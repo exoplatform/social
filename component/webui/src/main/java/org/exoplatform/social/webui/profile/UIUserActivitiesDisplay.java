@@ -210,7 +210,13 @@ public class UIUserActivitiesDisplay extends UIContainer {
       removeChild(UIActivitiesLoader.class);
       activitiesLoader = addChild(UIActivitiesLoader.class, null, "UIActivitiesLoader");
     }
-    activitiesLoader.setPostContext(PostContext.USER);
+    //
+    String activityId = Utils.getActivityID();
+    if (activityId != null && activityId.length() > 0) {
+      activitiesLoader.setPostContext(PostContext.SINGLE);
+    } else {
+      activitiesLoader.setPostContext(PostContext.USER);
+    }   
     activitiesLoader.setLoadingCapacity(ACTIVITY_PER_PAGE);
     activitiesLoader.setOwnerName(ownerName);
     activitiesLoader.setSelectedDisplayMode(selectedDisplayMode.toString());

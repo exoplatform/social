@@ -50,7 +50,8 @@ public class UIComposer extends UIForm {
 
   public enum PostContext {
     SPACE,
-    USER
+    USER,
+    SINGLE
   }
 
   private PostContext postContext;

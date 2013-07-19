@@ -26,9 +26,13 @@ import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
+import org.exoplatform.social.core.identity.model.Identity;
+import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
+import org.exoplatform.social.core.manager.ActivityManager;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.webui.Utils;
 import org.exoplatform.social.webui.composer.UIComposer;
+import org.exoplatform.social.webui.composer.UIComposer.PostContext;
 import org.exoplatform.social.webui.profile.UIUserActivitiesDisplay;
 import org.exoplatform.web.application.RequireJS;
 import org.exoplatform.webui.application.WebuiRequestContext;
@@ -156,6 +160,13 @@ public class UIActivitiesLoader extends UIContainer {
       activitiesCounter = 0;
       isExtendLoader = false;
       
+      String activityId = Utils.getActivityID();
+      if (activityId != null && activityId.length() > 0) {
+        postContext = PostContext.SINGLE;
+      } else {
+        postContext = PostContext.USER;
+      }
+      
       activitiesContainer.setPostContext(postContext);
       activitiesContainer.setOwnerName(ownerName);
       activitiesContainer.setSelectedDisplayMode(selectedDisplayMode);
@@ -166,7 +177,11 @@ public class UIActivitiesLoader extends UIContainer {
       List<ExoSocialActivity> activities = new ArrayList<ExoSocialActivity>(0);
       
       if (isShowActivities(space)) {
-        activities = loadActivities(currentLoadIndex, loadingCapacity);
+        if (this.postContext == PostContext.USER) {
+          activities = loadActivities(currentLoadIndex, loadingCapacity);
+        } else {
+          activities = loadActivity();
+        }
       }
       
       activitiesContainer.setActivityList(activities);
@@ -212,13 +227,35 @@ public class UIActivitiesLoader extends UIContainer {
     return null;
   }
   
+  private List<ExoSocialActivity> loadActivity() throws Exception {
+    ActivityManager activityManager = Utils.getActivityManager();
+    String activityId = Utils.getActivityID();
+    ExoSocialActivity activity = activityManager.getActivity(activityId);
+    if (activity == null)
+      return null;
+    return new ArrayList<ExoSocialActivity>(Arrays.asList(activity));
+  }
+  
   private boolean isShowActivities(Space space) {
-    if (space == null) return true;
+    if (space == null) {
+      space = getSpaceByActivityId(Utils.getActivityID());
+      if (space == null)
+        return true;
+    }
     
     String remoteId = Util.getPortalRequestContext().getRemoteUser();
     return Utils.getSpaceService().isMember(space, remoteId);
   }
 
+  private Space getSpaceByActivityId(String activityId) {
+    try {
+      ExoSocialActivity activity = Utils.getActivityManager().getActivity(activityId);
+      Identity spaceIdentity = Utils.getIdentityManager().getOrCreateIdentity(SpaceIdentityProvider.NAME, activity.getStreamOwner(), true);
+      return Utils.getSpaceService().getSpaceByPrettyName(spaceIdentity.getRemoteId());
+    } catch (Exception e) {
+      return null;
+    }
+  }
 
   public static class LoadMoreActionListener extends EventListener<UIActivitiesLoader> {
     @Override

@@ -45,7 +45,9 @@
   <div class="uiTabPane $uiTabClazz">
  	 <div class="uiUserActivitiesContainer">
       <% uicomponent.renderChild(PopupContainer.class); %>
-      <% uicomponent.renderChild(UIComposer.class); %>
+      <%if (uicomponent.isComposerDisplayed()) {%>  
+         <% uicomponent.renderChild(UIComposer.class); %>
+      <%}%>
       <% uicomponent.renderChild(UIUserActivitiesDisplay.class); %>
     </div>
   </div>

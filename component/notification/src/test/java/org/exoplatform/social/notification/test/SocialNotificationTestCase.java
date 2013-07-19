@@ -25,7 +25,10 @@ import java.util.Map;
 
 import org.exoplatform.commons.api.notification.MessageInfo;
 import org.exoplatform.commons.api.notification.NotificationMessage;
+import org.exoplatform.commons.api.notification.plugin.AbstractNotificationPlugin;
+import org.exoplatform.commons.api.notification.plugin.NotificationKey;
 import org.exoplatform.commons.api.notification.service.TemplateGenerator;
+import org.exoplatform.commons.api.notification.service.setting.NotificationPluginService;
 import org.exoplatform.groovyscript.GroovyTemplate;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.activity.model.ExoSocialActivityImpl;
@@ -40,6 +43,8 @@ import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.notification.AbstractCoreTest;
 import org.exoplatform.social.notification.DefaultDataTest;
 import org.exoplatform.social.notification.Utils;
+import org.exoplatform.social.notification.plugin.LikePlugin;
+import org.exoplatform.social.notification.plugin.PostActivityPlugin;
 import org.exoplatform.social.notification.provider.SocialProviderImpl;
 
 public class SocialNotificationTestCase extends AbstractCoreTest {
@@ -50,6 +55,7 @@ public class SocialNotificationTestCase extends AbstractCoreTest {
   private List<Space>  tearDownSpaceList;
   private SpaceServiceImpl spaceService;
   private RelationshipManagerImpl relationshipManager;
+  private NotificationPluginService pluginService;
 
   private Identity rootIdentity;
   private Identity johnIdentity;
@@ -67,14 +73,16 @@ public class SocialNotificationTestCase extends AbstractCoreTest {
   protected void setUp() throws Exception {
     super.setUp();
 
+    pluginService = Utils.getService(NotificationPluginService.class);
     templateGenerator = Utils.getService(TemplateGenerator.class);
     identityManager = Utils.getService(IdentityManager.class);
     activityManager = Utils.getService(ActivityManagerImpl.class);
     spaceService = Utils.getService(SpaceServiceImpl.class);
     relationshipManager = Utils.getService(RelationshipManagerImpl.class);
     
-    assertNotNull(activityManager);
-
+    assertNotNull(templateGenerator);
+    assertNotNull(pluginService);
+    
     rootIdentity = identityManager.getOrCreateIdentity("organization", "root", true);
     johnIdentity = identityManager.getOrCreateIdentity("organization", "john", true);
     maryIdentity = identityManager.getOrCreateIdentity("organization", "mary", true);
@@ -148,7 +156,7 @@ public class SocialNotificationTestCase extends AbstractCoreTest {
     identityManager.deleteIdentity(ghostIdentity);
   }
   
-  public void testSaveCommentWithMention() throws Exception {
+  public void TestSaveCommentWithMention() throws Exception {
     
     //root post an activity and mention demo
     ExoSocialActivity activity = new ExoSocialActivityImpl();
@@ -187,7 +195,7 @@ public class SocialNotificationTestCase extends AbstractCoreTest {
     assertEquals(maryIdentity.getRemoteId(), users.get(2));
   }
   
-  public void testSaveComment() throws Exception {
+  public void TestSaveComment() throws Exception {
     {
       ExoSocialActivity activity = new ExoSocialActivityImpl();
       activity.setTitle("activity title");
@@ -248,7 +256,7 @@ public class SocialNotificationTestCase extends AbstractCoreTest {
     }
   }
 
-  public void testSaveActivity() throws Exception {
+  public void TestSaveActivity() throws Exception {
 
     //
     ExoSocialActivity activity = new ExoSocialActivityImpl();
@@ -303,8 +311,15 @@ public class SocialNotificationTestCase extends AbstractCoreTest {
     spaceService.deleteSpace(space);
   }
   
-  public void testLikeActivity() throws Exception {
+  public void TestLikeActivity() throws Exception {
 
+    AbstractNotificationPlugin like = new LikePlugin();
+    NotificationKey likeKey = new NotificationKey(like);
+    
+    AbstractNotificationPlugin post = new PostActivityPlugin();
+    NotificationKey postKey = new NotificationKey(post);
+    pluginService.add(like);
+    pluginService.add(post);
     //
     ExoSocialActivity activity = new ExoSocialActivityImpl();
     activity.setTitle("title ");
@@ -316,15 +331,17 @@ public class SocialNotificationTestCase extends AbstractCoreTest {
     activityManager.saveLike(activity, maryIdentity);
     assertEquals(1, Utils.getSocialEmailStorage().emails().size());
     
+    pluginService.remove(likeKey);
+    pluginService.remove(postKey);
   }
   
-  public void testInviteToConnect() throws Exception {
+  public void TestInviteToConnect() throws Exception {
     relationshipManager.inviteToConnect(rootIdentity, demoIdentity);
     
     assertEquals(1, Utils.getSocialEmailStorage().emails().size());
   }
   
-  public void testInvitedToJoinSpace() throws Exception {
+  public void TestInvitedToJoinSpace() throws Exception {
     Space space = getSpaceInstance(1);
     spaceService.addInvitedUser(space, maryIdentity.getRemoteId());
     Collection<NotificationMessage> messages = Utils.getSocialEmailStorage().emails();
@@ -335,7 +352,7 @@ public class SocialNotificationTestCase extends AbstractCoreTest {
     spaceService.deleteSpace(space);
   }
   
-  public void testAddPendingUser() throws Exception {
+  public void TestAddPendingUser() throws Exception {
     Space space = getSpaceInstance(1);
     spaceService.addPendingUser(space, maryIdentity.getRemoteId());
     
@@ -343,7 +360,7 @@ public class SocialNotificationTestCase extends AbstractCoreTest {
     spaceService.deleteSpace(space);
   }
   
-  public void testBuildDigestMessage() throws Exception {
+  public void TestBuildDigestMessage() throws Exception {
     {
       //ActivityCommentProvider
       ExoSocialActivity activity = new ExoSocialActivityImpl();

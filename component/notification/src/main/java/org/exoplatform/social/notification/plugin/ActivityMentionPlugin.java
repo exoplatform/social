@@ -87,8 +87,8 @@ public class ActivityMentionPlugin extends AbstractNotificationPlugin {
         ExoSocialActivity activity = Utils.getActivityManager().getActivity(activityId);
         Identity identity = Utils.getIdentityManager().getIdentity(activity.getPosterId(), true);
 
-        templateContext.put("USER", identity.getProfile().getFullName());
-        templateContext.put("ACTIVITY", activity.getTitle());
+        templateContext.put("USER", SocialNotificationUtils.buildRedirecUrl("user", identity.getRemoteId(), identity.getProfile().getFullName()));
+        templateContext.put("ACTIVITY", SocialNotificationUtils.buildRedirecUrl("activity", activity.getId(), activity.getTitle()));
         String digester = Utils.getTemplateGenerator().processDigest(templateContext.digestType(0).end());
 
         writer.append(digester).append("</br>");

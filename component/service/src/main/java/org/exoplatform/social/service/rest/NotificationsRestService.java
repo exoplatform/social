@@ -59,7 +59,9 @@ public class NotificationsRestService implements ResourceContainer {
   private RelationshipManager relationshipManager;
   private SpaceService spaceService;
   
-  private static String       ACTIVITY_ID_PREFIX = "#activityContainer";
+  private static String       ACTIVITY_ID_PREFIX = "activity";
+
+  private static String       SLASH              = "/";
   
   public enum URL_TYPE {
     user, space, activity, portal_home, all_space, connections, notification_settings, connections_request, space_invitation;
@@ -265,20 +267,15 @@ public class NotificationsRestService implements ResourceContainer {
    */
   @GET
   @Path("replyActivity/{activityId}")
-  public Response replyActivity(@Context UriInfo uriInfo,
-                                @PathParam("activityId") String activityId) throws Exception {
+  public Response replyActivity(@PathParam("activityId") String activityId) throws Exception {
     checkAuthenticatedRequest();
 
     ExoSocialActivity activity = getActivityManager().getActivity(activityId);
-    Identity identity = getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, ConversationState.getCurrent().getIdentity().getUserId(), true);
-    if (identity == null) {
-      identity = getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, Util.getViewerId(uriInfo), true);
-    }
-    if (identity == null || activity == null) {
+    if (activity == null) {
       throw new WebApplicationException(Response.Status.BAD_REQUEST);
     }
 
-    String targetURL = Util.getBaseUrl() + LinkProvider.getUserActivityUri(identity.getRemoteId()) + ACTIVITY_ID_PREFIX + activity.getId();
+    String targetURL = Util.getBaseUrl() + LinkProvider.getRedirectUri(ACTIVITY_ID_PREFIX + SLASH + activity.getId() + SLASH + "focus");
 
     // redirect to target page
     return Response.seeOther(URI.create(targetURL)).build();
@@ -293,20 +290,15 @@ public class NotificationsRestService implements ResourceContainer {
    */
   @GET
   @Path("viewFullDiscussion/{activityId}")
-  public Response viewFullDiscussion(@Context UriInfo uriInfo,
-                                     @PathParam("activityId") String activityId) throws Exception {
+  public Response viewFullDiscussion(@PathParam("activityId") String activityId) throws Exception {
     checkAuthenticatedRequest();
 
     ExoSocialActivity activity = getActivityManager().getActivity(activityId);
-    Identity identity = getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, ConversationState.getCurrent().getIdentity().getUserId(), true);
-    if (identity == null) {
-      identity = getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, Util.getViewerId(uriInfo), true);
-    }
-    if (identity == null || activity == null) {
+    if (activity == null) {
       throw new WebApplicationException(Response.Status.BAD_REQUEST);
     }
 
-    String targetURL = Util.getBaseUrl() + LinkProvider.getUserActivityUri(identity.getRemoteId()) + ACTIVITY_ID_PREFIX + activity.getId();
+    String targetURL = Util.getBaseUrl() + LinkProvider.getRedirectUri(ACTIVITY_ID_PREFIX + SLASH + activity.getId() + SLASH + "expand");
 
     // redirect to target page
     return Response.seeOther(URI.create(targetURL)).build();
@@ -337,7 +329,7 @@ public class NotificationsRestService implements ResourceContainer {
         case activity: {
           activity = getActivityManager().getActivity(objectId);
           userIdentity = getIdentityManager().getIdentity(activity.getPosterId(), true);
-          targetURL = Util.getBaseUrl() + LinkProvider.getUserActivityUri(userIdentity.getRemoteId()) + ACTIVITY_ID_PREFIX + activity.getId();
+          targetURL = Util.getBaseUrl() + LinkProvider.getRedirectUri(ACTIVITY_ID_PREFIX + SLASH + activity.getId());
           break;
         }
         case user: {

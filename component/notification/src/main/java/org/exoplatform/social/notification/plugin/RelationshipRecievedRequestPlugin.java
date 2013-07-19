@@ -16,7 +16,9 @@
  */
 package org.exoplatform.social.notification.plugin;
 
+import java.io.IOException;
 import java.io.Writer;
+import java.util.List;
 
 import org.exoplatform.commons.api.notification.MessageInfo;
 import org.exoplatform.commons.api.notification.NotificationContext;
@@ -77,6 +79,42 @@ public class RelationshipRecievedRequestPlugin extends AbstractNotificationPlugi
 
   @Override
   public boolean makeDigest(NotificationContext ctx, Writer writer) {
+    List<NotificationMessage> notifications = ctx.getNotificationMessages();
+    NotificationMessage first = notifications.get(0);
+
+    String language = getLanguage(first);
+    TemplateContext templateContext = new TemplateContext(first.getKey().getId(), language);
+    
+    int count = notifications.size();
+    String[] keys = {"USER", "USER_LIST", "LAST3_USERS"};
+    String key = "";
+    StringBuilder value = new StringBuilder();
+
+    try {
+      for (int i = 0; i < count && i < 3; i++) {
+        Identity identity = Utils.getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, notifications.get(i).getValueOwnerParameter("sender"), true);
+        if (i > 1 && count == 3) {
+          key = keys[i - 1];
+        } else {
+          key = keys[i];
+        }
+        value.append(SocialNotificationUtils.buildRedirecUrl("user", identity.getRemoteId(), identity.getProfile().getFullName()));
+        if (count > (i + 1) && i < 2) {
+          value.append(", ");
+        }
+      }
+      templateContext.put(key, value.toString());
+      if(count > 3) {
+        templateContext.put("COUNT", SocialNotificationUtils.buildRedirecUrl("connections_request", null, String.valueOf((count - 3))));
+      }
+      
+      String digester = Utils.getTemplateGenerator().processDigest(templateContext.digestType(count).end());
+      writer.append(digester).append("</br>");
+    } catch (IOException e) {
+      ctx.setException(e);
+      return false;
+    }
+    
     return true;
   }
 

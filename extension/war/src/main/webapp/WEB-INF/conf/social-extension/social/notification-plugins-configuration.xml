@@ -50,7 +50,7 @@
   </external-component-plugins>
 
   <external-component-plugins>
-    <target-component>org.exoplatform.commons.api.notification.service.ProviderSettingService</target-component>
+    <target-component>org.exoplatform.commons.api.notification.service.setting.ProviderSettingService</target-component>
     <component-plugin>
       <name>active.providers</name>
       <set-method>registerActiveProviderPlugin</set-method>
@@ -227,7 +227,7 @@
   </external-component-plugins>
 
   <external-component-plugins>
-    <target-component>org.exoplatform.commons.api.notification.service.ProviderSettingService</target-component>
+    <target-component>org.exoplatform.commons.api.notification.service.setting.ProviderSettingService</target-component>
     <component-plugin>
       <name>active.providers</name>
       <set-method>registerGroupProviderPlugin</set-method>
@@ -303,7 +303,7 @@
   </external-component-plugins>
   
   <external-component-plugins>
-    <target-component>org.exoplatform.commons.api.notification.service.ProviderService</target-component>
+    <target-component>org.exoplatform.commons.api.notification.service.storage.ProviderService</target-component>
     <component-plugin>
       <name>default.providers</name>
       <set-method>registerProviderPlugin</set-method>

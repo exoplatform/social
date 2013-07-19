@@ -111,21 +111,20 @@ public class NewUserPlugin extends AbstractNotificationPlugin {
       for (int i = 0; i < count && i < 3; i++) {
         String remoteId = notifications.get(i).getValueOwnerParameter(SocialNotificationUtils.REMOTE_ID.getKey());
         Identity identity = Utils.getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, remoteId, true);
-        Profile userProfile = identity.getProfile();
         //
         if (i > 1 && count == 3) {
           key = keys[i - 1];
         } else {
           key = keys[i];
         }
-        value.append(userProfile.getFullName());
+        value.append(SocialNotificationUtils.buildRedirecUrl("user", identity.getRemoteId(), identity.getProfile().getFullName()));
         if (count > (i + 1) && i < 2) {
           value.append(", ");
         }
       }
       templateContext.put(key, value.toString());
       if(count > 3) {
-        templateContext.put("COUNT", String.valueOf((count - 3)));
+        templateContext.put("COUNT", SocialNotificationUtils.buildRedirecUrl("connections", null, String.valueOf((count - 3))));
       }
       
       templateContext.put("PORTAL_NAME", System.getProperty("exo.notifications.portalname", "eXo"));

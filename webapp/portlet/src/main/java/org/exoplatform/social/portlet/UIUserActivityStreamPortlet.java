@@ -50,6 +50,7 @@ public class UIUserActivityStreamPortlet extends UIPortletApplication {
   private UIComposer uiComposer;
   private boolean composerDisplayed = false;
   UIUserActivitiesDisplay uiUserActivitiesDisplay;
+  private String activityId;
   /**
    * constructor
    *
@@ -59,7 +60,15 @@ public class UIUserActivityStreamPortlet extends UIPortletApplication {
     viewerName = Utils.getViewerRemoteId();
     ownerName = Utils.getOwnerRemoteId();
     uiComposer = addChild(UIComposer.class, null, null);
-    uiComposer.setPostContext(PostContext.USER);
+    activityId = Utils.getActivityID();
+    if (activityId != null) {
+      uiComposer.setPostContext(PostContext.SINGLE);
+      uiComposer.setRendered(false);
+      composerDisplayed = false;
+    } else {
+      uiComposer.setPostContext(PostContext.USER);
+      composerDisplayed = true;
+    }
     uiUserActivitiesDisplay = addChild(UIUserActivitiesDisplay.class, null, "UIUserActivitiesDisplay");
     uiComposer.setActivityDisplay(uiUserActivitiesDisplay);
     addChild(PopupContainer.class, null, "HiddenContainer");
@@ -67,6 +76,11 @@ public class UIUserActivityStreamPortlet extends UIPortletApplication {
 
   public boolean isComposerDisplayed() {
     return composerDisplayed;
+  }
+  
+  public String getActivityId() {
+    activityId = Utils.getActivityID();
+    return activityId;
   }
 
   /**

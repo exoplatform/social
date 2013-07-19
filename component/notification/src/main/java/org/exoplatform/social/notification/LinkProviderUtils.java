@@ -144,11 +144,8 @@ public static final String RESOURCE_URL = "social/notifications";
    */
   public static String getRestUrl(String type, String objectId1, String objectId2) {
     String baseUrl = getBaseRestUrl();
-    StringBuffer sb = new StringBuffer(baseUrl).append("/").append(type).append("/").append(objectId1);
-    if (objectId2 == null) {
-      return sb.toString();
-    }
-    return sb.append("/").append(objectId2).toString();
+    return new StringBuffer(baseUrl).append("/").append(type).append("/").append(objectId1)
+                                    .append("/").append(objectId2).toString();
   }
   
   /** 

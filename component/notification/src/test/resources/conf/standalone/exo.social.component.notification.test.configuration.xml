@@ -23,18 +23,23 @@
   xmlns="http://www.exoplatform.org/xml/ns/kernel_1_2.xsd">
 
   <component>
-    <key>org.exoplatform.commons.api.notification.NotificationDataStorage</key>
+    <key>org.exoplatform.commons.api.notification.service.storage.NotificationDataStorage</key>
     <type>org.exoplatform.social.notification.mock.MockNotificationDataStorage</type>
   </component>
 
   <component>
-    <key>org.exoplatform.commons.api.notification.service.NotificationService</key>
-    <type>org.exoplatform.commons.notification.impl.NotificationServiceImpl</type>
+    <key>org.exoplatform.commons.api.notification.service.storage.NotificationService</key>
+    <type>org.exoplatform.commons.notification.impl.storage.NotificationServiceImpl</type>
+  </component>
+  
+  <component>
+    <key>org.exoplatform.commons.api.notification.service.setting.NotificationPluginService</key>
+    <type>org.exoplatform.commons.notification.impl.setting.NotificationPluginServiceImpl</type>
   </component>
 
   <component>
-    <key>org.exoplatform.commons.api.notification.service.UserNotificationService</key>
-    <type>org.exoplatform.commons.notification.impl.UserNotificationServiceImpl</type>
+    <key>org.exoplatform.commons.api.notification.service.setting.UserNotificationService</key>
+    <type>org.exoplatform.commons.notification.impl.setting.UserNotificationServiceImpl</type>
   </component>
 
   <component>
@@ -47,7 +52,7 @@
     <type>org.exoplatform.social.notification.mock.MockTemplateGeneratorImpl</type>
   </component>
   <component>
-    <key>org.exoplatform.commons.api.notification.service.ProviderSettingService</key>
+    <key>org.exoplatform.commons.api.notification.service.setting.ProviderSettingService</key>
     <type>org.exoplatform.social.notification.mock.MockProviderSettingService</type>
   </component>
   

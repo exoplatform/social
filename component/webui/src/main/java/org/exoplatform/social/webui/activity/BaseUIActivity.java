@@ -448,6 +448,22 @@ public class BaseUIActivity extends UIForm {
     comments = activityCommentsListAccess.loadAsList(0, DEFAULT_LIMIT);
     comments = getI18N(comments);
     identityLikes = activity.getLikeIdentityIds();
+    
+    //init single activity : focus to comment's box or expand all comments
+    initSingleActivity();
+  }
+  
+  private void initSingleActivity() {
+    UIActivitiesContainer uiActivitiesContainer = getAncestorOfType(UIActivitiesContainer.class);
+    PostContext postContext = uiActivitiesContainer.getPostContext();
+    if (postContext == PostContext.SINGLE) {
+      String type = Utils.getDisplayTypeActivity();
+      if ("expand".equals(type)) {
+        setCommentListStatus(CommentStatus.ALL);
+      } else if ("focus".equals(type)) {
+        setCommentFormDisplayed(true);
+      }
+    }
   }
   
   public boolean isUserActivity() {

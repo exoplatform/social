@@ -255,6 +255,44 @@ public class Utils {
   }
   
   /**
+   * Gets ExoRouter
+   * @return ExoRouter
+   */
+  public static final ExoRouter getExoRouter() {
+    return (ExoRouter) ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(ExoRouter.class);
+  }
+  
+  /**
+   * Get activity's id
+   * @return
+   */
+  public static String getActivityID() {
+    Route route = getActivityRoute(); 
+    return route == null ? null : route.localArgs.get("activityID");
+    
+  }
+  
+  /**
+   * Get display's type of activity
+   * @return displayType
+   */
+  public static String getDisplayTypeActivity() {
+    Route route = getActivityRoute(); 
+    return route == null ? null : route.localArgs.get("displayType");
+    
+  }
+  
+  /**
+   * Get the route
+   * @return
+   */
+  private static Route getActivityRoute() {
+    getExoRouter();
+    String uriActivity = getSelectedNode();
+    return ExoRouter.route("/" + uriActivity);
+  }
+  
+  /**
    * Get the uri.
    * 
    * @param url

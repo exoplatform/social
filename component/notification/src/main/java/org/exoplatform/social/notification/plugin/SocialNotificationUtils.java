@@ -105,9 +105,9 @@ public class SocialNotificationUtils {
       int count = values.size();
 
       if (activity != null) {
-        templateContext.put("ACTIVITY", activity.getTitle());
+        templateContext.put("ACTIVITY", SocialNotificationUtils.buildRedirecUrl("activity", activity.getId(), activity.getTitle()));
       } else {
-        templateContext.put("SPACE", space.getPrettyName());
+        templateContext.put("SPACE", SocialNotificationUtils.buildRedirecUrl("space", space.getId(), space.getDisplayName()));
       }
       
       String[] keys = {"USER", "USER_LIST", "LAST3_USERS"};
@@ -116,20 +116,23 @@ public class SocialNotificationUtils {
       
       for (int i = 0; i < count && i <= 3; i++) {
         Identity identity = Utils.getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, values.get(i), true);
-        Profile userProfile = identity.getProfile();
         if (i > 1 && count == 3) {
           key = keys[i - 1];
         } else {
           key = keys[i];
         }
-        value.append(userProfile.getFullName());
+        value.append(SocialNotificationUtils.buildRedirecUrl("user", identity.getRemoteId(), identity.getProfile().getFullName()));
         if (count > (i + 1) && i < 2) {
           value.append(", ");
         }
       }
       templateContext.put(key, value.toString());
       if(count > 3) {
-        templateContext.put("COUNT", String.valueOf((count - 3)));
+        if (activity != null) {
+          templateContext.put("COUNT", SocialNotificationUtils.buildRedirecUrl("activity", activity.getId(), String.valueOf((count - 3))));
+        } else {
+          templateContext.put("COUNT", SocialNotificationUtils.buildRedirecUrl("space", space.getId(), String.valueOf((count - 3))));
+        }
       }
 
       String digester = Utils.getTemplateGenerator().processDigest(templateContext.digestType(count));

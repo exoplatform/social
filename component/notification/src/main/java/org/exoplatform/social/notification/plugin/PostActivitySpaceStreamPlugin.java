@@ -16,7 +16,9 @@
  */
 package org.exoplatform.social.notification.plugin;
 
+import java.io.IOException;
 import java.io.Writer;
+import java.util.List;
 
 import org.exoplatform.commons.api.notification.MessageInfo;
 import org.exoplatform.commons.api.notification.NotificationContext;
@@ -87,7 +89,30 @@ public class PostActivitySpaceStreamPlugin extends AbstractNotificationPlugin {
 
   @Override
   public boolean makeDigest(NotificationContext ctx, Writer writer) {
+    List<NotificationMessage> notifications = ctx.getNotificationMessages();
+    NotificationMessage first = notifications.get(0);
+
+    String language = getLanguage(first);
+    TemplateContext templateContext = new TemplateContext(first.getKey().getId(), language);
     
+    try {
+      for (NotificationMessage message : notifications) {
+        String activityId = message.getValueOwnerParameter(SocialNotificationUtils.ACTIVITY_ID.getKey());
+        ExoSocialActivity activity = Utils.getActivityManager().getActivity(activityId);
+        Identity identity = Utils.getIdentityManager().getIdentity(activity.getPosterId(), true);
+        Space space = Utils.getSpaceService().getSpaceByPrettyName(activity.getStreamOwner());
+        
+        templateContext.put("USER", SocialNotificationUtils.buildRedirecUrl("user", identity.getRemoteId(), identity.getProfile().getFullName()));
+        templateContext.put("ACTIVITY", SocialNotificationUtils.buildRedirecUrl("activity", activity.getId(), activity.getTitle()));
+        templateContext.put("SPACE", SocialNotificationUtils.buildRedirecUrl("space", space.getId(), space.getDisplayName()));
+        String digester = Utils.getTemplateGenerator().processDigest(templateContext.digestType(0).end());
+        writer.append(digester).append("</br>");
+
+      }
+    } catch (IOException e) {
+      ctx.setException(e);
+      return false;
+    }
     return true;
   }
 

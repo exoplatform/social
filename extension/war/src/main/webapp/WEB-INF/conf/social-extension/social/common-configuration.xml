@@ -50,7 +50,7 @@
                 <map type="java.util.HashMap">
                   <entry>
                     <key><string>activity.show</string></key>
-                    <value><string>/activity/{activityID}</string></value>
+                    <value><string>/activity/{activityID}/{displayType}</string></value>
                   </entry>
                   <entry>
                     <key><string>activity.stream.owner.show</string></key>
