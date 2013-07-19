@@ -22,7 +22,7 @@ import java.util.Map;
 import org.exoplatform.commons.api.notification.plugin.ActiveProviderPlugin;
 import org.exoplatform.commons.api.notification.plugin.GroupProviderModel;
 import org.exoplatform.commons.api.notification.plugin.GroupProviderPlugin;
-import org.exoplatform.commons.api.notification.service.ProviderSettingService;
+import org.exoplatform.commons.api.notification.service.setting.ProviderSettingService;
 
 public class MockProviderSettingService implements ProviderSettingService {
 

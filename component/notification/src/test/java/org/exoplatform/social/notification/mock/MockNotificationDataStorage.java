@@ -21,8 +21,8 @@ import java.util.Collection;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-import org.exoplatform.commons.api.notification.NotificationDataStorage;
 import org.exoplatform.commons.api.notification.NotificationMessage;
+import org.exoplatform.commons.api.notification.service.storage.NotificationDataStorage;
 
 public class MockNotificationDataStorage implements NotificationDataStorage {
   Queue<NotificationMessage>       queue = new ConcurrentLinkedQueue<NotificationMessage>();
