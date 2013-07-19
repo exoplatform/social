@@ -35,7 +35,7 @@ import org.exoplatform.social.notification.SocialMessageBuilder;
 import org.exoplatform.social.notification.Utils;
 
 public class LikePlugin extends AbstractNotificationPlugin {
-  private final String ID = "ActivityLikeProvider";
+  public static final String ID = "ActivityLikeProvider";
   
   @Override
   public String getId() {

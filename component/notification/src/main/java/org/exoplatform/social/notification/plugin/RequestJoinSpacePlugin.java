@@ -37,7 +37,7 @@ import org.exoplatform.social.notification.LinkProviderUtils;
 import org.exoplatform.social.notification.Utils;
 
 public class RequestJoinSpacePlugin extends AbstractNotificationPlugin {
-  public final String ID = "RequestJoinSpace";
+  public static final String ID = "RequestJoinSpace";
 
   @Override
   public String getId() {

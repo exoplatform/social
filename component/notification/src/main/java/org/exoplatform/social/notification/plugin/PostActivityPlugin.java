@@ -33,7 +33,7 @@ import org.exoplatform.social.notification.SocialMessageBuilder;
 import org.exoplatform.social.notification.Utils;
 
 public class PostActivityPlugin extends AbstractNotificationPlugin {
-  public final String ID = "ActivityPostProvider";
+  public static final String ID = "ActivityPostProvider";
   
   @Override
   public String getId() {

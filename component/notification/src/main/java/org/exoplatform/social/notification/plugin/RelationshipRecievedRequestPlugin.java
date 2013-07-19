@@ -32,7 +32,7 @@ import org.exoplatform.social.notification.LinkProviderUtils;
 import org.exoplatform.social.notification.Utils;
 
 public class RelationshipRecievedRequestPlugin extends AbstractNotificationPlugin {
-  public final String ID = "RelationshipRecievedRequest";
+  public static final String ID = "RelationshipRecievedRequest";
 
   @Override
   public String getId() {

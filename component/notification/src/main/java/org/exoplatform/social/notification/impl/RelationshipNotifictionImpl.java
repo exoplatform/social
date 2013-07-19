@@ -17,15 +17,14 @@
 package org.exoplatform.social.notification.impl;
 
 import org.exoplatform.commons.api.notification.NotificationContext;
-import org.exoplatform.commons.api.notification.NotificationDataStorage;
+import org.exoplatform.commons.api.notification.plugin.NotificationKey;
 import org.exoplatform.commons.notification.impl.NotificationContextImpl;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.relationship.RelationshipEvent;
 import org.exoplatform.social.core.relationship.RelationshipListenerPlugin;
 import org.exoplatform.social.core.relationship.model.Relationship;
-import org.exoplatform.social.notification.Utils;
-import org.exoplatform.social.notification.context.NotificationExecutor;
+import org.exoplatform.social.notification.plugin.RelationshipRecievedRequestPlugin;
 import org.exoplatform.social.notification.task.RelationshipTask;
 
 public class RelationshipNotifictionImpl extends RelationshipListenerPlugin {
@@ -34,19 +33,16 @@ public class RelationshipNotifictionImpl extends RelationshipListenerPlugin {
   
   @Override
   public void confirmed(RelationshipEvent event) {
-    // TODO Auto-generated method stub
 
   }
 
   @Override
   public void ignored(RelationshipEvent event) {
-    // TODO Auto-generated method stub
 
   }
 
   @Override
   public void removed(RelationshipEvent event) {
-    // TODO Auto-generated method stub
 
   }
 
@@ -55,18 +51,16 @@ public class RelationshipNotifictionImpl extends RelationshipListenerPlugin {
     Relationship relationship = event.getPayload();
     try {
       NotificationContext ctx = NotificationContextImpl.DEFAULT.append(RelationshipTask.RELATIONSHIP, relationship);
-      NotificationDataStorage storage = Utils.getSocialEmailStorage();
-      storage.add(NotificationExecutor.execute(ctx, RelationshipTask.CONNECTION_REQUEST_RECEIVED));
+      ctx.getNotificationExecutor().with(ctx.makeCommand(NotificationKey.key(RelationshipRecievedRequestPlugin.ID)))
+                                   .execute(ctx);
     } catch (Exception e) {
       LOG.warn("Failed to get invite to connect information of " + event + ": " + e.getMessage());
     }
-
   }
 
   @Override
   public void denied(RelationshipEvent event) {
-    // TODO Auto-generated method stub
-
+    
   }
 
 }

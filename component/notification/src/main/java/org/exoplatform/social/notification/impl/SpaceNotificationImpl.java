@@ -17,100 +17,58 @@
 package org.exoplatform.social.notification.impl;
 
 import org.exoplatform.commons.api.notification.NotificationContext;
-import org.exoplatform.commons.api.notification.NotificationDataStorage;
+import org.exoplatform.commons.api.notification.plugin.NotificationKey;
 import org.exoplatform.commons.notification.impl.NotificationContextImpl;
 import org.exoplatform.social.core.space.SpaceListenerPlugin;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceLifeCycleEvent;
-import org.exoplatform.social.notification.Utils;
-import org.exoplatform.social.notification.context.NotificationExecutor;
+import org.exoplatform.social.notification.plugin.RequestJoinSpacePlugin;
+import org.exoplatform.social.notification.plugin.SpaceInvitationPlugin;
 import org.exoplatform.social.notification.task.SpaceTask;
 
 public class SpaceNotificationImpl extends SpaceListenerPlugin {
 
   @Override
-  public void spaceCreated(SpaceLifeCycleEvent event) {
-    // TODO Auto-generated method stub
-
-  }
+  public void spaceCreated(SpaceLifeCycleEvent event) {}
 
   @Override
-  public void spaceRemoved(SpaceLifeCycleEvent event) {
-    // TODO Auto-generated method stub
-
-  }
+  public void spaceRemoved(SpaceLifeCycleEvent event) {}
 
   @Override
-  public void applicationAdded(SpaceLifeCycleEvent event) {
-    // TODO Auto-generated method stub
-
-  }
+  public void applicationAdded(SpaceLifeCycleEvent event) {}
 
   @Override
-  public void applicationRemoved(SpaceLifeCycleEvent event) {
-    // TODO Auto-generated method stub
-
-  }
+  public void applicationRemoved(SpaceLifeCycleEvent event) {}
 
   @Override
-  public void applicationActivated(SpaceLifeCycleEvent event) {
-    // TODO Auto-generated method stub
-
-  }
+  public void applicationActivated(SpaceLifeCycleEvent event) {}
 
   @Override
-  public void applicationDeactivated(SpaceLifeCycleEvent event) {
-    // TODO Auto-generated method stub
-
-  }
+  public void applicationDeactivated(SpaceLifeCycleEvent event) {}
 
   @Override
-  public void joined(SpaceLifeCycleEvent event) {
-    // TODO Auto-generated method stub
-
-  }
+  public void joined(SpaceLifeCycleEvent event) {}
 
   @Override
-  public void left(SpaceLifeCycleEvent event) {
-    // TODO Auto-generated method stub
-
-  }
+  public void left(SpaceLifeCycleEvent event) {}
 
   @Override
-  public void grantedLead(SpaceLifeCycleEvent event) {
-    // TODO Auto-generated method stub
-
-  }
+  public void grantedLead(SpaceLifeCycleEvent event) {}
 
   @Override
-  public void revokedLead(SpaceLifeCycleEvent event) {
-    // TODO Auto-generated method stub
-
-  }
+  public void revokedLead(SpaceLifeCycleEvent event) {}
 
   @Override
-  public void spaceRenamed(SpaceLifeCycleEvent event) {
-    // TODO Auto-generated method stub
-
-  }
+  public void spaceRenamed(SpaceLifeCycleEvent event) {}
 
   @Override
-  public void spaceDescriptionEdited(SpaceLifeCycleEvent event) {
-    // TODO Auto-generated method stub
-
-  }
+  public void spaceDescriptionEdited(SpaceLifeCycleEvent event) {}
 
   @Override
-  public void spaceAvatarEdited(SpaceLifeCycleEvent event) {
-    // TODO Auto-generated method stub
-
-  }
+  public void spaceAvatarEdited(SpaceLifeCycleEvent event) {}
 
   @Override
-  public void spaceAccessEdited(SpaceLifeCycleEvent event) {
-    // TODO Auto-generated method stub
-
-  }
+  public void spaceAccessEdited(SpaceLifeCycleEvent event) {}
   
   @Override
   public void addInvitedUser(SpaceLifeCycleEvent event) {
@@ -119,8 +77,8 @@ public class SpaceNotificationImpl extends SpaceListenerPlugin {
     
     NotificationContext ctx = NotificationContextImpl.DEFAULT.append(SpaceTask.REMOTE_ID, userId)
                                                              .append(SpaceTask.SPACE, space);
-    NotificationDataStorage storage = Utils.getSocialEmailStorage();
-    storage.add(NotificationExecutor.execute(ctx, SpaceTask.SPACE_INVITATION));
+    
+    ctx.getNotificationExecutor().with(ctx.makeCommand(NotificationKey.key(SpaceInvitationPlugin.ID))).execute(ctx);
   }
   
   @Override
@@ -130,8 +88,8 @@ public class SpaceNotificationImpl extends SpaceListenerPlugin {
     
     NotificationContext ctx = NotificationContextImpl.DEFAULT.append(SpaceTask.REMOTE_ID, userId)
                                                              .append(SpaceTask.SPACE, space);
-    NotificationDataStorage storage = Utils.getSocialEmailStorage();
     
-    storage.add(NotificationExecutor.execute(ctx, SpaceTask.SPACE_JOIN_REQUEST));
+    ctx.getNotificationExecutor().with(ctx.makeCommand(NotificationKey.key(RequestJoinSpacePlugin.ID))).execute(ctx);
+    
   }
 }

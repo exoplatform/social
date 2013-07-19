@@ -32,7 +32,7 @@ import org.exoplatform.social.notification.LinkProviderUtils;
 import org.exoplatform.social.notification.Utils;
 
 public class ActivityMentionPlugin extends AbstractNotificationPlugin {
-  public final String ID = "ActivityMentionPlugin";
+  public static final String ID = "ActivityMentionPlugin";
 
   @Override
   public String getId() {

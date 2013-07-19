@@ -16,57 +16,44 @@
  */
 package org.exoplatform.social.notification.impl;
 
-import java.util.Collection;
-
 import org.exoplatform.commons.api.notification.NotificationContext;
-import org.exoplatform.commons.api.notification.NotificationDataStorage;
-import org.exoplatform.commons.api.notification.NotificationMessage;
+import org.exoplatform.commons.api.notification.plugin.NotificationKey;
 import org.exoplatform.commons.notification.impl.NotificationContextImpl;
 import org.exoplatform.social.core.activity.ActivityLifeCycleEvent;
 import org.exoplatform.social.core.activity.ActivityListenerPlugin;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.notification.SocialMessageBuilder;
-import org.exoplatform.social.notification.Utils;
-import org.exoplatform.social.notification.context.NotificationExecutor;
-import org.exoplatform.social.notification.task.ActivityTask;
+import org.exoplatform.social.notification.plugin.ActivityCommentPlugin;
+import org.exoplatform.social.notification.plugin.ActivityMentionPlugin;
+import org.exoplatform.social.notification.plugin.LikePlugin;
+import org.exoplatform.social.notification.plugin.PostActivityPlugin;
+import org.exoplatform.social.notification.plugin.PostActivitySpaceStreamPlugin;
 
 public class ActivityNotificationImpl extends ActivityListenerPlugin {
 
-  @SuppressWarnings("unchecked")
   @Override
   public void saveActivity(ActivityLifeCycleEvent event) {
     ExoSocialActivity activity = event.getSource();    
     NotificationContext ctx = NotificationContextImpl.DEFAULT.append(SocialMessageBuilder.ACTIVITY, activity);
-    
-    // check if activity contain mentions then create mention task
-    NotificationDataStorage storage = Utils.getSocialEmailStorage();
-    
-    Collection<NotificationMessage> messages = NotificationExecutor.execute(ctx, ActivityTask.POST_ACTIVITY, 
-                                 ActivityTask.POST_ACTIVITY_ON_SPACE, ActivityTask.MENTION_ACTIVITY);
-    
-    if (messages.size() != 0) {
-      // add all available types
-      storage.addAll(messages);
-    }
+
+    ctx.getNotificationExecutor().with(ctx.makeCommand(NotificationKey.key(PostActivityPlugin.ID)))
+                                 .with(ctx.makeCommand(NotificationKey.key(PostActivitySpaceStreamPlugin.ID)))
+                                 .with(ctx.makeCommand(NotificationKey.key(ActivityMentionPlugin.ID)))
+                                 .execute(ctx);
   }
 
   @Override
   public void updateActivity(ActivityLifeCycleEvent event) {
   }
 
-  @SuppressWarnings("unchecked")
   @Override
   public void saveComment(ActivityLifeCycleEvent event) {
     ExoSocialActivity activity = event.getSource();    
     NotificationContext ctx = NotificationContextImpl.DEFAULT.append(SocialMessageBuilder.ACTIVITY, activity);
-    
-    NotificationDataStorage storage = Utils.getSocialEmailStorage();
-    Collection<NotificationMessage> message = NotificationExecutor.execute(ctx, ActivityTask.COMMENT_ACTIVITY, ActivityTask.MENTION_ACTIVITY);
-    
-    if (message != null) {
-      // add all available types and will be ignored if value is null
-      storage.addAll(message);
-    }
+
+    ctx.getNotificationExecutor().with(ctx.makeCommand(NotificationKey.key(ActivityCommentPlugin.ID)))
+                                 .with(ctx.makeCommand(NotificationKey.key(ActivityMentionPlugin.ID)))
+                                 .execute(ctx);
   }
 
   @Override
@@ -74,11 +61,7 @@ public class ActivityNotificationImpl extends ActivityListenerPlugin {
     ExoSocialActivity activity = event.getSource();    
     NotificationContext ctx = NotificationContextImpl.DEFAULT.append(SocialMessageBuilder.ACTIVITY, activity);
     
-    // check if activity contain mentions then create mention task
-    NotificationDataStorage storage = Utils.getSocialEmailStorage();
-    
-    // add all available types and will be ignored if value is null
-    storage.add(NotificationExecutor.execute(ctx, ActivityTask.LIKE));
-    
+    ctx.getNotificationExecutor().with(ctx.makeCommand(NotificationKey.key(LikePlugin.ID)))
+                                 .execute(ctx);
   }
 }

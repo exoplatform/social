@@ -35,7 +35,7 @@ import org.exoplatform.social.notification.SocialMessageBuilder;
 import org.exoplatform.social.notification.Utils;
 
 public class ActivityCommentPlugin extends AbstractNotificationPlugin {
-  public final String ID = "ActivityCommentProvider";
+  public static final String ID = "ActivityCommentProvider";
 
   @Override
   public NotificationMessage makeNotification(NotificationContext ctx) {

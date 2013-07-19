@@ -33,7 +33,7 @@ import org.exoplatform.social.notification.SocialMessageBuilder;
 import org.exoplatform.social.notification.Utils;
 
 public class PostActivitySpaceStreamPlugin extends AbstractNotificationPlugin {
-  private final String ID = "ActivityPostSpaceProvider";
+  public static final String ID = "ActivityPostSpaceProvider";
   
   @Override
   public String getId() {
