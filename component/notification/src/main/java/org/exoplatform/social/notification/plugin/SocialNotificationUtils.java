@@ -18,15 +18,14 @@ package org.exoplatform.social.notification.plugin;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import org.exoplatform.commons.api.notification.ArgumentLiteral;
-import org.exoplatform.commons.api.notification.ProviderData;
+import org.exoplatform.commons.api.notification.TemplateContext;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
@@ -89,7 +88,7 @@ public class SocialNotificationUtils {
     return destinataires;
   }
   
-  public static String getMessageByIds(Map<String, List<String>> map, ProviderData providerData, String language) {
+  public static String getMessageByIds(Map<String, List<String>> map, TemplateContext templateContext) {
     StringBuilder sb = new StringBuilder();
     ExoSocialActivity activity = null;
     Space space = null;
@@ -105,12 +104,10 @@ public class SocialNotificationUtils {
       List<String> values = entry.getValue();
       int count = values.size();
 
-      Map<String, String> valueables = new HashMap<String, String>();
-      
       if (activity != null) {
-        valueables.put("ACTIVITY", activity.getTitle());
+        templateContext.put("ACTIVITY", activity.getTitle());
       } else {
-        valueables.put("SPACE", space.getPrettyName());
+        templateContext.put("SPACE", space.getPrettyName());
       }
       
       String[] keys = {"USER", "USER_LIST", "LAST3_USERS"};
@@ -130,12 +127,12 @@ public class SocialNotificationUtils {
           value.append(", ");
         }
       }
-      valueables.put(key, value.toString());
+      templateContext.put(key, value.toString());
       if(count > 3) {
-        valueables.put("COUNT", String.valueOf((count - 3)));
+        templateContext.put("COUNT", String.valueOf((count - 3)));
       }
 
-      String digester = Utils.getTemplateGenerator().processDigestIntoString(providerData.getType(), valueables, language, count);
+      String digester = Utils.getTemplateGenerator().processDigest(templateContext.digestType(count));
       sb.append(digester).append("</br>");
     }
     

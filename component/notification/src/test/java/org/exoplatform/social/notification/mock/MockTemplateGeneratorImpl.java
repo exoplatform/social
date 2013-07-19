@@ -16,9 +16,8 @@
  */
 package org.exoplatform.social.notification.mock;
 
-import java.util.Map;
-
 import org.apache.commons.lang.StringUtils;
+import org.exoplatform.commons.api.notification.TemplateContext;
 import org.exoplatform.commons.api.notification.plugin.MappingKey;
 import org.exoplatform.commons.api.notification.plugin.TemplateConfigurationPlugin;
 import org.exoplatform.commons.api.notification.service.TemplateGenerator;
@@ -33,13 +32,13 @@ public class MockTemplateGeneratorImpl implements TemplateGenerator {
   }
 
   @Override
-  public String processTemplate(String providerId, Map<String, String> valueables, String language) {
-    MappingKey mappingKey = generatorImpl.getMappingKey(providerId);
-    String templateKey = mappingKey.getKeyValue("template", "Notification.template." + providerId);
+  public String processTemplate(TemplateContext ctx) {
+    MappingKey mappingKey = generatorImpl.getMappingKey(ctx.getProviderId());
+    String templateKey = mappingKey.getKeyValue("template", "Notification.template." + ctx.getProviderId());
     String template = NotificationUtils.getResourceBundle(templateKey, null, mappingKey.getLocaleResouceBundle());
-    if (valueables != null) {
-      for (String findKey : valueables.keySet()) {
-        template = StringUtils.replace(template, findKey, valueables.get(findKey));
+    if (ctx != null) {
+      for (String findKey : ctx.keySet()) {
+        template = StringUtils.replace(template, findKey, (String)ctx.get(findKey));
       }
     }
     return template;
@@ -51,17 +50,17 @@ public class MockTemplateGeneratorImpl implements TemplateGenerator {
   }
 
   @Override
-  public String processSubjectIntoString(String providerId, Map<String, String> valueables, String language) {
-    return generatorImpl.processSubjectIntoString(providerId, valueables, language);
+  public String processSubject(TemplateContext ctx) {
+    return generatorImpl.processSubject(ctx);
   }
 
   @Override
-  public String processDigestIntoString(String providerId, Map<String, String> valueables, String language, int size) {
-    return generatorImpl.processDigestIntoString(providerId, valueables, language, size);
+  public String processDigest(TemplateContext ctx) {
+    return generatorImpl.processDigest(ctx);
   }
 
   @Override
-  public String processTemplateInContainer(String providerId, Map<String, String> valueables, String language) {
+  public String processTemplateInContainer(TemplateContext ctx) {
     // TODO Auto-generated method stub
     return null;
   }

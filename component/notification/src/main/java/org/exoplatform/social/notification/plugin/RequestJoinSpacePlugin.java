@@ -19,7 +19,6 @@ package org.exoplatform.social.notification.plugin;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,6 +27,7 @@ import org.exoplatform.commons.api.notification.MessageInfo;
 import org.exoplatform.commons.api.notification.NotificationContext;
 import org.exoplatform.commons.api.notification.NotificationMessage;
 import org.exoplatform.commons.api.notification.ProviderData;
+import org.exoplatform.commons.api.notification.TemplateContext;
 import org.exoplatform.commons.api.notification.plugin.AbstractNotificationPlugin;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
@@ -58,12 +58,12 @@ public class RequestJoinSpacePlugin extends AbstractNotificationPlugin {
   @Override
   public MessageInfo makeMessage(NotificationContext ctx) {
     MessageInfo messageInfo = new MessageInfo();
-    Map<String, String> templateContext = new HashMap<String, String>();
     
     NotificationMessage notification = ctx.getNotificationMessage();
     
     String language = getLanguage(notification);
-    
+    TemplateContext templateContext = new TemplateContext(notification.getKey().getId(), language);
+
     String spaceId = notification.getValueOwnerParameter(SocialNotificationUtils.SPACE_ID.getKey());
     Space space = Utils.getSpaceService().getSpaceById(spaceId);
     Identity identity = Utils.getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, notification.getValueOwnerParameter("request_from"), true);
@@ -71,12 +71,12 @@ public class RequestJoinSpacePlugin extends AbstractNotificationPlugin {
     
     templateContext.put("SPACE", space.getDisplayName());
     templateContext.put("USER", userProfile.getFullName());
-    String subject = Utils.getTemplateGenerator().processSubjectIntoString(notification.getKey().getId(), templateContext, language);
+    String subject = Utils.getTemplateGenerator().processSubject(templateContext);
     
     templateContext.put("AVATAR", LinkProviderUtils.getUserAvatarUrl(userProfile));
     templateContext.put("VALIDATE_SPACE_REQUEST_ACTION_URL", LinkProviderUtils.getValidateRequestToJoinSpaceUrl(space.getId(), identity.getRemoteId()));
     templateContext.put("REFUSE_SPACE_REQUEST_ACTION_URL", LinkProviderUtils.getRefuseRequestToJoinSpaceUrl(space.getId(), identity.getRemoteId()));
-    String body = Utils.getTemplateGenerator().processTemplate(notification.getKey().getId(), templateContext, language);
+    String body = Utils.getTemplateGenerator().processTemplate(templateContext);
     
     return messageInfo.subject(subject).body(body).end();
   }
@@ -92,13 +92,14 @@ public class RequestJoinSpacePlugin extends AbstractNotificationPlugin {
     Map<String, List<String>> map = new LinkedHashMap<String, List<String>>();
 
     try {
+      TemplateContext templateContext = new TemplateContext(providerData.getType(), language);
       for (NotificationMessage message : notifications) {
         String spaceId = message.getValueOwnerParameter(SocialNotificationUtils.SPACE_ID.getKey());
         String fromUser = message.getValueOwnerParameter("request_from");
         //
         SocialNotificationUtils.processInforSendTo(map, spaceId, fromUser);
       }
-      writer.append(SocialNotificationUtils.getMessageByIds(map, providerData, language));
+      writer.append(SocialNotificationUtils.getMessageByIds(map, templateContext));
     } catch (IOException e) {
       ctx.setException(e);
       return false;

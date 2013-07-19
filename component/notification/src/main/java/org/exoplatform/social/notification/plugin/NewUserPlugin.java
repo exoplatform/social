@@ -20,13 +20,12 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.exoplatform.commons.api.notification.MessageInfo;
 import org.exoplatform.commons.api.notification.NotificationContext;
 import org.exoplatform.commons.api.notification.NotificationMessage;
+import org.exoplatform.commons.api.notification.TemplateContext;
 import org.exoplatform.commons.api.notification.plugin.AbstractNotificationPlugin;
 import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.social.core.identity.model.Identity;
@@ -74,23 +73,23 @@ public class NewUserPlugin extends AbstractNotificationPlugin {
   @Override
   public MessageInfo makeMessage(NotificationContext ctx) {
     MessageInfo messageInfo = new MessageInfo();
-    Map<String, String> templateContext = new HashMap<String, String>();
     
     NotificationMessage notification = ctx.getNotificationMessage();
     
     String language = getLanguage(notification);
-    
+    TemplateContext templateContext = new TemplateContext(notification.getKey().getId(), language);
+
     String remoteId = notification.getValueOwnerParameter(SocialNotificationUtils.REMOTE_ID.getKey());
     Identity identity = Utils.getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, remoteId, true);
     Profile userProfile = identity.getProfile();
     
     templateContext.put("USER", userProfile.getFullName());
     templateContext.put("PORTAL_NAME", System.getProperty("exo.notifications.portalname", "eXo"));
-    String subject = Utils.getTemplateGenerator().processSubjectIntoString(notification.getKey().getId(), templateContext, language);
+    String subject = Utils.getTemplateGenerator().processSubject(templateContext);
     
     templateContext.put("AVATAR", LinkProviderUtils.getUserAvatarUrl(userProfile));
     templateContext.put("CONNECT_ACTION_URL", LinkProviderUtils.getInviteToConnectUrl(identity.getRemoteId()));
-    String body = Utils.getTemplateGenerator().processTemplate(notification.getKey().getId(), templateContext, language);
+    String body = Utils.getTemplateGenerator().processTemplate(templateContext);
     
     return messageInfo.subject(subject).body(body).end();
   }
@@ -102,7 +101,7 @@ public class NewUserPlugin extends AbstractNotificationPlugin {
 
     String language = getLanguage(first);
     
-    Map<String, String> templateContext = new HashMap<String, String>();
+    TemplateContext templateContext = new TemplateContext(first.getKey().getId(), language);
     int count = notifications.size();
     String[] keys = {"USER", "USER_LIST", "LAST3_USERS"};
     String key = "";
@@ -130,7 +129,7 @@ public class NewUserPlugin extends AbstractNotificationPlugin {
       }
       
       templateContext.put("PORTAL_NAME", System.getProperty("exo.notifications.portalname", "eXo"));
-      String digester = Utils.getTemplateGenerator().processDigestIntoString(first.getKey().getId(), templateContext, language, count);
+      String digester = Utils.getTemplateGenerator().processDigest(templateContext.digestType(count));
       writer.append(digester).append("</br>");
       
     } catch (IOException e) {

@@ -17,12 +17,11 @@
 package org.exoplatform.social.notification.plugin;
 
 import java.io.Writer;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.exoplatform.commons.api.notification.MessageInfo;
 import org.exoplatform.commons.api.notification.NotificationContext;
 import org.exoplatform.commons.api.notification.NotificationMessage;
+import org.exoplatform.commons.api.notification.TemplateContext;
 import org.exoplatform.commons.api.notification.plugin.AbstractNotificationPlugin;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.identity.model.Identity;
@@ -62,12 +61,12 @@ public class PostActivitySpaceStreamPlugin extends AbstractNotificationPlugin {
   @Override
   public MessageInfo makeMessage(NotificationContext ctx) {
     MessageInfo messageInfo = new MessageInfo();
-    Map<String, String> templateContext = new HashMap<String, String>();
     
     NotificationMessage notification = ctx.getNotificationMessage();
     
     String language = getLanguage(notification);
-    
+    TemplateContext templateContext = new TemplateContext(notification.getKey().getId(), language);
+
     String activityId = notification.getValueOwnerParameter(SocialNotificationUtils.ACTIVITY_ID.getKey());
     ExoSocialActivity activity = Utils.getActivityManager().getActivity(activityId);
     Identity identity = Utils.getIdentityManager().getIdentity(activity.getPosterId(), true);
@@ -76,12 +75,12 @@ public class PostActivitySpaceStreamPlugin extends AbstractNotificationPlugin {
     
     templateContext.put("USER", identity.getProfile().getFullName());
     templateContext.put("SPACE", spaceIdentity.getProfile().getFullName());
-    String subject = Utils.getTemplateGenerator().processSubjectIntoString(notification.getKey().getId(), templateContext, language);
+    String subject = Utils.getTemplateGenerator().processSubject(templateContext);
     
     templateContext.put("ACTIVITY", activity.getTitle());
     templateContext.put("REPLY_ACTION_URL", LinkProviderUtils.getReplyActivityUrl(activity.getId()));
     templateContext.put("VIEW_FULL_DISCUSSION_ACTION_URL", LinkProviderUtils.getViewFullDiscussionUrl(activity.getId()));
-    String body = Utils.getTemplateGenerator().processTemplate(notification.getKey().getId(), templateContext, language);
+    String body = Utils.getTemplateGenerator().processTemplate(templateContext);
     
     return messageInfo.subject(subject).body(body).end();
   }

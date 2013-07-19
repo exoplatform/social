@@ -18,7 +18,6 @@ package org.exoplatform.social.notification.plugin;
 
 import java.io.IOException;
 import java.io.Writer;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,6 +26,7 @@ import org.exoplatform.commons.api.notification.MessageInfo;
 import org.exoplatform.commons.api.notification.NotificationContext;
 import org.exoplatform.commons.api.notification.NotificationMessage;
 import org.exoplatform.commons.api.notification.ProviderData;
+import org.exoplatform.commons.api.notification.TemplateContext;
 import org.exoplatform.commons.api.notification.plugin.AbstractNotificationPlugin;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.identity.model.Identity;
@@ -56,11 +56,10 @@ public class ActivityCommentPlugin extends AbstractNotificationPlugin {
   @Override
   public MessageInfo makeMessage(NotificationContext ctx) {
     MessageInfo messageInfo = new MessageInfo();
-    Map<String, String> templateContext = new HashMap<String, String>();
-    
     NotificationMessage notification = ctx.getNotificationMessage();
-    
     String language = getLanguage(notification);
+
+    TemplateContext templateContext = new TemplateContext(notification.getKey().getId(), language);
     
     String activityId = notification.getValueOwnerParameter(SocialNotificationUtils.ACTIVITY_ID.getKey());
     ExoSocialActivity activity = Utils.getActivityManager().getActivity(activityId);
@@ -68,13 +67,13 @@ public class ActivityCommentPlugin extends AbstractNotificationPlugin {
     Identity identity = Utils.getIdentityManager().getIdentity(activity.getPosterId(), true);
     
     templateContext.put("USER", identity.getProfile().getFullName());
-    String subject = Utils.getTemplateGenerator().processSubjectIntoString(notification.getKey().getId(), templateContext, language);
+    String subject = Utils.getTemplateGenerator().processSubject(templateContext);
     
     templateContext.put("COMMENT", activity.getTitle());
     templateContext.put("ACTIVITY", parentActivity.getTitle());
     templateContext.put("REPLY_ACTION_URL", LinkProviderUtils.getReplyActivityUrl(activity.getId()));
     templateContext.put("VIEW_FULL_DISCUSSION_ACTION_URL", LinkProviderUtils.getViewFullDiscussionUrl(activity.getId()));
-    String body = Utils.getTemplateGenerator().processTemplate(notification.getKey().getId(), templateContext, language);
+    String body = Utils.getTemplateGenerator().processTemplate(templateContext);
     
     return messageInfo.subject(subject).body(body).end();
   }
@@ -96,6 +95,7 @@ public class ActivityCommentPlugin extends AbstractNotificationPlugin {
     Map<String, List<String>> map = new LinkedHashMap<String, List<String>>();
     
     try {
+      TemplateContext templateContext = new TemplateContext(providerData.getType(), language);
       for (NotificationMessage message : notifications) {
         String activityId = message.getValueOwnerParameter(SocialNotificationUtils.ACTIVITY_ID.getKey());
         ExoSocialActivity activity = Utils.getActivityManager().getActivity(activityId);
@@ -103,7 +103,7 @@ public class ActivityCommentPlugin extends AbstractNotificationPlugin {
         //
         SocialNotificationUtils.processInforSendTo(map, parentActivity.getId(), message.getValueOwnerParameter("poster"));
       }
-      writer.append(SocialNotificationUtils.getMessageByIds(map, providerData, language));
+      writer.append(SocialNotificationUtils.getMessageByIds(map, templateContext));
     } catch (IOException e) {
       ctx.setException(e);
       return false;

@@ -17,12 +17,11 @@
 package org.exoplatform.social.notification.plugin;
 
 import java.io.Writer;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.exoplatform.commons.api.notification.MessageInfo;
 import org.exoplatform.commons.api.notification.NotificationContext;
 import org.exoplatform.commons.api.notification.NotificationMessage;
+import org.exoplatform.commons.api.notification.TemplateContext;
 import org.exoplatform.commons.api.notification.plugin.AbstractNotificationPlugin;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
@@ -53,25 +52,25 @@ public class RelationshipRecievedRequestPlugin extends AbstractNotificationPlugi
   @Override
   public MessageInfo makeMessage(NotificationContext ctx) {
     MessageInfo messageInfo = new MessageInfo();
-    Map<String, String> templateContext = new HashMap<String, String>();
     
     NotificationMessage notification = ctx.getNotificationMessage();
     
     String language = getLanguage(notification);
-    
+    TemplateContext templateContext = new TemplateContext(notification.getKey().getId(), language);
+
     String sender = notification.getValueOwnerParameter("sender");
-    String toUser = notification.getSendToUserIds().iterator().next();
+    String toUser = notification.getTo();
     Identity identity = Utils.getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, sender, true);
     Profile userProfile = identity.getProfile();
     
     templateContext.put("PORTAL_NAME", System.getProperty("exo.notifications.portalname", "eXo"));
     templateContext.put("USER", userProfile.getFullName());
-    String subject = Utils.getTemplateGenerator().processSubjectIntoString(notification.getKey().getId(), templateContext, language);
+    String subject = Utils.getTemplateGenerator().processSubject(templateContext);
     
     templateContext.put("AVATAR", LinkProviderUtils.getUserAvatarUrl(userProfile));
     templateContext.put("ACCEPT_CONNECTION_REQUEST_ACTION_URL", LinkProviderUtils.getConfirmInvitationToConnectUrl(sender, toUser));
     templateContext.put("REFUSE_CONNECTION_REQUEST_ACTION_URL", LinkProviderUtils.getIgnoreInvitationToConnectUrl(sender, toUser));
-    String body = Utils.getTemplateGenerator().processTemplate(notification.getKey().getId(), templateContext, language);
+    String body = Utils.getTemplateGenerator().processTemplate(templateContext);
 
     return messageInfo.subject(subject).body(body).end();
   }
