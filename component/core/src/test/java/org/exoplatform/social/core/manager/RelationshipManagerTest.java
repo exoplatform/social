@@ -19,6 +19,8 @@ package org.exoplatform.social.core.manager;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.social.core.identity.model.Identity;
@@ -40,7 +42,9 @@ public class RelationshipManagerTest extends AbstractCoreTest {
   private Identity rootIdentity,
                    johnIdentity,
                    maryIdentity,
-                   demoIdentity;
+                   demoIdentity,
+                   ghostIdentity,
+                   paulIdentity;
 
   private List<Relationship> tearDownRelationshipList;
 
@@ -56,6 +60,8 @@ public class RelationshipManagerTest extends AbstractCoreTest {
     johnIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "john");
     maryIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "mary");
     demoIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "demo");
+    ghostIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "ghost");
+    paulIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "paul");
   }
 
   @Override
@@ -68,6 +74,8 @@ public class RelationshipManagerTest extends AbstractCoreTest {
     identityManager.deleteIdentity(johnIdentity);
     identityManager.deleteIdentity(maryIdentity);
     identityManager.deleteIdentity(demoIdentity);
+    identityManager.deleteIdentity(ghostIdentity);
+    identityManager.deleteIdentity(paulIdentity);
 
     super.tearDown();
   }
@@ -1389,4 +1397,51 @@ public class RelationshipManagerTest extends AbstractCoreTest {
      tearDownRelationshipList.add(johnMaryRelationship);
      tearDownRelationshipList.add(johnRootRelationship);
   }
+  
+  public void testGetSuggestions() throws Exception {
+    Relationship maryToGhostRelationship = relationshipManager.inviteToConnect(ghostIdentity, maryIdentity);
+    Relationship ghostToJohnRelationship = relationshipManager.inviteToConnect(ghostIdentity, johnIdentity);
+    Relationship maryToDemoRelationship = relationshipManager.inviteToConnect(demoIdentity, maryIdentity);
+
+    Map<Identity, Integer> suggestions = relationshipManager.getSuggestions(ghostIdentity, 0, 10); 
+
+    Object[] objs = suggestions.entrySet().toArray();
+    
+    Entry<Identity, Integer> first = (Entry<Identity, Integer>) objs[0];
+
+    assertEquals(1, first.getValue().intValue());
+    assertEquals(demoIdentity.getRemoteId(), first.getKey().getRemoteId());
+
+    //increase common users
+    Relationship johnToDemoRelationship = relationshipManager.inviteToConnect(demoIdentity, johnIdentity);
+    Relationship paulToDemoRelationship = relationshipManager.inviteToConnect(paulIdentity, maryIdentity);
+    suggestions = relationshipManager.getSuggestions(ghostIdentity, 0, 10); 
+    
+    objs = suggestions.entrySet().toArray();
+    first = (Entry<Identity, Integer>) objs[0];
+    Entry<Identity, Integer> second = (Entry<Identity, Integer>) objs[1];
+    
+    assertEquals(demoIdentity.getRemoteId(), first.getKey().getRemoteId());
+    assertEquals(paulIdentity.getRemoteId(), second.getKey().getRemoteId());
+    assertEquals(2, first.getValue().intValue());
+    assertEquals(demoIdentity.getRemoteId(), first.getKey().getRemoteId());
+    assertEquals(1, second.getValue().intValue());
+    assertEquals(paulIdentity.getRemoteId(), second.getKey().getRemoteId());
+    
+    //test with offset > 0
+    suggestions = relationshipManager.getSuggestions(ghostIdentity, 1, 10); 
+    
+    objs = suggestions.entrySet().toArray();
+    first = (Entry<Identity, Integer>) objs[0];
+    
+    assertEquals(1, first.getValue().intValue());
+    assertEquals(paulIdentity.getRemoteId(), first.getKey().getRemoteId());
+
+    tearDownRelationshipList.add(maryToDemoRelationship);
+    tearDownRelationshipList.add(johnToDemoRelationship);
+    tearDownRelationshipList.add(maryToGhostRelationship);
+    tearDownRelationshipList.add(ghostToJohnRelationship);
+    tearDownRelationshipList.add(paulToDemoRelationship);
+  }
+  
 }
