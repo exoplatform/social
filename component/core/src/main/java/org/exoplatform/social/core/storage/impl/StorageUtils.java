@@ -370,6 +370,21 @@ public class StorageUtils {
   }
   
   /**
+   * Make the decision to persist JCR Storage or not
+   * @return
+   */
+  public static boolean persistJCR() {
+    try {
+      //ChromatticSession chromatticSession = AbstractStorage.lifecycleLookup().getSession();
+      //chromatticSession.getJCRSession().save();
+      SpaceUtils.endSyn(true);
+    } catch (Exception e) {
+      return false;
+    }
+    return true;
+  }
+  
+  /**
    * Returns a collection containing all the elements in <code>list1</code> that
    * are also in <code>list2</code>.
    * 
