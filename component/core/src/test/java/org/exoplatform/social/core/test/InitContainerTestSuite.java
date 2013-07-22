@@ -46,11 +46,15 @@ import org.exoplatform.social.core.storage.cache.CachedSpaceStorageTestCase;
 import org.exoplatform.social.core.storage.impl.ActivityStorageImplTestCase;
 import org.exoplatform.social.core.storage.impl.IdentityStorageImplTestCase;
 import org.exoplatform.social.core.storage.impl.RelationshipStorageImplTestCase;
+import org.exoplatform.social.core.updater.ActivityStreamUpdaterTest;
+import org.exoplatform.social.core.updater.SpaceActivityStreamUpdaterTest;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.runners.Suite.SuiteClasses;
 
 @SuiteClasses({
+  ActivityStreamUpdaterTest.class,
+  SpaceActivityStreamUpdaterTest.class,
   SpaceLastVisitedTest.class,
   WhatsHotTest.class,
   ActivityManagerTest.class,

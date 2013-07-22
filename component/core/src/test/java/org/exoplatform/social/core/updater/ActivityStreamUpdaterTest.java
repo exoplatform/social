@@ -41,6 +41,10 @@ public class ActivityStreamUpdaterTest extends AbstractCoreTest {
   private Identity johnIdentity;
   private Identity maryIdentity;
   private Identity demoIdentity;
+  private Identity ghostIdentity;
+  private Identity paulIdentity;
+  private Identity raulIdentity;
+  private Identity jameIdentity;
  
   
   @Override
@@ -59,16 +63,19 @@ public class ActivityStreamUpdaterTest extends AbstractCoreTest {
     johnIdentity = new Identity(OrganizationIdentityProvider.NAME, "john");
     maryIdentity = new Identity(OrganizationIdentityProvider.NAME, "mary");
     demoIdentity = new Identity(OrganizationIdentityProvider.NAME, "demo");
+    ghostIdentity = new Identity(OrganizationIdentityProvider.NAME, "ghost");
+    paulIdentity = new Identity(OrganizationIdentityProvider.NAME, "paul");
+    raulIdentity = new Identity(OrganizationIdentityProvider.NAME, "raul");
+    jameIdentity = new Identity(OrganizationIdentityProvider.NAME, "jame");
     
     identityStorage.saveIdentity(rootIdentity);
     identityStorage.saveIdentity(johnIdentity);
     identityStorage.saveIdentity(maryIdentity);
     identityStorage.saveIdentity(demoIdentity);
-
-    assertNotNull("rootIdentity.getId() must not be null", rootIdentity.getId());
-    assertNotNull("johnIdentity.getId() must not be null", johnIdentity.getId());
-    assertNotNull("maryIdentity.getId() must not be null", maryIdentity.getId());
-    assertNotNull("demoIdentity.getId() must not be null", demoIdentity.getId());
+    identityStorage.saveIdentity(ghostIdentity);
+    identityStorage.saveIdentity(paulIdentity);
+    identityStorage.saveIdentity(raulIdentity);
+    identityStorage.saveIdentity(jameIdentity);
 
     tearDownActivityList = new ArrayList<ExoSocialActivity>();
   }
@@ -82,6 +89,10 @@ public class ActivityStreamUpdaterTest extends AbstractCoreTest {
     identityStorage.deleteIdentity(johnIdentity);
     identityStorage.deleteIdentity(maryIdentity);
     identityStorage.deleteIdentity(demoIdentity);
+    identityStorage.deleteIdentity(ghostIdentity);
+    identityStorage.deleteIdentity(paulIdentity);
+    identityStorage.deleteIdentity(raulIdentity);
+    identityStorage.deleteIdentity(jameIdentity);
     
     activityStorage.setInjectStreams(true);
     super.tearDown();

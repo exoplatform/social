@@ -15,7 +15,10 @@ import java.util.regex.Pattern;
 
 import org.chromattic.api.ChromatticSession;
 import org.exoplatform.commons.chromattic.ChromatticManager;
+import org.exoplatform.commons.chromattic.Synchronization;
 import org.exoplatform.commons.utils.ListAccess;
+import org.exoplatform.container.ExoContainer;
+import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
@@ -389,6 +392,32 @@ public class StorageUtils {
       if (chromatticSession.getJCRSession().hasPendingChanges()) {
         chromatticSession.save();
       }
+    } catch (Exception e) {
+      return false;
+    }
+    return true;
+  }
+  
+  /**
+   * Make the decision to persist JCR Storage or not
+   * @return
+   */
+  public static boolean persistJCR(boolean beginRequest) {
+    try {
+      //push to JCR
+      AbstractStorage.lifecycleLookup().closeContext(true);
+      
+      ExoContainer container = ExoContainerContext.getCurrentContainer();
+      ChromatticManager manager = (ChromatticManager) container.getComponentInstanceOfType(ChromatticManager.class);
+      Synchronization synchronization = manager.getSynchronization();
+      synchronization.setSaveOnClose(true);
+      //close synchronous and session.logout
+      manager.endRequest(true);
+      //
+      if (beginRequest) {
+        manager.beginRequest();
+      }
+      
     } catch (Exception e) {
       return false;
     }

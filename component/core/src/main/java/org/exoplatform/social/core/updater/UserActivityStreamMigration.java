@@ -38,12 +38,13 @@ import org.exoplatform.social.core.storage.api.IdentityStorage;
 import org.exoplatform.social.core.storage.impl.AbstractStorage;
 import org.exoplatform.social.core.storage.impl.StorageUtils;
 import org.exoplatform.social.core.storage.query.JCRProperties;
-import org.exoplatform.social.core.storage.streams.SocialChromatticAsyncProcessor;
+import org.exoplatform.social.core.storage.streams.SocialChromatticSyncProcessor;
 import org.exoplatform.social.core.storage.streams.StreamProcessContext;
 
 public class UserActivityStreamMigration extends AbstractStorage {
   
  private static final Log LOG = ExoLogger.getLogger(UserActivityStreamUpdaterPlugin.class);
+ private static final int BATCH_FLUSH_LIMIT = 10;
   
  private IdentityStorage identityStorage = null;
  
@@ -125,15 +126,29 @@ public class UserActivityStreamMigration extends AbstractStorage {
     long totalOfIdentity = it.getSize();
     Identity owner = null; 
     Node node = null;
+    int batchIndex = 0;
+    int offset = 0;
     try {
       while (it.hasNext()) {
         node = (Node) it.next();
         owner = getIdentityStorage().findIdentityById(node.getUUID());
-
         doUpgrade(owner, totalOfIdentity, limit);
+        batchIndex++;
+        offset++;
+        
+        //
+        if (batchIndex == BATCH_FLUSH_LIMIT) {
+          LOG.warn("UPGRAGE SESSION FLUSH: " + offset);
+          StorageUtils.persistJCR(true);
+          it = nodes(sb.toString());
+          _skip(it, offset);
+          batchIndex = 0;
+        }
       }
     } catch (Exception e) {
-      LOG.warn("Failed to migration for Activity Stream.");
+      LOG.error("Failed to migration for Activity Stream.", e);
+    } finally {
+      StorageUtils.persistJCR(false);
     }
   }
   
@@ -144,12 +159,9 @@ public class UserActivityStreamMigration extends AbstractStorage {
     processCtx.identity(owner).limit(limit).totalProcesses((int)total);
     
     try {
-      //ctx.getServiceExecutor().async(upgradeProcessor(), processCtx, createAsyncCallback());
-      processCtx.getTraceElement().start();
       upgradeProcessor().start(processCtx);
       upgradeProcessor().process(processCtx);
       upgradeProcessor().end(processCtx);
-      processCtx.getTraceElement().end();
       createAsyncCallback().done(processCtx);
     } catch (Exception e) {
       processCtx.setException(e);
@@ -164,8 +176,8 @@ public class UserActivityStreamMigration extends AbstractStorage {
     return processCtx;
   }
   
-  private SocialChromatticAsyncProcessor upgradeProcessor() {
-    return new SocialChromatticAsyncProcessor(SocialServiceContextImpl.getInstance()) {
+  private SocialChromatticSyncProcessor upgradeProcessor() {
+    return new SocialChromatticSyncProcessor(SocialServiceContextImpl.getInstance()) {
 
       @Override
       protected ProcessContext execute(ProcessContext processContext) throws Exception {

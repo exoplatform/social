@@ -28,16 +28,21 @@ import org.chromattic.api.Status;
 import org.exoplatform.commons.chromattic.ChromatticManager;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.jcr.impl.core.query.QueryImpl;
+import org.exoplatform.services.log.ExoLogger;
+import org.exoplatform.services.log.Log;
 import org.exoplatform.social.common.lifecycle.SocialChromatticLifeCycle;
 import org.exoplatform.social.core.chromattic.entity.ProviderRootEntity;
 import org.exoplatform.social.core.chromattic.entity.SpaceRootEntity;
 import org.exoplatform.social.core.storage.exception.NodeNotFoundException;
+import org.exoplatform.social.core.updater.UserActivityStreamUpdaterPlugin;
 
 /**
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
  * @version $Revision$
  */
 public abstract class AbstractStorage {
+  
+  private static final Log LOG = ExoLogger.getLogger(AbstractStorage.class);
 
   protected final SocialChromatticLifeCycle lifeCycle;
 
@@ -192,6 +197,7 @@ public abstract class AbstractStorage {
       //
       return query.execute().getNodes();
     } catch (Exception ex) {
+      LOG.error("Query is failed!.", ex);
       return null;
     }
   }
