@@ -31,7 +31,7 @@ import org.exoplatform.social.notification.LinkProviderUtils;
 import org.exoplatform.social.notification.Utils;
 
 public class ActivityMentionPlugin extends AbstractNotificationPlugin {
-  public static final String ID = "ActivityMentionPlugin";
+  public static final String ID = "ActivityMentionProvider";
 
   @Override
   public String getId() {
@@ -42,6 +42,9 @@ public class ActivityMentionPlugin extends AbstractNotificationPlugin {
   public NotificationMessage makeNotification(NotificationContext ctx) {
     ExoSocialActivity activity = ctx.value(SocialNotificationUtils.ACTIVITY);
     List<String> sendToUsers = Utils.getDestinataires(activity.getMentionedIds(), activity.getPosterId());
+    if (sendToUsers.size() == 0) {
+      return null;
+    }
     
     return NotificationMessage.instance().key(getKey())
            .to(sendToUsers)

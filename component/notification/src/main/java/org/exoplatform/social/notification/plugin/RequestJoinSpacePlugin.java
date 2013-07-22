@@ -26,7 +26,6 @@ import java.util.Map;
 import org.exoplatform.commons.api.notification.MessageInfo;
 import org.exoplatform.commons.api.notification.NotificationContext;
 import org.exoplatform.commons.api.notification.NotificationMessage;
-import org.exoplatform.commons.api.notification.ProviderData;
 import org.exoplatform.commons.api.notification.TemplateContext;
 import org.exoplatform.commons.api.notification.plugin.AbstractNotificationPlugin;
 import org.exoplatform.social.core.identity.model.Identity;
@@ -87,12 +86,11 @@ public class RequestJoinSpacePlugin extends AbstractNotificationPlugin {
     NotificationMessage first = notifications.get(0);
 
     String language = getLanguage(first);
-    ProviderData providerData = Utils.getProviderService().getProvider(first.getKey().getId());
     
     Map<String, List<String>> map = new LinkedHashMap<String, List<String>>();
 
     try {
-      TemplateContext templateContext = new TemplateContext(providerData.getType(), language);
+      TemplateContext templateContext = new TemplateContext(first.getKey().getId(), language);
       for (NotificationMessage message : notifications) {
         String spaceId = message.getValueOwnerParameter(SocialNotificationUtils.SPACE_ID.getKey());
         String fromUser = message.getValueOwnerParameter("request_from");

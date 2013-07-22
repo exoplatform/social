@@ -22,9 +22,9 @@ import org.exoplatform.commons.notification.impl.NotificationContextImpl;
 import org.exoplatform.social.core.space.SpaceListenerPlugin;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceLifeCycleEvent;
+import org.exoplatform.social.notification.SocialMessageBuilder;
 import org.exoplatform.social.notification.plugin.RequestJoinSpacePlugin;
 import org.exoplatform.social.notification.plugin.SpaceInvitationPlugin;
-import org.exoplatform.social.notification.task.SpaceTask;
 
 public class SpaceNotificationImpl extends SpaceListenerPlugin {
 
@@ -75,8 +75,8 @@ public class SpaceNotificationImpl extends SpaceListenerPlugin {
     Space space = event.getSpace();
     String userId = event.getTarget();
     
-    NotificationContext ctx = NotificationContextImpl.DEFAULT.append(SpaceTask.REMOTE_ID, userId)
-                                                             .append(SpaceTask.SPACE, space);
+    NotificationContext ctx = NotificationContextImpl.DEFAULT.append(SocialMessageBuilder.REMOTE_ID, userId)
+                                                             .append(SocialMessageBuilder.SPACE, space);
     
     ctx.getNotificationExecutor().with(ctx.makeCommand(NotificationKey.key(SpaceInvitationPlugin.ID))).execute(ctx);
   }
@@ -86,8 +86,8 @@ public class SpaceNotificationImpl extends SpaceListenerPlugin {
     Space space = event.getSpace();
     String userId = event.getTarget();
     
-    NotificationContext ctx = NotificationContextImpl.DEFAULT.append(SpaceTask.REMOTE_ID, userId)
-                                                             .append(SpaceTask.SPACE, space);
+    NotificationContext ctx = NotificationContextImpl.DEFAULT.append(SocialMessageBuilder.REMOTE_ID, userId)
+                                                             .append(SocialMessageBuilder.SPACE, space);
     
     ctx.getNotificationExecutor().with(ctx.makeCommand(NotificationKey.key(RequestJoinSpacePlugin.ID))).execute(ctx);
     

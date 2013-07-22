@@ -25,7 +25,6 @@ import java.util.Map;
 import org.exoplatform.commons.api.notification.MessageInfo;
 import org.exoplatform.commons.api.notification.NotificationContext;
 import org.exoplatform.commons.api.notification.NotificationMessage;
-import org.exoplatform.commons.api.notification.ProviderData;
 import org.exoplatform.commons.api.notification.TemplateContext;
 import org.exoplatform.commons.api.notification.plugin.AbstractNotificationPlugin;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
@@ -42,7 +41,7 @@ public class ActivityCommentPlugin extends AbstractNotificationPlugin {
     ExoSocialActivity comment = ctx.value(SocialMessageBuilder.ACTIVITY);
     ExoSocialActivity activity = Utils.getActivityManager().getParentActivity(comment);
     List<String> sendToUsers = Utils.getDestinataires(activity.getCommentedIds(), comment.getPosterId());
-    if (! sendToUsers.contains(activity.getStreamOwner())) {
+    if (! sendToUsers.contains(activity.getStreamOwner()) && ! Utils.isSpaceActivity(activity) && ! activity.getPosterId().equals(comment.getPosterId())) {
       sendToUsers.add(activity.getStreamOwner());
     }
     //
@@ -90,12 +89,11 @@ public class ActivityCommentPlugin extends AbstractNotificationPlugin {
     NotificationMessage first = notifications.get(0);
 
     String language = getLanguage(first);
-    ProviderData providerData = Utils.getProviderService().getProvider(first.getKey().getId());
     
     Map<String, List<String>> map = new LinkedHashMap<String, List<String>>();
     
     try {
-      TemplateContext templateContext = new TemplateContext(providerData.getType(), language);
+      TemplateContext templateContext = new TemplateContext(first.getKey().getId(), language);
       for (NotificationMessage message : notifications) {
         String activityId = message.getValueOwnerParameter(SocialNotificationUtils.ACTIVITY_ID.getKey());
         ExoSocialActivity activity = Utils.getActivityManager().getActivity(activityId);

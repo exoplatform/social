@@ -33,12 +33,12 @@ import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.profile.ProfileFilter;
 import org.exoplatform.social.notification.LinkProviderUtils;
+import org.exoplatform.social.notification.SocialMessageBuilder;
 import org.exoplatform.social.notification.Utils;
-import org.exoplatform.social.notification.task.ProfileTask;
 
 public class NewUserPlugin extends AbstractNotificationPlugin {
 
-  public final String ID = "NewUserJoinSocialIntranet";
+  public static final String ID = "NewUserJoinSocialIntranet";
   
   @Override
   public String getId() {
@@ -47,7 +47,7 @@ public class NewUserPlugin extends AbstractNotificationPlugin {
 
   @Override
   public NotificationMessage makeNotification(NotificationContext ctx) {
-    Profile profile = ctx.value(ProfileTask.PROFILE);
+    Profile profile = ctx.value(SocialMessageBuilder.PROFILE);
     
     try {
       
@@ -63,8 +63,9 @@ public class NewUserPlugin extends AbstractNotificationPlugin {
       }
       
       return NotificationMessage.instance()
-             .with("remoteId", profile.getIdentity().getRemoteId())
-             .to(allUsers);
+                                .key(getId())
+                                .with("remoteId", profile.getIdentity().getRemoteId())
+                                .to(allUsers);
     } catch (Exception e) {
       return null;
     }

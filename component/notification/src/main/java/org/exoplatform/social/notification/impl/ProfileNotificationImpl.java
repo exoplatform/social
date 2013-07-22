@@ -16,27 +16,23 @@
  */
 package org.exoplatform.social.notification.impl;
 
-import java.util.Collection;
-
 import org.exoplatform.commons.api.notification.NotificationContext;
-import org.exoplatform.commons.api.notification.NotificationMessage;
-import org.exoplatform.commons.api.notification.service.storage.NotificationDataStorage;
+import org.exoplatform.commons.api.notification.plugin.NotificationKey;
 import org.exoplatform.commons.notification.impl.NotificationContextImpl;
+import org.exoplatform.services.log.ExoLogger;
+import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.profile.ProfileLifeCycleEvent;
 import org.exoplatform.social.core.profile.ProfileListenerPlugin;
-import org.exoplatform.social.notification.Utils;
-import org.exoplatform.social.notification.context.NotificationExecutor;
-import org.exoplatform.social.notification.task.ActivityTask;
-import org.exoplatform.social.notification.task.ProfileTask;
+import org.exoplatform.social.notification.SocialMessageBuilder;
+import org.exoplatform.social.notification.plugin.NewUserPlugin;
 
 public class ProfileNotificationImpl extends ProfileListenerPlugin {
+  
+  private static final Log LOG = ExoLogger.getLogger(ProfileNotificationImpl.class);
 
   @Override
   public void avatarUpdated(ProfileLifeCycleEvent event) {
-    Profile profile = event.getProfile();
-    NotificationContext ctx = NotificationContextImpl.DEFAULT.append(ProfileTask.PROFILE, profile);
-    NotificationExecutor.execute(ctx, ProfileTask.UPDATE_AVATAR, ProfileTask.UPDATE_DISPLAY_NAME);
   }
 
   @Override
@@ -65,16 +61,13 @@ public class ProfileNotificationImpl extends ProfileListenerPlugin {
 
   @Override
   public void createProfile(ProfileLifeCycleEvent event) {
-    Profile profile = event.getProfile();
-    NotificationContext ctx = NotificationContextImpl.DEFAULT.append(ProfileTask.PROFILE, profile);
-    
-    // check if activity contain mentions then create mention task
-    NotificationDataStorage storage = Utils.getSocialEmailStorage();
-    
-    NotificationMessage message = NotificationExecutor.execute(ctx, ProfileTask.NEW_USER_JOIN_SOCIAL_INTRANET);
-    
-    if (message != null) {
-      storage.add(message);
+    try {
+      Profile profile = event.getProfile();
+      NotificationContext ctx = NotificationContextImpl.DEFAULT.append(SocialMessageBuilder.PROFILE, profile);
+      ctx.getNotificationExecutor().with(ctx.makeCommand(NotificationKey.key(NewUserPlugin.ID)))
+                                   .execute(ctx);
+    } catch (Exception e) {
+      LOG.warn("Failed to get invite to connect information of " + event + ": " + e.getMessage());
     }
   }
 

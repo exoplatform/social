@@ -43,7 +43,9 @@ public class PostActivityPlugin extends AbstractNotificationPlugin {
   public NotificationMessage makeNotification(NotificationContext ctx) {
     try {
       ExoSocialActivity activity = ctx.value(SocialMessageBuilder.ACTIVITY);
-      
+      if (activity.getStreamOwner().equals(Utils.getUserId(activity.getPosterId())) || Utils.isSpaceActivity(activity)) {
+        return null;
+      }
       return NotificationMessage.instance()
           .to(activity.getStreamOwner())
           .with(SocialNotificationUtils.POSTER.getKey(), Utils.getUserId(activity.getPosterId()))
