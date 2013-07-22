@@ -238,14 +238,6 @@
 <!-- check the use of this portlet -->
   <portlet-skin>
     <application-name>social-portlet</application-name>
-    <portlet-name>SocialLogoPortlet</portlet-name>
-    <skin-name>Default</skin-name>
-    <css-path>/skin/css/uiSocialLogoPortlet/Style.css</css-path>
-    <css-priority>1</css-priority>
-  </portlet-skin>
-  
-  <portlet-skin>
-    <application-name>social-portlet</application-name>
     <portlet-name>SpaceAccessPortlet</portlet-name>
     <skin-name>Default</skin-name>
     <css-path>/skin/css/uiSpaceAccessPortlet/Style.css</css-path>
