@@ -639,6 +639,4 @@ public class CachedRelationshipStorage implements RelationshipStorage {
 
   }
 
-
-  
 }

@@ -76,6 +76,15 @@ public abstract class IdentityEntity {
   @Owner
   public abstract ProfileEntity getProfile();
   public abstract void setProfile(ProfileEntity profile);
+  
+  /**
+   * Store activities's streams
+   */
+  @MappedBy("soc:streams")
+  @OneToOne
+  @Owner
+  public abstract StreamsEntity getStreams();
+  public abstract void setStreams(StreamsEntity streams);
 
   /**
    * Store all activities in the activity stream of an identity.
@@ -85,7 +94,7 @@ public abstract class IdentityEntity {
   @Owner
   public abstract ActivityListEntity getActivityList();
   public abstract void setActivityList(ActivityListEntity activityListEntity);
-
+  
   /**
    * Store all the relationships which contain an identity inviting other identities to connect with himself.
    */
@@ -169,4 +178,8 @@ public abstract class IdentityEntity {
 
   @Create
   public abstract RelationshipEntity createRelationship();
+  
+  @Create
+  public abstract StreamsEntity createStreams();
+  
 }

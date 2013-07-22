@@ -282,30 +282,22 @@
 							            if (relationStatus == "pending") { // Viewing is not owner
 							                action = $('<div/>', {
 							                    "class": "connect btn btn-primary",
-							                    "text": "" + labels.Confirm,
+							                    "text": "" + labels.Connect,
 							                    "data-action": "Accept:" + ownerUserId,
 							                    "onclick": "takeAction(this)"
 							                });
 							            } else if (relationStatus == "waiting") { // Viewing is owner
 							                action = $('<div/>', {
-							                    "class": "connect btn",
-							                    "text": "" + labels.CancelRequest,
-							                    "data-action": "Revoke:" + ownerUserId,
-							                    "onclick": "takeAction(this)"
+							                    "class": "",
+							                    "text": "" + labels.youHaveSentAnInvitation
 							                });
 							            } else if (relationStatus == "confirmed") { // Had Connection 
 							                action = $('<div/>', {
-							                    "class": "connect btn",
-							                    "text": "" + labels.RemoveConnection,
-							                    "data-action": "Disconnect:" + ownerUserId,
-							                    "onclick": "takeAction(this)"
+							                    "class": ""
 							                });
 							            } else if (relationStatus == "ignored") { // Connection is removed
 							                action = $('<div/>', {
-							                    "class": "connect btn",
-							                    "text": "" + labels.Ignore,
-							                    "data-action": "Deny:" + ownerUserId,
-							                    "onclick": "takeAction(this)"
+							                    "class": ""
 							                });
 							            }
 							    
@@ -326,35 +318,39 @@
 							        var img = $("<img/>",{
 							           "src" : json.avatarURL
 							        });
+							        var aAvatar = $("<a/>", {
+				                         "target" : "_parent",
+				                         "href" : json.profileUrl
+				                    });
 							        
-                      tdAvatar.append(img);
+							        tdAvatar.append(aAvatar.append(img));
                       
 							        var tdProfile = $("<td/>");
 							        var aProfile = $("<a/>", {
-                         "target" : "_parent",
-                         "href" : json.profileUrl,
-                         "text" : json.fullName
-                      });
+							        	"target" : "_parent",
+							        	"href" : json.profileUrl,
+							        	"text" : json.fullName
+							        });
 
-                      tdProfile.append(aProfile);
+							        tdProfile.append(aProfile);
 
-                      if (json.position) {
-								        var divPosition = $("<div/>", {
-								           "font-weight" : "normal",
-								           "text" : json.position
-								        });
-								        tdProfile.append(divPosition);
+							        if (json.position) {
+							        	var divPosition = $("<div/>", {
+							        		"font-weight" : "normal",
+							        		"text" : json.position
+							        	});
+							        	tdProfile.append(divPosition);
 							        }
                       
-                      tr.append(tdAvatar).append(tdProfile);
-                      
-                      tbody.append(tr);
-                      
-                      popupContent.append(tbody);
+							        tr.append(tdAvatar).append(tdProfile);
+
+							        tbody.append(tr);
+
+							        popupContent.append(tbody);
                       
 							        if (json.activityTitle) {
 								        var blockquote = $("<blockquote/>", {
-								           "text" : stripString(json.activityTitle)
+								           "html" :json.activityTitle
 								        });
 							        }
 							        
@@ -377,25 +373,7 @@
 							        tiptip_content.html(popupContentContainer.html());
 							    }
 							    
-							    function stripString(activityTitle) {
-							      var MAX_CHAR = 100;
-							      var DOT_DOT_DOT = "...";
 
-							      if ( activityTitle.match(/<(\w+)((?:\s+\w+(?:\s*=\s*(?:(?:"[^"]*")|(?:'[^']*')|[^>\s]+))?)*)\s*(\/?)>/) ) {
-                      activityTitle=activityTitle.replace(/<br>/gi, "\n");
-                      activityTitle=activityTitle.replace(/<p.*>/gi, "\n");
-                      activityTitle=activityTitle.replace(/<a.*href="(.*?)".*>(.*?)<\/a>/gi, " $2 ");
-                      activityTitle=activityTitle.replace(/<(?:.|\s)*?>/g, "");
-                    }
-
-							      //
-							      if (activityTitle.length < MAX_CHAR) {
-							        return activityTitle;
-							      }
-							      
-							      //
-							      return activityTitle.substring(0, MAX_CHAR) + DOT_DOT_DOT;
-							    };
 							    
 							    function takeAction(el) {
 							        var dataAction = $(el).attr('data-action');

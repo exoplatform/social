@@ -16,33 +16,16 @@
  */
 package org.exoplatform.social.service.rest;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.QueryParam;
-import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
-import javax.ws.rs.core.SecurityContext;
-import javax.ws.rs.core.UriInfo;
-import javax.xml.bind.annotation.XmlRootElement;
-
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
+
 import org.apache.shindig.social.opensocial.model.Activity;
 import org.exoplatform.container.ExoContainer;
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.PortalContainer;
+import org.exoplatform.services.log.ExoLogger;
+import org.exoplatform.services.log.Log;
 import org.exoplatform.services.rest.resource.ResourceContainer;
 import org.exoplatform.services.security.ConversationState;
 import org.exoplatform.services.security.IdentityConstants;
@@ -61,6 +44,12 @@ import org.exoplatform.social.core.space.SpaceException;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
 import org.exoplatform.webui.utils.TimeConvertUtils;
+
+import javax.ws.rs.*;
+import javax.ws.rs.core.*;
+import javax.ws.rs.core.Response.Status;
+import javax.xml.bind.annotation.XmlRootElement;
+import java.util.*;
 
 /**
  * 
@@ -107,11 +96,19 @@ public class PeopleRestService implements ResourceContainer{
   /** Number of default limit activities. */
   private static final int DEFAULT_LIMIT = 20;
   
+  private static final String DEFAULT_ACTIVITY = "DEFAULT_ACTIVITY";
+  private static final String LINK_ACTIVITY = "LINK_ACTIVITY";
+  private static final String DOC_ACTIVITY = "DOC_ACTIVITY";
+  
   private IdentityManager identityManager;
   private ActivityManager activityManager;
   private RelationshipManager relationshipManager;
   private SpaceService spaceService;
-  
+  private static final int MAX_CHAR = 100;
+  private static final String THREE_DOTS = "...";
+    private static final int MAX_DOC_CHAR = 25;
+    private static Log log = ExoLogger.getLogger(PeopleRestService.class);
+
   public PeopleRestService() {
   }
 
@@ -414,11 +411,12 @@ public class PeopleRestService implements ResourceContainer{
         }
       }
 
-      RealtimeListAccess<ExoSocialActivity> activitiesListAccess = getActivityManager().getActivitiesByPoster(identity);
+      RealtimeListAccess<ExoSocialActivity> activitiesListAccess = getActivityManager()
+          .getActivitiesByPoster(identity, DEFAULT_ACTIVITY, LINK_ACTIVITY, DOC_ACTIVITY);
       
       List<ExoSocialActivity> activities = activitiesListAccess.loadAsList(0, 1);
       if (activities.size() > 0) {
-        peopleInfo.setActivityTitle(StringEscapeUtils.unescapeHtml(activities.get(0).getTitle()));
+        peopleInfo.setActivityTitle(substringActivity(activities.get(0)));
       }
       
       Profile userProfile = identity.getProfile();
@@ -437,7 +435,101 @@ public class PeopleRestService implements ResourceContainer{
     }
     return Util.getResponse(peopleInfo, uriInfo, mediaType, Response.Status.OK);
   }
-  
+
+
+    private String substringActivity( ExoSocialActivity act) {
+        String activity = "";
+        try{
+
+
+
+            if (act.getType() != null ) {
+
+                activity = act.getTitle().replaceAll("<br/>", " ").replaceAll("<br />", " ").replaceAll("<br>", " ").replaceAll("</br>", " ").trim();
+                activity = StringEscapeUtils.unescapeHtml(activity);
+                activity = activity.replaceAll("\"", "'");
+
+                if (activity.length() > MAX_CHAR && act.getType().equals(DEFAULT_ACTIVITY)) {
+                    String maxBody = activity.substring(0, MAX_CHAR);
+                    int tagEnterLocation = maxBody.indexOf('<', 0);
+                    if (tagEnterLocation != -1) {
+                        if (tagEnterLocation == 0) {
+                            if (maxBody.indexOf("<", tagEnterLocation) == 0) {
+                                int endtag = activity.indexOf(">", tagEnterLocation);
+                                int tagend = activity.indexOf("<", endtag);
+                                int tagend2 = activity.indexOf(">", tagend);
+                                String linktitle = activity.substring(endtag + 1, tagend);
+                                if (linktitle.length() > MAX_CHAR) {
+                                    linktitle = linktitle.substring(0, MAX_CHAR);
+                                    activity = activity.substring(0, endtag + 1) + linktitle + activity.substring(tagend, tagend2 + 1);
+                                } else {
+                                    activity = activity.substring(0, tagend2);
+                                }
+                            }
+
+                            activity = activity + "<span class='truncate_ellipsis'>" + THREE_DOTS + "</span>";
+                        } else {
+                            int tagEndLocation = maxBody.indexOf("<", tagEnterLocation + 1);
+                            int tagLocationEnd = maxBody.indexOf("/>", tagEnterLocation);
+                            if ((tagEndLocation == -1 && tagLocationEnd == -1)) {
+                                String str1 = maxBody.substring(0, tagEnterLocation - 1);
+                                activity = str1 + "<span class='truncate_ellipsis'>" + THREE_DOTS + "</span>";
+                            }
+                            if (tagEndLocation != -1) {
+
+                                if (tagEndLocation > MAX_CHAR - 3) {
+                                    String charRest = activity.substring(0, tagEndLocation + 3);
+                                    activity = charRest + "<span class='truncate_ellipsis'>" + THREE_DOTS + "</span>";
+                                } else {
+                                    if (tagEndLocation <= MAX_CHAR - 3) {
+                                        activity = maxBody + "<span class='truncate_ellipsis'>" + THREE_DOTS + "</span>";
+                                    }
+                                }
+                            }
+                            if (tagLocationEnd != -1) {
+                                activity = maxBody + "<span class='truncate_ellipsis'>" + THREE_DOTS + "</span>";
+                            }
+                        }
+                    } else {
+                        activity = maxBody + "<span class='truncate_ellipsis'>" + THREE_DOTS + "</span>";
+                    }
+                }
+
+                if (act.getType().equals(DOC_ACTIVITY)) {
+                    try{
+                        if ((activity.split(">")[1].split("<")[0]).length() > MAX_DOC_CHAR) {
+                            String docName = activity.split(">")[1].split("<")[0].substring(0, MAX_DOC_CHAR).concat(THREE_DOTS);
+                            String docUrl = activity.split(">")[0].split("=")[1].replace("\"", "'");
+                            activity = "Shared a Document <a class='ColorLink' target='_blank' href=" + docUrl + "title='" + activity.split(">")[1].split("<")[0] + "'>" + docName + "</a>";
+                        }
+                    }catch(ArrayIndexOutOfBoundsException e) {
+                        log.warn("Error while recovering activity of type DOC_ACTIVITY [Url of shared Document Not found ]") ;
+                        return "";
+                    }
+                }
+
+                if (act.getType().equals(LINK_ACTIVITY)) {
+
+                    if (activity.indexOf("<", 0) != -1) {
+                        activity = activity.substring(activity.indexOf(">", 0) + 1, activity.indexOf("<", activity.indexOf(">", 0)));
+                    }
+                    if (activity.length() > MAX_CHAR) {
+                        activity = activity.substring(0, MAX_CHAR);
+                    }
+
+                    activity = "<a class='ColorLink' target='_blank' href='" + act.getUrl().replaceAll("\"", "'") + "'>" + activity + "</a>";
+                }
+
+            }
+
+
+
+            return activity;
+        }catch (Exception e){
+            log.error("Error while recovering user's last activity [WhoIsOnLine rendering phase] :" + e.getMessage(), e);
+            return "";
+        }
+    }
   public static class ConnectionInfoRestOut extends HashMap<String, Object> {
     public static enum Field {
       /**
