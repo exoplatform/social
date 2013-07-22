@@ -29,7 +29,7 @@
   <context-param>
     <param-name>guice-modules</param-name>
     <param-value>
-      org.apache.shindig.common.PropertiesModule:
+      org.exoplatform.portal.gadget.core.ExoPropertiesModule:
       org.exoplatform.social.opensocial.ExoSocialApiGuiceModule:
       org.apache.shindig.gadgets.DefaultGuiceModule:
       org.exoplatform.portal.gadget.core.ExoOAuthModule:
