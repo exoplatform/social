@@ -105,26 +105,6 @@ public static final String RESOURCE_URL = "social/notifications";
   }
   
   /**
-   * Gets the url to the activity with id = activityId of userId
-   * 
-   * @param activityId
-   * @return
-   */
-  public static String getReplyActivityUrl(String activityId) {
-    return getRestUrl(REPLY_ACTIVITY, activityId, null);
-  }
-  
-  /**
-   * Gets the url to the activity with id = activityId of userId
-   * 
-   * @param activityId
-   * @return
-   */
-  public static String getViewFullDiscussionUrl(String activityId) {
-    return getRestUrl(VIEW_FULL_DISCUSSION, activityId, null);
-  }
-  
-  /**
    * Gets the associated page of type
    * @param type type of the page : user or space or activity
    * @param objectId can be a space's id or user's id or activity's id
@@ -166,7 +146,8 @@ public static final String RESOURCE_URL = "social/notifications";
    * @return
    */
   public static String getUserAvatarUrl(Profile profile) {
-    return profile.getAvatarUrl() != null ? profile.getAvatarUrl() : LinkProvider.PROFILE_DEFAULT_AVATAR_URL;
+    String domain = System.getProperty("gatein.email.domain.url", "http://localhost:8080");
+    return profile.getAvatarUrl() != null ? domain + profile.getAvatarUrl() : domain + LinkProvider.PROFILE_DEFAULT_AVATAR_URL;
   }
   
   /**
@@ -176,6 +157,7 @@ public static final String RESOURCE_URL = "social/notifications";
    * @return
    */
   public static String getSpaceAvatarUrl(Space space) {
-    return space.getAvatarUrl() != null ? space.getAvatarUrl() : LinkProvider.SPACE_DEFAULT_AVATAR_URL;
+    String domain = System.getProperty("gatein.email.domain.url", "http://localhost:8080");
+    return space.getAvatarUrl() != null ? domain + space.getAvatarUrl() : domain + LinkProvider.SPACE_DEFAULT_AVATAR_URL;
   }
 }

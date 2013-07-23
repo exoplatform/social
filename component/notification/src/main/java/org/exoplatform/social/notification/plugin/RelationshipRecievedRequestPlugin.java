@@ -69,6 +69,7 @@ public class RelationshipRecievedRequestPlugin extends AbstractNotificationPlugi
     templateContext.put("USER", userProfile.getFullName());
     String subject = Utils.getTemplateGenerator().processSubject(templateContext);
     
+    templateContext.put("PROFILE_URL", LinkProviderUtils.getRedirectUrl("user", identity.getRemoteId()));
     templateContext.put("AVATAR", LinkProviderUtils.getUserAvatarUrl(userProfile));
     templateContext.put("ACCEPT_CONNECTION_REQUEST_ACTION_URL", LinkProviderUtils.getConfirmInvitationToConnectUrl(sender, toUser));
     templateContext.put("REFUSE_CONNECTION_REQUEST_ACTION_URL", LinkProviderUtils.getIgnoreInvitationToConnectUrl(sender, toUser));

@@ -458,10 +458,15 @@ public class BaseUIActivity extends UIForm {
     PostContext postContext = uiActivitiesContainer.getPostContext();
     if (postContext == PostContext.SINGLE) {
       String type = Utils.getDisplayTypeActivity();
-      if ("expand".equals(type)) {
+      if ("comments".equals(type)) {
+        // expand all comments
         setCommentListStatus(CommentStatus.ALL);
-      } else if ("focus".equals(type)) {
+      } else if ("reply".equals(type)) {
+        // open the comment's box, ready for reply
         setCommentFormDisplayed(true);
+      } else if ("likers".equals(type)) {
+        // expand the full list of likers
+        
       }
     }
   }

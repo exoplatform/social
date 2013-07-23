@@ -17,7 +17,10 @@
 package org.exoplatform.social.webui.space;
 
 import org.exoplatform.portal.application.PortalRequestContext;
+import org.exoplatform.portal.application.RequestNavigationData;
 import org.exoplatform.portal.webui.util.Util;
+import org.exoplatform.social.common.router.ExoRouter;
+import org.exoplatform.social.common.router.ExoRouter.Route;
 import org.exoplatform.social.core.space.SpaceUtils;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
@@ -67,6 +70,19 @@ public class UISpaceSetting extends UIContainer {
     Space space  = getApplicationComponent(SpaceService.class).getSpaceByUrl(spaceUrl);
     if (space != null) {
       setValues(space);
+    }
+  }
+  
+  public void initTabByContext() {
+    PortalRequestContext pcontext = Util.getPortalRequestContext();
+    String requestPath = pcontext.getControllerContext().getParameter(RequestNavigationData.REQUEST_PATH);
+    Route route = ExoRouter.route(requestPath);
+    if (route != null) {
+      String app = route.localArgs.get("appName");
+      String path = route.localArgs.get("path");
+      if ("settings".equals(app) && "members".equals(path)) {
+        getChild(UITabPane.class).setSelectedTab(3);
+      }
     }
   }
 

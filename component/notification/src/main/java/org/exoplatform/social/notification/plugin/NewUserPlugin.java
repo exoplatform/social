@@ -50,17 +50,17 @@ public class NewUserPlugin extends AbstractNotificationPlugin {
     Profile profile = ctx.value(SocialMessageBuilder.PROFILE);
     
     try {
+      List<String> allUsers = new ArrayList<String>();
       
-      //This type of notification need to get all users of the system, except the new created user
-      ProfileFilter profileFilter = new ProfileFilter();
+      //TODO : This type of notification need to get all users who want to receive this kind of notification, except the new created user
+      
+      /*ProfileFilter profileFilter = new ProfileFilter();
       profileFilter.setExcludedIdentityList(Arrays.asList(profile.getIdentity()));
       ListAccess<Identity> list = Utils.getIdentityManager().getIdentitiesByProfileFilter(profile.getIdentity().getProviderId(), profileFilter, false);
       
-      List<String> allUsers = new ArrayList<String>();
-      
       for (Identity identity : list.load(0, list.getSize())) {
         allUsers.add(identity.getRemoteId());
-      }
+      }*/
       
       return NotificationMessage.instance()
                                 .key(getId())
@@ -88,6 +88,7 @@ public class NewUserPlugin extends AbstractNotificationPlugin {
     templateContext.put("PORTAL_NAME", System.getProperty("exo.notifications.portalname", "eXo"));
     String subject = Utils.getTemplateGenerator().processSubject(templateContext);
     
+    templateContext.put("PROFILE_URL", LinkProviderUtils.getRedirectUrl("user", identity.getRemoteId()));
     templateContext.put("AVATAR", LinkProviderUtils.getUserAvatarUrl(userProfile));
     templateContext.put("CONNECT_ACTION_URL", LinkProviderUtils.getInviteToConnectUrl(identity.getRemoteId()));
     String body = Utils.getTemplateGenerator().processTemplate(templateContext);

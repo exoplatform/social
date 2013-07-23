@@ -85,7 +85,7 @@ public class NotificationsRestServiceTest extends AbstractResourceTest {
     ExoSocialActivity activity = new ExoSocialActivityImpl();
     activity.setTitle("activity");
     activityManager.saveActivity(rootIdentity, activity);
-    ContainerResponse response = service("GET", "/social/notifications/replyActivity/" + activity.getId(), "", null, null);
+    ContainerResponse response = service("GET", "/social/notifications/redirectUrl/reply_activity/" + activity.getId(), "", null, null);
     assertNotNull(response);
     assertEquals(303, response.getStatus());
     
@@ -97,7 +97,7 @@ public class NotificationsRestServiceTest extends AbstractResourceTest {
     ExoSocialActivity activity = new ExoSocialActivityImpl();
     activity.setTitle("activity");
     activityManager.saveActivity(rootIdentity, activity);
-    ContainerResponse response = service("GET", "/social/notifications/viewFullDiscussion/" + activity.getId(), "", null, null);
+    ContainerResponse response = service("GET", "/social/notifications/redirectUrl/view_full_activity/" + activity.getId(), "", null, null);
     assertNotNull(response);
     assertEquals(303, response.getStatus());
     
@@ -194,7 +194,7 @@ public class NotificationsRestServiceTest extends AbstractResourceTest {
     ExoSocialActivity activity = new ExoSocialActivityImpl();
     activity.setTitle("activity");
     activityManager.saveActivity(rootIdentity, activity);
-    ContainerResponse response = service("GET", "/social/notifications/redirectUrl/activity/" + activity.getId(), "", null, null);
+    ContainerResponse response = service("GET", "/social/notifications/redirectUrl/view_full_activity/" + activity.getId(), "", null, null);
     assertEquals(303, response.getStatus());
     
     response = service("GET", "/social/notifications/redirectUrl/user/" + demoIdentity.getRemoteId(), "", null, null);

@@ -121,8 +121,8 @@ public class SocialProviderImpl extends AbstractNotificationProvider {
           
           ctx.put("PROFILE_URL", LinkProviderUtils.getRedirectUrl("user", identity.getRemoteId()));
           ctx.put("ACTIVITY", activity.getTitle());
-          ctx.put("REPLY_ACTION_URL", LinkProviderUtils.getReplyActivityUrl(activity.getId()));
-          ctx.put("VIEW_FULL_DISCUSSION_ACTION_URL", LinkProviderUtils.getViewFullDiscussionUrl(activity.getId()));
+          ctx.put("REPLY_ACTION_URL", LinkProviderUtils.getRedirectUrl("reply_activity", activity.getId()));
+          ctx.put("VIEW_FULL_DISCUSSION_ACTION_URL", LinkProviderUtils.getRedirectUrl("view_full_activity", activity.getId()));
           body = templateGenerator.processTemplate(ctx);
          
           messageInfo.subject(subject).body(body);
@@ -140,8 +140,8 @@ public class SocialProviderImpl extends AbstractNotificationProvider {
           ctx.put("PROFILE_URL", LinkProviderUtils.getRedirectUrl("user", identity.getRemoteId()));
           ctx.put("COMMENT", activity.getTitle());
           ctx.put("ACTIVITY", parentActivity.getTitle());
-          ctx.put("REPLY_ACTION_URL", LinkProviderUtils.getReplyActivityUrl(activity.getId()));
-          ctx.put("VIEW_FULL_DISCUSSION_ACTION_URL", LinkProviderUtils.getViewFullDiscussionUrl(activity.getId()));
+          ctx.put("REPLY_ACTION_URL", LinkProviderUtils.getRedirectUrl("reply_activity", activity.getId()));
+          ctx.put("VIEW_FULL_DISCUSSION_ACTION_URL", LinkProviderUtils.getRedirectUrl("view_full_activity", activity.getId()));
           body = templateGenerator.processTemplate(ctx);
           
           messageInfo.subject(subject).body(body);
@@ -157,8 +157,8 @@ public class SocialProviderImpl extends AbstractNotificationProvider {
 
           ctx.put("PROFILE_URL", LinkProviderUtils.getRedirectUrl("user", identity.getRemoteId()));
           ctx.put("ACTIVITY", activity.getTitle());
-          ctx.put("REPLY_ACTION_URL", LinkProviderUtils.getReplyActivityUrl(activity.getId()));
-          ctx.put("VIEW_FULL_DISCUSSION_ACTION_URL", LinkProviderUtils.getViewFullDiscussionUrl(activity.getId()));
+          ctx.put("REPLY_ACTION_URL", LinkProviderUtils.getRedirectUrl("reply_activity", activity.getId()));
+          ctx.put("VIEW_FULL_DISCUSSION_ACTION_URL", LinkProviderUtils.getRedirectUrl("view_full_activity", activity.getId()));
           body = templateGenerator.processTemplate(ctx);
           
           messageInfo.subject(subject).body(body);
@@ -174,8 +174,8 @@ public class SocialProviderImpl extends AbstractNotificationProvider {
           
           ctx.put("PROFILE_URL", LinkProviderUtils.getRedirectUrl("user", identity.getRemoteId()));
           ctx.put("ACTIVITY", activity.getTitle());
-          ctx.put("REPLY_ACTION_URL", LinkProviderUtils.getReplyActivityUrl(activity.getId()));
-          ctx.put("VIEW_FULL_DISCUSSION_ACTION_URL", LinkProviderUtils.getViewFullDiscussionUrl(activity.getId()));
+          ctx.put("REPLY_ACTION_URL", LinkProviderUtils.getRedirectUrl("reply_activity", activity.getId()));
+          ctx.put("VIEW_FULL_DISCUSSION_ACTION_URL", LinkProviderUtils.getRedirectUrl("view_full_activity", activity.getId()));
           body = templateGenerator.processTemplate(ctx);
           
           messageInfo.subject(subject).body(body);
@@ -195,8 +195,8 @@ public class SocialProviderImpl extends AbstractNotificationProvider {
           ctx.put("PROFILE_URL", LinkProviderUtils.getRedirectUrl("user", identity.getRemoteId()));
           ctx.put("SPACE_URL", LinkProviderUtils.getRedirectUrl("space", space.getId()));
           ctx.put("ACTIVITY", activity.getTitle());
-          ctx.put("REPLY_ACTION_URL", LinkProviderUtils.getReplyActivityUrl(activity.getId()));
-          ctx.put("VIEW_FULL_DISCUSSION_ACTION_URL", LinkProviderUtils.getViewFullDiscussionUrl(activity.getId()));
+          ctx.put("REPLY_ACTION_URL", LinkProviderUtils.getRedirectUrl("reply_activity", activity.getId()));
+          ctx.put("VIEW_FULL_DISCUSSION_ACTION_URL", LinkProviderUtils.getRedirectUrl("view_full_activity", activity.getId()));
           body = templateGenerator.processTemplate(ctx);
           
           messageInfo.subject(subject).body(body);

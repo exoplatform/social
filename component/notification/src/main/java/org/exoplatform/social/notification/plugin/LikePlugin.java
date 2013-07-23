@@ -70,9 +70,10 @@ public class LikePlugin extends AbstractNotificationPlugin {
     templateContext.put("USER", identity.getProfile().getFullName());
     String subject = Utils.getTemplateGenerator().processSubject(templateContext);
 
+    templateContext.put("PROFILE_URL", LinkProviderUtils.getRedirectUrl("user", identity.getRemoteId()));
     templateContext.put("ACTIVITY", activity.getTitle());
-    templateContext.put("REPLY_ACTION_URL", LinkProviderUtils.getReplyActivityUrl(activity.getId()));
-    templateContext.put("VIEW_FULL_DISCUSSION_ACTION_URL", LinkProviderUtils.getViewFullDiscussionUrl(activity.getId()));
+    templateContext.put("REPLY_ACTION_URL", LinkProviderUtils.getRedirectUrl("reply_activity", activity.getId()));
+    templateContext.put("VIEW_FULL_DISCUSSION_ACTION_URL", LinkProviderUtils.getRedirectUrl("view_full_activity", activity.getId()));
     String body = Utils.getTemplateGenerator().processTemplate(templateContext);
     
     return messageInfo.subject(subject).body(body).end();

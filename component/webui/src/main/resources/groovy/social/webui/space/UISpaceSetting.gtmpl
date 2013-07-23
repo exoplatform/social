@@ -24,7 +24,9 @@
    _ctx.getRequestContext().getJavascriptManager().require("SHARED/bts_tab");
 %>
 <div class="uiSpaceSetting" id="$uicomponent.id">
-<% if(uicomponent.isLeader()){ %>
+<% if(uicomponent.isLeader()){ 
+     uicomponent.initTabByContext();
+%>
   <div><% uicomponent.renderChild(UITabPane.class);%></div>
 <% } else {
      def context = _ctx.getRequestContext();

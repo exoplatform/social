@@ -64,7 +64,8 @@ public class NotificationsRestService implements ResourceContainer {
   private static String       SLASH              = "/";
   
   public enum URL_TYPE {
-    user, space, activity, portal_home, all_space, connections, notification_settings, connections_request, space_invitation;
+    user, space, space_members, reply_activity, view_full_activity, view_likers_activity, portal_home,
+    all_space, connections, notification_settings, connections_request, space_invitation;
   }
   
   public NotificationsRestService() {
@@ -226,7 +227,7 @@ public class NotificationsRestService implements ResourceContainer {
     }
     getSpaceService().addMember(space, userId);
 
-    String targetURL = Util.getBaseUrl() + LinkProvider.getActivityUriForSpace(space.getGroupId().replace("/spaces/", ""), space.getPrettyName()) + "/settings";
+    String targetURL = Util.getBaseUrl() + LinkProvider.getActivityUriForSpace(space.getGroupId().replace("/spaces/", ""), space.getPrettyName()) + "/settings/members";
 
     // redirect to target page
     return Response.seeOther(URI.create(targetURL)).build();
@@ -252,53 +253,7 @@ public class NotificationsRestService implements ResourceContainer {
     }
     getSpaceService().removePendingUser(space, userId);
 
-    String targetURL = Util.getBaseUrl() + LinkProvider.getActivityUriForSpace(space.getGroupId().replace("/spaces/", ""), space.getPrettyName()) + "/settings";
-
-    // redirect to target page
-    return Response.seeOther(URI.create(targetURL)).build();
-  }
-  
-  /**
-   * Redirect to the associated activity
-   * 
-   * @param activityId id of the activity
-   * @return
-   * @throws Exception
-   */
-  @GET
-  @Path("replyActivity/{activityId}")
-  public Response replyActivity(@PathParam("activityId") String activityId) throws Exception {
-    checkAuthenticatedRequest();
-
-    ExoSocialActivity activity = getActivityManager().getActivity(activityId);
-    if (activity == null) {
-      throw new WebApplicationException(Response.Status.BAD_REQUEST);
-    }
-
-    String targetURL = Util.getBaseUrl() + LinkProvider.getRedirectUri(ACTIVITY_ID_PREFIX + SLASH + activity.getId() + SLASH + "focus");
-
-    // redirect to target page
-    return Response.seeOther(URI.create(targetURL)).build();
-  }
-  
-  /**
-   * Redirect to the associated activity
-   * 
-   * @param activityId id of the activity
-   * @return
-   * @throws Exception
-   */
-  @GET
-  @Path("viewFullDiscussion/{activityId}")
-  public Response viewFullDiscussion(@PathParam("activityId") String activityId) throws Exception {
-    checkAuthenticatedRequest();
-
-    ExoSocialActivity activity = getActivityManager().getActivity(activityId);
-    if (activity == null) {
-      throw new WebApplicationException(Response.Status.BAD_REQUEST);
-    }
-
-    String targetURL = Util.getBaseUrl() + LinkProvider.getRedirectUri(ACTIVITY_ID_PREFIX + SLASH + activity.getId() + SLASH + "expand");
+    String targetURL = Util.getBaseUrl() + LinkProvider.getActivityUriForSpace(space.getGroupId().replace("/spaces/", ""), space.getPrettyName()) + "/settings/members";
 
     // redirect to target page
     return Response.seeOther(URI.create(targetURL)).build();
@@ -326,10 +281,22 @@ public class NotificationsRestService implements ResourceContainer {
       checkAuthenticatedRequest();
       URL_TYPE urlType = URL_TYPE.valueOf(type);
       switch (urlType) {
-        case activity: {
+        case view_full_activity: {
           activity = getActivityManager().getActivity(objectId);
           userIdentity = getIdentityManager().getIdentity(activity.getPosterId(), true);
-          targetURL = Util.getBaseUrl() + LinkProvider.getRedirectUri(ACTIVITY_ID_PREFIX + SLASH + activity.getId());
+          targetURL = Util.getBaseUrl() + LinkProvider.getRedirectUri(ACTIVITY_ID_PREFIX + SLASH + activity.getId() + SLASH + "comments");
+          break;
+        }
+        case view_likers_activity: {
+          activity = getActivityManager().getActivity(objectId);
+          userIdentity = getIdentityManager().getIdentity(activity.getPosterId(), true);
+          targetURL = Util.getBaseUrl() + LinkProvider.getRedirectUri(ACTIVITY_ID_PREFIX + SLASH + activity.getId() + SLASH + "likers");
+          break;
+        }
+        case reply_activity: {
+          activity = getActivityManager().getActivity(objectId);
+          userIdentity = getIdentityManager().getIdentity(activity.getPosterId(), true);
+          targetURL = Util.getBaseUrl() + LinkProvider.getRedirectUri(ACTIVITY_ID_PREFIX + SLASH + activity.getId() + SLASH + "reply");
           break;
         }
         case user: {
@@ -340,6 +307,11 @@ public class NotificationsRestService implements ResourceContainer {
         case space: {
           space = getSpaceService().getSpaceById(objectId);
           targetURL = Util.getBaseUrl() + LinkProvider.getActivityUriForSpace(space.getGroupId().replace("/spaces/", ""), space.getPrettyName());
+          break;
+        }
+        case space_members: {
+          space = getSpaceService().getSpaceById(objectId);
+          targetURL = Util.getBaseUrl() + LinkProvider.getActivityUriForSpace(space.getGroupId().replace("/spaces/", ""), space.getPrettyName()) + "/settings/members";
           break;
         }
         case portal_home: {

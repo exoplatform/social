@@ -61,6 +61,7 @@ public class SpaceInvitationPlugin extends AbstractNotificationPlugin {
     Space space = Utils.getSpaceService().getSpaceById(spaceId);
     
     templateContext.put("SPACE", space.getDisplayName());
+    templateContext.put("SPACE_URL", LinkProviderUtils.getRedirectUrl("space", space.getId()));
     String subject = Utils.getTemplateGenerator().processSubject(templateContext);
     
     templateContext.put("SPACE_AVATAR", LinkProviderUtils.getSpaceAvatarUrl(space));

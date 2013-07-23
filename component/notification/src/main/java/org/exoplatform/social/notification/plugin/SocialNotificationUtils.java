@@ -104,10 +104,11 @@ public class SocialNotificationUtils {
       List<String> values = entry.getValue();
       int count = values.size();
 
+      String type = (templateContext.getProviderId().equals("ActivityLikeProvider")) ? "view_likers_activity" : "view_full_activity";
       if (activity != null) {
-        templateContext.put("ACTIVITY", SocialNotificationUtils.buildRedirecUrl("activity", activity.getId(), activity.getTitle()));
+        templateContext.put("ACTIVITY", SocialNotificationUtils.buildRedirecUrl(type, activity.getId(), activity.getTitle()));
       } else {
-        templateContext.put("SPACE", SocialNotificationUtils.buildRedirecUrl("space", space.getId(), space.getDisplayName()));
+        templateContext.put("SPACE", SocialNotificationUtils.buildRedirecUrl("space_members", space.getId(), space.getDisplayName()));
       }
       
       String[] keys = {"USER", "USER_LIST", "LAST3_USERS"};
@@ -129,9 +130,9 @@ public class SocialNotificationUtils {
       templateContext.put(key, value.toString());
       if(count > 3) {
         if (activity != null) {
-          templateContext.put("COUNT", SocialNotificationUtils.buildRedirecUrl("activity", activity.getId(), String.valueOf((count - 3))));
+          templateContext.put("COUNT", SocialNotificationUtils.buildRedirecUrl(type, activity.getId(), String.valueOf((count - 3))));
         } else {
-          templateContext.put("COUNT", SocialNotificationUtils.buildRedirecUrl("space", space.getId(), String.valueOf((count - 3))));
+          templateContext.put("COUNT", SocialNotificationUtils.buildRedirecUrl("space_members", space.getId(), String.valueOf((count - 3))));
         }
       }
 
