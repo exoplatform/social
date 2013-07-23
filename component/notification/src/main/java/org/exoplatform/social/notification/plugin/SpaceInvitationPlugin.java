@@ -25,12 +25,17 @@ import org.exoplatform.commons.api.notification.NotificationContext;
 import org.exoplatform.commons.api.notification.NotificationMessage;
 import org.exoplatform.commons.api.notification.TemplateContext;
 import org.exoplatform.commons.api.notification.plugin.AbstractNotificationPlugin;
+import org.exoplatform.container.xml.InitParams;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.notification.LinkProviderUtils;
 import org.exoplatform.social.notification.Utils;
 
 public class SpaceInvitationPlugin extends AbstractNotificationPlugin {
   public static final String ID = "InvitedJoinSpace";
+
+  public SpaceInvitationPlugin(InitParams initParams) {
+    super(initParams);
+  }
 
   @Override
   public String getId() {

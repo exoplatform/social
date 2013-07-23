@@ -49,21 +49,21 @@
 		%>
 				<tr>
 					<td class="left">
-						<strong><%=_ctx.appRes("UINotificationSettingForm.label." + group.getName())%></strong>
+						<strong><%=_ctx.appRes(group.getResouceBundleKey())%></strong>
 					</td>
 					<td></td>
 					<td></td>
 				</tr>
 				<%
-					for (String providerId : group.getValues()) {
-					  if(providers.contains(providerId) == false) {
+					for (def provider : group.getProviderDatas()) {
+					  if(providers.contains(provider.getType()) == false) {
 					    continue;
 					  } 
-					  providers.remove(providerId);
+					  providers.remove(provider.getType());
 				%>
 				<tr>
 					<td class="left">
-						<label for="$providerId" style="padding-left:20px"><%=_ctx.appRes("UINotificationSettingForm.label." + providerId)%></label>
+						<label for="<%=provider.getType()%>" style="padding-left:20px"><%=_ctx.appRes(provider.getResourceBundleKey())%></label>
 					</td>
 					<td class="center">
 						<% uiform.renderField(providerId); %>	

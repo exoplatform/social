@@ -17,61 +17,60 @@
 package org.exoplatform.social.notification.mock;
 
 import java.util.List;
-import java.util.Map;
 
-import org.exoplatform.commons.api.notification.plugin.ActiveProviderPlugin;
-import org.exoplatform.commons.api.notification.plugin.GroupProviderModel;
+import org.exoplatform.commons.api.notification.GroupProvider;
+import org.exoplatform.commons.api.notification.ProviderData;
 import org.exoplatform.commons.api.notification.plugin.GroupProviderPlugin;
+import org.exoplatform.commons.api.notification.plugin.model.PluginConfig;
 import org.exoplatform.commons.api.notification.service.setting.ProviderSettingService;
 
 public class MockProviderSettingService implements ProviderSettingService {
 
   @Override
-  public void registerActiveProviderPlugin(ActiveProviderPlugin activeProviderPlugin) {
+  public void registerPluginConfig(PluginConfig pluginConfig) {
+    // TODO Auto-generated method stub
     
-
   }
 
   @Override
-  public void registerGroupProviderPlugin(GroupProviderPlugin groupProviderPlugin) {
+  public void registerGroupConfig(GroupProviderPlugin groupConfig) {
     
-
   }
-
+  
   @Override
-  public List<String> getActiveProviderIds(boolean isAdmin) {
-    
+  public PluginConfig getPluginConfig(String pluginId) {
+    // TODO Auto-generated method stub
     return null;
   }
 
   @Override
-  public Map<String, Boolean> getActiveProviderIdForSetting() {
-    
+  public List<GroupProvider> getGroupProviders() {
+    // TODO Auto-generated method stub
     return null;
   }
 
   @Override
-  public void setActiveProviders(Map<String, Boolean> mapProviderId) {
+  public void saveActiveProviders(List<ProviderData> providerDatas) {
+    // TODO Auto-generated method stub
     
-
   }
 
   @Override
-  public List<GroupProviderModel> getGroupProviders() {
-    
+  public List<String> getActiveProviderIds() {
+    // TODO Auto-generated method stub
     return null;
   }
 
   @Override
   public boolean getActiveFeature() {
-    
-    return true;
+    // TODO Auto-generated method stub
+    return false;
   }
 
   @Override
   public void saveActiveFeature(boolean isActive) {
+    // TODO Auto-generated method stub
     
-
   }
 
 }

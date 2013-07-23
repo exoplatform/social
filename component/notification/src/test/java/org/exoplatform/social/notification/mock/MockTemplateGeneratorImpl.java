@@ -18,8 +18,7 @@ package org.exoplatform.social.notification.mock;
 
 import org.apache.commons.lang.StringUtils;
 import org.exoplatform.commons.api.notification.TemplateContext;
-import org.exoplatform.commons.api.notification.plugin.MappingKey;
-import org.exoplatform.commons.api.notification.plugin.TemplateConfigurationPlugin;
+import org.exoplatform.commons.api.notification.plugin.model.TemplateConfig;
 import org.exoplatform.commons.api.notification.service.TemplateGenerator;
 import org.exoplatform.commons.notification.NotificationUtils;
 import org.exoplatform.commons.notification.impl.TemplateGeneratorImpl;
@@ -33,7 +32,7 @@ public class MockTemplateGeneratorImpl implements TemplateGenerator {
 
   @Override
   public String processTemplate(TemplateContext ctx) {
-    MappingKey mappingKey = generatorImpl.getMappingKey(ctx.getProviderId());
+    TemplateConfig mappingKey = generatorImpl.getTemplateConfig(ctx.getProviderId());
     String templateKey = mappingKey.getKeyValue("template", "Notification.template." + ctx.getProviderId());
     String template = NotificationUtils.getResourceBundle(templateKey, null, mappingKey.getLocaleResouceBundle());
     if (ctx != null) {
@@ -42,11 +41,6 @@ public class MockTemplateGeneratorImpl implements TemplateGenerator {
       }
     }
     return template;
-  }
-
-  @Override
-  public void registerTemplateConfigurationPlugin(TemplateConfigurationPlugin configurationPlugin) {
-    generatorImpl.registerTemplateConfigurationPlugin(configurationPlugin);
   }
 
   @Override

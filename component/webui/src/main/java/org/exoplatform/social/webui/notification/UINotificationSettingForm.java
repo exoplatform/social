@@ -20,18 +20,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
+import org.exoplatform.commons.api.notification.GroupProvider;
 import org.exoplatform.commons.api.notification.UserNotificationSetting;
 import org.exoplatform.commons.api.notification.UserNotificationSetting.FREQUENCY;
-import org.exoplatform.commons.api.notification.plugin.GroupProviderModel;
 import org.exoplatform.commons.api.notification.service.setting.ProviderSettingService;
 import org.exoplatform.commons.api.notification.service.setting.UserNotificationService;
 import org.exoplatform.commons.utils.CommonsUtils;
-import org.exoplatform.portal.config.UserACL;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
-import org.exoplatform.services.security.ConversationState;
-import org.exoplatform.services.security.Identity;
-import org.exoplatform.services.security.IdentityConstants;
 import org.exoplatform.social.webui.Utils;
 import org.exoplatform.web.application.ApplicationMessage;
 import org.exoplatform.webui.application.WebuiRequestContext;
@@ -93,7 +89,7 @@ public class UINotificationSettingForm extends UIForm {
     return this.isRenderConfirm;
   }
   
-  protected List<GroupProviderModel> getGroupProviders() {
+  protected List<GroupProvider> getGroupProviders() {
     return settingService.getGroupProviders();
   }
 
@@ -138,7 +134,7 @@ public class UINotificationSettingForm extends UIForm {
 
   public void initSettingForm() {
     UserNotificationSetting setting = notificationService.getUserNotificationSetting(Utils.getOwnerRemoteId());
-    activeProviders = settingService.getActiveProviderIds(isAdmin());
+    activeProviders = settingService.getActiveProviderIds();
     for (String providerId : activeProviders) {
       addUIFormInput(new UICheckBoxInput(providerId, providerId, isInInstantly(setting, providerId)));
       addUIFormInput(new UIFormSelectBox(makeSelectBoxId(providerId), makeSelectBoxId(providerId), getDigestOptions()).setValue(getDigestValue(setting, providerId)));
@@ -159,31 +155,6 @@ public class UINotificationSettingForm extends UIForm {
     getUICheckBoxInput(CHECK_BOX_DEACTIVATE).setChecked((isActiveNotification == false));
   }
   
-  
-  private boolean isAdmin() {
-    try {
-      UserACL userACL = CommonsUtils.getService(UserACL.class);
-      List<String> list = new ArrayList<String>();
-      Identity identity = ConversationState.getCurrent().getIdentity();
-      String userId = identity.getUserId();
-      if (userId == null || userId.equals("") || IdentityConstants.ANONIM.equals(userId)) {
-        userId = Utils.getOwnerRemoteId();
-        if(userId != null && ! userId.equals("")) {
-          list.add(userId);
-        }
-      } else {
-        list.addAll(identity.getGroups());
-      }
-      for (String str : list) {
-        if (str.equals(userACL.getSuperUser()) || str.equals(userACL.getAdminGroups())){
-          return true;
-        }
-      }
-    } catch (Exception e) {
-      LOG.debug("Failed to check permision for user by component UserACL", e);
-    }
-    return false;
-  }
   
   public static class SaveActionListener extends EventListener<UINotificationSettingForm> {
     public void execute(Event<UINotificationSettingForm> event) throws Exception {

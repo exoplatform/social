@@ -28,6 +28,7 @@ import org.exoplatform.commons.api.notification.NotificationContext;
 import org.exoplatform.commons.api.notification.NotificationMessage;
 import org.exoplatform.commons.api.notification.TemplateContext;
 import org.exoplatform.commons.api.notification.plugin.AbstractNotificationPlugin;
+import org.exoplatform.container.xml.InitParams;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
@@ -36,6 +37,11 @@ import org.exoplatform.social.notification.LinkProviderUtils;
 import org.exoplatform.social.notification.Utils;
 
 public class RequestJoinSpacePlugin extends AbstractNotificationPlugin {
+  
+  public RequestJoinSpacePlugin(InitParams initParams) {
+    super(initParams);
+  }
+
   public static final String ID = "RequestJoinSpace";
 
   @Override

@@ -22,7 +22,6 @@ import java.util.List;
 
 import org.exoplatform.commons.api.notification.service.TemplateGenerator;
 import org.exoplatform.commons.api.notification.service.storage.NotificationDataStorage;
-import org.exoplatform.commons.api.notification.service.storage.ProviderService;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.identity.model.Identity;
@@ -96,7 +95,4 @@ public class Utils {
     return getService(TemplateGenerator.class);
   }
   
-  public static ProviderService getProviderService() {
-    return getService(ProviderService.class);
-  }
 }

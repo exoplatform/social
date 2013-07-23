@@ -25,6 +25,7 @@ import org.exoplatform.commons.api.notification.NotificationContext;
 import org.exoplatform.commons.api.notification.NotificationMessage;
 import org.exoplatform.commons.api.notification.TemplateContext;
 import org.exoplatform.commons.api.notification.plugin.AbstractNotificationPlugin;
+import org.exoplatform.container.xml.InitParams;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.notification.LinkProviderUtils;
@@ -32,6 +33,10 @@ import org.exoplatform.social.notification.Utils;
 
 public class ActivityMentionPlugin extends AbstractNotificationPlugin {
   public static final String ID = "ActivityMentionProvider";
+  
+  public ActivityMentionPlugin(InitParams initParams) {
+    super(initParams);
+  }
 
   @Override
   public String getId() {

@@ -30,9 +30,12 @@ import org.exoplatform.commons.api.notification.NotificationContext;
 import org.exoplatform.commons.api.notification.NotificationMessage;
 import org.exoplatform.commons.api.notification.plugin.AbstractNotificationPlugin;
 import org.exoplatform.commons.api.notification.plugin.NotificationKey;
+import org.exoplatform.commons.api.notification.plugin.model.PluginConfig;
 import org.exoplatform.commons.api.notification.service.TemplateGenerator;
 import org.exoplatform.commons.api.notification.service.setting.NotificationPluginService;
 import org.exoplatform.commons.notification.impl.NotificationContextImpl;
+import org.exoplatform.container.xml.InitParams;
+import org.exoplatform.container.xml.ObjectParameter;
 import org.exoplatform.groovyscript.GroovyTemplate;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.activity.model.ExoSocialActivityImpl;
@@ -109,32 +112,38 @@ public class SocialNotificationTestCase extends AbstractCoreTest {
     assertNotNull(templateGenerator);
     assertNotNull(pluginService);
     
+    InitParams initParams = new InitParams();
+    PluginConfig pluginConfig = new PluginConfig();
+    ObjectParameter parameter = new ObjectParameter();
+    parameter.setObject(pluginConfig);
+    initParams.addParameter(parameter);
+    
     //init all plugins (by default, we must init them from xml config)
-    creatUserPlugin = new NewUserPlugin();
+    creatUserPlugin = new NewUserPlugin(initParams);
     creatUserKey = new NotificationKey(creatUserPlugin);
     
-    commentPlugin = new ActivityCommentPlugin();
+    commentPlugin = new ActivityCommentPlugin(initParams);
     commentKey = new NotificationKey(commentPlugin);
     
-    postActivityPlugin = new PostActivityPlugin();
+    postActivityPlugin = new PostActivityPlugin(initParams);
     postKey = new NotificationKey(postActivityPlugin);
     
-    mentionPlugin = new ActivityMentionPlugin();
+    mentionPlugin = new ActivityMentionPlugin(initParams);
     mentionKey = new NotificationKey(mentionPlugin);
     
-    likePlugin = new LikePlugin();
+    likePlugin = new LikePlugin(initParams);
     likeKey = new NotificationKey(likePlugin);
     
-    postSpaceActivityPlugin = new PostActivitySpaceStreamPlugin();
+    postSpaceActivityPlugin = new PostActivitySpaceStreamPlugin(initParams);
     postSpaceKey = new NotificationKey(postSpaceActivityPlugin);
     
-    inviteToConnectPlugin = new RelationshipRecievedRequestPlugin();
+    inviteToConnectPlugin = new RelationshipRecievedRequestPlugin(initParams);
     relationKey = new NotificationKey(inviteToConnectPlugin);
     
-    invitedJoinSpacePlugin = new SpaceInvitationPlugin();
+    invitedJoinSpacePlugin = new SpaceInvitationPlugin(initParams);
     invitedJoinSpaceKey = new NotificationKey(invitedJoinSpacePlugin);
     
-    spaceJoinRequestPlugin = new RequestJoinSpacePlugin();
+    spaceJoinRequestPlugin = new RequestJoinSpacePlugin(initParams);
     spaceJoinRequestKey = new NotificationKey(spaceJoinRequestPlugin);
     
     pluginService.add(likePlugin);

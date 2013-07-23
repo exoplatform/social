@@ -28,6 +28,7 @@ import org.exoplatform.commons.api.notification.NotificationMessage;
 import org.exoplatform.commons.api.notification.TemplateContext;
 import org.exoplatform.commons.api.notification.plugin.AbstractNotificationPlugin;
 import org.exoplatform.commons.utils.ListAccess;
+import org.exoplatform.container.xml.InitParams;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
@@ -39,6 +40,9 @@ import org.exoplatform.social.notification.Utils;
 public class NewUserPlugin extends AbstractNotificationPlugin {
 
   public static final String ID = "NewUserJoinSocialIntranet";
+  public NewUserPlugin(InitParams initParams) {
+    super(initParams);
+  }
   
   @Override
   public String getId() {

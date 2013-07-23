@@ -1,0 +1,440 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.exoplatform.org/xml/ns/kernel_1_2.xsd http://www.exoplatform.org/xml/ns/kernel_1_2.xsd"
+  xmlns="http://www.exoplatform.org/xml/ns/kernel_1_2.xsd">
+
+  <external-component-plugins>
+    <target-component>org.exoplatform.social.core.manager.ActivityManager</target-component>
+    <component-plugin>
+      <name>ActivityNotificationImpl</name>
+      <set-method>addActivityEventListener</set-method>
+      <type>org.exoplatform.social.notification.impl.ActivityNotificationImpl</type>
+    </component-plugin>
+  </external-component-plugins>
+  
+  <external-component-plugins>
+    <target-component>org.exoplatform.social.core.manager.IdentityManager</target-component>
+    <component-plugin>
+      <name>ProfileNotificationImpl</name>
+      <set-method>registerProfileListener</set-method>
+      <type>org.exoplatform.social.notification.impl.ProfileNotificationImpl</type>
+    </component-plugin>
+  </external-component-plugins>
+  
+  <external-component-plugins>
+    <target-component>org.exoplatform.social.core.manager.RelationshipManager</target-component>
+    <component-plugin>
+      <name>RelationshipNotifictionImpl</name>
+      <set-method>addListenerPlugin</set-method>
+      <type>org.exoplatform.social.notification.impl.RelationshipNotifictionImpl</type>
+    </component-plugin>
+  </external-component-plugins>
+
+  <external-component-plugins>
+    <target-component>org.exoplatform.social.core.space.spi.SpaceService</target-component>
+    <component-plugin>
+      <name>SpaceNotificationImpl</name>
+      <set-method>registerSpaceListenerPlugin</set-method>
+      <type>org.exoplatform.social.notification.impl.SpaceNotificationImpl</type>
+    </component-plugin>
+  </external-component-plugins>
+  
+  <external-component-plugins>
+    <target-component>org.exoplatform.commons.api.notification.service.NotificationProviderService</target-component>
+    <component-plugin>
+      <name>NotificationServiceListener</name>
+      <set-method>addSupportProviderImpl</set-method>
+      <type>org.exoplatform.social.notification.provider.SocialProviderImpl</type>
+    </component-plugin>
+  </external-component-plugins>
+
+  <external-component-plugins>
+    <target-component>org.exoplatform.commons.api.notification.service.ProviderSettingService</target-component>
+    <component-plugin>
+      <name>active.providers</name>
+      <set-method>registerActiveProviderPlugin</set-method>
+      <type>org.exoplatform.commons.api.notification.plugin.ActiveProviderPlugin</type>
+      <description>Initial values for providers.</description>
+      <init-params>
+        <values-param>
+          <name>active.admin</name>
+          <description>Providers active only for administrators</description>
+          <value></value>
+        </values-param>
+        <values-param>
+          <name>active.global</name>
+          <description>Providers active for all users</description>
+          <value>ActivityMentionProvider</value>
+          <value>ActivityCommentProvider</value>
+          <value>ActivityLikeProvider</value>
+          <value>ActivityPostProvider</value>
+          <value>ActivityPostSpaceProvider</value>
+          <value>NewUserJoinSocialIntranet</value>
+          <value>ReceiceConnectionRequest</value>
+          <value>InvitedJoinSpace</value>
+          <value>RequestJoinSpace</value>
+        </values-param>
+      </init-params>
+    </component-plugin>
+  </external-component-plugins>
+
+  <external-component-plugins>
+    <target-component>org.exoplatform.commons.api.notification.service.TemplateGenerator</target-component>
+    <component-plugin>
+      <name>template.providers</name>
+      <set-method>registerTemplateConfigurationPlugin</set-method>
+      <type>org.exoplatform.commons.api.notification.plugin.TemplateConfigurationPlugin</type>
+      <description>Initial template for providers.</description>
+      <init-params>
+        <object-param>
+          <name>template.ActivityMentionProvider</name>
+          <description>The template of ActivityMentionProvider</description>
+          <object type="org.exoplatform.commons.api.notification.plugin.MappingKey">
+            <field name="providerId">
+              <string>ActivityMentionProvider</string>
+            </field>
+            <field name="localeResouceBundle">
+              <string>locale.notification.template.Notification</string>
+            </field>
+            <field name="localeResouceTemplate">
+              <string>war:/notification/templates/ActivityMentionProvider.gtmpl</string>
+            </field>
+          </object>
+        </object-param>
+        <object-param>
+          <name>template.ActivityCommentProvider</name>
+          <description>The template of ActivityCommentProvider</description>
+          <object type="org.exoplatform.commons.api.notification.plugin.MappingKey">
+            <field name="providerId">
+              <string>ActivityCommentProvider</string>
+            </field>
+            <field name="localeResouceBundle">
+              <string>locale.notification.template.Notification</string>
+            </field>
+            <field name="localeResouceTemplate">
+              <string>war:/notification/templates/ActivityCommentProvider.gtmpl</string>
+            </field>
+          </object>
+        </object-param>
+        <object-param>
+          <name>template.ActivityLikeProvider</name>
+          <description>The template of ActivityLikeProvider</description>
+          <object type="org.exoplatform.commons.api.notification.plugin.MappingKey">
+            <field name="providerId">
+              <string>ActivityLikeProvider</string>
+            </field>
+            <field name="localeResouceBundle">
+              <string>locale.notification.template.Notification</string>
+            </field>
+            <field name="localeResouceTemplate">
+              <string>war:/notification/templates/ActivityLikeProvider.gtmpl</string>
+            </field>
+          </object>
+        </object-param>
+        <object-param>
+          <name>template.ActivityPostProvider</name>
+          <description>The template of ActivityPostProvider</description>
+          <object type="org.exoplatform.commons.api.notification.plugin.MappingKey">
+            <field name="providerId">
+              <string>ActivityPostProvider</string>
+            </field>
+            <field name="localeResouceBundle">
+              <string>locale.notification.template.Notification</string>
+            </field>
+            <field name="localeResouceTemplate">
+              <string>war:/notification/templates/ActivityPostProvider.gtmpl</string>
+            </field>
+          </object>
+        </object-param>
+        <object-param>
+          <name>template.ActivityPostSpaceProvider</name>
+          <description>The template of ActivityPostSpaceProvider</description>
+          <object type="org.exoplatform.commons.api.notification.plugin.MappingKey">
+            <field name="providerId">
+              <string>ActivityPostSpaceProvider</string>
+            </field>
+            <field name="localeResouceBundle">
+              <string>locale.notification.template.Notification</string>
+            </field>
+            <field name="localeResouceTemplate">
+              <string>war:/notification/templates/ActivityPostSpaceProvider.gtmpl</string>
+            </field>
+          </object>
+        </object-param>
+        <object-param>
+          <name>template.NewUserJoinSocialIntranet</name>
+          <description>The template of NewUserJoinSocialIntranet</description>
+          <object type="org.exoplatform.commons.api.notification.plugin.MappingKey">
+            <field name="providerId">
+              <string>NewUserJoinSocialIntranet</string>
+            </field>
+            <field name="localeResouceBundle">
+              <string>locale.notification.template.Notification</string>
+            </field>
+            <field name="localeResouceTemplate">
+              <string>war:/notification/templates/NewUserJoinSocialIntranet.gtmpl</string>
+            </field>
+          </object>
+        </object-param>
+        <object-param>
+          <name>template.ReceiceConnectionRequest</name>
+          <description>The template of ReceiceConnectionRequest</description>
+          <object type="org.exoplatform.commons.api.notification.plugin.MappingKey">
+            <field name="providerId">
+              <string>ReceiceConnectionRequest</string>
+            </field>
+            <field name="localeResouceBundle">
+              <string>locale.notification.template.Notification</string>
+            </field>
+            <field name="localeResouceTemplate">
+              <string>war:/notification/templates/ReceiceConnectionRequest.gtmpl</string>
+            </field>
+          </object>
+        </object-param>
+        <object-param>
+          <name>template.InvitedJoinSpace</name>
+          <description>The template of InvitedJoinSpace</description>
+          <object type="org.exoplatform.commons.api.notification.plugin.MappingKey">
+            <field name="providerId">
+              <string>InvitedJoinSpace</string>
+            </field>
+            <field name="localeResouceBundle">
+              <string>locale.notification.template.Notification</string>
+            </field>
+            <field name="localeResouceTemplate">
+              <string>war:/notification/templates/InvitedJoinSpace.gtmpl</string>
+            </field>
+          </object>
+        </object-param>
+        <object-param>
+          <name>template.RequestJoinSpace</name>
+          <description>The template of RequestJoinSpace</description>
+          <object type="org.exoplatform.commons.api.notification.plugin.MappingKey">
+            <field name="providerId">
+              <string>RequestJoinSpace</string>
+            </field>
+            <field name="localeResouceBundle">
+              <string>locale.notification.template.Notification</string>
+            </field>
+            <field name="localeResouceTemplate">
+              <string>war:/notification/templates/RequestJoinSpace.gtmpl</string>
+            </field>
+          </object>
+        </object-param>
+      </init-params>
+    </component-plugin>
+  </external-component-plugins>
+
+  <external-component-plugins>
+    <target-component>org.exoplatform.commons.api.notification.service.ProviderSettingService</target-component>
+    <component-plugin>
+      <name>active.providers</name>
+      <set-method>registerGroupProviderPlugin</set-method>
+      <type>org.exoplatform.commons.api.notification.plugin.GroupProviderPlugin</type>
+      <description>Initial values for providers.</description>
+      <init-params>
+        <object-param>
+          <name>general.groups</name>
+          <description>The general group of providers</description>
+          <object type="org.exoplatform.commons.api.notification.plugin.GroupProviderModel">
+            <field name="name">
+              <string>01.general</string>
+            </field>
+            <field name="values">
+              <collection type="java.util.ArrayList">
+                <value><string>NewUserJoinSocialIntranet</string></value>
+              </collection>
+            </field>
+          </object>
+        </object-param>
+
+        <object-param>
+          <name>connections.groups</name>
+          <description>The connections group of providers</description>
+          <object type="org.exoplatform.commons.api.notification.plugin.GroupProviderModel">
+            <field name="name">
+              <string>02.connections</string>
+            </field>
+            <field name="values">
+              <collection type="java.util.ArrayList">
+                <value><string>ReceiceConnectionRequest</string></value>
+              </collection>
+            </field>
+          </object>
+        </object-param>
+
+        <object-param>
+          <name>spaces.groups</name>
+          <description>The spaces group of providers</description>
+          <object type="org.exoplatform.commons.api.notification.plugin.GroupProviderModel">
+            <field name="name">
+              <string>03.spaces</string>
+            </field>
+            <field name="values">
+              <collection type="java.util.ArrayList">
+                <value><string>InvitedJoinSpace</string></value>
+                <value><string>RequestJoinSpace</string></value>
+                <value><string>ActivityPostSpaceProvider</string></value>
+              </collection>
+            </field>
+          </object>
+        </object-param>
+
+        <object-param>
+          <name>activity_stream.groups</name>
+          <description>The activity stream group of providers</description>            
+          <object type="org.exoplatform.commons.api.notification.plugin.GroupProviderModel">
+            <field name="name">
+              <string>04.activity_stream</string>
+            </field>
+            <field name="values">
+              <collection type="java.util.ArrayList">
+                <value><string>ActivityPostProvider</string></value>
+                <value><string>ActivityMentionProvider</string></value>
+                <value><string>ActivityCommentProvider</string></value>
+                <value><string>ActivityLikeProvider</string></value>
+              </collection>
+            </field>
+          </object>
+        </object-param>
+      </init-params>
+    </component-plugin>
+  </external-component-plugins>
+  
+  <external-component-plugins>
+    <target-component>org.exoplatform.commons.api.notification.service.ProviderService</target-component>
+    <component-plugin>
+      <name>default.providers</name>
+      <set-method>registerProviderPlugin</set-method>
+      <type>org.exoplatform.commons.api.notification.plugin.ProviderPlugin</type>
+      <description>Initial values for providers.</description>
+
+      <init-params>
+      
+        <object-param>
+          <name>ActivityMentionProvider</name>
+          <description>The activity mention provider</description>
+          <object type="org.exoplatform.commons.api.notification.plugin.ProviderModel">
+            <field name="type">
+              <string>ActivityMentionProvider</string>
+            </field>
+            <field name="order">
+              <string>5</string>
+            </field>
+          </object>
+        </object-param>
+
+        <object-param>
+          <name>ActivityCommentProvider</name>
+          <description>The activity comment provider</description>
+          <object type="org.exoplatform.commons.api.notification.plugin.ProviderModel">
+            <field name="type">
+              <string>ActivityCommentProvider</string>
+            </field>
+            <field name="order">
+              <string>8</string>
+            </field>
+          </object>
+        </object-param>
+        
+        <object-param>
+          <name>ActivityLikeProvider</name>
+          <description>The activity like provider</description>
+          <object type="org.exoplatform.commons.api.notification.plugin.ProviderModel">
+            <field name="type">
+              <string>ActivityLikeProvider</string>
+            </field>
+            <field name="order">
+              <string>9</string>
+            </field>
+          </object>
+        </object-param>
+
+        <object-param>
+          <name>ActivityPostProvider</name>
+          <description>The activity post provider</description>
+          <object type="org.exoplatform.commons.api.notification.plugin.ProviderModel">
+            <field name="type">
+              <string>ActivityPostProvider</string>
+            </field>
+            <field name="order">
+              <string>6</string>
+            </field>
+          </object>
+        </object-param>
+
+        <object-param>
+          <name>ActivityPostSpaceProvider</name>
+          <description>The activity post space provider</description>
+          <object type="org.exoplatform.commons.api.notification.plugin.ProviderModel">
+            <field name="type">
+              <string>ActivityPostSpaceProvider</string>
+            </field>
+            <field name="order">
+              <string>7</string>
+            </field>
+          </object>
+        </object-param>
+
+
+        <object-param>
+          <name>NewUserJoinSocialIntranet</name>
+          <description>The new user join social intranet provider</description> 
+          <object type="org.exoplatform.commons.api.notification.plugin.ProviderModel">
+            <field name="type">
+              <string>NewUserJoinSocialIntranet</string>
+            </field>
+            <field name="order">
+              <string>1</string>
+            </field>
+          </object>
+        </object-param>
+
+        <object-param>
+          <name>ReceiceConnectionRequest</name>
+          <description>The receice connection request provider</description>
+          <object type="org.exoplatform.commons.api.notification.plugin.ProviderModel">
+            <field name="type">
+              <string>ReceiceConnectionRequest</string>
+            </field>
+            <field name="order">
+              <string>2</string>
+            </field>
+          </object>
+        </object-param>
+
+        <object-param>
+          <name>InvitedJoinSpace</name>
+          <description>The invited join space provider</description>
+          <object type="org.exoplatform.commons.api.notification.plugin.ProviderModel">
+            <field name="type">
+              <string>InvitedJoinSpace</string>
+            </field>
+            <field name="order">
+              <string>3</string>
+            </field>
+          </object>
+        </object-param>
+
+        <object-param>
+          <name>RequestJoinSpace</name>
+          <description>The request join space provider</description>
+          <object type="org.exoplatform.commons.api.notification.plugin.ProviderModel">
+            <field name="type">
+              <string>RequestJoinSpace</string>
+            </field>
+            <field name="order">
+              <string>4</string>
+            </field>
+          </object> 
+        </object-param>
+        
+        <!-- End individual provider -->
+           
+        
+      </init-params>
+    </component-plugin>
+  </external-component-plugins>
+
+</configuration>

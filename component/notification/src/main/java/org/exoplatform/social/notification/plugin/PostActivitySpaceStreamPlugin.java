@@ -25,6 +25,7 @@ import org.exoplatform.commons.api.notification.NotificationContext;
 import org.exoplatform.commons.api.notification.NotificationMessage;
 import org.exoplatform.commons.api.notification.TemplateContext;
 import org.exoplatform.commons.api.notification.plugin.AbstractNotificationPlugin;
+import org.exoplatform.container.xml.InitParams;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
@@ -34,6 +35,11 @@ import org.exoplatform.social.notification.SocialMessageBuilder;
 import org.exoplatform.social.notification.Utils;
 
 public class PostActivitySpaceStreamPlugin extends AbstractNotificationPlugin {
+  
+  public PostActivitySpaceStreamPlugin(InitParams initParams) {
+    super(initParams);
+  }
+
   public static final String ID = "ActivityPostSpaceProvider";
   
   @Override
