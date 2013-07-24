@@ -247,13 +247,11 @@ var UIActivity = {
 	  );
 	},
 	
-	loadLikersByURL : function(activityId) {
+	loadLikersByURL : function() {
     $(document).ready( function() {
       var contentBoxEl = $('#'+UIActivity.contentBoxId);
       var listLiked = $(contentBoxEl).find('.listLiked');
-        if(activityId.length > 0) {
-          listLiked.trigger('click');
-        }
+      listLiked.find('.btn').trigger('click');
       }
     );
   },

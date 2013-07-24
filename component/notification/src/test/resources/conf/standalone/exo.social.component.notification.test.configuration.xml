@@ -29,7 +29,7 @@
 
   <component>
     <key>org.exoplatform.commons.api.notification.service.storage.NotificationService</key>
-    <type>org.exoplatform.commons.notification.impl.storage.NotificationServiceImpl</type>
+    <type>org.exoplatform.commons.notification.impl.service.NotificationServiceImpl</type>
   </component>
   
   <component>
@@ -38,13 +38,8 @@
   </component>
 
   <component>
-    <key>org.exoplatform.commons.api.notification.service.setting.UserNotificationService</key>
-    <type>org.exoplatform.commons.notification.impl.setting.UserNotificationServiceImpl</type>
-  </component>
-
-  <component>
-    <key>org.exoplatform.commons.api.notification.service.NotificationProviderService</key>
-    <type>org.exoplatform.commons.notification.impl.DigestorProviderImpl</type>
+    <key>org.exoplatform.commons.api.notification.service.setting.UserSettingService</key>
+    <type>org.exoplatform.commons.notification.impl.setting.UserSettingServiceImpl</type>
   </component>
 
   <component>

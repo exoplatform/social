@@ -18,7 +18,9 @@ package org.exoplatform.social.notification.plugin;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.exoplatform.commons.api.notification.NotificationContext;
 import org.exoplatform.commons.api.notification.TemplateContext;
@@ -74,6 +76,10 @@ public class ActivityMentionPlugin extends AbstractNotificationPlugin {
     templateContext.put("USER", identity.getProfile().getFullName());
     String subject = Utils.getTemplateGenerator().processSubject(templateContext);
     
+    // In case of mention on a comment, we need provide the information of the activity, not the comment
+    if (activity.isComment()) {
+      activity = Utils.getActivityManager().getParentActivity(activity);
+    }
     templateContext.put("PROFILE_URL", LinkProviderUtils.getRedirectUrl("user", identity.getRemoteId()));
     templateContext.put("ACTIVITY", activity.getTitle());
     templateContext.put("REPLY_ACTION_URL", LinkProviderUtils.getRedirectUrl("reply_activity", activity.getId()));
@@ -89,20 +95,22 @@ public class ActivityMentionPlugin extends AbstractNotificationPlugin {
     NotificationMessage first = notifications.get(0);
 
     String language = getLanguage(first);
+    
+    Map<String, List<String>> map = new LinkedHashMap<String, List<String>>();
     try {
       TemplateContext templateContext = new TemplateContext(first.getKey().getId(), language);
       for (NotificationMessage notification : notifications) {
         String activityId = notification.getValueOwnerParameter(SocialNotificationUtils.ACTIVITY_ID.getKey());
         ExoSocialActivity activity = Utils.getActivityManager().getActivity(activityId);
         Identity identity = Utils.getIdentityManager().getIdentity(activity.getPosterId(), true);
+        
+        if (activity.isComment()) {
+          activity = Utils.getActivityManager().getParentActivity(activity);
+        }
 
-        templateContext.put("USER", SocialNotificationUtils.buildRedirecUrl("user", identity.getRemoteId(), identity.getProfile().getFullName()));
-        templateContext.put("ACTIVITY", SocialNotificationUtils.buildRedirecUrl("view_full_activity", activity.getId(), activity.getTitle()));
-        String digester = Utils.getTemplateGenerator().processDigest(templateContext.digestType(0).end());
-
-        writer.append(digester).append("</br>");
+        SocialNotificationUtils.processInforSendTo(map, activity.getId(), identity.getRemoteId());
       }
-
+      writer.append(SocialNotificationUtils.getMessageByIds(map, templateContext));
     } catch (IOException e) {
       ctx.setException(e);
       return false;

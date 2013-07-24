@@ -40,12 +40,13 @@
 
   uicomponent.refresh();
   String uiTabClazz = (Utils.isHomePage() == true) ? "uiTabPaneHomePage" : "";
-  String displayType = uicomponent.getDisplayTypeActivity();
-  String loadLikersActivityId = (displayType.equals("likers")) ? uicomponent.activityId : "";
-  String replyActivityId = (displayType.equals("reply")) ? uicomponent.activityId : "";
   
-  jsManager.require("SHARED/social-ui-activity", "activity").addScripts("activity.replyByURL('$replyActivityId');");
-  jsManager.require("SHARED/social-ui-activity", "activity").addScripts("activity.loadLikersByURL('$loadLikersActivityId');");
+  String displayType = uicomponent.getDisplayTypeActivity();
+  if ("reply".equals(displayType)) {
+    jsManager.require("SHARED/social-ui-activity", "activity").addScripts("activity.replyByURL('$uicomponent.activityId');");
+  } else if ("likers".equals(displayType)) {
+    jsManager.require("SHARED/social-ui-activity", "activity").addScripts("activity.loadLikersByURL();");
+  }
 %>
 <div class="uiUserActivityStreamPortlet" id="$uicomponent.id">
   <div class="uiTabPane $uiTabClazz">

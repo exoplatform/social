@@ -28,6 +28,7 @@ import org.exoplatform.commons.api.notification.plugin.AbstractNotificationPlugi
 import org.exoplatform.container.xml.InitParams;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.identity.model.Identity;
+import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.notification.LinkProviderUtils;
 import org.exoplatform.social.notification.Utils;
 
@@ -94,24 +95,39 @@ public class PostActivityPlugin extends AbstractNotificationPlugin {
   public boolean makeDigest(NotificationContext ctx, Writer writer) {
     List<NotificationMessage> notifications = ctx.getNotificationMessages();
     NotificationMessage first = notifications.get(0);
+    String sendToUser = first.getTo();
 
     String language = getLanguage(first);
     
+    TemplateContext templateContext = new TemplateContext(first.getKey().getId(), language);
+    int count = notifications.size();
+    String[] keys = {"USER", "USER_LIST", "LAST3_USERS"};
+    String key = "";
+    StringBuilder value = new StringBuilder();
     
     try {
-      TemplateContext templateContext = new TemplateContext(first.getKey().getId(), language);
-      for (NotificationMessage message : notifications) {
-        String activityId = message.getValueOwnerParameter(SocialNotificationUtils.ACTIVITY_ID.getKey());
-        ExoSocialActivity activity = Utils.getActivityManager().getActivity(activityId);
-        Identity identity = Utils.getIdentityManager().getIdentity(activity.getPosterId(), true);
-        
-        templateContext.put("USER", SocialNotificationUtils.buildRedirecUrl("user", identity.getRemoteId(), identity.getProfile().getFullName()));
-        templateContext.put("ACTIVITY", SocialNotificationUtils.buildRedirecUrl("view_full_activity", activity.getId(), activity.getTitle()));
-        String digester = Utils.getTemplateGenerator().processDigest(templateContext.digestType(0));
-        writer.append(digester).append("</br>");
-  
-        templateContext.clear();
+      for (int i = 0; i < count && i < 3; i++) {
+        String remoteId = notifications.get(i).getValueOwnerParameter(SocialNotificationUtils.POSTER.getKey());
+        Identity identity = Utils.getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, remoteId, true);
+        //
+        if (i > 1 && count == 3) {
+          key = keys[i - 1];
+        } else {
+          key = keys[i];
+        }
+        value.append(SocialNotificationUtils.buildRedirecUrl("user", identity.getRemoteId(), identity.getProfile().getFullName()));
+        if (count > (i + 1) && i < 2) {
+          value.append(", ");
+        }
       }
+      templateContext.put(key, value.toString());
+      if(count > 3) {
+        templateContext.put("COUNT", SocialNotificationUtils.buildRedirecUrl("user_activity_stream", sendToUser, String.valueOf((count - 3))));
+      }
+      templateContext.put("USER_ACTIVITY_STREAM", LinkProviderUtils.getRedirectUrl("user_activity_stream", sendToUser));
+      String digester = Utils.getTemplateGenerator().processDigest(templateContext.digestType(count));
+      writer.append(digester).append("</br>");
+      
     } catch (IOException e) {
       ctx.setException(e);
       return false;

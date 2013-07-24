@@ -268,6 +268,12 @@ public class SocialNotificationTestCase extends AbstractCoreTest {
     assertEquals(johnIdentity.getRemoteId(), users.get(1));
     assertEquals(maryIdentity.getRemoteId(), users.get(2));
     
+    ctx = NotificationContextImpl.DEFAULT;
+    ctx.setNotificationMessage(message2.setTo("mary"));
+    MessageInfo info1 = mentionPlugin.buildMessage(ctx);
+    assertEquals("You were mentioned by " + demoIdentity.getProfile().getFullName(), info1.getSubject());
+    assertEquals(demoIdentity.getProfile().getFullName() + " has mentioned you in an activity : activity title <a href=\"/portal/classic/profile/demo\">Demo gtn</a>", info1.getBody());
+    
   }
   
   public void testSaveComment() throws Exception {
@@ -499,8 +505,7 @@ public class SocialNotificationTestCase extends AbstractCoreTest {
       Writer writer = new StringWriter();
       postActivityPlugin.buildDigest(ctx, writer);
 
-      assertEquals("<a href=\"localhost/rest/social/notifications/redirectUrl/user/demo\">Demo gtn</a> posted on your activity stream : <a href=\"localhost/rest/social/notifications/redirectUrl/view_full_activity/" + activity1.getId() +"\">activity1 title 1</a>.</br>" + 
-                   "<a href=\"localhost/rest/social/notifications/redirectUrl/user/mary\">Mary Kelly</a> posted on your activity stream : <a href=\"localhost/rest/social/notifications/redirectUrl/view_full_activity/" + activity2.getId() +"\">activity2 title 2</a>.</br>", writer.toString());
+      assertEquals("<a href=\"localhost/rest/social/notifications/redirectUrl/user/demo\">Demo gtn</a>, <a href=\"localhost/rest/social/notifications/redirectUrl/user/mary\">Mary Kelly</a> posted on <a href=\"localhost/rest/social/notifications/redirectUrl/user_activity_stream/root\">your activity stream</a>.</br>", writer.toString());
     }
     
     {
@@ -602,6 +607,34 @@ public class SocialNotificationTestCase extends AbstractCoreTest {
       String result = "<a href=\"localhost/rest/social/notifications/redirectUrl/user/root\">Root Root</a> has mentioned you in an activity : <a href=\"localhost/rest/social/notifications/redirectUrl/view_full_activity/"+act.getId()+"\">hello <a href=\"/portal/classic/profile/demo\">Demo gtn</a></a></br><a href=\"localhost/rest/social/notifications/redirectUrl/user/root\">Root Root</a> has mentioned you in an activity : <a href=\"localhost/rest/social/notifications/redirectUrl/view_full_activity/"+act1.getId()+"\">hello <a href=\"/portal/classic/profile/demo\">Demo gtn</a></a></br>";
       assertEquals(result, writer.toString());
       
+      //mary and john post a comment for act and mention demo
+      ExoSocialActivity maryComment = new ExoSocialActivityImpl();
+      act = activityManager.getActivity(act.getId());
+      maryComment.setTitle("hello @demo");
+      maryComment.setUserId(maryIdentity.getId());
+      activityManager.saveComment(act, maryComment);
+      
+      ExoSocialActivity johnComment = new ExoSocialActivityImpl();
+      act = activityManager.getActivity(act.getId());
+      johnComment.setTitle("hello @demo");
+      johnComment.setUserId(johnIdentity.getId());
+      activityManager.saveComment(act, johnComment);
+      
+      // 4 messages are created : 2 to root for comments on his activity, 2 to demo for mention him
+      messages = ((MockNotificationDataStorage)Utils.getSocialEmailStorage()).emails();
+      assertEquals(4, messages.size());
+      
+      list = new ArrayList<NotificationMessage>();
+      for (NotificationMessage message : messages) {
+        if (message.getKey().getId().equals("ActivityMentionProvider"))
+          list.add(message.setTo(demoIdentity.getRemoteId()));
+      }
+      ctx = NotificationContextImpl.DEFAULT;
+      ctx.setNotificationMessages(list);
+      writer = new StringWriter();
+      mentionPlugin.buildDigest(ctx, writer);
+      result = "<a href=\"localhost/rest/social/notifications/redirectUrl/user/john\">John Anthony</a>, <a href=\"localhost/rest/social/notifications/redirectUrl/user/mary\">Mary Kelly</a> have mentioned you in an activity : <a href=\"localhost/rest/social/notifications/redirectUrl/view_full_activity/"+act.getId()+"\">hello <a href=\"/portal/classic/profile/demo\">Demo gtn</a></a></br>";
+      assertEquals(result, writer.toString());
     }
     
     {
@@ -628,6 +661,71 @@ public class SocialNotificationTestCase extends AbstractCoreTest {
       identityManager.deleteIdentity(paulIdentity);
       identityManager.deleteIdentity(raulIdentity);
       identityManager.deleteIdentity(jameIdentity);
+    }
+    
+    {
+      //ActivityLikeProvider
+      ExoSocialActivity activity = new ExoSocialActivityImpl();
+      activity.setTitle("activity title");
+      activityManager.saveActivity(rootIdentity, activity);
+      tearDownActivityList.add(activity);
+      
+      activityManager.saveLike(activity, maryIdentity);
+      activityManager.saveLike(activity, johnIdentity);
+      activityManager.saveLike(activity, demoIdentity);
+      
+      Collection<NotificationMessage> messages = ((MockNotificationDataStorage)Utils.getSocialEmailStorage()).emails();
+      assertEquals(3, messages.size());
+      List<NotificationMessage> list = new ArrayList<NotificationMessage>();
+      for (NotificationMessage message : messages) {
+        list.add(message.setTo(rootIdentity.getRemoteId()));
+      }
+      NotificationContext ctx = NotificationContextImpl.DEFAULT;
+      ctx.setNotificationMessages(list);
+      Writer writer = new StringWriter();
+      likePlugin.buildDigest(ctx, writer);
+      assertEquals("<a href=\"localhost/rest/social/notifications/redirectUrl/user/demo\">Demo gtn</a>, <a href=\"localhost/rest/social/notifications/redirectUrl/user/john\">John Anthony</a>, <a href=\"localhost/rest/social/notifications/redirectUrl/user/mary\">Mary Kelly</a> like your activity : <a href=\"localhost/rest/social/notifications/redirectUrl/view_likers_activity/"+activity.getId()+"\">activity title</a>.</br>", writer.toString());
+    }
+    
+    {
+      //ActivityPostSpaceProvider
+      Space space1 = getSpaceInstance(1);
+      Space space2 = getSpaceInstance(2);
+      Identity spaceIdentity1 = identityManager.getOrCreateIdentity(SpaceIdentityProvider.NAME, space1.getPrettyName(), false);
+      Identity spaceIdentity2 = identityManager.getOrCreateIdentity(SpaceIdentityProvider.NAME, space2.getPrettyName(), false);
+      
+      // demo post an activity on space1
+      ExoSocialActivity demoActivity = new ExoSocialActivityImpl();
+      demoActivity.setTitle("demo activity title");
+      demoActivity.setUserId(demoIdentity.getId());
+      activityManager.saveActivity(spaceIdentity1, demoActivity);
+      tearDownActivityList.add(demoActivity);
+      
+      // john and mary post an activity on space2
+      ExoSocialActivity maryActivity = new ExoSocialActivityImpl();
+      maryActivity.setTitle("mary activity title");
+      maryActivity.setUserId(maryIdentity.getId());
+      activityManager.saveActivity(spaceIdentity2, maryActivity);
+      tearDownActivityList.add(maryActivity);
+      
+      ExoSocialActivity johnActivity = new ExoSocialActivityImpl();
+      johnActivity.setTitle("john activity title");
+      johnActivity.setUserId(johnIdentity.getId());
+      activityManager.saveActivity(spaceIdentity2, johnActivity);
+      tearDownActivityList.add(johnActivity);
+      
+      Collection<NotificationMessage> messages = ((MockNotificationDataStorage)Utils.getSocialEmailStorage()).emails();
+      assertEquals(3, messages.size());
+      
+      List<NotificationMessage> list = new ArrayList<NotificationMessage>();
+      for (NotificationMessage message : messages) {
+        list.add(message.setTo(rootIdentity.getRemoteId()));
+      }
+      NotificationContext ctx = NotificationContextImpl.DEFAULT;
+      ctx.setNotificationMessages(list);
+      Writer writer = new StringWriter();
+      postSpaceActivityPlugin.buildDigest(ctx, writer);
+      assertEquals("<a href=\"localhost/rest/social/notifications/redirectUrl/user/demo\">Demo gtn</a> posted in <a href=\"localhost/rest/social/notifications/redirectUrl/space/"+space1.getId()+"\">my space 1</a>.</br><a href=\"localhost/rest/social/notifications/redirectUrl/user/john\">John Anthony</a>, <a href=\"localhost/rest/social/notifications/redirectUrl/user/mary\">Mary Kelly</a> posted in <a href=\"localhost/rest/social/notifications/redirectUrl/space/"+space2.getId()+"\">my space 2</a>.</br>", writer.toString());
     }
   }
   

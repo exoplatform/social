@@ -65,7 +65,7 @@ public class NotificationsRestService implements ResourceContainer {
   
   public enum URL_TYPE {
     user, space, space_members, reply_activity, view_full_activity, view_likers_activity, portal_home,
-    all_space, connections, notification_settings, connections_request, space_invitation;
+    all_space, connections, notification_settings, connections_request, space_invitation, user_activity_stream;
   }
   
   public NotificationsRestService() {
@@ -302,6 +302,11 @@ public class NotificationsRestService implements ResourceContainer {
         case user: {
           userIdentity = getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, objectId, true);
           targetURL = Util.getBaseUrl() + LinkProvider.getUserProfileUri(userIdentity.getRemoteId());
+          break;
+        }
+        case user_activity_stream: {
+          userIdentity = getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, objectId, true);
+          targetURL = Util.getBaseUrl() + LinkProvider.getUserActivityUri(userIdentity.getRemoteId());
           break;
         }
         case space: {
