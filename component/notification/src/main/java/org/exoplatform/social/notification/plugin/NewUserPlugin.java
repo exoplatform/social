@@ -19,22 +19,18 @@ package org.exoplatform.social.notification.plugin;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
-import org.exoplatform.commons.api.notification.MessageInfo;
 import org.exoplatform.commons.api.notification.NotificationContext;
-import org.exoplatform.commons.api.notification.NotificationMessage;
 import org.exoplatform.commons.api.notification.TemplateContext;
+import org.exoplatform.commons.api.notification.model.MessageInfo;
+import org.exoplatform.commons.api.notification.model.NotificationMessage;
 import org.exoplatform.commons.api.notification.plugin.AbstractNotificationPlugin;
-import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.container.xml.InitParams;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
-import org.exoplatform.social.core.profile.ProfileFilter;
 import org.exoplatform.social.notification.LinkProviderUtils;
-import org.exoplatform.social.notification.SocialMessageBuilder;
 import org.exoplatform.social.notification.Utils;
 
 public class NewUserPlugin extends AbstractNotificationPlugin {
@@ -51,7 +47,7 @@ public class NewUserPlugin extends AbstractNotificationPlugin {
 
   @Override
   public NotificationMessage makeNotification(NotificationContext ctx) {
-    Profile profile = ctx.value(SocialMessageBuilder.PROFILE);
+    Profile profile = ctx.value(SocialNotificationUtils.PROFILE);
     
     try {
       List<String> allUsers = new ArrayList<String>();

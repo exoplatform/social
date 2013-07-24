@@ -21,10 +21,10 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 import org.exoplatform.commons.api.notification.GroupProvider;
-import org.exoplatform.commons.api.notification.UserNotificationSetting;
-import org.exoplatform.commons.api.notification.UserNotificationSetting.FREQUENCY;
+import org.exoplatform.commons.api.notification.model.UserSetting;
+import org.exoplatform.commons.api.notification.model.UserSetting.FREQUENCY;
 import org.exoplatform.commons.api.notification.service.setting.ProviderSettingService;
-import org.exoplatform.commons.api.notification.service.setting.UserNotificationService;
+import org.exoplatform.commons.api.notification.service.setting.UserSettingService;
 import org.exoplatform.commons.utils.CommonsUtils;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
@@ -69,14 +69,14 @@ public class UINotificationSettingForm extends UIForm {
 
   private List<String>             activeProviders        = new ArrayList<String>();
   
-  private UserNotificationService notificationService;
+  private UserSettingService notificationService;
   
   private ProviderSettingService settingService;
 
   private boolean isRenderConfirm = false;
 
   public UINotificationSettingForm() throws Exception {
-    notificationService = CommonsUtils.getService(UserNotificationService.class);
+    notificationService = CommonsUtils.getService(UserSettingService.class);
     settingService = CommonsUtils.getService(ProviderSettingService.class);
     setActions(new String[] { "Save", "Reset" });
   }
@@ -97,11 +97,11 @@ public class UINotificationSettingForm extends UIForm {
     return new ArrayList<String>(activeProviders);
   }
   
-  private boolean isInInstantly(UserNotificationSetting setting, String providerId) {
+  private boolean isInInstantly(UserSetting setting, String providerId) {
     return (setting.isInInstantly(providerId)) ? true : false;
   }
 
-  private String getDigestValue(UserNotificationSetting setting, String providerId) {
+  private String getDigestValue(UserSetting setting, String providerId) {
     if (setting.isInWeekly(providerId)) {
       return WEEKLY;
     } else if (setting.isInDaily(providerId)) {
@@ -133,7 +133,7 @@ public class UINotificationSettingForm extends UIForm {
   }
 
   public void initSettingForm() {
-    UserNotificationSetting setting = notificationService.getUserNotificationSetting(Utils.getOwnerRemoteId());
+    UserSetting setting = notificationService.get(Utils.getOwnerRemoteId());
     activeProviders = settingService.getActiveProviderIds();
     for (String providerId : activeProviders) {
       addUIFormInput(new UICheckBoxInput(providerId, providerId, isInInstantly(setting, providerId)));
@@ -146,7 +146,7 @@ public class UINotificationSettingForm extends UIForm {
     addUIFormInput(boxInput);
   }
 
-  private void resetSettingForm(UserNotificationSetting setting) {
+  private void resetSettingForm(UserSetting setting) {
     for (String providerId : activeProviders) {
         getUICheckBoxInput(providerId).setChecked(isInInstantly(setting, providerId));
         getUIFormSelectBox(makeSelectBoxId(providerId)).setValue(getDigestValue(setting, providerId));
@@ -159,7 +159,7 @@ public class UINotificationSettingForm extends UIForm {
   public static class SaveActionListener extends EventListener<UINotificationSettingForm> {
     public void execute(Event<UINotificationSettingForm> event) throws Exception {
       UINotificationSettingForm uiForm = event.getSource();
-      UserNotificationSetting notificationSetting = new UserNotificationSetting();
+      UserSetting notificationSetting = new UserSetting();
       for (String providerId : uiForm.activeProviders) {
         if(uiForm.getUICheckBoxInput(providerId).isChecked() == true) {
           notificationSetting.addProvider(providerId, FREQUENCY.INSTANTLY);
@@ -175,7 +175,7 @@ public class UINotificationSettingForm extends UIForm {
       }
       notificationSetting.setActive(uiForm.getUICheckBoxInput(CHECK_BOX_DEACTIVATE).isChecked() == false);
       //
-      uiForm.notificationService.saveUserNotificationSetting(notificationSetting.setUserId(Utils.getOwnerRemoteId()));
+      uiForm.notificationService.save(notificationSetting.setUserId(Utils.getOwnerRemoteId()));
       uiForm.resetSettingForm(notificationSetting);
       //
       WebuiRequestContext context = event.getRequestContext();
@@ -224,9 +224,9 @@ public class UINotificationSettingForm extends UIForm {
   public static class ClickActionListener extends EventListener<UINotificationSettingForm> {
     public void execute(Event<UINotificationSettingForm> event) throws Exception {
       UINotificationSettingForm notifications = event.getSource();
-      UserNotificationSetting notificationSetting = UserNotificationSetting.getDefaultInstance();
+      UserSetting notificationSetting = UserSetting.getDefaultInstance();
       notifications.resetSettingForm(notificationSetting);
-      notifications.notificationService.saveUserNotificationSetting(notificationSetting.setUserId(Utils.getOwnerRemoteId()));
+      notifications.notificationService.save(notificationSetting.setUserId(Utils.getOwnerRemoteId()));
       event.getRequestContext().addUIComponentToUpdateByAjax(notifications);
     }
   }

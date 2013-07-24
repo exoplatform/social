@@ -22,16 +22,15 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.exoplatform.commons.api.notification.MessageInfo;
 import org.exoplatform.commons.api.notification.NotificationContext;
-import org.exoplatform.commons.api.notification.NotificationMessage;
 import org.exoplatform.commons.api.notification.TemplateContext;
+import org.exoplatform.commons.api.notification.model.MessageInfo;
+import org.exoplatform.commons.api.notification.model.NotificationMessage;
 import org.exoplatform.commons.api.notification.plugin.AbstractNotificationPlugin;
 import org.exoplatform.container.xml.InitParams;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.notification.LinkProviderUtils;
-import org.exoplatform.social.notification.SocialMessageBuilder;
 import org.exoplatform.social.notification.Utils;
 
 public class LikePlugin extends AbstractNotificationPlugin {
@@ -49,7 +48,7 @@ public class LikePlugin extends AbstractNotificationPlugin {
 
   @Override
   public NotificationMessage makeNotification(NotificationContext ctx) {
-    ExoSocialActivity activity = ctx.value(SocialMessageBuilder.ACTIVITY);
+    ExoSocialActivity activity = ctx.value(SocialNotificationUtils.ACTIVITY);
     
     String[] likersId = activity.getLikeIdentityIds();
     

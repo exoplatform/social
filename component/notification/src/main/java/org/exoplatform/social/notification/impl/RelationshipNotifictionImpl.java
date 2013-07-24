@@ -24,8 +24,8 @@ import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.relationship.RelationshipEvent;
 import org.exoplatform.social.core.relationship.RelationshipListenerPlugin;
 import org.exoplatform.social.core.relationship.model.Relationship;
-import org.exoplatform.social.notification.SocialMessageBuilder;
 import org.exoplatform.social.notification.plugin.RelationshipRecievedRequestPlugin;
+import org.exoplatform.social.notification.plugin.SocialNotificationUtils;
 
 public class RelationshipNotifictionImpl extends RelationshipListenerPlugin {
 
@@ -50,7 +50,7 @@ public class RelationshipNotifictionImpl extends RelationshipListenerPlugin {
   public void requested(RelationshipEvent event) {
     Relationship relationship = event.getPayload();
     try {
-      NotificationContext ctx = NotificationContextImpl.DEFAULT.append(SocialMessageBuilder.RELATIONSHIP, relationship);
+      NotificationContext ctx = NotificationContextImpl.DEFAULT.append(SocialNotificationUtils.RELATIONSHIP, relationship);
       ctx.getNotificationExecutor().with(ctx.makeCommand(NotificationKey.key(RelationshipRecievedRequestPlugin.ID)))
                                    .execute(ctx);
     } catch (Exception e) {

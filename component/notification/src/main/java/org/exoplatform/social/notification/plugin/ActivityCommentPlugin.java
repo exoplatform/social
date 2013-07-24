@@ -22,16 +22,15 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.exoplatform.commons.api.notification.MessageInfo;
 import org.exoplatform.commons.api.notification.NotificationContext;
-import org.exoplatform.commons.api.notification.NotificationMessage;
 import org.exoplatform.commons.api.notification.TemplateContext;
+import org.exoplatform.commons.api.notification.model.MessageInfo;
+import org.exoplatform.commons.api.notification.model.NotificationMessage;
 import org.exoplatform.commons.api.notification.plugin.AbstractNotificationPlugin;
 import org.exoplatform.container.xml.InitParams;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.notification.LinkProviderUtils;
-import org.exoplatform.social.notification.SocialMessageBuilder;
 import org.exoplatform.social.notification.Utils;
 
 public class ActivityCommentPlugin extends AbstractNotificationPlugin {
@@ -44,7 +43,7 @@ public class ActivityCommentPlugin extends AbstractNotificationPlugin {
 
   @Override
   public NotificationMessage makeNotification(NotificationContext ctx) {
-    ExoSocialActivity comment = ctx.value(SocialMessageBuilder.ACTIVITY);
+    ExoSocialActivity comment = ctx.value(SocialNotificationUtils.ACTIVITY);
     ExoSocialActivity activity = Utils.getActivityManager().getParentActivity(comment);
     List<String> sendToUsers = Utils.getDestinataires(activity.getCommentedIds(), comment.getPosterId());
     if (! sendToUsers.contains(activity.getStreamOwner()) && ! Utils.isSpaceActivity(activity) && ! activity.getPosterId().equals(comment.getPosterId())) {

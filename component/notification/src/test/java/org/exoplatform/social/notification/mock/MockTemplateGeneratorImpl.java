@@ -55,7 +55,6 @@ public class MockTemplateGeneratorImpl implements TemplateGenerator {
 
   @Override
   public String processTemplateInContainer(TemplateContext ctx) {
-    // TODO Auto-generated method stub
     return null;
   }
 

@@ -17,36 +17,36 @@
 package org.exoplatform.social.notification.mock;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Queue;
-import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.List;
+import java.util.Map;
 
-import org.exoplatform.commons.api.notification.NotificationMessage;
+import org.exoplatform.commons.api.notification.model.NotificationMessage;
+import org.exoplatform.commons.api.notification.model.UserSetting;
+import org.exoplatform.commons.api.notification.plugin.NotificationKey;
 import org.exoplatform.commons.api.notification.service.storage.NotificationDataStorage;
 
 public class MockNotificationDataStorage implements NotificationDataStorage {
-  Queue<NotificationMessage>       queue = new ConcurrentLinkedQueue<NotificationMessage>();
 
-  public MockNotificationDataStorage() {
-  }
+  private List<NotificationMessage> jcrMock = new ArrayList<NotificationMessage>();
   
-  public MockNotificationDataStorage add(NotificationMessage notificationMessage) {
-    queue.add(notificationMessage);
-    return this;
+  @Override
+  public void save(NotificationMessage notification) throws Exception {
+    this.jcrMock.add(notification);
   }
 
-  public MockNotificationDataStorage addAll(Collection<NotificationMessage> notificationMessages) {
-    queue.addAll(notificationMessages);
-    return this;
+  @Override
+  public Map<NotificationKey, List<NotificationMessage>> getByUser(UserSetting userSetting) {
+    return null;
   }
   
   public int size() {
-    return queue.size();
+    return this.jcrMock.size();
   }
   
-  public Collection<NotificationMessage> emails() {
-    Collection<NotificationMessage> messages = new ArrayList<NotificationMessage>(queue);
-    queue.clear();
-    return messages;
+  public List<NotificationMessage> emails() {
+    List<NotificationMessage> list = new ArrayList<NotificationMessage>(jcrMock);
+    jcrMock.clear();
+    return list;
   }
+ 
 }

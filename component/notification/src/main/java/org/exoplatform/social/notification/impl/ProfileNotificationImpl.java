@@ -24,8 +24,8 @@ import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.profile.ProfileLifeCycleEvent;
 import org.exoplatform.social.core.profile.ProfileListenerPlugin;
-import org.exoplatform.social.notification.SocialMessageBuilder;
 import org.exoplatform.social.notification.plugin.NewUserPlugin;
+import org.exoplatform.social.notification.plugin.SocialNotificationUtils;
 
 public class ProfileNotificationImpl extends ProfileListenerPlugin {
   
@@ -37,38 +37,30 @@ public class ProfileNotificationImpl extends ProfileListenerPlugin {
 
   @Override
   public void basicInfoUpdated(ProfileLifeCycleEvent event) {
-    // TODO Auto-generated method stub
 
   }
 
   @Override
   public void contactSectionUpdated(ProfileLifeCycleEvent event) {
-    // TODO Auto-generated method stub
 
   }
 
   @Override
   public void experienceSectionUpdated(ProfileLifeCycleEvent event) {
-    // TODO Auto-generated method stub
 
   }
 
   @Override
   public void headerSectionUpdated(ProfileLifeCycleEvent event) {
-    // TODO Auto-generated method stub
 
   }
 
   @Override
   public void createProfile(ProfileLifeCycleEvent event) {
-    try {
-      Profile profile = event.getProfile();
-      NotificationContext ctx = NotificationContextImpl.DEFAULT.append(SocialMessageBuilder.PROFILE, profile);
-      ctx.getNotificationExecutor().with(ctx.makeCommand(NotificationKey.key(NewUserPlugin.ID)))
-                                   .execute(ctx);
-    } catch (Exception e) {
-      LOG.warn("Failed to get invite to connect information of " + event + ": " + e.getMessage());
-    }
+    Profile profile = event.getProfile();
+    
+    NotificationContext ctx = NotificationContextImpl.DEFAULT.append(SocialNotificationUtils.PROFILE, profile);
+    ctx.getNotificationExecutor().with(ctx.makeCommand(NotificationKey.key(NewUserPlugin.ID))).execute(ctx);
   }
 
 }

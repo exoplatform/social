@@ -20,10 +20,10 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.List;
 
-import org.exoplatform.commons.api.notification.MessageInfo;
 import org.exoplatform.commons.api.notification.NotificationContext;
-import org.exoplatform.commons.api.notification.NotificationMessage;
 import org.exoplatform.commons.api.notification.TemplateContext;
+import org.exoplatform.commons.api.notification.model.MessageInfo;
+import org.exoplatform.commons.api.notification.model.NotificationMessage;
 import org.exoplatform.commons.api.notification.plugin.AbstractNotificationPlugin;
 import org.exoplatform.container.xml.InitParams;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
@@ -31,7 +31,6 @@ import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.notification.LinkProviderUtils;
-import org.exoplatform.social.notification.SocialMessageBuilder;
 import org.exoplatform.social.notification.Utils;
 
 public class PostActivitySpaceStreamPlugin extends AbstractNotificationPlugin {
@@ -50,7 +49,7 @@ public class PostActivitySpaceStreamPlugin extends AbstractNotificationPlugin {
   @Override
   public NotificationMessage makeNotification(NotificationContext ctx) {
     try {
-      ExoSocialActivity activity = ctx.value(SocialMessageBuilder.ACTIVITY);
+      ExoSocialActivity activity = ctx.value(SocialNotificationUtils.ACTIVITY);
       Space space = Utils.getSpaceService().getSpaceByPrettyName(activity.getStreamOwner());
       
       
