@@ -1389,4 +1389,5 @@ public class RelationshipManagerTest extends AbstractCoreTest {
      tearDownRelationshipList.add(johnMaryRelationship);
      tearDownRelationshipList.add(johnRootRelationship);
   }
+  
 }

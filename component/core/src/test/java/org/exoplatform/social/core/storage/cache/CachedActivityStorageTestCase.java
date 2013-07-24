@@ -21,6 +21,7 @@ import org.apache.commons.lang.ArrayUtils;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.activity.model.ExoSocialActivityImpl;
 import org.exoplatform.social.core.identity.model.Identity;
+import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.relationship.model.Relationship;
 import org.exoplatform.social.core.storage.impl.IdentityStorageImpl;
 import org.exoplatform.social.core.test.AbstractCoreTest;
@@ -64,9 +65,9 @@ public class CachedActivityStorageTestCase extends AbstractCoreTest {
     cacheService.getActivityCache().clearCache();
 
     //
-    identity = new Identity("p", "r");
+    identity = new Identity(OrganizationIdentityProvider.NAME, "mary");
     identityStorage.saveIdentity(identity);
-    identity2 = new Identity("p", "r2");
+    identity2 = new Identity(OrganizationIdentityProvider.NAME, "demo");
     identityStorage.saveIdentity(identity2);
 
     //
@@ -87,7 +88,7 @@ public class CachedActivityStorageTestCase extends AbstractCoreTest {
 
   }
 
-  @MaxQueryNumber(110)
+  @MaxQueryNumber(180)
   public void testSaveActivity() throws Exception {
 
     //
@@ -119,7 +120,7 @@ public class CachedActivityStorageTestCase extends AbstractCoreTest {
 
   }
 
-  @MaxQueryNumber(100)
+  @MaxQueryNumber(250)
   public void testRemoveActivity() throws Exception {
 
     //
@@ -149,7 +150,7 @@ public class CachedActivityStorageTestCase extends AbstractCoreTest {
 
   }
 
-  @MaxQueryNumber(210)
+  @MaxQueryNumber(294)
   public void testRelationshipActivity() throws Exception {
 
     //
@@ -181,7 +182,7 @@ public class CachedActivityStorageTestCase extends AbstractCoreTest {
 
   }
 
-  @MaxQueryNumber(90)
+  @MaxQueryNumber(260)
   public void testSaveComment() throws Exception {
 
     //
@@ -214,7 +215,7 @@ public class CachedActivityStorageTestCase extends AbstractCoreTest {
 
   }
 
-  @MaxQueryNumber(114)
+  @MaxQueryNumber(314)
   public void testRemoveComment() throws Exception {
     //
     ExoSocialActivity activity = new ExoSocialActivityImpl();
@@ -255,7 +256,7 @@ public class CachedActivityStorageTestCase extends AbstractCoreTest {
 
   }
   
-  @MaxQueryNumber(130)
+  @MaxQueryNumber(920)
   public void testUpdateActivity() throws Exception {
     ExoSocialActivity activity = new ExoSocialActivityImpl();
     activity.setTitle("hello");

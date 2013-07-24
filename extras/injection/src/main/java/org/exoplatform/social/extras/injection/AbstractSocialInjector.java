@@ -18,6 +18,7 @@ import org.exoplatform.social.core.space.spi.SpaceService;
 import org.exoplatform.social.core.storage.api.IdentityStorage;
 import org.exoplatform.social.core.storage.impl.AbstractStorage;
 import org.exoplatform.social.core.storage.query.WhereExpression;
+import org.exoplatform.social.core.updater.UserActivityStreamMigration;
 import org.exoplatform.social.extras.injection.utils.LoremIpsum4J;
 import org.exoplatform.social.extras.injection.utils.NameGenerator;
 
@@ -78,6 +79,9 @@ public abstract class AbstractSocialInjector extends DataInjector {
 
   /** . */
   protected final SpaceService spaceService;
+  
+  /** . */
+  protected final UserActivityStreamMigration streamMigration;
 
   /** . */
   protected final UserHandler userHandler;
@@ -102,6 +106,7 @@ public abstract class AbstractSocialInjector extends DataInjector {
     this.activityManager = (ActivityManager) container.getComponentInstanceOfType(ActivityManager.class);
     this.spaceService = (SpaceService) container.getComponentInstanceOfType(SpaceService.class);
     this.organizationService = (OrganizationService) container.getComponentInstanceOfType(OrganizationService.class);
+    this.streamMigration = (UserActivityStreamMigration) container.getComponentInstanceOfType(UserActivityStreamMigration.class);
 
     //
     this.userHandler = organizationService.getUserHandler();

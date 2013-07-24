@@ -19,9 +19,15 @@ package org.exoplatform.social.core.storage.impl;
 
 import java.util.Iterator;
 
+import javax.jcr.NodeIterator;
+import javax.jcr.query.Query;
+import javax.jcr.query.QueryManager;
+
 import org.chromattic.api.ChromatticSession;
+import org.chromattic.api.Status;
 import org.exoplatform.commons.chromattic.ChromatticManager;
 import org.exoplatform.container.PortalContainer;
+import org.exoplatform.services.jcr.impl.core.query.QueryImpl;
 import org.exoplatform.social.common.lifecycle.SocialChromatticLifeCycle;
 import org.exoplatform.social.core.chromattic.entity.ProviderRootEntity;
 import org.exoplatform.social.core.chromattic.entity.SpaceRootEntity;
@@ -115,7 +121,14 @@ public abstract class AbstractStorage {
   protected void _removeById(final Class<?> clazz, final String nodeId) {
     getSession().remove(getSession().findById(clazz, nodeId));
   }
-
+  
+  protected <T> Status getStatus(final Class<T> clazz, final Object entity) throws IllegalArgumentException {
+    if (clazz != entity.getClass()) {
+      throw new IllegalArgumentException("Entity argument is wrong.");
+    }
+    return getSession().getStatus(entity);
+  }
+  
   protected boolean isJcrProperty(String name) {
     return !name.startsWith(NS_JCR);
   }
@@ -153,6 +166,70 @@ public abstract class AbstractStorage {
       return false;
     }
   }
+  
+  /**
+   * Gets NodeIterator with Statement with offset and limit
+   * 
+   * @param statement
+   * @param offset
+   * @param limit
+   * @return
+   * @throws Exception
+   */
+  protected NodeIterator nodes(String statement) {
+    //
+    if (statement == null) return null;
+    
+    //
+    try {
+      QueryManager queryMgr = getSession().getJCRSession().getWorkspace().getQueryManager();
+      Query query = queryMgr.createQuery(statement, Query.SQL);
+      if (query instanceof QueryImpl) {
+        QueryImpl impl = (QueryImpl) query;
+        
+        return impl.execute().getNodes();
+      }
+      
+      //
+      return query.execute().getNodes();
+    } catch (Exception ex) {
+      return null;
+    }
+  }
+  
+  /**
+   * Gets NodeIterator with Statement with offset and limit
+   * 
+   * @param statement
+   * @param offset
+   * @param limit
+   * @return
+   * @throws Exception
+   */
+  protected NodeIterator nodes(String statement, long offset, long limit) {
+    //
+    if (statement == null) return null;
+    
+    //
+    try {
+      QueryManager queryMgr = getSession().getJCRSession().getWorkspace().getQueryManager();
+      Query query = queryMgr.createQuery(statement, Query.SQL);
+      if (query instanceof QueryImpl) {
+        QueryImpl impl = (QueryImpl) query;
+        
+        //
+        impl.setOffset(offset);
+        impl.setLimit(limit);
+        
+        return impl.execute().getNodes();
+      }
+      
+      //
+      return query.execute().getNodes();
+    } catch (Exception ex) {
+      return null;
+    }
+  }
 
   public static boolean startSynchronization() {
 
@@ -173,7 +250,7 @@ public abstract class AbstractStorage {
     }
   }
 
-  private static SocialChromatticLifeCycle lifecycleLookup() {
+  public static SocialChromatticLifeCycle lifecycleLookup() {
 
     PortalContainer container = PortalContainer.getInstance();
     ChromatticManager manager = (ChromatticManager) container.getComponentInstanceOfType(ChromatticManager.class);

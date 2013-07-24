@@ -78,7 +78,7 @@ public class CachedIdentityStorageTestCase extends AbstractCoreTest {
 
   }
 
-  @MaxQueryNumber(50)
+  @MaxQueryNumber(60)
   public void testFindIdentityById() throws Exception {
 
     assertEquals(0, cacheService.getIdentityCache().getCacheSize());
@@ -95,7 +95,7 @@ public class CachedIdentityStorageTestCase extends AbstractCoreTest {
 
   }
 
-  @MaxQueryNumber(50)
+  @MaxQueryNumber(60)
   public void testFindIdentity() throws Exception {
 
     assertEquals(0, cacheService.getIdentityCache().getCacheSize());
@@ -115,7 +115,7 @@ public class CachedIdentityStorageTestCase extends AbstractCoreTest {
 
   }
 
-  @MaxQueryNumber(200)
+  @MaxQueryNumber(248)
   public void testRemoveIdentity() throws Exception {
 
     assertEquals(0, cacheService.getIdentityCache().getCacheSize());
@@ -134,7 +134,7 @@ public class CachedIdentityStorageTestCase extends AbstractCoreTest {
 
   }
 
-  @MaxQueryNumber(50)
+  @MaxQueryNumber(60)
   public void testUpdateIdentity() throws Exception {
 
     assertEquals(0, cacheService.getIdentityCache().getCacheSize());
@@ -148,7 +148,7 @@ public class CachedIdentityStorageTestCase extends AbstractCoreTest {
 
   }
 
-  @MaxQueryNumber(50)
+  @MaxQueryNumber(60)
   public void testLoadProfile() throws Exception {
 
     assertEquals(0, cacheService.getIdentityCache().getCacheSize());
@@ -165,7 +165,7 @@ public class CachedIdentityStorageTestCase extends AbstractCoreTest {
 
   }
 
-  @MaxQueryNumber(50)
+  @MaxQueryNumber(60)
   public void testSaveProfile() throws Exception {
 
     assertEquals(0, cacheService.getIdentityCache().getCacheSize());
@@ -182,7 +182,7 @@ public class CachedIdentityStorageTestCase extends AbstractCoreTest {
 
   }
 
-  @MaxQueryNumber(50)
+  @MaxQueryNumber(60)
   public void testUpdateProfile() throws Exception {
 
     assertEquals(0, cacheService.getIdentityCache().getCacheSize());
@@ -199,7 +199,7 @@ public class CachedIdentityStorageTestCase extends AbstractCoreTest {
 
   }
 
-  @MaxQueryNumber(150)
+  @MaxQueryNumber(180)
   public void testGetIdentitiesByFilterCount() throws Exception {
 
     assertEquals(0, cacheService.getIdentityCache().getCacheSize());
@@ -248,7 +248,7 @@ public class CachedIdentityStorageTestCase extends AbstractCoreTest {
 
   }
 
-  @MaxQueryNumber(50)
+  @MaxQueryNumber(60)
   public void testGetIdentitiesByFirstCharacterOfNameCount() throws Exception {
 
     assertEquals(0, cacheService.getIdentityCache().getCacheSize());
@@ -263,7 +263,7 @@ public class CachedIdentityStorageTestCase extends AbstractCoreTest {
 
   }
 
-  @MaxQueryNumber(50)
+  @MaxQueryNumber(60)
   public void testGetIdentitiesByFirstCharacterOfName() throws Exception {
 
     assertEquals(0, cacheService.getIdentityCache().getCacheSize());

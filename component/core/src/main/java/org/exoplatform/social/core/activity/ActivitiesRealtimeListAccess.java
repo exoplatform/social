@@ -42,7 +42,8 @@ public class ActivitiesRealtimeListAccess implements RealtimeListAccess<ExoSocia
     CONNECTIONS_ACTIVITIES,
     USER_SPACE_ACTIVITIES,
     SPACE_ACTIVITIES,
-    POSTER_ACTIVITIES
+    POSTER_ACTIVITIES,
+    POSTER_AND_TYPES_ACTIVITIES
   }
 
   /**
@@ -65,7 +66,8 @@ public class ActivitiesRealtimeListAccess implements RealtimeListAccess<ExoSocia
    * The viewer identity.
    */
   private Identity viewerIdentity;
-
+  
+  private String[] activityTypes;
 
   /**
    * Constructor.
@@ -80,6 +82,24 @@ public class ActivitiesRealtimeListAccess implements RealtimeListAccess<ExoSocia
     this.activityStorage = existingActivityStorage;
     this.activityType = chosenActivityType;
     this.ownerIdentity = chosenOwnerIdentity;
+  }
+  
+  /**
+   * Constructor.
+   *
+   * @param existingActivityStorage
+   * @param chosenActivityType
+   * @param chosenOwnerIdentity
+   * @param activityTypes
+   */
+  public ActivitiesRealtimeListAccess(final ActivityStorage existingActivityStorage,
+                                      final ActivityType chosenActivityType,
+                                      final Identity chosenOwnerIdentity,
+                                      final String... activityTypes) {
+    this.activityStorage = existingActivityStorage;
+    this.activityType = chosenActivityType;
+    this.ownerIdentity = chosenOwnerIdentity;
+    this.activityTypes = activityTypes;
   }
   
   /**
@@ -125,6 +145,9 @@ public class ActivitiesRealtimeListAccess implements RealtimeListAccess<ExoSocia
       }
       case POSTER_ACTIVITIES: {
         return activityStorage.getActivitiesByPoster(ownerIdentity, index, limit);
+      } 
+      case POSTER_AND_TYPES_ACTIVITIES: {
+        return activityStorage.getActivitiesByPoster(ownerIdentity, index, limit, activityTypes);
       }
     }
     return Collections.emptyList();
@@ -159,6 +182,9 @@ public class ActivitiesRealtimeListAccess implements RealtimeListAccess<ExoSocia
       }
       case POSTER_ACTIVITIES: {
         return activityStorage.getNumberOfActivitiesByPoster(ownerIdentity);
+      }
+      case POSTER_AND_TYPES_ACTIVITIES: {
+        return 0;
       }
     }
     return 0;

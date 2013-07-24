@@ -596,7 +596,7 @@ public class RelationshipStorageTest extends AbstractCoreTest {
    * in case Identity had no connection yet
    * @throws Exception
    */
-  @MaxQueryNumber(650)
+  @MaxQueryNumber(710)
   public void testGetConnectionsByFilterEmpty() throws Exception {
     populateData();
     ProfileFilter pf = new ProfileFilter();
@@ -611,7 +611,7 @@ public class RelationshipStorageTest extends AbstractCoreTest {
    * @throws Exception
    * @since 1.2.3
    */
-  @MaxQueryNumber(750)
+  @MaxQueryNumber(850)
   public void testGetConnectionsByFilter() throws Exception {
     populateData();
     populateRelationshipData(Type.CONFIRMED);
@@ -632,7 +632,7 @@ public class RelationshipStorageTest extends AbstractCoreTest {
    * @throws Exception
    * @since 1.2.3
    */
-  @MaxQueryNumber(750)
+  @MaxQueryNumber(850)
   public void testGetIncomingByFilter() throws Exception {
     populateData();
     populateRelationshipIncommingData();
@@ -653,7 +653,7 @@ public class RelationshipStorageTest extends AbstractCoreTest {
    * @throws Exception
    * @since 1.2.3
    */
-  @MaxQueryNumber(750)
+  @MaxQueryNumber(850)
   public void testGetOutgoingByFilter() throws Exception {
     populateData();
     populateRelationshipData(Type.PENDING);
@@ -674,7 +674,7 @@ public class RelationshipStorageTest extends AbstractCoreTest {
    * @throws Exception
    * @since 1.2.3
    */
-  @MaxQueryNumber(750)
+  @MaxQueryNumber(850)
   public void testGetIncomingCountByFilter() throws Exception {
     populateData();
     populateRelationshipIncommingData();
@@ -695,7 +695,7 @@ public class RelationshipStorageTest extends AbstractCoreTest {
    * @throws Exception
    * @since 1.2.2
    */
-  @MaxQueryNumber(750)
+  @MaxQueryNumber(850)
   public void testGetConnectionsCountByFilter() throws Exception {
     populateData();
     populateRelationshipData(Type.CONFIRMED);
@@ -716,7 +716,7 @@ public class RelationshipStorageTest extends AbstractCoreTest {
    * @throws Exception
    * @since 1.2.3
    */
-  @MaxQueryNumber(750)
+  @MaxQueryNumber(850)
   public void testGetOutgoingCountByFilter() throws Exception {
     populateData();
     populateRelationshipData(Type.PENDING);
