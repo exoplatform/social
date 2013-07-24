@@ -73,4 +73,10 @@ public class MockProviderSettingService implements ProviderSettingService {
     
   }
 
+  @Override
+  public List<ProviderData> getActiveProviders() {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
 }

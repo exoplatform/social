@@ -26,8 +26,6 @@ import org.exoplatform.commons.api.notification.model.UserSetting.FREQUENCY;
 import org.exoplatform.commons.api.notification.service.setting.ProviderSettingService;
 import org.exoplatform.commons.api.notification.service.setting.UserSettingService;
 import org.exoplatform.commons.utils.CommonsUtils;
-import org.exoplatform.services.log.ExoLogger;
-import org.exoplatform.services.log.Log;
 import org.exoplatform.social.webui.Utils;
 import org.exoplatform.web.application.ApplicationMessage;
 import org.exoplatform.webui.application.WebuiRequestContext;
@@ -54,8 +52,6 @@ import org.exoplatform.webui.form.input.UICheckBoxInput;
   }
 )
 public class UINotificationSettingForm extends UIForm {
-
-  private static final Log         LOG                  = ExoLogger.getLogger(UINotificationSettingForm.class);
 
   private static final String      CHECK_BOX_DEACTIVATE     = "checkBoxDeactivate";
 

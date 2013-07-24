@@ -45,7 +45,10 @@
 		<%} else {
 		  	List providers = uiform.getActiveProviders();
 				for(def group : groupProviders) {
-				  
+				  List providerDatas = group.getProviderDatas();
+				  if(providerDatas == null || providerDatas.size() == 0) {
+				    continue;
+				  }
 		%>
 				<tr>
 					<td class="left">
@@ -55,15 +58,16 @@
 					<td></td>
 				</tr>
 				<%
-					for (def provider : group.getProviderDatas()) {
-					  if(providers.contains(provider.getType()) == false) {
+					for (def provider : providerDatas) {
+					  String providerId = provider.getType();
+					  if(providers.contains(providerId) == false) {
 					    continue;
 					  } 
-					  providers.remove(provider.getType());
+					  providers.remove(providerId);
 				%>
 				<tr>
 					<td class="left">
-						<label for="<%=provider.getType()%>" style="padding-left:20px"><%=_ctx.appRes(provider.getResourceBundleKey())%></label>
+						<label for="$providerId" style="padding-left:20px"><%=_ctx.appRes("Notification.title." + providerId)%></label>
 					</td>
 					<td class="center">
 						<% uiform.renderField(providerId); %>	
@@ -73,32 +77,7 @@
 					</td>
 				</tr>
 		 	 <% } %>
-		 <% } 
-		 		if(providers.size() > 0) {
-		 %>
-		 		<tr>
-					<td class="left">
-						<%=_ctx.appRes("UINotificationSettingForm.label.other")%>
-					</td>
-					<td></td>
-					<td></td>
-				</tr>
-				<%
-					for (String providerId : providers) {
-				%>
-				<tr>
-					<td class="left">
-						<label for="<%=providerId%>" style="padding-left:20px"><%=_ctx.appRes("UINotificationSettingForm.label." + providerId)%></label>
-					</td>
-					<td class="center">
-						<% uiform.renderField(providerId); %>	
-					</td>
-					<td class="center">
-						<% uiform.renderField(uiform.makeSelectBoxId(providerId)); %>	
-					</td>
-				</tr>
-		 	 <% } %>
-	 	 <% } %>
+		 <% } %>
 	 <% } %>
 			</tbody>
 		</table>
