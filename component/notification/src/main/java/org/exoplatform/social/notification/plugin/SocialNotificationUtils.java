@@ -158,4 +158,14 @@ public class SocialNotificationUtils {
     return "<a href=\""+ link + "\">" + name + "</a>";
   }
   
+  public static void addFooterAndFirstName(String remoteId, TemplateContext templateContext) {
+    try {
+      Identity receiver = Utils.getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, remoteId, true);
+      templateContext.put("FIRSTNAME", (String) receiver.getProfile().getProperty(Profile.FIRST_NAME));
+      templateContext.put("FOOTER_LINK", LinkProviderUtils.getRedirectUrl("settings", receiver.getRemoteId()));
+    } catch (Exception e) {
+      return;
+    }
+  }
+  
 }

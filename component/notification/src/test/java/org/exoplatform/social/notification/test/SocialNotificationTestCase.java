@@ -392,7 +392,7 @@ public class SocialNotificationTestCase extends AbstractCoreTest {
     spaceService.deleteSpace(space);
   }
   
-  public void TestLikeActivity() throws Exception {
+  public void testLikeActivity() throws Exception {
 
     //
     ExoSocialActivity activity = new ExoSocialActivityImpl();
@@ -400,7 +400,7 @@ public class SocialNotificationTestCase extends AbstractCoreTest {
     activity.setUserId(demoIdentity.getId());
     activityManager.saveActivity(rootIdentity, activity);
     tearDownActivityList.add(activity);
-  //TODO     assertEquals(1, ((MockNotificationDataStorage)Utils.getSocialEmailStorage()).size());
+    assertEquals(1, ((MockNotificationDataStorage)Utils.getSocialEmailStorage()).size());
     
     activityManager.saveLike(activity, maryIdentity);
     assertEquals(1, ((MockNotificationDataStorage)Utils.getSocialEmailStorage()).size());

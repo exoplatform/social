@@ -67,6 +67,7 @@ public class LikePlugin extends AbstractNotificationPlugin {
     
     String language = getLanguage(notification);
     TemplateContext templateContext = new TemplateContext(notification.getKey().getId(), language);
+    SocialNotificationUtils.addFooterAndFirstName(notification.getTo(), templateContext);
     
     String activityId = notification.getValueOwnerParameter(SocialNotificationUtils.ACTIVITY_ID.getKey());
     ExoSocialActivity activity = Utils.getActivityManager().getActivity(activityId);
@@ -91,11 +92,12 @@ public class LikePlugin extends AbstractNotificationPlugin {
     NotificationMessage first = notifications.get(0);
 
     String language = getLanguage(first);
+    TemplateContext templateContext = new TemplateContext(first.getKey().getId(), language);
+    SocialNotificationUtils.addFooterAndFirstName(first.getTo(), templateContext);
     
     Map<String, List<String>> map = new LinkedHashMap<String, List<String>>();
 
     try {
-      TemplateContext templateContext = new TemplateContext(first.getKey().getId(), language);
       for (NotificationMessage message : notifications) {
         String activityId = message.getValueOwnerParameter(SocialNotificationUtils.ACTIVITY_ID.getKey());
         //

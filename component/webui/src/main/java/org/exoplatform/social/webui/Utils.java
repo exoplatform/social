@@ -267,29 +267,31 @@ public class Utils {
    * @return
    */
   public static String getActivityID() {
-    Route route = getActivityRoute(); 
-    return route == null ? null : route.localArgs.get("activityID");
-    
+    if ("activity".equals(getSelectedNode())) {
+      return getValueFromRequestParam("id");
+    }
+    return null;
   }
   
   /**
-   * Get display's type of activity
-   * @return displayType
+   * Check the request param of url to verify if need focus to comment box
+   * @return true if need focus to comment box
    */
-  public static String getDisplayTypeActivity() {
-    Route route = getActivityRoute(); 
-    return route == null ? null : route.localArgs.get("displayType");
-    
+  public static boolean isFocusCommentBox() {
+    return ("1").equals(getValueFromRequestParam("comment"));
   }
   
   /**
-   * Get the route
-   * @return
+   * Check the request param of url to verify if need expand all likers
+   * @return true if need expand all likers
    */
-  private static Route getActivityRoute() {
-    getExoRouter();
-    String uriActivity = getSelectedNode();
-    return ExoRouter.route("/" + uriActivity);
+  public static boolean isExpandLikers() {
+    return ("1").equals(getValueFromRequestParam("likes"));
+  }
+  
+  public static String getValueFromRequestParam(String param) {
+    PortalRequestContext request = Util.getPortalRequestContext();
+    return request.getRequest().getParameter(param);
   }
   
   /**

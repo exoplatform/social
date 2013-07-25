@@ -61,8 +61,6 @@ public class NotificationsRestService implements ResourceContainer {
   
   private static String       ACTIVITY_ID_PREFIX = "activity";
 
-  private static String       SLASH              = "/";
-  
   public enum URL_TYPE {
     user, space, space_members, reply_activity, view_full_activity, view_likers_activity, portal_home,
     all_space, connections, notification_settings, connections_request, space_invitation, user_activity_stream;
@@ -284,19 +282,19 @@ public class NotificationsRestService implements ResourceContainer {
         case view_full_activity: {
           activity = getActivityManager().getActivity(objectId);
           userIdentity = getIdentityManager().getIdentity(activity.getPosterId(), true);
-          targetURL = Util.getBaseUrl() + LinkProvider.getRedirectUri(ACTIVITY_ID_PREFIX + SLASH + activity.getId() + SLASH + "comments");
+          targetURL = Util.getBaseUrl() + LinkProvider.getRedirectUri(ACTIVITY_ID_PREFIX + "?id=" + activity.getId());
           break;
         }
         case view_likers_activity: {
           activity = getActivityManager().getActivity(objectId);
           userIdentity = getIdentityManager().getIdentity(activity.getPosterId(), true);
-          targetURL = Util.getBaseUrl() + LinkProvider.getRedirectUri(ACTIVITY_ID_PREFIX + SLASH + activity.getId() + SLASH + "likers");
+          targetURL = Util.getBaseUrl() + LinkProvider.getRedirectUri(ACTIVITY_ID_PREFIX + "?id=" + activity.getId() + "&likes=1");
           break;
         }
         case reply_activity: {
           activity = getActivityManager().getActivity(objectId);
           userIdentity = getIdentityManager().getIdentity(activity.getPosterId(), true);
-          targetURL = Util.getBaseUrl() + LinkProvider.getRedirectUri(ACTIVITY_ID_PREFIX + SLASH + activity.getId() + SLASH + "reply");
+          targetURL = Util.getBaseUrl() + LinkProvider.getRedirectUri(ACTIVITY_ID_PREFIX + "?id=" + activity.getId() + "&comment=1");
           break;
         }
         case user: {

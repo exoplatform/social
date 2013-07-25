@@ -83,10 +83,6 @@ public class UIUserActivityStreamPortlet extends UIPortletApplication {
     return activityId;
   }
   
-  public String getDisplayTypeActivity() {
-    return Utils.getDisplayTypeActivity();
-  }
-
   /**
    * resets to reload all activities
    *

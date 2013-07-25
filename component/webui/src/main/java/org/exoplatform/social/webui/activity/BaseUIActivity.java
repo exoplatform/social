@@ -457,16 +457,11 @@ public class BaseUIActivity extends UIForm {
     UIActivitiesContainer uiActivitiesContainer = getAncestorOfType(UIActivitiesContainer.class);
     PostContext postContext = uiActivitiesContainer.getPostContext();
     if (postContext == PostContext.SINGLE) {
-      String type = Utils.getDisplayTypeActivity();
-      if ("comments".equals(type)) {
+      if (! Utils.isExpandLikers() && ! Utils.isFocusCommentBox()) {
         // expand all comments
         setCommentListStatus(CommentStatus.ALL);
-      } else if ("reply".equals(type)) {
-        // open the comment's box, ready for reply
-        setCommentFormDisplayed(true);
-      } else if ("likers".equals(type)) {
-        // expand the full list of likers
-        
+      } else {
+        setCommentListStatus(CommentStatus.LATEST);
       }
     }
   }
@@ -635,7 +630,7 @@ public class BaseUIActivity extends UIForm {
       if (uiActivity.isNoLongerExisting(activityId, event)) {
         return;
       }
-      uiActivity.refresh();
+      //uiActivity.refresh();
       uiActivity.setAllLoaded(true);
       event.getRequestContext().addUIComponentToUpdateByAjax(uiActivity);
       

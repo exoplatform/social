@@ -68,6 +68,7 @@ public class RelationshipRecievedRequestPlugin extends AbstractNotificationPlugi
 
     String sender = notification.getValueOwnerParameter("sender");
     String toUser = notification.getTo();
+    SocialNotificationUtils.addFooterAndFirstName(toUser, templateContext);
     Identity identity = Utils.getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, sender, true);
     Profile userProfile = identity.getProfile();
     
@@ -91,6 +92,7 @@ public class RelationshipRecievedRequestPlugin extends AbstractNotificationPlugi
 
     String language = getLanguage(first);
     TemplateContext templateContext = new TemplateContext(first.getKey().getId(), language);
+    SocialNotificationUtils.addFooterAndFirstName(first.getTo(), templateContext);
     
     int count = notifications.size();
     String[] keys = {"USER", "USER_LIST", "LAST3_USERS"};
