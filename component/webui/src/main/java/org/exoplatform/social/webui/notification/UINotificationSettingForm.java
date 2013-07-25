@@ -65,14 +65,14 @@ public class UINotificationSettingForm extends UIForm {
 
   private List<String>             activeProviders        = new ArrayList<String>();
   
-  private UserSettingService notificationService;
+  private UserSettingService     userSettingService;
   
   private ProviderSettingService settingService;
 
   private boolean isRenderConfirm = false;
 
   public UINotificationSettingForm() throws Exception {
-    notificationService = CommonsUtils.getService(UserSettingService.class);
+    userSettingService = CommonsUtils.getService(UserSettingService.class);
     settingService = CommonsUtils.getService(ProviderSettingService.class);
     setActions(new String[] { "Save", "Reset" });
   }
@@ -129,7 +129,7 @@ public class UINotificationSettingForm extends UIForm {
   }
 
   public void initSettingForm() {
-    UserSetting setting = notificationService.get(Utils.getOwnerRemoteId());
+    UserSetting setting = userSettingService.get(Utils.getOwnerRemoteId());
     activeProviders = settingService.getActiveProviderIds();
     for (String providerId : activeProviders) {
       addUIFormInput(new UICheckBoxInput(providerId, providerId, isInInstantly(setting, providerId)));
@@ -171,7 +171,7 @@ public class UINotificationSettingForm extends UIForm {
       }
       notificationSetting.setActive(uiForm.getUICheckBoxInput(CHECK_BOX_DEACTIVATE).isChecked() == false);
       //
-      uiForm.notificationService.save(notificationSetting.setUserId(Utils.getOwnerRemoteId()));
+      uiForm.userSettingService.save(notificationSetting.setUserId(Utils.getOwnerRemoteId()));
       uiForm.resetSettingForm(notificationSetting);
       //
       WebuiRequestContext context = event.getRequestContext();
@@ -222,7 +222,7 @@ public class UINotificationSettingForm extends UIForm {
       UINotificationSettingForm notifications = event.getSource();
       UserSetting notificationSetting = UserSetting.getDefaultInstance();
       notifications.resetSettingForm(notificationSetting);
-      notifications.notificationService.save(notificationSetting.setUserId(Utils.getOwnerRemoteId()));
+      notifications.userSettingService.save(notificationSetting.setUserId(Utils.getOwnerRemoteId()));
       event.getRequestContext().addUIComponentToUpdateByAjax(notifications);
     }
   }

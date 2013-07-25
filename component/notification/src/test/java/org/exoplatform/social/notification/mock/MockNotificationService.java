@@ -17,23 +17,22 @@
 package org.exoplatform.social.notification.mock;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.exoplatform.commons.api.notification.model.NotificationMessage;
 import org.exoplatform.commons.api.notification.model.UserSetting;
 import org.exoplatform.commons.api.notification.plugin.NotificationKey;
-import org.exoplatform.commons.api.notification.service.storage.NotificationDataStorage;
+import org.exoplatform.commons.api.notification.service.AbstractNotificationServiceListener;
+import org.exoplatform.commons.api.notification.service.storage.NotificationService;
 
-public class MockNotificationDataStorage implements NotificationDataStorage {
+public class MockNotificationService implements NotificationService {
 
-  private List<NotificationMessage> jcrMock = new ArrayList<NotificationMessage>();
+  private Queue<NotificationMessage> jcrMock = new ConcurrentLinkedQueue<NotificationMessage>();
   
-  @Override
-  public void save(NotificationMessage notification) throws Exception {
-    this.jcrMock.add(notification);
-  }
-
   @Override
   public Map<NotificationKey, List<NotificationMessage>> getByUser(UserSetting userSetting) {
     return null;
@@ -43,10 +42,34 @@ public class MockNotificationDataStorage implements NotificationDataStorage {
     return this.jcrMock.size();
   }
   
+  public void clear() {
+    jcrMock.clear();
+  }
+
   public List<NotificationMessage> emails() {
     List<NotificationMessage> list = new ArrayList<NotificationMessage>(jcrMock);
-    jcrMock.clear();
+    clear();
     return list;
+  }
+
+  @Override
+  public void process(NotificationMessage message) throws Exception {
+    jcrMock.add(message);
+  }
+
+  @Override
+  public void processDaily() throws Exception {
+  }
+
+  @Override
+  public void process(Collection<NotificationMessage> messages) throws Exception {
+    for (NotificationMessage message : messages) {
+      process(message);
+    }
+  }
+
+  @Override
+  public void addSendNotificationListener(AbstractNotificationServiceListener messageListener) {
   }
  
 }

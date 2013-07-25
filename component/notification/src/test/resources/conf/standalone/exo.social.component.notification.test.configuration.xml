@@ -23,13 +23,8 @@
   xmlns="http://www.exoplatform.org/xml/ns/kernel_1_2.xsd">
 
   <component>
-    <key>org.exoplatform.commons.api.notification.service.storage.NotificationDataStorage</key>
-    <type>org.exoplatform.social.notification.mock.MockNotificationDataStorage</type>
-  </component>
-
-  <component>
     <key>org.exoplatform.commons.api.notification.service.storage.NotificationService</key>
-    <type>org.exoplatform.commons.notification.impl.service.NotificationServiceImpl</type>
+    <type>org.exoplatform.social.notification.mock.MockNotificationService</type>
   </component>
   
   <component>

@@ -32,6 +32,7 @@ import org.exoplatform.commons.api.notification.plugin.AbstractNotificationPlugi
 import org.exoplatform.commons.api.notification.plugin.NotificationKey;
 import org.exoplatform.commons.api.notification.plugin.model.PluginConfig;
 import org.exoplatform.commons.api.notification.service.TemplateGenerator;
+import org.exoplatform.commons.api.notification.service.storage.NotificationService;
 import org.exoplatform.commons.notification.impl.NotificationContextImpl;
 import org.exoplatform.commons.notification.impl.setting.NotificationPluginContainer;
 import org.exoplatform.container.xml.InitParams;
@@ -49,7 +50,7 @@ import org.exoplatform.social.core.space.impl.SpaceServiceImpl;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.notification.AbstractCoreTest;
 import org.exoplatform.social.notification.Utils;
-import org.exoplatform.social.notification.mock.MockNotificationDataStorage;
+import org.exoplatform.social.notification.mock.MockNotificationService;
 import org.exoplatform.social.notification.plugin.ActivityCommentPlugin;
 import org.exoplatform.social.notification.plugin.ActivityMentionPlugin;
 import org.exoplatform.social.notification.plugin.LikePlugin;
@@ -94,6 +95,8 @@ public class SocialNotificationTestCase extends AbstractCoreTest {
   private NotificationKey invitedJoinSpaceKey;
   private NotificationKey spaceJoinRequestKey;
   
+  private MockNotificationService notificationService;
+  
   public static final String ACTIVITY_ID = "activityId";
 
   public static final String SPACE_ID    = "spaceId";
@@ -109,6 +112,8 @@ public class SocialNotificationTestCase extends AbstractCoreTest {
     activityManager = Utils.getService(ActivityManagerImpl.class);
     spaceService = Utils.getService(SpaceServiceImpl.class);
     relationshipManager = Utils.getService(RelationshipManagerImpl.class);
+    
+    notificationService = (MockNotificationService) Utils.getService(NotificationService.class);
     
     assertNotNull(templateGenerator);
     assertNotNull(pluginService);
@@ -163,8 +168,8 @@ public class SocialNotificationTestCase extends AbstractCoreTest {
     demoIdentity = identityManager.getOrCreateIdentity("organization", "demo", true);
     
     // each new identity created, a notification will be raised
-    Collection<NotificationMessage> messages = ((MockNotificationDataStorage)Utils.getSocialEmailStorage()).emails();
-   // TODO assertEquals(4, messages.size());
+    Collection<NotificationMessage> messages = notificationService.emails();
+    assertEquals(4, messages.size());
     
     assertNotNull(rootIdentity.getId());
     assertNotNull(johnIdentity.getId());
@@ -203,7 +208,8 @@ public class SocialNotificationTestCase extends AbstractCoreTest {
     pluginService.remove(relationKey);
     pluginService.remove(invitedJoinSpaceKey);
     pluginService.remove(spaceJoinRequestKey);
-
+    
+    notificationService.clear();
     super.tearDown();
   }
   
@@ -217,18 +223,18 @@ public class SocialNotificationTestCase extends AbstractCoreTest {
     assertTrue(actual.indexOf("the value of abcx") > 0);
   }
   
-  public void TestCreateNewUser() throws Exception {
+  public void testCreateNewUser() throws Exception {
     Identity ghostIdentity = identityManager.getOrCreateIdentity("organization", "ghost", true);
     
-    Collection<NotificationMessage> messages = ((MockNotificationDataStorage)Utils.getSocialEmailStorage()).emails();
-  //TODO     assertEquals(1, messages.size());
-    //TODO : get all users who wants to receive this kind of notification
+    Collection<NotificationMessage> messages = notificationService.emails();
+       assertEquals(1, messages.size());
+     //TODO: get all users who wants to receive this kind of notification
     //assertEquals(4, messages.iterator().next().getSendToUserIds().size());
     
     identityManager.deleteIdentity(ghostIdentity);
   }
   
-  public void TestSaveCommentWithMention() throws Exception {
+  public void testSaveCommentWithMention() throws Exception {
     
     //root post an activity and mention demo
     ExoSocialActivity activity = new ExoSocialActivityImpl();
@@ -237,8 +243,8 @@ public class SocialNotificationTestCase extends AbstractCoreTest {
     tearDownActivityList.add(activity);
 
     //a notification will be send to demo
-    Collection<NotificationMessage> messages = ((MockNotificationDataStorage)Utils.getSocialEmailStorage()).emails();
-    //TODO assertEquals(1, messages.size());
+    Collection<NotificationMessage> messages = notificationService.emails();
+    assertEquals(1, messages.size());
     assertEquals(demoIdentity.getRemoteId(), messages.iterator().next().getSendToUserIds().get(0));
     
     //demo comment on root's activity and mention mary, root and john
@@ -248,7 +254,7 @@ public class SocialNotificationTestCase extends AbstractCoreTest {
     activityManager.saveComment(activity, comment);
     
     //2 messages will be created : 1st for root to notify a comment on his activity, 2nd for root, john, mary to notify the mention's action 
-    messages = ((MockNotificationDataStorage)Utils.getSocialEmailStorage()).emails();
+    messages = notificationService.emails();
     assertEquals(2, messages.size());
     Iterator<NotificationMessage> iterators = messages.iterator();
     
@@ -276,7 +282,7 @@ public class SocialNotificationTestCase extends AbstractCoreTest {
     
   }
   
-  public void TestSaveComment() throws Exception {
+  public void testSaveComment() throws Exception {
     {
       ExoSocialActivity activity = new ExoSocialActivityImpl();
       activity.setTitle("activity title");
@@ -288,8 +294,8 @@ public class SocialNotificationTestCase extends AbstractCoreTest {
       comment.setUserId(demoIdentity.getId());
       activityManager.saveComment(activity, comment);
       
-      Collection<NotificationMessage> messages = ((MockNotificationDataStorage)Utils.getSocialEmailStorage()).emails();
-    //TODO       assertEquals(1, messages.size());
+      Collection<NotificationMessage> messages = notificationService.emails();
+           assertEquals(1, messages.size());
       NotificationMessage message = messages.iterator().next();
       NotificationContext ctx = NotificationContextImpl.DEFAULT;
       ctx.setNotificationMessage(message.setTo("demo"));
@@ -311,7 +317,7 @@ public class SocialNotificationTestCase extends AbstractCoreTest {
       comment1.setUserId(demoIdentity.getId());
       activityManager.saveComment(activity, comment1);
       
-      Collection<NotificationMessage> messages = ((MockNotificationDataStorage)Utils.getSocialEmailStorage()).emails();
+      Collection<NotificationMessage> messages = notificationService.emails();
       assertEquals(1, messages.size());
       assertEquals(1, messages.iterator().next().getSendToUserIds().size());
       assertEquals(rootIdentity.getRemoteId(), messages.iterator().next().getSendToUserIds().get(0));
@@ -322,7 +328,7 @@ public class SocialNotificationTestCase extends AbstractCoreTest {
       comment2.setUserId(maryIdentity.getId());
       activityManager.saveComment(activity, comment2);
       
-      messages = ((MockNotificationDataStorage)Utils.getSocialEmailStorage()).emails();
+      messages = notificationService.emails();
       assertEquals(1, messages.size());
       assertEquals(2, messages.iterator().next().getSendToUserIds().size());
       
@@ -333,13 +339,13 @@ public class SocialNotificationTestCase extends AbstractCoreTest {
       comment3.setUserId(rootIdentity.getId());
       activityManager.saveComment(activity, comment3);
       
-      messages = ((MockNotificationDataStorage)Utils.getSocialEmailStorage()).emails();
+      messages = notificationService.emails();
       assertEquals(1, messages.size());
       assertEquals(2, messages.iterator().next().getSendToUserIds().size());
     }
   }
 
-  public void TestSaveActivity() throws Exception {
+  public void testSaveActivity() throws Exception {
     //
     ExoSocialActivity activity = new ExoSocialActivityImpl();
     activity.setTitle("title ");
@@ -347,7 +353,7 @@ public class SocialNotificationTestCase extends AbstractCoreTest {
     activityManager.saveActivity(rootIdentity, activity);
     tearDownActivityList.add(activity);
     
-  //TODO     assertEquals(1, ((MockNotificationDataStorage)Utils.getSocialEmailStorage()).emails().size());
+       assertEquals(1, notificationService.emails().size());
     
     //
     ExoSocialActivity got = activityManager.getActivity(activity.getId());
@@ -361,7 +367,7 @@ public class SocialNotificationTestCase extends AbstractCoreTest {
     activityManager.saveActivity(rootIdentity, act);
     tearDownActivityList.add(act);
     assertNotNull(act.getId());
-    assertEquals(2, ((MockNotificationDataStorage)Utils.getSocialEmailStorage()).emails().size());
+    assertEquals(2, notificationService.emails().size());
     
     // demo post activity on space
     Space space = getSpaceInstance(1);
@@ -372,7 +378,7 @@ public class SocialNotificationTestCase extends AbstractCoreTest {
     activityManager.saveActivity(spaceIdentity, spaceActivity);
     tearDownActivityList.add(spaceActivity);
     
-    Collection<NotificationMessage> messages = ((MockNotificationDataStorage)Utils.getSocialEmailStorage()).emails();
+    Collection<NotificationMessage> messages = notificationService.emails();
     assertEquals(1, messages.size());
     assertEquals(1, messages.iterator().next().getSendToUserIds().size());
     
@@ -385,7 +391,7 @@ public class SocialNotificationTestCase extends AbstractCoreTest {
     activityManager.saveActivity(spaceIdentity, spaceActivity2);
     tearDownActivityList.add(spaceActivity2);
     
-    messages = ((MockNotificationDataStorage)Utils.getSocialEmailStorage()).emails();
+    messages = notificationService.emails();
     assertEquals(1, messages.size());
     assertEquals(3, messages.iterator().next().getSendToUserIds().size());
     
@@ -400,33 +406,32 @@ public class SocialNotificationTestCase extends AbstractCoreTest {
     activity.setUserId(demoIdentity.getId());
     activityManager.saveActivity(rootIdentity, activity);
     tearDownActivityList.add(activity);
-    assertEquals(1, ((MockNotificationDataStorage)Utils.getSocialEmailStorage()).size());
+    assertEquals(1, notificationService.emails().size());
     
     activityManager.saveLike(activity, maryIdentity);
-    assertEquals(1, ((MockNotificationDataStorage)Utils.getSocialEmailStorage()).size());
+    assertEquals(1, notificationService.emails().size());
     
   }
   
-  public void TestInviteToConnect() throws Exception {
+  public void testInviteToConnect() throws Exception {
     relationshipManager.inviteToConnect(rootIdentity, demoIdentity);
     
-    Collection<NotificationMessage> messages = ((MockNotificationDataStorage)Utils.getSocialEmailStorage()).emails();
-  //TODO     assertEquals(1, messages.size());
+    Collection<NotificationMessage> messages = notificationService.emails();
+    assertEquals(1, messages.size());
     NotificationMessage message = messages.iterator().next();
     NotificationContext ctx = NotificationContextImpl.DEFAULT;
     ctx.setNotificationMessage(message.setTo("demo"));
     MessageInfo info = inviteToConnectPlugin.buildMessage(ctx);
     
     assertEquals("localhost/social-resources/skin/images/ShareImages/UserAvtDefault.png", info.getBody());
-    assertEquals(1, ((MockNotificationDataStorage)Utils.getSocialEmailStorage()).emails().size());
   }
   
-  public void TestInvitedToJoinSpace() throws Exception {
+  public void testInvitedToJoinSpace() throws Exception {
     
     Space space = getSpaceInstance(1);
     spaceService.addInvitedUser(space, maryIdentity.getRemoteId());
-    Collection<NotificationMessage> messages = ((MockNotificationDataStorage)Utils.getSocialEmailStorage()).emails();
-  //TODO     assertEquals(1, messages.size());
+    Collection<NotificationMessage> messages = notificationService.emails();
+       assertEquals(1, messages.size());
     NotificationMessage message = messages.iterator().next();
     NotificationContext ctx = NotificationContextImpl.DEFAULT;
     ctx.setNotificationMessage(message.setTo("mary"));
@@ -435,15 +440,15 @@ public class SocialNotificationTestCase extends AbstractCoreTest {
     spaceService.deleteSpace(space);
   }
   
-  public void TestAddPendingUser() throws Exception {
+  public void testAddPendingUser() throws Exception {
     Space space = getSpaceInstance(1);
     spaceService.addPendingUser(space, maryIdentity.getRemoteId());
     
-  //TODO     assertEquals(1, ((MockNotificationDataStorage)Utils.getSocialEmailStorage()).emails().size());
+       assertEquals(1, notificationService.emails().size());
     spaceService.deleteSpace(space);
   }
   
-  public void TestBuildDigestMessage() throws Exception {
+  public void testBuildDigestMessage() throws Exception {
     {
       //ActivityCommentProvider
       ExoSocialActivity activity = new ExoSocialActivityImpl();
@@ -463,8 +468,8 @@ public class SocialNotificationTestCase extends AbstractCoreTest {
       comment2.setUserId(demoIdentity.getId());
       activityManager.saveComment(activity, comment2);
       
-      Collection<NotificationMessage> messages = ((MockNotificationDataStorage)Utils.getSocialEmailStorage()).emails();
-    //TODO       assertEquals(2, messages.size());
+      Collection<NotificationMessage> messages = notificationService.emails();
+           assertEquals(2, messages.size());
       
       List<NotificationMessage> list = new ArrayList<NotificationMessage>();
       for (NotificationMessage message : messages) {
@@ -493,7 +498,7 @@ public class SocialNotificationTestCase extends AbstractCoreTest {
       activityManager.saveActivity(rootIdentity, activity2);
       tearDownActivityList.add(activity2);
       
-      Collection<NotificationMessage> messages = ((MockNotificationDataStorage)Utils.getSocialEmailStorage()).emails();
+      Collection<NotificationMessage> messages = notificationService.emails();
       assertEquals(2, messages.size());
       
       List<NotificationMessage> list = new ArrayList<NotificationMessage>();
@@ -514,7 +519,7 @@ public class SocialNotificationTestCase extends AbstractCoreTest {
       relationshipManager.inviteToConnect(rootIdentity, demoIdentity);
       relationshipManager.inviteToConnect(johnIdentity, demoIdentity);
       relationshipManager.inviteToConnect(maryIdentity, demoIdentity);
-      Collection<NotificationMessage> messages = ((MockNotificationDataStorage)Utils.getSocialEmailStorage()).emails();
+      Collection<NotificationMessage> messages = notificationService.emails();
       assertEquals(3, messages.size());
       List<NotificationMessage> list = new ArrayList<NotificationMessage>();
       for (NotificationMessage message : messages) {
@@ -540,7 +545,7 @@ public class SocialNotificationTestCase extends AbstractCoreTest {
       Space space4 = getSpaceInstance(4);
       spaceService.addInvitedUser(space4, maryIdentity.getRemoteId());
       
-      Collection<NotificationMessage> messages = ((MockNotificationDataStorage)Utils.getSocialEmailStorage()).emails();
+      Collection<NotificationMessage> messages = notificationService.emails();
       assertEquals(4, messages.size());
       List<NotificationMessage> list = new ArrayList<NotificationMessage>();
       for (NotificationMessage message : messages) {
@@ -566,7 +571,7 @@ public class SocialNotificationTestCase extends AbstractCoreTest {
       spaceService.addPendingUser(space, johnIdentity.getRemoteId());
       spaceService.addPendingUser(space, demoIdentity.getRemoteId());
       
-      Collection<NotificationMessage> messages = ((MockNotificationDataStorage)Utils.getSocialEmailStorage()).emails();
+      Collection<NotificationMessage> messages = notificationService.emails();
       assertEquals(3, messages.size());
       List<NotificationMessage> list = new ArrayList<NotificationMessage>();
       for (NotificationMessage message : messages) {
@@ -593,7 +598,7 @@ public class SocialNotificationTestCase extends AbstractCoreTest {
       activityManager.saveActivity(rootIdentity, act1);
       tearDownActivityList.add(act1);
       
-      Collection<NotificationMessage> messages = ((MockNotificationDataStorage)Utils.getSocialEmailStorage()).emails();
+      Collection<NotificationMessage> messages = notificationService.emails();
       assertEquals(2, messages.size());
       
       List<NotificationMessage> list = new ArrayList<NotificationMessage>();
@@ -621,7 +626,7 @@ public class SocialNotificationTestCase extends AbstractCoreTest {
       activityManager.saveComment(act, johnComment);
       
       // 4 messages are created : 2 to root for comments on his activity, 2 to demo for mention him
-      messages = ((MockNotificationDataStorage)Utils.getSocialEmailStorage()).emails();
+      messages = notificationService.emails();
       assertEquals(4, messages.size());
       
       list = new ArrayList<NotificationMessage>();
@@ -644,7 +649,7 @@ public class SocialNotificationTestCase extends AbstractCoreTest {
       Identity raulIdentity = identityManager.getOrCreateIdentity("organization", "raul", true);
       Identity jameIdentity = identityManager.getOrCreateIdentity("organization", "jame", true);
       
-      Collection<NotificationMessage> messages = ((MockNotificationDataStorage)Utils.getSocialEmailStorage()).emails();
+      Collection<NotificationMessage> messages = notificationService.emails();
       assertEquals(4, messages.size());
       List<NotificationMessage> list = new ArrayList<NotificationMessage>();
       for (NotificationMessage message : messages) {
@@ -674,7 +679,7 @@ public class SocialNotificationTestCase extends AbstractCoreTest {
       activityManager.saveLike(activity, johnIdentity);
       activityManager.saveLike(activity, demoIdentity);
       
-      Collection<NotificationMessage> messages = ((MockNotificationDataStorage)Utils.getSocialEmailStorage()).emails();
+      Collection<NotificationMessage> messages = notificationService.emails();
       assertEquals(3, messages.size());
       List<NotificationMessage> list = new ArrayList<NotificationMessage>();
       for (NotificationMessage message : messages) {
@@ -714,7 +719,7 @@ public class SocialNotificationTestCase extends AbstractCoreTest {
       activityManager.saveActivity(spaceIdentity2, johnActivity);
       tearDownActivityList.add(johnActivity);
       
-      Collection<NotificationMessage> messages = ((MockNotificationDataStorage)Utils.getSocialEmailStorage()).emails();
+      Collection<NotificationMessage> messages = notificationService.emails();
       assertEquals(3, messages.size());
       
       List<NotificationMessage> list = new ArrayList<NotificationMessage>();
