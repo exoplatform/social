@@ -163,10 +163,10 @@ public class UINotificationSettingForm extends UIForm {
         //
         String selected = uiForm.getUIFormSelectBox(uiForm.makeSelectBoxId(providerId)).getValue();
         if(WEEKLY.equals(selected)) {
-          notificationSetting.addProvider(providerId, FREQUENCY.WEEKLY_KEY);
+          notificationSetting.addProvider(providerId, FREQUENCY.WEEKLY);
         }
         if(DAILY.equals(selected)) {
-          notificationSetting.addProvider(providerId, FREQUENCY.DAILY_KEY);
+          notificationSetting.addProvider(providerId, FREQUENCY.DAILY);
         }
       }
       notificationSetting.setActive(uiForm.getUICheckBoxInput(CHECK_BOX_DEACTIVATE).isChecked() == false);
