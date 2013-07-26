@@ -41,7 +41,7 @@ public class PostActivitySpaceStreamPlugin extends AbstractNotificationPlugin {
     super(initParams);
   }
 
-  public static final String ID = "ActivityPostSpaceProvider";
+  public static final String ID = "PostActivitySpaceStreamPlugin";
   
   @Override
   public String getId() {

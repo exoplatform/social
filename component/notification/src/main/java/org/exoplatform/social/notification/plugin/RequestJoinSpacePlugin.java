@@ -42,7 +42,7 @@ public class RequestJoinSpacePlugin extends AbstractNotificationPlugin {
     super(initParams);
   }
 
-  public static final String ID = "RequestJoinSpace";
+  public static final String ID = "RequestJoinSpacePlugin";
 
   @Override
   public String getId() {

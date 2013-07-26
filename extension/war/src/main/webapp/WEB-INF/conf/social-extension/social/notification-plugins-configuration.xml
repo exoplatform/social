@@ -53,7 +53,7 @@
           <description>The template of ActivityMentionPlugin</description>
           <object type="org.exoplatform.commons.api.notification.plugin.model.PluginConfig">
             <field name="pluginId">
-              <string>ActivityMentionProvider</string>
+              <string>ActivityMentionPlugin</string>
             </field>
             <field name="resourceBundleKey">
               <string>Notification.label.ActivityMentionPlugin</string>
@@ -75,7 +75,7 @@
                   <string>locale.notification.template.Notification</string>
                 </field>
                 <field name="localeResouceTemplate">
-                  <string>war:/notification/templates/ActivityMentionProvider.gtmpl</string>
+                  <string>war:/notification/templates/ActivityMentionPlugin.gtmpl</string>
                 </field>
               </object>
             </field>
@@ -94,11 +94,11 @@
       <description>Initial information for plugin.</description>
       <init-params>
         <object-param>
-          <name>template.ActivityCommentProvider</name>
+          <name>template.ActivityCommentPlugin</name>
           <description>The template of ActivityCommentPlugin</description>
           <object type="org.exoplatform.commons.api.notification.plugin.model.PluginConfig">
             <field name="pluginId">
-              <string>ActivityCommentProvider</string>
+              <string>ActivityCommentPlugin</string>
             </field>
             <field name="resourceBundleKey">
               <string>Notification.label.ActivityCommentPlugin</string>
@@ -121,7 +121,7 @@
                   <string>locale.notification.template.Notification</string>
                 </field>
                 <field name="localeResouceTemplate">
-                  <string>war:/notification/templates/ActivityCommentProvider.gtmpl</string>
+                  <string>war:/notification/templates/ActivityCommentPlugin.gtmpl</string>
                 </field>
               </object>
             </field>
@@ -140,11 +140,11 @@
       <description>Initial information for plugin.</description>
       <init-params>
         <object-param>
-          <name>template.ActivityLikeProvider</name>
+          <name>template.LikePlugin</name>
           <description>The template of ActivityLikePlugin</description>
           <object type="org.exoplatform.commons.api.notification.plugin.model.PluginConfig">
             <field name="pluginId">
-              <string>ActivityLikeProvider</string>
+              <string>LikePlugin</string>
             </field>
             <field name="resourceBundleKey">
               <string>Notification.label.ActivityLikePlugin</string>
@@ -166,7 +166,7 @@
                   <string>locale.notification.template.Notification</string>
                 </field>
                 <field name="localeResouceTemplate">
-                  <string>war:/notification/templates/ActivityLikeProvider.gtmpl</string>
+                  <string>war:/notification/templates/LikePlugin.gtmpl</string>
                 </field>
               </object>
             </field>
@@ -185,11 +185,11 @@
       <description>Initial information for plugin.</description>
       <init-params>
         <object-param>
-          <name>template.ActivityPostProvider</name>
+          <name>template.PostActivityPlugin</name>
           <description>The template of PostActivityPlugin</description>
           <object type="org.exoplatform.commons.api.notification.plugin.model.PluginConfig">
             <field name="pluginId">
-              <string>ActivityPostProvider</string>
+              <string>PostActivityPlugin</string>
             </field>
             <field name="resourceBundleKey">
               <string>Notification.label.PostActivityPlugin</string>
@@ -211,7 +211,7 @@
                   <string>locale.notification.template.Notification</string>
                 </field>
                 <field name="localeResouceTemplate">
-                  <string>war:/notification/templates/ActivityPostProvider.gtmpl</string>
+                  <string>war:/notification/templates/PostActivityPlugin.gtmpl</string>
                 </field>
               </object>
             </field>
@@ -230,11 +230,11 @@
       <description>Initial information for plugin.</description>
       <init-params>
         <object-param>
-          <name>template.ActivityPostSpaceProvider</name>
+          <name>template.PostActivitySpaceStreamPlugin</name>
           <description>The template of PostActivitySpaceStreamPlugin</description>
           <object type="org.exoplatform.commons.api.notification.plugin.model.PluginConfig">
             <field name="pluginId">
-              <string>ActivityPostSpaceProvider</string>
+              <string>PostActivitySpaceStreamPlugin</string>
             </field>
             <field name="resourceBundleKey">
               <string>Notification.label.PostActivitySpacePlugin</string>
@@ -256,7 +256,7 @@
                   <string>locale.notification.template.Notification</string>
                 </field>
                 <field name="localeResouceTemplate">
-                  <string>war:/notification/templates/ActivityPostSpaceProvider.gtmpl</string>
+                  <string>war:/notification/templates/PostActivitySpaceStreamPlugin.gtmpl</string>
                 </field>
               </object>
             </field>
@@ -275,11 +275,11 @@
       <description>Initial information for plugin.</description>
       <init-params>
         <object-param>
-          <name>template.NewUserJoinSocialIntranet</name>
+          <name>template.NewUserPlugin</name>
           <description>The template of NewUserPlugin</description>
           <object type="org.exoplatform.commons.api.notification.plugin.model.PluginConfig">
             <field name="pluginId">
-              <string>NewUserJoinSocialIntranet</string>
+              <string>NewUserPlugin</string>
             </field>
             <field name="resourceBundleKey">
               <string>Notification.label.NewUserPlugin</string>
@@ -301,7 +301,7 @@
                   <string>locale.notification.template.Notification</string>
                 </field>
                 <field name="localeResouceTemplate">
-                  <string>war:/notification/templates/NewUserJoinSocialIntranet.gtmpl</string>
+                  <string>war:/notification/templates/NewUserPlugin.gtmpl</string>
                 </field>
               </object>
             </field>
@@ -316,15 +316,15 @@
     <component-plugin>
       <name>notification.plugins</name>
       <set-method>add</set-method>
-      <type>org.exoplatform.social.notification.plugin.RelationshipRecievedRequestPlugin</type>
+      <type>org.exoplatform.social.notification.plugin.RelationshipRecievedRequestPluginPlugin</type>
       <description>Initial information for plugin.</description>
       <init-params>
         <object-param>
-          <name>template.RelationshipRecievedRequest</name>
+          <name>template.RelationshipRecievedRequestPlugin</name>
           <description>The template of RecievedRequestPlugin</description>
           <object type="org.exoplatform.commons.api.notification.plugin.model.PluginConfig">
             <field name="pluginId">
-              <string>RelationshipRecievedRequest</string>
+              <string>RelationshipRecievedRequestPlugin</string>
             </field>
             <field name="resourceBundleKey">
               <string>Notification.label.RecievedRequestPlugin</string>
@@ -366,11 +366,11 @@
       <description>Initial information for plugin.</description>
       <init-params>
         <object-param>
-          <name>template.InvitedJoinSpace</name>
+          <name>template.SpaceInvitationPlugin</name>
           <description>The template of NewUserPlugin</description>
           <object type="org.exoplatform.commons.api.notification.plugin.model.PluginConfig">
             <field name="pluginId">
-              <string>InvitedJoinSpace</string>
+              <string>SpaceInvitationPlugin</string>
             </field>
             <field name="resourceBundleKey">
               <string>Notification.label.SpaceInvitationPlugin</string>
@@ -393,7 +393,7 @@
                   <string>locale.notification.template.Notification</string>
                 </field>
                 <field name="localeResouceTemplate">
-                  <string>war:/notification/templates/InvitedJoinSpace.gtmpl</string>
+                  <string>war:/notification/templates/SpaceInvitationPlugin.gtmpl</string>
                 </field>
               </object>
             </field>
@@ -408,18 +408,18 @@
     <component-plugin>
       <name>notification.plugins</name>
       <set-method>add</set-method>
-      <type>org.exoplatform.social.notification.plugin.RequestJoinSpacePlugin</type>
+      <type>org.exoplatform.social.notification.plugin.RequestJoinSpacePluginPlugin</type>
       <description>Initial information for plugin.</description>
       <init-params>
         <object-param>
-          <name>template.RequestJoinSpace</name>
+          <name>template.RequestJoinSpacePlugin</name>
           <description>The template of SpaceInvitationPlugin</description>
           <object type="org.exoplatform.commons.api.notification.plugin.model.PluginConfig">
             <field name="pluginId">
-              <string>RequestJoinSpace</string>
+              <string>RequestJoinSpacePlugin</string>
             </field>
             <field name="resourceBundleKey">
-              <string>Notification.label.RequestJoinSpacePlugin</string>
+              <string>Notification.label.RequestJoinSpacePluginPlugin</string>
             </field>
             <field name="order">
               <string>4</string>
@@ -439,7 +439,7 @@
                   <string>locale.notification.template.Notification</string>
                 </field>
                 <field name="localeResouceTemplate">
-                  <string>war:/notification/templates/RequestJoinSpace.gtmpl</string>
+                  <string>war:/notification/templates/RequestJoinSpacePlugin.gtmpl</string>
                 </field>
               </object>
             </field>

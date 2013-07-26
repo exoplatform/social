@@ -39,7 +39,7 @@ public class RelationshipRecievedRequestPlugin extends AbstractNotificationPlugi
     super(initParams);
   }
 
-  public static final String ID = "RelationshipRecievedRequest";
+  public static final String ID = "RelationshipRecievedRequestPlugin";
 
   @Override
   public String getId() {

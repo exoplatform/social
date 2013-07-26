@@ -39,7 +39,7 @@ public class LikePlugin extends AbstractNotificationPlugin {
     super(initParams);
   }
 
-  public static final String ID = "ActivityLikeProvider";
+  public static final String ID = "LikePlugin";
   
   @Override
   public String getId() {

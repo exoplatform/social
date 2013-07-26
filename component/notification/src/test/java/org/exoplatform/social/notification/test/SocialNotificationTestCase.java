@@ -450,7 +450,7 @@ public class SocialNotificationTestCase extends AbstractCoreTest {
   
   public void testBuildDigestMessage() throws Exception {
     {
-      //ActivityCommentProvider
+      //ActivityCommentPlugin
       ExoSocialActivity activity = new ExoSocialActivityImpl();
       activity.setTitle("activity title");
       activityManager.saveActivity(rootIdentity, activity);
@@ -485,7 +485,7 @@ public class SocialNotificationTestCase extends AbstractCoreTest {
     }
     
     {
-      //ActivityPostProvider
+      //PostActivityPlugin
       ExoSocialActivity activity1 = new ExoSocialActivityImpl();
       activity1.setTitle("activity1 title 1");
       activity1.setUserId(demoIdentity.getId());
@@ -535,7 +535,7 @@ public class SocialNotificationTestCase extends AbstractCoreTest {
     }
     
     {
-      //InvitedJoinSpace
+      //SpaceInvitationPlugin
       Space space1 = getSpaceInstance(1);
       spaceService.addInvitedUser(space1, maryIdentity.getRemoteId());
       Space space2 = getSpaceInstance(2);
@@ -565,7 +565,7 @@ public class SocialNotificationTestCase extends AbstractCoreTest {
     }
     
     {
-      //RequestJoinSpace
+      //RequestJoinSpacePlugin
       Space space = getSpaceInstance(1);
       spaceService.addPendingUser(space, maryIdentity.getRemoteId());
       spaceService.addPendingUser(space, johnIdentity.getRemoteId());
@@ -588,7 +588,7 @@ public class SocialNotificationTestCase extends AbstractCoreTest {
     }
     
     {
-      //ActivityMentionProvider
+      //ActivityMentionPlugin
       ExoSocialActivity act = new ExoSocialActivityImpl();
       act.setTitle("hello @demo");
       activityManager.saveActivity(rootIdentity, act);
@@ -631,7 +631,7 @@ public class SocialNotificationTestCase extends AbstractCoreTest {
       
       list = new ArrayList<NotificationMessage>();
       for (NotificationMessage message : messages) {
-        if (message.getKey().getId().equals("ActivityMentionProvider"))
+        if (message.getKey().getId().equals("ActivityMentionPlugin"))
           list.add(message.setTo(demoIdentity.getRemoteId()));
       }
       ctx = NotificationContextImpl.DEFAULT;
@@ -643,7 +643,7 @@ public class SocialNotificationTestCase extends AbstractCoreTest {
     }
     
     {
-      //NewUserJoinSocialIntranet
+      //NewUserPlugin
       Identity ghostIdentity = identityManager.getOrCreateIdentity("organization", "ghost", true);
       Identity paulIdentity = identityManager.getOrCreateIdentity("organization", "paul", true);
       Identity raulIdentity = identityManager.getOrCreateIdentity("organization", "raul", true);
@@ -669,7 +669,7 @@ public class SocialNotificationTestCase extends AbstractCoreTest {
     }
     
     {
-      //ActivityLikeProvider
+      //LikePlugin
       ExoSocialActivity activity = new ExoSocialActivityImpl();
       activity.setTitle("activity title");
       activityManager.saveActivity(rootIdentity, activity);
@@ -693,7 +693,7 @@ public class SocialNotificationTestCase extends AbstractCoreTest {
     }
     
     {
-      //ActivityPostSpaceProvider
+      //PostActivitySpaceStreamPlugin
       Space space1 = getSpaceInstance(1);
       Space space2 = getSpaceInstance(2);
       Identity spaceIdentity1 = identityManager.getOrCreateIdentity(SpaceIdentityProvider.NAME, space1.getPrettyName(), false);

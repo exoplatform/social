@@ -39,7 +39,7 @@ public class ActivityCommentPlugin extends AbstractNotificationPlugin {
     super(initParams);
   }
 
-  public static final String ID = "ActivityCommentProvider";
+  public static final String ID = "ActivityCommentPlugin";
 
   @Override
   public NotificationMessage makeNotification(NotificationContext ctx) {

@@ -35,7 +35,7 @@ import org.exoplatform.social.notification.Utils;
 
 public class NewUserPlugin extends AbstractNotificationPlugin {
 
-  public static final String ID = "NewUserJoinSocialIntranet";
+  public static final String ID = "NewUserPlugin";
   public NewUserPlugin(InitParams initParams) {
     super(initParams);
   }

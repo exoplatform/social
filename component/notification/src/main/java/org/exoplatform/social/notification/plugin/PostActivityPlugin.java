@@ -38,7 +38,7 @@ public class PostActivityPlugin extends AbstractNotificationPlugin {
     super(initParams);
   }
 
-  public static final String ID = "ActivityPostProvider";
+  public static final String ID = "PostActivityPlugin";
   
   @Override
   public String getId() {

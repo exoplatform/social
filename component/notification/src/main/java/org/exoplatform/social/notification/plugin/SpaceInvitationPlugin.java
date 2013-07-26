@@ -31,7 +31,7 @@ import org.exoplatform.social.notification.LinkProviderUtils;
 import org.exoplatform.social.notification.Utils;
 
 public class SpaceInvitationPlugin extends AbstractNotificationPlugin {
-  public static final String ID = "InvitedJoinSpace";
+  public static final String ID = "SpaceInvitationPlugin";
 
   public SpaceInvitationPlugin(InitParams initParams) {
     super(initParams);
