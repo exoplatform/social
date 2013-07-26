@@ -316,7 +316,7 @@
     <component-plugin>
       <name>notification.plugins</name>
       <set-method>add</set-method>
-      <type>org.exoplatform.social.notification.plugin.RelationshipRecievedRequestPluginPlugin</type>
+      <type>org.exoplatform.social.notification.plugin.RelationshipRecievedRequestPlugin</type>
       <description>Initial information for plugin.</description>
       <init-params>
         <object-param>
@@ -408,7 +408,7 @@
     <component-plugin>
       <name>notification.plugins</name>
       <set-method>add</set-method>
-      <type>org.exoplatform.social.notification.plugin.RequestJoinSpacePluginPlugin</type>
+      <type>org.exoplatform.social.notification.plugin.RequestJoinSpacePlugin</type>
       <description>Initial information for plugin.</description>
       <init-params>
         <object-param>
@@ -419,7 +419,7 @@
               <string>RequestJoinSpacePlugin</string>
             </field>
             <field name="resourceBundleKey">
-              <string>Notification.label.RequestJoinSpacePluginPlugin</string>
+              <string>Notification.label.RequestJoinSpacePlugin</string>
             </field>
             <field name="order">
               <string>4</string>
