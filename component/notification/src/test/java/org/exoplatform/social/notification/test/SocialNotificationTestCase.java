@@ -343,6 +343,30 @@ public class SocialNotificationTestCase extends AbstractCoreTest {
       assertEquals(1, messages.size());
       assertEquals(2, messages.iterator().next().getSendToUserIds().size());
     }
+    
+    {
+      //Test case for SOC-3549
+      
+      ExoSocialActivity activity = new ExoSocialActivityImpl();
+      activity.setTitle("activity title");
+      activity.setUserId(demoIdentity.getId());
+      activityManager.saveActivity(rootIdentity, activity);
+      tearDownActivityList.add(activity);
+      
+      Collection<NotificationMessage> messages = notificationService.emails();
+      assertEquals(1, messages.size());
+      
+      ExoSocialActivity comment1 = new ExoSocialActivityImpl();
+      activity = activityManager.getActivity(activity.getId());
+      comment1.setTitle("comment title 1");
+      comment1.setUserId(rootIdentity.getId());
+      activityManager.saveComment(activity, comment1);
+      
+      messages = notificationService.emails();
+      assertEquals(1, messages.size());
+      assertEquals(1, messages.iterator().next().getSendToUserIds().size());
+      assertEquals(demoIdentity.getRemoteId(), messages.iterator().next().getSendToUserIds().get(0));
+    }
   }
 
   public void testSaveActivity() throws Exception {

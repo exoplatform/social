@@ -53,11 +53,14 @@ public class PostActivitySpaceStreamPlugin extends AbstractNotificationPlugin {
     try {
       ExoSocialActivity activity = ctx.value(SocialNotificationUtils.ACTIVITY);
       Space space = Utils.getSpaceService().getSpaceByPrettyName(activity.getStreamOwner());
-      
+      String poster = Utils.getUserId(activity.getPosterId());
+      if (space != null && poster.equals(activity.getStreamOwner())) {
+        return null;
+      }
       
       return NotificationMessage.instance()
                                 .key(getId())
-                                .with(SocialNotificationUtils.POSTER.getKey(), Utils.getUserId(activity.getPosterId()))
+                                .with(SocialNotificationUtils.POSTER.getKey(), poster)
                                 .with(SocialNotificationUtils.ACTIVITY_ID.getKey(), activity.getId())
                                 .to(Utils.getDestinataires(activity, space)).end();
     } catch (Exception e) {

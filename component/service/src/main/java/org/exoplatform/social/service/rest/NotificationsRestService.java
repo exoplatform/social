@@ -330,7 +330,7 @@ public class NotificationsRestService implements ResourceContainer {
           break;
         }
         case connections_request: {
-          userIdentity = getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, Util.getViewerId(uriInfo), true);
+          userIdentity = getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, objectId, true);
           targetURL = Util.getBaseUrl() + LinkProvider.getRedirectUri("connexions/receivedInvitations/" + userIdentity.getRemoteId());
           break;
         }

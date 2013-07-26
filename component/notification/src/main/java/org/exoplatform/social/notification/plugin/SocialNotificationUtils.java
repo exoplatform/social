@@ -162,7 +162,7 @@ public class SocialNotificationUtils {
     try {
       Identity receiver = Utils.getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, remoteId, true);
       templateContext.put("FIRSTNAME", (String) receiver.getProfile().getProperty(Profile.FIRST_NAME));
-      templateContext.put("FOOTER_LINK", LinkProviderUtils.getRedirectUrl("settings", receiver.getRemoteId()));
+      templateContext.put("FOOTER_LINK", LinkProviderUtils.getRedirectUrl("notification_settings", receiver.getRemoteId()));
     } catch (Exception e) {
       return;
     }

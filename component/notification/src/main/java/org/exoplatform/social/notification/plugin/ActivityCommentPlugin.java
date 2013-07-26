@@ -45,10 +45,23 @@ public class ActivityCommentPlugin extends AbstractNotificationPlugin {
   public NotificationMessage makeNotification(NotificationContext ctx) {
     ExoSocialActivity comment = ctx.value(SocialNotificationUtils.ACTIVITY);
     ExoSocialActivity activity = Utils.getActivityManager().getParentActivity(comment);
+    
+    //Send notification to all others users who have comment on this activity
     List<String> sendToUsers = Utils.getDestinataires(activity.getCommentedIds(), comment.getPosterId());
-    if (! sendToUsers.contains(activity.getStreamOwner()) && ! Utils.isSpaceActivity(activity) && ! activity.getPosterId().equals(comment.getPosterId())) {
+    
+    //Send notification to the poster of activity
+    if (! activity.getPosterId().equals(comment.getPosterId())) {
+      String userName = Utils.getUserId(activity.getPosterId());
+      if (! sendToUsers.contains(userName) && ! activity.getStreamOwner().equals(userName)) {
+        sendToUsers.add(userName);
+      }
+    }
+    
+    //Send notification to the owner of activity
+    if (! sendToUsers.contains(activity.getStreamOwner()) && ! Utils.isSpaceActivity(activity) && ! activity.getStreamOwner().equals(Utils.getUserId(comment.getPosterId()))) {
       sendToUsers.add(activity.getStreamOwner());
     }
+    
     //
     return NotificationMessage.instance()
            .to(sendToUsers)

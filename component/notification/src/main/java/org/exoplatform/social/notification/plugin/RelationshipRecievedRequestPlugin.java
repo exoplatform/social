@@ -114,7 +114,7 @@ public class RelationshipRecievedRequestPlugin extends AbstractNotificationPlugi
       }
       templateContext.put(key, value.toString());
       if(count > 3) {
-        templateContext.put("COUNT", SocialNotificationUtils.buildRedirecUrl("connections_request", null, String.valueOf((count - 3))));
+        templateContext.put("COUNT", SocialNotificationUtils.buildRedirecUrl("connections_request", first.getTo(), String.valueOf((count - 3))));
       }
       
       String digester = Utils.getTemplateGenerator().processDigest(templateContext.digestType(count).end());
