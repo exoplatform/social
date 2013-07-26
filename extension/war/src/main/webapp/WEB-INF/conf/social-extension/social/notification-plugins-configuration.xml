@@ -347,7 +347,7 @@
                   <string>locale.notification.template.Notification</string>
                 </field>
                 <field name="localeResouceTemplate">
-                  <string>war:/notification/templates/ReceiceConnectionRequest.gtmpl</string>
+                  <string>war:/notification/templates/RelationshipRecievedRequestPlugin.gtmpl</string>
                 </field>
               </object>
             </field>
