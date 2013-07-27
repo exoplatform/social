@@ -22,8 +22,7 @@ import java.util.Iterator;
 import javax.jcr.NodeIterator;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryManager;
-import javax.jcr.RepositoryException;
-import org.chromattic.api.ChromatticException;
+
 import org.chromattic.api.ChromatticSession;
 import org.chromattic.api.Status;
 import org.exoplatform.commons.chromattic.ChromatticManager;
@@ -35,7 +34,6 @@ import org.exoplatform.social.common.lifecycle.SocialChromatticLifeCycle;
 import org.exoplatform.social.core.chromattic.entity.ProviderRootEntity;
 import org.exoplatform.social.core.chromattic.entity.SpaceRootEntity;
 import org.exoplatform.social.core.storage.exception.NodeNotFoundException;
-import org.exoplatform.social.core.updater.UserActivityStreamUpdaterPlugin;
 
 /**
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
@@ -45,7 +43,6 @@ public abstract class AbstractStorage {
   
   private static final Log LOG = ExoLogger.getLogger(AbstractStorage.class);
 
-  private static Log LOG = ExoLogger.getLogger(AbstractStorage.class);
   //
   protected final SocialChromatticLifeCycle lifeCycle;
 
