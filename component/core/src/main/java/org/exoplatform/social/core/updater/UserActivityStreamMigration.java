@@ -44,7 +44,7 @@ import org.exoplatform.social.core.storage.streams.StreamProcessContext;
 public class UserActivityStreamMigration extends AbstractStorage {
   
  private static final Log LOG = ExoLogger.getLogger(UserActivityStreamUpdaterPlugin.class);
- private static final int BATCH_FLUSH_LIMIT = 100;
+ private static final int BATCH_FLUSH_LIMIT = 10;
   
  private IdentityStorage identityStorage = null;
  
@@ -139,6 +139,7 @@ public class UserActivityStreamMigration extends AbstractStorage {
         
         //
         if (batchIndex == BATCH_FLUSH_LIMIT) {
+          LOG.warn("UPGRAGE SESSION FLUSH: " + offset);
           StorageUtils.persistJCR();
           it = nodes(sb.toString());
           skip(it, offset);
@@ -146,7 +147,7 @@ public class UserActivityStreamMigration extends AbstractStorage {
         }
       }
     } catch (Exception e) {
-      LOG.warn("Failed to migration for Activity Stream.");
+      LOG.error("Failed to migration for Activity Stream.", e);
     } finally {
       StorageUtils.persistJCR();
     }
