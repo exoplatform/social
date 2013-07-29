@@ -400,6 +400,7 @@
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-surefire-plugin</artifactId>
           <configuration>
+            <argLine>-Xmx1024m -XX:MaxPermSize=512m</argLine>
             <systemPropertyVariables>
               <org.apache.commons.logging.Log>org.apache.commons.logging.impl.SimpleLog</org.apache.commons.logging.Log>
               <org.apache.commons.logging.simplelog.defaultlog>info</org.apache.commons.logging.simplelog.defaultlog>
