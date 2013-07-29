@@ -97,6 +97,7 @@ public class UISpacePermission extends UIForm {
       space.setEditor(Utils.getViewerRemoteId());
       spaceSrc.saveSpace(space, false);
       UIApplication uiApp = requestContext.getUIApplication();
+      uiApp.clearMessages();
       uiApp.addMessage(new ApplicationMessage("UISpacePermission.msg.update-success", null, ApplicationMessage.INFO));
       //requestContext.addUIComponentToUpdateByAjax(uiApp.getUIPopupMessages());
       requestContext.addUIComponentToUpdateByAjax(uiSpacePermission);
