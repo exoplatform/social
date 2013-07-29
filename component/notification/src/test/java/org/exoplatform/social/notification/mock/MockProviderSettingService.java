@@ -34,9 +34,10 @@ public class MockProviderSettingService implements ProviderSettingService {
 
   @Override
   public void registerGroupConfig(GroupProviderPlugin groupConfig) {
+    // TODO Auto-generated method stub
     
   }
-  
+
   @Override
   public PluginConfig getPluginConfig(String pluginId) {
     // TODO Auto-generated method stub
@@ -50,13 +51,25 @@ public class MockProviderSettingService implements ProviderSettingService {
   }
 
   @Override
-  public void saveActiveProviders(List<ProviderData> providerDatas) {
+  public void saveProvider(String providerId, boolean isActive) {
     // TODO Auto-generated method stub
     
   }
 
   @Override
+  public boolean isActive(String providerId) {
+    // TODO Auto-generated method stub
+    return false;
+  }
+
+  @Override
   public List<String> getActiveProviderIds() {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  @Override
+  public List<ProviderData> getActiveProviders() {
     // TODO Auto-generated method stub
     return null;
   }
@@ -71,12 +84,6 @@ public class MockProviderSettingService implements ProviderSettingService {
   public void saveActiveFeature(boolean isActive) {
     // TODO Auto-generated method stub
     
-  }
-
-  @Override
-  public List<ProviderData> getActiveProviders() {
-    // TODO Auto-generated method stub
-    return null;
   }
 
 }
