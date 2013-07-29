@@ -271,7 +271,7 @@ public class UISpaceSearch extends UIForm {
       String searchCondition = (((UIFormStringInput) uiSpaceSearch.getChildById(SPACE_SEARCH)).getValue());
       if (searchCondition == null || searchCondition.equals(defaultSpaceNameAndDesc) || ASTERIK_STR
           .equals(searchCondition) || PERCENTAGE_STR.equals(searchCondition)) {
-        uiSpaceSearch.setSpaceNameSearch(defaultSpaceNameAndDesc);
+        uiSpaceSearch.setSpaceNameSearch(null);
         uiSpaceSearch.setNewSearch(true);
       } else {
         if (searchCondition != null) {
