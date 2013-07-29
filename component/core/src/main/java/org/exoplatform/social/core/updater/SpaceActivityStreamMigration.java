@@ -47,6 +47,8 @@ public class SpaceActivityStreamMigration extends AbstractStorage {
  private IdentityStorage identityStorage = null;
  
  private static AtomicInteger currentNumber = new AtomicInteger(0);
+ 
+ private static final int BATCH_FLUSH_LIMIT = 40;
 
   private IdentityStorage getIdentityStorage() {
     if (this.identityStorage == null) {
@@ -66,15 +68,29 @@ public class SpaceActivityStreamMigration extends AbstractStorage {
     long totalOfIdentity = it.getSize();
     Identity owner = null; 
     Node node = null;
+    int batchIndex = 0;
+    int offset = 0;
     try {
       while (it.hasNext()) {
         node = (Node) it.next();
         owner = getIdentityStorage().findIdentityById(node.getUUID());
-
         doUpgrade(owner, totalOfIdentity, limit);
+        batchIndex++;
+        offset++;
+        
+        //
+        if (batchIndex == BATCH_FLUSH_LIMIT) {
+          LOG.warn("UPGRAGE SESSION FLUSH: " + offset);
+          StorageUtils.persistJCR(true);
+          it = nodes(sb.toString());
+          _skip(it, offset);
+          batchIndex = 0;
+        }
       }
     } catch (Exception e) {
       LOG.warn("Failed to migration for Space Activity Stream.");
+    } finally {
+      StorageUtils.persistJCR(false);
     }
   }
   

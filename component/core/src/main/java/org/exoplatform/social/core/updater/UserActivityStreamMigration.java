@@ -132,7 +132,6 @@ public class UserActivityStreamMigration extends AbstractStorage {
       while (it.hasNext()) {
         node = (Node) it.next();
         owner = getIdentityStorage().findIdentityById(node.getUUID());
-
         doUpgrade(owner, totalOfIdentity, limit);
         batchIndex++;
         offset++;
@@ -140,33 +139,16 @@ public class UserActivityStreamMigration extends AbstractStorage {
         //
         if (batchIndex == BATCH_FLUSH_LIMIT) {
           LOG.warn("UPGRAGE SESSION FLUSH: " + offset);
-          StorageUtils.persistJCR();
+          StorageUtils.persistJCR(true);
           it = nodes(sb.toString());
-          skip(it, offset);
+          _skip(it, offset);
           batchIndex = 0;
         }
       }
     } catch (Exception e) {
       LOG.error("Failed to migration for Activity Stream.", e);
     } finally {
-      StorageUtils.persistJCR();
-    }
-  }
-  
-  /**
-   * Skip these users who migrated
-   * @param it the iterator
-   * @param offset the skip number
-   */
-  private void skip(NodeIterator it, int offset) {
-    while (it.hasNext()) {
-      if (offset == 0) {
-        return;
-      }
-      else {
-        it.next();
-        --offset;
-      }
+      StorageUtils.persistJCR(false);
     }
   }
   

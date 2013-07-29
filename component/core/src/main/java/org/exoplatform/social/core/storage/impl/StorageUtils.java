@@ -402,7 +402,7 @@ public class StorageUtils {
    * Make the decision to persist JCR Storage or not
    * @return
    */
-  public static boolean persistJCR() {
+  public static boolean persistJCR(boolean beginRequest) {
     try {
       //push to JCR
       AbstractStorage.lifecycleLookup().closeContext(true);
@@ -413,7 +413,10 @@ public class StorageUtils {
       synchronization.setSaveOnClose(true);
       //close synchronous and session.logout
       manager.endRequest(true);
-      manager.beginRequest();
+      //
+      if (beginRequest) {
+        manager.beginRequest();
+      }
       
     } catch (Exception e) {
       return false;
