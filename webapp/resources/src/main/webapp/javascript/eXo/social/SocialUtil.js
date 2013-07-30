@@ -130,6 +130,17 @@
           eXo.social.PopupConfirmation.confirm('demo', [{action: action_, label : label_}], title_, message_, close_);
         }); 
       },
+      
+    feedbackMessagePopup : function(title, message, closeLabel) { 
+      var popup = PopupConfirmation.makeTemplate();
+      popup.find('.popupTitle').html(title);
+      message = message.replace("${simpleQuote}", "'");
+      popup.find('.contentMessage').html(message);
+      var uiAction = popup.find('.uiAction');
+      uiAction.append(PopupConfirmation.addAction(null, closeLabel));
+      //
+      PopupConfirmation.show(popup);
+     },
     
     /**
      * Get current Browser

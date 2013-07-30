@@ -18,6 +18,7 @@ package org.exoplatform.social.webui;
 
 import java.util.Calendar;
 import java.util.List;
+import java.util.ResourceBundle;
 
 import javax.servlet.http.Cookie;
 
@@ -30,6 +31,8 @@ import org.exoplatform.portal.mop.user.UserNode;
 import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.portal.webui.workspace.UIPortalApplication;
 import org.exoplatform.portal.webui.workspace.UIWorkingWorkspace;
+import org.exoplatform.services.log.ExoLogger;
+import org.exoplatform.services.log.Log;
 import org.exoplatform.social.common.router.ExoRouter;
 import org.exoplatform.social.common.router.ExoRouter.Route;
 import org.exoplatform.social.core.identity.model.Identity;
@@ -73,6 +76,8 @@ public class Utils {
   
   /** */
   private static RequestNavInfo currentRequestNavData = null;
+  
+  private static Log             LOG = ExoLogger.getLogger(Utils.class);
   
   /**
    * Gets remote id of owner user (depends on URL: .../remoteId). If owner user is null, return viewer remote id
@@ -292,6 +297,36 @@ public class Utils {
   public static String getValueFromRequestParam(String param) {
     PortalRequestContext request = Util.getPortalRequestContext();
     return request.getRequest().getParameter(param);
+  }
+  
+  /**
+   * Initializes feedback message
+   * 
+   * return
+   */
+  public static void initFeedbackMessagePopup() {
+    try {
+      WebuiRequestContext context = WebuiRequestContext.getCurrentInstance();
+      ResourceBundle res = context.getApplicationResourceBundle();
+      PortletRequestContext pContext = (PortletRequestContext) context;
+      JavascriptManager jm = pContext.getJavascriptManager();
+      String feedbackMessageType = getValueFromRequestParam("feedbackMessage");
+      if (feedbackMessageType != null) {
+        String title = res.getString("Notification.feedback.title." + feedbackMessageType);
+        String message = res.getString("Notification.feedback.message." + feedbackMessageType);
+        String userName = getValueFromRequestParam("userName");
+        String spaceId = getValueFromRequestParam("spaceId");
+        if (userName != null)
+          message = message.replace("{0}", getUserIdentity(userName, false).getProfile().getFullName());
+        if (spaceId != null)
+          message = message.replace("{1}", getSpaceService().getSpaceById(spaceId).getDisplayName());
+        String closeLabel = res.getString("Notification.label.Close");
+        message = message.replace("'", "${simpleQuote}");
+        jm.require("SHARED/socialUtil", "socialUtil").addScripts("socialUtil.feedbackMessagePopup('" + title + "','" + message + "','" + closeLabel + "');");
+      }
+    } catch (Exception e) {
+      LOG.debug("Failed to init the feedback message");
+    }
   }
   
   /**

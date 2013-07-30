@@ -41,6 +41,18 @@
   uicomponent.refresh();
   String uiTabClazz = (Utils.isHomePage() == true) ? "uiTabPaneHomePage" : "";
   
+  if (uicomponent.isSingleActivityNotExist()) { %>
+    <div class="uiUserActivityStreamPortlet" id="$uicomponent.id">
+		  <div class="uiTabPane $uiTabClazz">
+		   <div class="uiUserActivitiesContainer">
+		      <%=_ctx.appRes("UIUserActivitiesDisplay.label.activityNotFound")%>
+		    </div>
+		  </div>
+		</div>
+  <%
+    return;
+  }
+  
   if (Utils.isFocusCommentBox()) {
     jsManager.require("SHARED/social-ui-activity", "activity").addScripts("activity.replyByURL('"+ uicomponent.getActivityId() + "');");
   } else if (Utils.isExpandLikers()) {

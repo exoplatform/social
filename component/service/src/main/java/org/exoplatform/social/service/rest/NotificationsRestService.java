@@ -147,7 +147,8 @@ public class NotificationsRestService implements ResourceContainer {
     }
     getRelationshipManager().deny(sender, receiver);
 
-    String targetURL = Util.getBaseUrl() + LinkProvider.getUserConnectionsYoursUri(receiver.getRemoteId());
+    //redirect to the requesters list and display a feedback message
+    String targetURL = Util.getBaseUrl() + LinkProvider.getRedirectUri("connexions/receivedInvitations/" + receiver.getRemoteId() + "?feedbackMessage=ConnectionRequestRefuse&userName=" + sender.getRemoteId());
 
     // redirect to target page
     return Response.seeOther(URI.create(targetURL)).build();
@@ -199,7 +200,8 @@ public class NotificationsRestService implements ResourceContainer {
     }
     getSpaceService().removeInvitedUser(space, userId);
 
-    String targetURL = Util.getBaseUrl() + LinkProvider.getRedirectUri("all-spaces");
+    //redirect to all spaces and display a feedback message
+    String targetURL = Util.getBaseUrl() + LinkProvider.getRedirectUri("all-spaces?feedbackMessage=SpaceInvitationRefuse&spaceId=" + spaceId);
     
     // redirect to target page
     return Response.seeOther(URI.create(targetURL)).build();
@@ -220,12 +222,23 @@ public class NotificationsRestService implements ResourceContainer {
     checkAuthenticatedRequest();
 
     Space space = getSpaceService().getSpaceById(spaceId);
+    
     if (space == null) {
       throw new WebApplicationException(Response.Status.BAD_REQUEST);
     }
+    
+    StringBuilder sb = new StringBuilder().append("?feedbackMessage=");
+    if (getSpaceService().isMember(space, userId)) {
+      sb.append("SpaceRequestAlreadyMember&spaceId=").append(spaceId);
+    } else {
+      sb.append("SpaceRequestApprove");
+    }
+    sb.append("&userName=").append(userId);
+
     getSpaceService().addMember(space, userId);
 
-    String targetURL = Util.getBaseUrl() + LinkProvider.getActivityUriForSpace(space.getGroupId().replace("/spaces/", ""), space.getPrettyName()) + "/settings/members";
+    //redirect to space's members page and display a feedback message
+    String targetURL = Util.getBaseUrl() + LinkProvider.getActivityUriForSpace(space.getGroupId().replace("/spaces/", ""), space.getPrettyName()) + "/settings/members" + sb.toString();
 
     // redirect to target page
     return Response.seeOther(URI.create(targetURL)).build();
@@ -251,7 +264,8 @@ public class NotificationsRestService implements ResourceContainer {
     }
     getSpaceService().removePendingUser(space, userId);
 
-    String targetURL = Util.getBaseUrl() + LinkProvider.getActivityUriForSpace(space.getGroupId().replace("/spaces/", ""), space.getPrettyName()) + "/settings/members";
+    //redirect to space's members page and display a feedback message
+    String targetURL = Util.getBaseUrl() + LinkProvider.getActivityUriForSpace(space.getGroupId().replace("/spaces/", ""), space.getPrettyName()) + "/settings/members?feedbackMessage=SpaceRequestRefuse&userName=" + userId;
 
     // redirect to target page
     return Response.seeOther(URI.create(targetURL)).build();

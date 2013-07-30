@@ -83,6 +83,13 @@ public class UIUserActivityStreamPortlet extends UIPortletApplication {
     return activityId;
   }
   
+  public boolean isSingleActivityNotExist() {
+    if (getActivityId() != null) {
+      return Utils.getActivityManager().getActivity(getActivityId()) == null;
+    }
+    return false;
+  }
+  
   /**
    * resets to reload all activities
    *
