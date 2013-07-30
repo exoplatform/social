@@ -38,7 +38,7 @@
   </component>
 
   <component>
-    <key>org.exoplatform.commons.api.notification.service.TemplateGenerator</key>
+    <key>org.exoplatform.commons.api.notification.service.template.TemplateGenerator</key>
     <type>org.exoplatform.social.notification.mock.MockTemplateGeneratorImpl</type>
   </component>
   <component>

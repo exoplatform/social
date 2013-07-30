@@ -20,8 +20,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.exoplatform.commons.api.notification.service.TemplateGenerator;
 import org.exoplatform.commons.api.notification.service.storage.NotificationDataStorage;
+import org.exoplatform.commons.api.notification.service.template.TemplateGenerator;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.identity.model.Identity;

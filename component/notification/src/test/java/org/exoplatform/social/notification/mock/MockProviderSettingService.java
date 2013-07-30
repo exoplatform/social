@@ -18,10 +18,10 @@ package org.exoplatform.social.notification.mock;
 
 import java.util.List;
 
-import org.exoplatform.commons.api.notification.GroupProvider;
+import org.exoplatform.commons.api.notification.model.GroupProvider;
 import org.exoplatform.commons.api.notification.model.ProviderData;
 import org.exoplatform.commons.api.notification.plugin.GroupProviderPlugin;
-import org.exoplatform.commons.api.notification.plugin.model.PluginConfig;
+import org.exoplatform.commons.api.notification.plugin.config.PluginConfig;
 import org.exoplatform.commons.api.notification.service.setting.ProviderSettingService;
 
 public class MockProviderSettingService implements ProviderSettingService {

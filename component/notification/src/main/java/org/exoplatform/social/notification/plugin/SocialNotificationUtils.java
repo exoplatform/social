@@ -24,8 +24,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import org.exoplatform.commons.api.notification.ArgumentLiteral;
-import org.exoplatform.commons.api.notification.TemplateContext;
+import org.exoplatform.commons.api.notification.model.ArgumentLiteral;
+import org.exoplatform.commons.api.notification.service.template.TemplateContext;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;

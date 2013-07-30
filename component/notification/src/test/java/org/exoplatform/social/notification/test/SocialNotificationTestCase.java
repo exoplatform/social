@@ -27,12 +27,12 @@ import java.util.Map;
 
 import org.exoplatform.commons.api.notification.NotificationContext;
 import org.exoplatform.commons.api.notification.model.MessageInfo;
+import org.exoplatform.commons.api.notification.model.NotificationKey;
 import org.exoplatform.commons.api.notification.model.NotificationMessage;
 import org.exoplatform.commons.api.notification.plugin.AbstractNotificationPlugin;
-import org.exoplatform.commons.api.notification.plugin.NotificationKey;
-import org.exoplatform.commons.api.notification.plugin.model.PluginConfig;
-import org.exoplatform.commons.api.notification.service.TemplateGenerator;
+import org.exoplatform.commons.api.notification.plugin.config.PluginConfig;
 import org.exoplatform.commons.api.notification.service.storage.NotificationService;
+import org.exoplatform.commons.api.notification.service.template.TemplateGenerator;
 import org.exoplatform.commons.notification.impl.NotificationContextImpl;
 import org.exoplatform.commons.notification.impl.setting.NotificationPluginContainer;
 import org.exoplatform.container.xml.InitParams;

@@ -23,9 +23,9 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
+import org.exoplatform.commons.api.notification.model.NotificationKey;
 import org.exoplatform.commons.api.notification.model.NotificationMessage;
 import org.exoplatform.commons.api.notification.model.UserSetting;
-import org.exoplatform.commons.api.notification.plugin.NotificationKey;
 import org.exoplatform.commons.api.notification.service.AbstractNotificationServiceListener;
 import org.exoplatform.commons.api.notification.service.storage.NotificationService;
 

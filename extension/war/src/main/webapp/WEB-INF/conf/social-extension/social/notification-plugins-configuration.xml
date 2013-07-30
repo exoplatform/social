@@ -51,7 +51,7 @@
         <object-param>
           <name>template.ActivityMentionPlugin</name>
           <description>The template of ActivityMentionPlugin</description>
-          <object type="org.exoplatform.commons.api.notification.plugin.model.PluginConfig">
+          <object type="org.exoplatform.commons.api.notification.plugin.config.PluginConfig">
             <field name="pluginId">
               <string>ActivityMentionPlugin</string>
             </field>
@@ -70,11 +70,11 @@
               <string>activity_stream</string>
             </field>
             <field name="templateConfig">
-              <object type="org.exoplatform.commons.api.notification.plugin.model.TemplateConfig">
-                <field name="localeResouceBundle">
+              <object type="org.exoplatform.commons.api.notification.plugin.config.TemplateConfig">
+                <field name="bundlePath">
                   <string>locale.notification.template.Notification</string>
                 </field>
-                <field name="localeResouceTemplate">
+                <field name="templatePath">
                   <string>war:/notification/templates/ActivityMentionPlugin.gtmpl</string>
                 </field>
               </object>
@@ -96,7 +96,7 @@
         <object-param>
           <name>template.ActivityCommentPlugin</name>
           <description>The template of ActivityCommentPlugin</description>
-          <object type="org.exoplatform.commons.api.notification.plugin.model.PluginConfig">
+          <object type="org.exoplatform.commons.api.notification.plugin.config.PluginConfig">
             <field name="pluginId">
               <string>ActivityCommentPlugin</string>
             </field>
@@ -116,11 +116,11 @@
               <string>activity_stream</string>
             </field>
             <field name="templateConfig">
-              <object type="org.exoplatform.commons.api.notification.plugin.model.TemplateConfig">
-                <field name="localeResouceBundle">
+              <object type="org.exoplatform.commons.api.notification.plugin.config.TemplateConfig">
+                <field name="bundlePath">
                   <string>locale.notification.template.Notification</string>
                 </field>
-                <field name="localeResouceTemplate">
+                <field name="templatePath">
                   <string>war:/notification/templates/ActivityCommentPlugin.gtmpl</string>
                 </field>
               </object>
@@ -142,7 +142,7 @@
         <object-param>
           <name>template.LikePlugin</name>
           <description>The template of ActivityLikePlugin</description>
-          <object type="org.exoplatform.commons.api.notification.plugin.model.PluginConfig">
+          <object type="org.exoplatform.commons.api.notification.plugin.config.PluginConfig">
             <field name="pluginId">
               <string>LikePlugin</string>
             </field>
@@ -161,11 +161,11 @@
               <string>activity_stream</string>
             </field>
             <field name="templateConfig">
-              <object type="org.exoplatform.commons.api.notification.plugin.model.TemplateConfig">
-                <field name="localeResouceBundle">
+              <object type="org.exoplatform.commons.api.notification.plugin.config.TemplateConfig">
+                <field name="bundlePath">
                   <string>locale.notification.template.Notification</string>
                 </field>
-                <field name="localeResouceTemplate">
+                <field name="templatePath">
                   <string>war:/notification/templates/LikePlugin.gtmpl</string>
                 </field>
               </object>
@@ -187,7 +187,7 @@
         <object-param>
           <name>template.PostActivityPlugin</name>
           <description>The template of PostActivityPlugin</description>
-          <object type="org.exoplatform.commons.api.notification.plugin.model.PluginConfig">
+          <object type="org.exoplatform.commons.api.notification.plugin.config.PluginConfig">
             <field name="pluginId">
               <string>PostActivityPlugin</string>
             </field>
@@ -206,11 +206,11 @@
               <string>activity_stream</string>
             </field>
             <field name="templateConfig">
-              <object type="org.exoplatform.commons.api.notification.plugin.model.TemplateConfig">
-                <field name="localeResouceBundle">
+              <object type="org.exoplatform.commons.api.notification.plugin.config.TemplateConfig">
+                <field name="bundlePath">
                   <string>locale.notification.template.Notification</string>
                 </field>
-                <field name="localeResouceTemplate">
+                <field name="templatePath">
                   <string>war:/notification/templates/PostActivityPlugin.gtmpl</string>
                 </field>
               </object>
@@ -232,7 +232,7 @@
         <object-param>
           <name>template.PostActivitySpaceStreamPlugin</name>
           <description>The template of PostActivitySpaceStreamPlugin</description>
-          <object type="org.exoplatform.commons.api.notification.plugin.model.PluginConfig">
+          <object type="org.exoplatform.commons.api.notification.plugin.config.PluginConfig">
             <field name="pluginId">
               <string>PostActivitySpaceStreamPlugin</string>
             </field>
@@ -251,11 +251,11 @@
               <string>spaces</string>
             </field>
             <field name="templateConfig">
-              <object type="org.exoplatform.commons.api.notification.plugin.model.TemplateConfig">
-                <field name="localeResouceBundle">
+              <object type="org.exoplatform.commons.api.notification.plugin.config.TemplateConfig">
+                <field name="bundlePath">
                   <string>locale.notification.template.Notification</string>
                 </field>
-                <field name="localeResouceTemplate">
+                <field name="templatePath">
                   <string>war:/notification/templates/PostActivitySpaceStreamPlugin.gtmpl</string>
                 </field>
               </object>
@@ -277,7 +277,7 @@
         <object-param>
           <name>template.NewUserPlugin</name>
           <description>The template of NewUserPlugin</description>
-          <object type="org.exoplatform.commons.api.notification.plugin.model.PluginConfig">
+          <object type="org.exoplatform.commons.api.notification.plugin.config.PluginConfig">
             <field name="pluginId">
               <string>NewUserPlugin</string>
             </field>
@@ -296,11 +296,11 @@
               <string>general</string>
             </field>
             <field name="templateConfig">
-              <object type="org.exoplatform.commons.api.notification.plugin.model.TemplateConfig">
-                <field name="localeResouceBundle">
+              <object type="org.exoplatform.commons.api.notification.plugin.config.TemplateConfig">
+                <field name="bundlePath">
                   <string>locale.notification.template.Notification</string>
                 </field>
-                <field name="localeResouceTemplate">
+                <field name="templatePath">
                   <string>war:/notification/templates/NewUserPlugin.gtmpl</string>
                 </field>
               </object>
@@ -322,7 +322,7 @@
         <object-param>
           <name>template.RelationshipRecievedRequestPlugin</name>
           <description>The template of RecievedRequestPlugin</description>
-          <object type="org.exoplatform.commons.api.notification.plugin.model.PluginConfig">
+          <object type="org.exoplatform.commons.api.notification.plugin.config.PluginConfig">
             <field name="pluginId">
               <string>RelationshipRecievedRequestPlugin</string>
             </field>
@@ -342,11 +342,11 @@
               <string>connections</string>
             </field>
             <field name="templateConfig">
-              <object type="org.exoplatform.commons.api.notification.plugin.model.TemplateConfig">
-                <field name="localeResouceBundle">
+              <object type="org.exoplatform.commons.api.notification.plugin.config.TemplateConfig">
+                <field name="bundlePath">
                   <string>locale.notification.template.Notification</string>
                 </field>
-                <field name="localeResouceTemplate">
+                <field name="templatePath">
                   <string>war:/notification/templates/RelationshipRecievedRequestPlugin.gtmpl</string>
                 </field>
               </object>
@@ -368,7 +368,7 @@
         <object-param>
           <name>template.SpaceInvitationPlugin</name>
           <description>The template of NewUserPlugin</description>
-          <object type="org.exoplatform.commons.api.notification.plugin.model.PluginConfig">
+          <object type="org.exoplatform.commons.api.notification.plugin.config.PluginConfig">
             <field name="pluginId">
               <string>SpaceInvitationPlugin</string>
             </field>
@@ -388,11 +388,11 @@
               <string>spaces</string>
             </field>
             <field name="templateConfig">
-              <object type="org.exoplatform.commons.api.notification.plugin.model.TemplateConfig">
-                <field name="localeResouceBundle">
+              <object type="org.exoplatform.commons.api.notification.plugin.config.TemplateConfig">
+                <field name="bundlePath">
                   <string>locale.notification.template.Notification</string>
                 </field>
-                <field name="localeResouceTemplate">
+                <field name="templatePath">
                   <string>war:/notification/templates/SpaceInvitationPlugin.gtmpl</string>
                 </field>
               </object>
@@ -414,7 +414,7 @@
         <object-param>
           <name>template.RequestJoinSpacePlugin</name>
           <description>The template of SpaceInvitationPlugin</description>
-          <object type="org.exoplatform.commons.api.notification.plugin.model.PluginConfig">
+          <object type="org.exoplatform.commons.api.notification.plugin.config.PluginConfig">
             <field name="pluginId">
               <string>RequestJoinSpacePlugin</string>
             </field>
@@ -434,11 +434,11 @@
               <string>spaces</string>
             </field>
             <field name="templateConfig">
-              <object type="org.exoplatform.commons.api.notification.plugin.model.TemplateConfig">
-                <field name="localeResouceBundle">
+              <object type="org.exoplatform.commons.api.notification.plugin.config.TemplateConfig">
+                <field name="bundlePath">
                   <string>locale.notification.template.Notification</string>
                 </field>
-                <field name="localeResouceTemplate">
+                <field name="templatePath">
                   <string>war:/notification/templates/RequestJoinSpacePlugin.gtmpl</string>
                 </field>
               </object>

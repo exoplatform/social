@@ -17,7 +17,7 @@
 package org.exoplatform.social.notification.impl;
 
 import org.exoplatform.commons.api.notification.NotificationContext;
-import org.exoplatform.commons.api.notification.plugin.NotificationKey;
+import org.exoplatform.commons.api.notification.model.NotificationKey;
 import org.exoplatform.commons.notification.impl.NotificationContextImpl;
 import org.exoplatform.social.core.space.SpaceListenerPlugin;
 import org.exoplatform.social.core.space.model.Space;

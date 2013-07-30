@@ -24,10 +24,10 @@ import java.util.List;
 import java.util.Map;
 
 import org.exoplatform.commons.api.notification.NotificationContext;
-import org.exoplatform.commons.api.notification.TemplateContext;
 import org.exoplatform.commons.api.notification.model.MessageInfo;
 import org.exoplatform.commons.api.notification.model.NotificationMessage;
 import org.exoplatform.commons.api.notification.plugin.AbstractNotificationPlugin;
+import org.exoplatform.commons.api.notification.service.template.TemplateContext;
 import org.exoplatform.container.xml.InitParams;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;

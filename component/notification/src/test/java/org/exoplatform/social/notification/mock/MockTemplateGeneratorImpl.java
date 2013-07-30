@@ -17,11 +17,11 @@
 package org.exoplatform.social.notification.mock;
 
 import org.apache.commons.lang.StringUtils;
-import org.exoplatform.commons.api.notification.TemplateContext;
-import org.exoplatform.commons.api.notification.plugin.model.TemplateConfig;
-import org.exoplatform.commons.api.notification.service.TemplateGenerator;
+import org.exoplatform.commons.api.notification.plugin.config.TemplateConfig;
+import org.exoplatform.commons.api.notification.service.template.TemplateContext;
+import org.exoplatform.commons.api.notification.service.template.TemplateGenerator;
 import org.exoplatform.commons.notification.NotificationUtils;
-import org.exoplatform.commons.notification.impl.TemplateGeneratorImpl;
+import org.exoplatform.commons.notification.impl.service.template.TemplateGeneratorImpl;
 
 public class MockTemplateGeneratorImpl implements TemplateGenerator {
 
@@ -34,7 +34,7 @@ public class MockTemplateGeneratorImpl implements TemplateGenerator {
   public String processTemplate(TemplateContext ctx) {
     TemplateConfig mappingKey = generatorImpl.getTemplateConfig(ctx.getProviderId());
     String templateKey = mappingKey.getKeyValue("template", "Notification.template." + ctx.getProviderId());
-    String template = NotificationUtils.getResourceBundle(templateKey, null, mappingKey.getLocaleResouceBundle());
+    String template = NotificationUtils.getResourceBundle(templateKey, null, mappingKey.getBundlePath());
     if (ctx != null) {
       for (String findKey : ctx.keySet()) {
         template = StringUtils.replace(template, findKey, (String)ctx.get(findKey));

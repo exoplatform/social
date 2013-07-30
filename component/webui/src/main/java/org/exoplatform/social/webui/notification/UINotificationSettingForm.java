@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
-import org.exoplatform.commons.api.notification.GroupProvider;
+import org.exoplatform.commons.api.notification.model.GroupProvider;
 import org.exoplatform.commons.api.notification.model.UserSetting;
 import org.exoplatform.commons.api.notification.model.UserSetting.FREQUENCY;
 import org.exoplatform.commons.api.notification.service.setting.ProviderSettingService;
