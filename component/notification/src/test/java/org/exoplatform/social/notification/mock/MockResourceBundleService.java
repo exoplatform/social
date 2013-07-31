@@ -37,8 +37,7 @@ import org.exoplatform.services.resources.ResourceBundleService;
 
 
 public class MockResourceBundleService implements ResourceBundleService {
-//  private static final String RESOUCE_LOCATION = "jar:/locale/notification/template/NotificationTemplate_en.properties";
-  private static final String RESOUCE_LOCATION = "jar:/";
+  private static final String RESOURCE_LOCATION = "jar:/";
   ConfigurationManager configurationService;
   ResourceBundle resourceBundle;
   List<String> locals = new ArrayList<String>();
@@ -77,7 +76,7 @@ public class MockResourceBundleService implements ResourceBundleService {
       InputStream inputStream = null;
       List<String> list = new ArrayList<String>();
       try {
-        inputStream = configurationService.getInputStream(RESOUCE_LOCATION + id);
+        inputStream = configurationService.getInputStream(RESOURCE_LOCATION + id);
         list = readTextECToListByInput(inputStream);
       } catch (Exception e) {
         e.printStackTrace();

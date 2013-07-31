@@ -52,7 +52,7 @@
 		%>
 				<tr>
 					<td class="left">
-						<strong><%=_ctx.appRes(group.getResouceBundleKey())%></strong>
+						<strong><%=_ctx.appRes(group.getResourceBundleKey())%></strong>
 					</td>
 					<td></td>
 					<td></td>
