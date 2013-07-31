@@ -30,6 +30,7 @@ import org.exoplatform.commons.api.notification.service.template.TemplateContext
 import org.exoplatform.container.xml.InitParams;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.identity.model.Identity;
+import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.notification.LinkProviderUtils;
 import org.exoplatform.social.notification.Utils;
 
@@ -71,7 +72,7 @@ public class LikePlugin extends AbstractNotificationPlugin {
     
     String activityId = notification.getValueOwnerParameter(SocialNotificationUtils.ACTIVITY_ID.getKey());
     ExoSocialActivity activity = Utils.getActivityManager().getActivity(activityId);
-    Identity identity = Utils.getIdentityManager().getIdentity(activity.getPosterId(), true);
+    Identity identity = Utils.getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, notification.getValueOwnerParameter("likersId"), true);
     
     templateContext.put("USER", identity.getProfile().getFullName());
     String subject = Utils.getTemplateGenerator().processSubject(templateContext);

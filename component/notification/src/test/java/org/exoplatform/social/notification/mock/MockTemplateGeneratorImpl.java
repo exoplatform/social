@@ -37,7 +37,7 @@ public class MockTemplateGeneratorImpl implements TemplateGenerator {
     String template = NotificationUtils.getResourceBundle(templateKey, null, mappingKey.getBundlePath());
     if (ctx != null) {
       for (String findKey : ctx.keySet()) {
-        template = StringUtils.replace(template, findKey, (String)ctx.get(findKey));
+        template = StringUtils.replace(template, "$" + findKey, (String)ctx.get(findKey));
       }
     }
     return template;

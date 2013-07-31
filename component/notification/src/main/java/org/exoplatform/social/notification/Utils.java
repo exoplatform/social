@@ -74,8 +74,12 @@ public class Utils {
   }
   
   public static List<String> getDestinataires(ExoSocialActivity activity, Space space) {
-    List<String> destinataires = Arrays.asList(space.getMembers());
-    destinataires.remove(getUserId(activity.getPosterId()));
+    List<String> destinataires = new ArrayList<String>();
+    String poster = getUserId(activity.getPosterId());
+    for (String member : space.getMembers()) {
+      if (! member.equals(poster))
+        destinataires.add(member);
+    }
     return destinataires;
   }
   
