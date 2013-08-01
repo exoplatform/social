@@ -81,6 +81,7 @@ public class ActivityMentionPlugin extends AbstractNotificationPlugin {
     if (activity.isComment()) {
       activity = Utils.getActivityManager().getParentActivity(activity);
     }
+    templateContext.put("AVATAR", LinkProviderUtils.getUserAvatarUrl(identity.getProfile()));
     templateContext.put("PROFILE_URL", LinkProviderUtils.getRedirectUrl("user", identity.getRemoteId()));
     templateContext.put("ACTIVITY", activity.getTitle());
     templateContext.put("REPLY_ACTION_URL", LinkProviderUtils.getRedirectUrl("reply_activity", activity.getId()));
