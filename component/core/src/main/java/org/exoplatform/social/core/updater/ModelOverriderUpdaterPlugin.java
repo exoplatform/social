@@ -33,7 +33,13 @@ public class ModelOverriderUpdaterPlugin extends UpgradeProductPlugin {
     //
     PortalContainer portalContainer = PortalContainer.getInstance();
     ChromatticManager manager = (ChromatticManager) portalContainer.getComponentInstanceOfType(ChromatticManager.class);
-    ((ComponentRequestLifecycle) manager).startRequest(portalContainer);
+    Boolean startComponentRequestLifecycle=false;
+    try {
+      ((ComponentRequestLifecycle) manager).startRequest(portalContainer);
+      startComponentRequestLifecycle=true;
+    } catch (Exception e1) {
+      LOG.warn(e1);
+    }
     SocialChromatticLifeCycle lifeCycle = (SocialChromatticLifeCycle) manager.getLifeCycle(SocialChromatticLifeCycle.SOCIAL_LIFECYCLE_NAME);
 
     //
@@ -51,7 +57,8 @@ public class ModelOverriderUpdaterPlugin extends UpgradeProductPlugin {
 
     }
       finally {
-        ((ComponentRequestLifecycle) manager).endRequest(portalContainer);
+        if(startComponentRequestLifecycle)
+          ((ComponentRequestLifecycle) manager).endRequest(portalContainer);
     }
 
   }
