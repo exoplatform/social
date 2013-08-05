@@ -32,6 +32,7 @@ import org.exoplatform.social.common.service.impl.SocialServiceContextImpl;
 import org.exoplatform.social.common.service.utils.ConsoleUtils;
 import org.exoplatform.social.common.service.utils.ObjectHelper;
 import org.exoplatform.social.core.chromattic.entity.ProfileEntity;
+import org.exoplatform.social.core.chromattic.entity.ProviderEntity;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
 import org.exoplatform.social.core.storage.api.IdentityStorage;
@@ -61,7 +62,13 @@ public class SpaceActivityStreamMigration extends AbstractStorage {
   
   public void upgrade(int limit) {
     StringBuffer sb = new StringBuffer().append("SELECT * FROM soc:identitydefinition WHERE ");
-    sb.append(JCRProperties.path.getName()).append(" LIKE '").append(getProviderRoot().getProviders().get(SpaceIdentityProvider.NAME).getPath() + StorageUtils.SLASH_STR + StorageUtils.PERCENT_STR);
+    ProviderEntity provider = getProviderRoot().getProviders().get(SpaceIdentityProvider.NAME);
+    //nothing needs to migrate.
+    if (provider == null) {
+      return;
+    }
+    
+    sb.append(JCRProperties.path.getName()).append(" LIKE '").append(provider.getPath() + StorageUtils.SLASH_STR + StorageUtils.PERCENT_STR);
     sb.append("' AND NOT ").append(ProfileEntity.deleted.getName()).append(" = ").append("true");
     
     LOG.warn("SQL : " + sb.toString());

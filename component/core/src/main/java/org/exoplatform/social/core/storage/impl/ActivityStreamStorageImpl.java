@@ -487,8 +487,9 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
     FEED() {
       @Override
       public ActivityRefListEntity refsOf(IdentityEntity identityEntity) {
-        if (identityEntity.getStreams() == null) return null;
-        
+        if (identityEntity.getStreams() == null) return create(identityEntity);
+        if (identityEntity.getStreams().getOwner() == null) return create(identityEntity);
+
         return identityEntity.getStreams().getAll();
       }
       
@@ -510,7 +511,8 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
     CONNECTION() {
       @Override
       public ActivityRefListEntity refsOf(IdentityEntity identityEntity) {
-        if (identityEntity.getStreams() == null) return null;
+        if (identityEntity.getStreams() == null) return create(identityEntity);
+        if (identityEntity.getStreams().getOwner() == null) return create(identityEntity);
         
         return identityEntity.getStreams().getConnections();
       }
@@ -532,7 +534,8 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
     MY_SPACES() {
       @Override
       public ActivityRefListEntity refsOf(IdentityEntity identityEntity) {
-        if (identityEntity.getStreams() == null) return null;
+        if (identityEntity.getStreams() == null) return create(identityEntity);
+        if (identityEntity.getStreams().getOwner() == null) return create(identityEntity);
         
         return identityEntity.getStreams().getMySpaces();
       }
@@ -554,7 +557,8 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
     SPACE_STREAM() {
       @Override
       public ActivityRefListEntity refsOf(IdentityEntity identityEntity) {
-        if (identityEntity.getStreams() == null) return null;
+        if (identityEntity.getStreams() == null) return create(identityEntity);
+        if (identityEntity.getStreams().getOwner() == null) return create(identityEntity);
         
         return identityEntity.getStreams().getSpace();
       }
@@ -576,8 +580,10 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
     MY_ACTIVITIES() {
       @Override
       public ActivityRefListEntity refsOf(IdentityEntity identityEntity) {
-        if (identityEntity.getStreams() == null) return null;
+        if (identityEntity.getStreams() == null) return create(identityEntity);
         
+        if (identityEntity.getStreams().getOwner() == null) return create(identityEntity);
+          
         return identityEntity.getStreams().getOwner();
       }
 
