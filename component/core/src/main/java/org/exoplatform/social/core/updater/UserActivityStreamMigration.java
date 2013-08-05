@@ -148,7 +148,9 @@ public class UserActivityStreamMigration extends AbstractStorage {
     } catch (Exception e) {
       LOG.error("Failed to migration for Activity Stream.", e);
     } finally {
+      
       StorageUtils.persistJCR(false);
+      StorageUtils.endRequest();
     }
   }
   
