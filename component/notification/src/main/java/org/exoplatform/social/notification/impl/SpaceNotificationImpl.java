@@ -75,7 +75,7 @@ public class SpaceNotificationImpl extends SpaceListenerPlugin {
     Space space = event.getSpace();
     String userId = event.getTarget();
     
-    NotificationContext ctx = NotificationContextImpl.DEFAULT.append(SocialNotificationUtils.REMOTE_ID, userId)
+    NotificationContext ctx = NotificationContextImpl.cloneInstance().append(SocialNotificationUtils.REMOTE_ID, userId)
                                                              .append(SocialNotificationUtils.SPACE, space);
     
     ctx.getNotificationExecutor().with(ctx.makeCommand(NotificationKey.key(SpaceInvitationPlugin.ID))).execute(ctx);
@@ -86,7 +86,7 @@ public class SpaceNotificationImpl extends SpaceListenerPlugin {
     Space space = event.getSpace();
     String userId = event.getTarget();
     
-    NotificationContext ctx = NotificationContextImpl.DEFAULT.append(SocialNotificationUtils.REMOTE_ID, userId)
+    NotificationContext ctx = NotificationContextImpl.cloneInstance().append(SocialNotificationUtils.REMOTE_ID, userId)
                                                              .append(SocialNotificationUtils.SPACE, space);
     
     ctx.getNotificationExecutor().with(ctx.makeCommand(NotificationKey.key(RequestJoinSpacePlugin.ID))).execute(ctx);

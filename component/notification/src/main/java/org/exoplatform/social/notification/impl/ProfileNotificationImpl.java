@@ -59,7 +59,7 @@ public class ProfileNotificationImpl extends ProfileListenerPlugin {
   public void createProfile(ProfileLifeCycleEvent event) {
     Profile profile = event.getProfile();
     
-    NotificationContext ctx = NotificationContextImpl.DEFAULT.append(SocialNotificationUtils.PROFILE, profile);
+    NotificationContext ctx = NotificationContextImpl.cloneInstance().append(SocialNotificationUtils.PROFILE, profile);
     ctx.getNotificationExecutor().with(ctx.makeCommand(NotificationKey.key(NewUserPlugin.ID))).execute(ctx);
   }
 

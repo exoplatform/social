@@ -261,7 +261,7 @@ public class SocialNotificationTestCase extends AbstractCoreTest {
     NotificationMessage message1 = iterators.next();
     assertEquals(1, message1.getSendToUserIds().size());
  
-    NotificationContext ctx = NotificationContextImpl.DEFAULT;
+    NotificationContext ctx = NotificationContextImpl.cloneInstance();
     ctx.setNotificationMessage(message1.setTo("mary"));
     MessageInfo info = commentPlugin.buildMessage(ctx);
     assertEquals(demoIdentity.getProfile().getFullName() + " commented one of your activities", info.getSubject());
@@ -274,7 +274,7 @@ public class SocialNotificationTestCase extends AbstractCoreTest {
     assertEquals(johnIdentity.getRemoteId(), users.get(1));
     assertEquals(maryIdentity.getRemoteId(), users.get(2));
     
-    ctx = NotificationContextImpl.DEFAULT;
+    ctx = NotificationContextImpl.cloneInstance();
     ctx.setNotificationMessage(message2.setTo("mary"));
     MessageInfo info1 = mentionPlugin.buildMessage(ctx);
     assertEquals("You were mentioned by " + demoIdentity.getProfile().getFullName(), info1.getSubject());
@@ -297,7 +297,7 @@ public class SocialNotificationTestCase extends AbstractCoreTest {
       Collection<NotificationMessage> messages = notificationService.emails();
            assertEquals(1, messages.size());
       NotificationMessage message = messages.iterator().next();
-      NotificationContext ctx = NotificationContextImpl.DEFAULT;
+      NotificationContext ctx = NotificationContextImpl.cloneInstance();
       ctx.setNotificationMessage(message.setTo("demo"));
       MessageInfo info = commentPlugin.buildMessage(ctx);
   
@@ -443,7 +443,7 @@ public class SocialNotificationTestCase extends AbstractCoreTest {
     Collection<NotificationMessage> messages = notificationService.emails();
     assertEquals(1, messages.size());
     NotificationMessage message = messages.iterator().next();
-    NotificationContext ctx = NotificationContextImpl.DEFAULT;
+    NotificationContext ctx = NotificationContextImpl.cloneInstance();
     ctx.setNotificationMessage(message.setTo("demo"));
     MessageInfo info = inviteToConnectPlugin.buildMessage(ctx);
     
@@ -457,7 +457,7 @@ public class SocialNotificationTestCase extends AbstractCoreTest {
     Collection<NotificationMessage> messages = notificationService.emails();
        assertEquals(1, messages.size());
     NotificationMessage message = messages.iterator().next();
-    NotificationContext ctx = NotificationContextImpl.DEFAULT;
+    NotificationContext ctx = NotificationContextImpl.cloneInstance();
     ctx.setNotificationMessage(message.setTo("mary"));
     MessageInfo info = invitedJoinSpacePlugin.buildMessage(ctx);
     assertEquals("You've been invited to join "+ space.getDisplayName() + " space", info.getSubject());
@@ -500,7 +500,7 @@ public class SocialNotificationTestCase extends AbstractCoreTest {
         list.add(message.setTo(rootIdentity.getRemoteId()));
       }
       
-      NotificationContext ctx = NotificationContextImpl.DEFAULT;
+      NotificationContext ctx = NotificationContextImpl.cloneInstance();
       ctx.setNotificationMessages(list);
       Writer writer = new StringWriter();
       commentPlugin.buildDigest(ctx, writer);
@@ -529,7 +529,7 @@ public class SocialNotificationTestCase extends AbstractCoreTest {
       for (NotificationMessage message : messages) {
         list.add(message.setTo(rootIdentity.getRemoteId()));
       }
-      NotificationContext ctx = NotificationContextImpl.DEFAULT;
+      NotificationContext ctx = NotificationContextImpl.cloneInstance();
       ctx.setNotificationMessages(list);
       Writer writer = new StringWriter();
       postActivityPlugin.buildDigest(ctx, writer);
@@ -550,7 +550,7 @@ public class SocialNotificationTestCase extends AbstractCoreTest {
         list.add(message.setTo(demoIdentity.getRemoteId()));
       }
       //String digest = buildDigestMessageInfo(list);
-      NotificationContext ctx = NotificationContextImpl.DEFAULT;
+      NotificationContext ctx = NotificationContextImpl.cloneInstance();
       ctx.setNotificationMessages(list);
       Writer writer = new StringWriter();
       inviteToConnectPlugin.buildDigest(ctx, writer);
@@ -575,7 +575,7 @@ public class SocialNotificationTestCase extends AbstractCoreTest {
       for (NotificationMessage message : messages) {
         list.add(message.setTo(maryIdentity.getRemoteId()));
       }
-      NotificationContext ctx = NotificationContextImpl.DEFAULT;
+      NotificationContext ctx = NotificationContextImpl.cloneInstance();
       ctx.setNotificationMessages(list);
       Writer writer = new StringWriter();
       invitedJoinSpacePlugin.buildDigest(ctx, writer);
@@ -601,7 +601,7 @@ public class SocialNotificationTestCase extends AbstractCoreTest {
       for (NotificationMessage message : messages) {
         list.add(message.setTo(rootIdentity.getRemoteId()));
       }
-      NotificationContext ctx = NotificationContextImpl.DEFAULT;
+      NotificationContext ctx = NotificationContextImpl.cloneInstance();
       ctx.setNotificationMessages(list);
       Writer writer = new StringWriter();
       spaceJoinRequestPlugin.buildDigest(ctx, writer);
@@ -629,7 +629,7 @@ public class SocialNotificationTestCase extends AbstractCoreTest {
       for (NotificationMessage message : messages) {
         list.add(message.setTo(demoIdentity.getRemoteId()));
       }
-      NotificationContext ctx = NotificationContextImpl.DEFAULT;
+      NotificationContext ctx = NotificationContextImpl.cloneInstance();
       ctx.setNotificationMessages(list);
       Writer writer = new StringWriter();
       mentionPlugin.buildDigest(ctx, writer);
@@ -658,7 +658,7 @@ public class SocialNotificationTestCase extends AbstractCoreTest {
         if (message.getKey().getId().equals("ActivityMentionPlugin"))
           list.add(message.setTo(demoIdentity.getRemoteId()));
       }
-      ctx = NotificationContextImpl.DEFAULT;
+      ctx = NotificationContextImpl.cloneInstance();
       ctx.setNotificationMessages(list);
       writer = new StringWriter();
       mentionPlugin.buildDigest(ctx, writer);
@@ -679,7 +679,7 @@ public class SocialNotificationTestCase extends AbstractCoreTest {
       for (NotificationMessage message : messages) {
         list.add(message.setTo(demoIdentity.getRemoteId()));
       }
-      NotificationContext ctx = NotificationContextImpl.DEFAULT;
+      NotificationContext ctx = NotificationContextImpl.cloneInstance();
       ctx.setNotificationMessages(list);
       Writer writer = new StringWriter();
       creatUserPlugin.buildDigest(ctx, writer);
@@ -709,7 +709,7 @@ public class SocialNotificationTestCase extends AbstractCoreTest {
       for (NotificationMessage message : messages) {
         list.add(message.setTo(rootIdentity.getRemoteId()));
       }
-      NotificationContext ctx = NotificationContextImpl.DEFAULT;
+      NotificationContext ctx = NotificationContextImpl.cloneInstance();
       ctx.setNotificationMessages(list);
       Writer writer = new StringWriter();
       likePlugin.buildDigest(ctx, writer);
@@ -750,7 +750,7 @@ public class SocialNotificationTestCase extends AbstractCoreTest {
       for (NotificationMessage message : messages) {
         list.add(message.setTo(rootIdentity.getRemoteId()));
       }
-      NotificationContext ctx = NotificationContextImpl.DEFAULT;
+      NotificationContext ctx = NotificationContextImpl.cloneInstance();
       ctx.setNotificationMessages(list);
       Writer writer = new StringWriter();
       postSpaceActivityPlugin.buildDigest(ctx, writer);

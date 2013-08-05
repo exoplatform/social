@@ -34,7 +34,7 @@ public class ActivityNotificationImpl extends ActivityListenerPlugin {
   @Override
   public void saveActivity(ActivityLifeCycleEvent event) {
     ExoSocialActivity activity = event.getSource();    
-    NotificationContext ctx = NotificationContextImpl.DEFAULT.append(SocialNotificationUtils.ACTIVITY, activity);
+    NotificationContext ctx = NotificationContextImpl.cloneInstance().append(SocialNotificationUtils.ACTIVITY, activity);
 
     ctx.getNotificationExecutor().with(ctx.makeCommand(NotificationKey.key(PostActivityPlugin.ID)))
                                  .with(ctx.makeCommand(NotificationKey.key(PostActivitySpaceStreamPlugin.ID)))
@@ -49,7 +49,7 @@ public class ActivityNotificationImpl extends ActivityListenerPlugin {
   @Override
   public void saveComment(ActivityLifeCycleEvent event) {
     ExoSocialActivity activity = event.getSource();    
-    NotificationContext ctx = NotificationContextImpl.DEFAULT.append(SocialNotificationUtils.ACTIVITY, activity);
+    NotificationContext ctx = NotificationContextImpl.cloneInstance().append(SocialNotificationUtils.ACTIVITY, activity);
 
     ctx.getNotificationExecutor().with(ctx.makeCommand(NotificationKey.key(ActivityCommentPlugin.ID)))
                                  .with(ctx.makeCommand(NotificationKey.key(ActivityMentionPlugin.ID)))
@@ -59,7 +59,7 @@ public class ActivityNotificationImpl extends ActivityListenerPlugin {
   @Override
   public void likeActivity(ActivityLifeCycleEvent event) {
     ExoSocialActivity activity = event.getSource();    
-    NotificationContext ctx = NotificationContextImpl.DEFAULT.append(SocialNotificationUtils.ACTIVITY, activity);
+    NotificationContext ctx = NotificationContextImpl.cloneInstance().append(SocialNotificationUtils.ACTIVITY, activity);
     
     ctx.getNotificationExecutor().with(ctx.makeCommand(NotificationKey.key(LikePlugin.ID)))
                                  .execute(ctx);

@@ -50,7 +50,7 @@ public class RelationshipNotifictionImpl extends RelationshipListenerPlugin {
   public void requested(RelationshipEvent event) {
     Relationship relationship = event.getPayload();
     try {
-      NotificationContext ctx = NotificationContextImpl.DEFAULT.append(SocialNotificationUtils.RELATIONSHIP, relationship);
+      NotificationContext ctx = NotificationContextImpl.cloneInstance().append(SocialNotificationUtils.RELATIONSHIP, relationship);
       ctx.getNotificationExecutor().with(ctx.makeCommand(NotificationKey.key(RelationshipRecievedRequestPlugin.ID)))
                                    .execute(ctx);
     } catch (Exception e) {
