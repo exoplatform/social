@@ -407,17 +407,31 @@ public class StorageUtils {
       //push to JCR
       AbstractStorage.lifecycleLookup().closeContext(true);
       
+      if (beginRequest) {
+        AbstractStorage.lifecycleLookup().openContext();
+      }
+      
+    } catch (Exception e) {
+      return false;
+    }
+    return true;
+  }
+  
+  /**
+   * End the request for ChromatticManager 
+   * @return
+   */
+  public static boolean endRequest() {
+    try {
+      
       ExoContainer container = ExoContainerContext.getCurrentContainer();
       ChromatticManager manager = (ChromatticManager) container.getComponentInstanceOfType(ChromatticManager.class);
       Synchronization synchronization = manager.getSynchronization();
-      synchronization.setSaveOnClose(true);
-      //close synchronous and session.logout
-      manager.endRequest(true);
-      //
-      if (beginRequest) {
-        manager.beginRequest();
+      if (synchronization != null) {
+        synchronization.setSaveOnClose(true);
+        //close synchronous and session.logout
+        manager.endRequest(true);
       }
-      
     } catch (Exception e) {
       return false;
     }
