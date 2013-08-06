@@ -1,0 +1,116 @@
+#{param name=_ctx/}
+#{param name=checkbox/}
+#{param name=checkboxId/}
+#{param name=groups/}
+#{param name=checkBoxs/}
+#{param name=selectBoxs/}
+
+<div id="userNotification" class="uiUserNotificationPortlet uiNotificationSettings">
+	<div class="UIPopupWindow UIDragObject uiPopup UISocialConfirmation" style="width: 550px; display: none;">
+		<div class="popupHeader ClearFix">
+			<a class="uiIconClose pull-right" title="${_ctx.appRes("Notification.action.Close")}"></a>
+			<span class="PopupTitle popupTitle"></span>
+		</div>
+		<div class="PopupContent popupContent">
+			<ul class="singleMessage popupMessage resizable">
+				<li>
+					<span class="confirmationIcon contentMessage"></span>
+				</li>
+			</ul>
+			<div class="uiAction uiActionBorder"></div>
+		</div>			
+	</div>
+	<form id="uiNotificationSetting" name="uiNotificationSetting" action="" method="post">
+		<div class="uiSocTitleBar clearfix">
+			<h4>${_ctx.appRes("Notification.label.NotificationSettings")}</h4>
+			<span>${_ctx.appRes("Notification.label.NotificationsDescription")}</span>
+		</div>
+		
+		<div>
+			<span class="uiCheckbox">
+				<input type="checkbox" ${checkbox} name="${checkboxId}" class="checkbox" id="${checkboxId}"/>
+				<span style="margin-left:10px">${_ctx.appRes("Notification.label.DisableEmailNotifciation")}</span>
+			</span>
+		</div>
+		
+		<%
+			String display = "block";
+			if("checked".equals(checkbox)) {
+			  display = "none";
+			}
+		%>
+		<div class="form-horizontal" style="display:${display}">
+			<table class="uiGrid table table-striped">
+				<thead>
+					<tr>
+						<th class="left">${_ctx.appRes("Notification.label.NotificationsChose")}</th>
+						<th width="200px" class="left">${_ctx.appRes("Notification.label.SendMeAnEmailRightWay")}</th>
+						<th width="200px" class="left">${_ctx.appRes("Notification.label.IncludeInMyDigestEmail")}</th>
+					</tr>
+				</thead>
+				<tbody>
+			<% 
+				if (groups == null || groups.size() == 0) { 
+			%>
+					<tr>
+						<td class="empty center" colspan="5">
+						 ${_ctx.appRes("Notification.label.Empty")}
+						</td>
+					</tr>	
+			<%} else {
+					for(def group : groups) {
+					  List pluginInfos = group.getProviderDatas();
+					  if(pluginInfos == null || pluginInfos.size() == 0) {
+					    continue;
+					  }
+			%>
+					<tr>
+						<td class="left">
+							<strong>${_ctx.appRes(group.getResourceBundleKey())}</strong>
+						</td>
+						<td></td>
+						<td></td>
+					</tr>
+					<%
+						for (def plugin : pluginInfos) {
+						  String pluginId = plugin.getType();
+						  if(plugin.isActive() == false) {
+						    continue;
+						  } 
+					%>
+					<tr>
+						<td class="left">
+							<label for="$providerId" style="padding-left:20px">${_ctx.appRes("Notification.title." + pluginId)}</label>
+						</td>
+						<td class="center">
+							${checkBoxs.get(pluginId)}
+						</td>
+						<td class="center">
+							${selectBoxs.get(pluginId)}
+						</td>
+					</tr>
+			 	 <% } %>
+			 <% } %>
+		 <% } %>
+				</tbody>
+			</table>
+			<%
+				String inforTitle = _ctx.appRes("Notification.title.Information");
+				String confTitle = _ctx.appRes("Notification.title.Confirmation");
+	
+				String msgOK = _ctx.appRes("Notification.msg.SaveOKSetting");
+				String msgNOK = _ctx.appRes("Notification.msg.SaveNOKSetting");
+	
+				String close = _ctx.appRes("Notification.action.Close");
+				String ok = _ctx.appRes("Notification.action.OK");
+	
+				String confirm = _ctx.appRes("Notification.msg.ResetSetting");
+				String confirmLabel = _ctx.appRes("Notification.action.Confirm");
+			%>
+			<div class="uiAction" data-info="${inforTitle}" data-conf="${confTitle}" data-close="${close}" data-ok="${ok}">
+				<button id="Save" data-ok="${msgOK}" data-nok="${msgNOK}" class="btn" type="button">${_ctx.appRes("Notification.action.Save")}</button>
+				<button id="Reset" data-confirm="${confirm}" data-confirm-label="${confirmLabel}" class="btn" type="button">${_ctx.appRes("Notification.action.Reset")}</button>
+			</div>
+		</div>
+	</form>
+</div>

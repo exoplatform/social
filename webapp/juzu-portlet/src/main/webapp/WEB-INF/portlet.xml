@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<portlet-app xmlns="http://java.sun.com/xml/ns/portlet/portlet-app_2_0.xsd"
+             version="2.0"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://java.sun.com/xml/ns/portlet/portlet-app_2_0.xsd
+   http://java.sun.com/xml/ns/portlet/portlet-app_2_0.xsd">
+   
+   <!--User notification settings portlet -->
+   <portlet>
+     <description xml:lang="EN">User notification settings portlet</description>
+     <portlet-name>NotificationSettingsPortlet</portlet-name>
+     <display-name xml:lang="EN">User Notification Settings</display-name>
+     <portlet-class>org.exoplatform.social.portlet.userNotification.UserNotificationPortlet</portlet-class>
+          
+     <supports>
+       <mime-type>text/html</mime-type>
+     </supports>
+     
+     <supported-locale>en</supported-locale>
+     <resource-bundle>locale.portlet.notification.UserNotificationPortlet</resource-bundle>
+     <portlet-info>
+       <title>User notification settings</title>
+       <keywords>social</keywords>
+     </portlet-info>
+     
+   </portlet>
+</portlet-app>

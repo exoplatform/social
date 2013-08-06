@@ -267,6 +267,7 @@
 
   setTimeout(PopupConfirmation.executeCurrentConfirm, 220);
   eXo.social.PopupConfirmation = eXo.social.PopupConfirmation || PopupConfirmation;
+  SocialUtils.PopupConfirmation = eXo.social.PopupConfirmation;
   eXo.social.SocialUtil = SocialUtils;
   return SocialUtils;
 
