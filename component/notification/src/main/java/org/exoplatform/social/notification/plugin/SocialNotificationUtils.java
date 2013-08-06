@@ -92,7 +92,9 @@ public class SocialNotificationUtils {
     StringBuilder sb = new StringBuilder();
     ExoSocialActivity activity = null;
     Space space = null;
+    sb.append("<ul style=\"margin: 0 0  40px; padding-left: 0; list-style-position: outside;\">");
     for (Entry<String, List<String>> entry : map.entrySet()) {
+      sb.append("<li style=\"margin: 0 0 13px 14px; font-size: 13px; list-style: disc; line-height: 18px; font-family: HelveticaNeue, Helvetica, Arial, sans-serif;\">");
       String id = entry.getKey();
       try {
         activity = Utils.getActivityManager().getActivity(id);
@@ -138,8 +140,11 @@ public class SocialNotificationUtils {
       }
 
       String digester = Utils.getTemplateGenerator().processDigest(templateContext.digestType(count));
-      sb.append(digester).append("</br>");
+      sb.append(digester);
+      sb.append("</li>");
     }
+    
+    sb.append("</ul>");
     
     return sb.toString();
   }
@@ -155,7 +160,7 @@ public class SocialNotificationUtils {
   
   public static String buildRedirecUrl(String type, String id, String name) {
     String link = LinkProviderUtils.getRedirectUrl(type, id);
-    return "<a href=\""+ link + "\">" + name + "</a>";
+    return "<a target=\"_blank\" style=\"text-decoration: none; font-weight: bold; color: #2f5e92; font-family: 'HelveticaNeue Bold', Helvetica, Arial, sans-serif; font-size: 13px; line-height: 18px;\" href=\""+ link + "\">" + name + "</a>";
   }
   
   public static void addFooterAndFirstName(String remoteId, TemplateContext templateContext) {

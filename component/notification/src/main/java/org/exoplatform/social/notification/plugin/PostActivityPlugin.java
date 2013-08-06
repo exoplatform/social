@@ -129,7 +129,7 @@ public class PostActivityPlugin extends AbstractNotificationPlugin {
       }
       templateContext.put("USER_ACTIVITY_STREAM", LinkProviderUtils.getRedirectUrl("user_activity_stream", sendToUser));
       String digester = Utils.getTemplateGenerator().processDigest(templateContext.digestType(count));
-      writer.append(digester).append("</br>");
+      writer.append(digester);
       
     } catch (IOException e) {
       ctx.setException(e);

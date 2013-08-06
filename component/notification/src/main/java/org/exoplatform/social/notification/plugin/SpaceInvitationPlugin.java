@@ -112,7 +112,7 @@ public class SpaceInvitationPlugin extends AbstractNotificationPlugin {
       }
 
       String digester = Utils.getTemplateGenerator().processDigest(templateContext.digestType(count).end());
-      writer.append(digester).append("</br>");
+      writer.append(digester);
     } catch (IOException e) {
       ctx.setException(e);
       return false;

@@ -133,7 +133,7 @@ public class NewUserPlugin extends AbstractNotificationPlugin {
       
       templateContext.put("PORTAL_NAME", System.getProperty("exo.notifications.portalname", "eXo"));
       String digester = Utils.getTemplateGenerator().processDigest(templateContext.digestType(count));
-      writer.append(digester).append("</br>");
+      writer.append(digester);
       
     } catch (IOException e) {
       ctx.setException(e);
