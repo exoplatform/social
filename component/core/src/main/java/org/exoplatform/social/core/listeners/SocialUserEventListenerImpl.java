@@ -20,6 +20,8 @@ import org.exoplatform.container.ExoContainer;
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.container.component.RequestLifeCycle;
+import org.exoplatform.services.log.ExoLogger;
+import org.exoplatform.services.log.Log;
 import org.exoplatform.services.organization.User;
 import org.exoplatform.services.organization.UserEventListener;
 import org.exoplatform.social.core.identity.model.Identity;
@@ -39,6 +41,8 @@ import org.exoplatform.social.core.storage.impl.StorageUtils;
  */
 public class SocialUserEventListenerImpl extends UserEventListener {
 
+  private static final Log LOG = ExoLogger.getLogger(SocialUserEventListenerImpl.class);
+  
   @Override
   public void preSave(User user, boolean isNew) throws Exception {
 
@@ -131,6 +135,7 @@ public class SocialUserEventListenerImpl extends UserEventListener {
       // TODO: Send an alert email to super admin to manage spaces in case deleted user is the last manager.
       // Nothing executed (user not deleted) when facing this case now with code commit by SOC-1507.
       // Will be implemented by SOC-2276.
+      LOG.debug("Problem occurred when deleting identity.");
     }
     
     //
