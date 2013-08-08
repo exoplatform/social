@@ -90,14 +90,15 @@
     <picocontainer.version>1.1</picocontainer.version>
     <jbossxb.version>2.0.1.GA</jbossxb.version>
     <jboss-common-core.version>2.2.9.GA</jboss-common-core.version>
-
-    <org.exoplatform.kernel.version>2.3.12-GA</org.exoplatform.kernel.version>
-    <org.exoplatform.core.version>2.4.12-GA</org.exoplatform.core.version>
-    <org.exoplatform.ws.version>2.2.12-GA</org.exoplatform.ws.version>
-    <org.exoplatform.jcr.version>1.14.12-GA</org.exoplatform.jcr.version>
-    <org.exoplatform.portal.version>3.2.9-PLF</org.exoplatform.portal.version>
-    <org.exoplatform.ecms.version>2.3.12</org.exoplatform.ecms.version>   
-    <org.exoplatform.commons.version>1.1.13</org.exoplatform.commons.version>
+    <!-- eXo Dependencies -->
+    <org.exoplatform.kernel.version>2.3.13-GA-SNAPSHOT</org.exoplatform.kernel.version>
+    <org.exoplatform.core.version>2.4.13-GA-SNAPSHOT</org.exoplatform.core.version>
+    <org.exoplatform.ws.version>2.2.13-GA-SNAPSHOT</org.exoplatform.ws.version>
+    <org.exoplatform.jcr.version>1.14.13-GA-SNAPSHOT</org.exoplatform.jcr.version>
+    <org.exoplatform.portal.version>3.2.10-PLF-SNAPSHOT</org.exoplatform.portal.version>
+    <org.exoplatform.ecms.version>2.3.13-SNAPSHOT</org.exoplatform.ecms.version>   
+    <org.exoplatform.commons.version>1.1.14-SNAPSHOT</org.exoplatform.commons.version>
+    <org.exoplatform.doc.doc-style.version>1.0.12-SNAPSHOT</org.exoplatform.doc.doc-style.version>
     <org.exoplatform.exopackage.version>1.1.4</org.exoplatform.exopackage.version>
     <org.exoplatform.tool.version>1.0.0</org.exoplatform.tool.version>
     <org.gatein.common.version>2.0.4-GA</org.gatein.common.version>
@@ -121,7 +122,6 @@
     <org.apache.httpcomponents.httpcore.version>4.0.1</org.apache.httpcomponents.httpcore.version>
     <org.staxnav.version>0.9.6</org.staxnav.version>
 
-
     <net.sf.ehcache.version>1.6.0</net.sf.ehcache.version>
     <net.oauth.core.oauth.version>20100527</net.oauth.core.oauth.version>
     <net.oauth.core.oauth-provider.version>20100527</net.oauth.core.oauth-provider.version>
@@ -134,10 +134,6 @@
     <com.google.inject.extensions.version>2.0</com.google.inject.extensions.version>
 
     <de.odysseus.juel.version>2.1.2</de.odysseus.juel.version>
-    
-    <org.exoplatform.doc.doc-style.version>1.0.11</org.exoplatform.doc.doc-style.version>
-
-
     <!-- ***************************************************** -->
     <!-- Plugin versions (waiting for an upgrade in exo parent -->
     <!-- ***************************************************** -->
