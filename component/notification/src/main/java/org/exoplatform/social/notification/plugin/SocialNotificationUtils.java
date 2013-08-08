@@ -118,7 +118,7 @@ public class SocialNotificationUtils {
       String key = "";
       StringBuilder value = new StringBuilder();
       
-      for (int i = 0; i < count && i <= 3; i++) {
+      for (int i = 0; i < count && i < 3; i++) {
         Identity identity = Utils.getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, values.get(i), true);
         if (i > 1 && count == 3) {
           key = keys[i - 1];

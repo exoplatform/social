@@ -46,6 +46,11 @@ public class ActivityCommentPlugin extends AbstractNotificationPlugin {
     ExoSocialActivity comment = ctx.value(SocialNotificationUtils.ACTIVITY);
     ExoSocialActivity activity = Utils.getActivityManager().getParentActivity(comment);
     
+    //Don't make any notification when a comment is added on the activity created automaticaly when space created
+    if (Utils.isSpaceActivity(activity) && activity.getStreamOwner().equals(Utils.getUserId(activity.getPosterId()))) {
+      return null;
+    }
+    
     //Send notification to all others users who have comment on this activity
     List<String> sendToUsers = Utils.getDestinataires(activity.getCommentedIds(), comment.getPosterId());
     

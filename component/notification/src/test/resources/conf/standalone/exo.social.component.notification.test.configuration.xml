@@ -36,6 +36,16 @@
     <key>org.exoplatform.commons.api.notification.service.setting.UserSettingService</key>
     <type>org.exoplatform.commons.notification.impl.setting.UserSettingServiceImpl</type>
   </component>
+  
+  <component>
+    <key>org.exoplatform.commons.api.settings.SettingService</key>
+    <type>org.exoplatform.social.notification.mock.MockSettingServiceImpl</type>
+  </component>
+
+  <component>
+    <key>org.exoplatform.commons.api.settings.ExoFeatureService</key>
+    <type>org.exoplatform.settings.impl.ExoFeatureServiceImpl</type>
+  </component>
 
   <component>
     <key>org.exoplatform.commons.api.notification.service.template.TemplateGenerator</key>
