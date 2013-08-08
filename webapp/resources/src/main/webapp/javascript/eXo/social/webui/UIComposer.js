@@ -56,7 +56,7 @@
 
       $(document).ready(function() {
         var actionLink = $('#actionLink');
-        if(actionLink.length > 0 && (UIComposer.clickOn === null || $(UIComposer.clickOn).hasClass('uidocactivitycomposer') === false)) {
+        if(actionLink.length > 0 && UIComposer.clickOn === null) {
           if ($('#InputLink').length == 0) {
             actionLink.trigger('click');
           } else {
