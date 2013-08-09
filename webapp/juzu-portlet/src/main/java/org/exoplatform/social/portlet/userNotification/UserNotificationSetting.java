@@ -84,16 +84,17 @@ public class UserNotificationSetting {
       UserSetting setting = UserSetting.getInstance();
       Map<String, String> datas = parserParams(params);
       for (String pluginId : datas.keySet()) {
-        if(pluginId.indexOf(SELECT_BOX_PREFIX) > 0) {
+        if (pluginId.indexOf(SELECT_BOX_PREFIX) > 0) {
+          String value = datas.get(pluginId);
           pluginId = pluginId.replaceFirst(SELECT_BOX_PREFIX, "");
           //
-          if(WEEKLY.equals(datas.get(pluginId))) {
+          if (WEEKLY.equals(value)) {
             setting.addProvider(pluginId, FREQUENCY.WEEKLY);
           }
-          if(DAILY.equals(datas.get(pluginId))) {
+          if (DAILY.equals(value)) {
             setting.addProvider(pluginId, FREQUENCY.DAILY);
           }
-        } else {
+        } else if (CHECK_BOX_DEACTIVATE_ID.equals(pluginId) == false) {
           setting.addProvider(pluginId, FREQUENCY.INSTANTLY);
         }
       }
