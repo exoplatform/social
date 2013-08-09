@@ -38,6 +38,8 @@ import org.exoplatform.commons.api.notification.model.UserSetting.FREQUENCY;
 import org.exoplatform.commons.api.notification.service.setting.ProviderSettingService;
 import org.exoplatform.commons.api.notification.service.setting.UserSettingService;
 import org.exoplatform.commons.juzu.ajax.Ajax;
+import org.exoplatform.commons.notification.NotificationUtils;
+import org.exoplatform.commons.utils.CommonsUtils;
 import org.exoplatform.social.webui.Utils;
 
 
@@ -68,7 +70,6 @@ public class UserNotificationSetting {
   @View
   public void index(RenderContext renderContext) {
     if(bundle == null) {
-      System.out.println(renderContext.getParameters().toString());
       bundle = renderContext.getApplicationContext().resolveBundle(renderContext.getUserContext().getLocale());
     }
     
@@ -128,6 +129,19 @@ public class UserNotificationSetting {
 
   private Map<String, Object> parameters() {
     Map<String, Object> parameters = new HashMap<String, Object>();
+
+    if(CommonsUtils.isFeatureActive(NotificationUtils.FEATURE_NAME) == false) {
+      parameters.put("active", false);
+      parameters.put("checkbox", "");
+      parameters.put("checkboxId", "");
+      parameters.put("groups", "");
+      parameters.put("checkBoxs", "");
+      parameters.put("selectBoxs", "");
+      return parameters;
+    }
+    //
+    parameters.put("active", true);
+    //
     Context context = new Context(bundle);
     parameters.put("_ctx", context);
 
@@ -140,17 +154,17 @@ public class UserNotificationSetting {
     List<GroupProvider> groups = providerSettingService.getGroupProviders();
     parameters.put("groups", groups);
     //
-
+    
     Map<String, String> selectBoxList = new HashMap<String, String>();
     Map<String, String> checkBoxList = new HashMap<String, String>();
-
+    
     Map<String, String> options = buildOptions(context);
-
+    
     for (String pluginId : providerSettingService.getActiveProviderIds()) {
       selectBoxList.put(pluginId, buildSelectBox(pluginId, options, getValue(setting, pluginId)));
       checkBoxList.put(pluginId, buildCheckBox(pluginId, isInInstantly(setting, pluginId)));
     }
-
+    
     parameters.put("checkBoxs", checkBoxList);
     parameters.put("selectBoxs", selectBoxList);
 
