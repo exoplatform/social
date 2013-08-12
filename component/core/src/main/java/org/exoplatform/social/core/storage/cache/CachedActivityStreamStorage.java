@@ -39,6 +39,11 @@ public class CachedActivityStreamStorage implements ActivityStreamStorage {
   public void save(ProcessContext ctx) {
     this.storage.save(ctx);
   }
+  
+  @Override
+  public void savePoster(ProcessContext ctx) {
+    this.storage.savePoster(ctx);
+  }
 
   @Override
   public void delete(String activityId) {
@@ -58,6 +63,11 @@ public class CachedActivityStreamStorage implements ActivityStreamStorage {
   @Override
   public void update(ProcessContext ctx) {
     this.storage.update(ctx);
+  }
+  
+  @Override
+  public void updateCommenter(ProcessContext ctx) {
+    this.storage.updateCommenter(ctx);
   }
   
   @Override

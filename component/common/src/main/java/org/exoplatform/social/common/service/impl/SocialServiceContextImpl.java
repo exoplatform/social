@@ -105,7 +105,7 @@ public class SocialServiceContextImpl implements SocialServiceContext {
 
   @Override
   public boolean isTraced() {
-    return true;
+    return false;
   }
   
   @Override
