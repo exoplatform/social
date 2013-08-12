@@ -162,6 +162,7 @@
 		.img {
 		margin: 0 20px 20px 0;
 		text-align: center;
+		width: 47.2%;
 		}
 	}
 }
@@ -255,7 +256,7 @@
 	.heading ,.description,.actionBar,.listLikedBox {
 		padding: 16px;
 	}
-	.description,.theContent,.viewComment, .contentAnswer, .calendarBox{
+	.description,.theContent,.viewComment, .contentAnswer, .calendarBox, .titleWiki, a{
 		word-wrap: break-word;
 	}
 }
@@ -294,6 +295,13 @@
 		padding: 0 0 0 16px;
 		background: url("/social-resources/skin/images/Activity/text-forum.png") repeat-y left top;
 		margin-top: 10px;
+	}
+}
+
+.activityStream {
+	.titleWiki {
+		clear: both;
+		
 	}
 }
 
@@ -356,7 +364,11 @@
 				li {
 					display: inline;
 					margin: 0 5px;
+					a:hover {
+						color: @linkColorHover;
+					}
 				}
+				
 			}
 		}
 		
@@ -401,21 +413,24 @@
 		#gradient > .vertical-three-colors(@white,@white,94%,#f7f7f7);
 		.pull-left  {
 			width:75px;
+			margin-right: 10px;
 		}
 		.pull-left + .text {
-			margin-left: 90px;
+			overflow: hidden;
 		}
 		.descriptionText {
 			    word-wrap: break-word;
 			    min-height: 30px;
 		}
 		.isPreviewable {
+			overflow: hidden;
 			position: relative;
 			.pull-left  {
 				width: 300px;
+				margin-right: 10px;
 			}
 			.pull-left + .text {
-				margin-left: 315px;
+				overflow: hidden;
 			}
 			.versionFile {			
 				color: @grayLight;font-size: 12px;
@@ -442,7 +457,9 @@
 			border-right: 6px solid transparent;
 			right: 0px;
 		}
-		
+		.content {
+			word-wrap: break-word;
+		}
 	}
 }	
 
@@ -472,6 +489,12 @@
 				right: 0px;
 				display:none;
 				cursor: pointer;
+				&:hover {
+					color: @linkColorHover;
+				}
+			}
+			.uiIconClose {
+				top: 3px;
 			}
 			.uiIconClose + .viewComment {
 				right: 25px;
@@ -524,6 +547,9 @@
 		.border-radius(@baseBorderRadius);
 		background: @grayWhiteSmoke;
 		padding: 5px 2px;
+		&.pull-left {
+			width: 50px;
+		}
 	}
 }
 
@@ -614,12 +640,7 @@
 /*=======fileActivity activity==========*/  
 .fileActivity {
 	.introBox .isPreviewable {
-		 .pull-left {
-			width: 300px;
-			&+ .text {
-				margin-left: 315px;
-			}
-		 }
+		 
 		 .fileTypeContent {
 			float: left;
 			width: 60px;
@@ -629,8 +650,9 @@
 		 }		
 		 .PlayerContianer {
 			width: 330px;
-			& + .text {
-				margin-left: 350px;
+			margin-right: 10px;
+			&+ .text {
+				overflow: hidden;
 			}
 		 }
 		.PlayerContent {

@@ -469,7 +469,7 @@ public class ExoSocialActivityImpl extends ActivityImpl implements ExoSocialActi
     if (updated != null) {
       setUpdated(new Date(updated));
     } else {
-      setUpdated(new Date(System.currentTimeMillis()));
+      setUpdated(getPostedTime());
     }
   }
   

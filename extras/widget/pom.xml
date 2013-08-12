@@ -22,10 +22,9 @@
   <parent>
     <artifactId>social-extras</artifactId>
     <groupId>org.exoplatform.social</groupId>
-    <version>4.0.x-SNAPSHOT</version>
+    <version>4.1.0-SNAPSHOT</version>
   </parent>
   <artifactId>social-extras-widget</artifactId>
-  <version>4.0.x-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>eXo Social Extras - Widget</name>
   <description>eXo Social Extras - Widget</description>

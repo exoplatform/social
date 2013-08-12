@@ -197,7 +197,7 @@
                       def phone = it.get(value);
                       def type = it.get(key);
                 %>
-                    <div><%=type%>:<%=phone%></div>
+                    <div><%=type%>:&nbsp;<%=phone%></div>
                  <% } 
                   } else { %>
                     $noPhoneLabel
@@ -218,7 +218,7 @@
                       def type = it.get(key);
 
                     %>
-                    <div><%=type%>:<%=phone%></div>
+                    <div><%=type%>:&nbsp;<%=phone%></div>
                  <%	} %>
               </div>
             </div>
@@ -272,7 +272,7 @@
                           def type = it.get(key);
 
                       %>
-                      <div><%=type%>:<%=im%></div>
+                      <div><%=type%>:&nbsp;<%=im%></div>
                       <%}
                      } else { %>
                        $noImsLabel
@@ -291,7 +291,7 @@
                     def type = it.get(key);
 
                     %>
-                    <div><%=type%>:<%=im%></div>
+                    <div><%=type%>:&nbsp;<%=im%></div>
                  <%	} %>
               </div>
             </div>

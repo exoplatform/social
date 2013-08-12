@@ -175,6 +175,7 @@
 	        this.thumbnailCheckbox = $('#' + this.thumbnailCheckboxId);
 	        this.images = $('img',this.thumbnails);
 	        doStats.apply(this);
+	        showThumbnail.apply(UIComposerLinkExtension);
 	
 	        this.backThumbnail.on('click', function(evt) {
 	          if (UIComposerLinkExtension.shownThumbnailIndex > 0) {

@@ -18,13 +18,25 @@
 package org.exoplatform.social.core.storage.impl;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.concurrent.Callable;
+import java.util.concurrent.Future;
 
+import javax.jcr.Node;
+import javax.jcr.NodeIterator;
+
+import org.apache.commons.lang.ArrayUtils;
 import org.chromattic.api.query.Ordering;
 import org.chromattic.api.query.QueryBuilder;
 import org.chromattic.api.query.QueryResult;
+import org.chromattic.core.query.QueryImpl;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
@@ -34,6 +46,7 @@ import org.exoplatform.social.core.chromattic.entity.RelationshipEntity;
 import org.exoplatform.social.core.chromattic.entity.RelationshipListEntity;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
+import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.profile.ProfileFilter;
 import org.exoplatform.social.core.relationship.model.Relationship;
 import org.exoplatform.social.core.storage.RelationshipStorageException;
@@ -44,6 +57,7 @@ import org.exoplatform.social.core.storage.cache.CachedActivityStorage;
 import org.exoplatform.social.core.storage.exception.NodeNotFoundException;
 import org.exoplatform.social.core.storage.query.JCRProperties;
 import org.exoplatform.social.core.storage.query.WhereExpression;
+import org.exoplatform.social.core.storage.thread.SocialExecutorService;
 
 /**
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
@@ -57,10 +71,12 @@ public class RelationshipStorageImpl extends AbstractStorage implements Relation
   private final IdentityStorage identityStorage;
   private RelationshipStorage relationshipStorage;
   private CachedActivityStorage cachedActivityStorage;
+  private Object lock = new Object();
+  private SocialExecutorService<String[]> executorService = new SocialExecutorService<String[]>(10);
 
   public RelationshipStorageImpl(IdentityStorage identityStorage) {
    this.identityStorage = identityStorage;
- }
+  }
 
   private enum Origin { FROM, TO }
   
@@ -101,14 +117,8 @@ public class RelationshipStorageImpl extends AbstractStorage implements Relation
           loadProfile(receiver);
         }
 
-        if (relationshipEntity.isSender()) {
-          relationship.setSender(sender);
-          relationship.setReceiver(receiver);
-        }
-        else {
-          relationship.setSender(receiver);
-          relationship.setReceiver(sender);
-        }
+        relationship.setSender(sender);
+        relationship.setReceiver(receiver);
 
         if (SENDER.equals(entry.getValue().getParent().getName()) ||
             RECEIVER.equals(entry.getValue().getParent().getName())) {
@@ -199,9 +209,13 @@ public class RelationshipStorageImpl extends AbstractStorage implements Relation
     StorageUtils.applyFilter(whereExpression, filter);
 
     //
-    QueryResult<ProfileEntity> result = builder.where(whereExpression.toString())
-                                               .orderBy(ProfileEntity.lastName.getName(), Ordering.ASC)
-                                               .get().objects(offset, limit);
+    builder.where(whereExpression.toString()).orderBy(ProfileEntity.fullName.getName(), Ordering.ASC);
+    
+    QueryImpl<ProfileEntity> queryImpl = (QueryImpl<ProfileEntity>) builder.get();
+    ((org.exoplatform.services.jcr.impl.core.query.QueryImpl) queryImpl.getNativeQuery()).setCaseInsensitiveOrder(true);
+    
+    QueryResult<ProfileEntity> result = queryImpl.objects(offset, limit);
+    
     while(result.hasNext()) {
       IdentityEntity current = result.next().getIdentity();
       Identity i = new Identity(current.getProviderId(), current.getRemoteId());
@@ -251,36 +265,53 @@ public class RelationshipStorageImpl extends AbstractStorage implements Relation
     IdentityEntity identity2 = _findById(IdentityEntity.class, identityId2);
 
     RelationshipEntity createdRelationship = identity1.createRelationship();
-    RelationshipEntity symmetricalRelationship = identity1.createRelationship();
-
+    RelationshipEntity symmetricalRelationship = identity2.createRelationship();
+    
     switch (relationship.getStatus()) {
 
       case PENDING:
         identity1.getSender().getRelationships().put(identity2.getRemoteId(), createdRelationship);
         identity2.getReceiver().getRelationships().put(identity1.getRemoteId(), symmetricalRelationship);
+        
+        createdRelationship.setFrom(identity1);
+        createdRelationship.setTo(identity2);
+        
+        symmetricalRelationship.setFrom(identity1);
+        symmetricalRelationship.setTo(identity2);
+        
         break;
 
       case CONFIRMED:
         identity1.getRelationship().getRelationships().put(identity2.getRemoteId(), createdRelationship);
         identity2.getRelationship().getRelationships().put(identity1.getRemoteId(), symmetricalRelationship);
+        
+        createdRelationship.setFrom(identity1);
+        createdRelationship.setTo(identity2);
+        
+        symmetricalRelationship.setFrom(identity2);
+        symmetricalRelationship.setTo(identity1);
+        
         break;
 
       case IGNORED:
         identity1.getIgnore().getRelationships().put(identity2.getRemoteId(), createdRelationship);
-        identity2.getIgnored().getRelationships().put(identity2.getRemoteId(), symmetricalRelationship);
+        identity2.getIgnored().getRelationships().put(identity1.getRemoteId(), symmetricalRelationship);
+        
+        createdRelationship.setFrom(identity1);
+        createdRelationship.setTo(identity2);
+        
+        symmetricalRelationship.setFrom(identity1);
+        symmetricalRelationship.setTo(identity2);
+        
         break;
 
     }
 
     long createdTimeStamp = System.currentTimeMillis();
-    createdRelationship.setFrom(identity1);
-    createdRelationship.setTo(identity2);
     createdRelationship.setReciprocal(symmetricalRelationship);
     createdRelationship.setStatus(relationship.getStatus().toString());
     createdRelationship.setCreatedTime(createdTimeStamp);
     
-    symmetricalRelationship.setFrom(identity2);
-    symmetricalRelationship.setTo(identity1);
     symmetricalRelationship.setReciprocal(createdRelationship);
     symmetricalRelationship.setStatus(relationship.getStatus().toString());
     symmetricalRelationship.setCreatedTime(createdTimeStamp);
@@ -316,6 +347,9 @@ public class RelationshipStorageImpl extends AbstractStorage implements Relation
 
     RelationshipEntity savedRelationship = _findById(RelationshipEntity.class, relationship.getId());
     RelationshipEntity symmetricalRelationship = savedRelationship.getReciprocal();
+    
+    IdentityEntity sender = _findById(IdentityEntity.class, relationship.getSender().getId());
+    IdentityEntity receiver = _findById(IdentityEntity.class, relationship.getReceiver().getId());
 
     savedRelationship.setStatus(relationship.getStatus().toString());
     symmetricalRelationship.setStatus(relationship.getStatus().toString());
@@ -332,6 +366,13 @@ public class RelationshipStorageImpl extends AbstractStorage implements Relation
         
         break;
       case CONFIRMED:
+        
+        //measure the relationship is two ways when relationship is confirmed
+        savedRelationship.setFrom(sender);
+        savedRelationship.setTo(receiver);
+        
+        symmetricalRelationship.setFrom(receiver);
+        symmetricalRelationship.setTo(sender);
 
         // Move to relationship
         savedRelationship.getParent().getParent().getRelationship().getRelationships()
@@ -476,7 +517,7 @@ public class RelationshipStorageImpl extends AbstractStorage implements Relation
     IdentityEntity identityEntity2 = _findById(IdentityEntity.class, identity2.getId());
 
     // CONFIRMED
-    RelationshipEntity got = identityEntity1.getRelationship().getRelationships().get(identityEntity2.getName());
+    RelationshipEntity got = identityEntity1.getRelationship().getRelationships().get(identityEntity2.getName());    
 
     // PENDING
     if (got == null) {
@@ -754,7 +795,7 @@ public class RelationshipStorageImpl extends AbstractStorage implements Relation
       IdentityEntity receiverEntity = _findById(IdentityEntity.class, receiver.getId());
 
       Iterator<RelationshipEntity> it = receiverEntity.getReceiver().getRelationships().values().iterator();
-      return getIdentitiesFromRelationship(it, Origin.TO, offset, limit);
+      return getIdentitiesFromRelationship(it, Origin.FROM, offset, limit);
 
     }
     catch (NodeNotFoundException e) {
@@ -961,6 +1002,210 @@ public class RelationshipStorageImpl extends AbstractStorage implements Relation
     List<Identity> identities = getStorage().getOutgoingRelationships(existingIdentity, 0, -1);
     return getIdentitiesRelationsByFilterCount(identities, profileFilter);
 
+  }
+  
+  private String[] getRelationships(String id) {
+    ThreadLocal<String[]> identityIdsLocal = new ThreadLocal<String[]>();
+
+    String[] relationshipIds = new String[0];
+    identityIdsLocal.set(relationshipIds);
+
+    try {
+
+      IdentityEntity identityEntity = _findById(IdentityEntity.class, id);
+
+      StringBuffer sb = new StringBuffer().append("SELECT * FROM soc:relationshipdefinition WHERE ");
+      sb.append(JCRProperties.path.getName())
+        .append(" LIKE '")
+        .append(identityEntity.getPath() + StorageUtils.SLASH_STR + StorageUtils.PERCENT_STR)
+        .append("'");
+      //
+      sb.append(" ORDER BY ").append(RelationshipEntity.createdTime.getName()).append(" DESC ");
+
+      synchronized (lock) {
+
+        NodeIterator it = nodes(sb.toString());
+
+        while (it.hasNext()) {
+          Node node = (Node) it.next();
+
+          RelationshipEntity currentRelationshipEntity = _findById(RelationshipEntity.class,
+                                                                   node.getUUID());
+
+          IdentityEntity gotIdentityEntity;
+          if (currentRelationshipEntity.isReceiver()) {
+            gotIdentityEntity = currentRelationshipEntity.getFrom();
+          } else {
+            gotIdentityEntity = currentRelationshipEntity.getTo();
+          }
+          identityIdsLocal.set((String[]) ArrayUtils.add(identityIdsLocal.get(),
+                                                         gotIdentityEntity.getId()));
+        }
+
+      }
+    } catch (Exception e) {
+      throw new RelationshipStorageException(RelationshipStorageException.Type.FAILED_TO_GET_RELATIONSHIP,
+                                             e.getMessage());
+    }
+
+    return identityIdsLocal.get();
+  }
+  
+  private String[] getSuggestion(List<String> relationshipIds) {
+    String[] suggestions = new String[0];
+    
+    try {
+      int startIndex = 0;
+      int toIndex = 100;
+      //
+      List<String> excludeIdentities = StorageUtils.subList(relationshipIds, startIndex, toIndex); 
+      while (excludeIdentities.size() > 0) {
+        
+        StringBuffer sb = new StringBuffer().append("SELECT * FROM soc:identitydefinition WHERE ");
+        sb.append(JCRProperties.path.getName()).append(" LIKE '").append(getProviderRoot().getProviders().get(OrganizationIdentityProvider.NAME).getPath() + StorageUtils.SLASH_STR + StorageUtils.PERCENT_STR).append("'");
+        
+        for(String id : excludeIdentities) {
+          sb.append(" AND NOT ").append(JCRProperties.id.getName()).append(" = '").append(id).append("'");
+        }
+        
+        NodeIterator nodeIter = nodes(sb.toString()); 
+        while(nodeIter.hasNext()) {
+          Node node = (Node)nodeIter.next();
+          String id = node.getUUID();
+          //String remoteId = node.getProperty(IdentityEntity.remoteId.getName()).getString();
+          if (relationshipIds.contains(id) == false
+              && ArrayUtils.contains(suggestions, id) == false) {
+            suggestions = (String[]) ArrayUtils.add(suggestions, id);
+          }
+        }
+        
+        //
+        startIndex = toIndex;
+        toIndex += 100;
+        
+        excludeIdentities = StorageUtils.subList(relationshipIds, startIndex, toIndex); 
+      }//end filter identities
+      
+    } catch (Exception e) {
+      throw new RelationshipStorageException(RelationshipStorageException.Type.FAILED_TO_GET_RELATIONSHIP,
+                                             e.getMessage());
+    }
+    
+    return suggestions;
+  }
+  /**
+   * Gets Suggestion list with relationship for each identity.
+   * @param suggestions
+   * @return
+   */
+  private Map<String, String[]> getSuggestionRelationships(final String[] suggestions) {
+    for (final String id : suggestions) {
+      //
+      Callable<String[]> task = new  Callable<String[]>() {
+        @Override
+        public String[] call() throws Exception {
+          return getRelationships(id);
+        }
+      };
+      executorService.submit(task, id);
+    }
+    
+    //Wait multiple threads finish work and push relationships to map
+    Map<String, String[]> suggestRelationships = new HashMap<String, String[]>();
+    copyFutureToMap(suggestRelationships, executorService.getFutureCollections());
+    
+    return suggestRelationships;
+  }
+  /**
+   * Gets result from future task
+   * @param map
+   * @param futures
+   */
+  private void copyFutureToMap(Map<String, String[]> map, Map<String, Future<String[]>> futures) {
+    try {
+      for (Entry<String, Future<String[]>> future : futures.entrySet()) {
+        map.put(future.getKey(), future.getValue().get());
+      }
+    } catch (Exception e) {
+      LOG.warn("Failed to get result from Future." + e);
+    }
+  }
+  /**
+   * Calculate and statistic suggestion.
+   * 
+   * @param relationshipIds
+   * @param suggestRelationships
+   * @return
+   */
+  private Map<String, Integer> statisticSuggesstion(List<String> relationshipIds, Map<String, String[]> suggestRelationships) {
+    //Calculate the common users of current Identity with each suggestion.
+    Map<String, Integer> suggestionIdMap = new HashMap<String, Integer>();
+    for (Entry<String, String[]> friendOfIdentity : suggestRelationships.entrySet()) {
+      //
+      String identityId = friendOfIdentity.getKey();
+      suggestionIdMap.put(identityId, StorageUtils.getCommonItemNumber(relationshipIds, Arrays.asList(friendOfIdentity.getValue())));
+    }
+    
+    return suggestionIdMap;
+  }
+  
+  /**
+   * {@inheritDoc}
+   */
+  public Map<Identity, Integer> getSuggestions(Identity identity, int offset, int limit) throws RelationshipStorageException {
+    //get identities who have relationship
+    List<String> relationshipIds = new ArrayList<String>(); 
+    relationshipIds.add(identity.getId());
+    relationshipIds.addAll(Arrays.asList(getRelationships(identity.getId())));
+    
+    //store all identities who is not relationship with provided identity
+    String[] suggestions = getSuggestion(relationshipIds);
+
+    //Find relationships of the identities are filtered
+    //Wait multiple threads finish work and push relationships to map
+    Map<String, String[]> suggestRelationships = getSuggestionRelationships(suggestions);
+
+    //statistic suggestion
+    Map<String, Integer> suggestionIdMap = statisticSuggesstion(relationshipIds, suggestRelationships);
+    //
+    if (offset > suggestionIdMap.size()) return Collections.emptyMap();
+    return buildSuggestions(StorageUtils.sortMapByValue(suggestionIdMap, false), offset, limit);
+  }
+  
+  private Map<Identity, Integer> buildSuggestions(Map<String, Integer> mapIds,
+                                                  final int offset,
+                                                  final int limit) {
+
+    Map<Identity, Integer> suggestions = new LinkedHashMap<Identity, Integer>();
+    //
+    int i = 0;
+    for (Entry<String, Integer> id : mapIds.entrySet()) {
+      // skip to offset
+      if (i < offset) {
+        i++;
+        continue;
+      }
+
+      // limit the return result
+      if (i > (offset + limit))
+        break;
+
+      try {
+        IdentityEntity identityEntity = _findById(IdentityEntity.class, id.getKey());
+        Identity _identity = new Identity(id.getKey());
+        _identity.setDeleted(identityEntity.isDeleted());
+        _identity.setRemoteId(identityEntity.getRemoteId());
+        _identity.setProviderId(identityEntity.getProviderId());
+        loadProfile(_identity);
+        // put to suggestion result
+        suggestions.put(_identity, id.getValue());
+
+      } catch (NodeNotFoundException e) {
+        LOG.warn("Could not found identity with id = " + id.getKey());
+      }
+      i++;
+    }
+    return suggestions;
   }
 
   public void setStorage(RelationshipStorage storage) {

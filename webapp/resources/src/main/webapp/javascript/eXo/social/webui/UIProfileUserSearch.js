@@ -17,6 +17,8 @@
 
 (function($) {
 var UIProfileUserSearch = { 
+    uicomponentId : '',
+    
 		COLOR : {
 		  FOCUS : "#000000",
 		  BLUR : "#C7C7C7"
@@ -42,6 +44,7 @@ var UIProfileUserSearch = {
       var currentUserName = params.currentUserName || null;
       var typeOfRelation = params.typeOfRelation || null;
     
+      this.uicomponentId = params.uicomponentId;
       var profileSearch = $("#" + params.uicomponentId);
       var nameEl = $(UIProfileUserSearch.INPUT_ID.NAME, profileSearch);
       var posEl = $(UIProfileUserSearch.INPUT_ID.POSITION, profileSearch);
@@ -134,8 +137,21 @@ var UIProfileUserSearch = {
 	        } else {
 	        }
       }
-		}
+      //
+      UIProfileUserSearch.resizeForm();
+    },
+
+    resizeForm : function() {
+      var parent = $("#" + UIProfileUserSearch.uicomponentId);
+      var label = parent.find('label:[for=Search]');
+      var searchBtn = $(UIProfileUserSearch.INPUT_ID.SEARCH, parent);
+      var staticSize = label.outerWidth() + searchBtn.outerWidth() + 64;
+      var inputSize = (parent.width() - staticSize) / 3;
+      parent.find('input[type=text]').css( {'width': inputSize + 'px', 'minWidth' : '80px'});
+    }
 };
+
+$(window).on('resize', UIProfileUserSearch.resizeForm );
 
 return UIProfileUserSearch;
 })($);

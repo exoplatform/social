@@ -568,9 +568,16 @@ public class SpaceStorageImpl extends AbstractStorage implements SpaceStorage {
       
       //
       if (spaceFilter.getAppId() != null) {
-        whereExpression.contains(SpaceEntity.app, StorageUtils.PERCENT_STR + spaceFilter.getAppId() + StorageUtils.PERCENT_STR);
+        whereExpression.contains(SpaceEntity.app, spaceFilter.getAppId());
         whereExpression.and();
       }
+      
+      //
+      whereExpression.startGroup();
+    } else if (spaceFilter != null && spaceFilter.getAppId() != null) {
+      //
+      whereExpression.contains(SpaceEntity.app, spaceFilter.getAppId());
+      whereExpression.and();
       
       //
       whereExpression.startGroup();
@@ -1398,11 +1405,12 @@ public class SpaceStorageImpl extends AbstractStorage implements SpaceStorage {
       if (this.isValidInput(spaceNameSearchCondition)) {
 
         List<String> unifiedSearchConditions = this.processUnifiedSearchCondition(spaceNameSearchCondition);
+        
         boolean first = true;
         for(String condition : unifiedSearchConditions) {
           //
           if (first == false) {
-            whereExpression.or();
+            whereExpression.and();
           } else {
             whereExpression.startGroup();
             first = false;
@@ -1809,8 +1817,8 @@ public class SpaceStorageImpl extends AbstractStorage implements SpaceStorage {
       }
       ref.setSpaceRef(spaceEntity);
 
-      getSession().save();
-      
+//      getSession().save();
+
     } catch (NodeNotFoundException e) {
       LOG.warn(e.getMessage(), e);
     }

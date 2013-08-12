@@ -18,7 +18,10 @@
 package org.exoplatform.social.core.storage.cache;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.cache.ExoCache;
@@ -35,6 +38,7 @@ import org.exoplatform.social.core.storage.cache.model.data.IdentityData;
 import org.exoplatform.social.core.storage.cache.model.data.IntegerData;
 import org.exoplatform.social.core.storage.cache.model.data.ListIdentitiesData;
 import org.exoplatform.social.core.storage.cache.model.data.RelationshipData;
+import org.exoplatform.social.core.storage.cache.model.data.SuggestionsData;
 import org.exoplatform.social.core.storage.cache.model.key.IdentityFilterKey;
 import org.exoplatform.social.core.storage.cache.model.key.IdentityKey;
 import org.exoplatform.social.core.storage.cache.model.key.ListRelationshipsKey;
@@ -42,7 +46,9 @@ import org.exoplatform.social.core.storage.cache.model.key.RelationshipCountKey;
 import org.exoplatform.social.core.storage.cache.model.key.RelationshipIdentityKey;
 import org.exoplatform.social.core.storage.cache.model.key.RelationshipKey;
 import org.exoplatform.social.core.storage.cache.model.key.RelationshipType;
+import org.exoplatform.social.core.storage.cache.model.key.SuggestionKey;
 import org.exoplatform.social.core.storage.cache.selector.RelationshipCacheSelector;
+import org.exoplatform.social.core.storage.cache.selector.SuggestionCacheSelector;
 import org.exoplatform.social.core.storage.impl.RelationshipStorageImpl;
 
 /**
@@ -61,12 +67,14 @@ public class CachedRelationshipStorage implements RelationshipStorage {
   private final ExoCache<RelationshipIdentityKey, RelationshipKey> exoRelationshipByIdentityCache;
   private final ExoCache<RelationshipCountKey, IntegerData> exoRelationshipCountCache;
   private final ExoCache<ListRelationshipsKey, ListIdentitiesData> exoRelationshipsCache;
+  private final ExoCache<SuggestionKey, SuggestionsData> exoSuggestionCache;
 
   //
   private final FutureExoCache<RelationshipKey, RelationshipData, ServiceContext<RelationshipData>> relationshipCache;
   private final FutureExoCache<RelationshipIdentityKey,RelationshipKey,ServiceContext<RelationshipKey>> relationshipCacheIdentity;
   private final FutureExoCache<RelationshipCountKey, IntegerData, ServiceContext<IntegerData>> relationshipsCount;
   private final FutureExoCache<ListRelationshipsKey, ListIdentitiesData, ServiceContext<ListIdentitiesData>> relationshipsCache;
+  private final FutureExoCache<SuggestionKey, SuggestionsData, ServiceContext<SuggestionsData>> suggestionCache;
 
   //
   private final ExoCache<IdentityKey, IdentityData> exoIdentityCache;
@@ -93,13 +101,14 @@ public class CachedRelationshipStorage implements RelationshipStorage {
     try {
       exoRelationshipsCache.select(new RelationshipCacheSelector(identities.toArray(new String[]{})));
       exoRelationshipCountCache.select(new RelationshipCacheSelector(identities.toArray(new String[]{})));
+      exoSuggestionCache.select(new SuggestionCacheSelector(identities.toArray(new String[]{})));
     }
     catch (Exception e) {
       LOG.error(e);
     }
 
   }
-
+  
   /**
    * Build the identity list from the caches Ids.
    *
@@ -134,6 +143,38 @@ public class CachedRelationshipStorage implements RelationshipStorage {
     return new ListIdentitiesData(data);
 
   }
+  
+  /**
+   * Build the suggestions from the identity map.
+   *
+   * @param map map of indentity
+   */
+  private SuggestionsData buildIdMap(Map<Identity, Integer> map) {
+
+    Map<String, Integer> data = new LinkedHashMap<String, Integer>();
+    for (Entry<Identity, Integer> item : map.entrySet()) {
+      data.put(item.getKey().getId(), item.getValue());
+    }
+    
+    return new SuggestionsData(data);
+  }
+  
+  /**
+   * Build the suggestions map from the caches Ids.
+   *
+   * @param data map of identities
+   * @return suggestions
+   */
+  private Map<Identity, Integer> buildSuggestions(SuggestionsData data) {
+
+    Map<Identity, Integer> suggestions = new LinkedHashMap<Identity, Integer>();
+    for (Entry<String, Integer> item : data.getMap().entrySet()) {
+      Identity gotIdentity = identityStorage.findIdentityById(item.getKey());
+      suggestions.put(gotIdentity, item.getValue());
+    }
+    return suggestions;
+
+  }
 
   public CachedActivityStorage getCachedActivityStorage() {
     if (cachedActivityStorage == null) {
@@ -156,12 +197,14 @@ public class CachedRelationshipStorage implements RelationshipStorage {
     this.exoRelationshipByIdentityCache = cacheService.getRelationshipCacheByIdentity();
     this.exoRelationshipCountCache = cacheService.getRelationshipsCount();
     this.exoRelationshipsCache = cacheService.getRelationshipsCache();
+    this.exoSuggestionCache = cacheService.getSuggestionCache();
 
     //
     this.relationshipCache = CacheType.RELATIONSHIP.createFutureCache(exoRelationshipCache);
     this.relationshipCacheIdentity = CacheType.RELATIONSHIP_FROM_IDENTITY.createFutureCache(exoRelationshipByIdentityCache);
     this.relationshipsCount = CacheType.RELATIONSHIPS_COUNT.createFutureCache(exoRelationshipCountCache);
     this.relationshipsCache = CacheType.RELATIONSHIPS.createFutureCache(exoRelationshipsCache);
+    this.suggestionCache = CacheType.SUGGESTIONS.createFutureCache(exoSuggestionCache);
 
     //
     this.exoIdentityCache = cacheService.getIdentityCache();
@@ -639,6 +682,23 @@ public class CachedRelationshipStorage implements RelationshipStorage {
 
   }
 
+  public Map<Identity, Integer> getSuggestions(final Identity identity, final int offset, final int limit) throws RelationshipStorageException {
+    //
+    IdentityKey key = new IdentityKey(identity);
+    SuggestionKey<IdentityKey> suggestKey = new SuggestionKey<IdentityKey>(key, offset, limit);
+    
+    SuggestionsData keys = suggestionCache.get(
+        new ServiceContext<SuggestionsData>() {
+          public SuggestionsData execute() {
+            Map<Identity, Integer> got = storage.getSuggestions(identity, offset, limit);
+            return buildIdMap(got);
+          }
+        },
+        suggestKey);
+
+    //
+    return buildSuggestions(keys);
+  }
 
   
 }

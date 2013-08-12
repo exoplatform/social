@@ -31,6 +31,7 @@ public class RelationshipStorageException extends ExoSocialException {
     ILLEGAL_ARGUMENTS("Illegal_Arguments"),
     FAILED_TO_SAVE_RELATIONSHIP("Failed_To_Save_Relationship"),
     FAILED_TO_GET_RELATIONSHIP("Failed_To_Get_Relationship"),
+    FAILED_TO_GET_SUGGESTION("Failed_To_Get_Suggestion"),
     FAILED_TO_GET_RELATIONSHIP_OF_THEM("Failed_To_Get_Relationship_Of_Them"),
     FAILED_TO_UPDATE_RELATIONSHIP("Failed_To_Update_Relationship"),
     FAILED_TO_DELETE_RELATIONSHIP("Failed_To_Delete_Relationship"),

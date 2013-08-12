@@ -609,7 +609,13 @@ public class Utils {
 
     //
     String spacePrettyName = route.localArgs.get("spacePrettyName");
+    Space space = spaceService.getSpaceByPrettyName(spacePrettyName);
+    if (space == null) {
+      String groupId = String.format("%s/%s", SpaceUtils.SPACE_GROUP, spacePrettyName);
+      space = spaceService.getSpaceByGroupId(groupId); 
+    }
+     
     
-    return spaceService.getSpaceByPrettyName(spacePrettyName);
+    return space;
   }
 }

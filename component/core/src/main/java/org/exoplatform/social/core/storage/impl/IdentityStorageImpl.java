@@ -37,6 +37,7 @@ import org.chromattic.api.query.QueryBuilder;
 import org.chromattic.api.query.QueryResult;
 import org.chromattic.ext.ntdef.NTFile;
 import org.chromattic.ext.ntdef.Resource;
+import org.chromattic.core.query.QueryImpl;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
@@ -1002,7 +1003,11 @@ public class IdentityStorageImpl extends AbstractStorage implements IdentityStor
     builder.where(whereExpression.toString());
     applyOrder(builder, profileFilter);
 
-    QueryResult<ProfileEntity> results = builder.get().objects(offset, limit);
+
+    QueryImpl<ProfileEntity> queryImpl = (QueryImpl<ProfileEntity>) builder.get();
+    ((org.exoplatform.services.jcr.impl.core.query.QueryImpl) queryImpl.getNativeQuery()).setCaseInsensitiveOrder(true);
+    
+    QueryResult<ProfileEntity> results = queryImpl.objects(offset, limit);
     while (results.hasNext()) {
 
       ProfileEntity profileEntity = results.next();
@@ -1048,9 +1053,12 @@ public class IdentityStorageImpl extends AbstractStorage implements IdentityStor
     builder.where(whereExpression.toString());
     applyOrder(builder, profileFilter);
 
-   //QueryResult<ProfileEntity> results = builder.get().objects(offset, limit);
+    QueryImpl<ProfileEntity> queryImpl = (QueryImpl<ProfileEntity>) builder.get();
+    ((org.exoplatform.services.jcr.impl.core.query.QueryImpl) queryImpl.getNativeQuery()).setCaseInsensitiveOrder(true);
     
-    QueryResult<ProfileEntity> results = builder.get().objects();
+    QueryResult<ProfileEntity> results = queryImpl.objects();
+
+    //QueryResult<ProfileEntity> results = builder.get().objects();
     
     //
     IdentityResult identityResult = new IdentityResult(offset, limit, results.size());
@@ -1199,7 +1207,12 @@ public class IdentityStorageImpl extends AbstractStorage implements IdentityStor
     builder.where(whereExpression.toString());
     applyOrder(builder, profileFilter);
 
-    QueryResult<ProfileEntity> results = builder.get().objects();
+    QueryImpl<ProfileEntity> queryImpl = (QueryImpl<ProfileEntity>) builder.get();
+    ((org.exoplatform.services.jcr.impl.core.query.QueryImpl) queryImpl.getNativeQuery()).setCaseInsensitiveOrder(true);
+    
+    QueryResult<ProfileEntity> results = queryImpl.objects();
+    
+    //QueryResult<ProfileEntity> results = builder.get().objects();
     
     //
     IdentityResult identityResult = new IdentityResult(offset, limit, results.size());

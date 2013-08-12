@@ -202,7 +202,7 @@
 					  if (linkImage.equals("")) {
 						linkClass = "";
 					  } else {
-						link = "<img width=\"110px\" rel=\"tooltip\" data-placement=\"bottom\" title=\"$linkTitle\" src=\"$linkImage\" alt=\"$linkTitle\" />";
+						link = "<img width=\"75px\" rel=\"tooltip\" data-placement=\"bottom\" title=\"$linkTitle\" src=\"$linkImage\" alt=\"$linkTitle\" />";
 					  }
 					  def embedHtml = uicomponent.getEmbedHtml();
 					%>
@@ -280,19 +280,16 @@
 				</div><!--end list like people--> 
 				<%}%>
 			<div id="CommentBlockBound${activity.id}" class="commentBox ">    
-			  <% if (uicomponent.commentListToggleable()) {
-			  def showAllCommentsAction = uicomponent.event("SetCommentListStatus", "all");
-			  def hideAllCommentsAction = uicomponent.event("SetCommentListStatus", "none");
-			  %>
+			  <% if (uicomponent.commentListToggleable()) { %>
 			  <div class="commentListInfo clearfix">
 				<div class="pull-right numberComment">$commentsHidden/$totalComments</div>
 				<% if (commentListStatus.getStatus().equals("latest") || commentListStatus.getStatus().equals("none")) { %>
-				  <a onclick="$showAllCommentsAction" href="#show-all-comments">$labelShowAllComments</a>
+				  <a onclick="<%=uicomponent.event("SetCommentListStatus", "all")%>" href="javascript:void(0);">$labelShowAllComments</a>
 				<% } else if (commentListStatus.getStatus().equals("all")) { %>
 		      <% if (commentsHidden > 0) { %>
-		        <a onclick="$loadPreviousCommentsAction" href="javascript:void(0);">$labelShowPreviousComments</a>
+		        <a onclick="<%=uicomponent.event("SetCommentListStatus", "all")%>" href="javascript:void(0);">$labelShowPreviousComments</a>
 		      <% } else { %>
-		        <a onclick="$hideAllCommentsAction" href="#hide-all-comments">$labelHideAllComments</a>
+		        <a onclick="<%=uicomponent.event("SetCommentListStatus", "none")%>" href="javascript:void(0);">$labelHideAllComments</a>
 		      <% } %>
 	      <% } %>
 	      </div>

@@ -38,6 +38,7 @@ import org.chromattic.api.query.Ordering;
 import org.chromattic.api.query.Query;
 import org.chromattic.api.query.QueryBuilder;
 import org.chromattic.api.query.QueryResult;
+import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.ActivityProcessor;
@@ -271,6 +272,9 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     //update new stream owner
     try {
       Identity streamOwnerIdentity = identityStorage.findIdentity(SpaceIdentityProvider.NAME, activity.getStreamOwner());
+      if (streamOwnerIdentity == null) {
+        streamOwnerIdentity = identityStorage.findIdentity(OrganizationIdentityProvider.NAME, activity.getStreamOwner());
+      }
       IdentityEntity streamOwnerEntity = _findById(IdentityEntity.class, streamOwnerIdentity.getId());
       identityEntity = streamOwnerEntity;
       activityEntity.setIdentity(streamOwnerEntity);
@@ -364,7 +368,11 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
   }
 
   private ActivityStorage getStorage() {
-    return (activityStorage != null ? activityStorage : this);
+    if (activityStorage == null) {
+      activityStorage = (ActivityStorage) PortalContainer.getInstance().getComponentInstanceOfType(ActivityStorage.class);
+    }
+    
+    return activityStorage;
   }
 
   /*
@@ -801,7 +809,7 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     
     ActivityFilter filter = new ActivityFilter(){};
     //
-    return getActivitiesOfIdentities(ActivityBuilderWhere.simple().mentioner(ownerIdentity).owners(identities), filter, offset, limit);
+    return getActivitiesOfIdentities(ActivityBuilderWhere.simple().poster(ownerIdentity).commenter(ownerIdentity).liker(ownerIdentity).mentioner(ownerIdentity).owners(identities), filter, offset, limit);
   }
 
   /**
@@ -1224,24 +1232,45 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
    */
   public List<ExoSocialActivity> getComments(ExoSocialActivity existingActivity, int offset, int limit) {
 
+    List<ExoSocialActivity> activities = new ArrayList<ExoSocialActivity>();
     String[] commentIds = getStorage().getActivity(existingActivity.getId()).getReplyToId();
-
-    long totalSize = commentIds.length;
     
-    ActivityIterator activityIt = new ActivityIterator(offset, limit, totalSize);
+    //
+    limit = (limit > commentIds.length ? commentIds.length : limit);
     
-    int i = 0;
-    while (i < totalSize) {
-      ExoSocialActivity comment = getActivity(commentIds[i]);
-      if (!comment.isHidden())
-        activityIt.add(comment);
-      if (activityIt.addMore() == false) {
-        break;
+    for (int i = offset ; i < commentIds.length ; i++) {
+      if (isHidden(commentIds[i]) == false) {
+        activities.add(getStorage().getActivity(commentIds[i]));
+        
+        //
+        if (activities.size() == limit) {
+          break;
+        }
       }
-      i++;
+      
+      
     }
-    
-    return activityIt.result();
+    return activities;
+  }
+  
+  /**
+   * Checks specified comment is hidden or not
+   * @param commentId
+   * @return TRUE hidden comment/ FALSE otherwise
+   */
+  private boolean isHidden(String commentId) {
+
+    try {
+      ActivityEntity activityEntity = _findById(ActivityEntity.class, commentId);
+      HidableEntity hidable = _getMixin(activityEntity, HidableEntity.class, false);
+      if (hidable != null) {
+        return hidable.getHidden();
+      }
+    } catch (NodeNotFoundException e) {
+      return true;
+    }
+
+    return false;
   }
 
   /**
@@ -1257,7 +1286,7 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     //
     for(String commentId : commentIds) {
       ExoSocialActivity comment = getActivity(commentId);
-      if (!comment.isHidden())
+      if (comment != null && comment.isHidden() == false)
         activities.add(getStorage().getActivity(commentId));
     }
 

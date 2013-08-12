@@ -33,6 +33,7 @@
     configure : function(params) {
       UIComposer.composerId = params.composerId;
       UIComposer.textareaId = params.textareaId;
+      UIComposer.mentionBtnLabel = params.mentionBtnLabel;
       UIComposer.userTyped = false;
     },
     init : function() {
@@ -42,7 +43,7 @@
 				'href' : 'javascript:void(0);',
 				'rel':'tooltip',
 				'data-placement':'bottom',
-				'title':'Mention',
+				'title': UIComposer.mentionBtnLabel,
 				'class':'actionIcon',
 				'id': 'mentionButton'
 			}

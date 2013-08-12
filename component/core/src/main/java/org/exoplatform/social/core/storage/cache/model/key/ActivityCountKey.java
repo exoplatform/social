@@ -66,6 +66,11 @@ public class ActivityCountKey extends ScopeCacheKey {
     this.time = time;
     this.type = type;
   }
+  
+  public ActivityCountKey(final String baseId, final ActivityType type) {
+    this.baseId = baseId;
+    this.type = type;
+  }
 
   public IdentityKey getKey() {
     return key;
