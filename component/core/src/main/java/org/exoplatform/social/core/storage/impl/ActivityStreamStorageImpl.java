@@ -112,6 +112,7 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
 
   @Override
   public void save(ProcessContext ctx) {
+    //must call with asynchronous
     try {
       StreamProcessContext streamCtx = ObjectHelper.cast(StreamProcessContext.class, ctx);
       Identity owner = streamCtx.getIdentity();
@@ -129,13 +130,34 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
       }
     } catch (NodeNotFoundException e) {
       ctx.setException(e);
+      LOG.warn("Failed to add Activity Relations references.", e);
+    }
+  }
+  
+  @Override
+  public void savePoster(ProcessContext ctx) {
+    //call synchronous
+    try {
+      StreamProcessContext streamCtx = ObjectHelper.cast(StreamProcessContext.class, ctx);
+      Identity owner = streamCtx.getIdentity();
+      //
+      ActivityEntity activityEntity = _findById(ActivityEntity.class, streamCtx.getActivity().getId());     
+      if (OrganizationIdentityProvider.NAME.equals(owner.getProviderId())) {
+        createOwnerRefs(owner, activityEntity);
+      } else if (SpaceIdentityProvider.NAME.equals(owner.getProviderId())) {
+        //
+        manageRefList(new UpdateContext(owner, null), activityEntity, ActivityRefType.SPACE_STREAM);
+        //
+        Identity ownerPosterOnSpace = identityStorage.findIdentityById(activityEntity.getPosterIdentity().getId());
+        ownerSpaceMembersRefs(ownerPosterOnSpace, activityEntity);
+      }
+    } catch (NodeNotFoundException e) {
+      ctx.setException(e);
       LOG.warn("Failed to add Activity references.", e);
     }
   }
   
   private void user(Identity owner, ActivityEntity activityEntity) throws NodeNotFoundException {
-    createOwnerRefs(owner, activityEntity);
-
     //
     List<Identity> got = getRelationshipStorage().getConnections(owner);
     if (got.size() > 0) {
@@ -180,12 +202,6 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
    }
 
   private void space(Identity owner, ActivityEntity activityEntity) throws NodeNotFoundException {
-    //
-    manageRefList(new UpdateContext(owner, null), activityEntity, ActivityRefType.SPACE_STREAM);
-    //
-    Identity ownerPosterOnSpace = identityStorage.findIdentityById(activityEntity.getPosterIdentity().getId());
-    ownerSpaceMembersRefs(ownerPosterOnSpace, activityEntity);
-    //
     Space space = getSpaceStorage().getSpaceByPrettyName(owner.getRemoteId());
     
     if (space == null) return;
@@ -273,14 +289,14 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
     }
     return false;
   }
-
+  
   @Override
-  public void update(ProcessContext ctx) {
+  public void updateCommenter(ProcessContext ctx) {
     
     try {
       StreamProcessContext streamCtx = ObjectHelper.cast(StreamProcessContext.class, ctx);
       ExoSocialActivity activity = streamCtx.getActivity();
-      long oldUpdated = streamCtx.getOldUpdated();
+      
 
       //
       ActivityEntity activityEntity = _findById(ActivityEntity.class, activity.getId());
@@ -295,19 +311,54 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
         refList.add(ref.getDay().getMonth().getYear().getList());
       }
       
+      long oldUpdated = streamCtx.getOldUpdated();
       //
-      for(ActivityRefListEntity list : refList) {
-        //LOG.info("update()::BEFORE");
-        //printDebug(list, oldUpdated);
-        
+      for (ActivityRefListEntity list : refList) {
         list.remove(oldUpdated);
         ActivityRef ref = list.get(activity.getUpdated().getTime());
         ref.setLastUpdated(activity.getUpdated().getTime());
         ref.setActivityEntity(activityEntity);
-        
-        //LOG.info("update()::AFTER");
-        //printDebug(list, oldUpdated);
       }
+     
+    } catch (NodeNotFoundException e) {
+      LOG.warn("Failed to updateCommenter Activity references.");
+    }
+  }
+
+  @Override
+  public void update(ProcessContext ctx) {
+    
+    try {
+      StreamProcessContext streamCtx = ObjectHelper.cast(StreamProcessContext.class, ctx);
+      ExoSocialActivity activity = streamCtx.getActivity();
+//      long oldUpdated = streamCtx.getOldUpdated();
+
+      //
+      ActivityEntity activityEntity = _findById(ActivityEntity.class, activity.getId());
+//      Collection<ActivityRef> references = activityEntity.getActivityRefs();
+//      
+//      List<ActivityRefListEntity> refList = new ArrayList<ActivityRefListEntity>(); 
+//      //
+//      for(ActivityRef ref : references) {
+//        if (ref.getLastUpdated() == activity.getUpdated().getTime()) continue;
+//        
+//        //
+//        refList.add(ref.getDay().getMonth().getYear().getList());
+//      }
+//      
+//      //
+//      for(ActivityRefListEntity list : refList) {
+//        //LOG.info("update()::BEFORE");
+//        //printDebug(list, oldUpdated);
+//        
+//        list.remove(oldUpdated);
+//        ActivityRef ref = list.get(activity.getUpdated().getTime());
+//        ref.setLastUpdated(activity.getUpdated().getTime());
+//        ref.setActivityEntity(activityEntity);
+//        
+//        //LOG.info("update()::AFTER");
+//        //printDebug(list, oldUpdated);
+//      }
       
       //mentioners
       addMentioner(streamCtx.getMentioners(), activityEntity);

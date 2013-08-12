@@ -128,7 +128,7 @@ public class SocialServiceExecutorImpl implements SocialServiceExecutor {
   public ProcessContext async(AsyncProcessor asyncProcessor, ProcessContext processContext) {
     Future<ProcessContext> future = asyncProcess(asyncProcessor, processContext);
     try {
-      future.get(10, TimeUnit.SECONDS);
+      future.get(10, TimeUnit.MILLISECONDS);
       //
       return future.get();
     } catch (InterruptedException e) {
