@@ -21,8 +21,6 @@ import java.util.concurrent.Future;
 
 public interface SocialServiceExecutor {
 
-  SocialServiceContext getSocialServiceContext();
-
   ProcessContext execute(ServiceContext<ProcessContext> serviceContext,
                            ProcessContext processContext);
   

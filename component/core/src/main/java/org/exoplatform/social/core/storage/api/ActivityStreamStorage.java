@@ -59,16 +59,32 @@ public interface ActivityStreamStorage {
     }
   }
   /**
-   * Saves the activity into a streams.
+   * Saves the activity into the poster's stream
    * 
    * @param ctx 
    * 1. ctx.getIdentity()  
    * Owner is User Identity: Adds given {@link org.exoplatform.social.core.activity.model.ExoSocialActivity}
-   * to Connections's Feed and Connections streams.
+   * to Connections Feed and Connections streams.
    * 
    * Owner is Space Identity: Adds given {@link org.exoplatform.social.core.activity.model.ExoSocialActivity}
-   * to Space's Member's Feed and My Spaces streams.
-   * 2. ctx.getActivity() given activity to records the stream
+   * to Space Member's Feed and My Spaces streams.
+   * 2. ctx.getActivity() the activity to record the stream
+   * 
+   * @since 4.0.2, 4.1.0
+   */
+  public void savePoster(ProcessContext ctx);
+  
+  /**
+   * Saves the activity into the stream for connections and mentions
+   * 
+   * @param ctx 
+   * 1. ctx.getIdentity()  
+   * Owner is User Identity: Adds given {@link org.exoplatform.social.core.activity.model.ExoSocialActivity}
+   * to Connections Feed and Connections streams.
+   * 
+   * Owner is Space Identity: Adds given {@link org.exoplatform.social.core.activity.model.ExoSocialActivity}
+   * to Space Member's Feed and My Spaces streams.
+   * 2. ctx.getActivity() the activity to record the stream
    * 
    * @since 4.0.2, 4.1.0
    */
@@ -117,16 +133,29 @@ public interface ActivityStreamStorage {
   public void deleteConnect(Identity sender, Identity receiver);
   
   /**
-   * Updates the activity when has actions such as like, mentions, unlike, or add comment
+   * Updates the activity stream what relates to updated activity
+   * It will run with asynchronous mode
    * 
    * @param ctx 
-   * 1. ctx.getActivity() given activity to records the streams
-   * 2. ctx.getOldUpdated() oldUpdated of given the Activity. 
-   * 3. ctx.getMentioner() mentioners of given the Activity.
-   * 4. ctx.getCommenters() commenters of given the Activity. 
+   * 1. ctx.getActivity() given activity to record the streams
+   * 2. ctx.getOldUpdated() oldUpdated of the given Activity. 
+   * 3. ctx.getMentioner() mentioners of the given Activity.
+   * 4. ctx.getCommenters() commenters of the given Activity. 
    * @since 4.0.2, 4.1.0
    */
   public void update(ProcessContext ctx);
+  
+  /**
+   * Updates the activity when has actions such as add comment
+   * 
+   * @param ctx 
+   * 1. ctx.getActivity() the activity to record the streams
+   * 2. ctx.getOldUpdated() oldUpdated of the given Activity. 
+   * 3. ctx.getMentioner() mentioners of the given Activity.
+   * 4. ctx.getCommenters() commenters of the given Activity. 
+   * @since 4.0.2, 4.1.0
+   */
+  public void updateCommenter(ProcessContext ctx);
   
   /**
    * Deletes the activity ref when has actions such as delete comment, check has any mentioner and commenter were removed

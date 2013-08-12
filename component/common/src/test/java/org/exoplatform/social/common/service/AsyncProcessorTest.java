@@ -106,17 +106,6 @@ public class AsyncProcessorTest extends TestSocialServiceContext {
     assertEquals("done", params.getProperty("result", String.class));
   }
   
-  public void testAysncProcessor() throws Exception {
-    
-    ProcessContext params = new ProcessorContextImpl(getContext());
-    params.setProcessorName("AsyncProcessorTest");
-    params.setProperty("test0", "test0");
-    params.setProperty("test1", "test1");
-    
-    ProcessContext got = serviceExecute(params);
-    
-    assertEquals("done", got.getProperty("result", String.class));
-  }
   
   public void testAysncCallback() throws Exception {
 
@@ -128,10 +117,11 @@ public class AsyncProcessorTest extends TestSocialServiceContext {
     
     for(int i = 0; i < 80; i++) {
       ProcessContext got = serviceExecute(params, createAsyncCallback());
+      Thread.sleep(50);
       assertEquals("done", got.getProperty("result", String.class));
     }
 
-    
+    Thread.sleep(1000);
   }
 
   private AsyncCallback createAsyncCallback() {

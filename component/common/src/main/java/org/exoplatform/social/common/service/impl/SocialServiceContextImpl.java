@@ -19,21 +19,21 @@ package org.exoplatform.social.common.service.impl;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.exoplatform.container.PortalContainer;
 import org.exoplatform.social.common.service.ExecutorServiceManager;
 import org.exoplatform.social.common.service.LifecycleService;
 import org.exoplatform.social.common.service.ProcessContext;
 import org.exoplatform.social.common.service.SocialServiceContext;
 import org.exoplatform.social.common.service.SocialServiceExecutor;
 import org.exoplatform.social.common.service.TraceFactory;
+import org.exoplatform.social.common.service.thread.ThreadPoolConfig;
 import org.exoplatform.social.common.service.utils.TraceList;
 
 public class SocialServiceContextImpl implements SocialServiceContext {
   
-  private static final String NAME = "SocialServiceContext";
+  private static ExecutorServiceManager executorServiceManager = new ExecutorServiceManagerImpl();
   
-  private ExecutorServiceManager executorServiceManager;
-  
-  private SocialServiceExecutor serviceExecutor;
+  private final SocialServiceExecutor serviceExecutor;
   
   private List<LifecycleService> lifecycleServices = new ArrayList<LifecycleService>();
   
@@ -46,27 +46,23 @@ public class SocialServiceContextImpl implements SocialServiceContext {
   private ProcessType isAsyn = ProcessType.SYNC;
   
   private SocialServiceContextImpl() {
-    this.executorServiceManager = new ExecutorServiceManagerImpl(this);
-    this.serviceExecutor = new SocialServiceExecutorImpl(this, executorServiceManager.newDefaultThreadPool("Social"));
     this.traceFactory = TraceFactory.defaultFactory;
+    Object obj = PortalContainer.getInstance().getComponentInstanceOfType(ThreadPoolConfig.class);
+    if (obj != null) {
+      ThreadPoolConfig config = (ThreadPoolConfig)obj;
+      boolean async = config.isAsyncMode();
+      this.isAsyn = async ? ProcessType.ASYNC : ProcessType.SYNC;
+      
+      serviceExecutor = new SocialServiceExecutorImpl(executorServiceManager.newThreadPool("Social", config));
+    } else {
+      serviceExecutor = new SocialServiceExecutorImpl(executorServiceManager.newDefaultThreadPool("Social"));
   }
   
-  private SocialServiceContextImpl(ProcessType isAsyn) {
-    this();
-    this.isAsyn = isAsyn;
   }
   
   public static SocialServiceContext getInstance() {
     if (instance == null) {
       instance = new SocialServiceContextImpl();
-    }
-    
-    return instance;
-  }
-  
-  public static SocialServiceContext getInstance(ProcessType isAsyn) {
-    if (instance == null) {
-      instance = new SocialServiceContextImpl(isAsyn);
     }
     
     return instance;
@@ -88,11 +84,11 @@ public class SocialServiceContextImpl implements SocialServiceContext {
 
   @Override
   public SocialServiceExecutor getServiceExecutor() {
-    return this.serviceExecutor;
+    return serviceExecutor;
   }
   
   public ExecutorServiceManager getExecutorServiceManager() {
-    return this.executorServiceManager;
+    return executorServiceManager;
 }
 
   @Override
@@ -105,7 +101,7 @@ public class SocialServiceContextImpl implements SocialServiceContext {
 
   @Override
   public boolean isTraced() {
-    return true;
+    return false;
   }
   
   @Override

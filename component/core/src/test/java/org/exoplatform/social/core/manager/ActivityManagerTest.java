@@ -1085,17 +1085,20 @@ public class ActivityManagerTest extends AbstractCoreTest {
     this.populateActivityMass(maryIdentity, 3);
     this.populateActivityMass(johnIdentity, 2);
 
+    List<ExoSocialActivity> demoActivityFeed = activityManager.getActivityFeed(demoIdentity);
+    assertEquals(3, demoActivityFeed.size());
+
     Space space = this.getSpaceInstance(spaceService, 0);
     Identity spaceIdentity = identityManager.getOrCreateIdentity(SpaceIdentityProvider.NAME, space.getPrettyName(), false);
     populateActivityMass(spaceIdentity, 5);
 
-    List<ExoSocialActivity> demoActivityFeed = activityManager.getActivityFeed(demoIdentity);
+    demoActivityFeed = activityManager.getActivityFeed(demoIdentity);
     assertEquals("demoActivityFeed.size() must be 8", 8, demoActivityFeed.size());
 
     Relationship demoMaryConnection = relationshipManager.invite(demoIdentity, maryIdentity);
     assertEquals(8, activityManager.getActivityFeedWithListAccess(demoIdentity).getSize());
 
-    relationshipManager.confirm(demoMaryConnection);
+    relationshipManager.confirm(demoIdentity, maryIdentity);
     List<ExoSocialActivity> demoActivityFeed2 = activityManager.getActivityFeed(demoIdentity);
     assertEquals("demoActivityFeed2.size() must return 11", 11, demoActivityFeed2.size());
     List<ExoSocialActivity> maryActivityFeed = activityManager.getActivityFeed(maryIdentity);

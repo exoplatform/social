@@ -18,8 +18,6 @@ package org.exoplatform.social.common.service.thread;
 
 import java.util.concurrent.ThreadFactory;
 
-import org.exoplatform.services.log.ExoLogger;
-import org.exoplatform.services.log.Log;
 import org.exoplatform.social.common.service.utils.ThreadHelper;
 
 public final class SocialThreadFactory implements ThreadFactory {
@@ -27,17 +25,20 @@ public final class SocialThreadFactory implements ThreadFactory {
   private final String pattern;
   private final String name;
   private final boolean daemon;
+  private final int priority;
 
-  public SocialThreadFactory(String pattern, String name, boolean daemon) {
+  public SocialThreadFactory(String pattern, String name, boolean daemon, int priority) {
       this.pattern = pattern;
       this.name = name;
       this.daemon = daemon;
+      this.priority = priority;
   }
 
   public Thread newThread(Runnable runnable) {
       String threadName = ThreadHelper.resolveThreadName(pattern, name);
       Thread answer = new Thread(runnable, threadName);
       answer.setDaemon(daemon);
+      answer.setPriority(this.priority);
 
       return answer;
   }

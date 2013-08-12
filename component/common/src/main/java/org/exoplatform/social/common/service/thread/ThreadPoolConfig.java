@@ -19,9 +19,17 @@ package org.exoplatform.social.common.service.thread;
 import java.io.Serializable;
 import java.util.concurrent.TimeUnit;
 
-public class ThreadPoolConfig implements Serializable, Cloneable {
+import org.exoplatform.container.xml.InitParams;
+import org.exoplatform.container.xml.ValueParam;
+
+public class ThreadPoolConfig implements Serializable {
 
   private static final long serialVersionUID = 1L;
+  
+  private final String POOL_SIZE = "pool-size";
+  private final String MAX_POOL_SIZE = "max-pool-size";
+  private final String ASYNC_MODE = "async-mode";
+  private final String THREAD_PRIORITY = "thread-priority";
   
   private String id;
   private Boolean defaultProfile;
@@ -30,11 +38,55 @@ public class ThreadPoolConfig implements Serializable, Cloneable {
   private Long keepAliveTime;
   private TimeUnit timeUnit;
   private Integer maxQueueSize;
+  private int priority = Thread.NORM_PRIORITY;
+  private boolean asyncMode;
   
-  public ThreadPoolConfig() {}
+  public ThreadPoolConfig(InitParams params) {
   
-  public ThreadPoolConfig(String id) {
-    this.id = id;
+    this.setKeepAliveTime(60L);
+    this.setTimeUnit(TimeUnit.SECONDS);
+    this.setMaxQueueSize(1000);
+    
+    //
+    ValueParam poolSize = params.getValueParam(POOL_SIZE);
+    ValueParam maxPoolSize = params.getValueParam(MAX_POOL_SIZE);
+    ValueParam asyncMode = params.getValueParam(ASYNC_MODE);
+    ValueParam threadPriority = params.getValueParam(THREAD_PRIORITY);
+    
+    //
+    try {
+      this.poolSize = Integer.valueOf(poolSize.getValue());
+    }
+    catch (Exception e) {
+      this.poolSize = 10;
+    }
+    
+    //
+    try {
+      this.maxPoolSize = Integer.valueOf(maxPoolSize.getValue());
+    }
+    catch (Exception e) {
+      this.maxPoolSize = 20;
+    }
+    
+    //
+    try {
+      this.priority = Integer.valueOf(threadPriority.getValue());
+    }
+    catch (Exception e) {
+      this.priority = Thread.MAX_PRIORITY;
+    }
+
+    //
+    try {
+      this.asyncMode = Boolean.valueOf(asyncMode.getValue());
+    }
+    catch (Exception e) {
+      this.asyncMode = false;
+    }
+  }
+  
+  public ThreadPoolConfig() {
   }
   
 
@@ -116,7 +168,7 @@ public class ThreadPoolConfig implements Serializable, Cloneable {
    * @return the keep alive time
    */
   public Long getKeepAliveTime() {
-      return keepAliveTime;
+      return this.keepAliveTime;
   }
 
   /**
@@ -168,5 +220,19 @@ public class ThreadPoolConfig implements Serializable, Cloneable {
       this.maxQueueSize = maxQueueSize;
   }
   
+  public int getPriority() {
+    return priority;
+  }
+
+  public void setPriority(int priority) {
+    this.priority = priority;
+  }
   
+  public boolean isAsyncMode() {
+    return asyncMode;
+  }
+
+  public void setAsyncMode(boolean asyncMode) {
+    this.asyncMode = asyncMode;
+  }
 }

@@ -114,6 +114,29 @@
     </init-params>
   </component>
 
+  <component>
+    <key>org.exoplatform.social.common.service.thread.ThreadPoolConfig</key>
+    <type>org.exoplatform.social.common.service.thread.ThreadPoolConfig</type>
+    <init-params>
+      <value-param>
+        <name>pool-size</name>
+        <value>10</value>
+      </value-param>
+      <value-param>
+        <name>max-pool-size</name>
+        <value>20</value>
+      </value-param>
+      <value-param>
+        <name>async-mode</name>
+        <value>false</value>
+      </value-param>
+      <value-param>
+        <name>thread-priority</name>
+        <value>10</value>
+      </value-param>
+    </init-params>
+  </component>
+
   <!--
     Activity Stream storage components.
   -->

@@ -27,8 +27,10 @@ import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.manager.RelationshipManager;
 import org.exoplatform.social.core.manager.RelationshipManagerImpl;
 import org.exoplatform.social.core.relationship.model.Relationship;
+import org.exoplatform.social.core.space.SpaceUtils;
 import org.exoplatform.social.core.storage.api.IdentityStorage;
 import org.exoplatform.social.core.storage.impl.ActivityStorageImpl;
+import org.exoplatform.social.core.storage.impl.StorageUtils;
 import org.exoplatform.social.core.test.AbstractCoreTest;
 import org.exoplatform.social.core.test.MaxQueryNumber;
 

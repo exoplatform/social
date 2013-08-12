@@ -342,14 +342,9 @@ public class UIUserActivitiesDisplay extends UIContainer {
   public static class RefreshStreamActionListener extends EventListener<UIUserActivitiesDisplay> {
     public void execute(Event<UIUserActivitiesDisplay> event) throws Exception {
      UIUserActivitiesDisplay uiUserActivities = event.getSource();
-     WebuiRequestContext requestContext = event.getRequestContext();
      uiUserActivities.init();
      
-     //
-     UIActivitiesLoader activitiesLoader = uiUserActivities.getChild(UIActivitiesLoader.class);
-     event.getRequestContext().addUIComponentToUpdateByAjax(activitiesLoader);
-     requestContext.addUIComponentToUpdateByAjax(uiUserActivities);
-     
+     event.getRequestContext().addUIComponentToUpdateByAjax(uiUserActivities);
      Utils.resizeHomePage();
    }
  }
