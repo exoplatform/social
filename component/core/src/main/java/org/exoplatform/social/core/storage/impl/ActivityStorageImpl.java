@@ -591,8 +591,8 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
       //
       if (mustInjectStreams) {
         Identity identity = identityStorage.findIdentityById(comment.getUserId());
-        StreamInvocationHelper.updateCommenter(identity, activity, oldUpdated);
-        StreamInvocationHelper.update(activity, oldUpdated, mentioners.toArray(new String[0]), commenters.toArray(new String[0]));
+        StreamInvocationHelper.updateCommenter(identity, activity, commenters.toArray(new String[0]));
+        StreamInvocationHelper.update(activity, mentioners.toArray(new String[0]));
       }
     }  
     catch (NodeNotFoundException e) {
