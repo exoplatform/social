@@ -25,6 +25,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.apache.commons.lang.ArrayUtils;
+import org.chromattic.api.query.Ordering;
 import org.chromattic.api.query.Query;
 import org.chromattic.api.query.QueryBuilder;
 import org.chromattic.api.query.QueryResult;
@@ -41,7 +42,6 @@ import org.exoplatform.social.core.chromattic.entity.ActivityRefListEntity;
 import org.exoplatform.social.core.chromattic.entity.IdentityEntity;
 import org.exoplatform.social.core.chromattic.entity.StreamsEntity;
 import org.exoplatform.social.core.chromattic.filter.JCRFilterLiteral;
-import org.exoplatform.social.core.chromattic.utils.ActivityRefList;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
@@ -295,30 +295,17 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
     try {
       StreamProcessContext streamCtx = ObjectHelper.cast(StreamProcessContext.class, ctx);
       ExoSocialActivity activity = streamCtx.getActivity();
-      
-
-      //
+      Identity commenter = streamCtx.getIdentity();
+      IdentityEntity identityEntity = identityStorage._findIdentityEntity(commenter.getProviderId(), commenter.getRemoteId());
       ActivityEntity activityEntity = _findById(ActivityEntity.class, activity.getId());
-      Collection<ActivityRef> references = activityEntity.getActivityRefs();
       
-      List<ActivityRefListEntity> refList = new ArrayList<ActivityRefListEntity>(); 
-      //
-      for(ActivityRef ref : references) {
-        if (ref.getLastUpdated() == activity.getUpdated().getTime()) continue;
-        
-        //
-        refList.add(ref.getDay().getMonth().getYear().getList());
+      QueryResult<ActivityRef> got = getActivityRefs(identityEntity, activityEntity);
+      ActivityRef activityRef = null;
+      while(got.hasNext()) {
+        activityRef = got.next();
+        activityRef.setName("" + activity.getUpdated().getTime());
+        activityRef.setLastUpdated(activity.getUpdated().getTime());
       }
-      
-      long oldUpdated = streamCtx.getOldUpdated();
-      //
-      for (ActivityRefListEntity list : refList) {
-        list.remove(oldUpdated);
-        ActivityRef ref = list.get(activity.getUpdated().getTime());
-        ref.setLastUpdated(activity.getUpdated().getTime());
-        ref.setActivityEntity(activityEntity);
-      }
-     
     } catch (NodeNotFoundException e) {
       LOG.warn("Failed to updateCommenter Activity references.");
     }
@@ -330,35 +317,16 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
     try {
       StreamProcessContext streamCtx = ObjectHelper.cast(StreamProcessContext.class, ctx);
       ExoSocialActivity activity = streamCtx.getActivity();
-//      long oldUpdated = streamCtx.getOldUpdated();
 
-      //
       ActivityEntity activityEntity = _findById(ActivityEntity.class, activity.getId());
-//      Collection<ActivityRef> references = activityEntity.getActivityRefs();
-//      
-//      List<ActivityRefListEntity> refList = new ArrayList<ActivityRefListEntity>(); 
-//      //
-//      for(ActivityRef ref : references) {
-//        if (ref.getLastUpdated() == activity.getUpdated().getTime()) continue;
-//        
-//        //
-//        refList.add(ref.getDay().getMonth().getYear().getList());
-//      }
-//      
-//      //
-//      for(ActivityRefListEntity list : refList) {
-//        //LOG.info("update()::BEFORE");
-//        //printDebug(list, oldUpdated);
-//        
-//        list.remove(oldUpdated);
-//        ActivityRef ref = list.get(activity.getUpdated().getTime());
-//        ref.setLastUpdated(activity.getUpdated().getTime());
-//        ref.setActivityEntity(activityEntity);
-//        
-//        //LOG.info("update()::AFTER");
-//        //printDebug(list, oldUpdated);
-//      }
-      
+      Collection<ActivityRef> references = activityEntity.getActivityRefs();
+
+      for (ActivityRef ref : references) {
+        ref.setName("" + activity.getUpdated().getTime());
+        ref.setLastUpdated(activity.getUpdated().getTime());
+
+      }
+
       //mentioners
       addMentioner(streamCtx.getMentioners(), activityEntity);
       //commenter
@@ -425,6 +393,7 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
 
   @Override
   public List<ExoSocialActivity> getConnections(Identity owner, int offset, int limit) {
+    
     return getActivities(ActivityRefType.CONNECTION, owner, offset, limit);
   }
 
@@ -662,14 +631,8 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
     List<ExoSocialActivity> got = new LinkedList<ExoSocialActivity>();
     try {
       IdentityEntity identityEntity = identityStorage._findIdentityEntity(owner.getProviderId(), owner.getRemoteId());
-      ActivityRefListEntity refList = type.refsOf(identityEntity);
-      ActivityRefList list = new ActivityRefList(refList);
       
-      int nb = 0;
-      
-      Iterator<ActivityRef> it = list.iterator();
-
-      _skip(it, offset);
+      Iterator<ActivityRef> it = getActivityRefs(identityEntity, type, offset, limit);
 
       while (it.hasNext()) {
         ActivityRef current = it.next();
@@ -684,20 +647,12 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
         ExoSocialActivity a = getStorage().getActivity(current.getActivityEntity().getId());
             
         got.add(a);
-        //LOG.warn(current.toString());
-        
-
-        if (++nb == limit) {
-          break;
-        }
 
       }
       
     } catch (NodeNotFoundException e) {
       LOG.warn("Failed to getActivities()");
     }
-    
-    //Collections.reverse(got);
     
     return got;
   }
@@ -781,7 +736,22 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
     whereExpression.and().equals(ActivityRef.target, activityEntity.getId());
 
     builder.where(whereExpression.toString());
+    
+    
     return builder.get().objects();
+  }
+  
+  private QueryResult<ActivityRef> getActivityRefs(IdentityEntity identityEntity, ActivityRefType type, long offset, long limit) throws NodeNotFoundException {
+
+    QueryBuilder<ActivityRef> builder = getSession().createQueryBuilder(ActivityRef.class);
+
+    WhereExpression whereExpression = new WhereExpression();
+    ActivityRefListEntity refList = type.refsOf(identityEntity);
+    whereExpression.like(JCRProperties.path, refList.getPath() + "/%");
+
+    builder.where(whereExpression.toString());
+    builder.orderBy(ActivityRef.lastUpdated.getName(), Ordering.DESC);
+    return builder.get().objects(offset, limit);
   }
   
   private void createOwnerRefs(Identity owner, ActivityEntity activityEntity) throws NodeNotFoundException {
@@ -895,6 +865,7 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
   }
   
   private void printDebug(ActivityRefListEntity list, long oldUpdated) {
+    LOG.info("printDebug::OLD Date = " + oldUpdated);
     LOG.info("printDebug::SIZE = " + list.refs(oldUpdated).size());
     LOG.info("printDebug::path = " + list.getPath());
     

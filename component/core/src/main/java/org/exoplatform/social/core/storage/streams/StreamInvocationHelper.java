@@ -97,23 +97,24 @@ public class StreamInvocationHelper {
   public static ProcessContext update(ExoSocialActivity activity, long oldUpdated, String[] mentioners, String[] commenters) {
     //
     StreamProcessContext processCtx = StreamProcessContext.getIntance(StreamProcessContext.UPDATE_ACTIVITY_PROCESS, ctx);
-    processCtx.oldUpdate(oldUpdated).activity(activity).mentioners(mentioners).commenters(commenters);
+    processCtx.activity(activity).mentioners(mentioners).commenters(commenters);
     
     try {
-      beforeAsync();
-      //
-      ctx.getServiceExecutor().execute(StreamProcessorFactory.updateStream(), processCtx);
+      ctx.getServiceExecutor().async(StreamProcessorFactory.updateStream(), processCtx);
     } finally {
-      LOG.info(processCtx.getTraceLog());
+      if (ctx.isTraced()) {
+        LOG.info(processCtx.getTraceLog());
+      }
+      
     }
     
     return processCtx;
   }
   
-  public static ProcessContext updateCommenter(ExoSocialActivity activity, long oldUpdated) {
+  public static ProcessContext updateCommenter(Identity commenter, ExoSocialActivity activity, long oldUpdated) {
     //
     StreamProcessContext processCtx = StreamProcessContext.getIntance(StreamProcessContext.UPDATE_ACTIVITY_COMMENTER_PROCESS, ctx);
-    processCtx.oldUpdate(oldUpdated).activity(activity);
+    processCtx.identity(commenter).activity(activity);
     
     try {
       beforeAsync();

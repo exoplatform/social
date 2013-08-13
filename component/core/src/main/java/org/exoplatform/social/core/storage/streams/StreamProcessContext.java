@@ -42,7 +42,6 @@ public class StreamProcessContext extends ProcessorContextImpl {
   
   public final static String OWNER = "OWNER";
   public final static String ACTIVITY = "ACTIVITY";
-  public final static String OLD_UPDATED = "OLD_UPDATED";
   public final static String ACTIVITY_ID = "ACTIVITY_ID";
   public final static String SENDER = "SENDER";
   public final static String RECEIVER = "RECEIVER";
@@ -97,15 +96,6 @@ public class StreamProcessContext extends ProcessorContextImpl {
   
   public String getActivityId() {
     return getProperty(ACTIVITY, String.class);
-  }
-  
-  public StreamProcessContext oldUpdate(long oldUpdate) {
-    setProperty(OLD_UPDATED, oldUpdate);
-    return this;
-  }
-  
-  public long getOldUpdated() {
-    return getProperty(OLD_UPDATED, Long.class);
   }
   
   public StreamProcessContext sender(Identity sender) {

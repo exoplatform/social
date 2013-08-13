@@ -40,6 +40,8 @@ public abstract class ActivityRef implements NamedEntity {
   @Property(name = "soc:lastUpdated")
   public abstract Long getLastUpdated();
   public abstract void setLastUpdated(Long lastUpdated);
+  public static final PropertyLiteralExpression<String> lastUpdated =
+      new PropertyLiteralExpression<String>(String.class, "soc:lastUpdated");
   
   @ManyToOne
   public abstract ActivityRefDayEntity getDay();
