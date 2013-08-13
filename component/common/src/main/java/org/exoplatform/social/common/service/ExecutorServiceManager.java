@@ -56,10 +56,6 @@ public interface ExecutorServiceManager {
   
   ThreadPoolConfig getThreadPoolConfig(String id);
   
-  ThreadPoolConfig getDefaultThreadPoolConfig();
-  
   ExecutorService newThreadPool(String name, ThreadPoolConfig config);
-  
-  void registerThreadPoolProfile(ThreadPoolConfig config);
   
 }

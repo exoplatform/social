@@ -22,7 +22,6 @@ import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.social.common.service.ProcessContext;
 import org.exoplatform.social.common.service.SocialServiceContext;
-import org.exoplatform.social.common.service.SocialServiceContext.ProcessType;
 import org.exoplatform.social.common.service.impl.SocialServiceContextImpl;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.identity.model.Identity;
@@ -45,14 +44,19 @@ public class StreamInvocationHelper {
    */
   public static ProcessContext save(Identity owner, ExoSocialActivity activity, String[] mentioners) {
     //
-    SocialServiceContext ctx = SocialServiceContextImpl.getInstance(ProcessType.ASYNC);
+    SocialServiceContext ctx = SocialServiceContextImpl.getInstance();
     StreamProcessContext processCtx = StreamProcessContext.getIntance(StreamProcessContext.NEW_ACTIVITY_RELATIONS_PROCESS, ctx);
     processCtx.identity(owner).activity(activity).mentioners(mentioners);
     
     try {
-      SpaceUtils.endSyn(true);
-      //
-      ctx.getServiceExecutor().async(StreamProcessorFactory.saveStream(), processCtx);
+      if (ctx.isAsync()) {
+        SpaceUtils.endSyn(true);
+        //
+        ctx.getServiceExecutor().async(StreamProcessorFactory.saveStream(), processCtx);
+      } else {
+        ctx.getServiceExecutor().execute(StreamProcessorFactory.saveStream(), processCtx);
+      }
+      
     } finally {
       if (ctx.isTraced()) {
         LOG.info(processCtx.getTraceLog());
@@ -73,7 +77,7 @@ public class StreamInvocationHelper {
    */
   public static ProcessContext savePoster(Identity owner, ExoSocialActivity activity) {
     //
-    SocialServiceContext ctx = SocialServiceContextImpl.getInstance(ProcessType.SYNC);
+    SocialServiceContext ctx = SocialServiceContextImpl.getInstance();
     StreamProcessContext processCtx = StreamProcessContext.getIntance(StreamProcessContext.NEW_ACTIVITY_PROCESS, ctx);
     processCtx.identity(owner).activity(activity);
     
@@ -94,13 +98,18 @@ public class StreamInvocationHelper {
     return false;
   }
   
-  public static ProcessContext update(ExoSocialActivity activity, long oldUpdated, String[] mentioners, String[] commenters) {
+  public static ProcessContext update(ExoSocialActivity activity, String[] mentioners) {
     //
     StreamProcessContext processCtx = StreamProcessContext.getIntance(StreamProcessContext.UPDATE_ACTIVITY_PROCESS, ctx);
-    processCtx.activity(activity).mentioners(mentioners).commenters(commenters);
+    processCtx.activity(activity).mentioners(mentioners);
     
     try {
-      ctx.getServiceExecutor().async(StreamProcessorFactory.updateStream(), processCtx);
+      if (ctx.isAsync()) {
+        ctx.getServiceExecutor().async(StreamProcessorFactory.updateStream(), processCtx);
+      } else {
+        ctx.getServiceExecutor().execute(StreamProcessorFactory.updateStream(), processCtx);
+      }
+      
     } finally {
       if (ctx.isTraced()) {
         LOG.info(processCtx.getTraceLog());
@@ -111,10 +120,10 @@ public class StreamInvocationHelper {
     return processCtx;
   }
   
-  public static ProcessContext updateCommenter(Identity commenter, ExoSocialActivity activity, long oldUpdated) {
+  public static ProcessContext updateCommenter(Identity commenter, ExoSocialActivity activity, String[] commenters) {
     //
     StreamProcessContext processCtx = StreamProcessContext.getIntance(StreamProcessContext.UPDATE_ACTIVITY_COMMENTER_PROCESS, ctx);
-    processCtx.identity(commenter).activity(activity);
+    processCtx.identity(commenter).activity(activity).commenters(commenters);
     
     try {
       beforeAsync();
@@ -201,14 +210,18 @@ public class StreamInvocationHelper {
   
   public static ProcessContext connect(Identity sender, Identity receiver) {
     //
-    SocialServiceContext ctx = SocialServiceContextImpl.getInstance(ProcessType.ASYNC);
+    SocialServiceContext ctx = SocialServiceContextImpl.getInstance();
     StreamProcessContext processCtx = StreamProcessContext.getIntance(StreamProcessContext.CONNECT_ACTIVITY_PROCESS, ctx);
     processCtx.sender(sender).receiver(receiver);
     
     try {
       beforeAsync();
-      //
-      ctx.getServiceExecutor().async(StreamProcessorFactory.connectStream(), processCtx);
+      if(ctx.isAsync()) {
+        ctx.getServiceExecutor().async(StreamProcessorFactory.connectStream(), processCtx);
+      } else {
+        ctx.getServiceExecutor().execute(StreamProcessorFactory.connectStream(), processCtx);
+      }
+      
     } finally {
       LOG.info(processCtx.getTraceLog());
     }
@@ -218,14 +231,19 @@ public class StreamInvocationHelper {
   
   public static ProcessContext addSpaceMember(Identity owner, Identity spaceIdentity) {
     //
-    SocialServiceContext ctx = SocialServiceContextImpl.getInstance(ProcessType.ASYNC);
+    SocialServiceContext ctx = SocialServiceContextImpl.getInstance();
     StreamProcessContext processCtx = StreamProcessContext.getIntance(StreamProcessContext.ADD_SPACE_MEMBER_ACTIVITY_PROCESS, ctx);
     processCtx.identity(owner).spaceIdentity(spaceIdentity);
     
     try {
-      beforeAsync();
-      //
-      ctx.getServiceExecutor().async(StreamProcessorFactory.addSpaceMemberStream(), processCtx);
+      if(ctx.isAsync()) {
+        beforeAsync();
+        //
+        ctx.getServiceExecutor().async(StreamProcessorFactory.addSpaceMemberStream(), processCtx);
+      } else {
+        ctx.getServiceExecutor().execute(StreamProcessorFactory.addSpaceMemberStream(), processCtx);
+      }
+      
     } finally {
       LOG.info(processCtx.getTraceLog());
     }
@@ -252,13 +270,19 @@ public class StreamInvocationHelper {
   
   public static ProcessContext createFeedActivityRef(Identity owner, List<ExoSocialActivity> list) {
     //
-    SocialServiceContext ctx = SocialServiceContextImpl.getInstance(ProcessType.ASYNC);
+    SocialServiceContext ctx = SocialServiceContextImpl.getInstance();
     StreamProcessContext processCtx = StreamProcessContext.getIntance(StreamProcessContext.LAZY_UPGRADE_STREAM_PROCESS, ctx);
     processCtx.identity(owner).activities(list);
     
     try {
-      //
-      ctx.getServiceExecutor().async(StreamProcessorFactory.createFeedActivityRef(), processCtx);
+      if(ctx.isAsync()) {
+        //
+        ctx.getServiceExecutor().async(StreamProcessorFactory.createFeedActivityRef(), processCtx);
+      } else {
+        //
+        ctx.getServiceExecutor().execute(StreamProcessorFactory.createFeedActivityRef(), processCtx);
+      }
+      
     } finally {
       LOG.info(processCtx.getTraceLog());
     }
@@ -268,13 +292,19 @@ public class StreamInvocationHelper {
   
   public static ProcessContext createConnectionsActivityRef(Identity owner, List<ExoSocialActivity> list) {
     //
-    SocialServiceContext ctx = SocialServiceContextImpl.getInstance(ProcessType.ASYNC);
+    SocialServiceContext ctx = SocialServiceContextImpl.getInstance();
     StreamProcessContext processCtx = StreamProcessContext.getIntance(StreamProcessContext.LAZY_UPGRADE_STREAM_PROCESS, ctx);
     processCtx.identity(owner).activities(list);
     
     try {
-      //
-      ctx.getServiceExecutor().async(StreamProcessorFactory.createConnectionsActivityRef(), processCtx);
+      if(ctx.isAsync()) {
+        //
+        ctx.getServiceExecutor().async(StreamProcessorFactory.createConnectionsActivityRef(), processCtx);
+      } else {
+        //
+        ctx.getServiceExecutor().execute(StreamProcessorFactory.createConnectionsActivityRef(), processCtx);
+      }
+      
     } finally {
       LOG.info(processCtx.getTraceLog());
     }
@@ -284,13 +314,19 @@ public class StreamInvocationHelper {
   
   public static ProcessContext createMySpacesActivityRef(Identity owner, List<ExoSocialActivity> list) {
     //
-    SocialServiceContext ctx = SocialServiceContextImpl.getInstance(ProcessType.ASYNC);
+    SocialServiceContext ctx = SocialServiceContextImpl.getInstance();
     StreamProcessContext processCtx = StreamProcessContext.getIntance(StreamProcessContext.LAZY_UPGRADE_STREAM_PROCESS, ctx);
     processCtx.identity(owner).activities(list);
     
     try {
-      //
-      ctx.getServiceExecutor().async(StreamProcessorFactory.createMySpacesActivityRef(), processCtx);
+      if(ctx.isAsync()) {
+        //
+        ctx.getServiceExecutor().async(StreamProcessorFactory.createMySpacesActivityRef(), processCtx);
+      } else {
+        //
+        ctx.getServiceExecutor().execute(StreamProcessorFactory.createMySpacesActivityRef(), processCtx);
+      }
+      
     } finally {
       LOG.info(processCtx.getTraceLog());
     }
@@ -300,13 +336,19 @@ public class StreamInvocationHelper {
   
   public static ProcessContext createMyActivitiesActivityRef(Identity owner, List<ExoSocialActivity> list) {
     //
-    SocialServiceContext ctx = SocialServiceContextImpl.getInstance(ProcessType.ASYNC);
+    SocialServiceContext ctx = SocialServiceContextImpl.getInstance();
     StreamProcessContext processCtx = StreamProcessContext.getIntance(StreamProcessContext.LAZY_UPGRADE_STREAM_PROCESS, ctx);
     processCtx.identity(owner).activities(list);
     
     try {
-      //
-      ctx.getServiceExecutor().async(StreamProcessorFactory.createMyActivitiesActivityRef(), processCtx);
+      if(ctx.isAsync()) {
+        //
+        ctx.getServiceExecutor().async(StreamProcessorFactory.createMyActivitiesActivityRef(), processCtx);
+      } else {
+        //
+        ctx.getServiceExecutor().execute(StreamProcessorFactory.createMyActivitiesActivityRef(), processCtx);
+      }
+      
     } finally {
       LOG.info(processCtx.getTraceLog());
     }
@@ -316,13 +358,19 @@ public class StreamInvocationHelper {
   
   public static ProcessContext createSpaceActivityRef(Identity owner, List<ExoSocialActivity> list) {
     //
-    SocialServiceContext ctx = SocialServiceContextImpl.getInstance(ProcessType.ASYNC);
+    SocialServiceContext ctx = SocialServiceContextImpl.getInstance();
     StreamProcessContext processCtx = StreamProcessContext.getIntance(StreamProcessContext.LAZY_UPGRADE_STREAM_PROCESS, ctx);
     processCtx.identity(owner).activities(list);
     
     try {
-      //
-      ctx.getServiceExecutor().async(StreamProcessorFactory.createSpaceActivityRef(), processCtx);
+      if(ctx.isAsync()) {
+        //
+        ctx.getServiceExecutor().async(StreamProcessorFactory.createSpaceActivityRef(), processCtx);
+      } else {
+        //
+        ctx.getServiceExecutor().execute(StreamProcessorFactory.createSpaceActivityRef(), processCtx);
+      }
+      
     } finally {
       LOG.info(processCtx.getTraceLog());
     }

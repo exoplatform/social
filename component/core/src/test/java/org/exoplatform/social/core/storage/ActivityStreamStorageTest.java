@@ -299,13 +299,13 @@ public class ActivityStreamStorageTest extends AbstractCoreTest {
     }
     
     //update
-    Calendar calendar = Calendar.getInstance(Locale.ENGLISH);
-    //calendar.add(Calendar.DAY_OF_MONTH, 2);
-    long updated = calendar.getTimeInMillis();
+    ExoSocialActivity comment = new ExoSocialActivityImpl();
+    comment.setTitle(activityTitle  + " @mary @john");
+    comment.isComment(true);
+    comment.setUserId(maryIdentity.getId());
+    activityStorage.saveComment(activity1, comment);
     
-    activity1.setUpdated(updated);
-    LOG.info("<======================updated=======================>");
-    activityStorage.saveActivity(rootIdentity, activity1);
+    LOG.info("<======================updated whatshot=======================>");
     
     { //checks what's hot
       List<ExoSocialActivity> list = streamStorage.getFeed(rootIdentity, 0, 10);

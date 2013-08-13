@@ -307,6 +307,19 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
         activityRef.setName("" + activity.getUpdated().getTime());
         activityRef.setLastUpdated(activity.getUpdated().getTime());
       }
+      
+      //activity's poster != comment's poster
+      //don't have on My Activity stream
+      int count = getActivityRefs(identityEntity, activityEntity, ActivityRefType.MY_ACTIVITIES);
+      if (count == 0) {
+        manageRefList(new UpdateContext(commenter, null), activityEntity, ActivityRefType.MY_ACTIVITIES);
+      }
+      //post comment also put the activity on feed if have not any
+      count = getActivityRefs(identityEntity, activityEntity, ActivityRefType.FEED);
+      if (count == 0) {
+        manageRefList(new UpdateContext(commenter, null), activityEntity, ActivityRefType.FEED);
+      }
+      
     } catch (NodeNotFoundException e) {
       LOG.warn("Failed to updateCommenter Activity references.");
     }
@@ -330,8 +343,6 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
 
       //mentioners
       addMentioner(streamCtx.getMentioners(), activityEntity);
-      //commenter
-      addCommenter(streamCtx.getCommenters(), activityEntity);
     } catch (NodeNotFoundException e) {
       LOG.warn("Failed to update Activity references.");
     }
@@ -740,6 +751,18 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
     
     
     return builder.get().objects();
+  }
+  
+  private int getActivityRefs(IdentityEntity identityEntity, ActivityEntity activityEntity, ActivityRefType type) throws NodeNotFoundException {
+    QueryBuilder<ActivityRef> builder = getSession().createQueryBuilder(ActivityRef.class);
+
+    WhereExpression whereExpression = new WhereExpression();
+    ActivityRefListEntity refList = type.refsOf(identityEntity);
+    whereExpression.like(JCRProperties.path, refList.getPath() + "/%");
+    whereExpression.and().equals(ActivityRef.target, activityEntity.getId());
+
+    builder.where(whereExpression.toString());
+    return builder.get().objects().size();
   }
   
   private QueryResult<ActivityRef> getActivityRefs(IdentityEntity identityEntity, ActivityRefType type, long offset, long limit) throws NodeNotFoundException {

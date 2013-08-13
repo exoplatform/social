@@ -38,6 +38,29 @@
   </component>
   
   <component>
+    <key>org.exoplatform.social.common.service.thread.ThreadPoolConfig</key>
+    <type>org.exoplatform.social.common.service.thread.ThreadPoolConfig</type>
+    <init-params>
+      <value-param>
+        <name>pool-size</name>
+        <value>10</value>
+      </value-param>
+      <value-param>
+        <name>max-pool-size</name>
+        <value>20</value>
+      </value-param>
+      <value-param>
+        <name>async-mode</name>
+        <value>true</value>
+      </value-param>
+      <value-param>
+        <name>thread-priority</name>
+        <value>5</value><!--10: HIGH, 5: NORMAL; 1: LOW-->
+      </value-param>
+    </init-params>
+  </component>
+  
+  <component>
     <type>org.exoplatform.social.core.updater.UserActivityStreamMigration</type>
   </component>
   
