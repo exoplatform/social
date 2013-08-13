@@ -19,6 +19,7 @@ package org.exoplatform.social.portlet.userNotification;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
 
@@ -35,15 +36,20 @@ import juzu.template.Template;
 import org.exoplatform.commons.api.notification.model.GroupProvider;
 import org.exoplatform.commons.api.notification.model.UserSetting;
 import org.exoplatform.commons.api.notification.model.UserSetting.FREQUENCY;
+import org.exoplatform.commons.api.notification.plugin.config.PluginConfig;
 import org.exoplatform.commons.api.notification.service.setting.ProviderSettingService;
 import org.exoplatform.commons.api.notification.service.setting.UserSettingService;
 import org.exoplatform.commons.juzu.ajax.Ajax;
 import org.exoplatform.commons.notification.NotificationUtils;
+import org.exoplatform.commons.notification.impl.DigestDailyPlugin;
 import org.exoplatform.commons.utils.CommonsUtils;
+import org.exoplatform.services.log.ExoLogger;
+import org.exoplatform.services.log.Log;
 import org.exoplatform.social.webui.Utils;
 
 
 public class UserNotificationSetting {
+  private static final Log LOG = ExoLogger.getLogger(UserNotificationSetting.class);
 
   @Inject
   @Path("index.gtmpl") Template index;
@@ -66,13 +72,18 @@ public class UserNotificationSetting {
   private static final String CHECK_BOX_DEACTIVATE_ID = "checkBoxDeactivate";
 
   private final static String SELECT_BOX_PREFIX       = "SelectBox";
+  
+  private Locale locale = Locale.ENGLISH;
 
   @View
   public void index(RenderContext renderContext) {
-    if(bundle == null) {
-      bundle = renderContext.getApplicationContext().resolveBundle(renderContext.getUserContext().getLocale());
+    if (renderContext != null) {
+      locale = renderContext.getUserContext().getLocale();
     }
-    
+    if (bundle == null) {
+      bundle = renderContext.getApplicationContext().resolveBundle(locale);
+    }
+
     index.render(parameters());
   }
  
@@ -128,6 +139,7 @@ public class UserNotificationSetting {
   }
 
   private Map<String, Object> parameters() {
+    
     Map<String, Object> parameters = new HashMap<String, Object>();
 
     if(CommonsUtils.isFeatureActive(NotificationUtils.FEATURE_NAME) == false) {
@@ -192,9 +204,9 @@ public class UserNotificationSetting {
   
   private Map<String, String> buildOptions(Context context) {
     Map<String, String> options = new HashMap<String, String>();
-    options.put("Daily", context.appRes("Notification.label.Daily"));
-    options.put("Weekly", context.appRes("Notification.label.Weekly"));
-    options.put("Never", context.appRes("Notification.label.Never"));
+    options.put("Daily", context.appRes("UINotification.label.Daily"));
+    options.put("Weekly", context.appRes("UINotification.label.Weekly"));
+    options.put("Never", context.appRes("UINotification.label.Never"));
     return options;
   }
   
@@ -232,19 +244,46 @@ public class UserNotificationSetting {
 
   public class Context {
     ResourceBundle rs;
-    
+
     public Context(ResourceBundle rs) {
       this.rs = rs;
     }
-    
+
     public String appRes(String key) {
       try {
-        return rs.getString(key).replaceAll("'","&#39;").replaceAll("\"","&#34;");
+        return rs.getString(key).replaceAll("'", "&#39;").replaceAll("\"", "&#34;");
+      } catch (java.util.MissingResourceException e) {
+        LOG.warn("Can't find resource for bundle key " + key);
       } catch (Exception e) {
-        return key;
+        LOG.debug("Error when get resource bundle key " + key, e);
       }
+      return key;
+    }
+    
+    private String getBundlePath(String id) {
+      PluginConfig pluginConfig = providerSettingService.getPluginConfig(id);
+      if (pluginConfig != null) {
+        return pluginConfig.getTemplateConfig().getBundlePath();
+      }
+      //
+      if (GroupProvider.defaultGroupIds.contains(id)) {
+        return providerSettingService.getPluginConfig(DigestDailyPlugin.ID)
+            .getTemplateConfig().getBundlePath();
+      }
+      //
+      List<GroupProvider> groups = providerSettingService.getGroupProviders();
+      for (GroupProvider groupProvider : groups) {
+        if (groupProvider.getGroupId().equals(id)) {
+          return groupProvider.getProviderDatas().get(0).getBundlePath();
+        }
+      }
+      return "";
     }
 
+    public String pluginRes(String key, String id) {
+      String path = getBundlePath(id);
+      return NotificationUtils.getResourceBundle(key, locale, path);
+    }
   }
      
 }

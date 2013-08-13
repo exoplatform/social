@@ -56,7 +56,7 @@
               <string>ActivityMentionPlugin</string>
             </field>
             <field name="resourceBundleKey">
-              <string>Notification.label.ActivityMentionPlugin</string>
+              <string>UINotification.label.ActivityMentionPlugin</string>
             </field>
             <field name="order">
               <string>5</string>
@@ -101,7 +101,7 @@
               <string>ActivityCommentPlugin</string>
             </field>
             <field name="resourceBundleKey">
-              <string>Notification.label.ActivityCommentPlugin</string>
+              <string>UINotification.label.ActivityCommentPlugin</string>
             </field>
             <field name="order">
               <string>8</string>
@@ -147,7 +147,7 @@
               <string>LikePlugin</string>
             </field>
             <field name="resourceBundleKey">
-              <string>Notification.label.ActivityLikePlugin</string>
+              <string>UINotification.label.ActivityLikePlugin</string>
             </field>
             <field name="order">
               <string>9</string>
@@ -192,7 +192,7 @@
               <string>PostActivityPlugin</string>
             </field>
             <field name="resourceBundleKey">
-              <string>Notification.label.PostActivityPlugin</string>
+              <string>UINotification.label.PostActivityPlugin</string>
             </field>
             <field name="order">
               <string>6</string>
@@ -237,7 +237,7 @@
               <string>PostActivitySpaceStreamPlugin</string>
             </field>
             <field name="resourceBundleKey">
-              <string>Notification.label.PostActivitySpacePlugin</string>
+              <string>UINotification.label.PostActivitySpacePlugin</string>
             </field>
             <field name="order">
               <string>7</string>
@@ -282,7 +282,7 @@
               <string>NewUserPlugin</string>
             </field>
             <field name="resourceBundleKey">
-              <string>Notification.label.NewUserPlugin</string>
+              <string>UINotification.label.NewUserPlugin</string>
             </field>
             <field name="order">
               <string>1</string>
@@ -327,7 +327,7 @@
               <string>RelationshipRecievedRequestPlugin</string>
             </field>
             <field name="resourceBundleKey">
-              <string>Notification.label.RecievedRequestPlugin</string>
+              <string>UINotification.label.RecievedRequestPlugin</string>
             </field>
             <field name="order">
               <string>2</string>
@@ -373,7 +373,7 @@
               <string>SpaceInvitationPlugin</string>
             </field>
             <field name="resourceBundleKey">
-              <string>Notification.label.SpaceInvitationPlugin</string>
+              <string>UINotification.label.SpaceInvitationPlugin</string>
             </field>
             <field name="order">
               <string>3</string>
@@ -419,7 +419,7 @@
               <string>RequestJoinSpacePlugin</string>
             </field>
             <field name="resourceBundleKey">
-              <string>Notification.label.RequestJoinSpacePlugin</string>
+              <string>UINotification.label.RequestJoinSpacePlugin</string>
             </field>
             <field name="order">
               <string>4</string>
