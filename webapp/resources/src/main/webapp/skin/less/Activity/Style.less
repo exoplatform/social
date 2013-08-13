@@ -508,14 +508,18 @@
 			}
 			.commmentLeft {
 				float:left;
+				margin-right: 10px;
 				&+ .commentRight{
-					margin-left: 45px;
+				  overflow: hidden;
 				}
 			}
 			.commentInputBox  {
 				padding: 3px 0 0 ;
+				.btn {
+					margin-left: 10px;
+				}
 				.commentInput {
-					margin-right: 112px;
+					overflow: hidden;
 					textarea {
 						 .size(28px,100%);
 						 resize: none;
