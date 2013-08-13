@@ -129,6 +129,8 @@ public class SpacesRestService implements ResourceContainer {
    */
   private static final QualifiedName REQUEST_SITE_NAME = QualifiedName.create("gtn", "sitename");
   
+  private static final String ALL_SPACES = "all-spaces"; 
+  
   /**
    * constructor
    */
@@ -528,13 +530,8 @@ public class SpacesRestService implements ResourceContainer {
       qualifiedName.put(LANG, "");
       
       StringBuilder urlBuilder = new StringBuilder();
-      UserPortalConfig userPortalConfig = SpaceUtils.getUserPortalConfig();
-      qualifiedName.put(REQUEST_SITE_NAME, userPortalConfig.getPortalName());
-      if (portalOwner.equals("socialdemo")) {
-        qualifiedName.put(PATH, "all-spaces");
-      } else {
-        qualifiedName.put(PATH, "spaces");
-      }
+      qualifiedName.put(REQUEST_SITE_NAME, portalOwner);
+      qualifiedName.put(PATH, ALL_SPACES);
       router.render(qualifiedName, new URIWriter(urlBuilder));
       spaceList.setMoreSpacesUrl(urlBuilder.toString());
     } catch (Exception e) {

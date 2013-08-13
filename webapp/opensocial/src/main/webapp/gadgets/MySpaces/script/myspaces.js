@@ -1,7 +1,7 @@
   var eXo = eXo || {};
   eXo.social = eXo.social || {};
   
-  var SocialUtil = eXo.social.SocialUtil;
+  var SocialGadgetsUtil = eXo.social.SocialGadgetsUtil;
   
   //When run in socialdemo, need to change this config to /classsic/all-spaces
   var domain = top.location.protocol + "//" + top.location.host; 
@@ -97,7 +97,7 @@
 	      emptyItem.className = 'NoneSpace';
 	      emptyItem.innerHTML = eXo.social.Locale.getMsg('has_no_space');
 	      mySpacesEl.appendChild(emptyItem);
-	      SocialUtil.adjustHeight(mySpacesEl);
+	      SocialGadgetsUtil.adjustHeight(mySpacesEl);
 	      return;
 	    }
 	
@@ -109,7 +109,7 @@
 	      mySpacesEl.appendChild(spaceItem);
 	    }
 	    
-	    SocialUtil.adjustHeight(mySpacesEl);
+	    SocialGadgetsUtil.adjustHeight(mySpacesEl);
 	  }
 	}
 	
