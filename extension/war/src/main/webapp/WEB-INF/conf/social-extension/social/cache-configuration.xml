@@ -380,6 +380,10 @@
               <boolean>true</boolean>
             </field>
           </object>
+        </object-param>
+        <object-param>
+          <name>SuggestionsCache</name>
+          <description>The JBoss Cache configuration for the SuggestionsCache</description>
           <object type="org.exoplatform.services.cache.impl.jboss.ea.EAExoCacheConfig">
             <field name="name">
               <string>SuggestionsCache</string>
