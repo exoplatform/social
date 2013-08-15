@@ -18,7 +18,7 @@
                         <table border="0" cellpadding="0" cellspacing="0" width="92%" bgcolor="#ffffff" align="center" style="background-color: #ffffff; color:#333333;line-height:20px;">
                             <tr>
                                 <td align="left" style="padding: 10px 0;">
-                                    <p style="margin: 10px 0;font-size:13px;font-family:'HelveticaNeue bold',verdana,arial,tahoma">Hi Mark,</p>
+                                    <p style="margin: 10px 0;font-size:13px;font-family:'HelveticaNeue bold',verdana,arial,tahoma"><%=_ctx.appRes("Notification.label.SayHello")%> $FIRSTNAME,</p>
                                     <table border="0" cellpadding="0" cellspacing="0" >
                                         <tr>
                                             <td valign="top" width="90px">
