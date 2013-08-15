@@ -14,12 +14,16 @@
 		margin: 0 0 10px 0; 
 	}
 	.inputLink {
-		margin: 0 75px 0 0;
+		 overflow: hidden; 
 		input[type="text"] {
 			width: 100%;
 			height: 28px; 
 		}
 	}	
+	 .btn {
+  		margin-left: 10px; 
+   		 min-width: 82px;
+  	} 
 	.blastShare  {
 		.uiContentBox {
 			padding: 5px; 
@@ -490,14 +494,18 @@
 			}
 			.commmentLeft {
 				float:left;
+				 margin-right: 10px; 
 				&+ .commentRight{
-					margin-left: 45px;
+					overflow: hidden; 
 				}
 			}
 			.commentInputBox  {
 				padding: 3px 0 0 ;
+				.btn {
+			         margin-left: 10px;
+			      } 
 				.commentInput {
-					margin-right: 112px;
+					overflow: hidden;
 					textarea {
 						 .size(28px,100%);
 						 resize: none;
