@@ -83,7 +83,7 @@ public class ActivityMentionPlugin extends AbstractNotificationPlugin {
     }
     templateContext.put("AVATAR", LinkProviderUtils.getUserAvatarUrl(identity.getProfile()));
     templateContext.put("PROFILE_URL", LinkProviderUtils.getRedirectUrl("user", identity.getRemoteId()));
-    templateContext.put("ACTIVITY", activity.getTitle());
+    templateContext.put("ACTIVITY", Utils.processMentions(activity.getTitle()));
     templateContext.put("REPLY_ACTION_URL", LinkProviderUtils.getRedirectUrl("reply_activity", activity.getId()));
     templateContext.put("VIEW_FULL_DISCUSSION_ACTION_URL", LinkProviderUtils.getRedirectUrl("view_full_activity", activity.getId()));
     String body = Utils.getTemplateGenerator().processTemplate(templateContext);

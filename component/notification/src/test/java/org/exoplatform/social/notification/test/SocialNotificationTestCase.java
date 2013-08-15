@@ -278,7 +278,7 @@ public class SocialNotificationTestCase extends AbstractCoreTest {
     ctx.setNotificationMessage(message2.setTo("mary"));
     MessageInfo info1 = mentionPlugin.buildMessage(ctx);
     assertEquals("You were mentioned by " + demoIdentity.getProfile().getFullName(), info1.getSubject());
-    assertEquals(demoIdentity.getProfile().getFullName() + " has mentioned you in an activity : activity title <a href=\"/portal/classic/profile/demo\">Demo gtn</a>", info1.getBody());
+    assertEquals(demoIdentity.getProfile().getFullName() + " has mentioned you in an activity : activity title <a href=\"localhost/portal/classic/profile/demo\">Demo gtn</a>", info1.getBody());
     
   }
   
@@ -756,6 +756,16 @@ public class SocialNotificationTestCase extends AbstractCoreTest {
       postSpaceActivityPlugin.buildDigest(ctx, writer);
 //      assertEquals("<a href=\"localhost/rest/social/notifications/redirectUrl/user/demo\">Demo gtn</a> posted in <a href=\"localhost/rest/social/notifications/redirectUrl/space/"+space1.getId()+"\">my space 1</a>.</br><a href=\"localhost/rest/social/notifications/redirectUrl/user/john\">John Anthony</a>, <a href=\"localhost/rest/social/notifications/redirectUrl/user/mary\">Mary Kelly</a> posted in <a href=\"localhost/rest/social/notifications/redirectUrl/space/"+space2.getId()+"\">my space 2</a>.</br>", writer.toString());
     }
+  }
+  
+  public void testMentionProcess() throws Exception {
+    String title= "hello <a href=\"/portal/classic/profile/demo\">Demo gtn</a>"+
+        ", <a href=\"/portal/classic/coucou/john\">John Smith</a>" +
+        ", <a href=\"/portal/classic/profile/mary\">Mary Kelly</a>";
+    String result = "hello <a href=\"localhost/portal/classic/profile/demo\">Demo gtn</a>"+
+        ", <a href=\"/portal/classic/coucou/john\">John Smith</a>" +
+        ", <a href=\"localhost/portal/classic/profile/mary\">Mary Kelly</a>";
+    assertEquals(result, Utils.processMentions(title));
   }
   
   private Space getSpaceInstance(int number) throws Exception {

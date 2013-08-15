@@ -109,7 +109,7 @@ public class SocialNotificationUtils {
       String typeActivityDisplay = (templateContext.getProviderId().equals("LikePlugin")) ? "view_likers_activity" : "view_full_activity";
       String typeSpaceDisplay = (templateContext.getProviderId().equals("PostActivitySpaceStreamPlugin")) ? "space" : "space_members";
       if (activity != null) {
-        templateContext.put("ACTIVITY", SocialNotificationUtils.buildRedirecUrl(typeActivityDisplay, activity.getId(), activity.getTitle()));
+        templateContext.put("ACTIVITY", SocialNotificationUtils.buildRedirecUrl(typeActivityDisplay, activity.getId(), Utils.processMentions(activity.getTitle())));
       } else {
         templateContext.put("SPACE", SocialNotificationUtils.buildRedirecUrl(typeSpaceDisplay, space.getId(), space.getDisplayName()));
       }
