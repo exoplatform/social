@@ -178,22 +178,26 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     ActivityEntity activityEntity = _findById(ActivityEntity.class, activity.getId());
     
     //
-    long oldUpdated = activityEntity.getLastUpdated();
+    //long oldUpdated = activityEntity.getLastUpdated();
     String[] removedLikes = StorageUtils.sub(activityEntity.getLikes(), activity.getLikeIdentityIds());
     String[] addedLikes = StorageUtils.sub(activity.getLikeIdentityIds(), activityEntity.getLikes());
+    //Don't update the last modified for activity.
+    //Don't apply What's hot for like/dislike case.
     
     //streamStorage.update(activity, oldUpdated, false);
-    if (mustInjectStreams && removedLikes.length == 0) {
-      activity.setUpdated(System.currentTimeMillis());
-      StreamInvocationHelper.update(activity, oldUpdated, null, null);
+    //if (mustInjectStreams && removedLikes.length == 0) {
+    //  activity.setUpdated(System.currentTimeMillis());
+    //  StreamInvocationHelper.update(activity, oldUpdated, null, null);
+    //}
+    
+    if (removedLikes.length > 0 || addedLikes.length > 0) {
+      //process likes activity
+      manageActivityLikes(addedLikes, removedLikes, activity);
     }
     
     //
     fillActivityEntityFromActivity(activity, activityEntity);
     StorageUtils.persist();
-    
-    //process likes activity
-    manageActivityLikes(addedLikes, removedLikes, activity);
   }
   
   private void manageActivityLikes(String[] addedLikes, String[] removedLikes, ExoSocialActivity activity) {
@@ -211,7 +215,6 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     if (removedLikes != null) {
       for (String id : removedLikes) {
         Identity removedLiker = identityStorage.findIdentityById(id);
-        //streamStorage.unLike(removedLiker, activity);
         if (mustInjectStreams) {
           StreamInvocationHelper.unLike(removedLiker, activity);
         }
@@ -586,9 +589,10 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
       activity.setUpdated(currentMillis);
       
       //
-      //streamStorage.update(activity, oldUpdated, false);
       if (mustInjectStreams) {
-        StreamInvocationHelper.update(activity, oldUpdated, mentioners.toArray(new String[0]), commenters.toArray(new String[0]));
+        Identity identity = identityStorage.findIdentityById(comment.getUserId());
+        StreamInvocationHelper.updateCommenter(identity, activity, commenters.toArray(new String[0]));
+        StreamInvocationHelper.update(activity, mentioners.toArray(new String[0]));
       }
     }  
     catch (NodeNotFoundException e) {
@@ -628,6 +632,9 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
         //create refs
         //streamStorage.save(owner, activity);
         if (mustInjectStreams) {
+          //run synchronous
+          StreamInvocationHelper.savePoster(owner, activity);
+          //run asynchronous
           StreamInvocationHelper.save(owner, activity, mentioners);
         }
       }

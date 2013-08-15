@@ -135,6 +135,25 @@ public abstract class ActivityRefListEntity {
     return ref;
   }
   
+  public ActivityRef update(long oldLastUpdated, long newLastUpdated) {
+    Calendar calendar = Calendar.getInstance(Locale.ENGLISH);
+    calendar.setTimeInMillis(oldLastUpdated);
+
+    String year = String.valueOf(calendar.get(Calendar.YEAR));
+    String month = MONTH_NAME[calendar.get(Calendar.MONTH)];
+    String day = String.valueOf(calendar.get(Calendar.DAY_OF_MONTH));
+
+    ActivityRefDayEntity dayEntity = this.getYear(year).getMonth(month).getDay(day);
+    
+    //needs to check it existing or not in list
+    ActivityRef ref = dayEntity.getActivityRefs().get("" + oldLastUpdated);
+    
+    if (ref != null) {
+      ref.setName("" + newLastUpdated);
+    }
+    return ref;
+  }
+  
   public Map<String, ActivityRef> refs(long lastUpdated) {
     Calendar calendar = Calendar.getInstance(Locale.ENGLISH);
     calendar.setTimeInMillis(lastUpdated);

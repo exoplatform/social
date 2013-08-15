@@ -48,6 +48,23 @@ public class StreamProcessorFactory {
   }
   
   /**
+   * Build Save only these streams what own by poster.
+   * 
+   * @return
+   */
+  public static SocialChromatticAsyncProcessor savePoster() {
+    return new SocialChromatticAsyncProcessor(SocialServiceContextImpl.getInstance()) {
+
+      @Override
+      protected ProcessContext execute(ProcessContext processContext) throws Exception {
+        getStreamStorage().savePoster(processContext);
+        return processContext;
+      }
+
+    };
+  }
+  
+  /**
    * Build Update Stream processor
    * @return
    */
@@ -57,6 +74,22 @@ public class StreamProcessorFactory {
       @Override
       protected ProcessContext execute(ProcessContext processContext) throws Exception {
         getStreamStorage().update(processContext);
+        return processContext;
+      }
+
+    };
+  }
+  
+  /**
+   * Build Update Commenter processor
+   * @return
+   */
+  public static SocialChromatticAsyncProcessor updateCommenter() {
+    return new SocialChromatticAsyncProcessor(SocialServiceContextImpl.getInstance()) {
+
+      @Override
+      protected ProcessContext execute(ProcessContext processContext) throws Exception {
+        getStreamStorage().updateCommenter(processContext);
         return processContext;
       }
 

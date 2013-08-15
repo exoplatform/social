@@ -492,4 +492,9 @@ public class ExoSocialActivityImpl extends ActivityImpl implements ExoSocialActi
   public void setPosterId(String posterId) {
     this.posterId = posterId;
   }
+  
+  @Override
+  public String toString() {
+    return "ExoSocialActivity[id = " + getId() + ",title=" + getTitle() + " ]";
+  }
 }

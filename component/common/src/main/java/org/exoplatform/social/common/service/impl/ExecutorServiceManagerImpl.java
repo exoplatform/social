@@ -25,7 +25,6 @@ import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 
 import org.exoplatform.social.common.service.ExecutorServiceManager;
-import org.exoplatform.social.common.service.SocialServiceContext;
 import org.exoplatform.social.common.service.thread.DefaultThreadPoolFactory;
 import org.exoplatform.social.common.service.thread.SocialThreadFactory;
 import org.exoplatform.social.common.service.thread.ThreadPoolConfig;
@@ -33,20 +32,15 @@ import org.exoplatform.social.common.service.thread.ThreadPoolFactory;
 
 public class ExecutorServiceManagerImpl implements ExecutorServiceManager {
   
-  private final SocialServiceContext socialContext;
   private ThreadPoolFactory threadPoolFactory = new DefaultThreadPoolFactory();
   private final List<ExecutorService> executorServices = new ArrayList<ExecutorService>();
   private String threadNamePattern;
-  private long shutdownAwaitTermination = 10000;
-  private String defaultThreadPoolProfileId = "defaultThreadPoolConfig";
   private final Map<String, ThreadPoolConfig> threadPoolProfiles = new HashMap<String, ThreadPoolConfig>();
   
   private ThreadPoolConfig defaultConfig;
   
-  public ExecutorServiceManagerImpl(SocialServiceContext socialContext) {
-    this.socialContext = socialContext;
-    
-    defaultConfig = new ThreadPoolConfig(defaultThreadPoolProfileId);
+  public ExecutorServiceManagerImpl() {
+    defaultConfig = new ThreadPoolConfig();
     
     defaultConfig.setDefaultProfile(true);
     defaultConfig.setPoolSize(10);
@@ -54,8 +48,7 @@ public class ExecutorServiceManagerImpl implements ExecutorServiceManager {
     defaultConfig.setKeepAliveTime(60L);
     defaultConfig.setTimeUnit(TimeUnit.SECONDS);
     defaultConfig.setMaxQueueSize(1000);
-    
-    registerThreadPoolProfile(defaultConfig);
+    defaultConfig.setPriority(Thread.MAX_PRIORITY);
   }
 
   @Override
@@ -74,12 +67,7 @@ public class ExecutorServiceManagerImpl implements ExecutorServiceManager {
 
   @Override
   public ExecutorService newDefaultThreadPool(String name) {
-    return newThreadPool(name, getDefaultThreadPoolConfig());
-  }
-  
-  @Override
-  public ThreadPoolConfig getDefaultThreadPoolConfig() {
-      return getThreadPoolConfig(defaultThreadPoolProfileId);
+    return newThreadPool(name, this.defaultConfig);
   }
   
   
@@ -90,22 +78,15 @@ public class ExecutorServiceManagerImpl implements ExecutorServiceManager {
   
   @Override
   public ExecutorService newThreadPool(String name, ThreadPoolConfig config) {
-    ThreadPoolConfig defaultConfig = getDefaultThreadPoolConfig();
-
-    ThreadFactory threadFactory = createThreadFactory(name, true);
-    ExecutorService executorService = threadPoolFactory.newThreadPool(defaultConfig, threadFactory);
+    ThreadFactory threadFactory = createThreadFactory(name, true, config.getPriority());
+    ExecutorService executorService = threadPoolFactory.newThreadPool(config, threadFactory);
 
     //
     return executorService;
   }
 
-  private ThreadFactory createThreadFactory(String name, boolean isDaemon) {
-    return new SocialThreadFactory(threadNamePattern, name, isDaemon);
-  }
-  
-  @Override
-  public void registerThreadPoolProfile(ThreadPoolConfig config) {
-      threadPoolProfiles.put(config.getId(), config);
+  private ThreadFactory createThreadFactory(String name, boolean isDaemon, int priority) {
+    return new SocialThreadFactory(threadNamePattern, name, isDaemon, priority);
   }
 
 }

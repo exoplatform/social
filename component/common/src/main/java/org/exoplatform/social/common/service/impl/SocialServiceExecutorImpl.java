@@ -35,23 +35,15 @@ import org.exoplatform.social.common.service.utils.AsyncProcessorTool;
 
 public class SocialServiceExecutorImpl implements SocialServiceExecutor {
 
-  private final SocialServiceContext context;
   private ExecutorService executor;
   
-  public SocialServiceExecutorImpl(SocialServiceContext context) {
-    this.context = context;
+  public SocialServiceExecutorImpl() {
   }
   
-  public SocialServiceExecutorImpl(SocialServiceContext context, ExecutorService executor) {
-    this.context = context;
+  public SocialServiceExecutorImpl(ExecutorService executor) {
     this.executor = executor;
   }
   
-  @Override
-  public SocialServiceContext getSocialServiceContext() {
-    return context;
-  }
-
   @Override
   public ProcessContext execute(ServiceContext<ProcessContext> serviceContext, ProcessContext processContext) {
     processContext.getTraceElement().start();
@@ -87,7 +79,7 @@ public class SocialServiceExecutorImpl implements SocialServiceExecutor {
       }
     };
     
-    if (this.context.isTraced()) {
+    if (SocialServiceContextImpl.getInstance().isTraced()) {
       task = new LogWatchCallable<ProcessContext>(task, processorContext.getTraceElement());
     }
     
@@ -118,7 +110,8 @@ public class SocialServiceExecutorImpl implements SocialServiceExecutor {
         if (executor != null) {
             return executor;
         }
-        executor = context.getExecutorServiceManager().newDefaultThreadPool("DefaultSocialExecutor");
+        
+        executor = SocialServiceContextImpl.getInstance().getExecutorServiceManager().newDefaultThreadPool("DefaultSocialExecutor");
     }
 
     return executor;
@@ -128,7 +121,7 @@ public class SocialServiceExecutorImpl implements SocialServiceExecutor {
   public ProcessContext async(AsyncProcessor asyncProcessor, ProcessContext processContext) {
     Future<ProcessContext> future = asyncProcess(asyncProcessor, processContext);
     try {
-      future.get(10, TimeUnit.SECONDS);
+      future.get(10, TimeUnit.MILLISECONDS);
       //
       return future.get();
     } catch (InterruptedException e) {
@@ -152,7 +145,7 @@ public class SocialServiceExecutorImpl implements SocialServiceExecutor {
       }
     };
     
-    if (this.context.isTraced()) {
+    if (SocialServiceContextImpl.getInstance().isTraced()) {
       task = new LogWatchCallable<ProcessContext>(task, processContext.getTraceElement());
     }
     
@@ -161,7 +154,7 @@ public class SocialServiceExecutorImpl implements SocialServiceExecutor {
     
     try {
       //Change timeout for Future when run debug mode
-      future.get(2, TimeUnit.MINUTES);
+      future.get(10, TimeUnit.MILLISECONDS);
       //
       return future.get();
     } catch (InterruptedException e) {

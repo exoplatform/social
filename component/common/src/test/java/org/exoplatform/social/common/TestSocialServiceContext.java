@@ -21,8 +21,6 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-import junit.framework.TestCase;
-
 import org.exoplatform.social.common.service.AsyncCallback;
 import org.exoplatform.social.common.service.AsyncProcessor;
 import org.exoplatform.social.common.service.ProcessContext;
@@ -30,7 +28,7 @@ import org.exoplatform.social.common.service.SocialServiceContext;
 import org.exoplatform.social.common.service.SocialServiceExecutor;
 import org.exoplatform.social.common.service.impl.SocialServiceContextImpl;
 
-public abstract class TestSocialServiceContext extends TestCase {
+public class TestSocialServiceContext extends AbstractCommonTest {
 
   private SocialServiceContext context;
   private SocialServiceExecutor serviceExecutor;
@@ -61,9 +59,13 @@ public abstract class TestSocialServiceContext extends TestCase {
     return serviceExecutor;
   }
   
-  protected abstract void config();
+  protected void config() {
+    
+  }
   
-  protected abstract AsyncProcessor createAsyncProcessor();
+  protected AsyncProcessor createAsyncProcessor() {
+    return null;
+  }
   
   protected ProcessContext serviceExecute(ProcessContext processContext) throws ExecutionException, InterruptedException, TimeoutException {
     return getExecutor().async(createAsyncProcessor(), processContext);

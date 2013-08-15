@@ -26,7 +26,9 @@ import org.exoplatform.social.core.identity.model.Identity;
 public class StreamProcessContext extends ProcessorContextImpl {
   
   public static String NEW_ACTIVITY_PROCESS = "NEW_ACTIVITY";
+  public static String NEW_ACTIVITY_RELATIONS_PROCESS = "NEW_ACTIVITY_FOR_RELATIONS";
   public static String UPDATE_ACTIVITY_PROCESS = "UPDATE_ACTIVITY";
+  public static String UPDATE_ACTIVITY_COMMENTER_PROCESS = "UPDATE_ACTIVITY_COMMENTER";
   public static String DELETE_ACTIVITY_PROCESS = "DELETE_ACTIVITY";
   public static String DELETE_COMMENT_PROCESS = "DELETE_COMMENT";
   public static String LIKE_ACTIVITY_PROCESS = "LIKE_ACTIVITY";
@@ -40,7 +42,6 @@ public class StreamProcessContext extends ProcessorContextImpl {
   
   public final static String OWNER = "OWNER";
   public final static String ACTIVITY = "ACTIVITY";
-  public final static String OLD_UPDATED = "OLD_UPDATED";
   public final static String ACTIVITY_ID = "ACTIVITY_ID";
   public final static String SENDER = "SENDER";
   public final static String RECEIVER = "RECEIVER";
@@ -95,15 +96,6 @@ public class StreamProcessContext extends ProcessorContextImpl {
   
   public String getActivityId() {
     return getProperty(ACTIVITY, String.class);
-  }
-  
-  public StreamProcessContext oldUpdate(long oldUpdate) {
-    setProperty(OLD_UPDATED, oldUpdate);
-    return this;
-  }
-  
-  public long getOldUpdated() {
-    return getProperty(OLD_UPDATED, Long.class);
   }
   
   public StreamProcessContext sender(Identity sender) {
