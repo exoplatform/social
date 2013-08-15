@@ -78,16 +78,14 @@ public class NotificationsRestService implements ResourceContainer {
    * @throws Exception
    */
   @GET
-  @Path("inviteToConnect/{userId}")
+  @Path("inviteToConnect/{receiverId}/{senderId}")
   public Response inviteToConnect(@Context UriInfo uriInfo,
-                                  @PathParam("userId") String userId) throws Exception {
+                                  @PathParam("receiverId") String receiverId,
+                                  @PathParam("senderId") String senderId) throws Exception {
     checkAuthenticatedRequest();
     
-    Identity sender = getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, ConversationState.getCurrent().getIdentity().getUserId(), true);
-    if (sender == null) {
-      sender = getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, Util.getViewerId(uriInfo), true);
-    }
-    Identity receiver = getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, userId, true);
+    Identity sender = getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, (senderId != null ? senderId : ConversationState.getCurrent().getIdentity().getUserId()), true);
+    Identity receiver = getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, receiverId, true);
     if (sender == null || receiver == null) {
       throw new WebApplicationException(Response.Status.BAD_REQUEST);
     }

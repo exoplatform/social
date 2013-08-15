@@ -34,7 +34,7 @@
 
   <component>
     <key>org.exoplatform.commons.api.notification.service.setting.UserSettingService</key>
-    <type>org.exoplatform.commons.notification.impl.setting.UserSettingServiceImpl</type>
+    <type>org.exoplatform.social.notification.mock.MockUserSettingServiceImpl</type>
   </component>
   
   <component>

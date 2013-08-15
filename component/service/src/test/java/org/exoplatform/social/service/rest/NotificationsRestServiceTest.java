@@ -106,7 +106,7 @@ public class NotificationsRestServiceTest extends AbstractResourceTest {
   
   public void testInviteToConnect() throws Exception {
     startSessionAs("root");
-    ContainerResponse response = service("GET", "/social/notifications/inviteToConnect/" + johnIdentity.getRemoteId(), "", null, null);
+    ContainerResponse response = service("GET", "/social/notifications/inviteToConnect/" + johnIdentity.getRemoteId() + "/" + rootIdentity.getRemoteId(), "", null, null);
     assertNotNull(response);
     assertEquals(303, response.getStatus());
   }

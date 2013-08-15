@@ -37,8 +37,8 @@ public static final String RESOURCE_URL = "social/notifications";
    * @param receiverId remoteId of the receiver
    * @return
    */
-  public static String getInviteToConnectUrl(String userId) {
-    return getRestUrl(INVITE_TO_CONNECT, userId, null);
+  public static String getInviteToConnectUrl(String receiverId, String senderId) {
+    return getRestUrl(INVITE_TO_CONNECT, receiverId, senderId);
   }
   
   /**

@@ -71,5 +71,18 @@ public class MockNotificationService implements NotificationService {
   @Override
   public void addSendNotificationListener(AbstractNotificationServiceListener messageListener) {
   }
+
+  @Override
+  public Map<String, NotificationMessage> getNotificationMessagesByProviderId(String pluginId,
+                                                                              boolean isWeekend) {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  @Override
+  public void removeNotificationMessages(String pluginId) {
+    // TODO Auto-generated method stub
+    
+  }
  
 }

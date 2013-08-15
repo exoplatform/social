@@ -25,7 +25,9 @@ import org.exoplatform.commons.api.notification.NotificationContext;
 import org.exoplatform.commons.api.notification.model.MessageInfo;
 import org.exoplatform.commons.api.notification.model.NotificationMessage;
 import org.exoplatform.commons.api.notification.plugin.AbstractNotificationPlugin;
+import org.exoplatform.commons.api.notification.service.setting.UserSettingService;
 import org.exoplatform.commons.api.notification.service.template.TemplateContext;
+import org.exoplatform.commons.utils.CommonsUtils;
 import org.exoplatform.container.xml.InitParams;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
@@ -50,22 +52,19 @@ public class NewUserPlugin extends AbstractNotificationPlugin {
     Profile profile = ctx.value(SocialNotificationUtils.PROFILE);
     
     try {
+      //Try to get user setting of new user and set mixin value for user setting node
+      UserSettingService userSettingService = CommonsUtils.getService(UserSettingService.class);
+      userSettingService.get(profile.getIdentity().getRemoteId());
+      
+      //This type of notification need to get all users who want to receive this kind of notification, except the new created user
+      //To avoid all problem related to the performance, we will get this list after, step by step, when sending message
       List<String> allUsers = new ArrayList<String>();
-      
-      //TODO : This type of notification need to get all users who want to receive this kind of notification, except the new created user
-      
-      /*ProfileFilter profileFilter = new ProfileFilter();
-      profileFilter.setExcludedIdentityList(Arrays.asList(profile.getIdentity()));
-      ListAccess<Identity> list = Utils.getIdentityManager().getIdentitiesByProfileFilter(profile.getIdentity().getProviderId(), profileFilter, false);
-      
-      for (Identity identity : list.load(0, list.getSize())) {
-        allUsers.add(identity.getRemoteId());
-      }*/
       
       return NotificationMessage.instance()
                                 .key(getId())
                                 .with("remoteId", profile.getIdentity().getRemoteId())
-                                .to(allUsers);
+                                .to(allUsers)
+                                .setFrom(profile.getIdentity().getRemoteId());
     } catch (Exception e) {
       return null;
     }
@@ -91,7 +90,7 @@ public class NewUserPlugin extends AbstractNotificationPlugin {
     
     templateContext.put("PROFILE_URL", LinkProviderUtils.getRedirectUrl("user", identity.getRemoteId()));
     templateContext.put("AVATAR", LinkProviderUtils.getUserAvatarUrl(userProfile));
-    templateContext.put("CONNECT_ACTION_URL", LinkProviderUtils.getInviteToConnectUrl(identity.getRemoteId()));
+    templateContext.put("CONNECT_ACTION_URL", LinkProviderUtils.getInviteToConnectUrl(identity.getRemoteId(), notification.getTo()));
     String body = Utils.getTemplateGenerator().processTemplate(templateContext);
     
     return messageInfo.subject(subject).body(body).end();
