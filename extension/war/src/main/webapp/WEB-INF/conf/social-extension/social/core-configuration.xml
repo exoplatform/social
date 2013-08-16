@@ -627,22 +627,5 @@
       </init-params>
     </component-plugin>
   </external-component-plugins>
-  
-  <external-component-plugins>
-    <target-component>org.exoplatform.commons.upgrade.UpgradeProductService</target-component>
-    <component-plugin>
-      <name>UserNotificationSettingUpdaterPlugin</name>
-      <set-method>addUpgradePlugin</set-method>
-      <type>org.exoplatform.social.notification.upgrade.UserNotificationSettingUpdaterPlugin</type>
-      <description>User Notification Setting Updater</description>
-      <init-params>
-        <value-param>
-          <name>product.group.id</name>
-          <description>The groupId of the product</description>
-          <value>org.exoplatform.social</value>
-        </value-param>
-      </init-params>
-    </component-plugin>
-  </external-component-plugins>
 
 </configuration>
