@@ -74,16 +74,4 @@ public class MockProviderSettingService implements ProviderSettingService {
     return null;
   }
 
-  @Override
-  public boolean getActiveFeature() {
-    // TODO Auto-generated method stub
-    return false;
-  }
-
-  @Override
-  public void saveActiveFeature(boolean isActive) {
-    // TODO Auto-generated method stub
-    
-  }
-
 }
