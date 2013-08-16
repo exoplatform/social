@@ -85,7 +85,6 @@ public class SpaceInvitationPlugin extends AbstractNotificationPlugin {
 
     String language = getLanguage(first);
     TemplateContext templateContext = new TemplateContext(first.getKey().getId(), language);
-    SocialNotificationUtils.addFooterAndFirstName(first.getTo(), templateContext);
     
     int count = notifications.size();
     String[] keys = {"SPACE", "SPACE_LIST", "LAST3_SPACES"};

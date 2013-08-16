@@ -94,7 +94,6 @@ public class LikePlugin extends AbstractNotificationPlugin {
 
     String language = getLanguage(first);
     TemplateContext templateContext = new TemplateContext(first.getKey().getId(), language);
-    SocialNotificationUtils.addFooterAndFirstName(first.getTo(), templateContext);
     
     Map<String, List<String>> map = new LinkedHashMap<String, List<String>>();
 

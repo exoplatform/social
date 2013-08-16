@@ -101,7 +101,6 @@ public class PostActivityPlugin extends AbstractNotificationPlugin {
     String language = getLanguage(first);
     
     TemplateContext templateContext = new TemplateContext(first.getKey().getId(), language);
-    SocialNotificationUtils.addFooterAndFirstName(sendToUser, templateContext);
     
     int count = notifications.size();
     String[] keys = {"USER", "USER_LIST", "LAST3_USERS"};

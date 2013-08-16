@@ -92,7 +92,6 @@ public class RelationshipRecievedRequestPlugin extends AbstractNotificationPlugi
 
     String language = getLanguage(first);
     TemplateContext templateContext = new TemplateContext(first.getKey().getId(), language);
-    SocialNotificationUtils.addFooterAndFirstName(first.getTo(), templateContext);
     
     int count = notifications.size();
     String[] keys = {"USER", "USER_LIST", "LAST3_USERS"};
