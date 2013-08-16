@@ -741,7 +741,7 @@ public class PeopleRestService implements ResourceContainer{
   }
   
   static public class UserInfo {
-    static private String AVATAR_URL = "/social-resources/skin/ShareImages/Avatar.gif";
+    static private String AVATAR_URL = "/social-resources/skin/images/ShareImages/UserAvtDefault.png";
 
     String id;
     String name;
