@@ -18,7 +18,7 @@
 @Application
 @Portlet
 @Bindings({ 
-    @Binding(ProviderSettingService.class), 
+    @Binding(PluginConfigService.class), 
     @Binding(UserSettingService.class) 
   }
 )
@@ -29,5 +29,5 @@ import juzu.Application;
 import juzu.plugin.portlet.Portlet;
 import juzu.plugin.binding.Binding;
 import juzu.plugin.binding.Bindings;
-import org.exoplatform.commons.api.notification.service.setting.ProviderSettingService;
+import org.exoplatform.commons.api.notification.service.setting.PluginConfigService;
 import org.exoplatform.commons.api.notification.service.setting.UserSettingService;

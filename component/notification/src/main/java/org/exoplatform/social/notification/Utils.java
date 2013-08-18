@@ -22,7 +22,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.exoplatform.commons.api.notification.service.storage.NotificationDataStorage;
-import org.exoplatform.commons.api.notification.service.template.TemplateGenerator;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.identity.model.Identity;
@@ -113,10 +112,6 @@ public class Utils {
   
   public static ActivityManager getActivityManager() {
     return getService(ActivityManager.class);
-  }
-  
-  public static TemplateGenerator getTemplateGenerator() {
-    return getService(TemplateGenerator.class);
   }
   
 }

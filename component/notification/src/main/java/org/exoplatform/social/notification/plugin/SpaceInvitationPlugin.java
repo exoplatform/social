@@ -22,9 +22,10 @@ import java.util.List;
 
 import org.exoplatform.commons.api.notification.NotificationContext;
 import org.exoplatform.commons.api.notification.model.MessageInfo;
-import org.exoplatform.commons.api.notification.model.NotificationMessage;
+import org.exoplatform.commons.api.notification.model.NotificationInfo;
 import org.exoplatform.commons.api.notification.plugin.AbstractNotificationPlugin;
 import org.exoplatform.commons.api.notification.service.template.TemplateContext;
+import org.exoplatform.commons.notification.template.TemplateUtils;
 import org.exoplatform.container.xml.InitParams;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.notification.LinkProviderUtils;
@@ -43,11 +44,11 @@ public class SpaceInvitationPlugin extends AbstractNotificationPlugin {
   }
 
   @Override
-  public NotificationMessage makeNotification(NotificationContext ctx) {
+  public NotificationInfo makeNotification(NotificationContext ctx) {
     Space space = ctx.value(SocialNotificationUtils.SPACE);
     String userId = ctx.value(SocialNotificationUtils.REMOTE_ID);
     
-    return NotificationMessage.instance().key(getId())
+    return NotificationInfo.instance().key(getId())
            .with(SocialNotificationUtils.PRETTY_NAME.getKey(), space.getPrettyName())
            .with(SocialNotificationUtils.SPACE_ID.getKey(), space.getId())
            .to(userId).end();
@@ -57,7 +58,7 @@ public class SpaceInvitationPlugin extends AbstractNotificationPlugin {
   public MessageInfo makeMessage(NotificationContext ctx) {
     MessageInfo messageInfo = new MessageInfo();
     
-    NotificationMessage notification = ctx.getNotificationMessage();
+    NotificationInfo notification = ctx.getNotificationInfo();
     
     String language = getLanguage(notification);
     TemplateContext templateContext = new TemplateContext(notification.getKey().getId(), language);
@@ -68,20 +69,20 @@ public class SpaceInvitationPlugin extends AbstractNotificationPlugin {
     
     templateContext.put("SPACE", space.getDisplayName());
     templateContext.put("SPACE_URL", LinkProviderUtils.getRedirectUrl("space", space.getId()));
-    String subject = Utils.getTemplateGenerator().processSubject(templateContext);
+    String subject = TemplateUtils.processSubject(templateContext);
     
     templateContext.put("SPACE_AVATAR", LinkProviderUtils.getSpaceAvatarUrl(space));
     templateContext.put("ACCEPT_SPACE_INVITATION_ACTION_URL", LinkProviderUtils.getAcceptInvitationToJoinSpaceUrl(space.getId(), notification.getTo()));
     templateContext.put("REFUSE_SPACE_INVITATION_ACTION_URL", LinkProviderUtils.getIgnoreInvitationToJoinSpaceUrl(space.getId(), notification.getTo()));
-    String body = Utils.getTemplateGenerator().processTemplate(templateContext);
+    String body = TemplateUtils.processGroovy(templateContext);
     
     return messageInfo.subject(subject).body(body).end();
   }
 
   @Override
   public boolean makeDigest(NotificationContext ctx, Writer writer) {
-    List<NotificationMessage> notifications = ctx.getNotificationMessages();
-    NotificationMessage first = notifications.get(0);
+    List<NotificationInfo> notifications = ctx.getNotificationInfos();
+    NotificationInfo first = notifications.get(0);
 
     String language = getLanguage(first);
     TemplateContext templateContext = new TemplateContext(first.getKey().getId(), language);
@@ -110,7 +111,7 @@ public class SpaceInvitationPlugin extends AbstractNotificationPlugin {
         templateContext.put("COUNT", SocialNotificationUtils.buildRedirecUrl("space_invitation", null, String.valueOf((count - 3))));
       }
 
-      String digester = Utils.getTemplateGenerator().processDigest(templateContext.digestType(count).end());
+      String digester = TemplateUtils.processDigest(templateContext.digestType(count).end());
       writer.append(digester);
     } catch (IOException e) {
       ctx.setException(e);

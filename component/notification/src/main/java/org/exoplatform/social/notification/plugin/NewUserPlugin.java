@@ -23,12 +23,13 @@ import java.util.List;
 
 import org.exoplatform.commons.api.notification.NotificationContext;
 import org.exoplatform.commons.api.notification.model.MessageInfo;
-import org.exoplatform.commons.api.notification.model.NotificationMessage;
+import org.exoplatform.commons.api.notification.model.NotificationInfo;
 import org.exoplatform.commons.api.notification.plugin.AbstractNotificationPlugin;
 import org.exoplatform.commons.api.notification.service.setting.ProviderSettingService;
 import org.exoplatform.commons.api.notification.service.setting.UserSettingService;
 import org.exoplatform.commons.api.notification.service.template.TemplateContext;
 import org.exoplatform.commons.notification.NotificationUtils;
+import org.exoplatform.commons.notification.template.TemplateUtils;
 import org.exoplatform.commons.utils.CommonsUtils;
 import org.exoplatform.container.xml.InitParams;
 import org.exoplatform.social.core.identity.model.Identity;
@@ -50,7 +51,7 @@ public class NewUserPlugin extends AbstractNotificationPlugin {
   }
 
   @Override
-  public NotificationMessage makeNotification(NotificationContext ctx) {
+  public NotificationInfo makeNotification(NotificationContext ctx) {
     Profile profile = ctx.value(SocialNotificationUtils.PROFILE);
     
     try {
@@ -58,7 +59,7 @@ public class NewUserPlugin extends AbstractNotificationPlugin {
       //To avoid all problem related to the performance, we will get this list after, step by step, when sending message
       List<String> allUsers = new ArrayList<String>();
       
-      return NotificationMessage.instance()
+      return NotificationInfo.instance()
                                 .key(getId())
                                 .with("remoteId", profile.getIdentity().getRemoteId())
                                 .to(allUsers)
@@ -72,7 +73,7 @@ public class NewUserPlugin extends AbstractNotificationPlugin {
   public MessageInfo makeMessage(NotificationContext ctx) {
     MessageInfo messageInfo = new MessageInfo();
     
-    NotificationMessage notification = ctx.getNotificationMessage();
+    NotificationInfo notification = ctx.getNotificationInfo();
     
     String language = getLanguage(notification);
     TemplateContext templateContext = new TemplateContext(notification.getKey().getId(), language);
@@ -84,20 +85,20 @@ public class NewUserPlugin extends AbstractNotificationPlugin {
     
     templateContext.put("USER", userProfile.getFullName());
     templateContext.put("PORTAL_NAME", System.getProperty("exo.notifications.portalname", "eXo"));
-    String subject = Utils.getTemplateGenerator().processSubject(templateContext);
+    String subject = TemplateUtils.processSubject(templateContext);
     
     templateContext.put("PROFILE_URL", LinkProviderUtils.getRedirectUrl("user", identity.getRemoteId()));
     templateContext.put("AVATAR", LinkProviderUtils.getUserAvatarUrl(userProfile));
     templateContext.put("CONNECT_ACTION_URL", LinkProviderUtils.getInviteToConnectUrl(identity.getRemoteId(), notification.getTo()));
-    String body = Utils.getTemplateGenerator().processTemplate(templateContext);
+    String body = TemplateUtils.processGroovy(templateContext);
     
     return messageInfo.subject(subject).body(body).end();
   }
 
   @Override
   public boolean makeDigest(NotificationContext ctx, Writer writer) {
-    List<NotificationMessage> notifications = ctx.getNotificationMessages();
-    NotificationMessage first = notifications.get(0);
+    List<NotificationInfo> notifications = ctx.getNotificationInfos();
+    NotificationInfo first = notifications.get(0);
 
     String language = getLanguage(first);
     TemplateContext templateContext = new TemplateContext(first.getKey().getId(), language);
@@ -128,7 +129,7 @@ public class NewUserPlugin extends AbstractNotificationPlugin {
       }
       
       templateContext.put("PORTAL_NAME", System.getProperty("exo.notifications.portalname", "eXo"));
-      String digester = Utils.getTemplateGenerator().processDigest(templateContext.digestType(count));
+      String digester = TemplateUtils.processDigest(templateContext.digestType(count));
       writer.append(digester);
       
     } catch (IOException e) {

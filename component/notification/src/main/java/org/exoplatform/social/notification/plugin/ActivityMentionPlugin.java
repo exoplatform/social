@@ -24,9 +24,10 @@ import java.util.Map;
 
 import org.exoplatform.commons.api.notification.NotificationContext;
 import org.exoplatform.commons.api.notification.model.MessageInfo;
-import org.exoplatform.commons.api.notification.model.NotificationMessage;
+import org.exoplatform.commons.api.notification.model.NotificationInfo;
 import org.exoplatform.commons.api.notification.plugin.AbstractNotificationPlugin;
 import org.exoplatform.commons.api.notification.service.template.TemplateContext;
+import org.exoplatform.commons.notification.template.TemplateUtils;
 import org.exoplatform.container.xml.InitParams;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.identity.model.Identity;
@@ -46,14 +47,14 @@ public class ActivityMentionPlugin extends AbstractNotificationPlugin {
   }
 
   @Override
-  public NotificationMessage makeNotification(NotificationContext ctx) {
+  public NotificationInfo makeNotification(NotificationContext ctx) {
     ExoSocialActivity activity = ctx.value(SocialNotificationUtils.ACTIVITY);
     List<String> sendToUsers = Utils.getDestinataires(activity.getMentionedIds(), activity.getPosterId());
     if (sendToUsers.size() == 0) {
       return null;
     }
     
-    return NotificationMessage.instance().key(getKey())
+    return NotificationInfo.instance().key(getKey())
            .to(sendToUsers)
            .with("poster", Utils.getUserId(activity.getPosterId()))
            .with(SocialNotificationUtils.ACTIVITY_ID.getKey(), activity.getId())
@@ -64,7 +65,7 @@ public class ActivityMentionPlugin extends AbstractNotificationPlugin {
   public MessageInfo makeMessage(NotificationContext ctx) {
     MessageInfo messageInfo = new MessageInfo();
     
-    NotificationMessage notification = ctx.getNotificationMessage();
+    NotificationInfo notification = ctx.getNotificationInfo();
     String language = getLanguage(notification);
 
     TemplateContext templateContext = new TemplateContext(notification.getKey().getId(), language);
@@ -75,7 +76,7 @@ public class ActivityMentionPlugin extends AbstractNotificationPlugin {
     Identity identity = Utils.getIdentityManager().getIdentity(activity.getPosterId(), true);
 
     templateContext.put("USER", identity.getProfile().getFullName());
-    String subject = Utils.getTemplateGenerator().processSubject(templateContext);
+    String subject = TemplateUtils.processSubject(templateContext);
     
     // In case of mention on a comment, we need provide the information of the activity, not the comment
     if (activity.isComment()) {
@@ -86,22 +87,22 @@ public class ActivityMentionPlugin extends AbstractNotificationPlugin {
     templateContext.put("ACTIVITY", Utils.processMentions(activity.getTitle()));
     templateContext.put("REPLY_ACTION_URL", LinkProviderUtils.getRedirectUrl("reply_activity", activity.getId()));
     templateContext.put("VIEW_FULL_DISCUSSION_ACTION_URL", LinkProviderUtils.getRedirectUrl("view_full_activity", activity.getId()));
-    String body = Utils.getTemplateGenerator().processTemplate(templateContext);
+    String body = TemplateUtils.processGroovy(templateContext);
    
     return messageInfo.subject(subject).body(body).end();
   }
 
   @Override
   public boolean makeDigest(NotificationContext ctx, Writer writer) {
-    List<NotificationMessage> notifications = ctx.getNotificationMessages();
-    NotificationMessage first = notifications.get(0);
+    List<NotificationInfo> notifications = ctx.getNotificationInfos();
+    NotificationInfo first = notifications.get(0);
 
     String language = getLanguage(first);
     TemplateContext templateContext = new TemplateContext(first.getKey().getId(), language);
     
-    Map<String, List<String>> map = new LinkedHashMap<String, List<String>>();
+    Map<String, List<String>> receiverMap = new LinkedHashMap<String, List<String>>();
     try {
-      for (NotificationMessage notification : notifications) {
+      for (NotificationInfo notification : notifications) {
         String activityId = notification.getValueOwnerParameter(SocialNotificationUtils.ACTIVITY_ID.getKey());
         ExoSocialActivity activity = Utils.getActivityManager().getActivity(activityId);
         Identity identity = Utils.getIdentityManager().getIdentity(activity.getPosterId(), true);
@@ -110,9 +111,10 @@ public class ActivityMentionPlugin extends AbstractNotificationPlugin {
           activity = Utils.getActivityManager().getParentActivity(activity);
         }
 
-        SocialNotificationUtils.processInforSendTo(map, activity.getId(), identity.getRemoteId());
+        //make the list receivers who will send mail to them.
+        SocialNotificationUtils.processInforSendTo(receiverMap, activity.getId(), identity.getRemoteId());
       }
-      writer.append(SocialNotificationUtils.getMessageByIds(map, templateContext));
+      writer.append(SocialNotificationUtils.getMessageByIds(receiverMap, templateContext));
     } catch (IOException e) {
       ctx.setException(e);
       return false;

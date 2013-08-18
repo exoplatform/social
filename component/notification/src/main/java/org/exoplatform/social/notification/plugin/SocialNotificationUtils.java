@@ -26,6 +26,7 @@ import java.util.Set;
 
 import org.exoplatform.commons.api.notification.model.ArgumentLiteral;
 import org.exoplatform.commons.api.notification.service.template.TemplateContext;
+import org.exoplatform.commons.notification.template.TemplateUtils;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
@@ -88,12 +89,18 @@ public class SocialNotificationUtils {
     return destinataires;
   }
   
-  public static String getMessageByIds(Map<String, List<String>> map, TemplateContext templateContext) {
+  /**
+   * 
+   * @param receiversMap
+   * @param templateContext
+   * @return
+   */
+  public static String getMessageByIds(Map<String, List<String>> receiversMap, TemplateContext templateContext) {
     StringBuilder sb = new StringBuilder();
     ExoSocialActivity activity = null;
     Space space = null;
     sb.append("<ul style=\"margin: 0 0  40px; padding-left: 0; list-style-position: outside;\">");
-    for (Entry<String, List<String>> entry : map.entrySet()) {
+    for (Entry<String, List<String>> entry : receiversMap.entrySet()) {
       sb.append("<li style=\"margin: 0 0 13px 14px; font-size: 13px; list-style: disc; line-height: 18px; font-family: HelveticaNeue, Helvetica, Arial, sans-serif;\">");
       String id = entry.getKey();
       try {
@@ -106,8 +113,8 @@ public class SocialNotificationUtils {
       List<String> values = entry.getValue();
       int count = values.size();
 
-      String typeActivityDisplay = (templateContext.getProviderId().equals("LikePlugin")) ? "view_likers_activity" : "view_full_activity";
-      String typeSpaceDisplay = (templateContext.getProviderId().equals("PostActivitySpaceStreamPlugin")) ? "space" : "space_members";
+      String typeActivityDisplay = (templateContext.getPluginId().equals("LikePlugin")) ? "view_likers_activity" : "view_full_activity";
+      String typeSpaceDisplay = (templateContext.getPluginId().equals("PostActivitySpaceStreamPlugin")) ? "space" : "space_members";
       if (activity != null) {
         templateContext.put("ACTIVITY", SocialNotificationUtils.buildRedirecUrl(typeActivityDisplay, activity.getId(), Utils.processMentions(activity.getTitle())));
       } else {
@@ -139,7 +146,7 @@ public class SocialNotificationUtils {
         }
       }
 
-      String digester = Utils.getTemplateGenerator().processDigest(templateContext.digestType(count));
+      String digester = TemplateUtils.processDigest(templateContext.digestType(count));
       sb.append(digester);
       sb.append("</li>");
     }

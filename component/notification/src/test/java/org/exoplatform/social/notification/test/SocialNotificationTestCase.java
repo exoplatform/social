@@ -27,14 +27,13 @@ import java.util.Map;
 
 import org.exoplatform.commons.api.notification.NotificationContext;
 import org.exoplatform.commons.api.notification.model.MessageInfo;
+import org.exoplatform.commons.api.notification.model.NotificationInfo;
 import org.exoplatform.commons.api.notification.model.NotificationKey;
-import org.exoplatform.commons.api.notification.model.NotificationMessage;
 import org.exoplatform.commons.api.notification.plugin.AbstractNotificationPlugin;
 import org.exoplatform.commons.api.notification.plugin.config.PluginConfig;
+import org.exoplatform.commons.api.notification.service.setting.PluginContainer;
 import org.exoplatform.commons.api.notification.service.storage.NotificationService;
-import org.exoplatform.commons.api.notification.service.template.TemplateGenerator;
 import org.exoplatform.commons.notification.impl.NotificationContextImpl;
-import org.exoplatform.commons.notification.impl.setting.NotificationPluginContainer;
 import org.exoplatform.container.xml.InitParams;
 import org.exoplatform.container.xml.ObjectParameter;
 import org.exoplatform.groovyscript.GroovyTemplate;
@@ -62,14 +61,13 @@ import org.exoplatform.social.notification.plugin.RequestJoinSpacePlugin;
 import org.exoplatform.social.notification.plugin.SpaceInvitationPlugin;
 
 public class SocialNotificationTestCase extends AbstractCoreTest {
-  private TemplateGenerator templateGenerator;
   private IdentityManager identityManager;
   private ActivityManagerImpl activityManager;
   private List<ExoSocialActivity> tearDownActivityList;
   private List<Space>  tearDownSpaceList;
   private SpaceServiceImpl spaceService;
   private RelationshipManagerImpl relationshipManager;
-  private NotificationPluginContainer pluginService;
+  private PluginContainer pluginService;
 
   private Identity rootIdentity;
   private Identity johnIdentity;
@@ -106,8 +104,7 @@ public class SocialNotificationTestCase extends AbstractCoreTest {
   protected void setUp() throws Exception {
     super.setUp();
 
-    pluginService = Utils.getService(NotificationPluginContainer.class);
-    templateGenerator = Utils.getService(TemplateGenerator.class);
+    pluginService = Utils.getService(PluginContainer.class);
     identityManager = Utils.getService(IdentityManager.class);
     activityManager = Utils.getService(ActivityManagerImpl.class);
     spaceService = Utils.getService(SpaceServiceImpl.class);
@@ -115,7 +112,6 @@ public class SocialNotificationTestCase extends AbstractCoreTest {
     
     notificationService = (MockNotificationService) Utils.getService(NotificationService.class);
     
-    assertNotNull(templateGenerator);
     assertNotNull(pluginService);
     
     InitParams initParams = new InitParams();
@@ -168,7 +164,7 @@ public class SocialNotificationTestCase extends AbstractCoreTest {
     demoIdentity = identityManager.getOrCreateIdentity("organization", "demo", true);
     
     // each new identity created, a notification will be raised
-    Collection<NotificationMessage> messages = notificationService.emails();
+    Collection<NotificationInfo> messages = notificationService.emails();
     assertEquals(4, messages.size());
     
     assertNotNull(rootIdentity.getId());
@@ -226,7 +222,7 @@ public class SocialNotificationTestCase extends AbstractCoreTest {
   public void testCreateNewUser() throws Exception {
     Identity ghostIdentity = identityManager.getOrCreateIdentity("organization", "ghost", true);
     
-    Collection<NotificationMessage> messages = notificationService.emails();
+    Collection<NotificationInfo> messages = notificationService.emails();
        assertEquals(1, messages.size());
      //TODO: get all users who wants to receive this kind of notification
     //assertEquals(4, messages.iterator().next().getSendToUserIds().size());
@@ -243,7 +239,7 @@ public class SocialNotificationTestCase extends AbstractCoreTest {
     tearDownActivityList.add(activity);
 
     //a notification will be send to demo
-    Collection<NotificationMessage> messages = notificationService.emails();
+    Collection<NotificationInfo> messages = notificationService.emails();
     assertEquals(1, messages.size());
     assertEquals(demoIdentity.getRemoteId(), messages.iterator().next().getSendToUserIds().get(0));
     
@@ -256,18 +252,18 @@ public class SocialNotificationTestCase extends AbstractCoreTest {
     //2 messages will be created : 1st for root to notify a comment on his activity, 2nd for root, john, mary to notify the mention's action 
     messages = notificationService.emails();
     assertEquals(2, messages.size());
-    Iterator<NotificationMessage> iterators = messages.iterator();
+    Iterator<NotificationInfo> iterators = messages.iterator();
     
-    NotificationMessage message1 = iterators.next();
+    NotificationInfo message1 = iterators.next();
     assertEquals(1, message1.getSendToUserIds().size());
  
     NotificationContext ctx = NotificationContextImpl.cloneInstance();
-    ctx.setNotificationMessage(message1.setTo("mary"));
+    ctx.setNotificationInfo(message1.setTo("mary"));
     MessageInfo info = commentPlugin.buildMessage(ctx);
     assertEquals(demoIdentity.getProfile().getFullName() + " commented one of your activities", info.getSubject());
     assertEquals("activity title <a href=\"/portal/classic/profile/demo\">Demo gtn</a>", info.getBody());
     
-    NotificationMessage message2 = iterators.next();
+    NotificationInfo message2 = iterators.next();
     List<String> users = message2.getSendToUserIds();
     assertEquals(3, users.size());
     assertEquals(rootIdentity.getRemoteId(), users.get(0));
@@ -275,7 +271,7 @@ public class SocialNotificationTestCase extends AbstractCoreTest {
     assertEquals(maryIdentity.getRemoteId(), users.get(2));
     
     ctx = NotificationContextImpl.cloneInstance();
-    ctx.setNotificationMessage(message2.setTo("mary"));
+    ctx.setNotificationInfo(message2.setTo("mary"));
     MessageInfo info1 = mentionPlugin.buildMessage(ctx);
     assertEquals("You were mentioned by " + demoIdentity.getProfile().getFullName(), info1.getSubject());
     assertEquals(demoIdentity.getProfile().getFullName() + " has mentioned you in an activity : activity title <a href=\"localhost/portal/classic/profile/demo\">Demo gtn</a>", info1.getBody());
@@ -294,11 +290,11 @@ public class SocialNotificationTestCase extends AbstractCoreTest {
       comment.setUserId(demoIdentity.getId());
       activityManager.saveComment(activity, comment);
       
-      Collection<NotificationMessage> messages = notificationService.emails();
+      Collection<NotificationInfo> messages = notificationService.emails();
            assertEquals(1, messages.size());
-      NotificationMessage message = messages.iterator().next();
+      NotificationInfo message = messages.iterator().next();
       NotificationContext ctx = NotificationContextImpl.cloneInstance();
-      ctx.setNotificationMessage(message.setTo("demo"));
+      ctx.setNotificationInfo(message.setTo("demo"));
       MessageInfo info = commentPlugin.buildMessage(ctx);
   
       assertEquals(demoIdentity.getProfile().getFullName() + " commented one of your activities", info.getSubject());
@@ -317,7 +313,7 @@ public class SocialNotificationTestCase extends AbstractCoreTest {
       comment1.setUserId(demoIdentity.getId());
       activityManager.saveComment(activity, comment1);
       
-      Collection<NotificationMessage> messages = notificationService.emails();
+      Collection<NotificationInfo> messages = notificationService.emails();
       assertEquals(1, messages.size());
       assertEquals(1, messages.iterator().next().getSendToUserIds().size());
       assertEquals(rootIdentity.getRemoteId(), messages.iterator().next().getSendToUserIds().get(0));
@@ -353,7 +349,7 @@ public class SocialNotificationTestCase extends AbstractCoreTest {
       activityManager.saveActivity(rootIdentity, activity);
       tearDownActivityList.add(activity);
       
-      Collection<NotificationMessage> messages = notificationService.emails();
+      Collection<NotificationInfo> messages = notificationService.emails();
       assertEquals(1, messages.size());
       
       ExoSocialActivity comment1 = new ExoSocialActivityImpl();
@@ -402,7 +398,7 @@ public class SocialNotificationTestCase extends AbstractCoreTest {
     activityManager.saveActivity(spaceIdentity, spaceActivity);
     tearDownActivityList.add(spaceActivity);
     
-    Collection<NotificationMessage> messages = notificationService.emails();
+    Collection<NotificationInfo> messages = notificationService.emails();
     assertEquals(1, messages.size());
     assertEquals(1, messages.iterator().next().getSendToUserIds().size());
     
@@ -440,11 +436,11 @@ public class SocialNotificationTestCase extends AbstractCoreTest {
   public void testInviteToConnect() throws Exception {
     relationshipManager.inviteToConnect(rootIdentity, demoIdentity);
     
-    Collection<NotificationMessage> messages = notificationService.emails();
+    Collection<NotificationInfo> messages = notificationService.emails();
     assertEquals(1, messages.size());
-    NotificationMessage message = messages.iterator().next();
+    NotificationInfo message = messages.iterator().next();
     NotificationContext ctx = NotificationContextImpl.cloneInstance();
-    ctx.setNotificationMessage(message.setTo("demo"));
+    ctx.setNotificationInfo(message.setTo("demo"));
     MessageInfo info = inviteToConnectPlugin.buildMessage(ctx);
     
     assertEquals("localhost/social-resources/skin/images/ShareImages/UserAvtDefault.png", info.getBody());
@@ -454,11 +450,11 @@ public class SocialNotificationTestCase extends AbstractCoreTest {
     
     Space space = getSpaceInstance(1);
     spaceService.addInvitedUser(space, maryIdentity.getRemoteId());
-    Collection<NotificationMessage> messages = notificationService.emails();
+    Collection<NotificationInfo> messages = notificationService.emails();
        assertEquals(1, messages.size());
-    NotificationMessage message = messages.iterator().next();
+    NotificationInfo message = messages.iterator().next();
     NotificationContext ctx = NotificationContextImpl.cloneInstance();
-    ctx.setNotificationMessage(message.setTo("mary"));
+    ctx.setNotificationInfo(message.setTo("mary"));
     MessageInfo info = invitedJoinSpacePlugin.buildMessage(ctx);
     assertEquals("You've been invited to join "+ space.getDisplayName() + " space", info.getSubject());
     spaceService.deleteSpace(space);
@@ -492,16 +488,16 @@ public class SocialNotificationTestCase extends AbstractCoreTest {
       comment2.setUserId(demoIdentity.getId());
       activityManager.saveComment(activity, comment2);
       
-      Collection<NotificationMessage> messages = notificationService.emails();
+      Collection<NotificationInfo> messages = notificationService.emails();
            assertEquals(2, messages.size());
       
-      List<NotificationMessage> list = new ArrayList<NotificationMessage>();
-      for (NotificationMessage message : messages) {
+      List<NotificationInfo> list = new ArrayList<NotificationInfo>();
+      for (NotificationInfo message : messages) {
         list.add(message.setTo(rootIdentity.getRemoteId()));
       }
       
       NotificationContext ctx = NotificationContextImpl.cloneInstance();
-      ctx.setNotificationMessages(list);
+      ctx.setNotificationInfos(list);
       Writer writer = new StringWriter();
       commentPlugin.buildDigest(ctx, writer);
 
@@ -522,15 +518,15 @@ public class SocialNotificationTestCase extends AbstractCoreTest {
       activityManager.saveActivity(rootIdentity, activity2);
       tearDownActivityList.add(activity2);
       
-      Collection<NotificationMessage> messages = notificationService.emails();
+      Collection<NotificationInfo> messages = notificationService.emails();
       assertEquals(2, messages.size());
       
-      List<NotificationMessage> list = new ArrayList<NotificationMessage>();
-      for (NotificationMessage message : messages) {
+      List<NotificationInfo> list = new ArrayList<NotificationInfo>();
+      for (NotificationInfo message : messages) {
         list.add(message.setTo(rootIdentity.getRemoteId()));
       }
       NotificationContext ctx = NotificationContextImpl.cloneInstance();
-      ctx.setNotificationMessages(list);
+      ctx.setNotificationInfos(list);
       Writer writer = new StringWriter();
       postActivityPlugin.buildDigest(ctx, writer);
 
@@ -543,15 +539,15 @@ public class SocialNotificationTestCase extends AbstractCoreTest {
       relationshipManager.inviteToConnect(rootIdentity, demoIdentity);
       relationshipManager.inviteToConnect(johnIdentity, demoIdentity);
       relationshipManager.inviteToConnect(maryIdentity, demoIdentity);
-      Collection<NotificationMessage> messages = notificationService.emails();
+      Collection<NotificationInfo> messages = notificationService.emails();
       assertEquals(3, messages.size());
-      List<NotificationMessage> list = new ArrayList<NotificationMessage>();
-      for (NotificationMessage message : messages) {
+      List<NotificationInfo> list = new ArrayList<NotificationInfo>();
+      for (NotificationInfo message : messages) {
         list.add(message.setTo(demoIdentity.getRemoteId()));
       }
       //String digest = buildDigestMessageInfo(list);
       NotificationContext ctx = NotificationContextImpl.cloneInstance();
-      ctx.setNotificationMessages(list);
+      ctx.setNotificationInfos(list);
       Writer writer = new StringWriter();
       inviteToConnectPlugin.buildDigest(ctx, writer);
 
@@ -569,14 +565,14 @@ public class SocialNotificationTestCase extends AbstractCoreTest {
       Space space4 = getSpaceInstance(4);
       spaceService.addInvitedUser(space4, maryIdentity.getRemoteId());
       
-      Collection<NotificationMessage> messages = notificationService.emails();
+      Collection<NotificationInfo> messages = notificationService.emails();
       assertEquals(4, messages.size());
-      List<NotificationMessage> list = new ArrayList<NotificationMessage>();
-      for (NotificationMessage message : messages) {
+      List<NotificationInfo> list = new ArrayList<NotificationInfo>();
+      for (NotificationInfo message : messages) {
         list.add(message.setTo(maryIdentity.getRemoteId()));
       }
       NotificationContext ctx = NotificationContextImpl.cloneInstance();
-      ctx.setNotificationMessages(list);
+      ctx.setNotificationInfos(list);
       Writer writer = new StringWriter();
       invitedJoinSpacePlugin.buildDigest(ctx, writer);
       String result = "You have been asked to joing the following spaces: <a href=\"localhost/rest/social/notifications/redirectUrl/space/"+space1.getId()+"\">my space 1</a>, <a href=\"localhost/rest/social/notifications/redirectUrl/space/"+space2.getId()+"\">my space 2</a>, <a href=\"localhost/rest/social/notifications/redirectUrl/space/"+space3.getId()+"\">my space 3</a> and <a href=\"localhost/rest/social/notifications/redirectUrl/space_invitation/null\">1</a> others.</br>";
@@ -595,14 +591,14 @@ public class SocialNotificationTestCase extends AbstractCoreTest {
       spaceService.addPendingUser(space, johnIdentity.getRemoteId());
       spaceService.addPendingUser(space, demoIdentity.getRemoteId());
       
-      Collection<NotificationMessage> messages = notificationService.emails();
+      Collection<NotificationInfo> messages = notificationService.emails();
       assertEquals(3, messages.size());
-      List<NotificationMessage> list = new ArrayList<NotificationMessage>();
-      for (NotificationMessage message : messages) {
+      List<NotificationInfo> list = new ArrayList<NotificationInfo>();
+      for (NotificationInfo message : messages) {
         list.add(message.setTo(rootIdentity.getRemoteId()));
       }
       NotificationContext ctx = NotificationContextImpl.cloneInstance();
-      ctx.setNotificationMessages(list);
+      ctx.setNotificationInfos(list);
       Writer writer = new StringWriter();
       spaceJoinRequestPlugin.buildDigest(ctx, writer);
       String result = "The following users have asked to join the <a href=\"localhost/rest/social/notifications/redirectUrl/space_members/"+space.getId()+"\">my space 1</a> space: <a href=\"localhost/rest/social/notifications/redirectUrl/user/demo\">Demo gtn</a>, <a href=\"localhost/rest/social/notifications/redirectUrl/user/john\">John Anthony</a>, <a href=\"localhost/rest/social/notifications/redirectUrl/user/mary\">Mary Kelly</a>.</br>";
@@ -622,15 +618,15 @@ public class SocialNotificationTestCase extends AbstractCoreTest {
       activityManager.saveActivity(rootIdentity, act1);
       tearDownActivityList.add(act1);
       
-      Collection<NotificationMessage> messages = notificationService.emails();
+      Collection<NotificationInfo> messages = notificationService.emails();
       assertEquals(2, messages.size());
       
-      List<NotificationMessage> list = new ArrayList<NotificationMessage>();
-      for (NotificationMessage message : messages) {
+      List<NotificationInfo> list = new ArrayList<NotificationInfo>();
+      for (NotificationInfo message : messages) {
         list.add(message.setTo(demoIdentity.getRemoteId()));
       }
       NotificationContext ctx = NotificationContextImpl.cloneInstance();
-      ctx.setNotificationMessages(list);
+      ctx.setNotificationInfos(list);
       Writer writer = new StringWriter();
       mentionPlugin.buildDigest(ctx, writer);
       String result = "<a href=\"localhost/rest/social/notifications/redirectUrl/user/root\">Root Root</a> has mentioned you in an activity : <a href=\"localhost/rest/social/notifications/redirectUrl/view_full_activity/"+act.getId()+"\">hello <a href=\"/portal/classic/profile/demo\">Demo gtn</a></a></br><a href=\"localhost/rest/social/notifications/redirectUrl/user/root\">Root Root</a> has mentioned you in an activity : <a href=\"localhost/rest/social/notifications/redirectUrl/view_full_activity/"+act1.getId()+"\">hello <a href=\"/portal/classic/profile/demo\">Demo gtn</a></a></br>";
@@ -653,13 +649,13 @@ public class SocialNotificationTestCase extends AbstractCoreTest {
       messages = notificationService.emails();
       assertEquals(4, messages.size());
       
-      list = new ArrayList<NotificationMessage>();
-      for (NotificationMessage message : messages) {
+      list = new ArrayList<NotificationInfo>();
+      for (NotificationInfo message : messages) {
         if (message.getKey().getId().equals("ActivityMentionPlugin"))
           list.add(message.setTo(demoIdentity.getRemoteId()));
       }
       ctx = NotificationContextImpl.cloneInstance();
-      ctx.setNotificationMessages(list);
+      ctx.setNotificationInfos(list);
       writer = new StringWriter();
       mentionPlugin.buildDigest(ctx, writer);
       result = "<a href=\"localhost/rest/social/notifications/redirectUrl/user/john\">John Anthony</a>, <a href=\"localhost/rest/social/notifications/redirectUrl/user/mary\">Mary Kelly</a> have mentioned you in an activity : <a href=\"localhost/rest/social/notifications/redirectUrl/view_full_activity/"+act.getId()+"\">hello <a href=\"/portal/classic/profile/demo\">Demo gtn</a></a></br>";
@@ -673,14 +669,14 @@ public class SocialNotificationTestCase extends AbstractCoreTest {
       Identity raulIdentity = identityManager.getOrCreateIdentity("organization", "raul", true);
       Identity jameIdentity = identityManager.getOrCreateIdentity("organization", "jame", true);
       
-      Collection<NotificationMessage> messages = notificationService.emails();
+      Collection<NotificationInfo> messages = notificationService.emails();
       assertEquals(4, messages.size());
-      List<NotificationMessage> list = new ArrayList<NotificationMessage>();
-      for (NotificationMessage message : messages) {
+      List<NotificationInfo> list = new ArrayList<NotificationInfo>();
+      for (NotificationInfo message : messages) {
         list.add(message.setTo(demoIdentity.getRemoteId()));
       }
       NotificationContext ctx = NotificationContextImpl.cloneInstance();
-      ctx.setNotificationMessages(list);
+      ctx.setNotificationInfos(list);
       Writer writer = new StringWriter();
       creatUserPlugin.buildDigest(ctx, writer);
       String result = "<a href=\"localhost/rest/social/notifications/redirectUrl/user/ghost\">Ghost gtn</a>, <a href=\"localhost/rest/social/notifications/redirectUrl/user/paul\">Paul gtn</a>, <a href=\"localhost/rest/social/notifications/redirectUrl/user/raul\">Raul gtn</a> and <a href=\"localhost/rest/social/notifications/redirectUrl/connections/null\">1</a> more have joined social intranet.</br>";
@@ -703,14 +699,14 @@ public class SocialNotificationTestCase extends AbstractCoreTest {
       activityManager.saveLike(activity, johnIdentity);
       activityManager.saveLike(activity, demoIdentity);
       
-      Collection<NotificationMessage> messages = notificationService.emails();
+      Collection<NotificationInfo> messages = notificationService.emails();
       assertEquals(3, messages.size());
-      List<NotificationMessage> list = new ArrayList<NotificationMessage>();
-      for (NotificationMessage message : messages) {
+      List<NotificationInfo> list = new ArrayList<NotificationInfo>();
+      for (NotificationInfo message : messages) {
         list.add(message.setTo(rootIdentity.getRemoteId()));
       }
       NotificationContext ctx = NotificationContextImpl.cloneInstance();
-      ctx.setNotificationMessages(list);
+      ctx.setNotificationInfos(list);
       Writer writer = new StringWriter();
       likePlugin.buildDigest(ctx, writer);
 //      assertEquals("<a href=\"localhost/rest/social/notifications/redirectUrl/user/demo\">Demo gtn</a>, <a href=\"localhost/rest/social/notifications/redirectUrl/user/john\">John Anthony</a>, <a href=\"localhost/rest/social/notifications/redirectUrl/user/mary\">Mary Kelly</a> like your activity : <a href=\"localhost/rest/social/notifications/redirectUrl/view_likers_activity/"+activity.getId()+"\">activity title</a>.</br>", writer.toString());
@@ -743,15 +739,15 @@ public class SocialNotificationTestCase extends AbstractCoreTest {
       activityManager.saveActivity(spaceIdentity2, johnActivity);
       tearDownActivityList.add(johnActivity);
       
-      Collection<NotificationMessage> messages = notificationService.emails();
+      Collection<NotificationInfo> messages = notificationService.emails();
       assertEquals(3, messages.size());
       
-      List<NotificationMessage> list = new ArrayList<NotificationMessage>();
-      for (NotificationMessage message : messages) {
+      List<NotificationInfo> list = new ArrayList<NotificationInfo>();
+      for (NotificationInfo message : messages) {
         list.add(message.setTo(rootIdentity.getRemoteId()));
       }
       NotificationContext ctx = NotificationContextImpl.cloneInstance();
-      ctx.setNotificationMessages(list);
+      ctx.setNotificationInfos(list);
       Writer writer = new StringWriter();
       postSpaceActivityPlugin.buildDigest(ctx, writer);
 //      assertEquals("<a href=\"localhost/rest/social/notifications/redirectUrl/user/demo\">Demo gtn</a> posted in <a href=\"localhost/rest/social/notifications/redirectUrl/space/"+space1.getId()+"\">my space 1</a>.</br><a href=\"localhost/rest/social/notifications/redirectUrl/user/john\">John Anthony</a>, <a href=\"localhost/rest/social/notifications/redirectUrl/user/mary\">Mary Kelly</a> posted in <a href=\"localhost/rest/social/notifications/redirectUrl/space/"+space2.getId()+"\">my space 2</a>.</br>", writer.toString());

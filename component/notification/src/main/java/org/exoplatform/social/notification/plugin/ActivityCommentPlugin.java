@@ -24,9 +24,10 @@ import java.util.Map;
 
 import org.exoplatform.commons.api.notification.NotificationContext;
 import org.exoplatform.commons.api.notification.model.MessageInfo;
-import org.exoplatform.commons.api.notification.model.NotificationMessage;
+import org.exoplatform.commons.api.notification.model.NotificationInfo;
 import org.exoplatform.commons.api.notification.plugin.AbstractNotificationPlugin;
 import org.exoplatform.commons.api.notification.service.template.TemplateContext;
+import org.exoplatform.commons.notification.template.TemplateUtils;
 import org.exoplatform.container.xml.InitParams;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.identity.model.Identity;
@@ -42,7 +43,7 @@ public class ActivityCommentPlugin extends AbstractNotificationPlugin {
   public static final String ID = "ActivityCommentPlugin";
 
   @Override
-  public NotificationMessage makeNotification(NotificationContext ctx) {
+  public NotificationInfo makeNotification(NotificationContext ctx) {
     ExoSocialActivity comment = ctx.value(SocialNotificationUtils.ACTIVITY);
     ExoSocialActivity activity = Utils.getActivityManager().getParentActivity(comment);
     
@@ -68,7 +69,7 @@ public class ActivityCommentPlugin extends AbstractNotificationPlugin {
     }
     
     //
-    return NotificationMessage.instance()
+    return NotificationInfo.instance()
            .to(sendToUsers)
            .with(SocialNotificationUtils.ACTIVITY_ID.getKey(), comment.getId())
            .with(SocialNotificationUtils.POSTER.getKey(), Utils.getUserId(comment.getUserId()))
@@ -78,7 +79,7 @@ public class ActivityCommentPlugin extends AbstractNotificationPlugin {
   @Override
   public MessageInfo makeMessage(NotificationContext ctx) {
     MessageInfo messageInfo = new MessageInfo();
-    NotificationMessage notification = ctx.getNotificationMessage();
+    NotificationInfo notification = ctx.getNotificationInfo();
     String language = getLanguage(notification);
 
     TemplateContext templateContext = new TemplateContext(notification.getKey().getId(), language);
@@ -90,14 +91,14 @@ public class ActivityCommentPlugin extends AbstractNotificationPlugin {
     Identity identity = Utils.getIdentityManager().getIdentity(activity.getPosterId(), true);
     
     templateContext.put("USER", identity.getProfile().getFullName());
-    String subject = Utils.getTemplateGenerator().processSubject(templateContext);
+    String subject = TemplateUtils.processSubject(templateContext);
     
     templateContext.put("PROFILE_URL", LinkProviderUtils.getRedirectUrl("user", identity.getRemoteId()));
     templateContext.put("COMMENT", activity.getTitle());
     templateContext.put("ACTIVITY", parentActivity.getTitle());
     templateContext.put("REPLY_ACTION_URL", LinkProviderUtils.getRedirectUrl("reply_activity", parentActivity.getId()));
     templateContext.put("VIEW_FULL_DISCUSSION_ACTION_URL", LinkProviderUtils.getRedirectUrl("view_full_activity", parentActivity.getId()));
-    String body = Utils.getTemplateGenerator().processTemplate(templateContext);
+    String body = TemplateUtils.processGroovy(templateContext);
     
     return messageInfo.subject(subject).body(body).end();
   }
@@ -110,22 +111,25 @@ public class ActivityCommentPlugin extends AbstractNotificationPlugin {
   @Override
   public boolean makeDigest(NotificationContext ctx, Writer writer) {
     
-    List<NotificationMessage> notifications = ctx.getNotificationMessages();
-    NotificationMessage first = notifications.get(0);
+    List<NotificationInfo> notifications = ctx.getNotificationInfos();
+    NotificationInfo first = notifications.get(0);
 
     String language = getLanguage(first);
     TemplateContext templateContext = new TemplateContext(first.getKey().getId(), language);
-    Map<String, List<String>> map = new LinkedHashMap<String, List<String>>();
+    SocialNotificationUtils.addFooterAndFirstName(first.getTo(), templateContext);
+    
+    //Store the activity id as key, and the list all identities who posted to the activity.
+    Map<String, List<String>> receiverMap = new LinkedHashMap<String, List<String>>();
     
     try {
-      for (NotificationMessage message : notifications) {
+      for (NotificationInfo message : notifications) {
         String activityId = message.getValueOwnerParameter(SocialNotificationUtils.ACTIVITY_ID.getKey());
         ExoSocialActivity activity = Utils.getActivityManager().getActivity(activityId);
         ExoSocialActivity parentActivity = Utils.getActivityManager().getParentActivity(activity);
         //
-        SocialNotificationUtils.processInforSendTo(map, parentActivity.getId(), message.getValueOwnerParameter("poster"));
+        SocialNotificationUtils.processInforSendTo(receiverMap, parentActivity.getId(), message.getValueOwnerParameter("poster"));
       }
-      writer.append(SocialNotificationUtils.getMessageByIds(map, templateContext));
+      writer.append(SocialNotificationUtils.getMessageByIds(receiverMap, templateContext));
     } catch (IOException e) {
       ctx.setException(e);
       return false;

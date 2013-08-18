@@ -254,7 +254,7 @@ var UIActivity = {
       listLiked.find('.btn').trigger('click');
       }
     );
-  },
+  }
 };
 
 return UIActivity;

@@ -19,12 +19,12 @@ package org.exoplatform.social.notification.mock;
 import java.util.List;
 
 import org.exoplatform.commons.api.notification.model.GroupProvider;
-import org.exoplatform.commons.api.notification.model.ProviderData;
+import org.exoplatform.commons.api.notification.model.PluginInfo;
 import org.exoplatform.commons.api.notification.plugin.GroupProviderPlugin;
 import org.exoplatform.commons.api.notification.plugin.config.PluginConfig;
-import org.exoplatform.commons.api.notification.service.setting.ProviderSettingService;
+import org.exoplatform.commons.api.notification.service.setting.PluginConfigService;
 
-public class MockProviderSettingService implements ProviderSettingService {
+public class MockProviderSettingService implements PluginConfigService {
 
   @Override
   public void registerPluginConfig(PluginConfig pluginConfig) {
@@ -45,13 +45,13 @@ public class MockProviderSettingService implements ProviderSettingService {
   }
 
   @Override
-  public List<GroupProvider> getGroupProviders() {
+  public List<GroupProvider> getGroupPlugins() {
     // TODO Auto-generated method stub
     return null;
   }
 
   @Override
-  public void saveProvider(String providerId, boolean isActive) {
+  public void savePlugin(String providerId, boolean isActive) {
     // TODO Auto-generated method stub
     
   }
@@ -63,13 +63,13 @@ public class MockProviderSettingService implements ProviderSettingService {
   }
 
   @Override
-  public List<String> getActiveProviderIds() {
+  public List<String> getActivePluginIds() {
     // TODO Auto-generated method stub
     return null;
   }
 
   @Override
-  public List<ProviderData> getActiveProviders() {
+  public List<PluginInfo> getActivePlugins() {
     // TODO Auto-generated method stub
     return null;
   }

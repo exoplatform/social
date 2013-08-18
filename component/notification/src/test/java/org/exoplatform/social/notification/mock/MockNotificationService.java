@@ -23,18 +23,17 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
+import org.exoplatform.commons.api.notification.model.NotificationInfo;
 import org.exoplatform.commons.api.notification.model.NotificationKey;
-import org.exoplatform.commons.api.notification.model.NotificationMessage;
 import org.exoplatform.commons.api.notification.model.UserSetting;
-import org.exoplatform.commons.api.notification.service.AbstractNotificationServiceListener;
 import org.exoplatform.commons.api.notification.service.storage.NotificationService;
 
 public class MockNotificationService implements NotificationService {
 
-  private Queue<NotificationMessage> jcrMock = new ConcurrentLinkedQueue<NotificationMessage>();
+  private Queue<NotificationInfo> jcrMock = new ConcurrentLinkedQueue<NotificationInfo>();
   
   @Override
-  public Map<NotificationKey, List<NotificationMessage>> getByUser(UserSetting userSetting) {
+  public Map<NotificationKey, List<NotificationInfo>> getByUser(UserSetting userSetting) {
     return null;
   }
   
@@ -46,14 +45,14 @@ public class MockNotificationService implements NotificationService {
     jcrMock.clear();
   }
 
-  public List<NotificationMessage> emails() {
-    List<NotificationMessage> list = new ArrayList<NotificationMessage>(jcrMock);
+  public List<NotificationInfo> emails() {
+    List<NotificationInfo> list = new ArrayList<NotificationInfo>(jcrMock);
     clear();
     return list;
   }
 
   @Override
-  public void process(NotificationMessage message) throws Exception {
+  public void process(NotificationInfo message) throws Exception {
     jcrMock.add(message);
   }
 
@@ -62,18 +61,14 @@ public class MockNotificationService implements NotificationService {
   }
 
   @Override
-  public void process(Collection<NotificationMessage> messages) throws Exception {
-    for (NotificationMessage message : messages) {
+  public void process(Collection<NotificationInfo> messages) throws Exception {
+    for (NotificationInfo message : messages) {
       process(message);
     }
   }
 
   @Override
-  public void addSendNotificationListener(AbstractNotificationServiceListener messageListener) {
-  }
-
-  @Override
-  public Map<String, NotificationMessage> getNotificationMessagesByProviderId(String pluginId,
+  public Map<String, NotificationInfo> getNotificationMessagesByProviderId(String pluginId,
                                                                               boolean isWeekend) {
     // TODO Auto-generated method stub
     return null;

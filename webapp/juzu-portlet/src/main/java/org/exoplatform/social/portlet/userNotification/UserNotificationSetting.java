@@ -38,11 +38,12 @@ import org.exoplatform.commons.api.notification.model.GroupProvider;
 import org.exoplatform.commons.api.notification.model.UserSetting;
 import org.exoplatform.commons.api.notification.model.UserSetting.FREQUENCY;
 import org.exoplatform.commons.api.notification.plugin.config.PluginConfig;
-import org.exoplatform.commons.api.notification.service.setting.ProviderSettingService;
+import org.exoplatform.commons.api.notification.service.setting.PluginConfigService;
 import org.exoplatform.commons.api.notification.service.setting.UserSettingService;
 import org.exoplatform.commons.juzu.ajax.Ajax;
 import org.exoplatform.commons.notification.NotificationUtils;
 import org.exoplatform.commons.notification.impl.DigestDailyPlugin;
+import org.exoplatform.commons.notification.template.TemplateUtils;
 import org.exoplatform.commons.utils.CommonsUtils;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.portal.application.PortalRequestContext;
@@ -64,7 +65,7 @@ public class UserNotificationSetting {
   ResourceBundle bundle;  
   
   @Inject
-  ProviderSettingService providerSettingService;
+  PluginConfigService providerSettingService;
 
   @Inject
   UserSettingService     userSettingService;
@@ -164,7 +165,7 @@ public class UserNotificationSetting {
     parameters.put("checkbox", checkbox);
     parameters.put("checkboxId", CHECK_BOX_DEACTIVATE_ID);
     //
-    List<GroupProvider> groups = providerSettingService.getGroupProviders();
+    List<GroupProvider> groups = providerSettingService.getGroupPlugins();
     parameters.put("groups", groups);
     //
     
@@ -173,7 +174,7 @@ public class UserNotificationSetting {
     
     Map<String, String> options = buildOptions(context);
     
-    for (String pluginId : providerSettingService.getActiveProviderIds()) {
+    for (String pluginId : providerSettingService.getActivePluginIds()) {
       selectBoxList.put(pluginId, buildSelectBox(pluginId, options, getValue(setting, pluginId)));
       checkBoxList.put(pluginId, buildCheckBox(pluginId, isInInstantly(setting, pluginId)));
     }
@@ -288,7 +289,7 @@ public class UserNotificationSetting {
             .getTemplateConfig().getBundlePath();
       }
       //
-      List<GroupProvider> groups = providerSettingService.getGroupProviders();
+      List<GroupProvider> groups = providerSettingService.getGroupPlugins();
       for (GroupProvider groupProvider : groups) {
         if (groupProvider.getGroupId().equals(id)) {
           return groupProvider.getProviderDatas().get(0).getBundlePath();
@@ -299,7 +300,7 @@ public class UserNotificationSetting {
 
     public String pluginRes(String key, String id) {
       String path = getBundlePath(id);
-      return NotificationUtils.getResourceBundle(key, locale, path);
+      return TemplateUtils.getResourceBundle(key, locale, path);
     }
   }
      
