@@ -126,7 +126,7 @@ public class PostActivityPlugin extends AbstractNotificationPlugin {
       if(count > 3) {
         templateContext.put("COUNT", SocialNotificationUtils.buildRedirecUrl("user_activity_stream", sendToUser, String.valueOf((count - 3))));
       }
-      templateContext.put("USER_ACTIVITY_STREAM", LinkProviderUtils.getRedirectUrl("user_activity_stream", sendToUser));
+      templateContext.put("ACTIVITY_STREAM", LinkProviderUtils.getRedirectUrl("user_activity_stream", sendToUser));
       String digester = Utils.getTemplateGenerator().processDigest(templateContext.digestType(count));
       writer.append(digester);
       
