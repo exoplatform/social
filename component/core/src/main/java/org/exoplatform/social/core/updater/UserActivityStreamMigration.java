@@ -98,7 +98,7 @@ public class UserActivityStreamMigration extends AbstractStorage {
       sb.append(") ");
     }
     
-    LOG.warn("SQL : " + sb.toString());
+    LOG.debug("SQL : " + sb.toString());
     
     NodeIterator it = nodes(sb.toString());
     long totalOfIdentity = to - from;
@@ -121,7 +121,7 @@ public class UserActivityStreamMigration extends AbstractStorage {
     sb.append(JCRProperties.path.getName()).append(" LIKE '").append(getProviderRoot().getProviders().get(OrganizationIdentityProvider.NAME).getPath() + StorageUtils.SLASH_STR + StorageUtils.PERCENT_STR);
     sb.append("' AND NOT ").append(ProfileEntity.deleted.getName()).append(" = ").append("true");
     
-    LOG.warn("SQL : " + sb.toString());
+    LOG.debug("SQL : " + sb.toString());
     NodeIterator it = nodes(sb.toString());
     long totalOfIdentity = it.getSize();
     Identity owner = null; 
@@ -138,7 +138,7 @@ public class UserActivityStreamMigration extends AbstractStorage {
         
         //
         if (batchIndex == BATCH_FLUSH_LIMIT) {
-          LOG.warn("UPGRAGE SESSION FLUSH: " + offset);
+          LOG.info("UPGRAGE SESSION FLUSH: " + offset);
           StorageUtils.persistJCR(true);
           it = nodes(sb.toString());
           _skip(it, offset);
