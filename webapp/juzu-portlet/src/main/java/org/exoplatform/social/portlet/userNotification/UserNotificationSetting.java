@@ -24,6 +24,7 @@ import java.util.Map;
 import java.util.ResourceBundle;
 
 import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
 
 import juzu.Path;
 import juzu.Resource;
@@ -43,9 +44,14 @@ import org.exoplatform.commons.juzu.ajax.Ajax;
 import org.exoplatform.commons.notification.NotificationUtils;
 import org.exoplatform.commons.notification.impl.DigestDailyPlugin;
 import org.exoplatform.commons.utils.CommonsUtils;
+import org.exoplatform.container.PortalContainer;
+import org.exoplatform.portal.application.PortalRequestContext;
+import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.social.webui.Utils;
+import org.exoplatform.web.application.JavascriptManager;
+import org.exoplatform.webui.application.WebuiRequestContext;
 
 
 public class UserNotificationSetting {
@@ -77,6 +83,12 @@ public class UserNotificationSetting {
 
   @View
   public void index(RenderContext renderContext) {
+    //Redirect to the home's page if the feature is off
+    if(CommonsUtils.isFeatureActive(NotificationUtils.FEATURE_NAME) == false) {
+      redirectToHomePage();
+      return;
+    }
+    
     if (renderContext != null) {
       locale = renderContext.getUserContext().getLocale();
     }
@@ -142,17 +154,6 @@ public class UserNotificationSetting {
     
     Map<String, Object> parameters = new HashMap<String, Object>();
 
-    if(CommonsUtils.isFeatureActive(NotificationUtils.FEATURE_NAME) == false) {
-      parameters.put("active", false);
-      parameters.put("checkbox", "");
-      parameters.put("checkboxId", "");
-      parameters.put("groups", "");
-      parameters.put("checkBoxs", "");
-      parameters.put("selectBoxs", "");
-      return parameters;
-    }
-    //
-    parameters.put("active", true);
     //
     Context context = new Context(bundle);
     parameters.put("_ctx", context);
@@ -240,6 +241,22 @@ public class UserNotificationSetting {
       datas.put(data[0], data[1]);
     }
     return datas;
+  }
+  
+  private void redirectToHomePage() {
+    PortalRequestContext portalRequestContext = Util.getPortalRequestContext();
+    HttpServletRequest currentServletRequest = portalRequestContext.getRequest();
+    StringBuilder sb = new StringBuilder();
+    sb.append(currentServletRequest.getScheme()).append("://")
+      .append(currentServletRequest.getServerName())
+      .append(":").append(currentServletRequest.getServerPort())
+      .append("/").append(PortalContainer.getCurrentPortalContainerName())
+      .append("/").append(portalRequestContext.getPortalOwner());
+    
+    WebuiRequestContext ctx = WebuiRequestContext.getCurrentInstance();
+    JavascriptManager jsManager = ctx.getJavascriptManager();
+    jsManager.addJavascript("try { window.location.href='" + sb.toString() + "' } catch(e) {" +
+            "window.location.href('" + sb.toString() + "') }");
   }
 
   public class Context {
