@@ -82,17 +82,16 @@ public class ActivityCommentPlugin extends AbstractNotificationPlugin {
     NotificationInfo notification = ctx.getNotificationInfo();
     String language = getLanguage(notification);
 
-    TemplateContext templateContext = new TemplateContext(notification.getKey().getId(), language);
-    SocialNotificationUtils.addFooterAndFirstName(notification.getTo(), templateContext);
-    
     String activityId = notification.getValueOwnerParameter(SocialNotificationUtils.ACTIVITY_ID.getKey());
     ExoSocialActivity activity = Utils.getActivityManager().getActivity(activityId);
     ExoSocialActivity parentActivity = Utils.getActivityManager().getParentActivity(activity);
     Identity identity = Utils.getIdentityManager().getIdentity(activity.getPosterId(), true);
     
+    TemplateContext templateContext = new TemplateContext(notification.getKey().getId(), language);
     templateContext.put("USER", identity.getProfile().getFullName());
     String subject = TemplateUtils.processSubject(templateContext);
     
+    SocialNotificationUtils.addFooterAndFirstName(notification.getTo(), templateContext);
     templateContext.put("PROFILE_URL", LinkProviderUtils.getRedirectUrl("user", identity.getRemoteId()));
     templateContext.put("COMMENT", activity.getTitle());
     templateContext.put("ACTIVITY", parentActivity.getTitle());

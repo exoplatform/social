@@ -38,7 +38,7 @@ import org.exoplatform.commons.api.notification.model.GroupProvider;
 import org.exoplatform.commons.api.notification.model.UserSetting;
 import org.exoplatform.commons.api.notification.model.UserSetting.FREQUENCY;
 import org.exoplatform.commons.api.notification.plugin.config.PluginConfig;
-import org.exoplatform.commons.api.notification.service.setting.PluginConfigService;
+import org.exoplatform.commons.api.notification.service.setting.PluginSettingService;
 import org.exoplatform.commons.api.notification.service.setting.UserSettingService;
 import org.exoplatform.commons.juzu.ajax.Ajax;
 import org.exoplatform.commons.notification.NotificationUtils;
@@ -65,7 +65,7 @@ public class UserNotificationSetting {
   ResourceBundle bundle;  
   
   @Inject
-  PluginConfigService providerSettingService;
+  PluginSettingService providerSettingService;
 
   @Inject
   UserSettingService     userSettingService;
