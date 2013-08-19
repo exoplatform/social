@@ -54,13 +54,6 @@ public class NewUserPlugin extends AbstractNotificationPlugin {
     Profile profile = ctx.value(SocialNotificationUtils.PROFILE);
     
     try {
-      //Add mixin type for new user if feature and provider active
-      ProviderSettingService providerSettingService = CommonsUtils.getService(ProviderSettingService.class);
-      if (CommonsUtils.isFeatureActive(NotificationUtils.FEATURE_NAME) && providerSettingService.isActive(getId())) {
-        UserSettingService userSettingService = CommonsUtils.getService(UserSettingService.class);
-        userSettingService.addMixin(profile.getIdentity().getRemoteId());
-      }
-      
       //This type of notification need to get all users who want to receive this kind of notification, except the new created user
       //To avoid all problem related to the performance, we will get this list after, step by step, when sending message
       List<String> allUsers = new ArrayList<String>();
