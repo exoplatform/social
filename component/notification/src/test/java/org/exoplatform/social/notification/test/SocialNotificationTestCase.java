@@ -30,23 +30,16 @@ import org.exoplatform.commons.api.notification.model.MessageInfo;
 import org.exoplatform.commons.api.notification.model.NotificationInfo;
 import org.exoplatform.commons.api.notification.model.NotificationKey;
 import org.exoplatform.commons.api.notification.plugin.AbstractNotificationPlugin;
-import org.exoplatform.commons.api.notification.service.setting.PluginContainer;
-import org.exoplatform.commons.api.notification.service.storage.NotificationService;
 import org.exoplatform.commons.notification.impl.NotificationContextImpl;
 import org.exoplatform.groovyscript.GroovyTemplate;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.activity.model.ExoSocialActivityImpl;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
-import org.exoplatform.social.core.manager.ActivityManagerImpl;
-import org.exoplatform.social.core.manager.IdentityManager;
-import org.exoplatform.social.core.manager.RelationshipManagerImpl;
 import org.exoplatform.social.core.space.impl.DefaultSpaceApplicationHandler;
-import org.exoplatform.social.core.space.impl.SpaceServiceImpl;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.notification.AbstractCoreTest;
 import org.exoplatform.social.notification.Utils;
-import org.exoplatform.social.notification.mock.MockNotificationService;
 import org.exoplatform.social.notification.plugin.ActivityCommentPlugin;
 import org.exoplatform.social.notification.plugin.ActivityMentionPlugin;
 import org.exoplatform.social.notification.plugin.LikePlugin;
@@ -58,19 +51,10 @@ import org.exoplatform.social.notification.plugin.RequestJoinSpacePlugin;
 import org.exoplatform.social.notification.plugin.SpaceInvitationPlugin;
 
 public class SocialNotificationTestCase extends AbstractCoreTest {
-  private IdentityManager identityManager;
-  private ActivityManagerImpl activityManager;
+
   private List<ExoSocialActivity> tearDownActivityList;
   private List<Space>  tearDownSpaceList;
-  private SpaceServiceImpl spaceService;
-  private RelationshipManagerImpl relationshipManager;
-  private PluginContainer pluginService;
 
-  private Identity rootIdentity;
-  private Identity johnIdentity;
-  private Identity maryIdentity;
-  private Identity demoIdentity;
-  
   private AbstractNotificationPlugin newUserPlugin;
   private AbstractNotificationPlugin commentPlugin;
   private AbstractNotificationPlugin postActivityPlugin;
@@ -81,8 +65,6 @@ public class SocialNotificationTestCase extends AbstractCoreTest {
   private AbstractNotificationPlugin spaceInvitationPlugin;
   private AbstractNotificationPlugin requestJoinSpacePlugin;
   
-  private MockNotificationService notificationService;
-  
   public static final String ACTIVITY_ID = "activityId";
 
   public static final String SPACE_ID    = "spaceId";
@@ -92,31 +74,8 @@ public class SocialNotificationTestCase extends AbstractCoreTest {
   protected void setUp() throws Exception {
     super.setUp();
 
-    pluginService = Utils.getService(PluginContainer.class);
-    identityManager = Utils.getService(IdentityManager.class);
-    activityManager = Utils.getService(ActivityManagerImpl.class);
-    spaceService = Utils.getService(SpaceServiceImpl.class);
-    relationshipManager = Utils.getService(RelationshipManagerImpl.class);
-    notificationService = (MockNotificationService) Utils.getService(NotificationService.class);
-    
-    assertNotNull(pluginService);
-    
     initPlugins();
     
-    rootIdentity = identityManager.getOrCreateIdentity("organization", "root", true);
-    johnIdentity = identityManager.getOrCreateIdentity("organization", "john", true);
-    maryIdentity = identityManager.getOrCreateIdentity("organization", "mary", true);
-    demoIdentity = identityManager.getOrCreateIdentity("organization", "demo", true);
-    
-    // each new identity created, a notification will be raised
-    Collection<NotificationInfo> messages = notificationService.emails();
-    assertEquals(4, messages.size());
-    
-    assertNotNull(rootIdentity.getId());
-    assertNotNull(johnIdentity.getId());
-    assertNotNull(maryIdentity.getId());
-    assertNotNull(demoIdentity.getId());
-
     tearDownActivityList = new ArrayList<ExoSocialActivity>();
     tearDownSpaceList = new ArrayList<Space>();
     
@@ -156,13 +115,6 @@ public class SocialNotificationTestCase extends AbstractCoreTest {
       spaceService.deleteSpace(sp);
     }
 
-    identityManager.deleteIdentity(rootIdentity);
-    identityManager.deleteIdentity(johnIdentity);
-    identityManager.deleteIdentity(maryIdentity);
-    identityManager.deleteIdentity(demoIdentity);
-    
-    notificationService.clear();
-    
     destroyPlugins();
     super.tearDown();
   }
@@ -194,9 +146,7 @@ public class SocialNotificationTestCase extends AbstractCoreTest {
     Identity ghostIdentity = identityManager.getOrCreateIdentity("organization", "ghost", true);
     
     Collection<NotificationInfo> messages = notificationService.emails();
-       assertEquals(1, messages.size());
-     //TODO: get all users who wants to receive this kind of notification
-    //assertEquals(4, messages.iterator().next().getSendToUserIds().size());
+    assertEquals(1, messages.size());
     
     identityManager.deleteIdentity(ghostIdentity);
   }

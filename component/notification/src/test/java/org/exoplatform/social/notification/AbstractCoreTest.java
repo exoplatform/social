@@ -16,34 +16,29 @@
  */
 package org.exoplatform.social.notification;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-import java.util.List;
+import java.util.Collection;
 
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
-import junit.framework.AssertionFailedError;
-
-import org.apache.commons.lang.ArrayUtils;
+import org.exoplatform.commons.api.notification.model.NotificationInfo;
+import org.exoplatform.commons.api.notification.service.setting.PluginContainer;
+import org.exoplatform.commons.api.notification.service.setting.PluginSettingService;
+import org.exoplatform.commons.api.notification.service.storage.NotificationService;
+import org.exoplatform.commons.api.settings.ExoFeatureService;
 import org.exoplatform.commons.testing.BaseExoTestCase;
-import org.exoplatform.commons.utils.PageList;
 import org.exoplatform.component.test.ConfigurationUnit;
 import org.exoplatform.component.test.ConfiguredBy;
 import org.exoplatform.component.test.ContainerScope;
-import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.jcr.RepositoryService;
 import org.exoplatform.services.jcr.core.ManageableRepository;
-import org.exoplatform.services.log.ExoLogger;
-import org.exoplatform.services.log.Log;
-import org.exoplatform.services.organization.OrganizationService;
-import org.exoplatform.services.organization.User;
-import org.exoplatform.social.core.space.SpaceException;
-import org.exoplatform.social.core.space.SpaceUtils;
-import org.exoplatform.social.core.space.model.Space;
+import org.exoplatform.social.core.identity.model.Identity;
+import org.exoplatform.social.core.manager.ActivityManagerImpl;
+import org.exoplatform.social.core.manager.IdentityManager;
+import org.exoplatform.social.core.manager.RelationshipManagerImpl;
 import org.exoplatform.social.core.space.spi.SpaceService;
+import org.exoplatform.social.notification.mock.MockNotificationService;
 
 @ConfiguredBy({
   @ConfigurationUnit(scope = ContainerScope.PORTAL, path = "conf/exo.portal.component.identity-configuration.xml"),
@@ -57,147 +52,63 @@ import org.exoplatform.social.core.space.spi.SpaceService;
 })
 public abstract class AbstractCoreTest extends BaseExoTestCase {
 
-  public static boolean wantCount = false;
-  private static int count;
-  private int maxQuery;
-  private final Log LOG = ExoLogger.getLogger(AbstractCoreTest.class);
-
+  protected IdentityManager identityManager;
+  protected ActivityManagerImpl activityManager;
   protected SpaceService spaceService;
+  protected RelationshipManagerImpl relationshipManager;
+  protected PluginContainer pluginService;
+  protected MockNotificationService notificationService;
+  protected PluginSettingService pluginSettingService;
+  protected ExoFeatureService exoFeatureService;
+  
   protected Session session;
   
+  protected Identity rootIdentity;
+  protected Identity johnIdentity;
+  protected Identity maryIdentity;
+  protected Identity demoIdentity;
   
   @Override
   protected void setUp() throws Exception {
     begin();
     session = getSession();
 
-    // If is query number test, init byteman
-    if (getClass().isAnnotationPresent(QueryNumberTest.class)) {
-      count = 0;
-      maxQuery = 0;
-    }
-
     //
-    spaceService = (SpaceService) getContainer().getComponentInstanceOfType(SpaceService.class);
+    pluginService = Utils.getService(PluginContainer.class);
+    identityManager = Utils.getService(IdentityManager.class);
+    activityManager = Utils.getService(ActivityManagerImpl.class);
+    spaceService = Utils.getService(SpaceService.class);
+    relationshipManager = Utils.getService(RelationshipManagerImpl.class);
+    notificationService = (MockNotificationService) Utils.getService(NotificationService.class);
+    pluginSettingService = Utils.getService(PluginSettingService.class);
+    exoFeatureService = Utils.getService(ExoFeatureService.class);
     
+    rootIdentity = identityManager.getOrCreateIdentity("organization", "root", true);
+    johnIdentity = identityManager.getOrCreateIdentity("organization", "john", true);
+    maryIdentity = identityManager.getOrCreateIdentity("organization", "mary", true);
+    demoIdentity = identityManager.getOrCreateIdentity("organization", "demo", true);
+    
+    Collection<NotificationInfo> messages = notificationService.emails();
+    assertEquals(4, messages.size());
   }
 
   @Override
   protected void tearDown() throws Exception {
-    wantCount = false;
+    identityManager.deleteIdentity(rootIdentity);
+    identityManager.deleteIdentity(johnIdentity);
+    identityManager.deleteIdentity(maryIdentity);
+    identityManager.deleteIdentity(demoIdentity);
+    
     session = null;
+    notificationService.clear();
     end();
   }
   
-
-  // Fork from Junit 3.8.2
-  @Override
-  /**
-   * Override to run the test and assert its state.
-   * @throws Throwable if any exception is thrown
-   */
-  protected void runTest() throws Throwable {
-    String fName = getName();
-    assertNotNull("TestCase.fName cannot be null", fName); // Some VMs crash when calling getMethod(null,null);
-    Method runMethod= null;
-    try {
-      // use getMethod to get all public inherited
-      // methods. getDeclaredMethods returns all
-      // methods of this class but excludes the
-      // inherited ones.
-      runMethod= getClass().getMethod(fName, (Class[])null);
-    } catch (NoSuchMethodException e) {
-      fail("Method \""+fName+"\" not found");
-    }
-    if (!Modifier.isPublic(runMethod.getModifiers())) {
-      fail("Method \""+fName+"\" should be public");
-    }
-
-    try {
-      MaxQueryNumber queryNumber = runMethod.getAnnotation(MaxQueryNumber.class);
-      if (queryNumber != null) {
-        wantCount = true;
-        maxQuery = queryNumber.value();
-      }
-      runMethod.invoke(this);
-    }
-    catch (InvocationTargetException e) {
-      e.fillInStackTrace();
-      throw e.getTargetException();
-    }
-    catch (IllegalAccessException e) {
-      e.fillInStackTrace();
-      throw e;
-    }
-
-    if (wantCount && count > maxQuery) {
-      throw new AssertionFailedError(""+ count + " JDBC queries was executed but the maximum is : " + maxQuery);
-    }
-    
-  }
-
-  // Called by byteman
-  public static void count() {
-    ++count;
-   }
-
   private Session getSession() throws RepositoryException {
     PortalContainer container = PortalContainer.getInstance();
     RepositoryService repositoryService = (RepositoryService) container.getComponentInstance(RepositoryService.class);
     ManageableRepository repository = repositoryService.getCurrentRepository();
     return repository.getSystemSession("portal-test");
-  }
-
-  /**
-   * Creates new space with out init apps.
-   *
-   * @param space
-   * @param creator
-   * @param invitedGroupId
-   * @return
-   * @since 1.2.0-GA
-   */
-  protected Space createSpaceNonInitApps(Space space, String creator, String invitedGroupId) {
-    // Creates new space by creating new group
-    String groupId = null;
-    try {
-      groupId = SpaceUtils.createGroup(space.getDisplayName(), creator);
-    } catch (SpaceException e) {
-      LOG.error("Error while creating group", e);
-    }
-
-    if (invitedGroupId != null) {
-      // Invites user in group join to new created space.
-      // Gets users in group and then invites user to join into space.
-      OrganizationService org = (OrganizationService) ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(OrganizationService.class);
-      try {
-        PageList<User> groupMembersAccess = org.getUserHandler().findUsersByGroup(invitedGroupId);
-        List<User> users = groupMembersAccess.getAll();
-
-        for (User user : users) {
-          String userId = user.getUserName();
-          if (!userId.equals(creator)) {
-            String[] invitedUsers = space.getInvitedUsers();
-            if (!ArrayUtils.contains(invitedUsers, userId)) {
-              invitedUsers = (String[]) ArrayUtils.add(invitedUsers, userId);
-              space.setInvitedUsers(invitedUsers);
-            }
-          }
-        }
-      } catch (Exception e) {
-        LOG.error("Failed to invite users from group " + invitedGroupId, e);
-      }
-    }
-    String[] managers = new String[] { creator };
-    space.setManagers(managers);
-    space.setGroupId(groupId);
-    space.setUrl(space.getPrettyName());
-    try {
-      spaceService.saveSpace(space, true);
-    } catch (SpaceException e) {
-      LOG.warn("Error while saving space", e);
-    }
-    return space;
   }
 
 }

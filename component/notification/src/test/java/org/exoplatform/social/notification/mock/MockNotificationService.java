@@ -26,7 +26,9 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import org.exoplatform.commons.api.notification.model.NotificationInfo;
 import org.exoplatform.commons.api.notification.model.NotificationKey;
 import org.exoplatform.commons.api.notification.model.UserSetting;
+import org.exoplatform.commons.api.notification.service.setting.PluginSettingService;
 import org.exoplatform.commons.api.notification.service.storage.NotificationService;
+import org.exoplatform.commons.utils.CommonsUtils;
 
 public class MockNotificationService implements NotificationService {
 
@@ -53,6 +55,12 @@ public class MockNotificationService implements NotificationService {
 
   @Override
   public void process(NotificationInfo message) throws Exception {
+    String providerId = message.getKey().getId();
+
+    // if the provider is not active, do nothing
+    PluginSettingService settingService = CommonsUtils.getService(PluginSettingService.class);
+    if (settingService.isActive(providerId) == false)
+      return;
     jcrMock.add(message);
   }
 
