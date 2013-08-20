@@ -16,15 +16,15 @@
  */
 package org.exoplatform.social.notification;
 
-import java.util.Collection;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
-import org.exoplatform.commons.api.notification.model.NotificationInfo;
 import org.exoplatform.commons.api.notification.service.setting.PluginContainer;
 import org.exoplatform.commons.api.notification.service.setting.PluginSettingService;
-import org.exoplatform.commons.api.notification.service.storage.NotificationService;
 import org.exoplatform.commons.api.settings.ExoFeatureService;
 import org.exoplatform.commons.testing.BaseExoTestCase;
 import org.exoplatform.component.test.ConfigurationUnit;
@@ -51,7 +51,6 @@ import org.exoplatform.social.notification.mock.MockNotificationService;
   @ConfigurationUnit(scope = ContainerScope.PORTAL, path = "conf/standalone/exo.social.component.core.test.configuration.xml")
 })
 public abstract class AbstractCoreTest extends BaseExoTestCase {
-
   protected IdentityManager identityManager;
   protected ActivityManagerImpl activityManager;
   protected SpaceService spaceService;
@@ -72,38 +71,52 @@ public abstract class AbstractCoreTest extends BaseExoTestCase {
   protected void setUp() throws Exception {
     begin();
     session = getSession();
-
-    //
-    pluginService = Utils.getService(PluginContainer.class);
-    identityManager = Utils.getService(IdentityManager.class);
-    activityManager = Utils.getService(ActivityManagerImpl.class);
-    spaceService = Utils.getService(SpaceService.class);
-    relationshipManager = Utils.getService(RelationshipManagerImpl.class);
-    notificationService = (MockNotificationService) Utils.getService(NotificationService.class);
-    pluginSettingService = Utils.getService(PluginSettingService.class);
-    exoFeatureService = Utils.getService(ExoFeatureService.class);
-    
-    rootIdentity = identityManager.getOrCreateIdentity("organization", "root", true);
-    johnIdentity = identityManager.getOrCreateIdentity("organization", "john", true);
-    maryIdentity = identityManager.getOrCreateIdentity("organization", "mary", true);
-    demoIdentity = identityManager.getOrCreateIdentity("organization", "demo", true);
-    
-    Collection<NotificationInfo> messages = notificationService.emails();
-    assertEquals(4, messages.size());
   }
 
   @Override
   protected void tearDown() throws Exception {
-    identityManager.deleteIdentity(rootIdentity);
-    identityManager.deleteIdentity(johnIdentity);
-    identityManager.deleteIdentity(maryIdentity);
-    identityManager.deleteIdentity(demoIdentity);
-    
     session = null;
-    notificationService.clear();
     end();
   }
   
+
+  // Fork from Junit 3.8.2
+  @Override
+  /**
+   * Override to run the test and assert its state.
+   * @throws Throwable if any exception is thrown
+   */
+  protected void runTest() throws Throwable {
+    String fName = getName();
+    assertNotNull("TestCase.fName cannot be null", fName); // Some VMs crash when calling getMethod(null,null);
+    Method runMethod= null;
+    try {
+      // use getMethod to get all public inherited
+      // methods. getDeclaredMethods returns all
+      // methods of this class but excludes the
+      // inherited ones.
+      runMethod= getClass().getMethod(fName, (Class[])null);
+    } catch (NoSuchMethodException e) {
+      fail("Method \""+fName+"\" not found");
+    }
+    if (!Modifier.isPublic(runMethod.getModifiers())) {
+      fail("Method \""+fName+"\" should be public");
+    }
+
+    try {
+      runMethod.invoke(this);
+    }
+    catch (InvocationTargetException e) {
+      e.fillInStackTrace();
+      throw e.getTargetException();
+    }
+    catch (IllegalAccessException e) {
+      e.fillInStackTrace();
+      throw e;
+    }
+    
+  }
+
   private Session getSession() throws RepositoryException {
     PortalContainer container = PortalContainer.getInstance();
     RepositoryService repositoryService = (RepositoryService) container.getComponentInstance(RepositoryService.class);
