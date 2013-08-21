@@ -26,7 +26,6 @@ import org.exoplatform.commons.api.notification.model.NotificationInfo;
 import org.exoplatform.commons.api.notification.plugin.AbstractNotificationPlugin;
 import org.exoplatform.commons.api.notification.plugin.NotificationPluginUtils;
 import org.exoplatform.commons.api.notification.service.setting.UserSettingService;
-import org.exoplatform.commons.api.notification.service.storage.NotificationDataStorage;
 import org.exoplatform.commons.api.notification.service.template.TemplateContext;
 import org.exoplatform.commons.notification.template.TemplateUtils;
 import org.exoplatform.commons.utils.CommonsUtils;
@@ -54,21 +53,17 @@ public class NewUserPlugin extends AbstractNotificationPlugin {
     Profile profile = ctx.value(SocialNotificationUtils.PROFILE);
     String remoteId = profile.getIdentity().getRemoteId();
     try {
-      UserSettingService notificationService = CommonsUtils.getService(UserSettingService.class);
       UserSettingService userSettingService = CommonsUtils.getService(UserSettingService.class);
-      NotificationDataStorage storage = CommonsUtils.getService(NotificationDataStorage.class);
       //
       userSettingService.addMixin(remoteId);
       //
-      NotificationInfo notification = NotificationInfo.instance();
-      notification.key(getId())
-                  .with(SocialNotificationUtils.REMOTE_ID.getKey(), remoteId)
-                  .setFrom(remoteId);
 
-      //
-      storage.save(notification);
-
-      return notification.to(notificationService.getUserSettingByPlugin(ID)).end();
+      return NotificationInfo.instance()
+                              .key(getId())
+                              .with(SocialNotificationUtils.REMOTE_ID.getKey(), remoteId)
+                              .setSendAll(true)
+                              .setFrom(remoteId)
+                              .end();
     } catch (Exception e) {
       return null;
     }

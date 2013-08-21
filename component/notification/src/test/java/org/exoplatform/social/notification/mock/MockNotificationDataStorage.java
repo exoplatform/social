@@ -41,16 +41,9 @@ public class MockNotificationDataStorage implements NotificationDataStorage {
   }
 
   @Override
-  public void createParentNodeOfPlugin(String pluginId) {
+  public void removeMessageAfterSent() throws Exception {
+    
   }
 
-  @Override
-  public Map<String, NotificationInfo> getNotificationMessagesByPluginId(String pluginId, boolean isWeekend) {
-    return null;
-  }
-
-  @Override
-  public void removeNotificationMessages(String pluginId) {
-  }
 
 }
