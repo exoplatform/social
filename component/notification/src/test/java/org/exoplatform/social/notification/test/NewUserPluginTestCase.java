@@ -14,9 +14,10 @@ import org.exoplatform.commons.api.notification.plugin.AbstractNotificationPlugi
 import org.exoplatform.commons.notification.impl.NotificationContextImpl;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.notification.AbstractCoreTest;
+import org.exoplatform.social.notification.AbstractPluginTest;
 import org.exoplatform.social.notification.plugin.NewUserPlugin;
 
-public class NewUserPluginTestCase extends AbstractCoreTest {
+public class NewUserPluginTestCase extends AbstractPluginTest {
   
   private AbstractNotificationPlugin newUserPlugin;
   
@@ -126,5 +127,10 @@ public class NewUserPluginTestCase extends AbstractCoreTest {
     identityManager.deleteIdentity(ghostIdentity);
     identityManager.deleteIdentity(raulIdentity);
     identityManager.deleteIdentity(paulIdentity);
+  }
+
+  @Override
+  public AbstractNotificationPlugin getPlugin() {
+    return newUserPlugin;
   }
 }

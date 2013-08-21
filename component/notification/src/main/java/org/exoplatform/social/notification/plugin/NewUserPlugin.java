@@ -18,15 +18,19 @@ package org.exoplatform.social.notification.plugin;
 
 import java.io.IOException;
 import java.io.Writer;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.exoplatform.commons.api.notification.NotificationContext;
 import org.exoplatform.commons.api.notification.model.MessageInfo;
 import org.exoplatform.commons.api.notification.model.NotificationInfo;
 import org.exoplatform.commons.api.notification.plugin.AbstractNotificationPlugin;
+import org.exoplatform.commons.api.notification.plugin.NotificationPluginUtils;
+import org.exoplatform.commons.api.notification.service.setting.UserSettingService;
+import org.exoplatform.commons.api.notification.service.storage.NotificationDataStorage;
 import org.exoplatform.commons.api.notification.service.template.TemplateContext;
+import org.exoplatform.commons.notification.NotificationUtils;
 import org.exoplatform.commons.notification.template.TemplateUtils;
+import org.exoplatform.commons.utils.CommonsUtils;
 import org.exoplatform.container.xml.InitParams;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
@@ -49,17 +53,23 @@ public class NewUserPlugin extends AbstractNotificationPlugin {
   @Override
   public NotificationInfo makeNotification(NotificationContext ctx) {
     Profile profile = ctx.value(SocialNotificationUtils.PROFILE);
-    
+    String remoteId = profile.getIdentity().getRemoteId();
     try {
-      //This type of notification need to get all users who want to receive this kind of notification, except the new created user
-      //To avoid all problem related to the performance, we will get this list after, step by step, when sending message
-      List<String> allUsers = new ArrayList<String>();
-      
-      return NotificationInfo.instance()
-                                .key(getId())
-                                .with("remoteId", profile.getIdentity().getRemoteId())
-                                .to(allUsers)
-                                .setFrom(profile.getIdentity().getRemoteId());
+      UserSettingService notificationService = CommonsUtils.getService(UserSettingService.class);
+      UserSettingService userSettingService = CommonsUtils.getService(UserSettingService.class);
+      NotificationDataStorage storage = CommonsUtils.getService(NotificationDataStorage.class);
+      //
+      userSettingService.addMixin(remoteId);
+      //
+      NotificationInfo notification = NotificationInfo.instance();
+      notification.key(getId())
+                  .with(SocialNotificationUtils.REMOTE_ID.getKey(), remoteId)
+                  .setFrom(remoteId);
+
+      //
+      storage.save(notification);
+
+      return notification.to(notificationService.getUserSettingByPlugin(ID)).end();
     } catch (Exception e) {
       return null;
     }
@@ -80,7 +90,7 @@ public class NewUserPlugin extends AbstractNotificationPlugin {
     Profile userProfile = identity.getProfile();
     
     templateContext.put("USER", userProfile.getFullName());
-    templateContext.put("PORTAL_NAME", System.getProperty("exo.notifications.portalname", "eXo"));
+    templateContext.put("PORTAL_NAME", NotificationPluginUtils.getSenderName());
     String subject = TemplateUtils.processSubject(templateContext);
     
     templateContext.put("PROFILE_URL", LinkProviderUtils.getRedirectUrl("user", identity.getRemoteId()));

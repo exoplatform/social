@@ -35,6 +35,11 @@
     <key>org.exoplatform.commons.api.notification.service.storage.NotificationService</key>
     <type>org.exoplatform.social.notification.mock.MockNotificationService</type>
   </component>
+
+  <component>
+    <key>org.exoplatform.commons.api.notification.service.storage.NotificationDataStorage</key>
+    <type>org.exoplatform.social.notification.mock.MockNotificationDataStorage</type>
+  </component>
   
   <component>
     <key>org.exoplatform.commons.api.notification.service.setting.PluginContainer</key>

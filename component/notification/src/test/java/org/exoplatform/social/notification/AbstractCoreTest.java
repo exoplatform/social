@@ -71,6 +71,14 @@ public abstract class AbstractCoreTest extends BaseExoTestCase {
   protected void setUp() throws Exception {
     begin();
     session = getSession();
+    identityManager = getService(IdentityManager.class);
+    activityManager = getService(ActivityManagerImpl.class);
+    spaceService = getService(SpaceService.class);
+    relationshipManager = getService(RelationshipManagerImpl.class);
+    pluginService = getService(PluginContainer.class);
+    notificationService = getService(MockNotificationService.class);
+    pluginSettingService = getService(PluginSettingService.class);
+    exoFeatureService = getService(ExoFeatureService.class);
   }
 
   @Override
@@ -79,6 +87,10 @@ public abstract class AbstractCoreTest extends BaseExoTestCase {
     end();
   }
   
+  @SuppressWarnings("unchecked")
+  public <T> T getService(Class<T> clazz) {
+    return (T) getContainer().getComponentInstanceOfType(clazz);
+  }
 
   // Fork from Junit 3.8.2
   @Override

@@ -19,13 +19,10 @@ package org.exoplatform.social.notification.mock;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.exoplatform.commons.api.notification.model.NotificationInfo;
-import org.exoplatform.commons.api.notification.model.NotificationKey;
-import org.exoplatform.commons.api.notification.model.UserSetting;
 import org.exoplatform.commons.api.notification.service.setting.PluginSettingService;
 import org.exoplatform.commons.api.notification.service.storage.NotificationService;
 import org.exoplatform.commons.utils.CommonsUtils;
@@ -33,11 +30,6 @@ import org.exoplatform.commons.utils.CommonsUtils;
 public class MockNotificationService implements NotificationService {
 
   private Queue<NotificationInfo> jcrMock = new ConcurrentLinkedQueue<NotificationInfo>();
-  
-  @Override
-  public Map<NotificationKey, List<NotificationInfo>> getByUser(UserSetting userSetting) {
-    return null;
-  }
   
   public int size() {
     return this.jcrMock.size();
@@ -65,7 +57,7 @@ public class MockNotificationService implements NotificationService {
   }
 
   @Override
-  public void processDaily() throws Exception {
+  public void processDigest() throws Exception {
   }
 
   @Override
@@ -75,14 +67,4 @@ public class MockNotificationService implements NotificationService {
     }
   }
 
-  @Override
-  public Map<String, NotificationInfo> getNotificationMessagesByProviderId(String pluginId,
-                                                                              boolean isWeekend) {
-    return null;
-  }
-
-  @Override
-  public void removeNotificationMessages(String pluginId) {
-  }
- 
 }

@@ -10,10 +10,10 @@ import org.exoplatform.commons.api.notification.plugin.AbstractNotificationPlugi
 import org.exoplatform.commons.notification.impl.NotificationContextImpl;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.activity.model.ExoSocialActivityImpl;
-import org.exoplatform.social.notification.AbstractCoreTest;
+import org.exoplatform.social.notification.AbstractPluginTest;
 import org.exoplatform.social.notification.plugin.PostActivityPlugin;
 
-public class PostActivityPluginTestCase extends AbstractCoreTest {
+public class PostActivityPluginTestCase extends AbstractPluginTest {
   
 private AbstractNotificationPlugin postActivityPlugin;
   
@@ -52,5 +52,10 @@ private AbstractNotificationPlugin postActivityPlugin;
     MessageInfo info = postActivityPlugin.buildMessage(ctx);
     
     assertEquals("Demo gtn posted on your activity stream<br/>", info.getSubject());
+  }
+
+  @Override
+  public AbstractNotificationPlugin getPlugin() {
+    return postActivityPlugin;
   }
 }

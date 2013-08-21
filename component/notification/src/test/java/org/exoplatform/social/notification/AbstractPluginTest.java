@@ -23,19 +23,11 @@ import org.exoplatform.commons.api.notification.NotificationContext;
 import org.exoplatform.commons.api.notification.model.MessageInfo;
 import org.exoplatform.commons.api.notification.model.NotificationInfo;
 import org.exoplatform.commons.api.notification.plugin.AbstractNotificationPlugin;
-import org.exoplatform.commons.api.notification.service.setting.PluginContainer;
-import org.exoplatform.commons.api.notification.service.setting.PluginSettingService;
-import org.exoplatform.commons.api.notification.service.storage.NotificationService;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.activity.model.ExoSocialActivityImpl;
 import org.exoplatform.social.core.identity.model.Identity;
-import org.exoplatform.social.core.manager.ActivityManagerImpl;
-import org.exoplatform.social.core.manager.IdentityManager;
-import org.exoplatform.social.core.manager.RelationshipManagerImpl;
 import org.exoplatform.social.core.space.impl.DefaultSpaceApplicationHandler;
-import org.exoplatform.social.core.space.impl.SpaceServiceImpl;
 import org.exoplatform.social.core.space.model.Space;
-import org.exoplatform.social.notification.mock.MockNotificationService;
 
 /**
  * Created by The eXo Platform SAS
@@ -44,19 +36,6 @@ import org.exoplatform.social.notification.mock.MockNotificationService;
  * Aug 20, 2013  
  */
 public abstract class AbstractPluginTest extends AbstractCoreTest {
-
-  protected IdentityManager identityManager;
-  protected ActivityManagerImpl activityManager;
-  protected SpaceServiceImpl spaceService;
-  protected RelationshipManagerImpl relationshipManager;
-  protected PluginContainer pluginService;
-  protected PluginSettingService pluginSettingService;
-  private MockNotificationService notificationService;
-  
-  protected Identity rootIdentity;
-  protected Identity johnIdentity;
-  protected Identity maryIdentity;
-  protected Identity demoIdentity;
   
   protected List<ExoSocialActivity> tearDownActivityList;
   protected List<Space>  tearDownSpaceList;
@@ -66,14 +45,6 @@ public abstract class AbstractPluginTest extends AbstractCoreTest {
   @Override
   protected void setUp() throws Exception {
     super.setUp();
-    
-    pluginService = Utils.getService(PluginContainer.class);
-    pluginSettingService = Utils.getService(PluginSettingService.class);
-    identityManager = Utils.getService(IdentityManager.class);
-    activityManager = Utils.getService(ActivityManagerImpl.class);
-    spaceService = Utils.getService(SpaceServiceImpl.class);
-    relationshipManager = Utils.getService(RelationshipManagerImpl.class);
-    notificationService = (MockNotificationService) Utils.getService(NotificationService.class);
     
     rootIdentity = identityManager.getOrCreateIdentity("organization", "root", true);
     johnIdentity = identityManager.getOrCreateIdentity("organization", "john", true);

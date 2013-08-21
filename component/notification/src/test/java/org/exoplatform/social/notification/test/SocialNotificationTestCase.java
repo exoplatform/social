@@ -36,9 +36,8 @@ import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.activity.model.ExoSocialActivityImpl;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
-import org.exoplatform.social.core.space.impl.DefaultSpaceApplicationHandler;
 import org.exoplatform.social.core.space.model.Space;
-import org.exoplatform.social.notification.AbstractCoreTest;
+import org.exoplatform.social.notification.AbstractPluginTest;
 import org.exoplatform.social.notification.Utils;
 import org.exoplatform.social.notification.plugin.ActivityCommentPlugin;
 import org.exoplatform.social.notification.plugin.ActivityMentionPlugin;
@@ -50,7 +49,7 @@ import org.exoplatform.social.notification.plugin.RelationshipRecievedRequestPlu
 import org.exoplatform.social.notification.plugin.RequestJoinSpacePlugin;
 import org.exoplatform.social.notification.plugin.SpaceInvitationPlugin;
 
-public class SocialNotificationTestCase extends AbstractCoreTest {
+public class SocialNotificationTestCase extends AbstractPluginTest {
 
   private List<ExoSocialActivity> tearDownActivityList;
   private List<Space>  tearDownSpaceList;
@@ -82,6 +81,11 @@ public class SocialNotificationTestCase extends AbstractCoreTest {
     System.setProperty("gatein.email.domain.url", "localhost");
 
   }
+  
+  @Override
+  public AbstractNotificationPlugin getPlugin() {
+    return null;
+  }
 
   private void initPlugins() {
     newUserPlugin = pluginService.getPlugin(NotificationKey.key(NewUserPlugin.ID));
@@ -102,6 +106,12 @@ public class SocialNotificationTestCase extends AbstractCoreTest {
     assertNotNull(spaceInvitationPlugin);
     requestJoinSpacePlugin = pluginService.getPlugin(NotificationKey.key(RequestJoinSpacePlugin.ID));
     assertNotNull(requestJoinSpacePlugin);
+    
+    rootIdentity = identityManager.getOrCreateIdentity("organization", "root", true);
+    johnIdentity = identityManager.getOrCreateIdentity("organization", "john", true);
+    maryIdentity = identityManager.getOrCreateIdentity("organization", "mary", true);
+    demoIdentity = identityManager.getOrCreateIdentity("organization", "demo", true);
+    
   }
   
   @Override
@@ -685,29 +695,4 @@ public class SocialNotificationTestCase extends AbstractCoreTest {
     assertEquals(result, Utils.processMentions(title));
   }
   
-  private Space getSpaceInstance(int number) throws Exception {
-    Space space = new Space();
-    space.setDisplayName("my space " + number);
-    space.setPrettyName(space.getDisplayName());
-    space.setRegistration(Space.OPEN);
-    space.setDescription("add new space " + number);
-    space.setType(DefaultSpaceApplicationHandler.NAME);
-    space.setVisibility(Space.PUBLIC);
-    space.setRegistration(Space.VALIDATION);
-    space.setPriority(Space.INTERMEDIATE_PRIORITY);
-    space.setGroupId("/space/space" + number);
-    space.setAvatarUrl("my-avatar-url");
-    String[] managers = new String[] {rootIdentity.getRemoteId()};
-    String[] members = new String[] {};
-    String[] invitedUsers = new String[] {};
-    String[] pendingUsers = new String[] {};
-    space.setInvitedUsers(invitedUsers);
-    space.setPendingUsers(pendingUsers);
-    space.setManagers(managers);
-    space.setMembers(members);
-    space.setUrl(space.getPrettyName());
-    space.setAvatarLastUpdated(System.currentTimeMillis());
-    this.spaceService.saveSpace(space, true);
-    return space;
-  }
 }
