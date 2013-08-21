@@ -11,6 +11,7 @@ import org.exoplatform.commons.notification.impl.NotificationContextImpl;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.activity.model.ExoSocialActivityImpl;
 import org.exoplatform.social.notification.AbstractPluginTest;
+import org.exoplatform.social.notification.mock.MockMessageQueue;
 import org.exoplatform.social.notification.plugin.PostActivityPlugin;
 
 public class PostActivityPluginTestCase extends AbstractPluginTest {
@@ -44,11 +45,11 @@ private AbstractNotificationPlugin postActivityPlugin;
     activity.setUserId(demoIdentity.getId());
     activityManager.saveActivity(rootIdentity, activity);
     
-    Collection<NotificationInfo> messages = notificationService.emails();
-    assertEquals(1, messages.size());
+    NotificationInfo ntf = MockMessageQueue.get();
+    assertNotNull(ntf);
     
     NotificationContext ctx = NotificationContextImpl.cloneInstance();
-    ctx.setNotificationInfo(messages.iterator().next().setTo("root"));
+    ctx.setNotificationInfo(ntf.setTo("root"));
     MessageInfo info = postActivityPlugin.buildMessage(ctx);
     
     assertEquals("Demo gtn posted on your activity stream<br/>", info.getSubject());

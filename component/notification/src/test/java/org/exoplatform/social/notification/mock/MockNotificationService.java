@@ -23,9 +23,12 @@ import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.exoplatform.commons.api.notification.model.NotificationInfo;
+import org.exoplatform.commons.api.notification.model.UserSetting;
 import org.exoplatform.commons.api.notification.service.setting.PluginSettingService;
+import org.exoplatform.commons.api.notification.service.setting.UserSettingService;
 import org.exoplatform.commons.api.notification.service.storage.NotificationService;
 import org.exoplatform.commons.utils.CommonsUtils;
+import org.exoplatform.social.notification.Utils;
 
 public class MockNotificationService implements NotificationService {
 
@@ -48,12 +51,41 @@ public class MockNotificationService implements NotificationService {
   @Override
   public void process(NotificationInfo message) throws Exception {
     String providerId = message.getKey().getId();
-
+    
     // if the provider is not active, do nothing
     PluginSettingService settingService = CommonsUtils.getService(PluginSettingService.class);
     if (settingService.isActive(providerId) == false)
       return;
-    jcrMock.add(message);
+    
+    List<String> userIds = message.getSendToUserIds();
+    
+    if (userIds == null) {
+      //for NewUserPlugin
+      jcrMock.add(message);
+      return;
+    }
+    
+    UserSettingService userSettingService = Utils.getService(UserSettingService.class);
+    
+    for (String userId : userIds) {
+      UserSetting userSetting =  userSettingService.get(userId);
+      
+      if (userSetting == null) {
+        userSetting = UserSetting.getDefaultInstance();
+        userSetting.setUserId(userId);
+      }
+      
+      if (userSetting.isInInstantly(providerId)) {
+        //put to queue
+        MockMessageQueue.add(message);
+      }
+      
+      if (userSetting.isInDaily(providerId) || userSetting.isInWeekly(providerId)) {
+        jcrMock.add(message);
+      }
+      
+    }
+    
   }
 
   @Override

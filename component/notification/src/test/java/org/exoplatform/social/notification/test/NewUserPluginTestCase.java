@@ -13,32 +13,27 @@ import org.exoplatform.commons.api.notification.model.NotificationKey;
 import org.exoplatform.commons.api.notification.plugin.AbstractNotificationPlugin;
 import org.exoplatform.commons.notification.impl.NotificationContextImpl;
 import org.exoplatform.social.core.identity.model.Identity;
-import org.exoplatform.social.notification.AbstractCoreTest;
 import org.exoplatform.social.notification.AbstractPluginTest;
+import org.exoplatform.social.notification.mock.MockMessageQueue;
 import org.exoplatform.social.notification.plugin.NewUserPlugin;
 
 public class NewUserPluginTestCase extends AbstractPluginTest {
   
-  private AbstractNotificationPlugin newUserPlugin;
-  
   @Override
   protected void setUp() throws Exception {
     super.setUp();
-    newUserPlugin = pluginService.getPlugin(NotificationKey.key(NewUserPlugin.ID));
-    assertNotNull(newUserPlugin);
     
     //By default the plugin and feature are active
-    assertTrue(pluginSettingService.isActive(newUserPlugin.getId()));
+    assertTrue(pluginSettingService.isActive(getPlugin().getId()));
     assertTrue(exoFeatureService.isActiveFeature("notification"));
   }
   
   @Override
   protected void tearDown() throws Exception {
     //
-    pluginSettingService.savePlugin(newUserPlugin.getId(), true);
-    exoFeatureService.saveActiveFeature("notification", true);
+    turnON(getPlugin());
+    turnFeatureOn();
     
-    newUserPlugin = null;
     super.tearDown();
   }
   
@@ -50,22 +45,24 @@ public class NewUserPluginTestCase extends AbstractPluginTest {
     
     NotificationContext ctx = NotificationContextImpl.cloneInstance();
     ctx.setNotificationInfo(messages.iterator().next().setTo("mary"));
-    MessageInfo info = newUserPlugin.buildMessage(ctx);
+    MessageInfo info = buildMessageInfo(ctx);
     
     assertEquals(info.getSubject(), "Ghost gtn has joined eXo<br/>");
     
     //And when the plugin is not active
-    pluginSettingService.savePlugin(newUserPlugin.getId(), false);
+    turnOff(getPlugin());
+
     Identity raulIdentity = identityManager.getOrCreateIdentity("organization", "raul", true);
-    messages = notificationService.emails();
-    assertEquals(0, messages.size());
+    NotificationInfo ntf = MockMessageQueue.get();
+    assertNull(ntf);
     
     //Active the plugin but turn off the feature
-    pluginSettingService.savePlugin(newUserPlugin.getId(), true);
-    exoFeatureService.saveActiveFeature("notification", false);
+    turnON(getPlugin());
+    turnFeatureOff();
+
     Identity paulIdentity = identityManager.getOrCreateIdentity("organization", "paul", true);
-    messages = notificationService.emails();
-    assertEquals(0, messages.size());
+    ntf = MockMessageQueue.get();
+    assertNull(ntf);
     
     identityManager.deleteIdentity(ghostIdentity);
     identityManager.deleteIdentity(raulIdentity);
@@ -77,6 +74,7 @@ public class NewUserPluginTestCase extends AbstractPluginTest {
     Identity raulIdentity = identityManager.getOrCreateIdentity("organization", "raul", true);
     Identity paulIdentity = identityManager.getOrCreateIdentity("organization", "paul", true);
     
+    //Digest
     Collection<NotificationInfo> messages = notificationService.emails();
     assertEquals(3, messages.size());
     
@@ -87,7 +85,7 @@ public class NewUserPluginTestCase extends AbstractPluginTest {
     }
     ctx.setNotificationInfos(list);
     Writer writer = new StringWriter();
-    newUserPlugin.buildDigest(ctx, writer);
+    getPlugin().buildDigest(ctx, writer);
     
     identityManager.deleteIdentity(ghostIdentity);
     identityManager.deleteIdentity(raulIdentity);
@@ -96,7 +94,7 @@ public class NewUserPluginTestCase extends AbstractPluginTest {
   
   public void testDigestWithPluginOff() throws Exception {
     //turn off the plugin
-    pluginSettingService.savePlugin(newUserPlugin.getId(), false);
+    turnOff(getPlugin());
     
     Identity ghostIdentity = identityManager.getOrCreateIdentity("organization", "ghost", true);
     Identity raulIdentity = identityManager.getOrCreateIdentity("organization", "raul", true);
@@ -131,6 +129,6 @@ public class NewUserPluginTestCase extends AbstractPluginTest {
 
   @Override
   public AbstractNotificationPlugin getPlugin() {
-    return newUserPlugin;
+    return pluginService.getPlugin(NotificationKey.key(NewUserPlugin.ID));
   }
 }

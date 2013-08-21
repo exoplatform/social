@@ -22,12 +22,15 @@ import java.util.List;
 import org.exoplatform.commons.api.notification.NotificationContext;
 import org.exoplatform.commons.api.notification.model.MessageInfo;
 import org.exoplatform.commons.api.notification.model.NotificationInfo;
+import org.exoplatform.commons.api.notification.model.UserSetting;
 import org.exoplatform.commons.api.notification.plugin.AbstractNotificationPlugin;
+import org.exoplatform.commons.api.notification.service.setting.UserSettingService;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.activity.model.ExoSocialActivityImpl;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.space.impl.DefaultSpaceApplicationHandler;
 import org.exoplatform.social.core.space.model.Space;
+import org.exoplatform.social.notification.mock.MockMessageQueue;
 
 /**
  * Created by The eXo Platform SAS
@@ -37,14 +40,20 @@ import org.exoplatform.social.core.space.model.Space;
  */
 public abstract class AbstractPluginTest extends AbstractCoreTest {
   
+  protected UserSettingService userSettingService;
+  
   protected List<ExoSocialActivity> tearDownActivityList;
   protected List<Space>  tearDownSpaceList;
+  protected List<Identity>  tearDownIdentityList;
   
   public abstract AbstractNotificationPlugin getPlugin();
   
   @Override
   protected void setUp() throws Exception {
     super.setUp();
+    
+    
+    userSettingService = Utils.getService(UserSettingService.class);
     
     rootIdentity = identityManager.getOrCreateIdentity("organization", "root", true);
     johnIdentity = identityManager.getOrCreateIdentity("organization", "john", true);
@@ -53,6 +62,7 @@ public abstract class AbstractPluginTest extends AbstractCoreTest {
     
     // each new identity created, a notification will be raised
     notificationService.clear();
+    MockMessageQueue.get();
     
     assertNotNull(rootIdentity.getId());
     assertNotNull(johnIdentity.getId());
@@ -61,7 +71,12 @@ public abstract class AbstractPluginTest extends AbstractCoreTest {
 
     tearDownActivityList = new ArrayList<ExoSocialActivity>();
     tearDownSpaceList = new ArrayList<Space>();
+    tearDownIdentityList = new ArrayList<Identity>();
     
+    tearDownIdentityList.add(rootIdentity);
+    tearDownIdentityList.add(johnIdentity);
+    tearDownIdentityList.add(maryIdentity);
+    tearDownIdentityList.add(demoIdentity);
   }
   
   @Override
@@ -74,10 +89,9 @@ public abstract class AbstractPluginTest extends AbstractCoreTest {
       spaceService.deleteSpace(sp);
     }
     
-    identityManager.deleteIdentity(rootIdentity);
-    identityManager.deleteIdentity(johnIdentity);
-    identityManager.deleteIdentity(maryIdentity);
-    identityManager.deleteIdentity(demoIdentity);
+    for (Identity identity : tearDownIdentityList) {
+      identityManager.deleteIdentity(identity);
+    }
     
     notificationService.clear();
     
@@ -98,6 +112,10 @@ public abstract class AbstractPluginTest extends AbstractCoreTest {
     List<NotificationInfo> list = notificationService.emails();
     assertTrue(list.size() > 0);
     return list.get(0);
+  }
+  
+  protected List<NotificationInfo> getNotificationInfos() {
+    return notificationService.emails();
   }
   
   /**
@@ -134,6 +152,18 @@ public abstract class AbstractPluginTest extends AbstractCoreTest {
   
   protected void turnON(AbstractNotificationPlugin plugin) {
     pluginSettingService.savePlugin(plugin.getId(), true);
+  }
+  
+  protected void turnOff(AbstractNotificationPlugin plugin) {
+    pluginSettingService.savePlugin(plugin.getId(), false);
+  }
+  
+  protected void turnFeatureOn() {
+    exoFeatureService.saveActiveFeature("notification", true);
+  }
+  
+  protected void turnFeatureOff() {
+    exoFeatureService.saveActiveFeature("notification", false);
   }
   
   /**
@@ -200,5 +230,58 @@ public abstract class AbstractPluginTest extends AbstractCoreTest {
     return space;
   }
   
+  /**
+   * Make Instantly setting
+   * @param userId 
+   * @param settings the list of plugins
+   */
+  protected void setInstantlySettings(String userId, List<String> settings) {
+    UserSetting userSetting =  userSettingService.get(userId);
+    
+    if (userSetting == null) {
+      userSetting = UserSetting.getInstance();
+      userSetting.setUserId(userId);
+    }
+    userSetting.setActive(true);
+    //
+    userSetting.setInstantlyProviders(settings);
+    userSettingService.save(userSetting);
+  }
+  
+  /**
+   * Make Daily setting
+   * @param userId
+   * @param settings
+   */
+  protected void setDailySetting(String userId, List<String> settings) {
+    UserSetting userSetting =  userSettingService.get(userId);
+    
+    if (userSetting == null) {
+      userSetting = UserSetting.getInstance();
+      userSetting.setUserId(userId);
+    }
+    userSetting.setActive(true);
+    
+    userSetting.setDailyProviders(settings);
+    userSettingService.save(userSetting);
+  }
+  
+  /**
+   * Make Weekly setting
+   * @param userId
+   * @param settings
+   */
+  protected void setWeeklySetting(String userId, List<String> settings) {
+    UserSetting userSetting =  userSettingService.get(userId);
+    
+    if (userSetting == null) {
+      userSetting = UserSetting.getInstance();
+      userSetting.setUserId(userId);
+    }
+    userSetting.setActive(true);
+    
+    userSetting.setWeeklyProviders(settings);
+    userSettingService.save(userSetting);
+  }
   
 }
