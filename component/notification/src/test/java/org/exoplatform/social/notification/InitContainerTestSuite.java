@@ -15,9 +15,9 @@ import org.junit.runners.Suite.SuiteClasses;
 @RunWith(Suite.class)
 @SuiteClasses({
   PostActivityPluginTest.class,
-  NewUserPluginTest.class,
-  RequestJoinSpacePluginTest.class,
-  SpaceInvitationPluginTest.class
+  NewUserPluginTest.class
+  //RequestJoinSpacePluginTest.class,
+  //SpaceInvitationPluginTest.class
 })
 @ConfigTestCase(AbstractCoreTest.class)
 public class InitContainerTestSuite extends BaseExoContainerTestSuite {

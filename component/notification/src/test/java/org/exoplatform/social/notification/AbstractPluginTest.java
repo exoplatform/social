@@ -35,6 +35,8 @@ import org.exoplatform.social.notification.plugin.ActivityCommentPlugin;
 import org.exoplatform.social.notification.plugin.ActivityMentionPlugin;
 import org.exoplatform.social.notification.plugin.LikePlugin;
 import org.exoplatform.social.notification.plugin.PostActivityPlugin;
+import org.exoplatform.social.notification.plugin.RequestJoinSpacePlugin;
+import org.exoplatform.social.notification.plugin.SpaceInvitationPlugin;
 
 /**
  * Created by The eXo Platform SAS
@@ -336,18 +338,24 @@ public abstract class AbstractPluginTest extends AbstractCoreTest {
     instantly.add(ActivityCommentPlugin.ID);
     instantly.add(ActivityMentionPlugin.ID);
     instantly.add(LikePlugin.ID);
+    instantly.add(RequestJoinSpacePlugin.ID);
+    instantly.add(SpaceInvitationPlugin.ID);
     
     List<String> daily = new ArrayList<String>();
     daily.add(PostActivityPlugin.ID);
     daily.add(ActivityCommentPlugin.ID);
     daily.add(ActivityMentionPlugin.ID);
     daily.add(LikePlugin.ID);
+    daily.add(RequestJoinSpacePlugin.ID);
+    daily.add(SpaceInvitationPlugin.ID);
     
     List<String> weekly = new ArrayList<String>();
     weekly.add(PostActivityPlugin.ID);
     weekly.add(ActivityCommentPlugin.ID);
     weekly.add(ActivityMentionPlugin.ID);
     weekly.add(LikePlugin.ID);
+    weekly.add(RequestJoinSpacePlugin.ID);
+    weekly.add(SpaceInvitationPlugin.ID);
     
     model.setInstantlyProviders(instantly);
     model.setDailyProviders(daily);

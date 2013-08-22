@@ -16,8 +16,19 @@
  */
 package org.exoplatform.social.notification.plugin;
 
+import java.io.StringWriter;
+import java.io.Writer;
+import java.util.Arrays;
+import java.util.List;
+
+import org.exoplatform.commons.api.notification.NotificationContext;
+import org.exoplatform.commons.api.notification.model.MessageInfo;
+import org.exoplatform.commons.api.notification.model.NotificationInfo;
 import org.exoplatform.commons.api.notification.model.NotificationKey;
+import org.exoplatform.commons.api.notification.model.UserSetting;
 import org.exoplatform.commons.api.notification.plugin.AbstractNotificationPlugin;
+import org.exoplatform.commons.notification.impl.NotificationContextImpl;
+import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.notification.AbstractPluginTest;
 
 /**
@@ -27,6 +38,89 @@ import org.exoplatform.social.notification.AbstractPluginTest;
  * Aug 20, 2013  
  */
 public class PostActivityPluginTest extends AbstractPluginTest {
+  
+  public void testInstantly() throws Exception {
+    makeActivity(demoIdentity, "demo post activity on activity stream of root");
+    
+    List<NotificationInfo> list = assertMadeNotifications(1);
+    NotificationInfo postActivityNotification = list.get(0);
+    
+    NotificationContext ctx = NotificationContextImpl.cloneInstance();
+    ctx.setNotificationInfo(postActivityNotification.setTo("root"));
+    MessageInfo info = buildMessageInfo(ctx);
+    
+    assertSubject(info, "Demo gtn posted on your activity stream<br/>");
+    assertBody(info, "New post on your activity stream");
+    assertBody(info, "demo post activity on activity stream of root");
+  }
+  
+  public void testInstantlyWhenPluginOrFeatureOff() throws Exception {
+    //Turn off the plugin
+    turnOFF(getPlugin());
+    
+    makeActivity(demoIdentity, "demo post activity on activity stream of root");
+    
+    assertMadeNotifications(0);
+    
+    //turn on the plugin then turn off the feature
+    turnON(getPlugin());
+    turnFeatureOff();
+    
+    makeActivity(maryIdentity, "mary post activity on activity stream of root");
+    assertMadeNotifications(0);
+    
+    turnFeatureOn();
+  }
+  
+  public void testDigest() throws Exception {
+    //config setting of root to receive notification daily
+    UserSetting rootSetting = new UserSetting();
+    rootSetting.setUserId(rootIdentity.getRemoteId());
+    rootSetting.setDailyProviders(Arrays.asList(getPlugin().getId()));
+    userSettingService.save(rootSetting);
+    
+    //create new user
+    Identity ghostIdentity = identityManager.getOrCreateIdentity("organization", "ghost", true);
+    List<NotificationInfo> list = assertMadeNotifications(1);
+    notificationService.clearAll();
+    
+    makeActivity(demoIdentity, "demo post activity on activity stream of root");
+    makeActivity(maryIdentity, "mary post activity on activity stream of root");
+    makeActivity(johnIdentity, "john post activity on activity stream of root");
+    makeActivity(ghostIdentity, "ghost post activity on activity stream of root");
+    
+    //Digest
+    list = assertMadeNotifications(4);
+    
+    NotificationContext ctx = NotificationContextImpl.cloneInstance();
+    list.set(0, list.get(0).setTo(rootIdentity.getRemoteId()));
+    ctx.setNotificationInfos(list);
+    Writer writer = new StringWriter();
+    getPlugin().buildDigest(ctx, writer);
+    assertDigest(writer, "Demo gtn, Mary Kelly, John Anthony and 1 others posted on your activity stream.");
+    
+    tearDownIdentityList.add(ghostIdentity);
+  }
+  
+  public void testDigestWithPluginOrFeatureOff() throws Exception {
+    //Turn off the plugin
+    turnOFF(getPlugin());
+    
+    makeActivity(demoIdentity, "demo post activity on activity stream of root");
+    makeActivity(maryIdentity, "mary post activity on activity stream of root");
+    
+    assertMadeNotifications(0);
+    
+    //turn on the plugin then turn off the feature
+    turnON(getPlugin());
+    turnFeatureOff();
+    
+    makeActivity(johnIdentity, "john post activity on activity stream of root");
+    
+    assertMadeNotifications(0);
+    
+    turnFeatureOn();
+  }
 
   @Override
   public AbstractNotificationPlugin getPlugin() {
