@@ -1,4 +1,4 @@
-package org.exoplatform.social.notification.test;
+package org.exoplatform.social.notification.plugin;
 
 import java.io.StringWriter;
 import java.io.Writer;
@@ -17,7 +17,7 @@ import org.exoplatform.social.notification.AbstractPluginTest;
 import org.exoplatform.social.notification.mock.MockMessageQueue;
 import org.exoplatform.social.notification.plugin.NewUserPlugin;
 
-public class NewUserPluginTestCase extends AbstractPluginTest {
+public class NewUserPluginTest extends AbstractPluginTest {
   
   @Override
   protected void setUp() throws Exception {
@@ -47,11 +47,10 @@ public class NewUserPluginTestCase extends AbstractPluginTest {
     ctx.setNotificationInfo(messages.iterator().next().setTo("mary"));
     MessageInfo info = buildMessageInfo(ctx);
     
-    assertEquals(info.getSubject(), "Ghost gtn has joined eXo<br/>");
+    assertSubject(info, "Ghost gtn has joined eXo<br/>");
     
     //And when the plugin is not active
     turnOff(getPlugin());
-
     Identity raulIdentity = identityManager.getOrCreateIdentity("organization", "raul", true);
     NotificationInfo ntf = MockMessageQueue.get();
     assertNull(ntf);
@@ -86,6 +85,7 @@ public class NewUserPluginTestCase extends AbstractPluginTest {
     ctx.setNotificationInfos(list);
     Writer writer = new StringWriter();
     getPlugin().buildDigest(ctx, writer);
+    assertDigest(writer, "Ghost gtn, Raul gtn, Paul gtn have joined eXo.");
     
     identityManager.deleteIdentity(ghostIdentity);
     identityManager.deleteIdentity(raulIdentity);

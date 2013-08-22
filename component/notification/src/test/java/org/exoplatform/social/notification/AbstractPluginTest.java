@@ -16,6 +16,7 @@
  */
 package org.exoplatform.social.notification;
 
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -148,6 +149,15 @@ public abstract class AbstractPluginTest extends AbstractCoreTest {
    */
   protected void assertBody(MessageInfo message, String includedString) {
     assertTrue(message.getBody().indexOf(includedString) > 0);
+  }
+  
+  /**
+   * Validate the digest email
+   * @param writer
+   * @param includedString
+   */
+  protected void assertDigest(Writer writer, String includedString) {
+    assertEquals(includedString, writer.toString().replaceAll("\\<.*?>", ""));
   }
   
   protected void turnON(AbstractNotificationPlugin plugin) {
