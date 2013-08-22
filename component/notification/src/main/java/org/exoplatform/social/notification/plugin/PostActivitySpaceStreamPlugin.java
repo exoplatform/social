@@ -128,4 +128,9 @@ public class PostActivitySpaceStreamPlugin extends AbstractNotificationPlugin {
     return true;
   }
 
+  @Override
+  public boolean isValid(NotificationContext ctx) {
+    return true;
+  }
+
 }

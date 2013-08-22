@@ -50,9 +50,6 @@ public class ActivityMentionPlugin extends AbstractNotificationPlugin {
   public NotificationInfo makeNotification(NotificationContext ctx) {
     ExoSocialActivity activity = ctx.value(SocialNotificationUtils.ACTIVITY);
     List<String> sendToUsers = Utils.getDestinataires(activity.getMentionedIds(), activity.getPosterId());
-    if (sendToUsers.size() == 0) {
-      return null;
-    }
     
     return NotificationInfo.instance().key(getKey())
            .to(sendToUsers)
@@ -121,5 +118,12 @@ public class ActivityMentionPlugin extends AbstractNotificationPlugin {
     }
     
     return true;
+  }
+
+  @Override
+  public boolean isValid(NotificationContext ctx) {
+    ExoSocialActivity activity = ctx.value(SocialNotificationUtils.ACTIVITY);
+    List<String> sendToUsers = Utils.getDestinataires(activity.getMentionedIds(), activity.getPosterId());
+    return sendToUsers.size() > 0; 
   }
 }

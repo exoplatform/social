@@ -127,4 +127,9 @@ public class RelationshipRecievedRequestPlugin extends AbstractNotificationPlugi
     return true;
   }
 
+  @Override
+  public boolean isValid(NotificationContext ctx) {
+    return true;
+  }
+
 }

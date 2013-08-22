@@ -50,9 +50,7 @@ public class PostActivityPlugin extends AbstractNotificationPlugin {
   public NotificationInfo makeNotification(NotificationContext ctx) {
     try {
       ExoSocialActivity activity = ctx.value(SocialNotificationUtils.ACTIVITY);
-      if (activity.getStreamOwner().equals(Utils.getUserId(activity.getPosterId())) || Utils.isSpaceActivity(activity)) {
-        return null;
-      }
+
       return NotificationInfo.instance()
           .to(activity.getStreamOwner())
           .with(SocialNotificationUtils.POSTER.getKey(), Utils.getUserId(activity.getPosterId()))
@@ -133,6 +131,15 @@ public class PostActivityPlugin extends AbstractNotificationPlugin {
       
     } catch (IOException e) {
       ctx.setException(e);
+      return false;
+    }
+    return true;
+  }
+
+  @Override
+  public boolean isValid(NotificationContext ctx) {
+    ExoSocialActivity activity = ctx.value(SocialNotificationUtils.ACTIVITY);
+    if (activity.getStreamOwner().equals(Utils.getUserId(activity.getPosterId())) || Utils.isSpaceActivity(activity)) {
       return false;
     }
     return true;

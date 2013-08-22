@@ -121,4 +121,9 @@ public class SpaceInvitationPlugin extends AbstractNotificationPlugin {
     return true;
   }
 
+  @Override
+  public boolean isValid(NotificationContext ctx) {
+    return true;
+  }
+
 }

@@ -28,7 +28,6 @@ import org.exoplatform.commons.api.notification.plugin.NotificationPluginUtils;
 import org.exoplatform.commons.api.notification.service.setting.UserSettingService;
 import org.exoplatform.commons.api.notification.service.storage.NotificationDataStorage;
 import org.exoplatform.commons.api.notification.service.template.TemplateContext;
-import org.exoplatform.commons.notification.NotificationUtils;
 import org.exoplatform.commons.notification.template.TemplateUtils;
 import org.exoplatform.commons.utils.CommonsUtils;
 import org.exoplatform.container.xml.InitParams;
@@ -143,6 +142,11 @@ public class NewUserPlugin extends AbstractNotificationPlugin {
       return false;
     }
     
+    return true;
+  }
+
+  @Override
+  public boolean isValid(NotificationContext ctx) {
     return true;
   }
 

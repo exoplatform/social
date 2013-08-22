@@ -117,4 +117,9 @@ public class RequestJoinSpacePlugin extends AbstractNotificationPlugin {
     return true;
   }
 
+  @Override
+  public boolean isValid(NotificationContext ctx) {
+    return true;
+  }
+
 }

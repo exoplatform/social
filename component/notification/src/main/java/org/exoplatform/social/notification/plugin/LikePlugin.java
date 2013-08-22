@@ -114,4 +114,14 @@ public class LikePlugin extends AbstractNotificationPlugin {
     return true;
   }
 
+  @Override
+  public boolean isValid(NotificationContext ctx) {
+    ExoSocialActivity activity = ctx.value(SocialNotificationUtils.ACTIVITY);
+    String[] likersId = activity.getLikeIdentityIds();
+    if (activity.getStreamOwner().equals(Utils.getUserId(likersId[likersId.length-1]))) {
+      return false;
+    }
+    return true;
+  }
+
 }
