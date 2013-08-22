@@ -343,8 +343,6 @@ public class UIUserActivitiesDisplay extends UIContainer {
      uiUserActivities.init();
      
      //
-     UIActivitiesLoader activitiesLoader = uiUserActivities.getChild(UIActivitiesLoader.class);
-     event.getRequestContext().addUIComponentToUpdateByAjax(activitiesLoader);
      requestContext.addUIComponentToUpdateByAjax(uiUserActivities);
      
      Utils.resizeHomePage();
