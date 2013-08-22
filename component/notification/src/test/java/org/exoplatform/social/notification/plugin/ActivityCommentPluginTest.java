@@ -63,6 +63,8 @@ public class ActivityCommentPluginTest extends AbstractPluginTest {
     notificationService.clearAll();
     //STEP 2 add comment
     makeComment(activity, demoIdentity, COMMENT_TITLE);
+    //assert equals = 2 because root is stream owner, and mary is activity's poster
+    //then when add commnent need to notify to root and mary
     List<NotificationInfo> list = assertMadeNotifications(2);
     NotificationInfo commentNotification = list.get(0);
     //STEP 3 assert Message info
@@ -86,6 +88,8 @@ public class ActivityCommentPluginTest extends AbstractPluginTest {
     notificationService.clearAll();
     //STEP 2 add comment
     makeComment(activity, maryIdentity, COMMENT_TITLE);
+    //assert equals = 2 because root is stream owner, and mary is activity's poster
+    //then when add commnent need to notify to root and mary
     List<NotificationInfo> list = assertMadeNotifications(1);
     NotificationInfo commentNotification = list.get(0);
     //STEP 3 assert Message info
@@ -97,5 +101,68 @@ public class ActivityCommentPluginTest extends AbstractPluginTest {
     assertSubject(info, maryIdentity.getProfile().getFullName() + " commented one of your activities<br/>");
     assertBody(info, "New comment on your activity");
   }
+  
+  
+  public void testPluginOFF() throws Exception {
+    //STEP 1 post activity
+    ExoSocialActivity activity = makeActivity(maryIdentity, ACTIVITY_TITLE);
+    assertMadeNotifications(1);
+    notificationService.clearAll();
+    //STEP 2 add comment
+    makeComment(activity, demoIdentity, COMMENT_TITLE);
+    //assert equals = 2 because root is stream owner, and mary is activity's poster
+    //then when add commnent need to notify to root and mary
+    List<NotificationInfo> list = assertMadeNotifications(2);
+    NotificationInfo commentNotification = list.get(0);
+    //STEP 3 assert Message info
+    
+    NotificationContext ctx = NotificationContextImpl.cloneInstance();
+    ctx.setNotificationInfo(commentNotification.setTo(demoIdentity.getRemoteId()));
+    MessageInfo info = getPlugin().buildMessage(ctx);
+    
+    assertSubject(info, demoIdentity.getProfile().getFullName() + " commented one of your activities<br/>");
+    assertBody(info, "New comment on your activity");
+    
+    notificationService.clearAll();
+    
+    //OFF Plugin
+    turnOFF(getPlugin());
+    
+    makeComment(activity, demoIdentity, COMMENT_TITLE);
+    assertMadeNotifications(0);
+    
+    turnON(getPlugin());
+  }
+  
+  public void testPluginON() throws Exception {
+    //STEP 1 OFF ActivityCommentPlugin
+    turnOFF(getPlugin());
+    ExoSocialActivity activity = makeActivity(maryIdentity, ACTIVITY_TITLE);
+    assertMadeNotifications(1);
+    notificationService.clearAll();
+    
+    //STEP 2 Add Comment
+    makeComment(activity, demoIdentity, COMMENT_TITLE);
+    assertMadeNotifications(0);
 
+    //STEP 3 assert Message info
+    turnON(getPlugin());
+    makeComment(activity, demoIdentity, COMMENT_TITLE);
+    //assert equals = 2 because root is stream owner, and mary is activity's poster
+    //then when add commnent need to notify to root and mary
+    List<NotificationInfo> list = assertMadeNotifications(2);
+    NotificationInfo commentNotification = list.get(0);
+    //STEP 3 assert Message info
+    
+    NotificationContext ctx = NotificationContextImpl.cloneInstance();
+    ctx.setNotificationInfo(commentNotification.setTo(demoIdentity.getRemoteId()));
+    MessageInfo info = getPlugin().buildMessage(ctx);
+    
+    assertSubject(info, demoIdentity.getProfile().getFullName() + " commented one of your activities<br/>");
+    assertBody(info, "New comment on your activity");
+    
+    notificationService.clearAll();
+  }
+  
+  
 }

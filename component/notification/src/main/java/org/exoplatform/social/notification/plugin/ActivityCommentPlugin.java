@@ -29,12 +29,16 @@ import org.exoplatform.commons.api.notification.plugin.AbstractNotificationPlugi
 import org.exoplatform.commons.api.notification.service.template.TemplateContext;
 import org.exoplatform.commons.notification.template.TemplateUtils;
 import org.exoplatform.container.xml.InitParams;
+import org.exoplatform.services.log.ExoLogger;
+import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.notification.LinkProviderUtils;
 import org.exoplatform.social.notification.Utils;
 
 public class ActivityCommentPlugin extends AbstractNotificationPlugin {
+  
+  private static final Log LOG = ExoLogger.getLogger(ActivityCommentPlugin.class);
   
   public ActivityCommentPlugin(InitParams initParams) {
     super(initParams);
@@ -63,6 +67,8 @@ public class ActivityCommentPlugin extends AbstractNotificationPlugin {
       sendToUsers.add(activity.getStreamOwner());
     }
     
+    
+    LOG.info("PluginID = " + ID + "[receivers: " + sendToUsers.toString() + "]");
     //
     return NotificationInfo.instance()
            .to(sendToUsers)

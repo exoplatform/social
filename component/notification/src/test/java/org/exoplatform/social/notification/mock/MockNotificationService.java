@@ -59,19 +59,19 @@ public class MockNotificationService implements NotificationService {
   }
 
   @Override
-  public void process(NotificationInfo message) throws Exception {
-    String providerId = message.getKey().getId();
+  public void process(NotificationInfo notification) throws Exception {
+    String providerId = notification.getKey().getId();
     
     // if the provider is not active, do nothing
     PluginSettingService settingService = CommonsUtils.getService(PluginSettingService.class);
     if (settingService.isActive(providerId) == false)
       return;
     
-    List<String> userIds = message.getSendToUserIds();
+    List<String> userIds = notification.getSendToUserIds();
     
     if (userIds == null) {
       //for NewUserPlugin
-      storeDigestJCR.add(message);
+      storeDigestJCR.add(notification);
       return;
     }
     
@@ -86,11 +86,11 @@ public class MockNotificationService implements NotificationService {
       }
       
       if (userSetting.isInInstantly(providerId)) {
-        this.storeInstantly.add(message);
+        this.storeInstantly.add(notification);
       }
       
       if (userSetting.isInDaily(providerId) || userSetting.isInWeekly(providerId)) {
-        storeDigestJCR.add(message);
+        storeDigestJCR.add(notification);
       }
       
     }

@@ -81,6 +81,7 @@ public abstract class AbstractPluginTest extends AbstractCoreTest {
     tearDownIdentityList.add(demoIdentity);
     notificationService.clearAll();
     initUserSetting();
+    turnON(getPlugin());
   }
   
   @Override
