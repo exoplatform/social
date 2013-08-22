@@ -135,7 +135,7 @@ public class RequestJoinSpacePluginTest extends AbstractPluginTest {
   
   public void testRequestJoinSpaceWhenPluginOff() throws Exception {
     //
-    turnOff(getPlugin());
+    turnOFF(getPlugin());
     //
     List<String> settings = new ArrayList<String>();
     settings.add(getPlugin().getId());

@@ -155,7 +155,7 @@ public class SocialNotificationTestCase extends AbstractPluginTest {
   public void testCreateNewUser() throws Exception {
     Identity ghostIdentity = identityManager.getOrCreateIdentity("organization", "ghost", true);
     
-    Collection<NotificationInfo> messages = notificationService.emails();
+    Collection<NotificationInfo> messages = notificationService.storeDigestJCR();
     assertEquals(1, messages.size());
     
     identityManager.deleteIdentity(ghostIdentity);
@@ -170,7 +170,7 @@ public class SocialNotificationTestCase extends AbstractPluginTest {
     tearDownActivityList.add(activity);
 
     //a notification will be send to demo
-    Collection<NotificationInfo> messages = notificationService.emails();
+    Collection<NotificationInfo> messages = notificationService.storeDigestJCR();
     assertEquals(1, messages.size());
     assertEquals(demoIdentity.getRemoteId(), messages.iterator().next().getSendToUserIds().get(0));
     
@@ -181,7 +181,7 @@ public class SocialNotificationTestCase extends AbstractPluginTest {
     activityManager.saveComment(activity, comment);
     
     //2 messages will be created : 1st for root to notify a comment on his activity, 2nd for root, john, mary to notify the mention's action 
-    messages = notificationService.emails();
+    messages = notificationService.storeDigestJCR();
     assertEquals(2, messages.size());
     Iterator<NotificationInfo> iterators = messages.iterator();
     
@@ -221,7 +221,7 @@ public class SocialNotificationTestCase extends AbstractPluginTest {
       comment.setUserId(demoIdentity.getId());
       activityManager.saveComment(activity, comment);
       
-      Collection<NotificationInfo> messages = notificationService.emails();
+      Collection<NotificationInfo> messages = notificationService.storeDigestJCR();
            assertEquals(1, messages.size());
       NotificationInfo message = messages.iterator().next();
       NotificationContext ctx = NotificationContextImpl.cloneInstance();
@@ -244,7 +244,7 @@ public class SocialNotificationTestCase extends AbstractPluginTest {
       comment1.setUserId(demoIdentity.getId());
       activityManager.saveComment(activity, comment1);
       
-      Collection<NotificationInfo> messages = notificationService.emails();
+      Collection<NotificationInfo> messages = notificationService.storeDigestJCR();
       assertEquals(1, messages.size());
       assertEquals(1, messages.iterator().next().getSendToUserIds().size());
       assertEquals(rootIdentity.getRemoteId(), messages.iterator().next().getSendToUserIds().get(0));
@@ -255,7 +255,7 @@ public class SocialNotificationTestCase extends AbstractPluginTest {
       comment2.setUserId(maryIdentity.getId());
       activityManager.saveComment(activity, comment2);
       
-      messages = notificationService.emails();
+      messages = notificationService.storeDigestJCR();
       assertEquals(1, messages.size());
       assertEquals(2, messages.iterator().next().getSendToUserIds().size());
       
@@ -266,7 +266,7 @@ public class SocialNotificationTestCase extends AbstractPluginTest {
       comment3.setUserId(rootIdentity.getId());
       activityManager.saveComment(activity, comment3);
       
-      messages = notificationService.emails();
+      messages = notificationService.storeDigestJCR();
       assertEquals(1, messages.size());
       assertEquals(2, messages.iterator().next().getSendToUserIds().size());
     }
@@ -280,7 +280,7 @@ public class SocialNotificationTestCase extends AbstractPluginTest {
       activityManager.saveActivity(rootIdentity, activity);
       tearDownActivityList.add(activity);
       
-      Collection<NotificationInfo> messages = notificationService.emails();
+      Collection<NotificationInfo> messages = notificationService.storeDigestJCR();
       assertEquals(1, messages.size());
       
       ExoSocialActivity comment1 = new ExoSocialActivityImpl();
@@ -289,7 +289,7 @@ public class SocialNotificationTestCase extends AbstractPluginTest {
       comment1.setUserId(rootIdentity.getId());
       activityManager.saveComment(activity, comment1);
       
-      messages = notificationService.emails();
+      messages = notificationService.storeDigestJCR();
       assertEquals(1, messages.size());
       assertEquals(1, messages.iterator().next().getSendToUserIds().size());
       assertEquals(demoIdentity.getRemoteId(), messages.iterator().next().getSendToUserIds().get(0));
@@ -304,7 +304,7 @@ public class SocialNotificationTestCase extends AbstractPluginTest {
     activityManager.saveActivity(rootIdentity, activity);
     tearDownActivityList.add(activity);
     
-       assertEquals(1, notificationService.emails().size());
+       assertEquals(1, notificationService.storeDigestJCR().size());
     
     //
     ExoSocialActivity got = activityManager.getActivity(activity.getId());
@@ -318,7 +318,7 @@ public class SocialNotificationTestCase extends AbstractPluginTest {
     activityManager.saveActivity(rootIdentity, act);
     tearDownActivityList.add(act);
     assertNotNull(act.getId());
-    assertEquals(2, notificationService.emails().size());
+    assertEquals(2, notificationService.storeDigestJCR().size());
     
     // demo post activity on space
     Space space = getSpaceInstance(1);
@@ -329,7 +329,7 @@ public class SocialNotificationTestCase extends AbstractPluginTest {
     activityManager.saveActivity(spaceIdentity, spaceActivity);
     tearDownActivityList.add(spaceActivity);
     
-    Collection<NotificationInfo> messages = notificationService.emails();
+    Collection<NotificationInfo> messages = notificationService.storeDigestJCR();
     assertEquals(1, messages.size());
     assertEquals(1, messages.iterator().next().getSendToUserIds().size());
     
@@ -342,7 +342,7 @@ public class SocialNotificationTestCase extends AbstractPluginTest {
     activityManager.saveActivity(spaceIdentity, spaceActivity2);
     tearDownActivityList.add(spaceActivity2);
     
-    messages = notificationService.emails();
+    messages = notificationService.storeDigestJCR();
     assertEquals(1, messages.size());
     assertEquals(3, messages.iterator().next().getSendToUserIds().size());
     
@@ -357,17 +357,17 @@ public class SocialNotificationTestCase extends AbstractPluginTest {
     activity.setUserId(demoIdentity.getId());
     activityManager.saveActivity(rootIdentity, activity);
     tearDownActivityList.add(activity);
-    assertEquals(1, notificationService.emails().size());
+    assertEquals(1, notificationService.storeDigestJCR().size());
     
     activityManager.saveLike(activity, maryIdentity);
-    assertEquals(1, notificationService.emails().size());
+    assertEquals(1, notificationService.storeDigestJCR().size());
     
   }
   
   public void testInviteToConnect() throws Exception {
     relationshipManager.inviteToConnect(rootIdentity, demoIdentity);
     
-    Collection<NotificationInfo> messages = notificationService.emails();
+    Collection<NotificationInfo> messages = notificationService.storeDigestJCR();
     assertEquals(1, messages.size());
     NotificationInfo message = messages.iterator().next();
     NotificationContext ctx = NotificationContextImpl.cloneInstance();
@@ -381,7 +381,7 @@ public class SocialNotificationTestCase extends AbstractPluginTest {
     
     Space space = getSpaceInstance(1);
     spaceService.addInvitedUser(space, maryIdentity.getRemoteId());
-    Collection<NotificationInfo> messages = notificationService.emails();
+    Collection<NotificationInfo> messages = notificationService.storeDigestJCR();
        assertEquals(1, messages.size());
     NotificationInfo message = messages.iterator().next();
     NotificationContext ctx = NotificationContextImpl.cloneInstance();
@@ -395,7 +395,7 @@ public class SocialNotificationTestCase extends AbstractPluginTest {
     Space space = getSpaceInstance(1);
     spaceService.addPendingUser(space, maryIdentity.getRemoteId());
     
-       assertEquals(1, notificationService.emails().size());
+       assertEquals(1, notificationService.storeDigestJCR().size());
     spaceService.deleteSpace(space);
   }
   
@@ -419,7 +419,7 @@ public class SocialNotificationTestCase extends AbstractPluginTest {
       comment2.setUserId(demoIdentity.getId());
       activityManager.saveComment(activity, comment2);
       
-      Collection<NotificationInfo> messages = notificationService.emails();
+      Collection<NotificationInfo> messages = notificationService.storeDigestJCR();
            assertEquals(2, messages.size());
       
       List<NotificationInfo> list = new ArrayList<NotificationInfo>();
@@ -449,7 +449,7 @@ public class SocialNotificationTestCase extends AbstractPluginTest {
       activityManager.saveActivity(rootIdentity, activity2);
       tearDownActivityList.add(activity2);
       
-      Collection<NotificationInfo> messages = notificationService.emails();
+      Collection<NotificationInfo> messages = notificationService.storeDigestJCR();
       assertEquals(2, messages.size());
       
       List<NotificationInfo> list = new ArrayList<NotificationInfo>();
@@ -470,7 +470,7 @@ public class SocialNotificationTestCase extends AbstractPluginTest {
       relationshipManager.inviteToConnect(rootIdentity, demoIdentity);
       relationshipManager.inviteToConnect(johnIdentity, demoIdentity);
       relationshipManager.inviteToConnect(maryIdentity, demoIdentity);
-      Collection<NotificationInfo> messages = notificationService.emails();
+      Collection<NotificationInfo> messages = notificationService.storeDigestJCR();
       assertEquals(3, messages.size());
       List<NotificationInfo> list = new ArrayList<NotificationInfo>();
       for (NotificationInfo message : messages) {
@@ -496,7 +496,7 @@ public class SocialNotificationTestCase extends AbstractPluginTest {
       Space space4 = getSpaceInstance(4);
       spaceService.addInvitedUser(space4, maryIdentity.getRemoteId());
       
-      Collection<NotificationInfo> messages = notificationService.emails();
+      Collection<NotificationInfo> messages = notificationService.storeDigestJCR();
       assertEquals(4, messages.size());
       List<NotificationInfo> list = new ArrayList<NotificationInfo>();
       for (NotificationInfo message : messages) {
@@ -522,7 +522,7 @@ public class SocialNotificationTestCase extends AbstractPluginTest {
       spaceService.addPendingUser(space, johnIdentity.getRemoteId());
       spaceService.addPendingUser(space, demoIdentity.getRemoteId());
       
-      Collection<NotificationInfo> messages = notificationService.emails();
+      Collection<NotificationInfo> messages = notificationService.storeDigestJCR();
       assertEquals(3, messages.size());
       List<NotificationInfo> list = new ArrayList<NotificationInfo>();
       for (NotificationInfo message : messages) {
@@ -549,7 +549,7 @@ public class SocialNotificationTestCase extends AbstractPluginTest {
       activityManager.saveActivity(rootIdentity, act1);
       tearDownActivityList.add(act1);
       
-      Collection<NotificationInfo> messages = notificationService.emails();
+      Collection<NotificationInfo> messages = notificationService.storeDigestJCR();
       assertEquals(2, messages.size());
       
       List<NotificationInfo> list = new ArrayList<NotificationInfo>();
@@ -577,7 +577,7 @@ public class SocialNotificationTestCase extends AbstractPluginTest {
       activityManager.saveComment(act, johnComment);
       
       // 4 messages are created : 2 to root for comments on his activity, 2 to demo for mention him
-      messages = notificationService.emails();
+      messages = notificationService.storeDigestJCR();
       assertEquals(4, messages.size());
       
       list = new ArrayList<NotificationInfo>();
@@ -600,7 +600,7 @@ public class SocialNotificationTestCase extends AbstractPluginTest {
       Identity raulIdentity = identityManager.getOrCreateIdentity("organization", "raul", true);
       Identity jameIdentity = identityManager.getOrCreateIdentity("organization", "jame", true);
       
-      Collection<NotificationInfo> messages = notificationService.emails();
+      Collection<NotificationInfo> messages = notificationService.storeDigestJCR();
       assertEquals(4, messages.size());
       List<NotificationInfo> list = new ArrayList<NotificationInfo>();
       for (NotificationInfo message : messages) {
@@ -630,7 +630,7 @@ public class SocialNotificationTestCase extends AbstractPluginTest {
       activityManager.saveLike(activity, johnIdentity);
       activityManager.saveLike(activity, demoIdentity);
       
-      Collection<NotificationInfo> messages = notificationService.emails();
+      Collection<NotificationInfo> messages = notificationService.storeDigestJCR();
       assertEquals(3, messages.size());
       List<NotificationInfo> list = new ArrayList<NotificationInfo>();
       for (NotificationInfo message : messages) {
@@ -670,7 +670,7 @@ public class SocialNotificationTestCase extends AbstractPluginTest {
       activityManager.saveActivity(spaceIdentity2, johnActivity);
       tearDownActivityList.add(johnActivity);
       
-      Collection<NotificationInfo> messages = notificationService.emails();
+      Collection<NotificationInfo> messages = notificationService.storeDigestJCR();
       assertEquals(3, messages.size());
       
       List<NotificationInfo> list = new ArrayList<NotificationInfo>();

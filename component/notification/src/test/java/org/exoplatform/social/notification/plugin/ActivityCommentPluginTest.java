@@ -16,8 +16,15 @@
  */
 package org.exoplatform.social.notification.plugin;
 
+import java.util.List;
+
+import org.exoplatform.commons.api.notification.NotificationContext;
+import org.exoplatform.commons.api.notification.model.MessageInfo;
+import org.exoplatform.commons.api.notification.model.NotificationInfo;
 import org.exoplatform.commons.api.notification.model.NotificationKey;
 import org.exoplatform.commons.api.notification.plugin.AbstractNotificationPlugin;
+import org.exoplatform.commons.notification.impl.NotificationContextImpl;
+import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.notification.AbstractPluginTest;
 
 /**
@@ -27,10 +34,68 @@ import org.exoplatform.social.notification.AbstractPluginTest;
  * Aug 20, 2013  
  */
 public class ActivityCommentPluginTest extends AbstractPluginTest {
-
+  private final static String ACTIVITY_TITLE = "my activity's title post today.";
+  private final static String COMMENT_TITLE = "my comment's title add today.";
+  
+  @Override
+  protected void setUp() throws Exception {
+    super.setUp();
+  }
+  
+  @Override
+  protected void tearDown() throws Exception {
+    super.tearDown();
+  }
+  
   @Override
   public AbstractNotificationPlugin getPlugin() {
     return pluginService.getPlugin(NotificationKey.key(ActivityCommentPlugin.ID));
+  }
+  
+  /**
+   * Just test for simple case when you post the simple activity
+   * @throws Exception
+   */
+  public void testSimpleCase() throws Exception {
+    //STEP 1 post activity
+    ExoSocialActivity activity = makeActivity(maryIdentity, ACTIVITY_TITLE);
+    assertMadeNotifications(1);
+    notificationService.clearAll();
+    //STEP 2 add comment
+    makeComment(activity, demoIdentity, COMMENT_TITLE);
+    List<NotificationInfo> list = assertMadeNotifications(2);
+    NotificationInfo commentNotification = list.get(0);
+    //STEP 3 assert Message info
+    
+    NotificationContext ctx = NotificationContextImpl.cloneInstance();
+    ctx.setNotificationInfo(commentNotification.setTo(demoIdentity.getRemoteId()));
+    MessageInfo info = getPlugin().buildMessage(ctx);
+    
+    assertSubject(info, demoIdentity.getProfile().getFullName() + " commented one of your activities<br/>");
+    assertBody(info, "New comment on your activity");
+  }
+  
+  /**
+   * Just test for simple case when you post the simple activity
+   * @throws Exception
+   */
+  public void testSimpleCaseTwoComments() throws Exception {
+    //STEP 1 post activity
+    ExoSocialActivity activity = makeActivity(maryIdentity, ACTIVITY_TITLE);
+    assertMadeNotifications(1);
+    notificationService.clearAll();
+    //STEP 2 add comment
+    makeComment(activity, maryIdentity, COMMENT_TITLE);
+    List<NotificationInfo> list = assertMadeNotifications(1);
+    NotificationInfo commentNotification = list.get(0);
+    //STEP 3 assert Message info
+    
+    NotificationContext ctx = NotificationContextImpl.cloneInstance();
+    ctx.setNotificationInfo(commentNotification.setTo(maryIdentity.getRemoteId()));
+    MessageInfo info = getPlugin().buildMessage(ctx);
+    
+    assertSubject(info, maryIdentity.getProfile().getFullName() + " commented one of your activities<br/>");
+    assertBody(info, "New comment on your activity");
   }
 
 }

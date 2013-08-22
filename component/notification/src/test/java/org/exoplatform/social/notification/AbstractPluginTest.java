@@ -31,7 +31,10 @@ import org.exoplatform.social.core.activity.model.ExoSocialActivityImpl;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.space.impl.DefaultSpaceApplicationHandler;
 import org.exoplatform.social.core.space.model.Space;
-import org.exoplatform.social.notification.mock.MockMessageQueue;
+import org.exoplatform.social.notification.plugin.ActivityCommentPlugin;
+import org.exoplatform.social.notification.plugin.ActivityMentionPlugin;
+import org.exoplatform.social.notification.plugin.LikePlugin;
+import org.exoplatform.social.notification.plugin.PostActivityPlugin;
 
 /**
  * Created by The eXo Platform SAS
@@ -52,9 +55,8 @@ public abstract class AbstractPluginTest extends AbstractCoreTest {
   @Override
   protected void setUp() throws Exception {
     super.setUp();
-    
-    
     userSettingService = Utils.getService(UserSettingService.class);
+    
     
     rootIdentity = identityManager.getOrCreateIdentity("organization", "root", true);
     johnIdentity = identityManager.getOrCreateIdentity("organization", "john", true);
@@ -62,9 +64,6 @@ public abstract class AbstractPluginTest extends AbstractCoreTest {
     demoIdentity = identityManager.getOrCreateIdentity("organization", "demo", true);
     
     // each new identity created, a notification will be raised
-    notificationService.clear();
-    MockMessageQueue.get();
-    
     assertNotNull(rootIdentity.getId());
     assertNotNull(johnIdentity.getId());
     assertNotNull(maryIdentity.getId());
@@ -78,6 +77,8 @@ public abstract class AbstractPluginTest extends AbstractCoreTest {
     tearDownIdentityList.add(johnIdentity);
     tearDownIdentityList.add(maryIdentity);
     tearDownIdentityList.add(demoIdentity);
+    notificationService.clearAll();
+    initUserSetting();
   }
   
   @Override
@@ -94,8 +95,7 @@ public abstract class AbstractPluginTest extends AbstractCoreTest {
       identityManager.deleteIdentity(identity);
     }
     
-    notificationService.clear();
-    
+    notificationService.clearAll();
     super.tearDown();
   }
   
@@ -110,13 +110,13 @@ public abstract class AbstractPluginTest extends AbstractCoreTest {
    * @return
    */
   protected NotificationInfo getNotificationInfo() {
-    List<NotificationInfo> list = notificationService.emails();
+    List<NotificationInfo> list = notificationService.storeDigestJCR();
     assertTrue(list.size() > 0);
     return list.get(0);
   }
   
   protected List<NotificationInfo> getNotificationInfos() {
-    return notificationService.emails();
+    return notificationService.storeDigestJCR();
   }
   
   /**
@@ -160,12 +160,34 @@ public abstract class AbstractPluginTest extends AbstractCoreTest {
     assertEquals(includedString, writer.toString().replaceAll("\\<.*?>", ""));
   }
   
-  protected void turnON(AbstractNotificationPlugin plugin) {
-    pluginSettingService.savePlugin(plugin.getId(), true);
+
+  /**
+   * Asserts the number of notification what made by the plugins.
+   * @param number
+   */
+  protected List<NotificationInfo> assertMadeNotifications(int number) {
+    //get notification then clear the notification list
+    UserSetting setting = userSettingService.get(rootIdentity.getRemoteId());
+    List<NotificationInfo> got = notificationService.storeDigestJCR();
+    if (setting.isInInstantly(getPlugin().getKey().getId())) {
+      got = notificationService.storeInstantly();
+      assertEquals(number, got.size());
+    }
+    //
+    if (setting.isInDaily(getPlugin().getKey().getId())) {
+      got = notificationService.storeDigestJCR();
+      assertEquals(number, got.size());
+    }
+    
+    return got;
   }
   
-  protected void turnOff(AbstractNotificationPlugin plugin) {
-    pluginSettingService.savePlugin(plugin.getId(), false);
+  /**
+   * Turn on the plug in
+   * @param plugin
+   */
+  protected void turnON(AbstractNotificationPlugin plugin) {
+    pluginSettingService.savePlugin(plugin.getId(), true);
   }
   
   protected void turnFeatureOn() {
@@ -177,6 +199,14 @@ public abstract class AbstractPluginTest extends AbstractCoreTest {
   }
   
   /**
+   * Turn off the plugin
+   * @param plugin
+   */
+  protected void turnOFF(AbstractNotificationPlugin plugin) {
+    pluginSettingService.savePlugin(plugin.getId(), false);
+  }
+  
+  /**
    * Makes the activity for Test Case
    * @param owner
    * @param activityTitle
@@ -185,6 +215,7 @@ public abstract class AbstractPluginTest extends AbstractCoreTest {
   protected ExoSocialActivity makeActivity(Identity owner, String activityTitle) {
     ExoSocialActivity activity = new ExoSocialActivityImpl();
     activity.setTitle(activityTitle);
+    activity.setUserId(owner.getId());
     activityManager.saveActivity(rootIdentity, activity);
     tearDownActivityList.add(activity);
     
@@ -203,7 +234,6 @@ public abstract class AbstractPluginTest extends AbstractCoreTest {
     comment.setTitle(commentTitle);
     comment.setUserId(commenter.getId());
     activityManager.saveComment(activity, comment);
-    tearDownActivityList.add(comment);
     
     return comment;
   }
@@ -292,6 +322,67 @@ public abstract class AbstractPluginTest extends AbstractCoreTest {
     
     userSetting.setWeeklyProviders(settings);
     userSettingService.save(userSetting);
+  }
+  
+  /**
+   * Initialize the User Setting for root
+   */
+  private void initUserSetting() {
+    //rootIdentity
+    UserSetting model = UserSetting.getInstance();
+    model.setActive(true);
+    List<String> instantly = new ArrayList<String>();
+    instantly.add(PostActivityPlugin.ID);
+    instantly.add(ActivityCommentPlugin.ID);
+    instantly.add(ActivityMentionPlugin.ID);
+    instantly.add(LikePlugin.ID);
+    
+    List<String> daily = new ArrayList<String>();
+    daily.add(PostActivityPlugin.ID);
+    daily.add(ActivityCommentPlugin.ID);
+    daily.add(ActivityMentionPlugin.ID);
+    daily.add(LikePlugin.ID);
+    
+    List<String> weekly = new ArrayList<String>();
+    weekly.add(PostActivityPlugin.ID);
+    weekly.add(ActivityCommentPlugin.ID);
+    weekly.add(ActivityMentionPlugin.ID);
+    weekly.add(LikePlugin.ID);
+    
+    model.setInstantlyProviders(instantly);
+    model.setDailyProviders(daily);
+    model.setWeeklyProviders(weekly);
+    
+    //root
+    model.setUserId(rootIdentity.getRemoteId());
+    userSettingService.save(model);
+    
+    //mary
+    model = UserSetting.getInstance();
+    model.setUserId(maryIdentity.getRemoteId());
+    model.setActive(true);
+    model.setInstantlyProviders(instantly);
+    model.setDailyProviders(daily);
+    model.setWeeklyProviders(weekly);
+    userSettingService.save(model);
+    
+    //john
+    model = UserSetting.getInstance();
+    model.setUserId(johnIdentity.getRemoteId());
+    model.setActive(true);
+    model.setInstantlyProviders(instantly);
+    model.setDailyProviders(daily);
+    model.setWeeklyProviders(weekly);
+    userSettingService.save(model);
+    
+    //demo
+    model = UserSetting.getInstance();
+    model.setUserId(demoIdentity.getRemoteId());
+    model.setActive(true);
+    model.setInstantlyProviders(instantly);
+    model.setDailyProviders(daily);
+    model.setWeeklyProviders(weekly);
+    userSettingService.save(model);
   }
   
 }

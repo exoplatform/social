@@ -134,7 +134,7 @@ public class SpaceInvitationPluginTest extends AbstractPluginTest {
   
   public void testSpaceInvitationWhenPluginOff() throws Exception {
     //
-    turnOff(getPlugin());
+    turnOFF(getPlugin());
     //
     checkNotificationWhenPluginOrFeatureOff();
     

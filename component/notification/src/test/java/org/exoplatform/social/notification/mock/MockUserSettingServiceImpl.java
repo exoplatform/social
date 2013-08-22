@@ -1,6 +1,8 @@
 package org.exoplatform.social.notification.mock;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.exoplatform.commons.api.notification.model.UserSetting;
 import org.exoplatform.commons.api.notification.service.setting.UserSettingService;
@@ -8,13 +10,21 @@ import org.exoplatform.services.organization.User;
 
 public class MockUserSettingServiceImpl implements UserSettingService {
 
+  private Map<String, UserSetting> settings = new HashMap<String, UserSetting>();
+  
+  public MockUserSettingServiceImpl() {
+    
+  }
+  
+  
   @Override
-  public void save(UserSetting notificationSetting) {
+  public void save(UserSetting setting) {
+    settings.put(setting.getUserId(), setting);
   }
 
   @Override
   public UserSetting get(String userId) {
-    return null;
+    return settings.get(userId);
   }
 
   @Override

@@ -40,7 +40,7 @@ public class NewUserPluginTest extends AbstractPluginTest {
   public void testInstantly() throws Exception {
     Identity ghostIdentity = identityManager.getOrCreateIdentity("organization", "ghost", true);
     
-    Collection<NotificationInfo> messages = notificationService.emails();
+    Collection<NotificationInfo> messages = notificationService.storeDigestJCR();
     assertEquals(1, messages.size());
     
     NotificationContext ctx = NotificationContextImpl.cloneInstance();
@@ -50,7 +50,7 @@ public class NewUserPluginTest extends AbstractPluginTest {
     assertSubject(info, "Ghost gtn has joined eXo<br/>");
     
     //And when the plugin is not active
-    turnOff(getPlugin());
+    turnOFF(getPlugin());
     Identity raulIdentity = identityManager.getOrCreateIdentity("organization", "raul", true);
     NotificationInfo ntf = MockMessageQueue.get();
     assertNull(ntf);
@@ -74,7 +74,7 @@ public class NewUserPluginTest extends AbstractPluginTest {
     Identity paulIdentity = identityManager.getOrCreateIdentity("organization", "paul", true);
     
     //Digest
-    Collection<NotificationInfo> messages = notificationService.emails();
+    Collection<NotificationInfo> messages = notificationService.storeDigestJCR();
     assertEquals(3, messages.size());
     
     NotificationContext ctx = NotificationContextImpl.cloneInstance();
@@ -94,14 +94,14 @@ public class NewUserPluginTest extends AbstractPluginTest {
   
   public void testDigestWithPluginOff() throws Exception {
     //turn off the plugin
-    turnOff(getPlugin());
+    turnOFF(getPlugin());
     
     Identity ghostIdentity = identityManager.getOrCreateIdentity("organization", "ghost", true);
     Identity raulIdentity = identityManager.getOrCreateIdentity("organization", "raul", true);
     Identity paulIdentity = identityManager.getOrCreateIdentity("organization", "paul", true);
     
     //No messages
-    Collection<NotificationInfo> messages = notificationService.emails();
+    Collection<NotificationInfo> messages = notificationService.storeDigestJCR();
     assertEquals(0, messages.size());
     
     identityManager.deleteIdentity(ghostIdentity);
@@ -119,7 +119,7 @@ public class NewUserPluginTest extends AbstractPluginTest {
     Identity paulIdentity = identityManager.getOrCreateIdentity("organization", "paul", true);
     
     //No messages
-    Collection<NotificationInfo> messages = notificationService.emails();
+    Collection<NotificationInfo> messages = notificationService.storeDigestJCR();
     assertEquals(0, messages.size());
     
     identityManager.deleteIdentity(ghostIdentity);

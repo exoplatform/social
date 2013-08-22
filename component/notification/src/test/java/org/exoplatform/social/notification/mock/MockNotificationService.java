@@ -16,11 +16,9 @@
  */
 package org.exoplatform.social.notification.mock;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Queue;
-import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.exoplatform.commons.api.notification.model.NotificationInfo;
 import org.exoplatform.commons.api.notification.model.UserSetting;
@@ -32,20 +30,32 @@ import org.exoplatform.social.notification.Utils;
 
 public class MockNotificationService implements NotificationService {
 
-  private Queue<NotificationInfo> jcrMock = new ConcurrentLinkedQueue<NotificationInfo>();
+  private List<NotificationInfo> storeDigestJCR = new CopyOnWriteArrayList<NotificationInfo>();
+  private List<NotificationInfo> storeInstantly = new CopyOnWriteArrayList<NotificationInfo>();
   
-  public int size() {
-    return this.jcrMock.size();
+  public int sizeOfDigestJCR() {
+    return this.storeDigestJCR.size();
   }
   
-  public void clear() {
-    jcrMock.clear();
+  public void clearAll() {
+    clearOfDigestJCR();
+    clearOfInstantly();
+  }
+  
+  public void clearOfDigestJCR() {
+    this.storeDigestJCR.clear();
+  }
+  
+  public void clearOfInstantly() {
+    this.storeInstantly.clear();
   }
 
-  public List<NotificationInfo> emails() {
-    List<NotificationInfo> list = new ArrayList<NotificationInfo>(jcrMock);
-    clear();
-    return list;
+  public List<NotificationInfo> storeDigestJCR() {
+    return this.storeDigestJCR;
+  }
+  
+  public List<NotificationInfo> storeInstantly() {
+    return this.storeInstantly;
   }
 
   @Override
@@ -61,7 +71,7 @@ public class MockNotificationService implements NotificationService {
     
     if (userIds == null) {
       //for NewUserPlugin
-      jcrMock.add(message);
+      storeDigestJCR.add(message);
       return;
     }
     
@@ -76,12 +86,11 @@ public class MockNotificationService implements NotificationService {
       }
       
       if (userSetting.isInInstantly(providerId)) {
-        //put to queue
-        MockMessageQueue.add(message);
+        this.storeInstantly.add(message);
       }
       
       if (userSetting.isInDaily(providerId) || userSetting.isInWeekly(providerId)) {
-        jcrMock.add(message);
+        storeDigestJCR.add(message);
       }
       
     }
