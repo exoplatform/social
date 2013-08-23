@@ -22,19 +22,6 @@
    xsi:schemaLocation="http://www.exoplatform.org/xml/ns/kernel_1_2.xsd http://www.exoplatform.org/xml/ns/kernel_1_2.xsd"
    xmlns="http://www.exoplatform.org/xml/ns/kernel_1_2.xsd">
 
-  <import>war:/conf/social-extension/jcr/jcr-configuration.xml</import>
-  <import>war:/conf/social-extension/organization/organization-configuration.xml</import>
-  <import>war:/conf/social-extension/portal/portal-configuration.xml</import>
-  <import>war:/conf/social-extension/social/social-configuration.xml</import>
-  <import>war:/conf/social-extension/social/component-plugins-configuration.xml</import>
-
-  <!-- Comes from config module -->
-  <import>war:/conf/social-extension/social/cache-configuration.xml</import>
-  <import>war:/conf/social-extension/social/common-configuration.xml</import>
-  <import>war:/conf/social-extension/social/core-configuration.xml</import>
-  <import>war:/conf/social-extension/social/opensocial-configuration.xml</import>
-  <import>war:/conf/social-extension/social/service-configuration.xml</import>
-  <import>war:/conf/social-extension/social/webui-configuration.xml</import>
-  <import>war:/conf/social-extension/social/notification-configuration.xml</import>
+   <import>war:/conf/social-notification-extension/social/notification-plugins-configuration.xml</import>
 
 </configuration>

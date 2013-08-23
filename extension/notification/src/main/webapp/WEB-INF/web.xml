@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!--
+
+    Copyright (C) 2003-2010 eXo Platform SAS.
+
+    This program is free software; you can redistribute it and/or
+    modify it under the terms of the GNU Affero General Public License
+    as published by the Free Software Foundation; either version 3
+    of the License, or (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, see<http://www.gnu.org/licenses/>.
+
+-->
+<web-app version="3.0"
+        metadata-complete="true"
+        xmlns="http://java.sun.com/xml/ns/javaee"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd">
+        
+  <display-name>social-notification-extension</display-name>
+
+  <context-param>
+     <description>Binary assets workspace name</description>
+    <param-name>org.exoplatform.frameworks.jcr.command.web.fckeditor.digitalAssetsWorkspace</param-name>
+    <param-value>collaboration</param-value>
+  </context-param>
+
+  <context-param>
+    <description>Binary assets path</description>
+    <param-name>org.exoplatform.frameworks.jcr.command.web.fckeditor.digitalAssetsPath</param-name>
+    <param-value>/Digital Assets/</param-value>
+  </context-param>
+
+  <context-param>
+    <description>Binary assets workspace name</description>
+    <param-name>CurrentFolder</param-name>
+    <param-value>/Digital Assets/</param-value>
+  </context-param>
+
+  <!-- ================================================================== -->
+  <!--   RESOURCE FILTER TO CACHE MERGED JAVASCRIPT AND CSS               -->
+  <!-- ================================================================== -->
+  <filter>
+    <filter-name>ResourceRequestFilter</filter-name>
+    <filter-class>org.exoplatform.portal.application.ResourceRequestFilter</filter-class>
+  </filter>
+
+  <filter-mapping>
+    <filter-name>ResourceRequestFilter</filter-name>
+    <url-pattern>/*</url-pattern>
+  </filter-mapping>
+
+
+  <!-- ================================================================== -->
+  <!--           LISTENER                                                 -->
+  <!-- ================================================================== -->
+  <listener>
+    <listener-class>org.exoplatform.container.web.PortalContainerConfigOwner</listener-class>
+  </listener>
+  <!-- ================================================================== -->
+  <!--           SERVLET                                                  -->
+  <!-- ================================================================== -->
+  <servlet>
+    <servlet-name>GateInServlet</servlet-name>
+    <servlet-class>org.gatein.wci.api.GateInServlet</servlet-class>
+    <load-on-startup>0</load-on-startup>
+  </servlet>
+
+  <!--  =================================================================  -->
+  <servlet-mapping>
+    <servlet-name>GateInServlet</servlet-name>
+    <url-pattern>/gateinservlet</url-pattern>
+  </servlet-mapping>
+</web-app>

@@ -10,7 +10,7 @@
   <artifactId>social-webapp-juzu-portlet</artifactId>
   <version>4.1.x-social-notifications-SNAPSHOT</version>
   <packaging>jar</packaging>
-  <name>eXo User Notification Setting Portlet</name>
+  <name>eXo Social Juzu Portlet</name>
   <dependencies>
   
     <dependency>

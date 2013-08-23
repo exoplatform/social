@@ -143,6 +143,18 @@
       </dependency>
       <dependency>
         <groupId>org.exoplatform.social</groupId>
+        <artifactId>social-notification-extension</artifactId>
+        <version>${project.version}</version>
+        <type>war</type>
+      </dependency>
+      <dependency>
+        <groupId>org.exoplatform.social</groupId>
+        <artifactId>social-notification-extension</artifactId>
+        <version>${project.version}</version>
+        <type>pom</type>
+      </dependency>
+      <dependency>
+        <groupId>org.exoplatform.social</groupId>
         <artifactId>social-extras-feedmash</artifactId>
         <version>${project.version}</version>
       </dependency>
