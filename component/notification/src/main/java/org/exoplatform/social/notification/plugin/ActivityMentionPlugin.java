@@ -29,15 +29,12 @@ import org.exoplatform.commons.api.notification.plugin.AbstractNotificationPlugi
 import org.exoplatform.commons.api.notification.service.template.TemplateContext;
 import org.exoplatform.commons.notification.template.TemplateUtils;
 import org.exoplatform.container.xml.InitParams;
-import org.exoplatform.services.log.ExoLogger;
-import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.notification.LinkProviderUtils;
 import org.exoplatform.social.notification.Utils;
 
 public class ActivityMentionPlugin extends AbstractNotificationPlugin {
-  private static final Log LOG = ExoLogger.getLogger(ActivityMentionPlugin.class);
   public static final String ID = "ActivityMentionPlugin";
   
   public ActivityMentionPlugin(InitParams initParams) {
@@ -54,7 +51,6 @@ public class ActivityMentionPlugin extends AbstractNotificationPlugin {
     ExoSocialActivity activity = ctx.value(SocialNotificationUtils.ACTIVITY);
     List<String> sendToUsers = Utils.getDestinataires(activity.getMentionedIds(), activity.getPosterId());
     
-    LOG.info("PluginID = " + ID + "[receivers: " + sendToUsers.toString() + "]");
     return NotificationInfo.instance().key(getKey())
            .to(sendToUsers)
            .with("poster", Utils.getUserId(activity.getPosterId()))
