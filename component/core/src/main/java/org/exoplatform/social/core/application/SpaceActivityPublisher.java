@@ -357,10 +357,17 @@ public class SpaceActivityPublisher extends SpaceListenerPlugin {
     String activityId = getStorage().getProfileActivityId(spaceIdentity.getProfile(), Profile.AttachedActivityType.SPACE);
     if (activityId != null) {
       try {
+        ExoSocialActivity activity = (ExoSocialActivityImpl) activityManager.getActivity(activityId);
+        
         if (! "Has left the space.".equals(activityMessage)) {
           ExoSocialActivity comment = createComment(activityMessage, titleId, null, SPACE_APP_ID, identity, templateParams);
-          ExoSocialActivity activity = (ExoSocialActivityImpl) activityManager.getActivity(activityId);
           activityManager.saveComment(activity, comment);
+        }
+        
+        // When update number of members in case of join and left space ==> update the activity's title
+        if (USER_JOINED_TITLE_ID.equals(titleId) || MEMBER_LEFT_TITLE_ID.equals(titleId)) {
+          activity.setTitle(getActivityTitleBySpace(space.getPrettyName()));
+          activityManager.updateActivity(activity);
         }
       } catch (Exception e) {
         LOG.debug("Run in case of activity deleted and reupdate");
@@ -370,7 +377,7 @@ public class SpaceActivityPublisher extends SpaceListenerPlugin {
     if (activityId == null) {
       ExoSocialActivity activity = new ExoSocialActivityImpl();
       activity.setType(SPACE_PROFILE_ACTIVITY);
-      activity.setTitle("1 Member");
+      activity.setTitle(getActivityTitleBySpace(space.getPrettyName()));
       if (Space.HIDDEN.equals(space.getVisibility())) {
         activity.isHidden(true);
       }
@@ -448,6 +455,13 @@ public class SpaceActivityPublisher extends SpaceListenerPlugin {
       ExoSocialActivity comment = createComment(userSpaceActivityMessage, titleId, event.getSpace().getDisplayName(), USER_ACTIVITIES_FOR_SPACE, identity, new LinkedHashMap<String, String>());
       activityManager.saveComment(activity, comment);
     }
+  }
+  
+  private String getActivityTitleBySpace(String spacePrettyName) {
+    Space sp = getSpaceStorage().getSpaceByPrettyName(spacePrettyName);
+    StringBuilder sb = new StringBuilder();
+    sb.append(sp.getMembers().length).append(" Member(s)");
+    return sb.toString();
   }
   
   private ExoSocialActivity createComment(String title, String titleId, String spacePrettyName, String type, Identity identity, Map<String, String> templateParams) {
