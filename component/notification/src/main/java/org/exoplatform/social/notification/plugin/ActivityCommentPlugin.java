@@ -18,6 +18,7 @@ package org.exoplatform.social.notification.plugin;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -46,26 +47,15 @@ public class ActivityCommentPlugin extends AbstractNotificationPlugin {
   public NotificationInfo makeNotification(NotificationContext ctx) {
     ExoSocialActivity comment = ctx.value(SocialNotificationUtils.ACTIVITY);
     ExoSocialActivity activity = Utils.getActivityManager().getParentActivity(comment);
-    
     //Send notification to all others users who have comment on this activity
-    List<String> sendToUsers = Utils.getDestinataires(activity.getCommentedIds(), comment.getPosterId());
-    
-    //Send notification to the poster of activity
-    if (! activity.getPosterId().equals(comment.getPosterId())) {
-      String userName = Utils.getUserId(activity.getPosterId());
-      if (! sendToUsers.contains(userName) && ! activity.getStreamOwner().equals(userName)) {
-        sendToUsers.add(userName);
-      }
-    }
-    
-    //Send notification to the owner of activity
-    if (! sendToUsers.contains(activity.getStreamOwner()) && ! Utils.isSpaceActivity(activity) && ! activity.getStreamOwner().equals(Utils.getUserId(comment.getPosterId()))) {
-      sendToUsers.add(activity.getStreamOwner());
-    }
-    
+    List<String> receivers = new ArrayList<String>();
+    Utils.sendToCommeters(receivers, activity.getCommentedIds(), comment.getPosterId());
+    Utils.sendToStreamOwner(receivers, activity.getStreamOwner(), comment.getPosterId());
+    Utils.sendToActivityPoster(receivers, activity.getPosterId(), comment.getPosterId());
+
     //
     return NotificationInfo.instance()
-           .to(sendToUsers)
+           .to(receivers)
            .with(SocialNotificationUtils.ACTIVITY_ID.getKey(), comment.getId())
            .with(SocialNotificationUtils.POSTER.getKey(), Utils.getUserId(comment.getUserId()))
            .key(getId());

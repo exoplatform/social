@@ -64,7 +64,47 @@ public class Utils {
     return (id != null);
   }
   
-  public static List<String> getDestinataires(String[] users, String poster) {
+  public static void sendToCommeters(List<String> receivers, String[] commenters, String poster) {
+    receivers.addAll(getDestinataires(commenters, poster));
+  }
+  
+  /**
+   * Process the receiver list with StreamOwner or not
+   * @param receivers
+   * @param streamOwner
+   * @param posteId
+   */
+  public static void sendToStreamOwner(List<String> receivers, String streamOwner, String posteId) {
+    String postRemoteId = Utils.getUserId(posteId);
+    if (streamOwner.equals(postRemoteId) == false) {
+      if (receivers.contains(streamOwner) == false) {
+        receivers.add(streamOwner);
+      }
+        
+    }
+  }
+  
+  /**
+   * Process the receiver list with Activity's Poster what will be parent for added comment.
+   * @param receivers
+   * @param streamOwner
+   * @param posteId
+   */
+  public static void sendToActivityPoster(List<String> receivers, String activityPosterId, String posteId) {
+    String activityPosterRemoteId = Utils.getUserId(activityPosterId);
+    if (activityPosterId.equals(posteId) == false) {
+      if (receivers.contains(activityPosterRemoteId) == false) {
+        receivers.add(activityPosterRemoteId);
+      }
+        
+    }
+  }
+  
+  public static void sendToMentioners(List<String> receivers, String[] mentioners, String poster) {
+    receivers.addAll(getDestinataires(mentioners, poster));
+  }
+  
+  private static List<String> getDestinataires(String[] users, String poster) {
     List<String> destinataires = new ArrayList<String>();
     for (String user : users) {
       user = user.split("@")[0];

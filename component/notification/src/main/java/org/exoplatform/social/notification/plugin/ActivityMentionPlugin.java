@@ -18,6 +18,7 @@ package org.exoplatform.social.notification.plugin;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -35,6 +36,7 @@ import org.exoplatform.social.notification.LinkProviderUtils;
 import org.exoplatform.social.notification.Utils;
 
 public class ActivityMentionPlugin extends AbstractNotificationPlugin {
+  
   public static final String ID = "ActivityMentionPlugin";
   
   public ActivityMentionPlugin(InitParams initParams) {
@@ -49,10 +51,12 @@ public class ActivityMentionPlugin extends AbstractNotificationPlugin {
   @Override
   public NotificationInfo makeNotification(NotificationContext ctx) {
     ExoSocialActivity activity = ctx.value(SocialNotificationUtils.ACTIVITY);
-    List<String> sendToUsers = Utils.getDestinataires(activity.getMentionedIds(), activity.getPosterId());
     
+    List<String> receivers = new ArrayList<String>();
+    Utils.sendToMentioners(receivers, activity.getMentionedIds(), activity.getPosterId());
+
     return NotificationInfo.instance().key(getKey())
-           .to(sendToUsers)
+           .to(receivers)
            .with("poster", Utils.getUserId(activity.getPosterId()))
            .with(SocialNotificationUtils.ACTIVITY_ID.getKey(), activity.getId())
            .end();
@@ -123,7 +127,6 @@ public class ActivityMentionPlugin extends AbstractNotificationPlugin {
   @Override
   public boolean isValid(NotificationContext ctx) {
     ExoSocialActivity activity = ctx.value(SocialNotificationUtils.ACTIVITY);
-    List<String> sendToUsers = Utils.getDestinataires(activity.getMentionedIds(), activity.getPosterId());
-    return sendToUsers.size() > 0; 
+    return activity.getMentionedIds().length > 0; 
   }
 }
