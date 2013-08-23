@@ -25,13 +25,11 @@ import org.exoplatform.commons.api.notification.NotificationContext;
 import org.exoplatform.commons.api.notification.model.MessageInfo;
 import org.exoplatform.commons.api.notification.model.NotificationInfo;
 import org.exoplatform.commons.api.notification.model.NotificationKey;
-import org.exoplatform.commons.api.notification.model.UserSetting;
 import org.exoplatform.commons.api.notification.plugin.AbstractNotificationPlugin;
 import org.exoplatform.commons.notification.impl.NotificationContextImpl;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.notification.AbstractPluginTest;
-import org.exoplatform.social.notification.mock.MockMessageQueue;
 
 /**
  * Created by The eXo Platform SAS
@@ -44,19 +42,10 @@ public class RequestJoinSpacePluginTest extends AbstractPluginTest {
   @Override
   protected void setUp() throws Exception {
     super.setUp();
-    
-    //By default the plugin and feature are active
-    assertTrue(pluginSettingService.isActive(getPlugin().getId()));
-    assertTrue(exoFeatureService.isActiveFeature("notification"));
-    
   }
   
   @Override
   protected void tearDown() throws Exception {
-    //
-    turnON(getPlugin());
-    turnFeatureOn();
-    
     super.tearDown();
   }
 
@@ -65,165 +54,210 @@ public class RequestJoinSpacePluginTest extends AbstractPluginTest {
     return pluginService.getPlugin(NotificationKey.key(RequestJoinSpacePlugin.ID));
   }
 
-  public void testRequestJoinSpaceWhenPluginOn() throws Exception {
+  public void testSimpleCase() throws Exception {
     //
-    turnON(getPlugin());
-    
-    List<String> settings = new ArrayList<String>();
-    settings.add(getPlugin().getId());
-    
-    setInstantlySettings(rootIdentity.getRemoteId(), settings);
-    
     Space space = getSpaceInstance(1);
+    //Make request to join space
     spaceService.addPendingUser(space, maryIdentity.getRemoteId());
+    List<NotificationInfo> list = assertMadeNotifications(1);
     
-    //check instantly
-    NotificationInfo ntf = MockMessageQueue.get();
-    ntf.setTo(rootIdentity.getRemoteId());
-    
+    //assert Message Info
+    NotificationInfo ntf = list.get(0);
     NotificationContext ctx = NotificationContextImpl.cloneInstance();
-    ctx.setNotificationInfo(ntf);
-    
+    ctx.setNotificationInfo(ntf.setTo(rootIdentity.getRemoteId()));
     MessageInfo message = buildMessageInfo(ctx);
     
     assertSubject(message, maryIdentity.getProfile().getFullName()+" has requested access to my space 1 space.<br/>");
     assertBody(message, "New access requirement to your space");
-    
-    setDailySetting(rootIdentity.getRemoteId(), settings);
-    
+    notificationService.clearAll();
+  }
+  
+  public void testPluginOFF() throws Exception {
+    //
+    Space space = getSpaceInstance(1);
+    //Make request to join space
     spaceService.addPendingUser(space, demoIdentity.getRemoteId());
-    spaceService.addPendingUser(space, johnIdentity.getRemoteId());
+    List<NotificationInfo> list = assertMadeNotifications(1);
     
-    //Daily
-    //assertEquals(1, notificationService.emails().size());
-    List<NotificationInfo> ntfs = getNotificationInfos();
+    //assert Message Info
+    NotificationInfo ntf = list.get(0);
+    NotificationContext ctx = NotificationContextImpl.cloneInstance();
+    ctx.setNotificationInfo(ntf.setTo(rootIdentity.getRemoteId()));
+    MessageInfo message = buildMessageInfo(ctx);
+    
+    assertSubject(message, demoIdentity.getProfile().getFullName()+" has requested access to my space 1 space.<br/>");
+    assertBody(message, "New access requirement to your space");
+    notificationService.clearAll();
+    
+    //OFF
+    turnOFF(getPlugin());
+    
+    //make request
+    spaceService.addPendingUser(space, demoIdentity.getRemoteId());
+    assertMadeNotifications(0);
+    
+    //Check other plugin
+    makeRelationship(maryIdentity, rootIdentity);
+    assertMadeNotifications(1);
+    notificationService.clearAll();
+    //
+    turnON(getPlugin());
+  }
+  
+  public void testPluginON() throws Exception {
+    //OFF
+    turnOFF(getPlugin());
+    
+    //
+    Space space = getSpaceInstance(1);
+    //Make request to join space
+    spaceService.addPendingUser(space, demoIdentity.getRemoteId());
+    assertMadeNotifications(0);
+    
+    //ON
+    turnON(getPlugin());
+    
+    //Make request to join space
+    spaceService.addPendingUser(space, maryIdentity.getRemoteId());
+    List<NotificationInfo> list = assertMadeNotifications(1);
+    
+    //assert Message Info
+    NotificationInfo ntf = list.get(0);
+    NotificationContext ctx = NotificationContextImpl.cloneInstance();
+    ctx.setNotificationInfo(ntf.setTo(rootIdentity.getRemoteId()));
+    MessageInfo message = buildMessageInfo(ctx);
+    
+    assertSubject(message, maryIdentity.getProfile().getFullName()+" has requested access to my space 1 space.<br/>");
+    assertBody(message, "New access requirement to your space");
+    notificationService.clearAll();
+  }
+  
+  public void testDigestWithPluginON() throws Exception {
+    //OFF
+    turnOFF(getPlugin());
+    
+    //
+    Space space = getSpaceInstance(1);
+    //Make requests to join space
+    spaceService.addPendingUser(space, demoIdentity.getRemoteId());
+    assertMadeNotifications(0);
+    
+    //ON
+    turnON(getPlugin());
+    
+    //make requests
+    spaceService.addPendingUser(space, johnIdentity.getRemoteId());
+    spaceService.addPendingUser(space, maryIdentity.getRemoteId());
+    
+    List<NotificationInfo> list = assertMadeNotifications(2);
     List<NotificationInfo> messages = new ArrayList<NotificationInfo>();
-    for (NotificationInfo m : ntfs) {
+    for (NotificationInfo m : list) {
       m.setTo(rootIdentity.getRemoteId());
       messages.add(m);
     }
     Writer writer = new StringWriter();
-    ctx = NotificationContextImpl.cloneInstance();
+    NotificationContext ctx = NotificationContextImpl.cloneInstance();
     ctx.setNotificationInfos(messages);
     getPlugin().buildDigest(ctx, writer);
     
-    assertTrue(writer.toString().indexOf("The following users have asked to join") > 0);
-    
-    //
-    Identity ghostIdentity = identityManager.getOrCreateIdentity("organization", "ghost", true);
-    Identity raulIdentity = identityManager.getOrCreateIdentity("organization", "raul", true);
-    
-    //Weekly
-    setDailySetting(rootIdentity.getRemoteId(), new ArrayList<String>());//remove Daily settings
-    setWeeklySetting(rootIdentity.getRemoteId(), settings);
-    
-    spaceService.addPendingUser(space, ghostIdentity.getRemoteId());
-    spaceService.addPendingUser(space, raulIdentity.getRemoteId());
-    
-    writer = new StringWriter();
-    ctx = NotificationContextImpl.cloneInstance();
-    ctx.setNotificationInfos(messages);
-    getPlugin().buildDigest(ctx, writer);
-    //
-    assertTrue(writer.toString().indexOf("The following users have asked to join") > 0);
-    
-    tearDownIdentityList.add(ghostIdentity);
-    tearDownIdentityList.add(raulIdentity);
-    tearDownSpaceList.add(space);
+    assertDigest(writer, "The following users have asked to join the my space 1 space: John Anthony, Mary Kelly.");
+    notificationService.clearAll();
     
   }
   
-  public void testRequestJoinSpaceWhenPluginOff() throws Exception {
+  public void testDigestWithPluginOFF() throws Exception {
     //
-    turnOFF(getPlugin());
-    //
-    List<String> settings = new ArrayList<String>();
-    settings.add(getPlugin().getId());
-    
-    setInstantlySettings(rootIdentity.getRemoteId(), settings);
-    
     Space space = getSpaceInstance(1);
-    spaceService.addPendingUser(space, maryIdentity.getRemoteId());
-    
-    //check instantly
-    NotificationInfo ntf = MockMessageQueue.get();
-    assertNull(ntf);
-    
-    //Daily
-    setDailySetting(rootIdentity.getRemoteId(), settings);
-    
+    //Make requests to join space
     spaceService.addPendingUser(space, demoIdentity.getRemoteId());
     spaceService.addPendingUser(space, johnIdentity.getRemoteId());
     
-    List<NotificationInfo> ntfs = getNotificationInfos();
-    assertTrue(ntfs.size() == 0);
+    //assert Message Info
+    List<NotificationInfo> list = assertMadeNotifications(2);
+    List<NotificationInfo> messages = new ArrayList<NotificationInfo>();
+    for (NotificationInfo m : list) {
+      m.setTo(rootIdentity.getRemoteId());
+      messages.add(m);
+    }
+    Writer writer = new StringWriter();
+    NotificationContext ctx = NotificationContextImpl.cloneInstance();
+    ctx.setNotificationInfos(messages);
+    getPlugin().buildDigest(ctx, writer);
     
+    assertDigest(writer, "The following users have asked to join the my space 1 space: Demo gtn, John Anthony.");
+    notificationService.clearAll();
+    
+    //OFF
+    turnOFF(getPlugin());
+    
+    //Make request
+    spaceService.addPendingUser(space, maryIdentity.getRemoteId());
+    assertMadeNotifications(0);
     //
-    Identity ghostIdentity = identityManager.getOrCreateIdentity("organization", "ghost", true);
-    Identity raulIdentity = identityManager.getOrCreateIdentity("organization", "raul", true);
-    //clear notification when create new user
-    getNotificationInfos();
-    
-    //Weekly
-    setDailySetting(rootIdentity.getRemoteId(), new ArrayList<String>());//remove Daily settings
-    setWeeklySetting(rootIdentity.getRemoteId(), settings);
-    
-    spaceService.addPendingUser(space, ghostIdentity.getRemoteId());
-    spaceService.addPendingUser(space, raulIdentity.getRemoteId());
-    
-    //
-    ntfs = getNotificationInfos();
-    assertTrue(ntfs.size() == 0);
-    
-    tearDownIdentityList.add(ghostIdentity);
-    tearDownIdentityList.add(raulIdentity);
-    tearDownSpaceList.add(space);
-    
+    turnON(getPlugin());
   }
   
-  public void testRequestJoinSpaceWhenFeatureOff() throws Exception {
+  public void testDigestWithFeatureOFF() throws Exception {
     //
+    Space space = getSpaceInstance(1);
+    //Make requests to join space
+    spaceService.addPendingUser(space, demoIdentity.getRemoteId());
+    spaceService.addPendingUser(space, maryIdentity.getRemoteId());
+    
+    List<NotificationInfo> list = assertMadeNotifications(2);
+    List<NotificationInfo> messages = new ArrayList<NotificationInfo>();
+    for (NotificationInfo m : list) {
+      m.setTo(rootIdentity.getRemoteId());
+      messages.add(m);
+    }
+    Writer writer = new StringWriter();
+    NotificationContext ctx = NotificationContextImpl.cloneInstance();
+    ctx.setNotificationInfos(messages);
+    getPlugin().buildDigest(ctx, writer);
+    
+    assertDigest(writer, "The following users have asked to join the my space 1 space: Demo gtn, Mary Kelly.");
+    notificationService.clearAll();
+    
+    //OFF
     turnFeatureOff();
     
+    //Make request
+    spaceService.addPendingUser(space, johnIdentity.getRemoteId());
+    makeRelationship(johnIdentity, rootIdentity);
+    
+    assertMadeNotifications(0);
     //
-    List<String> settings = new ArrayList<String>();
-    settings.add(getPlugin().getId());
-    
-    setInstantlySettings(rootIdentity.getRemoteId(), settings);
-    
+    turnFeatureOn();
+  }
+  
+  public void testDigestWithFeatureON() throws Exception {
+    //
+    turnFeatureOff();
+    //
     Space space = getSpaceInstance(1);
+    //Make requests to join space
+    spaceService.addPendingUser(space, demoIdentity.getRemoteId());
+    assertMadeNotifications(0);
+    
+    //ON
+    turnFeatureOn();
+    spaceService.addPendingUser(space, johnIdentity.getRemoteId());
     spaceService.addPendingUser(space, maryIdentity.getRemoteId());
     
-    //check instantly
-    NotificationInfo ntf = MockMessageQueue.get();
-    assertNull(ntf);
+    List<NotificationInfo> list = assertMadeNotifications(2);
+    List<NotificationInfo> messages = new ArrayList<NotificationInfo>();
+    for (NotificationInfo m : list) {
+      m.setTo(rootIdentity.getRemoteId());
+      messages.add(m);
+    }
+    Writer writer = new StringWriter();
+    NotificationContext ctx = NotificationContextImpl.cloneInstance();
+    ctx.setNotificationInfos(messages);
+    getPlugin().buildDigest(ctx, writer);
     
-    //Daily
-    setDailySetting(rootIdentity.getRemoteId(), settings);
+    assertDigest(writer, "The following users have asked to join the my space 1 space: John Anthony, Mary Kelly.");
+    notificationService.clearAll();
     
-    spaceService.addPendingUser(space, demoIdentity.getRemoteId());
-    spaceService.addPendingUser(space, johnIdentity.getRemoteId());
-    
-    List<NotificationInfo> ntfs = getNotificationInfos();
-    assertTrue(ntfs.size() == 0);
-    
-    //
-    Identity ghostIdentity = identityManager.getOrCreateIdentity("organization", "ghost", true);
-    Identity raulIdentity = identityManager.getOrCreateIdentity("organization", "raul", true);
-    
-    //Weekly
-    setDailySetting(rootIdentity.getRemoteId(), new ArrayList<String>());//remove Daily settings
-    setWeeklySetting(rootIdentity.getRemoteId(), settings);
-    
-    spaceService.addPendingUser(space, ghostIdentity.getRemoteId());
-    spaceService.addPendingUser(space, raulIdentity.getRemoteId());
-    
-    //
-    ntfs = getNotificationInfos();
-    assertTrue(ntfs.size() == 0);
-    
-    tearDownIdentityList.add(ghostIdentity);
-    tearDownIdentityList.add(raulIdentity);
-    tearDownSpaceList.add(space);
   }
+
 }

@@ -27,9 +27,8 @@ import org.exoplatform.commons.api.notification.model.NotificationInfo;
 import org.exoplatform.commons.api.notification.model.NotificationKey;
 import org.exoplatform.commons.api.notification.plugin.AbstractNotificationPlugin;
 import org.exoplatform.commons.notification.impl.NotificationContextImpl;
-import org.exoplatform.social.core.relationship.model.Relationship;
+import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.notification.AbstractPluginTest;
-import org.exoplatform.social.notification.mock.MockMessageQueue;
 
 /**
  * Created by The eXo Platform SAS
@@ -42,19 +41,10 @@ public class RelationshipReceivedRequestPluginTest extends AbstractPluginTest {
   @Override
   protected void setUp() throws Exception {
     super.setUp();
-    
-    //By default the plugin and feature are active
-    assertTrue(pluginSettingService.isActive(getPlugin().getId()));
-    assertTrue(exoFeatureService.isActiveFeature("notification"));
-    
   }
   
   @Override
   protected void tearDown() throws Exception {
-    //
-    turnON(getPlugin());
-    turnFeatureOn();
-    
     super.tearDown();
   }
   
@@ -63,65 +53,203 @@ public class RelationshipReceivedRequestPluginTest extends AbstractPluginTest {
     return pluginService.getPlugin(NotificationKey.key(RelationshipRecievedRequestPlugin.ID));
   }
   
-  public void testInstantly() throws Exception {
+  public void testSimpleCase() throws Exception {
     //
-    List<String> settings = new ArrayList<String>();
-    settings.add(getPlugin().getId());
-
-    setInstantlySettings(demoIdentity.getRemoteId(), settings);
-
-    Relationship relationship = relationshipManager.inviteToConnect(rootIdentity, demoIdentity);
-
-    NotificationInfo ntf = MockMessageQueue.get();
-    assertNotNull(ntf);
+    makeRelationship(demoIdentity, rootIdentity);
+    List<NotificationInfo> list = assertMadeNotifications(1);
     
+    NotificationInfo ntf = list.get(0);
     NotificationContext ctx = NotificationContextImpl.cloneInstance();
-    ctx.setNotificationInfo(ntf.setTo("demo"));
-    MessageInfo message = getPlugin().buildMessage(ctx);
+    ctx.setNotificationInfo(ntf.setTo("root"));
+    MessageInfo message = buildMessageInfo(ctx);
     
     assertBody(message, "New connection request");
+    assertSubject(message, demoIdentity.getProfile().getFullName() +" wants to connect with you on eXo<br/>");
+    notificationService.clearAll();
+  }
+  
+  public void testPluginOFF() throws Exception {
+    //
+    makeRelationship(demoIdentity, rootIdentity);
+    List<NotificationInfo> list = assertMadeNotifications(1);
     
-    relationshipManager.remove(relationship);
+    NotificationInfo ntf = list.get(0);
+    NotificationContext ctx = NotificationContextImpl.cloneInstance();
+    ctx.setNotificationInfo(ntf.setTo("root"));
+    MessageInfo message = buildMessageInfo(ctx);
+    
+    assertBody(message, "New connection request");
+    assertSubject(message, demoIdentity.getProfile().getFullName() +" wants to connect with you on eXo<br/>");
+    notificationService.clearAll();
+    
+    //OFF Plugin
+    turnOFF(getPlugin());
+    
+    makeRelationship(maryIdentity, rootIdentity);
+    assertMadeNotifications(0);
+    
+    //Check other Plugin: RequestJoinSpacePlugin
+    Space space = getSpaceInstance(1);
+    spaceService.addPendingUser(space, maryIdentity.getRemoteId());
+    assertMadeNotifications(1);
+    notificationService.clearAll();
+    
+    //ON
+    turnON(getPlugin());
+  }
+  
+  public void testPluginON() throws Exception {
+    //OFF Plugin
+    turnOFF(getPlugin());
+    //
+    makeRelationship(demoIdentity, rootIdentity);
+    assertMadeNotifications(0);
+    
+    //ON
+    turnON(getPlugin());
+    makeRelationship(maryIdentity, rootIdentity);
+    List<NotificationInfo> list = assertMadeNotifications(1);
+    
+    NotificationInfo ntf = list.get(0);
+    NotificationContext ctx = NotificationContextImpl.cloneInstance();
+    ctx.setNotificationInfo(ntf.setTo("root"));
+    MessageInfo message = buildMessageInfo(ctx);
+    
+    assertBody(message, "New connection request");
+    assertSubject(message, maryIdentity.getProfile().getFullName() +" wants to connect with you on eXo<br/>");
+    notificationService.clearAll();
     
   }
   
-  public void testInstantlyWithDaily() throws Exception {
+  public void testDigestWithPluginON() throws Exception {
     //
-    List<String> settings = new ArrayList<String>();
-    settings.add(getPlugin().getId());
-
-    setInstantlySettings(demoIdentity.getRemoteId(), settings);
-    setWeeklySetting(demoIdentity.getRemoteId(), settings);
-
-    Relationship relationship = relationshipManager.inviteToConnect(rootIdentity, demoIdentity);
-
-    NotificationInfo ntf = MockMessageQueue.get();
-    assertNotNull(ntf);
+    turnOFF(getPlugin());
+    //
+    makeRelationship(johnIdentity, rootIdentity);
+    assertMadeNotifications(0);
     
-    NotificationContext ctx = NotificationContextImpl.cloneInstance();
-    ctx.setNotificationInfo(ntf.setTo("demo"));
-    MessageInfo message = getPlugin().buildMessage(ctx);
+    //ON
+    turnON(getPlugin());
     
-    assertBody(message, "New connection request");
-    
-    Relationship relationship2 = relationshipManager.inviteToConnect(maryIdentity, demoIdentity);
-    
+    //Make more relationship
+    makeRelationship(demoIdentity, rootIdentity);
+    makeRelationship(maryIdentity, rootIdentity);
     //
     List<NotificationInfo> messages = new ArrayList<NotificationInfo>();
-    for (NotificationInfo m : getNotificationInfos()) {
-      m.setTo(demoIdentity.getRemoteId());
+    List<NotificationInfo> list = assertMadeNotifications(2);
+    for (NotificationInfo m : list) {
+      m.setTo(rootIdentity.getRemoteId());
       messages.add(m);
     }
     
     Writer writer = new StringWriter();
-    ctx = NotificationContextImpl.cloneInstance();
+    NotificationContext ctx = NotificationContextImpl.cloneInstance();
     ctx.setNotificationInfos(messages);
     getPlugin().buildDigest(ctx, writer);
     
-    System.err.println("testInstantlyWithDaily with Body == "+ writer.toString());
+    assertDigest(writer, "You've received a connection request from Demo gtn, Mary Kelly.");
+    notificationService.clearAll();
     
-    relationshipManager.remove(relationship);
-    relationshipManager.remove(relationship2);
+  }
+  
+  public void testDigestWithPluginOFF() throws Exception {
+    //Make more relationship
+    makeRelationship(demoIdentity, rootIdentity);
+    makeRelationship(maryIdentity, rootIdentity);
+    //
+    List<NotificationInfo> messages = new ArrayList<NotificationInfo>();
+    List<NotificationInfo> list = assertMadeNotifications(2);
+    for (NotificationInfo m : list) {
+      m.setTo(rootIdentity.getRemoteId());
+      messages.add(m);
+    }
+    
+    Writer writer = new StringWriter();
+    NotificationContext ctx = NotificationContextImpl.cloneInstance();
+    ctx.setNotificationInfos(messages);
+    getPlugin().buildDigest(ctx, writer);
+    
+    assertDigest(writer, "You've received a connection request from Demo gtn, Mary Kelly.");
+    notificationService.clearAll();
+    //
+    turnOFF(getPlugin());
+    //
+    makeRelationship(johnIdentity, rootIdentity);
+    assertMadeNotifications(0);
+    
+    //Check another Plugin: RequestJoinSpacePlugin
+    Space space = getSpaceInstance(1);
+    spaceService.addPendingUser(space, maryIdentity.getRemoteId());
+    assertMadeNotifications(1);
+    
+    //ON
+    turnON(getPlugin());
+    notificationService.clearAll();
+  }
+  
+  public void testDigestWithFeatureOFF() throws Exception {
+    //Make more relationship
+    makeRelationship(demoIdentity, rootIdentity);
+    makeRelationship(maryIdentity, rootIdentity);
+    //
+    List<NotificationInfo> messages = new ArrayList<NotificationInfo>();
+    List<NotificationInfo> list = assertMadeNotifications(2);
+    for (NotificationInfo m : list) {
+      m.setTo(rootIdentity.getRemoteId());
+      messages.add(m);
+    }
+    
+    Writer writer = new StringWriter();
+    NotificationContext ctx = NotificationContextImpl.cloneInstance();
+    ctx.setNotificationInfos(messages);
+    getPlugin().buildDigest(ctx, writer);
+    
+    assertDigest(writer, "You've received a connection request from Demo gtn, Mary Kelly.");
+    notificationService.clearAll();
+    //
+    turnFeatureOff();
+    
+    //Make event
+    makeRelationship(johnIdentity, rootIdentity);
+    //Check another Plugin: RequestJoinSpacePlugin
+    Space space = getSpaceInstance(1);
+    spaceService.addPendingUser(space, maryIdentity.getRemoteId());
+    
+    //assert 
+    assertMadeNotifications(0);
+    
+    //ON
+    turnFeatureOn();
+  }
+  
+  public void testDigestWithFeatureON() throws Exception {
+    //
+    turnFeatureOff();
+    //
+    makeRelationship(demoIdentity, rootIdentity);
+    assertMadeNotifications(0);
+    
+    //ON
+    turnFeatureOn();
+    
+    //Make more relationship
+    makeRelationship(johnIdentity, rootIdentity);
+    makeRelationship(maryIdentity, rootIdentity);
+    //
+    List<NotificationInfo> messages = new ArrayList<NotificationInfo>();
+    List<NotificationInfo> list = assertMadeNotifications(2);
+    for (NotificationInfo m : list) {
+      m.setTo(rootIdentity.getRemoteId());
+      messages.add(m);
+    }
+    
+    Writer writer = new StringWriter();
+    NotificationContext ctx = NotificationContextImpl.cloneInstance();
+    ctx.setNotificationInfos(messages);
+    getPlugin().buildDigest(ctx, writer);
+    
+    assertDigest(writer, "You've received a connection request from John Anthony, Mary Kelly.");
+    notificationService.clearAll();
     
   }
   

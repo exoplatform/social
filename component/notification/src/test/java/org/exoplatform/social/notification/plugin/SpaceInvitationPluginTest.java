@@ -29,7 +29,6 @@ import org.exoplatform.commons.api.notification.plugin.AbstractNotificationPlugi
 import org.exoplatform.commons.notification.impl.NotificationContextImpl;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.notification.AbstractPluginTest;
-import org.exoplatform.social.notification.mock.MockMessageQueue;
 
 /**
  * Created by The eXo Platform SAS
@@ -63,136 +62,222 @@ public class SpaceInvitationPluginTest extends AbstractPluginTest {
     return pluginService.getPlugin(NotificationKey.key(SpaceInvitationPlugin.ID));
   }
 
-  public void testSpaceInvitationWhenPluginOn() throws Exception {
+  public void testSimpleCase() throws Exception {
     //
-    List<String> settings = new ArrayList<String>();
-    settings.add(getPlugin().getId());
-    
-    setInstantlySettings(rootIdentity.getRemoteId(), settings);
-    
     Space space = getSpaceInstance(1);
+    
+    //Invite user to join space
     spaceService.addInvitedUser(space, maryIdentity.getRemoteId());
+    List<NotificationInfo> list = assertMadeNotifications(1);
     
-    //check instantly
-    NotificationInfo ntf = MockMessageQueue.get();
-    ntf.setTo(rootIdentity.getRemoteId());
-    
+    //assert Message Info
     NotificationContext ctx = NotificationContextImpl.cloneInstance();
-    ctx.setNotificationInfo(ntf);
-    
+    ctx.setNotificationInfo(list.get(0).setTo(rootIdentity.getRemoteId()));
     MessageInfo message = buildMessageInfo(ctx);
     
     assertSubject(message, "You've been invited to join " + space.getDisplayName() + " space<br/>");
     assertBody(message, "You've received an invitation to join");
+    notificationService.clearAll();
+  }
+  
+  public void testPluginOFF() throws Exception {
+    //
+    Space space = getSpaceInstance(1);
     
-    //Daily
-    setDailySetting(rootIdentity.getRemoteId(), settings);
+    //Invite user to join space
+    spaceService.addInvitedUser(space, rootIdentity.getRemoteId());
+    List<NotificationInfo> list = assertMadeNotifications(1);
     
+    //assert Message Info
+    NotificationContext ctx = NotificationContextImpl.cloneInstance();
+    ctx.setNotificationInfo(list.get(0).setTo(rootIdentity.getRemoteId()));
+    MessageInfo message = buildMessageInfo(ctx);
+    
+    assertSubject(message, "You've been invited to join " + space.getDisplayName() + " space<br/>");
+    assertBody(message, "You've received an invitation to join");
+    notificationService.clearAll();
+    
+    //OFF
+    turnOFF(getPlugin());
+    
+    //Make invite
+    spaceService.addInvitedUser(space, demoIdentity.getRemoteId());
+    assertMadeNotifications(0);
+    
+    //check other plugin
+    makeRelationship(johnIdentity, demoIdentity);
+    assertMadeNotifications(1);
+    
+    notificationService.clearAll();
+    //
+    turnON(getPlugin());
+  }
+  
+  public void testPluginON() throws Exception {
+    //OFF
+    turnOFF(getPlugin());
+    //
+    Space space = getSpaceInstance(1);
+    //Invite user to join space
+    spaceService.addInvitedUser(space, rootIdentity.getRemoteId());
+    assertMadeNotifications(0);
+    
+    //ON
+    turnON(getPlugin());
+    
+    //Make more invitations
     Space space2 = getSpaceInstance(2);
-    Space space3 = getSpaceInstance(3);
-    spaceService.addInvitedUser(space2, maryIdentity.getRemoteId());
-    spaceService.addInvitedUser(space3, maryIdentity.getRemoteId());
+    spaceService.addInvitedUser(space2, rootIdentity.getRemoteId());
     
-    List<NotificationInfo> ntfs = getNotificationInfos();
+    List<NotificationInfo> list = assertMadeNotifications(1);
+    //assert Message Info
+    NotificationContext ctx = NotificationContextImpl.cloneInstance();
+    ctx.setNotificationInfo(list.get(0).setTo(rootIdentity.getRemoteId()));
+    MessageInfo message = buildMessageInfo(ctx);
+    
+    assertSubject(message, "You've been invited to join " + space2.getDisplayName() + " space<br/>");
+    assertBody(message, "You've received an invitation to join");
+    notificationService.clearAll();
+  }
+  
+  public void testDigestWithPluginOFF() throws Exception {
+    //Make more invitations
+    Space space1 = getSpaceInstance(1);
+    Space space2 = getSpaceInstance(2);
+    spaceService.addInvitedUser(space1, rootIdentity.getRemoteId());
+    spaceService.addInvitedUser(space2, rootIdentity.getRemoteId());
+    
+    //assert Digest message
+    List<NotificationInfo> ntfs = assertMadeNotifications(2);
     List<NotificationInfo> messages = new ArrayList<NotificationInfo>();
     for (NotificationInfo m : ntfs) {
       m.setTo(rootIdentity.getRemoteId());
       messages.add(m);
     }
     Writer writer = new StringWriter();
-    ctx = NotificationContextImpl.cloneInstance();
+    NotificationContext ctx = NotificationContextImpl.cloneInstance();
     ctx.setNotificationInfos(messages);
     getPlugin().buildDigest(ctx, writer);
     
-    assertTrue(writer.toString().indexOf("You have been asked to joing the following spaces:") >= 0);
+    assertDigest(writer, "You have been asked to joing the following spaces: my space 1, my space 2.");
+    notificationService.clearAll();
     
-    //
-    Space space4 = getSpaceInstance(4);
-    Space space5 = getSpaceInstance(5);
-    
-    //Weekly
-    setDailySetting(rootIdentity.getRemoteId(), new ArrayList<String>());//remove Daily settings
-    setWeeklySetting(rootIdentity.getRemoteId(), settings);
-    
-    spaceService.addInvitedUser(space4, maryIdentity.getRemoteId());
-    spaceService.addInvitedUser(space5, maryIdentity.getRemoteId());
-    
-    writer = new StringWriter();
-    ctx = NotificationContextImpl.cloneInstance();
-    ctx.setNotificationInfos(messages);
-    getPlugin().buildDigest(ctx, writer);
-    //
-    assertTrue(writer.toString().indexOf("You have been asked to joing the following spaces:") >= 0);
-    
-    tearDownSpaceList.add(space);
-    tearDownSpaceList.add(space2);
-    tearDownSpaceList.add(space3);
-    tearDownSpaceList.add(space4);
-    tearDownSpaceList.add(space5);
-    
-  }
-  
-  public void testSpaceInvitationWhenPluginOff() throws Exception {
-    //
+    //OFF
     turnOFF(getPlugin());
     //
-    checkNotificationWhenPluginOrFeatureOff();
+    Space space3 = getSpaceInstance(3);
+    spaceService.addInvitedUser(space3, rootIdentity.getRemoteId());
+    assertMadeNotifications(0);
+    
+    //other plugin
+    makeRelationship(johnIdentity, demoIdentity);
+    assertMadeNotifications(1);
+    
+    notificationService.clearAll();
+    //
+    turnON(getPlugin());
+  }
+  
+  public void testDigestWithPluginON() throws Exception {
+    //OFF
+    turnOFF(getPlugin());
+    //
+    Space space = getSpaceInstance(1);
+    //Invite user to join space
+    spaceService.addInvitedUser(space, rootIdentity.getRemoteId());
+    assertMadeNotifications(0);
+    
+    //ON
+    turnON(getPlugin());
+    
+    //Make more invitations
+    Space space2 = getSpaceInstance(2);
+    Space space3 = getSpaceInstance(3);
+    spaceService.addInvitedUser(space2, rootIdentity.getRemoteId());
+    spaceService.addInvitedUser(space3, rootIdentity.getRemoteId());
+    
+    //assert Digest message
+    List<NotificationInfo> ntfs = assertMadeNotifications(2);
+    List<NotificationInfo> messages = new ArrayList<NotificationInfo>();
+    for (NotificationInfo m : ntfs) {
+      m.setTo(rootIdentity.getRemoteId());
+      messages.add(m);
+    }
+    Writer writer = new StringWriter();
+    NotificationContext ctx = NotificationContextImpl.cloneInstance();
+    ctx.setNotificationInfos(messages);
+    getPlugin().buildDigest(ctx, writer);
+    
+    assertDigest(writer, "You have been asked to joing the following spaces: my space 2, my space 3.");
+    notificationService.clearAll();
     
   }
   
-  public void testSpaceInvitationWhenFeatureOff() throws Exception {
-    //
+  public void testDigestWithFeatureOFF() throws Exception {
+    //Make more invitations
+    Space space1 = getSpaceInstance(1);
+    Space space2 = getSpaceInstance(2);
+    spaceService.addInvitedUser(space1, rootIdentity.getRemoteId());
+    spaceService.addInvitedUser(space2, rootIdentity.getRemoteId());
+    
+    //assert Digest message
+    List<NotificationInfo> ntfs = assertMadeNotifications(2);
+    List<NotificationInfo> messages = new ArrayList<NotificationInfo>();
+    for (NotificationInfo m : ntfs) {
+      m.setTo(rootIdentity.getRemoteId());
+      messages.add(m);
+    }
+    Writer writer = new StringWriter();
+    NotificationContext ctx = NotificationContextImpl.cloneInstance();
+    ctx.setNotificationInfos(messages);
+    getPlugin().buildDigest(ctx, writer);
+    
+    assertDigest(writer, "You have been asked to joing the following spaces: my space 1, my space 2.");
+    notificationService.clearAll();
+    
+    //OFF Feature
     turnFeatureOff();
     //
-    checkNotificationWhenPluginOrFeatureOff();
+    Space space3 = getSpaceInstance(3);
+    spaceService.addInvitedUser(space3, rootIdentity.getRemoteId());
+    makeRelationship(johnIdentity, demoIdentity);
+    assertMadeNotifications(0);
     
-  }
-
-  private void checkNotificationWhenPluginOrFeatureOff() throws Exception {
     //
-    List<String> settings = new ArrayList<String>();
-    settings.add(getPlugin().getId());
+    turnFeatureOn();
+  }
+  
+  public void testDigestWithFeatureON() throws Exception {
+    //
+    turnFeatureOff();
     
-    setInstantlySettings(rootIdentity.getRemoteId(), settings);
+    //Make invitation
+    Space space1 = getSpaceInstance(1);
+    spaceService.addInvitedUser(space1, rootIdentity.getRemoteId());
+    assertMadeNotifications(0);
     
-    Space space = getSpaceInstance(1);
-    spaceService.addInvitedUser(space, maryIdentity.getRemoteId());
-    
-    //check instantly
-    NotificationInfo ntf = MockMessageQueue.get();
-    assertNull(ntf);
-    
-    //Daily
-    setDailySetting(rootIdentity.getRemoteId(), settings);
+    //ON
+    turnFeatureOn();
     
     Space space2 = getSpaceInstance(2);
     Space space3 = getSpaceInstance(3);
-    spaceService.addInvitedUser(space2, maryIdentity.getRemoteId());
-    spaceService.addInvitedUser(space3, maryIdentity.getRemoteId());
+    spaceService.addInvitedUser(space2, rootIdentity.getRemoteId());
+    spaceService.addInvitedUser(space3, rootIdentity.getRemoteId());
+    //assert Digest message
+    List<NotificationInfo> ntfs = assertMadeNotifications(2);
+    List<NotificationInfo> messages = new ArrayList<NotificationInfo>();
+    for (NotificationInfo m : ntfs) {
+      m.setTo(rootIdentity.getRemoteId());
+      messages.add(m);
+    }
+    Writer writer = new StringWriter();
+    NotificationContext ctx = NotificationContextImpl.cloneInstance();
+    ctx.setNotificationInfos(messages);
+    getPlugin().buildDigest(ctx, writer);
     
-    List<NotificationInfo> ntfs = getNotificationInfos();
-    assertTrue(ntfs.size() == 0);
+    assertDigest(writer, "You have been asked to joing the following spaces: my space 2, my space 3.");
+    notificationService.clearAll();
     
-    //
-    Space space4 = getSpaceInstance(4);
-    Space space5 = getSpaceInstance(5);
-    
-    //Weekly
-    setDailySetting(rootIdentity.getRemoteId(), new ArrayList<String>());//remove Daily settings
-    setWeeklySetting(rootIdentity.getRemoteId(), settings);
-    
-    spaceService.addInvitedUser(space4, maryIdentity.getRemoteId());
-    spaceService.addInvitedUser(space5, maryIdentity.getRemoteId());
-    
-    //
-    ntfs = getNotificationInfos();
-    assertTrue(ntfs.size() == 0);
-    
-    tearDownSpaceList.add(space);
-    tearDownSpaceList.add(space2);
-    tearDownSpaceList.add(space3);
-    tearDownSpaceList.add(space4);
-    tearDownSpaceList.add(space5);
   }
   
 }

@@ -2,6 +2,7 @@ package org.exoplatform.social.notification;
 
 import org.exoplatform.commons.testing.BaseExoContainerTestSuite;
 import org.exoplatform.commons.testing.ConfigTestCase;
+import org.exoplatform.social.notification.plugin.RelationshipReceivedRequestPluginTest;
 import org.exoplatform.social.notification.plugin.RequestJoinSpacePluginTest;
 import org.exoplatform.social.notification.plugin.SpaceInvitationPluginTest;
 import org.exoplatform.social.notification.plugin.NewUserPluginTest;
@@ -15,9 +16,10 @@ import org.junit.runners.Suite.SuiteClasses;
 @RunWith(Suite.class)
 @SuiteClasses({
   PostActivityPluginTest.class,
-  NewUserPluginTest.class
-  //RequestJoinSpacePluginTest.class,
-  //SpaceInvitationPluginTest.class
+  NewUserPluginTest.class,
+  RelationshipReceivedRequestPluginTest.class,
+  RequestJoinSpacePluginTest.class,
+  SpaceInvitationPluginTest.class
 })
 @ConfigTestCase(AbstractCoreTest.class)
 public class InitContainerTestSuite extends BaseExoContainerTestSuite {

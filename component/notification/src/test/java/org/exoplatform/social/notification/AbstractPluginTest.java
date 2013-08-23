@@ -29,12 +29,15 @@ import org.exoplatform.commons.api.notification.service.setting.UserSettingServi
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.activity.model.ExoSocialActivityImpl;
 import org.exoplatform.social.core.identity.model.Identity;
+import org.exoplatform.social.core.relationship.model.Relationship;
 import org.exoplatform.social.core.space.impl.DefaultSpaceApplicationHandler;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.notification.plugin.ActivityCommentPlugin;
 import org.exoplatform.social.notification.plugin.ActivityMentionPlugin;
 import org.exoplatform.social.notification.plugin.LikePlugin;
 import org.exoplatform.social.notification.plugin.PostActivityPlugin;
+import org.exoplatform.social.notification.plugin.PostActivitySpaceStreamPlugin;
+import org.exoplatform.social.notification.plugin.RelationshipRecievedRequestPlugin;
 import org.exoplatform.social.notification.plugin.RequestJoinSpacePlugin;
 import org.exoplatform.social.notification.plugin.SpaceInvitationPlugin;
 
@@ -51,6 +54,7 @@ public abstract class AbstractPluginTest extends AbstractCoreTest {
   protected List<ExoSocialActivity> tearDownActivityList;
   protected List<Space>  tearDownSpaceList;
   protected List<Identity>  tearDownIdentityList;
+  protected List<Relationship>  tearDownRelationshipList;
   
   public abstract AbstractNotificationPlugin getPlugin();
   
@@ -74,6 +78,7 @@ public abstract class AbstractPluginTest extends AbstractCoreTest {
     tearDownActivityList = new ArrayList<ExoSocialActivity>();
     tearDownSpaceList = new ArrayList<Space>();
     tearDownIdentityList = new ArrayList<Identity>();
+    tearDownRelationshipList = new ArrayList<Relationship>();
     
     tearDownIdentityList.add(rootIdentity);
     tearDownIdentityList.add(johnIdentity);
@@ -94,11 +99,19 @@ public abstract class AbstractPluginTest extends AbstractCoreTest {
       spaceService.deleteSpace(sp);
     }
     
+    for (Relationship relationship : tearDownRelationshipList) {
+      relationshipManager.remove(relationship);
+    }
+    
     for (Identity identity : tearDownIdentityList) {
       identityManager.deleteIdentity(identity);
     }
     
     notificationService.clearAll();
+    //
+    turnON(getPlugin());
+    turnFeatureOn();
+    
     super.tearDown();
   }
   
@@ -225,6 +238,12 @@ public abstract class AbstractPluginTest extends AbstractCoreTest {
     return activity;
   }
   
+  protected Relationship makeRelationship(Identity identity1, Identity identity2) {
+    Relationship relationship = relationshipManager.inviteToConnect(identity1, identity2);
+    tearDownRelationshipList.add(relationship);
+    return relationship;
+  }
+  
   /**
    * Makes the comment for Test Case
    * @param activity
@@ -270,6 +289,7 @@ public abstract class AbstractPluginTest extends AbstractCoreTest {
     space.setUrl(space.getPrettyName());
     space.setAvatarLastUpdated(System.currentTimeMillis());
     this.spaceService.saveSpace(space, true);
+    tearDownSpaceList.add(space);
     return space;
   }
   
@@ -341,6 +361,8 @@ public abstract class AbstractPluginTest extends AbstractCoreTest {
     instantly.add(LikePlugin.ID);
     instantly.add(RequestJoinSpacePlugin.ID);
     instantly.add(SpaceInvitationPlugin.ID);
+    instantly.add(RelationshipRecievedRequestPlugin.ID);
+    instantly.add(PostActivitySpaceStreamPlugin.ID);
     
     List<String> daily = new ArrayList<String>();
     daily.add(PostActivityPlugin.ID);
@@ -349,6 +371,8 @@ public abstract class AbstractPluginTest extends AbstractCoreTest {
     daily.add(LikePlugin.ID);
     daily.add(RequestJoinSpacePlugin.ID);
     daily.add(SpaceInvitationPlugin.ID);
+    daily.add(RelationshipRecievedRequestPlugin.ID);
+    daily.add(PostActivitySpaceStreamPlugin.ID);
     
     List<String> weekly = new ArrayList<String>();
     weekly.add(PostActivityPlugin.ID);
@@ -357,6 +381,8 @@ public abstract class AbstractPluginTest extends AbstractCoreTest {
     weekly.add(LikePlugin.ID);
     weekly.add(RequestJoinSpacePlugin.ID);
     weekly.add(SpaceInvitationPlugin.ID);
+    weekly.add(RelationshipRecievedRequestPlugin.ID);
+    weekly.add(PostActivitySpaceStreamPlugin.ID);
     
     model.setInstantlyProviders(instantly);
     model.setDailyProviders(daily);
