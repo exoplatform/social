@@ -39,12 +39,14 @@ import org.exoplatform.social.notification.AbstractPluginTest;
  */
 public class PostActivityPluginTest extends AbstractPluginTest {
   
-  public void testInstantly() throws Exception {
+  public void testSimpleCase() throws Exception {
+    //STEP 1 post activity
     makeActivity(demoIdentity, "demo post activity on activity stream of root");
     
     List<NotificationInfo> list = assertMadeNotifications(1);
     NotificationInfo postActivityNotification = list.get(0);
     
+    //STEP 2 assert Message info
     NotificationContext ctx = NotificationContextImpl.cloneInstance();
     ctx.setNotificationInfo(postActivityNotification.setTo("root"));
     MessageInfo info = buildMessageInfo(ctx);
@@ -54,22 +56,41 @@ public class PostActivityPluginTest extends AbstractPluginTest {
     assertBody(info, "demo post activity on activity stream of root");
   }
   
-  public void testInstantlyWhenPluginOrFeatureOff() throws Exception {
-    //Turn off the plugin
+  public void testPluginONOFF() throws Exception {
+    //by default the plugin is on
+    makeActivity(demoIdentity, "demo post activity on activity stream of root");
+    assertMadeNotifications(1);
+    notificationService.clearAll();
+    
+    //turn off the plugin
     turnOFF(getPlugin());
     
-    makeActivity(demoIdentity, "demo post activity on activity stream of root");
-    
+    makeActivity(johnIdentity, "john post activity on activity stream of root");
     assertMadeNotifications(0);
     
-    //turn on the plugin then turn off the feature
+    //turn on the plugin
     turnON(getPlugin());
-    turnFeatureOff();
+    makeActivity(demoIdentity, "demo post activity on activity stream of root");
+    assertMadeNotifications(1);
+    notificationService.clearAll();
+  }
+  
+  public void testFeatureONOFF() throws Exception {
+    //by default the feature is ON
+    makeActivity(demoIdentity, "demo post activity on activity stream of root");
+    assertMadeNotifications(1);
+    notificationService.clearAll();
     
+    //turn off the feature
+    turnFeatureOff();
     makeActivity(maryIdentity, "mary post activity on activity stream of root");
     assertMadeNotifications(0);
     
+    //turn on the feature
     turnFeatureOn();
+    makeActivity(johnIdentity, "john post activity on activity stream of root");
+    assertMadeNotifications(1);
+    notificationService.clearAll();
   }
   
   public void testDigest() throws Exception {
@@ -102,26 +123,6 @@ public class PostActivityPluginTest extends AbstractPluginTest {
     tearDownIdentityList.add(ghostIdentity);
   }
   
-  public void testDigestWithPluginOrFeatureOff() throws Exception {
-    //Turn off the plugin
-    turnOFF(getPlugin());
-    
-    makeActivity(demoIdentity, "demo post activity on activity stream of root");
-    makeActivity(maryIdentity, "mary post activity on activity stream of root");
-    
-    assertMadeNotifications(0);
-    
-    //turn on the plugin then turn off the feature
-    turnON(getPlugin());
-    turnFeatureOff();
-    
-    makeActivity(johnIdentity, "john post activity on activity stream of root");
-    
-    assertMadeNotifications(0);
-    
-    turnFeatureOn();
-  }
-
   @Override
   public AbstractNotificationPlugin getPlugin() {
     return pluginService.getPlugin(NotificationKey.key(PostActivityPlugin.ID));
