@@ -2,8 +2,6 @@ package org.exoplatform.social.notification.plugin;
 
 import java.io.StringWriter;
 import java.io.Writer;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import org.exoplatform.commons.api.notification.NotificationContext;
@@ -14,8 +12,6 @@ import org.exoplatform.commons.api.notification.plugin.AbstractNotificationPlugi
 import org.exoplatform.commons.notification.impl.NotificationContextImpl;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.notification.AbstractPluginTest;
-import org.exoplatform.social.notification.mock.MockMessageQueue;
-import org.exoplatform.social.notification.plugin.NewUserPlugin;
 
 public class NewUserPluginTest extends AbstractPluginTest {
   
@@ -37,96 +33,87 @@ public class NewUserPluginTest extends AbstractPluginTest {
     super.tearDown();
   }
   
-  public void testInstantly() throws Exception {
+  public void testSimpleCase() throws Exception {
+    //STEP 1 create new user
     Identity ghostIdentity = identityManager.getOrCreateIdentity("organization", "ghost", true);
+    tearDownIdentityList.add(ghostIdentity);
     
-    Collection<NotificationInfo> messages = notificationService.storeDigestJCR();
-    assertEquals(1, messages.size());
+    List<NotificationInfo> list = assertMadeNotifications(1);
+    NotificationInfo newUserNotification = list.get(0);
     
+    //STEP 2 assert Message info
     NotificationContext ctx = NotificationContextImpl.cloneInstance();
-    ctx.setNotificationInfo(messages.iterator().next().setTo("mary"));
+    ctx.setNotificationInfo(newUserNotification.setTo("mary"));
     MessageInfo info = buildMessageInfo(ctx);
     
     assertSubject(info, "Ghost gtn has joined eXo<br/>");
-    
-    //And when the plugin is not active
-    turnOFF(getPlugin());
-    Identity raulIdentity = identityManager.getOrCreateIdentity("organization", "raul", true);
-    NotificationInfo ntf = MockMessageQueue.get();
-    assertNull(ntf);
-    
-    //Active the plugin but turn off the feature
-    turnON(getPlugin());
-    turnFeatureOff();
-
-    Identity paulIdentity = identityManager.getOrCreateIdentity("organization", "paul", true);
-    ntf = MockMessageQueue.get();
-    assertNull(ntf);
-    
-    identityManager.deleteIdentity(ghostIdentity);
-    identityManager.deleteIdentity(raulIdentity);
-    identityManager.deleteIdentity(paulIdentity);
+    assertBody(info, "New user on eXo");
   }
   
-  public void testDigestWithAllActive() throws Exception {
+  public void testPluginONOFF() throws Exception {
+    //by default the plugin is ON
+    Identity ghostIdentity = identityManager.getOrCreateIdentity("organization", "ghost", true);
+    tearDownIdentityList.add(ghostIdentity);
+    assertMadeNotifications(1);
+    notificationService.clearAll();
+    
+    //turn off the plugin
+    turnOFF(getPlugin());
+    
+    Identity raulIdentity = identityManager.getOrCreateIdentity("organization", "raul", true);
+    tearDownIdentityList.add(raulIdentity);
+    assertMadeNotifications(0);
+    
+    //turn on the plugin
+    turnON(getPlugin());
+    Identity paulIdentity = identityManager.getOrCreateIdentity("organization", "paul", true);
+    tearDownIdentityList.add(paulIdentity);
+    assertMadeNotifications(1);
+    notificationService.clearAll();
+  }
+  
+  public void testFeatureONOFF() throws Exception {
+    //by default the feature is ON
+    Identity ghostIdentity = identityManager.getOrCreateIdentity("organization", "ghost", true);
+    tearDownIdentityList.add(ghostIdentity);
+    assertMadeNotifications(1);
+    notificationService.clearAll();
+    
+    //turn off the feature
+    turnFeatureOff();
+    
+    Identity raulIdentity = identityManager.getOrCreateIdentity("organization", "raul", true);
+    tearDownIdentityList.add(raulIdentity);
+    assertMadeNotifications(0);
+    
+    //turn on the feature
+    turnFeatureOn();
+    Identity paulIdentity = identityManager.getOrCreateIdentity("organization", "paul", true);
+    tearDownIdentityList.add(paulIdentity);
+    assertMadeNotifications(1);
+    notificationService.clearAll();
+  }
+  
+  public void testDigest() throws Exception {
     Identity ghostIdentity = identityManager.getOrCreateIdentity("organization", "ghost", true);
     Identity raulIdentity = identityManager.getOrCreateIdentity("organization", "raul", true);
     Identity paulIdentity = identityManager.getOrCreateIdentity("organization", "paul", true);
     
     //Digest
-    Collection<NotificationInfo> messages = notificationService.storeDigestJCR();
-    assertEquals(3, messages.size());
+    List<NotificationInfo> list = assertMadeNotifications(3);
     
     NotificationContext ctx = NotificationContextImpl.cloneInstance();
-    List<NotificationInfo> list = new ArrayList<NotificationInfo>();
-    for (NotificationInfo message : messages) {
-      list.add(message.setTo(rootIdentity.getRemoteId()));
-    }
+    list.set(0, list.get(0).setTo(rootIdentity.getRemoteId()));
     ctx.setNotificationInfos(list);
     Writer writer = new StringWriter();
     getPlugin().buildDigest(ctx, writer);
     assertDigest(writer, "Ghost gtn, Raul gtn, Paul gtn have joined eXo.");
     
-    identityManager.deleteIdentity(ghostIdentity);
-    identityManager.deleteIdentity(raulIdentity);
-    identityManager.deleteIdentity(paulIdentity);
+    tearDownIdentityList.add(ghostIdentity);
+    tearDownIdentityList.add(raulIdentity);
+    tearDownIdentityList.add(paulIdentity);
   }
   
-  public void testDigestWithPluginOff() throws Exception {
-    //turn off the plugin
-    turnOFF(getPlugin());
-    
-    Identity ghostIdentity = identityManager.getOrCreateIdentity("organization", "ghost", true);
-    Identity raulIdentity = identityManager.getOrCreateIdentity("organization", "raul", true);
-    Identity paulIdentity = identityManager.getOrCreateIdentity("organization", "paul", true);
-    
-    //No messages
-    Collection<NotificationInfo> messages = notificationService.storeDigestJCR();
-    assertEquals(0, messages.size());
-    
-    identityManager.deleteIdentity(ghostIdentity);
-    identityManager.deleteIdentity(raulIdentity);
-    identityManager.deleteIdentity(paulIdentity);
-  }
-  
-  public void testDigestWithFeatureOff() throws Exception {
-    
-    //turn off the feature
-    exoFeatureService.saveActiveFeature("notification", false);
-    
-    Identity ghostIdentity = identityManager.getOrCreateIdentity("organization", "ghost", true);
-    Identity raulIdentity = identityManager.getOrCreateIdentity("organization", "raul", true);
-    Identity paulIdentity = identityManager.getOrCreateIdentity("organization", "paul", true);
-    
-    //No messages
-    Collection<NotificationInfo> messages = notificationService.storeDigestJCR();
-    assertEquals(0, messages.size());
-    
-    identityManager.deleteIdentity(ghostIdentity);
-    identityManager.deleteIdentity(raulIdentity);
-    identityManager.deleteIdentity(paulIdentity);
-  }
-
   @Override
   public AbstractNotificationPlugin getPlugin() {
     return pluginService.getPlugin(NotificationKey.key(NewUserPlugin.ID));
