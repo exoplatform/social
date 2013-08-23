@@ -41,19 +41,10 @@ public class SpaceInvitationPluginTest extends AbstractPluginTest {
   @Override
   protected void setUp() throws Exception {
     super.setUp();
-    
-    //By default the plugin and feature are active
-    assertTrue(pluginSettingService.isActive(getPlugin().getId()));
-    assertTrue(exoFeatureService.isActiveFeature("notification"));
-    
   }
   
   @Override
   protected void tearDown() throws Exception {
-    //
-    turnON(getPlugin());
-    turnFeatureOn();
-    
     super.tearDown();
   }
   
