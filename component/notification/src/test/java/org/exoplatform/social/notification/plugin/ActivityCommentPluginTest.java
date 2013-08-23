@@ -16,6 +16,9 @@
  */
 package org.exoplatform.social.notification.plugin;
 
+import java.io.StringWriter;
+import java.io.Writer;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.exoplatform.commons.api.notification.NotificationContext;
@@ -164,5 +167,61 @@ public class ActivityCommentPluginTest extends AbstractPluginTest {
     notificationService.clearAll();
   }
   
+  public void testFeatureONOFF() throws Exception {
+    ExoSocialActivity maryActivity = makeActivity(maryIdentity, ACTIVITY_TITLE);
+    //mary post activity on root stream ==> one notification
+    assertMadeNotifications(1);
+    notificationService.clearAll();
+    makeComment(maryActivity, demoIdentity, COMMENT_TITLE);
+    //assert equals = 2 because root is stream owner, and mary is activity's poster
+    assertMadeNotifications(2);
+    notificationService.clearAll();
+    
+    //turn off the feature ==> all plugins off
+    turnFeatureOff();
+    
+    ExoSocialActivity newActivity = makeActivity(maryIdentity, ACTIVITY_TITLE);
+    //postActivityPlugin off
+    assertMadeNotifications(0);
+    makeComment(newActivity, demoIdentity, COMMENT_TITLE);
+    //commentActivityPlugin off
+    assertMadeNotifications(0);
+    
+    //turn on the feature
+    turnFeatureOn();
+    
+    ExoSocialActivity johnActivity = makeActivity(johnIdentity, ACTIVITY_TITLE);
+    assertMadeNotifications(1);
+    notificationService.clearAll();
+    makeComment(johnActivity, demoIdentity, COMMENT_TITLE);
+    assertMadeNotifications(2);
+  }
   
+  public void testDigest() throws Exception {
+    //mary post activity on root stream ==> notify to root
+    ExoSocialActivity maryActivity = makeActivity(maryIdentity, ACTIVITY_TITLE);
+    assertMadeNotifications(1);
+    notificationService.clearAll();
+    
+    List<NotificationInfo> toRoot = new ArrayList<NotificationInfo>();
+
+    //demo add comment to maryActivity ==> notify to root and mary
+    makeComment(maryActivity, demoIdentity, "demo add comment");
+    List<NotificationInfo> list1 = assertMadeNotifications(2);
+    toRoot.add(list1.get(1));
+    notificationService.clearAll();
+    
+    //john add comment to maryActivity ==> notify to root, mary and demo
+    makeComment(activityManager.getActivity(maryActivity.getId()), johnIdentity, "john add comment");
+    List<NotificationInfo> list2 = assertMadeNotifications(3);
+    toRoot.add(list2.get(2));
+    notificationService.clearAll();
+    
+    NotificationContext ctx = NotificationContextImpl.cloneInstance();
+    toRoot.set(0, toRoot.get(0).setTo(rootIdentity.getRemoteId()));
+    ctx.setNotificationInfos(toRoot);
+    Writer writer = new StringWriter();
+    getPlugin().buildDigest(ctx, writer);
+    assertDigest(writer, "Demo gtn, John Anthony have commented on your activity : my activity's title post today.");
+  }
 }
