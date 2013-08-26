@@ -114,7 +114,7 @@ link
       if(UILinkUtil.isImageLink(link)){
         %>
           <div class="ImageLink">
-            <a href="$link" target="_blank"><img src="$link" rel="tooltip" data-placement="bottom" title="$title" height="120"/></a> 
+            <a href="$link" target="_blank" rel="tooltip" data-placement="bottom" title="$title"><img src="$link"  height="120"/></a> 
           </div>
         <%
       }
@@ -125,11 +125,11 @@ link
           <% if (images != null && images.size() > 0) { %>
 			<div id="UIThumbnailLeftBox" class="uiBox thumbnailLeft">
 				<div id="UIThumbnailDisplay" class="uiContentBox">
-				  <div id="Thumbnails" class="thumbnailInner">
+				  <div id="Thumbnails" class="thumbnailInner" rel="tooltip" data-placement="bottom" title="$title">
 					<%
 					  def thumbnailClass = "thumbnailShown";
 					  images.each({ %>
-					   <img src="$it" class="$thumbnailClass" rel="tooltip" data-placement="bottom" title="$title"/>
+					   <img src="$it" class="$thumbnailClass" />
 					  <%
 						thumbnailClass = "thumbnailHidden";
 					  })%>

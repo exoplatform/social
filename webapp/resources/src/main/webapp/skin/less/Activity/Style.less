@@ -417,7 +417,15 @@
 		#gradient > .vertical-three-colors(@white,@white,94%,#f7f7f7);
 		.pull-left  {
 			width:75px;
+			height: 75px;
+			overflow: hidden;
 			margin-right: 10px;
+			img {
+				max-height: 75px;
+				max-width: 75px;
+				min-height: 75px;
+				min-width: 75px;
+			}
 		}
 		.pull-left + .text {
 			overflow: hidden;
