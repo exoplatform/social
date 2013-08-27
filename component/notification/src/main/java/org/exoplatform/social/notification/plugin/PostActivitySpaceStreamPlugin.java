@@ -52,12 +52,10 @@ public class PostActivitySpaceStreamPlugin extends AbstractNotificationPlugin {
   @Override
   public NotificationInfo makeNotification(NotificationContext ctx) {
     try {
+      
       ExoSocialActivity activity = ctx.value(SocialNotificationUtils.ACTIVITY);
       Space space = Utils.getSpaceService().getSpaceByPrettyName(activity.getStreamOwner());
       String poster = Utils.getUserId(activity.getPosterId());
-      if (space != null && poster.equals(activity.getStreamOwner())) {
-        return null;
-      }
       
       return NotificationInfo.instance()
                                 .key(getId())
@@ -130,7 +128,14 @@ public class PostActivitySpaceStreamPlugin extends AbstractNotificationPlugin {
 
   @Override
   public boolean isValid(NotificationContext ctx) {
-    return true;
+    ExoSocialActivity activity = ctx.value(SocialNotificationUtils.ACTIVITY);
+    Space space = Utils.getSpaceService().getSpaceByPrettyName(activity.getStreamOwner());
+    //if the space is not null, then it's valid to make notification 
+    if (space != null) {
+      return true;
+    }
+    
+    return false;
   }
 
 }
