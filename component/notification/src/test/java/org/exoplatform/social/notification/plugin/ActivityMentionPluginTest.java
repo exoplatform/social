@@ -50,7 +50,7 @@ public class ActivityMentionPluginTest extends AbstractPluginTest {
     ctx.setNotificationInfo(mentionNotification.setTo(demoIdentity.getRemoteId()));
     MessageInfo info = getPlugin().buildMessage(ctx);
     
-    assertSubject(info, "You were mentioned by " + maryIdentity.getProfile().getFullName() + "<br/>");
+    assertSubject(info, "You were mentioned by " + maryIdentity.getProfile().getFullName());
     assertBody(info, "New mention of you");
   }
   
@@ -68,7 +68,7 @@ public class ActivityMentionPluginTest extends AbstractPluginTest {
     ctx.setNotificationInfo(commentNotification.setTo(johnIdentity.getRemoteId()));
     MessageInfo info = getPlugin().buildMessage(ctx);
     
-    assertSubject(info, "You were mentioned by " + demoIdentity.getProfile().getFullName() + "<br/>");
+    assertSubject(info, "You were mentioned by " + demoIdentity.getProfile().getFullName());
     assertBody(info, "New mention of you");
   }
   

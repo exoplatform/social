@@ -46,7 +46,7 @@ public class NewUserPluginTest extends AbstractPluginTest {
     ctx.setNotificationInfo(newUserNotification.setTo("mary"));
     MessageInfo info = buildMessageInfo(ctx);
     
-    assertSubject(info, "Ghost gtn has joined eXo<br/>");
+    assertSubject(info, "Ghost gtn has joined eXo");
     assertBody(info, "New user on eXo");
   }
   

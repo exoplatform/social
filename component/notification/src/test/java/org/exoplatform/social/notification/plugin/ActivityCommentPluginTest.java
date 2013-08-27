@@ -76,7 +76,7 @@ public class ActivityCommentPluginTest extends AbstractPluginTest {
     ctx.setNotificationInfo(commentNotification.setTo(demoIdentity.getRemoteId()));
     MessageInfo info = getPlugin().buildMessage(ctx);
     
-    assertSubject(info, demoIdentity.getProfile().getFullName() + " commented one of your activities<br/>");
+    assertSubject(info, demoIdentity.getProfile().getFullName() + " commented one of your activities");
     assertBody(info, "New comment on your activity");
   }
   
@@ -101,7 +101,7 @@ public class ActivityCommentPluginTest extends AbstractPluginTest {
     ctx.setNotificationInfo(commentNotification.setTo(maryIdentity.getRemoteId()));
     MessageInfo info = getPlugin().buildMessage(ctx);
     
-    assertSubject(info, maryIdentity.getProfile().getFullName() + " commented one of your activities<br/>");
+    assertSubject(info, maryIdentity.getProfile().getFullName() + " commented one of your activities");
     assertBody(info, "New comment on your activity");
   }
   
@@ -123,7 +123,7 @@ public class ActivityCommentPluginTest extends AbstractPluginTest {
     ctx.setNotificationInfo(commentNotification.setTo(demoIdentity.getRemoteId()));
     MessageInfo info = getPlugin().buildMessage(ctx);
     
-    assertSubject(info, demoIdentity.getProfile().getFullName() + " commented one of your activities<br/>");
+    assertSubject(info, demoIdentity.getProfile().getFullName() + " commented one of your activities");
     assertBody(info, "New comment on your activity");
     
     notificationService.clearAll();
@@ -161,7 +161,7 @@ public class ActivityCommentPluginTest extends AbstractPluginTest {
     ctx.setNotificationInfo(commentNotification.setTo(demoIdentity.getRemoteId()));
     MessageInfo info = getPlugin().buildMessage(ctx);
     
-    assertSubject(info, demoIdentity.getProfile().getFullName() + " commented one of your activities<br/>");
+    assertSubject(info, demoIdentity.getProfile().getFullName() + " commented one of your activities");
     assertBody(info, "New comment on your activity");
     
     notificationService.clearAll();

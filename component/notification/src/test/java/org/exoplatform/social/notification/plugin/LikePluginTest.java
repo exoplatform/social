@@ -52,7 +52,7 @@ public class LikePluginTest extends AbstractPluginTest {
     ctx.setNotificationInfo(likeNotification.setTo("root"));
     MessageInfo info = buildMessageInfo(ctx);
     
-    assertSubject(info, "Demo gtn likes one of your activities<br/>");
+    assertSubject(info, "Demo gtn likes one of your activities");
     assertBody(info, "New like on your activity stream");
   }
   

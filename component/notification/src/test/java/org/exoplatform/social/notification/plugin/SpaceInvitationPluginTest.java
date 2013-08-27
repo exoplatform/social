@@ -66,7 +66,7 @@ public class SpaceInvitationPluginTest extends AbstractPluginTest {
     ctx.setNotificationInfo(list.get(0).setTo(rootIdentity.getRemoteId()));
     MessageInfo message = buildMessageInfo(ctx);
     
-    assertSubject(message, "You've been invited to join " + space.getDisplayName() + " space<br/>");
+    assertSubject(message, "You've been invited to join " + space.getDisplayName() + " space");
     assertBody(message, "You've received an invitation to join");
     notificationService.clearAll();
   }
@@ -84,7 +84,7 @@ public class SpaceInvitationPluginTest extends AbstractPluginTest {
     ctx.setNotificationInfo(list.get(0).setTo(rootIdentity.getRemoteId()));
     MessageInfo message = buildMessageInfo(ctx);
     
-    assertSubject(message, "You've been invited to join " + space.getDisplayName() + " space<br/>");
+    assertSubject(message, "You've been invited to join " + space.getDisplayName() + " space");
     assertBody(message, "You've received an invitation to join");
     notificationService.clearAll();
     
@@ -126,7 +126,7 @@ public class SpaceInvitationPluginTest extends AbstractPluginTest {
     ctx.setNotificationInfo(list.get(0).setTo(rootIdentity.getRemoteId()));
     MessageInfo message = buildMessageInfo(ctx);
     
-    assertSubject(message, "You've been invited to join " + space2.getDisplayName() + " space<br/>");
+    assertSubject(message, "You've been invited to join " + space2.getDisplayName() + " space");
     assertBody(message, "You've received an invitation to join");
     notificationService.clearAll();
   }

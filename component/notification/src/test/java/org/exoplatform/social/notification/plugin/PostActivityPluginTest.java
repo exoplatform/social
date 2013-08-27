@@ -51,7 +51,7 @@ public class PostActivityPluginTest extends AbstractPluginTest {
     ctx.setNotificationInfo(postActivityNotification.setTo("root"));
     MessageInfo info = buildMessageInfo(ctx);
     
-    assertSubject(info, "Demo gtn posted on your activity stream<br/>");
+    assertSubject(info, "Demo gtn posted on your activity stream");
     assertBody(info, "New post on your activity stream");
     assertBody(info, "demo post activity on activity stream of root");
   }

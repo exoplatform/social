@@ -64,7 +64,7 @@ public class RelationshipReceivedRequestPluginTest extends AbstractPluginTest {
     MessageInfo message = buildMessageInfo(ctx);
     
     assertBody(message, "New connection request");
-    assertSubject(message, demoIdentity.getProfile().getFullName() +" wants to connect with you on eXo<br/>");
+    assertSubject(message, demoIdentity.getProfile().getFullName() +" wants to connect with you on eXo");
     notificationService.clearAll();
   }
   
@@ -79,7 +79,7 @@ public class RelationshipReceivedRequestPluginTest extends AbstractPluginTest {
     MessageInfo message = buildMessageInfo(ctx);
     
     assertBody(message, "New connection request");
-    assertSubject(message, demoIdentity.getProfile().getFullName() +" wants to connect with you on eXo<br/>");
+    assertSubject(message, demoIdentity.getProfile().getFullName() +" wants to connect with you on eXo");
     notificationService.clearAll();
     
     //OFF Plugin
@@ -116,7 +116,7 @@ public class RelationshipReceivedRequestPluginTest extends AbstractPluginTest {
     MessageInfo message = buildMessageInfo(ctx);
     
     assertBody(message, "New connection request");
-    assertSubject(message, maryIdentity.getProfile().getFullName() +" wants to connect with you on eXo<br/>");
+    assertSubject(message, maryIdentity.getProfile().getFullName() +" wants to connect with you on eXo");
     notificationService.clearAll();
     
   }

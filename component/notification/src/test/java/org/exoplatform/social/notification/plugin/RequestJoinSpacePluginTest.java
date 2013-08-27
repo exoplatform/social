@@ -67,7 +67,7 @@ public class RequestJoinSpacePluginTest extends AbstractPluginTest {
     ctx.setNotificationInfo(ntf.setTo(rootIdentity.getRemoteId()));
     MessageInfo message = buildMessageInfo(ctx);
     
-    assertSubject(message, maryIdentity.getProfile().getFullName()+" has requested access to my space 1 space.<br/>");
+    assertSubject(message, maryIdentity.getProfile().getFullName()+" has requested access to my space 1 space.");
     assertBody(message, "New access requirement to your space");
     notificationService.clearAll();
   }
@@ -85,7 +85,7 @@ public class RequestJoinSpacePluginTest extends AbstractPluginTest {
     ctx.setNotificationInfo(ntf.setTo(rootIdentity.getRemoteId()));
     MessageInfo message = buildMessageInfo(ctx);
     
-    assertSubject(message, demoIdentity.getProfile().getFullName()+" has requested access to my space 1 space.<br/>");
+    assertSubject(message, demoIdentity.getProfile().getFullName()+" has requested access to my space 1 space.");
     assertBody(message, "New access requirement to your space");
     notificationService.clearAll();
     
@@ -127,7 +127,7 @@ public class RequestJoinSpacePluginTest extends AbstractPluginTest {
     ctx.setNotificationInfo(ntf.setTo(rootIdentity.getRemoteId()));
     MessageInfo message = buildMessageInfo(ctx);
     
-    assertSubject(message, maryIdentity.getProfile().getFullName()+" has requested access to my space 1 space.<br/>");
+    assertSubject(message, maryIdentity.getProfile().getFullName()+" has requested access to my space 1 space.");
     assertBody(message, "New access requirement to your space");
     notificationService.clearAll();
   }
