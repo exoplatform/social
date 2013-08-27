@@ -395,6 +395,7 @@ public class CachedIdentityStorage implements IdentityStorage {
         listKey);
 
     //
+    LOG.trace("getIdentitiesForMentions:: return " + keys.getIds().size());
     return buildIdentities(keys);
     
   }
@@ -465,6 +466,7 @@ public class CachedIdentityStorage implements IdentityStorage {
         listKey);
 
     //
+    LOG.trace("getIdentitiesByFirstCharacterOfName:: return " + keys.getIds().size());
     return buildIdentities(keys);
 
   }
