@@ -99,7 +99,6 @@ public class SocialNotificationUtils {
     StringBuilder sb = new StringBuilder();
     ExoSocialActivity activity = null;
     Space space = null;
-    sb.append("<ul style=\"margin: 0 0  40px; padding-left: 0; list-style-position: outside;\">");
     for (Entry<String, List<String>> entry : receiversMap.entrySet()) {
       sb.append("<li style=\"margin: 0 0 13px 14px; font-size: 13px; list-style: disc; line-height: 18px; font-family: HelveticaNeue, Helvetica, Arial, sans-serif;\">");
       String id = entry.getKey();
@@ -150,8 +149,6 @@ public class SocialNotificationUtils {
       sb.append(digester);
       sb.append("</li>");
     }
-    
-    sb.append("</ul>");
     
     return sb.toString();
   }

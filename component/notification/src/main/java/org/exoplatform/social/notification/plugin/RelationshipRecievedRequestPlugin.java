@@ -100,6 +100,7 @@ public class RelationshipRecievedRequestPlugin extends AbstractNotificationPlugi
     StringBuilder value = new StringBuilder();
 
     try {
+      writer.append("<li style=\"margin: 0 0 13px 14px; font-size: 13px; list-style: disc; line-height: 18px; font-family: HelveticaNeue, Helvetica, Arial, sans-serif;\">");
       for (int i = 0; i < count && i < 3; i++) {
         Identity identity = Utils.getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, notifications.get(i).getValueOwnerParameter("sender"), true);
         if (i > 1 && count == 3) {
@@ -119,6 +120,7 @@ public class RelationshipRecievedRequestPlugin extends AbstractNotificationPlugi
       
       String digester = TemplateUtils.processDigest(templateContext.digestType(count).end());
       writer.append(digester);
+      writer.append("</li>");
     } catch (IOException e) {
       ctx.setException(e);
       return false;

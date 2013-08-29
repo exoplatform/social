@@ -107,6 +107,7 @@ public class PostActivityPlugin extends AbstractNotificationPlugin {
     StringBuilder value = new StringBuilder();
     
     try {
+      writer.append("<li style=\"margin: 0 0 13px 14px; font-size: 13px; list-style: disc; line-height: 18px; font-family: HelveticaNeue, Helvetica, Arial, sans-serif;\">");
       for (int i = 0; i < count && i < 3; i++) {
         String remoteId = notifications.get(i).getValueOwnerParameter(SocialNotificationUtils.POSTER.getKey());
         Identity identity = Utils.getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, remoteId, true);
@@ -125,10 +126,10 @@ public class PostActivityPlugin extends AbstractNotificationPlugin {
       if(count > 3) {
         templateContext.put("COUNT", SocialNotificationUtils.buildRedirecUrl("user_activity_stream", sendToUser, String.valueOf((count - 3))));
       }
-      templateContext.put("USER_ACTIVITY_STREAM", LinkProviderUtils.getRedirectUrl("user_activity_stream", sendToUser));
+      templateContext.put("ACTIVITY_STREAM", LinkProviderUtils.getRedirectUrl("user_activity_stream", sendToUser));
       String digester = TemplateUtils.processDigest(templateContext.digestType(count));
       writer.append(digester);
-      
+      writer.append("</li>");
     } catch (IOException e) {
       ctx.setException(e);
       return false;

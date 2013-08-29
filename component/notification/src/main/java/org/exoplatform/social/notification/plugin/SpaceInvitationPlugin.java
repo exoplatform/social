@@ -93,6 +93,7 @@ public class SpaceInvitationPlugin extends AbstractNotificationPlugin {
     StringBuilder value = new StringBuilder();
     
     try {
+      writer.append("<li style=\"margin: 0 0 13px 14px; font-size: 13px; list-style: disc; line-height: 18px; font-family: HelveticaNeue, Helvetica, Arial, sans-serif;\">");
       for (int i = 0; i < count && i < 3; i++) {
         String spaceId = notifications.get(i).getValueOwnerParameter(SocialNotificationUtils.SPACE_ID.getKey());
         Space space = Utils.getSpaceService().getSpaceById(spaceId);
@@ -113,6 +114,7 @@ public class SpaceInvitationPlugin extends AbstractNotificationPlugin {
 
       String digester = TemplateUtils.processDigest(templateContext.digestType(count).end());
       writer.append(digester);
+      writer.append("</li>");
     } catch (IOException e) {
       ctx.setException(e);
       return false;
