@@ -119,7 +119,12 @@ public class RequestJoinSpacePlugin extends AbstractNotificationPlugin {
 
   @Override
   public boolean isValid(NotificationContext ctx) {
-    return true;
+    //only sent when the space has the registration option "Validation"
+    Space space = ctx.value(SocialNotificationUtils.SPACE);
+    if (space.getRegistration().equals(Space.VALIDATION)) {
+      return true;
+    }
+    return false;
   }
 
 }
