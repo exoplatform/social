@@ -35,6 +35,7 @@ import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.notification.plugin.ActivityCommentPlugin;
 import org.exoplatform.social.notification.plugin.ActivityMentionPlugin;
 import org.exoplatform.social.notification.plugin.LikePlugin;
+import org.exoplatform.social.notification.plugin.NewUserPlugin;
 import org.exoplatform.social.notification.plugin.PostActivityPlugin;
 import org.exoplatform.social.notification.plugin.PostActivitySpaceStreamPlugin;
 import org.exoplatform.social.notification.plugin.RelationshipRecievedRequestPlugin;
@@ -351,9 +352,7 @@ public abstract class AbstractPluginTest extends AbstractCoreTest {
    * Initialize the User Setting for root
    */
   private void initUserSetting() {
-    //rootIdentity
-    UserSetting model = UserSetting.getInstance();
-    model.setActive(true);
+
     List<String> instantly = new ArrayList<String>();
     instantly.add(PostActivityPlugin.ID);
     instantly.add(ActivityCommentPlugin.ID);
@@ -373,6 +372,7 @@ public abstract class AbstractPluginTest extends AbstractCoreTest {
     daily.add(SpaceInvitationPlugin.ID);
     daily.add(RelationshipRecievedRequestPlugin.ID);
     daily.add(PostActivitySpaceStreamPlugin.ID);
+    daily.add(NewUserPlugin.ID);
     
     List<String> weekly = new ArrayList<String>();
     weekly.add(PostActivityPlugin.ID);
@@ -384,36 +384,22 @@ public abstract class AbstractPluginTest extends AbstractCoreTest {
     weekly.add(RelationshipRecievedRequestPlugin.ID);
     weekly.add(PostActivitySpaceStreamPlugin.ID);
     
-    model.setInstantlyProviders(instantly);
-    model.setDailyProviders(daily);
-    model.setWeeklyProviders(weekly);
-    
-    //root
-    model.setUserId(rootIdentity.getRemoteId());
-    userSettingService.save(model);
-    
-    //mary
-    model = UserSetting.getInstance();
-    model.setUserId(maryIdentity.getRemoteId());
-    model.setActive(true);
-    model.setInstantlyProviders(instantly);
-    model.setDailyProviders(daily);
-    model.setWeeklyProviders(weekly);
-    userSettingService.save(model);
-    
-    //john
-    model = UserSetting.getInstance();
-    model.setUserId(johnIdentity.getRemoteId());
-    model.setActive(true);
-    model.setInstantlyProviders(instantly);
-    model.setDailyProviders(daily);
-    model.setWeeklyProviders(weekly);
-    userSettingService.save(model);
-    
-    //demo
-    model = UserSetting.getInstance();
-    model.setUserId(demoIdentity.getRemoteId());
-    model.setActive(true);
+    // root
+    saveSetting(instantly, daily, weekly, rootIdentity.getRemoteId());
+
+    // mary
+    saveSetting(instantly, daily, weekly, maryIdentity.getRemoteId());
+
+    // john
+    saveSetting(instantly, daily, weekly, johnIdentity.getRemoteId());
+
+    // demo
+    saveSetting(instantly, daily, weekly, demoIdentity.getRemoteId());
+  }
+
+  private void saveSetting(List<String> instantly, List<String> daily, List<String> weekly, String userId) {
+    UserSetting model = UserSetting.getInstance();
+    model.setUserId(userId).setActive(true);
     model.setInstantlyProviders(instantly);
     model.setDailyProviders(daily);
     model.setWeeklyProviders(weekly);

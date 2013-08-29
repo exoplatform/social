@@ -1,5 +1,6 @@
 package org.exoplatform.social.notification.mock;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -44,7 +45,16 @@ public class MockUserSettingServiceImpl implements UserSettingService {
 
   @Override
   public List<String> getUserSettingByPlugin(String pluginId) {
-    return null;
+    List<String> userIds = new ArrayList<String>();
+    for (UserSetting userSetting : settings.values()) {
+      if (userSetting.isInDaily(pluginId) 
+          || userSetting.isInWeekly(pluginId) 
+          || userSetting.isInInstantly(pluginId)) {
+        userIds.add(userSetting.getUserId());
+      }
+    }
+    
+    return userIds;
   }
 
   @Override

@@ -26,7 +26,6 @@ import org.exoplatform.commons.api.notification.service.setting.PluginSettingSer
 import org.exoplatform.commons.api.notification.service.setting.UserSettingService;
 import org.exoplatform.commons.api.notification.service.storage.NotificationService;
 import org.exoplatform.commons.utils.CommonsUtils;
-import org.exoplatform.social.notification.Utils;
 
 public class MockNotificationService implements NotificationService {
 
@@ -60,22 +59,19 @@ public class MockNotificationService implements NotificationService {
 
   @Override
   public void process(NotificationInfo notification) throws Exception {
-    String providerId = notification.getKey().getId();
+    String pluginId = notification.getKey().getId();
     
     // if the provider is not active, do nothing
     PluginSettingService settingService = CommonsUtils.getService(PluginSettingService.class);
-    if (settingService.isActive(providerId) == false)
+    if (settingService.isActive(pluginId) == false)
       return;
     
     List<String> userIds = notification.getSendToUserIds();
-    
-    if (userIds == null || userIds.size() == 0) {
-      //for NewUserPlugin
-      storeDigestJCR.add(notification);
-      return;
+    UserSettingService userSettingService = CommonsUtils.getService(UserSettingService.class);
+    //
+    if (notification.isSendAll()) {
+      userIds = userSettingService.getUserSettingByPlugin(pluginId);
     }
-    
-    UserSettingService userSettingService = Utils.getService(UserSettingService.class);
     
     for (String userId : userIds) {
       UserSetting userSetting =  userSettingService.get(userId);
@@ -85,11 +81,11 @@ public class MockNotificationService implements NotificationService {
         userSetting.setUserId(userId);
       }
       
-      if (userSetting.isInInstantly(providerId)) {
+      if (userSetting.isInInstantly(pluginId)) {
         this.storeInstantly.add(notification);
       }
       
-      if (userSetting.isInDaily(providerId) || userSetting.isInWeekly(providerId)) {
+      if (userSetting.isInDaily(pluginId) || userSetting.isInWeekly(pluginId)) {
         storeDigestJCR.add(notification);
       }
       

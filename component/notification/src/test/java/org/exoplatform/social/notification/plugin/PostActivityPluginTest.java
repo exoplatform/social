@@ -102,7 +102,6 @@ public class PostActivityPluginTest extends AbstractPluginTest {
     
     //create new user
     Identity ghostIdentity = identityManager.getOrCreateIdentity("organization", "ghost", true);
-    List<NotificationInfo> list = assertMadeNotifications(1);
     notificationService.clearAll();
     
     makeActivity(demoIdentity, "demo post activity on activity stream of root");
@@ -111,7 +110,7 @@ public class PostActivityPluginTest extends AbstractPluginTest {
     makeActivity(ghostIdentity, "ghost post activity on activity stream of root");
     
     //Digest
-    list = assertMadeNotifications(4);
+    List<NotificationInfo> list = assertMadeNotifications(4);
     
     NotificationContext ctx = NotificationContextImpl.cloneInstance();
     list.set(0, list.get(0).setTo(rootIdentity.getRemoteId()));

@@ -2,6 +2,8 @@ package org.exoplatform.social.notification.plugin;
 
 import java.io.StringWriter;
 import java.io.Writer;
+import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
 
 import org.exoplatform.commons.api.notification.NotificationContext;
@@ -37,8 +39,8 @@ public class NewUserPluginTest extends AbstractPluginTest {
     //STEP 1 create new user
     Identity ghostIdentity = identityManager.getOrCreateIdentity("organization", "ghost", true);
     tearDownIdentityList.add(ghostIdentity);
-    
-    List<NotificationInfo> list = assertMadeNotifications(1);
+    // will sent 4 mails to 4 users existing.
+    List<NotificationInfo> list = assertMadeNotifications(4);
     NotificationInfo newUserNotification = list.get(0);
     
     //STEP 2 assert Message info
@@ -54,7 +56,7 @@ public class NewUserPluginTest extends AbstractPluginTest {
     //by default the plugin is ON
     Identity ghostIdentity = identityManager.getOrCreateIdentity("organization", "ghost", true);
     tearDownIdentityList.add(ghostIdentity);
-    assertMadeNotifications(1);
+    assertMadeNotifications(4);
     notificationService.clearAll();
     
     //turn off the plugin
@@ -68,7 +70,7 @@ public class NewUserPluginTest extends AbstractPluginTest {
     turnON(getPlugin());
     Identity paulIdentity = identityManager.getOrCreateIdentity("organization", "paul", true);
     tearDownIdentityList.add(paulIdentity);
-    assertMadeNotifications(1);
+    assertMadeNotifications(4);
     notificationService.clearAll();
   }
   
@@ -76,7 +78,8 @@ public class NewUserPluginTest extends AbstractPluginTest {
     //by default the feature is ON
     Identity ghostIdentity = identityManager.getOrCreateIdentity("organization", "ghost", true);
     tearDownIdentityList.add(ghostIdentity);
-    assertMadeNotifications(1);
+    
+    assertMadeNotifications(4);
     notificationService.clearAll();
     
     //turn off the feature
@@ -90,7 +93,7 @@ public class NewUserPluginTest extends AbstractPluginTest {
     turnFeatureOn();
     Identity paulIdentity = identityManager.getOrCreateIdentity("organization", "paul", true);
     tearDownIdentityList.add(paulIdentity);
-    assertMadeNotifications(1);
+    assertMadeNotifications(4);
     notificationService.clearAll();
   }
   
@@ -100,10 +103,15 @@ public class NewUserPluginTest extends AbstractPluginTest {
     Identity paulIdentity = identityManager.getOrCreateIdentity("organization", "paul", true);
     
     //Digest
-    List<NotificationInfo> list = assertMadeNotifications(3);
+    // will sent 12 mails to 4 users existing.
+    List<NotificationInfo> list = assertMadeNotifications(12);
     
     NotificationContext ctx = NotificationContextImpl.cloneInstance();
-    list.set(0, list.get(0).setTo(rootIdentity.getRemoteId()));
+    // remove duplicate message
+    list = new ArrayList<NotificationInfo>(new LinkedHashSet<NotificationInfo>(list));
+
+    list.get(0).setTo(rootIdentity.getRemoteId());
+    
     ctx.setNotificationInfos(list);
     Writer writer = new StringWriter();
     getPlugin().buildDigest(ctx, writer);
