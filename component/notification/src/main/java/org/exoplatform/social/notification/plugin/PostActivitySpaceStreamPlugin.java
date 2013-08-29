@@ -129,9 +129,9 @@ public class PostActivitySpaceStreamPlugin extends AbstractNotificationPlugin {
   @Override
   public boolean isValid(NotificationContext ctx) {
     ExoSocialActivity activity = ctx.value(SocialNotificationUtils.ACTIVITY);
-    Space space = Utils.getSpaceService().getSpaceByPrettyName(activity.getStreamOwner());
-    //if the space is not null, then it's valid to make notification 
-    if (space != null) {
+    Identity spaceIdentity = Utils.getIdentityManager().getOrCreateIdentity(SpaceIdentityProvider.NAME, activity.getStreamOwner(), false);
+    //if the space is not null and it's not the default activity of space, then it's valid to make notification 
+    if (spaceIdentity != null && activity.getPosterId().equals(spaceIdentity.getId()) == false) {
       return true;
     }
     

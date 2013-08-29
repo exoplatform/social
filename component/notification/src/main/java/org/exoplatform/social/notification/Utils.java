@@ -75,6 +75,11 @@ public class Utils {
    * @param posteId
    */
   public static void sendToStreamOwner(List<String> receivers, String streamOwner, String posteId) {
+    //Don't send to the stream owner when it's a space
+    Identity id = getIdentityManager().getOrCreateIdentity(SpaceIdentityProvider.NAME, streamOwner, false);
+    if (id != null) 
+      return;
+    
     String postRemoteId = Utils.getUserId(posteId);
     if (streamOwner.equals(postRemoteId) == false) {
       if (receivers.contains(streamOwner) == false) {

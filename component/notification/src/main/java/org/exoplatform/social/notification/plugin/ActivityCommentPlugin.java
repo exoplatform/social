@@ -32,6 +32,7 @@ import org.exoplatform.commons.notification.template.TemplateUtils;
 import org.exoplatform.container.xml.InitParams;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.identity.model.Identity;
+import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
 import org.exoplatform.social.notification.LinkProviderUtils;
 import org.exoplatform.social.notification.Utils;
 
@@ -127,9 +128,10 @@ public class ActivityCommentPlugin extends AbstractNotificationPlugin {
     ExoSocialActivity comment = ctx.value(SocialNotificationUtils.ACTIVITY);
     ExoSocialActivity activity = Utils.getActivityManager().getParentActivity(comment);
     
-    if (activity.getStreamOwner().equals(Utils.getUserId(activity.getPosterId()))) {
-      if (Utils.isSpaceActivity(activity) || activity.getPosterId().equals(comment.getPosterId()))
-        return false;
+    Identity spaceIdentity = Utils.getIdentityManager().getOrCreateIdentity(SpaceIdentityProvider.NAME, activity.getStreamOwner(), false);
+    //if the space is not null and it's not the default activity of space, then it's valid to make notification 
+    if (spaceIdentity != null && activity.getPosterId().equals(spaceIdentity.getId())) {
+      return false;
     }
     return true;
   }

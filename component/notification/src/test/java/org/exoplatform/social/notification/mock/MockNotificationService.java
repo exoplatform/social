@@ -69,7 +69,7 @@ public class MockNotificationService implements NotificationService {
     
     List<String> userIds = notification.getSendToUserIds();
     
-    if (userIds == null) {
+    if (userIds == null || userIds.size() == 0) {
       //for NewUserPlugin
       storeDigestJCR.add(notification);
       return;
