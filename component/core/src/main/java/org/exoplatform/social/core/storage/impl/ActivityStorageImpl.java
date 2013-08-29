@@ -2122,7 +2122,7 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
       
       //load more?
       if (loadMore) {
-        newOffset = offset + newLimit;
+        newOffset += newLimit;
         got = getUserActivities(posterIdentity, newOffset, newLimit);
         
         //the load more is empty, break
