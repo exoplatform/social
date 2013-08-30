@@ -199,6 +199,10 @@ public class UIComposer extends UIForm {
       //post activity via the current activity composer
       activityComposerManager.getCurrentActivityComposer().postActivity(postContext, uiComposer, event.getRequestContext(), message);
       
+      //clear client cache
+      Utils.clearUserProfilePopup();
+      
+      Utils.initUserProfilePopup(uiComposer.getId());
       Utils.resizeHomePage();
     }
   }

@@ -46,6 +46,13 @@ var UIProfile = {
         });
     });
   },
+  clearUserProfilePopup : function() {
+    $('div#socialUsersData').stop().animate({
+        'cursor':'none'
+    }, 1000, function () {
+        $(this).data("CacheSearch", {});
+    });
+  },
   addLabelToCheckBoxes: function(uicomponentId, label) {
     var component = $('#' + uicomponentId);
     var checkBoxes = component.find('span.uiCheckbox');

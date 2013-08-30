@@ -750,10 +750,10 @@ public class BaseUIActivity extends UIForm {
       if (activitiesContainer.getActivityList().size() == 0) {
         event.getRequestContext().addUIComponentToUpdateByAjax(activitiesContainer.getParent().getParent());
       } else {
-        event.getRequestContext().addUIComponentToUpdateByAjax(activitiesContainer);
+        event.getRequestContext().addUIComponentToUpdateByAjax(activitiesContainer.getParent());
       }
       
-      Utils.initUserProfilePopup(uiActivity.getId());
+      Utils.clearUserProfilePopup();
       Utils.resizeHomePage();
     }
 
