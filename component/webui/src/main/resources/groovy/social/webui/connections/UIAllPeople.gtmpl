@@ -155,8 +155,8 @@
 				<% } else { %>
 				<div class="spaceBox pull-left">
 				<% } %>
-					<a class="avatarXLarge pull-left">
-						<img rel="tooltip" data-placement="bottom" title="${fullName}" src="$imageSource" />
+					<a href="${profileURL}" class="avatarXLarge pull-left">
+						<img src="$imageSource" />
 					</a>
 					<div class="contentBox">
 						<h4 class="spaceTitle"><a href="${profileURL}">${fullName}</a></h4>
