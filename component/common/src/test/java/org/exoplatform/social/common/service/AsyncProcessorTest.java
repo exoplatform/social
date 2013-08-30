@@ -117,10 +117,11 @@ public class AsyncProcessorTest extends TestSocialServiceContext {
     
     for(int i = 0; i < 80; i++) {
       ProcessContext got = serviceExecute(params, createAsyncCallback());
+      Thread.sleep(50);
       assertEquals("done", got.getProperty("result", String.class));
     }
-
     
+    Thread.sleep(1000);
   }
 
   private AsyncCallback createAsyncCallback() {
