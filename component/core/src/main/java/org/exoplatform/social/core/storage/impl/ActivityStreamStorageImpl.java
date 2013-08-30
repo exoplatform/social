@@ -775,6 +775,7 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
 
     builder.where(whereExpression.toString());
     builder.orderBy(ActivityRef.lastUpdated.getName(), Ordering.DESC);
+    builder.orderBy(JCRProperties.name.getName(), Ordering.DESC);
     return builder.get().objects(offset, limit);
   }
   
