@@ -53,7 +53,7 @@
 				if (groups == null || groups.size() == 0) { 
 			%>
 					<tr>
-						<td class="empty center" colspan="5">
+						<td class="empty center" colspan="3">
 						 ${_ctx.appRes("UINotification.label.Empty")}
 						</td>
 					</tr>	
@@ -63,20 +63,25 @@
 					  if(pluginInfos == null || pluginInfos.size() == 0) {
 					    continue;
 					  }
-			%>
-					<tr>
-						<td class="left">
-							<strong>${_ctx.pluginRes(group.getResourceBundleKey(), group.getGroupId())}</strong>
-						</td>
-						<td></td>
-						<td></td>
-					</tr>
-					<%
+			
+					  int groupActive = 0;
 						for (def plugin : pluginInfos) {
 						  String pluginId = plugin.getType();
 						  if(plugin.isActive() == false) {
 						    continue;
-						  } 
+						  }
+						  groupActive = groupActive + 1;
+						  if (groupActive == 1) {
+						    %>
+				          <tr>
+				            <td class="left">
+				              <strong>${_ctx.pluginRes(group.getResourceBundleKey(), group.getGroupId())}</strong>
+				            </td>
+				            <td></td>
+				            <td></td>
+				          </tr>
+			          <%
+						  }
 					%>
 					<tr>
 						<td class="left">
