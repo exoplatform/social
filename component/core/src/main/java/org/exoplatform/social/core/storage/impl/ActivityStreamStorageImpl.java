@@ -143,7 +143,7 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
       //
       ActivityEntity activityEntity = _findById(ActivityEntity.class, streamCtx.getActivity().getId());     
       if (OrganizationIdentityProvider.NAME.equals(owner.getProviderId())) {
-    createOwnerRefs(owner, activityEntity);
+        createOwnerRefs(owner, activityEntity);
       } else if (SpaceIdentityProvider.NAME.equals(owner.getProviderId())) {
         //
         manageRefList(new UpdateContext(owner, null), activityEntity, ActivityRefType.SPACE_STREAM);
@@ -774,6 +774,7 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
 
     builder.where(whereExpression.toString());
     builder.orderBy(ActivityRef.lastUpdated.getName(), Ordering.DESC);
+    builder.orderBy(JCRProperties.name.getName(), Ordering.DESC);
     return builder.get().objects(offset, limit);
   }
   
