@@ -45,10 +45,22 @@ public class Utils {
     return getService(NotificationDataStorage.class);
   }
 
+  /**
+   * Gets the user's remote id from identity's id 
+   * 
+   * @param identityId the id of an user
+   * @return
+   */
   public static String getUserId(String identityId) {
     return getIdentityManager().getIdentity(identityId, false).getRemoteId();
   }
   
+  /**
+   * Convert an array of user's remote id to a list
+   * 
+   * @param userIds
+   * @return list of user's remote id
+   */
   public static List<String> toListUserIds(String... userIds) {
     List<String> ids = new ArrayList<String>();
 
@@ -59,6 +71,12 @@ public class Utils {
     return ids;
   }
   
+  /**
+   * Check if an activity is created in a space
+   * 
+   * @param activity
+   * @return true if activity is created in a space, else return false
+   */
   public static boolean isSpaceActivity(ExoSocialActivity activity) {
     Identity id = getIdentityManager().getOrCreateIdentity(SpaceIdentityProvider.NAME, activity.getStreamOwner(), false);
     return (id != null);
@@ -109,6 +127,13 @@ public class Utils {
     receivers.addAll(getDestinataires(mentioners, poster));
   }
   
+  /**
+   * Get the list of user's remote id that will receive the notification and not contain the poster of activity or comment
+   * 
+   * @param users list of all user
+   * @param poster user has posted the activity or comment
+   * @return
+   */
   private static List<String> getDestinataires(String[] users, String poster) {
     List<String> destinataires = new ArrayList<String>();
     for (String user : users) {
@@ -121,6 +146,12 @@ public class Utils {
     return destinataires;
   }
   
+  /**
+   * From activity's title, find all mention prefix and add the host + port to ensure the link to user's profile is correct
+   * 
+   * @param title title of activity
+   * @return
+   */
   public static String processMentions(String title) {
     Matcher matcher = MENTION_PATTERN.matcher(title);
     String domain = System.getProperty("gatein.email.domain.url", "http://localhost:8080");
@@ -137,6 +168,13 @@ public class Utils {
     return title;
   }
   
+  /**
+   * Gets the list of user's remote id to send notification when an activity is posted in space
+   * 
+   * @param activity
+   * @param space
+   * @return
+   */
   public static List<String> getDestinataires(ExoSocialActivity activity, Space space) {
     List<String> destinataires = new ArrayList<String>();
     String poster = getUserId(activity.getPosterId());
