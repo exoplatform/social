@@ -16,9 +16,9 @@
  */
 package org.exoplatform.social.core.chromattic.entity;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.chromattic.api.annotations.Create;
 import org.chromattic.api.annotations.DefaultValue;
@@ -93,6 +93,28 @@ public abstract class ActivityRefMonthEntity implements NamedEntity, IndexNumber
           getDaysList().add(i, dayEntity);
         }
       }
+    }
+
+    return dayEntity;
+
+  }
+  
+  public ActivityRefDayEntity getDay(String day, AtomicBoolean newYearMonthday) {
+
+    ActivityRefDayEntity dayEntity = getDays().get(day);
+
+    if (dayEntity == null) {
+      dayEntity = newDay();
+      getDays().put(day, dayEntity);
+      long longDay = Long.parseLong(day);
+      for (int i = getDaysList().size() - 1; i >= 0 ; --i) {
+        long longCurrent = Long.parseLong(getDaysList().get(i).getName());
+        if (longCurrent < longDay) {
+          getDaysList().add(i, dayEntity);
+        }
+      }
+      
+      newYearMonthday.set(true);
     }
 
     return dayEntity;

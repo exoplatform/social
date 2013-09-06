@@ -131,7 +131,7 @@ public abstract class AbstractSocialInjector extends DataInjector {
     
     try {
       userNumber = userNumber(userBase);
-      spaceNumber = userNumber(spacePrettyBase);
+      spaceNumber = spaceNumber(spaceBase);
     }
     catch (UndeclaredThrowableException e) {
       // If no user is existing, set keep 0 as value.

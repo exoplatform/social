@@ -21,6 +21,7 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.chromattic.api.annotations.Create;
 import org.chromattic.api.annotations.DefaultValue;
@@ -106,10 +107,42 @@ public abstract class ActivityRefListEntity {
 
   }
   
+  public ActivityRefYearEntity getYear(String year, AtomicBoolean newYearMonthDay) {
+    ActivityRefYearEntity yearEntity = null;
+    if (getYears() == null) {
+      yearEntity = newYear(year);
+    } else {
+      yearEntity = getYears().get(year);
+    }
+
+    if (yearEntity == null) {
+      yearEntity = newYear();
+      getYears().put(year, yearEntity);
+      long longYear = Long.parseLong(year);
+      for (int i = getYearsList().size() - 1; i >= 0 ; --i) {
+        long longCurrent = Long.parseLong(getYearsList().get(i).getName());
+        if (longCurrent < longYear) {
+          getYearsList().add(i, yearEntity);
+        }
+      }
+      
+      newYearMonthDay.set(true);
+    }
+
+    return yearEntity;
+
+  }
+  
   public ActivityRef get(ActivityEntity entity) {
     //migration 3.5.x => 4.x, lastUpdated of Activity is NULL, then use createdDate for replacement 
     Long key = entity.getLastUpdated() != null ? entity.getLastUpdated() : entity.getPostedTime(); 
     return get(key.longValue());
+  }
+  
+  public ActivityRef get(ActivityEntity entity, AtomicBoolean newYearMonthday) {
+    //migration 3.5.x => 4.x, lastUpdated of Activity is NULL, then use createdDate for replacement 
+    Long key = entity.getLastUpdated() != null ? entity.getLastUpdated() : entity.getPostedTime(); 
+    return get(key.longValue(), newYearMonthday);
   }
   
   public ActivityRef get(long lastUpdated) {
@@ -121,6 +154,29 @@ public abstract class ActivityRefListEntity {
     String day = String.valueOf(calendar.get(Calendar.DAY_OF_MONTH));
 
     ActivityRefDayEntity dayEntity = this.getYear(year).getMonth(month).getDay(day);
+    
+    //needs to check it existing or not in list
+    ActivityRef ref = dayEntity.getActivityRefs().get("" + lastUpdated);
+    
+    if (ref == null) {
+      ref = dayEntity.createRef();
+      ref.setName("" + lastUpdated);
+      dayEntity.getActivityRefList().add(ref);
+      dayEntity.inc();
+    }
+    
+    return ref;
+  }
+  
+  public ActivityRef get(long lastUpdated, AtomicBoolean newYearMonthDay) {
+    Calendar calendar = Calendar.getInstance(Locale.ENGLISH);
+    calendar.setTimeInMillis(lastUpdated);
+
+    String year = String.valueOf(calendar.get(Calendar.YEAR));
+    String month = MONTH_NAME[calendar.get(Calendar.MONTH)];
+    String day = String.valueOf(calendar.get(Calendar.DAY_OF_MONTH));
+
+    ActivityRefDayEntity dayEntity = this.getYear(year, newYearMonthDay).getMonth(month, newYearMonthDay).getDay(day, newYearMonthDay);
     
     //needs to check it existing or not in list
     ActivityRef ref = dayEntity.getActivityRefs().get("" + lastUpdated);
