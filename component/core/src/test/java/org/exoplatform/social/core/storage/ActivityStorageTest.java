@@ -479,7 +479,7 @@ public class ActivityStorageTest extends AbstractCoreTest {
   /**
    * Tests {@link ActivityStorage#getNumberOfActivitesOnActivityFeed(Identity)}.
    */
-  @MaxQueryNumber(734)
+  @MaxQueryNumber(800)
   public void testGetNumberOfActivitesOnActivityFeed() throws Exception {
     createActivities(3, demoIdentity);
     createActivities(2, maryIdentity);
@@ -545,7 +545,7 @@ public class ActivityStorageTest extends AbstractCoreTest {
   /**
    * Tests {@link ActivityStorage#getNumberOfOlderOnActivityFeed(Identity, ExoSocialActivity)}.
    */
-  @MaxQueryNumber(738)
+  @MaxQueryNumber(820)
   public void testGetNumberOfOlderOnActivityFeed() throws Exception {
     createActivities(3, demoIdentity);
     createActivities(2, maryIdentity);
@@ -821,7 +821,7 @@ public class ActivityStorageTest extends AbstractCoreTest {
    * 
    * @since 1.2.0-Beta3
    */
-  @MaxQueryNumber(2148)
+  @MaxQueryNumber(2158)
   public void testGetNewerOnActivitiesOfConnections() {
     List<Relationship> relationships = new ArrayList<Relationship> ();
     this.createActivities(3, maryIdentity);
@@ -1305,7 +1305,7 @@ public class ActivityStorageTest extends AbstractCoreTest {
    * 
    * @since 1.2.12
    */
-  @MaxQueryNumber(2310)
+  @MaxQueryNumber(2328)
   public void testGetNumberOfNewerOnActivitiesOfConnectionsByTimestamp() throws Exception {
     List<Relationship> relationships = new ArrayList<Relationship>();
     this.createActivities(3, maryIdentity);
@@ -2013,7 +2013,7 @@ public class ActivityStorageTest extends AbstractCoreTest {
   /**
    * Tests {@link ActivityStorage#getNewerOnActivityFeed(Identity, Long, int)}.
    */
-  @MaxQueryNumber(1216)
+  @MaxQueryNumber(1306)
   public void testGetNewerOnActivityFeedWithTimestamp() throws Exception {
     checkCleanData();
     createActivities(3, demoIdentity);
@@ -2074,7 +2074,7 @@ public class ActivityStorageTest extends AbstractCoreTest {
    * Test
    * {@link ActivityStorage#getNewerOnActivitiesOfConnections(Identity, Long, int)}
    */
-  @MaxQueryNumber(2326)
+  @MaxQueryNumber(2344)
   public void testGetNewerOnActivitiesOfConnectionsWithTimestamp() throws Exception {
     checkCleanData();
     List<Relationship> relationships = new ArrayList<Relationship>();

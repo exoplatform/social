@@ -23,6 +23,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.chromattic.api.query.Ordering;
@@ -846,6 +847,7 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
   
   private void manageRefList(UpdateContext context, ActivityEntity activityEntity, ActivityRefType type, boolean mustCheck) throws NodeNotFoundException {
 
+    AtomicBoolean newYearMonthday = new AtomicBoolean(false);
     if (context.getAdded() != null) {
       for (Identity identity : context.getAdded()) {
         IdentityEntity identityEntity = identityStorage._findIdentityEntity(identity.getProviderId(), identity.getRemoteId());
@@ -858,7 +860,15 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
         
         
         ActivityRefListEntity listRef = type.refsOf(identityEntity);
-        ActivityRef ref = listRef.get(activityEntity);
+        
+        newYearMonthday.set(false);
+        ActivityRef ref = listRef.get(activityEntity, newYearMonthday);
+        
+        //Take care the YearMonthDay path don't throw ADD_PROPERTY exception.
+        if (newYearMonthday.get()) {
+          StorageUtils.persist();
+        }
+        
         //LOG.info("manageRefList()::BEFORE");
         //printDebug(listRef, activityEntity.getLastUpdated());
         if (ref.getName() == null) {
