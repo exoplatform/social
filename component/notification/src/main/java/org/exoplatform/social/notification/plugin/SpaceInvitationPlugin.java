@@ -109,7 +109,7 @@ public class SpaceInvitationPlugin extends AbstractNotificationPlugin {
       }
       templateContext.put(key, value.toString());
       if(count > 3) {
-        templateContext.put("COUNT", SocialNotificationUtils.buildRedirecUrl("space_invitation", null, String.valueOf((count - 3))));
+        templateContext.put("COUNT", SocialNotificationUtils.buildRedirecUrl("space_invitation", first.getTo(), String.valueOf((count - 3))));
       }
 
       String digester = TemplateUtils.processDigest(templateContext.digestType(count).end());

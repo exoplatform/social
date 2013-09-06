@@ -125,7 +125,7 @@ public class NewUserPlugin extends AbstractNotificationPlugin {
       }
       templateContext.put(key, value.toString());
       if(count > 3) {
-        templateContext.put("COUNT", SocialNotificationUtils.buildRedirecUrl("connections", null, String.valueOf((count - 3))));
+        templateContext.put("COUNT", SocialNotificationUtils.buildRedirecUrl("connections", first.getTo(), String.valueOf((count - 3))));
       }
       
       templateContext.put("PORTAL_NAME", System.getProperty("exo.notifications.portalname", "eXo"));
