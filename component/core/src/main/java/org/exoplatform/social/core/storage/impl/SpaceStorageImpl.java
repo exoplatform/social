@@ -137,6 +137,40 @@ public class SpaceStorageImpl extends AbstractStorage implements SpaceStorage {
     }
     space.setAvatarLastUpdated(entity.getAvatarLastUpdated());
   }
+  
+  /**
+   * Fills {@link Space}'s properties to {@link SpaceEntity}'s.
+   *
+   * @param entity the space entity from chromattic
+   * @param space  the space pojo for services
+   */
+  private void fillSpaceSimpleFromEntity(SpaceEntity entity, Space space) {
+
+    space.setId(entity.getId());
+    space.setDisplayName(entity.getDisplayName());
+    space.setPrettyName(entity.getPrettyName());
+    space.setDescription(entity.getDescription());
+    space.setGroupId(entity.getGroupId());
+    space.setUrl(entity.getURL());
+    space.setCreatedTime(entity.getCreatedTime());
+
+    if (entity.getAvatarLastUpdated() != null) {
+      try {
+        PortalContainer container = PortalContainer.getInstance();
+        ChromatticSession chromatticSession = getSession();
+        String url = String.format("/%s/jcr/%s/%s/production/soc:providers/soc:space/soc:%s/soc:profile/soc:avatar/?upd=%d",
+            container.getRestContextName(),
+            lifeCycle.getRepositoryName(),
+            chromatticSession.getJCRSession().getWorkspace().getName(),
+            entity.getPrettyName(),
+            entity.getAvatarLastUpdated());
+        space.setAvatarUrl(LinkProvider.escapeJCRSpecialCharacters(url));
+      } catch (Exception e) {
+        LOG.warn("Failed to build avatar url: " + e.getMessage());
+      }
+    }
+    space.setAvatarLastUpdated(entity.getAvatarLastUpdated());
+  }
 
   /**
    * Fills {@link SpaceEntity}'s properties from {@link Space}'s.
@@ -158,10 +192,21 @@ public class SpaceStorageImpl extends AbstractStorage implements SpaceStorage {
     entity.setPriority(space.getPriority());
     entity.setGroupId(space.getGroupId());
     entity.setURL(space.getUrl());
-    entity.setMembersId(space.getMembers());
-    entity.setManagerMembersId(space.getManagers());
-    entity.setPendingMembersId(space.getPendingUsers());
-    entity.setInvitedMembersId(space.getInvitedUsers());
+    if (space.getMembers() != null && space.getMembers().length > 0) {
+      entity.setMembersId(space.getMembers());
+    }
+    //
+    if (space.getManagers() != null && space.getManagers().length > 0) {
+      entity.setManagerMembersId(space.getManagers());
+    }
+    //
+    if (space.getPendingUsers() != null && space.getPendingUsers().length > 0) {
+      entity.setPendingMembersId(space.getPendingUsers());
+    }
+    //
+    if (space.getInvitedUsers() != null && space.getInvitedUsers().length > 0) {
+      entity.setInvitedMembersId(space.getInvitedUsers());
+    }
     entity.setAvatarLastUpdated(space.getAvatarLastUpdated());
     entity.setCreatedTime(space.getCreatedTime() != 0 ? space.getCreatedTime() : System.currentTimeMillis());
 
@@ -1323,6 +1368,46 @@ public class SpaceStorageImpl extends AbstractStorage implements SpaceStorage {
   public int getAccessibleSpacesByFilterCount(String userId, SpaceFilter spaceFilter) {
     return getAccessibleSpacesByFilterQuery(userId, spaceFilter).objects().size();
   }
+  
+  /**
+   * {@inheritDoc}
+   */
+  public int getLastAccessedSpaceCount(SpaceFilter filter) {
+    
+    try {
+      IdentityEntity identityEntity = identityStorage._findIdentityEntity(OrganizationIdentityProvider.NAME, filter.getRemoteId());
+      SpaceListEntity listRef = RefType.MEMBER.refsOf(identityEntity);
+      Map<String, SpaceRef> mapRefs = listRef.getRefs();
+      //
+      int counter = 0;
+      
+      //
+      for(Map.Entry<String, SpaceRef> entry :  mapRefs.entrySet()) {
+        SpaceRef ref = entry.getValue();
+
+        // Lazy clean up
+        if (ref.getSpaceRef() == null) {
+          listRef.removeRef(entry.getKey());
+          continue;
+        }
+
+        if (filter.getAppId() == null) {
+          counter++;
+        } else {
+          if (ref.getSpaceRef().getApp().toLowerCase().indexOf(filter.getAppId().toLowerCase()) > 0) {
+            counter++;
+          }
+        }
+      }
+
+      
+      
+      return counter;
+      } catch (NodeNotFoundException e) {
+        LOG.warn(e.getMessage(), e);
+        return 0;
+      }
+  }
 
   /**
    * {@inheritDoc}
@@ -1757,6 +1842,28 @@ public class SpaceStorageImpl extends AbstractStorage implements SpaceStorage {
     }
 
   }
+  
+  /**
+   * {@inheritDoc}
+   */
+  public Space getSpaceSimpleById(String id) throws SpaceStorageException {
+
+    try {
+
+      SpaceEntity spaceEntity = _findById(SpaceEntity.class, id);
+
+      Space space = new Space();
+
+      fillSpaceSimpleFromEntity(spaceEntity, space);
+
+      return space;
+
+    }
+    catch (NodeNotFoundException e) {
+      return null;
+    }
+
+  }
 
   /**
    * {@inheritDoc}
@@ -1908,7 +2015,7 @@ public class SpaceStorageImpl extends AbstractStorage implements SpaceStorage {
     //
     while (it1.hasNext()) {
       space = new Space();
-      fillSpaceFromEntity(it1.next().getSpaceRef(), space);
+      fillSpaceSimpleFromEntity(it1.next().getSpaceRef(), space);
       got.add(space);
       //
       if (++numberOfSpaces == limit) {
