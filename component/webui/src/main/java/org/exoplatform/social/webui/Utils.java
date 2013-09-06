@@ -595,7 +595,20 @@ public class Utils {
       .addScripts("profile.initUserProfilePopup('" + uiActivityId + "', null);");
   }
   
-  private static Space getSpaceByContext() {
+  /**
+   * Clear user profile popup.
+   * 
+   * @param uiActivityId Id of activity component.
+   * @since 4.1.x
+   */
+  public static void clearUserProfilePopup() {
+    PortletRequestContext pContext = (PortletRequestContext) WebuiRequestContext.getCurrentInstance();
+    JavascriptManager jm = pContext.getJavascriptManager();
+    jm.require("SHARED/social-ui-profile", "profile")
+      .addScripts("profile.clearUserProfilePopup();");
+  }
+  
+  public static Space getSpaceByContext() {
     //
     SpaceService spaceService = (SpaceService) ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(SpaceService.class);
     PortalRequestContext pcontext = Util.getPortalRequestContext();

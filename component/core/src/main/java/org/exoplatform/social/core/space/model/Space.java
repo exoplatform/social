@@ -640,5 +640,23 @@ public class Space {
       this.createdTime = System.currentTimeMillis();
     }
   }
+  
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (!(o instanceof Space)) {
+      return false;
+    }
+
+    Space space = (Space) o;
+
+    if (id != null ? !id.equals(space.id) : space.id != null) {
+      return false;
+    }
+
+    return true;
+  }
 
 }
