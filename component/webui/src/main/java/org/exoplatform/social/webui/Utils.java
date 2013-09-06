@@ -595,7 +595,6 @@ public class Utils {
       .addScripts("profile.initUserProfilePopup('" + uiActivityId + "', null);");
   }
   
-  
   /**
    * Clear user profile popup.
    * 
@@ -609,7 +608,7 @@ public class Utils {
       .addScripts("profile.clearUserProfilePopup();");
   }
   
-  private static Space getSpaceByContext() {
+  public static Space getSpaceByContext() {
     //
     SpaceService spaceService = (SpaceService) ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(SpaceService.class);
     PortalRequestContext pcontext = Util.getPortalRequestContext();
