@@ -135,7 +135,7 @@
       var popup = PopupConfirmation.makeTemplate();
       popup.find('.popupTitle').html(title);
       message = message.replace("${simpleQuote}", "'");
-      popup.find('.contentMessage').html(message);
+      popup.find('.contentMessage').removeClass('confirmationIcon').addClass('infoIcon').html(message);
       var uiAction = popup.find('.uiAction');
       uiAction.append(PopupConfirmation.addAction(null, closeLabel));
       //
