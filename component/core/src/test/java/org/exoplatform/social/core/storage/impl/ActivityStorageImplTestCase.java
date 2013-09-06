@@ -410,7 +410,7 @@ public class ActivityStorageImplTestCase extends AbstractCoreTest {
     identityStorage.deleteIdentity(spaceIdentity);
   }
 
-  @MaxQueryNumber(918)
+  @MaxQueryNumber(926)
   public void testActivityOrder() throws Exception {
     // fill 10 activities
     for (int i = 0; i < 10; ++i) {
@@ -670,7 +670,7 @@ public class ActivityStorageImplTestCase extends AbstractCoreTest {
     assertTrue(!ids.contains(maryIdentity.getId()));
   }
 
-  @MaxQueryNumber(2550)
+  @MaxQueryNumber(2578)
   public void testContactActivities() throws Exception {
 
     //
@@ -732,7 +732,7 @@ public class ActivityStorageImplTestCase extends AbstractCoreTest {
 
   }
 
-  @MaxQueryNumber(802)
+  @MaxQueryNumber(882)
   public void testManyDays() throws Exception {
 
     long timestamp111 = timestamp(2001, 1, 1);
@@ -766,7 +766,7 @@ public class ActivityStorageImplTestCase extends AbstractCoreTest {
 
   }
 
-  @MaxQueryNumber(354)
+  @MaxQueryNumber(368)
   public void testManyDaysNoActivityOnDay() throws Exception {
 
     long timestamp1 = timestamp(2001, 1, 1);
@@ -783,7 +783,7 @@ public class ActivityStorageImplTestCase extends AbstractCoreTest {
 
   }
 
-  @MaxQueryNumber(714)
+  @MaxQueryNumber(746)
   public void testManyDaysNoActivityOnMonth() throws Exception {
 
     long timestamp11 = timestamp(2001, 1, 1);
@@ -806,7 +806,7 @@ public class ActivityStorageImplTestCase extends AbstractCoreTest {
 
   }
 
-  @MaxQueryNumber(1434)
+  @MaxQueryNumber(1498)
   public void testManyDaysNoActivityOnYear() throws Exception {
 
     long timestamp111 = timestamp(2001, 1, 1);

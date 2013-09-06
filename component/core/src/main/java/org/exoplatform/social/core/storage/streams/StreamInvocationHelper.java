@@ -25,7 +25,6 @@ import org.exoplatform.social.common.service.SocialServiceContext;
 import org.exoplatform.social.common.service.impl.SocialServiceContextImpl;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.identity.model.Identity;
-import org.exoplatform.social.core.space.SpaceUtils;
 import org.exoplatform.social.core.storage.impl.StorageUtils;
 
 public class StreamInvocationHelper {
@@ -50,7 +49,7 @@ public class StreamInvocationHelper {
     
     try {
       if (ctx.isAsync()) {
-        SpaceUtils.endSyn(true);
+        beforeAsync();
         //
         ctx.getServiceExecutor().async(StreamProcessorFactory.saveStream(), processCtx);
       } else {
@@ -82,7 +81,7 @@ public class StreamInvocationHelper {
     processCtx.identity(owner).activity(activity);
     
     try {
-      beforeAsync();
+      //beforeAsync(); Why do we need to save here? Can make the problem with ADD_PROPERTY
       ctx.getServiceExecutor().execute(StreamProcessorFactory.savePoster(), processCtx);
     } finally {
       LOG.info(processCtx.getTraceLog());
@@ -105,6 +104,7 @@ public class StreamInvocationHelper {
     
     try {
       if (ctx.isAsync()) {
+        beforeAsync();
         ctx.getServiceExecutor().async(StreamProcessorFactory.updateStream(), processCtx);
       } else {
         ctx.getServiceExecutor().execute(StreamProcessorFactory.updateStream(), processCtx);
@@ -126,7 +126,7 @@ public class StreamInvocationHelper {
     processCtx.identity(commenter).activity(activity).commenters(commenters);
     
     try {
-      beforeAsync();
+      //beforeAsync(); this point can make the problem with ADD_PROPERTY exception
       //
       ctx.getServiceExecutor().execute(StreamProcessorFactory.updateCommenter(), processCtx);
     } finally {
@@ -144,7 +144,7 @@ public class StreamInvocationHelper {
     processCtx.activity(activity).mentioners(mentioners).commenters(commenters);
     
     try {
-      beforeAsync();
+      //beforeAsync(); //this point can make the problem with ADD_PROPERTY exception
       //
       ctx.getServiceExecutor().execute(StreamProcessorFactory.deleteCommentStream(), processCtx);
     } finally {
@@ -162,9 +162,7 @@ public class StreamInvocationHelper {
     processCtx.identity(removedLike).activity(activity);
     
     try {
-      beforeAsync();
-      //don't use asynchronous because there is problem to get SessionProvider on Ecms side
-      //org.exoplatform.services.cms.impl.Utils
+      //beforeAsync();
       ctx.getServiceExecutor().execute(StreamProcessorFactory.unlikeActivity(), processCtx);
     } finally {
       LOG.info(processCtx.getTraceLog());
@@ -180,7 +178,7 @@ public class StreamInvocationHelper {
     processCtx.identity(liker).activity(activity);
     
     try {
-      beforeAsync();
+      //beforeAsync(); this point can make the problem with ADD_PROPERTY exception
       //don't use asynchronous because there is problem to get SessionProvider on Ecms side
       //org.exoplatform.services.cms.impl.Utils
       ctx.getServiceExecutor().execute(StreamProcessorFactory.likeActivity(), processCtx);
@@ -198,7 +196,7 @@ public class StreamInvocationHelper {
     processCtx.sender(sender).receiver(receiver);
     
     try {
-      beforeAsync();
+      //beforeAsync(); //this point can make the problem with ADD_PROPERTY exception
       //
       ctx.getServiceExecutor().execute(StreamProcessorFactory.deleteConnectStream(), processCtx);
     } finally {
@@ -215,8 +213,8 @@ public class StreamInvocationHelper {
     processCtx.sender(sender).receiver(receiver);
     
     try {
-      beforeAsync();
       if(ctx.isAsync()) {
+        beforeAsync();
         ctx.getServiceExecutor().async(StreamProcessorFactory.connectStream(), processCtx);
       } else {
         ctx.getServiceExecutor().execute(StreamProcessorFactory.connectStream(), processCtx);
@@ -258,7 +256,7 @@ public class StreamInvocationHelper {
     processCtx.identity(owner).spaceIdentity(spaceIdentity);
     
     try {
-      beforeAsync();
+      //beforeAsync(); //this point can make the problem with ADD_PROPERTY exception
       //
       ctx.getServiceExecutor().execute(StreamProcessorFactory.removeSpaceMemberStream(), processCtx);
     } finally {
@@ -276,6 +274,7 @@ public class StreamInvocationHelper {
     
     try {
       if(ctx.isAsync()) {
+        beforeAsync();
         //
         ctx.getServiceExecutor().async(StreamProcessorFactory.createFeedActivityRef(), processCtx);
       } else {
@@ -299,6 +298,7 @@ public class StreamInvocationHelper {
     try {
       if(ctx.isAsync()) {
         //
+        beforeAsync();     
         ctx.getServiceExecutor().async(StreamProcessorFactory.createConnectionsActivityRef(), processCtx);
       } else {
         //
@@ -321,6 +321,7 @@ public class StreamInvocationHelper {
     try {
       if(ctx.isAsync()) {
         //
+        beforeAsync();
         ctx.getServiceExecutor().async(StreamProcessorFactory.createMySpacesActivityRef(), processCtx);
       } else {
         //
@@ -343,6 +344,7 @@ public class StreamInvocationHelper {
     try {
       if(ctx.isAsync()) {
         //
+        beforeAsync();
         ctx.getServiceExecutor().async(StreamProcessorFactory.createMyActivitiesActivityRef(), processCtx);
       } else {
         //
@@ -365,6 +367,7 @@ public class StreamInvocationHelper {
     try {
       if(ctx.isAsync()) {
         //
+        beforeAsync();
         ctx.getServiceExecutor().async(StreamProcessorFactory.createSpaceActivityRef(), processCtx);
       } else {
         //
