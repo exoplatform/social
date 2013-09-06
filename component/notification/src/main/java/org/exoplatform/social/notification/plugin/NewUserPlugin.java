@@ -62,7 +62,6 @@ public class NewUserPlugin extends AbstractNotificationPlugin {
                               .key(getId())
                               .with(SocialNotificationUtils.REMOTE_ID.getKey(), remoteId)
                               .setSendAll(true)
-                              .setFrom(remoteId)
                               .end();
     } catch (Exception e) {
       return null;
