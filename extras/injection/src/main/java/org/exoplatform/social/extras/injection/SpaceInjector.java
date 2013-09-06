@@ -1,16 +1,17 @@
 package org.exoplatform.social.extras.injection;
 
+import java.util.HashMap;
+
 import org.exoplatform.social.core.space.SpaceUtils;
 import org.exoplatform.social.core.space.impl.DefaultSpaceApplicationHandler;
 import org.exoplatform.social.core.space.model.Space;
-
-import java.util.HashMap;
 
 /**
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
  * @version $Revision$
  */
 public class SpaceInjector extends AbstractSocialInjector {
+  private final int FLUSH_LIMIT = 4;
 
   /** . */
   private static final String NUMBER = "number";
@@ -37,40 +38,47 @@ public class SpaceInjector extends AbstractSocialInjector {
     String userPrefix = params.get(USER_PREFIX);
     String spacePrefix = params.get(SPACE_PREFIX);
     init(userPrefix, spacePrefix);
+    
+    int spaceCounter = 0;
 
-    //
-    for(int i = from; i <= to; ++i) {
-      for (int j = 0; j < number; ++j) {
+    try {
+      //
+      for(int i = from; i <= to; ++i) {
+        for (int j = 0; j < number; ++j) {
 
-        //
-        String owner = userBase + i;
-        String spaceName = spaceName();
+          //
+          String owner = userBase + i;
+          String spaceName = spaceName();
 
-        Space space = new Space();
-        space.setDisplayName(spaceName);
-        space.setPrettyName(spaceName);
-        space.setGroupId("/spaces/" + space.getPrettyName());
-        space.setRegistration(Space.OPEN);
-        space.setDescription(lorem.getWords(10));
-        space.setType(DefaultSpaceApplicationHandler.NAME);
-        space.setVisibility(Space.PRIVATE);
-        space.setRegistration(Space.OPEN);
-        space.setPriority(Space.INTERMEDIATE_PRIORITY);
+          Space space = new Space();
+          space.setDisplayName(spaceName);
+          space.setPrettyName(spaceName);
+          space.setGroupId("/spaces/" + space.getPrettyName());
+          space.setRegistration(Space.OPEN);
+          space.setDescription(lorem.getWords(10));
+          space.setType(DefaultSpaceApplicationHandler.NAME);
+          space.setVisibility(Space.PRIVATE);
+          space.setRegistration(Space.OPEN);
+          space.setPriority(Space.INTERMEDIATE_PRIORITY);
 
-        //
-        spaceService.createSpace(space, owner);
-        ++spaceNumber;
+          //
+          spaceService.createSpace(space, owner);
+          ++spaceNumber;
+          if (++spaceCounter == FLUSH_LIMIT) {
+            spaceCounter = 0;
+            //
+            SpaceUtils.endRequest();
+            getLog().info("Flush session...");
+          }
+          //
+          getLog().info("Space " + spaceName + " created by " + owner);
 
-        //
-        SpaceUtils.endRequest();
-
-        //
-        getLog().info("Space " + spaceName + " created by " + owner);
-
-
-
+        }
       }
+    } finally {
+      SpaceUtils.endRequest();
     }
+    
     
   }
 }
