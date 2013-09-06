@@ -30,5 +30,6 @@ public enum SpaceType {
   VISIBLE,
   EDITABLE,
   ALL,
-  UNIFIED_SEARCH
+  UNIFIED_SEARCH,
+  LATEST_ACCESSED
 }

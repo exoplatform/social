@@ -596,7 +596,7 @@ public class Utils {
       .addScripts("profile.initUserProfilePopup('" + uiActivityId + "', null);");
   }
   
-  private static Space getSpaceByContext() {
+  public static Space getSpaceByContext() {
     //
     SpaceService spaceService = (SpaceService) ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(SpaceService.class);
     PortalRequestContext pcontext = Util.getPortalRequestContext();
