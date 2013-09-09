@@ -87,12 +87,12 @@ public class PostActivitySpaceStreamPlugin extends AbstractNotificationPlugin {
     
     templateContext.put("USER", identity.getProfile().getFullName());
     templateContext.put("SPACE", spaceIdentity.getProfile().getFullName());
+    templateContext.put("ACTIVITY", activity.getTitle());
     String subject = TemplateUtils.processSubject(templateContext);
     
     Space space = Utils.getSpaceService().getSpaceByPrettyName(spaceIdentity.getRemoteId());
     templateContext.put("SPACE_URL", LinkProviderUtils.getRedirectUrl("space", space.getId()));
     templateContext.put("PROFILE_URL", LinkProviderUtils.getRedirectUrl("user", identity.getRemoteId()));
-    templateContext.put("ACTIVITY", activity.getTitle());
     templateContext.put("REPLY_ACTION_URL", LinkProviderUtils.getRedirectUrl("reply_activity", activity.getId()));
     templateContext.put("VIEW_FULL_DISCUSSION_ACTION_URL", LinkProviderUtils.getRedirectUrl("view_full_activity", activity.getId()));
     String body = TemplateUtils.processGroovy(templateContext);

@@ -76,10 +76,10 @@ public class LikePlugin extends AbstractNotificationPlugin {
     Identity identity = Utils.getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, notification.getValueOwnerParameter("likersId"), true);
     
     templateContext.put("USER", identity.getProfile().getFullName());
+    templateContext.put("ACTIVITY", activity.getTitle());
     String subject = TemplateUtils.processSubject(templateContext);
 
     templateContext.put("PROFILE_URL", LinkProviderUtils.getRedirectUrl("user", identity.getRemoteId()));
-    templateContext.put("ACTIVITY", activity.getTitle());
     templateContext.put("REPLY_ACTION_URL", LinkProviderUtils.getRedirectUrl("reply_activity", activity.getId()));
     templateContext.put("VIEW_FULL_DISCUSSION_ACTION_URL", LinkProviderUtils.getRedirectUrl("view_full_activity", activity.getId()));
     String body = TemplateUtils.processGroovy(templateContext);
