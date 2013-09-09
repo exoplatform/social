@@ -89,6 +89,11 @@
   </component>
   
   <component>
+    <key>org.exoplatform.services.jcr.ext.app.SessionProviderService</key>
+    <type>org.exoplatform.services.jcr.ext.app.ThreadLocalSessionProviderService</type>
+  </component>
+  
+  <component>
     <key>org.exoplatform.social.core.application.RelationshipPublisher</key>
     <type>org.exoplatform.social.core.application.RelationshipPublisher</type>
   </component>

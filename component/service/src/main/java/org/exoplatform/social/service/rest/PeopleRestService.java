@@ -43,6 +43,8 @@ import org.apache.shindig.social.opensocial.model.Activity;
 import org.exoplatform.container.ExoContainer;
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.PortalContainer;
+import org.exoplatform.services.log.ExoLogger;
+import org.exoplatform.services.log.Log;
 import org.exoplatform.services.rest.resource.ResourceContainer;
 import org.exoplatform.services.security.ConversationState;
 import org.exoplatform.services.security.IdentityConstants;
@@ -107,6 +109,8 @@ public class PeopleRestService implements ResourceContainer{
   /** Number of default limit activities. */
   private static final int DEFAULT_LIMIT = 20;
   
+  private static final Log LOG = ExoLogger.getLogger(PeopleRestService.class);
+                                                     
   private IdentityManager identityManager;
   private ActivityManager activityManager;
   private RelationshipManager relationshipManager;
@@ -611,7 +615,10 @@ public class PeopleRestService implements ResourceContainer{
     String userId = StringUtils.EMPTY;
     try {
       userId = ConversationState.getCurrent().getIdentity().getUserId();
-    } catch (Exception e) {}
+    } catch (Exception e) {
+      LOG.debug("Could not get id of user from ConversationState.");  
+    }
+    
     if(userId == null || userId.isEmpty() || IdentityConstants.ANONIM.equals(userId)) {
       if (securityContext != null && securityContext.getUserPrincipal() != null) {
         return securityContext.getUserPrincipal().getName();
@@ -734,7 +741,7 @@ public class PeopleRestService implements ResourceContainer{
   }
   
   static public class UserInfo {
-    static private String AVATAR_URL = "/social-resources/skin/ShareImages/Avatar.gif";
+    static private String AVATAR_URL = "/social-resources/skin/images/ShareImages/UserAvtDefault.png";
 
     String id;
     String name;

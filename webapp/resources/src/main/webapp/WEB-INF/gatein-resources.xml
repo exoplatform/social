@@ -26,7 +26,7 @@
   <portal-skin>
     <skin-name>Default</skin-name>
     <skin-module>Social</skin-module>
-    <css-path>/skin/DefaultSkin/Stylesheet.css</css-path>
+    <css-path>/skin/css/social.css</css-path>
   </portal-skin>
 
   <module>
@@ -75,6 +75,13 @@
       <module>uiPopupWindow</module>
       <as>popupWindow</as>
     </depends>    
+  </module>
+  
+  <module>
+    <name>socialGadgetsUtil</name>
+    <script>
+       <path>/javascript/eXo/social/SocialGadgetsUtil.js</path>
+    </script>
   </module>
   
   <module>

@@ -16,17 +16,14 @@
  */
 package org.exoplatform.social.webui.space;
 
-import java.util.Collection;
 import java.util.Iterator;
 import java.util.ResourceBundle;
 
 import org.exoplatform.services.organization.Group;
-import org.exoplatform.services.organization.Membership;
-import org.exoplatform.services.organization.MembershipHandler;
-import org.exoplatform.services.organization.OrganizationService;
+import org.exoplatform.services.security.ConversationState;
+import org.exoplatform.services.security.MembershipEntry;
 import org.exoplatform.social.core.space.SpaceUtils;
 import org.exoplatform.social.webui.UISocialGroupSelector;
-import org.exoplatform.web.application.RequestContext;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.ComponentConfigs;
@@ -34,8 +31,8 @@ import org.exoplatform.webui.config.annotation.EventConfig;
 import org.exoplatform.webui.core.UIContainer;
 import org.exoplatform.webui.core.UIPopupWindow;
 import org.exoplatform.webui.event.Event;
-import org.exoplatform.webui.event.EventListener;
 import org.exoplatform.webui.event.Event.Phase;
+import org.exoplatform.webui.event.EventListener;
 import org.exoplatform.webui.form.UIFormInputInfo;
 import org.exoplatform.webui.form.input.UICheckBoxInput;
 
@@ -103,31 +100,20 @@ public class UISpaceGroupBound extends UIContainer {
    * @throws Exception
    */
   protected boolean hasGroupWithManagerRole() throws Exception {
-    OrganizationService service = getApplicationComponent(OrganizationService.class);
-    RequestContext reqCtx = RequestContext.getCurrentInstance();
-    String remoteUser = reqCtx.getRemoteUser();
-    
-    // super user or not
-    if (service.getGroupHandler().findGroupByMembership(remoteUser, SpaceUtils
-        .getUserACL().getAdminMSType()).size() > 0) {
-      return true;
-    }
-    
-    // has any membership type
-    OrganizationService organizationService = SpaceUtils.getOrganizationService();
-    MembershipHandler memberShipHandler = organizationService.getMembershipHandler();
-    Collection<Membership> memberships = memberShipHandler.findMembershipsByUser(remoteUser);
-    Iterator<Membership> membershipsIt = memberships.iterator();
-    while (membershipsIt.hasNext()) {
-      Membership membership = (Membership) membershipsIt.next();
-      if (ANY_MEMBERSHIP_TYPE.equals(membership.getMembershipType())) {
+    String adminMSType = SpaceUtils.getUserACL().getAdminMSType();
+
+    Iterator<MembershipEntry> iter = ConversationState.getCurrent().getIdentity().getMemberships().iterator();
+    while (iter.hasNext()) {
+      String msType = iter.next().getMembershipType();
+      // has any or super membership type
+      if (ANY_MEMBERSHIP_TYPE.equals(msType) || adminMSType.equals(msType)) {
         return true;
       }
     }
-    
-    return false;    
+
+    return false;
   }
-  
+
   /**
    * triggers this action when user clicks on select group on UIGroupSelector
    */

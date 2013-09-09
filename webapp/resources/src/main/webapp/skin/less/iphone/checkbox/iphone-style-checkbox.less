@@ -49,8 +49,8 @@ label.iPhoneCheckLabelOn {
    left: 1px;
    min-width: 9px;
    top: 1px;
-   #gradient > .vertical(#4b72b4,#426393);
-   .box-shadow(inset 0px 3px 5px #213b68);
+   #gradient > .vertical(@blueLight,@blue);
+   .box-shadow(inset 0px 3px 5px @blueDark);
    .border-top-left-radius (9px);
    .border-bottom-left-radius(9px);
 }
@@ -61,8 +61,8 @@ label.iPhoneCheckLabelOn span {
 }
 
 label.iPhoneCheckLabelOff {
-   color: #8b8b8b;
-   background-color: #ececec;
+   color: @grayLight;
+   background-color: @grayMediumWhiteSmoke;
    #gradient > .vertical(rgba(0,0,0,0),rgba(0,0,0,0.09));
    .box-shadow(inset 0px 1px 1px rgba(0, 0, 0, 0.43));
    text-shadow: 1px 0px 0px @white;

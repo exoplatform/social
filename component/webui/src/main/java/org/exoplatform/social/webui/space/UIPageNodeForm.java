@@ -52,6 +52,8 @@ import org.exoplatform.portal.webui.page.UIWizardPageSetInfo;
 import org.exoplatform.portal.webui.portal.UIPortal;
 import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.portal.webui.workspace.UIPortalApplication;
+import org.exoplatform.services.log.ExoLogger;
+import org.exoplatform.services.log.Log;
 import org.exoplatform.services.resources.LocaleConfig;
 import org.exoplatform.services.resources.LocaleConfigService;
 import org.exoplatform.services.resources.ResourceBundleService;
@@ -114,6 +116,8 @@ public class UIPageNodeForm extends UIFormTabPane {
   private static final String          SWITCH_MODE_ONCHANGE   = "SwitchLabelMode";
 
   private static final String          LABEL                  = "label";
+  
+  private static final Log LOG = ExoLogger.getLogger(UIPageNodeForm.class);
   
   public UIPageNodeForm() throws Exception {
     super("UIPageNodeForm");
@@ -214,7 +218,7 @@ public class UIPageNodeForm extends UIFormTabPane {
       } catch (MissingResourceException e) {
         displayName = capitalizeFirstLetter(locale.getDisplayName(currentLocale));
       } catch (Exception e) {
-
+        LOG.debug("Could not get resource bundle.");
       }
 
       option = new SelectItemOption<String>(displayName, language);
@@ -269,7 +273,7 @@ public class UIPageNodeForm extends UIFormTabPane {
     Map<Locale, Described.State> i18nizedLabels = pageNode.getI18nizedLabels();
     if (i18nizedLabels != null) {
       for (Locale key : i18nizedLabels.keySet()) {
-        String locale = key.getCountry() != "" ? key.getLanguage() + "_" + key.getCountry()
+        String locale = !("".equals(key.getCountry())) ? key.getLanguage() + "_" + key.getCountry()
                                                : key.getLanguage(); 
         cachedLabels.put(locale, i18nizedLabels.get(key));
       }
