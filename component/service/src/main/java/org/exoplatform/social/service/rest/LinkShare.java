@@ -41,6 +41,7 @@ import org.cyberneko.html.HTMLConfiguration;
 import org.cyberneko.html.filters.DefaultFilter;
 import org.cyberneko.html.filters.ElementRemover;
 import org.exoplatform.services.log.ExoLogger;
+import org.exoplatform.services.log.Log;
 import org.exoplatform.social.common.embedder.EmbedderFactory;
 import org.exoplatform.social.common.embedder.ExoSocialMedia;
 
@@ -109,6 +110,8 @@ public class LinkShare extends DefaultFilter {
   private String mediaAlbum;
   private String mediaHeight;
   private String mediaWidth;
+  
+  private static final Log LOG = ExoLogger.getLogger(LinkShare.class);
   
   private static final String HTTP_PROTOCOL = "http://";
   private static final String HTTPS_PROTOCOL = "https://";
@@ -583,7 +586,7 @@ public class LinkShare extends DefaultFilter {
     try {
       url = new URL(this.link);
     } catch (MalformedURLException e) {
-      //Do nothing, this exception will never occur here
+      LOG.debug("MalformedURLException : Could not initialize url from link.");
     }
     String protocol = url.getProtocol();
     String host = url.getHost();

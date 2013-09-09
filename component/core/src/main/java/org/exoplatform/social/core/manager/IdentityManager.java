@@ -134,6 +134,16 @@ public interface IdentityManager {
                                                   boolean isProfileLoaded);
   
   /**
+   * Gets identity list access which contains the identities matched Unified Search condition
+   *
+   * @param providerId The id of provider
+   * @param profileFilter The filter
+   * @return the identities that matched condition.
+   * @since 4.0.x
+   */
+  ListAccess<Identity> getIdentitiesForUnifiedSearch(String providerId, ProfileFilter profileFilter);  
+  
+  /**
    * Gets space identities by filter information. 
    * Returned result with type is <code>ListAccess</code> then it can be lazy loaded.
    * 

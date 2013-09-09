@@ -27,7 +27,7 @@
   </parent>
   <groupId>org.exoplatform.social</groupId>
   <artifactId>social</artifactId>
-  <version>4.1.0-SNAPSHOT</version>
+  <version>4.1.x-soc-stabilization-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>eXo Social</name>
   <description>eXo Social - Enterprise Social Networking</description>
@@ -68,8 +68,8 @@
     <org.gatein.pc.version>2.4.0.Final</org.gatein.pc.version>
     <org.gatein.portal.version>3.5.4.Final</org.gatein.portal.version>
     <!-- Platform Project Dependencies -->
-    <org.exoplatform.commons.version>4.1.0-SNAPSHOT</org.exoplatform.commons.version>
-    <org.exoplatform.platform-ui.version>4.1.0-SNAPSHOT</org.exoplatform.platform-ui.version>
+    <org.exoplatform.commons.version>4.1.x-commons-stabilization-SNAPSHOT</org.exoplatform.commons.version>
+    <org.exoplatform.platform-ui.version>4.1.x-plfui-stabilization-SNAPSHOT</org.exoplatform.platform-ui.version>
     <!-- Platform Project 3rd party Dependencies -->
     <org.exoplatform.doc.doc-style.version>4.1.0-SNAPSHOT</org.exoplatform.doc.doc-style.version>
   </properties>
@@ -400,6 +400,7 @@
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-surefire-plugin</artifactId>
           <configuration>
+            <argLine>-Xmx1024m -XX:MaxPermSize=512m</argLine>
             <systemPropertyVariables>
               <org.apache.commons.logging.Log>org.apache.commons.logging.impl.SimpleLog</org.apache.commons.logging.Log>
               <org.apache.commons.logging.simplelog.defaultlog>info</org.apache.commons.logging.simplelog.defaultlog>

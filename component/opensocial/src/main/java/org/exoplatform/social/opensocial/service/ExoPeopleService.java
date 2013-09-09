@@ -474,7 +474,7 @@ public class ExoPeopleService extends ExoService implements PersonService, AppDa
         stringBuffer.insert(0, "/");
       }
     } catch (Exception e){
-      //Do nothing because cann't get the people page node
+      LOG.debug("Could not get the people page node.");
     }
     
     RequestLifeCycle.end();

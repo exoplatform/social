@@ -202,7 +202,7 @@
 					  if (linkImage.equals("")) {
 						linkClass = "";
 					  } else {
-						link = "<img width=\"75px\" rel=\"tooltip\" data-placement=\"bottom\" title=\"$linkTitle\" src=\"$linkImage\" alt=\"$linkTitle\" />";
+						link = "<img width=\"75px\" src=\"$linkImage\" alt=\"$linkTitle\" />";
 					  }
 					  def embedHtml = uicomponent.getEmbedHtml();
 					%>
@@ -212,7 +212,7 @@
 				<div class="uiBox roundedBottom introBox linkShare">
 					<div class="clearfix">
 						<% if (embedHtml == null && link.length() != 0) { %>
-							   <a href="javascript:void(0);" class="pull-left avatar">$link</a>
+							   <a href="javascript:void(0);" class="pull-left avatar" rel="tooltip" data-placement="bottom" title="$linkTitle">$link</a>
 						  <% } %>
 						  <div class="$linkClass text">
 								<a class="linkTitle" target="_blank" href="$linkSource">$linkTitle</a>

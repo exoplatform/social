@@ -40,7 +40,15 @@ public class SocialChromatticLifeCycle extends ChromatticLifeCycle {
       return session.get();
     }
     else {
-      onOpenSession(openContext());
+      try {
+        onOpenSession(openContext());
+      } catch (IllegalStateException e) {
+        this.closeContext(false);
+        onOpenSession(openContext());
+      }
+
+      providerRoot.set(null);
+      spaceRoot.set(null);
       return getSession();
     }
   }
