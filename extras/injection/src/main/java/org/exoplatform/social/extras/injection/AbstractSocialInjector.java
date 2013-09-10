@@ -1,5 +1,9 @@
 package org.exoplatform.social.extras.injection;
 
+import java.lang.reflect.UndeclaredThrowableException;
+import java.util.HashMap;
+import java.util.Random;
+
 import org.chromattic.api.query.QueryBuilder;
 import org.exoplatform.commons.chromattic.ChromatticManager;
 import org.exoplatform.container.PortalContainer;
@@ -18,13 +22,8 @@ import org.exoplatform.social.core.space.spi.SpaceService;
 import org.exoplatform.social.core.storage.api.IdentityStorage;
 import org.exoplatform.social.core.storage.impl.AbstractStorage;
 import org.exoplatform.social.core.storage.query.WhereExpression;
-import org.exoplatform.social.core.updater.UserActivityStreamMigration;
 import org.exoplatform.social.extras.injection.utils.LoremIpsum4J;
 import org.exoplatform.social.extras.injection.utils.NameGenerator;
-
-import java.lang.reflect.UndeclaredThrowableException;
-import java.util.HashMap;
-import java.util.Random;
 
 /**
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
@@ -79,9 +78,6 @@ public abstract class AbstractSocialInjector extends DataInjector {
 
   /** . */
   protected final SpaceService spaceService;
-  
-  /** . */
-  protected final UserActivityStreamMigration streamMigration;
 
   /** . */
   protected final UserHandler userHandler;
@@ -106,7 +102,6 @@ public abstract class AbstractSocialInjector extends DataInjector {
     this.activityManager = (ActivityManager) container.getComponentInstanceOfType(ActivityManager.class);
     this.spaceService = (SpaceService) container.getComponentInstanceOfType(SpaceService.class);
     this.organizationService = (OrganizationService) container.getComponentInstanceOfType(OrganizationService.class);
-    this.streamMigration = (UserActivityStreamMigration) container.getComponentInstanceOfType(UserActivityStreamMigration.class);
 
     //
     this.userHandler = organizationService.getUserHandler();
@@ -131,7 +126,7 @@ public abstract class AbstractSocialInjector extends DataInjector {
     
     try {
       userNumber = userNumber(userBase);
-      spaceNumber = spaceNumber(spacePrettyBase);
+      spaceNumber = spaceNumber(spaceBase);
     }
     catch (UndeclaredThrowableException e) {
       // If no user is existing, set keep 0 as value.

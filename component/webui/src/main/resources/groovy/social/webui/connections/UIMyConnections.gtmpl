@@ -94,7 +94,7 @@
             <div class="result clearfix"><span class="number"><%=uicomponent.peopleNum; %></span><%=_ctx.appRes(uicomponent.getId() + ".label.DisplayInOrderOfAlphabet")%></div>
             <ul class="letterList"> 
                  <li>
-                 <% if ((selectedStartChar != null) && (selectedStartChar == "All")) { %>
+                 <% if (selectedStartChar == null || selectedStartChar == "All") { %>
                             <a href="#$searchAll" id="searchAll" class="selected" onclick="<%=uicomponent.event("Search", ""+"All")%>">$searchAll</a>
                  <%} else {%>
                             <a href="#$searchAll" id="searchAll" onclick="<%=uicomponent.event("Search", ""+"All")%>">$searchAll</a>

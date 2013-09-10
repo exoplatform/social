@@ -94,11 +94,12 @@ public class PeopleRestService implements ResourceContainer{
   
   /** Number of default limit activities. */
   private static final int DEFAULT_LIMIT = 20;
-  
+
   private static final String DEFAULT_ACTIVITY = "DEFAULT_ACTIVITY";
   private static final String LINK_ACTIVITY = "LINK_ACTIVITY";
   private static final String DOC_ACTIVITY = "DOC_ACTIVITY";
-  
+  private static final Log LOG = ExoLogger.getLogger(PeopleRestService.class);
+
   private IdentityManager identityManager;
   private ActivityManager activityManager;
   private RelationshipManager relationshipManager;
@@ -702,7 +703,10 @@ public class PeopleRestService implements ResourceContainer{
     String userId = StringUtils.EMPTY;
     try {
       userId = ConversationState.getCurrent().getIdentity().getUserId();
-    } catch (Exception e) {}
+    } catch (Exception e) {
+      LOG.debug("Could not get id of user from ConversationState.");  
+    }
+    
     if(userId == null || userId.isEmpty() || IdentityConstants.ANONIM.equals(userId)) {
       if (securityContext != null && securityContext.getUserPrincipal() != null) {
         return securityContext.getUserPrincipal().getName();
@@ -825,7 +829,7 @@ public class PeopleRestService implements ResourceContainer{
   }
   
   static public class UserInfo {
-    static private String AVATAR_URL = "/social-resources/skin/ShareImages/Avatar.gif";
+    static private String AVATAR_URL = "/social-resources/skin/images/ShareImages/UserAvtDefault.png";
 
     String id;
     String name;

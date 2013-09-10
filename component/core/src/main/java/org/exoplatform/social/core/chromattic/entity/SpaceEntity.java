@@ -53,7 +53,7 @@ public abstract class SpaceEntity {
   public abstract String getPrettyName();
   public abstract void setPrettyName(String prettyName);
   public static final PropertyLiteralExpression<String> name =
-      new PropertyLiteralExpression<String>(String.class, "soc:displayName");
+      new PropertyLiteralExpression<String>(String.class, "soc:name");
 
   /**
    * The display name of a space.

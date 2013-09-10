@@ -90,10 +90,5 @@
       <set-method>addInjector</set-method>
       <type>org.exoplatform.social.extras.injection.RelationshipInjector</type>
     </component-plugin>
-    <component-plugin>
-      <name>stream</name>
-      <set-method>addInjector</set-method>
-      <type>org.exoplatform.social.extras.injection.UserStreamMigrationInjector</type>
-    </component-plugin>
   </external-component-plugins>
 </configuration>

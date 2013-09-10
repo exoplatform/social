@@ -215,6 +215,14 @@ public class IdentityManagerImpl implements IdentityManager {
   public List<Identity> getIdentitiesByProfileFilter(String providerId, ProfileFilter profileFilter) throws Exception {
     return Arrays.asList(getIdentitiesByProfileFilter(providerId, profileFilter, false).load(OFFSET, LIMIT));
   }
+  
+  /**
+   * {@inheritDoc}
+   */
+  public ListAccess<Identity> getIdentitiesForUnifiedSearch(String providerId,
+                                                            ProfileFilter profileFilter) {
+    return (new ProfileFilterListAccess(identityStorage, providerId, profileFilter, true, ProfileFilterListAccess.Type.UNIFIED_SEARCH));
+  }
 
   /**
    * {@inheritDoc}
@@ -522,4 +530,5 @@ public class IdentityManagerImpl implements IdentityManager {
       profileLifeCycle.experienceUpdated(profile.getIdentity().getRemoteId(), profile);
     }
   }
+
 }

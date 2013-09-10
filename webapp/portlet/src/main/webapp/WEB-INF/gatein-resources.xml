@@ -29,7 +29,7 @@
     <application-name>social-portlet</application-name>
     <portlet-name>SocialBannerPortlet</portlet-name>
     <skin-name>Default</skin-name>
-    <css-path>/skin/social/portlet/UIBannerPortlet/DefaultStylesheet.css</css-path>
+    <css-path>/skin/css/uiBannerPortlet/Style.css</css-path>
     <css-priority>1</css-priority>
   </portlet-skin>
 
@@ -37,7 +37,7 @@
     <application-name>social-portlet</application-name>
     <portlet-name>WarningPortlet</portlet-name>
     <skin-name>Default</skin-name>
-    <css-path>/skin/social/portlet/UIWarningPortlet/DefaultStylesheet.css</css-path>
+    <css-path>/skin/css/uiWarningPortlet/Style.css</css-path>
     <css-priority>1</css-priority>
   </portlet-skin>
 
@@ -45,7 +45,7 @@
     <application-name>social-portlet</application-name>
     <portlet-name>SocialExtensionLogoPortlet</portlet-name>
     <skin-name>Default</skin-name>
-    <css-path>/skin/social/portlet/UISocialExtensionLogoPortlet/DefaultStylesheet.css</css-path>
+    <css-path>/skin/css/uiSocialExtensionLogoPortlet/Style.css</css-path>
     <css-priority>1</css-priority>
   </portlet-skin>
 
@@ -53,7 +53,7 @@
     <application-name>social-portlet</application-name>
     <portlet-name>SocialExtensionHomePagePortlet</portlet-name>
     <skin-name>Default</skin-name>
-    <css-path>/skin/social/portlet/UISocialExtensionHomePagePortlet/DefaultStylesheet.css</css-path>
+    <css-path>/skin/css/uiSocialExtensionHomePagePortlet/Style.css</css-path>
     <css-priority>1</css-priority>
   </portlet-skin>
 
@@ -61,14 +61,14 @@
     <application-name>social-portlet</application-name>
     <portlet-name>SocialDemoHomePagePortlet</portlet-name>
     <skin-name>Default</skin-name>
-    <css-path>/skin/social/portlet/UISocialDemoHomePagePortlet/DefaultStylesheet.css</css-path>
+    <css-path>/skin/css/uiSocialDemoHomePagePortlet/Style.css</css-path>
   </portlet-skin>
 
   <portlet-skin>
     <application-name>social-portlet</application-name>
     <portlet-name>SocialNavigationPortlet</portlet-name>
     <skin-name>Default</skin-name>
-    <css-path>/skin/social/portlet/UISocialNavigationPortlet/DefaultStylesheet.css</css-path>
+    <css-path>/skin/css/uiSocialNavigationPortlet/Style.css</css-path>
     <css-priority>1</css-priority>
   </portlet-skin>
 
@@ -77,7 +77,7 @@
     <application-name>social-portlet</application-name>
     <portlet-name>MembersPortlet</portlet-name>
     <skin-name>Default</skin-name>
-    <css-path>/skin/social/portlet/UIMembersPortlet/DefaultStylesheet.css</css-path>
+    <css-path>/skin/css/uiMembersPortlet/Style.css</css-path>
     <css-priority>1</css-priority>
   </portlet-skin>
 
@@ -85,7 +85,7 @@
     <application-name>social-portlet</application-name>
     <portlet-name>SpaceMenuPortlet</portlet-name>
     <skin-name>Default</skin-name>
-    <css-path>/skin/social/portlet/UISpaceMenuPortlet/DefaultStylesheet.css</css-path>
+    <css-path>/skin/css/uiSpaceMenuPortlet/Style.css</css-path>
     <css-priority>1</css-priority>
   </portlet-skin>
 
@@ -93,15 +93,16 @@
     <application-name>social-portlet</application-name>
     <portlet-name>SpaceSettingPortlet</portlet-name>
     <skin-name>Default</skin-name>
-    <css-path>/skin/social/portlet/UISpaceSettingPortlet/DefaultStylesheet.css</css-path>
+    <css-path>/skin/css/uiSpaceSettingPortlet/Style.css</css-path>
     <css-priority>1</css-priority>
   </portlet-skin>
-
+  
+<!-- check the use of this portlet -->
   <portlet-skin>
     <application-name>social-portlet</application-name>
     <portlet-name>MySpacesPortlet</portlet-name>
     <skin-name>Default</skin-name>
-    <css-path>/skin/social/portlet/UIMySpacesPortlet/DefaultStylesheet.css</css-path>
+    <css-path>/skin/css/uiMySpacesPortlet/Style.css</css-path>
     <css-priority>1</css-priority>
   </portlet-skin>
 
@@ -109,15 +110,15 @@
     <application-name>social-portlet</application-name>
     <portlet-name>InvitationSpacesPortlet</portlet-name>
     <skin-name>Default</skin-name>
-    <css-path>/skin/social/portlet/UIInvitationSpacesPortlet/DefaultStylesheet.css</css-path>
+    <css-path>/skin/css/uiInvitationSpacesPortlet/Style.css</css-path>
     <css-priority>1</css-priority>
   </portlet-skin>
-
+  
   <portlet-skin>
     <application-name>social-portlet</application-name>
     <portlet-name>PendingSpacesPortlet</portlet-name>
     <skin-name>Default</skin-name>
-    <css-path>/skin/social/portlet/UIPendingSpacesPortlet/DefaultStylesheet.css</css-path>
+    <css-path>/skin/css/uiPendingSpacesPortlet/Style.css</css-path>
     <css-priority>1</css-priority>
   </portlet-skin>
 
@@ -125,15 +126,16 @@
     <application-name>social-portlet</application-name>
     <portlet-name>AllSpacesPortlet</portlet-name>
     <skin-name>Default</skin-name>
-    <css-path>/skin/social/portlet/UIAllSpacesPortlet/DefaultStylesheet.css</css-path>
+    <css-path>/skin/css/uiAllSpacesPortlet/Style.css</css-path>
     <css-priority>1</css-priority>
   </portlet-skin>
-
+<!-- check the use of this portlet -->
+  
   <portlet-skin>
     <application-name>social-portlet</application-name>
     <portlet-name>SpacesToolbarPortlet</portlet-name>
     <skin-name>Default</skin-name>
-    <css-path>/skin/social/portlet/UISpaceToolbarPortlet/DefaultStylesheet.css</css-path>
+    <css-path>/skin/css/uiSpaceToolbarPortlet/Style.css</css-path>
     <css-priority>1</css-priority>
   </portlet-skin>
 
@@ -141,7 +143,7 @@
     <application-name>social-portlet</application-name>
     <portlet-name>SocialFooterPortlet</portlet-name>
     <skin-name>Default</skin-name>
-    <css-path>/skin/social/portlet/UIFooterPortlet/DefaultStylesheet.css</css-path>
+    <css-path>/skin/css/uiFooterPortlet/Style.css</css-path>
     <css-priority>1</css-priority>
   </portlet-skin>
 
@@ -149,7 +151,7 @@
     <application-name>social-portlet</application-name>
     <portlet-name>SpaceActivityStreamPortlet</portlet-name>
     <skin-name>Default</skin-name>
-    <css-path>/skin/social/portlet/UISpaceActivityStreamPortlet/DefaultStylesheet.css</css-path>
+    <css-path>/skin/css/uiSpaceActivityStreamPortlet/Style.css</css-path>
     <css-priority>1</css-priority>
   </portlet-skin>
 
@@ -157,7 +159,7 @@
     <application-name>social-portlet</application-name>
     <portlet-name>UserActivityStreamPortlet</portlet-name>
     <skin-name>Default</skin-name>
-    <css-path>/skin/social/portlet/UIUserActivityStreamPortlet/DefaultStylesheet.css</css-path>
+    <css-path>/skin/css/uiUserActivityStreamPortlet/Style.css</css-path>
     <css-priority>1</css-priority>
   </portlet-skin>
 
@@ -165,7 +167,7 @@
     <application-name>social-portlet</application-name>
     <portlet-name>PeoplePortlet</portlet-name>
     <skin-name>Default</skin-name>
-    <css-path>/skin/social/portlet/UIPeoplePortlet/DefaultStylesheet.css</css-path>
+    <css-path>/skin/css/uiPeoplePortlet/Style.css</css-path>
     <css-priority>1</css-priority>
   </portlet-skin>
 
@@ -173,7 +175,7 @@
     <application-name>social-portlet</application-name>
     <portlet-name>ProfilePortlet</portlet-name>
     <skin-name>Default</skin-name>
-    <css-path>/skin/social/portlet/UIProfilePortlet/DefaultStylesheet.css</css-path>
+    <css-path>/skin/css/uiProfilePortlet/Style.css</css-path>
     <css-priority>1</css-priority>
   </portlet-skin>
 
@@ -181,7 +183,7 @@
     <application-name>social-portlet</application-name>
     <portlet-name>MyConnectionsNavigationPortlet</portlet-name>
     <skin-name>Default</skin-name>
-    <css-path>/skin/social/portlet/UIMyConnectionsNavigationPortlet/DefaultStylesheet.css</css-path>
+    <css-path>/skin/css/uiMyConnectionsNavigationPortlet/Style.css</css-path>
     <css-priority>1</css-priority>
   </portlet-skin>
 
@@ -189,7 +191,7 @@
     <application-name>social-portlet</application-name>
     <portlet-name>ConnectionsNavigationPortlet</portlet-name>
     <skin-name>Default</skin-name>
-    <css-path>/skin/social/portlet/UIConnectionsNavigationPortlet/DefaultStylesheet.css</css-path>
+    <css-path>/skin/css/uiConnectionsNavigationPortlet/Style.css</css-path>
     <css-priority>1</css-priority>
   </portlet-skin>
 
@@ -197,7 +199,7 @@
     <application-name>social-portlet</application-name>
     <portlet-name>ConnectionsPortlet</portlet-name>
     <skin-name>Default</skin-name>
-    <css-path>/skin/social/portlet/UIConnectionsPortlet/DefaultStylesheet.css</css-path>
+    <css-path>/skin/css/uiConnectionsPortlet/Style.css</css-path>
     <css-priority>1</css-priority>
   </portlet-skin>
 
@@ -205,7 +207,7 @@
     <application-name>social-portlet</application-name>
     <portlet-name>AllPeoplePortlet</portlet-name>
     <skin-name>Default</skin-name>
-    <css-path>/skin/social/portlet/UIAllPeoplePortlet/DefaultStylesheet.css</css-path>
+    <css-path>/skin/css/uiAllPeoplePortlet/Style.css</css-path>
     <css-priority>1</css-priority>
   </portlet-skin>
   
@@ -213,7 +215,7 @@
     <application-name>social-portlet</application-name>
     <portlet-name>RequestsPortlet</portlet-name>
     <skin-name>Default</skin-name>
-    <css-path>/skin/social/portlet/UIRequestsPortlet/DefaultStylesheet.css</css-path>
+    <css-path>/skin/css/uiRequestsPortlet/Style.css</css-path>
     <css-priority>1</css-priority>
   </portlet-skin>
 
@@ -221,7 +223,7 @@
     <application-name>social-portlet</application-name>
     <portlet-name>InvitationsPortlet</portlet-name>
     <skin-name>Default</skin-name>
-    <css-path>/skin/social/portlet/UIInvitationsPortlet/DefaultStylesheet.css</css-path>
+    <css-path>/skin/css/uiInvitationsPortlet/Style.css</css-path>
     <css-priority>1</css-priority>
   </portlet-skin>
 
@@ -229,26 +231,19 @@
     <application-name>social-portlet</application-name>
     <portlet-name>ProfileNavigationPortlet</portlet-name>
     <skin-name>Default</skin-name>
-    <css-path>/skin/social/portlet/UIProfileNavigationPortlet/DefaultStylesheet.css</css-path>
+    <css-path>/skin/css/uiProfileNavigationPortlet/Style.css</css-path>
     <css-priority>1</css-priority>
   </portlet-skin>
 
-  <portlet-skin>
-    <application-name>social-portlet</application-name>
-    <portlet-name>SocialLogoPortlet</portlet-name>
-    <skin-name>Default</skin-name>
-    <css-path>/skin/social/portlet/UISocialLogoPortlet/DefaultStylesheet.css</css-path>
-    <css-priority>1</css-priority>
-  </portlet-skin>
-  
+<!-- check the use of this portlet -->
   <portlet-skin>
     <application-name>social-portlet</application-name>
     <portlet-name>SpaceAccessPortlet</portlet-name>
     <skin-name>Default</skin-name>
-    <css-path>/skin/social/portlet/UISpaceAccessPortlet/DefaultStylesheet.css</css-path>
+    <css-path>/skin/css/uiSpaceAccessPortlet/Style.css</css-path>
     <css-priority>1</css-priority>
   </portlet-skin>
-
+<!-- check the use of this portlet -->
   <!-- Portlet javascript -->
   <portlet>
     <name>PeopleToolbarPortlet</name>

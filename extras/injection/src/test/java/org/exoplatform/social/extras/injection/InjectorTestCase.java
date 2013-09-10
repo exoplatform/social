@@ -17,6 +17,10 @@
 
 package org.exoplatform.social.extras.injection;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
 import org.exoplatform.component.test.AbstractKernelTest;
 import org.exoplatform.component.test.ConfigurationUnit;
 import org.exoplatform.component.test.ConfiguredBy;
@@ -32,11 +36,6 @@ import org.exoplatform.social.core.space.SpaceUtils;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
 import org.exoplatform.social.core.storage.api.IdentityStorage;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>

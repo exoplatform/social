@@ -11,7 +11,7 @@ import org.exoplatform.social.core.space.model.Space;
  * @version $Revision$
  */
 public class SpaceInjector extends AbstractSocialInjector {
-  private final int FLUSH_LIMIT = 4;
+  private final int FLUSH_LIMIT = 1;
 
   /** . */
   private static final String NUMBER = "number";
