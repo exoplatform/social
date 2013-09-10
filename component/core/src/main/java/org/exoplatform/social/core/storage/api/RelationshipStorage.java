@@ -23,6 +23,7 @@ import org.exoplatform.social.core.relationship.model.Relationship;
 import org.exoplatform.social.core.storage.RelationshipStorageException;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
@@ -307,4 +308,16 @@ public interface RelationshipStorage {
    */
   public int getOutgoingCountByFilter(
       final Identity existingIdentity, final ProfileFilter profileFilter) throws RelationshipStorageException;
+  
+  /**
+   * Gets the suggestions with number of commons users relate to provided identity
+   * @param identity the provided identity
+   * @param offset the offset position to get
+   * @param limit the limit of return result
+   * @return the map of suggestion users and number of commons users
+   * @throws RelationshipStorageException
+   * @since 4.0.x
+   */
+  public Map<Identity, Integer> getSuggestions(Identity identity, int offset, int limit) throws RelationshipStorageException;
+  
 }

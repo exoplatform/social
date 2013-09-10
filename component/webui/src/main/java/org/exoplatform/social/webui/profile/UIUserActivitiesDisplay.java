@@ -325,8 +325,6 @@ public class UIUserActivitiesDisplay extends UIContainer {
        
        uiUserActivities.setChangedMode(false);
        
-       UIActivitiesLoader activitiesLoader = uiUserActivities.getChild(UIActivitiesLoader.class);
-       
        //int numberOfUpdates = uiUserActivities.getNumberOfUpdatedActivities();
        
        //
@@ -336,7 +334,6 @@ public class UIUserActivitiesDisplay extends UIContainer {
 //       event.getRequestContext().getJavascriptManager()
 //       .require("SHARED/social-ui-activity-updates", "activityUpdates").addScripts("activityUpdates.resetCookie('" + String.format(Utils.LAST_UPDATED_ACTIVITIES_NUM, selectedDisplayMode, Utils.getViewerRemoteId()) + "','" + numberOfUpdates + "');");
 
-       event.getRequestContext().addUIComponentToUpdateByAjax(activitiesLoader);
      }
      
      requestContext.addUIComponentToUpdateByAjax(uiUserActivities);
@@ -352,8 +349,6 @@ public class UIUserActivitiesDisplay extends UIContainer {
      uiUserActivities.init();
      
      //
-     UIActivitiesLoader activitiesLoader = uiUserActivities.getChild(UIActivitiesLoader.class);
-     event.getRequestContext().addUIComponentToUpdateByAjax(activitiesLoader);
      requestContext.addUIComponentToUpdateByAjax(uiUserActivities);
      
      Utils.resizeHomePage();

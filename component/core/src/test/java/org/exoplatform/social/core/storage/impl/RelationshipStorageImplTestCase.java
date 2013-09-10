@@ -725,4 +725,31 @@ public class RelationshipStorageImplTestCase extends AbstractCoreTest {
     
     return relationship;
   }
+  
+  public void testGetRelationships() throws Exception {
+
+    Identity tmp1 = new Identity("organization", "tmp1");
+    Identity tmp2 = new Identity("organization", "tmp2");
+
+    identityStorage.saveIdentity(tmp1);
+    identityStorage.saveIdentity(tmp2);
+
+    Relationship newRelationship = new Relationship(tmp2, tmp1, Relationship.Type.PENDING);
+
+    //
+    storage._createRelationship(newRelationship);
+
+    //read from receiver
+    List<Identity> identities = storage.getRelationships(tmp2, 0, 10);
+    assertEquals(tmp1.getRemoteId(), identities.get(0).getRemoteId());
+
+    //read from sender
+    identities = storage.getRelationships(tmp1, 0, 10);
+    assertEquals(tmp2.getRemoteId(), identities.get(0).getRemoteId());
+
+    //
+    tearDownIdentityList.add(tmp1.getId());
+    tearDownIdentityList.add(tmp2.getId());
+
+  }
 }

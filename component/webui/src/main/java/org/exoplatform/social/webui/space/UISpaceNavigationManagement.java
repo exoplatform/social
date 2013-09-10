@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.exoplatform.portal.application.PortalRequestContext;
 import org.exoplatform.portal.config.UserPortalConfig;
 import org.exoplatform.portal.config.UserPortalConfigService;
@@ -137,6 +138,8 @@ public class UISpaceNavigationManagement extends UIContainer {
     sb.append("</li>");
     
     for (int idx = nodes.size() - 1; idx >= 0; idx--) {
+      String nodeLabel = nodes.get(idx).getResolvedLabel();
+      nodeLabel = StringEscapeUtils.escapeHtml(nodeLabel);
       sb.append("<li>");
       sb.append("<span class='uiIconMiniArrowRight'>&nbsp;</span>");
       sb.append("</li>");
@@ -146,7 +149,7 @@ public class UISpaceNavigationManagement extends UIContainer {
         sb.append("<li>");
       }
       sb.append("<a href=\"javascript:void(0);\" onclick=\"").append(this.event("SelectNode", nodes.get(idx).getId())).append("\"");
-      sb.append(">").append(nodes.get(idx).getResolvedLabel()).append("</a>");
+      sb.append(">").append(nodeLabel).append("</a>");
       sb.append("</li>");
     }
     

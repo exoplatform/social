@@ -1,13 +1,23 @@
 package org.exoplatform.social.core.storage.impl;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Pattern;
+
+import javax.jcr.RepositoryException;
 
 import org.chromattic.api.ChromatticSession;
 import org.exoplatform.commons.chromattic.ChromatticManager;
 import org.exoplatform.commons.utils.ListAccess;
+import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.PortalContainer;
+import org.exoplatform.services.jcr.RepositoryService;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.services.organization.OrganizationService;
@@ -39,7 +49,7 @@ public class StorageUtils {
   public static final String SOC_PREFIX = "soc:";
   
   //
-  private static List<String> userInPlatformGroups = null;
+  private static Map<String, List<String>> userInPlatformGroupsMap = new HashMap<String, List<String>>();
   
   //
   private static final Log LOG = ExoLogger.getLogger(StorageUtils.class.getName());
@@ -195,8 +205,16 @@ public class StorageUtils {
 
     try {
       //
+      PortalContainer container = (PortalContainer)(ExoContainerContext.getCurrentContainer());
+      
+      RepositoryService repo = (RepositoryService) container.getComponentInstanceOfType(RepositoryService.class);
+      //each tenant, there is dedicated organization's users then we need to make map to keep them.
+      String tenantName = repo.getCurrentRepository().getConfiguration().getName();
+      //
+      List<String> userInPlatformGroups = userInPlatformGroupsMap.get(tenantName);
+      //
       if (userInPlatformGroups == null) {
-        OrganizationService orgService = (OrganizationService) PortalContainer.getInstance().getComponentInstanceOfType(OrganizationService.class);
+        OrganizationService orgService = (OrganizationService) container.getComponentInstanceOfType(OrganizationService.class);
         
         //
         ListAccess<User> listAccess = orgService.getUserHandler()
@@ -211,6 +229,7 @@ public class StorageUtils {
         int loaded = 0;
         
         loaded = loadUserRange(listAccess, offset, limit, userInPlatformGroups);
+        LOG.trace("Users in Plafform Groups loading [size =" + loaded + "]");
         
         if (limit != totalSize) {
           while (loaded == 100) {
@@ -225,9 +244,15 @@ public class StorageUtils {
             loaded = loadUserRange(listAccess, offset, limit, userInPlatformGroups);
           }
         }
+        
+        LOG.trace("Users in Plafform Groups [size = " + userInPlatformGroups.size() + "]");
+        LOG.trace("Users in Plafform Groups[" + userInPlatformGroups + "]");
       }
       
-      //
+      LOG.trace("[The " + remoteId + " is contained in  platform/users group?" + userInPlatformGroups.contains(remoteId) + " ]");
+      
+      userInPlatformGroupsMap.put(tenantName, userInPlatformGroups);
+      
       return userInPlatformGroups.contains(remoteId);
     } catch (Exception e) {
       throw new IdentityStorageException(IdentityStorageException.Type.FAIL_TO_GET_IDENTITY_BY_PROFILE_FILTER,
@@ -257,7 +282,107 @@ public class StorageUtils {
    * there is any update in platform/users group, we need to take care.
    */
   public static void clearUsersPlatformGroup() {
-    userInPlatformGroups = null;
+    PortalContainer container = (PortalContainer)(ExoContainerContext.getCurrentContainer());
+    String tenantName = "";
+    try {
+      RepositoryService repo = (RepositoryService) container.getComponentInstanceOfType(RepositoryService.class);
+      //each tenant, there is dedicated organization's users then we need to make map to keep them.
+      tenantName = repo.getCurrentRepository().getConfiguration().getName();
+      userInPlatformGroupsMap.remove(tenantName);
+    } catch (RepositoryException e) {
+      LOG.warn("Wrong to clear the users for reporitory" + tenantName);
+    }
+    
+    
   }
   
+  /**
+   * Gets common item number from two list
+   * @param m the first list
+   * @param n the second list
+   * @return number of common item
+   */
+  public static <T> int getCommonItemNumber(final List<T> m, final List<T> n) {
+    if (m == null || n == null) {
+      return 0;
+    }
+    List<T> copy = new ArrayList<T>(m);
+    copy.removeAll(n);
+    
+    return (m.size() - copy.size());
+  }
+  
+  /**
+   * Sort one map by its value
+   * @param map the input map
+   * @param asc indicate sort by ASC (true) or DESC (false)
+   * @return the sorted map
+   * @since 4.0.x
+   */
+  public static <K, V extends Comparable<? super V>> Map<K, V> sortMapByValue( Map<K, V> map , final boolean asc) {
+    //
+    List<Map.Entry<K, V>> list = new LinkedList<Map.Entry<K, V>>( map.entrySet() );
+    //
+    Collections.sort( list, new Comparator<Map.Entry<K, V>>() {
+      public int compare( Map.Entry<K, V> o1, Map.Entry<K, V> o2 ) {
+        if (asc)
+          return (o1.getValue()).compareTo( o2.getValue() );
+        else
+          return (o1.getValue()).compareTo( o2.getValue() )/-1;
+      }
+    });
+
+    Map<K, V> result = new LinkedHashMap<K, V>();
+    for (Map.Entry<K, V> entry : list) {
+      result.put(entry.getKey(), entry.getValue());
+    }
+    return result;
+  }
+  
+  /**
+   * Process Unified Search Condition
+   * @param searchCondition the input search condition
+   * @return List of conditions
+   * @since 4.0.x
+   */
+  public static List<String> processUnifiedSearchCondition(String searchCondition) {
+    String[] spaceConditions = searchCondition.split(" ");
+    List<String> result = new ArrayList<String>(spaceConditions.length);
+    //
+    StringBuffer searchConditionBuffer = null;
+    for (String conditionValue : spaceConditions) {
+      //
+      searchConditionBuffer = new StringBuffer();
+      //
+      if (!conditionValue.contains(ASTERISK_STR) && !conditionValue.contains(PERCENT_STR)) {
+        searchConditionBuffer.append(ASTERISK_STR).append(conditionValue).append(ASTERISK_STR);
+      } else {
+        conditionValue = conditionValue.replace(ASTERISK_STR, PERCENT_STR);
+        searchConditionBuffer.append(PERCENT_STR).append(conditionValue).append(PERCENT_STR);
+      }
+      //
+      result.add(searchConditionBuffer.toString());
+    }
+    return result;
+  }
+  
+  /**
+   * Gets sub list from the provided list with start and end index.
+   * @param list the identity list
+   * @param startIndex start index to get
+   * @param toIndex end index to get
+   * @return sub list of the provided list
+   */
+  public static <T> List<T> subList(List<T> list, int startIndex, int toIndex) {
+    int totalSize = list.size();
+    
+    if (startIndex >= totalSize) return Collections.emptyList();
+    
+    //
+    if ( toIndex >= totalSize ) {
+      toIndex = totalSize;
+    }
+    
+    return list.subList(startIndex, toIndex);
+  }
 }
