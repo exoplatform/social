@@ -28,6 +28,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.jcr.Node;
+import javax.jcr.NodeIterator;
+import javax.jcr.RepositoryException;
+import javax.jcr.UnsupportedRepositoryOperationException;
+
 import org.chromattic.api.ChromatticSession;
 import org.chromattic.api.query.Ordering;
 import org.chromattic.api.query.Query;
@@ -1939,14 +1944,9 @@ public class SpaceStorageImpl extends AbstractStorage implements SpaceStorage {
     try {
       IdentityEntity identityEntity = identityStorage._findIdentityEntity(OrganizationIdentityProvider.NAME, remoteId);
       SpaceListEntity listRef = RefType.MEMBER.refsOf(identityEntity);
-      Map<String, SpaceRef> mapRefs = listRef.getRefs();
       
       SpaceEntity spaceEntity = _findById(SpaceEntity.class, space.getId());
 
-      if (mapRefs.containsKey(spaceEntity.getName())) {
-        getSession().remove(mapRefs.get(spaceEntity.getName()));
-      }
-      
       SpaceRef ref = listRef.getRef(spaceEntity.getName());
       if (!ref.getName().equals(spaceEntity.getName())) {
         ref.setName(spaceEntity.getName());
@@ -1963,60 +1963,72 @@ public class SpaceStorageImpl extends AbstractStorage implements SpaceStorage {
   @Override
   public List<Space> getLastAccessedSpace(SpaceFilter filter, int offset, int limit) throws SpaceStorageException {
     try {
-    IdentityEntity identityEntity = identityStorage._findIdentityEntity(OrganizationIdentityProvider.NAME, filter.getRemoteId());
-    SpaceListEntity listRef = RefType.MEMBER.refsOf(identityEntity);
-    Map<String, SpaceRef> mapRefs = listRef.getRefs();
-    //
-    List<SpaceRef> spaces = new LinkedList<SpaceRef>();
-    Space space = null;
-    
-    //
-    for(Map.Entry<String, SpaceRef> entry :  mapRefs.entrySet()) {
-      SpaceRef ref = entry.getValue();
+      IdentityEntity identityEntity = identityStorage._findIdentityEntity(OrganizationIdentityProvider.NAME, filter.getRemoteId());
 
-      // Lazy clean up
-      if (ref.getSpaceRef() == null) {
-        listRef.removeRef(entry.getKey());
-        continue;
+      StringBuffer sb = new StringBuffer().append("SELECT * FROM ");
+      sb.append(JCRProperties.SPACE_REF_NODE_TYPE);
+      //
+      sb.append(" WHERE ");
+      sb.append(JCRProperties.path.getName())
+        .append(" LIKE '")
+        .append(identityEntity.getPath()).append(StorageUtils.SLASH_STR)
+        .append(IdentityEntity.spacemember.getName())
+        .append(StorageUtils.SLASH_STR).append(StorageUtils.PERCENT_STR)
+        .append("'");
+      //
+      sb.append(" ORDER BY ")
+        .append(JCRProperties.JCR_LAST_MODIFIED_DATE.getName())
+        .append(" DESC");
+
+      NodeIterator it = nodes(sb.toString());
+      _skip(it, offset);
+
+      //
+      List<SpaceRef> spaces = new LinkedList<SpaceRef>();
+      Space space = null;
+
+      while (it.hasNext()) {
+        Node it1 = (Node) it.next();
+
+        SpaceRef ref = _findById(SpaceRef.class, it1.getUUID());
+        
+        if (filter.getAppId() == null) {
+          spaces.add(ref);
+        } else {
+          if (ref.getSpaceRef().getApp().toLowerCase().indexOf(filter.getAppId().toLowerCase()) > 0) {
+            spaces.add(ref);
+          }
+        }
+
       }
 
-      if (filter.getAppId() == null) {
-        spaces.add(ref);
-      } else {
-        if (ref.getSpaceRef().getApp().toLowerCase().indexOf(filter.getAppId().toLowerCase()) > 0) {
-          spaces.add(ref);
+      List<Space> got = new LinkedList<Space>();
+      //
+      Iterator<SpaceRef> it1 = spaces.iterator();   
+
+      int numberOfSpaces = 0;
+      //
+      while (it1.hasNext()) {
+        space = new Space();
+        fillSpaceSimpleFromEntity(it1.next().getSpaceRef(), space);
+        got.add(space);
+        //
+        if (++numberOfSpaces == limit) {
+          break;
         }
       }
-    }
 
-    //reserve order
-    Collections.reverse(spaces);
-    
-    List<Space> got = new LinkedList<Space>();
-    
-    //
-    Iterator<SpaceRef> it1 = spaces.iterator();   
-     _skip(it1, offset);
-     
-     
-    int numberOfSpaces = 0;
-    //
-    while (it1.hasNext()) {
-      space = new Space();
-      fillSpaceSimpleFromEntity(it1.next().getSpaceRef(), space);
-      got.add(space);
-      //
-      if (++numberOfSpaces == limit) {
-        break;
-      }
-    }
-   
-    
-    return got;
+      return got;
     } catch (NodeNotFoundException e) {
       LOG.warn(e.getMessage(), e);
-      return Collections.emptyList();
+    } catch (UnsupportedRepositoryOperationException e) {
+      LOG.warn(e.getMessage(), e);
+    } catch (RepositoryException e) {
+      LOG.warn(e.getMessage(), e);
     }
+    
+    //
+    return Collections.emptyList();
   }
 
   public int getNumberOfMemberPublicSpaces(String userId) {
