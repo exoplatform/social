@@ -192,24 +192,12 @@ public class SpaceStorageImpl extends AbstractStorage implements SpaceStorage {
     entity.setPriority(space.getPriority());
     entity.setGroupId(space.getGroupId());
     entity.setURL(space.getUrl());
-    if (space.getMembers() != null && space.getMembers().length > 0) {
-      entity.setMembersId(space.getMembers());
-    }
-    //
-    if (space.getManagers() != null && space.getManagers().length > 0) {
-      entity.setManagerMembersId(space.getManagers());
-    }
-    //
-    if (space.getPendingUsers() != null && space.getPendingUsers().length > 0) {
-      entity.setPendingMembersId(space.getPendingUsers());
-    }
-    //
-    if (space.getInvitedUsers() != null && space.getInvitedUsers().length > 0) {
-      entity.setInvitedMembersId(space.getInvitedUsers());
-    }
+    entity.setMembersId(space.getMembers());
+    entity.setManagerMembersId(space.getManagers());
+    entity.setPendingMembersId(space.getPendingUsers());
+    entity.setInvitedMembersId(space.getInvitedUsers());
     entity.setAvatarLastUpdated(space.getAvatarLastUpdated());
     entity.setCreatedTime(space.getCreatedTime() != 0 ? space.getCreatedTime() : System.currentTimeMillis());
-
   }
 
   private void applyOrder(QueryBuilder builder, SpaceFilter spaceFilter) {
