@@ -765,7 +765,9 @@ public class BaseUIActivity extends UIForm {
     public void execute(Event<BaseUIActivity> event) throws Exception {
       BaseUIActivity uiActivity = event.getSource();
       String activityId = uiActivity.getActivity().getId();
-      if (uiActivity.isNoLongerExisting(activityId, event)) {
+      String commentId = event.getRequestContext().getRequestParameter(OBJECTID);
+      if (uiActivity.isNoLongerExisting(activityId, event) || 
+          uiActivity.isNoLongerExisting(commentId, event)) {
         return;
       }
       WebuiRequestContext requestContext = event.getRequestContext();
