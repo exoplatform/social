@@ -34,6 +34,7 @@ import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.manager.ActivityManager;
+import org.exoplatform.social.webui.URLUtils;
 import org.exoplatform.social.webui.Utils;
 import org.exoplatform.social.webui.activity.UIActivitiesContainer;
 import org.exoplatform.social.webui.activity.UIActivitiesLoader;
@@ -210,6 +211,13 @@ public class UIUserActivitiesDisplay extends UIContainer {
       removeChild(UIActivitiesLoader.class);
       activitiesLoader = addChild(UIActivitiesLoader.class, null, "UIActivitiesLoader");
     }
+    
+    // Check if current display page is My Activity Stream
+    String currentUserName = URLUtils.getCurrentUser();
+    if (currentUserName != null) {
+      selectedDisplayMode = DisplayMode.MY_ACTIVITIES;
+    }
+    
     activitiesLoader.setPostContext(PostContext.USER);
     activitiesLoader.setLoadingCapacity(ACTIVITY_PER_PAGE);
     activitiesLoader.setOwnerName(ownerName);
