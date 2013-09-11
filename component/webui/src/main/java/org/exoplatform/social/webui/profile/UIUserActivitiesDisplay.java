@@ -344,7 +344,6 @@ public class UIUserActivitiesDisplay extends UIContainer {
      Utils.resizeHomePage();
    }
  }
-
   
   private int getActivitiesUpdatedNum(boolean hasRefresh) {
     if (this.postActivity) {

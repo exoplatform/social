@@ -94,12 +94,10 @@ public class PeopleRestService implements ResourceContainer{
   
   /** Number of default limit activities. */
   private static final int DEFAULT_LIMIT = 20;
-
   private static final String DEFAULT_ACTIVITY = "DEFAULT_ACTIVITY";
   private static final String LINK_ACTIVITY = "LINK_ACTIVITY";
   private static final String DOC_ACTIVITY = "DOC_ACTIVITY";
   private static final Log LOG = ExoLogger.getLogger(PeopleRestService.class);
-
   private IdentityManager identityManager;
   private ActivityManager activityManager;
   private RelationshipManager relationshipManager;

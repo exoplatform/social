@@ -388,7 +388,6 @@ public class StorageUtils {
     
     return list.subList(startIndex, toIndex);
   }
-  
   /*
    * Gets added element when compares between l1 and l2
    * @param l1
@@ -508,5 +507,4 @@ public class StorageUtils {
     }
     return list;
   }
-
 }
