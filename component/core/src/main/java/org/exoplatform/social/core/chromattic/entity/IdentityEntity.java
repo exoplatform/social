@@ -145,6 +145,8 @@ public abstract class IdentityEntity {
   @MappedBy("soc:spacemember")
   public abstract SpaceListEntity getSpaces();
   public abstract void setSpaces(SpaceListEntity spaces);
+  public static final PropertyLiteralExpression<String> spacemember =
+      new PropertyLiteralExpression<String>(String.class, "soc:spacemember");
 
   /**
    * Store all spaces which an identity is pending for validation to join.

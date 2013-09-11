@@ -120,7 +120,7 @@ public class SpaceRestServiceTest extends AbstractResourceTest {
     List<Space> spaces = spaceService.getLastAccessedSpace("mary", "app1", 0, 5);
     assertEquals(5, spaces.size());
     Space got = spaces.get(0);
-    assertEquals("space_4", got.getPrettyName());
+    assertEquals("space_1", got.getPrettyName());
     
     response = service("GET", "/portal/social/spaces/lastVisitedSpace/list.json?appId=app1&limit=5", "", null, null);
     assertEquals(200, response.getStatus());
@@ -128,7 +128,7 @@ public class SpaceRestServiceTest extends AbstractResourceTest {
     assertNotNull(gotList);
     List<SpaceRest> myList = gotList.getSpaces();
     SpaceRest sRest = myList.get(0);
-    assertEquals("space_4", sRest.getName());
+    assertEquals("space_1", sRest.getName());
     assertTrue(sRest.getAvatarUrl().length() > 0);
     
     
@@ -139,7 +139,7 @@ public class SpaceRestServiceTest extends AbstractResourceTest {
     spaces = spaceService.getLastAccessedSpace("mary", "app1", 0, 5);
     assertEquals(5, spaces.size());
     got = spaces.get(0);
-    assertEquals("space_2", got.getPrettyName());
+    assertEquals("space_1", got.getPrettyName());
     
     response = service("GET", "/portal/social/spaces/lastVisitedSpace/list.json?appId=app1&limit=5", "", null, null);
     assertEquals(200, response.getStatus());
@@ -147,7 +147,7 @@ public class SpaceRestServiceTest extends AbstractResourceTest {
     assertNotNull(gotList);
     myList = gotList.getSpaces();
     sRest = myList.get(0);
-    assertEquals("space_2", sRest.getName());
+    assertEquals("space_1", sRest.getName());
     assertTrue(sRest.getAvatarUrl().length() > 0);
     
     //appIdNull
@@ -157,7 +157,7 @@ public class SpaceRestServiceTest extends AbstractResourceTest {
     assertNotNull(gotList);
     myList = gotList.getSpaces();
     sRest = myList.get(0);
-    assertEquals("space_2", sRest.getName());
+    assertEquals("space_0", sRest.getName());
     assertTrue(sRest.getAvatarUrl().length() > 0);
 
     //
@@ -183,7 +183,7 @@ public class SpaceRestServiceTest extends AbstractResourceTest {
     List<Space> spaces = spaceService.getLastAccessedSpace("mary", "app1", 0, 5);
     assertEquals(5, spaces.size());
     Space got = spaces.get(0);
-    assertEquals("space_2", got.getPrettyName());
+    assertEquals("space_1", got.getPrettyName());
     
     response = service("GET", "/portal/social/spaces/lastVisitedSpace/list.json?appId=app1&limit=5", "", null, null);
     assertEquals(200, response.getStatus());
@@ -191,7 +191,7 @@ public class SpaceRestServiceTest extends AbstractResourceTest {
     assertNotNull(gotList);
     List<SpaceRest> myList = gotList.getSpaces();
     SpaceRest sRest = myList.get(0);
-    assertEquals("space_2", sRest.getName());
+    assertEquals("space_1", sRest.getName());
     
     //appIdNull
     response = service("GET", "/portal/social/spaces/lastVisitedSpace/list.json?limit=5", "", null, null);
@@ -200,7 +200,7 @@ public class SpaceRestServiceTest extends AbstractResourceTest {
     assertNotNull(gotList);
     myList = gotList.getSpaces();
     sRest = myList.get(0);
-    assertEquals("space_2", sRest.getName());
+    assertEquals("space_0", sRest.getName());
 
     //
     endSession();
