@@ -3,6 +3,7 @@ package org.exoplatform.social.core.updater;
 import java.io.InputStream;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
+
 import org.exoplatform.commons.chromattic.ChromatticManager;
 import org.exoplatform.commons.upgrade.UpgradeProductPlugin;
 import org.exoplatform.commons.version.util.VersionComparator;

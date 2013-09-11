@@ -98,6 +98,7 @@ public class PeopleRestService implements ResourceContainer{
   private static final String LINK_ACTIVITY = "LINK_ACTIVITY";
   private static final String DOC_ACTIVITY = "DOC_ACTIVITY";
   private static final Log LOG = ExoLogger.getLogger(PeopleRestService.class);
+                                                     
   private IdentityManager identityManager;
   private ActivityManager activityManager;
   private RelationshipManager relationshipManager;

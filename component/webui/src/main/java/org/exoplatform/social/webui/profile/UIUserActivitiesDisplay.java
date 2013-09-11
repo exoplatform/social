@@ -341,6 +341,7 @@ public class UIUserActivitiesDisplay extends UIContainer {
      UIUserActivitiesDisplay uiUserActivities = event.getSource();
      uiUserActivities.init();
      event.getRequestContext().addUIComponentToUpdateByAjax(uiUserActivities);
+     
      Utils.resizeHomePage();
    }
  }
