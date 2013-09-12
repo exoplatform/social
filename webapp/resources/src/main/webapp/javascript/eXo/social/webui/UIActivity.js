@@ -246,6 +246,10 @@ var UIActivity = {
   	  }
 	  );
 	},
+
+	setPageTitle : function(activityTitle) {
+		$(document).attr('title', 'Activity: ' + activityTitle);
+	},
 	
 	loadLikersByURL : function() {
     $(document).ready( function() {

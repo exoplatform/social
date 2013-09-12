@@ -58,6 +58,10 @@
   } else if (Utils.isExpandLikers()) {
     jsManager.require("SHARED/social-ui-activity", "activity").addScripts("activity.loadLikersByURL();");
   }
+  
+  if (uicomponent.isSingleActivity()) {
+    jsManager.require("SHARED/social-ui-activity", "activity").addScripts("activity.setPageTitle('"+ uicomponent.getActivityTitle() +"');");
+  }
 %>
 <div class="uiUserActivityStreamPortlet" id="$uicomponent.id">
   <div class="uiTabPane $uiTabClazz">

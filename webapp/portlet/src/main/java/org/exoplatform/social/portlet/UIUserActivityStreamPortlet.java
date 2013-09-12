@@ -127,6 +127,21 @@ public class UIUserActivityStreamPortlet extends UIPortletApplication {
     String str = request.getRequestURL().toString();
     return str.contains(activities);
   }
+  
+  public boolean isSingleActivity() {
+    final String displaySimpleActivity = "/activity";
+    PortalRequestContext portalRequestContext = Util.getPortalRequestContext();
+    HttpServletRequest request = portalRequestContext.getRequest();
+    String str = request.getRequestURL().toString();
+    return str.contains(displaySimpleActivity);
+  }
+  
+  public String getActivityTitle() {
+    if (getActivityId() != null) {
+      return Utils.getActivityManager().getActivity(getActivityId()).getTitle().replaceAll("'", "");
+    }
+    return "";
+  }
 
   /**
    * Renders popup message in case this child has not rendered in template.
