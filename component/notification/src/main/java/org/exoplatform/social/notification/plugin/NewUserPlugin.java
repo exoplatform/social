@@ -85,6 +85,7 @@ public class NewUserPlugin extends AbstractNotificationPlugin {
     
     templateContext.put("USER", userProfile.getFullName());
     templateContext.put("PORTAL_NAME", NotificationPluginUtils.getSenderName());
+    templateContext.put("PORTAL_HOME", NotificationPluginUtils.getPortalHome(NotificationPluginUtils.getSenderName()));
     String subject = TemplateUtils.processSubject(templateContext);
     
     templateContext.put("PROFILE_URL", LinkProviderUtils.getRedirectUrl("user", identity.getRemoteId()));
@@ -128,7 +129,11 @@ public class NewUserPlugin extends AbstractNotificationPlugin {
         templateContext.put("COUNT", SocialNotificationUtils.buildRedirecUrl("connections", first.getTo(), String.valueOf((count - 3))));
       }
       
-      templateContext.put("PORTAL_NAME", System.getProperty("exo.notifications.portalname", "eXo"));
+      String portalName = System.getProperty("exo.notifications.portalname", "eXo");
+      String portalLink = SocialNotificationUtils.buildRedirecUrl("portal_home", portalName, portalName);
+      
+      templateContext.put("PORTAL_NAME", portalName);
+      templateContext.put("PORTAL_HOME", portalLink);
       String digester = TemplateUtils.processDigest(templateContext.digestType(count));
       writer.append(digester);
       writer.append("</li>");

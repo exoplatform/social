@@ -4,7 +4,7 @@
                 <table  cellpadding="0" cellspacing="0" width="100%" bgcolor="#ffffff" align="center" style="border:1px solid #d8d8d8;">
                     <tr>
                         <td  height="45" valign="middle" style="margin:0;height:45px;font-weight:bold;vertical-align:middle;;background-color: #efefef;font-family:'HelveticaNeue bold',arial,tahoma,serif;color:#2f5e92;font-size:18px;text-align:center">
-                            <%=_ctx.appRes("Notification.title.NewUserPlugin", PORTAL_NAME)%>
+                            <%=_ctx.appRes("Notification.title.NewUserPlugin", PORTAL_HOME)%>
                         </td>
                     </tr>
                 </table>
@@ -29,7 +29,7 @@
                                                       <%
                                                         String profileUrl = "<a target=\"_blank\" href=\""+ PROFILE_URL + "\">" + USER + "</a>";
                                                       %>
-                                                      <%=_ctx.appRes("Notification.message.NewUserPlugin", profileUrl, PORTAL_NAME)%>     
+                                                      <%=_ctx.appRes("Notification.message.NewUserPlugin", profileUrl, PORTAL_HOME)%>     
                                                     </p>
                                                     <div>
                                                         <a target="_blank" style="
