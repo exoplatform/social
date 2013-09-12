@@ -4,7 +4,7 @@
             <table  cellpadding="0" cellspacing="0" width="100%" bgcolor="#ffffff" align="center" style="border:1px solid #d8d8d8;">
                 <tr>
                     <td  height="45" valign="middle" style="margin:0;height:45px;font-weight:bold;vertical-align:middle;;background-color: #efefef;font-family: 'HelveticaNeue Bold', Helvetica, Arial, sans-serif;color:#2f5e92;font-size:18px;text-align:center">
-                        <%=_ctx.appRes("Notification.title.PostActivitySpaceStreamPlugin")%>
+                        <%=_ctx.appRes("Notification.title.PostActivitySpaceStreamPlugin", SPACE)%>
                     </td>
                 </tr>
             </table>
