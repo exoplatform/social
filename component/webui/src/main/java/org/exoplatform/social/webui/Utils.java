@@ -16,8 +16,6 @@
  */
 package org.exoplatform.social.webui;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.util.Calendar;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -25,7 +23,6 @@ import java.util.ResourceBundle;
 import javax.servlet.http.Cookie;
 
 import org.apache.commons.lang.ArrayUtils;
-import org.apache.http.client.utils.URIUtils;
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.portal.application.PortalRequestContext;
 import org.exoplatform.portal.application.RequestNavigationData;
@@ -615,27 +612,6 @@ public class Utils {
   public static String normalizeString(String str) {
     if(str != null) {
       return str.trim().replaceAll("(\\s){2,}"," ");
-    }
-    return null;
-  }
-  
-  /**
-   * Convert special characters to HTML number
-   * @param str
-   * @return 
-   */
-  public static String convertToHTMLEncode(String str) {
-    if(str != null) {
-      try {
-        return URLEncoder.encode(str.trim(), "UTF-8")
-                         .replaceAll("\\+", "%20")
-                         .replaceAll("\\%21", "!")
-                         .replaceAll("\\%28", "(")
-                         .replaceAll("\\%29", ")")
-                         .replaceAll("\\%7E", "~");
-      } catch (UnsupportedEncodingException e) {
-        return str;
-      }
     }
     return null;
   }

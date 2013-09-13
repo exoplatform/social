@@ -41,30 +41,29 @@
   uicomponent.refresh();
   String uiTabClazz = (Utils.isHomePage() == true) ? "uiTabPaneHomePage" : "";
   
-  if (uicomponent.isSingleActivityNotExist()) { %>
-    <div class="uiUserActivityStreamPortlet" id="$uicomponent.id">
-		  <div class="uiTabPane $uiTabClazz">
-		   <div class="uiUserActivitiesContainer">
-		      <%=_ctx.appRes("UIUserActivitiesDisplay.label.activityNotFound")%>
+  if (uicomponent.isSingleActivity()) {
+    String activityTitle = uicomponent.getSingleActivityTitle();
+    if (activityTitle == null) {
+      activityTitle = _ctx.appRes("UIUserActivitiesDisplay.label.activityNotFound");
+	    %>
+	      <div class="uiUserActivityStreamPortlet" id="$uicomponent.id">
+		      <div class="uiTabPane $uiTabClazz">
+		       <div class="uiUserActivitiesContainer">
+		          <h4><%=_ctx.appRes("UIUserActivitiesDisplay.label.activityNotFound")%></h4>
+		        </div>
+		      </div>
 		    </div>
-		  </div>
-		</div>
-  <%
-    return;
+	    <%  
+	    jsManager.require("SHARED/social-ui-activity", "activity").addScripts("activity.setPageTitle('"+ activityTitle +"');");
+	    return;
+    }
+    jsManager.require("SHARED/social-ui-activity", "activity").addScripts("activity.setPageTitle(window.encodeURIComponent(\""+ activityTitle +"\").replace(/'/, '%27'));");
   }
   
   if (Utils.isFocusCommentBox()) {
     jsManager.require("SHARED/social-ui-activity", "activity").addScripts("activity.replyByURL('"+ uicomponent.getActivityId() + "');");
   } else if (Utils.isExpandLikers()) {
     jsManager.require("SHARED/social-ui-activity", "activity").addScripts("activity.loadLikersByURL();");
-  }
-  
-  if (uicomponent.isSingleActivity()) {
-    String activityTitle = uicomponent.getSingleActivityTitle();
-    if (activityTitle == null) {
-      activityTitle = _ctx.appRes("UIUserActivitiesDisplay.label.activityNotFound");
-    }
-    jsManager.require("SHARED/social-ui-activity", "activity").addScripts("activity.setPageTitle('"+ activityTitle +"');");
   }
 %>
 <div class="uiUserActivityStreamPortlet" id="$uicomponent.id">

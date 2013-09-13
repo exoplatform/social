@@ -16,20 +16,19 @@
  */
 package org.exoplatform.social.portlet;
 
-import java.util.ResourceBundle;
-
 import javax.servlet.http.HttpServletRequest;
 
 import org.exoplatform.portal.application.PortalRequestContext;
 import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.relationship.model.Relationship;
+import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.webui.Utils;
 import org.exoplatform.social.webui.composer.PopupContainer;
 import org.exoplatform.social.webui.composer.UIComposer;
 import org.exoplatform.social.webui.composer.UIComposer.PostContext;
 import org.exoplatform.social.webui.profile.UIUserActivitiesDisplay;
-import org.exoplatform.webui.application.WebuiRequestContext;
+import org.exoplatform.web.controller.QualifiedName;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.core.UIPortletApplication;
 import org.exoplatform.webui.core.lifecycle.UIApplicationLifecycle;
@@ -88,11 +87,18 @@ public class UIUserActivityStreamPortlet extends UIPortletApplication {
     return activityId;
   }
   
-  public boolean isSingleActivityNotExist() {
-    if (getActivityId() != null) {
-      return Utils.getActivityManager().getActivity(getActivityId()) == null;
-    }
-    return false;
+  /**
+   * If activity is from a space and the current user is member of this space
+   * the he has permission to view it
+   * 
+   * @param activity
+   * @return
+   */
+  private boolean hasPermissionToViewActivity(ExoSocialActivity activity) {
+    Space space = Utils.getSpaceService().getSpaceByPrettyName(activity.getStreamOwner());
+    if (space == null)
+      return true;
+    return space != null && Utils.getSpaceService().isMember(space, Utils.getViewerRemoteId());
   }
   
   /**
@@ -149,8 +155,8 @@ public class UIUserActivityStreamPortlet extends UIPortletApplication {
     String activityId = Utils.getValueFromRequestParam("id");
     if (activityId != null) {
       ExoSocialActivity activity = Utils.getActivityManager().getActivity(activityId);
-      if (activity != null) {
-        return Utils.convertToHTMLEncode(activity.getTitle());
+      if (activity != null && hasPermissionToViewActivity(activity)) {
+        return activity.getTitle();
       }
     }
     return null;
