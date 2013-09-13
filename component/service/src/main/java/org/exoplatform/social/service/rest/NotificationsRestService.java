@@ -185,7 +185,7 @@ public class NotificationsRestService implements ResourceContainer {
     }
     getSpaceService().addMember(space, userId);
 
-    String targetURL = Util.getBaseUrl() + LinkProvider.getActivityUriForSpace(space.getGroupId().replace("/spaces/", ""), space.getPrettyName());
+    String targetURL = Util.getBaseUrl() + LinkProvider.getActivityUriForSpace(space.getPrettyName(), space.getGroupId().replace("/spaces/", ""));
 
     // redirect to target page
     return Response.seeOther(URI.create(targetURL)).build();
@@ -258,7 +258,7 @@ public class NotificationsRestService implements ResourceContainer {
     getSpaceService().addMember(space, userId);
 
     //redirect to space's members page and display a feedback message
-    String targetURL = Util.getBaseUrl() + LinkProvider.getActivityUriForSpace(space.getGroupId().replace("/spaces/", ""), space.getPrettyName()) + "/settings/members" + sb.toString();
+    String targetURL = Util.getBaseUrl() + LinkProvider.getActivityUriForSpace(space.getPrettyName(), space.getGroupId().replace("/spaces/", "")) + "/settings/members" + sb.toString();
 
     // redirect to target page
     return Response.seeOther(URI.create(targetURL)).build();
@@ -289,7 +289,7 @@ public class NotificationsRestService implements ResourceContainer {
     getSpaceService().removePendingUser(space, userId);
 
     //redirect to space's members page and display a feedback message
-    String targetURL = Util.getBaseUrl() + LinkProvider.getActivityUriForSpace(space.getGroupId().replace("/spaces/", ""), space.getPrettyName()) + "/settings/members?feedbackMessage=SpaceRequestRefuse&userName=" + userId;
+    String targetURL = Util.getBaseUrl() + LinkProvider.getActivityUriForSpace(space.getPrettyName(), space.getGroupId().replace("/spaces/", "")) + "/settings/members?feedbackMessage=SpaceRequestRefuse&userName=" + userId;
 
     // redirect to target page
     return Response.seeOther(URI.create(targetURL)).build();
@@ -352,12 +352,12 @@ public class NotificationsRestService implements ResourceContainer {
         }
         case space: {
           space = getSpaceService().getSpaceById(objectId);
-          targetURL = Util.getBaseUrl() + LinkProvider.getActivityUriForSpace(space.getGroupId().replace("/spaces/", ""), space.getPrettyName());
+          targetURL = Util.getBaseUrl() + LinkProvider.getActivityUriForSpace(space.getPrettyName(), space.getGroupId().replace("/spaces/", ""));
           break;
         }
         case space_members: {
           space = getSpaceService().getSpaceById(objectId);
-          targetURL = Util.getBaseUrl() + LinkProvider.getActivityUriForSpace(space.getGroupId().replace("/spaces/", ""), space.getPrettyName()) + "/settings/members";
+          targetURL = Util.getBaseUrl() + LinkProvider.getActivityUriForSpace(space.getPrettyName(), space.getGroupId().replace("/spaces/", "")) + "/settings/members";
           break;
         }
         case portal_home: {
