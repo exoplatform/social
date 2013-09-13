@@ -97,46 +97,58 @@ public class SpaceActivityStreamUpdaterTest extends AbstractCoreTest {
     Space space = this.getSpaceInstance(spaceService, 0);
     Identity spaceIdentity = this.getIdentityManager().getOrCreateIdentity(SpaceIdentityProvider.NAME, space.getPrettyName(), false);
     
-    for(int i = 0; i < 100; i++) {
+    for(int i = 0; i < 10; i++) {
       ExoSocialActivity activity = new ExoSocialActivityImpl();
-      activity.setTitle(activityTitle + i);
+      activity.setTitle(activityTitle + i + " " + rootIdentity.getRemoteId());
       activity.setUserId(rootIdentity.getId());
       activityStorage.saveActivity(spaceIdentity, activity);
     }
     
-    for(int i = 0; i < 100; i++) {
+    for(int i = 0; i < 10; i++) {
       ExoSocialActivity activity = new ExoSocialActivityImpl();
-      activity.setTitle(activityTitle + i);
+      activity.setTitle(activityTitle + i + " " + demoIdentity.getRemoteId());
       activity.setUserId(demoIdentity.getId());
       activityStorage.saveActivity(spaceIdentity, activity);
     }
     
-    for(int i = 0; i < 100; i++) {
+    for(int i = 0; i < 10; i++) {
       ExoSocialActivity activity = new ExoSocialActivityImpl();
-      activity.setTitle(activityTitle + i);
+      activity.setTitle(activityTitle + i + " " + maryIdentity.getRemoteId());
       activity.setUserId(maryIdentity.getId());
       activityStorage.saveActivity(spaceIdentity, activity);
     }
     
-    for(int i = 0; i < 100; i++) {
+    for(int i = 0; i < 10; i++) {
       ExoSocialActivity activity = new ExoSocialActivityImpl();
-      activity.setTitle(activityTitle + i);
+      activity.setTitle(activityTitle + i  + " " + johnIdentity.getRemoteId());
       activity.setUserId(johnIdentity.getId());
       activityStorage.saveActivity(spaceIdentity, activity);
     }
     
     
     
-    assertEquals(400, activityStorage.getNumberOfSpaceActivitiesForUpgrade(spaceIdentity));
+    assertEquals(40, activityStorage.getNumberOfSpaceActivitiesForUpgrade(spaceIdentity));
     
     SpaceActivityStreamUpdaterPlugin updaterPlugin = new SpaceActivityStreamUpdaterPlugin(new InitParams());
     
     assertNotNull(updaterPlugin);
     updaterPlugin.processUpgrade("1.2.x", "4.0");
     
-    List<ExoSocialActivity> got = activityStorage.getSpaceActivities(spaceIdentity, 0, 450);
-    assertEquals(400, got.size());
+    List<ExoSocialActivity> got = activityStorage.getSpaceActivities(spaceIdentity, 0, 45);
+    printList(got);
+    assertEquals(40, activityStorage.getNumberOfSpaceActivitiesForUpgrade(spaceIdentity));
+    assertEquals(40, got.size());
     tearDownActivityList.addAll(got);
+  }
+  
+  private void printList(List<ExoSocialActivity> list) {
+    //DISABLED TO PRINT CONSOLE
+    /**
+    System.out.println("SIZE = " + list.size());
+    for(ExoSocialActivity a : list) {
+      System.out.println(a.toString());
+    }
+    **/
   }
   
   /**

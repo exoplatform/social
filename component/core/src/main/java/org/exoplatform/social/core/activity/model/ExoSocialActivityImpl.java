@@ -21,6 +21,7 @@ import java.util.Date;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.shindig.social.core.model.ActivityImpl;
+import org.exoplatform.social.core.storage.cache.model.key.ActivityKey;
 
 /**
  * Implementation of {@link org.exoplatform.social.core.activity.model.ExoSocialActivity}.
@@ -495,6 +496,34 @@ public class ExoSocialActivityImpl extends ActivityImpl implements ExoSocialActi
   
   @Override
   public String toString() {
-    return "ExoSocialActivity[id = " + getId() + ",title=" + getTitle() + " ]";
+    return "ExoSocialActivity[id = " + getId() + ",title=" + getTitle() + ",lastModified= " + getUpdated().getTime() + " ]";
+  }
+  
+  @Override
+  public boolean equals(final Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (!(o instanceof ExoSocialActivityImpl)) {
+      return false;
+    }
+    if (!super.equals(o)) {
+      return false;
+    }
+
+    ExoSocialActivityImpl that = (ExoSocialActivityImpl) o;
+
+    if (getId() != null ? !getId().equals(that.getId()) : that.getId() != null) {
+      return false;
+    }
+
+    return true;
+  }
+
+  @Override
+  public int hashCode() {
+    int result = super.hashCode();
+    result = 31 * result + (getId() != null ? getId().hashCode() : 0);
+    return result;
   }
 }

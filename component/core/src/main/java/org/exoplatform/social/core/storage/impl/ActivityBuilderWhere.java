@@ -326,8 +326,7 @@ public abstract class ActivityBuilderWhere implements BuilderWhereExpression<JCR
 
           }
         }
-
-
+        
         where.endGroup();
 
         Object objFilter = filter.get(ActivityFilter.ACTIVITY_UPDATED_POINT_FIELD).getValue();
@@ -353,6 +352,13 @@ public abstract class ActivityBuilderWhere implements BuilderWhereExpression<JCR
         String[] excludedActivityIds = this.activityIds;
         for(String id : excludedActivityIds) {
           where.and().not().equals(JCRProperties.id, id);
+        }
+        
+        //
+        if (first) {
+          where.equals(ActivityEntity.isComment, false);
+        } else {
+          where.and().equals(ActivityEntity.isComment, false);
         }
 
         return where.toString();
