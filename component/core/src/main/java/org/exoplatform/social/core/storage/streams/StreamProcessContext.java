@@ -86,7 +86,7 @@ public class StreamProcessContext extends ProcessorContextImpl {
   
   @SuppressWarnings("unchecked")
   public List<ExoSocialActivity> getActivities() {
-    return getProperty(ACTIVITY, List.class);
+    return getProperty(ACTIVITY_LIST, List.class);
   }
   
   public StreamProcessContext activityId(String activityId) {

@@ -955,11 +955,11 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
       ActivityRefListEntity listRef = type.create(identityEntity);
       // keep last migration
       ExoSocialActivity entity = activities.get(activities.size() - 1);
-      if (entity != null) {
-        Long value = entity.getUpdated() != null ? entity.getUpdated().getTime()
-                                                : entity.getPostedTime();
-        listRef.setLastMigration(value.longValue());
-      }
+      Long value = entity.getUpdated() != null ? entity.getUpdated().getTime() : entity.getPostedTime();
+      Long oldLastMigration = listRef.getLastMigration();
+      listRef.setLastMigration(value.longValue());
+      //don't increase with lazy migration.
+      Integer numberOfStream = listRef.getNumber();
       
       //
       for (ExoSocialActivity a : activities) {
@@ -973,6 +973,11 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
       
       //StorageUtils.getNode(identityEntity).save();
       //getSession().save();
+      //don't increase with lazy migration if has any migration before
+      if (oldLastMigration != null && oldLastMigration.longValue() > 0) {
+        listRef.setNumber(numberOfStream);
+      }
+      
       StorageUtils.persist();
       
     } catch (NodeNotFoundException e) {
