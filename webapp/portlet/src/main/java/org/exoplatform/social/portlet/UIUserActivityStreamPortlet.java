@@ -16,16 +16,20 @@
  */
 package org.exoplatform.social.portlet;
 
+import java.util.ResourceBundle;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.exoplatform.portal.application.PortalRequestContext;
 import org.exoplatform.portal.webui.util.Util;
+import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.relationship.model.Relationship;
 import org.exoplatform.social.webui.Utils;
 import org.exoplatform.social.webui.composer.PopupContainer;
 import org.exoplatform.social.webui.composer.UIComposer;
 import org.exoplatform.social.webui.composer.UIComposer.PostContext;
 import org.exoplatform.social.webui.profile.UIUserActivitiesDisplay;
+import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.core.UIPortletApplication;
 import org.exoplatform.webui.core.lifecycle.UIApplicationLifecycle;
@@ -51,6 +55,7 @@ public class UIUserActivityStreamPortlet extends UIPortletApplication {
   private boolean composerDisplayed = false;
   UIUserActivitiesDisplay uiUserActivitiesDisplay;
   private String activityId;
+  static private final String SINGLE_ACTIVITY_NODE = "activity";
   /**
    * constructor
    *
@@ -128,19 +133,27 @@ public class UIUserActivityStreamPortlet extends UIPortletApplication {
     return str.contains(activities);
   }
   
+  /**
+   * Check if the page display single activity or not
+   * @return boolean 
+   */
   public boolean isSingleActivity() {
-    final String displaySimpleActivity = "/activity";
-    PortalRequestContext portalRequestContext = Util.getPortalRequestContext();
-    HttpServletRequest request = portalRequestContext.getRequest();
-    String str = request.getRequestURL().toString();
-    return str.contains(displaySimpleActivity);
+    return SINGLE_ACTIVITY_NODE.equals(Utils.getSelectedNode());
   }
   
-  public String getActivityTitle() {
-    if (getActivityId() != null) {
-      return Utils.getActivityManager().getActivity(getActivityId()).getTitle().replaceAll("'", "");
+  /**
+   * Get activity title when display single activity
+   * @return activityTitle
+   */
+  public String getSingleActivityTitle() {
+    String activityId = Utils.getValueFromRequestParam("id");
+    if (activityId != null) {
+      ExoSocialActivity activity = Utils.getActivityManager().getActivity(activityId);
+      if (activity != null) {
+        return Utils.convertToHTMLEncode(activity.getTitle());
+      }
     }
-    return "";
+    return null;
   }
 
   /**

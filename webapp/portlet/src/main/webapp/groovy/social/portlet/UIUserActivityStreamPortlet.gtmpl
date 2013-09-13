@@ -60,7 +60,11 @@
   }
   
   if (uicomponent.isSingleActivity()) {
-    jsManager.require("SHARED/social-ui-activity", "activity").addScripts("activity.setPageTitle('"+ uicomponent.getActivityTitle() +"');");
+    String activityTitle = uicomponent.getSingleActivityTitle();
+    if (activityTitle == null) {
+      activityTitle = _ctx.appRes("UIUserActivitiesDisplay.label.activityNotFound");
+    }
+    jsManager.require("SHARED/social-ui-activity", "activity").addScripts("activity.setPageTitle('"+ activityTitle +"');");
   }
 %>
 <div class="uiUserActivityStreamPortlet" id="$uicomponent.id">
