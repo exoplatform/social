@@ -149,5 +149,34 @@
 		.btn {
 			margin-top: -10px;
 		}
+		
+		.suggestions {
+			border: 1px solid rgba(0, 0, 0, 0.2);
+			position: absolute;
+			background: @white; 
+			color: @textColor;
+			max-height: 150px;
+			overflow-y: auto;
+			overflow-y: hidden;
+			z-index: 1000;
+			border-radius: 3px 3px 3px 3px;
+    		box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+			.resultItem {
+				margin: 0px;
+				padding: 5px 20px 5px 9px;
+				position: relative;
+				height: auto;
+				cursor: pointer;
+				&:hover {
+					#gradient > .vertical(@blueLighter, darken(@blueLighter, 15%));
+					color: @white;
+				}
+				
+				p {
+					margin: 0;
+					padding: 0;
+				}
+			}
+		}
 	}
 }
