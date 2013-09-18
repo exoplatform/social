@@ -75,7 +75,6 @@ import org.exoplatform.social.core.storage.api.IdentityStorage;
 import org.exoplatform.social.core.storage.api.RelationshipStorage;
 import org.exoplatform.social.core.storage.api.SpaceStorage;
 import org.exoplatform.social.core.storage.exception.NodeNotFoundException;
-import org.exoplatform.social.core.storage.impl.ActivityStreamStorageImpl.ActivityRefType;
 import org.exoplatform.social.core.storage.query.WhereExpression;
 import org.exoplatform.social.core.storage.streams.StreamInvocationHelper;
 
@@ -858,17 +857,7 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
    * {@inheritDoc}
    */
   public int getNumberOfUserActivities(Identity owner) throws ActivityStorageException {
-
-    boolean hasSize = streamStorage.hasSizeOfMyActivities(owner);
-    
-    //migration lazily
-    if (hasSize == false) {
-      int size = getNumberOfUserActivitiesForUpgrade(owner);
-      streamStorage.migrateStreamSize(owner, size, ActivityRefType.MY_ACTIVITIES);
-      return size;
-    }
-    
-    return streamStorage.getNumberOfMyActivities(owner);
+    return getNumberOfUserActivitiesForUpgrade(owner);
   }
 
   /**
@@ -985,18 +974,7 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
    * {@inheritDoc}
    */
   public int getNumberOfActivitesOnActivityFeed(Identity ownerIdentity) {
-
-    boolean hasSize = streamStorage.hasSizeOfFeed(ownerIdentity);
-    
-    //migration lazily
-    if (hasSize == false) {
-      int size = getNumberOfActivitesOnActivityFeedForUpgrade(ownerIdentity);
-      streamStorage.migrateStreamSize(ownerIdentity, size, ActivityRefType.FEED);
-      return size;
-    }
-    
-    return streamStorage.getNumberOfFeed(ownerIdentity);
-
+    return getNumberOfActivitesOnActivityFeedForUpgrade(ownerIdentity);
   }
 
   @Override
@@ -1189,17 +1167,7 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
    * {@inheritDoc}
    */
   public int getNumberOfActivitiesOfConnections(Identity ownerIdentity) {
-
-    boolean hasSize = streamStorage.hasSizeOfConnections(ownerIdentity);
-    
-    //migration lazily
-    if (hasSize == false) {
-      int size = getNumberOfActivitiesOfConnectionsForUpgrade(ownerIdentity);
-      streamStorage.migrateStreamSize(ownerIdentity, size, ActivityRefType.CONNECTION);
-      return size;
-    }
-    
-    return streamStorage.getNumberOfConnections(ownerIdentity);
+    return getNumberOfActivitiesOfConnectionsForUpgrade(ownerIdentity);
   }
 
   /**
@@ -1327,17 +1295,7 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
    * {@inheritDoc}
    */
   public int getNumberOfUserSpacesActivities(Identity ownerIdentity) {
-
-   boolean hasSize = streamStorage.hasSizeOfMySpaces(ownerIdentity);
-    
-    //migration lazily
-    if (hasSize == false) {
-      int size = getNumberOfUserSpacesActivitiesForUpgrade(ownerIdentity);
-      streamStorage.migrateStreamSize(ownerIdentity, size, ActivityRefType.MY_SPACES);
-      return size;
-    }
-    
-    return streamStorage.getNumberOfMySpaces(ownerIdentity);
+    return getNumberOfUserSpacesActivitiesForUpgrade(ownerIdentity);
   }
 
   /**
@@ -1754,16 +1712,7 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
 
   @Override
   public int getNumberOfSpaceActivities(Identity spaceIdentity) {
-    boolean hasSize = streamStorage.hasSizeOfSpaceStream(spaceIdentity);
-    
-    //migration lazily
-    if (hasSize == false) {
-      int size = getNumberOfSpaceActivitiesForUpgrade(spaceIdentity);
-      streamStorage.migrateStreamSize(spaceIdentity, size, ActivityRefType.SPACE_STREAM);
-      return size;
-    }
-    
-    return streamStorage.getNumberOfSpaceStream(spaceIdentity);
+    return getNumberOfSpaceActivitiesForUpgrade(spaceIdentity);
   }
   
   @Override
