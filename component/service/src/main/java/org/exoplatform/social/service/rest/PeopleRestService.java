@@ -104,6 +104,7 @@ public class PeopleRestService implements ResourceContainer{
   private RelationshipManager relationshipManager;
   private SpaceService spaceService;
   private static final int MAX_CHAR = 100;
+  private static final String SPACE_CHAR = " ";
   private static final String THREE_DOTS = "...";
     private static final int MAX_DOC_CHAR = 25;
     private static Log log = ExoLogger.getLogger(PeopleRestService.class);
@@ -462,7 +463,7 @@ public class PeopleRestService implements ResourceContainer{
                                     linktitle = linktitle.substring(0, MAX_CHAR);
                                     activity = activity.substring(0, endtag + 1) + linktitle + activity.substring(tagend, tagend2 + 1);
                                 } else {
-                                    activity = activity.substring(0, tagend2);
+                                    activity = activity.substring(0, tagend2 + 1) + SPACE_CHAR + activity.substring(tagend2 + 2, MAX_CHAR - linktitle.length());
                                 }
                             }
 
