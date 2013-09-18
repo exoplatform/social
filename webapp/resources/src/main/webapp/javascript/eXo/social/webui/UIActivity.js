@@ -248,7 +248,7 @@ var UIActivity = {
 	},
 
 	setPageTitle : function(activityTitle) {
-		$(document).attr('title', 'Activity: ' + window.decodeURIComponent(activityTitle));
+		$(document).attr('title', 'Activity: ' + $('<div></div>').html(window.decodeURIComponent(activityTitle)).text());
 	},
 	
 	loadLikersByURL : function() {

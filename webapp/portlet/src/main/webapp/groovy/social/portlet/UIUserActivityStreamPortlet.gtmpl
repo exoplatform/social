@@ -57,7 +57,7 @@
 	    jsManager.require("SHARED/social-ui-activity", "activity").addScripts("activity.setPageTitle('"+ activityTitle +"');");
 	    return;
     }
-    jsManager.require("SHARED/social-ui-activity", "activity").addScripts("activity.setPageTitle(window.encodeURIComponent(\""+ activityTitle +"\").replace(/'/, '%27'));");
+    jsManager.require("SHARED/social-ui-activity", "activity").addScripts("activity.setPageTitle(window.encodeURIComponent(\""+ activityTitle.replace("\"", "\\42") +"\").replace(/'/, '%27'));");
   }
   
   if (Utils.isFocusCommentBox()) {
