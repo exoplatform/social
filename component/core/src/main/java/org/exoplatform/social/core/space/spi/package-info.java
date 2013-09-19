@@ -1,8 +1,10 @@
 /**
- * Provides the classes necessary to manage APIs to manage space and its life-cycle.
+ * Provides classes that are necessary to control spaces and their lifecycles.
  * <p>
- * With service to manage space, it provides all methods to process with spaces. To manage 
- * space life-cycle, it provides methods to raise and handle events.
+ * <ul>
+ * <li>To manage spaces, it provides all methods to process with spaces.</li>
+ * <li>To manage the space lifecycles, it provides methods to raise and handle events.</li>
+ * </ul>
  * 
  */
 package org.exoplatform.social.core.space.spi;
