@@ -415,19 +415,15 @@
 		position: relative;
 		.box-shadow(0px 2px 4px  -1px rgba(13,13,13,0.27));
 		#gradient > .vertical-three-colors(@white,@white,94%,@grayLighter);
-		.pull-left  {
-			width:75px;
-			height: 75px;
-			overflow: hidden;
+		a.avatar  {
 			margin-right: 10px;
 			img {
-				max-height: 75px;
-				max-width: 75px;
-				min-height: 75px;
-				min-width: 75px;
+				height: 75px;
+				width: 75px;
+				
 			}
 		}
-		.pull-left + .text {
+		.avatar + .text {
 			overflow: hidden;
 		}
 		.descriptionText {
@@ -435,13 +431,12 @@
 			    min-height: 30px;
 		}
 		.isPreviewable {
-			overflow: hidden;
 			position: relative;
-			.pull-left  {
+			.mediaContent  {
 				width: 300px;
 				margin-right: 10px;
 			}
-			.pull-left + .text {
+			.mediaContent + .text {
 				overflow: hidden;
 			}
 			.versionFile {			
@@ -516,18 +511,18 @@
 			}
 			.commmentLeft {
 				float:left;
-				margin-right: 10px;
 				&+ .commentRight{
-				  overflow: hidden;
+					 margin-left: 45px; 
 				}
 			}
 			.commentInputBox  {
 				padding: 3px 0 0 ;
 				.btn {
 					margin-left: 10px;
+					 position: relative;
+    				z-index: 1;
 				}
 				.commentInput {
-					overflow: hidden;
 					textarea {
 						 .size(28px,100%);
 						 resize: none;
