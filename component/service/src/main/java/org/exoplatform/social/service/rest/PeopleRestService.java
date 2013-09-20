@@ -431,7 +431,7 @@ public class PeopleRestService implements ResourceContainer{
       peopleInfo.setProfileUrl(LinkProvider.getUserActivityUri(identity.getRemoteId()));
       
       peopleInfo.setFullName(identity.getProfile().getFullName());
-      peopleInfo.setPosition(identity.getProfile().getPosition());
+      peopleInfo.setPosition(StringEscapeUtils.unescapeHtml(identity.getProfile().getPosition()));
     }
     return Util.getResponse(peopleInfo, uriInfo, mediaType, Response.Status.OK);
   }
