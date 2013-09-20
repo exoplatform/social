@@ -24,10 +24,10 @@
   <parent>
     <artifactId>social</artifactId>
     <groupId>org.exoplatform.social</groupId>
-    <version>4.0.x-SNAPSHOT</version>
+    <version>4.0.2-CP02-INTERNAL</version>
   </parent>
   <artifactId>social-extension</artifactId>
-  <version>4.0.x-SNAPSHOT</version>
+  <version>4.0.2-CP02-INTERNAL</version>
   <packaging>pom</packaging>
   <name>eXo Social Extension</name>
   <description>eXo Social Extension</description>
