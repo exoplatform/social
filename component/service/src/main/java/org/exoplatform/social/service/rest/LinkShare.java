@@ -40,9 +40,9 @@ import org.apache.xerces.xni.parser.XMLParserConfiguration;
 import org.cyberneko.html.HTMLConfiguration;
 import org.cyberneko.html.filters.DefaultFilter;
 import org.cyberneko.html.filters.ElementRemover;
+import org.exoplatform.commons.embedder.EmbedderFactory;
+import org.exoplatform.commons.embedder.ExoMedia;
 import org.exoplatform.services.log.ExoLogger;
-import org.exoplatform.social.common.embedder.EmbedderFactory;
-import org.exoplatform.social.common.embedder.ExoSocialMedia;
 
 /**
  * LinkShare - gets preview information of a link including: 
@@ -127,7 +127,7 @@ public class LinkShare extends DefaultFilter {
   private String   description;
   private String imageSrc;
   private List<String> images;
-  private ExoSocialMedia mediaObject;
+  private ExoMedia mediaObject;
   //Collections of description with key as lang
   private HashMap<String, String> descriptions;
   //holds temporary string values from characters() method
@@ -291,7 +291,7 @@ public class LinkShare extends DefaultFilter {
    * get mediaObject
    * @return
    */
-  public ExoSocialMedia getMediaObject() {
+  public ExoMedia getMediaObject() {
     return mediaObject;
   }
   
@@ -371,7 +371,7 @@ public class LinkShare extends DefaultFilter {
     linkShare.link = link;
     LinkShare.lang = lang;
     
-    linkShare.mediaObject = EmbedderFactory.getInstance(link).getExoSocialMedia();  
+    linkShare.mediaObject = EmbedderFactory.getInstance(link).getExoMedia(); 
     
     // if there is no media object, processes link to get page metadata
     if(linkShare.mediaObject == null) {
