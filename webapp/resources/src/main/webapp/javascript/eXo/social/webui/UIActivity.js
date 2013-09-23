@@ -236,6 +236,21 @@ var UIActivity = {
 		}
 	},
 	
+	hightlightComment : function(activityId) {
+    var isReply = window.location.href.indexOf("comment=1") > 0;
+    var anchor = window.location.hash;
+    var anchor_pattern = "#comment-([\\w|/]+|)";
+    var result = anchor.match(anchor_pattern);
+    if (result != null) {
+      var commentId = result[1];
+      var actionComment = '#commentContainer' + commentId;
+      $(actionComment).css("background-color","#f0f0f0");
+      if (isReply) {
+        this.replyByURL(activityId);
+      }
+    }
+  },
+	
 	replyByURL : function(activityId) {
 	  $(document).ready( function() {
   	    var actionComment = '#CommentLink' + activityId;

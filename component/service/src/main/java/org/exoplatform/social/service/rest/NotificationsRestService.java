@@ -62,8 +62,9 @@ public class NotificationsRestService implements ResourceContainer {
   private static String       ACTIVITY_ID_PREFIX = "activity";
 
   public enum URL_TYPE {
-    user, space, space_members, reply_activity, view_full_activity, view_likers_activity, portal_home,
-    all_space, connections, notification_settings, connections_request, space_invitation, user_activity_stream;
+    user, space, space_members, reply_activity, reply_activity_highlight_comment, view_full_activity,
+    view_full_activity_highlight_comment, view_likers_activity, portal_home, all_space,
+    connections, notification_settings, connections_request, space_invitation, user_activity_stream;
   }
   
   public NotificationsRestService() {
@@ -323,21 +324,27 @@ public class NotificationsRestService implements ResourceContainer {
       URL_TYPE urlType = URL_TYPE.valueOf(type);
       switch (urlType) {
         case view_full_activity: {
-          activity = getActivityManager().getActivity(objectId);
-          userIdentity = getIdentityManager().getIdentity(activity.getPosterId(), true);
-          targetURL = Util.getBaseUrl() + LinkProvider.getRedirectUri(ACTIVITY_ID_PREFIX + "?id=" + activity.getId());
+          targetURL = Util.getBaseUrl() + LinkProvider.getRedirectUri(ACTIVITY_ID_PREFIX + "?id=" + objectId);
+          break;
+        }
+        case view_full_activity_highlight_comment: {
+          String activityId = objectId.split("-")[0];
+          String commentId = objectId.split("-")[1];
+          targetURL = Util.getBaseUrl() + LinkProvider.getRedirectUri(ACTIVITY_ID_PREFIX + "?id=" + activityId + "#comment-" + commentId);
           break;
         }
         case view_likers_activity: {
-          activity = getActivityManager().getActivity(objectId);
-          userIdentity = getIdentityManager().getIdentity(activity.getPosterId(), true);
-          targetURL = Util.getBaseUrl() + LinkProvider.getRedirectUri(ACTIVITY_ID_PREFIX + "?id=" + activity.getId() + "&likes=1");
+          targetURL = Util.getBaseUrl() + LinkProvider.getRedirectUri(ACTIVITY_ID_PREFIX + "?id=" + objectId + "&likes=1");
           break;
         }
         case reply_activity: {
-          activity = getActivityManager().getActivity(objectId);
-          userIdentity = getIdentityManager().getIdentity(activity.getPosterId(), true);
-          targetURL = Util.getBaseUrl() + LinkProvider.getRedirectUri(ACTIVITY_ID_PREFIX + "?id=" + activity.getId() + "&comment=1");
+          targetURL = Util.getBaseUrl() + LinkProvider.getRedirectUri(ACTIVITY_ID_PREFIX + "?id=" + objectId + "&comment=1");
+          break;
+        }
+        case reply_activity_highlight_comment: {
+          String activityId = objectId.split("-")[0];
+          String commentId = objectId.split("-")[1];
+          targetURL = Util.getBaseUrl() + LinkProvider.getRedirectUri(ACTIVITY_ID_PREFIX + "?id=" + activityId + "#comment-" + commentId + "&comment=1");
           break;
         }
         case user: {
