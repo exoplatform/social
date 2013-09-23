@@ -21,7 +21,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 
-import org.exoplatform.social.common.embedder.ExoSocialMedia;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.activity.model.ExoSocialActivityImpl;
 import org.exoplatform.social.core.identity.model.Identity;
@@ -38,6 +37,7 @@ import org.exoplatform.social.webui.profile.UIUserActivitiesDisplay;
 import org.exoplatform.social.webui.space.UISpaceActivitiesDisplay;
 import org.exoplatform.web.application.ApplicationMessage;
 import org.exoplatform.webui.application.WebuiRequestContext;
+import org.exoplatform.commons.embedder.ExoMedia;
 import org.exoplatform.portal.application.PortalRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.EventConfig;
@@ -165,7 +165,7 @@ public class UILinkActivityComposer extends UIActivityComposer {
     
     templateParams = new LinkedHashMap<String, String>();
     templateParams.put(LINK_PARAM, linkShare_.getLink());
-    ExoSocialMedia mediaObject = linkShare_.getMediaObject();
+    ExoMedia mediaObject = linkShare_.getMediaObject();
     String image = "";
     List<String> images = linkShare_.getImages();
     if (images != null && images.size() > 0) {
