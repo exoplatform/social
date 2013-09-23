@@ -22,7 +22,7 @@
                                     <table border="0" cellpadding="0" cellspacing="0" >
                                         <tr>
                                             <td valign="top" width="90px">
-                                                <img height="60px" width="60px" src="$AVATAR" alt="$USER" />
+                                                <img height="60" width="60" src="$SPACE_AVATAR" alt="$SPACE" />
                                             </td>
                                             <td  valign="top">
                                                 <p style="margin:0 0 10px 0;line-height: 22px;font-size:13px;font-family:'HelveticaNeue bold',verdana,arial,tahoma">

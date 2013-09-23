@@ -82,7 +82,7 @@ public class RequestJoinSpacePlugin extends AbstractNotificationPlugin {
     
     templateContext.put("SPACE_URL", LinkProviderUtils.getRedirectUrl("space_members", space.getId()));
     templateContext.put("PROFILE_URL", LinkProviderUtils.getRedirectUrl("user", identity.getRemoteId()));
-    templateContext.put("AVATAR", LinkProviderUtils.getUserAvatarUrl(userProfile));
+    templateContext.put("SPACE_AVATAR", LinkProviderUtils.getSpaceAvatarUrl(space));
     templateContext.put("VALIDATE_SPACE_REQUEST_ACTION_URL", LinkProviderUtils.getValidateRequestToJoinSpaceUrl(space.getId(), identity.getRemoteId()));
     templateContext.put("REFUSE_SPACE_REQUEST_ACTION_URL", LinkProviderUtils.getRefuseRequestToJoinSpaceUrl(space.getId(), identity.getRemoteId()));
     String body = TemplateUtils.processGroovy(templateContext);
