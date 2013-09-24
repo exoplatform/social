@@ -1,9 +1,13 @@
 (function(sUtils, $) {
 
   var Notification = {
+    formData: '',
     parentId: '#userNotification',
     saveSetting : function(e) {
       var jElm = $(this);
+      if(jElm.hasClass('disabled')) {
+        return;
+      }
       var id = jElm.attr('id');
       var msgOk = jElm.attr('data-ok');
       var msgNOk = jElm.attr('data-nok');
@@ -11,10 +15,11 @@
       var close = jElm.parents('div:first').attr('data-close');
       var ok = jElm.parents('div:first').attr('data-ok');
       var infoTitle = jElm.parents('div:first').attr('data-info');
+      Notification.formData = $(document.forms['uiNotificationSetting']).serialize();
       $(Notification.parentId).jzAjax({        
         url : "UserNotificationSetting.saveSetting()",
         data : {
-          "params" : $(document.forms['uiNotificationSetting']).serialize()
+          "params" : Notification.formData
         },
         success : function(data) {
           if(data.ok === 'true') {
@@ -29,15 +34,17 @@
           } else if(id !== 'checkBoxDeactivate') {
             sUtils.PopupConfirmation.confirm(id, {}, infoTitle, msgNOk, close);
           }
+          jElm.addClass('disabled');
         }
       }).fail(function(jqXHR, textStatus) {
         alert( "Request failed: " + textStatus + ". "+jqXHR);
       });
     },
     onload : function() {
+      Notification.formData = $(document.forms['uiNotificationSetting']).serialize();
       var parent = $(Notification.parentId);
       var activeNotification = parent.find("input#checkBoxDeactivate"); 
-      var save = parent.find("button#Save");
+      var save = parent.find("button#Save").addClass('disabled');
       var reset = parent.find("button#Reset");
       //
       activeNotification.on('click', Notification.saveSetting) ;
@@ -65,6 +72,20 @@
         };
         sUtils.PopupConfirmation.confirm(elm.attr('id'), [actions], confTitle, elm.attr('data-confirm'), close);
       });
+      //
+      var horizontal = parent.find('div.form-horizontal');
+      horizontal.find('input[type=checkbox]').on('click', Notification.checkActiveButton);
+      horizontal.find('select').on('change', Notification.checkActiveButton);
+    },
+    checkActiveButton : function(e) {
+      var newData = $(document.forms['uiNotificationSetting']).serialize();
+      var parent = $(Notification.parentId);
+      if (Notification.formData !== newData) {
+        parent.find("button#Save").removeClass('disabled');
+        parent.find("button#Reset").removeClass('disabled');
+      } else if (parent.find("button#Save").hasClass('disabled') === false) {
+        parent.find("button#Save").addClass('disabled');
+      }
     }
   };
   Notification.onload();
