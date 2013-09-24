@@ -21,21 +21,22 @@
 */
 %>
 <%
-  import org.exoplatform.portal.webui.util.Util;
   import org.exoplatform.social.webui.Utils;
 
-  def labelNotAnyUpdatesPostedYet = _ctx.appRes("UIActivitiesLoader.label.Not_Any_Updates_Posted_Yet");
-  def labelLoadMore = _ctx.appRes("UIActivitiesLoader.label.Load_More");
-  def hasActivities = uicomponent.getActivitiesContainer().getChildren().size() > 0;
-
-  def pcontext = Util.getPortalRequestContext();
-  def jsManager = pcontext.getJavascriptManager();
-
+	def requireJS = _ctx.getRequestContext().getJavascriptManager().getRequireJS();
   if(uicomponent.id.equals("UIActivitiesLoader")) {
 	  boolean hasMore = uicomponent.isHasMore();
-	  jsManager.require("SHARED/social-ui-activities-loader", "activitiesLoader")
-	    .addScripts("activitiesLoader.init('$uicomponent.id', $hasMore);");
+	  requireJS.require("SHARED/social-ui-activities-loader", "activitiesLoader");
+	  requireJS.addScripts("activitiesLoader.init('$uicomponent.id', $hasMore);");
+	  
+	  requireJS.require("SHARED/social-ui-activity", "activity").require("SHARED/jquery", "jq");
+	  requireJS.addScripts("activity.displayLikes();");
+	  requireJS.addScripts("jq(window).resize(function() {activity.displayLikes();});");
   }
+  
+  def hasActivities = uicomponent.getActivitiesContainer().getChildren().size() > 0;
+  def labelNotAnyUpdatesPostedYet = _ctx.appRes("UIActivitiesLoader.label.Not_Any_Updates_Posted_Yet");
+  def labelLoadMore = _ctx.appRes("UIActivitiesLoader.label.Load_More");
 
   def statusTitle = _ctx.appRes("UserProfilePopup.label.Loading");
   def connectLabel = _ctx.appRes("UserProfilePopup.label.Connect");
@@ -54,7 +55,7 @@
 	  Ignore: '${ignoreLabel}'
 	} """
   
-  jsManager.require("SHARED/social-ui-profile", "profile").addScripts("profile.initUserProfilePopup('$uicomponent.id', $labels);");
+  requireJS.require("SHARED/social-ui-profile", "profile").addScripts("profile.initUserProfilePopup('$uicomponent.id', $labels);");
 	String clearClass = "clearBG";
 	if(Utils.isHomePage() && hasActivities && uicomponent.isUIUserActivityDisplay()) {
 	  clearClass = "clearfix";
@@ -74,8 +75,6 @@
    }
    
   if(uicomponent.id.equals("UIActivitiesLoader")) {
-  %>
-  <%
     if(!uicomponent.isExtendLoader()){
       %>
         <div class="boxLoadMore">
@@ -86,8 +85,8 @@
         
       <%
     }
-  %>
-<%} %>
-<div class="bottomContainer"></div>
-<% _ctx.include("classpath:groovy/social/webui/UISocialConfirmation.gtmpl"); %>
+		_ctx.include("classpath:groovy/social/webui/UISocialConfirmation.gtmpl");
+	}
+%>
+	<div class="bottomContainer"></div>
 </div>
