@@ -106,7 +106,7 @@
 				String msgOK = _ctx.appRes("UINotification.msg.SaveOKSetting");
 				String msgNOK = _ctx.appRes("UINotification.msg.SaveNOKSetting");
 	
-				String close = _ctx.appRes("UINotification.action.Close");
+				String close = _ctx.appRes("UINotification.action.Cancel");
 				String ok = _ctx.appRes("UINotification.action.OK");
 	
 				String confirm = _ctx.appRes("UINotification.msg.ResetSetting");
