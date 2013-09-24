@@ -1339,5 +1339,23 @@ public class CachedSpaceStorage implements SpaceStorage {
         .build();
 
   }
+  
+  @Override
+  public List<Space> getVisitedSpaces(final SpaceFilter filter, final int offset, final int limit) throws SpaceStorageException {
+    //
+    SpaceFilterKey key = new SpaceFilterKey(filter.getRemoteId(), filter, SpaceType.VISITED);
+    ListSpacesKey listKey = new ListSpacesKey(key, offset, limit);
+
+    //
+    ListSpacesData keys = spacesCache.get(new ServiceContext<ListSpacesData>() {
+      public ListSpacesData execute() {
+        List<Space> got = storage.getVisitedSpaces(filter, offset, limit);
+        return buildIds(got);
+      }
+    }, listKey);
+
+    //
+    return buildSpaces(keys);
+  }
 }
 

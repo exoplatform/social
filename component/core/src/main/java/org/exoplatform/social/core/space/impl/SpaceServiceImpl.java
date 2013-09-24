@@ -1476,4 +1476,8 @@ public class SpaceServiceImpl implements SpaceService {
   public ListAccess<Space> getLastAccessedSpace(String remoteId, String appId) {
     return new SpaceListAccess(this.spaceStorage, remoteId, appId, SpaceListAccess.Type.LASTEST_ACCESSED);
   }
+  
+  public ListAccess<Space> getVisitedSpaces(String remoteId, String appId) {
+    return new SpaceListAccess(this.spaceStorage, remoteId, appId, SpaceListAccess.Type.VISITED);
+  }
 }

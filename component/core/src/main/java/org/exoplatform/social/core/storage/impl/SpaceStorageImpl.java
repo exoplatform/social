@@ -1940,12 +1940,13 @@ public class SpaceStorageImpl extends AbstractStorage implements SpaceStorage {
         .append(" DESC");
 
       NodeIterator it = nodes(sb.toString());
-      _skip(it, offset);
 
       //
       List<SpaceRef> spaces = new LinkedList<SpaceRef>();
       Space space = null;
 
+      int numberOfSpaces = 0;
+      //
       while (it.hasNext()) {
         Node it1 = (Node) it.next();
 
@@ -1953,28 +1954,29 @@ public class SpaceStorageImpl extends AbstractStorage implements SpaceStorage {
         
         if (filter.getAppId() == null) {
           spaces.add(ref);
+          ++numberOfSpaces;
         } else {
           if (ref.getSpaceRef().getApp().toLowerCase().indexOf(filter.getAppId().toLowerCase()) > 0) {
             spaces.add(ref);
+            ++numberOfSpaces;
           }
         }
-
+        //
+        if (numberOfSpaces == limit) {
+          break;
+        }
       }
 
       List<Space> got = new LinkedList<Space>();
       //
-      Iterator<SpaceRef> it1 = spaces.iterator();   
+      Iterator<SpaceRef> it1 = spaces.iterator();
+      _skip(it1, offset);
 
-      int numberOfSpaces = 0;
       //
       while (it1.hasNext()) {
         space = new Space();
         fillSpaceSimpleFromEntity(it1.next().getSpaceRef(), space);
         got.add(space);
-        //
-        if (++numberOfSpaces == limit) {
-          break;
-        }
       }
 
       return got;
@@ -1994,5 +1996,115 @@ public class SpaceStorageImpl extends AbstractStorage implements SpaceStorage {
     return getSpacesOfMemberQuery(userId).objects().size();
   }
   
+  @Override
+  public List<Space> getVisitedSpaces(SpaceFilter filter, int offset, int limit) throws SpaceStorageException {
+
+    try {
+      IdentityEntity identityEntity = identityStorage._findIdentityEntity(OrganizationIdentityProvider.NAME, filter.getRemoteId());
+
+      StringBuffer sb = new StringBuffer().append("SELECT ");
+      sb.append(JCRProperties.JCR_LAST_CREATED_DATE.getName() + ",")
+        .append(JCRProperties.JCR_LAST_CREATED_DATE.getName())
+        .append(" FROM ")
+        .append(JCRProperties.SPACE_REF_NODE_TYPE);
+      //
+      sb.append(" WHERE ");
+      sb.append(JCRProperties.path.getName())
+        .append(" LIKE '")
+        .append(identityEntity.getPath())
+        .append(StorageUtils.SLASH_STR)
+        .append(IdentityEntity.spacemember.getName())
+        .append(StorageUtils.SLASH_STR)
+        .append(StorageUtils.PERCENT_STR)
+        .append("'")
+        .append(" AND ")
+        .append(JCRProperties.name.getName())
+        .append(" <> null");
+      //
+      sb.append(" ORDER BY ")
+        .append(JCRProperties.JCR_LAST_MODIFIED_DATE.getName())
+        .append(" DESC");
+
+      NodeIterator it = nodes(sb.toString());
+      _skip(it, offset);
+
+      //
+      List<SpaceRef> browsedSpaceRefs = new LinkedList<SpaceRef>();
+      List<SpaceRef> neverBrowsedSpaceRefs = new LinkedList<SpaceRef>();
+
+      //
+      int numberOfSpaces = 0;
+      while (it.hasNext()) {
+        Node node = (Node) it.next();
+
+        long createdTime = node.getProperty(JCRProperties.JCR_LAST_CREATED_DATE.getName()).getDate().getTimeInMillis();
+        long lastModifedDate = node.getProperty(JCRProperties.JCR_LAST_MODIFIED_DATE.getName()).getDate().getTimeInMillis();
+
+        SpaceRef ref = _findById(SpaceRef.class, node.getUUID());
+
+        // Process with spaces never browsed
+        if (lastModifedDate - createdTime < 2000) {
+          addSpaceRefToList(ref, filter, neverBrowsedSpaceRefs);
+        } else {
+          addSpaceRefToList(ref, filter, browsedSpaceRefs);
+        }
+
+        //
+        if (++numberOfSpaces == limit) {
+          break;
+        }
+      }
+
+      //
+      List<Space> got = new LinkedList<Space>();
+      Iterator<SpaceRef> spaceRefs = browsedSpaceRefs.iterator();
+      //
+      getSpacesFromSpaceRefs(spaceRefs, got);
+
+      int remain = limit - got.size();
+      // process the spaces which are never be browsed
+      if (neverBrowsedSpaceRefs.isEmpty() || (remain == 0)) {
+        return got;
+      }
+
+      spaceRefs = neverBrowsedSpaceRefs.iterator();
+      //
+      List<Space> neverBrowsedSpaces = new LinkedList<Space>();
+      getSpacesFromSpaceRefs(spaceRefs, neverBrowsedSpaces);
+      StorageUtils.sortSpaceByName(neverBrowsedSpaces, true);
+
+      //
+      got.addAll(neverBrowsedSpaces.subList(0, Math.min(remain, neverBrowsedSpaces.size())));
+
+      return got;
+    } catch (NodeNotFoundException e) {
+      LOG.warn(e.getMessage(), e);
+    } catch (RepositoryException e) {
+      LOG.warn(e.getMessage(), e);
+    }
+    //
+    return Collections.emptyList();
+  }
+  
+  private void addSpaceRefToList(SpaceRef ref, SpaceFilter filter, List<SpaceRef> list) {
+    //
+    if (filter.getAppId() == null) {
+      list.add(ref);
+    } else {
+      if (ref.getSpaceRef().getApp().toLowerCase().indexOf(filter.getAppId().toLowerCase()) > 0) {
+        list.add(ref);
+      }
+    }
+  }
+
+  private void getSpacesFromSpaceRefs(Iterator<SpaceRef> it, List<Space> list) {
+    Space space = null;
+    //
+    while (it.hasNext()) {
+      space = new Space();
+      fillSpaceFromEntity(it.next().getSpaceRef(), space);
+      list.add(space);
+    }
+  }
 
 }
