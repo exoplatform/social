@@ -362,6 +362,27 @@ public class StorageUtils {
   }
   
   /**
+   * Sort list of identities by full name
+   * 
+   * @param list
+   * @param asc
+   * @return sorted list
+   */
+  public static List<Identity> sortIdentitiesByFullName(List<Identity> list, final boolean asc) {
+    //
+    Collections.sort(list, new Comparator<Identity>() {
+      public int compare(Identity o1, Identity o2) {
+        if (asc)
+          return (o1.getProfile().getFullName()).compareTo(o2.getProfile().getFullName());
+        else
+          return (o1.getProfile().getFullName()).compareTo(o2.getProfile().getFullName()) / -1;
+      }
+    });
+
+    return list;
+  }
+  
+  /**
    * Process Unified Search Condition
    * @param searchCondition the input search condition
    * @return List of conditions

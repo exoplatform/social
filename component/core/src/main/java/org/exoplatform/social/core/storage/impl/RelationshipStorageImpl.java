@@ -954,6 +954,10 @@ public class RelationshipStorageImpl extends AbstractStorage implements Relation
   public List<Identity> getIncomingByFilter(
       final Identity existingIdentity, final ProfileFilter profileFilter, final long offset, final long limit)
       throws RelationshipStorageException {
+    //
+    if (profileFilter.isEmpty()) {
+      return StorageUtils.sortIdentitiesByFullName(getIncomingRelationships(existingIdentity, offset, limit), true);
+    }
 
     List<Identity> identities = getStorage().getIncomingRelationships(existingIdentity, 0, -1);
     return getIdentitiesRelationsByFilter(identities, profileFilter, offset, limit);
@@ -967,6 +971,10 @@ public class RelationshipStorageImpl extends AbstractStorage implements Relation
       final Identity existingIdentity, final ProfileFilter profileFilter, final long offset, final long limit)
       throws RelationshipStorageException {
 
+    if (profileFilter.isEmpty()) {
+      return StorageUtils.sortIdentitiesByFullName(getOutgoingRelationships(existingIdentity, offset, limit), true);
+    }
+    
     List<Identity> identities = getStorage().getOutgoingRelationships(existingIdentity, 0, -1);
     return getIdentitiesRelationsByFilter(identities, profileFilter, offset, limit);
 
@@ -976,6 +984,10 @@ public class RelationshipStorageImpl extends AbstractStorage implements Relation
    */
   public int getIncomingCountByFilter(
       final Identity existingIdentity, final ProfileFilter profileFilter) throws RelationshipStorageException {
+    
+    if (profileFilter.isEmpty()) {
+      return getIncomingRelationshipsCount(existingIdentity);
+    }
 
     List<Identity> identities = getStorage().getIncomingRelationships(existingIdentity, 0, -1);
     return getIdentitiesRelationsByFilterCount(identities, profileFilter);
@@ -998,6 +1010,10 @@ public class RelationshipStorageImpl extends AbstractStorage implements Relation
    */
   public int getOutgoingCountByFilter(
       final Identity existingIdentity, final ProfileFilter profileFilter) throws RelationshipStorageException {
+    
+    if (profileFilter.isEmpty()) {
+      return getOutgoingRelationshipsCount(existingIdentity);
+    }
 
     List<Identity> identities = getStorage().getOutgoingRelationships(existingIdentity, 0, -1);
     return getIdentitiesRelationsByFilterCount(identities, profileFilter);
