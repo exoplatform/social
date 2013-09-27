@@ -79,15 +79,15 @@ public class ActivityMentionPlugin extends AbstractNotificationPlugin {
     templateContext.put("USER", identity.getProfile().getFullName());
     String subject = TemplateUtils.processSubject(templateContext);
     
-    // In case of mention on a comment, we need provide the information of the activity, not the comment
+    // In case of mention on a comment, we need provide the id of the activity, not of the comment
     if (activity.isComment()) {
-      activity = Utils.getActivityManager().getParentActivity(activity);
+      activityId = Utils.getActivityManager().getParentActivity(activity).getId();
     }
     templateContext.put("AVATAR", LinkProviderUtils.getUserAvatarUrl(identity.getProfile()));
     templateContext.put("PROFILE_URL", LinkProviderUtils.getRedirectUrl("user", identity.getRemoteId()));
     templateContext.put("ACTIVITY", Utils.processMentions(activity.getTitle()));
-    templateContext.put("REPLY_ACTION_URL", LinkProviderUtils.getRedirectUrl("reply_activity", activity.getId()));
-    templateContext.put("VIEW_FULL_DISCUSSION_ACTION_URL", LinkProviderUtils.getRedirectUrl("view_full_activity", activity.getId()));
+    templateContext.put("REPLY_ACTION_URL", LinkProviderUtils.getRedirectUrl("reply_activity", activityId));
+    templateContext.put("VIEW_FULL_DISCUSSION_ACTION_URL", LinkProviderUtils.getRedirectUrl("view_full_activity", activityId));
     String body = TemplateUtils.processGroovy(templateContext);
    
     return messageInfo.subject(subject).body(body).end();
