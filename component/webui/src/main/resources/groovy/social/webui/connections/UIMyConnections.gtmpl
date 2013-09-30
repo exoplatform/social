@@ -135,7 +135,7 @@
          %>
          
           <div class="spaceBox pull-left">
-            <a class="avatarXLarge pull-left">
+            <a href="${profileURL}" class="avatarXLarge pull-left">
               <img rel="tooltip" data-placement="bottom" title="${fullName}" src="$imageSource" />
             </a>
             <div class="contentBox">
