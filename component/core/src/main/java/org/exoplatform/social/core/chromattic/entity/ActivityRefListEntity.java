@@ -133,19 +133,19 @@ public abstract class ActivityRefListEntity {
 
   }
   
-  public ActivityRef get(ActivityEntity entity) {
+  public ActivityRef getOrCreated(ActivityEntity entity) {
     //migration 3.5.x => 4.x, lastUpdated of Activity is NULL, then use createdDate for replacement 
     Long key = entity.getLastUpdated() != null ? entity.getLastUpdated() : entity.getPostedTime(); 
-    return get(key.longValue());
+    return getOrCreated(key.longValue());
   }
   
-  public ActivityRef get(ActivityEntity entity, AtomicBoolean newYearMonthday) {
+  public ActivityRef getOrCreated(ActivityEntity entity, AtomicBoolean newYearMonthday) {
     //migration 3.5.x => 4.x, lastUpdated of Activity is NULL, then use createdDate for replacement 
     Long key = entity.getLastUpdated() != null ? entity.getLastUpdated() : entity.getPostedTime(); 
-    return get(key.longValue(), newYearMonthday);
+    return getOrCreated(key.longValue(), newYearMonthday);
   }
   
-  public ActivityRef get(long lastUpdated) {
+  public ActivityRef getOrCreated(long lastUpdated) {
     Calendar calendar = Calendar.getInstance(Locale.ENGLISH);
     calendar.setTimeInMillis(lastUpdated);
 
@@ -168,7 +168,32 @@ public abstract class ActivityRefListEntity {
     return ref;
   }
   
-  public ActivityRef get(long lastUpdated, AtomicBoolean newYearMonthDay) {
+  public ActivityRef get(long lastUpdated) {
+    Calendar calendar = Calendar.getInstance(Locale.ENGLISH);
+    calendar.setTimeInMillis(lastUpdated);
+
+    String year = String.valueOf(calendar.get(Calendar.YEAR));
+    String month = MONTH_NAME[calendar.get(Calendar.MONTH)];
+    String day = String.valueOf(calendar.get(Calendar.DAY_OF_MONTH));
+
+    ActivityRefDayEntity dayEntity = this.getYear(year).getMonth(month).getDay(day);
+    
+    //needs to check it existing or not in list
+    return dayEntity.getActivityRefs().get("" + lastUpdated);
+  }
+  
+  public ActivityRefDayEntity getActivityRefDay(long lastUpdated) {
+    Calendar calendar = Calendar.getInstance(Locale.ENGLISH);
+    calendar.setTimeInMillis(lastUpdated);
+
+    String year = String.valueOf(calendar.get(Calendar.YEAR));
+    String month = MONTH_NAME[calendar.get(Calendar.MONTH)];
+    String day = String.valueOf(calendar.get(Calendar.DAY_OF_MONTH));
+
+    return this.getYear(year).getMonth(month).getDay(day);
+  }
+  
+  public ActivityRef getOrCreated(long lastUpdated, AtomicBoolean newYearMonthDay) {
     Calendar calendar = Calendar.getInstance(Locale.ENGLISH);
     calendar.setTimeInMillis(lastUpdated);
 
@@ -242,6 +267,22 @@ public abstract class ActivityRefListEntity {
     return isOnlyUpdate;
   }
   
+  public boolean isOnlyUpdate(ActivityRef oldRef, long newLastUpdated) {
+    ActivityRefDayEntity day = oldRef.getDay();
+    String oldYear = day.getMonth().getYear().getName();
+    String oldMonth = day.getMonth().getName();
+    String oldDay = day.getName();
+    
+    Calendar newCalendar = Calendar.getInstance(Locale.ENGLISH);
+    newCalendar.setTimeInMillis(newLastUpdated);
+    String newYear = String.valueOf(newCalendar.get(Calendar.YEAR));
+    String newMonth = MONTH_NAME[newCalendar.get(Calendar.MONTH)];
+    String newDay = String.valueOf(newCalendar.get(Calendar.DAY_OF_MONTH));
+    
+    boolean isOnlyUpdate = oldYear.equals(newYear) && oldMonth.equals(newMonth) && oldDay.equals(newDay);
+    return isOnlyUpdate;
+  }
+  
   public ActivityRef remove(ActivityEntity entity) {
     return remove(entity.getLastUpdated());
   }
@@ -265,6 +306,15 @@ public abstract class ActivityRefListEntity {
     }
     
     return ref;
+  }
+  
+  public boolean create(long newUpdated, ActivityEntity entity) {
+    ActivityRef newRef = getOrCreated(newUpdated);
+    newRef.setName("" + newUpdated);
+    newRef.setActivityEntity(entity);
+    newRef.setLastUpdated(newUpdated);
+    //
+    return true;
   }
   
 }

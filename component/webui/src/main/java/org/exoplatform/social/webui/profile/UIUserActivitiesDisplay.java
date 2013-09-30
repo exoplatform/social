@@ -116,8 +116,8 @@ public class UIUserActivitiesDisplay extends UIContainer {
     addChild(uiDropDownControl);
 
     // TODO: init() run two time when initiation this form.
-    String remoteId = Utils.getOwnerRemoteId();
-    this.setOwnerName(remoteId);
+    //String remoteId = Utils.getOwnerRemoteId();
+    //this.setOwnerName(remoteId);
     String selectedDisplayMode = Utils.getCookies(String.format(Utils.ACTIVITY_STREAM_TAB_SELECTED_COOKIED, Utils.getViewerRemoteId()));
     selectedDisplayMode = (selectedDisplayMode != null) ? selectedDisplayMode : DisplayMode.ALL_ACTIVITIES.name();
 

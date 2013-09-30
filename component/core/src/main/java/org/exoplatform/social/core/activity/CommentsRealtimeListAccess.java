@@ -141,4 +141,9 @@ public class CommentsRealtimeListAccess implements RealtimeListAccess<ExoSocialA
   public int getNumberOfOlder(Long sinceTime) {
     return activityStorage.getNumberOfOlderComments(existingActivity, sinceTime);
   }
+
+  @Override
+  public int getNumberOfUpgrade() {
+    return 0;
+  }
 }
