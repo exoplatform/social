@@ -23,25 +23,32 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import javax.jcr.Node;
-import javax.jcr.NodeIterator;
+import javax.jcr.PathNotFoundException;
+import javax.jcr.Property;
 import javax.jcr.RepositoryException;
-import javax.jcr.UnsupportedRepositoryOperationException;
 
 import org.chromattic.api.ChromatticSession;
 import org.chromattic.api.query.Ordering;
 import org.chromattic.api.query.Query;
 import org.chromattic.api.query.QueryBuilder;
 import org.chromattic.api.query.QueryResult;
+import org.chromattic.core.api.ChromatticSessionImpl;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
-import org.exoplatform.social.core.chromattic.entity.*;
+import org.exoplatform.social.core.chromattic.entity.IdentityEntity;
+import org.exoplatform.social.core.chromattic.entity.SpaceEntity;
+import org.exoplatform.social.core.chromattic.entity.SpaceListEntity;
+import org.exoplatform.social.core.chromattic.entity.SpaceRef;
+import org.exoplatform.social.core.chromattic.entity.SpaceRootEntity;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
@@ -73,7 +80,9 @@ public class SpaceStorageImpl extends AbstractStorage implements SpaceStorage {
    * The identity storage
    */
   private final IdentityStorageImpl identityStorage;
-
+  
+  private static final int TWO_SECONDS = 2000;
+  
   /**
    * Constructor.
    *
@@ -1923,69 +1932,58 @@ public class SpaceStorageImpl extends AbstractStorage implements SpaceStorage {
   public List<Space> getLastAccessedSpace(SpaceFilter filter, int offset, int limit) throws SpaceStorageException {
     try {
       IdentityEntity identityEntity = identityStorage._findIdentityEntity(OrganizationIdentityProvider.NAME, filter.getRemoteId());
-
-      StringBuffer sb = new StringBuffer().append("SELECT * FROM ");
-      sb.append(JCRProperties.SPACE_REF_NODE_TYPE);
+      SpaceListEntity listRef = RefType.MEMBER.refsOf(identityEntity);
+      Map<String, SpaceRef> mapRefs = listRef.getRefs();
+      
       //
-      sb.append(" WHERE ");
-      sb.append(JCRProperties.path.getName())
-        .append(" LIKE '")
-        .append(identityEntity.getPath()).append(StorageUtils.SLASH_STR)
-        .append(IdentityEntity.spacemember.getName())
-        .append(StorageUtils.SLASH_STR).append(StorageUtils.PERCENT_STR)
-        .append("'");
-      //
-      sb.append(" ORDER BY ")
-        .append(JCRProperties.JCR_LAST_MODIFIED_DATE.getName())
-        .append(" DESC");
-
-      NodeIterator it = nodes(sb.toString());
-
-      //
-      List<SpaceRef> spaces = new LinkedList<SpaceRef>();
+      ChromatticSessionImpl chromatticSession = (ChromatticSessionImpl) getSession();
+      Map<SpaceRef, Long> spaceRefs = new LinkedHashMap<SpaceRef, Long>();
       Space space = null;
-
-      int numberOfSpaces = 0;
+      
       //
-      while (it.hasNext()) {
-        Node it1 = (Node) it.next();
+      for(Map.Entry<String, SpaceRef> entry :  mapRefs.entrySet()) {
+        SpaceRef ref = entry.getValue();
+        Node node = chromatticSession.getNode(ref);
+        Property p = getProperty(node, JCRProperties.JCR_LAST_MODIFIED_DATE.getName());
+        long lastModifedDate = p == null ? 0 : p.getDate().getTimeInMillis();
 
-        SpaceRef ref = _findById(SpaceRef.class, it1.getUUID());
-        
+        // Lazy clean up
+        if (ref.getSpaceRef() == null) {
+          listRef.removeRef(entry.getKey());
+          continue;
+        }
+
         if (filter.getAppId() == null) {
-          spaces.add(ref);
-          ++numberOfSpaces;
+          spaceRefs.put(ref, lastModifedDate);
         } else {
           if (ref.getSpaceRef().getApp().toLowerCase().indexOf(filter.getAppId().toLowerCase()) > 0) {
-            spaces.add(ref);
-            ++numberOfSpaces;
+            spaceRefs.put(ref, lastModifedDate);
           }
         }
-        //
-        if (numberOfSpaces == limit) {
-          break;
-        }
       }
-
+      spaceRefs = StorageUtils.sortMapByValue(spaceRefs, false);
+      
       List<Space> got = new LinkedList<Space>();
-      //
-      Iterator<SpaceRef> it1 = spaces.iterator();
+      Iterator<SpaceRef> it1 = spaceRefs.keySet().iterator();
       _skip(it1, offset);
 
       //
+      int numberOfSpace = 0;
       while (it1.hasNext()) {
         space = new Space();
         fillSpaceSimpleFromEntity(it1.next().getSpaceRef(), space);
         got.add(space);
+        //
+        if (++numberOfSpace == limit) {
+          break;
+        }
       }
 
       return got;
     } catch (NodeNotFoundException e) {
-      LOG.warn(e.getMessage(), e);
-    } catch (UnsupportedRepositoryOperationException e) {
-      LOG.warn(e.getMessage(), e);
+      LOG.warn("Get last accessed spaces failure.", e);
     } catch (RepositoryException e) {
-      LOG.warn(e.getMessage(), e);
+      LOG.warn("Get last accessed spaces failure.", e);
     }
     
     //
@@ -2002,80 +2000,45 @@ public class SpaceStorageImpl extends AbstractStorage implements SpaceStorage {
     try {
       IdentityEntity identityEntity = identityStorage._findIdentityEntity(OrganizationIdentityProvider.NAME, filter.getRemoteId());
 
-      StringBuffer sb = new StringBuffer().append("SELECT ");
-      sb.append(JCRProperties.JCR_LAST_CREATED_DATE.getName() + ",")
-        .append(JCRProperties.JCR_LAST_CREATED_DATE.getName())
-        .append(" FROM ")
-        .append(JCRProperties.SPACE_REF_NODE_TYPE);
+      SpaceListEntity listRef = RefType.MEMBER.refsOf(identityEntity);
+      Map<String, SpaceRef> mapRefs = listRef.getRefs();
+      
       //
-      sb.append(" WHERE ");
-      sb.append(JCRProperties.path.getName())
-        .append(" LIKE '")
-        .append(identityEntity.getPath())
-        .append(StorageUtils.SLASH_STR)
-        .append(IdentityEntity.spacemember.getName())
-        .append(StorageUtils.SLASH_STR)
-        .append(StorageUtils.PERCENT_STR)
-        .append("'")
-        .append(" AND ")
-        .append(JCRProperties.name.getName())
-        .append(" <> null");
-      //
-      sb.append(" ORDER BY ")
-        .append(JCRProperties.JCR_LAST_MODIFIED_DATE.getName())
-        .append(" DESC");
-
-      NodeIterator it = nodes(sb.toString());
-      _skip(it, offset);
-
-      //
-      List<SpaceRef> browsedSpaceRefs = new LinkedList<SpaceRef>();
-      List<SpaceRef> neverBrowsedSpaceRefs = new LinkedList<SpaceRef>();
-
-      //
-      int numberOfSpaces = 0;
-      while (it.hasNext()) {
-        Node node = (Node) it.next();
-
-        long createdTime = node.getProperty(JCRProperties.JCR_LAST_CREATED_DATE.getName()).getDate().getTimeInMillis();
-        long lastModifedDate = node.getProperty(JCRProperties.JCR_LAST_MODIFIED_DATE.getName()).getDate().getTimeInMillis();
-
-        SpaceRef ref = _findById(SpaceRef.class, node.getUUID());
-
-        // Process with spaces never browsed
-        if (lastModifedDate - createdTime < 2000) {
-          addSpaceRefToList(ref, filter, neverBrowsedSpaceRefs);
-        } else {
-          addSpaceRefToList(ref, filter, browsedSpaceRefs);
-        }
-
-        //
-        if (++numberOfSpaces == limit) {
-          break;
-        }
+      Map<SpaceRef, Long> visitedSpaceRefs = new LinkedHashMap<SpaceRef, Long>();
+      List<SpaceRef> neverVisitedSpaceRefs = new LinkedList<SpaceRef>();
+      
+      visitedSpaceRefs = getSpaceRefs(mapRefs, visitedSpaceRefs, neverVisitedSpaceRefs, filter.getAppId());
+      Iterator<SpaceRef> spaceRefs = visitedSpaceRefs.keySet().iterator();
+      
+      if (offset < visitedSpaceRefs.size()) {
+        _skip(spaceRefs, offset);
+        offset = 0;
+      } else {
+        _skip(spaceRefs, offset);
+        offset = offset - (visitedSpaceRefs.size());
       }
-
+      
       //
       List<Space> got = new LinkedList<Space>();
-      Iterator<SpaceRef> spaceRefs = browsedSpaceRefs.iterator();
-      //
-      getSpacesFromSpaceRefs(spaceRefs, got);
-
+      //priority for visited spaces to return
+      getSpacesFromSpaceRefs(spaceRefs, got, limit);
+      
+      // process the spaces which are never be visited
       int remain = limit - got.size();
-      // process the spaces which are never be browsed
-      if (neverBrowsedSpaceRefs.isEmpty() || (remain == 0)) {
+      if (neverVisitedSpaceRefs.isEmpty() || (remain == 0)) {
         return got;
       }
 
-      spaceRefs = neverBrowsedSpaceRefs.iterator();
+      spaceRefs = neverVisitedSpaceRefs.iterator();
+      _skip(spaceRefs, offset);
       //
-      List<Space> neverBrowsedSpaces = new LinkedList<Space>();
-      getSpacesFromSpaceRefs(spaceRefs, neverBrowsedSpaces);
-      StorageUtils.sortSpaceByName(neverBrowsedSpaces, true);
+      List<Space> neverVisitedSpaces = new LinkedList<Space>();
+      getSpacesFromSpaceRefs(spaceRefs, neverVisitedSpaces, -1);
+      neverVisitedSpaces = StorageUtils.sortSpaceByName(neverVisitedSpaces, true);
 
       //
-      got.addAll(neverBrowsedSpaces.subList(0, Math.min(remain, neverBrowsedSpaces.size())));
-
+      got.addAll(neverVisitedSpaces.subList(0, Math.min(remain, neverVisitedSpaces.size())));
+      
       return got;
     } catch (NodeNotFoundException e) {
       LOG.warn(e.getMessage(), e);
@@ -2086,25 +2049,60 @@ public class SpaceStorageImpl extends AbstractStorage implements SpaceStorage {
     return Collections.emptyList();
   }
   
-  private void addSpaceRefToList(SpaceRef ref, SpaceFilter filter, List<SpaceRef> list) {
+  private Map<SpaceRef, Long> getSpaceRefs(Map<String, SpaceRef> spaceRefs, Map<SpaceRef, Long> visitedSpaceRefs, List<SpaceRef> neverVisitedSpaceRefs, String appId) throws RepositoryException {
     //
-    if (filter.getAppId() == null) {
-      list.add(ref);
-    } else {
-      if (ref.getSpaceRef().getApp().toLowerCase().indexOf(filter.getAppId().toLowerCase()) > 0) {
-        list.add(ref);
+    ChromatticSessionImpl chromatticSession = (ChromatticSessionImpl) getSession();
+    
+    for (Entry<String, SpaceRef> entry : spaceRefs.entrySet()) {
+      SpaceRef ref = entry.getValue();
+      Node node = chromatticSession.getNode(ref);
+      Property p1 = getProperty(node, JCRProperties.JCR_LAST_CREATED_DATE.getName());
+      Property p2 = getProperty(node, JCRProperties.JCR_LAST_MODIFIED_DATE.getName());
+      long createdTime = p1 == null ? 0 : p1.getDate().getTimeInMillis();
+      long lastModifedDate = p2 == null ? 0 : p2.getDate().getTimeInMillis();
+      
+      boolean isValid = false;
+      if (appId == null) {
+        isValid = true;
+      } else {
+        if (ref.getSpaceRef().getApp().toLowerCase().indexOf(appId.toLowerCase()) > 0) {
+          isValid = true;
+        }
+      }
+      
+      //The never visited spaces which have last modified date different with the created time less than 2 seconds
+      if (lastModifedDate - createdTime < TWO_SECONDS && isValid) {
+        neverVisitedSpaceRefs.add(ref);
+      } else if (isValid) {
+        visitedSpaceRefs.put(ref, lastModifedDate);
       }
     }
+    
+    //sort visited space by modified date
+    return StorageUtils.sortMapByValue(visitedSpaceRefs, false);
   }
-
-  private void getSpacesFromSpaceRefs(Iterator<SpaceRef> it, List<Space> list) {
+  
+  private void getSpacesFromSpaceRefs(Iterator<SpaceRef> it, List<Space> list, int limit) {
     Space space = null;
     //
+    int numberOfSpace = 0;
     while (it.hasNext()) {
       space = new Space();
       fillSpaceFromEntity(it.next().getSpaceRef(), space);
       list.add(space);
+      //
+      if (++numberOfSpace == limit) {
+        break;
+      }
     }
   }
 
+  private Property getProperty(Node node, String propertyName) {
+    try {
+      return node.getProperty(propertyName);
+    } catch (RepositoryException e) {
+      LOG.error(String.format("Get property %s failed", propertyName));
+    }
+    return null;
+  }
 }
