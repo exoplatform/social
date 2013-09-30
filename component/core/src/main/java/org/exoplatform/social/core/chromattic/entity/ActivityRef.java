@@ -22,6 +22,7 @@ import org.chromattic.api.annotations.ManyToOne;
 import org.chromattic.api.annotations.MappedBy;
 import org.chromattic.api.annotations.Name;
 import org.chromattic.api.annotations.Owner;
+import org.chromattic.api.annotations.Path;
 import org.chromattic.api.annotations.PrimaryType;
 import org.chromattic.api.annotations.Property;
 import org.exoplatform.social.core.storage.query.PropertyLiteralExpression;
@@ -33,6 +34,9 @@ public abstract class ActivityRef implements NamedEntity {
   @Name
   public abstract String getName();
   public abstract void setName(String name);
+  
+  @Path
+  public abstract String getPath();
   
   @Id
   public abstract String getId();
@@ -59,7 +63,8 @@ public abstract class ActivityRef implements NamedEntity {
   
   @Override
   public String toString() {
-    return String.format("ActRef{name=%s,lastUpdated=%s,target='%s',%s}",
+    return String.format("ActRef{path=%s, name=%s,lastUpdated=%s,target='%s',%s}",
+                         getPath(),
                          getName(),
                          getLastUpdated(),
                          getActivityEntity().getId(),

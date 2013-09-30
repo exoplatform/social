@@ -171,6 +171,11 @@ public abstract class AbstractStorage {
     }
   }
   
+  protected <M> boolean _hasMixin(Object o, Class<M> mixinType) {
+    M mixin = getSession().getEmbedded(o, mixinType);
+    return mixin != null;
+  }
+  
   /**
    * Gets NodeIterator with Statement with offset and limit
    * 

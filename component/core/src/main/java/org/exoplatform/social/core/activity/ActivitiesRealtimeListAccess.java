@@ -186,6 +186,9 @@ public class ActivitiesRealtimeListAccess implements RealtimeListAccess<ExoSocia
       case POSTER_AND_TYPES_ACTIVITIES: {
         return 0;
       }
+      case VIEW_USER_ACTIVITIES: {
+        return activityStorage.getNumberOfActivitiesByPoster(ownerIdentity);
+      }
     }
     return 0;
   }
@@ -427,6 +430,39 @@ public class ActivitiesRealtimeListAccess implements RealtimeListAccess<ExoSocia
     }
     }
     return 0;
+  }
+  
+  /**
+   * {@inheritDoc}
+   */
+  public int getNumberOfUpgrade() {
+    switch (activityType) {
+    case ACTIVITY_FEED: {
+      return activityStorage.getNumberOfActivitesOnActivityFeedForUpgrade(ownerIdentity);
+    }
+    case USER_ACTIVITIES: {
+      return activityStorage.getNumberOfUserActivitiesForUpgrade(ownerIdentity);
+    }
+    case CONNECTIONS_ACTIVITIES: {
+      return activityStorage.getNumberOfActivitiesOfConnectionsForUpgrade(ownerIdentity);
+    }
+    case USER_SPACE_ACTIVITIES: {
+      return activityStorage.getNumberOfUserSpacesActivitiesForUpgrade(ownerIdentity);
+    }
+    case SPACE_ACTIVITIES: {
+      return activityStorage.getNumberOfSpaceActivitiesForUpgrade(ownerIdentity);
+    }
+    case POSTER_ACTIVITIES: {
+      return activityStorage.getNumberOfActivitiesByPoster(ownerIdentity);
+    }
+    case POSTER_AND_TYPES_ACTIVITIES: {
+      return 0;
+    }
+    case VIEW_USER_ACTIVITIES: {
+      return activityStorage.getNumberOfActivitiesByPoster(ownerIdentity);
+    }
+  }
+  return 0;
   }
 
 }

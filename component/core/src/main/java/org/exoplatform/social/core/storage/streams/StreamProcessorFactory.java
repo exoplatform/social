@@ -16,10 +16,14 @@
  */
 package org.exoplatform.social.core.storage.streams;
 
+import java.util.List;
+
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.social.common.service.ProcessContext;
 import org.exoplatform.social.common.service.impl.SocialServiceContextImpl;
 import org.exoplatform.social.common.service.utils.ObjectHelper;
+import org.exoplatform.social.core.activity.model.ExoSocialActivity;
+import org.exoplatform.social.core.storage.api.ActivityStorage;
 import org.exoplatform.social.core.storage.api.ActivityStreamStorage;
 
 public class StreamProcessorFactory {
@@ -30,6 +34,10 @@ public class StreamProcessorFactory {
   
   private static ActivityStreamStorage getStreamStorage() {
     return (ActivityStreamStorage) PortalContainer.getInstance().getComponentInstanceOfType(ActivityStreamStorage.class);
+  }
+  
+  private static ActivityStorage getActivityStorage() {
+    return (ActivityStorage) PortalContainer.getInstance().getComponentInstanceOfType(ActivityStorage.class);
   }
   /**
    * Build Save Stream processor
@@ -292,6 +300,24 @@ public class StreamProcessorFactory {
         StreamProcessContext streamCtx = ObjectHelper.cast(StreamProcessContext.class, processContext);
         
         getStreamStorage().createSpaceActivityRef(streamCtx.getIdentity(), streamCtx.getActivities());
+        return processContext;
+      }
+
+    };
+  }
+  
+  /**
+   * Build the process to load Feed activity asynchronous
+   * @return
+   */
+  public static SocialChromatticAsyncProcessor loadFeed() {
+    return new SocialChromatticAsyncProcessor(SocialServiceContextImpl.getInstance()) {
+
+      @Override
+      protected ProcessContext execute(ProcessContext processContext) throws Exception {
+        StreamProcessContext streamCtx = ObjectHelper.cast(StreamProcessContext.class, processContext);
+        
+        getActivityStorage().getActivityFeed(streamCtx.getIdentity(), 0, 20);
         return processContext;
       }
 
