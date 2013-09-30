@@ -54,7 +54,10 @@ public enum CacheType {
   SPACE("SpaceCache"),
   SPACE_REF("SpaceRefCache"),
   SPACES_COUNT("SpacesCountCache"),
-  SPACES("SpacesCache")
+  SPACES("SpacesCache"),
+  
+  //
+  SPACE_SIMPLE("SpaceSimpleCache")
 
   ;
 
