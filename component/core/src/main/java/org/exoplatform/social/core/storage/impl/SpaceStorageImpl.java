@@ -28,6 +28,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.jcr.Node;
+import javax.jcr.NodeIterator;
+import javax.jcr.RepositoryException;
+import javax.jcr.UnsupportedRepositoryOperationException;
+
 import org.chromattic.api.ChromatticSession;
 import org.chromattic.api.query.Ordering;
 import org.chromattic.api.query.Query;
@@ -132,6 +137,40 @@ public class SpaceStorageImpl extends AbstractStorage implements SpaceStorage {
     }
     space.setAvatarLastUpdated(entity.getAvatarLastUpdated());
   }
+  
+  /**
+   * Fills {@link Space}'s properties to {@link SpaceEntity}'s.
+   *
+   * @param entity the space entity from chromattic
+   * @param space  the space pojo for services
+   */
+  private void fillSpaceSimpleFromEntity(SpaceEntity entity, Space space) {
+
+    space.setId(entity.getId());
+    space.setDisplayName(entity.getDisplayName());
+    space.setPrettyName(entity.getPrettyName());
+    space.setDescription(entity.getDescription());
+    space.setGroupId(entity.getGroupId());
+    space.setUrl(entity.getURL());
+    space.setCreatedTime(entity.getCreatedTime());
+
+    if (entity.getAvatarLastUpdated() != null) {
+      try {
+        PortalContainer container = PortalContainer.getInstance();
+        ChromatticSession chromatticSession = getSession();
+        String url = String.format("/%s/jcr/%s/%s/production/soc:providers/soc:space/soc:%s/soc:profile/soc:avatar/?upd=%d",
+            container.getRestContextName(),
+            lifeCycle.getRepositoryName(),
+            chromatticSession.getJCRSession().getWorkspace().getName(),
+            entity.getPrettyName(),
+            entity.getAvatarLastUpdated());
+        space.setAvatarUrl(LinkProvider.escapeJCRSpecialCharacters(url));
+      } catch (Exception e) {
+        LOG.warn("Failed to build avatar url: " + e.getMessage());
+      }
+    }
+    space.setAvatarLastUpdated(entity.getAvatarLastUpdated());
+  }
 
   /**
    * Fills {@link SpaceEntity}'s properties from {@link Space}'s.
@@ -159,7 +198,6 @@ public class SpaceStorageImpl extends AbstractStorage implements SpaceStorage {
     entity.setInvitedMembersId(space.getInvitedUsers());
     entity.setAvatarLastUpdated(space.getAvatarLastUpdated());
     entity.setCreatedTime(space.getCreatedTime() != 0 ? space.getCreatedTime() : System.currentTimeMillis());
-
   }
 
   private void applyOrder(QueryBuilder builder, SpaceFilter spaceFilter) {
@@ -1281,6 +1319,46 @@ public class SpaceStorageImpl extends AbstractStorage implements SpaceStorage {
   public int getAccessibleSpacesByFilterCount(String userId, SpaceFilter spaceFilter) {
     return getAccessibleSpacesByFilterQuery(userId, spaceFilter).objects().size();
   }
+  
+  /**
+   * {@inheritDoc}
+   */
+  public int getLastAccessedSpaceCount(SpaceFilter filter) {
+    
+    try {
+      IdentityEntity identityEntity = identityStorage._findIdentityEntity(OrganizationIdentityProvider.NAME, filter.getRemoteId());
+      SpaceListEntity listRef = RefType.MEMBER.refsOf(identityEntity);
+      Map<String, SpaceRef> mapRefs = listRef.getRefs();
+      //
+      int counter = 0;
+      
+      //
+      for(Map.Entry<String, SpaceRef> entry :  mapRefs.entrySet()) {
+        SpaceRef ref = entry.getValue();
+
+        // Lazy clean up
+        if (ref.getSpaceRef() == null) {
+          listRef.removeRef(entry.getKey());
+          continue;
+        }
+
+        if (filter.getAppId() == null) {
+          counter++;
+        } else {
+          if (ref.getSpaceRef().getApp().toLowerCase().indexOf(filter.getAppId().toLowerCase()) > 0) {
+            counter++;
+          }
+        }
+      }
+
+      
+      
+      return counter;
+      } catch (NodeNotFoundException e) {
+        LOG.warn(e.getMessage(), e);
+        return 0;
+      }
+  }
 
   /**
    * {@inheritDoc}
@@ -1716,6 +1794,28 @@ public class SpaceStorageImpl extends AbstractStorage implements SpaceStorage {
     }
 
   }
+  
+  /**
+   * {@inheritDoc}
+   */
+  public Space getSpaceSimpleById(String id) throws SpaceStorageException {
+
+    try {
+
+      SpaceEntity spaceEntity = _findById(SpaceEntity.class, id);
+
+      Space space = new Space();
+
+      fillSpaceSimpleFromEntity(spaceEntity, space);
+
+      return space;
+
+    }
+    catch (NodeNotFoundException e) {
+      return null;
+    }
+
+  }
 
   /**
    * {@inheritDoc}
@@ -1803,14 +1903,9 @@ public class SpaceStorageImpl extends AbstractStorage implements SpaceStorage {
     try {
       IdentityEntity identityEntity = identityStorage._findIdentityEntity(OrganizationIdentityProvider.NAME, remoteId);
       SpaceListEntity listRef = RefType.MEMBER.refsOf(identityEntity);
-      Map<String, SpaceRef> mapRefs = listRef.getRefs();
       
       SpaceEntity spaceEntity = _findById(SpaceEntity.class, space.getId());
 
-      if (mapRefs.containsKey(spaceEntity.getName())) {
-        getSession().remove(mapRefs.get(spaceEntity.getName()));
-      }
-      
       SpaceRef ref = listRef.getRef(spaceEntity.getName());
       if (!ref.getName().equals(spaceEntity.getName())) {
         ref.setName(spaceEntity.getName());
@@ -1827,65 +1922,189 @@ public class SpaceStorageImpl extends AbstractStorage implements SpaceStorage {
   @Override
   public List<Space> getLastAccessedSpace(SpaceFilter filter, int offset, int limit) throws SpaceStorageException {
     try {
-    IdentityEntity identityEntity = identityStorage._findIdentityEntity(OrganizationIdentityProvider.NAME, filter.getRemoteId());
-    SpaceListEntity listRef = RefType.MEMBER.refsOf(identityEntity);
-    Map<String, SpaceRef> mapRefs = listRef.getRefs();
-    //
-    List<SpaceRef> spaces = new LinkedList<SpaceRef>();
-    Space space = null;
-    
-    //
-    for(Map.Entry<String, SpaceRef> entry :  mapRefs.entrySet()) {
-      SpaceRef ref = entry.getValue();
+      IdentityEntity identityEntity = identityStorage._findIdentityEntity(OrganizationIdentityProvider.NAME, filter.getRemoteId());
 
-      // Lazy clean up
-      if (ref.getSpaceRef() == null) {
-        listRef.removeRef(entry.getKey());
-        continue;
-      }
+      StringBuffer sb = new StringBuffer().append("SELECT * FROM ");
+      sb.append(JCRProperties.SPACE_REF_NODE_TYPE);
+      //
+      sb.append(" WHERE ");
+      sb.append(JCRProperties.path.getName())
+        .append(" LIKE '")
+        .append(identityEntity.getPath()).append(StorageUtils.SLASH_STR)
+        .append(IdentityEntity.spacemember.getName())
+        .append(StorageUtils.SLASH_STR).append(StorageUtils.PERCENT_STR)
+        .append("'");
+      //
+      sb.append(" ORDER BY ")
+        .append(JCRProperties.JCR_LAST_MODIFIED_DATE.getName())
+        .append(" DESC");
 
-      if (filter.getAppId() == null) {
-        spaces.add(ref);
-      } else {
-        if (ref.getSpaceRef().getApp().toLowerCase().indexOf(filter.getAppId().toLowerCase()) > 0) {
+      NodeIterator it = nodes(sb.toString());
+
+      //
+      List<SpaceRef> spaces = new LinkedList<SpaceRef>();
+      Space space = null;
+
+      int numberOfSpaces = 0;
+      //
+      while (it.hasNext()) {
+        Node it1 = (Node) it.next();
+
+        SpaceRef ref = _findById(SpaceRef.class, it1.getUUID());
+        
+        if (filter.getAppId() == null) {
           spaces.add(ref);
+          ++numberOfSpaces;
+        } else {
+          if (ref.getSpaceRef().getApp().toLowerCase().indexOf(filter.getAppId().toLowerCase()) > 0) {
+            spaces.add(ref);
+            ++numberOfSpaces;
+          }
+        }
+        //
+        if (numberOfSpaces == limit) {
+          break;
         }
       }
-    }
 
-    //reserve order
-    Collections.reverse(spaces);
-    
-    List<Space> got = new LinkedList<Space>();
-    
-    //
-    Iterator<SpaceRef> it1 = spaces.iterator();   
-     _skip(it1, offset);
-     
-     
-    int numberOfSpaces = 0;
-    //
-    while (it1.hasNext()) {
-      space = new Space();
-      fillSpaceFromEntity(it1.next().getSpaceRef(), space);
-      got.add(space);
+      List<Space> got = new LinkedList<Space>();
       //
-      if (++numberOfSpaces == limit) {
-        break;
+      Iterator<SpaceRef> it1 = spaces.iterator();
+      _skip(it1, offset);
+
+      //
+      while (it1.hasNext()) {
+        space = new Space();
+        fillSpaceSimpleFromEntity(it1.next().getSpaceRef(), space);
+        got.add(space);
       }
-    }
-   
-    
-    return got;
+
+      return got;
     } catch (NodeNotFoundException e) {
       LOG.warn(e.getMessage(), e);
-      return Collections.emptyList();
+    } catch (UnsupportedRepositoryOperationException e) {
+      LOG.warn(e.getMessage(), e);
+    } catch (RepositoryException e) {
+      LOG.warn(e.getMessage(), e);
     }
+    
+    //
+    return Collections.emptyList();
   }
 
   public int getNumberOfMemberPublicSpaces(String userId) {
     return getSpacesOfMemberQuery(userId).objects().size();
   }
   
+  @Override
+  public List<Space> getVisitedSpaces(SpaceFilter filter, int offset, int limit) throws SpaceStorageException {
+
+    try {
+      IdentityEntity identityEntity = identityStorage._findIdentityEntity(OrganizationIdentityProvider.NAME, filter.getRemoteId());
+
+      StringBuffer sb = new StringBuffer().append("SELECT ");
+      sb.append(JCRProperties.JCR_LAST_CREATED_DATE.getName() + ",")
+        .append(JCRProperties.JCR_LAST_CREATED_DATE.getName())
+        .append(" FROM ")
+        .append(JCRProperties.SPACE_REF_NODE_TYPE);
+      //
+      sb.append(" WHERE ");
+      sb.append(JCRProperties.path.getName())
+        .append(" LIKE '")
+        .append(identityEntity.getPath())
+        .append(StorageUtils.SLASH_STR)
+        .append(IdentityEntity.spacemember.getName())
+        .append(StorageUtils.SLASH_STR)
+        .append(StorageUtils.PERCENT_STR)
+        .append("'")
+        .append(" AND ")
+        .append(JCRProperties.name.getName())
+        .append(" <> null");
+      //
+      sb.append(" ORDER BY ")
+        .append(JCRProperties.JCR_LAST_MODIFIED_DATE.getName())
+        .append(" DESC");
+
+      NodeIterator it = nodes(sb.toString());
+      _skip(it, offset);
+
+      //
+      List<SpaceRef> browsedSpaceRefs = new LinkedList<SpaceRef>();
+      List<SpaceRef> neverBrowsedSpaceRefs = new LinkedList<SpaceRef>();
+
+      //
+      int numberOfSpaces = 0;
+      while (it.hasNext()) {
+        Node node = (Node) it.next();
+
+        long createdTime = node.getProperty(JCRProperties.JCR_LAST_CREATED_DATE.getName()).getDate().getTimeInMillis();
+        long lastModifedDate = node.getProperty(JCRProperties.JCR_LAST_MODIFIED_DATE.getName()).getDate().getTimeInMillis();
+
+        SpaceRef ref = _findById(SpaceRef.class, node.getUUID());
+
+        // Process with spaces never browsed
+        if (lastModifedDate - createdTime < 2000) {
+          addSpaceRefToList(ref, filter, neverBrowsedSpaceRefs);
+        } else {
+          addSpaceRefToList(ref, filter, browsedSpaceRefs);
+        }
+
+        //
+        if (++numberOfSpaces == limit) {
+          break;
+        }
+      }
+
+      //
+      List<Space> got = new LinkedList<Space>();
+      Iterator<SpaceRef> spaceRefs = browsedSpaceRefs.iterator();
+      //
+      getSpacesFromSpaceRefs(spaceRefs, got);
+
+      int remain = limit - got.size();
+      // process the spaces which are never be browsed
+      if (neverBrowsedSpaceRefs.isEmpty() || (remain == 0)) {
+        return got;
+      }
+
+      spaceRefs = neverBrowsedSpaceRefs.iterator();
+      //
+      List<Space> neverBrowsedSpaces = new LinkedList<Space>();
+      getSpacesFromSpaceRefs(spaceRefs, neverBrowsedSpaces);
+      StorageUtils.sortSpaceByName(neverBrowsedSpaces, true);
+
+      //
+      got.addAll(neverBrowsedSpaces.subList(0, Math.min(remain, neverBrowsedSpaces.size())));
+
+      return got;
+    } catch (NodeNotFoundException e) {
+      LOG.warn(e.getMessage(), e);
+    } catch (RepositoryException e) {
+      LOG.warn(e.getMessage(), e);
+    }
+    //
+    return Collections.emptyList();
+  }
+  
+  private void addSpaceRefToList(SpaceRef ref, SpaceFilter filter, List<SpaceRef> list) {
+    //
+    if (filter.getAppId() == null) {
+      list.add(ref);
+    } else {
+      if (ref.getSpaceRef().getApp().toLowerCase().indexOf(filter.getAppId().toLowerCase()) > 0) {
+        list.add(ref);
+      }
+    }
+  }
+
+  private void getSpacesFromSpaceRefs(Iterator<SpaceRef> it, List<Space> list) {
+    Space space = null;
+    //
+    while (it.hasNext()) {
+      space = new Space();
+      fillSpaceFromEntity(it.next().getSpaceRef(), space);
+      list.add(space);
+    }
+  }
 
 }

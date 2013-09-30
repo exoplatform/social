@@ -180,6 +180,16 @@
           </object>
         </object-param>
         <object-param>
+          <name>SpaceSimpleCache</name>
+          <description></description>
+          <object type="org.exoplatform.services.cache.ExoCacheConfig">
+            <field name="name"><string>SpaceSimpleCache</string></field>
+            <field name="maxSize"><int>${cache.exo.social.SpaceCache.Capacity:100}</int></field>
+            <field name="liveTime"><long>${cache.exo.social.SpaceCache.TimeToLive:-1}</long></field>
+            <field name="implementation"><string>org.exoplatform.services.cache.concurrent.ConcurrentFIFOExoCache</string></field>
+          </object>
+        </object-param>
+        <object-param>
           <name>SpaceRefCache</name>
           <description></description>
           <object type="org.exoplatform.services.cache.ExoCacheConfig">

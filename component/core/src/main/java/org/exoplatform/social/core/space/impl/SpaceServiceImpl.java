@@ -1471,4 +1471,13 @@ public class SpaceServiceImpl implements SpaceService {
     SpaceFilter filter = new SpaceFilter(remoteId, appId);
     return spaceStorage.getLastAccessedSpace(filter, offset, limit);
   }
+  
+  @Override
+  public ListAccess<Space> getLastAccessedSpace(String remoteId, String appId) {
+    return new SpaceListAccess(this.spaceStorage, remoteId, appId, SpaceListAccess.Type.LASTEST_ACCESSED);
+  }
+  
+  public ListAccess<Space> getVisitedSpaces(String remoteId, String appId) {
+    return new SpaceListAccess(this.spaceStorage, remoteId, appId, SpaceListAccess.Type.VISITED);
+  }
 }

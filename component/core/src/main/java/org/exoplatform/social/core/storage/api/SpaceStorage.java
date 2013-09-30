@@ -514,6 +514,18 @@ public interface SpaceStorage {
    * @throws SpaceStorageException
    */
   public Space getSpaceById(String id) throws SpaceStorageException;
+  
+  /**
+   * Gets a space simple by its space id to aim decrease workload to get full information.
+   * 
+   * It's only to get a little space information such as displayName, groupId, prettyName
+   * description, id, avatar ..
+   *
+   * @param id
+   * @return space with id specified
+   * @throws SpaceStorageException
+   */
+  public Space getSpaceSimpleById(String id) throws SpaceStorageException;
 
   /**
    * Gets a space by its pretty name.
@@ -556,9 +568,15 @@ public interface SpaceStorage {
    * Gets list of spaces which user has been last visited.
    * @param offset TODO
    * @param limit
-   * @param remoteId
+   * @param filter
    */
   List<Space> getLastAccessedSpace(SpaceFilter filter, int offset, int limit) throws SpaceStorageException;
+  
+  /**
+   * Gets number of spaces which user has been last visited.
+   * @param filter
+   */
+  int getLastAccessedSpaceCount(SpaceFilter filter) throws SpaceStorageException;
   
   /**
    * Gets the count of the public spaces of the userId.
@@ -568,4 +586,15 @@ public interface SpaceStorage {
    * @since 4.0.0.Beta01
    */
   int getNumberOfMemberPublicSpaces(String userId);
+  
+  /**
+   * Get the visited spaces
+   * 
+   * @param spaceFilter
+   * @param offset
+   * @param limit
+   * @return list of browsed spaces
+   * @throws SpaceStorageException
+   */
+  List<Space> getVisitedSpaces(SpaceFilter filter, int offset, int limit) throws SpaceStorageException;
 }
