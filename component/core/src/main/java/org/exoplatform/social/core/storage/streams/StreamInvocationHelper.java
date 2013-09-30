@@ -97,10 +97,10 @@ public class StreamInvocationHelper {
     return false;
   }
   
-  public static ProcessContext update(ExoSocialActivity activity, String[] mentioners) {
+  public static ProcessContext update(ExoSocialActivity activity, String[] mentioners, long oldUpdated) {
     //
     StreamProcessContext processCtx = StreamProcessContext.getIntance(StreamProcessContext.UPDATE_ACTIVITY_PROCESS, ctx);
-    processCtx.activity(activity).mentioners(mentioners);
+    processCtx.activity(activity).mentioners(mentioners).oldLastUpdated(oldUpdated);
     
     try {
       if (ctx.isAsync()) {
@@ -120,10 +120,10 @@ public class StreamInvocationHelper {
     return processCtx;
   }
   
-  public static ProcessContext updateCommenter(Identity commenter, ExoSocialActivity activity, String[] commenters) {
+  public static ProcessContext updateCommenter(Identity commenter, ExoSocialActivity activity, String[] commenters, long oldUpdated) {
     //
     StreamProcessContext processCtx = StreamProcessContext.getIntance(StreamProcessContext.UPDATE_ACTIVITY_COMMENTER_PROCESS, ctx);
-    processCtx.identity(commenter).activity(activity).commenters(commenters);
+    processCtx.identity(commenter).activity(activity).commenters(commenters).oldLastUpdated(oldUpdated);
     
     try {
       //beforeAsync(); this point can make the problem with ADD_PROPERTY exception
@@ -372,6 +372,21 @@ public class StreamInvocationHelper {
       
     } finally {
       LOG.info(processCtx.getTraceLog());
+    }
+    
+    return processCtx;
+  }
+  
+  public static ProcessContext loadFeed(Identity owner) {
+    //
+    SocialServiceContext ctx = SocialServiceContextImpl.getInstance();
+    StreamProcessContext processCtx = StreamProcessContext.getIntance(StreamProcessContext.LOAD_ACTIVITIES_STREAM_PROCESS, ctx);
+    processCtx.identity(owner);
+    
+    try {
+        ctx.getServiceExecutor().async(StreamProcessorFactory.loadFeed(), processCtx);
+    } finally {
+      LOG.debug(processCtx.getTraceLog());
     }
     
     return processCtx;

@@ -1069,17 +1069,22 @@ public class CachedActivityStorage implements ActivityStorage {
   public int getNumberOfSpaceActivitiesForUpgrade(final Identity spaceIdentity) {
     //
     ActivityCountKey key =
-        new ActivityCountKey(new IdentityKey(spaceIdentity), ActivityType.SPACE);
+        new ActivityCountKey(new IdentityKey(spaceIdentity), ActivityType.SPACE_FOR_UPGRADE);
 
     //
-    return activitiesCountCache.get(
+    IntegerData countData = activitiesCountCache.get(
         new ServiceContext<IntegerData>() {
           public IntegerData execute() {
             return new IntegerData(storage.getNumberOfSpaceActivitiesForUpgrade(spaceIdentity));
           }
         },
-        key)
-        .build();
+        key);
+    
+    ActivityCountKey keySpace =
+        new ActivityCountKey(new IdentityKey(spaceIdentity), ActivityType.SPACE);
+    exoActivitiesCountCache.put(keySpace, countData);
+    
+    return countData.build();
   }
 
   @Override
@@ -1620,17 +1625,25 @@ public class CachedActivityStorage implements ActivityStorage {
   @Override
   public int getNumberOfUserActivitiesForUpgrade(final Identity owner) throws ActivityStorageException {
     //
-    ActivityCountKey key = new ActivityCountKey(new IdentityKey(owner), ActivityType.USER);
+    ActivityCountKey key = new ActivityCountKey(new IdentityKey(owner), ActivityType.USER_FOR_UPGRADE);
 
     //
-    return activitiesCountCache.get(
+    IntegerData countData =  activitiesCountCache.get(
         new ServiceContext<IntegerData>() {
           public IntegerData execute() {
             return new IntegerData(storage.getNumberOfUserActivitiesForUpgrade(owner));
           }
         },
-        key)
-        .build();
+        key);
+    
+    //
+    ActivityCountKey keyUser =
+        new ActivityCountKey(new IdentityKey(owner), ActivityType.USER);
+    exoActivitiesCountCache.put(keyUser, countData);
+    
+    //
+    return countData.build();
+    
   }
 
   @Override
@@ -1658,18 +1671,24 @@ public class CachedActivityStorage implements ActivityStorage {
   @Override
   public int getNumberOfActivitesOnActivityFeedForUpgrade(final Identity ownerIdentity) {
     //
-    ActivityCountKey key =
-        new ActivityCountKey(new IdentityKey(ownerIdentity), ActivityType.FEED);
-
+    ActivityCountKey key = new ActivityCountKey(new IdentityKey(ownerIdentity), ActivityType.FEED_FOR_UPGRADE);
+    
     //
-    return activitiesCountCache.get(
+    IntegerData countData = activitiesCountCache.get(
         new ServiceContext<IntegerData>() {
           public IntegerData execute() {
             return new IntegerData(storage.getNumberOfActivitesOnActivityFeedForUpgrade(ownerIdentity));
           }
         },
-        key)
-        .build();
+        key);
+        
+    //
+    ActivityCountKey keyFeed =
+        new ActivityCountKey(new IdentityKey(ownerIdentity), ActivityType.FEED);
+    exoActivitiesCountCache.put(keyFeed, countData);
+    
+    //
+    return countData.build();
   }
 
   @Override
@@ -1698,17 +1717,24 @@ public class CachedActivityStorage implements ActivityStorage {
   public int getNumberOfActivitiesOfConnectionsForUpgrade(final Identity ownerIdentity) {
     //
     ActivityCountKey key =
-        new ActivityCountKey(new IdentityKey(ownerIdentity), ActivityType.CONNECTION);
+        new ActivityCountKey(new IdentityKey(ownerIdentity), ActivityType.CONNECTION_FOR_UPGRADE);
 
     //
-    return activitiesCountCache.get(
+    IntegerData countData = activitiesCountCache.get(
         new ServiceContext<IntegerData>() {
           public IntegerData execute() {
             return new IntegerData(storage.getNumberOfActivitiesOfConnectionsForUpgrade(ownerIdentity));
           }
         },
-        key)
-        .build();
+        key);
+    
+    //
+    ActivityCountKey keyConnection =
+        new ActivityCountKey(new IdentityKey(ownerIdentity), ActivityType.CONNECTION);
+    exoActivitiesCountCache.put(keyConnection, countData);
+    
+    //
+    return countData.build();
   }
 
   @Override
@@ -1737,17 +1763,22 @@ public class CachedActivityStorage implements ActivityStorage {
   public int getNumberOfUserSpacesActivitiesForUpgrade(final Identity ownerIdentity) {
     //
     ActivityCountKey key =
-        new ActivityCountKey(new IdentityKey(ownerIdentity), ActivityType.SPACES);
+        new ActivityCountKey(new IdentityKey(ownerIdentity), ActivityType.SPACES_FOR_UPGRADE);
 
     //
-    return activitiesCountCache.get(
+    IntegerData countData = activitiesCountCache.get(
         new ServiceContext<IntegerData>() {
           public IntegerData execute() {
             return new IntegerData(storage.getNumberOfUserSpacesActivitiesForUpgrade(ownerIdentity));
           }
         },
-        key)
-        .build();
+        key);
+    
+    ActivityCountKey keySpaces =
+        new ActivityCountKey(new IdentityKey(ownerIdentity), ActivityType.SPACES);
+    exoActivitiesCountCache.put(keySpaces, countData);
+    
+    return countData.build();
   }
 
   @Override
