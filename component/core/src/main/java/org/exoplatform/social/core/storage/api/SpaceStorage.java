@@ -586,4 +586,15 @@ public interface SpaceStorage {
    * @since 4.0.0.Beta01
    */
   int getNumberOfMemberPublicSpaces(String userId);
+  
+  /**
+   * Get the visited spaces
+   * 
+   * @param spaceFilter
+   * @param offset
+   * @param limit
+   * @return list of browsed spaces
+   * @throws SpaceStorageException
+   */
+  List<Space> getVisitedSpaces(SpaceFilter filter, int offset, int limit) throws SpaceStorageException;
 }

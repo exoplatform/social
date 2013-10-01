@@ -131,7 +131,7 @@
       
 		    <div class="spaceBox pull-left">
           <a href="${profileURL}" class="avatarXLarge pull-left">
-            <img src="$imageSource"/>
+            <img rel="tooltip" data-placement="bottom" title="${fullName}" src="$imageSource"/>
           </a>
 			    <div class="contentBox">
             <h4 class="spaceTitle"><a href="${profileURL}">${fullName}</a></h4>         

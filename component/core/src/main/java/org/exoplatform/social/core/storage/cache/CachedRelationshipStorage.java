@@ -580,7 +580,7 @@ public class CachedRelationshipStorage implements RelationshipStorage {
                                             final long limit) throws RelationshipStorageException {
 
     //
-    IdentityFilterKey key = new IdentityFilterKey(existingIdentity.getProviderId(), profileFilter);
+    IdentityFilterKey key = new IdentityFilterKey(existingIdentity.getProviderId(), existingIdentity.getRemoteId(), profileFilter);
     ListRelationshipsKey<IdentityFilterKey> listKey =
         new ListRelationshipsKey<IdentityFilterKey>(key, RelationshipType.INCOMMING_WITH_FILTER, offset, limit);
 
@@ -605,7 +605,7 @@ public class CachedRelationshipStorage implements RelationshipStorage {
                                             final long limit) throws RelationshipStorageException {
 
     //
-    IdentityFilterKey key = new IdentityFilterKey(existingIdentity.getProviderId(), profileFilter);
+    IdentityFilterKey key = new IdentityFilterKey(existingIdentity.getProviderId(), existingIdentity.getRemoteId(), profileFilter);
     ListRelationshipsKey<IdentityFilterKey> listKey =
         new ListRelationshipsKey<IdentityFilterKey>(key, RelationshipType.OUTGOING_WITH_FILTER, offset, limit);
 
@@ -648,7 +648,7 @@ public class CachedRelationshipStorage implements RelationshipStorage {
       final Identity existingIdentity, final ProfileFilter profileFilter) throws RelationshipStorageException {
 
     //
-    IdentityFilterKey iKey = new IdentityFilterKey(existingIdentity.getProviderId(), profileFilter);
+    IdentityFilterKey iKey = new IdentityFilterKey(existingIdentity.getProviderId(), existingIdentity.getRemoteId(), profileFilter);
     RelationshipCountKey<IdentityFilterKey> key =
         new RelationshipCountKey<IdentityFilterKey>(iKey, RelationshipType.INCOMMING_WITH_FILTER);
 
@@ -667,7 +667,7 @@ public class CachedRelationshipStorage implements RelationshipStorage {
       final Identity existingIdentity, final ProfileFilter profileFilter) throws RelationshipStorageException {
 
     //
-    IdentityFilterKey iKey = new IdentityFilterKey(existingIdentity.getProviderId(), profileFilter);
+    IdentityFilterKey iKey = new IdentityFilterKey(existingIdentity.getProviderId(), existingIdentity.getRemoteId(), profileFilter);
     RelationshipCountKey<IdentityFilterKey> key =
         new RelationshipCountKey<IdentityFilterKey>(iKey, RelationshipType.OUTGOING_WITH_FILTER);
 

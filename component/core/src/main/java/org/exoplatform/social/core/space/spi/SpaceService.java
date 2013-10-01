@@ -1330,4 +1330,13 @@ public interface SpaceService {
    */
   String [] getPortletsPrefsRequired();
 
+  /**
+   * Gets the list of spaces which are visited by users
+   * 
+   * @param remoteId
+   * @param appId
+   * @return
+   */
+  ListAccess<Space> getVisitedSpaces(String remoteId, String appId);
+  
 }

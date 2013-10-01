@@ -54,6 +54,8 @@ public class ProfileFilter {
   private char firstCharacterOfName;
 
   private Sorting sorting;
+  
+  private boolean isEmpty;
 
   public ProfileFilter() {
     this.name = "";
@@ -64,6 +66,7 @@ public class ProfileFilter {
     this.excludedIdentityList = new ArrayList<Identity>();
     this.onlineRemoteIds = new ArrayList<String>();
     this.all = "";
+    this.isEmpty = true;
   }
   /**
    * Gets the position.
@@ -77,7 +80,10 @@ public class ProfileFilter {
    *
    * @param position the new position
    */
-  public void setPosition(String position) { this.position = position; }
+  public void setPosition(String position) { 
+    this.position = position; 
+    this.isEmpty = false;
+  }
 
   /**
    * Gets the company.
@@ -91,7 +97,10 @@ public class ProfileFilter {
    *
    * @param company the new company
    */
-  public void setCompany(String company) { this.company = company; }
+  public void setCompany(String company) {
+    this.company = company;
+    this.isEmpty = false;
+  }
 
   /**
    * Gets the skills.
@@ -105,14 +114,20 @@ public class ProfileFilter {
    *
    * @param skills the new skills
    */
-  public void setSkills(String skills) { this.skills = skills;}
+  public void setSkills(String skills) {
+    this.skills = skills;
+    this.isEmpty = false;
+  }
 
   /**
    * Sets the name.
    *
    * @param name the new name
    */
-  public void setName(String name) { this.name = name; }
+  public void setName(String name) {
+    this.name = name;
+    this.isEmpty = false;
+  }
 
   /**
    * Gets the name.
@@ -129,6 +144,7 @@ public class ProfileFilter {
    */
   public void setExcludedIdentityList(List<Identity> excludedIdentityList) {
     this.excludedIdentityList = excludedIdentityList;
+    this.isEmpty = false;
   }
 
   /**
@@ -173,7 +189,10 @@ public class ProfileFilter {
    * @param firstCharacterOfName the first character of name
    * @since 1.2.0-GA
    */
-  public void setFirstCharacterOfName(char firstCharacterOfName) { this.firstCharacterOfName = firstCharacterOfName; }
+  public void setFirstCharacterOfName(char firstCharacterOfName) {
+    this.firstCharacterOfName = firstCharacterOfName;
+    this.isEmpty = false;
+  }
 
   public String getAll() {
     return all;
@@ -181,6 +200,7 @@ public class ProfileFilter {
 
   public void setAll(String all) {
     this.all = SpaceUtils.removeSpecialCharacterInSpaceFilter(all);
+    this.isEmpty = false;
   }
 
   public Sorting getSorting() {
@@ -193,5 +213,8 @@ public class ProfileFilter {
   public void setSorting(Sorting sorting) {
     this.sorting = sorting;
   }
-
+  
+  public boolean isEmpty() {
+    return isEmpty;
+  }
 }

@@ -619,7 +619,7 @@ public class BaseUIActivity extends UIForm {
       event.getRequestContext().addUIComponentToUpdateByAjax(uiActivity);
       
       JavascriptManager jm = event.getRequestContext().getJavascriptManager();
-      jm.require("SHARED/social-ui-activity", "activity").addScripts("activity.loadLikes();");
+      jm.require("SHARED/social-ui-activity", "activity").addScripts("activity.loadLikes('#ContextBox" + activityId + "');");
       
       Utils.initUserProfilePopup(uiActivity.getId());
       Utils.resizeHomePage();
@@ -639,6 +639,10 @@ public class BaseUIActivity extends UIForm {
       String isLikedStr = requestContext.getRequestParameter(OBJECTID);
       boolean isLiked = Boolean.parseBoolean(isLikedStr);
       uiActivity.setLike(isLiked, requestContext.getRemoteUser());
+      //
+      JavascriptManager jm = event.getRequestContext().getJavascriptManager();
+      jm.require("SHARED/social-ui-activity", "activity").addScripts("activity.displayLike('#ContextBox" + activityId + "');");      
+      
       requestContext.addUIComponentToUpdateByAjax(uiActivity);
       
       Utils.initUserProfilePopup(uiActivity.getId());

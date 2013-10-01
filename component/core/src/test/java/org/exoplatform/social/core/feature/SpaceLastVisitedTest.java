@@ -116,7 +116,6 @@ public class SpaceLastVisitedTest extends AbstractCoreTest {
     got = spaces.get(0);
     assertEquals("space_1", got.getPrettyName());
     
-    
   }
   
   public void testGet10SpaceLastVisitedAppIdNull() throws Exception {

@@ -25,6 +25,7 @@ var UIActivity = {
   FOCUS_COMMENT_TEXT_AREA_HEIGHT : "28px",
   FOCUS_COMMENT_TEXT_AREA_COLOR : "#999999",
   DEFAULT_COMMENT_TEXT_AREA_COLOR : "#808080",
+  isLoadLike : false,
   onLoad: function (params) {
     UIActivity.configure(params);
     UIActivity.init();
@@ -110,7 +111,7 @@ var UIActivity = {
       });
     }
     
-	  //
+    //
     $('textarea#CommentTextarea' + UIActivity.activityId).exoMentions({
         onDataRequest:function (mode, query, callback) {
           var url = window.location.protocol + '//' + window.location.host + '/' + eXo.social.portal.rest + '/social/people/getprofile/data.json?search='+query;
@@ -134,107 +135,98 @@ var UIActivity = {
     var actionDeletes = $('a.controllDelete');
     if (actionDeletes.length > 0) {
       actionDeletes.off('click').on('click',
-				function(e) {
-					$('.currentDeleteActivity:first').removeClass('currentDeleteActivity');
-					var jElm = $(this);
-					jElm.addClass('currentDeleteActivity');
-					var id = jElm.attr('id');
-					if(id == null || id.length == 0) {
-					  $('#SocialCurrentConfirm').removeAttr('id');
-						id = "SocialCurrentConfirm";
-						jElm.attr('id', id)
-					}
-					var confirmText = jElm.attr('data-confirm');
-					eXo.social.PopupConfirmation.confirm(id, [{action: UIActivity.removeActivity, label : 'OK'}], 'Confirmation', confirmText, 'Close');
-				}
-			);
-    }
-    
-    //
-    
-    function hideMoreBtn() {
-      var contentBoxEl = $('#'+UIActivity.contentBoxId);
-      var listLiked = $(contentBoxEl).find('.listLiked');
-      var moreBtn = listLiked.find('.btn').hide();
-      moreBtn.hide();
-    }
-    
-    function reset() {
-      var contentBoxEl = $('#'+UIActivity.contentBoxId);
-      var listLiked = $(contentBoxEl).find('.listLiked');
-      if (listLiked.length == 0) {
-        listLiked = $(contentBoxEl).find('.listLikedBox'); 
-      }
-      var moreBtn = listLiked.find('.btn').hide();
-      var listLikedWidth = listLiked.outerWidth();
-      
-      //
-      var elWidth = listLiked.find('a:first-child').outerWidth() + 8;
-      var displayedNum = Math.floor(listLikedWidth/elWidth) - 1;
-      
-      //
-      var likedEl = listLiked.find('a');
-      var hasMore = (displayedNum < likedEl.length);
-      
-      likedEl.hide();
-      $.each(likedEl, function(idx, el) {
-        if (idx < displayedNum) {
-          $(el).show();
+        function(e) {
+          $('.currentDeleteActivity:first').removeClass('currentDeleteActivity');
+          var jElm = $(this);
+          jElm.addClass('currentDeleteActivity');
+          var id = jElm.attr('id');
+          if(id == null || id.length == 0) {
+            $('#SocialCurrentConfirm').removeAttr('id');
+            id = "SocialCurrentConfirm";
+            jElm.attr('id', id)
+          }
+          var confirmText = jElm.attr('data-confirm');
+          eXo.social.PopupConfirmation.confirm(id, [{action: UIActivity.removeActivity, label : 'OK'}], 'Confirmation', confirmText, 'Close');
         }
-      });
-      
-      if (hasMore) {
-        moreBtn.show();
+      );
+    }
+  },
+  loadLikes : function (activity) {
+    var likeBox = $(activity).find('.listLikedBox:first');
+    if(likeBox.length > 0) {
+      likeBox.find('.listLiked:first').find('a').show();
+      likeBox.find('.listLiked:first').find('button.btn').hide();
+      likeBox.attr('data-load', 'false');
+    }
+  },
+  displayLikes : function() {
+    if(UIActivity.isLoadLike === true) {
+      return;
+    }
+    //
+    var rootLoader = $('div#UIActivitiesLoader');
+    var activities = rootLoader.find('.activityStream');
+    //
+    $.each(activities, function(idx, activity) {
+      UIActivity.displayLike(activity);
+    }) ;
+    //
+    var t = setTimeout(function(){
+      UIActivity.isLoadLike = false; clearTimeout(t);
+    }, 400);
+  },
+  displayLike : function(activity) {
+    UIActivity.isLoadLike = true;
+    var likeBox = $(activity).find('.listLikedBox:first');
+    if(likeBox.length > 0 && likeBox.attr('data-load') !== 'false') {
+      var likeContainer = likeBox.find('.listLiked:first');
+      var moreBtn = likeContainer.find('button.btn').hide();
+      var mWith = likeContainer.width();
+      var items = likeContainer.find('a');
+      items.show();
+      var allMumber = items.length;
+      if(allMumber > 0) {
+        var maxItemDisplay = Math.floor(mWith/(items.eq(0).outerWidth() + 12))*2;
+        for(var i = maxItemDisplay; i < allMumber; ++i) {
+          items.eq(i).hide();
+          if (i === (allMumber - 1)) {
+            moreBtn.show();
+            items.eq(maxItemDisplay-1).hide();
+          }
+        }
       }
     }
-    
-    hideMoreBtn();
-    
-    $(window).load(function() {
-      reset();
-    });
-    
-    // process with like list
-    $(window).resize(function() {
-      reset();
-    });
-    
-	},
-	loadLikes : function () {
-	    var contentBoxEl = $('#'+UIActivity.contentBoxId);
-      var listLiked = $(contentBoxEl).find('.listLiked').find('a').show();
-      UIActivity.isLoadLike = true;
-	},
-	removeActivity : function () {
-		var jElm = $('.currentDeleteActivity:first');
-		var idElm = jElm.attr('id');
-		jElm.removeClass('currentDeleteActivity');
-		if (idElm.indexOf('Activity') > 0) { // remove activity
-			var idActivty = idElm.replace('DeleteActivityButton', '')
-			$('#activityContainer' + idActivty).css('overflow', 'hidden').animate(
-				{
-					height : '1px',
-					opacity : '0'
-				}, 500,
-				function() {
-					$(this).removeClass('activityStream');
-					window.eval(jElm.attr('data-delete').replace('javascript:', ''));
-				});
-		} else if (idElm.indexOf('Comment') > 0) { // remove comment
-			var idComment = idElm.replace('DeleteCommentButton', '')
-			$('#commentContainer' + idComment).css('overflow', 'hidden')
-			.animate(
-				{
-					height : '1px',
-					opacity : '0.1'
-				}, 300,
-				function() {
-					$(this).hide();
-					window.eval(jElm.attr('data-delete').replace('javascript:', ''));
-				}
-			);
-		}
-	}
+  },
+  removeActivity : function () {
+    var jElm = $('.currentDeleteActivity:first');
+    var idElm = jElm.attr('id');
+    jElm.removeClass('currentDeleteActivity');
+    if (idElm.indexOf('Activity') > 0) { // remove activity
+      var idActivty = idElm.replace('DeleteActivityButton', '')
+      $('#activityContainer' + idActivty).css('overflow', 'hidden').animate(
+        {
+          height : '1px',
+          opacity : '0'
+        }, 500,
+        function() {
+          $(this).removeClass('activityStream');
+          window.eval(jElm.attr('data-delete').replace('javascript:', ''));
+        });
+    } else if (idElm.indexOf('Comment') > 0) { // remove comment
+      var idComment = idElm.replace('DeleteCommentButton', '')
+      $('#commentContainer' + idComment).css('overflow', 'hidden')
+      .animate(
+        {
+          height : '1px',
+          opacity : '0.1'
+        }, 300,
+        function() {
+          $(this).hide();
+          window.eval(jElm.attr('data-delete').replace('javascript:', ''));
+        }
+      );
+    }
+  }
 };
 
 return UIActivity;

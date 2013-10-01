@@ -76,7 +76,9 @@ public class SpaceListAccess implements ListAccess<Space> {
     /** Provides Unified Search to get the spaces which are visible and not include these spaces hidden */
     UNIFIED_SEARCH,
     /** Provides SpaceNavigation to get the lastest spaces accessed */
-    LASTEST_ACCESSED
+    LASTEST_ACCESSED,
+    /** Gets the spaces which are visited at least once */
+    VISITED
   }
   
   /**
@@ -231,6 +233,8 @@ public class SpaceListAccess implements ListAccess<Space> {
       case UNIFIED_SEARCH: listSpaces = spaceStorage.getUnifiedSearchSpaces(this.userId, this.spaceFilter, offset, limit);
         break;
       case LASTEST_ACCESSED:listSpaces = spaceStorage.getLastAccessedSpace(this.spaceFilter, offset, limit);
+        break;
+      case VISITED: listSpaces = spaceStorage.getVisitedSpaces(this.spaceFilter, offset, limit);
         break;
     }
     return listSpaces.toArray(new Space[listSpaces.size()]);

@@ -19,11 +19,15 @@ package org.exoplatform.social.core.storage;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
 import junit.framework.TestCase;
 
+import org.exoplatform.social.core.identity.model.Identity;
+import org.exoplatform.social.core.identity.model.Profile;
+import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.storage.impl.StorageUtils;
 
 public class StorageUtilsTest extends TestCase {
@@ -125,6 +129,62 @@ public class StorageUtilsTest extends TestCase {
     
     assertEquals(0, loaded.size());
     
+  }
+  
+  public void testSortSpaceByName() {
+    Space space1 = new Space();
+    space1.setDisplayName("XYZ");
+    Space space2 = new Space();
+    space2.setDisplayName("ABC");
+    Space space3 = new Space();
+    space3.setDisplayName("GHE");
+    
+    List<Space> list = new LinkedList<Space>();
+    list.add(space1);
+    list.add(space2);
+    list.add(space3);
+    
+    assertEquals("XYZ", list.get(0).getDisplayName());
+    assertEquals("ABC", list.get(1).getDisplayName());
+    assertEquals("GHE", list.get(2).getDisplayName());
+    
+    StorageUtils.sortSpaceByName(list, true);
+    
+    assertEquals("ABC", list.get(0).getDisplayName());
+    assertEquals("GHE", list.get(1).getDisplayName());
+    assertEquals("XYZ", list.get(2).getDisplayName());
+    
+  }
+  
+  public void testSortIdentitiesByFullName() {
+    Identity id1 = new Identity("id1");
+    Profile profile = id1.getProfile();
+    profile.setProperty(Profile.FULL_NAME, "Xyz");
+    
+    Identity id2 = new Identity("id2");
+    profile = id2.getProfile();
+    profile.setProperty(Profile.FULL_NAME, "BCD");
+    
+    Identity id3 = new Identity("id3");
+    profile = id3.getProfile();
+    profile.setProperty(Profile.FULL_NAME, "Abc");
+    
+    //
+    List<Identity> list = new LinkedList<Identity>();
+    list.add(id1);
+    list.add(id2);
+    list.add(id3);
+    
+    //before sort
+    assertEquals("Xyz", list.get(0).getProfile().getFullName());
+    assertEquals("Abc", list.get(2).getProfile().getFullName());
+    
+    //
+    StorageUtils.sortIdentitiesByFullName(list, true);
+    
+    //after sort
+    assertEquals("Abc", list.get(0).getProfile().getFullName());
+    assertEquals("Xyz", list.get(2).getProfile().getFullName());
   }
 
 }

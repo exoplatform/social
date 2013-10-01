@@ -29,6 +29,7 @@ public class JCRProperties {
   
   public static final PropertyLiteralExpression<String> JCR_EXCERPT = new PropertyLiteralExpression<String>(String.class, "rep:excerpt()");
   public static final PropertyLiteralExpression<String> JCR_RELEVANCY = new PropertyLiteralExpression<String>(String.class, "jcr:score");
+  public static final PropertyLiteralExpression<String> JCR_LAST_CREATED_DATE = new PropertyLiteralExpression<String>(String.class, "exo:dateCreated");
   public static final PropertyLiteralExpression<String> JCR_LAST_MODIFIED_DATE = new PropertyLiteralExpression<String>(String.class, "exo:lastModifiedDate");
   
   public static final String PROFILE_NODE_TYPE = "soc:profiledefinition";
