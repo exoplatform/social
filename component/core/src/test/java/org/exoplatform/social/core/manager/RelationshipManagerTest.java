@@ -27,6 +27,7 @@ import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.model.AvatarAttachment;
+import org.exoplatform.social.core.profile.ProfileFilter;
 import org.exoplatform.social.core.relationship.model.Relationship;
 import org.exoplatform.social.core.relationship.model.Relationship.Type;
 import org.exoplatform.social.core.test.AbstractCoreTest;
@@ -1443,5 +1444,4 @@ public class RelationshipManagerTest extends AbstractCoreTest {
     tearDownRelationshipList.add(ghostToJohnRelationship);
     tearDownRelationshipList.add(paulToDemoRelationship);
   }
-  
 }

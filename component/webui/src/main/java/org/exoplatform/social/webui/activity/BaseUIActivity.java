@@ -754,10 +754,10 @@ public class BaseUIActivity extends UIForm {
       if (activitiesContainer.getActivityList().size() == 0) {
         event.getRequestContext().addUIComponentToUpdateByAjax(activitiesContainer.getParent().getParent());
       } else {
-        event.getRequestContext().addUIComponentToUpdateByAjax(activitiesContainer);
+        event.getRequestContext().addUIComponentToUpdateByAjax(activitiesContainer.getParent());
       }
       
-      Utils.initUserProfilePopup(uiActivity.getId());
+      Utils.clearUserProfilePopup();
       Utils.resizeHomePage();
     }
 
@@ -769,7 +769,9 @@ public class BaseUIActivity extends UIForm {
     public void execute(Event<BaseUIActivity> event) throws Exception {
       BaseUIActivity uiActivity = event.getSource();
       String activityId = uiActivity.getActivity().getId();
-      if (uiActivity.isNoLongerExisting(activityId, event)) {
+      String commentId = event.getRequestContext().getRequestParameter(OBJECTID);
+      if (uiActivity.isNoLongerExisting(activityId, event) || 
+          uiActivity.isNoLongerExisting(commentId, event)) {
         return;
       }
       WebuiRequestContext requestContext = event.getRequestContext();

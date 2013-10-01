@@ -1,19 +1,18 @@
 package org.exoplatform.social.core.storage.cache;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.activity.model.ExoSocialActivityImpl;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
 import org.exoplatform.social.core.space.model.Space;
-import org.exoplatform.social.core.storage.impl.ActivityStorageImpl;
 import org.exoplatform.social.core.storage.impl.IdentityStorageImpl;
 import org.exoplatform.social.core.test.AbstractCoreTest;
 import org.exoplatform.social.core.test.MaxQueryNumber;
 import org.exoplatform.social.core.test.QueryNumberTest;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
@@ -115,7 +114,7 @@ public class CachedSpaceStorageTestCase extends AbstractCoreTest {
    * @throws Exception
    * @since 1.2.8
    */
-  @MaxQueryNumber(460)
+  @MaxQueryNumber(730)
   public void testRenameSpace() throws Exception {
     Space space = new Space();
     space.setDisplayName("Hello");

@@ -150,7 +150,7 @@ public class IdentityStorageImplTestCase extends AbstractCoreTest {
     tearDownIdentityList.add(newIdentity.getId());
   }
 
-  @MaxQueryNumber(150)
+  @MaxQueryNumber(250)
   public void testDeleteIdentityExists() throws Exception {
     Identity newIdentity = new Identity("organization", "newToDelete");
 
@@ -232,7 +232,7 @@ public class IdentityStorageImplTestCase extends AbstractCoreTest {
 
   }
 
-  @MaxQueryNumber(450)
+  @MaxQueryNumber(500)
   public void testHardDeleteRelationship() throws Exception {
 
     Identity user1 = new Identity("organization", "user1");
@@ -273,7 +273,7 @@ public class IdentityStorageImplTestCase extends AbstractCoreTest {
 
   }
 
-  @MaxQueryNumber(360)
+  @MaxQueryNumber(416)
   public void testHardDeleteSpace() throws Exception {
 
     Identity user1 = new Identity("organization", "user1");
@@ -339,7 +339,7 @@ public class IdentityStorageImplTestCase extends AbstractCoreTest {
 
   }
 
-  @MaxQueryNumber(50)
+  @MaxQueryNumber(60)
   public void testCreateProfile() throws Exception {
     Identity newIdentity = new Identity("organization", "identityForProfile");
 
@@ -535,7 +535,7 @@ public class IdentityStorageImplTestCase extends AbstractCoreTest {
     tearDownIdentityList.add(newIdentity.getId());
   }
 
-  @MaxQueryNumber(100)
+  @MaxQueryNumber(150)
   public void testMoveIdentity() throws Exception {
     Identity newIdentity = new Identity("organization", "checkMove");
 
@@ -575,7 +575,7 @@ public class IdentityStorageImplTestCase extends AbstractCoreTest {
     assertNull(storage.getType(null, null));
   }
 
-  @MaxQueryNumber(128)
+  @MaxQueryNumber(130)
   public void testUpdateProfileProperties() throws Exception {
    Identity newIdentity = new Identity("organization", "checksaveprofile");
 
@@ -668,7 +668,7 @@ public class IdentityStorageImplTestCase extends AbstractCoreTest {
    tearDownIdentityList.add(newIdentity.getId());
   }
 
-  @MaxQueryNumber(250)
+  @MaxQueryNumber(260)
   public void testFindIdentityWithFilter() throws Exception {
 
     addIdentity("o", "toto", "male", "cadre");
@@ -791,7 +791,7 @@ public class IdentityStorageImplTestCase extends AbstractCoreTest {
     return filter;
   }
 
-  @MaxQueryNumber(100)
+  @MaxQueryNumber(110)
   public void testProfileContact() throws Exception {
     Identity newIdentity = new Identity("organization", "withcontact");
 

@@ -36,12 +36,55 @@
       </value-param>
     </init-params>
   </component>
+  
+  <component>
+    <key>org.exoplatform.social.common.service.thread.ThreadPoolConfig</key>
+    <type>org.exoplatform.social.common.service.thread.ThreadPoolConfig</type>
+    <init-params>
+      <value-param>
+        <name>pool-size</name>
+        <value>10</value>
+      </value-param>
+      <value-param>
+        <name>max-pool-size</name>
+        <value>20</value>
+      </value-param>
+      <value-param>
+        <name>async-mode</name>
+        <value>true</value>
+      </value-param>
+      <value-param>
+        <name>thread-priority</name>
+        <value>5</value><!--10: HIGH, 5: NORMAL; 1: LOW-->
+      </value-param>
+    </init-params>
+  </component>
+  
+  <component>
+    <type>org.exoplatform.social.core.updater.UserActivityStreamMigration</type>
+  </component>
+  
+  <component>
+    <type>org.exoplatform.social.core.updater.SpaceActivityStreamMigration</type>
+  </component>
 
   <component>
     <key>org.exoplatform.social.core.storage.cache.SocialStorageCacheService</key>
     <type>org.exoplatform.social.core.storage.cache.SocialStorageCacheService</type>
   </component>
 
+  <!--
+    Activity Stream storage components.
+  -->
+  <component>
+    <key>org.exoplatform.social.core.storage.api.ActivityStreamStorage</key>
+    <type>org.exoplatform.social.core.storage.cache.CachedActivityStreamStorage</type>
+  </component>
+  <component>
+    <key>org.exoplatform.social.core.storage.impl.ActivityStreamStorageImpl</key>
+    <type>org.exoplatform.social.core.storage.synchronization.SynchronizedActivityStreamStorage</type>
+  </component>
+  
   <!--
     Activity storage components.
   -->
@@ -566,6 +609,13 @@
           <value>org.exoplatform.social.core.chromattic.entity.ActivityMonthEntity</value>
           <value>org.exoplatform.social.core.chromattic.entity.ActivityYearEntity</value>
           <value>org.exoplatform.social.core.chromattic.entity.ActivityParameters</value>
+          
+          <value>org.exoplatform.social.core.chromattic.entity.StreamsEntity</value>
+          <value>org.exoplatform.social.core.chromattic.entity.ActivityRefListEntity</value>
+          <value>org.exoplatform.social.core.chromattic.entity.ActivityRefDayEntity</value>
+          <value>org.exoplatform.social.core.chromattic.entity.ActivityRefMonthEntity</value>
+          <value>org.exoplatform.social.core.chromattic.entity.ActivityRefYearEntity</value>
+          <value>org.exoplatform.social.core.chromattic.entity.ActivityRef</value>
 
           <value>org.exoplatform.social.core.chromattic.entity.SpaceRootEntity</value>
           <value>org.exoplatform.social.core.chromattic.entity.SpaceEntity</value>
@@ -593,6 +643,50 @@
           <name>product.group.id</name>
           <description>The groupId of the product</description>
           <value>org.exoplatform.social</value>
+        </value-param>
+      </init-params>
+    </component-plugin>
+  </external-component-plugins>
+  
+  <external-component-plugins>
+    <target-component>org.exoplatform.commons.upgrade.UpgradeProductService</target-component>
+    <component-plugin>
+      <name>UserActivityStreamUpdaterPlugin</name>
+      <set-method>addUpgradePlugin</set-method>
+      <type>org.exoplatform.social.core.updater.UserActivityStreamUpdaterPlugin</type>
+      <description>eXo Social User Activity Stream Updater</description>
+      <init-params>
+        <value-param>
+          <name>product.group.id</name>
+          <description>The groupId of the product</description>
+          <value>org.exoplatform.social</value>
+        </value-param>
+        <value-param>
+          <name>limit</name>
+          <description>The number of activities will be migrated</description>
+          <value>20</value>
+        </value-param>
+      </init-params>
+    </component-plugin>
+  </external-component-plugins>
+  
+   <external-component-plugins>
+    <target-component>org.exoplatform.commons.upgrade.UpgradeProductService</target-component>
+    <component-plugin>
+      <name>SpaceActivityStreamUpdaterPlugin</name>
+      <set-method>addUpgradePlugin</set-method>
+      <type>org.exoplatform.social.core.updater.SpaceActivityStreamUpdaterPlugin</type>
+      <description>eXo Social Space Activity Stream Updater</description>
+      <init-params>
+        <value-param>
+          <name>product.group.id</name>
+          <description>The groupId of the product</description>
+          <value>org.exoplatform.social</value>
+        </value-param>
+        <value-param>
+          <name>limit</name>
+          <description>The number of activities will be migrated</description>
+          <value>20</value>
         </value-param>
       </init-params>
     </component-plugin>
