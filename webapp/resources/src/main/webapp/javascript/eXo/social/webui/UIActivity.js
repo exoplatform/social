@@ -196,18 +196,6 @@ var UIActivity = {
         }
       }
     }
-    
-    hideMoreBtn();
-    
-    $(window).load(function() {
-      reset();
-    });
-    
-    // process with like list
-    $(window).resize(function() {
-      reset();
-    });
-    
 	},
 	loadLikes : function () {
 	    var contentBoxEl = $('#'+UIActivity.contentBoxId);
