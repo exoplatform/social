@@ -27,6 +27,7 @@ import org.exoplatform.social.core.chromattic.entity.ProfileEntity;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.profile.ProfileFilter;
 import org.exoplatform.social.core.space.SpaceUtils;
+import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.storage.IdentityStorageException;
 import org.exoplatform.social.core.storage.query.JCRProperties;
 import org.exoplatform.social.core.storage.query.QueryFunction;
@@ -337,6 +338,48 @@ public class StorageUtils {
       result.put(entry.getKey(), entry.getValue());
     }
     return result;
+  }
+  
+  /**
+   * Sort list of spaces by space's display name
+   * 
+   * @param list
+   * @param asc
+   * @return sorted list
+   */
+  public static List<Space> sortSpaceByName(List<Space> list, final boolean asc) {
+    //
+    Collections.sort(list, new Comparator<Space>() {
+      public int compare(Space o1, Space o2) {
+        if (asc)
+          return (o1.getDisplayName()).compareTo(o2.getDisplayName());
+        else
+          return (o1.getDisplayName()).compareTo(o2.getDisplayName()) / -1;
+      }
+    });
+
+    return list;
+  }
+  
+  /**
+   * Sort list of identities by full name
+   * 
+   * @param list
+   * @param asc
+   * @return sorted list
+   */
+  public static List<Identity> sortIdentitiesByFullName(List<Identity> list, final boolean asc) {
+    //
+    Collections.sort(list, new Comparator<Identity>() {
+      public int compare(Identity o1, Identity o2) {
+        if (asc)
+          return (o1.getProfile().getFullName()).compareTo(o2.getProfile().getFullName());
+        else
+          return (o1.getProfile().getFullName()).compareTo(o2.getProfile().getFullName()) / -1;
+      }
+    });
+
+    return list;
   }
   
   /**

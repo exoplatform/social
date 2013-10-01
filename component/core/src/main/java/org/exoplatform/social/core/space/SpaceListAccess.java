@@ -74,7 +74,11 @@ public class SpaceListAccess implements ListAccess<Space> {
     /** Gets the spaces which are visible and not include these spaces hidden */
     VISIBLE,
     /** Provides Unified Search to get the spaces which are visible and not include these spaces hidden */
-    UNIFIED_SEARCH
+    UNIFIED_SEARCH,
+    /** Provides SpaceNavigation to get the lastest spaces accessed */
+    LASTEST_ACCESSED,
+    /** Gets the spaces which are visited at least once */
+    VISITED
   }
   
   /**
@@ -134,6 +138,22 @@ public class SpaceListAccess implements ListAccess<Space> {
    * The constructor.
    * 
    * @param spaceStorage
+   * @param userId
+   * @param appId
+   * @param type
+   * @since 4.0.x
+   */
+  public SpaceListAccess(SpaceStorage spaceStorage, String userId, String appId, Type type) {
+    this.spaceStorage = spaceStorage;
+    this.userId = userId;
+    this.spaceFilter = new SpaceFilter(userId, appId);
+    this.type = type;
+  }
+  
+  /**
+   * The constructor.
+   * 
+   * @param spaceStorage
    * @param spaceFilter
    * @param type
    * @since 1.2.0-GA
@@ -166,6 +186,7 @@ public class SpaceListAccess implements ListAccess<Space> {
       case MEMBER_FILTER: return spaceStorage.getMemberSpacesByFilterCount(this.userId, this.spaceFilter);
       case VISIBLE: return spaceStorage.getVisibleSpacesCount(this.userId, this.spaceFilter);
       case UNIFIED_SEARCH: return spaceStorage.getUnifiedSearchSpacesCount(this.userId, this.spaceFilter);
+      case LASTEST_ACCESSED: return spaceStorage.getLastAccessedSpaceCount(this.spaceFilter);
       default: return 0;
     }
   }
@@ -210,6 +231,10 @@ public class SpaceListAccess implements ListAccess<Space> {
       case VISIBLE: listSpaces = spaceStorage.getVisibleSpaces(this.userId, this.spaceFilter, offset, limit);
         break;
       case UNIFIED_SEARCH: listSpaces = spaceStorage.getUnifiedSearchSpaces(this.userId, this.spaceFilter, offset, limit);
+        break;
+      case LASTEST_ACCESSED:listSpaces = spaceStorage.getLastAccessedSpace(this.spaceFilter, offset, limit);
+        break;
+      case VISITED: listSpaces = spaceStorage.getVisitedSpaces(this.spaceFilter, offset, limit);
         break;
     }
     return listSpaces.toArray(new Space[listSpaces.size()]);
