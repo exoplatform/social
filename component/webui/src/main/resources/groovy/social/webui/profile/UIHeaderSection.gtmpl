@@ -72,6 +72,7 @@
 <% uiform.begin() %>
   
   <h3><%=profile.getPropertyValue(Profile.FULL_NAME)%>
+	<% if (ownerIdentity != null && ownerIdentity.isDeleted() == false) { %>
 	<% if (contactStatus == null) { %>
 	  <% if (!Utils.isOwner()) { %>
 	     <button class="btn btn-primary" onclick="<%=uicomponent.event("AddContact")%>;return false;" >$inviteToConnectLabel</button>
@@ -86,6 +87,7 @@
 	<% } else if (contactStatus == Type.CONFIRMED) { %>
 	     <i class="uiIconGreenTick"></i>
 	     <button class="btn" onclick="<%=uicomponent.event("DenyContact")%>;return false;" >$disconnectLabel</button>
+	<% } %>
 	<% } %>
   </h3>
   
