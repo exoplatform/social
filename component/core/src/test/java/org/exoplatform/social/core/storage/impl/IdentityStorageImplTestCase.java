@@ -232,7 +232,7 @@ public class IdentityStorageImplTestCase extends AbstractCoreTest {
 
   }
 
-  @MaxQueryNumber(450)
+  @MaxQueryNumber(484)
   public void testHardDeleteRelationship() throws Exception {
 
     Identity user1 = new Identity("organization", "user1");
