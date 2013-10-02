@@ -53,8 +53,8 @@
   </div>
   <div class="BgML">
     <div class="BgMR">
-      <div class="BgMC ClearFix">
-        <div class="ColsPeople FL">
+      <div class="BgMC clearfix">
+        <div class="ColsPeople pull-left">
           <div class="TxtTile">$labelPeople<span class="TxtPeople">$labelYourOwnEnterpriseSocialNetwork</span></div>
           <ul>
             <li>$labelTurnYourDirectoryIntoASocialNetwork</li>
@@ -64,7 +64,7 @@
             <li>$labelOpenSocialAPISupport</li>
           </ul>
         </div>
-        <div class="ColsSpace FL">
+        <div class="ColsSpace pull-left">
           <div class="TxtTile">$labelSpaces<span class="TxtPeople">$labelCollaborativeWorkspacesForCommunities</span></div>
           <ul>
             <li>$labelRevealDomantCommunities</li>
@@ -74,16 +74,16 @@
             <li>$labelOpenSocialAPISupport</li>
           </ul>
         </div>
-        <div class="ColsIconExtan FL">
-          <div class="BlockWebsite FL">
+        <div class="ColsIconExtan pull-left">
+          <div class="BlockWebsite pull-left">
             <a href="javascript:void(0);" class="IconChatOnline" rel="tooltip" data-placement="bottom" title="$labelLiveChat"></a>
             <p><a href="javascript:void(0);" class="TxtLinkIcon">$labelLiveChat</a></p>
           </div>
-          <div class="BlockWebsite FL">
+          <div class="BlockWebsite pull-left">
             <a href="http://forum.exoplatform.org/portal/public/classic/" rel="tooltip" data-placement="bottom" class="IconForum" title="$labeleXoForums"></a>
             <p><a href="http://forum.exoplatform.org/portal/public/classic/" class="TxtLinkIcon">$labeleXoForums</a></p>
           </div>
-          <div class="BlockWebsite FL">
+          <div class="BlockWebsite pull-left">
             <a href="http://www.exoplatform.com/company/public/website/company/contact-us" class="IconContact" rel="tooltip" data-placement="bottom" title="$labelContactUs"></a>
             <p><a href="http://www.exoplatform.com/company/public/website/company/contact-us" class="TxtLinkIcon">$labelContactUs</a></p>
           </div>
