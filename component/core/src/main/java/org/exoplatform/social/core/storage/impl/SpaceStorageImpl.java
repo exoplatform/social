@@ -23,25 +23,31 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import javax.jcr.Node;
-import javax.jcr.NodeIterator;
+import javax.jcr.Property;
 import javax.jcr.RepositoryException;
-import javax.jcr.UnsupportedRepositoryOperationException;
 
 import org.chromattic.api.ChromatticSession;
 import org.chromattic.api.query.Ordering;
 import org.chromattic.api.query.Query;
 import org.chromattic.api.query.QueryBuilder;
 import org.chromattic.api.query.QueryResult;
+import org.chromattic.core.api.ChromatticSessionImpl;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
-import org.exoplatform.social.core.chromattic.entity.*;
+import org.exoplatform.social.core.chromattic.entity.IdentityEntity;
+import org.exoplatform.social.core.chromattic.entity.ProviderEntity;
+import org.exoplatform.social.core.chromattic.entity.SpaceEntity;
+import org.exoplatform.social.core.chromattic.entity.SpaceListEntity;
+import org.exoplatform.social.core.chromattic.entity.SpaceRef;
+import org.exoplatform.social.core.chromattic.entity.SpaceRootEntity;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
@@ -54,7 +60,6 @@ import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.storage.SpaceStorageException;
 import org.exoplatform.social.core.storage.api.ActivityStreamStorage;
 import org.exoplatform.social.core.storage.api.SpaceStorage;
-import org.exoplatform.social.core.storage.exception.NodeAlreadyExistsException;
 import org.exoplatform.social.core.storage.exception.NodeNotFoundException;
 import org.exoplatform.social.core.storage.query.JCRProperties;
 import org.exoplatform.social.core.storage.query.QueryFunction;
@@ -1964,67 +1969,58 @@ public class SpaceStorageImpl extends AbstractStorage implements SpaceStorage {
   public List<Space> getLastAccessedSpace(SpaceFilter filter, int offset, int limit) throws SpaceStorageException {
     try {
       IdentityEntity identityEntity = identityStorage._findIdentityEntity(OrganizationIdentityProvider.NAME, filter.getRemoteId());
-
-      StringBuffer sb = new StringBuffer().append("SELECT * FROM ");
-      sb.append(JCRProperties.SPACE_REF_NODE_TYPE);
+      SpaceListEntity listRef = RefType.MEMBER.refsOf(identityEntity);
+      Map<String, SpaceRef> mapRefs = listRef.getRefs();
+      
       //
-      sb.append(" WHERE ");
-      sb.append(JCRProperties.path.getName())
-        .append(" LIKE '")
-        .append(identityEntity.getPath()).append(StorageUtils.SLASH_STR)
-        .append(IdentityEntity.spacemember.getName())
-        .append(StorageUtils.SLASH_STR).append(StorageUtils.PERCENT_STR)
-        .append("'");
-      //
-      sb.append(" ORDER BY ")
-        .append(JCRProperties.JCR_LAST_MODIFIED_DATE.getName())
-        .append(" DESC");
-
-      NodeIterator it = nodes(sb.toString());
-      _skip(it, offset);
-
-      //
-      List<SpaceRef> spaces = new LinkedList<SpaceRef>();
+      ChromatticSessionImpl chromatticSession = (ChromatticSessionImpl) getSession();
+      Map<SpaceRef, Long> spaceRefs = new LinkedHashMap<SpaceRef, Long>();
       Space space = null;
+      
+      //
+      for(Map.Entry<String, SpaceRef> entry :  mapRefs.entrySet()) {
+        SpaceRef ref = entry.getValue();
+        Node node = chromatticSession.getNode(ref);
+        Property p = getProperty(node, JCRProperties.JCR_LAST_MODIFIED_DATE.getName());
+        long lastModifedDate = p == null ? 0 : p.getDate().getTimeInMillis();
 
-      while (it.hasNext()) {
-        Node it1 = (Node) it.next();
-
-        SpaceRef ref = _findById(SpaceRef.class, it1.getUUID());
-        
-        if (filter.getAppId() == null) {
-          spaces.add(ref);
-        } else {
-          if (ref.getSpaceRef().getApp().toLowerCase().indexOf(filter.getAppId().toLowerCase()) > 0) {
-            spaces.add(ref);
-          }
+        // Lazy clean up
+        if (ref.getSpaceRef() == null) {
+          listRef.removeRef(entry.getKey());
+          continue;
         }
 
+        if (filter.getAppId() == null) {
+          spaceRefs.put(ref, lastModifedDate);
+        } else {
+          if (ref.getSpaceRef().getApp().toLowerCase().indexOf(filter.getAppId().toLowerCase()) > 0) {
+            spaceRefs.put(ref, lastModifedDate);
+          }
+        }
       }
-
+      spaceRefs = StorageUtils.sortMapByValue(spaceRefs, false);
+      
       List<Space> got = new LinkedList<Space>();
-      //
-      Iterator<SpaceRef> it1 = spaces.iterator();   
+      Iterator<SpaceRef> it1 = spaceRefs.keySet().iterator();
+      _skip(it1, offset);
 
-      int numberOfSpaces = 0;
       //
+      int numberOfSpace = 0;
       while (it1.hasNext()) {
         space = new Space();
         fillSpaceSimpleFromEntity(it1.next().getSpaceRef(), space);
         got.add(space);
         //
-        if (++numberOfSpaces == limit) {
+        if (++numberOfSpace == limit) {
           break;
         }
       }
 
       return got;
     } catch (NodeNotFoundException e) {
-      LOG.warn(e.getMessage(), e);
-    } catch (UnsupportedRepositoryOperationException e) {
-      LOG.warn(e.getMessage(), e);
+      LOG.warn("Get last accessed spaces failure.", e);
     } catch (RepositoryException e) {
-      LOG.warn(e.getMessage(), e);
+      LOG.warn("Get last accessed spaces failure.", e);
     }
     
     //
@@ -2035,5 +2031,13 @@ public class SpaceStorageImpl extends AbstractStorage implements SpaceStorage {
     return getSpacesOfMemberQuery(userId).objects().size();
   }
   
+  private Property getProperty(Node node, String propertyName) {
+    try {
+      return node.getProperty(propertyName);
+    } catch (RepositoryException e) {
+      LOG.error(String.format("Get property %s failed", propertyName));
+    }
+    return null;
+  }
 
 }
