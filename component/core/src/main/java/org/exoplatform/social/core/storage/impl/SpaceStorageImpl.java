@@ -2019,7 +2019,6 @@ public class SpaceStorageImpl extends AbstractStorage implements SpaceStorage {
 
     try {
       IdentityEntity identityEntity = identityStorage._findIdentityEntity(OrganizationIdentityProvider.NAME, filter.getRemoteId());
-
       SpaceListEntity listRef = RefType.MEMBER.refsOf(identityEntity);
       Map<String, SpaceRef> mapRefs = listRef.getRefs();
       
