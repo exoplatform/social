@@ -177,7 +177,6 @@ public final class I18NActivityProcessor {
           return i18nActivity;
         }
         if (getMessageBundleKeys(i18nActivity) == false) {
-          LOG.warn("Failed to find registered message bundle key for titleId: " + i18nActivity.getTitleId());
           return i18nActivity;
         }
         
