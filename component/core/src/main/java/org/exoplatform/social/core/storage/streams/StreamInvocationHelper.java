@@ -58,7 +58,7 @@ public class StreamInvocationHelper {
       
     } finally {
       if (ctx.isTraced()) {
-        LOG.info(processCtx.getTraceLog());
+        LOG.debug(processCtx.getTraceLog());
       }
       
     }
@@ -84,7 +84,7 @@ public class StreamInvocationHelper {
       //beforeAsync(); Why do we need to save here? Can make the problem with ADD_PROPERTY
       ctx.getServiceExecutor().execute(StreamProcessorFactory.savePoster(), processCtx);
     } finally {
-      LOG.info(processCtx.getTraceLog());
+      LOG.debug(processCtx.getTraceLog());
     }
     
     return processCtx;
@@ -112,7 +112,7 @@ public class StreamInvocationHelper {
       
     } finally {
       if (ctx.isTraced()) {
-        LOG.info(processCtx.getTraceLog());
+        LOG.debug(processCtx.getTraceLog());
       }
       
     }
@@ -130,7 +130,7 @@ public class StreamInvocationHelper {
       //
       ctx.getServiceExecutor().execute(StreamProcessorFactory.updateCommenter(), processCtx);
     } finally {
-      LOG.info(processCtx.getTraceLog());
+      LOG.debug(processCtx.getTraceLog());
     }
     
     return processCtx;
@@ -148,7 +148,7 @@ public class StreamInvocationHelper {
       //
       ctx.getServiceExecutor().execute(StreamProcessorFactory.deleteCommentStream(), processCtx);
     } finally {
-      LOG.info(processCtx.getTraceLog());
+      LOG.debug(processCtx.getTraceLog());
     }
     
     return processCtx;
@@ -165,7 +165,7 @@ public class StreamInvocationHelper {
       //beforeAsync();
       ctx.getServiceExecutor().execute(StreamProcessorFactory.unlikeActivity(), processCtx);
     } finally {
-      LOG.info(processCtx.getTraceLog());
+      LOG.debug(processCtx.getTraceLog());
     }
     
     return processCtx;
@@ -183,7 +183,7 @@ public class StreamInvocationHelper {
       //org.exoplatform.services.cms.impl.Utils
       ctx.getServiceExecutor().execute(StreamProcessorFactory.likeActivity(), processCtx);
     } finally {
-      LOG.info(processCtx.getTraceLog());
+      LOG.debug(processCtx.getTraceLog());
     }
     
     return processCtx;
@@ -200,7 +200,7 @@ public class StreamInvocationHelper {
       //
       ctx.getServiceExecutor().execute(StreamProcessorFactory.deleteConnectStream(), processCtx);
     } finally {
-      LOG.info(processCtx.getTraceLog());
+      LOG.debug(processCtx.getTraceLog());
     }
     
     return processCtx;
@@ -221,7 +221,7 @@ public class StreamInvocationHelper {
       }
       
     } finally {
-      LOG.info(processCtx.getTraceLog());
+      LOG.debug(processCtx.getTraceLog());
     }
     
     return processCtx;
@@ -243,7 +243,7 @@ public class StreamInvocationHelper {
       }
       
     } finally {
-      LOG.info(processCtx.getTraceLog());
+      LOG.debug(processCtx.getTraceLog());
     }
     
     return processCtx;
@@ -260,7 +260,7 @@ public class StreamInvocationHelper {
       //
       ctx.getServiceExecutor().execute(StreamProcessorFactory.removeSpaceMemberStream(), processCtx);
     } finally {
-      LOG.info(processCtx.getTraceLog());
+      LOG.debug(processCtx.getTraceLog());
     }
     
     return processCtx;
@@ -283,7 +283,7 @@ public class StreamInvocationHelper {
       }
       
     } finally {
-      LOG.info(processCtx.getTraceLog());
+      LOG.debug(processCtx.getTraceLog());
     }
     
     return processCtx;
@@ -305,7 +305,7 @@ public class StreamInvocationHelper {
       }
       
     } finally {
-      LOG.info(processCtx.getTraceLog());
+      LOG.debug(processCtx.getTraceLog());
     }
     
     return processCtx;
@@ -327,7 +327,7 @@ public class StreamInvocationHelper {
       }
       
     } finally {
-      LOG.info(processCtx.getTraceLog());
+      LOG.debug(processCtx.getTraceLog());
     }
     
     return processCtx;
@@ -349,7 +349,7 @@ public class StreamInvocationHelper {
       }
       
     } finally {
-      LOG.info(processCtx.getTraceLog());
+      LOG.debug(processCtx.getTraceLog());
     }
     
     return processCtx;
@@ -371,7 +371,7 @@ public class StreamInvocationHelper {
       }
       
     } finally {
-      LOG.info(processCtx.getTraceLog());
+      LOG.debug(processCtx.getTraceLog());
     }
     
     return processCtx;
