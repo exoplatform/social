@@ -433,11 +433,7 @@
 		.isPreviewable {
 			position: relative;
 			.mediaContent  {
-				width: 300px;
-				margin-right: 10px;
-			}
-			.mediaContent + .text {
-				overflow: hidden;
+				max-width: 300px;
 			}
 			.versionFile {			
 				color: @grayLight;font-size: 12px;
@@ -609,10 +605,10 @@
 /*================uiContentActivity=======================*/
 
 .uiContentActivity {
-	.introBox.contentShare  .pull-left {		
-		width: 50px;
+	.introBox.contentShare  .pull-left {
+		margin-right: 10px;
 		&+ .text {
-			margin-left: 70px;
+			overflow: hidden;
 			
 		}
 	}
@@ -653,18 +649,22 @@
 /*=======fileActivity activity==========*/  
 .fileActivity {
 	.introBox .isPreviewable {
-		 
+	 	.pull-left {
+	 		margin-right: 10px;
+	 		& + .text {
+	 			overflow: hidden;
+	 		}
+		 }
 		 .fileTypeContent {
 			float: left;
-			width: 60px;
+			margin-right: 10px;
 			& + .text {
-				margin-left: 70px;
+				overflow: hidden;
 			}
 		 }		
 		 .PlayerContianer {
 			width: 330px;
 			height: auto;
-			margin-right: 10px;
 			&+ .text {
 				overflow: hidden;
 			}
