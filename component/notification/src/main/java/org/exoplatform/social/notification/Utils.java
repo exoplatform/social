@@ -46,20 +46,20 @@ public class Utils {
   }
 
   /**
-   * Gets the user's remote id from identity's id 
+   * Gets a remote Id from a user's identity Id.
    * 
-   * @param identityId the id of an user
-   * @return
+   * @param identityId The user's identity Id.
+   * @return The remote Id.
    */
   public static String getUserId(String identityId) {
     return getIdentityManager().getIdentity(identityId, false).getRemoteId();
   }
   
   /**
-   * Convert an array of user's remote id to a list
+   * Converts an array of remote user Ids into a list.
    * 
-   * @param userIds
-   * @return list of user's remote id
+   * @param userIds The remote user Ids.
+   * @return The list of remote Ids.
    */
   public static List<String> toListUserIds(String... userIds) {
     List<String> ids = new ArrayList<String>();
@@ -72,10 +72,10 @@ public class Utils {
   }
   
   /**
-   * Check if an activity is created in a space
+   * Checks if an activity is created in a space or not.
    * 
-   * @param activity
-   * @return true if activity is created in a space, else return false
+   * @param activity The activity to be checked.
+   * @return The returned value is "true" if the activity is created, or "false" if the activity is not created.
    */
   public static boolean isSpaceActivity(ExoSocialActivity activity) {
     Identity id = getIdentityManager().getOrCreateIdentity(SpaceIdentityProvider.NAME, activity.getStreamOwner(), false);
@@ -87,10 +87,10 @@ public class Utils {
   }
   
   /**
-   * Process the receiver list with StreamOwner or not
-   * @param receivers
-   * @param streamOwner
-   * @param posteId
+   * Checks if a notification message is sent to a stream owner or not.
+   * @param receivers The list of users receiving the notification message.
+   * @param streamOwner The owner of activity stream.
+   * @param posteId Id of the user who has posted the activity.
    */
   public static void sendToStreamOwner(List<String> receivers, String streamOwner, String posteId) {
     //Don't send to the stream owner when it's a space
@@ -108,10 +108,10 @@ public class Utils {
   }
   
   /**
-   * Process the receiver list with Activity's Poster what will be parent for added comment.
-   * @param receivers
-   * @param streamOwner
-   * @param posteId
+   * Checks if a notification message is sent to an activity poster when a new comment is created.
+   * @param receivers The list of users receiving the notification message.
+   * @param activityPosterId Id of the activity poster.
+   * @param posteId Id of the user who has commented.
    */
   public static void sendToActivityPoster(List<String> receivers, String activityPosterId, String posteId) {
     String activityPosterRemoteId = Utils.getUserId(activityPosterId);
@@ -128,11 +128,11 @@ public class Utils {
   }
   
   /**
-   * Get the list of user's remote id that will receive the notification and not contain the poster of activity or comment
+   * Gets remote Ids of all users who receive a notification message.
    * 
-   * @param users list of all user
-   * @param poster user has posted the activity or comment
-   * @return
+   * @param users The list of all users related to the activity.
+   * @param poster The user who has posted the activity or comment.
+   * @return The remote Ids.
    */
   private static List<String> getDestinataires(String[] users, String poster) {
     List<String> destinataires = new ArrayList<String>();
@@ -147,10 +147,10 @@ public class Utils {
   }
   
   /**
-   * From activity's title, find all mention prefix and add the host + port to ensure the link to user's profile is correct
+   * Finds all mention prefixes from an activity title, then adds a domain name to ensure the link to a user profile is correct.
    * 
-   * @param title title of activity
-   * @return
+   * @param title The activity title.
+   * @return The new title which contains the correct link to the user profile. 
    */
   public static String processMentions(String title) {
     Matcher matcher = MENTION_PATTERN.matcher(title);
@@ -169,11 +169,11 @@ public class Utils {
   }
   
   /**
-   * Gets the list of user's remote id to send notification when an activity is posted in space
+   * Gets remote Ids of all users who receive a notification message when an activity is posted in a space.
    * 
-   * @param activity
-   * @param space
-   * @return
+   * @param activity The created activity.
+   * @param space The space which contains the activity.
+   * @return The remote Ids.
    */
   public static List<String> getDestinataires(ExoSocialActivity activity, Space space) {
     List<String> destinataires = new ArrayList<String>();

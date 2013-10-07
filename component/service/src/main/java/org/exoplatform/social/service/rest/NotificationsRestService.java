@@ -46,7 +46,7 @@ import org.exoplatform.social.core.space.spi.SpaceService;
 
 /**
  * 
- * Provides REST Services for manipulating jobs relates to notifications.
+ * Provides REST Services for manipulating jobs related to notifications.
  * 
  * @anchor NotificationRestService
  */
@@ -71,14 +71,14 @@ public class NotificationsRestService implements ResourceContainer {
   }
   
   /**
-   * Process action "invite to connect" between two users, sender and receiver, then redirect to the page of receiver's profile
+   * Processes the "Invite to connect" action between two users, sender and receiver, then redirects to the receiver's profile page.
    * 
-   * @param senderId the remote id of the sender
-   * @param receiverId the remote id of the receiver
+   * @param senderId The sender's remote Id.
+   * @param receiverId The receiver's remote Id. 
    * @authentication
    * @request
    * GET: http://localhost:8080/rest/social/notifications/inviteToConnect/john/root
-   * @return redirect to the page of receiver's profile
+   * @return Redirects to the receiver's profile page.
    * @throws Exception
    */
   @GET
@@ -102,14 +102,14 @@ public class NotificationsRestService implements ResourceContainer {
   }
   
   /**
-   * Process action "accept the invitation to connect" between 2 users, then redirect to the activity stream of the sender
+   * Processes the "Accept the invitation to connect" action between 2 users, then redirects to the sender's activity stream.
    * 
-   * @param senderId the remote id of the sender
-   * @param receiverId the remote id of the receiver
+   * @param senderId The sender's remote Id.
+   * @param receiverId The receiver's remote Id.
    * @authentication
    * @request
    * GET: http://localhost:8080/rest/social/notifications/confirmInvitationToConnect/john/root
-   * @return redirect to the activity stream of the sender
+   * @return Redirects to the sender's activity stream.
    * @throws Exception
    */
   @GET
@@ -132,15 +132,15 @@ public class NotificationsRestService implements ResourceContainer {
   }
   
   /**
-   * Process action "deny the invitation to connect" between 2 users, then redirect to the connection requested page
-   * of the receiver and display a message to inform that the receiver ignored the invitation of the sender
+   * Processes the "Deny the invitation to connect" action between 2 users, then redirects to the receiver's page of received invitations.
+   * A message informing that the receiver ignored the sender's invitation will be displayed.
    * 
-   * @param senderId the remote id of the sender
-   * @param receiverId the remote id of the receiver
+   * @param senderId The sender's remote Id.
+   * @param receiverId The receiver's remote Id.
    * @authentication
    * @request
    * GET: localhost:8080/rest/social/notifications/ignoreInvitationToConnect/john/root
-   * @return redirect to the connection requested page of the receiver and display a message
+   * @return Redirects to the receiver's page of received invitations and displays a message.
    * @throws Exception
    */
   @GET
@@ -164,14 +164,14 @@ public class NotificationsRestService implements ResourceContainer {
   }
   
   /**
-   * Process action "accept the invitation to join space" and redirect user to the space's home page
+   * Processes the "Accept the invitation to join a space" action and redirects to the space homepage.
    * 
-   * @param userId the remote id of the user who is invited to join space
-   * @param spaceId the id of space
+   * @param userId The invitee's remote Id.
+   * @param spaceId Id of the space.
    * @authentication
    * @request
    * GET: localhost:8080/rest/social/notifications/acceptInvitationToJoinSpace/e1cacf067f0001015ac312536462fc6b/john
-   * @return redirect to the space's home page
+   * @return Redirects to the space's homepage.
    * @throws Exception
    */
   @GET
@@ -193,15 +193,15 @@ public class NotificationsRestService implements ResourceContainer {
   }
   
   /**
-   * Process action "deny the invitation to join space", redirect user to the page of all spaces and display a message
-   * that he just denied to join space
+   * Processes the "Deny the invitation to join a space" action, then redirects to the page of all spaces.
+   * A message informing that the invitee has denied to join the space will be displayed.
    * 
-   * @param userId the remote id of the user who is invited to join space
-   * @param spaceId the id of space
+   * @param userId The invitee's remote Id.
+   * @param spaceId Id of the space.
    * @authentication
    * @request
    * GET: localhost:8080/rest/social/notifications/ignoreInvitationToJoinSpace/e1cacf067f0001015ac312536462fc6b/john
-   * @return redirect user to the page of all spaces and display a message
+   * @return Redirects to the page of all spaces and displays a message.
    * @throws Exception
    */
   @GET
@@ -224,16 +224,16 @@ public class NotificationsRestService implements ResourceContainer {
   }
   
   /**
-   * This action is only for a manager of a space. This will add a user become a member of a space and redirect the 
-   * manager to the members's page of the space. Following the status of the user, he is already member of space or not,
-   * a message associated will be display to inform the event  
+   * Adds a member to a space, then redirects to the space's members page. 
+   * A message informing the added user is already member of the space or not will be displayed.
+   * This action is only for the space manager. 
    * 
-   * @param userId the remote id of the user who send the request to join space
-   * @param spaceId the id of space
+   * @param userId The remote Id of the user who requests for joining the space.
+   * @param spaceId Id of the space.
    * @authentication
    * @request
    * GET: localhost:8080/rest/social/notifications/validateRequestToJoinSpace/e1cacf067f0001015ac312536462fc6b/john
-   * @return redirect the manager to the members's page of the space and display a message associated
+   * @return Redirects to the space's members page and displays the message.
    * @throws Exception
    */
   @GET
@@ -266,15 +266,15 @@ public class NotificationsRestService implements ResourceContainer {
   }
   
   /**
-   * This action is only for a manager of a space. This will refuse a user become a member of a space and redirect the 
-   * manager to the members's page of this space.
+   * Refuses a user's request for joining a space, then redirects to 
+   * the space's members page. This action is only for the space manager. 
    * 
-   * @param userId the remote id of the user who send the request to join space
-   * @param spaceId the id of space
+   * @param userId The remote Id of the user who requests for joining the space.
+   * @param spaceId Id of the space.
    * @authentication
    * @request
    * GET: localhost:8080/rest/social/notifications/refuseRequestToJoinSpace/e1cacf067f0001015ac312536462fc6b/john
-   * @return redirect the manager to the members's page of the space.
+   * @return Redirects to the space's members page.
    * @throws Exception
    */
   @GET
@@ -297,16 +297,15 @@ public class NotificationsRestService implements ResourceContainer {
   }
   
   /**
-   * Depend on the type, the current user will be redirect to the associated place : user activity stream, portal home page,
-   * space home page, user profile ...
+   * Redirects the current user to an associated page, such as user activity stream, portal homepage,
+   * space homepage and user profile.
    * 
-   * @param type the type of the page will be redirected to: user --> user's activity stream, space --> space's home page
-   * view_full_activity --> display only one activity and expand all of its comments ...
-   * @param objectId id of the associated type, can be an activity's id, space's id, user's remote id ...
+   * @param type Type of the redirected page.
+   * @param objectId Id of the associated type that can be activity Id, space Id, or user remote Id.
    * @authentication
    * @request
    * GET: localhost:8080/rest/social/notifications/redirectUrl/view_full_activity/e1d2870c7f0001014e32114f6ff8a7ab
-   * @return redirect to the associated place
+   * @return Redirects to the associated page.
    * @throws Exception
    */
   @GET
@@ -407,8 +406,8 @@ public class NotificationsRestService implements ResourceContainer {
   }
   
   /**
-   * Gets the spaceService
-   * @return spaceService
+   * Gets a service which manages all things related to spaces.
+   * @return The SpaceService.
    * @see SpaceService
    */
   public SpaceService getSpaceService() {
@@ -419,8 +418,8 @@ public class NotificationsRestService implements ResourceContainer {
   }
 
   /**
-   * Gets identityManager
-   * @return identityManager
+   * Gets a service which manages all things related to identities.
+   * @return The IdentityManager.
    * @see IdentityManager
    */
   private IdentityManager getIdentityManager() {
@@ -431,8 +430,8 @@ public class NotificationsRestService implements ResourceContainer {
   }
   
   /**
-   * Gets activity Manager instance.
-   * @return activityManager
+   * Gets a service which manages all things related to activities.
+   * @return The ActivityManager.
    * @see ActivityManager
    */
   private ActivityManager getActivityManager() {
@@ -443,8 +442,8 @@ public class NotificationsRestService implements ResourceContainer {
   }
   
   /**
-   * Gets identityManager
-   * @return identityManager
+   * Gets a service which manages all things related to relationship.
+   * @return The RelationshipManager.
    * @see RelationshipManager
    */
   private RelationshipManager getRelationshipManager() {
@@ -455,8 +454,8 @@ public class NotificationsRestService implements ResourceContainer {
   }
   
   /**
-   * Gets Portal Container instance.
-   * @return portalContainer
+   * Gets a Portal Container instance.
+   * @return The PortalContainer.
    * @see PortalContainer
    */
   private ExoContainer getPortalContainer() {
