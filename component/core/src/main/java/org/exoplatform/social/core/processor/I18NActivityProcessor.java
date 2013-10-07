@@ -146,7 +146,6 @@ public final class I18NActivityProcessor {
           return i18nActivity;
         }
         if (getMessageBundleKey(i18nActivity) == null) {
-          LOG.warn("Failed to find registered message bundle key for titleId: " + i18nActivity.getTitleId());
           return i18nActivity;
         }
         String newTitle = appRes(resourceBundle, getMessageBundleKey(i18nActivity), i18nActivity.getTemplateParams());
