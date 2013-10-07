@@ -64,7 +64,7 @@ jsmanager.require("SHARED/jquery", "jq")
 <div class="uiSpaceSearch">
 <% uiform.begin() %>
     <!--search by name-->   
-	<div class="uiGrayLightBox ClearFix">
+	<div class="uiGrayLightBox clearfix">
 		<button class="btn btn-primary pull-left" type="button" onclick="<%= uicomponent.event("AddSpace") %>" ><i class="uiIconSocSimplePlus uiIconSocWhite"></i><%= labelActionAddSpace %></button>
 		
 		<!--label for="<%=childs.get(0).getId()%>" class="LeftContentInput">

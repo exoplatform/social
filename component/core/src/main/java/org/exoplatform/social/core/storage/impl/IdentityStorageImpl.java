@@ -32,12 +32,13 @@ import javax.jcr.nodetype.NodeType;
 import javax.jcr.nodetype.NodeTypeManager;
 import javax.jcr.nodetype.PropertyDefinition;
 
+import org.chromattic.api.UndeclaredRepositoryException;
 import org.chromattic.api.query.Ordering;
 import org.chromattic.api.query.QueryBuilder;
 import org.chromattic.api.query.QueryResult;
+import org.chromattic.core.query.QueryImpl;
 import org.chromattic.ext.ntdef.NTFile;
 import org.chromattic.ext.ntdef.Resource;
-import org.chromattic.core.query.QueryImpl;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
@@ -448,7 +449,7 @@ public class IdentityStorageImpl extends AbstractStorage implements IdentityStor
   protected void _removeRelationshipList(RelationshipListEntity listEntity) {
 
     for (RelationshipEntity relationshipEntity : listEntity.getRelationships().values()) {
-      getRelationshipStorage().removeRelationship(new Relationship(relationshipEntity.getId()));
+      getRelationshipStorage().removeRelationship(getRelationshipStorage().getRelationship(relationshipEntity.getId()));
     }
 
   }
@@ -724,28 +725,34 @@ public class IdentityStorageImpl extends AbstractStorage implements IdentityStor
     List<Map<String, String>> ims = new ArrayList<Map<String,String>>();
     List<Map<String, String>> urls = new ArrayList<Map<String,String>>();
 
-    //
-    for (String name : profileEntity.getProperties().keySet()) {
-      if (isJcrProperty(name)) {
-        switch(PropNs.nsOf(name)) {
-          case VOID:
-          case INDEX:
-            profile.setProperty(PropNs.cleanPrefix(name), profileEntity.getProperty(name).get(0));
-            break;
-          case PHONE:
-            fillProfileParam(profileEntity, phones, name);
-            break;
-          case IM:
-            fillProfileParam(profileEntity, ims, name);
-            break;
-          case URL:
-            fillProfileParam(profileEntity, urls, name);
-            break;
+    //handle try/catch here with test_test user on intranet. Makes sure it isn't broken process.
+    //The Problem: property definition is NULL /production/soc:providers/soc:organization/soc:test_test/soc:profile/soc:externalAvatarUrl []
+    try {
+      //
+      for (String name : profileEntity.getProperties().keySet()) {
+        if (isJcrProperty(name)) {
+          switch(PropNs.nsOf(name)) {
+            case VOID:
+            case INDEX:
+              profile.setProperty(PropNs.cleanPrefix(name), profileEntity.getProperty(name).get(0));
+              break;
+            case PHONE:
+              fillProfileParam(profileEntity, phones, name);
+              break;
+            case IM:
+              fillProfileParam(profileEntity, ims, name);
+              break;
+            case URL:
+              fillProfileParam(profileEntity, urls, name);
+              break;
+          }
         }
       }
+      
+    } catch(UndeclaredRepositoryException e) {
+      LOG.warn(e.getMessage()); 
     }
-
-
+    
     if (OrganizationIdentityProvider.NAME.equals(providerId) || SpaceIdentityProvider.NAME.equals(providerId)) {
 
       //
@@ -1379,8 +1386,11 @@ public class IdentityStorageImpl extends AbstractStorage implements IdentityStor
     try {
       ProfileEntity profileEntity = _findById(ProfileEntity.class, identity.getProfile().getId());
       ActivityProfileEntity activityPEntity = profileEntity.getActivityProfile();
-      type.setActivityId(activityPEntity, activityId);
+      if (activityPEntity == null) {
+        activityPEntity = profileEntity.createActivityProfile();
+      }
       profileEntity.setActivityProfile(activityPEntity);
+      type.setActivityId(activityPEntity, activityId);
       getSession().save();
     } catch (NodeNotFoundException e) {
       LOG.debug(e.getMessage(), e);

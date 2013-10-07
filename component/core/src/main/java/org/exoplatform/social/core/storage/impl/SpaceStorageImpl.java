@@ -31,7 +31,6 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import javax.jcr.Node;
-import javax.jcr.PathNotFoundException;
 import javax.jcr.Property;
 import javax.jcr.RepositoryException;
 
@@ -59,11 +58,13 @@ import org.exoplatform.social.core.space.SpaceFilter;
 import org.exoplatform.social.core.space.SpaceUtils;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.storage.SpaceStorageException;
+import org.exoplatform.social.core.storage.api.ActivityStreamStorage;
 import org.exoplatform.social.core.storage.api.SpaceStorage;
 import org.exoplatform.social.core.storage.exception.NodeNotFoundException;
 import org.exoplatform.social.core.storage.query.JCRProperties;
 import org.exoplatform.social.core.storage.query.QueryFunction;
 import org.exoplatform.social.core.storage.query.WhereExpression;
+import org.exoplatform.social.core.storage.streams.StreamInvocationHelper;
 
 /**
  * Space storage layer.
@@ -80,7 +81,9 @@ public class SpaceStorageImpl extends AbstractStorage implements SpaceStorage {
    * The identity storage
    */
   private final IdentityStorageImpl identityStorage;
-  
+
+  private final ActivityStreamStorage streamStorage;
+
   private static final int TWO_SECONDS = 2000;
   
   /**
@@ -88,8 +91,9 @@ public class SpaceStorageImpl extends AbstractStorage implements SpaceStorage {
    *
    * @param identityStorage the identity storage
    */
-  public SpaceStorageImpl(IdentityStorageImpl identityStorage) {
+  public SpaceStorageImpl(IdentityStorageImpl identityStorage, ActivityStreamStorage streamStorage) {
    this.identityStorage = identityStorage;
+   this.streamStorage = streamStorage;
  }
 
   /**
@@ -345,6 +349,8 @@ public class SpaceStorageImpl extends AbstractStorage implements SpaceStorage {
     String[] addedPending = sub(space.getPendingUsers(), spaceEntity.getPendingMembersId());
 
     manageRefList(new UpdateContext(addedMembers, removedMembers), spaceEntity, RefType.MEMBER);
+    manageActivityRefList(new UpdateContext(addedMembers, removedMembers), spaceEntity, RefType.MEMBER);
+    
     manageRefList(new UpdateContext(addedManagers, removedManagers), spaceEntity, RefType.MANAGER);
     manageRefList(new UpdateContext(addedInvited, removedInvited), spaceEntity, RefType.INVITED);
     manageRefList(new UpdateContext(addedPending, removedPending), spaceEntity, RefType.PENDING);
@@ -417,6 +423,27 @@ public class SpaceStorageImpl extends AbstractStorage implements SpaceStorage {
         catch (NodeNotFoundException e) {
           LOG.warn(e.getMessage(), e);
         }
+      }
+    }
+  }
+  
+  private void manageActivityRefList(UpdateContext context, SpaceEntity spaceEntity, RefType type) {
+
+    Identity spaceIdentity = identityStorage.findIdentity(SpaceIdentityProvider.NAME,
+                                                          spaceEntity.getPrettyName());
+    if (context.getAdded() != null) {
+      for (String userName : context.getAdded()) {
+        Identity identity = identityStorage.findIdentity(OrganizationIdentityProvider.NAME, userName);
+        //streamStorage.addSpaceMember(identity, spaceIdentity);
+        StreamInvocationHelper.addSpaceMember(identity, spaceIdentity);
+      }
+    }
+
+    if (context.getRemoved() != null) {
+      for (String userName : context.getRemoved()) {
+        Identity identity = identityStorage.findIdentity(OrganizationIdentityProvider.NAME, userName);
+        //streamStorage.removeSpaceMember(identity, spaceIdentity);
+        StreamInvocationHelper.removeSpaceMember(identity, spaceIdentity);
       }
     }
   }
@@ -2068,6 +2095,7 @@ public class SpaceStorageImpl extends AbstractStorage implements SpaceStorage {
         if (ref.getSpaceRef().getApp().toLowerCase().indexOf(appId.toLowerCase()) > 0) {
           isValid = true;
         }
+
       }
       
       //The never visited spaces which have last modified date different with the created time less than 2 seconds

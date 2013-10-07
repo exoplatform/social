@@ -1,5 +1,5 @@
 <div class="UIPopupWindow UIDragObject uiPopup UISocialConfirmation" id="UISocialConfirmation" style="width: 550px; display: none;">
-	<div class="popupHeader ClearFix">
+	<div class="popupHeader clearfix">
 		<a class="uiIconClose pull-right" title="<%=_ctx.appRes("UIConfirmation.Close")%>"></a>
 		<span class="PopupTitle popupTitle"></span>
 	</div>

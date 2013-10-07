@@ -38,21 +38,21 @@
 	         .require("SHARED/bts_tooltip").addScripts("jq('*[rel=\"tooltip\"]').tooltip();");
 %>
 
-<div class="UISocialHomepage ClearFix" id="$uicomponent.id">
+<div class="UISocialHomepage clearfix" id="$uicomponent.id">
 
 	<div class="ProductImage">
 		<h2><%= _ctx.appRes("UISocialDemoHomePagePortlet.label.eXo_Social") %></h2>
 		<h3><%= _ctx.appRes("UISocialDemoHomePagePortlet.label.An_Extended_Service_Of_eXo_Platform") %></h3>
 	</div>
 
-  <div class="UIBox"><div class="BoxTop"><div class="BoxBottom ClearFix">
-		<div class="Container FL">
+  <div class="UIBox"><div class="BoxTop"><div class="BoxBottom clearfix">
+		<div class="Container pull-left">
 			<div class="BoxDocument">
 				<h4><%= _ctx.appRes("UISocialDemoHomePagePortlet.label.Community_Members") %></h4>
 				<a href="http://docs.exoplatform.org" class="ArrowBlue"><%= _ctx.appRes("UISocialDemoHomePagePortlet.label.Download_eXo_Social_Documentation") %></a>
 			</div>
 		</div>
-	  <div  class="Container FR">
+	  <div  class="Container pull-right">
 			<div class="BoxTry">
 				<h4><%= _ctx.appRes("UISocialDemoHomePagePortlet.label.Enterprise_Or_Production_Use") %></h4>
 				<a href="http://platform.demo.exoplatform.org/" class="ArrowBlue"><%= _ctx.appRes("UISocialDemoHomePagePortlet.label.Try_eXo_Platform_3") %></a>
@@ -61,34 +61,34 @@
   </div></div></div>
 
 	<div class="UIDecoration DecorationTop">
-		<div class="DecorationBottom"><div class="DecorationCenter ClearFix">
+		<div class="DecorationBottom"><div class="DecorationCenter clearfix">
         <div class="RightSocialHomepage">
-          <div class="ClearFix">
-            <div class="BlockWebsite FL">
+          <div class="clearfix">
+            <div class="BlockWebsite pull-left">
               <a href="http://www.exoplatform.com/company/public/website/company/contact-us" target="_blank" class="IconContactUs Icon" rel="tooltip" data-placement="bottom" title="$titleContactUs"></a>
               <a href="http://www.exoplatform.com/company/public/website/company/contact-us" target="_blank" class="TxtLinkIcon">$titleContactUs</a>
             </div>
-            <div class="BlockResource FL">
+            <div class="BlockResource pull-left">
               <a href="http://www.exoplatform.com/company/public/website/resource-center" target="_blank" class="IconResource Icon" rel="tooltip" data-placement="bottom" title="$titleResourceCenter"></a>
               <a href="http://www.exoplatform.com/company/public/website/resource-center" target="_blank" class="TxtLinkIcon">$titleResourceCenter</a>
             </div>
           </div>
-          <div class="ClearFix">
-            <div class="BlockWebsite FL">
+          <div class="clearfix">
+            <div class="BlockWebsite pull-left">
               <a href="http://support.exoplatform.org/" target="_blank" class="IconSupport Icon" rel="tooltip" data-placement="bottom" title="$titleSupport"></a>
               <a href="http://support.exoplatform.org/" target="_blank" class="TxtLinkIcon">$titleSupport</a>
             </div>
-            <div class="BlockResource FL">
+            <div class="BlockResource pull-left">
               <a href="http://www.exoplatform.com/company/public/website/services/development/development-training"  target="_blank" class="IconTraining Icon" rel="tooltip" data-placement="bottom" title="$titleTraining"></a>
               <a href="http://www.exoplatform.com/company/public/website/services/development/development-training"  target="_blank" class="TxtLinkIcon">$titleTraining</a>
             </div>
           </div>
-          <div class="ClearFix">
+          <div class="clearfix">
             <div class="BlockWebsite FL">
               <a href="http://blog.exoplatform.org" target="_blank" class="IconBlog Icon" rel="tooltip" data-placement="bottom" rel="tooltip" data-placement="bottom" title="$titleExoBlog"></a>
               <a href="http://blog.exoplatform.org" target="_blank" class="TxtLinkIcon">$titleExoBlog</a>
             </div>
-            <div class="BlockResource FL">
+            <div class="BlockResource pull-left">
               <a href="http://www.exoplatform.com" target="_blank" class="IconWebsite Icon" rel="tooltip" data-placement="bottom" rel="tooltip" data-placement="bottom" title="$titleExoWebsite"></a>
               <a href="http://www.exoplatform.com" target="_blank" class="TxtLinkIcon">$titleExoWebsite</a>
             </div>
@@ -102,8 +102,8 @@
               <a href="http://www.exoplatform.com/company/public/website/resource-viewer?path=/website/eXo-Social-GS" target="_blank" ><%= _ctx.appRes("UISocialDemoHomePagePortlet.label.Getting_Started_Guide") %></a><%= _ctx.appRes("UISocialDemoHomePagePortlet.label.Or_Start_Exploring_Some_Of_The_Key_Features") %>
             </p>
           </div>
-          <div class="RowContent ClearFix">
-            <div class="FL ColsPeople">
+          <div class="RowContent clearfix">
+            <div class="pull-left ColsPeople">
               <h5 class="ProductTitle"><%= _ctx.appRes("UISocialDemoHomePagePortlet.label.People_And_Connections") %></h5>
               <ul>
                 <li><%= _ctx.appRes("UISocialDemoHomePagePortlet.label.Profiles") %></li>
@@ -112,7 +112,7 @@
                 <li><%= _ctx.appRes("UISocialDemoHomePagePortlet.label.Send_Accept_Reject_Cancel_Connection_Requests") %></li>
               </ul>
             </div>
-            <div class="FL ColsCommunity">
+            <div class="pull-left ColsCommunity">
               <h5 class="ProductTitle"><%= _ctx.appRes("UISocialDemoHomePagePortlet.label.Community_Management") %></h5>
               <ul>
                 <li><%= _ctx.appRes("UISocialDemoHomePagePortlet.label.Atomatic_Creation_Of_New_Spaces_For_Groups") %></li>
@@ -122,8 +122,8 @@
               </ul>
             </div>
           </div>
-          <div class="RowContent ClearFix">
-            <div class="FL ColsActivity">
+          <div class="RowContent clearfix">
+            <div class="pull-left ColsActivity">
               <h5 class="ProductTitle"><%= _ctx.appRes("UISocialDemoHomePagePortlet.label.Activity_Streams") %></h5>
               <ul>
                 <li><%= _ctx.appRes("UISocialDemoHomePagePortlet.label.Publish_View_User_Activities") %></li>
@@ -132,7 +132,7 @@
                 <li><%= _ctx.appRes("UISocialDemoHomePagePortlet.label.Comment_Vote_Activities") %></li>
               </ul>
             </div>
-            <div class="FL ColsGadgets">
+            <div class="pull-left ColsGadgets">
               <h5 class="ProductTitle"><%= _ctx.appRes("UISocialDemoHomePagePortlet.label.Builtin_Social_Gadgets") %></h5>
               <ul>
                 <li><%= _ctx.appRes("UISocialDemoHomePagePortlet.label.Status_Update") %></li>
@@ -142,7 +142,7 @@
               </ul>
             </div>
           </div>
-          <div class="RowContent ClearFix">
+          <div class="RowContent clearfix">
                <% if(prContext.getRemoteUser() == null) { %>
             <p class="Introduction Information"><%= _ctx.appRes("UISocialDemoHomePagePortlet.label.Start_Using_eXo_Social_Login_As") %>
                 <a href="${_ctx.getPortalContextPath()}/login?username=root&amp;password=gtn&amp;initialURI=${initialURI}">

@@ -118,7 +118,42 @@
       </value-param>
     </init-params>
   </component>
+  
+  <component>
+    <key>org.exoplatform.social.common.service.thread.ThreadPoolConfig</key>
+    <type>org.exoplatform.social.common.service.thread.ThreadPoolConfig</type>
+    <init-params>
+      <value-param>
+        <name>pool-size</name>
+        <value>10</value>
+      </value-param>
+      <value-param>
+        <name>max-pool-size</name>
+        <value>20</value>
+      </value-param>
+      <value-param>
+        <name>async-mode</name>
+        <value>false</value>
+      </value-param>
+      <value-param>
+        <name>thread-priority</name>
+        <value>10</value>
+      </value-param>
+    </init-params>
+  </component>
 
+  <!--
+    Activity Stream storage components.
+  -->
+  <component>
+    <key>org.exoplatform.social.core.storage.api.ActivityStreamStorage</key>
+    <type>org.exoplatform.social.core.storage.cache.CachedActivityStreamStorage</type>
+  </component>
+  <component>
+    <key>org.exoplatform.social.core.storage.impl.ActivityStreamStorageImpl</key>
+    <type>org.exoplatform.social.core.storage.synchronization.SynchronizedActivityStreamStorage</type>
+  </component>
+  
   <!--
     Activity storage components.
   -->
@@ -169,6 +204,14 @@
   <component>
     <key>org.exoplatform.social.core.storage.impl.SpaceStorageImpl</key>
     <type>org.exoplatform.social.core.storage.synchronization.SynchronizedSpaceStorage</type>
+  </component>
+  
+  <component>
+    <type>org.exoplatform.social.core.updater.UserActivityStreamMigration</type>
+  </component>
+  
+  <component>
+    <type>org.exoplatform.social.core.updater.SpaceActivityStreamMigration</type>
   </component>
 
   <component>
@@ -650,6 +693,13 @@
           <value>org.exoplatform.social.core.chromattic.entity.ActivityMonthEntity</value>
           <value>org.exoplatform.social.core.chromattic.entity.ActivityYearEntity</value>
           <value>org.exoplatform.social.core.chromattic.entity.ActivityParameters</value>
+          
+          <value>org.exoplatform.social.core.chromattic.entity.StreamsEntity</value>
+          <value>org.exoplatform.social.core.chromattic.entity.ActivityRefListEntity</value>
+          <value>org.exoplatform.social.core.chromattic.entity.ActivityRefDayEntity</value>
+          <value>org.exoplatform.social.core.chromattic.entity.ActivityRefMonthEntity</value>
+          <value>org.exoplatform.social.core.chromattic.entity.ActivityRefYearEntity</value>
+          <value>org.exoplatform.social.core.chromattic.entity.ActivityRef</value>
 
           <value>org.exoplatform.social.core.chromattic.entity.SpaceRootEntity</value>
           <value>org.exoplatform.social.core.chromattic.entity.SpaceEntity</value>
