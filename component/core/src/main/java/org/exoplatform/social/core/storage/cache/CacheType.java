@@ -49,6 +49,11 @@ public enum CacheType {
   ACTIVITY("ActivityCache"),
   ACTIVITIES_COUNT("ActivitiesCountCache"),
   ACTIVITIES("ActivitiesCache"),
+  
+  //
+  ACTIVITY_REF("ActivityRefCache"),
+  ACTIVITIES_REF_COUNT("ActivitiesRefCountCache"),
+  ACTIVITIES_REF("ActivitiesRefCache"),
 
   //
   SPACE("SpaceCache"),

@@ -24,6 +24,7 @@ import javax.jcr.query.Query;
 import javax.jcr.query.QueryManager;
 
 import org.chromattic.api.ChromatticSession;
+import org.chromattic.api.Status;
 import org.exoplatform.commons.chromattic.ChromatticManager;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.jcr.impl.core.query.QueryImpl;
@@ -39,8 +40,9 @@ import org.exoplatform.social.core.storage.exception.NodeNotFoundException;
  * @version $Revision$
  */
 public abstract class AbstractStorage {
+  
+  private static final Log LOG = ExoLogger.getLogger(AbstractStorage.class);
 
-  private static Log LOG = ExoLogger.getLogger(AbstractStorage.class);
   //
   protected final SocialChromatticLifeCycle lifeCycle;
 
@@ -123,7 +125,14 @@ public abstract class AbstractStorage {
   protected void _removeById(final Class<?> clazz, final String nodeId) {
     getSession().remove(getSession().findById(clazz, nodeId));
   }
-
+  
+  protected <T> Status getStatus(final Class<T> clazz, final Object entity) throws IllegalArgumentException {
+    if (clazz != entity.getClass()) {
+      throw new IllegalArgumentException("Entity argument is wrong.");
+    }
+    return getSession().getStatus(entity);
+  }
+  
   protected boolean isJcrProperty(String name) {
     return !name.startsWith(NS_JCR);
   }
@@ -161,32 +170,36 @@ public abstract class AbstractStorage {
       return false;
     }
   }
-
-  public static boolean startSynchronization() {
-
-    SocialChromatticLifeCycle lc = lifecycleLookup();
-
-    if (lc.getManager().getSynchronization() == null) {
-      lc.getManager().beginRequest();
-      return true;
+  
+  /**
+   * Gets NodeIterator with Statement with offset and limit
+   * 
+   * @param statement
+   * @param offset
+   * @param limit
+   * @return
+   * @throws Exception
+   */
+  protected NodeIterator nodes(String statement) {
+    //
+    if (statement == null) return null;
+    
+    //
+    try {
+      QueryManager queryMgr = getSession().getJCRSession().getWorkspace().getQueryManager();
+      Query query = queryMgr.createQuery(statement, Query.SQL);
+      if (query instanceof QueryImpl) {
+        QueryImpl impl = (QueryImpl) query;
+        
+        return impl.execute().getNodes();
+      }
+      
+      //
+      return query.execute().getNodes();
+    } catch (Exception ex) {
+      LOG.error("Query is failed!.", ex);
+      return null;
     }
-    return false;
-  }
-
-  public static void stopSynchronization(boolean requestClose) {
-
-    SocialChromatticLifeCycle lc = lifecycleLookup();
-    if (requestClose) {
-      lc.getManager().endRequest(true);
-    }
-  }
-
-  private static SocialChromatticLifeCycle lifecycleLookup() {
-
-    PortalContainer container = PortalContainer.getInstance();
-    ChromatticManager manager = (ChromatticManager) container.getComponentInstanceOfType(ChromatticManager.class);
-    return (SocialChromatticLifeCycle) manager.getLifeCycle(SocialChromatticLifeCycle.SOCIAL_LIFECYCLE_NAME);
-
   }
   
   /**
@@ -219,37 +232,35 @@ public abstract class AbstractStorage {
       //
       return query.execute().getNodes();
     } catch (Exception ex) {
-      LOG.warn("Failed to get Nodes with " + statement, ex);
+      return null;
     }
-    return null;
   }
-  
-  /**
-   * Gets NodeIterator with Statement with offset and limit
-   * 
-   * @param statement
-   * @param offset
-   * @param limit
-   * @return
-   * @throws Exception
-   */
-  protected NodeIterator nodes(String statement) {
-    //
-    if (statement == null) return null;
-    
-    //
-    try {
-      QueryManager queryMgr = getSession().getJCRSession().getWorkspace().getQueryManager();
-      Query query = queryMgr.createQuery(statement, Query.SQL);
-      if (query instanceof QueryImpl) {
-        QueryImpl impl = (QueryImpl) query;
-        return impl.execute().getNodes();
-      }
-      return query.execute().getNodes();
-    } catch (Exception ex) {
-      LOG.warn("Failed to get Nodes with " + statement, ex);
+
+  public static boolean startSynchronization() {
+
+    SocialChromatticLifeCycle lc = lifecycleLookup();
+
+    if (lc.getManager().getSynchronization() == null) {
+      lc.getManager().beginRequest();
+      return true;
     }
-    return null;
+    return false;
+  }
+
+  public static void stopSynchronization(boolean requestClose) {
+
+    SocialChromatticLifeCycle lc = lifecycleLookup();
+    if (requestClose) {
+      lc.getManager().endRequest(true);
+    }
+  }
+
+  public static SocialChromatticLifeCycle lifecycleLookup() {
+
+    PortalContainer container = PortalContainer.getInstance();
+    ChromatticManager manager = (ChromatticManager) container.getComponentInstanceOfType(ChromatticManager.class);
+    return (SocialChromatticLifeCycle) manager.getLifeCycle(SocialChromatticLifeCycle.SOCIAL_LIFECYCLE_NAME);
+
   }
   
 }

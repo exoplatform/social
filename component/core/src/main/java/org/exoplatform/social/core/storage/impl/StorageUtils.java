@@ -1,20 +1,24 @@
 package org.exoplatform.social.core.storage.impl;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
-
 import javax.jcr.RepositoryException;
 
 import org.chromattic.api.ChromatticSession;
 import org.exoplatform.commons.chromattic.ChromatticManager;
+import org.exoplatform.commons.chromattic.Synchronization;
 import org.exoplatform.commons.utils.ListAccess;
+import org.exoplatform.container.ExoContainer;
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.jcr.RepositoryService;
@@ -427,5 +431,124 @@ public class StorageUtils {
     }
     
     return list.subList(startIndex, toIndex);
+  }
+  /*
+   * Gets added element when compares between l1 and l2
+   * @param l1
+   * @param l2
+   * @return
+   */
+  public static String[] sub(String[] l1, String[] l2) {
+
+    if (l1 == null) {
+      return new String[]{};
+    }
+
+    if (l2 == null) {
+      return l1;
+    }
+
+    List<String> l = new ArrayList(Arrays.asList(l1));
+    l.removeAll(Arrays.asList(l2));
+    return l.toArray(new String[]{});
+  }
+  /**
+   * Make the decision to persist JCR Storage or not
+   * @return
+   */
+  public static boolean persist() {
+    try {
+      ChromatticSession chromatticSession = AbstractStorage.lifecycleLookup().getSession();
+      if (chromatticSession.getJCRSession().hasPendingChanges()) {
+        chromatticSession.save();
+      }
+    } catch (Exception e) {
+      return false;
+    }
+    return true;
+  }
+  
+  /**
+   * Make the decision to persist JCR Storage or not
+   * @return
+   */
+  public static boolean persistJCR(boolean beginRequest) {
+    try {
+      //push to JCR
+      AbstractStorage.lifecycleLookup().closeContext(true);
+      
+      if (beginRequest) {
+        AbstractStorage.lifecycleLookup().openContext();
+      }
+      
+    } catch (Exception e) {
+      return false;
+    }
+    return true;
+  }
+  
+  /**
+   * End the request for ChromatticManager 
+   * @return
+   */
+  public static boolean endRequest() {
+    try {
+      
+      ExoContainer container = ExoContainerContext.getCurrentContainer();
+      ChromatticManager manager = (ChromatticManager) container.getComponentInstanceOfType(ChromatticManager.class);
+      Synchronization synchronization = manager.getSynchronization();
+      if (synchronization != null) {
+        synchronization.setSaveOnClose(true);
+        //close synchronous and session.logout
+        manager.endRequest(true);
+      }
+    } catch (Exception e) {
+      return false;
+    }
+    return true;
+  }
+  
+  /**
+   * Returns a collection containing all the elements in <code>list1</code> that
+   * are also in <code>list2</code>.
+   * 
+   * @param list1
+   * @param list2
+   * @return
+   */
+  public <T> List<T> intersection(List<T> list1, List<T> list2) {
+    List<T> list = new ArrayList<T>();
+
+    for (T t : list1) {
+      if (list2.contains(t)) {
+        list.add(t);
+      }
+    }
+
+    return list;
+  }
+  /**
+   * Returns a array containing all the elements in <code>list1</code> that
+   * @param array1
+   * @param array2
+   * @return
+   */
+  public <T> T[] intersection(T[] array1, T[] array2) {
+    List<T> got = intersection(Arrays.asList(array1), Arrays.asList(array2));
+    return (T[]) got.toArray();
+  }
+  
+  /**
+   * Returns a new {@link List} containing a - b
+   * @param a
+   * @param b
+   * @return
+   */
+  public static <T> List<T> sub(final Collection<T> a, final Collection<T> b) {
+    ArrayList<T> list = new ArrayList<T>(a);
+    for (Iterator<T> it = b.iterator(); it.hasNext();) {
+        list.remove(it.next());
+    }
+    return list;
   }
 }

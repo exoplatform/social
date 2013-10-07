@@ -13,6 +13,46 @@
 	.uiProfileUserSearch {
 		margin: 20px 0 10px;
 	}
+	.spaceBox {
+		.size(165px,330px);
+		.uiGrayLightBox();
+		padding: 10px;
+		margin: 0 10px 10px 0;
+		.avatarXLarge img {
+			border: 1px solid @borderColor;
+		}
+		.contentBox {
+			margin-left: 140px;
+			height: 137px;
+			overflow: hidden;
+			.spaceTitle {
+				max-height: 42px;
+				overflow: hidden;
+				margin-top: 0;
+				.subTxt {
+					font-size: @baseFontSize;
+	    			font-weight: normal;
+				}
+			}
+			.email a {
+				display: block;
+				overflow: hidden;
+				text-overflow: ellipsis;
+			}
+			.content {
+				margin-top: 7px;
+	    		max-height: 43px;
+				overflow: hidden;
+			}
+		}
+		.connectionBtn {
+			line-height: 28px;	
+			.btn {
+				margin: 0 0 0 10px;
+			}
+		}
+	}
+	
 	.spaceMemberListBox {
 		background-color: @white;
 		border: 1px solid @grayMediumWhiteSmoke;

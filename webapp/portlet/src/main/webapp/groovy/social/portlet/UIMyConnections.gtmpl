@@ -86,9 +86,9 @@
 		 %>
 		
 				<% if (relationIdx % 2 == 0) { %>
-			  	<div class="ContentSpaceGray ClearFix">
+			  	<div class="ContentSpaceGray clearfix">
 			  <% } else {%>
-			  	<div class="ContentSpace ClearFix">
+			  	<div class="ContentSpace clearfix">
 			  <% }%>
 	    	<div class="AvartarPeopleBG">
 	           <img height="47px" width="47px" src="$imageSource" rel="tooltip" data-placement="bottom" title="$fullName"/>

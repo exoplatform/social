@@ -281,6 +281,13 @@ public class ActivityManagerImpl implements ActivityManager {
   /**
    * {@inheritDoc}
    */
+  public RealtimeListAccess<ExoSocialActivity> getActivitiesByPoster(Identity posterIdentity, String ... activityTypes) {
+    return new ActivitiesRealtimeListAccess(activityStorage, ActivityType.POSTER_AND_TYPES_ACTIVITIES, posterIdentity, activityTypes);
+  }
+  
+  /**
+   * {@inheritDoc}
+   */
   public void addProcessor(ActivityProcessor processor) {
     activityStorage.getActivityProcessors().add(processor);
     LOG.debug("added activity processor " + processor.getClass());
@@ -297,8 +304,7 @@ public class ActivityManagerImpl implements ActivityManager {
    * {@inheritDoc}
    */
   public ExoSocialActivity saveActivity(Identity streamOwner, ExoSocialActivity newActivity) {
-    saveActivityNoReturn(streamOwner, newActivity);
-    return newActivity;
+    return activityStorage.saveActivity(streamOwner, newActivity);
   }
 
   /**

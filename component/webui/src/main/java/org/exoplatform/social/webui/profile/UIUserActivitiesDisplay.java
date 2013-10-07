@@ -34,6 +34,7 @@ import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.manager.ActivityManager;
+import org.exoplatform.social.webui.URLUtils;
 import org.exoplatform.social.webui.Utils;
 import org.exoplatform.social.webui.activity.UIActivitiesContainer;
 import org.exoplatform.social.webui.activity.UIActivitiesLoader;
@@ -88,7 +89,8 @@ public class UIUserActivitiesDisplay extends UIContainer {
     ALL_ACTIVITIES,
     CONNECTIONS,
     MY_SPACE,
-    MY_ACTIVITIES
+    MY_ACTIVITIES,
+    POSTER_ACTIVITIES
   }
 
   private DisplayMode                selectedDisplayMode   = DisplayMode.ALL_ACTIVITIES;
@@ -217,6 +219,13 @@ public class UIUserActivitiesDisplay extends UIContainer {
     } else {
       activitiesLoader.setPostContext(PostContext.USER);
     }   
+    
+    // Check if current display page is My Activity Stream
+    String currentUserName = URLUtils.getCurrentUser();
+    if (currentUserName != null) {
+      selectedDisplayMode = DisplayMode.POSTER_ACTIVITIES;
+    }
+    
     activitiesLoader.setLoadingCapacity(ACTIVITY_PER_PAGE);
     activitiesLoader.setOwnerName(ownerName);
     activitiesLoader.setSelectedDisplayMode(selectedDisplayMode.toString());
@@ -252,6 +261,10 @@ public class UIUserActivitiesDisplay extends UIContainer {
       break;
     case MY_SPACE :
       activitiesListAccess = activityManager.getActivitiesOfUserSpacesWithListAccess(ownerIdentity);
+      activitiesLoader.setActivityListAccess(activitiesListAccess);
+      break;
+    case POSTER_ACTIVITIES:
+      activitiesListAccess = activityManager.getActivitiesByPoster(ownerIdentity);
       activitiesLoader.setActivityListAccess(activitiesListAccess);
       break;
     default :
@@ -345,16 +358,12 @@ public class UIUserActivitiesDisplay extends UIContainer {
   public static class RefreshStreamActionListener extends EventListener<UIUserActivitiesDisplay> {
     public void execute(Event<UIUserActivitiesDisplay> event) throws Exception {
      UIUserActivitiesDisplay uiUserActivities = event.getSource();
-     WebuiRequestContext requestContext = event.getRequestContext();
      uiUserActivities.init();
-     
-     //
-     requestContext.addUIComponentToUpdateByAjax(uiUserActivities);
+     event.getRequestContext().addUIComponentToUpdateByAjax(uiUserActivities);
      
      Utils.resizeHomePage();
    }
  }
-
   
   private int getActivitiesUpdatedNum(boolean hasRefresh) {
     if (this.postActivity) {

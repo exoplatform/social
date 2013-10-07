@@ -12,14 +12,14 @@
   String navTitle = uicomponent.getNavigationTitle();
 %>
 
-<div class="UISocialLogoPortlet ClearFix" id="$uicomponent.id" >
+<div class="UISocialLogoPortlet clearfix" id="$uicomponent.id" >
   <%if( _ctx.getRequestContext().getApplicationMode() == PortletMode.VIEW) {%>
     <!-- LOGO IMAGE -->
     <a href="javascript:void(0);" class="Img"><image src="<%=uicomponent.getURL()%>" alt="<%=_ctx.appRes("UISocialLogoPortlet.note.Text")%>" /></a>
     <div class="BannerTitle">$navTitle</div>
     <!-- ACTIONs -->
     <% if(prContext.getRemoteUser() == null) { %>
-    <div class="Signin ClearFix">
+    <div class="Signin clearfix">
       <a onclick="$changeLanguageAction"><%=_ctx.appRes("UISocialLogoPortlet.action.changeLanguage")%></a>
       <a href="$registerURI"><%=_ctx.appRes("UISocialLogoPortlet.action.Register")%></a>
       <a onclick="$signInAction"><%=_ctx.appRes("UISocialLogoPortlet.action.signin")%></a>

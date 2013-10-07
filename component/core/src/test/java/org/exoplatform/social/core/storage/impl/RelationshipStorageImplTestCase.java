@@ -63,7 +63,7 @@ public class RelationshipStorageImplTestCase extends AbstractCoreTest {
 
   }
 
-  @MaxQueryNumber(100)
+  @MaxQueryNumber(110)
   public void testCreateRelationship() throws Exception {
     Identity tmp1 = new Identity("organization", "tmp1");
     Identity tmp2 = new Identity("organization", "tmp2");
@@ -82,7 +82,7 @@ public class RelationshipStorageImplTestCase extends AbstractCoreTest {
     tearDownIdentityList.add(tmp2.getId());
   }
 
-  @MaxQueryNumber(100)
+  @MaxQueryNumber(110)
   public void testCreateRelationshipExists() throws Exception {
     Identity tmp1 = new Identity("organization", "tmp1");
     Identity tmp2 = new Identity("organization", "tmp2");
@@ -168,7 +168,7 @@ public class RelationshipStorageImplTestCase extends AbstractCoreTest {
     tearDownIdentityList.add(tmp2.getId());
   }
 
-  @MaxQueryNumber(130)
+  @MaxQueryNumber(150)
   public void testFindRelationship() throws Exception {
     Identity tmp1 = new Identity("organization", "tmp1");
     Identity tmp2 = new Identity("organization", "tmp2");
@@ -272,7 +272,7 @@ public class RelationshipStorageImplTestCase extends AbstractCoreTest {
     tearDownIdentityList.add(tmp2.getId());
   }
 
-  @MaxQueryNumber(100)
+  @MaxQueryNumber(120)
   public void testGetSenderRelationship() throws Exception {
     Identity tmp1 = new Identity("organization", "tmp1");
     Identity tmp2 = new Identity("organization", "tmp2");
@@ -307,7 +307,7 @@ public class RelationshipStorageImplTestCase extends AbstractCoreTest {
     tearDownIdentityList.add(tmp2.getId());
   }
 
-  @MaxQueryNumber(150)
+  @MaxQueryNumber(160)
   public void testGetSenderRelationshipWithProfile() throws Exception {
     Identity tmp1 = new Identity("organization", "tmp1");
     Identity tmp2 = new Identity("organization", "tmp2");
@@ -359,7 +359,7 @@ public class RelationshipStorageImplTestCase extends AbstractCoreTest {
     tearDownIdentityList.add(tmp2.getId());
   }
 
-  @MaxQueryNumber(100)
+  @MaxQueryNumber(110)
   public void testGetReceiverRelationship() throws Exception {
     Identity tmp1 = new Identity("organization", "tmp1");
     Identity tmp2 = new Identity("organization", "tmp2");
@@ -447,7 +447,7 @@ public class RelationshipStorageImplTestCase extends AbstractCoreTest {
     tearDownIdentityList.add(tmp2.getId());
   }
 
-  @MaxQueryNumber(100)
+  @MaxQueryNumber(110)
   public void testGetRelationship() throws Exception {
     Identity tmp1 = new Identity("organization", "tmp1");
     Identity tmp2 = new Identity("organization", "tmp2");
@@ -481,7 +481,7 @@ public class RelationshipStorageImplTestCase extends AbstractCoreTest {
     tearDownIdentityList.add(tmp2.getId());
   }
 
-  @MaxQueryNumber(320)
+  @MaxQueryNumber(360)
   public void testGetConnectionsCount() throws Exception {
 
     //
@@ -546,7 +546,7 @@ public class RelationshipStorageImplTestCase extends AbstractCoreTest {
     tearDownIdentityList.add(tmp5.getId());
   }
 
-  @MaxQueryNumber(330)
+  @MaxQueryNumber(370)
   public void testGetConnections() throws Exception {
 
     //
@@ -632,7 +632,7 @@ public class RelationshipStorageImplTestCase extends AbstractCoreTest {
     tearDownIdentityList.add(tmp5.getId());
   }
   
-  @MaxQueryNumber(350)
+  @MaxQueryNumber(400)
   public void testGetConnectionsByFilter() throws Exception {
     
     //
@@ -657,7 +657,7 @@ public class RelationshipStorageImplTestCase extends AbstractCoreTest {
     assertEquals(williamsIdentity, got.get(3));
   }
   
-  @MaxQueryNumber(350)
+  @MaxQueryNumber(400)
   public void testGetIncomingByFilter() throws Exception {
     
     //
@@ -682,7 +682,7 @@ public class RelationshipStorageImplTestCase extends AbstractCoreTest {
     assertEquals(williamsIdentity, got.get(3));
   }
   
-  @MaxQueryNumber(350)
+  @MaxQueryNumber(400)
   public void testGetOutgoingByFilter() throws Exception {
     
     //

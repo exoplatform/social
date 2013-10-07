@@ -233,7 +233,7 @@ public abstract class AbstractPluginTest extends AbstractCoreTest {
     ExoSocialActivity activity = new ExoSocialActivityImpl();
     activity.setTitle(activityTitle);
     activity.setUserId(owner.getId());
-    activityManager.saveActivity(rootIdentity, activity);
+    activityManager.saveActivityNoReturn(rootIdentity, activity);
     tearDownActivityList.add(activity);
     
     return activity;
