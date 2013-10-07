@@ -547,4 +547,22 @@ public class CachedIdentityStorage implements IdentityStorage {
     return buildIdentities(keys);
     
   }
+
+  @Override
+  public int getSpaceMemberIdentitiesByProfileFilterCount(final Space space,
+                                                          final ProfileFilter profileFilter,
+                                                          final Type type) throws IdentityStorageException {
+    //
+    IdentityFilterKey key = new IdentityFilterKey(SpaceIdentityProvider.NAME, space.getId(), profileFilter);
+
+    //
+    return identitiesCountCache.get(
+        new ServiceContext<IntegerData>() {
+
+          public IntegerData execute() {
+            return new IntegerData(storage.getSpaceMemberIdentitiesByProfileFilterCount(space, profileFilter, type));
+          }
+        },
+        key).build();
+  }
 }

@@ -474,7 +474,7 @@ public class StorageUtils {
    * @param list2
    * @return
    */
-  public <T> List<T> intersection(List<T> list1, List<T> list2) {
+  public static <T> List<T> intersection(List<T> list1, List<T> list2) {
     List<T> list = new ArrayList<T>();
 
     for (T t : list1) {

@@ -53,7 +53,8 @@ public class IdentityCacheSelector extends ScopeCacheSelector<ScopeCacheKey, Obj
     }
 
     if (key instanceof IdentityFilterKey) {
-      return ((IdentityFilterKey)key).getProviderId().equals(OrganizationIdentityProvider.NAME);
+      return ((IdentityFilterKey)key).getProviderId().equals(OrganizationIdentityProvider.NAME) || 
+                                      ((IdentityFilterKey)key).getProviderId().equals(SpaceIdentityProvider.NAME);
     }
 
     if (key instanceof ListIdentitiesKey) {

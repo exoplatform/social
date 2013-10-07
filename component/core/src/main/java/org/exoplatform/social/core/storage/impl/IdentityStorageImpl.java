@@ -22,6 +22,8 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -32,6 +34,7 @@ import javax.jcr.nodetype.NodeType;
 import javax.jcr.nodetype.NodeTypeManager;
 import javax.jcr.nodetype.PropertyDefinition;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.chromattic.api.UndeclaredRepositoryException;
 import org.chromattic.api.query.Ordering;
 import org.chromattic.api.query.QueryBuilder;
@@ -205,33 +208,14 @@ public class IdentityStorageImpl extends AbstractStorage implements IdentityStor
     return spaceStorage;
   }
 
-  private QueryResult<ProfileEntity> getSpaceMemberIdentitiesByProfileFilterQueryBuilder(Space space,
-      final ProfileFilter profileFilter, Type type,  long offset, long limit, boolean count)
+  private List<Identity> getSpaceMemberIdentities(Space space,
+      Type type, long offset, long limit, boolean count)
       throws IdentityStorageException {
 
-    if (offset < 0) {
-      offset = 0;
-    }
+    offset = Math.max(offset, 0);
 
-    String inputName = profileFilter.getName().replace(StorageUtils.ASTERISK_STR, StorageUtils.PERCENT_STR);
-    StorageUtils.processUsernameSearchPattern(inputName.trim());
-    List<Identity> excludedIdentityList = profileFilter.getExcludedIdentityList();
-
-    QueryBuilder<ProfileEntity> builder = getSession().createQueryBuilder(ProfileEntity.class);
-    WhereExpression whereExpression = new WhereExpression();
-
-    whereExpression.startGroup();
-    whereExpression
-        .like(JCRProperties.path, getProviderRoot().getProviders().get(
-                                OrganizationIdentityProvider.NAME).getPath() + StorageUtils.SLASH_STR + StorageUtils.PERCENT_STR)
-        .and()
-        .not().equals(ProfileEntity.deleted, "true");;
-
-    StorageUtils.applyExcludes(whereExpression, excludedIdentityList);
-    StorageUtils.applyFilter(whereExpression, profileFilter);
-
-    List<Identity> relations = new ArrayList<Identity>();
-
+    Map<Identity, String> profileMap = new LinkedHashMap<Identity, String>();
+    
     try {
       Space gotSpace = getSpaceStorage().getSpaceById(space.getId());
 
@@ -244,29 +228,100 @@ public class IdentityStorageImpl extends AbstractStorage implements IdentityStor
           members = gotSpace.getManagers();
           break;
       }
-
+      
       for (int i = 0; i <  members.length; i++){
-        relations.add(findIdentity(OrganizationIdentityProvider.NAME, members[i]));
+        Identity identity = findIdentity(OrganizationIdentityProvider.NAME, members[i]);
+        //
+        profileMap.put(identity, (String) identity.getProfile().getProperty(Profile.FULL_NAME));
+      }
+      
+      if (count == false) {
+        //sort profiles by full name
+        profileMap = StorageUtils.sortMapByValue(profileMap, true);
       }
 
     } catch (IdentityStorageException e){
       throw new IdentityStorageException(IdentityStorageException.Type.FAIL_TO_FIND_IDENTITY);
     }
-    whereExpression.endGroup();
-    whereExpression.and();
-    StorageUtils.applyWhereFromIdentity(whereExpression, relations);
-
-    builder.where(whereExpression.toString());
-    applyOrder(builder, profileFilter);
-
-    if(count){
-     return builder.where(whereExpression.toString()).get().objects();
-    } else {
-     return builder.where(whereExpression.toString()).get().objects(offset, limit);
+    
+    List<Identity> identities = new LinkedList<Identity>(profileMap.keySet());
+    
+    //
+    if (count) {
+      return identities;
     }
-
+    
+    return identities.subList((int)offset, (int) Math.min(identities.size(), limit + offset));
   }
 
+  private List<Identity> getSpaceMemberIdentitiesByProfileFilterQueryBuilder(Space space,
+      final ProfileFilter profileFilter, Type type, long offset, long limit, boolean count) 
+      throws IdentityStorageException {
+
+    offset = Math.max(offset, 0);
+    String inputName = profileFilter.getName().replace(StorageUtils.ASTERISK_STR,
+                                                       StorageUtils.PERCENT_STR);
+    StorageUtils.processUsernameSearchPattern(inputName.trim());
+    List<Identity> excludedIdentityList = profileFilter.getExcludedIdentityList();
+
+    QueryBuilder<ProfileEntity> builder = getSession().createQueryBuilder(ProfileEntity.class);
+    WhereExpression whereExpression = new WhereExpression();
+
+    whereExpression.startGroup();
+    whereExpression.like(JCRProperties.path, getProviderRoot().getProviders().get(
+                                             OrganizationIdentityProvider.NAME).getPath() + StorageUtils.SLASH_STR + StorageUtils.PERCENT_STR)
+                   .and()
+                   .not().equals(ProfileEntity.deleted, "true");
+
+    StorageUtils.applyExcludes(whereExpression, excludedIdentityList);
+    StorageUtils.applyFilter(whereExpression, profileFilter);
+    whereExpression.endGroup();
+    builder.where(whereExpression.toString());
+    applyOrder(builder, profileFilter);
+    
+    QueryResult<ProfileEntity> profiles = builder.where(whereExpression.toString()).get().objects();
+    
+    List<String> ids = new ArrayList<String>();
+    //
+    while (profiles.hasNext()) {
+      ProfileEntity p = profiles.next();
+      ids.add(p.getIdentity().getRemoteId());
+    }
+    
+
+    List<String> relations = new ArrayList<String>();
+    try {
+      Space gotSpace = getSpaceStorage().getSpaceById(space.getId());
+
+      switch (type) {
+      case MEMBER:
+        relations = Arrays.asList(gotSpace.getMembers());
+        break;
+      case MANAGER:
+        relations = Arrays.asList(gotSpace.getManagers());
+        break;
+      }
+
+    } catch (IdentityStorageException e) {
+      throw new IdentityStorageException(IdentityStorageException.Type.FAIL_TO_FIND_IDENTITY);
+    }
+    //
+    ids = StorageUtils.intersection(ids, relations);
+    
+    List<Identity> members = new LinkedList<Identity>();
+    //
+    for (String id : ids) {
+      members.add(findIdentity(OrganizationIdentityProvider.NAME, id));
+    }
+
+    if (count) {
+      return members;
+    } else {
+      return members.subList((int)offset, (int) Math.min(members.size(), limit + offset));
+    }
+  }
+  
+  
   private void applyOrder(QueryBuilder builder, ProfileFilter profileFilter) {
 
     //
@@ -1349,19 +1404,12 @@ public class IdentityStorageImpl extends AbstractStorage implements IdentityStor
       ProfileFilter profileFilter,
       Type type,
       long offset, long limit) throws IdentityStorageException {
-
-
-    List<Identity> listIdentity = new ArrayList<Identity>();
-    QueryResult<ProfileEntity> results = getSpaceMemberIdentitiesByProfileFilterQueryBuilder(space, profileFilter, type, offset,
-                                                                                             limit, false);
-
-    while (results.hasNext()) {
-      ProfileEntity profileEntity = results.next();
-      Identity identity = createIdentityFromEntity(profileEntity.getIdentity());
-      Profile profile = getStorage().loadProfile(new Profile(identity));
-      identity.setProfile(profile);
-      listIdentity.add(identity);
+    
+    if (profileFilter.isEmpty()) {
+      return getSpaceMemberIdentities(space, type, offset, limit, false);
     }
+
+    List<Identity> listIdentity = getSpaceMemberIdentitiesByProfileFilterQueryBuilder(space, profileFilter, type, offset, limit, false);
 
     return listIdentity;
   }
@@ -1372,11 +1420,13 @@ public class IdentityStorageImpl extends AbstractStorage implements IdentityStor
   public int getSpaceMemberIdentitiesByProfileFilterCount(
       Space space,
       ProfileFilter profileFilter,
-      Type type,
-      long offset, long limit) throws IdentityStorageException {
+      Type type) throws IdentityStorageException {
     
-    return getSpaceMemberIdentitiesByProfileFilterQueryBuilder(space, profileFilter, type, offset, limit, true).size();
-
+    if (profileFilter.isEmpty()) {
+      return getSpaceMemberIdentities(space, type, 0, 0, true).size();
+    }
+    
+    return getSpaceMemberIdentitiesByProfileFilterQueryBuilder(space, profileFilter, type, 0, 0, true).size();
   }
 
   /**

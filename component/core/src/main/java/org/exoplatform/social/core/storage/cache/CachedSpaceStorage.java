@@ -32,6 +32,7 @@ import org.exoplatform.social.core.storage.cache.model.data.IntegerData;
 import org.exoplatform.social.core.storage.cache.model.data.ListIdentitiesData;
 import org.exoplatform.social.core.storage.cache.model.data.ListSpacesData;
 import org.exoplatform.social.core.storage.cache.model.data.SpaceSimpleData;
+import org.exoplatform.social.core.storage.cache.model.key.IdentityFilterKey;
 import org.exoplatform.social.core.storage.cache.model.key.ListIdentitiesKey;
 import org.exoplatform.social.core.storage.cache.model.key.ListSpacesKey;
 import org.exoplatform.social.core.storage.cache.model.key.SpaceFilterKey;
@@ -62,6 +63,7 @@ public class CachedSpaceStorage implements SpaceStorage {
   private final ExoCache<SpaceRefKey, SpaceKey> exoRefSpaceCache;
   private final ExoCache<SpaceFilterKey, IntegerData> exoSpacesCountCache;
   private final ExoCache<ListSpacesKey, ListSpacesData> exoSpacesCache;
+  private final ExoCache<IdentityFilterKey, IntegerData> exoIdentitiesCountCache;
   private final ExoCache<ListIdentitiesKey, ListIdentitiesData> exoIdentitiesCache;
 
   private final FutureExoCache<SpaceKey, SpaceData, ServiceContext<SpaceData>> spaceCache;
@@ -182,6 +184,7 @@ public class CachedSpaceStorage implements SpaceStorage {
     this.exoRefSpaceCache = cacheService.getSpaceRefCache();
     this.exoSpacesCountCache = cacheService.getSpacesCountCache();
     this.exoSpacesCache = cacheService.getSpacesCache();
+    this.exoIdentitiesCountCache = cacheService.getCountIdentitiesCache();
     this.exoIdentitiesCache = cacheService.getIdentitiesCache();
 
     this.spaceCache = CacheType.SPACE.createFutureCache(exoSpaceCache);
@@ -203,6 +206,7 @@ public class CachedSpaceStorage implements SpaceStorage {
 
     try {
       exoIdentitiesCache.select(new IdentityCacheSelector(SpaceIdentityProvider.NAME));
+      exoIdentitiesCountCache.select(new IdentityCacheSelector(SpaceIdentityProvider.NAME));
     }
     catch (Exception e) {
       LOG.error(e);
