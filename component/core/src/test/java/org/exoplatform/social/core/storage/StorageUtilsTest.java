@@ -30,7 +30,7 @@ public class StorageUtilsTest extends TestCase {
 
   public void testProcessUnifiedSearchCondition() throws Exception {
     List<String> result = new ArrayList<String>();
-    result.add("*first*");
+    result.add("%first%");
     result.add("%%two%");
     result.add("%three%%");
     result.add("%%four%%");

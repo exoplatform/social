@@ -315,12 +315,8 @@ public class StorageUtils {
       //
       searchConditionBuffer = new StringBuffer();
       //
-      if (!conditionValue.contains(ASTERISK_STR) && !conditionValue.contains(PERCENT_STR)) {
-        searchConditionBuffer.append(ASTERISK_STR).append(conditionValue).append(ASTERISK_STR);
-      } else {
-        conditionValue = conditionValue.replace(ASTERISK_STR, PERCENT_STR);
-        searchConditionBuffer.append(PERCENT_STR).append(conditionValue).append(PERCENT_STR);
-      }
+      conditionValue = conditionValue.replace(ASTERISK_STR, PERCENT_STR);
+      searchConditionBuffer.append(PERCENT_STR).append(conditionValue).append(PERCENT_STR);
       //
       result.add(searchConditionBuffer.toString());
     }
