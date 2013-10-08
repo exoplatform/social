@@ -112,6 +112,11 @@ public class UISpaceAddForm extends UIFormTabPane {
     setSelectedTab(1);
   }
 
+  @Override
+  public String getLabel(ResourceBundle res, String key) {
+    return new StringBuffer(super.getLabel(res, key)).append((key.indexOf("action.") < 0) ? ":" : "").toString();
+  }
+
   /**
    * listener for create space action
    */

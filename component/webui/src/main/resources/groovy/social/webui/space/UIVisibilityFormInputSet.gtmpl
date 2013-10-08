@@ -20,7 +20,7 @@ jsmanager.require("SHARED/social-ui-customize-control", "customizeControl").addS
             String label = _ctx.appRes(uicomponent.getName() + ".label." + inputEntry.getId()) ;
             if(!label.equals(inputEntry.getId()) && (inputEntry instanceof UIFormRadioBoxInput)) {
            %>
-            <label class="control-label"><%=label%></label>
+            <label class="control-label"><%=label%>:</label>
            <%} %>
             <div class="controls">
 	                <%
