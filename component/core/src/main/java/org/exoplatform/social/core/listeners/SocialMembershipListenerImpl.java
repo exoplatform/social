@@ -21,6 +21,7 @@ import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.portal.config.UserACL;
 import org.exoplatform.services.organization.Membership;
 import org.exoplatform.services.organization.MembershipEventListener;
+import org.exoplatform.services.security.ConversationState;
 import org.exoplatform.social.core.space.SpaceUtils;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
@@ -52,6 +53,7 @@ public class SocialMembershipListenerImpl extends MembershipEventListener {
       //and 'member', except 'validator', '*'...so on.
       SpaceService spaceService = (SpaceService) container.getComponentInstanceOfType(SpaceService.class);
       Space space = spaceService.getSpaceByGroupId(m.getGroupId());
+      space.setEditor(ConversationState.getCurrent().getIdentity().getUserId());
       if (acl.getAdminMSType().equalsIgnoreCase(m.getMembershipType())) {
         spaceService.setManager(space, m.getUserName(), false);
         SpaceUtils.refreshNavigation();
@@ -78,6 +80,7 @@ public class SocialMembershipListenerImpl extends MembershipEventListener {
       Space space = spaceService.getSpaceByGroupId(m.getGroupId());
       //TODO A case to confirm: will we create a new space here when a new group is created via organization portlet
       if (space != null) {
+        space.setEditor(ConversationState.getCurrent().getIdentity().getUserId());
         String userName = m.getUserName();
         if (acl.getAdminMSType().equalsIgnoreCase(m.getMembershipType())) {
           if (spaceService.isManager(space, userName)) {
