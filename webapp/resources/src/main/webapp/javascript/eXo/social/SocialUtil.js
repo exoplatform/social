@@ -173,6 +173,7 @@
       $('#UISocialPopupConfirmation').remove();
       var popup = $('.UISocialConfirmation:first').clone();
       popup.attr('id', 'UISocialPopupConfirmation');
+      popup.find('.uiIconClose:first').on('click', PopupConfirmation.hiden);
       return popup;
     },
   

@@ -1,7 +1,6 @@
 package org.exoplatform.social.core.updater;
 
 import java.io.InputStream;
-
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
@@ -9,7 +8,6 @@ import org.exoplatform.commons.chromattic.ChromatticManager;
 import org.exoplatform.commons.upgrade.UpgradeProductPlugin;
 import org.exoplatform.commons.version.util.VersionComparator;
 import org.exoplatform.container.PortalContainer;
-import org.exoplatform.container.component.ComponentRequestLifecycle;
 import org.exoplatform.container.xml.InitParams;
 import org.exoplatform.services.jcr.RepositoryService;
 import org.exoplatform.services.jcr.core.ManageableRepository;

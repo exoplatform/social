@@ -87,7 +87,7 @@ public class CachedRelationshipStorageTestCase extends AbstractCoreTest {
 
   }
 
-  @MaxQueryNumber(200)
+  @MaxQueryNumber(234)
   public void testRemoveRelationship() throws Exception {
 
     Identity i1 = new Identity("p", "i1");
@@ -155,7 +155,7 @@ public class CachedRelationshipStorageTestCase extends AbstractCoreTest {
 
   }
   
-  @MaxQueryNumber(200)
+  @MaxQueryNumber(220)
   public void testGetRelationshipIdentity() throws Exception {
 
     Identity i1 = new Identity("p", "i1");

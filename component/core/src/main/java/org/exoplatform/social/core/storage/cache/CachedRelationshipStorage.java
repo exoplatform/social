@@ -699,6 +699,5 @@ public class CachedRelationshipStorage implements RelationshipStorage {
     //
     return buildSuggestions(keys);
   }
-
   
 }

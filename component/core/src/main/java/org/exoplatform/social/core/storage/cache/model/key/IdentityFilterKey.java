@@ -17,13 +17,13 @@
 
 package org.exoplatform.social.core.storage.cache.model.key;
 
-import org.exoplatform.social.core.identity.model.Identity;
-import org.exoplatform.social.core.profile.ProfileFilter;
-import org.exoplatform.social.core.search.Sorting;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import org.exoplatform.social.core.identity.model.Identity;
+import org.exoplatform.social.core.profile.ProfileFilter;
+import org.exoplatform.social.core.search.Sorting;
 
 /**
  * Immutable identity filter key.
@@ -42,6 +42,7 @@ public class IdentityFilterKey extends ScopeCacheKey {
   private final String skills;
   private final char firstChar;
   private final List<IdentityKey> excluded;
+  private final List<String> onlineRemoteIds;
   private final String all;
   private final Sorting sorting;
   
@@ -66,6 +67,8 @@ public class IdentityFilterKey extends ScopeCacheKey {
     }
 
     this.excluded = Collections.unmodifiableList(keys);
+    
+    this.onlineRemoteIds = Collections.unmodifiableList(filter.getOnlineRemoteIds());
     this.all = filter.getAll();
     this.sorting = filter.getSorting();
     
@@ -85,8 +88,9 @@ public class IdentityFilterKey extends ScopeCacheKey {
     for (Identity i : filter.getExcludedIdentityList()) {
       keys.add(new IdentityKey(i));
     }
-
     this.excluded = Collections.unmodifiableList(keys);
+    
+    this.onlineRemoteIds = Collections.unmodifiableList(filter.getOnlineRemoteIds());
     this.all = filter.getAll();
     this.sorting = filter.getSorting();
 
@@ -132,6 +136,7 @@ public class IdentityFilterKey extends ScopeCacheKey {
     if (all != null ? !all.equals(that.all) : that.all != null) return false;
     if (company != null ? !company.equals(that.company) : that.company != null) return false;
     if (excluded != null ? !excluded.equals(that.excluded) : that.excluded != null) return false;
+    if (onlineRemoteIds != null ? !onlineRemoteIds.equals(that.onlineRemoteIds) : that.onlineRemoteIds != null) return false;
     if (name != null ? !name.equals(that.name) : that.name != null) return false;
     if (position != null ? !position.equals(that.position) : that.position != null) return false;
     if (providerId != null ? !providerId.equals(that.providerId) : that.providerId != null) return false;
@@ -153,6 +158,7 @@ public class IdentityFilterKey extends ScopeCacheKey {
     result = 31 * result + (skills != null ? skills.hashCode() : 0);
     result = 31 * result + (int) firstChar;
     result = 31 * result + (excluded != null ? excluded.hashCode() : 0);
+    result = 31 * result + (onlineRemoteIds != null ? onlineRemoteIds.hashCode() : 0);
     result = 31 * result + (all != null ? all.hashCode() : 0);
     result = 31 * result + (sorting != null ? sorting.hashCode() : 0);
     return result;
