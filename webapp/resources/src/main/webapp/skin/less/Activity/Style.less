@@ -415,15 +415,15 @@
 		position: relative;
 		.box-shadow(0px 2px 4px  -1px rgba(13,13,13,0.27));
 		#gradient > .vertical-three-colors(@white,@white,94%,@grayLighter);
-		a.avatar  {
+		.pull-left {
 			margin-right: 10px;
-			img {
+			a.avatarXMedium img {
 				height: 75px;
 				width: 75px;
 				
 			}
 		}
-		.avatar + .text {
+		.pull-left + .text {
 			overflow: hidden;
 		}
 		.descriptionText {
@@ -556,7 +556,7 @@
 		padding: 5px 2px;
 		&.pull-left {
 			width: 50px;
-			margin: 5px 10px 5px 0;
+			margin: 0 10px 5px 0;
     		padding: 5px 10px;
 		}
 	}
@@ -629,15 +629,6 @@
 		}
 	}
 }
-/*=======Space activity==========*/ 
-.uiSpaceActivity {
-	.spaceMembers  {
-		color: @grayLight;
-		font-size: 12px;
-	}
-}
-
-
 /*=======Space activity==========*/ 
 .uiSpaceActivity {
 	.spaceMembers  {
