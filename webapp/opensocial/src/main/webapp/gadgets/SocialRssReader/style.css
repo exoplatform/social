@@ -1,76 +1,199 @@
+.Link, .Date {background: none;}
+.UIPageIterator {
+  margin: 5px auto 0px auto;
+  width: 99%;
+}
+
+.UIPageIterator a {
+  color:#333333;
+  display:block;
+  float:right;
+  font-size: 11px;
+  font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+}
+
+.UIPageIterator .Number {
+  border: 1px solid #DFDFDF;
+  padding: 0 3px;
+  margin-left: 1px; /* orientation=lt */
+  margin-right: 1px; /* orientation=rt */
+  cursor: pointer;
+  line-height: 15px;
+}
+
+.ClearRight {
+  clear:right;
+}
+
+.UIPageIterator .PageSelected {
+  color:#F16701;
+  font-weight:bold;
+}
+
+.UIPageIterator .Number:hover {
+  color: #0183F1;
+  border: 1px solid #B6B6B6;
+}
+
+.UIPageIterator .PageSelected {
+  color: #F16701;
+  font-weight: bold;
+}
+
+.UIPageIterator .Icon {
+  margin-left: 0.5px; /* orientation=lt */
+  margin-right: 0px; /* orientation=rt */
+  width: 18px;
+  height: 17px;
+  cursor: pointer;
+}
+
+.UIPageIterator .PagesTotalNumber {
+  color: #0183F1;
+  margin: 0 3px 0 1px; /* orientation=lt */
+  line-height: 17px;
+  font-size: 11px;
+  font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+}
+
+.UIPageIterator .TotalPages {
+  font-size: 11px;
+  line-height: 17px;
+  font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+}
+
+.UIPageIterator .LastTopPageIcon {
+  background: url('/social/skin/image/ArrowPageIterator.gif') no-repeat left -17px; /* orientation=lt */
+}
+
+.UIPageIterator .NextTopPageIcon {
+  background: url('/social/skin/image/ArrowPageIterator.gif') no-repeat left -51px; /* orientation=lt */
+}
+
+.UIPageIterator .LastPageIcon {
+  background: url('/social/skin/image/ArrowPageIterator.gif') no-repeat left -119px; /* orientation=lt */
+}
+
+.UIPageIterator .NextPageIcon {
+  background: url('/social/skin/image/ArrowPageIterator.gif') no-repeat left -85px;  /* orientation=lt */
+}
+
+.UIPageIterator .DisableLastTopPageIcon {
+  background: url('/social/skin/image/ArrowPageIterator.gif') no-repeat left top; /* orientation=lt */
+}
+
+.UIPageIterator .DisableNextTopPageIcon {
+  background: url('/social/skin/image/ArrowPageIterator.gif') no-repeat left -34px; /* orientation=lt */
+}
+
+.UIPageIterator .DisableLastPageIcon {
+  background: url('/social/skin/image/ArrowPageIterator.gif') no-repeat left -102px; /* orientation=lt */
+}
+
+.UIPageIterator .DisableNextPageIcon {
+  background: url('/social/skin/image/ArrowPageIterator.gif') no-repeat left -68px; /* orientation=lt */
+}
+
 p {
-	margin: 0px;
+  margin: 0px;
 }
 
 .descriptionHighlight .title {
-	border-bottom: 1px solid #e3e3e3;
-	background: #eeeeee;
-	margin-bottom: 2px;
-	padding: 3px;
+  border-bottom: 1px solid #e3e3e3;
+  background: #eeeeee;
+  margin-bottom: 2px;
+  padding: 3px;
 }
 
 .descriptionHighlight .title a {
-	color: #3C7EB2;
+  color: #3C7EB2;
 }
 
-.title {
-	margin: 1px 0px 0px;
-	padding: 2px 0px;
-	font-weight: bold;
+.title a {
+  display: inline-block;
+  line-height: 18px;
+  white-space: normal;
+  font-size: 13px;
+  word-wrap: break-word;
+  text-decoration: none!important;
+  vertical-align: top;
+}
+
+.minimize .title {
+  white-space: nowrap;
+}
+
+.minimize .title a {
+    margin-top: 3px;
+    width: 92%;
+}
+
+.maximize .title a {
+  font-size: 14px;
+  font-weight: bold;
+  line-height: 28px;
+}
+
+.maximize .title img {
+  display: none;
 }
 
 .item {
-	border-bottom: 1px dotted #b7b7b7;
+  padding: 5px 0;
+}
+
+.item + .item {
+  border-top: 1px solid #dadada;
 }
 
 .item .more {
-	color: #000000;
-	display: block;
-	font-size: 11px;
-	width: 100%;
-	padding: 0px;
+  color: #000000;
+  display: block;
+  font-size: 11px;
+  width: 100%;
+  padding: 0px;
 }
 
 .item .date {
-	color: #AAAAAA;
-	top: 0px;
-	left: 0px;
-	padding: 2px 20px 0px;
+  color: #AAAAAA;
+  top: 0px;
+  left: 0px;
+  padding: 0 0 0;
 }
 
 .item .more .desc {
-	background: #f5f5f5;
-	padding: 4px 20px 10px;
-}
-
-.item .date {
-	background: #f5f5f5;
+  padding: 0 0 0;
+  white-space: normal;
 }
 
 .item .more .link {
-	background: #eeeeee;
-	border-top: 1px solid #e3e3e3;
-	margin-top: 2px; 
-	padding: 0px 5px 0px 0px;
-	color: #fe7000;
-	font-weight: bold;
-	text-align: right;
+  margin-top: 2px; 
+  padding: 0px 5px 0px 0px;
+  color: #fe7000;
+  font-weight: bold;
+  text-align: right;
 }
 
 .item .more .link a {
-	color: #fe7000;
+  color: #fe7000;
 }
 
 .descriptionHighlight {
-	border: none;
-	margin: 2px 0px;
-	padding:0px;
+  border: none;
+  margin: 2px 0px;
+  padding:0px;
 }
 
 .err {
-	font-weight: bold;
-	font-size: 11px;
-	color: red;
-	margin-top: 100px;
-	text-align: center;
+  font-weight: bold;
+  font-size: 11px;
+  color: red;
+  margin-top: 100px;
+  text-align: center;
+}
+.maximize, .minimize {
+  height: 100%;
+}
+.maximize {
+  padding: 0 15px;
 }
