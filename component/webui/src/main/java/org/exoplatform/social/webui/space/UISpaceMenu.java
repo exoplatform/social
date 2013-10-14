@@ -28,6 +28,8 @@ import org.exoplatform.portal.mop.user.UserNode;
 import org.exoplatform.portal.mop.user.UserPortal;
 import org.exoplatform.portal.webui.portal.UIPortal;
 import org.exoplatform.portal.webui.util.Util;
+import org.exoplatform.services.log.ExoLogger;
+import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.space.SpaceException;
 import org.exoplatform.social.core.space.SpaceUtils;
 import org.exoplatform.social.core.space.model.Space;
@@ -71,6 +73,8 @@ public class UISpaceMenu extends UIContainer {
   
   private static final String DEFAULT_APP_ID = "DefaultAppId";
   
+  private static final Log LOG = ExoLogger.getLogger(UISpaceMenu.class);
+  
   /**
    * Stores SpaceService object.
    */
@@ -106,18 +110,24 @@ public class UISpaceMenu extends UIContainer {
     if (space == null) {
       return new ArrayList<UserNode>(0);
     }
-
-    UserNode spaceUserNode = SpaceUtils.getSpaceUserNode(space);
     
-    UserNode hiddenNode = spaceUserNode.getChild(SPACE_SETTINGS);
+    List<UserNode> userNodeArraySorted = new ArrayList<UserNode>();
     
-    if (!hasSettingPermission() && (hiddenNode != null)) {
-      spaceUserNode.removeChild(hiddenNode.getName());
+    try {
+      UserNode spaceUserNode = SpaceUtils.getSpaceUserNode(space);
+      
+      UserNode hiddenNode = spaceUserNode.getChild(SPACE_SETTINGS);
+      
+      if (!hasSettingPermission() && (hiddenNode != null)) {
+        spaceUserNode.removeChild(hiddenNode.getName());
+      }
+      
+      userNodeArraySorted.addAll(spaceUserNode.getChildren());
+      
+      removeNonePageNodes(userNodeArraySorted); 
+    } catch (Exception e) {
+      LOG.warn("Get UserNode of Space failed.");
     }
-    
-    List<UserNode> userNodeArraySorted = new ArrayList<UserNode>(spaceUserNode.getChildren());
-    
-    removeNonePageNodes(userNodeArraySorted); 
     
     //SOC-2290 Need to comment the bellow line, sort by in configuration XML file.
     //Collections.sort(userNodeArraySorted, new ApplicationComparator());

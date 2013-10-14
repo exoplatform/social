@@ -40,9 +40,13 @@
             <%
                if(fieldName != null && fieldName.length() > 0 && !fieldName.equals(uicomponent.getId())) {
             %>
-          <div class="control-group"><% uiform.renderField(field) %></div>
+          <div class="control-group">
+          	<div class="controls-full"><% uiform.renderField(field) %></div>
+          </div>
              <% } else { %>
-          <div class="control-group" colspan="2"><% uiform.renderField(field) %></div>
+          <div class="control-group">
+          	<div class="controls-full"><% uiform.renderField(field) %></div>
+          </div>
              <% } %>
           <%
               }

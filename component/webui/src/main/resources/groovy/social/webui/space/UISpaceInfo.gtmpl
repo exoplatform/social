@@ -29,13 +29,13 @@
   if (imageSource == null) {
     imageSource = LinkProvider.SPACE_DEFAULT_AVATAR_URL;
   }
-  def spaceAvatarTitle = _ctx.appRes("${uicomponentId}.title.SpaceAvatar");
+  def spaceAvatarTitle = _ctx.appRes("UISpaceInfo.title.SpaceAvatar");
 
-  def changeAvatar = uicomponent.event('ChangeAvatar');
-  def saveAction = uicomponent.url('Save');
+  def changeAvatar = uicomponent.event("ChangeAvatar");
+  def saveAction = uicomponent.url("Save");
   def childs = uicomponent.getChildren();
-  def clickChangeAvatar = _ctx.appRes("${uicomponent.getId()}.title.ClickChangeAvatar");
-  def changePictureLabel = _ctx.appRes(uicomponent.getId() + ".label.ChangePicture");
+  def clickChangeAvatar = _ctx.appRes("UISpaceInfo.title.ClickChangeAvatar");
+  def changePictureLabel = _ctx.appRes("UISpaceInfo.label.ChangePicture");
   def saveLabel = _ctx.appRes(uicomponent.getId() + ".action.Save");
 	def jsManager = _ctx.getRequestContext().getJavascriptManager();
 	jsManager.require("SHARED/jquery", "jq")
@@ -53,16 +53,16 @@
 		</div>
 		<div class="form-horizontal pull-left">
 			<div class="control-group">
-				<label class="control-label" for="<%=childs.get(1).getId()%>"><%= _ctx.appRes(uicomponent.getId() + ".label.name") %></label>
-				<div class="controls"><% uiform.renderField(childs.get(1))%></div>
+				<label class="control-label" for="<%=uiform.SPACE_DISPLAY_NAME%>"><%=_ctx.appRes(uicomponent.getId() + ".label.name")%>:</label>
+				<div class="controls"><% uiform.renderField(uiform.SPACE_DISPLAY_NAME)%></div>
 			</div>
 			<div class="control-group">
-				<label class="control-label" for="<%=childs.get(2).getId()%>"><%=_ctx.appRes(uicomponent.getId() + ".label.description")%></label>
-				<div class="controls"><% uiform.renderField(childs.get(2)); %></div>
+				<label class="control-label" for="<%=uiform.SPACE_DESCRIPTION%>"><%=_ctx.appRes(uicomponent.getId() + ".label.description")%>:</label>
+				<div class="controls"><% uiform.renderField(uiform.SPACE_DESCRIPTION); %></div>
 			</div>
 		</div>
 	</div>
 	<div class="uiAction uiActionBorder"><button class="btn" type="button" onclick="$saveAction">$saveLabel</button></div>
   <% uiform.end(); %>
-  <div class="uiAvatarUploader"><% uicomponent.renderChild(UIPopupWindow.class) %></div>
+  <div class="uiAvatarUploader"><% uicomponent.renderChild(UIPopupWindow.class); %></div>
 </div>

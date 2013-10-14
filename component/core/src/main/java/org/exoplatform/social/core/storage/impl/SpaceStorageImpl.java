@@ -34,6 +34,7 @@ import javax.jcr.Node;
 import javax.jcr.Property;
 import javax.jcr.RepositoryException;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.chromattic.api.ChromatticSession;
 import org.chromattic.api.query.Ordering;
 import org.chromattic.api.query.Query;
@@ -44,6 +45,8 @@ import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.chromattic.entity.IdentityEntity;
+import org.exoplatform.social.core.chromattic.entity.ProfileEntity;
+import org.exoplatform.social.core.chromattic.entity.ProviderEntity;
 import org.exoplatform.social.core.chromattic.entity.SpaceEntity;
 import org.exoplatform.social.core.chromattic.entity.SpaceListEntity;
 import org.exoplatform.social.core.chromattic.entity.SpaceRef;
@@ -557,17 +560,7 @@ public class SpaceStorageImpl extends AbstractStorage implements SpaceStorage {
       searchConditionBuffer = new StringBuffer();
       
       //
-      if (!conditionValue.contains(StorageUtils.ASTERISK_STR) && !conditionValue.contains(StorageUtils.PERCENT_STR)) {
-        if (conditionValue.charAt(0) != StorageUtils.ASTERISK_CHAR) {
-          searchConditionBuffer.append(StorageUtils.ASTERISK_STR).append(conditionValue);
-        }
-        if (conditionValue.charAt(conditionValue.length() - 1) != StorageUtils.ASTERISK_CHAR) {
-          searchConditionBuffer.append(StorageUtils.ASTERISK_STR);
-        }
-      } else {
-        conditionValue = conditionValue.replace(StorageUtils.ASTERISK_STR, StorageUtils.PERCENT_STR);
-        searchConditionBuffer.append(StorageUtils.PERCENT_STR).append(conditionValue).append(StorageUtils.PERCENT_STR);
-      }
+      searchConditionBuffer.append(StorageUtils.PERCENT_STR).append(conditionValue).append(StorageUtils.PERCENT_STR);
       
       //
       result.add(searchConditionBuffer.toString());
@@ -1534,17 +1527,17 @@ public class SpaceStorageImpl extends AbstractStorage implements SpaceStorage {
           if (condition.contains(StorageUtils.PERCENT_STR)) {
             whereExpression.startGroup();
             whereExpression
-                .like(SpaceEntity.name, condition)
+                .like(whereExpression.callFunction(QueryFunction.LOWER, SpaceEntity.name), condition.toLowerCase())
                 .or()
-                .like(SpaceEntity.description, condition);
+                .like(whereExpression.callFunction(QueryFunction.LOWER, SpaceEntity.description), StringEscapeUtils.escapeHtml(condition).toLowerCase());
             whereExpression.endGroup();
           }
           else {
             whereExpression.startGroup();
             whereExpression
-                .contains(SpaceEntity.name, condition)
+                .contains(whereExpression.callFunction(QueryFunction.LOWER, SpaceEntity.name), condition.toLowerCase())
                 .or()
-                .contains(SpaceEntity.description, condition);
+                .contains(whereExpression.callFunction(QueryFunction.LOWER, SpaceEntity.description), StringEscapeUtils.escapeHtml(condition).toLowerCase());
             whereExpression.endGroup();
           }
         } //end for
@@ -2026,7 +2019,6 @@ public class SpaceStorageImpl extends AbstractStorage implements SpaceStorage {
 
     try {
       IdentityEntity identityEntity = identityStorage._findIdentityEntity(OrganizationIdentityProvider.NAME, filter.getRemoteId());
-
       SpaceListEntity listRef = RefType.MEMBER.refsOf(identityEntity);
       Map<String, SpaceRef> mapRefs = listRef.getRefs();
       

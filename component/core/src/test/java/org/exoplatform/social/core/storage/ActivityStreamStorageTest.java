@@ -17,9 +17,7 @@
 package org.exoplatform.social.core.storage;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
-import java.util.Locale;
 
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
@@ -241,8 +239,6 @@ public class ActivityStreamStorageTest extends AbstractCoreTest {
       assertEquals(1, streamStorage.getNumberOfFeed(maryIdentity));
       assertEquals(1, streamStorage.getNumberOfMyActivities(maryIdentity));
       
-      assertEquals(1, streamStorage.getNumberOfFeed(johnIdentity));
-      assertEquals(1, streamStorage.getNumberOfMyActivities(johnIdentity));
     }
     
   }
@@ -316,6 +312,19 @@ public class ActivityStreamStorageTest extends AbstractCoreTest {
       
       ExoSocialActivity ac2 = list.get(1);
       assertEquals(activity2.getTitle(), ac2.getTitle()); 
+    }
+    
+    comment = new ExoSocialActivityImpl();
+    comment.setTitle(activityTitle  + " more one");
+    comment.isComment(true);
+    comment.setUserId(maryIdentity.getId());
+    activityStorage.saveComment(activity1, comment);
+    
+    LOG.info("<======================updated whatshot 1=======================>");
+    
+    { //checks what's hot
+      List<ExoSocialActivity> list = streamStorage.getFeed(rootIdentity, 0, 10);
+      assertEquals(2, list.size());
     }
     
     LOG.info("<======================add teardown=======================>");
