@@ -32,6 +32,7 @@ import javax.jcr.nodetype.NodeType;
 import javax.jcr.nodetype.NodeTypeManager;
 import javax.jcr.nodetype.PropertyDefinition;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.chromattic.api.UndeclaredRepositoryException;
 import org.chromattic.api.query.Ordering;
 import org.chromattic.api.query.QueryBuilder;
@@ -71,6 +72,7 @@ import org.exoplatform.social.core.storage.api.SpaceStorage;
 import org.exoplatform.social.core.storage.exception.NodeAlreadyExistsException;
 import org.exoplatform.social.core.storage.exception.NodeNotFoundException;
 import org.exoplatform.social.core.storage.query.JCRProperties;
+import org.exoplatform.social.core.storage.query.QueryFunction;
 import org.exoplatform.social.core.storage.query.WhereExpression;
 
 /**
@@ -1429,16 +1431,17 @@ public class IdentityStorageImpl extends AbstractStorage implements IdentityStor
           }
           //
           if (condition.contains(StorageUtils.PERCENT_STR)) {
+            String conditionEscapeHtml = StringEscapeUtils.escapeHtml(condition).toLowerCase();
             whereExpression.startGroup();
             whereExpression
-                .like(ProfileEntity.fullName, condition)
-                .or().like(ProfileEntity.firstName, condition)
-                .or().like(ProfileEntity.lastName, condition)
-                .or().like(ProfileEntity.position, condition)
-                .or().like(ProfileEntity.skills, condition)
-                .or().like(ProfileEntity.positions, condition)
-                .or().like(ProfileEntity.organizations, condition)
-                .or().like(ProfileEntity.jobsDescription, condition);
+                .like(whereExpression.callFunction(QueryFunction.LOWER, ProfileEntity.fullName), condition.toLowerCase())
+                .or().like(whereExpression.callFunction(QueryFunction.LOWER, ProfileEntity.firstName), condition.toLowerCase())
+                .or().like(whereExpression.callFunction(QueryFunction.LOWER, ProfileEntity.lastName), condition.toLowerCase())
+                .or().like(whereExpression.callFunction(QueryFunction.LOWER, ProfileEntity.position), conditionEscapeHtml)
+                .or().like(whereExpression.callFunction(QueryFunction.LOWER, ProfileEntity.skills), conditionEscapeHtml)
+                .or().like(whereExpression.callFunction(QueryFunction.LOWER, ProfileEntity.positions), conditionEscapeHtml)
+                .or().like(whereExpression.callFunction(QueryFunction.LOWER, ProfileEntity.organizations), conditionEscapeHtml)
+                .or().like(whereExpression.callFunction(QueryFunction.LOWER, ProfileEntity.jobsDescription), conditionEscapeHtml);
             whereExpression.endGroup();
           }
           else {

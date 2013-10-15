@@ -581,8 +581,8 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
       //
       if (mustInjectStreams) {
         Identity identity = identityStorage.findIdentityById(comment.getUserId());
-        StreamInvocationHelper.updateCommenter(identity, activity, commenters.toArray(new String[0]));
-        StreamInvocationHelper.update(activity, mentioners.toArray(new String[0]));
+        StreamInvocationHelper.updateCommenter(identity, activity, commenters.toArray(new String[0]), oldUpdated);
+        StreamInvocationHelper.update(activity, mentioners.toArray(new String[0]), oldUpdated);
       }
     }  
     catch (NodeNotFoundException e) {
@@ -859,7 +859,7 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
    * {@inheritDoc}
    */
   public int getNumberOfUserActivities(Identity owner) throws ActivityStorageException {
-    return getNumberOfUserActivitiesForUpgrade(owner);
+    return streamStorage.getNumberOfMyActivities(owner);
   }
 
   /**
@@ -976,7 +976,7 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
    * {@inheritDoc}
    */
   public int getNumberOfActivitesOnActivityFeed(Identity ownerIdentity) {
-    return getNumberOfActivitesOnActivityFeedForUpgrade(ownerIdentity);
+    return streamStorage.getNumberOfFeed(ownerIdentity);
   }
 
   @Override
@@ -1169,7 +1169,7 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
    * {@inheritDoc}
    */
   public int getNumberOfActivitiesOfConnections(Identity ownerIdentity) {
-    return getNumberOfActivitiesOfConnectionsForUpgrade(ownerIdentity);
+    return streamStorage.getNumberOfConnections(ownerIdentity);
   }
 
   /**
@@ -1297,7 +1297,7 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
    * {@inheritDoc}
    */
   public int getNumberOfUserSpacesActivities(Identity ownerIdentity) {
-    return getNumberOfUserSpacesActivitiesForUpgrade(ownerIdentity);
+    return streamStorage.getNumberOfMySpaces(ownerIdentity);
   }
 
   /**
@@ -1714,7 +1714,7 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
 
   @Override
   public int getNumberOfSpaceActivities(Identity spaceIdentity) {
-    return getNumberOfSpaceActivitiesForUpgrade(spaceIdentity);
+    return streamStorage.getNumberOfSpaceStream(spaceIdentity);
   }
   
   @Override

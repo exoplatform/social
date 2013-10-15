@@ -31,6 +31,16 @@ import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.storage.impl.StorageUtils;
 
 public class StorageUtilsTest extends TestCase {
+
+  public void testProcessUnifiedSearchCondition() throws Exception {
+    List<String> result = new ArrayList<String>();
+    result.add("%first%");
+    result.add("%%two%");
+    result.add("%three%%");
+    result.add("%%four%%");
+    result.add("%%five%%");
+    assertEquals(result, StorageUtils.processUnifiedSearchCondition("first *two three% %four* *five*"));
+  }
   
   public void testSortMapByValue() throws Exception {
     Map<String, Integer> map = new HashMap<String, Integer>();

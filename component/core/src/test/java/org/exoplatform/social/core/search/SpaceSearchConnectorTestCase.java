@@ -6,6 +6,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.exoplatform.commons.api.search.data.SearchContext;
 import org.exoplatform.commons.api.search.data.SearchResult;
 import org.exoplatform.container.xml.InitParams;
@@ -154,6 +155,41 @@ public class SpaceSearchConnectorTestCase extends AbstractCoreTest {
     List<SearchResult> rDateDesc = (List<SearchResult>) spaceSearchConnector.search(context, "description", Collections.EMPTY_LIST, 0, 10, "date", "DESC");
     assertEquals("bar", rDateDesc.get(0).getTitle());
     assertEquals("foo", rDateDesc.get(1).getTitle());
+  }
+  
+  public void testUnicodeData() throws Exception {
+    Identity maryIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "mary", false);
+    
+    Space space = new Space();
+    space.setDisplayName("広いニーズ");
+    space.setPrettyName("広いニーズ");
+    space.setDescription(StringEscapeUtils.escapeHtml("広いニーズに応えます。"));
+    space.setManagers(new String[]{"mary"});
+    space.setMembers(new String[]{"mary"});
+    space.setType(DefaultSpaceApplicationHandler.NAME);
+    space.setRegistration(Space.OPEN);
+    createSpaceNonInitApps(space, maryIdentity.getRemoteId(), null);
+    tearDown.add(space);
+    
+    Space newSpace = new Space();
+    newSpace.setDisplayName("close");
+    newSpace.setPrettyName("close");
+    newSpace.setDescription("closed");
+    newSpace.setManagers(new String[]{"mary"});
+    newSpace.setMembers(new String[]{"mary"});
+    newSpace.setType(DefaultSpaceApplicationHandler.NAME);
+    newSpace.setRegistration(Space.OPEN);
+    createSpaceNonInitApps(newSpace, maryIdentity.getRemoteId(), null);
+    tearDown.add(newSpace);
+    
+    setCurrentUser("mary");
+    assertEquals(1, spaceSearchConnector.search(context, "広", Collections.EMPTY_LIST, 0, 10, "relevancy", "ASC").size());
+    assertEquals(1, spaceSearchConnector.search(context, "%広いニー", Collections.EMPTY_LIST, 0, 10, "relevancy", "ASC").size());
+    assertEquals(1, spaceSearchConnector.search(context, "広いニーズ", Collections.EMPTY_LIST, 0, 10, "relevancy", "ASC").size());
+    assertEquals(1, spaceSearchConnector.search(context, "広いニーズに応えます。", Collections.EMPTY_LIST, 0, 10, "relevancy", "ASC").size());
+    
+    assertEquals(1, spaceSearchConnector.search(context, "clo", Collections.EMPTY_LIST, 0, 10, "relevancy", "ASC").size());
+    identityManager.deleteIdentity(maryIdentity);
   }
 
   private void setCurrentUser(final String name) {

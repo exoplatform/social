@@ -24,31 +24,26 @@
 
 %>
 <div class="uiSpacePermission">
-	<%uiform.begin()%>
+	<%uiform.begin();%>
 	<div class="form-horizontal">
 		<% 
 			for(field in uiform.getChildren()) { 
-			  %>
+		%>
 			  <div class="control-group">
 			  <%
-			
 				if(field.isRendered()) {
-					%>
-					<%fieldName = uicomponent.getLabel(field.getName());%>
-					<%
-						if(fieldName != null && fieldName.length() > 0 && !fieldName.equals(uicomponent.getId()) && !fieldName.equals(field.getName())) {
-					%>												
-						<label class="control-label">
-							<%=uicomponent.getLabel(field.getName()) %>:
-						</label>
-						<div class="controls"><% uiform.renderField(field) %></div>
-					<%} else {%>
-						<div class="controls"><% uiform.renderField(field) %></div>
-					<%}
+			  	fieldName = uiform.getLabel(field.getName());
+					if(!uiform.getId().equals(fieldName) && !field.getName().equals(fieldName)) {
+				%>												
+					<label class="control-label" for=<%=field.getName()%>><%=fieldName%>:</label>
+					<div class="controls"><% uiform.renderField(field);%></div>
+				<%} else {%>
+					<div class="controls"><% uiform.renderField(field);%></div>
+				<%}
 				}
-				%>
-			    </div>
-				<%
+			%>
+			  </div>
+		<%
 			}
 		%>
 	</div>
@@ -60,5 +55,5 @@
 			<button class="btn" onclick="$link">$actionLabel</button>
 		<%}%>
 	</div>
-	<%uiform.end()%>
+	<%uiform.end();%>
 </div>

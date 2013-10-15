@@ -300,11 +300,9 @@ public class UISpaceSearch extends UIForm {
     public void execute(Event<UISpaceSearch> event) throws Exception {
       UISpaceSearch uiSpaceSearch = event.getSource();
       UIPopupWindow uiPopup = uiSpaceSearch.getChild(UIPopupWindow.class);
-      UISpaceAddForm uiAddSpaceForm = uiSpaceSearch.createUIComponent(UISpaceAddForm.class,
-              null,
-              null);
+      UISpaceAddForm uiAddSpaceForm = uiSpaceSearch.createUIComponent(UISpaceAddForm.class, null, null);
       uiPopup.setUIComponent(uiAddSpaceForm);
-      uiPopup.setWindowSize(600, 0);
+      uiPopup.setWindowSize(625, 0);
       uiPopup.setShow(true);
     }
 

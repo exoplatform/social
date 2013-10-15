@@ -565,7 +565,7 @@ public class UISpaceMember extends UIForm {
       }
 
       spaceService.removeMember(space, userName);
-      spaceService.setManager(space, userName, false);
+      spaceService.setManager(spaceService.getSpaceById(space.getId()), userName, false);
 
       if (!useAjax) { // self remove.
         prContext = Util.getPortalRequestContext();

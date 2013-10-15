@@ -35,4 +35,5 @@ public class JCRProperties {
   public static final String PROFILE_NODE_TYPE = "soc:profiledefinition";
   public static final String SPACE_NODE_TYPE = "soc:spacedefinition";
   public static final String SPACE_REF_NODE_TYPE = "soc:spaceref";
+  public static final String ACTIVITY_NODE_TYPE = "soc:activity";
 }

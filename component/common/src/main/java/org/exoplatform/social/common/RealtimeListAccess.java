@@ -138,4 +138,12 @@ public interface RealtimeListAccess<E> extends ListAccess<E> {
    * @return number of older elements if any
    */
   int getNumberOfOlder(Long sinceTime);
+  
+  /**
+   * Gets the number of stream elements based on the updated time.
+   * This one will make query to count for load more case.
+   * 
+   * @return number of elements if any
+   */
+  int getNumberOfUpgrade();
 }

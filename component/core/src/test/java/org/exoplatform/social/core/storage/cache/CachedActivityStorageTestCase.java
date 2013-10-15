@@ -88,7 +88,7 @@ public class CachedActivityStorageTestCase extends AbstractCoreTest {
 
   }
 
-  @MaxQueryNumber(184)
+  @MaxQueryNumber(200)
   public void testSaveActivity() throws Exception {
 
     //
@@ -120,7 +120,7 @@ public class CachedActivityStorageTestCase extends AbstractCoreTest {
 
   }
 
-  @MaxQueryNumber(250)
+  @MaxQueryNumber(260)
   public void testRemoveActivity() throws Exception {
 
     //
@@ -150,7 +150,7 @@ public class CachedActivityStorageTestCase extends AbstractCoreTest {
 
   }
 
-  @MaxQueryNumber(310)
+  @MaxQueryNumber(314)
   public void testRelationshipActivity() throws Exception {
 
     //

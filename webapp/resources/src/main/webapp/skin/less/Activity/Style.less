@@ -415,15 +415,15 @@
 		position: relative;
 		.box-shadow(0px 2px 4px  -1px rgba(13,13,13,0.27));
 		#gradient > .vertical-three-colors(@white,@white,94%,@grayLighter);
-		a.avatar  {
+		.pull-left {
 			margin-right: 10px;
-			img {
+			a.avatarXMedium img {
 				height: 75px;
 				width: 75px;
 				
 			}
 		}
-		.avatar + .text {
+		.pull-left + .text {
 			overflow: hidden;
 		}
 		.descriptionText {
@@ -433,11 +433,7 @@
 		.isPreviewable {
 			position: relative;
 			.mediaContent  {
-				width: 300px;
-				margin-right: 10px;
-			}
-			.mediaContent + .text {
-				overflow: hidden;
+				max-width: 300px;
 			}
 			.versionFile {			
 				color: @grayLight;font-size: 12px;
@@ -560,7 +556,7 @@
 		padding: 5px 2px;
 		&.pull-left {
 			width: 50px;
-			margin: 5px 10px 5px 0;
+			margin: 0 10px 5px 0;
     		padding: 5px 10px;
 		}
 	}
@@ -609,10 +605,10 @@
 /*================uiContentActivity=======================*/
 
 .uiContentActivity {
-	.introBox.contentShare  .pull-left {		
-		width: 50px;
+	.introBox.contentShare  .pull-left {
+		margin-right: 10px;
 		&+ .text {
-			margin-left: 70px;
+			overflow: hidden;
 			
 		}
 	}
@@ -641,30 +637,25 @@
 	}
 }
 
-
-/*=======Space activity==========*/ 
-.uiSpaceActivity {
-	.spaceMembers  {
-		color: @grayLight;
-		font-size: 12px;
-	}
-}
-
 /*=======fileActivity activity==========*/  
 .fileActivity {
 	.introBox .isPreviewable {
-		 
+	 	.pull-left {
+	 		margin-right: 10px;
+	 		& + .text {
+	 			overflow: hidden;
+	 		}
+		 }
 		 .fileTypeContent {
 			float: left;
-			width: 60px;
+			margin-right: 10px;
 			& + .text {
-				margin-left: 70px;
+				overflow: hidden;
 			}
 		 }		
 		 .PlayerContianer {
 			width: 330px;
 			height: auto;
-			margin-right: 10px;
 			&+ .text {
 				overflow: hidden;
 			}

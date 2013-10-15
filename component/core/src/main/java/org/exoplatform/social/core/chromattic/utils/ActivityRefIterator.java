@@ -18,8 +18,12 @@ package org.exoplatform.social.core.chromattic.utils;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import org.exoplatform.social.core.chromattic.entity.ActivityRef;
 import org.exoplatform.social.core.chromattic.entity.ActivityRefDayEntity;
@@ -28,6 +32,7 @@ import org.exoplatform.social.core.chromattic.entity.ActivityRefMonthEntity;
 import org.exoplatform.social.core.chromattic.entity.ActivityRefYearEntity;
 import org.exoplatform.social.core.chromattic.entity.IndexNumber;
 import org.exoplatform.social.core.chromattic.entity.NamedEntity;
+import org.exoplatform.social.core.chromattic.entity.SpaceRef;
 
 public class ActivityRefIterator implements Iterator<ActivityRef> {
 
@@ -56,9 +61,16 @@ public class ActivityRefIterator implements Iterator<ActivityRef> {
 
   }
   
+  
+  
   private Iterator<ActivityRef> orderRefs() {
     List<ActivityRef> got = new ArrayList<ActivityRef>(dayIterator.next().getActivityRefList());
-    Collections.reverse(got);
+    
+    Collections.sort(got, new Comparator<ActivityRef>() {
+      public int compare(ActivityRef o1, ActivityRef o2) {
+        return (int) (Long.parseLong(o2.getName()) - Long.parseLong(o1.getName()));
+      }
+    });
     return got.iterator();
   }
 
