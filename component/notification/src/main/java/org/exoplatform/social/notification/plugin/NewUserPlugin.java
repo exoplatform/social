@@ -84,8 +84,8 @@ public class NewUserPlugin extends AbstractNotificationPlugin {
     Profile userProfile = identity.getProfile();
     
     templateContext.put("USER", userProfile.getFullName());
-    templateContext.put("PORTAL_NAME", NotificationPluginUtils.getSenderName());
-    templateContext.put("PORTAL_HOME", NotificationPluginUtils.getPortalHome(NotificationPluginUtils.getSenderName()));
+    templateContext.put("PORTAL_NAME", NotificationPluginUtils.getBrandingPortalName());
+    templateContext.put("PORTAL_HOME", NotificationPluginUtils.getPortalHome(NotificationPluginUtils.getBrandingPortalName()));
     String subject = TemplateUtils.processSubject(templateContext);
     
     templateContext.put("PROFILE_URL", LinkProviderUtils.getRedirectUrl("user", identity.getRemoteId()));
