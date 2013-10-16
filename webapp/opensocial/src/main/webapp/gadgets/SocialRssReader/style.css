@@ -1,3 +1,6 @@
+a:visited {
+	color: #345f8f;
+}
 .Link, .Date {background: none;}
 .UIPageIterator {
   margin: 5px auto 0px auto;
@@ -100,7 +103,6 @@ p {
 
 .descriptionHighlight .title {
   border-bottom: 1px solid #e3e3e3;
-  background: #eeeeee;
   margin-bottom: 2px;
   padding: 3px;
 }
@@ -117,6 +119,7 @@ p {
   word-wrap: break-word;
   text-decoration: none!important;
   vertical-align: top;
+  color: #2F5E92;
 }
 
 .minimize .title {
@@ -132,6 +135,7 @@ p {
   font-size: 14px;
   font-weight: bold;
   line-height: 28px;
+  margin-left: -8px;
 }
 
 .maximize .title img {
@@ -140,25 +144,18 @@ p {
 
 .item {
   padding: 5px 0;
-}
-
-.item + .item {
-  border-top: 1px solid #dadada;
+  border-bottom: 1px solid #dadada;
 }
 
 .item .more {
-  color: #000000;
   display: block;
-  font-size: 11px;
   width: 100%;
   padding: 0px;
 }
 
 .item .date {
-  color: #AAAAAA;
-  top: 0px;
-  left: 0px;
-  padding: 0 0 0;
+  font-size: 12px;
+  color: #999;
 }
 
 .item .more .desc {
@@ -169,13 +166,11 @@ p {
 .item .more .link {
   margin-top: 2px; 
   padding: 0px 5px 0px 0px;
-  color: #fe7000;
-  font-weight: bold;
   text-align: right;
 }
 
 .item .more .link a {
-  color: #fe7000;
+	font-size: 12px;
 }
 
 .descriptionHighlight {
@@ -191,9 +186,20 @@ p {
   margin-top: 100px;
   text-align: center;
 }
+
 .maximize, .minimize {
   height: 100%;
 }
+
 .maximize {
   padding: 0 15px;
+}
+
+.maximize .item {
+ 	border-bottom: none;
+}
+
+.maximize .item .desc {
+	border-top: 1px dotted #9B9B9B;
+	padding-top: 5px;
 }
