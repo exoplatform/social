@@ -244,6 +244,8 @@ var UIActivity = {
       $(actionComment).css("background-color","#f0f0f0");
       if (isReply) {
         this.replyByURL(activityId);
+      } else {
+    	  $('html,body').animate({scrollTop: $("#CommentBlock"+commentId).offset().top});
       }
     }
   },
