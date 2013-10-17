@@ -151,7 +151,7 @@ RssFetch.prototype.loadPage = function() {
     itemEl.appendChild(item_title);
     itemEl.appendChild(item_more);
 
-        feedEl.appendChild(itemEl);
+    feedEl.appendChild(itemEl);
   }
 
   if (eXo.social.thisRssFetch.totalPages > 1) {
@@ -178,16 +178,16 @@ RssFetch.prototype.loadPage = function() {
     var allPagesEl = this.getEl("pages");
     
     var totalPage = eXo.social.thisRssFetch.totalPages;
-    var nextPageTag = "<li><a  id='next' class='Icon NextPageIcon' onclick='eXo.social.thisRssFetch.nextPage()' title='next'>" +
+    var nextPageTag = "<li><a  id='next' class='Icon NextPageIcon' onclick='eXo.social.thisRssFetch.nextPage()' data-placement='left' rel='tooltip' data-original-title='Next Page'>" +
     				  "<i class='uiIconNextArrow'></i></a></li>";
     
-    var previousPageTag = "<li><a  id='previous' class='Icon LastPageIcon' onclick='eXo.social.thisRssFetch.previousPage()' title='previous'>" +
+    var previousPageTag = "<li><a  id='previous' class='Icon LastPageIcon' onclick='eXo.social.thisRssFetch.previousPage()' data-placement='left' rel='tooltip' data-original-title='Previous Page'>" +
 	  				  "<i class='uiIconPrevArrow'></i></a></li>";
     
-    var nextDisTag = "<li class='disabled'><a  id='next' onclick='eXo.social.thisRssFetch.nextPage()' title='next'>" +
+    var nextDisTag = "<li class='disabled'><a  id='next' onclick='eXo.social.thisRssFetch.nextPage()' data-placement='left' rel='tooltip' data-original-title='Next Page'>" +
 	  				 "<i class='uiIconNextArrow'></i></a></li>";
     
-    var previousDisTag = "<li class='disabled'><a  id='previous' onclick='eXo.social.thisRssFetch.previousPage()' title='previous'>" +
+    var previousDisTag = "<li class='disabled'><a  id='previous' onclick='eXo.social.thisRssFetch.previousPage()' data-placement='left' rel='tooltip' data-original-title='Previous Page'>" +
 	  					 "<i class='uiIconPrevArrow'></i></a></li>";
     
     var i = 1;
@@ -216,6 +216,10 @@ RssFetch.prototype.loadPage = function() {
     }
 
   }
+  
+  //show Tool-tip for paging
+  $('#next').tooltip();
+  $('#previous').tooltip();
 
   this.adjustHeight();
 }
