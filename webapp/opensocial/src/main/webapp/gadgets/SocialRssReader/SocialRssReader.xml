@@ -35,43 +35,46 @@
 
   <Content type="html" view="home">
   <![CDATA[
-    <script type="text/javascript" src="/social-resources/javascript/eXo/social/SocialUtil.js"></script>
-    <link rel="stylesheet" type="text/css" href="/eXoResources/skin/bootstrap/css/bootstrap.css" />    
-		<link rel="stylesheet" type="text/css" href="/eXoResources/skin/css/Core.css" />
-    <link rel="stylesheet" type="text/css" href="style.css"></link>
-    <script type="text/javascript" src="script.js"></script>
+    <head>
+    	<link rel="stylesheet" type="text/css" href="/eXoResources/skin/bootstrap/css/bootstrap.css" />    
+			<link rel="stylesheet" type="text/css" href="/eXoResources/skin/css/Core.css" />
+    	<link rel="stylesheet" type="text/css" href="style.css"></link>
+    	<script type="text/javascript" src="script.js"></script>
+      <script type="text/javascript">
+      	var prefs = new _IG_Prefs(__MODULE_ID__);
+      	var feedurl = prefs.getString("rssurl");
+      	var rssOnPage = prefs.getInt("rssPerPage");
 
-    <div id="rssFeed" class="minimize" style="overflow: auto; height: 100%;"></div>
-
-    <script type="text/javascript">
-      var prefs = new _IG_Prefs(__MODULE_ID__);
-      var feedurl = prefs.getString("rssurl");
-      var rssOnPage = prefs.getInt("rssPerPage");
-
-      var rssFetch = new RssFetch();
-      gadgets.util.registerOnLoadHandler(rssFetch.refreshFeed());
-    </script>
+      	var rssFetch = new RssFetch();
+      	rssFetch.refreshFeed();
+    	</script>
+    </head>
+		<body style="font-size:70%;">
+    <div id="rssFeed" class="minimize" style="height: 100%;"></div>
+		</body>
   ]]>
   </Content>
 
   <Content type="html" view="canvas">
   <![CDATA[
-    <script type="text/javascript" src="/social-resources/javascript/eXo/social/SocialUtil.js"></script>
-    <link rel="stylesheet" type="text/css" href="/eXoResources/skin/bootstrap/css/bootstrap.css" />    
-		<link rel="stylesheet" type="text/css" href="/eXoResources/skin/css/Core.css" />
-    <link rel="stylesheet" type="text/css" href="style.css"></link>
-    <script type="text/javascript" src="script.js"></script>
+    <head>
+    	<link rel="stylesheet" type="text/css" href="/eXoResources/skin/bootstrap/css/bootstrap.css" />    
+			<link rel="stylesheet" type="text/css" href="/eXoResources/skin/css/Core.css" />
+    	<link rel="stylesheet" type="text/css" href="style.css"></link>
+    	<script type="text/javascript" src="script.js"></script>
+		
+		  <script type="text/javascript">
+      	var prefs = new _IG_Prefs(__MODULE_ID__);
+      	var feedurl = prefs.getString("rssurl");
+      	var rssOnPage = prefs.getInt("rssPerPage");
 
-    <div id="rssFeed" class="maximize" style="overflow: auto; height: 100%;"></div>
-    
-    <script type="text/javascript">
-      var prefs = new _IG_Prefs(__MODULE_ID__);
-      var feedurl = prefs.getString("rssurl");
-      var rssOnPage = prefs.getInt("rssPerPage");
-
-      var rssFetch = new RssFetch();
-      gadgets.util.registerOnLoadHandler(rssFetch.refreshFeed());
-    </script>
+      	var rssFetch = new RssFetch().refreshFeed();
+      	rssFetch.refreshFeed();
+    	</script>
+    </head>
+    <body>
+    <div id="rssFeed" class="maximize" style="height: 100%;"></div>
+    </body>
   ]]>
   </Content>
 </Module>
