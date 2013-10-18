@@ -1576,7 +1576,17 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
       if (changedActivity.getTitle() == null) changedActivity.setTitle(activityEntity.getTitle());
       if (changedActivity.getBody() == null) changedActivity.setBody(activityEntity.getBody());
       
+      boolean isHidden = getActivity(changedActivity.getId()).isHidden();
       _saveActivity(changedActivity);
+      
+      //update activity ref when activity change value of isHidden
+      if (changedActivity.isHidden() != isHidden) {
+        Identity owner = identityStorage.findIdentity(SpaceIdentityProvider.NAME, changedActivity.getStreamOwner());
+        if (owner == null) {
+          owner = identityStorage.findIdentity(OrganizationIdentityProvider.NAME, changedActivity.getStreamOwner());
+        }
+        StreamInvocationHelper.updateHidable(owner, changedActivity);
+      }
       
       getSession().save();
       

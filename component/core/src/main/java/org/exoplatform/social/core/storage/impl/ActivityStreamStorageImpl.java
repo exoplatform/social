@@ -40,6 +40,7 @@ import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.chromattic.entity.ActivityEntity;
 import org.exoplatform.social.core.chromattic.entity.ActivityRef;
 import org.exoplatform.social.core.chromattic.entity.ActivityRefListEntity;
+import org.exoplatform.social.core.chromattic.entity.HidableEntity;
 import org.exoplatform.social.core.chromattic.entity.IdentityEntity;
 import org.exoplatform.social.core.chromattic.entity.StreamsEntity;
 import org.exoplatform.social.core.chromattic.filter.JCRFilterLiteral;
@@ -386,6 +387,37 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
       LOG.warn("Failed to update Activity references.", e);
     }
   }
+  
+  @Override
+  public void updateHidable(ProcessContext ctx) {
+    
+    try {
+      StreamProcessContext streamCtx = ObjectHelper.cast(StreamProcessContext.class, ctx);
+      ExoSocialActivity activity = streamCtx.getActivity();
+
+      ActivityEntity activityEntity = _findById(ActivityEntity.class, activity.getId());
+      Collection<ActivityRef> references = activityEntity.getActivityRefs();
+      
+      //Case of update hidden activity after migration
+      if (references == null || references.size() == 0) {
+        savePoster(ctx);
+        save(ctx);
+      }
+        
+      HidableEntity hidableActivity = _getMixin(activityEntity, HidableEntity.class, true);
+      hidableActivity.setHidden(activity.isHidden());
+      for (ActivityRef ref : references) {
+        if (hidableActivity.getHidden() == false) {
+          ref.getDay().inc();
+        } else {
+          ref.getDay().desc();
+        }
+      }
+      
+    } catch (Exception e) {
+      LOG.warn("Failed to update Activity references when change the visibility of activity.", e);
+    }
+  }
 
   /**
   @Override
@@ -723,7 +755,9 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
         
         //
         ExoSocialActivity a = getStorage().getActivity(current.getActivityEntity().getId());
-            
+        if (a.isHidden() == true) {
+          continue;
+        }
         got.add(a);
 
       }
@@ -754,8 +788,11 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
           current.getDay().getActivityRefs().remove(current.getName());
           continue;
         }
-
-        got.add(getStorage().getActivity(current.getActivityEntity().getId()));
+        ExoSocialActivity activity = getStorage().getActivity(current.getActivityEntity().getId());
+        if (activity.isHidden() == true) {
+          continue;
+        }
+        got.add(activity);
         if (++nb == limit) {
           break;
         }
@@ -953,6 +990,8 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
         
         
         ActivityRefListEntity listRef = type.refsOf(identityEntity);
+        //keep number
+        Integer oldNumberOfStream = listRef.getNumber();
         
         newYearMonthday.set(false);
         ActivityRef ref = listRef.getOrCreated(activityEntity, newYearMonthday);
@@ -973,6 +1012,13 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
         }
 
         ref.setActivityEntity(activityEntity);
+        
+        Integer newNumberOfStream = listRef.getNumber();
+        //If activity is hidden, we must decrease the number of activity references
+        HidableEntity hidableActivity = _getMixin(activityEntity, HidableEntity.class, true);
+        if (hidableActivity.getHidden() && (newNumberOfStream > oldNumberOfStream)) {
+          ref.getDay().desc();
+        }
 
         //LOG.info("manageRefList()::AFTER");
         //printDebug(listRef, activityEntity.getLastUpdated());

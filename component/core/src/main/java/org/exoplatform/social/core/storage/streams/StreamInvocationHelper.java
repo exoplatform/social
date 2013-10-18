@@ -120,6 +120,29 @@ public class StreamInvocationHelper {
     return processCtx;
   }
   
+  public static ProcessContext updateHidable(Identity owner, ExoSocialActivity activity) {
+    //
+    StreamProcessContext processCtx = StreamProcessContext.getIntance(StreamProcessContext.UPDATE_ACTIVITY_REF, ctx);
+    processCtx.activity(activity).mentioners(activity.getMentionedIds()).identity(owner);
+    
+    try {
+      if (ctx.isAsync()) {
+        beforeAsync();
+        ctx.getServiceExecutor().async(StreamProcessorFactory.updateHidable(), processCtx);
+      } else {
+        ctx.getServiceExecutor().execute(StreamProcessorFactory.updateHidable(), processCtx);
+      }
+      
+    } finally {
+      if (ctx.isTraced()) {
+        LOG.debug(processCtx.getTraceLog());
+      }
+      
+    }
+    
+    return processCtx;
+  }
+  
   public static ProcessContext updateCommenter(Identity commenter, ExoSocialActivity activity, String[] commenters, long oldUpdated) {
     //
     StreamProcessContext processCtx = StreamProcessContext.getIntance(StreamProcessContext.UPDATE_ACTIVITY_COMMENTER_PROCESS, ctx);

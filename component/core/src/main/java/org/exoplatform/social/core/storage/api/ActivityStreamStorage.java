@@ -146,6 +146,16 @@ public interface ActivityStreamStorage {
   public void update(ProcessContext ctx);
   
   /**
+   * Updates the activity references what relates to updated activity
+   * It will run with asynchronous mode
+   * 
+   * @param ctx 
+   * ctx.getActivity() given activity to record the streams
+   * @since 4.0.4, 4.1.0
+   */
+  public void updateHidable(ProcessContext ctx);
+  
+  /**
    * Updates the activity when has actions such as add comment
    * 
    * @param ctx 
