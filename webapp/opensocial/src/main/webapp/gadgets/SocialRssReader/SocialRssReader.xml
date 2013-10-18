@@ -41,6 +41,11 @@
     	<script language="javascript" type="text/javascript" src="/eXoResources/javascript/jquery-1.7.1.js"></script>
     	<script language="javascript" type="text/javascript" src="/eXoResources/skin/bootstrap/js/bootstrap-tooltip.js"></script>
     	<script type="text/javascript" src="script.js"></script>
+			<!--[if IE 8]>
+			<style type="text/css">
+				.minimize .title a {float: none;}
+			</style>
+			<![endif]-->
     	
     	<div id="rssFeed" class="minimize" style="height: 100%;"></div>
     	

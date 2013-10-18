@@ -17,9 +17,9 @@ p {
 }
 
 .minimize .descriptionHighlight .title {
-  border-bottom: 1px solid #e3e3e3;
-  margin-bottom: 2px;
-  padding: 3px;
+    border-bottom: 1px solid #E3E3E3;
+    margin-bottom: 2px;
+    padding-bottom: 5px;
 }
 
 .descriptionHighlight .title a {
@@ -42,12 +42,19 @@ p {
 }
 
 .minimize .title {
-  white-space: nowrap;
+	display: inline-block;
+	width: 100%;
+}
+
+.minimize .title img {
+		float: left;
+		margin-right: 5px;
+		margin-top: 1px;
 }
 
 .minimize .title a {
-    margin-top: 3px;
-    width: 92%;
+    float: left;
+    width: 90%;
 }
 
 .maximize .title a {
@@ -63,7 +70,7 @@ p {
 }
 
 .item {
-  padding: 5px 0;
+  padding: 6px 0 5px;
   border-bottom: 1px solid #dadada;
 }
 
@@ -110,13 +117,11 @@ p {
 }
 
 .minimize .subInfo {
-  margin: 4px 0 0;
+  margin: 5px 0 2px;
 }
 
 .descriptionHighlight {
   border: none;
-  margin: 2px 0px;
-  padding:0px;
 }
 
 .err {
@@ -167,7 +172,8 @@ p {
     font-size: 13px;
 }
 
-.pagination > a {
+.pagination .PagesTotalNumber,
+.pagination .TotalPages {
 	float: right;
 	color: #333;
 }
@@ -176,17 +182,25 @@ p {
 	margin-left: 5px;
 }
 
+.uiPageIterator ul > li > a,
+.uiPageIterator ul > .active > a{
+    -ms-filter: "progid:DXImageTransform.Microsoft.gradient(enabled=false)";
+}
+
 .pagination > a.PagesTotalNumber {color: #2F5E92;}
 
-.pagination > ul {
+.pagination #pages {
   float: right;
   margin-left: 10px;
+}
+
+.pagination ul  li {
+		float: left;
 }
 
 .pagination > ul > li > a {
   cursor: pointer;
 }
-
 .pagination > ul > li.disabled > a {
   cursor: default;
 }
