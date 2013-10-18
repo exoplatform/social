@@ -28,6 +28,7 @@ public class StreamProcessContext extends ProcessorContextImpl {
   public static String NEW_ACTIVITY_PROCESS = "NEW_ACTIVITY";
   public static String NEW_ACTIVITY_RELATIONS_PROCESS = "NEW_ACTIVITY_FOR_RELATIONS";
   public static String UPDATE_ACTIVITY_PROCESS = "UPDATE_ACTIVITY";
+  public static String UPDATE_ACTIVITY_REF = "UPDATE_ACTIVITY_REF";
   public static String UPDATE_ACTIVITY_COMMENTER_PROCESS = "UPDATE_ACTIVITY_COMMENTER";
   public static String DELETE_ACTIVITY_PROCESS = "DELETE_ACTIVITY";
   public static String DELETE_COMMENT_PROCESS = "DELETE_COMMENT";
