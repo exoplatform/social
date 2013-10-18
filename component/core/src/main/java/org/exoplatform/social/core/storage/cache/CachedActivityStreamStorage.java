@@ -210,5 +210,10 @@ public class CachedActivityStreamStorage implements ActivityStreamStorage {
     
   }
 
+  @Override
+  public void updateHidable(ProcessContext ctx) {
+    storage.updateHidable(ctx);
+  }
+
  
 }
