@@ -21,6 +21,7 @@
 */
 %>
 <% 
+  import org.exoplatform.social.webui.Utils;
   import org.exoplatform.webui.core.UIPopupWindow;
   import org.exoplatform.webui.core.UIPageIterator;
   import org.exoplatform.web.application.JavascriptManager;
@@ -57,6 +58,8 @@
   jsmanager.require("SHARED/social-ui-space-member-suggestion", "memberSuggestion").addScripts("memberSuggestion.onLoad($params);");
   
   def invitedUserNames = uicomponent.invitedUserNames;
+  
+  Utils.displayFeedbackMessageInline("$uicomponent.id");
 %>
 <div class="uiSpaceMember">
 <% uiform.begin() %>
