@@ -668,7 +668,6 @@
 	}
 	.fileShare {
 		.linkTitle {
-			display: block;
 			margin-top: -3px;
 		}
 		.videoContent {
@@ -687,8 +686,14 @@
 	.userPosition {
 		color: @linkColor;
 	}
-	.userContact [class^="uiIcon"]:hover {
-		background-image: url("/eXoResources/skin/images/Icons/uiIconsLightGray.png");
+	.userContact {
+		[class^="uiIcon"]:hover {
+			background-image: url("/eXoResources/skin/images/Icons/uiIconsLightGray.png");
+		}
+		
+		[class^="uiIconSoc"]:hover {
+			background-image: url("/social-resources/skin/images/Icons/uiIconsSocLightGray.png");
+		}
 	}
 }
 
@@ -709,17 +714,19 @@
 	.infoVote {
 		.titleVote {
 			float: left;
-			width: 13%;
+		    overflow: hidden;
+		    text-overflow: ellipsis;
+		    white-space: nowrap;
+		    width: 300px;
 		}
 		.progressing {
-			float: left;			
-			width: 15%;
-			color: @grayLight;
-			text-align: right;
+			color: #999999;
+		    float: right;
+		    text-align: right;
+		    width: 100px;
 		}
 		.progressBar {
-			float: left;
-			width: 72%;
+			margin: 0 100px 0 300px;
 			.progress {
 				margin-bottom: 10px;				
 			}

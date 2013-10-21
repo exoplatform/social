@@ -49,11 +49,7 @@
   <component>
     <type>org.exoplatform.social.extras.injection.RelationshipInjector</type>
   </component>
-  
-  <component>
-    <type>org.exoplatform.social.extras.injection.UserStreamMigrationInjector</type>
-  </component>
-
+ 
   <component>
     <type>org.exoplatform.services.bench.DataInjectorService</type>
   </component>

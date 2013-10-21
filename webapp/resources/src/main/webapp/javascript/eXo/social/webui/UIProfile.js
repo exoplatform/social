@@ -28,7 +28,7 @@ var UIProfile = {
     
     // User Profile Popup initialize
 	  var portal = eXo.social.portal;
-	  var restUrl = 'http://' + window.location.host + portal.context + '/' + portal.rest + '/social/people' + '/getPeopleInfo/{0}.json';
+	  var restUrl = window.location.origin + portal.context + '/' + portal.rest + '/social/people' + '/getPeopleInfo/{0}.json';
     
     var container = $('#' + uicomponentId).closest('.PORTLET-FRAGMENT');
     var userLinks = $(container).find('a:[href*="/profile/"]');
