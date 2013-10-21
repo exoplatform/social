@@ -89,6 +89,22 @@ public class StreamProcessorFactory {
   }
   
   /**
+   * Build Update Activity References
+   * @return
+   */
+  public static SocialChromatticAsyncProcessor updateHidable() {
+    return new SocialChromatticAsyncProcessor(SocialServiceContextImpl.getInstance()) {
+
+      @Override
+      protected ProcessContext execute(ProcessContext processContext) throws Exception {
+        getStreamStorage().updateHidable(processContext);
+        return processContext;
+      }
+
+    };
+  }
+  
+  /**
    * Build Update Commenter processor
    * @return
    */

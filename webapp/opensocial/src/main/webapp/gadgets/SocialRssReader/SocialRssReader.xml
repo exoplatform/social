@@ -12,7 +12,6 @@
   should have received a copy of the GNU General Public License along
   with this program; if not, see<http://www.gnu.org/licenses/>.
 -->
-
 <Module>
   <ModulePrefs author="eXoPlatform"
     description="Gadget for Social Rss Reader" directory_title="Social Rss Reader"
@@ -36,268 +35,48 @@
 
   <Content type="html" view="home">
   <![CDATA[
-    <script type="text/javascript" src="/social-resources/javascript/eXo/social/SocialUtil.js"></script>
-    <style type="text/css">
-        .UIPageIterator {
-          margin: 5px auto 0px auto;
-          width: 99%;
-        }
+    	<link rel="stylesheet" type="text/css" href="/eXoResources/skin/bootstrap/css/bootstrap.css" />    
+			<link rel="stylesheet" type="text/css" href="/eXoResources/skin/css/Core.css" />
+    	<link rel="stylesheet" type="text/css" href="style.css"></link>
+    	<script language="javascript" type="text/javascript" src="/eXoResources/javascript/jquery-1.7.1.js"></script>
+    	<script language="javascript" type="text/javascript" src="/eXoResources/skin/bootstrap/js/bootstrap-tooltip.js"></script>
+    	<script type="text/javascript" src="script.js"></script>
+			<!--[if IE 8]>
+			<style type="text/css">
+				.minimize .title a {float: none;}
+			</style>
+			<![endif]-->
+    	
+    	<div id="rssFeed" class="minimize" style="height: 100%;"></div>
+    	
+      <script type="text/javascript">
+      	var prefs = new _IG_Prefs(__MODULE_ID__);
+      	var feedurl = prefs.getString("rssurl");
+      	var rssOnPage = prefs.getInt("rssPerPage");
 
-        .UIPageIterator a {
-          color:#333333;
-          display:block;
-          float:right;
-          font-size: 11px;
-          font-family:Tahoma,Verdana,Arial,Helvetica,"Bitstream Vera Sans",sans-serif;
-        }
-
-        .UIPageIterator .Number {
-          border: 1px solid #DFDFDF;
-          padding: 0 3px;
-          margin-left: 1px; /* orientation=lt */
-          margin-right: 1px; /* orientation=rt */
-          cursor: pointer;
-          line-height: 15px;
-        }
-
-        a {
-          color:#082E2A;
-          text-decoration: none;
-          font-size: 11px;
-          font-family:Tahoma,Verdana,Arial,Helvetica,"Bitstream Vera Sans",sans-serif;
-        }
-
-        div {
-          margin:0;
-          outline-color:-moz-use-text-color;
-          outline-style:none;
-          outline-width:medium;
-          padding:0;
-          font-size:11px;
-          font-family:Tahoma,Verdana,Arial,Helvetica,"Bitstream Vera Sans",sans-serif;
-        }
-
-        .ClearRight {
-          clear:right;
-        }
-
-        .UIPageIterator .PageSelected {
-          color:#F16701;
-          font-weight:bold;
-        }
-
-        .UIPageIterator .Number:hover {
-          color: #0183F1;
-          border: 1px solid #B6B6B6;
-        }
-
-        .UIPageIterator .PageSelected {
-          color: #F16701;
-          font-weight: bold;
-        }
-
-        .UIPageIterator .Icon {
-          margin-left: 0.5px; /* orientation=lt */
-          margin-right: 0px; /* orientation=rt */
-          width: 18px;
-          height: 17px;
-          cursor: pointer;
-        }
-
-        .UIPageIterator .PagesTotalNumber {
-          color: #0183F1;
-          margin: 0 3px 0 1px; /* orientation=lt */
-          line-height: 17px;
-          font-size: 11px;
-          font-family:Tahoma,Verdana,Arial,Helvetica,"Bitstream Vera Sans",sans-serif;
-        }
-
-        .UIPageIterator .TotalPages {
-          font-size: 11px;
-          line-height: 17px;
-          font-family:Tahoma,Verdana,Arial,Helvetica,"Bitstream Vera Sans",sans-serif;
-        }
-
-        .UIPageIterator .LastTopPageIcon {
-          background: url('/social/skin/image/ArrowPageIterator.gif') no-repeat left -17px; /* orientation=lt */
-        }
-
-        .UIPageIterator .NextTopPageIcon {
-          background: url('/social/skin/image/ArrowPageIterator.gif') no-repeat left -51px; /* orientation=lt */
-        }
-
-        .UIPageIterator .LastPageIcon {
-          background: url('/social/skin/image/ArrowPageIterator.gif') no-repeat left -119px; /* orientation=lt */
-        }
-
-        .UIPageIterator .NextPageIcon {
-          background: url('/social/skin/image/ArrowPageIterator.gif') no-repeat left -85px;	/* orientation=lt */
-        }
-
-        .UIPageIterator .DisableLastTopPageIcon {
-          background: url('/social/skin/image/ArrowPageIterator.gif') no-repeat left top; /* orientation=lt */
-        }
-
-        .UIPageIterator .DisableNextTopPageIcon {
-          background: url('/social/skin/image/ArrowPageIterator.gif') no-repeat left -34px; /* orientation=lt */
-        }
-
-        .UIPageIterator .DisableLastPageIcon {
-          background: url('/social/skin/image/ArrowPageIterator.gif') no-repeat left -102px; /* orientation=lt */
-        }
-
-        .UIPageIterator .DisableNextPageIcon {
-          background: url('/social/skin/image/ArrowPageIterator.gif') no-repeat left -68px; /* orientation=lt */
-        }
-    </style>
-
-    <link rel="stylesheet" type="text/css" href="style.css"></link>
-    <script type="text/javascript" src="script.js"></script>
-
-    <div id="rssFeed" style="overflow: auto;"></div>
-
-
-    <script type="text/javascript">
-      var prefs = new _IG_Prefs(__MODULE_ID__);
-      var feedurl = prefs.getString("rssurl");
-      var rssOnPage = prefs.getInt("rssPerPage");
-
-      var rssFetch = new RssFetch();
-      gadgets.util.registerOnLoadHandler(rssFetch.refreshFeed());
-    </script>
+      	var rssFetch = new RssFetch();
+      	rssFetch.refreshFeed();
+    	</script>
   ]]>
   </Content>
 
   <Content type="html" view="canvas">
   <![CDATA[
-    <script type="text/javascript" src="/social-resources/javascript/eXo/social/SocialUtil.js"></script>
-    <style type="text/css">
-        .UIPageIterator {
-          margin: 5px auto 0px auto;
-          width: 99%;
-        }
-
-        .UIPageIterator a {
-          color:#333333;
-          display:block;
-          float:right;
-          font-size: 11px;
-          font-family:Tahoma,Verdana,Arial,Helvetica,"Bitstream Vera Sans",sans-serif;
-        }
-
-        .UIPageIterator .Number {
-          border: 1px solid #DFDFDF;
-          padding: 0 3px;
-          margin-left: 1px; /* orientation=lt */
-          margin-right: 1px; /* orientation=rt */
-          cursor: pointer;
-          line-height: 15px;
-        }
-
-        a {
-          color:#082E2A;
-          text-decoration: none;
-          font-size: 11px;
-          font-family:Tahoma,Verdana,Arial,Helvetica,"Bitstream Vera Sans",sans-serif;
-        }
-
-        div {
-          margin:0;
-          outline-color:-moz-use-text-color;
-          outline-style:none;
-          outline-width:medium;
-          padding:0;
-          font-size:11px;
-          font-family:Tahoma,Verdana,Arial,Helvetica,"Bitstream Vera Sans",sans-serif;
-        }
-
-        .ClearRight {
-          clear:right;
-        }
-
-        .UIPageIterator .PageSelected {
-          color:#F16701;
-          font-weight:bold;
-        }
-
-        .UIPageIterator .Number:hover {
-          color: #0183F1;
-          border: 1px solid #B6B6B6;
-        }
-
-        .UIPageIterator .PageSelected {
-          color: #F16701;
-          font-weight: bold;
-        }
-
-        .UIPageIterator .Icon {
-          margin-left: 0.5px; /* orientation=lt */
-          margin-right: 0px; /* orientation=rt */
-          width: 18px;
-          height: 17px;
-          cursor: pointer;
-        }
-
-        .UIPageIterator .PagesTotalNumber {
-          color: #0183F1;
-          margin: 0 3px 0 1px; /* orientation=lt */
-          line-height: 17px;
-          font-size: 11px;
-          font-family:Tahoma,Verdana,Arial,Helvetica,"Bitstream Vera Sans",sans-serif;
-        }
-
-        .UIPageIterator .TotalPages {
-          font-size: 11px;
-          line-height: 17px;
-          font-family:Tahoma,Verdana,Arial,Helvetica,"Bitstream Vera Sans",sans-serif;
-        }
-
-        .UIPageIterator .LastTopPageIcon {
-          background: url('/social/skin/image/ArrowPageIterator.gif') no-repeat left -17px; /* orientation=lt */
-        }
-
-        .UIPageIterator .NextTopPageIcon {
-          background: url('/social/skin/image/ArrowPageIterator.gif') no-repeat left -51px; /* orientation=lt */
-        }
-
-        .UIPageIterator .LastPageIcon {
-          background: url('/social/skin/image/ArrowPageIterator.gif') no-repeat left -119px; /* orientation=lt */
-        }
-
-        .UIPageIterator .NextPageIcon {
-          background: url('/social/skin/image/ArrowPageIterator.gif') no-repeat left -85px;	/* orientation=lt */
-        }
-
-        .UIPageIterator .DisableLastTopPageIcon {
-          background: url('/social/skin/image/ArrowPageIterator.gif') no-repeat left top; /* orientation=lt */
-        }
-
-        .UIPageIterator .DisableNextTopPageIcon {
-          background: url('/social/skin/image/ArrowPageIterator.gif') no-repeat left -34px; /* orientation=lt */
-        }
-
-        .UIPageIterator .DisableLastPageIcon {
-          background: url('/social/skin/image/ArrowPageIterator.gif') no-repeat left -102px; /* orientation=lt */
-        }
-
-        .UIPageIterator .DisableNextPageIcon {
-          background: url('/social/skin/image/ArrowPageIterator.gif') no-repeat left -68px; /* orientation=lt */
-        }
-    </style>
-
+    <link rel="stylesheet" type="text/css" href="/eXoResources/skin/bootstrap/css/bootstrap.css" />    
+		<link rel="stylesheet" type="text/css" href="/eXoResources/skin/css/Core.css" />
     <link rel="stylesheet" type="text/css" href="style.css"></link>
+    <script language="javascript" type="text/javascript" src="/eXoResources/javascript/jquery-1.7.1.js"></script>
+    	<script language="javascript" type="text/javascript" src="/eXoResources/skin/bootstrap/js/bootstrap-tooltip.js"></script>
     <script type="text/javascript" src="script.js"></script>
 
-    <div id="rssFeed" style="overflow: auto;"></div>
-
-
+    <div id="rssFeed" class="maximize" style="height: 100%;"></div>
+    
     <script type="text/javascript">
       var prefs = new _IG_Prefs(__MODULE_ID__);
       var feedurl = prefs.getString("rssurl");
       var rssOnPage = prefs.getInt("rssPerPage");
-
       var rssFetch = new RssFetch();
-      gadgets.util.registerOnLoadHandler(rssFetch.refreshFeed());
+      rssFetch.refreshFeed();
     </script>
   ]]>
   </Content>
