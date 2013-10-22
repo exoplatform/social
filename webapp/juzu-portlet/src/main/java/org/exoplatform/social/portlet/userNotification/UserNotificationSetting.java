@@ -35,6 +35,7 @@ import juzu.request.RenderContext;
 import juzu.template.Template;
 
 import org.exoplatform.commons.api.notification.model.GroupProvider;
+import org.exoplatform.commons.api.notification.model.PluginInfo;
 import org.exoplatform.commons.api.notification.model.UserSetting;
 import org.exoplatform.commons.api.notification.model.UserSetting.FREQUENCY;
 import org.exoplatform.commons.api.notification.plugin.config.PluginConfig;
@@ -168,6 +169,16 @@ public class UserNotificationSetting {
     List<GroupProvider> groups = providerSettingService.getGroupPlugins();
     parameters.put("groups", groups);
     //
+    boolean hasActivePlugin = false;
+    for (GroupProvider group : groups) {
+      for (PluginInfo plugin : group.getProviderDatas()) {
+        if (plugin.isActive()) {
+          hasActivePlugin = true;
+          break;
+        }
+      }
+    }
+    parameters.put("hasActivePlugin", hasActivePlugin);
     
     Map<String, String> selectBoxList = new HashMap<String, String>();
     Map<String, String> checkBoxList = new HashMap<String, String>();

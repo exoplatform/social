@@ -2,6 +2,7 @@
 #{param name=checkbox/}
 #{param name=checkboxId/}
 #{param name=groups/}
+#{param name=hasActivePlugin/}
 #{param name=checkBoxs/}
 #{param name=selectBoxs/}
 
@@ -25,7 +26,13 @@
 			<h4>${_ctx.appRes("UINotification.label.NotificationSettings")}</h4>
 			<span>${_ctx.appRes("UINotification.label.NotificationsDescription")}</span>
 		</div>
-		
+		<% 
+			if (hasActivePlugin == false) { 
+		%>
+		<div class="form-horizontal" >
+			<h4>${_ctx.appRes("UINotification.msg.NoPluginIsActive")}</h4>
+		</div>
+		<%} else { %>		
 		<div>
 			<span class="uiCheckbox">
 				<input type="checkbox" ${checkbox} name="${checkboxId}" class="checkbox" id="${checkboxId}"/>
@@ -116,6 +123,7 @@
 				<button id="Save" data-ok="${msgOK}" data-nok="${msgNOK}" class="btn" type="button">${_ctx.appRes("UINotification.action.Save")}</button>
 				<button id="Reset" data-confirm="${confirm}" data-confirm-label="${confirmLabel}" class="btn" type="button">${_ctx.appRes("UINotification.action.Reset")}</button>
 			</div>
+		<%} %>			
 		</div>
 	</form>
 </div>

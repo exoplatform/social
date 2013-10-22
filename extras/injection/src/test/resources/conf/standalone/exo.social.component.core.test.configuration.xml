@@ -47,11 +47,7 @@
   <component>
     <type>org.exoplatform.social.extras.injection.RelationshipInjector</type>
   </component>
-  
-  <component>
-    <type>org.exoplatform.social.extras.injection.UserStreamMigrationInjector</type>
-  </component>
-
+ 
   <component>
     <key>org.exoplatform.portal.config.UserACL</key>
     <type>org.exoplatform.portal.config.UserACL</type>

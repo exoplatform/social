@@ -46,8 +46,8 @@ import org.exoplatform.web.url.navigation.NodeURL;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.EventConfig;
-import org.exoplatform.webui.core.UIApplication;
 import org.exoplatform.webui.core.UIPopupWindow;
+import org.exoplatform.webui.core.UIPortletApplication;
 import org.exoplatform.webui.core.UITabPane;
 import org.exoplatform.webui.core.lifecycle.UIFormLifecycle;
 import org.exoplatform.webui.event.Event;
@@ -102,7 +102,7 @@ public class UISpaceInfo extends UIForm {
     spaceDisplayName.setHTMLAttribute(HTML_ATTRIBUTE_PLACEHOLDER, resourceBundle.getString("UISpaceSettings.label.spaceDisplayName"));
     addUIFormInput(spaceDisplayName.
                    addValidator(MandatoryValidator.class).
-                   addValidator(ExpressionValidator.class, "^([\\p{L}\\d]+[\\s]?)+$", "UISpaceInfo.msg.name-invalid").
+                   addValidator(ExpressionValidator.class, "^([\\p{L}\\d\']+[\\s]?)+$", "UISpaceInfo.msg.name-invalid").
                    addValidator(StringLengthValidator.class, 3, 30));
 
     UIFormTextAreaInput description = new UIFormTextAreaInput(SPACE_DESCRIPTION, SPACE_DESCRIPTION, null);
@@ -189,9 +189,6 @@ public class UISpaceInfo extends UIForm {
       SpaceService spaceService = uiSpaceInfo.getSpaceService();
       UIPortal uiPortal = Util.getUIPortal();
 
-      PortalRequestContext portalRequestContext = Util.getPortalRequestContext();
-      WebuiRequestContext requestContext = event.getRequestContext();
-      UIApplication uiApp = requestContext.getUIApplication();
       String id = uiSpaceInfo.getUIStringInput(SPACE_ID).getValue();
       String name = uiSpaceInfo.getUIStringInput(SPACE_DISPLAY_NAME).getValue();
       Space space = spaceService.getSpaceById(id);
@@ -200,7 +197,7 @@ public class UISpaceInfo extends UIForm {
       
       if (space == null) {
         //redirect to spaces
-        portalRequestContext.getResponse().sendRedirect(Utils.getURI("all-spaces"));
+        event.getRequestContext().sendRedirect(Utils.getURI("all-spaces"));
         return;
       }
       
@@ -208,6 +205,7 @@ public class UISpaceInfo extends UIForm {
       UserNode renamedNode = null;
       
       boolean nameChanged = (!space.getDisplayName().equals(name));
+      UIPortletApplication uiApp = uiSpaceInfo.getAncestorOfType(UIPortletApplication.class);
       if (nameChanged) {
 
         String cleanedString = SpaceUtils.cleanString(name);
@@ -231,7 +229,7 @@ public class UISpaceInfo extends UIForm {
       
       String spaceDescription = space.getDescription();
       if (spaceDescription == null || spaceDescription.trim().length() == 0) {
-        ResourceBundle resourceBundle = requestContext.getApplicationResourceBundle();
+        ResourceBundle resourceBundle = event.getRequestContext().getApplicationResourceBundle();
         space.setDescription(resourceBundle.getString(MSG_DEFAULT_SPACE_DESCRIPTION));
         uiSpaceInfo.getUIFormTextAreaInput(SPACE_DESCRIPTION).setValue(space.getDescription());
       } else {
@@ -265,7 +263,7 @@ public class UISpaceInfo extends UIForm {
           selectedNode = renamedNode;  
           PortalRequestContext prContext = Util.getPortalRequestContext();
           prContext.createURL(NodeURL.TYPE).setNode(selectedNode);
-          portalRequestContext.getResponse().sendRedirect(Utils.getSpaceURL(selectedNode));
+          event.getRequestContext().sendRedirect(Utils.getSpaceURL(selectedNode));
           return;
         }
       } else {

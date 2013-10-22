@@ -51,7 +51,7 @@ public class UISpaceSettings extends UIFormInputSet {
     spaceDisplayName.setHTMLAttribute(HTML_ATTRIBUTE_PLACEHOLDER, resourceBundle.getString("UISpaceSettings.label.spaceDisplayName"));
     addUIFormInput(spaceDisplayName.
                    addValidator(MandatoryValidator.class).
-                   addValidator(ExpressionValidator.class, "^([\\p{L}\\s\\d]+[\\s]?)+$", MSG_INVALID_SPACE_NAME).
+                   addValidator(ExpressionValidator.class, "^([\\p{L}\\s\\d\']+[\\s]?)+$", MSG_INVALID_SPACE_NAME).
                    addValidator(StringLengthValidator.class, 3, 30));
 
     UIFormTextAreaInput description = new UIFormTextAreaInput(SPACE_DESCRIPTION, SPACE_DESCRIPTION, null);

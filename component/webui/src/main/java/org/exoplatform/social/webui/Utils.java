@@ -300,11 +300,9 @@ public class Utils {
   }
   
   /**
-   * Initializes feedback message
-   * 
-   * return
+   * Display the feedback message inline instead of show on popup
    */
-  public static void initFeedbackMessagePopup() {
+  public static void displayFeedbackMessageInline(String parentId) {
     try {
       WebuiRequestContext context = WebuiRequestContext.getCurrentInstance();
       ResourceBundle res = context.getApplicationResourceBundle();
@@ -312,7 +310,6 @@ public class Utils {
       JavascriptManager jm = pContext.getJavascriptManager();
       String feedbackMessageType = getValueFromRequestParam("feedbackMessage");
       if (feedbackMessageType != null) {
-        String title = res.getString("Notification.feedback.title." + feedbackMessageType);
         String message = res.getString("Notification.feedback.message." + feedbackMessageType);
         String userName = getValueFromRequestParam("userName");
         String spaceId = getValueFromRequestParam("spaceId");
@@ -320,9 +317,8 @@ public class Utils {
           message = message.replace("{0}", getUserIdentity(userName, false).getProfile().getFullName());
         if (spaceId != null)
           message = message.replace("{1}", getSpaceService().getSpaceById(spaceId).getDisplayName());
-        String closeLabel = res.getString("Notification.label.Close");
         message = message.replace("'", "${simpleQuote}");
-        jm.require("SHARED/socialUtil", "socialUtil").addScripts("socialUtil.feedbackMessagePopup('" + title + "','" + message + "','" + closeLabel + "');");
+        jm.require("SHARED/socialUtil", "socialUtil").addScripts("socialUtil.feedbackMessageInline('" + parentId + "','" + message + "');");
       }
     } catch (Exception e) {
       LOG.debug("Failed to init the feedback message");

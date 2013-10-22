@@ -26,7 +26,6 @@
    def jsManager = _ctx.getRequestContext().getJavascriptManager();
    jsManager.require("SHARED/bts_tab");
    
-   Utils.initFeedbackMessagePopup();
 %>
 <div class="uiSpaceSetting" id="$uicomponent.id">
 <% if(uicomponent.isLeader()){ 

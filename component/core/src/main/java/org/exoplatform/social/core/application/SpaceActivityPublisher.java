@@ -37,6 +37,7 @@ import org.exoplatform.social.core.space.SpaceListenerPlugin;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.model.Space.UpdatedField;
 import org.exoplatform.social.core.space.spi.SpaceLifeCycleEvent;
+import org.exoplatform.social.core.space.spi.SpaceLifeCycleEvent.Type;
 import org.exoplatform.social.core.storage.api.IdentityStorage;
 import org.exoplatform.social.core.storage.api.SpaceStorage;
 
@@ -193,7 +194,7 @@ public class SpaceActivityPublisher extends SpaceListenerPlugin {
     templateParams.put(USER_NAME_PARAM, "@" + event.getTarget());
     templateParams.put(BaseActivityProcessorPlugin.TEMPLATE_PARAM_TO_PROCESS, USER_NAME_PARAM);
     
-    recordActivity(event, activityMessage, MANAGER_GRANTED_TITLE_ID, templateParams);
+    recordActivity(new SpaceLifeCycleEvent(space, space.getEditor(), Type.GRANTED_LEAD), activityMessage, MANAGER_GRANTED_TITLE_ID, templateParams);
     LOG.debug("user " + event.getTarget() + " has been promoted as space's manager " + space.getDisplayName());
   }
 
@@ -238,11 +239,12 @@ public class SpaceActivityPublisher extends SpaceListenerPlugin {
    */
   @Override
   public void revokedLead(SpaceLifeCycleEvent event) {
+    Space space = event.getSpace();
     final String activityMessage = "@" + event.getTarget() + " has been revoked as space's manager.";
     Map<String, String> templateParams = new LinkedHashMap<String, String>();
     templateParams.put(USER_NAME_PARAM, "@" + event.getTarget());
     templateParams.put(BaseActivityProcessorPlugin.TEMPLATE_PARAM_TO_PROCESS, USER_NAME_PARAM);
-    recordActivity(event, activityMessage, MANAGER_REVOKED_TITLE_ID, templateParams);
+    recordActivity(new SpaceLifeCycleEvent(space, space.getEditor(), Type.REVOKED_LEAD), activityMessage, MANAGER_REVOKED_TITLE_ID, templateParams);
     LOG.debug("user " + event.getTarget() + " has been revoked as space's manage "
             + event.getSpace().getDisplayName());
   }
@@ -353,9 +355,7 @@ public class SpaceActivityPublisher extends SpaceListenerPlugin {
     Space space = event.getSpace();
     Identity spaceIdentity = identityManager.getOrCreateIdentity(SpaceIdentityProvider.NAME, space.getPrettyName(), false);
     
-    String userId = space.getEditor() != null ? space.getEditor() : event.getTarget(); 
-    
-    Identity identity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, userId, false);
+    Identity identity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, event.getTarget(), false);
     String activityId = getStorage().getProfileActivityId(spaceIdentity.getProfile(), Profile.AttachedActivityType.SPACE);
     if (activityId != null) {
       try {
