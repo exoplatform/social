@@ -144,33 +144,20 @@
      
      feedbackMessageInline : function(parentId, message) { 
     	 message = message.replace("${simpleQuote}", "'");
-    	 
+
     	 var msgEl = $('#feedbackmessageInline');
-    	 
+
     	 if(msgEl.length === 0) {
-    		 //generate container of message
-    		 var msgEl = $('<div />', {
-    			 id : "feedbackMessageInline",
-    			 class : 'alert alert-success'
-    		 }).prependTo($('#'+ parentId));
-
-    		 //icon success
-    		 $('<i />', {
-    			 class : "uiIconSuccess"
-    		 }).appendTo(msgEl);
-
-    		 //generate message
-    		 $('<span />', {
-    			 class : "message",
-    			 text : message
-    		 }).appendTo(msgEl);
-    	 } else {
-    		 msgEl.hide().stop().find("span.message").text(message);
+    	   msgEl = $('<div id="feedbackMessageInline" class="alert alert-success">' +
+		               '  <i class="uiIconSuccess"></i><span class="message"></span>' +
+		               '</div>');
+    		 //
+    		 msgEl.prependTo($('#'+ parentId));
     	 }
-
-    	 msgEl.show('fast').delay(4500).hide('slow');
+       msgEl.stop().hide().find("span.message").text(message);
+       msgEl.show('fast').delay(4500).hide('slow');
       },
-    
+
     /**
      * Get current Browser
      */
