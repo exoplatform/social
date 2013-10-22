@@ -245,7 +245,10 @@ var UIActivity = {
       if (isReply) {
         this.replyByURL(activityId);
       } else {
-    	  $('html,body').animate({scrollTop: $("#CommentBlock"+commentId).offset().top});
+    	  var obj = document.getElementById('commentContainer'+ commentId);
+    	  if (obj) {
+    		  obj.scrollIntoView(true);
+    	  }
       }
     }
   },
