@@ -1,0 +1,352 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Copyright (C) 2003-2011 eXo Platform SAS.
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Affero General Public License for more details.
+
+    You should have received a copy of the GNU Affero General Public License
+    along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+-->
+
+<gatein-resources
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.gatein.org/xml/ns/gatein_resources_1_3 http://www.gatein.org/xml/ns/gatein_resources_1_3"
+        xmlns="http://www.gatein.org/xml/ns/gatein_resources_1_3">
+
+  <portal-skin>
+    <skin-name>Default</skin-name>
+    <skin-module>Social</skin-module>
+    <css-path>/skin/css/social.css</css-path>
+  </portal-skin>
+
+  <module>
+    <name>social-core</name> <!-- provides core utility for reuse (browser, dom level) -->
+    <script>
+      <path>/javascript/htmlparser.js</path>
+    </script>
+    <depends>
+      <module>base</module>
+    </depends>
+  </module>
+
+  <module>
+    <name>social-ui-profile</name>
+    <script>
+       <path>/javascript/eXo/social/webui/UIProfile.js</path>
+    </script>
+    <depends>
+      <module>socialUtil</module>
+    </depends>
+    <depends>
+      <module>jquery</module>
+      <as>$</as>
+    </depends>
+    <depends>
+       <module>webui</module>
+    </depends>
+    <depends>
+      <module>userPopupPlugin</module>
+    </depends>
+  </module>
+  
+  <module>
+    <name>socialUtil</name>
+    <script>
+       <path>/javascript/eXo/social/SocialUtil.js</path>
+    </script>
+    <depends>
+      <module>jquery</module>
+      <as>gj</as>
+    </depends>
+    <depends>
+      <module>uiMaskLayer</module>
+    </depends>
+    <depends>
+      <module>uiPopupWindow</module>
+      <as>popupWindow</as>
+    </depends>    
+  </module>
+  
+  <module>
+    <name>socialGadgetsUtil</name>
+    <script>
+       <path>/javascript/eXo/social/SocialGadgetsUtil.js</path>
+    </script>
+  </module>
+  
+  <module>
+    <name>social-ui-user-search</name>
+    <script>
+       <path>/javascript/eXo/social/webui/UIProfileUserSearch.js</path>
+    </script>
+    <depends>
+      <module>socialUtil</module>
+    </depends>
+    <depends>
+      <module>jquery</module>
+      <as>$</as>
+    </depends>
+    <depends>
+       <module>socialPlugin</module>
+    </depends>
+    <depends>
+       <module>webui</module>
+    </depends>
+  </module>
+  
+  <module>
+    <name>social-ui-space-search</name>
+    <script>
+       <path>/javascript/eXo/social/webui/UISpaceSearch.js</path>
+    </script>
+    <depends>
+      <module>socialUtil</module>
+    </depends>
+    <depends>
+      <module>jquery</module>
+      <as>$</as>
+    </depends>
+    <depends>
+       <module>socialPlugin</module>
+    </depends>
+    <depends>
+       <module>webui</module>
+    </depends>
+  </module>
+  
+  <module>
+    <name>social-ui-space-member-suggestion</name>
+    <script>
+       <path>/javascript/eXo/social/webui/UISpaceMemberSuggestion.js</path>
+    </script>
+    <depends>
+      <module>socialUtil</module>
+    </depends>
+    <depends>
+      <module>jquery</module>
+      <as>$</as>
+    </depends>
+    <depends>
+       <module>socialPlugin</module>
+    </depends>
+    <depends>
+       <module>webui</module>
+    </depends>
+  </module>
+  
+  <module>
+    <name>social-ui-space-nav</name>
+    <script>
+       <path>/javascript/eXo/social/webui/UISpaceNavigation.js</path>
+    </script>
+    <depends>
+      <module>socialUtil</module>
+    </depends>
+    <depends>
+       <module>base</module>
+    </depends>
+    <depends>
+      <module>jquery</module>
+      <as>$</as>
+    </depends>
+    <depends>
+      <module>bts_dropdown</module>
+    </depends>
+  </module>
+
+  <module>
+    <name>social-ui-activity-composer</name>
+    <script>
+       <path>/javascript/eXo/social/webui/UIComposer.js</path>
+    </script>
+    <depends>
+      <module>socialUtil</module>
+    </depends>
+    <depends>
+       <module>base</module>
+    </depends>
+    <depends>
+      <module>jquery</module>
+      <as>$</as>
+    </depends>
+    <depends>
+       <module>mentionsPlugin</module>
+    </depends>
+    <depends>
+      <module>mentionsLib</module>
+      <as>mentions</as>
+    </depends>
+  </module>
+
+  <module>
+    <name>social-ui-activity</name>
+    <script>
+      <path>/javascript/eXo/social/webui/UIActivity.js</path>
+    </script>
+    <depends>
+      <module>socialUtil</module>
+    </depends>
+    <depends>
+      <module>webui</module>
+    </depends>
+    <depends>
+      <module>jquery</module>
+      <as>$</as>
+    </depends>
+    <depends>
+       <module>mentionsPlugin</module>
+    </depends>
+    <depends>
+      <module>mentionsLib</module>
+      <as>mentions</as>
+    </depends>
+  </module>
+  
+  <module>
+    <name>social-ui-activities-loader</name>
+    <script>
+      <path>/javascript/eXo/social/webui/UIActivityLoader.js</path>
+    </script>
+    <depends>
+      <module>jquery</module>
+      <as>$</as>
+    </depends>
+  </module>
+
+  <module>
+    <name>social-ui-link-activity-composer</name>
+    <script>
+      <path>/javascript/eXo/social/webui/UIComposerLinkExtension.js</path>
+    </script>
+    <depends>
+      <module>socialUtil</module>
+    </depends>
+    <depends>
+      <module>jquery</module>
+      <as>$</as>
+    </depends>
+    <depends>
+      <module>webui</module>
+    </depends>
+  </module>
+
+  <module>
+    <name>social-ui-activity-updates</name>
+    <script>
+      <path>/javascript/eXo/social/webui/UIActivityUpdates.js</path>
+    </script>
+    <depends>
+      <module>jquery</module>
+      <as>$</as>
+    </depends>
+    <depends>
+      <module>webui</module>
+      <as>webui</as>
+    </depends>
+  </module>
+
+  <module>
+    <name>social-ui-customize-control</name>
+    <script>
+      <path>/javascript/eXo/social/webui/UICustomizeControl.js</path>
+    </script>
+    <depends>
+      <module>socialUtil</module>
+    </depends>
+    <depends>
+      <module>jquery</module>
+      <as>$</as>
+    </depends>
+    <depends>
+      <module>uiForm</module>
+      <as>uiForm</as>
+    </depends>
+    <depends>
+      <module>webui</module>
+    </depends>
+  </module>
+  
+  <module>
+    <name>social-category-selector</name>
+    <script>
+      <path>/javascript/eXo/social/webui/UIApplicationCategorySelector.js</path>
+    </script>
+    <depends>
+      <module>socialUtil</module>
+    </depends>
+    <depends>
+      <module>jquery</module>
+      <as>$</as>
+    </depends>
+    <depends>
+       <module>base</module>
+    </depends>
+    <depends>
+      <module>selectors</module>
+      <as>selector</as>
+    </depends>
+  </module>
+  
+  <module>
+    <name>socialPlugin</name>
+    <script>
+      <path>/javascript/eXo/social/Util.js</path>
+    </script>
+    <depends>
+      <module>jquery</module>
+      <as>jQuery</as>
+    </depends>
+  </module>
+
+  <module>
+    <name>iphonePlugin</name>
+    <script>
+      <path>/javascript/iphone/checkbox/iphone-style-checkboxes.js</path>
+    </script>
+    <depends>
+      <module>jquery</module>
+      <as>$</as>
+    </depends>
+  </module>
+  
+  <module>
+    <name>mentionsPlugin</name>
+    <script>
+      <path>/javascript/eXo/jquery.exomentions.js</path>
+    </script>
+    <depends>
+      <module>jquery</module>
+      <as>jQuery</as>
+    </depends>
+    <depends>
+      <module>mentionsLib</module>
+      <as>mentions</as>
+    </depends>
+  </module>
+  <module>
+    <name>mentionsLib</name>
+    <script>
+      <path>/javascript/eXo/underscore.js</path>
+    </script>
+  </module>
+  <module>
+    <name>userPopupPlugin</name>
+    <script>
+      <path>/javascript/eXo/UIUserProfilePopup.js</path>
+    </script>
+    <depends>
+      <module>jquery</module>
+      <as>jQuery</as>
+    </depends>
+  </module>
+</gatein-resources>
