@@ -73,8 +73,9 @@ public class GateInResourceTest extends TestCase {
     }
     
     String result = msg.toString();
-    System.out.println(result);
-    assertTrue(result.length() == 0);
+    if (result.length() > 0) {
+      fail(result);
+    }
   }
 
   private String verify(ScriptResourceDescriptor resource) throws Exception {
