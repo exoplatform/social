@@ -421,27 +421,29 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
 
       // mentioners
       addMentioner(streamCtx.getMentioners(), activityEntity);
+      //turnOffLock to get increase perf
+      //turnOnUpdateLock = false;
     } catch (NodeNotFoundException ex) {
+      LOG.warn("Probably was updated activity reference by another session");
+      LOG.debug(ex.getMessage(), ex);
+      //turnOnLock to avoid next exception
+    } catch (ChromatticException ex) {
+      Throwable throwable = ex.getCause();
+      if (throwable instanceof ItemExistsException || 
+          throwable instanceof InvalidItemStateException ||
+          throwable instanceof PathNotFoundException) {
         LOG.warn("Probably was updated activity reference by another session");
         LOG.debug(ex.getMessage(), ex);
         //turnOnLock to avoid next exception
-      } catch (ChromatticException ex) {
-        Throwable throwable = ex.getCause();
-        if (throwable instanceof ItemExistsException || 
-            throwable instanceof InvalidItemStateException ||
-            throwable instanceof PathNotFoundException) {
-          LOG.warn("Probably was updated activity reference by another session");
-          LOG.debug(ex.getMessage(), ex);
-          //turnOnLock to avoid next exception
-        }else {
-          LOG.warn("Probably was updated activity reference by another session", ex);
-          LOG.debug(ex.getMessage(), ex);
-        }
-        
-      } finally {
-          getSession().save();
-          lock.unlock();
+      }else {
+        LOG.warn("Probably was updated activity reference by another session", ex);
+        LOG.debug(ex.getMessage(), ex);
       }
+      
+    } finally {
+        getSession().save();
+        lock.unlock();
+    }
   }
   
   @Override

@@ -19,17 +19,18 @@
 
 package org.exoplatform.social.core.storage.cache;
 
-import org.exoplatform.commons.cache.future.Loader;
-
-import org.gatein.common.logging.Logger;
-import org.gatein.common.logging.LoggerFactory;
-
 import java.lang.reflect.UndeclaredThrowableException;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.FutureTask;
+
+import javax.jcr.InvalidItemStateException;
+
+import org.exoplatform.commons.cache.future.Loader;
+import org.gatein.common.logging.Logger;
+import org.gatein.common.logging.LoggerFactory;
 
 
 /**
@@ -156,7 +157,12 @@ public abstract class FutureCache<K, V, C>
          {
             if (e.getCause() != null)
             {
-               throw new UndeclaredThrowableException(e.getCause());
+              if (e.getCause() instanceof InvalidItemStateException) {
+                log.warn(e.getMessage());
+                return null;
+              } else {
+                throw new UndeclaredThrowableException(e.getCause());
+              }
             }
             else
             {

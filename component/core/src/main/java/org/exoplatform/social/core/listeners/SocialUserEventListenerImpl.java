@@ -56,9 +56,6 @@ public class SocialUserEventListenerImpl extends UserEventListener {
       throw new RuntimeException("Unable to create a previously deleted user : " + user.getUserName());
     }
     
-    //
-    StorageUtils.clearUsersPlatformGroup();
-
     RequestLifeCycle.end();
   }
 
@@ -138,9 +135,6 @@ public class SocialUserEventListenerImpl extends UserEventListener {
       LOG.debug("Problem occurred when deleting identity.");
     }
     
-    //
-    StorageUtils.clearUsersPlatformGroup();
-
     RequestLifeCycle.end();
 
   }

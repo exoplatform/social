@@ -4,6 +4,11 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.chromattic.api.ChromatticSession;
+import org.exoplatform.commons.chromattic.ChromatticManager;
+import org.exoplatform.container.PortalContainer;
+import org.exoplatform.social.common.lifecycle.SocialChromatticLifeCycle;
+import org.exoplatform.social.core.chromattic.entity.ProviderRootEntity;
 import org.exoplatform.social.core.identity.SpaceMemberFilterListAccess.Type;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
@@ -34,11 +39,13 @@ public class IdentityStorageTest extends AbstractCoreTest {
   private SpaceStorage spaceStorage;
   private List<Identity> tearDownIdentityList;
   private List<Space> tearDownSpaceList;
+  private SocialChromatticLifeCycle lifecycle;
 
   public void setUp() throws Exception {
     super.setUp();
     identityStorage = (IdentityStorage) getContainer().getComponentInstanceOfType(IdentityStorageImpl.class);
     spaceStorage = (SpaceStorage) getContainer().getComponentInstanceOfType(SpaceStorageImpl.class);
+    lifecycle = lifecycleLookup();
     assertNotNull("identityStorage must not be null", identityStorage);
     tearDownIdentityList = new ArrayList<Identity>();
     tearDownSpaceList = new ArrayList<Space>();
@@ -52,6 +59,42 @@ public class IdentityStorageTest extends AbstractCoreTest {
       spaceStorage.deleteSpace(space.getId());
     }
     super.tearDown();
+  }
+  
+  public void testUpgradeIdentity() {
+    Identity tobeSavedIdentity = new Identity(OrganizationIdentityProvider.NAME, "identity1");
+    identityStorage.saveIdentity(tobeSavedIdentity);
+
+    tearDownIdentityList.add(tobeSavedIdentity);
+
+    // Get new session
+    ChromatticSession session = lifecycle.getSession();
+    synchronized (this) {
+      try {
+        System.out.println("waiting 60 seconds ...");
+        this.wait(60 * 1000);
+      } catch (InterruptedException e1) {
+        System.out.println("InterruptedException but is Session close? " + session.isClosed());
+      }
+    }
+    System.out.println("JCRSession is alive? " + session.getJCRSession().isLive());
+    System.out.println("Session is close? " + session.isClosed());
+
+    // System.out.println("New session with timeout = " +timeout);
+    try {
+      IdentityStorageImpl impl = (IdentityStorageImpl)identityStorage;
+      ProviderRootEntity providerRoot = impl.getProviderRoot();
+      String path = providerRoot.getProviders().get(OrganizationIdentityProvider.NAME).getPath();
+      System.out.println(path);
+    } catch (NullPointerException e) {
+      e.printStackTrace();
+    }
+  }
+
+  private static SocialChromatticLifeCycle lifecycleLookup() {
+    PortalContainer container = PortalContainer.getInstance();
+    ChromatticManager manager = (ChromatticManager) container.getComponentInstanceOfType(ChromatticManager.class);
+    return (SocialChromatticLifeCycle) manager.getLifeCycle(SocialChromatticLifeCycle.SOCIAL_LIFECYCLE_NAME);
   }
 
   /**
@@ -434,11 +477,7 @@ public class IdentityStorageTest extends AbstractCoreTest {
   @MaxQueryNumber(1200)
   public void testGetIdentitiesByFirstCharacterOfNameCount() throws Exception {
     populateData();
-    populateData("root");
-    populateData("john");
-    populateData("mary");
-    populateData("raul");
-    populateData("ghost");
+    
     final ProfileFilter filter = new ProfileFilter();
     filter.setFirstCharacterOfName('F');
     int idsCount = identityStorage.getIdentitiesByFirstCharacterOfNameCount("organization", filter);
@@ -456,12 +495,6 @@ public class IdentityStorageTest extends AbstractCoreTest {
   public void testGetIdentitiesByFirstCharacterOfName() throws Exception {
     populateData();
     
-    populateData("root");
-    populateData("john");
-    populateData("mary");
-    populateData("raul");
-    populateData("ghost");
-    
     final ProfileFilter filter = new ProfileFilter();
     filter.setFirstCharacterOfName('F');
     assertEquals(0, identityStorage.getIdentitiesByFirstCharacterOfName("organization", filter, 0, 1, false).size());
@@ -476,12 +509,6 @@ public class IdentityStorageTest extends AbstractCoreTest {
   @MaxQueryNumber(2000)
   public void testGetIdentitiesByProfileFilterCount() throws Exception {
     populateData();
-    
-    populateData("root");
-    populateData("john");
-    populateData("mary");
-    populateData("raul");
-    populateData("ghost");
     
     ProfileFilter pf = new ProfileFilter();
     
