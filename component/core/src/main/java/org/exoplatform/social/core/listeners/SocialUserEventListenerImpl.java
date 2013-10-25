@@ -52,9 +52,6 @@ public class SocialUserEventListenerImpl extends UserEventListener {
       throw new RuntimeException("Unable to create a previously deleted user : " + user.getUserName());
     }
     
-    //
-    StorageUtils.clearUsersPlatformGroup();
-
     RequestLifeCycle.end();
   }
 
@@ -133,9 +130,6 @@ public class SocialUserEventListenerImpl extends UserEventListener {
       // Will be implemented by SOC-2276.
     }
     
-    //
-    StorageUtils.clearUsersPlatformGroup();
-
     RequestLifeCycle.end();
 
   }

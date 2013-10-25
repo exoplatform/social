@@ -18,14 +18,20 @@ package org.exoplatform.social.core.storage.impl;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
+import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.locks.ReentrantLock;
+
+import javax.jcr.InvalidItemStateException;
+import javax.jcr.ItemExistsException;
+import javax.jcr.PathNotFoundException;
 
 import org.apache.commons.lang.ArrayUtils;
+import org.chromattic.api.ChromatticException;
 import org.chromattic.api.query.Ordering;
 import org.chromattic.api.query.Query;
 import org.chromattic.api.query.QueryBuilder;
@@ -294,6 +300,7 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
 
   @Override
   public void updateCommenter(ProcessContext ctx) {
+    final ReentrantLock lock = new ReentrantLock();
     
     try {
       StreamProcessContext streamCtx = ObjectHelper.cast(StreamProcessContext.class, ctx);
@@ -301,6 +308,8 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
       Identity commenter = streamCtx.getIdentity();
       IdentityEntity identityEntity = identityStorage._findIdentityEntity(commenter.getProviderId(), commenter.getRemoteId());
       ActivityEntity activityEntity = _findById(ActivityEntity.class, activity.getId());
+      //
+      lock.lock();
       
       QueryResult<ActivityRef> got = getActivityRefs(identityEntity, activityEntity);
       ActivityRef activityRef = null;
@@ -323,8 +332,22 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
       }
       //create activityref for owner's activity
       createRefForPoster(activityEntity, oldUpdated);
-    } catch (NodeNotFoundException e) {
-      LOG.warn("Failed to updateCommenter Activity references.");
+    } catch (NodeNotFoundException ex) {
+      LOG.warn("Probably was updated activity reference by another session");
+      LOG.debug(ex.getMessage(), ex);
+    } catch (ChromatticException ex) {
+      Throwable throwable = ex.getCause();
+      if (throwable instanceof ItemExistsException || 
+          throwable instanceof InvalidItemStateException ||
+          throwable instanceof PathNotFoundException) {
+        LOG.warn("Probably was updated activity reference by another session");
+        LOG.debug(ex.getMessage(), ex);
+      }else {
+        LOG.warn("Probably was updated activity reference by another session", ex);
+        LOG.debug(ex.getMessage(), ex);
+      }
+    } finally {
+      lock.unlock();
     }
   }
 
@@ -347,22 +370,29 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
   
   @Override
   public void update(ProcessContext ctx) {
-    
+    final ReentrantLock lock = new ReentrantLock();
+    ThreadLocal<Set<String>> idLocal = new ThreadLocal<Set<String>>();
     try {
+      
       StreamProcessContext streamCtx = ObjectHelper.cast(StreamProcessContext.class, ctx);
       ExoSocialActivity activity = streamCtx.getActivity();
-
       ActivityEntity activityEntity = _findById(ActivityEntity.class, activity.getId());
+      
+      lock.lock(); // block until condition holds
+      
       Collection<ActivityRef> references = activityEntity.getActivityRefs();
-      Set<String> ids = new HashSet<String>();
-        
+      Set<String> ids = new ConcurrentSkipListSet<String>();
+
       for (ActivityRef ref : references) {
         ids.add(ref.getId());
       }
       
-      if (ids.size() > 0) {
-        for(String id : ids) {
-          ActivityRef old =_findById(ActivityRef.class, id);
+      idLocal.set(ids);
+      
+      Set<String> idList = idLocal.get(); 
+      if (idList.size() > 0) {
+        for (String id : idList) {
+          ActivityRef old = _findById(ActivityRef.class, id);
           LOG.debug("ActivityRef will be deleted: " + old.toString());
           ActivityRefListEntity refList = old.getDay().getMonth().getYear().getList();
           //
@@ -375,13 +405,34 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
             newRef.setActivityEntity(activityEntity);
             getSession().remove(old);
           }
-          
+
         }
       }
-      //mentioners
+
+      // mentioners
       addMentioner(streamCtx.getMentioners(), activityEntity);
-    } catch (Exception e) {
-      LOG.warn("Failed to update Activity references.", e);
+      //turnOffLock to get increase perf
+      //turnOnUpdateLock = false;
+    } catch (NodeNotFoundException ex) {
+      LOG.warn("Probably was updated activity reference by another session");
+      LOG.debug(ex.getMessage(), ex);
+      //turnOnLock to avoid next exception
+    } catch (ChromatticException ex) {
+      Throwable throwable = ex.getCause();
+      if (throwable instanceof ItemExistsException || 
+          throwable instanceof InvalidItemStateException ||
+          throwable instanceof PathNotFoundException) {
+        LOG.warn("Probably was updated activity reference by another session");
+        LOG.debug(ex.getMessage(), ex);
+        //turnOnLock to avoid next exception
+      }else {
+        LOG.warn("Probably was updated activity reference by another session", ex);
+        LOG.debug(ex.getMessage(), ex);
+      }
+      
+    } finally {
+        getSession().save();
+        lock.unlock();
     }
   }
 

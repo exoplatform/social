@@ -33,8 +33,12 @@ import java.util.TreeSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.jcr.InvalidItemStateException;
+import javax.jcr.ItemExistsException;
+
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.Validate;
+import org.chromattic.api.ChromatticException;
 import org.chromattic.api.query.Ordering;
 import org.chromattic.api.query.Query;
 import org.chromattic.api.query.QueryBuilder;
@@ -184,7 +188,7 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     }
     
     fillActivityEntityFromActivity(activity, activityEntity);
-    StorageUtils.persist();
+    
   }
   
   private void manageActivityLikes(String[] addedLikes, String[] removedLikes, ExoSocialActivity activity) {
@@ -560,6 +564,8 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
       //
       activity.setUpdated(currentMillis);
       
+      //SOC-3915 empty stream when post comment but lost it.
+      StorageUtils.persist();
       //
       if (mustInjectStreams) {
         Identity identity = identityStorage.findIdentityById(comment.getUserId());
@@ -569,9 +575,18 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     }  
     catch (NodeNotFoundException e) {
       throw new ActivityStorageException(ActivityStorageException.Type.FAILED_TO_SAVE_COMMENT, e.getMessage(), e);
+    } catch (ChromatticException ex) {
+      Throwable throwable = ex.getCause();
+      if (throwable instanceof ItemExistsException || 
+          throwable instanceof InvalidItemStateException) {
+        LOG.warn("Probably was inserted activity by another session");
+        LOG.debug(ex.getMessage(), ex);
+      } else {
+        throw new ActivityStorageException(ActivityStorageException.Type.FAILED_TO_SAVE_ACTIVITY, ex.getMessage());
+      }
     }
     
-    StorageUtils.persist();
+    //StorageUtils.persist();
     
     //
     LOG.debug(String.format(
@@ -630,6 +645,16 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     }
     catch (NodeNotFoundException e) {
       throw new ActivityStorageException(ActivityStorageException.Type.FAILED_TO_SAVE_ACTIVITY, e.getMessage(), e);
+    } catch (ChromatticException ex) {
+      Throwable throwable = ex.getCause();
+      if (throwable instanceof ItemExistsException || 
+          throwable instanceof InvalidItemStateException) {
+        LOG.warn("Probably was inserted activity by another session");
+        LOG.debug(ex.getMessage(), ex);
+        return activity;
+      } else {
+        throw new ActivityStorageException(ActivityStorageException.Type.FAILED_TO_SAVE_ACTIVITY, ex.getMessage());
+      }
     }
   }
 
@@ -1382,7 +1407,6 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     for (int i = offset ; i < commentIds.length ; i++) {
       if (isHidden(commentIds[i]) == false) {
         activities.add(getStorage().getActivity(commentIds[i]));
-        
         //
         if (activities.size() == limit) {
           break;
@@ -1403,10 +1427,15 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
 
     try {
       ActivityEntity activityEntity = _findById(ActivityEntity.class, commentId);
-      HidableEntity hidable = _getMixin(activityEntity, HidableEntity.class, false);
-      if (hidable != null) {
-        return hidable.getHidden();
+      if (activityEntity != null) {
+        HidableEntity hidable = _getMixin(activityEntity, HidableEntity.class, false);
+        if (hidable != null) {
+          return hidable.getHidden();
+        }
+      } else {
+        return true;
       }
+      
     } catch (NodeNotFoundException e) {
       return true;
     }
@@ -1427,7 +1456,7 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     //
     for(String commentId : commentIds) {
       ExoSocialActivity comment = getActivity(commentId);
-      if (!comment.isHidden())
+      if (comment != null && !comment.isHidden())
         activities.add(getStorage().getActivity(commentId));
     }
 
@@ -1561,15 +1590,21 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
       if (changedActivity.getBody() == null) changedActivity.setBody(activityEntity.getBody());
       
       _saveActivity(changedActivity);
-      
-      getSession().save();
-      
     }
     catch (NodeNotFoundException e) {
       throw new ActivityStorageException(
           ActivityStorageException.Type.FAILED_TO_SAVE_ACTIVITY,
           e.getMessage()
       );
+    } catch (ChromatticException ex) {
+      Throwable throwable = ex.getCause();
+      if (throwable instanceof ItemExistsException || 
+          throwable instanceof InvalidItemStateException) {
+        LOG.warn("Probably was updated activity by another session");
+        LOG.debug(ex.getMessage(), ex);
+      } else {
+        throw new ActivityStorageException(ActivityStorageException.Type.FAILED_TO_UPDATE_ACTIVITY, ex.getMessage());
+      }
     }
 
   }
