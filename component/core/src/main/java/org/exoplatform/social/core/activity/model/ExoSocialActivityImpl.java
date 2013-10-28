@@ -21,7 +21,6 @@ import java.util.Date;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.shindig.social.core.model.ActivityImpl;
-import org.exoplatform.social.core.storage.cache.model.key.ActivityKey;
 
 /**
  * Implementation of {@link org.exoplatform.social.core.activity.model.ExoSocialActivity}.

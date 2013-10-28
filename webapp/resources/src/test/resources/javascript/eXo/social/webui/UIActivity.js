@@ -186,7 +186,7 @@ var UIActivity = {
       items.show();
       var allMumber = items.length;
       if(allMumber > 0) {
-        var maxItemDisplay = Math.floor(mWith/(items.eq(0).outerWidth() + 12))*1;
+        var maxItemDisplay = Math.floor(mWith/(items.eq(0).outerWidth() + 12))*2;
         for(var i = maxItemDisplay; i < allMumber; ++i) {
           items.eq(i).hide();
           if (i === (allMumber - 1)) {

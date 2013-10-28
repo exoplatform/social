@@ -30,6 +30,7 @@ import org.exoplatform.services.log.Log;
 import org.exoplatform.social.common.RealtimeListAccess;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.activity.model.ExoSocialActivityImpl;
+import org.exoplatform.social.core.application.SpaceActivityPublisher;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
@@ -402,7 +403,7 @@ public class BaseUIActivity extends UIForm {
 
   protected void saveComment(String remoteUser, String message) throws Exception {
     ExoSocialActivity comment = new ExoSocialActivityImpl(Utils.getViewerIdentity().getId(),
-            SpaceService.SPACES_APP_ID, message, null);
+                                                          SpaceActivityPublisher.SPACE_APP_ID, message, null);
     Utils.getActivityManager().saveComment(getActivity(), comment);
     activityCommentsListAccess = Utils.getActivityManager().getCommentsWithListAccess(getActivity());
     comments = activityCommentsListAccess.loadAsList(0, DEFAULT_LIMIT);
@@ -410,7 +411,7 @@ public class BaseUIActivity extends UIForm {
     setCommentListStatus(CommentStatus.ALL);
   }
 
-  protected void setLike(boolean isLiked, String remoteUser) throws Exception {
+  protected void setLike(boolean isLiked) throws Exception {
     Identity viewerIdentity = Utils.getViewerIdentity();
     activity.setBody(null);
     activity.setTitle(null);
@@ -637,10 +638,9 @@ public class BaseUIActivity extends UIForm {
       uiActivity.refresh();
       WebuiRequestContext requestContext = event.getRequestContext();
       String isLikedStr = requestContext.getRequestParameter(OBJECTID);
-      boolean isLiked = Boolean.parseBoolean(isLikedStr);
-      uiActivity.setLike(isLiked, requestContext.getRemoteUser());
+      uiActivity.setLike(Boolean.parseBoolean(isLikedStr));
       //
-      JavascriptManager jm = event.getRequestContext().getJavascriptManager();
+      JavascriptManager jm = requestContext.getJavascriptManager();
       jm.require("SHARED/social-ui-activity", "activity").addScripts("activity.displayLike('#ContextBox" + activityId + "');");      
       
       requestContext.addUIComponentToUpdateByAjax(uiActivity);

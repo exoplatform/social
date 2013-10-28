@@ -372,6 +372,8 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
           if (refList.isOnlyUpdate(old, activity.getUpdated().getTime())) {
             old.setName("" + activity.getUpdated().getTime());
             old.setLastUpdated(activity.getUpdated().getTime());
+            //handle in the case injection, there are a lot of updating activity short time.
+            getSession().save();
           } else {
             ActivityRef newRef = refList.getOrCreated(activity.getUpdated().getTime());
             newRef.setLastUpdated(activity.getUpdated().getTime());
