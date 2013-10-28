@@ -5,16 +5,13 @@
     parentId: '#userNotification',
     saveSetting : function(e) {
       var jElm = $(this);
-      if(jElm.hasClass('disabled')) {
+      if(jElm.is('button') && jElm.hasClass('disabled')) {
         return;
       }
       var id = jElm.attr('id');
       var msgOk = jElm.attr('data-ok');
       var msgNOk = jElm.attr('data-nok');
       
-      var close = jElm.parents('div:first').attr('data-close');
-      var ok = jElm.parents('div:first').attr('data-ok');
-      var infoTitle = jElm.parents('div:first').attr('data-info');
       Notification.formData = $(document.forms['uiNotificationSetting']).serialize();
       $(Notification.parentId).jzAjax({        
         url : "UserNotificationSetting.saveSetting()",
@@ -29,12 +26,14 @@
               $(Notification.parentId).find('div.form-horizontal:first').show();
             }
             if(id !== 'checkBoxDeactivate') {
-              sUtils.PopupConfirmation.confirm(id, {}, infoTitle, msgOk, ok);
+              sUtils.feedbackMessageInline('userNotification', msgOk);
             }
           } else if(id !== 'checkBoxDeactivate') {
-            sUtils.PopupConfirmation.confirm(id, {}, infoTitle, msgNOk, close);
+            sUtils.feedbackMessageInline('userNotification', msgNOk);
           }
-          jElm.addClass('disabled');
+          if(jElm.is('button')) {
+            jElm.addClass('disabled');
+          }
         }
       }).fail(function(jqXHR, textStatus) {
         alert( "Request failed: " + textStatus + ". "+jqXHR);

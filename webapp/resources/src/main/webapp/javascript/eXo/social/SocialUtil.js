@@ -143,20 +143,24 @@
      },
      
      feedbackMessageInline : function(parentId, message) { 
-    	 message = message.replace("${simpleQuote}", "'");
+       message = message.replace("${simpleQuote}", "'");
 
-    	 var msgEl = $('#feedbackmessageInline');
+       var msgEl = $('#feedbackmessageInline');
 
-    	 if(msgEl.length === 0) {
-    	   msgEl = $('<div id="feedbackMessageInline" class="alert alert-success">' +
-		               '  <i class="uiIconSuccess"></i><span class="message"></span>' +
-		               '</div>');
-    		 //
-    		 msgEl.prependTo($('#'+ parentId));
-    	 }
+       if(msgEl.length === 0) {
+         msgEl = $('<div id="feedbackMessageInline" class="alert alert-success">' +
+                   '  <i class="uiIconSuccess"></i><span class="message"></span>' +
+                   '</div>');
+         //
+         msgEl.prependTo($('#'+ parentId));
+       }
+
+       if($(window).scrollTop() > msgEl.offset().top) {
+         msgEl[0].scrollIntoView(true);
+       }
        msgEl.stop().hide().find("span.message").text(message);
        msgEl.show('fast').delay(4500).hide('slow');
-      },
+     },
 
     /**
      * Get current Browser
