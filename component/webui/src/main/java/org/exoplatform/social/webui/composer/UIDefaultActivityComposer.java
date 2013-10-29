@@ -19,11 +19,11 @@ package org.exoplatform.social.webui.composer;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.activity.model.ExoSocialActivityImpl;
 import org.exoplatform.social.core.application.PeopleService;
+import org.exoplatform.social.core.application.SpaceActivityPublisher;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
 import org.exoplatform.social.core.space.model.Space;
-import org.exoplatform.social.core.space.spi.SpaceService;
 import org.exoplatform.social.webui.Utils;
 import org.exoplatform.social.webui.activity.UIDefaultActivity;
 import org.exoplatform.social.webui.composer.UIComposer.PostContext;
@@ -63,7 +63,7 @@ public class UIDefaultActivityComposer extends UIActivityComposer {
                                                                space.getPrettyName(),
                                                                false);
       ExoSocialActivity activity = new ExoSocialActivityImpl(Utils.getViewerIdentity().getId(),
-                                   SpaceService.SPACES_APP_ID,
+                                   SpaceActivityPublisher.SPACE_APP_ID,
                                    postedMessage,
                                    null);
       activity.setType(UIDefaultActivity.ACTIVITY_TYPE);
