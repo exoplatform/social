@@ -70,7 +70,9 @@ public class SocialChromatticLifeCycle extends ChromatticLifeCycle {
   protected void onCloseSession(final SessionContext context) {
      
     super.onCloseSession(context);
-    session.get().close();
+    if (session.get() != null) {
+      session.get().close();
+    }
     session.remove();
     providerRoot.set(null);
     spaceRoot.set(null);
