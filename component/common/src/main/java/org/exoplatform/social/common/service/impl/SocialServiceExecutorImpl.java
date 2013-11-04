@@ -29,7 +29,6 @@ import org.exoplatform.social.common.service.LogWatchCallable;
 import org.exoplatform.social.common.service.ProcessContext;
 import org.exoplatform.social.common.service.Processor;
 import org.exoplatform.social.common.service.ServiceContext;
-import org.exoplatform.social.common.service.SocialServiceContext;
 import org.exoplatform.social.common.service.SocialServiceExecutor;
 import org.exoplatform.social.common.service.utils.AsyncProcessorTool;
 
