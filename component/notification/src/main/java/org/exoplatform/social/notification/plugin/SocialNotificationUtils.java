@@ -22,8 +22,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.Set;
 
+import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.commons.lang.StringUtils;
 import org.exoplatform.commons.api.notification.model.ArgumentLiteral;
 import org.exoplatform.commons.api.notification.service.template.TemplateContext;
 import org.exoplatform.commons.notification.template.TemplateUtils;
@@ -50,7 +54,10 @@ public class SocialNotificationUtils {
   public final static ArgumentLiteral<Relationship> RELATIONSHIP = new ArgumentLiteral<Relationship>(Relationship.class, "relationship");
   
   public final static ArgumentLiteral<String> RELATIONSHIP_ID = new ArgumentLiteral<String>(String.class, "relationshipId");
+  
+  public static final String EMPTY_STR = "";
 
+  public static final String SPACE_STR     = " ";
   
   public static String getUserId(String identityId) {
     return Utils.getIdentityManager().getIdentity(identityId, false).getRemoteId();
@@ -175,6 +182,26 @@ public class SocialNotificationUtils {
     } catch (Exception e) {
       return;
     }
+  }
+  
+  public static String cleanHtmlTags(String str) {
+    //
+    if (str == null || str.trim().length() == 0) {
+      return "";
+    }
+    str = StringUtils.replace(str, "\n", SPACE_STR);
+    // Clean html code
+    String scriptregex = "<(script|style)[^>]*>[^<]*</(script|style)>";
+    Pattern p1 = Pattern.compile(scriptregex, Pattern.CASE_INSENSITIVE);
+    Matcher m1 = p1.matcher(str);
+    str = m1.replaceAll(EMPTY_STR);
+    String tagregex = "<[^>]*>";
+    Pattern p2 = Pattern.compile(tagregex);
+    Matcher m2 = p2.matcher(str);
+    str = m2.replaceAll(EMPTY_STR);
+    String multiplenewlines = "(\\n{1,2})(\\s*\\n)+";
+    str = str.replaceAll(multiplenewlines, "$1");
+    return str;
   }
   
 }
