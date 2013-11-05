@@ -47,16 +47,20 @@ public class SocialUserEventListenerImpl extends UserEventListener {
   public void preSave(User user, boolean isNew) throws Exception {
 
     RequestLifeCycle.begin(PortalContainer.getInstance());
-    ExoContainer container = ExoContainerContext.getCurrentContainer();
-    IdentityStorage ids = (IdentityStorage) container.getComponentInstanceOfType(IdentityStorage.class);
+    try{
+      ExoContainer container = ExoContainerContext.getCurrentContainer();
+      IdentityStorage ids = (IdentityStorage) container.getComponentInstanceOfType(IdentityStorage.class);
+  
+      Identity identity = ids.findIdentity(OrganizationIdentityProvider.NAME, user.getUserName());
+  
+      if (isNew && identity != null) {
+        throw new RuntimeException("Unable to create a previously deleted user : " + user.getUserName());
+      }
 
-    Identity identity = ids.findIdentity(OrganizationIdentityProvider.NAME, user.getUserName());
-
-    if (isNew && identity != null) {
-      throw new RuntimeException("Unable to create a previously deleted user : " + user.getUserName());
     }
-    
-    RequestLifeCycle.end();
+    finally{
+      RequestLifeCycle.end();
+    }
   }
 
   /**
@@ -68,74 +72,81 @@ public class SocialUserEventListenerImpl extends UserEventListener {
    */
   public void postSave(User user, boolean isNew) throws Exception {
     RequestLifeCycle.begin(PortalContainer.getInstance());
-    ExoContainer container = ExoContainerContext.getCurrentContainer();
-    //
-    IdentityManager idm = (IdentityManager) container.getComponentInstanceOfType(IdentityManager.class);
-    Identity identity = idm.getOrCreateIdentity(OrganizationIdentityProvider.NAME, user.getUserName(), true);
-     
-    //
-    Profile profile = identity.getProfile();
     
-    //
-    boolean hasUpdated = false;
-    
-    if(!isNew) {
-      String uFirstName = user.getFirstName();
-      String uLastName = user.getLastName();
-      String uFullName = user.getFullName();
-      String uEmail = user.getEmail();
-
+    try{
+      ExoContainer container = ExoContainerContext.getCurrentContainer();
       //
-      String pFirstName = (String) profile.getProperty(Profile.FIRST_NAME);
-      String pLastName = (String) profile.getProperty(Profile.LAST_NAME);
-      String pEmail = (String) profile.getProperty(Profile.EMAIL);
-     
-
-      if ((pFirstName == null) || (!pFirstName.equals(uFirstName))) {
-        profile.setProperty(Profile.FIRST_NAME, uFirstName);
-        profile.setProperty(Profile.FULL_NAME, uFullName);
-        hasUpdated = true;
-      }
-
-      if ((pLastName == null) || (!pLastName.equals(uLastName))) {
-        profile.setProperty(Profile.LAST_NAME, uLastName);
-        profile.setProperty(Profile.FULL_NAME, uFullName);
-        hasUpdated = true;
+      IdentityManager idm = (IdentityManager) container.getComponentInstanceOfType(IdentityManager.class);
+      Identity identity = idm.getOrCreateIdentity(OrganizationIdentityProvider.NAME, user.getUserName(), true);
+       
+      //
+      Profile profile = identity.getProfile();
+      
+      //
+      boolean hasUpdated = false;
+      
+      if(!isNew) {
+        String uFirstName = user.getFirstName();
+        String uLastName = user.getLastName();
+        String uFullName = user.getFullName();
+        String uEmail = user.getEmail();
+  
+        //
+        String pFirstName = (String) profile.getProperty(Profile.FIRST_NAME);
+        String pLastName = (String) profile.getProperty(Profile.LAST_NAME);
+        String pEmail = (String) profile.getProperty(Profile.EMAIL);
+       
+  
+        if ((pFirstName == null) || (!pFirstName.equals(uFirstName))) {
+          profile.setProperty(Profile.FIRST_NAME, uFirstName);
+          profile.setProperty(Profile.FULL_NAME, uFullName);
+          hasUpdated = true;
+        }
+  
+        if ((pLastName == null) || (!pLastName.equals(uLastName))) {
+          profile.setProperty(Profile.LAST_NAME, uLastName);
+          profile.setProperty(Profile.FULL_NAME, uFullName);
+          hasUpdated = true;
+        }
+        
+        if ((pEmail == null) || (!pEmail.equals(uEmail))) {
+          profile.setProperty(Profile.EMAIL, uEmail);
+          hasUpdated = true;
+        }
+        
       }
       
-      if ((pEmail == null) || (!pEmail.equals(uEmail))) {
-        profile.setProperty(Profile.EMAIL, uEmail);
-        hasUpdated = true;
-      }
       
+  
+      if (hasUpdated) {
+        idm.updateProfile(profile);
+      }
     }
-    
-    
-
-    if (hasUpdated) {
-      idm.updateProfile(profile);
+    finally{
+      RequestLifeCycle.end();
     }
-    RequestLifeCycle.end();
   }
 
   @Override
   public void preDelete(final User user) throws Exception {
 
     RequestLifeCycle.begin(PortalContainer.getInstance());
-    ExoContainer container = ExoContainerContext.getCurrentContainer();
-    IdentityManager idm = (IdentityManager) container.getComponentInstanceOfType(IdentityManager.class);
-    Identity identity = idm.getOrCreateIdentity(OrganizationIdentityProvider.NAME, user.getUserName(), true);
-    
-    try {
-      idm.hardDeleteIdentity(identity);
-    } catch (Exception e) {
-      // TODO: Send an alert email to super admin to manage spaces in case deleted user is the last manager.
-      // Nothing executed (user not deleted) when facing this case now with code commit by SOC-1507.
-      // Will be implemented by SOC-2276.
-      LOG.debug("Problem occurred when deleting identity.");
+    try{
+      ExoContainer container = ExoContainerContext.getCurrentContainer();
+      IdentityManager idm = (IdentityManager) container.getComponentInstanceOfType(IdentityManager.class);
+      Identity identity = idm.getOrCreateIdentity(OrganizationIdentityProvider.NAME, user.getUserName(), true);
+      
+      try {
+        idm.hardDeleteIdentity(identity);
+      } catch (Exception e) {
+        // TODO: Send an alert email to super admin to manage spaces in case deleted user is the last manager.
+        // Nothing executed (user not deleted) when facing this case now with code commit by SOC-1507.
+        // Will be implemented by SOC-2276.
+      }
+      
+    }finally{
+      RequestLifeCycle.end();
     }
-    
-    RequestLifeCycle.end();
 
   }
 }
