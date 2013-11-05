@@ -68,11 +68,17 @@ public abstract class AbstractStorage {
   }
 
   private <T> T getRoot(String nodetypeName, Class<T> t) {
-    T got = getSession().findByPath(t, nodetypeName);
-    if (got == null) {
-      got = getSession().insert(t, nodetypeName);
+    boolean created = startSynchronization();
+    try {
+      T got = getSession().findByPath(t, nodetypeName);
+      if (got == null) {
+        got = getSession().insert(t, nodetypeName);
+      }
+      return got;
     }
-    return got;
+    finally {
+      stopSynchronization(created);
+    }
   }
 
   protected ProviderRootEntity getProviderRoot() {
