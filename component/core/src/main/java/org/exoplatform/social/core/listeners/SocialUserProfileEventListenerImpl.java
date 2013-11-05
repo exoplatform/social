@@ -34,44 +34,47 @@ public class SocialUserProfileEventListenerImpl extends UserProfileEventListener
   @Override
   public void postSave(UserProfile userProfile, boolean isNew) throws Exception {
     RequestLifeCycle.begin(PortalContainer.getInstance());
-    ExoContainer container = ExoContainerContext.getCurrentContainer();
-    //
-    IdentityManager idm = (IdentityManager) container.getComponentInstanceOfType(IdentityManager.class);
-    Identity identity = idm.getOrCreateIdentity(OrganizationIdentityProvider.NAME, userProfile.getUserName(), true);
-       
-    //
-    Profile profile = identity.getProfile();
-    
-    //
-    String uGender = null;
-    String uPosition = null;
-    if (userProfile != null) {
-      uGender = userProfile.getAttribute(UserProfile.PERSONAL_INFO_KEYS[4]);//"user.gender"
-      uPosition = userProfile.getAttribute(UserProfile.PERSONAL_INFO_KEYS[7]);//user.jobtitle
+    try{
+      ExoContainer container = ExoContainerContext.getCurrentContainer();
+      //
+      IdentityManager idm = (IdentityManager) container.getComponentInstanceOfType(IdentityManager.class);
+      Identity identity = idm.getOrCreateIdentity(OrganizationIdentityProvider.NAME, userProfile.getUserName(), true);
+         
+      //
+      Profile profile = identity.getProfile();
+      
+      //
+      String uGender = null;
+      String uPosition = null;
+      if (userProfile != null) {
+        uGender = userProfile.getAttribute(UserProfile.PERSONAL_INFO_KEYS[4]);//"user.gender"
+        uPosition = userProfile.getAttribute(UserProfile.PERSONAL_INFO_KEYS[7]);//user.jobtitle
+      }
+      
+      //
+      String pGender = (String) profile.getProperty(Profile.GENDER);
+      String pPosition = (String) profile.getProperty(Profile.POSITION);
+      
+      //
+      boolean hasUpdated = false;
+  
+      //
+      if (uGender != null && !uGender.equals(pGender)) {
+        profile.setProperty(Profile.GENDER, uGender);
+        hasUpdated = true;
+      }
+      
+      if (uPosition != null && !uPosition.equals(pPosition)) {
+        profile.setProperty(Profile.POSITION, uPosition);
+        hasUpdated = true;
+      }
+  
+      if (hasUpdated) {
+        IdentityStorage storage = (IdentityStorage) container.getComponentInstanceOfType(IdentityStorage.class);
+        storage.updateProfile(profile);
+      }
+    }finally{
+      RequestLifeCycle.end();
     }
-    
-    //
-    String pGender = (String) profile.getProperty(Profile.GENDER);
-    String pPosition = (String) profile.getProperty(Profile.POSITION);
-    
-    //
-    boolean hasUpdated = false;
-
-    //
-    if (uGender != null && !uGender.equals(pGender)) {
-      profile.setProperty(Profile.GENDER, uGender);
-      hasUpdated = true;
-    }
-    
-    if (uPosition != null && !uPosition.equals(pPosition)) {
-      profile.setProperty(Profile.POSITION, uPosition);
-      hasUpdated = true;
-    }
-
-    if (hasUpdated) {
-      IdentityStorage storage = (IdentityStorage) container.getComponentInstanceOfType(IdentityStorage.class);
-      storage.updateProfile(profile);
-    }
-    RequestLifeCycle.end();
   }
 }
