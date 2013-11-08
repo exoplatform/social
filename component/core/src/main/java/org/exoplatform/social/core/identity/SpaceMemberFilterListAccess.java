@@ -98,7 +98,7 @@ public class SpaceMemberFilterListAccess implements ListAccess<Identity> {
    * {@inheritDoc}
    */
   public int getSize() throws Exception {
-      return identityStorage.getSpaceMemberIdentitiesByProfileFilter(space, profileFilter, type, 0, 0).size();
+      return identityStorage.getSpaceMemberIdentitiesByProfileFilterCount(space, profileFilter, type);
   }
 
   /**

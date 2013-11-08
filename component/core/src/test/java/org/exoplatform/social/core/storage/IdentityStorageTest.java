@@ -2,7 +2,9 @@ package org.exoplatform.social.core.storage;
 
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.exoplatform.social.core.identity.SpaceMemberFilterListAccess.Type;
 import org.exoplatform.social.core.identity.model.Identity;
@@ -611,6 +613,22 @@ public class IdentityStorageTest extends AbstractCoreTest {
     profileFilter.setName("3");
     identities = identityStorage.getSpaceMemberIdentitiesByProfileFilter(space, profileFilter, Type.MEMBER, 0, 2);
     assertEquals(1, identities.size());
+    
+    profileFilter = new ProfileFilter();
+    profileFilter.setPosition("developer");
+    identities = identityStorage.getSpaceMemberIdentitiesByProfileFilter(space, profileFilter, Type.MEMBER, 0, 2);
+    assertEquals(2, identities.size());
+    
+    profileFilter = new ProfileFilter();
+    profileFilter.setSkills("skills");
+    identities = identityStorage.getSpaceMemberIdentitiesByProfileFilter(space, profileFilter, Type.MEMBER, 0, 2);
+    assertEquals(2, identities.size());
+    
+    profileFilter = new ProfileFilter();
+    profileFilter.setAll("exo");
+    identities = identityStorage.getSpaceMemberIdentitiesByProfileFilter(space, profileFilter, Type.MEMBER, 0, 2);
+    assertEquals(2, identities.size());
+    
   }
   
   /**
@@ -687,6 +705,14 @@ public class IdentityStorageTest extends AbstractCoreTest {
       profile.setProperty(Profile.FULL_NAME, "FirstName" + i + " " +  "LastName" + i);
       profile.setProperty("position", "developer");
       profile.setProperty("gender", "male");
+      
+      Map<String, String> experiences = new HashMap<String, String>();
+      experiences.put(Profile.EXPERIENCES_COMPANY, "exo");
+      experiences.put(Profile.EXPERIENCES_SKILLS, "skills");
+      experiences.put(Profile.EXPERIENCES_DESCRIPTION, "job Description");
+      List<Map<String, String>> expList = new ArrayList<Map<String,String>>();
+      expList.add(experiences);
+      profile.setProperty(Profile.EXPERIENCES, expList);
       identity.setProfile(profile);
       tearDownIdentityList.add(identity);
       identityStorage.saveProfile(profile);

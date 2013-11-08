@@ -14,6 +14,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 import javax.jcr.RepositoryException;
+
+import org.apache.commons.lang.StringEscapeUtils;
 import org.chromattic.api.ChromatticSession;
 import org.exoplatform.commons.chromattic.ChromatticManager;
 import org.exoplatform.commons.chromattic.Synchronization;
@@ -63,6 +65,7 @@ public class StorageUtils {
     String inputName = profileFilter.getName().replace(ASTERISK_STR, PERCENT_STR);
     processUsernameSearchPattern(inputName.trim());
     String position = addPositionSearchPattern(profileFilter.getPosition().trim()).replace(ASTERISK_STR, PERCENT_STR);
+//    String position = profileFilter.getPosition().trim();
     inputName = inputName.isEmpty() ? ASTERISK_STR : inputName;
     String nameForSearch = inputName.replace(ASTERISK_STR, SPACE_STR);
     char firstChar = profileFilter.getFirstCharacterOfName();
@@ -83,31 +86,34 @@ public class StorageUtils {
     }
 
     if (position.length() != 0) {
-      whereExpression.and().like(
-          whereExpression.callFunction(QueryFunction.LOWER, ProfileEntity.position),
-          PERCENT_STR + position.toLowerCase() + PERCENT_STR
-      );
+      whereExpression.and().startGroup()
+        .like(whereExpression.callFunction(QueryFunction.LOWER, ProfileEntity.position),
+              PERCENT_STR + position.toLowerCase() + PERCENT_STR)
+        .or().like(whereExpression.callFunction(QueryFunction.LOWER, ProfileEntity.positions), 
+              PERCENT_STR + StringEscapeUtils.escapeHtml(position.toLowerCase()) + PERCENT_STR)
+        .endGroup();
     }
 
     if (skills.length() != 0) {
       whereExpression.and().like(
           whereExpression.callFunction(QueryFunction.LOWER, ProfileEntity.skills),
-          PERCENT_STR + skills.toLowerCase() + PERCENT_STR
+          PERCENT_STR + StringEscapeUtils.escapeHtml(skills.toLowerCase()) + PERCENT_STR
       );
     }
 
     if (profileFilter.getAll().length() != 0) {
       String value = profileFilter.getAll();
+      String escapedHTMLCondition = StringEscapeUtils.escapeHtml(value.toLowerCase());
 
       whereExpression.and().startGroup()
           .contains(ProfileEntity.fullName, value.toLowerCase())
           .or().contains(ProfileEntity.firstName, value.toLowerCase())
           .or().contains(ProfileEntity.lastName, value.toLowerCase())
-          .or().contains(ProfileEntity.position, value.toLowerCase())
-          .or().contains(ProfileEntity.skills, value.toLowerCase())
-          .or().contains(ProfileEntity.positions, value.toLowerCase())
-          .or().contains(ProfileEntity.organizations, value.toLowerCase())
-          .or().contains(ProfileEntity.jobsDescription, value.toLowerCase())
+          .or().contains(ProfileEntity.positions, escapedHTMLCondition)
+          .or().contains(ProfileEntity.skills, escapedHTMLCondition)
+          .or().contains(ProfileEntity.positions, escapedHTMLCondition)
+          .or().contains(ProfileEntity.organizations, escapedHTMLCondition)
+          .or().contains(ProfileEntity.jobsDescription, escapedHTMLCondition)
           .endGroup();
     }
 
@@ -474,7 +480,7 @@ public class StorageUtils {
    * @param list2
    * @return
    */
-  public <T> List<T> intersection(List<T> list1, List<T> list2) {
+  public static <T> List<T> intersection(List<T> list1, List<T> list2) {
     List<T> list = new ArrayList<T>();
 
     for (T t : list1) {

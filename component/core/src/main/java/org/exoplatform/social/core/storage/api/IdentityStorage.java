@@ -253,6 +253,20 @@ public interface IdentityStorage {
                                                                 throws IdentityStorageException;
   
   /**
+   * Get size of getSpaceMemberIdentitiesByProfileFilter function
+   * @param space
+   * @param profileFilter
+   * @param offset
+   * @param limit
+   * @return
+   * @throws IdentityStorageException
+   * @throws org.exoplatform.social.core.storage.exception.NodeNotFoundException
+   */
+  public int getSpaceMemberIdentitiesByProfileFilterCount(final Space space,
+                                                          final ProfileFilter profileFilter,
+                                                          Type type) throws IdentityStorageException;
+  
+  /**
    * Updates profile activity id by type.
    * 
    * @param identity
