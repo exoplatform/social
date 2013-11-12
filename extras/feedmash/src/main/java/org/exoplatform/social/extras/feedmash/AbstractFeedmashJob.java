@@ -55,7 +55,7 @@ public abstract class AbstractFeedmashJob implements Job {
 
   protected String              feedUrl;
 
-  protected Integer             rampup       = 5;
+  protected Integer             rampup=1;
 
   protected String              pluginName;
   
@@ -222,14 +222,15 @@ public abstract class AbstractFeedmashJob implements Job {
   }
 
   private boolean severIsStarting(JobDataMap dataMap) {
-    // hack to before actually starting working otherwise picketlink fails
+ // hack to before actually starting working otherwise picketlink fails
     // starting...
-    rampup = (Integer) dataMap.get("rampup");
-    if (rampup == null) {
-      rampup = 2;
-    }
+    //rampup = (Integer) dataMap.get("rampup");
+    //if (rampup == null) {
+    //  rampup = 2;
+    //}
     if (rampup > 1) {
-      dataMap.put("rampup", --rampup);
+      //dataMap.put("rampup", --rampup);
+      rampup=--rampup;
       LOG.debug("waiting #" + rampup);
       return true;
     }
