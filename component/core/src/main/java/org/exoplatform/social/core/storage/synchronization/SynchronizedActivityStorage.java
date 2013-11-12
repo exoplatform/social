@@ -982,6 +982,20 @@ public class SynchronizedActivityStorage extends ActivityStorageImpl {
    * {@inheritDoc}
    */
   @Override
+  public int getNumberOfActivitiesByPoster(Identity posterIdentity, Identity ownerIdentity) {
+    boolean created = startSynchronization();
+    try {
+      return super.getNumberOfActivitiesByPoster(posterIdentity, ownerIdentity);
+    }
+    finally {
+      stopSynchronization(created);
+    }
+  }
+  
+  /**
+   * {@inheritDoc}
+   */
+  @Override
   public List<ExoSocialActivity> getNewerOnSpaceActivities(Identity spaceIdentity,
                                                            ExoSocialActivity baseActivity,
                                                            int limit) {
