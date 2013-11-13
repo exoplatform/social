@@ -434,11 +434,7 @@ public class IdentityStorageTest extends AbstractCoreTest {
   @MaxQueryNumber(1200)
   public void testGetIdentitiesByFirstCharacterOfNameCount() throws Exception {
     populateData();
-    populateData("root");
-    populateData("john");
-    populateData("mary");
-    populateData("raul");
-    populateData("ghost");
+    
     final ProfileFilter filter = new ProfileFilter();
     filter.setFirstCharacterOfName('F');
     int idsCount = identityStorage.getIdentitiesByFirstCharacterOfNameCount("organization", filter);
@@ -456,12 +452,6 @@ public class IdentityStorageTest extends AbstractCoreTest {
   public void testGetIdentitiesByFirstCharacterOfName() throws Exception {
     populateData();
     
-    populateData("root");
-    populateData("john");
-    populateData("mary");
-    populateData("raul");
-    populateData("ghost");
-    
     final ProfileFilter filter = new ProfileFilter();
     filter.setFirstCharacterOfName('F');
     assertEquals(0, identityStorage.getIdentitiesByFirstCharacterOfName("organization", filter, 0, 1, false).size());
@@ -476,12 +466,6 @@ public class IdentityStorageTest extends AbstractCoreTest {
   @MaxQueryNumber(2000)
   public void testGetIdentitiesByProfileFilterCount() throws Exception {
     populateData();
-    
-    populateData("root");
-    populateData("john");
-    populateData("mary");
-    populateData("raul");
-    populateData("ghost");
     
     ProfileFilter pf = new ProfileFilter();
     

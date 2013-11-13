@@ -1070,16 +1070,11 @@ public class IdentityStorageImpl extends AbstractStorage implements IdentityStor
     //
     IdentityResult identityResult = new IdentityResult(offset, limit, results.size());
     
-    String remoteId = null;
     //
     while (results.hasNext()) {
 
       ProfileEntity profileEntity = results.next();
 
-      remoteId = profileEntity.getIdentity().getRemoteId();
-      
-      if (StorageUtils.isUserActivated(remoteId) == false) continue;
-      
       Identity identity = createIdentityFromEntity(profileEntity.getIdentity());
       
       Profile profile = getStorage().loadProfile(new Profile(identity));
@@ -1165,26 +1160,8 @@ public class IdentityStorageImpl extends AbstractStorage implements IdentityStor
     builder.where(whereExpression.toString());
 
     QueryResult<ProfileEntity> results = builder.get().objects();
-    
-    //
-    IdentityResult identityResult = new IdentityResult(results.size());
-    
-    String remoteId = null;
-    //
-    while (results.hasNext()) {
 
-      ProfileEntity profileEntity = results.next();
-
-      remoteId = profileEntity.getIdentity().getRemoteId();
-      
-      if (StorageUtils.isUserActivated(remoteId) == false) continue;
-      
-      Identity identity = createIdentityFromEntity(profileEntity.getIdentity());
-      
-      identityResult.add(identity);
-    }
-
-    return identityResult.result().size();
+    return results.size();
 
   }
 
@@ -1213,25 +1190,7 @@ public class IdentityStorageImpl extends AbstractStorage implements IdentityStor
     
     QueryResult<ProfileEntity> results = builder.get().objects();
     
-    //
-    IdentityResult identityResult = new IdentityResult(results.size());
-    
-    String remoteId = null;
-    //
-    while (results.hasNext()) {
-
-      ProfileEntity profileEntity = results.next();
-
-      remoteId = profileEntity.getIdentity().getRemoteId();
-      
-      if (StorageUtils.isUserActivated(remoteId) == false) continue;
-      
-      Identity identity = createIdentityFromEntity(profileEntity.getIdentity());
-      
-      identityResult.add(identity);
-    }
-
-    return identityResult.result().size();
+    return results.size();
   }
 
   /**
@@ -1263,20 +1222,13 @@ public class IdentityStorageImpl extends AbstractStorage implements IdentityStor
     
     QueryResult<ProfileEntity> results = queryImpl.objects();
     
-    //QueryResult<ProfileEntity> results = builder.get().objects();
-    
     //
     IdentityResult identityResult = new IdentityResult(offset, limit, results.size());
     
-    String remoteId = null;
     //
     while (results.hasNext()) {
 
       ProfileEntity profileEntity = results.next();
-      
-      remoteId = profileEntity.getIdentity().getRemoteId();
-      
-      if (StorageUtils.isUserActivated(remoteId) == false) continue;
       
       Identity identity = createIdentityFromEntity(profileEntity.getIdentity());
       
@@ -1289,7 +1241,6 @@ public class IdentityStorageImpl extends AbstractStorage implements IdentityStor
       if (identityResult.addMore() == false) {
         break;
       }
-      
 
     }
 

@@ -9,29 +9,22 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
-import javax.jcr.RepositoryException;
+
 import org.chromattic.api.ChromatticSession;
 import org.exoplatform.commons.chromattic.ChromatticManager;
 import org.exoplatform.commons.chromattic.Synchronization;
-import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.container.ExoContainer;
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.PortalContainer;
-import org.exoplatform.services.jcr.RepositoryService;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
-import org.exoplatform.services.organization.OrganizationService;
-import org.exoplatform.services.organization.User;
 import org.exoplatform.social.common.lifecycle.SocialChromatticLifeCycle;
 import org.exoplatform.social.core.chromattic.entity.ProfileEntity;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.profile.ProfileFilter;
-import org.exoplatform.social.core.space.SpaceUtils;
-import org.exoplatform.social.core.storage.IdentityStorageException;
 import org.exoplatform.social.core.storage.query.JCRProperties;
 import org.exoplatform.social.core.storage.query.QueryFunction;
 import org.exoplatform.social.core.storage.query.WhereExpression;
@@ -51,9 +44,6 @@ public class StorageUtils {
   public static final String SLASH_STR = "/";
   public static final String SOC_ACTIVITY_INFO = "soc:activityInfo";
   public static final String SOC_PREFIX = "soc:";
-  
-  //
-  private static Map<String, List<String>> userInPlatformGroupsMap = new HashMap<String, List<String>>();
   
   //
   private static final Log LOG = ExoLogger.getLogger(StorageUtils.class.getName());
@@ -198,108 +188,7 @@ public class StorageUtils {
                               append(path.replaceAll("%", "%25"));
     return encodedUrl.toString();
   }
-  
-  /**
-   * Checks Identity in Social is activated or not
-   * @param identity
-   * @return TRUE activated otherwise FALSE
-   * @throws IdentityStorageException
-   */
-  public static boolean isUserActivated(String remoteId) throws IdentityStorageException {
 
-    try {
-      //
-      PortalContainer container = (PortalContainer)(ExoContainerContext.getCurrentContainer());
-      
-      RepositoryService repo = (RepositoryService) container.getComponentInstanceOfType(RepositoryService.class);
-      //each tenant, there is dedicated organization's users then we need to make map to keep them.
-      String tenantName = repo.getCurrentRepository().getConfiguration().getName();
-      //
-      List<String> userInPlatformGroups = userInPlatformGroupsMap.get(tenantName);
-      //
-      if (userInPlatformGroups == null) {
-        OrganizationService orgService = (OrganizationService) container.getComponentInstanceOfType(OrganizationService.class);
-        
-        //
-        ListAccess<User> listAccess = orgService.getUserHandler()
-                                                .findUsersByGroupId(SpaceUtils.PLATFORM_USERS_GROUP);
-
-        int offset = 0;
-        int limit = 100;
-        int totalSize = listAccess.getSize();
-
-        userInPlatformGroups = new ArrayList<String>();
-        limit = Math.min(limit, totalSize);
-        int loaded = 0;
-        
-        loaded = loadUserRange(listAccess, offset, limit, userInPlatformGroups);
-        LOG.trace("Users in Plafform Groups loading [size =" + loaded + "]");
-        
-        if (limit != totalSize) {
-          while (loaded == 100) {
-            offset += limit;
-            
-            //prevent to over totalSize
-            if (offset + limit > totalSize) {
-              limit = totalSize - offset;
-            }
-            
-            //
-            loaded = loadUserRange(listAccess, offset, limit, userInPlatformGroups);
-          }
-        }
-        
-        LOG.trace("Users in Plafform Groups [size = " + userInPlatformGroups.size() + "]");
-        LOG.trace("Users in Plafform Groups[" + userInPlatformGroups + "]");
-      }
-      
-      LOG.trace("[The " + remoteId + " is contained in  platform/users group?" + userInPlatformGroups.contains(remoteId) + " ]");
-      
-      userInPlatformGroupsMap.put(tenantName, userInPlatformGroups);
-      
-      return userInPlatformGroups.contains(remoteId);
-    } catch (Exception e) {
-      throw new IdentityStorageException(IdentityStorageException.Type.FAIL_TO_GET_IDENTITY_BY_PROFILE_FILTER,
-                                         e.getMessage());
-    }
-  }
-  
-  /**
-   * Gets User range for given group
-   * @param listAccess
-   * @param offset
-   * @param limit
-   * @param userList
-   * @return
-   * @throws Exception
-   */
-  private static int loadUserRange(ListAccess<User> listAccess, int  offset, int limit, List<String> userList) throws Exception {
-    User[] gotList = listAccess.load(offset, limit);
-    for(User item : gotList) {
-      userList.add(item.getUserName());
-    }
-    //
-    return gotList.length;
-  }
-  
-  /**
-   * there is any update in platform/users group, we need to take care.
-   */
-  public static void clearUsersPlatformGroup() {
-    PortalContainer container = (PortalContainer)(ExoContainerContext.getCurrentContainer());
-    String tenantName = "";
-    try {
-      RepositoryService repo = (RepositoryService) container.getComponentInstanceOfType(RepositoryService.class);
-      //each tenant, there is dedicated organization's users then we need to make map to keep them.
-      tenantName = repo.getCurrentRepository().getConfiguration().getName();
-      userInPlatformGroupsMap.remove(tenantName);
-    } catch (RepositoryException e) {
-      LOG.warn("Wrong to clear the users for reporitory" + tenantName);
-    }
-    
-    
-  }
-  
   /**
    * Process Unified Search Condition
    * @param searchCondition the input search condition
