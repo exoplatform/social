@@ -18,15 +18,13 @@ package org.exoplatform.social.notification.plugin;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.Set;
 
-import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 import org.exoplatform.commons.api.notification.model.ArgumentLiteral;
 import org.exoplatform.commons.api.notification.service.template.TemplateContext;
@@ -45,6 +43,7 @@ public class SocialNotificationUtils {
 
   public final static ArgumentLiteral<String> ACTIVITY_ID = new ArgumentLiteral<String>(String.class, "activityId");
   public final static ArgumentLiteral<String> POSTER = new ArgumentLiteral<String>(String.class, "poster");
+  public final static ArgumentLiteral<String> SENDER = new ArgumentLiteral<String>(String.class, "sender");
   public final static ArgumentLiteral<ExoSocialActivity> ACTIVITY = new ArgumentLiteral<ExoSocialActivity>(ExoSocialActivity.class, "activity");
   public final static ArgumentLiteral<Profile> PROFILE = new ArgumentLiteral<Profile>(Profile.class, "profile");
   public final static ArgumentLiteral<Space> SPACE = new ArgumentLiteral<Space>(Space.class, "space");
@@ -160,13 +159,80 @@ public class SocialNotificationUtils {
     return sb.toString();
   }
   
-  public static void processInforSendTo(Map<String, List<String>> map, String key, String value) {
-    Set<String> set = new HashSet<String>();
-    if (map.containsKey(key)) {
-      set.addAll(map.get(key));
+  /**
+   * 
+   * @param receiversMap
+   * @param templateContext
+   * @return
+   */
+  public static String getMessageByIds(Map<String, List<String>> receiversMap, TemplateContext templateContext, String type) {
+    StringBuilder sb = new StringBuilder();
+    for (Entry<String, List<String>> entry : receiversMap.entrySet()) {
+      sb.append("<li style=\"margin: 0 0 13px 14px; font-size: 13px; list-style: disc; line-height: 18px; font-family: HelveticaNeue, Helvetica, Arial, sans-serif;\">");
+      String targetId = entry.getKey();
+      List<String> values = entry.getValue();
+      int count = values.size();
+
+      String[] keys = new String[]{"USER", "USER_LIST", "LAST3_USERS"};
+      if ("space".equals(type)) {
+        keys = new String[]{"SPACE", "SPACE_LIST", "LAST3_SPACES"};
+      }
+      String key = "";
+      StringBuilder value = new StringBuilder();
+
+      for (int i = 0; i < count && i < 3; i++) {
+        String name = "";
+        if ("user".equals(type) || "connections_request".equals(type)) {
+          Identity identity = Utils.getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, values.get(i), true);
+          name = identity.getProfile().getFullName();
+        } else {
+          Space space = Utils.getSpaceService().getSpaceById(values.get(i));
+          name = space.getDisplayName();
+        }
+        //
+        if (i > 1 && count == 3) {
+          key = keys[i - 1];
+        } else {
+          key = keys[i];
+        }
+        value.append(SocialNotificationUtils.buildRedirecUrl(type, values.get(i), name));
+        if (count > (i + 1) && i < 2) {
+          value.append(", ");
+        }
+      }
+      templateContext.put(key, value.toString());
+      if(count > 3) {
+        if ("user".equals(type)) {
+          templateContext.put("COUNT", SocialNotificationUtils.buildRedirecUrl("user_activity_stream", targetId, String.valueOf((count - 3))));
+          templateContext.put("ACTIVITY_STREAM", LinkProviderUtils.getRedirectUrl("user_activity_stream", targetId));
+        } else if ("space".equals(type)) {
+          templateContext.put("COUNT", SocialNotificationUtils.buildRedirecUrl("space_invitation", targetId, String.valueOf((count - 3))));
+        } else {
+          templateContext.put("COUNT", SocialNotificationUtils.buildRedirecUrl("connections_request", targetId, String.valueOf((count - 3))));
+        }
+      } else {
+        if ("user".equals(type)) {
+          templateContext.put("ACTIVITY_STREAM", LinkProviderUtils.getRedirectUrl("user_activity_stream", targetId));
+        }
+      }
+
+      String digester = TemplateUtils.processDigest(templateContext.digestType(count));
+      sb.append(digester);
+      sb.append("</li>");
     }
-    set.add(value);
-    map.put(key, new ArrayList<String>(set));
+    
+    return sb.toString();
+  }
+  
+  public static void processInforSendTo(Map<String, List<String>> map, String key, String value) {
+    List<String> list = new LinkedList<String>();
+    if (map.containsKey(key)) {
+      list.addAll(map.get(key));
+    }
+    if (list.contains(value) == false) {
+      list.add(value);
+    }
+    map.put(key, new ArrayList<String>(list));
   }
   
   public static String buildRedirecUrl(String type, String id, String name) {

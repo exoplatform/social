@@ -122,6 +122,22 @@ public class PostActivityPluginTest extends AbstractPluginTest {
     tearDownIdentityList.add(ghostIdentity);
   }
   
+  public void testDigestWithSameUser() throws Exception {
+    makeActivity(demoIdentity, "demo post activity on activity stream of root");
+    makeActivity(demoIdentity, "mary post activity on activity stream of root");
+    makeActivity(johnIdentity, "john post activity on activity stream of root");
+    
+    //Digest
+    List<NotificationInfo> list = assertMadeNotifications(3);
+    
+    NotificationContext ctx = NotificationContextImpl.cloneInstance();
+    list.set(0, list.get(0).setTo(rootIdentity.getRemoteId()));
+    ctx.setNotificationInfos(list);
+    Writer writer = new StringWriter();
+    getPlugin().buildDigest(ctx, writer);
+    assertDigest(writer, "Demo gtn, John Anthony posted on your activity stream.");
+  }
+  
   @Override
   public AbstractNotificationPlugin getPlugin() {
     return pluginService.getPlugin(NotificationKey.key(PostActivityPlugin.ID));

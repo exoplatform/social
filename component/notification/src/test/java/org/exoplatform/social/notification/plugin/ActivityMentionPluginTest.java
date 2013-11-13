@@ -149,7 +149,36 @@ public class ActivityMentionPluginTest extends AbstractPluginTest {
     ctx.setNotificationInfos(toJohn);
     Writer writer = new StringWriter();
     getPlugin().buildDigest(ctx, writer);
-    assertDigest(writer, "Demo gtn, Root Root, Mary Kelly have mentioned you in an activity : mary mention John Anthony and Demo gtn");
+    assertDigest(writer, "Mary Kelly, Demo gtn, Root Root have mentioned you in an activity : mary mention John Anthony and Demo gtn");
+  }
+  
+  public void testDigestWithDuplicateUser() throws Exception {
+    List<NotificationInfo> toJohn = new ArrayList<NotificationInfo>();
+    
+    //mary post activity on root stream and mention john, demo
+    ExoSocialActivity maryActivity = makeActivity(maryIdentity, "mary mention @john and @demo");
+    List<NotificationInfo> list = assertMadeNotifications(3);
+    toJohn.add(list.get(1));
+    notificationService.clearAll();
+    
+    //demo add comment to maryActivity and mention john
+    makeComment(maryActivity, demoIdentity, "demo mention @john");
+    List<NotificationInfo> list1 = assertMadeNotifications(3);
+    toJohn.add(list1.get(2));
+    notificationService.clearAll();
+    
+    //root add comment to maryActivity and mention john
+    makeComment(activityManager.getActivity(maryActivity.getId()), demoIdentity, "root mention @john");
+    List<NotificationInfo> list2 = assertMadeNotifications(3);
+    toJohn.add(list2.get(2));
+    notificationService.clearAll();
+    
+    NotificationContext ctx = NotificationContextImpl.cloneInstance();
+    toJohn.set(0, toJohn.get(0).setTo(johnIdentity.getRemoteId()));
+    ctx.setNotificationInfos(toJohn);
+    Writer writer = new StringWriter();
+    getPlugin().buildDigest(ctx, writer);
+    assertDigest(writer, "Mary Kelly, Demo gtn have mentioned you in an activity : mary mention John Anthony and Demo gtn");
   }
 
   @Override

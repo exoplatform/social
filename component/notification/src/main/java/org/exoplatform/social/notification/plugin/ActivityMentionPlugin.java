@@ -74,7 +74,6 @@ public class ActivityMentionPlugin extends AbstractNotificationPlugin {
     
     String activityId = notification.getValueOwnerParameter(SocialNotificationUtils.ACTIVITY_ID.getKey());
     ExoSocialActivity activity = Utils.getActivityManager().getActivity(activityId);
-    ExoSocialActivity parentActivity = Utils.getActivityManager().getParentActivity(activity);
     Identity identity = Utils.getIdentityManager().getIdentity(activity.getPosterId(), true);
 
     templateContext.put("USER", identity.getProfile().getFullName());
@@ -82,13 +81,17 @@ public class ActivityMentionPlugin extends AbstractNotificationPlugin {
     
     // In case of mention on a comment, we need provide the id of the activity, not of the comment
     if (activity.isComment()) {
-      activityId = Utils.getActivityManager().getParentActivity(activity).getId();
+      ExoSocialActivity parentActivity = Utils.getActivityManager().getParentActivity(activity);
+      activityId = parentActivity.getId();
+      templateContext.put("REPLY_ACTION_URL", LinkProviderUtils.getRedirectUrl("reply_activity_highlight_comment", activityId + "-" + activity.getId()));
+      templateContext.put("VIEW_FULL_DISCUSSION_ACTION_URL", LinkProviderUtils.getRedirectUrl("view_full_activity_highlight_comment", activityId + "-" + activity.getId()));
+    } else {
+      templateContext.put("REPLY_ACTION_URL", LinkProviderUtils.getRedirectUrl("reply_activity", activityId));
+      templateContext.put("VIEW_FULL_DISCUSSION_ACTION_URL", LinkProviderUtils.getRedirectUrl("view_full_activity", activityId));
     }
     templateContext.put("AVATAR", LinkProviderUtils.getUserAvatarUrl(identity.getProfile()));
     templateContext.put("PROFILE_URL", LinkProviderUtils.getRedirectUrl("user", identity.getRemoteId()));
     templateContext.put("ACTIVITY", Utils.processMentions(activity.getTitle()));
-    templateContext.put("REPLY_ACTION_URL", LinkProviderUtils.getRedirectUrl("reply_activity_highlight_comment", parentActivity.getId() + "-" + activity.getId()));
-    templateContext.put("VIEW_FULL_DISCUSSION_ACTION_URL", LinkProviderUtils.getRedirectUrl("view_full_activity_highlight_comment", parentActivity.getId() + "-" + activity.getId()));
     String body = TemplateUtils.processGroovy(templateContext);
    
     return messageInfo.subject(subject).body(body).end();

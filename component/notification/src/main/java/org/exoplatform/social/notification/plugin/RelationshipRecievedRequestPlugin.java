@@ -18,7 +18,9 @@ package org.exoplatform.social.notification.plugin;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.exoplatform.commons.api.notification.NotificationContext;
 import org.exoplatform.commons.api.notification.model.MessageInfo;
@@ -90,42 +92,20 @@ public class RelationshipRecievedRequestPlugin extends AbstractNotificationPlugi
   public boolean makeDigest(NotificationContext ctx, Writer writer) {
     List<NotificationInfo> notifications = ctx.getNotificationInfos();
     NotificationInfo first = notifications.get(0);
-
     String language = getLanguage(first);
-    TemplateContext templateContext = new TemplateContext(first.getKey().getId(), language);
     
-    int count = notifications.size();
-    String[] keys = {"USER", "USER_LIST", "LAST3_USERS"};
-    String key = "";
-    StringBuilder value = new StringBuilder();
+    TemplateContext templateContext = new TemplateContext(first.getKey().getId(), language);
+    Map<String, List<String>> receiverMap = new LinkedHashMap<String, List<String>>();
 
     try {
-      writer.append("<li style=\"margin: 0 0 13px 14px; font-size: 13px; list-style: disc; line-height: 18px; font-family: HelveticaNeue, Helvetica, Arial, sans-serif;\">");
-      for (int i = 0; i < count && i < 3; i++) {
-        Identity identity = Utils.getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, notifications.get(i).getValueOwnerParameter("sender"), true);
-        if (i > 1 && count == 3) {
-          key = keys[i - 1];
-        } else {
-          key = keys[i];
-        }
-        value.append(SocialNotificationUtils.buildRedirecUrl("user", identity.getRemoteId(), identity.getProfile().getFullName()));
-        if (count > (i + 1) && i < 2) {
-          value.append(", ");
-        }
+      for (NotificationInfo message : notifications) {
+        SocialNotificationUtils.processInforSendTo(receiverMap, first.getTo(), message.getValueOwnerParameter(SocialNotificationUtils.SENDER.getKey()));
       }
-      templateContext.put(key, value.toString());
-      if(count > 3) {
-        templateContext.put("COUNT", SocialNotificationUtils.buildRedirecUrl("connections_request", first.getTo(), String.valueOf((count - 3))));
-      }
-      
-      String digester = TemplateUtils.processDigest(templateContext.digestType(count).end());
-      writer.append(digester);
-      writer.append("</li>");
+      writer.append(SocialNotificationUtils.getMessageByIds(receiverMap, templateContext, "connections_request"));
     } catch (IOException e) {
       ctx.setException(e);
       return false;
     }
-    
     return true;
   }
 

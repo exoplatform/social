@@ -18,7 +18,9 @@ package org.exoplatform.social.notification.plugin;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.exoplatform.commons.api.notification.NotificationContext;
 import org.exoplatform.commons.api.notification.model.MessageInfo;
@@ -29,7 +31,6 @@ import org.exoplatform.commons.notification.template.TemplateUtils;
 import org.exoplatform.container.xml.InitParams;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.identity.model.Identity;
-import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.notification.LinkProviderUtils;
 import org.exoplatform.social.notification.Utils;
 
@@ -96,40 +97,16 @@ public class PostActivityPlugin extends AbstractNotificationPlugin {
     List<NotificationInfo> notifications = ctx.getNotificationInfos();
     NotificationInfo first = notifications.get(0);
     String sendToUser = first.getTo();
-
     String language = getLanguage(first);
     
     TemplateContext templateContext = new TemplateContext(first.getKey().getId(), language);
-    
-    int count = notifications.size();
-    String[] keys = {"USER", "USER_LIST", "LAST3_USERS"};
-    String key = "";
-    StringBuilder value = new StringBuilder();
+    Map<String, List<String>> receiverMap = new LinkedHashMap<String, List<String>>();
     
     try {
-      writer.append("<li style=\"margin: 0 0 13px 14px; font-size: 13px; list-style: disc; line-height: 18px; font-family: HelveticaNeue, Helvetica, Arial, sans-serif;\">");
-      for (int i = 0; i < count && i < 3; i++) {
-        String remoteId = notifications.get(i).getValueOwnerParameter(SocialNotificationUtils.POSTER.getKey());
-        Identity identity = Utils.getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, remoteId, true);
-        //
-        if (i > 1 && count == 3) {
-          key = keys[i - 1];
-        } else {
-          key = keys[i];
-        }
-        value.append(SocialNotificationUtils.buildRedirecUrl("user", identity.getRemoteId(), identity.getProfile().getFullName()));
-        if (count > (i + 1) && i < 2) {
-          value.append(", ");
-        }
+      for (NotificationInfo message : notifications) {
+        SocialNotificationUtils.processInforSendTo(receiverMap, sendToUser, message.getValueOwnerParameter(SocialNotificationUtils.POSTER.getKey()));
       }
-      templateContext.put(key, value.toString());
-      if(count > 3) {
-        templateContext.put("COUNT", SocialNotificationUtils.buildRedirecUrl("user_activity_stream", sendToUser, String.valueOf((count - 3))));
-      }
-      templateContext.put("ACTIVITY_STREAM", LinkProviderUtils.getRedirectUrl("user_activity_stream", sendToUser));
-      String digester = TemplateUtils.processDigest(templateContext.digestType(count));
-      writer.append(digester);
-      writer.append("</li>");
+      writer.append(SocialNotificationUtils.getMessageByIds(receiverMap, templateContext, "user"));
     } catch (IOException e) {
       ctx.setException(e);
       return false;
