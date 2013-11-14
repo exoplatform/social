@@ -103,7 +103,7 @@ public class UISocialGroupSelector extends UIContainer {
     String remoteUser = reqCtx.getRemoteUser();
     if (getCurrentGroup() == null)
       return null;
-    Collection<Object> groups = service.getGroupHandler().findGroups(
+    Collection<Group> groups = service.getGroupHandler().findGroups(
         getCurrentGroup());
     if (groups.size() > 0) {
       for (Object child : groups) {
