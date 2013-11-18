@@ -35,6 +35,8 @@ import java.util.regex.Pattern;
 
 import javax.jcr.InvalidItemStateException;
 import javax.jcr.ItemExistsException;
+import javax.jcr.Node;
+import javax.jcr.NodeIterator;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.Validate;
@@ -2374,15 +2376,10 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     
     return excludedActivities;
   }
-
-  @Override
-  public List<ExoSocialActivity> getActivities(Identity owner,
-                                               Identity viewer,
-                                               long offset,
-                                               long limit) throws ActivityStorageException {
-    
-    List<Identity> queryIdentities = new ArrayList<Identity>();
-    queryIdentities.add(owner);
+  
+  private String getQueryViewerActivityStream(Identity owner, Identity viewer) {
+    List<Identity> posterIdentities = new ArrayList<Identity>();
+    posterIdentities.add(owner);
     
     //
     if (viewer != null 
@@ -2398,24 +2395,61 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
       
       //
       if (hasRelationship) {
-        queryIdentities.add(viewer);
+        posterIdentities.add(viewer);
       }
     }
     
     //
-    List<Identity> spaceIdentityOfOwner = getSpacesId(owner);
-    Map<String, Identity> spaceIdentityOfViewer = getSpacesIdOfIdentity(viewer);
-    for(Identity identity : spaceIdentityOfOwner) {
-      if (spaceIdentityOfViewer.containsKey(identity.getRemoteId())) {
-        queryIdentities.add(identity);
+    return ActivityBuilderWhere.viewOwner().posters(posterIdentities).build(new ActivityFilter());
+  }
+
+  @Override
+  public List<ExoSocialActivity> getActivities(Identity owner,
+                                               Identity viewer,
+                                               long offset,
+                                               long limit) throws ActivityStorageException {
+    List<ExoSocialActivity> got = new ArrayList<ExoSocialActivity>();
+    StringBuilder query = new StringBuilder().append("SELECT * FROM soc:activity WHERE ").append(getQueryViewerActivityStream(owner, viewer));
+    NodeIterator it = nodes(query.toString());
+    while (it.hasNext() && limit > 0) {
+      if (offset > 0) {
+        offset--;
+        continue;
       }
+      Node node = (Node) it.next();
+      try {
+        ActivityEntity entity = _findById(ActivityEntity.class, node.getUUID());
+        if (! entity.getIdentity().getProviderId().equals(SpaceIdentityProvider.NAME)) {
+          got.add(getActivity(entity.getId()));
+          limit--;
+        }
+      } catch (Exception e) {
+        LOG.debug("Failed to get activities posted by owner and viewer");
+      }
+      
     }
-    
-    //
-    ActivityFilter filter = new ActivityFilter(){};
 
     //
-    return getOwnerActivitiesOfIdentities(ActivityBuilderWhere.owner().owners(queryIdentities).mentioner(owner).poster(owner), filter, offset, limit);
+    return got;
+  }
+  
+  @Override
+  public int getNumberOfActivitiesByPoster(Identity ownerIdentity, Identity viewerIdentity) {
+    int cpt = 0;
+    StringBuilder query = new StringBuilder().append("SELECT * FROM soc:activity WHERE ").append(getQueryViewerActivityStream(ownerIdentity, viewerIdentity));
+    NodeIterator it = nodes(query.toString());
+    while (it.hasNext()) {
+      Node node = (Node) it.next();
+      try {
+        ActivityEntity entity = _findById(ActivityEntity.class, node.getUUID());
+        if (! entity.getIdentity().getProviderId().equals(SpaceIdentityProvider.NAME)) {
+          cpt++;
+        }
+      } catch (Exception e) {
+        LOG.debug("Failed to get number of activities posted by owner and viewer");
+      }
+    }
+    return cpt;
   }
   
   /**

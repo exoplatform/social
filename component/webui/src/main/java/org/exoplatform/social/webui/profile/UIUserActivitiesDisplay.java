@@ -216,7 +216,7 @@ public class UIUserActivitiesDisplay extends UIContainer {
     // Check if current display page is My Activity Stream
     String currentUserName = URLUtils.getCurrentUser();
     if (currentUserName != null) {
-      selectedDisplayMode = DisplayMode.POSTER_ACTIVITIES;
+      selectedDisplayMode = DisplayMode.OWNER_STATUS;
     }
     
     activitiesLoader.setPostContext(PostContext.USER);
@@ -255,10 +255,6 @@ public class UIUserActivitiesDisplay extends UIContainer {
       break;
     case MY_SPACE :
       activitiesListAccess = activityManager.getActivitiesOfUserSpacesWithListAccess(ownerIdentity);
-      activitiesLoader.setActivityListAccess(activitiesListAccess);
-      break;
-    case POSTER_ACTIVITIES:
-      activitiesListAccess = activityManager.getActivitiesByPoster(ownerIdentity);
       activitiesLoader.setActivityListAccess(activitiesListAccess);
       break;
     default :

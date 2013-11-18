@@ -1190,6 +1190,23 @@ public class CachedActivityStorage implements ActivityStorage {
   }
   
   @Override
+  public int getNumberOfActivitiesByPoster(final Identity ownerIdentity, final Identity viewerIdentity) {
+    //
+    ActivityCountKey key =
+        new ActivityCountKey(new IdentityKey(ownerIdentity), new IdentityKey(viewerIdentity), ActivityType.POSTER);
+
+    //
+    return activitiesCountCache.get(
+        new ServiceContext<IntegerData>() {
+          public IntegerData execute() {
+            return new IntegerData(storage.getNumberOfActivitiesByPoster(ownerIdentity, viewerIdentity));
+          }
+        },
+        key)
+        .build();
+  }
+  
+  @Override
   public List<ExoSocialActivity> getNewerOnSpaceActivities(final Identity ownerIdentity,
                                                            final ExoSocialActivity baseActivity,
                                                            final int limit) {

@@ -1,11 +1,13 @@
 /**
- * Provides the classes necessary to manage all related entities on Social, both service to manage
- * each type in separating or in collaborating between them.
- *  
- * <p>
- * Entities in social need to be managed are: Identity, Activity and Relationship.
- * The Identity includes all profile information of users and spaces. 
- * The Activity contains all information relate to people, spaces and applications activities.
- * The Relationship with methods to manage relationship between users and users, users and spaces.
+ * Provides classes that are necessary to manage all related entities on Social and all services that manage
+ * each type in both separating and collaborating between them.
+ *
+ * Entities in Social which need to be managed are: Identity, Activity and Relationship.
+ * 
+ * <ul>
+ * <li>The Activity contains all information regarding to people, spaces and applications activities.</li>
+ * <li>The Identity contains all profile information of users and spaces.</li>
+ * <li>The Relationship contains all information regarding to relationship between users and users, users and spaces.</li>
+ * </ul>
  */
 package org.exoplatform.social.core.manager;

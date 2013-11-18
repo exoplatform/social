@@ -111,7 +111,7 @@ public class UIUsersInGroupSelector extends UIContainer {
     String remoteUser = reqCtx.getRemoteUser();
     if (getCurrentGroup() == null)
       return null;
-    Collection<Object> groups = service.getGroupHandler().findGroups(
+    Collection<Group> groups = service.getGroupHandler().findGroups(
         getCurrentGroup());
     groups.remove(service.getGroupHandler().findGroupById(getCurrentGroupId()));
     if (groups.size() > 0) {

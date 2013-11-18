@@ -88,7 +88,7 @@ public class CachedActivityStorageTestCase extends AbstractCoreTest {
 
   }
 
-  @MaxQueryNumber(200)
+  @MaxQueryNumber(282)
   public void testSaveActivity() throws Exception {
 
     //
@@ -120,7 +120,7 @@ public class CachedActivityStorageTestCase extends AbstractCoreTest {
 
   }
 
-  @MaxQueryNumber(260)
+  @MaxQueryNumber(384)
   public void testRemoveActivity() throws Exception {
 
     //
@@ -150,7 +150,7 @@ public class CachedActivityStorageTestCase extends AbstractCoreTest {
 
   }
 
-  @MaxQueryNumber(314)
+  @MaxQueryNumber(459)
   public void testRelationshipActivity() throws Exception {
 
     //
@@ -182,7 +182,7 @@ public class CachedActivityStorageTestCase extends AbstractCoreTest {
 
   }
 
-  @MaxQueryNumber(260)
+  @MaxQueryNumber(336)
   public void testSaveComment() throws Exception {
 
     //
@@ -215,7 +215,7 @@ public class CachedActivityStorageTestCase extends AbstractCoreTest {
 
   }
 
-  @MaxQueryNumber(314)
+  @MaxQueryNumber(432)
   public void testRemoveComment() throws Exception {
     //
     ExoSocialActivity activity = new ExoSocialActivityImpl();

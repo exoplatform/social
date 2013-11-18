@@ -600,6 +600,51 @@ public abstract class ActivityBuilderWhere implements BuilderWhereExpression<JCR
       }
     };
   }
+  
+  public static ActivityBuilderWhere viewOwner() {
+
+    return new ActivityBuilderWhere() {
+
+      @Override
+      public String make(JCRFilterLiteral filter) {
+        List<Identity> posterIdentities = getPosters();
+
+        //has relationship
+        if (posterIdentities != null && posterIdentities.size() > 0) {
+          boolean first = true;
+          where.startGroup();
+          for (Identity identity : posterIdentities) {
+
+            if (first) {
+              first = false;
+            }
+            else {
+              where.or();
+            }
+            where.equals(ActivityEntity.poster, identity.getId());
+
+          }
+          where.endGroup();
+          
+          where.and();
+        
+          where.equals(ActivityEntity.isComment, Boolean.FALSE);
+  
+          //
+          where.and();
+          //
+          where.startGroup();
+          {
+            where.equals(HidableEntity.isHidden, Boolean.FALSE);
+            where.or().isNull(HidableEntity.isHidden);
+          }
+          where.endGroup();
+        }
+
+        return where.toString();
+      }
+    };
+  }
 
 }
 

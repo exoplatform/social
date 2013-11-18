@@ -715,6 +715,17 @@ public interface ActivityStorage {
   public int getNumberOfActivitiesByPoster(Identity posterIdentity);
   
   /**
+   * Gets the number of activities of poster.
+   * 
+   * @param viewerIdentity The given viewer identity information.
+   * @param ownerIdentity The given owner identity information.
+   * 
+   * @return The size of return results.
+   * @since 4.0.4
+   */
+  public int getNumberOfActivitiesByPoster(Identity ownerIdentity, Identity viewerIdentity);
+  
+  /**
    * Gets list of newer activities of spaces where the identity can
    * access
    * @param spaceIdentity
