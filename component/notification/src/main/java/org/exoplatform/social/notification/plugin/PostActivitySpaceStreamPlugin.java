@@ -89,7 +89,7 @@ public class PostActivitySpaceStreamPlugin extends AbstractNotificationPlugin {
     templateContext.put("USER", identity.getProfile().getFullName());
     templateContext.put("SPACE", spaceIdentity.getProfile().getFullName());
     templateContext.put("ACTIVITY", activity.getTitle());
-    templateContext.put("SUBJECT", SocialNotificationUtils.cleanHtmlTags(activity.getTitle()));
+    templateContext.put("SUBJECT", SocialNotificationUtils.buildSubject(activity.getTitle()));
     String subject = TemplateUtils.processSubject(templateContext);
     
     Space space = Utils.getSpaceService().getSpaceByPrettyName(spaceIdentity.getRemoteId());

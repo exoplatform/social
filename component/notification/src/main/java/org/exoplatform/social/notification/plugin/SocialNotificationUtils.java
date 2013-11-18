@@ -58,6 +58,8 @@ public class SocialNotificationUtils {
 
   public static final String SPACE_STR     = " ";
   
+  public static final int NOTIFICATION_SUBJECT_LIMIT = 50;
+  
   public static String getUserId(String identityId) {
     return Utils.getIdentityManager().getIdentity(identityId, false).getRemoteId();
   }
@@ -250,6 +252,43 @@ public class SocialNotificationUtils {
     }
   }
   
+  /**
+   * Build the subject of notification mail from origin string
+   *  - Just contains plain text
+   *  - If string have multiple lines, just get the first line
+   *  - Limit number of characters
+   * @param str the origin string
+   * @return the result of subject
+   * @since 4.1.x
+   */
+  public static String buildSubject(String str) {
+    //
+    if (str == null || str.trim().length() == 0) {
+      return "";
+    }
+    
+    //take the first line if string have multiple lines
+    str = str.replace("\n", "<br />").replace("<br>", "<br />");
+    String[] arr = str.trim().split("<br />");
+    
+    String subject = "";
+    for (String s : arr) {
+      if (s.trim().length() > 0) {
+        subject = cleanHtmlTags(s);
+        if (arr.length > 2) {
+          subject += " ...";
+        }
+        break;
+      }
+    }
+    
+    if (subject.length() <= NOTIFICATION_SUBJECT_LIMIT) {
+      return subject;
+    }
+    
+    return subject.substring(0, NOTIFICATION_SUBJECT_LIMIT) + " ...";
+  }
+  
   public static String cleanHtmlTags(String str) {
     //
     if (str == null || str.trim().length() == 0) {
@@ -267,7 +306,7 @@ public class SocialNotificationUtils {
     str = m2.replaceAll(EMPTY_STR);
     String multiplenewlines = "(\\n{1,2})(\\s*\\n)+";
     str = str.replaceAll(multiplenewlines, "$1");
-    return str;
+    return str.trim();
   }
   
 }
