@@ -140,9 +140,6 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
         addMentioner(streamCtx.getMentioners(), activityEntity);
       }
       
-      //
-      identityStorage.updateProfileActivityId(owner, activityEntity.getId(), Profile .AttachedActivityType.RELATIONSHIP);
-      
     } catch (NodeNotFoundException e) {
       ctx.setException(e);
       LOG.warn("Failed to add Activity Relations references.", e);
