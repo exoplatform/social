@@ -72,7 +72,6 @@
               <property name="time-out" value="15m"/>
               <property name="jbosscache-configuration"
                         value="conf/exo.portal.component.test.jcr-jbosscache-lock-config.xml"/>
-              <property name="jbosscache-cl-cache.jdbc.datasource" value="jdbcexo"/>
             </properties>
           </lock-manager>
         </workspace>
@@ -126,7 +125,6 @@
               <property name="time-out" value="15m"/>
               <property name="jbosscache-configuration"
                         value="jar:/conf/exo.portal.component.test.jcr-jbosscache-lock-config.xml"/>
-              <property name="jbosscache-cl-cache.jdbc.datasource" value="jdbcexo"/>
             </properties>
           </lock-manager>
         </workspace>
