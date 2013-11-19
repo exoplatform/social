@@ -423,7 +423,7 @@ public class DefaultSpaceApplicationHandler implements SpaceApplicationHandler {
                                           page.isShowMaxWindow(), 
                                           page.getFactoryId(), 
                                           page.getAccessPermissions() != null ? Arrays.asList(page.getAccessPermissions()) : null, 
-                                          page.getEditPermission(), Arrays.asList(page.getMoveAppsPermissions()), Arrays.asList(page.getMoveContainersPermissions()));
+                                          page.getEditPermission());
       
       //setting some data to page.
       setPage(space, app, gadgetApplication, portletApplication, page);

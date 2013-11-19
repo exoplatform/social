@@ -27,7 +27,7 @@ import org.exoplatform.portal.mop.user.UserNavigation;
 import org.exoplatform.portal.mop.user.UserNode;
 import org.exoplatform.portal.mop.user.UserPortal;
 import org.exoplatform.portal.webui.application.UIPortlet;
-import org.exoplatform.portal.webui.page.UIPage;
+import org.exoplatform.portal.webui.page.UIPageBody;
 import org.exoplatform.portal.webui.portal.PageNodeEvent;
 import org.exoplatform.portal.webui.portal.UIPortal;
 import org.exoplatform.portal.webui.util.Util;
@@ -208,12 +208,12 @@ public class UISocialNavigation extends UIComponent {
         uiNavigation.selectedParent_ = selectNav;
       else
         uiNavigation.selectedParent_ = userPortal.resolvePath(selectNav, null, parentUri);
-      UIPage uiPage = uiPortal.findFirstComponentOfType(UIPage.class);
-      if (uiPage != null) {
-        if (uiPage.getMaximizedUIPortlet() != null) {
-          UIPortlet currentPortlet = uiPage.getMaximizedUIPortlet();
-          currentPortlet.setCurrentWindowState(WindowState.NORMAL);
-          uiPage.setMaximizedUIPortlet(null);
+        UIPageBody uiPageBody = uiPortal.findFirstComponentOfType(UIPageBody.class);
+        if (uiPageBody != null) {
+            if (uiPageBody.getMaximizedUIComponent() != null) {
+                UIPortlet currentPortlet = (UIPortlet) uiPageBody.getMaximizedUIComponent();
+                currentPortlet.setCurrentWindowState(WindowState.NORMAL);
+                uiPageBody.setMaximizedUIComponent(null);
         }
       }
       PageNodeEvent<UIPortal> pnevent;
