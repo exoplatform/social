@@ -37,6 +37,7 @@ import javax.jcr.InvalidItemStateException;
 import javax.jcr.ItemExistsException;
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
+import javax.jcr.RepositoryException;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.Validate;
@@ -45,6 +46,7 @@ import org.chromattic.api.query.Ordering;
 import org.chromattic.api.query.Query;
 import org.chromattic.api.query.QueryBuilder;
 import org.chromattic.api.query.QueryResult;
+import org.chromattic.core.api.ChromatticSessionImpl;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
@@ -263,6 +265,19 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     fillStream(activityEntity, activity);
     
   }
+  
+  private long getLastUpdatedTime(ActivityEntity activityEntity) {
+    ChromatticSessionImpl chromatticSession = (ChromatticSessionImpl) getSession();
+    try {
+      Node node = chromatticSession.getNode(activityEntity);
+      if (node.hasProperty(ActivityEntity.lastUpdated.getName())) {
+        return activityEntity.getLastUpdated();
+      }
+    } catch (RepositoryException e) {
+      LOG.debug("Failed to get last updated by activity with id = " + activityEntity.getId(), e);
+    }
+    return activityEntity.getPostedTime();
+  }
 
   private ExoSocialActivity fillActivityFromEntity(ActivityEntity activityEntity, ExoSocialActivity activity) {
 
@@ -275,7 +290,7 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     activity.setBodyId(activityEntity.getBodyId());
     activity.setUserId(activityEntity.getPosterIdentity().getId());
     activity.setPostedTime(activityEntity.getPostedTime());
-    activity.setUpdated(activityEntity.getLastUpdated());
+    activity.setUpdated(getLastUpdatedTime(activityEntity));
     activity.setType(activityEntity.getType());
     activity.setAppId(activityEntity.getAppId());
     activity.setExternalId(activityEntity.getExternalId());
@@ -555,7 +570,7 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
       activityEntity.setCommenters(processCommenters(activity.getCommentedIds(), comment.getUserId(), commenters, true));
       
       //
-      long oldUpdated = activityEntity.getLastUpdated();
+      long oldUpdated = getLastUpdatedTime(activityEntity);
       activityEntity.getComments().add(commentEntity);
       activityEntity.setLastUpdated(currentMillis);
       commentEntity.setTitle(comment.getTitle());
