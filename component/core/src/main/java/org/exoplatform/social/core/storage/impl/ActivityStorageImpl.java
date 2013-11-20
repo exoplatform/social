@@ -263,8 +263,9 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     return activityEntity.getPostedTime();
   }
 
-  private void fillActivityFromEntity(ActivityEntity activityEntity, ExoSocialActivity activity) {
+  private ExoSocialActivity fillActivityFromEntity(ActivityEntity activityEntity, ExoSocialActivity activity) {
 
+    try {
     //
     activity.setId(activityEntity.getId());
     activity.setTitle(activityEntity.getTitle());
@@ -323,11 +324,17 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     if (hidable != null) {
       activity.isHidden(hidable.getHidden());
     }
-    
+    } catch (Exception e) {
+      LOG.debug("Failed to fill activity from entity : entity null or missing property", e);
+      return null;
+    }
 
     //
-    fillStream(activityEntity, activity);
+    if (activity != null) {
+      fillStream(activityEntity, activity);
+    }
     
+    return activity;
   }
 
   private void fillStream(ActivityEntity activityEntity, ExoSocialActivity activity) {
@@ -457,9 +464,11 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
 
       //
       activity.setId(activityEntity.getId());
-      fillActivityFromEntity(activityEntity, activity);
+      activity = fillActivityFromEntity(activityEntity, activity);
 
-      processActivity(activity);
+      if (activity != null) {
+        processActivity(activity);
+      }
 
       //
       return activity;
@@ -1422,7 +1431,11 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     
     for (int i = offset ; i < commentIds.length ; i++) {
       if (isHidden(commentIds[i]) == false) {
-        activities.add(getStorage().getActivity(commentIds[i]));
+        ExoSocialActivity comment = getActivity(commentIds[i]);
+        if (comment == null) {
+          continue;
+        }
+        activities.add(comment);
         //
         if (activities.size() == limit) {
           break;
