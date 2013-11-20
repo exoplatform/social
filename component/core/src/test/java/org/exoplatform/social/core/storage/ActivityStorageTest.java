@@ -674,7 +674,7 @@ public class ActivityStorageTest extends AbstractCoreTest {
    * @throws Exception
    * @since 1.2.2
    */
-  @MaxQueryNumber(624)
+  @MaxQueryNumber(708)
   public void testGetActivitiesOfConnectionsWithPosterIdentity() throws Exception {
     RelationshipManager relationshipManager = this.getRelationshipManager();
     List<Relationship> relationships = new ArrayList<Relationship>();
@@ -686,7 +686,7 @@ public class ActivityStorageTest extends AbstractCoreTest {
     
     Relationship demoMaryIdentity = relationshipManager.inviteToConnect(demoIdentity, maryIdentity);
     relationshipManager.confirm(maryIdentity, demoIdentity);
-    johnDemoIdentity = relationshipManager.get(demoMaryIdentity.getId());
+    demoMaryIdentity = relationshipManager.get(demoMaryIdentity.getId());
     relationships.add(demoMaryIdentity);
    
     ExoSocialActivity activity = new ExoSocialActivityImpl();
@@ -706,7 +706,7 @@ public class ActivityStorageTest extends AbstractCoreTest {
     
     List<ExoSocialActivity> demoConnectionActivities = activityStorage.getActivitiesOfConnections(demoIdentity, 0, 10);
     assertNotNull("demoConnectionActivities must not be null", demoConnectionActivities);
-    assertEquals(0, demoConnectionActivities.size());
+    assertEquals(1, demoConnectionActivities.size());
     
     List<ExoSocialActivity> maryConnectionActivities = activityStorage.getActivitiesOfConnections(maryIdentity, 0, 10);
     assertNotNull("maryConnectionActivities must not be null", maryConnectionActivities);

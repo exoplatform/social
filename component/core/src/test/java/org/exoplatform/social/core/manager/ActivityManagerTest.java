@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
+import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.social.common.RealtimeListAccess;
@@ -1316,6 +1317,85 @@ public class ActivityManagerTest extends AbstractCoreTest {
     populateActivityMass(rootIdentity, 30);
     count = activityManager.getActivitiesCount(rootIdentity);
     assertEquals("count must be: 30", 30, count);
+  }
+  
+  public void testPosterActivity() throws Exception {
+    //Root posts 2 activities
+    ExoSocialActivity rootActivity1 = new ExoSocialActivityImpl();
+    rootActivity1.setTitle("root activity 1");
+    activityManager.saveActivityNoReturn(rootIdentity, rootActivity1);
+    tearDownActivityList.add(rootActivity1);
+    
+    ExoSocialActivity rootActivity2 = new ExoSocialActivityImpl();
+    rootActivity2.setTitle("root activity 2");
+    activityManager.saveActivityNoReturn(rootIdentity, rootActivity2);
+    tearDownActivityList.add(rootActivity2);
+    
+    //Demo posts 1 activity on root stream
+    ExoSocialActivity demoActivity = new ExoSocialActivityImpl();
+    demoActivity.setTitle("demo posts activity on root stream");
+    demoActivity.setUserId(demoIdentity.getId());
+    activityManager.saveActivityNoReturn(rootIdentity, demoActivity);
+    tearDownActivityList.add(demoActivity);
+    
+    //Root create a space and post an activity in this space
+    Space space = new Space();
+    space.setDisplayName("my space 1");
+    space.setPrettyName(space.getDisplayName());
+    space.setRegistration(Space.OPEN);
+    space.setDescription("add new space 1");
+    space.setType(DefaultSpaceApplicationHandler.NAME);
+    space.setVisibility(Space.OPEN);
+    space.setRegistration(Space.VALIDATION);
+    space.setPriority(Space.INTERMEDIATE_PRIORITY);
+    space.setGroupId(SpaceUtils.SPACE_GROUP + "/" + space.getPrettyName());
+    space.setUrl(space.getPrettyName());
+    String[] managers = new String[] { "root"};
+    String[] members = new String[] { "root"};
+    space.setManagers(managers);
+    space.setMembers(members);
+    spaceService.saveSpace(space, true);
+    Identity spaceIdentity = this.identityManager.getOrCreateIdentity(SpaceIdentityProvider.NAME, space.getPrettyName(), false);
+    
+    ExoSocialActivity rootPostSpaceActivity = new ExoSocialActivityImpl();
+    rootPostSpaceActivity.setTitle("root post activity on space");
+    rootPostSpaceActivity.setUserId(rootIdentity.getId());
+    activityManager.saveActivityNoReturn(spaceIdentity, rootPostSpaceActivity);
+    tearDownActivityList.add(rootPostSpaceActivity);
+    
+    //Root connect with demo
+    Relationship rootDemoConnection = relationshipManager.inviteToConnect(rootIdentity, demoIdentity);
+    relationshipManager.confirm(demoIdentity, rootIdentity);
+
+    //root view his stream
+    ListAccess<ExoSocialActivity> listAccess = activityManager.getActivitiesWithListAccess(rootIdentity);
+    assertNotNull("listAccess must not be null", listAccess);
+    assertEquals("3 activities (1 in space) created by root", 3, listAccess.getSize());
+    assertEquals("3 activities (1 in space) created by root", 3, listAccess.load(0, 10).length);
+    
+    //demo view stream of root
+    listAccess = activityManager.getActivitiesWithListAccess(rootIdentity, demoIdentity);
+    assertEquals("3 activities : 2 created by root and 1 created by demo matched", 3, listAccess.getSize());
+    assertEquals("3 activities : 2 created by root and 1 created by demo matched", 3, listAccess.load(0, 10).length);
+    
+    //Demo posts new activity on root stream
+    ExoSocialActivity demoActivity2 = new ExoSocialActivityImpl();
+    demoActivity2.setTitle("demo activity");
+    activityManager.saveActivityNoReturn(demoIdentity, demoActivity2);
+    tearDownActivityList.add(demoActivity2);
+    
+    //demo view his stream
+    listAccess = activityManager.getActivitiesWithListAccess(demoIdentity);
+    assertEquals("2 activities created by demo matched", 2, listAccess.getSize());
+    assertEquals("2 activities created by demo matched", 2, listAccess.load(0, 10).length);
+    
+    //demo view his feed stream
+    listAccess = activityManager.getActivityFeedWithListAccess(demoIdentity);
+    assertEquals(4, listAccess.getSize());
+    assertEquals(4, listAccess.load(0, 10).length);
+    
+    relationshipManager.delete(rootDemoConnection);
+    spaceService.deleteSpace(space);
   }
   
   /**

@@ -932,7 +932,7 @@ public class ActivityStorageImplTestCase extends AbstractCoreTest {
     
   }
 
-  @MaxQueryNumber(264)
+  @MaxQueryNumber(246)
   public void testActivityProcessing() throws Exception {
 
     //

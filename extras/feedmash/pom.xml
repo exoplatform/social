@@ -103,12 +103,12 @@
     <dependency>
       <groupId>rome</groupId>
       <artifactId>rome</artifactId>
-      <exclusions>
-        <exclusion>
-          <groupId>jdom</groupId>
-          <artifactId>jdom</artifactId>
-        </exclusion>
-      </exclusions>
+        <exclusions>
+            <exclusion>
+                <groupId>jdom</groupId>
+                <artifactId>jdom</artifactId>
+            </exclusion>
+        </exclusions>
     </dependency>
     <!-- commons-logging used by quartz is forbidden and must be replaced by org.slf4j:jcl-over-slf4j -->
     <dependency>

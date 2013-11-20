@@ -187,7 +187,7 @@ public class ActivitiesRealtimeListAccess implements RealtimeListAccess<ExoSocia
         return 0;
       }
       case VIEW_USER_ACTIVITIES: {
-        return activityStorage.getNumberOfActivitiesByPoster(ownerIdentity);
+        return activityStorage.getNumberOfActivitiesByPoster(ownerIdentity, viewerIdentity);
       }
     }
     return 0;
@@ -459,7 +459,7 @@ public class ActivitiesRealtimeListAccess implements RealtimeListAccess<ExoSocia
       return 0;
     }
     case VIEW_USER_ACTIVITIES: {
-      return activityStorage.getNumberOfActivitiesByPoster(ownerIdentity);
+      return activityStorage.getNumberOfActivitiesByPoster(ownerIdentity, viewerIdentity);
     }
   }
   return 0;

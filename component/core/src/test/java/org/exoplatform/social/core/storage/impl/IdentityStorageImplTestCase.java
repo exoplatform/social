@@ -963,7 +963,7 @@ public class IdentityStorageImplTestCase extends AbstractCoreTest {
     tearDownIdentityList.add(newIdentity.getId());
   }
 
-  @MaxQueryNumber(100)
+  @MaxQueryNumber(120)
   public void testProfileXpWithSkillsNull() throws Exception {
     Identity newIdentity = new Identity("organization", "withxp2");
 

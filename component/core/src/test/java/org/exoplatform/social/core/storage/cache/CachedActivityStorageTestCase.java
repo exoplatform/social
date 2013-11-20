@@ -120,7 +120,7 @@ public class CachedActivityStorageTestCase extends AbstractCoreTest {
 
   }
 
-  @MaxQueryNumber(260)
+  @MaxQueryNumber(360)
   public void testRemoveActivity() throws Exception {
 
     //
