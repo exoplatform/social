@@ -26,20 +26,20 @@ import org.exoplatform.social.core.relationship.model.Relationship;
 import org.exoplatform.social.core.storage.RelationshipStorageException;
 
 /**
- * The RelationshipManager is used to work with connections between identities:
- *
+ * Controls connections between identities.
+ * This includes:
  * <ul>
- *   <li>Get relationship between 2 identities.</li>
- *   <li>Interact between identities: invite, confirm, deny, ignore.</li>
- *   <li>Get list access to get list of connections, incoming, outgoing.</li>
+ *   <li>Getting relationship between 2 identities.</li>
+ *   <li>Interacting between identities: inviting, confirming, denying and ignoring.</li>
+ *   <li>Getting a list access which contains connections, incoming and outgoing.</li>
  * </ul>
  */
 public interface RelationshipManager {
   /**
-   * Gets a relationship by its id.
+   * Gets a relationship by its Id.
    *
-   * @param relationshipId the relationship id
-   * @return an existing relationship or null
+   * @param relationshipId Id of the relationship.
+   * @return The existing relationship or null.
    * @LevelAPI Platform
    * @since  1.2.0-GA
    */
@@ -48,9 +48,9 @@ public interface RelationshipManager {
   /**
    * Gets a relationship between 2 identities.
    *
-   * @param identity1 one identity
-   * @param identity2 the other identity
-   * @return the relationship between 2 identities
+   * @param identity1 The identity 1.
+   * @param identity2 The identity 2.
+   * @return The relationship between 2 identities.
    * @LevelAPI Platform
    * @since  1.2.0-GA
    */
@@ -59,7 +59,7 @@ public interface RelationshipManager {
   /**
    * Updates an existing relationship.
    *
-   * @param existingRelationship the existing relationship
+   * @param existingRelationship The existing relationship to be updated.
    * @LevelAPI Platform
    * @since 1.2.0-GA
    */
@@ -68,95 +68,91 @@ public interface RelationshipManager {
   /**
    * Deletes an existing relationship.
    *
-   * @param existingRelationship the existing relationship
+   * @param existingRelationship The existing relationship to be deleted.
    * @LevelAPI Platform
    * @since 1.2.0-GA
    */
   void delete(Relationship existingRelationship);
 
   /**
-   * Invites one identity to connected with an other identity. The first argument must be the sender identity. The
+   * Invites one identity to connect to the other. The first argument must be the sender identity. The
    * second argument must be the identity who is invited to connect.
    * <p/>
    * One identity is not allowed to invite himself to connect.
    *
-   * @param invitingIdentity the sender identity
-   * @param invitedIdentity  the identity who is invited
+   * @param invitingIdentity The sender identity.
+   * @param invitedIdentity The identity who is invited.
    * @LevelAPI Platform
    * @since 1.2.0-GA
    */
   Relationship inviteToConnect(Identity invitingIdentity, Identity invitedIdentity);
 
   /**
-   * The invited identity confirms to connect to an inviting identity. The invited identity is not allowed to confirm if
-   * he's not invited to connect by inviting identity.
+   * Confirms to connect to an identity who sent invitation.
    *
-   * @param invitedIdentity  the invited identity
-   * @param invitingIdentity the inviting identity
+   * @param invitedIdentity The identity who gets invitation.
+   * @param invitingIdentity The identity who invites another.
    * @LevelAPI Platform
    * @since 1.2.0-GA
    */
   void confirm(Identity invitedIdentity, Identity invitingIdentity);
 
   /**
-   * The invited identity denies to connect to an inviting identity.
-   * The invited identity is not allowed to deny if he's not invited to connect by inviting identity.
-   *
-   * @param invitedIdentity  the invited identity
-   * @param invitingIdentity the inviting identity
+   * Denies to connect to an identity who sent invitation.
+   * 
+   * @param invitedIdentity The identity who gets invitation.
+   * @param invitingIdentity The identity who invites another.
    * @LevelAPI Platform
    * @since 1.2.0-GA
    */
   void deny(Identity invitedIdentity, Identity invitingIdentity);
 
   /**
-   * The invited identity ignores to connect to an inviting identity.
-   * <p/>
-   * If the invited identity ignores the inviting identity, the inviting identity can not invite this invited identity
-   * any more.
+   * Ignores to connect to an identity who sent invitation.
+   * Once being ignored, the inviting identity cannot invite any more.
    *
-   * @param invitedIdentity  the invited identity
-   * @param invitingIdentity the inviting identity
+   * @param invitedIdentity The identity who gets invitation.
+   * @param invitingIdentity The identity who invites another.
    * @LevelAPI Platform
    * @since 1.2.0-GA
    */
   void ignore(Identity invitedIdentity, Identity invitingIdentity);
 
   /**
-   * Gets the list access to get a list of identity who is connected with the provided identity.
+   * Gets a list access which contains all identities who are connected to a provided identity.
    *
-   * @param existingIdentity the existing provided identity
-   * @return the list access
+   * @param existingIdentity The existing provided identity.
+   * @return The list access.
    * @LevelAPI Platform
    * @since 1.2.0-GA
    */
   ListAccess<Identity> getConnections(Identity existingIdentity);
 
   /**
-   * Gets the list access to get a list of identity who invited to connect to the provided identity.
+   * Gets a list access which contains all identities who invited to connect to a provided identity.
    *
-   * @param existingIdentity the existing provided identity
-   * @return the list access
+   * @param existingIdentity The existing provided identity.
+   * @return The list access.
    * @LevelAPI Platform
    * @since  1.2.0-GA
    */
   ListAccess<Identity> getIncomingWithListAccess(Identity existingIdentity);
 
   /**
-   * Gets the list access to get a list of identity who was invited to connect by the provided identity.
+   * Gets a list access which contains all identities who were invited to connect by a provided identity.
    *
-   * @param existingIdentity the existing provided identity
-   * @return the list access
+   * @param existingIdentity The existing provided identity.
+   * @return The list access.
    * @LevelAPI Platform
    * @since  1.2.0-GA
    */
   ListAccess<Identity> getOutgoing(Identity existingIdentity);
 
   /**
-   * Gets the list access to get identities who is connected, was invited or invited the provided identity.
+   * Gets a list access which contains all identities who were connected, were invited or invited a provided identity.
    *
-   * @param existingIdentity the existing provided identity
-   * @return the list access
+   * @param existingIdentity The existing provided identity.
+   * @return The list access.
    * @LevelAPI Platform
    * @since  1.2.0-GA
    */
@@ -165,9 +161,9 @@ public interface RelationshipManager {
   /**
    * Gets the relationship status between 2 identities.
    *
-   * @param identity1 the identity1
-   * @param identity2 the identity2
-   * @return the relationship type
+   * @param identity1 The identity 1.
+   * @param identity2 The identity 2.
+   * @return The relationship type.
    * @LevelAPI Platform
    * @since 1.2.0-GA
    */
@@ -176,26 +172,26 @@ public interface RelationshipManager {
   /**
    * Creates a connection invitation between 2 identities.
    *
-   * @param sender inviter
-   * @param receiver invitee
-   * @return a PENDING relation
+   * @param sender The inviter.
+   * @param receiver The invitee.
+   * @return The PENDING relation.
    * @throws RelationshipStorageException
    * @LevelAPI Provisional
    * @deprecated Use {@link #inviteToConnect(Identity, Identity)} instead.
-   *             Will be removed by 4.0.x
+   *             Will be removed by 4.0.x.
    */
   @Deprecated
   Relationship invite(Identity sender, Identity receiver) throws RelationshipStorageException;
 
   /**
-   * Gets relationship the by id.
+   * Gets a relationship by a given Id.
    *
-   * @param id the id
-   * @return the by id
+   * @param id The given Id.
+   * @return The relationship.
    * @throws RelationshipStorageException the exception
    * @LevelAPI Provisional
    * @deprecated Use {@link #get(String)} instead.
-   *             Will be removed by 4.0.x
+   *             Will be removed by 4.0.x.
    */
   @Deprecated
   Relationship getRelationshipById(String id) throws RelationshipStorageException;
@@ -203,23 +199,23 @@ public interface RelationshipManager {
   /**
    * Saves a relationship.
    *
-   * @param relationship the relationship
+   * @param relationship The relationship to be saved.
    * @throws RelationshipStorageException the exception
    * @LevelAPI Provisional
    * @deprecated Use actions (inviteToConnect, confirm) instead.
-   *             Will be removed by 4.0.x
+   *             Will be removed by 4.0.x.
    */
   @Deprecated
   void save(Relationship relationship) throws RelationshipStorageException;
 
   /**
-   * Marks a relationship as confirmed.
+   * Marks a relationship as "confirmed".
    *
-   * @param relationship the relationship
+   * @param relationship The relationship to be marked as "confirmed".
    * @throws RelationshipStorageException the exception
    * @LevelAPI Provisional
    * @deprecated Use {@link #confirm(Identity, Identity)} instead.
-   *             Will be removed by 4.0.x
+   *             Will be removed by 4.0.x.
    */
   @Deprecated
   void confirm(Relationship relationship) throws RelationshipStorageException;
@@ -227,150 +223,148 @@ public interface RelationshipManager {
   /**
    * Denies a relationship.
    *
-   * @param relationship
+   * @param relationship The relationship to be denied.
    * @throws RelationshipStorageException
    * @LevelAPI Provisional
    * @deprecated Use {@link #deny(Identity, Identity)} instead.
-   *             Will be removed by 4.0.x
+   *             Will be removed by 4.0.x.
    */
   @Deprecated
   void deny(Relationship relationship) throws RelationshipStorageException;
 
   /**
-   * Remove a relationship.
+   * Removes a relationship.
    *
-   * @param relationship the relationship
+   * @param relationship The relationship to be removed.
    * @throws RelationshipStorageException the exception
    * @LevelAPI Provisional
    * @deprecated Use {@link #delete(Relationship)} instead.
-   *             Will be removed by 4.0.x
+   *             Will be removed by 4.0.x.
    */
   @Deprecated
   void remove(Relationship relationship) throws RelationshipStorageException;
 
   /**
-   * Marks a relationship as ignored.
+   * Marks a relationship as "ignored".
    *
-   * @param relationship the relationship
+   * @param relationship The relationship to be marked as "ignored".
    * @throws RelationshipStorageException the exception
    * @LevelAPI Provisional
    * @deprecated Use {@link #ignore(Identity, Identity)} instead.
-   *             Will be removed by 4.0.x
+   *             Will be removed by 4.0.x.
    */
   @Deprecated
   void ignore(Relationship relationship) throws RelationshipStorageException;
 
   /**
-   * Returns all the pending relationship: sent.
+   * Returns all pending relationships: sent.
    *
-   * @param identity the identity
-   * @return the pending
+   * @param identity The identity.
+   * @return The pending relationships.
    * @throws RelationshipStorageException the exception
    * @LevelAPI Provisional
    * @deprecated Use {@link #getIncoming(Identity)} instead.
-   *             Will be removed by 4.0.x
+   *             Will be removed by 4.0.x.
    */
   @Deprecated
   List<Relationship> getPendingRelationships(Identity identity) throws RelationshipStorageException;
 
   /**
-   * If toConfirm is true, it returns list of pending relationship received not confirmed if toConfirm is false, it
-   * returns list of relationship sent not confirmed yet.
+   * Gets a list of pending relationships that were received but not confirmed or were sent but not confirmed.
    *
-   * @param identity  the identity
-   * @param toConfirm the to confirm
-   * @return the pending
+   * @param identity The identity.
+   * @param toConfirm If "true", it returns a list of pending relationships received but not confirmed. If "false", it
+   * returns a list of pending relationships sent but not confirmed.
+   * @return The list of pending relationships.
    * @throws RelationshipStorageException the exception
    * @LevelAPI Provisional
    * @deprecated When toConfirm=true, use {@link #getIncoming(Identity)} instead.
    *             When toConfirm=false, use {@link #getOutgoing(Identity)} instead.
-   *             Will be removed by 4.0.x
+   *             Will be removed by 4.0.x.
    */
   @Deprecated
   List<Relationship> getPendingRelationships(Identity identity, boolean toConfirm) throws RelationshipStorageException;
 
   /**
-   * Gets pending relations in 2 case:
-   * - if toConfirm is true, it returns list of pending relationship received not
-   * confirmed
-   * - if toConfirm is false, it returns list of relationship sent not confirmed yet.
+   *Gets a list of pending relationships that were received but not confirmed or were sent but not confirmed.
    *
-   * @param currIdentity the curr identity
-   * @param identities   the identities
-   * @param toConfirm    the to confirm
-   * @return the pending
+   * @param currIdentity The current identity.
+   * @param identities  The identities.
+   * @param toConfirm  If "true", it returns a list of pending relationships received but not confirmed. If "false", it
+   * returns a list of pending relationships sent but not confirmed.
+   * @return The list of pending relationships.
    * @throws RelationshipStorageException the exception
    * @LevelAPI Provisional
    * @deprecated When toConfirm=true, use {@link #getIncoming(Identity)} instead.
    *             When toConfirm=false use {@link #getOutgoing(Identity)} instead.
-   *             Will be removed by 4.0.x
+   *             Will be removed by 4.0.x.
    */
   @Deprecated
   List<Relationship> getPendingRelationships(Identity currIdentity, List<Identity> identities,
                                              boolean toConfirm) throws RelationshipStorageException;
 
   /**
-   * Gets contacts that match the search result.
+   * Gets contacts matching with the current identity.
    *
-   * @param currIdentity the curr identity
-   * @param identities the identities
-   * @return the contacts
+   * @param currIdentity The current identity.
+   * @param identities The identities.
+   * @return The contacts.
    * @throws RelationshipStorageException the exception
    * @LevelAPI Provisional
    * @deprecated Use {@link #getConnections(Identity)} instead.
-   *             Will be removed by 4.0.x
+   *             Will be removed by 4.0.x.
    */
   @Deprecated
   List<Relationship> getContacts(Identity currIdentity, List<Identity> identities) throws RelationshipStorageException;
 
   /**
-   * Gets the contacts.
+   * Gets contacts of an identity.
    *
-   * @param identity the identity
-   * @return the contacts
+   * @param identity The identity.
+   * @return The contacts.
    * @throws RelationshipStorageException the exception
    * @LevelAPI Provisional
    * @deprecated Use {@link #getConnections(Identity)} instead.
-   *             Will be removed by 4.0.x
+   *             Will be removed by 4.0.x.
    */
   @Deprecated
   List<Relationship> getContacts(Identity identity) throws RelationshipStorageException;
 
   /**
-   * Returns all the relationships associated with a given identity.
+   * Returns all relationships associated with a given identity.
    *
-   * @param identity the identity
-   * @return the list
+   * @param identity The identity.
+   * @return The relationships.
    * @throws RelationshipStorageException the exception
    * @LevelAPI Provisional
    * @deprecated Use {@link #getAllWithListAccess(Identity)} instead.
-   *             Will be removed by 4.0.x
+   *             Will be removed by 4.0.x.
    */
   @Deprecated
   List<Relationship> getAllRelationships(Identity identity) throws RelationshipStorageException;
 
   /**
-   * Returns all the relationship associated with a given identityId.
+   * Returns all relationships associated with a given identityId.
    *
-   * @param id the id
-   * @return the by identity id
+   * @param id Id of the identity.
+   * @return The relationships.
    * @throws RelationshipStorageException the exception
    * @LevelAPI Provisional
    * @deprecated Use {@link #getAllWithListAccess(Identity)} with identity instead.
-   *             Will be removed by 4.0.x
+   *             Will be removed by 4.0.x.
    */
   @Deprecated
   List<Relationship> getRelationshipsByIdentityId(String id) throws RelationshipStorageException;
 
   /**
-   * Returns all the identity associated with a given identity
+   * Returns all identities associated with a given identity.
    *
-   * @param id the id
-   * @return the identities
+   * @param id The given identity.
+   * @return The identities.
    * @throws Exception the exception
    * @LevelAPI Provisional
    * @deprecated Use {@link #getAllWithListAccess(Identity)} instead.
-   *             Will be removed by 4.0.x
+   *             Will be removed by 4.0.x.
    */
   @Deprecated
   List<Identity> getIdentities(Identity id) throws Exception;
@@ -378,12 +372,12 @@ public interface RelationshipManager {
   /**
    * Creates a relationship.
    *
-   * @param sender the sender
-   * @param receiver the receiver
-   * @return the relationship
+   * @param sender The sender.
+   * @param receiver The receiver.
+   * @return The relationship.
    * @LevelAPI Provisional
    * @deprecated Use {@link #invite(Identity, Identity)} instead.
-   *             Will be removed by 4.0.x
+   *             Will be removed by 4.0.x.
    */
   @Deprecated
   Relationship create(Identity sender, Identity receiver);
@@ -391,53 +385,53 @@ public interface RelationshipManager {
   /**
    * Saves a relationship.
    *
-   * @param relationship the rel
+   * @param relationship The relationship to be saved.
    * @throws RelationshipStorageException the exception
    * @LevelAPI Provisional
    * @deprecated Use {@link #update(Relationship)} instead.
-   *             Will be removed by 4.0.x
+   *             Will be removed by 4.0.x.
    */
   @Deprecated
   void saveRelationship(Relationship relationship) throws RelationshipStorageException;
 
   /**
-   * Finds route.
+   * Gets a relationship between 2 identities.
    *
-   * @param sender the id1
-   * @param receiver the id2
-   * @return the list
+   * @param sender The identity 1.
+   * @param receiver The identity 2.
+   * @return The relationship.
    * @throws RelationshipStorageException
    * @LevelAPI Provisional
    * @deprecated Should use {@link #get(Identity, Identity)} instead.
-   *             Will be removed by 4.0.x
+   *             Will be removed by 4.0.x.
    */
   @Deprecated
   List findRoute(Identity sender, Identity receiver) throws RelationshipStorageException;
 
   /**
-   * Gets the relationship.
+   * Gets a relationship between 2 identities.
    *
-   * @param sender the id1
-   * @param receiver the id2
-   * @return the relationship
+   * @param sender The identity 1.
+   * @param receiver The identity 2.
+   * @return The relationship.
    * @throws RelationshipStorageException the exception
    * @LevelAPI Provisional
    * @deprecated Use {@link #get(Identity, Identity)} instead.
-   *             Will be removed by 4.0.x
+   *             Will be removed by 4.0.x.
    */
   @Deprecated
   Relationship getRelationship(Identity sender, Identity receiver) throws RelationshipStorageException;
 
   /**
-   * Finds any identity having relationshipType with the ownerIdentity.
-   * @param ownerIdentity
-   * @param relationshipType
-   * @return list of identites
+   * Finds all identities having relationshipType with the ownerIdentity.
+   * @param ownerIdentity The owner identity.
+   * @param relationshipType The relationship type.
+   * @return The identities.
    * @throws RelationshipStorageException
    * @LevelAPI Provisional
    * @since 1.2.0-Beta1
    * @deprecated Use {@link #getIncoming(Identity)} or {@link #getOutgoing(Identity)} instead.
-   *             Will be removed by 4.0.x
+   *             Will be removed by 4.0.x.
    */
   @Deprecated
   List<Identity> findRelationships(Identity ownerIdentity, Relationship.Type relationshipType)
@@ -446,163 +440,161 @@ public interface RelationshipManager {
   /**
    * Gets the relationship status.
    *
-   * @param rel the rel
-   * @param id the id
-   * @return the relationship status
+   * @param rel The relationship.
+   * @param id The identity.
+   * @return The relationship status.
    * @LevelAPI Provisional
    * @deprecated Now we don't use this method to get relationship we get status of relationship object
    * and depend on sender and receiver, we can define pending relationship or incoming relationship.
    * But we still keep this method for build, call {@link #getStatus(Identity, Identity)}.
-   *            This method will be removed by 4.0.x
+   *            This method will be removed by 4.0.x.
    */
   @Deprecated
   Relationship.Type getRelationshipStatus(Relationship rel, Identity id);
 
   /**
-   * Gets connection status.
-   *
-   * @param fromIdentity
-   * @param toIdentity
-   * @return relationshipType
+   * Gets the connection status between 2 identities.
+   * 
+   * @param fromIdentity The identity 1.
+   * @param toIdentity The identity 2.
+   * @return The connection status.
    * @throws Exception
    * @LevelAPI Provisional
    * @since 1.1.1
    * @deprecated Use {@link #getStatus(Identity, Identity)} instead.
-   *             Will be removed by 4.0.x
+   *             Will be removed by 4.0.x.
    */
   @Deprecated
   Relationship.Type getConnectionStatus(Identity fromIdentity, Identity toIdentity) throws Exception;
 
   /**
-   * Gets all the pending relationship of sender.
+   * Gets all pending relationships of a sender.
    *
-   * @param sender the sender
-   * @return the pending relationships
+   * @param sender The sender.
+   * @return The pending relationships.
    * @throws RelationshipStorageException the exception
    * @LevelAPI Provisional
    * @since 1.2.0-Beta1
    * @deprecated Use {@link #getIncoming(Identity)} instead.
-   *             Will be removed by 4.0.x
+   *             Will be removed by 4.0.x.
    */
   @Deprecated
   List<Relationship> getPending(Identity sender) throws RelationshipStorageException;
 
   /**
-   * Gets pending relationships of sender that match with identities.
+   * Gets pending relationships of a sender that match with identities.
    *
-   * @param sender the sender
-   * @param identities the identities
-   * @return the pending relationships
+   * @param sender The sender.
+   * @param identities The identities.
+   * @return The pending relationships.
    * @throws RelationshipStorageException the exception
    * @LevelAPI Provisional
    * @since 1.2.0-Beta1
    * @deprecated Use {@link #getIncomingWithListAccess(Identity)} instead.
-   *             Will be removed by 4.0.x
+   *             Will be removed by 4.0.x.
    */
   @Deprecated
   List<Relationship> getPending(Identity sender, List<Identity> identities) throws RelationshipStorageException;
 
   /**
-   * Gets list of required validation relationship of receiver
+   * Gets relationships of a receiver that are waiting for validation.
    *
-   * @param receiver the receiver identity
-   * @return the list of relationships
+   * @param receiver Identity of the receiver.
+   * @return The relationships.
    * @throws RelationshipStorageException
    * @LevelAPI Provisional
    * @since 1.2.0-Beta1
    * @deprecated Use {@link #getIncomingWithListAccess(Identity)} instead.
-   *             Will be removed by 4.0.x
+   *             Will be removed by 4.0.x.
    */
   @Deprecated
   List<Relationship> getIncoming(Identity receiver) throws RelationshipStorageException;
 
   /**
-   * Gets list of required validation relationship of receiver that match with
-   * identities.
+   * Gets relationships of a receiver that are waiting for validation and match with identities.
    *
-   * @param receiver the receiver
-   * @param identities the identities
-   * @return the pending require validation relationships
+   * @param receiver Identity of the receiver.
+   * @param identities The identities.
+   * @return The list of relationships.
    * @throws RelationshipStorageException the exception
    * @LevelAPI Provisional
    * @since 1.2.0-Beta1
    * @deprecated Use {@link #getIncomingWithListAccess(Identity)} instead.
-   *             Will be removed by 4.0.x
+   *             Will be removed by 4.0.x.
    */
   @Deprecated
   List<Relationship> getIncoming(Identity receiver, List<Identity> identities) throws RelationshipStorageException;
 
   /**
-   * Gets list of confirmed relationship of identity.
+   * Gets relationships confirmed by an identity.
    *
-   * @param identity the identity
-   * @return the confirmed relationships
+   * @param identity The identity.
+   * @return The confirmed relationships.
    * @throws RelationshipStorageException the exception
    * @LevelAPI Provisional
    * @since 1.2.0-Beta1
    * @deprecated Use {@link #getConnections(Identity)} instead.
-   *             Will be removed by 4.0.x
+   *             Will be removed by 4.0.x.
    */
   @Deprecated
   List<Relationship> getConfirmed(Identity identity) throws RelationshipStorageException;
 
   /**
-   * Gets list of confirmed relationship of identity that match with identities.
+   * Gets relationships confirmed by an identity that match with identities.
    *
-   * @param identity the identity
-   * @param identities the identities
-   * @return the list of confirmed relationship
+   * @param identity The identity.
+   * @param identities The identities.
+   * @return The confirmed relationships.
    * @throws RelationshipStorageException the exception
    * @LevelAPI Provisional
    * @since 1.2.0-Beta1
    * @deprecated Use {@link #getConnections(Identity)} instead.
-   *             Will be removed by 4.0.x
+   *             Will be removed by 4.0.x.
    */
   @Deprecated
   List<Relationship> getConfirmed(Identity identity, List<Identity> identities) throws RelationshipStorageException;
 
   /**
-   * Returns all the relationship of a given identity with other identity.
+   * Gets all relationships of a given identity with other identity.
    *
-   * @param identity the identity
-   * @return the list relationships
+   * @param identity The identity.
+   * @return The relationships.
    * @throws RelationshipStorageException the exception
    * @LevelAPI Provisional
    * @since 1.2.0-Beta1
    * @deprecated Use {@link #getAllWithListAccess(Identity)} instead.
-   *             Will be removed by 4.0.x
+   *             Will be removed by 4.0.x.
    */
   @Deprecated
   List<Relationship> getAll(Identity identity) throws RelationshipStorageException;
 
   /**
-   * Returns all the relationship of a given identity with other identity in identities.
+   * Gets all relationships of a given identity.
    *
-   * @param identity   the identity
-   * @param identities the list identity the identities
-   * @return the list relationships
+   * @param identity The identity.
+   * @param identities The identities.
+   * @return The relationships.
    * @throws RelationshipStorageException the exception
    * @LevelAPI Provisional
    * @since 1.2.0-Beta1
    * @deprecated Use {@link #getAllWithListAccess(Identity)} instead.
-   *             Will be removed by 4.0.x
+   *             Will be removed by 4.0.x.
    */
   @Deprecated
   List<Relationship> getAll(Identity identity, List<Identity> identities) throws RelationshipStorageException;
 
   /**
-   * Returns all the relationship of a given identity with other identity in
-   * identities.
+   * Gets all relationships of a given identity.
    *
-   * @param identity the identity
-   * @param type the status
-   * @param identities the list identity the identities
-   * @return the list
+   * @param identity The identity.
+   * @param type The status.
+   * @param identities The identities.
+   * @return The relationships.
    * @throws RelationshipStorageException the exception
    * @LevelAPI Provisional
    * @since 1.2.0-Beta1
    * @deprecated Use {@link #getAllWithListAccess(Identity)} instead.
-   *             Will be removed by 4.0.x
+   *             Will be removed by 4.0.x.
    */
   @Deprecated
   List<Relationship> getAll(Identity identity, Relationship.Type type,
@@ -610,48 +602,48 @@ public interface RelationshipManager {
   
   
   /**
-   * Gets the list access to get a list of identities who is connected with the provided identity
-   * and filtered by profile filter.
+   * Gets a list access which contains all identities who are connected to a provided identity
+   * and filtered by a profile filter.
    * 
-   * @param existingIdentity the provided identity.
-   * @param profileFilter the provided profile filter.
+   * @param existingIdentity The provided identity.
+   * @param profileFilter The provided profile filter.
    * @LevelAPI Platform
-   * @return the list access
+   * @return The list access.
    * @since 1.2.3
    * 
    */
   ListAccess<Identity> getConnectionsByFilter(Identity existingIdentity, ProfileFilter profileFilter);
   
   /**
-   * Gets the list access to get a list of identities who invited to connect to the provided identity
-   * and filtered by profile filter.
+   * Gets a list access which contains all identities who invited to connect to a provided identity
+   * and filtered by a profile filter.
    *
-   * @param existingIdentity the provided identity
-   * @param profileFilter    the provided profile filter
-   * @return the list access
+   * @param existingIdentity The provided identity.
+   * @param profileFilter The provided profile filter.
+   * @return The list access.
    * @LevelAPI Platform
    * @since  1.2.3
    */
   ListAccess<Identity> getIncomingByFilter(Identity existingIdentity, ProfileFilter profileFilter);
   
   /**
-   * Gets the list access to get a list of identities who was invited by the provided identity to connect
-   * and filtered by profile filter.
+   * Gets a list access which contains all identities who were invited by a provided identity to connect
+   * and filtered by a profile filter.
    *
-   * @param existingIdentity the provided identity
-   * @param profileFilter    the provided profile filter
-   * @return the list access
+   * @param existingIdentity The provided identity.
+   * @param profileFilter The provided profile filter.
+   * @return The list access.
    * @LevelAPI Platform
    * @since  1.2.3
    */
   ListAccess<Identity> getOutgoingByFilter(Identity existingIdentity, ProfileFilter profileFilter);
   
   /**
-   * Gets the suggestions with number of commons users relate to provided identity
-   * @param identity the provided identity
-   * @param offset the offset position to get
-   * @param limit the limit of return result
-   * @return the map of suggestion users and number of commons users
+   * Gets suggestions having common users with a provided identity.
+   * @param identity The provided identity.
+   * @param offset The starting point from which suggestions are got.
+   * @param limit The limitation of suggestions.
+   * @return The suggestions.
    * @since 4.0.x
    */
   public Map<Identity, Integer> getSuggestions(Identity identity, int offset, int limit);

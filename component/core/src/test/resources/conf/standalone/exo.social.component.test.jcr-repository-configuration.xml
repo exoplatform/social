@@ -22,6 +22,7 @@
     <repository name="repository" system-workspace="system" default-workspace="portal-test">
       <security-domain>gatein-domain</security-domain>
       <access-control>optional</access-control>
+      <session-max-age>30</session-max-age>
       <authentication-policy>org.exoplatform.services.jcr.impl.core.access.JAASAuthenticator</authentication-policy>
 
       <!-- System -->
