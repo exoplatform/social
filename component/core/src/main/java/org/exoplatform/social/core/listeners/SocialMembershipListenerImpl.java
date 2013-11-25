@@ -104,7 +104,6 @@ public class SocialMembershipListenerImpl extends MembershipEventListener {
 
     } else if (m.getGroupId().startsWith(SpaceUtils.PLATFORM_USERS_GROUP)) {
       clearIdentityCaching();
-      StorageUtils.clearUsersPlatformGroup();
     }
   }
   

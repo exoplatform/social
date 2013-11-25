@@ -20,6 +20,7 @@ package org.exoplatform.social.common.lifecycle;
 import org.chromattic.api.ChromatticSession;
 import org.exoplatform.commons.chromattic.ChromatticLifeCycle;
 import org.exoplatform.commons.chromattic.SessionContext;
+import org.exoplatform.container.PortalContainer;
 import org.exoplatform.container.xml.InitParams;
 
 /**
@@ -36,23 +37,14 @@ public class SocialChromatticLifeCycle extends ChromatticLifeCycle {
   public static final String SOCIAL_LIFECYCLE_NAME = "soc";
 
   public ChromatticSession getSession() {
-    if (session.get() != null && session.get().getJCRSession().isLive() && !session.get().isClosed()) {
-      return session.get();
+    if (invalidSession()) {
+      reCreateSession();
     }
-    else {
-      try {
-        onOpenSession(openContext());
-      } catch (IllegalStateException e) {
-        this.closeContext(false);
-        onOpenSession(openContext());
-      }
-
-      providerRoot.set(null);
-      spaceRoot.set(null);
-      return getSession();
-    }
+    
+    return session.get();
   }
 
+  
   public SocialChromatticLifeCycle(final InitParams params) {
 
     super(params);
@@ -70,7 +62,9 @@ public class SocialChromatticLifeCycle extends ChromatticLifeCycle {
   protected void onCloseSession(final SessionContext context) {
      
     super.onCloseSession(context);
-    session.get().close();
+    if (session.get() != null) {
+      session.get().close();
+    }
     session.remove();
     providerRoot.set(null);
     spaceRoot.set(null);
@@ -78,11 +72,35 @@ public class SocialChromatticLifeCycle extends ChromatticLifeCycle {
   }
 
   public ThreadLocal getProviderRoot() {
+    if (invalidSession()) {
+      reCreateSession();
+    }
     return providerRoot;
   }
 
   public ThreadLocal getSpaceRoot() {
+    if (invalidSession()) {
+      reCreateSession();
+    }
     return spaceRoot;
   }
+  
+  private boolean invalidSession() {
+    boolean invalid = (session.get() == null);
+    if(invalid) return invalid;
+    return session.get().getJCRSession().isLive() == false || session.get().isClosed();
+  }
+  
+  private void reCreateSession() {
+    try {
+      onOpenSession(openContext());
+    } catch (IllegalStateException e) {
+      this.closeContext(false);
+      this.getManager().endRequest(false);
+      this.getManager().startRequest(PortalContainer.getInstance());
+      session.set(this.getChromattic().openSession());
+    }
+  }
+
 
 }
