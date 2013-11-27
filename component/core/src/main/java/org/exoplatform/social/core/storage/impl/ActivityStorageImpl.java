@@ -585,6 +585,9 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
       
       //
       activity.setUpdated(currentMillis);
+      
+      //SOC-3915 empty stream when post comment but lost it.
+      StorageUtils.persist();
       //
       if (mustInjectStreams) {
         Identity identity = identityStorage.findIdentityById(comment.getUserId());
@@ -1430,7 +1433,6 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     for (int i = offset ; i < commentIds.length ; i++) {
       if (isHidden(commentIds[i]) == false) {
         activities.add(getStorage().getActivity(commentIds[i]));
-        
         //
         if (activities.size() == limit) {
           break;
@@ -1451,10 +1453,15 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
 
     try {
       ActivityEntity activityEntity = _findById(ActivityEntity.class, commentId);
-      HidableEntity hidable = _getMixin(activityEntity, HidableEntity.class, false);
-      if (hidable != null) {
-        return hidable.getHidden();
+      if (activityEntity != null) {
+        HidableEntity hidable = _getMixin(activityEntity, HidableEntity.class, false);
+        if (hidable != null) {
+          return hidable.getHidden();
+        }
+      } else {
+        return true;
       }
+      
     } catch (NodeNotFoundException e) {
       return true;
     }
@@ -1475,7 +1482,7 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     //
     for(String commentId : commentIds) {
       ExoSocialActivity comment = getActivity(commentId);
-      if (comment != null && comment.isHidden() == false)
+      if (comment != null && !comment.isHidden())
         activities.add(getStorage().getActivity(commentId));
     }
 
@@ -1618,10 +1625,9 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
           owner = identityStorage.findIdentity(OrganizationIdentityProvider.NAME, changedActivity.getStreamOwner());
         }
         StreamInvocationHelper.updateHidable(owner, changedActivity);
+        getSession().save();
       }
       
-      getSession().save();
-
     }
     catch (NodeNotFoundException e) {
       throw new ActivityStorageException(

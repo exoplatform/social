@@ -25,7 +25,9 @@ import javax.jcr.query.QueryManager;
 
 import org.chromattic.api.ChromatticSession;
 import org.chromattic.api.Status;
+import org.chromattic.core.api.ChromatticSessionImpl;
 import org.exoplatform.commons.chromattic.ChromatticManager;
+import org.exoplatform.commons.chromattic.Synchronization;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.jcr.impl.core.query.QueryImpl;
 import org.exoplatform.services.log.ExoLogger;
@@ -68,21 +70,29 @@ public abstract class AbstractStorage {
   }
 
   private <T> T getRoot(String nodetypeName, Class<T> t) {
-    T got = getSession().findByPath(t, nodetypeName);
-    if (got == null) {
-      got = getSession().insert(t, nodetypeName);
+    boolean created = startSynchronization();
+    try {
+      T got = getSession().findByPath(t, nodetypeName);
+      if (got == null) {
+        got = getSession().insert(t, nodetypeName);
+      }
+      return got;
     }
-    return got;
+    finally {
+      stopSynchronization(created);
+    }
   }
 
-  protected ProviderRootEntity getProviderRoot() {
+  public ProviderRootEntity getProviderRoot() {
     if (lifeCycle.getProviderRoot().get() == null) {
       lifeCycle.getProviderRoot().set(getRoot(NODETYPE_PROVIDERS, ProviderRootEntity.class));
     }
+
     return (ProviderRootEntity) lifeCycle.getProviderRoot().get();
   }
+  
 
-  protected SpaceRootEntity getSpaceRoot() {
+  public SpaceRootEntity getSpaceRoot() {
     if (lifeCycle.getSpaceRoot().get() == null) {
       lifeCycle.getSpaceRoot().set(getRoot(NODETYPE_SPACES, SpaceRootEntity.class));
     }
