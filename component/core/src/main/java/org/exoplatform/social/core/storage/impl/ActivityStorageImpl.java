@@ -2416,6 +2416,9 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
                                                long limit) throws ActivityStorageException {
     List<ExoSocialActivity> got = new ArrayList<ExoSocialActivity>();
     StringBuilder query = new StringBuilder().append("SELECT * FROM soc:activity WHERE ").append(getQueryViewerActivityStream(owner, viewer));
+    query.append(" ORDER BY ").append(ActivityEntity.lastUpdated.getName()).append(" DESC");
+    query.append(", ").append(ActivityEntity.postedTime.getName()).append(" DESC");
+    
     NodeIterator it = nodes(query.toString());
     while (it.hasNext() && limit > 0) {
       if (offset > 0) {
