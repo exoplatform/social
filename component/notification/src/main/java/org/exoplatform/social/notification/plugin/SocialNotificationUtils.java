@@ -25,6 +25,7 @@ import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 import org.exoplatform.commons.api.notification.model.ArgumentLiteral;
 import org.exoplatform.commons.api.notification.service.template.TemplateContext;
@@ -281,6 +282,9 @@ public class SocialNotificationUtils {
         break;
       }
     }
+    
+    //unescape HTML
+    subject = StringEscapeUtils.unescapeHtml(subject);
     
     if (subject.length() <= NOTIFICATION_SUBJECT_LIMIT) {
       return subject;
