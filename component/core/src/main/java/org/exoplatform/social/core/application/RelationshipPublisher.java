@@ -127,7 +127,7 @@ public class RelationshipPublisher extends RelationshipListenerPlugin {
       if (activityIdSender == null) {
         ExoSocialActivity newActivitySender = createNewActivity(sender, nbOfSenderConnections);
         activityManager.saveActivityNoReturn(sender, newActivitySender);
-        getIdentityStorage().updateProfileActivityId(sender, newActivitySender.getId(), Profile.AttachedActivityType.RELATIONSHIP);
+        //getIdentityStorage().updateProfileActivityId(sender, newActivitySender.getId(), Profile.AttachedActivityType.RELATIONSHIP);
         activityManager.saveComment(newActivitySender, senderComment);
       }
       
@@ -144,7 +144,7 @@ public class RelationshipPublisher extends RelationshipListenerPlugin {
       if (activityIdReceiver == null) {
         ExoSocialActivity newActivityReceiver = createNewActivity(receiver, nbOfReceiverConnections);
         activityManager.saveActivityNoReturn(receiver, newActivityReceiver);
-        getIdentityStorage().updateProfileActivityId(receiver, newActivityReceiver.getId(), Profile.AttachedActivityType.RELATIONSHIP);
+        //getIdentityStorage().updateProfileActivityId(receiver, newActivityReceiver.getId(), Profile.AttachedActivityType.RELATIONSHIP);
         activityManager.saveComment(newActivityReceiver, receiverComment);
       }
     } catch (Exception e) {

@@ -49,7 +49,7 @@ public class StreamInvocationHelper {
     
     try {
       if (ctx.isAsync()) {
-        beforeAsync();
+        //beforeAsync();
         //
         ctx.getServiceExecutor().async(StreamProcessorFactory.saveStream(), processCtx);
       } else {
