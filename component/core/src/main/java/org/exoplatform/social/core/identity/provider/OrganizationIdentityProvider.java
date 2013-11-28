@@ -232,7 +232,30 @@ public class OrganizationIdentityProvider extends IdentityProvider<User> {
         organizationService.getUserHandler().saveUser(foundUser, true);
         state.setAttribute(CacheUserProfileFilter.USER_PROFILE, foundUser);
       }
+    }
+    
+    /**
+     * Updates profile in Contact section
+     * @throws Exception
+     */
+    private void updateContact() throws Exception {
+      //
+      String gender = (String) updatedProfile.getProperty(Profile.GENDER);
+
+
+      UserProfile foundUserProfile = organizationService.getUserProfileHandler()
+                                                        .findUserProfileByName(userName);
+      //
+      if(foundUserProfile == null) {
+        foundUserProfile = organizationService.getUserProfileHandler().createUserProfileInstance(userName);
+      }
+
+      String uGender = foundUserProfile.getAttribute(UserProfile.PERSONAL_INFO_KEYS[4]);// "user.gender"
       
+      if (gender !=null && !gender.equals(uGender)) {
+        foundUserProfile.setAttribute(UserProfile.PERSONAL_INFO_KEYS[4], gender);// "user.gender"
+        organizationService.getUserProfileHandler().saveUserProfile(foundUserProfile, false);
+      }
       //
       updatePositionAndGender();
     }
@@ -250,7 +273,7 @@ public class OrganizationIdentityProvider extends IdentityProvider<User> {
       
       //
       if(foundUserProfile == null) {
-        return;
+        foundUserProfile = organizationService.getUserProfileHandler().createUserProfileInstance(userName);
       }
       
       boolean hasUpdated = false;
