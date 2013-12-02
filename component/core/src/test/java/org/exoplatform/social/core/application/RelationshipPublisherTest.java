@@ -141,4 +141,55 @@ public class RelationshipPublisherTest extends  AbstractCoreTest {
     activityManager.deleteActivity(demoActivity);
     
   }
+  
+  public void testConfirmedAndUpdateProfile() throws Exception {
+    Profile profile = rootIdentity.getProfile();
+
+    profile.setAttachedActivityType(Profile.AttachedActivityType.USER);
+    assertNull(getActivityId(profile));
+
+    //update the profile for the first time
+    profile.setProperty(Profile.POSITION, "developer");
+    identityManager.updateProfile(profile);
+
+    //from now, activity must not be null
+    assertNotNull(getActivityId(profile));
+
+    String activityId = getActivityId(profile);
+    ExoSocialActivity activity = activityManager.getActivity(activityId);
+
+    List<ExoSocialActivity> comments = activityManager.getCommentsWithListAccess(activity).loadAsList(0, 20);
+    //Number of comments must be 1
+    assertEquals(1, comments.size());
+    assertEquals("Position is now: developer", comments.get(0).getTitle());
+
+    Relationship rootToDemoRelationship = relationshipManager.inviteToConnect(rootIdentity, demoIdentity);
+    relationshipManager.confirm(rootIdentity, demoIdentity);
+    relationshipPublisher.confirmed(new RelationshipEvent(Type.CONFIRM, relationshipManager, rootToDemoRelationship));
+
+    String rootActivityId =  identityStorage.getProfileActivityId(rootIdentity.getProfile(), Profile.AttachedActivityType.RELATIONSHIP);
+    assertNotNull(rootActivityId);
+    ExoSocialActivity rootActivity = activityManager.getActivity(rootActivityId);
+    List<ExoSocialActivity> rootComments = activityManager.getCommentsWithListAccess(rootActivity).loadAsList(0, 10);
+    assertEquals(1, rootComments.size());
+    assertEquals("I'm now connected with 1 user(s)",rootActivity.getTitle());
+    assertEquals("I'm now connected with Demo gtn",rootComments.get(0).getTitle());
+
+    String demoActivityId =  identityStorage.getProfileActivityId(demoIdentity.getProfile(), Profile.AttachedActivityType.RELATIONSHIP);
+    assertNotNull(demoActivityId);
+    ExoSocialActivity demoActivity = activityManager.getActivity(demoActivityId);
+    List<ExoSocialActivity> demoComments = activityManager.getCommentsWithListAccess(demoActivity).loadAsList(0, 10);
+    assertEquals(1, demoComments.size());
+    assertEquals("I'm now connected with 1 user(s)",demoActivity.getTitle());
+    assertEquals("I'm now connected with Root Root",demoComments.get(0).getTitle());
+
+    relationshipManager.delete(rootToDemoRelationship);
+    activityManager.deleteActivity(rootActivity);
+    activityManager.deleteActivity(demoActivity);
+  }
+
+  private String getActivityId(Profile profile) {
+    return identityStorage.getProfileActivityId(profile, Profile.AttachedActivityType.USER);
+  }
+
 }

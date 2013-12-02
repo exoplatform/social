@@ -1054,11 +1054,32 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
         Integer oldNumberOfStream = listRef.getNumber();
         
         newYearMonthday.set(false);
-        ActivityRef ref = listRef.getOrCreated(activityEntity, newYearMonthday);
+        ActivityRef ref = null;
         
         //Take care the YearMonthDay path don't throw ADD_PROPERTY exception.
-        if (newYearMonthday.get()) {
-          StorageUtils.persist();
+        
+        final ReentrantLock lock = new ReentrantLock();
+        try {
+          lock.lock();
+          newYearMonthday.set(false);
+          ref = listRef.getOrCreated(activityEntity, newYearMonthday);
+          if (newYearMonthday.get()) {
+            StorageUtils.persist();
+          }
+        } catch (ChromatticException ex) {
+          Throwable throwable = ex.getCause();
+          if (throwable instanceof ItemExistsException
+              || throwable instanceof InvalidItemStateException
+              || throwable instanceof PathNotFoundException) {
+            LOG.warn("Probably YearMonthDay path was created by another session");
+            LOG.debug(ex.getMessage(), ex);
+          } else {
+            LOG.warn("Probably YearMonthDay path was created by another session", ex);
+            LOG.debug(ex.getMessage(), ex);
+          }
+          return;
+        } finally {
+          lock.unlock();
         }
         
         //LOG.info("manageRefList()::BEFORE");
