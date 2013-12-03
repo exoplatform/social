@@ -640,6 +640,8 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
         String[] mentioners = _createActivity(owner, activity);
         if (RelationshipPublisher.USER_ACTIVITIES_FOR_RELATIONSHIP.equals(activity.getType()))
           identityStorage.updateProfileActivityId(owner, activity.getId(), Profile.AttachedActivityType.RELATIONSHIP);
+
+        StorageUtils.persist();
         //create refs
         //streamStorage.save(owner, activity);
         if (mustInjectStreams) {

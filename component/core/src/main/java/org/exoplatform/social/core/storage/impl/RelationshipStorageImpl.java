@@ -402,7 +402,7 @@ public class RelationshipStorageImpl extends AbstractStorage implements Relation
       // TODO : IGNORED
     }
 
-    getSession().save();
+    //getSession().save();
 
     //
     LOG.debug(String.format(
