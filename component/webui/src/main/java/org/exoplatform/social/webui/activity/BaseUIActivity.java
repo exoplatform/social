@@ -676,17 +676,17 @@ public class BaseUIActivity extends UIForm {
       
       //
       String inputContainerId = "InputContainer" + activityId;
-      StringBuffer script = new StringBuffer("$(function() {");
+      StringBuffer script = new StringBuffer("(function($) {");
       script.append("var inputContainer = $('#").append(inputContainerId).append("');");
       script.append("inputContainer.addClass('inputContainerShow').show();");
-      script.append("});");
+      script.append("})(jq);");
       
       JavascriptManager jm = event.getRequestContext().getJavascriptManager();
       
       Utils.initUserProfilePopup(uiActivity.getId());
       Utils.resizeHomePage();
       
-      jm.addJavascript(script.toString());
+      jm.require("SHARED/jquery", "jq").addScripts(script.toString());
     }
   }
 
