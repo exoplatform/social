@@ -22,7 +22,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang.StringEscapeUtils;
 import org.exoplatform.commons.api.notification.NotificationContext;
 import org.exoplatform.commons.api.notification.model.MessageInfo;
 import org.exoplatform.commons.api.notification.model.NotificationInfo;
@@ -89,7 +88,7 @@ public class PostActivitySpaceStreamPlugin extends AbstractNotificationPlugin {
     templateContext.put("USER", identity.getProfile().getFullName());
     templateContext.put("SPACE", spaceIdentity.getProfile().getFullName());
     templateContext.put("ACTIVITY", activity.getTitle());
-    templateContext.put("SUBJECT", SocialNotificationUtils.buildSubject(activity.getTitle()));
+    templateContext.put("SUBJECT", activity.getTitle());
     String subject = TemplateUtils.processSubject(templateContext);
     
     Space space = Utils.getSpaceService().getSpaceByPrettyName(spaceIdentity.getRemoteId());

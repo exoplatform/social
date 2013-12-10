@@ -22,11 +22,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
-import org.apache.commons.lang.StringEscapeUtils;
-import org.apache.commons.lang.StringUtils;
 import org.exoplatform.commons.api.notification.model.ArgumentLiteral;
 import org.exoplatform.commons.api.notification.service.template.TemplateContext;
 import org.exoplatform.commons.notification.template.TemplateUtils;
@@ -59,7 +55,6 @@ public class SocialNotificationUtils {
 
   public static final String SPACE_STR     = " ";
   
-  public static final int NOTIFICATION_SUBJECT_LIMIT = 50;
   
   public static String getUserId(String identityId) {
     return Utils.getIdentityManager().getIdentity(identityId, false).getRemoteId();
@@ -251,66 +246,6 @@ public class SocialNotificationUtils {
     } catch (Exception e) {
       return;
     }
-  }
-  
-  /**
-   * Build the subject of notification mail from origin string
-   *  - Just contains plain text
-   *  - If string have multiple lines, just get the first line
-   *  - Limit number of characters
-   * @param str the origin string
-   * @return the result of subject
-   * @since 4.1.x
-   */
-  public static String buildSubject(String str) {
-    //
-    if (str == null || str.trim().length() == 0) {
-      return "";
-    }
-    
-    //take the first line if string have multiple lines
-    str = str.replace("\n", "<br />").replace("<br>", "<br />");
-    String[] arr = str.trim().split("<br />");
-    
-    String subject = "";
-    for (String s : arr) {
-      if (s.trim().length() > 0) {
-        subject = cleanHtmlTags(s);
-        if (arr.length > 2) {
-          subject += " ...";
-        }
-        break;
-      }
-    }
-    
-    //unescape HTML
-    subject = StringEscapeUtils.unescapeHtml(subject);
-    
-    if (subject.length() <= NOTIFICATION_SUBJECT_LIMIT) {
-      return subject;
-    }
-    
-    return subject.substring(0, NOTIFICATION_SUBJECT_LIMIT) + " ...";
-  }
-  
-  public static String cleanHtmlTags(String str) {
-    //
-    if (str == null || str.trim().length() == 0) {
-      return "";
-    }
-    str = StringUtils.replace(str, "\n", SPACE_STR);
-    // Clean html code
-    String scriptregex = "<(script|style)[^>]*>[^<]*</(script|style)>";
-    Pattern p1 = Pattern.compile(scriptregex, Pattern.CASE_INSENSITIVE);
-    Matcher m1 = p1.matcher(str);
-    str = m1.replaceAll(EMPTY_STR);
-    String tagregex = "<[^>]*>";
-    Pattern p2 = Pattern.compile(tagregex);
-    Matcher m2 = p2.matcher(str);
-    str = m2.replaceAll(EMPTY_STR);
-    String multiplenewlines = "(\\n{1,2})(\\s*\\n)+";
-    str = str.replaceAll(multiplenewlines, "$1");
-    return str.trim();
   }
   
 }
