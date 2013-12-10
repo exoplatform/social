@@ -699,4 +699,18 @@ public class CachedRelationshipStorage implements RelationshipStorage {
     //
     return buildSuggestions(keys);
   }
+  
+  /**
+   * Clear suggestion cache with provided identity. 
+   * 
+   * @param identity Provided identity.
+   * @since 4.0.5
+   */
+  public void clearSuggestionCache(Identity identity) {
+    try {
+      exoSuggestionCache.select(new SuggestionCacheSelector(new String[]{identity.getId()}));
+    } catch (Exception e) {
+      LOG.error(e);
+    }
+  }
 }

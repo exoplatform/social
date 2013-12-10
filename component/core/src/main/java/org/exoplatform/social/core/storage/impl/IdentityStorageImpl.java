@@ -40,6 +40,8 @@ import org.chromattic.api.query.QueryResult;
 import org.chromattic.core.query.QueryImpl;
 import org.chromattic.ext.ntdef.NTFile;
 import org.chromattic.ext.ntdef.Resource;
+import org.exoplatform.container.ExoContainer;
+import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
@@ -61,7 +63,6 @@ import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvide
 import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
 import org.exoplatform.social.core.model.AvatarAttachment;
 import org.exoplatform.social.core.profile.ProfileFilter;
-import org.exoplatform.social.core.relationship.model.Relationship;
 import org.exoplatform.social.core.search.Sorting;
 import org.exoplatform.social.core.service.LinkProvider;
 import org.exoplatform.social.core.space.model.Space;
@@ -69,6 +70,7 @@ import org.exoplatform.social.core.storage.IdentityStorageException;
 import org.exoplatform.social.core.storage.api.IdentityStorage;
 import org.exoplatform.social.core.storage.api.RelationshipStorage;
 import org.exoplatform.social.core.storage.api.SpaceStorage;
+import org.exoplatform.social.core.storage.cache.CachedRelationshipStorage;
 import org.exoplatform.social.core.storage.exception.NodeAlreadyExistsException;
 import org.exoplatform.social.core.storage.exception.NodeNotFoundException;
 import org.exoplatform.social.core.storage.query.JCRProperties;
@@ -419,6 +421,14 @@ public class IdentityStorageImpl extends AbstractStorage implements IdentityStor
     _removeRelationshipList(identityEntity.getRelationship());
     _removeRelationshipList(identityEntity.getIgnore());
     _removeRelationshipList(identityEntity.getIgnored());
+    
+    // in case of have no any relationships yet. SOC-3761
+    ExoContainer container = ExoContainerContext.getCurrentContainer();
+    RelationshipStorage relationshipStorage = (RelationshipStorage) container
+        .getComponentInstanceOfType(RelationshipStorage.class);
+    if (relationshipStorage instanceof CachedRelationshipStorage) {
+      ((CachedRelationshipStorage)relationshipStorage).clearSuggestionCache(identity);
+    }
 
     // Remove space membership
     _removeSpaceMembership(SpaceStorageImpl.RefType.MANAGER, identityEntity);
@@ -1425,5 +1435,4 @@ public class IdentityStorageImpl extends AbstractStorage implements IdentityStor
     }
     return true;
   }
-
 }

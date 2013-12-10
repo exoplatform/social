@@ -27,7 +27,8 @@ import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.storage.api.IdentityStorage;
-import org.exoplatform.social.core.storage.impl.StorageUtils;
+import org.exoplatform.social.core.storage.api.RelationshipStorage;
+import org.exoplatform.social.core.storage.cache.CachedRelationshipStorage;
 
 /**
  * Listens to user updating events.
@@ -116,6 +117,13 @@ public class SocialUserEventListenerImpl extends UserEventListener {
   
       if (hasUpdated) {
         idm.updateProfile(profile);
+      }
+      
+      // SOC-3761
+      RelationshipStorage relationshipStorage = (RelationshipStorage) container
+          .getComponentInstanceOfType(RelationshipStorage.class);
+      if (relationshipStorage instanceof CachedRelationshipStorage) {
+        ((CachedRelationshipStorage)relationshipStorage).clearSuggestionCache(identity);
       }
     }
     finally{
