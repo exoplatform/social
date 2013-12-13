@@ -17,24 +17,50 @@
                     <td bgcolor="#ffffff" style="background-color: #ffffff;">
                         <table border="0" cellpadding="0" cellspacing="0" width="92%" bgcolor="#ffffff" align="center" style="background-color: #ffffff; font-size: 12px;color:#333333;line-height: 18px;">
                             <tr>
-                                <td align="left" bgcolor="#ffffff" style="background-color: #ffffff;padding: 10px 0;">
-                                    <p style="margin: 10px 0;"><%=_ctx.appRes("Notification.label.SayHello")%> $FIRSTNAME,</p>
-                                    <p style="margin: 10px 0 20px;">
+                                <td align="left" bgcolor="#ffffff" style="background-color: #ffffff;padding: 20px 0 10px;">
+                                    <p style="margin: 0 0 10px; line-height: 16px; font-family: HelveticaNeue, Helvetica, Arial, sans-serif; color: #333333;"><%=_ctx.appRes("Notification.label.SayHello")%> $FIRSTNAME,</p>
+                                    <p style="margin: 10px 0 20px; line-height: 16px; font-family: HelveticaNeue, Helvetica, Arial, sans-serif; color: #333333;">
                                     <%
                                       String profileUrl = "<strong><a target=\"_blank\" style=\"color: #2f5e92; font-family: 'HelveticaNeue Bold', Helvetica, Arial, sans-serif\" href=\""+ PROFILE_URL + "\">" + USER + "</a></strong>";
                                     %>
                                     <%=_ctx.appRes("Notification.message.ActivityCommentPlugin", profileUrl)%> :
                                     </p>
-                                    <table border="0" cellpadding="0" cellspacing="0" width="100%" bgcolor="#ffffff" align="center" style="background-color: #ffffff; font-size: 12px;color:#333333;line-height: 18px; margin-bottom: 15px;">
+                                    <table border="0" cellpadding="0" cellspacing="0" width="100%" bgcolor="#ffffff" align="center" style="background-color: #ffffff; font-size: 12px;color:#333333;line-height: 18px;">
                                         <tbody>
                                             <tr>
                                                 <td align="left" bgcolor="#ffffff" style="background-color: #f9f9f9; padding: 15px 20px;">
-                                                    <p style="margin: 5px 0; line-height: 16px; font-family: HelveticaNeue, Helvetica, Arial, sans-serif">$ACTIVITY</p>
-                                                    <p style="margin: 5px 0; line-height: 16px; font-family: HelveticaNeue, Helvetica, Arial, sans-serif">$COMMENT</p>
+                                                    <table border="0" cellpadding="0" cellspacing="0" width="100%" bgcolor="#ffffff" align="center" style="background-color: #ffffff; font-size: 13px;color:#333333;line-height: 18px;">
+																											<tbody>
+																												<tr>
+																													<td align="left" bgcolor="#f9f9f9" style="background-color: #f9f9f9; padding: 0x; line-height: 16px; font-family: HelveticaNeue, Helvetica, Arial, sans-serif; color: #333333;">$ACTIVITY</td>
+																												</tr>
+																												<tr>
+																													<td align="left" bgcolor="#f9f9f9" style="
+																														background-color: #f9f9f9;
+																														line-height: 16px;
+																														font-family: HelveticaNeue, Helvetica, Arial, sans-serif;
+																														color: #333333;
+																														padding: 10px 0 6px;
+																													">
+																														<hr style="
+																															border-width: 1px 0 0;
+																															border-style: solid none none;
+																															border-color: #d8d8d8 transparent transparent;
+																															margin: 6px 0;
+																															padding: 0;
+																														">
+																													</td>
+																												</tr>
+																												<tr>
+																													<td align="left" bgcolor="#f9f9f9" style="background-color: #f9f9f9; padding: 0 0 1px; line-height: 16px; font-family: HelveticaNeue, Helvetica, Arial, sans-serif; color: #333333;">$COMMENT</td>
+																												</tr>
+																											</tbody>
+																										</table>
                                                 </td>
                                             </tr>
                                         </tbody>
                                     </table>
+                                    <br/>
                                     <p style="margin: 0 0 20px;">
                                         <a target="_blank" style="
                                             display: inline-block;
@@ -42,7 +68,6 @@
                                             font-size: 11px;
                                             font-family: 'HelveticaNeue Bold', Helvetica, Arial, sans-serif;
                                             color: #ffffff;
-                                            text-shadow: 0 -1px 0 rgba(23, 33, 37, .25);
                                             background-color: #567ab6;
                                             background-image: -moz-linear-gradient(top, #638acd, #426393);
                                             background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#638acd), to(#426393));
@@ -52,7 +77,7 @@
                                             background-repeat: repeat-x;
                                             border-radius: 4px;
                                             -moz-border-radius: 4px;
-                                            padding: 4px 8px;
+                                            padding: 5px 8px;
                                             line-height: 100%;
                                             text-align: center;
                                             border: 1px solid #224886;
@@ -77,7 +102,7 @@
                                             background-repeat: repeat-x;
                                             border-radius: 4px;
                                             -moz-border-radius: 4px;
-                                            padding: 4px 8px;
+                                            padding: 5px 8px;
                                             line-height: 100%;
                                             text-align: center;
                                             border: 1px solid #c7c7c7;
