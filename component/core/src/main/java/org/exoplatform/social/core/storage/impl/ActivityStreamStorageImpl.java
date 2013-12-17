@@ -300,7 +300,7 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
 
   @Override
   public void updateCommenter(ProcessContext ctx) {
-    final ReentrantLock lock = new ReentrantLock();
+    //final ReentrantLock lock = new ReentrantLock();
     
     try {
       StreamProcessContext streamCtx = ObjectHelper.cast(StreamProcessContext.class, ctx);
@@ -309,7 +309,7 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
       IdentityEntity identityEntity = identityStorage._findIdentityEntity(commenter.getProviderId(), commenter.getRemoteId());
       ActivityEntity activityEntity = _findById(ActivityEntity.class, activity.getId());
       //
-      lock.lock();
+      //lock.lock();
       
       QueryResult<ActivityRef> got = getActivityRefs(identityEntity, activityEntity);
       ActivityRef activityRef = null;
@@ -347,7 +347,7 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
         LOG.debug(ex.getMessage(), ex);
       }
     } finally {
-      lock.unlock();
+      //lock.unlock();
     }
   }
 
@@ -358,19 +358,19 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
     has = hasActivityRefs(posterIdentity, activityEntity, ActivityRefType.MY_ACTIVITIES, oldUpdated);
     if (has == false) {
       addRefList(posterIdentity, activityEntity, ActivityRefType.MY_ACTIVITIES, false);
-      LOG.debug("createRefForPoster::MyActivities stream :" + posterIdentity.getRemoteId());
+      LOG.trace("createRefForPoster::MyActivities stream :" + posterIdentity.getRemoteId());
     }
     //post comment also put the activity on feed if have not any
     has = hasActivityRefs(posterIdentity, activityEntity, ActivityRefType.FEED, oldUpdated);
     if (has == false) {
       addRefList(posterIdentity, activityEntity, ActivityRefType.FEED, false);
-      LOG.debug("createRefForPoster::Feed stream :" + posterIdentity.getRemoteId());
+      LOG.trace("createRefForPoster::Feed stream :" + posterIdentity.getRemoteId());
     }
   }
   
   @Override
   public void update(ProcessContext ctx) {
-    final ReentrantLock lock = new ReentrantLock();
+    //final ReentrantLock lock = new ReentrantLock();
     ThreadLocal<Set<String>> idLocal = new ThreadLocal<Set<String>>();
     try {
       
@@ -378,7 +378,7 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
       ExoSocialActivity activity = streamCtx.getActivity();
       ActivityEntity activityEntity = _findById(ActivityEntity.class, activity.getId());
       
-      lock.lock(); // block until condition holds
+      //lock.lock(); // block until condition holds
       
       Collection<ActivityRef> references = activityEntity.getActivityRefs();
       Set<String> ids = new ConcurrentSkipListSet<String>();
@@ -393,7 +393,7 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
       if (idList.size() > 0) {
         for (String id : idList) {
           ActivityRef old = _findById(ActivityRef.class, id);
-          LOG.debug("ActivityRef will be deleted: " + old.toString());
+          LOG.trace("ActivityRef will be deleted: " + old.toString());
           ActivityRefListEntity refList = old.getDay().getMonth().getYear().getList();
           //
           if (refList.isOnlyUpdate(old, activity.getUpdated().getTime())) {
@@ -432,7 +432,7 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
       
     } finally {
         getSession().save();
-        lock.unlock();
+        //lock.unlock();
     }
   }
 
@@ -989,7 +989,7 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
   
   private void manageRefList(UpdateContext context, ActivityEntity activityEntity, ActivityRefType type, boolean mustCheck) throws NodeNotFoundException {
 
-    AtomicBoolean newYearMonthday = new AtomicBoolean(false);
+    //AtomicBoolean newYearMonthday = new AtomicBoolean(false);
     if (context.getAdded() != null) {
       for (Identity identity : context.getAdded()) {
         IdentityEntity identityEntity = identityStorage._findIdentityEntity(identity.getProviderId(), identity.getRemoteId());
@@ -1003,13 +1003,14 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
         
         ActivityRefListEntity listRef = type.refsOf(identityEntity);
         
-        newYearMonthday.set(false);
-        ActivityRef ref = listRef.getOrCreated(activityEntity, newYearMonthday);
+        //newYearMonthday.set(false);
+        //ActivityRef ref = listRef.getOrCreated(activityEntity, newYearMonthday);
+        ActivityRef ref = listRef.getOrCreated(activityEntity);
         
         //Take care the YearMonthDay path don't throw ADD_PROPERTY exception.
-        if (newYearMonthday.get()) {
-          StorageUtils.persist();
-        }
+        //if (newYearMonthday.get()) {
+        //  StorageUtils.persist();
+        //}
         
         //LOG.info("manageRefList()::BEFORE");
         //printDebug(listRef, activityEntity.getLastUpdated());
@@ -1044,7 +1045,7 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
                           ActivityRefType type,
                           boolean mustCheck) throws NodeNotFoundException {
 
-    AtomicBoolean newYearMonthday = new AtomicBoolean(false);
+    //AtomicBoolean newYearMonthday = new AtomicBoolean(false);
     //
     if (mustCheck) {
       // to avoid add back activity to given stream what has already existing
@@ -1054,13 +1055,15 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
 
     ActivityRefListEntity listRef = type.refsOf(identityEntity);
 
-    newYearMonthday.set(false);
-    ActivityRef ref = listRef.getOrCreated(activityEntity, newYearMonthday);
+    //newYearMonthday.set(false);
+    //ActivityRef ref = listRef.getOrCreated(activityEntity, newYearMonthday);
 
     // Take care the YearMonthDay path don't throw ADD_PROPERTY exception.
-    if (newYearMonthday.get()) {
-      StorageUtils.persist();
-    }
+    //if (newYearMonthday.get()) {
+    //  StorageUtils.persist();
+    //}
+    
+    ActivityRef ref = listRef.getOrCreated(activityEntity);
 
     if (ref.getName() == null) {
       ref.setName(activityEntity.getName());
