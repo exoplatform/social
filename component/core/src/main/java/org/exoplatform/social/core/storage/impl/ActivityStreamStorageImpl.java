@@ -18,13 +18,11 @@ package org.exoplatform.social.core.storage.impl;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.locks.ReentrantLock;
+import java.util.concurrent.ConcurrentSkipListSet;
 
 import javax.jcr.InvalidItemStateException;
 import javax.jcr.ItemExistsException;
