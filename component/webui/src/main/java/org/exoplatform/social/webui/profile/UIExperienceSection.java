@@ -47,7 +47,8 @@ import org.exoplatform.webui.form.UIFormStringInput;
 import org.exoplatform.webui.form.UIFormTextAreaInput;
 import org.exoplatform.webui.form.input.UICheckBoxInput;
 import org.exoplatform.webui.form.validator.ExpressionValidator;
-import org.exoplatform.webui.form.validator.PersonalNameValidator;
+import org.exoplatform.webui.form.validator.UserConfigurableValidator;
+
 
 /**
  * Component manages all experience informations
@@ -650,13 +651,13 @@ public class UIExperienceSection extends UIProfileSection {
    * @throws Exception
    */
   private void addUIFormInput() throws Exception {
+    final String JOB_TITLE = "jobtitle";
     WebuiRequestContext requestContext = WebuiRequestContext.getCurrentInstance();
     ResourceBundle resourceBundle = requestContext.getApplicationResourceBundle();
     expIdx += 1;
-    addUIFormInput(new UIFormStringInput(Profile.EXPERIENCES_COMPANY + expIdx, null, null)
-      .addValidator(PersonalNameValidator.class));
+    addUIFormInput(new UIFormStringInput(Profile.EXPERIENCES_COMPANY + expIdx, null, null));
     addUIFormInput(new UIFormStringInput(Profile.EXPERIENCES_POSITION + expIdx, null, null)
-      .addValidator(PersonalNameValidator.class));
+      .addValidator(UserConfigurableValidator.class, JOB_TITLE, UserConfigurableValidator.KEY_PREFIX + JOB_TITLE, false));
 
     UIFormTextAreaInput description = new UIFormTextAreaInput(Profile.EXPERIENCES_DESCRIPTION + expIdx, null, null);
     description.setHTMLAttribute(HTML_ATTRIBUTE_TITLE, resourceBundle.getString("UIExperienceSection.label.description"));
