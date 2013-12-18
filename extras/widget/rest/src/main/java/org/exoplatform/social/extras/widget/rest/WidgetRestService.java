@@ -179,7 +179,7 @@ public class WidgetRestService implements ResourceContainer {
       if (service.hasAccessPermission(space, username)) {
         Identity spaceIdentity = identityManager.getOrCreateIdentity(SpaceIdentityProvider.NAME,
                                                                      space.getPrettyName(), true);
-        RealtimeListAccess<ExoSocialActivity> spaceActivitiesListAccess = activityManager.getActivitiesWithListAccess(spaceIdentity);
+        RealtimeListAccess<ExoSocialActivity> spaceActivitiesListAccess = activityManager.getActivitiesOfSpaceWithListAccess(spaceIdentity);
         
         List<ExoSocialActivity> activities = spaceActivitiesListAccess.loadAsList(0, DEFAULT_LIMIT);
 
