@@ -85,11 +85,10 @@ public class PostActivityPlugin extends AbstractNotificationPlugin {
     String subject = TemplateUtils.processSubject(templateContext);
     
     templateContext.put("PROFILE_URL", LinkProviderUtils.getRedirectUrl("user", identity.getRemoteId()));
-    templateContext.put("ACTIVITY", activity.getTitle());
     templateContext.put("REPLY_ACTION_URL", LinkProviderUtils.getRedirectUrl("reply_activity", activity.getId()));
     templateContext.put("VIEW_FULL_DISCUSSION_ACTION_URL", LinkProviderUtils.getRedirectUrl("view_full_activity", activity.getId()));
-    String body = TemplateUtils.processGroovy(templateContext);
-    
+    //
+    String body = SocialNotificationUtils.getBody(ctx, templateContext, activity);
     return messageInfo.subject(subject).body(body).end();
   }
 

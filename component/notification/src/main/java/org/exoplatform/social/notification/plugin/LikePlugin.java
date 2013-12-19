@@ -18,6 +18,7 @@ package org.exoplatform.social.notification.plugin;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -51,13 +52,20 @@ public class LikePlugin extends AbstractNotificationPlugin {
   @Override
   public NotificationInfo makeNotification(NotificationContext ctx) {
     ExoSocialActivity activity = ctx.value(SocialNotificationUtils.ACTIVITY);
-    
+
     String[] likersId = activity.getLikeIdentityIds();
+    String liker = Utils.getUserId(likersId[likersId.length - 1]);
+
+    List<String> toUsers = new ArrayList<String>();
+    toUsers.add(Utils.getUserId(activity.getPosterId()));
+    if (Utils.isSpaceActivity(activity) == false && liker.equals(activity.getStreamOwner()) == false) {
+      toUsers.add(activity.getStreamOwner());
+    }
     
     return NotificationInfo.instance()
-                               .to(activity.getStreamOwner())
+                               .to(toUsers)
                                .with(SocialNotificationUtils.ACTIVITY_ID.getKey(), activity.getId())
-                               .with("likersId", Utils.getUserId(likersId[likersId.length-1]))
+                               .with("likersId", liker)
                                .key(getId()).end();
   }
 
@@ -76,15 +84,15 @@ public class LikePlugin extends AbstractNotificationPlugin {
     Identity identity = Utils.getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, notification.getValueOwnerParameter("likersId"), true);
     
     templateContext.put("USER", identity.getProfile().getFullName());
-    templateContext.put("ACTIVITY", activity.getTitle());
     templateContext.put("SUBJECT", activity.getTitle());
     String subject = TemplateUtils.processSubject(templateContext);
 
     templateContext.put("PROFILE_URL", LinkProviderUtils.getRedirectUrl("user", identity.getRemoteId()));
     templateContext.put("REPLY_ACTION_URL", LinkProviderUtils.getRedirectUrl("reply_activity", activity.getId()));
     templateContext.put("VIEW_FULL_DISCUSSION_ACTION_URL", LinkProviderUtils.getRedirectUrl("view_full_activity", activity.getId()));
-    String body = TemplateUtils.processGroovy(templateContext);
-    
+
+    //
+    String body = SocialNotificationUtils.getBody(ctx, templateContext, activity);
     return messageInfo.subject(subject).body(body).end();
   }
 
@@ -119,7 +127,8 @@ public class LikePlugin extends AbstractNotificationPlugin {
   public boolean isValid(NotificationContext ctx) {
     ExoSocialActivity activity = ctx.value(SocialNotificationUtils.ACTIVITY);
     String[] likersId = activity.getLikeIdentityIds();
-    if (activity.getStreamOwner().equals(Utils.getUserId(likersId[likersId.length-1]))) {
+    if (activity.getStreamOwner().equals(Utils.getUserId(likersId[likersId.length-1])) &&
+        activity.getPosterId().equals(likersId[likersId.length-1])) {
       return false;
     }
     return true;
