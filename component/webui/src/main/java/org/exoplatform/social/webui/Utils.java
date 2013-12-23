@@ -574,6 +574,7 @@ public class Utils {
     StringBuilder script = new StringBuilder("setTimeout(function() {")
       .append("jq('.LeftNavigationTDContainer:first').css('height', 'auto');")
       .append("jq('#UIUserActivityStreamPortlet').css('height', 'auto');")
+      .append("jq('#UIProfile').css('height', 'auto');")
       .append("platformLeftNavigation.resize();")
       .append("}, 200);");
     
