@@ -81,6 +81,7 @@ public class PostActivityPlugin extends AbstractNotificationPlugin {
     
     
     templateContext.put("USER", identity.getProfile().getFullName());
+    templateContext.put("SUBJECT", activity.getTitle());
     String subject = TemplateUtils.processSubject(templateContext);
     
     templateContext.put("PROFILE_URL", LinkProviderUtils.getRedirectUrl("user", identity.getRemoteId()));
