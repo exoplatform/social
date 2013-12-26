@@ -46,7 +46,7 @@ import org.exoplatform.webui.form.UIFormInput;
 import org.exoplatform.webui.form.UIFormStringInput;
 import org.exoplatform.webui.form.UIFormTextAreaInput;
 import org.exoplatform.webui.form.input.UICheckBoxInput;
-import org.exoplatform.webui.form.validator.ExpressionValidator;
+import org.exoplatform.webui.form.validator.DateTimeValidator;
 import org.exoplatform.webui.form.validator.PersonalNameValidator;
 
 /**
@@ -95,10 +95,6 @@ public class UIExperienceSection extends UIProfileSection {
    * DATE FORMAT.
    */
   final public static String DATE_FORMAT_MMDDYYYY = "MM/dd/yyyy";
-
-  /** DATE TIME VALIDATE EXPRESSION. */
-  private static final String DATETIME_REGEX =
-     "^(\\d{1,2}\\/\\d{1,2}\\/\\d{1,4})\\s*(\\s+\\d{1,2}:\\d{1,2}:\\d{1,2})?$";
       
   /** MANDATORY START DATE MESSAGE. */
   private static final String INVALID_START_DATE_MANDATORY = "UIExperienceSection.msg.Invalid-startdate-mandatory";
@@ -674,11 +670,11 @@ public class UIExperienceSection extends UIProfileSection {
 
     UIFormDateTimeInput startDate = new UIFormDateTimeInput(Profile.EXPERIENCES_START_DATE + expIdx, null, null, false);
     startDate.setHTMLAttribute(HTML_ATTRIBUTE_TITLE, resourceBundle.getString("UIExperienceSection.label.startDate"));
-    addUIFormInput(startDate.addValidator(ExpressionValidator.class, DATETIME_REGEX, INVALID_START_DATE_FORMAT));
+    addUIFormInput(startDate.addValidator(DateTimeValidator.class));
 
     UIFormDateTimeInput endDate = new UIFormDateTimeInput(Profile.EXPERIENCES_END_DATE + expIdx, null, null, false);
     endDate.setHTMLAttribute(HTML_ATTRIBUTE_TITLE, resourceBundle.getString("UIExperienceSection.label.endDate"));
-    addUIFormInput(endDate.addValidator(ExpressionValidator.class, DATETIME_REGEX, INVALID_END_DATE_FORMAT));
+    addUIFormInput(endDate.addValidator(DateTimeValidator.class));
 
     UICheckBoxInput uiDateInputCheck = new UICheckBoxInput(Integer.toString(expIdx), null, false);
     uiDateInputCheck.setComponentConfig(UICheckBoxInput.class, "UIFormCheckBoxEndDate");
