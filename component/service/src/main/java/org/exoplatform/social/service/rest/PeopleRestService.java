@@ -416,7 +416,7 @@ public class PeopleRestService implements ResourceContainer{
       
       List<ExoSocialActivity> activities = activitiesListAccess.loadAsList(0, 1);
       if (activities.size() > 0) {
-        peopleInfo.setActivityTitle(substringActivity(activities.get(0)));
+        peopleInfo.setActivityTitle(StringEscapeUtils.unescapeHtml(activities.get(0).getTitle()));
       }
       
       Profile userProfile = identity.getProfile();

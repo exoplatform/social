@@ -363,7 +363,7 @@ public class SpaceUtils {
    */
   static class PortletCategoryComparator implements Comparator<ApplicationCategory> {
     public int compare(ApplicationCategory cat1, ApplicationCategory cat2) {
-      return cat1.getDisplayName().compareTo(cat2.getDisplayName());
+      return cat1.getDisplayName(true).compareTo(cat2.getDisplayName(true));
     }
   }
 
@@ -1180,9 +1180,16 @@ public class SpaceUtils {
     NavigationContext spaceNavCtx = getGroupNavigationContext(space.getGroupId());
 
     UserNavigation userNav = SpaceUtils.getUserPortal().getNavigation(spaceNavCtx.getKey());
+    
     UserNode parentUserNode = SpaceUtils.getUserPortal().getNode(userNav, Scope.CHILDREN, null, null);
-    UserNode spaceUserNode = parentUserNode.getChild(space.getUrl());
-    SpaceUtils.getUserPortal().updateNode(spaceUserNode, Scope.CHILDREN, null);
+    UserNode spaceUserNode = parentUserNode.getChildrenSize() > 0 ? parentUserNode.getChild(0) : null;
+    
+    if (spaceUserNode != null) {
+      SpaceUtils.getUserPortal().updateNode(spaceUserNode, Scope.CHILDREN, null);
+    } else {
+      LOG.warn("Failed to get because of spaceUserNode is NULL");
+    }
+    
     return spaceUserNode;
   }
   

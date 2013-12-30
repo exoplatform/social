@@ -56,8 +56,8 @@
 
       $(document).ready(function() {
         var actionLink = $('#actionLink');
-        if(actionLink.length > 0 && (UIComposer.clickOn === null || $(UIComposer.clickOn).hasClass('uidocactivitycomposer') === false)) {
-          if ($('#InputLink').length == 0) {
+        if(actionLink.length > 0 && $(UIComposer.clickOn).hasClass('uidocactivitycomposer') === false) {
+          if ($('#InputLink').length == 0 && UIComposer.clickOn != null) {
             actionLink.trigger('click');
           } else {
             var container = $('#ComposerContainer');
