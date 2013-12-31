@@ -432,7 +432,7 @@ public class ActivityStorageImplTestCase extends AbstractCoreTest {
     // fill 10 activities
     Calendar cal = Calendar.getInstance();
     long today = cal.getTime().getTime();
-    cal.add(Calendar.DAY_OF_MONTH, -1);
+    cal.add(Calendar.DATE, -1);
     long yesterday = cal.getTime().getTime();
     //i > 5 PostedTime = currentDate + i;
     //else yesterdayDate = currentDate + i;
