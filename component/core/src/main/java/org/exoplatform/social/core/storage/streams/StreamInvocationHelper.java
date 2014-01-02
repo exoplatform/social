@@ -104,17 +104,15 @@ public class StreamInvocationHelper {
     
     try {
       if (ctx.isAsync()) {
+        processCtx.getTraceElement().start();
         beforeAsync();
         ctx.getServiceExecutor().async(StreamProcessorFactory.updateStream(), processCtx);
+        processCtx.getTraceElement().end();
       } else {
         ctx.getServiceExecutor().execute(StreamProcessorFactory.updateStream(), processCtx);
       }
-      
     } finally {
-      if (ctx.isTraced()) {
-        LOG.debug(processCtx.getTraceLog());
-      }
-      
+      LOG.debug(processCtx.getTraceLog());
     }
     
     return processCtx;
@@ -363,8 +361,10 @@ public class StreamInvocationHelper {
     
     try {
       if(ctx.isAsync()) {
+        processCtx.getTraceElement().start();
         beforeAsync();
         ctx.getServiceExecutor().async(StreamProcessorFactory.createSpaceActivityRef(), processCtx);
+        processCtx.getTraceElement().end();
       } else {
         //
         ctx.getServiceExecutor().execute(StreamProcessorFactory.createSpaceActivityRef(), processCtx);
@@ -384,7 +384,9 @@ public class StreamInvocationHelper {
     processCtx.identity(owner);
     
     try {
-        ctx.getServiceExecutor().async(StreamProcessorFactory.loadFeed(), processCtx);
+      processCtx.getTraceElement().start();
+      ctx.getServiceExecutor().async(StreamProcessorFactory.loadFeed(), processCtx);
+      processCtx.getTraceElement().end();
     } finally {
       LOG.debug(processCtx.getTraceLog());
     }

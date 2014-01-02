@@ -49,6 +49,7 @@ import org.exoplatform.social.core.chromattic.entity.IdentityEntity;
 import org.exoplatform.social.core.chromattic.entity.ProfileEntity;
 import org.exoplatform.social.core.chromattic.entity.ProfileXpEntity;
 import org.exoplatform.social.core.chromattic.entity.ProviderEntity;
+import org.exoplatform.social.core.chromattic.entity.ProviderRootEntity;
 import org.exoplatform.social.core.chromattic.entity.RelationshipEntity;
 import org.exoplatform.social.core.chromattic.entity.RelationshipListEntity;
 import org.exoplatform.social.core.chromattic.entity.SpaceRef;
@@ -683,10 +684,18 @@ public class IdentityStorageImpl extends AbstractStorage implements IdentityStor
     return identity;
   }
 
-  protected IdentityEntity _findIdentityEntity(final String providerId, final String remoteId)
-      throws NodeNotFoundException {
-
-    ProviderEntity providerEntity = getProviderRoot().getProviders().get(providerId);
+  protected IdentityEntity _findIdentityEntity(final String providerId, final String remoteId) throws NodeNotFoundException {
+    
+    ProviderEntity providerEntity;
+    
+    try {
+      providerEntity = getProviderRoot().getProviders().get(providerId);
+      
+    } catch (Exception ex) {
+      lifeCycle.getProviderRoot().set(null);
+      //
+      providerEntity = getProviderRoot().getProviders().get(providerId);
+    }
 
     if (providerEntity == null) {
       throw new NodeNotFoundException("The node " + providerId + "/" + remoteId + " doesn't be found");

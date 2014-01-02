@@ -645,8 +645,9 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
       if (activity.getId() == null) {
 
         String[] mentioners = _createActivity(owner, activity);
+        //
+        StorageUtils.persist();
         //create refs
-        //streamStorage.save(owner, activity);
         if (mustInjectStreams) {
           //run synchronous
           StreamInvocationHelper.savePoster(owner, activity);

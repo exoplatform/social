@@ -478,7 +478,7 @@ public class ActivityStreamStorageTest extends AbstractCoreTest {
    
     String activityId = identityStorage.getProfileActivityId(spaceIdentity.getProfile(), Profile.AttachedActivityType.SPACE);
     activityStorage.deleteActivity(activityId);
-   spaceService.deleteSpace(space);
+    spaceService.deleteSpace(space);
   }
  
  public void testGetActivityByPoster() throws ActivityStorageException {
