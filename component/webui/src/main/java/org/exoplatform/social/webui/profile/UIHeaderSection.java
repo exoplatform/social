@@ -32,6 +32,7 @@ import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.event.EventListener;
 import org.exoplatform.webui.event.Event.Phase;
 import org.exoplatform.webui.form.UIFormStringInput;
+import org.exoplatform.webui.form.validator.MandatoryValidator;
 import org.exoplatform.webui.form.validator.UserConfigurableValidator;
 
 /**
@@ -72,7 +73,7 @@ public class UIHeaderSection extends UIProfileSection {
     UIFormStringInput position = new UIFormStringInput(Profile.POSITION, Profile.POSITION, null);
     
     position.setHTMLAttribute(HTML_ATTRIBUTE_TITLE, resourceBundle.getString("UIHeaderSection.label.yourPosition"));
-    addUIFormInput(position.addValidator(UserConfigurableValidator.class,
+    addUIFormInput(position.addValidator(MandatoryValidator.class).addValidator(UserConfigurableValidator.class,
                         JOB_TITLE, UserConfigurableValidator.KEY_PREFIX + JOB_TITLE, false));
     setSubmitAction("return false;");
   }
