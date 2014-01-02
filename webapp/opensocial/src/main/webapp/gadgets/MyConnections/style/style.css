@@ -55,7 +55,7 @@
 	height: 20px;
 	line-height: 16px;
 	display: block;
-	background: url('/social-resources/skin/DefaultSkin/portal/background/IconSearch.gif') no-repeat right center;
+	background: url('/eXoSkin/skin/less/social/skin/DefaultSkin/portal/background/IconSearch.gif') no-repeat right center;
 	margin-right: 3px;
 }
 
@@ -65,7 +65,7 @@
 }
 
 .GadgetConnectionSearch .ListContent .Icon {
-	background: url('/social-resources/skin/DefaultSkin/portal/background/IconListContent.gif') no-repeat right center;
+	background: url('/eXoSkin/skin/less/social/skin/DefaultSkin/portal/background/IconListContent.gif') no-repeat right center;
 	line-height: 20px;
 	padding-right: 13px;
 	margin-right: 7px;
@@ -172,13 +172,13 @@
 }
 
 .GadgetConnection .ListContent .Action .CommIcon {
-	background: url('/social-resources/skin/DefaultSkin/portal/background/CommIcon.png') no-repeat center;
+	background: url('/eXoSkin/skin/less/social/skin/DefaultSkin/portal/background/CommIcon.png') no-repeat center;
 	padding: 2px 6px;
 	margin-right: 7px;
 }
 
 .GadgetConnection .ListContent .Action .LikeIcon {
-	background: url('/social-resources/skin/DefaultSkin/portal/background/LikeIcon.png') no-repeat center;
+	background: url('/eXoSkin/skin/less/social/skin/DefaultSkin/portal/background/LikeIcon.png') no-repeat center;
 	padding: 2px 6px;
 }
 
@@ -262,42 +262,42 @@
 	white-space: nowrap;
 	overflow: hidden;
 }
-
+/*
 .GadgetConnectionBar .SettingIcon {
-	background: url('/social-resources/skin/DefaultSkin/portal/background/SettingIcon.png') no-repeat center;
+	background: url('/eXoSkin/skin/less/social/skin/DefaultSkin/portal/background/SettingIcon.png') no-repeat center;
 	padding: 0px 8px;
 	margin-right: 3px;
 }
 
 .GadgetConnectionBar .SettingSelected {
-	background: url('/social-resources/skin/DefaultSkin/portal/background/SettingSelected.png') no-repeat center;
+	background: url('/eXoSkin/skin/less/social/skin/DefaultSkin/portal/background/SettingSelected.png') no-repeat center;
 	padding: 0px 8px;
 	margin-right: 3px;
 }
 
 .GadgetConnectionBar .ListIcon {
-	background: url('/social-resources/skin/DefaultSkin/portal/background/ListNormal.png') no-repeat center;
+	background: url('/eXoSkin/skin/less/social/skin/DefaultSkin/portal/background/ListNormal.png') no-repeat center;
 	padding: 0px 8px;
 	margin-right: 3px;
 }
 
 .GadgetConnectionBar .ListSelected {
-	background: url('/social-resources/skin/DefaultSkin/portal/background/ListIcon.png') no-repeat center;
+	background: url('/eXoSkin/skin/less/social/skin/DefaultSkin/portal/background/ListIcon.png') no-repeat center;
 	padding: 0px 8px;
 	margin-right: 3px;
 }
 
 .GadgetConnectionBar .NumberListIcon {
-	background: url('/social-resources/skin/DefaultSkin/portal/background/NumberListIcon.png') no-repeat center;
+	background: url('/eXoSkin/skin/less/social/skin/DefaultSkin/portal/background/NumberListIcon.png') no-repeat center;
 	padding: 0px 8px;
 	margin-right: 3px;
 }
 
 .GadgetConnectionBar .NumberListSelected {
-	background: url('/social-resources/skin/DefaultSkin/portal/background/ListSelected.png') no-repeat center;
+	background: url('/eXoSkin/skin/less/social/skin/DefaultSkin/portal/background/ListSelected.png') no-repeat center;
 	padding: 0px 8px;
 	margin-right: 3px;
-}
+}*/
 
 .GadgetConnection .CurentActivity {
  	margin: 12px;
@@ -320,15 +320,15 @@
 }
 
 .GadgetConnection .CurentActivity .Action .CommIcon {
- 	background: url('/social-resources/skin/DefaultSkin/portal/background/CommIcon.png') no-repeat center;
+ 	background: url('/eXoSkin/skin/less/social/skin/DefaultSkin/portal/background/CommIcon.png') no-repeat center;
  	padding: 2px 6px;
  	margin-right: 7px;
 }
 
 .GadgetConnection .CurentActivity .Action .LikeIcon {
- 	background: url('/social-resources/skin/DefaultSkin/portal/background/LikeIcon.png') no-repeat center;
+ 	background: url('/eXoSkin/skin/less/social/skin/DefaultSkin/portal/background/LikeIcon.png') no-repeat center;
  	padding: 2px 6px;
-}
+}-*
 
 .GadgetConnection .CurentActivity .NumberLike {
  	color: #0053A7;
