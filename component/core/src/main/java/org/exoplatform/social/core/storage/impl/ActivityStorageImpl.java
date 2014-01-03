@@ -594,12 +594,13 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
       activity.setUpdated(currentMillis);
       
       //SOC-3915 empty stream when post comment but lost it.
+      //WhatsHotTest is failed.
       StorageUtils.persist();
       //
       if (mustInjectStreams) {
         Identity identity = identityStorage.findIdentityById(comment.getUserId());
-        StreamInvocationHelper.updateCommenter(identity, activity, commenters.toArray(new String[0]), oldUpdated);
-        StreamInvocationHelper.update(activity, mentioners.toArray(new String[0]), oldUpdated);
+        StreamInvocationHelper.updateCommenter(identity, activityEntity, commenters.toArray(new String[0]), oldUpdated);
+        StreamInvocationHelper.update(activityEntity, mentioners.toArray(new String[0]), oldUpdated);
       }
     }  
     catch (NodeNotFoundException e) {

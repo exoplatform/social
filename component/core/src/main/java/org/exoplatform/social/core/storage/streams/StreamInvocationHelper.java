@@ -94,15 +94,15 @@ public class StreamInvocationHelper {
     return false;
   }
   
-  public static ProcessContext update(ExoSocialActivity activity, String[] mentioners, long oldUpdated) {
+  public static ProcessContext update(ActivityEntity entity, String[] mentioners, long oldUpdated) {
     //
     StreamProcessContext processCtx = StreamProcessContext.getIntance(StreamProcessContext.UPDATE_ACTIVITY_PROCESS, ctx);
-    processCtx.activity(activity).mentioners(mentioners).oldLastUpdated(oldUpdated);
+    processCtx.activityEntity(entity).mentioners(mentioners).oldLastUpdated(oldUpdated);
     
     try {
       if (ctx.isAsync()) {
         processCtx.getTraceElement().start();
-        beforeAsync();
+        //beforeAsync();
         ctx.getServiceExecutor().async(StreamProcessorFactory.updateStream(), processCtx);
         processCtx.getTraceElement().end();
       } else {
@@ -115,10 +115,10 @@ public class StreamInvocationHelper {
     return processCtx;
   }
   
-  public static ProcessContext updateCommenter(Identity commenter, ExoSocialActivity activity, String[] commenters, long oldUpdated) {
+  public static ProcessContext updateCommenter(Identity commenter, ActivityEntity entity, String[] commenters, long oldUpdated) {
     //
     StreamProcessContext processCtx = StreamProcessContext.getIntance(StreamProcessContext.UPDATE_ACTIVITY_COMMENTER_PROCESS, ctx);
-    processCtx.identity(commenter).activity(activity).commenters(commenters).oldLastUpdated(oldUpdated);
+    processCtx.identity(commenter).activityEntity(entity).commenters(commenters).oldLastUpdated(oldUpdated);
     
     try {
       //beforeAsync(); this point can make the problem with ADD_PROPERTY exception

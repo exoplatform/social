@@ -21,15 +21,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.atomic.AtomicBoolean;
-
-import javax.jcr.InvalidItemStateException;
-import javax.jcr.ItemExistsException;
-import javax.jcr.PathNotFoundException;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.chromattic.api.ChromatticException;
@@ -296,10 +288,9 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
   public void updateCommenter(ProcessContext ctx) {
     try {
       StreamProcessContext streamCtx = ObjectHelper.cast(StreamProcessContext.class, ctx);
-      ExoSocialActivity activity = streamCtx.getActivity();
       Identity commenter = streamCtx.getIdentity();
       IdentityEntity identityEntity = identityStorage._findIdentityEntity(commenter.getProviderId(), commenter.getRemoteId());
-      ActivityEntity activityEntity = _findById(ActivityEntity.class, activity.getId());
+      ActivityEntity activityEntity = streamCtx.getActivityEntity();
       //
       long oldUpdated = streamCtx.getOldLastUpdated();  
       //activity's poster != comment's poster
@@ -354,8 +345,7 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
   public void update(ProcessContext ctx) {
     try {
       StreamProcessContext streamCtx = ObjectHelper.cast(StreamProcessContext.class, ctx);
-      ExoSocialActivity activity = streamCtx.getActivity();
-      ActivityEntity activityEntity = _findById(ActivityEntity.class, activity.getId());
+      ActivityEntity activityEntity = streamCtx.getActivityEntity();
       List<ActivityRef> references = new CopyOnWriteArrayList<ActivityRef>(activityEntity.getActivityRefs());
       long oldUpdated = streamCtx.getOldLastUpdated();
       ActivityRef newRef = null;
@@ -367,8 +357,8 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
         LOG.trace("ActivityRef will be deleted: " + old.getId());
         ActivityRefListEntity refList = old.getDay().getMonth().getYear().getList();
         //
-        newRef = refList.getOrCreated(activity.getUpdated().getTime());
-        newRef.setLastUpdated(activity.getUpdated().getTime());
+        newRef = refList.getOrCreated(activityEntity.getLastUpdated());
+        newRef.setLastUpdated(activityEntity.getLastUpdated());
         newRef.setActivityEntity(activityEntity);
         refList.remove(Long.parseLong(old.getName()));
       }
@@ -380,7 +370,7 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
       LOG.debug(ex.getMessage(), ex);
       //turnOnLock to avoid next exception
     } catch (ChromatticException ex) {
-        LOG.warn("Probably was updated activity reference by another session", ex);
+        LOG.warn("Probably was updated activity reference by another session");
         LOG.debug(ex.getMessage(), ex);
     }
   }

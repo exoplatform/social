@@ -43,9 +43,9 @@ public class ThreadPoolConfig implements Serializable {
   
   public ThreadPoolConfig(InitParams params) {
   
-    this.setKeepAliveTime(60L);
+    this.setKeepAliveTime(10L);
     this.setTimeUnit(TimeUnit.SECONDS);
-    this.setMaxQueueSize(1000);
+    this.setMaxQueueSize(100);
     
     //
     ValueParam poolSize = params.getValueParam(POOL_SIZE);
@@ -58,7 +58,7 @@ public class ThreadPoolConfig implements Serializable {
       this.poolSize = Integer.valueOf(poolSize.getValue());
     }
     catch (Exception e) {
-      this.poolSize = 10;
+      this.poolSize = 5;
     }
     
     //
@@ -66,7 +66,7 @@ public class ThreadPoolConfig implements Serializable {
       this.maxPoolSize = Integer.valueOf(maxPoolSize.getValue());
     }
     catch (Exception e) {
-      this.maxPoolSize = 20;
+      this.maxPoolSize = 5;
     }
     
     //
