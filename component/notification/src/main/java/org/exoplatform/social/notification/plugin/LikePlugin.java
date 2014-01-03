@@ -18,7 +18,6 @@ package org.exoplatform.social.notification.plugin;
 
 import java.io.IOException;
 import java.io.Writer;
-import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -56,14 +55,8 @@ public class LikePlugin extends AbstractNotificationPlugin {
     String[] likersId = activity.getLikeIdentityIds();
     String liker = Utils.getUserId(likersId[likersId.length - 1]);
 
-    List<String> toUsers = new ArrayList<String>();
-    toUsers.add(Utils.getUserId(activity.getPosterId()));
-    if (Utils.isSpaceActivity(activity) == false && liker.equals(activity.getStreamOwner()) == false) {
-      toUsers.add(activity.getStreamOwner());
-    }
-    
     return NotificationInfo.instance()
-                               .to(toUsers)
+                               .to(Utils.getUserId(activity.getPosterId()))
                                .with(SocialNotificationUtils.ACTIVITY_ID.getKey(), activity.getId())
                                .with("likersId", liker)
                                .key(getId()).end();
@@ -127,8 +120,7 @@ public class LikePlugin extends AbstractNotificationPlugin {
   public boolean isValid(NotificationContext ctx) {
     ExoSocialActivity activity = ctx.value(SocialNotificationUtils.ACTIVITY);
     String[] likersId = activity.getLikeIdentityIds();
-    if (activity.getStreamOwner().equals(Utils.getUserId(likersId[likersId.length-1])) &&
-        activity.getPosterId().equals(likersId[likersId.length-1])) {
+    if (activity.getPosterId().equals(likersId[likersId.length-1])) {
       return false;
     }
     return true;

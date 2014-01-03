@@ -27,6 +27,7 @@ import org.exoplatform.commons.api.notification.NotificationContext;
 import org.exoplatform.commons.api.notification.model.ArgumentLiteral;
 import org.exoplatform.commons.api.notification.model.NotificationKey;
 import org.exoplatform.commons.api.notification.plugin.AbstractNotificationChildPlugin;
+import org.exoplatform.commons.api.notification.plugin.AbstractNotificationPlugin;
 import org.exoplatform.commons.api.notification.service.setting.PluginContainer;
 import org.exoplatform.commons.api.notification.service.template.TemplateContext;
 import org.exoplatform.commons.notification.template.TemplateUtils;
@@ -257,11 +258,11 @@ public class SocialNotificationUtils {
   public static String getBody(NotificationContext ctx, TemplateContext context, ExoSocialActivity activity) {
     NotificationKey childKey = new NotificationKey(activity.getType());
     PluginContainer pluginContainer = CommonsUtils.getService(PluginContainer.class);
-    AbstractNotificationChildPlugin child = (AbstractNotificationChildPlugin) pluginContainer.getChildPlugin(childKey);
-    if (child == null) {
-      child = (AbstractNotificationChildPlugin) pluginContainer.getChildPlugin(new NotificationKey(DefaultActivityChildPlugin.ID));
+    AbstractNotificationPlugin child = pluginContainer.getPlugin(childKey);
+    if (child == null || (child instanceof AbstractNotificationChildPlugin) == false) {
+      child = pluginContainer.getPlugin(new NotificationKey(DefaultActivityChildPlugin.ID));
     }
-    context.put("ACTIVITY", child.makeContent(ctx));
+    context.put("ACTIVITY", ((AbstractNotificationChildPlugin) child).makeContent(ctx));
 
     return TemplateUtils.processGroovy(context);
   }
