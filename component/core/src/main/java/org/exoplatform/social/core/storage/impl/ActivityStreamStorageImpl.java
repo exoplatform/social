@@ -127,7 +127,7 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
       StreamProcessContext streamCtx = ObjectHelper.cast(StreamProcessContext.class, ctx);
       Identity owner = streamCtx.getIdentity();
       //
-      ActivityEntity activityEntity = _findById(ActivityEntity.class, streamCtx.getActivity().getId());     
+      ActivityEntity activityEntity = streamCtx.getActivityEntity();
       if (OrganizationIdentityProvider.NAME.equals(owner.getProviderId())) {
         user(owner, activityEntity);
         //mention case
@@ -140,7 +140,8 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
       }
     } catch (NodeNotFoundException e) {
       ctx.setException(e);
-      LOG.warn("Failed to add Activity Relations references.", e);
+      LOG.warn("Failed to add Activity references.");
+      LOG.debug("Failed to add Activity references.", e);
     }
   }
   
@@ -151,7 +152,7 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
       StreamProcessContext streamCtx = ObjectHelper.cast(StreamProcessContext.class, ctx);
       Identity owner = streamCtx.getIdentity();
       //
-      ActivityEntity activityEntity = _findById(ActivityEntity.class, streamCtx.getActivity().getId());     
+      ActivityEntity activityEntity = streamCtx.getActivityEntity();
       if (OrganizationIdentityProvider.NAME.equals(owner.getProviderId())) {
         createOwnerRefs(owner, activityEntity);
       } else if (SpaceIdentityProvider.NAME.equals(owner.getProviderId())) {
@@ -163,7 +164,8 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
       }
     } catch (NodeNotFoundException e) {
       ctx.setException(e);
-      LOG.warn("Failed to add Activity references.", e);
+      LOG.warn("Failed to add Activity references.");
+      LOG.debug("Failed to add Activity references.", e);
     }
   }
 
@@ -202,15 +204,6 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
     }
    }
    
-   private void addCommenter(String[] identityIds, ActivityEntity activityEntity) throws NodeNotFoundException {
-     if (identityIds != null && identityIds.length > 0) {
-       for(String identityId : identityIds) {
-         Identity identity = identityStorage.findIdentityById(identityId);
-         createOwnerRefs(identity, activityEntity);
-       }
-     }
-   }
-
   private void space(Identity owner, ActivityEntity activityEntity) throws NodeNotFoundException {
     Space space = getSpaceStorage().getSpaceByPrettyName(owner.getRemoteId());
     
@@ -875,12 +868,12 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
   
   private void createConnectionsRefs(List<Identity> identities, ActivityEntity activityEntity) throws NodeNotFoundException {
     manageRefList(new UpdateContext(identities, null), activityEntity, ActivityRefType.FEED, true);
-    manageRefList(new UpdateContext(identities, null), activityEntity, ActivityRefType.CONNECTION, true);
+    manageRefList(new UpdateContext(identities, null), activityEntity, ActivityRefType.CONNECTION, false);
   }
   
   private void createConnectionsRefs(Identity identity, ActivityEntity activityEntity) throws NodeNotFoundException {
     manageRefList(new UpdateContext(identity, null), activityEntity, ActivityRefType.FEED, true);
-    manageRefList(new UpdateContext(identity, null), activityEntity, ActivityRefType.CONNECTION, true);
+    manageRefList(new UpdateContext(identity, null), activityEntity, ActivityRefType.CONNECTION, false);
   }
   
   private void removeRelationshipRefs(Identity identity, ActivityEntity activityEntity) throws NodeNotFoundException {

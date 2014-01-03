@@ -130,7 +130,7 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
   /*
    * Internal
    */
-  protected String[] _createActivity(Identity owner, ExoSocialActivity activity) throws NodeNotFoundException {
+  protected ActivityEntity _createActivity(Identity owner, ExoSocialActivity activity, List<String> mentioners) throws NodeNotFoundException {
 
     IdentityEntity identityEntity = _findById(IdentityEntity.class, owner.getId());
 
@@ -170,13 +170,13 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     
     //records activity for mention case.
     
-    List<String> mentioners = new ArrayList<String>();
     activity.setMentionedIds(processMentions(activity.getMentionedIds(), activity.getTitle(), mentioners, true));
     
     activity.setPosterId(activity.getUserId() != null ? activity.getUserId() : owner.getId());
       
     fillActivityEntityFromActivity(activity, activityEntity);
-    return mentioners.toArray(new String[0]);
+    
+    return activityEntity;
   }
 
   protected void _saveActivity(ExoSocialActivity activity) throws NodeNotFoundException {
@@ -644,15 +644,16 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
 
       if (activity.getId() == null) {
 
-        String[] mentioners = _createActivity(owner, activity);
+        List<String> mentioners = new ArrayList<String>();
+        ActivityEntity entity = _createActivity(owner, activity, mentioners);
         //
         StorageUtils.persist();
         //create refs
         if (mustInjectStreams) {
           //run synchronous
-          StreamInvocationHelper.savePoster(owner, activity);
+          StreamInvocationHelper.savePoster(owner, entity);
           //run asynchronous
-          StreamInvocationHelper.save(owner, activity, mentioners);
+          StreamInvocationHelper.save(owner, entity, mentioners.toArray(new String[0]));
         }
       }
       else {

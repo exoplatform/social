@@ -24,6 +24,7 @@ import org.exoplatform.social.common.service.ProcessContext;
 import org.exoplatform.social.common.service.SocialServiceContext;
 import org.exoplatform.social.common.service.impl.SocialServiceContextImpl;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
+import org.exoplatform.social.core.chromattic.entity.ActivityEntity;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.storage.impl.StorageUtils;
 
@@ -41,26 +42,23 @@ public class StreamInvocationHelper {
    * @param mentioners NULL is empty mentioner.
    * @return
    */
-  public static ProcessContext save(Identity owner, ExoSocialActivity activity, String[] mentioners) {
+  public static ProcessContext save(Identity owner, ActivityEntity entity, String[] mentioners) {
     //
     SocialServiceContext ctx = SocialServiceContextImpl.getInstance();
     StreamProcessContext processCtx = StreamProcessContext.getIntance(StreamProcessContext.NEW_ACTIVITY_RELATIONS_PROCESS, ctx);
-    processCtx.identity(owner).activity(activity).mentioners(mentioners);
+    processCtx.identity(owner).activityEntity(entity).mentioners(mentioners);
     
     try {
       if (ctx.isAsync()) {
-        beforeAsync();
-        //
+        processCtx.getTraceElement().start();
         ctx.getServiceExecutor().async(StreamProcessorFactory.saveStream(), processCtx);
+        processCtx.getTraceElement().end();
       } else {
-      ctx.getServiceExecutor().execute(StreamProcessorFactory.saveStream(), processCtx);
+        ctx.getServiceExecutor().execute(StreamProcessorFactory.saveStream(), processCtx);
       }
       
     } finally {
-      if (ctx.isTraced()) {
-        LOG.debug(processCtx.getTraceLog());
-      }
-      
+      LOG.debug(processCtx.getTraceLog());
     }
     
     return processCtx;
@@ -74,14 +72,13 @@ public class StreamInvocationHelper {
    * @param mentioners NULL is empty mentioner.
    * @return
    */
-  public static ProcessContext savePoster(Identity owner, ExoSocialActivity activity) {
+  public static ProcessContext savePoster(Identity owner, ActivityEntity entity) {
     //
     SocialServiceContext ctx = SocialServiceContextImpl.getInstance();
     StreamProcessContext processCtx = StreamProcessContext.getIntance(StreamProcessContext.NEW_ACTIVITY_PROCESS, ctx);
-    processCtx.identity(owner).activity(activity);
+    processCtx.identity(owner).activityEntity(entity);
     
     try {
-      //beforeAsync(); Why do we need to save here? Can make the problem with ADD_PROPERTY
       ctx.getServiceExecutor().execute(StreamProcessorFactory.savePoster(), processCtx);
     } finally {
       LOG.debug(processCtx.getTraceLog());
