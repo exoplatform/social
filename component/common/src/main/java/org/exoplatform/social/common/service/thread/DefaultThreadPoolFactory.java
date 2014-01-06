@@ -73,6 +73,7 @@ public class DefaultThreadPoolFactory implements ThreadPoolFactory {
 
       ThreadPoolExecutor answer = new ThreadPoolExecutor(corePoolSize, maxPoolSize, keepAliveTime, timeUnit, workQueue);
       answer.setThreadFactory(threadFactory);
+      answer.allowCoreThreadTimeOut(true);
       answer.setRejectedExecutionHandler(new ThreadPoolExecutor.CallerRunsPolicy());
       return answer;
   }

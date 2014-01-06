@@ -61,7 +61,6 @@ import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvide
 import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
 import org.exoplatform.social.core.model.AvatarAttachment;
 import org.exoplatform.social.core.profile.ProfileFilter;
-import org.exoplatform.social.core.relationship.model.Relationship;
 import org.exoplatform.social.core.search.Sorting;
 import org.exoplatform.social.core.service.LinkProvider;
 import org.exoplatform.social.core.space.model.Space;
@@ -683,10 +682,14 @@ public class IdentityStorageImpl extends AbstractStorage implements IdentityStor
     return identity;
   }
 
-  protected IdentityEntity _findIdentityEntity(final String providerId, final String remoteId)
-      throws NodeNotFoundException {
-
-    ProviderEntity providerEntity = getProviderRoot().getProviders().get(providerId);
+  protected IdentityEntity _findIdentityEntity(final String providerId, final String remoteId) throws NodeNotFoundException {
+    ProviderEntity providerEntity;
+    try {
+      providerEntity = getProviderRoot().getProviders().get(providerId);
+    } catch (Exception ex) {
+      lifeCycle.getProviderRoot().set(null);
+      providerEntity = getProviderRoot().getProviders().get(providerId);
+    }
 
     if (providerEntity == null) {
       throw new NodeNotFoundException("The node " + providerId + "/" + remoteId + " doesn't be found");

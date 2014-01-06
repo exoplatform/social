@@ -18,11 +18,10 @@ package org.exoplatform.social.core.storage.impl;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -127,7 +126,7 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
       StreamProcessContext streamCtx = ObjectHelper.cast(StreamProcessContext.class, ctx);
       Identity owner = streamCtx.getIdentity();
       //
-      ActivityEntity activityEntity = _findById(ActivityEntity.class, streamCtx.getActivity().getId());     
+      ActivityEntity activityEntity = streamCtx.getActivityEntity();   
       if (OrganizationIdentityProvider.NAME.equals(owner.getProviderId())) {
         user(owner, activityEntity);
         //mention case
@@ -140,7 +139,8 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
       }
     } catch (NodeNotFoundException e) {
       ctx.setException(e);
-      LOG.warn("Failed to add Activity Relations references.", e);
+      LOG.warn("Failed to add Activity references.");
+      LOG.debug("Failed to add Activity references.", e);
     }
   }
   
@@ -151,7 +151,7 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
       StreamProcessContext streamCtx = ObjectHelper.cast(StreamProcessContext.class, ctx);
       Identity owner = streamCtx.getIdentity();
       //
-      ActivityEntity activityEntity = _findById(ActivityEntity.class, streamCtx.getActivity().getId());     
+      ActivityEntity activityEntity = streamCtx.getActivityEntity();   
       if (OrganizationIdentityProvider.NAME.equals(owner.getProviderId())) {
         createOwnerRefs(owner, activityEntity);
         if (! owner.getId().equals(activityEntity.getPosterIdentity().getId())) {
@@ -170,7 +170,8 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
       }
     } catch (NodeNotFoundException e) {
       ctx.setException(e);
-      LOG.warn("Failed to add Activity references.", e);
+      LOG.warn("Failed to add Activity references.");
+      LOG.debug("Failed to add Activity references.", e);
     }
   }
   
@@ -207,15 +208,6 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
         createOwnerRefs(identity, activityEntity);
       }
     }
-   }
-   
-   private void addCommenter(String[] identityIds, ActivityEntity activityEntity) throws NodeNotFoundException {
-     if (identityIds != null && identityIds.length > 0) {
-       for(String identityId : identityIds) {
-         Identity identity = identityStorage.findIdentityById(identityId);
-         createOwnerRefs(identity, activityEntity);
-       }
-     }
    }
 
   private void space(Identity owner, ActivityEntity activityEntity) throws NodeNotFoundException {
@@ -309,56 +301,41 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
   
   @Override
   public void updateCommenter(ProcessContext ctx) {
-    final ReentrantLock lock = new ReentrantLock();
-    
     try {
       StreamProcessContext streamCtx = ObjectHelper.cast(StreamProcessContext.class, ctx);
-      ExoSocialActivity activity = streamCtx.getActivity();
       Identity commenter = streamCtx.getIdentity();
       IdentityEntity identityEntity = identityStorage._findIdentityEntity(commenter.getProviderId(), commenter.getRemoteId());
-      ActivityEntity activityEntity = _findById(ActivityEntity.class, activity.getId());
+      ActivityEntity activityEntity = streamCtx.getActivityEntity();
       //
-      lock.lock();
-      
-      QueryResult<ActivityRef> got = getActivityRefs(identityEntity, activityEntity);
-      ActivityRef activityRef = null;
-      while(got.hasNext()) {
-        activityRef = got.next();
-        activityRef.setName("" + activity.getUpdated().getTime());
-        activityRef.setLastUpdated(activity.getUpdated().getTime());
-      }
-      
       long oldUpdated = streamCtx.getOldLastUpdated();  
       //activity's poster != comment's poster
       //don't have on My Activity stream
-      boolean has = hasActivityRefs(identityEntity, activityEntity, ActivityRefType.MY_ACTIVITIES, oldUpdated);
-      if (has == false) {
-        manageRefList(new UpdateContext(commenter, null), activityEntity, ActivityRefType.MY_ACTIVITIES);
-      }
+      updateCommenterActivityRefs(identityEntity, activityEntity, ActivityRefType.MY_ACTIVITIES, oldUpdated);
+      
       //post comment also put the activity on feed if have not any
-      has = hasActivityRefs(identityEntity, activityEntity, ActivityRefType.FEED, oldUpdated);
-      if (has == false) {
-        manageRefList(new UpdateContext(commenter, null), activityEntity, ActivityRefType.FEED);
-      }
-      //create activityref for owner's activity
+      updateCommenterActivityRefs(identityEntity, activityEntity, ActivityRefType.FEED, oldUpdated);
+      //create activityref for owner's activity for 3.5.x
       createRefForPoster(activityEntity, oldUpdated);
     } catch (NodeNotFoundException ex) {
       LOG.warn("Probably was updated activity reference by another session");
       LOG.debug(ex.getMessage(), ex);
     } catch (ChromatticException ex) {
-      Throwable throwable = ex.getCause();
-      if (throwable instanceof ItemExistsException || 
-          throwable instanceof InvalidItemStateException ||
-          throwable instanceof PathNotFoundException) {
-        LOG.warn("Probably was updated activity reference by another session");
-        LOG.debug(ex.getMessage(), ex);
-      }else {
-        LOG.warn("Probably was updated activity reference by another session", ex);
-        LOG.debug(ex.getMessage(), ex);
-      }
-    } finally {
-      lock.unlock();
+      LOG.warn("Probably was updated activity reference by another session");
+      LOG.debug(ex.getMessage(), ex);
     }
+  }
+  
+  private void updateCommenterActivityRefs(IdentityEntity identityEntity, ActivityEntity activityEntity, ActivityRefType type, long oldUpdated) {
+    ActivityRefListEntity refList = type.refsOf(identityEntity);
+    ActivityRef ref = refList.get(oldUpdated);
+    if (ref != null && ref.getActivityEntity().getId().equals(activityEntity.getId()) ) {
+      LOG.trace("remove activityRefId " +  ref.getId() +" for commenter: " + identityEntity.getRemoteId());
+      refList.remove(oldUpdated);
+    }
+    ActivityRef newRef = refList.getOrCreated(activityEntity.getLastUpdated());
+    newRef.setName("" + activityEntity.getLastUpdated());
+    newRef.setLastUpdated(activityEntity.getLastUpdated());
+    newRef.setActivityEntity(activityEntity);
   }
 
   private void createRefForPoster(ActivityEntity activityEntity, long oldUpdated) throws NodeNotFoundException {
@@ -380,80 +357,45 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
   
   @Override
   public void update(ProcessContext ctx) {
-    final ReentrantLock lock = new ReentrantLock();
-    ThreadLocal<Set<String>> idLocal = new ThreadLocal<Set<String>>();
     try {
-      
       StreamProcessContext streamCtx = ObjectHelper.cast(StreamProcessContext.class, ctx);
-      ExoSocialActivity activity = streamCtx.getActivity();
-      ActivityEntity activityEntity = _findById(ActivityEntity.class, activity.getId());
-      
-      lock.lock(); // block until condition holds
-      
-      Collection<ActivityRef> references = activityEntity.getActivityRefs();
-      Set<String> ids = new ConcurrentSkipListSet<String>();
-
-      for (ActivityRef ref : references) {
-        ids.add(ref.getId());
-      }
-      
-      idLocal.set(ids);
-      
-      Set<String> idList = idLocal.get(); 
-      if (idList.size() > 0) {
-        for (String id : idList) {
-          ActivityRef old = _findById(ActivityRef.class, id);
-          LOG.debug("ActivityRef will be deleted: " + old.toString());
-          ActivityRefListEntity refList = old.getDay().getMonth().getYear().getList();
-          //
-          if (refList.isOnlyUpdate(old, activity.getUpdated().getTime())) {
-            old.setName("" + activity.getUpdated().getTime());
-            old.setLastUpdated(activity.getUpdated().getTime());
-          } else {
-            ActivityRef newRef = refList.getOrCreated(activity.getUpdated().getTime());
-            newRef.setLastUpdated(activity.getUpdated().getTime());
-            newRef.setActivityEntity(activityEntity);
-            getSession().remove(old);
-          }
-
+      ActivityEntity activityEntity = streamCtx.getActivityEntity();
+      List<ActivityRef> references = new CopyOnWriteArrayList<ActivityRef>(activityEntity.getActivityRefs());
+      long oldUpdated = streamCtx.getOldLastUpdated();
+      ActivityRef newRef = null;
+      for (ActivityRef old : references) {
+        if(Long.parseLong(old.getName()) > oldUpdated) {
+          continue;
         }
+
+        LOG.trace("ActivityRef will be deleted: " + old.getId());
+        ActivityRefListEntity refList = old.getDay().getMonth().getYear().getList();
+        //
+        newRef = refList.getOrCreated(activityEntity.getLastUpdated());
+        newRef.setLastUpdated(activityEntity.getLastUpdated());
+        newRef.setActivityEntity(activityEntity);
+        refList.remove(Long.parseLong(old.getName()));
       }
 
       // mentioners
       addMentioner(streamCtx.getMentioners(), activityEntity);
-      //turnOffLock to get increase perf
-      //turnOnUpdateLock = false;
     } catch (NodeNotFoundException ex) {
       LOG.warn("Probably was updated activity reference by another session");
       LOG.debug(ex.getMessage(), ex);
       //turnOnLock to avoid next exception
     } catch (ChromatticException ex) {
-      Throwable throwable = ex.getCause();
-      if (throwable instanceof ItemExistsException || 
-          throwable instanceof InvalidItemStateException ||
-          throwable instanceof PathNotFoundException) {
-        LOG.warn("Probably was updated activity reference by another session");
-        LOG.debug(ex.getMessage(), ex);
-        //turnOnLock to avoid next exception
-      }else {
-        LOG.warn("Probably was updated activity reference by another session", ex);
-        LOG.debug(ex.getMessage(), ex);
-      }
-      
-    } finally {
-        getSession().save();
-        lock.unlock();
+      LOG.warn("Probably was updated activity reference by another session");
+      LOG.debug(ex.getMessage(), ex);
     }
   }
   
   @Override
   public void updateHidable(ProcessContext ctx) {
-    
     try {
       StreamProcessContext streamCtx = ObjectHelper.cast(StreamProcessContext.class, ctx);
       ExoSocialActivity activity = streamCtx.getActivity();
 
-      ActivityEntity activityEntity = _findById(ActivityEntity.class, activity.getId());
+      ActivityEntity activityEntity = streamCtx.getActivityEntity();
       Collection<ActivityRef> references = activityEntity.getActivityRefs();
       
       //Case of update hidden activity after migration
@@ -616,7 +558,7 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
           ActivityEntity entity = activities.next();
           
           //has on sender stream
-          if (isExistingActivityRef(receiverEntity, entity)) continue;
+          if (isExistingActivityRef(receiverEntity, entity, ActivityRefType.CONNECTION)) continue;
           
           //
           createConnectionsRefs(receiver, entity);
@@ -631,7 +573,7 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
           ActivityEntity entity = activities.next();
 
           //has on receiver stream
-          if (isExistingActivityRef(senderEntity, entity)) continue;
+          if (isExistingActivityRef(senderEntity, entity, ActivityRefType.CONNECTION)) continue;
           
           //
           createConnectionsRefs(sender, entity);
@@ -930,22 +872,9 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
     return builder.get();
   }
   
-  private boolean isExistingActivityRef(IdentityEntity identityEntity, ActivityEntity activityEntity) throws NodeNotFoundException {
-    return getActivityRefs(identityEntity, activityEntity).size() > 0;
-  }
-  
-  private QueryResult<ActivityRef> getActivityRefs(IdentityEntity identityEntity, ActivityEntity activityEntity) throws NodeNotFoundException {
-
-    QueryBuilder<ActivityRef> builder = getSession().createQueryBuilder(ActivityRef.class);
-
-    WhereExpression whereExpression = new WhereExpression();
-    whereExpression.like(JCRProperties.path, identityEntity.getPath() + "/%");
-    whereExpression.and().equals(ActivityRef.target, activityEntity.getId());
-
-    builder.where(whereExpression.toString());
-    
-    
-    return builder.get().objects();
+  private boolean isExistingActivityRef(IdentityEntity identityEntity, ActivityEntity activityEntity, ActivityRefType type) throws NodeNotFoundException {
+    ActivityRefListEntity refList = type.refsOf(identityEntity);
+    return refList.get(activityEntity.getLastUpdated()) != null;
   }
   
   private boolean hasActivityRefs(IdentityEntity identityEntity, ActivityEntity activityEntity, ActivityRefType type, long oldUpdated) throws NodeNotFoundException {
@@ -980,12 +909,12 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
   
   private void createConnectionsRefs(List<Identity> identities, ActivityEntity activityEntity) throws NodeNotFoundException {
     manageRefList(new UpdateContext(identities, null), activityEntity, ActivityRefType.FEED, true);
-    manageRefList(new UpdateContext(identities, null), activityEntity, ActivityRefType.CONNECTION, true);
+    manageRefList(new UpdateContext(identities, null), activityEntity, ActivityRefType.CONNECTION, false);
   }
   
   private void createConnectionsRefs(Identity identity, ActivityEntity activityEntity) throws NodeNotFoundException {
     manageRefList(new UpdateContext(identity, null), activityEntity, ActivityRefType.FEED, true);
-    manageRefList(new UpdateContext(identity, null), activityEntity, ActivityRefType.CONNECTION, true);
+    manageRefList(new UpdateContext(identity, null), activityEntity, ActivityRefType.CONNECTION, false);
   }
   
   private void removeRelationshipRefs(Identity identity, ActivityEntity activityEntity) throws NodeNotFoundException {
@@ -1037,7 +966,6 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
   
   private void manageRefList(UpdateContext context, ActivityEntity activityEntity, ActivityRefType type, boolean mustCheck) throws NodeNotFoundException {
 
-    AtomicBoolean newYearMonthday = new AtomicBoolean(false);
     if (context.getAdded() != null) {
       for (Identity identity : context.getAdded()) {
         IdentityEntity identityEntity = identityStorage._findIdentityEntity(identity.getProviderId(), identity.getRemoteId());
@@ -1045,7 +973,7 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
         //
         if (mustCheck) {
           //to avoid add back activity to given stream what has already existing
-          if (isExistingActivityRef(identityEntity, activityEntity)) continue;
+          if (isExistingActivityRef(identityEntity, activityEntity, type)) continue;
         }
         
         
@@ -1053,34 +981,7 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
         //keep number
         Integer oldNumberOfStream = listRef.getNumber();
         
-        newYearMonthday.set(false);
-        ActivityRef ref = null;
-        
-        //Take care the YearMonthDay path don't throw ADD_PROPERTY exception.
-        
-        final ReentrantLock lock = new ReentrantLock();
-        try {
-          lock.lock();
-          newYearMonthday.set(false);
-          ref = listRef.getOrCreated(activityEntity, newYearMonthday);
-          if (newYearMonthday.get()) {
-            StorageUtils.persist();
-          }
-        } catch (ChromatticException ex) {
-          Throwable throwable = ex.getCause();
-          if (throwable instanceof ItemExistsException
-              || throwable instanceof InvalidItemStateException
-              || throwable instanceof PathNotFoundException) {
-            LOG.warn("Probably YearMonthDay path was created by another session");
-            LOG.debug(ex.getMessage(), ex);
-          } else {
-            LOG.warn("Probably YearMonthDay path was created by another session", ex);
-            LOG.debug(ex.getMessage(), ex);
-          }
-          return;
-        } finally {
-          lock.unlock();
-        }
+        ActivityRef ref = listRef.getOrCreated(activityEntity);
         
         //LOG.info("manageRefList()::BEFORE");
         //printDebug(listRef, activityEntity.getLastUpdated());
@@ -1101,8 +1002,6 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
           ref.getDay().desc();
         }
 
-        //LOG.info("manageRefList()::AFTER");
-        //printDebug(listRef, activityEntity.getLastUpdated());
       }
     }
     
@@ -1122,23 +1021,14 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
                           ActivityRefType type,
                           boolean mustCheck) throws NodeNotFoundException {
 
-    AtomicBoolean newYearMonthday = new AtomicBoolean(false);
     //
     if (mustCheck) {
-      // to avoid add back activity to given stream what has already existing
-      if (isExistingActivityRef(identityEntity, activityEntity))
+      if (isExistingActivityRef(identityEntity, activityEntity, type))
         return;
     }
 
     ActivityRefListEntity listRef = type.refsOf(identityEntity);
-
-    newYearMonthday.set(false);
-    ActivityRef ref = listRef.getOrCreated(activityEntity, newYearMonthday);
-
-    // Take care the YearMonthDay path don't throw ADD_PROPERTY exception.
-    if (newYearMonthday.get()) {
-      StorageUtils.persist();
-    }
+    ActivityRef ref = listRef.getOrCreated(activityEntity);
 
     if (ref.getName() == null) {
       ref.setName(activityEntity.getName());
