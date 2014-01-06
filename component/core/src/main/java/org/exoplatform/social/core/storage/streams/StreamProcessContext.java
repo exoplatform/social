@@ -21,6 +21,7 @@ import java.util.List;
 import org.exoplatform.social.common.service.SocialServiceContext;
 import org.exoplatform.social.common.service.impl.ProcessorContextImpl;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
+import org.exoplatform.social.core.chromattic.entity.ActivityEntity;
 import org.exoplatform.social.core.identity.model.Identity;
 
 public class StreamProcessContext extends ProcessorContextImpl {
@@ -44,6 +45,7 @@ public class StreamProcessContext extends ProcessorContextImpl {
   
   public final static String OWNER = "OWNER";
   public final static String ACTIVITY = "ACTIVITY";
+  public final static String ACTIVITY_ENTITY = "ACTIVITY_ENTITY";
   public final static String ACTIVITY_ID = "ACTIVITY_ID";
   public final static String SENDER = "SENDER";
   public final static String RECEIVER = "RECEIVER";
@@ -80,6 +82,15 @@ public class StreamProcessContext extends ProcessorContextImpl {
   
   public ExoSocialActivity getActivity() {
     return getProperty(ACTIVITY, ExoSocialActivity.class);
+  }
+  
+  public StreamProcessContext activityEntity(ActivityEntity entity) {
+    setProperty(ACTIVITY_ENTITY, entity);
+    return this;
+  }
+
+  public ActivityEntity getActivityEntity() {
+    return getProperty(ACTIVITY_ENTITY, ActivityEntity.class);
   }
   
   public StreamProcessContext activities(List<ExoSocialActivity> list) {

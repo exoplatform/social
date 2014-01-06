@@ -579,7 +579,7 @@ public class ActivityStorageImplTestCase extends AbstractCoreTest {
     assertEquals(false, updatedActivity.isLocked());
   }
 
-  @MaxQueryNumber(18000)
+  @MaxQueryNumber(21560)
   public void testCommentOrder() throws Exception {
     // fill 10 activities
     for (int i = 0; i < 10; ++i) {
@@ -612,7 +612,7 @@ public class ActivityStorageImplTestCase extends AbstractCoreTest {
     }
   }
 
-  @MaxQueryNumber(1700)
+  @MaxQueryNumber(2130)
   public void testDeleteComment() throws Exception {
     ExoSocialActivity activity = new ExoSocialActivityImpl();
     activity.setTitle("activity title");
