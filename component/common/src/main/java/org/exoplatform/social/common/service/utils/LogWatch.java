@@ -67,8 +67,7 @@ public class LogWatch implements Cloneable {
   }
 
   public long elapsedTime() {
-    elapsedTime = (elapsedTime == -1L) ? (System.nanoTime() - nanoStartTime) / NANOS_IN_A_MILLI
-                               : elapsedTime;
+    elapsedTime = (elapsedTime == -1L) ? (System.nanoTime() - nanoStartTime) / NANOS_IN_A_MILLI : elapsedTime;
     return elapsedTime;
   }
   
