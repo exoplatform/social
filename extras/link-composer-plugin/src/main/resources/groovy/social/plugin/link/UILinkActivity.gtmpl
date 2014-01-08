@@ -27,6 +27,7 @@
   import org.exoplatform.social.core.space.model.Space;
   import org.exoplatform.social.webui.Utils;
   import org.exoplatform.social.plugin.link.UILinkUtil;
+  import org.apache.commons.lang.StringEscapeUtils;
 
   def pcontext = Util.getPortalRequestContext();
   def jsManager = pcontext.getJavascriptManager().require("SHARED/uiForm");
@@ -190,12 +191,12 @@
 				</div><!--end heading-->
 				   <%
 					  def linkSource = uicomponent.getLinkSource();
-					  def linkTitle = uicomponent.getLinkTitle();
+					  def linkTitle = StringEscapeUtils.escapeHtml(uicomponent.getLinkTitle());
 					  if (linkTitle.equals("")) {
 						linkTitle = linkSource;
 					  }
 					  def linkImage = uicomponent.getLinkImage();
-					  def linkDescription = uicomponent.getLinkDescription();
+					  def linkDescription = StringEscapeUtils.escapeHtml(uicomponent.getLinkDescription());
 					  def linkComment = uicomponent.getLinkComment();
 					  def linkClass = "content";
 					  def link = "";
