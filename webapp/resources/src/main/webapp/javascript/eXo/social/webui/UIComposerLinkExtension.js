@@ -73,11 +73,8 @@
 	    var updateElement = function(editableEl) {
 	        //hide this, set new value and display
 	        var oldEl = $(editableEl).prev();
-	        if (oldEl.html() != null) { //IE
-	            oldEl.html($(editableEl).val());
-	        } else {
-	            oldEl.text($(editableEl).val()) ;
-	        }
+	        oldEl.text($(editableEl).val()).html();
+	        
 	        //updates data
 	        //detects element by class, if class contains ContentTitle -> update title,
 	        // if class contains ContentDescription -> update description
