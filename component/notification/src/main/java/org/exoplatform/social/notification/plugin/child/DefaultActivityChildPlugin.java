@@ -57,6 +57,10 @@ public class DefaultActivityChildPlugin extends AbstractNotificationChildPlugin 
 
     String activityId = notification.getValueOwnerParameter(SocialNotificationUtils.ACTIVITY_ID.getKey());
     ExoSocialActivity activity = Utils.getActivityManager().getActivity(activityId);
+    if (activity.isComment()) {
+      //we need to build the content of activity by type, so if it's a comment, we will get the parent activity
+      activity = Utils.getActivityManager().getParentActivity(activity);
+    }
     templateContext.put("ACTIVITY", Utils.processLinkTitle(activity.getTitle()));
     //
     String content = TemplateUtils.processGroovy(templateContext);
