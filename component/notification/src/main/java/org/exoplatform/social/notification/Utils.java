@@ -36,6 +36,10 @@ public class Utils {
   
   private static final Pattern MENTION_PATTERN = Pattern.compile("<a href=\"([\\w|/]+|)/profile/([\\w]+)\">([\\w|\\s]+|)</a>");
   
+  private static final Pattern LINK_PATTERN = Pattern.compile("<a ([^>]+)>([^<]+)</a>");
+  
+  private static final String styleCSS = " style=\"color: #2f5e92; text-decoration: none;\"";
+  
   @SuppressWarnings("unchecked")
   public static <T> T getService(Class<T> clazz) {
     return (T) PortalContainer.getInstance().getComponentInstanceOfType(clazz);
@@ -164,6 +168,21 @@ public class Utils {
         String host = matcher.group(1);
         title = title.replace(result, result.replace(host, domain + host));
       }
+    }
+    return title;
+  }
+  
+  /**
+   * Add the style css for a link in the activity title to display a link without underline
+   * 
+   * @param title activity title
+   * @return activity title after process all link
+   */
+  public static String processLinkTitle(String title) {
+    Matcher matcher = LINK_PATTERN.matcher(title);
+    while (matcher.find()) {
+      String result = matcher.group(1);
+      title = title.replace(result, result + styleCSS);
     }
     return title;
   }

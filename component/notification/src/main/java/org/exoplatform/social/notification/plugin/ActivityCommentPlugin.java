@@ -83,7 +83,7 @@ public class ActivityCommentPlugin extends AbstractNotificationPlugin {
     templateContext.put("REPLY_ACTION_URL", LinkProviderUtils.getRedirectUrl("reply_activity_highlight_comment", parentActivity.getId() + "-" + activity.getId()));
     templateContext.put("VIEW_FULL_DISCUSSION_ACTION_URL", LinkProviderUtils.getRedirectUrl("view_full_activity_highlight_comment", parentActivity.getId() + "-" + activity.getId()));
     //
-    String body = SocialNotificationUtils.getBody(ctx, templateContext, activity);
+    String body = SocialNotificationUtils.getBody(ctx, templateContext, parentActivity);
     return messageInfo.subject(subject).body(body).end();
   }
 
