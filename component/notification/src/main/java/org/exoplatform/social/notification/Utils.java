@@ -173,6 +173,27 @@ public class Utils {
   }
   
   /**
+   * Gets the list of mentioners in a message that is not the poster
+   * 
+   * @param title the activity title
+   * @param posterId id of the poster
+   * @return list of mentioners
+   */
+  public static List<String> getMentioners(String title, String posterId) {
+    String posterRemoteId = getUserId(posterId);
+    List<String> mentioners = new ArrayList<String>();
+    Matcher matcher = MENTION_PATTERN.matcher(title);
+    while (matcher.find()) {
+      String remoteId = matcher.group(2);
+      Identity identity = getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, remoteId, false);
+      if (identity != null && posterRemoteId.equals(remoteId) == false && mentioners.contains(remoteId) == false) { 
+        mentioners.add(remoteId);
+      }
+    }
+    return mentioners;
+  }
+  
+  /**
    * Add the style css for a link in the activity title to display a link without underline
    * 
    * @param title activity title
