@@ -20,24 +20,35 @@
           style="width: 100%; background-color: #ffffff; font-size: 13px; color: #333333; line-height: 18px;">
           <tr>
           <%
-            if (EMBED_URL != null && EMBED_URL.length() > 0) {
+            if (THUMBNAIL_URL != null && THUMBNAIL_URL.length() > 0) {
           %>
             <td align="left" valign="top" bgcolor="#f9f9f9" style="vertical-align: top; background-color: #f9f9f9; padding: 0 15px 0 0;">
-              <a href="$ACTIVITY_URL" style="margin: 0; padding: 0; display: block; margin-top: 5px;">
-                <img width="75px" height="75px" style="max-width: 300px;" src="$EMBED_URL" alt="image" />
+              <a href="$ACTIVITY_URL" style="display: block; position: relative; margin: 0; padding: 0; display: block; margin-top: 5px;">
+                <img style="max-width: 300px;" src="$THUMBNAIL_URL" alt="image" />
+                <%
+                  if (IS_EMBED_LINK == true) {
+                %>
+                
+                  <!-- Add play button on thumbnail image in case of embed -->
+                
+                <% } %>
               </a>
             </td>
-          <% } %>
+          <%
+            }
+          %>
             <td align="left" bgcolor="#f9f9f9" width="90%" align="top"
               style="width: 90%; background-color: #f9f9f9; padding: 0 0; vertical-align: top;">
               <a href="$LINK_URL" style="display: inline-block; color: #2f5e92; font-family: 'HelveticaNeue Bold', Helvetica, Arial, sans-serif; font-size: 13px; line-height: 18px; font-weight: bold; text-decoration: none; margin: 0 0 10px;">
                 $LINK_TITLE
               </a>
               <%
-		            if (LINK_DESCRIPTION != null && LINK_DESCRIPTION.length() > 0) {
-		          %>
+                if (LINK_DESCRIPTION != null && LINK_DESCRIPTION.length() > 0) {
+              %>
                 <p style="margin: 0 0 15px; min-height: 36px;">$LINK_DESCRIPTION</p>
-              <% } %>
+              <%
+                }
+              %>
               <p style="margin: 0; color: #333333;">
                 <%=_ctx.appRes("LinkActivity.notification.label.source")%>: <a style="color: #2f5e92; font-family: 'HelveticaNeue Bold', Helvetica, Arial, sans-serif; font-size: 13px; line-height: 18px; text-decoration: none; max-width: 205px; word-wrap: break-word;"
                   href="$LINK_URL" target="">$LINK_URL</a>

@@ -11,6 +11,7 @@ import org.exoplatform.container.xml.InitParams;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.manager.ActivityManager;
 import org.exoplatform.social.notification.LinkProviderUtils;
+import org.exoplatform.social.notification.Utils;
 import org.exoplatform.social.service.rest.LinkShare;
 
 public class LinkActivityChildPlugin extends AbstractNotificationChildPlugin {
@@ -59,7 +60,7 @@ public class LinkActivityChildPlugin extends AbstractNotificationChildPlugin {
       templateContext.put("LINK_URL", url);
       templateContext.put("THUMBNAIL_URL", getImageUrl(url));
       templateContext.put("IS_EMBED_LINK", isEmbedLink());
-      templateContext.put("LINK_DESCRIPTION", activity.getTemplateParams().get(DESCRIPTION_PARAM));
+      templateContext.put("LINK_DESCRIPTION", Utils.formatContent(activity.getTemplateParams().get(DESCRIPTION_PARAM)));
       templateContext.put("ACTIVITY_URL", LinkProviderUtils.getRedirectUrl(VIEW_FULL_ACTIVITY, activity.getId()));
       //
       String content = TemplateUtils.processGroovy(templateContext);

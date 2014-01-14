@@ -39,6 +39,8 @@ public class Utils {
   private static final Pattern LINK_PATTERN = Pattern.compile("<a ([^>]+)>([^<]+)</a>");
   
   private static final String styleCSS = " style=\"color: #2f5e92; text-decoration: none;\"";
+
+  private static final int MAX_LENGTH = 150;
   
   @SuppressWarnings("unchecked")
   public static <T> T getService(Class<T> clazz) {
@@ -223,6 +225,19 @@ public class Utils {
         destinataires.add(member);
     }
     return destinataires;
+  }
+  
+  /**
+   * Get 150 first characters of a string
+   * 
+   * @param content
+   * @return
+   */
+  public static String formatContent(String content) {
+    if (content.length() > MAX_LENGTH) {
+      content = content.substring(0, MAX_LENGTH) + " ... ";
+    }
+    return content;
   }
   
   public static IdentityManager getIdentityManager() {
