@@ -21,7 +21,7 @@
                                     <p style="margin: 10px 0;"><%=_ctx.appRes("Notification.label.SayHello")%> $FIRSTNAME,</p>
                                     <p style="margin: 10px 0 20px;">
                                       <%
-                                        String profileUrl = "<strong><a target=\"_blank\" style=\"color: #2f5e92; font-family: 'HelveticaNeue Bold', Helvetica, Arial, sans-serif\" href=\""+ PROFILE_URL + "\">" + USER + "</a></strong>";
+                                        String profileUrl = "<strong><a target=\"_blank\" style=\"color: #2f5e92; font-size: 13px; text-decoration: none; font-family: 'HelveticaNeue Bold', Helvetica, Arial, sans-serif\" href=\""+ PROFILE_URL + "\">" + USER + "</a></strong>";
                                       %>
                                       <%=_ctx.appRes("Notification.message.PostActivityPlugin", profileUrl)%> : <br/>
                                     </p>

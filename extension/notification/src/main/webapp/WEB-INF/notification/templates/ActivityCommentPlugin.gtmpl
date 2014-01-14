@@ -21,7 +21,7 @@
                                     <p style="margin: 0 0 10px; line-height: 16px; font-family: HelveticaNeue, Helvetica, Arial, sans-serif; color: #333333;"><%=_ctx.appRes("Notification.label.SayHello")%> $FIRSTNAME,</p>
                                     <p style="margin: 10px 0 20px; line-height: 16px; font-family: HelveticaNeue, Helvetica, Arial, sans-serif; color: #333333;">
                                     <%
-                                      String profileUrl = "<strong><a target=\"_blank\" style=\"color: #2f5e92; font-family: 'HelveticaNeue Bold', Helvetica, Arial, sans-serif\" href=\""+ PROFILE_URL + "\">" + USER + "</a></strong>";
+                                      String profileUrl = "<strong><a target=\"_blank\" style=\"color: #2f5e92; font-size: 13px; text-decoration: none; font-family: 'HelveticaNeue Bold', Helvetica, Arial, sans-serif\" href=\""+ PROFILE_URL + "\">" + USER + "</a></strong>";
                                     %>
                                     <%=_ctx.appRes("Notification.message.ActivityCommentPlugin", profileUrl)%> :
                                     </p>
@@ -40,7 +40,7 @@
 																														line-height: 16px;
 																														font-family: HelveticaNeue, Helvetica, Arial, sans-serif;
 																														color: #333333;
-																														padding: 10px 0 6px;
+																														padding: 6px 0 6px;
 																													">
 																														<hr style="
 																															border-width: 1px 0 0;
@@ -52,7 +52,17 @@
 																													</td>
 																												</tr>
 																												<tr>
-																													<td align="left" bgcolor="#f9f9f9" style="background-color: #f9f9f9; padding: 0 0 1px; line-height: 16px; font-family: HelveticaNeue, Helvetica, Arial, sans-serif; color: #333333;">$COMMENT</td>
+																													<td align="left" bgcolor="#f9f9f9" style="
+																														background-color:#f9f9f9;
+																														padding:0 0 1px;
+																														line-height:16px;
+																														font-family:HelveticaNeue,Helvetica,Arial,sans-serif;
+																														color:#333333">
+																														<p style="margin: 0 0 5px;line-height:16px;font-family:HelveticaNeue,Helvetica,Arial,sans-serif;color:#333333">
+																															<%=profileUrl%><strong style="color: #2f5e92; font-size: 13px;">:</strong>
+																														</p>
+																														$COMMENT
+																													</td>
 																												</tr>
 																											</tbody>
 																										</table>
@@ -78,7 +88,9 @@
                                             border-radius: 4px;
                                             -moz-border-radius: 4px;
                                             padding: 5px 8px;
-                                            line-height: 100%;
+                                            height: 11px;
+                                            line-height: 11px;
+                                            max-height: 11px;
                                             text-align: center;
                                             border: 1px solid #224886;
                                             font-weight: bold;
@@ -103,7 +115,9 @@
                                             border-radius: 4px;
                                             -moz-border-radius: 4px;
                                             padding: 5px 8px;
-                                            line-height: 100%;
+                                            height: 11px;
+                                            line-height: 12px;
+                                            max-height: 11px;
                                             text-align: center;
                                             border: 1px solid #c7c7c7;
                                             -webkit-box-shadow: inset 0 1px 0 rgba(255,255,255,.2), 0 1px 2px rgba(0,0,0,.05);
