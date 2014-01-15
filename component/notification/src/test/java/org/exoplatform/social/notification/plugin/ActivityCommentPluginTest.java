@@ -222,6 +222,6 @@ public class ActivityCommentPluginTest extends AbstractPluginTest {
     ctx.setNotificationInfos(toRoot);
     Writer writer = new StringWriter();
     getPlugin().buildDigest(ctx, writer);
-    assertDigest(writer, "Demo gtn, John Anthony have commented on your activity : my activity's title post today.");
+    assertDigest(writer, "Demo gtn, John Anthony have commented on your activity: my activity's title post today.");
   }
 }

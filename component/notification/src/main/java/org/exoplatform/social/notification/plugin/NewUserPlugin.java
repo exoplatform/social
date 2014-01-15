@@ -109,7 +109,7 @@ public class NewUserPlugin extends AbstractNotificationPlugin {
     String key = "";
     StringBuilder value = new StringBuilder();
     try {
-      writer.append("<li style=\"margin: 0 0 13px 14px; font-size: 13px; list-style: disc; line-height: 18px; font-family: HelveticaNeue, Helvetica, Arial, sans-serif;\">");
+      writer.append("<li style=\"margin: 0 0 13px 14px; font-size: 13px; line-height: 18px; font-family: HelveticaNeue, Helvetica, Arial, sans-serif;\">");
       for (int i = 0; i < count && i < 3; i++) {
         String remoteId = notifications.get(i).getValueOwnerParameter(SocialNotificationUtils.REMOTE_ID.getKey());
         Identity identity = Utils.getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, remoteId, true);

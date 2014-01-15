@@ -62,6 +62,9 @@ public class SocialNotificationUtils {
 
   public static final String SPACE_STR     = " ";
   
+  public static final String DOT_STRING       = ".";
+  public static final String A_HREF_TAG_REGEX = "</?a[^>]*>";
+  
   
   public static String getUserId(String identityId) {
     return Utils.getIdentityManager().getIdentity(identityId, false).getRemoteId();
@@ -111,7 +114,7 @@ public class SocialNotificationUtils {
     ExoSocialActivity activity = null;
     Space space = null;
     for (Entry<String, List<String>> entry : receiversMap.entrySet()) {
-      sb.append("<li style=\"margin: 0 0 13px 14px; font-size: 13px; list-style: disc; line-height: 18px; font-family: HelveticaNeue, Helvetica, Arial, sans-serif;\">");
+      sb.append("<li style=\"margin: 0 0 13px 14px; font-size: 13px; line-height: 18px; font-family: HelveticaNeue, Helvetica, Arial, sans-serif;\">");
       String id = entry.getKey();
       try {
         activity = Utils.getActivityManager().getActivity(id);
@@ -126,7 +129,13 @@ public class SocialNotificationUtils {
       String typeActivityDisplay = (templateContext.getPluginId().equals("LikePlugin")) ? "view_likers_activity" : "view_full_activity";
       String typeSpaceDisplay = (templateContext.getPluginId().equals("PostActivitySpaceStreamPlugin")) ? "space" : "space_members";
       if (activity != null) {
-        templateContext.put("ACTIVITY", SocialNotificationUtils.buildRedirecUrl(typeActivityDisplay, activity.getId(), activity.getTitle()));
+        String title = activity.getTitle();
+        // removes a href link from title. Just for digest building case.
+        title = title.replaceAll(A_HREF_TAG_REGEX, ""); 
+        if (!title.endsWith(DOT_STRING)) {
+          title = title + DOT_STRING; 
+        }
+        templateContext.put("ACTIVITY", SocialNotificationUtils.buildRedirecActivityUrl(typeActivityDisplay, activity.getId(), title));
       } else {
         templateContext.put("SPACE", SocialNotificationUtils.buildRedirecUrl(typeSpaceDisplay, space.getId(), space.getDisplayName()));
       }
@@ -150,7 +159,7 @@ public class SocialNotificationUtils {
       templateContext.put(key, value.toString());
       if(count > 3) {
         if (activity != null) {
-          templateContext.put("COUNT", SocialNotificationUtils.buildRedirecUrl(typeActivityDisplay, activity.getId(), String.valueOf((count - 3))));
+          templateContext.put("COUNT", SocialNotificationUtils.buildRedirecActivityUrl(typeActivityDisplay, activity.getId(), String.valueOf((count - 3))));
         } else {
           templateContext.put("COUNT", SocialNotificationUtils.buildRedirecUrl(typeSpaceDisplay, space.getId(), String.valueOf((count - 3))));
         }
@@ -163,7 +172,7 @@ public class SocialNotificationUtils {
     
     return sb.toString();
   }
-  
+
   /**
    * 
    * @param receiversMap
@@ -173,7 +182,7 @@ public class SocialNotificationUtils {
   public static String getMessageByIds(Map<String, List<String>> receiversMap, TemplateContext templateContext, String type) {
     StringBuilder sb = new StringBuilder();
     for (Entry<String, List<String>> entry : receiversMap.entrySet()) {
-      sb.append("<li style=\"margin: 0 0 13px 14px; font-size: 13px; list-style: disc; line-height: 18px; font-family: HelveticaNeue, Helvetica, Arial, sans-serif;\">");
+      sb.append("<li style=\"margin: 0 0 13px 14px; font-size: 13px; line-height: 18px; font-family: HelveticaNeue, Helvetica, Arial, sans-serif;\">");
       String targetId = entry.getKey();
       List<String> values = entry.getValue();
       int count = values.size();
@@ -243,6 +252,11 @@ public class SocialNotificationUtils {
   public static String buildRedirecUrl(String type, String id, String name) {
     String link = LinkProviderUtils.getRedirectUrl(type, id);
     return "<a target=\"_blank\" style=\"text-decoration: none; font-weight: bold; color: #2f5e92; font-family: 'HelveticaNeue Bold', Helvetica, Arial, sans-serif; font-size: 13px; line-height: 18px;\" href=\""+ link + "\">" + name + "</a>";
+  }
+  
+  public static String buildRedirecActivityUrl(String type, String id, String activityTitle) {
+    String link = LinkProviderUtils.getRedirectUrl(type, id);
+    return "<a target=\"_blank\" style=\"text-decoration: none; color: #2f5e92; font-family: 'HelveticaNeue Bold', Helvetica, Arial, sans-serif; font-size: 13px; line-height: 18px;\" href=\""+ link + "\">" + activityTitle + "</a>";
   }
   
   public static void addFooterAndFirstName(String remoteId, TemplateContext templateContext) {

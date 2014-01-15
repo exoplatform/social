@@ -132,7 +132,7 @@ public class LikePluginTest extends AbstractPluginTest {
     ctx.setNotificationInfos(list);
     Writer writer = new StringWriter();
     getPlugin().buildDigest(ctx, writer);
-    assertDigest(writer, "Mary Kelly, Demo gtn, John Anthony like your activity : root post an activity.");
+    assertDigest(writer, "Mary Kelly, Demo gtn, John Anthony like your activity: root post an activity.");
   }
   
   public void testLikeLinkActivity() throws Exception {
