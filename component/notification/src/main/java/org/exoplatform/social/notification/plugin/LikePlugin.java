@@ -51,14 +51,13 @@ public class LikePlugin extends AbstractNotificationPlugin {
   @Override
   public NotificationInfo makeNotification(NotificationContext ctx) {
     ExoSocialActivity activity = ctx.value(SocialNotificationUtils.ACTIVITY);
-
+    
     String[] likersId = activity.getLikeIdentityIds();
-    String liker = Utils.getUserId(likersId[likersId.length - 1]);
-
+    
     return NotificationInfo.instance()
-                               .to(Utils.getUserId(activity.getPosterId()))
+                               .to(activity.getStreamOwner())
                                .with(SocialNotificationUtils.ACTIVITY_ID.getKey(), activity.getId())
-                               .with("likersId", liker)
+                               .with("likersId", Utils.getUserId(likersId[likersId.length-1]))
                                .key(getId()).end();
   }
 
@@ -77,15 +76,15 @@ public class LikePlugin extends AbstractNotificationPlugin {
     Identity identity = Utils.getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, notification.getValueOwnerParameter("likersId"), true);
     
     templateContext.put("USER", identity.getProfile().getFullName());
+    templateContext.put("ACTIVITY", activity.getTitle());
     templateContext.put("SUBJECT", activity.getTitle());
     String subject = TemplateUtils.processSubject(templateContext);
 
     templateContext.put("PROFILE_URL", LinkProviderUtils.getRedirectUrl("user", identity.getRemoteId()));
     templateContext.put("REPLY_ACTION_URL", LinkProviderUtils.getRedirectUrl("reply_activity", activity.getId()));
     templateContext.put("VIEW_FULL_DISCUSSION_ACTION_URL", LinkProviderUtils.getRedirectUrl("view_full_activity", activity.getId()));
-
-    //
-    String body = SocialNotificationUtils.getBody(ctx, templateContext, activity);
+    String body = TemplateUtils.processGroovy(templateContext);
+    
     return messageInfo.subject(subject).body(body).end();
   }
 
@@ -120,7 +119,7 @@ public class LikePlugin extends AbstractNotificationPlugin {
   public boolean isValid(NotificationContext ctx) {
     ExoSocialActivity activity = ctx.value(SocialNotificationUtils.ACTIVITY);
     String[] likersId = activity.getLikeIdentityIds();
-    if (activity.getPosterId().equals(likersId[likersId.length-1])) {
+    if (activity.getStreamOwner().equals(Utils.getUserId(likersId[likersId.length-1]))) {
       return false;
     }
     return true;

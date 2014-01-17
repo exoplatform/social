@@ -80,10 +80,12 @@ public class ActivityCommentPlugin extends AbstractNotificationPlugin {
     SocialNotificationUtils.addFooterAndFirstName(notification.getTo(), templateContext);
     templateContext.put("PROFILE_URL", LinkProviderUtils.getRedirectUrl("user", identity.getRemoteId()));
     templateContext.put("COMMENT", activity.getTitle());
+    templateContext.put("ACTIVITY", parentActivity.getTitle());
     templateContext.put("REPLY_ACTION_URL", LinkProviderUtils.getRedirectUrl("reply_activity_highlight_comment", parentActivity.getId() + "-" + activity.getId()));
     templateContext.put("VIEW_FULL_DISCUSSION_ACTION_URL", LinkProviderUtils.getRedirectUrl("view_full_activity_highlight_comment", parentActivity.getId() + "-" + activity.getId()));
-    //
-    String body = SocialNotificationUtils.getBody(ctx, templateContext, parentActivity);
+
+    String body = TemplateUtils.processGroovy(templateContext);
+    
     return messageInfo.subject(subject).body(body).end();
   }
 

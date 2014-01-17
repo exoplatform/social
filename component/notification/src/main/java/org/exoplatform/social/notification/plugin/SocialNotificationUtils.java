@@ -23,15 +23,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.exoplatform.commons.api.notification.NotificationContext;
 import org.exoplatform.commons.api.notification.model.ArgumentLiteral;
-import org.exoplatform.commons.api.notification.model.NotificationKey;
-import org.exoplatform.commons.api.notification.plugin.AbstractNotificationChildPlugin;
-import org.exoplatform.commons.api.notification.plugin.AbstractNotificationPlugin;
-import org.exoplatform.commons.api.notification.service.setting.PluginContainer;
 import org.exoplatform.commons.api.notification.service.template.TemplateContext;
 import org.exoplatform.commons.notification.template.TemplateUtils;
-import org.exoplatform.commons.utils.CommonsUtils;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
@@ -41,7 +35,6 @@ import org.exoplatform.social.core.relationship.model.Relationship;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.notification.LinkProviderUtils;
 import org.exoplatform.social.notification.Utils;
-import org.exoplatform.social.notification.plugin.child.DefaultActivityChildPlugin;
 
 public class SocialNotificationUtils {
 
@@ -267,18 +260,6 @@ public class SocialNotificationUtils {
     } catch (Exception e) {
       return;
     }
-  }
-  
-  public static String getBody(NotificationContext ctx, TemplateContext context, ExoSocialActivity activity) {
-    NotificationKey childKey = new NotificationKey(activity.getType());
-    PluginContainer pluginContainer = CommonsUtils.getService(PluginContainer.class);
-    AbstractNotificationPlugin child = pluginContainer.getPlugin(childKey);
-    if (child == null || (child instanceof AbstractNotificationChildPlugin) == false) {
-      child = pluginContainer.getPlugin(new NotificationKey(DefaultActivityChildPlugin.ID));
-    }
-    context.put("ACTIVITY", ((AbstractNotificationChildPlugin) child).makeContent(ctx));
-
-    return TemplateUtils.processGroovy(context);
   }
   
 }
