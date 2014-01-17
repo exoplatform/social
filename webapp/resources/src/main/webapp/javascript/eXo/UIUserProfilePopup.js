@@ -349,8 +349,9 @@
 							        popupContent.append(tbody);
                       
 							        if (json.activityTitle) {
+                        var activityContent = $("<div/>").html(json.activityTitle).text();                        
 								        var blockquote = $("<blockquote/>", {
-								           "text" :json.activityTitle
+								           "html" :activityContent
 								        });
 							        }
 							        
