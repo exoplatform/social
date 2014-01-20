@@ -17,7 +17,6 @@ public class MockUserSettingServiceImpl implements UserSettingService {
     
   }
   
-  
   @Override
   public void save(UserSetting setting) {
     settings.put(setting.getUserId(), setting);
@@ -36,11 +35,6 @@ public class MockUserSettingServiceImpl implements UserSettingService {
   @Override
   public long getNumberOfDaily() {
     return 0;
-  }
-
-  @Override
-  public List<UserSetting> getDefaultDaily() {
-    return null;
   }
 
   @Override
@@ -65,4 +59,14 @@ public class MockUserSettingServiceImpl implements UserSettingService {
   public void addMixin(User[] users) {
   }
 
+
+  @Override
+  public List<UserSetting> getDefaultDaily(int offset, int limit) {
+    return null;
+  }
+
+  @Override
+  public long getNumberOfDefaultDaily() {
+    return 0;
+  }
 }
