@@ -350,7 +350,7 @@
                       
 							        if (json.activityTitle) {
 								        var blockquote = $("<blockquote/>", {
-								           "html" :json.activityTitle
+								           "text" :json.activityTitle.replace(/<[^>]+>/g, '')
 								        });
 							        }
 							        
