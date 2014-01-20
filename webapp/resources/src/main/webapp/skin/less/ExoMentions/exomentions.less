@@ -1,0 +1,146 @@
+.exo-mentions {
+  position: relative;
+  background: @white;
+  .border-radius(4px);
+  textarea {
+	  display: none;
+	}
+	.autocomplete-menu {
+	  display: none;
+	  background: @white;
+	  border: 1px solid #b2b2b2;
+	  position: absolute;
+	  left: 0;
+	  right: 0;
+	  z-index: 10000;
+	  margin-top: -2px;
+	   .border-radius(4px);
+	   .box-shadow(0 2px 5px rgba(0, 0, 0, 0.148438));
+	         
+	}
+}
+
+
+.exo-mentions .autocomplete-menu {
+	 li {
+	  background-color: @white;
+	  padding: 5px 10px;
+	  overflow: hidden;
+	  cursor: pointer;
+	  white-space: nowrap;
+	  &:first-child {
+			.border-radius(4px 4px 0px 0px);
+		}
+		&:last-child {
+		  .border-radius(0px 0px 4px 4px);
+		}
+		> .avatarSmall {
+			display: inline-block;
+			margin-right: 10px;
+		}
+		&.active {
+			background-color: #517ABE;
+		    background-image: linear-gradient(to bottom, #628ACC, #3763AA);
+		    background-repeat: repeat-x;
+			color: @white;
+		}
+		&.msg {
+		  background-color: @white;
+			cursor: inherit;
+		}
+		 strong {
+		  font-weight: bold;
+		}
+		
+	 }
+
+}
+.exo-mentions {
+	.mentions {
+	  display: none;
+	}
+	  	
+	.replaceTextArea {
+		margin:0;
+		width:auto;
+		cursor: text;
+		position:relative;
+		resize:none;
+		overflow-x:hidden;
+		overflow-y:auto;
+		word-wrap:break-word;
+		border-radius: 4px;
+		border: 1px solid #C7C7C7;
+		.box-shadow(~'0 2px 1px rgba(0, 0, 0, 0.075) inset');
+		color:@textColor;
+		font-size: @baseFontSize;
+		height: 28px;
+		padding: 5px 8px;
+		&:focus {
+			border-color: #94B0DF;
+		   .box-shadow(~'0 1px 1px rgba(0, 0, 0, 0.075) inset, 0 0 5px rgba(29, 75, 159, 0.6)');
+		}
+		 > span {
+		  background: #e0e8f5;
+		  border-radius: 3px;
+		  color: #2f5e92;
+		  border: 1px solid #3f6fbb;
+		  padding: 1px 5px;
+		  display: inline-block;
+		   i {
+			  margin-left: 6px;
+			  text-indent: -1000px;
+			}
+		  
+		}
+		
+	}
+}
+
+.activityStream  .exo-mentions .replaceTextArea { 
+	padding: 3px 5px;
+}
+
+.exo-mentions .replaceTextArea {
+	span.none {
+	  background: none transparent;
+	  border: none;
+	  border-radius: 0px;
+	  color: @white;
+	  padding: 0px;
+	  display: inline;
+	  width: 0px;
+	}
+	 .uiIconClose {
+	  color: transparent;
+	  text-indent: -9999px;
+	  cursor: pointer;
+	}
+	 .cursorText {
+		  display: inline;
+		  width: 0px;
+		}
+}
+
+
+.exo-mentions {
+	.placeholder {
+		  color: @placeholderText;
+		  position: absolute;
+		  top: 10px;
+		  left: 10px;
+		  opacity: 0.85;
+		}
+		.uiIconClose  {
+		  display:inline-block !important;
+		  position:static !important;
+		  cursor:pointer;
+		}
+		
+	
+}
+
+.activityStream .exo-mentions .placeholder {
+  top: 3px;
+  left: 6px;
+}
