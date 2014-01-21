@@ -1424,7 +1424,7 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
   public List<ExoSocialActivity> getComments(ExoSocialActivity existingActivity, int offset, int limit) {
 
     List<ExoSocialActivity> activities = new ArrayList<ExoSocialActivity>();
-    String[] commentIds = getStorage().getActivity(existingActivity.getId()).getReplyToId();
+    String[] commentIds = getActivity(existingActivity.getId()).getReplyToId();
     
     //
     limit = (limit > commentIds.length ? commentIds.length : limit);
@@ -1480,7 +1480,7 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     List<ExoSocialActivity> activities = new ArrayList<ExoSocialActivity>();
 
     //
-    List<String> commentIds = Arrays.asList(getStorage().getActivity(existingActivity.getId()).getReplyToId());
+    List<String> commentIds = Arrays.asList(getActivity(existingActivity.getId()).getReplyToId());
 
     //
     for(String commentId : commentIds) {
