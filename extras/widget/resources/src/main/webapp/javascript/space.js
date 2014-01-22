@@ -121,7 +121,7 @@
             stylesheetLink = document.createElement('link');
             stylesheetLink.type = 'text/css';
             stylesheetLink.rel = 'stylesheet';
-            stylesheetLink.href = configuration.serverURL + '/socialWidgetResources/skin/Stylesheet.css';
+            stylesheetLink.href = configuration.serverURL + '/socialWidgetResources/skin/css/social-extras-widget-resource.css';
             scriptEl = document.getElementsByTagName('script')[0]; 
             scriptEl.parentNode.insertBefore(stylesheetLink, scriptEl);
         }
