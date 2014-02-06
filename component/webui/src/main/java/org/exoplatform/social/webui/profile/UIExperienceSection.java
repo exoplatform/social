@@ -569,7 +569,7 @@ public class UIExperienceSection extends UIProfileSection {
       Calendar cal = Calendar.getInstance();
 
       String startDateInput = uiDateTimeInput.getValue();      
-      if (!((startDateInput == null) || (startDateInput.length() == 0))) {
+      if ((startDateInput != null) && (startDateInput.length() != 0)) {
         try {
           cal.setTime(sf.parse(startDateInput));
           startDate = calendarToString(cal);
@@ -581,11 +581,12 @@ public class UIExperienceSection extends UIProfileSection {
         uiApplication.addMessage(new ApplicationMessage(INVALID_START_DATE_MANDATORY, null, 1));
         errorCode = 1;
       }
-             
+
       try {
         uiDateTimeInput = (UIFormDateTimeInput) listUIComp.get(i + 5);
-        if (!"".equals(uiDateTimeInput.getValue())) {
-          cal.setTime(sf.parse(uiDateTimeInput.getValue())) ;
+        String endDateInput = uiDateTimeInput.getValue();
+        if ((endDateInput != null ) && (endDateInput.length() != 0)) {
+          cal.setTime(sf.parse(endDateInput)) ;
         }
       } catch (Exception e) {
         endDate = null;
