@@ -22,6 +22,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.locks.ReentrantLock;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.chromattic.api.ChromatticException;
@@ -343,10 +344,12 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
   
   @Override
   public void update(ProcessContext ctx) {
+    ReentrantLock lock = new ReentrantLock();
     try {
       StreamProcessContext streamCtx = ObjectHelper.cast(StreamProcessContext.class, ctx);
       ActivityEntity activityEntity = streamCtx.getActivityEntity();
-      List<ActivityRef> references = new CopyOnWriteArrayList<ActivityRef>(activityEntity.getActivityRefs());
+      lock.lock();
+      Collection<ActivityRef> references = activityEntity.getActivityRefs();
       long oldUpdated = streamCtx.getOldLastUpdated();
       ActivityRef newRef = null;
       for (ActivityRef old : references) {
@@ -372,6 +375,8 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
     } catch (ChromatticException ex) {
         LOG.warn("Probably was updated activity reference by another session");
         LOG.debug(ex.getMessage(), ex);
+    } finally {
+      lock.unlock();
     }
   }
 
