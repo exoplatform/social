@@ -151,6 +151,13 @@
         <name>OSHtmlSanitizer</name>
         <set-method>addProcessorPlugin</set-method>
         <type>org.exoplatform.social.core.processor.OSHtmlSanitizerProcessor</type>
+        <init-params>
+          <value-param>
+            <name>priority</name>
+            <description>priority of this processor (lower are executed first)</description>
+            <value>3</value>
+          </value-param>
+        </init-params>
       </component-plugin>
     </component-plugins>
   </component>
