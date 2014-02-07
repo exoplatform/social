@@ -23,7 +23,7 @@
 	</div>
 	<form id="uiNotificationSetting" name="uiNotificationSetting" action="" method="post">
 		<div class="uiSocTitleBar clearfix">
-			<h4>${_ctx.appRes("UINotification.label.NotificationSettings")}</h4>
+			<h3>${_ctx.appRes("UINotification.label.NotificationSettings")}</h3>
 			<span>${_ctx.appRes("UINotification.label.NotificationsDescription")}</span>
 		</div>
 		<% 
