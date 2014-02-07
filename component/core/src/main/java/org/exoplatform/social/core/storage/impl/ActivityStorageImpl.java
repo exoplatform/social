@@ -133,7 +133,7 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
   /*
    * Internal
    */
-  protected String[] _createActivity(Identity owner, ExoSocialActivity activity) throws NodeNotFoundException {
+  protected ActivityEntity _createActivity(Identity owner, ExoSocialActivity activity, List<String> mentioners) throws NodeNotFoundException {
 
     IdentityEntity identityEntity = _findById(IdentityEntity.class, owner.getId());
 
@@ -172,7 +172,6 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     
     //records activity for mention case.
     
-    List<String> mentioners = new ArrayList<String>();
     activity.setMentionedIds(processMentions(activity.getMentionedIds(), activity.getTitle(), mentioners, true));
     
     //
@@ -180,7 +179,8 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
       
     //
     fillActivityEntityFromActivity(activity, activityEntity);
-    return mentioners.toArray(new String[0]);
+    
+    return activityEntity;
   }
 
   protected void _saveActivity(ExoSocialActivity activity) throws NodeNotFoundException {
@@ -613,8 +613,8 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
       //
       if (mustInjectStreams) {
         Identity identity = identityStorage.findIdentityById(comment.getUserId());
-        StreamInvocationHelper.updateCommenter(identity, activity, commenters.toArray(new String[0]), oldUpdated);
-        StreamInvocationHelper.update(activity, mentioners.toArray(new String[0]), oldUpdated);
+        StreamInvocationHelper.updateCommenter(identity, activityEntity, commenters.toArray(new String[0]), oldUpdated);
+        StreamInvocationHelper.update(activityEntity, mentioners.toArray(new String[0]), oldUpdated);
       }
     }  
     catch (NodeNotFoundException e) {
@@ -658,19 +658,18 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     try {
 
       if (activity.getId() == null) {
-
-        String[] mentioners = _createActivity(owner, activity);
-        if (RelationshipPublisher.USER_ACTIVITIES_FOR_RELATIONSHIP.equals(activity.getType()))
-          identityStorage.updateProfileActivityId(owner, activity.getId(), Profile.AttachedActivityType.RELATIONSHIP);
+        
+        List<String> mentioners = new ArrayList<String>();
+        ActivityEntity entity = _createActivity(owner, activity, mentioners);
 
         StorageUtils.persist();
         //create refs
         //streamStorage.save(owner, activity);
         if (mustInjectStreams) {
           //run synchronous
-          StreamInvocationHelper.savePoster(owner, activity);
+          StreamInvocationHelper.savePoster(owner, entity);
           //run asynchronous
-          StreamInvocationHelper.save(owner, activity, mentioners);
+          StreamInvocationHelper.save(owner, entity, mentioners.toArray(new String[0]));
         }
       }
       else {
@@ -1650,16 +1649,13 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
         if (owner == null) {
           owner = identityStorage.findIdentity(OrganizationIdentityProvider.NAME, changedActivity.getStreamOwner());
         }
-        StreamInvocationHelper.updateHidable(owner, changedActivity);
+        StreamInvocationHelper.updateHidable(owner, activityEntity, changedActivity);
         getSession().save();
       }
       
     }
     catch (NodeNotFoundException e) {
-      throw new ActivityStorageException(
-          ActivityStorageException.Type.FAILED_TO_SAVE_ACTIVITY,
-          e.getMessage()
-      );
+      throw new ActivityStorageException(ActivityStorageException.Type.FAILED_TO_SAVE_ACTIVITY, e.getMessage());
     } catch (ChromatticException ex) {
       Throwable throwable = ex.getCause();
       if (throwable instanceof ItemExistsException || 

@@ -24,6 +24,7 @@ import org.exoplatform.social.common.service.ProcessContext;
 import org.exoplatform.social.common.service.SocialServiceContext;
 import org.exoplatform.social.common.service.impl.SocialServiceContextImpl;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
+import org.exoplatform.social.core.chromattic.entity.ActivityEntity;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.storage.impl.StorageUtils;
 
@@ -37,19 +38,18 @@ public class StreamInvocationHelper {
    * Invokes to records the activity to Stream
    * 
    * @param owner
-   * @param activity
+   * @param entity
    * @param mentioners NULL is empty mentioner.
    * @return
    */
-  public static ProcessContext save(Identity owner, ExoSocialActivity activity, String[] mentioners) {
+  public static ProcessContext save(Identity owner, ActivityEntity entity, String[] mentioners) {
     //
     SocialServiceContext ctx = SocialServiceContextImpl.getInstance();
     StreamProcessContext processCtx = StreamProcessContext.getIntance(StreamProcessContext.NEW_ACTIVITY_RELATIONS_PROCESS, ctx);
-    processCtx.identity(owner).activity(activity).mentioners(mentioners);
+    processCtx.identity(owner).activityEntity(entity).mentioners(mentioners);
     
     try {
       if (ctx.isAsync()) {
-        //beforeAsync();
         //
         ctx.getServiceExecutor().async(StreamProcessorFactory.saveStream(), processCtx);
       } else {
@@ -74,11 +74,11 @@ public class StreamInvocationHelper {
    * @param mentioners NULL is empty mentioner.
    * @return
    */
-  public static ProcessContext savePoster(Identity owner, ExoSocialActivity activity) {
+  public static ProcessContext savePoster(Identity owner, ActivityEntity entity) {
     //
     SocialServiceContext ctx = SocialServiceContextImpl.getInstance();
     StreamProcessContext processCtx = StreamProcessContext.getIntance(StreamProcessContext.NEW_ACTIVITY_PROCESS, ctx);
-    processCtx.identity(owner).activity(activity);
+    processCtx.identity(owner).activityEntity(entity);
     
     try {
       //beforeAsync(); Why do we need to save here? Can make the problem with ADD_PROPERTY
@@ -97,33 +97,32 @@ public class StreamInvocationHelper {
     return false;
   }
   
-  public static ProcessContext update(ExoSocialActivity activity, String[] mentioners, long oldUpdated) {
+  public static ProcessContext update(ActivityEntity entity, String[] mentioners, long oldUpdated) {
     //
     StreamProcessContext processCtx = StreamProcessContext.getIntance(StreamProcessContext.UPDATE_ACTIVITY_PROCESS, ctx);
-    processCtx.activity(activity).mentioners(mentioners).oldLastUpdated(oldUpdated);
+    processCtx.activityEntity(entity).mentioners(mentioners).oldLastUpdated(oldUpdated);
     
     try {
       if (ctx.isAsync()) {
+        processCtx.getTraceElement().start();
         beforeAsync();
         ctx.getServiceExecutor().async(StreamProcessorFactory.updateStream(), processCtx);
+        processCtx.getTraceElement().end();
       } else {
         ctx.getServiceExecutor().execute(StreamProcessorFactory.updateStream(), processCtx);
       }
       
     } finally {
-      if (ctx.isTraced()) {
-        LOG.debug(processCtx.getTraceLog());
-      }
-      
+      LOG.debug(processCtx.getTraceLog());
     }
     
     return processCtx;
   }
   
-  public static ProcessContext updateHidable(Identity owner, ExoSocialActivity activity) {
+  public static ProcessContext updateHidable(Identity owner, ActivityEntity entity, ExoSocialActivity activity) {
     //
     StreamProcessContext processCtx = StreamProcessContext.getIntance(StreamProcessContext.UPDATE_ACTIVITY_REF, ctx);
-    processCtx.activity(activity).mentioners(activity.getMentionedIds()).identity(owner);
+    processCtx.activityEntity(entity).activity(activity).mentioners(entity.getMentioners()).identity(owner);
     
     try {
       if (ctx.isAsync()) {
@@ -143,10 +142,10 @@ public class StreamInvocationHelper {
     return processCtx;
   }
   
-  public static ProcessContext updateCommenter(Identity commenter, ExoSocialActivity activity, String[] commenters, long oldUpdated) {
+  public static ProcessContext updateCommenter(Identity commenter, ActivityEntity entity, String[] commenters, long oldUpdated) {
     //
     StreamProcessContext processCtx = StreamProcessContext.getIntance(StreamProcessContext.UPDATE_ACTIVITY_COMMENTER_PROCESS, ctx);
-    processCtx.identity(commenter).activity(activity).commenters(commenters).oldLastUpdated(oldUpdated);
+    processCtx.identity(commenter).activityEntity(entity).commenters(commenters).oldLastUpdated(oldUpdated);
     
     try {
       //beforeAsync(); this point can make the problem with ADD_PROPERTY exception
@@ -366,9 +365,11 @@ public class StreamInvocationHelper {
     
     try {
       if(ctx.isAsync()) {
+        processCtx.getTraceElement().start();
         //
         beforeAsync();
         ctx.getServiceExecutor().async(StreamProcessorFactory.createMyActivitiesActivityRef(), processCtx);
+        processCtx.getTraceElement().end();
       } else {
         //
         ctx.getServiceExecutor().execute(StreamProcessorFactory.createMyActivitiesActivityRef(), processCtx);
@@ -411,7 +412,9 @@ public class StreamInvocationHelper {
     processCtx.identity(owner);
     
     try {
-        ctx.getServiceExecutor().async(StreamProcessorFactory.loadFeed(), processCtx);
+      processCtx.getTraceElement().start();
+      ctx.getServiceExecutor().async(StreamProcessorFactory.loadFeed(), processCtx);
+      processCtx.getTraceElement().end();
     } finally {
       LOG.debug(processCtx.getTraceLog());
     }

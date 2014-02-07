@@ -43,11 +43,11 @@
     <init-params>
       <value-param>
         <name>pool-size</name>
-        <value>10</value>
+        <value>5</value>
       </value-param>
       <value-param>
         <name>max-pool-size</name>
-        <value>20</value>
+        <value>5</value>
       </value-param>
       <value-param>
         <name>async-mode</name>
@@ -55,7 +55,7 @@
       </value-param>
       <value-param>
         <name>thread-priority</name>
-        <value>5</value><!--10: HIGH, 5: NORMAL; 1: LOW-->
+        <value>1</value><!--10: HIGH, 5: NORMAL; 1: LOW-->
       </value-param>
     </init-params>
   </component>
