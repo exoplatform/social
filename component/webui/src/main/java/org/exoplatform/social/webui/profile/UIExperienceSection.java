@@ -513,10 +513,8 @@ public class UIExperienceSection extends UIProfileSection {
     String startDate = null;
     String endDate = null;
     Boolean isCurrent = null;
-    Date sDate = null;
-    Date eDate = null;
-    Date today = new Date();
-
+    Calendar today = Calendar.getInstance();
+    today.setTime(new Date());
     WebuiRequestContext context = WebuiRequestContext.getCurrentInstance();
     UIApplication uiApplication = context.getUIApplication();
     Profile p = getProfile();
@@ -562,59 +560,70 @@ public class UIExperienceSection extends UIProfileSection {
 
       uiDateTimeInput = (UIFormDateTimeInput) listUIComp.get(i + 4);
       Locale locale = context.getParentAppRequestContext().getLocale();
-      String currentPartern = uiDateTimeInput.getDatePattern_();
+      String currentPattern = uiDateTimeInput.getDatePattern_();
       
-      SimpleDateFormat sf = new SimpleDateFormat(currentPartern, locale);
-      Calendar cal = Calendar.getInstance();
-      
-      if (!"".equals(uiDateTimeInput.getValue())) { 
-        cal.setTime(sf.parse(uiDateTimeInput.getValue()));
-        startDate = calendarToString(cal);
-        if ((startDate == null) || (startDate.length() == 0)) {
-          uiApplication.addMessage(new ApplicationMessage(INVALID_START_DATE_MANDATORY, null, 1));
+      SimpleDateFormat sf = new SimpleDateFormat(currentPattern, locale);
+      // Specify whether or not date/time parsing is to be lenient.
+      sf.setLenient(false);
+      Calendar sCalendar = Calendar.getInstance();
+      Calendar eCalendar = Calendar.getInstance();
+
+      String startDateInput = uiDateTimeInput.getValue();      
+      if ((startDateInput != null) && (startDateInput.length() != 0)) {
+        try {
+          sCalendar.setTime(sf.parse(startDateInput));
+          startDate = calendarToString(sCalendar);
+        } catch (Exception e) {
+          // Check Date format
+          startDate = null;
+          uiApplication.addMessage(new ApplicationMessage(INVALID_START_DATE_FORMAT, new String[] {currentPattern}, 1));
           errorCode = 1;
         }
+      } else {
+        // Start date cannot be null
+        startDate = null;
+        uiApplication.addMessage(new ApplicationMessage(INVALID_START_DATE_MANDATORY, null, 1));
+        errorCode = 1;
       }
-      
+
       try {
         uiDateTimeInput = (UIFormDateTimeInput) listUIComp.get(i + 5);
-        if (!"".equals(uiDateTimeInput.getValue())) {
-          cal.setTime(sf.parse(uiDateTimeInput.getValue())) ;
+        String endDateInput = uiDateTimeInput.getValue();
+        if (endDateInput == null || endDateInput.length() == 0) {
+          endDate = null;
+        } else {
+          eCalendar.setTime(sf.parse(endDateInput));
+          endDate = calendarToString(eCalendar);
         }
       } catch (Exception e) {
+        // Check Date format
         endDate = null;
+        uiApplication.addMessage(new ApplicationMessage(INVALID_END_DATE_FORMAT, new String[] {currentPattern}, 1));
+        errorCode = 1;
       }
       
       uiCheckBox = (UICheckBoxInput) listUIComp.get(i + 6);
       isCurrent = uiCheckBox.getValue();
-      
-      if (startDate == null && (endDate != null || isCurrent.booleanValue()) ||
-          "".equals(startDate) && ("".equals(endDate)|| isCurrent.booleanValue())) {
-        uiApplication.addMessage(new ApplicationMessage(INVALID_START_DATE_MANDATORY, null, 1));
-        errorCode = 1;
-      }
-      
-      if (startDate != null && !"".equals(startDate)) {
-        endDate = calendarToString(cal);
-
-        sDate = stringToDate(startDate);
-        eDate = stringToDate(endDate);
-        if (endDate != null && !"".equals(endDate) && sDate.after(today)) {
+          
+      if (startDate != null && !"".equals(startDate)) { 
+        if (sCalendar.after(today)) {
+          // Start Date cannot be after today
           uiApplication.addMessage(new ApplicationMessage(START_DATE_AFTER_TODAY, null, 1));
           errorCode = 1;
         }
 
         if (!isCurrent) {
           if ((endDate == null) || (endDate.length() == 0)) {
+            // End Date is mandatory with all positions except current position
             uiApplication.addMessage(new ApplicationMessage(INVALID_END_DATE_MANDATORY, null, 1));
             errorCode = 1;
-          }
-          
-          if ((eDate != null) && eDate.after(today)) {
+          } else if (eCalendar.after(today)) {
+            // End Date cannot be after today
             uiApplication.addMessage(new ApplicationMessage(END_DATE_AFTER_TODAY, null, 1));
             errorCode = 1;
           }
-          if ((sDate != null) && sDate.after(eDate)) {
+          if (sCalendar.after(eCalendar)) {
+            // Start date must be before end date
             uiApplication.addMessage(new ApplicationMessage(STARTDATE_BEFORE_ENDDATE, null, 1));
             errorCode = 1;
           }
@@ -675,11 +684,11 @@ public class UIExperienceSection extends UIProfileSection {
 
     UIFormDateTimeInput startDate = new UIFormDateTimeInput(Profile.EXPERIENCES_START_DATE + expIdx, null, null, false);
     startDate.setHTMLAttribute(HTML_ATTRIBUTE_TITLE, resourceBundle.getString("UIExperienceSection.label.startDate"));
-    addUIFormInput(startDate.addValidator(ExpressionValidator.class, DATETIME_REGEX, INVALID_START_DATE_FORMAT));
+    addUIFormInput(startDate);
 
     UIFormDateTimeInput endDate = new UIFormDateTimeInput(Profile.EXPERIENCES_END_DATE + expIdx, null, null, false);
     endDate.setHTMLAttribute(HTML_ATTRIBUTE_TITLE, resourceBundle.getString("UIExperienceSection.label.endDate"));
-    addUIFormInput(endDate.addValidator(ExpressionValidator.class, DATETIME_REGEX, INVALID_END_DATE_FORMAT));
+    addUIFormInput(endDate);
 
     UICheckBoxInput uiDateInputCheck = new UICheckBoxInput(Integer.toString(expIdx), null, false);
     uiDateInputCheck.setComponentConfig(UICheckBoxInput.class, "UIFormCheckBoxEndDate");
@@ -717,5 +726,5 @@ public class UIExperienceSection extends UIProfileSection {
     Calendar calendar = Calendar.getInstance();
     calendar.setTime(date);
     return calendar;
-  }
+  }  
 }
