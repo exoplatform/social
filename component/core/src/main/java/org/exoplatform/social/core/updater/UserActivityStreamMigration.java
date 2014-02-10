@@ -203,7 +203,7 @@ public class UserActivityStreamMigration extends AbstractStorage {
       public void done(ProcessContext processContext) {
         int value = currentNumber.incrementAndGet();
         int percent = (value*100) / processContext.getTotalProcesses();
-        ConsoleUtils.consoleProgBar(percent);
+        ConsoleUtils.logProgBar(percent);
       }
     };
   }
