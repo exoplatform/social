@@ -130,7 +130,7 @@ public class AsyncProcessorTest extends TestSocialServiceContext {
       public void done(ProcessContext processContext) {
         int value = currentNumber.incrementAndGet();
         int percent = (value *100) / processContext.getTotalProcesses();
-        ConsoleUtils.consoleProgBar(percent);
+        ConsoleUtils.logProgBar(percent);
       }
     };
   }

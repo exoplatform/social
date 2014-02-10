@@ -53,7 +53,7 @@
 <div class="uiMembersPortlet" id="$uicomponentId">
     <h3 class="uiInputInfo">$spaceName</h3>
     <span>$visibility</span>
-    <h4 class="titleWithBorder">$administratorLabel</h4>
+    <h4 class="titleWithBorder mgB220">$administratorLabel</h4>
     <div class="memberList clearfix">
           <% if (managerList.size() > 0) {
             for(user in managerList) {

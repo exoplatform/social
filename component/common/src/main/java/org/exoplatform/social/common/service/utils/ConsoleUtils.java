@@ -22,11 +22,6 @@ import org.exoplatform.services.log.Log;
 public class ConsoleUtils {
   
   private static final Log LOG = ExoLogger.getLogger(ConsoleUtils.class);
-
-  public static void consoleProgBar(int percent) {
-   
-    System.out.print("\n" + process(percent));
-  }
   
   public static void logProgBar(int percent) {
     
