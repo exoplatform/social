@@ -562,20 +562,20 @@ public class UIExperienceSection extends UIProfileSection {
 
       uiDateTimeInput = (UIFormDateTimeInput) listUIComp.get(i + 4);
       Locale locale = context.getParentAppRequestContext().getLocale();
-      String currentPartern = uiDateTimeInput.getDatePattern_();
+      String currentPattern = uiDateTimeInput.getDatePattern_();
       
-      SimpleDateFormat sf = new SimpleDateFormat(currentPartern, locale);
+      SimpleDateFormat sf = new SimpleDateFormat(currentPattern, locale);
       // Specify whether or not date/time parsing is to be lenient.
       sf.setLenient(false);
       Calendar cal = Calendar.getInstance();
 
       String startDateInput = uiDateTimeInput.getValue();      
-      if (!((startDateInput == null) || (startDateInput.length() == 0))) {
+      if (startDateInput != null && startDateInput.length() > 0) {
         try {
           cal.setTime(sf.parse(startDateInput));
           startDate = calendarToString(cal);
         } catch (Exception e) {
-          uiApplication.addMessage(new ApplicationMessage(INVALID_START_DATE_FORMAT, new String[] {currentPartern}, 1));
+          uiApplication.addMessage(new ApplicationMessage(INVALID_START_DATE_FORMAT, new String[] {currentPattern}, 1));
           errorCode = 1;
         }
       } else {
@@ -590,7 +590,7 @@ public class UIExperienceSection extends UIProfileSection {
         }
       } catch (Exception e) {
         endDate = null;
-        uiApplication.addMessage(new ApplicationMessage(INVALID_END_DATE_FORMAT, new String[] {currentPartern}, 1));
+        uiApplication.addMessage(new ApplicationMessage(INVALID_END_DATE_FORMAT, new String[] {currentPattern}, 1));
         errorCode = 1;
       }
       
