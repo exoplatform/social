@@ -328,6 +328,10 @@ public abstract class ActivityRefListEntity {
     //needs to check it existing or not in list
     ActivityRef ref = dayEntity.getActivityRefs().remove(entity.getId());
     
+    if (ref == null) {
+      ref = dayEntity.getActivityRefs().remove("" + lastUpdated);
+    }
+    
     if (ref != null) {
       dayEntity.desc();
       ref = null;

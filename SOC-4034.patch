@@ -1,0 +1,601 @@
+diff --git a/component/core/src/main/java/org/exoplatform/social/core/activity/model/ExoSocialActivityImpl.java b/component/core/src/main/java/org/exoplatform/social/core/activity/model/ExoSocialActivityImpl.java
+index 46085a1..b78f67a 100644
+--- a/component/core/src/main/java/org/exoplatform/social/core/activity/model/ExoSocialActivityImpl.java
++++ b/component/core/src/main/java/org/exoplatform/social/core/activity/model/ExoSocialActivityImpl.java
+@@ -507,9 +507,6 @@ public class ExoSocialActivityImpl extends ActivityImpl implements ExoSocialActi
+     if (!(o instanceof ExoSocialActivityImpl)) {
+       return false;
+     }
+-    if (!super.equals(o)) {
+-      return false;
+-    }
+ 
+     ExoSocialActivityImpl that = (ExoSocialActivityImpl) o;
+ 
+diff --git a/component/core/src/main/java/org/exoplatform/social/core/chromattic/entity/ActivityRefListEntity.java b/component/core/src/main/java/org/exoplatform/social/core/chromattic/entity/ActivityRefListEntity.java
+index d01c541..a97e13c 100644
+--- a/component/core/src/main/java/org/exoplatform/social/core/chromattic/entity/ActivityRefListEntity.java
++++ b/component/core/src/main/java/org/exoplatform/social/core/chromattic/entity/ActivityRefListEntity.java
+@@ -133,18 +133,6 @@ public abstract class ActivityRefListEntity {
+ 
+   }
+   
+-  public ActivityRef getOrCreated(ActivityEntity entity) {
+-    //migration 3.5.x => 4.x, lastUpdated of Activity is NULL, then use createdDate for replacement 
+-    Long key = entity.getLastUpdated() != null ? entity.getLastUpdated() : entity.getPostedTime(); 
+-    return getOrCreated(key.longValue());
+-  }
+-  
+-  public ActivityRef getOrCreated(ActivityEntity entity, AtomicBoolean newYearMonthday) {
+-    //migration 3.5.x => 4.x, lastUpdated of Activity is NULL, then use createdDate for replacement 
+-    Long key = entity.getLastUpdated() != null ? entity.getLastUpdated() : entity.getPostedTime(); 
+-    return getOrCreated(key.longValue(), newYearMonthday);
+-  }
+-  
+   public ActivityRef getOrCreated(long lastUpdated) {
+     Calendar calendar = Calendar.getInstance(Locale.ENGLISH);
+     calendar.setTimeInMillis(lastUpdated);
+@@ -168,7 +156,8 @@ public abstract class ActivityRefListEntity {
+     return ref;
+   }
+   
+-  public ActivityRef get(long lastUpdated) {
++  public ActivityRef getOrCreated(ActivityEntity entity) {
++    Long lastUpdated = entity.getLastUpdated() != null ? entity.getLastUpdated() : entity.getPostedTime();
+     Calendar calendar = Calendar.getInstance(Locale.ENGLISH);
+     calendar.setTimeInMillis(lastUpdated);
+ 
+@@ -179,10 +168,22 @@ public abstract class ActivityRefListEntity {
+     ActivityRefDayEntity dayEntity = this.getYear(year).getMonth(month).getDay(day);
+     
+     //needs to check it existing or not in list
+-    return dayEntity.getActivityRefs().get("" + lastUpdated);
++    ActivityRef ref = dayEntity.getActivityRefs().get(entity.getId());
++    
++    if (ref == null) {
++      ref = dayEntity.createRef();
++      ref.setName(entity.getId());
++      dayEntity.getActivityRefList().add(ref);
++      ref.setLastUpdated(lastUpdated);
++      ref.setActivityEntity(entity);
++      dayEntity.inc();
++    }
++    
++    return ref;
+   }
+   
+-  public ActivityRefDayEntity getActivityRefDay(long lastUpdated) {
++  public ActivityRef get(ActivityEntity entity) {
++    Long lastUpdated = entity.getLastUpdated() != null ? entity.getLastUpdated() : entity.getPostedTime();
+     Calendar calendar = Calendar.getInstance(Locale.ENGLISH);
+     calendar.setTimeInMillis(lastUpdated);
+ 
+@@ -190,10 +191,13 @@ public abstract class ActivityRefListEntity {
+     String month = MONTH_NAME[calendar.get(Calendar.MONTH)];
+     String day = String.valueOf(calendar.get(Calendar.DAY_OF_MONTH));
+ 
+-    return this.getYear(year).getMonth(month).getDay(day);
++    ActivityRefDayEntity dayEntity = this.getYear(year).getMonth(month).getDay(day);
++    
++    //needs to check it existing or not in list
++    return dayEntity.getActivityRefs().get(entity.getId());
+   }
+   
+-  public ActivityRef getOrCreated(long lastUpdated, AtomicBoolean newYearMonthDay) {
++  public ActivityRefDayEntity getActivityRefDay(long lastUpdated) {
+     Calendar calendar = Calendar.getInstance(Locale.ENGLISH);
+     calendar.setTimeInMillis(lastUpdated);
+ 
+@@ -201,38 +205,44 @@ public abstract class ActivityRefListEntity {
+     String month = MONTH_NAME[calendar.get(Calendar.MONTH)];
+     String day = String.valueOf(calendar.get(Calendar.DAY_OF_MONTH));
+ 
+-    ActivityRefDayEntity dayEntity = this.getYear(year, newYearMonthDay).getMonth(month, newYearMonthDay).getDay(day, newYearMonthDay);
+-    
+-    //needs to check it existing or not in list
+-    ActivityRef ref = dayEntity.getActivityRefs().get("" + lastUpdated);
+-    
+-    if (ref == null) {
+-      ref = dayEntity.createRef();
+-      ref.setName("" + lastUpdated);
+-      dayEntity.getActivityRefList().add(ref);
+-      dayEntity.inc();
+-    }
+-    
+-    return ref;
++    return this.getYear(year).getMonth(month).getDay(day);
+   }
+   
+-  public ActivityRef update(long oldLastUpdated, long newLastUpdated) {
+-    Calendar calendar = Calendar.getInstance(Locale.ENGLISH);
+-    calendar.setTimeInMillis(oldLastUpdated);
++ 
++  
++  public void update(ActivityEntity entity, ActivityRef old, long oldLastUpdated) {
++    Calendar oldCalendar = Calendar.getInstance(Locale.ENGLISH);
++    oldCalendar.setTimeInMillis(oldLastUpdated);
+ 
+-    String year = String.valueOf(calendar.get(Calendar.YEAR));
+-    String month = MONTH_NAME[calendar.get(Calendar.MONTH)];
+-    String day = String.valueOf(calendar.get(Calendar.DAY_OF_MONTH));
++    String oldYear = String.valueOf(oldCalendar.get(Calendar.YEAR));
++    String oldMonth = MONTH_NAME[oldCalendar.get(Calendar.MONTH)];
++    String oldDay = String.valueOf(oldCalendar.get(Calendar.DAY_OF_MONTH));
++    
++    Long lastUpdated = entity.getLastUpdated() != null ? entity.getLastUpdated() : entity.getPostedTime();
++    
++    Calendar newCalendar = Calendar.getInstance(Locale.ENGLISH);
++    newCalendar.setTimeInMillis(lastUpdated);
+ 
+-    ActivityRefDayEntity dayEntity = this.getYear(year).getMonth(month).getDay(day);
++    String newYear = String.valueOf(newCalendar.get(Calendar.YEAR));
++    String newMonth = MONTH_NAME[newCalendar.get(Calendar.MONTH)];
++    String newDay = String.valueOf(newCalendar.get(Calendar.DAY_OF_MONTH));
+     
+-    //needs to check it existing or not in list
+-    ActivityRef ref = dayEntity.getActivityRefs().get("" + oldLastUpdated);
++    ActivityRefDayEntity oldDayEntity = this.getYear(oldYear).getMonth(oldMonth).getDay(oldDay);
++    ActivityRef oldRef = oldDayEntity.getActivityRefs().get(entity.getId());
++    //
++    if (oldRef == null) {
++      oldRef = oldDayEntity.getActivityRefs().get(old.getName());
++    }
+     
+-    if (ref != null) {
+-      ref.setName("" + newLastUpdated);
++    if (oldRef != null) {
++      if (!oldYear.equalsIgnoreCase(newYear) || !oldMonth.equalsIgnoreCase(newMonth) || !oldDay.equalsIgnoreCase(newDay)) {
++        oldDayEntity.getActivityRefs().remove(oldRef.getName());
++        getOrCreated(entity);
++      } else {
++        oldRef.setLastUpdated(lastUpdated);
++      }
+     }
+-    return ref;
++    
+   }
+   
+   public Map<String, ActivityRef> refs(long lastUpdated) {
+@@ -283,10 +293,6 @@ public abstract class ActivityRefListEntity {
+     return isOnlyUpdate;
+   }
+   
+-  public ActivityRef remove(ActivityEntity entity) {
+-    return remove(entity.getLastUpdated());
+-  }
+-  
+   public ActivityRef remove(long lastUpdated) {
+     Calendar calendar = Calendar.getInstance(Locale.ENGLISH);
+     calendar.setTimeInMillis(lastUpdated);
+@@ -308,9 +314,31 @@ public abstract class ActivityRefListEntity {
+     return ref;
+   }
+   
++  public ActivityRef remove(ActivityEntity entity) {
++    Long lastUpdated = entity.getLastUpdated() != null ? entity.getLastUpdated() : entity.getPostedTime();
++    Calendar calendar = Calendar.getInstance(Locale.ENGLISH);
++    calendar.setTimeInMillis(lastUpdated);
++
++    String year = String.valueOf(calendar.get(Calendar.YEAR));
++    String month = MONTH_NAME[calendar.get(Calendar.MONTH)];
++    String day = String.valueOf(calendar.get(Calendar.DAY_OF_MONTH));
++
++    ActivityRefDayEntity dayEntity = this.getYear(year).getMonth(month).getDay(day);
++    
++    //needs to check it existing or not in list
++    ActivityRef ref = dayEntity.getActivityRefs().remove(entity.getId());
++    
++    if (ref != null) {
++      dayEntity.desc();
++      ref = null;
++    }
++    
++    return ref;
++  }
++  
+   public boolean create(long newUpdated, ActivityEntity entity) {
+-    ActivityRef newRef = getOrCreated(newUpdated);
+-    newRef.setName("" + newUpdated);
++    ActivityRef newRef = getOrCreated(entity);
++    newRef.setName(entity.getId());
+     newRef.setActivityEntity(entity);
+     newRef.setLastUpdated(newUpdated);
+     //
+diff --git a/component/core/src/main/java/org/exoplatform/social/core/chromattic/utils/ActivityRefIterator.java b/component/core/src/main/java/org/exoplatform/social/core/chromattic/utils/ActivityRefIterator.java
+index 42e4010..e9a90d7 100644
+--- a/component/core/src/main/java/org/exoplatform/social/core/chromattic/utils/ActivityRefIterator.java
++++ b/component/core/src/main/java/org/exoplatform/social/core/chromattic/utils/ActivityRefIterator.java
+@@ -20,10 +20,7 @@ import java.util.ArrayList;
+ import java.util.Collections;
+ import java.util.Comparator;
+ import java.util.Iterator;
+-import java.util.LinkedHashMap;
+-import java.util.LinkedList;
+ import java.util.List;
+-import java.util.Map;
+ 
+ import org.exoplatform.social.core.chromattic.entity.ActivityRef;
+ import org.exoplatform.social.core.chromattic.entity.ActivityRefDayEntity;
+@@ -32,7 +29,6 @@ import org.exoplatform.social.core.chromattic.entity.ActivityRefMonthEntity;
+ import org.exoplatform.social.core.chromattic.entity.ActivityRefYearEntity;
+ import org.exoplatform.social.core.chromattic.entity.IndexNumber;
+ import org.exoplatform.social.core.chromattic.entity.NamedEntity;
+-import org.exoplatform.social.core.chromattic.entity.SpaceRef;
+ 
+ public class ActivityRefIterator implements Iterator<ActivityRef> {
+ 
+@@ -61,14 +57,14 @@ public class ActivityRefIterator implements Iterator<ActivityRef> {
+ 
+   }
+   
+-  
+-  
+   private Iterator<ActivityRef> orderRefs() {
+     List<ActivityRef> got = new ArrayList<ActivityRef>(dayIterator.next().getActivityRefList());
+     
+     Collections.sort(got, new Comparator<ActivityRef>() {
+       public int compare(ActivityRef o1, ActivityRef o2) {
+-        return (int) (Long.parseLong(o2.getName()) - Long.parseLong(o1.getName()));
++        long val2 = o2.getLastUpdated() != null ? o2.getLastUpdated() : Long.parseLong(o2.getName());
++        long val1 = o1.getLastUpdated() != null ? o1.getLastUpdated() : Long.parseLong(o1.getName());
++        return (int) (val2 - val1);
+       }
+     });
+     return got.iterator();
+diff --git a/component/core/src/main/java/org/exoplatform/social/core/storage/impl/ActivityStorageImpl.java b/component/core/src/main/java/org/exoplatform/social/core/storage/impl/ActivityStorageImpl.java
+index e3ac7bc..5f30515 100644
+--- a/component/core/src/main/java/org/exoplatform/social/core/storage/impl/ActivityStorageImpl.java
++++ b/component/core/src/main/java/org/exoplatform/social/core/storage/impl/ActivityStorageImpl.java
+@@ -596,7 +596,7 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
+       if (mustInjectStreams) {
+         Identity identity = identityStorage.findIdentityById(comment.getUserId());
+         StreamInvocationHelper.updateCommenter(identity, activityEntity, commenters.toArray(new String[0]), oldUpdated);
+-        StreamInvocationHelper.update(activityEntity, mentioners.toArray(new String[0]), oldUpdated);
++        StreamInvocationHelper.update(activity, mentioners.toArray(new String[0]), oldUpdated);
+       }
+     }  
+     catch (NodeNotFoundException e) {
+@@ -612,7 +612,7 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
+       }
+     }
+     
+-    //StorageUtils.persist();
++    StorageUtils.persist();
+     
+     //
+     LOG.debug(String.format(
+@@ -650,7 +650,7 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
+           //run synchronous
+           StreamInvocationHelper.savePoster(owner, entity);
+           //run asynchronous
+-          StreamInvocationHelper.save(owner, entity, mentioners.toArray(new String[0]));
++          StreamInvocationHelper.save(owner, activity, mentioners.toArray(new String[0]));
+         }
+       }
+       else {
+diff --git a/component/core/src/main/java/org/exoplatform/social/core/storage/impl/ActivityStreamStorageImpl.java b/component/core/src/main/java/org/exoplatform/social/core/storage/impl/ActivityStreamStorageImpl.java
+index 5871f15..637ff3d 100644
+--- a/component/core/src/main/java/org/exoplatform/social/core/storage/impl/ActivityStreamStorageImpl.java
++++ b/component/core/src/main/java/org/exoplatform/social/core/storage/impl/ActivityStreamStorageImpl.java
+@@ -21,7 +21,6 @@ import java.util.Collection;
+ import java.util.Iterator;
+ import java.util.LinkedList;
+ import java.util.List;
+-import java.util.concurrent.CopyOnWriteArrayList;
+ 
+ import org.apache.commons.lang.ArrayUtils;
+ import org.chromattic.api.ChromatticException;
+@@ -119,7 +118,7 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
+       StreamProcessContext streamCtx = ObjectHelper.cast(StreamProcessContext.class, ctx);
+       Identity owner = streamCtx.getIdentity();
+       //
+-      ActivityEntity activityEntity = streamCtx.getActivityEntity();
++      ActivityEntity activityEntity = _findById(ActivityEntity.class, streamCtx.getActivity().getId());
+       if (OrganizationIdentityProvider.NAME.equals(owner.getProviderId())) {
+         user(owner, activityEntity);
+         //mention case
+@@ -231,7 +230,7 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
+       }
+       
+       for(ActivityRefListEntity list : refList) {
+-        list.remove(activityEntity.getLastUpdated());
++        list.remove(activityEntity);
+       }
+       
+       
+@@ -312,14 +311,13 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
+   
+   private void updateCommenterActivityRefs(IdentityEntity identityEntity, ActivityEntity activityEntity, ActivityRefType type, long oldUpdated) {
+     ActivityRefListEntity refList = type.refsOf(identityEntity);
+-    ActivityRef ref = refList.get(oldUpdated);
+-    if (ref != null && ref.getActivityEntity().getId().equals(activityEntity.getId()) ) {
++    ActivityRef ref = refList.get(activityEntity);
++    if (ref != null) {
+       LOG.trace("remove activityRefId " +  ref.getId() +" for commenter: " + identityEntity.getRemoteId());
+-      refList.remove(oldUpdated);
++      refList.remove(activityEntity);
+     }
+     
+-    ActivityRef newRef = refList.getOrCreated(activityEntity.getLastUpdated());
+-    newRef.setName("" + activityEntity.getLastUpdated());
++    ActivityRef newRef = refList.getOrCreated(activityEntity);
+     newRef.setLastUpdated(activityEntity.getLastUpdated());
+     newRef.setActivityEntity(activityEntity);
+   }
+@@ -345,24 +343,23 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
+   public void update(ProcessContext ctx) {
+     try {
+       StreamProcessContext streamCtx = ObjectHelper.cast(StreamProcessContext.class, ctx);
+-      ActivityEntity activityEntity = streamCtx.getActivityEntity();
+-      List<ActivityRef> references = new CopyOnWriteArrayList<ActivityRef>(activityEntity.getActivityRefs());
++      ActivityEntity activityEntity = _findById(ActivityEntity.class, streamCtx.getActivity().getId());
++      //ActivityEntity activityEntity = streamCtx.getActivity();
++      Collection<ActivityRef> references = activityEntity.getActivityRefs();
+       long oldUpdated = streamCtx.getOldLastUpdated();
+       ActivityRef newRef = null;
+       for (ActivityRef old : references) {
+-        if(Long.parseLong(old.getName()) > oldUpdated) {
+-          continue;
+-        }
+-
+-        LOG.trace("ActivityRef will be deleted: " + old.getId());
+         ActivityRefListEntity refList = old.getDay().getMonth().getYear().getList();
+-        //
+-        newRef = refList.getOrCreated(activityEntity.getLastUpdated());
+-        newRef.setLastUpdated(activityEntity.getLastUpdated());
+-        newRef.setActivityEntity(activityEntity);
+-        refList.remove(Long.parseLong(old.getName()));
++        //ActivityRef.getName equals ActivityId or not
++        if (old.getName().equalsIgnoreCase(activityEntity.getId())) {
++          refList.update(activityEntity, old, oldUpdated);
++        } else {
++          newRef = refList.getOrCreated(activityEntity.getLastUpdated());
++          newRef.setLastUpdated(activityEntity.getLastUpdated());
++          newRef.setActivityEntity(activityEntity);
++          refList.remove(Long.parseLong(old.getName()));
++        }
+       }
+-
+       // mentioners
+       addMentioner(streamCtx.getMentioners(), activityEntity);
+     } catch (NodeNotFoundException ex) {
+@@ -743,10 +740,17 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
+           continue;
+         }
+ 
+-        got.add(getStorage().getActivity(current.getActivityEntity().getId()));
+-        if (++nb == limit) {
+-          break;
++        ExoSocialActivity a = getStorage().getActivity(current.getActivityEntity().getId());
++        if (!got.contains(a)) {
++          got.add(a);
++          if (++nb == limit) {
++            break;
++          }
++        } else {
++          current.getDay().getActivityRefs().remove(current.getName());
+         }
++        
++        
+       }
+     } catch (NodeNotFoundException e) {
+       LOG.warn("Failed to activities!");
+@@ -823,12 +827,12 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
+   
+   private boolean isExistingActivityRef(IdentityEntity identityEntity, ActivityEntity activityEntity, ActivityRefType type) throws NodeNotFoundException {
+     ActivityRefListEntity refList = type.refsOf(identityEntity);
+-    return refList.get(activityEntity.getLastUpdated()) != null;
++    return refList.get(activityEntity) != null;
+   }
+   
+   private boolean hasActivityRefs(IdentityEntity identityEntity, ActivityEntity activityEntity, ActivityRefType type, long oldUpdated) throws NodeNotFoundException {
+     ActivityRefListEntity refList = type.refsOf(identityEntity);
+-    ActivityRef ref = refList.get(oldUpdated);
++    ActivityRef ref = refList.get(activityEntity);
+     return ref != null && ref.getActivityEntity().getId() == activityEntity.getId();
+   }
+   
+@@ -926,16 +930,7 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
+         
+         
+         ActivityRefListEntity listRef = type.refsOf(identityEntity);
+-        
+         ActivityRef ref = listRef.getOrCreated(activityEntity);
+-        
+-        if (ref.getName() == null) {
+-          ref.setName(activityEntity.getName());
+-        }
+-
+-        if (ref.getLastUpdated() == null) {
+-          ref.setLastUpdated(activityEntity.getLastUpdated());
+-        }
+         ref.setActivityEntity(activityEntity);
+       }
+     }
+diff --git a/component/core/src/main/java/org/exoplatform/social/core/storage/impl/RelationshipStorageImpl.java b/component/core/src/main/java/org/exoplatform/social/core/storage/impl/RelationshipStorageImpl.java
+index 79b9166..3cc5f99 100644
+--- a/component/core/src/main/java/org/exoplatform/social/core/storage/impl/RelationshipStorageImpl.java
++++ b/component/core/src/main/java/org/exoplatform/social/core/storage/impl/RelationshipStorageImpl.java
+@@ -381,7 +381,7 @@ public class RelationshipStorageImpl extends AbstractStorage implements Relation
+       // TODO : IGNORED
+     }
+ 
+-    getSession().save();
++    //getSession().save();
+ 
+     //
+     LOG.debug(String.format(
+diff --git a/component/core/src/main/java/org/exoplatform/social/core/storage/streams/StreamInvocationHelper.java b/component/core/src/main/java/org/exoplatform/social/core/storage/streams/StreamInvocationHelper.java
+index 2ced94e..4e5cef5 100644
+--- a/component/core/src/main/java/org/exoplatform/social/core/storage/streams/StreamInvocationHelper.java
++++ b/component/core/src/main/java/org/exoplatform/social/core/storage/streams/StreamInvocationHelper.java
+@@ -42,11 +42,11 @@ public class StreamInvocationHelper {
+    * @param mentioners NULL is empty mentioner.
+    * @return
+    */
+-  public static ProcessContext save(Identity owner, ActivityEntity entity, String[] mentioners) {
++  public static ProcessContext save(Identity owner, ExoSocialActivity activity, String[] mentioners) {
+     //
+     SocialServiceContext ctx = SocialServiceContextImpl.getInstance();
+     StreamProcessContext processCtx = StreamProcessContext.getIntance(StreamProcessContext.NEW_ACTIVITY_RELATIONS_PROCESS, ctx);
+-    processCtx.identity(owner).activityEntity(entity).mentioners(mentioners);
++    processCtx.identity(owner).activity(activity).mentioners(mentioners);
+     
+     try {
+       if (ctx.isAsync()) {
+@@ -94,10 +94,10 @@ public class StreamInvocationHelper {
+     return false;
+   }
+   
+-  public static ProcessContext update(ActivityEntity entity, String[] mentioners, long oldUpdated) {
++  public static ProcessContext update(ExoSocialActivity activity, String[] mentioners, long oldUpdated) {
+     //
+     StreamProcessContext processCtx = StreamProcessContext.getIntance(StreamProcessContext.UPDATE_ACTIVITY_PROCESS, ctx);
+-    processCtx.activityEntity(entity).mentioners(mentioners).oldLastUpdated(oldUpdated);
++    processCtx.activity(activity).mentioners(mentioners).oldLastUpdated(oldUpdated);
+     
+     try {
+       if (ctx.isAsync()) {
+diff --git a/component/core/src/main/java/org/exoplatform/social/core/storage/synchronization/SynchronizedActivityStreamStorage.java b/component/core/src/main/java/org/exoplatform/social/core/storage/synchronization/SynchronizedActivityStreamStorage.java
+index a1dedfd..a6fb7b9 100644
+--- a/component/core/src/main/java/org/exoplatform/social/core/storage/synchronization/SynchronizedActivityStreamStorage.java
++++ b/component/core/src/main/java/org/exoplatform/social/core/storage/synchronization/SynchronizedActivityStreamStorage.java
+@@ -137,5 +137,27 @@ public class SynchronizedActivityStreamStorage extends ActivityStreamStorageImpl
+     }
+   }
+   
++  @Override
++  public void update(ProcessContext ctx) {
++    boolean created = startSynchronization();
++    try {
++      super.update(ctx);
++    }
++    finally {
++      stopSynchronization(created);
++    }
++    
++  }
++  
++  @Override
++  public void updateCommenter(ProcessContext ctx) {
++    boolean created = startSynchronization();
++    try {
++      super.updateCommenter(ctx);
++    }
++    finally {
++      stopSynchronization(created);
++    }
++  }
+ 
+ }
+diff --git a/component/core/src/test/java/org/exoplatform/social/core/application/ProfileUpdatesPublisherTest.java b/component/core/src/test/java/org/exoplatform/social/core/application/ProfileUpdatesPublisherTest.java
+index a129789..75a99f2 100644
+--- a/component/core/src/test/java/org/exoplatform/social/core/application/ProfileUpdatesPublisherTest.java
++++ b/component/core/src/test/java/org/exoplatform/social/core/application/ProfileUpdatesPublisherTest.java
+@@ -154,11 +154,11 @@ public class ProfileUpdatesPublisherTest extends AbstractCoreTest {
+     assertEquals(6, comments.size());
+     
+     // make sure just only one activity existing
+-    //assertEquals(1, activityManager.getActivitiesWithListAccess(rootIdentity).getSize());
++    assertEquals(1, activityManager.getActivitiesWithListAccess(rootIdentity).getSize());
+     
+     // delete this activity
+     activityManager.deleteActivity(activityId);
+-    assertEquals(1, activityManager.getActivitiesWithListAccess(rootIdentity).getSize());
++    assertEquals(0, activityManager.getActivitiesWithListAccess(rootIdentity).getSize());
+     
+     //re-updated profile will create new activity with a comment 
+     profile.setProperty(Profile.POSITION, "worker");
+diff --git a/component/core/src/test/java/org/exoplatform/social/core/feature/WhatsHotTest.java b/component/core/src/test/java/org/exoplatform/social/core/feature/WhatsHotTest.java
+index 6ffe3c9..672dac4 100644
+--- a/component/core/src/test/java/org/exoplatform/social/core/feature/WhatsHotTest.java
++++ b/component/core/src/test/java/org/exoplatform/social/core/feature/WhatsHotTest.java
+@@ -113,7 +113,8 @@ public class WhatsHotTest extends AbstractCoreTest {
+     }
+ 
+     // remove 5 activities
+-    Iterator<ExoSocialActivity> it = activityStorage.getUserActivities(rootIdentity).iterator();
++    List<ExoSocialActivity> result = activityStorage.getUserActivities(rootIdentity);
++    Iterator<ExoSocialActivity> it = result.iterator();
+ 
+     for (int i = 0; i < 5; ++i) {
+       activityStorage.deleteActivity(it.next().getId());
+diff --git a/component/core/src/test/java/org/exoplatform/social/core/storage/ActivityStorageTest.java b/component/core/src/test/java/org/exoplatform/social/core/storage/ActivityStorageTest.java
+index 0cebb73..f995306 100644
+--- a/component/core/src/test/java/org/exoplatform/social/core/storage/ActivityStorageTest.java
++++ b/component/core/src/test/java/org/exoplatform/social/core/storage/ActivityStorageTest.java
+@@ -1854,7 +1854,7 @@ public class ActivityStorageTest extends AbstractCoreTest {
+    * 
+    * @throws ActivityStorageException
+    */
+-  @MaxQueryNumber(498)
++  @MaxQueryNumber(540)
+   public void testGetActivitiesByPagingWithCreatingComments() throws ActivityStorageException {
+     checkCleanData();
+ 
+@@ -2043,7 +2043,7 @@ public class ActivityStorageTest extends AbstractCoreTest {
+   /**
+    * Tests {@link ActivityStorage#getOlderOnActivityFeed(Identity, Long, int)}.
+    */
+-  @MaxQueryNumber(722)
++  @MaxQueryNumber(760)
+   public void testGetOlderOnActivityFeedWithTimestamp() throws Exception {
+     checkCleanData();
+     createActivities(5, demoIdentity);
+diff --git a/component/core/src/test/java/org/exoplatform/social/core/storage/cache/CachedActivityStorageTestCase.java b/component/core/src/test/java/org/exoplatform/social/core/storage/cache/CachedActivityStorageTestCase.java
+index f12f094..6efcb01 100644
+--- a/component/core/src/test/java/org/exoplatform/social/core/storage/cache/CachedActivityStorageTestCase.java
++++ b/component/core/src/test/java/org/exoplatform/social/core/storage/cache/CachedActivityStorageTestCase.java
+@@ -182,7 +182,7 @@ public class CachedActivityStorageTestCase extends AbstractCoreTest {
+ 
+   }
+ 
+-  @MaxQueryNumber(260)
++  @MaxQueryNumber(270)
+   public void testSaveComment() throws Exception {
+ 
+     //
+@@ -215,7 +215,7 @@ public class CachedActivityStorageTestCase extends AbstractCoreTest {
+ 
+   }
+ 
+-  @MaxQueryNumber(314)
++  @MaxQueryNumber(330)
+   public void testRemoveComment() throws Exception {
+     //
+     ExoSocialActivity activity = new ExoSocialActivityImpl();
+diff --git a/component/webui/src/main/java/org/exoplatform/social/webui/activity/UIActivitiesLoader.java b/component/webui/src/main/java/org/exoplatform/social/webui/activity/UIActivitiesLoader.java
+index 6407fc7..82586e1 100644
+--- a/component/webui/src/main/java/org/exoplatform/social/webui/activity/UIActivitiesLoader.java
++++ b/component/webui/src/main/java/org/exoplatform/social/webui/activity/UIActivitiesLoader.java
+@@ -66,6 +66,7 @@ public class UIActivitiesLoader extends UIContainer {
+   private UIActivitiesContainer activitiesContainer;
+   private UIContainer extendContainer;
+   private int loadingCapacity;
++  private int pageSize;
+   private Space space;
+   private int activitiesCounter;
+   
+@@ -116,6 +117,7 @@ public class UIActivitiesLoader extends UIContainer {
+ 
+   public void setLoadingCapacity(int loadingCapacity) {
+     this.loadingCapacity = loadingCapacity;
++    this.pageSize = loadingCapacity;
+   }
+ 
+   public boolean isHasMore() {
+@@ -196,7 +198,13 @@ public class UIActivitiesLoader extends UIContainer {
+     
+     lastActivitiesLoader.setActivities(activities);
+     if(activityListAccess != null) {
+-      lastActivitiesLoader.setHasMore(activityListAccess.getSize() > activitiesCounter);
++      if (activities.size() < this.pageSize) {
++        lastActivitiesLoader.setHasMore(false);
++        this.setHasMore(false);
++      } else if (activities.size() == this.pageSize) {
++        lastActivitiesLoader.setHasMore(activityListAccess.getSize() > activitiesCounter);
++        this.setHasMore(false);
++      }
+     }
+   }
+ 
