@@ -316,14 +316,13 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
     IdentityEntity identityEntity = identityStorage._findIdentityEntity(identity.getProviderId(), identity.getRemoteId());
     ActivityRefListEntity refList = type.refsOf(identityEntity);
     ActivityRef ref = refList.get(activityEntity);
-    HidableEntity hidableActivity = null;
+    HidableEntity hidableActivity = _getMixin(activityEntity, HidableEntity.class, false);
     if (ref != null) {
       LOG.trace("remove activityRefId " +  ref.getId() +" for commenter: " + identityEntity.getRemoteId());
-      hidableActivity = _getMixin(activityEntity, HidableEntity.class, false);
       refList.remove(activityEntity, hidableActivity.getHidden());
     }
     
-    refList.getOrCreated(activityEntity, hidableActivity == null ? false : hidableActivity.getHidden() );
+    refList.getOrCreated(activityEntity, hidableActivity.getHidden() );
   }
 
   private void createRefForPoster(ActivityEntity activityEntity, long oldUpdated) throws NodeNotFoundException {
@@ -482,7 +481,7 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
   
   @Override
   public List<ExoSocialActivity> getSpaceStream(Identity owner, int offset, int limit) {
-    return getActivities(ActivityRefType.SPACE_STREAM, owner, offset, limit);
+    return getActivitiesNotQuery(ActivityRefType.SPACE_STREAM, owner, offset, limit);
   }
 
   @Override
@@ -695,35 +694,6 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
     public abstract ActivityRefListEntity create(IdentityEntity identityEntity);
   }
   
-  private List<ExoSocialActivity> getActivities(ActivityRefType type, Identity owner, int offset, int limit) {
-    List<ExoSocialActivity> got = new LinkedList<ExoSocialActivity>();
-    try {
-      IdentityEntity identityEntity = identityStorage._findIdentityEntity(owner.getProviderId(), owner.getRemoteId());
-      
-      Iterator<ActivityRef> it = getActivityRefs(identityEntity, type, offset, limit);
-
-      while (it.hasNext()) {
-        ActivityRef current = it.next();
-
-        //take care in the case, current.getActivityEntity() = null the same ActivityRef, need to remove it out
-        if (current.getActivityEntity() == null) {
-          current.getDay().getActivityRefs().remove(current.getName());
-          continue;
-        }
-        
-        //
-        ExoSocialActivity a = getStorage().getActivity(current.getActivityEntity().getId());
-            
-        got.add(a);
-
-      }
-      
-    } catch (NodeNotFoundException e) {
-      LOG.warn("Failed to getActivities()");
-    }
-    
-    return got;
-  }
   
   private List<ExoSocialActivity> getActivitiesNotQuery(ActivityRefType type, Identity owner, int offset, int limit) {
     List<ExoSocialActivity> got = new LinkedList<ExoSocialActivity>();

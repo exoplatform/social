@@ -246,7 +246,6 @@ public class SpaceActivityPublisherTest extends  AbstractCoreTest {
    
    
  }
- /**
  public void testSpaceHidden() throws Exception {
    Identity rootIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "root", true);
 
@@ -287,7 +286,7 @@ public class SpaceActivityPublisherTest extends  AbstractCoreTest {
    assertEquals(1, spaceActivities.load(0, 10).length);
    
    //Check user activity stream
-   assertEquals(2, userActivities.getSize());
+   assertEquals(1, userActivities.getSize());
    assertEquals(1, userActivities.load(0, 10).length);
    
    //Check user feed activity stream
@@ -304,10 +303,10 @@ public class SpaceActivityPublisherTest extends  AbstractCoreTest {
    
    //Check space activity stream
    assertEquals(0, spaceActivities.getSize());
-   assertEquals(1, spaceActivities.load(0, 10).length);
+   assertEquals(0, spaceActivities.load(0, 10).length);
    
    //Check user activity stream
-   assertEquals(1, userActivities.getSize());
+   assertEquals(0, userActivities.getSize());
    assertEquals(0, userActivities.load(0, 10).length);
    
    //Check user feed activity stream
@@ -317,6 +316,6 @@ public class SpaceActivityPublisherTest extends  AbstractCoreTest {
    //clean up
    spaceService.deleteSpace(space);
    identityManager.deleteIdentity(rootIdentity);
- } **/
+ }
 
 }
