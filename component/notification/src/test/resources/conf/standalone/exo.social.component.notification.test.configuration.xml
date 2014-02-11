@@ -80,6 +80,26 @@
   </component>
 
   <component>
+    <key>org.exoplatform.commons.api.notification.service.NotificationCompletionService</key>
+    <type>org.exoplatform.commons.api.notification.service.NotificationCompletionService</type>
+    <init-params>
+      <value-param>
+        <name>async-execution</name>
+        <value>false</value>
+      </value-param>
+    </init-params>
+  </component>
+
+  <component>
+    <key>org.exoplatform.commons.api.notification.service.setting.PluginContainer</key>
+    <type>org.exoplatform.commons.notification.impl.setting.NotificationPluginContainer</type>
+  </component>
+
+  <component>
+    <type>org.exoplatform.commons.notification.cache.TemplateCaching</type>
+  </component>
+
+  <component>
     <key>org.exoplatform.services.resources.ResourceBundleService</key>
     <type>org.exoplatform.social.notification.mock.MockResourceBundleService</type>
   </component>

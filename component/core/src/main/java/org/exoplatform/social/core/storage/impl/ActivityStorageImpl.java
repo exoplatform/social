@@ -296,6 +296,11 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     activity.setPriority(activityEntity.getPriority());
     activity.isComment(activityEntity.isComment());
     activity.setPosterId(activityEntity.getPosterIdentity().getId());
+    
+    //
+    if (activity.isComment()) {
+      activity.setParentId(activityEntity.getParentActivity().getId());
+    }
 
     //
     List<String> computeCommentid = new ArrayList<String>();
@@ -614,7 +619,7 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
       if (mustInjectStreams) {
         Identity identity = identityStorage.findIdentityById(comment.getUserId());
         StreamInvocationHelper.updateCommenter(identity, activityEntity, commenters.toArray(new String[0]), oldUpdated);
-        StreamInvocationHelper.update(activityEntity, mentioners.toArray(new String[0]), oldUpdated);
+        StreamInvocationHelper.update(activity, mentioners.toArray(new String[0]), oldUpdated);
       }
     }  
     catch (NodeNotFoundException e) {
@@ -630,14 +635,15 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
       }
     }
     
-    //StorageUtils.persist();
+    StorageUtils.persist();
     
     //
     LOG.debug(String.format(
-        "Comment %s by %s (%s) created",
+        "Comment %s by %s (%s) created: comment size is == %s ",
         comment.getTitle(),
         comment.getUserId(),
-        comment.getId()
+        comment.getId(),
+        activity.getCommentedIds().length
     ));
   }
 
@@ -669,7 +675,7 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
           //run synchronous
           StreamInvocationHelper.savePoster(owner, entity);
           //run asynchronous
-          StreamInvocationHelper.save(owner, entity, mentioners.toArray(new String[0]));
+          StreamInvocationHelper.save(owner, activity, mentioners.toArray(new String[0]));
         }
       }
       else {
@@ -1452,7 +1458,7 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     
     for (int i = offset ; i < commentIds.length ; i++) {
       if (isHidden(commentIds[i]) == false) {
-        ExoSocialActivity comment = getActivity(commentIds[i]);
+        ExoSocialActivity comment = getStorage().getActivity(commentIds[i]);
         if (comment == null) {
           continue;
         }
@@ -1498,20 +1504,20 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
    */
   public int getNumberOfComments(ExoSocialActivity existingActivity) {
     //return getStorage().getActivity(existingActivity.getId()).getReplyToId().length;
-    List<ExoSocialActivity> activities = new ArrayList<ExoSocialActivity>();
+    int size = 0;
 
     //
     List<String> commentIds = Arrays.asList(getStorage().getActivity(existingActivity.getId()).getReplyToId());
 
     //
     for(String commentId : commentIds) {
-      ExoSocialActivity comment = getActivity(commentId);
+      ExoSocialActivity comment = getStorage().getActivity(commentId);
       if (comment != null && !comment.isHidden())
-        activities.add(getStorage().getActivity(commentId));
+        size++;
     }
 
     //
-    return activities.size();
+    return size;
   }
 
   /**

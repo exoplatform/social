@@ -161,6 +161,9 @@ public class CachedActivityStorage implements ActivityStorage {
    */
   public ExoSocialActivity getActivity(final String activityId) throws ActivityStorageException {
 
+    if (activityId == null || activityId.length() == 0) {
+      return ActivityData.NULL.build();
+    }
     //
     ActivityKey key = new ActivityKey(activityId);
 
@@ -258,7 +261,7 @@ public class CachedActivityStorage implements ActivityStorage {
    * {@inheritDoc}
    */
   public ExoSocialActivity getParentActivity(final ExoSocialActivity comment) throws ActivityStorageException {
-    return storage.getParentActivity(comment);
+    return getActivity(getActivity(comment.getId()).getParentId());
   }
 
   /**
@@ -867,22 +870,7 @@ public class CachedActivityStorage implements ActivityStorage {
    * {@inheritDoc}
    */
   public List<ExoSocialActivity> getComments(final ExoSocialActivity existingActivity, final int offset, final int limit) {
-    //
-    ActivityCountKey key = new ActivityCountKey(existingActivity.getId(), ActivityType.COMMENTS);
-    ListActivitiesKey listKey = new ListActivitiesKey(key, offset, limit);
-
-    //
-    ListActivitiesData keys = activitiesCache.get(
-        new ServiceContext<ListActivitiesData>() {
-          public ListActivitiesData execute() {
-            List<ExoSocialActivity> got = storage.getComments(existingActivity, offset, limit);
-            return buildIds(got);
-          }
-        },
-        listKey);
-
-    //
-    return buildActivities(keys);
+    return storage.getComments(existingActivity, offset, limit);
   }
 
   /**
