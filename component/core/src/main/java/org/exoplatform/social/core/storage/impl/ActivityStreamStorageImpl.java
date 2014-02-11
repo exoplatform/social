@@ -21,7 +21,6 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.locks.ReentrantLock;
 
 import org.apache.commons.lang.ArrayUtils;
@@ -232,7 +231,7 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
       }
       
       for(ActivityRefListEntity list : refList) {
-        list.remove(activityEntity.getLastUpdated());
+        list.remove(activityEntity);
       }
       
       
@@ -313,14 +312,13 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
   
   private void updateCommenterActivityRefs(IdentityEntity identityEntity, ActivityEntity activityEntity, ActivityRefType type, long oldUpdated) {
     ActivityRefListEntity refList = type.refsOf(identityEntity);
-    ActivityRef ref = refList.get(oldUpdated);
-    if (ref != null && ref.getActivityEntity().getId().equals(activityEntity.getId()) ) {
+    ActivityRef ref = refList.get(activityEntity);
+    if (ref != null) {
       LOG.trace("remove activityRefId " +  ref.getId() +" for commenter: " + identityEntity.getRemoteId());
-      refList.remove(oldUpdated);
+      refList.remove(activityEntity);
     }
     
-    ActivityRef newRef = refList.getOrCreated(activityEntity.getLastUpdated());
-    newRef.setName("" + activityEntity.getLastUpdated());
+    ActivityRef newRef = refList.getOrCreated(activityEntity);
     newRef.setLastUpdated(activityEntity.getLastUpdated());
     newRef.setActivityEntity(activityEntity);
   }
@@ -344,28 +342,24 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
   
   @Override
   public void update(ProcessContext ctx) {
-    ReentrantLock lock = new ReentrantLock();
     try {
       StreamProcessContext streamCtx = ObjectHelper.cast(StreamProcessContext.class, ctx);
       ActivityEntity activityEntity = streamCtx.getActivityEntity();
-      lock.lock();
       Collection<ActivityRef> references = activityEntity.getActivityRefs();
       long oldUpdated = streamCtx.getOldLastUpdated();
       ActivityRef newRef = null;
       for (ActivityRef old : references) {
-        if(Long.parseLong(old.getName()) > oldUpdated) {
-          continue;
-        }
-
-        LOG.trace("ActivityRef will be deleted: " + old.getId());
         ActivityRefListEntity refList = old.getDay().getMonth().getYear().getList();
-        //
-        newRef = refList.getOrCreated(activityEntity.getLastUpdated());
-        newRef.setLastUpdated(activityEntity.getLastUpdated());
-        newRef.setActivityEntity(activityEntity);
-        refList.remove(Long.parseLong(old.getName()));
+        //ActivityRef.getName equals ActivityId or not
+        if (old.getName().equalsIgnoreCase(activityEntity.getId())) {
+          refList.update(activityEntity, old, oldUpdated);
+        } else {
+          newRef = refList.getOrCreated(activityEntity.getLastUpdated());
+          newRef.setLastUpdated(activityEntity.getLastUpdated());
+          newRef.setActivityEntity(activityEntity);
+          refList.remove(Long.parseLong(old.getName()));
+        }
       }
-
       // mentioners
       addMentioner(streamCtx.getMentioners(), activityEntity);
     } catch (NodeNotFoundException ex) {
@@ -375,8 +369,6 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
     } catch (ChromatticException ex) {
         LOG.warn("Probably was updated activity reference by another session");
         LOG.debug(ex.getMessage(), ex);
-    } finally {
-      lock.unlock();
     }
   }
 
@@ -748,10 +740,17 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
           continue;
         }
 
-        got.add(getStorage().getActivity(current.getActivityEntity().getId()));
-        if (++nb == limit) {
-          break;
+        ExoSocialActivity a = getStorage().getActivity(current.getActivityEntity().getId());
+        if (!got.contains(a)) {
+          got.add(a);
+          if (++nb == limit) {
+            break;
+          }
+        } else {
+          current.getDay().getActivityRefs().remove(current.getName());
         }
+        
+        
       }
     } catch (NodeNotFoundException e) {
       LOG.warn("Failed to activities!");
@@ -828,12 +827,12 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
   
   private boolean isExistingActivityRef(IdentityEntity identityEntity, ActivityEntity activityEntity, ActivityRefType type) throws NodeNotFoundException {
     ActivityRefListEntity refList = type.refsOf(identityEntity);
-    return refList.get(activityEntity.getLastUpdated()) != null;
+    return refList.get(activityEntity) != null;
   }
   
   private boolean hasActivityRefs(IdentityEntity identityEntity, ActivityEntity activityEntity, ActivityRefType type, long oldUpdated) throws NodeNotFoundException {
     ActivityRefListEntity refList = type.refsOf(identityEntity);
-    ActivityRef ref = refList.get(oldUpdated);
+    ActivityRef ref = refList.get(activityEntity);
     return ref != null && ref.getActivityEntity().getId() == activityEntity.getId();
   }
   
@@ -931,16 +930,7 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
         
         
         ActivityRefListEntity listRef = type.refsOf(identityEntity);
-        
         ActivityRef ref = listRef.getOrCreated(activityEntity);
-        
-        if (ref.getName() == null) {
-          ref.setName(activityEntity.getName());
-        }
-
-        if (ref.getLastUpdated() == null) {
-          ref.setLastUpdated(activityEntity.getLastUpdated());
-        }
         ref.setActivityEntity(activityEntity);
       }
     }

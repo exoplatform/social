@@ -473,7 +473,7 @@ public class ActivityStreamStorageTest extends AbstractCoreTest {
 
     {
       spaceService.removeMember(space, maryIdentity.getRemoteId());
-      assertEquals(1, streamStorage.getMySpaces(maryIdentity, 0, -1).size());
+      assertEquals(0, streamStorage.getMySpaces(maryIdentity, 0, -1).size());
     }
    
     String activityId = identityStorage.getProfileActivityId(spaceIdentity.getProfile(), Profile.AttachedActivityType.SPACE);

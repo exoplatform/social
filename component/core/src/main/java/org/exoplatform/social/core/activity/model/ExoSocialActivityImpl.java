@@ -507,9 +507,6 @@ public class ExoSocialActivityImpl extends ActivityImpl implements ExoSocialActi
     if (!(o instanceof ExoSocialActivityImpl)) {
       return false;
     }
-    if (!super.equals(o)) {
-      return false;
-    }
 
     ExoSocialActivityImpl that = (ExoSocialActivityImpl) o;
 

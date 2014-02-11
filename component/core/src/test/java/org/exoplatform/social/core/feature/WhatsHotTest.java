@@ -113,7 +113,8 @@ public class WhatsHotTest extends AbstractCoreTest {
     }
 
     // remove 5 activities
-    Iterator<ExoSocialActivity> it = activityStorage.getUserActivities(rootIdentity).iterator();
+    List<ExoSocialActivity> result = activityStorage.getUserActivities(rootIdentity);
+    Iterator<ExoSocialActivity> it = result.iterator();
 
     for (int i = 0; i < 5; ++i) {
       activityStorage.deleteActivity(it.next().getId());
