@@ -118,7 +118,7 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
       StreamProcessContext streamCtx = ObjectHelper.cast(StreamProcessContext.class, ctx);
       Identity owner = streamCtx.getIdentity();
       //
-      ActivityEntity activityEntity = streamCtx.getActivityEntity();
+      ActivityEntity activityEntity = _findById(ActivityEntity.class, streamCtx.getActivity().getId());
       if (OrganizationIdentityProvider.NAME.equals(owner.getProviderId())) {
         user(owner, activityEntity);
         //mention case
@@ -343,8 +343,9 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
   public void update(ProcessContext ctx) {
     try {
       StreamProcessContext streamCtx = ObjectHelper.cast(StreamProcessContext.class, ctx);
-      ActivityEntity activityEntity = streamCtx.getActivityEntity();
-      Collection<ActivityRef> references = new ArrayList<ActivityRef>(activityEntity.getActivityRefs());
+      ActivityEntity activityEntity = _findById(ActivityEntity.class, streamCtx.getActivity().getId());
+      //ActivityEntity activityEntity = streamCtx.getActivity();
+      Collection<ActivityRef> references = activityEntity.getActivityRefs();
       long oldUpdated = streamCtx.getOldLastUpdated();
       ActivityRef newRef = null;
       for (ActivityRef old : references) {
