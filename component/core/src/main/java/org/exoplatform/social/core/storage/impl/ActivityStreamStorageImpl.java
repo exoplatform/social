@@ -344,7 +344,7 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
     try {
       StreamProcessContext streamCtx = ObjectHelper.cast(StreamProcessContext.class, ctx);
       ActivityEntity activityEntity = streamCtx.getActivityEntity();
-      Collection<ActivityRef> references = activityEntity.getActivityRefs();
+      Collection<ActivityRef> references = new ArrayList<ActivityRef>(activityEntity.getActivityRefs());
       long oldUpdated = streamCtx.getOldLastUpdated();
       ActivityRef newRef = null;
       for (ActivityRef old : references) {
