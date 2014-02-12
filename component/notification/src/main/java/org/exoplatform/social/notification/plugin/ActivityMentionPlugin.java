@@ -115,6 +115,9 @@ public class ActivityMentionPlugin extends AbstractNotificationPlugin {
       for (NotificationInfo notification : notifications) {
         String activityId = notification.getValueOwnerParameter(SocialNotificationUtils.ACTIVITY_ID.getKey());
         ExoSocialActivity activity = Utils.getActivityManager().getActivity(activityId);
+        if (activity == null) {
+          continue;
+        }
         Identity identity = Utils.getIdentityManager().getIdentity(activity.getPosterId(), true);
         
         if (activity.isComment()) {
