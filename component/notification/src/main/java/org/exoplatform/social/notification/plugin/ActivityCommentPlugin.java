@@ -110,6 +110,9 @@ public class ActivityCommentPlugin extends AbstractNotificationPlugin {
       for (NotificationInfo message : notifications) {
         String activityId = message.getValueOwnerParameter(SocialNotificationUtils.ACTIVITY_ID.getKey());
         ExoSocialActivity activity = Utils.getActivityManager().getActivity(activityId);
+        if (activity == null) {
+          continue;
+        }
         ExoSocialActivity parentActivity = Utils.getActivityManager().getParentActivity(activity);
         //
         SocialNotificationUtils.processInforSendTo(receiverMap, parentActivity.getId(), message.getValueOwnerParameter("poster"));
