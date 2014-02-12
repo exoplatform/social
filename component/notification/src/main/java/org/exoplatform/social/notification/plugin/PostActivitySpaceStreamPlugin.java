@@ -115,6 +115,9 @@ public class PostActivitySpaceStreamPlugin extends AbstractNotificationPlugin {
       for (NotificationInfo message : notifications) {
         String activityId = message.getValueOwnerParameter(SocialNotificationUtils.ACTIVITY_ID.getKey());
         ExoSocialActivity activity = Utils.getActivityManager().getActivity(activityId);
+        if (activity == null) {
+          continue;
+        }
         Space space = Utils.getSpaceService().getSpaceByPrettyName(activity.getStreamOwner());
         //
         SocialNotificationUtils.processInforSendTo(map, space.getId(), message.getValueOwnerParameter(SocialNotificationUtils.POSTER.getKey()));
