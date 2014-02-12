@@ -44,19 +44,6 @@ public class SynchronizedActivityStreamStorage extends ActivityStreamStorageImpl
   }
   
   @Override
-  public void savePoster(ProcessContext ctx) {
-    boolean created = startSynchronization();
-    try {
-      super.savePoster(ctx);
-    }
-    finally {
-      stopSynchronization(created);
-    }
-    
-  }
-  
-  
-  @Override
   public void unLike(Identity removedLike, ExoSocialActivity activity) {
     
     boolean created = startSynchronization();
