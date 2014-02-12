@@ -105,6 +105,12 @@ public class PostActivityPlugin extends AbstractNotificationPlugin {
     
     try {
       for (NotificationInfo message : notifications) {
+        ExoSocialActivity activity = Utils.getActivityManager().getActivity(message.getValueOwnerParameter(SocialNotificationUtils.ACTIVITY_ID.getKey()));
+        
+        //Case of activity was deleted, ignore this notification
+        if (activity == null) {
+          continue;
+        }
         SocialNotificationUtils.processInforSendTo(receiverMap, sendToUser, message.getValueOwnerParameter(SocialNotificationUtils.POSTER.getKey()));
       }
       writer.append(SocialNotificationUtils.getMessageByIds(receiverMap, templateContext, "user"));
