@@ -595,7 +595,7 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
       
       //SOC-3915 empty stream when post comment but lost it.
       //WhatsHotTest is failed.
-      StorageUtils.persist();
+      StorageUtils.persist(true);
       //
       if (mustInjectStreams) {
         Identity identity = identityStorage.findIdentityById(comment.getUserId());
@@ -616,7 +616,7 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
       }
     }
     
-    StorageUtils.persist();
+    StorageUtils.persist(true);
     
     //
     LOG.debug(String.format(
@@ -648,7 +648,7 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
         List<String> mentioners = new ArrayList<String>();
         ActivityEntity entity = _createActivity(owner, activity, mentioners);
         //
-        StorageUtils.persist();
+        StorageUtils.persist(true);
         //create refs
         if (mustInjectStreams) {
           //run synchronous
@@ -661,7 +661,7 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
         _saveActivity(activity);
       }
 
-      StorageUtils.persist();
+      StorageUtils.persist(true);
 
       //
       LOG.debug(String.format(
