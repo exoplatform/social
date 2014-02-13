@@ -30,7 +30,7 @@ import org.exoplatform.services.jcr.RepositoryService;
  * @copyright eXo SAS
  */
 @ConfiguredBy({
-  @ConfigurationUnit(scope = ContainerScope.PORTAL, path = "conf/standalone/exo.social.component.test.jcr-configuration.xml"),
+  @ConfigurationUnit(scope = ContainerScope.PORTAL, path = "conf/exo.portal.component.test.jcr-configuration.xml"),
   @ConfigurationUnit(scope = ContainerScope.PORTAL, path = "conf/standalone/exo.social.component.common.test.configuration.xml")
 })
 public abstract class AbstractCommonTest extends BaseExoTestCase {
