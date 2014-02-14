@@ -1538,7 +1538,7 @@ public class ActivityStorageTest extends AbstractCoreTest {
    * 
    * @since 1.2.0-Beta3
    */
-  @MaxQueryNumber(15350)
+  @MaxQueryNumber(15380)
   public void testGetComments() {
     int totalNumber = 40;
     String activityTitle = "activity title";
@@ -1567,7 +1567,7 @@ public class ActivityStorageTest extends AbstractCoreTest {
    * 
    * @since 1.2.0-Beta3
    */
-  @MaxQueryNumber(15350)
+  @MaxQueryNumber(15380)
   public void testGetNumberOfComments() {
     int totalNumber = 40;
     String activityTitle = "activity title";
@@ -1599,7 +1599,7 @@ public class ActivityStorageTest extends AbstractCoreTest {
    * 
    * @since 1.2.0-Beta3
    */
-  @MaxQueryNumber(9150)
+  @MaxQueryNumber(9260)
   public void testGetNumberOfNewerComments() {
     int totalNumber = 10;
     String activityTitle = "activity title";
@@ -1649,7 +1649,7 @@ public class ActivityStorageTest extends AbstractCoreTest {
    * 
    * @since 1.2.0-Beta3
    */
-  @MaxQueryNumber(9150)
+  @MaxQueryNumber(9260)
   public void testGetNewerComments() {
     int totalNumber = 10;
     String activityTitle = "activity title";
@@ -1919,7 +1919,7 @@ public class ActivityStorageTest extends AbstractCoreTest {
    * 
    * @since 4.0
    */
-  @MaxQueryNumber(1940)
+  @MaxQueryNumber(2010)
   public void testGetHiddenComments() {
     int totalNumber = 5;
     String activityTitle = "activity title";
@@ -2385,7 +2385,7 @@ public class ActivityStorageTest extends AbstractCoreTest {
   /**
    * Test {@link ActivityStorage#getNewerComments(ExoSocialActivity, Long, int)}
    */
-  @MaxQueryNumber(9150)
+  @MaxQueryNumber(9260)
   public void testGetNewerCommentsWithTimestamp() throws Exception {
     checkCleanData();
     int totalNumber = 10;

@@ -614,7 +614,7 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
       activity.setUpdated(currentMillis);
       
       //SOC-3915 empty stream when post comment but lost it.
-      StorageUtils.persist();
+      StorageUtils.persist(true);
       //
       if (mustInjectStreams) {
         Identity identity = identityStorage.findIdentityById(comment.getUserId());
@@ -635,8 +635,7 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
       }
     }
     
-    StorageUtils.persist();
-    
+    StorageUtils.persist(true);
     //
     LOG.debug(String.format(
         "Comment %s by %s (%s) created: comment size is == %s ",
@@ -668,7 +667,7 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
         List<String> mentioners = new ArrayList<String>();
         ActivityEntity entity = _createActivity(owner, activity, mentioners);
 
-        StorageUtils.persist();
+        StorageUtils.persist(true);
         //create refs
         //streamStorage.save(owner, activity);
         if (mustInjectStreams) {
@@ -681,7 +680,8 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
       else {
         _saveActivity(activity);
       }
-      StorageUtils.persist();
+      
+      StorageUtils.persist(true);
 
       //
       LOG.debug(String.format(
