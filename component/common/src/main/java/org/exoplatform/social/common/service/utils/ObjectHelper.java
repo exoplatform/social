@@ -127,7 +127,7 @@ public class ObjectHelper {
           return (T)cast(Boolean.class, value);
       } else if (toType.isPrimitive()) {
           Class<?> newType = convertPrimitiveTypeToWrapperType(toType);
-          if (newType != toType) {
+          if (!toType.equals(newType)) {
               return (T)cast(newType, value);
           }
       }
