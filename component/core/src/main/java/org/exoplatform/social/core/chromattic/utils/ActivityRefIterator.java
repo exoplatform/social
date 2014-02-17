@@ -62,9 +62,11 @@ public class ActivityRefIterator implements Iterator<ActivityRef> {
     
     Collections.sort(got, new Comparator<ActivityRef>() {
       public int compare(ActivityRef o1, ActivityRef o2) {
-        long val2 = o2.getLastUpdated() != null ? o2.getLastUpdated() : Long.parseLong(o2.getName());
-        long val1 = o1.getLastUpdated() != null ? o1.getLastUpdated() : Long.parseLong(o1.getName());
-        return (int) (val2 - val1);
+        Long val2 = o2.getLastUpdated();
+        Long val1 = o1.getLastUpdated();
+        long l2 = val2 != null ? val2 : Long.parseLong(o2.getName());
+        long l1 = val1 != null ? val1 : Long.parseLong(o1.getName());
+        return (int) (l2 - l1);
       }
     });
     return got.iterator();

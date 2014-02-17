@@ -1002,7 +1002,7 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     if (got.size() == limit) {
       return got;
     }
-    
+
     int remaind = limit - got.size();
     if (remaind > 0) {
       int newOffset = got.size() + offset;
@@ -1456,21 +1456,19 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     //
     limit = (limit > commentIds.length ? commentIds.length : limit);
     
-    for (int i = offset ; i < commentIds.length ; i++) {
-      if (isHidden(commentIds[i]) == false) {
-        ExoSocialActivity comment = getStorage().getActivity(commentIds[i]);
-        if (comment == null) {
-          continue;
-        }
-        activities.add(comment);
-        //
-        if (activities.size() == limit) {
-          break;
-        }
+    for (int i = offset; i < commentIds.length; i++) {
+      ExoSocialActivity comment = getStorage().getActivity(commentIds[i]);
+      if (comment == null || comment.isHidden()) {
+        continue;
       }
-      
-      
+      activities.add(comment);
+      //
+      if (activities.size() == limit) {
+        break;
+      }
     }
+    
+    
     return activities;
   }
   
@@ -1504,16 +1502,15 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
    */
   public int getNumberOfComments(ExoSocialActivity existingActivity) {
     //return getStorage().getActivity(existingActivity.getId()).getReplyToId().length;
-    int size = 0;
-
     //
     List<String> commentIds = Arrays.asList(getStorage().getActivity(existingActivity.getId()).getReplyToId());
+    int size = commentIds.size();
 
     //
     for(String commentId : commentIds) {
-      ExoSocialActivity comment = getStorage().getActivity(commentId);
-      if (comment != null && !comment.isHidden())
-        size++;
+      if (isHidden(commentId)) {
+        size--;
+      }
     }
 
     //
