@@ -64,6 +64,15 @@ public interface ActivityStorage {
    * @return the activity
    */
   public ExoSocialActivity getActivity(String activityId) throws ActivityStorageException;
+  
+  /**
+   * Load an comment by its id.
+   *
+   * @param commentId the id of the comment. An UUID.
+   * @return the comment
+   * @since 4.1
+   */
+  public ExoSocialActivity getComment(String commentId) throws ActivityStorageException;
 
   /**
    * Gets all the activities by identity.

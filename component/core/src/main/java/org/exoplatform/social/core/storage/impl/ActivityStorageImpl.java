@@ -304,7 +304,8 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
 
     //
     List<String> computeCommentid = new ArrayList<String>();
-    for (ActivityEntity commentEntity : activityEntity.getComments()) {
+    List<ActivityEntity> comments = activityEntity.getComments();
+    for (ActivityEntity commentEntity : comments) {
       computeCommentid.add(commentEntity.getId());
     }
 
@@ -312,17 +313,17 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     activity.setReplyToId(computeCommentid.toArray(new String[]{}));
     String[] likes = activityEntity.getLikes();
     if (likes != null) {
-      activity.setLikeIdentityIds(activityEntity.getLikes());
+      activity.setLikeIdentityIds(likes);
     }
     
     String[] mentioners = activityEntity.getMentioners();
     if (mentioners != null) {
-      activity.setMentionedIds(activityEntity.getMentioners());
+      activity.setMentionedIds(mentioners);
     }
 
     String[] commenters = activityEntity.getCommenters();
     if (commenters != null) {
-      activity.setCommentedIds(activityEntity.getCommenters());
+      activity.setCommentedIds(commenters);
     }
     
     //
@@ -355,6 +356,56 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     
     return activity;
   }
+  
+  private ExoSocialActivity fillCommentFromEntity(ActivityEntity activityEntity, ExoSocialActivity comment) {
+
+    try {
+    //
+    comment.setId(activityEntity.getId());
+    comment.setTitle(activityEntity.getTitle());
+    comment.setTitleId(activityEntity.getTitleId());
+    comment.setBody(activityEntity.getBody());
+    comment.setBodyId(activityEntity.getBodyId());
+    comment.setPostedTime(activityEntity.getPostedTime());
+    comment.setUpdated(getLastUpdatedTime(activityEntity));
+    comment.isComment(activityEntity.isComment());
+    String posterId = activityEntity.getPosterIdentity().getId();
+    comment.setUserId(posterId);
+    comment.setPosterId(posterId);
+    
+    //
+    if (comment.isComment()) {
+      comment.setParentId(activityEntity.getParentActivity().getId());
+    }
+    
+    String[] mentioners = activityEntity.getMentioners();
+    if (mentioners != null) {
+      comment.setMentionedIds(mentioners);
+    }
+
+    //
+    ActivityParameters params = activityEntity.getParams();
+    if (params != null) {
+      comment.setTemplateParams(new LinkedHashMap<String, String>(params.getParams()));
+    }
+    else {
+      comment.setTemplateParams(new HashMap<String, String>());
+    }
+    
+    //
+    comment.isLocked(false);
+    //
+    HidableEntity hidable = _getMixin(activityEntity, HidableEntity.class, false);
+    if (hidable != null) {
+      comment.isHidden(hidable.getHidden());
+    }
+    } catch (Exception e) {
+      LOG.debug("Failed to fill comment from entity : entity null or missing property", e);
+      return null;
+    }
+    
+    return comment;
+  }
 
   private void fillStream(ActivityEntity activityEntity, ExoSocialActivity activity) {
 
@@ -365,9 +416,10 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
 
     //update new stream owner
     try {
-      Identity streamOwnerIdentity = identityStorage.findIdentity(SpaceIdentityProvider.NAME, activity.getStreamOwner());
+      String identityId = activity.getStreamOwner();
+      Identity streamOwnerIdentity = identityStorage.findIdentity(SpaceIdentityProvider.NAME, identityId);
       if (streamOwnerIdentity == null) {
-        streamOwnerIdentity = identityStorage.findIdentity(OrganizationIdentityProvider.NAME, activity.getStreamOwner());
+        streamOwnerIdentity = identityStorage.findIdentity(OrganizationIdentityProvider.NAME, identityId);
       }
       IdentityEntity streamOwnerEntity = _findById(IdentityEntity.class, streamOwnerIdentity.getId());
       identityEntity = streamOwnerEntity;
@@ -485,7 +537,7 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
       ExoSocialActivity activity = new ExoSocialActivityImpl();
 
       //
-      activity.setId(activityEntity.getId());
+      //activity.setId(activityEntity.getId());
       activity = fillActivityFromEntity(activityEntity, activity);
 
       if (activity != null) {
@@ -498,6 +550,33 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     }
     catch (NodeNotFoundException e) {
       //throw new ActivityStorageException(ActivityStorageException.Type.FAILED_TO_GET_ACTIVITY, e.getMessage(), e);
+      return null;
+    }
+  }
+  
+  /**
+   * {@inheritDoc}
+   */
+  public ExoSocialActivity getComment(String commentId) throws ActivityStorageException {
+
+    try {
+
+      //
+      ActivityEntity activityEntity = _findById(ActivityEntity.class, commentId);
+      ExoSocialActivity comment = new ExoSocialActivityImpl();
+
+      //
+      comment = fillCommentFromEntity(activityEntity, comment);
+
+      if (comment != null) {
+        processActivity(comment);
+      }
+
+      //
+      return comment;
+
+    }
+    catch (NodeNotFoundException e) {
       return null;
     }
   }
@@ -1457,7 +1536,7 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     limit = (limit > commentIds.length ? commentIds.length : limit);
     
     for (int i = offset; i < commentIds.length; i++) {
-      ExoSocialActivity comment = getStorage().getActivity(commentIds[i]);
+      ExoSocialActivity comment = getStorage().getComment(commentIds[i]);
       if (comment == null || comment.isHidden()) {
         continue;
       }
@@ -1815,6 +1894,10 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     List<ExoSocialActivity> got = streamStorage.getSpaceStream(spaceIdentity, index, limit);
 
     if (got.size() == limit) {
+      return got;
+    }
+    
+    if (got.size() == getStorage().getNumberOfSpaceActivitiesForUpgrade(spaceIdentity)) {
       return got;
     }
     

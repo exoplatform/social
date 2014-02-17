@@ -191,6 +191,37 @@ public class CachedActivityStorage implements ActivityStorage {
 
   }
   
+  @Override
+  public ExoSocialActivity getComment(final String commentId) throws ActivityStorageException {
+    if (commentId == null || commentId.length() == 0) {
+      return ActivityData.NULL.build();
+    }
+    //
+    ActivityKey key = new ActivityKey(commentId);
+
+    //
+    ActivityData activity = activityCache.get(
+        new ServiceContext<ActivityData>() {
+          public ActivityData execute() {
+            try {
+              ExoSocialActivity got = storage.getComment(commentId);
+              if (got != null) {
+                return new ActivityData(got);
+              }
+              else {
+                return ActivityData.NULL;
+              }
+            } catch (Exception e) {
+              throw new RuntimeException(e);
+            }
+          }
+        },
+        key);
+
+    //
+    return activity.build();
+  }
+  
   /**
    * {@inheritDoc}
    */
