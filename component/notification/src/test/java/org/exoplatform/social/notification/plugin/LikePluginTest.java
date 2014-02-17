@@ -167,6 +167,28 @@ public class LikePluginTest extends AbstractPluginTest {
     assertBody(info, "description of activity");
   }
   
+  public void testDigestWithUnLike() throws Exception {
+    // mary post activity on her stream
+    ExoSocialActivity activity = makeActivity(rootIdentity, "root post an activity");
+    notificationService.clearAll();
+
+    List<NotificationInfo> list = assertMadeNotifications(0);
+    activityManager.saveLike(activity, demoIdentity);
+    activityManager.saveLike(activity, johnIdentity);
+
+    list = assertMadeNotifications(2);
+
+    // john unlike
+    activityManager.deleteLike(activity, johnIdentity);
+
+    NotificationContext ctx = NotificationContextImpl.cloneInstance();
+    list.set(0, list.get(0).setTo(rootIdentity.getRemoteId()));
+    ctx.setNotificationInfos(list);
+    Writer writer = new StringWriter();
+    getPlugin().buildDigest(ctx, writer);
+    assertDigest(writer, "Demo gtn likes your activity: root post an activity.");
+  }
+  
   @Override
   public AbstractNotificationPlugin getPlugin() {
     return pluginService.getPlugin(NotificationKey.key(LikePlugin.ID));

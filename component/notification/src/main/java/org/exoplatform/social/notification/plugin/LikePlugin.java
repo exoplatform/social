@@ -19,6 +19,7 @@ package org.exoplatform.social.notification.plugin;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -33,6 +34,7 @@ import org.exoplatform.container.xml.InitParams;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
+import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.notification.LinkProviderUtils;
 import org.exoplatform.social.notification.Utils;
 
@@ -110,6 +112,21 @@ public class LikePlugin extends AbstractNotificationPlugin {
     try {
       for (NotificationInfo message : notifications) {
         String activityId = message.getValueOwnerParameter(SocialNotificationUtils.ACTIVITY_ID.getKey());
+        
+        ExoSocialActivity activity = Utils.getActivityManager().getActivity(activityId);
+
+        //
+        if (activity == null) {
+          continue;
+        }
+
+        //
+        String fromUser = message.getValueOwnerParameter("likersId");
+
+        Identity identityFrom = Utils.getService(IdentityManager.class).getOrCreateIdentity(OrganizationIdentityProvider.NAME, fromUser, false);
+        if (identityFrom == null || !Arrays.asList(activity.getLikeIdentityIds()).contains(identityFrom.getId())) {
+          continue;
+        }
         //
         SocialNotificationUtils.processInforSendTo(map, activityId, message.getValueOwnerParameter("likersId"));
       }
