@@ -308,9 +308,12 @@ public class StorageUtils {
       ChromatticSession chromatticSession = AbstractStorage.lifecycleLookup().getSession();
       if (chromatticSession.getJCRSession().hasPendingChanges()) {
         chromatticSession.getJCRSession().save();
-        //chromatticSession.getJCRSession().refresh(true);
+        //don't invoke session refresh here because it's increase Max Query number to JCR
+        //so that affect performance of Activity populate
       }
     } catch (Exception e) {
+      LOG.warn(e.getMessage());
+      LOG.debug(e.getMessage(), e);
       return false;
     }
     return true;
@@ -318,6 +321,7 @@ public class StorageUtils {
   
   /**
    * Make the decision to persist JCR Storage and refresh session or not
+   * In the case when executes multi-threading environment with JCR.
    * @return
    */
   public static boolean persist(boolean isRefresh) {
@@ -326,11 +330,15 @@ public class StorageUtils {
       if (chromatticSession.getJCRSession().hasPendingChanges()) {
         chromatticSession.getJCRSession().save();
         if (isRefresh) {
+          //using refresh in the case when executes multi-threading environment with JCR.
+          //should refresh the JCR node.
           chromatticSession.getJCRSession().refresh(true);
         }
         
       }
     } catch (Exception e) {
+      LOG.warn(e.getMessage());
+      LOG.debug(e.getMessage(), e);
       return false;
     }
     return true;
@@ -364,6 +372,8 @@ public class StorageUtils {
       }
       
     } catch (Exception e) {
+      LOG.warn(e.getMessage());
+      LOG.debug(e.getMessage(), e);
       return false;
     }
     return true;

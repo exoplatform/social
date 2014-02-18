@@ -156,7 +156,15 @@ public abstract class ActivityRefListEntity {
     return ref;
   }
   
+  /**
+   *  Gets or creates an ActivityRef and provides some data 
+   *  for this one as name, lastUpdated and Activity what will be referenced
+   * @param entity ActivityEntity
+   * @return
+   */
   public ActivityRef getOrCreated(ActivityEntity entity) {
+    //In some cases, migrated Activity from 3.5.x, ActivityRef's lastUpdated is NULL
+    //uses instead of Activity's postedTime.
     Long lastUpdated = entity.getLastUpdated() != null ? entity.getLastUpdated() : entity.getPostedTime();
     Calendar calendar = Calendar.getInstance(Locale.ENGLISH);
     calendar.setTimeInMillis(lastUpdated);
@@ -172,6 +180,7 @@ public abstract class ActivityRefListEntity {
     
     if (ref == null) {
       ref = dayEntity.createRef();
+      //uses ActivityId as the node's name of ActivityRef
       ref.setName(entity.getId());
       dayEntity.getActivityRefList().add(ref);
       ref.setLastUpdated(lastUpdated);
@@ -183,6 +192,8 @@ public abstract class ActivityRefListEntity {
   }
   
   public ActivityRef get(ActivityEntity entity) {
+    //In some cases, migrated Activity from 3.5.x, ActivityRef's lastUpdated is NULL
+    //uses instead of Activity's postedTime.
     Long lastUpdated = entity.getLastUpdated() != null ? entity.getLastUpdated() : entity.getPostedTime();
     Calendar calendar = Calendar.getInstance(Locale.ENGLISH);
     calendar.setTimeInMillis(lastUpdated);
@@ -209,7 +220,16 @@ public abstract class ActivityRefListEntity {
   }
   
  
-  
+  /**
+   * Needs to update the ActivityRef to top of stream (what's hot functionally) when 
+   * adds new comment to referenced Activity.
+   * 
+   * 1. Remove old one
+   * 2. Creates new one with new position in stream.
+   * @param entity
+   * @param old
+   * @param oldLastUpdated
+   */
   public void update(ActivityEntity entity, ActivityRef old, long oldLastUpdated) {
     Calendar oldCalendar = Calendar.getInstance(Locale.ENGLISH);
     oldCalendar.setTimeInMillis(oldLastUpdated);
@@ -235,6 +255,13 @@ public abstract class ActivityRefListEntity {
     }
     
     if (oldRef != null) {
+      //In the case oldLastUpdated and newLastUpdated are different 
+      //that mean: 
+      // IF the new ActivityRef and old one don't have the same parent node then:
+      // 1. Removes old one
+      // 2 Creates new one.
+      // ELSE (the same parent node)
+      // just updated lastUpdated
       if (!oldYear.equalsIgnoreCase(newYear) || !oldMonth.equalsIgnoreCase(newMonth) || !oldDay.equalsIgnoreCase(newDay)) {
         oldDayEntity.getActivityRefs().remove(oldRef.getName());
         getOrCreated(entity);
@@ -315,6 +342,8 @@ public abstract class ActivityRefListEntity {
   }
   
   public ActivityRef remove(ActivityEntity entity) {
+    //In some cases, migrated Activity from 3.5.x, ActivityRef's lastUpdated is NULL
+    //uses instead of Activity's postedTime.
     Long lastUpdated = entity.getLastUpdated() != null ? entity.getLastUpdated() : entity.getPostedTime();
     Calendar calendar = Calendar.getInstance(Locale.ENGLISH);
     calendar.setTimeInMillis(lastUpdated);
@@ -325,9 +354,10 @@ public abstract class ActivityRefListEntity {
 
     ActivityRefDayEntity dayEntity = this.getYear(year).getMonth(month).getDay(day);
     
-    //needs to check it existing or not in list
+    //remove by ActivityId
     ActivityRef ref = dayEntity.getActivityRefs().remove(entity.getId());
     
+    //removes by Activity's lastUpdated time
     if (ref == null) {
       ref = dayEntity.getActivityRefs().remove("" + lastUpdated);
     }

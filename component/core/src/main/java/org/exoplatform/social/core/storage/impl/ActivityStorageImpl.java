@@ -286,7 +286,9 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
 
     //
     List<String> computeCommentid = new ArrayList<String>();
-    for (ActivityEntity commentEntity : activityEntity.getComments()) {
+    
+    List<ActivityEntity> comments = activityEntity.getComments();
+    for (ActivityEntity commentEntity : comments) {
       computeCommentid.add(commentEntity.getId());
     }
 
@@ -294,17 +296,17 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     activity.setReplyToId(computeCommentid.toArray(new String[]{}));
     String[] likes = activityEntity.getLikes();
     if (likes != null) {
-      activity.setLikeIdentityIds(activityEntity.getLikes());
+      activity.setLikeIdentityIds(likes);
     }
     
     String[] mentioners = activityEntity.getMentioners();
     if (mentioners != null) {
-      activity.setMentionedIds(activityEntity.getMentioners());
+      activity.setMentionedIds(mentioners);
     }
 
     String[] commenters = activityEntity.getCommenters();
     if (commenters != null) {
-      activity.setCommentedIds(activityEntity.getCommenters());
+      activity.setCommentedIds(commenters);
     }
     
     //
@@ -593,8 +595,9 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
       //
       activity.setUpdated(currentMillis);
       
-      //SOC-3915 empty stream when post comment but lost it.
-      //WhatsHotTest is failed.
+      //Resolved SOC-3915 empty stream when post comment but lost it.
+      //Resolved WhatsHotTest is failed.
+      //persist and refresh JCR node to prevent NodeNotFoundException
       StorageUtils.persist(true);
       //
       if (mustInjectStreams) {
@@ -616,8 +619,8 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
       }
     }
     
+    //persist and refresh JCR node to prevent NodeNotFoundException
     StorageUtils.persist(true);
-    
     //
     LOG.debug(String.format(
         "Comment %s by %s (%s) created",
@@ -646,14 +649,18 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
       if (activity.getId() == null) {
 
         List<String> mentioners = new ArrayList<String>();
-        ActivityEntity entity = _createActivity(owner, activity, mentioners);
         //
+        ActivityEntity entity = _createActivity(owner, activity, mentioners);
+        //persist and refresh JCR node to prevent NodeNotFoundException
         StorageUtils.persist(true);
+        
         //create refs
         if (mustInjectStreams) {
-          //run synchronous
+          //due to run in the same thread then pass AcitivityEntity to Stream service to create ActivityRef
+          //don't need to get JCR to avoid NodeNotFoundException
           StreamInvocationHelper.savePoster(owner, entity);
-          //run asynchronous
+          //run asynchronous: JCR session doesn't share in multi threading, in Stream service, 
+          //we must get ActivityEntity from JCR to prevent the session (holding by ActivityEntity) has been closed exception
           StreamInvocationHelper.save(owner, activity, mentioners.toArray(new String[0]));
         }
       }
@@ -661,6 +668,7 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
         _saveActivity(activity);
       }
 
+      //persist and refresh JCR node to prevent NodeNotFoundException
       StorageUtils.persist(true);
 
       //
@@ -1436,49 +1444,20 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     //
     limit = (limit > commentIds.length ? commentIds.length : limit);
     
-    for (int i = offset ; i < commentIds.length ; i++) {
-      if (isHidden(commentIds[i]) == false) {
-        ExoSocialActivity comment = getActivity(commentIds[i]);
-        if (comment == null) {
-          continue;
-        }
-        activities.add(comment);
-        //
-        if (activities.size() == limit) {
-          break;
-        }
+    for (int i = offset; i < commentIds.length; i++) {
+      ExoSocialActivity comment = getStorage().getActivity(commentIds[i]);
+      if (comment == null || comment.isHidden()) {
+        continue;
       }
-      
-      
+      activities.add(comment);
+      //
+      if (activities.size() == limit) {
+        break;
+      }
     }
     return activities;
   }
   
-  /**
-   * Checks specified comment is hidden or not
-   * @param commentId
-   * @return TRUE hidden comment/ FALSE otherwise
-   */
-  private boolean isHidden(String commentId) {
-
-    try {
-      ActivityEntity activityEntity = _findById(ActivityEntity.class, commentId);
-      if (activityEntity != null) {
-        HidableEntity hidable = _getMixin(activityEntity, HidableEntity.class, false);
-        if (hidable != null) {
-          return hidable.getHidden();
-        }
-      } else {
-        return true;
-      }
-      
-    } catch (NodeNotFoundException e) {
-      return true;
-    }
-
-    return false;
-  }
-
   /**
    * {@inheritDoc}
    */

@@ -117,7 +117,8 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
     try {
       StreamProcessContext streamCtx = ObjectHelper.cast(StreamProcessContext.class, ctx);
       Identity owner = streamCtx.getIdentity();
-      //
+      //It has been invoked by Activity Service with the multi-threading.
+      //so that, gets Entity from JCR, prevent Session.logout exception.
       ActivityEntity activityEntity = _findById(ActivityEntity.class, streamCtx.getActivity().getId());
       if (OrganizationIdentityProvider.NAME.equals(owner.getProviderId())) {
         user(owner, activityEntity);
@@ -142,7 +143,8 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
     try {
       StreamProcessContext streamCtx = ObjectHelper.cast(StreamProcessContext.class, ctx);
       Identity owner = streamCtx.getIdentity();
-      //
+      //It has been invoked by Activity Service with the same thread.
+      //so that, retrieves Entity directly from Stream context, don't spend time to get from JCR => impact performance.
       ActivityEntity activityEntity = streamCtx.getActivityEntity();
       if (OrganizationIdentityProvider.NAME.equals(owner.getProviderId())) {
         createOwnerRefs(owner, activityEntity);
@@ -289,6 +291,8 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
       StreamProcessContext streamCtx = ObjectHelper.cast(StreamProcessContext.class, ctx);
       Identity commenter = streamCtx.getIdentity();
       IdentityEntity identityEntity = identityStorage._findIdentityEntity(commenter.getProviderId(), commenter.getRemoteId());
+      //It has been invoked by Activity Service with the same thread.
+      //so that, retrieves Entity directly from Stream context, don't spend time to get from JCR => impact performance.
       ActivityEntity activityEntity = streamCtx.getActivityEntity();
       //
       long oldUpdated = streamCtx.getOldLastUpdated();  
@@ -314,12 +318,11 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
     ActivityRef ref = refList.get(activityEntity);
     if (ref != null) {
       LOG.trace("remove activityRefId " +  ref.getId() +" for commenter: " + identityEntity.getRemoteId());
+      //removes ActivityRef in old position 
       refList.remove(activityEntity);
     }
-    
-    ActivityRef newRef = refList.getOrCreated(activityEntity);
-    newRef.setLastUpdated(activityEntity.getLastUpdated());
-    newRef.setActivityEntity(activityEntity);
+    //creates new ActivityRef makes sure the ActivityRef at the top of Stream
+    refList.getOrCreated(activityEntity);
   }
 
   private void createRefForPoster(ActivityEntity activityEntity, long oldUpdated) throws NodeNotFoundException {
@@ -343,6 +346,8 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
   public void update(ProcessContext ctx) {
     try {
       StreamProcessContext streamCtx = ObjectHelper.cast(StreamProcessContext.class, ctx);
+      //It has been invoked by Activity Service with the multi-threading.
+      //so that, gets Entity from JCR, prevent Session.logout exception when retrieves its references
       ActivityEntity activityEntity = _findById(ActivityEntity.class, streamCtx.getActivity().getId());
       //ActivityEntity activityEntity = streamCtx.getActivity();
       Collection<ActivityRef> references = activityEntity.getActivityRefs();
@@ -350,7 +355,7 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
       ActivityRef newRef = null;
       for (ActivityRef old : references) {
         ActivityRefListEntity refList = old.getDay().getMonth().getYear().getList();
-        //ActivityRef.getName equals ActivityId or not
+        //Checks to remove ActivityRef by lastUpdated or ActivityId
         if (old.getName().equalsIgnoreCase(activityEntity.getId())) {
           refList.update(activityEntity, old, oldUpdated);
         } else {
@@ -862,11 +867,13 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
   
   private void createConnectionsRefs(List<Identity> identities, ActivityEntity activityEntity) throws NodeNotFoundException {
     manageRefList(new UpdateContext(identities, null), activityEntity, ActivityRefType.FEED, true);
+    //changes from TRUE to FALSE, don't need to check ActivityRef duplicate or not >> improves performance to create ActivityRef
     manageRefList(new UpdateContext(identities, null), activityEntity, ActivityRefType.CONNECTION, false);
   }
   
   private void createConnectionsRefs(Identity identity, ActivityEntity activityEntity) throws NodeNotFoundException {
     manageRefList(new UpdateContext(identity, null), activityEntity, ActivityRefType.FEED, true);
+    //Changes from TRUE to FALSE, don't need to check ActivityRef duplicate or not >> improves performance to create ActivityRef
     manageRefList(new UpdateContext(identity, null), activityEntity, ActivityRefType.CONNECTION, false);
   }
   
@@ -878,7 +885,6 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
   private void createSpaceMembersRefs(List<Identity> identities, ActivityEntity activityEntity) throws NodeNotFoundException {
     manageRefList(new UpdateContext(identities, null), activityEntity, ActivityRefType.FEED);
     manageRefList(new UpdateContext(identities, null), activityEntity, ActivityRefType.MY_SPACES);
-    //manageRefList(new UpdateContext(identities, null), activityEntity, ActivityRefType.SPACE_STREAM);
   }
   
   private void ownerSpaceMembersRefs(Identity identity, ActivityEntity activityEntity) throws NodeNotFoundException {
