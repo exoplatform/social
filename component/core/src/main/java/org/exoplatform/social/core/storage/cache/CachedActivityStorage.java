@@ -161,9 +161,6 @@ public class CachedActivityStorage implements ActivityStorage {
    */
   public ExoSocialActivity getActivity(final String activityId) throws ActivityStorageException {
 
-    if (activityId == null || activityId.length() == 0) {
-      return ActivityData.NULL.build();
-    }
     //
     ActivityKey key = new ActivityKey(activityId);
 
@@ -189,37 +186,6 @@ public class CachedActivityStorage implements ActivityStorage {
     //
     return activity.build();
 
-  }
-  
-  @Override
-  public ExoSocialActivity getComment(final String commentId) throws ActivityStorageException {
-    if (commentId == null || commentId.length() == 0) {
-      return ActivityData.NULL.build();
-    }
-    //
-    ActivityKey key = new ActivityKey(commentId);
-
-    //
-    ActivityData activity = activityCache.get(
-        new ServiceContext<ActivityData>() {
-          public ActivityData execute() {
-            try {
-              ExoSocialActivity got = storage.getComment(commentId);
-              if (got != null) {
-                return new ActivityData(got);
-              }
-              else {
-                return ActivityData.NULL;
-              }
-            } catch (Exception e) {
-              throw new RuntimeException(e);
-            }
-          }
-        },
-        key);
-
-    //
-    return activity.build();
   }
   
   /**
@@ -292,7 +258,7 @@ public class CachedActivityStorage implements ActivityStorage {
    * {@inheritDoc}
    */
   public ExoSocialActivity getParentActivity(final ExoSocialActivity comment) throws ActivityStorageException {
-    return getActivity(getActivity(comment.getId()).getParentId());
+    return storage.getParentActivity(comment);
   }
 
   /**
@@ -901,6 +867,7 @@ public class CachedActivityStorage implements ActivityStorage {
    * {@inheritDoc}
    */
   public List<ExoSocialActivity> getComments(final ExoSocialActivity existingActivity, final int offset, final int limit) {
+    //
     ActivityCountKey key = new ActivityCountKey(existingActivity.getId(), ActivityType.COMMENTS);
     ListActivitiesKey listKey = new ListActivitiesKey(key, offset, limit);
 

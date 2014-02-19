@@ -69,6 +69,4 @@ public class MockUserSettingServiceImpl implements UserSettingService {
   public long getNumberOfDefaultDaily() {
     return 0;
   }
-
-
 }

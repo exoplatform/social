@@ -64,7 +64,6 @@ public class ActivityData implements CacheData<ExoSocialActivity> {
   private final String[] commenters;
   private final ActivityStream.Type streamType;
   private final String posterId;
-  private final String parentId;
 
   public ActivityData(final ExoSocialActivity activity) {
 
@@ -95,7 +94,6 @@ public class ActivityData implements CacheData<ExoSocialActivity> {
     this.commenters = activity.getCommentedIds();
     this.streamType = activity.getActivityStream().getType();
     this.posterId = activity.getPosterId();
-    this.parentId = activity.getParentId();
 
     if (activity.getTemplateParams() != null) {
       this.templateParams = Collections.unmodifiableMap(activity.getTemplateParams());
@@ -136,7 +134,6 @@ public class ActivityData implements CacheData<ExoSocialActivity> {
     if (mentioners != null) { activity.setMentionedIds(mentioners); }
     if (commenters != null) { activity.setCommentedIds(commenters); }
     activity.setPosterId(posterId);
-    activity.setParentId(parentId);
 
     ActivityStream activityStream = activity.getActivityStream();
     activityStream.setId(streamId);

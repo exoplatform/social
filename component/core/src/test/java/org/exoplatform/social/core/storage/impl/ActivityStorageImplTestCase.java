@@ -612,7 +612,7 @@ public class ActivityStorageImplTestCase extends AbstractCoreTest {
     }
   }
 
-  @MaxQueryNumber(2170)
+  @MaxQueryNumber(2130)
   public void testDeleteComment() throws Exception {
     ExoSocialActivity activity = new ExoSocialActivityImpl();
     activity.setTitle("activity title");
@@ -932,7 +932,7 @@ public class ActivityStorageImplTestCase extends AbstractCoreTest {
     
   }
 
-  @MaxQueryNumber(265)
+  @MaxQueryNumber(246)
   public void testActivityProcessing() throws Exception {
 
     //

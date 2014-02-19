@@ -351,9 +351,9 @@ public class SecurityManagerTest extends AbstractServiceTest {
     assertFalse("maryDeleteDemoComment must be false", maryDeleteDemoComment);
 
     connectIdentities(maryIdentity, demoIdentity, true);
-    createActivities(maryIdentity, maryIdentity, 1);
+    createActivities(maryIdentity, demoIdentity, 1);
     RealtimeListAccess<ExoSocialActivity> maryActivitiesListAccess = activityManager.getActivitiesWithListAccess(maryIdentity);
-    ExoSocialActivity maryActivity = maryActivitiesListAccess.loadAsList(0, -1).get(0);
+    ExoSocialActivity maryActivity = maryActivitiesListAccess.loadAsList(0, maryActivitiesListAccess.getSize()).get(0);
     createComment(maryActivity, demoIdentity, 1);
     createComment(maryActivity, maryIdentity, 1);
     RealtimeListAccess<ExoSocialActivity> maryActivityCommentListAccess = activityManager.getCommentsWithListAccess(maryActivity);
@@ -371,7 +371,7 @@ public class SecurityManagerTest extends AbstractServiceTest {
     ExoSocialActivity maryCommentMaryActivity = comments.get(1); // must be 0
 
     boolean demoDeleteMaryCommentMaryActivity = SecurityManager.canDeleteComment(getContainer(),
-                                                                                 maryIdentity, maryCommentMaryActivity);
+                                                                                 demoIdentity, maryCommentMaryActivity);
 
     assertTrue("demoDeleteMaryCommentMaryActivity must be true", demoDeleteMaryCommentMaryActivity);
 
@@ -442,7 +442,6 @@ public class SecurityManagerTest extends AbstractServiceTest {
       activity.setType("exosocial:core");
       activity.setTitle("title " + i);
       activity.setUserId(posterIdentity.getId());
-      activity.setPosterId(posterIdentity.getId());
       activityManager.saveActivityNoReturn(identityStream, activity);
       activity = activityManager.getActivity(activity.getId());
       tearDownActivityList.add(activity);

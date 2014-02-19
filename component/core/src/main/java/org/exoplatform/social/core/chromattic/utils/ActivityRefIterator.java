@@ -20,7 +20,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import org.exoplatform.social.core.chromattic.entity.ActivityRef;
 import org.exoplatform.social.core.chromattic.entity.ActivityRefDayEntity;
@@ -29,6 +32,7 @@ import org.exoplatform.social.core.chromattic.entity.ActivityRefMonthEntity;
 import org.exoplatform.social.core.chromattic.entity.ActivityRefYearEntity;
 import org.exoplatform.social.core.chromattic.entity.IndexNumber;
 import org.exoplatform.social.core.chromattic.entity.NamedEntity;
+import org.exoplatform.social.core.chromattic.entity.SpaceRef;
 
 public class ActivityRefIterator implements Iterator<ActivityRef> {
 
@@ -57,16 +61,14 @@ public class ActivityRefIterator implements Iterator<ActivityRef> {
 
   }
   
+  
+  
   private Iterator<ActivityRef> orderRefs() {
     List<ActivityRef> got = new ArrayList<ActivityRef>(dayIterator.next().getActivityRefList());
     
     Collections.sort(got, new Comparator<ActivityRef>() {
       public int compare(ActivityRef o1, ActivityRef o2) {
-        Long val2 = o2.getLastUpdated();
-        Long val1 = o1.getLastUpdated();
-        long l2 = val2 != null ? val2 : Long.parseLong(o2.getName());
-        long l1 = val1 != null ? val1 : Long.parseLong(o1.getName());
-        return (int) (l2 - l1);
+        return (int) (Long.parseLong(o2.getName()) - Long.parseLong(o1.getName()));
       }
     });
     return got.iterator();

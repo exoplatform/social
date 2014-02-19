@@ -182,7 +182,7 @@ public class CachedActivityStorageTestCase extends AbstractCoreTest {
 
   }
 
-  @MaxQueryNumber(270)
+  @MaxQueryNumber(260)
   public void testSaveComment() throws Exception {
 
     //
@@ -215,7 +215,7 @@ public class CachedActivityStorageTestCase extends AbstractCoreTest {
 
   }
 
-  @MaxQueryNumber(330)
+  @MaxQueryNumber(314)
   public void testRemoveComment() throws Exception {
     //
     ExoSocialActivity activity = new ExoSocialActivityImpl();

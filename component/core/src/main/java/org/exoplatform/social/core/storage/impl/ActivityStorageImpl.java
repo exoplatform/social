@@ -296,16 +296,10 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     activity.setPriority(activityEntity.getPriority());
     activity.isComment(activityEntity.isComment());
     activity.setPosterId(activityEntity.getPosterIdentity().getId());
-    
-    //
-    if (activity.isComment()) {
-      activity.setParentId(activityEntity.getParentActivity().getId());
-    }
 
     //
     List<String> computeCommentid = new ArrayList<String>();
-    List<ActivityEntity> comments = activityEntity.getComments();
-    for (ActivityEntity commentEntity : comments) {
+    for (ActivityEntity commentEntity : activityEntity.getComments()) {
       computeCommentid.add(commentEntity.getId());
     }
 
@@ -313,17 +307,17 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     activity.setReplyToId(computeCommentid.toArray(new String[]{}));
     String[] likes = activityEntity.getLikes();
     if (likes != null) {
-      activity.setLikeIdentityIds(likes);
+      activity.setLikeIdentityIds(activityEntity.getLikes());
     }
     
     String[] mentioners = activityEntity.getMentioners();
     if (mentioners != null) {
-      activity.setMentionedIds(mentioners);
+      activity.setMentionedIds(activityEntity.getMentioners());
     }
 
     String[] commenters = activityEntity.getCommenters();
     if (commenters != null) {
-      activity.setCommentedIds(commenters);
+      activity.setCommentedIds(activityEntity.getCommenters());
     }
     
     //
@@ -356,56 +350,6 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     
     return activity;
   }
-  
-  private ExoSocialActivity fillCommentFromEntity(ActivityEntity activityEntity, ExoSocialActivity comment) {
-
-    try {
-    //
-    comment.setId(activityEntity.getId());
-    comment.setTitle(activityEntity.getTitle());
-    comment.setTitleId(activityEntity.getTitleId());
-    comment.setBody(activityEntity.getBody());
-    comment.setBodyId(activityEntity.getBodyId());
-    comment.setPostedTime(activityEntity.getPostedTime());
-    comment.setUpdated(getLastUpdatedTime(activityEntity));
-    comment.isComment(activityEntity.isComment());
-    String posterId = activityEntity.getPosterIdentity().getId();
-    comment.setUserId(posterId);
-    comment.setPosterId(posterId);
-    
-    //
-    if (comment.isComment()) {
-      comment.setParentId(activityEntity.getParentActivity().getId());
-    }
-    
-    String[] mentioners = activityEntity.getMentioners();
-    if (mentioners != null) {
-      comment.setMentionedIds(mentioners);
-    }
-
-    //
-    ActivityParameters params = activityEntity.getParams();
-    if (params != null) {
-      comment.setTemplateParams(new LinkedHashMap<String, String>(params.getParams()));
-    }
-    else {
-      comment.setTemplateParams(new HashMap<String, String>());
-    }
-    
-    //
-    comment.isLocked(false);
-    //
-    HidableEntity hidable = _getMixin(activityEntity, HidableEntity.class, false);
-    if (hidable != null) {
-      comment.isHidden(hidable.getHidden());
-    }
-    } catch (Exception e) {
-      LOG.debug("Failed to fill comment from entity : entity null or missing property", e);
-      return null;
-    }
-    
-    return comment;
-  }
 
   private void fillStream(ActivityEntity activityEntity, ExoSocialActivity activity) {
 
@@ -416,10 +360,9 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
 
     //update new stream owner
     try {
-      String identityId = activity.getStreamOwner();
-      Identity streamOwnerIdentity = identityStorage.findIdentity(SpaceIdentityProvider.NAME, identityId);
+      Identity streamOwnerIdentity = identityStorage.findIdentity(SpaceIdentityProvider.NAME, activity.getStreamOwner());
       if (streamOwnerIdentity == null) {
-        streamOwnerIdentity = identityStorage.findIdentity(OrganizationIdentityProvider.NAME, identityId);
+        streamOwnerIdentity = identityStorage.findIdentity(OrganizationIdentityProvider.NAME, activity.getStreamOwner());
       }
       IdentityEntity streamOwnerEntity = _findById(IdentityEntity.class, streamOwnerIdentity.getId());
       identityEntity = streamOwnerEntity;
@@ -537,7 +480,7 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
       ExoSocialActivity activity = new ExoSocialActivityImpl();
 
       //
-      //activity.setId(activityEntity.getId());
+      activity.setId(activityEntity.getId());
       activity = fillActivityFromEntity(activityEntity, activity);
 
       if (activity != null) {
@@ -550,33 +493,6 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     }
     catch (NodeNotFoundException e) {
       //throw new ActivityStorageException(ActivityStorageException.Type.FAILED_TO_GET_ACTIVITY, e.getMessage(), e);
-      return null;
-    }
-  }
-  
-  /**
-   * {@inheritDoc}
-   */
-  public ExoSocialActivity getComment(String commentId) throws ActivityStorageException {
-
-    try {
-
-      //
-      ActivityEntity activityEntity = _findById(ActivityEntity.class, commentId);
-      ExoSocialActivity comment = new ExoSocialActivityImpl();
-
-      //
-      comment = fillCommentFromEntity(activityEntity, comment);
-
-      if (comment != null) {
-        processActivity(comment);
-      }
-
-      //
-      return comment;
-
-    }
-    catch (NodeNotFoundException e) {
       return null;
     }
   }
@@ -693,12 +609,12 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
       activity.setUpdated(currentMillis);
       
       //SOC-3915 empty stream when post comment but lost it.
-      StorageUtils.persist(true);
+      StorageUtils.persist();
       //
       if (mustInjectStreams) {
         Identity identity = identityStorage.findIdentityById(comment.getUserId());
         StreamInvocationHelper.updateCommenter(identity, activityEntity, commenters.toArray(new String[0]), oldUpdated);
-        StreamInvocationHelper.update(activity, mentioners.toArray(new String[0]), oldUpdated);
+        StreamInvocationHelper.update(activityEntity, mentioners.toArray(new String[0]), oldUpdated);
       }
     }  
     catch (NodeNotFoundException e) {
@@ -714,14 +630,14 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
       }
     }
     
-    StorageUtils.persist(true);
+    //StorageUtils.persist();
+    
     //
     LOG.debug(String.format(
-        "Comment %s by %s (%s) created: comment size is == %s ",
+        "Comment %s by %s (%s) created",
         comment.getTitle(),
         comment.getUserId(),
-        comment.getId(),
-        activity.getCommentedIds().length
+        comment.getId()
     ));
   }
 
@@ -746,21 +662,20 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
         List<String> mentioners = new ArrayList<String>();
         ActivityEntity entity = _createActivity(owner, activity, mentioners);
 
-        StorageUtils.persist(true);
+        StorageUtils.persist();
         //create refs
         //streamStorage.save(owner, activity);
         if (mustInjectStreams) {
           //run synchronous
           StreamInvocationHelper.savePoster(owner, entity);
           //run asynchronous
-          StreamInvocationHelper.save(owner, activity, mentioners.toArray(new String[0]));
+          StreamInvocationHelper.save(owner, entity, mentioners.toArray(new String[0]));
         }
       }
       else {
         _saveActivity(activity);
       }
-      
-      StorageUtils.persist(true);
+      StorageUtils.persist();
 
       //
       LOG.debug(String.format(
@@ -1081,7 +996,7 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     if (got.size() == limit) {
       return got;
     }
-
+    
     int remaind = limit - got.size();
     if (remaind > 0) {
       int newOffset = got.size() + offset;
@@ -1535,19 +1450,21 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     //
     limit = (limit > commentIds.length ? commentIds.length : limit);
     
-    for (int i = offset; i < commentIds.length; i++) {
-      ExoSocialActivity comment = getStorage().getComment(commentIds[i]);
-      if (comment == null || comment.isHidden()) {
-        continue;
+    for (int i = offset ; i < commentIds.length ; i++) {
+      if (isHidden(commentIds[i]) == false) {
+        ExoSocialActivity comment = getActivity(commentIds[i]);
+        if (comment == null) {
+          continue;
+        }
+        activities.add(comment);
+        //
+        if (activities.size() == limit) {
+          break;
+        }
       }
-      activities.add(comment);
-      //
-      if (activities.size() == limit) {
-        break;
-      }
+      
+      
     }
-    
-    
     return activities;
   }
   
@@ -1581,19 +1498,20 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
    */
   public int getNumberOfComments(ExoSocialActivity existingActivity) {
     //return getStorage().getActivity(existingActivity.getId()).getReplyToId().length;
+    List<ExoSocialActivity> activities = new ArrayList<ExoSocialActivity>();
+
     //
     List<String> commentIds = Arrays.asList(getStorage().getActivity(existingActivity.getId()).getReplyToId());
-    int size = commentIds.size();
 
     //
     for(String commentId : commentIds) {
-      if (isHidden(commentId)) {
-        size--;
-      }
+      ExoSocialActivity comment = getActivity(commentId);
+      if (comment != null && !comment.isHidden())
+        activities.add(getStorage().getActivity(commentId));
     }
 
     //
-    return size;
+    return activities.size();
   }
 
   /**
@@ -1894,10 +1812,6 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     List<ExoSocialActivity> got = streamStorage.getSpaceStream(spaceIdentity, index, limit);
 
     if (got.size() == limit) {
-      return got;
-    }
-    
-    if (got.size() == getStorage().getNumberOfSpaceActivitiesForUpgrade(spaceIdentity)) {
       return got;
     }
     
