@@ -604,7 +604,9 @@ public class ActivityResources implements ResourceContainer {
       throw new WebApplicationException(Response.Status.NOT_FOUND);
     }
     
-    if(!SecurityManager.canDeleteActivity(portalContainer, authenticatedIdentity, commentActivity)){
+    //remove if(!SecurityManager.canDeleteActivity(portalContainer, authenticatedIdentity, commentActivity))
+    // because it's comment then don't care Stream owner of comment.
+    if(!SecurityManager.canDeleteComment(portalContainer, authenticatedIdentity, commentActivity)) {
       throw new WebApplicationException(Response.Status.FORBIDDEN);
     }
     

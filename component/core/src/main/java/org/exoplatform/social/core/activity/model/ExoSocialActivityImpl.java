@@ -91,6 +91,9 @@ public class ExoSocialActivityImpl extends ActivityImpl implements ExoSocialActi
   
   private String posterId;
   
+  //
+  private String parentId;
+  
   /**
    * constructor.
    */
@@ -493,6 +496,16 @@ public class ExoSocialActivityImpl extends ActivityImpl implements ExoSocialActi
     this.posterId = posterId;
   }
   
+  @Override
+  public String getParentId() {
+    return parentId;
+  }
+
+  @Override
+  public void setParentId(String parentId) {
+    this.parentId = parentId;
+  }
+
   @Override
   public String toString() {
     return "ExoSocialActivity[id = " + getId() + ",title=" + getTitle() + ",lastModified= " + getUpdated().getTime() + " ]";

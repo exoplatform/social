@@ -246,7 +246,6 @@ public class SpaceActivityPublisherTest extends  AbstractCoreTest {
    
    
  }
- 
  public void testSpaceHidden() throws Exception {
    Identity rootIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "root", true);
 
@@ -272,6 +271,7 @@ public class SpaceActivityPublisherTest extends  AbstractCoreTest {
    ListAccess<ExoSocialActivity> userFeedActivities = activityManager.getActivityFeedWithListAccess(rootIdentity);
    
    assertEquals(0, userFeedActivities.getSize());
+   assertEquals(0, userActivities.getSize());
    
    //Set space's visibility to PRIVATE
    space.setVisibility(Space.PRIVATE);

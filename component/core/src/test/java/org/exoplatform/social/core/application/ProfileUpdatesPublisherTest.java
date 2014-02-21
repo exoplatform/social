@@ -154,11 +154,11 @@ public class ProfileUpdatesPublisherTest extends AbstractCoreTest {
     assertEquals(6, comments.size());
     
     // make sure just only one activity existing
-    //assertEquals(1, activityManager.getActivitiesWithListAccess(rootIdentity).getSize());
+    assertEquals(1, activityManager.getActivitiesWithListAccess(rootIdentity).getSize());
     
     // delete this activity
     activityManager.deleteActivity(activityId);
-    assertEquals(1, activityManager.getActivitiesWithListAccess(rootIdentity).getSize());
+    assertEquals(0, activityManager.getActivitiesWithListAccess(rootIdentity).getSize());
     
     //re-updated profile will create new activity with a comment 
     profile.setProperty(Profile.POSITION, "worker");
