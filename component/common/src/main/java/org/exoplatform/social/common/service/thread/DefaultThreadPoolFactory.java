@@ -73,6 +73,8 @@ public class DefaultThreadPoolFactory implements ThreadPoolFactory {
 
       ThreadPoolExecutor answer = new ThreadPoolExecutor(corePoolSize, maxPoolSize, keepAliveTime, timeUnit, workQueue);
       answer.setThreadFactory(threadFactory);
+      //sets TRUE : allows terminal if no tasks arrive within the keep-alive time
+      //sets FALSE: When false, core threads are never terminated due to lack of incoming tasks.
       answer.allowCoreThreadTimeOut(true);
       answer.setRejectedExecutionHandler(new ThreadPoolExecutor.CallerRunsPolicy());
       return answer;

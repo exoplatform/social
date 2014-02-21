@@ -367,7 +367,7 @@ public class ActivityStreamStorageTest extends AbstractCoreTest {
     assertEquals(0, got.size());
   }
   
-  public void testConnectionsExistActivities() throws ActivityStorageException {
+public void testConnectionsExistActivities() throws ActivityStorageException {
     
     RelationshipPublisher relationshipPublisher = (RelationshipPublisher) getContainer().getComponentInstanceOfType(RelationshipPublisher.class);
     relationshipManager.addListenerPlugin(relationshipPublisher);

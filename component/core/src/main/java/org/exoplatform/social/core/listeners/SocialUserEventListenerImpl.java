@@ -142,6 +142,8 @@ public class SocialUserEventListenerImpl extends UserEventListener {
         // TODO: Send an alert email to super admin to manage spaces in case deleted user is the last manager.
         // Nothing executed (user not deleted) when facing this case now with code commit by SOC-1507.
         // Will be implemented by SOC-2276.
+        
+        LOG.debug("Problem occurred when deleting user named " + identity.getRemoteId());
       }
       
     }finally{

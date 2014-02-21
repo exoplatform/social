@@ -57,6 +57,7 @@ public class UIHomeSpacePortlet extends UIPortletApplication implements Dashboar
       Space space = Utils.getSpaceService().getSpaceByUrl(spaceUrl);
       return Utils.getSpaceService().hasEditPermission(space, Utils.getViewerRemoteId());
     } catch (Exception e) {
+      log.debug("Probem when checking the permision of user on space.");
     }
     return false;
   }

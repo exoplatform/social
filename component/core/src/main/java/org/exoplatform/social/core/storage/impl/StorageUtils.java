@@ -353,6 +353,27 @@ public class StorageUtils {
   }
   
   /**
+   * Make the decision to persist JCR Storage and refresh session or not
+   * 
+   * @return
+   */
+  public static boolean persist(boolean isRefresh) {
+    try {
+      ChromatticSession chromatticSession = AbstractStorage.lifecycleLookup().getSession();
+      if (chromatticSession.getJCRSession().hasPendingChanges()) {
+        chromatticSession.getJCRSession().save();
+        if (isRefresh) {
+          chromatticSession.getJCRSession().refresh(true);
+        }
+
+      }
+    } catch (Exception e) {
+      return false;
+    }
+    return true;
+  }
+  
+  /**
    * Make the decision to persist JCR Storage or not
    * @return
    */
