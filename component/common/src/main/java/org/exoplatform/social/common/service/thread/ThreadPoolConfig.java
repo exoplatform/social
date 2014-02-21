@@ -43,9 +43,12 @@ public class ThreadPoolConfig implements Serializable {
   
   public ThreadPoolConfig(InitParams params) {
     
+    //changes from 60 to 10 due to reduce time to keep alive core threads
+    //and threads have been released and hold resource shorter
     this.setKeepAliveTime(10L);
     this.setTimeUnit(TimeUnit.SECONDS);
-    this.setMaxQueueSize(1000);
+    //reduce max queue size number to avoid allowing more resources.
+    this.setMaxQueueSize(100);
     
     //
     ValueParam poolSize = params.getValueParam(POOL_SIZE);
