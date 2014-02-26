@@ -45,6 +45,12 @@
          def appId = app.getApplicationName();
          def isRemovable = uicomponent.isRemovable(appId);
          def appName = uicomponent.getAppName(appId);
+         def appLabel = appName
+         // appId's format is appPortlet:appName;
+         def appTokens = appId.split(":");
+         if (appTokens != null) {
+           appLabel = _ctx.appRes(appTokens[0] + ".label.name");
+         }
          def applicationIconTitle = _ctx.appRes("${uicomponentId}.title.ApplicationIcon");
          appNameIco = appId.split(":")[0];
           
@@ -57,7 +63,7 @@
 		<a class="uiIconClose pull-right" href="javascript:void(0);" onclick="$removeApplication"></a>
 		<% } %>
 		<div class="communityContainer">
-			<strong><%= appName %></strong>
+			<strong><%= appLabel %></strong>
 			<br/>
 			<span><%= app.getDescription() %></span>
 		</div>
