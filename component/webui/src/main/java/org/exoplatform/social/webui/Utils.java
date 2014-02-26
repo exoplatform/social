@@ -18,10 +18,12 @@ package org.exoplatform.social.webui;
 
 import java.util.Calendar;
 import java.util.List;
+import java.util.MissingResourceException;
 
 import javax.servlet.http.Cookie;
 
 import org.apache.commons.lang.ArrayUtils;
+import org.exoplatform.commons.utils.PropertyManager;
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.portal.application.PortalRequestContext;
 import org.exoplatform.portal.application.RequestNavigationData;
@@ -30,6 +32,8 @@ import org.exoplatform.portal.mop.user.UserNode;
 import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.portal.webui.workspace.UIPortalApplication;
 import org.exoplatform.portal.webui.workspace.UIWorkingWorkspace;
+import org.exoplatform.services.log.ExoLogger;
+import org.exoplatform.services.log.Log;
 import org.exoplatform.social.common.router.ExoRouter;
 import org.exoplatform.social.common.router.ExoRouter.Route;
 import org.exoplatform.social.core.identity.model.Identity;
@@ -73,6 +77,8 @@ public class Utils {
   
   /** */
   private static RequestNavInfo currentRequestNavData = null;
+  
+  private static final Log LOG = ExoLogger.getLogger(Utils.class);
   
   /**
    * Gets remote id of owner user (depends on URL: .../remoteId). If owner user is null, return viewer remote id
@@ -618,5 +624,21 @@ public class Utils {
     }
     
     return space;
+  }
+  /**
+   * Get Resource bundle. If failure, log it in developer mode
+   * @param msgKey key to get resource bundle
+   * @return Localized value for msgKey. null if value is not found 
+   */
+  public static String appRes (String msgKey) {
+    WebuiRequestContext context = WebuiRequestContext.getCurrentInstance();
+    try {
+      return context.getApplicationResourceBundle().getString(msgKey);
+    } catch (MissingResourceException ex) {
+      if (PropertyManager.isDevelopping()) {
+        LOG.warn("Can not find resource bundle for key : " + msgKey);
+      }
+      return null;
+    }    
   }
 }
