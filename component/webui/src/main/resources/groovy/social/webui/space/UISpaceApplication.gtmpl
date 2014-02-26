@@ -45,14 +45,10 @@
          def appId = app.getApplicationName();
          def isRemovable = uicomponent.isRemovable(appId);
          def appName = uicomponent.getAppName(appId);
-         def appLabel = appName
-         // appId's format is appPortlet:appName;
-         def appTokens = appId.split(":");
-         if (appTokens != null) {
-           appLabel = _ctx.appRes(appTokens[0] + ".label.name");
-         }
+         def appLabel = appName;
          def applicationIconTitle = _ctx.appRes("${uicomponentId}.title.ApplicationIcon");
          appNameIco = appId.split(":")[0];
+         if (appNameIco != null) appLabel = _ctx.appRes(appNameIco + ".label.name");
           
   %>
     <div class="contentSpace pull-left clearfix">
