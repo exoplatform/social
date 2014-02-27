@@ -51,7 +51,7 @@
   def position = profile.getPropertyValue(Profile.POSITION);
   
   if (isEditable)
-    position = ((position == null || position == "") ? _ctx.appRes(uicomponent.getName() + ".label.yourPosition"): position);
+    position = ((position == null || position == "") ? _ctx.appRes(uicomponent.getName() + ".label.yourPosition"): _ctx.appRes(uicomponent.getName() + ".label.yourPosition") + ": " + position);
   else
     position = (position == null ? "": position);
   
