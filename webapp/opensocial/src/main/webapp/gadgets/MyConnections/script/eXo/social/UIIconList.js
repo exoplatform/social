@@ -364,7 +364,7 @@
 		if (response.data !== null && response.data.comments !== null) {
 			var commentsBlock = [];
 			$.each(response.data.comments, function(index, comment) {
-		   	commentsBlock.push('<li class="ClearFix">');
+		   	commentsBlock.push('<li class="clearfix">');
 		   		commentsBlock.push('<a href="javascript:void(0)" class="User">' + comment.posterIdentity.profile.fullName + ': </a>');
 		   		commentsBlock.push('<span>' + comment.text + '</span>');
 		   	commentsBlock.push('</li>');
@@ -419,7 +419,7 @@
   function getMyConnectionDetailBlock() {
   	var userBlock = [];
 		
-		userBlock.push('<div class="MemberProptile ClearFix" id="MemberProptileDetail">');
+		userBlock.push('<div class="MemberProptile clearfix" id="MemberProptileDetail">');
 			userBlock.push('<a target="_blank" href="' + Comment.refer.connectionActivity.profileUrl + '" class="Avatar"><img title="' + Comment.refer.connectionActivity.displayName + '" alt="' + Comment.refer.connectionActivity.displayName + '" width="44px" height="44px" src="' + Comment.refer.connectionActivity.avatarUrl + '"/></a>');
 			userBlock.push('<div class="Content">');
 				userBlock.push('<a target="_blank" href="' + Comment.refer.connectionActivity.profileUrl + '" class="User">' + Comment.refer.connectionActivity.displayName + '</a>');
@@ -428,7 +428,7 @@
 			userBlock.push('</div>');
 		userBlock.push('</div>');
 		
-		userBlock.push('<div class="CurentActivity ClearFix">');
+		userBlock.push('<div class="CurentActivity clearfix">');
 			userBlock.push('<div class="Action">');
 				userBlock.push('<a id="CommentCurrentLatestActivity" href="javascript:void(0)" class="CommIcon">&nbsp;</a><a id="LikeCurrentLatestActivity" href="javascript:void(0)" class="LikeIcon">&nbsp;</a>');
 			userBlock.push('</div>');
@@ -488,7 +488,7 @@
   			$(uiComponent.QuickCommentInput).val(Locale.getMsg('comment_here'));
   			
   			var commentBack = [];
-  			commentBack.push('<li class="ClearFix">');
+  			commentBack.push('<li class="clearfix">');
   				commentBack.push('<a href="javascript:void(0)" class="User">' + response.data.posterIdentity.profile.fullName + ': </a>');
   				commentBack.push('<span>' + response.data.text + '</span>');
   			commentBack.push('</li>');

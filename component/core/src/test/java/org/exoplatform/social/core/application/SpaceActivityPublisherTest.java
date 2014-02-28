@@ -20,6 +20,7 @@ import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.activity.model.ActivityStream;
@@ -227,12 +228,94 @@ public class SpaceActivityPublisherTest extends  AbstractCoreTest {
      assertEquals("Description has been updated to: " + space.getDescription(), comments.get(4).getTitle());
    }
    
+   {
+     assertEquals("new description", space.getDescription());
+     
+     space.setDescription("Cet espace est à chercher des bugs");
+     space.setField(UpdatedField.DESCRIPTION);
+     spaceService.updateSpace(space);
+     comments = activityManager.getCommentsWithListAccess(newActivity).loadAsList(0, 20);
+     assertEquals(6, comments.size());
+     assertEquals("Description has been updated to: Cet espace est &agrave; chercher des bugs", comments.get(5).getTitle());
+   }
+   
    //clean up
    activityManager.deleteActivity(activityId);
    spaceService.deleteSpace(space);
    identityManager.deleteIdentity(rootIdentity);
    
    
+ }
+ public void testSpaceHidden() throws Exception {
+   Identity rootIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "root", true);
+
+   //Create a hidden space
+   Space space = new Space();
+   space.setDisplayName("Toto");
+   space.setPrettyName(space.getDisplayName());
+   space.setGroupId("/platform/users");
+   space.setVisibility(Space.HIDDEN);
+   String[] managers = new String[] {"root"};
+   String[] members = new String[] {"root"};
+   space.setManagers(managers);
+   space.setMembers(members);
+   spaceService.saveSpace(space, true);
+   
+   //broadcast event
+   SpaceLifeCycleEvent event  = new SpaceLifeCycleEvent(space, rootIdentity.getRemoteId(), SpaceLifeCycleEvent.Type.SPACE_CREATED);
+   spaceActivityPublisher.spaceCreated(event);
+
+   Identity spaceIdentity = identityManager.getOrCreateIdentity(SpaceIdentityProvider.NAME, space.getPrettyName(), false);
+   ListAccess<ExoSocialActivity> spaceActivities = activityManager.getActivitiesOfSpaceWithListAccess(spaceIdentity);
+   ListAccess<ExoSocialActivity> userActivities = activityManager.getActivitiesWithListAccess(rootIdentity);
+   ListAccess<ExoSocialActivity> userFeedActivities = activityManager.getActivityFeedWithListAccess(rootIdentity);
+   
+   assertEquals(0, userFeedActivities.getSize());
+   assertEquals(0, userActivities.getSize());
+   
+   //Set space's visibility to PRIVATE
+   space.setVisibility(Space.PRIVATE);
+   spaceService.saveSpace(space, false);
+   
+   spaceActivities = activityManager.getActivitiesOfSpaceWithListAccess(spaceIdentity);
+   userActivities = activityManager.getActivitiesWithListAccess(rootIdentity);
+   userFeedActivities = activityManager.getActivityFeedWithListAccess(rootIdentity);
+   
+   //Check space activity stream
+   assertEquals(1, spaceActivities.getSize());
+   assertEquals(1, spaceActivities.load(0, 10).length);
+   
+   //Check user activity stream
+   assertEquals(1, userActivities.getSize());
+   assertEquals(1, userActivities.load(0, 10).length);
+   
+   //Check user feed activity stream
+   assertEquals(1, userFeedActivities.getSize());
+   assertEquals(1, userFeedActivities.load(0, 10).length);
+   
+   //Set space's visibility to PRIVATE
+   space.setVisibility(Space.HIDDEN);
+   spaceService.saveSpace(space, false);
+   
+   spaceActivities = activityManager.getActivitiesOfSpaceWithListAccess(spaceIdentity);
+   userActivities = activityManager.getActivitiesWithListAccess(rootIdentity);
+   userFeedActivities = activityManager.getActivityFeedWithListAccess(rootIdentity);
+   
+   //Check space activity stream
+   assertEquals(0, spaceActivities.getSize());
+   assertEquals(0, spaceActivities.load(0, 10).length);
+   
+   //Check user activity stream
+   assertEquals(0, userActivities.getSize());
+   assertEquals(0, userActivities.load(0, 10).length);
+   
+   //Check user feed activity stream
+   assertEquals(0, userFeedActivities.getSize());
+   assertEquals(0, userFeedActivities.load(0, 10).length);
+
+   //clean up
+   spaceService.deleteSpace(space);
+   identityManager.deleteIdentity(rootIdentity);
  }
 
 }

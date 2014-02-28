@@ -36,12 +36,55 @@
       </value-param>
     </init-params>
   </component>
+  
+  <component>
+    <key>org.exoplatform.social.common.service.thread.ThreadPoolConfig</key>
+    <type>org.exoplatform.social.common.service.thread.ThreadPoolConfig</type>
+    <init-params>
+      <value-param>
+        <name>pool-size</name>
+        <value>5</value>
+      </value-param>
+      <value-param>
+        <name>max-pool-size</name>
+        <value>5</value>
+      </value-param>
+      <value-param>
+        <name>async-mode</name>
+        <value>true</value>
+      </value-param>
+      <value-param>
+        <name>thread-priority</name>
+        <value>1</value><!--10: HIGH, 5: NORMAL; 1: LOW-->
+      </value-param>
+    </init-params>
+  </component>
+  
+  <component>
+    <type>org.exoplatform.social.core.updater.UserActivityStreamMigration</type>
+  </component>
+  
+  <component>
+    <type>org.exoplatform.social.core.updater.SpaceActivityStreamMigration</type>
+  </component>
 
   <component>
     <key>org.exoplatform.social.core.storage.cache.SocialStorageCacheService</key>
     <type>org.exoplatform.social.core.storage.cache.SocialStorageCacheService</type>
   </component>
 
+  <!--
+    Activity Stream storage components.
+  -->
+  <component>
+    <key>org.exoplatform.social.core.storage.api.ActivityStreamStorage</key>
+    <type>org.exoplatform.social.core.storage.cache.CachedActivityStreamStorage</type>
+  </component>
+  <component>
+    <key>org.exoplatform.social.core.storage.impl.ActivityStreamStorageImpl</key>
+    <type>org.exoplatform.social.core.storage.synchronization.SynchronizedActivityStreamStorage</type>
+  </component>
+  
   <!--
     Activity storage components.
   -->
@@ -479,36 +522,6 @@
     <type>org.exoplatform.social.core.application.SpaceActivityPublisher</type>
   </component>
 
-  <component>
-    <key>org.exoplatform.social.common.embedder.OembedEmbedder</key>
-    <type>org.exoplatform.social.common.embedder.OembedEmbedder</type>
-      <init-params>
-        <value-param>
-          <name>http://www\.dailymotion\.com/video/.*</name>
-          <value>http://www.dailymotion.com/services/oembed?format=json&amp;url=%s</value>
-        </value-param>
-        <value-param>
-          <name>http://vimeo\.com/.*</name>
-          <value>http://vimeo.com/api/oembed.json?url=%s&amp;width=480</value>
-        </value-param>
-        <value-param>
-          <name>http://www\.slideshare\.net/.*/.*</name>
-          <value>http://www.slideshare.net/api/oembed/2?url=%s&amp;format=json</value>
-        </value-param>
-      </init-params>
-  </component>
-  
-  <component>
-    <key>org.exoplatform.social.common.embedder.YoutubeEmbedder</key>
-    <type>org.exoplatform.social.common.embedder.YoutubeEmbedder</type>
-      <init-params>
-        <value-param>
-          <name>(?:https?:\/\/)?(?:www\.)?(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&amp;v=))((\w|-){11})(?:\S+)?$</name>
-          <value>http://gdata.youtube.com/feeds/api/videos/%s?v=2&amp;alt=json</value>
-        </value-param>
-      </init-params>
-  </component> 
-
   <external-component-plugins>
     <target-component>org.exoplatform.services.resources.ResourceBundleService</target-component>
     <component-plugin>
@@ -596,6 +609,13 @@
           <value>org.exoplatform.social.core.chromattic.entity.ActivityMonthEntity</value>
           <value>org.exoplatform.social.core.chromattic.entity.ActivityYearEntity</value>
           <value>org.exoplatform.social.core.chromattic.entity.ActivityParameters</value>
+          
+          <value>org.exoplatform.social.core.chromattic.entity.StreamsEntity</value>
+          <value>org.exoplatform.social.core.chromattic.entity.ActivityRefListEntity</value>
+          <value>org.exoplatform.social.core.chromattic.entity.ActivityRefDayEntity</value>
+          <value>org.exoplatform.social.core.chromattic.entity.ActivityRefMonthEntity</value>
+          <value>org.exoplatform.social.core.chromattic.entity.ActivityRefYearEntity</value>
+          <value>org.exoplatform.social.core.chromattic.entity.ActivityRef</value>
 
           <value>org.exoplatform.social.core.chromattic.entity.SpaceRootEntity</value>
           <value>org.exoplatform.social.core.chromattic.entity.SpaceEntity</value>
@@ -627,5 +647,58 @@
       </init-params>
     </component-plugin>
   </external-component-plugins>
-
+  
+  <external-component-plugins>
+    <target-component>org.exoplatform.commons.upgrade.UpgradeProductService</target-component>
+    <component-plugin>
+      <name>UserActivityStreamUpdaterPlugin</name>
+      <set-method>addUpgradePlugin</set-method>
+      <type>org.exoplatform.social.core.updater.UserActivityStreamUpdaterPlugin</type>
+      <description>eXo Social User Activity Stream Updater</description>
+      <init-params>
+        <value-param>
+          <name>product.group.id</name>
+          <description>The groupId of the product</description>
+          <value>org.exoplatform.social</value>
+        </value-param>
+        <value-param>
+          <name>limit</name>
+          <description>The number of activities will be migrated</description>
+          <value>20</value>
+        </value-param>
+      </init-params>
+    </component-plugin>
+  </external-component-plugins>
+  
+   <external-component-plugins>
+    <target-component>org.exoplatform.commons.upgrade.UpgradeProductService</target-component>
+    <component-plugin>
+      <name>SpaceActivityStreamUpdaterPlugin</name>
+      <set-method>addUpgradePlugin</set-method>
+      <type>org.exoplatform.social.core.updater.SpaceActivityStreamUpdaterPlugin</type>
+      <description>eXo Social Space Activity Stream Updater</description>
+      <init-params>
+        <value-param>
+          <name>product.group.id</name>
+          <description>The groupId of the product</description>
+          <value>org.exoplatform.social</value>
+        </value-param>
+        <value-param>
+          <name>limit</name>
+          <description>The number of activities will be migrated</description>
+          <value>20</value>
+        </value-param>
+      </init-params>
+    </component-plugin>
+  </external-component-plugins>
+  
+   <external-component-plugins>
+    <target-component>org.exoplatform.services.listener.ListenerService</target-component>
+    <component-plugin>
+      <name>exo.core.security.ConversationRegistry.register</name>
+      <set-method>addListener</set-method>
+      <type>org.exoplatform.social.core.listeners.AsynchronousLoadActivitiesListener</type>
+      <description>loading activities into caching with asynchronous</description>      
+    </component-plugin>       
+  </external-component-plugins>    
 </configuration>

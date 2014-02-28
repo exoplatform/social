@@ -32,9 +32,12 @@ import javax.jcr.nodetype.NodeType;
 import javax.jcr.nodetype.NodeTypeManager;
 import javax.jcr.nodetype.PropertyDefinition;
 
+import org.apache.commons.lang.StringEscapeUtils;
+import org.chromattic.api.UndeclaredRepositoryException;
 import org.chromattic.api.query.Ordering;
 import org.chromattic.api.query.QueryBuilder;
 import org.chromattic.api.query.QueryResult;
+import org.chromattic.core.query.QueryImpl;
 import org.chromattic.ext.ntdef.NTFile;
 import org.chromattic.ext.ntdef.Resource;
 import org.exoplatform.container.PortalContainer;
@@ -58,7 +61,6 @@ import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvide
 import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
 import org.exoplatform.social.core.model.AvatarAttachment;
 import org.exoplatform.social.core.profile.ProfileFilter;
-import org.exoplatform.social.core.relationship.model.Relationship;
 import org.exoplatform.social.core.search.Sorting;
 import org.exoplatform.social.core.service.LinkProvider;
 import org.exoplatform.social.core.space.model.Space;
@@ -69,6 +71,7 @@ import org.exoplatform.social.core.storage.api.SpaceStorage;
 import org.exoplatform.social.core.storage.exception.NodeAlreadyExistsException;
 import org.exoplatform.social.core.storage.exception.NodeNotFoundException;
 import org.exoplatform.social.core.storage.query.JCRProperties;
+import org.exoplatform.social.core.storage.query.QueryFunction;
 import org.exoplatform.social.core.storage.query.WhereExpression;
 
 /**
@@ -447,7 +450,7 @@ public class IdentityStorageImpl extends AbstractStorage implements IdentityStor
   protected void _removeRelationshipList(RelationshipListEntity listEntity) {
 
     for (RelationshipEntity relationshipEntity : listEntity.getRelationships().values()) {
-      getRelationshipStorage().removeRelationship(new Relationship(relationshipEntity.getId()));
+      getRelationshipStorage().removeRelationship(getRelationshipStorage().getRelationship(relationshipEntity.getId()));
     }
 
   }
@@ -678,11 +681,44 @@ public class IdentityStorageImpl extends AbstractStorage implements IdentityStor
 
     return identity;
   }
+  /**
+   * Gets just identity information without profile
+   * Improve performance in the case only needs Identity's Id
+   * for create Activity and Comment also
+   * 
+   * @param providerId
+   * @param remoteId
+   * @param forceLoadProfile
+   * @return
+   */
+  protected Identity _findIdentityEntity(final String providerId, final String remoteId, boolean forceLoadProfile) {
+    IdentityEntity identityEntity;
+    Identity identity = null;
+    try {
+      if (!forceLoadProfile) {
+        identityEntity = _findIdentityEntity(providerId, remoteId);
 
-  protected IdentityEntity _findIdentityEntity(final String providerId, final String remoteId)
-      throws NodeNotFoundException {
+        identity = new Identity(OrganizationIdentityProvider.NAME, remoteId);
+        identity.setId(identityEntity.getId());
+      } else {
+        identity = _findIdentity(providerId, remoteId);
+      }
+      
+    } catch (NodeNotFoundException e) {
+      LOG.warn(e.getMessage());
+      LOG.debug(e.getMessage(), e);
+    }
+    return identity;
+  }
 
-    ProviderEntity providerEntity = getProviderRoot().getProviders().get(providerId);
+  protected IdentityEntity _findIdentityEntity(final String providerId, final String remoteId) throws NodeNotFoundException {
+    ProviderEntity providerEntity;
+    try {
+      providerEntity = getProviderRoot().getProviders().get(providerId);
+    } catch (Exception ex) {
+      lifeCycle.getProviderRoot().set(null);
+      providerEntity = getProviderRoot().getProviders().get(providerId);
+    }
 
     if (providerEntity == null) {
       throw new NodeNotFoundException("The node " + providerId + "/" + remoteId + " doesn't be found");
@@ -723,28 +759,34 @@ public class IdentityStorageImpl extends AbstractStorage implements IdentityStor
     List<Map<String, String>> ims = new ArrayList<Map<String,String>>();
     List<Map<String, String>> urls = new ArrayList<Map<String,String>>();
 
-    //
-    for (String name : profileEntity.getProperties().keySet()) {
-      if (isJcrProperty(name)) {
-        switch(PropNs.nsOf(name)) {
-          case VOID:
-          case INDEX:
-            profile.setProperty(PropNs.cleanPrefix(name), profileEntity.getProperty(name).get(0));
-            break;
-          case PHONE:
-            fillProfileParam(profileEntity, phones, name);
-            break;
-          case IM:
-            fillProfileParam(profileEntity, ims, name);
-            break;
-          case URL:
-            fillProfileParam(profileEntity, urls, name);
-            break;
+    //handle try/catch here with test_test user on intranet. Makes sure it isn't broken process.
+    //The Problem: property definition is NULL /production/soc:providers/soc:organization/soc:test_test/soc:profile/soc:externalAvatarUrl []
+    try {
+      //
+      for (String name : profileEntity.getProperties().keySet()) {
+        if (isJcrProperty(name)) {
+          switch(PropNs.nsOf(name)) {
+            case VOID:
+            case INDEX:
+              profile.setProperty(PropNs.cleanPrefix(name), profileEntity.getProperty(name).get(0));
+              break;
+            case PHONE:
+              fillProfileParam(profileEntity, phones, name);
+              break;
+            case IM:
+              fillProfileParam(profileEntity, ims, name);
+              break;
+            case URL:
+              fillProfileParam(profileEntity, urls, name);
+              break;
+          }
         }
       }
+      
+    } catch(UndeclaredRepositoryException e) {
+      LOG.warn(e.getMessage()); 
     }
-
-
+    
     if (OrganizationIdentityProvider.NAME.equals(providerId) || SpaceIdentityProvider.NAME.equals(providerId)) {
 
       //
@@ -1002,7 +1044,11 @@ public class IdentityStorageImpl extends AbstractStorage implements IdentityStor
     builder.where(whereExpression.toString());
     applyOrder(builder, profileFilter);
 
-    QueryResult<ProfileEntity> results = builder.get().objects(offset, limit);
+
+    QueryImpl<ProfileEntity> queryImpl = (QueryImpl<ProfileEntity>) builder.get();
+    ((org.exoplatform.services.jcr.impl.core.query.QueryImpl) queryImpl.getNativeQuery()).setCaseInsensitiveOrder(true);
+    
+    QueryResult<ProfileEntity> results = queryImpl.objects(offset, limit);
     while (results.hasNext()) {
 
       ProfileEntity profileEntity = results.next();
@@ -1048,23 +1094,21 @@ public class IdentityStorageImpl extends AbstractStorage implements IdentityStor
     builder.where(whereExpression.toString());
     applyOrder(builder, profileFilter);
 
-   //QueryResult<ProfileEntity> results = builder.get().objects(offset, limit);
+    QueryImpl<ProfileEntity> queryImpl = (QueryImpl<ProfileEntity>) builder.get();
+    ((org.exoplatform.services.jcr.impl.core.query.QueryImpl) queryImpl.getNativeQuery()).setCaseInsensitiveOrder(true);
     
-    QueryResult<ProfileEntity> results = builder.get().objects();
+    QueryResult<ProfileEntity> results = queryImpl.objects();
+
+    //QueryResult<ProfileEntity> results = builder.get().objects();
     
     //
     IdentityResult identityResult = new IdentityResult(offset, limit, results.size());
     
-    String remoteId = null;
     //
     while (results.hasNext()) {
 
       ProfileEntity profileEntity = results.next();
 
-      remoteId = profileEntity.getIdentity().getRemoteId();
-      
-      if (StorageUtils.isUserActivated(remoteId) == false) continue;
-      
       Identity identity = createIdentityFromEntity(profileEntity.getIdentity());
       
       Profile profile = getStorage().loadProfile(new Profile(identity));
@@ -1081,6 +1125,50 @@ public class IdentityStorageImpl extends AbstractStorage implements IdentityStor
     }
 
     return identityResult.result();
+  }
+  
+
+  /**
+   * {@inheritDoc}
+   */
+  public List<Identity> getIdentitiesForUnifiedSearch(final String providerId, 
+                                                      ProfileFilter profileFilter,
+                                                      long offset, long limit) throws IdentityStorageException {
+    if (offset < 0) {
+      offset = 0;
+    }
+    
+    List<Identity> listIdentity = new ArrayList<Identity>();
+
+    QueryBuilder<ProfileEntity> builder = getSession().createQueryBuilder(ProfileEntity.class);
+    WhereExpression whereExpression = new WhereExpression();
+    //
+    whereExpression
+        .like(JCRProperties.path, getProviderRoot().getProviders().get(providerId).getPath() + StorageUtils.SLASH_STR + StorageUtils.PERCENT_STR)
+        .and()
+        .not().equals(ProfileEntity.deleted, "true");
+    
+    //apply unified search
+    _applyUnifiedSearchFilter(whereExpression, profileFilter);
+    
+    builder.where(whereExpression.toString());
+    applyOrder(builder, profileFilter);
+
+    QueryImpl<ProfileEntity> queryImpl = (QueryImpl<ProfileEntity>) builder.get();
+    
+    QueryResult<ProfileEntity> results = queryImpl.objects(offset, limit);
+    while (results.hasNext()) {
+
+      ProfileEntity profileEntity = results.next();
+
+      Identity identity = createIdentityFromEntity(profileEntity.getIdentity());
+      Profile profile = getStorage().loadProfile(new Profile(identity));
+      identity.setProfile(profile);
+      listIdentity.add(identity);
+
+    }
+
+    return listIdentity;
   }
   
   /**
@@ -1106,26 +1194,8 @@ public class IdentityStorageImpl extends AbstractStorage implements IdentityStor
     builder.where(whereExpression.toString());
 
     QueryResult<ProfileEntity> results = builder.get().objects();
-    
-    //
-    IdentityResult identityResult = new IdentityResult(results.size());
-    
-    String remoteId = null;
-    //
-    while (results.hasNext()) {
 
-      ProfileEntity profileEntity = results.next();
-
-      remoteId = profileEntity.getIdentity().getRemoteId();
-      
-      if (StorageUtils.isUserActivated(remoteId) == false) continue;
-      
-      Identity identity = createIdentityFromEntity(profileEntity.getIdentity());
-      
-      identityResult.add(identity);
-    }
-
-    return identityResult.result().size();
+    return results.size();
 
   }
 
@@ -1154,25 +1224,7 @@ public class IdentityStorageImpl extends AbstractStorage implements IdentityStor
     
     QueryResult<ProfileEntity> results = builder.get().objects();
     
-    //
-    IdentityResult identityResult = new IdentityResult(results.size());
-    
-    String remoteId = null;
-    //
-    while (results.hasNext()) {
-
-      ProfileEntity profileEntity = results.next();
-
-      remoteId = profileEntity.getIdentity().getRemoteId();
-      
-      if (StorageUtils.isUserActivated(remoteId) == false) continue;
-      
-      Identity identity = createIdentityFromEntity(profileEntity.getIdentity());
-      
-      identityResult.add(identity);
-    }
-
-    return identityResult.result().size();
+    return results.size();
   }
 
   /**
@@ -1199,20 +1251,18 @@ public class IdentityStorageImpl extends AbstractStorage implements IdentityStor
     builder.where(whereExpression.toString());
     applyOrder(builder, profileFilter);
 
-    QueryResult<ProfileEntity> results = builder.get().objects();
+    QueryImpl<ProfileEntity> queryImpl = (QueryImpl<ProfileEntity>) builder.get();
+    ((org.exoplatform.services.jcr.impl.core.query.QueryImpl) queryImpl.getNativeQuery()).setCaseInsensitiveOrder(true);
+    
+    QueryResult<ProfileEntity> results = queryImpl.objects();
     
     //
     IdentityResult identityResult = new IdentityResult(offset, limit, results.size());
     
-    String remoteId = null;
     //
     while (results.hasNext()) {
 
       ProfileEntity profileEntity = results.next();
-      
-      remoteId = profileEntity.getIdentity().getRemoteId();
-      
-      if (StorageUtils.isUserActivated(remoteId) == false) continue;
       
       Identity identity = createIdentityFromEntity(profileEntity.getIdentity());
       
@@ -1225,7 +1275,6 @@ public class IdentityStorageImpl extends AbstractStorage implements IdentityStor
       if (identityResult.addMore() == false) {
         break;
       }
-      
 
     }
 
@@ -1322,8 +1371,11 @@ public class IdentityStorageImpl extends AbstractStorage implements IdentityStor
     try {
       ProfileEntity profileEntity = _findById(ProfileEntity.class, identity.getProfile().getId());
       ActivityProfileEntity activityPEntity = profileEntity.getActivityProfile();
-      type.setActivityId(activityPEntity, activityId);
+      if (activityPEntity == null) {
+        activityPEntity = profileEntity.createActivityProfile();
+      }
       profileEntity.setActivityProfile(activityPEntity);
+      type.setActivityId(activityPEntity, activityId);
       getSession().save();
     } catch (NodeNotFoundException e) {
       LOG.debug(e.getMessage(), e);
@@ -1342,4 +1394,68 @@ public class IdentityStorageImpl extends AbstractStorage implements IdentityStor
       return null;
     }
   }
+  
+  private void _applyUnifiedSearchFilter(WhereExpression whereExpression, ProfileFilter profileFilter) {
+
+    String searchCondition = profileFilter.getAll();
+
+    if (searchCondition != null && searchCondition.length() != 0) {
+      if (this.isValidInput(searchCondition)) {
+
+        List<String> unifiedSearchConditions = StorageUtils.processUnifiedSearchCondition(searchCondition);
+        boolean first = true;
+        for(String condition : unifiedSearchConditions) {
+          //
+          if (first == false) {
+            whereExpression.or();
+          } else {
+            whereExpression.and().startGroup();
+            first = false;
+          }
+          //
+          if (condition.contains(StorageUtils.PERCENT_STR)) {
+            String conditionEscapeHtml = StringEscapeUtils.escapeHtml(condition).toLowerCase();
+            whereExpression.startGroup();
+            whereExpression
+                .like(whereExpression.callFunction(QueryFunction.LOWER, ProfileEntity.fullName), condition.toLowerCase())
+                .or().like(whereExpression.callFunction(QueryFunction.LOWER, ProfileEntity.firstName), condition.toLowerCase())
+                .or().like(whereExpression.callFunction(QueryFunction.LOWER, ProfileEntity.lastName), condition.toLowerCase())
+                .or().like(whereExpression.callFunction(QueryFunction.LOWER, ProfileEntity.position), conditionEscapeHtml)
+                .or().like(whereExpression.callFunction(QueryFunction.LOWER, ProfileEntity.skills), conditionEscapeHtml)
+                .or().like(whereExpression.callFunction(QueryFunction.LOWER, ProfileEntity.positions), conditionEscapeHtml)
+                .or().like(whereExpression.callFunction(QueryFunction.LOWER, ProfileEntity.organizations), conditionEscapeHtml)
+                .or().like(whereExpression.callFunction(QueryFunction.LOWER, ProfileEntity.jobsDescription), conditionEscapeHtml);
+            whereExpression.endGroup();
+          }
+          else {
+            whereExpression.startGroup();
+            whereExpression
+                .contains(ProfileEntity.fullName, condition)
+                .or().contains(ProfileEntity.firstName, condition)
+                .or().contains(ProfileEntity.lastName, condition)
+                .or().contains(ProfileEntity.position, condition)
+                .or().contains(ProfileEntity.skills, condition)
+                .or().contains(ProfileEntity.positions, condition)
+                .or().contains(ProfileEntity.organizations, condition)
+                .or().contains(ProfileEntity.jobsDescription, condition);
+            whereExpression.endGroup();
+          }
+        } //end for
+        whereExpression.endGroup();
+      }
+    }
+  }
+  
+  private boolean isValidInput(String input) {
+    if (input == null || input.length() == 0) {
+      return false;
+    }
+    String cleanString = input.replaceAll("\\*", "");
+    cleanString = cleanString.replaceAll("\\%", "");
+    if (cleanString.length() == 0) {
+       return false;
+    }
+    return true;
+  }
+
 }

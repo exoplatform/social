@@ -161,6 +161,21 @@ public interface IdentityStorage {
                                                  long offset,
                                                  long limit,
                                                  boolean forceLoadOrReloadProfile) throws IdentityStorageException;
+  
+  /**
+   * Gets the identities for Unified Search.
+   *
+   * @param providerId Id of provider.
+   * @param profileFilter    Information of profile that used in filtering.
+   * @param offset           Start index of list to be get.
+   * @param limit            End index of list to be get.
+   * @return the identities
+   * @throws IdentityStorageException
+   * @since 4.0.x
+   */
+  public List<Identity> getIdentitiesForUnifiedSearch(final String providerId,
+                                                      final ProfileFilter profileFilter,
+                                                      long offset, long limit) throws IdentityStorageException;
 
   /**
    * Counts the number of identity by profile filter.

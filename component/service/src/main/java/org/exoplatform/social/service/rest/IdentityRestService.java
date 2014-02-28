@@ -34,7 +34,7 @@ import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvide
 import org.exoplatform.social.core.manager.IdentityManager;
 
 /**
- * Allows to work with identity.
+ * Provides services to work with identities.
  * 
  * @anchor IdentityRestService
  */
@@ -47,11 +47,11 @@ public class IdentityRestService implements ResourceContainer {
   public IdentityRestService() {}
 
   /**
-   * Gets identity by user's name and return in json format.
+   * Gets an identity by a user's name and returns in the JSON format.
    * 
-   * @param uriInfo The request URI information.
-   * @param username The name of target user.
-   * 
+   * @param uriInfo The requested URI information.
+   * @param username The name of the target user.
+   * @param portalName The name of the current portal.
    * @anchor IdentityRestService.getId
    * 
    * @return UserId The information of provided user.

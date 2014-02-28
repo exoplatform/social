@@ -13,7 +13,6 @@ function RssFetch() {
 
 RssFetch.prototype.toggleDescription = function(elmnt_id) {
   	var blockForAdjustHeight = _gel("rssFeed");
-  	var SocialUtil = eXo.social.SocialUtil;
     if (_gel('more_'+elmnt_id).style.display == 'none') {
         _gel('more_'+elmnt_id).style.display = '';
         _gel('item_'+elmnt_id).className = 'item descriptionHighlight';
@@ -21,7 +20,7 @@ RssFetch.prototype.toggleDescription = function(elmnt_id) {
         _gel('more_'+elmnt_id).style.display = 'none';
         _gel('item_'+elmnt_id).className = 'item';
     }
-    SocialUtil.adjustHeight(blockForAdjustHeight);
+    this.adjustHeight();
 }
 
 RssFetch.prototype.shared = function() {
@@ -52,19 +51,25 @@ RssFetch.prototype.share = function(i, link) {
 }
 
 RssFetch.prototype.generateLinkContent = function(i, link) {
-  return "<a href='javascript:rssFetch.share(" + i +")'>Share</a> | <a href='" + link + "' target='_blank'>view link &raquo;</a>";
+  return "<a href='javascript:rssFetch.share(" + i +")'>Share</a> | <a href='" + link + "' target='_blank'>view link</a>";
 }
 
 RssFetch.prototype.refreshFeed = function() {
-  _IG_FetchXmlContent(prefs.getString("rssurl"), function(feed) {rssFetch.renderFeed(feed);}, { refreshInterval: (60 * 30) });
+	_IG_FetchXmlContent(prefs.getString("rssurl"), function(feed) {rssFetch.renderFeed(feed);}, { refreshInterval: (60 * 30) });
+}
+
+RssFetch.prototype.adjustHeight = function() {
+	var rss = document.getElementById('rssFeed');
+	rss.style.height = 'auto';
+	gadgets.window.adjustHeight();
+	rss.style.height = '100%';
 }
 
 RssFetch.prototype.loadPage = function() {
- 	var SocialUtil = eXo.social.SocialUtil;
   var feedEl = _gel("rssFeed");
   var currentView = gadgets.views.getCurrentView().getName();
 
-  var bullet = "<img src='/social-resources/skin/DefaultSkin/portal/background/favicon.png' tilte='rssIcon' alt='rssIcon' border=0 align='absmiddle' style='height:16;width:16;' onerror='this.style.visibility=\"hidden\";'>&nbsp;&nbsp;";
+  var bullet = "<img src='/social/gadgets/SocialRssReader/images/icon-rss.png' tilte='rssIcon' alt='rssIcon' border=0 align='absmiddle' style='height:16;width:16;' onerror='this.style.visibility=\"hidden\";'>&nbsp;&nbsp;";
 
   while ( feedEl.hasChildNodes() )
   {
@@ -88,6 +93,9 @@ RssFetch.prototype.loadPage = function() {
         var item_desc = document.createElement('div');
         var item_date = document.createElement('div');
         var item_link = document.createElement('div');
+        var item_link_date = document.createElement('div');
+        item_link_date.appendChild(item_date);
+        item_link_date.appendChild(item_link);
 
         itemEl.id = 'item_'+i;
         item_title.id = 'title_'+i;
@@ -111,6 +119,8 @@ RssFetch.prototype.loadPage = function() {
         item_desc.className = 'desc';
         item_date.className = 'date';
         item_link.className = 'link';
+        
+        item_link_date.className = 'subInfo';
 
     var nodeList = eXo.social.thisRssFetch.itemList.item(i).childNodes;
     for (var j = 0; j < nodeList.length ; j++) {
@@ -135,14 +145,13 @@ RssFetch.prototype.loadPage = function() {
     item_desc.innerHTML = description;
     item_link.innerHTML = this.generateLinkContent(i, link);
 
-    item_more.appendChild(item_date);
+    item_more.appendChild(item_link_date);
     item_more.appendChild(item_desc);
-        item_more.appendChild(item_link);
 
     itemEl.appendChild(item_title);
     itemEl.appendChild(item_more);
 
-        feedEl.appendChild(itemEl);
+    feedEl.appendChild(itemEl);
   }
 
   if (eXo.social.thisRssFetch.totalPages > 1) {
@@ -151,7 +160,8 @@ RssFetch.prototype.loadPage = function() {
     var float_div = document.createElement('div');
     var span_tag = document.createElement('span');
     item_paging.id = "paging";
-    item_paging.className = "UIPageIterator";
+    //item_paging.className = "UIPageIterator";
+    item_paging.className = "pagination uiPageIterator";
     float_div.className = "ClearRight";
 
     item_paging.innerHTML = this.setDisplayPaging(eXo.social.thisRssFetch.currentPage);
@@ -166,66 +176,69 @@ RssFetch.prototype.loadPage = function() {
 
     var allPages = [];
     var allPagesEl = this.getEl("pages");
-    var i = eXo.social.thisRssFetch.totalPages;
-    while(i > 0) {
-          var str="";
+    
+    var totalPage = eXo.social.thisRssFetch.totalPages;
+    var nextPageTag = "<li><a  id='next' class='Icon NextPageIcon' onclick='eXo.social.thisRssFetch.nextPage()' data-placement='left' rel='tooltip' data-original-title='Next Page'>" +
+    				  "<i class='uiIconNextArrow'></i></a></li>";
+    
+    var previousPageTag = "<li><a  id='previous' class='Icon LastPageIcon' onclick='eXo.social.thisRssFetch.previousPage()' data-placement='left' rel='tooltip' data-original-title='Previous Page'>" +
+	  				  "<i class='uiIconPrevArrow'></i></a></li>";
+    
+    var nextDisTag = "<li class='disabled'><a  id='next' onclick='eXo.social.thisRssFetch.nextPage()' data-placement='left' rel='tooltip' data-original-title='Next Page'>" +
+	  				 "<i class='uiIconNextArrow'></i></a></li>";
+    
+    var previousDisTag = "<li class='disabled'><a  id='previous' onclick='eXo.social.thisRssFetch.previousPage()' data-placement='left' rel='tooltip' data-original-title='Previous Page'>" +
+	  					 "<i class='uiIconPrevArrow'></i></a></li>";
+    
+    var i = 1;
+    while(i <= totalPage) {
+    	var str="";
 
-          if (i == eXo.social.thisRssFetch.currentPage) {
-            str = "<a class ='Number PageSelected' onclick='eXo.social.thisRssFetch.toPage("+i+")'>" + i + "</a>";
-          } else {
-            str = "<a class ='Number' onclick='eXo.social.thisRssFetch.toPage("+i+")'>" + i + "</a>";
-          }
+    	if (i == eXo.social.thisRssFetch.currentPage) {
+    		str = "<li class ='active'><a onclick='eXo.social.thisRssFetch.toPage("+i+")'>" + i + "</a></li>";
+    	} else {
+    		str = "<li><a onclick='eXo.social.thisRssFetch.toPage("+i+")'>" + i + "</a></li>";
+    	}
 
-          allPages.push(str);
-          i=i-1;
-      }
-
-      allPagesEl.innerHTML = allPages.join(" ");
+    	allPages.push(str);
+    	i++;
+    }
+    
+    var currentPage = eXo.social.thisRssFetch.currentPage;
+    if (totalPage == 1) {
+    	allPagesEl.innerHTML  = this.createHTML(previousDisTag, allPages.join(" "), nextDisTag);
+    } else if ((currentPage > 1) && (currentPage < totalPage)) {
+    	allPagesEl.innerHTML = this.createHTML(previousPageTag, allPages.join(" "), nextPageTag);
+    } else if (currentPage == 1) {
+    	allPagesEl.innerHTML = this.createHTML(previousDisTag, allPages.join(" "), nextPageTag);
+    } else if (currentPage == totalPage) {
+    	allPagesEl.innerHTML = this.createHTML(previousPageTag, allPages.join(" "), nextDisTag);
     }
 
-    SocialUtil.adjustHeight(feedEl);
+  }
+  
+  //show Tool-tip for paging
+  $('#next').tooltip();
+  $('#previous').tooltip();
+
+  this.adjustHeight();
+}
+
+RssFetch.prototype.createHTML = function(previous, pages, next) {
+	var HTML="";
+	HTML+= previous;
+	HTML+= pages;
+	HTML+= next;
+	return HTML;
 }
 
 RssFetch.prototype.setDisplayPaging = function(currentPage) {
-  var rtnHTML="";
-  var totalPage = eXo.social.thisRssFetch.totalPages;
-  var lastPageTag = this.createTag("last", "Icon NextTopPageIcon","eXo.social.thisRssFetch.lastPage()","last");
-  var nextPageTag = this.createTag("next", "Icon NextPageIcon","eXo.social.thisRssFetch.nextPage()","next");
-  var previousPageTag = this.createTag("previous", "Icon LastPageIcon","eXo.social.thisRssFetch.previousPage()","previous");
-  var firstPageTag = this.createTag("first", "Icon LastTopPageIcon","eXo.social.thisRssFetch.firstPage()","first");
-  var previousDisTag = this.createTag("previous", "Icon DisableLastPageIcon","void()","previous");
-  var firstDisTag = this.createTag("first", "Icon DisableLastTopPageIcon","void()","first");
-  var lastDisTag = this.createTag("last", "Icon DisableNextTopPageIcon","void()","last");
-  var nextDisTag = this.createTag("next", "Icon DisableNextPageIcon","void()","next");
-  var pagesTag = "<div id='pages'></div>";
-
-  if (totalPage == 1) {
-    rtnHTML= this.createHTML(lastDisTag, nextDisTag, pagesTag, previousDisTag, firstDisTag);
-  } else if ((currentPage > 1) && (currentPage < totalPage)) {
-    rtnHTML= this.createHTML(lastPageTag, nextPageTag, pagesTag, previousPageTag, firstPageTag);
-  } else if (currentPage == 1) {
-    rtnHTML= this.createHTML(lastPageTag, nextPageTag, pagesTag, previousDisTag, firstDisTag);
-  } else if (currentPage == totalPage) {
-    rtnHTML= this.createHTML(lastDisTag, nextDisTag, pagesTag, previousPageTag, firstPageTag);
-  }
-
-
+  var rtnHTML = "<ul id='pages'></ul>";
+  rtnHTML+="<a class='PagesTotalNumber' id='totalPages' title='Total pages'></a>";
+  rtnHTML+= "<a class='TotalPages'>Total pages:</a>";
   return rtnHTML;
 }
 
-RssFetch.prototype.createHTML = function(last, next, pages, previous, first) {
-  var HTML="";
-
-  HTML+= last;
-  HTML+= next;
-  HTML+= pages;
-  HTML+= previous;
-  HTML+= first;
-  HTML+="<a class='PagesTotalNumber' id='totalPages' title='Total pages'></a>";
-  HTML+= "<a class='TotalPages'>Total pages:</a>";
-
-  return HTML;
-}
 RssFetch.prototype.createTag = function(id, cls, action, title) {
   return "<a  id='" +id+"' class='"+cls+"' onclick='"+action+"' title='" + title + "'></a>";
 }

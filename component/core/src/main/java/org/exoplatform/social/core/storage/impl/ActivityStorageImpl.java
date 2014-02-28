@@ -25,6 +25,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.SortedSet;
@@ -32,12 +33,21 @@ import java.util.TreeSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.jcr.InvalidItemStateException;
+import javax.jcr.ItemExistsException;
+import javax.jcr.Node;
+import javax.jcr.NodeIterator;
+import javax.jcr.RepositoryException;
+
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.Validate;
+import org.chromattic.api.ChromatticException;
 import org.chromattic.api.query.Ordering;
 import org.chromattic.api.query.Query;
 import org.chromattic.api.query.QueryBuilder;
 import org.chromattic.api.query.QueryResult;
+import org.chromattic.core.api.ChromatticSessionImpl;
+import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.ActivityProcessor;
@@ -68,11 +78,13 @@ import org.exoplatform.social.core.service.LinkProvider;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.storage.ActivityStorageException;
 import org.exoplatform.social.core.storage.api.ActivityStorage;
+import org.exoplatform.social.core.storage.api.ActivityStreamStorage;
 import org.exoplatform.social.core.storage.api.IdentityStorage;
 import org.exoplatform.social.core.storage.api.RelationshipStorage;
 import org.exoplatform.social.core.storage.api.SpaceStorage;
 import org.exoplatform.social.core.storage.exception.NodeNotFoundException;
 import org.exoplatform.social.core.storage.query.WhereExpression;
+import org.exoplatform.social.core.storage.streams.StreamInvocationHelper;
 
 /**
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
@@ -91,24 +103,35 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
   private final RelationshipStorage relationshipStorage;
   private final IdentityStorage identityStorage;
   private final SpaceStorage spaceStorage;
+  private final ActivityStreamStorage streamStorage;
+  //sets value to tell this storage to inject Streams or not
+  private boolean mustInjectStreams = true;
 
   public ActivityStorageImpl(
       final RelationshipStorage relationshipStorage,
       final IdentityStorage identityStorage,
-      final SpaceStorage spaceStorage) {
+      final SpaceStorage spaceStorage,
+      final ActivityStreamStorage streamStorage) {
 
     this.relationshipStorage = relationshipStorage;
     this.identityStorage = identityStorage;
     this.spaceStorage = spaceStorage;
+    this.streamStorage = streamStorage;
     this.activityProcessors = new TreeSet<ActivityProcessor>(processorComparator());
-
+  }
+  
+  /**
+   * Sets value to tell this storage to inject Streams or not
+   * @param mustInject
+   */
+  public void setInjectStreams(boolean mustInject) {
+    this.mustInjectStreams = mustInject;
   }
 
   /*
    * Internal
    */
-
-  protected void _createActivity(Identity owner, ExoSocialActivity activity) throws NodeNotFoundException {
+  protected ActivityEntity _createActivity(Identity owner, ExoSocialActivity activity, List<String> mentioners) throws NodeNotFoundException {
 
     IdentityEntity identityEntity = _findById(IdentityEntity.class, owner.getId());
 
@@ -144,24 +167,71 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     activity.setPostedTime(activityMillis);
     activity.setReplyToId(new String[]{});
     activity.setUpdated(activityMillis);
-    activity.setMentionedIds(processMentions(activity.getMentionedIds(), activity.getTitle(), true));
+    
+    //records activity for mention case.
+    
+    activity.setMentionedIds(processMentions(activity.getMentionedIds(), activity.getTitle(), mentioners, true));
+    
+    //
     activity.setPosterId(activity.getUserId() != null ? activity.getUserId() : owner.getId());
       
     //
     fillActivityEntityFromActivity(activity, activityEntity);
+    
+    return activityEntity;
   }
 
   protected void _saveActivity(ExoSocialActivity activity) throws NodeNotFoundException {
 
     ActivityEntity activityEntity = _findById(ActivityEntity.class, activity.getId());
+    
+    //
+    //long oldUpdated = activityEntity.getLastUpdated();
+    String[] removedLikes = StorageUtils.sub(activityEntity.getLikes(), activity.getLikeIdentityIds());
+    String[] addedLikes = StorageUtils.sub(activity.getLikeIdentityIds(), activityEntity.getLikes());
+    //Don't update the last modified for activity.
+    //Don't apply What's hot for like/dislike case.
+    
+    //streamStorage.update(activity, oldUpdated, false);
+    //if (mustInjectStreams && removedLikes.length == 0) {
+    //  activity.setUpdated(System.currentTimeMillis());
+    //  StreamInvocationHelper.update(activity, oldUpdated, null, null);
+    //}
+    
+    if (removedLikes.length > 0 || addedLikes.length > 0) {
+      //process likes activity
+      manageActivityLikes(addedLikes, removedLikes, activity);
+    }
+    //
     fillActivityEntityFromActivity(activity, activityEntity);
+    
+  }
+  
+  private void manageActivityLikes(String[] addedLikes, String[] removedLikes, ExoSocialActivity activity) {
 
+    if (addedLikes != null) {
+      for (String id : addedLikes) {
+        Identity identity = identityStorage.findIdentityById(id);
+        //streamStorage.save(identity, activity);
+        if (mustInjectStreams) {
+          StreamInvocationHelper.like(identity, activity);
+        }
+      }
+    }
+
+    if (removedLikes != null) {
+      for (String id : removedLikes) {
+        Identity removedLiker = identityStorage.findIdentityById(id);
+        if (mustInjectStreams) {
+          StreamInvocationHelper.unLike(removedLiker, activity);
+        }
+      }
+    }
   }
 
   /*
    * Private
    */
-
   private void fillActivityEntityFromActivity(ExoSocialActivity activity, ActivityEntity activityEntity) {
 
     activityEntity.setTitle(activity.getTitle());
@@ -193,10 +263,29 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     fillStream(activityEntity, activity);
     
   }
+  
+  private long getLastUpdatedTime(ActivityEntity activityEntity) {
+    ChromatticSessionImpl chromatticSession = (ChromatticSessionImpl) getSession();
+    try {
+      Node node = chromatticSession.getNode(activityEntity);
+      if (node.hasProperty(ActivityEntity.lastUpdated.getName())) {
+        return activityEntity.getLastUpdated();
+      }
+    } catch (RepositoryException e) {
+      LOG.debug("Failed to get last updated by activity with id = " + activityEntity.getId(), e);
+    }
+    return activityEntity.getPostedTime();
+  }
 
-  private void fillActivityFromEntity(ActivityEntity activityEntity, ExoSocialActivity activity) {
+  private ExoSocialActivity fillActivityFromEntity(ActivityEntity activityEntity, ExoSocialActivity activity) {
 
+    try {
     //
+    boolean isComment = activityEntity.isComment();
+    if (isComment) {
+      return fillCommentFromEntity(activityEntity, activity);
+    }
+    
     activity.setId(activityEntity.getId());
     activity.setTitle(activityEntity.getTitle());
     activity.setTitleId(activityEntity.getTitleId());
@@ -204,18 +293,19 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     activity.setBodyId(activityEntity.getBodyId());
     activity.setUserId(activityEntity.getPosterIdentity().getId());
     activity.setPostedTime(activityEntity.getPostedTime());
-    activity.setUpdated(activityEntity.getLastUpdated());
+    activity.setUpdated(getLastUpdatedTime(activityEntity));
     activity.setType(activityEntity.getType());
     activity.setAppId(activityEntity.getAppId());
     activity.setExternalId(activityEntity.getExternalId());
     activity.setUrl(activityEntity.getUrl());
     activity.setPriority(activityEntity.getPriority());
-    activity.isComment(activityEntity.isComment());
+    activity.isComment(isComment);
     activity.setPosterId(activityEntity.getPosterIdentity().getId());
-
+    
     //
     List<String> computeCommentid = new ArrayList<String>();
-    for (ActivityEntity commentEntity : activityEntity.getComments()) {
+    List<ActivityEntity> comments = activityEntity.getComments();
+    for (ActivityEntity commentEntity : comments) {
       computeCommentid.add(commentEntity.getId());
     }
 
@@ -223,17 +313,17 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     activity.setReplyToId(computeCommentid.toArray(new String[]{}));
     String[] likes = activityEntity.getLikes();
     if (likes != null) {
-      activity.setLikeIdentityIds(activityEntity.getLikes());
+      activity.setLikeIdentityIds(likes);
     }
     
     String[] mentioners = activityEntity.getMentioners();
     if (mentioners != null) {
-      activity.setMentionedIds(activityEntity.getMentioners());
+      activity.setMentionedIds(mentioners);
     }
 
     String[] commenters = activityEntity.getCommenters();
     if (commenters != null) {
-      activity.setCommentedIds(activityEntity.getCommenters());
+      activity.setCommentedIds(commenters);
     }
     
     //
@@ -254,11 +344,71 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     if (hidable != null) {
       activity.isHidden(hidable.getHidden());
     }
-    
+    } catch (Exception e) {
+      LOG.debug("Failed to fill activity from entity : entity null or missing property", e);
+      return null;
+    }
 
     //
-    fillStream(activityEntity, activity);
+    if (activity != null) {
+      fillStream(activityEntity, activity);
+    }
     
+    return activity;
+  }
+  
+  private ExoSocialActivity fillCommentFromEntity(ActivityEntity activityEntity, ExoSocialActivity comment) {
+
+    try {
+      //
+      comment.setId(activityEntity.getId());
+      comment.setTitle(activityEntity.getTitle());
+      comment.setTitleId(activityEntity.getTitleId());
+      comment.setBody(activityEntity.getBody());
+      comment.setBodyId(activityEntity.getBodyId());
+      comment.setPostedTime(activityEntity.getPostedTime());
+      comment.setUpdated(getLastUpdatedTime(activityEntity));
+      comment.isComment(activityEntity.isComment());
+      //
+      String posterId =  activityEntity.getPosterIdentity().getId();
+      comment.setUserId(posterId);
+      comment.setPosterId(posterId);
+      //
+      comment.setParentId(activityEntity.getParentActivity().getId());
+
+      String[] mentioners = activityEntity.getMentioners();
+      if (mentioners != null) {
+        comment.setMentionedIds(mentioners);
+      }
+
+      //
+      ActivityParameters params = activityEntity.getParams();
+      if (params != null) {
+        comment.setTemplateParams(new LinkedHashMap<String, String>(params.getParams()));
+      } else {
+        comment.setTemplateParams(new HashMap<String, String>());
+      }
+
+      //
+      comment.isLocked(false);
+      
+      //
+      HidableEntity hidable = _getMixin(activityEntity, HidableEntity.class, false);
+      if (hidable != null) {
+        comment.isHidden(hidable.getHidden());
+      }
+      
+//      if (comment != null) {
+//        fillStream(activityEntity, comment);
+//      }
+    } catch (Exception e) {
+      LOG.debug("Failed to fill comment from entity : entity null or missing property", e);
+      return null;
+    }
+
+    
+    
+    return comment;
   }
 
   private void fillStream(ActivityEntity activityEntity, ExoSocialActivity activity) {
@@ -270,7 +420,11 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
 
     //update new stream owner
     try {
-      Identity streamOwnerIdentity = identityStorage.findIdentity(SpaceIdentityProvider.NAME, activity.getStreamOwner());
+      String identityId = activity.getStreamOwner();
+      Identity streamOwnerIdentity = identityStorage.findIdentity(SpaceIdentityProvider.NAME, identityId);
+      if (streamOwnerIdentity == null) {
+        streamOwnerIdentity = identityStorage.findIdentity(OrganizationIdentityProvider.NAME, identityId);
+      }
       IdentityEntity streamOwnerEntity = _findById(IdentityEntity.class, streamOwnerIdentity.getId());
       identityEntity = streamOwnerEntity;
       activityEntity.setIdentity(streamOwnerEntity);
@@ -364,7 +518,11 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
   }
 
   private ActivityStorage getStorage() {
-    return (activityStorage != null ? activityStorage : this);
+    if (activityStorage == null) {
+      activityStorage = (ActivityStorage) PortalContainer.getInstance().getComponentInstanceOfType(ActivityStorage.class);
+    }
+    
+    return activityStorage;
   }
 
   /*
@@ -383,10 +541,11 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
       ExoSocialActivity activity = new ExoSocialActivityImpl();
 
       //
-      activity.setId(activityEntity.getId());
-      fillActivityFromEntity(activityEntity, activity);
+      activity = fillActivityFromEntity(activityEntity, activity);
 
-      processActivity(activity);
+      if (activity != null) {
+        processActivity(activity);
+      }
 
       //
       return activity;
@@ -397,7 +556,6 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
       return null;
     }
   }
-
   /**
    * {@inheritDoc}
    */
@@ -410,18 +568,38 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
   /**
    * {@inheritDoc}
    */
-  public List<ExoSocialActivity> getUserActivities(Identity owner, long offset, long limit)
-      throws ActivityStorageException {
+  public List<ExoSocialActivity> getUserActivities(Identity owner, long offset, long limit) throws ActivityStorageException {
     
-    if (owner == null) {
-      return Collections.emptyList();
+    List<ExoSocialActivity> got = streamStorage.getMyActivities(owner, (int)offset, (int)limit);
+    //
+    if (got.size() == limit) {
+      return got;
     }
     
-    
-    ActivityFilter filter = new ActivityFilter(){};
-    //
-    return getActivitiesOfIdentities (ActivityBuilderWhere.simple().poster(owner).mentioner(owner).commenter(owner).liker(owner).owners(owner), filter, offset, limit);
-    
+    long remaind = limit - got.size();
+    if (remaind > 0) {
+      long newOffset = got.size() + offset;
+      List<ExoSocialActivity> origin = getUserActivitiesForUpgrade(owner, newOffset, limit);
+      List<ExoSocialActivity> migrateList = new LinkedList<ExoSocialActivity>();
+
+      long i = remaind;
+      // fill to enough limit
+      for (ExoSocialActivity activity : origin) {
+        if (got.contains(activity) == false) {
+          got.add(activity);
+          migrateList.add(activity);
+          if (--i == 0) {
+            break;
+          }
+        }
+
+      }
+
+      if (migrateList.size() > 0) {
+        StreamInvocationHelper.createMyActivitiesActivityRef(owner, migrateList);
+      }
+    }
+    return got;
   }
   
   /**
@@ -437,10 +615,16 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
       ActivityEntity activityEntity = _findById(ActivityEntity.class, activity.getId());
       ActivityEntity commentEntity = activityEntity.createComment(String.valueOf(commentMillis));
 
-      activityEntity.setMentioners(processMentions(activity.getMentionedIds(), comment.getTitle(), true));
-      activityEntity.setCommenters(processCommenters(activity.getCommentedIds(), comment.getUserId(), true));
+      //
+      List<String> mentioners = new ArrayList<String>();
+      activityEntity.setMentioners(processMentions(activity.getMentionedIds(), comment.getTitle(), mentioners, true));
       
       //
+      List<String> commenters = new ArrayList<String>();
+      activityEntity.setCommenters(processCommenters(activity.getCommentedIds(), comment.getUserId(), commenters, true));
+      
+      //
+      long oldUpdated = getLastUpdatedTime(activityEntity);
       activityEntity.getComments().add(commentEntity);
       activityEntity.setLastUpdated(currentMillis);
       commentEntity.setTitle(comment.getTitle());
@@ -452,6 +636,7 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
       commentEntity.setComment(Boolean.TRUE);
       commentEntity.setPostedTime(commentMillis);
       commentEntity.setLastUpdated(commentMillis);
+      comment.setParentId(activity.getId());
       
       HidableEntity hidable = _getMixin(commentEntity, HidableEntity.class, true);
       hidable.setHidden(comment.isHidden());
@@ -474,18 +659,43 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
       }
       listIds.add(commentEntity.getId());
       activity.setReplyToId(listIds.toArray(new String[]{}));
-
-    }
+      
+      //
+      activity.setUpdated(currentMillis);
+      
+      //SOC-3915 empty stream when post comment but lost it.
+      //Resolved SOC-3915 empty stream when post comment but lost it.
+      //Resolved WhatsHotTest is failed.
+      //persist and refresh JCR node to prevent NodeNotFoundException
+      StorageUtils.persist(true);
+      //
+      if (mustInjectStreams) {
+        Identity identity = identityStorage.findIdentityById(comment.getUserId());
+        StreamInvocationHelper.updateCommenter(identity, activityEntity, commenters.toArray(new String[0]), oldUpdated);
+        StreamInvocationHelper.update(activity, mentioners.toArray(new String[0]), oldUpdated);
+      }
+    }  
     catch (NodeNotFoundException e) {
       throw new ActivityStorageException(ActivityStorageException.Type.FAILED_TO_SAVE_COMMENT, e.getMessage(), e);
+    } catch (ChromatticException ex) {
+      Throwable throwable = ex.getCause();
+      if (throwable instanceof ItemExistsException || 
+          throwable instanceof InvalidItemStateException) {
+        LOG.warn("Probably was inserted activity by another session");
+        LOG.debug(ex.getMessage(), ex);
+      } else {
+        throw new ActivityStorageException(ActivityStorageException.Type.FAILED_TO_SAVE_ACTIVITY, ex.getMessage());
+      }
     }
-    getSession().save();
+    //persist and refresh JCR node to prevent NodeNotFoundException
+    StorageUtils.persist(true);
     //
     LOG.debug(String.format(
-        "Comment %s by %s (%s) created",
+        "Comment %s by %s (%s) created: comment size is == %s ",
         comment.getTitle(),
         comment.getUserId(),
-        comment.getId()
+        comment.getId(),
+        activity.getCommentedIds().length
     ));
   }
 
@@ -506,18 +716,29 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     try {
 
       if (activity.getId() == null) {
-
-        _createActivity(owner, activity);
         
+        List<String> mentioners = new ArrayList<String>();
+        ActivityEntity entity = _createActivity(owner, activity, mentioners);
+
+        
+        StorageUtils.persist(true);
+        //create refs
+        if (mustInjectStreams) {
+          //run synchronous
+          //due to run in the same thread then pass AcitivityEntity to Stream service to create ActivityRef
+          //don't need to get JCR to avoid NodeNotFoundException
+          StreamInvocationHelper.savePoster(owner, entity);
+          //run asynchronous: JCR session doesn't share in multi threading, in Stream service.
+          
+          StreamInvocationHelper.save(owner, activity, mentioners.toArray(new String[0]));
+        }
       }
       else {
-
         _saveActivity(activity);
-
       }
 
-      //
-      getSession().save();
+      //persist and refresh JCR node to prevent NodeNotFoundException
+      StorageUtils.persist(true);
 
       //
       LOG.debug(String.format(
@@ -533,6 +754,16 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     }
     catch (NodeNotFoundException e) {
       throw new ActivityStorageException(ActivityStorageException.Type.FAILED_TO_SAVE_ACTIVITY, e.getMessage(), e);
+    } catch (ChromatticException ex) {
+      Throwable throwable = ex.getCause();
+      if (throwable instanceof ItemExistsException || 
+          throwable instanceof InvalidItemStateException) {
+        LOG.warn("Probably was inserted activity by another session");
+        LOG.debug(ex.getMessage(), ex);
+        return activity;
+      } else {
+        throw new ActivityStorageException(ActivityStorageException.Type.FAILED_TO_SAVE_ACTIVITY, ex.getMessage());
+      }
     }
   }
 
@@ -575,14 +806,33 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
       // remove mentions information
       if (activityEntity.isComment()) {
         ActivityEntity activityEntityOfComment = activityEntity.getParentActivity();
-        activityEntityOfComment.setMentioners(processMentions(activityEntityOfComment.getMentioners(), activityEntity.getTitle(), false));
         
         //
-        activityEntityOfComment.setCommenters(processCommenters(activityEntityOfComment.getCommenters(), activityEntity.getPosterIdentity().getId(), false));
+        List<String> mentioners = new ArrayList<String>();
+        activityEntityOfComment.setMentioners(processMentions(activityEntityOfComment.getMentioners(), activityEntity.getTitle(), mentioners, false));
+        
+        
+        //
+        List<String> commenters = new ArrayList<String>();
+        activityEntityOfComment.setCommenters(processCommenters(activityEntityOfComment.getCommenters(), activityEntity.getPosterIdentity().getId(), commenters, false));
+        //
+        if (mustInjectStreams) {
+          ExoSocialActivity parentActivity = getActivity(activityEntityOfComment.getId());
+          StreamInvocationHelper.deleteComment(parentActivity, mentioners.toArray(new String[0]), commenters.toArray(new String[0]));
+        }
+        
       } else {
-        activityEntity.setMentioners(processMentions(activityEntity.getMentioners(), activityEntity.getTitle(), false));
+        List<String> mentioners = new ArrayList<String>();
+        activityEntity.setMentioners(processMentions(activityEntity.getMentioners(), activityEntity.getTitle(), mentioners, false));
+        //
+        if (mustInjectStreams) {
+          StreamInvocationHelper.deleteComment(activity, mentioners.toArray(new String[0]), null);
+        }
       }
       
+      //create refs
+      streamStorage.delete(activityId);
+
       //
       _removeById(ActivityEntity.class, activityId);
 
@@ -592,7 +842,8 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
       }
 
       //
-      getSession().save();
+      //getSession().save();
+      StorageUtils.persist();
 
       //
       LOG.debug(String.format(
@@ -612,9 +863,29 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
    * {@inheritDoc}
    */
   public void deleteComment(String activityId, String commentId) throws ActivityStorageException {
-
     deleteActivity(commentId);
+  }
+  
+  /**
+   * {@inheritDoc}
+   */
+  private ExoSocialActivity getActivityById(String activityId) throws ActivityStorageException {
 
+    try {
+
+      //
+      ActivityEntity activityEntity = _findById(ActivityEntity.class, activityId);
+      ExoSocialActivity activity = new ExoSocialActivityImpl();
+
+      //
+      activity.setId(activityEntity.getId());
+      //
+      return activity;
+
+    }
+    catch (NodeNotFoundException e) {
+      return null;
+    }
   }
 
   /**
@@ -704,15 +975,7 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
    * {@inheritDoc}
    */
   public int getNumberOfUserActivities(Identity owner) throws ActivityStorageException {
-
-    if (owner == null) {
-      return 0;
-    }
-    
-    ActivityFilter filter = new ActivityFilter(){};
-    //
-    return getActivitiesOfIdentities (ActivityBuilderWhere.simple().mentioner(owner).owners(owner), filter, 0, 0).size();
-
+    return streamStorage.getNumberOfMyActivities(owner);
   }
 
   /**
@@ -791,35 +1054,45 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
    * {@inheritDoc}
    */
   public List<ExoSocialActivity> getActivityFeed(Identity ownerIdentity, int offset, int limit) {
+    List<ExoSocialActivity> got = streamStorage.getFeed(ownerIdentity, offset, limit);
 
-    //
-    List<Identity> identities = new ArrayList<Identity>();
+    if (got.size() == limit) {
+      return got;
+    }
 
-    identities.addAll(relationshipStorage.getConnections(ownerIdentity));
-    identities.addAll(getSpacesId(ownerIdentity));
-    identities.add(ownerIdentity);
-    
-    ActivityFilter filter = new ActivityFilter(){};
-    //
-    return getActivitiesOfIdentities(ActivityBuilderWhere.simple().mentioner(ownerIdentity).owners(identities), filter, offset, limit);
+    int remaind = limit - got.size();
+    if (remaind > 0) {
+      int newOffset = got.size() + offset;
+      List<ExoSocialActivity> origin = getActivityFeedForUpgrade(ownerIdentity, newOffset, limit);
+      List<ExoSocialActivity> migrateList = new LinkedList<ExoSocialActivity>();
+
+      int i = remaind;
+      // fill to enough limit
+      for (ExoSocialActivity activity : origin) {
+        if (got.contains(activity) == false) {
+          got.add(activity);
+          migrateList.add(activity);
+          if (--i == 0) {
+            break;
+          }
+        }
+
+      }
+
+      if (migrateList.size() > 0) {
+        StreamInvocationHelper.createFeedActivityRef(ownerIdentity, migrateList);
+      }
+
+    }
+
+    return got;
   }
 
   /**
    * {@inheritDoc}
    */
   public int getNumberOfActivitesOnActivityFeed(Identity ownerIdentity) {
-
-    //
-    List<Identity> identities = new ArrayList<Identity>();
-
-    identities.addAll(relationshipStorage.getConnections(ownerIdentity));
-    identities.addAll(getSpacesId(ownerIdentity));
-    identities.add(ownerIdentity);
-    
-    ActivityFilter filter = new ActivityFilter(){};
-
-    return getActivitiesOfIdentitiesQuery(ActivityBuilderWhere.simple().mentioner(ownerIdentity).owners(identities), filter).objects().size();
-
+    return streamStorage.getNumberOfFeed(ownerIdentity);
   }
 
   @Override
@@ -974,40 +1247,45 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
    * {@inheritDoc}
    */
   public List<ExoSocialActivity> getActivitiesOfConnections(Identity ownerIdentity, int offset, int limit) {
-
-    List<Identity> connections = relationshipStorage.getConnections(ownerIdentity);
-    
-    if (connections.size() <=0 ) {
-      return Collections.emptyList();
+    List<ExoSocialActivity> got = streamStorage.getConnections(ownerIdentity, offset, limit);
+    //
+    if (got.size() == limit) {
+      return got;
     }
     
-    //
-    ActivityFilter filter = new ActivityFilter(){};
+    int remaind = limit - got.size();
+    if (remaind > 0) {
+      int newOffset = got.size() + offset;
+      List<ExoSocialActivity> origin = getActivitiesOfConnectionsForUpgrade(ownerIdentity, newOffset, limit);
+      List<ExoSocialActivity> migrateList = new LinkedList<ExoSocialActivity>();
 
-    //
-    return getActivitiesOfIdentities(ActivityBuilderWhere.simple().owners(connections), filter, offset, limit);
+      int i = remaind;
+      // fill to enough limit
+      for (ExoSocialActivity activity : origin) {
+        if (got.contains(activity) == false) {
+          got.add(activity);
+          migrateList.add(activity);
+          if (--i == 0) {
+            break;
+          }
+        }
+
+      }
+
+      if (migrateList.size() > 0) {
+        StreamInvocationHelper.createConnectionsActivityRef(ownerIdentity, migrateList);
+      }
+
+    }
+
+    return got;
   }
 
   /**
    * {@inheritDoc}
    */
   public int getNumberOfActivitiesOfConnections(Identity ownerIdentity) {
-
-    //
-
-    List<Identity> connectionList = relationshipStorage.getConnections(ownerIdentity);
-    
-    if (connectionList.size() <= 0) {
-      return 0;
-    }
-
-    //
-    ActivityFilter filter = new ActivityFilter(){};
-
-    //
-    return getActivitiesOfIdentitiesQuery(ActivityBuilderWhere.simple().owners(connectionList),
-                                          filter).objects().size();
-
+    return streamStorage.getNumberOfConnections(ownerIdentity);
   }
 
   /**
@@ -1097,40 +1375,45 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
    * {@inheritDoc}
    */
   public List<ExoSocialActivity> getUserSpacesActivities(Identity ownerIdentity, int offset, int limit) {
-
+    List<ExoSocialActivity> got = streamStorage.getMySpaces(ownerIdentity, offset, limit);
     //
-    List<Identity> spaceList = getSpacesId(ownerIdentity);
+    if (got.size() == limit) {
+      return got;
+    }
+    
+    int remaind = limit - got.size();
+    if (remaind > 0) {
+      int newOffset = got.size() + offset;
+      List<ExoSocialActivity> origin = getUserSpacesActivitiesForUpgrade(ownerIdentity, newOffset, limit);
+      List<ExoSocialActivity> migrateList = new LinkedList<ExoSocialActivity>();
 
-    //
-    if (spaceList.size() == 0) {
-      return Collections.emptyList();
+      int i = remaind;
+      // fill to enough limit
+      for (ExoSocialActivity activity : origin) {
+        if (got.contains(activity) == false) {
+          got.add(activity);
+          migrateList.add(activity);
+          if (--i == 0) {
+            break;
+          }
+        }
+
+      }
+
+      if (migrateList.size() > 0) {
+        StreamInvocationHelper.createMySpacesActivityRef(ownerIdentity, migrateList);
+      }
+
     }
 
-    //
-    ActivityFilter filter = new ActivityFilter(){};
-
-    //
-    return getActivitiesOfIdentities(ActivityBuilderWhere.simple().owners(spaceList), filter, 0, limit);
+    return got;
   }
 
   /**
    * {@inheritDoc}
    */
   public int getNumberOfUserSpacesActivities(Identity ownerIdentity) {
-
-    //
-    List<Identity> spaceList = getSpacesId(ownerIdentity);
-
-    //
-    if (spaceList.size() == 0) {
-      return 0;
-    }
-
-    //
-    ActivityFilter filter = new ActivityFilter(){};
-
-    //
-    return getActivitiesOfIdentitiesQuery(ActivityBuilderWhere.simple().owners(spaceList), filter).objects().size();
+    return streamStorage.getNumberOfMySpaces(ownerIdentity);
   }
 
   /**
@@ -1224,24 +1507,51 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
    */
   public List<ExoSocialActivity> getComments(ExoSocialActivity existingActivity, int offset, int limit) {
 
+    List<ExoSocialActivity> activities = new ArrayList<ExoSocialActivity>();
     String[] commentIds = getStorage().getActivity(existingActivity.getId()).getReplyToId();
-
-    long totalSize = commentIds.length;
     
-    ActivityIterator activityIt = new ActivityIterator(offset, limit, totalSize);
+    //
+    limit = (limit > commentIds.length ? commentIds.length : limit);
     
-    int i = 0;
-    while (i < totalSize) {
-      ExoSocialActivity comment = getActivity(commentIds[i]);
-      if (!comment.isHidden())
-        activityIt.add(comment);
-      if (activityIt.addMore() == false) {
+    for (int i = offset; i < commentIds.length; i++) {
+      ExoSocialActivity comment = getStorage().getActivity(commentIds[i]);
+      if (comment == null || comment.isHidden()) {
+        continue;
+      }
+      activities.add(comment);
+      //
+      if (activities.size() == limit) {
         break;
       }
-      i++;
     }
     
-    return activityIt.result();
+    
+    return activities;
+  }
+  
+  /**
+   * Checks specified comment is hidden or not
+   * @param commentId
+   * @return TRUE hidden comment/ FALSE otherwise
+   */
+  private boolean isHidden(String commentId) {
+
+    try {
+      ActivityEntity activityEntity = _findById(ActivityEntity.class, commentId);
+      if (activityEntity != null) {
+        HidableEntity hidable = _getMixin(activityEntity, HidableEntity.class, false);
+        if (hidable != null) {
+          return hidable.getHidden();
+        }
+      } else {
+        return true;
+      }
+      
+    } catch (NodeNotFoundException e) {
+      return true;
+    }
+
+    return false;
   }
 
   /**
@@ -1249,20 +1559,19 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
    */
   public int getNumberOfComments(ExoSocialActivity existingActivity) {
     //return getStorage().getActivity(existingActivity.getId()).getReplyToId().length;
-    List<ExoSocialActivity> activities = new ArrayList<ExoSocialActivity>();
-
     //
     List<String> commentIds = Arrays.asList(getStorage().getActivity(existingActivity.getId()).getReplyToId());
+    int size = commentIds.size();
 
     //
     for(String commentId : commentIds) {
-      ExoSocialActivity comment = getActivity(commentId);
-      if (!comment.isHidden())
-        activities.add(getStorage().getActivity(commentId));
+      if (isHidden(commentId)) {
+        size--;
+      }
     }
 
     //
-    return activities.size();
+    return size;
   }
 
   /**
@@ -1390,16 +1699,31 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
       if (changedActivity.getTitle() == null) changedActivity.setTitle(activityEntity.getTitle());
       if (changedActivity.getBody() == null) changedActivity.setBody(activityEntity.getBody());
       
+      boolean isHidden = getActivity(changedActivity.getId()).isHidden();
       _saveActivity(changedActivity);
       
-      getSession().save();
+      //update activity ref when activity change value of isHidden
+      if (changedActivity.isHidden() != isHidden) {
+        Identity owner = identityStorage.findIdentity(SpaceIdentityProvider.NAME, changedActivity.getStreamOwner());
+        if (owner == null) {
+          owner = identityStorage.findIdentity(OrganizationIdentityProvider.NAME, changedActivity.getStreamOwner());
+        }
+        StreamInvocationHelper.updateHidable(owner, activityEntity, changedActivity);
+        getSession().save();
+      }
       
     }
     catch (NodeNotFoundException e) {
-      throw new ActivityStorageException(
-          ActivityStorageException.Type.FAILED_TO_SAVE_ACTIVITY,
-          e.getMessage()
-      );
+      throw new ActivityStorageException(ActivityStorageException.Type.FAILED_TO_SAVE_ACTIVITY, e.getMessage());
+    } catch (ChromatticException ex) {
+      Throwable throwable = ex.getCause();
+      if (throwable instanceof ItemExistsException || 
+          throwable instanceof InvalidItemStateException) {
+        LOG.warn("Probably was updated activity by another session");
+        LOG.debug(ex.getMessage(), ex);
+      } else {
+        throw new ActivityStorageException(ActivityStorageException.Type.FAILED_TO_UPDATE_ACTIVITY, ex.getMessage());
+      }
     }
 
   }
@@ -1444,14 +1768,20 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     this.activityStorage = storage;
   }
 
-  //
-  private String[] processMentions(String[] mentionerIds, String title, boolean isAdded) {
+  /**
+   * Processes Mentioners who mention via the Activity.
+   * 
+   * @param mentionerIds
+   * @param title
+   * @param isAdded
+   * @return list of added IdentityIds who mentioned
+   */
+  private String[] processMentions(String[] mentionerIds, String title, List<String> addedOrRemovedIds, boolean isAdded) {
     if (title == null || title.length() == 0) {
       return ArrayUtils.EMPTY_STRING_ARRAY;
     }
     
     Matcher matcher = MENTION_PATTERN.matcher(title);
-    
     while (matcher.find()) {
       String remoteId = matcher.group().substring(1);
       if (!USER_NAME_VALIDATOR_REGEX.matcher(remoteId).matches()) {
@@ -1461,25 +1791,26 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
       // if not the right mention then ignore
       if (identity != null) { 
         String mentionStr = identity.getId() + MENTION_CHAR; // identityId@
-        mentionerIds = isAdded ? add(mentionerIds, mentionStr) : remove(mentionerIds, mentionStr);
+        mentionerIds = isAdded ? add(mentionerIds, mentionStr, addedOrRemovedIds) : remove(mentionerIds, mentionStr, addedOrRemovedIds);
       }
     }
     return mentionerIds;
   }
   
-  private String[] processCommenters(String[] commenters, String commenter, boolean isAdded) {
+  private String[] processCommenters(String[] commenters, String commenter, List<String> addedOrRemovedIds, boolean isAdded) {
     if (commenter == null || commenter.length() == 0) {
       return ArrayUtils.EMPTY_STRING_ARRAY;
     }
     
-    commenter += MENTION_CHAR; 
-    commenters = isAdded ? add(commenters, commenter) : remove(commenters, commenter);
+    String newCommenter = commenter + MENTION_CHAR; 
+    commenters = isAdded ? add(commenters, newCommenter, addedOrRemovedIds) : remove(commenters, newCommenter, addedOrRemovedIds);
     
     return commenters;
   }
 
-  private String[] add(String[] mentionerIds, String mentionStr) {
+  private String[] add(String[] mentionerIds, String mentionStr, List<String> addedOrRemovedIds) {
     if (ArrayUtils.toString(mentionerIds).indexOf(mentionStr) == -1) { // the first mention
+      addedOrRemovedIds.add(mentionStr.replace(MENTION_CHAR, ""));
       return (String[]) ArrayUtils.add(mentionerIds, mentionStr + 1);
     }
     
@@ -1492,21 +1823,25 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
       }
     }
     
+
+    addedOrRemovedIds.add(mentionStr.replace(MENTION_CHAR, ""));
     mentionerIds = (String[]) ArrayUtils.add(mentionerIds, storedId);
     return mentionerIds;
   }
 
-  private String[] remove(String[] mentionerIds, String mentionStr) {
+  private String[] remove(String[] mentionerIds, String mentionStr, List<String> addedOrRemovedIds) {
     for (String mentionerId : mentionerIds) {
       if (mentionerId.indexOf(mentionStr) != -1) {
         int numStored = Integer.parseInt(mentionerId.split(MENTION_CHAR)[1]) - 1;
         
         if (numStored == 0) {
+          addedOrRemovedIds.add(mentionStr.replace(MENTION_CHAR, ""));
           return (String[]) ArrayUtils.removeElement(mentionerIds, mentionerId);
         }
 
         mentionerIds = (String[]) ArrayUtils.removeElement(mentionerIds, mentionerId);
         mentionerIds = (String[]) ArrayUtils.add(mentionerIds, mentionStr + numStored);
+        addedOrRemovedIds.add(mentionStr.replace(MENTION_CHAR, ""));
         break;
       }
     }
@@ -1515,6 +1850,11 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
 
   @Override
   public int getNumberOfSpaceActivities(Identity spaceIdentity) {
+    return streamStorage.getNumberOfSpaceStream(spaceIdentity);
+  }
+  
+  @Override
+  public int getNumberOfSpaceActivitiesForUpgrade(Identity spaceIdentity) {
     //
     if (spaceIdentity == null) {
       return 0;
@@ -1529,16 +1869,57 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
 
   @Override
   public List<ExoSocialActivity> getSpaceActivities(Identity spaceIdentity, int index, int limit) {
+    List<ExoSocialActivity> got = streamStorage.getSpaceStream(spaceIdentity, index, limit);
+
+    if (got.size() == limit) {
+      return got;
+    }
+    
+    if (got.size() == getStorage().getNumberOfSpaceActivitiesForUpgrade(spaceIdentity)) {
+      return got;
+    }
+    
+    int remaind = limit - got.size();
+    if (remaind > 0) {
+      int newOffset = got.size() + index;
+      List<ExoSocialActivity> origin = getSpaceActivitiesForUpgrade(spaceIdentity, newOffset, limit);
+      List<ExoSocialActivity> migrateList = new LinkedList<ExoSocialActivity>();
+
+      int i = remaind;
+      // fill to enough limit
+      for (ExoSocialActivity activity : origin) {
+        if (got.contains(activity) == false) {
+          got.add(activity);
+          migrateList.add(activity);
+          if (--i == 0) {
+            break;
+          }
+        }
+
+      }
+
+      if (migrateList.size() > 0) {
+        StreamInvocationHelper.createSpaceActivityRef(spaceIdentity, migrateList);
+      }
+
+    }
+
+    return got;
+  }
+  
+  @Override
+  public List<ExoSocialActivity> getSpaceActivitiesForUpgrade(Identity spaceIdentity, int index, int limit) {
     //
     if (spaceIdentity == null) {
       return Collections.emptyList();
     }
-
+  
     //
     ActivityFilter filter = ActivityFilter.space();
-
+  
     //
-    return getActivitiesOfIdentities(ActivityBuilderWhere.space().owners(spaceIdentity), filter, 0, limit);
+    return getActivitiesOfIdentities(ActivityBuilderWhere.space().owners(spaceIdentity), filter, index, limit);
+  
   }
 
   @Override
@@ -1741,7 +2122,7 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
   }
   
   private List<ExoSocialActivity> getActivitiesFromQueryResults(QueryResult<ActivityEntity> results) {
-    List<ExoSocialActivity> activities =  new ArrayList<ExoSocialActivity>();
+    List<ExoSocialActivity> activities =  new LinkedList<ExoSocialActivity>();
 
     while(results.hasNext()) {
       activities.add(getStorage().getActivity(results.next().getId()));
@@ -1753,10 +2134,61 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
   
   @Override
   public List<ExoSocialActivity> getActivitiesByPoster(Identity posterIdentity, int offset, int limit) {
-    ActivityFilter filter = new ActivityFilter(){};
-
-    //
-    return getActivitiesOfIdentities(ActivityBuilderWhere.simple().owners(posterIdentity).poster(posterIdentity), filter, offset, limit);
+    return getActivitiesByPoster(posterIdentity, offset, limit, new String[0]);
+  }
+  
+  @Override
+  public List<ExoSocialActivity> getActivitiesByPoster(Identity posterIdentity, int offset, int limit, String ...activityTypes) {
+    //make sure that limit < 10 then get 10 the lastest activites for process.
+    int newLimit = Math.max(limit, 10);
+    List<ExoSocialActivity> got = getUserActivities(posterIdentity, offset, newLimit);
+    List<ExoSocialActivity> result = new ArrayList<ExoSocialActivity>();
+    if (got.size() == 0) return result;
+    
+    int added = 0;
+    boolean loadMore = true;
+    int newOffset = offset;
+    
+    //process the code what only retrieves these activities by PosterIdentity
+    while(loadMore) {
+      //put the activity to result
+      for(ExoSocialActivity a : got) {
+        if (a.getPosterId() == posterIdentity.getId() && matchActivityTypes(a, activityTypes)) {
+          result.add(a);
+          if (++added == limit) {
+            loadMore = false;
+            break;
+          }
+        }
+      }
+      
+      //load more?
+      if (loadMore) {
+        newOffset += newLimit;
+        got = getUserActivities(posterIdentity, newOffset, newLimit);
+        
+        //the load more is empty, break
+        if (got.size() == 0) {
+          loadMore = false;
+        }
+      }
+    }
+    
+    return result;
+  }
+  
+  /**
+   * Determines the activity's type
+   * 
+   * @param a
+   * @param activityTypes
+   * @return
+   */
+  private boolean matchActivityTypes(ExoSocialActivity a, String ...activityTypes) {
+    if (activityTypes == null || activityTypes.length == 0) return true;
+    
+    return ArrayUtils.contains(activityTypes, a.getType());
+        
   }
   
   @Override
@@ -2043,15 +2475,10 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     
     return excludedActivities;
   }
-
-  @Override
-  public List<ExoSocialActivity> getActivities(Identity owner,
-                                               Identity viewer,
-                                               long offset,
-                                               long limit) throws ActivityStorageException {
-    
-    List<Identity> queryIdentities = new ArrayList<Identity>();
-    queryIdentities.add(owner);
+  
+  private String getQueryViewerActivityStream(Identity owner, Identity viewer) {
+    List<Identity> posterIdentities = new ArrayList<Identity>();
+    posterIdentities.add(owner);
     
     //
     if (viewer != null 
@@ -2067,24 +2494,64 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
       
       //
       if (hasRelationship) {
-        queryIdentities.add(viewer);
+        posterIdentities.add(viewer);
       }
     }
     
     //
-    List<Identity> spaceIdentityOfOwner = getSpacesId(owner);
-    Map<String, Identity> spaceIdentityOfViewer = getSpacesIdOfIdentity(viewer);
-    for(Identity identity : spaceIdentityOfOwner) {
-      if (spaceIdentityOfViewer.containsKey(identity.getRemoteId())) {
-        queryIdentities.add(identity);
-      }
-    }
+    return ActivityBuilderWhere.viewOwner().posters(posterIdentities).build(new ActivityFilter());
+  }
+
+  @Override
+  public List<ExoSocialActivity> getActivities(Identity owner,
+                                               Identity viewer,
+                                               long offset,
+                                               long limit) throws ActivityStorageException {
+    List<ExoSocialActivity> got = new ArrayList<ExoSocialActivity>();
+    StringBuilder query = new StringBuilder().append("SELECT * FROM soc:activity WHERE ").append(getQueryViewerActivityStream(owner, viewer));
+    query.append(" ORDER BY ").append(ActivityEntity.lastUpdated.getName()).append(" DESC");
+    query.append(", ").append(ActivityEntity.postedTime.getName()).append(" DESC");
     
-    //
-    ActivityFilter filter = new ActivityFilter(){};
+    NodeIterator it = nodes(query.toString());
+    while (it.hasNext() && limit > 0) {
+      if (offset > 0) {
+        offset--;
+        continue;
+      }
+      Node node = (Node) it.next();
+      try {
+        ActivityEntity entity = _findById(ActivityEntity.class, node.getUUID());
+        if (! entity.getIdentity().getProviderId().equals(SpaceIdentityProvider.NAME)) {
+          got.add(getActivity(entity.getId()));
+          limit--;
+        }
+      } catch (Exception e) {
+        LOG.debug("Failed to get activities posted by owner and viewer");
+      }
+      
+    }
 
     //
-    return getOwnerActivitiesOfIdentities(ActivityBuilderWhere.owner().owners(queryIdentities).mentioner(owner).poster(owner), filter, offset, limit);
+    return got;
+  }
+  
+  @Override
+  public int getNumberOfActivitiesByPoster(Identity ownerIdentity, Identity viewerIdentity) {
+    int cpt = 0;
+    StringBuilder query = new StringBuilder().append("SELECT * FROM soc:activity WHERE ").append(getQueryViewerActivityStream(ownerIdentity, viewerIdentity));
+    NodeIterator it = nodes(query.toString());
+    while (it.hasNext()) {
+      Node node = (Node) it.next();
+      try {
+        ActivityEntity entity = _findById(ActivityEntity.class, node.getUUID());
+        if (! entity.getIdentity().getProviderId().equals(SpaceIdentityProvider.NAME)) {
+          cpt++;
+        }
+      } catch (Exception e) {
+        LOG.debug("Failed to get number of activities posted by owner and viewer");
+      }
+    }
+    return cpt;
   }
   
   /**
@@ -2125,6 +2592,19 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
   //
   @Override
   public List<ExoSocialActivity> getOlderFeedActivities(Identity owner, Long sinceTime, int limit) {
+    return getOlderFeedActivities(owner, sinceTime, 0, limit);
+  }
+  
+  /**
+   * Gets the activities which less sinceTime with offset and limit.
+   * 
+   * @param owner
+   * @param sinceTime
+   * @param offset
+   * @param limit
+   * @return
+   */
+  private List<ExoSocialActivity> getOlderFeedActivities(Identity owner, Long sinceTime, int offset, int limit) {
     //
     List<Identity> identities = new ArrayList<Identity>();
 
@@ -2137,11 +2617,11 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     }
     
     //
-    JCRFilterLiteral filter = ActivityFilter.ACTIVITY_NEW_UPDATED_FILTER;
+    JCRFilterLiteral filter = ActivityFilter.older();
     filter.with(ActivityFilter.ACTIVITY_UPDATED_POINT_FIELD).value(TimestampType.OLDER.from(sinceTime));
     
     return getActivitiesFromQueryResults(getActivitiesOfIdentitiesQuery(ActivityBuilderWhere
-      .updated().owners(identities), filter).objects((long)0, (long)limit));
+      .updated().owners(identities), filter).objects((long)offset, (long)limit));
   }
   
   //
@@ -2363,5 +2843,127 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     }
     
     return nb;
+  }
+
+  @Override
+  public List<ExoSocialActivity> getUserActivitiesForUpgrade(Identity owner, long offset, long limit) throws ActivityStorageException {
+    if (owner == null) {
+      return Collections.emptyList();
+    }
+
+
+    ActivityFilter filter = new ActivityFilter(){};
+    //
+    return getActivitiesOfIdentities (ActivityBuilderWhere.simple().poster(owner).mentioner(owner).commenter(owner).liker(owner).owners(owner), filter, offset, limit);
+  }
+
+  @Override
+  public int getNumberOfUserActivitiesForUpgrade(Identity owner) throws ActivityStorageException {
+    if (owner == null) {
+      return 0;
+    }
+
+    ActivityFilter filter = new ActivityFilter() {};
+    //
+    return getActivitiesOfIdentities (ActivityBuilderWhere.simple().poster(owner).mentioner(owner).commenter(owner).liker(owner).owners(owner), filter, 0, 0).size();
+  }
+
+  @Override
+  public List<ExoSocialActivity> getActivityFeedForUpgrade(Identity ownerIdentity,
+                                                           int offset,
+                                                           int limit) {
+  
+    
+    List<Identity> identities = new ArrayList<Identity>();
+
+    identities.addAll(relationshipStorage.getConnections(ownerIdentity));
+    identities.addAll(getSpacesId(ownerIdentity));
+    identities.add(ownerIdentity);
+    
+    ActivityFilter filter = new ActivityFilter(){};
+    //
+    return getActivitiesOfIdentities(ActivityBuilderWhere.simple().mentioner(ownerIdentity).owners(identities), filter, offset, limit);
+  }
+
+  @Override
+  public int getNumberOfActivitesOnActivityFeedForUpgrade(Identity ownerIdentity) {
+    //
+    List<Identity> identities = new ArrayList<Identity>();
+
+    identities.addAll(relationshipStorage.getConnections(ownerIdentity));
+    identities.addAll(getSpacesId(ownerIdentity));
+    identities.add(ownerIdentity);
+    
+    ActivityFilter filter = new ActivityFilter(){};
+
+    return getActivitiesOfIdentitiesQuery(ActivityBuilderWhere.simple().mentioner(ownerIdentity).owners(identities), filter).objects().size();
+  }
+
+  @Override
+  public List<ExoSocialActivity> getActivitiesOfConnectionsForUpgrade(Identity ownerIdentity,
+                                                                      int offset,
+                                                                      int limit) {
+    List<Identity> connections = relationshipStorage.getConnections(ownerIdentity);
+
+    if (connections.size() <= 0) {
+      return Collections.emptyList();
+    }
+
+    //
+    ActivityFilter filter = new ActivityFilter() {};
+
+    //
+    return getActivitiesOfIdentities(ActivityBuilderWhere.simple().owners(connections), filter, offset, limit);
+  }
+
+  @Override
+  public int getNumberOfActivitiesOfConnectionsForUpgrade(Identity ownerIdentity) {
+    List<Identity> connectionList = relationshipStorage.getConnections(ownerIdentity);
+  
+    if (connectionList.size() <= 0) {
+      return 0;
+    }
+
+    //
+    ActivityFilter filter = new ActivityFilter(){};
+
+    //
+    return getActivitiesOfIdentitiesQuery(ActivityBuilderWhere.simple().owners(connectionList), filter).objects().size();
+  }
+
+  @Override
+  public List<ExoSocialActivity> getUserSpacesActivitiesForUpgrade(Identity ownerIdentity,
+                                                                   int offset,
+                                                                   int limit) {
+    //
+    List<Identity> spaceList = getSpacesId(ownerIdentity);
+
+    //
+    if (spaceList.size() == 0) {
+      return Collections.emptyList();
+    }
+
+    //
+    ActivityFilter filter = new ActivityFilter(){};
+
+    //
+    return getActivitiesOfIdentities(ActivityBuilderWhere.simple().owners(spaceList), filter, offset, limit);
+  }
+
+  @Override
+  public int getNumberOfUserSpacesActivitiesForUpgrade(Identity ownerIdentity) {
+    //
+    List<Identity> spaceList = getSpacesId(ownerIdentity);
+  
+    //
+    if (spaceList.size() == 0) {
+      return 0;
+    }
+
+    //
+    ActivityFilter filter = new ActivityFilter(){};
+  
+    //
+    return getActivitiesOfIdentitiesQuery(ActivityBuilderWhere.simple().owners(spaceList), filter).objects().size();
   }
 }

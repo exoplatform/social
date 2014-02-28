@@ -25,6 +25,7 @@ import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
+import org.exoplatform.social.core.activity.ActivitiesRealtimeListAccess;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.webui.Utils;
@@ -65,6 +66,7 @@ public class UIActivitiesLoader extends UIContainer {
   private UIActivitiesContainer activitiesContainer;
   private UIContainer extendContainer;
   private int loadingCapacity;
+  private int pageSize;
   private Space space;
   private int activitiesCounter;
   
@@ -114,6 +116,7 @@ public class UIActivitiesLoader extends UIContainer {
   }
 
   public void setLoadingCapacity(int loadingCapacity) {
+    this.pageSize = loadingCapacity;
     this.loadingCapacity = loadingCapacity;
   }
 
@@ -176,6 +179,10 @@ public class UIActivitiesLoader extends UIContainer {
   }
 
   private void loadNext() throws Exception {
+    if (activityListAccess != null && activityListAccess instanceof ActivitiesRealtimeListAccess) {
+      ActivitiesRealtimeListAccess listAccess = (ActivitiesRealtimeListAccess) activityListAccess;
+      listAccess.getNumberOfUpgrade();
+    }
     currentLoadIndex += loadingCapacity;
     List<ExoSocialActivity> activities = new ArrayList<ExoSocialActivity>(0);
     lastActivitiesLoader = extendContainer.addChild(UIActivitiesLoader.class, null, UIActivitiesLoader.genereateId());
@@ -190,8 +197,14 @@ public class UIActivitiesLoader extends UIContainer {
     lastActivitiesContainer.setSpace(space);
     
     lastActivitiesLoader.setActivities(activities);
-    if(activityListAccess != null) {
-      lastActivitiesLoader.setHasMore(activityListAccess.getSize() > activitiesCounter);
+    if (activityListAccess != null) {
+      if (activities.size() < this.pageSize) {
+        lastActivitiesLoader.setHasMore(false);
+        this.setHasMore(false);
+      } else if (activities.size() == this.pageSize) {
+        lastActivitiesLoader.setHasMore(activityListAccess.getSize() > activitiesCounter);
+        this.setHasMore(false);
+      }
     }
   }
 

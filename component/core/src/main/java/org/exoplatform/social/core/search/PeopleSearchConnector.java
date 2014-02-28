@@ -48,7 +48,7 @@ public class PeopleSearchConnector extends AbstractSocialSearchConnector {
     ProfileFilter filter = new ProfileFilter();
     filter.setAll(query);
     filter.setSorting(sorting);
-    ListAccess<Identity> la = identityManager.getIdentitiesByProfileFilter(OrganizationIdentityProvider.NAME, filter, true);
+    ListAccess<Identity> la = identityManager.getIdentitiesForUnifiedSearch(OrganizationIdentityProvider.NAME, filter);
     
     try {
       

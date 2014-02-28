@@ -26,6 +26,8 @@ import org.exoplatform.container.ExoContainer;
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.xml.InitParams;
 import org.exoplatform.container.xml.ValuesParam;
+import org.exoplatform.services.log.ExoLogger;
+import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.storage.api.IdentityStorage;
 
@@ -44,6 +46,8 @@ public class ProfileConfig {
   /** The activityStorage. */
   private IdentityStorage storage = null;
 
+  private static final Log LOG = ExoLogger.getLogger(ProfileConfig.class);
+  
   /**
    * Instantiates a new profile config.
    *
@@ -137,7 +141,9 @@ public class ProfileConfig {
       String type = storage.getType(fieldName, propertyName);
       if(type != null)
         return type;
-    } catch (Exception e) { }
+    } catch (Exception e) {
+      LOG.debug("Could not get type of property. Return String as default.");
+    }
 
     return "String";
   }

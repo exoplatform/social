@@ -40,7 +40,7 @@ import org.exoplatform.services.rest.resource.ResourceContainer;
 
 
 /**
- * Provides services for application registry gadget: shows application list.
+ * Provides services for the application registry gadget which shows a list of applications.
  *
  * @anchor AppsRestService
  *
@@ -55,15 +55,15 @@ public class AppsRestService implements ResourceContainer {
   public AppsRestService() {}
   
   /**
-   * shows apps by json/xml format: <br />
-   * GET: /{restContextName}/social/apps/show.{format}
-   * 
-   * @param uriInfo The request URI information.
-   * @param format The type of returned result.
+   * Gets applications from the application registry service of the portal.
+   *
+   *
+   * @param uriInfo The requested URI information.
+   * @param format The type of a returned result.
    * 
    * @anchor AppsRestService.showApps
    * 
-   * @return The response contains returned result.
+   * @return The response contains returned results.
    * 
    * @throws Exception
    * 
@@ -79,7 +79,7 @@ public class AppsRestService implements ResourceContainer {
   }
   
   /**
-   * Describes an Application entity from application registry service of portal.<br />
+   * Describes an application entity from the application registry service of the portal.
    * This class is needed as a model for converter of the rest service.
    */
   static public class App {

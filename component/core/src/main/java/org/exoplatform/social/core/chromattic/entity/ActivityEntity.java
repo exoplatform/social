@@ -17,6 +17,7 @@
 
 package org.exoplatform.social.core.chromattic.entity;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -62,6 +63,10 @@ public abstract class ActivityEntity implements NamedEntity {
   @Owner
   @OneToMany
   public abstract List<ActivityEntity> getComments();
+  
+  @OneToMany(type = RelationshipType.REFERENCE)
+  @MappedBy("ref")
+  public abstract Collection<ActivityRef> getActivityRefs();
 
   @ManyToOne
   public abstract ActivityDayEntity getDay();
@@ -236,5 +241,15 @@ public abstract class ActivityEntity implements NamedEntity {
       chromatticMap.put(entry.getKey(), entry.getValue());
     }
     
+  }
+  
+  @Override
+  public String toString() {
+    return String.format("\nAct{id=%s,type=%s,lastUpdated=%s,title='%s',poster=%s}",
+                         getId(),
+                         getTitleId(),
+                         getLastUpdated(),
+                         getTitle(),
+                         getPosterIdentity().getRemoteId());
   }
 }

@@ -17,6 +17,10 @@
 
 package org.exoplatform.social.core.storage.api;
 
+import java.util.List;
+import java.util.Map;
+import java.util.SortedSet;
+
 import org.exoplatform.social.core.ActivityProcessor;
 import org.exoplatform.social.core.activity.filter.ActivityFilter;
 import org.exoplatform.social.core.activity.filter.ActivityUpdateFilter;
@@ -24,10 +28,6 @@ import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.storage.ActivityStorageException;
 import org.exoplatform.social.core.storage.impl.ActivityBuilderWhere;
-
-import java.util.List;
-import java.util.Map;
-import java.util.SortedSet;
 
 /**
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
@@ -51,6 +51,11 @@ public interface ActivityStorage {
   }
 
   static final String MENTION_CHAR = "@";
+  /**
+   * //sets value to tell this storage to inject Streams or not
+   * @param mustInject
+   */
+  void setInjectStreams(boolean mustInject);
   
   /**
    * Load an activity by its id.
@@ -79,6 +84,19 @@ public interface ActivityStorage {
    * @return the activities
    */
   public List<ExoSocialActivity> getUserActivities(
+      Identity owner, long offset, long limit) throws ActivityStorageException;
+  
+  /**
+   * Gets the activities by identity for upgrade Activity Stream feature
+   *
+   * Access a user's activity stream by specifying the offset and limit.
+   *
+   * @param owner the identity
+   * @param offset
+   * @param limit
+   * @return the activities
+   */
+  public List<ExoSocialActivity> getUserActivitiesForUpgrade(
       Identity owner, long offset, long limit) throws ActivityStorageException;
 
   /**
@@ -180,6 +198,14 @@ public interface ActivityStorage {
   public int getNumberOfUserActivities(Identity owner) throws ActivityStorageException;
   
   /**
+   * Count the number of activities from an ownerIdentity for upgrade Activity Stream feature
+   *
+   * @param owner
+   * @return the number of activities
+   */
+  public int getNumberOfUserActivitiesForUpgrade(Identity owner) throws ActivityStorageException;
+  
+  /**
    * Gets the number of newer activities based on an existing activity.
    *
    * @param ownerIdentity
@@ -228,6 +254,17 @@ public interface ActivityStorage {
    * @return
    */
   public List<ExoSocialActivity> getActivityFeed(Identity ownerIdentity, int offset, int limit);
+  
+  /**
+   * Gets activity feed from an identity for upgrade Activity Stream feature
+   *
+   * @param ownerIdentity
+   * @param offset
+   * @param limit
+   * @return
+   * @since 4.1.x, 4.0.2
+   */
+  public List<ExoSocialActivity> getActivityFeedForUpgrade(Identity ownerIdentity, int offset, int limit);
 
   /**
    * Gets the number of activities feed based from ownerIdentity.
@@ -236,6 +273,15 @@ public interface ActivityStorage {
    * @return
    */
   public int getNumberOfActivitesOnActivityFeed(Identity ownerIdentity);
+  
+  /**
+   * Gets the number of activities feed based from ownerIdentity for upgrade Activity Stream feature.
+   *
+   * @param ownerIdentity
+   * @return
+   * @since 4.1.x, 4.0.2
+   */
+  public int getNumberOfActivitesOnActivityFeedForUpgrade(Identity ownerIdentity);
 
   /**
    * Gets the list of newer activities feed based on an existing activity.
@@ -287,7 +333,18 @@ public interface ActivityStorage {
    * @since 1.2.0-Beta3
    */
   public List<ExoSocialActivity> getActivitiesOfConnections(Identity ownerIdentity, int offset, int limit);
-
+  
+  /**
+   * Gets activities of connections of an identity with offset, limit for upgrade Activity Stream feature.
+   *
+   * @param ownerIdentity
+   * @param offset
+   * @param limit
+   * @return
+   * @since 4.1.x, 4.0.2
+   */
+  public List<ExoSocialActivity> getActivitiesOfConnectionsForUpgrade(Identity ownerIdentity, int offset, int limit);
+  
   /**
    * Gets the count of the activities of connections who connected with an identity.
    *
@@ -296,6 +353,15 @@ public interface ActivityStorage {
    * @since 1.2.0-Beta3
    */
   public int getNumberOfActivitiesOfConnections(Identity ownerIdentity);
+  
+  /**
+   * Gets the count of the activities of connections who connected with an identity for upgrade Activity Stream feature.
+   *
+   * @param ownerIdentity
+   * @return
+   *  @since 4.1.x, 4.0.2
+   */
+  public int getNumberOfActivitiesOfConnectionsForUpgrade(Identity ownerIdentity);
 
   /**
    * Gets the activities of the identity with offset, limit.
@@ -365,6 +431,17 @@ public interface ActivityStorage {
   public List<ExoSocialActivity> getUserSpacesActivities(Identity ownerIdentity, int offset, int limit);
 
   /**
+   * Gets the activities of spaces where identity can access (manager or member) for upgrade Activity Stream feature
+   *
+   * @param ownerIdentity
+   * @param offset
+   * @param limit
+   * @return
+   * @since 4.1.x, 4.0.2
+   */
+  public List<ExoSocialActivity> getUserSpacesActivitiesForUpgrade(Identity ownerIdentity, int offset, int limit);
+
+  /**
    * Gets the number of activities of spaces where identity can access (manager or member).
    *
    * @param ownerIdentity
@@ -372,6 +449,15 @@ public interface ActivityStorage {
    * @since 1.2.0-Beta3
    */
   public int getNumberOfUserSpacesActivities(Identity ownerIdentity);
+  
+  /**
+   * Gets the number of activities of spaces where identity can access (manager or member) for upgrade Activity Stream feature.
+   *
+   * @param ownerIdentity
+   * @return
+   * @since 4.1.x, 4.0.2
+   */
+  public int getNumberOfUserSpacesActivitiesForUpgrade(Identity ownerIdentity);
 
   /**
    * Gets the number of newer activities of spaces where the identity can access, based on an existing activity.
@@ -557,6 +643,15 @@ public interface ActivityStorage {
    * @since 4.0 Alpha01
    */
   public int getNumberOfSpaceActivities(Identity spaceIdentity);
+  
+  /**
+   * Gets the number of newer activities of spaces where the identity can
+   * access for upgrade Stream feature
+   * @param spaceIdentity
+   * @return
+   * @since 4.0.2, 4.1.x
+   */
+  public int getNumberOfSpaceActivitiesForUpgrade(Identity spaceIdentity);
 
   /**
    * Gets list of activities of spaces where the identity can
@@ -570,6 +665,19 @@ public interface ActivityStorage {
    * 
    */
   public List<ExoSocialActivity> getSpaceActivities(Identity spaceIdentity, int index, int limit);
+  
+  /**
+   * Gets list of activities of spaces where the identity can
+   * access for upgrade Stream feature
+   * @param spaceIdentity
+   * @param index
+   * @param limit
+   * 
+   * @return
+   * @since 4.0.2, 4.1.x
+   * 
+   */
+  public List<ExoSocialActivity> getSpaceActivitiesForUpgrade(Identity spaceIdentity, int index, int limit);
 
   /**
    * Gets activities by poster.
@@ -584,6 +692,19 @@ public interface ActivityStorage {
   public List<ExoSocialActivity> getActivitiesByPoster(Identity posterIdentity, int offset, int limit);
   
   /**
+   * Gets activities by poster and activity's types
+   * 
+   * @param posterIdentity The identity of given poster.
+   * @param offsset The start point to load.
+   * @param limit The range to load.
+   * @param activityTypes: type of activities
+   *  
+   * @return The activities that match the given poster.
+   * @since 4.0.2-GA
+   */
+  public List<ExoSocialActivity> getActivitiesByPoster(Identity posterIdentity, int offset, int limit, String...activityTypes);
+  
+  /**
    * Gets the number of activities of poster.
    * 
    * @param posterIdentity The given poster identity information.
@@ -592,6 +713,17 @@ public interface ActivityStorage {
    * @since 4.0.1-GA
    */
   public int getNumberOfActivitiesByPoster(Identity posterIdentity);
+  
+  /**
+   * Gets the number of activities of poster.
+   * 
+   * @param viewerIdentity The given viewer identity information.
+   * @param ownerIdentity The given owner identity information.
+   * 
+   * @return The size of return results.
+   * @since 4.0.4
+   */
+  public int getNumberOfActivitiesByPoster(Identity ownerIdentity, Identity viewerIdentity);
   
   /**
    * Gets list of newer activities of spaces where the identity can

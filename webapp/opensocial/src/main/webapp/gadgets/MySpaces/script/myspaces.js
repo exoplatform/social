@@ -1,7 +1,7 @@
   var eXo = eXo || {};
   eXo.social = eXo.social || {};
   
-  var SocialUtil = eXo.social.SocialUtil;
+  var SocialGadgetsUtil = eXo.social.SocialGadgetsUtil;
   
   //When run in socialdemo, need to change this config to /classsic/all-spaces
   var domain = top.location.protocol + "//" + top.location.host; 
@@ -45,10 +45,10 @@
 	      
 	      this.moreSpaces = getAllSpacesURL();
 	      
-	      titleContent += '<div class="TitGad ClearFix">';
-	      titleContent += '<a id="MoreAllSpaces" href="' + this.moreSpaces + '" target="_parent" class="IconDropDown">' + Locale.getMsg('more_link_label') + '</a>'
-	      titleContent += '<div class="ContTit">' + Locale.getMsg('my_spaces') + '</div>';
-	      titleContent += '</div>';
+	      titleContent += '<h6 class="title left">';
+	      titleContent += Locale.getMsg('my_spaces');
+	      titleContent += '<a id="MoreAllSpaces" href="' + this.moreSpaces + '" target="_parent" class="btn btn-primary btn-mini pull-right">' + Locale.getMsg('more_link_label') + '</a>'
+	      titleContent += '</h6>';
 	      moreSpaceEl.innerHTML = titleContent;
 	      var siteUrl = hostName + "/" + restContext + "/" + portalName + "/social/spaces/mySpaces/show.json";
 	      mySpaces.makeRequest(siteUrl, mySpaces.displayValue);
@@ -80,7 +80,7 @@
 	
 	MySpaces.prototype.displayValue = function(resp) {
 	  var mySpacesEl = _gel("myspaces_id");
-	  mySpacesEl.className = "GadCont MySpace";
+	  mySpacesEl.className = "uiContentBox";
 	  while (mySpacesEl.hasChildNodes()) {
 	    mySpacesEl.removeChild(mySpacesEl.firstChild);
 	  }
@@ -94,10 +94,10 @@
 	    var spaceData = resp.data.spaces;
 	    if ((spaceData == null) || (spaceData.length == 0)) {
 	      var emptyItem = document.createElement('div');
-	      emptyItem.className = 'NoneSpace';
+	      emptyItem.className = 'light_message';
 	      emptyItem.innerHTML = eXo.social.Locale.getMsg('has_no_space');
 	      mySpacesEl.appendChild(emptyItem);
-	      SocialUtil.adjustHeight(mySpacesEl);
+	      SocialGadgetsUtil.adjustHeight(mySpacesEl);
 	      return;
 	    }
 	
@@ -109,7 +109,7 @@
 	      mySpacesEl.appendChild(spaceItem);
 	    }
 	    
-	    SocialUtil.adjustHeight(mySpacesEl);
+	    SocialGadgetsUtil.adjustHeight(mySpacesEl);
 	  }
 	}
 	

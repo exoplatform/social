@@ -48,6 +48,23 @@ public class ProfileFilterListAccess implements ListAccess<Identity> {
    */
   boolean forceLoadProfile;
   
+  /** The type */
+  Type type;
+  
+  /**
+   * The Profile list access Type Enum.
+   */
+  public enum Type {
+    /** Gets all of Profiles. */
+    ALL,
+    /** Gets Profile by the first character of Name. */
+    BY_FIRST_CHARACTER_OF_NAME,
+    /** Gets Profile for Mention feature. */
+    MENTION,
+    /** Provides Unified Search Profile. */
+    UNIFIED_SEARCH
+  }
+  
   /**
    * Constructor.
    * 
@@ -62,6 +79,24 @@ public class ProfileFilterListAccess implements ListAccess<Identity> {
     this.profileFilter = profileFilter;
     this.providerId = providerId;
     this.forceLoadProfile = forceLoadProfile;
+  }
+  
+  /**
+   * Constructor.
+   * 
+   * @param identityStorage The identity storage 
+   * @param providerId Id of provider.
+   * @param profileFilter Filter object as extract's condition.
+   * @param forceLoadProfile True then force to load profile.
+   * @param type Type of which list provide for
+   */
+  public ProfileFilterListAccess(IdentityStorage identityStorage, String providerId, ProfileFilter profileFilter,
+                                 boolean forceLoadProfile, Type type) {
+    this.identityStorage = identityStorage;
+    this.profileFilter = profileFilter;
+    this.providerId = providerId;
+    this.forceLoadProfile = forceLoadProfile;
+    this.type = type;
   }
 
   /**
@@ -86,12 +121,23 @@ public class ProfileFilterListAccess implements ListAccess<Identity> {
   public Identity[] load(int offset, int limit) throws Exception, IllegalArgumentException {
     ListAccessValidator.validateIndex(offset, limit, getSize());
     List<Identity> identities = new ArrayList<Identity>();
-    if (profileFilter.getFirstCharacterOfName() != EMPTY_CHARACTER) {
-      identities = identityStorage.getIdentitiesByFirstCharacterOfName(providerId, profileFilter, offset,
-                                                                       limit, forceLoadProfile);
-    } else {
-      identities = identityStorage.getIdentitiesForMentions(providerId, profileFilter, offset,
-                                                                limit, forceLoadProfile);
+    //
+    if(type != null) {
+      switch(type) {
+      case UNIFIED_SEARCH:
+        identities = identityStorage.getIdentitiesForUnifiedSearch(providerId, profileFilter, offset, limit);
+      default: 
+          break;
+      }
+    }else {
+      //TODO: Need move follow logic into switch type for consistency logic
+      if (profileFilter.getFirstCharacterOfName() != EMPTY_CHARACTER) {
+        identities = identityStorage.getIdentitiesByFirstCharacterOfName(providerId, profileFilter, offset,
+                                                                         limit, forceLoadProfile);
+      } else {
+        identities = identityStorage.getIdentitiesForMentions(providerId, profileFilter, offset,
+                                                              limit, forceLoadProfile);
+      }
     }
     
     return Util.convertListToArray(identities, Identity.class);

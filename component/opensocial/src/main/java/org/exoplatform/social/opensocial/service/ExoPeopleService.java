@@ -450,8 +450,8 @@ public class ExoPeopleService extends ExoService implements PersonService, AppDa
       }
     };
     StringBuffer stringBuffer = new StringBuffer();
+    RequestLifeCycle.begin(portalContainer);
     try {
-      RequestLifeCycle.begin(portalContainer);
       UserPortalConfig userPortalCfg = userPortalConfigSer.
                                        getUserPortalConfig(userPortalConfigSer.getDefaultPortal(), remoteId, NULL_CONTEXT);
       UserPortal userPortal = userPortalCfg.getUserPortal();
@@ -474,10 +474,11 @@ public class ExoPeopleService extends ExoService implements PersonService, AppDa
         stringBuffer.insert(0, "/");
       }
     } catch (Exception e){
-      //Do nothing because cann't get the people page node
+      LOG.debug("Could not get the people page node.");
     }
-    
-    RequestLifeCycle.end();
+    finally{
+      RequestLifeCycle.end();
+    }
     return stringBuffer.toString();
   }
 }

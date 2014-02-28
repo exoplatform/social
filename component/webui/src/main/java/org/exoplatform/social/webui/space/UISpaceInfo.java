@@ -46,8 +46,8 @@ import org.exoplatform.web.url.navigation.NodeURL;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.EventConfig;
-import org.exoplatform.webui.core.UIApplication;
 import org.exoplatform.webui.core.UIPopupWindow;
+import org.exoplatform.webui.core.UIPortletApplication;
 import org.exoplatform.webui.core.UITabPane;
 import org.exoplatform.webui.core.lifecycle.UIFormLifecycle;
 import org.exoplatform.webui.event.Event;
@@ -74,14 +74,17 @@ public class UISpaceInfo extends UIForm {
   private static final Log LOG = ExoLogger.getLogger(UISpaceInfo.class);
   
   private static final String SPACE_ID = "id";
-  private static final String SPACE_DISPLAY_NAME = "displayName";
-  private static final String SPACE_DESCRIPTION = "description";
+
+  private static final String SPACE_DISPLAY_NAME            = "displayName";
+  private static final String SPACE_DESCRIPTION             = "description";
+  private static final String SPACE_TAG                     = "tag";
   private SpaceService spaceService = null;
   private final String POPUP_AVATAR_UPLOADER = "UIPopupAvatarUploader";
   private static final String MSG_DEFAULT_SPACE_DESCRIPTION = "UISpaceAddForm.msg.default_space_description";
   
   /** Html attribute title. */
-  private static final String HTML_ATTRIBUTE_TITLE   = "title";
+  private static final String HTML_ATTRIBUTE_TITLE          = "title";
+  private static final String HTML_ATTRIBUTE_PLACEHOLDER    = "placeholder";
   
   /**
    * constructor
@@ -91,24 +94,25 @@ public class UISpaceInfo extends UIForm {
   public UISpaceInfo() throws Exception {
     WebuiRequestContext requestContext = WebuiRequestContext.getCurrentInstance();
     ResourceBundle resourceBundle = requestContext.getApplicationResourceBundle();
-    UIFormStringInput spaceId = new UIFormStringInput(SPACE_ID, SPACE_ID, null);
+    UIFormStringInput spaceId = new UIFormStringInput(SPACE_ID, SPACE_ID, null).setRendered(false);
     spaceId.setHTMLAttribute(HTML_ATTRIBUTE_TITLE, resourceBundle.getString("UISpaceInfo.label.SpaceId"));
-    addUIFormInput((UIFormStringInput)spaceId.setRendered(false));
+    addUIFormInput(spaceId);
 
-    UIFormStringInput spaceDisplayNameInput = new UIFormStringInput(SPACE_DISPLAY_NAME, SPACE_DISPLAY_NAME, null);
-    
-    addUIFormInput(spaceDisplayNameInput.
+    UIFormStringInput spaceDisplayName = new UIFormStringInput(SPACE_DISPLAY_NAME, SPACE_DISPLAY_NAME, null);
+    spaceDisplayName.setHTMLAttribute(HTML_ATTRIBUTE_PLACEHOLDER, resourceBundle.getString("UISpaceSettings.label.spaceDisplayName"));
+    addUIFormInput(spaceDisplayName.
                    addValidator(MandatoryValidator.class).
-                   addValidator(ExpressionValidator.class, "^([\\p{L}\\d]+[\\s]?)+$", "UISpaceInfo.msg.name-invalid").
+                   addValidator(ExpressionValidator.class, "^([\\p{L}\\d\']+[\\s]?)+$", "UISpaceInfo.msg.name-invalid").
                    addValidator(StringLengthValidator.class, 3, 30));
 
-    addUIFormInput(new UIFormTextAreaInput(SPACE_DESCRIPTION, SPACE_DESCRIPTION, null).
-                   addValidator(StringLengthValidator.class, 0, 255));
+    UIFormTextAreaInput description = new UIFormTextAreaInput(SPACE_DESCRIPTION, SPACE_DESCRIPTION, null);
+    description.setHTMLAttribute(HTML_ATTRIBUTE_PLACEHOLDER, resourceBundle.getString("UISpaceSettings.label.spaceDescription"));
+    addUIFormInput(description.addValidator(StringLengthValidator.class, 0, 255));
 
     //temporary disable tag
-    UIFormStringInput tag = new UIFormStringInput("tag","tag",null);
+    UIFormStringInput tag = new UIFormStringInput(SPACE_TAG, SPACE_TAG, null).setRendered(false);
     tag.setHTMLAttribute(HTML_ATTRIBUTE_TITLE, resourceBundle.getString("UISpaceInfo.label.tag"));
-    addUIFormInput((UIFormStringInput)tag.setRendered(false));
+    addUIFormInput(tag);
 
     UIPopupWindow uiPopup = createUIComponent(UIPopupWindow.class, null, POPUP_AVATAR_UPLOADER);
     uiPopup.setWindowSize(500, 0);
@@ -145,10 +149,10 @@ public class UISpaceInfo extends UIForm {
    */
   public void setValue(Space space) throws Exception {
     invokeGetBindingBean(space);
-    String descValue = ((UIFormTextAreaInput) this.getChildById(SPACE_DESCRIPTION)).getValue();
-    ((UIFormTextAreaInput) this.getChildById(SPACE_DESCRIPTION)).setValue(StringEscapeUtils.unescapeHtml(descValue));
+    UIFormTextAreaInput description = getUIFormTextAreaInput(SPACE_DESCRIPTION);
+    description.setValue(StringEscapeUtils.unescapeHtml(description.getValue()));
     //TODO: have to find the way to don't need the line code below.
-    getUIStringInput("tag").setValue(space.getTag());
+    getUIStringInput(SPACE_TAG).setValue(space.getTag());
   }
 
   public void saveAvatar(UIAvatarUploadContent uiAvatarUploadContent, Space space) throws Exception {
@@ -185,9 +189,6 @@ public class UISpaceInfo extends UIForm {
       SpaceService spaceService = uiSpaceInfo.getSpaceService();
       UIPortal uiPortal = Util.getUIPortal();
 
-      PortalRequestContext portalRequestContext = Util.getPortalRequestContext();
-      WebuiRequestContext requestContext = event.getRequestContext();
-      UIApplication uiApp = requestContext.getUIApplication();
       String id = uiSpaceInfo.getUIStringInput(SPACE_ID).getValue();
       String name = uiSpaceInfo.getUIStringInput(SPACE_DISPLAY_NAME).getValue();
       Space space = spaceService.getSpaceById(id);
@@ -196,7 +197,7 @@ public class UISpaceInfo extends UIForm {
       
       if (space == null) {
         //redirect to spaces
-        portalRequestContext.getResponse().sendRedirect(Utils.getURI("all-spaces"));
+        event.getRequestContext().sendRedirect(Utils.getURI("all-spaces"));
         return;
       }
       
@@ -204,6 +205,7 @@ public class UISpaceInfo extends UIForm {
       UserNode renamedNode = null;
       
       boolean nameChanged = (!space.getDisplayName().equals(name));
+      UIPortletApplication uiApp = uiSpaceInfo.getAncestorOfType(UIPortletApplication.class);
       if (nameChanged) {
 
         String cleanedString = SpaceUtils.cleanString(name);
@@ -227,7 +229,7 @@ public class UISpaceInfo extends UIForm {
       
       String spaceDescription = space.getDescription();
       if (spaceDescription == null || spaceDescription.trim().length() == 0) {
-        ResourceBundle resourceBundle = requestContext.getApplicationResourceBundle();
+        ResourceBundle resourceBundle = event.getRequestContext().getApplicationResourceBundle();
         space.setDescription(resourceBundle.getString(MSG_DEFAULT_SPACE_DESCRIPTION));
         uiSpaceInfo.getUIFormTextAreaInput(SPACE_DESCRIPTION).setValue(space.getDescription());
       } else {
@@ -261,7 +263,7 @@ public class UISpaceInfo extends UIForm {
           selectedNode = renamedNode;  
           PortalRequestContext prContext = Util.getPortalRequestContext();
           prContext.createURL(NodeURL.TYPE).setNode(selectedNode);
-          portalRequestContext.getResponse().sendRedirect(Utils.getSpaceURL(selectedNode));
+          event.getRequestContext().sendRedirect(Utils.getSpaceURL(selectedNode));
           return;
         }
       } else {

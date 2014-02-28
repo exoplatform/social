@@ -16,32 +16,15 @@
  */
 package org.exoplatform.social.service.rest;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.QueryParam;
-import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
-import javax.ws.rs.core.SecurityContext;
-import javax.ws.rs.core.UriInfo;
-import javax.xml.bind.annotation.XmlRootElement;
-
 import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.shindig.social.opensocial.model.Activity;
 import org.exoplatform.container.ExoContainer;
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.PortalContainer;
+import org.exoplatform.services.log.ExoLogger;
+import org.exoplatform.services.log.Log;
 import org.exoplatform.services.rest.resource.ResourceContainer;
 import org.exoplatform.services.security.ConversationState;
 import org.exoplatform.services.security.IdentityConstants;
@@ -60,6 +43,12 @@ import org.exoplatform.social.core.space.SpaceException;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
 import org.exoplatform.webui.utils.TimeConvertUtils;
+
+import javax.ws.rs.*;
+import javax.ws.rs.core.*;
+import javax.ws.rs.core.Response.Status;
+import javax.xml.bind.annotation.XmlRootElement;
+import java.util.*;
 
 /**
  * 
@@ -105,25 +94,34 @@ public class PeopleRestService implements ResourceContainer{
   
   /** Number of default limit activities. */
   private static final int DEFAULT_LIMIT = 20;
-  
+  private static final String DEFAULT_ACTIVITY = "DEFAULT_ACTIVITY";
+  private static final String LINK_ACTIVITY = "LINK_ACTIVITY";
+  private static final String DOC_ACTIVITY = "DOC_ACTIVITY";
+  private static final Log LOG = ExoLogger.getLogger(PeopleRestService.class);
+                                                     
   private IdentityManager identityManager;
   private ActivityManager activityManager;
   private RelationshipManager relationshipManager;
   private SpaceService spaceService;
-  
+  private static final int MAX_CHAR = 100;
+  private static final String SPACE_CHAR = " ";
+  private static final String THREE_DOTS = "...";
+    private static final int MAX_DOC_CHAR = 25;
+    private static Log log = ExoLogger.getLogger(PeopleRestService.class);
+
   public PeopleRestService() {
   }
 
   /**
-   * Gets and returns list of user's name that match the input string for suggesting.
+   * Gets users' names that match the input string for suggestion.
    * 
-   * @param uriInfo The request URI information.
+   * @param uriInfo The requested URI information.
    * @param name The provided characters to be searched.
-   * @param currentUser The user  who sends request.
-   * @param typeOfRelation Relationship status such as "confirmed", "pending", "incoming", "member_of_space" or "user_to_invite"
-   * @param spaceURL URL of the related space.
-   * @param format The response format type, for example: JSON, or XML.
-   * @return list of user's name match the input string.
+   * @param currentUser The user who sends request.
+   * @param typeOfRelation The relationship status such as "confirmed", "pending", "incoming", "member_of_space" or "user_to_invite"
+   * @param spaceURL The URL of the related space.
+   * @param format The format of the returned result, for example, JSON, or XML.
+   * @return A list of users' names that match the input string.
    * @throws Exception
    * @LevelAPI Platform
    * @anchor PeopleRestService.suggestUsernames
@@ -174,11 +172,11 @@ public class PeopleRestService implements ResourceContainer{
   }
   
   /**
-   * Gets and returns list of user's name that match the input string for suggesting.
+   * Gets users' information that matches the input string.
    * 
    * @param uriInfo The request URI information.
-   * @param query The name of the user to filter
-   * @return list of user's name that matched the input string.
+   * @param query The name of the user to filter.
+   * @return Users' information that matches the input string.
    * @throws Exception
    * @LevelAPI Platform
    * @anchor PeopleRestService.suggestUsernames
@@ -213,16 +211,17 @@ public class PeopleRestService implements ResourceContainer{
   }
   
   /**
-   * Gets and returns list people's information that have had connection with current viewer.
+   * Gets the information of people who have had connection with the current user.
    * 
-   * @param uriInfo The request URI information.
-   * @param format The response format type, for example: JSON, or XML.
+   * @param uriInfo The requested URI information.
+   * @param format The format of the returned result, for example, JSON, or XML.
    * @param portalName The name of current portal.
-   * @param nameToSearch The name of user who want to get.
-   * @param offset Start point of returned result.
-   * @param limit End point of returned result.
+   * @param nameToSearch The name of user who wants to get.
+   * @param offset The starting point of the returned result.
+   * @param limit The ending point of the returned result.
    * @param lang The locale type.
-   * @return list people's information.
+   * @return The information of people who have had connection with the current user and the information must match with
+   * the input condition (name to search).
    * @throws Exception
    * @LevelAPI Platform
    * @anchor PeopleRestService.searchConnection
@@ -276,18 +275,18 @@ public class PeopleRestService implements ResourceContainer{
   }
   
   /**
-   * Gets and returns information of people that are displayed as detail user's information on popup.
+   * Gets the detailed information of a user on the pop-up, based on his/her username.
    * 
-   * @param uriInfo The request URI information.
-   * @param format The response format type, for example: JSON, or XML.
-   * @param portalName The name of current portal container.
-   * @param currentUserName The name of user who sends request.
-   * @param userId Id of user is specified.
-   * @param update
-   * @return Information of people appropriate focus user.
+   * @param uriInfo The requested URI information.
+   * @param format The format of the returned result, for example, JSON, or XML.
+   * @param portalName The name of the current portal container.
+   * @param currentUserName The current user name who sends request.
+   * @param userId The specific user Id.
+   * @param updatedType The type of connection action shown on the pop-up.
+   * @return The detailed information of a user.
    * @throws Exception
    * @LevelAPI Provisional
-   * @deprecated Will be removed by 4.0.x
+   * @deprecated Will be removed in eXo Platform 4.0.x
    * @anchor PeopleRestService.getPeopleInfo
    */
   @GET
@@ -340,16 +339,16 @@ public class PeopleRestService implements ResourceContainer{
   }
   
   /**
-   * Gets a set of information of target user. Returned information of user such as: full name, position
-   * avatar, link to profile and relationship status with user who sends request.
+   * Gets a set of information of the target user. The returned information of the user includes full name, position
+   * avatar, link to profile and relationship status with the current user who sends request.
    * 
-   * @param uriInfo The request URI information.
-   * @param securityContextThe security context.
-   * @param userId The id of specific user.
-   * @param formatThe response format type, for example: JSON, or XML.
-   * @param currentUserName The user name  who sends request.
-   * @param updatedType The provided type of update.
-   * @return Information of people appropriate focus user.
+   * @param uriInfo The requested URI information.
+   * @param securityContext The security context of the system.
+   * @param userId The Id of a specific user.
+   * @param format The format of the returned result, for example, JSON, or XML.
+   * @param currentUserName The current user name who sends request.
+   * @param updatedType The type of connection action shown on the pop-up.
+   * @return The detailed information of a user.
    * @throws Exception
    * @LevelAPI Platform
    * @anchor PeopleRestService.getPeopleInfo
@@ -412,11 +411,12 @@ public class PeopleRestService implements ResourceContainer{
         }
       }
 
-      RealtimeListAccess<ExoSocialActivity> activitiesListAccess = getActivityManager().getActivitiesByPoster(identity);
+      RealtimeListAccess<ExoSocialActivity> activitiesListAccess = getActivityManager()
+          .getActivitiesByPoster(identity, DEFAULT_ACTIVITY, LINK_ACTIVITY, DOC_ACTIVITY);
       
       List<ExoSocialActivity> activities = activitiesListAccess.loadAsList(0, 1);
       if (activities.size() > 0) {
-        peopleInfo.setActivityTitle(activities.get(0).getTitle());
+        peopleInfo.setActivityTitle(StringEscapeUtils.unescapeHtml(activities.get(0).getTitle()));
       }
       
       Profile userProfile = identity.getProfile();
@@ -431,11 +431,105 @@ public class PeopleRestService implements ResourceContainer{
       peopleInfo.setProfileUrl(LinkProvider.getUserActivityUri(identity.getRemoteId()));
       
       peopleInfo.setFullName(identity.getProfile().getFullName());
-      peopleInfo.setPosition(identity.getProfile().getPosition());
+      peopleInfo.setPosition(StringEscapeUtils.unescapeHtml(identity.getProfile().getPosition()));
     }
     return Util.getResponse(peopleInfo, uriInfo, mediaType, Response.Status.OK);
   }
-  
+
+
+    private String substringActivity( ExoSocialActivity act) {
+        String activity = "";
+        try{
+
+
+
+            if (act.getType() != null ) {
+
+                activity = act.getTitle().replaceAll("<br/>", " ").replaceAll("<br />", " ").replaceAll("<br>", " ").replaceAll("</br>", " ").trim();
+                activity = StringEscapeUtils.unescapeHtml(activity);
+                activity = activity.replaceAll("\"", "'");
+
+                if (activity.length() > MAX_CHAR && act.getType().equals(DEFAULT_ACTIVITY)) {
+                    String maxBody = activity.substring(0, MAX_CHAR);
+                    int tagEnterLocation = maxBody.indexOf('<', 0);
+                    if (tagEnterLocation != -1) {
+                        if (tagEnterLocation == 0) {
+                            if (maxBody.indexOf("<", tagEnterLocation) == 0) {
+                                int endtag = activity.indexOf(">", tagEnterLocation);
+                                int tagend = activity.indexOf("<", endtag);
+                                int tagend2 = activity.indexOf(">", tagend);
+                                String linktitle = activity.substring(endtag + 1, tagend);
+                                if (linktitle.length() > MAX_CHAR) {
+                                    linktitle = linktitle.substring(0, MAX_CHAR);
+                                    activity = activity.substring(0, endtag + 1) + linktitle + activity.substring(tagend, tagend2 + 1);
+                                } else {
+                                    activity = activity.substring(0, tagend2 + 1) + SPACE_CHAR + activity.substring(tagend2 + 2, MAX_CHAR - linktitle.length());
+                                }
+                            }
+
+                            activity = activity + "<span class='truncate_ellipsis'>" + THREE_DOTS + "</span>";
+                        } else {
+                            int tagEndLocation = maxBody.indexOf("<", tagEnterLocation + 1);
+                            int tagLocationEnd = maxBody.indexOf("/>", tagEnterLocation);
+                            if ((tagEndLocation == -1 && tagLocationEnd == -1)) {
+                                String str1 = maxBody.substring(0, tagEnterLocation - 1);
+                                activity = str1 + "<span class='truncate_ellipsis'>" + THREE_DOTS + "</span>";
+                            }
+                            if (tagEndLocation != -1) {
+
+                                if (tagEndLocation > MAX_CHAR - 3) {
+                                    String charRest = activity.substring(0, tagEndLocation + 3);
+                                    activity = charRest + "<span class='truncate_ellipsis'>" + THREE_DOTS + "</span>";
+                                } else {
+                                    if (tagEndLocation <= MAX_CHAR - 3) {
+                                        activity = maxBody + "<span class='truncate_ellipsis'>" + THREE_DOTS + "</span>";
+                                    }
+                                }
+                            }
+                            if (tagLocationEnd != -1) {
+                                activity = maxBody + "<span class='truncate_ellipsis'>" + THREE_DOTS + "</span>";
+                            }
+                        }
+                    } else {
+                        activity = maxBody + "<span class='truncate_ellipsis'>" + THREE_DOTS + "</span>";
+                    }
+                }
+
+                if (act.getType().equals(DOC_ACTIVITY)) {
+                    try{
+                        if ((activity.split(">")[1].split("<")[0]).length() > MAX_DOC_CHAR) {
+                            String docName = activity.split(">")[1].split("<")[0].substring(0, MAX_DOC_CHAR).concat(THREE_DOTS);
+                            String docUrl = activity.split(">")[0].split("=")[1].replace("\"", "'");
+                            activity = "Shared a Document <a class='ColorLink' target='_blank' href=" + docUrl + "title='" + activity.split(">")[1].split("<")[0] + "'>" + docName + "</a>";
+                        }
+                    }catch(ArrayIndexOutOfBoundsException e) {
+                        log.warn("Error while recovering activity of type DOC_ACTIVITY [Url of shared Document Not found ]") ;
+                        return "";
+                    }
+                }
+
+                if (act.getType().equals(LINK_ACTIVITY)) {
+
+                    if (activity.indexOf("<", 0) != -1) {
+                        activity = activity.substring(activity.indexOf(">", 0) + 1, activity.indexOf("<", activity.indexOf(">", 0)));
+                    }
+                    if (activity.length() > MAX_CHAR) {
+                        activity = activity.substring(0, MAX_CHAR);
+                    }
+
+                    activity = "<a class='ColorLink' target='_blank' href='" + act.getUrl().replaceAll("\"", "'") + "'>" + activity + "</a>";
+                }
+
+            }
+
+
+
+            return activity;
+        }catch (Exception e){
+            log.error("Error while recovering user's last activity [WhoIsOnLine rendering phase] :" + e.getMessage(), e);
+            return "";
+        }
+    }
   public static class ConnectionInfoRestOut extends HashMap<String, Object> {
     public static enum Field {
       /**
@@ -609,7 +703,10 @@ public class PeopleRestService implements ResourceContainer{
     String userId = StringUtils.EMPTY;
     try {
       userId = ConversationState.getCurrent().getIdentity().getUserId();
-    } catch (Exception e) {}
+    } catch (Exception e) {
+      LOG.debug("Could not get id of user from ConversationState.");  
+    }
+    
     if(userId == null || userId.isEmpty() || IdentityConstants.ANONIM.equals(userId)) {
       if (securityContext != null && securityContext.getUserPrincipal() != null) {
         return securityContext.getUserPrincipal().getName();
@@ -732,7 +829,7 @@ public class PeopleRestService implements ResourceContainer{
   }
   
   static public class UserInfo {
-    static private String AVATAR_URL = "/social-resources/skin/ShareImages/Avatar.gif";
+    static private String AVATAR_URL = "/social-resources/skin/images/ShareImages/UserAvtDefault.png";
 
     String id;
     String name;

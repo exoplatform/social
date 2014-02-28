@@ -11,8 +11,8 @@
 
 
 .uiSpaceMenu {
-	border-bottom: 1px solid #c7c7c7;
-	#gradient > .vertical(#f8f8f8,#ececec);
+	border-bottom: 1px solid @borderColor;
+	#gradient > .vertical(@grayLighter,@grayMediumWhiteSmoke);
 	.box-shadow(inset);
 	height: 90px;
 	
@@ -43,7 +43,7 @@
 		}
 		
 		> .active > a {
-			#gradient > .vertical(#999999,#828282);
+			#gradient > .vertical(@grayLight,@gray);
 			.box-shadow(1px 0 4px rgba(0,0,0,0.38) inset);
 		}
 		
@@ -59,7 +59,7 @@
 		
 		> li > a > span {
 			display: block;
-			color: #616161;
+			color: @textColor;
 		}
 		
 		> .active > a > span {
@@ -68,8 +68,8 @@
 		}
 		
 		> .dropdown > a > b {
-			border: 2px dashed #616161;
-			color: #616161;
+			border: 2px dashed @borderColor;
+			color: @textColor;
 			display: block;
 			font-size: 20px;
 			font-weight: 100;

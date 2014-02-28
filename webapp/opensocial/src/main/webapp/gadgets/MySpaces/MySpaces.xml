@@ -1,45 +1,51 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 
 <Module>
-  <ModulePrefs author="eXoPlatform"
+	<ModulePrefs author="eXoPlatform"
     title="My Spaces Gadget"
     directory_title="My Spaces Gadget"
     title_url="http://www.exoplatform.org"
     description="A simple Gadget that lists all spaces of current viewer.">
-    <Locale messages="locale/ALL_ALL.xml" />
-    <Locale lang="en" messages="locale/en_ALL.xml" />
-    <Locale lang="fr" messages="locale/fr_ALL.xml" />
-    <Locale lang="it" messages="locale/it_ALL.xml" />
-    <Require feature="opensocial-0.8" />
-    <Require feature="dynamic-height" />
-    <Require feature="settitle" />
-    <Require feature="views" />
-    <Require feature="minimessage" />
-  </ModulePrefs>
-  <Content type="html" view="default, home, profile">
-  <![CDATA[
-  <link rel="stylesheet" type="text/css" href="style/style.css" />
-  <script type="text/javascript" src="script/debug.js"></script>
-  <script type="text/javascript" src="script/myspaces.js"></script>
-  <script type="text/javascript" src="script/Locale.js"></script>
-  <script type="text/javascript" src="/social-resources/javascript/eXo/social/SocialUtil.js"></script>
-  <div class="UIGadgetThemes UIYellowThemes">
-    <div id="more_spaces"></div>
-    <div id="myspaces_id"></div>
-	</div>
-  ]]>
-  </Content>
+		<Locale messages="locale/ALL_ALL.xml" />
+		<Locale lang="en" messages="locale/en_ALL.xml" />
+		<Locale lang="fr" messages="locale/fr_ALL.xml" />
+		<Locale lang="it" messages="locale/it_ALL.xml" />
+		<Require feature="opensocial-0.8" />
+		<Require feature="dynamic-height" />
+		<Require feature="settitle" />
+		<Require feature="views" />
+		<Require feature="minimessage" />
+	</ModulePrefs>
+	<Content type="html" view="default, home, profile">
+		<![CDATA[   
+			<link rel="stylesheet" type="text/css" href="/eXoResources/skin/bootstrap/css/bootstrap.css" />    
+			<link rel="stylesheet" type="text/css" href="/eXoResources/skin/css/Core.css" />
+			<link type="text/css" rel="stylesheet" href="/exo-gadget-resources/skin/exo-gadget/gadget-common.css" />
+			<link rel="stylesheet" type="text/css" href="style/style.css" />
+			<script type="text/javascript" src="script/debug.js"></script>
+			<script type="text/javascript" src="/social-resources/javascript/eXo/social/SocialGadgetsUtil.js"></script>
+			<script type="text/javascript" src="script/myspaces.js"></script>
+			<script type="text/javascript" src="script/Locale.js"></script>
+			<div class="UIGadgetThemes uiBox">
+			<div id="more_spaces"></div>
+			<div id="myspaces_id"></div>
+			</div>
+		]]>
+	</Content>
     <Content type="html" view="canvas">
-  <![CDATA[
-  <link rel="stylesheet" type="text/css" href="style/style.css" />
-  <script type="text/javascript" src="script/debug.js"></script>    
-  <script type="text/javascript" src="script/myspaces.js"></script>
-  <script type="text/javascript" src="script/Locale.js"></script>
-  <script type="text/javascript" src="/social-resources/javascript/eXo/social/SocialUtil.js"></script>
-  <div class="UIGadgetThemes UIYellowThemes">
-    <div id="more_spaces"></div>
-    <div id="myspaces_id"></div>
-	</div>
-  ]]>
-  </Content>
+		<![CDATA[   
+			<link rel="stylesheet" type="text/css" href="/eXoResources/skin/bootstrap/css/bootstrap.css" />    
+			<link rel="stylesheet" type="text/css" href="/eXoResources/skin/css/Core.css" />
+			<link type="text/css" rel="stylesheet" href="/exo-gadget-resources/skin/exo-gadget/gadget-common.css" />
+			<link rel="stylesheet" type="text/css" href="style/style.css" />
+			<script type="text/javascript" src="script/debug.js"></script>
+			<script type="text/javascript" src="/social-resources/javascript/eXo/social/SocialGadgetsUtil.js"></script>    
+			<script type="text/javascript" src="script/myspaces.js"></script>
+			<script type="text/javascript" src="script/Locale.js"></script>
+			<div class="UIGadgetThemes uibox">
+			<div id="more_spaces"></div>
+			<div id="myspaces_id"></div>
+			</div>
+		]]>
+	</Content>
 </Module>

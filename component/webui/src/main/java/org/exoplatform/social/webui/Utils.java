@@ -574,6 +574,7 @@ public class Utils {
     StringBuilder script = new StringBuilder("setTimeout(function() {")
       .append("jq('.LeftNavigationTDContainer:first').css('height', 'auto');")
       .append("jq('#UIUserActivityStreamPortlet').css('height', 'auto');")
+      .append("jq('#UIProfile').css('height', 'auto');")
       .append("platformLeftNavigation.resize();")
       .append("}, 200);");
     
@@ -595,7 +596,20 @@ public class Utils {
       .addScripts("profile.initUserProfilePopup('" + uiActivityId + "', null);");
   }
   
-  private static Space getSpaceByContext() {
+  /**
+   * Clear user profile popup.
+   * 
+   * @param uiActivityId Id of activity component.
+   * @since 4.1.x
+   */
+  public static void clearUserProfilePopup() {
+    PortletRequestContext pContext = (PortletRequestContext) WebuiRequestContext.getCurrentInstance();
+    JavascriptManager jm = pContext.getJavascriptManager();
+    jm.require("SHARED/social-ui-profile", "profile")
+      .addScripts("profile.clearUserProfilePopup();");
+  }
+  
+  public static Space getSpaceByContext() {
     //
     SpaceService spaceService = (SpaceService) ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(SpaceService.class);
     PortalRequestContext pcontext = Util.getPortalRequestContext();
@@ -609,7 +623,13 @@ public class Utils {
 
     //
     String spacePrettyName = route.localArgs.get("spacePrettyName");
+    Space space = spaceService.getSpaceByPrettyName(spacePrettyName);
+    if (space == null) {
+      String groupId = String.format("%s/%s", SpaceUtils.SPACE_GROUP, spacePrettyName);
+      space = spaceService.getSpaceByGroupId(groupId); 
+    }
+     
     
-    return spaceService.getSpaceByPrettyName(spacePrettyName);
+    return space;
   }
 }

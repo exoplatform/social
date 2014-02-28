@@ -271,7 +271,7 @@ public class UISpaceSearch extends UIForm {
       String searchCondition = (((UIFormStringInput) uiSpaceSearch.getChildById(SPACE_SEARCH)).getValue());
       if (searchCondition == null || searchCondition.equals(defaultSpaceNameAndDesc) || ASTERIK_STR
           .equals(searchCondition) || PERCENTAGE_STR.equals(searchCondition)) {
-        uiSpaceSearch.setSpaceNameSearch(defaultSpaceNameAndDesc);
+        uiSpaceSearch.setSpaceNameSearch(null);
         uiSpaceSearch.setNewSearch(true);
       } else {
         if (searchCondition != null) {
@@ -280,11 +280,11 @@ public class UISpaceSearch extends UIForm {
         
         uiSpaceSearch.setSpaceNameSearch(searchCondition);
         uiSpaceSearch.setNewSearch(true);
+      }
 
-        Event<UIComponent> searchEvent = uiSpaceSearch.<UIComponent>getParent().createEvent(SEARCH, Event.Phase.PROCESS, ctx);
-        if (searchEvent != null) {
-          searchEvent.broadcast();
-        }
+      Event<UIComponent> searchEvent = uiSpaceSearch.<UIComponent>getParent().createEvent(SEARCH, Event.Phase.PROCESS, ctx);
+      if (searchEvent != null) {
+        searchEvent.broadcast();
       }
     }
   }
@@ -300,11 +300,9 @@ public class UISpaceSearch extends UIForm {
     public void execute(Event<UISpaceSearch> event) throws Exception {
       UISpaceSearch uiSpaceSearch = event.getSource();
       UIPopupWindow uiPopup = uiSpaceSearch.getChild(UIPopupWindow.class);
-      UISpaceAddForm uiAddSpaceForm = uiSpaceSearch.createUIComponent(UISpaceAddForm.class,
-              null,
-              null);
+      UISpaceAddForm uiAddSpaceForm = uiSpaceSearch.createUIComponent(UISpaceAddForm.class, null, null);
       uiPopup.setUIComponent(uiAddSpaceForm);
-      uiPopup.setWindowSize(600, 0);
+      uiPopup.setWindowSize(625, 0);
       uiPopup.setShow(true);
     }
 

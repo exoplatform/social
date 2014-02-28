@@ -207,6 +207,7 @@
  <% } %>
   <% uicomponent.renderChild(UIActivitiesLoader.class);%>
   <% if ( hasActivities ) { %>
+  <% Utils.resizeHomePage();%>
   	<div class="activityBottom"><span></span></div>
   <% } %>
 <% } %>

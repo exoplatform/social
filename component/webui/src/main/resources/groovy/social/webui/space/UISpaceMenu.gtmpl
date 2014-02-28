@@ -109,7 +109,6 @@
     }
     
     def pName = uicomponent.getAppIdByAppName(appName);
-    if (pName == null) continue;
   %>
   <% if(nodeName.equals(appSelected)) {%>
        <li class="active">

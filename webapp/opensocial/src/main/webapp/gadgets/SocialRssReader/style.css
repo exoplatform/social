@@ -1,76 +1,210 @@
-p {
-	margin: 0px;
+body, td, div, span, p {
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+}
+a:visited {
+  color: #345f8f;
+}
+.Link, .Date {
+  background: none;
+  line-height: 18px;
+}
+.ClearRight {
+  clear:right;
 }
 
-.descriptionHighlight .title {
-	border-bottom: 1px solid #e3e3e3;
-	background: #eeeeee;
-	margin-bottom: 2px;
-	padding: 3px;
+p {
+  margin: 0px;
+}
+
+.minimize .descriptionHighlight .title {
+    border-bottom: 1px solid #E3E3E3;
+    margin-bottom: 2px;
+    padding-bottom: 5px;
 }
 
 .descriptionHighlight .title a {
-	color: #3C7EB2;
+  color: #2F5E92;
 }
 
-.title {
-	margin: 1px 0px 0px;
-	padding: 2px 0px;
-	font-weight: bold;
+.maximize .descriptionHighlight .title a {
+	cursor: default;	
+}
+
+.title a {
+  display: inline-block;
+  line-height: 18px;
+  white-space: normal;
+  font-size: 13px;
+  word-wrap: break-word;
+  text-decoration: none!important;
+  vertical-align: top;
+  color: #2F5E92;
+}
+
+.minimize .title {
+	display: inline-block;
+	width: 100%;
+}
+
+.minimize .title img {
+		float: left;
+		margin-right: 5px;
+		margin-top: 1px;
+}
+
+.minimize .title a {
+    float: left;
+    width: 90%;
+}
+
+.maximize .title a {
+  font-size: 14px;
+  font-weight: bold;
+  line-height: 28px;
+  margin-left: -8px;
+  cursor: default;
+}
+
+.maximize .title img {
+  display: none;
 }
 
 .item {
-	border-bottom: 1px dotted #b7b7b7;
+  padding: 6px 0 5px;
+  border-bottom: 1px solid #dadada;
 }
 
 .item .more {
-	color: #000000;
-	display: block;
-	font-size: 11px;
-	width: 100%;
-	padding: 0px;
+  display: block;
+  width: 100%;
+  padding: 0px;
 }
 
 .item .date {
-	color: #AAAAAA;
-	top: 0px;
-	left: 0px;
-	padding: 2px 20px 0px;
+  font-size: 12px;
+  color: #999;
+  float: left;
+}
+
+.minimize .link, .minimize .date {
+  font-size: 11px;
 }
 
 .item .more .desc {
-	background: #f5f5f5;
-	padding: 4px 20px 10px;
+  padding: 0 0 0;
+  white-space: normal;
 }
 
-.item .date {
-	background: #f5f5f5;
+.maximize .item .more {
+	display: block!important;
+}
+
+.minimize .item .more .desc {
+  line-height: 18px;
+  margin-bottom: 5px;
 }
 
 .item .more .link {
-	background: #eeeeee;
-	border-top: 1px solid #e3e3e3;
-	margin-top: 2px; 
-	padding: 0px 5px 0px 0px;
-	color: #fe7000;
-	font-weight: bold;
-	text-align: right;
+  text-align: right;
+  float: right;
+  color: #2F5E92;
 }
 
-.item .more .link a {
-	color: #fe7000;
+.subInfo {
+  display: inline-block;
+  width: 100%;
+  margin-bottom: 8px;
+}
+
+.minimize .subInfo {
+  margin: 5px 0 2px;
 }
 
 .descriptionHighlight {
-	border: none;
-	margin: 2px 0px;
-	padding:0px;
+  border: none;
 }
 
 .err {
-	font-weight: bold;
-	font-size: 11px;
-	color: red;
-	margin-top: 100px;
-	text-align: center;
+  font-weight: bold;
+  font-size: 11px;
+  color: red;
+  margin-top: 100px;
+  text-align: center;
+}
+
+.maximize, .minimize {
+  height: 100%;
+}
+
+.maximize {
+  padding: 0 15px;
+}
+
+.maximize .item {
+   border-bottom: none;
+}
+
+.maximize .item .desc {
+  border-top: 1px dotted #9B9B9B;
+  padding-top: 10px;
+  line-height: 22px;
+}
+
+.mmlib_table {
+  -webkit-border-radius: 3px 3px 3px 3px;
+  -moz-border-radius: 3px 3px 3px 3px;
+  border-radius: 3px 3px 3px 3px;
+  -webkit-box-shadow: 0px 1px 1px #e2e3e3;
+  -moz-box-shadow: 0px 1px 1px #e2e3e3;
+  box-shadow: 0px 1px 1px #e2e3e3;
+  background: #fcf4d4;
+  border: 1px solid #edad00;
+  color: #333333;
+  padding: 8px 13px;
+  margin: 10px 0 15px;
+  z-index: 10;
+  font-size: 13px;
+  font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+}
+.pagination {
+    line-height: 27px;
+    margin: 15px 0 10px;
+    font-size: 13px;
+}
+
+.pagination .PagesTotalNumber,
+.pagination .TotalPages {
+	float: right;
+	color: #333;
+}
+
+.pagination > a {
+	margin-left: 5px;
+}
+
+.uiPageIterator ul > li > a,
+.uiPageIterator ul > .active > a{
+    -ms-filter: "progid:DXImageTransform.Microsoft.gradient(enabled=false)";
+}
+
+.pagination > a.PagesTotalNumber {color: #2F5E92;}
+
+.pagination #pages {
+  float: right;
+  margin-left: 10px;
+}
+
+.pagination ul  li {
+		float: left;
+}
+
+.pagination > ul > li > a {
+  cursor: pointer;
+}
+.pagination > ul > li.disabled > a {
+  cursor: default;
+}
+
+.pagination > ul > li > a > i {
+    margin-top: 3px;
 }

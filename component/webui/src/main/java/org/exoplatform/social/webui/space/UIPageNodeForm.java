@@ -18,6 +18,7 @@
 package org.exoplatform.social.webui.space;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
@@ -41,12 +42,18 @@ import org.exoplatform.portal.config.model.Page;
 import org.exoplatform.portal.mop.Described;
 import org.exoplatform.portal.mop.SiteType;
 import org.exoplatform.portal.mop.Visibility;
+import org.exoplatform.portal.mop.page.PageContext;
+import org.exoplatform.portal.mop.page.PageKey;
+import org.exoplatform.portal.mop.page.PageService;
+import org.exoplatform.portal.mop.page.PageState;
 import org.exoplatform.portal.mop.user.UserNavigation;
 import org.exoplatform.portal.webui.page.UIPageSelector;
 import org.exoplatform.portal.webui.page.UIWizardPageSetInfo;
 import org.exoplatform.portal.webui.portal.UIPortal;
 import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.portal.webui.workspace.UIPortalApplication;
+import org.exoplatform.services.log.ExoLogger;
+import org.exoplatform.services.log.Log;
 import org.exoplatform.services.resources.LocaleConfig;
 import org.exoplatform.services.resources.LocaleConfigService;
 import org.exoplatform.services.resources.ResourceBundleService;
@@ -109,6 +116,8 @@ public class UIPageNodeForm extends UIFormTabPane {
   private static final String          SWITCH_MODE_ONCHANGE   = "SwitchLabelMode";
 
   private static final String          LABEL                  = "label";
+  
+  private static final Log LOG = ExoLogger.getLogger(UIPageNodeForm.class);
   
   public UIPageNodeForm() throws Exception {
     super("UIPageNodeForm");
@@ -209,7 +218,7 @@ public class UIPageNodeForm extends UIFormTabPane {
       } catch (MissingResourceException e) {
         displayName = capitalizeFirstLetter(locale.getDisplayName(currentLocale));
       } catch (Exception e) {
-
+        LOG.debug("Could not get resource bundle.");
       }
 
       option = new SelectItemOption<String>(displayName, language);
@@ -264,7 +273,7 @@ public class UIPageNodeForm extends UIFormTabPane {
     Map<Locale, Described.State> i18nizedLabels = pageNode.getI18nizedLabels();
     if (i18nizedLabels != null) {
       for (Locale key : i18nizedLabels.keySet()) {
-        String locale = key.getCountry() != "" ? key.getLanguage() + "_" + key.getCountry()
+        String locale = !("".equals(key.getCountry())) ? key.getLanguage() + "_" + key.getCountry()
                                                : key.getLanguage(); 
         cachedLabels.put(locale, i18nizedLabels.get(key));
       }
@@ -480,11 +489,35 @@ public class UIPageNodeForm extends UIFormTabPane {
       if (pageSelector.getPage() == null) {
         pageSelector.setValue(null);
       } else {
+        PageContext pageContext = pageSelector.getPage();
         DataStorage storage = uiPageNodeForm.getApplicationComponent(DataStorage.class);
-        Page page = storage.getPage(pageSelector.getPage().getKey().format());
-        if (storage.getPage(page.getPageId()) == null) {
-          storage.create(page);
-          pageSelector.setValue(page.getPageId());
+        PageService pageService = uiPageNodeForm.getApplicationComponent(PageService.class);
+        if (pageService.loadPage(pageContext.getKey()) == null) {
+            pageService.savePage(pageContext);
+
+            //
+            Page page = new Page();
+            page.setOwnerType(pageContext.getKey().getSite().getTypeName());
+            page.setOwnerId(pageContext.getKey().getSite().getName());
+            page.setName(pageContext.getKey().getName());
+            String title = pageContext.getState().getDisplayName();
+            String[] accessPermission = pageContext.getState().getAccessPermissions() == null ? null : pageContext
+                    .getState().getAccessPermissions()
+                    .toArray(new String[pageContext.getState().getAccessPermissions().size()]);
+            if (title == null || title.trim().length() < 1) {
+                title = page.getName();
+            }
+            page.setTitle(title);
+            page.setShowMaxWindow(false);
+            page.setAccessPermissions(accessPermission);
+            page.setEditPermission(pageContext.getState().getEditPermission());
+            page.setModifiable(true);
+            if (page.getChildren() == null) {
+                page.setChildren(new ArrayList<ModelObject>());
+            }
+
+            storage.save(page);
+            pageSelector.setValue(page.getPageId());
         }
       }
 
@@ -663,16 +696,20 @@ public class UIPageNodeForm extends UIFormTabPane {
       if (page.getChildren() == null)
         page.setChildren(new ArrayList<ModelObject>());
 
+      PageState pageState = new PageState(uiPageTitle.getValue(), null, false, null,
+              accessPermission != null ? Arrays.asList(accessPermission) : null, editPermission);
+      
       // check page is exist
-      DataStorage dataService = uiForm.getApplicationComponent(DataStorage.class);
-      Page existPage = dataService.getPage(page.getPageId());
+      PageKey pageKey = PageKey.parse(uiForm.getOwnerType().getName() + "::" + ownerId + "::" + uiPageName.getValue());
+      PageService pageService = uiForm.getApplicationComponent(PageService.class);
+      PageContext existPage = pageService.loadPage(pageKey);
       if (existPage != null) {
         uiPortalApp.addMessage(new ApplicationMessage("UIPageForm.msg.sameName", null));
         pcontext.addUIComponentToUpdateByAjax(uiPortalApp.getUIPopupMessages());
         return;
       }
 
-      pageSelector.setValue(page.getId());
+      pageSelector.setPage(new PageContext(pageKey, pageState));
       event.getRequestContext().addUIComponentToUpdateByAjax(pageSelector); 
     }
   }

@@ -33,29 +33,29 @@ import org.exoplatform.social.common.ResourceBundleUtil;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 
 /**
- * The <code>I18NActivityProcessor</code> class processes any i18n on activity to dynamic new activity with i18n title.
+ * Processes any i18n on activity to a dynamic new activity with the i18n title.
  * <p/>
  * How to I18N-ize an activity:
  * <ul>
  *   <li>
- *     must set <em>titleId</em> to indicate it's an I18N activity. <em>titleId</em> is used to map with a specific message
+ *     Set <em>titleId</em> to indicate it is an I18N activity. <em>titleId</em> is used to map with a specific message
  *     bundle key via configuration.
  *   </li>
  *   <li>
- *     if that resource bundle message is a compound resource bundle message, provide templateParams. The argument number will
+ *     If that resource bundle message is a compound resource bundle message, provide templateParams. The argument number will
  *     be counted as it appears on the map.
  *     For example: templateParams = {"key1": "value1", "key2": "value2"} => message bundle arguments = ["value1", "value2"].
- *     Note: to reserve the order of elements, LinkedHashMap must be used to create templateParams.
+ *     Note: To reserve the order of elements, LinkedHashMap must be used to create templateParams.
  *   </li>
  *   <li>
- *     create a resource bundle file and this file name is called "resourceBundleKeyFile" for configuration later.
+ *     Create a resource bundle file and this file name is called "resourceBundleKeyFile" for configuration later.
  *   </li>
  *   <li>
- *     register that resource bundle file with {@link BaseResourceBundlePlugin} to
+ *     Register the resource bundle file with {@link BaseResourceBundlePlugin} to
  *     {@link ResourceBundleService}.
  *   </li>
  *   <li>
- *     register {@link ActivityResourceBundlePlugin} with this service.
+ *     Register {@link ActivityResourceBundlePlugin} with this service.
  *   </li>
  * </ul>
  *
@@ -90,7 +90,7 @@ public final class I18NActivityProcessor {
   /**
    * Registers an activity resource bundle plugin.
    *
-   * @param activityResourceBundlePlugin the activity resource bundle plugin.
+   * @param activityResourceBundlePlugin The activity resource bundle plugin.
    * @LevelAPI Platform
    */
   public void addActivityResourceBundlePlugin(ActivityResourceBundlePlugin activityResourceBundlePlugin) {
@@ -109,9 +109,9 @@ public final class I18NActivityProcessor {
   }
 
   /**
-   * Un-registers an existing registered resource bundle plugin.
+   * Unregisters an existing registered resource bundle plugin.
    *
-   * @param activityResourceBundlePlugin the existing activity resource bundle plugin.
+   * @param activityResourceBundlePlugin The existing activity resource bundle plugin.
    * @LevelAPI Platform
    */
   public void removeActivityResourceBundlePlugin(ActivityResourceBundlePlugin activityResourceBundlePlugin) {
@@ -128,11 +128,11 @@ public final class I18NActivityProcessor {
   /**
    * Processes the I18N activity which means that activity.getTitleId() != null.
    *
-   * @param i18nActivity The target activity to be proceeded.
+   * @param i18nActivity The target activity to be processed.
    *        
    * @param selectedLocale The target locale that activity will be localized.
    *
-   * @return the activity which content has been localized.
+   * @return The activity which content has been localized.
    * 
    * @LevelAPI Platform
    */
@@ -146,7 +146,6 @@ public final class I18NActivityProcessor {
           return i18nActivity;
         }
         if (getMessageBundleKey(i18nActivity) == null) {
-          LOG.warn("Failed to find registered message bundle key for titleId: " + i18nActivity.getTitleId());
           return i18nActivity;
         }
         String newTitle = appRes(resourceBundle, getMessageBundleKey(i18nActivity), i18nActivity.getTemplateParams());
@@ -161,10 +160,10 @@ public final class I18NActivityProcessor {
   /**
    * Processes the I18N activity which means that activity.getTitleId() != null.
    *
-   * @param i18nActivity the I18N activity
-   * @param selectedLocale the selected locale
+   * @param i18nActivity The I18N activity.
+   * @param selectedLocale The selected locale.
    *
-   * @return the new activity with I18N title
+   * @return The new activity with I18N title.
    * @LevelAPI Platform
    */
   public ExoSocialActivity processKeys(ExoSocialActivity i18nActivity, Locale selectedLocale) {
@@ -177,7 +176,6 @@ public final class I18NActivityProcessor {
           return i18nActivity;
         }
         if (getMessageBundleKeys(i18nActivity) == false) {
-          LOG.warn("Failed to find registered message bundle key for titleId: " + i18nActivity.getTitleId());
           return i18nActivity;
         }
         
@@ -190,7 +188,7 @@ public final class I18NActivityProcessor {
   /**
    * Sets the external resource bundle service.
    *
-   * @param resourceBundleService the resource bundle service
+   * @param resourceBundleService The resource bundle service.
    * @LevelAPI Platform
    */
   public void setResourceBundleService(ResourceBundleService resourceBundleService) {
@@ -234,10 +232,10 @@ public final class I18NActivityProcessor {
   }
   
   /**
-   * Checks if this i18n activity has registered activity resource bundle plugin.
+   * Checks if the i18n activity has registered the activity resource bundle plugin.
    *
-   * @param i18nActivity the i18n activity.
-   * @return a boolean value.
+   * @param i18nActivity The i18n activity.
+   * @return A boolean value.
    */
   private boolean activityTypeRegistered(ExoSocialActivity i18nActivity) {
     if (resourceBundlePluginMap == null) {
@@ -247,10 +245,10 @@ public final class I18NActivityProcessor {
   }
 
   /**
-   * Gets the associated registered message bundle key for this i18n activity's titleId.
+   * Gets an associated registered message bundle key for the i18n activity's titleId.
    *
-   * @param i18nActivity the i18n activity.
-   * @return the found registered message bundle key.
+   * @param i18nActivity The i18n activity.
+   * @return The registered message bundle key.
    */
   private String getMessageBundleKey(ExoSocialActivity i18nActivity) {
     ActivityResourceBundlePlugin resourceBundlePlugin = resourceBundlePluginMap.get(i18nActivity.getType());
@@ -258,10 +256,10 @@ public final class I18NActivityProcessor {
   }
   
   /**
-   * Gets the associated registered message bundle keys for this i18n activity's titleId.
+   * Gets associated registered message bundle keys for the i18n activity's titleId.
    *
-   * @param i18nActivity the i18n activity.
-   * @return the found registered message bundle key.
+   * @param i18nActivity The i18n activity.
+   * @return The registered message bundle key.
    */
   private boolean getMessageBundleKeys(ExoSocialActivity i18nActivity) {
     ActivityResourceBundlePlugin resourceBundlePlugin = resourceBundlePluginMap.get(i18nActivity.getType());
@@ -277,10 +275,10 @@ public final class I18NActivityProcessor {
   }
   
   /**
-   * Gets the associated registered message bundle key for this i18n activity's titleId.
+   * Gets an associated registered message bundle key for the i18n activity's titleId.
    *
-   * @param i18nActivity the i18n activity.
-   * @return the found registered message bundle key.
+   * @param i18nActivity The i18n activity.
+   * @return The registered message bundle key.
    */
   private String getMessageBundleKey(String activityType, String resourceBundleKey) {
     ActivityResourceBundlePlugin resourceBundlePlugin = resourceBundlePluginMap.get(activityType);
@@ -288,23 +286,23 @@ public final class I18NActivityProcessor {
   }
 
   /**
-   * Gets the associated resource bundle key file registered with this type of activity.
+   * Gets an associated resource bundle key file registered with this type of activity.
    *
-   * @param i18nActivity the i18n activity
-   * @return the associated resource bundle key file
+   * @param i18nActivity The i18n activity.
+   * @return The associated resource bundle key file.
    */
   private String getResourceBundleKeyFile(ExoSocialActivity i18nActivity) {
     return resourceBundlePluginMap.get(i18nActivity.getType()).getResourceBundleKeyFile();
   }
 
   /**
-   * Gets the associated message bundle value from a specific message bundle key. If templateParams is not null, try to resolve
+   * Gets an associated message bundle value from a specific message bundle key. If templateParams is not null, try to resolve
    * the detected compound message bundle.
    *
-   * @param resourceBundle the registered resource bundle from resource bundle key file
-   * @param msgKey         the message key
-   * @param templateParams the possible template params for resolving compound message bundle.
-   * @return the found message bundle value or null if not found.
+   * @param resourceBundle The registered resource bundle from the resource bundle key file.
+   * @param msgKey The message key.
+   * @param templateParams The possible template params for resolving compound message bundle.
+   * @return The message bundle value or null if not found.
    */
   private String appRes(ResourceBundle resourceBundle, String msgKey, Map<String, String> templateParams) {
 
@@ -320,13 +318,13 @@ public final class I18NActivityProcessor {
   }
   
   /**
-   * Gets the associated message bundle value from a specific message bundle key. If templateParams is not null, try to resolve
+   * Gets an associated message bundle value from a specific message bundle key. If templateParams is not null, try to resolve
    * the detected compound message bundle.
    *
-   * @param resourceBundle the registered resource bundle from resource bundle key file
-   * @param msgKey         the message key
-   * @param templateParams the possible template params for resolving compound message bundle.
-   * @return the found message bundle value or null if not found.
+   * @param resourceBundle The registered resource bundle from the resource bundle key file.
+   * @param msgKey The message key.
+   * @param templateParams The possible template params for resolving the compound message bundle.
+   * @return The message bundle value or null if not found.
    */
   private String appRes(ResourceBundle resourceBundle, String msgKey, String[] values) {
 
@@ -342,11 +340,11 @@ public final class I18NActivityProcessor {
   }
 
   /**
-   * Finds the message bundle value from message bundle key.
+   * Finds a message bundle value from a message bundle key.
    *
-   * @param res    the resource bundle.
-   * @param msgKey the message bundle key.
-   * @return the found message bundle value or null if not found.
+   * @param res The resource bundle.
+   * @param msgKey The message bundle key.
+   * @return The message bundle value or null if not found.
    */
   private String appRes(ResourceBundle res, String msgKey) {
     String value = null;
@@ -360,11 +358,11 @@ public final class I18NActivityProcessor {
 
 
   /**
-   * Gets the associated registered resource bundle from an i18n activity and the selected locale.
+   * Gets an associated registered resource bundle from an i18n activity and the selected locale.
    *
-   * @param i18nActivity   the i18n activity.
-   * @param selectedLocale the selected locale.
-   * @return the associated registered resource bundle.
+   * @param i18nActivity The i18n activity.
+   * @param selectedLocale The selected locale.
+   * @return The associated registered resource bundle.
    */
   private ResourceBundle getResourceBundle(ExoSocialActivity i18nActivity, Locale selectedLocale) {
     if (resourceBundleService == null) {

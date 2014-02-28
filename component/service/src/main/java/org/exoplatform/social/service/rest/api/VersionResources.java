@@ -37,7 +37,7 @@ import org.exoplatform.social.service.rest.api.models.Version;
 import org.exoplatform.social.service.rest.api.models.Versions;
 
 /**
- * Provides the latest rest service version and provides the supported one.
+ * Provides the latest REST service version.
  *
  * @anchor VersionResources
  * 
@@ -60,10 +60,11 @@ public class VersionResources implements ResourceContainer {
   }
 
   /**
-   * Gets the latest eXo Social REST API version. This version number should be used as the latest and stable version that is considered to include all new features and updates of eXo Social REST services.
+   * Gets the latest REST API version of eXo Platform. This version number should be used as the latest and stable
+   * one which is considered to include all new features and updates of eXo Platform REST services.
    * @param uriInfo The URI information.
-   * @param format  The expected returned format.
-   * @request 
+   * @param format  The format of the returned result, for example, JSON or XML.
+   * @request
    * GET http://localhost:8080/rest/api/social/version/latest.json
    * or
    * GET http://localhost:8080/rest/api/social/version/latest.xml
@@ -71,7 +72,7 @@ public class VersionResources implements ResourceContainer {
    * {"version": "v1-alpha3"}
    * or
    * <version>v1-alpha3</version>
-   * @return response of the request, the type bases on the format param
+   * @return The information of the latest REST version.
    * @LevelAPI Platform
    * @anchor VersionResources.getLatestVersion
    */
@@ -89,8 +90,8 @@ public class VersionResources implements ResourceContainer {
 
 
   /**
-   * Gets eXo Social REST service versions that are supported. This is for backward compatibility. If a client
-   * application is using an older eXo Social REST APIs version, all APIs of the version still can work. The array MUST
+   * Gets eXo Platform REST service versions that are supported. This is for backward compatibility. If a client
+   * application is using an older eXo Platform REST APIs version, all APIs of the version still can work. The array MUST
    * have the latest to oldest order. For example, {{{[v2, v1, v1-beta3]}}}, but not
    * {{{[v1, v2, v1-beta3]}}}.
    * @param uriInfo The URI information.
@@ -105,7 +106,7 @@ public class VersionResources implements ResourceContainer {
    * <versions>
    *   <version>v1-alpha3</version>
    * </versions>
-   * @return response of the request, the type bases on the format param
+   * @return The information of the REST service versions supported by eXo Platform.
    * @LevelAPI Platform
    * @anchor VersionResources.getSupportedVersions
    *

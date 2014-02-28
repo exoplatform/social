@@ -2,18 +2,17 @@
 /*global alert: false, confirm: false, console: false, prompt: false, window: true */
 (function () {
     //We set default configuration values
-    var portalENV = parent.eXo.env.portal;
     var configuration = {
         //Do not include a trailing /
-        serverURL: top.location.host,
+        serverURL: "http://localhost:8080",
 
         //start and end by a /
-        spaceServicePath: "/" + ((portalENV.rest) ? portalENV.rest : "rest") + "/spaces/",
+        spaceServicePath: "/rest/private/spaces/",
 
         // This is default values work with eXo Platform 3.0.x
         // This can be configured using space.setContainerName and space.setPortalName
-        containerName: (portalENV.context).replace('/', ''), 
-        portalName: portalENV.portalName,
+        containerName: "portal",
+        portalName: "intranet",
 
         linkElId: "exoSpacesLink",
         spaceInfoTmpl: '<div style="height:200px;overflow:hidden;width:220px;border:medium none;"><a href="javascript:void(0)" rel="close" style="float:right;">Close</a><br /><%= iframe %></div>'
@@ -122,7 +121,7 @@
             stylesheetLink = document.createElement('link');
             stylesheetLink.type = 'text/css';
             stylesheetLink.rel = 'stylesheet';
-            stylesheetLink.href = configuration.serverURL + '/socialWidgetResources/skin/Stylesheet.css';
+            stylesheetLink.href = configuration.serverURL + '/socialWidgetResources/skin/css/social-extras-widget-resource.css';
             scriptEl = document.getElementsByTagName('script')[0]; 
             scriptEl.parentNode.insertBefore(stylesheetLink, scriptEl);
         }

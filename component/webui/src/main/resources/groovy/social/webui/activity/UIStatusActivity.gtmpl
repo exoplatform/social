@@ -151,7 +151,7 @@
 
 <div class="UIActivity">
   <% uiform.begin() %>
-  <div class="NormalBox ClearFix">
+  <div class="NormalBox clearfix">
     <a class="Avatar"  href="$ownerUri">
       <img  src="$ownerAvatar" alt="$ownerName" />
       <span class="BorderTop"></span>
@@ -159,7 +159,7 @@
     </a>
     <div class="ContentBox" id="ContextBox${activity.id}">
       <div id="ActivityContextBox${activity.id}">
-      <h5 class="TitleContent ClearFix">
+      <h5 class="TitleContent clearfix">
         <a class="Text"  href="$ownerUri">$ownerName</a><br>
         <span class="DateTime">$activityPostedTime</span>
       <% if (activityDeletable) {%>
@@ -276,9 +276,9 @@
       if (!commenterAvatarImgSrc) commenterAvatarImgSrc = LinkProvider.PROFILE_DEFAULT_AVATAR_URL;
     %>
       <% if (commentCounter == commentList.size()) {%>
-      <div id="CommentBlock${activity.id}${commentCounter}" class="CommentBox CommentBoxNoneBottomLine ClearFix">
+      <div id="CommentBlock${activity.id}${commentCounter}" class="CommentBox CommentBoxNoneBottomLine clearfix">
       <% } else { %>
-      <div id="CommentBlock${activity.id}${commentCounter}" class="CommentBox ClearFix">
+      <div id="CommentBlock${activity.id}${commentCounter}" class="CommentBox clearfix">
       <% } %>
         <a href="$commenterProfileUri" title="$commenterFullName" class="AvatarCM">
           <img width="38px" height="36px" title="$commenterFullName" alt="$commenterFullName" src="$commenterAvatarImgSrc" />
@@ -307,9 +307,9 @@
       if (!currentCommenterAvatar) currentCommenterAvatar= LinkProvider.PROFILE_DEFAULT_AVATAR_URL;
     %>
     <% if (commentList.size() == 0) { %>
-      <div class="CommentBox InputArea CommentFormBoxNone ClearFix" id="CommentFormBlock${activity.id}">
+      <div class="CommentBox InputArea CommentFormBoxNone clearfix" id="CommentFormBlock${activity.id}">
     <% } else { %>
-      <div class="CommentBox InputArea CommentFormBox ClearFix" id="CommentFormBlock${activity.id}">
+      <div class="CommentBox InputArea CommentFormBox clearfix" id="CommentFormBlock${activity.id}">
     <% } %>
         <a class="AvatarCM" title="$currentCommenterName" href="$currentCommenterUri">
           <img title="$currentCommenterName" src="$currentCommenterAvatar" alt="$currentCommenterName" />

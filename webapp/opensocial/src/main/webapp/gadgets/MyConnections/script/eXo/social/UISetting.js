@@ -76,7 +76,7 @@
   	
     var settingContentBlock = 
     '<div class="SettingContent">' +
-      '<div class="Row ClearFix">' +
+      '<div class="Row clearfix">' +
 			  '<div class="LabelIL">' + Locale.getMsg('view_type') + '</div>' +
 			  '<select class="SelectboxIL" id="ViewType">' +
 				  '<option value="ICON_LIST">' + Locale.getMsg('icon_list') + '</option>' +
@@ -84,7 +84,7 @@
 			  '</select>' +
 		  '</div>' +
 		  
-		  '<div class="Row ClearFix">' +
+		  '<div class="Row clearfix">' +
 			  '<div class="LabelUT">' + Locale.getMsg('update_time') + '</div>' +
 			  '<select class="SelectboxUT" id="UpdateTime">' +
 				  '<option value="5">' + Locale.getMsg('every_5_mins') + '</option>' +
@@ -94,7 +94,7 @@
 			  '</select>' +
 		  '</div>' +
 		  
-		  '<div class="Row ClearFix">' +
+		  '<div class="Row clearfix">' +
 			  '<div class="LabelISB">' + Locale.getMsg('item_sort_by') + '</div>' +
 			  '<select id="OrderBy" class="SelectboxISB">' +
           '<option value="RAND">' + Locale.getMsg('randomize') + '</option>' +
@@ -104,7 +104,7 @@
 			  '</select>' +
 		  '</div>' +
 		  
-		  '<div class="Row ClearFix">' +
+		  '<div class="Row clearfix">' +
 		    '<label class="LabelNIV" for="ItemPerViewNum">' + Locale.getMsg('number_item_per_view') + '</label>' +
 			  '<input title="' + Locale.getMsg('number_item_per_view') + '" id="ItemPerViewNum" class="InputNIV" type="text" value="10"/>' +
 		  '</div>' +

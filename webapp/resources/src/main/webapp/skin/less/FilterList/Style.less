@@ -16,7 +16,7 @@
 			display: inline-block;
 			a {
 				.uiActionWithLabel;
-				border: 1px solid #d9d9d9;
+				border: 1px solid @borderColor;
 				color: @textColor;
 				.size(22px, 23px);
 				line-height: 22px;
@@ -29,10 +29,10 @@
 			 color: @linkColor;
 			 font-weight: bold;
 			}
-			a.allSpace {
+			a.allSpace, a#searchAll {
 				width: auto;
 				padding: 0px 3px;
-			}
+			}			
 		}
 	}
 }

@@ -97,7 +97,7 @@
       <p class="NotYet"><%=_ctx.appRes(uicomponent.getId() + ".label.NoContactFound")%></p>
     </div>
   <%}%>
-  <div class="ClearFix">
+  <div class="clearfix">
   
   <% list.each {
       def identity = it;
@@ -128,9 +128,9 @@
       }
   %>
     <% if (peopleIdx % 2 == 0) { %>
-       <div class="ContentSpaceGray ClearFix">
+       <div class="ContentSpaceGray clearfix">
     <% } else {%>
-       <div class="ContentSpace ClearFix">
+       <div class="ContentSpace clearfix">
     <% }%>
          <a class="AvatarUser">
            <img rel="tooltip" data-placement="bottom" title="${fullName}" src="$imageSource" />
@@ -164,15 +164,15 @@
                 
                 <ul class="InviteTitle">
 				<% if (contactStatus == Relationship.Type.PENDING && relationship.isSender(identity)) { %>
-				      <li class="FL"><button class="btn" onclick="<%=uicomponent.event("DenyContact",identity.getId())%>">$denyTitle</button></li>
-				      <li class="Line FL">&nbsp;</li>
-				      <li class="FL"><button class="btn" onclick="<%=uicomponent.event("AcceptContact",identity.getId())%>">$acceptTitle</button></li>
+				      <li class="pull-left"><button class="btn" onclick="<%=uicomponent.event("DenyContact",identity.getId())%>">$denyTitle</button></li>
+				      <li class="Line pull-left">&nbsp;</li>
+				      <li class="pull-left"><button class="btn" onclick="<%=uicomponent.event("AcceptContact",identity.getId())%>">$acceptTitle</button></li>
 				<% } else if (contactStatus == Relationship.Type.PENDING) { %>
-				      <li class="FL"><button class="btn" onclick="<%=uicomponent.event("DenyContact",identity.getId())%>">$revokeTitle</button></li>
+				      <li class="pull-left"><button class="btn" onclick="<%=uicomponent.event("DenyContact",identity.getId())%>">$revokeTitle</button></li>
 				<% } else if (contactStatus == Relationship.Type.CONFIRMED) { %>
-				      <li class="FL"><button class="btn" onclick="<%=uicomponent.event("DenyContact",identity.getId())%>">$removeTitle</button></li>
+				      <li class="pull-left"><button class="btn" onclick="<%=uicomponent.event("DenyContact",identity.getId())%>">$removeTitle</button></li>
 				<% } else if (contactStatus == null) { %>
-				      <li class="FL"><button class="btn" onclick="$addAction">$inviteTitle</button></li>
+				      <li class="pull-left"><button class="btn" onclick="$addAction">$inviteTitle</button></li>
 				<% } %>
 				</ul>
           </div>

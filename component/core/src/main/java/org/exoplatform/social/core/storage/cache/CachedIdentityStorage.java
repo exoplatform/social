@@ -395,6 +395,7 @@ public class CachedIdentityStorage implements IdentityStorage {
         listKey);
 
     //
+    LOG.trace("getIdentitiesForMentions:: return " + keys.getIds().size());
     return buildIdentities(keys);
     
   }
@@ -465,6 +466,7 @@ public class CachedIdentityStorage implements IdentityStorage {
         listKey);
 
     //
+    LOG.trace("getIdentitiesByFirstCharacterOfName:: return " + keys.getIds().size());
     return buildIdentities(keys);
 
   }
@@ -518,5 +520,31 @@ public class CachedIdentityStorage implements IdentityStorage {
 
   public String getProfileActivityId(Profile profile, AttachedActivityType type) {
     return storage.getProfileActivityId(profile, type);
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  public List<Identity> getIdentitiesForUnifiedSearch(final String providerId,
+                                                      final ProfileFilter profileFilter,
+                                                      final long offset,
+                                                      final long limit) throws IdentityStorageException {
+    //
+    IdentityFilterKey key = new IdentityFilterKey(providerId, profileFilter);
+    ListIdentitiesKey listKey = new ListIdentitiesKey(key, offset, limit);
+
+    //
+    ListIdentitiesData keys = identitiesCache.get(
+        new ServiceContext<ListIdentitiesData>() {
+          public ListIdentitiesData execute() {
+            List<Identity> got = storage.getIdentitiesForUnifiedSearch(providerId, profileFilter, offset, limit);
+            return buildIds(got);
+          }
+        },
+        listKey);
+
+    //
+    return buildIdentities(keys);
+    
   }
 }

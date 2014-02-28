@@ -34,6 +34,7 @@ import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.manager.ActivityManager;
+import org.exoplatform.social.webui.URLUtils;
 import org.exoplatform.social.webui.Utils;
 import org.exoplatform.social.webui.activity.UIActivitiesContainer;
 import org.exoplatform.social.webui.activity.UIActivitiesLoader;
@@ -88,7 +89,8 @@ public class UIUserActivitiesDisplay extends UIContainer {
     ALL_ACTIVITIES,
     CONNECTIONS,
     MY_SPACE,
-    MY_ACTIVITIES
+    MY_ACTIVITIES,
+    POSTER_ACTIVITIES
   }
 
   private DisplayMode                selectedDisplayMode   = DisplayMode.ALL_ACTIVITIES;
@@ -116,8 +118,8 @@ public class UIUserActivitiesDisplay extends UIContainer {
     addChild(uiDropDownControl);
 
     // TODO: init() run two time when initiation this form.
-    String remoteId = Utils.getOwnerRemoteId();
-    this.setOwnerName(remoteId);
+    //String remoteId = Utils.getOwnerRemoteId();
+    //this.setOwnerName(remoteId);
     String selectedDisplayMode = Utils.getCookies(String.format(Utils.ACTIVITY_STREAM_TAB_SELECTED_COOKIED, Utils.getViewerRemoteId()));
     selectedDisplayMode = (selectedDisplayMode != null) ? selectedDisplayMode : DisplayMode.ALL_ACTIVITIES.name();
 
@@ -210,6 +212,13 @@ public class UIUserActivitiesDisplay extends UIContainer {
       removeChild(UIActivitiesLoader.class);
       activitiesLoader = addChild(UIActivitiesLoader.class, null, "UIActivitiesLoader");
     }
+    
+    // Check if current display page is My Activity Stream
+    String currentUserName = URLUtils.getCurrentUser();
+    if (currentUserName != null) {
+      selectedDisplayMode = DisplayMode.OWNER_STATUS;
+    }
+    
     activitiesLoader.setPostContext(PostContext.USER);
     activitiesLoader.setLoadingCapacity(ACTIVITY_PER_PAGE);
     activitiesLoader.setOwnerName(ownerName);
@@ -319,8 +328,6 @@ public class UIUserActivitiesDisplay extends UIContainer {
        
        uiUserActivities.setChangedMode(false);
        
-       UIActivitiesLoader activitiesLoader = uiUserActivities.getChild(UIActivitiesLoader.class);
-       
        //int numberOfUpdates = uiUserActivities.getNumberOfUpdatedActivities();
        
        //
@@ -330,7 +337,6 @@ public class UIUserActivitiesDisplay extends UIContainer {
 //       event.getRequestContext().getJavascriptManager()
 //       .require("SHARED/social-ui-activity-updates", "activityUpdates").addScripts("activityUpdates.resetCookie('" + String.format(Utils.LAST_UPDATED_ACTIVITIES_NUM, selectedDisplayMode, Utils.getViewerRemoteId()) + "','" + numberOfUpdates + "');");
 
-       event.getRequestContext().addUIComponentToUpdateByAjax(activitiesLoader);
      }
      
      requestContext.addUIComponentToUpdateByAjax(uiUserActivities);
@@ -342,18 +348,12 @@ public class UIUserActivitiesDisplay extends UIContainer {
   public static class RefreshStreamActionListener extends EventListener<UIUserActivitiesDisplay> {
     public void execute(Event<UIUserActivitiesDisplay> event) throws Exception {
      UIUserActivitiesDisplay uiUserActivities = event.getSource();
-     WebuiRequestContext requestContext = event.getRequestContext();
      uiUserActivities.init();
-     
-     //
-     UIActivitiesLoader activitiesLoader = uiUserActivities.getChild(UIActivitiesLoader.class);
-     event.getRequestContext().addUIComponentToUpdateByAjax(activitiesLoader);
-     requestContext.addUIComponentToUpdateByAjax(uiUserActivities);
+     event.getRequestContext().addUIComponentToUpdateByAjax(uiUserActivities);
      
      Utils.resizeHomePage();
    }
  }
-
   
   private int getActivitiesUpdatedNum(boolean hasRefresh) {
     if (this.postActivity) {

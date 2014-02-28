@@ -55,6 +55,7 @@ import org.exoplatform.social.core.space.model.Space.UpdatedField;
 import org.exoplatform.social.core.space.spi.SpaceApplicationHandler;
 import org.exoplatform.social.core.space.spi.SpaceLifeCycleListener;
 import org.exoplatform.social.core.space.spi.SpaceService;
+import org.exoplatform.social.core.storage.api.ActivityStreamStorage;
 import org.exoplatform.social.core.storage.api.IdentityStorage;
 import org.exoplatform.social.core.storage.api.SpaceStorage;
 
@@ -73,6 +74,8 @@ public class SpaceServiceImpl implements SpaceService {
   private SpaceStorage                         spaceStorage;
 
   private IdentityStorage                      identityStorage;
+  
+  private ActivityStreamStorage                streamStorage;
 
   private OrganizationService                  orgService               = null;
 
@@ -100,10 +103,11 @@ public class SpaceServiceImpl implements SpaceService {
    * @throws Exception
    */
   @SuppressWarnings("unchecked")
-  public SpaceServiceImpl(InitParams params, SpaceStorage spaceStorage, IdentityStorage identityStorage) throws Exception {
+  public SpaceServiceImpl(InitParams params, SpaceStorage spaceStorage, IdentityStorage identityStorage, ActivityStreamStorage streamStorage) throws Exception {
 
     this.spaceStorage = spaceStorage;
     this.identityStorage = identityStorage;
+    this.streamStorage = streamStorage;
 
     //backward compatible
     if (params != null) {
@@ -365,6 +369,12 @@ public class SpaceServiceImpl implements SpaceService {
    */
   @SuppressWarnings("deprecation")
   public Space createSpace(Space space, String creator, String invitedGroupId) {
+    //
+    String[] managers = new String[] {creator};
+    String[] members = new String[] {creator};
+    space.setManagers(managers);
+    space.setMembers(members);
+    
     // Creates new space by creating new group
     String groupId = null;
     try {
@@ -389,7 +399,13 @@ public class SpaceServiceImpl implements SpaceService {
           String userId = user.getUserName();
           if (!userId.equals(creator)) {
             String[] invitedUsers = space.getInvitedUsers();
-            if (!ArrayUtils.contains(invitedUsers, userId)) {
+            if (userId.equals(getUserACL().getSuperUser())) {
+              members = space.getMembers();
+              if (!ArrayUtils.contains(members, userId)) {
+                members = (String[]) ArrayUtils.add(members, userId);
+                space.setMembers(members);
+              }
+            } else if (!ArrayUtils.contains(invitedUsers, userId)) {
               invitedUsers = (String[]) ArrayUtils.add(invitedUsers, userId);
               space.setInvitedUsers(invitedUsers);
             }
@@ -407,10 +423,7 @@ public class SpaceServiceImpl implements SpaceService {
       space.setPrettyName(groupId.split("/")[2]);
     }
     
-    String[] managers = new String[] {creator};
-    String[] members = new String[] {creator};
-    space.setManagers(managers);
-    space.setMembers(members);
+
     space.setGroupId(groupId);
     space.setUrl(space.getPrettyName());
 
@@ -1231,7 +1244,8 @@ public class SpaceServiceImpl implements SpaceService {
    * {@inheritDoc}
    */
   public ListAccess<Space> getAccessibleSpacesByFilter(String userId, SpaceFilter spaceFilter) {
-    if (userId.equals(getUserACL().getSuperUser())) {
+    if (userId.equals(getUserACL().getSuperUser()) 
+        && (spaceFilter == null || spaceFilter.getAppId() == null)) {
       return new SpaceListAccess(this.spaceStorage, spaceFilter, SpaceListAccess.Type.ALL_FILTER);
     } else {
       return new SpaceListAccess(this.spaceStorage, userId, spaceFilter, SpaceListAccess.Type.ACCESSIBLE_FILTER);
@@ -1393,7 +1407,10 @@ public class SpaceServiceImpl implements SpaceService {
         space.setManagers(managers);
         this.updateSpace(space);
         SpaceUtils.removeUserFromGroupWithManagerMembership(userId, space.getGroupId());
-        spaceLifeCycle.revokedLead(space, userId);
+        Space updatedSpace = getSpaceById(space.getId()); 
+        if (isMember(updatedSpace, userId)) {
+          spaceLifeCycle.revokedLead(space, userId);
+        }
       }
     }
   }
@@ -1457,5 +1474,14 @@ public class SpaceServiceImpl implements SpaceService {
   public List<Space> getLastAccessedSpace(String remoteId, String appId, int offset, int limit) throws SpaceException {
     SpaceFilter filter = new SpaceFilter(remoteId, appId);
     return spaceStorage.getLastAccessedSpace(filter, offset, limit);
+  }
+  
+  @Override
+  public ListAccess<Space> getLastAccessedSpace(String remoteId, String appId) {
+    return new SpaceListAccess(this.spaceStorage, remoteId, appId, SpaceListAccess.Type.LASTEST_ACCESSED);
+  }
+  
+  public ListAccess<Space> getVisitedSpaces(String remoteId, String appId) {
+    return new SpaceListAccess(this.spaceStorage, remoteId, appId, SpaceListAccess.Type.VISITED);
   }
 }

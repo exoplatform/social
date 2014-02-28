@@ -33,6 +33,7 @@
     configure : function(params) {
       UIComposer.composerId = params.composerId;
       UIComposer.textareaId = params.textareaId;
+      UIComposer.mentionBtnLabel = params.mentionBtnLabel;
       UIComposer.userTyped = false;
     },
     init : function() {
@@ -42,7 +43,7 @@
 				'href' : 'javascript:void(0);',
 				'rel':'tooltip',
 				'data-placement':'bottom',
-				'title':'Mention',
+				'title': UIComposer.mentionBtnLabel,
 				'class':'actionIcon',
 				'id': 'mentionButton'
 			}
@@ -55,8 +56,8 @@
 
       $(document).ready(function() {
         var actionLink = $('#actionLink');
-        if(actionLink.length > 0 && (UIComposer.clickOn === null || $(UIComposer.clickOn).hasClass('uidocactivitycomposer') === false)) {
-          if ($('#InputLink').length == 0) {
+        if(actionLink.length > 0 && $(UIComposer.clickOn).hasClass('uidocactivitycomposer') === false) {
+          if ($('#InputLink').length == 0 && UIComposer.clickOn != null) {
             actionLink.trigger('click');
           } else {
             var container = $('#ComposerContainer');

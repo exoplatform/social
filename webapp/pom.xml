@@ -22,10 +22,9 @@
   <parent>
     <artifactId>social</artifactId>
     <groupId>org.exoplatform.social</groupId>
-    <version>4.0.x-SNAPSHOT</version>
+    <version>4.1.0-SNAPSHOT</version>
   </parent>
   <artifactId>social-webapp</artifactId>
-  <version>4.0.x-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>eXo Social Web Apps</name>
   <description>eXo Social Web Apps</description>

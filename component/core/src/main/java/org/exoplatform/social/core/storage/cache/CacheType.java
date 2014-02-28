@@ -43,17 +43,26 @@ public enum CacheType {
   RELATIONSHIP_FROM_IDENTITY("RelationshipFromIdentityCache"),
   RELATIONSHIPS_COUNT("RelationshipsCountCache"),
   RELATIONSHIPS("RelationshipsCache"),
+  SUGGESTIONS("SuggestionsCache"),
 
   //
   ACTIVITY("ActivityCache"),
   ACTIVITIES_COUNT("ActivitiesCountCache"),
   ACTIVITIES("ActivitiesCache"),
+  
+  //
+  ACTIVITY_REF("ActivityRefCache"),
+  ACTIVITIES_REF_COUNT("ActivitiesRefCountCache"),
+  ACTIVITIES_REF("ActivitiesRefCache"),
 
   //
   SPACE("SpaceCache"),
   SPACE_REF("SpaceRefCache"),
   SPACES_COUNT("SpacesCountCache"),
-  SPACES("SpacesCache")
+  SPACES("SpacesCache"),
+  
+  //
+  SPACE_SIMPLE("SpaceSimpleCache")
 
   ;
 

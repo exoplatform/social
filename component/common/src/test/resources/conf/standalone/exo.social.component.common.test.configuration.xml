@@ -26,6 +26,29 @@
     <key>org.exoplatform.social.common.xmlprocessor.XMLProcessor</key>
     <type>org.exoplatform.social.common.xmlprocessor.XMLProcessorImpl</type>
   </component>
+  
+  <component>
+    <key>org.exoplatform.social.common.service.thread.ThreadPoolConfig</key>
+    <type>org.exoplatform.social.common.service.thread.ThreadPoolConfig</type>
+    <init-params>
+      <value-param>
+        <name>pool-size</name>
+        <value>10</value>
+      </value-param>
+      <value-param>
+        <name>max-pool-size</name>
+        <value>20</value>
+      </value-param>
+      <value-param>
+        <name>async-mode</name>
+        <value>false</value>
+      </value-param>
+      <value-param>
+        <name>thread-priority</name>
+        <value>10</value>
+      </value-param>
+    </init-params>
+  </component>
 
   <component>
     <key>org.exoplatform.social.common.xmlprocessor.model.XMLTagFilterPolicy</key>
@@ -121,40 +144,6 @@
         </init-params>
       </component-plugin>
     </component-plugins>
-  </component>
-  
-  <component>
-    <key>org.exoplatform.social.common.embedder.OembedEmbedder</key>
-    <type>org.exoplatform.social.common.embedder.OembedEmbedder</type>
-      <init-params>
-        <value-param>
-          <name>http://(www|de)\.youtube\.com/watch\?v=.*</name>
-          <value>http://www.youtube.com/oembed?url=%s&amp;format=json</value>
-        </value-param>
-        <value-param>
-          <name>http://www\.dailymotion\.com/video/.*</name>
-          <value>http://www.dailymotion.com/services/oembed?format=json&amp;url=%s</value>
-        </value-param>
-        <value-param>
-          <name>http://vimeo\.com/.*</name>
-          <value>http://vimeo.com/api/oembed.json?url=%s&amp;width=480</value>
-        </value-param>
-        <value-param>
-          <name>http://www\.slideshare\.net/.*/.*</name>
-          <value>http://www.slideshare.net/api/oembed/2?url=%s&amp;format=json</value>
-        </value-param>
-      </init-params>
-  </component>
-  
-  <component>
-    <key>org.exoplatform.social.common.embedder.YoutubeEmbedder</key>
-    <type>org.exoplatform.social.common.embedder.YoutubeEmbedder</type>
-      <init-params>
-        <value-param>
-          <name>(?:https?:\/\/)?(?:www\.)?(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&amp;v=))((\w|-){11})(?:\S+)?$</name>
-          <value>http://gdata.youtube.com/feeds/api/videos/%s?v=2&amp;alt=json</value>
-        </value-param>
-      </init-params>
   </component>
   
   <component>

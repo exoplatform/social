@@ -236,7 +236,7 @@ public class OrganizationIdentityProvider extends IdentityProvider<User> {
 
       String uGender = foundUserProfile.getAttribute(UserProfile.PERSONAL_INFO_KEYS[4]);// "user.gender"
       
-      if (gender !=null && uGender != gender) {
+      if (gender !=null && !gender.equals(uGender)) {
         foundUserProfile.setAttribute(UserProfile.PERSONAL_INFO_KEYS[4], gender);// "user.gender"
         organizationService.getUserProfileHandler().saveUserProfile(foundUserProfile, false);
       }
@@ -259,7 +259,7 @@ public class OrganizationIdentityProvider extends IdentityProvider<User> {
       }
       
       String uPosition = foundUserProfile.getAttribute(UserProfile.PERSONAL_INFO_KEYS[7]);//user.jobtitle
-      if (position != null && uPosition != position) {
+      if (position != null && !position.equals(uPosition)) {
         foundUserProfile.setAttribute(UserProfile.PERSONAL_INFO_KEYS[7], position);//user.jobtitle
         organizationService.getUserProfileHandler().saveUserProfile(foundUserProfile, false);
       }

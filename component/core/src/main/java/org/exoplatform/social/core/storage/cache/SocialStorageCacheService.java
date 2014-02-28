@@ -28,6 +28,8 @@ import org.exoplatform.social.core.storage.cache.model.data.ListSpacesData;
 import org.exoplatform.social.core.storage.cache.model.data.ProfileData;
 import org.exoplatform.social.core.storage.cache.model.data.RelationshipData;
 import org.exoplatform.social.core.storage.cache.model.data.SpaceData;
+import org.exoplatform.social.core.storage.cache.model.data.SpaceSimpleData;
+import org.exoplatform.social.core.storage.cache.model.data.SuggestionsData;
 import org.exoplatform.social.core.storage.cache.model.key.ActivityCountKey;
 import org.exoplatform.social.core.storage.cache.model.key.ActivityKey;
 import org.exoplatform.social.core.storage.cache.model.key.IdentityCompositeKey;
@@ -43,6 +45,7 @@ import org.exoplatform.social.core.storage.cache.model.key.RelationshipKey;
 import org.exoplatform.social.core.storage.cache.model.key.SpaceFilterKey;
 import org.exoplatform.social.core.storage.cache.model.key.SpaceKey;
 import org.exoplatform.social.core.storage.cache.model.key.SpaceRefKey;
+import org.exoplatform.social.core.storage.cache.model.key.SuggestionKey;
 
 /**
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
@@ -62,6 +65,9 @@ public class SocialStorageCacheService {
   private final ExoCache<RelationshipIdentityKey, RelationshipKey> relationshipCacheByIdentity;
   private final ExoCache<RelationshipCountKey, IntegerData> relationshipsCount;
   private final ExoCache<ListRelationshipsKey, ListIdentitiesData> relationshipsCache;
+  
+  // Suggestion
+  private final ExoCache<SuggestionKey, SuggestionsData> suggestionCache;
 
   // ActivityStorage
   private final ExoCache<ActivityKey, ActivityData> activityCache;
@@ -73,6 +79,8 @@ public class SocialStorageCacheService {
   private final ExoCache<SpaceRefKey, SpaceKey> spaceRefCache;
   private final ExoCache<SpaceFilterKey, IntegerData> spacesCountCache;
   private final ExoCache<ListSpacesKey, ListSpacesData> spacesCache;
+  
+  private final ExoCache<SpaceKey, SpaceSimpleData> spaceSimpleCache;
 
   public SocialStorageCacheService(CacheService cacheService) {
     
@@ -86,6 +94,8 @@ public class SocialStorageCacheService {
     this.relationshipCacheByIdentity = CacheType.RELATIONSHIP_FROM_IDENTITY.getFromService(cacheService);
     this.relationshipsCount = CacheType.RELATIONSHIPS_COUNT.getFromService(cacheService);
     this.relationshipsCache = CacheType.RELATIONSHIPS.getFromService(cacheService);
+    
+    this.suggestionCache = CacheType.SUGGESTIONS.getFromService(cacheService);
 
     this.activityCache = CacheType.ACTIVITY.getFromService(cacheService);
     this.activitiesCountCache = CacheType.ACTIVITIES_COUNT.getFromService(cacheService);
@@ -95,6 +105,8 @@ public class SocialStorageCacheService {
     this.spaceRefCache = CacheType.SPACE_REF.getFromService(cacheService);
     this.spacesCountCache = CacheType.SPACES_COUNT.getFromService(cacheService);
     this.spacesCache = CacheType.SPACES.getFromService(cacheService);
+    
+    this.spaceSimpleCache = CacheType.SPACE_SIMPLE.getFromService(cacheService);
 
   }
 
@@ -122,6 +134,10 @@ public class SocialStorageCacheService {
     return relationshipCache;
   }
 
+  public ExoCache<SuggestionKey, SuggestionsData> getSuggestionCache() {
+    return suggestionCache;
+  }
+  
   public ExoCache<RelationshipIdentityKey, RelationshipKey> getRelationshipCacheByIdentity() {
     return relationshipCacheByIdentity;
   }
@@ -148,6 +164,10 @@ public class SocialStorageCacheService {
 
   public ExoCache<SpaceKey, SpaceData> getSpaceCache() {
     return spaceCache;
+  }
+  
+  public ExoCache<SpaceKey, SpaceSimpleData> getSpaceSimpleCache() {
+    return spaceSimpleCache;
   }
 
   public ExoCache<SpaceRefKey, SpaceKey> getSpaceRefCache() {

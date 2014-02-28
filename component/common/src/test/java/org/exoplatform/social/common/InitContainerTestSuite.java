@@ -18,8 +18,8 @@ package org.exoplatform.social.common;
 
 import org.exoplatform.commons.testing.BaseExoContainerTestSuite;
 import org.exoplatform.commons.testing.ConfigTestCase;
-import org.exoplatform.social.common.embedder.EmbedderTest;
 import org.exoplatform.social.common.jcr.UtilTest;
+import org.exoplatform.social.common.service.AsyncProcessorTest;
 import org.exoplatform.social.common.xmlprocessor.XMLProcessorTest;
 import org.exoplatform.social.common.xmlprocessor.model.XmlTagFilterPolicyTest;
 import org.junit.AfterClass;
@@ -30,10 +30,10 @@ import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-  EmbedderTest.class,
   UtilTest.class,
   XMLProcessorTest.class,
-  XmlTagFilterPolicyTest.class
+  XmlTagFilterPolicyTest.class,
+  AsyncProcessorTest.class
   })
 @ConfigTestCase(AbstractCommonTest.class)
 public class InitContainerTestSuite extends BaseExoContainerTestSuite {

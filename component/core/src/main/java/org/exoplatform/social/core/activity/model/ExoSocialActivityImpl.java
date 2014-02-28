@@ -91,6 +91,9 @@ public class ExoSocialActivityImpl extends ActivityImpl implements ExoSocialActi
   
   private String posterId;
   
+  //
+  private String parentId;
+  
   /**
    * constructor.
    */
@@ -469,7 +472,7 @@ public class ExoSocialActivityImpl extends ActivityImpl implements ExoSocialActi
     if (updated != null) {
       setUpdated(new Date(updated));
     } else {
-      setUpdated(new Date(System.currentTimeMillis()));
+      setUpdated(getPostedTime());
     }
   }
   
@@ -491,5 +494,45 @@ public class ExoSocialActivityImpl extends ActivityImpl implements ExoSocialActi
   @Override
   public void setPosterId(String posterId) {
     this.posterId = posterId;
+  }
+  
+  @Override
+  public String getParentId() {
+    return parentId;
+  }
+
+  @Override
+  public void setParentId(String parentId) {
+    this.parentId = parentId;
+  }
+
+  @Override
+  public String toString() {
+    return "ExoSocialActivity[id = " + getId() + ",title=" + getTitle() + ",lastModified= " + getUpdated().getTime() + " ]";
+  }
+  
+  @Override
+  public boolean equals(final Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (!(o instanceof ExoSocialActivityImpl)) {
+      return false;
+    }
+
+    ExoSocialActivityImpl that = (ExoSocialActivityImpl) o;
+
+    if (getId() != null ? !getId().equals(that.getId()) : that.getId() != null) {
+      return false;
+    }
+
+    return true;
+  }
+
+  @Override
+  public int hashCode() {
+    int result = super.hashCode();
+    result = 31 * result + (getId() != null ? getId().hashCode() : 0);
+    return result;
   }
 }

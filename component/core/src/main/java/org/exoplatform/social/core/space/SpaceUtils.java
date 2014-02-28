@@ -30,7 +30,6 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import javax.portlet.PortletPreferences;
 import javax.servlet.http.HttpServletRequest;
 
 import org.exoplatform.application.registry.Application;
@@ -89,7 +88,6 @@ import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
 import org.exoplatform.webui.application.WebuiRequestContext;
-import org.exoplatform.webui.application.portlet.PortletRequestContext;
 import org.gatein.common.i18n.LocalizedString;
 import org.gatein.common.util.Tools;
 import org.gatein.pc.api.Portlet;
@@ -365,7 +363,7 @@ public class SpaceUtils {
    */
   static class PortletCategoryComparator implements Comparator<ApplicationCategory> {
     public int compare(ApplicationCategory cat1, ApplicationCategory cat2) {
-      return cat1.getDisplayName().compareTo(cat2.getDisplayName());
+      return cat1.getDisplayName(true).compareTo(cat2.getDisplayName(true));
     }
   }
 
@@ -1182,9 +1180,16 @@ public class SpaceUtils {
     NavigationContext spaceNavCtx = getGroupNavigationContext(space.getGroupId());
 
     UserNavigation userNav = SpaceUtils.getUserPortal().getNavigation(spaceNavCtx.getKey());
+    
     UserNode parentUserNode = SpaceUtils.getUserPortal().getNode(userNav, Scope.CHILDREN, null, null);
-    UserNode spaceUserNode = parentUserNode.getChild(space.getUrl());
-    SpaceUtils.getUserPortal().updateNode(spaceUserNode, Scope.CHILDREN, null);
+    UserNode spaceUserNode = parentUserNode.getChildrenSize() > 0 ? parentUserNode.getChild(0) : null;
+    
+    if (spaceUserNode != null) {
+      SpaceUtils.getUserPortal().updateNode(spaceUserNode, Scope.CHILDREN, null);
+    } else {
+      LOG.warn("Failed to get because of spaceUserNode is NULL");
+    }
+    
     return spaceUserNode;
   }
   
@@ -1367,7 +1372,7 @@ public class SpaceUtils {
     String[] appPart;
     for (int idx = 0; idx < apps.length; idx++) {
       appPart = apps[idx].split(":");
-      if (appPart[0].equals(appId)) {
+      if (appPart[0].equals(appId) || appPart[1].equals(appId)) {
         return true;
       }
     }

@@ -8,70 +8,73 @@
 
 
 /*************** less *******************/
-.uiProfile {
-	padding: 10px 10px 0;
-	.uiIconGreenTick {
-		background-image: url("/eXoResources/skin/images/Icons/uiIconColor.png");
-		background-position: -80px -40px;
-	}
-
-	.uiIconGrayCircleTick {
-		background-image: url("/eXoResources/skin/images/Icons/uiIconColor.png");
-		background-position: -100px -40px;
-	}
+.uiSocApplication {
+	padding: 10px;
+	.uiProfile {
+		padding: 10px 10px 0;
+		.uiIconGreenTick {
+			background-image: url("/eXoResources/skin/images/Icons/uiIconColor.png");
+			background-position: -80px -40px;
+		}
 	
-	.uiIconEdit {
-		margin: 3px 0 0 10px;
-	}
-	
-	.form-horizontal .controls {
-		line-height: 30px;
-	}
-}
-
-.uiHeaderSection .position {
-	text-transform: capitalize;
-	margin-bottom: 10px;
-	.uiIconEdit {
-		margin: -3px 0 0 10px;
-	}
-	.titleWithBorder:after {
-		height: 14px;
-	}
-	.pull-right {
-		margin-left: 10px;
-	}
-}
-
-.uiProfile .uiSocTitleBar {
-	line-height: 35px;
-	.pull-right {
-		margin-left: 10px;
-	}
-}
-
-.uiProfile {
-	.uiContactSection .form-horizontal .control-group .controls {
-		div {
-			margin: 10px 0 0;
+		.uiIconGrayCircleTick {
+			background-image: url("/eXoResources/skin/images/Icons/uiIconColor.png");
+			background-position: -100px -40px;
 		}
 		
-		div:first-child {
-			margin-top: 0;
+		.uiIconEdit {
+			margin: 3px 0 0 10px;
+		}
+		
+		.form-horizontal .controls {
+			line-height: 30px;
 		}
 	}
 	
-	.uiExperienceSection {
-		.blockSeparator {
-			border-top: 1px solid #E6E6E6;
-	    	padding-top: 20px;
-    	}
-
-    	.currentExperience, .pastExperience {
-    		border: 1px solid #E6E6E6;
-		    border-radius: 4px 4px 4px 4px;
-		    padding: 10px 0;
-		    margin-bottom: 10px;
-    	}
+	.uiHeaderSection .position {
+		text-transform: capitalize;
+		margin-bottom: 10px;
+		.uiIconEdit {
+			margin: -3px 0 0 10px;
+		}
+		.titleWithBorder:after {
+			height: 14px;
+		}
+		.pull-right {
+			margin-left: 10px;
+		}
+	}
+	
+	.uiProfile .uiSocTitleBar {
+		line-height: 35px;
+		.pull-right {
+			margin-left: 10px;
+		}
+	}
+	
+	.uiProfile {
+		.uiContactSection .form-horizontal .control-group .controls {
+			div {
+				margin: 10px 0 0;
+			}
+			
+			div:first-child {
+				margin-top: 0;
+			}
+		}
+		
+		.uiExperienceSection {
+			.blockSeparator {
+				border-top: 1px solid @grayMediumWhiteSmoke;
+		    	padding-top: 20px;
+	    	}
+	
+	    	.currentExperience, .pastExperience {
+	    		border: 1px solid @grayMediumWhiteSmoke;
+			    border-radius: 4px 4px 4px 4px;
+			    padding: 10px 0;
+			    margin-bottom: 10px;
+	    	}
+		}
 	}
 }

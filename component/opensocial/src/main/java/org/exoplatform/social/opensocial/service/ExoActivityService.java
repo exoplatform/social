@@ -238,7 +238,7 @@ public class ExoActivityService extends ExoService implements ActivityService {
       am.saveActivityNoReturn(targetStream, exoActivity);
 
       return ImmediateFuture.newInstance(null);
-    } catch (Throwable e) {
+    } catch (Exception e) {
       if (e instanceof ProtocolException) {
         throw (ProtocolException)e;
       }

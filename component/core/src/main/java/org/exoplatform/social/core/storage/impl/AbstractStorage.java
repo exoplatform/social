@@ -19,9 +19,19 @@ package org.exoplatform.social.core.storage.impl;
 
 import java.util.Iterator;
 
+import javax.jcr.NodeIterator;
+import javax.jcr.query.Query;
+import javax.jcr.query.QueryManager;
+
 import org.chromattic.api.ChromatticSession;
+import org.chromattic.api.Status;
+import org.chromattic.core.api.ChromatticSessionImpl;
 import org.exoplatform.commons.chromattic.ChromatticManager;
+import org.exoplatform.commons.chromattic.Synchronization;
 import org.exoplatform.container.PortalContainer;
+import org.exoplatform.services.jcr.impl.core.query.QueryImpl;
+import org.exoplatform.services.log.ExoLogger;
+import org.exoplatform.services.log.Log;
 import org.exoplatform.social.common.lifecycle.SocialChromatticLifeCycle;
 import org.exoplatform.social.core.chromattic.entity.ProviderRootEntity;
 import org.exoplatform.social.core.chromattic.entity.SpaceRootEntity;
@@ -32,6 +42,8 @@ import org.exoplatform.social.core.storage.exception.NodeNotFoundException;
  * @version $Revision$
  */
 public abstract class AbstractStorage {
+  
+  private static final Log LOG = ExoLogger.getLogger(AbstractStorage.class);
 
   //
   protected final SocialChromatticLifeCycle lifeCycle;
@@ -58,21 +70,29 @@ public abstract class AbstractStorage {
   }
 
   private <T> T getRoot(String nodetypeName, Class<T> t) {
-    T got = getSession().findByPath(t, nodetypeName);
-    if (got == null) {
-      got = getSession().insert(t, nodetypeName);
+    boolean created = startSynchronization();
+    try {
+      T got = getSession().findByPath(t, nodetypeName);
+      if (got == null) {
+        got = getSession().insert(t, nodetypeName);
+      }
+      return got;
     }
-    return got;
+    finally {
+      stopSynchronization(created);
+    }
   }
 
-  protected ProviderRootEntity getProviderRoot() {
+  public ProviderRootEntity getProviderRoot() {
     if (lifeCycle.getProviderRoot().get() == null) {
       lifeCycle.getProviderRoot().set(getRoot(NODETYPE_PROVIDERS, ProviderRootEntity.class));
     }
+
     return (ProviderRootEntity) lifeCycle.getProviderRoot().get();
   }
+  
 
-  protected SpaceRootEntity getSpaceRoot() {
+  public SpaceRootEntity getSpaceRoot() {
     if (lifeCycle.getSpaceRoot().get() == null) {
       lifeCycle.getSpaceRoot().set(getRoot(NODETYPE_SPACES, SpaceRootEntity.class));
     }
@@ -115,7 +135,14 @@ public abstract class AbstractStorage {
   protected void _removeById(final Class<?> clazz, final String nodeId) {
     getSession().remove(getSession().findById(clazz, nodeId));
   }
-
+  
+  protected <T> Status getStatus(final Class<T> clazz, final Object entity) throws IllegalArgumentException {
+    if (clazz != entity.getClass()) {
+      throw new IllegalArgumentException("Entity argument is wrong.");
+    }
+    return getSession().getStatus(entity);
+  }
+  
   protected boolean isJcrProperty(String name) {
     return !name.startsWith(NS_JCR);
   }
@@ -153,6 +180,76 @@ public abstract class AbstractStorage {
       return false;
     }
   }
+  
+  protected <M> boolean _hasMixin(Object o, Class<M> mixinType) {
+    M mixin = getSession().getEmbedded(o, mixinType);
+    return mixin != null;
+  }
+  
+  /**
+   * Gets NodeIterator with Statement with offset and limit
+   * 
+   * @param statement
+   * @param offset
+   * @param limit
+   * @return
+   * @throws Exception
+   */
+  protected NodeIterator nodes(String statement) {
+    //
+    if (statement == null) return null;
+    
+    //
+    try {
+      QueryManager queryMgr = getSession().getJCRSession().getWorkspace().getQueryManager();
+      Query query = queryMgr.createQuery(statement, Query.SQL);
+      if (query instanceof QueryImpl) {
+        QueryImpl impl = (QueryImpl) query;
+        
+        return impl.execute().getNodes();
+      }
+      
+      //
+      return query.execute().getNodes();
+    } catch (Exception ex) {
+      LOG.error("Query is failed!.", ex);
+      return null;
+    }
+  }
+  
+  /**
+   * Gets NodeIterator with Statement with offset and limit
+   * 
+   * @param statement
+   * @param offset
+   * @param limit
+   * @return
+   * @throws Exception
+   */
+  protected NodeIterator nodes(String statement, long offset, long limit) {
+    //
+    if (statement == null) return null;
+    
+    //
+    try {
+      QueryManager queryMgr = getSession().getJCRSession().getWorkspace().getQueryManager();
+      Query query = queryMgr.createQuery(statement, Query.SQL);
+      if (query instanceof QueryImpl) {
+        QueryImpl impl = (QueryImpl) query;
+        
+        //
+        impl.setOffset(offset);
+        impl.setLimit(limit);
+        
+        return impl.execute().getNodes();
+      }
+      
+      //
+      return query.execute().getNodes();
+    } catch (Exception ex) {
+      return null;
+    }
+  }
 
   public static boolean startSynchronization() {
 
@@ -173,7 +270,7 @@ public abstract class AbstractStorage {
     }
   }
 
-  private static SocialChromatticLifeCycle lifecycleLookup() {
+  public static SocialChromatticLifeCycle lifecycleLookup() {
 
     PortalContainer container = PortalContainer.getInstance();
     ChromatticManager manager = (ChromatticManager) container.getComponentInstanceOfType(ChromatticManager.class);

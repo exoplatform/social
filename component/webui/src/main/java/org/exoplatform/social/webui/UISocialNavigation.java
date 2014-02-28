@@ -208,12 +208,12 @@ public class UISocialNavigation extends UIComponent {
         uiNavigation.selectedParent_ = selectNav;
       else
         uiNavigation.selectedParent_ = userPortal.resolvePath(selectNav, null, parentUri);
-      UIPageBody uiPageBody = uiPortal.findFirstComponentOfType(UIPageBody.class);
-      if (uiPageBody != null) {
-        if (uiPageBody.getMaximizedUIComponent() != null) {
-          UIPortlet currentPortlet = (UIPortlet) uiPageBody.getMaximizedUIComponent();
-          currentPortlet.setCurrentWindowState(WindowState.NORMAL);
-          uiPageBody.setMaximizedUIComponent(null);
+        UIPageBody uiPageBody = uiPortal.findFirstComponentOfType(UIPageBody.class);
+        if (uiPageBody != null) {
+            if (uiPageBody.getMaximizedUIComponent() != null) {
+                UIPortlet currentPortlet = (UIPortlet) uiPageBody.getMaximizedUIComponent();
+                currentPortlet.setCurrentWindowState(WindowState.NORMAL);
+                uiPageBody.setMaximizedUIComponent(null);
         }
       }
       PageNodeEvent<UIPortal> pnevent;

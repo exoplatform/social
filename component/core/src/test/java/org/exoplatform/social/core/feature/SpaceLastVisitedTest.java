@@ -105,7 +105,7 @@ public class SpaceLastVisitedTest extends AbstractCoreTest {
     spaces = spaceService.getLastAccessedSpace("mary", "app1", 0, 5);
     assertEquals(5, spaces.size());
     Space got = spaces.get(0);
-    assertEquals("space_4", got.getPrettyName());
+    assertEquals("space_1", got.getPrettyName());
     
     //
     Space space2 = spaceService.getSpaceByPrettyName("space_2");
@@ -114,8 +114,7 @@ public class SpaceLastVisitedTest extends AbstractCoreTest {
     spaces = spaceService.getLastAccessedSpace("mary", "app1", 0, 5);
     assertEquals(5, spaces.size());
     got = spaces.get(0);
-    assertEquals("space_2", got.getPrettyName());
-    
+    assertEquals("space_1", got.getPrettyName());
     
   }
   
@@ -139,7 +138,7 @@ public class SpaceLastVisitedTest extends AbstractCoreTest {
     spaces = spaceService.getLastAccessedSpace("mary", null, 0, 5);
     assertEquals(5, spaces.size());
     Space got = spaces.get(0);
-    assertEquals("space_4", got.getPrettyName());
+    assertEquals("space_0", got.getPrettyName());
   }
   
   public void testGet10SpaceLastVisitedAppId() throws Exception {
@@ -155,7 +154,7 @@ public class SpaceLastVisitedTest extends AbstractCoreTest {
     
     assertEquals(5, spaces.size());
     Space got = spaces.get(0);
-    assertEquals("space_9", got.getPrettyName());
+    assertEquals("space_4", got.getPrettyName());
     
     //
     Space space2 = spaceService.getSpaceByPrettyName("space_2");
@@ -164,7 +163,7 @@ public class SpaceLastVisitedTest extends AbstractCoreTest {
     spaces = spaceService.getLastAccessedSpace("mary", "app4", 0, 5);
     assertEquals(5, spaces.size());
     got = spaces.get(0);
-    assertEquals("space_9", got.getPrettyName());
+    assertEquals("space_4", got.getPrettyName());
   }
   
   /**

@@ -74,7 +74,6 @@
 <div class="uiPendingRelation" id="$uicomponent.id">
   	<% uicomponent.renderChild(UIProfileUserSearch.class); %>
   
-	  <% if (uicomponent.isHasPeopleTab()) {%>
 	  <div class="uiTabNormal uiTabInPage">
 	     <ul class="nav nav-tabs">
 	          <li><a href='$allPeopleURL'>$labelEveryone</a></li>
@@ -91,7 +90,7 @@
 	            <div class="result clearfix"><span class="number"><%=uicomponent.peopleNum; %></span><%=_ctx.appRes(uicomponent.getId() + ".label.DisplayInOrderOfAlphabet")%></div>
 	            <ul class="letterList"> 
 	                 <li>
-	                 <% if ((selectedStartChar != null) && (selectedStartChar == "All")) { %>
+	                 <% if (selectedStartChar == null || selectedStartChar == "All") { %>
 	                            <a href="#$searchAll" id="searchAll" class="selected" onclick="<%=uicomponent.event("Search", ""+"All")%>">$searchAll</a>
 	                 <%} else {%>
 	                            <a href="#$searchAll" id="searchAll" onclick="<%=uicomponent.event("Search", ""+"All")%>">$searchAll</a>
@@ -131,7 +130,7 @@
       %>
       
 		    <div class="spaceBox pull-left">
-          <a class="avatarXLarge pull-left">
+          <a href="${profileURL}" class="avatarXLarge pull-left">
             <img rel="tooltip" data-placement="bottom" title="${fullName}" src="$imageSource"/>
           </a>
 			    <div class="contentBox">
@@ -169,8 +168,5 @@
   <%  }	%>
   </div>
   </div>
-	  </div>
-	  <% } %>
-	  
-	 
+ </div>
 </div>

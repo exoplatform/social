@@ -30,6 +30,7 @@ import org.exoplatform.services.log.Log;
 import org.exoplatform.social.common.RealtimeListAccess;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.activity.model.ExoSocialActivityImpl;
+import org.exoplatform.social.core.application.SpaceActivityPublisher;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
@@ -402,7 +403,7 @@ public class BaseUIActivity extends UIForm {
 
   protected void saveComment(String remoteUser, String message) throws Exception {
     ExoSocialActivity comment = new ExoSocialActivityImpl(Utils.getViewerIdentity().getId(),
-            SpaceService.SPACES_APP_ID, message, null);
+                                                          SpaceActivityPublisher.SPACE_APP_ID, message, null);
     Utils.getActivityManager().saveComment(getActivity(), comment);
     activityCommentsListAccess = Utils.getActivityManager().getCommentsWithListAccess(getActivity());
     comments = activityCommentsListAccess.loadAsList(0, DEFAULT_LIMIT);
@@ -410,7 +411,7 @@ public class BaseUIActivity extends UIForm {
     setCommentListStatus(CommentStatus.ALL);
   }
 
-  protected void setLike(boolean isLiked, String remoteUser) throws Exception {
+  protected void setLike(boolean isLiked) throws Exception {
     Identity viewerIdentity = Utils.getViewerIdentity();
     activity.setBody(null);
     activity.setTitle(null);
@@ -619,7 +620,7 @@ public class BaseUIActivity extends UIForm {
       event.getRequestContext().addUIComponentToUpdateByAjax(uiActivity);
       
       JavascriptManager jm = event.getRequestContext().getJavascriptManager();
-      jm.require("SHARED/social-ui-activity", "activity").addScripts("activity.loadLikes();");
+      jm.require("SHARED/social-ui-activity", "activity").addScripts("activity.loadLikes('#ContextBox" + activityId + "');");
       
       Utils.initUserProfilePopup(uiActivity.getId());
       Utils.resizeHomePage();
@@ -637,8 +638,11 @@ public class BaseUIActivity extends UIForm {
       uiActivity.refresh();
       WebuiRequestContext requestContext = event.getRequestContext();
       String isLikedStr = requestContext.getRequestParameter(OBJECTID);
-      boolean isLiked = Boolean.parseBoolean(isLikedStr);
-      uiActivity.setLike(isLiked, requestContext.getRemoteUser());
+      uiActivity.setLike(Boolean.parseBoolean(isLikedStr));
+      //
+      JavascriptManager jm = requestContext.getJavascriptManager();
+      jm.require("SHARED/social-ui-activity", "activity").addScripts("activity.displayLike('#ContextBox" + activityId + "');");      
+      
       requestContext.addUIComponentToUpdateByAjax(uiActivity);
       
       Utils.initUserProfilePopup(uiActivity.getId());
@@ -672,17 +676,17 @@ public class BaseUIActivity extends UIForm {
       
       //
       String inputContainerId = "InputContainer" + activityId;
-      StringBuffer script = new StringBuffer("$(function() {");
+      StringBuffer script = new StringBuffer("(function($) {");
       script.append("var inputContainer = $('#").append(inputContainerId).append("');");
       script.append("inputContainer.addClass('inputContainerShow').show();");
-      script.append("});");
+      script.append("})(jq);");
       
       JavascriptManager jm = event.getRequestContext().getJavascriptManager();
       
       Utils.initUserProfilePopup(uiActivity.getId());
       Utils.resizeHomePage();
       
-      jm.addJavascript(script.toString());
+      jm.require("SHARED/jquery", "jq").addScripts(script.toString());
     }
   }
 
@@ -750,10 +754,10 @@ public class BaseUIActivity extends UIForm {
       if (activitiesContainer.getActivityList().size() == 0) {
         event.getRequestContext().addUIComponentToUpdateByAjax(activitiesContainer.getParent().getParent());
       } else {
-        event.getRequestContext().addUIComponentToUpdateByAjax(activitiesContainer);
+        event.getRequestContext().addUIComponentToUpdateByAjax(activitiesContainer.getParent());
       }
       
-      Utils.initUserProfilePopup(uiActivity.getId());
+      Utils.clearUserProfilePopup();
       Utils.resizeHomePage();
     }
 
@@ -765,7 +769,9 @@ public class BaseUIActivity extends UIForm {
     public void execute(Event<BaseUIActivity> event) throws Exception {
       BaseUIActivity uiActivity = event.getSource();
       String activityId = uiActivity.getActivity().getId();
-      if (uiActivity.isNoLongerExisting(activityId, event)) {
+      String commentId = event.getRequestContext().getRequestParameter(OBJECTID);
+      if (uiActivity.isNoLongerExisting(activityId, event) || 
+          uiActivity.isNoLongerExisting(commentId, event)) {
         return;
       }
       WebuiRequestContext requestContext = event.getRequestContext();
