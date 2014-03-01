@@ -53,7 +53,7 @@ import org.exoplatform.webui.event.EventListener;
 
 @ComponentConfigs({
   @ComponentConfig(
-    template = "classpath:groovy/social/webui/space/UISpaceNavigationManagement.gtmpl",
+    template = "war:/groovy/social/webui/space/UISpaceNavigationManagement.gtmpl",
     events = {
       @EventConfig(listeners = UISpaceNavigationManagement.AddRootNodeActionListener.class),
       @EventConfig(listeners = UISpaceNavigationManagement.AddNodeActionListener.class),

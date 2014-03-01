@@ -39,12 +39,12 @@ import org.exoplatform.webui.event.EventListener;
 
 @ComponentConfigs({
   @ComponentConfig(
-    template = "classpath:groovy/social/webui/space/UISpaceSetting.gtmpl"
+    template = "war:/groovy/social/webui/space/UISpaceSetting.gtmpl"
   ),
   @ComponentConfig(
     type = UITabPane.class,
     id = "UISpaceSettingTabPane",
-    template = "classpath:groovy/social/webui/space/UISpaceSettingPane.gtmpl",
+    template = "war:/groovy/social/webui/space/UISpaceSettingPane.gtmpl",
     events = { @EventConfig(listeners = UITabPane.SelectTabActionListener.class) })
   })
 public class UISpaceSetting extends UIContainer {

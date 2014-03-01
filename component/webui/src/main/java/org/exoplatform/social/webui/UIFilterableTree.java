@@ -25,7 +25,7 @@ import org.exoplatform.webui.config.annotation.EventConfig;
 import org.exoplatform.webui.core.UITree;
 
 @ComponentConfig(
-  template = "classpath:groovy/social/webui/UIFilterableTree.gtmpl",
+  template = "war:/groovy/social/webui/UIFilterableTree.gtmpl",
   events = @EventConfig(listeners = UITree.ChangeNodeActionListener.class)
 )
 @Serialized

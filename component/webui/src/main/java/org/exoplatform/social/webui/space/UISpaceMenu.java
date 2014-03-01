@@ -48,7 +48,7 @@ import org.exoplatform.webui.event.EventListener;
 
 
 @ComponentConfig(
-  template = "classpath:groovy/social/webui/space/UISpaceMenu.gtmpl",
+  template = "war:/groovy/social/webui/space/UISpaceMenu.gtmpl",
   events = {
     @EventConfig(name = "RenameSpaceAppName", listeners = UISpaceMenu.RenameSpaceAppNameActionListener.class)
   }

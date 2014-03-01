@@ -38,7 +38,7 @@ import org.exoplatform.webui.form.input.UICheckBoxInput;
 
 @ComponentConfigs({
   @ComponentConfig(
-    template = "classpath:groovy/social/webui/space/UISpaceGroupBound.gtmpl",
+    template = "war:/groovy/social/webui/space/UISpaceGroupBound.gtmpl",
     events = {@EventConfig(listeners = UISpaceGroupBound.SelectGroupActionListener.class, phase=Phase.DECODE) }
   ),
   @ComponentConfig(

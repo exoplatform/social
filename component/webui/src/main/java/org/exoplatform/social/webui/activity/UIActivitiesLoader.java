@@ -44,7 +44,7 @@ import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.event.EventListener;
 
 @ComponentConfig(
-  template = "classpath:groovy/social/webui/activity/UIActivitiesLoader.gtmpl",
+  template = "war:/groovy/social/webui/activity/UIActivitiesLoader.gtmpl",
   events = {
     @EventConfig(listeners = UIActivitiesLoader.LoadMoreActionListener.class)
   }

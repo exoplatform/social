@@ -59,7 +59,7 @@ import org.exoplatform.webui.form.UIFormStringInput;
  * @copyright eXo Platform SAS
  */
 @ComponentConfig(
-  template = "classpath:groovy/social/plugin/link/UILinkActivityComposer.gtmpl",
+  template = "war:/groovy/social/plugin/link/UILinkActivityComposer.gtmpl",
   events = {
     @EventConfig(listeners = UILinkActivityComposer.AttachActionListener.class),
     @EventConfig(listeners = UILinkActivityComposer.ChangeLinkContentActionListener.class),

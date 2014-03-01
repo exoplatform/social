@@ -30,7 +30,7 @@ import org.exoplatform.webui.form.UIFormRadioBoxInput;
 
 
 @ComponentConfig(
-  template = "classpath:groovy/social/webui/space/UIVisibilityFormInputSet.gtmpl"
+  template = "war:/groovy/social/webui/space/UIVisibilityFormInputSet.gtmpl"
 )
 public class UISpaceVisibility extends UIFormInputSet {
   public static final String UI_SPACE_VISIBILITY   = "UIVisibility";

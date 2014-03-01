@@ -23,7 +23,7 @@ import org.exoplatform.webui.core.lifecycle.UIFormLifecycle;
 
 @ComponentConfig(
    lifecycle = UIFormLifecycle.class,
-   template = "classpath:groovy/social/plugin/link/UILinkActivity.gtmpl",
+   template = "war:/groovy/social/plugin/link/UILinkActivity.gtmpl",
    events = {
      @EventConfig(listeners = BaseUIActivity.LoadLikesActionListener.class),
      @EventConfig(listeners = BaseUIActivity.ToggleDisplayCommentFormActionListener.class),

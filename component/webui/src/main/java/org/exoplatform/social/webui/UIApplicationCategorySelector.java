@@ -39,7 +39,7 @@ import org.exoplatform.webui.event.EventListener;
  * @since  Jan 17, 2012
  */
 @ComponentConfig(
- template = "classpath:groovy/social/webui/UIApplicationCategorySelector.gtmpl",
+ template = "war:/groovy/social/webui/UIApplicationCategorySelector.gtmpl",
  events = {
    @EventConfig(listeners = SelectActionListener.class)
  }

@@ -41,7 +41,7 @@ import org.exoplatform.webui.form.validator.UserConfigurableValidator;
 
 @ComponentConfig(
   lifecycle = UIFormLifecycle.class,
-  template = "classpath:groovy/social/webui/profile/UIHeaderSection.gtmpl",
+  template = "war:/groovy/social/webui/profile/UIHeaderSection.gtmpl",
   events = {
     @EventConfig(listeners = UIHeaderSection.AddContactActionListener.class, phase = Phase.DECODE),
     @EventConfig(listeners = UIHeaderSection.AcceptContactActionListener.class, phase = Phase.DECODE),

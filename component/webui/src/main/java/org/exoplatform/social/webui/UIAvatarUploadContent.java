@@ -36,7 +36,7 @@ import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.event.EventListener;
 
 @ComponentConfig(
-  template = "classpath:groovy/social/webui/UIAvatarUploadContent.gtmpl",
+  template = "war:/groovy/social/webui/UIAvatarUploadContent.gtmpl",
   events = {
     @EventConfig(listeners = UIAvatarUploadContent.SaveActionListener.class),
     @EventConfig(listeners = UIAvatarUploadContent.CancelActionListener.class)
