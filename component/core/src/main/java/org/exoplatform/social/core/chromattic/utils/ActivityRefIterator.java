@@ -92,7 +92,7 @@ public class ActivityRefIterator implements Iterator<ActivityRef> {
       dayIterator = monthIterator.next().getDays().values().iterator();
       nothing = false;
       if (dayIterator.hasNext()) {
-        entityIterator = dayIterator.next().getActivityRefs().values().iterator();
+        entityIterator = orderRefs();
         if (entityIterator.hasNext()) {
           return true;
         }
