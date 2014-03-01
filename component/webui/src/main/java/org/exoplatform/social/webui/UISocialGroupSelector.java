@@ -46,7 +46,7 @@ import org.exoplatform.webui.form.UIForm;
 
 @ComponentConfigs({
   @ComponentConfig(
-    template = "classpath:groovy/social/webui/space/UISocialGroupSelector.gtmpl",
+    template = "war:/groovy/social/webui/space/UISocialGroupSelector.gtmpl",
     events = {
       @EventConfig(phase = Phase.DECODE, listeners = UISocialGroupSelector.ChangeNodeActionListener.class),
       @EventConfig(phase = Phase.DECODE, listeners = UISocialGroupSelector.SelectGroupActionListener.class),
@@ -56,7 +56,7 @@ import org.exoplatform.webui.form.UIForm;
    @ComponentConfig(
      type = UIFilterableTree.class,
      id = "UITreeGroupSelector",
-     template = "classpath:groovy/social/webui/UIFilterableTree.gtmpl",
+     template = "war:/groovy/social/webui/UIFilterableTree.gtmpl",
      events = @EventConfig(listeners = UIFilterableTree.ChangeNodeActionListener.class, phase = Phase.DECODE)
    ),
    @ComponentConfig(

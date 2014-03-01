@@ -40,7 +40,7 @@ import org.exoplatform.webui.core.UIPortletApplication;
  * @since Apr 12, 2010
  */
 @ComponentConfig(
-  template = "classpath:groovy/social/webui/UIActivitiesContainer.gtmpl"
+  template = "war:/groovy/social/webui/UIActivitiesContainer.gtmpl"
 )
 public class UIActivitiesContainer extends UIContainer {
   private static final Log LOG = ExoLogger.getLogger(UIActivitiesContainer.class);
