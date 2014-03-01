@@ -35,7 +35,7 @@ import org.exoplatform.webui.core.UIContainer;
  */
 
 @ComponentConfig(
-  template = "classpath:groovy/social/webui/profile/UIProfile.gtmpl"
+  template = "war:/groovy/social/webui/profile/UIProfile.gtmpl"
 )
 public class UIProfile extends UIContainer {
 

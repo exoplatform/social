@@ -49,7 +49,7 @@ import org.exoplatform.webui.form.UIForm;
 
 @ComponentConfig(
   lifecycle = UIFormLifecycle.class,
-  template =  "classpath:groovy/social/webui/space/UISpaceApplication.gtmpl",
+  template =  "war:/groovy/social/webui/space/UISpaceApplication.gtmpl",
   events = {
     @EventConfig(listeners = UISpaceApplication.AddApplicationActionListener.class),
     @EventConfig(listeners = UISpaceApplication.RemoveApplicationActionListener.class),

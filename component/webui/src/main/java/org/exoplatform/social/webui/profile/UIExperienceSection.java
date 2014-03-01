@@ -60,7 +60,7 @@ import org.exoplatform.webui.form.validator.UserConfigurableValidator;
 @ComponentConfigs({
   @ComponentConfig(
     lifecycle = UIFormLifecycle.class,
-    template =  "classpath:groovy/social/webui/profile/UIExperienceSection.gtmpl",
+    template =  "war:/groovy/social/webui/profile/UIExperienceSection.gtmpl",
     events = {
       @EventConfig(listeners = UIExperienceSection.EditActionListener.class, phase=Phase.DECODE),
       @EventConfig(listeners = UIExperienceSection.SaveActionListener.class),

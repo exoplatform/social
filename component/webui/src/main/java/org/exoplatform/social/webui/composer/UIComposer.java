@@ -41,7 +41,7 @@ import org.exoplatform.webui.form.UIFormTextAreaInput;
  */
 @ComponentConfig(
   lifecycle = UIFormLifecycle.class,
-  template = "classpath:groovy/social/webui/composer/UIComposer.gtmpl",
+  template = "war:/groovy/social/webui/composer/UIComposer.gtmpl",
   events = {
     @EventConfig(listeners = UIComposer.PostMessageActionListener.class)
   }

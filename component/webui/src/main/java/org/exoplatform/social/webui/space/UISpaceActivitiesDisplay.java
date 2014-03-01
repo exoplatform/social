@@ -37,7 +37,7 @@ import org.exoplatform.webui.config.annotation.ComponentConfig;
  * @copyright eXo Platform SAS
  */
 @ComponentConfig(
-  template = "classpath:groovy/social/webui/space/UISpaceActivitiesDisplay.gtmpl"
+  template = "war:/groovy/social/webui/space/UISpaceActivitiesDisplay.gtmpl"
 )
 public class UISpaceActivitiesDisplay extends UIContainer {
   static private final Log LOG = ExoLogger.getLogger(UISpaceActivitiesDisplay.class);

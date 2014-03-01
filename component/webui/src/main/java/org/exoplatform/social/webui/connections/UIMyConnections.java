@@ -43,7 +43,7 @@ import org.exoplatform.webui.form.UIFormStringInput;
 
 @ComponentConfigs({
   @ComponentConfig(
-    template =  "classpath:groovy/social/webui/connections/UIMyConnections.gtmpl",
+    template =  "war:/groovy/social/webui/connections/UIMyConnections.gtmpl",
     events = {
       @EventConfig(listeners = UIMyConnections.RemoveConnectionActionListener.class),
       @EventConfig(listeners = UIMyConnections.SearchActionListener.class),
