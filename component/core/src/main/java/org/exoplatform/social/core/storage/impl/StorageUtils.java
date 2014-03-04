@@ -86,7 +86,7 @@ public class StorageUtils {
       );
     }
 	
-	if (company.length() != 0) {
+    if (company.length() != 0) {
       whereExpression.and().like(
           whereExpression.callFunction(QueryFunction.LOWER, ProfileEntity.organizations),
           PERCENT_STR + company.toLowerCase() + PERCENT_STR
