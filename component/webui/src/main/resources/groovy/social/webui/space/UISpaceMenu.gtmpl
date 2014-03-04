@@ -106,7 +106,11 @@
     if ( node.getPageRef() != null ) {
       appName = node.getPageRef().getName();
       if ( appName != null) {
-        nodeTitle= _ctx.appRes(appName + ".label.name");
+        try {
+          nodeTitle= _ctx.getRequestContext().getApplicationResourceBundle().getString(appName + ".label.name");
+        } catch (MissingResourceException ex) {
+          // Do thing, use default value instead
+        }
       }
     }   
     def nodeLabel = getFitString(nodeTitle, 15);
