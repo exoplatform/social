@@ -272,7 +272,7 @@
                           def type = it.get(key);
 
                       %>
-                      <div><%=type%>:&nbsp;<%=im%></div>
+                      <div><%=_ctx.appRes(uicomponent.getId() + ".label." + type)%>:&nbsp;<%=im%></div>
                       <%}
                      } else { %>
                        $noImsLabel
@@ -291,7 +291,7 @@
                     def type = it.get(key);
 
                     %>
-                    <div><%=type%>:&nbsp;<%=im%></div>
+                    <div><%=_ctx.appRes(uicomponent.getId() + ".label." + type)%>:&nbsp;<%=im%></div>
                  <%	} %>
               </div>
             </div>
