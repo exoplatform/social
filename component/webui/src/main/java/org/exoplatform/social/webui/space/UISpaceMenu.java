@@ -19,7 +19,6 @@ package org.exoplatform.social.webui.space;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.MissingResourceException;
 
 import org.exoplatform.application.registry.Application;
 import org.exoplatform.portal.application.PortalRequestContext;
