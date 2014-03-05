@@ -22,7 +22,6 @@ import java.util.List;
 import java.util.MissingResourceException;
 
 import org.exoplatform.application.registry.Application;
-import org.exoplatform.commons.utils.PropertyManager;
 import org.exoplatform.portal.application.PortalRequestContext;
 import org.exoplatform.portal.config.DataStorage;
 import org.exoplatform.portal.config.model.Page;
@@ -154,17 +153,7 @@ public class UISpaceMenu extends UIContainer {
     
     return DEFAULT_APP_ID;
   }
-  public String appRes (String msgKey) {
-    WebuiRequestContext context = WebuiRequestContext.getCurrentInstance();
-    try {
-      return context.getApplicationResourceBundle().getString(msgKey);
-    } catch (MissingResourceException ex) {
-      if (PropertyManager.isDevelopping()) {
-        ExoLogger.getLogger("portal:WebuiBindingContext").warn("Can not find resource bundle for key : " + msgKey);
-      }
-      return null;
-    }    
-  }
+
   /**
    * Renames space application name.<br> - Gets selected node and selected page navigation.<br> -
    * Changes selected node information.<br> - Updates new information for selected page

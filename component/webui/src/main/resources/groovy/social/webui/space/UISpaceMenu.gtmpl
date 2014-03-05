@@ -106,7 +106,7 @@
     if ( node.getPageRef() != null ) {
       appName = node.getPageRef().getName();
       if ( appName != null) {
-        def appLabelFromResourceBundle = uicomponent.appRes(appName + ".label.name");
+        def appLabelFromResourceBundle = org.exoplatform.social.webui.Utils.appRes(appName + ".label.name");
         if (appLabelFromResourceBundle != null) nodeTitle = appLabelFromResourceBundle;
       }
     }   

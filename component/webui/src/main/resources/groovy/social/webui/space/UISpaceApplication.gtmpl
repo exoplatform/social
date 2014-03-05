@@ -49,7 +49,7 @@
          def applicationIconTitle = _ctx.appRes("${uicomponentId}.title.ApplicationIcon");
          appNameIco = appId.split(":")[0];
          if (appNameIco != null) {
-           def appLabelFromResourceBundle = uicomponent.appRes(appNameIco + ".label.name");
+           def appLabelFromResourceBundle = org.exoplatform.social.webui.Utils.appRes(appNameIco + ".label.name");
            if (appLabelFromResourceBundle != null) appLabel = appLabelFromResourceBundle;
          }          
   %>
