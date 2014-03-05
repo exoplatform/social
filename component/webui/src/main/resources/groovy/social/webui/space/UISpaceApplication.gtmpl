@@ -49,11 +49,8 @@
          def applicationIconTitle = _ctx.appRes("${uicomponentId}.title.ApplicationIcon");
          appNameIco = appId.split(":")[0];
          if (appNameIco != null) {
-           try {
-             appLabel = _ctx.getRequestContext().getApplicationResourceBundle().getString(appNameIco + ".label.name");
-           } catch (MissingResourceException ex) {
-             // Do thing, use default value instead
-           }
+           def appLabelFromResourceBundle = uicomponent.appRes(appNameIco + ".label.name");
+           if (appLabelFromResourceBundle != null) appLabel = appLabelFromResourceBundle;
          }          
   %>
     <div class="contentSpace pull-left clearfix">

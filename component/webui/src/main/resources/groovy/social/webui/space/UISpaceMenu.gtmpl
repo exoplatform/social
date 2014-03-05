@@ -106,11 +106,8 @@
     if ( node.getPageRef() != null ) {
       appName = node.getPageRef().getName();
       if ( appName != null) {
-        try {
-          nodeTitle= _ctx.getRequestContext().getApplicationResourceBundle().getString(appName + ".label.name");
-        } catch (MissingResourceException ex) {
-          // Do thing, use default value instead
-        }
+        def appLabelFromResourceBundle = uicomponent.appRes(appName + ".label.name");
+        if (appLabelFromResourceBundle != null) nodeTitle = appLabelFromResourceBundle;
       }
     }   
     def nodeLabel = getFitString(nodeTitle, 15);

@@ -23,11 +23,13 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.MissingResourceException;
 
 import org.exoplatform.application.registry.Application;
 import org.exoplatform.application.registry.ApplicationCategory;
 import org.exoplatform.commons.utils.ObjectPageList;
 import org.exoplatform.commons.utils.PageList;
+import org.exoplatform.commons.utils.PropertyManager;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.space.SpaceUtils;
@@ -255,6 +257,18 @@ public class UISpaceApplication extends UIForm {
     }
     
     return null;
+  }
+  
+  public String appRes (String msgKey) {
+    WebuiRequestContext context = WebuiRequestContext.getCurrentInstance();
+    try {
+      return context.getApplicationResourceBundle().getString(msgKey);
+    } catch (MissingResourceException ex) {
+      if (PropertyManager.isDevelopping()) {
+        ExoLogger.getLogger("portal:WebuiBindingContext").warn("Can not find resource bundle for key : " + msgKey);
+      }
+      return null;
+    }    
   }
 
   /**
