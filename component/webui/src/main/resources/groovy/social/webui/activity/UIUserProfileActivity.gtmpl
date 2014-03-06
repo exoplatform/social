@@ -363,7 +363,7 @@
 			</div> <!--end commentlist-->
 			<div class="commentList inputContainer" id="InputContainer${activity.id}">
 			<%
-			  def currentCommenterIdentity = Utils.getOwnerIdentity();
+			  def currentCommenterIdentity = Utils.getViewerIdentity();
 			  def currentCommenterUri = LinkProvider.getUserProfileUri(currentCommenterIdentity.getRemoteId());
 			  def currentCommenterAvatar = currentCommenterIdentity.profile.avatarUrl;
 			  def currentCommenterName = currentCommenterIdentity.profile.fullName;
