@@ -23,7 +23,9 @@
 		}
 		
 		.uiIconEdit {
-			margin: 3px 0 0 10px;
+			margin: 0px 0 0 10px;
+			line-height: 20px;
+			vertical-align: baseline;
 		}
 		
 		.form-horizontal .controls {
@@ -43,12 +45,26 @@
 		.pull-right {
 			margin-left: 10px;
 		}
+		.positionTitle {
+			float: left;
+			+ a {
+				vertical-align: middle;
+			}
+		}
 	}
 	
 	.uiProfile .uiSocTitleBar {
 		line-height: 35px;
 		.pull-right {
 			margin-left: 10px;
+		}
+		.nameTitle {
+			float: left;
+			+ a {
+				display: inline-block;
+				line-height: 21px;
+				vertical-align: middle;
+			}
 		}
 	}
 	
