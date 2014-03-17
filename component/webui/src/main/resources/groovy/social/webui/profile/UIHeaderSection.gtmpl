@@ -93,7 +93,7 @@
   
   <div class="position">
       <% if(!isEdit) { %>
-            <%=position %><% if(isEditable) { %> <a href="<%=uicomponent.event("Edit", "" + !isEdit)%>"><i class="uiIconEdit"></i></a> <% } %>
+            <span class="positionTitle"><%=position %></span><% if(isEditable) { %> <a href="<%=uicomponent.event("Edit", "" + !isEdit)%>"><i class="uiIconEdit"></i></a> <% } %>
       <% } else {
             if (isEditable) { %>
               <%uicomponent.setValue();%>

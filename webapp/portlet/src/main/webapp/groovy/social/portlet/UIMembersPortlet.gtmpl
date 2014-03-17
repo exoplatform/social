@@ -31,7 +31,6 @@
     def managerList = uicomponent.getManagerList();
     
     def uicomponentId = uicomponent.getId()
-    def adminLabel = _ctx.appRes("${uicomponentId}.label.Admin")
     def administratorLabel = _ctx.appRes("${uicomponentId}.label.Administrator")
     def spaceMemberLabel = _ctx.appRes("${uicomponentId}.label.SpaceMember")
     def space = uicomponent.getSpace();
@@ -129,13 +128,12 @@
       <% uicomponent.renderChild(UIProfileUserSearch.class); %>
       <div class="memberList spaceMemberListBox clearfix">
          <h4 class="titleWithBorder">$contactsDirectory</h4>
-          <% if(memberList.size() > 0)  { %>
             <!--div class="DirectoryNormalBox"-->
             <div class="uiFilterList">
                 <div class="result clearfix"><span class="number"><%=uicomponent.memberNum; %></span><%=_ctx.appRes(uicomponent.getId() + ".label.DisplayInOrderOfAlphabet")%></div>
                 <ul class="letterList"> 
                      <li>
-                     <% if ((selectedStartChar != null) && (selectedStartChar == "All")) { %>
+                     <% if (selectedStartChar == null || selectedStartChar == "All") { %>
                                 <a href="#$searchAll" id="searchAll" class="selected" onclick="<%=uicomponent.event("Search", ""+"All")%>">$searchAll</a>
                      <%} else {%>
                                 <a href="#$searchAll" id="searchAll" onclick="<%=uicomponent.event("Search", ""+"All")%>">$searchAll</a>
@@ -153,7 +151,7 @@
                      <% } %>
                </ul>
           </div>
-      <% 
+      <% if(memberList.size() > 0) { 
         for(user in memberList) {
           def memberUserName = user.getProfile().getFullName();
           position = user.getProfile().position;
@@ -213,13 +211,7 @@
           <% } %>
         </div>
         <% }
-      } else { %>
-        <!-- NEED TO BE ADD CODE HERE INSTEAD OF STATIC TEXT  
-            <div class="noneContentSpace"><%=_ctx.appRes(uicomponent.getId() + ".label.NotMemberYet")%></div>-->
-        <div class="uiFilterList">
-            <div class="result clearfix"><span class="number">0 </span><%=_ctx.appRes(uicomponent.getId() + ".label.NoneResultFound")%></div>
-        </div>
-      <% } %>
+      } %>
        </div>
        <% if(uicomponent.isEnableLoadNext()) { %>
          <div id="LoadMoreButton" class="btn" onclick="<%=uicomponent.event('LoadMoreMember')%>" >

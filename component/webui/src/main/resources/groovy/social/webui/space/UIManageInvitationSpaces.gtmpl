@@ -1,154 +1,143 @@
 <%
-  import org.exoplatform.social.webui.Utils
-  import org.exoplatform.portal.webui.util.Util
-  import org.exoplatform.social.core.space.model.Space
-  import org.exoplatform.social.core.space.SpaceUtils
-  import org.exoplatform.social.webui.space.UIManageMySpaces
-  import org.exoplatform.social.webui.space.UISpaceSearch
-  import org.exoplatform.social.core.service.LinkProvider;
+	import org.exoplatform.social.webui.Utils
+	import org.exoplatform.portal.webui.util.Util
+	import org.exoplatform.social.core.space.model.Space
+	import org.exoplatform.social.core.space.SpaceUtils
+	import org.exoplatform.social.webui.space.UIManageMySpaces
+	import org.exoplatform.social.webui.space.UISpaceSearch
+	import org.exoplatform.social.core.service.LinkProvider;
 
-  def uicomponentId = uicomponent.id;
-  
-  def labelActionLeaveSpace = _ctx.appRes("${uicomponentId}.label.action_leave_space");
-  def acceptSpaceActionLabel = _ctx.appRes("${uicomponentId}.label.accept_invitation");
-  def iconImgLabel = _ctx.appRes("${uicomponentId}.label.received_invitation_to_join_space");
-  def ignoreSpaceActionLabel = _ctx.appRes("${uicomponentId}.label.ignore_invitation");
-  def labelMembers = _ctx.appRes("${uicomponentId}.label.Members");
-  def mySpaceIdx = 0;
-  def style="display:none;";
-  
-  def labelShowMoreSpace = _ctx.appRes("${uicomponentId}.label.Show_More");
-  def fieldLabelMembers = _ctx.appRes("${uicomponentId}.label.members");
-  def spacesFoundLabel = _ctx.appRes("${uicomponentId}.label.SpaceListing");
-  
-  if (uicomponent.isLoadAtEnd()) {
-    uicomponent.init();
-  }
+	def uicomponentId = uicomponent.id;
+	
+	def labelActionLeaveSpace = _ctx.appRes("${uicomponentId}.label.action_leave_space");
+	def acceptSpaceActionLabel = _ctx.appRes("${uicomponentId}.label.accept_invitation");
+	def iconImgLabel = _ctx.appRes("${uicomponentId}.label.received_invitation_to_join_space");
+	def ignoreSpaceActionLabel = _ctx.appRes("${uicomponentId}.label.ignore_invitation");
+	def labelMembers = _ctx.appRes("${uicomponentId}.label.Members");
+	def mySpaceIdx = 0;
+	def style="display:none;";
+	
+	def labelShowMoreSpace = _ctx.appRes("${uicomponentId}.label.Show_More");
+	def fieldLabelMembers = _ctx.appRes("${uicomponentId}.label.members");
+	def spacesFoundLabel = _ctx.appRes("${uicomponentId}.label.SpaceListing");
+	
+	if (uicomponent.isLoadAtEnd()) {
+		uicomponent.init();
+	}
 
-  def invitedSpaces = uicomponent.getInvitedSpacesList();
-  def selectedChar = uicomponent.getSelectedChar();
-  def searchAll = _ctx.appRes("${uicomponentId}.label.SearchAll");
-  def allSpacesURL = Utils.getURI("all-spaces");
-  def mySpaceURL = Utils.getURI("spaces");
-  def invitationsReceivedURL = Utils.getURI("invitationSpace");
-  def requestPendingURL = Utils.getURI("pendingSpace");
-  def labelAllSpaces = _ctx.appRes("${uicomponent.id}.label.All_Space");
-  def labelMySpace = _ctx.appRes("${uicomponent.id}.label.My_Space");
-  def labelInvitationsReceived = _ctx.appRes("${uicomponent.id}.label.Invitations_Received");
-  def labelRequestsPending = _ctx.appRes("${uicomponent.id}.label.Requests_Pending");
-  def selectedNode = Utils.getSelectedNode();
-  
-  if (invitedSpaces.size() == uicomponent.getInvitedSpacesNum()) {
-    uicomponent.setLoadAtEnd(true);
-  }
-  
-	def jsManager = _ctx.getRequestContext().getJavascriptManager();
-	jsManager.require("SHARED/jquery", "jq")
-	         .require("SHARED/bts_tooltip").addScripts("jq('*[rel=\"tooltip\"]').tooltip();");
+	def invitedSpaces = uicomponent.getInvitedSpacesList();
+	def selectedChar = uicomponent.getSelectedChar();
+	def searchAll = _ctx.appRes("${uicomponentId}.label.SearchAll");
+	def allSpacesURL = Utils.getURI("all-spaces");
+	def mySpaceURL = Utils.getURI("spaces");
+	def invitationsReceivedURL = Utils.getURI("invitationSpace");
+	def requestPendingURL = Utils.getURI("pendingSpace");
+	def labelAllSpaces = _ctx.appRes("${uicomponent.id}.label.All_Space");
+	def labelMySpace = _ctx.appRes("${uicomponent.id}.label.My_Space");
+	def labelInvitationsReceived = _ctx.appRes("${uicomponent.id}.label.Invitations_Received");
+	def labelRequestsPending = _ctx.appRes("${uicomponent.id}.label.Requests_Pending");
+	def selectedNode = Utils.getSelectedNode();
+	
+	if (invitedSpaces.size() == uicomponent.getInvitedSpacesNum()) {
+		uicomponent.setLoadAtEnd(true);
+	}
+	
+	def requireJS = _ctx.getRequestContext().getJavascriptManager().getRequireJS();
+	requireJS.require("SHARED/jquery", "jq").require("SHARED/bts_tooltip").addScripts("jq('*[rel=\"tooltip\"]').tooltip();");
 %>
 <div class="uiManageSpace" id="$uicomponent.id">
-  <% uicomponent.renderChild(UISpaceSearch.class); %>
+	<% uicomponent.renderChild(UISpaceSearch.class); %>
 
 	<div class="uiTabNormal uiTabInPage">
-	  <ul class='nav nav-tabs'>
-	    <li class='<%= selectedNode.equals("all-spaces")? "active" : "" %>'><a href='$allSpacesURL'>$labelAllSpaces</a></li>
-	    <li class='<%= selectedNode.equals("spaces")? "active" : "" %>'><a href='$mySpaceURL'>$labelMySpace</a></li>
-	    <li class='<%= selectedNode.equals("invitationSpace")? "active" : "" %>'><a href='$invitationsReceivedURL'>$labelInvitationsReceived</a></li>
-	    <li class='<%= selectedNode.equals("pendingSpace")? "active" : "" %>'><a href='$requestPendingURL'>$labelRequestsPending</a></li>
-	  </ul>
+		<ul class="nav nav-tabs">
+			<li class="<%=selectedNode.equals("all-spaces")? "active" : ""%>"><a href="$allSpacesURL">$labelAllSpaces</a></li>
+			<li class="<%=selectedNode.equals("spaces")? "active" : ""%>"><a href="$mySpaceURL">$labelMySpace</a></li>
+			<li class="<%=selectedNode.equals("invitationSpace")? "active" : ""%>"><a href="$invitationsReceivedURL">$labelInvitationsReceived</a></li>
+			<li class="<%=selectedNode.equals("pendingSpace")? "active" : ""%>"><a href="$requestPendingURL">$labelRequestsPending</a></li>
+		</ul>
 	 
-	  <div class="tab-content">
-	    <div class="tab-pane active">
+		<div class="tab-content">
+			<div class="tab-pane active">
 				<!--search by directory-->
 					<div class="boxSpaceList">
-					    <h4 class="titleWithBorder">$spacesFoundLabel</h4>
-					    <!--div class="DirectoryNormalBox"-->
-					    <div class="uiFilterList">
-					        <div class="result clearfix"><span class="number"><%=uicomponent.getInvitedSpacesNum() %></span><%=_ctx.appRes(uicomponent.getId() + ".label.DisplayInOrderOfAlphabet")%></div>
-					        <ul class="letterList"> 
-					       <% 
-		               	String cssClassSelected = (uicomponent.SEARCH_ALL.equals(selectedChar)) ? "selected allSpace" : "allSpace";
-		             %>
-		                <li>
-		                	<a href="javascript:void(0);" class="$cssClassSelected" id="searchAllSpace" onclick="<%=uicomponent.event("Search", uicomponent.SEARCH_ALL)%>">$searchAll</a>
-		                </li>
-		             <%
-		             		String[] alphabets = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"];
-		                for (ch in alphabets) {
-		                  cssClassSelected = (selectedChar.equals(ch)) ? "selected" : "";
-		        	   %>
-		                <li>
-		                    <a href="javascript:void(0);" class="$cssClassSelected" onclick="<%=uicomponent.event("Search", ch)%>">$ch</a>
-		                </li>
-		             <% } %>
-					        </ul>
-					    </div>
-					    
+						<h4 class="titleWithBorder">$spacesFoundLabel</h4>
+						<!--div class="DirectoryNormalBox"-->
+						<div class="uiFilterList">
+							<div class="result clearfix"><span class="number"><%=uicomponent.getInvitedSpacesNum() %></span><%=_ctx.appRes(uicomponent.getId() + ".label.DisplayInOrderOfAlphabet")%></div>
+							<ul class="letterList"> 
+						 <% 
+							 	String cssClassSelected = (uicomponent.SEARCH_ALL.equals(selectedChar)) ? "selected allSpace" : "allSpace";
+						 %>
+								<li>
+									<a href="javascript:void(0);" class="$cssClassSelected" id="searchAllSpace" onclick="<%=uicomponent.event("Search", uicomponent.SEARCH_ALL)%>">$searchAll</a>
+								</li>
+						 <%
+						 		String[] alphabets = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"];
+								for (ch in alphabets) {
+									cssClassSelected = (selectedChar.equals(ch)) ? "selected" : "";
+						 %>
+								<li>
+										<a href="javascript:void(0);" class="$cssClassSelected" onclick="<%=uicomponent.event("Search", ch)%>">$ch</a>
+								</li>
+						 <% } %>
+							</ul>
+						</div>
+							
 					</div>
-				  <div class="spaceList clearfix">
+					<div class="spaceList clearfix">
 				
-				  <%for (space in invitedSpaces) {
-				      def spaceUrl = Utils.getSpaceHomeURL(space);
-				      def acceptSpaceAction = uicomponent.event("Accept", space.id) + "; return false";
-				      def ignoreSpaceAction = uicomponent.event("Ignore", space.id) + "; return false";
-				      def imageSource = uicomponent.getImageSource(space);
-				      if (imageSource == null) {
-				        imageSource = LinkProvider.SPACE_DEFAULT_AVATAR_URL;
-				      }
-				      def spaceAvatarTitle = _ctx.appRes("${uicomponentId}.title.SpaceAvatar");
-				      def visibility = space.visibility;
-				       //trick, temporary use private as visible
-				      if (visibility.equals(Space.PRIVATE)) visibility = "visible";
-				      mySpaceIdx += 1;
-				  %>
+					<%for (space in invitedSpaces) {
+							def spaceUrl = Utils.getSpaceHomeURL(space);
+							def acceptSpaceAction = uicomponent.event("Accept", space.id) + "; return false";
+							def ignoreSpaceAction = uicomponent.event("Ignore", space.id) + "; return false";
+							def imageSource = uicomponent.getImageSource(space);
+							if (imageSource == null) {
+								imageSource = LinkProvider.SPACE_DEFAULT_AVATAR_URL;
+							}
+							def spaceAvatarTitle = _ctx.appRes("${uicomponentId}.title.SpaceAvatar");
+							def visibility = space.visibility;
+							 //trick, temporary use private as visible
+							if (visibility.equals(Space.PRIVATE)) visibility = "visible";
+							mySpaceIdx += 1;
+					%>
 				
-				    <div class="spaceBox pull-left">
-				      <div class="avatarXLarge pull-left">
-				        <img alt="$spaceAvatarTitle" src="$imageSource" />
-				      </div>
-				      <div class="contentBox">
-				        <h4 class="spaceTitle">
-				          <a href="javascript:void(0)">$space.displayName</a> 
-				          <span class="subTxt">($iconImgLabel)</span>
-				        </h4>
-				        <div class="membersCount">$fieldLabelMembers <%= SpaceUtils.countMembers(space) %></div>
-				        <div class="content">
-                    <% if (space.description != null && space.description.length() > 0) { %>
-                      $space.description<br/>
-                    <% } else { %>
-                      <%=_ctx.appRes("${uicomponent.id}.msg.default_space_description")%>
-                    <% } %>
-				        </div>
-				        </div>
-				        <div class="connectionBtn clearfix">
-				        <button type="button" class="btn pull-right" onclick="<%= ignoreSpaceAction %>">$ignoreSpaceActionLabel</button>
-				        <button type="button" class="btn btn-primary pull-right" onclick="<%= acceptSpaceAction %>">$acceptSpaceActionLabel</button>
+						<div class="spaceBox pull-left">
+							<div class="avatarXLarge pull-left">
+								<img alt="$spaceAvatarTitle" src="$imageSource" />
+							</div>
+							<div class="contentBox">
+								<h4 class="spaceTitle">
+									<a href="javascript:void(0)">$space.displayName</a> 
+									<span class="subTxt">($iconImgLabel)</span>
+								</h4>
+								<div class="membersCount">$fieldLabelMembers <%= SpaceUtils.countMembers(space) %></div>
+								<div class="content">
+								 <% if (space.description != null && space.description.length() > 0) { %>
+									 $space.description<br/>
+								 <% } else { %>
+									 <%=_ctx.appRes("${uicomponent.id}.msg.default_space_description")%>
+								 <% } %>
+								</div>
+							</div>
+							<div class="connectionBtn clearfix">
+								<button type="button" class="btn pull-right" onclick="<%= ignoreSpaceAction %>">$ignoreSpaceActionLabel</button>
+								<button type="button" class="btn btn-primary pull-right" onclick="<%= acceptSpaceAction %>">$acceptSpaceActionLabel</button>
+							</div>
 						</div>
-						</div>
-				      </div>
-				    </div>
-				    <%}%>
-				  </div>
-			    <%
-			   if(uicomponent.isEnableLoadNext()) {
-			  %>
-			      <div id="LoadMoreReceivedInvitationButton" class="MoreSpace" onclick="<%=uicomponent.event("LoadMoreSpace")%>" >
-			        $labelShowMoreSpace
-			      </div>
-			    <%
-			   } else {
-			   %>
-<script type="text/javascript">
-	var loadMore = document.getElementById("LoadMoreReceivedInvitationButton");
-	if (loadMore) {
-		loadMore.style.display = "none";
-	}
-</script>
-			    <%
-			    }
-			    %>
-			 </div>
-	  </div>
-	</div> 
-	
+					<%}%>
+				</div>
+			</div>
+			<%
+			  if(uicomponent.isEnableLoadNext()) {
+			%>
+					<div id="LoadMoreReceivedInvitationButton" class="MoreSpace" onclick="<%=uicomponent.event("LoadMoreSpace")%>" >
+						$labelShowMoreSpace
+					</div>
+			<%
+			  } else {
+			    requireJS.addScripts("(function(jq){ var more = jq('#LoadMoreReceivedInvitationButton'); if(more.length > 0) {more.hide();} })(jq);");
+			  }
+			%>
+		</div>
+	</div>
 </div>

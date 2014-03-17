@@ -33,8 +33,7 @@ import org.exoplatform.webui.event.EventListener;
 import org.exoplatform.webui.event.Event.Phase;
 import org.exoplatform.webui.form.UIFormStringInput;
 import org.exoplatform.webui.form.validator.MandatoryValidator;
-import org.exoplatform.webui.form.validator.PersonalNameValidator;
-import org.exoplatform.webui.form.validator.StringLengthValidator;
+import org.exoplatform.webui.form.validator.UserConfigurableValidator;
 
 /**
  * Component is used for short user information (name, position) managing.<br>
@@ -63,6 +62,8 @@ public class UIHeaderSection extends UIProfileSection {
   /** Html attribute title. */
   private static final String HTML_ATTRIBUTE_TITLE   = "title";
 
+  public static final String JOB_TITLE = "jobtitle";
+
   /**
    * Initializes components for header form.<br>
    */
@@ -72,9 +73,8 @@ public class UIHeaderSection extends UIProfileSection {
     UIFormStringInput position = new UIFormStringInput(Profile.POSITION, Profile.POSITION, null);
     
     position.setHTMLAttribute(HTML_ATTRIBUTE_TITLE, resourceBundle.getString("UIHeaderSection.label.yourPosition"));
-    addUIFormInput(position.
-                   addValidator(MandatoryValidator.class).addValidator(PersonalNameValidator.class).
-                   addValidator(StringLengthValidator.class, 3, 30));
+    addUIFormInput(position.addValidator(MandatoryValidator.class).addValidator(UserConfigurableValidator.class,
+                        JOB_TITLE, UserConfigurableValidator.KEY_PREFIX + JOB_TITLE, false));
     setSubmitAction("return false;");
   }
 
