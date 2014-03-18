@@ -28,9 +28,11 @@
 							  <%
 							    if (IS_EMBED_LINK == true) {
 							  %>
-							  
-							    <!-- Add play button on thumbnail image in case of embed -->
-							  
+							    <a href="$ACTIVITY_URL" style="font-size: 13px; line-height: 20px; font-family: HelveticaNeue, Helvetica, Arial, sans-serif; text-decoration: none; color: #2F5E92;" >
+							    <span style="display: inline-block; vertical-align: 0px; border-top: 5px solid transparent; border-bottom: 5px solid transparent; border-left: 5px solid #5073a7; margin-right: 2px;">
+							    <%=_ctx.appRes("LinkActivity.notification.label.WatchTheVideo")%>
+							    </span>
+							    </a>
 							  <% } %>
 							</a>
             </td>
