@@ -18,7 +18,9 @@ package org.exoplatform.social.notification.plugin;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.exoplatform.commons.api.notification.NotificationContext;
 import org.exoplatform.commons.api.notification.model.MessageInfo;
@@ -104,39 +106,26 @@ public class NewUserPlugin extends AbstractNotificationPlugin {
     String language = getLanguage(first);
     TemplateContext templateContext = new TemplateContext(first.getKey().getId(), language);
     
-    int count = notifications.size();
-    String[] keys = {"USER", "USER_LIST", "LAST3_USERS"};
-    String key = "";
-    StringBuilder value = new StringBuilder();
+    Map<String, List<String>> map = new LinkedHashMap<String, List<String>>();
     try {
-      writer.append("<li style=\"margin: 0 0 13px 14px; font-size: 13px; line-height: 18px; font-family: HelveticaNeue, Helvetica, Arial, sans-serif;\">");
-      for (int i = 0; i < count && i < 3; i++) {
-        String remoteId = notifications.get(i).getValueOwnerParameter(SocialNotificationUtils.REMOTE_ID.getKey());
+      for (NotificationInfo message : notifications) {
+        String remoteId = message.getValueOwnerParameter(SocialNotificationUtils.REMOTE_ID.getKey());
+
         Identity identity = Utils.getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, remoteId, true);
         //
-        if (i > 1 && count == 3) {
-          key = keys[i - 1];
-        } else {
-          key = keys[i];
+        if (identity.isDeleted() == true) {
+          continue;
         }
-        value.append(SocialNotificationUtils.buildRedirecUrl("user", identity.getRemoteId(), identity.getProfile().getFullName()));
-        if (count > (i + 1) && i < 2) {
-          value.append(", ");
-        }
-      }
-      templateContext.put(key, value.toString());
-      if(count > 3) {
-        templateContext.put("COUNT", SocialNotificationUtils.buildRedirecUrl("connections", first.getTo(), String.valueOf((count - 3))));
+        
+        SocialNotificationUtils.processInforSendTo(map, ID, remoteId);
       }
       
       String portalName = System.getProperty("exo.notifications.portalname", "eXo");
-      String portalLink = SocialNotificationUtils.buildRedirecUrl("portal_home", portalName, portalName);
       
       templateContext.put("PORTAL_NAME", portalName);
-      templateContext.put("PORTAL_HOME", portalLink);
-      String digester = TemplateUtils.processDigest(templateContext.digestType(count));
-      writer.append(digester);
-      writer.append("</li>");
+      templateContext.put("PORTAL_HOME", SocialNotificationUtils.buildRedirecUrl("portal_home", portalName, portalName));
+
+      writer.append(SocialNotificationUtils.getMessageByIds(map, templateContext, "new_user"));
     } catch (IOException e) {
       ctx.setException(e);
       return false;

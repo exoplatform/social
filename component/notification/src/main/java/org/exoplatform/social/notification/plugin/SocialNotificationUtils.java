@@ -196,7 +196,7 @@ public class SocialNotificationUtils {
 
       for (int i = 0; i < count && i < 3; i++) {
         String name = "";
-        if ("user".equals(type) || "connections_request".equals(type)) {
+        if ("new_user".equals(type) || "user".equals(type) || "connections_request".equals(type)) {
           Identity identity = Utils.getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, values.get(i), true);
           name = identity.getProfile().getFullName();
         } else {
@@ -209,7 +209,7 @@ public class SocialNotificationUtils {
         } else {
           key = keys[i];
         }
-        value.append(SocialNotificationUtils.buildRedirecUrl(type, values.get(i), name));
+        value.append(SocialNotificationUtils.buildRedirecUrl("new_user".equals(type) ? "user" : type, values.get(i), name));
         if (count > (i + 1) && i < 2) {
           value.append(", ");
         }
@@ -221,6 +221,8 @@ public class SocialNotificationUtils {
           templateContext.put("ACTIVITY_STREAM", LinkProviderUtils.getRedirectUrl("user_activity_stream", targetId));
         } else if ("space".equals(type)) {
           templateContext.put("COUNT", SocialNotificationUtils.buildRedirecUrl("space_invitation", targetId, String.valueOf((count - 3))));
+        } else if ("new_user".equals(type)) {
+          templateContext.put("COUNT", SocialNotificationUtils.buildRedirecUrl("connections", "all", String.valueOf((count - 3))));
         } else {
           templateContext.put("COUNT", SocialNotificationUtils.buildRedirecUrl("connections_request", targetId, String.valueOf((count - 3))));
         }
