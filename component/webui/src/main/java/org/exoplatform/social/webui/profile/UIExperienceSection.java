@@ -47,7 +47,8 @@ import org.exoplatform.webui.form.UIFormStringInput;
 import org.exoplatform.webui.form.UIFormTextAreaInput;
 import org.exoplatform.webui.form.input.UICheckBoxInput;
 import org.exoplatform.webui.form.validator.ExpressionValidator;
-import org.exoplatform.webui.form.validator.PersonalNameValidator;
+import org.exoplatform.webui.form.validator.UserConfigurableValidator;
+
 
 /**
  * Component manages all experience informations
@@ -561,20 +562,27 @@ public class UIExperienceSection extends UIProfileSection {
 
       uiDateTimeInput = (UIFormDateTimeInput) listUIComp.get(i + 4);
       Locale locale = context.getParentAppRequestContext().getLocale();
-      String currentPartern = uiDateTimeInput.getDatePattern_();
+      String currentPattern = uiDateTimeInput.getDatePattern_();
       
-      SimpleDateFormat sf = new SimpleDateFormat(currentPartern, locale);
+      SimpleDateFormat sf = new SimpleDateFormat(currentPattern, locale);
+      // Specify whether or not date/time parsing is to be lenient.
+      sf.setLenient(false);
       Calendar cal = Calendar.getInstance();
-      
-      if (!"".equals(uiDateTimeInput.getValue())) { 
-        cal.setTime(sf.parse(uiDateTimeInput.getValue()));
-        startDate = calendarToString(cal);
-        if ((startDate == null) || (startDate.length() == 0)) {
-          uiApplication.addMessage(new ApplicationMessage(INVALID_START_DATE_MANDATORY, null, 1));
+
+      String startDateInput = uiDateTimeInput.getValue();      
+      if (startDateInput != null && startDateInput.length() > 0) {
+        try {
+          cal.setTime(sf.parse(startDateInput));
+          startDate = calendarToString(cal);
+        } catch (Exception e) {
+          uiApplication.addMessage(new ApplicationMessage(INVALID_START_DATE_FORMAT, new String[] {currentPattern}, 1));
           errorCode = 1;
         }
+      } else {
+        uiApplication.addMessage(new ApplicationMessage(INVALID_START_DATE_MANDATORY, null, 1));
+        errorCode = 1;
       }
-      
+             
       try {
         uiDateTimeInput = (UIFormDateTimeInput) listUIComp.get(i + 5);
         if (!"".equals(uiDateTimeInput.getValue())) {
@@ -582,6 +590,8 @@ public class UIExperienceSection extends UIProfileSection {
         }
       } catch (Exception e) {
         endDate = null;
+        uiApplication.addMessage(new ApplicationMessage(INVALID_END_DATE_FORMAT, new String[] {currentPattern}, 1));
+        errorCode = 1;
       }
       
       uiCheckBox = (UICheckBoxInput) listUIComp.get(i + 6);
@@ -650,13 +660,13 @@ public class UIExperienceSection extends UIProfileSection {
    * @throws Exception
    */
   private void addUIFormInput() throws Exception {
+    final String JOB_TITLE = "jobtitle";
     WebuiRequestContext requestContext = WebuiRequestContext.getCurrentInstance();
     ResourceBundle resourceBundle = requestContext.getApplicationResourceBundle();
     expIdx += 1;
-    addUIFormInput(new UIFormStringInput(Profile.EXPERIENCES_COMPANY + expIdx, null, null)
-      .addValidator(PersonalNameValidator.class));
+    addUIFormInput(new UIFormStringInput(Profile.EXPERIENCES_COMPANY + expIdx, null, null));
     addUIFormInput(new UIFormStringInput(Profile.EXPERIENCES_POSITION + expIdx, null, null)
-      .addValidator(PersonalNameValidator.class));
+      .addValidator(UserConfigurableValidator.class, JOB_TITLE, UserConfigurableValidator.KEY_PREFIX + JOB_TITLE, false));
 
     UIFormTextAreaInput description = new UIFormTextAreaInput(Profile.EXPERIENCES_DESCRIPTION + expIdx, null, null);
     description.setHTMLAttribute(HTML_ATTRIBUTE_TITLE, resourceBundle.getString("UIExperienceSection.label.description"));
@@ -674,11 +684,11 @@ public class UIExperienceSection extends UIProfileSection {
 
     UIFormDateTimeInput startDate = new UIFormDateTimeInput(Profile.EXPERIENCES_START_DATE + expIdx, null, null, false);
     startDate.setHTMLAttribute(HTML_ATTRIBUTE_TITLE, resourceBundle.getString("UIExperienceSection.label.startDate"));
-    addUIFormInput(startDate.addValidator(ExpressionValidator.class, DATETIME_REGEX, INVALID_START_DATE_FORMAT));
+    addUIFormInput(startDate);
 
     UIFormDateTimeInput endDate = new UIFormDateTimeInput(Profile.EXPERIENCES_END_DATE + expIdx, null, null, false);
     endDate.setHTMLAttribute(HTML_ATTRIBUTE_TITLE, resourceBundle.getString("UIExperienceSection.label.endDate"));
-    addUIFormInput(endDate.addValidator(ExpressionValidator.class, DATETIME_REGEX, INVALID_END_DATE_FORMAT));
+    addUIFormInput(endDate);
 
     UICheckBoxInput uiDateInputCheck = new UICheckBoxInput(Integer.toString(expIdx), null, false);
     uiDateInputCheck.setComponentConfig(UICheckBoxInput.class, "UIFormCheckBoxEndDate");
@@ -716,5 +726,5 @@ public class UIExperienceSection extends UIProfileSection {
     Calendar calendar = Calendar.getInstance();
     calendar.setTime(date);
     return calendar;
-  }
+  }  
 }

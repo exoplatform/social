@@ -193,8 +193,6 @@ public class SecurityManager {
   public static boolean canDeleteActivity(PortalContainer portalContainer, Identity authenticatedIdentity,
                                           ExoSocialActivity existingActivity) {
     SpaceService spaceService = (SpaceService) portalContainer.getComponentInstanceOfType(SpaceService.class);
-    RelationshipManager relationshipManager = (RelationshipManager) portalContainer.
-                                                                    getComponentInstanceOfType(RelationshipManager.class);
 
     // My activity
     if (authenticatedIdentity.getId().equals(existingActivity.getUserId())) {
@@ -221,7 +219,8 @@ public class SecurityManager {
     }
     return false;
   }
-
+  
+  
   /**
    * <p>Checks if an authenticated identity has the permission to comment on an existing activity.</p>
    *
@@ -303,12 +302,12 @@ public class SecurityManager {
    */
   public static boolean canDeleteComment(PortalContainer portalContainer, Identity authenticatedIdentity,
                                          ExoSocialActivity existingComment) {
-    //TODO if the author of Activity which comment belong to want to delete comment return true
-    
-    if(canDeleteActivity(portalContainer, authenticatedIdentity, existingComment)){
+    if (authenticatedIdentity.getId().equals(existingComment.getUserId())) {
       return true;
+    } else {
+      return false;
     }
-    return false;
+
   }
   /**
    * <p>Gets the current logged in Identity, if not logged in return null</p>

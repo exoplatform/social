@@ -57,8 +57,13 @@
       $(document).ready(function() {
         var actionLink = $('#actionLink');
         if(actionLink.length > 0 && $(UIComposer.clickOn).hasClass('uidocactivitycomposer') === false) {
-          if ($('#InputLink').length == 0 && UIComposer.clickOn != null) {
-            actionLink.trigger('click');
+          if ($('#InputLink').length == 0) {            
+            if (UIComposer.clickOn == null || UIComposer.clickOn == "") {
+              var UIComposerComp = $('#UIPageCreationWizard');
+              if (UIComposerComp.find('#UIPagePreview').length == 0) {
+                actionLink.trigger('click');
+              }
+            }
           } else {
             var container = $('#ComposerContainer');
             if (container.find('#LinkExtensionContainer').length > 0) {

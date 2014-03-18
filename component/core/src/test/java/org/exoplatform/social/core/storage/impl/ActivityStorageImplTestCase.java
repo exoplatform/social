@@ -457,6 +457,40 @@ public class ActivityStorageImplTestCase extends AbstractCoreTest {
     }
   }
 
+  /* Today: the 1st of this month
+     Yesterday: the last day of last month
+  */
+  @MaxQueryNumber(1480)
+  public void testActivityOrderByPostedTime2() throws Exception {
+    // fill 10 activities
+    Calendar cal = Calendar.getInstance();
+    cal.set(Calendar.DATE, 1);
+    long today = cal.getTime().getTime();
+    cal.add(Calendar.DATE, -1);
+    long yesterday = cal.getTime().getTime();
+    //i >= 5 PostedTime = currentDate + i;
+    //else PostedTime = yesterdayDate + i;
+    for (int i = 0; i < 10; ++i) {
+      ExoSocialActivity activity = new ExoSocialActivityImpl();
+      activity.setTitle("title " + i);
+      activity.setPostedTime(i >= 5 ? today + i : yesterday + i);
+      activityStorage.saveActivity(rootIdentity, activity);
+    }
+
+    int i = 9;
+    for (ExoSocialActivity activity : activityStorage.getUserActivities(rootIdentity)) {
+      assertEquals("title " + i, activity.getTitle());
+      
+      if (i>= 5) {
+        assertEquals(today + i, activity.getPostedTime().longValue());        
+      } else {
+        assertEquals(yesterday + i, activity.getPostedTime().longValue());
+      }
+      
+      --i;
+    }
+  }
+
   @MaxQueryNumber(2400)
   public void testActivityOrder2() throws Exception {
     // fill 10 activities
@@ -612,7 +646,7 @@ public class ActivityStorageImplTestCase extends AbstractCoreTest {
     }
   }
 
-  @MaxQueryNumber(2130)
+  @MaxQueryNumber(2170)
   public void testDeleteComment() throws Exception {
     ExoSocialActivity activity = new ExoSocialActivityImpl();
     activity.setTitle("activity title");
@@ -932,7 +966,7 @@ public class ActivityStorageImplTestCase extends AbstractCoreTest {
     
   }
 
-  @MaxQueryNumber(246)
+  @MaxQueryNumber(265)
   public void testActivityProcessing() throws Exception {
 
     //

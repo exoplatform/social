@@ -20,6 +20,7 @@ import org.exoplatform.social.webui.activity.BaseUIActivity;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.EventConfig;
 import org.exoplatform.webui.core.lifecycle.UIFormLifecycle;
+import org.apache.commons.lang.StringEscapeUtils;
 
 @ComponentConfig(
    lifecycle = UIFormLifecycle.class,
@@ -51,7 +52,7 @@ public class UILinkActivity extends BaseUIActivity {
     this.linkComment = linkComment;
   }
   public String getLinkDescription() {
-    return linkDescription;
+    return StringEscapeUtils.escapeHtml(linkDescription);
   }
   public void setLinkDescription(String linkDescription) {
     this.linkDescription = linkDescription;
@@ -63,13 +64,13 @@ public class UILinkActivity extends BaseUIActivity {
     this.linkImage = linkImage;
   }
   public String getLinkSource() {
-    return linkSource;
+    return StringEscapeUtils.escapeHtml(linkSource);
   }
   public void setLinkSource(String linkSource) {
     this.linkSource = linkSource;
   }
   public String getLinkTitle() {
-    return linkTitle;
+    return StringEscapeUtils.escapeHtml(linkTitle);
   }
   public void setLinkTitle(String linkTitle) {                
     this.linkTitle = linkTitle;

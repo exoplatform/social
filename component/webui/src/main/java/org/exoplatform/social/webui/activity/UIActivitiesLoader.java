@@ -66,6 +66,7 @@ public class UIActivitiesLoader extends UIContainer {
   private UIActivitiesContainer activitiesContainer;
   private UIContainer extendContainer;
   private int loadingCapacity;
+  private int pageSize;
   private Space space;
   private int activitiesCounter;
   
@@ -115,6 +116,7 @@ public class UIActivitiesLoader extends UIContainer {
   }
 
   public void setLoadingCapacity(int loadingCapacity) {
+    this.pageSize = loadingCapacity;
     this.loadingCapacity = loadingCapacity;
   }
 
@@ -195,8 +197,14 @@ public class UIActivitiesLoader extends UIContainer {
     lastActivitiesContainer.setSpace(space);
     
     lastActivitiesLoader.setActivities(activities);
-    if(activityListAccess != null) {
-      lastActivitiesLoader.setHasMore(activityListAccess.getSize() > activitiesCounter);
+    if (activityListAccess != null) {
+      if (activities.size() < this.pageSize) {
+        lastActivitiesLoader.setHasMore(false);
+        this.setHasMore(false);
+      } else if (activities.size() == this.pageSize) {
+        lastActivitiesLoader.setHasMore(activityListAccess.getSize() > activitiesCounter);
+        this.setHasMore(false);
+      }
     }
   }
 

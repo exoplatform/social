@@ -36,7 +36,7 @@
 	  <% } %>
 	  
 		<h4 class="titleWithBorder">
-			<%=_ctx.appRes(uicomponent.getTranlationKey() + ".label.title")%>
+			<span class="nameTitle"><%=_ctx.appRes(uicomponent.getTranlationKey() + ".label.title")%></span>
 	  <% if (isEditable) { %>
 		<% if (!isEdit) { %>
 		  <a onclick="<%=uicomponent.event("Edit", "" + !isEdit)%>; return false;" href="javascript:void(0)"><i class="uiIconEdit"></i></a>

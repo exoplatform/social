@@ -681,6 +681,35 @@ public class IdentityStorageImpl extends AbstractStorage implements IdentityStor
 
     return identity;
   }
+  /**
+   * Gets just identity information without profile
+   * Improve performance in the case only needs Identity's Id
+   * for create Activity and Comment also
+   * 
+   * @param providerId
+   * @param remoteId
+   * @param forceLoadProfile
+   * @return
+   */
+  protected Identity _findIdentityEntity(final String providerId, final String remoteId, boolean forceLoadProfile) {
+    IdentityEntity identityEntity;
+    Identity identity = null;
+    try {
+      if (!forceLoadProfile) {
+        identityEntity = _findIdentityEntity(providerId, remoteId);
+
+        identity = new Identity(OrganizationIdentityProvider.NAME, remoteId);
+        identity.setId(identityEntity.getId());
+      } else {
+        identity = _findIdentity(providerId, remoteId);
+      }
+      
+    } catch (NodeNotFoundException e) {
+      LOG.warn(e.getMessage());
+      LOG.debug(e.getMessage(), e);
+    }
+    return identity;
+  }
 
   protected IdentityEntity _findIdentityEntity(final String providerId, final String remoteId) throws NodeNotFoundException {
     ProviderEntity providerEntity;
