@@ -22,6 +22,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.exoplatform.commons.api.notification.NotificationContext;
 import org.exoplatform.commons.api.notification.model.MessageInfo;
 import org.exoplatform.commons.api.notification.model.NotificationInfo;
@@ -92,7 +93,13 @@ public class SpaceInvitationPlugin extends AbstractNotificationPlugin {
     
     try {
       for (NotificationInfo message : notifications) {
-        SocialNotificationUtils.processInforSendTo(receiverMap, first.getTo(), message.getValueOwnerParameter(SocialNotificationUtils.SPACE_ID.getKey()));
+        String spaceId = message.getValueOwnerParameter(SocialNotificationUtils.SPACE_ID.getKey());
+        Space space = Utils.getSpaceService().getSpaceById(spaceId);
+        if (ArrayUtils.contains(space.getInvitedUsers(), first.getTo()) == false) {
+          continue;
+        }
+
+        SocialNotificationUtils.processInforSendTo(receiverMap, first.getTo(), spaceId);
       }
       writer.append(SocialNotificationUtils.getMessageByIds(receiverMap, templateContext, "space"));
     } catch (IOException e) {
