@@ -650,7 +650,7 @@
 	    <name>notification.plugins</name>
 	    <set-method>addChildPlugin</set-method>
 	    <type>org.exoplatform.social.notification.plugin.child.DefaultActivityChildPlugin</type>
-	    <description>Initial information for default child plugin.</description>
+	    <description>Initial information for default child notification plugin.</description>
 	    <init-params>
 	      <object-param>
 	        <name>template.DefaultActivityChildPlugin</name>
@@ -662,7 +662,7 @@
 	          <field name="templateConfig">
 	            <object type="org.exoplatform.commons.api.notification.plugin.config.TemplateConfig">
 	              <field name="bundlePath">
-	                <string>locale.notification.template.CommonsNotification</string>
+	                <string>locale.notification.template.Notification</string>
 	              </field>
 	              <field name="templatePath">
 	                <string>classpath:/notification/templates/DefaultActivity.gtmpl</string>
@@ -674,4 +674,36 @@
 	    </init-params>
 	  </component-plugin>
 	</external-component-plugins>
+	
+	<external-component-plugins>
+	 <target-component>org.exoplatform.commons.api.notification.service.setting.PluginContainer</target-component>
+	 <component-plugin>
+	   <name>notification.plugins</name>
+	   <set-method>addChildPlugin</set-method>
+	   <type>org.exoplatform.social.notification.plugin.child.LinkActivityChildPlugin</type>
+	   <description>Initial information for link child notification plugin.</description>
+	   <init-params>
+	     <object-param>
+	       <name>template.LinkActivityChildPlugin</name>
+	       <description>The template of LinkActivityChildPlugin</description>
+	       <object type="org.exoplatform.commons.api.notification.plugin.config.PluginConfig">
+	         <field name="pluginId">
+	           <string>LINK_ACTIVITY</string>
+	         </field>
+	         <field name="templateConfig">
+	           <object type="org.exoplatform.commons.api.notification.plugin.config.TemplateConfig">
+	             <field name="bundlePath">
+	               <string>locale.notification.template.Notification</string>
+	             </field>
+	             <field name="templatePath">
+	               <string>classpath:/notification/templates/activities/NotificationLinkActivity.gtmpl</string>
+	             </field>
+	           </object>
+	         </field>
+	       </object>
+	     </object-param>
+	   </init-params>
+	 </component-plugin>
+	</external-component-plugins>
+	
 </configuration>

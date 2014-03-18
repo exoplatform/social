@@ -443,5 +443,42 @@
 	    </init-params>
 	  </component-plugin>
 	</external-component-plugins>
-
+	
+  <external-component-plugins>
+	  <target-component>org.exoplatform.commons.api.notification.service.setting.PluginContainer</target-component>
+	  <component-plugin>
+	    <name>notification.plugins</name>
+	    <set-method>addChildPlugin</set-method>
+	    <type>org.exoplatform.social.notification.plugin.child.LinkActivityChildPlugin</type>
+	    <description>Initial information for link child notification plugin.</description>
+	    <init-params>
+	      <values-param>
+	        <name>parentIds</name>
+	        <description>The list parent plugin's id</description>
+	        <value>LikePlugin</value>
+	        <value>ActivityCommentPlugin</value>
+	      </values-param>
+	      <object-param>
+	        <name>template.LinkActivityChildPlugin</name>
+	        <description>The template of LinkActivityChildPlugin</description>
+	        <object type="org.exoplatform.commons.api.notification.plugin.config.PluginConfig">
+	          <field name="pluginId">
+	            <string>LINK_ACTIVITY</string>
+	          </field>
+	          <field name="templateConfig">
+	            <object type="org.exoplatform.commons.api.notification.plugin.config.TemplateConfig">
+	              <field name="bundlePath">
+	                <string>locale.notification.template.Notification</string>
+	              </field>
+	              <field name="templatePath">
+	                <string>war:/notification/templates/activities/NotificationLinkActivity.gtmpl</string>
+	              </field>
+	            </object>
+	          </field>
+	        </object>
+	      </object-param>
+	    </init-params>
+	  </component-plugin>
+	</external-component-plugins>
+  
 </configuration>

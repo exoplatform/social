@@ -53,7 +53,11 @@ public class ActivityMentionPlugin extends AbstractNotificationPlugin {
     ExoSocialActivity activity = ctx.value(SocialNotificationUtils.ACTIVITY);
     
     List<String> receivers = new ArrayList<String>();
-    Utils.sendToMentioners(receivers, activity.getMentionedIds(), activity.getPosterId());
+    if (activity.getMentionedIds().length > 0) {
+      Utils.sendToMentioners(receivers, activity.getMentionedIds(), activity.getPosterId());
+    } else {
+      receivers = Utils.getMentioners(activity.getTemplateParams().get("comment"), activity.getPosterId());
+    }
 
     return NotificationInfo.instance().key(getKey())
            .to(receivers)
@@ -132,6 +136,19 @@ public class ActivityMentionPlugin extends AbstractNotificationPlugin {
   @Override
   public boolean isValid(NotificationContext ctx) {
     ExoSocialActivity activity = ctx.value(SocialNotificationUtils.ACTIVITY);
-    return activity.getMentionedIds().length > 0; 
+    if (activity.getMentionedIds().length > 0) {
+      return true;
+    }
+
+    //Case of share link, the title of activity is the title of the link
+    //so the process mention is not correct and no mention is saved to activity
+    //We need to process the value stored in the template param of activity with key = comment
+    String commentLinkActivity = activity.getTemplateParams().get("comment");
+    if (commentLinkActivity != null && commentLinkActivity.length() > 0 &&
+        Utils.getMentioners(commentLinkActivity, activity.getPosterId()).size() > 0) {
+      return true;
+    }
+
+    return false;
   }
 }
