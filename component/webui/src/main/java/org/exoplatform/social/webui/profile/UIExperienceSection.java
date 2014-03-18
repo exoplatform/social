@@ -514,7 +514,7 @@ public class UIExperienceSection extends UIProfileSection {
     String endDate = null;
     Boolean isCurrent = null;
     // Check if there is any exception during parsing Date Time field
-    Boolean isDateTimeException = false;
+    boolean isDateTimeException = false;
     Date sDate = null;
     Date eDate = null;
     Date today = new Date();
