@@ -253,4 +253,30 @@ public class RelationshipReceivedRequestPluginTest extends AbstractPluginTest {
     
   }
   
+  public void testDigestCancelRequest() throws Exception {
+    //Make more relationship
+    makeRelationship(demoIdentity, rootIdentity);
+    makeRelationship(maryIdentity, rootIdentity);
+    makeRelationship(johnIdentity, rootIdentity);
+    
+    //
+    List<NotificationInfo> messages = new ArrayList<NotificationInfo>();
+    List<NotificationInfo> list = assertMadeNotifications(3);
+    for (NotificationInfo m : list) {
+      m.setTo(rootIdentity.getRemoteId());
+      messages.add(m);
+    }
+    
+    //cancel 2 request
+    cancelRelationship(rootIdentity, demoIdentity);
+    cancelRelationship(rootIdentity, johnIdentity);
+    
+    Writer writer = new StringWriter();
+    NotificationContext ctx = NotificationContextImpl.cloneInstance();
+    ctx.setNotificationInfos(messages);
+    getPlugin().buildDigest(ctx, writer);
+    
+    assertDigest(writer, "You've received a connection request from Mary Kelly.");
+    notificationService.clearAll();
+  }
 }

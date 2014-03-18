@@ -29,6 +29,7 @@ import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvide
 import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
 import org.exoplatform.social.core.manager.ActivityManager;
 import org.exoplatform.social.core.manager.IdentityManager;
+import org.exoplatform.social.core.manager.RelationshipManager;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
 
@@ -251,5 +252,8 @@ public class Utils {
   public static ActivityManager getActivityManager() {
     return getService(ActivityManager.class);
   }
-  
+
+  public static RelationshipManager getRelationshipManager() {
+    return getService(RelationshipManager.class);
+  }
 }
