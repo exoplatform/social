@@ -16,14 +16,6 @@
  */
 package org.exoplatform.social.core.space.impl;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
 import org.apache.commons.lang.ArrayUtils;
 import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.commons.utils.PageList;
@@ -58,6 +50,14 @@ import org.exoplatform.social.core.space.spi.SpaceService;
 import org.exoplatform.social.core.storage.api.ActivityStreamStorage;
 import org.exoplatform.social.core.storage.api.IdentityStorage;
 import org.exoplatform.social.core.storage.api.SpaceStorage;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 /**
  * {@link org.exoplatform.social.core.space.spi.SpaceService} implementation.
@@ -1476,6 +1476,10 @@ public class SpaceServiceImpl implements SpaceService {
   public List<Space> getLastAccessedSpace(String remoteId, String appId, int offset, int limit) throws SpaceException {
     SpaceFilter filter = new SpaceFilter(remoteId, appId);
     return spaceStorage.getLastAccessedSpace(filter, offset, limit);
+  }
+
+  public List<Space> getLastSpaces(int limit) {
+    return spaceStorage.getLastSpaces(limit);
   }
   
   @Override

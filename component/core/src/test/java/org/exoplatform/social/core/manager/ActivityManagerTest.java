@@ -16,15 +16,10 @@
  */
 package org.exoplatform.social.core.manager;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
-
-import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
+import org.exoplatform.services.organization.OrganizationService;
+import org.exoplatform.services.organization.User;
 import org.exoplatform.social.common.RealtimeListAccess;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.activity.model.ExoSocialActivityImpl;
@@ -38,6 +33,12 @@ import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
 import org.exoplatform.social.core.storage.ActivityStorageException;
 import org.exoplatform.social.core.test.AbstractCoreTest;
+
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
 
 /**
  * Unit Test for {@link ActivityManager}, including cache tests.
@@ -1314,6 +1315,66 @@ public class ActivityManagerTest extends AbstractCoreTest {
     assertEquals("count must be: 30", 30, count);
   }
   
+  public void testGetLastIdenties() throws Exception {
+    List<Identity> lastIds = identityManager.getLastIdentities(1);
+    assertEquals(1, lastIds.size());
+    Identity id1 = lastIds.get(0);
+    lastIds = identityManager.getLastIdentities(1);
+    assertEquals(1, lastIds.size());
+    assertEquals(id1, lastIds.get(0));
+    lastIds = identityManager.getLastIdentities(5);
+    assertEquals(5, lastIds.size());
+    assertEquals(id1, lastIds.get(0));
+    OrganizationService os = (OrganizationService) getContainer().getComponentInstanceOfType(OrganizationService.class);
+    User user1 = os.getUserHandler().createUserInstance("newId1");
+    os.getUserHandler().createUser(user1, false);
+    Identity newId1 = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "newId1", false);
+    lastIds = identityManager.getLastIdentities(1);
+    assertEquals(1, lastIds.size());
+    assertEquals(newId1, lastIds.get(0));
+    identityManager.deleteIdentity(newId1);
+    assertNull(identityManager.getIdentity(newId1.getId(), false));
+    lastIds = identityManager.getLastIdentities(1);
+    assertEquals(1, lastIds.size());
+    assertEquals(id1, lastIds.get(0));
+    User user2 = os.getUserHandler().createUserInstance("newId2");
+    os.getUserHandler().createUser(user2, false);
+    Identity newId2 = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "newId2", true);
+    lastIds = identityManager.getLastIdentities(5);
+    assertEquals(5, lastIds.size());
+    assertEquals(newId2, lastIds.get(0));
+    identityManager.deleteIdentity(newId2);
+    assertNull(identityManager.getIdentity(newId2.getId(), true));
+    lastIds = identityManager.getLastIdentities(5);
+    assertEquals(5, lastIds.size());
+    assertEquals(id1, lastIds.get(0));
+    newId1 = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "newId1", false);
+    newId2 = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "newId2", true);
+    lastIds = identityManager.getLastIdentities(1);
+    assertEquals(1, lastIds.size());
+    assertEquals(newId2, lastIds.get(0));
+    lastIds = identityManager.getLastIdentities(2);
+    assertEquals(2, lastIds.size());
+    assertEquals(newId2, lastIds.get(0));
+    assertEquals(newId1, lastIds.get(1));
+    identityManager.deleteIdentity(newId1);
+    os.getUserHandler().removeUser("newId1", false);
+    assertNull(identityManager.getIdentity(newId1.getId(), true));
+    lastIds = identityManager.getLastIdentities(1);
+    assertEquals(1, lastIds.size());
+    assertEquals(newId2, lastIds.get(0));
+    lastIds = identityManager.getLastIdentities(2);
+    assertEquals(2, lastIds.size());
+    assertEquals(newId2, lastIds.get(0));
+    assertFalse(newId1.equals(lastIds.get(1)));
+    identityManager.deleteIdentity(newId2);
+    os.getUserHandler().removeUser("newId2", false);
+    assertNull(identityManager.getIdentity(newId2.getId(), false));
+    lastIds = identityManager.getLastIdentities(1);
+    assertEquals(1, lastIds.size());
+    assertEquals(id1, lastIds.get(0));
+  }
+
   /**
    *
    */
