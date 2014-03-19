@@ -600,7 +600,7 @@ public class PeopleRestService implements ResourceContainer{
       this.setPrettyPostedTime(TimeConvertUtils.convertXTimeAgo(calendar.getTime(), "EEE,MMM dd,yyyy", new Locale(lang),
                                                                 TimeConvertUtils.MONTH));
       
-      this.setPosition(identity.getProfile().getPosition());
+      this.setPosition(StringEscapeUtils.unescapeHtml(identity.getProfile().getPosition()));
       this.setActivityId(lastestActivity.getId());
     }
     

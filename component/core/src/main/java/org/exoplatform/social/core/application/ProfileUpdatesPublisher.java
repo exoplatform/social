@@ -16,9 +16,7 @@
  */
 package org.exoplatform.social.core.application;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
-
+import org.apache.commons.lang.StringEscapeUtils;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.container.xml.InitParams;
 import org.exoplatform.services.log.ExoLogger;
@@ -33,6 +31,9 @@ import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.profile.ProfileLifeCycleEvent;
 import org.exoplatform.social.core.profile.ProfileListenerPlugin;
 import org.exoplatform.social.core.storage.api.IdentityStorage;
+
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 
 /**
@@ -87,7 +88,7 @@ public class ProfileUpdatesPublisher extends ProfileListenerPlugin {
 
   @Override
   public void headerSectionUpdated(ProfileLifeCycleEvent event) {
-    final String activityMessage = "Position is now: " + event.getProfile().getPosition();
+    final String activityMessage = "Position is now: " + StringEscapeUtils.unescapeHtml(event.getProfile().getPosition());
     publishActivity(event, activityMessage, "position_updated");
   }
   
@@ -99,7 +100,7 @@ public class ProfileUpdatesPublisher extends ProfileListenerPlugin {
     comment.setTitleId(titleId);
     Map<String, String> templateParams = new LinkedHashMap<String, String>();
     if (POSITION_TITLE_ID.equals(titleId)) {
-      templateParams.put(USER_POSITION_PARAM, position);
+      templateParams.put(USER_POSITION_PARAM, StringEscapeUtils.unescapeHtml(position));
       templateParams.put(BaseActivityProcessorPlugin.TEMPLATE_PARAM_TO_PROCESS, USER_POSITION_PARAM);
     }
     comment.setTemplateParams(templateParams);
