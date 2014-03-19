@@ -37,10 +37,6 @@ public class Utils {
   
   private static final Pattern MENTION_PATTERN = Pattern.compile("<a href=\"([\\w|/]+|)/profile/([\\w]+)\">([\\w|\\s]+|)</a>");
   
-  private static final Pattern LINK_PATTERN = Pattern.compile("<a ([^>]+)>([^<]+)</a>");
-  
-  private static final String styleCSS = " style=\"color: #2f5e92; text-decoration: none;\"";
-  
   private static final int MAX_LENGTH = 150;
   
   @SuppressWarnings("unchecked")
@@ -196,21 +192,6 @@ public class Utils {
     return mentioners;
   }
 
-  /**
-   * Add the style css for a link in the activity title to display a link without underline
-   * 
-   * @param title activity title
-   * @return activity title after process all link
-   */
-  public static String processLinkTitle(String title) {
-    Matcher matcher = LINK_PATTERN.matcher(title);
-    while (matcher.find()) {
-      String result = matcher.group(1);
-      title = title.replace(result, result + styleCSS);
-    }
-    return title;
-  }
-  
   /**
    * Gets remote Ids of all users who receive a notification message when an activity is posted in a space.
    * 

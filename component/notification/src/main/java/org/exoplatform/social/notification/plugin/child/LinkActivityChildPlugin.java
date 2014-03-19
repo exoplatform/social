@@ -5,6 +5,7 @@ import org.exoplatform.commons.api.notification.model.ArgumentLiteral;
 import org.exoplatform.commons.api.notification.model.NotificationInfo;
 import org.exoplatform.commons.api.notification.plugin.AbstractNotificationChildPlugin;
 import org.exoplatform.commons.api.notification.service.template.TemplateContext;
+import org.exoplatform.commons.notification.NotificationUtils;
 import org.exoplatform.commons.notification.template.TemplateUtils;
 import org.exoplatform.commons.utils.CommonsUtils;
 import org.exoplatform.container.xml.InitParams;
@@ -55,8 +56,8 @@ public class LinkActivityChildPlugin extends AbstractNotificationChildPlugin {
       
       String url = activity.getTemplateParams().get(LINK_PARAM);
       
-      templateContext.put("ACTIVITY_TITLE", activity.getTemplateParams().get(COMMENT_PARAM));
-      templateContext.put("LINK_TITLE", activity.getTemplateParams().get(TITLE_PARAM));
+      templateContext.put("ACTIVITY_TITLE", NotificationUtils.processLinkTitle(activity.getTemplateParams().get(COMMENT_PARAM)));
+      templateContext.put("LINK_TITLE", NotificationUtils.processLinkTitle(activity.getTemplateParams().get(TITLE_PARAM)));
       templateContext.put("LINK_URL", url);
       templateContext.put("THUMBNAIL_URL", getImageUrl(url));
       templateContext.put("IS_EMBED_LINK", isEmbedLink());

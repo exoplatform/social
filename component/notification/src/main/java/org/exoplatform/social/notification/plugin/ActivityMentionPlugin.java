@@ -28,6 +28,7 @@ import org.exoplatform.commons.api.notification.model.MessageInfo;
 import org.exoplatform.commons.api.notification.model.NotificationInfo;
 import org.exoplatform.commons.api.notification.plugin.AbstractNotificationPlugin;
 import org.exoplatform.commons.api.notification.service.template.TemplateContext;
+import org.exoplatform.commons.notification.NotificationUtils;
 import org.exoplatform.commons.notification.template.TemplateUtils;
 import org.exoplatform.container.xml.InitParams;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
@@ -83,21 +84,23 @@ public class ActivityMentionPlugin extends AbstractNotificationPlugin {
     templateContext.put("USER", identity.getProfile().getFullName());
     String subject = TemplateUtils.processSubject(templateContext);
     
+    templateContext.put("AVATAR", LinkProviderUtils.getUserAvatarUrl(identity.getProfile()));
+    templateContext.put("PROFILE_URL", LinkProviderUtils.getRedirectUrl("user", identity.getRemoteId()));
+    String body = "";
+    
     // In case of mention on a comment, we need provide the id of the activity, not of the comment
     if (activity.isComment()) {
       ExoSocialActivity parentActivity = Utils.getActivityManager().getParentActivity(activity);
       activityId = parentActivity.getId();
       templateContext.put("REPLY_ACTION_URL", LinkProviderUtils.getRedirectUrl("reply_activity_highlight_comment", activityId + "-" + activity.getId()));
       templateContext.put("VIEW_FULL_DISCUSSION_ACTION_URL", LinkProviderUtils.getRedirectUrl("view_full_activity_highlight_comment", activityId + "-" + activity.getId()));
+      templateContext.put("ACTIVITY", NotificationUtils.processLinkTitle(activity.getTitle()));
+      body = TemplateUtils.processGroovy(templateContext);
     } else {
       templateContext.put("REPLY_ACTION_URL", LinkProviderUtils.getRedirectUrl("reply_activity", activityId));
       templateContext.put("VIEW_FULL_DISCUSSION_ACTION_URL", LinkProviderUtils.getRedirectUrl("view_full_activity", activityId));
+      body = SocialNotificationUtils.getBody(ctx, templateContext, activity);
     }
-    
-    templateContext.put("AVATAR", LinkProviderUtils.getUserAvatarUrl(identity.getProfile()));
-    templateContext.put("PROFILE_URL", LinkProviderUtils.getRedirectUrl("user", identity.getRemoteId()));
-    templateContext.put("ACTIVITY", Utils.processMentions(activity.getTitle()));
-    String body = TemplateUtils.processGroovy(templateContext);
     
     return messageInfo.subject(subject).body(body).end();
   }
