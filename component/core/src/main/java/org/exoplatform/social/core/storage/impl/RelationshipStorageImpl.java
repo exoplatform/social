@@ -17,26 +17,11 @@
 
 package org.exoplatform.social.core.storage.impl;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.concurrent.Callable;
-import java.util.concurrent.Future;
-
-import javax.jcr.Node;
-import javax.jcr.NodeIterator;
-
-import org.apache.commons.lang.ArrayUtils;
 import org.chromattic.api.query.Ordering;
 import org.chromattic.api.query.QueryBuilder;
 import org.chromattic.api.query.QueryResult;
 import org.chromattic.core.query.QueryImpl;
+import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
@@ -46,9 +31,11 @@ import org.exoplatform.social.core.chromattic.entity.RelationshipEntity;
 import org.exoplatform.social.core.chromattic.entity.RelationshipListEntity;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
-import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
+import org.exoplatform.social.core.manager.RelationshipManager;
 import org.exoplatform.social.core.profile.ProfileFilter;
+import org.exoplatform.social.core.profile.ProfileLoader;
 import org.exoplatform.social.core.relationship.model.Relationship;
+import org.exoplatform.social.core.storage.IdentityStorageException;
 import org.exoplatform.social.core.storage.RelationshipStorageException;
 import org.exoplatform.social.core.storage.api.ActivityStorage;
 import org.exoplatform.social.core.storage.api.ActivityStreamStorage;
@@ -60,7 +47,19 @@ import org.exoplatform.social.core.storage.exception.NodeNotFoundException;
 import org.exoplatform.social.core.storage.query.JCRProperties;
 import org.exoplatform.social.core.storage.query.WhereExpression;
 import org.exoplatform.social.core.storage.streams.StreamInvocationHelper;
-import org.exoplatform.social.core.storage.thread.SocialExecutorService;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.NavigableMap;
+import java.util.Random;
+import java.util.Set;
+import java.util.TreeMap;
 
 /**
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
@@ -72,18 +71,26 @@ public class RelationshipStorageImpl extends AbstractStorage implements Relation
   private static final Log LOG = ExoLogger.getLogger(RelationshipStorage.class);
 
   private final IdentityStorage identityStorage;
+  private RelationshipManager relationshipManager;
   private RelationshipStorage relationshipStorage;
   private CachedActivityStorage cachedActivityStorage;
-  private Object lock = new Object();
   private CachedActivityStreamStorage streamStorage;
-  private SocialExecutorService<String[]> executorService = new SocialExecutorService<String[]>(10);
 
   public RelationshipStorageImpl(IdentityStorage identityStorage) {
    this.identityStorage = identityStorage;
   }
 
   private enum Origin { FROM, TO }
-  
+
+  private RelationshipManager getRelationshipManager() {
+    
+    if (relationshipManager == null) {
+      PortalContainer container = PortalContainer.getInstance();
+      this.relationshipManager  = (RelationshipManager) container.getComponentInstanceOfType(RelationshipManager.class);
+    }
+    return relationshipManager;
+  }
+
   private CachedActivityStorage getCachedActivityStorage() {
     
     if (this.cachedActivityStorage == null) {
@@ -155,16 +162,20 @@ public class RelationshipStorageImpl extends AbstractStorage implements Relation
     }
   }
 
-  private void loadProfile(Identity identity) {
-    Profile profile = new Profile(identity);
-    profile = identityStorage.loadProfile(profile);
-    identity.setProfile(profile);
+  private void loadProfile(final Identity identity) {
+    ProfileLoader loader = new ProfileLoader() {
+      public Profile load() throws IdentityStorageException {
+        Profile profile = new Profile(identity);
+        return identityStorage.loadProfile(profile);
+      }
+    };
+    identity.setProfileLoader(loader);
   }
 
   private List<Identity> getIdentitiesFromRelationship(Iterator<RelationshipEntity> it, Origin origin, long offset, long limit) {
 
     //
-    List<Identity> identities = new ArrayList<Identity>();
+    Set<Identity> identities = new LinkedHashSet<Identity>();
     int i = 0;
 
     _skip(it, offset);
@@ -178,20 +189,12 @@ public class RelationshipStorageImpl extends AbstractStorage implements Relation
 
         case FROM:
           identity = createIdentityFromEntity(relationshipEntity.getFrom());
-          
-          //remove duplicated
-          if (identities.indexOf(identity) == -1) {
-            identities.add(identity);
-          }
+          identities.add(identity);
           break;
 
         case TO:
           identity = createIdentityFromEntity(relationshipEntity.getTo());
-          //remove duplicated
-          if (identities.indexOf(identity) == -1) {
-            identities.add(identity);
-          }
-
+          identities.add(identity);
           break;
       }
 
@@ -201,7 +204,7 @@ public class RelationshipStorageImpl extends AbstractStorage implements Relation
 
     }
 
-    return identities;
+    return new ArrayList<Identity>(identities);
   }
 
   private Identity createIdentityFromEntity(IdentityEntity entity) {
@@ -1004,208 +1007,114 @@ public class RelationshipStorageImpl extends AbstractStorage implements Relation
     return getIdentitiesRelationsByFilterCount(identities, profileFilter);
 
   }
-  
-  private String[] getRelationships(String id) {
-    ThreadLocal<String[]> identityIdsLocal = new ThreadLocal<String[]>();
 
-    String[] relationshipIds = new String[0];
-    identityIdsLocal.set(relationshipIds);
-
-    try {
-
-      IdentityEntity identityEntity = _findById(IdentityEntity.class, id);
-
-      StringBuffer sb = new StringBuffer().append("SELECT * FROM soc:relationshipdefinition WHERE ");
-      sb.append(JCRProperties.path.getName())
-        .append(" LIKE '")
-        .append(identityEntity.getPath() + StorageUtils.SLASH_STR + StorageUtils.PERCENT_STR)
-        .append("'");
-      //
-      sb.append(" ORDER BY ").append(RelationshipEntity.createdTime.getName()).append(" DESC ");
-
-      synchronized (lock) {
-
-        NodeIterator it = nodes(sb.toString());
-
-        while (it.hasNext()) {
-          Node node = (Node) it.next();
-
-          RelationshipEntity currentRelationshipEntity = _findById(RelationshipEntity.class,
-                                                                   node.getUUID());
-
-          IdentityEntity gotIdentityEntity;
-          if (currentRelationshipEntity.isReceiver()) {
-            gotIdentityEntity = currentRelationshipEntity.getFrom();
-          } else {
-            gotIdentityEntity = currentRelationshipEntity.getTo();
-          }
-          identityIdsLocal.set((String[]) ArrayUtils.add(identityIdsLocal.get(),
-                                                         gotIdentityEntity.getId()));
-        }
-
-      }
-    } catch (Exception e) {
-      throw new RelationshipStorageException(RelationshipStorageException.Type.FAILED_TO_GET_RELATIONSHIP,
-                                             e.getMessage());
-    }
-
-    return identityIdsLocal.get();
-  }
-  
-  private String[] getSuggestion(List<String> relationshipIds) {
-    String[] suggestions = new String[0];
-    
-    try {
-      int startIndex = 0;
-      int toIndex = 100;
-      //
-      List<String> excludeIdentities = StorageUtils.subList(relationshipIds, startIndex, toIndex); 
-      while (excludeIdentities.size() > 0) {
-        
-        StringBuffer sb = new StringBuffer().append("SELECT * FROM soc:identitydefinition WHERE ");
-        sb.append(JCRProperties.path.getName()).append(" LIKE '").append(getProviderRoot().getProviders().get(OrganizationIdentityProvider.NAME).getPath() + StorageUtils.SLASH_STR + StorageUtils.PERCENT_STR).append("'");
-        sb.append(" AND soc:isDeleted = 'false'");
-        
-        for(String id : excludeIdentities) {
-          sb.append(" AND NOT ").append(JCRProperties.id.getName()).append(" = '").append(id).append("'");
-        }
-        
-        NodeIterator nodeIter = nodes(sb.toString()); 
-        while(nodeIter.hasNext()) {
-          Node node = (Node)nodeIter.next();
-          String id = node.getUUID();
-          //String remoteId = node.getProperty(IdentityEntity.remoteId.getName()).getString();
-          if (relationshipIds.contains(id) == false
-              && ArrayUtils.contains(suggestions, id) == false) {
-            suggestions = (String[]) ArrayUtils.add(suggestions, id);
-          }
-        }
-        
-        //
-        startIndex = toIndex;
-        toIndex += 100;
-        
-        excludeIdentities = StorageUtils.subList(relationshipIds, startIndex, toIndex); 
-      }//end filter identities
-      
-    } catch (Exception e) {
-      throw new RelationshipStorageException(RelationshipStorageException.Type.FAILED_TO_GET_RELATIONSHIP,
-                                             e.getMessage());
-    }
-    
-    return suggestions;
-  }
-  /**
-   * Gets Suggestion list with relationship for each identity.
-   * @param suggestions
-   * @return
-   */
-  private Map<String, String[]> getSuggestionRelationships(final String[] suggestions) {
-    for (final String id : suggestions) {
-      //
-      Callable<String[]> task = new  Callable<String[]>() {
-        @Override
-        public String[] call() throws Exception {
-          return getRelationships(id);
-        }
-      };
-      executorService.submit(task, id);
-    }
-    
-    //Wait multiple threads finish work and push relationships to map
-    Map<String, String[]> suggestRelationships = new HashMap<String, String[]>();
-    copyFutureToMap(suggestRelationships, executorService.getFutureCollections());
-    
-    return suggestRelationships;
-  }
-  /**
-   * Gets result from future task
-   * @param map
-   * @param futures
-   */
-  private void copyFutureToMap(Map<String, String[]> map, Map<String, Future<String[]>> futures) {
-    try {
-      for (Entry<String, Future<String[]>> future : futures.entrySet()) {
-        map.put(future.getKey(), future.getValue().get());
-      }
-    } catch (Exception e) {
-      LOG.warn("Failed to get result from Future." + e);
-    }
-  }
-  /**
-   * Calculate and statistic suggestion.
-   * 
-   * @param relationshipIds
-   * @param suggestRelationships
-   * @return
-   */
-  private Map<String, Integer> statisticSuggesstion(List<String> relationshipIds, Map<String, String[]> suggestRelationships) {
-    //Calculate the common users of current Identity with each suggestion.
-    Map<String, Integer> suggestionIdMap = new HashMap<String, Integer>();
-    for (Entry<String, String[]> friendOfIdentity : suggestRelationships.entrySet()) {
-      //
-      String identityId = friendOfIdentity.getKey();
-      suggestionIdMap.put(identityId, StorageUtils.getCommonItemNumber(relationshipIds, Arrays.asList(friendOfIdentity.getValue())));
-    }
-    
-    return suggestionIdMap;
-  }
-  
   /**
    * {@inheritDoc}
    */
-  public Map<Identity, Integer> getSuggestions(Identity identity, int offset, int limit) throws RelationshipStorageException {
-    //get identities who have relationship
-    List<String> relationshipIds = new ArrayList<String>(); 
-    relationshipIds.add(identity.getId());
-    relationshipIds.addAll(Arrays.asList(getRelationships(identity.getId())));
-    
-    //store all identities who is not relationship with provided identity
-    String[] suggestions = getSuggestion(relationshipIds);
-
-    //Find relationships of the identities are filtered
-    //Wait multiple threads finish work and push relationships to map
-    Map<String, String[]> suggestRelationships = getSuggestionRelationships(suggestions);
-
-    //statistic suggestion
-    Map<String, Integer> suggestionIdMap = statisticSuggesstion(relationshipIds, suggestRelationships);
-    //
-    if (offset > suggestionIdMap.size()) return Collections.emptyMap();
-    return buildSuggestions(StorageUtils.sortMapByValue(suggestionIdMap, false), offset, limit);
+  public Map<Identity, Integer> getSuggestions(Identity currentIdentity, int maxConnections, 
+                                                int maxConnectionsToLoad, 
+                                                int maxSuggestions) throws RelationshipStorageException {
+    try {
+      return _getSuggestions(currentIdentity, maxConnections, maxConnectionsToLoad, maxSuggestions);
+    } catch (Exception e) {
+      throw new RelationshipStorageException(RelationshipStorageException.Type.FAILED_TO_GET_SUGGESTION, e);
+    }
   }
-  
-  private Map<Identity, Integer> buildSuggestions(Map<String, Integer> mapIds,
-                                                  final int offset,
-                                                  final int limit) {
 
-    Map<Identity, Integer> suggestions = new LinkedHashMap<Identity, Integer>();
-    //
-    int i = 0;
-    for (Entry<String, Integer> id : mapIds.entrySet()) {
-      // skip to offset
-      if (i < offset) {
-        i++;
-        continue;
-      }
+  public Map<Identity, Integer> _getSuggestions(Identity currentIdentity, int maxConnections, 
+                                                int maxConnectionsToLoad, 
+                                                int maxSuggestions) throws Exception {
+    if (maxConnectionsToLoad > 0 && maxConnections > maxConnectionsToLoad)
+       maxConnectionsToLoad = maxConnections;
+     // Get identities level 1
+    Set<Identity> relationIdLevel1 = new HashSet<Identity>();
+    RelationshipManager relationshipManager = getRelationshipManager();
+    ListAccess<Identity> allConnections = relationshipManager.getConnections(currentIdentity);
+    int size = allConnections.getSize();
+    // The ideal limit of connection to treat however we could need to go beyond this limit
+    // if we cannot reach the expected amount of suggestions
+    int endIndex;
+    Random random = new Random();
+    Identity[] connections;
+    if (size > maxConnectionsToLoad && maxConnectionsToLoad > 0 && maxConnections > 0) {
+      // The total amount of connections is bigger than the maximum allowed
+      // We will then load only a random sample to reduce the best we can the 
+      // required time for this task 
+      int startIndex = random.nextInt(size - maxConnectionsToLoad);
+      endIndex = maxConnections;
+      connections= allConnections.load(startIndex, maxConnectionsToLoad);
+    } else {
+      // The total amount of connections is less than the maximum allowed
+      // We call load everything
+      endIndex = size;
+      connections= allConnections.load(0, size);
+    }
+    // we need to load all the connections
+    for (int i = 0; i < connections.length; i++) {
+      Identity id = connections[i];
+      relationIdLevel1.add(id);
+    }
+    relationIdLevel1.remove(currentIdentity);
 
-      // limit the return result
-      if (i > (offset + limit))
+    // Get identities level 2 (suggested Identities)
+    Map<Identity, Integer> suggestedIdentities = new HashMap<Identity, Integer>();
+    Iterator<Identity> it = relationIdLevel1.iterator();
+    for (int j = 0; j < size && it.hasNext(); j++) {
+      Identity id = it.next();
+      // We check if we reach the limit of connections to treat and if we have enough suggestions
+      if (j >= endIndex && suggestedIdentities.size() > maxSuggestions && maxSuggestions > 0)
         break;
-
-      try {
-        IdentityEntity identityEntity = _findById(IdentityEntity.class, id.getKey());
-        Identity _identity = new Identity(id.getKey());
-        _identity.setDeleted(identityEntity.isDeleted());
-        _identity.setRemoteId(identityEntity.getRemoteId());
-        _identity.setProviderId(identityEntity.getProviderId());
-        loadProfile(_identity);
-        // put to suggestion result
-        suggestions.put(_identity, id.getValue());
-
-      } catch (NodeNotFoundException e) {
-        LOG.warn("Could not found identity with id = " + id.getKey());
+      ListAccess<Identity> allConns = relationshipManager.getConnections(id);
+      int allConnSize = allConns.getSize();
+      int allConnStartIndex = 0;
+      if (allConnSize > maxConnections && maxConnections > 0) {
+        // The current identity has more connections that the allowed amount so we will treat a sample
+        allConnStartIndex = random.nextInt(allConnSize - maxConnections);
+        connections = allConns.load(allConnStartIndex, maxConnections);
+      } else {
+        // The current identity doesn't have more connections that the allowed amount so we will 
+        // treat all of them
+        connections = allConns.load(0, allConnSize);
       }
-      i++;
+      for (int i = 0; i < connections.length; i++) {
+        Identity ids = connections[i];
+        // We check if the current connection is not already part of the connections of the identity
+        // for which we seek some suggestions
+        if (!relationIdLevel1.contains(ids) && !ids.equals(currentIdentity) && !ids.isDeleted()
+             && relationshipManager.get(ids, currentIdentity) == null) {
+          Integer commonIdentities = suggestedIdentities.get(ids);
+          if (commonIdentities == null) {
+            commonIdentities = new Integer(1);
+          } else {
+            commonIdentities = new Integer(commonIdentities.intValue() + 1);
+          }
+          suggestedIdentities.put(ids, commonIdentities);
+        }
+      }
+    }
+    NavigableMap<Integer, List<Identity>> groupByCommonConnections = new TreeMap<Integer, List<Identity>>();
+    // This for loop allows to group the suggestions by total amount of common connections
+    for (Identity identity : suggestedIdentities.keySet()) {
+      Integer commonIdentities = suggestedIdentities.get(identity);
+      List<Identity> ids = groupByCommonConnections.get(commonIdentities);
+      if (ids == null) {
+        ids = new ArrayList<Identity>();
+        groupByCommonConnections.put(commonIdentities, ids);
+      }
+      ids.add(identity);
+    }
+    Map<Identity, Integer> suggestions = new LinkedHashMap<Identity, Integer>();
+    int suggestionLeft = maxSuggestions;
+    // We iterate over the suggestions starting from the suggestions with the highest amount of common
+    // connections
+    main: for (Integer key : groupByCommonConnections.descendingKeySet()) {
+      List<Identity> ids = groupByCommonConnections.get(key);
+      for (Identity identity : ids) {
+        suggestions.put(identity, key);
+        // We stop once we have enough suggestions
+        if (maxSuggestions > 0 && --suggestionLeft == 0)
+          break main;
+      }
     }
     return suggestions;
   }
@@ -1213,6 +1122,4 @@ public class RelationshipStorageImpl extends AbstractStorage implements Relation
   public void setStorage(RelationshipStorage storage) {
     this.relationshipStorage = storage;
   }
-
-
 }

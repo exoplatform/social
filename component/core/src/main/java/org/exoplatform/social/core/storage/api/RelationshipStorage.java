@@ -310,14 +310,23 @@ public interface RelationshipStorage {
       final Identity existingIdentity, final ProfileFilter profileFilter) throws RelationshipStorageException;
   
   /**
-   * Gets the suggestions with number of commons users relate to provided identity
-   * @param identity the provided identity
-   * @param offset the offset position to get
-   * @param limit the limit of return result
-   * @return the map of suggestion users and number of commons users
-   * @throws RelationshipStorageException
+   * Gets suggestions having common users with the provided identity. If the total amount of suggestions
+   * found doesn't match with the expected amount this method could return null even if some suggestions
+   * have been found, this is needed to be able to distinguish cases where we could not found enough
+   * suggestions because we did not treat all the sub connections from cases where on a given sample
+   * of sub connections we could not find what we expect
+   * @param identity The provided identity.
+   * @param maxConnections Maximum of connections that we can treat per identity. If set
+   * to a value <= 0, the limit will be disabled
+   * @param maxConnectionsToLoad In case, the maxConnections are not enough to find enough suggestion, 
+   * we load more connections at the first level. If maxConnectionsToLoad or maxConnections has been 
+   * set to a value <= 0, the limit will be disabled
+   * @param maxSuggestions The total amount of expected suggestions. If set to a value <= 0, the limit 
+   * will be disabled
    * @since 4.0.x
    */
-  public Map<Identity, Integer> getSuggestions(Identity identity, int offset, int limit) throws RelationshipStorageException;
+  public Map<Identity, Integer> getSuggestions(Identity identity, int maxConnections, 
+                                               int maxConnectionsToLoad, 
+                                               int maxSuggestions) throws RelationshipStorageException;
   
 }

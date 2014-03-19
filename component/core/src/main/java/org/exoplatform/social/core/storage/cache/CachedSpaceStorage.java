@@ -24,26 +24,27 @@ import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
+import org.exoplatform.social.core.search.Sorting;
 import org.exoplatform.social.core.space.SpaceFilter;
 import org.exoplatform.social.core.space.SpaceUtils;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.storage.SpaceStorageException;
+import org.exoplatform.social.core.storage.api.SpaceStorage;
+import org.exoplatform.social.core.storage.cache.loader.ServiceContext;
 import org.exoplatform.social.core.storage.cache.model.data.IntegerData;
 import org.exoplatform.social.core.storage.cache.model.data.ListIdentitiesData;
 import org.exoplatform.social.core.storage.cache.model.data.ListSpacesData;
+import org.exoplatform.social.core.storage.cache.model.data.SpaceData;
 import org.exoplatform.social.core.storage.cache.model.data.SpaceSimpleData;
 import org.exoplatform.social.core.storage.cache.model.key.ListIdentitiesKey;
 import org.exoplatform.social.core.storage.cache.model.key.ListSpacesKey;
 import org.exoplatform.social.core.storage.cache.model.key.SpaceFilterKey;
+import org.exoplatform.social.core.storage.cache.model.key.SpaceKey;
+import org.exoplatform.social.core.storage.cache.model.key.SpaceRefKey;
 import org.exoplatform.social.core.storage.cache.model.key.SpaceType;
 import org.exoplatform.social.core.storage.cache.selector.IdentityCacheSelector;
 import org.exoplatform.social.core.storage.cache.selector.ScopeCacheSelector;
 import org.exoplatform.social.core.storage.impl.SpaceStorageImpl;
-import org.exoplatform.social.core.storage.api.SpaceStorage;
-import org.exoplatform.social.core.storage.cache.loader.ServiceContext;
-import org.exoplatform.social.core.storage.cache.model.data.SpaceData;
-import org.exoplatform.social.core.storage.cache.model.key.SpaceKey;
-import org.exoplatform.social.core.storage.cache.model.key.SpaceRefKey;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -1321,6 +1322,27 @@ public class CachedSpaceStorage implements SpaceStorage {
 
     //
     return buildSimpleSpaces(keys);
+  }
+
+  public List<Space> getLastSpaces(final int limit) {
+     SpaceFilter filter = new SpaceFilter(null, null);
+     filter.setSorting(new Sorting(Sorting.SortBy.DATE, Sorting.OrderBy.DESC));
+
+     SpaceFilterKey key = new SpaceFilterKey(null, filter, null);
+     ListSpacesKey listKey = new ListSpacesKey(key, 0, limit);
+
+     //
+     ListSpacesData keys = spacesCache.get(
+         new ServiceContext<ListSpacesData>() {
+           public ListSpacesData execute() {
+             List<Space> got = storage.getLastSpaces(limit);
+             return buildIds(got);
+           }
+         },
+         listKey);
+
+     //
+     return buildSimpleSpaces(keys);
   }
 
   @Override

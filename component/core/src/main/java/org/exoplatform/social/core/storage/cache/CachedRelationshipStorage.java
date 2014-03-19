@@ -17,12 +17,6 @@
 
 package org.exoplatform.social.core.storage.cache;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.cache.ExoCache;
 import org.exoplatform.services.log.ExoLogger;
@@ -50,6 +44,12 @@ import org.exoplatform.social.core.storage.cache.model.key.SuggestionKey;
 import org.exoplatform.social.core.storage.cache.selector.RelationshipCacheSelector;
 import org.exoplatform.social.core.storage.cache.selector.SuggestionCacheSelector;
 import org.exoplatform.social.core.storage.impl.RelationshipStorageImpl;
+
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 /**
  * Cache support for RelationshipStorage.
@@ -147,7 +147,7 @@ public class CachedRelationshipStorage implements RelationshipStorage {
   /**
    * Build the suggestions from the identity map.
    *
-   * @param map map of indentity
+   * @param map map of identity
    */
   private SuggestionsData buildIdMap(Map<Identity, Integer> map) {
 
@@ -166,7 +166,6 @@ public class CachedRelationshipStorage implements RelationshipStorage {
    * @return suggestions
    */
   private Map<Identity, Integer> buildSuggestions(SuggestionsData data) {
-
     Map<Identity, Integer> suggestions = new LinkedHashMap<Identity, Integer>();
     for (Entry<String, Integer> item : data.getMap().entrySet()) {
       Identity gotIdentity = identityStorage.findIdentityById(item.getKey());
@@ -317,17 +316,27 @@ public class CachedRelationshipStorage implements RelationshipStorage {
   /**
    * {@inheritDoc}
    */
-  public Relationship getRelationship(final Identity identity1, final Identity identity2)
+  public Relationship getRelationship(Identity identity1, Identity identity2)
       throws RelationshipStorageException {
 
-    //
-    final RelationshipIdentityKey key = new RelationshipIdentityKey(identity1.getId(), identity2.getId());
+    // We make sure to check the Relationship in the same order to improve
+    // efficiency of the cache
+    final Identity idFirst, idLast;
+    if (identity1.getId().compareTo(identity2.getId()) > 0) {
+      idFirst = identity1;
+      idLast = identity2;
+    } else {
+      idFirst = identity2;
+      idLast = identity1;
+    }
+
+    final RelationshipIdentityKey key = new RelationshipIdentityKey(idFirst.getId(), idLast.getId());
 
     //
     RelationshipKey gotKey = relationshipCacheIdentity.get(
         new ServiceContext<RelationshipKey>() {
           public RelationshipKey execute() {
-            Relationship got = storage.getRelationship(identity1, identity2);
+            Relationship got = storage.getRelationship(idFirst, idLast);
             if (got != null) {
               RelationshipKey k = new RelationshipKey(got.getId());
               exoRelationshipByIdentityCache.put(key, k);
@@ -682,15 +691,22 @@ public class CachedRelationshipStorage implements RelationshipStorage {
 
   }
 
-  public Map<Identity, Integer> getSuggestions(final Identity identity, final int offset, final int limit) throws RelationshipStorageException {
+  public Map<Identity, Integer> getSuggestions(final Identity identity, final int maxConnections, 
+                                                final int maxConnectionsToLoad, 
+                                                final int maxSuggestions) 
+                                                         throws RelationshipStorageException {
     //
     IdentityKey key = new IdentityKey(identity);
-    SuggestionKey<IdentityKey> suggestKey = new SuggestionKey<IdentityKey>(key, offset, limit);
+    SuggestionKey<IdentityKey> suggestKey = new SuggestionKey<IdentityKey>(key, maxConnections, 
+                                                                           maxConnectionsToLoad, 
+                                                                           maxSuggestions);
     
     SuggestionsData keys = suggestionCache.get(
         new ServiceContext<SuggestionsData>() {
           public SuggestionsData execute() {
-            Map<Identity, Integer> got = storage.getSuggestions(identity, offset, limit);
+            Map<Identity, Integer> got = storage.getSuggestions(identity, maxConnections, 
+                                                                maxConnectionsToLoad, 
+                                                                maxSuggestions);
             return buildIdMap(got);
           }
         },
