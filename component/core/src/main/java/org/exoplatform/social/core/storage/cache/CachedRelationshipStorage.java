@@ -17,12 +17,6 @@
 
 package org.exoplatform.social.core.storage.cache;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.cache.ExoCache;
 import org.exoplatform.services.log.ExoLogger;
@@ -50,6 +44,12 @@ import org.exoplatform.social.core.storage.cache.model.key.SuggestionKey;
 import org.exoplatform.social.core.storage.cache.selector.RelationshipCacheSelector;
 import org.exoplatform.social.core.storage.cache.selector.SuggestionCacheSelector;
 import org.exoplatform.social.core.storage.impl.RelationshipStorageImpl;
+
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 /**
  * Cache support for RelationshipStorage.
@@ -317,17 +317,27 @@ public class CachedRelationshipStorage implements RelationshipStorage {
   /**
    * {@inheritDoc}
    */
-  public Relationship getRelationship(final Identity identity1, final Identity identity2)
+  public Relationship getRelationship(Identity identity1, Identity identity2)
       throws RelationshipStorageException {
 
-    //
-    final RelationshipIdentityKey key = new RelationshipIdentityKey(identity1.getId(), identity2.getId());
+    // We make sure to check the Relationship in the same order to improve
+    // efficiency of the cache
+    final Identity idFirst, idLast;
+    if (identity1.getId().compareTo(identity2.getId()) > 0) {
+      idFirst = identity1;
+      idLast = identity2;
+    } else {
+      idFirst = identity2;
+      idLast = identity1;
+    }
+
+    final RelationshipIdentityKey key = new RelationshipIdentityKey(idFirst.getId(), idLast.getId());
 
     //
     RelationshipKey gotKey = relationshipCacheIdentity.get(
         new ServiceContext<RelationshipKey>() {
           public RelationshipKey execute() {
-            Relationship got = storage.getRelationship(identity1, identity2);
+            Relationship got = storage.getRelationship(idFirst, idLast);
             if (got != null) {
               RelationshipKey k = new RelationshipKey(got.getId());
               exoRelationshipByIdentityCache.put(key, k);

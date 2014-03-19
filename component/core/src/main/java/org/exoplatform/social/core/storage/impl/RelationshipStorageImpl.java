@@ -17,21 +17,6 @@
 
 package org.exoplatform.social.core.storage.impl;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.concurrent.Callable;
-import java.util.concurrent.Future;
-
-import javax.jcr.Node;
-import javax.jcr.NodeIterator;
-
 import org.apache.commons.lang.ArrayUtils;
 import org.chromattic.api.query.Ordering;
 import org.chromattic.api.query.QueryBuilder;
@@ -48,7 +33,9 @@ import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.profile.ProfileFilter;
+import org.exoplatform.social.core.profile.ProfileLoader;
 import org.exoplatform.social.core.relationship.model.Relationship;
+import org.exoplatform.social.core.storage.IdentityStorageException;
 import org.exoplatform.social.core.storage.RelationshipStorageException;
 import org.exoplatform.social.core.storage.api.ActivityStorage;
 import org.exoplatform.social.core.storage.api.ActivityStreamStorage;
@@ -61,6 +48,23 @@ import org.exoplatform.social.core.storage.query.JCRProperties;
 import org.exoplatform.social.core.storage.query.WhereExpression;
 import org.exoplatform.social.core.storage.streams.StreamInvocationHelper;
 import org.exoplatform.social.core.storage.thread.SocialExecutorService;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+import java.util.concurrent.Callable;
+import java.util.concurrent.Future;
+
+import javax.jcr.Node;
+import javax.jcr.NodeIterator;
 
 /**
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
@@ -155,16 +159,20 @@ public class RelationshipStorageImpl extends AbstractStorage implements Relation
     }
   }
 
-  private void loadProfile(Identity identity) {
-    Profile profile = new Profile(identity);
-    profile = identityStorage.loadProfile(profile);
-    identity.setProfile(profile);
+  private void loadProfile(final Identity identity) {
+    ProfileLoader loader = new ProfileLoader() {
+      public Profile load() throws IdentityStorageException {
+        Profile profile = new Profile(identity);
+        return identityStorage.loadProfile(profile);
+      }
+    };
+    identity.setProfileLoader(loader);
   }
 
   private List<Identity> getIdentitiesFromRelationship(Iterator<RelationshipEntity> it, Origin origin, long offset, long limit) {
 
     //
-    List<Identity> identities = new ArrayList<Identity>();
+    Set<Identity> identities = new LinkedHashSet<Identity>();
     int i = 0;
 
     _skip(it, offset);
@@ -178,20 +186,12 @@ public class RelationshipStorageImpl extends AbstractStorage implements Relation
 
         case FROM:
           identity = createIdentityFromEntity(relationshipEntity.getFrom());
-          
-          //remove duplicated
-          if (identities.indexOf(identity) == -1) {
-            identities.add(identity);
-          }
+          identities.add(identity);
           break;
 
         case TO:
           identity = createIdentityFromEntity(relationshipEntity.getTo());
-          //remove duplicated
-          if (identities.indexOf(identity) == -1) {
-            identities.add(identity);
-          }
-
+          identities.add(identity);
           break;
       }
 
@@ -201,7 +201,7 @@ public class RelationshipStorageImpl extends AbstractStorage implements Relation
 
     }
 
-    return identities;
+    return new ArrayList<Identity>(identities);
   }
 
   private Identity createIdentityFromEntity(IdentityEntity entity) {

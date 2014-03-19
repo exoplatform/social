@@ -20,7 +20,6 @@ package org.exoplatform.social.core.storage.cache;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.manager.IdentityManager;
-import org.exoplatform.social.core.manager.RelationshipManager;
 import org.exoplatform.social.core.relationship.model.Relationship;
 import org.exoplatform.social.core.storage.impl.IdentityStorageImpl;
 import org.exoplatform.social.core.test.AbstractCoreTest;
@@ -149,10 +148,20 @@ public class CachedRelationshipStorageTestCase extends AbstractCoreTest {
     cacheService.getRelationshipCacheByIdentity().clearCache();
     assertEquals(0, cacheService.getRelationshipCache().getCacheSize());
 
-    relationshipStorage.getRelationship(i1, i2);
+    Relationship r1 = relationshipStorage.getRelationship(i1, i2);
+    assertNotNull(r1);
     assertEquals(1, cacheService.getRelationshipCache().getCacheSize());
     assertEquals(1, cacheService.getRelationshipCacheByIdentity().getCacheSize());
 
+    Relationship r2 = relationshipStorage.getRelationship(i2, i1);
+    assertNotNull(r2);
+    assertEquals("Same Id", r1.getId(), r2.getId());
+    assertEquals("Same symetric", r1.isSymetric(), r2.isSymetric());
+    assertEquals("Same receiver", r1.getReceiver(), r2.getReceiver());
+    assertEquals("Same sender", r1.getSender(), r2.getSender());
+    assertEquals("Same status", r1.getStatus(), r2.getStatus());
+    assertEquals(1, cacheService.getRelationshipCache().getCacheSize());
+    assertEquals(1, cacheService.getRelationshipCacheByIdentity().getCacheSize());
   }
   
   @MaxQueryNumber(220)
