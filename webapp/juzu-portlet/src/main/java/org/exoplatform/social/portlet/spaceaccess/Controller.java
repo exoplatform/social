@@ -16,12 +16,17 @@
  */
 package org.exoplatform.social.portlet.spaceaccess;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.inject.Inject;
 
 import juzu.Action;
 import juzu.Path;
 import juzu.Response;
 import juzu.View;
+import juzu.template.Template;
+
 import javax.annotation.PreDestroy;
 
 import org.exoplatform.portal.application.PortalRequestContext;
@@ -30,7 +35,6 @@ import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.social.core.space.SpaceAccessType;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
-import org.exoplatform.social.portlet.spaceaccess.templates.spaceAccessMessage;
 import org.exoplatform.social.webui.Utils;
 import org.exoplatform.web.application.RequestContext;
 import org.exoplatform.web.url.navigation.NavigationResource;
@@ -39,7 +43,7 @@ import org.exoplatform.webui.application.WebuiRequestContext;
 
 public class Controller {
   
-  @Inject @Path("spaceAccessMessage.gtmpl") spaceAccessMessage message;
+  @Inject @Path("index.gtmpl") Template message;
   @Inject SpaceService spaceService;
 
   static private final String ALL_SPACE_LINK = "all-spaces";
@@ -49,14 +53,16 @@ public class Controller {
     PortalRequestContext pcontext = (PortalRequestContext)(WebuiRequestContext.getCurrentInstance());
     Object statusObject = pcontext.getRequest().getSession().getAttribute(SpaceAccessType.ACCESSED_TYPE_KEY);
     Object spacePrettyNameObj = pcontext.getRequest().getSession().getAttribute(SpaceAccessType.ACCESSED_SPACE_PRETTY_NAME_KEY);
+    Map<String, Object> parameters = new HashMap<String, Object>();
     
     
     if (spacePrettyNameObj == null) {
-      message.with()
-             .status(statusObject != null ? statusObject.toString() : "")
-             .spaceDisplayName("")
-             .spacePrettyName("")
-             .redirectURI(statusObject != null ? Utils.getURI(ALL_SPACE_LINK) : "").render();
+      //
+      parameters.put("status", statusObject != null ? statusObject.toString() : "");
+      parameters.put("spaceDisplayName", "");
+      parameters.put("spacePrettyName", "");
+      parameters.put("redirectURI", statusObject != null ? Utils.getURI(ALL_SPACE_LINK) : "");
+      message.with(parameters).render();
       return;
       
     } 
@@ -77,14 +83,11 @@ public class Controller {
     } 
     
     //
-    message.with()
-           .status(status)
-           .spaceDisplayName(spaceDisplayName)
-           .spacePrettyName(spacePrettyName)
-           .redirectURI("")
-           .render();
-
-    
+    parameters.put("status", status);
+    parameters.put("spaceDisplayName", spaceDisplayName);
+    parameters.put("spacePrettyName", spacePrettyName);
+    parameters.put("redirectURI", "");
+    message.with(parameters).render();
   }
   
   @Action

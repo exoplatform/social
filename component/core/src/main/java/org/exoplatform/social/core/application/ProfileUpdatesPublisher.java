@@ -145,5 +145,9 @@ public class ProfileUpdatesPublisher extends ProfileListenerPlugin {
   private IdentityStorage getStorage() {
     return (IdentityStorage) PortalContainer.getInstance().getComponentInstanceOfType(IdentityStorage.class);
   }
+
+  @Override
+  public void createProfile(ProfileLifeCycleEvent event) {
+  }
   
 }

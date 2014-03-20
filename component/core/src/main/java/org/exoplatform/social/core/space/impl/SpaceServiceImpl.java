@@ -1211,6 +1211,7 @@ public class SpaceServiceImpl implements SpaceService {
       space = addInvited(space, userId);
     }
     this.updateSpace(space);
+    spaceLifeCycle.addInvitedUser(space, userId);
   }
 
   /**
@@ -1238,6 +1239,7 @@ public class SpaceServiceImpl implements SpaceService {
     } else {
       LOG.warn("Unable request to join");
     }
+    spaceLifeCycle.addPendingUser(space, userId);
   }
 
   /**

@@ -46,6 +46,10 @@
   <component>
     <type>org.exoplatform.social.service.rest.PeopleRestService</type>
   </component>
+  
+  <component>
+    <type>org.exoplatform.social.service.rest.NotificationsRestService</type>
+  </component>
 <!-- REST service -->
 
 <!-- Social Rest API resources for latest -->

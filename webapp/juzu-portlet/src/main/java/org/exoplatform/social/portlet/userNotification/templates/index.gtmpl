@@ -1,0 +1,129 @@
+#{param name=_ctx/}
+#{param name=checkbox/}
+#{param name=checkboxId/}
+#{param name=groups/}
+#{param name=hasActivePlugin/}
+#{param name=checkBoxs/}
+#{param name=selectBoxs/}
+
+<div id="userNotification" class="uiUserNotificationPortlet uiNotificationSettings">
+	<div class="UIPopupWindow UIDragObject uiPopup UISocialConfirmation" style="width: 550px; display: none;">
+		<div class="popupHeader ClearFix">
+			<a class="uiIconClose pull-right" title="${_ctx.appRes("UINotification.action.Close")}"></a>
+			<span class="PopupTitle popupTitle"></span>
+		</div>
+		<div class="PopupContent popupContent">
+			<ul class="singleMessage popupMessage resizable">
+				<li>
+					<span class="confirmationIcon contentMessage"></span>
+				</li>
+			</ul>
+			<div class="uiAction uiActionBorder"></div>
+		</div>			
+	</div>
+	<form id="uiNotificationSetting" name="uiNotificationSetting" action="" method="post">
+		<div class="uiSocTitleBar clearfix">
+			<h3>${_ctx.appRes("UINotification.label.NotificationSettings")}</h3>
+			<span>${_ctx.appRes("UINotification.label.NotificationsDescription")}</span>
+		</div>
+		<% 
+			if (hasActivePlugin == false) { 
+		%>
+		<div class="form-horizontal" >
+			<h4>${_ctx.appRes("UINotification.msg.NoPluginIsActive")}</h4>
+		</div>
+		<%} else { %>		
+		<div>
+			<span class="uiCheckbox">
+				<input type="checkbox" ${checkbox} name="${checkboxId}" class="checkbox" id="${checkboxId}"/>
+				<span style="margin-left:10px">${_ctx.appRes("UINotification.label.DisableEmailNotifciation")}</span>
+			</span>
+		</div>
+		
+		<%
+			String display = "block";
+			if("checked".equals(checkbox)) {
+			  display = "none";
+			}
+		%>
+		<div class="form-horizontal" style="display:${display}">
+			<table class="uiGrid table table-striped">
+				<thead>
+					<tr>
+						<th class="left">${_ctx.appRes("UINotification.label.NotificationsChose")}:</th>
+						<th width="200px" class="left">${_ctx.appRes("UINotification.label.SendMeAnEmailRightWay")}</th>
+						<th width="200px" class="left">${_ctx.appRes("UINotification.label.IncludeInMyDigestEmail")}</th>
+					</tr>
+				</thead>
+				<tbody>
+			<% 
+				if (groups == null || groups.size() == 0) { 
+			%>
+					<tr>
+						<td class="empty center" colspan="3">
+						 ${_ctx.appRes("UINotification.label.Empty")}
+						</td>
+					</tr>	
+			<%} else {
+					for(def group : groups) {
+					  List pluginInfos = group.getProviderDatas();
+					  if(pluginInfos == null || pluginInfos.size() == 0) {
+					    continue;
+					  }
+			
+					  int groupActive = 0;
+						for (def plugin : pluginInfos) {
+						  String pluginId = plugin.getType();
+						  if(plugin.isActive() == false) {
+						    continue;
+						  }
+						  groupActive = groupActive + 1;
+						  if (groupActive == 1) {
+						    %>
+				          <tr>
+				            <td class="left">
+				              <strong>${_ctx.pluginRes(group.getResourceBundleKey(), group.getGroupId())}</strong>
+				            </td>
+				            <td></td>
+				            <td></td>
+				          </tr>
+			          <%
+						  }
+					%>
+					<tr>
+						<td class="left">
+							<label for="${pluginId}">${_ctx.pluginRes("UINotification.title." + pluginId, pluginId)}</label>
+						</td>
+						<td class="center">
+							${checkBoxs.get(pluginId)}
+						</td>
+						<td class="center">
+							${selectBoxs.get(pluginId)}
+						</td>
+					</tr>
+			 	 <% } %>
+			 <% } %>
+		 <% } %>
+				</tbody>
+			</table>
+			<%
+				String inforTitle = _ctx.appRes("UINotification.title.Information");
+				String confTitle = _ctx.appRes("UINotification.title.Confirmation");
+	
+				String msgOK = _ctx.appRes("UINotification.msg.SaveOKSetting");
+				String msgNOK = _ctx.appRes("UINotification.msg.SaveNOKSetting");
+	
+				String close = _ctx.appRes("UINotification.action.Cancel");
+				String ok = _ctx.appRes("UINotification.action.OK");
+	
+				String confirm = _ctx.appRes("UINotification.msg.ResetSetting");
+				String confirmLabel = _ctx.appRes("UINotification.action.Confirm");
+			%>
+			<div class="uiAction" data-info="${inforTitle}" data-conf="${confTitle}" data-close="${close}" data-ok="${ok}">
+				<button id="Save" data-ok="${msgOK}" data-nok="${msgNOK}" class="btn" type="button">${_ctx.appRes("UINotification.action.Save")}</button>
+				<button id="Reset" data-confirm="${confirm}" data-confirm-label="${confirmLabel}" class="btn" type="button">${_ctx.appRes("UINotification.action.Reset")}</button>
+			</div>
+		<%} %>			
+		</div>
+	</form>
+</div>

@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Copyright (C) 2003-2010 eXo Platform SAS.
+
+    This program is free software; you can redistribute it and/or
+    modify it under the terms of the GNU Affero General Public License
+    as published by the Free Software Foundation; either version 3
+    of the License, or (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, see<http://www.gnu.org/licenses />.
+
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <artifactId>social-extension</artifactId>
+    <groupId>org.exoplatform.social</groupId>
+    <version>4.1.0-SNAPSHOT</version>
+  </parent>
+  <groupId>org.exoplatform.social</groupId>
+  <artifactId>social-notification-extension</artifactId>
+  <packaging>war</packaging>
+  <name>eXo Social Notification Extension</name>
+  <description>eXo Social Notification Extension</description>
+  <dependencies>
+    <dependency>
+      <groupId>org.exoplatform.commons</groupId>
+      <artifactId>commons-api</artifactId>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.exoplatform.social</groupId>
+      <artifactId>social-component-common</artifactId>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.exoplatform.social</groupId>
+      <artifactId>social-component-core</artifactId>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.exoplatform.social</groupId>
+      <artifactId>social-component-notification</artifactId>
+      <scope>runtime</scope>
+    </dependency>
+  </dependencies>
+  <build>
+    <finalName>social-notification-extension</finalName>
+  </build>
+</project>

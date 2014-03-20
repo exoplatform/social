@@ -93,5 +93,15 @@ public abstract class SpaceListenerPlugin extends ManagedPlugin implements
    * {@inheritDoc}
    */
   public abstract void spaceAvatarEdited(SpaceLifeCycleEvent event);
+  
+  /**
+   * {@inheritDoc}
+   */
+  public abstract void addInvitedUser(SpaceLifeCycleEvent event);
+  
+  /**
+   * {@inheritDoc}
+   */
+  public abstract void addPendingUser(SpaceLifeCycleEvent event);
 
 }

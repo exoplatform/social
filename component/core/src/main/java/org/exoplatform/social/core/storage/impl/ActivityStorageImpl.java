@@ -638,6 +638,8 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
       commentEntity.setLastUpdated(commentMillis);
       comment.setParentId(activity.getId());
       
+      commentEntity.setMentioners(processMentions(ArrayUtils.EMPTY_STRING_ARRAY, comment.getTitle(), new ArrayList<String>(), true));
+      
       HidableEntity hidable = _getMixin(commentEntity, HidableEntity.class, true);
       hidable.setHidden(comment.isHidden());
       
@@ -736,7 +738,6 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
       else {
         _saveActivity(activity);
       }
-
       //persist and refresh JCR node to prevent NodeNotFoundException
       StorageUtils.persist(true);
 
