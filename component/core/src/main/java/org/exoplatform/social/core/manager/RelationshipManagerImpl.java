@@ -16,11 +16,6 @@
  */
 package org.exoplatform.social.core.manager;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-
 import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.social.core.identity.ConnectionFilterListAccess;
@@ -34,6 +29,11 @@ import org.exoplatform.social.core.relationship.model.Relationship;
 import org.exoplatform.social.core.relationship.model.Relationship.Type;
 import org.exoplatform.social.core.storage.RelationshipStorageException;
 import org.exoplatform.social.core.storage.api.RelationshipStorage;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 
 /**
  * The Class RelationshipManager implements RelationshipManager without caching.
@@ -560,7 +560,19 @@ public class RelationshipManagerImpl implements RelationshipManager {
                                           ConnectionFilterListAccess.Type.PROFILE_FILTER_OUTGOING);
   }
 
-  public Map<Identity, Integer> getSuggestions(Identity identity, int offset, int limit) {
-    return this.storage.getSuggestions(identity, offset, limit);
+  public Map<Identity, Integer> getSuggestions(Identity identity, int maxConnections, 
+                                                int maxConnectionsToLoad, int maxSuggestions, int maxTries) {
+    Map<Identity, Integer> suggestions = storage.getSuggestions(identity, maxConnections, maxConnectionsToLoad, 
+                                                                maxSuggestions, maxTries == 1);
+    int triesLeft = maxTries > 0 ? maxTries : -1;
+    while (suggestions == null) {
+      // We retry as long as we don't have a result
+      triesLeft--;
+      maxConnections *= 2;
+      maxConnectionsToLoad *= 2;
+      suggestions = storage.getSuggestions(identity, maxConnections, maxConnectionsToLoad, 
+                                           maxSuggestions, triesLeft == 1);
+    }
+    return suggestions;
   }
 }

@@ -46,6 +46,7 @@ import org.exoplatform.social.core.storage.cache.selector.SuggestionCacheSelecto
 import org.exoplatform.social.core.storage.impl.RelationshipStorageImpl;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -147,7 +148,7 @@ public class CachedRelationshipStorage implements RelationshipStorage {
   /**
    * Build the suggestions from the identity map.
    *
-   * @param map map of indentity
+   * @param map map of identity
    */
   private SuggestionsData buildIdMap(Map<Identity, Integer> map) {
 
@@ -166,7 +167,8 @@ public class CachedRelationshipStorage implements RelationshipStorage {
    * @return suggestions
    */
   private Map<Identity, Integer> buildSuggestions(SuggestionsData data) {
-
+    if (data.getMap() == null)
+      return null;
     Map<Identity, Integer> suggestions = new LinkedHashMap<Identity, Integer>();
     for (Entry<String, Integer> item : data.getMap().entrySet()) {
       Identity gotIdentity = identityStorage.findIdentityById(item.getKey());
@@ -692,15 +694,29 @@ public class CachedRelationshipStorage implements RelationshipStorage {
 
   }
 
-  public Map<Identity, Integer> getSuggestions(final Identity identity, final int offset, final int limit) throws RelationshipStorageException {
+  public Map<Identity, Integer> getSuggestions(final Identity identity, final int maxConnections, 
+                                                final int maxConnectionsToLoad, 
+                                                final int maxSuggestions,
+                                                final boolean nullNotAllowed) 
+                                                         throws RelationshipStorageException {
     //
     IdentityKey key = new IdentityKey(identity);
-    SuggestionKey<IdentityKey> suggestKey = new SuggestionKey<IdentityKey>(key, offset, limit);
+    SuggestionKey<IdentityKey> suggestKey = new SuggestionKey<IdentityKey>(key, maxConnections, 
+                                                                           maxConnectionsToLoad, 
+                                                                           maxSuggestions,
+                                                                           nullNotAllowed);
     
     SuggestionsData keys = suggestionCache.get(
         new ServiceContext<SuggestionsData>() {
           public SuggestionsData execute() {
-            Map<Identity, Integer> got = storage.getSuggestions(identity, offset, limit);
+            Map<Identity, Integer> got = storage.getSuggestions(identity, maxConnections, 
+                                                                maxConnectionsToLoad, 
+                                                                maxSuggestions,
+                                                                nullNotAllowed);
+            // We manage the case where the result is null
+            if (got == Collections.EMPTY_MAP) {
+              return new SuggestionsData(null);
+            }
             return buildIdMap(got);
           }
         },
