@@ -258,7 +258,8 @@ public class UIUserActivitiesDisplay extends UIContainer {
       activitiesLoader.setActivityListAccess(activitiesListAccess);
       break;
     case POSTER_ACTIVITIES:
-      activitiesListAccess = activityManager.getActivitiesByPoster(ownerIdentity);
+      Identity viewerIdentity = Utils.getViewerIdentity();	
+      activitiesListAccess = activityManager.getActivitiesWithListAccess(ownerIdentity,viewerIdentity);
       activitiesLoader.setActivityListAccess(activitiesListAccess);
       break; 
     default :
