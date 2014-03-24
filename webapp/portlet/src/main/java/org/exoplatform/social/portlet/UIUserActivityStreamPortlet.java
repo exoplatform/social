@@ -20,12 +20,15 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.exoplatform.portal.application.PortalRequestContext;
 import org.exoplatform.portal.webui.util.Util;
+import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.relationship.model.Relationship;
+import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.webui.Utils;
 import org.exoplatform.social.webui.composer.PopupContainer;
 import org.exoplatform.social.webui.composer.UIComposer;
 import org.exoplatform.social.webui.composer.UIComposer.PostContext;
 import org.exoplatform.social.webui.profile.UIUserActivitiesDisplay;
+import org.exoplatform.web.controller.QualifiedName;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.core.UIPortletApplication;
 import org.exoplatform.webui.core.lifecycle.UIApplicationLifecycle;
@@ -50,6 +53,8 @@ public class UIUserActivityStreamPortlet extends UIPortletApplication {
   private UIComposer uiComposer;
   private boolean composerDisplayed = false;
   UIUserActivitiesDisplay uiUserActivitiesDisplay;
+  private String activityId;
+  static private final String SINGLE_ACTIVITY_NODE = "activity";
   /**
    * constructor
    *
@@ -59,7 +64,15 @@ public class UIUserActivityStreamPortlet extends UIPortletApplication {
     viewerName = Utils.getViewerRemoteId();
     ownerName = Utils.getOwnerRemoteId();
     uiComposer = addChild(UIComposer.class, null, null);
-    uiComposer.setPostContext(PostContext.USER);
+    activityId = Utils.getActivityID();
+    if (activityId != null) {
+      uiComposer.setPostContext(PostContext.SINGLE);
+      uiComposer.setRendered(false);
+      composerDisplayed = false;
+    } else {
+      uiComposer.setPostContext(PostContext.USER);
+      composerDisplayed = true;
+    }
     uiUserActivitiesDisplay = addChild(UIUserActivitiesDisplay.class, null, "UIUserActivitiesDisplay");
     uiComposer.setActivityDisplay(uiUserActivitiesDisplay);
     addChild(PopupContainer.class, null, "HiddenContainer");
@@ -68,7 +81,26 @@ public class UIUserActivityStreamPortlet extends UIPortletApplication {
   public boolean isComposerDisplayed() {
     return composerDisplayed;
   }
-
+  
+  public String getActivityId() {
+    activityId = Utils.getActivityID();
+    return activityId;
+  }
+  
+  /**
+   * If activity is from a space and the current user is member of this space
+   * the he has permission to view it
+   * 
+   * @param activity
+   * @return
+   */
+  private boolean hasPermissionToViewActivity(ExoSocialActivity activity) {
+    Space space = Utils.getSpaceService().getSpaceByPrettyName(activity.getStreamOwner());
+    if (space == null)
+      return true;
+    return space != null && Utils.getSpaceService().isMember(space, Utils.getViewerRemoteId());
+  }
+  
   /**
    * resets to reload all activities
    *
@@ -105,6 +137,29 @@ public class UIUserActivityStreamPortlet extends UIPortletApplication {
     HttpServletRequest request = portalRequestContext.getRequest();
     String str = request.getRequestURL().toString();
     return str.contains(activities);
+  }
+  
+  /**
+   * Check if the page display single activity or not
+   * @return boolean 
+   */
+  public boolean isSingleActivity() {
+    return SINGLE_ACTIVITY_NODE.equals(Utils.getSelectedNode());
+  }
+  
+  /**
+   * Get activity title when display single activity
+   * @return activityTitle
+   */
+  public String getSingleActivityTitle() {
+    String activityId = Utils.getValueFromRequestParam("id");
+    if (activityId != null) {
+      ExoSocialActivity activity = Utils.getActivityManager().getActivity(activityId);
+      if (activity != null && hasPermissionToViewActivity(activity)) {
+        return activity.getTitle();
+      }
+    }
+    return null;
   }
 
   /**

@@ -27,6 +27,7 @@
     <version>4.1.x-soc-stabilization-SNAPSHOT</version>
   </parent>
   <artifactId>social-extension</artifactId>
+  <version>4.1.x-soc-stabilization-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>eXo Social Extension</name>
   <description>eXo Social Extension</description>
@@ -34,5 +35,6 @@
     <module>config</module>
     <module>jar</module>
     <module>war</module>
+    <module>notification</module>
   </modules>
 </project>

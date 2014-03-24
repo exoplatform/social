@@ -47,6 +47,11 @@ public class SpaceSearchConnector extends AbstractSocialSearchConnector {
     SpaceFilter filter = new SpaceFilter();
     filter.setSpaceNameSearchCondition(query);
     filter.setSorting(sorting);
+    
+    //if condition only have special characters or empty
+    if(filter.getSpaceNameSearchCondition().isEmpty()){
+      return results;
+    }
 
     ExoContainerContext eXoContext = (ExoContainerContext)ExoContainerContext.getCurrentContainer()
         .getComponentInstanceOfType(ExoContainerContext.class);

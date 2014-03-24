@@ -81,6 +81,8 @@
 	def jsManager = _ctx.getRequestContext().getJavascriptManager();
 	jsManager.require("SHARED/jquery", "jq")
 	         .require("SHARED/bts_tooltip").addScripts("jq('*[rel=\"tooltip\"]').tooltip();");
+	
+	Utils.displayFeedbackMessageInline("$uicomponent.id");
 %>
 <div class="uiInvitations" id="$uicomponent.id">
     <% uicomponent.renderChild(UIProfileUserSearch.class); %>

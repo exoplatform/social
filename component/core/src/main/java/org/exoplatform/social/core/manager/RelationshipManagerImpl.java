@@ -526,7 +526,7 @@ public class RelationshipManagerImpl implements RelationshipManager {
       relationship = new Relationship(invitingIdentity, invitedIdentity);
       relationship.setStatus(Type.PENDING);
       this.update(relationship);
-      //lifeCycle.relationshipRequested(this, relationship);
+      lifeCycle.relationshipRequested(this, relationship);
     }
     return relationship;
   }

@@ -150,6 +150,15 @@ public class SpaceLifeCycleTest extends AbstractCoreTest {
     public void spaceAccessEdited(SpaceLifeCycleEvent event) {
       recordEvent(event);
     }
+    
+    public void addInvitedUser(SpaceLifeCycleEvent event) {
+      recordEvent(event);
+    }
+    
+    public void addPendingUser(SpaceLifeCycleEvent event) {
+      recordEvent(event);
+    }
+
 
   }
 

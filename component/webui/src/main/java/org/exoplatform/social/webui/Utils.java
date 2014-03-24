@@ -18,6 +18,7 @@ package org.exoplatform.social.webui;
 
 import java.util.Calendar;
 import java.util.List;
+import java.util.ResourceBundle;
 
 import javax.servlet.http.Cookie;
 
@@ -30,6 +31,8 @@ import org.exoplatform.portal.mop.user.UserNode;
 import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.portal.webui.workspace.UIPortalApplication;
 import org.exoplatform.portal.webui.workspace.UIWorkingWorkspace;
+import org.exoplatform.services.log.ExoLogger;
+import org.exoplatform.services.log.Log;
 import org.exoplatform.social.common.router.ExoRouter;
 import org.exoplatform.social.common.router.ExoRouter.Route;
 import org.exoplatform.social.core.identity.model.Identity;
@@ -73,6 +76,8 @@ public class Utils {
   
   /** */
   private static RequestNavInfo currentRequestNavData = null;
+  
+  private static Log             LOG = ExoLogger.getLogger(Utils.class);
   
   /**
    * Gets remote id of owner user (depends on URL: .../remoteId). If owner user is null, return viewer remote id
@@ -252,6 +257,72 @@ public class Utils {
    */
   public static final SpaceService getSpaceService() {
     return (SpaceService) ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(SpaceService.class);
+  }
+  
+  /**
+   * Gets ExoRouter
+   * @return ExoRouter
+   */
+  public static final ExoRouter getExoRouter() {
+    return (ExoRouter) ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(ExoRouter.class);
+  }
+  
+  /**
+   * Get activity's id
+   * @return
+   */
+  public static String getActivityID() {
+    if ("activity".equals(getSelectedNode())) {
+      return getValueFromRequestParam("id");
+    }
+    return null;
+  }
+  
+  /**
+   * Check the request param of url to verify if need focus to comment box
+   * @return true if need focus to comment box
+   */
+  public static boolean isFocusCommentBox() {
+    return ("1").equals(getValueFromRequestParam("comment"));
+  }
+  
+  /**
+   * Check the request param of url to verify if need expand all likers
+   * @return true if need expand all likers
+   */
+  public static boolean isExpandLikers() {
+    return ("1").equals(getValueFromRequestParam("likes"));
+  }
+  
+  public static String getValueFromRequestParam(String param) {
+    PortalRequestContext request = Util.getPortalRequestContext();
+    return request.getRequest().getParameter(param);
+  }
+  
+  /**
+   * Display the feedback message inline instead of show on popup
+   */
+  public static void displayFeedbackMessageInline(String parentId) {
+    try {
+      WebuiRequestContext context = WebuiRequestContext.getCurrentInstance();
+      ResourceBundle res = context.getApplicationResourceBundle();
+      PortletRequestContext pContext = (PortletRequestContext) context;
+      JavascriptManager jm = pContext.getJavascriptManager();
+      String feedbackMessageType = getValueFromRequestParam("feedbackMessage");
+      if (feedbackMessageType != null) {
+        String message = res.getString("Notification.feedback.message." + feedbackMessageType);
+        String userName = getValueFromRequestParam("userName");
+        String spaceId = getValueFromRequestParam("spaceId");
+        if (userName != null)
+          message = message.replace("{0}", getUserIdentity(userName, false).getProfile().getFullName());
+        if (spaceId != null)
+          message = message.replace("{1}", getSpaceService().getSpaceById(spaceId).getDisplayName());
+        message = message.replace("'", "${simpleQuote}");
+        jm.require("SHARED/socialUtil", "socialUtil").addScripts("socialUtil.feedbackMessageInline('" + parentId + "','" + message + "');");
+      }
+    } catch (Exception e) {
+      LOG.debug("Failed to init the feedback message");
+    }
   }
   
   /**

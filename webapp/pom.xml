@@ -25,12 +25,14 @@
     <version>4.1.x-soc-stabilization-SNAPSHOT</version>
   </parent>
   <artifactId>social-webapp</artifactId>
+  <version>4.1.x-soc-stabilization-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>eXo Social Web Apps</name>
   <description>eXo Social Web Apps</description>
   <modules>
     <module>resources</module>
     <module>portlet</module>
+    <module>juzu-portlet</module>
     <module>opensocial</module>
   </modules>
 </project>

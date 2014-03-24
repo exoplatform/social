@@ -50,5 +50,10 @@ public abstract class ProfileListenerPlugin extends AbstractListenerPlugin imple
    * {@inheritDoc}
    */
   public abstract void headerSectionUpdated(ProfileLifeCycleEvent event);
+  
+  /**
+   * {@inheritDoc}
+   */
+  public abstract void createProfile(ProfileLifeCycleEvent event);
 
 }

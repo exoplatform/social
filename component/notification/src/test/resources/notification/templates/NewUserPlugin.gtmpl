@@ -1,0 +1,32 @@
+<div style="margin: 20px; background: #EDF5FF;font-family:HelveticaNeue,arial,tahoma,serif;">
+	<div style="line-height:45px;min-height:45px; border: solid 1px #d8d8d8; border-bottom:none;;font-weight:bold;vertical-align:middle;background-color:#efefef;color:#2f5e92;font-size:18px;text-align:center">
+		<span><%=_ctx.appRes("Notification.title.NewUserPlugin", PORTAL_NAME)%></span>
+	</div>
+	<div style="border:solid 1px #d8d8d8; padding:20px;border-bottom:none;">
+		<%=_ctx.appRes("Notification.label.SayHello")%> $FIRSTNAME,<br/>
+		 <table cellpadding="1" cellspacing="0" class="cf an5" border="0" style="width:98%">
+			<tbody>
+				<tr style="vertical-align:middle;text-align:left;">
+					<td class="anS" style="width:60px">
+						<div	class="anR Gr">
+							<img height="60" width="60" src="$AVATAR" alt="$USER" class="aNN">
+						</div>
+					</td>
+					<td class="anQ">
+					<%
+						String profileUrl = "<a target=\"_blank\" href=\""+ PROFILE_URL + "\">" + USER + "</a>";
+					%>
+					<%=_ctx.appRes("Notification.message.NewUserPlugin", profileUrl, PORTAL_NAME)%>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+		<br/>
+		<a target="_blank" href="$CONNECT_ACTION_URL"><%=_ctx.appRes("Notification.label.ConnectNow")%></a>
+		<br/><br/>
+		<div style="line-height:20px;color:#b7b7b7"><%=_ctx.appRes("Notification.label.footer", FOOTER_LINK)%></div>
+	</div>
+	<div style="border:1px solid #456693;font-size:14px;line-height:40px;min-height:40px; color:#fff;vertical-align:middle;background:#456693;text-align:center;font-weight:bold;">
+		<%=_ctx.appRes("Notification.label.CompanyName")%>
+	</div>
+</div>

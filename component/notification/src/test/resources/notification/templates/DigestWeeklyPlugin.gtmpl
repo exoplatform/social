@@ -1,0 +1,73 @@
+<%
+import static java.util.Calendar.*;
+%>
+<table border="0" cellpadding="0" cellspacing="0" width="600" bgcolor="#ffffff" align="center" style="background-color: #ffffff; font-size: 13px;color:#333333;line-height: 18px;font-family: HelveticaNeue, Helvetica, Arial, sans-serif;">
+    <tr>
+        <td align="center"  valign="middle" >
+            <table  cellpadding="0" cellspacing="0" width="100%" bgcolor="#ffffff" align="center" style="border:1px solid #d8d8d8;">
+                <tr>
+                    <td  height="45" valign="middle" style="margin:0;height:45px;font-weight:bold;vertical-align:middle; background-color: #efefef; font-family: 'HelveticaNeue Bold', Helvetica, Arial, sans-serif;color:#2f5e92;font-size:18px;text-align:center">
+                        <% 
+                           def nowCal = Calendar.instance;
+                           def y = nowCal.get(Calendar.YEAR);
+                           Date nowDate = nowCal.time;
+                           def m = nowDate[Calendar.MONTH] + 1;
+                           def d = nowDate[Calendar.DATE];
+                           
+                           int cdow = nowCal.get(Calendar.DAY_OF_WEEK);
+                           Calendar lastFri = (Calendar) nowCal.clone();
+                           lastFri.add(Calendar.DATE, -7 - (cdow - Calendar.FRIDAY));
+                           
+                           def lastFriYear = lastFri.get(Calendar.YEAR);
+                           Date lastFriDate = lastFri.time;
+                           def lastFriMonth = lastFriDate[Calendar.MONTH] + 1;
+                           def lastFriDay = lastFriDate[Calendar.DATE];
+                           
+                           String dateTime =  lastFriMonth + "/" + lastFriDay + "/" + lastFriYear + " - " + m + "/" + d + "/" + y;
+                        %>
+                        <%=_ctx.appRes("Notification.title.DigestProvider", PORTAL_NAME, dateTime)%>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr><!--end header area-->
+    <tr>
+        <td bgcolor="#ffffff" style="background-color: #ffffff;">
+            <table cellpadding="0" cellspacing="0" width="100%"  bgcolor="#ffffff" style="background-color: #ffffff; border-left:1px solid #d8d8d8;border-right:1px solid #d8d8d8;">
+                <tr>
+                    <td bgcolor="#ffffff" style="background-color: #ffffff;">
+                        <table border="0" cellpadding="0" cellspacing="0" width="92%" bgcolor="#ffffff" align="center" style="background-color: #ffffff; font-size: 13px;color:#333333;line-height: 18px;">
+                            <tr>
+                                <td align="left" bgcolor="#ffffff" style="background-color: #ffffff;padding: 10px 0;">
+                                    <p style="margin: 10px 0;"><%=_ctx.appRes("Notification.label.SayHello")%> <%=FIRSTNAME%>,</p>
+                                    <p style="margin: 10px 0 15px;"><%=_ctx.appRes("Notification.message.DigestProvider", PORTAL_NAME)%>&nbsp;<strong style="color: #333; font-weight: bold; font-family: 'HelveticaNeue Bold', Helvetica, Arial, sans-serif; font-size: 13px; line-height: 18px;"><%=_ctx.appRes("Notification.label.Weekly")%></strong>.
+                                    </p>
+                                    <%=DIGEST_MESSAGES_LIST%>
+                                    <%
+                                      String footerLink = "<a href=\"" + FOOTER_LINK + "\">" + _ctx.appRes("Notification.label.ClickHere") + "</a>";
+                                    %>
+                                    <p style="margin: 10px 0; color: #999999; font-family: HelveticaNeue, Helvetica, Arial, sans-serif;">
+                                        <%=_ctx.appRes("Notification.footer.DigestProvider", footerLink)%>
+                                    </p>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr><!--end content area-->
+    <tr>
+        <td bgcolor="#456693" align="center"  style="border:1px solid #456693;">
+            <table border="0" cellpadding="0" cellspacing="0" width="92%"  style="font-size: 13px;line-height: 18px;font-family:HelveticaNeue,verdana,arial,tahoma">
+                <tr>
+                    <td align="left" valign="top" style="font-family: HelveticaNeue, Helvetica, Arial, sans-serif,serif;color:#ffffff;font-size:13px;" >
+                        <h3 style="text-align: center; margin: 0; padding: 10px 0;">
+                            <a target="_blank" style="color: #ffffff; font-size: 13px;font-family:'HelveticaNeue Bold',arial,tahoma,serif; font-weight: bold; text-decoration: none;" href="http://www.exoplatform.com/company/en/home" title="eXo Platform"><%=_ctx.appRes("Notification.label.CompanyName")%></a>
+                        </h3>               
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr><!--end footer area-->     
+</table>

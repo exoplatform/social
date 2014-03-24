@@ -419,4 +419,14 @@ public class SpaceActivityPublisher extends SpaceListenerPlugin {
     return (SpaceStorage) PortalContainer.getInstance().getComponentInstanceOfType(SpaceStorage.class);
   }
 
+  @Override
+  public void addInvitedUser(SpaceLifeCycleEvent event) {
+    
+  }
+
+  @Override
+  public void addPendingUser(SpaceLifeCycleEvent event) {
+    
+  }
+
 }

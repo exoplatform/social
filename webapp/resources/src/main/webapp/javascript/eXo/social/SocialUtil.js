@@ -130,7 +130,38 @@
           eXo.social.PopupConfirmation.confirm('demo', [{action: action_, label : label_}], title_, message_, close_);
         }); 
       },
-    
+      
+    feedbackMessagePopup : function(title, message, closeLabel) { 
+      var popup = PopupConfirmation.makeTemplate();
+      popup.find('.popupTitle').html(title);
+      message = message.replace("${simpleQuote}", "'");
+      popup.find('.contentMessage').removeClass('confirmationIcon').addClass('infoIcon').html(message);
+      var uiAction = popup.find('.uiAction');
+      uiAction.append(PopupConfirmation.addAction(null, closeLabel));
+      //
+      PopupConfirmation.show(popup);
+     },
+     
+     feedbackMessageInline : function(parentId, message) { 
+       message = message.replace("${simpleQuote}", "'");
+
+       var msgEl = $('#feedbackmessageInline');
+
+       if(msgEl.length === 0) {
+         msgEl = $('<div id="feedbackMessageInline" class="alert alert-success">' +
+                   '  <i class="uiIconSuccess"></i><span class="message"></span>' +
+                   '</div>');
+         //
+         msgEl.prependTo($('#'+ parentId));
+       }
+
+       if($(window).scrollTop() > msgEl.offset().top) {
+         msgEl[0].scrollIntoView(true);
+       }
+       msgEl.stop().hide().find("span.message").text(message);
+       msgEl.show('fast').delay(4500).hide('slow');
+     },
+
     /**
      * Get current Browser
      */
@@ -257,6 +288,7 @@
 
   setTimeout(PopupConfirmation.executeCurrentConfirm, 220);
   eXo.social.PopupConfirmation = eXo.social.PopupConfirmation || PopupConfirmation;
+  SocialUtils.PopupConfirmation = eXo.social.PopupConfirmation;
   eXo.social.SocialUtil = SocialUtils;
   return SocialUtils;
 

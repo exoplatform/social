@@ -30,6 +30,9 @@ import org.exoplatform.social.core.ActivityProcessor;
 import org.exoplatform.social.core.BaseActivityProcessorPlugin;
 import org.exoplatform.social.core.activity.ActivitiesRealtimeListAccess;
 import org.exoplatform.social.core.activity.ActivitiesRealtimeListAccess.ActivityType;
+import org.exoplatform.social.core.activity.ActivityLifeCycle;
+import org.exoplatform.social.core.activity.ActivityListener;
+import org.exoplatform.social.core.activity.ActivityListenerPlugin;
 import org.exoplatform.social.core.activity.CommentsRealtimeListAccess;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.activity.model.ExoSocialActivityImpl;
@@ -58,6 +61,8 @@ public class ActivityManagerImpl implements ActivityManager {
 
   /** spaceService */
   protected SpaceService                 spaceService;
+  
+  protected ActivityLifeCycle            activityLifeCycle = new ActivityLifeCycle();
 
   /**
    * Default limit for deprecated methods to get maximum number of activities.
@@ -80,6 +85,7 @@ public class ActivityManagerImpl implements ActivityManager {
    */
   public void saveActivityNoReturn(Identity streamOwner, ExoSocialActivity newActivity) {
     activityStorage.saveActivity(streamOwner, newActivity);
+    activityLifeCycle.saveActivity(getActivity(newActivity.getId()));
   }
 
   /**
@@ -142,6 +148,7 @@ public class ActivityManagerImpl implements ActivityManager {
   public void saveComment(ExoSocialActivity existingActivity, ExoSocialActivity newComment) throws
           ActivityStorageException {
     activityStorage.saveComment(existingActivity, newComment);
+    activityLifeCycle.saveComment(activityStorage.getActivity(newComment.getId()));
   }
 
   /**
@@ -182,6 +189,7 @@ public class ActivityManagerImpl implements ActivityManager {
     identityIds = (String[]) ArrayUtils.add(identityIds, identity.getId());
     existingActivity.setLikeIdentityIds(identityIds);
     updateActivity(existingActivity);
+    activityLifeCycle.likeActivity(existingActivity);
   }
 
   /**
@@ -198,6 +206,25 @@ public class ActivityManagerImpl implements ActivityManager {
     } else {
       LOG.warn("activity is not liked by identity: " + identity);
     }
+  }
+
+  @Override
+  public void addActivityEventListener(ActivityListenerPlugin activityListenerPlugin) {
+    registerActivityListener(activityListenerPlugin);   
+  }
+  
+  /**
+   * {@inheritDoc}
+   */
+  public void registerActivityListener(ActivityListener listener) {
+    activityLifeCycle.addListener(listener);
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  public void unregisterActivityListener(ActivityListener listener) {
+    activityLifeCycle.removeListener(listener);
   }
 
 
@@ -460,4 +487,5 @@ public class ActivityManagerImpl implements ActivityManager {
     Validate.notNull(newActivity.getUserId(), "activity.getUserId() must not be null!");
     return identityManager.getIdentity(newActivity.getUserId(), false);
   }
+
 }

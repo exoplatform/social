@@ -449,6 +449,22 @@ public class BaseUIActivity extends UIForm {
     comments = activityCommentsListAccess.loadAsList(0, DEFAULT_LIMIT);
     comments = getI18N(comments);
     identityLikes = activity.getLikeIdentityIds();
+    
+    //init single activity : focus to comment's box or expand all comments
+    initSingleActivity();
+  }
+  
+  private void initSingleActivity() {
+    UIActivitiesContainer uiActivitiesContainer = getAncestorOfType(UIActivitiesContainer.class);
+    PostContext postContext = uiActivitiesContainer.getPostContext();
+    if (postContext == PostContext.SINGLE) {
+      if (! Utils.isExpandLikers() && ! Utils.isFocusCommentBox()) {
+        // expand all comments
+        setCommentListStatus(CommentStatus.ALL);
+      } else {
+        setCommentListStatus(CommentStatus.LATEST);
+      }
+    }
   }
   
   public boolean isUserActivity() {
@@ -615,7 +631,7 @@ public class BaseUIActivity extends UIForm {
       if (uiActivity.isNoLongerExisting(activityId, event)) {
         return;
       }
-      uiActivity.refresh();
+      //uiActivity.refresh();
       uiActivity.setAllLoaded(true);
       event.getRequestContext().addUIComponentToUpdateByAjax(uiActivity);
       
