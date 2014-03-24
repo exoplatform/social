@@ -159,8 +159,18 @@
       expiredays = ((expiredays == null) ? "" : ";expires=" + exdate.toGMTString());
       var path = ';path=/portal';
       document.cookie = name + "=" + escape(value) + expiredays + path;
+    },
+    updateRelationship : function(identityId) {
+      var identityBox = $('#identity' + identityId);
+      var relationshipInfo = $('#UIUpdateRelationship > div');
+      if (relationshipInfo.length > 0) {
+        //
+        identityBox.find('span.statusLabel:first').text(relationshipInfo.data('status'));
+        identityBox.find('button.actionLabel:first').attr('onclick', relationshipInfo.data('action'));
+        identityBox.find('button.actionLabel:first').text(relationshipInfo.text());
+      }
+      identityBox.find('button.btn-confirm:first').hide();
     }
-    
   };
   
 
