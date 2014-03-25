@@ -128,5 +128,19 @@ public interface SpaceLifeCycleListener extends LifeCycleListener<SpaceLifeCycle
    * @param event the space lifecycle event
    */
   void spaceAccessEdited(SpaceLifeCycleEvent event);
+  
+  /**
+   * Invokes this method when a user is invited to join a space.
+   *
+   * @param event the space lifecycle event
+   */
+  void addInvitedUser(SpaceLifeCycleEvent event);
+  
+  /**
+   * Invokes this method when a user request to join a space.
+   *
+   * @param event the space lifecycle event
+   */
+  void addPendingUser(SpaceLifeCycleEvent event);
 
 }

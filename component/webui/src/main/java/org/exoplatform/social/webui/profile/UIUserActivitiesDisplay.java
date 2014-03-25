@@ -212,6 +212,13 @@ public class UIUserActivitiesDisplay extends UIContainer {
       removeChild(UIActivitiesLoader.class);
       activitiesLoader = addChild(UIActivitiesLoader.class, null, "UIActivitiesLoader");
     }
+    //
+    String activityId = Utils.getActivityID();
+    if (activityId != null && activityId.length() > 0) {
+      activitiesLoader.setPostContext(PostContext.SINGLE);
+    } else {
+      activitiesLoader.setPostContext(PostContext.USER);
+    }   
     
     // Check if current display page is My Activity Stream
     String currentUserName = URLUtils.getCurrentUser();
@@ -219,7 +226,6 @@ public class UIUserActivitiesDisplay extends UIContainer {
       selectedDisplayMode = DisplayMode.OWNER_STATUS;
     }
     
-    activitiesLoader.setPostContext(PostContext.USER);
     activitiesLoader.setLoadingCapacity(ACTIVITY_PER_PAGE);
     activitiesLoader.setOwnerName(ownerName);
     activitiesLoader.setSelectedDisplayMode(selectedDisplayMode.toString());

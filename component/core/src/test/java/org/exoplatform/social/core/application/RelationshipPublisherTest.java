@@ -174,7 +174,6 @@ public class RelationshipPublisherTest extends  AbstractCoreTest {
     assertEquals(1, rootComments.size());
     assertEquals("I'm now connected with 1 user(s)",rootActivity.getTitle());
     assertEquals("I'm now connected with Demo gtn",rootComments.get(0).getTitle());
-
     String demoActivityId =  identityStorage.getProfileActivityId(demoIdentity.getProfile(), Profile.AttachedActivityType.RELATIONSHIP);
     assertNotNull(demoActivityId);
     ExoSocialActivity demoActivity = activityManager.getActivity(demoActivityId);
@@ -182,7 +181,6 @@ public class RelationshipPublisherTest extends  AbstractCoreTest {
     assertEquals(1, demoComments.size());
     assertEquals("I'm now connected with 1 user(s)",demoActivity.getTitle());
     assertEquals("I'm now connected with Root Root",demoComments.get(0).getTitle());
-
     relationshipManager.delete(rootToDemoRelationship);
     activityManager.deleteActivity(rootActivity);
     activityManager.deleteActivity(demoActivity);

@@ -32,6 +32,7 @@ import org.exoplatform.social.core.identity.SpaceMemberFilterListAccess;
 import org.exoplatform.social.core.identity.SpaceMemberFilterListAccess.Type;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
+import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.profile.ProfileFilter;
 import org.exoplatform.social.core.profile.ProfileLifeCycle;
 import org.exoplatform.social.core.profile.ProfileListener;
@@ -336,6 +337,11 @@ public class IdentityManagerImpl implements IdentityManager {
         saveIdentity(identityFoundByRemoteProvider);
         this.getIdentityStorage().saveProfile(identityFoundByRemoteProvider.getProfile());
         result = identityFoundByRemoteProvider;
+        
+        // case of create new space or user, an event will be called only in case of create user
+        if (OrganizationIdentityProvider.NAME.equals(providerId)) {
+          profileLifeCycle.createProfile(result.getProfile());
+        }
       } else {
         // Not found in provider, so return null
         return result;

@@ -582,6 +582,9 @@ public class RelationshipStorageImpl extends AbstractStorage implements Relation
         _createRelationship(relationship);
       }
       else {
+        //
+        StorageUtils.persist();
+        
         _saveRelationship(relationship);
       }
     }

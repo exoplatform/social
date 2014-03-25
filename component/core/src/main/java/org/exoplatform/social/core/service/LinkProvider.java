@@ -63,6 +63,7 @@ public class LinkProvider {
   
   private static IdentityManager identityManager;
   private static Log             LOG = ExoLogger.getLogger(LinkProvider.class);
+  private static final String CONFIGURED_DOMAIN_URL = "gatein.email.domain.url";
 
   /**
    * Hacks for unit test to work.
@@ -146,6 +147,14 @@ public class LinkProvider {
   public static String getProfileLink(final String username, final String portalOwner) {
     Identity identity = getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, username, true);
     Validate.notNull(identity, "Identity must not be null.");
+    
+    //
+    String configured_domain_url = System.getProperty(CONFIGURED_DOMAIN_URL, null);
+    if (configured_domain_url != null) {
+      return "<a href=\"" + configured_domain_url + buildProfileUri(identity.getRemoteId(), null, portalOwner)
+      + "\" target=\"_parent\">" + identity.getProfile().getFullName() + "</a>";
+    } 
+
     return "<a href=\"" + buildProfileUri(identity.getRemoteId(), null, portalOwner)
     + "\" target=\"_parent\">" + identity.getProfile().getFullName() + "</a>";
   }
@@ -383,6 +392,28 @@ public class LinkProvider {
    */
   private static String getBaseUri(final String portalName, String portalOwner) {
     return "/" + getPortalName(portalName) + "/" + getPortalOwner(portalOwner);
+  }
+  
+  /**
+   * Gets the link of notification settings page
+   * 
+   * @param remoteId
+   * @return
+   */
+  public static String getUserNotificationSettingUri(final String remoteId) {
+    return getBaseUri(null, null) + "/notifications" + ROUTE_DELIMITER + remoteId;
+  }
+  
+  /**
+   * Gets the link of all spaces page
+   * 
+   * @return
+   */
+  public static String getRedirectUri(String type) {
+    if (type.isEmpty()) {
+      return getBaseUri(null, null);
+    }
+    return getBaseUri(null, null) + "/" + type;
   }
 
   /**

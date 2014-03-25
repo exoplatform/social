@@ -196,36 +196,85 @@ var UIActivity = {
         }
       }
     }
-  },
-  removeActivity : function () {
-    var jElm = $('.currentDeleteActivity:first');
-    var idElm = jElm.attr('id');
-    jElm.removeClass('currentDeleteActivity');
-    if (idElm.indexOf('Activity') > 0) { // remove activity
-      var idActivty = idElm.replace('DeleteActivityButton', '')
-      $('#activityContainer' + idActivty).css('overflow', 'hidden').animate(
-        {
-          height : '1px',
-          opacity : '0'
-        }, 500,
-        function() {
-          $(this).removeClass('activityStream');
-          window.eval(jElm.attr('data-delete').replace('javascript:', ''));
-        });
-    } else if (idElm.indexOf('Comment') > 0) { // remove comment
-      var idComment = idElm.replace('DeleteCommentButton', '')
-      $('#commentContainer' + idComment).css('overflow', 'hidden')
-      .animate(
-        {
-          height : '1px',
-          opacity : '0.1'
-        }, 300,
-        function() {
-          $(this).hide();
-          window.eval(jElm.attr('data-delete').replace('javascript:', ''));
-        }
-      );
+	},
+	loadLikes : function () {
+	    var contentBoxEl = $('#'+UIActivity.contentBoxId);
+      var listLiked = $(contentBoxEl).find('.listLiked').find('a').show();
+      UIActivity.isLoadLike = true;
+	},
+	removeActivity : function () {
+		var jElm = $('.currentDeleteActivity:first');
+		var idElm = jElm.attr('id');
+		jElm.removeClass('currentDeleteActivity');
+		if (idElm.indexOf('Activity') > 0) { // remove activity
+			var idActivty = idElm.replace('DeleteActivityButton', '')
+			$('#activityContainer' + idActivty).css('overflow', 'hidden').animate(
+				{
+					height : '1px',
+					opacity : '0'
+				}, 500,
+				function() {
+					$(this).removeClass('activityStream');
+					window.eval(jElm.attr('data-delete').replace('javascript:', ''));
+				});
+		} else if (idElm.indexOf('Comment') > 0) { // remove comment
+			var idComment = idElm.replace('DeleteCommentButton', '')
+			$('#commentContainer' + idComment).css('overflow', 'hidden')
+			.animate(
+				{
+					height : '1px',
+					opacity : '0.1'
+				}, 300,
+				function() {
+					$(this).hide();
+					window.eval(jElm.attr('data-delete').replace('javascript:', ''));
+				}
+			);
+		}
+	},
+	
+	hightlightComment : function(activityId) {
+    var isReply = window.location.href.indexOf("comment=1") > 0;
+    var anchor = window.location.hash;
+    var anchor_pattern = "#comment-([\\w|/]+|)";
+    var result = anchor.match(anchor_pattern);
+    if (result != null) {
+      var commentId = result[1];
+      var actionComment = '#commentContainer' + commentId;
+      $(actionComment).css("background-color","#f0f0f0");
+      if (isReply) {
+        this.replyByURL(activityId);
+      } else {
+    	  var obj = document.getElementById('commentContainer'+ commentId);
+    	  if (obj) {
+    		  obj.scrollIntoView(true);
+    	  }
+      }
     }
+  },
+	
+	replyByURL : function(activityId) {
+	  $(document).ready( function() {
+  	    var actionComment = '#CommentLink' + activityId;
+  	    var cmAction = $(actionComment);
+  	    if(cmAction.length > 0) {
+  	      cmAction.trigger('click');
+  	    }
+  	  }
+	  );
+	},
+
+	setPageTitle : function(activityTitle) {
+		$(document).attr('title', 'Activity: ' + $('<div></div>').html(window.decodeURIComponent(activityTitle)).text());
+	},
+	
+	loadLikersByURL : function() {
+    $(document).ready( function() {
+      var contentBoxEl = $('#'+UIActivity.contentBoxId);
+      var listLiked = $(contentBoxEl).find('.listLiked');
+      listLiked.find('.btn').trigger('click');
+      }
+    );
   }
 };
 

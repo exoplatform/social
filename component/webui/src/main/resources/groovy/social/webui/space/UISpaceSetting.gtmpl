@@ -20,11 +20,17 @@
 -->
 */
 %>
-<% import org.exoplatform.webui.core.UITabPane; 
-   _ctx.getRequestContext().getJavascriptManager().require("SHARED/bts_tab");
+<% import org.exoplatform.webui.core.UITabPane;
+   import org.exoplatform.social.webui.Utils;
+
+   def jsManager = _ctx.getRequestContext().getJavascriptManager();
+   jsManager.require("SHARED/bts_tab");
+   
 %>
 <div class="uiSpaceSetting" id="$uicomponent.id">
-<% if(uicomponent.isLeader()){ %>
+<% if(uicomponent.isLeader()){ 
+     uicomponent.initTabByContext();
+%>
   <div><% uicomponent.renderChild(UITabPane.class);%></div>
 <% } else {
      def context = _ctx.getRequestContext();

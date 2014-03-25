@@ -46,6 +46,9 @@ public class ProfileLifeCycle extends AbstractLifeCycle<ProfileListener, Profile
     case HEADER_UPDATED:
       listener.headerSectionUpdated(event);
       break;
+    case CREATED:
+      listener.createProfile(event);
+      break;
     default:
       break;
     }
@@ -69,6 +72,10 @@ public class ProfileLifeCycle extends AbstractLifeCycle<ProfileListener, Profile
 
   public void headerUpdated(String username, Profile profile) {
     broadcast(new ProfileLifeCycleEvent(Type.HEADER_UPDATED, username, profile));
+  }
+  
+  public void createProfile(Profile profile) {
+    broadcast(new ProfileLifeCycleEvent(Type.CREATED, profile.getIdentity().getRemoteId(), profile));
   }
 
 }
