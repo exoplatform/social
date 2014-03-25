@@ -87,6 +87,7 @@ import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
 import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
+import org.exoplatform.social.core.storage.impl.AbstractStorage;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.gatein.common.i18n.LocalizedString;
 import org.gatein.common.util.Tools;
@@ -1629,5 +1630,21 @@ public class SpaceUtils {
   public static UserACL getUserACL() {
     ExoContainer container = ExoContainerContext.getCurrentContainer();
     return (UserACL) container.getComponentInstanceOfType(UserACL.class);
+  }
+  /**
+   * Check if an activity is space activity
+   *  
+   * @param activityID 
+   * @return true if it is space activity
+   */
+  public static boolean isSpaceActivity (String activityID) throws Exception {
+    String path = null;
+    try {
+      path = AbstractStorage.lifecycleLookup().getSession().getJCRSession().getNodeByUUID(activityID).getPath();
+      if (path.contains("soc:space")) return true;
+      return false;
+    } catch (Exception e) {
+      throw e;
+    }
   }
 }
