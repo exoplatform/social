@@ -42,6 +42,7 @@ import org.exoplatform.social.core.relationship.model.Relationship;
 import org.exoplatform.social.core.space.SpaceUtils;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
+import org.exoplatform.social.core.storage.impl.AbstractStorage;
 import org.exoplatform.web.application.JavascriptManager;
 import org.exoplatform.web.application.RequestContext;
 import org.exoplatform.web.controller.QualifiedName;
@@ -618,5 +619,21 @@ public class Utils {
     }
     
     return space;
+  }
+  /**
+   * Check if an activity is space activity
+   *  
+   * @param activityID 
+   * @return true if it is space activity
+   */
+  public static boolean isSpaceActivity (String activityID) throws Exception {
+    String path = null;
+    try {
+      path = AbstractStorage.lifecycleLookup().getSession().getJCRSession().getNodeByUUID(activityID).getPath();
+      if (path.contains("soc:space")) return true;
+      return false;
+    } catch (Exception e) {
+      throw e;
+    }
   }
 }
