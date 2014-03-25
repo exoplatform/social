@@ -38,6 +38,7 @@ import org.exoplatform.social.core.processor.I18NActivityProcessor;
 import org.exoplatform.social.core.relationship.model.Relationship;
 import org.exoplatform.social.core.relationship.model.Relationship.Type;
 import org.exoplatform.social.core.space.SpaceException;
+import org.exoplatform.social.core.space.SpaceUtils;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
 import org.exoplatform.social.core.storage.ActivityStorageException;
@@ -592,9 +593,16 @@ public class BaseUIActivity extends UIForm {
    * @since 1.2.2
    */
   protected boolean isSpaceStreamOwner() {
-    Identity identityStreamOwner = Utils.getIdentityManager().getOrCreateIdentity(SpaceIdentityProvider.NAME, 
-                                                                                  this.getActivity().getStreamOwner(), false);
-    return (identityStreamOwner != null);
+    try {
+      if (SpaceUtils.isSpaceActivity(this.getActivity().getId())) {
+        return SpaceUtils.isSpaceNameExisted(this.getActivity().getStreamOwner());
+      }
+      return false;
+    } catch (Exception e) {
+      LOG.error("Cannot get Activity ", e);
+      return false;
+    }
+	  
   }
   
   /**
