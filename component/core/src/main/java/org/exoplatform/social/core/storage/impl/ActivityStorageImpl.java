@@ -351,7 +351,7 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
       if (streamId.equals(activityEntity.getIdentity().getId())) {
         identityEntity = activityEntity.getIdentity();
       } else {
-    	IdentityEntity streamOwnerEntity = _findById(IdentityEntity.class, streamId);
+        IdentityEntity streamOwnerEntity = _findById(IdentityEntity.class, streamId);
         identityEntity = streamOwnerEntity;
         activityEntity.setIdentity(streamOwnerEntity);  
       }
