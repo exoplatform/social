@@ -561,18 +561,8 @@ public class RelationshipManagerImpl implements RelationshipManager {
   }
 
   public Map<Identity, Integer> getSuggestions(Identity identity, int maxConnections, 
-                                                int maxConnectionsToLoad, int maxSuggestions, int maxTries) {
-    Map<Identity, Integer> suggestions = storage.getSuggestions(identity, maxConnections, maxConnectionsToLoad, 
-                                                                maxSuggestions, maxTries == 1);
-    int triesLeft = maxTries > 0 ? maxTries : -1;
-    while (suggestions == null) {
-      // We retry as long as we don't have a result
-      triesLeft--;
-      maxConnections *= 2;
-      maxConnectionsToLoad *= 2;
-      suggestions = storage.getSuggestions(identity, maxConnections, maxConnectionsToLoad, 
-                                           maxSuggestions, triesLeft == 1);
-    }
-    return suggestions;
+                                                int maxConnectionsToLoad, int maxSuggestions) {
+    return storage.getSuggestions(identity, maxConnections, maxConnectionsToLoad, 
+                                                                maxSuggestions);
   }
 }

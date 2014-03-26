@@ -314,14 +314,13 @@ public class SynchronizedRelationshipStorage extends RelationshipStorageImpl {
   @Override
   public Map<Identity, Integer> getSuggestions(Identity identity, int maxConnections, 
                                                 int maxConnectionsToLoad, 
-                                                int maxSuggestions,
-                                                boolean nullNotAllowed) 
+                                                int maxSuggestions) 
                                                 throws RelationshipStorageException {
 
     boolean created = startSynchronization();
     try {
       return super.getSuggestions(identity, maxConnections, maxConnectionsToLoad, 
-                                    maxSuggestions, nullNotAllowed);
+                                    maxSuggestions);
     }
     finally {
       stopSynchronization(created);

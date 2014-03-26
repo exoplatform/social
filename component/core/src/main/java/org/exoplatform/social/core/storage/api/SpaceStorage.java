@@ -17,11 +17,11 @@
 
 package org.exoplatform.social.core.storage.api;
 
-import java.util.List;
-
 import org.exoplatform.social.core.space.SpaceFilter;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.storage.SpaceStorageException;
+
+import java.util.List;
 
 /**
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
@@ -586,4 +586,14 @@ public interface SpaceStorage {
    * @since 4.0.0.Beta01
    */
   int getNumberOfMemberPublicSpaces(String userId);
+
+  /**
+   * Gets the last spaces that have been created.
+   *
+   * @param limit the limit of spaces to provide.
+   * @return The last spaces.
+   * @LevelAPI Experimental
+   * @since 4.0.x
+   */
+  List<Space> getLastSpaces(int limit);
 }

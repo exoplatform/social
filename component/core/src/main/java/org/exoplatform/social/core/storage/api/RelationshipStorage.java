@@ -323,13 +323,10 @@ public interface RelationshipStorage {
    * set to a value <= 0, the limit will be disabled
    * @param maxSuggestions The total amount of expected suggestions. If set to a value <= 0, the limit 
    * will be disabled
-   * @param nullNotAllowed indicates whether or not null can be returned by the this method
-   * @return The suggestions.
    * @since 4.0.x
    */
   public Map<Identity, Integer> getSuggestions(Identity identity, int maxConnections, 
                                                int maxConnectionsToLoad, 
-                                               int maxSuggestions,
-                                               boolean nullNotAllowed) throws RelationshipStorageException;
+                                               int maxSuggestions) throws RelationshipStorageException;
   
 }

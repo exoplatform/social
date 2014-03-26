@@ -17,22 +17,6 @@
 
 package org.exoplatform.social.core.storage.impl;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import javax.jcr.Node;
-import javax.jcr.Property;
-import javax.jcr.RepositoryException;
-
 import org.apache.commons.lang.StringEscapeUtils;
 import org.chromattic.api.ChromatticSession;
 import org.chromattic.api.query.Ordering;
@@ -44,7 +28,6 @@ import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.chromattic.entity.IdentityEntity;
-import org.exoplatform.social.core.chromattic.entity.ProfileEntity;
 import org.exoplatform.social.core.chromattic.entity.ProviderEntity;
 import org.exoplatform.social.core.chromattic.entity.SpaceEntity;
 import org.exoplatform.social.core.chromattic.entity.SpaceListEntity;
@@ -67,6 +50,22 @@ import org.exoplatform.social.core.storage.query.JCRProperties;
 import org.exoplatform.social.core.storage.query.QueryFunction;
 import org.exoplatform.social.core.storage.query.WhereExpression;
 import org.exoplatform.social.core.storage.streams.StreamInvocationHelper;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import javax.jcr.Node;
+import javax.jcr.Property;
+import javax.jcr.RepositoryException;
 
 /**
  * Space storage layer.
@@ -2017,6 +2016,27 @@ public class SpaceStorageImpl extends AbstractStorage implements SpaceStorage {
     
     //
     return Collections.emptyList();
+  }
+
+  public List<Space> getLastSpaces(final int limit) {
+    QueryBuilder<SpaceEntity> builder = getSession().createQueryBuilder(SpaceEntity.class);
+
+    Ordering ordering = Ordering.valueOf(Sorting.OrderBy.DESC.toString());
+
+    builder.orderBy(SpaceEntity.createdTime.getName(), ordering);
+
+    QueryResult<SpaceEntity> result = builder.get().objects(0L, (long)limit);
+
+    List<Space> got = new LinkedList<Space>();
+    while (result.hasNext()) {
+      SpaceEntity entity =  result.next();
+      Space space = new Space();
+
+      fillSpaceFromEntity(entity, space);
+
+      got.add(space);
+    }
+    return got;
   }
 
   public int getNumberOfMemberPublicSpaces(String userId) {

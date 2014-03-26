@@ -16,8 +16,6 @@
  */
 package org.exoplatform.social.core.space.spi;
 
-import java.util.List;
-
 import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.social.core.application.PortletPreferenceRequiredPlugin;
 import org.exoplatform.social.core.space.SpaceApplicationConfigPlugin;
@@ -26,6 +24,8 @@ import org.exoplatform.social.core.space.SpaceFilter;
 import org.exoplatform.social.core.space.SpaceListAccess;
 import org.exoplatform.social.core.space.SpaceListenerPlugin;
 import org.exoplatform.social.core.space.model.Space;
+
+import java.util.List;
 
 /**
  * Provides methods to work with Space.
@@ -1068,7 +1068,17 @@ public interface SpaceService {
    * @LevelAPI Platform
    */
   List<Space> getLastAccessedSpace(String remoteId, String appId, int offset, int limit) throws SpaceException;
-  
+
+  /**
+   * Gets the last spaces that have been created.
+   *
+   * @param limit the limit of spaces to provide.
+   * @return The last spaces.
+   * @LevelAPI Experimental
+   * @since 4.0.x
+   */
+  List<Space> getLastSpaces(int limit);
+
   /**
    * Gets a list of the most recently accessed spaces of a user.
    *

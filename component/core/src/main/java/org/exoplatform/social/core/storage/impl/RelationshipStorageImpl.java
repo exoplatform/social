@@ -49,11 +49,10 @@ import org.exoplatform.social.core.storage.query.WhereExpression;
 import org.exoplatform.social.core.storage.streams.StreamInvocationHelper;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -71,13 +70,6 @@ public class RelationshipStorageImpl extends AbstractStorage implements Relation
   /** Logger */
   private static final Log LOG = ExoLogger.getLogger(RelationshipStorage.class);
 
-  private static final Comparator<Identity> SORT_IDENTITY_BY_NAME = new Comparator<Identity>() {
-
-    @Override
-    public int compare(Identity o1, Identity o2) {
-      return o1.getProfile().getFullName().compareTo(o2.getProfile().getFullName());
-    }
-  };
   private final IdentityStorage identityStorage;
   private RelationshipManager relationshipManager;
   private RelationshipStorage relationshipStorage;
@@ -1021,11 +1013,9 @@ public class RelationshipStorageImpl extends AbstractStorage implements Relation
    */
   public Map<Identity, Integer> getSuggestions(Identity currentIdentity, int maxConnections, 
                                                 int maxConnectionsToLoad, 
-                                                int maxSuggestions,
-                                                boolean nullNotAllowed) throws RelationshipStorageException {
+                                                int maxSuggestions) throws RelationshipStorageException {
     try {
-      return _getSuggestions(currentIdentity, maxConnections, maxConnectionsToLoad, 
-                              maxSuggestions, nullNotAllowed);
+      return _getSuggestions(currentIdentity, maxConnections, maxConnectionsToLoad, maxSuggestions);
     } catch (Exception e) {
       throw new RelationshipStorageException(RelationshipStorageException.Type.FAILED_TO_GET_SUGGESTION, e);
     }
@@ -1033,8 +1023,7 @@ public class RelationshipStorageImpl extends AbstractStorage implements Relation
 
   public Map<Identity, Integer> _getSuggestions(Identity currentIdentity, int maxConnections, 
                                                 int maxConnectionsToLoad, 
-                                                int maxSuggestions,
-                                                boolean nullNotAllowed) throws Exception {
+                                                int maxSuggestions) throws Exception {
     if (maxConnectionsToLoad > 0 && maxConnections > maxConnectionsToLoad)
        maxConnectionsToLoad = maxConnections;
      // Get identities level 1
@@ -1047,7 +1036,6 @@ public class RelationshipStorageImpl extends AbstractStorage implements Relation
     int endIndex;
     Random random = new Random();
     Identity[] connections;
-    boolean completeLoad = true;
     if (size > maxConnectionsToLoad && maxConnectionsToLoad > 0 && maxConnections > 0) {
       // The total amount of connections is bigger than the maximum allowed
       // We will then load only a random sample to reduce the best we can the 
@@ -1055,7 +1043,6 @@ public class RelationshipStorageImpl extends AbstractStorage implements Relation
       int startIndex = random.nextInt(size - maxConnectionsToLoad);
       endIndex = maxConnections;
       connections= allConnections.load(startIndex, maxConnectionsToLoad);
-      completeLoad = false;
     } else {
       // The total amount of connections is less than the maximum allowed
       // We call load everything
@@ -1072,7 +1059,6 @@ public class RelationshipStorageImpl extends AbstractStorage implements Relation
     // Get identities level 2 (suggested Identities)
     Map<Identity, Integer> suggestedIdentities = new HashMap<Identity, Integer>();
     Iterator<Identity> it = relationIdLevel1.iterator();
-    boolean completeConnectionLookUp = true;
     for (int j = 0; j < size && it.hasNext(); j++) {
       Identity id = it.next();
       // We check if we reach the limit of connections to treat and if we have enough suggestions
@@ -1085,7 +1071,6 @@ public class RelationshipStorageImpl extends AbstractStorage implements Relation
         // The current identity has more connections that the allowed amount so we will treat a sample
         allConnStartIndex = random.nextInt(allConnSize - maxConnections);
         connections = allConns.load(allConnStartIndex, maxConnections);
-        completeConnectionLookUp = false;
       } else {
         // The current identity doesn't have more connections that the allowed amount so we will 
         // treat all of them
@@ -1095,8 +1080,8 @@ public class RelationshipStorageImpl extends AbstractStorage implements Relation
         Identity ids = connections[i];
         // We check if the current connection is not already part of the connections of the identity
         // for which we seek some suggestions
-        if (!relationIdLevel1.contains(ids) && !ids.equals(currentIdentity) 
-             && relationshipManager.get(ids, currentIdentity) == null && !ids.isDeleted()) {
+        if (!relationIdLevel1.contains(ids) && !ids.equals(currentIdentity) && !ids.isDeleted()
+             && relationshipManager.get(ids, currentIdentity) == null) {
           Integer commonIdentities = suggestedIdentities.get(ids);
           if (commonIdentities == null) {
             commonIdentities = new Integer(1);
@@ -1118,7 +1103,7 @@ public class RelationshipStorageImpl extends AbstractStorage implements Relation
       }
       ids.add(identity);
     }
-    Map<Identity, Integer> suggestions = new TreeMap<Identity, Integer>(SORT_IDENTITY_BY_NAME);
+    Map<Identity, Integer> suggestions = new LinkedHashMap<Identity, Integer>();
     int suggestionLeft = maxSuggestions;
     // We iterate over the suggestions starting from the suggestions with the highest amount of common
     // connections
@@ -1131,17 +1116,7 @@ public class RelationshipStorageImpl extends AbstractStorage implements Relation
           break main;
       }
     }
-    // We check whether we have no total amount of expected suggestions, or we have the expected amount of
-    // suggestions, or we have no max connections, or if null values are not allowed
-    // or we have already treated all the connections available,
-    // or if so we return what we have otherwise we return Collections.emptyMap() representing null as
-    // null cannot be stored into the cache
-    if (maxSuggestions <= 0 || suggestionLeft <= 0 || maxConnectionsToLoad <= 0 || maxConnections <= 0 ||
-        nullNotAllowed || (completeLoad && completeConnectionLookUp)) {
-      return suggestions;
-    } else {
-      return Collections.emptyMap();
-    }
+    return suggestions;
   }
 
   public void setStorage(RelationshipStorage storage) {

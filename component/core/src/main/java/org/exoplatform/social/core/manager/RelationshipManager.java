@@ -648,14 +648,11 @@ public interface RelationshipManager {
    * set to a value <= 0, the limit will be disabled
    * @param maxSuggestions The total amount of expected suggestions. If set to a value <= 0, the limit 
    * will be disabled
-   * @param maxTries The total amount of tries allowed to get the expected amount of suggestions. 
-   * If set to a value <= 0, it will try as many times as possible
    * @return The suggestions.
    * @since 4.0.x
    */
   public Map<Identity, Integer> getSuggestions(Identity identity, int maxConnections, 
                                                int maxConnectionsToLoad, 
-                                               int maxSuggestions,
-                                               int maxTries);
+                                               int maxSuggestions);
   
 }

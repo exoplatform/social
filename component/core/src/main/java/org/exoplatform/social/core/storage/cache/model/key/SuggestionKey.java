@@ -26,17 +26,14 @@ public class SuggestionKey <T> extends ScopeCacheKey {
   private final int maxConnections;
   private final int maxConnectionsToLoad;
   private final int maxSuggestions;
-  private final boolean nullNotAllowed;
 
   public SuggestionKey(final T key, int maxConnections, 
                         int maxConnectionsToLoad, 
-                        int maxSuggestions,
-                        boolean nullNotAllowed) {
+                        int maxSuggestions) {
     this.key = key;
     this.maxConnections = maxConnections;
     this.maxConnectionsToLoad = maxConnectionsToLoad;
     this.maxSuggestions = maxSuggestions;
-    this.nullNotAllowed = nullNotAllowed;
   }
 
   public T getKey() {
@@ -75,8 +72,6 @@ public class SuggestionKey <T> extends ScopeCacheKey {
       return false;
     if (maxSuggestions != other.maxSuggestions)
       return false;
-    if (nullNotAllowed != other.nullNotAllowed)
-       return false;
     return true;
   }
 }
