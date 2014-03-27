@@ -1336,7 +1336,7 @@ public class CachedSpaceStorage implements SpaceStorage {
          new ServiceContext<ListSpacesData>() {
            public ListSpacesData execute() {
              List<Space> got = storage.getLastSpaces(limit);
-             return buildSimpleIds(got);
+             return buildIds(got);
            }
          },
          listKey);

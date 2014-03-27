@@ -27,6 +27,7 @@ import org.exoplatform.social.core.identity.SpaceMemberFilterListAccess;
 import org.exoplatform.social.core.identity.SpaceMemberFilterListAccess.Type;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
+import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.profile.ProfileFilter;
 import org.exoplatform.social.core.profile.ProfileLifeCycle;
 import org.exoplatform.social.core.profile.ProfileListener;
@@ -92,7 +93,7 @@ public class IdentityManagerImpl implements IdentityManager {
   public List<Identity> getLastIdentities(int limit) {
     ProfileFilter profileFilter = new ProfileFilter();
     profileFilter.setSorting(new Sorting(Sorting.SortBy.DATE, Sorting.OrderBy.DESC));
-    return identityStorage.getIdentitiesForUnifiedSearch(null, profileFilter, 0, limit);
+    return identityStorage.getIdentitiesForUnifiedSearch(OrganizationIdentityProvider.NAME, profileFilter, 0, limit);
   }
 
   /**
