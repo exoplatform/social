@@ -513,6 +513,8 @@ public class UIExperienceSection extends UIProfileSection {
     String startDate = null;
     String endDate = null;
     Boolean isCurrent = null;
+    // Check if there is any exception during parsing Date Time field
+    boolean isDateTimeException = false;
     Date sDate = null;
     Date eDate = null;
     Date today = new Date();
@@ -560,6 +562,7 @@ public class UIExperienceSection extends UIProfileSection {
       uiFormTextAreaInput = (UIFormTextAreaInput) listUIComp.get(i + 3);
       skills = uiFormTextAreaInput.getValue();
 
+      isDateTimeException = false;
       uiDateTimeInput = (UIFormDateTimeInput) listUIComp.get(i + 4);
       Locale locale = context.getParentAppRequestContext().getLocale();
       String currentPattern = uiDateTimeInput.getDatePattern_();
@@ -577,61 +580,67 @@ public class UIExperienceSection extends UIProfileSection {
         } catch (Exception e) {
           uiApplication.addMessage(new ApplicationMessage(INVALID_START_DATE_FORMAT, new String[] {currentPattern}, 1));
           errorCode = 1;
+          isDateTimeException = true;
         }
       } else {
-        uiApplication.addMessage(new ApplicationMessage(INVALID_START_DATE_MANDATORY, null, 1));
-        errorCode = 1;
+        startDate = null;
       }
-             
-      try {
-        uiDateTimeInput = (UIFormDateTimeInput) listUIComp.get(i + 5);
-        if (!"".equals(uiDateTimeInput.getValue())) {
-          cal.setTime(sf.parse(uiDateTimeInput.getValue())) ;
-        }
-      } catch (Exception e) {
+      
+      uiDateTimeInput = (UIFormDateTimeInput) listUIComp.get(i + 5);
+      String endDateInput = uiDateTimeInput.getValue();
+      if (endDateInput != null && endDateInput.length() > 0) {
+    	 try {
+    	   cal.setTime(sf.parse(endDateInput)) ;
+    	 } catch (Exception e) {
+    	   uiApplication.addMessage(new ApplicationMessage(INVALID_END_DATE_FORMAT, new String[] {currentPattern}, 1));
+    	   errorCode = 1;
+    	   isDateTimeException = true;
+    	 }
+      } else {
         endDate = null;
-        uiApplication.addMessage(new ApplicationMessage(INVALID_END_DATE_FORMAT, new String[] {currentPattern}, 1));
-        errorCode = 1;
       }
-      
-      uiCheckBox = (UICheckBoxInput) listUIComp.get(i + 6);
-      isCurrent = uiCheckBox.getValue();
-      
-      if (startDate == null && (endDate != null || isCurrent.booleanValue()) ||
-          "".equals(startDate) && ("".equals(endDate)|| isCurrent.booleanValue())) {
-        uiApplication.addMessage(new ApplicationMessage(INVALID_START_DATE_MANDATORY, null, 1));
-        errorCode = 1;
-      }
-      
-      if (startDate != null && !"".equals(startDate)) {
-        endDate = calendarToString(cal);
 
-        sDate = stringToDate(startDate);
-        eDate = stringToDate(endDate);
-        if (endDate != null && !"".equals(endDate) && sDate.after(today)) {
-          uiApplication.addMessage(new ApplicationMessage(START_DATE_AFTER_TODAY, null, 1));
+      //Only check other conditions if there is not any Date Time exception 
+      if (!isDateTimeException) {
+        uiCheckBox = (UICheckBoxInput) listUIComp.get(i + 6);
+        isCurrent = uiCheckBox.getValue();
+      
+        if (startDate == null && (endDate != null || isCurrent.booleanValue()) ||
+            "".equals(startDate) && ("".equals(endDate)|| isCurrent.booleanValue())) {
+          uiApplication.addMessage(new ApplicationMessage(INVALID_START_DATE_MANDATORY, null, 1));
           errorCode = 1;
         }
+      
+        if (startDate != null && !"".equals(startDate)) {
+          endDate = calendarToString(cal);
 
-        if (!isCurrent) {
-          if ((endDate == null) || (endDate.length() == 0)) {
-            uiApplication.addMessage(new ApplicationMessage(INVALID_END_DATE_MANDATORY, null, 1));
+          sDate = stringToDate(startDate);
+          eDate = stringToDate(endDate);
+          if (endDate != null && !"".equals(endDate) && sDate.after(today)) {
+            uiApplication.addMessage(new ApplicationMessage(START_DATE_AFTER_TODAY, null, 1));
             errorCode = 1;
           }
+
+          if (!isCurrent) {
+            if ((endDate == null) || (endDate.length() == 0)) {
+              uiApplication.addMessage(new ApplicationMessage(INVALID_END_DATE_MANDATORY, null, 1));
+              errorCode = 1;
+            }
           
-          if ((eDate != null) && eDate.after(today)) {
-            uiApplication.addMessage(new ApplicationMessage(END_DATE_AFTER_TODAY, null, 1));
-            errorCode = 1;
+            if ((eDate != null) && eDate.after(today)) {
+              uiApplication.addMessage(new ApplicationMessage(END_DATE_AFTER_TODAY, null, 1));
+              errorCode = 1;
+            }
+            if ((sDate != null) && sDate.after(eDate)) {
+              uiApplication.addMessage(new ApplicationMessage(STARTDATE_BEFORE_ENDDATE, null, 1));
+              errorCode = 1;
+            }
+          } else {
+            endDate = null;
           }
-          if ((sDate != null) && sDate.after(eDate)) {
-            uiApplication.addMessage(new ApplicationMessage(STARTDATE_BEFORE_ENDDATE, null, 1));
-            errorCode = 1;
-          }
-        } else {
-          endDate = null;
         }
       }
-      
+
       uiMap.put(Profile.EXPERIENCES_COMPANY, escapeHtml(company));
       uiMap.put(Profile.EXPERIENCES_POSITION, escapeHtml(position));
       uiMap.put(Profile.EXPERIENCES_DESCRIPTION, escapeHtml(description));

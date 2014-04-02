@@ -32,6 +32,7 @@
   def isEdit = uicomponent.isEditMode();
   def isEditable = uicomponent.isEditable();
   def children = uicomponent.getChilds();
+  def email = children.get(4).getValue(); 
   _ctx.getRequestContext().getJavascriptManager().require("SHARED/uiForm");
 %>
 <div class="uiBasicInfoSection">
@@ -74,9 +75,9 @@
           <% if (isEdit) {
             uiform.renderField(children.get(4));
              } else { %>
-             <a href="javascript:void(0);" class="email">
-              <%=children.get(4).getValue();%>
-             </a>
+		<a href="mailto:${email}" class="email">
+		${email}
+		</a>
           <% } %>
           </div>
         </div>

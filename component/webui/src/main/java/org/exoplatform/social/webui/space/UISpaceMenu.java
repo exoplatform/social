@@ -152,7 +152,7 @@ public class UISpaceMenu extends UIContainer {
     
     return DEFAULT_APP_ID;
   }
-  
+
   /**
    * Renames space application name.<br> - Gets selected node and selected page navigation.<br> -
    * Changes selected node information.<br> - Updates new information for selected page

@@ -45,9 +45,13 @@
          def appId = app.getApplicationName();
          def isRemovable = uicomponent.isRemovable(appId);
          def appName = uicomponent.getAppName(appId);
+         def appLabel = appName;
          def applicationIconTitle = _ctx.appRes("${uicomponentId}.title.ApplicationIcon");
          appNameIco = appId.split(":")[0];
-          
+         if (appNameIco != null) {
+           def appLabelFromResourceBundle = org.exoplatform.social.webui.Utils.appRes(appNameIco + ".label.name");
+           if (appLabelFromResourceBundle != null) appLabel = appLabelFromResourceBundle;
+         }          
   %>
     <div class="contentSpace pull-left clearfix">
 		<i class="uiIconApp<%=appNameIco%> uiIconDefaultApp"></i>
@@ -57,7 +61,7 @@
 		<a class="uiIconClose pull-right" href="javascript:void(0);" onclick="$removeApplication"></a>
 		<% } %>
 		<div class="communityContainer">
-			<strong><%= appName %></strong>
+			<strong><%= appLabel %></strong>
 			<br/>
 			<span><%= app.getDescription() %></span>
 		</div>
