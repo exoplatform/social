@@ -78,16 +78,16 @@ public class UIContactSection extends UIProfileSection {
   public static final String URL = "3url";
 
   /** MALE. */
-  public static final String VALUE_GENDER_MALE      = "Male";
+  public static final String VALUE_GENDER_MALE      = "male";
 
   /** FEMALE. */
-  public static final String VALUE_GENDER_FEMALE    = "Female";
+  public static final String VALUE_GENDER_FEMALE    = "female";
 
   /** PHONE_TYPES. */
-  public static final String[] PHONE_TYPES = new String[] {"Work","Home","Other"};
+  public static final String[] PHONE_TYPES = new String[] {"work","home","other"};
 
   /** IM_TYPES. */
-  public static final String[] IM_TYPES = new String[] {"Gtalk","Msn","Skype","Yahoo","Other"};
+  public static final String[] IM_TYPES = new String[] {"gtalk","msn","skype","yahoo","other"};
 
   /** WEBSITE TITLE. */
   public static final String WEBSITE_TITLE = "Website Title";
@@ -181,15 +181,15 @@ public class UIContactSection extends UIProfileSection {
    */
   public UIContactSection() throws Exception {
     addChild(UITitleBar.class, null, null);
+    ResourceBundle resourceBundle = PortalRequestContext.getCurrentInstance().getApplicationResourceBundle();
 
     List<SelectItemOption<String>> options = new ArrayList<SelectItemOption<String>>();
-    options.add(new SelectItemOption<String>(VALUE_GENDER_MALE));
-    options.add(new SelectItemOption<String>(VALUE_GENDER_FEMALE));
+    options.add(new SelectItemOption<String>(resourceBundle.getString("UIContactSection.label.male"),VALUE_GENDER_MALE));
+    options.add(new SelectItemOption<String>(resourceBundle.getString("UIContactSection.label.female"),VALUE_GENDER_FEMALE));
     addUIFormInput(new UIFormSelectBox(GENDER_CHILD, GENDER_CHILD, options));
     
     // Get sample url message from resource bundle and set to variable.
-    ResourceBundle resourceBudle = PortalRequestContext.getCurrentInstance().getApplicationResourceBundle();
-    setSampleURL(resourceBudle.getString("UIContactSection.msg.sampleUrl"));
+    setSampleURL(resourceBundle.getString("UIContactSection.msg.sampleUrl"));
   }
 
   /**
@@ -585,9 +585,11 @@ public class UIContactSection extends UIProfileSection {
    * @param uiName Name of component.
    */
   private void createUISelectBox(final String[] values, final String uiName) {
+    WebuiRequestContext requestContext = WebuiRequestContext.getCurrentInstance();
+    ResourceBundle resourceBundle = requestContext.getApplicationResourceBundle();
     List<SelectItemOption<String>> options = new ArrayList<SelectItemOption<String>>();
     for (String value : values) {
-      options.add(new SelectItemOption<String>(value));
+      options.add(new SelectItemOption<String>(resourceBundle.getString("UIContactSection.label."+value),value));	
     }
     addUIFormInput(new UIFormSelectBox(uiName, null, options));
   }

@@ -256,6 +256,7 @@ public class UISpaceApplication extends UIForm {
     
     return null;
   }
+  
 
   /**
    * Triggers this action when user clicks on add button
