@@ -53,7 +53,7 @@
   if (isEditable)
     position = ((position == null || position == "") ? _ctx.appRes(uicomponent.getName() + ".label.yourPosition"): _ctx.appRes(uicomponent.getName() + ".label.yourPosition") + ": " + position);
   else
-    position = (position == null ? "": position);
+    position = (position == null ? "": _ctx.appRes(uicomponent.getName() + ".label.Position") + ": " + position);
   
   def componentId = uicomponent.id;
   def inviteToConnectLabel = _ctx.appRes(componentId + ".label.InviteToConnect");
