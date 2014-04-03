@@ -182,7 +182,7 @@ public class SpaceFilter {
    * @param spaceNameSearchCondition
    */
   public void setSpaceNameSearchCondition(String spaceNameSearchCondition) {
-    this.spaceNameSearchCondition = SpaceUtils.removeSpecialCharacterInSpaceFilter(spaceNameSearchCondition);
+    this.spaceNameSearchCondition = SpaceUtils.processUnifiedSearchCondition(spaceNameSearchCondition);
   }
 
   public Sorting getSorting() {

@@ -30,6 +30,8 @@ import org.exoplatform.social.core.manager.RelationshipManagerTest;
 import org.exoplatform.social.core.processor.MentionsProcessorTest;
 import org.exoplatform.social.core.processor.OSHtmlSanitizerProcessorTest;
 import org.exoplatform.social.core.processor.TemplateParamsProcessorTest;
+import org.exoplatform.social.core.search.PeopleSearchConnectorTestCase;
+import org.exoplatform.social.core.search.SpaceSearchConnectorTestCase;
 import org.exoplatform.social.core.service.LinkProviderTest;
 import org.exoplatform.social.core.space.SpaceLifeCycleTest;
 import org.exoplatform.social.core.space.SpaceUtilsRestTest;
@@ -84,7 +86,9 @@ import org.junit.runners.Suite.SuiteClasses;
   TemplateParamsProcessorTest.class,
   ProfileUpdatesPublisherTest.class,
   MentionsProcessorTest.class,
-  LinkProviderTest.class
+  LinkProviderTest.class,
+  PeopleSearchConnectorTestCase.class,
+  SpaceSearchConnectorTestCase.class
   })
 @ConfigTestCase(AbstractCoreTest.class)
 public class InitContainerTestSuite extends BaseExoContainerTestSuite {
