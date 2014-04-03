@@ -327,7 +327,7 @@ public class LinkShare extends DefaultFilter {
     parser.setProperty("http://cyberneko.org/html/properties/default-encoding", "UTF-8");
     parser.setProperty("http://cyberneko.org/html/properties/filters", filter);
     parser.setDocumentHandler(this);
-    XMLInputSource source = new XMLInputSource(null, link, null);
+    XMLInputSource source = new XMLInputSource(null, Util.getDecodeQueryURL(link), null);
     source.setEncoding(encoding);
     try {
       parser.parse(source);
@@ -337,9 +337,9 @@ public class LinkShare extends DefaultFilter {
     } catch (IOException e) {
       // Process as normal behavior in case the link is in the valid form
       // but have been blocked or some other same reasons.
-      this.title = link;
+      this.title = this.link;
     } catch (Exception e) {
-      this.title = link;
+      this.title = this.link;
     }
   }
   
@@ -581,7 +581,7 @@ public class LinkShare extends DefaultFilter {
    * @return absolute link
    */
   private String getAbsLink(String link) {
-    if (link.startsWith("http://")) return link;
+    if (link.startsWith("http://") || link.startsWith("https://")) return link;
     URL url = null;
     try {
       url = new URL(this.link);
