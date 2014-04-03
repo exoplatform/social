@@ -21,7 +21,7 @@
 */
 %>
 <%
-  import org.exoplatform.portal.webui.util.Util;
+  import org.exoplatform.social.service.rest.Util;
   import org.exoplatform.webui.form.UIFormTextAreaInput;
   import org.exoplatform.social.core.service.LinkProvider;
   import org.exoplatform.social.core.space.model.Space;
@@ -29,7 +29,7 @@
   import org.exoplatform.social.plugin.link.UILinkUtil;
   import org.apache.commons.lang.StringEscapeUtils;
 
-  def pcontext = Util.getPortalRequestContext();
+  def pcontext = org.exoplatform.portal.webui.util.Util.getPortalRequestContext();
   def jsManager = pcontext.getJavascriptManager().require("SHARED/uiForm");
   def labelActivityHasBeenDeleted = _ctx.appRes("UIActivity.label.Activity_Has_Been_Deleted");
   def activity = uicomponent.getActivity();
@@ -139,7 +139,6 @@
    listPeopleBGClass = "displayNone";
   }
 
-  activityContentTitle = activity.title;
   activityPostedTime = uicomponent.getPostedTimeString(_ctx, activity.postedTime);
 
   def ownerIdentity = uicomponent.ownerIdentity;
@@ -190,13 +189,17 @@
 					</div>
 				</div><!--end heading-->
 				   <%
-					  def linkSource = uicomponent.getLinkSource();
-					  def linkTitle = StringEscapeUtils.escapeHtml(uicomponent.getLinkTitle());
+					  String linkSource = uicomponent.getLinkSource();
+				   	  String linkTitle = uicomponent.getLinkTitle();
 					  if (linkTitle.equals("")) {
 						linkTitle = linkSource;
 					  }
-					  def linkImage = uicomponent.getLinkImage();
-					  def linkDescription = StringEscapeUtils.escapeHtml(uicomponent.getLinkDescription());
+					  String linkImage = uicomponent.getLinkImage();
+					  String linkDescription = UILinkUtil.simpleEscapeHtml(uicomponent.getLinkDescription());
+					  //
+					  linkTitle = UILinkUtil.simpleEscapeHtml(Util.getDecodeQueryURL(linkTitle));
+					  linkSource = UILinkUtil.simpleEscapeHtml(Util.getDecodeQueryURL(linkSource));
+					  //
 					  def linkComment = uicomponent.getLinkComment();
 					  def linkClass = "content";
 					  def link = "";
