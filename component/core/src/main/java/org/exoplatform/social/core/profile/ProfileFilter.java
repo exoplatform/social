@@ -199,7 +199,7 @@ public class ProfileFilter {
   }
 
   public void setAll(String all) {
-    this.all = SpaceUtils.removeSpecialCharacterInSpaceFilter(all);
+    this.all = SpaceUtils.processUnifiedSearchCondition(all);
     this.isEmpty = false;
   }
 

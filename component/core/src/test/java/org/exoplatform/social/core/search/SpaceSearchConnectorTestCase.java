@@ -42,14 +42,14 @@ public class SpaceSearchConnectorTestCase extends AbstractCoreTest {
   private String CONTROLLER_PATH = "conf/standalone/controller.xml";
   private Router router;
   private SearchContext context;
+  private Identity demoIdentity;
 
   public void setUp() throws Exception {
     super.setUp();
     
     identityManager = (IdentityManager) getContainer().getComponentInstanceOfType(IdentityManager.class);
 
-    Identity userA = new Identity(OrganizationIdentityProvider.NAME, "demo");
-    identityManager.saveIdentity(userA);
+    demoIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "demo", false);
 
     Space sFoo = new Space();
     sFoo.setDisplayName("foo");
@@ -59,7 +59,7 @@ public class SpaceSearchConnectorTestCase extends AbstractCoreTest {
     sFoo.setMembers(new String[]{"demo"});
     sFoo.setType(DefaultSpaceApplicationHandler.NAME);
     sFoo.setRegistration(Space.OPEN);
-    createSpaceNonInitApps(sFoo, userA.getRemoteId(), null);
+    createSpaceNonInitApps(sFoo, demoIdentity.getRemoteId(), null);
     tearDown.add(sFoo);
 
     Space sBar = new Space();
@@ -72,7 +72,7 @@ public class SpaceSearchConnectorTestCase extends AbstractCoreTest {
     InputStream inputStream = getClass().getResourceAsStream("/eXo-Social.png");
     AvatarAttachment avatarAttachment = new AvatarAttachment(null, "avatar", "png", inputStream, null, System.currentTimeMillis());
     sBar.setAvatarAttachment(avatarAttachment);
-    createSpaceNonInitApps(sBar, userA.getRemoteId(), null);
+    createSpaceNonInitApps(sBar, demoIdentity.getRemoteId(), null);
     tearDown.add(sBar);
 
     Space sAnother = new Space();
@@ -82,7 +82,7 @@ public class SpaceSearchConnectorTestCase extends AbstractCoreTest {
     sAnother.setManagers(new String[]{"demo"});
     sAnother.setMembers(new String[]{"demo"});
     sAnother.setType(DefaultSpaceApplicationHandler.NAME);
-    createSpaceNonInitApps(sAnother, userA.getRemoteId(), null);
+    createSpaceNonInitApps(sAnother, demoIdentity.getRemoteId(), null);
     tearDown.add(sAnother);
 
     InitParams params = new InitParams();
@@ -109,11 +109,11 @@ public class SpaceSearchConnectorTestCase extends AbstractCoreTest {
 
   public void testFilter() throws Exception {
     setCurrentUser("demo");
-    assertEquals(2, spaceSearchConnector.search(context, "foo bar", Collections.EMPTY_LIST, 0, 10, "relevancy", "ASC").size());
+    assertEquals(0, spaceSearchConnector.search(context, "foo bar", Collections.EMPTY_LIST, 0, 10, "relevancy", "ASC").size());
     assertEquals(1, spaceSearchConnector.search(context, "foo", Collections.EMPTY_LIST, 0, 10, "relevancy", "ASC").size());
     assertEquals(1, spaceSearchConnector.search(context, "bar", Collections.EMPTY_LIST, 0, 10, "relevancy", "ASC").size());
-    assertEquals(2, spaceSearchConnector.search(context, "foo description", Collections.EMPTY_LIST, 0, 10, "relevancy", "ASC").size());
-    assertEquals(1, spaceSearchConnector.search(context, "foo space", Collections.EMPTY_LIST, 0, 10, "relevancy", "ASC").size());
+    assertEquals(1, spaceSearchConnector.search(context, "foo description", Collections.EMPTY_LIST, 0, 10, "relevancy", "ASC").size());
+    assertEquals(0, spaceSearchConnector.search(context, "foo space", Collections.EMPTY_LIST, 0, 10, "relevancy", "ASC").size());
     assertEquals(2, spaceSearchConnector.search(context, "description", Collections.EMPTY_LIST, 0, 10, "relevancy", "ASC").size());
   }
 
@@ -272,6 +272,12 @@ public class SpaceSearchConnectorTestCase extends AbstractCoreTest {
     tearDown.add(space6);
     tearDown.add(space7);
     
+  }
+  
+  public void testFuzzySearch() throws Exception {
+    setCurrentUser("demo");
+    assertEquals(1, spaceSearchConnector.search(context, "foo~0.5", Collections.EMPTY_LIST, 0, 10, "relevancy", "ASC").size());
+    assertEquals(1, spaceSearchConnector.search(context, "foo~0.5 description~0.5", Collections.EMPTY_LIST, 0, 10, "relevancy", "ASC").size());
   }
   
   /**
