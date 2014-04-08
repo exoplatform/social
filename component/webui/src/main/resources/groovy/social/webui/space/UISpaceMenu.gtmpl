@@ -24,6 +24,7 @@
   import org.exoplatform.social.webui.Utils;
   import org.exoplatform.social.core.space.SpaceUtils;
   import org.exoplatform.social.core.service.LinkProvider;
+  import org.apache.commons.lang.StringEscapeUtils;
 
   def uicomponentId = uicomponent.id;
 	
@@ -110,7 +111,7 @@
         if (appLabelFromResourceBundle != null) nodeTitle = appLabelFromResourceBundle;
       }
     }   
-    def nodeLabel = getFitString(nodeTitle, 15);
+    def nodeLabel = StringEscapeUtils.escapeHtml(getFitString(nodeTitle, 15));
  
     def pName = uicomponent.getAppIdByAppName(appName);
   %>

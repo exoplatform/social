@@ -24,6 +24,7 @@
   import org.exoplatform.webui.core.UIPageIterator;
   import org.exoplatform.application.registry.Application;
   import org.exoplatform.webui.core.UIPopupContainer;
+  import org.apache.commons.lang.StringEscapeUtils;
 
   def uicomponentId = uicomponent.id;
   def addApplicationLabel = _ctx.appRes("${uicomponentId}.label.AddApplication");
@@ -61,9 +62,9 @@
 		<a class="uiIconClose pull-right" href="javascript:void(0);" onclick="$removeApplication"></a>
 		<% } %>
 		<div class="communityContainer">
-			<strong><%= appLabel %></strong>
+			<strong><%= StringEscapeUtils.escapeHtml(appLabel); %></strong>
 			<br/>
-			<span><%= app.getDescription() %></span>
+			<span><%= StringEscapeUtils.escapeHtml(app.getDescription()); %></span>
 		</div>
 	</div>
     <% } %>
