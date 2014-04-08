@@ -19,6 +19,8 @@
 
 -->
 */
+import org.apache.commons.lang.StringEscapeUtils;
+
 def uicomponentId = uicomponent.id;
 def selectApplicationsLabel = _ctx.appRes("${uicomponentId}.label.select_applications");
 def typeLabel = _ctx.appRes("${uicomponentId}.label.type");
@@ -44,11 +46,11 @@ jsManager.require("SHARED/jquery", "jq")
           <i class="uiIconApp<%=appNameIco%> uiIconDefaultApp"></i>
 		  <a class="btn-mini btn-primary pull-right" onclick="$addApplicationAction"><%=_ctx.appRes("UIApplicationListSelector.label.add");%></a>
           <div class="appContent">
-              <strong>$application.displayName</strong>
+              <strong><%=StringEscapeUtils.escapeHtml(application.displayName);%></strong>
 			  <br/>
               <strong>$typeLabel:</strong> $application.type.name
 			  <br/>
-			  <strong>$descriptionLabel:</strong> $application.description
+			  <strong>$descriptionLabel:</strong> <%=StringEscapeUtils.escapeHtml(application.description);%>
         </div>
       </div>
       <%
