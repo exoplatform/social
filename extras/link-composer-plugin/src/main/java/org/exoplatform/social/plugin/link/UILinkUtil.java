@@ -19,6 +19,8 @@ package org.exoplatform.social.plugin.link;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang.Validate;
+import org.apache.commons.lang.StringUtils;
+import java.io.StringWriter;
 
 /**
  * Utility class for link composer plugin.
@@ -37,5 +39,42 @@ final public class UILinkUtil {
     Validate.notNull(link, "link must not be null");
     Pattern pattern = Pattern.compile("(?-i)(\\.jpg|\\.gif|\\.jpeg|\\.bmp|\\.png|\\.tif)$");
     return pattern.matcher(link).find();
+  }
+  
+  /**
+  * Simple escape HTML tags
+  * Example: Input: <a href=\"abc.com\">test</a>
+  *         Output: &lt;a href=&#34;abc.com&#34;&gt;test&lt;/a&gt;
+  * 
+  * @param input The text input
+  * @return The text after simple escape HTML
+  */
+  public static String simpleEscapeHtml(String input) {
+   if (input == null || input.trim().length() == 0) {
+     return StringUtils.EMPTY;
+   }
+   int length = input.length();
+   StringWriter writer = new StringWriter((int) (length * 1.5));
+   for (int i = 0; i < length; i++) {
+     char ch = input.charAt(i);
+     switch (ch) {
+     case '<':
+       writer.append("&lt;");
+       break;
+     case '>':
+       writer.append("&gt;");
+       break;
+     case '\'':
+       writer.append("&#39;");
+       break;
+     case '"':
+       writer.append("&#34;");
+       break;
+     default:
+       writer.append(ch);
+       break;
+     }
+   }
+   return writer.toString();
   }
 }
