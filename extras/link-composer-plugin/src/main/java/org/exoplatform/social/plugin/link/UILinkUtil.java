@@ -20,7 +20,7 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.lang.Validate;
 import org.apache.commons.lang.StringUtils;
-import java.io.StringWriter;
+import java.lang.StringBuilder;
 
 /**
  * Utility class for link composer plugin.
@@ -54,7 +54,7 @@ final public class UILinkUtil {
      return StringUtils.EMPTY;
    }
    int length = input.length();
-   StringWriter writer = new StringWriter((int) (length * 1.5));
+   StringBuilder writer = new StringBuilder((int) (length * 1.5));
    for (int i = 0; i < length; i++) {
      char ch = input.charAt(i);
      switch (ch) {
