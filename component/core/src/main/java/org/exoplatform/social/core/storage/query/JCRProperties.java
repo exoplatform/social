@@ -37,4 +37,5 @@ public class JCRProperties {
   public static final String SPACE_REF_NODE_TYPE = "soc:spaceref";
   public static final String ACTIVITY_NODE_TYPE = "soc:activity";
   public static final String RELATIONSHIP_NODE_TYPE = "soc:relationship";
+  public static final String IS_DISABLED_NODE_TYPE = "soc:isDisabled";
 }

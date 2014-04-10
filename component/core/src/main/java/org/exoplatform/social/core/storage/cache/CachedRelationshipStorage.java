@@ -115,6 +115,19 @@ public class CachedRelationshipStorage extends AbstractStorage implements Relati
   }
   
   /**
+   * When enable/disable an user, we need to clear all cache associated to suggestion and relationship
+   */
+  public void clearAllRelationshipCache() {
+    try {
+      exoRelationshipsCache.clearCache();
+      exoRelationshipCountCache.clearCache();
+      exoSuggestionCache.clearCache();
+    } catch (Exception e) {
+      LOG.error(e);
+    }
+  }
+  
+  /**
    * Build the identity list from the caches Ids.
    *
    * @param data ids

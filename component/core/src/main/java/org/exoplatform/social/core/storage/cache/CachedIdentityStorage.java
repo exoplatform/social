@@ -19,8 +19,13 @@ package org.exoplatform.social.core.storage.cache;
 
 import java.util.ArrayList;
 import java.util.List;
+<<<<<<< HEAD
 import java.util.Set;
 
+=======
+
+import org.exoplatform.container.PortalContainer;
+>>>>>>> SOC-4151 | [Disable User - People] Add mixintypes to check relationships
 import org.exoplatform.services.cache.ExoCache;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
@@ -78,6 +83,7 @@ public class CachedIdentityStorage implements IdentityStorage {
   private final FutureExoCache<ActiveIdentityKey, ActiveIdentitiesData, ServiceContext<ActiveIdentitiesData>> activeIdentitiesCache;
 
   private final IdentityStorageImpl storage;
+  private CachedRelationshipStorage cachedRelationshipStorage;
 
   void clearCache() {
 
@@ -89,6 +95,14 @@ public class CachedIdentityStorage implements IdentityStorage {
       LOG.error(e);
     }
 
+  }
+  
+  private CachedRelationshipStorage getCachedRelationshipStorage() {
+    if (cachedRelationshipStorage == null) {
+      cachedRelationshipStorage = (CachedRelationshipStorage) 
+          PortalContainer.getInstance().getComponentInstanceOfType(CachedRelationshipStorage.class);
+    }
+    return cachedRelationshipStorage;
   }
 
   /**
@@ -174,6 +188,7 @@ public class CachedIdentityStorage implements IdentityStorage {
     //
     IdentityKey key = new IdentityKey(new Identity(identity.getId()));
     exoIdentityCache.remove(key);
+    exoIdentityIndexCache.remove(key);
     clearCache();
 
     //
@@ -577,5 +592,18 @@ public class CachedIdentityStorage implements IdentityStorage {
           key);
 
     return data.build();
+  }
+  /**
+   * {@inheritDoc}
+   */
+  public void processEnabledIdentity(Identity identity, boolean isEnable) {
+    storage.processEnabledIdentity(identity, isEnable);
+    //
+    IdentityKey key = new IdentityKey(new Identity(identity.getId()));
+    identityCache.remove(key);
+    exoIdentityCache.remove(key);
+    identitiesCache.clear();
+    clearCache();
+    getCachedRelationshipStorage().clearAllRelationshipCache();
   }
 }

@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 import org.apache.commons.lang.StringUtils;
+import org.exoplatform.commons.utils.CommonsUtils;
 import org.exoplatform.container.ExoContainer;
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.PortalContainer;
@@ -161,5 +162,16 @@ public class SocialUserEventListenerImpl extends UserEventListener {
       RequestLifeCycle.end();
     }
 
+  }
+  
+  @Override
+  public void postSetEnabled(User user) throws Exception {
+    RequestLifeCycle.begin(PortalContainer.getInstance());
+    try {
+      IdentityManager idm = CommonsUtils.getService(IdentityManager.class);
+      idm.processEnabledIdentity(user.getUserName(), user.isEnabled());
+    } finally {
+      RequestLifeCycle.end();
+    }
   }
 }

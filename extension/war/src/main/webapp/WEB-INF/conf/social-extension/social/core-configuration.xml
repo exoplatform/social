@@ -628,6 +628,7 @@
           <value>org.exoplatform.social.core.chromattic.entity.ProviderRootEntity</value>
           <value>org.exoplatform.social.core.chromattic.entity.ProviderEntity</value>
 
+          <value>org.exoplatform.social.core.chromattic.entity.DisabledEntity</value>
           <value>org.exoplatform.social.core.chromattic.entity.IdentityEntity</value>
           <value>org.exoplatform.social.core.chromattic.entity.ProfileEntity</value>
           <value>org.exoplatform.social.core.chromattic.entity.ActivityProfileEntity</value>

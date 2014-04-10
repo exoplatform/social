@@ -31,6 +31,7 @@ import org.exoplatform.services.organization.OrganizationService;
 import org.exoplatform.services.organization.User;
 import org.exoplatform.services.organization.UserHandler;
 import org.exoplatform.services.organization.UserProfile;
+import org.exoplatform.services.organization.UserStatus;
 import org.exoplatform.social.core.identity.IdentityProvider;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
@@ -100,21 +101,15 @@ public class OrganizationIdentityProvider extends IdentityProvider<User> {
   @Override
   public User findByRemoteId(String remoteId) {
     User user = null;
-    try {
-      ConversationState state = ConversationState.getCurrent();
-      if (state.getIdentity().getUserId().equals(remoteId)) {
-        user = (User) state.getAttribute(CacheUserProfileFilter.USER_PROFILE);
-      }
-    } catch (Exception e) {
-      if (LOG.isDebugEnabled()) {
-        LOG.debug("Cannot get information of user " + remoteId + " from Converstation State!");  
-      }
+    ConversationState state = ConversationState.getCurrent();
+    if (state.getIdentity().getUserId().equals(remoteId)) {
+      user = (User) state.getAttribute(CacheUserProfileFilter.USER_PROFILE);
     }
     if (user == null) {
       try {
         RequestLifeCycle.begin((ComponentRequestLifecycle) organizationService);
         UserHandler userHandler = organizationService.getUserHandler();
-        user = userHandler.findUserByName(remoteId);
+        user = userHandler.findUserByName(remoteId, UserStatus.ANY);
       } catch (Exception e) {
         if (LOG.isDebugEnabled()) {
           LOG.debug("Cannot get information of user " + remoteId + " from Organization Service");
@@ -133,6 +128,7 @@ public class OrganizationIdentityProvider extends IdentityProvider<User> {
   @Override
   public Identity createIdentity(User user) {
     Identity identity = new Identity(NAME, user.getUserName());
+    identity.setEnable(user.isEnabled());
     return identity;
   }
 
