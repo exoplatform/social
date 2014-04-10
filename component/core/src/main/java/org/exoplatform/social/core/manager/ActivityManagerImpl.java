@@ -84,6 +84,10 @@ public class ActivityManagerImpl implements ActivityManager {
    * {@inheritDoc}
    */
   public void saveActivityNoReturn(Identity streamOwner, ExoSocialActivity newActivity) {
+    if (!streamOwner.isEnable()) {
+      LOG.warn("Activity could not be saved. Owner has been disabled.");
+      return;
+    }
     activityStorage.saveActivity(streamOwner, newActivity);
     activityLifeCycle.saveActivity(getActivity(newActivity.getId()));
   }
