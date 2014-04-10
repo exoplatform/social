@@ -89,7 +89,8 @@ public class UIUserActivitiesDisplay extends UIContainer {
     ALL_ACTIVITIES,
     CONNECTIONS,
     MY_SPACE,
-    MY_ACTIVITIES
+    MY_ACTIVITIES,
+    POSTER_ACTIVITIES
   }
 
   private DisplayMode                selectedDisplayMode   = DisplayMode.ALL_ACTIVITIES;
