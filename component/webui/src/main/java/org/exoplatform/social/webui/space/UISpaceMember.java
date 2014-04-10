@@ -265,16 +265,12 @@ public class UISpaceMember extends UIForm {
    */
   @SuppressWarnings("unchecked")
   public List<String> getPendingUsers() throws Exception {
-    List<String> pendingUsersList = new ArrayList<String>();
     SpaceService spaceService = getSpaceService();
     Space space = spaceService.getSpaceById(spaceId);
     if (space == null) {
       return new ArrayList<String>(0);
     }
-    String[] pendingUsers = space.getPendingUsers();
-    if (pendingUsers != null) {
-      pendingUsersList.addAll(Arrays.asList(pendingUsers));
-    }
+    List<String> pendingUsersList = Utils.getEnableUsers(space.getPendingUsers());
 
     int currentPage = iteratorPendingUsers.getCurrentPage();
     LazyPageList<String> pageList = new LazyPageList<String>(
@@ -298,16 +294,12 @@ public class UISpaceMember extends UIForm {
    */
   @SuppressWarnings("unchecked")
   public List<String> getInvitedUsers() throws Exception {
-    List<String> invitedUsersList = new ArrayList<String>();
     SpaceService spaceService = getSpaceService();
     Space space = spaceService.getSpaceById(spaceId);
     if (space == null) {
       return new ArrayList<String>(0);
     }
-    String[] invitedUsers = space.getInvitedUsers();
-    if (invitedUsers != null) {
-      invitedUsersList.addAll(Arrays.asList(invitedUsers));
-    }
+    List<String> invitedUsersList = Utils.getEnableUsers(space.getInvitedUsers());
 
     int currentPage = iteratorInvitedUsers.getCurrentPage();
     LazyPageList<String> pageList = new LazyPageList<String>(
@@ -337,19 +329,17 @@ public class UISpaceMember extends UIForm {
     if (space == null) {
       return new ArrayList<String>(0);
     }
+    List<String> membersList = Utils.getEnableUsers(space.getMembers());
+    
     int currentPage = iteratorExistingUsers.getCurrentPage();
-    if (space.getMembers() != null) {
-      LazyPageList<String> pageList = new LazyPageList<String>(
-          new StringListAccess(Arrays.asList(space.getMembers())),
-          ITEMS_PER_PAGE);
-      iteratorExistingUsers.setPageList(pageList);
-      if (this.isNewSearch()) {
-        iteratorExistingUsers.setCurrentPage(FIRST_PAGE);
-      } else {
-        iteratorExistingUsers.setCurrentPage(currentPage);
-      }
-      this.setNewSearch(false);
+    LazyPageList<String> pageList = new LazyPageList<String>(new StringListAccess(membersList), ITEMS_PER_PAGE);
+    iteratorExistingUsers.setPageList(pageList);
+    if (this.isNewSearch()) {
+      iteratorExistingUsers.setCurrentPage(FIRST_PAGE);
+    } else {
+      iteratorExistingUsers.setCurrentPage(currentPage);
     }
+    this.setNewSearch(false);
     return iteratorExistingUsers.getCurrentPageData();
   }
 

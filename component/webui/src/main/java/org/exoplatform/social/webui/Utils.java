@@ -16,6 +16,7 @@
  */
 package org.exoplatform.social.webui;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
@@ -177,6 +178,36 @@ public class Utils {
    */
   public static Identity getUserIdentity(String userName, boolean loadProfile) {
     return Utils.getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, userName, loadProfile);
+  }
+  
+  /**
+   * Check if an user is enable/disable from the remote id (user name)
+   * 
+   * @param userName
+   * @return true if user is enable else return false
+   */
+  public static boolean isEnableUser(String userName) {
+    return getUserIdentity(userName, false).isEnable();
+  }
+  
+  /**
+   * Get only users who are enable
+   * 
+   * @param users list of all users
+   * @return list of enable users
+   */
+  public static List<String> getEnableUsers(String[] users) {
+    if (users == null) {
+      return new ArrayList<String>();
+    }
+    List<String> results = new ArrayList<String>();
+    for (String user : users) {
+      if (!Utils.isEnableUser(user)) {
+        continue;
+      }
+      results.add(user);
+    }
+    return results;
   }
 
   /**
