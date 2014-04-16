@@ -20,6 +20,7 @@ import org.exoplatform.social.webui.activity.BaseUIActivity;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.EventConfig;
 import org.exoplatform.webui.core.lifecycle.UIFormLifecycle;
+import org.exoplatform.social.plugin.link.UILinkUtil;
 import org.apache.commons.lang.StringEscapeUtils;
 
 @ComponentConfig(
@@ -46,9 +47,13 @@ public class UILinkActivity extends BaseUIActivity {
   private String embedHtml = "";
   
   public String getLinkComment() {
+    linkComment = StringEscapeUtils.unescapeHtml(linkComment);
+    linkComment = UILinkUtil.simpleEscapeHtml(linkComment);
     return linkComment;
   }
   public void setLinkComment(String linkComment) {
+    linkComment = StringEscapeUtils.unescapeHtml(linkComment);
+    linkComment = UILinkUtil.simpleEscapeHtml(linkComment);
     this.linkComment = linkComment;
   }
   public String getLinkDescription() {
