@@ -798,10 +798,10 @@ public class RelationshipStorageTest extends AbstractCoreTest {
   private void populateData() {
     String providerId = "organization";
     int total = 10;
-	Map<String, String> xp = new HashMap<String, String>();
+    Map<String, String> xp = new HashMap<String, String>();
     List<Map<String, String>> xps = new ArrayList<Map<String, String>>();
-	xp.put(Profile.EXPERIENCES_COMPANY, "exo");
-	xps.add(xp);
+    xp.put(Profile.EXPERIENCES_COMPANY, "exo");
+    xps.add(xp);
     for (int i = 0; i < total; i++) {
       String remoteId = "username" + i;
       Identity identity = new Identity(providerId, remoteId);
