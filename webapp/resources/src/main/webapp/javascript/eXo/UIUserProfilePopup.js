@@ -73,14 +73,35 @@
                          if (!opts.keepAlive) {
                              deactive_tiptip()
                          }
-                         //
                          var $this = $(this);
-                         var timeoutId = setTimeout(function(){
-	                          if(!tiptip_holder.is(':hover')) {
-	                            deactive_tiptip();
-	                          }
-	                       }, 250);
-	                       $this.data('timeoutId', timeoutId); 
+			 var version = -1;
+			 if (navigator.appName == 'Microsoft Internet Explorer')
+			 {
+			     var ua = navigator.userAgent;
+			     var re  = new RegExp("MSIE ([0-9]{1,}[\.0-9]{0,})");
+			     if (re.exec(ua) != null)
+				version = parseFloat( RegExp.$1 );
+			 }
+			 if ( version > -1 && version <= 9.0)
+			 {     
+			   //The :hover css selector changed by the function below since it's not supported by IE8                         							 
+			   tiptip_holder.hover(function() {
+			   $(this).toggleClass('hover')
+			   });
+			   var timeoutId = setTimeout(function(){
+			      if (!tiptip_holder.hasClass('hover')) {
+			         deactive_tiptip();
+			      }
+			   }, 250);
+			}
+			else {
+			   var timeoutId = setTimeout(function(){
+			      if(!tiptip_holder.is(':hover')) {
+			         deactive_tiptip();
+			      }
+			   }, 250);
+			}							
+                     $this.data('timeoutId', timeoutId); 
                      });
                      if (opts.keepAlive) {
                          tiptip_holder.hover(function () {}, function () {
