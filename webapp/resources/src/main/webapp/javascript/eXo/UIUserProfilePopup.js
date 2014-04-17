@@ -75,24 +75,24 @@
                          }
                          var $this = $(this);
                          if ((navigator.appVersion.indexOf("MSIE") != -1) && (parseFloat(navigator.appVersion.split("MSIE")[1].split(";")[0])<=9)) {
-							//The :hover css selector changed by the function below since it's not supported by IE8                         							 
-							tiptip_holder.hover(function() {
-								$(this).toggleClass('hover')
-							});
-							var timeoutId = setTimeout(function(){
-								if (!tiptip_holder.hasClass('hover')) {
-									deactive_tiptip();
-								}
-							}, 250);
-						}
-						else {
-							var timeoutId = setTimeout(function(){
-								if(!tiptip_holder.is(':hover')) {
-									deactive_tiptip();
-								}
-							}, 250);
-						}							
-	                    $this.data('timeoutId', timeoutId); 
+			   //The :hover css selector changed by the function below since it's not supported by IE8                         							 
+			   tiptip_holder.hover(function() {
+			   $(this).toggleClass('hover')
+			   });
+			   var timeoutId = setTimeout(function(){
+			      if (!tiptip_holder.hasClass('hover')) {
+			         deactive_tiptip();
+			      }
+			   }, 250);
+			}
+			else {
+			   var timeoutId = setTimeout(function(){
+			      if(!tiptip_holder.is(':hover')) {
+			         deactive_tiptip();
+			      }
+			   }, 250);
+			}							
+                     $this.data('timeoutId', timeoutId); 
                      });
                      if (opts.keepAlive) {
                          tiptip_holder.hover(function () {}, function () {
