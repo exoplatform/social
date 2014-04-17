@@ -703,4 +703,16 @@ public class Utils {
     
     return space;
   }
+  
+  /**
+   * Clears cached user data on user profile popup.
+   * 
+   * @since 4.1.x
+   */
+  public static void clearCacheOnUserPopup() {
+    WebuiRequestContext reqContext = WebuiRequestContext.getCurrentInstance();
+    JavascriptManager jm = reqContext.getJavascriptManager();
+    jm.require("SHARED/jquery", "jq")
+      .addScripts("(function($) { $('#socialUsersData').data('CacheSearch', {}); })(jq);");
+  }
 }
