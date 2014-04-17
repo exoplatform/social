@@ -625,6 +625,7 @@ public class Utils {
     
     return space;
   }
+
   /**
    * Get Resource bundle. If failure, log it in developer mode
    * @param msgKey key to get resource bundle
@@ -639,6 +640,19 @@ public class Utils {
         LOG.warn("Can not find resource bundle for key : " + msgKey);
       }
       return null;
-    }    
+    }
+  }
+
+  
+  /**
+   * Clears cached user data on user profile popup.
+   * 
+   * @since 4.0.7
+   */
+  public static void clearCacheOnUserPopup() {
+    WebuiRequestContext reqContext = WebuiRequestContext.getCurrentInstance();
+    JavascriptManager jm = reqContext.getJavascriptManager();
+    jm.require("SHARED/jquery", "jq")
+      .addScripts("(function($) { $('#socialUsersData').data('CacheSearch', {}); })(jq);");
   }
 }
