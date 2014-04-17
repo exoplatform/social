@@ -75,8 +75,12 @@
                          }
                          //
                          var $this = $(this);
+                         //The :hover css selector changed by the function below since it's not supported by IE8
+                         tiptip_holder.hover(function() {
+                             $(this).toggleClass('hover')
+                         });
                          var timeoutId = setTimeout(function(){
-	                          if(!tiptip_holder.is(':hover')) {
+                              if (!tiptip_holder.hasClass('hover')) {
 	                            deactive_tiptip();
 	                          }
 	                       }, 250);
