@@ -215,8 +215,9 @@ public class UIActivitiesLoader extends UIContainer {
         lastActivitiesLoader.setHasMore(false);
         this.setHasMore(false);
       } else if (activities.size() == this.pageSize) {
-        lastActivitiesLoader.setHasMore(activityListAccess.getSize() > activitiesCounter);
-        this.setHasMore(false);
+        boolean hasMore = activityListAccess.getSize() > activitiesCounter;
+        lastActivitiesLoader.setHasMore(hasMore);
+        this.setHasMore(hasMore);
       }
     }
   }
