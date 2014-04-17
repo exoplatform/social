@@ -346,6 +346,7 @@ public class UIMembersPortlet extends UIPortletApplication {
       }
       
       Utils.getRelationshipManager().inviteToConnect(invitingIdentity, invitedIdentity);
+      Utils.clearCacheOnUserPopup();
       event.getRequestContext().addUIComponentToUpdateByAjax(uiAllPeople);
     }
   }
@@ -371,6 +372,7 @@ public class UIMembersPortlet extends UIPortletApplication {
         return;
       }
       
+      Utils.clearCacheOnUserPopup();
       Utils.getRelationshipManager().confirm(invitedIdentity, invitingIdentity);
     }
   }
@@ -401,6 +403,7 @@ public class UIMembersPortlet extends UIPortletApplication {
         return;
       }
       
+      Utils.clearCacheOnUserPopup();
       Utils.getRelationshipManager().deny(inviIdentityIdentity, invitingIdentity);
     }
   }

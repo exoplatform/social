@@ -216,6 +216,7 @@
                    } else {
 		                 $.ajax({
 		                     type: "GET",
+                                     cache: false,
 		                     url: restUrl
 		                 }).complete(function (jqXHR) {
 		                     if (jqXHR.readyState === 4) {
@@ -384,12 +385,35 @@
 
 							    
 							    function takeAction(el) {
+							    	var userList = org_elem.parents('div.userList:first');
+							    	
+							    	var thisTip = $(el).parents('div#tiptip_content:first');
+							    	var tipName = thisTip.find('table#tipName:first');
+							    	var userURL = tipName.find('a:first').attr('href').replace('activities', 'profile');
+							    	
+							    	var focusedUserLink = userList.find('a[href$="' + userURL + '"]:first');
+							    	var focusedUserBlock = focusedUserLink.parents('div.spaceBox:first');
+							    	
+							    	if (focusedUserBlock.length > 0) {
+							    		var actionBtn = $(focusedUserBlock).find('div.connectionBtn');
+							    		// invoke onclick()
+							    		actionBtn.find('button.btn:first').click();
+							    		
+							    		// clear cache and hide popup
+							    		var popup = $(el).closest('#tiptip_holder');
+							    		popup.fadeOut('fast');
+							    		// clear cache
+							    		clearCache();
+							    		return;
+							    	}							    								    									    	
+							    	
 							        var dataAction = $(el).attr('data-action');
 							        var updatedType = dataAction.split(":")[0];
 							        var ownerUserId = dataAction.split(":")[1];
 							    
 							        $.ajax({
 							            type: "GET",
+                                                                    cache: false,
 							            url: opts.restURL.replace('{0}', ownerUserId) + '?updatedType=' + updatedType
 							        }).complete(function (jqXHR) {
 							            if (jqXHR.readyState === 4) {
