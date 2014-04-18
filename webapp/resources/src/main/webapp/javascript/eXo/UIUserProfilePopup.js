@@ -74,7 +74,16 @@
                              deactive_tiptip()
                          }
                          var $this = $(this);
-                         if ((navigator.appVersion.indexOf("MSIE") != -1) && (parseFloat(navigator.appVersion.split("MSIE")[1].split(";")[0])<=9)) {
+			 var version = -1;
+			 if (navigator.appName == 'Microsoft Internet Explorer')
+			 {
+			     var ua = navigator.userAgent;
+			     var re  = new RegExp("MSIE ([0-9]{1,}[\.0-9]{0,})");
+			     if (re.exec(ua) != null)
+				version = parseFloat( RegExp.$1 );
+			 }
+			 if ( version > -1 && version <= 9.0)
+			 {     
 			   //The :hover css selector changed by the function below since it's not supported by IE8                         							 
 			   tiptip_holder.hover(function() {
 			   $(this).toggleClass('hover')
