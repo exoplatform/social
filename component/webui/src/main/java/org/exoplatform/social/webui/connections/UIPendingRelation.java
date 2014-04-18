@@ -345,6 +345,7 @@ public class UIPendingRelation extends UIContainer {
       }
       
       Utils.getRelationshipManager().deny(invitedIdentity, invitingIdentity);
+      Utils.clearCacheOnUserPopup();
       event.getRequestContext().addUIComponentToUpdateByAjax(uiPendingRelation);
     }
   }
