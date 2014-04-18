@@ -125,6 +125,15 @@ public interface ActivityStorage {
    * @since 1.1.1
    */
   public void saveComment(ExoSocialActivity activity, ExoSocialActivity comment) throws ActivityStorageException;
+  
+  /**
+   * Saves a new comment to a specific activity and updates activity
+   *
+   * @param activity The activity.
+   * @param newComment The comment to be saved.
+   * @LevelAPI Platform
+   */
+  public void saveComment(ExoSocialActivity activity, ExoSocialActivity comment, boolean hasUpdatedActivity) throws ActivityStorageException;
 
   /**
      * Saves an activity into a stream.

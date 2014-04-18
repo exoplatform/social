@@ -17,6 +17,7 @@
 package org.exoplatform.social.core.storage;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import org.exoplatform.services.log.ExoLogger;
@@ -299,6 +300,7 @@ public class ActivityStreamStorageTest extends AbstractCoreTest {
     comment.setTitle(activityTitle  + " @mary @john");
     comment.isComment(true);
     comment.setUserId(maryIdentity.getId());
+    comment.setPosterId(maryIdentity.getId());
     activityStorage.saveComment(activity1, comment);
     
     LOG.info("<======================updated whatshot=======================>");
@@ -308,10 +310,17 @@ public class ActivityStreamStorageTest extends AbstractCoreTest {
       assertEquals(2, list.size());
       
       ExoSocialActivity ac1 = list.get(0);
-      assertEquals(activity1.getTitle(), ac1.getTitle());
-      
       ExoSocialActivity ac2 = list.get(1);
-      assertEquals(activity2.getTitle(), ac2.getTitle()); 
+      Calendar cal1 = Calendar.getInstance();
+      cal1.setTime(ac1.getUpdated());
+      LOG.info("ac1.getLastUpdated = " + cal1.getTimeInMillis());
+      
+      Calendar cal2 = Calendar.getInstance();
+      cal2.setTime(ac2.getUpdated());
+      LOG.info("ac2.getLastUpdated = " + cal2.getTimeInMillis());
+
+      assertEquals(activity1.getTitle(), ac1.getTitle());
+      assertEquals(activity2.getTitle(), ac2.getTitle());
     }
     
     comment = new ExoSocialActivityImpl();

@@ -94,10 +94,10 @@ public class StreamInvocationHelper {
     return false;
   }
   
-  public static ProcessContext update(ExoSocialActivity activity, String[] mentioners, long oldUpdated) {
+  public static ProcessContext update(ExoSocialActivity activity, long oldUpdated) {
     //
     StreamProcessContext processCtx = StreamProcessContext.getIntance(StreamProcessContext.UPDATE_ACTIVITY_PROCESS, ctx);
-    processCtx.activity(activity).mentioners(mentioners).oldLastUpdated(oldUpdated);
+    processCtx.activity(activity).oldLastUpdated(oldUpdated);
     
     try {
       if (ctx.isAsync()) {
@@ -115,10 +115,10 @@ public class StreamInvocationHelper {
     return processCtx;
   }
   
-  public static ProcessContext updateCommenter(Identity commenter, ActivityEntity entity, String[] commenters, long oldUpdated) {
+  public static ProcessContext updateCommenter(Identity commenter, ActivityEntity entity, String[] commenters, String[] mentioners, long oldUpdated) {
     //
     StreamProcessContext processCtx = StreamProcessContext.getIntance(StreamProcessContext.UPDATE_ACTIVITY_COMMENTER_PROCESS, ctx);
-    processCtx.identity(commenter).activityEntity(entity).commenters(commenters).oldLastUpdated(oldUpdated);
+    processCtx.identity(commenter).activityEntity(entity).commenters(commenters).mentioners(mentioners).oldLastUpdated(oldUpdated);
     
     try {
       //beforeAsync(); this point can make the problem with ADD_PROPERTY exception

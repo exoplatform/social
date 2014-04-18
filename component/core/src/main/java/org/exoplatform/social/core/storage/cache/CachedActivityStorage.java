@@ -235,6 +235,22 @@ public class CachedActivityStorage implements ActivityStorage {
     exoActivityCache.put(activityKey, new ActivityData(getActivity(activity.getId())));
     clearCache();
   }
+  
+  /**
+   * {@inheritDoc}
+   */
+  public void saveComment(final ExoSocialActivity activity, final ExoSocialActivity comment, boolean hasUpdateActivity) throws ActivityStorageException {
+
+    //
+    storage.saveComment(activity, comment, hasUpdateActivity);
+
+    //
+    exoActivityCache.put(new ActivityKey(comment.getId()), new ActivityData(getActivity(comment.getId())));
+    ActivityKey activityKey = new ActivityKey(activity.getId());
+    exoActivityCache.remove(activityKey);
+    exoActivityCache.put(activityKey, new ActivityData(getActivity(activity.getId())));
+    clearCache();
+  }
 
   /**
    * {@inheritDoc}

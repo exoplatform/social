@@ -57,13 +57,12 @@ public abstract class SocialChromatticAsyncProcessor implements AsyncProcessor {
     //execute
     try {
       processContext = execute(processContext);
-      
-      if (processContext.isDone()) {
-        callback.done(processContext);
-      }
+      processContext.done(true);
     } catch (Exception e) {
       processContext.setException(e);
       return processContext;
+    } finally {
+      callback.done(processContext);
     }
     //end Session
     return processContext;

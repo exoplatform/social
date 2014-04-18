@@ -127,6 +127,15 @@ public interface ActivityManager {
    * @LevelAPI Platform
    */
   void saveComment(ExoSocialActivity activity, ExoSocialActivity newComment);
+  
+  /**
+   * Saves a new comment to a specific activity and updates activity
+   *
+   * @param activity The activity.
+   * @param newComment The comment to be saved.
+   * @LevelAPI Platform
+   */
+  void saveComment(ExoSocialActivity activity, ExoSocialActivity newComment, boolean hasUpdatedActivity);
 
   /**
    * Gets comments of a specific activity. 

@@ -537,10 +537,11 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
    */
   public void saveComment(ExoSocialActivity activity, ExoSocialActivity comment) throws ActivityStorageException {
 
+    long oldUpdated = 0;
+    long currentMillis = System.currentTimeMillis();
+    
     try {
-
       //
-      long currentMillis = System.currentTimeMillis();
       long commentMillis = (comment.getPostedTime() != null ? comment.getPostedTime() : currentMillis);
       ActivityEntity activityEntity = _findById(ActivityEntity.class, activity.getId());
       ActivityEntity commentEntity = activityEntity.createComment(String.valueOf(commentMillis));
@@ -557,7 +558,7 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
       activityEntity.setCommenters(processCommenters(activity.getCommentedIds(), comment.getUserId(), commenters, true));
       
       //
-      long oldUpdated = getLastUpdatedTime(activityEntity);
+      oldUpdated = getLastUpdatedTime(activityEntity);
       activityEntity.getComments().add(commentEntity);
       activityEntity.setLastUpdated(currentMillis);
       commentEntity.setTitle(comment.getTitle());
@@ -595,16 +596,13 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
       //
       activity.setUpdated(currentMillis);
       
-      //Resolved SOC-3915 empty stream when post comment but lost it.
-      //Resolved WhatsHotTest is failed.
-      //persist and refresh JCR node to prevent NodeNotFoundException
-      StorageUtils.persist(true);
       //
       if (mustInjectStreams) {
         Identity identity = identityStorage.findIdentityById(comment.getUserId());
-        StreamInvocationHelper.updateCommenter(identity, activityEntity, commenters.toArray(new String[0]), oldUpdated);
-        StreamInvocationHelper.update(activity, mentioners.toArray(new String[0]), oldUpdated);
+        StreamInvocationHelper.updateCommenter(identity, activityEntity, commenters.toArray(new String[0]), mentioners.toArray(new String[0]), oldUpdated);
       }
+      
+      //getSession().save();
     }  
     catch (NodeNotFoundException e) {
       throw new ActivityStorageException(ActivityStorageException.Type.FAILED_TO_SAVE_COMMENT, e.getMessage(), e);
@@ -614,13 +612,19 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
           throwable instanceof InvalidItemStateException) {
         LOG.warn("Probably was inserted activity by another session");
         LOG.debug(ex.getMessage(), ex);
+        StorageUtils.refresh(false);
       } else {
         throw new ActivityStorageException(ActivityStorageException.Type.FAILED_TO_SAVE_ACTIVITY, ex.getMessage());
       }
+    } finally {
+      if (mustInjectStreams) {
+        //different oldDate and lastUpdated then call update what's hot.
+        if (!StorageUtils.isSame(oldUpdated, currentMillis)) {
+          StreamInvocationHelper.update(activity, oldUpdated);
+        }
+      }
     }
     
-    //persist and refresh JCR node to prevent NodeNotFoundException
-    StorageUtils.persist(true);
     //
     LOG.debug(String.format(
         "Comment %s by %s (%s) created",
@@ -628,6 +632,122 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
         comment.getUserId(),
         comment.getId()
     ));
+  }
+  
+    @Override
+    public void saveComment(ExoSocialActivity activity,
+                            ExoSocialActivity comment,
+                            boolean hasUpdatedActivity) throws ActivityStorageException {
+      long oldUpdated = 0;
+      long currentMillis = System.currentTimeMillis();
+      try {
+  
+        //
+        long commentMillis = (comment.getPostedTime() != null ? comment.getPostedTime() : currentMillis);
+        ActivityEntity activityEntity = _findById(ActivityEntity.class, activity.getId());
+        ActivityEntity commentEntity = activityEntity.createComment(String.valueOf(commentMillis));
+  
+        //
+        List<String> mentioners = new ArrayList<String>();
+        activityEntity.setMentioners(processMentions(activity.getMentionedIds(), comment.getTitle(), mentioners, true));
+        
+        //
+        List<String> commenters = new ArrayList<String>();
+        activityEntity.setCommenters(processCommenters(activity.getCommentedIds(), comment.getUserId(), commenters, true));
+        
+        //
+        oldUpdated = getLastUpdatedTime(activityEntity);
+        activityEntity.getComments().add(commentEntity);
+        activityEntity.setLastUpdated(currentMillis);
+        if (hasUpdatedActivity) {
+          if (activity.getTitle() != null) {
+            activityEntity.setTitle(activity.getTitle());
+          }
+          if (activity.getBody() != null) {
+            activityEntity.setBody(activity.getBody());
+          }
+          Map<String, String> params = activity.getTemplateParams();
+          if (params != null) {
+            activityEntity.putParams(params);
+          }
+        }
+        
+        activityEntity.setLastUpdated(currentMillis);
+        commentEntity.setTitle(comment.getTitle());
+        commentEntity.setType(comment.getType());
+        commentEntity.setTitleId(comment.getTitleId());
+        commentEntity.setBody(comment.getBody());
+        commentEntity.setIdentity(activityEntity.getIdentity());
+        commentEntity.setPosterIdentity(_findById(IdentityEntity.class, comment.getUserId()));
+        commentEntity.setComment(Boolean.TRUE);
+        commentEntity.setPostedTime(commentMillis);
+        commentEntity.setLastUpdated(commentMillis);
+//        comment.setParentId(activity.getId());
+        
+        HidableEntity hidable = _getMixin(commentEntity, HidableEntity.class, true);
+        hidable.setHidden(comment.isHidden());
+        
+        comment.setId(commentEntity.getId());
+  
+        Map<String, String> params = comment.getTemplateParams();
+        if (params != null) {
+          commentEntity.putParams(params);
+        }
+        
+        //
+        String[] ids = activity.getReplyToId();
+        List<String> listIds;
+        if (ids != null) {
+          listIds = new ArrayList<String>(Arrays.asList(ids));
+        }
+        else {
+          listIds = new ArrayList<String>();
+        }
+        listIds.add(commentEntity.getId());
+        activity.setReplyToId(listIds.toArray(new String[]{}));
+        
+        //
+        activity.setUpdated(currentMillis);
+        
+        
+        //
+        if (mustInjectStreams) {
+          Identity identity = identityStorage.findIdentityById(comment.getUserId());
+          StreamInvocationHelper.updateCommenter(identity, activityEntity, commenters.toArray(new String[0]), mentioners.toArray(new String[0]), oldUpdated);
+        }
+        
+        //getSession().save();
+      }  
+      catch (NodeNotFoundException e) {
+        throw new ActivityStorageException(ActivityStorageException.Type.FAILED_TO_SAVE_COMMENT, e.getMessage(), e);
+      } catch (ChromatticException ex) {
+        Throwable throwable = ex.getCause();
+        if (throwable instanceof ItemExistsException || 
+            throwable instanceof InvalidItemStateException) {
+          LOG.warn("Probably was inserted activity by another session");
+          LOG.debug(ex.getMessage(), ex);
+          StorageUtils.refresh(false);
+        } else {
+          throw new ActivityStorageException(ActivityStorageException.Type.FAILED_TO_SAVE_ACTIVITY, ex.getMessage());
+        }
+      } finally {
+        //persist with JCR
+        if (mustInjectStreams) {
+          //different oldDate and lastUpdated then call update what's hot.
+          if (!StorageUtils.isSame(oldUpdated, currentMillis)) {
+            StreamInvocationHelper.update(activity, oldUpdated);
+          }
+        }
+      }
+      
+      LOG.debug(String.format(
+          "Comment %s by %s (%s) created: comment size is == %s ",
+          comment.getTitle(),
+          comment.getUserId(),
+          comment.getId(),
+          activity.getCommentedIds().length
+      ));
+      
   }
 
   /**
@@ -643,33 +763,26 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     } catch (IllegalArgumentException e) {
       throw new ActivityStorageException(ActivityStorageException.Type.ILLEGAL_ARGUMENTS, e.getMessage(), e);
     }
+    
+    boolean isNew = (activity.getId() == null);
+    List<String> mentioners = new ArrayList<String>();
+    boolean go = true;
 
     try {
 
-      if (activity.getId() == null) {
-
-        List<String> mentioners = new ArrayList<String>();
+      if (isNew) {
         //
         ActivityEntity entity = _createActivity(owner, activity, mentioners);
-        //persist and refresh JCR node to prevent NodeNotFoundException
-        StorageUtils.persist(true);
-        
         //create refs
         if (mustInjectStreams) {
           //due to run in the same thread then pass AcitivityEntity to Stream service to create ActivityRef
           //don't need to get JCR to avoid NodeNotFoundException
           StreamInvocationHelper.savePoster(owner, entity);
-          //run asynchronous: JCR session doesn't share in multi threading, in Stream service, 
-          //we must get ActivityEntity from JCR to prevent the session (holding by ActivityEntity) has been closed exception
-          StreamInvocationHelper.save(owner, activity, mentioners.toArray(new String[0]));
         }
       }
       else {
         _saveActivity(activity);
       }
-
-      //persist and refresh JCR node to prevent NodeNotFoundException
-      StorageUtils.persist(true);
 
       //
       LOG.debug(String.format(
@@ -678,6 +791,8 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
           activity.getUserId(),
           activity.getId()
       ));
+      
+      getSession().save();
 
       //
       return activity;
@@ -691,9 +806,20 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
           throwable instanceof InvalidItemStateException) {
         LOG.warn("Probably was inserted activity by another session");
         LOG.debug(ex.getMessage(), ex);
+        StorageUtils.refresh(false);
+        go = false;
         return activity;
       } else {
         throw new ActivityStorageException(ActivityStorageException.Type.FAILED_TO_SAVE_ACTIVITY, ex.getMessage());
+      }
+    } finally {
+      //call create ActivityRef
+      if (isNew && go) {
+        if (mustInjectStreams) {
+          //run asynchronous: JCR session doesn't share in multi threading, in Stream service, 
+          //we must get ActivityEntity from JCR to prevent the session (holding by ActivityEntity) has been closed exception
+          StreamInvocationHelper.save(owner, activity, mentioners.toArray(new String[0]));
+        }
       }
     }
   }

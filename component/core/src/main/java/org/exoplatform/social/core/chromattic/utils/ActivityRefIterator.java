@@ -59,16 +59,18 @@ public class ActivityRefIterator implements Iterator<ActivityRef> {
   
   private Iterator<ActivityRef> orderRefs() {
     List<ActivityRef> got = new ArrayList<ActivityRef>(dayIterator.next().getActivityRefList());
-    
+    //
+    Collections.reverse(got);
+    //
     Collections.sort(got, new Comparator<ActivityRef>() {
       public int compare(ActivityRef o1, ActivityRef o2) {
         //Due to change using AcitivityId as ActivityRef's name instead of Activity's lastUpdated
-        Long val2 = o2.getLastUpdated();
-        Long val1 = o1.getLastUpdated();
+        Long val2 = o2.getActivityEntity().getLastUpdated();
+        Long val1 = o1.getActivityEntity().getLastUpdated();
         //In some cases, migrated Activity from 3.5.x, ActivityRef's lastUpdated is NULL
-        //uses instead of ActivityRef's name.
-        long l2 = val2 != null ? val2.longValue() : Long.parseLong(o2.getName());
-        long l1 = val1 != null ? val1.longValue() : Long.parseLong(o1.getName());
+        //uses instead of postedTime.
+        long l2 = val2 != null ? val2.longValue() : o2.getActivityEntity().getPostedTime();
+        long l1 = val1 != null ? val1.longValue() : o2.getActivityEntity().getPostedTime();
         return (int) (l2 - l1);
       }
     });

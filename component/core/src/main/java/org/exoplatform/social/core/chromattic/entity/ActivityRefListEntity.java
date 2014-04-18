@@ -186,6 +186,8 @@ public abstract class ActivityRefListEntity {
       ref.setLastUpdated(lastUpdated);
       ref.setActivityEntity(entity);
       dayEntity.inc();
+    } else {
+      ref.setLastUpdated(lastUpdated);
     }
     
     return ref;

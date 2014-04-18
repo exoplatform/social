@@ -17,6 +17,7 @@
 package org.exoplatform.social.core.storage;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -25,6 +26,7 @@ import java.util.Map;
 import junit.framework.TestCase;
 
 import org.exoplatform.social.core.storage.impl.StorageUtils;
+
 
 public class StorageUtilsTest extends TestCase {
 
@@ -135,6 +137,32 @@ public class StorageUtilsTest extends TestCase {
     
     assertEquals(0, loaded.size());
     
+  }
+  
+  public void testTheSameCalendar() throws Exception {
+    long date1 = System.currentTimeMillis();
+    long date2 = System.currentTimeMillis();
+    
+    assertTrue(StorageUtils.isSame(date1, date2));
+  }
+  
+  public void testTheSameCalendar1() throws Exception {
+    long date1 = System.currentTimeMillis();
+    Calendar cal1 = Calendar.getInstance();
+    cal1.setTimeInMillis(date1);
+    //decrease 1 hour
+    cal1.set(Calendar.HOUR, 1);
+    date1 = cal1.getTimeInMillis();
+    
+    //
+    long date2 = System.currentTimeMillis();
+    Calendar cal2 = Calendar.getInstance();
+    cal2.setTimeInMillis(date2);
+    //decrease 1 hour
+    cal2.set(Calendar.MINUTE, 10);
+    date2 = cal2.getTimeInMillis();
+    
+    assertTrue(StorageUtils.isSame(date1, date2));
   }
 
 }

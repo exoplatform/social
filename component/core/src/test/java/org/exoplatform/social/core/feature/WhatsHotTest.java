@@ -296,6 +296,9 @@ public class WhatsHotTest extends AbstractCoreTest {
     activity1.setTitle("title @demo hi");
     activityStorage.saveActivity(rootIdentity, activity1);
     
+    List<ExoSocialActivity> list = activityStorage.getActivities(demoIdentity, johnIdentity, 0, 10);
+    assertEquals(1, list.size());
+    
     //owner poster comment
     ExoSocialActivity activity2 = new ExoSocialActivityImpl();
     activity2.setTitle("john title");
@@ -303,9 +306,10 @@ public class WhatsHotTest extends AbstractCoreTest {
     
     createComment(activity2, demoIdentity, 2);
     
-    List<ExoSocialActivity> list = activityStorage.getActivities(demoIdentity, johnIdentity, 0, 10);
-    
-    assertEquals(2, list.size());
+    list = activityStorage.getActivities(demoIdentity, johnIdentity, 0, 10);
+    //wrong here: expectation = 2 when john view demo's stream, only have one activity what demo was mentioned.
+    //correct: expectation =1
+    assertEquals(1, list.size());
     
     tearDownActivityList.addAll(list);
   }
@@ -331,8 +335,9 @@ public class WhatsHotTest extends AbstractCoreTest {
     createComment(activity2, demoIdentity, 2);
     
     List<ExoSocialActivity> list = activityStorage.getActivities(demoIdentity, johnIdentity, 0, 10);
-    
-    assertEquals(4, list.size());
+    //wrong here: expectation =4 >> when john view demo's stream, only have three activity what demo was mentioned and poster
+    //correct: expectation =3
+    assertEquals(3, list.size());
     
     tearDownActivityList.addAll(list);
     relationshipManager.unregisterListener(publisher);
