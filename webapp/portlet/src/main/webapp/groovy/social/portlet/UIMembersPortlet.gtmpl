@@ -56,7 +56,8 @@
     <div class="memberList clearfix">
           <% if (managerList.size() > 0) {
             for(user in managerList) {
-              def userName = user.getProfile().getFullName();
+              def profile = user.profile;
+              def userName = profile.getPropertyValue(Profile.FIRST_NAME) + " " + profile.getPropertyValue(Profile.LAST_NAME);
               position = user.getProfile().getPosition();
               def profileURL = LinkProvider.getUserProfileUri(user.getRemoteId());
               if (!position) position = "";
@@ -153,7 +154,8 @@
           </div>
       <% if(memberList.size() > 0) { 
         for(user in memberList) {
-          def memberUserName = user.getProfile().getFullName();
+          def profile = user.profile;
+          def memberUserName = profile.getPropertyValue(Profile.FIRST_NAME) + " " + profile.getPropertyValue(Profile.LAST_NAME);
           position = user.getProfile().position;
           if (!position) position = "";
           def profileURL = LinkProvider.getUserProfileUri(user.getRemoteId());

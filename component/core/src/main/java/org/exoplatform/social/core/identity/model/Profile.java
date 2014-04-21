@@ -423,12 +423,15 @@ public class Profile {
    * @return the full name
    */
   public final String getFullName() {
+    String fullName = (String) getProperty(FULL_NAME);
+    if (fullName != null && fullName.length() > 0) {
+      return fullName;
+    }
+    
     String first = (String) getProperty(FIRST_NAME);
     String last = (String) getProperty(LAST_NAME);
-    String fullName = getProperty(FULL_NAME) != null ? (String) getProperty(FULL_NAME) : "";
-    String all = (first != null) ? first : "";
-    all += (last != null) ? " " + last : "";
-    return all.length() > 0 ? all : fullName;
+    fullName = (first != null ? first : "") + " " + (last != null ? last : "");
+    return fullName;
   }
 
   /**

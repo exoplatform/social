@@ -36,6 +36,7 @@ import org.exoplatform.social.webui.Utils;
 import org.exoplatform.services.organization.OrganizationService;
 import org.exoplatform.services.organization.User;
 import org.exoplatform.social.core.identity.model.Identity;
+import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.space.model.Space;
@@ -59,7 +60,6 @@ import org.exoplatform.webui.form.UIFormStringInput;
 import org.exoplatform.webui.form.validator.ExpressionValidator;
 import org.exoplatform.webui.form.validator.MandatoryValidator;
 import org.exoplatform.webui.organization.account.UIUserSelector;
-
 
 @ComponentConfigs ({
   @ComponentConfig(
@@ -942,8 +942,11 @@ public class UISpaceMember extends UIForm {
     Identity identity = idm.getOrCreateIdentity(OrganizationIdentityProvider.NAME, userId, true);
     
     if (identity == null) return StringUtils.EMPTY;
-    
-    return identity.getProfile().getFullName();
+    identity.getProfile();
+    Profile profile = identity.getProfile();
+    String firstName = (String)profile.getProperty(Profile.FIRST_NAME);
+    String lastName = (String)profile.getProperty(Profile.LAST_NAME);
+    return (firstName != null ? firstName : "") + " " + (lastName != null ? lastName : "");
   }
 
   public boolean isNewSearch() {

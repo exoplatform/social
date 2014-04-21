@@ -123,7 +123,8 @@
         <div class="userList clearfix">
         <%  for(id in myRelation) {
             profileURL = LinkProvider.getUserProfileUri(id.getRemoteId());
-            fullName = id.profile.fullName;
+            def profile = id.profile;
+            def fullName = profile.getPropertyValue(Profile.FIRST_NAME) + " " + profile.getPropertyValue(Profile.LAST_NAME);
             def removeConnectionAction = uicomponent.event("RemoveConnection",id.getId());
             position = id.profile.position;
             relationIdx += 1;
