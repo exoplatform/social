@@ -52,4 +52,21 @@ public class UILinkUtilTest extends TestCase {
     //Need to handle this case
     //assertTrue(UILinkUtil.isImageLink(imageWithParams));
   }
+  
+  public void testSimpleEscapeHtml() {
+    String input = null;
+    assertEquals(UILinkUtil.simpleEscapeHtml(input), "");
+    input = "test";
+    assertEquals(UILinkUtil.simpleEscapeHtml(input), "test");
+    input = "<test";
+    assertEquals(UILinkUtil.simpleEscapeHtml(input), "&lt;test");
+    input = "<test>";
+    assertEquals(UILinkUtil.simpleEscapeHtml(input), "&lt;test&gt;");
+    input = "<a href=\"abc.com\">test</a>";
+    assertEquals(UILinkUtil.simpleEscapeHtml(input), "&lt;a href=&#34;abc.com&#34;&gt;test&lt;/a&gt;");
+    input = "<script type=\"text/javascript\">alert('test');</script>";
+    assertEquals(UILinkUtil.simpleEscapeHtml(input), "&lt;script type=&#34;text/javascript&#34;&gt;alert(&#39;test&#39;);&lt;/script&gt;");
+    input = "<script>alert('test');</script>";
+    assertEquals(UILinkUtil.simpleEscapeHtml(input), "&lt;script&gt;alert(&#39;test&#39;);&lt;/script&gt;");
+  }
 }
