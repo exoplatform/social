@@ -45,6 +45,7 @@ public class PeopleSearchConnector extends AbstractSocialSearchConnector {
 
     List<SearchResult> results = new ArrayList<SearchResult>();
 
+    query = query.substring(0,query.lastIndexOf("~")); //Remove the fuzzy syntax since it's not recognized
     ProfileFilter filter = new ProfileFilter();
     filter.setAll(query);
     filter.setSorting(sorting);
