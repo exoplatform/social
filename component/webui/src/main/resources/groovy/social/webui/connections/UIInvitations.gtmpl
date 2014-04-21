@@ -130,7 +130,8 @@
       <div class="userList clearfix">
       <% for (identity in myInvitations) {
             profileURL = LinkProvider.getUserProfileUri(identity.getRemoteId());
-            fullName = identity.profile.fullName;
+            def profile = identity.profile;
+            def fullName = profile.getPropertyValue(Profile.FIRST_NAME) + " " + profile.getPropertyValue(Profile.LAST_NAME);
             position = identity.profile.position;
             def email= identity.profile.email;
             if (!email) email = "";

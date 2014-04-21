@@ -127,7 +127,8 @@
 			  <% list.each {
 			      def identity = it;
 			      def profileURL = LinkProvider.getUserProfileUri(identity.getRemoteId());
-			      def fullName = identity.profile.fullName;
+			      def profile = identity.profile;
+			      def fullName = profile.getPropertyValue(Profile.FIRST_NAME) + " " + profile.getPropertyValue(Profile.LAST_NAME);
 			      def email = identity.profile.email;
 			      if (!email) { email = ""; }
 			      def connectAction = uicomponent.event("Connect", identity.getId());
