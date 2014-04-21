@@ -170,17 +170,23 @@ public class ActivityManagerImpl implements ActivityManager {
    * {@inheritDoc}
    */
   public void saveLike(ExoSocialActivity existingActivity, Identity identity) {
+    //
+    ExoSocialActivity activity = getActivity(existingActivity.getId());
 
-    existingActivity.setTitle(null);
-    existingActivity.setBody(null);
-
-    String[] identityIds = existingActivity.getLikeIdentityIds();
+    String[] identityIds = activity.getLikeIdentityIds();
     if (ArrayUtils.contains(identityIds, identity.getId())) {
       LOG.warn("activity is already liked by identity: " + identity);
       return;
     }
+    
+    //
+    existingActivity.setTitle(null);
+    existingActivity.setBody(null);
+    existingActivity.setTemplateParams(null);
+    
     identityIds = (String[]) ArrayUtils.add(identityIds, identity.getId());
     existingActivity.setLikeIdentityIds(identityIds);
+    //
     updateActivity(existingActivity);
   }
 
@@ -188,12 +194,18 @@ public class ActivityManagerImpl implements ActivityManager {
    * {@inheritDoc}
    */
   public void deleteLike(ExoSocialActivity activity, Identity identity) {
-    activity.setTitle(null);
-    activity.setBody(null);
     String[] identityIds = activity.getLikeIdentityIds();
     if (ArrayUtils.contains(identityIds, identity.getId())) {
+      //
+      activity = getActivity(activity.getId());
+      //
+      activity.setTitle(null);
+      activity.setBody(null);
+      activity.setTemplateParams(null);
+      //
       identityIds = (String[]) ArrayUtils.removeElement(identityIds, identity.getId());
       activity.setLikeIdentityIds(identityIds);
+      //
       updateActivity(activity);
     } else {
       LOG.warn("activity is not liked by identity: " + identity);

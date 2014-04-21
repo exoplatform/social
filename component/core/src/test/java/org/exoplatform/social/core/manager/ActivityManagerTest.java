@@ -16,6 +16,13 @@
  */
 package org.exoplatform.social.core.manager;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
+
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.services.organization.OrganizationService;
@@ -33,12 +40,6 @@ import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
 import org.exoplatform.social.core.storage.ActivityStorageException;
 import org.exoplatform.social.core.test.AbstractCoreTest;
-
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
 
 /**
  * Unit Test for {@link ActivityManager}, including cache tests.
@@ -534,6 +535,38 @@ public class ActivityManagerTest extends AbstractCoreTest {
     assertEquals("demoActivity.getLikeIdentityIds().length must return: 1", 1, demoActivity.getLikeIdentityIds().length);
     assertEquals("&amp;&quot;demo activity", demoActivity.getTitle());
   }
+
+  /**
+   * Test {@link ActivityManager#saveLike(ExoSocialActivity, Identity)}
+   *  for case not change the template param after liked.
+   * 
+   * @throws Exception
+   * @since 4.0.5
+   */  
+  public void testSaveLikeNotChangeTemplateParam() throws Exception {
+    ExoSocialActivity demoActivity = new ExoSocialActivityImpl();
+    demoActivity.setTitle("title");
+    demoActivity.setUserId(demoActivity.getId());
+    //
+    Map<String, String> templateParams = new HashMap<String, String>();
+    templateParams.put("link", "http://exoplatform.com?test=<script>");
+    demoActivity.setTemplateParams(templateParams);
+    //
+    
+    activityManager.saveActivityNoReturn(demoIdentity, demoActivity);
+    tearDownActivityList.add(demoActivity);
+    //
+    demoActivity = activityManager.getActivity(demoActivity.getId());
+    assertEquals("demoActivity.getLikeIdentityIds() must return: 0",
+                 0, demoActivity.getLikeIdentityIds().length);
+    //
+    activityManager.saveLike(demoActivity, johnIdentity);
+    
+    ExoSocialActivity likedActivity = activityManager.getActivity(demoActivity.getId());
+    //
+    assertEquals(1, likedActivity.getLikeIdentityIds().length);
+    assertEquals(templateParams.get("link"), likedActivity.getTemplateParams().get("link"));
+  }
   
   /**
    * Test {@link ActivityManager#deleteLike(ExoSocialActivity, Identity)}
@@ -571,6 +604,40 @@ public class ActivityManagerTest extends AbstractCoreTest {
     
     demoActivity = activityManager.getActivity(demoActivity.getId());
     assertEquals("demoActivity.getLikeIdentityIds().length must return: 0", 0, demoActivity.getLikeIdentityIds().length);
+  }
+  
+  /**
+   * Test {@link ActivityManager#deleteLike(ExoSocialActivity, Identity)}
+   *  for case not change the template param after liked.
+   * 
+   * @throws Exception
+   * @since 4.0.5
+   */  
+  public void testDeleteLikeNotChangeTemplateParam() throws Exception {
+    ExoSocialActivity demoActivity = new ExoSocialActivityImpl();
+    demoActivity.setTitle("title");
+    demoActivity.setUserId(demoActivity.getId());
+    //
+    Map<String, String> templateParams = new HashMap<String, String>();
+    templateParams.put("link", "http://exoplatform.com?test=<script>");
+    demoActivity.setTemplateParams(templateParams);
+    //
+    
+    activityManager.saveActivityNoReturn(demoIdentity, demoActivity);
+    tearDownActivityList.add(demoActivity);
+    //
+    demoActivity = activityManager.getActivity(demoActivity.getId());
+    activityManager.saveLike(demoActivity, johnIdentity);
+    ExoSocialActivity likedActivity = activityManager.getActivity(demoActivity.getId());
+    //
+    assertEquals(1, likedActivity.getLikeIdentityIds().length);
+    //
+    demoActivity = activityManager.getActivity(demoActivity.getId());
+    activityManager.deleteLike(demoActivity, johnIdentity);
+    ExoSocialActivity deleteLikeActivity = activityManager.getActivity(demoActivity.getId());
+    //
+    assertEquals(0, deleteLikeActivity.getLikeIdentityIds().length);
+    assertEquals(templateParams.get("link"), deleteLikeActivity.getTemplateParams().get("link"));
   }
   
   /**
