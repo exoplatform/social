@@ -83,6 +83,24 @@ public class PeopleSearchConnectorTestCase extends AbstractCoreTest {
     identityManager.saveProfile(pDoesExist);
     tearDown.add(iDoesExist.getId());
 
+    Identity ifuzzy = new Identity(OrganizationIdentityProvider.NAME, "fuzzy");
+    Profile pfuzzy = new Profile(ifuzzy);
+
+    pFoo.setProperty(Profile.FULL_NAME, "fuzzy");
+    pFoo.setProperty(Profile.EMAIL, "fuzzy@mail.com");
+    pFoo.setProperty(Profile.GENDER, "Male");
+
+    Map<String, String> xfuzzy = new HashMap<String, String>();
+    List<Map<String, String>> xfuzzys = new ArrayList<Map<String, String>>();
+    xfuzzy.put(Profile.EXPERIENCES_POSITION, "Engineer");
+    xfuzzy.put(Profile.EXPERIENCES_COMPANY, "company0");
+    xfuzzys.add(xfuzzy);
+    pfuzzy.setProperty(Profile.EXPERIENCES, xfuzzys);
+
+    identityManager.saveIdentity(ifuzzy);
+    identityManager.saveProfile(pfuzzy);
+    tearDown.add(ifuzzy.getId());
+
     InitParams params = new InitParams();
     params.put("constructor.params", new PropertiesParam());
     peopleSearchConnector = new PeopleSearchConnector(params, identityManager);
@@ -109,6 +127,11 @@ public class PeopleSearchConnectorTestCase extends AbstractCoreTest {
     //
     assertEquals(2, peopleSearchConnector.search(null, "posi", Collections.EMPTY_LIST, 0, 10, "relevancy", "asc").size());
     assertEquals(2, peopleSearchConnector.search(null, "do", Collections.EMPTY_LIST, 0, 10, "relevancy", "asc").size());
+    //Test of a search query containing fuzzy syntax with current offset and limit
+    assertEquals(0, peopleSearchConnector.search(null, "non-existent~0.5", Collections.EMPTY_LIST, 0, 5, "relevancy", "asc").size());
+    assertEquals(1, peopleSearchConnector.search(null, "company0~0.5", Collections.EMPTY_LIST, 0, 5, "relevancy", "asc").size());
+    assertEquals(0, peopleSearchConnector.search(null, "non-existent", Collections.EMPTY_LIST, 0, 5, "relevancy", "asc").size());
+    assertEquals(1, peopleSearchConnector.search(null, "company0", Collections.EMPTY_LIST, 0, 5, "relevancy", "asc").size());
   }
 
   public void testData() throws Exception {

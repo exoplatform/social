@@ -1,13 +1,5 @@
 package org.exoplatform.social.core.search;
 
-import java.net.URLDecoder;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
-import javax.jcr.query.Row;
-import javax.jcr.query.RowIterator;
-
 import org.exoplatform.commons.api.search.data.SearchContext;
 import org.exoplatform.commons.api.search.data.SearchResult;
 import org.exoplatform.commons.utils.ListAccess;
@@ -25,6 +17,13 @@ import org.exoplatform.social.core.space.spi.SpaceService;
 import org.exoplatform.social.core.storage.impl.StorageUtils;
 import org.exoplatform.social.core.storage.query.JCRProperties;
 import org.exoplatform.social.core.storage.query.WhereExpression;
+
+import javax.jcr.query.Row;
+import javax.jcr.query.RowIterator;
+import java.net.URLDecoder;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 /**
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
@@ -44,6 +43,9 @@ public class SpaceSearchConnector extends AbstractSocialSearchConnector {
 
     List<SearchResult> results = new ArrayList<SearchResult>();
 
+    int tildeIdx = query.lastIndexOf("~");
+    if(tildeIdx!=-1)
+      query = query.substring(0,tildeIdx); //Remove the fuzzy syntax since it's not recognized
     SpaceFilter filter = new SpaceFilter();
     filter.setSpaceNameSearchCondition(query);
     filter.setSorting(sorting);
