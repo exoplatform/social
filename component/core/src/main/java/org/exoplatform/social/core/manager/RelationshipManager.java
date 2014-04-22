@@ -649,10 +649,23 @@ public interface RelationshipManager {
    * @param maxSuggestions The total amount of expected suggestions. If set to a value <= 0, the limit 
    * will be disabled
    * @return The suggestions.
-   * @since 4.0.x
+   * @LevelAPI Experimental
+   * @since 4.0.6
    */
   public Map<Identity, Integer> getSuggestions(Identity identity, int maxConnections, 
                                                int maxConnectionsToLoad, 
                                                int maxSuggestions);
-  
+
+  /**
+   * Gets suggestions having common users with the provided identity.
+   * @param identity The provided identity.
+   * @param offset The starting point from which suggestions are got.
+   * @param limit The limitation of suggestions.
+   * @return The suggestions.
+   * @LevelAPI Experimental
+   * @since 4.0.2
+   * @deprecated Use {@link #getSuggestions(org.exoplatform.social.core.identity.model.Identity, int, int, int)} instead
+   */
+  @Deprecated
+  public Map<Identity, Integer> getSuggestions(Identity identity, int offset, int limit);
 }

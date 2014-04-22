@@ -1397,7 +1397,62 @@ public class RelationshipManagerTest extends AbstractCoreTest {
      tearDownRelationshipList.add(johnMaryRelationship);
      tearDownRelationshipList.add(johnRootRelationship);
   }
-  
+
+  public void testOldGetSuggestions() throws Exception {
+    Relationship maryToGhostRelationship = relationshipManager.inviteToConnect(ghostIdentity, maryIdentity);
+    Relationship ghostToJohnRelationship = relationshipManager.inviteToConnect(ghostIdentity, johnIdentity);
+    Relationship maryToDemoRelationship = relationshipManager.inviteToConnect(demoIdentity, maryIdentity);
+
+    Map<Identity, Integer> suggestions = relationshipManager.getSuggestions(ghostIdentity, 0, 10);
+    // The relationships must be confirmed first
+    assertTrue(suggestions.isEmpty());
+    relationshipManager.confirm(ghostIdentity, maryIdentity);
+    relationshipManager.confirm(ghostIdentity, johnIdentity);
+    relationshipManager.confirm(demoIdentity, maryIdentity);
+    suggestions = relationshipManager.getSuggestions(ghostIdentity, 0, 10);
+    Object[] objs = suggestions.entrySet().toArray();
+
+    Entry<Identity, Integer> first = (Entry<Identity, Integer>) objs[0];
+
+    assertEquals(1, first.getValue().intValue());
+    assertEquals(demoIdentity.getRemoteId(), first.getKey().getRemoteId());
+
+    //increase common users
+    Relationship johnToDemoRelationship = relationshipManager.inviteToConnect(demoIdentity, johnIdentity);
+    Relationship paulToDemoRelationship = relationshipManager.inviteToConnect(paulIdentity, maryIdentity);
+    suggestions = relationshipManager.getSuggestions(ghostIdentity, 0, 10);
+    assertEquals(1, suggestions.size());
+    relationshipManager.confirm(demoIdentity, johnIdentity);
+    relationshipManager.confirm(paulIdentity, maryIdentity);
+
+    suggestions = relationshipManager.getSuggestions(ghostIdentity, 0, 10);
+    objs = suggestions.entrySet().toArray();
+    first = (Entry<Identity, Integer>) objs[0];
+    Entry<Identity, Integer> second = (Entry<Identity, Integer>) objs[1];
+
+    assertEquals(demoIdentity.getRemoteId(), first.getKey().getRemoteId());
+    assertEquals(paulIdentity.getRemoteId(), second.getKey().getRemoteId());
+    assertEquals(2, first.getValue().intValue());
+    assertEquals(demoIdentity.getRemoteId(), first.getKey().getRemoteId());
+    assertEquals(1, second.getValue().intValue());
+    assertEquals(paulIdentity.getRemoteId(), second.getKey().getRemoteId());
+
+    //test with offset > 0
+    suggestions = relationshipManager.getSuggestions(ghostIdentity, 1, 10);
+
+    objs = suggestions.entrySet().toArray();
+    first = (Entry<Identity, Integer>) objs[0];
+
+    assertEquals(1, first.getValue().intValue());
+    assertEquals(paulIdentity.getRemoteId(), first.getKey().getRemoteId());
+
+    tearDownRelationshipList.add(maryToDemoRelationship);
+    tearDownRelationshipList.add(johnToDemoRelationship);
+    tearDownRelationshipList.add(maryToGhostRelationship);
+    tearDownRelationshipList.add(ghostToJohnRelationship);
+    tearDownRelationshipList.add(paulToDemoRelationship);
+  }
+
   public void testGetSuggestions() throws Exception {
     Relationship maryToGhostRelationship = relationshipManager.inviteToConnect(ghostIdentity, maryIdentity);
     Relationship ghostToJohnRelationship = relationshipManager.inviteToConnect(ghostIdentity, johnIdentity);
