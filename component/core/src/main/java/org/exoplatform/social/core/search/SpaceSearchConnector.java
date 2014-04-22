@@ -44,6 +44,7 @@ public class SpaceSearchConnector extends AbstractSocialSearchConnector {
 
     List<SearchResult> results = new ArrayList<SearchResult>();
 
+    query = query.substring(0,query.lastIndexOf("~")); //Remove the fuzzy syntax since it's not recognized
     SpaceFilter filter = new SpaceFilter();
     filter.setSpaceNameSearchCondition(query);
     filter.setSorting(sorting);
