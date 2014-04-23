@@ -1,13 +1,5 @@
 package org.exoplatform.social.core.search;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-
-import javax.jcr.query.Row;
-import javax.jcr.query.RowIterator;
-
 import org.exoplatform.commons.api.search.data.SearchContext;
 import org.exoplatform.commons.api.search.data.SearchResult;
 import org.exoplatform.commons.utils.ListAccess;
@@ -24,6 +16,13 @@ import org.exoplatform.social.core.service.LinkProvider;
 import org.exoplatform.social.core.storage.impl.StorageUtils;
 import org.exoplatform.social.core.storage.query.JCRProperties;
 import org.exoplatform.social.core.storage.query.WhereExpression;
+
+import javax.jcr.query.Row;
+import javax.jcr.query.RowIterator;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
@@ -45,7 +44,8 @@ public class PeopleSearchConnector extends AbstractSocialSearchConnector {
 
     List<SearchResult> results = new ArrayList<SearchResult>();
 
-    query = query.substring(0,query.lastIndexOf("~")); //Remove the fuzzy syntax since it's not recognized
+    if(query.contains("~"+range.offset+"."+range.limit))
+      query = query.substring(0,query.lastIndexOf("~")); //Remove the fuzzy syntax since it's not recognized
     ProfileFilter filter = new ProfileFilter();
     filter.setAll(query);
     filter.setSorting(sorting);

@@ -1,11 +1,5 @@
 package org.exoplatform.social.core.search;
 
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-
 import org.apache.commons.lang.StringEscapeUtils;
 import org.exoplatform.commons.api.search.data.SearchContext;
 import org.exoplatform.commons.api.search.data.SearchResult;
@@ -28,6 +22,12 @@ import org.exoplatform.web.controller.metadata.ControllerDescriptor;
 import org.exoplatform.web.controller.metadata.DescriptorBuilder;
 import org.exoplatform.web.controller.router.Router;
 import org.exoplatform.web.controller.router.RouterConfigException;
+
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
@@ -85,6 +85,16 @@ public class SpaceSearchConnectorTestCase extends AbstractCoreTest {
     createSpaceNonInitApps(sAnother, userA.getRemoteId(), null);
     tearDown.add(sAnother);
 
+    Space sfuzzy = new Space();
+    sfuzzy.setDisplayName("fuzzy");
+    sfuzzy.setPrettyName("fuzzy");
+    sfuzzy.setDescription("fuzzy details");
+    sfuzzy.setManagers(new String[]{"demo"});
+    sfuzzy.setMembers(new String[]{"demo"});
+    sfuzzy.setType(DefaultSpaceApplicationHandler.NAME);
+    createSpaceNonInitApps(sfuzzy, userA.getRemoteId(), null);
+    tearDown.add(sfuzzy);
+
     InitParams params = new InitParams();
     params.put("constructor.params", new PropertiesParam());
     spaceSearchConnector = new SpaceSearchConnector(params, spaceService) {};
@@ -115,6 +125,8 @@ public class SpaceSearchConnectorTestCase extends AbstractCoreTest {
     assertEquals(2, spaceSearchConnector.search(context, "foo description", Collections.EMPTY_LIST, 0, 10, "relevancy", "ASC").size());
     assertEquals(1, spaceSearchConnector.search(context, "foo space", Collections.EMPTY_LIST, 0, 10, "relevancy", "ASC").size());
     assertEquals(2, spaceSearchConnector.search(context, "description", Collections.EMPTY_LIST, 0, 10, "relevancy", "ASC").size());
+    //Test of a search query containing fuzzy syntax with current offset and limit
+    assertEquals(0, spaceSearchConnector.search(context, "non-existent~0.5", Collections.EMPTY_LIST, 0, 5, "relevancy", "ASC").size());
   }
 
   public void testData() throws Exception {
