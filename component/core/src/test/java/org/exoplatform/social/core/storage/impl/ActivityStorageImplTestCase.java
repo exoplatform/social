@@ -252,6 +252,58 @@ public class ActivityStorageImplTestCase extends AbstractCoreTest {
   }
 
   @MaxQueryNumber(428)
+  public void testNotChangeTemplateParamActivity() throws Exception {
+    ExoSocialActivity activity = new ExoSocialActivityImpl();
+    activity.setTitle("title");
+    activity.setBody("body");
+    //
+    Map<String, String> templateParams = new HashMap<String, String>();
+    templateParams.put("link", "http://exoplatform.com?test=<script>");
+    activity.setTemplateParams(templateParams);
+    //
+    activityStorage.saveActivity(rootIdentity, activity);
+    assertNotNull(activity.getId());
+
+    //
+    ExoSocialActivity got = activityStorage.getActivity(activity.getId());
+    got.setTemplateParams(null);
+    
+    activityStorage.updateActivity(got);
+
+    ExoSocialActivity updatedActivity = activityStorage.getActivity(activity.getId());
+
+    assertEquals(activity.getId(), updatedActivity.getId());
+    assertEquals(activity.getTemplateParams().get("link"), updatedActivity.getTemplateParams().get("link"));
+  }
+
+  @MaxQueryNumber(428)
+  public void testUpdateTemplateParamActivity() throws Exception {
+    ExoSocialActivity activity = new ExoSocialActivityImpl();
+    activity.setTitle("title");
+    activity.setBody("body");
+    //
+    Map<String, String> templateParams = new HashMap<String, String>();
+    templateParams.put("link", "http://exoplatform.com?test=<script>");
+    activity.setTemplateParams(templateParams);
+    //
+    activityStorage.saveActivity(rootIdentity, activity);
+    assertNotNull(activity.getId());
+
+    //
+    ExoSocialActivity got = activityStorage.getActivity(activity.getId());
+    templateParams.put("link", "http://www.exoplatform.com");
+    got.setTemplateParams(templateParams);
+    
+    activityStorage.updateActivity(got);
+
+    ExoSocialActivity updatedActivity = activityStorage.getActivity(activity.getId());
+
+    assertEquals(activity.getId(), updatedActivity.getId());
+    assertNotSame(activity.getTemplateParams().get("link"), updatedActivity.getTemplateParams().get("link"));
+  }
+  
+
+  @MaxQueryNumber(428)
   public void testUpdateActivityForUnLike() throws Exception {
 
     //

@@ -48,4 +48,23 @@ public class UtilTest extends TestCase {
     assertFalse(Util.isValidURL("abc : fsdfs"));
     assertFalse(Util.isValidURL("abc #$ vn"));
   }
+  
+  /**
+   * Performs testing for {@link Util#getDecodeQueryURL(String)}
+   * 
+   * @throws Exception
+   */
+  public void testGetDecodeQueryURL() throws Exception {
+    String url = "http://google.com";
+    assertEquals(url, Util.getDecodeQueryURL(url));
+    
+    url = "translate.google.com/#en|vi|What has changed?";
+    assertEquals(url, Util.getDecodeQueryURL(url));
+
+    url = "translate.google.com/?translate=abc#en";
+    assertEquals(url, Util.getDecodeQueryURL(url));
+    
+    url = "http://google.com?%3Cscript%3Ealert(%22Link_attached%22)%3C/script%3E";
+    assertEquals("http://google.com?<script>alert(\"Link_attached\")</script>", Util.getDecodeQueryURL(url));
+  }
 }

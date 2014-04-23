@@ -413,8 +413,6 @@ public class BaseUIActivity extends UIForm {
 
   protected void setLike(boolean isLiked) throws Exception {
     Identity viewerIdentity = Utils.getViewerIdentity();
-    activity.setBody(null);
-    activity.setTitle(null);
     if (isLiked) {
       Utils.getActivityManager().saveLike(activity, viewerIdentity);
     } else {
@@ -633,7 +631,6 @@ public class BaseUIActivity extends UIForm {
       if (uiActivity.isNoLongerExisting(activityId, event)) {
         return;
       }
-      uiActivity.refresh();
       WebuiRequestContext requestContext = event.getRequestContext();
       String isLikedStr = requestContext.getRequestParameter(OBJECTID);
       uiActivity.setLike(Boolean.parseBoolean(isLikedStr));

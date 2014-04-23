@@ -460,6 +460,8 @@ public class ActivityResourcesTest extends AbstractResourceTest {
     
     String resourceUrl = RESOURCE_URL+"/" + demoActivity.getId() + ".json";
     
+    demoActivity = activityManager.getActivitiesWithListAccess(demoIdentity).load(0, 1)[0];
+    
     { // get activity by id without any query param
       startSessionAs("demo");
       ContainerResponse containerResponse = service("GET", resourceUrl, "", null, null);
