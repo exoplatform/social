@@ -128,6 +128,7 @@ public class SpaceSearchConnectorTestCase extends AbstractCoreTest {
     //Test of a search query containing fuzzy syntax with current offset and limit
     assertEquals(0, spaceSearchConnector.search(context, "non-existent~0.5", Collections.EMPTY_LIST, 0, 5, "relevancy", "ASC").size());
     assertEquals(1, spaceSearchConnector.search(context, "fuzzy~0.5", Collections.EMPTY_LIST, 0, 5, "relevancy", "ASC").size());
+    assertEquals(0, spaceSearchConnector.search(context, "non-existent", Collections.EMPTY_LIST, 0, 5, "relevancy", "asc").size());
   }
 
   public void testData() throws Exception {

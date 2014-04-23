@@ -44,7 +44,7 @@ public class PeopleSearchConnector extends AbstractSocialSearchConnector {
 
     List<SearchResult> results = new ArrayList<SearchResult>();
 
-    if(query.contains("~"+range.offset+"."+range.limit))
+    if(query.indexOf("~")!=-1)
       query = query.substring(0,query.lastIndexOf("~")); //Remove the fuzzy syntax since it's not recognized
     ProfileFilter filter = new ProfileFilter();
     filter.setAll(query);
