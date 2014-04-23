@@ -16,7 +16,7 @@
  */
 package org.exoplatform.social.plugin.link;
 
-import java.io.StringWriter;
+import java.lang.StringBuilder;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.regex.Pattern;
@@ -59,7 +59,7 @@ final public class UILinkUtil {
       return StringUtils.EMPTY;
     }
     int length = input.length();
-    StringWriter writer = new StringWriter((int) (length * 1.5));
+    StringBuilder writer = new StringBuilder((int) (length * 1.5));
     for (int i = 0; i < length; i++) {
       char ch = input.charAt(i);
       switch (ch) {
