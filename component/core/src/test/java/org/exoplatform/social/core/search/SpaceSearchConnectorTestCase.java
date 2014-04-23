@@ -87,7 +87,7 @@ public class SpaceSearchConnectorTestCase extends AbstractCoreTest {
 
     Space sfuzzy = new Space();
     sfuzzy.setDisplayName("fuzzy");
-    sfuzzy.setPrettyName("fuzzy");
+    sfuzzy.setPrettyName("fuzzy0");
     sfuzzy.setDescription("fuzzy details");
     sfuzzy.setManagers(new String[]{"demo"});
     sfuzzy.setMembers(new String[]{"demo"});
@@ -127,6 +127,7 @@ public class SpaceSearchConnectorTestCase extends AbstractCoreTest {
     assertEquals(2, spaceSearchConnector.search(context, "description", Collections.EMPTY_LIST, 0, 10, "relevancy", "ASC").size());
     //Test of a search query containing fuzzy syntax with current offset and limit
     assertEquals(0, spaceSearchConnector.search(context, "non-existent~0.5", Collections.EMPTY_LIST, 0, 5, "relevancy", "ASC").size());
+    assertEquals(1, spaceSearchConnector.search(context, "fuzzy~0.5", Collections.EMPTY_LIST, 0, 5, "relevancy", "ASC").size());
   }
 
   public void testData() throws Exception {

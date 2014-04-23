@@ -129,6 +129,7 @@ public class PeopleSearchConnectorTestCase extends AbstractCoreTest {
     assertEquals(2, peopleSearchConnector.search(null, "do", Collections.EMPTY_LIST, 0, 10, "relevancy", "asc").size());
     //Test of a search query containing fuzzy syntax with current offset and limit
     assertEquals(0, peopleSearchConnector.search(null, "non-existent~0.5", Collections.EMPTY_LIST, 0, 5, "relevancy", "asc").size());
+    assertEquals(1, peopleSearchConnector.search(null, "company0~0.5", Collections.EMPTY_LIST, 0, 5, "relevancy", "asc").size());
   }
 
   public void testData() throws Exception {
