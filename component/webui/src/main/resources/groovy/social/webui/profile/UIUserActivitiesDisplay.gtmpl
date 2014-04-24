@@ -127,14 +127,6 @@
 	</div>
   </div>
   
-  <div class="clearfix activityTop">
-    <div class="activityStreamStatus pull-left">
-    
-    <div class="arrowBottom"></div>
-      <!--<span id="noUpdates"><%=noUpdates%></span>-->
-      <a class="uiIconRefresh uiIconLightGray" href="javascript:void(0);" rel="tooltip" title="$refreshTooltipButton" id="RefreshButton" onclick="<%=uicomponent.event("RefreshStream")%>" ></a>
-    </div>
-  </div>
   <div id="UIActivitiesLoader" class="uiActivityStream clearfix">
     <div id="UIActivitiesContainer_welcomeActivity" class="UIActivitiesContainer_welcomeActivity">
       <div class="activityStream uiDefaultActivity" id="welcomeActivity">
@@ -184,7 +176,7 @@
   <div class="activityBottom"><span></span></div>
 <% } else { %>
  <% if (Utils.isHomePage()) { %>
-	<div class="clearfix activityTop">
+	<div class="activityTop">
     <div class="pull-right">
       <% uicomponent.renderChild(UIDropDownControl.class);%>
     </div>
@@ -197,12 +189,6 @@
 	    <% } %>
       <% } %>
     -->
-    <% if (hasActivities) { %>
-    <div class="activityStreamStatus pull-left">
-      <div class="arrowBottom"></div>
-      <a class="uiIconRefresh uiIconLightGray" href="javascript:void(0);" rel="tooltip" title="$refreshTooltipButton" id="RefreshButton" onclick="<%=uicomponent.event("RefreshStream")%>" ></a>
-    </div>
-    <% } %>
   </div>
  <% } %>
   <% uicomponent.renderChild(UIActivitiesLoader.class);%>
