@@ -131,6 +131,7 @@ public class PeopleSearchConnectorTestCase extends AbstractCoreTest {
     assertEquals(0, peopleSearchConnector.search(null, "non-existent~0.5", Collections.EMPTY_LIST, 0, 5, "relevancy", "asc").size());
     assertEquals(1, peopleSearchConnector.search(null, "company0~0.5", Collections.EMPTY_LIST, 0, 5, "relevancy", "asc").size());
     assertEquals(0, peopleSearchConnector.search(null, "non-existent", Collections.EMPTY_LIST, 0, 5, "relevancy", "asc").size());
+    assertEquals(1, peopleSearchConnector.search(null, "company0", Collections.EMPTY_LIST, 0, 5, "relevancy", "asc").size());
   }
 
   public void testData() throws Exception {
