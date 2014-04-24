@@ -176,7 +176,6 @@ public class UIActivitiesLoader extends UIContainer {
       activitiesContainer.setActivityList(activities);
     } catch (Exception e) {
       LOG.error(e.getMessage(), e);
-	e.printStackTrace();
     }
   }
 
