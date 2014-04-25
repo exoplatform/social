@@ -589,7 +589,6 @@ public final class Util {
       try {
         query = new URL(url).getQuery();
         if (query != null) {
-          //
           String newQuery = URLDecoder.decode(query, "UTF-8");
           return url.replace(query, newQuery);
         }

@@ -197,7 +197,7 @@
 					  String linkSource = uicomponent.getLinkSource();
 				   	  String linkTitle = uicomponent.getLinkTitle();
 					  if (linkTitle.equals("")) {
-						linkTitle = linkSource;
+					    linkTitle = UILinkUtil.simpleEscapeHtml(linkSource);
 					  }
 					  String linkImage = uicomponent.getLinkImage();
 					  String linkDescription = UILinkUtil.simpleEscapeHtml(uicomponent.getLinkDescription());
