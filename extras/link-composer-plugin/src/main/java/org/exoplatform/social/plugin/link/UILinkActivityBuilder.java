@@ -19,7 +19,7 @@ package org.exoplatform.social.plugin.link;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.exoplatform.container.PortalContainer;
+import org.exoplatform.commons.utils.CommonsUtils;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
@@ -36,51 +36,44 @@ public class UILinkActivityBuilder extends BaseUIActivityBuilder {
   @Override
   protected void extendUIActivity(BaseUIActivity uiActivity, ExoSocialActivity activity) {
     UILinkActivity uiLinkActivity = (UILinkActivity) uiActivity;
-
-    Map<String, String> templateParams = activity.getTemplateParams();
-    if (templateParams != null) {
-        uiLinkActivity.setLinkSource(templateParams.get(UILinkActivityComposer.LINK_PARAM));
-
-        uiLinkActivity.setLinkTitle(templateParams.get(UILinkActivityComposer.TITLE_PARAM));
-
-        uiLinkActivity.setLinkImage(templateParams.get(UILinkActivityComposer.IMAGE_PARAM));
-
-        uiLinkActivity.setLinkDescription(templateParams.get(UILinkActivityComposer.DESCRIPTION_PARAM));
-
-        uiLinkActivity.setLinkComment(templateParams.get(UILinkActivityComposer.COMMENT_PARAM));
-        
-        uiLinkActivity.setEmbedHtml(templateParams.get(UILinkActivityComposer.HTML_PARAM));
-    } else {
-      try {
-        JSONObject jsonObj = new JSONObject(activity.getTitle());
-        uiLinkActivity.setLinkSource(jsonObj.getString(UILinkActivityComposer.LINK_PARAM));
-        uiLinkActivity.setLinkTitle(jsonObj.getString(UILinkActivityComposer.TITLE_PARAM));
-        uiLinkActivity.setLinkImage(jsonObj.getString(UILinkActivityComposer.IMAGE_PARAM));
-        uiLinkActivity.setLinkDescription(jsonObj.getString(UILinkActivityComposer.DESCRIPTION_PARAM));
-        uiLinkActivity.setLinkComment(jsonObj.getString(UILinkActivityComposer.COMMENT_PARAM));
-        saveToNewDataFormat(activity, uiLinkActivity);
-      } catch (JSONException e) {
-        LOG.error("Error with link activity's title data");
-      }
+    
+    if (activity.getTemplateParams() == null) {
+      saveToNewDataFormat(activity);
     }
+    
+    Map<String, String> templateParams = activity.getTemplateParams();
+    uiLinkActivity.setLinkSource(templateParams.get(UILinkActivityComposer.LINK_PARAM));
+    uiLinkActivity.setLinkTitle(templateParams.get(UILinkActivityComposer.TITLE_PARAM));
+    uiLinkActivity.setLinkImage(templateParams.get(UILinkActivityComposer.IMAGE_PARAM));
+    uiLinkActivity.setLinkDescription(templateParams.get(UILinkActivityComposer.DESCRIPTION_PARAM));
+    uiLinkActivity.setLinkComment(templateParams.get(UILinkActivityComposer.COMMENT_PARAM));
+    uiLinkActivity.setEmbedHtml(templateParams.get(UILinkActivityComposer.HTML_PARAM));
   }
 
-  private void saveToNewDataFormat(ExoSocialActivity activity, UILinkActivity uiLinkActivity) {
-    String linkTitle = "Shared a link: <a href=\"${" + UILinkActivityComposer.LINK_PARAM + "}\">" +
-            "${" + UILinkActivityComposer.TITLE_PARAM + "} </a>";
-    activity.setTitle(linkTitle);
-    Map<String, String> templateParams = new HashMap<String, String>();
-    templateParams.put(UILinkActivityComposer.LINK_PARAM, uiLinkActivity.getLinkSource());
-    templateParams.put(UILinkActivityComposer.TITLE_PARAM, uiLinkActivity.getLinkTitle());
-    templateParams.put(UILinkActivityComposer.IMAGE_PARAM, uiLinkActivity.getLinkImage());
-    templateParams.put(UILinkActivityComposer.DESCRIPTION_PARAM, uiLinkActivity.getLinkDescription());
-    templateParams.put(UILinkActivityComposer.COMMENT_PARAM, uiLinkActivity.getLinkComment());
-    activity.setTemplateParams(templateParams);
-    ActivityManager am = (ActivityManager) PortalContainer.getInstance().getComponentInstanceOfType(ActivityManager.class);
+  private void saveToNewDataFormat(ExoSocialActivity activity) {
     try {
-      am.saveActivityNoReturn(activity);
+      JSONObject jsonObj = new JSONObject(activity.getTitle());
+
+      StringBuilder linkTitle = new StringBuilder("Shared a link:");
+      linkTitle.append(" <a href=\"${").append(UILinkActivityComposer.LINK_PARAM).append("}\">${")
+          .append(UILinkActivityComposer.TITLE_PARAM).append("} </a>");
+      activity.setTitle(linkTitle.toString());
+      
+      Map<String, String> templateParams = new HashMap<String, String>();
+      templateParams.put(UILinkActivityComposer.LINK_PARAM, jsonObj.getString(UILinkActivityComposer.LINK_PARAM));
+      templateParams.put(UILinkActivityComposer.TITLE_PARAM, jsonObj.getString(UILinkActivityComposer.TITLE_PARAM));
+      templateParams.put(UILinkActivityComposer.IMAGE_PARAM, jsonObj.getString(UILinkActivityComposer.IMAGE_PARAM));
+      templateParams.put(UILinkActivityComposer.DESCRIPTION_PARAM, jsonObj.getString(UILinkActivityComposer.DESCRIPTION_PARAM));
+      templateParams.put(UILinkActivityComposer.COMMENT_PARAM, jsonObj.getString(UILinkActivityComposer.COMMENT_PARAM));
+      activity.setTemplateParams(templateParams);
+      
+      CommonsUtils.getService(ActivityManager.class).saveActivityNoReturn(activity);
+    } catch (JSONException je) {
+      LOG.error("Error with activity's title data");
     } catch (ActivityStorageException ase) {
       LOG.warn("Could not save new data format for document activity.", ase);
+    } catch (Exception e) {
+      LOG.error("Unknown error  to save document activity.", e);
     }
   }
 }
