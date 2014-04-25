@@ -626,7 +626,7 @@ public class RelationshipStorageTest extends AbstractCoreTest {
     assertEquals("Number of identities must be " + identities.size(), 2, identities.size());
     pf.setPosition("developer");
     pf.setName("FirstName9");
-	pf.setCompany("");
+    pf.setCompany("");
     identities = relationshipStorage.getConnectionsByFilter(tearDownIdentityList.get(0), pf, 0, 20);
     assertEquals("Number of identities must be " + identities.size(), 1, identities.size());
   }
