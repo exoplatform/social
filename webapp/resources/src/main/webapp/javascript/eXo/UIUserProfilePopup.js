@@ -380,6 +380,22 @@
                 }
 
                 function takeAction(el) {
+                    var userBlock = org_elem.parents('div.spaceBox:first');
+
+                    if (userBlock.length > 0) {
+                      var actionBtn = $(userBlock).find('div.connectionBtn');
+                      
+                      // invoke onclick()
+                      actionBtn.find('button.btn:first').click();
+                      
+                      // clear cache and hide popup
+                      var popup = $(el).closest('#tiptip_holder');
+                      popup.fadeOut('fast');
+                      // clear cache
+                      clearCache();
+                      return;
+                    }
+
                     var dataAction = $(el).attr('data-action');
                     var updatedType = dataAction.split(":")[0];
                     var ownerUserId = dataAction.split(":")[1];
