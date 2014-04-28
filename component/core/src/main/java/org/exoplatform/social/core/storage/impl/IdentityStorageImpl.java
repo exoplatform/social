@@ -287,8 +287,8 @@ public class IdentityStorageImpl extends AbstractStorage implements IdentityStor
         break;
       case RELEVANCY:
         builder.orderBy(JCRProperties.JCR_RELEVANCY.getName(), ordering);
-      case TITLE:
-        builder.orderBy(ProfileEntity.fullName.getName(), ordering);
+      case TITLE:        
+        builder.orderBy(ProfileEntity.lastName.getName(), ordering).orderBy(ProfileEntity.firstName.getName(), ordering);
         break;
     }
   }
