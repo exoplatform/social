@@ -214,10 +214,14 @@ public class NotificationsRestService implements ResourceContainer {
     if (space == null) {
       throw new WebApplicationException(Response.Status.BAD_REQUEST);
     }
-    getSpaceService().removeInvitedUser(space, userId);
-
-    //redirect to all spaces and display a feedback message
-    String targetURL = Util.getBaseUrl() + LinkProvider.getRedirectUri("all-spaces?feedbackMessage=SpaceInvitationRefuse&spaceId=" + spaceId);
+    String targetURL = Util.getBaseUrl();
+    if (getSpaceService().isMember(space, userId)) {
+      targetURL = LinkProvider.getRedirectUri("all-spaces?feedbackMessage=SpaceInvitationAlreadyMember&spaceId=" + spaceId);
+    } else {
+      getSpaceService().removeInvitedUser(space, userId);
+      //redirect to all spaces and display a feedback message
+      targetURL = LinkProvider.getRedirectUri("all-spaces?feedbackMessage=SpaceInvitationRefuse&spaceId=" + spaceId);
+    }
     
     // redirect to target page
     return Response.seeOther(URI.create(targetURL)).build();
