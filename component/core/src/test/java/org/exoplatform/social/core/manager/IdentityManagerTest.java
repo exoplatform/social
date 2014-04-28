@@ -596,6 +596,43 @@ public class IdentityManagerTest extends AbstractCoreTest {
       assertEquals(3, identityArray.length);
     }
   }
+  
+  /**
+   * Test order {@link IdentityManager#getIdentitiesByProfileFilter(String, ProfileFilter, boolean)}
+   */
+  public void testOrderOfGetIdentitiesByProfileFilter() throws Exception {
+    // Create new users 
+    String providerId = "organization";
+    String[] FirstNameList = {"John","Bob","Alain"};
+    String[] LastNameList = {"Smith","Dupond","Dupond"};
+    for (int i = 0; i < 3; i++) {
+      String remoteId = "username" + i;
+      Identity identity = new Identity(providerId, remoteId);
+      identityManager.saveIdentity(identity);
+      Profile profile = new Profile(identity);
+      profile.setProperty(Profile.FIRST_NAME, FirstNameList[i]);
+      profile.setProperty(Profile.LAST_NAME, LastNameList[i]);
+      profile.setProperty(Profile.FULL_NAME, FirstNameList[i] + " " +  LastNameList[i]);
+      profile.setProperty(Profile.POSITION, "developer");
+      profile.setProperty(Profile.GENDER, "male");
+
+      identityManager.saveProfile(profile);
+      identity.setProfile(profile);
+      tearDownIdentityList.add(identity);   
+    }
+    
+    ProfileFilter pf = new ProfileFilter();
+    ListAccess<Identity> idsListAccess = null;
+    // Test order by last name
+    pf.setFirstCharacterOfName('D');
+    idsListAccess = identityManager.getIdentitiesByProfileFilter(providerId, pf, false);
+    assertNotNull(idsListAccess);
+    assertEquals(2, idsListAccess.getSize());
+    // Test order by first name if last name is equal
+    Identity[] identityArray = idsListAccess.load(0, 2);
+    assertEquals(tearDownIdentityList.get(2).getId(), identityArray[0].getId());
+    
+  }
 
   /**
    * Test {@link IdentityManager#updateIdentity(Identity}
