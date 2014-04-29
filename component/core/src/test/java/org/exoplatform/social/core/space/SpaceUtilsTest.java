@@ -85,4 +85,12 @@ public class SpaceUtilsTest extends TestCase {
     assertTrue(isInstalledApp);
   }
  
+  public void testProcessUnifiedSearchCondition() {
+    String input = "spa~ce~0.5";
+    assertEquals("spa~ce", SpaceUtils.processUnifiedSearchCondition(input));
+    input = "space~0.5";
+    assertEquals("space", SpaceUtils.processUnifiedSearchCondition(input));
+    input = "space~0.5 test~0.5";
+    assertEquals("space test", SpaceUtils.processUnifiedSearchCondition(input));
+  }
 }

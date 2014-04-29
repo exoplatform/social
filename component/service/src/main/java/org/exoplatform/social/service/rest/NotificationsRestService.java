@@ -214,10 +214,14 @@ public class NotificationsRestService implements ResourceContainer {
     if (space == null) {
       throw new WebApplicationException(Response.Status.BAD_REQUEST);
     }
-    getSpaceService().removeInvitedUser(space, userId);
-
-    //redirect to all spaces and display a feedback message
-    String targetURL = Util.getBaseUrl() + LinkProvider.getRedirectUri("all-spaces?feedbackMessage=SpaceInvitationRefuse&spaceId=" + spaceId);
+    String targetURL = Util.getBaseUrl();
+    if (getSpaceService().isMember(space, userId)) {
+      targetURL = targetURL + LinkProvider.getRedirectUri("all-spaces?feedbackMessage=SpaceInvitationAlreadyMember&spaceId=" + spaceId);
+    } else {
+      getSpaceService().removeInvitedUser(space, userId);
+      //redirect to all spaces and display a feedback message
+      targetURL = targetURL + LinkProvider.getRedirectUri("all-spaces?feedbackMessage=SpaceInvitationRefuse&spaceId=" + spaceId);
+    }
     
     // redirect to target page
     return Response.seeOther(URI.create(targetURL)).build();
@@ -287,13 +291,19 @@ public class NotificationsRestService implements ResourceContainer {
     if (space == null) {
       throw new WebApplicationException(Response.Status.BAD_REQUEST);
     }
-    getSpaceService().removePendingUser(space, userId);
-
-    //redirect to space's members page and display a feedback message
-    String targetURL = Util.getBaseUrl() + LinkProvider.getActivityUriForSpace(space.getPrettyName(), space.getGroupId().replace("/spaces/", "")) + "/settings/members?feedbackMessage=SpaceRequestRefuse&userName=" + userId;
+    String baseUrl = Util.getBaseUrl();
+    String spaceHomeUrl = LinkProvider.getActivityUriForSpace(space.getPrettyName(), space.getGroupId().replace("/spaces/", ""));
+    StringBuilder targetURL = new StringBuilder().append(baseUrl).append(spaceHomeUrl).append("/settings/members?feedbackMessage=");
+    if (getSpaceService().isMember(space, userId)) {
+      targetURL.append("SpaceRequestAlreadyMember&spaceId=").append(spaceId).append("&userName=").append(userId);
+    } else {
+      getSpaceService().removePendingUser(space, userId);
+      //redirect to space's members page and display a feedback message
+      targetURL.append("SpaceRequestRefuse&userName=").append(userId);
+    }
 
     // redirect to target page
-    return Response.seeOther(URI.create(targetURL)).build();
+    return Response.seeOther(URI.create(targetURL.toString())).build();
   }
   
   /**

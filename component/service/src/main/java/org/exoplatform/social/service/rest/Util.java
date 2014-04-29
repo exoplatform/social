@@ -21,6 +21,7 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import java.net.URLConnection;
+import java.net.URLDecoder;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
@@ -571,5 +572,31 @@ public final class Util {
     } finally {
       urlConnection = null;
     }
+  }
+  
+  /**
+   * Decode query parameters of string URL
+   * Example: Input: http://google.com?%3Cscript%3E
+   *         Output: http://google.com?<script>
+   *
+   * @param url The string URL to decode
+   * @return The URL decoded query parameters
+   * @since 4.1.0
+   */
+  public static String getDecodeQueryURL(String url) {
+    if (isValidURL(url)) {
+      String query;
+      try {
+        query = new URL(url).getQuery();
+        if (query != null) {
+          //
+          String newQuery = URLDecoder.decode(query, "UTF-8");
+          return url.replace(query, newQuery);
+        }
+      } catch (Exception e) {
+        return url;
+      }
+    }
+    return url;
   }
 }
