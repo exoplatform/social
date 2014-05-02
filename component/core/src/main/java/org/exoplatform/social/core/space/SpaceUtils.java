@@ -60,6 +60,8 @@ import org.exoplatform.portal.mop.navigation.NavigationServiceException;
 import org.exoplatform.portal.mop.navigation.NavigationState;
 import org.exoplatform.portal.mop.navigation.NodeContext;
 import org.exoplatform.portal.mop.navigation.Scope;
+import org.exoplatform.portal.mop.page.PageContext;
+import org.exoplatform.portal.mop.page.PageService;
 import org.exoplatform.portal.mop.user.UserNavigation;
 import org.exoplatform.portal.mop.user.UserNode;
 import org.exoplatform.portal.mop.user.UserPortal;
@@ -516,6 +518,13 @@ public class SpaceUtils {
                                               String newSpaceName) throws Exception {
     DataStorage dataStorage = getDataStorage();
     Page page = dataStorage.getPage(spacePageNode.getPageRef().format());
+    
+    ExoContainer container = ExoContainerContext.getCurrentContainer();
+    PageService pageService = (PageService) container.getComponentInstanceOfType(PageService.class);
+    PageContext pageContext = pageService.loadPage(page.getPageKey());
+    String newPageTitle = newSpaceName+" -"+pageContext.getState().getDisplayName().split("-")[1];
+    pageContext.setState(pageContext.getState().builder().displayName(newPageTitle).build());
+    pageService.savePage(pageContext);
     
     ArrayList<ModelObject> pageChildren = page.getChildren();
     
