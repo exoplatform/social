@@ -325,7 +325,7 @@
                     });
 
                     var aAvatar = $("<a/>", {
-                        "target":"_parent",
+                        "target":"_self",
                         "href":json.profileUrl
                     });
 
@@ -333,7 +333,7 @@
 
                     var tdProfile = $("<td/>");
                     var aProfile = $("<a/>", {
-                        "target":"_parent",
+                        "target":"_self",
                         "href":json.profileUrl,
                         "text":json.fullName
                     });
