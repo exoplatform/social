@@ -518,14 +518,7 @@ public class SpaceUtils {
                                               String newSpaceName) throws Exception {
     DataStorage dataStorage = getDataStorage();
     Page page = dataStorage.getPage(spacePageNode.getPageRef().format());
-    
-    ExoContainer container = ExoContainerContext.getCurrentContainer();
-    PageService pageService = (PageService) container.getComponentInstanceOfType(PageService.class);
-    PageContext pageContext = pageService.loadPage(page.getPageKey());
-    String newPageTitle = newSpaceName+" -"+pageContext.getState().getDisplayName().split("-")[1];
-    pageContext.setState(pageContext.getState().builder().displayName(newPageTitle).build());
-    pageService.savePage(pageContext);
-    
+
     ArrayList<ModelObject> pageChildren = page.getChildren();
     
     //change menu portlet preference
@@ -540,6 +533,32 @@ public class SpaceUtils {
     Container applicationContainer = findContainerById(pageChildren, APPLICATION_CONTAINER);
     if (applicationContainer == null) {
       applicationContainer = findContainerById(pageChildren, SPACE_APPLICATIONS);
+    }
+  }
+
+  /**
+   * Change the page title of the application referring to the current spacePageNode
+   * @param spacePageNode
+   * @param newSpaceName
+   * @throws Exception
+  */
+
+  @SuppressWarnings("unchecked")
+  public static void changeAppPageTitle(UserNode spacePageNode,
+                                        String newSpaceName) throws Exception {
+    DataStorage dataStorage = getDataStorage();
+    Page page = dataStorage.getPage(spacePageNode.getPageRef().format());
+
+    ExoContainer container = ExoContainerContext.getCurrentContainer();
+    PageService pageService = (PageService) container.getComponentInstanceOfType(PageService.class);
+    PageContext pageContext = pageService.loadPage(page.getPageKey());
+    if(pageContext != null && pageContext.getState() != null){
+        String dispalyname = pageContext.getState().getDisplayName();
+        if(dispalyname != null && !dispalyname.isEmpty() && dispalyname.indexOf("-") != -1) {
+            String newPageTitle = newSpaceName+" -"+dispalyname.split("-")[1];
+            pageContext.setState(pageContext.getState().builder().displayName(newPageTitle).build());
+            pageService.savePage(pageContext);
+        }
     }
   }
 
