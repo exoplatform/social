@@ -1510,7 +1510,7 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
 
     List<ExoSocialActivity> activities = new ArrayList<ExoSocialActivity>();
     String[] commentIds = getStorage().getActivity(existingActivity.getId()).getReplyToId();
-    
+
     //
     limit = (limit > commentIds.length ? commentIds.length : limit);
     
@@ -1702,7 +1702,11 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
       
       boolean isHidden = getActivity(changedActivity.getId()).isHidden();
       _saveActivity(changedActivity);
-      
+
+      //if update comment, no need to update stream
+      if (changedActivity.isComment()) {
+        return;
+      }
       //update activity ref when activity change value of isHidden
       if (changedActivity.isHidden() != isHidden) {
         Identity owner = identityStorage.findIdentity(SpaceIdentityProvider.NAME, changedActivity.getStreamOwner());
