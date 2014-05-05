@@ -17,7 +17,9 @@
 package org.exoplatform.social.notification;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -86,7 +88,7 @@ public class Utils {
     return (id != null);
   }
   
-  public static void sendToCommeters(List<String> receivers, String[] commenters, String poster) {
+  public static void sendToCommeters(Set<String> receivers, String[] commenters, String poster) {
     receivers.addAll(getDestinataires(commenters, poster));
   }
   
@@ -96,7 +98,7 @@ public class Utils {
    * @param streamOwner The owner of activity stream.
    * @param posteId Id of the user who has posted the activity.
    */
-  public static void sendToStreamOwner(List<String> receivers, String streamOwner, String posteId) {
+  public static void sendToStreamOwner(Set<String> receivers, String streamOwner, String posteId) {
     //Don't send to the stream owner when it's a space
     Identity id = getIdentityManager().getOrCreateIdentity(SpaceIdentityProvider.NAME, streamOwner, false);
     if (id != null) 
@@ -104,10 +106,7 @@ public class Utils {
     
     String postRemoteId = Utils.getUserId(posteId);
     if (streamOwner.equals(postRemoteId) == false) {
-      if (receivers.contains(streamOwner) == false) {
-        receivers.add(streamOwner);
-      }
-        
+      receivers.add(streamOwner);
     }
   }
   
@@ -117,17 +116,14 @@ public class Utils {
    * @param activityPosterId Id of the activity poster.
    * @param posteId Id of the user who has commented.
    */
-  public static void sendToActivityPoster(List<String> receivers, String activityPosterId, String posteId) {
+  public static void sendToActivityPoster(Set<String> receivers, String activityPosterId, String posteId) {
     String activityPosterRemoteId = Utils.getUserId(activityPosterId);
     if (activityPosterId.equals(posteId) == false) {
-      if (receivers.contains(activityPosterRemoteId) == false) {
-        receivers.add(activityPosterRemoteId);
-      }
-        
+      receivers.add(activityPosterRemoteId);
     }
   }
   
-  public static void sendToMentioners(List<String> receivers, String[] mentioners, String poster) {
+  public static void sendToMentioners(Set<String> receivers, String[] mentioners, String poster) {
     receivers.addAll(getDestinataires(mentioners, poster));
   }
   
@@ -138,12 +134,12 @@ public class Utils {
    * @param poster The user who has posted the activity or comment.
    * @return The remote Ids.
    */
-  private static List<String> getDestinataires(String[] users, String poster) {
-    List<String> destinataires = new ArrayList<String>();
+  private static Set<String> getDestinataires(String[] users, String poster) {
+    Set<String> destinataires = new HashSet<String>();
     for (String user : users) {
       user = user.split("@")[0];
       String userName = getUserId(user);
-      if (! destinataires.contains(userName) && ! user.equals(poster)) {
+      if (! user.equals(poster)) {
         destinataires.add(userName);
       }
     }
