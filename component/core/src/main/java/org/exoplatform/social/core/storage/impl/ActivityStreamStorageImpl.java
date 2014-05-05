@@ -1111,8 +1111,9 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
       
       //Case of update hidden activity after migration
       if (references == null || references.size() == 0) {
-        savePoster(ctx);
-        save(ctx);
+        streamCtx.activityEntity(activityEntity);
+        savePoster(streamCtx);
+        save(streamCtx);
       }
         
       HidableEntity hidableActivity = _getMixin(activityEntity, HidableEntity.class, true);
