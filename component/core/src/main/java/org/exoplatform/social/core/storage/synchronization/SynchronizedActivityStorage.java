@@ -95,6 +95,26 @@ public class SynchronizedActivityStorage extends ActivityStorageImpl {
     }
 
   }
+
+  @Override
+  public void saveComment(ExoSocialActivity activity, ExoSocialActivity comment) throws ActivityStorageException {
+    boolean created = startSynchronization();
+    try {
+      super.saveComment(activity, comment);
+    } finally {
+      stopSynchronization(created);
+    }
+  }
+
+  @Override
+  public void saveComment(ExoSocialActivity activity, ExoSocialActivity comment, boolean hasUpdatedActivity) throws ActivityStorageException {
+    boolean created = startSynchronization();
+    try {
+      super.saveComment(activity, comment, hasUpdatedActivity);
+    } finally {
+      stopSynchronization(created);
+    }
+  }
   
   @Override
   public List<ExoSocialActivity> getUserActivitiesForUpgrade(Identity owner, long offset, long limit) throws ActivityStorageException {
