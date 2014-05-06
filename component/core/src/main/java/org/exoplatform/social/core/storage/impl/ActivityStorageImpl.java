@@ -164,6 +164,7 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     // Fill activity model
     activity.setId(activityEntity.getId());
     activity.setStreamOwner(identityEntity.getRemoteId());
+    activity.setStreamId(identityEntity.getId());
     activity.setPostedTime(activityMillis);
     activity.setReplyToId(new String[]{});
     activity.setUpdated(activityMillis);
@@ -420,18 +421,17 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
 
     //update new stream owner
     try {
-      String identityId = activity.getStreamOwner();
-      Identity streamOwnerIdentity = identityStorage.findIdentity(SpaceIdentityProvider.NAME, identityId);
-      if (streamOwnerIdentity == null) {
-        streamOwnerIdentity = identityStorage.findIdentity(OrganizationIdentityProvider.NAME, identityId);
+      String streamId = activity.getStreamId();
+      if (streamId.equals(activityEntity.getIdentity().getId())) {
+        identityEntity = activityEntity.getIdentity();
+      } else {
+        IdentityEntity streamOwnerEntity = _findById(IdentityEntity.class, streamId);
+        identityEntity = streamOwnerEntity;
+        activityEntity.setIdentity(streamOwnerEntity);  
       }
-      IdentityEntity streamOwnerEntity = _findById(IdentityEntity.class, streamOwnerIdentity.getId());
-      identityEntity = streamOwnerEntity;
-      activityEntity.setIdentity(streamOwnerEntity);
     } catch (Exception e) {
       identityEntity = activityEntity.getIdentity();
     }
-    //
     stream.setId(identityEntity.getId());
     stream.setPrettyId(identityEntity.getRemoteId());
     stream.setType(identityEntity.getProviderId());
@@ -1510,7 +1510,7 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
 
     List<ExoSocialActivity> activities = new ArrayList<ExoSocialActivity>();
     String[] commentIds = getStorage().getActivity(existingActivity.getId()).getReplyToId();
-    
+
     //
     limit = (limit > commentIds.length ? commentIds.length : limit);
     
@@ -1702,7 +1702,11 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
       
       boolean isHidden = getActivity(changedActivity.getId()).isHidden();
       _saveActivity(changedActivity);
-      
+
+      //if update comment, no need to update stream
+      if (changedActivity.isComment()) {
+        return;
+      }
       //update activity ref when activity change value of isHidden
       if (changedActivity.isHidden() != isHidden) {
         Identity owner = identityStorage.findIdentity(SpaceIdentityProvider.NAME, changedActivity.getStreamOwner());

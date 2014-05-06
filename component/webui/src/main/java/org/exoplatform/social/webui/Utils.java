@@ -18,11 +18,13 @@ package org.exoplatform.social.webui;
 
 import java.util.Calendar;
 import java.util.List;
+import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
 import javax.servlet.http.Cookie;
 
 import org.apache.commons.lang.ArrayUtils;
+import org.exoplatform.commons.utils.PropertyManager;
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.portal.application.PortalRequestContext;
 import org.exoplatform.portal.application.RequestNavigationData;
@@ -714,5 +716,22 @@ public class Utils {
     JavascriptManager jm = reqContext.getJavascriptManager();
     jm.require("SHARED/jquery", "jq")
       .addScripts("(function($) { $('#socialUsersData').data('CacheSearch', {}); })(jq);");
+  }
+  
+  /**
+   * Get Resource bundle. If failure, log it in developer mode
+   * @param msgKey key to get resource bundle
+   * @return Localized value for msgKey. null if value is not found 
+   */
+  public static String appRes (String msgKey) {
+    WebuiRequestContext context = WebuiRequestContext.getCurrentInstance();
+    try {
+      return context.getApplicationResourceBundle().getString(msgKey);
+    } catch (MissingResourceException ex) {
+      if (PropertyManager.isDevelopping()) {
+        LOG.warn("Can not find resource bundle for key : " + msgKey);
+      }
+      return null;
+    }    
   }
 }

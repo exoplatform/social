@@ -16,12 +16,6 @@
  */
 package org.exoplatform.social.core.manager;
 
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-
 import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
@@ -31,6 +25,12 @@ import org.exoplatform.social.core.profile.ProfileFilter;
 import org.exoplatform.social.core.relationship.model.Relationship;
 import org.exoplatform.social.core.relationship.model.Relationship.Type;
 import org.exoplatform.social.core.test.AbstractCoreTest;
+
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 /**
  * Unit Tests for {@link RelationshipManager}
@@ -1398,14 +1398,75 @@ public class RelationshipManagerTest extends AbstractCoreTest {
      tearDownRelationshipList.add(johnMaryRelationship);
      tearDownRelationshipList.add(johnRootRelationship);
   }
-  
+
+  public void testOldGetSuggestions() throws Exception {
+    Relationship maryToGhostRelationship = relationshipManager.inviteToConnect(ghostIdentity, maryIdentity);
+    Relationship ghostToJohnRelationship = relationshipManager.inviteToConnect(ghostIdentity, johnIdentity);
+    Relationship maryToDemoRelationship = relationshipManager.inviteToConnect(demoIdentity, maryIdentity);
+
+    Map<Identity, Integer> suggestions = relationshipManager.getSuggestions(ghostIdentity, 0, 10);
+    // The relationships must be confirmed first
+    assertTrue(suggestions.isEmpty());
+    relationshipManager.confirm(ghostIdentity, maryIdentity);
+    relationshipManager.confirm(ghostIdentity, johnIdentity);
+    relationshipManager.confirm(demoIdentity, maryIdentity);
+    suggestions = relationshipManager.getSuggestions(ghostIdentity, 0, 10);
+    Object[] objs = suggestions.entrySet().toArray();
+
+    Entry<Identity, Integer> first = (Entry<Identity, Integer>) objs[0];
+
+    assertEquals(1, first.getValue().intValue());
+    assertEquals(demoIdentity.getRemoteId(), first.getKey().getRemoteId());
+
+    //increase common users
+    Relationship johnToDemoRelationship = relationshipManager.inviteToConnect(demoIdentity, johnIdentity);
+    Relationship paulToDemoRelationship = relationshipManager.inviteToConnect(paulIdentity, maryIdentity);
+    suggestions = relationshipManager.getSuggestions(ghostIdentity, 0, 10);
+    assertEquals(1, suggestions.size());
+    relationshipManager.confirm(demoIdentity, johnIdentity);
+    relationshipManager.confirm(paulIdentity, maryIdentity);
+
+    suggestions = relationshipManager.getSuggestions(ghostIdentity, 0, 10);
+    objs = suggestions.entrySet().toArray();
+    first = (Entry<Identity, Integer>) objs[0];
+    Entry<Identity, Integer> second = (Entry<Identity, Integer>) objs[1];
+
+    assertEquals(demoIdentity.getRemoteId(), first.getKey().getRemoteId());
+    assertEquals(paulIdentity.getRemoteId(), second.getKey().getRemoteId());
+    assertEquals(2, first.getValue().intValue());
+    assertEquals(demoIdentity.getRemoteId(), first.getKey().getRemoteId());
+    assertEquals(1, second.getValue().intValue());
+    assertEquals(paulIdentity.getRemoteId(), second.getKey().getRemoteId());
+
+    //test with offset > 0
+    suggestions = relationshipManager.getSuggestions(ghostIdentity, 1, 10);
+
+    objs = suggestions.entrySet().toArray();
+    first = (Entry<Identity, Integer>) objs[0];
+
+    assertEquals(1, first.getValue().intValue());
+    assertEquals(paulIdentity.getRemoteId(), first.getKey().getRemoteId());
+
+    tearDownRelationshipList.add(maryToDemoRelationship);
+    tearDownRelationshipList.add(johnToDemoRelationship);
+    tearDownRelationshipList.add(maryToGhostRelationship);
+    tearDownRelationshipList.add(ghostToJohnRelationship);
+    tearDownRelationshipList.add(paulToDemoRelationship);
+  }
+
   public void testGetSuggestions() throws Exception {
     Relationship maryToGhostRelationship = relationshipManager.inviteToConnect(ghostIdentity, maryIdentity);
     Relationship ghostToJohnRelationship = relationshipManager.inviteToConnect(ghostIdentity, johnIdentity);
     Relationship maryToDemoRelationship = relationshipManager.inviteToConnect(demoIdentity, maryIdentity);
 
-    Map<Identity, Integer> suggestions = relationshipManager.getSuggestions(ghostIdentity, 0, 10); 
-
+    Map<Identity, Integer> suggestions = relationshipManager.getSuggestions(ghostIdentity, -1, -1, 10); 
+    // The relationships must be confirmed first
+    assertTrue(suggestions.isEmpty());
+    relationshipManager.confirm(ghostIdentity, maryIdentity);
+    relationshipManager.confirm(ghostIdentity, johnIdentity);
+    relationshipManager.confirm(demoIdentity, maryIdentity);
+    suggestions = relationshipManager.getSuggestions(ghostIdentity, -1, -1, 10); 
+    assertEquals(1, suggestions.size());
     Object[] objs = suggestions.entrySet().toArray();
     
     Entry<Identity, Integer> first = (Entry<Identity, Integer>) objs[0];
@@ -1416,8 +1477,13 @@ public class RelationshipManagerTest extends AbstractCoreTest {
     //increase common users
     Relationship johnToDemoRelationship = relationshipManager.inviteToConnect(demoIdentity, johnIdentity);
     Relationship paulToDemoRelationship = relationshipManager.inviteToConnect(paulIdentity, maryIdentity);
-    suggestions = relationshipManager.getSuggestions(ghostIdentity, 0, 10); 
-    
+    suggestions = relationshipManager.getSuggestions(ghostIdentity, -1, -1, 10); 
+    assertEquals(1, suggestions.size());
+    relationshipManager.confirm(demoIdentity, johnIdentity);
+    relationshipManager.confirm(paulIdentity, maryIdentity);
+
+    suggestions = relationshipManager.getSuggestions(ghostIdentity, -1, -1, 10); 
+    assertEquals(2, suggestions.size());
     objs = suggestions.entrySet().toArray();
     first = (Entry<Identity, Integer>) objs[0];
     Entry<Identity, Integer> second = (Entry<Identity, Integer>) objs[1];
@@ -1428,20 +1494,71 @@ public class RelationshipManagerTest extends AbstractCoreTest {
     assertEquals(demoIdentity.getRemoteId(), first.getKey().getRemoteId());
     assertEquals(1, second.getValue().intValue());
     assertEquals(paulIdentity.getRemoteId(), second.getKey().getRemoteId());
-    
-    //test with offset > 0
-    suggestions = relationshipManager.getSuggestions(ghostIdentity, 1, 10); 
-    
-    objs = suggestions.entrySet().toArray();
-    first = (Entry<Identity, Integer>) objs[0];
-    
-    assertEquals(1, first.getValue().intValue());
-    assertEquals(paulIdentity.getRemoteId(), first.getKey().getRemoteId());
+
+    relationshipManager.delete(paulToDemoRelationship);
+    suggestions = relationshipManager.getSuggestions(ghostIdentity, -1, -1, 10); 
+    assertEquals(1, suggestions.size());
 
     tearDownRelationshipList.add(maryToDemoRelationship);
     tearDownRelationshipList.add(johnToDemoRelationship);
     tearDownRelationshipList.add(maryToGhostRelationship);
     tearDownRelationshipList.add(ghostToJohnRelationship);
-    tearDownRelationshipList.add(paulToDemoRelationship);
+  }
+
+  public void testGetSuggestionsWithParams() throws Exception {
+    Relationship maryToGhostRelationship = relationshipManager.inviteToConnect(ghostIdentity, maryIdentity);
+    Relationship maryToDemoRelationship = relationshipManager.inviteToConnect(demoIdentity, maryIdentity);
+    Relationship paulToMaryRelationship = relationshipManager.inviteToConnect(paulIdentity, maryIdentity);
+    Relationship johnToMaryRelationship = relationshipManager.inviteToConnect(maryIdentity, johnIdentity);
+    Relationship rootToMaryRelationship = relationshipManager.inviteToConnect(maryIdentity, rootIdentity);
+
+    Map<Identity, Integer> suggestions = relationshipManager.getSuggestions(ghostIdentity, -1, -1, 10); 
+    // The relationships must be confirmed first
+    assertTrue(suggestions.isEmpty());
+    suggestions = relationshipManager.getSuggestions(ghostIdentity, 10, 10, 10);
+    assertTrue(suggestions.isEmpty());
+    suggestions = relationshipManager.getSuggestions(ghostIdentity, 10, 10, 10);
+    assertTrue(suggestions.isEmpty());
+    relationshipManager.confirm(ghostIdentity, maryIdentity);
+    relationshipManager.confirm(paulIdentity, maryIdentity);
+    relationshipManager.confirm(demoIdentity, maryIdentity);
+    relationshipManager.confirm(maryIdentity, johnIdentity);
+    relationshipManager.confirm(maryIdentity, rootIdentity);
+
+    suggestions = relationshipManager.getSuggestions(ghostIdentity, -1, -1, 10);
+    assertFalse(suggestions.containsKey(ghostIdentity));
+    assertEquals(4, suggestions.size());
+    suggestions = relationshipManager.getSuggestions(ghostIdentity, -1, -1, 10);
+    assertFalse(suggestions.containsKey(ghostIdentity));
+    assertEquals(4, suggestions.size());
+    suggestions = relationshipManager.getSuggestions(ghostIdentity, 2, 2, 10);
+    assertFalse(suggestions.containsKey(ghostIdentity));
+    // 1 or 2 depending on the connections loaded, if there is ghostIdentity, it will be one
+    // otherwise it will be 2
+    assertTrue(suggestions.size() > 0 && suggestions.size() <= 2);
+    suggestions = relationshipManager.getSuggestions(ghostIdentity, 2, 3, 10);
+    assertFalse(suggestions.containsKey(ghostIdentity));
+    // 1 or 2 depending on the connections loaded, if there is ghostIdentity, it will be one
+    // otherwise it will be 2
+    assertTrue(suggestions.size() > 0 && suggestions.size() <= 2);
+    suggestions = relationshipManager.getSuggestions(ghostIdentity, 2, 3, 10);
+    assertFalse(suggestions.containsKey(ghostIdentity));
+    // 1 or 2 depending on the connections loaded, if there is ghostIdentity, it will be one
+    // otherwise it will be 2
+    assertTrue(suggestions.size() > 0 && suggestions.size() <= 2);
+
+    suggestions = relationshipManager.getSuggestions(ghostIdentity, 10, 10, 2);
+    assertFalse(suggestions.containsKey(ghostIdentity));
+    assertEquals(2, suggestions.size());
+
+    suggestions = relationshipManager.getSuggestions(ghostIdentity, 10, 2, 2);
+    assertFalse(suggestions.containsKey(ghostIdentity));
+    assertEquals(2, suggestions.size());
+
+    tearDownRelationshipList.add(maryToGhostRelationship);
+    tearDownRelationshipList.add(maryToDemoRelationship);
+    tearDownRelationshipList.add(paulToMaryRelationship);
+    tearDownRelationshipList.add(johnToMaryRelationship);
+    tearDownRelationshipList.add(rootToMaryRelationship);
   }
 }

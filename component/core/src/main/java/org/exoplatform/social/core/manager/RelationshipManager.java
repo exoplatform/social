@@ -16,14 +16,14 @@
  */
 package org.exoplatform.social.core.manager;
 
-import java.util.List;
-import java.util.Map;
-
 import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.profile.ProfileFilter;
 import org.exoplatform.social.core.relationship.model.Relationship;
 import org.exoplatform.social.core.storage.RelationshipStorageException;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * Controls connections between identities.
@@ -639,13 +639,33 @@ public interface RelationshipManager {
   ListAccess<Identity> getOutgoingByFilter(Identity existingIdentity, ProfileFilter profileFilter);
   
   /**
-   * Gets suggestions having common users with a provided identity.
+   * Gets suggestions having common users with the provided identity.
+   * @param identity The provided identity.
+   * @param maxConnections Maximum of connections that we can treat per identity. If set
+   * to a value <= 0, the limit will be disabled
+   * @param maxConnectionsToLoad In case, the maxConnections are not enough to find enough suggestion, 
+   * we load more connections at the first level. If maxConnectionsToLoad or maxConnections has been 
+   * set to a value <= 0, the limit will be disabled
+   * @param maxSuggestions The total amount of expected suggestions. If set to a value <= 0, the limit 
+   * will be disabled
+   * @return The suggestions.
+   * @LevelAPI Experimental
+   * @since 4.0.6
+   */
+  public Map<Identity, Integer> getSuggestions(Identity identity, int maxConnections, 
+                                               int maxConnectionsToLoad, 
+                                               int maxSuggestions);
+
+  /**
+   * Gets suggestions having common users with the provided identity.
    * @param identity The provided identity.
    * @param offset The starting point from which suggestions are got.
    * @param limit The limitation of suggestions.
    * @return The suggestions.
-   * @since 4.0.x
+   * @LevelAPI Experimental
+   * @since 4.0.2
+   * @deprecated Use {@link #getSuggestions(org.exoplatform.social.core.identity.model.Identity, int, int, int)} instead
    */
+  @Deprecated
   public Map<Identity, Integer> getSuggestions(Identity identity, int offset, int limit);
-  
 }

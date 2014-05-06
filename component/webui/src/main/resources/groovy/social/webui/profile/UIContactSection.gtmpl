@@ -136,7 +136,7 @@
           <%
             } else {
                if ((gender != null) && (gender != "")) { %>
-                 <%=gender %>
+                 <%=_ctx.appRes(uicomponent.getId() + ".label." + gender) %>
             <% } else { %>
                 $noGenderLabel
             <% } %>
@@ -148,7 +148,7 @@
         <div class="control-group">
           <label class="control-label"><strong><%=_ctx.appRes(uicomponent.getId() + ".label.gender")%>:</strong></label>
           <div class="controls">
-            <%=gender %>
+            <%=_ctx.appRes(uicomponent.getId() + ".label." + gender) %>
           </div>
         </div>
       <% } %>
@@ -197,7 +197,7 @@
                       def phone = it.get(value);
                       def type = it.get(key);
                 %>
-                    <div><%=type%>:&nbsp;<%=phone%></div>
+                    <div><%=_ctx.appRes(uicomponent.getId() + ".label." + type)%>:&nbsp;<%=phone%></div>
                  <% } 
                   } else { %>
                     $noPhoneLabel
@@ -218,7 +218,7 @@
                       def type = it.get(key);
 
                     %>
-                    <div><%=type%>:&nbsp;<%=phone%></div>
+                    <div><%=_ctx.appRes(uicomponent.getId() + ".label." + type)%>:&nbsp;<%=phone%></div>
                  <%	} %>
               </div>
             </div>
@@ -272,7 +272,7 @@
                           def type = it.get(key);
 
                       %>
-                      <div><%=type%>:&nbsp;<%=im%></div>
+                      <div><%=_ctx.appRes(uicomponent.getId() + ".label." + type)%>:&nbsp;<%=im%></div>
                       <%}
                      } else { %>
                        $noImsLabel
@@ -291,7 +291,7 @@
                     def type = it.get(key);
 
                     %>
-                    <div><%=type%>:&nbsp;<%=im%></div>
+                    <div><%=_ctx.appRes(uicomponent.getId() + ".label." + type)%>:&nbsp;<%=im%></div>
                  <%	} %>
               </div>
             </div>

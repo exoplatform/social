@@ -608,9 +608,7 @@ public class BaseUIActivity extends UIForm {
    * @since 1.2.2
    */
   protected boolean isSpaceStreamOwner() {
-    Identity identityStreamOwner = Utils.getIdentityManager().getOrCreateIdentity(SpaceIdentityProvider.NAME, 
-                                                                                  this.getActivity().getStreamOwner(), false);
-    return (identityStreamOwner != null);
+    return this.getActivity().getActivityStream().getType().name().equalsIgnoreCase(SpaceIdentityProvider.NAME);
   }
   
   /**

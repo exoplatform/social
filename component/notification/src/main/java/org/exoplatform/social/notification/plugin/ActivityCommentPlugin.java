@@ -19,9 +19,11 @@ package org.exoplatform.social.notification.plugin;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.exoplatform.commons.api.notification.NotificationContext;
 import org.exoplatform.commons.api.notification.model.MessageInfo;
@@ -49,14 +51,14 @@ public class ActivityCommentPlugin extends AbstractNotificationPlugin {
     ExoSocialActivity comment = ctx.value(SocialNotificationUtils.ACTIVITY);
     ExoSocialActivity activity = Utils.getActivityManager().getParentActivity(comment);
     //Send notification to all others users who have comment on this activity
-    List<String> receivers = new ArrayList<String>();
+    Set<String> receivers = new HashSet<String>();
     Utils.sendToCommeters(receivers, activity.getCommentedIds(), comment.getPosterId());
     Utils.sendToStreamOwner(receivers, activity.getStreamOwner(), comment.getPosterId());
     Utils.sendToActivityPoster(receivers, activity.getPosterId(), comment.getPosterId());
 
     //
     return NotificationInfo.instance()
-           .to(receivers)
+           .to(new ArrayList<String>(receivers))
            .with(SocialNotificationUtils.ACTIVITY_ID.getKey(), comment.getId())
            .with(SocialNotificationUtils.POSTER.getKey(), Utils.getUserId(comment.getUserId()))
            .key(getId());
