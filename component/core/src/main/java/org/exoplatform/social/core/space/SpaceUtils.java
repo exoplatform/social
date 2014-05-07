@@ -386,7 +386,8 @@ public class SpaceUtils {
     if (str == null) {
       throw new IllegalArgumentException("String argument must not be null.");
     }
-      
+    // Workaround to escape special characters which are not escaped by the transliterate
+    str = convertSpecialCharacters(str);
     str = ACCENTS_CONVERTER.transliterate(str);
 
     // the character ? seems to not be changed to d by the transliterate
@@ -416,6 +417,24 @@ public class SpaceUtils {
       }
     }
     return cleanedStr.toString().toLowerCase();
+  }
+  
+  public static String convertSpecialCharacters(String text)
+  {
+	if (text == null) return null;
+    final String SPECIAL_CHARACTERS = "ı";
+    final String LATIN_CHARACTERS = "i";
+    StringBuilder strippedText = new StringBuilder(text.length());
+    for (int i = 0; i < text.length(); i++) {
+      char currentCharacter = text.charAt(i);
+      int pos = SPECIAL_CHARACTERS.indexOf(currentCharacter);
+      if (pos >= 0 ) {
+        strippedText.append(LATIN_CHARACTERS.charAt(pos));	
+      } else {
+    	strippedText.append(currentCharacter);
+      }
+    }
+    return strippedText.toString();
   }
 
   /**
