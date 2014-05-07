@@ -419,8 +419,7 @@ public class SpaceUtils {
     return cleanedStr.toString().toLowerCase();
   }
   
-  public static String convertSpecialCharacters(String text)
-  {
+  public static String convertSpecialCharacters(String text) {
     if (text == null) return null;
     final String SPECIAL_CHARACTERS = "ı";
     final String LATIN_CHARACTERS = "i";
