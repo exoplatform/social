@@ -150,7 +150,12 @@ public class SpaceUtils {
   private static String NUMBER_REG_PATTERN = "[0-9]";
   private static String UNDER_SCORE_STR = "_";
   private static String SPACE_STR = " ";
-  
+
+  // List of special characters which cannot be escaped by Transliterator
+  private final static String SPECIAL_CHARACTER = "ı";
+  private final static String LATIN_CHARACTER = "i";
+ 
+ 
   /**
    * Creates a new group from an existing group. This new group will get all data from existing group except for group
    * name
@@ -421,14 +426,12 @@ public class SpaceUtils {
   
   public static String convertSpecialCharacters(String text) {
     if (text == null) return null;
-    final String SPECIAL_CHARACTERS = "ı";
-    final String LATIN_CHARACTERS = "i";
-    StringBuilder strippedText = new StringBuilder(text.length());
-    for (int i = 0; i < text.length(); i++) {
+    int textLength = text.length();
+    StringBuilder strippedText = new StringBuilder(textLength);
+    for (int i = 0; i < textLength; i++) {
       char currentCharacter = text.charAt(i);
-      int pos = SPECIAL_CHARACTERS.indexOf(currentCharacter);
-      if (pos >= 0 ) {
-        strippedText.append(LATIN_CHARACTERS.charAt(pos));	
+      if (SPECIAL_CHARACTER.equals(String.valueOf(currentCharacter))) {
+        strippedText.append(LATIN_CHARACTER);	
       } else {
     	strippedText.append(currentCharacter);
       }
