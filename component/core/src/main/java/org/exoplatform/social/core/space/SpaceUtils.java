@@ -150,7 +150,12 @@ public class SpaceUtils {
   private static String NUMBER_REG_PATTERN = "[0-9]";
   private static String UNDER_SCORE_STR = "_";
   private static String SPACE_STR = " ";
-  
+
+  // List of special characters which cannot be escaped by Transliterator
+  private final static char SPECIAL_CHARACTER = 'ı';
+  private final static char LATIN_CHARACTER = 'i';
+ 
+ 
   /**
    * Creates a new group from an existing group. This new group will get all data from existing group except for group
    * name
@@ -386,7 +391,8 @@ public class SpaceUtils {
     if (str == null) {
       throw new IllegalArgumentException("String argument must not be null.");
     }
-      
+    // Workaround to escape special characters which are not escaped by the transliterate
+    str = convertSpecialCharacters(str);
     str = ACCENTS_CONVERTER.transliterate(str);
 
     // the character ? seems to not be changed to d by the transliterate
@@ -416,6 +422,21 @@ public class SpaceUtils {
       }
     }
     return cleanedStr.toString().toLowerCase();
+  }
+  
+  public static String convertSpecialCharacters(String text) {
+    if (text == null) return null;
+    int textLength = text.length();
+    StringBuilder strippedText = new StringBuilder(textLength);
+    for (int i = 0; i < textLength; i++) {
+      char currentCharacter = text.charAt(i);
+      if (SPECIAL_CHARACTER == currentCharacter) {
+        strippedText.append(LATIN_CHARACTER);	
+      } else {
+    	strippedText.append(currentCharacter);
+      }
+    }
+    return strippedText.toString();
   }
 
   /**
