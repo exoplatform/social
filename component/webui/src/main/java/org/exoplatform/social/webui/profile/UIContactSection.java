@@ -184,8 +184,8 @@ public class UIContactSection extends UIProfileSection {
     ResourceBundle resourceBundle = PortalRequestContext.getCurrentInstance().getApplicationResourceBundle();
 
     List<SelectItemOption<String>> options = new ArrayList<SelectItemOption<String>>();
-    options.add(new SelectItemOption<String>(resourceBundle.getString("UIContactSection.label.male"),VALUE_GENDER_MALE));
-    options.add(new SelectItemOption<String>(resourceBundle.getString("UIContactSection.label.female"),VALUE_GENDER_FEMALE));
+    options.add(new SelectItemOption<String>(VALUE_GENDER_MALE, VALUE_GENDER_MALE));
+    options.add(new SelectItemOption<String>(VALUE_GENDER_FEMALE, VALUE_GENDER_FEMALE));
     addUIFormInput(new UIFormSelectBox(GENDER_CHILD, GENDER_CHILD, options));
     
     // Get sample url message from resource bundle and set to variable.
@@ -548,7 +548,7 @@ public class UIContactSection extends UIProfileSection {
     ResourceBundle resourceBundle = requestContext.getApplicationResourceBundle();
     if (PHONE.equals(type)) {
       int phoneIdx = phoneCount;
-      createUISelectBox(PHONE_TYPES, PHONE + StringUtils.leftPad(String.valueOf(phoneIdx++), 3, '0'));
+      createPhoneUISelectBox(PHONE_TYPES, PHONE + StringUtils.leftPad(String.valueOf(phoneIdx++), 3, '0'));
       UIFormStringInput phone = new UIFormStringInput(PHONE + StringUtils.leftPad(String.valueOf(phoneIdx++), 3, '0'),null,null);
       phone.setHTMLAttribute(HTML_ATTRIBUTE_TITLE, resourceBundle.getString("UIContactSection.label.phones"));
       addUIFormInput(phone
@@ -594,6 +594,21 @@ public class UIContactSection extends UIProfileSection {
     addUIFormInput(new UIFormSelectBox(uiName, null, options));
   }
 
+  /**
+   * Creates UISelectBox for Phones.
+   *
+   * @param values Array of value for setting.
+   *
+   * @param uiName Name of component.
+   */
+  private void createPhoneUISelectBox(final String[] values, final String uiName) {
+    List<SelectItemOption<String>> options = new ArrayList<SelectItemOption<String>>();
+    for (String value : values) {
+      options.add(new SelectItemOption<String>(value, value)); 
+    }
+    addUIFormInput(new UIFormSelectBox(uiName, null, options));
+  }
+  
   /**
    * Sorts a list in increase order of alphabet.<br>
    *
