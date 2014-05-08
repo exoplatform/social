@@ -391,8 +391,7 @@ public class SpaceUtils {
     if (str == null) {
       throw new IllegalArgumentException("String argument must not be null.");
     }
-    // Workaround to escape special characters which are not escaped by the transliterate
-    str = convertSpecialCharacters(str);
+  
     str = ACCENTS_CONVERTER.transliterate(str);
 
     // the character ? seems to not be changed to d by the transliterate
@@ -411,6 +410,10 @@ public class SpaceUtils {
         }
         continue;
       }
+      // Workaround to escape special characters which are not escaped by the transliterate
+      if (c == SPECIAL_CHARACTER) {
+        cleanedStr.setCharAt(i, LATIN_CHARACTER);
+      }
 
       if (!(Character.isLetterOrDigit(c) || c == '_')) {
         cleanedStr.deleteCharAt(i--);
@@ -424,21 +427,6 @@ public class SpaceUtils {
     return cleanedStr.toString().toLowerCase();
   }
   
-  public static String convertSpecialCharacters(String text) {
-    if (text == null) return null;
-    int textLength = text.length();
-    StringBuilder strippedText = new StringBuilder(textLength);
-    for (int i = 0; i < textLength; i++) {
-      char currentCharacter = text.charAt(i);
-      if (SPECIAL_CHARACTER == currentCharacter) {
-        strippedText.append(LATIN_CHARACTER);	
-      } else {
-    	strippedText.append(currentCharacter);
-      }
-    }
-    return strippedText.toString();
-  }
-
   /**
    * Gets spaceName by portletPreference.
    *
