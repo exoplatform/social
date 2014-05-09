@@ -71,7 +71,7 @@
 <div class="uiHeaderSection">
 <% uiform.begin() %>
   
-  <h3><%=profile.getPropertyValue(Profile.FULL_NAME)%>
+  <h3><%=profile.getFullName(true);%>
 	<% if (ownerIdentity != null && ownerIdentity.isDeleted() == false) { %>
 	<% if (contactStatus == null) { %>
 	  <% if (!Utils.isOwner()) { %>
