@@ -16,6 +16,8 @@
  */
 package org.exoplatform.social.core.identity.model;
 
+import org.exoplatform.social.core.profile.ProfileLoader;
+
 /**
  * Represents persons or objects relevant to the social system.
  */
@@ -37,7 +39,10 @@ public class Identity {
   boolean isDeleted;
   
   /** The profile. */
-  Profile profile;
+  volatile Profile profile;
+
+  /** The profile loaded allowing to load the profile on demand */
+  private volatile ProfileLoader profileLoader;
 
   /** The global id. */
   GlobalId globalId;
@@ -107,7 +112,17 @@ public class Identity {
    */
   public Profile getProfile() {
     if (profile == null) {
-      profile = new Profile(this);
+      if (profileLoader == null) {
+        profile = new Profile(this);
+      } else {
+        synchronized (this) {
+          if (profile == null) {
+            profile = profileLoader.load();
+            // Get rid of the loader once it is loaded
+            profileLoader = null;
+          }
+        }
+      }
     }
     return profile;
   }
@@ -119,6 +134,15 @@ public class Identity {
    */
   public void setProfile(Profile profile) {
     this.profile = profile;
+  }
+
+  /**
+   * Sets the profile loader.
+   *
+   * @param profileLoader the new profile loader
+   */
+  public void setProfileLoader(ProfileLoader profileLoader) {
+    this.profileLoader = profileLoader;
   }
 
   /**
@@ -175,10 +199,27 @@ public class Identity {
   }
 
   @Override
+  public int hashCode() {
+    final int prime = 31;
+    int result = 1;
+    result = prime * result + ((id == null) ? 0 : id.hashCode());
+    return result;
+  }
+
+  @Override
   public boolean equals(Object obj) {
-    if (obj instanceof Identity) {
-        return getId().equals(((Identity)obj).getId());
-    }
-    return super.equals(obj);
+    if (this == obj)
+      return true;
+    if (obj == null)
+      return false;
+    if (getClass() != obj.getClass())
+      return false;
+    Identity other = (Identity)obj;
+    if (id == null) {
+      if (other.id != null)
+        return false;
+    } else if (!id.equals(other.id))
+      return false;
+    return true;
   }
 }

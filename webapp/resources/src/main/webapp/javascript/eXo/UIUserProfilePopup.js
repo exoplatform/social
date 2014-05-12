@@ -325,7 +325,7 @@
                     });
 
                     var aAvatar = $("<a/>", {
-                        "target":"_parent",
+                        "target":"_self",
                         "href":json.profileUrl
                     });
 
@@ -333,7 +333,7 @@
 
                     var tdProfile = $("<td/>");
                     var aProfile = $("<a/>", {
-                        "target":"_parent",
+                        "target":"_self",
                         "href":json.profileUrl,
                         "text":json.fullName
                     });
@@ -380,10 +380,17 @@
                 }
 
                 function takeAction(el) {
-                    var userBlock = org_elem.parents('div.spaceBox:first');
+                    var userList = org_elem.parents('div.userList:first');
 
-                    if (userBlock.length > 0) {
-                      var actionBtn = $(userBlock).find('div.connectionBtn');
+                    var thisTip = $(el).parents('div#tiptip_content:first');
+                    var tipName = thisTip.find('table#tipName:first');
+                    var userURL = tipName.find('a:first').attr('href').replace('activities', 'profile'); 
+
+                    var focusedUserLink = userList.find('a[href$="' + userURL + '"]:first');
+                    var focusedUserBlock = focusedUserLink.parents('div.spaceBox:first');
+                    
+                    if (focusedUserBlock.length > 0) {
+                      var actionBtn = $(focusedUserBlock).find('div.connectionBtn');
                       
                       // invoke onclick()
                       actionBtn.find('button.btn:first').click();

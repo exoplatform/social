@@ -737,6 +737,7 @@ public class PeopleRestService implements ResourceContainer{
       } else if (USER_TO_INVITE.equals(typeOfRelation) && !spaceSrv.isInvited(space, userName)
                  && !spaceSrv.isPending(space, userName) && !spaceSrv.isMember(space, userName)) {
         nameList.addName(userName);
+        nameList.addFullName(fullName);
       }
     }
   }
@@ -880,6 +881,7 @@ public class PeopleRestService implements ResourceContainer{
   @XmlRootElement
   static public class UserNameList {
     private List<String> _names;
+    private List<String> _fullNames;
     /**
      * Sets user name list
      * @param user name list
@@ -895,6 +897,20 @@ public class PeopleRestService implements ResourceContainer{
     public List<String> getNames() { 
       return _names; 
     }
+
+    /**
+     * Sets user full name list
+     * @param fullNames list
+     */
+    public void setFullNames(List<String> fullNames) {
+      this._fullNames = fullNames;
+    }
+
+    /**
+     * Gets user full name list
+     * @return _fullNames list
+     */
+    public List<String> getFullNames() { return _fullNames; }
     
     /**
      * Add name to user name list
@@ -905,6 +921,17 @@ public class PeopleRestService implements ResourceContainer{
         _names = new ArrayList<String>();
       }
       _names.add(name);
+    }
+
+    /**
+     * Add the user full name to fullNames list
+     * @param fullName
+     */
+    public void addFullName(String fullName) {
+      if (_fullNames == null) {
+        _fullNames = new ArrayList<String>();
+      }
+      _fullNames.add(fullName);
     }
   }
 

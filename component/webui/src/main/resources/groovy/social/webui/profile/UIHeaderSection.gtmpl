@@ -51,9 +51,9 @@
   def position = profile.getPropertyValue(Profile.POSITION);
   
   if (isEditable)
-    position = ((position == null || position == "") ? _ctx.appRes(uicomponent.getName() + ".label.yourPosition"): position);
+    position = ((position == null || position == "") ? _ctx.appRes(uicomponent.getName() + ".label.yourPosition"): _ctx.appRes(uicomponent.getName() + ".label.yourPosition") + ": " + position);
   else
-    position = (position == null ? "": position);
+    position = (position == null ? "": _ctx.appRes(uicomponent.getName() + ".label.Position") + ": " + position);
   
   def componentId = uicomponent.id;
   def inviteToConnectLabel = _ctx.appRes(componentId + ".label.InviteToConnect");
@@ -71,7 +71,7 @@
 <div class="uiHeaderSection">
 <% uiform.begin() %>
   
-  <h3><%=profile.getPropertyValue(Profile.FULL_NAME)%>
+  <h3><%=profile.getFullName(true);%>
 	<% if (ownerIdentity != null && ownerIdentity.isDeleted() == false) { %>
 	<% if (contactStatus == null) { %>
 	  <% if (!Utils.isOwner()) { %>
@@ -91,15 +91,15 @@
 	<% } %>
   </h3>
   
-  <div class="position">
+  <div class="position clearfix">
       <% if(!isEdit) { %>
             <span class="positionTitle"><%=position %></span><% if(isEditable) { %> <a href="<%=uicomponent.event("Edit", "" + !isEdit)%>"><i class="uiIconEdit"></i></a> <% } %>
       <% } else {
             if (isEditable) { %>
               <%uicomponent.setValue();%>
               <div class="pull-right">
-	              <button id="savePosition" class="btn btn-primary" onclick="<%=uicomponent.event("Save") %>"><%=_ctx.appRes(uicomponent.getName() + ".label.Send")%></button>              
-	              <button id="cancelPosition" class="btn" onclick="<%=uicomponent.event("Cancel") %>"><%=_ctx.appRes(uicomponent.getName() + ".label.Cancel")%></button>
+	              <button id="savePosition" class="btn btn-primary" onclick="<%=uicomponent.event("Save")%>;return false;"><%=_ctx.appRes(uicomponent.getName() + ".label.Send")%></button>              
+	              <button id="cancelPosition" class="btn" onclick="<%=uicomponent.event("Cancel")%>;return false;"><%=_ctx.appRes(uicomponent.getName() + ".label.Cancel")%></button>
               </div>
               <div class="titleWithBorder">
               	<% uiform.renderChild(UIFormStringInput.class) %>

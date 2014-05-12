@@ -17,7 +17,6 @@
 package org.exoplatform.social.notification.plugin;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -76,24 +75,6 @@ public class SocialNotificationUtils {
   public static boolean isSpaceActivity(ExoSocialActivity activity) {
     Identity id = Utils.getIdentityManager().getOrCreateIdentity(SpaceIdentityProvider.NAME, activity.getStreamOwner(), false);
     return (id != null);
-  }
-  
-  public static List<String> getDestinataires(String[] users, String poster) {
-    List<String> destinataires = new ArrayList<String>();
-    for (String user : users) {
-      user = user.split("@")[0];
-      String userName = getUserId(user);
-      if (! destinataires.contains(userName) && ! user.equals(poster)) {
-        destinataires.add(userName);
-      }
-    }
-    return destinataires;
-  }
-  
-  public static List<String> getDestinataires(ExoSocialActivity activity, Space space) {
-    List<String> destinataires = Arrays.asList(space.getMembers());
-    destinataires.remove(getUserId(activity.getPosterId()));
-    return destinataires;
   }
   
   /**

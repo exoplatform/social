@@ -24,6 +24,7 @@
   import org.exoplatform.webui.core.UIPageIterator;
   import org.exoplatform.application.registry.Application;
   import org.exoplatform.webui.core.UIPopupContainer;
+  import org.apache.commons.lang.StringEscapeUtils;
 
   def uicomponentId = uicomponent.id;
   def addApplicationLabel = _ctx.appRes("${uicomponentId}.label.AddApplication");
@@ -45,8 +46,13 @@
          def appId = app.getApplicationName();
          def isRemovable = uicomponent.isRemovable(appId);
          def appName = uicomponent.getAppName(appId);
+         def appLabel = appName;
          def applicationIconTitle = _ctx.appRes("${uicomponentId}.title.ApplicationIcon");
          appNameIco = appId.split(":")[0];
+         if (appNameIco != null) {
+           def appLabelFromResourceBundle = org.exoplatform.social.webui.Utils.appRes(appNameIco + ".label.name");
+           if (appLabelFromResourceBundle != null) appLabel = appLabelFromResourceBundle;
+         }
           
   %>
     <div class="contentSpace pull-left clearfix">
@@ -57,9 +63,9 @@
 		<a class="uiIconClose pull-right" href="javascript:void(0);" onclick="$removeApplication"></a>
 		<% } %>
 		<div class="communityContainer">
-			<strong><%= appName %></strong>
+			<strong><%= StringEscapeUtils.escapeHtml(appLabel); %></strong>
 			<br/>
-			<span><%= app.getDescription() %></span>
+			<span><%= StringEscapeUtils.escapeHtml(app.getDescription()); %></span>
 		</div>
 	</div>
     <% } %>

@@ -16,37 +16,62 @@
  */
 package org.exoplatform.social.core.storage.cache.model.key;
 
-public class SuggestionKey <T> extends ListCacheKey {
+public class SuggestionKey <T> extends ScopeCacheKey {
   
+  /**
+   * The serial version UID
+   */
+  private static final long serialVersionUID = 716295319216334677L;
   private final T key;
+  private final int maxConnections;
+  private final int maxConnectionsToLoad;
+  private final int maxSuggestions;
 
-  public SuggestionKey(final T key, final long offset, final long limit) {
-    super(offset, limit);
+  public SuggestionKey(final T key, int maxConnections, 
+                        int maxConnectionsToLoad, 
+                        int maxSuggestions) {
     this.key = key;
+    this.maxConnections = maxConnections;
+    this.maxConnectionsToLoad = maxConnectionsToLoad;
+    this.maxSuggestions = maxSuggestions;
   }
-  
+
   public T getKey() {
     return this.key;
   }
 
   @Override
-  public boolean equals(final Object o) {
-    if (this == o) {
-      return true;
-    }
-    if (!(o instanceof SuggestionKey)) {
-      return false;
-    }
-    if (!super.equals(o)) {
-      return false;
-    }
-    
-    SuggestionKey that = (SuggestionKey) o;
-    
-    if (key != null ? !key.equals(that.key) : that.key != null) {
-      return false;
-    }
+  public int hashCode() {
+    final int prime = 31;
+    int result = super.hashCode();
+    result = prime * result + ((key == null) ? 0 : key.hashCode());
+    result = prime * result + maxConnections;
+    result = prime * result + maxConnectionsToLoad;
+    result = prime * result + maxSuggestions;
+    return result;
+  }
 
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj)
+      return true;
+    if (!super.equals(obj))
+      return false;
+    if (getClass() != obj.getClass())
+      return false;
+    @SuppressWarnings("rawtypes")
+    SuggestionKey other = (SuggestionKey)obj;
+    if (key == null) {
+      if (other.key != null)
+        return false;
+    } else if (!key.equals(other.key))
+      return false;
+    if (maxConnections != other.maxConnections)
+      return false;
+    if (maxConnectionsToLoad != other.maxConnectionsToLoad)
+      return false;
+    if (maxSuggestions != other.maxSuggestions)
+      return false;
     return true;
   }
 }
