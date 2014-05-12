@@ -18,6 +18,7 @@ package org.exoplatform.social.webui.space;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.lang.ArrayUtils;
@@ -270,11 +271,15 @@ public class UISpaceMember extends UIForm {
     if (space == null) {
       return new ArrayList<String>(0);
     }
-    List<String> pendingUsersList = Utils.getEnableUsers(space.getPendingUsers());
-
+    
+    String[] pendingUsers = space.getPendingUsers();
+    if (pendingUsers == null || pendingUsers.length == 0) {
+      return Collections.<String>emptyList();
+    }
+    
     int currentPage = iteratorPendingUsers.getCurrentPage();
     LazyPageList<String> pageList = new LazyPageList<String>(
-                                      new StringListAccess(pendingUsersList),
+                                      new StringListAccess(Arrays.asList(pendingUsers)),
                                       ITEMS_PER_PAGE);
     iteratorPendingUsers.setPageList(pageList);
     int pageCount = iteratorPendingUsers.getAvailablePage();
@@ -299,11 +304,15 @@ public class UISpaceMember extends UIForm {
     if (space == null) {
       return new ArrayList<String>(0);
     }
-    List<String> invitedUsersList = Utils.getEnableUsers(space.getInvitedUsers());
-
+    
+    String[] invitedUsers = space.getInvitedUsers();
+    if (invitedUsers == null || invitedUsers.length == 0) {
+      return Collections.<String>emptyList();
+    }
+    
     int currentPage = iteratorInvitedUsers.getCurrentPage();
     LazyPageList<String> pageList = new LazyPageList<String>(
-                                      new StringListAccess(invitedUsersList),
+                                      new StringListAccess(Arrays.asList(invitedUsers)),
                                       ITEMS_PER_PAGE);
     iteratorInvitedUsers.setPageList(pageList);
     int pageCount = iteratorInvitedUsers.getAvailablePage();
@@ -329,10 +338,14 @@ public class UISpaceMember extends UIForm {
     if (space == null) {
       return new ArrayList<String>(0);
     }
-    List<String> membersList = Utils.getEnableUsers(space.getMembers());
+    
+    String[] memberUsers = space.getMembers();
+    if (memberUsers == null || memberUsers.length == 0) {
+      return Collections.<String>emptyList();
+    }
     
     int currentPage = iteratorExistingUsers.getCurrentPage();
-    LazyPageList<String> pageList = new LazyPageList<String>(new StringListAccess(membersList), ITEMS_PER_PAGE);
+    LazyPageList<String> pageList = new LazyPageList<String>(new StringListAccess(Arrays.asList(memberUsers)), ITEMS_PER_PAGE);
     iteratorExistingUsers.setPageList(pageList);
     if (this.isNewSearch()) {
       iteratorExistingUsers.setCurrentPage(FIRST_PAGE);
