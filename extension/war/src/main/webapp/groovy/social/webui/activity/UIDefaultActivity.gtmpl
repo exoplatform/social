@@ -121,7 +121,7 @@
   } else {
     if (totalLikesNum > 2) {
       def id = Utils.getIdentityManager().getIdentity(displayedIdentityLikes[0]);
-      labelLikes = labelOneAndOthersLikeThis.replace("{0}", id.profile.fullName).replace("{1}", totalLikesNum + "");
+      labelLikes = labelOneAndOthersLikeThis.replace("{0}", id.profile.fullName).replace("{1}", totalLikesNum - 1 + "");
     } else if (totalLikesNum == 1) {
       def id = Utils.getIdentityManager().getIdentity(displayedIdentityLikes[0]);
       labelLikes = labelOnePersonLikeThis.replace("{0}", id.profile.fullName);
