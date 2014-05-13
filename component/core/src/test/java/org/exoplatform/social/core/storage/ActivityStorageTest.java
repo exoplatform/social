@@ -2495,6 +2495,7 @@ public class ActivityStorageTest extends AbstractCoreTest {
         this.identityManager.getOrCreateIdentity(SpaceIdentityProvider.NAME,space.getPrettyName(),false);
     
     activity.setStreamOwner(spaceIdentity.getRemoteId());
+    activity.setStreamId(spaceIdentity.getId());
     activityStorage.updateActivity(activity);
     
     activity = activityStorage.getActivity(activity.getId());

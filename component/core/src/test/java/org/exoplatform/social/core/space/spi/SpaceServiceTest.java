@@ -16,11 +16,6 @@
  */
 package org.exoplatform.social.core.space.spi;
 
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.regex.Pattern;
-
 import org.apache.commons.lang.ArrayUtils;
 import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.services.log.ExoLogger;
@@ -39,6 +34,11 @@ import org.exoplatform.social.core.space.impl.DefaultSpaceApplicationHandler;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.storage.api.IdentityStorage;
 import org.exoplatform.social.core.test.AbstractCoreTest;
+
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Pattern;
 
 public class SpaceServiceTest extends AbstractCoreTest {
   private IdentityStorage identityStorage;
@@ -2708,6 +2708,44 @@ public class SpaceServiceTest extends AbstractCoreTest {
       assertNotNull("invitedSpaces must not be  null", invitedSpaces2);
       assertEquals("invitedSpaces must return: " + invitedSpaceCount2, invitedSpaceCount2, invitedSpaces2.size());
     }
+  }
+
+  public void testGetLastSpaces() throws Exception {
+    tearDownSpaceList.add(populateData());
+    tearDownSpaceList.add(createMoreSpace("Space2"));
+    List<Space> lastSpaces = spaceService.getLastSpaces(1);
+    assertEquals(1, lastSpaces.size());
+    Space sp1 = lastSpaces.get(0);
+    lastSpaces = spaceService.getLastSpaces(1);
+    assertEquals(1, lastSpaces.size());
+    assertEquals(sp1, lastSpaces.get(0));
+    lastSpaces = spaceService.getLastSpaces(5);
+    assertEquals(2, lastSpaces.size());
+    assertEquals(sp1, lastSpaces.get(0));
+    Space newSp1 = createMoreSpace("newSp1");
+    lastSpaces = spaceService.getLastSpaces(1);
+    assertEquals(1, lastSpaces.size());
+    assertEquals(newSp1, lastSpaces.get(0));
+    lastSpaces = spaceService.getLastSpaces(5);
+    assertEquals(3, lastSpaces.size());
+    assertEquals(newSp1, lastSpaces.get(0));
+    Space newSp2 = createMoreSpace("newSp2");
+    lastSpaces = spaceService.getLastSpaces(1);
+    assertEquals(1, lastSpaces.size());
+    assertEquals(newSp2, lastSpaces.get(0));
+    lastSpaces = spaceService.getLastSpaces(5);
+    assertEquals(4, lastSpaces.size());
+    assertEquals(newSp2, lastSpaces.get(0));
+    assertEquals(newSp1, lastSpaces.get(1));
+    spaceService.deleteSpace(newSp1);
+    lastSpaces = spaceService.getLastSpaces(5);
+    assertEquals(3, lastSpaces.size());
+    assertEquals(newSp2, lastSpaces.get(0));
+    assertFalse(newSp1.equals(lastSpaces.get(1)));
+    spaceService.deleteSpace(newSp2);
+    lastSpaces = spaceService.getLastSpaces(5);
+    assertEquals(2, lastSpaces.size());
+    assertEquals(sp1, lastSpaces.get(0));
   }
 
   private Space populateData() throws Exception {

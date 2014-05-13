@@ -17,14 +17,14 @@
 
 package org.exoplatform.social.core.storage.synchronization;
 
-import java.util.List;
-
 import org.exoplatform.social.core.space.SpaceFilter;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.storage.SpaceStorageException;
 import org.exoplatform.social.core.storage.api.ActivityStreamStorage;
 import org.exoplatform.social.core.storage.impl.IdentityStorageImpl;
 import org.exoplatform.social.core.storage.impl.SpaceStorageImpl;
+
+import java.util.List;
 
 /**
  * {@link SynchronizedSpaceStorage} as a decorator to
@@ -796,5 +796,15 @@ public class SynchronizedSpaceStorage extends SpaceStorageImpl {
       stopSynchronization(created);
     }
     
+  }
+
+  public List<Space> getLastSpaces(final int limit) {
+    boolean created = startSynchronization();
+    try {
+      return super.getLastSpaces(limit);
+    }
+    finally {
+      stopSynchronization(created);
+    }
   }
 }

@@ -88,24 +88,28 @@ public class SocialUserEventListenerImpl extends UserEventListener {
       if(!isNew) {
         String uFirstName = user.getFirstName();
         String uLastName = user.getLastName();
-        String uFullName = user.getFullName();
+        String uDisplayName = user.getDisplayName();
         String uEmail = user.getEmail();
   
         //
         String pFirstName = (String) profile.getProperty(Profile.FIRST_NAME);
         String pLastName = (String) profile.getProperty(Profile.LAST_NAME);
+        String pFullName = (String) profile.getProperty(Profile.FULL_NAME);
         String pEmail = (String) profile.getProperty(Profile.EMAIL);
        
   
         if ((pFirstName == null) || (!pFirstName.equals(uFirstName))) {
           profile.setProperty(Profile.FIRST_NAME, uFirstName);
-          profile.setProperty(Profile.FULL_NAME, uFullName);
           hasUpdated = true;
         }
   
         if ((pLastName == null) || (!pLastName.equals(uLastName))) {
           profile.setProperty(Profile.LAST_NAME, uLastName);
-          profile.setProperty(Profile.FULL_NAME, uFullName);
+          hasUpdated = true;
+        }
+        
+        if ((uDisplayName != null) && (!uDisplayName.equals(pFullName))) {
+          profile.setProperty(Profile.FULL_NAME, uDisplayName);
           hasUpdated = true;
         }
         
