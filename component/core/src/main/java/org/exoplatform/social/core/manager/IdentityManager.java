@@ -16,8 +16,6 @@
  */
 package org.exoplatform.social.core.manager;
 
-import java.util.List;
-
 import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.social.core.identity.IdentityProvider;
 import org.exoplatform.social.core.identity.IdentityProviderPlugin;
@@ -32,6 +30,8 @@ import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.storage.api.IdentityStorage;
 import org.exoplatform.webui.exception.MessageException;
 
+import java.util.List;
+
 /**
  * Provides APIs to manage identities.
  * APIs provide capability of getting, creating or updating identities and profile information.
@@ -41,6 +41,16 @@ import org.exoplatform.webui.exception.MessageException;
  * Also, the API which adds or removes the provider information is provided.  
  */
 public interface IdentityManager {
+
+  /**
+   * Gets the last identities that have been created.
+   *
+   * @param limit the limit of identities to provide.
+   * @return The last identities.
+   * @LevelAPI Experimental
+   * @since 4.0.x
+   */
+  List<Identity> getLastIdentities(int limit);
 
   /**
    * Gets or creates an identity provided by an identity provider and an identity Id.

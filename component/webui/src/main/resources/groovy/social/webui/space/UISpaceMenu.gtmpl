@@ -24,6 +24,7 @@
   import org.exoplatform.social.webui.Utils;
   import org.exoplatform.social.core.space.SpaceUtils;
   import org.exoplatform.social.core.service.LinkProvider;
+  import org.apache.commons.lang.StringEscapeUtils;
 
   def uicomponentId = uicomponent.id;
 	
@@ -100,14 +101,18 @@
       continue;
     }
     def nodeTitle = node.getResolvedLabel();
-    def nodeLabel = getFitString(nodeTitle, 15);
     def nodeUri = node.getURI();
     def uriParts = nodeUri.split("/");
     def nodeName = uriParts[uriParts.length - 1];
     if ( node.getPageRef() != null ) {
       appName = node.getPageRef().getName();
-    }
-    
+      if ( appName != null) {
+        def appLabelFromResourceBundle = org.exoplatform.social.webui.Utils.appRes(appName + ".label.name");
+        if (appLabelFromResourceBundle != null) nodeTitle = appLabelFromResourceBundle;
+      }
+    }   
+    def nodeLabel = StringEscapeUtils.escapeHtml(getFitString(nodeTitle, 15));
+ 
     def pName = uicomponent.getAppIdByAppName(appName);
   %>
   <% if(nodeName.equals(appSelected)) {%>

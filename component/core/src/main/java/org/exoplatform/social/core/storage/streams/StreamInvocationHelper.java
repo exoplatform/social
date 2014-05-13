@@ -122,7 +122,7 @@ public class StreamInvocationHelper {
   public static ProcessContext updateHidable(Identity owner, ActivityEntity entity, ExoSocialActivity activity) {
     //
     StreamProcessContext processCtx = StreamProcessContext.getIntance(StreamProcessContext.UPDATE_ACTIVITY_REF, ctx);
-    processCtx.activity(activity).activity(activity).mentioners(entity.getMentioners()).identity(owner);
+    processCtx.activity(activity).mentioners(entity.getMentioners()).identity(owner);
     
     try {
       if (ctx.isAsync()) {

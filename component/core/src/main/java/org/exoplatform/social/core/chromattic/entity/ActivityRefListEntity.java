@@ -162,10 +162,13 @@ public abstract class ActivityRefListEntity {
     return ref;
   }
   
-  public ActivityRef get(ActivityEntity entity) {
+  public ActivityRef get(ActivityEntity entity, Long oldLastUpdated) {
+    Long lastUpdated = oldLastUpdated;
     //In some cases, migrated Activity from 3.5.x, ActivityRef's lastUpdated is NULL
     //uses instead of Activity's postedTime.
-    Long lastUpdated = entity.getLastUpdated() != null ? entity.getLastUpdated() : entity.getPostedTime();
+    if (oldLastUpdated == null) {
+      lastUpdated = entity.getLastUpdated() != null ? entity.getLastUpdated() : entity.getPostedTime();
+    }
     Calendar calendar = Calendar.getInstance(Locale.ENGLISH);
     calendar.setTimeInMillis(lastUpdated);
 
@@ -301,10 +304,13 @@ public abstract class ActivityRefListEntity {
   }
 
   
-  public ActivityRef remove(ActivityEntity entity, boolean isHidden) {
+  public ActivityRef remove(ActivityEntity entity, boolean isHidden, Long oldLastUpdated) {
+    Long lastUpdated = oldLastUpdated;
     //In some cases, migrated Activity from 3.5.x, ActivityRef's lastUpdated is NULL
     //uses instead of Activity's postedTime.
-    Long lastUpdated = entity.getLastUpdated() != null ? entity.getLastUpdated() : entity.getPostedTime();
+    if (oldLastUpdated == null) {
+      lastUpdated = entity.getLastUpdated() != null ? entity.getLastUpdated() : entity.getPostedTime();
+    }
     Calendar calendar = Calendar.getInstance(Locale.ENGLISH);
     calendar.setTimeInMillis(lastUpdated);
 

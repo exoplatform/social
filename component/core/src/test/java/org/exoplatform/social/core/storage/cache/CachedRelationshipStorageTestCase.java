@@ -149,10 +149,20 @@ public class CachedRelationshipStorageTestCase extends AbstractCoreTest {
     cacheService.getRelationshipCacheByIdentity().clearCache();
     assertEquals(0, cacheService.getRelationshipCache().getCacheSize());
 
-    relationshipStorage.getRelationship(i1, i2);
+    Relationship r1 = relationshipStorage.getRelationship(i1, i2);
+    assertNotNull(r1);
     assertEquals(1, cacheService.getRelationshipCache().getCacheSize());
     assertEquals(1, cacheService.getRelationshipCacheByIdentity().getCacheSize());
 
+    Relationship r2 = relationshipStorage.getRelationship(i2, i1);
+    assertNotNull(r2);
+    assertEquals("Same Id", r1.getId(), r2.getId());
+    assertEquals("Same symetric", r1.isSymetric(), r2.isSymetric());
+    assertEquals("Same receiver", r1.getReceiver(), r2.getReceiver());
+    assertEquals("Same sender", r1.getSender(), r2.getSender());
+    assertEquals("Same status", r1.getStatus(), r2.getStatus());
+    assertEquals(1, cacheService.getRelationshipCache().getCacheSize());
+    assertEquals(1, cacheService.getRelationshipCacheByIdentity().getCacheSize());
   }
   
   @MaxQueryNumber(220)
@@ -198,38 +208,45 @@ public class CachedRelationshipStorageTestCase extends AbstractCoreTest {
     
     assertEquals(0, cacheService.getSuggestionCache().getCacheSize());
     
-    relationshipStorage.getSuggestions(johnIdentity, 0, 10);
-    relationshipStorage.getSuggestions(maryIdentity, 0, 10);
-    relationshipStorage.getSuggestions(demoIdentity, 0, 10);
+    relationshipStorage.getSuggestions(johnIdentity, -1, -1, 10);
+    relationshipStorage.getSuggestions(maryIdentity, -1, -1, 10);
+    relationshipStorage.getSuggestions(demoIdentity, -1, -1, 10);
     
     assertEquals(3, cacheService.getSuggestionCache().getCacheSize());
     
-    relationshipStorage.getSuggestions(ghostIdentity, 0, 10);
-    relationshipStorage.getSuggestions(paulIdentity, 0, 10);
+    relationshipStorage.getSuggestions(ghostIdentity, -1, -1, 10);
+    relationshipStorage.getSuggestions(paulIdentity, -1, -1, 10);
     
     assertEquals(5, cacheService.getSuggestionCache().getCacheSize());
     
-    //different offset/limit
-    relationshipStorage.getSuggestions(paulIdentity, 0, 5);
-    relationshipStorage.getSuggestions(paulIdentity, 5, 10);
+    //different parameters
+    relationshipStorage.getSuggestions(paulIdentity, 5, 5, 10);
+    relationshipStorage.getSuggestions(paulIdentity, 5, 10, 10);
     
     assertEquals(7, cacheService.getSuggestionCache().getCacheSize());
     
-    // same identity and offset/limit
-    relationshipStorage.getSuggestions(paulIdentity, 0, 10);
+    // same identity and parameters
+    relationshipStorage.getSuggestions(paulIdentity, 5, 5, 10);
     
     assertEquals(7, cacheService.getSuggestionCache().getCacheSize());
+    
+    // same identity and different parameters
+    relationshipStorage.getSuggestions(paulIdentity, 5, 5, 15);
+    relationshipStorage.getSuggestions(paulIdentity, 5, 15, 10);
+    relationshipStorage.getSuggestions(paulIdentity, 15, 5, 10);
+    
+    assertEquals(10, cacheService.getSuggestionCache().getCacheSize());
     
     cacheService.getSuggestionCache().clearCache();
     
     assertEquals(0, cacheService.getSuggestionCache().getCacheSize());
     
-    relationshipStorage.getSuggestions(maryIdentity, 0, 10);
-    relationshipStorage.getSuggestions(maryIdentity, 0, 10);
+    relationshipStorage.getSuggestions(maryIdentity, -1, -1, 10);
+    relationshipStorage.getSuggestions(maryIdentity, -1, -1, 10);
     
     assertEquals(1, cacheService.getSuggestionCache().getCacheSize());
     
-    relationshipStorage.getSuggestions(maryIdentity, 0, 0);
+    relationshipStorage.getSuggestions(maryIdentity, -1, -1, 1);
     
     assertEquals(2, cacheService.getSuggestionCache().getCacheSize());
   }

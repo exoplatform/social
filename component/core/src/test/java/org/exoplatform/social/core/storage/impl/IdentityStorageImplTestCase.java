@@ -1140,4 +1140,50 @@ public class IdentityStorageImplTestCase extends AbstractCoreTest {
     }
     return string.replace("[", "%5B").replace("]", "%5D").replace(":", "%3A");
   }
+  
+  @MaxQueryNumber(100)
+  public void testSearchByPositions() throws Exception {
+    Identity newIdentity = new Identity("organization", "withPositions");
+
+    //
+    storage._createIdentity(newIdentity);
+    String generatedId = newIdentity.getId();
+    assertNotNull(generatedId);
+    assertEquals("organization", newIdentity.getProviderId());
+    assertEquals(false, newIdentity.isDeleted());
+    assertEquals("withPositions", newIdentity.getRemoteId());
+    assertNotNull(newIdentity.getProfile());
+    assertNull(newIdentity.getProfile().getId());
+	
+    //
+    storage._createProfile(newIdentity.getProfile());
+    assertNotNull(newIdentity.getProfile().getId());
+	
+    //
+    Profile profile = newIdentity.getProfile();
+    profile.setProperty(Profile.USERNAME, "user");
+    profile.setProperty(Profile.FIRST_NAME, "first");
+    profile.setProperty(Profile.LAST_NAME, "last");
+    // xps
+    List<Map<String, Object>> xps = new ArrayList<Map<String, Object>>();
+    Map<String, Object> xp1 = new HashMap<String, Object>();
+    xp1.put(Profile.EXPERIENCES_SKILLS, null);
+    xp1.put(Profile.EXPERIENCES_POSITION, "dev");
+    xp1.put(Profile.EXPERIENCES_COMPANY, "exo");
+    xp1.put(Profile.EXPERIENCES_DESCRIPTION, "description 1");
+    xp1.put(Profile.EXPERIENCES_START_DATE, "01/01/2010");
+    xp1.put(Profile.EXPERIENCES_END_DATE, null);
+    xp1.put(Profile.EXPERIENCES_IS_CURRENT, Boolean.TRUE);
+    xps.add(xp1);
+    	   
+    profile.setProperty(Profile.EXPERIENCES, xps);
+	
+    //
+    storage._saveProfile(profile);
+	
+    ProfileFilter dev = createFilter('\u0000', "", "", "dev", null);
+    assertEquals(1, storage.getIdentitiesByProfileFilter("organization", dev, 0, 10, false).size());
+	
+    tearDownIdentityList.add(newIdentity.getId());	  
+  }
 }

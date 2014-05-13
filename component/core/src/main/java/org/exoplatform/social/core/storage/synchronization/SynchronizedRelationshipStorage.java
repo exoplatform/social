@@ -17,14 +17,14 @@
 
 package org.exoplatform.social.core.storage.synchronization;
 
-import java.util.List;
-import java.util.Map;
-
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.relationship.model.Relationship;
 import org.exoplatform.social.core.storage.RelationshipStorageException;
 import org.exoplatform.social.core.storage.api.IdentityStorage;
 import org.exoplatform.social.core.storage.impl.RelationshipStorageImpl;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * {@link SynchronizedRelationshipStorage} as a decorator to {@link org.exoplatform.social.core.storage.api.RelationshipStorage}
@@ -312,11 +312,15 @@ public class SynchronizedRelationshipStorage extends RelationshipStorageImpl {
    * {@inheritDoc}
    */
   @Override
-  public Map<Identity, Integer> getSuggestions(final Identity identity, final int offset, final int limit) throws RelationshipStorageException {
+  public Map<Identity, Integer> getSuggestions(Identity identity, int maxConnections, 
+                                                int maxConnectionsToLoad, 
+                                                int maxSuggestions) 
+                                                throws RelationshipStorageException {
 
     boolean created = startSynchronization();
     try {
-      return super.getSuggestions(identity, offset, limit);
+      return super.getSuggestions(identity, maxConnections, maxConnectionsToLoad, 
+                                    maxSuggestions);
     }
     finally {
       stopSynchronization(created);

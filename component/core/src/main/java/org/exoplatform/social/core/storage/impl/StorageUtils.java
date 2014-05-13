@@ -77,6 +77,10 @@ public class StorageUtils {
           whereExpression.callFunction(QueryFunction.LOWER, ProfileEntity.position),
           PERCENT_STR + position.toLowerCase() + PERCENT_STR
       );
+      whereExpression.or().like(
+          whereExpression.callFunction(QueryFunction.LOWER, ProfileEntity.positions),
+          PERCENT_STR + position.toLowerCase() + PERCENT_STR
+      );
     }
 
     if (skills.length() != 0) {

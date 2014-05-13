@@ -165,26 +165,40 @@
 	           .attr('autocomplete', 'off');
 
 	        function buildResults(searchedResults) {
-	            var i, iFound = 0;
+	          var i, iFound = 0,
+	              usedList,
+	              searchResultsNames = searchedResults.names,
+	              searchedResultsFullNames = searchedResults.fullNames;
 
 	            $(results).html('').hide();
 
-              if (searchedResults == null) return;
-
-	            // build list of item over searched result
-	            for (i = 0; i < searchedResults.length; i += 1) {
+              /* If the "names" array object is null, then no results to show */
+              if (searchResultsNames == null) {
+                return;
+              }
+              /* If the "fullNames" array object is null then "names" array object will be used to build result list
+                (This should be the default behavior) */
+              else if (searchedResultsFullNames == null) {
+                usedList = searchResultsNames;
+              }
+              /* Otherwise, if the "fullNames" array object is not null,
+                then it will be used to build result list instead of "names" array object */
+              else {
+                usedList = searchedResultsFullNames;
+              }
+              for (i = 0; i < usedList.length; i += 1) {
                 var item = $('<div />'),
-                    text = searchedResults[i];
+                text = usedList[i];
 
                 $(item).append('<p class="text">' + text + '</p>');
 
-                if (typeof searchedResults[i].extra === 'string') {
-                  $(item).append('<p class="extra">' + searchedResults[i].extra + '</p>');
+                if (typeof usedList[i].extra === 'string') {
+                  $(item).append('<p class="extra">' + usedList[i].extra + '</p>');
                 }
 
                 $(item).addClass('resultItem')
                     .click(function(n) { return function() {
-                      selectResultItem(searchedResults[n]);
+                      selectResultItem(searchResultsNames[n]);
                     };}(i))
                     .mouseover(function(el) { return function() {
                       changeHover(el);
@@ -196,7 +210,7 @@
                 if (typeof options.maxResults === 'number' && iFound >= options.maxResults) {
                   break;
                 }
-	            }
+              }
 
 	            if ($('div', results).length > 0) { // if have any element then display the list
                 currentSelectedItem = undefined;
@@ -225,7 +239,7 @@
 	                  url: restUrl,
 	                  complete: function(jqXHR) {
 					            if(jqXHR.readyState === 4) {
-					              buildResults($.parseJSON(jqXHR.responseText).names);
+					              buildResults($.parseJSON(jqXHR.responseText));
 					            }
 	                  }
 	          })

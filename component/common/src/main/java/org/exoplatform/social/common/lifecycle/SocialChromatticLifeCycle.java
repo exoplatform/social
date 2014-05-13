@@ -96,7 +96,9 @@ public class SocialChromatticLifeCycle extends ChromatticLifeCycle {
       onOpenSession(openContext());
     } catch (IllegalStateException e) {
       this.closeContext(false);
-      this.getManager().endRequest(false);
+      if(this.getManager().getSynchronization() != null) {
+        this.getManager().endRequest(false);
+      }
       this.getManager().startRequest(PortalContainer.getInstance());
       session.set(this.getChromattic().openSession());
     }
