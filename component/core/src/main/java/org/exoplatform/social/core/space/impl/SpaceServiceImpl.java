@@ -437,11 +437,15 @@ public class SpaceServiceImpl implements SpaceService {
         setApp(space, spaceApplication.getPortletName(), spaceApplication.getAppTitle(), spaceApplication.isRemovable(),
                Space.ACTIVE_STATUS);
       }
+      
+      saveSpace(space, false);
     } catch (Exception e) {
       LOG.warn("Failed to init apps", e);
+    } finally {
+      SpaceUtils.endSyn(true);
     }
 
-    saveSpace(space, false);
+    
     
     return space;
   }

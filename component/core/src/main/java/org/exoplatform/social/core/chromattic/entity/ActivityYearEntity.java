@@ -17,12 +17,6 @@
 
 package org.exoplatform.social.core.chromattic.entity;
 
-import java.text.DateFormatSymbols;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-
 import org.chromattic.api.annotations.Create;
 import org.chromattic.api.annotations.DefaultValue;
 import org.chromattic.api.annotations.FormattedBy;
@@ -35,6 +29,12 @@ import org.chromattic.api.annotations.Path;
 import org.chromattic.api.annotations.PrimaryType;
 import org.chromattic.api.annotations.Property;
 import org.chromattic.ext.format.BaseEncodingObjectFormatter;
+
+import java.text.DateFormatSymbols;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 /**
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
@@ -96,13 +96,7 @@ public abstract class ActivityYearEntity implements NamedEntity, IndexNumber {
     if (monthEntity == null) {
       monthEntity = newMonth();
       getMonths().put(month, monthEntity);
-      long longMonth = MONTH_NAME.indexOf(month);
-      for (int i = getMonthsList().size() - 1; i >= 0 ; --i) {
-        long longCurrent = MONTH_NAME.indexOf(getMonthsList().get(i).getName());
-        if (longCurrent < longMonth) {
-          getMonthsList().add(i, monthEntity);
-        }
-      }
+      getMonthsList().add(monthEntity);
     }
 
     return monthEntity;

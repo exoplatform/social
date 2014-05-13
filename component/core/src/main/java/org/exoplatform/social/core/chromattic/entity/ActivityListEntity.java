@@ -17,9 +17,6 @@
 
 package org.exoplatform.social.core.chromattic.entity;
 
-import java.util.List;
-import java.util.Map;
-
 import org.chromattic.api.annotations.Create;
 import org.chromattic.api.annotations.DefaultValue;
 import org.chromattic.api.annotations.FormattedBy;
@@ -29,6 +26,9 @@ import org.chromattic.api.annotations.Path;
 import org.chromattic.api.annotations.PrimaryType;
 import org.chromattic.api.annotations.Property;
 import org.chromattic.ext.format.BaseEncodingObjectFormatter;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
@@ -80,13 +80,7 @@ public abstract class ActivityListEntity {
     if (yearEntity == null) {
       yearEntity = newYear();
       getYears().put(year, yearEntity);
-      long longYear = Long.parseLong(year);
-      for (int i = getYearsList().size() - 1; i >= 0 ; --i) {
-        long longCurrent = Long.parseLong(getYearsList().get(i).getName());
-        if (longCurrent < longYear) {
-          getYearsList().add(i, yearEntity);
-        }
-      }
+      getYearsList().add(yearEntity);
     }
 
     return yearEntity;
