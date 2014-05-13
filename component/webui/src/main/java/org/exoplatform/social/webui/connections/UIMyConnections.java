@@ -357,6 +357,7 @@ public class UIMyConnections extends UIContainer {
       }
       
       Utils.getRelationshipManager().delete(relationship);
+      Utils.clearCacheOnUserPopup();
       event.getRequestContext().addUIComponentToUpdateByAjax(uiMyConnections);
     }
   }

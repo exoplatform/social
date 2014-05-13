@@ -343,6 +343,7 @@ public class UIInvitations extends UIContainer {
         return;
       }
       Utils.getRelationshipManager().confirm(invitedIdentity, invitingIdentity);
+      Utils.clearCacheOnUserPopup();
       event.getRequestContext().addUIComponentToUpdateByAjax(uiInvitations);
     }
   }
@@ -371,6 +372,7 @@ public class UIInvitations extends UIContainer {
       }
       
       Utils.getRelationshipManager().deny(invitedIdentity, invitingIdentity);
+      Utils.clearCacheOnUserPopup();
       event.getRequestContext().addUIComponentToUpdateByAjax(uiInvitations);
     }
   }

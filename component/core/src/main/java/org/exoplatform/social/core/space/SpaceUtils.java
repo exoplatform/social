@@ -1547,6 +1547,29 @@ public class SpaceUtils {
     result = result.replaceAll("\\s+", " ");
     return result.trim();
   }
+  
+  /**
+   * As the similarity is provided in the search term, we need to extract the keyword that user enter in 
+   * the search form
+   * 
+   * @param input the search value include the similarity
+   * @return the search condition after process
+   */
+  public static String processUnifiedSearchCondition(String input) {
+    if (input.isEmpty() || input.indexOf("~") < 0 || input.indexOf("\\~") > 0) {
+      return input;
+    }
+    StringBuilder builder = new StringBuilder();
+    //The similarity is added for each word in the search condition, ex : space~0.5 test~0.5
+    //then we need to process each word separately 
+    String[] tab = input.split(" ");
+    for (String s : tab){
+      if (s.isEmpty()) continue;
+      String searchTerm = s.substring(0, s.lastIndexOf("~"));
+      builder.append(searchTerm).append(" ");
+    }
+    return builder.toString().trim();
+  }
 
   /**
    * Builds pretty name base on the basic name in case create more than one space with the same name.

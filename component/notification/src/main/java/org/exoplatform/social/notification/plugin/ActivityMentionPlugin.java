@@ -19,9 +19,11 @@ package org.exoplatform.social.notification.plugin;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.exoplatform.commons.api.notification.NotificationContext;
 import org.exoplatform.commons.api.notification.model.MessageInfo;
@@ -52,11 +54,11 @@ public class ActivityMentionPlugin extends AbstractNotificationPlugin {
   public NotificationInfo makeNotification(NotificationContext ctx) {
     ExoSocialActivity activity = ctx.value(SocialNotificationUtils.ACTIVITY);
     
-    List<String> receivers = new ArrayList<String>();
+    Set<String> receivers = new HashSet<String>();
     Utils.sendToMentioners(receivers, activity.getMentionedIds(), activity.getPosterId());
 
     return NotificationInfo.instance().key(getKey())
-           .to(receivers)
+           .to(new ArrayList<String>(receivers))
            .with("poster", Utils.getUserId(activity.getPosterId()))
            .with(SocialNotificationUtils.ACTIVITY_ID.getKey(), activity.getId())
            .end();

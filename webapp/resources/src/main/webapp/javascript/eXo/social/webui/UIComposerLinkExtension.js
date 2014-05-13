@@ -28,7 +28,7 @@
     DOUBLE_COMMA: "double_comma",
     ENTER_KEY_CODE: 13,
 	  changeLinkContent: function () {
-	    var link = decodeURI(this.linkData.link),
+	    var link = this.linkData.link || '',
 	    title = this.linkData.title;
 	    image = this.linkData.image;
 	    description = this.linkData.description;
@@ -98,8 +98,8 @@
 	    this.linkInfoDisplayed = params.linkInfoDisplayed || false;
 	    this.inputLinkId = params.inputLinkId || 'inputLink';
 	    this.attachButtonId = params.attachButtonId || 'attachButton';
-	    this.attachUrl = decodeURI(params.attachUrl || "");
-	    this.changeLinkContentUrl = decodeURI(params.changeLinkContentUrl || "");
+	    this.attachUrl = encodeURI(decodeURIComponent(params.attachUrl || ""));
+	    this.changeLinkContentUrl = encodeURI(decodeURIComponent(params.changeLinkContentUrl || ""));
 	    this.shownThumbnailIndex = params.shownThumbnailIndex || 0;
 	    this.uiThumbnailDisplayId = params.uiThumbnailDisplayId || 'UIThumbnailDisplay';
 	    this.thumbnailsId = params.thumbnailsId || 'Thumbnails';
@@ -108,17 +108,7 @@
 	    this.statsId = params.statsId || 'Stats';
 	    this.thumbnailCheckboxId = params.thumbnailCheckboxId || 'ThumbnailCheckbox';
 	    this.linkData = params.linkData || {};
-	    
-	    var comp = UIComposerLinkExtension;
-      if (this.linkData.title) {
-        this.linkData.title = this.linkData.title.replace(/comp.SINGLE_COMMA/g, "&#39;");
-        this.linkData.title = this.linkData.title.replace(/comp.DOUBLE_COMMA/g, "&quot;");
-      }
-      
-      if (this.linkData.description) { 
-        this.linkData.description = this.linkData.description.replace(/comp.SINGLE_COMMA/g, "&#39;");
-        this.linkData.description = this.linkData.description.replace(/comp.DOUBLE_COMMA/g, "&quot;");
-      }
+	    //
 	    if (!this.attachUrl) {
 	      alert('error: attachUrl is null!');
 	    }
@@ -244,7 +234,8 @@
 	        if (inputLink.val() === '' || inputLink.val() === UIComposerLinkExtension.HTTP) {
 	          return;
 	        }
-	        var url = UIComposerLinkExtension.attachUrl.replace(/&amp;/g, "&") + '&objectId='+ encodeURIComponent(inputLink.val()) + '&ajaxRequest=true';
+	        var urlInput =  encodeURIComponent(encodeURI(inputLink.val()));
+	        var url = UIComposerLinkExtension.attachUrl.replace(/&amp;/g, "&") + '&objectId=' + urlInput + '&ajaxRequest=true';
 	        ajaxGet(url, function(){
 	          try {
 	            $('textarea#composerInput').exoMentions('showButton', function() {});

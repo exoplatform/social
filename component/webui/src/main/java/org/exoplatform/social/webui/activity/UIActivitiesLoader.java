@@ -166,8 +166,6 @@ public class UIActivitiesLoader extends UIContainer {
       String activityId = Utils.getActivityID();
       if (activityId != null && activityId.length() > 0) {
         postContext = PostContext.SINGLE;
-      } else {
-        postContext = PostContext.USER;
       }
       
       activitiesContainer.setPostContext(postContext);
@@ -180,10 +178,10 @@ public class UIActivitiesLoader extends UIContainer {
       List<ExoSocialActivity> activities = new ArrayList<ExoSocialActivity>(0);
       
       if (isShowActivities(space)) {
-        if (this.postContext == PostContext.USER) {
-          activities = loadActivities(currentLoadIndex, loadingCapacity);
-        } else {
+        if (this.postContext == PostContext.SINGLE) {
           activities = loadActivity();
+        } else {
+          activities = loadActivities(currentLoadIndex, loadingCapacity);
         }
       }
       
@@ -217,8 +215,9 @@ public class UIActivitiesLoader extends UIContainer {
         lastActivitiesLoader.setHasMore(false);
         this.setHasMore(false);
       } else if (activities.size() == this.pageSize) {
-        lastActivitiesLoader.setHasMore(activityListAccess.getSize() > activitiesCounter);
-        this.setHasMore(false);
+        boolean hasMore = activityListAccess.getSize() > activitiesCounter;
+        lastActivitiesLoader.setHasMore(hasMore);
+        this.setHasMore(hasMore);
       }
     }
   }

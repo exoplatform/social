@@ -17,9 +17,6 @@
 
 package org.exoplatform.social.core.storage.cache;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.exoplatform.services.cache.ExoCache;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
@@ -30,6 +27,7 @@ import org.exoplatform.social.core.identity.model.Profile.AttachedActivityType;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
 import org.exoplatform.social.core.profile.ProfileFilter;
+import org.exoplatform.social.core.profile.ProfileLoader;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.storage.IdentityStorageException;
 import org.exoplatform.social.core.storage.api.IdentityStorage;
@@ -46,6 +44,9 @@ import org.exoplatform.social.core.storage.cache.model.key.ListSpaceMembersKey;
 import org.exoplatform.social.core.storage.cache.model.key.SpaceKey;
 import org.exoplatform.social.core.storage.cache.selector.IdentityCacheSelector;
 import org.exoplatform.social.core.storage.impl.IdentityStorageImpl;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Cache support for IdentityStorage.
@@ -184,7 +185,7 @@ public class CachedIdentityStorage implements IdentityStorage {
   public Identity findIdentityById(final String nodeId) throws IdentityStorageException {
 
     IdentityKey key = new IdentityKey(new Identity(nodeId));
-    Identity i = identityCache.get(
+    final Identity i = identityCache.get(
         new ServiceContext<IdentityData>() {
 
           public IdentityData execute() {
@@ -196,7 +197,13 @@ public class CachedIdentityStorage implements IdentityStorage {
 
     //
     if (i != null) {
-      i.setProfile(loadProfile(i.getProfile()));
+      ProfileLoader loader = new ProfileLoader() {
+        public Profile load() throws IdentityStorageException {
+          Profile profile = new Profile(i);
+          return loadProfile(profile);
+        }
+      };
+      i.setProfileLoader(loader);
     }
 
     //

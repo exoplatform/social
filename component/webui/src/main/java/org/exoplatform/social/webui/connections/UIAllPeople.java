@@ -348,6 +348,7 @@ public class UIAllPeople extends UIContainer {
       }
       
       Utils.getRelationshipManager().inviteToConnect(invitingIdentity, invitedIdentity);
+      Utils.clearCacheOnUserPopup();
       event.getRequestContext().addUIComponentToUpdateByAjax(uiAllPeople);
     }
   }
@@ -374,7 +375,7 @@ public class UIAllPeople extends UIContainer {
       }
       
       Utils.getRelationshipManager().confirm(invitedIdentity, invitingIdentity);
-      
+      Utils.clearCacheOnUserPopup();
       event.getRequestContext().addUIComponentToUpdateByAjax(uiAllPeople);
     }
   }
@@ -405,7 +406,7 @@ public class UIAllPeople extends UIContainer {
       } else {
         Utils.getRelationshipManager().deny(inviIdentityIdentity, invitingIdentity);
       }
-      
+      Utils.clearCacheOnUserPopup();
       event.getRequestContext().addUIComponentToUpdateByAjax(uiAllPeople);
     }
   }
