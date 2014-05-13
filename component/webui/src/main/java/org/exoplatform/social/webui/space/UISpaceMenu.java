@@ -85,15 +85,12 @@ public class UISpaceMenu extends UIContainer {
    */
   private Space space = null;
 
-  private List<Application> appList;
-  
   /**
    * Constructor.
    *
    * @throws Exception
    */
   public UISpaceMenu() throws Exception {
-    appList = SpaceUtils.getApplications(getSpace().getGroupId());
     spaceService = getSpaceService(); 
   }
 
@@ -293,31 +290,6 @@ public class UISpaceMenu extends UIContainer {
     String userId = Util.getPortalRequestContext().getRemoteUser();
     Space space = getSpace();
     return spaceService.hasSettingPermission(space, userId);
-  }
-
-  protected String getAppIcon(String pageRef) {
-    String spaceUrl = Utils.getSpaceUrlByContext();
-    Space space = getSpaceService().getSpaceByUrl(spaceUrl);
-    String installedApps = space.getApp();
-    String[] apps = installedApps.split(",");
-    String[] appParts = null;
-    String appName = pageRef.substring(pageRef.lastIndexOf("::") + 2);
-    
-    for (String app : apps) {
-      if (app.length() != 0) {
-        appParts = app.split(":");
-        if (appParts[0].equals(appName) || appParts[1].equals(appName)) {
-          // get application icon by portlet name
-          for (Application application : appList) {
-            if (application.getApplicationName().equals(appParts[0])) {
-              return application.getIconURL();
-            }
-          }
-        }
-      }
-    }
-    
-    return null;
   }
  
   /**
