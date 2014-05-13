@@ -432,6 +432,22 @@ public class Profile {
   }
 
   /**
+   * Gets the full name as display name.
+   *
+   * @return the full name
+   */
+  public final String getFullName(boolean isDisplayName) {
+    if (!isDisplayName) return getFullName();
+    
+    String fullName = (String) getProperty(FULL_NAME);
+    if (fullName != null && fullName.length() > 0) {
+      return fullName;
+    }
+    
+    return getFullName();
+  }
+  
+  /**
    * Get this profile URL
    * 
    * @return this profile URL
