@@ -311,6 +311,11 @@ public class SecurityManagerTest extends AbstractServiceTest {
     maryCommentToDemoActivity = SecurityManager.canCommentToActivity(getContainer(), maryIdentity, demoActivity);
     assertTrue("maryCommentToDemoActivity must be true", maryCommentToDemoActivity);
 
+    createMentionsActivities(johnIdentity, maryIdentity);
+    RealtimeListAccess<ExoSocialActivity> johnActivitiesListAccess = activityManager.getActivitiesWithListAccess(johnIdentity);
+    ExoSocialActivity johnActivity = johnActivitiesListAccess.loadAsList(0, johnActivitiesListAccess.getSize()).get(0);
+    assertTrue(SecurityManager.canCommentToActivity(getContainer(), maryIdentity, johnActivity));
+    
     createSpaces(1);
     Space createdSpace = tearDownSpaceList.get(0);
     Identity spaceIdentity = identityManager.getOrCreateIdentity(SpaceIdentityProvider.NAME,
@@ -449,6 +454,16 @@ public class SecurityManagerTest extends AbstractServiceTest {
     }
   }
 
+  private void createMentionsActivities (Identity posterIdentity, Identity mentionedIdentity) {
+    ExoSocialActivity activity = new ExoSocialActivityImpl();
+    activity.setTitle("hello " + "@" + mentionedIdentity.getRemoteId());
+    activity.setUserId(posterIdentity.getId());
+    activity.setPosterId(posterIdentity.getId());
+    activityManager.saveActivityNoReturn(posterIdentity, activity);
+    activity = activityManager.getActivity(activity.getId());
+    tearDownActivityList.add(activity);
+  }
+  
   /**
    * Creates a comment to an existing activity.
    *
