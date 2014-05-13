@@ -24,7 +24,7 @@
           %>
             <td align="left" valign="top" bgcolor="#f9f9f9" style="vertical-align: top; background-color: #f9f9f9; padding: 0 15px 0 0;">
               <a href="$ACTIVITY_URL" style="display: block; position: relative; margin: 0; padding: 0; display: block; margin-top: 5px;">
-                <img style="max-width: 300px;" src="$THUMBNAIL_URL" alt="image" />
+                <img style="max-width: 75px;" src="$THUMBNAIL_URL" alt="image" />
                 <%
 			            if (IS_EMBED_LINK) {
 			          %>
