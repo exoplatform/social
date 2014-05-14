@@ -28,6 +28,28 @@ public class SpaceInjector extends AbstractSocialInjector {
   /** . */
   private static final String SPACE_PREFIX = "spacePrefix";
 
+  private static final String PATTERN = "pattern";
+
+  public String userName(String pattern,int index){
+      if (pattern == null){
+          return userPrettyBase + index;
+      }
+      else {
+          String nameAppend = new StringBuilder().append(pattern).append(index).toString();
+          return userPrettyBase + nameAppend.substring(nameAppend.length() - pattern.length());
+      }
+  }
+
+  public String spaceName(String pattern){
+      if (pattern == null){
+          return spacePrettyBase + spaceNumber;
+      }
+      else {
+          String nameAppend = new StringBuilder().append(pattern).append(spaceNumber).toString();
+          return spacePrettyBase + nameAppend.substring(nameAppend.length() - pattern.length());
+      }
+  }
+
   @Override
   public void inject(HashMap<String, String> params) throws Exception {
 
@@ -37,6 +59,8 @@ public class SpaceInjector extends AbstractSocialInjector {
     int to = param(params, TO_USER);
     String userPrefix = params.get(USER_PREFIX);
     String spacePrefix = params.get(SPACE_PREFIX);
+    String pattern = params.get(PATTERN);
+
     init(userPrefix, spacePrefix);
     
     int spaceCounter = 0;
@@ -47,8 +71,8 @@ public class SpaceInjector extends AbstractSocialInjector {
         for (int j = 0; j < number; ++j) {
 
           //
-          String owner = userBase + i;
-          String spaceName = spaceName();
+          String owner = userName(pattern,i);
+          String spaceName = spaceName(pattern);
 
           Space space = new Space();
           space.setDisplayName(spaceName);

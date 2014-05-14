@@ -50,6 +50,9 @@ public abstract class AbstractSocialInjector extends DataInjector {
   protected String userBase;
 
   /** . */
+  protected String userPrettyBase ;
+
+  /** . */
   protected String spaceBase;
 
   /** . */
@@ -117,6 +120,7 @@ public abstract class AbstractSocialInjector extends DataInjector {
     userBase = (userPrefix == null ? DEFAULT_USER_BASE : userPrefix);
     spaceBase = (spacePrefix == null ? DEFAULT_SPACE_BASE : spacePrefix);
     spacePrettyBase = spaceBase.replace(".", "");
+    userPrettyBase = userBase.replace(".", "");
 
     //
     userNumber = 0;
