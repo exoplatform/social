@@ -74,7 +74,7 @@ public final class Util {
       "(?::[\\d]{1,5})?" +                                                                        // port
       "(?:[\\/|\\?|\\#].*)?$");                                                               // path and query
 
-
+  
   /**
    * Prevents constructing a new instance.
    */
@@ -598,5 +598,22 @@ public final class Util {
       }
     }
     return url;
+  }
+  
+  /**
+   * Checks if user is mentioned or not.
+   * 
+   * @param existingActivity Activity to check.
+   * @param identityId Identity Id to check mentioned or not.
+   * 
+   * @return true if input user has been mentioned in activity.
+   */
+  public static boolean hasMentioned(ExoSocialActivity existingActivity, String identityId) {
+    for (String mentioner : existingActivity.getMentionedIds()) {
+      if (mentioner.startsWith(identityId)) { // identityId@mentioned_times
+        return true;
+      }
+    }
+    return false;
   }
 }

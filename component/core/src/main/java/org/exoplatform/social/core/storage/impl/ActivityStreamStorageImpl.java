@@ -722,10 +722,12 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
         }
 
         ExoSocialActivity a = getStorage().getActivity(current.getActivityEntity().getId());
-        if (!got.contains(a) && !a.isHidden()) {
-          got.add(a);
-          if (++nb == limit) {
-            break;
+        if (!got.contains(a)) {
+          if (!a.isHidden()) {
+            got.add(a);
+            if (++nb == limit) {
+              break;
+            }
           }
         } else {
           //remove if we have duplicate activity on stream.

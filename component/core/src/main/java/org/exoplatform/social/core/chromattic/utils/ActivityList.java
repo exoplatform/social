@@ -17,14 +17,14 @@
 
 package org.exoplatform.social.core.chromattic.utils;
 
+import org.exoplatform.social.core.chromattic.entity.ActivityDayEntity;
+import org.exoplatform.social.core.chromattic.entity.ActivityEntity;
+import org.exoplatform.social.core.chromattic.entity.ActivityListEntity;
+
 import java.text.DateFormatSymbols;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Locale;
-
-import org.exoplatform.social.core.chromattic.entity.ActivityDayEntity;
-import org.exoplatform.social.core.chromattic.entity.ActivityEntity;
-import org.exoplatform.social.core.chromattic.entity.ActivityListEntity;
 
 /**
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
@@ -73,7 +73,7 @@ public class ActivityList implements Collection<ActivityEntity> {
     String day = String.valueOf(calendar.get(Calendar.DAY_OF_MONTH));
 
     ActivityDayEntity dayEntity = listEntity.getYear(year).getMonth(month).getDay(day);
-    dayEntity.getActivities().add(0, activityEntity);
+    dayEntity.getActivities().add(activityEntity);
     dayEntity.inc();
 
     return true;
