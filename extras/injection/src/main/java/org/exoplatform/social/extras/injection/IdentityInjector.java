@@ -13,14 +13,13 @@ public class IdentityInjector extends AbstractSocialInjector {
 
   /** . */
   private static final String NUMBER = "number";
-  private static final String PREFIX = "prefix";
+  private static final String USER_PREFIX = "userPrefix";
   private static final String PATTERN = "pattern";
 
-    /**
-     *
-     * @param pattern
-     * @return name with suffix pattern
-     */
+   /**
+   * @param pattern
+   * @return userName with new pattern
+   */
   public String userName(String pattern){
       if (pattern == null){
           return userPrettyBase + userNumber;
@@ -36,15 +35,14 @@ public class IdentityInjector extends AbstractSocialInjector {
 
     //
     int number = param(params, NUMBER);
-    String prefix = params.get(PREFIX);
+    String userPrefix = params.get(USER_PREFIX);
     String pattern = params.get(PATTERN);
-    init(prefix, null);
+    init(userPrefix, null);
 
     //
     for(int i = 0; i < number; ++i) {
 
-      //
-
+      //create username with new pattern
       String username = userName(pattern);
       User user = userHandler.createUserInstance(username);
       user.setEmail(username + "@" + DOMAIN);

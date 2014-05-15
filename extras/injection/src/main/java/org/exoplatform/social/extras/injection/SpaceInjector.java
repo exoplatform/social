@@ -29,8 +29,13 @@ public class SpaceInjector extends AbstractSocialInjector {
   private static final String SPACE_PREFIX = "spacePrefix";
 
   private static final String PATTERN = "pattern";
-
-  public String userName(String pattern,int index){
+  
+   /**
+   * @param pattern
+   * @param index 
+   * @return userName with new pattern
+   */
+  private String userName(String pattern,int index){
       if (pattern == null){
           return userPrettyBase + index;
       }
@@ -39,8 +44,12 @@ public class SpaceInjector extends AbstractSocialInjector {
           return userPrettyBase + nameAppend.substring(nameAppend.length() - pattern.length());
       }
   }
-
-  public String spaceName(String pattern){
+  
+   /**
+   * @param pattern
+   * @return spaceName with new pattern
+   */
+  private String spaceName(String pattern){
       if (pattern == null){
           return spacePrettyBase + spaceNumber;
       }
@@ -62,7 +71,7 @@ public class SpaceInjector extends AbstractSocialInjector {
     String pattern = params.get(PATTERN);
 
     init(userPrefix, spacePrefix);
-    
+    String userPrettyBase = userBase.replace(".", "");
     int spaceCounter = 0;
 
     try {
@@ -70,8 +79,9 @@ public class SpaceInjector extends AbstractSocialInjector {
       for(int i = from; i <= to; ++i) {
         for (int j = 0; j < number; ++j) {
 
-          //
+          //create owner name with new pattern
           String owner = userName(pattern,i);
+          //create space name with new pattern
           String spaceName = spaceName(pattern);
 
           Space space = new Space();
@@ -102,7 +112,6 @@ public class SpaceInjector extends AbstractSocialInjector {
     } finally {
       SpaceUtils.endRequest();
     }
-    
     
   }
 }

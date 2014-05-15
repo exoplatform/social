@@ -24,7 +24,25 @@ public class RelationshipInjector extends AbstractSocialInjector {
   private static final String TO_USER = "toUser";
 
   /** . */
-  private static final String PREFIX = "prefix";
+  private static final String USER_PREFIX = "userPrefix";
+
+  /** . */
+  private static final String PATTERN = "pattern";
+  
+ /**
+   * @param pattern
+   * @param index 
+   * @return userName with new pattern
+   */
+  private String userName(String pattern,int index){
+      if (pattern == null){
+          return userPrettyBase + index;
+      }
+      else {
+          String nameAppend = new StringBuilder().append(pattern).append(index).toString();
+          return userPrettyBase + nameAppend.substring(nameAppend.length() - pattern.length());
+      }
+  }
 
   @Override
   public void inject(HashMap<String, String> params) throws Exception {
@@ -33,8 +51,10 @@ public class RelationshipInjector extends AbstractSocialInjector {
     int number = param(params, NUMBER);
     int from = param(params, FROM_USER);
     int to = param(params, TO_USER);
-    String prefix = params.get(PREFIX);
-    init(prefix, null);
+    String userPrefix = params.get(USER_PREFIX);
+    String pattern = params.get(PATTERN);
+
+    init(userPrefix, null);
 
     if (number <= 0) {
       getLog().error("Number have to be positive. Value '" + number + "' incorrect. Aborting injection ...");
@@ -51,46 +71,88 @@ public class RelationshipInjector extends AbstractSocialInjector {
 
     int floor = from;
     for (Map.Entry<Integer, Integer> e : computed.entrySet()) {
-      generate(e, floor);
+      generate(e, floor, pattern);
       floor += e.getKey();
     }
 
   }
 
-  private void generate(Map.Entry<Integer, Integer> e, int floor) {
+  private void generate(Map.Entry<Integer, Integer> e, int floor, String pattern) {
+    
+    String userPrettyBase = userBase.replace(".", "");
+    if (pattern == null) {
 
-    for (int i = floor; i < floor + e.getKey(); ++i) {
-      for (int j = floor; j < floor + e.getKey(); ++j) {
+      for (int i = floor; i < floor + e.getKey(); ++i) {
+        for (int j = floor; j < floor + e.getKey(); ++j) {
+            
+            String fromUser = userPrettyBase + i;
 
-        //
-        String fromUser = userBase + i;
-        String toUser = userBase + j;
-
-        //
-        if (i > j) {
-          getLog().info("Relationship between " + fromUser + " and " + toUser + " already exists");
-        }
-        else if(i == j) {
-          continue;
-        }
-        else {
-
+            String toUser = userPrettyBase + j;
+        
           //
-          Identity identity1 = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, fromUser, false);
-          Identity identity2 = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, toUser, false);
+          if (i > j) {
+            getLog().info("Relationship between " + fromUser + " and " + toUser + " already exists");
+          }
+          else if(i == j) {
+            continue;
+          }
+          else {
 
-          //
-          Relationship r = new Relationship(identity1, identity2, Relationship.Type.CONFIRMED);
-          relationshipManager.saveRelationship(r);
-          
-          //
-          getLog().info("Relationship between " + fromUser + " and " + toUser + " generated");
-          
+            //
+            Identity identity1 = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, fromUser, false);
+            Identity identity2 = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, toUser, false);
+
+            //
+            Relationship r = new Relationship(identity1, identity2, Relationship.Type.CONFIRMED);
+            relationshipManager.saveRelationship(r);
+            
+            //
+            getLog().info("Relationship between " + fromUser + " and " + toUser + " generated");
+            
+          }
+
         }
-
       }
     }
+    else {
 
+            for (int i = floor; i < floor + e.getKey(); ++i) {
+              for (int j = floor; j < floor + e.getKey(); ++j) {
+            
+                //String fromUser = userName(pattern,i);
+                //String toUser = userName(pattern,j);
+
+                //create name with new pattern
+                String fromUserAppend = new StringBuilder().append(pattern).append(i).toString();
+                String fromUser = userPrettyBase + fromUserAppend.substring(fromUserAppend.length() - pattern.length());
+                //create name with new pattern
+                String toUserAppend = new StringBuilder().append(pattern).append(j).toString();
+                String toUser = userPrettyBase + toUserAppend.substring(toUserAppend.length() - pattern.length());
+          
+                if (i > j) {
+                  getLog().info("Relationship between " + fromUser + " and " + toUser + " already exists");
+                }
+                else if(i == j) {
+                  continue;
+                }
+                else {
+
+                  //
+                  Identity identity1 = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, fromUser, false);
+                  Identity identity2 = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, toUser, false);
+
+                  //
+                  Relationship r = new Relationship(identity1, identity2, Relationship.Type.CONFIRMED);
+                  relationshipManager.saveRelationship(r);
+                
+                  //
+                  getLog().info("Relationship between " + fromUser + " and " + toUser + " generated");
+                
+                }
+
+              }
+            }
+          }
   }
 
   /**
