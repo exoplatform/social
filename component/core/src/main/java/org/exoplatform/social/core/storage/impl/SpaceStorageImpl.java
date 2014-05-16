@@ -497,6 +497,8 @@ public class SpaceStorageImpl extends AbstractStorage implements SpaceStorage {
           whereExpression
               .like(SpaceEntity.name, spaceNameSearchCondition)
               .or()
+              .like(SpaceEntity.displayName, spaceNameSearchCondition)
+              .or()
               .like(SpaceEntity.description, spaceNameSearchCondition);
           whereExpression.endGroup();
         }
@@ -504,6 +506,8 @@ public class SpaceStorageImpl extends AbstractStorage implements SpaceStorage {
           whereExpression.startGroup();
           whereExpression
               .contains(SpaceEntity.name, spaceNameSearchCondition)
+              .or()
+              .contains(SpaceEntity.displayName, spaceNameSearchCondition)
               .or()
               .contains(SpaceEntity.description, spaceNameSearchCondition);
           whereExpression.endGroup();
