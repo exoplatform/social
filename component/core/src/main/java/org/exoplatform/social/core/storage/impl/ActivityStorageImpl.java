@@ -969,7 +969,7 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
       builder.orderBy(ActivityEntity.postedTime.getName(), Ordering.DESC);
     }
 
-    return builder.get();
+    return builder.get(false);
   }
   
   /**
@@ -1761,7 +1761,7 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     builder.where(whereBuilder.build(filter));
     whereBuilder.orderBy(builder, filter);
 
-    return builder.get();
+    return builder.get(false);
   }
   
   

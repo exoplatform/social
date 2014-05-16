@@ -279,6 +279,11 @@ public class SecurityManager {
           return true;
         }        
 
+        // User is mentioned
+        if (Util.hasMentioned(existingActivity, authenticatedIdentity.getId())) {
+          return true;
+        }
+        
         break;
 
     }

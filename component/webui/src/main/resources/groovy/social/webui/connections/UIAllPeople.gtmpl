@@ -166,15 +166,18 @@
 						<% if((email != null) && (email.length() > 0)) { %>
 						<div class="email"><a href="mailto:${email}">${email}</a></div>
 						<% } %>
+						<% if (contactStatus == Relationship.Type.PENDING && relationship.isSender(identity)) { %>
+						<br/><span class="pull-left">$invitationReceivedLabel</span>
+						<% } else if (contactStatus == Relationship.Type.PENDING) {%>
+						<br/><span class="pull-left">$invitationSentLabel</span>
+						<% } %>
 					</div>
 					<div class="connectionBtn clearfix">
 						<% if (contactStatus == Relationship.Type.PENDING && relationship.isSender(identity)) { %>
 							<button class="btn pull-right" onclick="<%=uicomponent.event("Ignore",identity.getId())%>">$ignoreTitle</button>
 							<button class="btn btn-primary pull-right" onclick="<%=uicomponent.event("Confirm",identity.getId())%>">$confirmTitle</button>
-							<span class="pull-right">$invitationReceivedLabel</span>
 						<% } else if (contactStatus == Relationship.Type.PENDING) { %>
 							<button class="btn pull-right" onclick="<%=uicomponent.event("Ignore",identity.getId())%>">$cancelRequestLabel</button>
-							<span class="pull-right">$invitationSentLabel</span>
 						<% } else if (contactStatus == Relationship.Type.CONFIRMED) { %>
 							<button class="btn pull-right" onclick="<%=uicomponent.event("Ignore",identity.getId())%>">$removeTitle</button>
 						<% } else if (contactStatus == null) { %>

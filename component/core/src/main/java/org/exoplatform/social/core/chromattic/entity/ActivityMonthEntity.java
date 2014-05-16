@@ -17,9 +17,6 @@
 
 package org.exoplatform.social.core.chromattic.entity;
 
-import java.util.List;
-import java.util.Map;
-
 import org.chromattic.api.annotations.Create;
 import org.chromattic.api.annotations.DefaultValue;
 import org.chromattic.api.annotations.FormattedBy;
@@ -31,6 +28,9 @@ import org.chromattic.api.annotations.Path;
 import org.chromattic.api.annotations.PrimaryType;
 import org.chromattic.api.annotations.Property;
 import org.chromattic.ext.format.BaseEncodingObjectFormatter;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
@@ -87,13 +87,7 @@ public abstract class ActivityMonthEntity implements NamedEntity, IndexNumber {
     if (dayEntity == null) {
       dayEntity = newDay();
       getDays().put(day, dayEntity);
-      long longDay = Long.parseLong(day);
-      for (int i = getDaysList().size() - 1; i >= 0 ; --i) {
-        long longCurrent = Long.parseLong(getDaysList().get(i).getName());
-        if (longCurrent < longDay) {
-          getDaysList().add(i, dayEntity);
-        }
-      }
+      getDaysList().add(dayEntity);
     }
 
     return dayEntity;
