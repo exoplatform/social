@@ -29,21 +29,6 @@ public class RelationshipInjector extends AbstractSocialInjector {
   /** . */
   private static final String PATTERN = "pattern";
   
- /**
-   * @param pattern
-   * @param index 
-   * @return userName with new pattern
-   */
-  private String userName(String pattern,int index){
-      if (pattern == null){
-          return userPrettyBase + index;
-      }
-      else {
-          String nameAppend = new StringBuilder().append(pattern).append(index).toString();
-          return userPrettyBase + nameAppend.substring(nameAppend.length() - pattern.length());
-      }
-  }
-
   @Override
   public void inject(HashMap<String, String> params) throws Exception {
     
