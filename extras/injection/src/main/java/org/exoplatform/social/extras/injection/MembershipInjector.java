@@ -139,33 +139,5 @@ public class MembershipInjector extends AbstractSocialInjector {
     }
   }
   
-  /**
-   * @param pattern
-   * @param index 
-   * @return userName with new pattern
-   */
-  private String userName(String pattern,int index){
-      if (pattern == null){
-          return userPrettyBase + index;
-      }
-      else {
-          String nameAppend = new StringBuilder().append(pattern).append(index).toString();
-          return userPrettyBase + nameAppend.substring(nameAppend.length() - pattern.length());
-      }
-  }
-   /**
-   * @param pattern
-   * @param index 
-   * @return spaceName with new pattern
-   */
-  private String spaceName(String pattern,int index){
-      if (pattern == null){
-          return spacePrettyBase + index;
-      }
-      else {
-          String nameAppend = new StringBuilder().append(pattern).append(index).toString();
-          return spacePrettyBase + nameAppend.substring(nameAppend.length() - pattern.length());
-      }
-  }
   
 }
