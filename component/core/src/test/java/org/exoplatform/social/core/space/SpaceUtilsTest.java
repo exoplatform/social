@@ -155,11 +155,11 @@ public class SpaceUtilsTest extends AbstractCoreTest {
           AppName = pc.getState().getDisplayName().split("-")[0].trim();
 
           assertEquals("Space1", AppName);
-          SpaceUtils.changeAppPageTitle(childNode,"bechir");
+          SpaceUtils.changeAppPageTitle(childNode,"newspacetitle");
           pc = pageService.loadPage(childNode.getPageRef());
           AppName = pc.getState().getDisplayName().split("-")[0].trim();
 
-          assertEquals("bechir", AppName);
+          assertEquals("newspacetitle", AppName);
       }
 
   }

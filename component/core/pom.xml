@@ -232,6 +232,12 @@
       <artifactId>jcl-over-slf4j</artifactId>
       <scope>test</scope>
     </dependency>
+    <dependency>
+       <groupId>javax.ccpp</groupId>
+       <artifactId>ccpp</artifactId>
+        <version>1.0</version>
+        <scope>test</scope>
+    </dependency>
   </dependencies>
   <build>
     <plugins>
