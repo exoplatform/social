@@ -156,6 +156,39 @@ public class RelationshipStorageImpl extends AbstractStorage implements Relation
     }
   }
 
+  private void putReceiverRelationshipToList(List<Relationship> relationships, RelationshipListEntity list, Identity receiver) {
+    if (list != null) {
+      for (Map.Entry<String, RelationshipEntity> entry : list.getRelationships().entrySet()) {
+        Relationship relationship = new Relationship(entry.getValue().getId());
+
+        RelationshipEntity relationshipEntity = entry.getValue();
+        IdentityEntity senderEntity = relationshipEntity.getFrom();
+        if (senderEntity.getId().equals(receiver.getId())) {
+          senderEntity = relationshipEntity.getTo();
+        }
+
+        Identity sender = new Identity(senderEntity.getId());
+        sender.setRemoteId(senderEntity.getRemoteId());
+        sender.setProviderId(senderEntity.getProviderId());
+        ProfileEntity senderProfileEntity = senderEntity.getProfile();
+
+        if (senderProfileEntity != null) {
+          loadProfile(sender);
+        }
+
+        if (receiver.getProfile() != null) {
+          loadProfile(receiver);
+        }
+
+        relationship.setSender(sender);
+        relationship.setReceiver(receiver);
+        relationship.setStatus(Relationship.Type.PENDING);
+
+       relationships.add(relationship);
+      }
+    }
+  }
+  
   private void loadProfile(final Identity identity) {
     ProfileLoader loader = new ProfileLoader() {
       public Profile load() throws IdentityStorageException {
@@ -201,6 +234,33 @@ public class RelationshipStorageImpl extends AbstractStorage implements Relation
     return new ArrayList<Identity>(identities);
   }
 
+  private List<Identity> getIdentitiesFromRelationship(Iterator<RelationshipEntity> it, Identity current, long offset, long limit) {
+    //
+    Set<Identity> identities = new LinkedHashSet<Identity>();
+    int i = 0;
+
+    _skip(it, offset);
+
+    Identity identity = null;
+    while (it.hasNext()) {
+      RelationshipEntity relationshipEntity = it.next();
+      
+      IdentityEntity entity = relationshipEntity.getFrom();
+      if (entity.getId().equals(current.getId())) {
+        entity = relationshipEntity.getTo();
+      }
+      
+      identity = createIdentityFromEntity(entity);
+      identities.add(identity);
+
+      if (limit != -1 && limit > 0 && ++i >= limit) {
+        break;
+     }
+    }
+
+    return new ArrayList<Identity>(identities);
+  }
+  
   private Identity createIdentityFromEntity(IdentityEntity entity) {
 
     Identity identity = identityStorage.findIdentityById(entity.getId());
@@ -485,7 +545,9 @@ public class RelationshipStorageImpl extends AbstractStorage implements Relation
           break;
 
         case PENDING:
-          putRelationshipToList(relationships, receiverEntity.getReceiver());
+          //SOC-4283 : to work around the problem of wrong data with receiver relationship (sender and receiver value are exchanged)
+          //so we need a specific method to treat the problem
+          putReceiverRelationshipToList(relationships, receiverEntity.getReceiver(), receiver);
           break;
 
         // TODO : IGNORED
@@ -823,7 +885,9 @@ public class RelationshipStorageImpl extends AbstractStorage implements Relation
       IdentityEntity receiverEntity = _findById(IdentityEntity.class, receiver.getId());
 
       Iterator<RelationshipEntity> it = receiverEntity.getReceiver().getRelationships().values().iterator();
-      return getIdentitiesFromRelationship(it, Origin.FROM, offset, limit);
+      //SOC-4283 : to work around the problem of wrong data with receiver relationship (sender and receiver value are exchanged)
+      //so we need a specific method to treat the problem
+      return getIdentitiesFromRelationship(it, receiver, offset, limit);
 
     }
     catch (NodeNotFoundException e) {
