@@ -50,6 +50,7 @@ import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
+import org.exoplatform.services.organization.MembershipTypeHandler;
 import org.exoplatform.services.organization.OrganizationService;
 import org.exoplatform.services.organization.User;
 import org.exoplatform.social.core.chromattic.entity.ActivityProfileEntity;
@@ -73,6 +74,7 @@ import org.exoplatform.social.core.model.AvatarAttachment;
 import org.exoplatform.social.core.profile.ProfileFilter;
 import org.exoplatform.social.core.search.Sorting;
 import org.exoplatform.social.core.service.LinkProvider;
+import org.exoplatform.social.core.space.SpaceUtils;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.storage.IdentityStorageException;
 import org.exoplatform.social.core.storage.api.IdentityStorage;
@@ -253,11 +255,20 @@ public class IdentityStorageImpl extends AbstractStorage implements IdentityStor
           break;
         case MANAGER:
           members = gotSpace.getManagers();
+          List<String> wildcardUsers = SpaceUtils.findMembershipUsersByGroupAndTypes(space
+              .getGroupId(), MembershipTypeHandler.ANY_MEMBERSHIP_TYPE);
+          
+          for (String remoteId : wildcardUsers) {
+            relations.add(findIdentity(OrganizationIdentityProvider.NAME, remoteId));
+          }
           break;
       }
 
       for (int i = 0; i <  members.length; i++){
-        relations.add(findIdentity(OrganizationIdentityProvider.NAME, members[i]));
+        Identity identity = findIdentity(OrganizationIdentityProvider.NAME, members[i]);
+        if (!relations.contains(identity)) {
+          relations.add(identity);
+        }
       }
 
     } catch (IdentityStorageException e){
