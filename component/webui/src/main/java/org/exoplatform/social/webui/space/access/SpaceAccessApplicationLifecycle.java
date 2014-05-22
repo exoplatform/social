@@ -27,6 +27,7 @@ import org.exoplatform.services.log.Log;
 import org.exoplatform.services.security.Identity;
 import org.exoplatform.services.security.IdentityRegistry;
 import org.exoplatform.services.security.MembershipEntry;
+import org.exoplatform.services.organization.MembershipTypeHandler;
 import org.exoplatform.social.common.router.ExoRouter;
 import org.exoplatform.social.common.router.ExoRouter.Route;
 import org.exoplatform.social.core.space.SpaceAccessType;
@@ -81,7 +82,8 @@ public class SpaceAccessApplicationLifecycle implements ApplicationLifecycle<Web
       if (space != null && remoteId != null) {
         addMembershipToIdentity(remoteId, space);
       
-        if (inSuperAdminGroup(remoteId, space)) {
+        if (inSuperAdminGroup(remoteId, space) 
+            || SpaceUtils.isUserHasMembershipTypesInGroup(remoteId, space.getGroupId(), MembershipTypeHandler.ANY_MEMBERSHIP_TYPE)) {
           return;
         }
       }
