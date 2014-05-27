@@ -139,6 +139,11 @@ public class CachedActivityStreamStorage implements ActivityStreamStorage {
   public void connect(Identity sender, Identity receiver) {
     this.storage.connect(sender, receiver);
   }
+  
+  @Override
+  public List<ExoSocialActivity> getViewerActivities(Identity owner, int offset, int limit) {
+    return this.storage.getViewerActivities(owner, offset, limit);
+  }
 
   @Override
   public void deleteConnect(Identity sender, Identity receiver) {

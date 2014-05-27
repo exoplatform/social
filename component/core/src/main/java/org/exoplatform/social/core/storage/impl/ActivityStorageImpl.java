@@ -674,7 +674,10 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
       if (mustInjectStreams) {
         Identity identity = identityStorage.findIdentityById(comment.getUserId());
         StreamInvocationHelper.updateCommenter(identity, activityEntity, commenters.toArray(new String[0]), oldUpdated);
-        StreamInvocationHelper.update(activity, mentioners.toArray(new String[0]), oldUpdated);
+        //only update what's hot when add comment the current day after the last updated of activity
+        if (StorageUtils.afterDayOrMore(oldUpdated, currentMillis)) {
+          StreamInvocationHelper.update(activity, mentioners.toArray(new String[0]), oldUpdated);
+        }
       }
     }  
     catch (NodeNotFoundException e) {
@@ -2512,32 +2515,7 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
                                                Identity viewer,
                                                long offset,
                                                long limit) throws ActivityStorageException {
-    List<ExoSocialActivity> got = new ArrayList<ExoSocialActivity>();
-    StringBuilder query = new StringBuilder().append("SELECT * FROM soc:activity WHERE ").append(getQueryViewerActivityStream(owner, viewer));
-    query.append(" ORDER BY ").append(ActivityEntity.lastUpdated.getName()).append(" DESC");
-    query.append(", ").append(ActivityEntity.postedTime.getName()).append(" DESC");
-    
-    NodeIterator it = nodes(query.toString());
-    while (it.hasNext() && limit > 0) {
-      if (offset > 0) {
-        offset--;
-        continue;
-      }
-      Node node = (Node) it.next();
-      try {
-        ActivityEntity entity = _findById(ActivityEntity.class, node.getUUID());
-        if (! entity.getIdentity().getProviderId().equals(SpaceIdentityProvider.NAME)) {
-          got.add(getActivity(entity.getId()));
-          limit--;
-        }
-      } catch (Exception e) {
-        LOG.debug("Failed to get activities posted by owner and viewer");
-      }
-      
-    }
-
-    //
-    return got;
+    return this.streamStorage.getViewerActivities(owner, (int)offset, (int)limit);
   }
   
   @Override

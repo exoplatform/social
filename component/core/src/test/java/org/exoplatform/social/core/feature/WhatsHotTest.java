@@ -247,7 +247,8 @@ public class WhatsHotTest extends AbstractCoreTest {
 
     List<ExoSocialActivity> list = activityStorage.getActivities(demoIdentity, johnIdentity, 0, 2);
     
-    assertEquals(2, list.size());
+    //only show demo's activity when John is viewer
+    assertEquals(1, list.size());
     
     tearDownActivityList.addAll(list);
     relationshipManager.unregisterListener(publisher);
@@ -262,7 +263,8 @@ public class WhatsHotTest extends AbstractCoreTest {
 
     List<ExoSocialActivity> list = activityStorage.getActivities(demoIdentity, johnIdentity, 0, 10);
     
-    assertEquals(2, list.size());
+    //only show demo's activity when John is viewer
+    assertEquals(1, list.size());
     
     tearDownActivityList.addAll(list);
     relationshipManager.unregisterListener(publisher);
@@ -282,8 +284,8 @@ public class WhatsHotTest extends AbstractCoreTest {
     
     List<ExoSocialActivity> list = activityStorage.getActivities(demoIdentity, johnIdentity, 0, 10);
     
-    //john view demo'as --> only activity posted by demo and john display
-    assertEquals(2, list.size());
+    //only show demo's activity when John is viewer
+    assertEquals(1, list.size());
     
     tearDownActivityList.addAll(list);
     relationshipManager.unregisterListener(publisher);
@@ -337,8 +339,8 @@ public class WhatsHotTest extends AbstractCoreTest {
     createComment(activity2, demoIdentity, 2);
     
     List<ExoSocialActivity> list = activityStorage.getActivities(demoIdentity, johnIdentity, 0, 10);
-    
-    assertEquals(2, list.size());
+    //only show demo's activity when John is viewer
+    assertEquals(1, list.size());
     
     tearDownActivityList.addAll(list);
     relationshipManager.unregisterListener(publisher);

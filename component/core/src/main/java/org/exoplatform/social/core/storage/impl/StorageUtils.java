@@ -44,6 +44,7 @@ public class StorageUtils {
   public static final String SLASH_STR = "/";
   public static final String SOC_ACTIVITY_INFO = "soc:activityInfo";
   public static final String SOC_PREFIX = "soc:";
+  private final static long DAY_MILISECONDS = 86400000;//a day = 24h x 60m x 60s x 1000 milisecond.
   
   //
   private static final Log LOG = ExoLogger.getLogger(StorageUtils.class.getName());
@@ -460,4 +461,17 @@ public class StorageUtils {
     }
     return list;
   }
+  
+  /**
+  * Compares oldDate and newDate.
+  *
+  * return TRUE if given newDate the after one day or more the given oldDate
+  * @param oldDate
+  * @param newDate
+  * @return TRUE: the day after oldDate
+  */
+    public static boolean afterDayOrMore(long oldDate, long newDate) {
+      long diffValue = newDate - oldDate;
+      return diffValue >= DAY_MILISECONDS;
+    }
 }
