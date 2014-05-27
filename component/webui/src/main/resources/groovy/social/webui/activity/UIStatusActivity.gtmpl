@@ -61,14 +61,13 @@
   def unlikeActivityAction = uicomponent.event("LikeActivity", "false");
 
   def commentList = uicomponent.getComments();
-  def allComments = uicomponent.getAllComments();
-  if (allComments) {
-    labelShowAllComments = labelShowAllComments.replace("{0}", allComments.size() + "");
-    labelHideAllComments = labelHideAllComments.replace("{0}", allComments.size() + "");
+  int allCommentSize = uicomponent.getAllCommentSize();
+  if (allCommentSize > 0) {
+    labelShowAllComments = labelShowAllComments.replace("{0}", allCommentSize + "");
+    labelHideAllComments = labelHideAllComments.replace("{0}", allCommentSize + "");
 
   }
-  def totalComments = allComments.size();
-  def commentsHidden = allComments.size()-commentList.size();
+  def commentsHidden = allCommentSize-commentList.size();
   def displayedIdentityLikes = uicomponent.getDisplayedIdentityLikes();
   def identityLikesNum = 0;
   def totalLikesNum = uicomponent.getIdentityLikes().length;
@@ -88,7 +87,7 @@
     commentMinCharactersAllowed: '${uicomponent.getCommentMinCharactersAllowed()}',
     commentMaxCharactersAllowed: '${uicomponent.getCommentMaxCharactersAllowed()}',
     commentFormDisplayed: '$commentFormDisplayed',
-    allCommentSize: '${allComments.size()}',
+    allCommentSize: '${allCommentSize}',
     commentFormFocused: '${uicomponent.isCommentFormFocused()}'
   } """
   
@@ -177,8 +176,8 @@
         <a class="$commentLink"  id="CommentLink${activity.id}" href="javascript:void(0);">
           $labelComment
         </a> 
-        <% if ( totalComments > 0 ) { %>
-          <span>$totalComments</span>
+        <% if ( allCommentSize > 0 ) { %>
+          <span>$allCommentSize</span>
         <% } %>
         |
       <% if (uicomponent.isLiked()) { %>
@@ -244,7 +243,7 @@
                 <a onclick="$loadPreviousCommentsAction" href="javascript:void(0);">
                   $labelShowPreviousComments
                 </a>
-                <span style="float:right">$commentsHidden/$totalComments</span>
+                <span style="float:right">$commentsHidden/$allCommentSize</span>
               <% } else { %>
                 <a onclick="$hideAllCommentsAction" href="javascript:void(0);">
                   $labelHideAllComments

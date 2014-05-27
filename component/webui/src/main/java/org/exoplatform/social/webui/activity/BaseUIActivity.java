@@ -250,10 +250,25 @@ public class BaseUIActivity extends UIForm {
     return getI18N(comments);
   }
 
+  /**
+   * Don't use this method what you want to get the comments's size.
+   * You could use the new method for this stuff: getAllCommentSize() method
+   * 
+   * @return
+   */
+  @Deprecated
   public List<ExoSocialActivity> getAllComments() {
     return activityCommentsListAccess.loadAsList(0, activityCommentsListAccess.getSize());
   }
 
+  /**
+   * Gets number of comments of the specified activity
+   * @return
+   */
+  public int getAllCommentSize() {
+    return activityCommentsListAccess.getSize();
+  }
+  
   public String[] getIdentityLikes() {
     return identityLikes;
   }
@@ -264,10 +279,7 @@ public class BaseUIActivity extends UIForm {
    * @throws Exception
    */
   public String[] getDisplayedIdentityLikes() throws Exception {
-    List<String> likes = Arrays.asList(identityLikes);
-    Collections.reverse(likes);
-    identityLikes = (String[])likes.toArray();
-    
+    ArrayUtils.reverse(identityLikes);
     return identityLikes;
   }
 
@@ -649,7 +661,7 @@ public class BaseUIActivity extends UIForm {
       if (uiActivity.isNoLongerExisting(activityId, event)) {
         return;
       }
-      uiActivity.refresh();
+      //uiActivity.refresh();
       WebuiRequestContext requestContext = event.getRequestContext();
       String isLikedStr = requestContext.getRequestParameter(OBJECTID);
       uiActivity.setLike(Boolean.parseBoolean(isLikedStr));
@@ -672,7 +684,7 @@ public class BaseUIActivity extends UIForm {
       if (uiActivity.isNoLongerExisting(activityId, event)) {
         return;
       }
-      uiActivity.refresh();
+      //uiActivity.refresh();
       String status = event.getRequestContext().getRequestParameter(OBJECTID);
       CommentStatus commentListStatus = null;
       if (status.equals(CommentStatus.LATEST.getStatus())) {
@@ -727,7 +739,7 @@ public class BaseUIActivity extends UIForm {
       if (uiActivity.isNoLongerExisting(activityId, event)) {
         return;
       }
-      uiActivity.refresh();
+      //uiActivity.refresh();
       WebuiRequestContext requestContext = event.getRequestContext();
       UIFormTextAreaInput uiFormComment = uiActivity.getChild(UIFormTextAreaInput.class);
       String message = uiFormComment.getValue();
@@ -791,7 +803,7 @@ public class BaseUIActivity extends UIForm {
       WebuiRequestContext requestContext = event.getRequestContext();
       Utils.getActivityManager().deleteComment(uiActivity.getActivity().getId(),
                                                requestContext.getRequestParameter(OBJECTID));
-      uiActivity.refresh();
+      //uiActivity.refresh();
       requestContext.addUIComponentToUpdateByAjax(uiActivity);
       
       Utils.initUserProfilePopup(uiActivity.getId());

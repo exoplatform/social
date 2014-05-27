@@ -65,15 +65,14 @@
   def unlikeActivityAction = uicomponent.event("LikeActivity", "false");
 
   def commentList = uicomponent.getComments();
-  def allComments = uicomponent.getAllComments();
-  if (allComments) {
-    labelShowAllComments = labelShowAllComments.replace("{0}", allComments.size() + "");
-    labelHideAllComments = labelHideAllComments.replace("{0}", allComments.size() + "");
+  int allCommentSize = uicomponent.getAllCommentSize();
+  if (allCommentSize > 0) {
+    labelShowAllComments = labelShowAllComments.replace("{0}", allCommentSize + "");
+    labelHideAllComments = labelHideAllComments.replace("{0}", allCommentSize + "");
 
   }
   
-  def totalComments = allComments.size();
-  def commentsHidden = allComments.size()-commentList.size();
+  def commentsHidden = allCommentSize-commentList.size();
   def displayedIdentityLikes = uicomponent.getDisplayedIdentityLikes();
   def identityLikesNum = 0;
   def totalLikesNum = uicomponent.getIdentityLikes().length;
@@ -94,7 +93,7 @@
     commentMinCharactersAllowed: '${uicomponent.getCommentMinCharactersAllowed()}',
     commentMaxCharactersAllowed: '${uicomponent.getCommentMaxCharactersAllowed()}',
     commentFormDisplayed: '$commentFormDisplayed',
-    allCommentSize: '${allComments.size()}',
+    allCommentSize: '${allCommentSize}',
     commentFormFocused: '${uicomponent.isCommentFormFocused()}'
 	} """
   
@@ -239,7 +238,7 @@
 	        <ul class="pull-right statusAction">
 	            <li>
 	                <a class="$commentLink"  id="CommentLink${activity.id}" href="javascript:void(0);">
-	                    <i class="uiIconComment uiIconLightGray"></i>&nbsp;$totalComments
+	                    <i class="uiIconComment uiIconLightGray"></i>&nbsp;$allCommentSize
 	                </a> 
 	            </li>
 	          <% if (uicomponent.isLiked()) { %>
@@ -290,7 +289,7 @@
 	      def loadPreviousCommentsAction = uicomponent.event("SetCommentListStatus", "all");
 	      %>
 	      <div class="commentListInfo clearfix">
-	        <div class="pull-right numberComment">$commentsHidden/$totalComments</div>
+	        <div class="pull-right numberComment">$commentsHidden/$allCommentSize</div>
 	        <% if (commentListStatus.getStatus().equals("latest") || commentListStatus.getStatus().equals("none")) { %>
 	          <a onclick="$showAllCommentsAction" href="javascript:void(0);">$labelShowAllComments</a>
 	        <% } else if (commentListStatus.getStatus().equals("all")) { %>
