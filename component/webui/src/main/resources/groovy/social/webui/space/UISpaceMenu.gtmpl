@@ -30,11 +30,11 @@
 	
   //SpaceUtils.reloadNavigation();
   def apps = uicomponent.getApps();
-  def spaceUrl = Utils.getSpaceUrlByContext();
-  def space = uicomponent.getSpace(spaceUrl);
-  def spaceHomeUrl = Utils.getSpaceHomeURL(space);
-  def appSelected = uicomponent.getAppSelected();
-  def srcDefaultAppIcon = "/eXoResources/skin/sharedImages/Icon80x80/DefaultPortlet.png";
+  def space = uicomponent.getSpace();
+  
+  String spaceHomeUrl = Utils.getSpaceHomeURL(space);
+  String appSelected = uicomponent.getAppSelected();
+  String srcDefaultAppIcon = "/eXoResources/skin/sharedImages/Icon80x80/DefaultPortlet.png";
   
   public String getFitString(String nodeLabel, int maxLen) {
     def labelStr = "";
@@ -61,38 +61,37 @@
         fitStr = labelStrPrev + appendLabel;
       }
     }
-    return fitStr;
+    return StringEscapeUtils.escapeHtml(fitStr);
   }
 
-  def moreLabel = _ctx.appRes("${uicomponentId}.label.More");
-  def jsManager = _ctx.getRequestContext().getJavascriptManager();
-  jsManager.require("SHARED/social-ui-space-nav", "spacenav").addScripts("spacenav.addEditability('" + uicomponent.id + "','" + moreLabel + "');");
-  def srcAppIcon;
-  def appName;
-  def uiIconAppSpaceActivityStreamPortlet = "uiIconAppSpaceActivityStreamPortlet";
+  String moreLabel = _ctx.appRes("${uicomponentId}.label.More").replace("'", "\\47");
+  _ctx.getRequestContext().getJavascriptManager()
+  	  .require("SHARED/social-ui-space-nav", "spacenav")
+  	  .addScripts("spacenav.addEditability('" + uicomponent.id + "','" + moreLabel + "');");
+  
+  String srcAppIcon;
+  String appName;
+  String uiIconAppSpaceActivityStreamPortlet = "uiIconAppSpaceActivityStreamPortlet";
+  String selectedClazz = "";
+  String activityStreamUrl = "href=\"javascript:void(0);\" onclick=\"window.location.href='" + spaceHomeUrl + "'\"";
+  if(appSelected == null || appSelected.length() == 0) {
+    selectedClazz = "active";
+    activityStreamUrl = "href=\"javascript:void(0);\"";
+  }
 %>
 
 <div class="uiSpaceMenu clearfix" id="UISpaceMenu">
   <%
-    def activityStreamLabel = _ctx.appRes(uicomponent.getId() + ".label.ActivityStream");
+    String activityStreamLabel = _ctx.appRes(uicomponent.getId() + ".label.ActivityStream");
   %>
   
   <ul class="nav nav-tabs spaceMenuTab" id="spaceMenuTab" style="visibility: hidden;">
-    <% if (spaceUrl.equals(appSelected)) { %>
-    <li class="active">
-      <a data-toggle="tab" onclick="location.href='<%= spaceHomeUrl %>'" href="javascript:void(0);">
-        <i class="uiIconAppSpaceActivityStreamPortlet uiIconDefaultApp"></i>
-        <span class="tabName">$activityStreamLabel</span>
-      </a>
-    </li>
-    <% } else { %>
-    <li class="">
-      <a data-toggle="tab" onclick="location.href='<%= spaceHomeUrl %>'" href="javascript:void(0);">
+    <li class="$selectedClazz">
+      <a data-toggle="tab" <%=activityStreamUrl%>>
         <i class="uiIconAppSpaceActivityStreamPortlet uiIconDefaultApp"></i>
         <span class="tabName"> $activityStreamLabel</span>
       </a>
     </li>
-    <% } %>
   
   
   <%
@@ -100,38 +99,33 @@
     if ( uicomponent.HIDDEN.equals(node.getVisibility().toString()) ) {
       continue;
     }
-    def nodeTitle = node.getResolvedLabel();
-    def nodeUri = node.getURI();
-    def uriParts = nodeUri.split("/");
-    def nodeName = uriParts[uriParts.length - 1];
+    String nodeTitle = node.getResolvedLabel();
+    String nodeUri = node.getURI();
+    String []uriParts = nodeUri.split("/");
+    String nodeName = uriParts[uriParts.length - 1];
     if ( node.getPageRef() != null ) {
       appName = node.getPageRef().getName();
       if ( appName != null) {
-        def appLabelFromResourceBundle = org.exoplatform.social.webui.Utils.appRes(appName + ".label.name");
+        String appLabelFromResourceBundle = _ctx.appRes(appName + ".label.name");
         if (appLabelFromResourceBundle != null) nodeTitle = appLabelFromResourceBundle;
       }
     }   
-    def nodeLabel = StringEscapeUtils.escapeHtml(getFitString(nodeTitle, 15));
+    String nodeLabel = getFitString(nodeTitle, 15);
  
-    def pName = uicomponent.getAppIdByAppName(appName);
+    String pName = uicomponent.getAppIdByAppName(appName);
+    String pageURI = "href=\"javascript:void(0);\" onclick=\"window.location.href='" + spaceHomeUrl + "/" + nodeName + "'\"";
+    selectedClazz = "";
+    if(appSelected != null && nodeName.equals(appSelected)) {
+      pageURI = "href=\"javascript:void(0);\"";
+      selectedClazz = "active";
+    }
   %>
-  <% if(nodeName.equals(appSelected)) {%>
-       <li class="active">
-         <a data-toggle="tab" href="javascript:void(0);">
-           <i class="uiIconApp<%=pName%> uiIconDefaultApp"></i>
-           <span id='$nodeName' class="tabName">$nodeLabel</span>
-         </a>
-       </li>
-  <% } else {
-     def pageURI = Utils.getSpaceHomeURL(space) + "/" + nodeName;
-  %>
-       <li class="">
-         <a data-toggle="tab" onclick="location.href='<%= pageURI %>'" href="javascript:void(0);">
-           <i class="uiIconApp<%=pName%> uiIconDefaultApp"></i>
-           <span id='$nodeName' class="tabName">$nodeLabel</span>
-         </a>
-       </li>
-  <% }%>
+    <li class="$selectedClazz">
+      <a data-toggle="tab" <%=pageURI%>>
+        <i class="uiIconApp<%=pName%> uiIconDefaultApp"></i>
+        <span id="$nodeName" class="tabName">$nodeLabel</span>
+      </a>
+  	</li>
   <%
   }
   %>
