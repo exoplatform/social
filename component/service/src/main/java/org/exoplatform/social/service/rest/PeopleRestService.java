@@ -44,6 +44,7 @@ import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
 import org.exoplatform.webui.utils.TimeConvertUtils;
 
+import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
 import javax.ws.rs.core.Response.Status;
@@ -126,6 +127,7 @@ public class PeopleRestService implements ResourceContainer{
    * @LevelAPI Platform
    * @anchor PeopleRestService.suggestUsernames
    */
+  @RolesAllowed("users")
   @GET
   @Path("suggest.{format}")
   public Response suggestUsernames(@Context UriInfo uriInfo,
@@ -184,6 +186,7 @@ public class PeopleRestService implements ResourceContainer{
   @GET
   @Path("getprofile/data.json")
   public Response suggestUsernames(@Context UriInfo uriInfo,
+                                   @Context SecurityContext securityContext,
                     @QueryParam("search") String query) throws Exception {
     MediaType mediaType = Util.getMediaType("json", new String[]{"json"});
     List<Identity> excludedIdentityList = new ArrayList<Identity>();
@@ -199,8 +202,15 @@ public class PeopleRestService implements ResourceContainer{
     
     List<UserInfo> userInfos = new ArrayList<PeopleRestService.UserInfo>(identities.size());
     UserInfo userInfo;
+    String userType = ConversationState.getCurrent().getIdentity().getUserId();
+    boolean isAnonymous = IdentityConstants.ANONIM.equals(userType) 
+      || securityContext.getUserPrincipal() == null;
+    
     for (Identity identity : identities) {
-      userInfo = new UserInfo(identity.getRemoteId());
+      userInfo = new UserInfo();
+      if (!isAnonymous) {
+        userInfo.setId(identity.getRemoteId());
+      }
       userInfo.setName(identity.getProfile().getFullName());
       userInfo.setAvatar(identity.getProfile().getAvatarUrl());
       userInfo.setType("contact"); //hardcode for test
@@ -229,6 +239,7 @@ public class PeopleRestService implements ResourceContainer{
   @GET
   @Path("{portalName}/getConnections.{format}")
   public Response searchConnection(@Context UriInfo uriInfo,
+                                   @Context SecurityContext securityContext,
                     @PathParam("portalName") String portalName,
                     @QueryParam("nameToSearch") String nameToSearch,
                     @QueryParam("offset") int offset,
@@ -264,7 +275,16 @@ public class PeopleRestService implements ResourceContainer{
       identities = relationshipManager.getConnectionsByFilter(currentUser, filter).load(offset, limit);
     }
     
+    String userType = ConversationState.getCurrent().getIdentity().getUserId();
+    boolean isAnonymous = IdentityConstants.ANONIM.equals(userType) 
+      || securityContext.getUserPrincipal() == null;
+    
     for(Identity identity : identities){
+      if (isAnonymous) {
+        entitys.add(new ConnectionInfoRestOut(identity));
+        continue;
+      }
+      
       HashMap<String, Object> temp = getIdentityInfo(identity, lang);
       if(temp != null){
         entitys.add(temp);
@@ -538,6 +558,12 @@ public class PeopleRestService implements ResourceContainer{
       initialize();
     }
     
+    public ConnectionInfoRestOut(Identity identity) {
+      this.setDisplayName(identity.getProfile().getFullName());
+      this.setAvatarUrl(Util.buildAbsoluteAvatarURL(identity));
+      this.setPosition(StringEscapeUtils.unescapeHtml(identity.getProfile().getPosition()));
+    }
+    
     public ConnectionInfoRestOut(Identity identity, Activity lastestActivity, String lang){
       this.setDisplayName(identity.getProfile().getFullName());
       this.setAvatarUrl(Util.buildAbsoluteAvatarURL(identity));
@@ -788,9 +814,8 @@ public class PeopleRestService implements ResourceContainer{
     String avatar;
     String type;
 
-    public UserInfo(String name) {
-      this.name = name;
-      this.id = "@" + name;
+    public void setId(String id) {
+      this.id = "@" + id;
     }
 
     public String getId() {
