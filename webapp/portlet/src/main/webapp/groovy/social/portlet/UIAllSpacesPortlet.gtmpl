@@ -27,6 +27,6 @@
 %>
 <div class="uiSpacePortlet" id="$uicomponent.id">
   <% uicomponent.renderChildren(); %>
-  <% _ctx.include("classpath:groovy/social/webui/UISocialConfirmation.gtmpl"); %>
+  <% _ctx.include("war:/groovy/social/webui/UISocialConfirmation.gtmpl"); %>
 </div>
 
