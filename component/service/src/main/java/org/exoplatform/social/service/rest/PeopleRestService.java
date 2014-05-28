@@ -275,70 +275,6 @@ public class PeopleRestService implements ResourceContainer{
   }
   
   /**
-   * Gets the detailed information of a user on the pop-up, based on his/her username.
-   * 
-   * @param uriInfo The requested URI information.
-   * @param format The format of the returned result, for example, JSON, or XML.
-   * @param portalName The name of the current portal container.
-   * @param currentUserName The current user name who sends request.
-   * @param userId The specific user Id.
-   * @param updatedType The type of connection action shown on the pop-up.
-   * @return The detailed information of a user.
-   * @throws Exception
-   * @LevelAPI Provisional
-   * @deprecated Will be removed in eXo Platform 4.0.x
-   * @anchor PeopleRestService.getPeopleInfo
-   */
-  @GET
-  @Path("{portalName}/{currentUserName}/getPeopleInfo/{userId}.{format}")
-  public Response getPeopleInfo(@Context UriInfo uriInfo,
-                                @PathParam("portalName") String portalName,
-                                @PathParam("currentUserName") String currentUserName,
-                                @PathParam("userId") String userId,
-                                @PathParam("format") String format,
-                                @QueryParam("updatedType") String updatedType) throws Exception {
-    PeopleInfo peopleInfo = new PeopleInfo();
-    MediaType mediaType = Util.getMediaType(format);
-    Identity identity = getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME,
-                                                                   userId, false);
-
-    Identity currentIdentity = getIdentityManager().
-            getOrCreateIdentity(OrganizationIdentityProvider.NAME, currentUserName, false);
-    
-    if (updatedType != null) {
-      Relationship rel = getRelationshipManager().get(currentIdentity, identity);
-      if (ACCEPT_ACTION.equals(updatedType)) { // Accept or Deny
-        getRelationshipManager().confirm(rel);
-      } else if (DENY_ACTION.equals(updatedType)) {
-        getRelationshipManager().deny(rel);
-      } else if (REVOKE_ACTION.equals(updatedType)) {
-        getRelationshipManager().deny(rel);
-      } else if (INVITE_ACTION.equals(updatedType)) {
-        getRelationshipManager().invite(currentIdentity, identity);
-      } else if (REMOVE_ACTION.equals(updatedType)) {
-        getRelationshipManager().remove(rel);
-      }
-    }
-    
-    Relationship relationship = getRelationshipManager().get(currentIdentity, identity);
-    
-    peopleInfo.setRelationshipType(getRelationshipType(relationship, currentIdentity));
-    
-    RealtimeListAccess<ExoSocialActivity> activitiesListAccess = getActivityManager().getActivitiesWithListAccess(identity);
-    
-    List<ExoSocialActivity> activities = activitiesListAccess.loadAsList(0, DEFAULT_LIMIT);
-    if (activities.size() > 0) {
-      peopleInfo.setActivityTitle(activities.get(0).getTitle());
-    } else { // Default title of activity
-      peopleInfo.setActivityTitle("No updates have been posted yet.");
-    }
-    
-    peopleInfo.setAvatarURL((String) identity.getProfile().getProperty(Profile.AVATAR_URL));
-    
-    return Util.getResponse(peopleInfo, uriInfo, mediaType, Response.Status.OK);
-  }
-  
-  /**
    * Gets a set of information of the target user. The returned information of the user includes full name, position
    * avatar, link to profile and relationship status with the current user who sends request.
    * 
@@ -382,57 +318,72 @@ public class PeopleRestService implements ResourceContainer{
     Identity identity = getIdentityManager()
         .getOrCreateIdentity(OrganizationIdentityProvider.NAME, userId, false);
     if (identity != null) {
-      peopleInfo.setRelationshipType(NO_ACTION);
-      if(currentUserName != null && !userId.equals(currentUserName)){
-        Identity currentIdentity = getIdentityManager()
-            .getOrCreateIdentity(OrganizationIdentityProvider.NAME, currentUserName, false);
-
-        if(currentIdentity != null) {
-          // Process action
-          if (updatedType != null) {
-            if (currentIdentity != null) {
-              if (ACCEPT_ACTION.equals(updatedType)) { // Accept or Deny
-                getRelationshipManager().confirm(currentIdentity, identity);
-              } else if (DENY_ACTION.equals(updatedType)) {
-                getRelationshipManager().deny(currentIdentity, identity);
-              } else if (REVOKE_ACTION.equals(updatedType)) {
-                getRelationshipManager().deny(currentIdentity, identity);
-              } else if (INVITE_ACTION.equals(updatedType)) {
-                getRelationshipManager().inviteToConnect(currentIdentity, identity);
-              } else if (REMOVE_ACTION.equals(updatedType)) {
-                getRelationshipManager().delete(getRelationshipManager().get(currentIdentity, identity));
-              }
-            }
-          }
-
-          // Set relationship type
-          Relationship relationship = getRelationshipManager().get(currentIdentity, identity);
-          peopleInfo.setRelationshipType(getRelationshipType(relationship, currentIdentity));
-        }
-      }
-
-      RealtimeListAccess<ExoSocialActivity> activitiesListAccess = getActivityManager()
-          .getActivitiesByPoster(identity, DEFAULT_ACTIVITY, LINK_ACTIVITY, DOC_ACTIVITY);
-      
-      List<ExoSocialActivity> activities = activitiesListAccess.loadAsList(0, 1);
-      if (activities.size() > 0) {
-        peopleInfo.setActivityTitle(StringEscapeUtils.unescapeHtml(activities.get(0).getTitle()));
-      }
-      
+      // public information
+      peopleInfo.setFullName(identity.getProfile().getFullName());
+      peopleInfo.setPosition(StringEscapeUtils.unescapeHtml(identity.getProfile().getPosition()));
       Profile userProfile = identity.getProfile();
-      
       String avatarURL = userProfile.getAvatarUrl();
       if (avatarURL == null) {
         avatarURL = LinkProvider.PROFILE_DEFAULT_AVATAR_URL;
       }
-      
       peopleInfo.setAvatarURL(avatarURL);
-
-      peopleInfo.setProfileUrl(LinkProvider.getUserActivityUri(identity.getRemoteId()));
       
-      peopleInfo.setFullName(identity.getProfile().getFullName());
-      peopleInfo.setPosition(StringEscapeUtils.unescapeHtml(identity.getProfile().getPosition()));
+      
+      String userType = ConversationState.getCurrent().getIdentity().getUserId();
+      boolean isAnonymous = IdentityConstants.ANONIM.equals(userType) 
+          || securityContext.getUserPrincipal() == null;
+      
+      if (!isAnonymous) { // private information
+        peopleInfo.setProfileUrl(LinkProvider.getUserActivityUri(identity.getRemoteId()));
+        
+        peopleInfo.setRelationshipType(NO_ACTION);
+        
+        String relationshipType = null;
+        
+        if(currentUserName != null && !userId.equals(currentUserName)) {
+          Identity currentIdentity = getIdentityManager()
+              .getOrCreateIdentity(OrganizationIdentityProvider.NAME, currentUserName, false);
+  
+          // Set relationship type
+          Relationship relationship = getRelationshipManager().get(currentIdentity, identity);
+          
+          if(currentIdentity != null) {
+            // Process action
+            if (updatedType != null) {
+              if (currentIdentity != null) {
+                if (ACCEPT_ACTION.equals(updatedType)) { // Accept or Deny
+                  getRelationshipManager().confirm(currentIdentity, identity);
+                } else if (DENY_ACTION.equals(updatedType)) {
+                  getRelationshipManager().deny(currentIdentity, identity);
+                } else if (REVOKE_ACTION.equals(updatedType)) {
+                  getRelationshipManager().deny(currentIdentity, identity);
+                } else if (INVITE_ACTION.equals(updatedType)) {
+                  getRelationshipManager().inviteToConnect(currentIdentity, identity);
+                } else if (REMOVE_ACTION.equals(updatedType)) {
+                  getRelationshipManager().delete(getRelationshipManager().get(currentIdentity, identity));
+                }
+              }
+            }
+  
+            relationshipType = getRelationshipType(relationship, currentIdentity);
+            peopleInfo.setRelationshipType(relationshipType);
+          }
+        }
+        
+        if (CONFIRMED_STATUS.equals(relationshipType)) {
+        
+          // exposed if relationship type is confirmed (has connection with current logged in user)
+          RealtimeListAccess<ExoSocialActivity> activitiesListAccess = getActivityManager()
+              .getActivitiesByPoster(identity, DEFAULT_ACTIVITY, LINK_ACTIVITY, DOC_ACTIVITY);
+          
+          List<ExoSocialActivity> activities = activitiesListAccess.loadAsList(0, 1);
+          if (activities.size() > 0) {
+            peopleInfo.setActivityTitle(StringEscapeUtils.unescapeHtml(activities.get(0).getTitle()));
+          }
+        }
+      }
     }
+    
     return Util.getResponse(peopleInfo, uriInfo, mediaType, Response.Status.OK);
   }
 
