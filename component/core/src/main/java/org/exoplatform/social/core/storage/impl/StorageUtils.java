@@ -67,10 +67,19 @@ public class StorageUtils {
       );
     }
     else if (nameForSearch.trim().length() != 0) {
-      whereExpression.and().like(
+      whereExpression.and().startGroup().like(
           whereExpression.callFunction(QueryFunction.LOWER, ProfileEntity.fullName),
           PERCENT_STR + nameForSearch.toLowerCase() + PERCENT_STR
       );
+      whereExpression.or().like(
+          whereExpression.callFunction(QueryFunction.LOWER, ProfileEntity.firstName),
+          PERCENT_STR + nameForSearch.toLowerCase() + PERCENT_STR
+      );
+      whereExpression.or().like(
+         whereExpression.callFunction(QueryFunction.LOWER, ProfileEntity.lastName),
+         PERCENT_STR + nameForSearch.toLowerCase() + PERCENT_STR
+      )
+      .endGroup();
     }
 
     if (position.length() != 0) {

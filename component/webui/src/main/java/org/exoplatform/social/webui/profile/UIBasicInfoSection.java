@@ -133,20 +133,17 @@ public class UIBasicInfoSection extends UIProfileSection {
 
       String firstName = uiForm.getUIStringInput(Profile.FIRST_NAME).getValue();
       String lastName = uiForm.getUIStringInput(Profile.LAST_NAME).getValue();
-      String newEmail = uiForm.getUIStringInput(Profile.EMAIL).getValue();
-      String fullName = firstName + " " + lastName;
+      String newEmail = uiForm.getUIStringInput(Profile.EMAIL).getValue();      
       
       Identity viewerIdentity = Utils.getViewerIdentity(true);
       Profile profile = viewerIdentity.getProfile();
       boolean profileHasUpdated = false;
       if (!(profile.getProperty(Profile.FIRST_NAME)).equals(firstName)) {
         profile.setProperty(Profile.FIRST_NAME, firstName);
-        profile.setProperty(Profile.FULL_NAME, fullName);
         profileHasUpdated = true;
       }
       if (!(profile.getProperty(Profile.LAST_NAME)).equals(lastName)) {
         profile.setProperty(Profile.LAST_NAME, lastName);
-        profile.setProperty(Profile.FULL_NAME, fullName);
         profileHasUpdated = true;
       }
       if (!(profile.getProperty(Profile.EMAIL)).equals(newEmail)) {

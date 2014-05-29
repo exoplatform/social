@@ -16,6 +16,7 @@
  */
 package org.exoplatform.social.core.listeners;
 
+import org.apache.commons.lang.StringUtils;
 import org.exoplatform.container.ExoContainer;
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.PortalContainer;
@@ -27,7 +28,6 @@ import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.storage.api.IdentityStorage;
-import org.exoplatform.social.core.storage.impl.StorageUtils;
 
 /**
  * Listens to user updating events.
@@ -85,11 +85,13 @@ public class SocialUserEventListenerImpl extends UserEventListener {
         String uFirstName = user.getFirstName();
         String uLastName = user.getLastName();
         String uFullName = user.getFullName();
+        String uDisplayName = user.getDisplayName();
         String uEmail = user.getEmail();
   
         //
         String pFirstName = (String) profile.getProperty(Profile.FIRST_NAME);
         String pLastName = (String) profile.getProperty(Profile.LAST_NAME);
+        String pFullName = (String) profile.getProperty(Profile.FULL_NAME);
         String pEmail = (String) profile.getProperty(Profile.EMAIL);
        
   
@@ -102,6 +104,14 @@ public class SocialUserEventListenerImpl extends UserEventListener {
         if ((pLastName == null) || (!pLastName.equals(uLastName))) {
           profile.setProperty(Profile.LAST_NAME, uLastName);
           profile.setProperty(Profile.FULL_NAME, uFullName);
+          hasUpdated = true;
+        }
+        
+        if (uDisplayName == null || StringUtils.isEmpty(uDisplayName)) {
+          uDisplayName = uFirstName + " " + uLastName;
+        }
+        if(!uDisplayName.equals(pFullName)) {
+          profile.setProperty(Profile.FULL_NAME, uDisplayName);
           hasUpdated = true;
         }
         
