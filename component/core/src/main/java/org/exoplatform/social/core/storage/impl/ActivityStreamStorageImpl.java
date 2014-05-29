@@ -507,7 +507,7 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
   
   @Override
   public List<ExoSocialActivity> getViewerActivities(Identity owner, int offset, int limit) {
-    return getActivitiesNotQueryWithoutSpace(ActivityRefType.MY_ACTIVITIES, owner, offset, limit);
+    return getOwnerActivitiesNotQuery(ActivityRefType.MY_ACTIVITIES, owner, offset, limit);
   }
 
   @Override
@@ -748,7 +748,7 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
     return got;
   }
   
-  private List<ExoSocialActivity> getActivitiesNotQueryWithoutSpace(ActivityRefType type, Identity owner, int offset, int limit) {
+  private List<ExoSocialActivity> getOwnerActivitiesNotQuery(ActivityRefType type, Identity owner, int offset, int limit) {
     List<ExoSocialActivity> got = new LinkedList<ExoSocialActivity>();
     try {
       IdentityEntity identityEntity = identityStorage._findIdentityEntity(owner.getProviderId(), owner.getRemoteId());
@@ -771,11 +771,7 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
         ExoSocialActivity a = getStorage().getActivity(current.getActivityEntity().getId());
         if (!got.contains(a)) {
           //only take these user's activities and ower is poster
-          if (!a.isHidden()
-              && !SpaceIdentityProvider.NAME.equalsIgnoreCase(a.getActivityStream()
-                                                               .getType()
-                                                               .toString())
-              && a.getPosterId().equals(owner.getId())) {
+          if (!a.isHidden() && a.getStreamOwner().equals(owner.getRemoteId())) {
             got.add(a);
             if (++nb == limit) {
               break;
