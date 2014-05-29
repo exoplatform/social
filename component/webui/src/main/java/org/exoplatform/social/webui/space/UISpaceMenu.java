@@ -24,6 +24,10 @@ import org.exoplatform.portal.application.PortalRequestContext;
 import org.exoplatform.portal.application.RequestNavigationData;
 import org.exoplatform.portal.config.DataStorage;
 import org.exoplatform.portal.config.model.Page;
+import org.exoplatform.portal.config.UserACL;
+import org.exoplatform.portal.mop.page.PageContext;
+import org.exoplatform.portal.mop.page.PageKey;
+import org.exoplatform.portal.mop.page.PageService;
 import org.exoplatform.portal.mop.user.UserNode;
 import org.exoplatform.portal.mop.user.UserPortal;
 import org.exoplatform.portal.webui.portal.UIPortal;
@@ -393,12 +397,18 @@ public class UISpaceMenu extends UIContainer {
  * @since 4.0.1-GA
  */
 private void removeNonePageNodes(List<UserNode> nodes) {
-  
   List<UserNode> nonePageNodes = new ArrayList<UserNode>();
-  
+  UserACL userACL = SpaceUtils.getUserACL();
+  boolean noPageNode;
   for (UserNode node : nodes) {
-    if (node.getPageRef() == null) {
+    PageKey currentPage = node.getPageRef();
+    if (currentPage == null) {
       nonePageNodes.add(node);
+    } else {
+      PageContext currentPageContext = getApplicationComponent(PageService.class).loadPage(currentPage);
+      if (currentPageContext == null || !userACL.hasPermission(currentPageContext)) {
+        nonePageNodes.add(node);
+      }
     }
   }
   
