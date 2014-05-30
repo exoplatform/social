@@ -31,51 +31,42 @@
   import org.exoplatform.portal.application.PortalRequestContext;
   import org.exoplatform.social.core.identity.model.Profile;
   import org.exoplatform.social.core.service.LinkProvider;
+  import org.exoplatform.social.webui.connections.UIUpdateRelationship;
   
-  def uicomponentId = uicomponent.id;
-  def connectTitle = _ctx.appRes(uicomponent.getId() + ".label.Connect")
-  def ignoreTitle = _ctx.appRes(uicomponent.getId() + ".label.Ignore")
-  def confirmTitle = _ctx.appRes(uicomponent.getId() + ".label.Confirm")
-  def pendingTitle = _ctx.appRes(uicomponent.getId() + ".label.Pending")
-  def removeTitle = _ctx.appRes(uicomponent.getId() + ".label.RemoveConnection")
-  def cancelRequestLabel = _ctx.appRes(uicomponent.getId() + ".label.CancelRequest")
-  def connectionLabel = _ctx.appRes(uicomponent.getId() + ".label.Connection")
-  def invitationSentLabel = _ctx.appRes(uicomponent.getId() + ".label.InvitationSent")
-  def invitationReceivedLabel = _ctx.appRes(uicomponent.getId() + ".label.InvitationReceived")
-  
-  def peopleIdx = 0
-  
+  def peopleIdx = 0;
   if (uicomponent.isNewOwner()) {
     uicomponent.init();
   }
-
   def list = uicomponent.getPeopleList();
 
   if (list.size() == uicomponent.getPeopleNum()) {
-    uicomponent.setLoadAtEnd(true)
+    uicomponent.setLoadAtEnd(true);
   }
   
-  def alphabets = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"];
-  def contactsDirectory = _ctx.appRes("${uicomponentId}.label.ContactsDirectory")
-  def labelEveryone = _ctx.appRes("${uicomponentId}.label.Everyone")
-  def myConnectionsLabel = _ctx.appRes("${uicomponentId}.label.MyConnections");
-	def labelRequestsReceived = _ctx.appRes("${uicomponentId}.label.RequestsReceived")
-	def labelRequestsSent = _ctx.appRes("${uicomponentId}.label.RequestsSent")
-	def searchAll = _ctx.appRes("${uicomponentId}.label.SearchAll");
-	def portalURI = Utils.getURI("");
-	def ownerIdentity = Utils.getOwnerIdentity();
-	def ownerId = ownerIdentity.getRemoteId();
-	def selectedNode = URLUtils.getRequestedNode();
+  String[] alphabets = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"];
+  String contactsDirectory = _ctx.appRes("UIAllPeople.label.ContactsDirectory");
+  String labelEveryone = _ctx.appRes("UIAllPeople.label.Everyone");
+  String myConnectionsLabel = _ctx.appRes("UIAllPeople.label.MyConnections");
+  String labelRequestsReceived = _ctx.appRes("UIAllPeople.label.RequestsReceived");
+  String labelRequestsSent = _ctx.appRes("UIAllPeople.label.RequestsSent");
+  String searchAll = _ctx.appRes("UIAllPeople.label.SearchAll");
+
+  def ownerIdentity = Utils.getOwnerIdentity();
+
+  String portalURI = Utils.getURI("");
+  String ownerId = ownerIdentity.getRemoteId();
+  String selectedNode = URLUtils.getRequestedNode();
 	
-	def allPeopleURL = "${portalURI}${selectedNode}/all-people/${ownerId}";
-	def networkURL = "${portalURI}${selectedNode}/network/${ownerId}";
-	def receivedInvitationsURL = "${portalURI}${selectedNode}/receivedInvitations/${ownerId}";
-	def sentInvitationURL = "${portalURI}${selectedNode}/pendingRequests/${ownerId}";
-	
-	def selectedStartChar = uicomponent.getSelectedChar();
-	def jsManager = _ctx.getRequestContext().getJavascriptManager();
-	jsManager.require("SHARED/jquery", "jq")
-           .require("SHARED/bts_tooltip").addScripts("jq('*[rel=\"tooltip\"]').tooltip();");
+  String allPeopleURL = "${portalURI}${selectedNode}/all-people/${ownerId}";
+  String networkURL = "${portalURI}${selectedNode}/network/${ownerId}";
+  String receivedInvitationsURL = "${portalURI}${selectedNode}/receivedInvitations/${ownerId}";
+  String sentInvitationURL = "${portalURI}${selectedNode}/pendingRequests/${ownerId}";
+
+  String selectedStartChar = uicomponent.getSelectedChar();
+  //
+  _ctx.getRequestContext().getJavascriptManager()
+  	  .require("SHARED/jquery", "jq") .require("SHARED/bts_tooltip")
+      .addScripts("jq('*[rel=\"tooltip\"]').tooltip();");
 %>
 <div class="uiAllPeople" id="$uicomponent.id">
   
@@ -95,7 +86,7 @@
 			    <h4 class="titleWithBorder">$contactsDirectory</h4>
 			    <!--div class="DirectoryNormalBox"-->
 			    <div class="uiFilterList">
-			        <div class="result clearfix"><span class="number"><%=uicomponent.peopleNum; %></span><%=_ctx.appRes(uicomponent.getId() + ".label.DisplayInOrderOfAlphabet")%></div>
+			        <div class="result clearfix"><span class="number"><%=uicomponent.peopleNum%></span><%=_ctx.appRes("UIAllPeople.label.DisplayInOrderOfAlphabet")%></div>
 			        <ul class="letterList"> 
 					     <li>
 					     <% if ((selectedStartChar != null) && (selectedStartChar == "All")) { %>
@@ -149,14 +140,14 @@
 			      } else if (contactStatus == Relationship.Type.PENDING) {
 			        statusIconSrc = LinkProvider.WAITING_CONFIRMATION_ICON;
 			      }
+			      String checkbox = "";
+			      if (contactStatus == Relationship.Type.CONFIRMED) {
+			        checkbox = "checkedBox";
+			      }
 			  %>
-			    <% if (contactStatus == Relationship.Type.CONFIRMED) { %>
-				<div class="checkedBox spaceBox pull-left">
-				<% } else { %>
-				<div class="spaceBox pull-left">
-				<% } %>
-					<a href="${profileURL}" class="avatarXLarge pull-left">
-						<img rel="tooltip" data-placement="bottom" title="${fullName}" src="$imageSource" />
+				<div class="$checkbox spaceBox pull-left" id="identity${identity.getId()}">
+					<a href="${profileURL}" class="avatarXLarge pull-left" rel="tooltip" data-placement="bottom" title="${fullName}">
+						<img src="$imageSource" />
 					</a>
 					<div class="contentBox">
 						<h4 class="spaceTitle"><a href="${profileURL}">${fullName}</a></h4>
@@ -166,32 +157,45 @@
 						<% if((email != null) && (email.length() > 0)) { %>
 						<div class="email"><a href="mailto:${email}">${email}</a></div>
 						<% } %>
-						<% if (contactStatus == Relationship.Type.PENDING && relationship.isSender(identity)) { %>
-						<br/><span class="pull-left">$invitationReceivedLabel</span>
-						<% } else if (contactStatus == Relationship.Type.PENDING) {%>
-						<br/><span class="pull-left">$invitationSentLabel</span>
-						<% } %>
 					</div>
 					<div class="connectionBtn clearfix">
-						<% if (contactStatus == Relationship.Type.PENDING && relationship.isSender(identity)) { %>
-							<button class="btn pull-right" onclick="<%=uicomponent.event("Ignore",identity.getId())%>">$ignoreTitle</button>
-							<button class="btn btn-primary pull-right" onclick="<%=uicomponent.event("Confirm",identity.getId())%>">$confirmTitle</button>
-						<% } else if (contactStatus == Relationship.Type.PENDING) { %>
-							<button class="btn pull-right" onclick="<%=uicomponent.event("Ignore",identity.getId())%>">$cancelRequestLabel</button>
-						<% } else if (contactStatus == Relationship.Type.CONFIRMED) { %>
-							<button class="btn pull-right" onclick="<%=uicomponent.event("Ignore",identity.getId())%>">$removeTitle</button>
-						<% } else if (contactStatus == null) { %>
-							<button class="btn pull-right" onclick="$connectAction">$connectTitle</button>
-						<% } %>
+						<%
+							String label = _ctx.appRes("UIAllPeople.label.Ignore");
+							String action = uicomponent.event("Ignore",identity.getId());
+							String statusLabel = "";
+							if(contactStatus == Relationship.Type.PENDING) {
+							  if(relationship.isSender(identity)) {
+							    statusLabel = _ctx.appRes("UIAllPeople.label.InvitationReceived");
+							  } else {
+							    label = _ctx.appRes("UIAllPeople.label.CancelRequest");
+							    statusLabel = _ctx.appRes("UIAllPeople.label.InvitationSent");
+							  }
+							} else if(contactStatus == Relationship.Type.CONFIRMED) {
+							  label = _ctx.appRes("UIAllPeople.label.RemoveConnection");
+							} else if(contactStatus == null) {
+							  label = _ctx.appRes("UIAllPeople.label.Connect");
+							  action = uicomponent.event("Connect", identity.getId());
+							}
+						%>
+							<button class="btn pull-right actionLabel" onclick="$action">$label</button>
+							<%
+						  	if (contactStatus == Relationship.Type.PENDING && relationship.isSender(identity)) {
+							%>
+							<button class="btn btn-primary pull-right btn-confirm" 
+									onclick="<%=uicomponent.event("Confirm",identity.getId())%>"><%=_ctx.appRes("UIAllPeople.label.Confirm")%></button>
+							<%
+							}
+							%>
+							<span class="pull-right statusLabel">$statusLabel</span>
 						</div>
 					</div>
 				<% } %>
 				</div>
 				<% if(uicomponent.isEnableLoadNext()) { %>
-				<button id="LoadMoreButton" class="btn" onclick="<%=uicomponent.event('LoadMorePeople')%>" >
-				<%=_ctx.appRes(uicomponent.getId() + ".label.ShowMore")%>
+				<button id="LoadMoreButton" class="btn" onclick="<%=uicomponent.event("LoadMorePeople")%>" >
+				<%=_ctx.appRes("UIAllPeople.label.ShowMore")%>
 				</button>
-			  <% } else { %>
+				<% } else { %>
 				      <script type="text/javascript">
 				        var loadMoreButton = document.getElementById("LoadMoreButton");
 				        if (loadMoreButton) {
@@ -200,9 +204,10 @@
 				          }catch(e){};
 			            }	          
 				      </script>
-			  <%  }	%>
+			  <% } %>
 			  
 		  </div>
 		</div>
 	</div>
+	<% uicomponent.renderChild(UIUpdateRelationship.class); %>
 </div>
