@@ -166,6 +166,7 @@ public class UISpaceApplication extends UIForm {
     for (int index = 0; index < listApp.length; index++) {
       for (int idx = 0; idx < installedAppList.size(); idx++) {
         application = installedAppList.get(idx);
+        if (application == null) continue;
         String temporalSpaceName = application.getApplicationName();
 
         appParts = listApp[index].split(":");
