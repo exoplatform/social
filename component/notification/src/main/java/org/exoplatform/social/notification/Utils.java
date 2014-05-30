@@ -40,6 +40,28 @@ public class Utils {
   
   private static final Pattern LINK_PATTERN = Pattern.compile("<a ([^>]+)>([^<]+)</a>");
   
+  private static final Pattern HREF_PATTERN = Pattern.compile("href=\"(.*?)\"");
+  
+  private static final String SLASH_STR = "/";
+  
+  private static final Pattern URL_PATTERN = Pattern
+      .compile("^(?i)" +
+      "(" +
+        "((?:(?:ht)tp(?:s?)\\:\\/\\/)?" +                                                       // protolcol
+        "(?:\\w+:\\w+@)?" +                                                                       // username password
+        "(((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\." +  // IPAddress
+        "(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?))|" +     // IPAddress
+        "(?:(?:[-\\p{L}\\p{Digit}\\+\\$\\-\\*\\=]+\\.)+" +
+        "(?:com|org|net|edu|gov|mil|biz|info|mobi|name|aero|jobs|museum|travel|asia|cat|coop|int|pro|tel|xxx|[a-z]{2}))))|" + //Domain
+        "(?:(?:(?:ht)tp(?:s?)\\:\\/\\/)(?:\\w+:\\w+@)?(?:[-\\p{L}\\p{Digit}\\+\\$\\-\\*\\=]+))" + // Protocol with hostname
+      ")" +
+      "(?::[\\d]{1,5})?" +                                                                        // port
+      "(?:[\\/|\\?|\\#].*)?$");                                                               // path and query
+  
+  private static final String SYSTEM_EMAIL_DOMAIN_KEY = "gatein.email.domain.url";
+  
+  private static final String DEFAULT_EMAIL_DOMAIN = "http://localhost:8080";
+  
   private static final String styleCSS = " style=\"color: #2f5e92; text-decoration: none;\"";
   
   @SuppressWarnings("unchecked")
@@ -176,11 +198,33 @@ public class Utils {
    */
   public static String processLinkTitle(String title) {
     Matcher matcher = LINK_PATTERN.matcher(title);
+    String domain = System.getProperty(SYSTEM_EMAIL_DOMAIN_KEY, DEFAULT_EMAIL_DOMAIN);
     while (matcher.find()) {
       String result = matcher.group(1);
       title = title.replace(result, result + styleCSS);
+      Matcher m = HREF_PATTERN.matcher(result);
+      if (m.find()) {
+        String url = m.group(1);
+        if (url != null && !isValidUrl(url)) {
+          String newUrl = url.startsWith(SLASH_STR) ? domain + url : domain + SLASH_STR + url;
+          if (isValidUrl(newUrl)) {
+            title = title.replace(url, newUrl);
+          }
+        }
+      }
     }
+    
     return title;
+  }
+  
+  /**
+   * Validates URL.
+   * 
+   * @param url string to validate
+   * @return true if url is valid (url started with http/https/www/ftp ...)
+   */
+  public static boolean isValidUrl(String url) {
+    return URL_PATTERN.matcher(url).matches();  
   }
   
   /**
