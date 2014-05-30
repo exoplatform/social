@@ -168,6 +168,12 @@
         identityBox.find('span.statusLabel:first').text(relationshipInfo.data('status'));
         identityBox.find('button.actionLabel:first').attr('onclick', relationshipInfo.data('action'));
         identityBox.find('button.actionLabel:first').text(relationshipInfo.text());
+        var clazz = relationshipInfo.data('class');
+        if(clazz.length > 0) {
+          identityBox.addClass(clazz);
+        } else {
+          identityBox.removeClass('checkedBox');
+        }
       }
       identityBox.find('button.btn-confirm:first').hide();
     }

@@ -60,7 +60,7 @@ public class UIUpdateRelationship extends UIContainer {
       
       String label = res.getString("UIAllPeople.label.Ignore");
       String action = uiAllPeople.event("Ignore", identity.getId());
-      String statusLabel = "";
+      String statusLabel = "", statusClass = "";
       //
       Type status = (relationship != null) ? relationship.getStatus() : null;
       //
@@ -74,10 +74,12 @@ public class UIUpdateRelationship extends UIContainer {
 
       } else if (status == Type.CONFIRMED) {
         label = res.getString("UIAllPeople.label.RemoveConnection");
+        statusClass = "checkedBox";
       }
       //
       writer.append("<div style=\"display:none\" data-action=\"").append(action).append("\" ")
-            .append("data-status=\"").append(statusLabel).append("\">")
+            .append("data-status=\"").append(statusLabel).append("\" ")
+            .append("data-class=\"").append(statusClass).append("\">")
             .append(label).append("</div>");
       //
       context.getJavascriptManager().getRequireJS().require("SHARED/socialUtil", "utils")
