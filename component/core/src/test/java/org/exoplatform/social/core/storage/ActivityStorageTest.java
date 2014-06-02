@@ -38,6 +38,7 @@ import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
 import org.exoplatform.social.core.storage.api.ActivityStorage;
 import org.exoplatform.social.core.storage.api.IdentityStorage;
+import org.exoplatform.social.core.storage.impl.StorageUtils;
 import org.exoplatform.social.core.test.AbstractCoreTest;
 import org.exoplatform.social.core.test.MaxQueryNumber;
 import org.exoplatform.social.core.test.QueryNumberTest;
@@ -2049,13 +2050,15 @@ public class ActivityStorageTest extends AbstractCoreTest {
     createActivities(5, demoIdentity);
     Long maxTime = activityStorage.getActivityFeed(demoIdentity, 0, 10).get(2).getUpdated().getTime();
     assertEquals(2, activityStorage.getOlderFeedActivities(demoIdentity, maxTime, 10).size());
-    
+
     // Update an older activity, this activity must be newer than maxTime
     ExoSocialActivity act = activityStorage.getActivityFeed(demoIdentity, 0, 10).get(3);
     ExoSocialActivity comment = new ExoSocialActivityImpl();
     comment.setTitle("demo comment ");
     comment.setUserId(demoIdentity.getId());
     activityStorage.saveComment(act, comment);
+    //
+    StorageUtils.persist(true);
     assertEquals(1, activityStorage.getOlderFeedActivities(demoIdentity, maxTime, 10).size());
 
     // Delete the activity at this maxTime will don't change the result
