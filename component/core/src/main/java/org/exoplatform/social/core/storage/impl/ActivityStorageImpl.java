@@ -602,7 +602,7 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
         StreamInvocationHelper.updateCommenter(identity, activityEntity, commenters.toArray(new String[0]), mentioners.toArray(new String[0]), oldUpdated);
       }
       
-      //getSession().save();
+      getSession().save();
     }  
     catch (NodeNotFoundException e) {
       throw new ActivityStorageException(ActivityStorageException.Type.FAILED_TO_SAVE_COMMENT, e.getMessage(), e);
