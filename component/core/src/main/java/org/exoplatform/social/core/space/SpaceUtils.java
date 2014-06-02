@@ -611,8 +611,6 @@ public class SpaceUtils {
     ChromatticManager manager = (ChromatticManager) container.getComponentInstanceOfType(ChromatticManager.class);
     Synchronization synchronization = manager.getSynchronization();
     synchronization.setSaveOnClose(save);
-    RequestLifeCycle.end();
-    RequestLifeCycle.begin(container);
   }
   /**
    * Finds container by id

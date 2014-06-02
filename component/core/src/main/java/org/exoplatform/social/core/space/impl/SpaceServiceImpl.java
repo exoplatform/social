@@ -427,9 +427,6 @@ public class SpaceServiceImpl implements SpaceService {
     space.setGroupId(groupId);
     space.setUrl(space.getPrettyName());
 
-    saveSpace(space, true);
-    spaceLifeCycle.spaceCreated(space, creator);
-    
     try {
       SpaceApplicationHandler spaceApplicationHandler = getSpaceApplicationHandler(space);
       spaceApplicationHandler.initApps(space, getSpaceApplicationConfigPlugin());
@@ -438,15 +435,13 @@ public class SpaceServiceImpl implements SpaceService {
                Space.ACTIVE_STATUS);
       }
       
-      saveSpace(space, false);
+      
     } catch (Exception e) {
       LOG.warn("Failed to init apps", e);
-    } finally {
-      SpaceUtils.endSyn(true);
     }
-
     
-    
+    saveSpace(space, true);
+    spaceLifeCycle.spaceCreated(space, creator);
     return space;
   }
 
