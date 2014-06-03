@@ -76,7 +76,7 @@ public class LikePlugin extends AbstractNotificationPlugin {
     Identity identity = Utils.getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, notification.getValueOwnerParameter("likersId"), true);
     
     templateContext.put("USER", identity.getProfile().getFullName());
-    templateContext.put("ACTIVITY", activity.getTitle());
+    templateContext.put("ACTIVITY", Utils.processLinkTitle(activity.getTitle()));
     templateContext.put("SUBJECT", activity.getTitle());
     String subject = TemplateUtils.processSubject(templateContext);
 
