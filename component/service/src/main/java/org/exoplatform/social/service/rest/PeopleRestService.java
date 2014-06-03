@@ -33,6 +33,7 @@ import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
+import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
 import org.exoplatform.social.core.manager.ActivityManager;
 import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.manager.RelationshipManager;
@@ -94,7 +95,6 @@ public class PeopleRestService implements ResourceContainer{
   private static final long SUGGEST_LIMIT = 20;
   
   /** Number of default limit activities. */
-  private static final int DEFAULT_LIMIT = 20;
   private static final String DEFAULT_ACTIVITY = "DEFAULT_ACTIVITY";
   private static final String LINK_ACTIVITY = "LINK_ACTIVITY";
   private static final String DOC_ACTIVITY = "DOC_ACTIVITY";
@@ -104,11 +104,6 @@ public class PeopleRestService implements ResourceContainer{
   private ActivityManager activityManager;
   private RelationshipManager relationshipManager;
   private SpaceService spaceService;
-  private static final int MAX_CHAR = 100;
-  private static final String SPACE_CHAR = " ";
-  private static final String THREE_DOTS = "...";
-    private static final int MAX_DOC_CHAR = 25;
-    private static Log log = ExoLogger.getLogger(PeopleRestService.class);
 
   public PeopleRestService() {
   }
@@ -337,6 +332,8 @@ public class PeopleRestService implements ResourceContainer{
     PeopleInfo peopleInfo = new PeopleInfo(NO_INFO);
     Identity identity = getIdentityManager()
         .getOrCreateIdentity(OrganizationIdentityProvider.NAME, userId, false);
+    Identity currentIdentity = getIdentityManager()
+        .getOrCreateIdentity(OrganizationIdentityProvider.NAME, currentUserName, false);
     if (identity != null) {
       // public information
       peopleInfo.setFullName(identity.getProfile().getFullName());
@@ -361,9 +358,6 @@ public class PeopleRestService implements ResourceContainer{
         String relationshipType = null;
         
         if(currentUserName != null && !userId.equals(currentUserName)) {
-          Identity currentIdentity = getIdentityManager()
-              .getOrCreateIdentity(OrganizationIdentityProvider.NAME, currentUserName, false);
-  
           // Set relationship type
           Relationship relationship = getRelationshipManager().get(currentIdentity, identity);
           
@@ -393,12 +387,9 @@ public class PeopleRestService implements ResourceContainer{
         if (CONFIRMED_STATUS.equals(relationshipType)) {
         
           // exposed if relationship type is confirmed (has connection with current logged in user)
-          RealtimeListAccess<ExoSocialActivity> activitiesListAccess = getActivityManager()
-              .getActivitiesByPoster(identity, DEFAULT_ACTIVITY, LINK_ACTIVITY, DOC_ACTIVITY);
-          
-          List<ExoSocialActivity> activities = activitiesListAccess.loadAsList(0, 1);
-          if (activities.size() > 0) {
-            peopleInfo.setActivityTitle(StringEscapeUtils.unescapeHtml(activities.get(0).getTitle()));
+          String activityTitle = getLatestActivityTitle(identity, currentIdentity);
+          if (activityTitle != null) {
+            peopleInfo.setActivityTitle(StringEscapeUtils.unescapeHtml(activityTitle));
           }
         }
       }
@@ -407,100 +398,6 @@ public class PeopleRestService implements ResourceContainer{
     return Util.getResponse(peopleInfo, uriInfo, mediaType, Response.Status.OK);
   }
 
-
-    private String substringActivity( ExoSocialActivity act) {
-        String activity = "";
-        try{
-
-
-
-            if (act.getType() != null ) {
-
-                activity = act.getTitle().replaceAll("<br/>", " ").replaceAll("<br />", " ").replaceAll("<br>", " ").replaceAll("</br>", " ").trim();
-                activity = StringEscapeUtils.unescapeHtml(activity);
-                activity = activity.replaceAll("\"", "'");
-
-                if (activity.length() > MAX_CHAR && act.getType().equals(DEFAULT_ACTIVITY)) {
-                    String maxBody = activity.substring(0, MAX_CHAR);
-                    int tagEnterLocation = maxBody.indexOf('<', 0);
-                    if (tagEnterLocation != -1) {
-                        if (tagEnterLocation == 0) {
-                            if (maxBody.indexOf("<", tagEnterLocation) == 0) {
-                                int endtag = activity.indexOf(">", tagEnterLocation);
-                                int tagend = activity.indexOf("<", endtag);
-                                int tagend2 = activity.indexOf(">", tagend);
-                                String linktitle = activity.substring(endtag + 1, tagend);
-                                if (linktitle.length() > MAX_CHAR) {
-                                    linktitle = linktitle.substring(0, MAX_CHAR);
-                                    activity = activity.substring(0, endtag + 1) + linktitle + activity.substring(tagend, tagend2 + 1);
-                                } else {
-                                    activity = activity.substring(0, tagend2 + 1) + SPACE_CHAR + activity.substring(tagend2 + 2, MAX_CHAR - linktitle.length());
-                                }
-                            }
-
-                            activity = activity + "<span class='truncate_ellipsis'>" + THREE_DOTS + "</span>";
-                        } else {
-                            int tagEndLocation = maxBody.indexOf("<", tagEnterLocation + 1);
-                            int tagLocationEnd = maxBody.indexOf("/>", tagEnterLocation);
-                            if ((tagEndLocation == -1 && tagLocationEnd == -1)) {
-                                String str1 = maxBody.substring(0, tagEnterLocation - 1);
-                                activity = str1 + "<span class='truncate_ellipsis'>" + THREE_DOTS + "</span>";
-                            }
-                            if (tagEndLocation != -1) {
-
-                                if (tagEndLocation > MAX_CHAR - 3) {
-                                    String charRest = activity.substring(0, tagEndLocation + 3);
-                                    activity = charRest + "<span class='truncate_ellipsis'>" + THREE_DOTS + "</span>";
-                                } else {
-                                    if (tagEndLocation <= MAX_CHAR - 3) {
-                                        activity = maxBody + "<span class='truncate_ellipsis'>" + THREE_DOTS + "</span>";
-                                    }
-                                }
-                            }
-                            if (tagLocationEnd != -1) {
-                                activity = maxBody + "<span class='truncate_ellipsis'>" + THREE_DOTS + "</span>";
-                            }
-                        }
-                    } else {
-                        activity = maxBody + "<span class='truncate_ellipsis'>" + THREE_DOTS + "</span>";
-                    }
-                }
-
-                if (act.getType().equals(DOC_ACTIVITY)) {
-                    try{
-                        if ((activity.split(">")[1].split("<")[0]).length() > MAX_DOC_CHAR) {
-                            String docName = activity.split(">")[1].split("<")[0].substring(0, MAX_DOC_CHAR).concat(THREE_DOTS);
-                            String docUrl = activity.split(">")[0].split("=")[1].replace("\"", "'");
-                            activity = "Shared a Document <a class='ColorLink' target='_blank' href=" + docUrl + "title='" + activity.split(">")[1].split("<")[0] + "'>" + docName + "</a>";
-                        }
-                    }catch(ArrayIndexOutOfBoundsException e) {
-                        log.warn("Error while recovering activity of type DOC_ACTIVITY [Url of shared Document Not found ]") ;
-                        return "";
-                    }
-                }
-
-                if (act.getType().equals(LINK_ACTIVITY)) {
-
-                    if (activity.indexOf("<", 0) != -1) {
-                        activity = activity.substring(activity.indexOf(">", 0) + 1, activity.indexOf("<", activity.indexOf(">", 0)));
-                    }
-                    if (activity.length() > MAX_CHAR) {
-                        activity = activity.substring(0, MAX_CHAR);
-                    }
-
-                    activity = "<a class='ColorLink' target='_blank' href='" + act.getUrl().replaceAll("\"", "'") + "'>" + activity + "</a>";
-                }
-
-            }
-
-
-
-            return activity;
-        }catch (Exception e){
-            log.error("Error while recovering user's last activity [WhoIsOnLine rendering phase] :" + e.getMessage(), e);
-            return "";
-        }
-    }
   public static class ConnectionInfoRestOut extends HashMap<String, Object> {
     public static enum Field {
       /**
@@ -989,6 +886,39 @@ public class PeopleRestService implements ResourceContainer{
 
     public void setPosition(String position) {
       this.position = position;
+    }
+  }
+  
+  private String getLatestActivityTitle(Identity identity, Identity currentIdentity) {
+    RealtimeListAccess<ExoSocialActivity> activitiesListAccess = getActivityManager()
+        .getActivitiesByPoster(identity, DEFAULT_ACTIVITY, LINK_ACTIVITY, DOC_ACTIVITY);
+    
+    int totalActivities = activitiesListAccess.getSize();
+    int loadedActivityNum = 0;
+    while (true) {
+      List<ExoSocialActivity> activities = activitiesListAccess.loadAsList(0, 20);
+      
+      loadedActivityNum += activities.size();
+      
+      for (ExoSocialActivity act : activities) {
+        
+        if (getIdentityManager().getOrCreateIdentity(
+            OrganizationIdentityProvider.NAME, act.getStreamOwner(), false) != null) {
+          return act.getTitle();
+        }
+        
+        if (getIdentityManager().getOrCreateIdentity(
+            SpaceIdentityProvider.NAME, act.getStreamOwner(), false) != null) {
+          Space space = getSpaceService().getSpaceByPrettyName(act.getStreamOwner());
+          if (getSpaceService().isMember(space, currentIdentity.getRemoteId())) {
+            return act.getTitle();
+          }
+        }
+      }
+      
+      if (loadedActivityNum >= totalActivities) {
+        return null;  
+      }
     }
   }
 }
