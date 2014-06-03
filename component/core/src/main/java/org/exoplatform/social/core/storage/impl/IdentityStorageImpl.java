@@ -460,6 +460,9 @@ public class IdentityStorageImpl extends AbstractStorage implements IdentityStor
     for(SpaceRef ref : refType.refsOf(identity).getRefs().values()) {
       Space space = getSpaceStorage().getSpaceById(ref.getSpaceRef().getId());
       String[] ids = refType.idsOf(space);
+      if (ids == null || ids.length == 0) {
+        continue;
+      }
       List<String> idList = new ArrayList<String>(Arrays.asList(ids));
       idList.remove(identity.getRemoteId());
       refType.setIds(space, idList.toArray(new String[]{}));
