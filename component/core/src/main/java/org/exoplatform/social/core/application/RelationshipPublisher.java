@@ -35,6 +35,7 @@ import org.exoplatform.social.core.processor.I18NActivityUtils;
 import org.exoplatform.social.core.relationship.RelationshipEvent;
 import org.exoplatform.social.core.relationship.RelationshipListenerPlugin;
 import org.exoplatform.social.core.relationship.model.Relationship;
+import org.exoplatform.social.core.space.SpaceUtils;
 import org.exoplatform.social.core.storage.api.IdentityStorage;
 
 /**
@@ -128,6 +129,7 @@ public class RelationshipPublisher extends RelationshipListenerPlugin {
         ExoSocialActivity newActivitySender = createNewActivity(sender, nbOfSenderConnections);
         activityManager.saveActivityNoReturn(sender, newActivitySender);
         getIdentityStorage().updateProfileActivityId(sender, newActivitySender.getId(), Profile.AttachedActivityType.RELATIONSHIP);
+        SpaceUtils.endRequest();
         activityManager.saveComment(newActivitySender, senderComment);
       }
       
@@ -145,6 +147,7 @@ public class RelationshipPublisher extends RelationshipListenerPlugin {
         ExoSocialActivity newActivityReceiver = createNewActivity(receiver, nbOfReceiverConnections);
         activityManager.saveActivityNoReturn(receiver, newActivityReceiver);
         getIdentityStorage().updateProfileActivityId(receiver, newActivityReceiver.getId(), Profile.AttachedActivityType.RELATIONSHIP);
+        SpaceUtils.endRequest();
         activityManager.saveComment(newActivityReceiver, receiverComment);
       }
     } catch (Exception e) {

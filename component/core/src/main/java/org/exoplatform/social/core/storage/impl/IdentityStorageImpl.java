@@ -1379,7 +1379,6 @@ public class IdentityStorageImpl extends AbstractStorage implements IdentityStor
       }
       profileEntity.setActivityProfile(activityPEntity);
       type.setActivityId(activityPEntity, activityId);
-      getSession().save();
     } catch (NodeNotFoundException e) {
       LOG.debug(e.getMessage(), e);
     }
