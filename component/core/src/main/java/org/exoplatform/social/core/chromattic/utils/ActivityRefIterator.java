@@ -16,11 +16,7 @@
  */
 package org.exoplatform.social.core.chromattic.utils;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 import org.exoplatform.social.core.chromattic.entity.ActivityRef;
 import org.exoplatform.social.core.chromattic.entity.ActivityRefDayEntity;
@@ -56,22 +52,33 @@ public class ActivityRefIterator implements Iterator<ActivityRef> {
     }
 
   }
+
   private Iterator<ActivityRef> orderRefs() {
     List<ActivityRef> got = new ArrayList<ActivityRef>(dayIterator.next().getActivityRefList());
-    
+    // We use this local cache to avoid accessing the JCR at each call
+    final Map<String, Long> cache = new HashMap<String, Long>();
     Collections.sort(got, new Comparator<ActivityRef>() {
       public int compare(ActivityRef o1, ActivityRef o2) {
-        //Due to change using AcitivityId as ActivityRef's name instead of Activity's lastUpdated
-        Long val2 = o2.getActivityEntity() != null ? o2.getActivityEntity().getLastUpdated() : o2.getLastUpdated();
-        Long val1 = o1.getActivityEntity() != null ? o1.getActivityEntity().getLastUpdated() : o1.getLastUpdated();
-        //In some cases, migrated Activity from 3.5.x, ActivityRef's lastUpdated is NULL
-        //uses instead of ActivityRef's name.
-        long l2 = val2 != null ? val2 : Long.parseLong(o2.getName());
-        long l1 = val1 != null ? val1 : Long.parseLong(o1.getName());
-        return (int) (l2 - l1);
+        Long co2 = getValue(o2, cache);
+        Long co1 = getValue(o1, cache);
+        return (int) (co2 - co1);
       }
     });
     return got.iterator();
+  }
+
+  private static Long getValue(ActivityRef o, Map<String, Long> cache) {
+    // Due to change using ActivityId as ActivityRef's name instead of Activity's lastUpdated
+    Long co = cache.get(o.getId());
+    if (co == null) {
+      co = o.getLastUpdated();
+      //In some cases, migrated Activity from 3.5.x, ActivityRef's lastUpdated is NULL
+      //uses instead of ActivityRef's name.
+      if (co == null)
+        co = Long.parseLong(o.getName());
+      cache.put(o.getId(), co);
+    }
+    return co;
   }
 
   public boolean hasNext() {
