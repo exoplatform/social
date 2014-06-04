@@ -24,6 +24,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.exoplatform.commons.api.notification.service.storage.NotificationDataStorage;
+import org.exoplatform.commons.utils.CommonsUtils;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.identity.model.Identity;
@@ -57,10 +58,6 @@ public class Utils {
       ")" +
       "(?::[\\d]{1,5})?" +                                                                        // port
       "(?:[\\/|\\?|\\#].*)?$");                                                               // path and query
-  
-  private static final String SYSTEM_EMAIL_DOMAIN_KEY = "gatein.email.domain.url";
-  
-  private static final String DEFAULT_EMAIL_DOMAIN = "http://localhost:8080";
   
   private static final String styleCSS = " style=\"color: #2f5e92; text-decoration: none;\"";
   
@@ -176,7 +173,7 @@ public class Utils {
    */
   public static String processMentions(String title) {
     Matcher matcher = MENTION_PATTERN.matcher(title);
-    String domain = System.getProperty("gatein.email.domain.url", "http://localhost:8080");
+    String domain = CommonsUtils.getCurrentDomain();
     while (matcher.find()) {
       String remoteId = matcher.group(2);
       Identity identity = getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, remoteId, false);
@@ -198,7 +195,7 @@ public class Utils {
    */
   public static String processLinkTitle(String title) {
     Matcher matcher = LINK_PATTERN.matcher(title);
-    String domain = System.getProperty(SYSTEM_EMAIL_DOMAIN_KEY, DEFAULT_EMAIL_DOMAIN);
+    String domain = CommonsUtils.getCurrentDomain();
     while (matcher.find()) {
       String result = matcher.group(1);
       title = title.replace(result, result + styleCSS);
