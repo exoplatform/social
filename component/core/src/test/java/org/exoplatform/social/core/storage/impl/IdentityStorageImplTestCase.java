@@ -709,7 +709,7 @@ public class IdentityStorageImplTestCase extends AbstractCoreTest {
     assertEquals(2, storage.getIdentitiesByProfileFilter("o", cadre, 0, 10, false).size());
     assertEquals(1, storage.getIdentitiesByProfileFilter("o", dev, 0, 10, false).size());
 
-    assertEquals(3, storage.getIdentitiesByProfileFilter("o", t2, 0, 10, false).size());
+    assertEquals(2, storage.getIdentitiesByProfileFilter("o", t2, 0, 10, false).size());
     assertEquals(1, storage.getIdentitiesByProfileFilter("o", filterB2Skills, 0, 10, false).size());
     assertEquals("totota", storage.getIdentitiesByProfileFilter("o", filterB2Skills, 0, 10, false).get(0).getRemoteId());
   }
