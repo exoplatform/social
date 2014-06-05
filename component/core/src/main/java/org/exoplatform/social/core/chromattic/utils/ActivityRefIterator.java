@@ -16,19 +16,9 @@
  */
 package org.exoplatform.social.core.chromattic.utils;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
-import org.exoplatform.social.core.chromattic.entity.ActivityRef;
-import org.exoplatform.social.core.chromattic.entity.ActivityRefDayEntity;
-import org.exoplatform.social.core.chromattic.entity.ActivityRefListEntity;
-import org.exoplatform.social.core.chromattic.entity.ActivityRefMonthEntity;
-import org.exoplatform.social.core.chromattic.entity.ActivityRefYearEntity;
-import org.exoplatform.social.core.chromattic.entity.IndexNumber;
-import org.exoplatform.social.core.chromattic.entity.NamedEntity;
+import org.exoplatform.social.core.chromattic.entity.*;
 
 public class ActivityRefIterator implements Iterator<ActivityRef> {
 
@@ -56,22 +46,39 @@ public class ActivityRefIterator implements Iterator<ActivityRef> {
     }
 
   }
+
   private Iterator<ActivityRef> orderRefs() {
     List<ActivityRef> got = new ArrayList<ActivityRef>(dayIterator.next().getActivityRefList());
-    
+    // We use this local cache to avoid accessing the JCR at each call
+    final Map<String, Long> cache = new HashMap<String, Long>();
     Collections.sort(got, new Comparator<ActivityRef>() {
       public int compare(ActivityRef o1, ActivityRef o2) {
-        //Due to change using AcitivityId as ActivityRef's name instead of Activity's lastUpdated
-        Long val2 = o2.getActivityEntity() != null ? o2.getActivityEntity().getLastUpdated() : o2.getLastUpdated();
-        Long val1 = o1.getActivityEntity() != null ? o1.getActivityEntity().getLastUpdated() : o1.getLastUpdated();
-        //In some cases, migrated Activity from 3.5.x, ActivityRef's lastUpdated is NULL
-        //uses instead of ActivityRef's name.
-        long l2 = val2 != null ? val2 : Long.parseLong(o2.getName());
-        long l1 = val1 != null ? val1 : Long.parseLong(o1.getName());
-        return (int) (l2 - l1);
+        Long co2 = getActivityRefLastUpdated(cache, o2);
+        Long co1 = getActivityRefLastUpdated(cache, o1);
+        return (int) (co2 - co1);
       }
     });
     return got.iterator();
+  }
+
+  /**
+   * Gives the value of lastUpdated from the provided cache if it can be found otherwise it will be retrieved
+   * from the related ActivityEntity if it exists or directly from the ActivityRef thanks to getLastUpdated()
+   * or getName()
+   */
+  private static Long getActivityRefLastUpdated(Map<String, Long> cache, ActivityRef o) {
+    // Due to change using ActivityId as ActivityRef's name instead of Activity's lastUpdated
+    Long co = cache.get(o.getId());
+    if (co == null) {
+      ActivityEntity ae = o.getActivityEntity();
+      co = ae == null ? o.getLastUpdated() : ae.getLastUpdated();
+      //In some cases, migrated Activity from 3.5.x, ActivityRef's lastUpdated is NULL
+      //uses instead of ActivityRef's name.
+      if (co == null)
+        co = Long.parseLong(o.getName());
+      cache.put(o.getId(), co);
+    }
+    return co;
   }
 
   public boolean hasNext() {
