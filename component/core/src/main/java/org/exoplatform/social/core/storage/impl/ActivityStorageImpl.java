@@ -370,6 +370,7 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
       comment.setPostedTime(activityEntity.getPostedTime());
       comment.setUpdated(getLastUpdatedTime(activityEntity));
       comment.isComment(activityEntity.isComment());
+      comment.setType(activityEntity.getType());
       //
       String posterId =  activityEntity.getPosterIdentity().getId();
       comment.setUserId(posterId);
