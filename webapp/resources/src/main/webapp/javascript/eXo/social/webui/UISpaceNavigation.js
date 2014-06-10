@@ -176,4 +176,4 @@ var UISpaceNavigation = {
 };
 
 return UISpaceNavigation;
-})(jq);
+})($);
