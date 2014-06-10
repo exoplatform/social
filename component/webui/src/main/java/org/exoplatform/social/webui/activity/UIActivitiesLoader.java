@@ -224,7 +224,7 @@ public class UIActivitiesLoader extends UIContainer {
         boolean hasMore = size > length;
         setHasMore(hasMore);
         
-        return hasMore ? Arrays.asList(activities).subList(0, length) : Arrays.asList(activities) ;
+        return hasMore ? new ArrayList<ExoSocialActivity>(Arrays.asList(activities)).subList(0, length) : new ArrayList<ExoSocialActivity>(Arrays.asList(activities)) ;
       }
     }
     return null;
