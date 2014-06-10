@@ -34,8 +34,6 @@
   def labelValidateInvitation = _ctx.appRes("${uicomponentId}.label.ValidateInvitation");
   def labelDeclineInvitation = _ctx.appRes("${uicomponentId}.label.DeclineInvitation");
   def labelCancelRequest = _ctx.appRes("${uicomponentId}.label.CancelRequest");
-  def labelRevokeManager = _ctx.appRes("${uicomponentId}.label.RevokeManager");
-  def labelGrantManager = _ctx.appRes("${uicomponentId}.label.GrantManager");
   def labelRemoveMember = _ctx.appRes("${uicomponentId}.label.RemoveMember");
   def pendingUsers = uicomponent.getPendingUsers();
   def invitedUsers = uicomponent.getInvitedUsers();
@@ -201,22 +199,7 @@
 		%>
 		<tr id="existingUsersTable">
 			<td><%= uicomponent.getFullName(user) %></td>
-			<td class="center" width="15%"><!-- <% if(isLeader) { %>
-
-				<% if(uicomponent.isCurrentUser(user)) { %>
-				<a  onclick="$selfRemoveLeader" title="$labelRevokeManager"><span class="ManageMemButtonSub">$labelRevokeManager</span></a>
-				<% } else {%>
-				<a  href="$homeSpaceUrl" onclick="$removeLeader" title="$labelRevokeManager"><span
-					class="ManageMemButtonSub label">$labelRevokeManager</span></a>
-				<% } %>
-
-				<% } else { %>
-
-				<a onclick="$makeLeader" title="$labelGrantManager"><span
-					class="ManageMemButtonAdd label">$labelGrantManager</span></a>
-
-				<% } %>
-				-->
+			<td class="center" width="15%">
 				<div class="spaceRole" onclick="$toggleLeadership">
 				<% if(isLeader) { %>
 					<input type="checkbox" class="yesno" checked="checked" style="visibility: hidden;">
