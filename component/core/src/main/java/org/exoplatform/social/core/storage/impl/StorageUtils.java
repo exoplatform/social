@@ -3,6 +3,7 @@ package org.exoplatform.social.core.storage.impl;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -10,9 +11,11 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.regex.Pattern;
 
+import org.apache.commons.lang.time.DateUtils;
 import org.chromattic.api.ChromatticSession;
 import org.exoplatform.commons.chromattic.ChromatticManager;
 import org.exoplatform.commons.chromattic.Synchronization;
@@ -316,13 +319,81 @@ public class StorageUtils {
       ChromatticSession chromatticSession = AbstractStorage.lifecycleLookup().getSession();
       if (chromatticSession.getJCRSession().hasPendingChanges()) {
         chromatticSession.save();
+        //don't invoke session refresh here because it's increase Max Query number to JCR
+        //so that affect performance of Activity populate
       }
     } catch (Exception e) {
+      LOG.warn(e.getMessage());
+      LOG.debug(e.getMessage(), e);
       return false;
     }
     return true;
   }
   
+  /**
+   * Make the decision to persist JCR Storage and refresh session or not
+   * In the case when executes multi-threading environment with JCR.
+   * @return
+   */
+  public static boolean persist(boolean isRefresh) {
+    try {
+      ChromatticSession chromatticSession = AbstractStorage.lifecycleLookup().getSession();
+      if (chromatticSession.getJCRSession().hasPendingChanges()) {
+        chromatticSession.save();
+        if (isRefresh) {
+          //using refresh in the case when executes multi-threading environment with JCR.
+          //should refresh the JCR node.
+          chromatticSession.getJCRSession().refresh(true);
+        }
+        
+      }
+    } catch (Exception e) {
+      LOG.warn(e.getMessage());
+      LOG.debug(e.getMessage(), e);
+      return false;
+    }
+    return true;
+  }
+  
+  /**
+   * Returns <code>true</code> if this session holds pending (that is, unsaved) changes;
+   * otherwise returns <code>false</code>.
+   *
+   * @return
+   */
+  public static boolean refresh(boolean keepChanges) {
+    try {
+      ChromatticSession chromatticSession = AbstractStorage.lifecycleLookup().getSession();
+      chromatticSession.getJCRSession().refresh(keepChanges);
+    } catch (Exception e) {
+      return false;
+    }
+    return true;
+  }
+  /**
+   * 
+   * @param oldTime
+   * @param newTime
+   * @return
+   */
+  public static boolean isSame(long oldTime, long newTime) {
+    
+    Calendar oldCalendar = Calendar.getInstance(Locale.ENGLISH);
+    oldCalendar.setTimeInMillis(oldTime);
+    oldCalendar.set(Calendar.HOUR, 0);
+    oldCalendar.set(Calendar.MINUTE, 0);
+    oldCalendar.set(Calendar.SECOND, 0);
+    oldCalendar.set(Calendar.MILLISECOND, 0);
+    
+    Calendar newCalendar = Calendar.getInstance(Locale.ENGLISH);
+    newCalendar.setTimeInMillis(newTime);
+    newCalendar.set(Calendar.HOUR, 0);
+    newCalendar.set(Calendar.MINUTE, 0);
+    newCalendar.set(Calendar.SECOND, 0);
+    newCalendar.set(Calendar.MILLISECOND, 0);
+    
+    return DateUtils.isSameInstant(oldCalendar, newCalendar);
+  }
   /**
    * Make the decision to persist JCR Storage or not
    * @return
@@ -337,6 +408,8 @@ public class StorageUtils {
       }
       
     } catch (Exception e) {
+      LOG.warn(e.getMessage());
+      LOG.debug(e.getMessage(), e);
       return false;
     }
     return true;

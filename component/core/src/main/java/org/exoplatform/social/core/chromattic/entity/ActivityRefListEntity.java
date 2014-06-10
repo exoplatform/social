@@ -133,18 +133,6 @@ public abstract class ActivityRefListEntity {
 
   }
   
-  public ActivityRef getOrCreated(ActivityEntity entity) {
-    //migration 3.5.x => 4.x, lastUpdated of Activity is NULL, then use createdDate for replacement 
-    Long key = entity.getLastUpdated() != null ? entity.getLastUpdated() : entity.getPostedTime(); 
-    return getOrCreated(key.longValue());
-  }
-  
-  public ActivityRef getOrCreated(ActivityEntity entity, AtomicBoolean newYearMonthday) {
-    //migration 3.5.x => 4.x, lastUpdated of Activity is NULL, then use createdDate for replacement 
-    Long key = entity.getLastUpdated() != null ? entity.getLastUpdated() : entity.getPostedTime(); 
-    return getOrCreated(key.longValue(), newYearMonthday);
-  }
-  
   public ActivityRef getOrCreated(long lastUpdated) {
     Calendar calendar = Calendar.getInstance(Locale.ENGLISH);
     calendar.setTimeInMillis(lastUpdated);
@@ -168,7 +156,16 @@ public abstract class ActivityRefListEntity {
     return ref;
   }
   
-  public ActivityRef get(long lastUpdated) {
+  /**
+   *  Gets or creates an ActivityRef and provides some data 
+   *  for this one as name, lastUpdated and Activity what will be referenced
+   * @param entity ActivityEntity
+   * @return
+   */
+  public ActivityRef getOrCreated(ActivityEntity entity) {
+    //In some cases, migrated Activity from 3.5.x, ActivityRef's lastUpdated is NULL
+    //uses instead of Activity's postedTime.
+    Long lastUpdated = entity.getLastUpdated() != null ? entity.getLastUpdated() : entity.getPostedTime();
     Calendar calendar = Calendar.getInstance(Locale.ENGLISH);
     calendar.setTimeInMillis(lastUpdated);
 
@@ -179,7 +176,38 @@ public abstract class ActivityRefListEntity {
     ActivityRefDayEntity dayEntity = this.getYear(year).getMonth(month).getDay(day);
     
     //needs to check it existing or not in list
-    return dayEntity.getActivityRefs().get("" + lastUpdated);
+    ActivityRef ref = dayEntity.getActivityRefs().get(entity.getId());
+    
+    if (ref == null) {
+      ref = dayEntity.createRef();
+      //uses ActivityId as the node's name of ActivityRef
+      ref.setName(entity.getId());
+      dayEntity.getActivityRefList().add(ref);
+      ref.setLastUpdated(lastUpdated);
+      ref.setActivityEntity(entity);
+      dayEntity.inc();
+    } else {
+      ref.setLastUpdated(lastUpdated);
+    }
+    
+    return ref;
+  }
+  
+  public ActivityRef get(ActivityEntity entity) {
+    //In some cases, migrated Activity from 3.5.x, ActivityRef's lastUpdated is NULL
+    //uses instead of Activity's postedTime.
+    Long lastUpdated = entity.getLastUpdated() != null ? entity.getLastUpdated() : entity.getPostedTime();
+    Calendar calendar = Calendar.getInstance(Locale.ENGLISH);
+    calendar.setTimeInMillis(lastUpdated);
+
+    String year = String.valueOf(calendar.get(Calendar.YEAR));
+    String month = MONTH_NAME[calendar.get(Calendar.MONTH)];
+    String day = String.valueOf(calendar.get(Calendar.DAY_OF_MONTH));
+
+    ActivityRefDayEntity dayEntity = this.getYear(year).getMonth(month).getDay(day);
+    
+    //needs to check it existing or not in list
+    return dayEntity.getActivityRefs().get(entity.getId());
   }
   
   public ActivityRefDayEntity getActivityRefDay(long lastUpdated) {
@@ -193,46 +221,57 @@ public abstract class ActivityRefListEntity {
     return this.getYear(year).getMonth(month).getDay(day);
   }
   
-  public ActivityRef getOrCreated(long lastUpdated, AtomicBoolean newYearMonthDay) {
-    Calendar calendar = Calendar.getInstance(Locale.ENGLISH);
-    calendar.setTimeInMillis(lastUpdated);
+ 
+  /**
+   * Needs to update the ActivityRef to top of stream (what's hot functionally) when 
+   * adds new comment to referenced Activity.
+   * 
+   * 1. Remove old one
+   * 2. Creates new one with new position in stream.
+   * @param entity
+   * @param old
+   * @param oldLastUpdated
+   */
+  public void update(ActivityEntity entity, ActivityRef old, long oldLastUpdated) {
+    Calendar oldCalendar = Calendar.getInstance(Locale.ENGLISH);
+    oldCalendar.setTimeInMillis(oldLastUpdated);
 
-    String year = String.valueOf(calendar.get(Calendar.YEAR));
-    String month = MONTH_NAME[calendar.get(Calendar.MONTH)];
-    String day = String.valueOf(calendar.get(Calendar.DAY_OF_MONTH));
+    String oldYear = String.valueOf(oldCalendar.get(Calendar.YEAR));
+    String oldMonth = MONTH_NAME[oldCalendar.get(Calendar.MONTH)];
+    String oldDay = String.valueOf(oldCalendar.get(Calendar.DAY_OF_MONTH));
+    
+    Long lastUpdated = entity.getLastUpdated() != null ? entity.getLastUpdated() : entity.getPostedTime();
+    
+    Calendar newCalendar = Calendar.getInstance(Locale.ENGLISH);
+    newCalendar.setTimeInMillis(lastUpdated);
 
-    ActivityRefDayEntity dayEntity = this.getYear(year, newYearMonthDay).getMonth(month, newYearMonthDay).getDay(day, newYearMonthDay);
+    String newYear = String.valueOf(newCalendar.get(Calendar.YEAR));
+    String newMonth = MONTH_NAME[newCalendar.get(Calendar.MONTH)];
+    String newDay = String.valueOf(newCalendar.get(Calendar.DAY_OF_MONTH));
     
-    //needs to check it existing or not in list
-    ActivityRef ref = dayEntity.getActivityRefs().get("" + lastUpdated);
-    
-    if (ref == null) {
-      ref = dayEntity.createRef();
-      ref.setName("" + lastUpdated);
-      dayEntity.getActivityRefList().add(ref);
-      dayEntity.inc();
+    ActivityRefDayEntity oldDayEntity = this.getYear(oldYear).getMonth(oldMonth).getDay(oldDay);
+    ActivityRef oldRef = oldDayEntity.getActivityRefs().get(entity.getId());
+    //
+    if (oldRef == null) {
+      oldRef = oldDayEntity.getActivityRefs().get(old.getName());
     }
     
-    return ref;
-  }
-  
-  public ActivityRef update(long oldLastUpdated, long newLastUpdated) {
-    Calendar calendar = Calendar.getInstance(Locale.ENGLISH);
-    calendar.setTimeInMillis(oldLastUpdated);
-
-    String year = String.valueOf(calendar.get(Calendar.YEAR));
-    String month = MONTH_NAME[calendar.get(Calendar.MONTH)];
-    String day = String.valueOf(calendar.get(Calendar.DAY_OF_MONTH));
-
-    ActivityRefDayEntity dayEntity = this.getYear(year).getMonth(month).getDay(day);
-    
-    //needs to check it existing or not in list
-    ActivityRef ref = dayEntity.getActivityRefs().get("" + oldLastUpdated);
-    
-    if (ref != null) {
-      ref.setName("" + newLastUpdated);
+    if (oldRef != null) {
+      //In the case oldLastUpdated and newLastUpdated are different 
+      //that mean: 
+      // IF the new ActivityRef and old one don't have the same parent node then:
+      // 1. Removes old one
+      // 2 Creates new one.
+      // ELSE (the same parent node)
+      // just updated lastUpdated
+      if (!oldYear.equalsIgnoreCase(newYear) || !oldMonth.equalsIgnoreCase(newMonth) || !oldDay.equalsIgnoreCase(newDay)) {
+        oldDayEntity.getActivityRefs().remove(oldRef.getName());
+        getOrCreated(entity);
+      } else {
+        oldRef.setLastUpdated(lastUpdated);
+      }
     }
-    return ref;
+    
   }
   
   public Map<String, ActivityRef> refs(long lastUpdated) {
@@ -283,10 +322,6 @@ public abstract class ActivityRefListEntity {
     return isOnlyUpdate;
   }
   
-  public ActivityRef remove(ActivityEntity entity) {
-    return remove(entity.getLastUpdated());
-  }
-  
   public ActivityRef remove(long lastUpdated) {
     Calendar calendar = Calendar.getInstance(Locale.ENGLISH);
     calendar.setTimeInMillis(lastUpdated);
@@ -308,9 +343,38 @@ public abstract class ActivityRefListEntity {
     return ref;
   }
   
+  public ActivityRef remove(ActivityEntity entity) {
+    //In some cases, migrated Activity from 3.5.x, ActivityRef's lastUpdated is NULL
+    //uses instead of Activity's postedTime.
+    Long lastUpdated = entity.getLastUpdated() != null ? entity.getLastUpdated() : entity.getPostedTime();
+    Calendar calendar = Calendar.getInstance(Locale.ENGLISH);
+    calendar.setTimeInMillis(lastUpdated);
+
+    String year = String.valueOf(calendar.get(Calendar.YEAR));
+    String month = MONTH_NAME[calendar.get(Calendar.MONTH)];
+    String day = String.valueOf(calendar.get(Calendar.DAY_OF_MONTH));
+
+    ActivityRefDayEntity dayEntity = this.getYear(year).getMonth(month).getDay(day);
+    
+    //remove by ActivityId
+    ActivityRef ref = dayEntity.getActivityRefs().remove(entity.getId());
+    
+    //removes by Activity's lastUpdated time
+    if (ref == null) {
+      ref = dayEntity.getActivityRefs().remove("" + lastUpdated);
+    }
+    
+    if (ref != null) {
+      dayEntity.desc();
+      ref = null;
+    }
+    
+    return ref;
+  }
+  
   public boolean create(long newUpdated, ActivityEntity entity) {
-    ActivityRef newRef = getOrCreated(newUpdated);
-    newRef.setName("" + newUpdated);
+    ActivityRef newRef = getOrCreated(entity);
+    newRef.setName(entity.getId());
     newRef.setActivityEntity(entity);
     newRef.setLastUpdated(newUpdated);
     //

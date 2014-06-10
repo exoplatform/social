@@ -114,7 +114,7 @@ public class CachedSpaceStorageTestCase extends AbstractCoreTest {
    * @throws Exception
    * @since 1.2.8
    */
-  @MaxQueryNumber(718)
+  @MaxQueryNumber(742)
   public void testRenameSpace() throws Exception {
     Space space = new Space();
     space.setDisplayName("Hello");

@@ -33,24 +33,19 @@ public class AsyncProcessorTool {
    * @throws Exception can be thrown if waiting is interrupted
    */
   public static void process(final AsyncProcessor processor, final ProcessContext processContext) throws Exception {
-      final CountDownLatch latch = new CountDownLatch(1);
-      processor.start(processContext);
-      ProcessContext got = processor.process(processContext, new AsyncCallback() {
-          public void done(ProcessContext processContext) {
-              if (processContext.isFailed() == false) {
-                  latch.countDown();
-              }
-          }
-
-          @Override
-          public String toString() {
-              return "Done " + processor;
-          }
-      });
-      if (got.isInProgress()) {
-          latch.await();
+    final CountDownLatch latch = new CountDownLatch(1);
+    processor.process(processContext, new AsyncCallback() {
+      public void done(ProcessContext processContext) {
+        //remove condition decrease LatchCountDown value.
+        latch.countDown();
       }
-      
-      processor.end(processContext);
+
+      @Override
+      public String toString() {
+        return "Done " + processor;
+      }
+    });
+    
+    latch.await();
   }
 }

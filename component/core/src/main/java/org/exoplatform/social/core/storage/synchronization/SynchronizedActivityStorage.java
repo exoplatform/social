@@ -95,6 +95,26 @@ public class SynchronizedActivityStorage extends ActivityStorageImpl {
     }
 
   }
+
+  @Override
+  public void saveComment(ExoSocialActivity activity, ExoSocialActivity comment) throws ActivityStorageException {
+    boolean created = startSynchronization();
+    try {
+      super.saveComment(activity, comment);
+    } finally {
+      stopSynchronization(created);
+    }
+  }
+
+  @Override
+  public void saveComment(ExoSocialActivity activity, ExoSocialActivity comment, boolean hasUpdatedActivity) throws ActivityStorageException {
+    boolean created = startSynchronization();
+    try {
+      super.saveComment(activity, comment, hasUpdatedActivity);
+    } finally {
+      stopSynchronization(created);
+    }
+  }
   
   @Override
   public List<ExoSocialActivity> getUserActivitiesForUpgrade(Identity owner, long offset, long limit) throws ActivityStorageException {
@@ -107,39 +127,7 @@ public class SynchronizedActivityStorage extends ActivityStorageImpl {
     }
     
   }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public void saveComment(final ExoSocialActivity activity, final ExoSocialActivity comment) throws ActivityStorageException {
-
-    boolean created = startSynchronization();
-    try {
-      super.saveComment(activity, comment);
-    }
-    finally {
-      stopSynchronization(created);
-    }
-
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public ExoSocialActivity saveActivity(final Identity owner, final ExoSocialActivity activity) throws ActivityStorageException {
-
-    boolean created = startSynchronization();
-    try {
-      return super.saveActivity(owner, activity);
-    }
-    finally {
-      stopSynchronization(created);
-    }
-
-  }
-
+ 
   /**
    * {@inheritDoc}
    */
@@ -1328,4 +1316,5 @@ public class SynchronizedActivityStorage extends ActivityStorageImpl {
       stopSynchronization(created);
     }
   }
+ 
 }

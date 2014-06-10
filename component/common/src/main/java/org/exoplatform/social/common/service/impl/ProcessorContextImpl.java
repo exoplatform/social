@@ -201,7 +201,7 @@ public class ProcessorContextImpl implements ProcessContext {
 
   @Override
   public boolean isInProgress() {
-    return false;
+    return isDone;
   }
 
   @Override

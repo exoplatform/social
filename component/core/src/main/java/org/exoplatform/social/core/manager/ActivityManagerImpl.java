@@ -143,6 +143,12 @@ public class ActivityManagerImpl implements ActivityManager {
           ActivityStorageException {
     activityStorage.saveComment(existingActivity, newComment);
   }
+  
+  @Override
+  public void saveComment(ExoSocialActivity existingActivity, ExoSocialActivity newComment, boolean hasUpdatedActivity) {
+    activityStorage.saveComment(existingActivity, newComment, hasUpdatedActivity);
+
+  }
 
   /**
    * {@inheritDoc}

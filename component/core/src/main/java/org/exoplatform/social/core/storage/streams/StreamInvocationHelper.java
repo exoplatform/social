@@ -24,6 +24,7 @@ import org.exoplatform.social.common.service.ProcessContext;
 import org.exoplatform.social.common.service.SocialServiceContext;
 import org.exoplatform.social.common.service.impl.SocialServiceContextImpl;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
+import org.exoplatform.social.core.chromattic.entity.ActivityEntity;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.storage.impl.StorageUtils;
 
@@ -49,18 +50,15 @@ public class StreamInvocationHelper {
     
     try {
       if (ctx.isAsync()) {
-        beforeAsync();
-        //
+        processCtx.getTraceElement().start();
         ctx.getServiceExecutor().async(StreamProcessorFactory.saveStream(), processCtx);
+        processCtx.getTraceElement().end();
       } else {
-      ctx.getServiceExecutor().execute(StreamProcessorFactory.saveStream(), processCtx);
+        ctx.getServiceExecutor().execute(StreamProcessorFactory.saveStream(), processCtx);
       }
       
     } finally {
-      if (ctx.isTraced()) {
-        LOG.debug(processCtx.getTraceLog());
-      }
-      
+      LOG.debug(processCtx.getTraceLog());
     }
     
     return processCtx;
@@ -74,14 +72,13 @@ public class StreamInvocationHelper {
    * @param mentioners NULL is empty mentioner.
    * @return
    */
-  public static ProcessContext savePoster(Identity owner, ExoSocialActivity activity) {
+  public static ProcessContext savePoster(Identity owner, ActivityEntity entity) {
     //
     SocialServiceContext ctx = SocialServiceContextImpl.getInstance();
     StreamProcessContext processCtx = StreamProcessContext.getIntance(StreamProcessContext.NEW_ACTIVITY_PROCESS, ctx);
-    processCtx.identity(owner).activity(activity);
+    processCtx.identity(owner).activityEntity(entity);
     
     try {
-      //beforeAsync(); Why do we need to save here? Can make the problem with ADD_PROPERTY
       ctx.getServiceExecutor().execute(StreamProcessorFactory.savePoster(), processCtx);
     } finally {
       LOG.debug(processCtx.getTraceLog());
@@ -97,33 +94,31 @@ public class StreamInvocationHelper {
     return false;
   }
   
-  public static ProcessContext update(ExoSocialActivity activity, String[] mentioners, long oldUpdated) {
+  public static ProcessContext update(ExoSocialActivity activity, long oldUpdated) {
     //
     StreamProcessContext processCtx = StreamProcessContext.getIntance(StreamProcessContext.UPDATE_ACTIVITY_PROCESS, ctx);
-    processCtx.activity(activity).mentioners(mentioners).oldLastUpdated(oldUpdated);
+    processCtx.activity(activity).oldLastUpdated(oldUpdated);
     
     try {
       if (ctx.isAsync()) {
-        beforeAsync();
+        processCtx.getTraceElement().start();
+        //beforeAsync();
         ctx.getServiceExecutor().async(StreamProcessorFactory.updateStream(), processCtx);
+        processCtx.getTraceElement().end();
       } else {
         ctx.getServiceExecutor().execute(StreamProcessorFactory.updateStream(), processCtx);
       }
-      
     } finally {
-      if (ctx.isTraced()) {
-        LOG.debug(processCtx.getTraceLog());
-      }
-      
+      LOG.debug(processCtx.getTraceLog());
     }
     
     return processCtx;
   }
   
-  public static ProcessContext updateCommenter(Identity commenter, ExoSocialActivity activity, String[] commenters, long oldUpdated) {
+  public static ProcessContext updateCommenter(Identity commenter, ActivityEntity entity, String[] commenters, String[] mentioners, long oldUpdated) {
     //
     StreamProcessContext processCtx = StreamProcessContext.getIntance(StreamProcessContext.UPDATE_ACTIVITY_COMMENTER_PROCESS, ctx);
-    processCtx.identity(commenter).activity(activity).commenters(commenters).oldLastUpdated(oldUpdated);
+    processCtx.identity(commenter).activityEntity(entity).commenters(commenters).mentioners(mentioners).oldLastUpdated(oldUpdated);
     
     try {
       //beforeAsync(); this point can make the problem with ADD_PROPERTY exception
@@ -363,8 +358,10 @@ public class StreamInvocationHelper {
     
     try {
       if(ctx.isAsync()) {
+        processCtx.getTraceElement().start();
         beforeAsync();
         ctx.getServiceExecutor().async(StreamProcessorFactory.createSpaceActivityRef(), processCtx);
+        processCtx.getTraceElement().end();
       } else {
         //
         ctx.getServiceExecutor().execute(StreamProcessorFactory.createSpaceActivityRef(), processCtx);
@@ -384,7 +381,9 @@ public class StreamInvocationHelper {
     processCtx.identity(owner);
     
     try {
-        ctx.getServiceExecutor().async(StreamProcessorFactory.loadFeed(), processCtx);
+      processCtx.getTraceElement().start();
+      ctx.getServiceExecutor().async(StreamProcessorFactory.loadFeed(), processCtx);
+      processCtx.getTraceElement().end();
     } finally {
       LOG.debug(processCtx.getTraceLog());
     }

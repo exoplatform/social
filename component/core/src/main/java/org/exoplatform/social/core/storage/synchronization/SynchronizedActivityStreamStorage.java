@@ -43,7 +43,6 @@ public class SynchronizedActivityStreamStorage extends ActivityStreamStorageImpl
     }
   }
   
-  
   @Override
   public void unLike(Identity removedLike, ExoSocialActivity activity) {
     
@@ -137,5 +136,27 @@ public class SynchronizedActivityStreamStorage extends ActivityStreamStorageImpl
     }
   }
   
+  @Override
+  public void update(ProcessContext ctx) {
+    boolean created = startSynchronization();
+    try {
+      super.update(ctx);
+    }
+    finally {
+      stopSynchronization(created);
+    }
+    
+  }
+  
+  @Override
+  public void updateCommenter(ProcessContext ctx) {
+    boolean created = startSynchronization();
+    try {
+      super.updateCommenter(ctx);
+    }
+    finally {
+      stopSynchronization(created);
+    }
+  }
 
 }
