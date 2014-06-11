@@ -735,8 +735,12 @@
     function triggerOninputMention(before, after) {
       var val = '';
       var cr = getCaretPosition();
-      if(cr  > 0) {
-        val = currentSelection.elm.textContent.substr(0, currentSelection.offset);
+      if(cr  > 0 && !currentSelection && !currentSelection.elm) {
+        var textContent = currentSelection.elm.textContent;
+        if (textContent == undefined) { // < IE9
+          textContent = currentSelection.elm.innerText;  
+        }
+        val = textContent.substr(0, currentSelection.offset); 
       }
       if(val.length <= 0) {
         var indexChanged = utils.getCursorIndexOfText(before, after);
