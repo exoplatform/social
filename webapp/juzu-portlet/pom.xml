@@ -4,10 +4,10 @@
   <parent>
     <artifactId>social-webapp</artifactId>
     <groupId>org.exoplatform.social</groupId>
-    <version>4.1.0-SNAPSHOT</version>
+    <version>4.1-M2</version>
   </parent>
   <artifactId>social-webapp-juzu-portlet</artifactId>
-  <version>4.1.0-SNAPSHOT</version>
+  <version>4.1-M2</version>
   <packaging>jar</packaging>
   <name>eXo Social Juzu Portlet</name>
   <dependencies>
