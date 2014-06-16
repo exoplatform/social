@@ -36,7 +36,7 @@ import org.exoplatform.webui.form.UIFormRadioBoxInput;
 
 @ComponentConfig(
     lifecycle = UIFormLifecycle.class,
-    template = "classpath:groovy/social/webui/space/UISpacePermission.gtmpl",
+    template = "war:/groovy/social/webui/space/UISpacePermission.gtmpl",
     events = {
         @EventConfig(listeners = UISpacePermission.SaveActionListener.class)
       }

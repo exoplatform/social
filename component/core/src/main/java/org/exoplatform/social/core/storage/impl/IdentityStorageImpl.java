@@ -460,6 +460,9 @@ public class IdentityStorageImpl extends AbstractStorage implements IdentityStor
     for(SpaceRef ref : refType.refsOf(identity).getRefs().values()) {
       Space space = getSpaceStorage().getSpaceById(ref.getSpaceRef().getId());
       String[] ids = refType.idsOf(space);
+      if (ids == null || ids.length == 0) {
+        continue;
+      }
       List<String> idList = new ArrayList<String>(Arrays.asList(ids));
       idList.remove(identity.getRemoteId());
       refType.setIds(space, idList.toArray(new String[]{}));
@@ -1376,7 +1379,6 @@ public class IdentityStorageImpl extends AbstractStorage implements IdentityStor
       }
       profileEntity.setActivityProfile(activityPEntity);
       type.setActivityId(activityPEntity, activityId);
-      getSession().save();
     } catch (NodeNotFoundException e) {
       LOG.debug(e.getMessage(), e);
     }

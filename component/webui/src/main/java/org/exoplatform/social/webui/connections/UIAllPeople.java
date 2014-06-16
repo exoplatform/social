@@ -49,7 +49,7 @@ import org.exoplatform.webui.form.UIFormStringInput;
  * @since 1.2.2
  */
 @ComponentConfig(
-  template = "classpath:groovy/social/webui/connections/UIAllPeople.gtmpl",
+  template = "war:/groovy/social/webui/connections/UIAllPeople.gtmpl",
   events = {
     @EventConfig(listeners = UIAllPeople.ConnectActionListener.class),
     @EventConfig(listeners = UIAllPeople.ConfirmActionListener.class),
@@ -96,18 +96,9 @@ public class UIAllPeople extends UIContainer {
   private List<Identity> peopleList;
   private ListAccess<Identity> peopleListAccess;
   private int peopleNum;
-  private boolean hasPeopleTab;
   String selectedChar = null;
   private Identity lastOwner = null;
   
-  public boolean isHasPeopleTab() {
-    return hasPeopleTab;
-  }
-
-  public void setHasPeopleTab(boolean hasPeopleTab) {
-    this.hasPeopleTab = hasPeopleTab;
-  }
-
   /**
    * Gets selected character when search by alphabet.
    *
@@ -132,8 +123,8 @@ public class UIAllPeople extends UIContainer {
    * @throws Exception
    */
   public UIAllPeople() throws Exception {
+    addChild(UIUpdateRelationship.class, null, null);
     uiProfileUserSearch = addChild(UIProfileUserSearch.class, null, null);
-    setHasPeopleTab(true);
     uiProfileUserSearch.setHasConnectionLink(false);
     setSelectedChar(ALL_FILTER);
     init();
@@ -347,9 +338,12 @@ public class UIAllPeople extends UIContainer {
         return;
       }
       
-      Utils.getRelationshipManager().inviteToConnect(invitingIdentity, invitedIdentity);
+      relationship = Utils.getRelationshipManager().inviteToConnect(invitingIdentity, invitedIdentity);
       Utils.clearCacheOnUserPopup();
-      event.getRequestContext().addUIComponentToUpdateByAjax(uiAllPeople);
+      //
+      UIUpdateRelationship updateUserRelationship = uiAllPeople.getChild(UIUpdateRelationship.class);
+      updateUserRelationship.setIdentity(invitedIdentity).setRelationship(relationship);
+      event.getRequestContext().addUIComponentToUpdateByAjax(updateUserRelationship);
     }
   }
 
@@ -376,7 +370,11 @@ public class UIAllPeople extends UIContainer {
       
       Utils.getRelationshipManager().confirm(invitedIdentity, invitingIdentity);
       Utils.clearCacheOnUserPopup();
-      event.getRequestContext().addUIComponentToUpdateByAjax(uiAllPeople);
+      //
+      relationship = Utils.getRelationshipManager().get(invitingIdentity, invitedIdentity);
+      UIUpdateRelationship updateUserRelationship = uiAllPeople.getChild(UIUpdateRelationship.class);
+      updateUserRelationship.setIdentity(invitedIdentity).setRelationship(relationship);
+      event.getRequestContext().addUIComponentToUpdateByAjax(updateUserRelationship);
     }
   }
 
@@ -407,7 +405,9 @@ public class UIAllPeople extends UIContainer {
         Utils.getRelationshipManager().deny(inviIdentityIdentity, invitingIdentity);
       }
       Utils.clearCacheOnUserPopup();
-      event.getRequestContext().addUIComponentToUpdateByAjax(uiAllPeople);
+      UIUpdateRelationship updateUserRelationship = uiAllPeople.getChild(UIUpdateRelationship.class);
+      updateUserRelationship.setIdentity(inviIdentityIdentity).setRelationship(null);
+      event.getRequestContext().addUIComponentToUpdateByAjax(updateUserRelationship);
     }
   }
 

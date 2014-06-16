@@ -27,6 +27,7 @@ import org.exoplatform.commons.api.notification.service.setting.PluginContainer;
 import org.exoplatform.commons.api.notification.service.setting.PluginSettingService;
 import org.exoplatform.commons.api.settings.ExoFeatureService;
 import org.exoplatform.commons.testing.BaseExoTestCase;
+import org.exoplatform.commons.utils.CommonsUtils;
 import org.exoplatform.component.test.ConfigurationUnit;
 import org.exoplatform.component.test.ConfiguredBy;
 import org.exoplatform.component.test.ContainerScope;
@@ -79,6 +80,7 @@ public abstract class AbstractCoreTest extends BaseExoTestCase {
     notificationService = getService(MockNotificationService.class);
     pluginSettingService = getService(PluginSettingService.class);
     exoFeatureService = getService(ExoFeatureService.class);
+    System.setProperty(CommonsUtils.CONFIGURED_DOMAIN_URL_KEY, "http://exoplatform.com");
   }
 
   @Override

@@ -29,6 +29,7 @@ import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.model.AvatarAttachment;
 import org.exoplatform.social.core.service.LinkProvider;
 import org.exoplatform.social.core.space.SpaceFilter;
+import org.exoplatform.social.core.space.SpaceListAccess;
 import org.exoplatform.social.core.space.SpaceUtils;
 import org.exoplatform.social.core.space.impl.DefaultSpaceApplicationHandler;
 import org.exoplatform.social.core.space.model.Space;
@@ -2355,6 +2356,26 @@ public class SpaceServiceTest extends AbstractCoreTest {
     assertFalse("ArrayUtils.contains(savedSpace.getInvitedUsers(), newInvitedUser.getRemoteId()) must return false",
                 ArrayUtils.contains(savedSpace.getInvitedUsers(), newInvitedUser.getRemoteId()));
   }
+  
+  public void testGetVisibleSpacesWithCondition() throws Exception {
+    Space sp1 = this.createSpace("space test", "demo");
+    Space sp2 = this.createSpace("space 11", "demo");
+    tearDownSpaceList.add(sp1);
+    tearDownSpaceList.add(sp2);
+    
+    SpaceListAccess list = spaceService.getVisibleSpacesWithListAccess("demo", new SpaceFilter("space test"));
+    assertEquals(1, list.getSize());
+    assertEquals(1, list.load(0, 10).length);
+    list = spaceService.getVisibleSpacesWithListAccess("demo", new SpaceFilter("space 11"));
+    assertEquals(1, list.getSize());
+    assertEquals(1, list.load(0, 10).length);
+    list = spaceService.getVisibleSpacesWithListAccess("demo", new SpaceFilter("space_11"));
+    assertEquals(1, list.getSize());
+    assertEquals(1, list.load(0, 10).length);
+    list = spaceService.getVisibleSpacesWithListAccess("demo", new SpaceFilter("space"));
+    assertEquals(2, list.getSize());
+    assertEquals(2, list.load(0, 10).length);
+  }
 
   /**
    * Test {@link SpaceService#acceptInvitation(Space, String)}
@@ -2769,6 +2790,25 @@ public class SpaceServiceTest extends AbstractCoreTest {
 
     spaceService.saveSpace(space1, true);
     return space1;
+  }
+  
+  private Space createSpace(String spaceName, String creator) throws Exception {
+    Space space = new Space();
+    space.setDisplayName(spaceName);
+    space.setPrettyName(spaceName);
+    space.setGroupId("/spaces/" + space.getPrettyName());
+    space.setRegistration(Space.OPEN);
+    space.setDescription("description of space" + spaceName);
+    space.setType(DefaultSpaceApplicationHandler.NAME);
+    space.setVisibility(Space.PRIVATE);
+    space.setRegistration(Space.OPEN);
+    space.setPriority(Space.INTERMEDIATE_PRIORITY);
+    String[] managers = new String[] {creator};
+    String[] members = new String[] {creator};
+    space.setManagers(managers);
+    space.setMembers(members);
+    spaceService.saveSpace(space, true);
+    return space;
   }
 
   /**

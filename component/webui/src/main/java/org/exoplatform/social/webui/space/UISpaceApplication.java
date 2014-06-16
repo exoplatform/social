@@ -49,7 +49,7 @@ import org.exoplatform.webui.form.UIForm;
 
 @ComponentConfig(
   lifecycle = UIFormLifecycle.class,
-  template =  "classpath:groovy/social/webui/space/UISpaceApplication.gtmpl",
+  template =  "war:/groovy/social/webui/space/UISpaceApplication.gtmpl",
   events = {
     @EventConfig(listeners = UISpaceApplication.AddApplicationActionListener.class),
     @EventConfig(listeners = UISpaceApplication.RemoveApplicationActionListener.class),
@@ -166,6 +166,7 @@ public class UISpaceApplication extends UIForm {
     for (int index = 0; index < listApp.length; index++) {
       for (int idx = 0; idx < installedAppList.size(); idx++) {
         application = installedAppList.get(idx);
+        if (application == null) continue;
         String temporalSpaceName = application.getApplicationName();
 
         appParts = listApp[index].split(":");

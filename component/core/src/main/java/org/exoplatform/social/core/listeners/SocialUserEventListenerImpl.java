@@ -16,6 +16,7 @@
  */
 package org.exoplatform.social.core.listeners;
 
+import org.apache.commons.lang.StringUtils;
 import org.exoplatform.container.ExoContainer;
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.PortalContainer;
@@ -29,7 +30,6 @@ import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.storage.api.IdentityStorage;
-import org.exoplatform.social.core.storage.impl.StorageUtils;
 
 /**
  * Listens to user updating events.
@@ -108,7 +108,11 @@ public class SocialUserEventListenerImpl extends UserEventListener {
           hasUpdated = true;
         }
         
-        if ((uDisplayName != null) && (!uDisplayName.equals(pFullName))) {
+        if (uDisplayName == null || StringUtils.isEmpty(uDisplayName)) {
+          uDisplayName = uFirstName + " " + uLastName;
+        } 
+        
+        if(!uDisplayName.equals(pFullName)) {
           profile.setProperty(Profile.FULL_NAME, uDisplayName);
           hasUpdated = true;
         }
@@ -120,8 +124,6 @@ public class SocialUserEventListenerImpl extends UserEventListener {
         
       }
       
-      
-  
       if (hasUpdated) {
         idm.updateProfile(profile);
       }

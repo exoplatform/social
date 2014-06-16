@@ -43,7 +43,7 @@ import org.exoplatform.webui.event.EventListener;
 import org.exoplatform.webui.form.UIFormStringInput;
 
 @ComponentConfig(
-  template =  "classpath:groovy/social/webui/connections/UIPendingRelation.gtmpl",
+  template =  "war:/groovy/social/webui/connections/UIPendingRelation.gtmpl",
   events = {
     @EventConfig(listeners = UIPendingRelation.IgnoreActionListener.class),
     @EventConfig(listeners = UIPendingRelation.SearchActionListener.class),

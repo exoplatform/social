@@ -49,7 +49,7 @@ import org.exoplatform.webui.form.UIFormStringInput;
  * @since 1.2.2
  */
 @ComponentConfig(
-  template = "classpath:groovy/social/webui/space/UIManageAllSpaces.gtmpl",
+  template = "war:/groovy/social/webui/space/UIManageAllSpaces.gtmpl",
   events = {
     @EventConfig(listeners = UIManageAllSpaces.RequestToJoinActionListener.class),
     @EventConfig(listeners = UIManageAllSpaces.CancelInvitationActionListener.class),

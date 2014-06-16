@@ -140,7 +140,7 @@ public class InjectorTestCase extends AbstractKernelTest {
     performMembershipTest(null, null);
   }
   
-  public void testPrefixSpaceMember() throws Exception {
+  public void TestPrefixSpaceMember() throws Exception {
     performMembershipTest("foo", "bar");
   }
   

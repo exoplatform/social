@@ -33,6 +33,7 @@ import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
+import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
 import org.exoplatform.social.core.manager.ActivityManager;
 import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.manager.RelationshipManager;
@@ -44,6 +45,7 @@ import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
 import org.exoplatform.webui.utils.TimeConvertUtils;
 
+import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
 import javax.ws.rs.core.Response.Status;
@@ -93,7 +95,6 @@ public class PeopleRestService implements ResourceContainer{
   private static final long SUGGEST_LIMIT = 20;
   
   /** Number of default limit activities. */
-  private static final int DEFAULT_LIMIT = 20;
   private static final String DEFAULT_ACTIVITY = "DEFAULT_ACTIVITY";
   private static final String LINK_ACTIVITY = "LINK_ACTIVITY";
   private static final String DOC_ACTIVITY = "DOC_ACTIVITY";
@@ -103,11 +104,6 @@ public class PeopleRestService implements ResourceContainer{
   private ActivityManager activityManager;
   private RelationshipManager relationshipManager;
   private SpaceService spaceService;
-  private static final int MAX_CHAR = 100;
-  private static final String SPACE_CHAR = " ";
-  private static final String THREE_DOTS = "...";
-    private static final int MAX_DOC_CHAR = 25;
-    private static Log log = ExoLogger.getLogger(PeopleRestService.class);
 
   public PeopleRestService() {
   }
@@ -126,6 +122,7 @@ public class PeopleRestService implements ResourceContainer{
    * @LevelAPI Platform
    * @anchor PeopleRestService.suggestUsernames
    */
+  @RolesAllowed("users")
   @GET
   @Path("suggest.{format}")
   public Response suggestUsernames(@Context UriInfo uriInfo,
@@ -184,6 +181,7 @@ public class PeopleRestService implements ResourceContainer{
   @GET
   @Path("getprofile/data.json")
   public Response suggestUsernames(@Context UriInfo uriInfo,
+                                   @Context SecurityContext securityContext,
                     @QueryParam("search") String query) throws Exception {
     MediaType mediaType = Util.getMediaType("json", new String[]{"json"});
     List<Identity> excludedIdentityList = new ArrayList<Identity>();
@@ -199,8 +197,15 @@ public class PeopleRestService implements ResourceContainer{
     
     List<UserInfo> userInfos = new ArrayList<PeopleRestService.UserInfo>(identities.size());
     UserInfo userInfo;
+    String userType = ConversationState.getCurrent().getIdentity().getUserId();
+    boolean isAnonymous = IdentityConstants.ANONIM.equals(userType) 
+      || securityContext.getUserPrincipal() == null;
+    
     for (Identity identity : identities) {
-      userInfo = new UserInfo(identity.getRemoteId());
+      userInfo = new UserInfo();
+      if (!isAnonymous) {
+        userInfo.setId(identity.getRemoteId());
+      }
       userInfo.setName(identity.getProfile().getFullName());
       userInfo.setAvatar(identity.getProfile().getAvatarUrl());
       userInfo.setType("contact"); //hardcode for test
@@ -229,6 +234,7 @@ public class PeopleRestService implements ResourceContainer{
   @GET
   @Path("{portalName}/getConnections.{format}")
   public Response searchConnection(@Context UriInfo uriInfo,
+                                   @Context SecurityContext securityContext,
                     @PathParam("portalName") String portalName,
                     @QueryParam("nameToSearch") String nameToSearch,
                     @QueryParam("offset") int offset,
@@ -264,7 +270,16 @@ public class PeopleRestService implements ResourceContainer{
       identities = relationshipManager.getConnectionsByFilter(currentUser, filter).load(offset, limit);
     }
     
+    String userType = ConversationState.getCurrent().getIdentity().getUserId();
+    boolean isAnonymous = IdentityConstants.ANONIM.equals(userType) 
+      || securityContext.getUserPrincipal() == null;
+    
     for(Identity identity : identities){
+      if (isAnonymous) {
+        entitys.add(new ConnectionInfoRestOut(identity));
+        continue;
+      }
+      
       HashMap<String, Object> temp = getIdentityInfo(identity, lang);
       if(temp != null){
         entitys.add(temp);
@@ -272,70 +287,6 @@ public class PeopleRestService implements ResourceContainer{
     }
     
     return Util.getResponse(entitys, uriInfo, mediaType, Response.Status.OK);
-  }
-  
-  /**
-   * Gets the detailed information of a user on the pop-up, based on his/her username.
-   * 
-   * @param uriInfo The requested URI information.
-   * @param format The format of the returned result, for example, JSON, or XML.
-   * @param portalName The name of the current portal container.
-   * @param currentUserName The current user name who sends request.
-   * @param userId The specific user Id.
-   * @param updatedType The type of connection action shown on the pop-up.
-   * @return The detailed information of a user.
-   * @throws Exception
-   * @LevelAPI Provisional
-   * @deprecated Will be removed in eXo Platform 4.0.x
-   * @anchor PeopleRestService.getPeopleInfo
-   */
-  @GET
-  @Path("{portalName}/{currentUserName}/getPeopleInfo/{userId}.{format}")
-  public Response getPeopleInfo(@Context UriInfo uriInfo,
-                                @PathParam("portalName") String portalName,
-                                @PathParam("currentUserName") String currentUserName,
-                                @PathParam("userId") String userId,
-                                @PathParam("format") String format,
-                                @QueryParam("updatedType") String updatedType) throws Exception {
-    PeopleInfo peopleInfo = new PeopleInfo();
-    MediaType mediaType = Util.getMediaType(format);
-    Identity identity = getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME,
-                                                                   userId, false);
-
-    Identity currentIdentity = getIdentityManager().
-            getOrCreateIdentity(OrganizationIdentityProvider.NAME, currentUserName, false);
-    
-    if (updatedType != null) {
-      Relationship rel = getRelationshipManager().get(currentIdentity, identity);
-      if (ACCEPT_ACTION.equals(updatedType)) { // Accept or Deny
-        getRelationshipManager().confirm(rel);
-      } else if (DENY_ACTION.equals(updatedType)) {
-        getRelationshipManager().deny(rel);
-      } else if (REVOKE_ACTION.equals(updatedType)) {
-        getRelationshipManager().deny(rel);
-      } else if (INVITE_ACTION.equals(updatedType)) {
-        getRelationshipManager().invite(currentIdentity, identity);
-      } else if (REMOVE_ACTION.equals(updatedType)) {
-        getRelationshipManager().remove(rel);
-      }
-    }
-    
-    Relationship relationship = getRelationshipManager().get(currentIdentity, identity);
-    
-    peopleInfo.setRelationshipType(getRelationshipType(relationship, currentIdentity));
-    
-    RealtimeListAccess<ExoSocialActivity> activitiesListAccess = getActivityManager().getActivitiesWithListAccess(identity);
-    
-    List<ExoSocialActivity> activities = activitiesListAccess.loadAsList(0, DEFAULT_LIMIT);
-    if (activities.size() > 0) {
-      peopleInfo.setActivityTitle(activities.get(0).getTitle());
-    } else { // Default title of activity
-      peopleInfo.setActivityTitle("No updates have been posted yet.");
-    }
-    
-    peopleInfo.setAvatarURL((String) identity.getProfile().getProperty(Profile.AVATAR_URL));
-    
-    return Util.getResponse(peopleInfo, uriInfo, mediaType, Response.Status.OK);
   }
   
   /**
@@ -381,155 +332,72 @@ public class PeopleRestService implements ResourceContainer{
     PeopleInfo peopleInfo = new PeopleInfo(NO_INFO);
     Identity identity = getIdentityManager()
         .getOrCreateIdentity(OrganizationIdentityProvider.NAME, userId, false);
+    Identity currentIdentity = getIdentityManager()
+        .getOrCreateIdentity(OrganizationIdentityProvider.NAME, currentUserName, false);
     if (identity != null) {
-      peopleInfo.setRelationshipType(NO_ACTION);
-      if(currentUserName != null && !userId.equals(currentUserName)){
-        Identity currentIdentity = getIdentityManager()
-            .getOrCreateIdentity(OrganizationIdentityProvider.NAME, currentUserName, false);
-
-        if(currentIdentity != null) {
-          // Process action
-          if (updatedType != null) {
-            if (currentIdentity != null) {
-              if (ACCEPT_ACTION.equals(updatedType)) { // Accept or Deny
-                getRelationshipManager().confirm(currentIdentity, identity);
-              } else if (DENY_ACTION.equals(updatedType)) {
-                getRelationshipManager().deny(currentIdentity, identity);
-              } else if (REVOKE_ACTION.equals(updatedType)) {
-                getRelationshipManager().deny(currentIdentity, identity);
-              } else if (INVITE_ACTION.equals(updatedType)) {
-                getRelationshipManager().inviteToConnect(currentIdentity, identity);
-              } else if (REMOVE_ACTION.equals(updatedType)) {
-                getRelationshipManager().delete(getRelationshipManager().get(currentIdentity, identity));
-              }
-            }
-          }
-
-          // Set relationship type
-          Relationship relationship = getRelationshipManager().get(currentIdentity, identity);
-          peopleInfo.setRelationshipType(getRelationshipType(relationship, currentIdentity));
-        }
-      }
-
-      RealtimeListAccess<ExoSocialActivity> activitiesListAccess = getActivityManager()
-          .getActivitiesByPoster(identity, DEFAULT_ACTIVITY, LINK_ACTIVITY, DOC_ACTIVITY);
-      
-      List<ExoSocialActivity> activities = activitiesListAccess.loadAsList(0, 1);
-      if (activities.size() > 0) {
-        peopleInfo.setActivityTitle(StringEscapeUtils.unescapeHtml(activities.get(0).getTitle()));
-      }
-      
+      // public information
+      peopleInfo.setFullName(identity.getProfile().getFullName());
+      peopleInfo.setPosition(StringEscapeUtils.unescapeHtml(identity.getProfile().getPosition()));
       Profile userProfile = identity.getProfile();
-      
       String avatarURL = userProfile.getAvatarUrl();
       if (avatarURL == null) {
         avatarURL = LinkProvider.PROFILE_DEFAULT_AVATAR_URL;
       }
-      
       peopleInfo.setAvatarURL(avatarURL);
-
-      peopleInfo.setProfileUrl(LinkProvider.getUserActivityUri(identity.getRemoteId()));
       
-      peopleInfo.setFullName(identity.getProfile().getFullName());
-      peopleInfo.setPosition(StringEscapeUtils.unescapeHtml(identity.getProfile().getPosition()));
+      
+      String userType = ConversationState.getCurrent().getIdentity().getUserId();
+      boolean isAnonymous = IdentityConstants.ANONIM.equals(userType) 
+          || securityContext.getUserPrincipal() == null;
+      
+      if (!isAnonymous) { // private information
+        peopleInfo.setProfileUrl(LinkProvider.getUserActivityUri(identity.getRemoteId()));
+        
+        peopleInfo.setRelationshipType(NO_ACTION);
+        
+        String relationshipType = null;
+        
+        if(currentUserName != null && !userId.equals(currentUserName)) {
+          // Set relationship type
+          Relationship relationship = getRelationshipManager().get(currentIdentity, identity);
+          
+          if(currentIdentity != null) {
+            // Process action
+            if (updatedType != null) {
+              if (currentIdentity != null) {
+                if (ACCEPT_ACTION.equals(updatedType)) { // Accept or Deny
+                  getRelationshipManager().confirm(currentIdentity, identity);
+                } else if (DENY_ACTION.equals(updatedType)) {
+                  getRelationshipManager().deny(currentIdentity, identity);
+                } else if (REVOKE_ACTION.equals(updatedType)) {
+                  getRelationshipManager().deny(currentIdentity, identity);
+                } else if (INVITE_ACTION.equals(updatedType)) {
+                  getRelationshipManager().inviteToConnect(currentIdentity, identity);
+                } else if (REMOVE_ACTION.equals(updatedType)) {
+                  getRelationshipManager().delete(getRelationshipManager().get(currentIdentity, identity));
+                }
+              }
+            }
+  
+            relationshipType = getRelationshipType(relationship, currentIdentity);
+            peopleInfo.setRelationshipType(relationshipType);
+          }
+        }
+        
+        if (CONFIRMED_STATUS.equals(relationshipType)) {
+        
+          // exposed if relationship type is confirmed (has connection with current logged in user)
+          String activityTitle = getLatestActivityTitle(identity, currentIdentity);
+          if (activityTitle != null) {
+            peopleInfo.setActivityTitle(StringEscapeUtils.unescapeHtml(activityTitle));
+          }
+        }
+      }
     }
+    
     return Util.getResponse(peopleInfo, uriInfo, mediaType, Response.Status.OK);
   }
 
-
-    private String substringActivity( ExoSocialActivity act) {
-        String activity = "";
-        try{
-
-
-
-            if (act.getType() != null ) {
-
-                activity = act.getTitle().replaceAll("<br/>", " ").replaceAll("<br />", " ").replaceAll("<br>", " ").replaceAll("</br>", " ").trim();
-                activity = StringEscapeUtils.unescapeHtml(activity);
-                activity = activity.replaceAll("\"", "'");
-
-                if (activity.length() > MAX_CHAR && act.getType().equals(DEFAULT_ACTIVITY)) {
-                    String maxBody = activity.substring(0, MAX_CHAR);
-                    int tagEnterLocation = maxBody.indexOf('<', 0);
-                    if (tagEnterLocation != -1) {
-                        if (tagEnterLocation == 0) {
-                            if (maxBody.indexOf("<", tagEnterLocation) == 0) {
-                                int endtag = activity.indexOf(">", tagEnterLocation);
-                                int tagend = activity.indexOf("<", endtag);
-                                int tagend2 = activity.indexOf(">", tagend);
-                                String linktitle = activity.substring(endtag + 1, tagend);
-                                if (linktitle.length() > MAX_CHAR) {
-                                    linktitle = linktitle.substring(0, MAX_CHAR);
-                                    activity = activity.substring(0, endtag + 1) + linktitle + activity.substring(tagend, tagend2 + 1);
-                                } else {
-                                    activity = activity.substring(0, tagend2 + 1) + SPACE_CHAR + activity.substring(tagend2 + 2, MAX_CHAR - linktitle.length());
-                                }
-                            }
-
-                            activity = activity + "<span class='truncate_ellipsis'>" + THREE_DOTS + "</span>";
-                        } else {
-                            int tagEndLocation = maxBody.indexOf("<", tagEnterLocation + 1);
-                            int tagLocationEnd = maxBody.indexOf("/>", tagEnterLocation);
-                            if ((tagEndLocation == -1 && tagLocationEnd == -1)) {
-                                String str1 = maxBody.substring(0, tagEnterLocation - 1);
-                                activity = str1 + "<span class='truncate_ellipsis'>" + THREE_DOTS + "</span>";
-                            }
-                            if (tagEndLocation != -1) {
-
-                                if (tagEndLocation > MAX_CHAR - 3) {
-                                    String charRest = activity.substring(0, tagEndLocation + 3);
-                                    activity = charRest + "<span class='truncate_ellipsis'>" + THREE_DOTS + "</span>";
-                                } else {
-                                    if (tagEndLocation <= MAX_CHAR - 3) {
-                                        activity = maxBody + "<span class='truncate_ellipsis'>" + THREE_DOTS + "</span>";
-                                    }
-                                }
-                            }
-                            if (tagLocationEnd != -1) {
-                                activity = maxBody + "<span class='truncate_ellipsis'>" + THREE_DOTS + "</span>";
-                            }
-                        }
-                    } else {
-                        activity = maxBody + "<span class='truncate_ellipsis'>" + THREE_DOTS + "</span>";
-                    }
-                }
-
-                if (act.getType().equals(DOC_ACTIVITY)) {
-                    try{
-                        if ((activity.split(">")[1].split("<")[0]).length() > MAX_DOC_CHAR) {
-                            String docName = activity.split(">")[1].split("<")[0].substring(0, MAX_DOC_CHAR).concat(THREE_DOTS);
-                            String docUrl = activity.split(">")[0].split("=")[1].replace("\"", "'");
-                            activity = "Shared a Document <a class='ColorLink' target='_blank' href=" + docUrl + "title='" + activity.split(">")[1].split("<")[0] + "'>" + docName + "</a>";
-                        }
-                    }catch(ArrayIndexOutOfBoundsException e) {
-                        log.warn("Error while recovering activity of type DOC_ACTIVITY [Url of shared Document Not found ]") ;
-                        return "";
-                    }
-                }
-
-                if (act.getType().equals(LINK_ACTIVITY)) {
-
-                    if (activity.indexOf("<", 0) != -1) {
-                        activity = activity.substring(activity.indexOf(">", 0) + 1, activity.indexOf("<", activity.indexOf(">", 0)));
-                    }
-                    if (activity.length() > MAX_CHAR) {
-                        activity = activity.substring(0, MAX_CHAR);
-                    }
-
-                    activity = "<a class='ColorLink' target='_blank' href='" + act.getUrl().replaceAll("\"", "'") + "'>" + activity + "</a>";
-                }
-
-            }
-
-
-
-            return activity;
-        }catch (Exception e){
-            log.error("Error while recovering user's last activity [WhoIsOnLine rendering phase] :" + e.getMessage(), e);
-            return "";
-        }
-    }
   public static class ConnectionInfoRestOut extends HashMap<String, Object> {
     public static enum Field {
       /**
@@ -585,6 +453,12 @@ public class PeopleRestService implements ResourceContainer{
      */
     public ConnectionInfoRestOut() {
       initialize();
+    }
+    
+    public ConnectionInfoRestOut(Identity identity) {
+      this.setDisplayName(identity.getProfile().getFullName());
+      this.setAvatarUrl(Util.buildAbsoluteAvatarURL(identity));
+      this.setPosition(StringEscapeUtils.unescapeHtml(identity.getProfile().getPosition()));
     }
     
     public ConnectionInfoRestOut(Identity identity, Activity lastestActivity, String lang){
@@ -837,9 +711,8 @@ public class PeopleRestService implements ResourceContainer{
     String avatar;
     String type;
 
-    public UserInfo(String name) {
-      this.name = name;
-      this.id = "@" + name;
+    public void setId(String id) {
+      this.id = "@" + id;
     }
 
     public String getId() {
@@ -1013,6 +886,39 @@ public class PeopleRestService implements ResourceContainer{
 
     public void setPosition(String position) {
       this.position = position;
+    }
+  }
+  
+  private String getLatestActivityTitle(Identity identity, Identity currentIdentity) {
+    RealtimeListAccess<ExoSocialActivity> activitiesListAccess = getActivityManager()
+        .getActivitiesByPoster(identity, DEFAULT_ACTIVITY, LINK_ACTIVITY, DOC_ACTIVITY);
+    
+    int totalActivities = activitiesListAccess.getSize();
+    int loadedActivityNum = 0;
+    while (true) {
+      List<ExoSocialActivity> activities = activitiesListAccess.loadAsList(0, 20);
+      
+      loadedActivityNum += activities.size();
+      
+      for (ExoSocialActivity act : activities) {
+        
+        if (getIdentityManager().getOrCreateIdentity(
+            OrganizationIdentityProvider.NAME, act.getStreamOwner(), false) != null) {
+          return act.getTitle();
+        }
+        
+        if (getIdentityManager().getOrCreateIdentity(
+            SpaceIdentityProvider.NAME, act.getStreamOwner(), false) != null) {
+          Space space = getSpaceService().getSpaceByPrettyName(act.getStreamOwner());
+          if (getSpaceService().isMember(space, currentIdentity.getRemoteId())) {
+            return act.getTitle();
+          }
+        }
+      }
+      
+      if (loadedActivityNum >= totalActivities) {
+        return null;  
+      }
     }
   }
 }

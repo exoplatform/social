@@ -1,0 +1,114 @@
+<!--
+
+    Copyright (C) 2003-2007 eXo Platform SAS.
+
+    This program is free software; you can redistribute it and/or
+    modify it under the terms of the GNU Affero General Public License
+    as published by the Free Software Foundation; either version 3
+    of the License, or (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, see<http://www.gnu.org/licenses/>.
+
+-->
+<%
+  import org.exoplatform.social.webui.Utils;
+  import org.exoplatform.social.core.service.LinkProvider;
+  import org.exoplatform.webui.form.UIFormStringInput;
+  import org.exoplatform.social.core.identity.model.Profile;
+  import org.exoplatform.social.core.relationship.model.Relationship;
+  import org.exoplatform.social.core.relationship.model.Relationship.Type;
+  import org.exoplatform.web.application.JavascriptManager;
+  
+  def rcontext = _ctx.getRequestContext() ;
+  JavascriptManager jsmanager = rcontext.getJavascriptManager();
+  
+  def params = """ {
+    positionId: 'position',
+    saveButtonId: 'savePosition'
+  } """
+  
+  jsmanager.require("SHARED/uiForm");
+  jsmanager.require("SHARED/social-ui-profile", "profile").addScripts("profile.init($params);");
+
+  def ownerIdentity = Utils.getOwnerIdentity(true);
+  def viewerIdentity = Utils.getViewerIdentity();
+
+  def currentUser = ownerIdentity.profile.fullName;
+  def actititesURL = LinkProvider.getUserActivityUri(ownerIdentity.getRemoteId());
+  def profileURL = LinkProvider.getUserProfileUri(ownerIdentity.getRemoteId());
+  def relationURL = LinkProvider.getUserConnectionsUri(ownerIdentity.getRemoteId());
+  
+  def profile = uicomponent.getProfile();
+  def isEdit = uicomponent.isEditMode();
+  def isEditable = uicomponent.isEditable();
+  def contactStatus = uicomponent.getContactStatus();
+  def position = profile.getPropertyValue(Profile.POSITION);
+  
+  if (isEditable)
+    position = ((position == null || position == "") ? _ctx.appRes(uicomponent.getName() + ".label.yourPosition"): _ctx.appRes(uicomponent.getName() + ".label.yourPosition") + ": " + position);
+  else
+    position = (position == null ? "": _ctx.appRes(uicomponent.getName() + ".label.Position") + ": " + position);
+  
+  def componentId = uicomponent.id;
+  def inviteToConnectLabel = _ctx.appRes(componentId + ".label.InviteToConnect");
+  def connectLabel = _ctx.appRes(componentId + ".label.Connect");
+  def denyLabel = _ctx.appRes(componentId + ".label.Deny");
+  def revokeLabel = _ctx.appRes(componentId + ".label.Revoke");
+  def disconnectLabel = _ctx.appRes(componentId + ".label.Disconnect");
+  def inviteToConnectTitle = (_ctx.appRes(componentId + ".label.InviteToConnectTitle")).replace("{0}", currentUser + "");
+  def connectTitle = (_ctx.appRes(componentId + ".label.ConnectTitle")).replace("{0}", currentUser + "");
+  def denyTitle = (_ctx.appRes(componentId + ".label.DenyTitle")).replace("{0}", currentUser + "");
+  def revokeTitle = (_ctx.appRes(componentId + ".label.RevokeTitle")).replace("{0}", currentUser + "");
+  def disconnectTitle = (_ctx.appRes(componentId + ".label.DisconnectTitle")).replace("{0}", currentUser + "");
+  def relationship = uicomponent.getRelationship();
+%>
+<div class="uiHeaderSection">
+<% uiform.begin() %>
+  
+  <h3><%=profile.getFullName();%>
+	<% if (ownerIdentity != null && ownerIdentity.isDeleted() == false) { %>
+	<% if (contactStatus == null) { %>
+	  <% if (!Utils.isOwner()) { %>
+	     <button class="btn btn-primary" onclick="<%=uicomponent.event("AddContact")%>;return false;" >$inviteToConnectLabel</button>
+	  <% } %>
+	<% } else if (contactStatus == Type.PENDING && relationship.isReceiver(viewerIdentity)) { %>
+	     <i class="uiIconGrayCircleTick"></i>
+	     <button class="btn" onclick="<%=uicomponent.event("DenyContact")%>;return false;" >$denyLabel</button>
+       <button class="btn btn-primary" onclick="<%=uicomponent.event("AcceptContact")%>;return false;" >$connectLabel</button>	     
+	<% } else if (contactStatus == Type.PENDING && relationship.isSender(viewerIdentity)) { %>
+	     <i class="uiIconGrayCircleTick"></i>
+	     <button class="btn" onclick="<%=uicomponent.event("DenyContact")%>;return false;" >$revokeLabel</button> 
+	<% } else if (contactStatus == Type.CONFIRMED) { %>
+	     <i class="uiIconGreenTick"></i>
+	     <button class="btn" onclick="<%=uicomponent.event("DenyContact")%>;return false;" >$disconnectLabel</button>
+	<% } %>
+	<% } %>
+  </h3>
+  
+  <div class="position clearfix">
+      <% if(!isEdit) { %>
+            <span class="positionTitle"><%=position %></span><% if(isEditable) { %> <a href="<%=uicomponent.event("Edit", "" + !isEdit)%>"><i class="uiIconEdit"></i></a> <% } %>
+      <% } else {
+            if (isEditable) { %>
+              <%uicomponent.setValue();%>
+              <div class="pull-right">
+	              <button id="savePosition" class="btn btn-primary" onclick="<%=uicomponent.event("Save")%>;return false;"><%=_ctx.appRes(uicomponent.getName() + ".label.Send")%></button>              
+	              <button id="cancelPosition" class="btn" onclick="<%=uicomponent.event("Cancel")%>;return false;"><%=_ctx.appRes(uicomponent.getName() + ".label.Cancel")%></button>
+              </div>
+              <div class="titleWithBorder">
+              	<% uiform.renderChild(UIFormStringInput.class) %>
+              </div>
+              
+          <%} else {%>
+            <%=position%>
+          <%}%>
+      <% }%>
+  </div>
+<% uiform.end() %>
+</div>

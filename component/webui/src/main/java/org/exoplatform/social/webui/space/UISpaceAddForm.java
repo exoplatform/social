@@ -203,6 +203,7 @@ public class UISpaceAddForm extends UIFormTabPane {
         uiApplication.addMessage(new ApplicationMessage(msg, null, ApplicationMessage.ERROR));
         return;
       }
+      SpaceUtils.endRequest();
       UIPopupWindow uiPopup = uiAddForm.getParent();
       uiPopup.setShow(false);
       Utils.updateWorkingWorkSpace();

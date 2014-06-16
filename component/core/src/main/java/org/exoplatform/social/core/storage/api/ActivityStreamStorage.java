@@ -317,6 +317,17 @@ public interface ActivityStreamStorage {
   public List<ExoSocialActivity> getMyActivities(Identity owner, int offset, int limit);
   
   /**
+   *  Gets the Owner Activities's stream by the viewer
+   *  
+   * @param owner
+   * @param offset
+   * @param limit
+   * @return
+   * @since 4.0.2, 4.1.0
+   */
+  public List<ExoSocialActivity> getViewerActivities(Identity owner, int offset, int limit);
+  
+  /**
    * 
    * @param owner
    * @return

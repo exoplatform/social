@@ -49,6 +49,9 @@ public class RelationshipPublisherTest extends  AbstractCoreTest {
   private Identity rootIdentity;
   private Identity demoIdentity;
   private Identity johnIdentity;
+  private Identity maryIdentity;
+  private Identity raulIdentity;
+  private Identity paulIdentity;
   
   public void setUp() throws Exception {
     super.setUp();
@@ -67,6 +70,9 @@ public class RelationshipPublisherTest extends  AbstractCoreTest {
     rootIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "root", true);
     demoIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "demo", true);
     johnIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "john", true);
+    maryIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "mary", true);
+    raulIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "raul", true);
+    paulIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "paul", true);
   }
 
   public void tearDown() throws Exception {
@@ -80,7 +86,49 @@ public class RelationshipPublisherTest extends  AbstractCoreTest {
     identityManager.deleteIdentity(rootIdentity);
     identityManager.deleteIdentity(demoIdentity);
     identityManager.deleteIdentity(johnIdentity);
+    identityManager.deleteIdentity(maryIdentity);
+    identityManager.deleteIdentity(raulIdentity);
+    identityManager.deleteIdentity(paulIdentity);
     super.tearDown();
+  }
+  
+  public void testConfirmedManyRelationship() {
+      
+    Relationship rootToDemoRelationship = relationshipManager.inviteToConnect(demoIdentity, rootIdentity);
+    Relationship rootToJohnRelationship = relationshipManager.inviteToConnect(johnIdentity, rootIdentity);
+    Relationship rootToMaryRelationship = relationshipManager.inviteToConnect(maryIdentity, rootIdentity);
+    Relationship rootToRaulRelationship = relationshipManager.inviteToConnect(raulIdentity, rootIdentity);
+    Relationship rootToPaulRelationship = relationshipManager.inviteToConnect(paulIdentity, rootIdentity);
+    
+    relationshipManager.confirm(rootIdentity, demoIdentity);
+    relationshipPublisher.confirmed(new RelationshipEvent(Type.CONFIRM, relationshipManager, rootToDemoRelationship));
+    relationshipManager.confirm(rootIdentity, johnIdentity);
+    relationshipPublisher.confirmed(new RelationshipEvent(Type.CONFIRM, relationshipManager, rootToJohnRelationship));
+    relationshipManager.confirm(rootIdentity, maryIdentity);
+    relationshipPublisher.confirmed(new RelationshipEvent(Type.CONFIRM, relationshipManager, rootToMaryRelationship));
+    relationshipManager.confirm(rootIdentity, raulIdentity);
+    relationshipPublisher.confirmed(new RelationshipEvent(Type.CONFIRM, relationshipManager, rootToRaulRelationship));
+    relationshipManager.confirm(rootIdentity, paulIdentity);
+    relationshipPublisher.confirmed(new RelationshipEvent(Type.CONFIRM, relationshipManager, rootToPaulRelationship));
+    
+    String rootActivityId =  identityStorage.getProfileActivityId(rootIdentity.getProfile(), Profile.AttachedActivityType.RELATIONSHIP);
+    assertNotNull(rootActivityId);
+    ExoSocialActivity rootActivity = activityManager.getActivity(rootActivityId);
+    List<ExoSocialActivity> rootComments = activityManager.getCommentsWithListAccess(rootActivity).loadAsList(0, 10);
+    assertEquals(5, rootComments.size());
+    assertEquals("I'm now connected with 5 user(s)",rootActivity.getTitle());
+    
+    String johnActivityId =  identityStorage.getProfileActivityId(johnIdentity.getProfile(), Profile.AttachedActivityType.RELATIONSHIP);
+    String maryActivityId =  identityStorage.getProfileActivityId(maryIdentity.getProfile(), Profile.AttachedActivityType.RELATIONSHIP);
+    String demoActivityId =  identityStorage.getProfileActivityId(demoIdentity.getProfile(), Profile.AttachedActivityType.RELATIONSHIP);
+    String raulActivityId =  identityStorage.getProfileActivityId(raulIdentity.getProfile(), Profile.AttachedActivityType.RELATIONSHIP);
+    String paulActivityId =  identityStorage.getProfileActivityId(paulIdentity.getProfile(), Profile.AttachedActivityType.RELATIONSHIP);
+    activityManager.deleteActivity(rootActivityId);
+    activityManager.deleteActivity(johnActivityId);
+    activityManager.deleteActivity(maryActivityId);
+    activityManager.deleteActivity(demoActivityId);
+    activityManager.deleteActivity(raulActivityId);
+    activityManager.deleteActivity(paulActivityId);
   }
 
   /**

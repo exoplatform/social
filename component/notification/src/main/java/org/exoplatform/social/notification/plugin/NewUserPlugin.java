@@ -27,6 +27,7 @@ import org.exoplatform.commons.api.notification.plugin.AbstractNotificationPlugi
 import org.exoplatform.commons.api.notification.plugin.NotificationPluginUtils;
 import org.exoplatform.commons.api.notification.service.setting.UserSettingService;
 import org.exoplatform.commons.api.notification.service.template.TemplateContext;
+import org.exoplatform.commons.notification.NotificationUtils;
 import org.exoplatform.commons.notification.template.TemplateUtils;
 import org.exoplatform.commons.utils.CommonsUtils;
 import org.exoplatform.container.xml.InitParams;
@@ -85,7 +86,7 @@ public class NewUserPlugin extends AbstractNotificationPlugin {
     
     templateContext.put("USER", userProfile.getFullName());
     templateContext.put("PORTAL_NAME", NotificationPluginUtils.getBrandingPortalName());
-    templateContext.put("PORTAL_HOME", NotificationPluginUtils.getPortalHome(NotificationPluginUtils.getBrandingPortalName()));
+    templateContext.put("PORTAL_HOME", NotificationUtils.getPortalHome(NotificationPluginUtils.getBrandingPortalName()));
     String subject = TemplateUtils.processSubject(templateContext);
     
     templateContext.put("PROFILE_URL", LinkProviderUtils.getRedirectUrl("user", identity.getRemoteId()));

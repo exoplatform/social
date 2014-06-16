@@ -58,7 +58,7 @@ import org.exoplatform.webui.event.EventListener;
  */
 @ComponentConfigs({
   @ComponentConfig(
-                   template = "classpath:groovy/social/webui/profile/UIUserActivitiesDisplay.gtmpl",
+                   template = "war:/groovy/social/webui/profile/UIUserActivitiesDisplay.gtmpl",
                    events = {
                        @EventConfig(listeners = UIUserActivitiesDisplay.RefreshStreamActionListener.class)
                    }

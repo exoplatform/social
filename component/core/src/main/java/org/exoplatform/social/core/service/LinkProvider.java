@@ -17,6 +17,7 @@
 package org.exoplatform.social.core.service;
 
 import org.apache.commons.lang.Validate;
+import org.exoplatform.commons.utils.CommonsUtils;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.container.xml.InitParams;
 import org.exoplatform.portal.mop.SiteType;
@@ -63,7 +64,6 @@ public class LinkProvider {
   
   private static IdentityManager identityManager;
   private static Log             LOG = ExoLogger.getLogger(LinkProvider.class);
-  private static final String CONFIGURED_DOMAIN_URL = "gatein.email.domain.url";
 
   /**
    * Hacks for unit test to work.
@@ -147,16 +147,18 @@ public class LinkProvider {
   public static String getProfileLink(final String username, final String portalOwner) {
     Identity identity = getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, username, true);
     Validate.notNull(identity, "Identity must not be null.");
-    
-    //
-    String configured_domain_url = System.getProperty(CONFIGURED_DOMAIN_URL, null);
-    if (configured_domain_url != null) {
-      return "<a href=\"" + configured_domain_url + buildProfileUri(identity.getRemoteId(), null, portalOwner)
-      + "\" target=\"_parent\">" + identity.getProfile().getFullName() + "</a>";
-    } 
 
-    return "<a href=\"" + buildProfileUri(identity.getRemoteId(), null, portalOwner)
-    + "\" target=\"_parent\">" + identity.getProfile().getFullName() + "</a>";
+    //
+    String configured_domain_url = null;
+    try {
+      configured_domain_url = CommonsUtils.getCurrentDomain();
+    } catch (NullPointerException e) {
+      configured_domain_url = null;
+    }
+
+    return new StringBuilder("<a href=\"").append((configured_domain_url != null) ? configured_domain_url : "")
+                .append(buildProfileUri(identity.getRemoteId(), null, portalOwner)).append("\" target=\"_parent\">")
+                .append(identity.getProfile().getFullName()).append("</a>").toString();
   }
 
   /**

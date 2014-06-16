@@ -21,6 +21,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.exoplatform.social.core.chromattic.entity.ActivityProfileEntity;
 import org.exoplatform.social.core.model.AvatarAttachment;
 
@@ -109,6 +110,9 @@ public class Profile {
   /** Resized subfix */
   public static final String        RESIZED_SUBFIX = "RESIZED_";
 
+  /** Space string */
+  private static final String       SPACE_STR = " ";
+  
   /** Types of updating of profile. */
   public static enum                UpdateType 
                                       {
@@ -423,28 +427,16 @@ public class Profile {
    * @return the full name
    */
   public final String getFullName() {
-    String first = (String) getProperty(FIRST_NAME);
-    String last = (String) getProperty(LAST_NAME);
-    String fullName = getProperty(FULL_NAME) != null ? (String) getProperty(FULL_NAME) : "";
-    String all = (first != null) ? first : "";
-    all += (last != null) ? " " + last : "";
-    return all.length() > 0 ? all : fullName;
-  }
-
-  /**
-   * Gets the full name as display name.
-   *
-   * @return the full name
-   */
-  public final String getFullName(boolean isDisplayName) {
-    if (!isDisplayName) return getFullName();
-    
     String fullName = (String) getProperty(FULL_NAME);
     if (fullName != null && fullName.length() > 0) {
       return fullName;
     }
     
-    return getFullName();
+    String firstName = (String) getProperty(FIRST_NAME);
+    String lastName = (String) getProperty(LAST_NAME);
+    fullName = (firstName != null) ? firstName : StringUtils.EMPTY;
+    fullName += (lastName != null) ? SPACE_STR + lastName : StringUtils.EMPTY;
+    return fullName;
   }
   
   /**
