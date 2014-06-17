@@ -53,7 +53,7 @@ import org.exoplatform.webui.form.UIFormStringInput;
  * @since 1.2.2
  */
 @ComponentConfig(
-  template = "classpath:groovy/social/webui/connections/UIAllPeople.gtmpl",
+  template = "war:/groovy/social/webui/connections/UIAllPeople.gtmpl",
   events = {
     @EventConfig(listeners = UIDisplayProfileList.ConnectActionListener.class),
     @EventConfig(listeners = UIDisplayProfileList.ConfirmActionListener.class),

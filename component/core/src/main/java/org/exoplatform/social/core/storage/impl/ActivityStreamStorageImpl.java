@@ -504,6 +504,11 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
   public int getNumberOfMyActivities(Identity owner) {
     return getNumberOfActivities(ActivityRefType.MY_ACTIVITIES, owner);
   }
+  
+  @Override
+  public List<ExoSocialActivity> getViewerActivities(Identity owner, int offset, int limit) {
+    return getOwnerActivitiesNotQuery(ActivityRefType.MY_ACTIVITIES, owner, offset, limit);
+  }
 
   @Override
   public void connect(Identity sender, Identity receiver) {
@@ -724,6 +729,49 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
         ExoSocialActivity a = getStorage().getActivity(current.getActivityEntity().getId());
         if (!got.contains(a)) {
           if (!a.isHidden()) {
+            got.add(a);
+            if (++nb == limit) {
+              break;
+            }
+          }
+        } else {
+          //remove if we have duplicate activity on stream.
+          //some of cases on PLF 3.5.x migration has duplicated Activity
+          current.getDay().getActivityRefs().remove(current.getName());
+        }
+        
+        
+      }
+    } catch (NodeNotFoundException e) {
+      LOG.warn("Failed to activities!");
+    }
+    return got;
+  }
+  
+  private List<ExoSocialActivity> getOwnerActivitiesNotQuery(ActivityRefType type, Identity owner, int offset, int limit) {
+    List<ExoSocialActivity> got = new LinkedList<ExoSocialActivity>();
+    try {
+      IdentityEntity identityEntity = identityStorage._findIdentityEntity(owner.getProviderId(), owner.getRemoteId());
+      
+      ActivityRefListEntity refList = type.refsOf(identityEntity);
+      ActivityRefList list = new ActivityRefList(refList);
+
+      int nb = 0;
+      ActivityRefIterator it = list.iterator();
+      _skip(it, offset);
+      while (it.hasNext()) {
+        ActivityRef current = it.next();
+        // take care in the case, current.getActivityEntity() = null the same
+        // SpaceRef, need to remove it out
+        if (current.getActivityEntity() == null) {
+          current.getDay().getActivityRefs().remove(current.getName());
+          continue;
+        }
+
+        ExoSocialActivity a = getStorage().getActivity(current.getActivityEntity().getId());
+        if (!got.contains(a)) {
+          //only take these user's activities and ower is poster
+          if (!a.isHidden() && a.getStreamOwner().equals(owner.getRemoteId())) {
             got.add(a);
             if (++nb == limit) {
               break;

@@ -2,16 +2,16 @@ package org.exoplatform.social.extras.injection;
 
 import java.util.HashMap;
 
-import org.exoplatform.social.core.space.SpaceUtils;
 import org.exoplatform.social.core.space.impl.DefaultSpaceApplicationHandler;
 import org.exoplatform.social.core.space.model.Space;
+import org.exoplatform.social.core.storage.impl.StorageUtils;
 
 /**
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
  * @version $Revision$
  */
 public class SpaceInjector extends AbstractSocialInjector {
-  private final int FLUSH_LIMIT = 1;
+  private final int FLUSH_LIMIT = 10;
 
   /** . */
   private static final String NUMBER = "number";
@@ -67,7 +67,7 @@ public class SpaceInjector extends AbstractSocialInjector {
           if (++spaceCounter == FLUSH_LIMIT) {
             spaceCounter = 0;
             //
-            SpaceUtils.endRequest();
+            StorageUtils.persistJCR(true);
             getLog().info("Flush session...");
           }
           //
@@ -76,7 +76,7 @@ public class SpaceInjector extends AbstractSocialInjector {
         }
       }
     } finally {
-      SpaceUtils.endRequest();
+      StorageUtils.persistJCR(false);
     }
     
     

@@ -20,8 +20,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.exoplatform.application.registry.Application;
 import org.exoplatform.portal.application.PortalRequestContext;
+import org.exoplatform.portal.application.RequestNavigationData;
 import org.exoplatform.portal.config.DataStorage;
 import org.exoplatform.portal.config.model.Page;
 import org.exoplatform.portal.mop.user.UserNode;
@@ -30,6 +30,8 @@ import org.exoplatform.portal.webui.portal.UIPortal;
 import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
+import org.exoplatform.social.common.router.ExoRouter;
+import org.exoplatform.social.common.router.ExoRouter.Route;
 import org.exoplatform.social.core.space.SpaceException;
 import org.exoplatform.social.core.space.SpaceUtils;
 import org.exoplatform.social.core.space.model.Space;
@@ -46,7 +48,7 @@ import org.exoplatform.webui.event.EventListener;
 
 
 @ComponentConfig(
-  template = "classpath:groovy/social/webui/space/UISpaceMenu.gtmpl",
+  template = "war:/groovy/social/webui/space/UISpaceMenu.gtmpl",
   events = {
     @EventConfig(name = "RenameSpaceAppName", listeners = UISpaceMenu.RenameSpaceAppNameActionListener.class)
   }
@@ -73,6 +75,8 @@ public class UISpaceMenu extends UIContainer {
   
   private static final String DEFAULT_APP_ID = "DefaultAppId";
   
+  private static final String APP_NAME = "appName";
+
   private static final Log LOG = ExoLogger.getLogger(UISpaceMenu.class);
   
   /**
@@ -258,10 +262,14 @@ public class UISpaceMenu extends UIContainer {
    * @throws Exception
    */
   public String getAppSelected() throws Exception {
-    UIPortal uiPortal = Util.getUIPortal();
-    UserNode selectedNode = uiPortal.getSelectedUserNode();
-    String[] split = selectedNode.getURI().split("/");
-    return split[split.length - 1];
+    PortalRequestContext plcontext = Util.getPortalRequestContext();
+    String requestPath = plcontext.getControllerContext().getParameter(RequestNavigationData.REQUEST_PATH);
+    Route route = ExoRouter.route(requestPath);
+    if (route == null) {
+      return null;
+    }
+    //
+    return route.localArgs.get(APP_NAME);
   }
 
   /**
@@ -312,9 +320,7 @@ public class UISpaceMenu extends UIContainer {
    */
   private Space getSpace() {
     if (space == null) {
-      spaceService = getSpaceService();
-      String spaceUrl = Utils.getSpaceUrlByContext();
-      space = spaceService.getSpaceByUrl(spaceUrl);
+      space = Utils.getSpaceByContext();
     }
     return space;
   }

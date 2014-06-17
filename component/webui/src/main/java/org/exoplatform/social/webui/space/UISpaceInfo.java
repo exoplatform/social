@@ -63,7 +63,7 @@ import org.exoplatform.webui.form.validator.StringLengthValidator;
 
 @ComponentConfig(
   lifecycle = UIFormLifecycle.class,
-  template = "classpath:groovy/social/webui/space/UISpaceInfo.gtmpl",
+  template = "war:/groovy/social/webui/space/UISpaceInfo.gtmpl",
   events = {
     @EventConfig(listeners = UISpaceInfo.SaveActionListener.class, phase = Phase.PROCESS),
     @EventConfig(listeners = UISpaceInfo.ChangeAvatarActionListener.class)

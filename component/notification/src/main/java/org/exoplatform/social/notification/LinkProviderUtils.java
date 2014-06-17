@@ -1,7 +1,6 @@
 package org.exoplatform.social.notification;
 
 import org.exoplatform.commons.utils.CommonsUtils;
-import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.service.LinkProvider;
 import org.exoplatform.social.core.space.model.Space;
@@ -133,10 +132,8 @@ public static final String RESOURCE_URL = "social/notifications";
    * 
    * @return base rest url like : http://localhost:8080/rest
    */
-  private static String getBaseRestUrl() {
-    String domain = System.getProperty("gatein.email.domain.url", "http://localhost:8080");
-    ExoContainerContext context = CommonsUtils.getService(ExoContainerContext.class);
-    return new StringBuffer(domain).append("/").append(context.getRestContextName()).toString();
+  public static String getBaseRestUrl() {
+    return new StringBuffer(CommonsUtils.getCurrentDomain()).append("/").append(CommonsUtils.getRestContextName()).toString();
   }
   
   /**
@@ -146,8 +143,7 @@ public static final String RESOURCE_URL = "social/notifications";
    * @return
    */
   public static String getUserAvatarUrl(Profile profile) {
-    String domain = System.getProperty("gatein.email.domain.url", "http://localhost:8080");
-    return profile.getAvatarUrl() != null ? domain + profile.getAvatarUrl() : domain + LinkProvider.PROFILE_DEFAULT_AVATAR_URL;
+    return CommonsUtils.getCurrentDomain() + ((profile != null && profile.getAvatarUrl() != null) ? profile.getAvatarUrl() : LinkProvider.PROFILE_DEFAULT_AVATAR_URL);
   }
   
   /**
@@ -157,7 +153,6 @@ public static final String RESOURCE_URL = "social/notifications";
    * @return
    */
   public static String getSpaceAvatarUrl(Space space) {
-    String domain = System.getProperty("gatein.email.domain.url", "http://localhost:8080");
-    return space.getAvatarUrl() != null ? domain + space.getAvatarUrl() : domain + LinkProvider.SPACE_DEFAULT_AVATAR_URL;
+    return CommonsUtils.getCurrentDomain() + ((space != null && space.getAvatarUrl() != null) ? space.getAvatarUrl() : LinkProvider.SPACE_DEFAULT_AVATAR_URL);
   }
 }

@@ -42,10 +42,10 @@ import org.exoplatform.webui.form.validator.StringLengthValidator;
 
 @ComponentConfig(
   lifecycle = UIFormLifecycle.class,
-  template = "classpath:groovy/social/webui/profile/UIBasicInfoSection.gtmpl",
+  template = "war:/groovy/social/webui/profile/UIBasicInfoSection.gtmpl",
   events = {
     @EventConfig(listeners = UIBasicInfoSection.EditActionListener.class, phase = Phase.DECODE),
-    @EventConfig(listeners = UIBasicInfoSection.SaveActionListener.class),
+    @EventConfig(listeners = UIBasicInfoSection.SaveActionListener.class, csrfCheck = true),
     @EventConfig(listeners = UIBasicInfoSection.CancelActionListener.class, phase = Phase.DECODE)
   }
 )

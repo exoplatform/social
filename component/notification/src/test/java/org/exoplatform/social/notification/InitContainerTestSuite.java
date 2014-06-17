@@ -25,7 +25,8 @@ import org.junit.runners.Suite.SuiteClasses;
   SpaceInvitationPluginTest.class,
   LikePluginTest.class,
   ActivityMentionPluginTest.class,
-  ActivityCommentPluginTest.class
+  ActivityCommentPluginTest.class,
+  LinkProviderUtilsTest.class
 })
 @ConfigTestCase(AbstractCoreTest.class)
 public class InitContainerTestSuite extends BaseExoContainerTestSuite {

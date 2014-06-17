@@ -20,7 +20,7 @@ import org.exoplatform.portal.webui.container.UIContainer;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 
 @ComponentConfig(
-  template = "classpath:groovy/social/webui/composer/UIActivityComposerContainer.gtmpl"
+  template = "war:/groovy/social/webui/composer/UIActivityComposerContainer.gtmpl"
 )
 public class UIActivityComposerContainer extends UIContainer {
 }
