@@ -21,9 +21,23 @@
 <configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://www.exoplatform.org/xml/ns/kernel_1_2.xsd http://www.exoplatform.org/xml/ns/kernel_1_2.xsd"
   xmlns="http://www.exoplatform.org/xml/ns/kernel_1_2.xsd">
-
+  
   <component>
-    <type>org.exoplatform.services.bench.DataInjectorService</type>
+    <type>org.exoplatform.social.extras.injection.PatternInjectorConfig</type>
+    <init-params>
+      <value-param>
+        <name>user-suffix-length</name>
+        <value>4</value><!-- it's suffix length of user, -1 without suffix pattern -->
+      </value-param>
+      <value-param>
+        <name>space-suffix-length</name>
+        <value>5</value><!-- it's suffix length of space name, -1 without suffix pattern -->
+      </value-param>
+      <value-param>
+        <name>user-password-default</name>
+        <value>exo</value><!-- it's user's password, default is "exo" -->
+      </value-param>
+    </init-params>
   </component>
 
   <component>
@@ -33,7 +47,7 @@
   <component>
     <type>org.exoplatform.social.extras.injection.SpaceInjector</type>
   </component>
-
+  
   <component>
     <type>org.exoplatform.social.extras.injection.MembershipInjector</type>
   </component>

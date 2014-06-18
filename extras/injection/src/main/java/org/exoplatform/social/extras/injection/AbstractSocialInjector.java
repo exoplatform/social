@@ -7,6 +7,8 @@ import java.util.Random;
 import org.chromattic.api.query.QueryBuilder;
 import org.exoplatform.commons.chromattic.ChromatticManager;
 import org.exoplatform.container.PortalContainer;
+import org.exoplatform.container.xml.InitParams;
+import org.exoplatform.container.xml.ValueParam;
 import org.exoplatform.services.bench.DataInjector;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
@@ -41,11 +43,23 @@ public abstract class AbstractSocialInjector extends DataInjector {
   private final static String DEFAULT_SPACE_BASE = "bench.space";
 
   /** . */
-  protected final static String PASSWORD = "exo";
+  protected final String password;
 
   /** . */
   protected final static String DOMAIN = "exoplatform.int";
-
+  
+  /** . */
+  protected static int spaceSuffixValue = -1;
+  
+  /** . */
+  protected static int userSuffixValue = -1;
+  
+  /** . */
+  protected String spaceSuffixPattern = null;
+  
+  /** . */
+  protected String userSuffixPattern = null;
+  
   /** . */
   protected String userBase;
 
@@ -93,7 +107,7 @@ public abstract class AbstractSocialInjector extends DataInjector {
 
   protected PortalContainer container;
   
-  public AbstractSocialInjector() {
+  public AbstractSocialInjector(PatternInjectorConfig config) {
 
     this.container = PortalContainer.getInstance();
     this.identityManager = (IdentityManager) container.getComponentInstanceOfType(IdentityManager.class);
@@ -108,7 +122,10 @@ public abstract class AbstractSocialInjector extends DataInjector {
     this.nameGenerator = new NameGenerator();
     this.random = new Random();
     this.lorem = new LoremIpsum4J();
-
+    
+    this.spaceSuffixValue = config.getSpaceSuffixValue();
+    this.userSuffixValue = config.getUserSuffixValue();
+    this.password = config.getUserPasswordValue();
   }
 
   public void init(String userPrefix, String spacePrefix) {
@@ -141,6 +158,25 @@ public abstract class AbstractSocialInjector extends DataInjector {
     
   }
   
+  public void init(String userPrefix, String spacePrefix, int userSuffixLength, int spaceSuffixLength) {
+    init(userPrefix, spacePrefix);
+    //
+    if (spaceSuffixLength > 0) {
+      spaceSuffixPattern = "%s%0" + spaceSuffixLength + "d";
+      LOG.info("Initial space suffix pattern : " + spaceSuffixPattern);
+    } else {
+      spaceSuffixPattern = null;
+    }
+    
+    if (userSuffixLength > 0) {
+      userSuffixPattern = "%s%0" + userSuffixLength + "d";
+      LOG.info("Initial user suffix pattern : " + userSuffixLength);
+    } else {
+      userSuffixPattern = null;
+    }
+    
+  }
+  
   @Override
   public Log getLog() {
     return ExoLogger.getExoLogger(this.getClass());
@@ -156,8 +192,6 @@ public abstract class AbstractSocialInjector extends DataInjector {
   }
 
   private int userNumber(String base) {
-
-
     PortalContainer container = PortalContainer.getInstance();
     ChromatticManager manager = (ChromatticManager) container.getComponentInstanceOfType(ChromatticManager.class);
     SocialChromatticLifeCycle lifeCycle = (SocialChromatticLifeCycle) manager.getLifeCycle(SocialChromatticLifeCycle.SOCIAL_LIFECYCLE_NAME);
@@ -183,13 +217,46 @@ public abstract class AbstractSocialInjector extends DataInjector {
 
   }
 
-
   protected String userName() {
-    return userBase + userNumber;
+    return userSuffixPattern != null ? userNameSuffixPattern() : userBase + userNumber;
   }
 
   protected String spaceName() {
-    return spaceBase + spaceNumber;
+    return spaceSuffixPattern != null ? spaceNameSuffixPattern() : spaceBase + spaceNumber;
+  }
+  
+  private String userNameSuffixPattern() {
+    return String.format(userSuffixPattern, userBase, userNumber);
+  }
+  /**
+   * Using for Unit testing to get the identity
+   * @param userNumber
+   * @return
+   */
+  protected String userNameSuffixPattern(int userNumber) {
+    String result;
+    if (userSuffixPattern != null) {
+      result = String.format(userSuffixPattern, userBase, userNumber);
+    } else {
+      result = userBase + userNumber;
+    }
+    return result;
+  }
+  
+  protected String spaceNameSuffixPattern() {
+    return String.format(spaceSuffixPattern, spaceBase, spaceNumber);
+  }
+  
+  protected String spaceNameSuffixPattern(int spaceNumber) {
+    String result;
+    if (spaceSuffixPattern != null) {
+      result = String.format(spaceSuffixPattern, spacePrettyBase, spaceNumber);
+    } else {
+      result = spacePrettyBase + spaceNumber;
+    }
+    
+    return result;
+    
   }
   
   protected int param(HashMap<String, String> params, String name) {

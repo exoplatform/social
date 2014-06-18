@@ -2,8 +2,12 @@ package org.exoplatform.social.extras.injection;
 
 import java.util.HashMap;
 
+import org.apache.poi.hslf.record.CurrentUserAtom;
+import org.exoplatform.container.xml.InitParams;
+import org.exoplatform.services.security.ConversationState;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
+import org.exoplatform.social.core.space.SpaceUtils;
 import org.exoplatform.social.core.space.model.Space;
 
 public class MembershipInjector extends AbstractSocialInjector {
@@ -32,6 +36,10 @@ public class MembershipInjector extends AbstractSocialInjector {
   /** . */
   private String identitiesInfo = "";
   
+  public MembershipInjector(PatternInjectorConfig pattern) {
+    super(pattern);
+  }
+  
   @Override
   public void inject(HashMap<String, String> params) throws Exception {
     
@@ -52,7 +60,7 @@ public class MembershipInjector extends AbstractSocialInjector {
       return;
     }
     
-    init(userPrefix, spacePrefix);
+    init(userPrefix, spacePrefix, userSuffixValue, spaceSuffixValue);
 
    
     getLog().info("About to inject Space Members :");
@@ -69,23 +77,24 @@ public class MembershipInjector extends AbstractSocialInjector {
    
   
   private void generate(int spaceIdx, String type, int from, int to) {
+    String spaceName = this.spaceNameSuffixPattern(spaceIdx);
+    String spacePrettyBaseName = SpaceUtils.cleanString(spaceName);
 
-    String spacePrettyBaseName = spaceBase.replace(".", "");
-    String spaceName = spacePrettyBaseName + spaceIdx;
-
-    Space space = spaceService.getSpaceByPrettyName(spaceName);
+    Space space = spaceService.getSpaceByPrettyName(spacePrettyBaseName);
+    
     if (space == null) {
       getLog().info("space with display name: " + spaceName + "is not existing");
       return;
     }
     
-    getLog().info("added users " + identitiesInfo + " to " + type + " of '" + spaceName + "' space.");
+    //space.setEditor(ConversationState.getCurrent().getIdentity().getUserId());
     
     Identity identity = null;
-    
     for(int i = from; i <= to; ++i) {
-      String username = userBase + i;
+      String username = this.userNameSuffixPattern(i);
       identity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, username, false);
+      space.setEditor(username);
+      getLog().info("added user(s) " + identity.getRemoteId() + " to " + type + " of '" + spaceName + "' space.");
       if ("member".endsWith(type)) {
         spaceService.addMember(space, identity.getRemoteId());
       } else if ("manager".endsWith(type)) {
