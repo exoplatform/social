@@ -130,7 +130,7 @@
 			<%
 			  if(uicomponent.isEnableLoadNext()) {
 			%>
-					<div id="LoadMoreReceivedInvitationButton" class="MoreSpace" onclick="<%=uicomponent.event("LoadMoreSpace")%>" >
+					<div id="LoadMoreReceivedInvitationButton" class="MoreSpace btn" onclick="<%=uicomponent.event("LoadMoreSpace")%>" >
 						$labelShowMoreSpace
 					</div>
 			<%
