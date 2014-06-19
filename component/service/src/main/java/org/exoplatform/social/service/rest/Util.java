@@ -34,10 +34,12 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
+import org.exoplatform.commons.utils.CommonsUtils;
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.rest.impl.EnvironmentContext;
 import org.exoplatform.services.security.ConversationState;
+import org.exoplatform.services.security.IdentityConstants;
 import org.exoplatform.social.core.activity.model.ActivityStream;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.identity.model.Identity;
@@ -49,6 +51,7 @@ import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.manager.RelationshipManager;
 import org.exoplatform.social.core.service.LinkProvider;
 import org.exoplatform.social.core.space.spi.SpaceService;
+import org.exoplatform.social.service.rest.api.VersionResources;
 import org.exoplatform.social.service.rest.api.models.IdentityRestOut;
 import org.exoplatform.social.service.rest.api.models.ProfileRestOut;
 
@@ -59,6 +62,8 @@ import org.exoplatform.social.service.rest.api.models.ProfileRestOut;
  * @since  Jan 5, 2009
  */
 public final class Util {
+  
+  public static final String SOCIAL_APPLICATION = "social";
   
   private static final Pattern URL_PATTERN = Pattern
       .compile("^(?i)" +
@@ -624,5 +629,74 @@ public final class Util {
       }
     }
     return false;
+  }
+  
+  /** 
+   * Get base url of rest service
+   * 
+   * @param type the type of rest service
+   * @param id the id of object
+   * 
+   * @return base rest url like : http://localhost:8080/rest/v1/social/users/123456
+   */
+  public static String getRestUrl(String type, String id) {
+    return new StringBuffer(getBaseRestUrl())
+                .append("/").append(VersionResources.CURRENT_VERSION)
+                .append("/").append(SOCIAL_APPLICATION)
+                .append("/").append(type)
+                .append("/").append(id).toString();
+  }
+  
+  /** 
+   * Get base url of rest service
+   * 
+   * @return base rest url like : http://localhost:8080/rest
+   */
+  public static String getBaseRestUrl() {
+    return new StringBuffer(CommonsUtils.getCurrentDomain()).append("/").append(CommonsUtils.getRestContextName()).toString();
+  }
+  
+  /**
+   * Get the rest url to load all members or managers of a space
+   * 
+   * @param id the id of space
+   * @param returnManager return managers or members
+   * @return rest url to load all members or managers of a space
+   */
+  public static String getMembersSpaceRestUrl(String id, boolean returnManager) {
+    StringBuffer spaceMembersRestUrl = new StringBuffer(getRestUrl(RestUtils.SPACES_TYPE, id)).append("/").append(RestUtils.USERS_TYPE);
+    if (returnManager) {
+      return spaceMembersRestUrl.append("?role=manager").toString();
+    }
+    return spaceMembersRestUrl.toString();
+  }
+  
+  /**
+   * Get the rest url in order to load all likes of an activity
+   * 
+   * @param activityId activity's id
+   * @return
+   */
+  public static String getLikesActivityRestUrl(String activityId) {
+    return new StringBuffer(getRestUrl(RestUtils.ACTIVITIES_TYPE, activityId)).append("/").append("likes").toString();
+  }
+  
+  /**
+   * Get the rest url in order to load all comments of an activity
+   * 
+   * @param activityId activity's id
+   * @return
+   */
+  public static String getCommentsActivityRestUrl(String activityId) {
+    return new StringBuffer(getRestUrl(RestUtils.ACTIVITIES_TYPE, activityId)).append("/").append("comments").toString();
+  }
+  
+  /**
+   * Check if the current user is authenticated
+   * 
+   * @return true if user not authenticated
+   */
+  public static boolean isAnonymous() {
+    return IdentityConstants.ANONIM.equals(ConversationState.getCurrent().getIdentity().getUserId());
   }
 }

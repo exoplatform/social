@@ -58,6 +58,14 @@
   <component>
     <type>org.exoplatform.social.service.rest.IntranetNotificationRestService</type>
   </component>
+
+  <component>
+    <type>org.exoplatform.social.service.rest.UsersRestService</type>
+  </component>
+  
+  <component>
+    <type>org.exoplatform.social.service.rest.RelationshipRestService</type>
+  </component>
 <!-- REST service -->
 
 <!-- Social Rest API resources for latest -->
