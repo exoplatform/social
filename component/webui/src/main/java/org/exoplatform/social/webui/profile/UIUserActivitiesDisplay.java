@@ -58,10 +58,7 @@ import org.exoplatform.webui.event.EventListener;
  */
 @ComponentConfigs({
   @ComponentConfig(
-                   template = "classpath:groovy/social/webui/profile/UIUserActivitiesDisplay.gtmpl",
-                   events = {
-                       @EventConfig(listeners = UIUserActivitiesDisplay.RefreshStreamActionListener.class)
-                   }
+                   template = "classpath:groovy/social/webui/profile/UIUserActivitiesDisplay.gtmpl"
                  ),
   @ComponentConfig(
     type = UIDropDownControl.class, 
@@ -344,15 +341,7 @@ public class UIUserActivitiesDisplay extends UIContainer {
    }
  }
   
-  public static class RefreshStreamActionListener extends EventListener<UIUserActivitiesDisplay> {
-    public void execute(Event<UIUserActivitiesDisplay> event) throws Exception {
-     UIUserActivitiesDisplay uiUserActivities = event.getSource();
-     uiUserActivities.init();
-     
-     event.getRequestContext().addUIComponentToUpdateByAjax(uiUserActivities);
-     Utils.resizeHomePage();
-   }
- }
+  
 
   
   private int getActivitiesUpdatedNum(boolean hasRefresh) {

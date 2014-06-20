@@ -42,9 +42,11 @@ import org.exoplatform.webui.event.EventListener;
 @ComponentConfig(
   template = "classpath:groovy/social/webui/activity/UIActivitiesLoader.gtmpl",
   events = {
-    @EventConfig(listeners = UIActivitiesLoader.LoadMoreActionListener.class)
+    @EventConfig(listeners = UIActivitiesLoader.LoadMoreActionListener.class),
+    @EventConfig(listeners = UIActivitiesLoader.RefreshStreamActionListener.class)
   }
 )
+
 
 public class UIActivitiesLoader extends UIContainer {
   private static final Log LOG = ExoLogger.getLogger(UIActivitiesLoader.class);
@@ -152,6 +154,7 @@ public class UIActivitiesLoader extends UIContainer {
   
   public void init() {
     try {
+
       hasMore = false;
       currentLoadIndex = 0;
       activitiesCounter = 0;
@@ -243,4 +246,14 @@ public class UIActivitiesLoader extends UIContainer {
       Utils.resizeHomePage();
     }
   }
+
+public static class RefreshStreamActionListener extends EventListener<UIActivitiesLoader> {
+    public void execute(Event<UIActivitiesLoader> event) throws Exception {
+     UIActivitiesLoader uiActivities = event.getSource();
+     uiActivities.init();
+     
+     event.getRequestContext().addUIComponentToUpdateByAjax(uiActivities);
+     Utils.resizeHomePage();
+   }
+ }
 }

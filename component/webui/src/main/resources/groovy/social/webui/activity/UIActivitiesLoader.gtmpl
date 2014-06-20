@@ -56,12 +56,16 @@
 	} """
   
   requireJS.require("SHARED/social-ui-profile", "profile").addScripts("profile.initUserProfilePopup('$uicomponent.id', $labels);");
-	String clearClass = "clearBG";
-	if(Utils.isHomePage() && hasActivities && uicomponent.isUIUserActivityDisplay()) {
-	  clearClass = "clearfix";
-	}
+	String clearClass = "clearfix";
+	
 %>
-
+<div class="clearfix activityTop">
+    <div class="activityStreamStatus pull-left">
+    
+    <div class="arrowBottom"></div>
+      <a class="uiIconRefresh uiIconLightGray" href="javascript:void(0);" rel="tooltip" title="<%= _ctx.appRes("UIActivity.label.Refresh");%>" id="RefreshButton" onclick="<%=uicomponent.event("RefreshStream")%>"></a>
+    </div>
+  </div>
 <div class="uiActivityStream $clearClass" id="$uicomponent.id">
 <% if ( hasActivities ) {
      uicomponent.renderChild(uicomponent.getActivitiesContainer());
