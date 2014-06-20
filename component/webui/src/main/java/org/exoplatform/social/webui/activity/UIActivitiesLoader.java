@@ -16,11 +16,6 @@
  */
 package org.exoplatform.social.webui.activity;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
-
 import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.services.log.ExoLogger;
@@ -43,10 +38,16 @@ import org.exoplatform.webui.core.UIContainer;
 import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.event.EventListener;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Random;
+
 @ComponentConfig(
   template = "war:/groovy/social/webui/activity/UIActivitiesLoader.gtmpl",
   events = {
-    @EventConfig(listeners = UIActivitiesLoader.LoadMoreActionListener.class)
+    @EventConfig(listeners = UIActivitiesLoader.LoadMoreActionListener.class),
+    @EventConfig(listeners = UIActivitiesLoader.RefreshStreamActionListener.class)
   }
 )
 
@@ -276,6 +277,15 @@ public class UIActivitiesLoader extends UIContainer {
       require.addScripts("activitiesLoader.setStatus('" + uiActivitiesLoader.isHasMore() + "');");
       
       Utils.resizeHomePage();
+    }
+  }
+
+  public static class RefreshStreamActionListener extends EventListener<UIActivitiesLoader> {
+    public void execute(Event<UIActivitiesLoader> event) throws Exception {
+        UIActivitiesLoader uiActivities = event.getSource();
+        uiActivities.init();
+        event.getRequestContext().addUIComponentToUpdateByAjax(uiActivities);
+        Utils.resizeHomePage();
     }
   }
 }
