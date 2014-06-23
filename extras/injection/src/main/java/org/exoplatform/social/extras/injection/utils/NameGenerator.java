@@ -44,7 +44,7 @@ public class NameGenerator {
   ArrayList<String> mid = new ArrayList<String>();
   ArrayList<String> sur = new ArrayList<String>();
 
-  private static char[] vocals = {'a', 'e', 'i', 'o', 'u', '�', '�', '�', '�', 'y'};
+  private static char[] vocals = {'a', 'e', 'i', 'o', 'u', 'ä', 'ö', 'õ', 'ü', 'y'};
   private static char[] consonants = {'b', 'c', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'm', 'n', 'p', 'q',
           'r', 's', 't', 'v', 'w', 'x', 'y'};
 

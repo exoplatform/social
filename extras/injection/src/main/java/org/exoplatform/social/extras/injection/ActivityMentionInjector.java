@@ -40,6 +40,11 @@ public class ActivityMentionInjector extends AbstractSocialInjector {
 
   /** . */
   private static final String MENTIONER = "mentioner";
+  
+  public ActivityMentionInjector(PatternInjectorConfig pattern) {
+    super(pattern);
+  }
+
 
   @Override
   public void inject(HashMap<String, String> params) throws Exception {
@@ -50,7 +55,7 @@ public class ActivityMentionInjector extends AbstractSocialInjector {
     int to = param(params, TO_USER);
     String userPrefix = params.get(USER_PREFIX);
     String mentioner = params.get(MENTIONER);
-    init(userPrefix, null);
+    init(userPrefix, null, userSuffixValue, spaceSuffixValue);
 
 
     // Init provider and base name
@@ -69,7 +74,7 @@ public class ActivityMentionInjector extends AbstractSocialInjector {
     for(int i = from; i <= to; ++i) {
 
       //
-      String fromUser = base + i;
+      String fromUser = this.userNameSuffixPattern(i);
       Identity identity = identityManager.getOrCreateIdentity(provider, fromUser, false);
 
       for (int j = 0; j < number; ++j) {

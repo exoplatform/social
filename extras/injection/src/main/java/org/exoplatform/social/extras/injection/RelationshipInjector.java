@@ -1,12 +1,13 @@
 package org.exoplatform.social.extras.injection;
 
-import org.exoplatform.social.core.identity.model.Identity;
-import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
-import org.exoplatform.social.core.relationship.model.Relationship;
-
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
+
+import org.exoplatform.container.xml.InitParams;
+import org.exoplatform.social.core.identity.model.Identity;
+import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
+import org.exoplatform.social.core.relationship.model.Relationship;
 
 /**
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
@@ -25,7 +26,12 @@ public class RelationshipInjector extends AbstractSocialInjector {
 
   /** . */
   private static final String PREFIX = "prefix";
+  
+  public RelationshipInjector(PatternInjectorConfig pattern) {
+    super(pattern);
+  }
 
+  
   @Override
   public void inject(HashMap<String, String> params) throws Exception {
     
@@ -34,7 +40,7 @@ public class RelationshipInjector extends AbstractSocialInjector {
     int from = param(params, FROM_USER);
     int to = param(params, TO_USER);
     String prefix = params.get(PREFIX);
-    init(prefix, null);
+    init(prefix, null, userSuffixValue, spaceSuffixValue);
 
     if (number <= 0) {
       getLog().error("Number have to be positive. Value '" + number + "' incorrect. Aborting injection ...");
@@ -63,8 +69,8 @@ public class RelationshipInjector extends AbstractSocialInjector {
       for (int j = floor; j < floor + e.getKey(); ++j) {
 
         //
-        String fromUser = userBase + i;
-        String toUser = userBase + j;
+        String fromUser = this.userNameSuffixPattern(i);
+        String toUser = this.userNameSuffixPattern(j);
 
         //
         if (i > j) {
