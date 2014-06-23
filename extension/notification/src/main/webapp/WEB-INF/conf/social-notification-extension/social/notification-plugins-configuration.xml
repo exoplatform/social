@@ -8,7 +8,7 @@
     <target-component>org.exoplatform.commons.api.notification.service.setting.PluginContainer</target-component>
     <component-plugin>
       <name>notification.plugins</name>
-      <set-method>add</set-method>
+      <set-method>addPlugin</set-method>
       <type>org.exoplatform.social.notification.plugin.ActivityMentionPlugin</type>
       <description>Initial information for plugin.</description>
       <init-params>
@@ -53,7 +53,7 @@
     <target-component>org.exoplatform.commons.api.notification.service.setting.PluginContainer</target-component>
     <component-plugin>
       <name>notification.plugins</name>
-      <set-method>add</set-method>
+      <set-method>addPlugin</set-method>
       <type>org.exoplatform.social.notification.plugin.ActivityCommentPlugin</type>
       <description>Initial information for plugin.</description>
       <init-params>
@@ -99,7 +99,7 @@
     <target-component>org.exoplatform.commons.api.notification.service.setting.PluginContainer</target-component>
     <component-plugin>
       <name>notification.plugins</name>
-      <set-method>add</set-method>
+      <set-method>addPlugin</set-method>
       <type>org.exoplatform.social.notification.plugin.LikePlugin</type>
       <description>Initial information for plugin.</description>
       <init-params>
@@ -144,7 +144,7 @@
     <target-component>org.exoplatform.commons.api.notification.service.setting.PluginContainer</target-component>
     <component-plugin>
       <name>notification.plugins</name>
-      <set-method>add</set-method>
+      <set-method>addPlugin</set-method>
       <type>org.exoplatform.social.notification.plugin.PostActivityPlugin</type>
       <description>Initial information for plugin.</description>
       <init-params>
@@ -189,7 +189,7 @@
     <target-component>org.exoplatform.commons.api.notification.service.setting.PluginContainer</target-component>
     <component-plugin>
       <name>notification.plugins</name>
-      <set-method>add</set-method>
+      <set-method>addPlugin</set-method>
       <type>org.exoplatform.social.notification.plugin.PostActivitySpaceStreamPlugin</type>
       <description>Initial information for plugin.</description>
       <init-params>
@@ -234,7 +234,7 @@
     <target-component>org.exoplatform.commons.api.notification.service.setting.PluginContainer</target-component>
     <component-plugin>
       <name>notification.plugins</name>
-      <set-method>add</set-method>
+      <set-method>addPlugin</set-method>
       <type>org.exoplatform.social.notification.plugin.NewUserPlugin</type>
       <description>Initial information for plugin.</description>
       <init-params>
@@ -279,7 +279,7 @@
     <target-component>org.exoplatform.commons.api.notification.service.setting.PluginContainer</target-component>
     <component-plugin>
       <name>notification.plugins</name>
-      <set-method>add</set-method>
+      <set-method>addPlugin</set-method>
       <type>org.exoplatform.social.notification.plugin.RelationshipRecievedRequestPlugin</type>
       <description>Initial information for plugin.</description>
       <init-params>
@@ -325,7 +325,7 @@
     <target-component>org.exoplatform.commons.api.notification.service.setting.PluginContainer</target-component>
     <component-plugin>
       <name>notification.plugins</name>
-      <set-method>add</set-method>
+      <set-method>addPlugin</set-method>
       <type>org.exoplatform.social.notification.plugin.SpaceInvitationPlugin</type>
       <description>Initial information for plugin.</description>
       <init-params>
@@ -371,7 +371,7 @@
     <target-component>org.exoplatform.commons.api.notification.service.setting.PluginContainer</target-component>
     <component-plugin>
       <name>notification.plugins</name>
-      <set-method>add</set-method>
+      <set-method>addPlugin</set-method>
       <type>org.exoplatform.social.notification.plugin.RequestJoinSpacePlugin</type>
       <description>Initial information for plugin.</description>
       <init-params>
@@ -412,5 +412,73 @@
       </init-params>
     </component-plugin>
   </external-component-plugins>
-
+  
+	<external-component-plugins>
+	  <target-component>org.exoplatform.commons.api.notification.service.setting.PluginContainer</target-component>
+	  <component-plugin>
+	    <name>notification.plugins</name>
+	    <set-method>addChildPlugin</set-method>
+	    <type>org.exoplatform.social.notification.plugin.child.DefaultActivityChildPlugin</type>
+	    <description>Initial information for default child plugin.</description>
+	    <init-params>
+	      <object-param>
+	        <name>template.DefaultActivityChildPlugin</name>
+	        <description>The template of DefaultActivityChildPlugin</description>
+	        <object type="org.exoplatform.commons.api.notification.plugin.config.PluginConfig">
+	          <field name="pluginId">
+	            <string>DEFAULT_ACTIVITY</string>
+	          </field>
+	          <field name="templateConfig">
+	            <object type="org.exoplatform.commons.api.notification.plugin.config.TemplateConfig">
+	              <field name="bundlePath">
+	                <string>locale.notification.template.Notification</string>
+	              </field>
+	              <field name="templatePath">
+	                <string>war:/notification/templates/activities/DefaultActivity.gtmpl</string>
+	              </field>
+	            </object>
+	          </field>
+	        </object>
+	      </object-param>
+	    </init-params>
+	  </component-plugin>
+	</external-component-plugins>
+	
+  <external-component-plugins>
+	  <target-component>org.exoplatform.commons.api.notification.service.setting.PluginContainer</target-component>
+	  <component-plugin>
+	    <name>notification.plugins</name>
+	    <set-method>addChildPlugin</set-method>
+	    <type>org.exoplatform.social.notification.plugin.child.LinkActivityChildPlugin</type>
+	    <description>Initial information for link child notification plugin.</description>
+	    <init-params>
+	      <values-param>
+	        <name>parentIds</name>
+	        <description>The list parent plugin's id</description>
+	        <value>LikePlugin</value>
+	        <value>ActivityCommentPlugin</value>
+	      </values-param>
+	      <object-param>
+	        <name>template.LinkActivityChildPlugin</name>
+	        <description>The template of LinkActivityChildPlugin</description>
+	        <object type="org.exoplatform.commons.api.notification.plugin.config.PluginConfig">
+	          <field name="pluginId">
+	            <string>LINK_ACTIVITY</string>
+	          </field>
+	          <field name="templateConfig">
+	            <object type="org.exoplatform.commons.api.notification.plugin.config.TemplateConfig">
+	              <field name="bundlePath">
+	                <string>locale.notification.template.Notification</string>
+	              </field>
+	              <field name="templatePath">
+	                <string>war:/notification/templates/activities/NotificationLinkActivity.gtmpl</string>
+	              </field>
+	            </object>
+	          </field>
+	        </object>
+	      </object-param>
+	    </init-params>
+	  </component-plugin>
+	</external-component-plugins>
+  
 </configuration>

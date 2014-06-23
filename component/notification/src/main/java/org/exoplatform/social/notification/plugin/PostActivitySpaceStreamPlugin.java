@@ -87,7 +87,6 @@ public class PostActivitySpaceStreamPlugin extends AbstractNotificationPlugin {
     
     templateContext.put("USER", identity.getProfile().getFullName());
     templateContext.put("SPACE", spaceIdentity.getProfile().getFullName());
-    templateContext.put("ACTIVITY", Utils.processLinkTitle(activity.getTitle()));
     templateContext.put("SUBJECT", activity.getTitle());
     String subject = TemplateUtils.processSubject(templateContext);
     
@@ -96,7 +95,8 @@ public class PostActivitySpaceStreamPlugin extends AbstractNotificationPlugin {
     templateContext.put("PROFILE_URL", LinkProviderUtils.getRedirectUrl("user", identity.getRemoteId()));
     templateContext.put("REPLY_ACTION_URL", LinkProviderUtils.getRedirectUrl("reply_activity", activity.getId()));
     templateContext.put("VIEW_FULL_DISCUSSION_ACTION_URL", LinkProviderUtils.getRedirectUrl("view_full_activity", activity.getId()));
-    String body = TemplateUtils.processGroovy(templateContext);
+
+    String body = SocialNotificationUtils.getBody(ctx, templateContext, activity);
     
     return messageInfo.subject(subject).body(body).end();
   }
@@ -115,6 +115,9 @@ public class PostActivitySpaceStreamPlugin extends AbstractNotificationPlugin {
       for (NotificationInfo message : notifications) {
         String activityId = message.getValueOwnerParameter(SocialNotificationUtils.ACTIVITY_ID.getKey());
         ExoSocialActivity activity = Utils.getActivityManager().getActivity(activityId);
+        if (activity == null) {
+          continue;
+        }
         Space space = Utils.getSpaceService().getSpaceByPrettyName(activity.getStreamOwner());
         //
         SocialNotificationUtils.processInforSendTo(map, space.getId(), message.getValueOwnerParameter(SocialNotificationUtils.POSTER.getKey()));

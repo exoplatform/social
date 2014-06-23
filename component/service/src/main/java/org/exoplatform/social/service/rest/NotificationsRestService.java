@@ -20,6 +20,7 @@ import static org.exoplatform.social.service.rest.RestChecker.checkAuthenticated
 
 import java.net.URI;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -34,7 +35,6 @@ import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.rest.resource.ResourceContainer;
 import org.exoplatform.services.security.ConversationState;
-import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.manager.ActivityManager;
@@ -324,36 +324,45 @@ public class NotificationsRestService implements ResourceContainer {
                               @PathParam("type") String type,
                               @PathParam("objectId") String objectId) throws Exception {
     Space space = null;
-    ExoSocialActivity activity = null;
     Identity userIdentity = null;
     String targetURL = null;
+    
+    HttpServletRequest currentServletRequest = Util.getCurrentServletRequest();
+    boolean hasLoggedIn = (currentServletRequest.getRemoteUser() != null);
+    String redirectLink = null;
+    if (!hasLoggedIn) {
+      //If user is not authenticated, the query parameter will be removed after login
+      //so we will not redirect to an activity with query parameter but with path parameter
+      //this new link will be processed on activity stream portlet
+      redirectLink = Util.getBaseUrl() + LinkProvider.getRedirectUri(ACTIVITY_ID_PREFIX + "/redirect/" + type + "/" + objectId);
+    }
     
     try {
       checkAuthenticatedRequest();
       URL_TYPE urlType = URL_TYPE.valueOf(type);
       switch (urlType) {
         case view_full_activity: {
-          targetURL = Util.getBaseUrl() + LinkProvider.getRedirectUri(ACTIVITY_ID_PREFIX + "?id=" + objectId);
+          targetURL = hasLoggedIn ? Util.getBaseUrl() + LinkProvider.getRedirectUri(ACTIVITY_ID_PREFIX + "?id=" + objectId) : redirectLink;
           break;
         }
         case view_full_activity_highlight_comment: {
           String activityId = objectId.split("-")[0];
           String commentId = objectId.split("-")[1];
-          targetURL = Util.getBaseUrl() + LinkProvider.getRedirectUri(ACTIVITY_ID_PREFIX + "?id=" + activityId + "#comment-" + commentId);
+          targetURL = hasLoggedIn ? Util.getBaseUrl() + LinkProvider.getRedirectUri(ACTIVITY_ID_PREFIX + "?id=" + activityId + "#comment-" + commentId) : redirectLink;
           break;
         }
         case view_likers_activity: {
-          targetURL = Util.getBaseUrl() + LinkProvider.getRedirectUri(ACTIVITY_ID_PREFIX + "?id=" + objectId + "&likes=1");
+          targetURL = hasLoggedIn ? Util.getBaseUrl() + LinkProvider.getRedirectUri(ACTIVITY_ID_PREFIX + "?id=" + objectId + "&likes=1") : redirectLink;
           break;
         }
         case reply_activity: {
-          targetURL = Util.getBaseUrl() + LinkProvider.getRedirectUri(ACTIVITY_ID_PREFIX + "?id=" + objectId + "&comment=1");
+          targetURL = hasLoggedIn ? Util.getBaseUrl() + LinkProvider.getRedirectUri(ACTIVITY_ID_PREFIX + "?id=" + objectId + "&comment=1") : redirectLink;
           break;
         }
         case reply_activity_highlight_comment: {
           String activityId = objectId.split("-")[0];
           String commentId = objectId.split("-")[1];
-          targetURL = Util.getBaseUrl() + LinkProvider.getRedirectUri(ACTIVITY_ID_PREFIX + "?id=" + activityId + "#comment-" + commentId + "&comment=1");
+          targetURL = hasLoggedIn ? Util.getBaseUrl() + LinkProvider.getRedirectUri(ACTIVITY_ID_PREFIX + "?id=" + activityId + "#comment-" + commentId + "&comment=1") : redirectLink;
           break;
         }
         case user: {

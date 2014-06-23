@@ -224,4 +224,35 @@ public class ActivityCommentPluginTest extends AbstractPluginTest {
     getPlugin().buildDigest(ctx, writer);
     assertDigest(writer, "Demo gtn, John Anthony have commented on your activity: my activity's title post today.");
   }
+  
+  public void testDigestWithDeletedComment() throws Exception {
+    //mary post activity on root stream ==> notify to root
+    ExoSocialActivity maryActivity = makeActivity(maryIdentity, ACTIVITY_TITLE);
+    assertMadeNotifications(1);
+    notificationService.clearAll();
+    
+    List<NotificationInfo> toRoot = new ArrayList<NotificationInfo>();
+
+    //demo add comment to maryActivity ==> notify to root and mary
+    makeComment(maryActivity, demoIdentity, "demo add comment");
+    List<NotificationInfo> list1 = assertMadeNotifications(2);
+    toRoot.add(list1.get(1));
+    notificationService.clearAll();
+    
+    //john add comment to maryActivity ==> notify to root, mary and demo
+    ExoSocialActivity johnComment = makeComment(activityManager.getActivity(maryActivity.getId()), johnIdentity, "john add comment");
+    List<NotificationInfo> list2 = assertMadeNotifications(3);
+    toRoot.add(list2.get(2));
+    notificationService.clearAll();
+    
+    //john delete his comment
+    activityManager.deleteActivity(johnComment);
+    
+    NotificationContext ctx = NotificationContextImpl.cloneInstance();
+    toRoot.set(0, toRoot.get(0).setTo(rootIdentity.getRemoteId()));
+    ctx.setNotificationInfos(toRoot);
+    Writer writer = new StringWriter();
+    getPlugin().buildDigest(ctx, writer);
+    assertDigest(writer, "Demo gtn has commented on your activity: my activity's title post today.");
+  }
 }

@@ -27,7 +27,6 @@ import org.exoplatform.commons.api.notification.model.NotificationInfo;
 import org.exoplatform.commons.api.notification.model.NotificationKey;
 import org.exoplatform.commons.api.notification.plugin.AbstractNotificationPlugin;
 import org.exoplatform.commons.notification.impl.NotificationContextImpl;
-import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.notification.AbstractPluginTest;
 
@@ -261,4 +260,29 @@ public class RequestJoinSpacePluginTest extends AbstractPluginTest {
     
   }
 
+  public void testDigestCancelRequest() throws Exception {
+    Space space = getSpaceInstance(1);
+    spaceService.addPendingUser(space, demoIdentity.getRemoteId());
+    spaceService.addPendingUser(space, johnIdentity.getRemoteId());
+    spaceService.addPendingUser(space, maryIdentity.getRemoteId());
+    
+    List<NotificationInfo> list = assertMadeNotifications(3);
+    List<NotificationInfo> messages = new ArrayList<NotificationInfo>();
+    for (NotificationInfo m : list) {
+      m.setTo(rootIdentity.getRemoteId());
+      messages.add(m);
+    }
+    
+    //john cancel his request to join space
+    spaceService.removePendingUser(space, johnIdentity.getRemoteId());
+    
+    Writer writer = new StringWriter();
+    NotificationContext ctx = NotificationContextImpl.cloneInstance();
+    ctx.setNotificationInfos(messages);
+    getPlugin().buildDigest(ctx, writer);
+    
+    assertDigest(writer, "The following users have asked to join the my space 1 space: Demo gtn, Mary Kelly.");
+    notificationService.clearAll();
+    
+  }
 }

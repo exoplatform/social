@@ -245,6 +245,14 @@ public abstract class AbstractPluginTest extends AbstractCoreTest {
     return relationship;
   }
   
+  protected void cancelRelationship(Identity identity1, Identity identity2) {
+    Relationship relationship = relationshipManager.get(identity1, identity2);
+    if (relationship != null && relationship.getStatus() == Relationship.Type.PENDING) {
+      relationshipManager.delete(relationship);
+      tearDownRelationshipList.remove(relationship);
+    }
+  }
+
   /**
    * Makes the comment for Test Case
    * @param activity

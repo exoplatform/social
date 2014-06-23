@@ -30,6 +30,7 @@ import org.exoplatform.commons.api.notification.model.MessageInfo;
 import org.exoplatform.commons.api.notification.model.NotificationInfo;
 import org.exoplatform.commons.api.notification.plugin.AbstractNotificationPlugin;
 import org.exoplatform.commons.api.notification.service.template.TemplateContext;
+import org.exoplatform.commons.notification.NotificationUtils;
 import org.exoplatform.commons.notification.template.TemplateUtils;
 import org.exoplatform.container.xml.InitParams;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
@@ -55,7 +56,11 @@ public class ActivityMentionPlugin extends AbstractNotificationPlugin {
     ExoSocialActivity activity = ctx.value(SocialNotificationUtils.ACTIVITY);
     
     Set<String> receivers = new HashSet<String>();
-    Utils.sendToMentioners(receivers, activity.getMentionedIds(), activity.getPosterId());
+    if (activity.getMentionedIds().length > 0) {
+      Utils.sendToMentioners(receivers, activity.getMentionedIds(), activity.getPosterId());
+    } else {
+      receivers = Utils.getMentioners(activity.getTemplateParams().get("comment"), activity.getPosterId());
+    }
 
     return NotificationInfo.instance().key(getKey())
            .to(new ArrayList<String>(receivers))
@@ -81,21 +86,23 @@ public class ActivityMentionPlugin extends AbstractNotificationPlugin {
     templateContext.put("USER", identity.getProfile().getFullName());
     String subject = TemplateUtils.processSubject(templateContext);
     
+    templateContext.put("AVATAR", LinkProviderUtils.getUserAvatarUrl(identity.getProfile()));
+    templateContext.put("PROFILE_URL", LinkProviderUtils.getRedirectUrl("user", identity.getRemoteId()));
+    String body = "";
+    
     // In case of mention on a comment, we need provide the id of the activity, not of the comment
     if (activity.isComment()) {
       ExoSocialActivity parentActivity = Utils.getActivityManager().getParentActivity(activity);
       activityId = parentActivity.getId();
       templateContext.put("REPLY_ACTION_URL", LinkProviderUtils.getRedirectUrl("reply_activity_highlight_comment", activityId + "-" + activity.getId()));
       templateContext.put("VIEW_FULL_DISCUSSION_ACTION_URL", LinkProviderUtils.getRedirectUrl("view_full_activity_highlight_comment", activityId + "-" + activity.getId()));
+      templateContext.put("ACTIVITY", NotificationUtils.processLinkTitle(activity.getTitle()));
+      body = TemplateUtils.processGroovy(templateContext);
     } else {
       templateContext.put("REPLY_ACTION_URL", LinkProviderUtils.getRedirectUrl("reply_activity", activityId));
       templateContext.put("VIEW_FULL_DISCUSSION_ACTION_URL", LinkProviderUtils.getRedirectUrl("view_full_activity", activityId));
+      body = SocialNotificationUtils.getBody(ctx, templateContext, activity);
     }
-    
-    templateContext.put("AVATAR", LinkProviderUtils.getUserAvatarUrl(identity.getProfile()));
-    templateContext.put("PROFILE_URL", LinkProviderUtils.getRedirectUrl("user", identity.getRemoteId()));
-    templateContext.put("ACTIVITY", Utils.processMentions(activity.getTitle()));
-    String body = TemplateUtils.processGroovy(templateContext);
     
     return messageInfo.subject(subject).body(body).end();
   }
@@ -113,6 +120,9 @@ public class ActivityMentionPlugin extends AbstractNotificationPlugin {
       for (NotificationInfo notification : notifications) {
         String activityId = notification.getValueOwnerParameter(SocialNotificationUtils.ACTIVITY_ID.getKey());
         ExoSocialActivity activity = Utils.getActivityManager().getActivity(activityId);
+        if (activity == null) {
+          continue;
+        }
         Identity identity = Utils.getIdentityManager().getIdentity(activity.getPosterId(), true);
         
         if (activity.isComment()) {
@@ -134,6 +144,19 @@ public class ActivityMentionPlugin extends AbstractNotificationPlugin {
   @Override
   public boolean isValid(NotificationContext ctx) {
     ExoSocialActivity activity = ctx.value(SocialNotificationUtils.ACTIVITY);
-    return activity.getMentionedIds().length > 0; 
+    if (activity.getMentionedIds().length > 0) {
+      return true;
+    }
+
+    //Case of share link, the title of activity is the title of the link
+    //so the process mention is not correct and no mention is saved to activity
+    //We need to process the value stored in the template param of activity with key = comment
+    String commentLinkActivity = activity.getTemplateParams().get("comment");
+    if (commentLinkActivity != null && commentLinkActivity.length() > 0 &&
+        Utils.getMentioners(commentLinkActivity, activity.getPosterId()).size() > 0) {
+      return true;
+    }
+
+    return false;
   }
 }

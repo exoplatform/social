@@ -32,12 +32,15 @@ import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvide
 import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
 import org.exoplatform.social.core.manager.ActivityManager;
 import org.exoplatform.social.core.manager.IdentityManager;
+import org.exoplatform.social.core.manager.RelationshipManager;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
 
 public class Utils {
   
   private static final Pattern MENTION_PATTERN = Pattern.compile("<a href=\"([\\w|/]+|)/profile/([\\w]+)\">([\\w|\\s]+|)</a>");
+  
+  private static final int MAX_LENGTH = 150;
   
   private static final Pattern LINK_PATTERN = Pattern.compile("<a ([^>]+)>([^<]+)</a>");
   
@@ -188,11 +191,26 @@ public class Utils {
   }
   
   /**
-   * Add the style css for a link in the activity title to display a link without underline
+   * Gets the list of mentioners in a message that is not the poster
    * 
-   * @param title activity title
-   * @return activity title after process all link
+   * @param title the activity title
+   * @param posterId id of the poster
+   * @return list of mentioners
    */
+  public static Set<String> getMentioners(String title, String posterId) {
+    String posterRemoteId = getUserId(posterId);
+    Set<String> mentioners = new HashSet<String>();
+    Matcher matcher = MENTION_PATTERN.matcher(title);
+    while (matcher.find()) {
+      String remoteId = matcher.group(2);
+      Identity identity = getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, remoteId, false);
+      if (identity != null && posterRemoteId.equals(remoteId) == false) { 
+        mentioners.add(remoteId);
+      }
+    }
+    return mentioners;
+  }
+  
   public static String processLinkTitle(String title) {
     Matcher matcher = LINK_PATTERN.matcher(title);
     String domain = CommonsUtils.getCurrentDomain();
@@ -213,7 +231,7 @@ public class Utils {
     
     return title;
   }
-  
+
   /**
    * Validates URL.
    * 
@@ -241,6 +259,19 @@ public class Utils {
     return destinataires;
   }
   
+  /**
+   * Get 150 first characters of a string
+   * 
+   * @param content
+   * @return
+   */
+  public static String formatContent(String content) {
+    if (content.length() > MAX_LENGTH) {
+      content = content.substring(0, MAX_LENGTH) + " ... ";
+    }
+    return content;
+  }
+
   public static IdentityManager getIdentityManager() {
     return getService(IdentityManager.class);
   }
@@ -252,5 +283,8 @@ public class Utils {
   public static ActivityManager getActivityManager() {
     return getService(ActivityManager.class);
   }
-  
+
+  public static RelationshipManager getRelationshipManager() {
+    return getService(RelationshipManager.class);
+  }
 }

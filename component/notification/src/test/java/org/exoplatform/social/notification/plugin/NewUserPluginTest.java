@@ -12,6 +12,8 @@ import org.exoplatform.commons.api.notification.model.NotificationInfo;
 import org.exoplatform.commons.api.notification.model.NotificationKey;
 import org.exoplatform.commons.api.notification.plugin.AbstractNotificationPlugin;
 import org.exoplatform.commons.notification.impl.NotificationContextImpl;
+import org.exoplatform.commons.utils.CommonsUtils;
+import org.exoplatform.services.organization.OrganizationService;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.notification.AbstractPluginTest;
 
@@ -112,10 +114,12 @@ public class NewUserPluginTest extends AbstractPluginTest {
 
     list.get(0).setTo(rootIdentity.getRemoteId());
     
+    CommonsUtils.getService(OrganizationService.class).getUserHandler().removeUser("raul", true);
+    
     ctx.setNotificationInfos(list);
     Writer writer = new StringWriter();
     getPlugin().buildDigest(ctx, writer);
-    assertDigest(writer, "Ghost gtn, Raul gtn, Paul gtn have joined eXo.");
+    assertDigest(writer, "Ghost gtn, Paul gtn have joined eXo.");
     
     tearDownIdentityList.add(ghostIdentity);
     tearDownIdentityList.add(raulIdentity);

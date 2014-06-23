@@ -99,6 +99,10 @@ public class RelationshipRecievedRequestPlugin extends AbstractNotificationPlugi
 
     try {
       for (NotificationInfo message : notifications) {
+        Relationship relationship = Utils.getRelationshipManager().get(message.getValueOwnerParameter(SocialNotificationUtils.RELATIONSHIP_ID.getKey()));
+        if (relationship == null || relationship.getStatus().name().equals("PENDING") == false) {
+          continue;
+        }
         SocialNotificationUtils.processInforSendTo(receiverMap, first.getTo(), message.getValueOwnerParameter(SocialNotificationUtils.SENDER.getKey()));
       }
       writer.append(SocialNotificationUtils.getMessageByIds(receiverMap, templateContext, "connections_request"));

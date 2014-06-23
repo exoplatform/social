@@ -23,6 +23,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.exoplatform.commons.api.notification.NotificationContext;
 import org.exoplatform.commons.api.notification.model.MessageInfo;
 import org.exoplatform.commons.api.notification.model.NotificationInfo;
@@ -104,6 +105,10 @@ public class RequestJoinSpacePlugin extends AbstractNotificationPlugin {
       for (NotificationInfo message : notifications) {
         String spaceId = message.getValueOwnerParameter(SocialNotificationUtils.SPACE_ID.getKey());
         String fromUser = message.getValueOwnerParameter("request_from");
+        Space space = Utils.getSpaceService().getSpaceById(spaceId);
+        if (ArrayUtils.contains(space.getPendingUsers(), fromUser) == false) {
+          continue;
+        }
         //
         SocialNotificationUtils.processInforSendTo(map, spaceId, fromUser);
       }
