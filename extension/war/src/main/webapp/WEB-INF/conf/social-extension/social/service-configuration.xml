@@ -66,6 +66,18 @@
   <component>
     <type>org.exoplatform.social.service.rest.RelationshipRestService</type>
   </component>
+  
+  <component>
+    <type>org.exoplatform.social.service.rest.SpaceRestService</type>
+  </component>
+  
+  <component>
+    <type>org.exoplatform.social.service.rest.IdentitiesRestService</type>
+  </component>
+  
+  <component>
+    <type>org.exoplatform.social.service.rest.SpaceMembershipRestService</type>
+  </component>
 <!-- REST service -->
 
 <!-- Social Rest API resources for latest -->
