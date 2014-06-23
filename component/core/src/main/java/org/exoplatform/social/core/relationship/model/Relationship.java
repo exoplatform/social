@@ -48,6 +48,8 @@ public class Relationship {
     CONFIRMED,
     /** The IGNORED. */
     IGNORED,
+    /** The ALL. */
+    ALL,
   }
 
   /**

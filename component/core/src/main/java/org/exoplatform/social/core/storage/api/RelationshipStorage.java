@@ -352,4 +352,24 @@ public interface RelationshipStorage {
    * @return
    */
   public List<Identity> getLastConnections(Identity identity, int limit) throws RelationshipStorageException;
+  
+  /**
+   * Gets a list of all relationships by status.
+   *
+   * @param identity The provided identity.
+   * @param type type of the relationship : ALL, PENDING or CONFIRMED.
+   * @param offset
+   * @param limit
+   * @return The list of relationships.
+   */
+  public List<Relationship> getRelationshipsByStatus(Identity identity, Relationship.Type type, long offset, long limit);
+  
+  /**
+   * Gets number of relationships by status.
+   *
+   * @param identity The provided identity.
+   * @param type type of the relationship : ALL, PENDING or CONFIRMED.
+   * @return The number of relationships.
+   */
+  public int getRelationshipsCountByStatus(Identity identity, Relationship.Type type);
 }

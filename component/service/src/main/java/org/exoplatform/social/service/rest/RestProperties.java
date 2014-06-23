@@ -8,6 +8,12 @@ public class RestProperties {
   public static final String HREF            = "href";
 
   public static final String IDENTITY        = "identity";
+  
+  public static final String REMOTE_ID       = "remoteId";
+
+  public static final String PROVIDER_ID     = "providerId";
+
+  public static final String GLOBAL_ID       = "globalId";
 
   public static final String STATUS          = "status";
 

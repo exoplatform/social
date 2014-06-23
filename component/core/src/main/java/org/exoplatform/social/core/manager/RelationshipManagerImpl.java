@@ -591,4 +591,18 @@ public class RelationshipManagerImpl implements RelationshipManager {
   public List<Identity> getLastConnections(Identity identity, int limit) {
     return storage.getLastConnections(identity, limit);
   }
+  
+  /**
+   * {@inheritDoc}
+   */
+  public List<Relationship> getRelationshipsByStatus(Identity identity, Relationship.Type type, int offset, int limit) {
+    return storage.getRelationshipsByStatus(identity, type, offset, limit);
+  }
+  
+  /**
+   * {@inheritDoc}
+   */
+  public int getRelationshipsCountByStatus(Identity identity, Relationship.Type type) {
+    return storage.getRelationshipsCountByStatus(identity, type);
+  }
 }

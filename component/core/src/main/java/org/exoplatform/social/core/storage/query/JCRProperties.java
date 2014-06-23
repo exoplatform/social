@@ -26,6 +26,7 @@ public class JCRProperties {
   public static final PropertyLiteralExpression<String> path = new PropertyLiteralExpression<String>(String.class, "jcr:path");
   public static final PropertyLiteralExpression<String> id = new PropertyLiteralExpression<String>(String.class, "jcr:uuid");
   public static final PropertyLiteralExpression<String> name = new PropertyLiteralExpression<String>(String.class, "exo:name");
+  public static final PropertyLiteralExpression<String> status = new PropertyLiteralExpression<String>(String.class, "soc:status");
   
   public static final PropertyLiteralExpression<String> JCR_EXCERPT = new PropertyLiteralExpression<String>(String.class, "rep:excerpt()");
   public static final PropertyLiteralExpression<String> JCR_RELEVANCY = new PropertyLiteralExpression<String>(String.class, "jcr:score");

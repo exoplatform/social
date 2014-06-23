@@ -269,7 +269,7 @@ public class UsersRestService implements ResourceContainer {
     List<Map<String, Object>> spaceInfos = new ArrayList<Map<String, Object>>();
     ListAccess<Space> listAccess = CommonsUtils.getService(SpaceService.class).getMemberSpaces(id);
     for (Space space : listAccess.load(offset, limit)) {
-      Map<String, Object> spaceInfo = RestUtils.buildEntityFromSpace(space);
+      Map<String, Object> spaceInfo = RestUtils.buildEntityFromSpace(space, id);
       //
       spaceInfos.add(spaceInfo);
     }
