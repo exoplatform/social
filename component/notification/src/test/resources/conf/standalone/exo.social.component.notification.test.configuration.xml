@@ -23,17 +23,13 @@
   xmlns="http://www.exoplatform.org/xml/ns/kernel_1_2.xsd">
   
   <component>
-    <key>org.exoplatform.commons.api.settings.SettingService</key>
-    <type>org.exoplatform.social.notification.mock.MockSettingServiceImpl</type>
-  </component>
-  
-  <component>
-    <type>org.exoplatform.commons.notification.cache.TemplateCaching</type>
+    <key>org.exoplatform.commons.api.settings.ExoFeatureService</key>
+    <type>org.exoplatform.settings.impl.ExoFeatureServiceImpl</type>
   </component>
 
   <component>
-    <key>org.exoplatform.commons.api.notification.service.storage.NotificationService</key>
-    <type>org.exoplatform.social.notification.mock.MockNotificationService</type>
+    <key>org.exoplatform.commons.api.settings.SettingService</key>
+		<type>org.exoplatform.social.notification.mock.MockSettingServiceImpl</type>
   </component>
 
   <component>
@@ -42,8 +38,8 @@
   </component>
   
   <component>
-    <key>org.exoplatform.commons.api.notification.service.setting.PluginContainer</key>
-    <type>org.exoplatform.commons.notification.impl.setting.NotificationPluginContainer</type>
+    <key>org.exoplatform.commons.api.notification.service.storage.NotificationService</key>
+    <type>org.exoplatform.social.notification.mock.MockNotificationService</type>
   </component>
 
   <component>
@@ -52,32 +48,49 @@
   </component>
   
   <component>
-    <key>org.exoplatform.commons.api.settings.ExoFeatureService</key>
-    <type>org.exoplatform.settings.impl.ExoFeatureServiceImpl</type>
-  </component>
-
-  <component>
     <key>org.exoplatform.commons.api.notification.service.setting.PluginSettingService</key>
     <type>org.exoplatform.commons.notification.impl.setting.PluginSettingServiceImpl</type>
   </component>
   
   <component>
-    <type>org.exoplatform.commons.notification.NotificationConfiguration</type>
+    <key>org.exoplatform.commons.api.notification.command.NotificationCommand</key>
+    <type>org.exoplatform.commons.notification.impl.command.NotificationCommandImpl</type>
+  </component>
+  
+	<component>
+	  <key>org.exoplatform.commons.notification.impl.PluginStatisticService</key>
+	  <type>org.exoplatform.commons.notification.impl.PluginStatisticService</type>
+	</component>
+	
+	<component>
+	  <key>org.exoplatform.commons.api.notification.service.template.DigestorService</key>
+	  <type>org.exoplatform.commons.notification.impl.service.template.DigestorServiceImpl</type>
+	</component>
+  
+  <component>
+    <key>org.exoplatform.commons.api.notification.service.QueueMessage</key>
+    <type>org.exoplatform.commons.notification.impl.service.QueueMessageImpl</type>
     <init-params>
       <value-param>
-        <name>workspace</name>
-        <value>portal-test</value>
+        <name>numberOfMailPerBatch</name> <!-- Max number of mails to send in period time -->
+        <value>50</value>
       </value-param>
       <value-param>
-        <name>dayOfWeekend</name>
-        <value>6</value>
-      </value-param>
-      <value-param>
-        <name>dayOfMonthend</name>
-        <value>28</value>
+        <name>period</name><!-- The time to repeat interval call send email notification -->
+        <value>60</value>
       </value-param>
     </init-params>
   </component>
+  
+  <component>
+	  <type>org.exoplatform.commons.notification.NotificationConfiguration</type>
+	  <init-params>
+	    <value-param>
+	      <name>workspace</name>
+	      <value>portal-test</value>
+	    </value-param>
+	  </init-params>
+	</component>
   
   <component>
 		<key>org.exoplatform.commons.api.notification.service.NotificationCompletionService</key>
@@ -88,6 +101,20 @@
 				<value>false</value>
 			</value-param>
 		</init-params>
+	</component>
+
+	<component>
+	  <key>org.exoplatform.commons.api.notification.service.setting.PluginContainer</key>
+	  <type>org.exoplatform.commons.notification.impl.setting.NotificationPluginContainer</type>
+	</component>
+	
+	<component>
+	  <type>org.exoplatform.commons.notification.cache.TemplateCaching</type>
+	</component>
+	
+	<component>
+	  <key>org.exoplatform.services.scheduler.JobSchedulerService</key>
+	  <type>org.exoplatform.social.notification.mock.MockJobSchedulerService</type>
 	</component>
 
 	<component>
@@ -144,7 +171,7 @@
     <target-component>org.exoplatform.commons.api.notification.service.setting.PluginContainer</target-component>
     <component-plugin>
       <name>notification.plugins</name>
-      <set-method>add</set-method>
+      <set-method>addPlugin</set-method>
       <type>org.exoplatform.social.notification.plugin.ActivityMentionPlugin</type>
       <description>Initial information for plugin.</description>
       <init-params>
@@ -189,7 +216,7 @@
     <target-component>org.exoplatform.commons.api.notification.service.setting.PluginContainer</target-component>
     <component-plugin>
       <name>notification.plugins</name>
-      <set-method>add</set-method>
+      <set-method>addPlugin</set-method>
       <type>org.exoplatform.social.notification.plugin.ActivityCommentPlugin</type>
       <description>Initial information for plugin.</description>
       <init-params>
@@ -235,7 +262,7 @@
     <target-component>org.exoplatform.commons.api.notification.service.setting.PluginContainer</target-component>
     <component-plugin>
       <name>notification.plugins</name>
-      <set-method>add</set-method>
+      <set-method>addPlugin</set-method>
       <type>org.exoplatform.social.notification.plugin.LikePlugin</type>
       <description>Initial information for plugin.</description>
       <init-params>
@@ -280,7 +307,7 @@
     <target-component>org.exoplatform.commons.api.notification.service.setting.PluginContainer</target-component>
     <component-plugin>
       <name>notification.plugins</name>
-      <set-method>add</set-method>
+      <set-method>addPlugin</set-method>
       <type>org.exoplatform.social.notification.plugin.PostActivityPlugin</type>
       <description>Initial information for plugin.</description>
       <init-params>
@@ -325,7 +352,7 @@
     <target-component>org.exoplatform.commons.api.notification.service.setting.PluginContainer</target-component>
     <component-plugin>
       <name>notification.plugins</name>
-      <set-method>add</set-method>
+      <set-method>addPlugin</set-method>
       <type>org.exoplatform.social.notification.plugin.PostActivitySpaceStreamPlugin</type>
       <description>Initial information for plugin.</description>
       <init-params>
@@ -370,7 +397,7 @@
     <target-component>org.exoplatform.commons.api.notification.service.setting.PluginContainer</target-component>
     <component-plugin>
       <name>notification.plugins</name>
-      <set-method>add</set-method>
+      <set-method>addPlugin</set-method>
       <type>org.exoplatform.social.notification.plugin.NewUserPlugin</type>
       <description>Initial information for plugin.</description>
       <init-params>
@@ -415,7 +442,7 @@
     <target-component>org.exoplatform.commons.api.notification.service.setting.PluginContainer</target-component>
     <component-plugin>
       <name>notification.plugins</name>
-      <set-method>add</set-method>
+      <set-method>addPlugin</set-method>
       <type>org.exoplatform.social.notification.plugin.RelationshipRecievedRequestPlugin</type>
       <description>Initial information for plugin.</description>
       <init-params>
@@ -461,7 +488,7 @@
     <target-component>org.exoplatform.commons.api.notification.service.setting.PluginContainer</target-component>
     <component-plugin>
       <name>notification.plugins</name>
-      <set-method>add</set-method>
+      <set-method>addPlugin</set-method>
       <type>org.exoplatform.social.notification.plugin.SpaceInvitationPlugin</type>
       <description>Initial information for plugin.</description>
       <init-params>
@@ -507,7 +534,7 @@
     <target-component>org.exoplatform.commons.api.notification.service.setting.PluginContainer</target-component>
     <component-plugin>
       <name>notification.plugins</name>
-      <set-method>add</set-method>
+      <set-method>addPlugin</set-method>
       <type>org.exoplatform.social.notification.plugin.RequestJoinSpacePlugin</type>
       <description>Initial information for plugin.</description>
       <init-params>
@@ -553,7 +580,7 @@
     <target-component>org.exoplatform.commons.api.notification.service.setting.PluginContainer</target-component>
     <component-plugin>
       <name>notification.plugins</name>
-      <set-method>add</set-method>
+      <set-method>addPlugin</set-method>
       <type>org.exoplatform.commons.notification.impl.DigestDailyPlugin</type>
       <description>Initial information for plugin.</description>
       <init-params>
@@ -587,7 +614,7 @@
     <target-component>org.exoplatform.commons.api.notification.service.setting.PluginContainer</target-component>
     <component-plugin>
       <name>notification.plugins</name>
-      <set-method>add</set-method>
+      <set-method>addPlugin</set-method>
       <type>org.exoplatform.commons.notification.impl.DigestWeeklyPlugin</type>
       <description>Initial information for plugin.</description>
       <init-params>
@@ -617,4 +644,66 @@
     </component-plugin>
   </external-component-plugins>
   
+  <external-component-plugins>
+	  <target-component>org.exoplatform.commons.api.notification.service.setting.PluginContainer</target-component>
+	  <component-plugin>
+	    <name>notification.plugins</name>
+	    <set-method>addChildPlugin</set-method>
+	    <type>org.exoplatform.social.notification.plugin.child.DefaultActivityChildPlugin</type>
+	    <description>Initial information for default child notification plugin.</description>
+	    <init-params>
+	      <object-param>
+	        <name>template.DefaultActivityChildPlugin</name>
+	        <description>The template of DefaultActivityChildPlugin</description>
+	        <object type="org.exoplatform.commons.api.notification.plugin.config.PluginConfig">
+	          <field name="pluginId">
+	            <string>DEFAULT_ACTIVITY</string>
+	          </field>
+	          <field name="templateConfig">
+	            <object type="org.exoplatform.commons.api.notification.plugin.config.TemplateConfig">
+	              <field name="bundlePath">
+	                <string>locale.notification.template.Notification</string>
+	              </field>
+	              <field name="templatePath">
+	                <string>classpath:/notification/templates/DefaultActivity.gtmpl</string>
+	              </field>
+	            </object>
+	          </field>
+	        </object>
+	      </object-param>
+	    </init-params>
+	  </component-plugin>
+	</external-component-plugins>
+	
+	<external-component-plugins>
+	 <target-component>org.exoplatform.commons.api.notification.service.setting.PluginContainer</target-component>
+	 <component-plugin>
+	   <name>notification.plugins</name>
+	   <set-method>addChildPlugin</set-method>
+	   <type>org.exoplatform.social.notification.plugin.child.LinkActivityChildPlugin</type>
+	   <description>Initial information for link child notification plugin.</description>
+	   <init-params>
+	     <object-param>
+	       <name>template.LinkActivityChildPlugin</name>
+	       <description>The template of LinkActivityChildPlugin</description>
+	       <object type="org.exoplatform.commons.api.notification.plugin.config.PluginConfig">
+	         <field name="pluginId">
+	           <string>LINK_ACTIVITY</string>
+	         </field>
+	         <field name="templateConfig">
+	           <object type="org.exoplatform.commons.api.notification.plugin.config.TemplateConfig">
+	             <field name="bundlePath">
+	               <string>locale.notification.template.Notification</string>
+	             </field>
+	             <field name="templatePath">
+	               <string>classpath:/notification/templates/activities/NotificationLinkActivity.gtmpl</string>
+	             </field>
+	           </object>
+	         </field>
+	       </object>
+	     </object-param>
+	   </init-params>
+	 </component-plugin>
+	</external-component-plugins>
+	
 </configuration>

@@ -22,9 +22,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.exoplatform.commons.api.notification.NotificationContext;
 import org.exoplatform.commons.api.notification.model.ArgumentLiteral;
+import org.exoplatform.commons.api.notification.model.NotificationKey;
+import org.exoplatform.commons.api.notification.plugin.AbstractNotificationChildPlugin;
+import org.exoplatform.commons.api.notification.plugin.AbstractNotificationPlugin;
+import org.exoplatform.commons.api.notification.service.setting.PluginContainer;
 import org.exoplatform.commons.api.notification.service.template.TemplateContext;
 import org.exoplatform.commons.notification.template.TemplateUtils;
+import org.exoplatform.commons.utils.CommonsUtils;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
@@ -34,6 +40,7 @@ import org.exoplatform.social.core.relationship.model.Relationship;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.notification.LinkProviderUtils;
 import org.exoplatform.social.notification.Utils;
+import org.exoplatform.social.notification.plugin.child.DefaultActivityChildPlugin;
 
 public class SocialNotificationUtils {
 
@@ -170,7 +177,7 @@ public class SocialNotificationUtils {
 
       for (int i = 0; i < count && i < 3; i++) {
         String name = "";
-        if ("user".equals(type) || "connections_request".equals(type)) {
+        if ("new_user".equals(type) || "user".equals(type) || "connections_request".equals(type)) {
           Identity identity = Utils.getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, values.get(i), true);
           name = identity.getProfile().getFullName();
         } else {
@@ -183,7 +190,7 @@ public class SocialNotificationUtils {
         } else {
           key = keys[i];
         }
-        value.append(SocialNotificationUtils.buildRedirecUrl(type, values.get(i), name));
+        value.append(SocialNotificationUtils.buildRedirecUrl("new_user".equals(type) ? "user" : type, values.get(i), name));
         if (count > (i + 1) && i < 2) {
           value.append(", ");
         }
@@ -195,6 +202,8 @@ public class SocialNotificationUtils {
           templateContext.put("ACTIVITY_STREAM", LinkProviderUtils.getRedirectUrl("user_activity_stream", targetId));
         } else if ("space".equals(type)) {
           templateContext.put("COUNT", SocialNotificationUtils.buildRedirecUrl("space_invitation", targetId, String.valueOf((count - 3))));
+        } else if ("new_user".equals(type)) {
+          templateContext.put("COUNT", SocialNotificationUtils.buildRedirecUrl("connections", "all", String.valueOf((count - 3))));
         } else {
           templateContext.put("COUNT", SocialNotificationUtils.buildRedirecUrl("connections_request", targetId, String.valueOf((count - 3))));
         }
@@ -241,6 +250,18 @@ public class SocialNotificationUtils {
     } catch (Exception e) {
       return;
     }
+  }
+  
+  public static String getBody(NotificationContext ctx, TemplateContext context, ExoSocialActivity activity) {
+    NotificationKey childKey = new NotificationKey(activity.getType());
+    PluginContainer pluginContainer = CommonsUtils.getService(PluginContainer.class);
+    AbstractNotificationPlugin child = pluginContainer.getPlugin(childKey);
+    if (child == null || (child instanceof AbstractNotificationChildPlugin) == false) {
+      child = pluginContainer.getPlugin(new NotificationKey(DefaultActivityChildPlugin.ID));
+    }
+    context.put("ACTIVITY", ((AbstractNotificationChildPlugin) child).makeContent(ctx));
+
+    return TemplateUtils.processGroovy(context);
   }
   
 }

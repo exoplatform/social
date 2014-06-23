@@ -85,10 +85,10 @@ public class PostActivityPlugin extends AbstractNotificationPlugin {
     String subject = TemplateUtils.processSubject(templateContext);
     
     templateContext.put("PROFILE_URL", LinkProviderUtils.getRedirectUrl("user", identity.getRemoteId()));
-    templateContext.put("ACTIVITY", Utils.processLinkTitle(activity.getTitle()));
     templateContext.put("REPLY_ACTION_URL", LinkProviderUtils.getRedirectUrl("reply_activity", activity.getId()));
     templateContext.put("VIEW_FULL_DISCUSSION_ACTION_URL", LinkProviderUtils.getRedirectUrl("view_full_activity", activity.getId()));
-    String body = TemplateUtils.processGroovy(templateContext);
+    
+    String body = SocialNotificationUtils.getBody(ctx, templateContext, activity);
     
     return messageInfo.subject(subject).body(body).end();
   }
@@ -105,6 +105,12 @@ public class PostActivityPlugin extends AbstractNotificationPlugin {
     
     try {
       for (NotificationInfo message : notifications) {
+        ExoSocialActivity activity = Utils.getActivityManager().getActivity(message.getValueOwnerParameter(SocialNotificationUtils.ACTIVITY_ID.getKey()));
+        
+        //Case of activity was deleted, ignore this notification
+        if (activity == null) {
+          continue;
+        }
         SocialNotificationUtils.processInforSendTo(receiverMap, sendToUser, message.getValueOwnerParameter(SocialNotificationUtils.POSTER.getKey()));
       }
       writer.append(SocialNotificationUtils.getMessageByIds(receiverMap, templateContext, "user"));

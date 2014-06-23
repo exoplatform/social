@@ -30,6 +30,7 @@ import org.exoplatform.commons.api.notification.model.MessageInfo;
 import org.exoplatform.commons.api.notification.model.NotificationInfo;
 import org.exoplatform.commons.api.notification.plugin.AbstractNotificationPlugin;
 import org.exoplatform.commons.api.notification.service.template.TemplateContext;
+import org.exoplatform.commons.notification.NotificationUtils;
 import org.exoplatform.commons.notification.template.TemplateUtils;
 import org.exoplatform.container.xml.InitParams;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
@@ -81,12 +82,11 @@ public class ActivityCommentPlugin extends AbstractNotificationPlugin {
     
     SocialNotificationUtils.addFooterAndFirstName(notification.getTo(), templateContext);
     templateContext.put("PROFILE_URL", LinkProviderUtils.getRedirectUrl("user", identity.getRemoteId()));
-    templateContext.put("COMMENT", activity.getTitle());
-    templateContext.put("ACTIVITY", Utils.processLinkTitle(parentActivity.getTitle()));
+    templateContext.put("COMMENT", NotificationUtils.processLinkTitle(activity.getTitle()));
     templateContext.put("REPLY_ACTION_URL", LinkProviderUtils.getRedirectUrl("reply_activity_highlight_comment", parentActivity.getId() + "-" + activity.getId()));
     templateContext.put("VIEW_FULL_DISCUSSION_ACTION_URL", LinkProviderUtils.getRedirectUrl("view_full_activity_highlight_comment", parentActivity.getId() + "-" + activity.getId()));
 
-    String body = TemplateUtils.processGroovy(templateContext);
+    String body = SocialNotificationUtils.getBody(ctx, templateContext, parentActivity);
     
     return messageInfo.subject(subject).body(body).end();
   }
@@ -113,6 +113,9 @@ public class ActivityCommentPlugin extends AbstractNotificationPlugin {
       for (NotificationInfo message : notifications) {
         String activityId = message.getValueOwnerParameter(SocialNotificationUtils.ACTIVITY_ID.getKey());
         ExoSocialActivity activity = Utils.getActivityManager().getActivity(activityId);
+        if (activity == null) {
+          continue;
+        }
         ExoSocialActivity parentActivity = Utils.getActivityManager().getParentActivity(activity);
         //
         SocialNotificationUtils.processInforSendTo(receiverMap, parentActivity.getId(), message.getValueOwnerParameter("poster"));

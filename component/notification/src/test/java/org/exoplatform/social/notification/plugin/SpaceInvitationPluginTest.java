@@ -270,5 +270,37 @@ public class SpaceInvitationPluginTest extends AbstractPluginTest {
     notificationService.clearAll();
     
   }
-  
+  public void testDigestCancelInvitation() throws Exception {
+    //Make more invitations
+    Space space1 = getSpaceInstance(1);
+    Space space2 = getSpaceInstance(2);
+    Space space3 = getSpaceInstance(3);
+    Space space4 = getSpaceInstance(4);
+    Space space5 = getSpaceInstance(5);
+    spaceService.addInvitedUser(space1, demoIdentity.getRemoteId());
+    spaceService.addInvitedUser(space2, demoIdentity.getRemoteId());
+    spaceService.addInvitedUser(space3, demoIdentity.getRemoteId());
+    spaceService.addInvitedUser(space4, demoIdentity.getRemoteId());
+    spaceService.addInvitedUser(space5, demoIdentity.getRemoteId());
+    
+    //assert Digest message
+    List<NotificationInfo> ntfs = assertMadeNotifications(5);
+    List<NotificationInfo> messages = new ArrayList<NotificationInfo>();
+    for (NotificationInfo m : ntfs) {
+      m.setTo(demoIdentity.getRemoteId());
+      messages.add(m);
+    }
+    
+    //space2 cancel invitation to demo
+    spaceService.removeInvitedUser(space2, demoIdentity.getRemoteId());
+    
+    Writer writer = new StringWriter();
+    NotificationContext ctx = NotificationContextImpl.cloneInstance();
+    ctx.setNotificationInfos(messages);
+    getPlugin().buildDigest(ctx, writer);
+    
+    assertDigest(writer, "You have been asked to joing the following spaces: my space 1, my space 3, my space 4 and 1 others.");
+    notificationService.clearAll();
+    
+  }  
 }
