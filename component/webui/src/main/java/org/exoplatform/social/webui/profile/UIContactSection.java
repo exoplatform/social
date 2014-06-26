@@ -556,7 +556,7 @@ public class UIContactSection extends UIProfileSection {
       phoneCount += 2;
     } else if (IM.equals(type)) {
       int imIdx = imCount;
-      createUISelectBox(IM_TYPES, IM + StringUtils.leftPad(String.valueOf(imIdx++), 3, '0'));
+      createPhoneUISelectBox(IM_TYPES, IM + StringUtils.leftPad(String.valueOf(imIdx++), 3, '0'));
       UIFormStringInput im = new UIFormStringInput(IM + StringUtils.leftPad(String.valueOf(imIdx++), 3, '0'), null, null);
       im.setHTMLAttribute(HTML_ATTRIBUTE_TITLE, resourceBundle.getString("UIContactSection.label.ims"));
       addUIFormInput(im
@@ -583,7 +583,9 @@ public class UIContactSection extends UIProfileSection {
    * @param values Array of value for setting.
    *
    * @param uiName Name of component.
+   * @deprecated use {@link #createPhoneUISelectBox(String[], String)} instead
    */
+  @Deprecated
   private void createUISelectBox(final String[] values, final String uiName) {
     WebuiRequestContext requestContext = WebuiRequestContext.getCurrentInstance();
     ResourceBundle resourceBundle = requestContext.getApplicationResourceBundle();
