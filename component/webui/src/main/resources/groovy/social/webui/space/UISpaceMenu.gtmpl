@@ -116,7 +116,7 @@
               for(node in apps) {
                 def appTabClass = "NormalTab";
                 def nodeTitle = node.getResolvedLabel();
-                def nodeLabel = getFitString(nodeTitle, 15);
+                def nodeLabel = getFitString(nodeTitle, 100);
                 def nodeUri = node.getURI();
                 def uriParts = nodeUri.split("/");
                 def nodeName = uriParts[uriParts.length - 1];
