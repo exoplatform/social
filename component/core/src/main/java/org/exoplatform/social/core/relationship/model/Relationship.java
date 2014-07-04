@@ -85,6 +85,20 @@ public class Relationship {
   }
 
   /**
+   * Instantiates a new relationship.
+   * 
+   * @param uuid
+   * @param sender
+   * @param receiver
+   * @since 1.2.10
+   */
+  public Relationship(String uuid, Identity sender, Identity receiver) {
+    this.id = uuid;
+    this.sender = sender;
+    this.receiver = receiver;
+  }
+  
+  /**
    * Gets the sender.
    * 
    * @return the sender
