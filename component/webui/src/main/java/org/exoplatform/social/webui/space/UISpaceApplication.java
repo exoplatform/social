@@ -37,6 +37,7 @@ import org.exoplatform.social.core.space.SpaceException;
 import org.exoplatform.social.core.space.SpaceUtils;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
+import org.exoplatform.social.webui.Utils;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.EventConfig;
@@ -256,7 +257,7 @@ public class UISpaceApplication extends UIForm {
    * @throws SpaceException
    */
   public String getAppName(Application application) throws SpaceException {
-    String spaceUrl = SpaceUtils.getSpaceUrl();
+    String spaceUrl = Utils.getSpaceUrlByContext();
     SpaceService spaceService = getApplicationComponent(SpaceService.class);
     Space space = spaceService.getSpaceByUrl(spaceUrl);
     if (space == null) {

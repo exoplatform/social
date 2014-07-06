@@ -23,7 +23,6 @@ import org.exoplatform.portal.config.UserPortalConfigService;
 import org.exoplatform.portal.mop.SiteKey;
 import org.exoplatform.portal.mop.SiteType;
 import org.exoplatform.portal.mop.user.UserNavigation;
-import org.exoplatform.portal.mop.user.UserNode;
 import org.exoplatform.portal.mop.user.UserPortal;
 import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.portal.webui.workspace.UIPortalApplication;
@@ -31,6 +30,7 @@ import org.exoplatform.portal.webui.workspace.UIWorkingWorkspace;
 import org.exoplatform.social.core.space.SpaceUtils;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
+import org.exoplatform.social.webui.Utils;
 import org.exoplatform.web.application.ApplicationMessage;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.ComponentConfigs;
@@ -116,8 +116,9 @@ public class UISpaceNavigationManagement extends UIContainer {
   public void reloadTreeData() throws Exception {
     UserPortal userPortal = Util.getUIPortalApplication().getUserPortalConfig().getUserPortal();
     SpaceService spaceService = getApplicationComponent(SpaceService.class);
-    String spaceUrl = SpaceUtils.getSpaceUrl();
+    String spaceUrl = Utils.getSpaceUrlByContext();
     Space space = spaceService.getSpaceByUrl(spaceUrl);
+    if (space == null) return;
 
     UserNavigation groupNav = SpaceUtils.getGroupNavigation(space.getGroupId());
 

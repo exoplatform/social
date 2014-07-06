@@ -70,7 +70,7 @@ public class UISpaceSetting extends UIContainer {
     uiTabPane.addChild(UISpaceNavigationManagement.class, null, null);
     uiTabPane.setSelectedTab(1);
     
-    String spaceUrl = SpaceUtils.getSpaceUrl();
+    String spaceUrl = Utils.getSpaceUrlByContext();
     Space space  = getApplicationComponent(SpaceService.class).getSpaceByUrl(spaceUrl);
     if (space != null) {
       setValues(space);

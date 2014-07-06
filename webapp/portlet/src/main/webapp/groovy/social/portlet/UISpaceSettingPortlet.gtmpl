@@ -22,9 +22,16 @@
 %>
 <%
   import org.exoplatform.social.webui.space.UISpaceSetting;
+  import org.exoplatform.social.webui.Utils;
+
+  def labelOutOfSpaceContext = _ctx.appRes("UISpacePortlet.label.OutOfSpaceContext");
 %>
 <div class="UISpaceSettingPortlet" id="$uicomponent.id">
-  <% 
-  uicomponent.renderChild(UISpaceSetting.class);
+  <%
+    if (Utils.isSpaceContext()) {
+      uicomponent.renderChild(UISpaceSetting.class);
+    } else {
   %>
+      <div class="UISpaceMenu" id="UISpaceMenu">$labelOutOfSpaceContext</div>
+  <%}%>
 </div>

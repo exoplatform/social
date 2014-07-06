@@ -19,6 +19,7 @@ package org.exoplatform.social.portlet;
 import org.exoplatform.social.core.space.SpaceUtils;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
+import org.exoplatform.social.webui.Utils;
 import org.exoplatform.social.webui.composer.PopupContainer;
 import org.exoplatform.social.webui.composer.UIComposer;
 import org.exoplatform.social.webui.space.UISpaceActivitiesDisplay;
@@ -54,7 +55,7 @@ public class UISpaceActivityStreamPortlet extends UIPortletApplication {
     uiComposer.setOptionContainer(hiddenContainer);
 
     uiDisplaySpaceActivities = addChild(UISpaceActivitiesDisplay.class, null, null);
-    space = getSpaceService().getSpaceByUrl(SpaceUtils.getSpaceUrl());
+    space = getSpaceService().getSpaceByUrl(Utils.getSpaceUrlByContext());
     uiDisplaySpaceActivities.setSpace(space);
     uiComposer.setActivityDisplay(uiDisplaySpaceActivities);
   }
@@ -77,7 +78,7 @@ public class UISpaceActivityStreamPortlet extends UIPortletApplication {
    * @throws Exception
    */
   public void refresh() throws Exception {
-    space = getSpaceService().getSpaceByUrl(SpaceUtils.getSpaceUrl());
+    space = getSpaceService().getSpaceByUrl(Utils.getSpaceUrlByContext());
     uiDisplaySpaceActivities.setSpace(space);
   }
 }
