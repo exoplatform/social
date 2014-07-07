@@ -333,7 +333,7 @@ public class StreamProcessorFactory {
       protected ProcessContext execute(ProcessContext processContext) throws Exception {
         StreamProcessContext streamCtx = ObjectHelper.cast(StreamProcessContext.class, processContext);
         
-        getActivityStorage().getActivityFeed(streamCtx.getIdentity(), 0, 20);
+        getActivityStorage().getActivityFeed(streamCtx.getIdentity(), 0, 21);
         return processContext;
       }
 

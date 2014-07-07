@@ -64,6 +64,7 @@ import org.exoplatform.social.core.space.SpaceUtils;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceApplicationHandler;
 import org.exoplatform.social.core.space.spi.SpaceService;
+import org.exoplatform.webui.application.WebuiRequestContext;
 
 /**
  * Default implementation for working with space applications.
@@ -320,9 +321,12 @@ public class DefaultSpaceApplicationHandler implements SpaceApplicationHandler {
       if (removedNode != null) {
         PageKey pageRef = removedNode.getState().getPageRef();
         if (pageRef.format() != null && pageRef.format().length() > 0) {
-          UIPortal uiPortal = Util.getUIPortal();
-          // Remove from cache
-          uiPortal.setUIPage(pageRef.format(), null);
+          //only clear UI caching when it's in UI context
+          if (WebuiRequestContext.getCurrentInstance() != null) {
+            UIPortal uiPortal = Util.getUIPortal();
+            // Remove from cache
+            uiPortal.setUIPage(pageRef.format(), null);
+          }
           pageService.destroyPage(pageRef);
         }
       }

@@ -75,6 +75,7 @@ import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
 import org.exoplatform.social.core.relationship.model.Relationship;
 import org.exoplatform.social.core.relationship.model.Relationship.Type;
 import org.exoplatform.social.core.service.LinkProvider;
+import org.exoplatform.social.core.space.SpaceUtils;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.storage.ActivityStorageException;
 import org.exoplatform.social.core.storage.api.ActivityStorage;
@@ -736,7 +737,7 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
           StreamInvocationHelper.savePoster(owner, entity);
           //run asynchronous: JCR session doesn't share in multi threading, in Stream service.
           
-          StreamInvocationHelper.save(owner, activity, mentioners.toArray(new String[0]));
+          StreamInvocationHelper.save(owner, entity, mentioners.toArray(new String[0]));
         }
       }
       else {
@@ -1565,7 +1566,13 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
   public int getNumberOfComments(ExoSocialActivity existingActivity) {
     //return getStorage().getActivity(existingActivity.getId()).getReplyToId().length;
     //
-    List<String> commentIds = Arrays.asList(getStorage().getActivity(existingActivity.getId()).getReplyToId());
+    //Need to check if the activity is not deleted by another session
+    ExoSocialActivity got  = getStorage().getActivity(existingActivity.getId());
+    if (got == null) {
+      LOG.warn("Probably was deleted activity by another session");
+      return 0;
+    }
+    List<String> commentIds = Arrays.asList(got.getReplyToId());
     int size = commentIds.size();
 
     //

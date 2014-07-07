@@ -18,15 +18,21 @@ package org.exoplatform.social.webui.space.access;
 
 import java.io.IOException;
 
+import org.exoplatform.commons.utils.CommonsUtils;
 import org.exoplatform.portal.application.PortalRequestContext;
 import org.exoplatform.portal.application.RequestNavigationData;
 import org.exoplatform.portal.mop.SiteType;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
+import org.exoplatform.services.security.Identity;
+import org.exoplatform.services.security.IdentityRegistry;
+import org.exoplatform.services.security.MembershipEntry;
 import org.exoplatform.social.common.router.ExoRouter;
 import org.exoplatform.social.common.router.ExoRouter.Route;
 import org.exoplatform.social.core.space.SpaceAccessType;
+import org.exoplatform.social.core.space.SpaceUtils;
 import org.exoplatform.social.core.space.model.Space;
+import org.exoplatform.social.core.space.spi.SpaceService;
 import org.exoplatform.social.webui.Utils;
 import org.exoplatform.web.application.Application;
 import org.exoplatform.web.application.ApplicationLifecycle;
@@ -71,6 +77,8 @@ public class SpaceAccessApplicationLifecycle implements ApplicationLifecycle<Web
       Space space = Utils.getSpaceService().getSpaceByPrettyName(spacePrettyName);
       String remoteId = Utils.getViewerRemoteId();
       
+      //it's workaround for SOC-3886 until EXOGTN-1829 is resolved, it's removing
+      addMembershipToIdentity(remoteId, space);
     
       if (inSuperAdminGroup(remoteId, space)) {
         return;
@@ -86,11 +94,34 @@ public class SpaceAccessApplicationLifecycle implements ApplicationLifecycle<Web
    //special case when remoteId is super administrator and allow to access
     return SpaceAccessType.SUPER_ADMINISTRATOR.doCheck(remoteId, space);
   }
+  /**
+   * It's workaround when runs on the clustering environment
+   * 
+   * @param remoteId
+   */
+  private void addMembershipToIdentity(String remoteId, Space space) {
+    IdentityRegistry identityRegistry = CommonsUtils.getService(IdentityRegistry.class);
+    Identity identity = identityRegistry.getIdentity(remoteId);
+    if (identity != null) {
+      
+      SpaceService spaceService = Utils.getSpaceService();
+      boolean isMember = spaceService.isMember(space, remoteId);
+      //add membership's member to Identity if it's absent
+      MembershipEntry me = new MembershipEntry(space.getGroupId(), SpaceUtils.MEMBER);
+      if (isMember && !identity.isMemberOf(me)) {
+        identity.getMemberships().add(me);
+      }
+      
+      //add membership's manager to Identity if it's absent
+      boolean isManager = spaceService.isManager(space, remoteId);
+      me = new MembershipEntry(space.getGroupId(), SpaceUtils.MANAGER);
+      if (isManager && !identity.isMemberOf(me))
+        identity.getMemberships().add(me);
+    }
+  }
 
   
   private void processSpaceAccess(PortalRequestContext pcontext, String remoteId, Space space) throws IOException {
-    
-    
     //
     boolean gotStatus = SpaceAccessType.SPACE_NOT_FOUND.doCheck(remoteId, space);
     if (gotStatus) {

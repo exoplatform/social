@@ -633,6 +633,8 @@
           <name>options</name>
           <property name="org.chromattic.api.Option.root_node.path" value="/production"/>
           <property name="org.chromattic.api.Option.root_node.create" value="true"/>
+          <property name="org.chromattic.api.Option.optimize.jcr.has_property.enabled" value="true"/>
+          <property name="org.chromattic.api.Option.optimize.jcr.has_node.enabled" value="true"/>
         </properties-param>
       </init-params>
     </component-plugin>

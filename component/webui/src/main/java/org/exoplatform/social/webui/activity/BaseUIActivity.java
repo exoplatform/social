@@ -225,6 +225,9 @@ public class BaseUIActivity extends UIForm {
    */
   public List<ExoSocialActivity> getComments() {
     int commentsSize = activityCommentsListAccess.getSize();
+    if (commentsSize == 0)
+      return new ArrayList<ExoSocialActivity>();
+    //
     List<ExoSocialActivity> comments = new ArrayList<ExoSocialActivity>();
     if (commentListStatus == CommentStatus.ALL) {
       if (currentLoadIndex == 0) {
