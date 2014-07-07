@@ -214,7 +214,7 @@
       } %>
        </div>
        <% if(uicomponent.isEnableLoadNext()) { %>
-         <div id="LoadMoreButton" class="btn" onclick="<%=uicomponent.event('LoadMoreMember')%>" >
+         <div id="LoadMoreButton" class="MoreSpace btn" onclick="<%=uicomponent.event('LoadMoreMember')%>" >
            <%=_ctx.appRes(uicomponent.getId() + ".label.ShowMore")%>
          </div>
      <% } else { %>
