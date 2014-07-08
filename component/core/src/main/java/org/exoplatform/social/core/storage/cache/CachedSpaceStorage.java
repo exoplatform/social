@@ -21,7 +21,6 @@ import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.cache.ExoCache;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
-import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
 import org.exoplatform.social.core.search.Sorting;
@@ -75,13 +74,6 @@ public class CachedSpaceStorage implements SpaceStorage {
   private CachedActivityStorage cachedActivityStorage;
   private CachedIdentityStorage cachedIdentityStorage;
 
-  /**
-   * Default limit activities to clear cache.
-   * 
-   * @since 1.2.8
-   */
-  private static final int DEFAULT_LIMIT_ACTIVITIES = 200;
-  
   /**
    * Build the activity list from the caches Ids.
    *
@@ -311,10 +303,7 @@ public class CachedSpaceStorage implements SpaceStorage {
 
     // remove activities cached of a space
     cachedActivityStorage = this.getCachedActivityStorage();
-    List<ExoSocialActivity> listActivities = cachedActivityStorage.getUserActivities(identitySpace, 0, DEFAULT_LIMIT_ACTIVITIES);
-    for (ExoSocialActivity activity : listActivities) {
-      cachedActivityStorage.clearActivityCached(activity.getId());
-    }
+    cachedActivityStorage.clearOwnerStreamCache(oldPrettyName);
 
     // remove space cached
     SpaceData removed = exoSpaceCache.remove(new SpaceKey(space.getId()));

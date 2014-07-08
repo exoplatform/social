@@ -156,4 +156,7 @@ public class ActivityData implements CacheData<ExoSocialActivity> {
     return userId;
   }
 
+  public String getStreamOwner() {
+    return streamOwner;
+  }
 }

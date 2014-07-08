@@ -43,6 +43,7 @@ import org.exoplatform.social.core.storage.cache.model.key.ActivityType;
 import org.exoplatform.social.core.storage.cache.model.key.IdentityKey;
 import org.exoplatform.social.core.storage.cache.model.key.ListActivitiesKey;
 import org.exoplatform.social.core.storage.cache.selector.ActivityOwnerCacheSelector;
+import org.exoplatform.social.core.storage.cache.selector.ActivityStreamOwnerCacheSelector;
 import org.exoplatform.social.core.storage.cache.selector.ScopeCacheSelector;
 import org.exoplatform.social.core.storage.impl.ActivityBuilderWhere;
 import org.exoplatform.social.core.storage.impl.ActivityStorageImpl;
@@ -91,6 +92,23 @@ public class CachedActivityStorage implements ActivityStorage {
 
   }
 
+  /**
+   * Clears activities of input owner from cache.
+   * 
+   * @param streamOwner owner of stream to be cleared.
+   * 
+   */
+  void clearOwnerStreamCache(String streamOwner) {
+    try {
+      exoActivityCache.select(new ActivityStreamOwnerCacheSelector(streamOwner));
+    }
+    catch (Exception e) {
+      LOG.error(e);
+    }
+    
+    clearCache();
+  }
+  
   /**
    * Clear activity cached.
    * 
