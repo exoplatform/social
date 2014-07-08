@@ -155,6 +155,11 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
       ActivityEntity activityEntity = streamCtx.getActivityEntity();
       if (OrganizationIdentityProvider.NAME.equals(owner.getProviderId())) {
         createOwnerRefs(owner, activityEntity);
+        IdentityEntity poster = activityEntity.getPosterIdentity();
+        if (!poster.getName().equals(owner.getRemoteId())) {
+          addRefList(poster, activityEntity, ActivityRefType.MY_ACTIVITIES, false);
+        }
+        
       } else if (SpaceIdentityProvider.NAME.equals(owner.getProviderId())) {
         //
         manageRefList(new UpdateContext(owner, null), activityEntity, ActivityRefType.SPACE_STREAM);
