@@ -133,10 +133,11 @@ public class LinkProvider {
   public static String getProfileLink(final String username, final String portalOwner) {
     Identity identity = getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, username, true);
     Validate.notNull(identity, "Identity must not be null.");
+    if (identity.isDeleted()) return "<span class=\"DeletedUser\" >" + identity.getProfile().getFullName() + "</span>";
     return "<a href=\"" + buildProfileUri(identity.getRemoteId(), null, portalOwner)
     + "\" target=\"_parent\">" + identity.getProfile().getFullName() + "</a>";
   }
-
+  
   /**
    * Gets absolute profile uri of userName
    *

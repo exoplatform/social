@@ -22,6 +22,7 @@
 %>
 <%
   import org.exoplatform.social.webui.Utils;
+  import org.exoplatform.portal.webui.util.Util;
   import org.exoplatform.webui.core.UIVirtualList;
   import org.exoplatform.social.core.model.AvatarAttachment;
   import org.exoplatform.social.core.identity.model.Profile;
@@ -48,9 +49,16 @@
   if (myRelation.size() == uicomponent.getPeopleNum()) {
     uicomponent.setLoadAtEnd(true)
   }
+  
+  def pcontext = Util.getPortalRequestContext();
+  def jsManager = pcontext.getJavascriptManager();
+  jsManager.addOnLoadJavascript("fillUpFreeSpace('${uicomponent.id}')");
 %>
 
 <div class="$uicomponent.id ContainerSpace" id="$uicomponent.id">
+<% if(!Utils.isUserExisting()) {%>
+<div class="DeactivatedUser"><%=_ctx.appRes("UIMyConnections.label.Cannot_view_connections_of_inactive_user")%></div>
+<%} else { %>
       <% uicomponent.renderChild(UIProfileUserSearch.class); %>
 
         <%if ((myRelation == null) || (myRelation.size() == 0)) {%>
@@ -129,5 +137,17 @@
         }	          
       </script>
   <%  }	%>
+<% } %>
+
   
+  <script type="text/javascript">
+      function fillUpFreeSpace(componentId) {
+        try{
+          var filledElement = document.getElementById(componentId);
+          if (filledElement) {
+            eXo.core.Browser.fillUpFreeSpace(filledElement);
+          }      
+        }catch(e){};
+      }    
+  </script>   
 </div>

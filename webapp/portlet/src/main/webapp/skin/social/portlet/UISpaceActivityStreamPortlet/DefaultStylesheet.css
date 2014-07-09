@@ -214,3 +214,9 @@
 	padding: 0px 0px 0px 20px;
 	margin: 0px 0px 0px 0px;
 }
+
+.UISpaceActivityStreamPortlet .UIActivity .DeletedUser {
+  color: black !important;
+  cursor: default !important;
+  text-decoration: line-through !important;
+}

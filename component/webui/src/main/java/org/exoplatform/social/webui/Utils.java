@@ -276,4 +276,20 @@ public class Utils {
     
     return nodeURL.setResource(resource).toString(); 
   }
+  
+  /**
+   * Checks current user is being viewed existing or not.
+   * 
+   * @return
+   * @since 1.2.9
+   */
+  public static boolean isUserExisting() {
+    String currentUserName = URLUtils.getCurrentUser();
+    if (currentUserName != null) {
+      return !getIdentityManager()
+          .getOrCreateIdentity(OrganizationIdentityProvider.NAME, currentUserName, false).isDeleted();
+      
+    }
+    return true;
+  }
 }
