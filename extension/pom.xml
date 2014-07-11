@@ -32,7 +32,6 @@
   <name>eXo Social Extension</name>
   <description>eXo Social Extension</description>
   <modules>
-    <module>config</module>
     <module>jar</module>
     <module>war</module>
     <module>notification</module>
