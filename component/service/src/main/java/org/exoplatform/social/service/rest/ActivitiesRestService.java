@@ -594,7 +594,7 @@ public class ActivitiesRestService implements ResourceContainer {
     }
 
     try {
-      Identity user = getIdentityManager().getIdentity(activity.getUserId(), false);
+      Identity user = getIdentityManager().getIdentity(identityId, false);
       _activityManager.deleteLike(activity, user);
     } catch(Exception ex) {
       throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
