@@ -32,6 +32,7 @@ public class CachedSpaceStorageTestCase extends AbstractCoreTest {
   private Identity root;
   
   private List<Space>  tearDownSpaceList;
+  private List<ExoSocialActivity>  tearDownActivityList;
 
   @Override
   public void setUp() throws Exception {
@@ -56,7 +57,7 @@ public class CachedSpaceStorageTestCase extends AbstractCoreTest {
     identityStorage.saveIdentity(root);
     
     tearDownSpaceList = new ArrayList<Space>();
-
+    tearDownActivityList = new ArrayList<ExoSocialActivity>();
   }
   
   @Override
@@ -64,6 +65,10 @@ public class CachedSpaceStorageTestCase extends AbstractCoreTest {
     
     for (Space sp : tearDownSpaceList) {
       cachedSpaceStorage.deleteSpace(sp.getId());
+    }
+    
+    for (ExoSocialActivity act : tearDownActivityList) {
+      cachedActivityStorage.deleteActivity(act.getId());
     }
     
     identityStorage.deleteIdentity(demo);
@@ -158,5 +163,64 @@ public class CachedSpaceStorageTestCase extends AbstractCoreTest {
     //
     cachedSpaceStorage.deleteSpace(space.getId());
     assertEquals(0, cacheService.getActivitiesCache().getCacheSize());
+  }
+  
+  /**
+   * Test {@link CachedSpaceStorage#renameSpace(Space, String)}
+   * 
+   * @throws Exception
+   * @since 4.1-RC1
+   */
+  @MaxQueryNumber(866)
+  public void testRenameSpaceOnCache() throws Exception {
+    Space space = new Space();
+    space.setDisplayName("Social");
+    space.setPrettyName(space.getDisplayName());
+    space.setGroupId("/space/Social");
+    space.setUrl(space.getPrettyName());
+    String[] managers = new String[] {"demo", "mary"};
+    String[] members = new String[] {"demo", "mary", "john"};
+    space.setManagers(managers);
+    space.setMembers(members);
+    cachedSpaceStorage.saveSpace(space, true);
+
+    //
+    Identity identitySpace = new Identity(SpaceIdentityProvider.NAME, space.getPrettyName());
+    identityStorage.saveIdentity(identitySpace);
+    identitySpace = identityStorage.findIdentity(SpaceIdentityProvider.NAME, space.getPrettyName());
+
+    //
+    ExoSocialActivity activity = new ExoSocialActivityImpl();
+    activity.setTitle("Post on space.");
+    activity.setUserId(identitySpace.getId());
+    cachedActivityStorage.saveActivity(identitySpace, activity);
+    tearDownActivityList.add(activity);
+    
+    ExoSocialActivity userActivity = new ExoSocialActivityImpl();
+    userActivity.setTitle("demo post on space");
+    userActivity.setUserId(demo.getId());
+    cachedActivityStorage.saveActivity(identitySpace, userActivity);
+    tearDownActivityList.add(userActivity);
+    
+    List<ExoSocialActivity> spaceActivities = cachedActivityStorage.getSpaceActivities(identitySpace, 0, 10);
+    
+    for (ExoSocialActivity esa : spaceActivities) {
+      assertEquals(esa.getStreamOwner(), space.getPrettyName());
+    }
+    
+    String newDisplayName = "social team";
+    
+    cachedSpaceStorage.renameSpace(space, newDisplayName);
+    Space got = cachedSpaceStorage.getSpaceById(space.getId());
+    
+    assertEquals(0, cacheService.getActivitiesCache().getCacheSize());
+    
+    spaceActivities = cachedActivityStorage.getSpaceActivities(identitySpace, 0, 10);
+    
+    for (ExoSocialActivity esa : spaceActivities) {
+      assertEquals(esa.getStreamOwner(), got.getPrettyName());
+    }
+    
+    cachedSpaceStorage.deleteSpace(space.getId());
   }
 }

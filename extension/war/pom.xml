@@ -116,11 +116,6 @@
     </dependency>
     <dependency>
       <groupId>org.exoplatform.social</groupId>
-      <artifactId>social-extension-config</artifactId>
-      <scope>runtime</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.exoplatform.social</groupId>
       <artifactId>social-extras-feedmash</artifactId>
       <scope>runtime</scope>
     </dependency>

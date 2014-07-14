@@ -48,6 +48,7 @@
     
     jsManager.require("SHARED/jquery", "jq")
              .require("SHARED/bts_tooltip").addScripts("jq('*[rel=\"tooltip\"]').tooltip();");
+    jsManager.require("SHARED/base", "base").addScripts("base.Browser.fillUpFreeSpace('" + uicomponent.id + "');");
 %>
 <div class="uiMembersPortlet" id="$uicomponentId">
     <h3 class="uiInputInfo">$spaceName</h3>
@@ -214,7 +215,7 @@
       } %>
        </div>
        <% if(uicomponent.isEnableLoadNext()) { %>
-         <div id="LoadMoreButton" class="btn" onclick="<%=uicomponent.event('LoadMoreMember')%>" >
+         <div id="LoadMoreButton" class="MoreSpace btn" onclick="<%=uicomponent.event('LoadMoreMember')%>" >
            <%=_ctx.appRes(uicomponent.getId() + ".label.ShowMore")%>
          </div>
      <% } else { %>
