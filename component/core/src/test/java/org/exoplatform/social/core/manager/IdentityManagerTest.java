@@ -29,6 +29,7 @@ import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.identity.provider.Application;
 import org.exoplatform.social.core.identity.provider.FakeIdentityProvider;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
+import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
 import org.exoplatform.social.core.profile.ProfileFilter;
 import org.exoplatform.social.core.space.SpaceUtils;
 import org.exoplatform.social.core.space.impl.DefaultSpaceApplicationHandler;
@@ -52,7 +53,7 @@ public class IdentityManagerTest extends AbstractCoreTest {
 
   private IdentityManager identityManager;
 
-  
+  private List<Space> tearDownSpaceList;
   private List<Identity>  tearDownIdentityList;
 
   private ActivityManager activityManager;
@@ -73,11 +74,19 @@ public class IdentityManagerTest extends AbstractCoreTest {
     userHandler = SpaceUtils.getOrganizationService().getUserHandler();
     
     tearDownIdentityList = new ArrayList<Identity>();
+    tearDownSpaceList = new ArrayList<Space>();
   }
 
   public void tearDown() throws Exception {
     for (Identity identity : tearDownIdentityList) {
       identityManager.deleteIdentity(identity);
+    }
+    for (Space space : tearDownSpaceList) {
+      Identity spaceIdentity = identityManager.getOrCreateIdentity(SpaceIdentityProvider.NAME, space.getPrettyName(), false);
+      if (spaceIdentity != null) {
+        identityManager.deleteIdentity(spaceIdentity);
+      }
+      spaceService.deleteSpace(space);
     }
     super.tearDown();
   }
@@ -232,7 +241,7 @@ public class IdentityManagerTest extends AbstractCoreTest {
     }
     
     //clear space
-    spaceService.deleteSpace(savedSpace);
+    tearDownSpaceList.add(savedSpace);
 
   }
 

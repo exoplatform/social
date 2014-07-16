@@ -47,6 +47,7 @@ import java.util.Random;
 public class ActivityManagerTest extends AbstractCoreTest {
   private final Log LOG = ExoLogger.getLogger(ActivityManagerTest.class);
   private List<ExoSocialActivity> tearDownActivityList;
+  private List<Space> tearDownSpaceList;
   private Identity rootIdentity;
   private Identity johnIdentity;
   private Identity maryIdentity;
@@ -69,6 +70,7 @@ public class ActivityManagerTest extends AbstractCoreTest {
     relationshipManager = (RelationshipManager) getContainer().getComponentInstanceOfType(RelationshipManager.class);
     spaceService = (SpaceService) getContainer().getComponentInstanceOfType(SpaceService.class);
     tearDownActivityList = new ArrayList<ExoSocialActivity>();
+    tearDownSpaceList = new ArrayList<Space>();
     rootIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "root", false);
     johnIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "john", false);
     maryIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "mary", false);
@@ -103,6 +105,15 @@ public class ActivityManagerTest extends AbstractCoreTest {
     identityManager.deleteIdentity(jameIdentity);
     identityManager.deleteIdentity(raulIdentity);
     identityManager.deleteIdentity(paulIdentity);
+    
+    for (Space space : tearDownSpaceList) {
+      Identity spaceIdentity = identityManager.getOrCreateIdentity(SpaceIdentityProvider.NAME, space.getPrettyName(), false);
+      if (spaceIdentity != null) {
+        identityManager.deleteIdentity(spaceIdentity);
+      }
+      spaceService.deleteSpace(space);
+    }
+    
     super.tearDown();
   }
 
@@ -672,6 +683,7 @@ public class ActivityManagerTest extends AbstractCoreTest {
   
   public void testGetActivitiesOfUserSpacesWithListAccess() throws Exception {
     Space space = this.getSpaceInstance(spaceService, 0);
+    tearDownSpaceList.add(space);
     Identity spaceIdentity = this.identityManager.getOrCreateIdentity(SpaceIdentityProvider.NAME, space.getPrettyName(), false);
     
     int totalNumber = 10;
@@ -704,6 +716,7 @@ public class ActivityManagerTest extends AbstractCoreTest {
                  demoActivities.getNumberOfOlder(baseActivity));
     
     Space space2 = this.getSpaceInstance(spaceService, 1);
+    tearDownSpaceList.add(space2);
     Identity spaceIdentity2 = this.identityManager.getOrCreateIdentity(SpaceIdentityProvider.NAME, space2.getPrettyName(), false);
     
     //demo posts activities to space2
@@ -735,8 +748,6 @@ public class ActivityManagerTest extends AbstractCoreTest {
     assertNotNull("demoActivities must not be null", demoActivities);
     assertEquals("demoActivities.getSize() must return: 0", 0, demoActivities.getSize());
     
-    spaceService.deleteSpace(space);
-    spaceService.deleteSpace(space2);
   }
   
   /**

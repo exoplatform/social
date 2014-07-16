@@ -489,6 +489,11 @@ public class SpaceServiceImpl implements SpaceService {
    */
   public void deleteSpace(Space space) {
     try {
+      Identity spaceIdentity = identityStorage.findIdentity(SpaceIdentityProvider.NAME, space.getPrettyName());
+
+      if (spaceIdentity != null) {
+        identityStorage.hardDeleteIdentity(spaceIdentity);
+      }
       
       // remove memberships of users with deleted space.
       SpaceUtils.removeMembershipFromGroup(space);
@@ -577,6 +582,10 @@ public class SpaceServiceImpl implements SpaceService {
    * {@inheritDoc}
    */
   public void removeMember(Space space, String userId) {
+    Identity spaceIdentity = identityStorage.findIdentity(SpaceIdentityProvider.NAME, space.getPrettyName());
+    if (spaceIdentity.isDeleted()) {
+      return;
+    }
     String[] members = space.getMembers();
     if (ArrayUtils.contains(members, userId)) {
       members = (String[]) ArrayUtils.removeElement(members, userId);

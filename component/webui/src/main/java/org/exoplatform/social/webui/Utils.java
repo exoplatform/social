@@ -170,6 +170,18 @@ public class Utils {
   }
 
   /**
+   * Gets identity from the remote id (space name)
+   * 
+   * @param spaceName
+   * @param loadProfile
+   * @return space identity
+   * @since 4.1-RC1
+   */
+  public static Identity getSpaceIdentity(String spaceName, boolean loadProfile) {
+    return Utils.getIdentityManager().getOrCreateIdentity(SpaceIdentityProvider.NAME, spaceName, loadProfile);
+  }
+  
+  /**
    * Gets space identity of the owner space (from remote id)
    * 
    * @return space identity

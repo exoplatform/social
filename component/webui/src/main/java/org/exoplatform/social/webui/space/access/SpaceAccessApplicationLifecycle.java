@@ -78,10 +78,12 @@ public class SpaceAccessApplicationLifecycle implements ApplicationLifecycle<Web
       String remoteId = Utils.getViewerRemoteId();
       
       //it's workaround for SOC-3886 until EXOGTN-1829 is resolved, it's removing
-      addMembershipToIdentity(remoteId, space);
-    
-      if (inSuperAdminGroup(remoteId, space)) {
-        return;
+      if (space != null) {
+        addMembershipToIdentity(remoteId, space);
+      
+        if (inSuperAdminGroup(remoteId, space)) {
+          return;
+        }
       }
       
       //

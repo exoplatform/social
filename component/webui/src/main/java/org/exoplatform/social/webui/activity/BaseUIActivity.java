@@ -17,14 +17,13 @@
 package org.exoplatform.social.webui.activity;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
 import org.apache.commons.lang.ArrayUtils;
+import org.exoplatform.commons.utils.CommonsUtils;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.social.common.RealtimeListAccess;
@@ -607,10 +606,21 @@ public class BaseUIActivity extends UIForm {
     
     // If an activity of space then set creator information
     if ( SpaceIdentityProvider.NAME.equals(ownerIdentity.getProviderId()) ) {
+      String spaceCreator = activity.getTemplateParams().get(Space.CREATOR);
+      
+      if (spaceCreator != null) {
+        return Utils.getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, spaceCreator, false);  
+      }
+      
       SpaceService spaceService = getApplicationComponent(SpaceService.class);
       Space space = spaceService.getSpaceByPrettyName(ownerIdentity.getRemoteId()); 
-      String[] managers = space.getManagers();
-      return Utils.getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME,managers[0], false);
+      
+      if (space == null) {
+        return ownerIdentity;
+      } else {
+        String[] managers = space.getManagers();
+        return Utils.getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME,managers[0], false);
+      }
     }
     
     return null;
@@ -834,6 +844,10 @@ public class BaseUIActivity extends UIForm {
       return true;
     }
     return false;
+  }
+  
+  public boolean isDeletedSpace(String streamOwner) {
+    return CommonsUtils.getService(SpaceService.class).getSpaceByPrettyName(streamOwner) == null;
   }
   
   /**
