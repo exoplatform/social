@@ -628,6 +628,17 @@ public class IdentityManagerTest extends AbstractCoreTest {
     idsListAccess = identityManager.getIdentitiesByProfileFilter(providerId, pf, false);
     assertNotNull(idsListAccess);
     assertEquals(2, idsListAccess.getSize());
+    assertEquals("Alain Dupond", idsListAccess.load(0, 20)[0].getProfile().getFullName());
+    assertEquals("Bob Dupond", idsListAccess.load(0, 20)[1].getProfile().getFullName());
+    
+    pf = new ProfileFilter();
+    idsListAccess = identityManager.getIdentitiesByProfileFilter(providerId, pf, false);
+    assertNotNull(idsListAccess);
+    assertEquals(3, idsListAccess.getSize());
+    assertEquals("Alain Dupond", idsListAccess.load(0, 20)[0].getProfile().getFullName());
+    assertEquals("Bob Dupond", idsListAccess.load(0, 20)[1].getProfile().getFullName());
+    assertEquals("John Smith", idsListAccess.load(0, 20)[2].getProfile().getFullName());
+    
     // Test order by first name if last name is equal
     Identity[] identityArray = idsListAccess.load(0, 2);
     assertEquals(tearDownIdentityList.get(2).getId(), identityArray[0].getId());
