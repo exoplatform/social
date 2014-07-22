@@ -32,7 +32,15 @@
      * Constants
      */
     ADDED_MARGIN_BOTTOM : 10,
-     
+    
+    PEOPLE_BOX_MAX_WIDTH:380,
+    PEOPLE_BOX_MIN_WIDTH:300,
+    
+    currentBrowseWidth : 0,
+    onResizeWidth : new Array(),
+    upFreeSpace : new Array(),
+    dynamicItems : new Array(),
+
     /**
      * Browsers for checking
      */
@@ -130,7 +138,38 @@
           eXo.social.PopupConfirmation.confirm('demo', [{action: action_, label : label_}], title_, message_, close_);
         }); 
       },
-    
+      
+    feedbackMessagePopup : function(title, message, closeLabel) { 
+      var popup = PopupConfirmation.makeTemplate();
+      popup.find('.popupTitle').html(title);
+      message = message.replace("${simpleQuote}", "'");
+      popup.find('.contentMessage').removeClass('confirmationIcon').addClass('infoIcon').html(message);
+      var uiAction = popup.find('.uiAction');
+      uiAction.append(PopupConfirmation.addAction(null, closeLabel));
+      //
+      PopupConfirmation.show(popup);
+     },
+     
+     feedbackMessageInline : function(parentId, message) { 
+       message = message.replace("${simpleQuote}", "'");
+
+       var msgEl = $('#feedbackmessageInline');
+
+       if(msgEl.length === 0) {
+         msgEl = $('<div id="feedbackMessageInline" class="alert alert-success">' +
+                   '  <i class="uiIconSuccess"></i><span class="message"></span>' +
+                   '</div>');
+         //
+         msgEl.prependTo($('#'+ parentId));
+       }
+
+       if($(window).scrollTop() > msgEl.offset().top) {
+         msgEl[0].scrollIntoView(true);
+       }
+       msgEl.stop().hide().find("span.message").text(message);
+       msgEl.show('fast').delay(4500).hide('slow');
+     },
+
     /**
      * Get current Browser
      */
@@ -159,10 +198,124 @@
       expiredays = ((expiredays == null) ? "" : ";expires=" + exdate.toGMTString());
       var path = ';path=/portal';
       document.cookie = name + "=" + escape(value) + expiredays + path;
+    },
+    updateRelationship : function(identityId) {
+      var identityBox = $('#identity' + identityId);
+      var relationshipInfo = $('#UIUpdateRelationship > div');
+      if (relationshipInfo.length > 0) {
+        //
+        identityBox.find('span.statusLabel:first').text(relationshipInfo.data('status'));
+        identityBox.find('button.actionLabel:first').attr('onclick', relationshipInfo.data('action'));
+        identityBox.find('button.actionLabel:first').text(relationshipInfo.text());
+        var clazz = relationshipInfo.data('class');
+        if(clazz.length > 0) {
+          identityBox.addClass(clazz);
+        } else {
+          identityBox.removeClass('checkedBox');
+        }
+      }
+      identityBox.find('button.btn-confirm:first').hide();
+    },
+    addOnResizeWidth : function(callback) {
+      if (callback && String(typeof callback) === "function") {
+        var name = String(callback.name + new Date().getTime());
+        SocialUtils.onResizeWidth[name] = callback;
+      }
+    },
+    addDynamicItemLayout : function(comId) {
+      if (comId && String(typeof comId) === "string") {
+        SocialUtils.dynamicItems.push(comId);
+        SocialUtils.dynamicItemLayout(comId);
+      }
+    },
+    onResizeDynamicItemLayout : function() {
+      var dynamicItems = SocialUtils.dynamicItems;
+      $.each(dynamicItems, function( index, comId ) {
+        SocialUtils.dynamicItemLayout(comId);
+      });
+    },
+    dynamicItemLayout : function(comId) {
+      var container = $('#'+comId);
+      if(container.length === 0) {
+        return;
+      }
+      var listContainer = container.find('div.itemList:first');
+      var widthContainer = listContainer.css('margin-right', '').width();
+      listContainer.css({'margin-right': '-10px'});
+      var listBoxs = listContainer.find('div.itemContainer');
+      //itemContainer
+      //PEOPLE_BOX_MAX_WIDTH:380,
+      //PEOPLE_BOX_MIN_WIDTH:320,
+      var maxItemInline = parseInt(widthContainer / SocialUtils.PEOPLE_BOX_MIN_WIDTH);
+      var minItemInline = parseInt(widthContainer / SocialUtils.PEOPLE_BOX_MAX_WIDTH);
+      var width = 0;
+      maxItemInline = Math.min(maxItemInline, listBoxs.length);
+      if(maxItemInline === minItemInline || minItemInline >= listBoxs.length) {
+        width = SocialUtils.PEOPLE_BOX_MAX_WIDTH;
+      } else {
+        width = SocialUtils.PEOPLE_BOX_MIN_WIDTH;
+      }
+      //
+      var delta = (widthContainer - (width * maxItemInline))/maxItemInline;
+      width += delta;
+      //
+      var d = (listBoxs.length > 3) ? 10/maxItemInline : 1.5;
+      listBoxs.each(function(index) {
+        if((index + 1) % maxItemInline === 0) {
+          $(this).width(parseInt(width + d - 10)).find('.spaceBox:first').css({'margin-right': '0px'});
+        } else {
+          $(this).width(parseInt(width + d)).find('.spaceBox:first').css({'margin-right': '10px'});
+        }
+      });
+      //
+      var moreButton = container.find('.load-more-items:first');
+      if(moreButton.length > 0) {
+        moreButton.css({'width' : (width*2 + d) + 'px', 'margin' : 'auto', 'display':'block'})
+      }
+      //
+    },
+    addfillUpFreeSpace : function(comId) {
+      if (comId && String(typeof comId) === "string") {
+        SocialUtils.upFreeSpace.push(comId);
+        SocialUtils.fillUpFreeSpace(comId);
+      }
+    },
+    onResizeFillUpFreeSpace : function() {
+      var upFreeSpaces = SocialUtils.upFreeSpace;
+      $.each(upFreeSpaces, function( index, comId ) {
+        SocialUtils.fillUpFreeSpace(comId);
+      });
+    },
+    fillUpFreeSpace : function(comId) {
+      var container = $('#'+comId);
+      if(container.length > 0) {
+        var windowH = $(window).height();
+        //
+        container.height('');
+        var topH = 0;
+        var top = $('#NavigationPortlet');
+        if(top.length > 0) {
+          topH = top.height();
+        }
+        var wH = windowH - topH;
+        var tdLeftNavi = $('.LeftNavigationTDContainer:first').css('height', wH);
+        if(tdLeftNavi.find('div:first').height()  > wH) {
+          tdLeftNavi.height('');
+        }
+        //
+        var parent = container.parents('td.RightBodyTDContainer:first').css('position', 'relative');
+        parent.append($('<div class="max-width-fake" style="bottom:0px; width:1px; position:absolute"></div>'));
+        
+        var fake = parent.find('.max-width-fake:first').css('top', parent.find('div:first').outerHeight());
+        var fakeH = fake.height();
+        if(fakeH > 2) {
+          container.height(container.height() + fakeH - 5);
+        }
+        fake.remove();
+        parent.css('position', '');
+      }
     }
-    
   };
-  
 
   PopupConfirmation = {
     actions : [],
@@ -254,9 +407,30 @@
       }
     }
   };
-
+  
+  gj(window).resize(function(evt) {
+    eXo.core.Browser.managerResize();
+    if (SocialUtils.currentBrowseWidth != document.documentElement.clientWidth) {
+      try {
+        var callback = SocialUtils.onResizeWidth;
+        for ( var name in callback) {
+          var method = callback[name];
+          if (typeof (method) == "function") {
+            method(evt);
+          }
+        }
+      } catch (e) {}
+    }
+    SocialUtils.currentBrowseWidth = document.documentElement.clientWidth;
+    //
+    SocialUtils.onResizeFillUpFreeSpace();
+  });
+  //
+  SocialUtils.addOnResizeWidth(SocialUtils.onResizeDynamicItemLayout);
+  
   setTimeout(PopupConfirmation.executeCurrentConfirm, 220);
   eXo.social.PopupConfirmation = eXo.social.PopupConfirmation || PopupConfirmation;
+  SocialUtils.PopupConfirmation = eXo.social.PopupConfirmation;
   eXo.social.SocialUtil = SocialUtils;
   return SocialUtils;
 

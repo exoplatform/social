@@ -84,7 +84,7 @@
 						</div>
 							
 					</div>
-					<div class="spaceList clearfix">
+					<div class="itemList spaceList clearfix">
 				
 					<%for (space in invitedSpaces) {
 							def spaceUrl = Utils.getSpaceHomeURL(space);
@@ -100,8 +100,8 @@
 							if (visibility.equals(Space.PRIVATE)) visibility = "visible";
 							mySpaceIdx += 1;
 					%>
-				
-						<div class="spaceBox pull-left">
+				  <div class="itemContainer pull-left">
+						<div class="spaceBox">
 							<div class="avatarXLarge pull-left">
 								<img alt="$spaceAvatarTitle" src="$imageSource" />
 							</div>
@@ -124,6 +124,7 @@
 								<button type="button" class="btn btn-primary pull-right" onclick="<%= acceptSpaceAction %>">$acceptSpaceActionLabel</button>
 							</div>
 						</div>
+					</div>
 					<%}%>
 				</div>
 			</div>

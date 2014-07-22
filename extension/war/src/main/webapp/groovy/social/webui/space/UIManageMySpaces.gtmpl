@@ -90,7 +90,7 @@
 				    </div>
 				    
 				</div>
-			  <div class="spaceList clearfix">
+			  <div class="itemList spaceList clearfix">
 			    <%for (space in userSpaces) {
 			        def iconImgLabel = _ctx.appRes("${uicomponentId}.label.member_of_space");
 			        def editSpaceAction = uicomponent.event("EditSpace", space.id) + "; return false";
@@ -122,8 +122,8 @@
 			        def spaceAvatarTitle = _ctx.appRes("${uicomponentId}.title.SpaceAvatar");
 			        mySpaceIdx += 1;
 			    %>
-			
-			    <div class="checkedBox spaceBox pull-left">
+  			  <div class="itemContainer pull-left">
+  			    <div class="checkedBox spaceBox">
 			      <!-- Leader -->
 			      <% if (role == 1) {
 			      	iconImgLabel = _ctx.appRes("${uicomponentId}.label.manager_of_space");
@@ -140,16 +140,15 @@
 			          <div class="content">
 			            <%= Utils.trunc(space.description, 45)%><br/>
 			          </div>
-			          </div>
-			          <div class="connectionBtn clearfix">
+		          </div>
+		          <div class="connectionBtn clearfix">
         				<button type="button" class="confirmPopup btn pull-right" data-onclick="<%= deleteSpaceAction %>" data-message="$deleteMessagePopup">$labelActionDeleteSpace</button>							  
 								<% if (hasMembership) { %>
-						  <button type="button" class="btn pull-right" onclick="<%= leaveSpaceAction %>" style="display:block;">$labelActionLeaveSpace</button>
+						    <button type="button" class="btn pull-right" onclick="<%= leaveSpaceAction %>" style="display:block;">$labelActionLeaveSpace</button>
 								<% } %>
 								<button type="button" class="btn btn-primary pull-right" onclick="location.href='<%= editSpaceLink %>'">$labelActionEditSpace</button>
 			        </div>
-			      </div>
-			      <% }%>
+			      <% } else %>
 			      <!-- Member -->
 			      <%if (role == 2) {
 			      %>
@@ -163,18 +162,19 @@
 			          </h4>
 			          <div class="membersCount" >$fieldLabelMembers <%= SpaceUtils.countMembers(space) %></div>
 			          <div class="content">
-                    <% if (space.description != null && space.description.length() > 0) { %>
-                      $space.description<br/>
-                    <% } else { %>
-                      <%=_ctx.appRes("${uicomponent.id}.msg.default_space_description") %>
-                    <% } %>
+                <% if (space.description != null && space.description.length() > 0) { %>
+                  $space.description<br/>
+                <% } else { %>
+                  <%=_ctx.appRes("${uicomponent.id}.msg.default_space_description") %>
+                <% } %>
 			          </div>
 			        </div>
-					<div class="connectionBtn clearfix">
-						<button type="button" class="btn pull-right" onclick="<%= leaveSpaceAction %>">$labelActionLeaveSpace</button>
-				  </div>
-			    </div>
+    					<div class="connectionBtn clearfix">
+    						<button type="button" class="btn pull-right" onclick="<%= leaveSpaceAction %>">$labelActionLeaveSpace</button>
+    				  </div>
 			    <%}%>
+  			    </div>
+  		    </div>
 			  <%}%>
 			    
 			  </div>
@@ -182,7 +182,7 @@
 			  <%
 			   if(uicomponent.isEnableLoadNext()) {
 			  %>
-			      <div id="LoadMoreMySpacesButton" class="MoreSpace btn" onclick="<%=uicomponent.event("LoadMoreSpace")%>" >
+			      <div id="LoadMoreMySpacesButton" class="load-more-items MoreSpace btn" onclick="<%=uicomponent.event("LoadMoreSpace")%>" >
 			        $labelShowMoreSpace
 			      </div>
 			    <%

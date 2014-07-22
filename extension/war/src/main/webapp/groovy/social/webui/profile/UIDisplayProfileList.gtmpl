@@ -181,7 +181,7 @@
   <% } %>
   </div>
   <% if(uicomponent.isEnableLoadNext()) { %>
-	    <button id="LoadMoreButton" class="btn" onclick="<%=uicomponent.event('LoadMorePeople')%>" >
+	    <button id="LoadMoreButton" class="load-more-items btn" onclick="<%=uicomponent.event('LoadMorePeople')%>" >
 	      <%=_ctx.appRes(uicomponent.getId() + ".label.ShowMore")%>
 	    </button>
   <% } else { %>

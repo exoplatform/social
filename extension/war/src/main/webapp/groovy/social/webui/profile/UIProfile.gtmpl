@@ -18,12 +18,9 @@
 -->
 
 <% 
-  import org.exoplatform.portal.webui.util.Util;
-  
-  def pcontext = Util.getPortalRequestContext();
-  def jsManager = pcontext.getJavascriptManager();
-  jsManager.require("SHARED/base", "base").addScripts("base.Browser.fillUpFreeSpace('" + uicomponent.id + "');");
-  
+def requireJs = _ctx.getRequestContext().getJavascriptManager().getRequireJS();
+requireJs.require("SHARED/socialUtil", "socialUtil")
+         .addScripts("socialUtil.addfillUpFreeSpace('" + uicomponent.id + "');");
 %>
 
 <div class="uiProfile" id="$uicomponent.id">

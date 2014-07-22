@@ -109,7 +109,7 @@ _ctx.getRequestContext().getJavascriptManager()
 				<% if ((list == null) || (list.size() == 0)) {%>
 				<div class="noneContentSpace"></div>
 				<%}%>
-				<div class="userList clearfix">
+				<div class="itemList userList clearfix">
 				
 				<% list.each {
 						def identity = it;
@@ -141,20 +141,21 @@ _ctx.getRequestContext().getJavascriptManager()
 							checkbox = "checkedBox";
 						}
 				%>
-				<div class="$checkbox spaceBox pull-left" id="identity${identity.getId()}">
-					<a href="${profileURL}" class="avatarXLarge pull-left" rel="tooltip" data-placement="bottom" title="${fullName}">
-						<img src="$imageSource" />
-					</a>
-					<div class="contentBox">
+				<div class="itemContainer pull-left">
+					<div class="$checkbox spaceBox" id="identity${identity.getId()}">
+						<a href="${profileURL}" class="avatarXLarge pull-left" rel="tooltip" data-placement="bottom" title="${fullName}">
+							<img src="$imageSource" />
+						</a>
+						<div class="contentBox">
 						<h4 class="spaceTitle"><a href="${profileURL}">${fullName}</a></h4>
 						<% if(position.length() > 0) { %>
-						<div class="position">${position}</div>
+							<div class="position">${position}</div>
 						<% } %>
 						<% if((email != null) && (email.length() > 0)) { %>
-						<div class="email"><a href="mailto:${email}">${email}</a></div>
+							<div class="email"><a href="mailto:${email}">${email}</a></div>
 						<% } %>
-					</div>
-					<div class="connectionBtn clearfix">
+						</div>
+						<div class="connectionBtn clearfix">
 						<%
 							String label = _ctx.appRes("UIAllPeople.label.Ignore");
 							String action = uicomponent.event("Ignore",identity.getId());
@@ -185,10 +186,11 @@ _ctx.getRequestContext().getJavascriptManager()
 							<span class="pull-right statusLabel">$statusLabel</span>
 						</div>
 					</div>
+				</div>
 				<% } %>
 				</div>
 				<% if(uicomponent.isEnableLoadNext()) { %>
-				<button id="LoadMoreButton" class="btn" onclick="<%=uicomponent.event("LoadMorePeople")%>" >
+				<button id="LoadMoreButton" class="load-more-items btn" onclick="<%=uicomponent.event("LoadMorePeople")%>" >
 					<%=_ctx.appRes("UIAllPeople.label.ShowMore")%>
 				</button>
 				<% } else { %>

@@ -95,7 +95,7 @@ import org.exoplatform.social.core.service.LinkProvider;
 		        </div>
 		    </div>
 		    
-		  	<div class="spaceList clearfix">
+		  	<div class="itemList spaceList clearfix">
 		
 		    <%for (space in allSpaces) {
 		        def typeOfSpace = uicomponent.getTypeOfSpace(space);
@@ -153,8 +153,8 @@ import org.exoplatform.social.core.service.LinkProvider;
 		        
 		        String checkedBox = ("MEMBER".equals(typeOfSpace.toString()) || "MANAGER".equals(typeOfSpace.toString())) ? "checkedBox" : "";
 		      %>
-
-		      <div class="$checkedBox spaceBox pull-left">       
+        <div class="itemContainer pull-left">
+		      <div class="spaceBox $checkedBox">       
 	        <% if (isPublic) { %>
 	          <a href="$spaceUrl" class="avatarXLarge pull-left">
 	            <img alt="$spaceAvatarTitle" src="$imageSource" />
@@ -209,13 +209,14 @@ import org.exoplatform.social.core.service.LinkProvider;
 		          
 		        </div>
 		      </div>
+	      </div>
 		      <%}%>
-		    </div>
+	    </div>
 		    
       <%
        if(uicomponent.isEnableLoadNext()) {
       %>
-		      <div id="LoadMoreMySpacesButton" class="MoreSpace btn" onclick="<%=uicomponent.event("LoadMoreSpace")%>" >
+		      <div id="LoadMoreMySpacesButton" class="load-more-items MoreSpace btn" onclick="<%=uicomponent.event("LoadMoreSpace")%>" >
 		        $labelShowMoreSpace
 		      </div>
       <%
