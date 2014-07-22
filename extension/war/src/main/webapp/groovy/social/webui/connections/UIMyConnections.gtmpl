@@ -120,7 +120,7 @@
       <%}%>
       
         <%if ((myRelation != null) && (myRelation.size() > 0)) {%>
-        <div class="userList clearfix">
+     <div class="itemList userList clearfix">
         <%  for(id in myRelation) {
             profileURL = LinkProvider.getUserProfileUri(id.getRemoteId());
             fullName = id.profile.fullName;
@@ -133,8 +133,8 @@
             String imageSource = id.profile.avatarUrl;
             if (!imageSource) imageSource = LinkProvider.PROFILE_DEFAULT_AVATAR_URL;
          %>
-         
-          <div class="spaceBox pull-left">
+       <div class="itemContainer pull-left">  
+          <div class="spaceBox">
             <a href="${profileURL}" class="avatarXLarge pull-left">
               <img rel="tooltip" data-placement="bottom" title="${fullName}" src="$imageSource" />
             </a>
@@ -150,16 +150,17 @@
 	          
 		        <% if (isEditable) {%>
 		        <div class="connectionBtn clearfix">
-	              <button class="btn pull-right" onclick="$removeConnectionAction">$removeTitle</button>
+	            <button class="btn pull-right" onclick="$removeConnectionAction">$removeTitle</button>
 	          </div>
 		        <% } %>	         
 	        </div>
+        </div>
     <%  } %>
       </div>
    <% } %> 
   
    <% if(uicomponent.isEnableLoadNext()) { %>
-      <button id="LoadMoreButton" class="btn" onclick="<%=uicomponent.event('LoadMorePeople')%>" >
+      <button id="LoadMoreButton" class="load-more-items btn" onclick="<%=uicomponent.event('LoadMorePeople')%>" >
         <%=_ctx.appRes(uicomponent.getId() + ".label.ShowMore")%>
       </button>
   <% } else { %>

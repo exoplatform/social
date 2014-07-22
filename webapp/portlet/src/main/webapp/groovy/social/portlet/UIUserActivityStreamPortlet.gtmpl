@@ -24,19 +24,14 @@
   import org.exoplatform.social.webui.composer.PopupContainer;
   import org.exoplatform.social.webui.composer.UIComposer;
   import org.exoplatform.social.webui.profile.UIUserActivitiesDisplay;
-  import org.exoplatform.portal.webui.util.Util;
   import org.exoplatform.social.webui.Utils;
-  import java.util.Calendar;
   
   def currentRemoteId = Utils.getViewerRemoteId();
-  def rcontext = _ctx.getRequestContext() ;
-  def jsManager = rcontext.getJavascriptManager();
-  def currentServerTime = Calendar.getInstance().getTimeInMillis();
+  def currentServerTime = java.util.Calendar.getInstance().getTimeInMillis();
   
-  //jsManager.require("SHARED/social-ui-activity-updates", "activityUpdates");
-  //         .addScripts("activityUpdates.initCookiesForFirstRun('$currentRemoteId',$currentServerTime);");
-  
-  jsManager.require("SHARED/base", "base").addScripts("base.Browser.fillUpFreeSpace('" + uicomponent.id + "');");
+  def requireJs = _ctx.getRequestContext().getJavascriptManager().getRequireJS();
+  requireJs.require("SHARED/socialUtil", "socialUtil").require("SHARED/social-ui-activity", "activity")
+           .addScripts("socialUtil.addfillUpFreeSpace('" + uicomponent.id + "');");
 
   uicomponent.refresh();
   String uiTabClazz = (Utils.isHomePage() == true) ? "uiTabPaneHomePage" : "";
@@ -54,19 +49,19 @@
 		      </div>
 		    </div>
 	    <%  
-	    jsManager.require("SHARED/social-ui-activity", "activity").addScripts("activity.setPageTitle('"+ activityTitle +"');");
+	    requireJs.addScripts("activity.setPageTitle('"+ activityTitle +"');");
 	    return;
     }
-    jsManager.require("SHARED/social-ui-activity", "activity").addScripts("activity.setPageTitle(window.encodeURIComponent(\""+ activityTitle.replace("\"", "\\42") +"\").replace(/'/, '%27'));");
+    requireJs.addScripts("activity.setPageTitle(window.encodeURIComponent(\""+ activityTitle.replace("\"", "\\42") +"\").replace(/'/, '%27'));");
   }
   
   if (Utils.isFocusCommentBox()) {
-    jsManager.require("SHARED/social-ui-activity", "activity").addScripts("activity.replyByURL('"+ uicomponent.getActivityId() + "');");
+    requireJs.addScripts("activity.replyByURL('"+ uicomponent.getActivityId() + "');");
   } else if (Utils.isExpandLikers()) {
-    jsManager.require("SHARED/social-ui-activity", "activity").addScripts("activity.loadLikersByURL();");
+    requireJs.addScripts("activity.loadLikersByURL();");
   }
   
-  jsManager.require("SHARED/social-ui-activity", "activity").addScripts("activity.hightlightComment('"+ uicomponent.getActivityId() + "');");
+  requireJs.addScripts("activity.hightlightComment('"+ uicomponent.getActivityId() + "');");
 %>
 <div class="uiUserActivityStreamPortlet" id="$uicomponent.id">
   <div class="uiTabPane $uiTabClazz">

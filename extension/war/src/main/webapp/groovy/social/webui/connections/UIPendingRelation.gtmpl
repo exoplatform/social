@@ -115,7 +115,7 @@
    		  </div>
       <%}%>
       
-      <div class="userList clearfix">
+      <div class="itemList userList clearfix">
       <%	for(identity in list) {
           def profileURL = LinkProvider.getUserProfileUri(identity.getRemoteId());
           def fullName = identity.profile.fullName;
@@ -128,32 +128,32 @@
           String imageSource = identity.profile.avatarUrl;
           if (!imageSource) imageSource = LinkProvider.PROFILE_DEFAULT_AVATAR_URL;
       %>
-      
-		    <div class="spaceBox pull-left">
-          <a href="${profileURL}" class="avatarXLarge pull-left">
-            <img rel="tooltip" data-placement="bottom" title="${fullName}" src="$imageSource"/>
-          </a>
-			    <div class="contentBox">
-            <h4 class="spaceTitle"><a href="${profileURL}">${fullName}</a></h4>         
+        <div class="itemContainer pull-left">
+  		    <div class="spaceBox">
+            <a href="${profileURL}" class="avatarXLarge pull-left">
+              <img rel="tooltip" data-placement="bottom" title="${fullName}" src="$imageSource"/>
+            </a>
+  			    <div class="contentBox">
+              <h4 class="spaceTitle"><a href="${profileURL}">${fullName}</a></h4>         
 	                <% if(position.length() > 0) { %>
 	                <div class="position">${position}</div>
 	                <%  } %>
 	                <% if(email.length() > 0) { %>
 	                <div class="email"><a href="mailto:${email}">${email}</a></div>
 	                <%  } %>
-			    </div>
+			      </div>
 		       <% if (isEditable) {%>
-				       	<div class="connectionBtn clearfix">
-				          <button class="btn pull-right" onclick="<%=uicomponent.event("Ignore",identity.getId())%>">$cancelRequestLabel</button>
-				        </div>
+		       	<div class="connectionBtn clearfix">
+		          <button class="btn pull-right" onclick="<%=uicomponent.event("Ignore",identity.getId())%>">$cancelRequestLabel</button>
+		        </div>
 		      <% } %>
+  		    </div>
 		    </div>
-  <% } %>
-  
-  </div>
+      <% } %>
+      </div>
     
   <% if(uicomponent.isEnableLoadNext()) { %>
-      <button id="LoadMoreButton" class="btn" onclick="<%=uicomponent.event('LoadMorePeople')%>" >
+      <button id="LoadMoreButton" class="load-more-items btn" onclick="<%=uicomponent.event('LoadMorePeople')%>" >
         <%=_ctx.appRes(uicomponent.getId() + ".label.ShowMore")%>
       </button>
   <% } else { %>

@@ -85,8 +85,7 @@
 				    
 				</div>
 				
-			  <div class="spaceList clearfix">
-			
+			  <div class="itemList spaceList clearfix">
 			    <%for (space in pendingSpaces) {
 			        def spaceUrl = Utils.getSpaceHomeURL(space)
 			        def revokeSpaceAction = uicomponent.event("RevokePending", space.id) + "; return false";
@@ -100,38 +99,38 @@
 			        def spaceAvatarTitle = _ctx.appRes("${uicomponentId}.title.SpaceAvatar");
 			        mySpaceIdx += 1;
 			    %>
-			
-			    <div class="spaceBox pull-left">
-			      <div class="avatarXLarge pull-left">
-			        <img alt="$spaceAvatarTitle" src="$imageSource" />
-			      </div>
-			      <div class="contentBox">
-			        <h4 class="spaceTitle">
-			          <a class="Text" href="javascript:void(0)">$space.displayName</a> 
-			          <span class="subTxt">($iconImgLabel)</span>
-			        </h4>
-			        <div class="membersCount">$fieldLabelMembers <%= SpaceUtils.countMembers(space) %></div>
-			        <div class="content">
-                    <% if (space.description != null && space.description.length() > 0) { %>
-                      $space.description<br/>
-                    <% } else { %>
-                      <%=_ctx.appRes("${uicomponent.id}.msg.default_space_description") %>
-                    <% } %>
-			        </div>
-			        </div>
-			        <div class="connectionBtn clearfix">
-				      <button type="button" class="btn pull-right" onclick="<%= revokeSpaceAction %>">$cancelInvitationActionLabel</button>
-			      </div>
-			    </div>
+  			  <div class="itemContainer pull-left">
+  			    <div class="spaceBox">
+  			      <div class="avatarXLarge pull-left">
+  			        <img alt="$spaceAvatarTitle" src="$imageSource" />
+  			      </div>
+  			      <div class="contentBox">
+  			        <h4 class="spaceTitle">
+  			          <a class="Text" href="javascript:void(0)">$space.displayName</a> 
+  			          <span class="subTxt">($iconImgLabel)</span>
+  			        </h4>
+  			        <div class="membersCount">$fieldLabelMembers <%= SpaceUtils.countMembers(space) %></div>
+  			        <div class="content">
+                  <% if (space.description != null && space.description.length() > 0) { %>
+                    $space.description<br/>
+                  <% } else { %>
+                    <%=_ctx.appRes("${uicomponent.id}.msg.default_space_description") %>
+                  <% } %>
+  			        </div>
+  			      </div>
+  		        <div class="connectionBtn clearfix">
+  			        <button type="button" class="btn pull-right" onclick="<%= revokeSpaceAction %>">$cancelInvitationActionLabel</button>
+  		        </div>
+  			    </div>
+  		    </div>
 			  <%}%>
-			  
 			  </div>
-			    <%
+			  <%
 			   if(uicomponent.isEnableLoadNext()) {
 			  %>
-			      <div id="LoadMoreSentInvitationButton" class="MoreSpace btn" onclick="<%=uicomponent.event("LoadMoreSpace")%>" >
-			        $labelShowMoreSpace
-			      </div>
+		      <div id="LoadMoreSentInvitationButton" class="load-more-items MoreSpace btn" onclick="<%=uicomponent.event("LoadMoreSpace")%>" >
+		        $labelShowMoreSpace
+		      </div>
 			    <%
 			   } else {
 			   %>
