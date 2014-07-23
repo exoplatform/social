@@ -30,6 +30,11 @@ import javax.ws.rs.core.MediaType;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.exoplatform.commons.utils.CommonsUtils;
+import org.exoplatform.services.log.ExoLogger;
+import org.exoplatform.services.log.Log;
+import org.exoplatform.services.organization.Membership;
+import org.exoplatform.services.organization.MembershipHandler;
+import org.exoplatform.services.organization.OrganizationService;
 import org.exoplatform.services.security.ConversationState;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.identity.model.Identity;
@@ -48,6 +53,8 @@ public class RestUtils {
   public static final int    DEFAULT_LIMIT           = 20;
 
   public static final int    DEFAULT_OFFSET          = 0;
+  
+  public static final int    HARD_LIMIT              = 50;
 
   public static final String USERS_TYPE              = "users";
 
@@ -58,6 +65,8 @@ public class RestUtils {
   public static final String IDENTITIES_TYPE         = "identities";
 
   public static final String SPACES_TYPE             = "spaces";
+  
+  public static final String SPACES_MEMBERSHIP_TYPE  = "spacesMemberships";
 
   public static final String SPACE_ACTIVITY_TYPE     = "space";
 
@@ -70,6 +79,8 @@ public class RestUtils {
   public static final String SUPPORT_TYPE            = "json";
 
   public static final String ADMIN_GROUP             = "/platform/administrators";
+  
+  private static final Log   LOG                     = ExoLogger.getLogger(RestUtils.class);
   
   /**
    * Get a hash map from an identity in order to build a json object for the rest service
@@ -125,6 +136,33 @@ public class RestUtils {
     map.put(RestProperties.URL, LinkProvider.getSpaceUri(space.getPrettyName()));
     map.put(RestProperties.VISIBILITY, space.getVisibility());
     map.put(RestProperties.SUBSCRIPTION, space.getRegistration());
+    return map;
+  }
+  
+  /**
+   * Get a hash map from a space in order to build a json object for the rest service
+   * 
+   * @param space the provided space
+   * @param userId the user's remote id
+   * @param type membership type
+   * @return a hash map
+   */
+  public static Map<String, String> buildEntityFromSpaceMembership(Space space, String userId, String type) {
+    Map<String, String> map = new LinkedHashMap<String, String>();
+    OrganizationService organizationService = CommonsUtils.getService(OrganizationService.class);
+    MembershipHandler handler = organizationService.getMembershipHandler();
+    try {
+      Membership membership = handler.findMembershipByUserGroupAndType(userId, space.getGroupId(), type);
+      map.put(RestProperties.ID, membership.getId());
+      map.put(RestProperties.HREF, Util.getRestUrl(SPACES_MEMBERSHIP_TYPE, membership.getId()));
+    } catch (Exception e) {
+      LOG.debug("Failed to find the membership");
+      return map;
+    }
+    map.put(RestProperties.USERS, Util.getRestUrl(USERS_TYPE, userId));
+    map.put(RestProperties.SPACES, Util.getRestUrl(SPACES_TYPE, space.getId()));
+    map.put(RestProperties.ROLE, type);
+    map.put(RestProperties.STATUS, "approved");
     return map;
   }
   

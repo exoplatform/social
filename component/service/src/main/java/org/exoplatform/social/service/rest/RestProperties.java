@@ -108,4 +108,10 @@ public class RestProperties {
   public static final String IS_CURRENT      = "isCurrent";
 
   public static final String DESCRIPTION     = "description";
+  
+  public static final String USERS           = "users";
+  
+  public static final String SPACES          = "spaces";
+  
+  public static final String ROLE            = "role";
 }

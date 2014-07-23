@@ -71,7 +71,7 @@ public class IdentitiesRestService implements ResourceContainer {
       throw new WebApplicationException(Response.Status.UNAUTHORIZED);
     }
     
-    limit = limit <= 0 ? RestUtils.DEFAULT_LIMIT : limit;
+    limit = limit <= 0 ? RestUtils.DEFAULT_LIMIT : Math.min(RestUtils.HARD_LIMIT, limit);
     offset = offset < 0 ? RestUtils.DEFAULT_OFFSET : offset;
     
     IdentityManager identityManager = CommonsUtils.getService(IdentityManager.class);

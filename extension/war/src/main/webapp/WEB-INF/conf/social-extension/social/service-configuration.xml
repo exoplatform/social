@@ -64,7 +64,7 @@
   </component>
   
   <component>
-    <type>org.exoplatform.social.service.rest.RelationshipRestService</type>
+    <type>org.exoplatform.social.service.rest.UsersRelationshipsRestService</type>
   </component>
   
   <component>

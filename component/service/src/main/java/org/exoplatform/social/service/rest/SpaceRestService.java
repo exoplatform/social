@@ -89,7 +89,7 @@ public class SpaceRestService implements ResourceContainer {
     }
     
     SpaceService spaceService = CommonsUtils.getService(SpaceService.class);
-    limit = limit <= 0 ? RestUtils.DEFAULT_LIMIT : limit;
+    limit = limit <= 0 ? RestUtils.DEFAULT_LIMIT : Math.min(RestUtils.HARD_LIMIT, limit);
     offset = offset < 0 ? RestUtils.DEFAULT_OFFSET : offset;
     
     List<Map<String, Object>> spaceInfos = new ArrayList<Map<String, Object>>();
@@ -300,7 +300,7 @@ public class SpaceRestService implements ResourceContainer {
       throw new WebApplicationException(Response.Status.UNAUTHORIZED);
     }
     
-    limit = limit <= 0 ? RestUtils.DEFAULT_LIMIT : limit;
+    limit = limit <= 0 ? RestUtils.DEFAULT_LIMIT : Math.min(RestUtils.HARD_LIMIT, limit);
     offset = offset < 0 ? RestUtils.DEFAULT_OFFSET : offset;
     
     String[] users = (role != null && role.equals("manager")) ? space.getManagers() : space.getMembers();

@@ -94,7 +94,7 @@ public class UsersRestService implements ResourceContainer {
                             @QueryParam("limit") int limit) throws Exception {
     checkAuthenticatedRequest();
     
-    limit = limit <= 0 ? RestUtils.DEFAULT_LIMIT : limit;
+    limit = limit <= 0 ? RestUtils.DEFAULT_LIMIT : Math.min(RestUtils.HARD_LIMIT, limit);
     offset = offset < 0 ? RestUtils.DEFAULT_OFFSET : offset;
     
     ProfileFilter filter = new ProfileFilter();
@@ -229,7 +229,7 @@ public class UsersRestService implements ResourceContainer {
       throw new WebApplicationException(Response.Status.BAD_REQUEST);
     }
     
-    limit = limit <= 0 ? RestUtils.DEFAULT_LIMIT : limit;
+    limit = limit <= 0 ? RestUtils.DEFAULT_LIMIT : Math.min(RestUtils.HARD_LIMIT, limit);
     offset = offset < 0 ? RestUtils.DEFAULT_OFFSET : offset;
     
     List<Map<String, Object>> profileInfos = new ArrayList<Map<String, Object>>();
@@ -263,7 +263,7 @@ public class UsersRestService implements ResourceContainer {
       throw new WebApplicationException(Response.Status.FORBIDDEN);
     }
     
-    limit = limit <= 0 ? RestUtils.DEFAULT_LIMIT : limit;
+    limit = limit <= 0 ? RestUtils.DEFAULT_LIMIT : Math.min(RestUtils.HARD_LIMIT, limit);
     offset = offset < 0 ? RestUtils.DEFAULT_OFFSET : offset;
     
     List<Map<String, Object>> spaceInfos = new ArrayList<Map<String, Object>>();
@@ -306,7 +306,7 @@ public class UsersRestService implements ResourceContainer {
       streamType = ACTIVITY_STREAM_TYPE.all;
     }
     
-    limit = limit <= 0 ? RestUtils.DEFAULT_LIMIT : limit;
+    limit = limit <= 0 ? RestUtils.DEFAULT_LIMIT : Math.min(RestUtils.HARD_LIMIT, limit);
     offset = offset < 0 ? RestUtils.DEFAULT_OFFSET : offset;
     
     ActivityManager activityManager = CommonsUtils.getService(ActivityManager.class);

@@ -47,9 +47,9 @@ import org.exoplatform.social.service.rest.api.VersionResources;
 import org.exoplatform.social.service.rest.api.models.RelationshipsCollections;
 
 @Path(VersionResources.CURRENT_VERSION + "/social/usersRelationships")
-public class RelationshipRestService implements ResourceContainer {
+public class UsersRelationshipsRestService implements ResourceContainer {
 
-  public RelationshipRestService() {
+  public UsersRelationshipsRestService() {
   }
   
   /**
@@ -73,7 +73,7 @@ public class RelationshipRestService implements ResourceContainer {
       throw new WebApplicationException(Response.Status.UNAUTHORIZED);
     }
     
-    limit = limit <= 0 ? RestUtils.DEFAULT_LIMIT : limit;
+    limit = limit <= 0 ? RestUtils.DEFAULT_LIMIT : Math.min(RestUtils.HARD_LIMIT, limit);
     offset = offset < 0 ? RestUtils.DEFAULT_OFFSET : offset;
     
     Identity givenUser = (user == null) ? null : CommonsUtils.getService(IdentityManager.class).getOrCreateIdentity(OrganizationIdentityProvider.NAME, user, true);
