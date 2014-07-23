@@ -225,8 +225,8 @@ public class SpaceMembershipRestService implements ResourceContainer {
     OrganizationService organizationService = CommonsUtils.getService(OrganizationService.class);
     MembershipHandler handler = organizationService.getMembershipHandler();
     Membership membership;
+    id = id + "/" + spacesPrefix + "/" + spacePrettyName;
     try {
-      id = id + "/" + spacesPrefix + "/" + spacePrettyName;
       membership = handler.findMembership(id);
     } catch (Exception e) {
       throw new WebApplicationException(Response.Status.UNAUTHORIZED);
@@ -237,12 +237,15 @@ public class SpaceMembershipRestService implements ResourceContainer {
     if (space == null) {
       throw new WebApplicationException(Response.Status.UNAUTHORIZED);
     }
+    space.setEditor(authenticatedUser);
     if (type.equals("manager") && ! spaceService.isManager(space, membership.getUserName())) {
       spaceService.setManager(space, membership.getUserName(), true);
     }
     if (type.equals("member") && spaceService.isManager(space, membership.getUserName())) {
       spaceService.setManager(space, membership.getUserName(), false);
     }
+    
+    membership = handler.findMembershipByUserGroupAndType(membership.getUserName(), membership.getGroupId(), type);
     
     return Util.getResponse(RestUtils.buildEntityFromSpaceMembership(space, membership.getUserName(), membership.getMembershipType()), uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
   }
@@ -271,8 +274,8 @@ public class SpaceMembershipRestService implements ResourceContainer {
     OrganizationService organizationService = CommonsUtils.getService(OrganizationService.class);
     MembershipHandler handler = organizationService.getMembershipHandler();
     Membership membership;
+    id = id + "/" + spacesPrefix + "/" + spacePrettyName;
     try {
-      id = id + "/" + spacesPrefix + "/" + spacePrettyName;
       membership = handler.findMembership(id);
     } catch (Exception e) {
       throw new WebApplicationException(Response.Status.UNAUTHORIZED);
@@ -283,6 +286,11 @@ public class SpaceMembershipRestService implements ResourceContainer {
     if (space == null) {
       throw new WebApplicationException(Response.Status.UNAUTHORIZED);
     }
+    
+    //remove user from space
+    space.setEditor(authenticatedUser);
+    spaceService.setManager(space, membership.getUserName(), false);
+    spaceService.removeMember(space, membership.getUserName());
     
     return Util.getResponse(RestUtils.buildEntityFromSpaceMembership(space, membership.getUserName(), membership.getMembershipType()), uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
   }
