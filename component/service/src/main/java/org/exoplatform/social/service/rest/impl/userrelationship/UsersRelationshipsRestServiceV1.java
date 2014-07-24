@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.exoplatform.social.service.rest;
+package org.exoplatform.social.service.rest.impl.userrelationship;
 
 import static org.exoplatform.social.service.rest.RestChecker.checkAuthenticatedRequest;
 
@@ -36,31 +36,27 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
 import org.exoplatform.commons.utils.CommonsUtils;
-import org.exoplatform.services.rest.resource.ResourceContainer;
 import org.exoplatform.services.security.ConversationState;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.manager.RelationshipManager;
 import org.exoplatform.social.core.relationship.model.Relationship;
-import org.exoplatform.social.service.rest.api.VersionResources;
+import org.exoplatform.social.service.rest.RestUtils;
+import org.exoplatform.social.service.rest.Util;
+import org.exoplatform.social.service.rest.api.UserRelationshipSocialRest;
 import org.exoplatform.social.service.rest.api.models.RelationshipsCollections;
 
-@Path(VersionResources.CURRENT_VERSION + "/social/usersRelationships")
-public class UsersRelationshipsRestService implements ResourceContainer {
+@Path("v1/social/usersRelationships")
+public class UsersRelationshipsRestServiceV1 implements UserRelationshipSocialRest {
 
-  public UsersRelationshipsRestService() {
+  public UsersRelationshipsRestServiceV1() {
   }
   
-  /**
-   * @param uriInfo
-   * @param status
-   * @param user
-   * @param offset
-   * @param limit
-   * @return
-   * @throws Exception
+  /* (non-Javadoc)
+   * @see org.exoplatform.social.service.rest.impl.userrelationship.UserRelationshipSocialRest#getUsersRelationships(javax.ws.rs.core.UriInfo, java.lang.String, java.lang.String, int, int)
    */
+  @Override
   @GET
   public Response getUsersRelationships(@Context UriInfo uriInfo,
                                          @QueryParam("status") String status,
@@ -83,7 +79,7 @@ public class UsersRelationshipsRestService implements ResourceContainer {
     if (givenUser != null && ! RestUtils.isMemberOfAdminGroup()) {
       Relationship relationship = relationshipManager.get(givenUser, authenticatedUser);
       RelationshipsCollections collections = new RelationshipsCollections(1, offset, limit);
-      Map<String, String> map = RestUtils.buildEntityFromRelationship(relationship);
+      Map<String, String> map = RestUtils.buildEntityFromRelationship(relationship, uriInfo.getPath());
       collections.setRelationships(Arrays.asList(map));
       return Util.getResponse(collections, uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
     }
@@ -112,18 +108,15 @@ public class UsersRelationshipsRestService implements ResourceContainer {
     }
     
     RelationshipsCollections collections = new RelationshipsCollections(size, offset, limit);
-    collections.setRelationships(buildRelationshipsCollections(relationships));
+    collections.setRelationships(buildRelationshipsCollections(relationships, uriInfo));
     
     return Util.getResponse(collections, uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
   }
   
-  /**
-   * @param uriInfo
-   * @param status
-   * @param user
-   * @return
-   * @throws Exception
+  /* (non-Javadoc)
+   * @see org.exoplatform.social.service.rest.impl.userrelationship.UserRelationshipSocialRest#createUsersRelationships(javax.ws.rs.core.UriInfo, java.lang.String, java.lang.String)
    */
+  @Override
   @POST
   public Response createUsersRelationships(@Context UriInfo uriInfo,
                                             @QueryParam("status") String status,
@@ -137,14 +130,10 @@ public class UsersRelationshipsRestService implements ResourceContainer {
     return Util.getResponse("", uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
   }
   
-  /**
-   * Get a relationship by id
-   * 
-   * @param uriInfo
-   * @param id
-   * @return
-   * @throws Exception
+  /* (non-Javadoc)
+   * @see org.exoplatform.social.service.rest.impl.userrelationship.UserRelationshipSocialRest#getUsersRelationshipsById(javax.ws.rs.core.UriInfo, java.lang.String)
    */
+  @Override
   @GET
   @Path("{id}")
   public Response getUsersRelationshipsById(@Context UriInfo uriInfo,
@@ -161,17 +150,13 @@ public class UsersRelationshipsRestService implements ResourceContainer {
     if (relationship == null || ! hasPermissionOnRelationship(authenticatedUser, relationship)) {
       return Util.getResponse(null, uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
     }
-    return Util.getResponse(RestUtils.buildEntityFromRelationship(relationship), uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
+    return Util.getResponse(RestUtils.buildEntityFromRelationship(relationship, uriInfo.getPath()), uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
   }
   
-  /**
-   * Process to update a relationship by id
-   * 
-   * @param uriInfo
-   * @param id
-   * @return
-   * @throws Exception
+  /* (non-Javadoc)
+   * @see org.exoplatform.social.service.rest.impl.userrelationship.UserRelationshipSocialRest#updateUsersRelationshipsById(javax.ws.rs.core.UriInfo, java.lang.String)
    */
+  @Override
   @PUT
   @Path("{id}")
   public Response updateUsersRelationshipsById(@Context UriInfo uriInfo,
@@ -192,17 +177,13 @@ public class UsersRelationshipsRestService implements ResourceContainer {
     //update relationship
     relationshipManager.update(relationship);
     
-    return Util.getResponse(RestUtils.buildEntityFromRelationship(relationship), uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
+    return Util.getResponse(RestUtils.buildEntityFromRelationship(relationship, uriInfo.getPath()), uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
   }
   
-  /**
-   * Process to delete a relationship by id
-   * 
-   * @param uriInfo
-   * @param id
-   * @return
-   * @throws Exception
+  /* (non-Javadoc)
+   * @see org.exoplatform.social.service.rest.impl.userrelationship.UserRelationshipSocialRest#deleteUsersRelationshipsById(javax.ws.rs.core.UriInfo, java.lang.String)
    */
+  @Override
   @DELETE
   @Path("{id}")
   public Response deleteUsersRelationshipsById(@Context UriInfo uriInfo,
@@ -222,7 +203,7 @@ public class UsersRelationshipsRestService implements ResourceContainer {
     //delete the relationship
     relationshipManager.delete(relationship);
     
-    return Util.getResponse(RestUtils.buildEntityFromRelationship(relationship), uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
+    return Util.getResponse(RestUtils.buildEntityFromRelationship(relationship, uriInfo.getPath()), uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
   }
 
   /**
@@ -241,10 +222,10 @@ public class UsersRelationshipsRestService implements ResourceContainer {
     return false;
   }
   
-  private List<Map<String, String>> buildRelationshipsCollections(List<Relationship> relationships) {
+  private List<Map<String, String>> buildRelationshipsCollections(List<Relationship> relationships, UriInfo uriInfo) {
     List<Map<String, String>> infos = new ArrayList<Map<String, String>>();
     for (Relationship relationship : relationships) {
-      Map<String, String> map = RestUtils.buildEntityFromRelationship(relationship);
+      Map<String, String> map = RestUtils.buildEntityFromRelationship(relationship, uriInfo.getPath());
       //
       infos.add(map);
     }

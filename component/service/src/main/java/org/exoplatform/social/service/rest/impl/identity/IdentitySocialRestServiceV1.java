@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.exoplatform.social.service.rest;
+package org.exoplatform.social.service.rest.impl.identity;
 
 import static org.exoplatform.social.service.rest.RestChecker.checkAuthenticatedRequest;
 
@@ -36,29 +36,23 @@ import javax.ws.rs.core.UriInfo;
 
 import org.exoplatform.commons.utils.CommonsUtils;
 import org.exoplatform.commons.utils.ListAccess;
-import org.exoplatform.services.rest.resource.ResourceContainer;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
 import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.profile.ProfileFilter;
-import org.exoplatform.social.service.rest.api.VersionResources;
+import org.exoplatform.social.service.rest.RestProperties;
+import org.exoplatform.social.service.rest.RestUtils;
+import org.exoplatform.social.service.rest.Util;
+import org.exoplatform.social.service.rest.api.IdentitySocialRest;
 import org.exoplatform.social.service.rest.api.models.IdentitiesCollections;
 
-@Path(VersionResources.CURRENT_VERSION + "/social/identities")
-public class IdentitiesRestService implements ResourceContainer {
+@Path("v1/social/identities")
+public class IdentitySocialRestServiceV1 implements IdentitySocialRest {
   
-  public IdentitiesRestService() {
-  }
-  
+
   /**
-   * Process to return a list of identities in json format
-   * 
-   * @param uriInfo
-   * @param offset
-   * @param limit
-   * @return
-   * @throws Exception
+   * {@inheritDoc}
    */
   @GET
   public Response getIdentities(@Context UriInfo uriInfo,
@@ -71,7 +65,7 @@ public class IdentitiesRestService implements ResourceContainer {
       throw new WebApplicationException(Response.Status.UNAUTHORIZED);
     }
     
-    limit = limit <= 0 ? RestUtils.DEFAULT_LIMIT : Math.min(RestUtils.HARD_LIMIT, limit);
+    limit = limit <= 0 ? RestUtils.DEFAULT_LIMIT : limit;
     offset = offset < 0 ? RestUtils.DEFAULT_OFFSET : offset;
     
     IdentityManager identityManager = CommonsUtils.getService(IdentityManager.class);
@@ -81,7 +75,7 @@ public class IdentitiesRestService implements ResourceContainer {
     
     List<Map<String, Object>> identityInfos = new ArrayList<Map<String, Object>>();
     for (Identity identity : identities) {
-      Map<String, Object> profileInfo = RestUtils.buildEntityFromIdentity(identity);
+      Map<String, Object> profileInfo = RestUtils.buildEntityFromIdentity(identity, uriInfo.getPath());
       profileInfo.put(RestProperties.REMOTE_ID, identity.getRemoteId());
       profileInfo.put(RestProperties.PROVIDER_ID, providerId);
       profileInfo.put(RestProperties.GLOBAL_ID, identity.getGlobalId());
@@ -95,14 +89,9 @@ public class IdentitiesRestService implements ResourceContainer {
     return Util.getResponse(collections, uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
   }
   
+
   /**
-   * Process to create an identity
-   * 
-   * @param uriInfo
-   * @param remoteId
-   * @param providerId
-   * @return
-   * @throws Exception
+   * {@inheritDoc}
    */
   @POST
   public Response createIdentities(@Context UriInfo uriInfo,
@@ -120,14 +109,11 @@ public class IdentitiesRestService implements ResourceContainer {
     IdentityManager identityManager = CommonsUtils.getService(IdentityManager.class);
     //check if user already exist
     Identity identity = identityManager.getOrCreateIdentity(providerId, remoteId, true);
-    if (identity != null) {
+    if (identity.isDeleted()) {
       throw new WebApplicationException(Response.Status.FORBIDDEN);
     }
 
-    identity = new Identity(providerId, remoteId);
-    identityManager.saveIdentity(identity);
-    
-    Map<String, Object> profileInfo = RestUtils.buildEntityFromIdentity(identity);
+    Map<String, Object> profileInfo = RestUtils.buildEntityFromIdentity(identity, uriInfo.getPath());
     profileInfo.put(RestProperties.REMOTE_ID, identity.getRemoteId());
     profileInfo.put(RestProperties.PROVIDER_ID, providerId);
     profileInfo.put(RestProperties.GLOBAL_ID, identity.getGlobalId());
@@ -135,13 +121,9 @@ public class IdentitiesRestService implements ResourceContainer {
     return Util.getResponse(profileInfo, uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
   }
   
+
   /**
-   * Process to return an identity in json format
-   * 
-   * @param uriInfo
-   * @param id
-   * @return
-   * @throws Exception
+   * {@inheritDoc}
    */
   @GET
   @Path("{id}")
@@ -156,7 +138,7 @@ public class IdentitiesRestService implements ResourceContainer {
     IdentityManager identityManager = CommonsUtils.getService(IdentityManager.class);
     Identity identity = identityManager.getIdentity(id, true);
     
-    Map<String, Object> profileInfo = RestUtils.buildEntityFromIdentity(identity);
+    Map<String, Object> profileInfo = RestUtils.buildEntityFromIdentity(identity, uriInfo.getPath());
     profileInfo.put(RestProperties.REMOTE_ID, identity.getRemoteId());
     profileInfo.put(RestProperties.PROVIDER_ID, identity.getProviderId());
     profileInfo.put(RestProperties.GLOBAL_ID, identity.getGlobalId());
@@ -164,13 +146,9 @@ public class IdentitiesRestService implements ResourceContainer {
     return Util.getResponse(profileInfo, uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
   }
   
+
   /**
-   * Process to update an identity by id
-   * 
-   * @param uriInfo
-   * @param id
-   * @return
-   * @throws Exception
+   * {@inheritDoc}
    */
   @PUT
   @Path("{id}")
@@ -190,7 +168,7 @@ public class IdentitiesRestService implements ResourceContainer {
     
     //TODO : process to update identity
     
-    Map<String, Object> profileInfo = RestUtils.buildEntityFromIdentity(identity);
+    Map<String, Object> profileInfo = RestUtils.buildEntityFromIdentity(identity, uriInfo.getPath());
     profileInfo.put(RestProperties.REMOTE_ID, identity.getRemoteId());
     profileInfo.put(RestProperties.PROVIDER_ID, identity.getProviderId());
     profileInfo.put(RestProperties.GLOBAL_ID, identity.getGlobalId());
@@ -198,13 +176,9 @@ public class IdentitiesRestService implements ResourceContainer {
     return Util.getResponse(profileInfo, uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
   }
   
+
   /**
-   * Process to delete an identity
-   * 
-   * @param uriInfo
-   * @param id
-   * @return
-   * @throws Exception
+   * {@inheritDoc}
    */
   @DELETE
   @Path("{id}")
@@ -226,7 +200,7 @@ public class IdentitiesRestService implements ResourceContainer {
     identityManager.hardDeleteIdentity(identity);
     identity = identityManager.getIdentity(id, true);
     
-    Map<String, Object> profileInfo = RestUtils.buildEntityFromIdentity(identity);
+    Map<String, Object> profileInfo = RestUtils.buildEntityFromIdentity(identity, uriInfo.getPath());
     profileInfo.put(RestProperties.REMOTE_ID, identity.getRemoteId());
     profileInfo.put(RestProperties.PROVIDER_ID, identity.getProviderId());
     profileInfo.put(RestProperties.GLOBAL_ID, identity.getGlobalId());
@@ -234,15 +208,9 @@ public class IdentitiesRestService implements ResourceContainer {
     return Util.getResponse(profileInfo, uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
   }
   
+
   /**
-   * Process to return all relationships of an identity in json format
-   * 
-   * @param uriInfo
-   * @param id
-   * @param offset
-   * @param limit
-   * @return
-   * @throws Exception
+   * {@inheritDoc}
    */
   @GET
   @Path("{id}/relationships")
@@ -262,7 +230,7 @@ public class IdentitiesRestService implements ResourceContainer {
       throw new WebApplicationException(Response.Status.NOT_FOUND);
     }
     
-    Map<String, Object> profileInfo = RestUtils.buildEntityFromIdentity(identity);
+    Map<String, Object> profileInfo = RestUtils.buildEntityFromIdentity(identity, uriInfo.getPath());
     profileInfo.put(RestProperties.REMOTE_ID, identity.getRemoteId());
     profileInfo.put(RestProperties.PROVIDER_ID, identity.getProviderId());
     profileInfo.put(RestProperties.GLOBAL_ID, identity.getGlobalId());

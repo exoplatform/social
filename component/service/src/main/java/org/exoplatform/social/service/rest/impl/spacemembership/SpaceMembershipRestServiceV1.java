@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.exoplatform.social.service.rest;
+package org.exoplatform.social.service.rest.impl.spacemembership;
 
 import static org.exoplatform.social.service.rest.RestChecker.checkAuthenticatedRequest;
 
@@ -41,7 +41,6 @@ import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.services.organization.Membership;
 import org.exoplatform.services.organization.MembershipHandler;
 import org.exoplatform.services.organization.OrganizationService;
-import org.exoplatform.services.rest.resource.ResourceContainer;
 import org.exoplatform.services.security.ConversationState;
 import org.exoplatform.services.security.IdentityConstants;
 import org.exoplatform.social.core.identity.model.Identity;
@@ -49,28 +48,21 @@ import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvide
 import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
-import org.exoplatform.social.service.rest.api.VersionResources;
+import org.exoplatform.social.service.rest.RestUtils;
+import org.exoplatform.social.service.rest.Util;
+import org.exoplatform.social.service.rest.api.SpaceMembershipSocialRest;
 import org.exoplatform.social.service.rest.api.models.SpaceMembershipsCollections;
 
-@Path(VersionResources.CURRENT_VERSION + "/social/spacesMemberships")
-public class SpaceMembershipRestService implements ResourceContainer {
+@Path("v1/social/spacesMemberships")
+public class SpaceMembershipRestServiceV1 implements SpaceMembershipSocialRest {
   
-  public SpaceMembershipRestService(){
+  public SpaceMembershipRestServiceV1(){
   }
 
-  /**
-   * Process to return a list of space's membership in json format
-   * 
-   * @param uriInfo
-   * @param status
-   * @param user
-   * @param space
-   * @param returnSize
-   * @param offset
-   * @param limit
-   * @return
-   * @throws Exception
+  /* (non-Javadoc)
+   * @see org.exoplatform.social.service.rest.impl.spacemembership.SpaceMembershipSocialRest#getSpacesMemberships(javax.ws.rs.core.UriInfo, java.lang.String, java.lang.String, java.lang.String, boolean, int, int)
    */
+  @Override
   @GET
   public Response getSpacesMemberships(@Context UriInfo uriInfo,
                                         @QueryParam("status") String status,
@@ -120,7 +112,7 @@ public class SpaceMembershipRestService implements ResourceContainer {
     }
     
     List<Map<String, String>> spaceMemberships = new ArrayList<Map<String, String>>();
-    setSpaceMemberships(spaceMemberships, spaces, user);
+    setSpaceMemberships(spaceMemberships, spaces, user, uriInfo);
     
     SpaceMembershipsCollections membershipsCollections = new SpaceMembershipsCollections(size, offset, limit);
     membershipsCollections.setSpaceMemberships(spaceMemberships);
@@ -128,6 +120,10 @@ public class SpaceMembershipRestService implements ResourceContainer {
     return Util.getResponse(membershipsCollections, uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
   }
   
+  /* (non-Javadoc)
+   * @see org.exoplatform.social.service.rest.impl.spacemembership.SpaceMembershipSocialRest#addSpacesMemberships(javax.ws.rs.core.UriInfo, java.lang.String, java.lang.String)
+   */
+  @Override
   @POST
   public Response addSpacesMemberships(@Context UriInfo uriInfo,
                                         @QueryParam("user") String user,
@@ -157,17 +153,13 @@ public class SpaceMembershipRestService implements ResourceContainer {
       throw new WebApplicationException(Response.Status.UNAUTHORIZED);
     }
     
-    return Util.getResponse(RestUtils.buildEntityFromSpaceMembership(givenSpace, user, ""), uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
+    return Util.getResponse(RestUtils.buildEntityFromSpaceMembership(givenSpace, user, "", uriInfo.getPath()), uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
   }
   
-  /**
-   * Process to return a spaceMembership by id
-   * 
-   * @param uriInfo
-   * @param id membership id
-   * @return
-   * @throws Exception
+  /* (non-Javadoc)
+   * @see org.exoplatform.social.service.rest.impl.spacemembership.SpaceMembershipSocialRest#getSpaceMembershipById(javax.ws.rs.core.UriInfo, java.lang.String, java.lang.String, java.lang.String)
    */
+  @Override
   @GET
   @Path("{id}/{spacesPrefix}/{spacePrettyName}")
   public Response getSpaceMembershipById(@Context UriInfo uriInfo,
@@ -197,17 +189,13 @@ public class SpaceMembershipRestService implements ResourceContainer {
       throw new WebApplicationException(Response.Status.UNAUTHORIZED);
     }
     
-    return Util.getResponse(RestUtils.buildEntityFromSpaceMembership(space, membership.getUserName(), membership.getMembershipType()), uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
+    return Util.getResponse(RestUtils.buildEntityFromSpaceMembership(space, membership.getUserName(), membership.getMembershipType(), uriInfo.getPath()), uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
   }
   
-  /**
-   * Process to update a spaceMembership by id
-   * 
-   * @param uriInfo
-   * @param id membership id
-   * @return
-   * @throws Exception
+  /* (non-Javadoc)
+   * @see org.exoplatform.social.service.rest.impl.spacemembership.SpaceMembershipSocialRest#updateSpaceMembershipById(javax.ws.rs.core.UriInfo, java.lang.String, java.lang.String, java.lang.String, java.lang.String)
    */
+  @Override
   @PUT
   @Path("{id}/{spacesPrefix}/{spacePrettyName}")
   public Response updateSpaceMembershipById(@Context UriInfo uriInfo,
@@ -247,17 +235,13 @@ public class SpaceMembershipRestService implements ResourceContainer {
     
     membership = handler.findMembershipByUserGroupAndType(membership.getUserName(), membership.getGroupId(), type);
     
-    return Util.getResponse(RestUtils.buildEntityFromSpaceMembership(space, membership.getUserName(), membership.getMembershipType()), uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
+    return Util.getResponse(RestUtils.buildEntityFromSpaceMembership(space, membership.getUserName(), membership.getMembershipType(), uriInfo.getPath()), uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
   }
   
-  /**
-   * Process to delete a spaceMembership by id
-   * 
-   * @param uriInfo
-   * @param id membership id
-   * @return
-   * @throws Exception
+  /* (non-Javadoc)
+   * @see org.exoplatform.social.service.rest.impl.spacemembership.SpaceMembershipSocialRest#deleteSpaceMembershipById(javax.ws.rs.core.UriInfo, java.lang.String, java.lang.String, java.lang.String)
    */
+  @Override
   @DELETE
   @Path("{id}/{spacesPrefix}/{spacePrettyName}")
   public Response deleteSpaceMembershipById(@Context UriInfo uriInfo,
@@ -292,24 +276,24 @@ public class SpaceMembershipRestService implements ResourceContainer {
     spaceService.setManager(space, membership.getUserName(), false);
     spaceService.removeMember(space, membership.getUserName());
     
-    return Util.getResponse(RestUtils.buildEntityFromSpaceMembership(space, membership.getUserName(), membership.getMembershipType()), uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
+    return Util.getResponse(RestUtils.buildEntityFromSpaceMembership(space, membership.getUserName(), membership.getMembershipType(), uriInfo.getPath()), uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
   }
   
-  private void setSpaceMemberships(List<Map<String, String>> spaceMemberships, List<Space> spaces, String userId) {
+  private void setSpaceMemberships(List<Map<String, String>> spaceMemberships, List<Space> spaces, String userId, UriInfo uriInfo) {
     for (Space space : spaces) {
       if (userId != null) {
         if (ArrayUtils.contains(space.getMembers(), userId)) {
-          spaceMemberships.add(RestUtils.buildEntityFromSpaceMembership(space, userId, "member"));
+          spaceMemberships.add(RestUtils.buildEntityFromSpaceMembership(space, userId, "member", uriInfo.getPath()));
         }
         if (ArrayUtils.contains(space.getManagers(), userId)) {
-          spaceMemberships.add(RestUtils.buildEntityFromSpaceMembership(space, userId, "manager"));
+          spaceMemberships.add(RestUtils.buildEntityFromSpaceMembership(space, userId, "manager", uriInfo.getPath()));
         }
       } else {
         for (String user : space.getMembers()) {
-          spaceMemberships.add(RestUtils.buildEntityFromSpaceMembership(space, user, "member"));
+          spaceMemberships.add(RestUtils.buildEntityFromSpaceMembership(space, user, "member", uriInfo.getPath()));
         }
         for (String user : space.getManagers()) {
-          spaceMemberships.add(RestUtils.buildEntityFromSpaceMembership(space, user, "manager"));
+          spaceMemberships.add(RestUtils.buildEntityFromSpaceMembership(space, user, "manager", uriInfo.getPath()));
         }
       }
     }

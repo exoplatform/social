@@ -88,7 +88,7 @@ public class RestUtils {
    * @param identity the provided identity
    * @return a hash map
    */
-  public static Map<String, Object> buildEntityFromIdentity(Identity identity) {
+  public static Map<String, Object> buildEntityFromIdentity(Identity identity, String restPath) {
     Map<String, Object> map = new LinkedHashMap<String, Object>();
     Profile profile = identity.getProfile();
     map.put(RestProperties.ID, identity.getId());
@@ -100,7 +100,7 @@ public class RestUtils {
       map.put(RestProperties.POSITION, profile.getPosition());
       map.put(RestProperties.FULL_NAME, profile.getFullName());
       map.put(RestProperties.EMAIL, profile.getEmail());
-      map.put(RestProperties.HREF, Util.getRestUrl(USERS_TYPE, identity.getRemoteId()));
+      map.put(RestProperties.HREF, Util.getRestUrl(USERS_TYPE, identity.getRemoteId(), restPath));
       map.put(RestProperties.PHONES, getSubListByProperties(profile.getPhones(), getPhoneProperties()));
       map.put(RestProperties.EXPERIENCES, getSubListByProperties((List)(List<Map<String, Object>>)profile.getProperty(Profile.EXPERIENCES), getExperiencesProperties()));
       map.put(RestProperties.IMS, getSubListByProperties((List<Map<String, String>>) profile.getProperty(Profile.CONTACT_IMS), getImsProperties()));
@@ -108,7 +108,7 @@ public class RestUtils {
       map.put(RestProperties.AVATAR, profile.getAvatarUrl());
     }
     map.put(RestProperties.DELETED, identity.isDeleted());
-    map.put(RestProperties.IDENTITY, Util.getRestUrl(IDENTITIES_TYPE, identity.getId()));
+    map.put(RestProperties.IDENTITY, Util.getRestUrl(IDENTITIES_TYPE, identity.getId(), restPath));
     return map;
   }
   
@@ -119,18 +119,18 @@ public class RestUtils {
    * @param userId the user's remote id
    * @return a hash map
    */
-  public static Map<String, Object> buildEntityFromSpace(Space space, String userId) {
+  public static Map<String, Object> buildEntityFromSpace(Space space, String userId, String restPath) {
     Map<String, Object> map = new LinkedHashMap<String, Object>();
     if (ArrayUtils.contains(space.getMembers(), userId) || isMemberOfAdminGroup()) {
       map.put(RestProperties.ID, space.getId());
-      map.put(RestProperties.HREF, Util.getRestUrl(SPACES_TYPE, space.getId()));
+      map.put(RestProperties.HREF, Util.getRestUrl(SPACES_TYPE, space.getId(), restPath));
       Identity spaceIdentity = CommonsUtils.getService(IdentityManager.class).getOrCreateIdentity(SpaceIdentityProvider.NAME, space.getPrettyName(), true);
-      map.put(RestProperties.IDENTITY, Util.getRestUrl(IDENTITIES_TYPE, spaceIdentity.getId()));
+      map.put(RestProperties.IDENTITY, Util.getRestUrl(IDENTITIES_TYPE, spaceIdentity.getId(), restPath));
       map.put(RestProperties.GROUP_ID, space.getGroupId());
       map.put(RestProperties.AVATAR_URL, space.getAvatarUrl());
       map.put(RestProperties.APPLICATIONS, getSpaceApplications(space));
-      map.put(RestProperties.MANAGERS, Util.getMembersSpaceRestUrl(space.getId(), true));
-      map.put(RestProperties.MEMBERS, Util.getMembersSpaceRestUrl(space.getId(), false));
+      map.put(RestProperties.MANAGERS, Util.getMembersSpaceRestUrl(space.getId(), true, restPath));
+      map.put(RestProperties.MEMBERS, Util.getMembersSpaceRestUrl(space.getId(), false, restPath));
     }
     map.put(RestProperties.DISPLAY_NAME, space.getDisplayName());
     map.put(RestProperties.URL, LinkProvider.getSpaceUri(space.getPrettyName()));
@@ -147,20 +147,20 @@ public class RestUtils {
    * @param type membership type
    * @return a hash map
    */
-  public static Map<String, String> buildEntityFromSpaceMembership(Space space, String userId, String type) {
+  public static Map<String, String> buildEntityFromSpaceMembership(Space space, String userId, String type, String restPath) {
     Map<String, String> map = new LinkedHashMap<String, String>();
     OrganizationService organizationService = CommonsUtils.getService(OrganizationService.class);
     MembershipHandler handler = organizationService.getMembershipHandler();
     try {
       Membership membership = handler.findMembershipByUserGroupAndType(userId, space.getGroupId(), type);
       map.put(RestProperties.ID, membership.getId());
-      map.put(RestProperties.HREF, Util.getRestUrl(SPACES_MEMBERSHIP_TYPE, membership.getId()));
+      map.put(RestProperties.HREF, Util.getRestUrl(SPACES_MEMBERSHIP_TYPE, membership.getId(), restPath));
     } catch (Exception e) {
       LOG.debug("Failed to find the membership");
       return map;
     }
-    map.put(RestProperties.USERS, Util.getRestUrl(USERS_TYPE, userId));
-    map.put(RestProperties.SPACES, Util.getRestUrl(SPACES_TYPE, space.getId()));
+    map.put(RestProperties.USERS, Util.getRestUrl(USERS_TYPE, userId, restPath));
+    map.put(RestProperties.SPACES, Util.getRestUrl(SPACES_TYPE, space.getId(), restPath));
     map.put(RestProperties.ROLE, type);
     map.put(RestProperties.STATUS, "approved");
     return map;
@@ -172,23 +172,23 @@ public class RestUtils {
    * @param activity the provided activity
    * @return a hash map
    */
-  public static Map<String, Object> buildEntityFromActivity(ExoSocialActivity activity) {
+  public static Map<String, Object> buildEntityFromActivity(ExoSocialActivity activity, String restPath) {
     Identity poster = CommonsUtils.getService(IdentityManager.class).getIdentity(activity.getPosterId(), true);
     Map<String, Object> map = new LinkedHashMap<String, Object>();
     map.put(RestProperties.ID, activity.getId());
-    map.put(RestProperties.HREF, Util.getRestUrl(ACTIVITIES_TYPE, activity.getId()));
-    map.put(RestProperties.IDENTITY, Util.getRestUrl(IDENTITIES_TYPE, activity.getPosterId()));
+    map.put(RestProperties.HREF, Util.getRestUrl(ACTIVITIES_TYPE, activity.getId(), restPath));
+    map.put(RestProperties.IDENTITY, Util.getRestUrl(IDENTITIES_TYPE, activity.getPosterId(), restPath));
     map.put(RestProperties.TITLE, activity.getTitle());
     map.put(RestProperties.BODY, activity.getBody());
-    map.put(RestProperties.OWNER, getActivityOwner(poster));
+    map.put(RestProperties.OWNER, getActivityOwner(poster, restPath));
     map.put(RestProperties.LINK, activity.getPermaLink());
     map.put(RestProperties.ATTACHMENTS, new ArrayList<String>());
     map.put(RestProperties.TYPE, activity.getType());
     map.put(RestProperties.CREATE_DATE, formatDateToISO8601(new Date(activity.getPostedTime())));
     map.put(RestProperties.UPDATE_DATE, formatDateToISO8601(activity.getUpdated()));
-    map.put(RestProperties.MENTIONS, getActivityMentions(activity));
-    map.put(RestProperties.LIKES, Util.getLikesActivityRestUrl(activity.getId()));
-    map.put(RestProperties.COMMENTS, Util.getCommentsActivityRestUrl(activity.getId()));
+    map.put(RestProperties.MENTIONS, getActivityMentions(activity, restPath));
+    map.put(RestProperties.LIKES, Util.getLikesActivityRestUrl(activity.getId(), restPath));
+    map.put(RestProperties.COMMENTS, Util.getCommentsActivityRestUrl(activity.getId(), restPath));
     return map;
   }
   
@@ -198,29 +198,29 @@ public class RestUtils {
    * @param relationship the provided relationship
    * @return a hash map
    */
-  public static Map<String, String> buildEntityFromRelationship(Relationship relationship) {
+  public static Map<String, String> buildEntityFromRelationship(Relationship relationship, String restPath) {
     Map<String, String> map = new LinkedHashMap<String, String>();
     map.put(RestProperties.ID, relationship.getId());
-    map.put(RestProperties.HREF, Util.getRestUrl(USERS_RELATIONSHIP_TYPE, relationship.getId()));
+    map.put(RestProperties.HREF, Util.getRestUrl(USERS_RELATIONSHIP_TYPE, relationship.getId(), restPath));
     map.put(RestProperties.STATUS, relationship.getStatus().name());
-    map.put(RestProperties.SENDER, Util.getRestUrl(USERS_TYPE, relationship.getSender().getRemoteId()));
-    map.put(RestProperties.RECEIVER, Util.getRestUrl(USERS_TYPE, relationship.getReceiver().getRemoteId()));
+    map.put(RestProperties.SENDER, Util.getRestUrl(USERS_TYPE, relationship.getSender().getRemoteId(), restPath));
+    map.put(RestProperties.RECEIVER, Util.getRestUrl(USERS_TYPE, relationship.getReceiver().getRemoteId(), restPath));
     return map;
   }
   
-  private static Map<String, String> getActivityOwner(Identity owner) {
+  private static Map<String, String> getActivityOwner(Identity owner, String restPath) {
     Map<String, String> mention = new LinkedHashMap<String, String>();
     mention.put(RestProperties.ID, owner.getId());
-    mention.put(RestProperties.HREF, Util.getRestUrl(USERS_TYPE, owner.getRemoteId()));
+    mention.put(RestProperties.HREF, Util.getRestUrl(USERS_TYPE, owner.getRemoteId(), restPath));
     return mention;
   }
   
-  private static List<Map<String, String>> getActivityMentions(ExoSocialActivity activity) {
+  private static List<Map<String, String>> getActivityMentions(ExoSocialActivity activity, String restPath) {
     List<Map<String, String>> mentions = new ArrayList<Map<String, String>>();
     for (String mentionner : activity.getMentionedIds()) {
       String mentionnerId = mentionner.split("@")[0];
       Identity userIdentity = CommonsUtils.getService(IdentityManager.class).getIdentity(mentionnerId, false);
-      mentions.add(getActivityOwner(userIdentity));
+      mentions.add(getActivityOwner(userIdentity, restPath));
     }
     return mentions;
   }

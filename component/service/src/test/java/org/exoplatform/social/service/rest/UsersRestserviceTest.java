@@ -9,7 +9,7 @@ import org.exoplatform.social.service.test.AbstractResourceTest;
 
 public class UsersRestserviceTest extends AbstractResourceTest {
   
-  static private UsersRestService usersRestService;
+  static private UserSocialRestServiceV1 usersRestService;
   
   private IdentityStorage identityStorage;
   private ActivityManagerImpl activityManager;
@@ -37,7 +37,7 @@ public class UsersRestserviceTest extends AbstractResourceTest {
     identityStorage.saveIdentity(maryIdentity);
     identityStorage.saveIdentity(demoIdentity);
     
-    usersRestService = new UsersRestService();
+    usersRestService = new UserSocialRestServiceV1();
     registry(usersRestService);
   }
 

@@ -63,8 +63,6 @@ import org.exoplatform.social.service.rest.api.models.ProfileRestOut;
  */
 public final class Util {
   
-  public static final String SOCIAL_APPLICATION = "social";
-  
   private static final Pattern URL_PATTERN = Pattern
       .compile("^(?i)" +
       "(" +
@@ -639,12 +637,15 @@ public final class Util {
    * 
    * @return base rest url like : http://localhost:8080/rest/v1/social/users/123456
    */
-  public static String getRestUrl(String type, String id) {
+  public static String getRestUrl(String type, String id, String restPath) {
+    String version = restPath.split("/")[1]; // path /v1/social/identities
+    String socialResource = restPath.split("/")[2]; // path /v1/social/identities
+    
     return new StringBuffer(getBaseRestUrl())
-                .append("/").append(VersionResources.CURRENT_VERSION)
-                .append("/").append(SOCIAL_APPLICATION)
-                .append("/").append(type)
-                .append("/").append(id).toString();
+    .append("/").append(version)
+    .append("/").append(socialResource)
+    .append("/").append(type)
+    .append("/").append(id).toString();
   }
   
   /** 
@@ -663,8 +664,8 @@ public final class Util {
    * @param returnManager return managers or members
    * @return rest url to load all members or managers of a space
    */
-  public static String getMembersSpaceRestUrl(String id, boolean returnManager) {
-    StringBuffer spaceMembersRestUrl = new StringBuffer(getRestUrl(RestUtils.SPACES_TYPE, id)).append("/").append(RestUtils.USERS_TYPE);
+  public static String getMembersSpaceRestUrl(String id, boolean returnManager, String restPath) {
+    StringBuffer spaceMembersRestUrl = new StringBuffer(getRestUrl(RestUtils.SPACES_TYPE, id, restPath)).append("/").append(RestUtils.USERS_TYPE);
     if (returnManager) {
       return spaceMembersRestUrl.append("?role=manager").toString();
     }
@@ -677,8 +678,8 @@ public final class Util {
    * @param activityId activity's id
    * @return
    */
-  public static String getLikesActivityRestUrl(String activityId) {
-    return new StringBuffer(getRestUrl(RestUtils.ACTIVITIES_TYPE, activityId)).append("/").append("likes").toString();
+  public static String getLikesActivityRestUrl(String activityId, String restPath) {
+    return new StringBuffer(getRestUrl(RestUtils.ACTIVITIES_TYPE, activityId, restPath)).append("/").append("likes").toString();
   }
   
   /**
@@ -687,8 +688,8 @@ public final class Util {
    * @param activityId activity's id
    * @return
    */
-  public static String getCommentsActivityRestUrl(String activityId) {
-    return new StringBuffer(getRestUrl(RestUtils.ACTIVITIES_TYPE, activityId)).append("/").append("comments").toString();
+  public static String getCommentsActivityRestUrl(String activityId, String restPath) {
+    return new StringBuffer(getRestUrl(RestUtils.ACTIVITIES_TYPE, activityId, restPath)).append("/").append("comments").toString();
   }
   
   /**

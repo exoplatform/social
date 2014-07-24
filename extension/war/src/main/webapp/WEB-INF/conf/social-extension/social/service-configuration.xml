@@ -62,21 +62,21 @@
   <component>
     <type>org.exoplatform.social.service.rest.UsersRestService</type>
   </component>
-  
+
   <component>
-    <type>org.exoplatform.social.service.rest.UsersRelationshipsRestService</type>
+    <type>org.exoplatform.social.service.rest.impl.identity.IdentitySocialRestServiceV1</type>
   </component>
-  
   <component>
-    <type>org.exoplatform.social.service.rest.SpaceRestService</type>
+    <type>org.exoplatform.social.service.rest.impl.space.SpaceSocialRestServiceV1</type>
   </component>
-  
   <component>
-    <type>org.exoplatform.social.service.rest.IdentitiesRestService</type>
+    <type>org.exoplatform.social.service.rest.impl.spacemembership.SpaceMembershipRestServiceV1</type>
   </component>
-  
   <component>
-    <type>org.exoplatform.social.service.rest.SpaceMembershipRestService</type>
+    <type>org.exoplatform.social.service.rest.impl.user.UserSocialRestServiceV1</type>
+  </component>
+  <component>
+    <type>org.exoplatform.social.service.rest.impl.userrelationship.UsersRelationshipsRestServiceV1</type>
   </component>
 <!-- REST service -->
 

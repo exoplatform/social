@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.exoplatform.social.service.rest;
+package org.exoplatform.social.service.rest.impl.space;
 
 import static org.exoplatform.social.service.rest.RestChecker.checkAuthenticatedRequest;
 
@@ -39,7 +39,6 @@ import javax.ws.rs.core.UriInfo;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.exoplatform.commons.utils.CommonsUtils;
 import org.exoplatform.commons.utils.ListAccess;
-import org.exoplatform.services.rest.resource.ResourceContainer;
 import org.exoplatform.services.security.ConversationState;
 import org.exoplatform.services.security.IdentityConstants;
 import org.exoplatform.social.common.RealtimeListAccess;
@@ -55,26 +54,22 @@ import org.exoplatform.social.core.space.SpaceFilter;
 import org.exoplatform.social.core.space.impl.DefaultSpaceApplicationHandler;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
-import org.exoplatform.social.service.rest.api.VersionResources;
+import org.exoplatform.social.service.rest.RestProperties;
+import org.exoplatform.social.service.rest.RestUtils;
+import org.exoplatform.social.service.rest.Util;
+import org.exoplatform.social.service.rest.api.SpaceSocialRest;
 import org.exoplatform.social.service.rest.api.models.ActivitiesCollections;
 import org.exoplatform.social.service.rest.api.models.SpacesCollections;
 import org.exoplatform.social.service.rest.api.models.UsersCollections;
 
-@Path(VersionResources.CURRENT_VERSION + "/social/spaces")
-public class SpaceRestService implements ResourceContainer {
+@Path("v1/social/spaces")
+public class SpaceSocialRestServiceV1 implements SpaceSocialRest {
 
-  public SpaceRestService() {
+  public SpaceSocialRestServiceV1() {
   }
   
   /**
-   * Process to return a list of space in json format
-   * 
-   * @param uriInfo
-   * @param q
-   * @param offset
-   * @param limit
-   * @return
-   * @throws Exception
+   * {@inheritDoc}
    */
   @GET
   public Response getSpaces(@Context UriInfo uriInfo,
@@ -105,7 +100,7 @@ public class SpaceRestService implements ResourceContainer {
       listAccess = spaceService.getAccessibleSpacesByFilter(authenticatedUser, spaceFilter);
     }
     for (Space space : listAccess.load(offset, limit)) {
-      Map<String, Object> spaceInfo = RestUtils.buildEntityFromSpace(space, authenticatedUser);
+      Map<String, Object> spaceInfo = RestUtils.buildEntityFromSpace(space, authenticatedUser, uriInfo.getPath());
       //
       spaceInfos.add(spaceInfo);
     }
@@ -117,15 +112,7 @@ public class SpaceRestService implements ResourceContainer {
   }
   
   /**
-   * Process to create a new space
-   * 
-   * @param uriInfo
-   * @param displayName
-   * @param description
-   * @param visibility
-   * @param registration
-   * @return
-   * @throws Exception
+   * {@inheritDoc}
    */
   @POST
   public Response createSpace(@Context UriInfo uriInfo,
@@ -155,16 +142,11 @@ public class SpaceRestService implements ResourceContainer {
     //
     spaceService.createSpace(space, authenticatedUser);
     
-    return Util.getResponse(RestUtils.buildEntityFromSpace(space, authenticatedUser), uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
+    return Util.getResponse(RestUtils.buildEntityFromSpace(space, authenticatedUser, uriInfo.getPath()), uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
   }
   
   /**
-   * Process to return a space by id
-   * 
-   * @param uriInfo
-   * @param id
-   * @return
-   * @throws Exception
+   * {@inheritDoc}
    */
   @GET
   @Path("{id}")
@@ -184,16 +166,11 @@ public class SpaceRestService implements ResourceContainer {
     }
     
     
-    return Util.getResponse(RestUtils.buildEntityFromSpace(space, authenticatedUser), uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
+    return Util.getResponse(RestUtils.buildEntityFromSpace(space, authenticatedUser, uriInfo.getPath()), uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
   }
   
   /**
-   * Process to update a space by id
-   * 
-   * @param uriInfo
-   * @param id
-   * @return
-   * @throws Exception
+   * {@inheritDoc}
    */
   @PUT
   @Path("{id}")
@@ -239,16 +216,11 @@ public class SpaceRestService implements ResourceContainer {
       spaceService.updateSpace(space);
     }
     
-    return Util.getResponse(RestUtils.buildEntityFromSpace(space, authenticatedUser), uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
+    return Util.getResponse(RestUtils.buildEntityFromSpace(space, authenticatedUser, uriInfo.getPath()), uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
   }
   
   /**
-   * Process to delete a space by id
-   * 
-   * @param uriInfo
-   * @param id space'id
-   * @return
-   * @throws Exception
+   * {@inheritDoc}
    */
   @DELETE
   @Path("{id}")
@@ -269,16 +241,11 @@ public class SpaceRestService implements ResourceContainer {
     
     spaceService.deleteSpace(space);
     
-    return Util.getResponse(RestUtils.buildEntityFromSpace(space, authenticatedUser), uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
+    return Util.getResponse(RestUtils.buildEntityFromSpace(space, authenticatedUser, uriInfo.getPath()), uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
   }
   
   /**
-   * Process to return a space by id
-   * 
-   * @param uriInfo
-   * @param id
-   * @return
-   * @throws Exception
+   * {@inheritDoc}
    */
   @GET
   @Path("{id}/users")
@@ -311,7 +278,7 @@ public class SpaceRestService implements ResourceContainer {
     List<Map<String, Object>> profileInfos = new ArrayList<Map<String, Object>>();
     for (String user : users) {
       Identity identity = CommonsUtils.getService(IdentityManager.class).getOrCreateIdentity(OrganizationIdentityProvider.NAME, user, true);
-      Map<String, Object> profileInfo = RestUtils.buildEntityFromIdentity(identity);
+      Map<String, Object> profileInfo = RestUtils.buildEntityFromIdentity(identity, uriInfo.getPath());
       //
       profileInfos.add(profileInfo);
     }
@@ -323,12 +290,7 @@ public class SpaceRestService implements ResourceContainer {
   }
   
   /**
-   * Process to return a space by id
-   * 
-   * @param uriInfo
-   * @param id
-   * @return
-   * @throws Exception
+   * {@inheritDoc}
    */
   @GET
   @Path("{id}/activities")
@@ -369,7 +331,7 @@ public class SpaceRestService implements ResourceContainer {
     as.put(RestProperties.ID, spaceIdentity.getRemoteId());
     //
     for (ExoSocialActivity activity : activities) {
-      Map<String, Object> activityInfo = RestUtils.buildEntityFromActivity(activity);
+      Map<String, Object> activityInfo = RestUtils.buildEntityFromActivity(activity, uriInfo.getPath());
       activityInfo.put(RestProperties.ACTIVITY_STREAM, as);
       //
       activitiesInfo.add(activityInfo);
@@ -381,6 +343,9 @@ public class SpaceRestService implements ResourceContainer {
     return Util.getResponse(activitiesCollections, uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
   }
   
+  /**
+   * {@inheritDoc}
+   */
   @POST
   @Path("{id}/activities")
   public Response postActivityOnSpace(@Context UriInfo uriInfo,
@@ -407,6 +372,6 @@ public class SpaceRestService implements ResourceContainer {
     activity.setUserId(target.getId());
     CommonsUtils.getService(ActivityManager.class).saveActivityNoReturn(spaceIdentity, activity);
     
-    return Util.getResponse(RestUtils.buildEntityFromActivity(activity), uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
+    return Util.getResponse(RestUtils.buildEntityFromActivity(activity, uriInfo.getPath()), uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
   }
 }
