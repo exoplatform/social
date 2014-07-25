@@ -274,9 +274,7 @@ public abstract class AbstractResourceTest extends AbstractServiceTest {
     assertEquals("activity.getPriority() must equal:",
                   expectedPriority,
                   entity.get("priority"));
-    assertEquals("activity.getTemplateParams() must return: " +
-                  activity.getTemplateParams() == null ? new HashMap().toString() : activity.getTemplateParams().toString(),
-                  activity.getTemplateParams() == null ? new HashMap() : activity.getTemplateParams(),
+    assertEquals(activity.getTemplateParams() == null ? new HashMap() : activity.getTemplateParams(),
                   entity.get("templateParams"));
     assertEquals("activity.getTitleId() must return: " + activity.getTitleId() == null ? "" : activity.getTitleId(),
                   activity.getTitleId() == null ? "" : activity.getTitleId() ,

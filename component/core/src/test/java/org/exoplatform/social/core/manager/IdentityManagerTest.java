@@ -29,6 +29,7 @@ import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.identity.provider.Application;
 import org.exoplatform.social.core.identity.provider.FakeIdentityProvider;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
+import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
 import org.exoplatform.social.core.profile.ProfileFilter;
 import org.exoplatform.social.core.space.SpaceUtils;
 import org.exoplatform.social.core.space.impl.DefaultSpaceApplicationHandler;
@@ -52,7 +53,7 @@ public class IdentityManagerTest extends AbstractCoreTest {
 
   private IdentityManager identityManager;
 
-  
+  private List<Space> tearDownSpaceList;
   private List<Identity>  tearDownIdentityList;
 
   private ActivityManager activityManager;
@@ -73,11 +74,19 @@ public class IdentityManagerTest extends AbstractCoreTest {
     userHandler = SpaceUtils.getOrganizationService().getUserHandler();
     
     tearDownIdentityList = new ArrayList<Identity>();
+    tearDownSpaceList = new ArrayList<Space>();
   }
 
   public void tearDown() throws Exception {
     for (Identity identity : tearDownIdentityList) {
       identityManager.deleteIdentity(identity);
+    }
+    for (Space space : tearDownSpaceList) {
+      Identity spaceIdentity = identityManager.getOrCreateIdentity(SpaceIdentityProvider.NAME, space.getPrettyName(), false);
+      if (spaceIdentity != null) {
+        identityManager.deleteIdentity(spaceIdentity);
+      }
+      spaceService.deleteSpace(space);
     }
     super.tearDown();
   }
@@ -232,7 +241,7 @@ public class IdentityManagerTest extends AbstractCoreTest {
     }
     
     //clear space
-    spaceService.deleteSpace(savedSpace);
+    tearDownSpaceList.add(savedSpace);
 
   }
 
@@ -586,6 +595,54 @@ public class IdentityManagerTest extends AbstractCoreTest {
       Identity[] identityArray = identityListAccess.load(0, 3);
       assertEquals(3, identityArray.length);
     }
+  }
+  
+  /**
+   * Test order {@link IdentityManager#getIdentitiesByProfileFilter(String, ProfileFilter, boolean)}
+   */
+  public void testOrderOfGetIdentitiesByProfileFilter() throws Exception {
+    // Create new users 
+    String providerId = "organization";
+    String[] FirstNameList = {"John","Bob","Alain"};
+    String[] LastNameList = {"Smith","Dupond","Dupond"};
+    for (int i = 0; i < 3; i++) {
+      String remoteId = "username" + i;
+      Identity identity = new Identity(providerId, remoteId);
+      identityManager.saveIdentity(identity);
+      Profile profile = new Profile(identity);
+      profile.setProperty(Profile.FIRST_NAME, FirstNameList[i]);
+      profile.setProperty(Profile.LAST_NAME, LastNameList[i]);
+      profile.setProperty(Profile.FULL_NAME, FirstNameList[i] + " " +  LastNameList[i]);
+      profile.setProperty(Profile.POSITION, "developer");
+      profile.setProperty(Profile.GENDER, "male");
+
+      identityManager.saveProfile(profile);
+      identity.setProfile(profile);
+      tearDownIdentityList.add(identity);   
+    }
+    
+    ProfileFilter pf = new ProfileFilter();
+    ListAccess<Identity> idsListAccess = null;
+    // Test order by last name
+    pf.setFirstCharacterOfName('D');
+    idsListAccess = identityManager.getIdentitiesByProfileFilter(providerId, pf, false);
+    assertNotNull(idsListAccess);
+    assertEquals(2, idsListAccess.getSize());
+    assertEquals("Alain Dupond", idsListAccess.load(0, 20)[0].getProfile().getFullName());
+    assertEquals("Bob Dupond", idsListAccess.load(0, 20)[1].getProfile().getFullName());
+    
+    pf = new ProfileFilter();
+    idsListAccess = identityManager.getIdentitiesByProfileFilter(providerId, pf, false);
+    assertNotNull(idsListAccess);
+    assertEquals(3, idsListAccess.getSize());
+    assertEquals("Alain Dupond", idsListAccess.load(0, 20)[0].getProfile().getFullName());
+    assertEquals("Bob Dupond", idsListAccess.load(0, 20)[1].getProfile().getFullName());
+    assertEquals("John Smith", idsListAccess.load(0, 20)[2].getProfile().getFullName());
+    
+    // Test order by first name if last name is equal
+    Identity[] identityArray = idsListAccess.load(0, 2);
+    assertEquals(tearDownIdentityList.get(2).getId(), identityArray[0].getId());
+    
   }
 
   /**

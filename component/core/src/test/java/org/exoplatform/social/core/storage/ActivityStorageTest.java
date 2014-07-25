@@ -56,6 +56,7 @@ public class ActivityStorageTest extends AbstractCoreTest {
   private IdentityManager identityManager;
   private RelationshipManager relationshipManager;
   private List<ExoSocialActivity> tearDownActivityList;
+  private List<Space> tearDownSpaceList;
 
   private Identity rootIdentity;
   private Identity johnIdentity;
@@ -88,6 +89,7 @@ public class ActivityStorageTest extends AbstractCoreTest {
     assertNotNull("demoIdentity.getId() must not be null", demoIdentity.getId());
 
     tearDownActivityList = new ArrayList<ExoSocialActivity>();
+    tearDownSpaceList = new ArrayList<Space>();
   }
 
   @Override
@@ -99,6 +101,14 @@ public class ActivityStorageTest extends AbstractCoreTest {
     identityStorage.deleteIdentity(johnIdentity);
     identityStorage.deleteIdentity(maryIdentity);
     identityStorage.deleteIdentity(demoIdentity);
+    
+    for (Space space : tearDownSpaceList) {
+      Identity spaceIdentity = identityStorage.findIdentity(SpaceIdentityProvider.NAME, space.getPrettyName());
+      if (spaceIdentity != null) {
+        identityStorage.deleteIdentity(spaceIdentity);
+      }
+      spaceService.deleteSpace(space);
+    }
     /*assertEquals("assertEquals(activityStorage.getActivities(rootIdentity).size() must be 0",
            0, activityStorage.getActivities(rootIdentity).size());
     assertEquals("assertEquals(activityStorage.getActivities(johnIdentity).size() must be 0",
@@ -1059,8 +1069,44 @@ public class ActivityStorageTest extends AbstractCoreTest {
     assertNotNull("demoActivities must not be null", demoActivities);
     assertEquals("demoActivities.size() must return: 0", 0, demoActivities.size());
     
+    tearDownSpaceList.add(space);
+    tearDownSpaceList.add(space2);
+  }
+  
+  public void testGetActivitiesAfterRemoveSpace() throws Exception {
+    SpaceService spaceService = this.getSpaceService();
+    Space space = this.getSpaceInstance(spaceService, 0);
+    tearDownSpaceList.add(space);
+    Identity spaceIdentity = this.identityManager.getOrCreateIdentity(SpaceIdentityProvider.NAME, space.getPrettyName(), false);
+    
+    int totalNumber = 10;
+    
+    //demo posts activities to space
+    for (int i = 0; i < totalNumber; i ++) {
+      ExoSocialActivity activity = new ExoSocialActivityImpl();
+      activity.setTitle("activity title " + i);
+      activity.setUserId(demoIdentity.getId());
+      activityStorage.saveActivity(spaceIdentity, activity);
+      tearDownActivityList.add(activity);
+    }
+    
+    List<ExoSocialActivity> spacesActivities = activityStorage.getUserSpacesActivities(demoIdentity, 0, 10);
+    assertEquals("spacesActivities.size() must return: 10", 10, spacesActivities.size());
+    List<ExoSocialActivity> myActivities = activityStorage.getUserActivities(demoIdentity, 0, 10);
+    assertEquals("myActivities.size() must return: 10", 10, myActivities.size());
+    List<ExoSocialActivity> feedActivities = activityStorage.getActivityFeed(demoIdentity, 0, 10);
+    assertEquals("feedActivities.size() must return: 10", 10, feedActivities.size());
+    
+    //delete space
     spaceService.deleteSpace(space);
-    spaceService.deleteSpace(space2);
+    
+    spacesActivities = activityStorage.getUserSpacesActivities(demoIdentity, 0, 10);
+    assertEquals(10, spacesActivities.size());
+    feedActivities = activityStorage.getActivityFeed(demoIdentity, 0, 10);
+    assertEquals(10, feedActivities.size());
+    myActivities = activityStorage.getUserActivities(demoIdentity, 0, 10);
+    assertEquals(10, myActivities.size());
+    
   }
 
   /**
@@ -1073,6 +1119,7 @@ public class ActivityStorageTest extends AbstractCoreTest {
   public void testGetNumberOfUserSpacesActivities() throws Exception {
     SpaceService spaceService = this.getSpaceService();
     Space space = this.getSpaceInstance(spaceService, 0);
+    tearDownSpaceList.add(space);
     Identity spaceIdentity = this.identityManager.getOrCreateIdentity(SpaceIdentityProvider.NAME, space.getPrettyName(), false);
     
     int totalNumber = 10;
@@ -1097,6 +1144,7 @@ public class ActivityStorageTest extends AbstractCoreTest {
     assertEquals("number must be: 10", 10, number);
     
     Space space2 = this.getSpaceInstance(spaceService, 1);
+    tearDownSpaceList.add(space2);
     Identity spaceIdentity2 = this.identityManager.getOrCreateIdentity(SpaceIdentityProvider.NAME, space2.getPrettyName(), false);
     
     //demo posts activities to space2
@@ -1116,8 +1164,6 @@ public class ActivityStorageTest extends AbstractCoreTest {
     number = activityStorage.getNumberOfUserSpacesActivities(demoIdentity);
     assertEquals("number must be: 20", 20, number);
     
-    spaceService.deleteSpace(space);
-    spaceService.deleteSpace(space2);
   }
 
   /**
@@ -1130,6 +1176,7 @@ public class ActivityStorageTest extends AbstractCoreTest {
   public void testGetNumberOfNewerOnUserSpacesActivities() throws Exception {
     SpaceService spaceService = this.getSpaceService();
     Space space = this.getSpaceInstance(spaceService, 0);
+    tearDownSpaceList.add(space);
     Identity spaceIdentity = this.identityManager.getOrCreateIdentity(SpaceIdentityProvider.NAME, space.getPrettyName(), false);
     
     int totalNumber = 10;
@@ -1157,6 +1204,7 @@ public class ActivityStorageTest extends AbstractCoreTest {
     assertEquals("number must be: 9", 9, number);
     
     Space space2 = this.getSpaceInstance(spaceService, 1);
+    tearDownSpaceList.add(space2);
     Identity spaceIdentity2 = this.identityManager.getOrCreateIdentity(SpaceIdentityProvider.NAME, space2.getPrettyName(), false);
     
     //demo posts activities to space2
@@ -1176,8 +1224,6 @@ public class ActivityStorageTest extends AbstractCoreTest {
     number = activityStorage.getNumberOfNewerOnUserSpacesActivities(demoIdentity, baseActivity);
     assertEquals("number must be: 19", 19, number);
     
-    spaceService.deleteSpace(space);
-    spaceService.deleteSpace(space2);
   }
 
   /**
@@ -1190,6 +1236,7 @@ public class ActivityStorageTest extends AbstractCoreTest {
   public void testGetNewerOnUserSpacesActivities() throws Exception {
     SpaceService spaceService = this.getSpaceService();
     Space space = this.getSpaceInstance(spaceService, 0);
+    tearDownSpaceList.add(space);
     Identity spaceIdentity = this.identityManager.getOrCreateIdentity(SpaceIdentityProvider.NAME, space.getPrettyName(), false);
     
     int totalNumber = 10;
@@ -1218,6 +1265,7 @@ public class ActivityStorageTest extends AbstractCoreTest {
     assertEquals("activities.size() must return: 9", 9, activities.size());
     
     Space space2 = this.getSpaceInstance(spaceService, 1);
+    tearDownSpaceList.add(space2);
     Identity spaceIdentity2 = this.identityManager.getOrCreateIdentity(SpaceIdentityProvider.NAME, space2.getPrettyName(), false);
     
     //demo posts activities to space2
@@ -1238,8 +1286,6 @@ public class ActivityStorageTest extends AbstractCoreTest {
     assertNotNull("activities must not be null", activities);
     assertEquals("activities.size() must return: 19", 19, activities.size());
     
-    spaceService.deleteSpace(space);
-    spaceService.deleteSpace(space2);
   }
 
   /**
@@ -1374,6 +1420,7 @@ public class ActivityStorageTest extends AbstractCoreTest {
   public void testGetNumberOfNewerOnUserSpacesActivitiesByTimestamp() throws Exception {
     SpaceService spaceService = this.getSpaceService();
     Space space = this.getSpaceInstance(spaceService, 0);
+    tearDownSpaceList.add(space);
     Identity spaceIdentity = 
         this.identityManager.getOrCreateIdentity(SpaceIdentityProvider.NAME,space.getPrettyName(),false);
 
@@ -1402,7 +1449,6 @@ public class ActivityStorageTest extends AbstractCoreTest {
 
     assertEquals(9, activityStorage.getNumberOfNewerOnUserSpacesActivities(demoIdentity,sinceTime));
 
-    spaceService.deleteSpace(space);
   }
   
   /**
@@ -1415,6 +1461,7 @@ public class ActivityStorageTest extends AbstractCoreTest {
   public void testGetNumberOfOlderOnUserSpacesActivities() throws Exception {
     SpaceService spaceService = this.getSpaceService();
     Space space = this.getSpaceInstance(spaceService, 0);
+    tearDownSpaceList.add(space);
     Identity spaceIdentity = this.identityManager.getOrCreateIdentity(SpaceIdentityProvider.NAME, space.getPrettyName(), false);
     
     int totalNumber = 10;
@@ -1442,6 +1489,7 @@ public class ActivityStorageTest extends AbstractCoreTest {
     assertEquals("number must be: 9", 9, number);
     
     Space space2 = this.getSpaceInstance(spaceService, 1);
+    tearDownSpaceList.add(space2);
     Identity spaceIdentity2 = this.identityManager.getOrCreateIdentity(SpaceIdentityProvider.NAME, space2.getPrettyName(), false);
     
     //demo posts activities to space2
@@ -1464,8 +1512,6 @@ public class ActivityStorageTest extends AbstractCoreTest {
     number = activityStorage.getNumberOfOlderOnUserSpacesActivities(demoIdentity, baseActivity);
     assertEquals("number must be: 19", 19, number);
     
-    spaceService.deleteSpace(space);
-    spaceService.deleteSpace(space2);
   }
 
   /**
@@ -1478,6 +1524,7 @@ public class ActivityStorageTest extends AbstractCoreTest {
   public void testGetOlderOnUserSpacesActivities() throws Exception {
     SpaceService spaceService = this.getSpaceService();
     Space space = this.getSpaceInstance(spaceService, 0);
+    tearDownSpaceList.add(space);
     Identity spaceIdentity = this.identityManager.getOrCreateIdentity(SpaceIdentityProvider.NAME, space.getPrettyName(), false);
     
     int totalNumber = 10;
@@ -1506,6 +1553,7 @@ public class ActivityStorageTest extends AbstractCoreTest {
     assertEquals("activities.size() must return: 9", 9, activities.size());
     
     Space space2 = this.getSpaceInstance(spaceService, 1);
+    tearDownSpaceList.add(space2);
     Identity spaceIdentity2 = this.identityManager.getOrCreateIdentity(SpaceIdentityProvider.NAME, space2.getPrettyName(), false);
     
     //demo posts activities to space2
@@ -1529,8 +1577,6 @@ public class ActivityStorageTest extends AbstractCoreTest {
     assertNotNull("activities must not be null", activities);
     assertEquals("activities.size() must return: 19", 19, activities.size());
     
-    spaceService.deleteSpace(space);
-    spaceService.deleteSpace(space2);
   }
 
   /**
@@ -2229,11 +2275,12 @@ public class ActivityStorageTest extends AbstractCoreTest {
    * 
    * @throws Exception
    */
-  @MaxQueryNumber(3252)
+  @MaxQueryNumber(3290)
   public void testGetNewerOnUserSpacesActivitiesWithTimestamp() throws Exception {
     checkCleanData();
     SpaceService spaceService = this.getSpaceService();
     Space space = this.getSpaceInstance(spaceService, 0);
+    tearDownSpaceList.add(space);
     Identity spaceIdentity = 
         this.identityManager.getOrCreateIdentity(SpaceIdentityProvider.NAME,space.getPrettyName(),false);
 
@@ -2265,6 +2312,7 @@ public class ActivityStorageTest extends AbstractCoreTest {
     assertEquals("activities.size() must return: 9", 9, activities.size());
 
     Space space2 = this.getSpaceInstance(spaceService, 1);
+    tearDownSpaceList.add(space2);
     Identity spaceIdentity2 = 
         this.identityManager.getOrCreateIdentity(SpaceIdentityProvider.NAME,space2.getPrettyName(),false);
 
@@ -2311,6 +2359,7 @@ public class ActivityStorageTest extends AbstractCoreTest {
     checkCleanData();
     SpaceService spaceService = this.getSpaceService();
     Space space = this.getSpaceInstance(spaceService, 0);
+    tearDownSpaceList.add(space);
     Identity spaceIdentity = 
         this.identityManager.getOrCreateIdentity(SpaceIdentityProvider.NAME,space.getPrettyName(),false);
 
@@ -2343,6 +2392,7 @@ public class ActivityStorageTest extends AbstractCoreTest {
     assertEquals("activities.size() must return: 9", 9, activities.size());
 
     Space space2 = this.getSpaceInstance(spaceService, 1);
+    tearDownSpaceList.add(space2);
     Identity spaceIdentity2 = 
         this.identityManager.getOrCreateIdentity(SpaceIdentityProvider.NAME,space2.getPrettyName(),false);
 
@@ -2378,8 +2428,6 @@ public class ActivityStorageTest extends AbstractCoreTest {
     assertEquals("activities.size() must return: 18", 18, 
                  activityStorage.getOlderUserSpacesActivities(demoIdentity, maxTime, 20).size());
 
-    spaceService.deleteSpace(space);
-    spaceService.deleteSpace(space2);
   }
 
   /**
@@ -2491,6 +2539,7 @@ public class ActivityStorageTest extends AbstractCoreTest {
     assertEquals(rootIdentity.getId(), activity.getStreamId());
     
     Space space = this.getSpaceInstance(spaceService, 0);
+    tearDownSpaceList.add(space);
     Identity spaceIdentity = 
         this.identityManager.getOrCreateIdentity(SpaceIdentityProvider.NAME,space.getPrettyName(),false);
     
@@ -2501,7 +2550,6 @@ public class ActivityStorageTest extends AbstractCoreTest {
     activity = activityStorage.getActivity(activity.getId());
     assertEquals(spaceIdentity.getId(), activity.getStreamId());
     
-    spaceService.deleteSpace(space);
   }
   
   @MaxQueryNumber(696)

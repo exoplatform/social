@@ -162,6 +162,8 @@ public class Space {
   /** The Constant LOW_PRIORITY. */
   public final static String LOW_PRIORITY = "3";
   
+  public static final String CREATOR = "space_creator";
+  
   /** Types of updating of space. */
   public static enum                UpdatedField 
                                       {

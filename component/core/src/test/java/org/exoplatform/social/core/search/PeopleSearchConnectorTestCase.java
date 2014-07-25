@@ -32,6 +32,7 @@ public class PeopleSearchConnectorTestCase extends AbstractCoreTest {
     Identity iFoo = new Identity(OrganizationIdentityProvider.NAME, "foo");
     Profile pFoo = new Profile(iFoo);
 
+    pFoo.setProperty(Profile.LAST_NAME, "foo");
     pFoo.setProperty(Profile.FULL_NAME, "foo");
     pFoo.setProperty(Profile.EMAIL, "foo@mail.com");
     pFoo.setProperty(Profile.GENDER, "Male");
@@ -59,6 +60,7 @@ public class PeopleSearchConnectorTestCase extends AbstractCoreTest {
 
     Identity iBar = new Identity(OrganizationIdentityProvider.NAME, "bar");
     Profile pBar = new Profile(iBar);
+    pBar.setProperty(Profile.LAST_NAME, "bar");
     pBar.setProperty(Profile.FULL_NAME, "bar");
     pBar.setProperty(Profile.POSITION, "bar position");
     Map<String, String> xBar = new HashMap<String, String>();
@@ -132,6 +134,7 @@ public class PeopleSearchConnectorTestCase extends AbstractCoreTest {
   }
 
   public void testOrder() throws Exception {
+    
     List<SearchResult> rTitleAsc = (List<SearchResult>) peopleSearchConnector.search(null, "position", Collections.EMPTY_LIST, 0, 10, "title", "asc");
     assertEquals("bar", rTitleAsc.get(0).getTitle());
     assertEquals("foo", rTitleAsc.get(1).getTitle());

@@ -35,6 +35,7 @@ import org.exoplatform.social.core.storage.ActivityStorageException;
 import org.exoplatform.social.core.test.AbstractCoreTest;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -47,6 +48,7 @@ import java.util.Random;
 public class ActivityManagerTest extends AbstractCoreTest {
   private final Log LOG = ExoLogger.getLogger(ActivityManagerTest.class);
   private List<ExoSocialActivity> tearDownActivityList;
+  private List<Space> tearDownSpaceList;
   private Identity rootIdentity;
   private Identity johnIdentity;
   private Identity maryIdentity;
@@ -69,6 +71,7 @@ public class ActivityManagerTest extends AbstractCoreTest {
     relationshipManager = (RelationshipManager) getContainer().getComponentInstanceOfType(RelationshipManager.class);
     spaceService = (SpaceService) getContainer().getComponentInstanceOfType(SpaceService.class);
     tearDownActivityList = new ArrayList<ExoSocialActivity>();
+    tearDownSpaceList = new ArrayList<Space>();
     rootIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "root", false);
     johnIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "john", false);
     maryIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "mary", false);
@@ -103,6 +106,15 @@ public class ActivityManagerTest extends AbstractCoreTest {
     identityManager.deleteIdentity(jameIdentity);
     identityManager.deleteIdentity(raulIdentity);
     identityManager.deleteIdentity(paulIdentity);
+    
+    for (Space space : tearDownSpaceList) {
+      Identity spaceIdentity = identityManager.getOrCreateIdentity(SpaceIdentityProvider.NAME, space.getPrettyName(), false);
+      if (spaceIdentity != null) {
+        identityManager.deleteIdentity(spaceIdentity);
+      }
+      spaceService.deleteSpace(space);
+    }
+    
     super.tearDown();
   }
 
@@ -529,6 +541,37 @@ public class ActivityManagerTest extends AbstractCoreTest {
     assertEquals("demoActivity.getLikeIdentityIds().length must return: 1", 1, demoActivity.getLikeIdentityIds().length);
     assertEquals("&amp;&quot;demo activity", demoActivity.getTitle());
   }
+  /**
+   * Test {@link ActivityManager#saveLike(ExoSocialActivity, Identity)}
+   *  for case not change the template param after liked.
+   * 
+   * @throws Exception
+   * @since 4.0.5
+   */  
+  public void testSaveLikeNotChangeTemplateParam() throws Exception {
+    ExoSocialActivity demoActivity = new ExoSocialActivityImpl();
+    demoActivity.setTitle("title");
+    demoActivity.setUserId(demoActivity.getId());
+    
+    Map<String, String> templateParams = new HashMap<String, String>();
+    templateParams.put("link", "http://exoplatform.com?test=<script>");
+    demoActivity.setTemplateParams(templateParams);
+    
+    
+    activityManager.saveActivityNoReturn(demoIdentity, demoActivity);
+    tearDownActivityList.add(demoActivity);
+    
+    demoActivity = activityManager.getActivity(demoActivity.getId());
+    assertEquals("demoActivity.getLikeIdentityIds() must return: 0",
+                 0, demoActivity.getLikeIdentityIds().length);
+    
+    activityManager.saveLike(demoActivity, johnIdentity);
+    
+    ExoSocialActivity likedActivity = activityManager.getActivity(demoActivity.getId());
+    
+    assertEquals(1, likedActivity.getLikeIdentityIds().length);
+    assertEquals(templateParams.get("link"), likedActivity.getTemplateParams().get("link"));
+  }
   
   /**
    * Test {@link ActivityManager#deleteLike(ExoSocialActivity, Identity)}
@@ -568,6 +611,39 @@ public class ActivityManagerTest extends AbstractCoreTest {
     assertEquals("demoActivity.getLikeIdentityIds().length must return: 0", 0, demoActivity.getLikeIdentityIds().length);
   }
   
+  /**
+   * Test {@link ActivityManager#deleteLike(ExoSocialActivity, Identity)}
+   *  for case not change the template param after liked.
+   * 
+   * @throws Exception
+   * @since 4.0.5
+   */  
+  public void testDeleteLikeNotChangeTemplateParam() throws Exception {
+    ExoSocialActivity demoActivity = new ExoSocialActivityImpl();
+    demoActivity.setTitle("title");
+    demoActivity.setUserId(demoActivity.getId());
+    
+    Map<String, String> templateParams = new HashMap<String, String>();
+    templateParams.put("link", "http://exoplatform.com?test=<script>");
+    demoActivity.setTemplateParams(templateParams);
+    
+    
+    activityManager.saveActivityNoReturn(demoIdentity, demoActivity);
+    tearDownActivityList.add(demoActivity);
+    
+    demoActivity = activityManager.getActivity(demoActivity.getId());
+    activityManager.saveLike(demoActivity, johnIdentity);
+    ExoSocialActivity likedActivity = activityManager.getActivity(demoActivity.getId());
+    
+    assertEquals(1, likedActivity.getLikeIdentityIds().length);
+    
+    demoActivity = activityManager.getActivity(demoActivity.getId());
+    activityManager.deleteLike(demoActivity, johnIdentity);
+    ExoSocialActivity deleteLikeActivity = activityManager.getActivity(demoActivity.getId());
+    
+    assertEquals(0, deleteLikeActivity.getLikeIdentityIds().length);
+    assertEquals(templateParams.get("link"), deleteLikeActivity.getTemplateParams().get("link"));
+  }  
   /**
    * Test {@link ActivityManager#getActivitiesWithListAccess(Identity)}
    * 
@@ -672,6 +748,7 @@ public class ActivityManagerTest extends AbstractCoreTest {
   
   public void testGetActivitiesOfUserSpacesWithListAccess() throws Exception {
     Space space = this.getSpaceInstance(spaceService, 0);
+    tearDownSpaceList.add(space);
     Identity spaceIdentity = this.identityManager.getOrCreateIdentity(SpaceIdentityProvider.NAME, space.getPrettyName(), false);
     
     int totalNumber = 10;
@@ -704,6 +781,7 @@ public class ActivityManagerTest extends AbstractCoreTest {
                  demoActivities.getNumberOfOlder(baseActivity));
     
     Space space2 = this.getSpaceInstance(spaceService, 1);
+    tearDownSpaceList.add(space2);
     Identity spaceIdentity2 = this.identityManager.getOrCreateIdentity(SpaceIdentityProvider.NAME, space2.getPrettyName(), false);
     
     //demo posts activities to space2
@@ -735,8 +813,6 @@ public class ActivityManagerTest extends AbstractCoreTest {
     assertNotNull("demoActivities must not be null", demoActivities);
     assertEquals("demoActivities.getSize() must return: 0", 0, demoActivities.getSize());
     
-    spaceService.deleteSpace(space);
-    spaceService.deleteSpace(space2);
   }
   
   /**

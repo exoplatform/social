@@ -58,6 +58,7 @@ public class StorageUtils {
     String nameForSearch = inputName.replace(ASTERISK_STR, SPACE_STR);
     char firstChar = profileFilter.getFirstCharacterOfName();
     String skills = profileFilter.getSkills();
+    String company = profileFilter.getCompany();
 
     //
     if (firstChar != '\u0000') {
@@ -98,6 +99,13 @@ public class StorageUtils {
       whereExpression.and().like(
           whereExpression.callFunction(QueryFunction.LOWER, ProfileEntity.skills),
           PERCENT_STR + skills.toLowerCase() + PERCENT_STR
+      );
+    }
+	
+    if (company.length() != 0) {
+      whereExpression.and().like(
+          whereExpression.callFunction(QueryFunction.LOWER, ProfileEntity.organizations),
+          PERCENT_STR + company.toLowerCase() + PERCENT_STR
       );
     }
 

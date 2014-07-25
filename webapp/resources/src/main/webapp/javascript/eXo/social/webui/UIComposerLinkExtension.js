@@ -108,7 +108,7 @@
 	    this.statsId = params.statsId || 'Stats';
 	    this.thumbnailCheckboxId = params.thumbnailCheckboxId || 'ThumbnailCheckbox';
 	    this.linkData = params.linkData || {};
-	    //
+
 	    if (!this.attachUrl) {
 	      alert('error: attachUrl is null!');
 	    }

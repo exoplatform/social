@@ -48,6 +48,7 @@ public class ActivityStreamStorageTest extends AbstractCoreTest {
   private ActivityStreamStorage streamStorage;
   private RelationshipManagerImpl relationshipManager;
   private List<ExoSocialActivity> tearDownActivityList;
+  private List<Space> tearDownSpaceList;
 
   private Identity rootIdentity;
   private Identity johnIdentity;
@@ -82,6 +83,7 @@ public class ActivityStreamStorageTest extends AbstractCoreTest {
     assertNotNull("demoIdentity.getId() must not be null", demoIdentity.getId());
 
     tearDownActivityList = new ArrayList<ExoSocialActivity>();
+    tearDownSpaceList = new ArrayList<Space>();
   }
 
   @Override
@@ -93,6 +95,13 @@ public class ActivityStreamStorageTest extends AbstractCoreTest {
     identityStorage.deleteIdentity(johnIdentity);
     identityStorage.deleteIdentity(maryIdentity);
     identityStorage.deleteIdentity(demoIdentity);
+    for (Space space : tearDownSpaceList) {
+      Identity spaceIdentity = identityStorage.findIdentity(SpaceIdentityProvider.NAME, space.getPrettyName());
+      if (spaceIdentity != null) {
+        identityStorage.deleteIdentity(spaceIdentity);
+      }
+      spaceService.deleteSpace(space);
+    }
     super.tearDown();
   }
 
@@ -478,7 +487,7 @@ public void testConnectionsExistActivities() throws ActivityStorageException {
    
     String activityId = identityStorage.getProfileActivityId(spaceIdentity.getProfile(), Profile.AttachedActivityType.SPACE);
     activityStorage.deleteActivity(activityId);
-   spaceService.deleteSpace(space);
+    tearDownSpaceList.add(space);
   }
  
  public void testGetActivityByPoster() throws ActivityStorageException {

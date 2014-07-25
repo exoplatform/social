@@ -16,6 +16,7 @@
  */
 package org.exoplatform.social.plugin.link;
 
+import org.exoplatform.social.service.rest.Util;
 import org.exoplatform.social.webui.activity.BaseUIActivity;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.EventConfig;
@@ -51,7 +52,7 @@ public class UILinkActivity extends BaseUIActivity {
     this.linkComment = linkComment;
   }
   public String getLinkDescription() {
-    return UILinkUtil.simpleEscapeHtml(linkDescription);
+    return UILinkUtil.simpleEscapeHtml(Util.getDecodeQueryURL(linkDescription));
   }
   public void setLinkDescription(String linkDescription) {
     this.linkDescription = linkDescription;
@@ -63,13 +64,13 @@ public class UILinkActivity extends BaseUIActivity {
     this.linkImage = linkImage;
   }
   public String getLinkSource() {
-    return linkSource;
+    return UILinkUtil.simpleEscapeHtml(Util.getDecodeQueryURL(linkSource));
   }
   public void setLinkSource(String linkSource) {
     this.linkSource = linkSource;
   }
   public String getLinkTitle() {
-    return UILinkUtil.simpleEscapeHtml(linkTitle);
+    return UILinkUtil.simpleEscapeHtml(Util.getDecodeQueryURL(linkTitle));
   }
   public void setLinkTitle(String linkTitle) {                
     this.linkTitle = linkTitle;

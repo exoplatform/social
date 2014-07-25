@@ -121,7 +121,7 @@
   } else {
     if (totalLikesNum > 2) {
       def id = Utils.getIdentityManager().getIdentity(displayedIdentityLikes[0]);
-      labelLikes = labelOneAndOthersLikeThis.replace("{0}", id.profile.fullName).replace("{1}", totalLikesNum + "");
+      labelLikes = labelOneAndOthersLikeThis.replace("{0}", id.profile.fullName).replace("{1}", totalLikesNum - 1 + "");
     } else if (totalLikesNum == 1) {
       def id = Utils.getIdentityManager().getIdentity(displayedIdentityLikes[0]);
       labelLikes = labelOnePersonLikeThis.replace("{0}", id.profile.fullName);
@@ -185,8 +185,14 @@
 					<span class="dateTime"><i class="uiIconClock  uiIconLightGray"></i>&nbsp;$activityPostedTime</span> 
 					<% if (uicomponent.isUserActivity() && uicomponent.isSpaceStreamOwner() && !uicomponent.isUISpaceActivitiesDisplay()) {
 						    Space spaceSource = Utils.getSpaceService().getSpaceByPrettyName(streamOwner);
-								def spaceSourceURI = LinkProvider.getSpaceUri(spaceSource.url);
-								def spaceName = spaceSource.displayName;
+                def spaceSourceURI, spaceName;
+                if (spaceSource != null) {
+                  spaceSourceURI = LinkProvider.getSpaceUri(spaceSource.url);
+                  spaceName = spaceSource.displayName;
+                } else {
+                  spaceSourceURI = LinkProvider.getActivityUriForSpace(streamOwner, streamOwner);
+                  spaceName = Utils.getSpaceIdentity(streamOwner, false).profile.fullName;
+                }
 					%>
 					<a class="spaceName" href="$spaceSourceURI"><i class="uiIconSocGroup uiIconSocLightGray"></i>&nbsp;$spaceName</a>
 					<%} %>

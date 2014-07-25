@@ -28,13 +28,8 @@ import junit.framework.TestCase;
 public class UILinkUtilTest extends TestCase {
 
   public void testIsImageLink() {
-//   The case false, because can not throws exception on groovy template
-//    try {
-//      UILinkUtil.isImageLink(null);
-//      fail("Expecting IllegalArgumentException");
-//    } catch (IllegalArgumentException iae) {
-//      assertEquals("link must not be null", iae.getMessage());
-//    }
+    assertFalse(UILinkUtil.isImageLink(null));
+    
     final String notImageLink = "http://exoplatform.com";
     final String jpgImageLink = "http://exoplatform.com/path/img.jpg";
     final String gifImageLink = "http://exoplatform.com/path/img.gif";
@@ -59,7 +54,6 @@ public class UILinkUtilTest extends TestCase {
     final String notImageLink = "http://exoplatform.com/path/img.txt";
     final String jpgErrorLink = "http://exoplatform.com/path/img.jpgs";
     final String errorWithParams = "http://exoplatform.com/path/img.jpg&width=300";
-    //
     final String jpgImageLink = "http://exoplatform.com/path/img.jpg";
     final String gifImageLink = "http://exoplatform.com/path/img.gif";
     final String jpegImageLink = "http://exoplatform.com/path/img.jpeg";
@@ -73,7 +67,6 @@ public class UILinkUtilTest extends TestCase {
     assertFalse(UILinkUtil.isImageLink(notImageLink));
     assertFalse(UILinkUtil.isImageLink(jpgErrorLink));
     assertFalse(UILinkUtil.isImageLink(errorWithParams));
-    //
     assertTrue(UILinkUtil.isImageLink(jpgImageLink));
     assertTrue(UILinkUtil.isImageLink(gifImageLink));
     assertTrue(UILinkUtil.isImageLink(bmpImageLink));
@@ -85,25 +78,28 @@ public class UILinkUtilTest extends TestCase {
   
   public void testSimpleEscapeHtml() {
     String input = null;
-    assertEquals(UILinkUtil.simpleEscapeHtml(input), "");
+    assertEquals("", UILinkUtil.simpleEscapeHtml(input));
     input = "test";
-    assertEquals(UILinkUtil.simpleEscapeHtml(input), "test");
+    assertEquals(input, UILinkUtil.simpleEscapeHtml(input));
     input = "<test";
-    assertEquals(UILinkUtil.simpleEscapeHtml(input), "&lt;test");
+    assertEquals("&lt;test", UILinkUtil.simpleEscapeHtml(input));
     input = "<test>";
-    assertEquals(UILinkUtil.simpleEscapeHtml(input), "&lt;test&gt;");
-    input = "<a herf=\"abc.com\">test</a>";
-    assertEquals(UILinkUtil.simpleEscapeHtml(input), "&lt;a herf=&#34;abc.com&#34;&gt;test&lt;/a&gt;");
+    assertEquals("&lt;test&gt;", UILinkUtil.simpleEscapeHtml(input));
+    input = "<a href=\"abc.com\">test</a>";
+    assertEquals("&lt;a href=&#34;abc.com&#34;&gt;test&lt;/a&gt;",
+                 UILinkUtil.simpleEscapeHtml(input));
     input = "<script type=\"text/javascript\">alert('test');</script>";
-    assertEquals(UILinkUtil.simpleEscapeHtml(input), "&lt;script type=&#34;text/javascript&#34;&gt;alert(&#39;test&#39;);&lt;/script&gt;");
+    assertEquals("&lt;script type=&#34;text/javascript&#34;&gt;alert(&#39;test&#39;);&lt;/script&gt;",
+                 UILinkUtil.simpleEscapeHtml(input));
   }
   
   public void testEncodeURI() {
     String input = "";
-    assertEquals(UILinkUtil.encodeURI(input), "");
+    assertEquals(input, UILinkUtil.encodeURI(input), "");
     input = "test";
-    assertEquals(UILinkUtil.encodeURI(input), "test");
+    assertEquals(input, UILinkUtil.encodeURI(input));
     input = "http://google.com?<script>alert(\"Link_attached\")</script>";
-    assertEquals(UILinkUtil.encodeURI(input), "http%3A%2F%2Fgoogle.com%3F%3Cscript%3Ealert%28%22Link_attached%22%29%3C%2Fscript%3E");
+    assertEquals("http%3A%2F%2Fgoogle.com%3F%3Cscript%3Ealert%28%22Link_attached%22%29%3C%2Fscript%3E",
+                 UILinkUtil.encodeURI(input));
   }
 }
