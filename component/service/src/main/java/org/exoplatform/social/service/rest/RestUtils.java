@@ -41,6 +41,7 @@ import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
+import org.exoplatform.social.core.manager.ActivityManager;
 import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.manager.RelationshipManager;
 import org.exoplatform.social.core.relationship.model.Relationship;
@@ -71,6 +72,10 @@ public class RestUtils {
   public static final String SPACE_ACTIVITY_TYPE     = "space";
 
   public static final String ACTIVITIES_TYPE         = "activities";
+  
+  public static final String COMMENTS_TYPE           = "comments";
+  
+  public static final String LIKES_TYPE              = "likes";
 
   public static final String KEY                     = "key";
 
@@ -178,17 +183,22 @@ public class RestUtils {
     map.put(RestProperties.ID, activity.getId());
     map.put(RestProperties.HREF, Util.getRestUrl(ACTIVITIES_TYPE, activity.getId(), restPath));
     map.put(RestProperties.IDENTITY, Util.getRestUrl(IDENTITIES_TYPE, activity.getPosterId(), restPath));
-    map.put(RestProperties.TITLE, activity.getTitle());
-    map.put(RestProperties.BODY, activity.getBody());
-    map.put(RestProperties.OWNER, getActivityOwner(poster, restPath));
-    map.put(RestProperties.LINK, activity.getPermaLink());
-    map.put(RestProperties.ATTACHMENTS, new ArrayList<String>());
-    map.put(RestProperties.TYPE, activity.getType());
+    map.put(RestProperties.MENTIONS, getActivityMentions(activity, restPath));
+    if (activity.isComment()) {
+      map.put(RestProperties.BODY, activity.getTitle());
+      map.put(RestProperties.POSTER, poster.getRemoteId());
+      map.put(RestProperties.ACTIVITY, Util.getRestUrl(ACTIVITIES_TYPE, CommonsUtils.getService(ActivityManager.class).getParentActivity(activity).getId(), restPath));
+    } else {
+      map.put(RestProperties.BODY, activity.getBody());
+      map.put(RestProperties.TITLE, activity.getTitle());
+      map.put(RestProperties.OWNER, getActivityOwner(poster, restPath));
+      map.put(RestProperties.LINK, activity.getPermaLink());
+      map.put(RestProperties.ATTACHMENTS, new ArrayList<String>());
+      map.put(RestProperties.TYPE, activity.getType());
+      map.put(RestProperties.COMMENTS, Util.getCommentsActivityRestUrl(activity.getId(), restPath));
+    }
     map.put(RestProperties.CREATE_DATE, formatDateToISO8601(new Date(activity.getPostedTime())));
     map.put(RestProperties.UPDATE_DATE, formatDateToISO8601(activity.getUpdated()));
-    map.put(RestProperties.MENTIONS, getActivityMentions(activity, restPath));
-    map.put(RestProperties.LIKES, Util.getLikesActivityRestUrl(activity.getId(), restPath));
-    map.put(RestProperties.COMMENTS, Util.getCommentsActivityRestUrl(activity.getId(), restPath));
     return map;
   }
   

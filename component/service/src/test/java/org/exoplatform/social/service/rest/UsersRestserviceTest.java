@@ -5,6 +5,7 @@ import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.manager.ActivityManagerImpl;
 import org.exoplatform.social.core.space.impl.SpaceServiceImpl;
 import org.exoplatform.social.core.storage.api.IdentityStorage;
+import org.exoplatform.social.service.rest.impl.user.UserSocialRestServiceV1;
 import org.exoplatform.social.service.test.AbstractResourceTest;
 
 public class UsersRestserviceTest extends AbstractResourceTest {

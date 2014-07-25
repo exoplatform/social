@@ -114,4 +114,12 @@ public class RestProperties {
   public static final String SPACES          = "spaces";
   
   public static final String ROLE            = "role";
+  
+  public static final String POSTER          = "poster";
+  
+  public static final String ACTIVITY        = "activity";
+  
+  public static final String LIKER           = "liker";
+  
+  public static final String LIKER_IDENTITY  = "likerIdentity";
 }

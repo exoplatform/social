@@ -673,16 +673,6 @@ public final class Util {
   }
   
   /**
-   * Get the rest url in order to load all likes of an activity
-   * 
-   * @param activityId activity's id
-   * @return
-   */
-  public static String getLikesActivityRestUrl(String activityId, String restPath) {
-    return new StringBuffer(getRestUrl(RestUtils.ACTIVITIES_TYPE, activityId, restPath)).append("/").append("likes").toString();
-  }
-  
-  /**
    * Get the rest url in order to load all comments of an activity
    * 
    * @param activityId activity's id
