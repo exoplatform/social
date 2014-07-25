@@ -99,8 +99,8 @@ public class RestUtils {
     map.put(RestProperties.ID, identity.getId());
     map.put(RestProperties.USER_NAME, identity.getRemoteId());
     if (OrganizationIdentityProvider.NAME.equals(identity.getProviderId())) {
-      map.put(RestProperties.FIRST_NAME, profile.getProperty(Profile.FIRST_NAME).toString());
-      map.put(RestProperties.LAST_NAME, profile.getProperty(Profile.LAST_NAME).toString());
+      map.put(RestProperties.FIRST_NAME, profile.getProperty(Profile.FIRST_NAME) != null ? profile.getProperty(Profile.FIRST_NAME).toString() : "");
+      map.put(RestProperties.LAST_NAME, profile.getProperty(Profile.LAST_NAME) != null ? profile.getProperty(Profile.LAST_NAME).toString() : "");
       map.put(RestProperties.GENDER, profile.getGender());
       map.put(RestProperties.POSITION, profile.getPosition());
       map.put(RestProperties.FULL_NAME, profile.getFullName());
@@ -243,14 +243,13 @@ public class RestUtils {
    * @param target the owner of the stream that we want to display
    * @return activityStream object, null if the viewer has no permission to view activity
    */
-  public static Map<String, String> getActivityStream(String authentiatedUsed, ExoSocialActivity activity, Identity target) {
-    Identity viewerIdentity = CommonsUtils.getService(IdentityManager.class).getOrCreateIdentity(OrganizationIdentityProvider.NAME, authentiatedUsed, true);
+  public static Map<String, String> getActivityStream(ExoSocialActivity activity, Identity authentiatedUsed) {
     Map<String, String> as = new LinkedHashMap<String, String>();
     Identity owner = CommonsUtils.getService(IdentityManager.class).getOrCreateIdentity(OrganizationIdentityProvider.NAME, activity.getStreamOwner(), true);
     if (owner != null) { //case of user activity
-      Relationship relationship = CommonsUtils.getService(RelationshipManager.class).get(viewerIdentity, target);
-      if (! viewerIdentity.getId().equals(activity.getPosterId()) //the viewer is not the poster
-          && ! viewerIdentity.getRemoteId().equals(activity.getStreamOwner()) //the viewer is not the owner
+      Relationship relationship = CommonsUtils.getService(RelationshipManager.class).get(authentiatedUsed, owner);
+      if (! authentiatedUsed.getId().equals(activity.getPosterId()) //the viewer is not the poster
+          && ! authentiatedUsed.getRemoteId().equals(activity.getStreamOwner()) //the viewer is not the owner
           && (relationship == null || ! relationship.getStatus().equals(Relationship.Type.CONFIRMED))) { //the viewer has no relationship with the given user 
         return null;
       }
@@ -258,7 +257,7 @@ public class RestUtils {
     } else { //case of space activity
       owner = CommonsUtils.getService(IdentityManager.class).getOrCreateIdentity(SpaceIdentityProvider.NAME, activity.getStreamOwner(), true);
       Space space = CommonsUtils.getService(SpaceService.class).getSpaceByPrettyName(owner.getRemoteId());
-      if (! CommonsUtils.getService(SpaceService.class).isMember(space, authentiatedUsed)) { //the viewer is not member of space
+      if (! CommonsUtils.getService(SpaceService.class).isMember(space, authentiatedUsed.getRemoteId())) { //the viewer is not member of space
         return null;
       }
       as.put(RestProperties.TYPE, SPACE_ACTIVITY_TYPE);

@@ -80,7 +80,7 @@ public class ActivitySocialRestServiceV1 implements ActivitySocialRest {
     
     List<Map<String, Object>> activitiesInfo = new ArrayList<Map<String, Object>>();
     for (ExoSocialActivity activity : activities) {
-      Map<String, String> as = RestUtils.getActivityStream(authenticatedUser, activity, currentUser);
+      Map<String, String> as = RestUtils.getActivityStream(activity, currentUser);
       if (as == null) continue;
       Map<String, Object> activityInfo = RestUtils.buildEntityFromActivity(activity, uriInfo.getPath());
       activityInfo.put(RestProperties.ACTIVITY_STREAM, as);
@@ -116,7 +116,7 @@ public class ActivitySocialRestServiceV1 implements ActivitySocialRest {
       throw new WebApplicationException(Response.Status.UNAUTHORIZED);
     }
     
-    Map<String, String> as = RestUtils.getActivityStream(authenticatedUser, activity.isComment() ? activityManager.getParentActivity(activity) : activity, currentUser);
+    Map<String, String> as = RestUtils.getActivityStream(activity.isComment() ? activityManager.getParentActivity(activity) : activity, currentUser);
     if (as == null) { //current user doesn't have permission to view activity
       throw new WebApplicationException(Response.Status.UNAUTHORIZED);
     }
@@ -155,7 +155,7 @@ public class ActivitySocialRestServiceV1 implements ActivitySocialRest {
     activity.setTitle(text);
     activityManager.updateActivity(activity);
     
-    Map<String, String> as = RestUtils.getActivityStream(authenticatedUser, activity, currentUser);
+    Map<String, String> as = RestUtils.getActivityStream(activity, currentUser);
     if (as == null) { //current user doesn't have permission to view activity
       throw new WebApplicationException(Response.Status.UNAUTHORIZED);
     }
@@ -187,7 +187,7 @@ public class ActivitySocialRestServiceV1 implements ActivitySocialRest {
       throw new WebApplicationException(Response.Status.UNAUTHORIZED);
     }
     
-    Map<String, String> as = RestUtils.getActivityStream(authenticatedUser, activity, currentUser);
+    Map<String, String> as = RestUtils.getActivityStream(activity, currentUser);
     if (as == null) { //current user doesn't have permission to view activity
       throw new WebApplicationException(Response.Status.UNAUTHORIZED);
     }
@@ -225,7 +225,7 @@ public class ActivitySocialRestServiceV1 implements ActivitySocialRest {
       throw new WebApplicationException(Response.Status.UNAUTHORIZED);
     }
     
-    if (RestUtils.getActivityStream(authenticatedUser, activity, currentUser) == null) { //current user doesn't have permission to view activity
+    if (RestUtils.getActivityStream(activity, currentUser) == null) { //current user doesn't have permission to view activity
       throw new WebApplicationException(Response.Status.UNAUTHORIZED);
     }
     
@@ -268,7 +268,7 @@ public class ActivitySocialRestServiceV1 implements ActivitySocialRest {
       throw new WebApplicationException(Response.Status.UNAUTHORIZED);
     }
     
-    if (RestUtils.getActivityStream(authenticatedUser, activity, currentUser) == null) { //current user doesn't have permission to view activity
+    if (RestUtils.getActivityStream(activity, currentUser) == null) { //current user doesn't have permission to view activity
       throw new WebApplicationException(Response.Status.UNAUTHORIZED);
     }
     

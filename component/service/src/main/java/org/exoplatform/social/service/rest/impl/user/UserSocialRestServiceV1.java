@@ -40,6 +40,7 @@ import org.exoplatform.services.organization.OrganizationService;
 import org.exoplatform.services.organization.User;
 import org.exoplatform.services.organization.UserHandler;
 import org.exoplatform.services.security.ConversationState;
+import org.exoplatform.services.security.IdentityConstants;
 import org.exoplatform.social.common.RealtimeListAccess;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.activity.model.ExoSocialActivityImpl;
@@ -209,6 +210,9 @@ public class UserSocialRestServiceV1 implements UserSocialRest {
     if (!ConversationState.getCurrent().getIdentity().getUserId().equals(id)) {
       throw new WebApplicationException(Response.Status.FORBIDDEN);
     }
+    
+    //TODO : what information can be updated?
+    
     //
     return Util.getResponse(RestUtils.buildEntityFromIdentity(identity, uriInfo.getPath()), uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
   }
@@ -302,9 +306,11 @@ public class UserSocialRestServiceV1 implements UserSocialRest {
                                        @QueryParam("limit") int limit) throws Exception {
     checkAuthenticatedRequest();
     //Check if no authenticated user
-    if (Util.isAnonymous()) {
-      throw new WebApplicationException(Response.Status.NOT_FOUND);
+    String authenticatedUser = ConversationState.getCurrent().getIdentity().getUserId();
+    if (IdentityConstants.ANONIM.equals(authenticatedUser)) {
+      throw new WebApplicationException(Response.Status.UNAUTHORIZED);
     }
+    
     //Check if the given user doesn't exist
     Identity target = CommonsUtils.getService(IdentityManager.class).getOrCreateIdentity(OrganizationIdentityProvider.NAME, id, true);
     if (target == null) {
@@ -353,8 +359,9 @@ public class UserSocialRestServiceV1 implements UserSocialRest {
     }
     
     List<Map<String, Object>> activitiesInfo = new ArrayList<Map<String, Object>>();
+    Identity currentUser = CommonsUtils.getService(IdentityManager.class).getOrCreateIdentity(OrganizationIdentityProvider.NAME, authenticatedUser, true);
     for (ExoSocialActivity activity : activities) {
-      Map<String, String> as = RestUtils.getActivityStream(ConversationState.getCurrent().getIdentity().getUserId(), activity, target);
+      Map<String, String> as = RestUtils.getActivityStream(activity, currentUser);
       if (as == null) continue;
       Map<String, Object> activityInfo = RestUtils.buildEntityFromActivity(activity, uriInfo.getPath());
       activityInfo.put(RestProperties.ACTIVITY_STREAM, as);
