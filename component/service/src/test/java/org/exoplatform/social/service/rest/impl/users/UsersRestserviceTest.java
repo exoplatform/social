@@ -1,4 +1,4 @@
-package org.exoplatform.social.service.rest;
+package org.exoplatform.social.service.rest.impl.users;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,6 +15,7 @@ import org.exoplatform.social.core.space.impl.DefaultSpaceApplicationHandler;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
 import org.exoplatform.social.core.storage.api.IdentityStorage;
+import org.exoplatform.social.service.rest.RestProperties;
 import org.exoplatform.social.service.rest.api.models.ActivitiesCollections;
 import org.exoplatform.social.service.rest.api.models.SpacesCollections;
 import org.exoplatform.social.service.rest.api.models.UsersCollections;
@@ -139,6 +140,10 @@ public class UsersRestserviceTest extends AbstractResourceTest {
     assertEquals("demo activity", result.get(RestProperties.TITLE));
     result = collections.getActivities().get(1);
     assertEquals("root activity", result.get(RestProperties.TITLE));
+    
+    activityManager.deleteActivity(maryActivity);
+    activityManager.deleteActivity(demoActivity);
+    activityManager.deleteActivity(rootActivity);
   }
   
   public void testGetSpacesOfUser() throws Exception {

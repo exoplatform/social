@@ -147,7 +147,7 @@ public class ActivitySocialRestServiceV1 implements ActivitySocialRest {
     
     ActivityManager activityManager = CommonsUtils.getService(ActivityManager.class);
     ExoSocialActivity activity = activityManager.getActivity(id);
-    if (activity == null) {
+    if (activity == null || ! activity.getPosterId().equals(currentUser.getId())) {
       throw new WebApplicationException(Response.Status.UNAUTHORIZED);
     }
     
@@ -156,9 +156,6 @@ public class ActivitySocialRestServiceV1 implements ActivitySocialRest {
     activityManager.updateActivity(activity);
     
     Map<String, String> as = RestUtils.getActivityStream(activity, currentUser);
-    if (as == null) { //current user doesn't have permission to view activity
-      throw new WebApplicationException(Response.Status.UNAUTHORIZED);
-    }
     Map<String, Object> activityInfo = RestUtils.buildEntityFromActivity(activity, uriInfo.getPath());
     activityInfo.put(RestProperties.ACTIVITY_STREAM, as);
     
@@ -183,16 +180,15 @@ public class ActivitySocialRestServiceV1 implements ActivitySocialRest {
     
     ActivityManager activityManager = CommonsUtils.getService(ActivityManager.class);
     ExoSocialActivity activity = activityManager.getActivity(id);
-    if (activity == null) {
+    if (activity == null || ! activity.getPosterId().equals(currentUser.getId()) || ! activity.getStreamOwner().equals(currentUser.getRemoteId())) {
       throw new WebApplicationException(Response.Status.UNAUTHORIZED);
     }
     
     Map<String, String> as = RestUtils.getActivityStream(activity, currentUser);
-    if (as == null) { //current user doesn't have permission to view activity
-      throw new WebApplicationException(Response.Status.UNAUTHORIZED);
-    }
     Map<String, Object> activityInfo = RestUtils.buildEntityFromActivity(activity, uriInfo.getPath());
     activityInfo.put(RestProperties.ACTIVITY_STREAM, as);
+    
+    activityManager.deleteActivity(activity);
     
     return Util.getResponse(activityInfo, uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
   }
