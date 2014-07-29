@@ -27,7 +27,7 @@
   
   uicomponent.refresh();
 %>
-<div class="uiSocApplication" id="$uicomponent.id">
+<div class="uiSocApplication uiSpaceActivityStreamPortlet" id="$uicomponent.id">
   <div class="uiTabPane">
  	  <div class="uiSpaceActivitiesContainer">
       <%

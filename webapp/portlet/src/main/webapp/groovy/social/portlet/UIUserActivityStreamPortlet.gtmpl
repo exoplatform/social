@@ -41,7 +41,7 @@
     if (activityTitle == null) {
       activityTitle = _ctx.appRes("UIUserActivitiesDisplay.label.activityNotFound");
 	    %>
-	      <div class="uiUserActivityStreamPortlet" id="$uicomponent.id">
+	      <div class="uiSocApplication uiUserActivityStreamPortlet" id="$uicomponent.id">
 		      <div class="uiTabPane $uiTabClazz">
 		       <div class="uiUserActivitiesContainer">
 		          <h4><%=_ctx.appRes("UIUserActivitiesDisplay.label.activityNotFound")%></h4>
@@ -63,7 +63,7 @@
   
   requireJs.addScripts("activity.hightlightComment('"+ uicomponent.getActivityId() + "');");
 %>
-<div class="uiUserActivityStreamPortlet" id="$uicomponent.id">
+<div class="uiSocApplication uiUserActivityStreamPortlet" id="$uicomponent.id">
   <div class="uiTabPane $uiTabClazz">
  	 <div class="uiUserActivitiesContainer">
       <% uicomponent.renderChild(PopupContainer.class); %>

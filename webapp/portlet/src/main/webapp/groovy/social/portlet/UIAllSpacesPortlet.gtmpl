@@ -25,7 +25,7 @@ requireJs.require("SHARED/socialUtil", "socialUtil")
          .addScripts("socialUtil.addfillUpFreeSpace('" + uicomponent.id + "');");
 
 %>
-<div class="uiSpacePortlet" id="$uicomponent.id">
+<div class="uiSocApplication uiAllSpacesPortlet" id="$uicomponent.id">
   <% uicomponent.renderChildren(); %>
   <% _ctx.include("war:/groovy/social/webui/UISocialConfirmation.gtmpl"); %>
 </div>
