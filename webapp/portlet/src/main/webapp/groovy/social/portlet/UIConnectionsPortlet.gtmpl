@@ -24,6 +24,6 @@ requireJs.require("SHARED/socialUtil", "socialUtil")
          .addScripts("socialUtil.addDynamicItemLayout('" + uicomponent.id + "');")
          .addScripts("socialUtil.addfillUpFreeSpace('" + uicomponent.id + "');");  
 %>
-<div class="uiSocApplication" id="$uicomponent.id">
+<div class="uiSocApplication uiConnectionsPortlet" id="$uicomponent.id">
   <% uicomponent.renderChildren(); %>
 </div>
