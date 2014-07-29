@@ -31,6 +31,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
@@ -51,9 +52,9 @@ import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.manager.RelationshipManager;
 import org.exoplatform.social.core.service.LinkProvider;
 import org.exoplatform.social.core.space.spi.SpaceService;
-import org.exoplatform.social.service.rest.api.VersionResources;
 import org.exoplatform.social.service.rest.api.models.IdentityRestOut;
 import org.exoplatform.social.service.rest.api.models.ProfileRestOut;
+import org.exoplatform.social.service.rest.api.models.ResourceCollections;
 
 /**
  * Util.java: utility class for rest <br />.
@@ -77,6 +78,16 @@ public final class Util {
       "(?::[\\d]{1,5})?" +                                                                        // port
       "(?:[\\/|\\?|\\#].*)?$");                                                               // path and query
 
+  /** Link header next relation. */
+  private static final String NEXT_ACTION = "next";
+  /** Link header previous relation. */
+  private static final String PREV_ACTION = "prev";
+  /** Link header first relation. */
+  private static final String FIRST_ACTION = "first";
+  /** Link header last relation. */
+  private static final String LAST_ACTION = "last";
+  /** Link header name. */
+  private static final String LINK = "Link";
   
   /**
    * Prevents constructing a new instance.
@@ -105,11 +116,114 @@ public final class Util {
    * @return response the response object
    */
   public static Response getResponse(Object entity, UriInfo uriInfo, MediaType mediaType, Response.Status status) {
-    return Response.created(uriInfo.getAbsolutePath())
+    Response resp = Response.created(uriInfo.getAbsolutePath())
                    .entity(entity)
                    .type(mediaType.toString() + "; charset=utf-8")
                    .status(status)
                    .build();
+    
+    if (!hasPaging(entity)) {
+      return resp;
+    }
+    
+    ResponseBuilder responseBuilder = Response.fromResponse(resp);
+    responseBuilder.header(LINK, buildLinkForHeader(entity, uriInfo.getAbsolutePath().toString()));
+    return responseBuilder.build();
+  }
+  
+  private static boolean hasPaging(Object entity) {
+    if (!(entity instanceof ResourceCollections)) {
+      return false;
+    }
+    
+    ResourceCollections rc = (ResourceCollections)entity;
+    int size = rc.getSize();
+    int offset = rc.getOffset();
+    int limit = rc.getLimit(); // items per page
+    
+    if (size <= 0 || limit == 0 || offset > size || size <= limit) {
+      return false;
+    }
+    
+    return true; 
+  }
+
+  /**
+   * "https://localhost:8080/rest/users?offset=50&limit=25"
+   * 
+   * Link: <https://localhost:8080/rest/users?offset=25&limit=25>; rel="previous", 
+   * <https://localhost:8080/rest/users?offset=75&limit=25>; rel="next"
+   * 
+   * @param entity
+   * @param restPath
+   * @return
+   */
+  public static Object buildLinkForHeader(Object entity, String requestPath) {
+    ResourceCollections rc = (ResourceCollections)entity;
+    int size = rc.getSize();
+    int offset = rc.getOffset();
+    int limit = rc.getLimit();
+    
+    StringBuilder linkHeader = new StringBuilder();
+    
+    if (hasNext(size, offset, limit)){
+      int nextOS = offset + limit;
+      linkHeader.append(createLinkHeader(requestPath, nextOS, limit, NEXT_ACTION));
+    }
+    
+    if (hasPrevious(size, offset, limit)){
+      int preOS = offset - limit;
+      appendCommaIfNecessary(linkHeader);
+      linkHeader.append(createLinkHeader(requestPath, preOS, limit,  PREV_ACTION));
+    }
+    
+    if (hasFirst(size, offset, limit)){
+      appendCommaIfNecessary(linkHeader);
+      linkHeader.append(createLinkHeader(requestPath, 0, limit,  FIRST_ACTION));
+    }
+    
+    if (hasLast(size, offset, limit)){
+      int pages = (int)Math.ceil((double)size/limit);
+      int lastOS = (pages - 1)*limit;
+      appendCommaIfNecessary(linkHeader);
+      linkHeader.append(createLinkHeader(requestPath, lastOS, limit,  LAST_ACTION));
+    }
+    
+    return linkHeader.toString();
+  }
+
+  private static boolean hasNext(int size, int offset, int limit) {
+    return size > offset + limit;
+  }
+
+  private static boolean hasPrevious(int size, int offset, int limit) {
+    if (offset == 0) {
+      return false;
+    }
+    
+    return offset >= limit;
+  }
+
+  private static boolean hasFirst(int size, int offset, int limit) {
+    return hasPrevious(size, offset, limit);
+  }
+
+  private static boolean hasLast(int size, int offset, int limit) {
+    if (offset + limit == size) {
+      return false;
+    }
+    
+    return hasNext(size, offset, limit);
+  }
+
+  private static void appendCommaIfNecessary(final StringBuilder linkHeader) {
+    if (linkHeader.length() > 0) {
+      linkHeader.append(", ");
+    }
+  }
+
+  private static String createLinkHeader(String uri, int offset, int limit, String rel) {
+    return "<" + uri + "?offset="+ offset + "&limit="+ limit + ">; rel=\"" + rel + "\"";
   }
   
   /**

@@ -16,7 +16,12 @@
  */
 package org.exoplatform.social.service.test;
 
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
+
 import org.exoplatform.social.service.rest.Util;
+import org.exoplatform.social.service.rest.api.models.ResourceCollections;
 
 import junit.framework.TestCase;
 
@@ -66,5 +71,31 @@ public class UtilTest extends TestCase {
     
     url = "http://google.com?%3Cscript%3Ealert(%22Link_attached%22)%3C/script%3E";
     assertEquals("http://google.com?<script>alert(\"Link_attached\")</script>", Util.getDecodeQueryURL(url));
+  }
+  
+  /*
+   * Performs testing for {@link Util#buildLinkForHeader(Object, String)}
+   */
+  public void testBuildLinkForHeader() throws Exception {
+    ResourceCollections rc = new ResourceCollections();
+    rc.setSize(60);
+    rc.setLimit(20);
+    
+    String requestPath = "https://localhost:8080/rest/private/v1/social/identities";
+    
+    //
+    rc.setOffset(0);
+    String linkForHeader = Util.buildLinkForHeader(rc, requestPath).toString();
+    assertEquals("<https://localhost:8080/rest/private/v1/social/identities?offset=20&limit=20>; rel=\"next\", <https://localhost:8080/rest/private/v1/social/identities?offset=40&limit=20>; rel=\"last\"", linkForHeader);
+
+    //
+    rc.setOffset(60);
+    linkForHeader = Util.buildLinkForHeader(rc, requestPath).toString();
+    assertEquals("<https://localhost:8080/rest/private/v1/social/identities?offset=40&limit=20>; rel=\"prev\", <https://localhost:8080/rest/private/v1/social/identities?offset=0&limit=20>; rel=\"first\"", linkForHeader);
+    
+    //
+    rc.setOffset(20);
+    linkForHeader = Util.buildLinkForHeader(rc, requestPath).toString();
+    assertEquals("<https://localhost:8080/rest/private/v1/social/identities?offset=40&limit=20>; rel=\"next\", <https://localhost:8080/rest/private/v1/social/identities?offset=0&limit=20>; rel=\"prev\", <https://localhost:8080/rest/private/v1/social/identities?offset=0&limit=20>; rel=\"first\", <https://localhost:8080/rest/private/v1/social/identities?offset=40&limit=20>; rel=\"last\"", linkForHeader);
   }
 }
