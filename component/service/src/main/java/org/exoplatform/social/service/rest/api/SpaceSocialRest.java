@@ -26,7 +26,8 @@ public interface SpaceSocialRest extends SocialRest {
   @GET
   public abstract Response getSpaces(@Context UriInfo uriInfo,
       @QueryParam("q") String q, @QueryParam("offset") int offset,
-      @QueryParam("limit") int limit) throws Exception;
+      @QueryParam("limit") int limit, @QueryParam("returnSize") boolean returnSize,
+      @QueryParam("fields") String fields) throws Exception;
 
   /**
    * Process to create a new space

@@ -33,7 +33,8 @@ public interface SpaceMembershipSocialRest extends SocialRest {
       @QueryParam("status") String status, @QueryParam("user") String user,
       @QueryParam("space") String space,
       @QueryParam("returnSize") boolean returnSize,
-      @QueryParam("offset") int offset, @QueryParam("limit") int limit)
+      @QueryParam("offset") int offset, @QueryParam("limit") int limit,
+      @QueryParam("fields") String fields)
       throws Exception;
 
   @POST

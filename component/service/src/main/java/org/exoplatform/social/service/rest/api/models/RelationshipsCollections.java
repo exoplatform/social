@@ -22,7 +22,7 @@ import java.util.Map;
 
 public class RelationshipsCollections extends ResourceCollections {
   
-  private List<Map<String, String>> relationships = new ArrayList<Map<String, String>>();
+  private List<Map<String, Object>> relationships = new ArrayList<Map<String, Object>>();
 
   public RelationshipsCollections(int size, int offset, int limit) {
     super(size, offset, limit);
@@ -31,13 +31,13 @@ public class RelationshipsCollections extends ResourceCollections {
   /**
    * @return the relationship
    */
-  public List<Map<String, String>> getRelationships() {
+  public List<Map<String, Object>> getRelationships() {
     return relationships;
   }
   /**
    * @param relationship the relationship to set
    */
-  public void setRelationships(List<Map<String, String>> relationships) {
+  public void setRelationships(List<Map<String, Object>> relationships) {
     this.relationships = relationships;
   }
   

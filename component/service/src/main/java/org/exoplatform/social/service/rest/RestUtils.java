@@ -152,8 +152,8 @@ public class RestUtils {
    * @param type membership type
    * @return a hash map
    */
-  public static Map<String, String> buildEntityFromSpaceMembership(Space space, String userId, String type, String restPath) {
-    Map<String, String> map = new LinkedHashMap<String, String>();
+  public static Map<String, Object> buildEntityFromSpaceMembership(Space space, String userId, String type, String restPath) {
+    Map<String, Object> map = new LinkedHashMap<String, Object>();
     OrganizationService organizationService = CommonsUtils.getService(OrganizationService.class);
     MembershipHandler handler = organizationService.getMembershipHandler();
     try {
@@ -208,8 +208,8 @@ public class RestUtils {
    * @param relationship the provided relationship
    * @return a hash map
    */
-  public static Map<String, String> buildEntityFromRelationship(Relationship relationship, String restPath) {
-    Map<String, String> map = new LinkedHashMap<String, String>();
+  public static Map<String, Object> buildEntityFromRelationship(Relationship relationship, String restPath) {
+    Map<String, Object> map = new LinkedHashMap<String, Object>();
     map.put(RestProperties.ID, relationship.getId());
     map.put(RestProperties.HREF, Util.getRestUrl(USERS_RELATIONSHIP_TYPE, relationship.getId(), restPath));
     map.put(RestProperties.STATUS, relationship.getStatus().name());

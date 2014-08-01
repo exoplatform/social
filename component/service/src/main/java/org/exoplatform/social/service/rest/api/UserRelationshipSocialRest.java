@@ -27,7 +27,9 @@ public interface UserRelationshipSocialRest extends SocialRest {
   @GET
   public abstract Response getUsersRelationships(@Context UriInfo uriInfo,
       @QueryParam("status") String status, @QueryParam("user") String user,
-      @QueryParam("offset") int offset, @QueryParam("limit") int limit)
+      @QueryParam("offset") int offset, @QueryParam("limit") int limit,
+      @QueryParam("returnSize") boolean returnSize,
+      @QueryParam("fields") String fields)
       throws Exception;
 
   /**

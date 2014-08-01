@@ -62,11 +62,18 @@ public class UsersRelationshipsRestServiceV1 implements UserRelationshipSocialRe
                                          @QueryParam("status") String status,
                                          @QueryParam("user") String user,
                                          @QueryParam("offset") int offset,
-                                         @QueryParam("limit") int limit) throws Exception {
+                                         @QueryParam("limit") int limit,
+                                         @QueryParam("returnSize") boolean returnSize,
+                                         @QueryParam("fields") String fields) throws Exception {
     checkAuthenticatedRequest();
     //Check if no authenticated user
     if (Util.isAnonymous()) {
       throw new WebApplicationException(Response.Status.UNAUTHORIZED);
+    }
+    
+    List<String> returnedProperties = new ArrayList<String>();
+    if (fields != null && fields.length() > 0) {
+      returnedProperties.addAll(Arrays.asList(fields.split(",")));
     }
     
     limit = limit <= 0 ? RestUtils.DEFAULT_LIMIT : Math.min(RestUtils.HARD_LIMIT, limit);
@@ -79,7 +86,7 @@ public class UsersRelationshipsRestServiceV1 implements UserRelationshipSocialRe
     if (givenUser != null && ! RestUtils.isMemberOfAdminGroup()) {
       Relationship relationship = relationshipManager.get(givenUser, authenticatedUser);
       RelationshipsCollections collections = new RelationshipsCollections(1, offset, limit);
-      Map<String, String> map = RestUtils.buildEntityFromRelationship(relationship, uriInfo.getPath());
+      Map<String, Object> map = RestUtils.buildEntityFromRelationship(relationship, uriInfo.getPath());
       collections.setRelationships(Arrays.asList(map));
       return Util.getResponse(collections, uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
     }
@@ -107,7 +114,7 @@ public class UsersRelationshipsRestServiceV1 implements UserRelationshipSocialRe
       }
     }
     
-    RelationshipsCollections collections = new RelationshipsCollections(size, offset, limit);
+    RelationshipsCollections collections = new RelationshipsCollections(returnSize ? size : -1, offset, limit);
     collections.setRelationships(buildRelationshipsCollections(relationships, uriInfo));
     
     return Util.getResponse(collections, uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
@@ -222,10 +229,10 @@ public class UsersRelationshipsRestServiceV1 implements UserRelationshipSocialRe
     return false;
   }
   
-  private List<Map<String, String>> buildRelationshipsCollections(List<Relationship> relationships, UriInfo uriInfo) {
-    List<Map<String, String>> infos = new ArrayList<Map<String, String>>();
+  private List<Map<String, Object>> buildRelationshipsCollections(List<Relationship> relationships, UriInfo uriInfo) {
+    List<Map<String, Object>> infos = new ArrayList<Map<String, Object>>();
     for (Relationship relationship : relationships) {
-      Map<String, String> map = RestUtils.buildEntityFromRelationship(relationship, uriInfo.getPath());
+      Map<String, Object> map = RestUtils.buildEntityFromRelationship(relationship, uriInfo.getPath());
       //
       infos.add(map);
     }

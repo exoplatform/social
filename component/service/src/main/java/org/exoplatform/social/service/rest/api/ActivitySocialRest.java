@@ -27,7 +27,8 @@ public interface ActivitySocialRest extends SocialRest {
   public Response getActivitiesOfCurrentUser(@Context UriInfo uriInfo,
                                               @QueryParam("returnSize") boolean returnSize,
                                               @QueryParam("offset") int offset,
-                                              @QueryParam("limit") int limit) throws Exception;
+                                              @QueryParam("limit") int limit,
+                                              @QueryParam("fields") String fields) throws Exception;
   
   /**
    * Process to return an activity by id in json format

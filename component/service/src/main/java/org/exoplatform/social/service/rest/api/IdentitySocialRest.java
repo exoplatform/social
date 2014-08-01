@@ -18,6 +18,7 @@
 package org.exoplatform.social.service.rest.api;
 
 import javax.ws.rs.DELETE;
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -44,7 +45,9 @@ public interface IdentitySocialRest extends SocialRest {
   @GET
   public abstract Response getIdentities(@Context UriInfo uriInfo,
       @QueryParam("type") String type, @QueryParam("offset") int offset,
-      @QueryParam("limit") int limit) throws Exception;
+      @QueryParam("limit") int limit, @QueryParam("returnSize") boolean returnSize,
+      @QueryParam("fields") String fields,
+      @QueryParam("callback") @DefaultValue("fn") String callback) throws Exception;
 
   /**
    * Process to create an identity

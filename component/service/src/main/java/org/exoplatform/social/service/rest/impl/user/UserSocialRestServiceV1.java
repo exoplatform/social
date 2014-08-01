@@ -19,6 +19,7 @@ package org.exoplatform.social.service.rest.impl.user;
 import static org.exoplatform.social.service.rest.RestChecker.checkAuthenticatedRequest;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -86,8 +87,15 @@ public class UserSocialRestServiceV1 implements UserSocialRest {
   public Response getUsers(@Context UriInfo uriInfo,
                             @QueryParam("q") String q,
                             @QueryParam("offset") int offset,
-                            @QueryParam("limit") int limit) throws Exception {
+                            @QueryParam("limit") int limit,
+                            @QueryParam("returnSize") boolean returnSize,
+                            @QueryParam("fields") String fields) throws Exception {
     checkAuthenticatedRequest();
+    
+    List<String> returnedProperties = new ArrayList<String>();
+    if (fields != null && fields.length() > 0) {
+      returnedProperties.addAll(Arrays.asList(fields.split(",")));
+    }
     
     limit = limit <= 0 ? RestUtils.DEFAULT_LIMIT : Math.min(RestUtils.HARD_LIMIT, limit);
     offset = offset < 0 ? RestUtils.DEFAULT_OFFSET : offset;
@@ -108,7 +116,7 @@ public class UserSocialRestServiceV1 implements UserSocialRest {
       profileInfos.add(profileInfo);
     }
     
-    UsersCollections users = new UsersCollections(list.getSize(), offset, limit);
+    UsersCollections users = new UsersCollections(returnSize ? list.getSize() : -1, offset, limit);
     users.setUsers(profileInfos);
     
     return Util.getResponse(users, uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);

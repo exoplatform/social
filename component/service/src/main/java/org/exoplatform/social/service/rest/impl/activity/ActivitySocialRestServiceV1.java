@@ -19,6 +19,7 @@ package org.exoplatform.social.service.rest.impl.activity;
 import static org.exoplatform.social.service.rest.RestChecker.checkAuthenticatedRequest;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -61,12 +62,18 @@ public class ActivitySocialRestServiceV1 implements ActivitySocialRest {
   public Response getActivitiesOfCurrentUser(@Context UriInfo uriInfo,
                                               @QueryParam("returnSize") boolean returnSize,
                                               @QueryParam("offset") int offset,
-                                              @QueryParam("limit") int limit) throws Exception {
+                                              @QueryParam("limit") int limit,
+                                              @QueryParam("fields") String fields) throws Exception {
     checkAuthenticatedRequest();
     //Check if no authenticated user
     String authenticatedUser = ConversationState.getCurrent().getIdentity().getUserId();
     if (IdentityConstants.ANONIM.equals(authenticatedUser)) {
       throw new WebApplicationException(Response.Status.UNAUTHORIZED);
+    }
+    
+    List<String> returnedProperties = new ArrayList<String>();
+    if (fields != null && fields.length() > 0) {
+      returnedProperties.addAll(Arrays.asList(fields.split(",")));
     }
     
     Identity currentUser = CommonsUtils.getService(IdentityManager.class).getOrCreateIdentity(OrganizationIdentityProvider.NAME, authenticatedUser, true);
@@ -85,7 +92,7 @@ public class ActivitySocialRestServiceV1 implements ActivitySocialRest {
       Map<String, Object> activityInfo = RestUtils.buildEntityFromActivity(activity, uriInfo.getPath());
       activityInfo.put(RestProperties.ACTIVITY_STREAM, as);
       //
-      activitiesInfo.add(activityInfo);
+      activitiesInfo.add(activityInfo); 
     }
     
     ActivitiesCollections activitiesCollections = new ActivitiesCollections(returnSize ? listAccess.getSize() : -1, offset, limit);

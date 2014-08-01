@@ -75,12 +75,19 @@ public class SpaceSocialRestServiceV1 implements SpaceSocialRest {
   public Response getSpaces(@Context UriInfo uriInfo,
                              @QueryParam("q") String q,
                              @QueryParam("offset") int offset,
-                             @QueryParam("limit") int limit) throws Exception {
+                             @QueryParam("limit") int limit,
+                             @QueryParam("returnSize") boolean returnSize,
+                             @QueryParam("fields") String fields) throws Exception {
     checkAuthenticatedRequest();
     //Check if no authenticated user
     String authenticatedUser = ConversationState.getCurrent().getIdentity().getUserId();
     if (IdentityConstants.ANONIM.equals(authenticatedUser)) {
       throw new WebApplicationException(Response.Status.UNAUTHORIZED);
+    }
+    
+    List<String> returnedProperties = new ArrayList<String>();
+    if (fields != null && fields.length() > 0) {
+      returnedProperties.addAll(Arrays.asList(fields.split(",")));
     }
     
     SpaceService spaceService = CommonsUtils.getService(SpaceService.class);
@@ -102,10 +109,10 @@ public class SpaceSocialRestServiceV1 implements SpaceSocialRest {
     for (Space space : listAccess.load(offset, limit)) {
       Map<String, Object> spaceInfo = RestUtils.buildEntityFromSpace(space, authenticatedUser, uriInfo.getPath());
       //
-      spaceInfos.add(spaceInfo);
+      spaceInfos.add(spaceInfo); 
     }
     
-    SpacesCollections spaces = new SpacesCollections(listAccess.getSize(), offset, limit);
+    SpacesCollections spaces = new SpacesCollections(returnSize ? listAccess.getSize() : -1, offset, limit);
     spaces.setSpaces(spaceInfos);
     
     return Util.getResponse(spaces, uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);

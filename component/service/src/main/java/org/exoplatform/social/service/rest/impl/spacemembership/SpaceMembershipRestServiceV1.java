@@ -70,13 +70,20 @@ public class SpaceMembershipRestServiceV1 implements SpaceMembershipSocialRest {
                                         @QueryParam("space") String space,
                                         @QueryParam("returnSize") boolean returnSize,
                                         @QueryParam("offset") int offset,
-                                        @QueryParam("limit") int limit) throws Exception {
+                                        @QueryParam("limit") int limit,
+                                        @QueryParam("fields") String fields) throws Exception {
     checkAuthenticatedRequest();
     //Check if no authenticated user
     String authenticatedUser = ConversationState.getCurrent().getIdentity().getUserId();
     if (IdentityConstants.ANONIM.equals(authenticatedUser)) {
       throw new WebApplicationException(Response.Status.UNAUTHORIZED);
     }
+    
+    List<String> returnedProperties = new ArrayList<String>();
+    if (fields != null && fields.length() > 0) {
+      returnedProperties.addAll(Arrays.asList(fields.split(",")));
+    }
+    
     //
     limit = limit <= 0 ? RestUtils.DEFAULT_LIMIT : Math.min(RestUtils.HARD_LIMIT, limit);
     offset = offset < 0 ? RestUtils.DEFAULT_OFFSET : offset;
@@ -111,10 +118,10 @@ public class SpaceMembershipRestServiceV1 implements SpaceMembershipSocialRest {
       size = spaces.size();
     }
     
-    List<Map<String, String>> spaceMemberships = new ArrayList<Map<String, String>>();
-    setSpaceMemberships(spaceMemberships, spaces, user, uriInfo);
+    List<Map<String, Object>> spaceMemberships = new ArrayList<Map<String, Object>>();
+    setSpaceMemberships(spaceMemberships, spaces, user, uriInfo, returnedProperties);
     
-    SpaceMembershipsCollections membershipsCollections = new SpaceMembershipsCollections(size, offset, limit);
+    SpaceMembershipsCollections membershipsCollections = new SpaceMembershipsCollections(returnSize ? size : -1, offset, limit);
     membershipsCollections.setSpaceMemberships(spaceMemberships);
     
     return Util.getResponse(membershipsCollections, uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
@@ -279,7 +286,8 @@ public class SpaceMembershipRestServiceV1 implements SpaceMembershipSocialRest {
     return Util.getResponse(RestUtils.buildEntityFromSpaceMembership(space, membership.getUserName(), membership.getMembershipType(), uriInfo.getPath()), uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
   }
   
-  private void setSpaceMemberships(List<Map<String, String>> spaceMemberships, List<Space> spaces, String userId, UriInfo uriInfo) {
+  private void setSpaceMemberships(List<Map<String, Object>> spaceMemberships, List<Space> spaces, 
+      String userId, UriInfo uriInfo, List<String> returnedProperties) {
     for (Space space : spaces) {
       if (userId != null) {
         if (ArrayUtils.contains(space.getMembers(), userId)) {

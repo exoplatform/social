@@ -6,7 +6,7 @@ import java.util.Map;
 
 public class SpaceMembershipsCollections extends ResourceCollections{
   
-  private List<Map<String, String>> spaceMemberships = new ArrayList<Map<String, String>>();
+  private List<Map<String, Object>> spaceMemberships = new ArrayList<Map<String, Object>>();
   
   public SpaceMembershipsCollections(int size, int offset, int limit) {
     super(size, offset, limit);
@@ -15,14 +15,14 @@ public class SpaceMembershipsCollections extends ResourceCollections{
   /**
    * @return the spaceMemberships
    */
-  public List<Map<String, String>> getSpaceMemberships() {
+  public List<Map<String, Object>> getSpaceMemberships() {
     return spaceMemberships;
   }
 
   /**
    * @param spaceMemberships the spaceMemberships to set
    */
-  public void setSpaceMemberships(List<Map<String, String>> spaceMemberships) {
+  public void setSpaceMemberships(List<Map<String, Object>> spaceMemberships) {
     this.spaceMemberships = spaceMemberships;
   }
   

@@ -19,15 +19,18 @@ package org.exoplatform.social.service.rest.impl.identity;
 import static org.exoplatform.social.service.rest.RestChecker.checkAuthenticatedRequest;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
 import javax.ws.rs.DELETE;
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
@@ -58,7 +61,10 @@ public class IdentitySocialRestServiceV1 implements IdentitySocialRest {
   public Response getIdentities(@Context UriInfo uriInfo,
                                  @QueryParam("type") String type,
                                  @QueryParam("offset") int offset,
-                                 @QueryParam("limit") int limit) throws Exception {
+                                 @QueryParam("limit") int limit,
+                                 @QueryParam("returnSize") boolean returnSize,
+                                 @QueryParam("fields") String fields,
+                                 @QueryParam("jsonp") @DefaultValue("fn") String callback) throws Exception {
     checkAuthenticatedRequest();
     //Check if no authenticated user
     if (Util.isAnonymous()) {
@@ -79,14 +85,14 @@ public class IdentitySocialRestServiceV1 implements IdentitySocialRest {
       profileInfo.put(RestProperties.REMOTE_ID, identity.getRemoteId());
       profileInfo.put(RestProperties.PROVIDER_ID, providerId);
       profileInfo.put(RestProperties.GLOBAL_ID, identity.getGlobalId());
-      //
+      
       identityInfos.add(profileInfo);
     }
     
-    IdentitiesCollections collections = new IdentitiesCollections(listAccess.getSize(), offset, limit);
+    IdentitiesCollections collections = new IdentitiesCollections(returnSize ? listAccess.getSize() : -1, offset, limit);
     collections.setIdentities(identityInfos);
     
-    return Util.getResponse(collections, uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
+    return Util.getResponse(collections, uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK, callback);
   }
   
 
