@@ -104,6 +104,37 @@
        -->
     </init-params>
   </component>
+
+  <!-- Request/Response filters. -->
+  <component>
+     <type>org.exoplatform.services.rest.impl.ProvidersRegistry</type>
+  </component>
+  <external-component-plugins>
+      <target-component>org.exoplatform.services.rest.impl.RequestHandlerImpl</target-component>
+      <component-plugin>
+       <name>ws.rs.response.filter</name>
+       <set-method>addPlugin</set-method>
+       <type>org.exoplatform.services.rest.impl.ResponseFilterComponentPlugin</type>
+       <init-params>
+          <value-param>
+             <name>ws.rs.response.jsonp-response-filter</name>
+             <value>org.exoplatform.social.service.rest.JSONPResponseFilter</value>
+          </value-param>
+       </init-params>
+      </component-plugin>
+      <component-plugin>
+       <name>ws.rs.response.filter</name>
+       <set-method>addPlugin</set-method>
+       <type>org.exoplatform.services.rest.impl.ResponseFilterComponentPlugin</type>
+       <init-params>
+          <value-param>
+             <name>ws.rs.response.jsonp-response-filter</name>
+             <value>org.exoplatform.social.service.rest.FieldsResponseFilter</value>
+          </value-param>
+       </init-params>
+      </component-plugin>
+  </external-component-plugins>
+  <!-- Request/Response filters. -->
   
   <external-component-plugins>
      <target-component>org.exoplatform.services.rest.impl.provider.JAXBContextResolver</target-component>

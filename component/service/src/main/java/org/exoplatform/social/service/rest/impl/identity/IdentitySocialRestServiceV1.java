@@ -63,8 +63,7 @@ public class IdentitySocialRestServiceV1 implements IdentitySocialRest {
                                  @QueryParam("offset") int offset,
                                  @QueryParam("limit") int limit,
                                  @QueryParam("returnSize") boolean returnSize,
-                                 @QueryParam("fields") String fields,
-                                 @QueryParam("jsonp") @DefaultValue("fn") String callback) throws Exception {
+                                 @QueryParam("fields") String fields) throws Exception {
     checkAuthenticatedRequest();
     //Check if no authenticated user
     if (Util.isAnonymous()) {
@@ -92,7 +91,7 @@ public class IdentitySocialRestServiceV1 implements IdentitySocialRest {
     IdentitiesCollections collections = new IdentitiesCollections(returnSize ? listAccess.getSize() : -1, offset, limit);
     collections.setIdentities(identityInfos);
     
-    return Util.getResponse(collections, uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK, callback);
+    return Util.getResponse(collections, uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
   }
   
 

@@ -46,8 +46,7 @@ public interface IdentitySocialRest extends SocialRest {
   public abstract Response getIdentities(@Context UriInfo uriInfo,
       @QueryParam("type") String type, @QueryParam("offset") int offset,
       @QueryParam("limit") int limit, @QueryParam("returnSize") boolean returnSize,
-      @QueryParam("fields") String fields,
-      @QueryParam("callback") @DefaultValue("fn") String callback) throws Exception;
+      @QueryParam("fields") String fields) throws Exception;
 
   /**
    * Process to create an identity

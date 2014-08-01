@@ -16,8 +16,6 @@
  */
 package org.exoplatform.social.service.rest;
 
-import com.sun.jersey.api.json.JSONWithPadding;
-
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URI;
@@ -26,9 +24,6 @@ import java.net.URLConnection;
 import java.net.URLDecoder;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.TimeZone;
 import java.util.regex.Pattern;
 
@@ -133,32 +128,6 @@ public final class Util {
     
     ResponseBuilder responseBuilder = Response.fromResponse(resp);
     responseBuilder.header(LINK, buildLinkForHeader(entity, uriInfo.getAbsolutePath().toString()));
-    return responseBuilder.build();
-  }
-  
-  /**
-   * Gets the response object constructed from the provided params.
-   *
-   * @param entity the identity
-   * @param uriInfo the uri request info
-   * @param mediaType the media type to be returned
-   * @param status the status code
-   * @return response the response object
-   */
-  public static Response getResponse(Object entity, UriInfo uriInfo, MediaType mediaType, Response.Status status, String callback) {
-    Response resp = Response.created(uriInfo.getAbsolutePath())
-                   .entity(entity)
-                   .type(mediaType.toString() + "; charset=utf-8")
-                   .status(status)
-                   .build();
-    
-    if (!hasPaging(entity)) {
-      return resp;
-    }
-    
-    ResponseBuilder responseBuilder = Response.fromResponse(resp);
-    responseBuilder.header(LINK, buildLinkForHeader(entity, uriInfo.getAbsolutePath().toString()));
-    responseBuilder.entity(new JSONWithPadding(resp, callback));
     return responseBuilder.build();
   }
   
