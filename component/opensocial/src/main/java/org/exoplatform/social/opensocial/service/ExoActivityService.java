@@ -238,7 +238,7 @@ public class ExoActivityService extends ExoService implements ActivityService {
       am.saveActivityNoReturn(targetStream, exoActivity);
 
       return ImmediateFuture.newInstance(null);
-    } catch (Throwable e) {
+    } catch (Exception e) {
       if (e instanceof ProtocolException) {
         throw (ProtocolException)e;
       }
@@ -253,8 +253,7 @@ public class ExoActivityService extends ExoService implements ActivityService {
    * @param fields the fields
    * @return the org.exoplatform.social.core.activitystream.model. activity
    */
-  private ExoSocialActivity convertFromOSActivity(Activity activity,
-                                                                                          Set<String> fields) {
+  private ExoSocialActivity convertFromOSActivity(Activity activity, Set<String> fields) {
 
     ExoSocialActivity exoActivity = new ExoSocialActivityImpl();
 

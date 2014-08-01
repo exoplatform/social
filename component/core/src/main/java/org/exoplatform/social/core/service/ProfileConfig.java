@@ -28,6 +28,8 @@ import org.exoplatform.container.xml.InitParams;
 import org.exoplatform.container.xml.ValuesParam;
 import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.storage.api.IdentityStorage;
+import org.gatein.common.logging.Logger;
+import org.gatein.common.logging.LoggerFactory;
 
 
 /**
@@ -35,6 +37,9 @@ import org.exoplatform.social.core.storage.api.IdentityStorage;
  */
 public class ProfileConfig {
 
+  /** .*/
+  private final static Logger log = LoggerFactory.getLogger(ProfileConfig.class);
+  
   /** The force multi value. */
   private List<String> forceMultiValue = new ArrayList<String>();
 
@@ -137,7 +142,9 @@ public class ProfileConfig {
       String type = storage.getType(fieldName, propertyName);
       if(type != null)
         return type;
-    } catch (Exception e) { }
+    } catch (Exception e) {
+      log.warn("Unknown type of fieldname: " + fieldName + " and propertyName: " + propertyName);
+    }
 
     return "String";
   }
