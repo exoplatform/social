@@ -41,6 +41,8 @@ public class UtilTest extends TestCase {
     assertTrue(Util.isValidURL("mailto:abc@facebook.com"));
     assertTrue(Util.isValidURL("http://translate.google.com/#en|vi|What has changed?"));
     assertTrue(Util.isValidURL("translate.google.com/#en|vi|What has changed?"));
+    assertTrue(Util.isValidURL("test.example.com/portal/g/:spaces:blabla/blabla"));
+    assertTrue(Util.isValidURL("http://test.example.com/portal/u/user_name/Tab_0"));
     
     assertFalse(Util.isValidURL(null));
     assertFalse(Util.isValidURL(""));
@@ -49,5 +51,6 @@ public class UtilTest extends TestCase {
     assertFalse(Util.isValidURL("abc.c om"));
     assertFalse(Util.isValidURL("abc : fsdfs"));
     assertFalse(Util.isValidURL("abc #$ vn"));
+    assertFalse(Util.isValidURL("@$%#%#.com"));
   }
 }
