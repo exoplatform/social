@@ -13,6 +13,7 @@ import javax.ws.rs.core.Response;
 import org.exoplatform.services.rest.Filter;
 import org.exoplatform.services.rest.GenericContainerResponse;
 import org.exoplatform.services.rest.ResponseFilter;
+import org.exoplatform.services.rest.impl.ApplicationContextImpl;
 import org.exoplatform.social.service.rest.api.models.ActivitiesCollections;
 import org.exoplatform.social.service.rest.api.models.IdentitiesCollections;
 import org.exoplatform.social.service.rest.api.models.RelationshipsCollections;
@@ -23,15 +24,11 @@ import org.exoplatform.social.service.rest.api.models.UsersCollections;
 @Filter
 public class FieldsResponseFilter implements ResponseFilter {
   private static final String FIELDS_QUERY_PARAM = "fields";
-  private HttpServletRequest httpRequest;
-  
-  public FieldsResponseFilter(@Context HttpServletRequest httpRequest) {
-    this.httpRequest = httpRequest;
-  }
-  
+
   @Override
   public void doFilter(GenericContainerResponse response) {
-    String outputFields = httpRequest.getParameter(FIELDS_QUERY_PARAM);
+    String outputFields = ApplicationContextImpl.getCurrent().getQueryParameters().getFirst(FIELDS_QUERY_PARAM);
+    
     boolean hasOutputFieldsFilter = outputFields != null && outputFields.length() > 0;
     
     if (hasOutputFieldsFilter) {
