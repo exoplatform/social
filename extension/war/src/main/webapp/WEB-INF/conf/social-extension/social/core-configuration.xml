@@ -166,10 +166,42 @@
     <type>org.exoplatform.social.core.service.LinkProvider</type>
   </component>
   -->
-  <!-- 
+  
+  <!--
+    Activity storage components.
+  -->
+  <component>
+    <key>org.exoplatform.social.core.storage.api.ActivityStorage</key>
+    <type>org.exoplatform.social.core.storage.cache.CachedActivityStorage</type> 
+  </component>
+  <component>
+    <key>org.exoplatform.social.core.mongo.storage.ActivityMongoStorageImpl</key>
+    <type>org.exoplatform.social.core.storage.synchronization.SynchronizedActivityStorage</type>
+  </component>
+  <component>
+    <key>org.exoplatform.social.core.mongo.entity.ActivityMongoEntity</key>
+    <type>org.exoplatform.social.core.mongo.entity.ActivityMongoEntity</type>
+  </component>
+  <component>
+    <key>org.exoplatform.social.core.mongo.entity.CommentMongoEntity</key>
+    <type>org.exoplatform.social.core.mongo.entity.CommentMongoEntity</type>
+  </component>
+  <component>
+    <key>org.exoplatform.social.core.mongo.entity.StreamItemMongoEntity</key>
+    <type>org.exoplatform.social.core.mongo.entity.StreamItemMongoEntity</type>
+  </component>
+  <component>
+    <key>org.exoplatform.social.core.mongo.storage.AbstractMongoStorage</key>
+    <type>org.exoplatform.social.core.mongo.storage.AbstractMongoStorage</type>
+  </component>
+  <component>
+    <key>org.exoplatform.social.core.mongo.storage.ActivityMongoStorageImpl</key>
+    <type>org.exoplatform.social.core.mongo.storage.ActivityMongoStorageImpl</type>
+  </component>
+  
   <component>
     <key>org.exoplatform.social.core.manager.ActivityManager</key>
-    <type>org.exoplatform.social.core.manager.ActivityManagerImpl</type>
+    <type>org.exoplatform.social.core.mongo.manager.ActivityMongoManagerImpl</type>
     <component-plugins>
       <component-plugin>
         <name>OSHtmlSanitizer</name>
@@ -184,11 +216,6 @@
         </init-params>
       </component-plugin>
     </component-plugins>
-  </component>
-  -->
-  <component>
-    <key>org.exoplatform.social.core.manager.ActivityManager</key>
-    <type>org.exoplatform.social.core.mongo.manager.ActivityMongoManagerImpl</type>
   </component>
   
   <component>
