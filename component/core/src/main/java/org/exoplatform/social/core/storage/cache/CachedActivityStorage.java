@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.SortedSet;
 
+import org.exoplatform.container.component.BaseComponentPlugin;
 import org.exoplatform.services.cache.ExoCache;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
@@ -65,7 +66,17 @@ public class CachedActivityStorage implements ActivityStorage {
   private final FutureExoCache<ActivityCountKey, IntegerData, ServiceContext<IntegerData>> activitiesCountCache;
   private final FutureExoCache<ListActivitiesKey, ListActivitiesData, ServiceContext<ListActivitiesData>> activitiesCache;
 
-  private final ActivityStorageImpl storage;
+  private ActivityStorageImpl storage;
+  
+  /**
+   * Register the other Activity Manager 
+   * @param activityManager
+   */
+  public void addPlugin(BaseComponentPlugin baseComponent) {
+    if (baseComponent instanceof ActivityStorageImpl) {
+      this.storage = (ActivityStorageImpl) baseComponent;
+    }
+  }
 
   public void clearCache() {
 

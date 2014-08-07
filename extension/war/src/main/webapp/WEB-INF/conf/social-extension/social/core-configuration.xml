@@ -201,7 +201,7 @@
   
   <component>
     <key>org.exoplatform.social.core.manager.ActivityManager</key>
-    <type>org.exoplatform.social.core.mongo.manager.ActivityMongoManagerImpl</type>
+    <type>org.exoplatform.social.core.manager.ActivityManagerImpl</type>
     <component-plugins>
       <component-plugin>
         <name>OSHtmlSanitizer</name>
