@@ -848,7 +848,7 @@ public class BaseUIActivity extends UIForm {
   
   public boolean isDeletedSpace(String streamOwner) {
     //only check when the activity belongs to the space stream owner
-    if (this.activity.getActivityStream().getType().equals(SpaceIdentityProvider.NAME)) {
+    if (this.activity.getActivityStream().getType().toString().equals(SpaceIdentityProvider.NAME)) {
       return CommonsUtils.getService(SpaceService.class).getSpaceByPrettyName(streamOwner) == null;
     } else {
       return false;
