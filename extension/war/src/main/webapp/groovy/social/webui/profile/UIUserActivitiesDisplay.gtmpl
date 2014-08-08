@@ -129,7 +129,7 @@
   
   <div class="clearfix activityTop">
     <div class="activityStreamStatus pull-left">
-
+    
     <div class="arrowBottom"></div>
       <!--<span id="noUpdates"><%=noUpdates%></span>-->
       <a class="uiIconRefresh uiIconLightGray" href="javascript:void(0);" rel="tooltip" title="$refreshTooltipButton" id="RefreshButton" onclick="<%=uicomponent.event("RefreshStream")%>" ></a>
@@ -145,24 +145,24 @@
 			        </a>
 			    </div>
 			  </div><!--end activityTimeLine-->
-
+			  
 			  <div class="boxContainer" id="boxContainer">
 			    <div id="ContextBoxWelcomeActivity" class="uiBox contentBox">
 			        <div id="ActivityContextBoxWelcomeActivity">
 			            <div class="heading">
 			                <span class="arrowLeft"></span>
 			                <div class="author">
-			                    <a title="$welcomeActivityName" href="javascript:void(0);">$welcomeActivityName</a>
+			                    <a title="$welcomeActivityName" href="javascript:void(0);">$welcomeActivityName</a>                
 			                </div>
 			                <div class="dataInfor">
-			                    <span class="dateTime"><i class="uiIconClock  uiIconLightGray"></i>&nbsp;$welcomeActivityPostedTime</span>
+			                    <span class="dateTime"><i class="uiIconClock  uiIconLightGray"></i>&nbsp;$welcomeActivityPostedTime</span> 
 			                </div>
 			            </div><!--end heading-->
-
+			            
 			            <!-- Welcome content -->
 			            <div class="description clearfix">
 			            	<div class="img pull-left">
-								      <img src="$welcomeActivityImage" />
+								      <img src="$welcomeActivityImage" />			            	
 			            	</div>
 			              	<p>$head_line</p>
 			              	<p><strong>$connect_and_discuss_with_others</strong><br />
@@ -184,7 +184,7 @@
   <div class="activityBottom"><span></span></div>
 <% } else { %>
  <% if (Utils.isHomePage()) { %>
-	<div class="activityTop">
+	<div class="clearfix activityTop">
     <div class="pull-right">
       <% uicomponent.renderChild(UIDropDownControl.class);%>
     </div>
@@ -197,7 +197,12 @@
 	    <% } %>
       <% } %>
     -->
-    
+    <% if (hasActivities) { %>
+    <div class="activityStreamStatus pull-left">
+      <div class="arrowBottom"></div>
+      <a class="uiIconRefresh uiIconLightGray" href="javascript:void(0);" rel="tooltip" title="$refreshTooltipButton" id="RefreshButton" onclick="<%=uicomponent.event("RefreshStream")%>" ></a>
+    </div>
+    <% } %>
   </div>
  <% } %>
   <% uicomponent.renderChild(UIActivitiesLoader.class);%>
