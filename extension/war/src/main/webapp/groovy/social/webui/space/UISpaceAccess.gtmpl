@@ -29,7 +29,10 @@
   def redirectURI = uicomponent.getRedirectURI();
   def pageTitle = _ctx.appRes("UISpaceAccess.pageTitle");
   def memberRestrict = _ctx.appRes("UISpaceAccess.memberRestrict");
-
+  
+	def jsManager = _ctx.getRequestContext().getJavascriptManager();
+	jsManager.require("SHARED/socialUtil", "socialUtil")
+	         .addScripts("socialUtil.addDynamicItemLayout('" + uicomponent.id + "');");
 %>
   <% if ("social.space.access.join-space".equals(status)) {
     memberRestrict = memberRestrict.replace("{0}", "<b>" + spaceDisplayName + "</b>");
