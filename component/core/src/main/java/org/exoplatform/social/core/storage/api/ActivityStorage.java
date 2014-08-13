@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.SortedSet;
 
+import org.exoplatform.container.component.BaseComponentPlugin;
 import org.exoplatform.social.core.ActivityProcessor;
 import org.exoplatform.social.core.activity.filter.ActivityFilter;
 import org.exoplatform.social.core.activity.filter.ActivityUpdateFilter;
@@ -51,6 +52,12 @@ public interface ActivityStorage {
   }
 
   static final String MENTION_CHAR = "@";
+  
+  /**
+   * Implements the mechanism to plugin the component.
+   * @param baseComponent
+   */
+  void addPlugin(BaseComponentPlugin baseComponent);
   /**
    * //sets value to tell this storage to inject Streams or not
    * @param mustInject
