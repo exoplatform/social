@@ -161,11 +161,6 @@
   </component>
   
   <component>
-    <key>org.exoplatform.social.core.service.LinkProvider</key>
-    <type>org.exoplatform.social.core.service.LinkProvider</type>
-  </component>
-  
-  <component>
     <key>org.exoplatform.social.core.manager.ActivityManager</key>
     <type>org.exoplatform.social.core.manager.ActivityManagerImpl</type>
     <component-plugins>
