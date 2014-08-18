@@ -134,7 +134,7 @@ public class IdentityResources implements ResourceContainer {
    * *space identities:* _providerId_ = space; _remoteId_ = space's pretty name.
    */
   @GET
-  @Path("{providerId}/{remoteId}.{format}")
+  @Path("{providerId}/{remoteId:.+}.{format}")
   @Produces(MediaType.APPLICATION_JSON)
   public Response getIdentityProviderIdAndRemoteId(@Context UriInfo uriInfo,
                                                    @PathParam("portalContainerName") String portalContainerName,
