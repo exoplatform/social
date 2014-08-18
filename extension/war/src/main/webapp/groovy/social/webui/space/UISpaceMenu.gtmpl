@@ -100,19 +100,18 @@
       continue;
     }
     String nodeTitle = node.getResolvedLabel();
+    String nodeIcon = node.getIcon();
     String nodeUri = node.getURI();
     String []uriParts = nodeUri.split("/");
     String nodeName = uriParts[uriParts.length - 1];
-    if ( node.getPageRef() != null ) {
+    String pName = "";
+    if ((nodeIcon == null) && (node.getPageRef() != null )) {
       appName = node.getPageRef().getName();
-      if ( appName != null) {
-        String appLabelFromResourceBundle = _ctx.appRes(appName + ".label.name");
-        if (appLabelFromResourceBundle != null) nodeTitle = appLabelFromResourceBundle;
-      }
+      pName = uicomponent.getAppIdByAppName(appName);
     }   
     String nodeLabel = getFitString(nodeTitle, 15);
  
-    String pName = uicomponent.getAppIdByAppName(appName);
+    
     String pageURI = "href=\"javascript:void(0);\" onclick=\"window.location.href='" + spaceHomeUrl + "/" + nodeName + "'\"";
     selectedClazz = "";
     if(appSelected != null && nodeName.equals(appSelected)) {
@@ -122,7 +121,11 @@
   %>
     <li class="$selectedClazz">
       <a data-toggle="tab" <%=pageURI%>>
+      <% if (nodeIcon != null) { %>
+        <i class="<%=nodeIcon%> nodeIconBg" >&nbsp;</i>
+      <% } else { %>
         <i class="uiIconApp<%=pName%> uiIconDefaultApp"></i>
+      <% } %>
         <span id="$nodeName" class="tabName">$nodeLabel</span>
       </a>
   	</li>
