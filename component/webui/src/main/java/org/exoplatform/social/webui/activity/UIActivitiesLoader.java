@@ -161,7 +161,7 @@ public class UIActivitiesLoader extends UIContainer {
       currentLoadIndex = 0;
       isExtendLoader = false;
       
-      String activityId = Utils.getActivityID();
+      String activityId = getSingleActivityId();
       if (activityId != null && activityId.length() > 0) {
         postContext = PostContext.SINGLE;
       }
@@ -187,6 +187,16 @@ public class UIActivitiesLoader extends UIContainer {
     } catch (Exception e) {
       LOG.error(e.getMessage(), e);
     }
+  }
+  
+  private String getSingleActivityId() {
+    if ("activity".equals(Utils.getSelectedNode())) {
+      if (Utils.getValueFromRequestParam("id") != null) {
+        return Utils.getValueFromRequestParam("id");
+      }
+      return Utils.getValueFromRefererURI("id");
+    }
+    return null;
   }
 
   private void loadNext() throws Exception {
@@ -232,8 +242,8 @@ public class UIActivitiesLoader extends UIContainer {
   
   private List<ExoSocialActivity> loadActivity() throws Exception {
     ActivityManager activityManager = Utils.getActivityManager();
-    String activityId = Utils.getActivityID();
-    ExoSocialActivity activity = activityManager.getActivity(activityId);
+    String activityId = getSingleActivityId();
+    ExoSocialActivity activity = (activityId != null) ? activityManager.getActivity(activityId) : null;
     if (activity == null)
       return null;
     return new ArrayList<ExoSocialActivity>(Arrays.asList(activity));
