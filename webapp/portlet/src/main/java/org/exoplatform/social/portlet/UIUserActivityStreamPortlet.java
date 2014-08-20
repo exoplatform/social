@@ -23,6 +23,8 @@ import org.exoplatform.commons.utils.CommonsUtils;
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.portal.application.PortalRequestContext;
 import org.exoplatform.portal.webui.util.Util;
+import org.exoplatform.services.log.ExoLogger;
+import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.relationship.model.Relationship;
 import org.exoplatform.social.core.space.model.Space;
@@ -59,8 +61,7 @@ public class UIUserActivityStreamPortlet extends UIPortletApplication {
   private static final String SINGLE_ACTIVITY_NODE = "activity";
   private static final String SINGLE_ACTIVITY_REDIRECT_LINK_PREFIX = "activity/redirect";
   private static final String NOTIFICATION_REST_PREFIX = "/social/notifications/redirectUrl";
-  private static final String DOMAIN_PROPERTY_KEY="gatein.email.domain.url";
-  private static final String DEFAULT_DOMAIN = "http://localhost:8080";
+  private static final Log LOG = ExoLogger.getLogger(UIUserActivityStreamPortlet.class.getName());
   /**
    * constructor
    *
@@ -165,9 +166,8 @@ public class UIUserActivityStreamPortlet extends UIPortletApplication {
     if (path.contains(SINGLE_ACTIVITY_REDIRECT_LINK_PREFIX)) {
       PortalRequestContext portalRequestContext = Util.getPortalRequestContext();
       HttpServletResponse response = portalRequestContext.getResponse();
-      String domain = System.getProperty(DOMAIN_PROPERTY_KEY, DEFAULT_DOMAIN);
       ExoContainerContext context = CommonsUtils.getService(ExoContainerContext.class);
-      String link = new StringBuffer(domain).append("/").append(context.getRestContextName())
+      String link = new StringBuffer(CommonsUtils.getCurrentDomain()).append("/").append(context.getRestContextName())
                                             .append(NOTIFICATION_REST_PREFIX)
                                             .append(path.replace(SINGLE_ACTIVITY_REDIRECT_LINK_PREFIX, ""))
                                             .toString();
@@ -180,13 +180,21 @@ public class UIUserActivityStreamPortlet extends UIPortletApplication {
    * @return activityTitle
    */
   public String getSingleActivityTitle() {
-    String activityId = Utils.getValueFromRequestParam("id");
-    if (activityId != null) {
-      ExoSocialActivity activity = Utils.getActivityManager().getActivity(activityId);
+    String gotId = Utils.getValueFromRequestParam("id");
+    if (gotId == null) {
+      gotId = Utils.getValueFromRefererURI("id");
+      LOG.debug("got id from referer uri::activityId = " + gotId);
+    }
+    LOG.debug("got id from parameter::activityId = " + gotId);
+    if (gotId != null) {
+      ExoSocialActivity activity = Utils.getActivityManager().getActivity(gotId);
+      LOG.debug("got the activity = " + activity.toString());
       if (activity != null && hasPermissionToViewActivity(activity)) {
         return activity.getTitle();
       }
     }
+    
+    LOG.debug("Activity title is NULL");
     return null;
   }
 
