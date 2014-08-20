@@ -490,28 +490,17 @@ public class SpaceStorageImpl extends AbstractStorage implements SpaceStorage {
     if (spaceNameSearchCondition != null && spaceNameSearchCondition.length() != 0) {
       if (this.isValidInput(spaceNameSearchCondition)) {
 
-        spaceNameSearchCondition = this.processSearchCondition(spaceNameSearchCondition);
+        spaceNameSearchCondition = new StringBuilder().append(StorageUtils.PERCENT_STR)
+            .append(spaceNameSearchCondition.replace(StorageUtils.ASTERISK_STR, StorageUtils.PERCENT_STR).toLowerCase()).append(StorageUtils.PERCENT_STR).toString();
 
-        if (spaceNameSearchCondition.contains(StorageUtils.PERCENT_STR)) {
-          whereExpression.startGroup();
-          whereExpression
-              .like(SpaceEntity.name, spaceNameSearchCondition)
-              .or()
-              .like(SpaceEntity.displayName, spaceNameSearchCondition)
-              .or()
-              .like(SpaceEntity.description, spaceNameSearchCondition);
-          whereExpression.endGroup();
-        }
-        else {
-          whereExpression.startGroup();
-          whereExpression
-              .contains(SpaceEntity.name, spaceNameSearchCondition)
-              .or()
-              .contains(SpaceEntity.displayName, spaceNameSearchCondition)
-              .or()
-              .contains(SpaceEntity.description, spaceNameSearchCondition);
-          whereExpression.endGroup();
-        }
+        whereExpression.startGroup();
+        whereExpression
+            .like(whereExpression.callFunction(QueryFunction.LOWER, SpaceEntity.name), spaceNameSearchCondition)
+            .or()
+            .like(whereExpression.callFunction(QueryFunction.LOWER, SpaceEntity.displayName), spaceNameSearchCondition)
+            .or()
+            .like(whereExpression.callFunction(QueryFunction.LOWER, SpaceEntity.description), spaceNameSearchCondition);
+        whereExpression.endGroup();
       }
     }
     else if (!Character.isDigit(firstCharacterOfName)) {
@@ -534,22 +523,6 @@ public class SpaceStorageImpl extends AbstractStorage implements SpaceStorage {
     return true;
   }
 
-  private String processSearchCondition(String searchCondition) {
-    StringBuffer searchConditionBuffer = new StringBuffer();
-    if (!searchCondition.contains(StorageUtils.ASTERISK_STR) && !searchCondition.contains(StorageUtils.PERCENT_STR)) {
-      if (searchCondition.charAt(0) != StorageUtils.ASTERISK_CHAR) {
-        searchConditionBuffer.append(StorageUtils.ASTERISK_STR).append(searchCondition);
-      }
-      if (searchCondition.charAt(searchCondition.length() - 1) != StorageUtils.ASTERISK_CHAR) {
-        searchConditionBuffer.append(StorageUtils.ASTERISK_STR);
-      }
-    } else {
-      searchCondition = searchCondition.replace(StorageUtils.ASTERISK_STR, StorageUtils.PERCENT_STR);
-      searchConditionBuffer.append(StorageUtils.PERCENT_STR).append(searchCondition).append(StorageUtils.PERCENT_STR);
-    }
-    return searchConditionBuffer.toString();
-  }
-  
   private List<String> processUnifiedSearchCondition(String searchCondition) {
     String[] spaceConditions = searchCondition.split(" ");
     List<String> result = new ArrayList<String>(spaceConditions.length);
@@ -1549,6 +1522,8 @@ public class SpaceStorageImpl extends AbstractStorage implements SpaceStorage {
             whereExpression
                 .like(whereExpression.callFunction(QueryFunction.LOWER, SpaceEntity.name), condition.toLowerCase())
                 .or()
+                .like(whereExpression.callFunction(QueryFunction.LOWER, SpaceEntity.displayName), condition.toLowerCase())
+                .or()
                 .like(whereExpression.callFunction(QueryFunction.LOWER, SpaceEntity.description), StringEscapeUtils.escapeHtml(condition).toLowerCase());
             whereExpression.endGroup();
           }
@@ -1556,6 +1531,8 @@ public class SpaceStorageImpl extends AbstractStorage implements SpaceStorage {
             whereExpression.startGroup();
             whereExpression
                 .contains(whereExpression.callFunction(QueryFunction.LOWER, SpaceEntity.name), condition.toLowerCase())
+                .or()
+                .like(whereExpression.callFunction(QueryFunction.LOWER, SpaceEntity.displayName), condition.toLowerCase())
                 .or()
                 .contains(whereExpression.callFunction(QueryFunction.LOWER, SpaceEntity.description), StringEscapeUtils.escapeHtml(condition).toLowerCase());
             whereExpression.endGroup();

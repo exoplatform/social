@@ -16,6 +16,11 @@
  */
 package org.exoplatform.social.core.space.spi;
 
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Pattern;
+
 import org.apache.commons.lang.ArrayUtils;
 import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.services.log.ExoLogger;
@@ -35,11 +40,6 @@ import org.exoplatform.social.core.space.impl.DefaultSpaceApplicationHandler;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.storage.api.IdentityStorage;
 import org.exoplatform.social.core.test.AbstractCoreTest;
-
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.regex.Pattern;
 
 public class SpaceServiceTest extends AbstractCoreTest {
   private IdentityStorage identityStorage;
@@ -410,7 +410,8 @@ public class SpaceServiceTest extends AbstractCoreTest {
     
     foundSpaceListAccess = spaceService.getAllSpacesByFilter(new SpaceFilter("<new>new(\"new\")</new>"));
     assertNotNull("foundSpaceListAccess must not be null", foundSpaceListAccess);
-    assertEquals("foundSpaceListAccess.getSize() must return: " + count, count, foundSpaceListAccess.getSize());
+    //correct test case : the term  "new new new new" should not match the result
+    assertEquals("foundSpaceListAccess.getSize() must return: " + 0, 0, foundSpaceListAccess.getSize());
 
     foundSpaceListAccess = spaceService.getAllSpacesByFilter(new SpaceFilter("what new space add"));
     assertNotNull("foundSpaceListAccess must not be null", foundSpaceListAccess);
@@ -2375,6 +2376,59 @@ public class SpaceServiceTest extends AbstractCoreTest {
     list = spaceService.getVisibleSpacesWithListAccess("demo", new SpaceFilter("space"));
     assertEquals(2, list.getSize());
     assertEquals(2, list.load(0, 10).length);
+  }
+  
+  public void testGetVisibleSpacesWithSpecialCharacters() throws Exception {
+    Space space1 = new Space();
+    space1.setDisplayName("広いニーズ");
+    space1.setPrettyName("広いニーズ");
+    space1.setManagers(new String[]{"root"});
+    space1.setMembers(new String[]{"root","mary"});
+    space1.setType(DefaultSpaceApplicationHandler.NAME);
+    space1.setRegistration(Space.OPEN);
+    createSpaceNonInitApps(space1, "mary", null);
+    tearDownSpaceList.add(space1);
+    
+    Space space2 = new Space();
+    space2.setDisplayName("ça c'est la vie");
+    space2.setPrettyName("ça c'est la vie");
+    space2.setManagers(new String[]{"root"});
+    space2.setMembers(new String[]{"root","mary"});
+    space2.setType(DefaultSpaceApplicationHandler.NAME);
+    space2.setRegistration(Space.OPEN);
+    createSpaceNonInitApps(space2, "mary", null);
+    tearDownSpaceList.add(space2);
+    
+    Space space3 = new Space();
+    space3.setDisplayName("Đây là không gian tiếng Việt");
+    space3.setPrettyName("Đây là không gian tiếng Việt");
+    space3.setManagers(new String[]{"root"});
+    space3.setMembers(new String[]{"root","mary"});
+    space3.setType(DefaultSpaceApplicationHandler.NAME);
+    space3.setRegistration(Space.OPEN);
+    createSpaceNonInitApps(space3, "mary", null);
+    tearDownSpaceList.add(space3);
+    
+    SpaceListAccess list = spaceService.getVisibleSpacesWithListAccess("root", new SpaceFilter("広いニーズ"));
+    assertEquals(1, list.getSize());
+    assertEquals(1, list.load(0, 10).length);
+    list = spaceService.getVisibleSpacesWithListAccess("mary", new SpaceFilter("広いニーズ"));
+    assertEquals(1, list.getSize());
+    assertEquals(1, list.load(0, 10).length);
+    
+    list = spaceService.getVisibleSpacesWithListAccess("root", new SpaceFilter("ça c'est la vie"));
+    assertEquals(1, list.getSize());
+    assertEquals(1, list.load(0, 10).length);
+    list = spaceService.getVisibleSpacesWithListAccess("mary", new SpaceFilter("ça c'est la vie"));
+    assertEquals(1, list.getSize());
+    assertEquals(1, list.load(0, 10).length);
+    
+    list = spaceService.getVisibleSpacesWithListAccess("root", new SpaceFilter("Đây là không gian tiếng Việt"));
+    assertEquals(1, list.getSize());
+    assertEquals(1, list.load(0, 10).length);
+    list = spaceService.getVisibleSpacesWithListAccess("mary", new SpaceFilter("Đây là không gian tiếng Việt"));
+    assertEquals(1, list.getSize());
+    assertEquals(1, list.load(0, 10).length);
   }
 
   /**

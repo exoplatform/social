@@ -55,8 +55,8 @@ public class SpaceUtilsTest extends TestCase {
    * @since 1.2.2
    */
   public void testRemoveSpecialCharacter() {
-    assertEquals("The filter should only filter special characters only","script alert Hello script 100", SpaceUtils.removeSpecialCharacterInSpaceFilter("<script>alert('Hello');</script> 100"));
-    assertEquals("The filter should keep wildcard *,? and %","% * ?", SpaceUtils.removeSpecialCharacterInSpaceFilter("( ) %{ } * [ ] \'? \""));
+    assertEquals("The filter should only filter special characters only","script alert 'Hello' script 100", SpaceUtils.removeSpecialCharacterInSpaceFilter("<script>alert('Hello');</script> 100"));
+    assertEquals("The filter should keep wildcard *,? and %","% * '?", SpaceUtils.removeSpecialCharacterInSpaceFilter("( ) %{ } * [ ] \'? \""));
     /* I comment this part because unicode String may have problem with Jenkins build.
     assertEquals("The filter should only filter special characters only","script alert a á à ả ã ạ ă ắ ằ ẳ ẵ ặ â" +
     		          " ấ ầ ẩ ẫ ậ o ó ò ỏ õ ọ ơ ớ ờ ở ỡ ợ u ú ù ủ ũ ụ ư ứ ừ ử ữ ự đ script 100",

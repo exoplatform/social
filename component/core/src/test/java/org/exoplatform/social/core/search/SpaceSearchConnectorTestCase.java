@@ -21,6 +21,8 @@ import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
 import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.model.AvatarAttachment;
 import org.exoplatform.social.core.service.LinkProvider;
+import org.exoplatform.social.core.space.SpaceFilter;
+import org.exoplatform.social.core.space.SpaceListAccess;
 import org.exoplatform.social.core.space.impl.DefaultSpaceApplicationHandler;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.test.AbstractCoreTest;
@@ -190,6 +192,31 @@ public class SpaceSearchConnectorTestCase extends AbstractCoreTest {
     
     assertEquals(1, spaceSearchConnector.search(context, "clo", Collections.EMPTY_LIST, 0, 10, "relevancy", "ASC").size());
     identityManager.deleteIdentity(maryIdentity);
+  }
+  
+  public void testUnifiedSearch() throws Exception {
+    Identity maryIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "mary", false);
+    Identity rootIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "root", false);
+    
+    Space space = new Space();
+    space.setDisplayName("広いニーズ");
+    space.setPrettyName("広いニーズ");
+    space.setManagers(new String[]{"root"});
+    space.setMembers(new String[]{"root","mary"});
+    space.setType(DefaultSpaceApplicationHandler.NAME);
+    space.setRegistration(Space.OPEN);
+    createSpaceNonInitApps(space, "mary", null);
+    tearDown.add(space);
+    
+    SpaceListAccess list = spaceService.getUnifiedSearchSpacesWithListAccess("root", new SpaceFilter("広いニーズ"));
+    assertEquals(1, list.getSize());
+    assertEquals(1, list.load(0, 10).length);
+    list = spaceService.getUnifiedSearchSpacesWithListAccess("mary", new SpaceFilter("広いニーズ"));
+    assertEquals(1, list.getSize());
+    assertEquals(1, list.load(0, 10).length);
+    
+    identityManager.deleteIdentity(maryIdentity);
+    identityManager.deleteIdentity(rootIdentity);
   }
 
   private void setCurrentUser(final String name) {
