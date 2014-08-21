@@ -216,6 +216,7 @@
                    } else {
 		                 $.ajax({
 		                     type: "GET",
+		                     cache: false,
 		                     url: restUrl
 		                 }).complete(function (jqXHR) {
 		                     if (jqXHR.readyState === 4) {
@@ -393,7 +394,14 @@
                       var actionBtn = $(focusedUserBlock).find('div.connectionBtn');
                       
                       // invoke onclick()
-                      actionBtn.find('button.btn:first').click();
+                      var actionBtnLabel = $(el).text();
+                      var btns = actionBtn.find('button.btn');
+                      btns.each(function () {
+                        var btn = $(this);
+                        if (btn.text() === actionBtnLabel) {
+						  btn.click();
+						}
+		              })
                       
                       // clear cache and hide popup
                       var popup = $(el).closest('#tiptip_holder');
@@ -409,6 +417,7 @@
 
                     $.ajax({
                         type:"GET",
+                        cache: false,
                         url:opts.restURL.replace('{0}', ownerUserId) + '?updatedType=' + updatedType
                     }).complete(function (jqXHR) {
                                 if (jqXHR.readyState === 4) {
