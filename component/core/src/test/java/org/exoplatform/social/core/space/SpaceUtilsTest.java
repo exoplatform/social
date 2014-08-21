@@ -84,5 +84,14 @@ public class SpaceUtilsTest extends TestCase {
     isInstalledApp = SpaceUtils.isInstalledApp(space, "CalendarPortlet");
     assertTrue(isInstalledApp);
   }
+  
+  public void testCleanString() {
+    assertTrue("space_1".equals(SpaceUtils.cleanString("space 1")));
+    assertTrue("space_1".equals(SpaceUtils.cleanString("Space 1")));
+    assertTrue("ismet".equals(SpaceUtils.cleanString("ısmet")));
+    assertTrue("accentue".equals(SpaceUtils.cleanString("accentué")));
+    assertTrue("aaaaaaaaaaa".equals(SpaceUtils.cleanString("áàâäåÁÃÄÅÀÂ")));
+    assertFalse("Space_1".equals(SpaceUtils.cleanString("Space 1")));
+  }
  
 }
