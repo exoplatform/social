@@ -856,6 +856,13 @@ public class BaseUIActivity extends UIForm {
   }
   
   /**
+   * @return the identity of the current user who is commenting on the activity
+   */
+  public Identity getCommenterIdentity() {
+    return Utils.getViewerIdentity();
+  }
+  
+  /**
    * Allow child can be override this method to process I18N
    * @param activity
    * @return
