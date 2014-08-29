@@ -32,8 +32,8 @@
 	    title = this.linkData.title;
 	    image = this.linkData.image;
 	    description = this.linkData.description;
-      var queryString = 'link=' + link + '&title=' + title 
-          + '&description=' + description;
+      var queryString = 'link=' + link + '&title=' + encodeURIComponent(title) 
+          + '&description=' + encodeURIComponent(description);
 	    
 	    if(image != null){
 	        queryString += '&image='+encodeURIComponent(image)
