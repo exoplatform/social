@@ -71,7 +71,7 @@ public class UIProfileUserSearch extends UIForm {
   /**
    * PATTERN FOR CHECK RIGHT INPUT VALUE
    */
-  static final String RIGHT_INPUT_PATTERN = "^[\\p{L}][\\p{L}._\\- \\d]+$";
+  static final String RIGHT_INPUT_PATTERN = "^[\\p{L}][\\p{L}._ \\& \\;\\- \\d]+$";
 
   /**
    * REGEX EXPRESSION OF POSITION FIELD.
