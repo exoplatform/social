@@ -278,7 +278,7 @@ public class SpaceServiceImpl implements SpaceService {
    * {@inheritDoc}
    */
   public SpaceListAccess getVisibleSpacesWithListAccess(String userId, SpaceFilter spaceFilter) {
-    if (userId.equals(getUserACL().getSuperUser())) {
+    if (getUserACL().isUserInGroup(getUserACL().getAdminGroups())) {
       if (spaceFilter == null)
        return new SpaceListAccess(this.spaceStorage, userId, spaceFilter, SpaceListAccess.Type.ALL);
       else
