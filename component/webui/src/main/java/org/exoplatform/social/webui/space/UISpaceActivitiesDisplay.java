@@ -26,6 +26,9 @@ import org.exoplatform.social.webui.Utils;
 import org.exoplatform.social.webui.activity.UIActivitiesLoader;
 import org.exoplatform.social.webui.composer.UIComposer.PostContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
+import org.exoplatform.webui.config.annotation.EventConfig;
+import org.exoplatform.webui.event.Event;
+import org.exoplatform.webui.event.EventListener;
 
 /**
  * UISpaceActivitiesDisplay.java
@@ -37,8 +40,12 @@ import org.exoplatform.webui.config.annotation.ComponentConfig;
  * @copyright eXo Platform SAS
  */
 @ComponentConfig(
-  template = "war:/groovy/social/webui/space/UISpaceActivitiesDisplay.gtmpl"
+  template = "war:/groovy/social/webui/space/UISpaceActivitiesDisplay.gtmpl",
+  events = {
+    @EventConfig(listeners = UISpaceActivitiesDisplay.RefreshStreamActionListener.class)
+  }
 )
+
 public class UISpaceActivitiesDisplay extends UIContainer {
   static private final Log LOG = ExoLogger.getLogger(UISpaceActivitiesDisplay.class);
 
@@ -102,5 +109,15 @@ public class UISpaceActivitiesDisplay extends UIContainer {
     String remoteId = Utils.getOwnerRemoteId();
     Utils.getSpaceService().updateSpaceAccessed(remoteId, space);
     
+  }
+
+  public static class RefreshStreamActionListener extends EventListener<UISpaceActivitiesDisplay> {
+    public void execute(Event<UISpaceActivitiesDisplay> event) throws Exception {
+     UISpaceActivitiesDisplay uiSpaceActivities = event.getSource();
+     uiSpaceActivities.init();
+     event.getRequestContext().addUIComponentToUpdateByAjax(uiSpaceActivities);
+
+     Utils.resizeHomePage();
+   }
   }
 }
