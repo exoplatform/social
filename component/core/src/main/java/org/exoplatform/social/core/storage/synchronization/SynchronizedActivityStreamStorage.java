@@ -157,5 +157,14 @@ public class SynchronizedActivityStreamStorage extends ActivityStreamStorageImpl
       stopSynchronization(created);
     }
   }
-
+  
+  @Override
+  public void addMentioners(ProcessContext ctx) {
+    boolean created = startSynchronization();
+    try {
+      super.addMentioners(ctx);
+    } finally {
+      stopSynchronization(created);
+    }
+  }
 }
