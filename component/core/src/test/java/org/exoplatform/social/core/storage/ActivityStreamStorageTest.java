@@ -211,6 +211,67 @@ public class ActivityStreamStorageTest extends AbstractCoreTest {
 
   }
   
+  public void testAddMentioners() throws ActivityStorageException {
+    final String activityTitle = "activity Title";
+
+    ExoSocialActivity activity = new ExoSocialActivityImpl();
+    activity.setTitle(activityTitle + " @demo ");
+    activityStorage.saveActivity(rootIdentity, activity);
+    tearDownActivityList.add(activity);
+    
+    assertEquals(1, streamStorage.getNumberOfFeed(rootIdentity));
+    assertEquals(1, streamStorage.getNumberOfFeed(demoIdentity));
+    
+    assertEquals(0, streamStorage.getNumberOfFeed(maryIdentity));
+    assertEquals(0, streamStorage.getNumberOfMyActivities(maryIdentity));
+    
+    ExoSocialActivity comment = new ExoSocialActivityImpl();
+    comment.setTitle(activityTitle  + " @mary @john @demo");
+    comment.isComment(true);
+    comment.setUserId(rootIdentity.getId());
+    activityStorage.saveComment(activity, comment);
+    
+    assertEquals(1, streamStorage.getNumberOfFeed(maryIdentity));
+    assertEquals(1, streamStorage.getNumberOfMyActivities(maryIdentity));
+    
+    assertEquals(1, streamStorage.getNumberOfFeed(johnIdentity));
+    assertEquals(1, streamStorage.getNumberOfMyActivities(johnIdentity));
+    
+    assertEquals(1, streamStorage.getNumberOfFeed(demoIdentity));
+    assertEquals(1, streamStorage.getNumberOfMyActivities(demoIdentity));
+    
+    ExoSocialActivity newComment = new ExoSocialActivityImpl();
+    newComment.setTitle("mary add a comment");
+    newComment.setUserId(maryIdentity.getId());
+    activityStorage.saveComment(activity, newComment);
+    
+    assertEquals(1, streamStorage.getNumberOfFeed(maryIdentity));
+    assertEquals(1, streamStorage.getNumberOfMyActivities(maryIdentity));
+    
+    //delete the comment of root that mentions to john, mary, demo
+    activityStorage.deleteComment(activity.getId(), comment.getId());
+    
+    //as demo is also mentioned in the activity's title, the reference is not deleted
+    assertEquals(1, streamStorage.getNumberOfFeed(demoIdentity));
+    assertEquals(1, streamStorage.getNumberOfMyActivities(demoIdentity));
+    
+    //as mary has posted another comment on activity, the reference is not deleted
+    assertEquals(1, streamStorage.getNumberOfFeed(maryIdentity));
+    assertEquals(1, streamStorage.getNumberOfMyActivities(maryIdentity));
+    
+    assertEquals(1, streamStorage.getNumberOfFeed(rootIdentity));
+    assertEquals(1, streamStorage.getNumberOfMyActivities(rootIdentity));
+    
+    assertEquals(0, streamStorage.getNumberOfFeed(johnIdentity));
+    assertEquals(0, streamStorage.getNumberOfMyActivities(johnIdentity));
+    
+    //delete the new comment posted by mary
+    activityStorage.deleteComment(activity.getId(), newComment.getId());
+    
+    assertEquals(0, streamStorage.getNumberOfFeed(maryIdentity));
+    assertEquals(0, streamStorage.getNumberOfMyActivities(maryIdentity));
+  }
+  
   public void testSaveCommentActivity() throws ActivityStorageException {
     final String activityTitle = "activity Title";
 

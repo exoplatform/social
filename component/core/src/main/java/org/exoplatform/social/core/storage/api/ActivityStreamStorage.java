@@ -407,4 +407,14 @@ public interface ActivityStreamStorage {
    * @since 4.0.2, 4.1.0
    */
   void migrateStreamSize(Identity owner, int size, ActivityRefType type);
+  
+  /**
+   * Updates the activity stream what related to mention activity/comment
+   * It will run with asynchronous mode
+   * 
+   * @param ctx 
+   * 1. ctx.getActivity() given activity to records the streams
+   * 2. ctx.getMentioner() mentioners of given the Activity.
+   */
+  public void addMentioners(ProcessContext ctx);
 }
