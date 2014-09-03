@@ -46,6 +46,7 @@ import org.exoplatform.social.core.chromattic.utils.ActivityRefList;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
+import org.exoplatform.social.core.relationship.model.Relationship;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.storage.ActivityStorageException;
 import org.exoplatform.social.core.storage.api.ActivityStorage;
@@ -182,20 +183,27 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
     }
   }
   
-  private void removeMentioner(String[] identityIds, ActivityEntity activityEntity) throws NodeNotFoundException {
-   if (identityIds != null && identityIds.length > 0) {
-     for(String identityId : identityIds) {
-       Identity identity = identityStorage.findIdentityById(identityId);
-       removeOwnerRefs(identity, activityEntity);
-     }
-   }
-  }
-  
-  private void removeCommenter(String[] identityIds, ActivityEntity activityEntity) throws NodeNotFoundException {
+  /**
+   * Remove activity reference from "my activity stream" of an user and if he is not connected with the
+   * activity's owner, remove also this reference from his "feed activity stream" 
+   * 
+   * @param identityIds
+   * @param activityEntity
+   * @throws NodeNotFoundException
+   */
+  private void removeActivityRefs(String[] identityIds, ActivityEntity activityEntity) throws NodeNotFoundException {
     if (identityIds != null && identityIds.length > 0) {
+      Identity owner = identityStorage.findIdentityById(activityEntity.getIdentity().getId());
       for(String identityId : identityIds) {
+        if (identityId.equals(owner.getId()) || identityId.equals(activityEntity.getPosterIdentity().getId())) {
+          continue;
+        }
         Identity identity = identityStorage.findIdentityById(identityId);
         manageRefList(new UpdateContext(null, identity), activityEntity, ActivityRefType.MY_ACTIVITIES);
+        Relationship relationship = relationshipStorage.getRelationship(owner, identity);
+        if (relationship == null || ! relationship.getStatus().equals(Relationship.Type.CONFIRMED)) {
+          manageRefList(new UpdateContext(null, identity), activityEntity, ActivityRefType.FEED);
+        }
       }
     }
   }
@@ -381,8 +389,6 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
           refList.remove(activityEntity, hidableActivity.getHidden(), oldUpdated);
         }
       }
-      // mentioners
-      addMentioner(streamCtx.getMentioners(), activityEntity);
     } catch (NodeNotFoundException ex) {
       LOG.warn("Probably was updated activity reference by another session");
       LOG.debug(ex.getMessage(), ex);
@@ -431,9 +437,9 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
       ActivityEntity activityEntity = _findById(ActivityEntity.class, activity.getId());
       
       //mentioners
-      removeMentioner(streamCtx.getMentioners(), activityEntity);
+      removeActivityRefs(streamCtx.getMentioners(), activityEntity);
       //commenter
-      removeCommenter(streamCtx.getCommenters(), activityEntity);
+      removeActivityRefs(streamCtx.getCommenters(), activityEntity);
     } catch (NodeNotFoundException e) {
       LOG.warn("Failed to delete Activity references for mentioner and commenter.");
     }
@@ -1193,6 +1199,22 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
     } 
   }
 
-
+  @Override
+  public void addMentioners(ProcessContext ctx) {
+    try {
+      StreamProcessContext streamCtx = ObjectHelper.cast(StreamProcessContext.class, ctx);
+      //
+      if (streamCtx.getMentioners() == null || streamCtx.getMentioners().length == 0) {
+        return;
+      }
+      ActivityEntity activityEntity = _findById(ActivityEntity.class, streamCtx.getActivity().getId());
+      // mentioners
+      addMentioner(streamCtx.getMentioners(), activityEntity);
+    } catch (NodeNotFoundException ex) {
+      LOG.warn("Probably was updated activity reference by another session");
+      LOG.debug(ex.getMessage(), ex);
+    } 
+    
+  }
   
 }

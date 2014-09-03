@@ -1450,6 +1450,44 @@ public class ActivityManagerTest extends AbstractCoreTest {
     assertEquals(1, lastIds.size());
     assertEquals(id1, lastIds.get(0));
   }
+  
+  public void testMentionersWhenAddComment() throws Exception {
+    ExoSocialActivity activity = new ExoSocialActivityImpl();
+    activity.setTitle("activity title");
+    activityManager.saveActivityNoReturn(johnIdentity, activity);
+    tearDownActivityList.add(activity);
+    
+    //demo add 2 comments on john's activity
+    int numberOfComments = 2;
+    ExoSocialActivity deleteComment = null;
+    for (int i = 0; i < numberOfComments; i++) {
+      ExoSocialActivity comment = new ExoSocialActivityImpl();
+      comment.setTitle("@demo on comment " + i);
+      comment.setUserId(johnIdentity.getId());
+      activityManager.saveComment(activity, comment);
+      deleteComment = comment;
+    }
+    
+    ExoSocialActivity got = activityManager.getActivity(activity.getId());
+    String[] commenters = got.getCommentedIds();
+    String[] mentioners = got.getMentionedIds();
+    assertEquals(1, commenters.length);
+    assertEquals(1, mentioners.length);
+    //as demo posts 2 comments, the number associated to his id in the commenter's and mentioners's list must be 2
+    assertEquals("2", commenters[0].split("@")[1]);
+    assertEquals("2", mentioners[0].split("@")[1]);
+    
+    //delete a comment
+    activityManager.deleteComment(got, deleteComment);
+    
+    got = activityManager.getActivity(activity.getId());
+    commenters = got.getCommentedIds();
+    mentioners = got.getMentionedIds();
+    assertEquals(1, commenters.length);
+    assertEquals(1, mentioners.length);
+    assertEquals("1", commenters[0].split("@")[1]);
+    assertEquals("1", mentioners[0].split("@")[1]);
+  }
 
   /**
    *

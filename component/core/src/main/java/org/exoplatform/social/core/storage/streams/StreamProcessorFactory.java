@@ -16,13 +16,10 @@
  */
 package org.exoplatform.social.core.storage.streams;
 
-import java.util.List;
-
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.social.common.service.ProcessContext;
 import org.exoplatform.social.common.service.impl.SocialServiceContextImpl;
 import org.exoplatform.social.common.service.utils.ObjectHelper;
-import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.storage.api.ActivityStorage;
 import org.exoplatform.social.core.storage.api.ActivityStreamStorage;
 
@@ -334,6 +331,22 @@ public class StreamProcessorFactory {
         StreamProcessContext streamCtx = ObjectHelper.cast(StreamProcessContext.class, processContext);
         
         getActivityStorage().getActivityFeed(streamCtx.getIdentity(), 0, 21);
+        return processContext;
+      }
+
+    };
+  }
+  
+  /**
+   * Build Update Stream References in case mention
+   * @return
+   */
+  public static SocialChromatticAsyncProcessor addMentioners() {
+    return new SocialChromatticAsyncProcessor(SocialServiceContextImpl.getInstance()) {
+
+      @Override
+      protected ProcessContext execute(ProcessContext processContext) throws Exception {
+        getStreamStorage().addMentioners(processContext);
         return processContext;
       }
 

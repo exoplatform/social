@@ -97,10 +97,10 @@ public class StreamInvocationHelper {
     return false;
   }
   
-  public static ProcessContext update(ExoSocialActivity activity, String[] mentioners, long oldUpdated) {
+  public static ProcessContext update(ExoSocialActivity activity, long oldUpdated) {
     //
     StreamProcessContext processCtx = StreamProcessContext.getIntance(StreamProcessContext.UPDATE_ACTIVITY_PROCESS, ctx);
-    processCtx.activity(activity).mentioners(mentioners).oldLastUpdated(oldUpdated);
+    processCtx.activity(activity).oldLastUpdated(oldUpdated);
     
     try {
       if (ctx.isAsync()) {
@@ -414,6 +414,22 @@ public class StreamInvocationHelper {
     try {
       processCtx.getTraceElement().start();
       ctx.getServiceExecutor().async(StreamProcessorFactory.loadFeed(), processCtx);
+      processCtx.getTraceElement().end();
+    } finally {
+      LOG.debug(processCtx.getTraceLog());
+    }
+    
+    return processCtx;
+  }
+  
+  public static ProcessContext addMentioners(ExoSocialActivity activity, String[] mentioners) {
+    //
+    StreamProcessContext processCtx = StreamProcessContext.getIntance(StreamProcessContext.UPDATE_ACTIVITY_MENTIONER_PROCESS, ctx);
+    processCtx.activity(activity).mentioners(mentioners);
+    
+    try {
+      processCtx.getTraceElement().start();
+      ctx.getServiceExecutor().async(StreamProcessorFactory.addMentioners(), processCtx);
       processCtx.getTraceElement().end();
     } finally {
       LOG.debug(processCtx.getTraceLog());
