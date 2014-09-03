@@ -58,7 +58,7 @@
   
   requireJS.require("SHARED/social-ui-profile", "profile").addScripts("profile.initUserProfilePopup('$uicomponent.id', $labels);");
 	String clearClass = "clearBG";
-	if(Utils.isHomePage() && hasActivities && uicomponent.isUIUserActivityDisplay()) {
+	if(hasActivities && !uicomponent.isExtendLoader()) {
 	  clearClass = "clearfix";
 	}
 %>
