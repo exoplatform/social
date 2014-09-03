@@ -429,7 +429,6 @@ public class StreamInvocationHelper {
     
     try {
       processCtx.getTraceElement().start();
-      beforeAsync();
       ctx.getServiceExecutor().async(StreamProcessorFactory.addMentioners(), processCtx);
       processCtx.getTraceElement().end();
     } finally {
