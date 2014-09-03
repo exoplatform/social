@@ -665,6 +665,8 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
       if (mustInjectStreams) {
         Identity identity = identityStorage.findIdentityById(comment.getUserId());
         StreamInvocationHelper.updateCommenter(identity, activityEntity, commenters.toArray(new String[0]), oldUpdated);
+        //make sure there is no duplicated identity in commenters and mentioners list 
+        processIdentitiesList(mentioners, commenters.toArray(new String[0]));
         StreamInvocationHelper.addMentioners(activity, mentioners.toArray(new String[0]));
         //only update what's hot when add comment the current day after the last updated of activity
         if (StorageUtils.afterDayOrMore(oldUpdated, currentMillis)) {
