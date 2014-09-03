@@ -228,7 +228,7 @@ public class ActivityStreamStorageTest extends AbstractCoreTest {
     ExoSocialActivity comment = new ExoSocialActivityImpl();
     comment.setTitle(activityTitle  + " @mary @john @demo");
     comment.isComment(true);
-    comment.setUserId(rootIdentity.getId());
+    comment.setUserId(maryIdentity.getId());
     activityStorage.saveComment(activity, comment);
     
     assertEquals(1, streamStorage.getNumberOfFeed(maryIdentity));
