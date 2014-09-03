@@ -19,6 +19,7 @@ package org.exoplatform.social.notification.mock;
 import java.util.List;
 import java.util.Map;
 
+import org.exoplatform.commons.api.notification.NotificationContext;
 import org.exoplatform.commons.api.notification.model.NotificationInfo;
 import org.exoplatform.commons.api.notification.model.NotificationKey;
 import org.exoplatform.commons.api.notification.model.UserSetting;
@@ -36,7 +37,7 @@ public class MockNotificationDataStorage implements NotificationDataStorage {
   }
 
   @Override
-  public Map<NotificationKey, List<NotificationInfo>> getByUser(UserSetting userSetting) {
+  public Map<NotificationKey, List<NotificationInfo>> getByUser(NotificationContext context, UserSetting userSetting) {
     return null;
   }
 
