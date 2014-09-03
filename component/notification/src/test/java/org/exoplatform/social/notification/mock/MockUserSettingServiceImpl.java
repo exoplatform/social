@@ -60,4 +60,33 @@ public class MockUserSettingServiceImpl implements UserSettingService {
   public List<UserSetting> getDigestDefaultSettingForAllUser(int offset, int limit) {
     return null;
   }
+
+  @Override
+  public List<UserSetting> getDaily(int offset, int limit) {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  @Override
+  public long getNumberOfDaily() {
+    // TODO Auto-generated method stub
+    return 0;
+  }
+
+  @Override
+  public List<UserSetting> getDefaultDaily(int offset, int limit) {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  @Override
+  public long getNumberOfDefaultDaily() {
+    // TODO Auto-generated method stub
+    return 0;
+  }
+
+  @Override
+  public List<UserSetting> getUserSettingWithDeactivate() {
+    return null;
+  }
 }
