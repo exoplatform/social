@@ -20,6 +20,8 @@ import org.apache.commons.lang.ArrayUtils;
 import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
+import org.exoplatform.services.security.ConversationState;
+import org.exoplatform.services.security.MembershipEntry;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
@@ -37,6 +39,7 @@ import org.exoplatform.social.core.test.AbstractCoreTest;
 
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -2575,7 +2578,67 @@ public class SpaceServiceTest extends AbstractCoreTest {
   public void testGetSpaceApplicationConfigPlugin() throws Exception {
     //TODO Complete this
   }
-  
+
+  /**
+   * Test {@link org.exoplatform.social.core.storage.SpaceStorage#getVisibleSpaces(String)}
+   *
+   * @throws Exception
+   * @since 1.2.5-GA
+   */
+  public void testGetHiddenSpaces() throws Exception {
+
+    Collection<MembershipEntry> adminMemberships = new ArrayList<MembershipEntry>();
+    adminMemberships.add(new MembershipEntry("/platform/administrators", "*"));
+
+    Collection<MembershipEntry> userMemberships = new ArrayList<MembershipEntry>();
+    userMemberships.add(new MembershipEntry("/platform/users", "*"));
+
+    /* create two different Identity (admin user | normal user) */
+    org.exoplatform.services.security.Identity adminIdentity = new org.exoplatform.services.security.Identity("admin", adminMemberships);
+    org.exoplatform.services.security.Identity userIdentity = new org.exoplatform.services.security.Identity("user", userMemberships);
+
+    int countSpace = 4;
+    int publicSpace = 2;
+    Space []listSpace = new Space[4];
+
+    //create 4 spaces with a single member "demo".
+    for (int i = 0; i < countSpace; i ++) {
+
+      if (i < 2)
+        //[0->1] :: there are 2 spaces with visible = 'private'
+        listSpace[i] = this.getSpaceInstance(i, Space.PRIVATE, Space.OPEN, "demo");
+      else
+        //[2->3]:: there are 2 spaces with visible = 'hidden'
+        listSpace[i] = this.getSpaceInstance(i, Space.HIDDEN, Space.OPEN, "demo");
+
+      spaceService.saveSpace(listSpace[i], true);
+      tearDownSpaceList.add(listSpace[i]);
+    }
+
+    //visible with userId = 'root'  return 4 spaces
+    {
+      /* all spaces are visible with user demo since he is a member */
+      List<Space> visibleAllSpaces = spaceService.getVisibleSpaces("demo", null);
+      assertNotNull("visibleSpaces must not be  null", visibleAllSpaces);
+      assertEquals("visibleSpaces() for demo user must return: " + countSpace, countSpace, visibleAllSpaces.size());
+
+      /* all spaces are visible with user root since he is an administrator even if he's not a member */
+      ConversationState conversationState = new ConversationState(adminIdentity);
+      conversationState.setCurrent(conversationState);
+      visibleAllSpaces = spaceService.getVisibleSpaces("root", null);
+      assertNotNull("visibleSpaces must not be  null", visibleAllSpaces);
+      assertEquals("visibleSpaces() for admin user must return: " + countSpace, countSpace, visibleAllSpaces.size());
+
+      /* only public spaces are visible with a simple user */
+      conversationState = new ConversationState(userIdentity);
+      conversationState.setCurrent(conversationState);
+      visibleAllSpaces = spaceService.getVisibleSpaces("user", null);
+      assertNotNull("visibleSpaces must not be  null", visibleAllSpaces);
+      assertEquals("visibleSpaces() for simple user must return: " + publicSpace, publicSpace, visibleAllSpaces.size());
+
+    }
+  }
+
   /**
    * Test {@link org.exoplatform.social.core.storage.SpaceStorage#getVisibleSpaces(String)}
    *
