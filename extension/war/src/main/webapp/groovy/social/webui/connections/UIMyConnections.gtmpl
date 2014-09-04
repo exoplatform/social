@@ -135,7 +135,7 @@
          %>
        <div class="itemContainer pull-left">  
           <div class="spaceBox">
-            <a href="${profileURL}" class="avatarXLarge pull-left">
+            <a href="${profileURL}" class="avatarLarge pull-left">
               <img rel="tooltip" data-placement="bottom" title="${fullName}" src="$imageSource" />
             </a>
             <div class="contentBox">

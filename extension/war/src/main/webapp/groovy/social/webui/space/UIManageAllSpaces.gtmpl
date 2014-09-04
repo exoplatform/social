@@ -158,11 +158,11 @@ import org.exoplatform.social.core.service.LinkProvider;
         <div class="itemContainer pull-left">
 		      <div class="spaceBox $checkedBox">       
 	        <% if (isPublic) { %>
-	          <a href="$spaceUrl" class="avatarXLarge pull-left">
+	          <a href="$spaceUrl" class="avatarLarge pull-left">
 	            <img alt="$spaceAvatarTitle" src="$imageSource" />
 	          </a>
 	        <%} else { %>
-	          <div class="avatarXLarge pull-left">
+	          <div class="avatarLarge pull-left">
 	             <img alt="$spaceAvatarTitle" src="$imageSource" />
 	          </div>
 	        <%} %>
@@ -198,7 +198,7 @@ import org.exoplatform.social.core.service.LinkProvider;
 		              <button type="button" class="btn pull-right" onclick="<%= ignoreInvitationAction %>">$ignoreInvitationLabel</button>
                   <button type="button" class="btn btn-primary pull-right" onclick="<%= acceptInvitationAction %>">$acceptInvitationLabel</button>
               <% } else if ("SENT".equals(typeOfSpace.toString())) {  %>
-                  <button type="button" class="btn btn-primary pull-right" onclick="<%= cancelInvitationAction %>">$cancelInvitationLabel</button>
+                  <button type="button" class="btn pull-right" onclick="<%= cancelInvitationAction %>">$cancelInvitationLabel</button>
               <% } else if ("MEMBER".equals(typeOfSpace.toString())) {  %>
                   <button type="button" class="btn pull-right" onclick="<%= leaveSpaceAction %>">$leaveSpaceLabel</button>
               <% } else {

@@ -75,7 +75,7 @@
         %>
         <div class="itemContainer pull-left">
           <div class="spaceBox $checkedBox">
-            <a class="avatarXLarge pull-left" rel="tooltip" data-placement="bottom" title="$userName">
+            <a class="avatarLarge pull-left" rel="tooltip" data-placement="bottom" title="$userName">
               <img class="ImgAvatar" src="$leaderImageSource"/>
             </a>
             <div class="contentBox">
@@ -169,7 +169,7 @@
       %>
 	      <div class="itemContainer pull-left">
           <div class="spaceBox $checkedBox pull-left">
-            <a class="avatarXLarge pull-left" rel="tooltip" data-placement="bottom" title="$memberUserName">
+            <a class="avatarLarge pull-left" rel="tooltip" data-placement="bottom" title="$memberUserName">
                 <img src="$memberImageSource" alt="#"/>
             </a>
             <div class="contentBox">

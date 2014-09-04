@@ -105,7 +105,7 @@
 					%>
 				  <div class="itemContainer pull-left">
 						<div class="spaceBox">
-							<div class="avatarXLarge pull-left">
+							<div class="avatarLarge pull-left">
 								<img alt="$spaceAvatarTitle" src="$imageSource" />
 							</div>
 							<div class="contentBox">
