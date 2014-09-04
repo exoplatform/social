@@ -99,7 +99,7 @@
     if ( uicomponent.HIDDEN.equals(node.getVisibility().toString()) ) {
       continue;
     }
-    String nodeTitle = node.getResolvedLabel();
+    String nodeTitle = node.getLabel();
     String nodeIcon = node.getIcon();
     String nodeUri = node.getURI();
     String []uriParts = nodeUri.split("/");
@@ -108,7 +108,19 @@
     if ((nodeIcon == null) && (node.getPageRef() != null )) {
       appName = node.getPageRef().getName();
       pName = uicomponent.getAppIdByAppName(appName);
-    }   
+    }
+    if ( node.getPageRef() != null ) {
+        appName = node.getPageRef().getName();
+        if (nodeTitle != null) {
+            if ( (appName != null)) {
+                def appLabelFromResourceBundle = org.exoplatform.social.webui.Utils.appRes(appName + ".label.name");
+                if (appLabelFromResourceBundle != null) nodeTitle = appLabelFromResourceBundle;
+            }
+        } else {
+            nodeTitle = node.getResolvedLabel();
+        }
+    }
+
     String nodeLabel = getFitString(nodeTitle, 15);
  
     
