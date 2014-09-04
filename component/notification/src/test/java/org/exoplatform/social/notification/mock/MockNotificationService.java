@@ -20,6 +20,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import org.exoplatform.commons.api.notification.NotificationContext;
 import org.exoplatform.commons.api.notification.model.NotificationInfo;
 import org.exoplatform.commons.api.notification.model.UserSetting;
 import org.exoplatform.commons.api.notification.service.setting.PluginSettingService;
@@ -94,14 +95,14 @@ public class MockNotificationService implements NotificationService {
   }
 
   @Override
-  public void processDigest() throws Exception {
-  }
-
-  @Override
   public void process(Collection<NotificationInfo> messages) throws Exception {
     for (NotificationInfo message : messages) {
       process(message);
     }
   }
 
+  @Override
+  public void digest(NotificationContext context) throws Exception {
+    // TODO Auto-generated method stub
+  }
 }

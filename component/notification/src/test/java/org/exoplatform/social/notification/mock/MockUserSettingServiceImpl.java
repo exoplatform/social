@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.exoplatform.commons.api.notification.NotificationContext;
 import org.exoplatform.commons.api.notification.model.UserSetting;
 import org.exoplatform.commons.api.notification.service.setting.UserSettingService;
 import org.exoplatform.services.organization.User;
@@ -25,16 +26,6 @@ public class MockUserSettingServiceImpl implements UserSettingService {
   @Override
   public UserSetting get(String userId) {
     return settings.get(userId);
-  }
-
-  @Override
-  public List<UserSetting> getDaily(int offset, int limit) {
-    return null;
-  }
-
-  @Override
-  public long getNumberOfDaily() {
-    return 0;
   }
 
   @Override
@@ -59,14 +50,20 @@ public class MockUserSettingServiceImpl implements UserSettingService {
   public void addMixin(User[] users) {
   }
 
-
   @Override
-  public List<UserSetting> getDefaultDaily(int offset, int limit) {
+  public List<UserSetting> getDigestSettingForAllUser(NotificationContext context,
+                                                      int offset,
+                                                      int limit) {
     return null;
   }
 
   @Override
-  public long getNumberOfDefaultDaily() {
-    return 0;
+  public List<UserSetting> getDigestDefaultSettingForAllUser(int offset, int limit) {
+    return null;
+  }
+
+  @Override
+  public List<UserSetting> getUserSettingWithDeactivate() {
+    return null;
   }
 }
