@@ -25,14 +25,13 @@ import javax.jcr.query.QueryManager;
 
 import org.chromattic.api.ChromatticSession;
 import org.chromattic.api.Status;
-import org.chromattic.core.api.ChromatticSessionImpl;
 import org.exoplatform.commons.chromattic.ChromatticManager;
-import org.exoplatform.commons.chromattic.Synchronization;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.jcr.impl.core.query.QueryImpl;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.social.common.lifecycle.SocialChromatticLifeCycle;
+import org.exoplatform.social.core.chromattic.entity.HidableEntity;
 import org.exoplatform.social.core.chromattic.entity.ProviderRootEntity;
 import org.exoplatform.social.core.chromattic.entity.SpaceRootEntity;
 import org.exoplatform.social.core.storage.exception.NodeNotFoundException;
@@ -167,6 +166,14 @@ public abstract class AbstractStorage {
     if (mixin == null && create) {
       mixin = getSession().create(mixinType);
       getSession().setEmbedded(o, mixinType, mixin);
+    }
+    //Fix for case old activity node without mixinType Hidable.
+    if (mixin != null && mixinType.equals(HidableEntity.class)) {
+      HidableEntity hidableEntity = (HidableEntity) mixin;
+      if (hidableEntity.getHidden() == null) {
+        hidableEntity.setHidden(false);
+        getSession().save();
+      }
     }
     return mixin;
   }

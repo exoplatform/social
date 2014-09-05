@@ -1291,7 +1291,7 @@ public class ActivityStorageTest extends AbstractCoreTest {
   /**
    * Tests {@link ActivityStorage#getNumberOfNewerOnUserActivities(Identity, Long)}
    */
-  @MaxQueryNumber(716)
+  @MaxQueryNumber(736)
   public void testGetNumberOfNewerOnUserActivitiesByTimestamp() {
     checkCleanData();
     createActivities(2, demoIdentity);
@@ -1878,7 +1878,7 @@ public class ActivityStorageTest extends AbstractCoreTest {
    * 
    * @throws ActivityStorageException
    */
-  @MaxQueryNumber(852)
+  @MaxQueryNumber(882)
   public void testGetActivitiesByPagingWithoutCreatingComments() throws ActivityStorageException {
     checkCleanData();
     final int totalActivityCount = 9;
@@ -2003,7 +2003,7 @@ public class ActivityStorageTest extends AbstractCoreTest {
   /**
    * Tests {@link ActivityStorage#getNewerOnUserActivities(Identity, Long, int)}
    */
-  @MaxQueryNumber(716)
+  @MaxQueryNumber(736)
   public void testGetNewerOnUserActivitiesWithTimestamp() {
     checkCleanData();
     createActivities(2, demoIdentity);
@@ -2032,7 +2032,7 @@ public class ActivityStorageTest extends AbstractCoreTest {
   /**
    * Tests {@link ActivityStorage#getOlderOnUserActivities(Identity, Long, int)}
    */
-  @MaxQueryNumber(716)
+  @MaxQueryNumber(736)
   public void testGetOlderOnUserActivitiesWithTimestamp() {
     checkCleanData();
     createActivities(2, demoIdentity);
@@ -2275,7 +2275,7 @@ public class ActivityStorageTest extends AbstractCoreTest {
    * 
    * @throws Exception
    */
-  @MaxQueryNumber(3290)
+  @MaxQueryNumber(3530)
   public void testGetNewerOnUserSpacesActivitiesWithTimestamp() throws Exception {
     checkCleanData();
     SpaceService spaceService = this.getSpaceService();

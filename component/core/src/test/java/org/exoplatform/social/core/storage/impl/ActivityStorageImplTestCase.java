@@ -410,7 +410,7 @@ public class ActivityStorageImplTestCase extends AbstractCoreTest {
     identityStorage.deleteIdentity(spaceIdentity);
   }
 
-  @MaxQueryNumber(930)
+  @MaxQueryNumber(974)
   public void testActivityOrder() throws Exception {
     // fill 10 activities
     for (int i = 0; i < 10; ++i) {
@@ -491,7 +491,7 @@ public class ActivityStorageImplTestCase extends AbstractCoreTest {
     }
   }
 
-  @MaxQueryNumber(2548)
+  @MaxQueryNumber(2764)
   public void testActivityOrder2() throws Exception {
     // fill 10 activities
     for (int i = 0; i < 10; ++i) {
@@ -704,7 +704,7 @@ public class ActivityStorageImplTestCase extends AbstractCoreTest {
     assertTrue(!ids.contains(maryIdentity.getId()));
   }
 
-  @MaxQueryNumber(2578)
+  @MaxQueryNumber(2704)
   public void testContactActivities() throws Exception {
 
     //
