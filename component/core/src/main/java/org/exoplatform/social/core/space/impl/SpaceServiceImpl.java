@@ -16,6 +16,14 @@
  */
 package org.exoplatform.social.core.space.impl;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
 import org.apache.commons.lang.ArrayUtils;
 import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.commons.utils.PageList;
@@ -50,14 +58,6 @@ import org.exoplatform.social.core.space.spi.SpaceService;
 import org.exoplatform.social.core.storage.api.ActivityStreamStorage;
 import org.exoplatform.social.core.storage.api.IdentityStorage;
 import org.exoplatform.social.core.storage.api.SpaceStorage;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
 
 /**
  * {@link org.exoplatform.social.core.space.spi.SpaceService} implementation.
@@ -1477,7 +1477,9 @@ public class SpaceServiceImpl implements SpaceService {
 
   @Override
   public void updateSpaceAccessed(String remoteId, Space space) throws SpaceException {
-    spaceStorage.updateSpaceAccessed(remoteId, space);
+    if (isMember(space, remoteId)) {
+      spaceStorage.updateSpaceAccessed(remoteId, space);
+    }
   }
 
   @Override
