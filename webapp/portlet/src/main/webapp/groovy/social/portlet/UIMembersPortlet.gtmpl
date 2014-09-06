@@ -50,7 +50,7 @@
              .require("SHARED/bts_tooltip").addScripts("jq('*[rel=\"tooltip\"]').tooltip();")
              .require("SHARED/socialUtil", "socialUtil").addScripts("socialUtil.addfillUpFreeSpace('" + uicomponent.id + "');");
 %>
-<div class="uiMembersPortlet" id="$uicomponentId">
+<div class="uiSocApplication uiMembersPortlet" id="$uicomponentId">
     <h3 class="uiInputInfo">$spaceName</h3>
     <span>$visibility</span>
     <h4 class="titleWithBorder mgB220">$administratorLabel</h4>
