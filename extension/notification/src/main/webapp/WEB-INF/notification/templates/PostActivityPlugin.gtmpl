@@ -28,10 +28,8 @@
                                     <table border="0" cellpadding="0" cellspacing="0" width="100%" bgcolor="#ffffff" align="center" style="background-color: #ffffff; font-size: 13px;color:#333333;line-height: 18px; margin-bottom: 15px;">
                                         <tbody>
                                             <tr>
-                                                <td align="left" bgcolor="#ffffff" style="background-color: #f9f9f9; padding: 15px 20px;">
-                                                    <p style="margin: 5px 0; font-size: 13px; line-height: 18px; font-family: HelveticaNeue, Helvetica, Arial, sans-serif">
-                                                        $ACTIVITY
-                                                    </p>
+                                                <td align="left" bgcolor="#ffffff" style="background-color: #f9f9f9; padding: 0;">
+                                                    $ACTIVITY
                                                 </td>
                                             </tr>
                                         </tbody>
