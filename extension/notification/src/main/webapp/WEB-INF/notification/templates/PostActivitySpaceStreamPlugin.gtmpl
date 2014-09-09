@@ -26,14 +26,12 @@
                                         %>
                                     <%=_ctx.appRes("Notification.message.PostActivitySpaceStreamPlugin", profileUrl, spaceUrl)%>:
                                     </p>
-                                    
+
                                     <table border="0" cellpadding="0" cellspacing="0" width="100%" bgcolor="#ffffff" align="center" style="background-color: #ffffff; font-size: 13px;color:#333333;line-height: 18px; margin-bottom: 15px;">
                                         <tbody>
                                             <tr>
                                                 <td align="left" bgcolor="#ffffff" style="background-color: #f9f9f9; padding: 15px 20px;">
-                                                    <p style="margin: 0 0 5px; font-size: 13px; line-height: 18px; font-family: HelveticaNeue, Helvetica, Arial, sans-serif">
-                                                        $ACTIVITY
-                                                    </p>
+                                                    $ACTIVITY
                                                 </td>
                                             </tr>
                                         </tbody>
@@ -103,8 +101,8 @@
                         </table>
                     </td>
                 </tr>
-            </table>            
-            
+            </table>
+
         </td>
     </tr><!--end content area-->
     <tr>
@@ -114,10 +112,10 @@
                     <td align="left" valign="top" style="font-family: HelveticaNeue, Helvetica, Arial, sans-serif,serif;color:#ffffff;font-size:13px;" >
                         <h3 style="text-align: center; margin: 0; padding: 10px 0;">
                             <a target="_blank" style="color: #ffffff; font-size: 13px;font-family:'HelveticaNeue Bold',arial,tahoma,serif; font-weight: bold; text-decoration: none;" href="http://www.exoplatform.com/company/en/home" title="eXo Platform"><%=_ctx.appRes("Notification.label.CompanyName")%></a>
-                        </h3>               
+                        </h3>
                     </td>
                 </tr>
             </table>
         </td>
-    </tr><!--end footer area-->     
+    </tr><!--end footer area-->
 </table>
