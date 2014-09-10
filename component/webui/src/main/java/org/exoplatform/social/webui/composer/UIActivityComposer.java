@@ -39,8 +39,7 @@ public abstract class UIActivityComposer extends UIContainer {
   private static final String UI_DOCUMENT_ACTIVITY_COMPOSER = "UIDocActivityComposer";
   private static final String FILE_ALREADY_ATTACHED = "UIActivityComposer.message.alreadyAttached";
 
-
-    private UIContainer activityDisplay;
+  private UIContainer activityDisplay;
   private UIActivityComposerManager activityComposerManager;
   private boolean isReady = false;
   private boolean isDisplayed = false;
