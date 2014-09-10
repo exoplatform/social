@@ -16,7 +16,9 @@
  */
 package org.exoplatform.social.webui.composer;
 
+import org.exoplatform.web.application.ApplicationMessage;
 import org.exoplatform.webui.application.WebuiRequestContext;
+import org.exoplatform.webui.core.UIApplication;
 import org.exoplatform.webui.core.UIComponent;
 import org.exoplatform.webui.core.UIContainer;
 import org.exoplatform.webui.event.Event;
@@ -35,8 +37,10 @@ import org.exoplatform.webui.event.EventListener;
 public abstract class UIActivityComposer extends UIContainer {
   private static final String SELECT_DOCUMENT_ACTION = "SelectDocument";
   private static final String UI_DOCUMENT_ACTIVITY_COMPOSER = "UIDocActivityComposer";
-  
-  private UIContainer activityDisplay;
+  private static final String FILE_ALREADY_ATTACHED = "UIActivityComposer.message.alreadyAttached";
+
+
+    private UIContainer activityDisplay;
   private UIActivityComposerManager activityComposerManager;
   private boolean isReady = false;
   private boolean isDisplayed = false;
@@ -120,6 +124,11 @@ public abstract class UIActivityComposer extends UIContainer {
       final UIActivityComposer activityComposer = event.getSource();
       final UIActivityComposerManager activityComposerManager = activityComposer.getActivityComposerManager();
       activityComposerManager.setCurrentActivityComposer(activityComposer);
+      if ((activityComposer.getClass().getSimpleName().equals(UI_DOCUMENT_ACTIVITY_COMPOSER))&&(activityComposer.isDisplayed())) {
+        UIApplication uiApp = ctx.getUIApplication();
+        uiApp.addMessage(new ApplicationMessage(FILE_ALREADY_ATTACHED, null, ApplicationMessage.WARNING));
+        return;
+      }
 
       activityComposer.onActivate(event);
       activityComposer.setDisplayed(true);
