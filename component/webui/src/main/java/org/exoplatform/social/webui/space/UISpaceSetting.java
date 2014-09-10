@@ -31,11 +31,9 @@ import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.ComponentConfigs;
 import org.exoplatform.webui.config.annotation.EventConfig;
 import org.exoplatform.webui.core.UIComponent;
-import org.exoplatform.webui.core.UIContainer;
 import org.exoplatform.webui.core.UIPopupContainer;
 import org.exoplatform.webui.core.UITabPane;
 import org.exoplatform.webui.event.Event;
-import org.exoplatform.webui.event.EventListener;
 
 @ComponentConfigs({
   @ComponentConfig(
@@ -45,9 +43,9 @@ import org.exoplatform.webui.event.EventListener;
     type = UITabPane.class,
     id = "UISpaceSettingTabPane",
     template = "war:/groovy/social/webui/space/UISpaceSettingPane.gtmpl",
-    events = { @EventConfig(listeners = UITabPane.SelectTabActionListener.class) })
+    events = { @EventConfig(listeners = UISpaceSetting.SelectTabActionListener.class) })
   })
-public class UISpaceSetting extends UIContainer {
+public class UISpaceSetting extends UITabPane {
 
   private Space space;
 
@@ -165,7 +163,7 @@ public class UISpaceSetting extends UIContainer {
    * When selecting tabs, deactivates application add popup from application tab
    * @author hoatle
    */
-  static public class SelectTabActionListener extends EventListener<UITabPane> {
+  static public class SelectTabActionListener extends UITabPane.SelectTabActionListener {
     public void execute(Event<UITabPane> event) throws Exception {
       UITabPane uiTabPane = event.getSource();
       WebuiRequestContext context = event.getRequestContext();
@@ -176,7 +174,6 @@ public class UISpaceSetting extends UIContainer {
       //The content must have to refresh.
       if (renderTab.equals(UISpaceNavigationManagement.class.getSimpleName())) {
         UISpaceNavigationManagement uiSpaceNavigation = uiTabPane.getChild(UISpaceNavigationManagement.class);
-        uiSpaceNavigation.reloadTreeData();
         UISpaceSetting uiSpaceSetting = (UISpaceSetting)uiTabPane.getParent();
         uiSpaceNavigation.setSpace(uiSpaceSetting.getSpace());
         event.getRequestContext().addUIComponentToUpdateByAjax(uiSpaceNavigation);

@@ -40,6 +40,7 @@ import org.exoplatform.webui.config.annotation.EventConfig;
 import org.exoplatform.webui.core.UIPageIterator;
 import org.exoplatform.webui.core.UIPopupContainer;
 import org.exoplatform.webui.core.UIPopupWindow;
+import org.exoplatform.webui.core.UITabPane;
 import org.exoplatform.webui.core.lifecycle.UIFormLifecycle;
 import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.event.Event.Phase;
@@ -306,6 +307,8 @@ public class UISpaceApplication extends UIForm {
         uiSpaceApplicationInstaller.setSpace(uiSpaceApp.space);
         context.addUIComponentToUpdateByAjax(uiPopup);
       }
+      
+      uiSpaceApp.reloadSpaceNavigationTree();
       SpaceUtils.updateWorkingWorkSpace();
     }
   }
@@ -321,10 +324,21 @@ public class UISpaceApplication extends UIForm {
       uiSpaceApplication.setValue(uiSpaceApplication.space);
       UISpaceSetting uiSpaceSetting = uiSpaceApplication.getAncestorOfType(UISpaceSetting.class);
       uiSpaceSetting.setValues(uiSpaceApplication.space); 
+
+      uiSpaceApplication.reloadSpaceNavigationTree();
       SpaceUtils.updateWorkingWorkSpace();
     }
   }
 
+  public void reloadSpaceNavigationTree() throws Exception {
+    UITabPane uiTabPane = this.getAncestorOfType(UITabPane.class);
+    if (uiTabPane != null) {
+      UISpaceNavigationManagement uiSpaceNavigation = uiTabPane.getChild(UISpaceNavigationManagement.class);
+      if (uiSpaceNavigation != null)
+        uiSpaceNavigation.reloadTreeData();
+    }
+  }
+  
   /**
    * Checks if an application exists in list or not.
    *
