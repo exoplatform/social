@@ -74,11 +74,6 @@ public class UIProfileUserSearch extends UIForm {
   static final String RIGHT_INPUT_PATTERN = "^[\\p{L}][\\p{L}._\\- \\d]+$";
 
   /**
-   * REGEX EXPRESSION OF POSITION FIELD.
-   */
-  public static final String POSITION_REGEX_EXPRESSION = "^\\p{L}[\\p{L}\\d._,\\s]+\\p{L}$";
-
-  /**
    * ADD PREFIX TO ENSURE ALWAY RIGHT THE PATTERN FOR CHECKING
    */
   static final String PREFIX_ADDED_FOR_CHECK = "PrefixAddedForCheck";
@@ -460,9 +455,6 @@ public class UIProfileUserSearch extends UIForm {
     private boolean isValidInput(final ProfileFilter input) {
       // Check contact name
       String contactName = input.getName();
-      String position = input.getPosition();
-      String skills = input.getSkills();
-      String company = input.getCompany();
       
       // Eliminate '*' and '%' character in string for checking
       String contactNameForCheck = null;
@@ -474,38 +466,7 @@ public class UIProfileUserSearch extends UIForm {
           return false;
         }
       }
-      // Eliminate '*' and '%' character in string for checking
-      String positionForCheck = null;
-      if (contactName != null) {
-        positionForCheck = position.replaceAll("[/*%]", "").trim();
-        // Make sure string for checking is started by alphabet character
-        positionForCheck = PREFIX_ADDED_FOR_CHECK + positionForCheck;
-        if (!positionForCheck.matches(RIGHT_INPUT_PATTERN)) {
-          return false;
-        }
-      }
 
-      // Eliminate '*' and '%' character in string for checking
-      String skillsForCheck = null;
-      if (contactName != null) {
-        skillsForCheck = skills.replaceAll("[/*%]", "").trim();
-        // Make sure string for checking is started by alphabet character
-        skillsForCheck = PREFIX_ADDED_FOR_CHECK + skillsForCheck;
-        if (!skillsForCheck.matches(RIGHT_INPUT_PATTERN)) {
-          return false;
-        }
-      }
-      
-      // Eliminate '*' and '%' character in string for checking
-      String companyForCheck = null;
-      if (contactName != null) {
-        companyForCheck = company.replaceAll("[/*%]", "").trim();
-        // Make sure string for checking is started by alphabet character
-        companyForCheck = PREFIX_ADDED_FOR_CHECK + companyForCheck;
-        if (!companyForCheck.matches(RIGHT_INPUT_PATTERN)) {
-          return false;
-        }
-      }
       return true;
     }
   }

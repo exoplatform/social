@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.chromattic.api.ChromatticSession;
 import org.exoplatform.commons.chromattic.ChromatticManager;
 import org.exoplatform.commons.chromattic.Synchronization;
@@ -53,12 +54,12 @@ public class StorageUtils {
     //
     String inputName = profileFilter.getName().replace(ASTERISK_STR, PERCENT_STR);
     processUsernameSearchPattern(inputName.trim());
-    String position = addPositionSearchPattern(profileFilter.getPosition().trim()).replace(ASTERISK_STR, PERCENT_STR);
+    String position = addAsteriskToStringInput(StringEscapeUtils.escapeHtml(profileFilter.getPosition()).trim()).replace(ASTERISK_STR, PERCENT_STR);
     inputName = inputName.isEmpty() ? ASTERISK_STR : inputName;
     String nameForSearch = inputName.replace(ASTERISK_STR, SPACE_STR);
     char firstChar = profileFilter.getFirstCharacterOfName();
-    String skills = profileFilter.getSkills();
-    String company = profileFilter.getCompany();
+    String skills = addAsteriskToStringInput(StringEscapeUtils.escapeHtml(profileFilter.getSkills()).trim()).replace(ASTERISK_STR, PERCENT_STR);
+    String company = addAsteriskToStringInput(StringEscapeUtils.escapeHtml(profileFilter.getCompany()).trim()).replace(ASTERISK_STR, PERCENT_STR);
 
     //
     if (firstChar != '\u0000') {
@@ -181,12 +182,12 @@ public class StorageUtils {
     return userName;
   }
 
-  public static String addPositionSearchPattern(final String position) {
-    if (position.length() != 0) {
-      if (position.indexOf(ASTERISK_STR) == -1) {
-        return ASTERISK_STR + position + ASTERISK_STR;
+  public static String addAsteriskToStringInput(final String input) {
+    if (input.length() != 0) {
+      if (input.indexOf(ASTERISK_STR) == -1) {
+        return ASTERISK_STR + input + ASTERISK_STR;
       }
-      return position;
+      return input;
     }
     return EMPTY_STR;
   }
