@@ -122,8 +122,8 @@
 
 .uiUserActivitiesDisplay {
 	.composerHintCont {
-		background: #DFEBFF;
-	    border: 1px solid @primaryLighterColor;
+		background: @blueLight;
+	    border: 1px solid @blue;
 	    .border-radius(4px);
 	    margin: -20px 0 20px;
 	    padding: 10px 30px 10px 15px;
@@ -131,13 +131,23 @@
 	}
 
 	.composerHintCont .arrowLeft {
-		background: url("/social-resources/skin/images/Activity/composerHintArrow.png") no-repeat 0 0;
+	    border-bottom: 15px solid @blue;
+	    border-left: 15px solid transparent;
+	    border-right: 15px solid transparent;
+	    bottom: 100%;
 	    display: block;
-	    height: 18px;
 	    position: absolute;
 	    right: 24px;
-	    top: -18px;
-	    width: 34px;
+	    &:after {
+			border-bottom: 16px solid @blueLight;
+			border-left: 16px solid transparent;
+			border-right: 16px solid transparent;
+			content: "";
+			display: block;
+			left: -16px;
+			position: absolute;
+			top: 1px;
+	    }
 	}
 
 	.composerHintCont .iconBorder {
@@ -175,26 +185,39 @@
 
 .activityStreamStatus {
 	.border-radius(@baseBorderRadius);
-	background: #ededed;
+	background: @componentBackground;
 	border: 1px solid @borderColor;
 	padding: 5px 18px;
 	position: relative;
 	.arrowBottom {
-		position: absolute;
-		.size(16px,21px);
-		display:block;
-		background: url("/social-resources/skin/images/Activity/arrows.png")  0px 0px;
-		bottom: -16px;
-		left: 15px;
+	    border-left: 10px solid transparent;
+	    border-right: 10px solid transparent;
+	    border-top: 10px solid @borderColor;
+	    display: block;
+	    left: 15px;
+	    position: absolute;
+	    top: 100%;
+		&:after {
+		    border-left: 9px solid transparent;
+		    border-right: 9px solid transparent;
+		    border-top: 9px solid @componentBackground;
+		    bottom: 1px;
+		    content: "";
+		    display: block;
+		    left: -9px;
+		    position: absolute;
+		}
 	}
 }
 
 .uiUserActivitiesDisplay.notSeen {
 	.activityStreamStatus {
-		background: #d9d9d9;
-		border: 1px solid #b3b3b3;
+		background: @componentBackgroundHover;
+		border: 1px solid @borderColor;
 		.arrowBottom {
-			background: url("/social-resources/skin/images/Activity/arrows-active.png")  0px 0px;
+			&:after {
+				border-top-color: @componentBackgroundHover;
+			}
 		}
 	}
 }
@@ -725,7 +748,7 @@
 		    width: 290px;
 		}
 		.progressing {
-			color: #999999;
+			color: @grayLight;
 		    float: right;
 		    text-align: right;
 		    width: 100px;
