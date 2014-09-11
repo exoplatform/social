@@ -36,34 +36,43 @@
 					max-height: 42px;
 					overflow: hidden;
 					margin-top: 0;
-					margin-bottom: 5px;
+					margin-bottom: 3px;
 					font-size: (@baseFontSize + 3);
-					.subTxt {
-						font-size: @baseFontSize;
-						font-weight: normal;
-					}
 				}
-				.email a {
+				.ellipsis {
+				/* Truncate text in the case the value's length over that it's expecting length,
+				*  then append '...' dots at the end of text to show.
+				*/
+
+					white-space: nowrap;
+					display: block;
+					width: 100%;
 					overflow: hidden;
 					text-overflow: ellipsis;
+				}
+				.email a {
 					font-size: (@baseFontSize - 1);
 				}
 				.content {
-					margin-top: 5px;
-					line-height: 18px;
+					margin-top: 3px;
+					line-height: 16px;
 					max-height: 55px;
 					overflow: hidden;
 				}
 			}
 			.connectionBtn {
 				line-height: 28px;
-    			.statusLabel {
-    				text-align: right;
-    				margin-top: -30px;
-    				display: block;
-    			}
+				min-height: 29px;
+  			.statusLabel {
+  				text-align: right;
+  				margin-top: -25px;
+  				line-height: 25px;
+				min-height: 24px;
+  				display: block;
+  				font-size: @baseFontSize;
+  			}
 				.btn {
-					margin: 5px 0 0 10px;
+					margin: 1px 0 0 10px;
 				}
 			}
 		}

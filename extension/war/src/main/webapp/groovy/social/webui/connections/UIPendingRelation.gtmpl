@@ -116,7 +116,7 @@
       <%}%>
       
       <div class="itemList userList clearfix">
-      <%	for(identity in list) {
+      <% for(identity in list) {
           def profileURL = LinkProvider.getUserProfileUri(identity.getRemoteId());
           def fullName = identity.profile.fullName;
           def ignoreAction = uicomponent.event("Ignore", identity.getId());
@@ -134,13 +134,13 @@
               <img src="$imageSource" alt="${fullName}" />
             </a>
   			    <div class="contentBox">
-              <h4 class="spaceTitle"><a href="${profileURL}">${fullName}</a></h4>         
-	                <% if(position.length() > 0) { %>
-	                <div class="position">${position}</div>
-	                <%  } %>
-	                <% if(email.length() > 0) { %>
-	                <div class="email"><a href="mailto:${email}">${email}</a></div>
-	                <%  } %>
+              <h4 class="spaceTitle"><a class="limitText" data-key="title" data-line="2" href="${profileURL}">${fullName}</a></h4>         
+                <% if(position.length() > 0) { %>
+	                <div class="position ellipsis">${position}</div>
+                <% } %>
+                <% if(email.length() > 0) { %>
+	                <div class="email"><a class="ellipsis" href="mailto:${email}">${email}</a></div>
+                <% } %>
 			      </div>
 		       <% if (isEditable) {%>
 		       	<div class="connectionBtn clearfix">

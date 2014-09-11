@@ -95,7 +95,7 @@
 				</div>
 			  <div class="itemList spaceList clearfix">
 			    <%for (space in userSpaces) {
-			        def iconImgLabel = _ctx.appRes("${uicomponentId}.label.member_of_space");
+			        def statusLabel = _ctx.appRes("${uicomponentId}.label.member_of_space");
 			        def editSpaceAction = uicomponent.event("EditSpace", space.id) + "; return false";
 			        def deleteSpaceAction = uicomponent.event("DeleteSpace", space.id) + "; return false";
 			        def leaveSpaceAction = uicomponent.event("LeaveSpace", space.id) + "; return false";
@@ -122,26 +122,30 @@
 			        if (imageSource == null) {
 			          imageSource = LinkProvider.SPACE_DEFAULT_AVATAR_URL;
 			        }
-			        def spaceAvatarTitle = _ctx.appRes("${uicomponentId}.title.SpaceAvatar");
+			        def spaceName = space.displayName;
 			        mySpaceIdx += 1;
 			    %>
   			  <div class="itemContainer pull-left">
   			    <div class="checkedBox spaceBox">
 			      <!-- Leader -->
 			      <% if (role == 1) {
-			      	iconImgLabel = _ctx.appRes("${uicomponentId}.label.manager_of_space");
+			      	statusLabel = _ctx.appRes("${uicomponentId}.label.manager_of_space");
 			      %>
 			        <a href="<%= spaceUrl %>" class="avatarLarge pull-left">
-			          <img alt="$spaceAvatarTitle" src="$imageSource" />
+			          <img src="$imageSource" alt="$spaceName"/>
 			        </a>
 			        <div class="contentBox">
 			          <h4 class="spaceTitle">
-			            <a href="<%= spaceUrl %>"><%= Utils.trunc(space.displayName, 15)%></a>
-			            <span class="subTxt">($iconImgLabel)</span>
+			             <a class="limitText" data-key="title" data-line="2" href="<%=spaceUrl%>"><%=spaceName%></a>
 			          </h4>
-			          <div class="membersCount" >$fieldLabelMembers <%= SpaceUtils.countMembers(space) %></div>
-			          <div class="content">
-			            <%= Utils.trunc(space.description, 45)%><br/>
+			          <div class="membersCount" >$fieldLabelMembers <%=SpaceUtils.countMembers(space) %></div>
+			          <div class="content limitText" data-key="content" data-line="2">
+			            <% if (space.description != null && !space.description.isEmpty()) { 
+		                 print(space.description);
+		               } else { 
+		                 print(_ctx.appRes("${uicomponent.id}.msg.default_space_description"));
+		               }
+                 %>
 			          </div>
 		          </div>
 		          <div class="connectionBtn clearfix">
@@ -150,30 +154,32 @@
 						    <button type="button" class="btn pull-right" onclick="<%= leaveSpaceAction %>" style="display:block;">$labelActionLeaveSpace</button>
 								<% } %>
 								<button type="button" class="btn btn-primary pull-right" onclick="location.href='<%= editSpaceLink %>'">$labelActionEditSpace</button>
+                <span class="statusLabel">$statusLabel</span>
 			        </div>
 			      <% } else %>
 			      <!-- Member -->
 			      <%if (role == 2) {
 			      %>
-			        <a href="<%= spaceUrl %>" class="avatarLarge pull-left">
-			          <img rel="tooltip" data-placement="bottom" title="$spaceAvatarTitle" alt="$spaceAvatarTitle" src="$imageSource" />
+			        <a href="<%= spaceUrl %>" class="avatarLarge pull-left" rel="tooltip" data-placement="bottom" title="$spaceName">
+			          <img src="$imageSource"/>
 			        </a>
 			        <div class="contentBox">
 			          <h4 class="spaceTitle">
-			            <a href="<%= spaceUrl %>">$space.displayName</a> 
-			            <span class="subTxt">($iconImgLabel)</span>
+			            <a class="limitText" data-key="title" data-line="2" href="<%=spaceUrl%>"><%=spaceName%></a>
 			          </h4>
-			          <div class="membersCount" >$fieldLabelMembers <%= SpaceUtils.countMembers(space) %></div>
-			          <div class="content">
-                <% if (space.description != null && space.description.length() > 0) { %>
-                  $space.description<br/>
-                <% } else { %>
-                  <%=_ctx.appRes("${uicomponent.id}.msg.default_space_description") %>
-                <% } %>
+			          <div class="membersCount" >$fieldLabelMembers <%=SpaceUtils.countMembers(space)%></div>
+			          <div class="content limitText" data-key="content" data-line="2">
+                <% if (space.description != null && !space.description.isEmpty()) { 
+		                 print(space.description);
+		               } else { 
+		                 print(_ctx.appRes("${uicomponent.id}.msg.default_space_description"));
+		               }
+                 %>
 			          </div>
 			        </div>
     					<div class="connectionBtn clearfix">
     						<button type="button" class="btn pull-right" onclick="<%= leaveSpaceAction %>">$labelActionLeaveSpace</button>
+                <span class="statusLabel">$statusLabel</span>
     				  </div>
 			    <%}%>
   			    </div>

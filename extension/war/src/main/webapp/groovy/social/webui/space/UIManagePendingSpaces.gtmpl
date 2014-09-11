@@ -12,7 +12,7 @@
   def spacesFoundLabel = _ctx.appRes("${uicomponentId}.label.SpaceListing");
   def labelActionLeaveSpace = _ctx.appRes("${uicomponentId}.label.action_leave_space");
   def cancelInvitationActionLabel= _ctx.appRes("${uicomponentId}.label.cancel_invitation");
-  def iconImgLabel = _ctx.appRes("${uicomponentId}.label.request_pending");
+  def statusLabel = _ctx.appRes("${uicomponentId}.label.request_pending");
   def labelMembers = _ctx.appRes("${uicomponentId}.fieldLabel.members");
   def mySpaceIdx = 0;
   def style="display:none;";
@@ -98,30 +98,31 @@
 			        if (imageSource == null) {
 			          imageSource = LinkProvider.SPACE_DEFAULT_AVATAR_URL;
 			        }
-			        def spaceAvatarTitle = _ctx.appRes("${uicomponentId}.title.SpaceAvatar");
+			        def spaceName = space.displayName;
 			        mySpaceIdx += 1;
 			    %>
   			  <div class="itemContainer pull-left">
   			    <div class="spaceBox">
   			      <div class="avatarLarge pull-left">
-  			        <img alt="$spaceAvatarTitle" src="$imageSource" />
+  			        <img src="$imageSource" alt="$spaceName"/>
   			      </div>
   			      <div class="contentBox">
   			        <h4 class="spaceTitle">
-  			          <a class="Text" href="javascript:void(0)">$space.displayName</a> 
-  			          <span class="subTxt">($iconImgLabel)</span>
+  			          <a class="limitText" data-key="title" data-line="2" href="<%=spaceUrl%>"><%=spaceName%></a>
   			        </h4>
   			        <div class="membersCount">$fieldLabelMembers <%= SpaceUtils.countMembers(space) %></div>
-  			        <div class="content">
-                  <% if (space.description != null && space.description.length() > 0) { %>
-                    $space.description<br/>
-                  <% } else { %>
-                    <%=_ctx.appRes("${uicomponent.id}.msg.default_space_description") %>
-                  <% } %>
-  			        </div>
+  			        <div class="content limitText" data-key="content" data-line="2" >
+		            <% if (space.description != null && !space.description.isEmpty()) { 
+		                 print(space.description);
+		               } else { 
+		                 print(_ctx.appRes("${uicomponent.id}.msg.default_space_description"));
+		               }
+                %>
+  		          </div>
   			      </div>
   		        <div class="connectionBtn clearfix">
   			        <button type="button" class="btn pull-right" onclick="<%= revokeSpaceAction %>">$cancelInvitationActionLabel</button>
+                <span class="statusLabel">$statusLabel</span>
   		        </div>
   			    </div>
   		    </div>

@@ -60,18 +60,17 @@ public class UIUpdateRelationship extends UIContainer {
       
       String label = res.getString("UIAllPeople.label.Ignore");
       String action = uiAllPeople.event("Ignore", identity.getId());
-      String statusLabel = "", statusClass = "";
+      String statusLabel = "", statusClass = "", btClass = "";
       //
       Type status = (relationship != null) ? relationship.getStatus() : null;
       //
       if (status == null) {
         label = res.getString("UIAllPeople.label.Connect");
         action = uiAllPeople.event("Connect", identity.getId());
-
+        btClass = "btn-primary";
       } else if (status.equals(Type.PENDING)) {
         label = res.getString("UIAllPeople.label.CancelRequest");
         statusLabel = res.getString("UIAllPeople.label.InvitationSent");
-
       } else if (status == Type.CONFIRMED) {
         label = res.getString("UIAllPeople.label.RemoveConnection");
         statusClass = "checkedBox";
@@ -79,7 +78,8 @@ public class UIUpdateRelationship extends UIContainer {
       //
       writer.append("<div style=\"display:none\" data-action=\"").append(action).append("\" ")
             .append("data-status=\"").append(statusLabel).append("\" ")
-            .append("data-class=\"").append(statusClass).append("\">")
+            .append("data-class=\"").append(statusClass).append("\" ")
+            .append("data-bt-class=\"").append(btClass).append("\">")
             .append(label).append("</div>");
       //
       context.getJavascriptManager().getRequireJS().require("SHARED/socialUtil", "utils")

@@ -147,12 +147,12 @@ _ctx.getRequestContext().getJavascriptManager()
 							<img src="$imageSource" alt="${fullName}"/>
 						</a>
 						<div class="contentBox">
-						<h4 class="spaceTitle"><a href="${profileURL}">${fullName}</a></h4>
+						<h4 class="spaceTitle"><a class="limitText" data-key="title" data-line="2" href="${profileURL}">${fullName}</a></h4>
 						<% if(position.length() > 0) { %>
-							<div class="position">${position}</div>
+							<div class="position ellipsis">${position}</div>
 						<% } %>
 						<% if((email != null) && (email.length() > 0)) { %>
-							<div class="email"><a href="mailto:${email}">${email}</a></div>
+							<div class="email"><a class="ellipsis" href="mailto:${email}">${email}</a></div>
 						<% } %>
 						</div>
 						<div class="connectionBtn clearfix">
@@ -160,6 +160,7 @@ _ctx.getRequestContext().getJavascriptManager()
 							String label = _ctx.appRes("UIAllPeople.label.Ignore");
 							String action = uicomponent.event("Ignore",identity.getId());
 							String statusLabel = "";
+							String primary = "";
 							if(contactStatus == Relationship.Type.PENDING) {
 								if(relationship.isSender(identity)) {
 									statusLabel = _ctx.appRes("UIAllPeople.label.InvitationReceived");
@@ -172,9 +173,10 @@ _ctx.getRequestContext().getJavascriptManager()
 							} else if(contactStatus == null) {
 								label = _ctx.appRes("UIAllPeople.label.Connect");
 								action = uicomponent.event("Connect", identity.getId());
+								primary = "btn-primary";
 							}
 						%>
-							<button class="btn pull-right actionLabel" onclick="$action">$label</button>
+							<button class="btn $primary pull-right actionLabel" onclick="$action">$label</button>
 							<%
 								if (contactStatus == Relationship.Type.PENDING && relationship.isSender(identity)) {
 							%>

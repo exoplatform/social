@@ -101,7 +101,7 @@ import org.exoplatform.social.core.service.LinkProvider;
 		
 		    <%for (space in allSpaces) {
 		        def typeOfSpace = uicomponent.getTypeOfSpace(space);
-		        def iconImgLabel = null;
+		        String statusLabel = "";
 		        def deleteSpaceAction = uicomponent.event("DeleteSpace", space.id) + "; return false";
 		        def leaveSpaceAction = uicomponent.event("LeaveSpace", space.id) + "; return false";
 		        def acceptInvitationAction = uicomponent.event("AcceptInvitation", space.id) + "; return false";
@@ -118,39 +118,34 @@ import org.exoplatform.social.core.service.LinkProvider;
 		        
 		        if ("INVITED".equals(typeOfSpace.toString())) {
 		          // Action{Accept-Deny}, Icon {Clock}
-		          iconImgLabel = _ctx.appRes("${uicomponentId}.label.received_invitation_to_join_space");
+		          statusLabel = _ctx.appRes("${uicomponentId}.label.received_invitation_to_join_space");
 		        } else if ("SENT".equals(typeOfSpace.toString())) {
 		          // Action{Cancel}, Icon{Clock}
-		          iconImgLabel = _ctx.appRes("${uicomponentId}.label.request_pending");
+		          statusLabel = _ctx.appRes("${uicomponentId}.label.request_pending");
 		        } else if ("MEMBER".equals(typeOfSpace.toString())) {
 		          //  Action{Leave}, Icon{Link}
-		          iconImgLabel = _ctx.appRes("${uicomponentId}.label.member_of_space");
+		          statusLabel = _ctx.appRes("${uicomponentId}.label.member_of_space");
 		        } else if ("MANAGER".equals(typeOfSpace.toString())) {
 		          // Action{Edit-Leave-Delete}, Icon{Member}
-		          iconImgLabel = _ctx.appRes("${uicomponentId}.label.manager_of_space");
+		          statusLabel = _ctx.appRes("${uicomponentId}.label.manager_of_space");
 		        } else {
 		          // Action{Join}, Icon{None}
 		        }
+            
+            int maxLineDes = 2;
+            if(statusLabel.isEmpty()) {
+              maxLineDes = 3;
+            }
 		        
 		        //if (uicomponent.hasEditPermission(space)) hasEditPermission = true
 		        if (visibility.equals(Space.PUBLIC) || uicomponent.hasEditPermission(space)) isPublic = true;
 		        if (registration.equals(Space.CLOSE)) isClose = true;
 		        
-		        //Temporary use private as visible
-		        if (visibility.equals(Space.PRIVATE)) visibility = "visible";
-		        def status = visibleStatus + " ";
-		        if (registration.equals("open")) {
-		          status += openStatus;
-		        } else if (registration.equals("validation")) {
-		          status += validationStatus;
-		        } else {
-		          status += closeStatus;
-		        }
 		        def imageSource = uicomponent.getImageSource(space);
 		        if (imageSource == null) {
 		          imageSource = LinkProvider.SPACE_DEFAULT_AVATAR_URL;
 		        }
-		        def spaceAvatarTitle = _ctx.appRes("${uicomponentId}.title.SpaceAvatar");
+		        def spaceName = space.displayName;// _ctx.appRes("${uicomponentId}.title.SpaceAvatar");
 		        allSpaceIdx += 1;
 		        
 		        String checkedBox = ("MEMBER".equals(typeOfSpace.toString()) || "MANAGER".equals(typeOfSpace.toString())) ? "checkedBox" : "";
@@ -159,41 +154,39 @@ import org.exoplatform.social.core.service.LinkProvider;
 		      <div class="spaceBox $checkedBox">       
 	        <% if (isPublic) { %>
 	          <a href="$spaceUrl" class="avatarLarge pull-left">
-	            <img alt="$spaceAvatarTitle" src="$imageSource" />
+	            <img src="$imageSource" alt="$spaceName"/>
 	          </a>
 	        <%} else { %>
 	          <div class="avatarLarge pull-left">
-	             <img alt="$spaceAvatarTitle" src="$imageSource" />
+	             <img src="$imageSource" alt="$spaceName"/>
 	          </div>
 	        <%} %>
 		
 		        <div class="contentBox">
 		          <h4 class="spaceTitle">
-		            <a href="<%= spaceUrl %>"><%=Utils.trunc(space.displayName, 15) %></a>
-		            <% if (iconImgLabel) {%>
-		            	<span class="subTxt">($iconImgLabel)</span>
-		            <% } %>
+		            <a class="limitText" data-key="title" data-line="2" href="<%=spaceUrl%>"><%=spaceName%></a>
 		          </h4>
 		          <div class="membersCount">$fieldLabelMembers <%= SpaceUtils.countMembers(space) %></div>
-		          <div class="content">
-		            <% if (space.description != null && space.description.length() > 0) { %>
-		              <%=Utils.trunc(space.description, 45) %><br/>
-		            <% } else { %>
-		              <%=_ctx.appRes("${uicomponent.id}.msg.default_space_description") %>
-		            <% } %>
+		          <div class="content limitText" data-key="content" data-line="$maxLineDes">
+		            <% if (space.description != null && !space.description.isEmpty()) { 
+		                 print(space.description);
+		               } else { 
+		                 print(_ctx.appRes("${uicomponent.id}.msg.default_space_description"));
+		               }
+                 %>
 		          </div>
 		        </div>
 		        <div class="connectionBtn clearfix">
    		        <% if ("MANAGER".equals(typeOfSpace.toString())) {  %>
                   <button type="button" class="confirmPopup btn pull-right" data-onclick="<%= deleteSpaceAction %>" data-message="$deleteMessagePopup">$deleteSpaceLabel</button>
                   <button type="button" class="btn pull-right" onclick="<%= leaveSpaceAction %>">$leaveSpaceLabel</button>
-                  <button type="button" class="btn pull-right" onclick="location.href='<%= editSpaceLink %>'">$editSpaceLabel</button>                  
+                  <button type="button" class="btn btn-primary pull-right" onclick="location.href='<%= editSpaceLink %>'">$editSpaceLabel</button>                  
 		          <% } else if (uicomponent.isSuperUser(space)) { %>
 		              <button type="button" class="confirmPopup btn pull-right" data-onclick="<%= deleteSpaceAction %>" data-message="$deleteMessagePopup">$deleteSpaceLabel</button>
 		             <% if ("MEMBER".equals(typeOfSpace.toString())) { %>
                   <button type="button" class="btn pull-right" onclick="<%= leaveSpaceAction %>">$leaveSpaceLabel</button>
 		             <% } %>
-		              <button type="button" class="btn pull-right" onclick="location.href='<%= editSpaceLink %>'">$editSpaceLabel</button>
+		              <button type="button" class="btn btn-primary pull-right" onclick="location.href='<%= editSpaceLink %>'">$editSpaceLabel</button>
 		          <% } else if ("INVITED".equals(typeOfSpace.toString())) { %>
 		              <button type="button" class="btn pull-right" onclick="<%= ignoreInvitationAction %>">$ignoreInvitationLabel</button>
                   <button type="button" class="btn btn-primary pull-right" onclick="<%= acceptInvitationAction %>">$acceptInvitationLabel</button>
@@ -208,7 +201,9 @@ import org.exoplatform.social.core.service.LinkProvider;
                      <button type="button" class="btn btn-primary pull-right" onclick="<%= requestToJoinSpaceAction %>">$joinSpaceLabel</button>
               <%   } %>
               <% } %>
-		          
+                <% if (!statusLabel.isEmpty()) {%>
+                  <span class="statusLabel">$statusLabel</span>
+                <% } %>
 		        </div>
 		      </div>
 	      </div>
