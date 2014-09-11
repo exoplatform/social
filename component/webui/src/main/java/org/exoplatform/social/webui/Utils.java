@@ -18,6 +18,7 @@ package org.exoplatform.social.webui;
 
 import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
@@ -26,12 +27,18 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpUtils;
 
 import org.apache.commons.lang.ArrayUtils;
+import org.exoplatform.commons.utils.ExpressionUtil;
 import org.exoplatform.commons.utils.PropertyManager;
+import org.exoplatform.container.ExoContainer;
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.portal.application.PortalRequestContext;
 import org.exoplatform.portal.application.RequestNavigationData;
+import org.exoplatform.portal.config.UserPortalConfigService;
 import org.exoplatform.portal.mop.SiteType;
+import org.exoplatform.portal.mop.Described;
+import org.exoplatform.portal.mop.user.UserNavigation;
 import org.exoplatform.portal.mop.user.UserNode;
+import org.exoplatform.portal.mop.description.DescriptionService;
 import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.portal.webui.workspace.UIPortalApplication;
 import org.exoplatform.portal.webui.workspace.UIWorkingWorkspace;
@@ -778,5 +785,41 @@ public class Utils {
       }
       return null;
     }    
+  }
+  
+  /**
+   * Gets resolved application label by input user node.
+   * 
+   * @param userNode user node
+   * @return label value of input user node. null be returned in case of node has no label. 
+   * @since 4.1-RC1
+   */
+  
+  public static String getResolvedAppLabel (UserNode userNode) {
+    ExoContainer container = ExoContainerContext.getCurrentContainer();
+    UserPortalConfigService userPortalConfigService = (UserPortalConfigService)
+                                                  container.getComponentInstanceOfType(UserPortalConfigService.class);
+    if (userNode ==  null) {
+      return null;
+    }
+    
+    String id = userNode.getId();
+    String nodeLabel = userNode.getLabel();
+    
+    if (nodeLabel != null) {
+      UserNavigation navigation = userNode.getNavigation();
+      ResourceBundle bundle = navigation.getBundle();
+      return ExpressionUtil.getExpressionValue(bundle, nodeLabel);
+    } else if (id != null) {
+      Locale userLocale =  Util.getPortalRequestContext().getLocale();
+      Locale portalLocale = SpaceUtils.getUserPortal().getLocale();
+      DescriptionService descriptionService = userPortalConfigService.getDescriptionService();
+      Described.State description = descriptionService.resolveDescription(id, portalLocale, userLocale);
+      if (description != null) {
+        return description.getName();
+      }
+    }
+    
+    return null;
   }
 }

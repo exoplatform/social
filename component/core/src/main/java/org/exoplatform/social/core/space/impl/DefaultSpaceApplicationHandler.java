@@ -440,16 +440,10 @@ public class DefaultSpaceApplicationHandler implements SpaceApplicationHandler {
     } catch (Exception e) {
       LOG.warn(e.getMessage(), e);
     }
+   
     
-    
-    String label = SpaceUtils.getDisplayAppName(app.getDisplayName());
-    if (spaceApplication.getAppTitle() != null && !spaceApplication.getAppTitle().isEmpty()) {
-      label = spaceApplication.getAppTitle();
-    }
-
     if (isRoot) {
       pageName = space.getUrl();
-      label = space.getDisplayName();
     } else {
       if (spaceApplication.getUri() != null && !spaceApplication.getUri().isEmpty()) {
         pageName = spaceApplication.getUri();
@@ -457,7 +451,7 @@ public class DefaultSpaceApplicationHandler implements SpaceApplicationHandler {
       
     }
     NodeContext<NodeContext<?>> childNodeCtx = nodeCtx.add(null, pageName);
-    childNodeCtx.setState(new NodeState.Builder().label(label).icon(spaceApplication.getIcon()).pageRef(PageKey.parse(page.getPageId())).build());
+    childNodeCtx.setState(new NodeState.Builder().icon(spaceApplication.getIcon()).pageRef(PageKey.parse(page.getPageId())).build());
     return childNodeCtx;
   }
 
