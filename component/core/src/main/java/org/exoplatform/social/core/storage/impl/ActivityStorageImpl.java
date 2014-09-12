@@ -37,6 +37,8 @@ import javax.jcr.InvalidItemStateException;
 import javax.jcr.ItemExistsException;
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
+import javax.jcr.Property;
+import javax.jcr.PropertyIterator;
 import javax.jcr.RepositoryException;
 
 import org.apache.commons.lang.ArrayUtils;
@@ -287,12 +289,13 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
       return fillCommentFromEntity(activityEntity, activity);
     }
     
+    String posterIdentitiyId = activityEntity.getPosterIdentity().getId();
     activity.setId(activityEntity.getId());
     activity.setTitle(activityEntity.getTitle());
     activity.setTitleId(activityEntity.getTitleId());
     activity.setBody(activityEntity.getBody());
     activity.setBodyId(activityEntity.getBodyId());
-    activity.setUserId(activityEntity.getPosterIdentity().getId());
+    activity.setUserId(posterIdentitiyId);
     activity.setPostedTime(activityEntity.getPostedTime());
     activity.setUpdated(getLastUpdatedTime(activityEntity));
     activity.setType(activityEntity.getType());
@@ -301,7 +304,7 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     activity.setUrl(activityEntity.getUrl());
     activity.setPriority(activityEntity.getPriority());
     activity.isComment(isComment);
-    activity.setPosterId(activityEntity.getPosterIdentity().getId());
+    activity.setPosterId(posterIdentitiyId);
     
     //
     List<String> computeCommentid = new ArrayList<String>();
@@ -328,13 +331,7 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     }
     
     //
-    ActivityParameters params = activityEntity.getParams();
-    if (params != null) {
-      activity.setTemplateParams(new LinkedHashMap<String, String>(params.getParams()));
-    }
-    else {
-      activity.setTemplateParams(new HashMap<String, String>());
-    }
+    activity.setTemplateParams(getTemplateParamsFromEntity(activityEntity.getParams()));
     
     //
     LockableEntity lockable = _getMixin(activityEntity, LockableEntity.class, false);
@@ -356,6 +353,39 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     }
     
     return activity;
+  }
+  
+   
+  /**
+   * Get all property from the activity parameter node but ignore all property starts with "exo:" and "jcr:" 
+   * what are unnecessary to avoid the performance problem.
+   * 
+   * @param params then activity parameter entity
+   * @return
+   */
+  private Map<String, String> getTemplateParamsFromEntity(ActivityParameters params) {
+    if (params == null) 
+      return new HashMap<String, String>();
+    //
+    Map<String, String> result = new LinkedHashMap<String, String>();
+    ChromatticSessionImpl chromatticSession = (ChromatticSessionImpl) getSession();
+    Node node = chromatticSession.getNode(params);
+    try {
+      PropertyIterator iterator = node.getProperties();
+      while (iterator.hasNext()) {
+        Property property = iterator.nextProperty();
+        String propertyName = property.getName();
+        //ignore property starts with "exo:" and "jcr:"
+        if (! propertyName.startsWith(NS_EXO) && ! propertyName.startsWith(NS_JCR)) {
+          result.put(propertyName, property.getString());
+        }
+      }
+    }
+    catch (Exception e) {
+      LOG.debug("Failed to get template params from activity entity.");
+      new HashMap<String, String>();
+    }
+    return result;
   }
   
   private ExoSocialActivity fillCommentFromEntity(ActivityEntity activityEntity, ExoSocialActivity comment) {
@@ -418,35 +448,35 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     //
     ActivityStream stream = new ActivityStreamImpl();
     
-    IdentityEntity identityEntity = null;
+    IdentityEntity identityEntity = activityEntity.getIdentity();
 
     //update new stream owner
     try {
       String streamId = activity.getStreamId();
-      if (streamId.equals(activityEntity.getIdentity().getId())) {
-        identityEntity = activityEntity.getIdentity();
-      } else {
+      if (! streamId.equals(identityEntity.getId())) {
         IdentityEntity streamOwnerEntity = _findById(IdentityEntity.class, streamId);
         identityEntity = streamOwnerEntity;
         activityEntity.setIdentity(streamOwnerEntity);  
       }
     } catch (Exception e) {
-      identityEntity = activityEntity.getIdentity();
+      //do nothing
     }
+    String remoteId = identityEntity.getRemoteId();
+    String providerId = identityEntity.getProviderId();
     stream.setId(identityEntity.getId());
-    stream.setPrettyId(identityEntity.getRemoteId());
-    stream.setType(identityEntity.getProviderId());
+    stream.setPrettyId(remoteId);
+    stream.setType(providerId);
     
     //Identity identity = identityStorage.findIdentityById(identityEntity.getId());
-    if (identityEntity != null && SpaceIdentityProvider.NAME.equals(identityEntity.getProviderId())) {
-      Space space = spaceStorage.getSpaceByPrettyName(identityEntity.getRemoteId());
+    if (identityEntity != null && SpaceIdentityProvider.NAME.equals(providerId)) {
+      Space space = spaceStorage.getSpaceByPrettyName(remoteId);
       //work-around for SOC-2366 when rename space's display name.
       if (space != null) {
         String groupId = space.getGroupId().split("/")[2];
-        stream.setPermaLink(LinkProvider.getActivityUriForSpace(identityEntity.getRemoteId(), groupId));
+        stream.setPermaLink(LinkProvider.getActivityUriForSpace(remoteId, groupId));
       }
     } else {
-      stream.setPermaLink(LinkProvider.getActivityUri(identityEntity.getProviderId(), identityEntity.getRemoteId()));
+      stream.setPermaLink(LinkProvider.getActivityUri(providerId, remoteId));
     }
     //
     activity.setActivityStream(stream);

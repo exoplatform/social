@@ -49,6 +49,7 @@ public abstract class AbstractStorage {
 
   //
   protected static final String NS_JCR = "jcr:";
+  protected static final String NS_EXO = "exo:";
 
   //
   protected static final String NODETYPE_PROVIDERS = "soc:providers";
