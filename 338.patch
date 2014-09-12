@@ -1,0 +1,512 @@
+From fd0d43bb2ef1449e05e8a854aa355c0e96366ba5 Mon Sep 17 00:00:00 2001
+From: lneji <lneji@exoplatform.com>
+Date: Wed, 10 Sep 2014 14:07:02 +0100
+Subject: [PATCH 1/3] Add warning message when a file is already attached in
+ uiactivitycomposer
+
+---
+ .../social/webui/composer/UIActivityComposer.java           | 13 +++++++++++--
+ .../src/main/resources/locale/social/Webui_ar.properties    |  4 ++++
+ .../src/main/resources/locale/social/Webui_cs.properties    |  4 ++++
+ .../src/main/resources/locale/social/Webui_de.properties    |  4 ++++
+ .../src/main/resources/locale/social/Webui_el.properties    |  4 ++++
+ .../src/main/resources/locale/social/Webui_en.properties    |  4 ++++
+ .../src/main/resources/locale/social/Webui_es_ES.properties |  6 +++++-
+ .../src/main/resources/locale/social/Webui_fa.properties    |  4 ++++
+ .../src/main/resources/locale/social/Webui_fi.properties    |  4 ++++
+ .../src/main/resources/locale/social/Webui_fr.properties    |  4 ++++
+ .../src/main/resources/locale/social/Webui_it.properties    |  4 ++++
+ .../src/main/resources/locale/social/Webui_ja.properties    |  4 ++++
+ .../src/main/resources/locale/social/Webui_lt.properties    |  4 ++++
+ .../src/main/resources/locale/social/Webui_no.properties    |  4 ++++
+ .../src/main/resources/locale/social/Webui_pl.properties    |  4 ++++
+ .../src/main/resources/locale/social/Webui_pt_BR.properties |  4 ++++
+ .../src/main/resources/locale/social/Webui_ro.properties    |  4 ++++
+ .../src/main/resources/locale/social/Webui_ru.properties    |  4 ++++
+ .../src/main/resources/locale/social/Webui_sq.properties    |  4 ++++
+ .../src/main/resources/locale/social/Webui_sv_SE.properties |  4 ++++
+ .../src/main/resources/locale/social/Webui_tr.properties    |  4 ++++
+ .../src/main/resources/locale/social/Webui_uk.properties    |  4 ++++
+ .../src/main/resources/locale/social/Webui_vi.properties    |  4 ++++
+ .../src/main/resources/locale/social/Webui_zh_CN.properties |  4 ++++
+ .../src/main/resources/locale/social/Webui_zh_TW.properties |  4 ++++
+ .../webapp/groovy/social/webui/composer/UIComposer.gtmpl    |  2 +-
+ 26 files changed, 109 insertions(+), 4 deletions(-)
+
+diff --git a/component/webui/src/main/java/org/exoplatform/social/webui/composer/UIActivityComposer.java b/component/webui/src/main/java/org/exoplatform/social/webui/composer/UIActivityComposer.java
+index d36bac8..7815865 100755
+--- a/component/webui/src/main/java/org/exoplatform/social/webui/composer/UIActivityComposer.java
++++ b/component/webui/src/main/java/org/exoplatform/social/webui/composer/UIActivityComposer.java
+@@ -16,7 +16,9 @@
+  */
+ package org.exoplatform.social.webui.composer;
+ 
++import org.exoplatform.web.application.ApplicationMessage;
+ import org.exoplatform.webui.application.WebuiRequestContext;
++import org.exoplatform.webui.core.UIApplication;
+ import org.exoplatform.webui.core.UIComponent;
+ import org.exoplatform.webui.core.UIContainer;
+ import org.exoplatform.webui.event.Event;
+@@ -35,8 +37,10 @@
+ public abstract class UIActivityComposer extends UIContainer {
+   private static final String SELECT_DOCUMENT_ACTION = "SelectDocument";
+   private static final String UI_DOCUMENT_ACTIVITY_COMPOSER = "UIDocActivityComposer";
+-  
+-  private UIContainer activityDisplay;
++  private static final String FILE_ALREADY_ATTACHED = "UIActivityComposer.message.alreadyAttached";
++
++
++    private UIContainer activityDisplay;
+   private UIActivityComposerManager activityComposerManager;
+   private boolean isReady = false;
+   private boolean isDisplayed = false;
+@@ -120,6 +124,11 @@ public void execute(Event<UIActivityComposer> event) throws Exception {
+       final UIActivityComposer activityComposer = event.getSource();
+       final UIActivityComposerManager activityComposerManager = activityComposer.getActivityComposerManager();
+       activityComposerManager.setCurrentActivityComposer(activityComposer);
++      if ((activityComposer.getClass().getSimpleName().equals(UI_DOCUMENT_ACTIVITY_COMPOSER))&&(activityComposer.isDisplayed())) {
++        UIApplication uiApp = ctx.getUIApplication();
++        uiApp.addMessage(new ApplicationMessage(FILE_ALREADY_ATTACHED, null, ApplicationMessage.WARNING));
++        return;
++      }
+ 
+       activityComposer.onActivate(event);
+       activityComposer.setDisplayed(true);
+diff --git a/component/webui/src/main/resources/locale/social/Webui_ar.properties b/component/webui/src/main/resources/locale/social/Webui_ar.properties
+index 68ca30a..f2223fc 100644
+--- a/component/webui/src/main/resources/locale/social/Webui_ar.properties
++++ b/component/webui/src/main/resources/locale/social/Webui_ar.properties
+@@ -150,6 +150,10 @@ UIComposer.label.Share=\u0634\u0627\u0631\u0643
+ UIComposer.label.Mention=\u0625\u0634\u0627\u0631\u0629
+ UIComposer.label.ShareStatus=\u0645\u0634\u0627\u0631\u0643\u0629 \u0648\u0636\u0639\u064A
+ UIComposer.msg.error.Empty_Message=\u0627\u0644\u0631\u0633\u0627\u0644\u0629 \u0641\u0627\u0631\u063A.
++#####################################################################################
++#                                  UIActivityComposer                               #
++#####################################################################################
++UIActivityComposer.message.alreadyAttached=
+ 
+ #####################################################################################
+ #               dummy resource bundle to avoid warning on terminal                  #
+diff --git a/component/webui/src/main/resources/locale/social/Webui_cs.properties b/component/webui/src/main/resources/locale/social/Webui_cs.properties
+index a44b2d0..ba7dc42 100644
+--- a/component/webui/src/main/resources/locale/social/Webui_cs.properties
++++ b/component/webui/src/main/resources/locale/social/Webui_cs.properties
+@@ -150,6 +150,10 @@ UIComposer.label.Share=Sd\u00EDlet
+ UIComposer.label.Mention=Zm\u00EDnit
+ UIComposer.label.ShareStatus=Sd\u00EDlet m\u016Fj Status
+ UIComposer.msg.error.Empty_Message=Zpr\u00E1va je pr\u00E1zdn\u00E1.
++#####################################################################################
++#                                  UIActivityComposer                               #
++#####################################################################################
++UIActivityComposer.message.alreadyAttached=
+ 
+ #####################################################################################
+ #               dummy resource bundle to avoid warning on terminal                  #
+diff --git a/component/webui/src/main/resources/locale/social/Webui_de.properties b/component/webui/src/main/resources/locale/social/Webui_de.properties
+index df9e2a3..96e1e5a 100644
+--- a/component/webui/src/main/resources/locale/social/Webui_de.properties
++++ b/component/webui/src/main/resources/locale/social/Webui_de.properties
+@@ -150,6 +150,10 @@ UIComposer.label.Share=Teilen
+ UIComposer.label.Mention=Erw\u00E4hnung
+ UIComposer.label.ShareStatus=Meinen Status teilen
+ UIComposer.msg.error.Empty_Message=Die Nachricht ist leer.
++#####################################################################################
++#                                  UIActivityComposer                               #
++#####################################################################################
++UIActivityComposer.message.alreadyAttached=
+ 
+ #####################################################################################
+ #               dummy resource bundle to avoid warning on terminal                  #
+diff --git a/component/webui/src/main/resources/locale/social/Webui_el.properties b/component/webui/src/main/resources/locale/social/Webui_el.properties
+index 48c5bd7..32edd57 100644
+--- a/component/webui/src/main/resources/locale/social/Webui_el.properties
++++ b/component/webui/src/main/resources/locale/social/Webui_el.properties
+@@ -150,6 +150,10 @@ UIComposer.label.Share=\u039C\u03BF\u03B9\u03C1\u03B1\u03C3\u03C4\u03B5\u03AF\u0
+ UIComposer.label.Mention=\u0391\u03BD\u03B1\u03C6\u03BF\u03C1\u03AC
+ UIComposer.label.ShareStatus=\u039C\u03BF\u03B9\u03C1\u03B1\u03C3\u03C4\u03B5\u03AF\u03C4\u03B5 \u03C4\u03B7\u03BD \u03BA\u03B1\u03C4\u03AC\u03C3\u03C4\u03B1\u03C3\u03AE \u03C3\u03B1\u03C2
+ UIComposer.msg.error.Empty_Message=\u03A4\u03BF \u03BC\u03AE\u03BD\u03C5\u03BC\u03B1 \u03B5\u03AF\u03BD\u03B1\u03B9 \u03BA\u03B5\u03BD\u03CC.
++#####################################################################################
++#                                  UIActivityComposer                               #
++#####################################################################################
++UIActivityComposer.message.alreadyAttached=
+ 
+ #####################################################################################
+ #               dummy resource bundle to avoid warning on terminal                  #
+diff --git a/component/webui/src/main/resources/locale/social/Webui_en.properties b/component/webui/src/main/resources/locale/social/Webui_en.properties
+index 360d71b..0424eb1 100644
+--- a/component/webui/src/main/resources/locale/social/Webui_en.properties
++++ b/component/webui/src/main/resources/locale/social/Webui_en.properties
+@@ -150,6 +150,10 @@ UIComposer.label.Share=Share
+ UIComposer.label.Mention=Mention
+ UIComposer.label.ShareStatus=Share My Status
+ UIComposer.msg.error.Empty_Message=The message is empty.
++#####################################################################################
++#                                  UIActivityComposer                               #
++#####################################################################################
++UIActivityComposer.message.alreadyAttached=
+ 
+ #####################################################################################
+ #               dummy resource bundle to avoid warning on terminal                  #
+diff --git a/component/webui/src/main/resources/locale/social/Webui_es_ES.properties b/component/webui/src/main/resources/locale/social/Webui_es_ES.properties
+index af18484..a439e58 100644
+--- a/component/webui/src/main/resources/locale/social/Webui_es_ES.properties
++++ b/component/webui/src/main/resources/locale/social/Webui_es_ES.properties
+@@ -149,7 +149,11 @@ UIComposer.label.Add=A\u00F1adir
+ UIComposer.label.Share=Compartir
+ UIComposer.label.Mention=Menci\u00F3n
+ UIComposer.label.ShareStatus=Compartir mi estatus
+-UIComposer.msg.error.Empty_Message=El mensaje est\u00E1 vac\u00EDo.
++UIComposer.msg.error.Empty_Message=El mensaje est\u00E1 vac\u00EDo.
++#####################################################################################
++#                                  UIActivityComposer                               #
++#####################################################################################
++UIActivityComposer.message.alreadyAttached=
+ 
+ #####################################################################################
+ #               dummy resource bundle to avoid warning on terminal                  #
+diff --git a/component/webui/src/main/resources/locale/social/Webui_fa.properties b/component/webui/src/main/resources/locale/social/Webui_fa.properties
+index ec1824a..2880e43 100644
+--- a/component/webui/src/main/resources/locale/social/Webui_fa.properties
++++ b/component/webui/src/main/resources/locale/social/Webui_fa.properties
+@@ -150,6 +150,10 @@ UIComposer.label.Share=\u0627\u0634\u062A\u0631\u0627\u06A9
+ UIComposer.label.Mention=\u0630\u06A9\u0631
+ UIComposer.label.ShareStatus=\u0627\u0634\u062A\u0631\u0627\u06A9 \u06AF\u0630\u0627\u0631\u06CC \u0648\u0636\u0639\u06CC\u062A \u0645\u0646
+ UIComposer.msg.error.Empty_Message=\u067E\u06CC\u0627\u0645 \u062E\u0627\u0644\u06CC \u0627\u0633\u062A.
++#####################################################################################
++#                                  UIActivityComposer                               #
++#####################################################################################
++UIActivityComposer.message.alreadyAttached=
+ 
+ #####################################################################################
+ #               dummy resource bundle to avoid warning on terminal                  #
+diff --git a/component/webui/src/main/resources/locale/social/Webui_fi.properties b/component/webui/src/main/resources/locale/social/Webui_fi.properties
+index a90cc65..4f0663c 100644
+--- a/component/webui/src/main/resources/locale/social/Webui_fi.properties
++++ b/component/webui/src/main/resources/locale/social/Webui_fi.properties
+@@ -150,6 +150,10 @@ UIComposer.label.Share=Share
+ UIComposer.label.Mention=Mention
+ UIComposer.label.ShareStatus=Share My Status
+ UIComposer.msg.error.Empty_Message=The message is empty.
++#####################################################################################
++#                                  UIActivityComposer                               #
++#####################################################################################
++UIActivityComposer.message.alreadyAttached=
+ 
+ #####################################################################################
+ #               dummy resource bundle to avoid warning on terminal                  #
+diff --git a/component/webui/src/main/resources/locale/social/Webui_fr.properties b/component/webui/src/main/resources/locale/social/Webui_fr.properties
+index 7682987..e840913 100644
+--- a/component/webui/src/main/resources/locale/social/Webui_fr.properties
++++ b/component/webui/src/main/resources/locale/social/Webui_fr.properties
+@@ -150,6 +150,10 @@ UIComposer.label.Share=Partager
+ UIComposer.label.Mention=Mention
+ UIComposer.label.ShareStatus=Partager mon statut
+ UIComposer.msg.error.Empty_Message=Le message est vide.
++#####################################################################################
++#                                  UIActivityComposer                               #
++#####################################################################################
++UIActivityComposer.message.alreadyAttached=
+ 
+ #####################################################################################
+ #               dummy resource bundle to avoid warning on terminal                  #
+diff --git a/component/webui/src/main/resources/locale/social/Webui_it.properties b/component/webui/src/main/resources/locale/social/Webui_it.properties
+index 68579a1..d094e48 100644
+--- a/component/webui/src/main/resources/locale/social/Webui_it.properties
++++ b/component/webui/src/main/resources/locale/social/Webui_it.properties
+@@ -150,6 +150,10 @@ UIComposer.label.Share=Condividi
+ UIComposer.label.Mention=Menzione
+ UIComposer.label.ShareStatus=Condividi il mio Status
+ UIComposer.msg.error.Empty_Message=Il messaggio \u00E8 vuoto.
++#####################################################################################
++#                                  UIActivityComposer                               #
++#####################################################################################
++UIActivityComposer.message.alreadyAttached=
+ 
+ #####################################################################################
+ #               dummy resource bundle to avoid warning on terminal                  #
+diff --git a/component/webui/src/main/resources/locale/social/Webui_ja.properties b/component/webui/src/main/resources/locale/social/Webui_ja.properties
+index b64ce4f..50cbcfd 100644
+--- a/component/webui/src/main/resources/locale/social/Webui_ja.properties
++++ b/component/webui/src/main/resources/locale/social/Webui_ja.properties
+@@ -150,6 +150,10 @@ UIComposer.label.Share=\u5171\u6709
+ UIComposer.label.Mention=Mention
+ UIComposer.label.ShareStatus=\u81EA\u5206\u306E\u30B9\u30C6\u30FC\u30BF\u30B9\u3092\u5171\u6709\u3057\u307E\u3057\u3087\u3046\uFF01
+ UIComposer.msg.error.Empty_Message=\u30E1\u30C3\u30BB\u30FC\u30B8\u306F\u7A7A\u767D\u3067\u3059
++#####################################################################################
++#                                  UIActivityComposer                               #
++#####################################################################################
++UIActivityComposer.message.alreadyAttached=
+ 
+ #####################################################################################
+ #               dummy resource bundle to avoid warning on terminal                  #
+diff --git a/component/webui/src/main/resources/locale/social/Webui_lt.properties b/component/webui/src/main/resources/locale/social/Webui_lt.properties
+index 7a566b5..6a461e1 100644
+--- a/component/webui/src/main/resources/locale/social/Webui_lt.properties
++++ b/component/webui/src/main/resources/locale/social/Webui_lt.properties
+@@ -150,6 +150,10 @@ UIComposer.label.Share=Dalintis
+ UIComposer.label.Mention=Pamin\u0117ti
+ UIComposer.label.ShareStatus=Dalintis mano b\u016Bsena
+ UIComposer.msg.error.Empty_Message=\u0160is prane\u0161imas yra tu\u0161\u010Dias.
++#####################################################################################
++#                                  UIActivityComposer                               #
++#####################################################################################
++UIActivityComposer.message.alreadyAttached=
+ 
+ #####################################################################################
+ #               dummy resource bundle to avoid warning on terminal                  #
+diff --git a/component/webui/src/main/resources/locale/social/Webui_no.properties b/component/webui/src/main/resources/locale/social/Webui_no.properties
+index 6dc1a36..e6b8ec6 100644
+--- a/component/webui/src/main/resources/locale/social/Webui_no.properties
++++ b/component/webui/src/main/resources/locale/social/Webui_no.properties
+@@ -150,6 +150,10 @@ UIComposer.label.Share=Del
+ UIComposer.label.Mention=Omtal
+ UIComposer.label.ShareStatus=Dele min Status
+ UIComposer.msg.error.Empty_Message=Meldingen er tom.
++#####################################################################################
++#                                  UIActivityComposer                               #
++#####################################################################################
++UIActivityComposer.message.alreadyAttached=
+ 
+ #####################################################################################
+ #               dummy resource bundle to avoid warning on terminal                  #
+diff --git a/component/webui/src/main/resources/locale/social/Webui_pl.properties b/component/webui/src/main/resources/locale/social/Webui_pl.properties
+index 544c875..9f0c8fe 100644
+--- a/component/webui/src/main/resources/locale/social/Webui_pl.properties
++++ b/component/webui/src/main/resources/locale/social/Webui_pl.properties
+@@ -150,6 +150,10 @@ UIComposer.label.Share=Share
+ UIComposer.label.Mention=Mention
+ UIComposer.label.ShareStatus=Share My Status
+ UIComposer.msg.error.Empty_Message=The message is empty.
++#####################################################################################
++#                                  UIActivityComposer                               #
++#####################################################################################
++UIActivityComposer.message.alreadyAttached=
+ 
+ #####################################################################################
+ #               dummy resource bundle to avoid warning on terminal                  #
+diff --git a/component/webui/src/main/resources/locale/social/Webui_pt_BR.properties b/component/webui/src/main/resources/locale/social/Webui_pt_BR.properties
+index d9784c9..b587de5 100644
+--- a/component/webui/src/main/resources/locale/social/Webui_pt_BR.properties
++++ b/component/webui/src/main/resources/locale/social/Webui_pt_BR.properties
+@@ -150,6 +150,10 @@ UIComposer.label.Share=Compartilhar
+ UIComposer.label.Mention=Refer\u00EAncia
+ UIComposer.label.ShareStatus=Compartilhar meu status
+ UIComposer.msg.error.Empty_Message=A mensagem est\u00E1 vazia.
++#####################################################################################
++#                                  UIActivityComposer                               #
++#####################################################################################
++UIActivityComposer.message.alreadyAttached=
+ 
+ #####################################################################################
+ #               dummy resource bundle to avoid warning on terminal                  #
+diff --git a/component/webui/src/main/resources/locale/social/Webui_ro.properties b/component/webui/src/main/resources/locale/social/Webui_ro.properties
+index 3292c7b..c8e17f6 100644
+--- a/component/webui/src/main/resources/locale/social/Webui_ro.properties
++++ b/component/webui/src/main/resources/locale/social/Webui_ro.properties
+@@ -150,6 +150,10 @@ UIComposer.label.Share=Distribuie
+ UIComposer.label.Mention=Men\u021Biune
+ UIComposer.label.ShareStatus=Partajeaz\u0103 statusul meu
+ UIComposer.msg.error.Empty_Message=Mesajul este gol.
++#####################################################################################
++#                                  UIActivityComposer                               #
++#####################################################################################
++UIActivityComposer.message.alreadyAttached=
+ 
+ #####################################################################################
+ #               dummy resource bundle to avoid warning on terminal                  #
+diff --git a/component/webui/src/main/resources/locale/social/Webui_ru.properties b/component/webui/src/main/resources/locale/social/Webui_ru.properties
+index 982f3bd..af7aeee 100644
+--- a/component/webui/src/main/resources/locale/social/Webui_ru.properties
++++ b/component/webui/src/main/resources/locale/social/Webui_ru.properties
+@@ -150,6 +150,10 @@ UIComposer.label.Share=\u041F\u043E\u0434\u0435\u043B\u0438\u0442\u044C\u0441\u0
+ UIComposer.label.Mention=\u0423\u043F\u043E\u043C\u044F\u043D\u0443\u0442\u044C
+ UIComposer.label.ShareStatus=\u041F\u043E\u0434\u0435\u043B\u0438\u0442\u044C\u0441\u044F \u0441\u0442\u0430\u0442\u0443\u0441\u043E\u043C
+ UIComposer.msg.error.Empty_Message=\u0421\u043E\u043E\u0431\u0449\u0435\u043D\u0438\u0435 \u043F\u0443\u0441\u0442\u043E.
++#####################################################################################
++#                                  UIActivityComposer                               #
++#####################################################################################
++UIActivityComposer.message.alreadyAttached=
+ 
+ #####################################################################################
+ #               dummy resource bundle to avoid warning on terminal                  #
+diff --git a/component/webui/src/main/resources/locale/social/Webui_sq.properties b/component/webui/src/main/resources/locale/social/Webui_sq.properties
+index aac0347..c236cae 100644
+--- a/component/webui/src/main/resources/locale/social/Webui_sq.properties
++++ b/component/webui/src/main/resources/locale/social/Webui_sq.properties
+@@ -150,6 +150,10 @@ UIComposer.label.Share=crwdns6786303:0crwdne6786303:0
+ UIComposer.label.Mention=crwdns6786304:0crwdne6786304:0
+ UIComposer.label.ShareStatus=crwdns6786305:0crwdne6786305:0
+ UIComposer.msg.error.Empty_Message=crwdns6786306:0crwdne6786306:0
++#####################################################################################
++#                                  UIActivityComposer                               #
++#####################################################################################
++UIActivityComposer.message.alreadyAttached=
+ 
+ #####################################################################################
+ #               dummy resource bundle to avoid warning on terminal                  #
+diff --git a/component/webui/src/main/resources/locale/social/Webui_sv_SE.properties b/component/webui/src/main/resources/locale/social/Webui_sv_SE.properties
+index 5677c3c..e42968b 100644
+--- a/component/webui/src/main/resources/locale/social/Webui_sv_SE.properties
++++ b/component/webui/src/main/resources/locale/social/Webui_sv_SE.properties
+@@ -150,6 +150,10 @@ UIComposer.label.Share=Dela
+ UIComposer.label.Mention=N\u00E4mna
+ UIComposer.label.ShareStatus=Dela min Status
+ UIComposer.msg.error.Empty_Message=Meddelandet \u00E4r tomt.
++#####################################################################################
++#                                  UIActivityComposer                               #
++#####################################################################################
++UIActivityComposer.message.alreadyAttached=
+ 
+ #####################################################################################
+ #               dummy resource bundle to avoid warning on terminal                  #
+diff --git a/component/webui/src/main/resources/locale/social/Webui_tr.properties b/component/webui/src/main/resources/locale/social/Webui_tr.properties
+index c919019..4bc153b 100644
+--- a/component/webui/src/main/resources/locale/social/Webui_tr.properties
++++ b/component/webui/src/main/resources/locale/social/Webui_tr.properties
+@@ -150,6 +150,10 @@ UIComposer.label.Share=Payla\u015F
+ UIComposer.label.Mention=S\u00F6z
+ UIComposer.label.ShareStatus=Durumumu payla\u015F
+ UIComposer.msg.error.Empty_Message=Mesaj i\u00E7eri\u011Fi bo\u015F.
++#####################################################################################
++#                                  UIActivityComposer                               #
++#####################################################################################
++UIActivityComposer.message.alreadyAttached=
+ 
+ #####################################################################################
+ #               dummy resource bundle to avoid warning on terminal                  #
+diff --git a/component/webui/src/main/resources/locale/social/Webui_uk.properties b/component/webui/src/main/resources/locale/social/Webui_uk.properties
+index 9188b09..4782cb8 100644
+--- a/component/webui/src/main/resources/locale/social/Webui_uk.properties
++++ b/component/webui/src/main/resources/locale/social/Webui_uk.properties
+@@ -150,6 +150,10 @@ UIComposer.label.Share=\u041F\u043E\u0434\u0456\u043B\u0438\u0442\u0438\u0441\u0
+ UIComposer.label.Mention=\u041F\u043E\u0441\u0438\u043B\u0430\u0442\u0438\u0441\u044F
+ UIComposer.label.ShareStatus=\u041F\u043E\u0434\u0456\u043B\u0438\u0442\u0438\u0441\u044F  \u0441\u0442\u0430\u0442\u0443\u0441\u043E\u043C
+ UIComposer.msg.error.Empty_Message=\u041F\u043E\u0432\u0456\u0434\u043E\u043C\u043B\u0435\u043D\u043D\u044F \u043F\u043E\u0440\u043E\u0436\u043D\u0454.
++#####################################################################################
++#                                  UIActivityComposer                               #
++#####################################################################################
++UIActivityComposer.message.alreadyAttached=
+ 
+ #####################################################################################
+ #               dummy resource bundle to avoid warning on terminal                  #
+diff --git a/component/webui/src/main/resources/locale/social/Webui_vi.properties b/component/webui/src/main/resources/locale/social/Webui_vi.properties
+index 0744810..e4d29a8 100644
+--- a/component/webui/src/main/resources/locale/social/Webui_vi.properties
++++ b/component/webui/src/main/resources/locale/social/Webui_vi.properties
+@@ -150,6 +150,10 @@ UIComposer.label.Share=Chia s\u1EBB
+ UIComposer.label.Mention=Nh\u1EAFc \u0111\u1EBFn m\u1ED9t ng\u01B0\u1EDDi d\u00F9ng
+ UIComposer.label.ShareStatus=Chia s\u1EBB tr\u1EA1ng th\u00E1i
+ UIComposer.msg.error.Empty_Message=Th\u00F4ng b\u00E1o r\u1ED7ng.
++#####################################################################################
++#                                  UIActivityComposer                               #
++#####################################################################################
++UIActivityComposer.message.alreadyAttached=
+ 
+ #####################################################################################
+ #               dummy resource bundle to avoid warning on terminal                  #
+diff --git a/component/webui/src/main/resources/locale/social/Webui_zh_CN.properties b/component/webui/src/main/resources/locale/social/Webui_zh_CN.properties
+index a61675b..8726ee4 100644
+--- a/component/webui/src/main/resources/locale/social/Webui_zh_CN.properties
++++ b/component/webui/src/main/resources/locale/social/Webui_zh_CN.properties
+@@ -150,6 +150,10 @@ UIComposer.label.Share=\u5206\u4EAB
+ UIComposer.label.Mention=\u63D0\u53CA
+ UIComposer.label.ShareStatus=\u5171\u4EAB\u6211\u7684\u72B6\u6001
+ UIComposer.msg.error.Empty_Message=\u8BE5\u6D88\u606F\u662F\u7A7A\u7684\u3002
++#####################################################################################
++#                                  UIActivityComposer                               #
++#####################################################################################
++UIActivityComposer.message.alreadyAttached=
+ 
+ #####################################################################################
+ #               dummy resource bundle to avoid warning on terminal                  #
+diff --git a/component/webui/src/main/resources/locale/social/Webui_zh_TW.properties b/component/webui/src/main/resources/locale/social/Webui_zh_TW.properties
+index 19d1f56..88bbd0d 100644
+--- a/component/webui/src/main/resources/locale/social/Webui_zh_TW.properties
++++ b/component/webui/src/main/resources/locale/social/Webui_zh_TW.properties
+@@ -150,6 +150,10 @@ UIComposer.label.Share=\u5206\u4EAB
+ UIComposer.label.Mention=\u63D0\u5230
+ UIComposer.label.ShareStatus=\u5206\u4EAB\u6211\u7684\u72C0\u614B
+ UIComposer.msg.error.Empty_Message=\u8A0A\u606F\u662F\u7A7A\u7684\u3002
++#####################################################################################
++#                                  UIActivityComposer                               #
++#####################################################################################
++UIActivityComposer.message.alreadyAttached=
+ 
+ #####################################################################################
+ #               dummy resource bundle to avoid warning on terminal                  #
+diff --git a/extension/war/src/main/webapp/groovy/social/webui/composer/UIComposer.gtmpl b/extension/war/src/main/webapp/groovy/social/webui/composer/UIComposer.gtmpl
+index 93fb0c2..9003db6 100644
+--- a/extension/war/src/main/webapp/groovy/social/webui/composer/UIComposer.gtmpl
++++ b/extension/war/src/main/webapp/groovy/social/webui/composer/UIComposer.gtmpl
+@@ -104,7 +104,7 @@
+           labelSimpleName = _ctx.appRes("UIActivityComposer.label.${simpleName}");
+           clazz = simpleName.toLowerCase();
+ 
+-          String action = acComposer.event((acComposer.isDisplayed()) ? "Close" : "Activate") + "; UIComposer.setCurrentValue(this)";
++          String action = acComposer.event("Activate") + "; UIComposer.setCurrentValue(this)";
+           if(simpleName.equals("UILinkActivityComposer")) {
+             print("<a id=\"actionLink\" onclick=\"$action\"><span></span></a>");
+             action = "UIComposer.showLink()";
+
+From 76085532a59d95747335f4afeb84a727aa91e087 Mon Sep 17 00:00:00 2001
+From: lneji <lneji@exoplatform.com>
+Date: Wed, 10 Sep 2014 14:08:58 +0100
+Subject: [PATCH 2/3] Add warning message when a file is already attached in
+ uiactivitycomposer
+
+---
+ .../java/org/exoplatform/social/webui/composer/UIActivityComposer.java | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/component/webui/src/main/java/org/exoplatform/social/webui/composer/UIActivityComposer.java b/component/webui/src/main/java/org/exoplatform/social/webui/composer/UIActivityComposer.java
+index 7815865..9a4d3a9 100755
+--- a/component/webui/src/main/java/org/exoplatform/social/webui/composer/UIActivityComposer.java
++++ b/component/webui/src/main/java/org/exoplatform/social/webui/composer/UIActivityComposer.java
+@@ -39,8 +39,7 @@
+   private static final String UI_DOCUMENT_ACTIVITY_COMPOSER = "UIDocActivityComposer";
+   private static final String FILE_ALREADY_ATTACHED = "UIActivityComposer.message.alreadyAttached";
+ 
+-
+-    private UIContainer activityDisplay;
++  private UIContainer activityDisplay;
+   private UIActivityComposerManager activityComposerManager;
+   private boolean isReady = false;
+   private boolean isDisplayed = false;
+
+From 1deb7d378d155bb578b685693cda15c152c8bb39 Mon Sep 17 00:00:00 2001
+From: lneji <lneji@exoplatform.com>
+Date: Wed, 10 Sep 2014 14:13:22 +0100
+Subject: [PATCH 3/3] Add warning message when a file is already attached in
+ uiactivitycomposer
+
+---
+ component/webui/src/main/resources/locale/social/Webui_en.properties | 2 +-
+ component/webui/src/main/resources/locale/social/Webui_fr.properties | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/component/webui/src/main/resources/locale/social/Webui_en.properties b/component/webui/src/main/resources/locale/social/Webui_en.properties
+index 0424eb1..f2c5338 100644
+--- a/component/webui/src/main/resources/locale/social/Webui_en.properties
++++ b/component/webui/src/main/resources/locale/social/Webui_en.properties
+@@ -153,7 +153,7 @@ UIComposer.msg.error.Empty_Message=The message is empty.
+ #####################################################################################
+ #                                  UIActivityComposer                               #
+ #####################################################################################
+-UIActivityComposer.message.alreadyAttached=
++UIActivityComposer.message.alreadyAttached=You have already attached a file, to change this file please delete it first.
+ 
+ #####################################################################################
+ #               dummy resource bundle to avoid warning on terminal                  #
+diff --git a/component/webui/src/main/resources/locale/social/Webui_fr.properties b/component/webui/src/main/resources/locale/social/Webui_fr.properties
+index e840913..345e4b1 100644
+--- a/component/webui/src/main/resources/locale/social/Webui_fr.properties
++++ b/component/webui/src/main/resources/locale/social/Webui_fr.properties
+@@ -153,7 +153,7 @@ UIComposer.msg.error.Empty_Message=Le message est vide.
+ #####################################################################################
+ #                                  UIActivityComposer                               #
+ #####################################################################################
+-UIActivityComposer.message.alreadyAttached=
++UIActivityComposer.message.alreadyAttached=Vous avez d\u00E9ja t\u00E9l\u00E9charg\u00E9 un fichier, si vous voulez le modifier, supprimez le d'abord
+ 
+ #####################################################################################
+ #               dummy resource bundle to avoid warning on terminal                  #
