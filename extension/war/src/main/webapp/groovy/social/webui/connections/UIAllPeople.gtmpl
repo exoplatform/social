@@ -143,8 +143,8 @@ _ctx.getRequestContext().getJavascriptManager()
 				%>
 				<div class="itemContainer pull-left">
 					<div class="$checkbox spaceBox" id="identity${identity.getId()}">
-						<a href="${profileURL}" class="avatarXLarge pull-left" rel="tooltip" data-placement="bottom" title="${fullName}">
-							<img src="$imageSource" />
+						<a href="${profileURL}" class="avatarLarge pull-left">
+							<img src="$imageSource" alt="${fullName}"/>
 						</a>
 						<div class="contentBox">
 						<h4 class="spaceTitle"><a href="${profileURL}">${fullName}</a></h4>

@@ -75,8 +75,8 @@
         %>
         <div class="itemContainer pull-left">
           <div class="spaceBox $checkedBox">
-            <a class="avatarXLarge pull-left" rel="tooltip" data-placement="bottom" title="$userName">
-              <img class="ImgAvatar" src="$leaderImageSource"/>
+            <a href="${profileURL}" class="avatarLarge pull-left">
+              <img class="ImgAvatar" src="$leaderImageSource" alt="${userName}" />
             </a>
             <div class="contentBox">
               <h4 class="spaceTitle"><a href="${profileURL}" class="CommunityName InviteTitle">$userName</a></h4>
@@ -169,8 +169,8 @@
       %>
 	      <div class="itemContainer pull-left">
           <div class="spaceBox $checkedBox pull-left">
-            <a class="avatarXLarge pull-left" rel="tooltip" data-placement="bottom" title="$memberUserName">
-                <img src="$memberImageSource" alt="#"/>
+            <a class="avatarLarge pull-left" href="${profileURL}" >
+                <img src="$memberImageSource" alt="$memberUserName" />
             </a>
             <div class="contentBox">
                 <h4 class="spaceTitle">
