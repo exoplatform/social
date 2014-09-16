@@ -331,7 +331,7 @@
 					<div id="CommentBlock${activity.id}${commentCounter}" class="commentItem">
 				  <% } %>
 						<div class="commmentLeft">
-						  <a class="avatarXSmall" href="$commenterProfileUri" rel="tooltip" data-placement="bottom" title="$commenterFullName" >
+						  <a class="avatarXSmall" href="$commenterProfileUri">
 							<img alt="$commenterFullName" src="$commenterAvatarImgSrc" />
 						  </a>
 						</div><!--end commentLeft-->     
@@ -371,7 +371,7 @@
 					  <div class="commentItem commentFormBox" id="CommentFormBlock${activity.id}">
 					<% } %>
 						<div class="commmentLeft">
-							<a class="avatarXSmall" rel="tooltip" data-placement="bottom" title="$currentCommenterName" href="$currentCommenterUri">
+							<a class="avatarXSmall" href="$currentCommenterUri">
 								<img src="$currentCommenterAvatar" alt="$currentCommenterName"/>
 							</a>
 						</div><!--end commentLeft--> 
