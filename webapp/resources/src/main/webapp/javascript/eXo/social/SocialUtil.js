@@ -213,7 +213,7 @@
           identityBox.removeClass('checkedBox');
         }
       }
-      identityBox.find('button.btn-confirm:first').hide();
+      identityBox.find('button.btn-confirm:first').remove();
     },
     addOnResizeWidth : function(callback) {
       if (callback && String(typeof callback) === "function") {

@@ -393,7 +393,12 @@
                       var actionBtn = $(focusedUserBlock).find('div.connectionBtn');
                       
                       // invoke onclick()
-                      actionBtn.find('button.btn:first').click();
+                      var btn = actionBtn.find('button.btn-confirm:first');
+                      if(btn.length === 0) {
+                        actionBtn.find('button.btn:first').trigger('click');
+                      } else {
+                        btn.trigger('click');
+                      }
                       
                       // clear cache and hide popup
                       var popup = $(el).closest('#tiptip_holder');
