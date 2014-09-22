@@ -22,6 +22,7 @@
 %>
 <%
   import org.exoplatform.social.webui.Utils;
+  import org.apache.commons.lang.StringEscapeUtils;
 
 	def requireJS = _ctx.getRequestContext().getJavascriptManager().getRequireJS();
   if(uicomponent.id.equals("UIActivitiesLoader")) {
@@ -38,12 +39,12 @@
   def labelNotAnyUpdatesPostedYet = _ctx.appRes("UIActivitiesLoader.label.Not_Any_Updates_Posted_Yet");
   def labelLoadMore = _ctx.appRes("UIActivitiesLoader.label.Load_More");
 
-  def statusTitle = _ctx.appRes("UserProfilePopup.label.Loading");
-  def connectLabel = _ctx.appRes("UserProfilePopup.label.Connect");
-  def confirmLabel = _ctx.appRes("UserProfilePopup.label.Confirm");
-  def cancelRequestLabel = _ctx.appRes("UserProfilePopup.label.CancelRequest");
-  def removeConnectionLabel = _ctx.appRes("UserProfilePopup.label.RemoveConnection");
-  def ignoreLabel = _ctx.appRes("UserProfilePopup.label.Ignore");
+  def statusTitle = StringEscapeUtils.escapeJavaScript(_ctx.appRes("UserProfilePopup.label.Loading"));
+  def connectLabel = StringEscapeUtils.escapeJavaScript(_ctx.appRes("UserProfilePopup.label.Connect"));
+  def confirmLabel = StringEscapeUtils.escapeJavaScript(_ctx.appRes("UserProfilePopup.label.Confirm"));
+  def cancelRequestLabel = StringEscapeUtils.escapeJavaScript(_ctx.appRes("UserProfilePopup.label.CancelRequest"));
+  def removeConnectionLabel = StringEscapeUtils.escapeJavaScript(_ctx.appRes("UserProfilePopup.label.RemoveConnection"));
+  def ignoreLabel = StringEscapeUtils.escapeJavaScript(_ctx.appRes("UserProfilePopup.label.Ignore"));
   def uicomponentId = uicomponent.id;
   
 	def labels = """ {

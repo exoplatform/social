@@ -22,6 +22,7 @@
   import org.exoplatform.social.webui.URLUtils;
   import org.exoplatform.social.webui.Utils;
   import org.exoplatform.portal.application.PortalRequestContext;
+  import org.apache.commons.lang.StringEscapeUtils;
 
 	def uicomponentId = uicomponent.id;
 	
@@ -29,14 +30,14 @@
 	def jsmanager = rcontext.getJavascriptManager();
   
 
-  def searchActionLabel = _ctx.appRes("${uicomponentId}.label.Search");
-	def searchByNameLabel = _ctx.appRes("${uicomponentId}.label.SearchByName");
-	def nameDefaultVal = _ctx.appRes("${uicomponentId}.label.Name");
-	def searchByRoleLabel = _ctx.appRes("${uicomponentId}.label.SearchByRole");
-	def positionDefaultVal = _ctx.appRes("${uicomponentId}.label.Position");
-	def andOrLabel = _ctx.appRes("${uicomponentId}.label.AndOr");
-	def skillsDefaultVal = _ctx.appRes("${uicomponentId}.label.Skills");
-	def contactsDirectory = _ctx.appRes("${uicomponentId}.label.ContactDirectory");
+  def searchActionLabel = StringEscapeUtils.escapeJavaScript(_ctx.appRes("${uicomponentId}.label.Search"));
+	def searchByNameLabel = StringEscapeUtils.escapeJavaScript(_ctx.appRes("${uicomponentId}.label.SearchByName"));
+	def nameDefaultVal = StringEscapeUtils.escapeJavaScript(_ctx.appRes("${uicomponentId}.label.Name"));
+	def searchByRoleLabel = StringEscapeUtils.escapeJavaScript(_ctx.appRes("${uicomponentId}.label.SearchByRole"));
+	def positionDefaultVal = StringEscapeUtils.escapeJavaScript(_ctx.appRes("${uicomponentId}.label.Position"));
+	def andOrLabel = StringEscapeUtils.escapeJavaScript(_ctx.appRes("${uicomponentId}.label.AndOr"));
+	def skillsDefaultVal = StringEscapeUtils.escapeJavaScript(_ctx.appRes("${uicomponentId}.label.Skills"));
+	def contactsDirectory = StringEscapeUtils.escapeJavaScript(_ctx.appRes("${uicomponentId}.label.ContactDirectory"));
 	def searchId = "Search";
 	def positionId = "position";
 	def skillsId = "skills";
@@ -48,12 +49,12 @@
   def typeOfRelation = uicomponent.getTypeOfRelation();
   def spaceURL = uicomponent.getSpaceURL();
 	
-	def statusTitle = _ctx.appRes("UserProfilePopup.label.Loading");
-	def connectLabel = _ctx.appRes("UserProfilePopup.label.Connect");
-  def confirmLabel = _ctx.appRes("UserProfilePopup.label.Confirm");
-  def cancelRequestLabel = _ctx.appRes("UserProfilePopup.label.CancelRequest");
-  def removeConnectionLabel = _ctx.appRes("UserProfilePopup.label.RemoveConnection");
-  def ignoreLabel = _ctx.appRes("UserProfilePopup.label.Ignore");
+	def statusTitle = StringEscapeUtils.escapeJavaScript(_ctx.appRes("UserProfilePopup.label.Loading"));
+	def connectLabel = StringEscapeUtils.escapeJavaScript(_ctx.appRes("UserProfilePopup.label.Connect"));
+  def confirmLabel = StringEscapeUtils.escapeJavaScript(_ctx.appRes("UserProfilePopup.label.Confirm"));
+  def cancelRequestLabel = StringEscapeUtils.escapeJavaScript(_ctx.appRes("UserProfilePopup.label.CancelRequest"));
+  def removeConnectionLabel = StringEscapeUtils.escapeJavaScript(_ctx.appRes("UserProfilePopup.label.RemoveConnection"));
+  def ignoreLabel = StringEscapeUtils.escapeJavaScript(_ctx.appRes("UserProfilePopup.label.Ignore"));
   
 	def labels = """ {
 	  StatusTitle: '${statusTitle}',
