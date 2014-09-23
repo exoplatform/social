@@ -231,9 +231,6 @@
 	      
 	      this.attachButton.removeAttr('disabled');
 	      this.attachButton.on( 'click', function(evt) {
-	        if (inputLink.val() === '' || inputLink.val() === UIComposerLinkExtension.HTTP) {
-	          return;
-	        }
 	        var urlInput =  encodeURIComponent(encodeURI(inputLink.val()));
 	        var url = UIComposerLinkExtension.attachUrl.replace(/&amp;/g, "&") + '&objectId=' + urlInput + '&ajaxRequest=true';
 	        ajaxGet(url, function(){

@@ -160,6 +160,11 @@ public class UILinkActivityComposer extends UIActivityComposer {
       displayErrorMessage(requestContext, MSG_ERROR_INVALID_LINK);
       return;
     }
+
+    if (linkShare_.getLink().equals("")){
+      displayErrorMessage(requestContext, MSG_ERROR_INVALID_LINK);
+      return;
+    }
     
     templateParams = new LinkedHashMap<String, String>();
     templateParams.put(LINK_PARAM, linkShare_.getLink());
