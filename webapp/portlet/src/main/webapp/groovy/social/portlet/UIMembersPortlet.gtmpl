@@ -39,7 +39,7 @@ String position = adminName = "";
 String adminProfileURL = "#";
 String leaderIdx = memberIdx = 0;
 String adminImageSource = LinkProvider.PROFILE_DEFAULT_AVATAR_URL;
-String alphabets[] = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"];
+String []alphabets = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"];
 String contactsDirectory = _ctx.appRes("UIMembersPortlet.label.ContactsDirectory");
 String searchAll = _ctx.appRes("UIMembersPortlet.label.SearchAll");
 String selectedStartChar = uicomponent.getSelectedChar();
