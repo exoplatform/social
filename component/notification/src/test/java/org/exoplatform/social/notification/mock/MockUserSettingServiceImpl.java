@@ -28,6 +28,7 @@ public class MockUserSettingServiceImpl implements UserSettingService {
     return settings.get(userId);
   }
 
+
   @Override
   public List<String> getUserSettingByPlugin(String pluginId) {
     List<String> userIds = new ArrayList<String>();

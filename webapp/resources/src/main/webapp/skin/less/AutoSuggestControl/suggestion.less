@@ -1,17 +1,18 @@
 div.suggestions {
-  border: 1px solid #cdcdc1;
-  border-top: 1px solid #b7b7b7;
+  border: 1px solid @borderColor;
   position: absolute;
-  background: white; 
-  color: #3A3A3A;
+  background: white;
+  color: @textColor;
   max-height: 150px;
   overflow-y: auto;
   overflow-y: hidden;
   z-index: 1000;
+  .border-radius(@borderRadiusSmall);
 }
 
 div.suggestions div.resultItem.hover {
-  background-color: #E1E1E1;
+  background-color: @dropdownLinkBackgroundHover;
+  color: @dropdownBackground;
 }
 
 div.suggestions div.resultItem {
@@ -20,6 +21,12 @@ div.suggestions div.resultItem {
   position:relative;
   height:auto;
   cursor:pointer;
+  &:first-child{
+  	.border-top-radius(@borderRadiusSmall);
+  }
+  &:last-child{
+  	.border-bottom-radius(@borderRadiusSmall);
+  }
 }
 
 div.suggestions div.resultItem p {

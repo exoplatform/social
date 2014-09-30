@@ -17,8 +17,11 @@
 package org.exoplatform.social.core.manager;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
+import org.apache.commons.betwixt.expression.StringExpression;
+import org.apache.commons.lang.StringEscapeUtils;
 import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.services.organization.User;
 import org.exoplatform.services.organization.UserHandler;
@@ -595,6 +598,61 @@ public class IdentityManagerTest extends AbstractCoreTest {
       Identity[] identityArray = identityListAccess.load(0, 3);
       assertEquals(3, identityArray.length);
     }
+  }
+  
+  public void testGetIdentitiesWithSpecialCharacters() throws Exception {
+    Identity identity = new Identity(OrganizationIdentityProvider.NAME, "username1");
+    identityManager.saveIdentity(identity);
+    Profile profile = new Profile(identity);
+    profile.setProperty(Profile.USERNAME, "username1");
+    profile.setProperty(Profile.FIRST_NAME, "FirstName");
+    profile.setProperty(Profile.LAST_NAME, "LastName");
+    profile.setProperty(Profile.FULL_NAME, "FirstName LastName");
+    profile.setProperty(Profile.POSITION, StringEscapeUtils.escapeHtml("A&d"));
+    profile.setProperty(Profile.GENDER, "male");
+    identityManager.saveProfile(profile);
+    identity.setProfile(profile);
+    tearDownIdentityList.add(identity);
+    
+    ProfileFilter pf = new ProfileFilter();
+    pf.setPosition("A&d");
+    ListAccess<Identity> identityListAccess = identityManager.getIdentitiesByProfileFilter(OrganizationIdentityProvider.NAME, pf, false);
+    assertEquals(1, identityListAccess.getSize());
+    assertEquals(1, identityListAccess.load(0, 10).length);
+    
+    profile.setProperty(Profile.POSITION, StringEscapeUtils.escapeHtml("!@#$%^&*()"));
+    identityManager.updateProfile(profile);
+    
+    pf.setPosition("!@#$%^&*()");
+    identityListAccess = identityManager.getIdentitiesByProfileFilter(OrganizationIdentityProvider.NAME, pf, false);
+    assertEquals(1, identityListAccess.getSize());
+    assertEquals(1, identityListAccess.load(0, 10).length);
+    
+    //
+    HashMap<String, Object> uiMap = new HashMap<String, Object>();
+    ArrayList<HashMap<String, Object>> experiences = new ArrayList<HashMap<String, Object>>();
+    uiMap.put(Profile.EXPERIENCES_SKILLS, StringEscapeUtils.escapeHtml("!@#$%^&*()"));
+    experiences.add(uiMap);
+    profile.setProperty(Profile.EXPERIENCES, experiences);
+    identityManager.updateProfile(profile);
+    
+    pf = new ProfileFilter();
+    pf.setSkills("!@#$%^&*()");
+    identityListAccess = identityManager.getIdentitiesByProfileFilter(OrganizationIdentityProvider.NAME, pf, false);
+    assertEquals(1, identityListAccess.getSize());
+    
+    //
+    uiMap = new HashMap<String, Object>();
+    experiences = new ArrayList<HashMap<String, Object>>();
+    uiMap.put(Profile.EXPERIENCES_SKILLS, StringEscapeUtils.escapeHtml("sale & marketing"));
+    experiences.add(uiMap);
+    profile.setProperty(Profile.EXPERIENCES, experiences);
+    identityManager.updateProfile(profile);
+    
+    pf = new ProfileFilter();
+    pf.setSkills("sale & marketing");
+    identityListAccess = identityManager.getIdentitiesByProfileFilter(OrganizationIdentityProvider.NAME, pf, false);
+    assertEquals(1, identityListAccess.getSize());
   }
   
   /**

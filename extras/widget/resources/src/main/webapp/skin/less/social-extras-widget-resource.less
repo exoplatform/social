@@ -1,22 +1,25 @@
+@import "variables.less";
+@import "mixins.less";
+//--------------------------------
 .exoSpacesContainer {
 	position: relative !important;
 	display: inline-block !important;
-	border: solid 1px #848484 !important;
+	border: solid 1px @gray !important;
 	border-radius: 3px !important;
 	padding: 2px !important;
 	margin: 0 !important;
-	background-color: #FFFFFF !important;
-	color: black !important;
+	background-color: @white !important;
+	color: @black !important;
 }
 
 .espInfoBox {
-	border: solid 2px #848484 !important;
+	border: solid 2px @gray !important;
 	position: absolute !important;
 	background-color: white !important;
 	padding: 5px !important;
 	margin: 0 !important;
 	a,a:visited {
-		color: black !important;
+		color: @black !important;
 	}
 }
 
@@ -24,7 +27,7 @@
 .exoSpacesLink {
 	background: url('../../img/icon.png') no-repeat 0 0 #FFF !important;
 	font-family: Lucida Sans Unicode !important;
-	color: black !important;
+	color: @black !important;
 	padding: 0 0 0 16px !important;
 	margin: 0 !important;
 }

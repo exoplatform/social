@@ -583,9 +583,21 @@ public class BaseUIActivity extends UIForm {
       if (Utils.getViewerIdentity().getId().equals(activityUserId)) {
         return true;
       }
+      Space space = null;
+      SpaceService spaceService = getApplicationComponent(SpaceService.class);
+      
       if (postContext == PostContext.SPACE) {
-        Space space = uiActivitiesContainer.getSpace();
-        SpaceService spaceService = getApplicationComponent(SpaceService.class);
+        space = uiActivitiesContainer.getSpace();
+        spaceService = getApplicationComponent(SpaceService.class);
+      } else {
+        Identity identityStreamOwner = Utils.getIdentityManager().getOrCreateIdentity(SpaceIdentityProvider.NAME, 
+            this.getActivity().getStreamOwner(), false);
+        if ( identityStreamOwner != null ) {
+          space = spaceService.getSpaceByPrettyName(identityStreamOwner.getRemoteId());        
+        }
+      }
+      
+      if (space != null) {
         return spaceService.isManager(space, Utils.getOwnerRemoteId());
       }
     } catch (Exception e) {
@@ -853,6 +865,13 @@ public class BaseUIActivity extends UIForm {
     } else {
       return false;
     }
+  }
+  
+  /**
+   * @return the identity of the current user who is commenting on the activity
+   */
+  public Identity getCommenterIdentity() {
+    return Utils.getViewerIdentity();
   }
   
   /**

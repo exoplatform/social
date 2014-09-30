@@ -94,6 +94,7 @@ public class MockNotificationService implements NotificationService {
     
   }
 
+
   @Override
   public void process(Collection<NotificationInfo> messages) throws Exception {
     for (NotificationInfo message : messages) {

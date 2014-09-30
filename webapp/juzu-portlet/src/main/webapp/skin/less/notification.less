@@ -1,4 +1,4 @@
-@import "variables.less"; 
+@import "variables.less";
 @import "mixins.less";
 
 .uiUserNotificationPortlet {
@@ -7,20 +7,21 @@
 		left: 60%;
 	    position: absolute;
 	    transform: translate(-50%);
+	    margin-top: -10px;
 	}
 	.uiGrid.table {
     tr {
     	label {
     		padding-left:20px;
     	}
-    }  
+    }
 	}
 }
 .uiNotificationSettings .uiSocTitleBar{
 	margin-bottom: 10px;
 }
 .uiNotificationSettings .uiSocTitleBar h4 {
-	color: #2F5E92;
+	color: @linkColor;
 	margin-bottom: 15px;
 }
 .uiNotificationSettings .uiCheckbox {

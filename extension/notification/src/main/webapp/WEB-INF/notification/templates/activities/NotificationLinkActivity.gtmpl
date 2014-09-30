@@ -3,66 +3,77 @@
   style="background-color: #ffffff; font-size: 13px; color: #333333; line-height: 18px;">
   <tbody>
     <tr>
-      <td align="left" bgcolor="#f9f9f9" style="background-color: #f9f9f9; padding: 0 20px; line-height: 16px; font-family: HelveticaNeue, Helvetica, Arial, sans-serif; color: #333333;">
-        $ACTIVITY_TITLE
-      </td>
-    </tr>
-    <tr>
-      <td align="left" bgcolor="#f9f9f9" style="background-color: #f9f9f9; line-height: 16px; font-family: HelveticaNeue, Helvetica, Arial, sans-serif; color: #333333; padding: 5px 0;">
-        <hr style="border-width: 1px 0 0; border-style: solid none none; border-color: #d8d8d8 transparent transparent; margin: 6px 0; padding: 0;">
-      </td>
-    </tr>
-    <tr>
       <td align="left" bgcolor="#f9f9f9"
-        style="background-color: #f9f9f9; padding: 0 20px 1px; line-height: 16px; font-family: HelveticaNeue, Helvetica, Arial, sans-serif; color: #333333;">
+        style="background-color: #f9f9f9; padding: 15px 0;">
         <table border="0" cellpadding="0" cellspacing="0" width="100%"
           bgcolor="#ffffff" align="center"
-          style="width: 100%; background-color: #ffffff; font-size: 13px; color: #333333; line-height: 18px;">
-          <tr>
-          <%
-            if (THUMBNAIL_URL != null && THUMBNAIL_URL.length() > 0) {
-          %>
-            <td align="left" valign="top" bgcolor="#f9f9f9" style="vertical-align: top; background-color: #f9f9f9; padding: 0 15px 0 0;">
-              <a href="$ACTIVITY_URL" style="display: block; position: relative; margin: 0; padding: 0; display: block; margin-top: 5px;">
-                <img style="max-width: 75px;" src="$THUMBNAIL_URL" alt="image" />
-                <%
-			            if (IS_EMBED_LINK) {
-			          %>
-                  <a href="$ACTIVITY_URL" style="white-space: nowrap; font-size: 13px; line-height: 20px; font-family: HelveticaNeue, Helvetica, Arial, sans-serif; text-decoration: none; color: #2F5E92;" >
-                    <span style="
-                      display: inline-block;
-                      vertical-align: 0px;
-                      border-top: 5px solid transparent;
-                      border-bottom: 5px solid transparent;
-                      border-left: 5px solid #5073a7; margin-right: 2px;
-                      
-                    "></span>
-                    <%=_ctx.appRes("LinkActivity.notification.label.WatchTheVideo")%>
-                  </a>
-							  <% } %>
-						  </a>
-            </td>
-          <%
-            }
-          %>
-            <td align="left" bgcolor="#f9f9f9" width="90%" align="top"
-              style="width: 90%; background-color: #f9f9f9; padding: 0 0; vertical-align: top;">
-              <a href="$LINK_URL" style="display: inline-block; color: #2f5e92; font-family: 'HelveticaNeue Bold', Helvetica, Arial, sans-serif; font-size: 13px; line-height: 18px; font-weight: bold; text-decoration: none; margin: 0 0 10px;">
-                $LINK_TITLE
-              </a>
-              <%
-                if (LINK_DESCRIPTION != null && LINK_DESCRIPTION.length() > 0) {
-              %>
-                <p style="margin: 0 0 15px; min-height: 36px;">$LINK_DESCRIPTION</p>
-              <%
-                }
-              %>
-              <p style="margin: 0; color: #333333;">
-                <%=_ctx.appRes("LinkActivity.notification.label.source")%>: <a style="color: #2f5e92; font-family: 'HelveticaNeue Bold', Helvetica, Arial, sans-serif; font-size: 13px; line-height: 18px; text-decoration: none; max-width: 205px; word-wrap: break-word;"
-                  href="$LINK_URL" target="">$LINK_URL</a>
-              </p>
-            </td>
-          </tr>
+          style="background-color: #ffffff; font-size: 13px; color: #333333; line-height: 18px;">
+          <tbody>
+            <tr>
+              <td align="left" bgcolor="#f9f9f9" style="background-color: #f9f9f9; padding: 0 20px 4px; line-height: 16px; font-family: HelveticaNeue, Helvetica, Arial, sans-serif; color: #333333;">
+                $ACTIVITY_TITLE
+              </td>
+            </tr>
+            <tr>
+              <td align="left" bgcolor="#f9f9f9" style="background-color: #f9f9f9; line-height: 16px; font-family: HelveticaNeue, Helvetica, Arial, sans-serif; color: #333333; padding: 5px 0;">
+                <hr style="border-width: 1px 0 0; border-style: solid none none; border-color: #d8d8d8 transparent transparent; margin: 6px 0; padding: 0;">
+              </td>
+            </tr>
+            <tr>
+              <td align="left" bgcolor="#f9f9f9"
+                style="background-color: #f9f9f9; padding: 0 20px 1px; line-height: 16px; font-family: HelveticaNeue, Helvetica, Arial, sans-serif; color: #333333;">
+                <table border="0" cellpadding="0" cellspacing="0" width="100%"
+                  bgcolor="#ffffff" align="center"
+                  style="width: 100%; background-color: #ffffff; font-size: 13px; color: #333333; line-height: 18px;">
+                  <tr>
+                  <%
+                    if (THUMBNAIL_URL != null && THUMBNAIL_URL.length() > 0) {
+                  %>
+                    <td align="left" valign="top" bgcolor="#f9f9f9" style="vertical-align: top; background-color: #f9f9f9; padding: 0 15px 0 0;">
+                      <a href="$ACTIVITY_URL" style="display: block; position: relative; margin: 0; padding: 0; display: block; margin-top: 5px;">
+                        <img style="max-width: 75px;" src="$THUMBNAIL_URL" alt="image" />
+                        <%
+                          if (IS_EMBED_LINK) {
+                        %>
+                          <a href="$ACTIVITY_URL" style="white-space: nowrap; font-size: 13px; line-height: 20px; font-family: HelveticaNeue, Helvetica, Arial, sans-serif; text-decoration: none; color: #2F5E92;" >
+                            <span style="
+                              display: inline-block;
+                              vertical-align: 0px;
+                              border-top: 5px solid transparent;
+                              border-bottom: 5px solid transparent;
+                              border-left: 5px solid #5073a7; margin-right: 2px;
+                              
+                            "></span>
+                            <%=_ctx.appRes("LinkActivity.notification.label.WatchTheVideo")%>
+                          </a>
+                        <% } %>
+                      </a>
+                    </td>
+                  <%
+                    }
+                  %>
+                    <td align="left" bgcolor="#f9f9f9" width="90%" align="top"
+                      style="width: 90%; background-color: #f9f9f9; padding: 0 0; vertical-align: top;">
+                      <a href="$LINK_URL" style="display: inline-block; color: #2f5e92; font-family: 'HelveticaNeue Bold', Helvetica, Arial, sans-serif; font-size: 13px; line-height: 18px; font-weight: bold; text-decoration: none; margin: 0 0 10px;">
+                        $LINK_TITLE
+                      </a>
+                      <%
+                        if (LINK_DESCRIPTION != null && LINK_DESCRIPTION.length() > 0) {
+                      %>
+                        <p style="margin: 0 0 15px; min-height: 36px;">$LINK_DESCRIPTION</p>
+                      <%
+                        }
+                      %>
+                      <p style="margin: 0; color: #333333;">
+                        <%=_ctx.appRes("LinkActivity.notification.label.source")%>: <a style="color: #2f5e92; font-family: 'HelveticaNeue Bold', Helvetica, Arial, sans-serif; font-size: 13px; line-height: 18px; text-decoration: none; max-width: 205px; word-wrap: break-word;"
+                          href="$LINK_URL" target="">$LINK_URL</a>
+                      </p>
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+          </tbody>
         </table>
       </td>
     </tr>

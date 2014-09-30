@@ -2,13 +2,13 @@
   position: relative;
   background: @white;
   .border-radius(4px);
-  textarea {
+  	textarea {
 	  display: none;
 	}
 	.autocomplete-menu {
 	  display: none;
 	  background: @white;
-	  border: 1px solid #b2b2b2;
+	  border: 1px solid @borderColor;
 	  position: absolute;
 	  left: 0;
 	  right: 0;
@@ -16,7 +16,6 @@
 	  margin-top: -2px;
 	   .border-radius(4px);
 	   .box-shadow(0 2px 5px rgba(0, 0, 0, 0.148438));
-	         
 	}
 }
 
@@ -39,9 +38,7 @@
 			margin-right: 10px;
 		}
 		&.active {
-			background-color: #517ABE;
-		    background-image: linear-gradient(to bottom, #628ACC, #3763AA);
-		    background-repeat: repeat-x;
+			background-color: @dropdownLinkBackgroundHover;
 			color: @white;
 		}
 		&.msg {
@@ -51,7 +48,7 @@
 		 strong {
 		  font-weight: bold;
 		}
-		
+
 	 }
 
 }
@@ -59,7 +56,7 @@
 	.mentions {
 	  display: none;
 	}
-	  	
+
 	.replaceTextArea {
 		margin:0;
 		width:auto;
@@ -70,34 +67,34 @@
 		overflow-y:auto;
 		word-wrap:break-word;
 		border-radius: 4px;
-		border: 1px solid #C7C7C7;
+		border: 1px solid @borderColor;
 		.box-shadow(~'0 2px 1px rgba(0, 0, 0, 0.075) inset');
 		color:@textColor;
 		font-size: @baseFontSize;
 		height: 28px;
 		padding: 5px 8px;
 		&:focus {
-			border-color: #94B0DF;
+			border-color: lighten(@primaryLighterColor, 13%);
 		   .box-shadow(~'0 1px 1px rgba(0, 0, 0, 0.075) inset, 0 0 5px rgba(29, 75, 159, 0.6)');
 		}
 		 > span {
-		  background: #e0e8f5;
+		  background: @blueLight;
 		  border-radius: 3px;
-		  color: #2f5e92;
-		  border: 1px solid #3f6fbb;
+		  color: @linkColor;
+		  border: 1px solid @blue;
 		  padding: 1px 5px;
 		  display: inline-block;
 		   i {
 			  margin-left: 6px;
 			  text-indent: -1000px;
 			}
-		  
+
 		}
-		
+
 	}
 }
 
-.activityStream  .exo-mentions .replaceTextArea { 
+.activityStream  .exo-mentions .replaceTextArea {
 	padding: 3px 5px;
 }
 
@@ -136,8 +133,8 @@
 		  position:static !important;
 		  cursor:pointer;
 		}
-		
-	
+
+
 }
 
 .activityStream .exo-mentions .placeholder {
