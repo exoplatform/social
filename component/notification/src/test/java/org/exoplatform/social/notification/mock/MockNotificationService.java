@@ -94,9 +94,6 @@ public class MockNotificationService implements NotificationService {
     
   }
 
-  @Override
-  public void digest(NotificationContext context) {
-  }
 
   @Override
   public void process(Collection<NotificationInfo> messages) throws Exception {
@@ -105,4 +102,8 @@ public class MockNotificationService implements NotificationService {
     }
   }
 
+  @Override
+  public void digest(NotificationContext context) throws Exception {
+    // TODO Auto-generated method stub
+  }
 }

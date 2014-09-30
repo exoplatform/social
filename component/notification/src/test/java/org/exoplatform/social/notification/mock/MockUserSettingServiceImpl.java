@@ -28,10 +28,6 @@ public class MockUserSettingServiceImpl implements UserSettingService {
     return settings.get(userId);
   }
 
-  @Override
-  public List<UserSetting> getDigestSettingForAllUser(NotificationContext context, int offset, int limit) {
-    return null;
-  }
 
   @Override
   public List<String> getUserSettingByPlugin(String pluginId) {
@@ -55,6 +51,12 @@ public class MockUserSettingServiceImpl implements UserSettingService {
   public void addMixin(User[] users) {
   }
 
+  @Override
+  public List<UserSetting> getDigestSettingForAllUser(NotificationContext context,
+                                                      int offset,
+                                                      int limit) {
+    return null;
+  }
 
   @Override
   public List<UserSetting> getDigestDefaultSettingForAllUser(int offset, int limit) {

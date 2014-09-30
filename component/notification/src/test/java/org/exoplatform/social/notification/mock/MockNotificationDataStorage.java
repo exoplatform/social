@@ -37,13 +37,14 @@ public class MockNotificationDataStorage implements NotificationDataStorage {
   }
 
   @Override
-  public Map<NotificationKey, List<NotificationInfo>> getByUser(NotificationContext context, UserSetting userSetting) {
-    return null;
+  public void removeMessageAfterSent() throws Exception {
+    
   }
 
   @Override
-  public void removeMessageAfterSent() throws Exception {
-    
+  public Map<NotificationKey, List<NotificationInfo>> getByUser(NotificationContext context,
+                                                                UserSetting userSetting) {
+    return null;
   }
 
 
