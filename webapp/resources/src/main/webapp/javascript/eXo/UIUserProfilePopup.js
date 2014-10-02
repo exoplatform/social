@@ -267,10 +267,11 @@
 							        var currentViewerId = portal.userName;
 							        var action = null;
 							        var labels = opts.labels;
+							        var isDeleted = json.deleted;
 							        
 							        tiptip_content.empty();
 							        
-							        if (currentViewerId != ownerUserId) {
+							        if (currentViewerId != ownerUserId && !isDeleted) {
 							    
 							            action = $('<div/>', {
 							                "class": "connect btn btn-primary",
@@ -367,7 +368,7 @@
                         popupContentContainer.append(blockquote);
                     }
 
-                    if (currentViewerId != ownerUserId) {
+                    if (currentViewerId != ownerUserId && !isDeleted) {
                         var divUIAction = $("<div/>", {
                             "class":"uiAction connectAction"
                         }).append(action);

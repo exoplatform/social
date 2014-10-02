@@ -338,6 +338,7 @@ public class PeopleRestService implements ResourceContainer{
       // public information
       peopleInfo.setFullName(identity.getProfile().getFullName());
       peopleInfo.setPosition(StringEscapeUtils.unescapeHtml(identity.getProfile().getPosition()));
+      peopleInfo.setDeleted(identity.isDeleted());
       Profile userProfile = identity.getProfile();
       String avatarURL = userProfile.getAvatarUrl();
       if (avatarURL == null) {
@@ -823,6 +824,7 @@ public class PeopleRestService implements ResourceContainer{
     private String relationshipType;
     private String fullName;
     private String position;
+    private Boolean isDeleted;
 
     
     public PeopleInfo() {
@@ -886,6 +888,14 @@ public class PeopleRestService implements ResourceContainer{
 
     public void setPosition(String position) {
       this.position = position;
+    }
+
+    public Boolean getDeleted() {
+          return isDeleted;
+    }
+
+    public void setDeleted(Boolean deleted) {
+          isDeleted = deleted;
     }
   }
   
