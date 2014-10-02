@@ -458,8 +458,8 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
         identityEntity = streamOwnerEntity;
         activityEntity.setIdentity(streamOwnerEntity);  
       }
-    } catch (Exception e) {
-      //do nothing
+    } catch (NodeNotFoundException nfe) {
+      LOG.debug("Could not get node by id: " + activity.getStreamId() + ". ", nfe);
     }
     String remoteId = identityEntity.getRemoteId();
     String providerId = identityEntity.getProviderId();
