@@ -840,7 +840,11 @@ public class UISpaceNavigationNodeSelector extends UIContainer {
                                                       null));
               return;
             } else {
-              spaceService.removeApplication(space.getId(), appName, appConfig[1]);
+              String parentNodeName = childNode.getParent().getName();
+              String rootNodeName = space.getPrettyName();
+              if (parentNodeName.equals(rootNodeName)) {
+                spaceService.removeApplication(space.getId(), appName, appConfig[1]);
+              }
               break;
             }
           }
