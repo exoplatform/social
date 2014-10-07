@@ -304,9 +304,9 @@
   </module>
 
   <module>
-    <name>iphonePlugin</name>
+    <name>switchButton</name>
     <script>
-      <path>/javascript/iphone/checkbox/iphone-style-checkboxes.js</path>
+      <path>/javascript/switch-button.js</path>
     </script>
     <depends>
       <module>jquery</module>
