@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.StringEscapeUtils;
 import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
@@ -2382,6 +2383,7 @@ public class SpaceServiceTest extends AbstractCoreTest {
     Space space1 = new Space();
     space1.setDisplayName("広いニーズ");
     space1.setPrettyName("広いニーズ");
+    space1.setDescription(StringEscapeUtils.escapeHtml("広いニーズに応えます。"));
     space1.setManagers(new String[]{"root"});
     space1.setMembers(new String[]{"root","mary"});
     space1.setType(DefaultSpaceApplicationHandler.NAME);
@@ -2410,6 +2412,9 @@ public class SpaceServiceTest extends AbstractCoreTest {
     tearDownSpaceList.add(space3);
     
     SpaceListAccess list = spaceService.getVisibleSpacesWithListAccess("root", new SpaceFilter("広いニーズ"));
+    assertEquals(1, list.getSize());
+    assertEquals(1, list.load(0, 10).length);
+    list = spaceService.getVisibleSpacesWithListAccess("root", new SpaceFilter("広いニーズに応えます。"));
     assertEquals(1, list.getSize());
     assertEquals(1, list.load(0, 10).length);
     list = spaceService.getVisibleSpacesWithListAccess("mary", new SpaceFilter("広いニーズ"));

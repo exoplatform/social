@@ -499,7 +499,7 @@ public class SpaceStorageImpl extends AbstractStorage implements SpaceStorage {
             .or()
             .like(whereExpression.callFunction(QueryFunction.LOWER, SpaceEntity.displayName), spaceNameSearchCondition)
             .or()
-            .like(whereExpression.callFunction(QueryFunction.LOWER, SpaceEntity.description), spaceNameSearchCondition);
+            .like(whereExpression.callFunction(QueryFunction.LOWER, SpaceEntity.description), StringEscapeUtils.escapeHtml(spaceNameSearchCondition));
         whereExpression.endGroup();
       }
     }
