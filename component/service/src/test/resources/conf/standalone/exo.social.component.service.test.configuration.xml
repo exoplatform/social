@@ -198,14 +198,12 @@
         <name>ws.rs.response.filter</name>
         <set-method>addPlugin</set-method>
         <type>org.exoplatform.services.rest.impl.ResponseFilterComponentPlugin</type>
-        <!--
         <init-params>
            <value-param>
-              <name>name</name>
-              <value>filter class</value>
+              <name>fields.response.filter</name>
+              <value>org.exoplatform.social.service.rest.FieldsResponseFilter</value>
            </value-param>
         </init-params>
-        -->
      </component-plugin>
   </external-component-plugins>
 

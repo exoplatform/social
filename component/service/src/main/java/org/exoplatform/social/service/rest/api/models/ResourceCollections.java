@@ -1,7 +1,12 @@
 package org.exoplatform.social.service.rest.api.models;
 
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
-public class ResourceCollections {
+
+public abstract class ResourceCollections {
 
   private int size;
   private int offset;
@@ -16,6 +21,8 @@ public class ResourceCollections {
   public ResourceCollections() {
   }
 
+  public abstract Object getCollectionByFields(List<String> returnedProperties);
+  
   /**
    * @return the size
    */
@@ -51,5 +58,20 @@ public class ResourceCollections {
    */
   public void setLimit(int limit) {
     this.limit = limit;
+  }
+  
+  public List<Map<String, Object>> extractInfo(List<String> returnedProperties, List<Map<String, Object>> elementInfos) {
+    List<Map<String, Object>> returnedInfos = new ArrayList<Map<String,Object>>();
+    for (Map<String, Object> elementInfo : elementInfos) {
+      Map<String, Object> map = new LinkedHashMap<String, Object>();
+      for (Map.Entry<String, Object> entry : elementInfo.entrySet()) {
+        if (returnedProperties.contains(entry.getKey())) {
+          map.put(entry.getKey(), entry.getValue());
+        }
+      }
+      returnedInfos.add(map);
+    }
+    
+    return returnedInfos;
   }
 }

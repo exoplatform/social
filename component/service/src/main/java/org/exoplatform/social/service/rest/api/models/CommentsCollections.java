@@ -42,4 +42,8 @@ public class CommentsCollections extends ResourceCollections {
     this.comments = comments;
   }
 
+  @Override
+  public Object getCollectionByFields(List<String> returnedProperties) {
+    return extractInfo(returnedProperties, getComments());
+  }
 }

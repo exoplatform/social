@@ -42,4 +42,8 @@ public class ActivitiesCollections extends ResourceCollections {
     this.activities = activities;
   }
 
+  @Override
+  public Object getCollectionByFields(List<String> returnedProperties) {
+    return extractInfo(returnedProperties, getActivities());
+  }
 }

@@ -25,5 +25,9 @@ public class SpaceMembershipsCollections extends ResourceCollections{
   public void setSpaceMemberships(List<Map<String, Object>> spaceMemberships) {
     this.spaceMemberships = spaceMemberships;
   }
-  
+
+  @Override
+  public Object getCollectionByFields(List<String> returnedProperties) {
+    return extractInfo(returnedProperties, getSpaceMemberships());
+  }
 }

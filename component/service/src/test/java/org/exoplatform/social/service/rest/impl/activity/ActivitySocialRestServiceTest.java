@@ -113,6 +113,42 @@ static private ActivitySocialRestServiceV1 activitySocialRestServiceV1;
     activityManager.deleteActivity(rootActivity);
   }
 
+  /*
+  public void testGetActivitiesWithFieldsLimited() throws Exception {
+    startSessionAs("root");
+    
+    relationshipManager.inviteToConnect(rootIdentity, demoIdentity);
+    relationshipManager.confirm(demoIdentity, rootIdentity);
+    
+    ExoSocialActivity rootActivity = new ExoSocialActivityImpl();
+    rootActivity.setTitle("root activity");
+    activityManager.saveActivityNoReturn(rootIdentity, rootActivity);
+    
+    ContainerResponse response = service("GET", "/v1/social/activities/" + rootActivity.getId() + "?fields=" + RestProperties.TITLE, "", null, null);
+    assertNotNull(response);
+    assertEquals(200, response.getStatus());
+    
+    Map<String, Object> entity = (Map<String, Object>)response.getEntity();
+//    assertEquals(1, entity.size());
+    assertEquals("root activity", entity.get(RestProperties.TITLE));
+    
+    //
+    ExoSocialActivity demoActivity = new ExoSocialActivityImpl();
+    demoActivity.setTitle("demo activity");
+    activityManager.saveActivityNoReturn(demoIdentity, demoActivity);
+    
+    response = service("GET", "/v1/social/activities?limit=5&offset=0", "", null, null);
+    assertNotNull(response);
+    assertEquals(200, response.getStatus());
+    ActivitiesCollections collections = (ActivitiesCollections) response.getEntity();
+    Map<String, Object> result = collections.getActivities().get(1);
+    assertEquals("root activity", result.get(RestProperties.TITLE));
+    
+    activityManager.deleteActivity(demoActivity);
+    activityManager.deleteActivity(rootActivity);
+  }
+  */
+  
   public void testGetUpdatedDeletedActivityById() throws Exception {
     startSessionAs("root");
     

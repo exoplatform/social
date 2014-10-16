@@ -42,5 +42,8 @@ public class IdentitiesCollections extends ResourceCollections {
     this.identities = identities;
   }
 
-  
+  @Override
+  public Object getCollectionByFields(List<String> returnedProperties) {
+    return extractInfo(returnedProperties, getIdentities());
+  }
 }

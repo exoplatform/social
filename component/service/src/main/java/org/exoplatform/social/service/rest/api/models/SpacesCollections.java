@@ -41,5 +41,9 @@ public class SpacesCollections extends ResourceCollections {
   public void setSpaces(List<Map<String, Object>> spaces) {
     this.spaces = spaces;
   }
-  
+
+  @Override
+  public Object getCollectionByFields(List<String> returnedProperties) {
+    return extractInfo(returnedProperties, getSpaces());
+  }
 }

@@ -21,6 +21,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
 import org.exoplatform.social.service.rest.Util;
+import org.exoplatform.social.service.rest.api.models.IdentitiesCollections;
 import org.exoplatform.social.service.rest.api.models.ResourceCollections;
 
 import junit.framework.TestCase;
@@ -77,10 +78,8 @@ public class UtilTest extends TestCase {
    * Performs testing for {@link Util#buildLinkForHeader(Object, String)}
    */
   public void testBuildLinkForHeader() throws Exception {
-    ResourceCollections rc = new ResourceCollections();
-    rc.setSize(60);
-    rc.setLimit(20);
-    
+    IdentitiesCollections rc = new IdentitiesCollections(60, 0, 20);
+
     String requestPath = "https://localhost:8080/rest/private/v1/social/identities";
     
     //

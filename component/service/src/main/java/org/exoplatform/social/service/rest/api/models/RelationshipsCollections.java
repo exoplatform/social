@@ -40,5 +40,9 @@ public class RelationshipsCollections extends ResourceCollections {
   public void setRelationships(List<Map<String, Object>> relationships) {
     this.relationships = relationships;
   }
-  
+
+  @Override
+  public Object getCollectionByFields(List<String> returnedProperties) {
+    return extractInfo(returnedProperties, getRelationships());
+  }
 }

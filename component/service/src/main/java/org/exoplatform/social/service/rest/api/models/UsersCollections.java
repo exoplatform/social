@@ -42,4 +42,8 @@ public class UsersCollections extends ResourceCollections {
     this.users = users;
   }
 
+  @Override
+  public Object getCollectionByFields(List<String> returnedProperties) {
+    return extractInfo(returnedProperties, getUsers());
+  }
 }
