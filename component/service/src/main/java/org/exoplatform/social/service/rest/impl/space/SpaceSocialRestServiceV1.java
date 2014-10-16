@@ -74,11 +74,7 @@ public class SpaceSocialRestServiceV1 extends AbstractSocialRestService implemen
    */
   @GET
   public Response getSpaces(@Context UriInfo uriInfo,
-                             @QueryParam("q") String q,
-                             @QueryParam("offset") int offset,
-                             @QueryParam("limit") int limit,
-                             @QueryParam("returnSize") boolean returnSize,
-                             @QueryParam("fields") String fields) throws Exception {
+                             @QueryParam("q") String q) throws Exception {
     checkAuthenticatedRequest();
     //Check if no authenticated user
     String authenticatedUser = ConversationState.getCurrent().getIdentity().getUserId();
@@ -87,13 +83,14 @@ public class SpaceSocialRestServiceV1 extends AbstractSocialRestService implemen
     }
     
     List<String> returnedProperties = new ArrayList<String>();
+    String fields = getQueryValueFields(uriInfo);
     if (fields != null && fields.length() > 0) {
       returnedProperties.addAll(Arrays.asList(fields.split(",")));
     }
     
     SpaceService spaceService = CommonsUtils.getService(SpaceService.class);
-    limit = limit <= 0 ? RestUtils.DEFAULT_LIMIT : Math.min(RestUtils.HARD_LIMIT, limit);
-    offset = offset < 0 ? RestUtils.DEFAULT_OFFSET : offset;
+    int limit = getQueryValueLimit(uriInfo);
+    int offset = getQueryValueOffset(uriInfo);
     
     List<Map<String, Object>> spaceInfos = new ArrayList<Map<String, Object>>();
     ListAccess<Space> listAccess = null;
@@ -108,12 +105,12 @@ public class SpaceSocialRestServiceV1 extends AbstractSocialRestService implemen
       listAccess = spaceService.getAccessibleSpacesByFilter(authenticatedUser, spaceFilter);
     }
     for (Space space : listAccess.load(offset, limit)) {
-      Map<String, Object> spaceInfo = RestUtils.buildEntityFromSpace(space, authenticatedUser, uriInfo.getPath());
+      Map<String, Object> spaceInfo = RestUtils.buildEntityFromSpace(space, authenticatedUser, uriInfo.getPath(), getQueryValueExpand(uriInfo));
       //
       spaceInfos.add(spaceInfo); 
     }
     
-    SpacesCollections spaces = new SpacesCollections(returnSize ? listAccess.getSize() : -1, offset, limit);
+    SpacesCollections spaces = new SpacesCollections(getQueryValueReturnSize(uriInfo) ? listAccess.getSize() : -1, offset, limit);
     spaces.setSpaces(spaceInfos);
     
     return Util.getResponse(spaces, uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
@@ -150,7 +147,7 @@ public class SpaceSocialRestServiceV1 extends AbstractSocialRestService implemen
     //
     spaceService.createSpace(space, authenticatedUser);
     
-    return Util.getResponse(RestUtils.buildEntityFromSpace(space, authenticatedUser, uriInfo.getPath()), uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
+    return Util.getResponse(RestUtils.buildEntityFromSpace(space, authenticatedUser, uriInfo.getPath(), getQueryValueExpand(uriInfo)), uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
   }
   
   /**
@@ -174,7 +171,7 @@ public class SpaceSocialRestServiceV1 extends AbstractSocialRestService implemen
     }
     
     
-    return Util.getResponse(RestUtils.buildEntityFromSpace(space, authenticatedUser, uriInfo.getPath()), uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
+    return Util.getResponse(RestUtils.buildEntityFromSpace(space, authenticatedUser, uriInfo.getPath(), getQueryValueExpand(uriInfo)), uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
   }
   
   /**
@@ -224,7 +221,7 @@ public class SpaceSocialRestServiceV1 extends AbstractSocialRestService implemen
       spaceService.updateSpace(space);
     }
     
-    return Util.getResponse(RestUtils.buildEntityFromSpace(space, authenticatedUser, uriInfo.getPath()), uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
+    return Util.getResponse(RestUtils.buildEntityFromSpace(space, authenticatedUser, uriInfo.getPath(), getQueryValueExpand(uriInfo)), uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
   }
   
   /**
@@ -249,7 +246,7 @@ public class SpaceSocialRestServiceV1 extends AbstractSocialRestService implemen
     
     spaceService.deleteSpace(space);
     
-    return Util.getResponse(RestUtils.buildEntityFromSpace(space, authenticatedUser, uriInfo.getPath()), uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
+    return Util.getResponse(RestUtils.buildEntityFromSpace(space, authenticatedUser, uriInfo.getPath(), getQueryValueExpand(uriInfo)), uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
   }
   
   /**
@@ -259,9 +256,7 @@ public class SpaceSocialRestServiceV1 extends AbstractSocialRestService implemen
   @Path("{id}/users")
   public Response getSpaceMembers(@Context UriInfo uriInfo,
                                    @PathParam("id") String id,
-                                   @QueryParam("role") String role,
-                                   @QueryParam("offset") int offset,
-                                   @QueryParam("limit") int limit) throws Exception {
+                                   @QueryParam("role") String role) throws Exception {
     checkAuthenticatedRequest();
     //Check if no authenticated user
     String authenticatedUser = ConversationState.getCurrent().getIdentity().getUserId();
@@ -275,8 +270,8 @@ public class SpaceSocialRestServiceV1 extends AbstractSocialRestService implemen
       throw new WebApplicationException(Response.Status.UNAUTHORIZED);
     }
     
-    limit = limit <= 0 ? RestUtils.DEFAULT_LIMIT : Math.min(RestUtils.HARD_LIMIT, limit);
-    offset = offset < 0 ? RestUtils.DEFAULT_OFFSET : offset;
+    int limit = getQueryValueLimit(uriInfo);
+    int offset = getQueryValueOffset(uriInfo);
     
     String[] users = (role != null && role.equals("manager")) ? space.getManagers() : space.getMembers();
     int size = users.length;
@@ -286,7 +281,7 @@ public class SpaceSocialRestServiceV1 extends AbstractSocialRestService implemen
     List<Map<String, Object>> profileInfos = new ArrayList<Map<String, Object>>();
     for (String user : users) {
       Identity identity = CommonsUtils.getService(IdentityManager.class).getOrCreateIdentity(OrganizationIdentityProvider.NAME, user, true);
-      Map<String, Object> profileInfo = RestUtils.buildEntityFromIdentity(identity, uriInfo.getPath());
+      Map<String, Object> profileInfo = RestUtils.buildEntityFromIdentity(identity, uriInfo.getPath(), getQueryValueExpand(uriInfo));
       //
       profileInfos.add(profileInfo);
     }
@@ -305,9 +300,7 @@ public class SpaceSocialRestServiceV1 extends AbstractSocialRestService implemen
   public Response getSpaceActivitiesById(@Context UriInfo uriInfo,
                                           @PathParam("id") String id,
                                           @QueryParam("after") Long after,
-                                          @QueryParam("before") Long before,
-                                          @QueryParam("offset") int offset,
-                                          @QueryParam("limit") int limit) throws Exception {
+                                          @QueryParam("before") Long before) throws Exception {
     checkAuthenticatedRequest();
     //Check if no authenticated user
     String authenticatedUser = ConversationState.getCurrent().getIdentity().getUserId();
@@ -320,6 +313,9 @@ public class SpaceSocialRestServiceV1 extends AbstractSocialRestService implemen
     if (space == null || ! spaceService.isMember(space, authenticatedUser)) {
       throw new WebApplicationException(Response.Status.UNAUTHORIZED);
     }
+    
+    int limit = getQueryValueLimit(uriInfo);
+    int offset = getQueryValueOffset(uriInfo);
     
     Identity spaceIdentity = CommonsUtils.getService(IdentityManager.class).getOrCreateIdentity(SpaceIdentityProvider.NAME, space.getPrettyName(), false);
     RealtimeListAccess<ExoSocialActivity> listAccess = CommonsUtils.getService(ActivityManager.class).getActivitiesOfSpaceWithListAccess(spaceIdentity);
@@ -339,7 +335,7 @@ public class SpaceSocialRestServiceV1 extends AbstractSocialRestService implemen
     as.put(RestProperties.ID, spaceIdentity.getRemoteId());
     //
     for (ExoSocialActivity activity : activities) {
-      Map<String, Object> activityInfo = RestUtils.buildEntityFromActivity(activity, uriInfo.getPath());
+      Map<String, Object> activityInfo = RestUtils.buildEntityFromActivity(activity, uriInfo.getPath(), getQueryValueExpand(uriInfo));
       activityInfo.put(RestProperties.ACTIVITY_STREAM, as);
       //
       activitiesInfo.add(activityInfo);
@@ -380,6 +376,6 @@ public class SpaceSocialRestServiceV1 extends AbstractSocialRestService implemen
     activity.setUserId(target.getId());
     CommonsUtils.getService(ActivityManager.class).saveActivityNoReturn(spaceIdentity, activity);
     
-    return Util.getResponse(RestUtils.buildEntityFromActivity(activity, uriInfo.getPath()), uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
+    return Util.getResponse(RestUtils.buildEntityFromActivity(activity, uriInfo.getPath(), getQueryValueExpand(uriInfo)), uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
   }
 }

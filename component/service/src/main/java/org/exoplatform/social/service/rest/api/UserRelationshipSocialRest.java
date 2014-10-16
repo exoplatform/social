@@ -19,18 +19,13 @@ public interface UserRelationshipSocialRest extends SocialRest {
    * @param uriInfo
    * @param status
    * @param user
-   * @param offset
-   * @param limit
    * @return
    * @throws Exception
    */
   @GET
   public abstract Response getUsersRelationships(@Context UriInfo uriInfo,
-      @QueryParam("status") String status, @QueryParam("user") String user,
-      @QueryParam("offset") int offset, @QueryParam("limit") int limit,
-      @QueryParam("returnSize") boolean returnSize,
-      @QueryParam("fields") String fields)
-      throws Exception;
+                                                   @QueryParam("status") String status,
+                                                   @QueryParam("user") String user) throws Exception;
 
   /**
    * @param uriInfo
@@ -41,8 +36,8 @@ public interface UserRelationshipSocialRest extends SocialRest {
    */
   @POST
   public abstract Response createUsersRelationships(@Context UriInfo uriInfo,
-      @QueryParam("status") String status, @QueryParam("user") String user)
-      throws Exception;
+                                                      @QueryParam("status") String status,
+                                                      @QueryParam("user") String user) throws Exception;
 
   /**
    * Get a relationship by id
@@ -55,7 +50,7 @@ public interface UserRelationshipSocialRest extends SocialRest {
   @GET
   @Path("{id}")
   public abstract Response getUsersRelationshipsById(@Context UriInfo uriInfo,
-      @PathParam("id") String id) throws Exception;
+                                                       @PathParam("id") String id) throws Exception;
 
   /**
    * Process to update a relationship by id
@@ -67,8 +62,8 @@ public interface UserRelationshipSocialRest extends SocialRest {
    */
   @PUT
   @Path("{id}")
-  public abstract Response updateUsersRelationshipsById(
-      @Context UriInfo uriInfo, @PathParam("id") String id) throws Exception;
+  public abstract Response updateUsersRelationshipsById(@Context UriInfo uriInfo,
+                                                          @PathParam("id") String id) throws Exception;
 
   /**
    * Process to delete a relationship by id
@@ -80,7 +75,7 @@ public interface UserRelationshipSocialRest extends SocialRest {
    */
   @DELETE
   @Path("{id}")
-  public abstract Response deleteUsersRelationshipsById(
-      @Context UriInfo uriInfo, @PathParam("id") String id) throws Exception;
+  public abstract Response deleteUsersRelationshipsById(@Context UriInfo uriInfo,
+                                                          @PathParam("id") String id) throws Exception;
 
 }

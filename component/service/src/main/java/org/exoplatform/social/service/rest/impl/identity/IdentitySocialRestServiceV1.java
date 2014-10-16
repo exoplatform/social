@@ -19,18 +19,15 @@ package org.exoplatform.social.service.rest.impl.identity;
 import static org.exoplatform.social.service.rest.RestChecker.checkAuthenticatedRequest;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
 import javax.ws.rs.DELETE;
-import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
@@ -60,19 +57,15 @@ public class IdentitySocialRestServiceV1 extends AbstractSocialRestService imple
    */
   @GET
   public Response getIdentities(@Context UriInfo uriInfo,
-                                 @QueryParam("type") String type,
-                                 @QueryParam("offset") int offset,
-                                 @QueryParam("limit") int limit,
-                                 @QueryParam("returnSize") boolean returnSize,
-                                 @QueryParam("fields") String fields) throws Exception {
+                                 @QueryParam("type") String type) throws Exception {
     checkAuthenticatedRequest();
     //Check if no authenticated user
     if (Util.isAnonymous()) {
       throw new WebApplicationException(Response.Status.UNAUTHORIZED);
     }
     
-    limit = limit <= 0 ? RestUtils.DEFAULT_LIMIT : limit;
-    offset = offset < 0 ? RestUtils.DEFAULT_OFFSET : offset;
+    int limit = getQueryValueLimit(uriInfo);
+    int offset = getQueryValueOffset(uriInfo);
     
     IdentityManager identityManager = CommonsUtils.getService(IdentityManager.class);
     String providerId = (type != null && type.equals("space")) ? SpaceIdentityProvider.NAME : OrganizationIdentityProvider.NAME;
@@ -81,7 +74,7 @@ public class IdentitySocialRestServiceV1 extends AbstractSocialRestService imple
     
     List<Map<String, Object>> identityInfos = new ArrayList<Map<String, Object>>();
     for (Identity identity : identities) {
-      Map<String, Object> profileInfo = RestUtils.buildEntityFromIdentity(identity, uriInfo.getPath());
+      Map<String, Object> profileInfo = RestUtils.buildEntityFromIdentity(identity, uriInfo.getPath(), getQueryValueExpand(uriInfo));
       profileInfo.put(RestProperties.REMOTE_ID, identity.getRemoteId());
       profileInfo.put(RestProperties.PROVIDER_ID, providerId);
       profileInfo.put(RestProperties.GLOBAL_ID, identity.getGlobalId());
@@ -89,7 +82,7 @@ public class IdentitySocialRestServiceV1 extends AbstractSocialRestService imple
       identityInfos.add(profileInfo);
     }
     
-    IdentitiesCollections collections = new IdentitiesCollections(returnSize ? listAccess.getSize() : -1, offset, limit);
+    IdentitiesCollections collections = new IdentitiesCollections(getQueryValueReturnSize(uriInfo) ? listAccess.getSize() : -1, offset, limit);
     collections.setIdentities(identityInfos);
     
     return Util.getResponse(collections, uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
@@ -119,7 +112,7 @@ public class IdentitySocialRestServiceV1 extends AbstractSocialRestService imple
       throw new WebApplicationException(Response.Status.FORBIDDEN);
     }
 
-    Map<String, Object> profileInfo = RestUtils.buildEntityFromIdentity(identity, uriInfo.getPath());
+    Map<String, Object> profileInfo = RestUtils.buildEntityFromIdentity(identity, uriInfo.getPath(), getQueryValueExpand(uriInfo));
     profileInfo.put(RestProperties.REMOTE_ID, identity.getRemoteId());
     profileInfo.put(RestProperties.PROVIDER_ID, providerId);
     profileInfo.put(RestProperties.GLOBAL_ID, identity.getGlobalId());
@@ -144,7 +137,7 @@ public class IdentitySocialRestServiceV1 extends AbstractSocialRestService imple
     IdentityManager identityManager = CommonsUtils.getService(IdentityManager.class);
     Identity identity = identityManager.getIdentity(id, true);
     
-    Map<String, Object> profileInfo = RestUtils.buildEntityFromIdentity(identity, uriInfo.getPath());
+    Map<String, Object> profileInfo = RestUtils.buildEntityFromIdentity(identity, uriInfo.getPath(), getQueryValueExpand(uriInfo));
     profileInfo.put(RestProperties.REMOTE_ID, identity.getRemoteId());
     profileInfo.put(RestProperties.PROVIDER_ID, identity.getProviderId());
     profileInfo.put(RestProperties.GLOBAL_ID, identity.getGlobalId());
@@ -174,7 +167,7 @@ public class IdentitySocialRestServiceV1 extends AbstractSocialRestService imple
     
     //TODO : process to update identity
     
-    Map<String, Object> profileInfo = RestUtils.buildEntityFromIdentity(identity, uriInfo.getPath());
+    Map<String, Object> profileInfo = RestUtils.buildEntityFromIdentity(identity, uriInfo.getPath(), getQueryValueExpand(uriInfo));
     profileInfo.put(RestProperties.REMOTE_ID, identity.getRemoteId());
     profileInfo.put(RestProperties.PROVIDER_ID, identity.getProviderId());
     profileInfo.put(RestProperties.GLOBAL_ID, identity.getGlobalId());
@@ -206,7 +199,7 @@ public class IdentitySocialRestServiceV1 extends AbstractSocialRestService imple
     identityManager.hardDeleteIdentity(identity);
     identity = identityManager.getIdentity(id, true);
     
-    Map<String, Object> profileInfo = RestUtils.buildEntityFromIdentity(identity, uriInfo.getPath());
+    Map<String, Object> profileInfo = RestUtils.buildEntityFromIdentity(identity, uriInfo.getPath(), getQueryValueExpand(uriInfo));
     profileInfo.put(RestProperties.REMOTE_ID, identity.getRemoteId());
     profileInfo.put(RestProperties.PROVIDER_ID, identity.getProviderId());
     profileInfo.put(RestProperties.GLOBAL_ID, identity.getGlobalId());
@@ -221,9 +214,7 @@ public class IdentitySocialRestServiceV1 extends AbstractSocialRestService imple
   @GET
   @Path("{id}/relationships")
   public Response getRelationshipsOfIdentity(@Context UriInfo uriInfo,
-                                              @PathParam("id") String id,
-                                              @QueryParam("offset") int offset,
-                                              @QueryParam("limit") int limit) throws Exception {
+                                              @PathParam("id") String id) throws Exception {
     checkAuthenticatedRequest();
     //Check if no authenticated user
     if (Util.isAnonymous()) {
@@ -236,7 +227,7 @@ public class IdentitySocialRestServiceV1 extends AbstractSocialRestService imple
       throw new WebApplicationException(Response.Status.NOT_FOUND);
     }
     
-    Map<String, Object> profileInfo = RestUtils.buildEntityFromIdentity(identity, uriInfo.getPath());
+    Map<String, Object> profileInfo = RestUtils.buildEntityFromIdentity(identity, uriInfo.getPath(), getQueryValueExpand(uriInfo));
     profileInfo.put(RestProperties.REMOTE_ID, identity.getRemoteId());
     profileInfo.put(RestProperties.PROVIDER_ID, identity.getProviderId());
     profileInfo.put(RestProperties.GLOBAL_ID, identity.getGlobalId());

@@ -81,7 +81,7 @@ public class ActivitySocialRestServiceV1 extends AbstractSocialRestService imple
     for (ExoSocialActivity activity : activities) {
       Map<String, String> as = RestUtils.getActivityStream(activity, currentUser);
       if (as == null) continue;
-      Map<String, Object> activityInfo = RestUtils.buildEntityFromActivity(activity, uriInfo.getPath());
+      Map<String, Object> activityInfo = RestUtils.buildEntityFromActivity(activity, uriInfo.getPath(), getQueryValueExpand(uriInfo));
       activityInfo.put(RestProperties.ACTIVITY_STREAM, as);
       //
       activitiesInfo.add(activityInfo); 
@@ -116,7 +116,7 @@ public class ActivitySocialRestServiceV1 extends AbstractSocialRestService imple
     if (as == null) { //current user doesn't have permission to view activity
       throw new WebApplicationException(Response.Status.UNAUTHORIZED);
     }
-    Map<String, Object> activityInfo = RestUtils.buildEntityFromActivity(activity, uriInfo.getPath());
+    Map<String, Object> activityInfo = RestUtils.buildEntityFromActivity(activity, uriInfo.getPath(), getQueryValueExpand(uriInfo));
     if (! activity.isComment()) {
       activityInfo.put(RestProperties.ACTIVITY_STREAM, as);
     }
@@ -149,7 +149,7 @@ public class ActivitySocialRestServiceV1 extends AbstractSocialRestService imple
     activityManager.updateActivity(activity);
     
     Map<String, String> as = RestUtils.getActivityStream(activity, currentUser);
-    Map<String, Object> activityInfo = RestUtils.buildEntityFromActivity(activity, uriInfo.getPath());
+    Map<String, Object> activityInfo = RestUtils.buildEntityFromActivity(activity, uriInfo.getPath(), getQueryValueExpand(uriInfo));
     activityInfo.put(RestProperties.ACTIVITY_STREAM, as);
     
     return Util.getResponse(activityInfo, uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
@@ -175,7 +175,7 @@ public class ActivitySocialRestServiceV1 extends AbstractSocialRestService imple
     }
     
     Map<String, String> as = RestUtils.getActivityStream(activity, currentUser);
-    Map<String, Object> activityInfo = RestUtils.buildEntityFromActivity(activity, uriInfo.getPath());
+    Map<String, Object> activityInfo = RestUtils.buildEntityFromActivity(activity, uriInfo.getPath(), getQueryValueExpand(uriInfo));
     activityInfo.put(RestProperties.ACTIVITY_STREAM, as);
     
     activityManager.deleteActivity(activity);
@@ -186,10 +186,7 @@ public class ActivitySocialRestServiceV1 extends AbstractSocialRestService imple
   @GET
   @Path("{id}/comments")
   public Response getCommentsOfActivity(@Context UriInfo uriInfo,
-                                         @PathParam("id") String id,
-                                         @QueryParam("returnSize") boolean returnSize,
-                                         @QueryParam("offset") int offset,
-                                         @QueryParam("limit") int limit) throws Exception {
+                                         @PathParam("id") String id) throws Exception {
     checkAuthenticatedRequest();
     //Check if no authenticated user
     String authenticatedUser = ConversationState.getCurrent().getIdentity().getUserId();
@@ -199,8 +196,8 @@ public class ActivitySocialRestServiceV1 extends AbstractSocialRestService imple
     
     Identity currentUser = CommonsUtils.getService(IdentityManager.class).getOrCreateIdentity(OrganizationIdentityProvider.NAME, authenticatedUser, true);
     
-    limit = limit <= 0 ? RestUtils.DEFAULT_LIMIT : Math.min(RestUtils.HARD_LIMIT, limit);
-    offset = offset < 0 ? RestUtils.DEFAULT_OFFSET : offset;
+    int limit = getQueryValueLimit(uriInfo);
+    int offset = getQueryValueOffset(uriInfo);
     
     ActivityManager activityManager = CommonsUtils.getService(ActivityManager.class);
     ExoSocialActivity activity = activityManager.getActivity(id);
@@ -217,12 +214,12 @@ public class ActivitySocialRestServiceV1 extends AbstractSocialRestService imple
     
     List<Map<String, Object>> commentsInfo = new ArrayList<Map<String, Object>>();
     for (ExoSocialActivity comment : comments) {
-      Map<String, Object> commentInfo = RestUtils.buildEntityFromActivity(comment, uriInfo.getPath());
+      Map<String, Object> commentInfo = RestUtils.buildEntityFromActivity(comment, uriInfo.getPath(), getQueryValueExpand(uriInfo));
       //
       commentsInfo.add(commentInfo);
     }
     
-    CommentsCollections commentsCollections = new CommentsCollections(returnSize ? listAccess.getSize() : -1, offset, limit);
+    CommentsCollections commentsCollections = new CommentsCollections(getQueryValueReturnSize(uriInfo) ? listAccess.getSize() : -1, offset, limit);
     commentsCollections.setComments(commentsInfo);
     
     return Util.getResponse(commentsCollections, uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
@@ -257,6 +254,6 @@ public class ActivitySocialRestServiceV1 extends AbstractSocialRestService imple
     comment.setUserId(currentUser.getId());
     activityManager.saveComment(activity, comment);
     
-    return Util.getResponse(RestUtils.buildEntityFromActivity(comment, uriInfo.getPath()), uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
+    return Util.getResponse(RestUtils.buildEntityFromActivity(comment, uriInfo.getPath(), getQueryValueExpand(uriInfo)), uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
   }
 }

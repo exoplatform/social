@@ -80,26 +80,19 @@ public class UserSocialRestServiceV1 extends AbstractSocialRestService implement
     
   }
   
-  /* (non-Javadoc)
-   * @see org.exoplatform.social.service.rest.impl.user.UserSocialRest#getUsers(javax.ws.rs.core.UriInfo, java.lang.String, int, int)
-   */
-  @Override
   @GET
   public Response getUsers(@Context UriInfo uriInfo,
-                            @QueryParam("q") String q,
-                            @QueryParam("offset") int offset,
-                            @QueryParam("limit") int limit,
-                            @QueryParam("returnSize") boolean returnSize,
-                            @QueryParam("fields") String fields) throws Exception {
+                            @QueryParam("q") String q) throws Exception {
     checkAuthenticatedRequest();
     
     List<String> returnedProperties = new ArrayList<String>();
+    String fields = getQueryValueFields(uriInfo);
     if (fields != null && fields.length() > 0) {
       returnedProperties.addAll(Arrays.asList(fields.split(",")));
     }
     
-    limit = limit <= 0 ? RestUtils.DEFAULT_LIMIT : Math.min(RestUtils.HARD_LIMIT, limit);
-    offset = offset < 0 ? RestUtils.DEFAULT_OFFSET : offset;
+    int limit = getQueryValueLimit(uriInfo);
+    int offset = getQueryValueOffset(uriInfo);
     
     ProfileFilter filter = new ProfileFilter();
     filter.setName(q == null || q.isEmpty() ? "" : q);
@@ -112,21 +105,17 @@ public class UserSocialRestServiceV1 extends AbstractSocialRestService implement
     Identity[] identities = list.load(offset, limit);
     List<Map<String, Object>> profileInfos = new ArrayList<Map<String, Object>>();
     for (Identity identity : identities) {
-      Map<String, Object> profileInfo = RestUtils.buildEntityFromIdentity(identity, uriInfo.getPath());
+      Map<String, Object> profileInfo = RestUtils.buildEntityFromIdentity(identity, uriInfo.getPath(), getQueryValueExpand(uriInfo));
       //
       profileInfos.add(profileInfo);
     }
     
-    UsersCollections users = new UsersCollections(returnSize ? list.getSize() : -1, offset, limit);
+    UsersCollections users = new UsersCollections(getQueryValueReturnSize(uriInfo) ? list.getSize() : -1, offset, limit);
     users.setUsers(profileInfos);
     
     return Util.getResponse(users, uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
   }
   
-  /* (non-Javadoc)
-   * @see org.exoplatform.social.service.rest.impl.user.UserSocialRest#addUser(javax.ws.rs.core.UriInfo, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String)
-   */
-  @Override
   @POST
   public Response addUser(@Context UriInfo uriInfo,
                            @QueryParam("userName") String userName,
@@ -156,13 +145,9 @@ public class UserSocialRestServiceV1 extends AbstractSocialRestService implement
     
     identity = CommonsUtils.getService(IdentityManager.class).getOrCreateIdentity(OrganizationIdentityProvider.NAME, userName, true);
     //
-    return Util.getResponse(RestUtils.buildEntityFromIdentity(identity, uriInfo.getPath()), uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
+    return Util.getResponse(RestUtils.buildEntityFromIdentity(identity, uriInfo.getPath(), getQueryValueExpand(uriInfo)), uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
   }
   
-  /* (non-Javadoc)
-   * @see org.exoplatform.social.service.rest.impl.user.UserSocialRest#getUserById(javax.ws.rs.core.UriInfo, java.lang.String)
-   */
-  @Override
   @GET
   @Path("{id}")
   public Response getUserById(@Context UriInfo uriInfo,
@@ -175,13 +160,9 @@ public class UserSocialRestServiceV1 extends AbstractSocialRestService implement
     
     Identity identity = CommonsUtils.getService(IdentityManager.class).getOrCreateIdentity(OrganizationIdentityProvider.NAME, id, true);
     //
-    return Util.getResponse(RestUtils.buildEntityFromIdentity(identity, uriInfo.getPath()), uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
+    return Util.getResponse(RestUtils.buildEntityFromIdentity(identity, uriInfo.getPath(), getQueryValueExpand(uriInfo)), uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
   }
   
-  /* (non-Javadoc)
-   * @see org.exoplatform.social.service.rest.impl.user.UserSocialRest#deleteUserById(javax.ws.rs.core.UriInfo, java.lang.String)
-   */
-  @Override
   @DELETE
   @Path("{id}")
   public Response deleteUserById(@Context UriInfo uriInfo,
@@ -199,13 +180,9 @@ public class UserSocialRestServiceV1 extends AbstractSocialRestService implement
     CommonsUtils.getService(IdentityManager.class).hardDeleteIdentity(identity);
     identity.setDeleted(true);
     //
-    return Util.getResponse(RestUtils.buildEntityFromIdentity(identity, uriInfo.getPath()), uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
+    return Util.getResponse(RestUtils.buildEntityFromIdentity(identity, uriInfo.getPath(), getQueryValueExpand(uriInfo)), uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
   }
   
-  /* (non-Javadoc)
-   * @see org.exoplatform.social.service.rest.impl.user.UserSocialRest#updateUserById(javax.ws.rs.core.UriInfo, java.lang.String)
-   */
-  @Override
   @PUT
   @Path("{id}")
   public Response updateUserById(@Context UriInfo uriInfo,
@@ -223,19 +200,13 @@ public class UserSocialRestServiceV1 extends AbstractSocialRestService implement
     //TODO : what information can be updated?
     
     //
-    return Util.getResponse(RestUtils.buildEntityFromIdentity(identity, uriInfo.getPath()), uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
+    return Util.getResponse(RestUtils.buildEntityFromIdentity(identity, uriInfo.getPath(), getQueryValueExpand(uriInfo)), uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
   }
   
-  /* (non-Javadoc)
-   * @see org.exoplatform.social.service.rest.impl.user.UserSocialRest#getConnectionOfUser(javax.ws.rs.core.UriInfo, java.lang.String, int, int)
-   */
-  @Override
   @GET
   @Path("{id}/connections")
   public Response getConnectionOfUser(@Context UriInfo uriInfo,
-                                       @PathParam("id") String id,
-                                       @QueryParam("offset") int offset,
-                                       @QueryParam("limit") int limit) throws Exception {
+                                       @PathParam("id") String id) throws Exception {
     checkAuthenticatedRequest();
     if (Util.isAnonymous()) {
       throw new WebApplicationException(Response.Status.UNAUTHORIZED);
@@ -245,33 +216,27 @@ public class UserSocialRestServiceV1 extends AbstractSocialRestService implement
       throw new WebApplicationException(Response.Status.BAD_REQUEST);
     }
     
-    limit = limit <= 0 ? RestUtils.DEFAULT_LIMIT : Math.min(RestUtils.HARD_LIMIT, limit);
-    offset = offset < 0 ? RestUtils.DEFAULT_OFFSET : offset;
+    int limit = getQueryValueLimit(uriInfo);
+    int offset = getQueryValueOffset(uriInfo);
     
     List<Map<String, Object>> profileInfos = new ArrayList<Map<String, Object>>();
     ListAccess<Identity> listAccess = CommonsUtils.getService(RelationshipManager.class).getConnectionsByFilter(target, new ProfileFilter());
     for (Identity identity : listAccess.load(offset, limit)) {
-      Map<String, Object> profileInfo = RestUtils.buildEntityFromIdentity(identity, uriInfo.getPath());
+      Map<String, Object> profileInfo = RestUtils.buildEntityFromIdentity(identity, uriInfo.getPath(), getQueryValueExpand(uriInfo));
       //
       profileInfos.add(profileInfo);
     }
     
-    UsersCollections users = new UsersCollections(listAccess.getSize(), offset, limit);
+    UsersCollections users = new UsersCollections(getQueryValueReturnSize(uriInfo) ? listAccess.getSize() : -1, offset, limit);
     users.setUsers(profileInfos);
     
     return Util.getResponse(users, uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
   }
   
-  /* (non-Javadoc)
-   * @see org.exoplatform.social.service.rest.impl.user.UserSocialRest#getSpacesOfUser(javax.ws.rs.core.UriInfo, java.lang.String, int, int)
-   */
-  @Override
   @GET
   @Path("{id}/spaces")
   public Response getSpacesOfUser(@Context UriInfo uriInfo,
-                                   @PathParam("id") String id,
-                                   @QueryParam("offset") int offset,
-                                   @QueryParam("limit") int limit) throws Exception {
+                                   @PathParam("id") String id) throws Exception {
     checkAuthenticatedRequest();
     Identity target = CommonsUtils.getService(IdentityManager.class).getOrCreateIdentity(OrganizationIdentityProvider.NAME, id, true);
     //Check if the given user exists
@@ -283,36 +248,30 @@ public class UserSocialRestServiceV1 extends AbstractSocialRestService implement
       throw new WebApplicationException(Response.Status.FORBIDDEN);
     }
     
-    limit = limit <= 0 ? RestUtils.DEFAULT_LIMIT : Math.min(RestUtils.HARD_LIMIT, limit);
-    offset = offset < 0 ? RestUtils.DEFAULT_OFFSET : offset;
+    int limit = getQueryValueLimit(uriInfo);
+    int offset = getQueryValueOffset(uriInfo);
     
     List<Map<String, Object>> spaceInfos = new ArrayList<Map<String, Object>>();
     ListAccess<Space> listAccess = CommonsUtils.getService(SpaceService.class).getMemberSpaces(id);
     for (Space space : listAccess.load(offset, limit)) {
-      Map<String, Object> spaceInfo = RestUtils.buildEntityFromSpace(space, id, uriInfo.getPath());
+      Map<String, Object> spaceInfo = RestUtils.buildEntityFromSpace(space, id, uriInfo.getPath(), getQueryValueExpand(uriInfo));
       //
       spaceInfos.add(spaceInfo);
     }
     
-    SpacesCollections spaces = new SpacesCollections(listAccess.getSize(), offset, limit);
+    SpacesCollections spaces = new SpacesCollections(getQueryValueReturnSize(uriInfo) ? listAccess.getSize() : -1, offset, limit);
     spaces.setSpaces(spaceInfos);
     
     return Util.getResponse(spaces, uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
   }
   
-  /* (non-Javadoc)
-   * @see org.exoplatform.social.service.rest.impl.user.UserSocialRest#getActivitiesOfUser(javax.ws.rs.core.UriInfo, java.lang.String, java.lang.String, java.lang.Long, java.lang.Long, int, int)
-   */
-  @Override
   @GET
   @Path("{id}/activities")
   public Response getActivitiesOfUser(@Context UriInfo uriInfo,
                                        @PathParam("id") String id,
                                        @QueryParam("type") String type,
                                        @QueryParam("after") Long after,
-                                       @QueryParam("before") Long before,
-                                       @QueryParam("offset") int offset,
-                                       @QueryParam("limit") int limit) throws Exception {
+                                       @QueryParam("before") Long before) throws Exception {
     checkAuthenticatedRequest();
     //Check if no authenticated user
     String authenticatedUser = ConversationState.getCurrent().getIdentity().getUserId();
@@ -332,8 +291,8 @@ public class UserSocialRestServiceV1 extends AbstractSocialRestService implement
       streamType = ACTIVITY_STREAM_TYPE.all;
     }
     
-    limit = limit <= 0 ? RestUtils.DEFAULT_LIMIT : Math.min(RestUtils.HARD_LIMIT, limit);
-    offset = offset < 0 ? RestUtils.DEFAULT_OFFSET : offset;
+    int limit = getQueryValueLimit(uriInfo);
+    int offset = getQueryValueOffset(uriInfo);
     
     ActivityManager activityManager = CommonsUtils.getService(ActivityManager.class);
     RealtimeListAccess<ExoSocialActivity> listAccess = null;
@@ -372,22 +331,18 @@ public class UserSocialRestServiceV1 extends AbstractSocialRestService implement
     for (ExoSocialActivity activity : activities) {
       Map<String, String> as = RestUtils.getActivityStream(activity, currentUser);
       if (as == null) continue;
-      Map<String, Object> activityInfo = RestUtils.buildEntityFromActivity(activity, uriInfo.getPath());
+      Map<String, Object> activityInfo = RestUtils.buildEntityFromActivity(activity, uriInfo.getPath(), getQueryValueExpand(uriInfo));
       activityInfo.put(RestProperties.ACTIVITY_STREAM, as);
       //
       activitiesInfo.add(activityInfo);
     }
     
-    ActivitiesCollections activitiesCollections = new ActivitiesCollections(listAccess.getSize(), offset, limit);
+    ActivitiesCollections activitiesCollections = new ActivitiesCollections(getQueryValueReturnSize(uriInfo) ? listAccess.getSize() : -1, offset, limit);
     activitiesCollections.setActivities(activitiesInfo);
     
     return Util.getResponse(activitiesCollections, uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
   }
   
-  /* (non-Javadoc)
-   * @see org.exoplatform.social.service.rest.impl.user.UserSocialRest#addActivityByUser(javax.ws.rs.core.UriInfo, java.lang.String, java.lang.String)
-   */
-  @Override
   @POST
   @Path("{id}/activities")
   public Response addActivityByUser(@Context UriInfo uriInfo,
@@ -408,7 +363,7 @@ public class UserSocialRestServiceV1 extends AbstractSocialRestService implement
     activity.setTitle(text);
     CommonsUtils.getService(ActivityManager.class).saveActivityNoReturn(target, activity);
     
-    return Util.getResponse(RestUtils.buildEntityFromActivity(activity, uriInfo.getPath()), uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
+    return Util.getResponse(RestUtils.buildEntityFromActivity(activity, uriInfo.getPath(), getQueryValueExpand(uriInfo)), uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
   }
   
 }

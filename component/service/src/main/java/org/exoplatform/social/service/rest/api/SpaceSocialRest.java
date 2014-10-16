@@ -18,16 +18,12 @@ public interface SpaceSocialRest extends SocialRest {
    * 
    * @param uriInfo
    * @param q
-   * @param offset
-   * @param limit
    * @return
    * @throws Exception
    */
   @GET
   public abstract Response getSpaces(@Context UriInfo uriInfo,
-      @QueryParam("q") String q, @QueryParam("offset") int offset,
-      @QueryParam("limit") int limit, @QueryParam("returnSize") boolean returnSize,
-      @QueryParam("fields") String fields) throws Exception;
+                                       @QueryParam("q") String q) throws Exception;
 
   /**
    * Process to create a new space
@@ -42,10 +38,10 @@ public interface SpaceSocialRest extends SocialRest {
    */
   @POST
   public abstract Response createSpace(@Context UriInfo uriInfo,
-      @QueryParam("displayName") String displayName,
-      @QueryParam("description") String description,
-      @QueryParam("visibility") String visibility,
-      @QueryParam("registration") String registration) throws Exception;
+                                         @QueryParam("displayName") String displayName,
+                                         @QueryParam("description") String description,
+                                         @QueryParam("visibility") String visibility,
+                                         @QueryParam("registration") String registration) throws Exception;
 
   /**
    * Process to return a space by id
@@ -58,7 +54,7 @@ public interface SpaceSocialRest extends SocialRest {
   @GET
   @Path("{id}")
   public abstract Response getSpaceById(@Context UriInfo uriInfo,
-      @PathParam("id") String id) throws Exception;
+                                          @PathParam("id") String id) throws Exception;
 
   /**
    * Process to update a space by id
@@ -71,11 +67,11 @@ public interface SpaceSocialRest extends SocialRest {
   @PUT
   @Path("{id}")
   public abstract Response updateSpaceById(@Context UriInfo uriInfo,
-      @PathParam("id") String id,
-      @QueryParam("displayName") String displayName,
-      @QueryParam("description") String description,
-      @QueryParam("visibility") String visibility,
-      @QueryParam("registration") String registration) throws Exception;
+                                             @PathParam("id") String id,
+                                             @QueryParam("displayName") String displayName,
+                                             @QueryParam("description") String description,
+                                             @QueryParam("visibility") String visibility,
+                                             @QueryParam("registration") String registration) throws Exception;
 
   /**
    * Process to delete a space by id
@@ -88,7 +84,7 @@ public interface SpaceSocialRest extends SocialRest {
   @DELETE
   @Path("{id}")
   public abstract Response deleteSpaceById(@Context UriInfo uriInfo,
-      @PathParam("id") String id) throws Exception;
+                                             @PathParam("id") String id) throws Exception;
 
   /**
    * Process to return a space by id
@@ -101,8 +97,8 @@ public interface SpaceSocialRest extends SocialRest {
   @GET
   @Path("{id}/users")
   public abstract Response getSpaceMembers(@Context UriInfo uriInfo,
-      @PathParam("id") String id, @QueryParam("role") String role,
-      @QueryParam("offset") int offset, @QueryParam("limit") int limit)
+                                             @PathParam("id") String id,
+                                             @QueryParam("role") String role)
       throws Exception;
 
   /**
@@ -116,14 +112,14 @@ public interface SpaceSocialRest extends SocialRest {
   @GET
   @Path("{id}/activities")
   public abstract Response getSpaceActivitiesById(@Context UriInfo uriInfo,
-      @PathParam("id") String id, @QueryParam("after") Long after,
-      @QueryParam("before") Long before, @QueryParam("offset") int offset,
-      @QueryParam("limit") int limit) throws Exception;
+                                                    @PathParam("id") String id,
+                                                    @QueryParam("after") Long after,
+                                                    @QueryParam("before") Long before) throws Exception;
 
   @POST
   @Path("{id}/activities")
   public abstract Response postActivityOnSpace(@Context UriInfo uriInfo,
-      @PathParam("id") String id, @QueryParam("text") String text)
-      throws Exception;
+                                                 @PathParam("id") String id,
+                                                 @QueryParam("text") String text) throws Exception;
 
 }

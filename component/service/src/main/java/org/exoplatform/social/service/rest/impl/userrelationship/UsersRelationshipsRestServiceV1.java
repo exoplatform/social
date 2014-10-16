@@ -54,18 +54,10 @@ public class UsersRelationshipsRestServiceV1 extends AbstractSocialRestService i
   public UsersRelationshipsRestServiceV1() {
   }
   
-  /* (non-Javadoc)
-   * @see org.exoplatform.social.service.rest.impl.userrelationship.UserRelationshipSocialRest#getUsersRelationships(javax.ws.rs.core.UriInfo, java.lang.String, java.lang.String, int, int)
-   */
-  @Override
   @GET
   public Response getUsersRelationships(@Context UriInfo uriInfo,
                                          @QueryParam("status") String status,
-                                         @QueryParam("user") String user,
-                                         @QueryParam("offset") int offset,
-                                         @QueryParam("limit") int limit,
-                                         @QueryParam("returnSize") boolean returnSize,
-                                         @QueryParam("fields") String fields) throws Exception {
+                                         @QueryParam("user") String user) throws Exception {
     checkAuthenticatedRequest();
     //Check if no authenticated user
     if (Util.isAnonymous()) {
@@ -73,12 +65,13 @@ public class UsersRelationshipsRestServiceV1 extends AbstractSocialRestService i
     }
     
     List<String> returnedProperties = new ArrayList<String>();
+    String fields = getQueryValueFields(uriInfo);
     if (fields != null && fields.length() > 0) {
       returnedProperties.addAll(Arrays.asList(fields.split(",")));
     }
     
-    limit = limit <= 0 ? RestUtils.DEFAULT_LIMIT : Math.min(RestUtils.HARD_LIMIT, limit);
-    offset = offset < 0 ? RestUtils.DEFAULT_OFFSET : offset;
+    int limit = getQueryValueLimit(uriInfo);
+    int offset = getQueryValueOffset(uriInfo);
     
     Identity givenUser = (user == null) ? null : CommonsUtils.getService(IdentityManager.class).getOrCreateIdentity(OrganizationIdentityProvider.NAME, user, true);
     Identity authenticatedUser = CommonsUtils.getService(IdentityManager.class).getOrCreateIdentity(OrganizationIdentityProvider.NAME, ConversationState.getCurrent().getIdentity().getUserId(), true);
@@ -87,7 +80,7 @@ public class UsersRelationshipsRestServiceV1 extends AbstractSocialRestService i
     if (givenUser != null && ! RestUtils.isMemberOfAdminGroup()) {
       Relationship relationship = relationshipManager.get(givenUser, authenticatedUser);
       RelationshipsCollections collections = new RelationshipsCollections(1, offset, limit);
-      Map<String, Object> map = RestUtils.buildEntityFromRelationship(relationship, uriInfo.getPath());
+      Map<String, Object> map = RestUtils.buildEntityFromRelationship(relationship, uriInfo.getPath(), getQueryValueExpand(uriInfo));
       collections.setRelationships(Arrays.asList(map));
       return Util.getResponse(collections, uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
     }
@@ -115,16 +108,12 @@ public class UsersRelationshipsRestServiceV1 extends AbstractSocialRestService i
       }
     }
     
-    RelationshipsCollections collections = new RelationshipsCollections(returnSize ? size : -1, offset, limit);
+    RelationshipsCollections collections = new RelationshipsCollections(getQueryValueReturnSize(uriInfo) ? size : -1, offset, limit);
     collections.setRelationships(buildRelationshipsCollections(relationships, uriInfo));
     
     return Util.getResponse(collections, uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
   }
   
-  /* (non-Javadoc)
-   * @see org.exoplatform.social.service.rest.impl.userrelationship.UserRelationshipSocialRest#createUsersRelationships(javax.ws.rs.core.UriInfo, java.lang.String, java.lang.String)
-   */
-  @Override
   @POST
   public Response createUsersRelationships(@Context UriInfo uriInfo,
                                             @QueryParam("status") String status,
@@ -138,10 +127,6 @@ public class UsersRelationshipsRestServiceV1 extends AbstractSocialRestService i
     return Util.getResponse("", uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
   }
   
-  /* (non-Javadoc)
-   * @see org.exoplatform.social.service.rest.impl.userrelationship.UserRelationshipSocialRest#getUsersRelationshipsById(javax.ws.rs.core.UriInfo, java.lang.String)
-   */
-  @Override
   @GET
   @Path("{id}")
   public Response getUsersRelationshipsById(@Context UriInfo uriInfo,
@@ -158,13 +143,9 @@ public class UsersRelationshipsRestServiceV1 extends AbstractSocialRestService i
     if (relationship == null || ! hasPermissionOnRelationship(authenticatedUser, relationship)) {
       throw new WebApplicationException(Response.Status.UNAUTHORIZED);
     }
-    return Util.getResponse(RestUtils.buildEntityFromRelationship(relationship, uriInfo.getPath()), uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
+    return Util.getResponse(RestUtils.buildEntityFromRelationship(relationship, uriInfo.getPath(), getQueryValueExpand(uriInfo)), uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
   }
   
-  /* (non-Javadoc)
-   * @see org.exoplatform.social.service.rest.impl.userrelationship.UserRelationshipSocialRest#updateUsersRelationshipsById(javax.ws.rs.core.UriInfo, java.lang.String)
-   */
-  @Override
   @PUT
   @Path("{id}")
   public Response updateUsersRelationshipsById(@Context UriInfo uriInfo,
@@ -185,13 +166,9 @@ public class UsersRelationshipsRestServiceV1 extends AbstractSocialRestService i
     //update relationship
     relationshipManager.update(relationship);
     
-    return Util.getResponse(RestUtils.buildEntityFromRelationship(relationship, uriInfo.getPath()), uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
+    return Util.getResponse(RestUtils.buildEntityFromRelationship(relationship, uriInfo.getPath(), getQueryValueExpand(uriInfo)), uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
   }
   
-  /* (non-Javadoc)
-   * @see org.exoplatform.social.service.rest.impl.userrelationship.UserRelationshipSocialRest#deleteUsersRelationshipsById(javax.ws.rs.core.UriInfo, java.lang.String)
-   */
-  @Override
   @DELETE
   @Path("{id}")
   public Response deleteUsersRelationshipsById(@Context UriInfo uriInfo,
@@ -211,7 +188,7 @@ public class UsersRelationshipsRestServiceV1 extends AbstractSocialRestService i
     //delete the relationship
     relationshipManager.delete(relationship);
     
-    return Util.getResponse(RestUtils.buildEntityFromRelationship(relationship, uriInfo.getPath()), uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
+    return Util.getResponse(RestUtils.buildEntityFromRelationship(relationship, uriInfo.getPath(), getQueryValueExpand(uriInfo)), uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
   }
 
   /**
@@ -233,7 +210,7 @@ public class UsersRelationshipsRestServiceV1 extends AbstractSocialRestService i
   private List<Map<String, Object>> buildRelationshipsCollections(List<Relationship> relationships, UriInfo uriInfo) {
     List<Map<String, Object>> infos = new ArrayList<Map<String, Object>>();
     for (Relationship relationship : relationships) {
-      Map<String, Object> map = RestUtils.buildEntityFromRelationship(relationship, uriInfo.getPath());
+      Map<String, Object> map = RestUtils.buildEntityFromRelationship(relationship, uriInfo.getPath(), getQueryValueExpand(uriInfo));
       //
       infos.add(map);
     }

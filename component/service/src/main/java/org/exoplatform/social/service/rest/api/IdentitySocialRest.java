@@ -18,7 +18,6 @@
 package org.exoplatform.social.service.rest.api;
 
 import javax.ws.rs.DELETE;
-import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -28,8 +27,6 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
-
-import org.exoplatform.social.service.rest.api.SocialRest;
 
 public interface IdentitySocialRest extends SocialRest {
 
@@ -44,9 +41,7 @@ public interface IdentitySocialRest extends SocialRest {
    */
   @GET
   public abstract Response getIdentities(@Context UriInfo uriInfo,
-      @QueryParam("type") String type, @QueryParam("offset") int offset,
-      @QueryParam("limit") int limit, @QueryParam("returnSize") boolean returnSize,
-      @QueryParam("fields") String fields) throws Exception;
+                                           @QueryParam("type") String type) throws Exception;
 
   /**
    * Process to create an identity
@@ -59,8 +54,8 @@ public interface IdentitySocialRest extends SocialRest {
    */
   @POST
   public abstract Response createIdentities(@Context UriInfo uriInfo,
-      @QueryParam("remoteId") String remoteId,
-      @QueryParam("providerId") String providerId) throws Exception;
+                                              @QueryParam("remoteId") String remoteId,
+                                              @QueryParam("providerId") String providerId) throws Exception;
 
   /**
    * Process to return an identity in json format
@@ -73,7 +68,7 @@ public interface IdentitySocialRest extends SocialRest {
   @GET
   @Path("{id}")
   public abstract Response getIdentityById(@Context UriInfo uriInfo,
-      @PathParam("id") String id) throws Exception;
+                                             @PathParam("id") String id) throws Exception;
 
   /**
    * Process to update an identity by id
@@ -86,7 +81,7 @@ public interface IdentitySocialRest extends SocialRest {
   @PUT
   @Path("{id}")
   public abstract Response updateIdentityById(@Context UriInfo uriInfo,
-      @PathParam("id") String id) throws Exception;
+                                                @PathParam("id") String id) throws Exception;
 
   /**
    * Process to delete an identity
@@ -99,7 +94,7 @@ public interface IdentitySocialRest extends SocialRest {
   @DELETE
   @Path("{id}")
   public abstract Response deleteIdentityById(@Context UriInfo uriInfo,
-      @PathParam("id") String id) throws Exception;
+                                                @PathParam("id") String id) throws Exception;
 
   /**
    * Process to return all relationships of an identity in json format
@@ -114,7 +109,6 @@ public interface IdentitySocialRest extends SocialRest {
   @GET
   @Path("{id}/relationships")
   public abstract Response getRelationshipsOfIdentity(@Context UriInfo uriInfo,
-      @PathParam("id") String id, @QueryParam("offset") int offset,
-      @QueryParam("limit") int limit) throws Exception;
+                                                        @PathParam("id") String id) throws Exception;
 
 }

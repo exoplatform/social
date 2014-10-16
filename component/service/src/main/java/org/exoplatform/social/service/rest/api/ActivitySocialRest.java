@@ -69,19 +69,13 @@ public interface ActivitySocialRest extends SocialRest {
    * 
    * @param uriInfo
    * @param id the id of activity
-   * @param returnSize true if the response must contain the total size of all comments found
-   * @param offset index of the first comment to return 
-   * @param limit the maximum number of comments to return
    * @return
    * @throws Exception
    */
   @GET
   @Path("{id}/comments")
   public Response getCommentsOfActivity(@Context UriInfo uriInfo,
-                                         @PathParam("id") String id,
-                                         @QueryParam("returnSize") boolean returnSize,
-                                         @QueryParam("offset") int offset,
-                                         @QueryParam("limit") int limit) throws Exception;
+                                         @PathParam("id") String id) throws Exception;
   
   /**
    * Process to create new comment
