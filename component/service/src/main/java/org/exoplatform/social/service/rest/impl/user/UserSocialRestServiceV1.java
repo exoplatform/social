@@ -56,6 +56,7 @@ import org.exoplatform.social.core.space.spi.SpaceService;
 import org.exoplatform.social.service.rest.RestProperties;
 import org.exoplatform.social.service.rest.RestUtils;
 import org.exoplatform.social.service.rest.Util;
+import org.exoplatform.social.service.rest.api.AbstractSocialRestService;
 import org.exoplatform.social.service.rest.api.UserSocialRest;
 import org.exoplatform.social.service.rest.api.models.ActivitiesCollections;
 import org.exoplatform.social.service.rest.api.models.SpacesCollections;
@@ -69,7 +70,7 @@ import org.exoplatform.social.service.rest.api.models.UsersCollections;
  */
 
 @Path("v1/social/users")
-public class UserSocialRestServiceV1 implements UserSocialRest {
+public class UserSocialRestServiceV1 extends AbstractSocialRestService implements UserSocialRest {
   
   public static enum ACTIVITY_STREAM_TYPE {
     all, owner, connections, spaces

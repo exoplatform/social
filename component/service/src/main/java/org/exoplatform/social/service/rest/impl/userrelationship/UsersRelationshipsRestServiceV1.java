@@ -44,11 +44,12 @@ import org.exoplatform.social.core.manager.RelationshipManager;
 import org.exoplatform.social.core.relationship.model.Relationship;
 import org.exoplatform.social.service.rest.RestUtils;
 import org.exoplatform.social.service.rest.Util;
+import org.exoplatform.social.service.rest.api.AbstractSocialRestService;
 import org.exoplatform.social.service.rest.api.UserRelationshipSocialRest;
 import org.exoplatform.social.service.rest.api.models.RelationshipsCollections;
 
 @Path("v1/social/usersRelationships")
-public class UsersRelationshipsRestServiceV1 implements UserRelationshipSocialRest {
+public class UsersRelationshipsRestServiceV1 extends AbstractSocialRestService implements UserRelationshipSocialRest {
 
   public UsersRelationshipsRestServiceV1() {
   }
@@ -155,7 +156,7 @@ public class UsersRelationshipsRestServiceV1 implements UserRelationshipSocialRe
     RelationshipManager relationshipManager = CommonsUtils.getService(RelationshipManager.class);
     Relationship relationship = relationshipManager.get(id);
     if (relationship == null || ! hasPermissionOnRelationship(authenticatedUser, relationship)) {
-      return Util.getResponse(null, uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
+      throw new WebApplicationException(Response.Status.UNAUTHORIZED);
     }
     return Util.getResponse(RestUtils.buildEntityFromRelationship(relationship, uriInfo.getPath()), uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
   }
@@ -178,7 +179,7 @@ public class UsersRelationshipsRestServiceV1 implements UserRelationshipSocialRe
     RelationshipManager relationshipManager = CommonsUtils.getService(RelationshipManager.class);
     Relationship relationship = relationshipManager.get(id);
     if (relationship == null || ! hasPermissionOnRelationship(authenticatedUser, relationship)) {
-      return Util.getResponse(null, uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
+      throw new WebApplicationException(Response.Status.UNAUTHORIZED);
     }
     
     //update relationship
@@ -205,7 +206,7 @@ public class UsersRelationshipsRestServiceV1 implements UserRelationshipSocialRe
     RelationshipManager relationshipManager = CommonsUtils.getService(RelationshipManager.class);
     Relationship relationship = relationshipManager.get(id);
     if (relationship == null || ! hasPermissionOnRelationship(authenticatedUser, relationship)) {
-      return Util.getResponse(null, uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
+      throw new WebApplicationException(Response.Status.UNAUTHORIZED);
     }
     //delete the relationship
     relationshipManager.delete(relationship);

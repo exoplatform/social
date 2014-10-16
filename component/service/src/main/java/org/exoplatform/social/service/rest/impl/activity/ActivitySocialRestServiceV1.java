@@ -23,6 +23,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -48,41 +49,32 @@ import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.service.rest.RestProperties;
 import org.exoplatform.social.service.rest.RestUtils;
 import org.exoplatform.social.service.rest.Util;
+import org.exoplatform.social.service.rest.api.AbstractSocialRestService;
 import org.exoplatform.social.service.rest.api.ActivitySocialRest;
 import org.exoplatform.social.service.rest.api.models.ActivitiesCollections;
 import org.exoplatform.social.service.rest.api.models.CommentsCollections;
 
 @Path("v1/social/activities")
-public class ActivitySocialRestServiceV1 implements ActivitySocialRest {
+public class ActivitySocialRestServiceV1 extends AbstractSocialRestService implements ActivitySocialRest {
   
-  /* (non-Javadoc)
-   * @see org.exoplatform.social.service.rest.api.ActivitySocialRest#getActivitiesOfCurrentUser(javax.ws.rs.core.UriInfo, boolean, int, int)
-   */
   @GET
-  public Response getActivitiesOfCurrentUser(@Context UriInfo uriInfo,
-                                              @QueryParam("returnSize") boolean returnSize,
-                                              @QueryParam("offset") int offset,
-                                              @QueryParam("limit") int limit,
-                                              @QueryParam("fields") String fields) throws Exception {
-    checkAuthenticatedRequest();
-    //Check if no authenticated user
+  @RolesAllowed("users")
+  public Response getActivitiesOfCurrentUser(@Context UriInfo uriInfo) throws Exception {
     String authenticatedUser = ConversationState.getCurrent().getIdentity().getUserId();
-    if (IdentityConstants.ANONIM.equals(authenticatedUser)) {
-      throw new WebApplicationException(Response.Status.UNAUTHORIZED);
-    }
     
     List<String> returnedProperties = new ArrayList<String>();
+    String fields = getQueryValueFields(uriInfo);
     if (fields != null && fields.length() > 0) {
       returnedProperties.addAll(Arrays.asList(fields.split(",")));
     }
     
     Identity currentUser = CommonsUtils.getService(IdentityManager.class).getOrCreateIdentity(OrganizationIdentityProvider.NAME, authenticatedUser, true);
     
-    limit = limit <= 0 ? RestUtils.DEFAULT_LIMIT : Math.min(RestUtils.HARD_LIMIT, limit);
-    offset = offset < 0 ? RestUtils.DEFAULT_OFFSET : offset;
+    int limit = getQueryValueLimit(uriInfo);
+    int offset = getQueryValueOffset(uriInfo);
     
     ActivityManager activityManager = CommonsUtils.getService(ActivityManager.class);
-    RealtimeListAccess<ExoSocialActivity> listAccess = activityManager.getActivityFeedWithListAccess(currentUser);
+    RealtimeListAccess<ExoSocialActivity> listAccess = activityManager.getAllActivitiesWithListAccess();
     List<ExoSocialActivity> activities = listAccess.loadAsList(offset, limit);
     
     List<Map<String, Object>> activitiesInfo = new ArrayList<Map<String, Object>>();
@@ -95,15 +87,12 @@ public class ActivitySocialRestServiceV1 implements ActivitySocialRest {
       activitiesInfo.add(activityInfo); 
     }
     
-    ActivitiesCollections activitiesCollections = new ActivitiesCollections(returnSize ? listAccess.getSize() : -1, offset, limit);
+    ActivitiesCollections activitiesCollections = new ActivitiesCollections(getQueryValueReturnSize(uriInfo) ? listAccess.getSize() : -1, offset, limit);
     activitiesCollections.setActivities(activitiesInfo);
     
     return Util.getResponse(activitiesCollections, uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
   }
   
-  /* (non-Javadoc)
-   * @see org.exoplatform.social.service.rest.api.ActivitySocialRest#getActivityById(javax.ws.rs.core.UriInfo, java.lang.String)
-   */
   @GET
   @Path("{id}")
   public Response getActivityById(@Context UriInfo uriInfo,
@@ -135,9 +124,6 @@ public class ActivitySocialRestServiceV1 implements ActivitySocialRest {
     return Util.getResponse(activityInfo, uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
   }
   
-  /* (non-Javadoc)
-   * @see org.exoplatform.social.service.rest.api.ActivitySocialRest#updateActivityById(javax.ws.rs.core.UriInfo, java.lang.String, java.lang.String)
-   */
   @PUT
   @Path("{id}")
   public Response updateActivityById(@Context UriInfo uriInfo,
@@ -169,9 +155,6 @@ public class ActivitySocialRestServiceV1 implements ActivitySocialRest {
     return Util.getResponse(activityInfo, uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
   }
   
-  /* (non-Javadoc)
-   * @see org.exoplatform.social.service.rest.api.ActivitySocialRest#deleteActivityById(javax.ws.rs.core.UriInfo, java.lang.String)
-   */
   @DELETE
   @Path("{id}")
   public Response deleteActivityById(@Context UriInfo uriInfo,
@@ -200,9 +183,6 @@ public class ActivitySocialRestServiceV1 implements ActivitySocialRest {
     return Util.getResponse(activityInfo, uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
   }
   
-  /* (non-Javadoc)
-   * @see org.exoplatform.social.service.rest.api.ActivitySocialRest#getCommentsOfActivity(javax.ws.rs.core.UriInfo, java.lang.String, boolean, int, int)
-   */
   @GET
   @Path("{id}/comments")
   public Response getCommentsOfActivity(@Context UriInfo uriInfo,
@@ -248,9 +228,6 @@ public class ActivitySocialRestServiceV1 implements ActivitySocialRest {
     return Util.getResponse(commentsCollections, uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
   }
   
-  /* (non-Javadoc)
-   * @see org.exoplatform.social.service.rest.api.ActivitySocialRest#postComment(javax.ws.rs.core.UriInfo, java.lang.String, java.lang.String)
-   */
   @POST
   @Path("{id}/comments")
   public Response postComment(@Context UriInfo uriInfo,

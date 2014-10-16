@@ -250,7 +250,8 @@ public class RestUtils {
       Relationship relationship = CommonsUtils.getService(RelationshipManager.class).get(authentiatedUsed, owner);
       if (! authentiatedUsed.getId().equals(activity.getPosterId()) //the viewer is not the poster
           && ! authentiatedUsed.getRemoteId().equals(activity.getStreamOwner()) //the viewer is not the owner
-          && (relationship == null || ! relationship.getStatus().equals(Relationship.Type.CONFIRMED))) { //the viewer has no relationship with the given user 
+          && (relationship == null || ! relationship.getStatus().equals(Relationship.Type.CONFIRMED)) //the viewer has no relationship with the given user
+          && ! isMemberOfAdminGroup()) { //current user is not an administrator  
         return null;
       }
       as.put(RestProperties.TYPE, USER_ACTIVITY_TYPE);

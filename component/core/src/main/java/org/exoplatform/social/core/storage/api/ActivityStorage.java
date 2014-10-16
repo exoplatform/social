@@ -1054,4 +1054,13 @@ public interface ActivityStorage {
    * @since 4.0
    */
   public int getNumberOfOlderComments(ExoSocialActivity existingActivity, Long sinceTime);
+
+  /**
+   * Get all activities
+   * 
+   * @param index
+   * @param limit
+   * @return
+   */
+  public List<ExoSocialActivity> getAllActivities(int index, int limit);
 }

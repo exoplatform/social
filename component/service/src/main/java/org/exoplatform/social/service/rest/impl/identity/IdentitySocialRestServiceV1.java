@@ -47,11 +47,12 @@ import org.exoplatform.social.core.profile.ProfileFilter;
 import org.exoplatform.social.service.rest.RestProperties;
 import org.exoplatform.social.service.rest.RestUtils;
 import org.exoplatform.social.service.rest.Util;
+import org.exoplatform.social.service.rest.api.AbstractSocialRestService;
 import org.exoplatform.social.service.rest.api.IdentitySocialRest;
 import org.exoplatform.social.service.rest.api.models.IdentitiesCollections;
 
 @Path("v1/social/identities")
-public class IdentitySocialRestServiceV1 implements IdentitySocialRest {
+public class IdentitySocialRestServiceV1 extends AbstractSocialRestService implements IdentitySocialRest {
   
 
   /**

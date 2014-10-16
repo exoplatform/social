@@ -17,18 +17,11 @@ public interface ActivitySocialRest extends SocialRest {
    * Process to return all activities in json format
    * 
    * @param uriInfo
-   * @param returnSize true if the response must contain the total size of all activities found
-   * @param offset index of the first activity to return 
-   * @param limit the maximum number of activities to return
    * @return
    * @throws Exception
    */
   @GET
-  public Response getActivitiesOfCurrentUser(@Context UriInfo uriInfo,
-                                              @QueryParam("returnSize") boolean returnSize,
-                                              @QueryParam("offset") int offset,
-                                              @QueryParam("limit") int limit,
-                                              @QueryParam("fields") String fields) throws Exception;
+  public Response getActivitiesOfCurrentUser(@Context UriInfo uriInfo) throws Exception;
   
   /**
    * Process to return an activity by id in json format

@@ -3056,4 +3056,11 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     //
     return getActivitiesOfIdentitiesQuery(ActivityBuilderWhere.simple().owners(spaceList), filter).objects().size();
   }
+
+  @Override
+  public List<ExoSocialActivity> getAllActivities(int index, int limit) {
+    ActivityFilter filter = new ActivityFilter(){};
+    //
+    return getActivitiesOfIdentities(ActivityBuilderWhere.simple(), filter, index, limit);
+  }
 }

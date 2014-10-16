@@ -1826,5 +1826,10 @@ public class CachedActivityStorage implements ActivityStorage {
     storage.setInjectStreams(mustInject);
     
   }
+
+  @Override
+  public List<ExoSocialActivity> getAllActivities(int index, int limit) {
+    return storage.getAllActivities(index, limit);
+  }
   
 }

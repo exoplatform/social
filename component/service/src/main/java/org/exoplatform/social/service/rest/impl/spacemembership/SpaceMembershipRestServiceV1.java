@@ -50,11 +50,12 @@ import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
 import org.exoplatform.social.service.rest.RestUtils;
 import org.exoplatform.social.service.rest.Util;
+import org.exoplatform.social.service.rest.api.AbstractSocialRestService;
 import org.exoplatform.social.service.rest.api.SpaceMembershipSocialRest;
 import org.exoplatform.social.service.rest.api.models.SpaceMembershipsCollections;
 
 @Path("v1/social/spacesMemberships")
-public class SpaceMembershipRestServiceV1 implements SpaceMembershipSocialRest {
+public class SpaceMembershipRestServiceV1 extends AbstractSocialRestService implements SpaceMembershipSocialRest {
   
   public SpaceMembershipRestServiceV1(){
   }

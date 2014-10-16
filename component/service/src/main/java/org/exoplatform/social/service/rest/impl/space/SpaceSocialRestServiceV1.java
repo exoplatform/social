@@ -57,13 +57,14 @@ import org.exoplatform.social.core.space.spi.SpaceService;
 import org.exoplatform.social.service.rest.RestProperties;
 import org.exoplatform.social.service.rest.RestUtils;
 import org.exoplatform.social.service.rest.Util;
+import org.exoplatform.social.service.rest.api.AbstractSocialRestService;
 import org.exoplatform.social.service.rest.api.SpaceSocialRest;
 import org.exoplatform.social.service.rest.api.models.ActivitiesCollections;
 import org.exoplatform.social.service.rest.api.models.SpacesCollections;
 import org.exoplatform.social.service.rest.api.models.UsersCollections;
 
 @Path("v1/social/spaces")
-public class SpaceSocialRestServiceV1 implements SpaceSocialRest {
+public class SpaceSocialRestServiceV1 extends AbstractSocialRestService implements SpaceSocialRest {
 
   public SpaceSocialRestServiceV1() {
   }
