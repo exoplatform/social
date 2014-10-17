@@ -28,8 +28,6 @@ import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
@@ -54,20 +52,15 @@ public class UsersRelationshipsRestServiceV1 extends AbstractSocialRestService i
   public UsersRelationshipsRestServiceV1() {
   }
   
+  @SuppressWarnings("unchecked")
   @GET
-  public Response getUsersRelationships(@Context UriInfo uriInfo,
-                                         @QueryParam("status") String status,
-                                         @QueryParam("user") String user) throws Exception {
+  public Response getUsersRelationships(@Context UriInfo uriInfo) throws Exception {
+    String status = getQueryParam("status");
+    String user = getQueryParam("user");
     checkAuthenticatedRequest();
     //Check if no authenticated user
     if (Util.isAnonymous()) {
       throw new WebApplicationException(Response.Status.UNAUTHORIZED);
-    }
-    
-    List<String> returnedProperties = new ArrayList<String>();
-    String fields = getQueryValueFields(uriInfo);
-    if (fields != null && fields.length() > 0) {
-      returnedProperties.addAll(Arrays.asList(fields.split(",")));
     }
     
     int limit = getQueryValueLimit(uriInfo);
@@ -115,9 +108,7 @@ public class UsersRelationshipsRestServiceV1 extends AbstractSocialRestService i
   }
   
   @POST
-  public Response createUsersRelationships(@Context UriInfo uriInfo,
-                                            @QueryParam("status") String status,
-                                            @QueryParam("user") String user) throws Exception {
+  public Response createUsersRelationships(@Context UriInfo uriInfo) throws Exception {
     checkAuthenticatedRequest();
     //Check if no authenticated user
     if (Util.isAnonymous()) {
@@ -129,8 +120,8 @@ public class UsersRelationshipsRestServiceV1 extends AbstractSocialRestService i
   
   @GET
   @Path("{id}")
-  public Response getUsersRelationshipsById(@Context UriInfo uriInfo,
-                                             @PathParam("id") String id) throws Exception {
+  public Response getUsersRelationshipsById(@Context UriInfo uriInfo) throws Exception {
+    String id = getPathParam("id");
     checkAuthenticatedRequest();
     //Check if no authenticated user
     if (Util.isAnonymous()) {
@@ -148,8 +139,8 @@ public class UsersRelationshipsRestServiceV1 extends AbstractSocialRestService i
   
   @PUT
   @Path("{id}")
-  public Response updateUsersRelationshipsById(@Context UriInfo uriInfo,
-                                                @PathParam("id") String id) throws Exception {
+  public Response updateUsersRelationshipsById(@Context UriInfo uriInfo) throws Exception {
+    String id = getPathParam("id");
     checkAuthenticatedRequest();
     //Check if no authenticated user
     if (Util.isAnonymous()) {
@@ -171,8 +162,8 @@ public class UsersRelationshipsRestServiceV1 extends AbstractSocialRestService i
   
   @DELETE
   @Path("{id}")
-  public Response deleteUsersRelationshipsById(@Context UriInfo uriInfo,
-                                                @PathParam("id") String id) throws Exception {
+  public Response deleteUsersRelationshipsById(@Context UriInfo uriInfo) throws Exception {
+    String id = getPathParam("id");
     checkAuthenticatedRequest();
     //Check if no authenticated user
     if (Util.isAnonymous()) {

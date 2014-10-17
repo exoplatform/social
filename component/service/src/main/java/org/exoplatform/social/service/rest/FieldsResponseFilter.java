@@ -20,6 +20,7 @@ public class FieldsResponseFilter implements ResponseFilter {
 
   @Override
   public void doFilter(GenericContainerResponse response) {
+    if (response.getEntity() == null) return;
     String outputFields = ApplicationContextImpl.getCurrent().getQueryParameters().getFirst(FIELDS_QUERY_PARAM);
     
     boolean hasOutputFieldsFilter = outputFields != null && outputFields.length() > 0;

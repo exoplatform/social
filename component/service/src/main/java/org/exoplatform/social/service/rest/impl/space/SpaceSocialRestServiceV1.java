@@ -29,8 +29,6 @@ import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
@@ -73,19 +71,13 @@ public class SpaceSocialRestServiceV1 extends AbstractSocialRestService implemen
    * {@inheritDoc}
    */
   @GET
-  public Response getSpaces(@Context UriInfo uriInfo,
-                             @QueryParam("q") String q) throws Exception {
+  public Response getSpaces(@Context UriInfo uriInfo) throws Exception {
+    String q = getQueryParam("q");
     checkAuthenticatedRequest();
     //Check if no authenticated user
     String authenticatedUser = ConversationState.getCurrent().getIdentity().getUserId();
     if (IdentityConstants.ANONIM.equals(authenticatedUser)) {
       throw new WebApplicationException(Response.Status.UNAUTHORIZED);
-    }
-    
-    List<String> returnedProperties = new ArrayList<String>();
-    String fields = getQueryValueFields(uriInfo);
-    if (fields != null && fields.length() > 0) {
-      returnedProperties.addAll(Arrays.asList(fields.split(",")));
     }
     
     SpaceService spaceService = CommonsUtils.getService(SpaceService.class);
@@ -120,11 +112,12 @@ public class SpaceSocialRestServiceV1 extends AbstractSocialRestService implemen
    * {@inheritDoc}
    */
   @POST
-  public Response createSpace(@Context UriInfo uriInfo,
-                               @QueryParam("displayName") String displayName,
-                               @QueryParam("description") String description,
-                               @QueryParam("visibility") String visibility,
-                               @QueryParam("registration") String registration) throws Exception {
+  public Response createSpace(@Context UriInfo uriInfo) throws Exception {
+    String displayName = getQueryParam("displayName");
+    String description = getQueryParam("description");
+    String visibility = getQueryParam("visibility");
+    String registration = getQueryParam("registration");
+    
     checkAuthenticatedRequest();
     String authenticatedUser = ConversationState.getCurrent().getIdentity().getUserId();
     if (IdentityConstants.ANONIM.equals(authenticatedUser)) {
@@ -155,8 +148,8 @@ public class SpaceSocialRestServiceV1 extends AbstractSocialRestService implemen
    */
   @GET
   @Path("{id}")
-  public Response getSpaceById(@Context UriInfo uriInfo,
-                                @PathParam("id") String id) throws Exception {
+  public Response getSpaceById(@Context UriInfo uriInfo) throws Exception {
+    String id = getPathParam("id");
     checkAuthenticatedRequest();
     //Check if no authenticated user
     String authenticatedUser = ConversationState.getCurrent().getIdentity().getUserId();
@@ -179,12 +172,13 @@ public class SpaceSocialRestServiceV1 extends AbstractSocialRestService implemen
    */
   @PUT
   @Path("{id}")
-  public Response updateSpaceById(@Context UriInfo uriInfo,
-                                   @PathParam("id") String id,
-                                   @QueryParam("displayName") String displayName,
-                                   @QueryParam("description") String description,
-                                   @QueryParam("visibility") String visibility,
-                                   @QueryParam("registration") String registration) throws Exception {
+  public Response updateSpaceById(@Context UriInfo uriInfo) throws Exception {
+    String id = getPathParam("id");
+    String displayName = getQueryParam("displayName");
+    String description = getQueryParam("description");
+    String visibility = getQueryParam("visibility");
+    String registration = getQueryParam("registration");
+    
     checkAuthenticatedRequest();
     //Check if no authenticated user
     String authenticatedUser = ConversationState.getCurrent().getIdentity().getUserId();
@@ -229,8 +223,8 @@ public class SpaceSocialRestServiceV1 extends AbstractSocialRestService implemen
    */
   @DELETE
   @Path("{id}")
-  public Response deleteSpaceById(@Context UriInfo uriInfo,
-                                   @PathParam("id") String id) throws Exception {
+  public Response deleteSpaceById(@Context UriInfo uriInfo) throws Exception {
+    String id = getPathParam("id");
     checkAuthenticatedRequest();
     //Check if no authenticated user
     String authenticatedUser = ConversationState.getCurrent().getIdentity().getUserId();
@@ -254,9 +248,9 @@ public class SpaceSocialRestServiceV1 extends AbstractSocialRestService implemen
    */
   @GET
   @Path("{id}/users")
-  public Response getSpaceMembers(@Context UriInfo uriInfo,
-                                   @PathParam("id") String id,
-                                   @QueryParam("role") String role) throws Exception {
+  public Response getSpaceMembers(@Context UriInfo uriInfo) throws Exception {
+    String id = getPathParam("id");
+    String role = getQueryParam("role");
     checkAuthenticatedRequest();
     //Check if no authenticated user
     String authenticatedUser = ConversationState.getCurrent().getIdentity().getUserId();
@@ -297,10 +291,11 @@ public class SpaceSocialRestServiceV1 extends AbstractSocialRestService implemen
    */
   @GET
   @Path("{id}/activities")
-  public Response getSpaceActivitiesById(@Context UriInfo uriInfo,
-                                          @PathParam("id") String id,
-                                          @QueryParam("after") Long after,
-                                          @QueryParam("before") Long before) throws Exception {
+  public Response getSpaceActivitiesById(@Context UriInfo uriInfo) throws Exception {
+    
+    String id = getPathParam("id");
+    Long after = Long.parseLong(getQueryParam("after"));
+    Long before= Long.parseLong(getQueryParam("before"));
     checkAuthenticatedRequest();
     //Check if no authenticated user
     String authenticatedUser = ConversationState.getCurrent().getIdentity().getUserId();
@@ -352,9 +347,9 @@ public class SpaceSocialRestServiceV1 extends AbstractSocialRestService implemen
    */
   @POST
   @Path("{id}/activities")
-  public Response postActivityOnSpace(@Context UriInfo uriInfo,
-                                       @PathParam("id") String id,
-                                       @QueryParam("text") String text) throws Exception {
+  public Response postActivityOnSpace(@Context UriInfo uriInfo) throws Exception {
+    String id = getPathParam("id");
+    String text = getQueryParam("text");
     checkAuthenticatedRequest();
     //
     String authenticatedUser = ConversationState.getCurrent().getIdentity().getUserId();

@@ -27,8 +27,6 @@ import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
@@ -56,8 +54,8 @@ public class IdentitySocialRestServiceV1 extends AbstractSocialRestService imple
    * {@inheritDoc}
    */
   @GET
-  public Response getIdentities(@Context UriInfo uriInfo,
-                                 @QueryParam("type") String type) throws Exception {
+  public Response getIdentities(@Context UriInfo uriInfo) throws Exception {
+    String type = getQueryParam("type");
     checkAuthenticatedRequest();
     //Check if no authenticated user
     if (Util.isAnonymous()) {
@@ -93,9 +91,9 @@ public class IdentitySocialRestServiceV1 extends AbstractSocialRestService imple
    * {@inheritDoc}
    */
   @POST
-  public Response createIdentities(@Context UriInfo uriInfo,
-                                    @QueryParam("remoteId") String remoteId,
-                                    @QueryParam("providerId") String providerId) throws Exception {
+  public Response createIdentities(@Context UriInfo uriInfo) throws Exception {
+    String remoteId = getQueryParam("remoteId");
+    String providerId = getQueryParam("providerId"); 
     checkAuthenticatedRequest();
     if (Util.isAnonymous() || !RestUtils.isMemberOfAdminGroup()) {
       throw new WebApplicationException(Response.Status.UNAUTHORIZED);
@@ -126,8 +124,8 @@ public class IdentitySocialRestServiceV1 extends AbstractSocialRestService imple
    */
   @GET
   @Path("{id}")
-  public Response getIdentityById(@Context UriInfo uriInfo,
-                                   @PathParam("id") String id) throws Exception {
+  public Response getIdentityById(@Context UriInfo uriInfo) throws Exception {
+    String id = getPathParam("id");
     checkAuthenticatedRequest();
     //Check if no authenticated user
     if (Util.isAnonymous()) {
@@ -151,8 +149,8 @@ public class IdentitySocialRestServiceV1 extends AbstractSocialRestService imple
    */
   @PUT
   @Path("{id}")
-  public Response updateIdentityById(@Context UriInfo uriInfo,
-                                      @PathParam("id") String id) throws Exception {
+  public Response updateIdentityById(@Context UriInfo uriInfo) throws Exception {
+    String id = getPathParam("id");
     checkAuthenticatedRequest();
     //Check if no authenticated user
     if (Util.isAnonymous()) {
@@ -181,8 +179,8 @@ public class IdentitySocialRestServiceV1 extends AbstractSocialRestService imple
    */
   @DELETE
   @Path("{id}")
-  public Response deleteIdentityById(@Context UriInfo uriInfo,
-                                      @PathParam("id") String id) throws Exception {
+  public Response deleteIdentityById(@Context UriInfo uriInfo) throws Exception {
+    String id = getPathParam("id");
     checkAuthenticatedRequest();
     //Check if no authenticated user
     if (RestUtils.isMemberOfAdminGroup()) {
@@ -213,8 +211,8 @@ public class IdentitySocialRestServiceV1 extends AbstractSocialRestService imple
    */
   @GET
   @Path("{id}/relationships")
-  public Response getRelationshipsOfIdentity(@Context UriInfo uriInfo,
-                                              @PathParam("id") String id) throws Exception {
+  public Response getRelationshipsOfIdentity(@Context UriInfo uriInfo) throws Exception {
+    String id = getPathParam("id");
     checkAuthenticatedRequest();
     //Check if no authenticated user
     if (Util.isAnonymous()) {

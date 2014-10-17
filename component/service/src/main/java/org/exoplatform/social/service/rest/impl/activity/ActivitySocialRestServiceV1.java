@@ -19,7 +19,6 @@ package org.exoplatform.social.service.rest.impl.activity;
 import static org.exoplatform.social.service.rest.RestChecker.checkAuthenticatedRequest;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -29,8 +28,6 @@ import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
@@ -62,12 +59,6 @@ public class ActivitySocialRestServiceV1 extends AbstractSocialRestService imple
   public Response getActivitiesOfCurrentUser(@Context UriInfo uriInfo) throws Exception {
     String authenticatedUser = ConversationState.getCurrent().getIdentity().getUserId();
     
-    List<String> returnedProperties = new ArrayList<String>();
-    String fields = getQueryValueFields(uriInfo);
-    if (fields != null && fields.length() > 0) {
-      returnedProperties.addAll(Arrays.asList(fields.split(",")));
-    }
-    
     Identity currentUser = CommonsUtils.getService(IdentityManager.class).getOrCreateIdentity(OrganizationIdentityProvider.NAME, authenticatedUser, true);
     
     int limit = getQueryValueLimit(uriInfo);
@@ -95,8 +86,8 @@ public class ActivitySocialRestServiceV1 extends AbstractSocialRestService imple
   
   @GET
   @Path("{id}")
-  public Response getActivityById(@Context UriInfo uriInfo,
-                                   @PathParam("id") String id) throws Exception {
+  public Response getActivityById(@Context UriInfo uriInfo) throws Exception {
+    String id = getPathParam("id");
     checkAuthenticatedRequest();
     //Check if no authenticated user
     String authenticatedUser = ConversationState.getCurrent().getIdentity().getUserId();
@@ -126,9 +117,9 @@ public class ActivitySocialRestServiceV1 extends AbstractSocialRestService imple
   
   @PUT
   @Path("{id}")
-  public Response updateActivityById(@Context UriInfo uriInfo,
-                                      @PathParam("id") String id,
-                                      @QueryParam("text") String text) throws Exception {
+  public Response updateActivityById(@Context UriInfo uriInfo) throws Exception {
+    String id = getPathParam("id");
+    String text = getQueryParam("text");
     checkAuthenticatedRequest();
     //Check if no authenticated user
     String authenticatedUser = ConversationState.getCurrent().getIdentity().getUserId();
@@ -157,8 +148,8 @@ public class ActivitySocialRestServiceV1 extends AbstractSocialRestService imple
   
   @DELETE
   @Path("{id}")
-  public Response deleteActivityById(@Context UriInfo uriInfo,
-                                      @PathParam("id") String id) throws Exception {
+  public Response deleteActivityById(@Context UriInfo uriInfo) throws Exception {
+    String id = getPathParam("id");
     checkAuthenticatedRequest();
     //Check if no authenticated user
     String authenticatedUser = ConversationState.getCurrent().getIdentity().getUserId();
@@ -185,8 +176,8 @@ public class ActivitySocialRestServiceV1 extends AbstractSocialRestService imple
   
   @GET
   @Path("{id}/comments")
-  public Response getCommentsOfActivity(@Context UriInfo uriInfo,
-                                         @PathParam("id") String id) throws Exception {
+  public Response getCommentsOfActivity(@Context UriInfo uriInfo) throws Exception {
+    String id = getPathParam("id");
     checkAuthenticatedRequest();
     //Check if no authenticated user
     String authenticatedUser = ConversationState.getCurrent().getIdentity().getUserId();
@@ -196,8 +187,8 @@ public class ActivitySocialRestServiceV1 extends AbstractSocialRestService imple
     
     Identity currentUser = CommonsUtils.getService(IdentityManager.class).getOrCreateIdentity(OrganizationIdentityProvider.NAME, authenticatedUser, true);
     
-    int limit = getQueryValueLimit(uriInfo);
-    int offset = getQueryValueOffset(uriInfo);
+    int limit = Integer.parseInt(getQueryParam("limit"));
+    int offset = Integer.parseInt(getQueryParam("offset"));
     
     ActivityManager activityManager = CommonsUtils.getService(ActivityManager.class);
     ExoSocialActivity activity = activityManager.getActivity(id);
@@ -227,9 +218,9 @@ public class ActivitySocialRestServiceV1 extends AbstractSocialRestService imple
   
   @POST
   @Path("{id}/comments")
-  public Response postComment(@Context UriInfo uriInfo,
-                               @PathParam("id") String id,
-                               @QueryParam("text") String text) throws Exception {
+  public Response postComment(@Context UriInfo uriInfo) throws Exception {
+    String id = getPathParam("id");
+    String text = getQueryParam("text");
     checkAuthenticatedRequest();
     //Check if no authenticated user
     String authenticatedUser = ConversationState.getCurrent().getIdentity().getUserId();

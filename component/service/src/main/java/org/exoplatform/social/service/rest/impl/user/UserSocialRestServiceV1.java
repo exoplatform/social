@@ -19,7 +19,6 @@ package org.exoplatform.social.service.rest.impl.user;
 import static org.exoplatform.social.service.rest.RestChecker.checkAuthenticatedRequest;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -28,8 +27,6 @@ import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
@@ -81,15 +78,9 @@ public class UserSocialRestServiceV1 extends AbstractSocialRestService implement
   }
   
   @GET
-  public Response getUsers(@Context UriInfo uriInfo,
-                            @QueryParam("q") String q) throws Exception {
+  public Response getUsers(@Context UriInfo uriInfo) throws Exception {
+    String q = getQueryParam("q");
     checkAuthenticatedRequest();
-    
-    List<String> returnedProperties = new ArrayList<String>();
-    String fields = getQueryValueFields(uriInfo);
-    if (fields != null && fields.length() > 0) {
-      returnedProperties.addAll(Arrays.asList(fields.split(",")));
-    }
     
     int limit = getQueryValueLimit(uriInfo);
     int offset = getQueryValueOffset(uriInfo);
@@ -117,12 +108,13 @@ public class UserSocialRestServiceV1 extends AbstractSocialRestService implement
   }
   
   @POST
-  public Response addUser(@Context UriInfo uriInfo,
-                           @QueryParam("userName") String userName,
-                           @QueryParam("firstName") String firstName,
-                           @QueryParam("lastName") String lastName,
-                           @QueryParam("password") String password,
-                           @QueryParam("email") String email) throws Exception {
+  public Response addUser(@Context UriInfo uriInfo) throws Exception {
+    String userName = getQueryParam("userName");
+    String firstName = getQueryParam("firstName");
+    String lastName = getQueryParam("lastName"); 
+    String password = getQueryParam("password");
+    String email = getQueryParam("email");
+    
     checkAuthenticatedRequest();
     //Check permission of current user
     if (!RestUtils.isMemberOfAdminGroup()) {
@@ -150,8 +142,8 @@ public class UserSocialRestServiceV1 extends AbstractSocialRestService implement
   
   @GET
   @Path("{id}")
-  public Response getUserById(@Context UriInfo uriInfo,
-                               @PathParam("id") String id) throws Exception {
+  public Response getUserById(@Context UriInfo uriInfo) throws Exception {
+    String id = getPathParam("id");
     checkAuthenticatedRequest();
     
     if (Util.isAnonymous()) {
@@ -165,8 +157,8 @@ public class UserSocialRestServiceV1 extends AbstractSocialRestService implement
   
   @DELETE
   @Path("{id}")
-  public Response deleteUserById(@Context UriInfo uriInfo,
-                                  @PathParam("id") String id) throws Exception {
+  public Response deleteUserById(@Context UriInfo uriInfo) throws Exception {
+    String id = getPathParam("id");
     checkAuthenticatedRequest();
     //Check permission of current user
     if (!RestUtils.isMemberOfAdminGroup()) {
@@ -185,8 +177,8 @@ public class UserSocialRestServiceV1 extends AbstractSocialRestService implement
   
   @PUT
   @Path("{id}")
-  public Response updateUserById(@Context UriInfo uriInfo,
-                                  @PathParam("id") String id) throws Exception {
+  public Response updateUserById(@Context UriInfo uriInfo) throws Exception {
+    String id = getPathParam("id");
     checkAuthenticatedRequest();
     Identity identity = CommonsUtils.getService(IdentityManager.class).getOrCreateIdentity(OrganizationIdentityProvider.NAME, id, true);
     if (identity == null) {
@@ -205,8 +197,8 @@ public class UserSocialRestServiceV1 extends AbstractSocialRestService implement
   
   @GET
   @Path("{id}/connections")
-  public Response getConnectionOfUser(@Context UriInfo uriInfo,
-                                       @PathParam("id") String id) throws Exception {
+  public Response getConnectionOfUser(@Context UriInfo uriInfo) throws Exception {
+    String id = getPathParam("id");
     checkAuthenticatedRequest();
     if (Util.isAnonymous()) {
       throw new WebApplicationException(Response.Status.UNAUTHORIZED);
@@ -235,8 +227,8 @@ public class UserSocialRestServiceV1 extends AbstractSocialRestService implement
   
   @GET
   @Path("{id}/spaces")
-  public Response getSpacesOfUser(@Context UriInfo uriInfo,
-                                   @PathParam("id") String id) throws Exception {
+  public Response getSpacesOfUser(@Context UriInfo uriInfo) throws Exception {
+    String id = getPathParam("id");
     checkAuthenticatedRequest();
     Identity target = CommonsUtils.getService(IdentityManager.class).getOrCreateIdentity(OrganizationIdentityProvider.NAME, id, true);
     //Check if the given user exists
@@ -267,11 +259,12 @@ public class UserSocialRestServiceV1 extends AbstractSocialRestService implement
   
   @GET
   @Path("{id}/activities")
-  public Response getActivitiesOfUser(@Context UriInfo uriInfo,
-                                       @PathParam("id") String id,
-                                       @QueryParam("type") String type,
-                                       @QueryParam("after") Long after,
-                                       @QueryParam("before") Long before) throws Exception {
+  public Response getActivitiesOfUser(@Context UriInfo uriInfo) throws Exception {
+    String id = getPathParam("id");
+    String type = getQueryParam("type");
+    Long after = Long.parseLong(getQueryParam("after")); 
+    Long before = Long.parseLong(getQueryParam("before"));
+    
     checkAuthenticatedRequest();
     //Check if no authenticated user
     String authenticatedUser = ConversationState.getCurrent().getIdentity().getUserId();
@@ -345,9 +338,9 @@ public class UserSocialRestServiceV1 extends AbstractSocialRestService implement
   
   @POST
   @Path("{id}/activities")
-  public Response addActivityByUser(@Context UriInfo uriInfo,
-                                     @PathParam("id") String id,
-                                     @QueryParam("text") String text) throws Exception {
+  public Response addActivityByUser(@Context UriInfo uriInfo) throws Exception {
+    String id = getPathParam("id");
+    String text = getQueryParam("text");
     checkAuthenticatedRequest();
     //Check if no authenticated user
     if (Util.isAnonymous()) {

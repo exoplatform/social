@@ -28,8 +28,6 @@ import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
@@ -61,21 +59,15 @@ public class SpaceMembershipRestServiceV1 extends AbstractSocialRestService impl
   }
 
   @GET
-  public Response getSpacesMemberships(@Context UriInfo uriInfo,
-                                        @QueryParam("status") String status,
-                                        @QueryParam("user") String user,
-                                        @QueryParam("space") String space) throws Exception {
+  public Response getSpacesMemberships(@Context UriInfo uriInfo) throws Exception {
+    String user = getQueryParam("user");
+    String space= getQueryParam("space");
+    
     checkAuthenticatedRequest();
     //Check if no authenticated user
     String authenticatedUser = ConversationState.getCurrent().getIdentity().getUserId();
     if (IdentityConstants.ANONIM.equals(authenticatedUser)) {
       throw new WebApplicationException(Response.Status.UNAUTHORIZED);
-    }
-    
-    List<String> returnedProperties = new ArrayList<String>();
-    String fields = getQueryValueFields(uriInfo);
-    if (fields != null && fields.length() > 0) {
-      returnedProperties.addAll(Arrays.asList(fields.split(",")));
     }
     
     //
@@ -113,7 +105,7 @@ public class SpaceMembershipRestServiceV1 extends AbstractSocialRestService impl
     }
     
     List<Map<String, Object>> spaceMemberships = new ArrayList<Map<String, Object>>();
-    setSpaceMemberships(spaceMemberships, spaces, user, uriInfo, returnedProperties);
+    setSpaceMemberships(spaceMemberships, spaces, user, uriInfo);
     
     SpaceMembershipsCollections membershipsCollections = new SpaceMembershipsCollections(getQueryValueReturnSize(uriInfo) ? size : -1, offset, limit);
     membershipsCollections.setSpaceMemberships(spaceMemberships);
@@ -122,9 +114,9 @@ public class SpaceMembershipRestServiceV1 extends AbstractSocialRestService impl
   }
   
   @POST
-  public Response addSpacesMemberships(@Context UriInfo uriInfo,
-                                        @QueryParam("user") String user,
-                                        @QueryParam("space") String space) throws Exception {
+  public Response addSpacesMemberships(@Context UriInfo uriInfo) throws Exception {
+    String user = getQueryParam("user");
+    String space = getQueryParam("space");
     checkAuthenticatedRequest();
     //Check if no authenticated user
     String authenticatedUser = ConversationState.getCurrent().getIdentity().getUserId();
@@ -155,10 +147,10 @@ public class SpaceMembershipRestServiceV1 extends AbstractSocialRestService impl
   
   @GET
   @Path("{id}/{spacesPrefix}/{spacePrettyName}")
-  public Response getSpaceMembershipById(@Context UriInfo uriInfo,
-                                          @PathParam("id") String id,
-                                          @PathParam("spacesPrefix") String spacesPrefix,
-                                          @PathParam("spacePrettyName") String spacePrettyName) throws Exception {
+  public Response getSpaceMembershipById(@Context UriInfo uriInfo) throws Exception {
+    String id = getPathParam("id");
+    String spacesPrefix = getPathParam("spacesPrefix");
+    String spacePrettyName = getPathParam("spacePrettyName"); 
     checkAuthenticatedRequest();
     //Check if no authenticated user
     String authenticatedUser = ConversationState.getCurrent().getIdentity().getUserId();
@@ -187,11 +179,12 @@ public class SpaceMembershipRestServiceV1 extends AbstractSocialRestService impl
   
   @PUT
   @Path("{id}/{spacesPrefix}/{spacePrettyName}")
-  public Response updateSpaceMembershipById(@Context UriInfo uriInfo,
-                                             @PathParam("id") String id,
-                                             @PathParam("spacesPrefix") String spacesPrefix,
-                                             @PathParam("spacePrettyName") String spacePrettyName,
-                                             @QueryParam("type") String type) throws Exception {
+  public Response updateSpaceMembershipById(@Context UriInfo uriInfo) throws Exception {
+    String id = getPathParam("id");
+    String spacesPrefix = getPathParam("spacesPrefix");
+    String spacePrettyName = getPathParam("spacePrettyName");
+    String type = getQueryParam("type");
+    
     checkAuthenticatedRequest();
     //Check if no authenticated user
     String authenticatedUser = ConversationState.getCurrent().getIdentity().getUserId();
@@ -229,10 +222,11 @@ public class SpaceMembershipRestServiceV1 extends AbstractSocialRestService impl
   
   @DELETE
   @Path("{id}/{spacesPrefix}/{spacePrettyName}")
-  public Response deleteSpaceMembershipById(@Context UriInfo uriInfo,
-                                             @PathParam("id") String id,
-                                             @PathParam("spacesPrefix") String spacesPrefix,
-                                             @PathParam("spacePrettyName") String spacePrettyName) throws Exception {
+  public Response deleteSpaceMembershipById(@Context UriInfo uriInfo) throws Exception {
+    String id = getPathParam("id");
+    String spacesPrefix = getPathParam("spacesPrefix");
+    String spacePrettyName = getPathParam("spacePrettyName");
+    
     checkAuthenticatedRequest();
     //Check if no authenticated user
     String authenticatedUser = ConversationState.getCurrent().getIdentity().getUserId();
@@ -265,7 +259,7 @@ public class SpaceMembershipRestServiceV1 extends AbstractSocialRestService impl
   }
   
   private void setSpaceMemberships(List<Map<String, Object>> spaceMemberships, List<Space> spaces, 
-      String userId, UriInfo uriInfo, List<String> returnedProperties) {
+      String userId, UriInfo uriInfo) {
     for (Space space : spaces) {
       if (userId != null) {
         if (ArrayUtils.contains(space.getMembers(), userId)) {

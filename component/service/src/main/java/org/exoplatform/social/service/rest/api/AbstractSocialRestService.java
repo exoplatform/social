@@ -8,6 +8,7 @@ import javax.ws.rs.core.UriInfo;
 import org.apache.commons.lang.CharEncoding;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.utils.URLEncodedUtils;
+import org.exoplatform.services.rest.impl.ApplicationContextImpl;
 
 public abstract class AbstractSocialRestService {
   
@@ -30,25 +31,29 @@ public abstract class AbstractSocialRestService {
     return null;
   }
   
-  protected String getQueryValueFields(UriInfo uriInfo) {
-    return getQueryParam(uriInfo, "fields");
+  protected String getPathParam(String name) {
+    return ApplicationContextImpl.getCurrent().getPathParameters().getFirst(name);
   }
 
+  protected String getQueryParam(String name) {
+    return ApplicationContextImpl.getCurrent().getQueryParameters().getFirst(name);   
+  }
+  
   protected String getQueryValueExpand(UriInfo uriInfo) {
     return getQueryParam(uriInfo, "expand");
   }
 
   protected int getQueryValueLimit(UriInfo uriInfo) {
     String limit = getQueryParam(uriInfo, "limit");
-    return (limit != null && Integer.valueOf(limit) > 0) ? Math.min(HARD_LIMIT, Integer.valueOf(limit)) : DEFAULT_LIMIT;
+    return (limit != null && Integer.parseInt(limit) > 0) ? Math.min(HARD_LIMIT, Integer.parseInt(limit)) : DEFAULT_LIMIT;
   }
 
   protected int getQueryValueOffset(UriInfo uriInfo) {
     String offset = getQueryParam(uriInfo, "offset");
-    return (offset != null) ? Integer.valueOf(offset) : 0;
+    return (offset != null) ? Integer.parseInt(offset) : 0;
   }
 
   protected boolean getQueryValueReturnSize(UriInfo uriInfo) {
-    return Boolean.valueOf(getQueryParam(uriInfo, "returnSize"));
+    return Boolean.parseBoolean(getQueryParam(uriInfo, "returnSize"));
   }
 }
