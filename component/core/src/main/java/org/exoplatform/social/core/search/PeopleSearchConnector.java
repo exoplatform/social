@@ -8,6 +8,7 @@ import java.util.Map;
 import javax.jcr.query.Row;
 import javax.jcr.query.RowIterator;
 
+import org.apache.lucene.queryParser.QueryParser;
 import org.exoplatform.commons.api.search.data.SearchContext;
 import org.exoplatform.commons.api.search.data.SearchResult;
 import org.exoplatform.commons.utils.ListAccess;
@@ -114,7 +115,7 @@ public class PeopleSearchConnector extends AbstractSocialSearchConnector {
     .not().equals(ProfileEntity.deleted, "true");
     
     if (filter.getAll().length() != 0) {
-      String value = filter.getAll();
+      String value = StorageUtils.escapeSpecialCharacter(filter.getAll());
 
       whereExpression.and().startGroup()
           .contains(ProfileEntity.fullName, value.toLowerCase())

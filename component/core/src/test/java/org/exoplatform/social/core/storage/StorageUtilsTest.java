@@ -196,5 +196,10 @@ public class StorageUtilsTest extends TestCase {
     assertEquals("Abc", list.get(0).getProfile().getFullName());
     assertEquals("Xyz", list.get(2).getProfile().getFullName());
   }
+  
+  public void testEscapeSpecialCharacter() {
+    String s = "! . , : ; ( ) ^}{[] -, \" '% *";
+    assertEquals("\\! . , \\: ; \\( \\) \\^\\}\\{\\[\\] \\-, \\\" ''% \\*", StorageUtils.escapeSpecialCharacter(s));
+  }
 
 }
