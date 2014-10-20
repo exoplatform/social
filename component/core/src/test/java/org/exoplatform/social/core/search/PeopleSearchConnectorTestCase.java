@@ -187,5 +187,9 @@ public class PeopleSearchConnectorTestCase extends AbstractCoreTest {
     rootProfile.setProperty(Profile.FIRST_NAME, "root");
     identityManager.saveProfile(rootProfile);
     assertEquals(1, peopleSearchConnector.search(null, "広いニーズ", Collections.EMPTY_LIST, 0, 10, "relevancy", "asc").size());
+    
+    rootProfile.setProperty(Profile.EXPERIENCES_SKILLS, StringEscapeUtils.escapeHtml("! . , : ; ( ) ^}{[] -, \" '% *"));
+    identityManager.saveProfile(rootProfile);
+    assertEquals(1, peopleSearchConnector.search(null, "! . , : ; ( ) ^}{[] -, \" '% *", Collections.EMPTY_LIST, 0, 10, "relevancy", "asc").size());
   }
 }

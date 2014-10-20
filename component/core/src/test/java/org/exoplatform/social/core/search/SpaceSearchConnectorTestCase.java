@@ -215,6 +215,21 @@ public class SpaceSearchConnectorTestCase extends AbstractCoreTest {
     assertEquals(1, list.getSize());
     assertEquals(1, list.load(0, 10).length);
     
+    Space space2 = new Space();
+    space2.setDisplayName("space2");
+    space2.setPrettyName("space2");
+    space2.setDescription("! . , : ; ( ) ^}{[] -, \" '% *");
+    space2.setManagers(new String[]{"root"});
+    space2.setMembers(new String[]{"root","mary"});
+    space2.setType(DefaultSpaceApplicationHandler.NAME);
+    space2.setRegistration(Space.OPEN);
+    createSpaceNonInitApps(space2, "mary", null);
+    tearDown.add(space2);
+    
+    list = spaceService.getUnifiedSearchSpacesWithListAccess("root", new SpaceFilter("! . , : ; ( ) ^}{[] -, \" '% *"));
+    assertEquals(1, list.getSize());
+    assertEquals(1, list.load(0, 10).length);
+    
     identityManager.deleteIdentity(maryIdentity);
     identityManager.deleteIdentity(rootIdentity);
   }

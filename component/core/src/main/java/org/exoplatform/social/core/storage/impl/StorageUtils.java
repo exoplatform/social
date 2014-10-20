@@ -13,6 +13,7 @@ import java.util.Map;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.lucene.queryParser.QueryParser;
 import org.chromattic.api.ChromatticSession;
 import org.exoplatform.commons.chromattic.ChromatticManager;
 import org.exoplatform.commons.chromattic.Synchronization;
@@ -111,7 +112,7 @@ public class StorageUtils {
     }
 
     if (profileFilter.getAll().length() != 0) {
-      String value = profileFilter.getAll();
+      String value = escapeSpecialCharacter(profileFilter.getAll());
 
       whereExpression.and().startGroup()
           .contains(ProfileEntity.fullName, value.toLowerCase())
@@ -125,6 +126,16 @@ public class StorageUtils {
           .endGroup();
     }
 
+  }
+  
+  /**
+   * Escape special character by using QueryParser then replace single quote character
+   * 
+   * @param s the string to escape
+   * @return
+   */
+  public static String escapeSpecialCharacter(String s) {
+    return QueryParser.escape(s).replace("'", "''");
   }
 
   public static void applyExcludes(final WhereExpression whereExpression, final List<Identity> excludedIdentityList) {

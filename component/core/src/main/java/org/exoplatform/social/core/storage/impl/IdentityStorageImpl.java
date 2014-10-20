@@ -33,6 +33,7 @@ import javax.jcr.nodetype.NodeTypeManager;
 import javax.jcr.nodetype.PropertyDefinition;
 
 import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.lucene.queryParser.QueryParser;
 import org.chromattic.api.UndeclaredRepositoryException;
 import org.chromattic.api.query.Ordering;
 import org.chromattic.api.query.QueryBuilder;
@@ -1399,7 +1400,7 @@ public class IdentityStorageImpl extends AbstractStorage implements IdentityStor
   
   private void _applyUnifiedSearchFilter(WhereExpression whereExpression, ProfileFilter profileFilter) {
 
-    String searchCondition = profileFilter.getAll();
+    String searchCondition = StorageUtils.escapeSpecialCharacter(profileFilter.getAll());
 
     if (searchCondition != null && searchCondition.length() != 0) {
       if (this.isValidInput(searchCondition)) {
