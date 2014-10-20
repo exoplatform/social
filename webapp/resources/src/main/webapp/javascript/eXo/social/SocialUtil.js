@@ -249,13 +249,12 @@
       if(item.length > 0) {
         var lineNumbers = parseInt(item.attr('data-line'));
         if(lineNumbers) {
-          var originalText = item.text().trim();
-          if(item.attr('data-text') == null) {
-            item.attr('data-text', originalText);
-          } else {
-            originalText = item.attr('data-text');
-            item.text(originalText);
-          }
+          var originalText = item.attr('data-text') || item.text().trim();
+          item.attr('data-text', originalText);
+          item.text(originalText);
+          var wText = item.attr('data-width-text') || SocialUtils.getTextWidth(originalText);
+          item.attr('data-width-text', wText);
+          //
           var originalSize = originalText.length;
           if(originalText.indexOf(' ') < 0) {
             item.css({'word-break': 'break-word', 'word-wrap':'break-word'});
@@ -263,13 +262,13 @@
           //
           var key = item.attr('data-key') + lineNumbers;
           var maxSize = eXo.social.DATA_LIMIT_TEXT[key] || 0;
-          var sizeOk = eXo.social.DATA_LIMIT_TEXT[key + 'previousSize'] || 0;
+          var wTextOk = eXo.social.DATA_LIMIT_TEXT[key + 'previousWidth'] || 0;
           var threeDots = '...';
           if (maxSize > 0) {
             if (originalSize > maxSize) {
               item.text(originalText.substring(0, maxSize - threeDots.length) + threeDots);
             }
-          } else if (originalSize > sizeOk) {
+          } else if (wText > wTextOk) {
             // set default height for text container.
             item.css({
               'margin-top' : '0px', 'margin-bottom' : '0px',
@@ -285,7 +284,7 @@
               eXo.social.DATA_LIMIT_TEXT[key] = decreaseSize;
             }
             //
-            eXo.social.DATA_LIMIT_TEXT[key + 'previousSize'] = decreaseSize;
+            eXo.social.DATA_LIMIT_TEXT[key + 'previousWidth'] = SocialUtils.getTextWidth(item.text());
             // reset CSS height style for text container
             item.css({
               'margin-top' : '', 'margin-bottom' : '',
@@ -295,6 +294,15 @@
           }
         }
       }
+    },
+    getTextWidth : function(text) {
+      var jtext = $('body').find('> .sampleText');
+      if (jtext.length == 0) {
+        jtext = $('<div class="sampleText" style="display:inline-block;visibility:hidden"></div>');
+        jtext.appendTo($('body'));
+      }
+      jtext.text(text);
+      return jtext.width();
     },
     dynamicItemLayout : function(comId) {
       var container = $('#'+comId);
