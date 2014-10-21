@@ -16,12 +16,11 @@
  */
 package org.exoplatform.social.service.rest.impl.identity;
 
-import static org.exoplatform.social.service.rest.RestChecker.checkAuthenticatedRequest;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -54,13 +53,9 @@ public class IdentitySocialRestServiceV1 extends AbstractSocialRestService imple
    * {@inheritDoc}
    */
   @GET
+  @RolesAllowed("users")
   public Response getIdentities(@Context UriInfo uriInfo) throws Exception {
     String type = getQueryParam("type");
-    checkAuthenticatedRequest();
-    //Check if no authenticated user
-    if (Util.isAnonymous()) {
-      throw new WebApplicationException(Response.Status.UNAUTHORIZED);
-    }
     
     int limit = getQueryValueLimit(uriInfo);
     int offset = getQueryValueOffset(uriInfo);
@@ -91,11 +86,11 @@ public class IdentitySocialRestServiceV1 extends AbstractSocialRestService imple
    * {@inheritDoc}
    */
   @POST
+  @RolesAllowed("users")
   public Response createIdentities(@Context UriInfo uriInfo) throws Exception {
     String remoteId = getQueryParam("remoteId");
     String providerId = getQueryParam("providerId"); 
-    checkAuthenticatedRequest();
-    if (Util.isAnonymous() || !RestUtils.isMemberOfAdminGroup()) {
+    if (!RestUtils.isMemberOfAdminGroup()) {
       throw new WebApplicationException(Response.Status.UNAUTHORIZED);
     }
     if (providerId == null || remoteId == null 
@@ -124,13 +119,9 @@ public class IdentitySocialRestServiceV1 extends AbstractSocialRestService imple
    */
   @GET
   @Path("{id}")
+  @RolesAllowed("users")
   public Response getIdentityById(@Context UriInfo uriInfo) throws Exception {
     String id = getPathParam("id");
-    checkAuthenticatedRequest();
-    //Check if no authenticated user
-    if (Util.isAnonymous()) {
-      throw new WebApplicationException(Response.Status.UNAUTHORIZED);
-    }
     
     IdentityManager identityManager = CommonsUtils.getService(IdentityManager.class);
     Identity identity = identityManager.getIdentity(id, true);
@@ -149,13 +140,9 @@ public class IdentitySocialRestServiceV1 extends AbstractSocialRestService imple
    */
   @PUT
   @Path("{id}")
+  @RolesAllowed("users")
   public Response updateIdentityById(@Context UriInfo uriInfo) throws Exception {
     String id = getPathParam("id");
-    checkAuthenticatedRequest();
-    //Check if no authenticated user
-    if (Util.isAnonymous()) {
-      throw new WebApplicationException(Response.Status.UNAUTHORIZED);
-    }
     
     IdentityManager identityManager = CommonsUtils.getService(IdentityManager.class);
     Identity identity = identityManager.getIdentity(id, true);
@@ -179,11 +166,10 @@ public class IdentitySocialRestServiceV1 extends AbstractSocialRestService imple
    */
   @DELETE
   @Path("{id}")
+  @RolesAllowed("users")
   public Response deleteIdentityById(@Context UriInfo uriInfo) throws Exception {
     String id = getPathParam("id");
-    checkAuthenticatedRequest();
-    //Check if no authenticated user
-    if (RestUtils.isMemberOfAdminGroup()) {
+    if (! RestUtils.isMemberOfAdminGroup()) {
       throw new WebApplicationException(Response.Status.UNAUTHORIZED);
     }
     
@@ -211,13 +197,9 @@ public class IdentitySocialRestServiceV1 extends AbstractSocialRestService imple
    */
   @GET
   @Path("{id}/relationships")
+  @RolesAllowed("users")
   public Response getRelationshipsOfIdentity(@Context UriInfo uriInfo) throws Exception {
     String id = getPathParam("id");
-    checkAuthenticatedRequest();
-    //Check if no authenticated user
-    if (Util.isAnonymous()) {
-      throw new WebApplicationException(Response.Status.UNAUTHORIZED);
-    }
     
     IdentityManager identityManager = CommonsUtils.getService(IdentityManager.class);
     Identity identity = identityManager.getIdentity(id, true);

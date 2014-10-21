@@ -16,14 +16,13 @@
  */
 package org.exoplatform.social.service.rest.impl.space;
 
-import static org.exoplatform.social.service.rest.RestChecker.checkAuthenticatedRequest;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -38,7 +37,6 @@ import org.apache.commons.lang.StringEscapeUtils;
 import org.exoplatform.commons.utils.CommonsUtils;
 import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.services.security.ConversationState;
-import org.exoplatform.services.security.IdentityConstants;
 import org.exoplatform.social.common.RealtimeListAccess;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.activity.model.ExoSocialActivityImpl;
@@ -70,16 +68,9 @@ public class SpaceSocialRestServiceV1 extends AbstractSocialRestService implemen
   /**
    * {@inheritDoc}
    */
-  @GET
+  @RolesAllowed("users")
   public Response getSpaces(@Context UriInfo uriInfo) throws Exception {
     String q = getQueryParam("q");
-    checkAuthenticatedRequest();
-    //Check if no authenticated user
-    String authenticatedUser = ConversationState.getCurrent().getIdentity().getUserId();
-    if (IdentityConstants.ANONIM.equals(authenticatedUser)) {
-      throw new WebApplicationException(Response.Status.UNAUTHORIZED);
-    }
-    
     SpaceService spaceService = CommonsUtils.getService(SpaceService.class);
     int limit = getQueryValueLimit(uriInfo);
     int offset = getQueryValueOffset(uriInfo);
@@ -91,6 +82,7 @@ public class SpaceSocialRestServiceV1 extends AbstractSocialRestService implemen
       spaceFilter = new SpaceFilter();
       spaceFilter.setSpaceNameSearchCondition(q);
     }
+    String authenticatedUser = ConversationState.getCurrent().getIdentity().getUserId();
     if (RestUtils.isMemberOfAdminGroup()) {
       listAccess = spaceService.getAllSpacesByFilter(spaceFilter);
     } else {
@@ -112,24 +104,21 @@ public class SpaceSocialRestServiceV1 extends AbstractSocialRestService implemen
    * {@inheritDoc}
    */
   @POST
+  @RolesAllowed("users")
   public Response createSpace(@Context UriInfo uriInfo) throws Exception {
     String displayName = getQueryParam("displayName");
     String description = getQueryParam("description");
     String visibility = getQueryParam("visibility");
     String registration = getQueryParam("registration");
     
-    checkAuthenticatedRequest();
-    String authenticatedUser = ConversationState.getCurrent().getIdentity().getUserId();
-    if (IdentityConstants.ANONIM.equals(authenticatedUser)) {
-      throw new WebApplicationException(Response.Status.UNAUTHORIZED);
-    }
     SpaceService spaceService = CommonsUtils.getService(SpaceService.class);
-
     //validate the display name
     if (spaceService.getSpaceByDisplayName(displayName) != null) {
       throw new SpaceException(SpaceException.Code.SPACE_ALREADY_EXIST);
     }
     
+    String authenticatedUser = ConversationState.getCurrent().getIdentity().getUserId();
+    //
     Space space = new Space();
     space.setDisplayName(displayName.trim());
     space.setPrettyName(space.getDisplayName());
@@ -148,22 +137,16 @@ public class SpaceSocialRestServiceV1 extends AbstractSocialRestService implemen
    */
   @GET
   @Path("{id}")
+  @RolesAllowed("users")
   public Response getSpaceById(@Context UriInfo uriInfo) throws Exception {
     String id = getPathParam("id");
-    checkAuthenticatedRequest();
-    //Check if no authenticated user
-    String authenticatedUser = ConversationState.getCurrent().getIdentity().getUserId();
-    if (IdentityConstants.ANONIM.equals(authenticatedUser)) {
-      throw new WebApplicationException(Response.Status.UNAUTHORIZED);
-    }
     
+    String authenticatedUser = ConversationState.getCurrent().getIdentity().getUserId();
     SpaceService spaceService = CommonsUtils.getService(SpaceService.class);
     Space space = spaceService.getSpaceById(id);
     if (space == null || (Space.HIDDEN.equals(space.getVisibility()) && ! spaceService.isMember(space, authenticatedUser) && ! RestUtils.isMemberOfAdminGroup())) {
       throw new WebApplicationException(Response.Status.UNAUTHORIZED);
     }
-    
-    
     return Util.getResponse(RestUtils.buildEntityFromSpace(space, authenticatedUser, uriInfo.getPath(), getQueryValueExpand(uriInfo)), uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
   }
   
@@ -172,6 +155,7 @@ public class SpaceSocialRestServiceV1 extends AbstractSocialRestService implemen
    */
   @PUT
   @Path("{id}")
+  @RolesAllowed("users")
   public Response updateSpaceById(@Context UriInfo uriInfo) throws Exception {
     String id = getPathParam("id");
     String displayName = getQueryParam("displayName");
@@ -179,13 +163,9 @@ public class SpaceSocialRestServiceV1 extends AbstractSocialRestService implemen
     String visibility = getQueryParam("visibility");
     String registration = getQueryParam("registration");
     
-    checkAuthenticatedRequest();
-    //Check if no authenticated user
-    String authenticatedUser = ConversationState.getCurrent().getIdentity().getUserId();
-    if (IdentityConstants.ANONIM.equals(authenticatedUser)) {
-      throw new WebApplicationException(Response.Status.UNAUTHORIZED);
-    }
     
+    String authenticatedUser = ConversationState.getCurrent().getIdentity().getUserId();
+    //
     SpaceService spaceService = CommonsUtils.getService(SpaceService.class);
     Space space = spaceService.getSpaceById(id);
     if (space == null || (! spaceService.isManager(space, authenticatedUser) && ! RestUtils.isMemberOfAdminGroup())) {
@@ -223,21 +203,16 @@ public class SpaceSocialRestServiceV1 extends AbstractSocialRestService implemen
    */
   @DELETE
   @Path("{id}")
+  @RolesAllowed("users")
   public Response deleteSpaceById(@Context UriInfo uriInfo) throws Exception {
     String id = getPathParam("id");
-    checkAuthenticatedRequest();
-    //Check if no authenticated user
     String authenticatedUser = ConversationState.getCurrent().getIdentity().getUserId();
-    if (IdentityConstants.ANONIM.equals(authenticatedUser)) {
-      throw new WebApplicationException(Response.Status.UNAUTHORIZED);
-    }
-    
+    //
     SpaceService spaceService = CommonsUtils.getService(SpaceService.class);
     Space space = spaceService.getSpaceById(id);
     if (space == null || (! spaceService.isManager(space, authenticatedUser) && ! RestUtils.isMemberOfAdminGroup())) {
       throw new WebApplicationException(Response.Status.UNAUTHORIZED);
     }
-    
     spaceService.deleteSpace(space);
     
     return Util.getResponse(RestUtils.buildEntityFromSpace(space, authenticatedUser, uriInfo.getPath(), getQueryValueExpand(uriInfo)), uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
@@ -248,16 +223,12 @@ public class SpaceSocialRestServiceV1 extends AbstractSocialRestService implemen
    */
   @GET
   @Path("{id}/users")
+  @RolesAllowed("users")
   public Response getSpaceMembers(@Context UriInfo uriInfo) throws Exception {
     String id = getPathParam("id");
     String role = getQueryParam("role");
-    checkAuthenticatedRequest();
-    //Check if no authenticated user
     String authenticatedUser = ConversationState.getCurrent().getIdentity().getUserId();
-    if (IdentityConstants.ANONIM.equals(authenticatedUser)) {
-      throw new WebApplicationException(Response.Status.UNAUTHORIZED);
-    }
-    
+    //
     SpaceService spaceService = CommonsUtils.getService(SpaceService.class);
     Space space = spaceService.getSpaceById(id);
     if (space == null || (! spaceService.isMember(space, authenticatedUser) && ! RestUtils.isMemberOfAdminGroup())) {
@@ -291,18 +262,14 @@ public class SpaceSocialRestServiceV1 extends AbstractSocialRestService implemen
    */
   @GET
   @Path("{id}/activities")
+  @RolesAllowed("users")
   public Response getSpaceActivitiesById(@Context UriInfo uriInfo) throws Exception {
     
     String id = getPathParam("id");
     Long after = Long.parseLong(getQueryParam("after"));
     Long before= Long.parseLong(getQueryParam("before"));
-    checkAuthenticatedRequest();
-    //Check if no authenticated user
     String authenticatedUser = ConversationState.getCurrent().getIdentity().getUserId();
-    if (IdentityConstants.ANONIM.equals(authenticatedUser)) {
-      throw new WebApplicationException(Response.Status.UNAUTHORIZED);
-    }
-    
+    //
     SpaceService spaceService = CommonsUtils.getService(SpaceService.class);
     Space space = spaceService.getSpaceById(id);
     if (space == null || ! spaceService.isMember(space, authenticatedUser)) {
@@ -347,16 +314,12 @@ public class SpaceSocialRestServiceV1 extends AbstractSocialRestService implemen
    */
   @POST
   @Path("{id}/activities")
+  @RolesAllowed("users")
   public Response postActivityOnSpace(@Context UriInfo uriInfo) throws Exception {
     String id = getPathParam("id");
     String text = getQueryParam("text");
-    checkAuthenticatedRequest();
-    //
     String authenticatedUser = ConversationState.getCurrent().getIdentity().getUserId();
-    if (IdentityConstants.ANONIM.equals(authenticatedUser)) {
-      throw new WebApplicationException(Response.Status.UNAUTHORIZED);
-    }
-    
+    //
     SpaceService spaceService = CommonsUtils.getService(SpaceService.class);
     Space space = spaceService.getSpaceById(id);
     if (space == null || ! spaceService.isMember(space, authenticatedUser)) {

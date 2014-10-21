@@ -16,8 +16,6 @@
  */
 package org.exoplatform.social.service.rest.impl.activity;
 
-import static org.exoplatform.social.service.rest.RestChecker.checkAuthenticatedRequest;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -35,7 +33,6 @@ import javax.ws.rs.core.UriInfo;
 
 import org.exoplatform.commons.utils.CommonsUtils;
 import org.exoplatform.services.security.ConversationState;
-import org.exoplatform.services.security.IdentityConstants;
 import org.exoplatform.social.common.RealtimeListAccess;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.activity.model.ExoSocialActivityImpl;
@@ -86,15 +83,11 @@ public class ActivitySocialRestServiceV1 extends AbstractSocialRestService imple
   
   @GET
   @Path("{id}")
+  @RolesAllowed("users")
   public Response getActivityById(@Context UriInfo uriInfo) throws Exception {
     String id = getPathParam("id");
-    checkAuthenticatedRequest();
-    //Check if no authenticated user
-    String authenticatedUser = ConversationState.getCurrent().getIdentity().getUserId();
-    if (IdentityConstants.ANONIM.equals(authenticatedUser)) {
-      throw new WebApplicationException(Response.Status.UNAUTHORIZED);
-    }
     
+    String authenticatedUser = ConversationState.getCurrent().getIdentity().getUserId();
     Identity currentUser = CommonsUtils.getService(IdentityManager.class).getOrCreateIdentity(OrganizationIdentityProvider.NAME, authenticatedUser, true);
     
     ActivityManager activityManager = CommonsUtils.getService(ActivityManager.class);
@@ -117,16 +110,12 @@ public class ActivitySocialRestServiceV1 extends AbstractSocialRestService imple
   
   @PUT
   @Path("{id}")
+  @RolesAllowed("users")
   public Response updateActivityById(@Context UriInfo uriInfo) throws Exception {
     String id = getPathParam("id");
     String text = getQueryParam("text");
-    checkAuthenticatedRequest();
-    //Check if no authenticated user
-    String authenticatedUser = ConversationState.getCurrent().getIdentity().getUserId();
-    if (IdentityConstants.ANONIM.equals(authenticatedUser)) {
-      throw new WebApplicationException(Response.Status.UNAUTHORIZED);
-    }
     
+    String authenticatedUser = ConversationState.getCurrent().getIdentity().getUserId();
     Identity currentUser = CommonsUtils.getService(IdentityManager.class).getOrCreateIdentity(OrganizationIdentityProvider.NAME, authenticatedUser, true);
     
     ActivityManager activityManager = CommonsUtils.getService(ActivityManager.class);
@@ -148,15 +137,11 @@ public class ActivitySocialRestServiceV1 extends AbstractSocialRestService imple
   
   @DELETE
   @Path("{id}")
+  @RolesAllowed("users")
   public Response deleteActivityById(@Context UriInfo uriInfo) throws Exception {
     String id = getPathParam("id");
-    checkAuthenticatedRequest();
-    //Check if no authenticated user
-    String authenticatedUser = ConversationState.getCurrent().getIdentity().getUserId();
-    if (IdentityConstants.ANONIM.equals(authenticatedUser)) {
-      throw new WebApplicationException(Response.Status.UNAUTHORIZED);
-    }
     
+    String authenticatedUser = ConversationState.getCurrent().getIdentity().getUserId();
     Identity currentUser = CommonsUtils.getService(IdentityManager.class).getOrCreateIdentity(OrganizationIdentityProvider.NAME, authenticatedUser, true);
     
     ActivityManager activityManager = CommonsUtils.getService(ActivityManager.class);
@@ -176,15 +161,11 @@ public class ActivitySocialRestServiceV1 extends AbstractSocialRestService imple
   
   @GET
   @Path("{id}/comments")
+  @RolesAllowed("users")
   public Response getCommentsOfActivity(@Context UriInfo uriInfo) throws Exception {
     String id = getPathParam("id");
-    checkAuthenticatedRequest();
-    //Check if no authenticated user
-    String authenticatedUser = ConversationState.getCurrent().getIdentity().getUserId();
-    if (IdentityConstants.ANONIM.equals(authenticatedUser)) {
-      throw new WebApplicationException(Response.Status.UNAUTHORIZED);
-    }
     
+    String authenticatedUser = ConversationState.getCurrent().getIdentity().getUserId();
     Identity currentUser = CommonsUtils.getService(IdentityManager.class).getOrCreateIdentity(OrganizationIdentityProvider.NAME, authenticatedUser, true);
     
     int limit = Integer.parseInt(getQueryParam("limit"));
@@ -218,16 +199,12 @@ public class ActivitySocialRestServiceV1 extends AbstractSocialRestService imple
   
   @POST
   @Path("{id}/comments")
+  @RolesAllowed("users")
   public Response postComment(@Context UriInfo uriInfo) throws Exception {
     String id = getPathParam("id");
     String text = getQueryParam("text");
-    checkAuthenticatedRequest();
-    //Check if no authenticated user
-    String authenticatedUser = ConversationState.getCurrent().getIdentity().getUserId();
-    if (IdentityConstants.ANONIM.equals(authenticatedUser)) {
-      throw new WebApplicationException(Response.Status.UNAUTHORIZED);
-    }
     
+    String authenticatedUser = ConversationState.getCurrent().getIdentity().getUserId();
     Identity currentUser = CommonsUtils.getService(IdentityManager.class).getOrCreateIdentity(OrganizationIdentityProvider.NAME, authenticatedUser, true);
     
     ActivityManager activityManager = CommonsUtils.getService(ActivityManager.class);

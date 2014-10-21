@@ -16,12 +16,11 @@
  */
 package org.exoplatform.social.service.rest.impl.user;
 
-import static org.exoplatform.social.service.rest.RestChecker.checkAuthenticatedRequest;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -38,7 +37,6 @@ import org.exoplatform.services.organization.OrganizationService;
 import org.exoplatform.services.organization.User;
 import org.exoplatform.services.organization.UserHandler;
 import org.exoplatform.services.security.ConversationState;
-import org.exoplatform.services.security.IdentityConstants;
 import org.exoplatform.social.common.RealtimeListAccess;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.activity.model.ExoSocialActivityImpl;
@@ -78,9 +76,9 @@ public class UserSocialRestServiceV1 extends AbstractSocialRestService implement
   }
   
   @GET
+  @RolesAllowed("users")
   public Response getUsers(@Context UriInfo uriInfo) throws Exception {
     String q = getQueryParam("q");
-    checkAuthenticatedRequest();
     
     int limit = getQueryValueLimit(uriInfo);
     int offset = getQueryValueOffset(uriInfo);
@@ -108,6 +106,7 @@ public class UserSocialRestServiceV1 extends AbstractSocialRestService implement
   }
   
   @POST
+  @RolesAllowed("users")
   public Response addUser(@Context UriInfo uriInfo) throws Exception {
     String userName = getQueryParam("userName");
     String firstName = getQueryParam("firstName");
@@ -115,7 +114,6 @@ public class UserSocialRestServiceV1 extends AbstractSocialRestService implement
     String password = getQueryParam("password");
     String email = getQueryParam("email");
     
-    checkAuthenticatedRequest();
     //Check permission of current user
     if (!RestUtils.isMemberOfAdminGroup()) {
       throw new WebApplicationException(Response.Status.FORBIDDEN);
@@ -142,14 +140,9 @@ public class UserSocialRestServiceV1 extends AbstractSocialRestService implement
   
   @GET
   @Path("{id}")
+  @RolesAllowed("users")
   public Response getUserById(@Context UriInfo uriInfo) throws Exception {
     String id = getPathParam("id");
-    checkAuthenticatedRequest();
-    
-    if (Util.isAnonymous()) {
-      throw new WebApplicationException(Response.Status.UNAUTHORIZED);
-    }
-    
     Identity identity = CommonsUtils.getService(IdentityManager.class).getOrCreateIdentity(OrganizationIdentityProvider.NAME, id, true);
     //
     return Util.getResponse(RestUtils.buildEntityFromIdentity(identity, uriInfo.getPath(), getQueryValueExpand(uriInfo)), uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
@@ -157,9 +150,9 @@ public class UserSocialRestServiceV1 extends AbstractSocialRestService implement
   
   @DELETE
   @Path("{id}")
+  @RolesAllowed("users")
   public Response deleteUserById(@Context UriInfo uriInfo) throws Exception {
     String id = getPathParam("id");
-    checkAuthenticatedRequest();
     //Check permission of current user
     if (!RestUtils.isMemberOfAdminGroup()) {
       throw new WebApplicationException(Response.Status.FORBIDDEN);
@@ -177,9 +170,9 @@ public class UserSocialRestServiceV1 extends AbstractSocialRestService implement
   
   @PUT
   @Path("{id}")
+  @RolesAllowed("users")
   public Response updateUserById(@Context UriInfo uriInfo) throws Exception {
     String id = getPathParam("id");
-    checkAuthenticatedRequest();
     Identity identity = CommonsUtils.getService(IdentityManager.class).getOrCreateIdentity(OrganizationIdentityProvider.NAME, id, true);
     if (identity == null) {
       throw new WebApplicationException(Response.Status.BAD_REQUEST);
@@ -197,12 +190,9 @@ public class UserSocialRestServiceV1 extends AbstractSocialRestService implement
   
   @GET
   @Path("{id}/connections")
+  @RolesAllowed("users")
   public Response getConnectionOfUser(@Context UriInfo uriInfo) throws Exception {
     String id = getPathParam("id");
-    checkAuthenticatedRequest();
-    if (Util.isAnonymous()) {
-      throw new WebApplicationException(Response.Status.UNAUTHORIZED);
-    }
     Identity target = CommonsUtils.getService(IdentityManager.class).getOrCreateIdentity(OrganizationIdentityProvider.NAME, id, true);
     if (target == null) {
       throw new WebApplicationException(Response.Status.BAD_REQUEST);
@@ -227,9 +217,9 @@ public class UserSocialRestServiceV1 extends AbstractSocialRestService implement
   
   @GET
   @Path("{id}/spaces")
+  @RolesAllowed("users")
   public Response getSpacesOfUser(@Context UriInfo uriInfo) throws Exception {
     String id = getPathParam("id");
-    checkAuthenticatedRequest();
     Identity target = CommonsUtils.getService(IdentityManager.class).getOrCreateIdentity(OrganizationIdentityProvider.NAME, id, true);
     //Check if the given user exists
     if (target == null) {
@@ -259,19 +249,14 @@ public class UserSocialRestServiceV1 extends AbstractSocialRestService implement
   
   @GET
   @Path("{id}/activities")
+  @RolesAllowed("users")
   public Response getActivitiesOfUser(@Context UriInfo uriInfo) throws Exception {
     String id = getPathParam("id");
     String type = getQueryParam("type");
     Long after = Long.parseLong(getQueryParam("after")); 
     Long before = Long.parseLong(getQueryParam("before"));
     
-    checkAuthenticatedRequest();
-    //Check if no authenticated user
     String authenticatedUser = ConversationState.getCurrent().getIdentity().getUserId();
-    if (IdentityConstants.ANONIM.equals(authenticatedUser)) {
-      throw new WebApplicationException(Response.Status.UNAUTHORIZED);
-    }
-    
     //Check if the given user doesn't exist
     Identity target = CommonsUtils.getService(IdentityManager.class).getOrCreateIdentity(OrganizationIdentityProvider.NAME, id, true);
     if (target == null) {
@@ -338,14 +323,10 @@ public class UserSocialRestServiceV1 extends AbstractSocialRestService implement
   
   @POST
   @Path("{id}/activities")
+  @RolesAllowed("users")
   public Response addActivityByUser(@Context UriInfo uriInfo) throws Exception {
     String id = getPathParam("id");
     String text = getQueryParam("text");
-    checkAuthenticatedRequest();
-    //Check if no authenticated user
-    if (Util.isAnonymous()) {
-      throw new WebApplicationException(Response.Status.NOT_FOUND);
-    }
     //Check if the given user doesn't exist
     Identity target = CommonsUtils.getService(IdentityManager.class).getOrCreateIdentity(OrganizationIdentityProvider.NAME, id, true);
     if (target == null || !ConversationState.getCurrent().getIdentity().getUserId().equals(id)) {
