@@ -81,6 +81,9 @@
   <component>
     <type>org.exoplatform.social.service.rest.impl.activity.ActivitySocialRestServiceV1</type>
   </component>
+  <component>
+    <type>org.exoplatform.social.service.rest.impl.relationship.RelationshipsRestServiceV1</type>
+  </component>
 <!-- REST service -->
 
 <!-- Social Rest API resources for latest -->

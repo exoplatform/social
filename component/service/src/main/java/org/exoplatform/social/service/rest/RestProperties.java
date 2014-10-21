@@ -16,6 +16,8 @@ public class RestProperties {
   public static final String GLOBAL_ID       = "globalId";
 
   public static final String STATUS          = "status";
+  
+  public static final String SYMETRIC        = "symetric";
 
   public static final String SENDER          = "receiver";
 

@@ -37,13 +37,16 @@ import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
 import org.exoplatform.social.core.manager.IdentityManager;
+import org.exoplatform.social.core.manager.RelationshipManager;
 import org.exoplatform.social.core.profile.ProfileFilter;
+import org.exoplatform.social.core.relationship.model.Relationship;
 import org.exoplatform.social.service.rest.RestProperties;
 import org.exoplatform.social.service.rest.RestUtils;
 import org.exoplatform.social.service.rest.Util;
 import org.exoplatform.social.service.rest.api.AbstractSocialRestService;
 import org.exoplatform.social.service.rest.api.IdentitySocialRest;
 import org.exoplatform.social.service.rest.api.models.IdentitiesCollections;
+import org.exoplatform.social.service.rest.api.models.RelationshipsCollections;
 
 @Path("v1/social/identities")
 public class IdentitySocialRestServiceV1 extends AbstractSocialRestService implements IdentitySocialRest {
@@ -200,6 +203,7 @@ public class IdentitySocialRestServiceV1 extends AbstractSocialRestService imple
   @RolesAllowed("users")
   public Response getRelationshipsOfIdentity(@Context UriInfo uriInfo) throws Exception {
     String id = getPathParam("id");
+    String with = getQueryParam("with");
     
     IdentityManager identityManager = CommonsUtils.getService(IdentityManager.class);
     Identity identity = identityManager.getIdentity(id, true);
@@ -207,11 +211,40 @@ public class IdentitySocialRestServiceV1 extends AbstractSocialRestService imple
       throw new WebApplicationException(Response.Status.NOT_FOUND);
     }
     
-    Map<String, Object> profileInfo = RestUtils.buildEntityFromIdentity(identity, uriInfo.getPath(), getQueryValueExpand(uriInfo));
-    profileInfo.put(RestProperties.REMOTE_ID, identity.getRemoteId());
-    profileInfo.put(RestProperties.PROVIDER_ID, identity.getProviderId());
-    profileInfo.put(RestProperties.GLOBAL_ID, identity.getGlobalId());
+    RelationshipManager relationshipManager = CommonsUtils.getService(RelationshipManager.class);
     
-    return Util.getResponse(profileInfo, uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
+    if (with != null && with.length() > 0) {
+      Identity withUser = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, with, true);
+      if (withUser == null) {
+        throw new WebApplicationException(Response.Status.UNAUTHORIZED);
+      }
+      //
+      Relationship relationship = relationshipManager.get(identity, withUser);
+      if (relationship == null) {
+        throw new WebApplicationException(Response.Status.UNAUTHORIZED);
+      }
+      return Util.getResponse(RestUtils.buildEntityFromRelationship(relationship, uriInfo.getPath(), getQueryValueExpand(uriInfo), false), uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
+    }
+    
+    int limit = getQueryValueLimit(uriInfo);
+    int offset = getQueryValueOffset(uriInfo);
+    
+    List<Relationship> relationships = relationshipManager.getRelationshipsByStatus(identity, Relationship.Type.ALL, offset, limit);
+    int size = getQueryValueReturnSize(uriInfo) ? relationshipManager.getRelationshipsCountByStatus(identity, Relationship.Type.ALL) : -1;
+    
+    RelationshipsCollections collections = new RelationshipsCollections(size, offset, limit);
+    collections.setRelationships(buildRelationshipsCollections(relationships, uriInfo));
+    
+    return Util.getResponse(collections, uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
+  }
+  
+  private List<Map<String, Object>> buildRelationshipsCollections(List<Relationship> relationships, UriInfo uriInfo) {
+    List<Map<String, Object>> infos = new ArrayList<Map<String, Object>>();
+    for (Relationship relationship : relationships) {
+      Map<String, Object> map = RestUtils.buildEntityFromRelationship(relationship, uriInfo.getPath(), getQueryParam("expand"), true);
+      //
+      infos.add(map);
+    }
+    return infos;
   }
 }

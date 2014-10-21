@@ -209,13 +209,16 @@ public class RestUtils {
    * @param relationship the provided relationship
    * @return a hash map
    */
-  public static Map<String, Object> buildEntityFromRelationship(Relationship relationship, String restPath, String expand) {
+  public static Map<String, Object> buildEntityFromRelationship(Relationship relationship, String restPath, String expand, boolean isSymetric) {
     Map<String, Object> map = new LinkedHashMap<String, Object>();
     map.put(RestProperties.ID, relationship.getId());
-    map.put(RestProperties.HREF, (expand != null && RestProperties.HREF.equals(expand)) ? buildEntityFromRelationship(relationship, restPath, null) : Util.getRestUrl(USERS_RELATIONSHIP_TYPE, relationship.getId(), restPath));
+    map.put(RestProperties.HREF, (expand != null && RestProperties.HREF.equals(expand)) ? buildEntityFromRelationship(relationship, restPath, null, isSymetric) : Util.getRestUrl(USERS_RELATIONSHIP_TYPE, relationship.getId(), restPath));
     map.put(RestProperties.STATUS, relationship.getStatus().name());
     map.put(RestProperties.SENDER, (expand != null && RestProperties.SENDER.equals(expand)) ? buildEntityFromIdentity(relationship.getSender(), restPath, null) : Util.getRestUrl(USERS_TYPE, relationship.getSender().getRemoteId(), restPath));
     map.put(RestProperties.RECEIVER, (expand != null && RestProperties.RECEIVER.equals(expand)) ? buildEntityFromIdentity(relationship.getReceiver(), restPath, null) : Util.getRestUrl(USERS_TYPE, relationship.getReceiver().getRemoteId(), restPath));
+    if (isSymetric) {
+      map.put(RestProperties.SYMETRIC, relationship.isSymetric());
+    }
     return map;
   }
   
