@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TimeZone;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.ws.rs.core.MediaType;
 
@@ -35,6 +36,8 @@ import org.exoplatform.services.log.Log;
 import org.exoplatform.services.organization.Membership;
 import org.exoplatform.services.organization.MembershipHandler;
 import org.exoplatform.services.organization.OrganizationService;
+import org.exoplatform.services.rest.ApplicationContext;
+import org.exoplatform.services.rest.impl.ApplicationContextImpl;
 import org.exoplatform.services.security.ConversationState;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.identity.model.Identity;
@@ -114,6 +117,15 @@ public class RestUtils {
     }
     map.put(RestProperties.DELETED, identity.isDeleted());
     map.put(RestProperties.IDENTITY, Util.getRestUrl(IDENTITIES_TYPE, identity.getId(), restPath));
+    
+    updateCachedEtagValue(getEtagValue(
+        profile.getFullName(),
+        profile.getGender(),
+        profile.getPosition(),
+        profile.getEmail(),
+        profile.getAvatarUrl()
+        // tmpPropertyValues {phones, experience, ims, urls}
+        ));
     return map;
   }
   
@@ -141,6 +153,8 @@ public class RestUtils {
     map.put(RestProperties.URL, LinkProvider.getSpaceUri(space.getPrettyName()));
     map.put(RestProperties.VISIBILITY, space.getVisibility());
     map.put(RestProperties.SUBSCRIPTION, space.getRegistration());
+    updateCachedEtagValue(getEtagValue(space.getDisplayName(), space.getDescription(), space
+        .getPrettyName(), space.getVisibility(), space.getRegistration(), space.getAvatarUrl()));
     return map;
   }
   
@@ -153,6 +167,9 @@ public class RestUtils {
    * @return a hash map
    */
   public static Map<String, Object> buildEntityFromSpaceMembership(Space space, String userId, String type, String restPath, String expand) {
+    //
+    updateCachedEtagValue(getEtagValue(type));
+    
     Map<String, Object> map = new LinkedHashMap<String, Object>();
     OrganizationService organizationService = CommonsUtils.getService(OrganizationService.class);
     MembershipHandler handler = organizationService.getMembershipHandler();
@@ -168,6 +185,7 @@ public class RestUtils {
     map.put(RestProperties.SPACES, Util.getRestUrl(SPACES_TYPE, space.getId(), restPath));
     map.put(RestProperties.ROLE, type);
     map.put(RestProperties.STATUS, "approved");
+    
     return map;
   }
   
@@ -200,6 +218,9 @@ public class RestUtils {
     }
     map.put(RestProperties.CREATE_DATE, formatDateToISO8601(new Date(activity.getPostedTime())));
     map.put(RestProperties.UPDATE_DATE, formatDateToISO8601(activity.getUpdated()));
+    
+    updateCachedLastModifiedValue(activity.getUpdated());
+    
     return map;
   }
   
@@ -219,6 +240,7 @@ public class RestUtils {
     if (isSymetric) {
       map.put(RestProperties.SYMETRIC, relationship.isSymetric());
     }
+    updateCachedEtagValue(getEtagValue(relationship.getId()));
     return map;
   }
   
@@ -338,9 +360,56 @@ public class RestUtils {
   
   private static String formatDateToISO8601(Date date) {
     TimeZone tz = TimeZone.getTimeZone("UTC");
-    DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm'Z'");
+    DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.sss'Z'");
     df.setTimeZone(tz);
     return df.format(date);
+  }
+
+  private static void updateCachedEtagValue(int etagValue) {
+    ApplicationContext ac = ApplicationContextImpl.getCurrent();
+    Map<String, String> properties = ac.getProperties();
+    ConcurrentHashMap<String, String> props = new ConcurrentHashMap<String, String>(properties);
+    
+    if (props.containsKey(RestProperties.ETAG)) {
+      props.remove(RestProperties.ETAG);
+    }
+    
+    if (props.containsKey(RestProperties.UPDATE_DATE)) {
+      props.remove(RestProperties.UPDATE_DATE);
+    }
+    
+    ac.setProperty(RestProperties.ETAG, String.valueOf(etagValue));
+    ApplicationContextImpl.setCurrent(ac);
+  }
+  
+  private static void updateCachedLastModifiedValue(Date lastModifiedDate) {
+    ApplicationContext ac = ApplicationContextImpl.getCurrent();
+    Map<String, String> properties = ac.getProperties();
+    ConcurrentHashMap<String, String> props = new ConcurrentHashMap<String, String>(properties);
+    
+    if (props.containsKey(RestProperties.UPDATE_DATE)) {
+      props.remove(RestProperties.UPDATE_DATE);
+    }
+    
+    if (props.containsKey(RestProperties.ETAG)) {
+      props.remove(RestProperties.ETAG);
+    }
+    
+    ac.setProperty(RestProperties.UPDATE_DATE, String.valueOf(lastModifiedDate.getTime()));
+    ApplicationContextImpl.setCurrent(ac);
+  }
+  
+  private static int getEtagValue(String... properties) {
+    final int prime = 31;
+    int result = 0;
+    
+    for (String prop : properties) {
+      if (prop != null) {
+        result = prime * result + prop.hashCode();
+      }
+    }
+    
+    return result;
   }
   
   /**

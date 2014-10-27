@@ -129,7 +129,7 @@
        <init-params>
           <value-param>
              <name>ws.rs.response.jsonp-response-filter</name>
-             <value>org.exoplatform.social.service.rest.FieldsResponseFilter</value>
+             <value>org.exoplatform.social.service.rest.SocialRestResponseFilter</value>
           </value-param>
        </init-params>
       </component-plugin>
@@ -201,7 +201,7 @@
         <init-params>
            <value-param>
               <name>fields.response.filter</name>
-              <value>org.exoplatform.social.service.rest.FieldsResponseFilter</value>
+              <value>org.exoplatform.social.service.rest.SocialRestResponseFilter</value>
            </value-param>
         </init-params>
      </component-plugin>

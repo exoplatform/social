@@ -124,4 +124,6 @@ public class RestProperties {
   public static final String LIKER           = "liker";
   
   public static final String LIKER_IDENTITY  = "likerIdentity";
+  
+  public static final String ETAG            = "ETag";
 }
