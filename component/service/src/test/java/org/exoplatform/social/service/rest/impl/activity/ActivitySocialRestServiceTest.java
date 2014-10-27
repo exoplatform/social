@@ -21,7 +21,7 @@ import org.exoplatform.social.service.test.AbstractResourceTest;
 
 public class ActivitySocialRestServiceTest extends AbstractResourceTest {
   
-static private ActivitySocialRestServiceV1 activitySocialRestServiceV1;
+  private ActivitySocialRestServiceV1 activitySocialRestServiceV1;
   
   private IdentityStorage identityStorage;
   private ActivityManager activityManager;
@@ -167,15 +167,16 @@ static private ActivitySocialRestServiceV1 activitySocialRestServiceV1;
     Map<String, Object> result = (Map<String, Object>) response.getEntity();
     assertEquals(result.get(RestProperties.TITLE), "demo activity");
     
+    String input = "{\"title\":updated}";
     //root try to update demo activity
-    response = service("PUT", "/v1/social/activities/" + demoActivity.getId() + "?text=updated", "", null, null);
+    response = getResponse("PUT", "/v1/social/activities/" + demoActivity.getId(), input);
     assertNotNull(response);
     //root is not the poster of activity then he can't modify it
     assertEquals(401, response.getStatus());
     
     //demo try to update demo activity
     startSessionAs("demo");
-    response = service("PUT", "/v1/social/activities/" + demoActivity.getId() + "?text=updated", "", null, null);
+    response = getResponse("PUT", "/v1/social/activities/" + demoActivity.getId(), input);
     assertNotNull(response);
     assertEquals(200, response.getStatus());
     result = (Map<String, Object>) response.getEntity();
@@ -239,11 +240,12 @@ static private ActivitySocialRestServiceV1 activitySocialRestServiceV1;
     activityManager.saveActivityNoReturn(rootIdentity, rootActivity);
     
     //post a comment by root on the prevous activity
-    ContainerResponse response = service("POST", "/v1/social/activities/" + rootActivity.getId() + "/comments?text=comment1", "", null, null);
+    String input = "{\"text\":comment1}";
+    ContainerResponse response = getResponse("POST", "/v1/social/activities/" + rootActivity.getId() + "/comments", input);
     assertNotNull(response);
     assertEquals(200, response.getStatus());
     Map<String, Object> result = (Map<String, Object>) response.getEntity();
-    assertEquals(result.get(RestProperties.TITLE), "comment1");
+    assertEquals("comment1", result.get(RestProperties.BODY));
     
     assertEquals(1, activityManager.getCommentsWithListAccess(rootActivity).getSize());
     

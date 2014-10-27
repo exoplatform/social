@@ -57,8 +57,8 @@ public class UsersRelationshipsRestServiceV1 extends AbstractSocialRestService i
     String status = getQueryParam("status");
     String user = getQueryParam("user");
     
-    int limit = getQueryValueLimit(uriInfo);
-    int offset = getQueryValueOffset(uriInfo);
+    int limit = getQueryValueLimit();
+    int offset = getQueryValueOffset();
     
     IdentityManager identityManager = CommonsUtils.getService(IdentityManager.class);
     Identity givenUser = (user == null) ? null : identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, user, true);
@@ -68,7 +68,7 @@ public class UsersRelationshipsRestServiceV1 extends AbstractSocialRestService i
     if (givenUser != null && ! RestUtils.isMemberOfAdminGroup()) {
       Relationship relationship = relationshipManager.get(givenUser, authenticatedUser);
       RelationshipsCollections collections = new RelationshipsCollections(1, offset, limit);
-      Map<String, Object> map = RestUtils.buildEntityFromRelationship(relationship, uriInfo.getPath(), getQueryValueExpand(uriInfo), false);
+      Map<String, Object> map = RestUtils.buildEntityFromRelationship(relationship, uriInfo.getPath(), getQueryParam("expand"), false);
       collections.setRelationships(Arrays.asList(map));
       return Util.getResponse(collections, uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
     }
@@ -96,7 +96,7 @@ public class UsersRelationshipsRestServiceV1 extends AbstractSocialRestService i
       }
     }
     
-    RelationshipsCollections collections = new RelationshipsCollections(getQueryValueReturnSize(uriInfo) ? size : -1, offset, limit);
+    RelationshipsCollections collections = new RelationshipsCollections(getQueryValueReturnSize() ? size : -1, offset, limit);
     collections.setRelationships(buildRelationshipsCollections(relationships, uriInfo));
     
     return Util.getResponse(collections, uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
@@ -120,7 +120,7 @@ public class UsersRelationshipsRestServiceV1 extends AbstractSocialRestService i
     if (relationship == null || ! hasPermissionOnRelationship(authenticatedUser, relationship)) {
       throw new WebApplicationException(Response.Status.UNAUTHORIZED);
     }
-    return Util.getResponse(RestUtils.buildEntityFromRelationship(relationship, uriInfo.getPath(), getQueryValueExpand(uriInfo), false), uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
+    return Util.getResponse(RestUtils.buildEntityFromRelationship(relationship, uriInfo.getPath(), getQueryParam("expand"), false), uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
   }
   
   @PUT
@@ -139,7 +139,7 @@ public class UsersRelationshipsRestServiceV1 extends AbstractSocialRestService i
     //update relationship
     relationshipManager.update(relationship);
     
-    return Util.getResponse(RestUtils.buildEntityFromRelationship(relationship, uriInfo.getPath(), getQueryValueExpand(uriInfo), false), uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
+    return Util.getResponse(RestUtils.buildEntityFromRelationship(relationship, uriInfo.getPath(), getQueryParam("expand"), false), uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
   }
   
   @DELETE
@@ -157,7 +157,7 @@ public class UsersRelationshipsRestServiceV1 extends AbstractSocialRestService i
     //delete the relationship
     relationshipManager.delete(relationship);
     
-    return Util.getResponse(RestUtils.buildEntityFromRelationship(relationship, uriInfo.getPath(), getQueryValueExpand(uriInfo), false), uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
+    return Util.getResponse(RestUtils.buildEntityFromRelationship(relationship, uriInfo.getPath(), getQueryParam("expand"), false), uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
   }
 
   /**
@@ -179,7 +179,7 @@ public class UsersRelationshipsRestServiceV1 extends AbstractSocialRestService i
   private List<Map<String, Object>> buildRelationshipsCollections(List<Relationship> relationships, UriInfo uriInfo) {
     List<Map<String, Object>> infos = new ArrayList<Map<String, Object>>();
     for (Relationship relationship : relationships) {
-      Map<String, Object> map = RestUtils.buildEntityFromRelationship(relationship, uriInfo.getPath(), getQueryValueExpand(uriInfo), false);
+      Map<String, Object> map = RestUtils.buildEntityFromRelationship(relationship, uriInfo.getPath(), getQueryParam("expand"), false);
       //
       infos.add(map);
     }

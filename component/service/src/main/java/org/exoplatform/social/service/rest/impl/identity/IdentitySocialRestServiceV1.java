@@ -60,8 +60,8 @@ public class IdentitySocialRestServiceV1 extends AbstractSocialRestService imple
   public Response getIdentities(@Context UriInfo uriInfo) throws Exception {
     String type = getQueryParam("type");
     
-    int limit = getQueryValueLimit(uriInfo);
-    int offset = getQueryValueOffset(uriInfo);
+    int limit = getQueryValueLimit();
+    int offset = getQueryValueOffset();
     
     IdentityManager identityManager = CommonsUtils.getService(IdentityManager.class);
     String providerId = (type != null && type.equals("space")) ? SpaceIdentityProvider.NAME : OrganizationIdentityProvider.NAME;
@@ -70,7 +70,7 @@ public class IdentitySocialRestServiceV1 extends AbstractSocialRestService imple
     
     List<Map<String, Object>> identityInfos = new ArrayList<Map<String, Object>>();
     for (Identity identity : identities) {
-      Map<String, Object> profileInfo = RestUtils.buildEntityFromIdentity(identity, uriInfo.getPath(), getQueryValueExpand(uriInfo));
+      Map<String, Object> profileInfo = RestUtils.buildEntityFromIdentity(identity, uriInfo.getPath(), getQueryParam("expand"));
       profileInfo.put(RestProperties.REMOTE_ID, identity.getRemoteId());
       profileInfo.put(RestProperties.PROVIDER_ID, providerId);
       profileInfo.put(RestProperties.GLOBAL_ID, identity.getGlobalId());
@@ -78,7 +78,7 @@ public class IdentitySocialRestServiceV1 extends AbstractSocialRestService imple
       identityInfos.add(profileInfo);
     }
     
-    IdentitiesCollections collections = new IdentitiesCollections(getQueryValueReturnSize(uriInfo) ? listAccess.getSize() : -1, offset, limit);
+    IdentitiesCollections collections = new IdentitiesCollections(getQueryValueReturnSize() ? listAccess.getSize() : -1, offset, limit);
     collections.setIdentities(identityInfos);
     
     return Util.getResponse(collections, uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
@@ -108,7 +108,7 @@ public class IdentitySocialRestServiceV1 extends AbstractSocialRestService imple
       throw new WebApplicationException(Response.Status.FORBIDDEN);
     }
 
-    Map<String, Object> profileInfo = RestUtils.buildEntityFromIdentity(identity, uriInfo.getPath(), getQueryValueExpand(uriInfo));
+    Map<String, Object> profileInfo = RestUtils.buildEntityFromIdentity(identity, uriInfo.getPath(), getQueryParam("expand"));
     profileInfo.put(RestProperties.REMOTE_ID, identity.getRemoteId());
     profileInfo.put(RestProperties.PROVIDER_ID, providerId);
     profileInfo.put(RestProperties.GLOBAL_ID, identity.getGlobalId());
@@ -128,8 +128,11 @@ public class IdentitySocialRestServiceV1 extends AbstractSocialRestService imple
     
     IdentityManager identityManager = CommonsUtils.getService(IdentityManager.class);
     Identity identity = identityManager.getIdentity(id, true);
+    if (identity == null) {
+      throw new WebApplicationException(Response.Status.UNAUTHORIZED);
+    }
     
-    Map<String, Object> profileInfo = RestUtils.buildEntityFromIdentity(identity, uriInfo.getPath(), getQueryValueExpand(uriInfo));
+    Map<String, Object> profileInfo = RestUtils.buildEntityFromIdentity(identity, uriInfo.getPath(), getQueryParam("expand"));
     profileInfo.put(RestProperties.REMOTE_ID, identity.getRemoteId());
     profileInfo.put(RestProperties.PROVIDER_ID, identity.getProviderId());
     profileInfo.put(RestProperties.GLOBAL_ID, identity.getGlobalId());
@@ -155,7 +158,7 @@ public class IdentitySocialRestServiceV1 extends AbstractSocialRestService imple
     
     //TODO : process to update identity
     
-    Map<String, Object> profileInfo = RestUtils.buildEntityFromIdentity(identity, uriInfo.getPath(), getQueryValueExpand(uriInfo));
+    Map<String, Object> profileInfo = RestUtils.buildEntityFromIdentity(identity, uriInfo.getPath(), getQueryParam("expand"));
     profileInfo.put(RestProperties.REMOTE_ID, identity.getRemoteId());
     profileInfo.put(RestProperties.PROVIDER_ID, identity.getProviderId());
     profileInfo.put(RestProperties.GLOBAL_ID, identity.getGlobalId());
@@ -186,7 +189,7 @@ public class IdentitySocialRestServiceV1 extends AbstractSocialRestService imple
     identityManager.hardDeleteIdentity(identity);
     identity = identityManager.getIdentity(id, true);
     
-    Map<String, Object> profileInfo = RestUtils.buildEntityFromIdentity(identity, uriInfo.getPath(), getQueryValueExpand(uriInfo));
+    Map<String, Object> profileInfo = RestUtils.buildEntityFromIdentity(identity, uriInfo.getPath(), getQueryParam("expand"));
     profileInfo.put(RestProperties.REMOTE_ID, identity.getRemoteId());
     profileInfo.put(RestProperties.PROVIDER_ID, identity.getProviderId());
     profileInfo.put(RestProperties.GLOBAL_ID, identity.getGlobalId());
@@ -223,14 +226,14 @@ public class IdentitySocialRestServiceV1 extends AbstractSocialRestService imple
       if (relationship == null) {
         throw new WebApplicationException(Response.Status.UNAUTHORIZED);
       }
-      return Util.getResponse(RestUtils.buildEntityFromRelationship(relationship, uriInfo.getPath(), getQueryValueExpand(uriInfo), false), uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
+      return Util.getResponse(RestUtils.buildEntityFromRelationship(relationship, uriInfo.getPath(), getQueryParam("expand"), false), uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
     }
     
-    int limit = getQueryValueLimit(uriInfo);
-    int offset = getQueryValueOffset(uriInfo);
+    int limit = getQueryValueLimit();
+    int offset = getQueryValueOffset();
     
     List<Relationship> relationships = relationshipManager.getRelationshipsByStatus(identity, Relationship.Type.ALL, offset, limit);
-    int size = getQueryValueReturnSize(uriInfo) ? relationshipManager.getRelationshipsCountByStatus(identity, Relationship.Type.ALL) : -1;
+    int size = getQueryValueReturnSize() ? relationshipManager.getRelationshipsCountByStatus(identity, Relationship.Type.ALL) : -1;
     
     RelationshipsCollections collections = new RelationshipsCollections(size, offset, limit);
     collections.setRelationships(buildRelationshipsCollections(relationships, uriInfo));

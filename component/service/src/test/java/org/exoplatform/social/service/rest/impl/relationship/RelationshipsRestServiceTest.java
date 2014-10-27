@@ -3,10 +3,7 @@ package org.exoplatform.social.service.rest.impl.relationship;
 import java.util.List;
 import java.util.Map;
 
-import javax.ws.rs.core.MultivaluedMap;
-
 import org.exoplatform.services.rest.impl.ContainerResponse;
-import org.exoplatform.services.rest.impl.MultivaluedMapImpl;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.manager.RelationshipManager;
 import org.exoplatform.social.core.relationship.model.Relationship;
@@ -84,13 +81,9 @@ public class RelationshipsRestServiceTest extends AbstractResourceTest {
   
   public void testCreateRelationship() throws Exception {
     startSessionAs("root");
-    String jsonEntity = "{\"sender\":root, \"receiver\":demo, \"status\":CONFIRMED}";
-    byte[] jsonData = jsonEntity.getBytes("UTF-8");
-    MultivaluedMap<String, String> h = new MultivaluedMapImpl();
-    h.putSingle("content-type", "application/json");
-    h.putSingle("content-length", "" + jsonData.length);
-    
-    ContainerResponse response = service("POST", "/v1/social/relationships/", "", h, jsonData);
+    //
+    String input = "{\"sender\":root, \"receiver\":demo, \"status\":CONFIRMED}";
+    ContainerResponse response = getResponse("POST", "/v1/social/relationships/", input);
     assertNotNull(response);
     assertEquals(200, response.getStatus());
     Map<String, Object> result = (Map<String, Object>) response.getEntity();
@@ -121,5 +114,19 @@ public class RelationshipsRestServiceTest extends AbstractResourceTest {
     
     //clean
     relationshipManager.delete(relationship);
+  }
+  
+  public void testDeleteRelationshipById() throws Exception {
+    Relationship relationship = new Relationship(rootIdentity, demoIdentity, Relationship.Type.CONFIRMED);
+    relationshipManager.update(relationship);
+    
+    startSessionAs("root");
+    ContainerResponse response = service("DELETE", "/v1/social/relationships/" + relationship.getId(), "", null, null);
+    assertNotNull(response);
+    assertEquals(200, response.getStatus());
+    Map<String, Object> result = (Map<String, Object>) response.getEntity();
+    
+    relationship = relationshipManager.get(result.get(RestProperties.ID).toString());
+    assertNull(relationship);
   }
 }

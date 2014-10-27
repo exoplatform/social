@@ -35,7 +35,6 @@ import org.exoplatform.services.rest.impl.EnvironmentContext;
 import org.exoplatform.services.rest.impl.InputHeadersMap;
 import org.exoplatform.services.rest.impl.MultivaluedMapImpl;
 import org.exoplatform.services.rest.tools.DummyContainerResponseWriter;
-import org.exoplatform.services.test.mock.MockHttpServletRequest;
 import org.exoplatform.social.core.activity.model.ActivityStream;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.identity.model.Identity;
@@ -58,6 +57,15 @@ import org.exoplatform.ws.frameworks.json.value.JsonValue;
  * @since Mar 3, 2010
  */
 public abstract class AbstractResourceTest extends AbstractServiceTest {
+  
+  public ContainerResponse getResponse(String method, String restPath, String input) throws Exception {
+    byte[] jsonData = input.getBytes("UTF-8");
+    MultivaluedMap<String, String> h = new MultivaluedMapImpl();
+    h.putSingle("content-type", "application/json");
+    h.putSingle("content-length", "" + jsonData.length);
+    
+    return service(method, restPath, "", h, jsonData);
+  }
 
   /**
    * gets response with provided writer

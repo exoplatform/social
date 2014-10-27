@@ -9,6 +9,9 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
+import org.exoplatform.social.service.rest.api.models.ActivityRestIn;
+import org.exoplatform.social.service.rest.api.models.CommentRestIn;
+
 public interface ActivitySocialRest extends SocialRest {
 
   /**
@@ -41,7 +44,8 @@ public interface ActivitySocialRest extends SocialRest {
    */
   @PUT
   @Path("{id}")
-  public Response updateActivityById(@Context UriInfo uriInfo) throws Exception;
+  public Response updateActivityById(@Context UriInfo uriInfo,
+                                      ActivityRestIn model) throws Exception;
   
   /**
    * Process to delete an activity by id
@@ -74,6 +78,7 @@ public interface ActivitySocialRest extends SocialRest {
    */
   @POST
   @Path("{id}/comments")
-  public Response postComment(@Context UriInfo uriInfo) throws Exception;
+  public Response postComment(@Context UriInfo uriInfo,
+                               CommentRestIn model) throws Exception;
   
 }

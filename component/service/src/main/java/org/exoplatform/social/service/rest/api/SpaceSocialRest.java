@@ -9,6 +9,9 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
+import org.exoplatform.social.service.rest.SpaceRestIn;
+import org.exoplatform.social.service.rest.api.models.ActivityRestIn;
+
 public interface SpaceSocialRest extends SocialRest {
 
   /**
@@ -29,7 +32,8 @@ public interface SpaceSocialRest extends SocialRest {
    * @throws Exception
    */
   @POST
-  public abstract Response createSpace(@Context UriInfo uriInfo) throws Exception;
+  public abstract Response createSpace(@Context UriInfo uriInfo,
+                                         SpaceRestIn model) throws Exception;
 
   /**
    * Process to return a space by id
@@ -51,7 +55,8 @@ public interface SpaceSocialRest extends SocialRest {
    */
   @PUT
   @Path("{id}")
-  public abstract Response updateSpaceById(@Context UriInfo uriInfo) throws Exception;
+  public abstract Response updateSpaceById(@Context UriInfo uriInfo,
+                                             SpaceRestIn model) throws Exception;
 
   /**
    * Process to delete a space by id
@@ -89,6 +94,7 @@ public interface SpaceSocialRest extends SocialRest {
 
   @POST
   @Path("{id}/activities")
-  public abstract Response postActivityOnSpace(@Context UriInfo uriInfo) throws Exception;
+  public abstract Response postActivityOnSpace(@Context UriInfo uriInfo,
+                                                 ActivityRestIn model) throws Exception;
 
 }

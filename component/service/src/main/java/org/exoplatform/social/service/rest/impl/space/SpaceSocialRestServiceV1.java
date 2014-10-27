@@ -28,8 +28,10 @@ import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
@@ -52,10 +54,12 @@ import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
 import org.exoplatform.social.service.rest.RestProperties;
 import org.exoplatform.social.service.rest.RestUtils;
+import org.exoplatform.social.service.rest.SpaceRestIn;
 import org.exoplatform.social.service.rest.Util;
 import org.exoplatform.social.service.rest.api.AbstractSocialRestService;
 import org.exoplatform.social.service.rest.api.SpaceSocialRest;
 import org.exoplatform.social.service.rest.api.models.ActivitiesCollections;
+import org.exoplatform.social.service.rest.api.models.ActivityRestIn;
 import org.exoplatform.social.service.rest.api.models.SpacesCollections;
 import org.exoplatform.social.service.rest.api.models.UsersCollections;
 
@@ -72,8 +76,8 @@ public class SpaceSocialRestServiceV1 extends AbstractSocialRestService implemen
   public Response getSpaces(@Context UriInfo uriInfo) throws Exception {
     String q = getQueryParam("q");
     SpaceService spaceService = CommonsUtils.getService(SpaceService.class);
-    int limit = getQueryValueLimit(uriInfo);
-    int offset = getQueryValueOffset(uriInfo);
+    int limit = getQueryValueLimit();
+    int offset = getQueryValueOffset();
     
     List<Map<String, Object>> spaceInfos = new ArrayList<Map<String, Object>>();
     ListAccess<Space> listAccess = null;
@@ -89,12 +93,12 @@ public class SpaceSocialRestServiceV1 extends AbstractSocialRestService implemen
       listAccess = spaceService.getAccessibleSpacesByFilter(authenticatedUser, spaceFilter);
     }
     for (Space space : listAccess.load(offset, limit)) {
-      Map<String, Object> spaceInfo = RestUtils.buildEntityFromSpace(space, authenticatedUser, uriInfo.getPath(), getQueryValueExpand(uriInfo));
+      Map<String, Object> spaceInfo = RestUtils.buildEntityFromSpace(space, authenticatedUser, uriInfo.getPath(), getQueryParam("expand"));
       //
       spaceInfos.add(spaceInfo); 
     }
     
-    SpacesCollections spaces = new SpacesCollections(getQueryValueReturnSize(uriInfo) ? listAccess.getSize() : -1, offset, limit);
+    SpacesCollections spaces = new SpacesCollections(getQueryValueReturnSize() ? listAccess.getSize() : -1, offset, limit);
     spaces.setSpaces(spaceInfos);
     
     return Util.getResponse(spaces, uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
@@ -104,32 +108,35 @@ public class SpaceSocialRestServiceV1 extends AbstractSocialRestService implemen
    * {@inheritDoc}
    */
   @POST
+  @Produces(MediaType.APPLICATION_JSON)
   @RolesAllowed("users")
-  public Response createSpace(@Context UriInfo uriInfo) throws Exception {
-    String displayName = getQueryParam("displayName");
-    String description = getQueryParam("description");
-    String visibility = getQueryParam("visibility");
-    String registration = getQueryParam("registration");
+  public Response createSpace(@Context UriInfo uriInfo,
+                               SpaceRestIn model) throws Exception {
+    if (model == null || model.getDisplayName() == null || model.getDisplayName().length() == 0) {
+      throw new WebApplicationException(Response.Status.UNAUTHORIZED);
+    }
     
     SpaceService spaceService = CommonsUtils.getService(SpaceService.class);
     //validate the display name
-    if (spaceService.getSpaceByDisplayName(displayName) != null) {
+    if (spaceService.getSpaceByDisplayName(model.getDisplayName()) != null) {
       throw new SpaceException(SpaceException.Code.SPACE_ALREADY_EXIST);
     }
     
     String authenticatedUser = ConversationState.getCurrent().getIdentity().getUserId();
     //
     Space space = new Space();
-    space.setDisplayName(displayName.trim());
-    space.setPrettyName(space.getDisplayName());
-    space.setDescription(StringEscapeUtils.escapeHtml(description));
+    fillSpaceFromModel(space, model);
+    space.setPriority(Space.INTERMEDIATE_PRIORITY);
+    space.setGroupId("/space/space" + space.getPrettyName());
     space.setType(DefaultSpaceApplicationHandler.NAME);
-    space.setVisibility(visibility);
-    space.setRegistration(registration);
+    String[] managers = new String[] {authenticatedUser};
+    String[] members = new String[] {authenticatedUser};
+    space.setManagers(managers);
+    space.setMembers(members);
     //
-    spaceService.createSpace(space, authenticatedUser);
+    spaceService.saveSpace(space, true);
     
-    return Util.getResponse(RestUtils.buildEntityFromSpace(space, authenticatedUser, uriInfo.getPath(), getQueryValueExpand(uriInfo)), uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
+    return Util.getResponse(RestUtils.buildEntityFromSpace(space, authenticatedUser, uriInfo.getPath(), getQueryParam("expand")), uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
   }
   
   /**
@@ -147,7 +154,7 @@ public class SpaceSocialRestServiceV1 extends AbstractSocialRestService implemen
     if (space == null || (Space.HIDDEN.equals(space.getVisibility()) && ! spaceService.isMember(space, authenticatedUser) && ! RestUtils.isMemberOfAdminGroup())) {
       throw new WebApplicationException(Response.Status.UNAUTHORIZED);
     }
-    return Util.getResponse(RestUtils.buildEntityFromSpace(space, authenticatedUser, uriInfo.getPath(), getQueryValueExpand(uriInfo)), uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
+    return Util.getResponse(RestUtils.buildEntityFromSpace(space, authenticatedUser, uriInfo.getPath(), getQueryParam("expand")), uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
   }
   
   /**
@@ -155,47 +162,28 @@ public class SpaceSocialRestServiceV1 extends AbstractSocialRestService implemen
    */
   @PUT
   @Path("{id}")
+  @Produces(MediaType.APPLICATION_JSON)
   @RolesAllowed("users")
-  public Response updateSpaceById(@Context UriInfo uriInfo) throws Exception {
-    String id = getPathParam("id");
-    String displayName = getQueryParam("displayName");
-    String description = getQueryParam("description");
-    String visibility = getQueryParam("visibility");
-    String registration = getQueryParam("registration");
+  public Response updateSpaceById(@Context UriInfo uriInfo,
+                                  SpaceRestIn model) throws Exception {
     
+    if (model == null) {
+      throw new WebApplicationException(Response.Status.UNAUTHORIZED);
+    }
     
     String authenticatedUser = ConversationState.getCurrent().getIdentity().getUserId();
     //
+    String id = getPathParam("id");
     SpaceService spaceService = CommonsUtils.getService(SpaceService.class);
     Space space = spaceService.getSpaceById(id);
     if (space == null || (! spaceService.isManager(space, authenticatedUser) && ! RestUtils.isMemberOfAdminGroup())) {
       throw new WebApplicationException(Response.Status.UNAUTHORIZED);
     }
     
-    boolean hasUpdate = false;
-    if (displayName != null && displayName.length() > 0 && ! displayName.equals(space.getDisplayName())) {
-      space.setDisplayName(displayName.trim());
-      space.setPrettyName(space.getDisplayName());
-      hasUpdate = true;
-    }
-    if (description != null && description.length() > 0 && ! description.equals(space.getDescription())) {
-      space.setDescription(StringEscapeUtils.escapeHtml(description));
-      hasUpdate = true;
-    }
-    if (visibility != null && visibility.length() > 0 && ! visibility.equals(space.getDescription())) {
-      space.setVisibility(visibility);
-      hasUpdate = true;
-    }
-    if (registration != null && registration.length() > 0 && ! registration.equals(space.getDescription())) {
-      space.setRegistration(registration);
-      hasUpdate = true;
-    }
+    fillSpaceFromModel(space, model);
+    spaceService.updateSpace(space);
     
-    if (hasUpdate) {
-      spaceService.updateSpace(space);
-    }
-    
-    return Util.getResponse(RestUtils.buildEntityFromSpace(space, authenticatedUser, uriInfo.getPath(), getQueryValueExpand(uriInfo)), uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
+    return Util.getResponse(RestUtils.buildEntityFromSpace(space, authenticatedUser, uriInfo.getPath(), getQueryParam("expand")), uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
   }
   
   /**
@@ -215,7 +203,7 @@ public class SpaceSocialRestServiceV1 extends AbstractSocialRestService implemen
     }
     spaceService.deleteSpace(space);
     
-    return Util.getResponse(RestUtils.buildEntityFromSpace(space, authenticatedUser, uriInfo.getPath(), getQueryValueExpand(uriInfo)), uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
+    return Util.getResponse(RestUtils.buildEntityFromSpace(space, authenticatedUser, uriInfo.getPath(), getQueryParam("expand")), uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
   }
   
   /**
@@ -235,8 +223,8 @@ public class SpaceSocialRestServiceV1 extends AbstractSocialRestService implemen
       throw new WebApplicationException(Response.Status.UNAUTHORIZED);
     }
     
-    int limit = getQueryValueLimit(uriInfo);
-    int offset = getQueryValueOffset(uriInfo);
+    int limit = getQueryValueLimit();
+    int offset = getQueryValueOffset();
     
     String[] users = (role != null && role.equals("manager")) ? space.getManagers() : space.getMembers();
     int size = users.length;
@@ -246,7 +234,7 @@ public class SpaceSocialRestServiceV1 extends AbstractSocialRestService implemen
     List<Map<String, Object>> profileInfos = new ArrayList<Map<String, Object>>();
     for (String user : users) {
       Identity identity = CommonsUtils.getService(IdentityManager.class).getOrCreateIdentity(OrganizationIdentityProvider.NAME, user, true);
-      Map<String, Object> profileInfo = RestUtils.buildEntityFromIdentity(identity, uriInfo.getPath(), getQueryValueExpand(uriInfo));
+      Map<String, Object> profileInfo = RestUtils.buildEntityFromIdentity(identity, uriInfo.getPath(), getQueryParam("expand"));
       //
       profileInfos.add(profileInfo);
     }
@@ -266,8 +254,6 @@ public class SpaceSocialRestServiceV1 extends AbstractSocialRestService implemen
   public Response getSpaceActivitiesById(@Context UriInfo uriInfo) throws Exception {
     
     String id = getPathParam("id");
-    Long after = Long.parseLong(getQueryParam("after"));
-    Long before= Long.parseLong(getQueryParam("before"));
     String authenticatedUser = ConversationState.getCurrent().getIdentity().getUserId();
     //
     SpaceService spaceService = CommonsUtils.getService(SpaceService.class);
@@ -276,16 +262,18 @@ public class SpaceSocialRestServiceV1 extends AbstractSocialRestService implemen
       throw new WebApplicationException(Response.Status.UNAUTHORIZED);
     }
     
-    int limit = getQueryValueLimit(uriInfo);
-    int offset = getQueryValueOffset(uriInfo);
+    int limit = getQueryValueLimit();
+    int offset = getQueryValueOffset();
     
     Identity spaceIdentity = CommonsUtils.getService(IdentityManager.class).getOrCreateIdentity(SpaceIdentityProvider.NAME, space.getPrettyName(), false);
     RealtimeListAccess<ExoSocialActivity> listAccess = CommonsUtils.getService(ActivityManager.class).getActivitiesOfSpaceWithListAccess(spaceIdentity);
+    Integer after = getIntegerValue("after"); 
+    Integer before = getIntegerValue("before");
     List<ExoSocialActivity> activities = null;
     if (after != null) {
-      activities = listAccess.loadNewer(after, limit);
+      activities = listAccess.loadNewer(after.longValue(), limit);
     } else if (before != null) {
-      activities = listAccess.loadOlder(before, limit);
+      activities = listAccess.loadOlder(before.longValue(), limit);
     } else {
       activities = listAccess.loadAsList(offset, limit);
     }
@@ -297,7 +285,7 @@ public class SpaceSocialRestServiceV1 extends AbstractSocialRestService implemen
     as.put(RestProperties.ID, spaceIdentity.getRemoteId());
     //
     for (ExoSocialActivity activity : activities) {
-      Map<String, Object> activityInfo = RestUtils.buildEntityFromActivity(activity, uriInfo.getPath(), getQueryValueExpand(uriInfo));
+      Map<String, Object> activityInfo = RestUtils.buildEntityFromActivity(activity, uriInfo.getPath(), getQueryParam("expand"));
       activityInfo.put(RestProperties.ACTIVITY_STREAM, as);
       //
       activitiesInfo.add(activityInfo);
@@ -314,10 +302,15 @@ public class SpaceSocialRestServiceV1 extends AbstractSocialRestService implemen
    */
   @POST
   @Path("{id}/activities")
+  @Produces(MediaType.APPLICATION_JSON)
   @RolesAllowed("users")
-  public Response postActivityOnSpace(@Context UriInfo uriInfo) throws Exception {
+  public Response postActivityOnSpace(@Context UriInfo uriInfo,
+                                       ActivityRestIn model) throws Exception {
+    if (model == null || model.getTitle() == null || model.getTitle().length() == 0) {
+      throw new WebApplicationException(Response.Status.UNAUTHORIZED);
+    }
+    //
     String id = getPathParam("id");
-    String text = getQueryParam("text");
     String authenticatedUser = ConversationState.getCurrent().getIdentity().getUserId();
     //
     SpaceService spaceService = CommonsUtils.getService(SpaceService.class);
@@ -327,13 +320,37 @@ public class SpaceSocialRestServiceV1 extends AbstractSocialRestService implemen
     }
     
     Identity spaceIdentity = CommonsUtils.getService(IdentityManager.class).getOrCreateIdentity(SpaceIdentityProvider.NAME, space.getPrettyName(), false);
-    Identity target = CommonsUtils.getService(IdentityManager.class).getOrCreateIdentity(OrganizationIdentityProvider.NAME, authenticatedUser, false);
+    Identity poster = CommonsUtils.getService(IdentityManager.class).getOrCreateIdentity(OrganizationIdentityProvider.NAME, authenticatedUser, false);
     
     ExoSocialActivity activity = new ExoSocialActivityImpl();
-    activity.setTitle(text);
-    activity.setUserId(target.getId());
+    activity.setTitle(model.getTitle());
+    activity.setUserId(poster.getId());
     CommonsUtils.getService(ActivityManager.class).saveActivityNoReturn(spaceIdentity, activity);
     
-    return Util.getResponse(RestUtils.buildEntityFromActivity(activity, uriInfo.getPath(), getQueryValueExpand(uriInfo)), uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
+    return Util.getResponse(RestUtils.buildEntityFromActivity(activity, uriInfo.getPath(), getQueryParam("expand")), uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
+  }
+  
+  private void fillSpaceFromModel(Space space, SpaceRestIn model) {
+    if (model.getDisplayName() != null && model.getDisplayName().length() > 0) {
+      space.setDisplayName(model.getDisplayName());
+    }
+    if (model.getDescription() != null && model.getDescription().length() > 0) {
+      space.setDescription(StringEscapeUtils.escapeHtml(model.getDescription()));
+    }
+    space.setPrettyName(space.getDisplayName());
+    
+    if (model.getVisibility() != null && (model.getVisibility().equals(Space.HIDDEN) 
+        || model.getVisibility().equals(Space.PRIVATE))) {
+      space.setVisibility(model.getVisibility());
+    } else if (space.getVisibility() == null || space.getVisibility().length() == 0) {
+      space.setVisibility(Space.PRIVATE);
+    }
+    
+    if (model.getRegistration() != null && (model.getRegistration().equals(Space.OPEN) 
+        || model.getRegistration().equals(Space.CLOSE) || model.getRegistration().equals(Space.VALIDATION))) {
+      space.setRegistration(model.getRegistration());
+    } else if (space.getRegistration() == null || space.getRegistration().length() == 0) {
+      space.setRegistration(Space.VALIDATION);
+    }
   }
 }

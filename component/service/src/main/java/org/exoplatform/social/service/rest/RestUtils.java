@@ -31,11 +31,6 @@ import javax.ws.rs.core.MediaType;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.exoplatform.commons.utils.CommonsUtils;
-import org.exoplatform.services.log.ExoLogger;
-import org.exoplatform.services.log.Log;
-import org.exoplatform.services.organization.Membership;
-import org.exoplatform.services.organization.MembershipHandler;
-import org.exoplatform.services.organization.OrganizationService;
 import org.exoplatform.services.rest.ApplicationContext;
 import org.exoplatform.services.rest.impl.ApplicationContextImpl;
 import org.exoplatform.services.security.ConversationState;
@@ -87,8 +82,6 @@ public class RestUtils {
   public static final String SUPPORT_TYPE            = "json";
 
   public static final String ADMIN_GROUP             = "/platform/administrators";
-  
-  private static final Log   LOG                     = ExoLogger.getLogger(RestUtils.class);
   
   /**
    * Get a hash map from an identity in order to build a json object for the rest service
@@ -171,16 +164,9 @@ public class RestUtils {
     updateCachedEtagValue(getEtagValue(type));
     
     Map<String, Object> map = new LinkedHashMap<String, Object>();
-    OrganizationService organizationService = CommonsUtils.getService(OrganizationService.class);
-    MembershipHandler handler = organizationService.getMembershipHandler();
-    try {
-      Membership membership = handler.findMembershipByUserGroupAndType(userId, space.getGroupId(), type);
-      map.put(RestProperties.ID, membership.getId());
-      map.put(RestProperties.HREF, (expand != null && RestProperties.HREF.equals(expand)) ? buildEntityFromSpaceMembership(space, userId, type, restPath, null) : Util.getRestUrl(SPACES_MEMBERSHIP_TYPE, membership.getId(), restPath));
-    } catch (Exception e) {
-      LOG.debug("Failed to find the membership");
-      return map;
-    }
+    String id = space.getPrettyName() + ":" + userId + ":" + type;
+    map.put(RestProperties.ID, id);
+    map.put(RestProperties.HREF, (expand != null && RestProperties.HREF.equals(expand)) ? buildEntityFromSpaceMembership(space, userId, type, restPath, null) : Util.getRestUrl(SPACES_MEMBERSHIP_TYPE, id, restPath));
     map.put(RestProperties.USERS, Util.getRestUrl(USERS_TYPE, userId, restPath));
     map.put(RestProperties.SPACES, Util.getRestUrl(SPACES_TYPE, space.getId(), restPath));
     map.put(RestProperties.ROLE, type);

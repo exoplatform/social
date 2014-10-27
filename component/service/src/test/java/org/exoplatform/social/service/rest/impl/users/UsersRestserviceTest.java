@@ -10,11 +10,11 @@ import org.exoplatform.social.core.activity.model.ExoSocialActivityImpl;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
 import org.exoplatform.social.core.manager.ActivityManager;
+import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.manager.RelationshipManager;
 import org.exoplatform.social.core.space.impl.DefaultSpaceApplicationHandler;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
-import org.exoplatform.social.core.storage.api.IdentityStorage;
 import org.exoplatform.social.service.rest.RestProperties;
 import org.exoplatform.social.service.rest.api.models.ActivitiesCollections;
 import org.exoplatform.social.service.rest.api.models.SpacesCollections;
@@ -26,8 +26,8 @@ public class UsersRestserviceTest extends AbstractResourceTest {
   
   static private UserSocialRestServiceV1 usersRestService;
   
-  private IdentityStorage identityStorage;
   private ActivityManager activityManager;
+  private IdentityManager identityManager;
   private RelationshipManager relationshipManager;
   private SpaceService spaceService;
   
@@ -44,20 +44,15 @@ public class UsersRestserviceTest extends AbstractResourceTest {
     System.setProperty("gatein.email.domain.url", "localhost:8080");
     tearDownSpaceList = new ArrayList<Space>();
     
-    identityStorage = (IdentityStorage) getContainer().getComponentInstanceOfType(IdentityStorage.class);
     activityManager = (ActivityManager) getContainer().getComponentInstanceOfType(ActivityManager.class);
+    identityManager = (IdentityManager) getContainer().getComponentInstanceOfType(IdentityManager.class);
     relationshipManager = (RelationshipManager) getContainer().getComponentInstanceOfType(RelationshipManager.class);
     spaceService = (SpaceService) getContainer().getComponentInstanceOfType(SpaceService.class);
     
-    rootIdentity = new Identity("organization", "root");
-    johnIdentity = new Identity("organization", "john");
-    maryIdentity = new Identity("organization", "mary");
-    demoIdentity = new Identity("organization", "demo");
-    
-    identityStorage.saveIdentity(rootIdentity);
-    identityStorage.saveIdentity(johnIdentity);
-    identityStorage.saveIdentity(maryIdentity);
-    identityStorage.saveIdentity(demoIdentity);
+    rootIdentity = identityManager.getOrCreateIdentity("organization", "root", true);
+    johnIdentity = identityManager.getOrCreateIdentity("organization", "john", true);
+    maryIdentity = identityManager.getOrCreateIdentity("organization", "mary", true);
+    demoIdentity = identityManager.getOrCreateIdentity("organization", "demo", true);
     
     usersRestService = new UserSocialRestServiceV1();
     registry(usersRestService);
@@ -65,17 +60,17 @@ public class UsersRestserviceTest extends AbstractResourceTest {
 
   public void tearDown() throws Exception {
     for (Space space : tearDownSpaceList) {
-      Identity spaceIdentity = identityStorage.findIdentity(SpaceIdentityProvider.NAME, space.getPrettyName());
+      Identity spaceIdentity = identityManager.getOrCreateIdentity(SpaceIdentityProvider.NAME, space.getPrettyName(), false);
       if (spaceIdentity != null) {
-        identityStorage.deleteIdentity(spaceIdentity);
+        identityManager.deleteIdentity(spaceIdentity);
       }
       spaceService.deleteSpace(space);
     }
     
-    identityStorage.deleteIdentity(rootIdentity);
-    identityStorage.deleteIdentity(johnIdentity);
-    identityStorage.deleteIdentity(maryIdentity);
-    identityStorage.deleteIdentity(demoIdentity);
+    identityManager.deleteIdentity(rootIdentity);
+    identityManager.deleteIdentity(johnIdentity);
+    identityManager.deleteIdentity(maryIdentity);
+    identityManager.deleteIdentity(demoIdentity);
     
     super.tearDown();
     unregistry(usersRestService);
@@ -86,6 +81,8 @@ public class UsersRestserviceTest extends AbstractResourceTest {
     ContainerResponse response = service("GET", "/v1/social/users?limit=5&offset=0", "", null, null);
     assertNotNull(response);
     assertEquals(200, response.getStatus());
+    UsersCollections users = (UsersCollections) response.getEntity();
+    assertEquals(4, users.getUsers().size());
   }
   
   public void testGetUserById() throws Exception {

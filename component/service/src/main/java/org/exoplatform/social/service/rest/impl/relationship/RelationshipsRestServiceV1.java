@@ -57,8 +57,8 @@ public class RelationshipsRestServiceV1 extends AbstractSocialRestService implem
   @RolesAllowed("users")
   public Response getRelationships(@Context UriInfo uriInfo) throws Exception {
     String status = getQueryParam("status");
-    int limit = getQueryValueLimit(uriInfo);
-    int offset = getQueryValueOffset(uriInfo);
+    int limit = getQueryValueLimit();
+    int offset = getQueryValueOffset();
     //
     RelationshipManager relationshipManager = CommonsUtils.getService(RelationshipManager.class);
     Relationship.Type type;
@@ -79,7 +79,7 @@ public class RelationshipsRestServiceV1 extends AbstractSocialRestService implem
       size = relationshipManager.getRelationshipsCountByStatus(authenticatedUser, type);
     }
     
-    RelationshipsCollections collections = new RelationshipsCollections(getQueryValueReturnSize(uriInfo) ? size : -1, offset, limit);
+    RelationshipsCollections collections = new RelationshipsCollections(getQueryValueReturnSize() ? size : -1, offset, limit);
     collections.setRelationships(buildRelationshipsCollections(relationships, uriInfo));
     //
     return Util.getResponse(collections, uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
@@ -122,7 +122,7 @@ public class RelationshipsRestServiceV1 extends AbstractSocialRestService implem
     relationship = new Relationship(sender, receiver, type);
     relationshipManager.update(relationship);
     
-    return Util.getResponse(RestUtils.buildEntityFromRelationship(relationship, uriInfo.getPath(), getQueryValueExpand(uriInfo), true), uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
+    return Util.getResponse(RestUtils.buildEntityFromRelationship(relationship, uriInfo.getPath(), getQueryParam("expand"), true), uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
   }
   
   @GET
@@ -137,11 +137,12 @@ public class RelationshipsRestServiceV1 extends AbstractSocialRestService implem
     if (relationship == null || ! hasPermissionOnRelationship(authenticatedUser, relationship)) {
       throw new WebApplicationException(Response.Status.UNAUTHORIZED);
     }
-    return Util.getResponse(RestUtils.buildEntityFromRelationship(relationship, uriInfo.getPath(), getQueryValueExpand(uriInfo), true), uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
+    return Util.getResponse(RestUtils.buildEntityFromRelationship(relationship, uriInfo.getPath(), getQueryParam("expand"), true), uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
   }
   
   @PUT
   @Path("{id}")
+  @Produces(MediaType.APPLICATION_JSON)
   @RolesAllowed("users")
   public Response updateRelationshipById(@Context UriInfo uriInfo,
                                           RelationshipRestIn model) throws Exception {
@@ -174,7 +175,7 @@ public class RelationshipsRestServiceV1 extends AbstractSocialRestService implem
       }
     }
     
-    return Util.getResponse(RestUtils.buildEntityFromRelationship(relationship, uriInfo.getPath(), getQueryValueExpand(uriInfo), false), uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
+    return Util.getResponse(RestUtils.buildEntityFromRelationship(relationship, uriInfo.getPath(), getQueryParam("expand"), false), uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
   }
   
   @DELETE
@@ -192,7 +193,7 @@ public class RelationshipsRestServiceV1 extends AbstractSocialRestService implem
     //delete the relationship
     relationshipManager.delete(relationship);
     
-    return Util.getResponse(RestUtils.buildEntityFromRelationship(relationship, uriInfo.getPath(), getQueryValueExpand(uriInfo), false), uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
+    return Util.getResponse(RestUtils.buildEntityFromRelationship(relationship, uriInfo.getPath(), getQueryParam("expand"), false), uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
   }
 
   /**
@@ -214,7 +215,7 @@ public class RelationshipsRestServiceV1 extends AbstractSocialRestService implem
   private List<Map<String, Object>> buildRelationshipsCollections(List<Relationship> relationships, UriInfo uriInfo) {
     List<Map<String, Object>> infos = new ArrayList<Map<String, Object>>();
     for (Relationship relationship : relationships) {
-      Map<String, Object> map = RestUtils.buildEntityFromRelationship(relationship, uriInfo.getPath(), getQueryValueExpand(uriInfo), true);
+      Map<String, Object> map = RestUtils.buildEntityFromRelationship(relationship, uriInfo.getPath(), getQueryParam("expand"), true);
       //
       infos.add(map);
     }

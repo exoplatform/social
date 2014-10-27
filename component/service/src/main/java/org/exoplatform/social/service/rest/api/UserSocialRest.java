@@ -9,6 +9,9 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
+import org.exoplatform.social.service.rest.api.models.ActivityRestIn;
+import org.exoplatform.social.service.rest.api.models.ProfileRestIn;
+
 public interface UserSocialRest extends SocialRest {
 
   /**
@@ -32,7 +35,8 @@ public interface UserSocialRest extends SocialRest {
    * @throws Exception
    */
   @POST
-  public abstract Response addUser(@Context UriInfo uriInfo) throws Exception;
+  public abstract Response addUser(@Context UriInfo uriInfo,
+                                     ProfileRestIn model) throws Exception;
 
   @GET
   @Path("{id}")
@@ -44,7 +48,8 @@ public interface UserSocialRest extends SocialRest {
 
   @PUT
   @Path("{id}")
-  public abstract Response updateUserById(@Context UriInfo uriInfo) throws Exception;
+  public abstract Response updateUserById(@Context UriInfo uriInfo,
+                                            ProfileRestIn model) throws Exception;
 
   @GET
   @Path("{id}/connections")
@@ -60,6 +65,7 @@ public interface UserSocialRest extends SocialRest {
 
   @POST
   @Path("{id}/activities")
-  public abstract Response addActivityByUser(@Context UriInfo uriInfo) throws Exception;
+  public abstract Response addActivityByUser(@Context UriInfo uriInfo,
+                                               ActivityRestIn model) throws Exception;
 
 }

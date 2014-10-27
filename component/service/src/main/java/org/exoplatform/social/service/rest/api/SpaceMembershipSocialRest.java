@@ -10,6 +10,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
 import org.exoplatform.social.service.rest.api.SocialRest;
+import org.exoplatform.social.service.rest.api.models.SpaceMembershipRestIn;
 
 public interface SpaceMembershipSocialRest extends SocialRest {
 
@@ -24,7 +25,8 @@ public interface SpaceMembershipSocialRest extends SocialRest {
   public abstract Response getSpacesMemberships(@Context UriInfo uriInfo) throws Exception;
 
   @POST
-  public abstract Response addSpacesMemberships(@Context UriInfo uriInfo) throws Exception;
+  public abstract Response addSpacesMemberships(@Context UriInfo uriInfo,
+                                                  SpaceMembershipRestIn model) throws Exception;
 
   /**
    * Process to return a spaceMembership by id
@@ -46,7 +48,8 @@ public interface SpaceMembershipSocialRest extends SocialRest {
    */
   @PUT
   @Path("{id}/{spacesPrefix}/{spacePrettyName}")
-  public abstract Response updateSpaceMembershipById(@Context UriInfo uriInfo) throws Exception;
+  public abstract Response updateSpaceMembershipById(@Context UriInfo uriInfo,
+                                                       SpaceMembershipRestIn model) throws Exception;
 
   /**
    * Process to delete a spaceMembership by id
