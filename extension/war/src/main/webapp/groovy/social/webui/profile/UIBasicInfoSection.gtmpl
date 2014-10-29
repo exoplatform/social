@@ -27,52 +27,61 @@
   import org.exoplatform.webui.core.UIPopupWindow;
   import org.exoplatform.social.webui.Utils;
   import org.exoplatform.social.webui.profile.UITitleBar;
-  uicomponent.reloadBasicInfo();
+  import org.exoplatform.social.core.identity.model.Profile;
 
   def isEdit = uicomponent.isEditMode();
   def isEditable = uicomponent.isEditable();
   def children = uicomponent.getChilds();
-  def email = children.get(4).getValue(); 
+  
+  def profile = uicomponent.getProfile();
+  def userName = profile.getProperty(Profile.USERNAME);
+  def firstName = profile.getProperty(Profile.FIRST_NAME);
+  def lastName = profile.getProperty(Profile.LAST_NAME);
+  def email = profile.getProperty(Profile.EMAIL);
   _ctx.getRequestContext().getJavascriptManager().require("SHARED/uiForm");
 %>
 <div class="uiBasicInfoSection">
   <% uiform.begin() %>
   <% uicomponent.renderChild(UITitleBar.class); %>
+  <%
+  if(isEdit && isEditable) { 
+    uicomponent.reloadBasicInfo();
+  } %>
   <div class="form-horizontal">
         <div class="control-group">
           <label class="control-label" for="<%=children.get(1).getId()%>"><strong><%=_ctx.appRes(uicomponent.getId() + ".label.userName")%>:</strong></label>
           <div class="controls">
-          <% if (isEdit) {
+          <% if (isEdit && isEditable) {
               uiform.renderField(children.get(1));
              } else {%>
-               <%=children.get(1).getValue(); %>
+               <%=userName %>
           <% } %>
           </div>
         </div>
         <div class="control-group">
           <label class="control-label" for="<%=children.get(2).getId()%>"><strong><%=_ctx.appRes(uicomponent.getId() + ".label.firstName")%>:</strong></label>
           <div class="controls">
-          <% if (isEdit) {
+          <% if (isEdit && isEditable) {
                uiform.renderField(children.get(2));
              } else { %>
-               <%=children.get(2).getValue(); %>
+               <%=firstName %>
           <% } %>
           </div>
         </div>
         <div class="control-group">
           <label class="control-label" for="<%=children.get(3).getId()%>"><strong><%=_ctx.appRes(uicomponent.getId() + ".label.lastName")%>:</strong></label>
           <div class="controls">
-            <% if (isEdit) {
+            <% if (isEdit && isEditable) {
                  uiform.renderField(children.get(3));
                } else { %>
-                 <%=children.get(3).getValue(); %>
+                 <%=lastName %>
             <% } %>
           </div>
         </div>
         <div class="control-group">
           <label class="control-label" for="<%=children.get(4).getId()%>"><strong><%=_ctx.appRes(uicomponent.getId() + ".label.email")%>:</strong></label>
           <div class="controls">
-          <% if (isEdit) {
+          <% if (isEdit && isEditable) {
             uiform.renderField(children.get(4));
              } else { %>
 		<a href="mailto:${email}" class="email">
