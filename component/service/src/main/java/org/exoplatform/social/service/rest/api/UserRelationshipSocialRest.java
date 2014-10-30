@@ -10,6 +10,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
 import org.exoplatform.social.service.rest.api.SocialRest;
+import org.exoplatform.social.service.rest.api.models.RelationshipRestIn;
 
 public interface UserRelationshipSocialRest extends SocialRest {
 
@@ -27,7 +28,8 @@ public interface UserRelationshipSocialRest extends SocialRest {
    * @throws Exception
    */
   @POST
-  public abstract Response createUsersRelationships(@Context UriInfo uriInfo) throws Exception;
+  public abstract Response createUsersRelationships(@Context UriInfo uriInfo,
+                                                      RelationshipRestIn model) throws Exception;
 
   /**
    * Get a relationship by id
@@ -49,7 +51,8 @@ public interface UserRelationshipSocialRest extends SocialRest {
    */
   @PUT
   @Path("{id}")
-  public abstract Response updateUsersRelationshipsById(@Context UriInfo uriInfo) throws Exception;
+  public abstract Response updateUsersRelationshipsById(@Context UriInfo uriInfo,
+                                                          RelationshipRestIn model) throws Exception;
 
   /**
    * Process to delete a relationship by id

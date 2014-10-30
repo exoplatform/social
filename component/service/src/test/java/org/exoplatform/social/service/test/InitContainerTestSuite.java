@@ -37,6 +37,7 @@ import org.exoplatform.social.service.rest.impl.identity.IdentitySocialRestServi
 import org.exoplatform.social.service.rest.impl.relationship.RelationshipsRestServiceTest;
 import org.exoplatform.social.service.rest.impl.space.SpaceSocialRestServiceTest;
 import org.exoplatform.social.service.rest.impl.spacemembership.SpaceMembershipRestServiceTest;
+import org.exoplatform.social.service.rest.impl.userrelationship.UserRelationshipsRestServiceTest;
 import org.exoplatform.social.service.rest.impl.users.UsersRestserviceTest;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -65,7 +66,7 @@ import org.junit.runners.Suite.SuiteClasses;
   RelationshipsRestServiceTest.class,
   SpaceSocialRestServiceTest.class,
   SpaceMembershipRestServiceTest.class,
-  //UserRelationshipsRestServiceTest.class,
+  UserRelationshipsRestServiceTest.class,
   UsersRestserviceTest.class
   })
 @ConfigTestCase(AbstractServiceTest.class)

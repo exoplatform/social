@@ -43,6 +43,7 @@ import org.exoplatform.social.service.rest.RestUtils;
 import org.exoplatform.social.service.rest.Util;
 import org.exoplatform.social.service.rest.api.AbstractSocialRestService;
 import org.exoplatform.social.service.rest.api.UserRelationshipSocialRest;
+import org.exoplatform.social.service.rest.api.models.RelationshipRestIn;
 import org.exoplatform.social.service.rest.api.models.RelationshipsCollections;
 
 @Path("v1/social/usersRelationships")
@@ -85,18 +86,18 @@ public class UsersRelationshipsRestServiceV1 extends AbstractSocialRestService i
     if (givenUser == null & RestUtils.isMemberOfAdminGroup()) {
       //gets all relationships from database by status
       relationships = relationshipManager.getRelationshipsByStatus(null, type, offset, limit);
-      size = relationshipManager.getRelationshipsCountByStatus(null, type);
+      size = getQueryValueReturnSize() ? relationshipManager.getRelationshipsCountByStatus(null, type) : -1;
     } else {
       if (givenUser == null) {
         relationships = relationshipManager.getRelationshipsByStatus(authenticatedUser, type, offset, limit);
-        size = relationshipManager.getRelationshipsCountByStatus(authenticatedUser, type);
+        size = getQueryValueReturnSize() ? relationshipManager.getRelationshipsCountByStatus(authenticatedUser, type) : -1;
       } else {
         relationships = relationshipManager.getRelationshipsByStatus(givenUser, type, offset, limit);
-        size = relationshipManager.getRelationshipsCountByStatus(givenUser, type);
+        size = getQueryValueReturnSize() ? relationshipManager.getRelationshipsCountByStatus(givenUser, type) : -1;
       }
     }
     
-    RelationshipsCollections collections = new RelationshipsCollections(getQueryValueReturnSize() ? size : -1, offset, limit);
+    RelationshipsCollections collections = new RelationshipsCollections(size, offset, limit);
     collections.setRelationships(buildRelationshipsCollections(relationships, uriInfo));
     
     return Util.getResponse(collections, uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
@@ -104,8 +105,33 @@ public class UsersRelationshipsRestServiceV1 extends AbstractSocialRestService i
   
   @POST
   @RolesAllowed("users")
-  public Response createUsersRelationships(@Context UriInfo uriInfo) throws Exception {
-    return Util.getResponse("", uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
+  public Response createUsersRelationships(@Context UriInfo uriInfo,
+                                            RelationshipRestIn model) throws Exception {
+    if (model == null || model.getReceiver() == null || model.getSender() == null) {
+      throw new WebApplicationException(Response.Status.UNAUTHORIZED);
+    }
+    //
+    String authenticatedUser = ConversationState.getCurrent().getIdentity().getUserId();
+    if (! RestUtils.isMemberOfAdminGroup() && !model.getReceiver().equals(authenticatedUser) && !model.getSender().equals(authenticatedUser)) {
+      throw new WebApplicationException(Response.Status.UNAUTHORIZED);
+    }
+    //
+    IdentityManager identityManager = CommonsUtils.getService(IdentityManager.class);
+    Identity sender = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, model.getSender(), true);
+    Identity receiver = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, model.getReceiver(), true);
+    if (sender == null || receiver == null) {
+      throw new WebApplicationException(Response.Status.UNAUTHORIZED);
+    }
+    
+    Relationship.Type status = model.getStatus() != null && model.getStatus().equalsIgnoreCase("pending") ? Relationship.Type.PENDING : Relationship.Type.CONFIRMED;
+    RelationshipManager relationshipManager = CommonsUtils.getService(RelationshipManager.class);
+    if (relationshipManager.get(sender, receiver) != null) {
+      throw new WebApplicationException(Response.Status.UNAUTHORIZED);
+    }
+    Relationship relationship = new Relationship(sender, receiver, status);
+    relationshipManager.update(relationship);
+    
+    return Util.getResponse(RestUtils.buildEntityFromRelationship(relationship, uriInfo.getPath(), getQueryParam("expand"), false), uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
   }
   
   @GET
@@ -126,9 +152,13 @@ public class UsersRelationshipsRestServiceV1 extends AbstractSocialRestService i
   @PUT
   @RolesAllowed("users")
   @Path("{id}")
-  public Response updateUsersRelationshipsById(@Context UriInfo uriInfo) throws Exception {
+  public Response updateUsersRelationshipsById(@Context UriInfo uriInfo,
+                                                RelationshipRestIn model) throws Exception {
+    if (model == null || model.getStatus() == null) {
+      throw new WebApplicationException(Response.Status.UNAUTHORIZED);
+    }
+    //
     String id = getPathParam("id");
-    
     Identity authenticatedUser = CommonsUtils.getService(IdentityManager.class).getOrCreateIdentity(OrganizationIdentityProvider.NAME, ConversationState.getCurrent().getIdentity().getUserId(), true);
     RelationshipManager relationshipManager = CommonsUtils.getService(RelationshipManager.class);
     Relationship relationship = relationshipManager.get(id);
@@ -136,8 +166,14 @@ public class UsersRelationshipsRestServiceV1 extends AbstractSocialRestService i
       throw new WebApplicationException(Response.Status.UNAUTHORIZED);
     }
     
-    //update relationship
-    relationshipManager.update(relationship);
+    Relationship.Type status;
+    try {
+      status = Relationship.Type.valueOf(model.getStatus());
+    } catch (Exception e) {
+      throw new WebApplicationException(Response.Status.UNAUTHORIZED);
+    }
+    //update relationship by status
+    updateRelationshipByStatus(relationship, status, relationshipManager);
     
     return Util.getResponse(RestUtils.buildEntityFromRelationship(relationship, uriInfo.getPath(), getQueryParam("expand"), false), uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
   }
@@ -184,5 +220,24 @@ public class UsersRelationshipsRestServiceV1 extends AbstractSocialRestService i
       infos.add(map);
     }
     return infos;
+  }
+  
+  private void updateRelationshipByStatus(Relationship relationship, Relationship.Type status, RelationshipManager relationshipManager) {
+    switch (status) {
+      case IGNORED: {//from confirm or pending to ignore
+        relationshipManager.delete(relationship);
+        break;
+      }
+      case PENDING: {//from confirm to pending but this case doesn't exist
+        break;
+      }
+      case CONFIRMED: {//from pending to confirm
+        relationship.setStatus(status);
+        relationshipManager.update(relationship);
+        break;
+      }
+      default:
+        break;
+      }
   }
 }

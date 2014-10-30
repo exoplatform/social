@@ -117,17 +117,26 @@ public class SpaceMembershipRestServiceTest extends AbstractResourceTest {
   
   public void testGetUpdateDeleteSpaceMembership() throws Exception {
     //root creates 1 space
-    getSpaceInstance(1, "root");
+    Space space = getSpaceInstance(1, "root");
+    spaceService.addMember(space, "demo");
     
     //root add demo as member of his space
     startSessionAs("root");
-    String id = "space1:root:member";
+    String id = "space1:demo:member";
     ContainerResponse response = service("GET", "/v1/social/spacesMemberships/" + id, "", null, null);
     assertNotNull(response);
     assertEquals(200, response.getStatus());
-    Map<String, Object> result = (Map<String, Object>) response.getEntity();
-    assertEquals("member", result.get(RestProperties.ROLE));
     
+    //update demo to manager
+    String input = "{\"role\":manager}";
+    response = getResponse("PUT", "/v1/social/spacesMemberships/" + id, input);
+    assertEquals(200, response.getStatus());
+    assertTrue(spaceService.isManager(spaceService.getSpaceById(space.getId()), "demo"));
+    
+    //delete membership of demo from space1
+    response = service("DELETE", "/v1/social/spacesMemberships/" + id, "", null, null);
+    assertEquals(200, response.getStatus());
+    assertFalse(spaceService.isMember(spaceService.getSpaceById(space.getId()), "demo"));
   }
   
   private Space getSpaceInstance(int number, String creator) throws Exception {
