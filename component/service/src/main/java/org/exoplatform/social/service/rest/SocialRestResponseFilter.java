@@ -25,6 +25,7 @@ import org.exoplatform.services.rest.GenericContainerResponse;
 import org.exoplatform.services.rest.ResponseFilter;
 import org.exoplatform.services.rest.impl.ApplicationContextImpl;
 import org.exoplatform.social.service.rest.api.models.ResourceCollections;
+import org.json.JSONObject;
 
 @Filter
 public class SocialRestResponseFilter implements ResponseFilter {
@@ -32,6 +33,7 @@ public class SocialRestResponseFilter implements ResponseFilter {
   private static final String PATTERN_RFC1123    = "EEE, dd MMM yyyy HH:mm:ss zzz";
   private static final String DOUBLE_QUOTE       = "^\"|\"$";
   private static final Log    LOG                = ExoLogger.getExoLogger(SocialRestResponseFilter.class);
+  private static final String JSONP              = "jsonp";
   
   @Override
   public void doFilter(GenericContainerResponse response) {
@@ -86,15 +88,48 @@ public class SocialRestResponseFilter implements ResponseFilter {
       entity = filterProperties(response.getEntity(), outputFields);
     }
     
+    String callbackFunction = getQueryParam(JSONP);
+     if (callbackFunction != null) {
+      StringBuffer theStringBuffer = new StringBuffer();
+      
+      // add callback function name
+      theStringBuffer.append(callbackFunction);
+      
+      // open 
+      theStringBuffer.append("(");
+
+      // serialize the POJO to JSON
+      String theResponseString = serializeToJson(entity); 
+
+      // add the JSON string
+      theStringBuffer.append(theResponseString);
+      
+      // close 
+      theStringBuffer.append(")");
+      
+      responseBuilder.entity(theStringBuffer.toString());  
+    } else {
+      responseBuilder.entity(entity);
+    }
+    
     CacheControl cc = new CacheControl();
     cc.setMaxAge(86400);
     cc.setPrivate(true);
     cc.setNoCache(false);
     
-    response.setResponse(responseBuilder.entity(entity)
-                                        .cacheControl(cc)
+    response.setResponse(responseBuilder.cacheControl(cc)
                                         .status(status)
                                         .build());
+  }
+
+  private String serializeToJson(Object entity) {
+    if (ResourceCollections.class.isAssignableFrom(entity.getClass())) {
+      return new JSONObject((ResourceCollections)entity).toString();
+    } else if (entity instanceof Map) {
+      return new JSONObject((Map<String, Object>)entity).toString();
+    }
+    
+    return StringUtils.EMPTY;
   }
 
   @SuppressWarnings("unchecked")
@@ -117,5 +152,10 @@ public class SocialRestResponseFilter implements ResponseFilter {
     }
     
     return new Object();
+  }
+  
+  private String getQueryParam(String queryParamName) {
+    ApplicationContext acx = ApplicationContextImpl.getCurrent();
+    return acx.getQueryParameters().getFirst(queryParamName);
   }
 }
