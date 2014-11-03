@@ -197,13 +197,15 @@ public class UIManageAllSpaces extends UIContainer {
    * @throws Exception 
    */
   public List<Space> getSpacesList() throws Exception {
+    this.spacesList = loadSpaces(0, this.spacesList.size());
+    int realSpacesListSize = this.spacesList.size();
+    
     if (isHasUpdatedSpace()) {
       setHasUpdatedSpace(false);
-      setSpacesList(loadSpaces(0, this.spacesList.size()));
     }
     
-    setEnableLoadNext((this.spacesList.size() >= SPACES_PER_PAGE)
-            && (this.spacesList.size() < getSpacesNum()));
+    setEnableLoadNext((realSpacesListSize >= SPACES_PER_PAGE)
+            && (realSpacesListSize < getSpacesNum()));
     
     return this.spacesList;
   }
