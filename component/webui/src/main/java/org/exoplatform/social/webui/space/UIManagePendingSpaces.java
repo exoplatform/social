@@ -97,7 +97,11 @@ public class UIManagePendingSpaces extends UIContainer {
       loadingCapacity = SPACES_PER_PAGE;
       pendingSpacesList = new ArrayList<Space>();
       setPendingSpacesList(loadPendingSpaces(currentLoadIndex, loadingCapacity));
-      setSelectedChar(SEARCH_ALL);
+      if (this.selectedChar != null){
+        setSelectedChar(this.selectedChar);
+      } else {
+        setSelectedChar(SEARCH_ALL);
+      }   
     } catch (Exception e) {
       LOG.error(e.getMessage(), e);
     }
@@ -174,13 +178,15 @@ public class UIManagePendingSpaces extends UIContainer {
    * @since 1.2.2
    */
   public List<Space> getPendingSpacesList() throws Exception {
-    if (isHasUpdatedSpace()) {
-      setHasUpdatedSpace(false);
-      setPendingSpacesList(loadPendingSpaces(0, this.pendingSpacesList.size()));
-    }
+    this.pendingSpacesList = loadPendingSpaces(0, this.pendingSpacesList.size());
+    int realPendingSpacesListSize = this.pendingSpacesList.size();
     
-    setEnableLoadNext((this.pendingSpacesList.size() >= SPACES_PER_PAGE)
-            && (this.pendingSpacesList.size() < getPendingSpacesNum()));
+    if (isHasUpdatedSpace()) {
+      setHasUpdatedSpace(false); 
+    }
+        
+    setEnableLoadNext((realPendingSpacesListSize >= SPACES_PER_PAGE)
+            && (realPendingSpacesListSize < getPendingSpacesNum()));
     
     return this.pendingSpacesList;
   }

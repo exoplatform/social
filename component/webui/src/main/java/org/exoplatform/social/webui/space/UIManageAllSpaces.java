@@ -119,7 +119,11 @@ public class UIManageAllSpaces extends UIContainer {
       loadingCapacity = SPACES_PER_PAGE;
       spacesList = new ArrayList<Space>();
       setSpacesList(loadSpaces(currentLoadIndex, loadingCapacity));
-      setSelectedChar(SEARCH_ALL);
+      if (this.selectedChar != null){
+        setSelectedChar(this.selectedChar);
+      } else {
+        setSelectedChar(SEARCH_ALL);
+      }   
     } catch (Exception e) {
       LOG.error(e.getMessage(), e);
     }
@@ -195,13 +199,15 @@ public class UIManageAllSpaces extends UIContainer {
    * @throws Exception 
    */
   public List<Space> getSpacesList() throws Exception {
+    this.spacesList = loadSpaces(0, this.spacesList.size());
+    int realSpacesListSize = this.spacesList.size();
+    
     if (isHasUpdatedSpace()) {
       setHasUpdatedSpace(false);
-      setSpacesList(loadSpaces(0, this.spacesList.size()));
     }
     
-    setEnableLoadNext((this.spacesList.size() >= SPACES_PER_PAGE)
-            && (this.spacesList.size() < getSpacesNum()));
+    setEnableLoadNext((realSpacesListSize >= SPACES_PER_PAGE)
+            && (realSpacesListSize < getSpacesNum()));
     
     return this.spacesList;
   }

@@ -103,7 +103,11 @@ public class UIManageInvitationSpaces extends UIContainer {
       loadingCapacity = SPACES_PER_PAGE;
       invitedSpacesList = new ArrayList<Space>();
       setInvitedSpacesList(loadInvitedSpaces(currentLoadIndex, loadingCapacity));
-      setSelectedChar(SEARCH_ALL);
+      if (this.selectedChar != null){
+        setSelectedChar(this.selectedChar);
+      } else {
+        setSelectedChar(SEARCH_ALL);
+      }   
     } catch (Exception e) {
       LOG.error(e.getMessage(), e);
     }
@@ -180,13 +184,15 @@ public class UIManageInvitationSpaces extends UIContainer {
    * @since 1.2.2
    */
   public List<Space> getInvitedSpacesList() throws Exception {
+    this.invitedSpacesList = loadInvitedSpaces(0, this.invitedSpacesList.size());
+    int realInvitedSpacesListSize = this.invitedSpacesList.size();
+    
     if (isHasUpdatedSpace()) {
       setHasUpdatedSpace(false);
-      setInvitedSpacesList(loadInvitedSpaces(0, this.invitedSpacesList.size()));
     }
     
-    setEnableLoadNext((this.invitedSpacesList.size() >= SPACES_PER_PAGE)
-            && (this.invitedSpacesList.size() < getInvitedSpacesNum()));
+    setEnableLoadNext((realInvitedSpacesListSize >= SPACES_PER_PAGE)
+            && (realInvitedSpacesListSize < getInvitedSpacesNum()));
     
     return this.invitedSpacesList;
   }

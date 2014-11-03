@@ -63,7 +63,7 @@ public class UIManageMySpaces extends UIContainer {
   private static final String SEARCH_ALL = "All";
   private static final String SPACE_SEARCH = "SpaceSearch";
 
-  private final Integer SPACES_PER_PAGE = 20;
+  private final Integer SPACES_PER_PAGE = 20; 
   private SpaceService spaceService = null;
   private String userId = null;
   private List<Space> spaces; // for search result
@@ -106,7 +106,11 @@ public class UIManageMySpaces extends UIContainer {
       loadingCapacity = SPACES_PER_PAGE;
       mySpacesList = new ArrayList<Space>();
       setMySpacesList(loadMySpaces(currentLoadIndex, loadingCapacity));
-      setSelectedChar(SEARCH_ALL);
+      if (this.selectedChar != null){
+        setSelectedChar(this.selectedChar);
+      } else {
+        setSelectedChar(SEARCH_ALL);
+      }      
     } catch (Exception e) {
       LOG.error(e.getMessage(), e);
     }
@@ -183,13 +187,14 @@ public class UIManageMySpaces extends UIContainer {
    * @since 1.2.2 
    */
   public List<Space> getMySpacesList() throws Exception {
+    this.mySpacesList = loadMySpaces(0, currentLoadIndex + loadingCapacity);
+    int realMySpacesListSize = mySpacesList.size();
     if (isHasUpdatedSpace()) {
       setHasUpdatedSpace(false);
-      setMySpacesList(loadMySpaces(0, this.mySpacesList.size()));
     }
     
-    setEnableLoadNext((this.mySpacesList.size() >= SPACES_PER_PAGE)
-            && (this.mySpacesList.size() < getMySpacesNum()));
+    setEnableLoadNext((realMySpacesListSize >= SPACES_PER_PAGE)
+            && (realMySpacesListSize < getMySpacesNum()));
     
     return this.mySpacesList;
   }
