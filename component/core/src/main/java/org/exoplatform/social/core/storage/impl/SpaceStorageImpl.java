@@ -1413,10 +1413,7 @@ public class SpaceStorageImpl extends AbstractStorage implements SpaceStorage {
    * {@inheritDoc}
    */
   public int getUnifiedSearchSpacesCount(String userId, SpaceFilter spaceFilter) throws SpaceStorageException {
-    if(validateFilter(spaceFilter)){
-      return _getUnifiedSearchSpaces(userId, spaceFilter).objects().size();
-    }
-    return 0;
+    return _getUnifiedSearchSpaces(userId, spaceFilter).objects().size();
   }
 
   
@@ -1467,10 +1464,6 @@ public class SpaceStorageImpl extends AbstractStorage implements SpaceStorage {
                                       throws SpaceStorageException {
     List<Space> spaces = new ArrayList<Space>();
     
-    if (!validateFilter(spaceFilter)) {
-      return Collections.emptyList();
-    }
-
     //
     QueryResult<SpaceEntity> results = _getUnifiedSearchSpaces(userId, spaceFilter).objects(offset, limit);
 
@@ -1502,7 +1495,6 @@ public class SpaceStorageImpl extends AbstractStorage implements SpaceStorage {
     char firstCharacterOfName = spaceFilter.getFirstCharacterOfSpaceName();
 
     if (spaceNameSearchCondition != null && spaceNameSearchCondition.length() != 0) {
-      if (this.isValidInput(spaceNameSearchCondition)) {
 
         List<String> unifiedSearchConditions = this.processUnifiedSearchCondition(spaceNameSearchCondition);
         
@@ -1539,7 +1531,6 @@ public class SpaceStorageImpl extends AbstractStorage implements SpaceStorage {
           }
         } //end for
         whereExpression.endGroup();
-      }
     }
     else if (!Character.isDigit(firstCharacterOfName)) {
       String firstCharacterOfNameString = Character.toString(firstCharacterOfName);

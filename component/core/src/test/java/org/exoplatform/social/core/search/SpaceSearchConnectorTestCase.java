@@ -208,17 +208,15 @@ public class SpaceSearchConnectorTestCase extends AbstractCoreTest {
     createSpaceNonInitApps(space, "mary", null);
     tearDown.add(space);
     
-    SpaceListAccess list = spaceService.getUnifiedSearchSpacesWithListAccess("root", new SpaceFilter("広いニーズ"));
-    assertEquals(1, list.getSize());
-    assertEquals(1, list.load(0, 10).length);
-    list = spaceService.getUnifiedSearchSpacesWithListAccess("mary", new SpaceFilter("広いニーズ"));
-    assertEquals(1, list.getSize());
-    assertEquals(1, list.load(0, 10).length);
+    setCurrentUser("root");
+    assertEquals(1, spaceSearchConnector.search(context, "広いニーズ", Collections.EMPTY_LIST, 0, 10, "relevancy", "ASC").size());
+    setCurrentUser("mary");
+    assertEquals(1, spaceSearchConnector.search(context, "広いニーズ", Collections.EMPTY_LIST, 0, 10, "relevancy", "ASC").size());
     
     Space space2 = new Space();
     space2.setDisplayName("space2");
     space2.setPrettyName("space2");
-    space2.setDescription("! . , : ; ( ) ^}{[] -, \" '% *");
+    space2.setDescription(StringEscapeUtils.escapeHtml("! . , : ; ( ) ^}{[] -, \" '% *"));
     space2.setManagers(new String[]{"root"});
     space2.setMembers(new String[]{"root","mary"});
     space2.setType(DefaultSpaceApplicationHandler.NAME);
@@ -226,9 +224,14 @@ public class SpaceSearchConnectorTestCase extends AbstractCoreTest {
     createSpaceNonInitApps(space2, "mary", null);
     tearDown.add(space2);
     
-    list = spaceService.getUnifiedSearchSpacesWithListAccess("root", new SpaceFilter("! . , : ; ( ) ^}{[] -, \" '% *"));
+    SpaceListAccess list = spaceService.getUnifiedSearchSpacesWithListAccess("root", new SpaceFilter("! . , : ; ( ) ^}{[] -, \" '% *"));
     assertEquals(1, list.getSize());
     assertEquals(1, list.load(0, 10).length);
+    
+    setCurrentUser("root");
+    assertEquals(1, spaceSearchConnector.search(context, "! . , : ; ( ) ^}{[] -, \" '% *", Collections.EMPTY_LIST, 0, 10, "relevancy", "ASC").size());
+    
+    assertEquals(5, spaceSearchConnector.search(context, "%", Collections.EMPTY_LIST, 0, 10, "relevancy", "ASC").size());
     
     identityManager.deleteIdentity(maryIdentity);
     identityManager.deleteIdentity(rootIdentity);
