@@ -148,10 +148,9 @@ public class SpaceSearchConnector extends AbstractSocialSearchConnector {
    */
   private String buildQuery(SpaceFilter spaceFilter) {
     WhereExpression whereExpression = new WhereExpression();
-    String spaceNameSearchCondition = spaceFilter.getSpaceNameSearchCondition();
+    String spaceNameSearchCondition = StorageUtils.escapeSpecialCharacter(spaceFilter.getSpaceNameSearchCondition());
     
     if (spaceNameSearchCondition != null && spaceNameSearchCondition.length() != 0) {
-      if (this.isValidInput(spaceNameSearchCondition)) {
 
         spaceNameSearchCondition = this.processSearchCondition(spaceNameSearchCondition);
 
@@ -171,7 +170,6 @@ public class SpaceSearchConnector extends AbstractSocialSearchConnector {
               .contains(SpaceEntity.description, spaceNameSearchCondition);
           whereExpression.endGroup();
         }
-      }
     }
     //
     StringBuilder sb = new StringBuilder("SELECT ").append(JCRProperties.JCR_EXCERPT.getName()).append(" FROM ");
@@ -183,18 +181,6 @@ public class SpaceSearchConnector extends AbstractSocialSearchConnector {
     
     //
     return sb.toString();
-  }
-  
-  private boolean isValidInput(String input) {
-    if (input == null || input.length() == 0) {
-      return false;
-    }
-    String cleanString = input.replaceAll("\\*", "");
-    cleanString = cleanString.replaceAll("\\%", "");
-    if (cleanString.length() == 0) {
-       return false;
-    }
-    return true;
   }
   
   private String processSearchCondition(String searchCondition) {
