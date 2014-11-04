@@ -105,7 +105,11 @@ public class UIManageInvitationSpaces extends UIContainer {
       loadingCapacity = SPACES_PER_PAGE;
       invitedSpacesList = new ArrayList<Space>();
       setInvitedSpacesList(loadInvitedSpaces(currentLoadIndex, loadingCapacity));
-      setSelectedChar(SEARCH_ALL);
+      if (this.selectedChar != null){
+        setSelectedChar(this.selectedChar);
+      } else {
+        setSelectedChar(SEARCH_ALL);
+      }   
     } catch (Exception e) {
       LOG.error(e.getMessage(), e);
     }

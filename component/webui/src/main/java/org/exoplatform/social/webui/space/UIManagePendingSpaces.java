@@ -99,7 +99,11 @@ public class UIManagePendingSpaces extends UIContainer {
       loadingCapacity = SPACES_PER_PAGE;
       pendingSpacesList = new ArrayList<Space>();
       setPendingSpacesList(loadPendingSpaces(currentLoadIndex, loadingCapacity));
-      setSelectedChar(SEARCH_ALL);
+      if (this.selectedChar != null){
+        setSelectedChar(this.selectedChar);
+      } else {
+        setSelectedChar(SEARCH_ALL);
+      }   
     } catch (Exception e) {
       LOG.error(e.getMessage(), e);
     }
