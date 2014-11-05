@@ -157,6 +157,10 @@ public class UIBasicInfoSection extends UIProfileSection {
         Utils.getIdentityManager().updateProfile(profile);
         //updates profile
         Utils.getOwnerIdentity(true);
+        ConversationState state = ConversationState.getCurrent();
+        OrganizationService organizationService = uiForm.getApplicationComponent(OrganizationService.class);
+        User user = organizationService.getUserHandler().findUserByName(state.getIdentity().getUserId());
+        state.setAttribute(CacheUserProfileFilter.USER_PROFILE, user);
       }
       
       uiForm.setFirstLoad(false);
