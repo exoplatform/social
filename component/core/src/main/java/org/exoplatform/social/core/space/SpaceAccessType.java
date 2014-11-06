@@ -73,6 +73,14 @@ public enum SpaceAccessType {
     }
     
   },
+  NO_AUTHENTICATED("social.space.access.no-authenticated") {
+
+    @Override
+    public boolean doCheck(String remoteId, Space space) {
+      return remoteId == null;
+    }
+    
+  },
   SPACE_NOT_FOUND("social.space.access.space-not-found") {
 
     @Override
