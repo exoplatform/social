@@ -78,7 +78,7 @@ public class SpaceAccessApplicationLifecycle implements ApplicationLifecycle<Web
       String remoteId = Utils.getViewerRemoteId();
       
       //it's workaround for SOC-3886 until EXOGTN-1829 is resolved, it's removing
-      if (space != null) {
+      if (space != null && remoteId != null) {
         addMembershipToIdentity(remoteId, space);
       
         if (inSuperAdminGroup(remoteId, space)) {
@@ -128,6 +128,12 @@ public class SpaceAccessApplicationLifecycle implements ApplicationLifecycle<Web
     boolean gotStatus = SpaceAccessType.SPACE_NOT_FOUND.doCheck(remoteId, space);
     if (gotStatus) {
       sendRedirect(pcontext, SpaceAccessType.SPACE_NOT_FOUND, null);
+      return;
+    }
+    //
+    gotStatus = SpaceAccessType.NO_AUTHENTICATED.doCheck(remoteId, space);
+    if (gotStatus) {
+      sendRedirect(pcontext, SpaceAccessType.NO_AUTHENTICATED, space.getPrettyName());
       return;
     }
     
