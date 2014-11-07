@@ -7,7 +7,6 @@
     <version>4.2.x-SNAPSHOT</version>
   </parent>
   <artifactId>social-webapp-juzu-portlet</artifactId>
-  <version>4.2.x-SNAPSHOT</version>
   <packaging>jar</packaging>
   <name>eXo Social Juzu Portlet</name>
   <dependencies>

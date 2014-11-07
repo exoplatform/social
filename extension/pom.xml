@@ -27,7 +27,6 @@
     <version>4.2.x-SNAPSHOT</version>
   </parent>
   <artifactId>social-extension</artifactId>
-  <version>4.2.x-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>eXo Social Extension</name>
   <description>eXo Social Extension</description>

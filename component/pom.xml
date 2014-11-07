@@ -25,7 +25,6 @@
     <version>4.2.x-SNAPSHOT</version>
   </parent>
   <artifactId>social-component</artifactId>
-  <version>4.2.x-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>eXo Social Component</name>
   <description>eXo Social Component</description>
