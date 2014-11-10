@@ -1406,15 +1406,16 @@ public class IdentityStorageImpl extends AbstractStorage implements IdentityStor
       if (this.isValidInput(searchCondition)) {
 
         List<String> unifiedSearchConditions = StorageUtils.processUnifiedSearchCondition(searchCondition);
+        if (unifiedSearchConditions.size() > 0) {
+          whereExpression.and().startGroup();
+        }
         boolean first = true;
         for(String condition : unifiedSearchConditions) {
           //
           if (first == false) {
             whereExpression.or();
-          } else {
-            whereExpression.and().startGroup();
-            first = false;
-          }
+          } 
+          
           //
           if (condition.contains(StorageUtils.PERCENT_STR)) {
             String conditionEscapeHtml = StringEscapeUtils.escapeHtml(condition).toLowerCase();
@@ -1443,8 +1444,13 @@ public class IdentityStorageImpl extends AbstractStorage implements IdentityStor
                 .or().contains(ProfileEntity.jobsDescription, condition);
             whereExpression.endGroup();
           }
+          
+          first = false;
         } //end for
-        whereExpression.endGroup();
+        
+        if (unifiedSearchConditions.size() > 0) {
+          whereExpression.endGroup();
+        }
       }
     }
   }
