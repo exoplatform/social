@@ -50,7 +50,7 @@ public class RelationshipReceivedRequestPluginTest extends AbstractPluginTest {
   
   @Override
   public AbstractNotificationPlugin getPlugin() {
-    return pluginService.getPlugin(NotificationKey.key(RelationshipRecievedRequestPlugin.ID));
+    return pluginService.getPlugin(NotificationKey.key(RelationshipReceivedRequestPlugin.ID));
   }
   
   public void testSimpleCase() throws Exception {
