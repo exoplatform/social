@@ -25,9 +25,9 @@
   <external-component-plugins>
     <target-component>org.exoplatform.social.core.manager.RelationshipManager</target-component>
     <component-plugin>
-      <name>RelationshipNotifictionImpl</name>
+      <name>RelationshipNotificationImpl</name>
       <set-method>addListenerPlugin</set-method>
-      <type>org.exoplatform.social.notification.impl.RelationshipNotifictionImpl</type>
+      <type>org.exoplatform.social.notification.impl.RelationshipNotificationImpl</type>
     </component-plugin>
   </external-component-plugins>
 

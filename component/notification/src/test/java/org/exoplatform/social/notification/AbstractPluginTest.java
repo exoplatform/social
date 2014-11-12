@@ -38,7 +38,7 @@ import org.exoplatform.social.notification.plugin.LikePlugin;
 import org.exoplatform.social.notification.plugin.NewUserPlugin;
 import org.exoplatform.social.notification.plugin.PostActivityPlugin;
 import org.exoplatform.social.notification.plugin.PostActivitySpaceStreamPlugin;
-import org.exoplatform.social.notification.plugin.RelationshipRecievedRequestPlugin;
+import org.exoplatform.social.notification.plugin.RelationshipReceivedRequestPlugin;
 import org.exoplatform.social.notification.plugin.RequestJoinSpacePlugin;
 import org.exoplatform.social.notification.plugin.SpaceInvitationPlugin;
 
@@ -368,7 +368,7 @@ public abstract class AbstractPluginTest extends AbstractCoreTest {
     instantly.add(LikePlugin.ID);
     instantly.add(RequestJoinSpacePlugin.ID);
     instantly.add(SpaceInvitationPlugin.ID);
-    instantly.add(RelationshipRecievedRequestPlugin.ID);
+    instantly.add(RelationshipReceivedRequestPlugin.ID);
     instantly.add(PostActivitySpaceStreamPlugin.ID);
     
     List<String> daily = new ArrayList<String>();
@@ -378,7 +378,7 @@ public abstract class AbstractPluginTest extends AbstractCoreTest {
     daily.add(LikePlugin.ID);
     daily.add(RequestJoinSpacePlugin.ID);
     daily.add(SpaceInvitationPlugin.ID);
-    daily.add(RelationshipRecievedRequestPlugin.ID);
+    daily.add(RelationshipReceivedRequestPlugin.ID);
     daily.add(PostActivitySpaceStreamPlugin.ID);
     daily.add(NewUserPlugin.ID);
     
@@ -389,7 +389,7 @@ public abstract class AbstractPluginTest extends AbstractCoreTest {
     weekly.add(LikePlugin.ID);
     weekly.add(RequestJoinSpacePlugin.ID);
     weekly.add(SpaceInvitationPlugin.ID);
-    weekly.add(RelationshipRecievedRequestPlugin.ID);
+    weekly.add(RelationshipReceivedRequestPlugin.ID);
     weekly.add(PostActivitySpaceStreamPlugin.ID);
     
     // root
