@@ -88,7 +88,7 @@ public class ExoRouterTest extends AbstractCommonTest {
     }});
     
     //
-    route = ExoRouter.route("/connections/recievedIvitations/root");
+    route = ExoRouter.route("/connections/receivedInvitations/root");
     
     assertRouter(route, "connections.network.show", new HashMap<String,String>(){{
       put("streamOwnerId","root");
