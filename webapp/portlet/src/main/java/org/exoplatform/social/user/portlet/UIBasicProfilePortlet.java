@@ -69,7 +69,7 @@ public class UIBasicProfilePortlet extends UIPortletApplication {
     }
     //
     List<Map<String, String>> phones = currentProfile.getPhones();
-    if (phones.size() > 0) {
+    if (phones != null && phones.size() > 0) {
       Map<String, String> phoneInfos = new HashMap<String, String>();
       for (Map<String, String> map : phones) {
         for (String key : map.keySet()) {
@@ -81,7 +81,7 @@ public class UIBasicProfilePortlet extends UIPortletApplication {
     }
     //
     List<Map<String, String>> ims = (List<Map<String, String>>) currentProfile.getProperty(Profile.CONTACT_IMS);
-    if (ims.size() > 0) {
+    if (ims != null && ims.size() > 0) {
       Map<String, String> imInfos = new HashMap<String, String>();
       for (Map<String, String> map : ims) {
         for (String key : map.keySet()) {
@@ -93,7 +93,7 @@ public class UIBasicProfilePortlet extends UIPortletApplication {
     }
     //
     List<Map<String, String>> urls = (List<Map<String, String>>) currentProfile.getProperty(Profile.CONTACT_URLS);
-    if (urls.size() > 0) {
+    if (urls != null && urls.size() > 0) {
       Map<String, String> urlInfos = new HashMap<String, String>();
       for (Map<String, String> map : urls) {
         for (String key : map.keySet()) {
