@@ -28,7 +28,8 @@
   import java.util.Calendar;
 
   def rcontext = _ctx.getRequestContext() ;
-  def jsManager = rcontext.getJavascriptManager();
+  def jsManager = rcontext.getJavascriptManager().require("SHARED/uiForm");
+  
   String script = "var dropDownBox = jq('#DisplayModesDropDown');" + 
                   "var btn = dropDownBox.find('div.btn');" +
                   "jq(btn).removeClass('btn-primary');" +
