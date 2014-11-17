@@ -606,6 +606,29 @@
   </portlet>
   
   <portlet>
+    <description xml:lang="EN">Intranet Notifications Portlet</description>
+    <portlet-name>IntranetNotificationsPortlet</portlet-name>
+    <display-name xml:lang="EN">Intranet Notifications Portlet</display-name>
+    <portlet-class>org.exoplatform.webui.application.portlet.PortletApplicationController</portlet-class>
+    <init-param>
+      <name>webui.configuration</name>
+      <value>/WEB-INF/conf/portlet/IntranetNotificationsPortlet/webui/configuration.xml</value>
+    </init-param>
+    <expiration-cache>0</expiration-cache>
+    <supports>
+      <mime-type>text/html</mime-type>
+      <portlet-mode>help</portlet-mode>
+    </supports>
+    <supported-locale>en</supported-locale>
+    <resource-bundle>locale.portlet.Portlets</resource-bundle>
+    <portlet-info>
+      <title>Intranet Notifications Portlet</title>
+      <short-title>Intranet Notifications Portlet</short-title>
+      <keywords>social</keywords>
+    </portlet-info>
+  </portlet>
+  
+  <portlet>
     <description xml:lang="EN">Connections Portlet</description>
     <portlet-name>ConnectionsPortlet</portlet-name>
     <display-name xml:lang="EN">Connections Portlet</display-name>

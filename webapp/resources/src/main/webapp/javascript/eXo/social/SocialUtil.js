@@ -370,6 +370,13 @@
         SocialUtils.fillUpFreeSpace(comId);
       }
     },
+    alertEvent : function(comId) {
+    	var socketUrl = 'ws://' + location.hostname + ':8080/social-portlet/notify/' + window.eXo.env.portal.userName;
+    	var socket = new WebSocket(socketUrl);
+    	socket.onmessage = function(evt) {
+    		SocialUtils.feedbackMessageInline(comId, evt.data);
+		}
+      },
     onResizeFillUpFreeSpace : function() {
       var upFreeSpaces = SocialUtils.upFreeSpace;
       $.each(upFreeSpaces, function( index, comId ) {
