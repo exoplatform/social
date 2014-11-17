@@ -1,0 +1,6 @@
+<%
+%>
+<div class="uiSocApplication uiRecentActivitiesPortlet" id="$uicomponent.id">
+	UIRecentActivitiesPortlet
+</div>
+

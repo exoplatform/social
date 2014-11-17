@@ -780,4 +780,159 @@
      <keywords>social</keywords>
    </portlet-info>
  </portlet>
+
+  <portlet>
+    <description xml:lang="EN">Status Profile Portlet</description>
+    <portlet-name>StatusProfilePortlet</portlet-name>
+    <display-name xml:lang="EN">Status Profile Portlet</display-name>
+    <portlet-class>org.exoplatform.webui.application.portlet.PortletApplicationController</portlet-class>
+    <init-param>
+      <name>webui.configuration</name>
+      <value>/WEB-INF/conf/portlet/StatusProfilePortlet/webui/configuration.xml</value>
+    </init-param>
+    <expiration-cache>0</expiration-cache>
+    <supports>
+      <mime-type>text/html</mime-type>
+    </supports>
+    <supported-locale>en</supported-locale>
+    <resource-bundle>locale.portlet.Portlets</resource-bundle>
+    <portlet-info>
+      <title>Status Profile Portlet</title>
+      <short-title>Status Profile Portlet</short-title>
+      <keywords>social</keywords>
+    </portlet-info>
+  </portlet>
+
+  <portlet>
+    <description xml:lang="EN">Action Profile Portlet</description>
+    <portlet-name>ActionProfilePortlet</portlet-name>
+    <display-name xml:lang="EN">Action Profile Portlet</display-name>
+    <portlet-class>org.exoplatform.webui.application.portlet.PortletApplicationController</portlet-class>
+    <init-param>
+      <name>webui.configuration</name>
+      <value>/WEB-INF/conf/portlet/ActionProfilePortlet/webui/configuration.xml</value>
+    </init-param>
+    <expiration-cache>0</expiration-cache>
+    <supports>
+      <mime-type>text/html</mime-type>
+    </supports>
+    <supported-locale>en</supported-locale>
+    <resource-bundle>locale.portlet.Portlets</resource-bundle>
+    <portlet-info>
+      <title>Action Profile Portlet</title>
+      <short-title>Action Profile Portlet</short-title>
+      <keywords>social</keywords>
+    </portlet-info>
+  </portlet>
+
+  <portlet>
+    <description xml:lang="EN">Basic Profile Portlet</description>
+    <portlet-name>BasicProfilePortlet</portlet-name>
+    <display-name xml:lang="EN">Basic Profile Portlet</display-name>
+    <portlet-class>org.exoplatform.webui.application.portlet.PortletApplicationController</portlet-class>
+    <init-param>
+      <name>webui.configuration</name>
+      <value>/WEB-INF/conf/portlet/BasicProfilePortlet/webui/configuration.xml</value>
+    </init-param>
+    <expiration-cache>0</expiration-cache>
+    <supports>
+      <mime-type>text/html</mime-type>
+    </supports>
+    <supported-locale>en</supported-locale>
+    <resource-bundle>locale.portlet.Portlets</resource-bundle>
+    <portlet-info>
+      <title>Basic Profile Portlet</title>
+      <short-title>Basic Profile Portlet</short-title>
+      <keywords>social</keywords>
+    </portlet-info>
+  </portlet>
+
+  <portlet>
+    <description xml:lang="EN">Experience Profile Portlet</description>
+    <portlet-name>ExperienceProfilePortlet</portlet-name>
+    <display-name xml:lang="EN">Experience Profile Portlet</display-name>
+    <portlet-class>org.exoplatform.webui.application.portlet.PortletApplicationController</portlet-class>
+    <init-param>
+      <name>webui.configuration</name>
+      <value>/WEB-INF/conf/portlet/ExperienceProfilePortlet/webui/configuration.xml</value>
+    </init-param>
+    <expiration-cache>0</expiration-cache>
+    <supports>
+      <mime-type>text/html</mime-type>
+    </supports>
+    <supported-locale>en</supported-locale>
+    <resource-bundle>locale.portlet.Portlets</resource-bundle>
+    <portlet-info>
+      <title>Experience Profile Portlet</title>
+      <short-title>Experience Profile Portlet</short-title>
+      <keywords>social</keywords>
+    </portlet-info>
+  </portlet>
+
+  <portlet>
+    <description xml:lang="EN">Connections User Portlet</description>
+    <portlet-name>MiniConnectionsPortlet</portlet-name>
+    <display-name xml:lang="EN">Connections User Portlet</display-name>
+    <portlet-class>org.exoplatform.webui.application.portlet.PortletApplicationController</portlet-class>
+    <init-param>
+      <name>webui.configuration</name>
+      <value>/WEB-INF/conf/portlet/MiniConnectionsPortlet/webui/configuration.xml</value>
+    </init-param>
+    <expiration-cache>0</expiration-cache>
+    <supports>
+      <mime-type>text/html</mime-type>
+    </supports>
+    <supported-locale>en</supported-locale>
+    <resource-bundle>locale.portlet.Portlets</resource-bundle>
+    <portlet-info>
+      <title>Connections Portlet</title>
+      <short-title>Connections User Portlet</short-title>
+      <keywords>social</keywords>
+    </portlet-info>
+  </portlet>
+
+  <portlet>
+    <description xml:lang="EN">Recent Activities Portlet</description>
+    <portlet-name>RecentActivitiesPortlet</portlet-name>
+    <display-name xml:lang="EN">Recent Activities Portlet</display-name>
+    <portlet-class>org.exoplatform.webui.application.portlet.PortletApplicationController</portlet-class>
+    <init-param>
+      <name>webui.configuration</name>
+      <value>/WEB-INF/conf/portlet/RecentActivitiesPortlet/webui/configuration.xml</value>
+    </init-param>
+    <expiration-cache>0</expiration-cache>
+    <supports>
+      <mime-type>text/html</mime-type>
+    </supports>
+    <supported-locale>en</supported-locale>
+    <resource-bundle>locale.portlet.Portlets</resource-bundle>
+    <portlet-info>
+      <title>Recent Activities Portlet</title>
+      <short-title>Recent Activities Portlet</short-title>
+      <keywords>social</keywords>
+    </portlet-info>
+  </portlet>
+
+  <portlet>
+    <description xml:lang="EN">Edit User Profile Portlet</description>
+    <portlet-name>EditUserProfilePortlet</portlet-name>
+    <display-name xml:lang="EN">Edit User Profile Portlet</display-name>
+    <portlet-class>org.exoplatform.webui.application.portlet.PortletApplicationController</portlet-class>
+    <init-param>
+      <name>webui.configuration</name>
+      <value>/WEB-INF/conf/portlet/EditUserProfilePortlet/webui/configuration.xml</value>
+    </init-param>
+    <expiration-cache>0</expiration-cache>
+    <supports>
+      <mime-type>text/html</mime-type>
+    </supports>
+    <supported-locale>en</supported-locale>
+    <resource-bundle>locale.portlet.Portlets</resource-bundle>
+    <portlet-info>
+      <title>Edit User Profile Portlet</title>
+      <short-title>Edit User Profile Portlet</short-title>
+      <keywords>social</keywords>
+    </portlet-info>
+  </portlet>
+
 </portlet-app>

@@ -1,0 +1,6 @@
+<%
+%>
+<div class="uiSocApplication uiEditUserProfilePortlet" id="$uicomponent.id">
+	UIEditUserProfilePortlet
+</div>
+

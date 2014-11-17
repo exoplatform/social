@@ -1,0 +1,6 @@
+<%
+%>
+<div class="uiSocApplication uiMiniConnectionsPortlet" id="$uicomponent.id">
+	UIMiniConnectionsPortlet
+</div>
+
