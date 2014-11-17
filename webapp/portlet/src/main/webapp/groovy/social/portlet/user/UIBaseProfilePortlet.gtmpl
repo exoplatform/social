@@ -1,6 +1,0 @@
-<%
-%>
-<div class="uiSocApplication uiBasicProfilePortlet" id="$uicomponent.id">
-	UIBasicProfilePortlet
-</div>
-
