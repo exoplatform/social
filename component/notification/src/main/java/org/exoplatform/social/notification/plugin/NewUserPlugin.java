@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import org.exoplatform.commons.api.notification.NotificationContext;
@@ -38,6 +39,7 @@ import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.notification.LinkProviderUtils;
 import org.exoplatform.social.notification.Utils;
+import org.exoplatform.webui.utils.TimeConvertUtils;
 
 public class NewUserPlugin extends AbstractNotificationPlugin {
 
@@ -138,6 +140,26 @@ public class NewUserPlugin extends AbstractNotificationPlugin {
   @Override
   public boolean isValid(NotificationContext ctx) {
     return true;
+  }
+
+  @Override
+  protected String makeUIMessage(NotificationContext ctx) {
+    NotificationInfo notification = ctx.getNotificationInfo();
+    
+    String language = getLanguage(notification);
+    TemplateContext templateContext = new TemplateContext(notification.getKey().getId(), language);
+
+    String remoteId = notification.getValueOwnerParameter(SocialNotificationUtils.REMOTE_ID.getKey());
+    Identity identity = Utils.getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, remoteId, true);
+    Profile userProfile = identity.getProfile();
+    
+    templateContext.put("NOTIFICATION_ID", notification.getId());
+    templateContext.put("LAST_UPDATED_TIME", TimeConvertUtils.convertXTimeAgo(TimeConvertUtils.getGreenwichMeanTime().getTime(), "EE, dd yyyy", new Locale(language), TimeConvertUtils.YEAR));
+    templateContext.put("USER", userProfile.getFullName());
+    templateContext.put("PORTAL_HOME", NotificationUtils.getPortalHome(NotificationPluginUtils.getBrandingPortalName()));
+    templateContext.put("PROFILE_URL", LinkProviderUtils.getRedirectUrl("user", identity.getRemoteId()));
+    templateContext.put("AVATAR", LinkProviderUtils.getUserAvatarUrl(userProfile));
+    return TemplateUtils.processIntranetGroovy(templateContext);
   }
 
 }

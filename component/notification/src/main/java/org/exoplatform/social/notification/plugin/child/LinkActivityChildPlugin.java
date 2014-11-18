@@ -2,6 +2,7 @@ package org.exoplatform.social.notification.plugin.child;
 
 import org.exoplatform.commons.api.notification.NotificationContext;
 import org.exoplatform.commons.api.notification.model.ArgumentLiteral;
+import org.exoplatform.commons.api.notification.model.MessageInfo;
 import org.exoplatform.commons.api.notification.model.NotificationInfo;
 import org.exoplatform.commons.api.notification.plugin.AbstractNotificationChildPlugin;
 import org.exoplatform.commons.api.notification.service.template.TemplateContext;
@@ -108,6 +109,11 @@ public class LinkActivityChildPlugin extends AbstractNotificationChildPlugin {
    */
   public void setEmbedLink(boolean isEmbedLink) {
     this.isEmbedLink = isEmbedLink;
+  }
+
+  @Override
+  protected String makeUIMessage(NotificationContext ctx) {
+    return null;
   }
 
 }

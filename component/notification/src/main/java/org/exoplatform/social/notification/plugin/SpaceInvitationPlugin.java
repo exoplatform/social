@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import org.apache.commons.lang.ArrayUtils;
@@ -33,6 +34,7 @@ import org.exoplatform.container.xml.InitParams;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.notification.LinkProviderUtils;
 import org.exoplatform.social.notification.Utils;
+import org.exoplatform.webui.utils.TimeConvertUtils;
 
 public class SpaceInvitationPlugin extends AbstractNotificationPlugin {
   public static final String ID = "SpaceInvitationPlugin";
@@ -113,6 +115,27 @@ public class SpaceInvitationPlugin extends AbstractNotificationPlugin {
   @Override
   public boolean isValid(NotificationContext ctx) {
     return true;
+  }
+
+  @Override
+  protected String makeUIMessage(NotificationContext ctx) {
+    NotificationInfo notification = ctx.getNotificationInfo();
+    
+    String language = getLanguage(notification);
+    TemplateContext templateContext = new TemplateContext(notification.getKey().getId(), language);
+
+    String spaceId = notification.getValueOwnerParameter(SocialNotificationUtils.SPACE_ID.getKey());
+    Space space = Utils.getSpaceService().getSpaceById(spaceId);
+    
+    templateContext.put("NOTIFICATION_ID", notification.getId());
+    templateContext.put("LAST_UPDATED_TIME", TimeConvertUtils.convertXTimeAgo(TimeConvertUtils.getGreenwichMeanTime().getTime(), "EE, dd yyyy", new Locale(language), TimeConvertUtils.YEAR));
+    templateContext.put("SPACE", space.getDisplayName());
+    templateContext.put("SPACE_URL", LinkProviderUtils.getRedirectUrl("space", space.getId()));
+    templateContext.put("SPACE_AVATAR", LinkProviderUtils.getSpaceAvatarUrl(space));
+    templateContext.put("ACCEPT_SPACE_INVITATION_ACTION_URL", LinkProviderUtils.getAcceptInvitationToJoinSpaceUrl(space.getId(), notification.getTo()));
+    templateContext.put("REFUSE_SPACE_INVITATION_ACTION_URL", LinkProviderUtils.getIgnoreInvitationToJoinSpaceUrl(space.getId(), notification.getTo()));
+    return TemplateUtils.processIntranetGroovy(templateContext);
+    
   }
 
 }

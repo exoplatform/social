@@ -21,6 +21,7 @@ import java.io.Writer;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import org.apache.commons.lang.ArrayUtils;
@@ -37,6 +38,7 @@ import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvide
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.notification.LinkProviderUtils;
 import org.exoplatform.social.notification.Utils;
+import org.exoplatform.webui.utils.TimeConvertUtils;
 
 public class RequestJoinSpacePlugin extends AbstractNotificationPlugin {
   
@@ -130,6 +132,30 @@ public class RequestJoinSpacePlugin extends AbstractNotificationPlugin {
       return true;
     }
     return false;
+  }
+
+  @Override
+  protected String makeUIMessage(NotificationContext ctx) {
+    NotificationInfo notification = ctx.getNotificationInfo();
+    
+    String language = getLanguage(notification);
+    TemplateContext templateContext = new TemplateContext(notification.getKey().getId(), language);
+
+    String spaceId = notification.getValueOwnerParameter(SocialNotificationUtils.SPACE_ID.getKey());
+    Space space = Utils.getSpaceService().getSpaceById(spaceId);
+    Identity identity = Utils.getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, notification.getValueOwnerParameter("request_from"), true);
+    Profile userProfile = identity.getProfile();
+    
+    templateContext.put("NOTIFICATION_ID", notification.getId());
+    templateContext.put("LAST_UPDATED_TIME", TimeConvertUtils.convertXTimeAgo(TimeConvertUtils.getGreenwichMeanTime().getTime(), "EE, dd yyyy", new Locale(language), TimeConvertUtils.YEAR));
+    templateContext.put("SPACE", space.getDisplayName());
+    templateContext.put("USER", userProfile.getFullName());
+    templateContext.put("SPACE_URL", LinkProviderUtils.getRedirectUrl("space_members", space.getId()));
+    templateContext.put("PROFILE_URL", LinkProviderUtils.getRedirectUrl("user", identity.getRemoteId()));
+    templateContext.put("AVATAR", LinkProviderUtils.getUserAvatarUrl(userProfile));
+    templateContext.put("VALIDATE_SPACE_REQUEST_ACTION_URL", LinkProviderUtils.getValidateRequestToJoinSpaceUrl(space.getId(), identity.getRemoteId()));
+    templateContext.put("REFUSE_SPACE_REQUEST_ACTION_URL", LinkProviderUtils.getRefuseRequestToJoinSpaceUrl(space.getId(), identity.getRemoteId()));
+    return TemplateUtils.processIntranetGroovy(templateContext);
   }
 
 }

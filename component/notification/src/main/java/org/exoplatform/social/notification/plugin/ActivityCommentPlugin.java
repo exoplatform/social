@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
@@ -38,6 +39,7 @@ import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
 import org.exoplatform.social.notification.LinkProviderUtils;
 import org.exoplatform.social.notification.Utils;
+import org.exoplatform.webui.utils.TimeConvertUtils;
 
 public class ActivityCommentPlugin extends AbstractNotificationPlugin {
   
@@ -140,6 +142,28 @@ public class ActivityCommentPlugin extends AbstractNotificationPlugin {
       return false;
     }
     return true;
+  }
+
+  @Override
+  protected String makeUIMessage(NotificationContext ctx) {
+    NotificationInfo notification = ctx.getNotificationInfo();
+    String language = getLanguage(notification);
+
+    String activityId = notification.getValueOwnerParameter(SocialNotificationUtils.ACTIVITY_ID.getKey());
+    ExoSocialActivity activity = Utils.getActivityManager().getActivity(activityId);
+    ExoSocialActivity parentActivity = Utils.getActivityManager().getParentActivity(activity);
+    Identity identity = Utils.getIdentityManager().getIdentity(activity.getPosterId(), true);
+    
+    TemplateContext templateContext = new TemplateContext(notification.getKey().getId(), language);
+    templateContext.put("NOTIFICATION_ID", notification.getId());
+    templateContext.put("LAST_UPDATED_TIME", TimeConvertUtils.convertXTimeAgo(activity.getUpdated(), "EE, dd yyyy", new Locale(language), TimeConvertUtils.YEAR));
+    templateContext.put("USER", identity.getProfile().getFullName());
+    templateContext.put("AVATAR", LinkProviderUtils.getUserAvatarUrl(identity.getProfile()));
+    templateContext.put("ACTIVITY", NotificationUtils.processLinkTitle(parentActivity.getTitle()));
+    templateContext.put("PROFILE_URL", LinkProviderUtils.getRedirectUrl("user", identity.getRemoteId()));
+    templateContext.put("VIEW_FULL_DISCUSSION_ACTION_URL", LinkProviderUtils.getRedirectUrl("view_full_activity_highlight_comment", parentActivity.getId() + "-" + activity.getId()));
+
+    return TemplateUtils.processIntranetGroovy(templateContext);
   }
   
   

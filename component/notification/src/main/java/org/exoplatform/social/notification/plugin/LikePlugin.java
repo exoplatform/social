@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import org.exoplatform.commons.api.notification.NotificationContext;
@@ -29,6 +30,7 @@ import org.exoplatform.commons.api.notification.model.MessageInfo;
 import org.exoplatform.commons.api.notification.model.NotificationInfo;
 import org.exoplatform.commons.api.notification.plugin.AbstractNotificationPlugin;
 import org.exoplatform.commons.api.notification.service.template.TemplateContext;
+import org.exoplatform.commons.notification.NotificationUtils;
 import org.exoplatform.commons.notification.template.TemplateUtils;
 import org.exoplatform.container.xml.InitParams;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
@@ -37,6 +39,7 @@ import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvide
 import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.notification.LinkProviderUtils;
 import org.exoplatform.social.notification.Utils;
+import org.exoplatform.webui.utils.TimeConvertUtils;
 
 public class LikePlugin extends AbstractNotificationPlugin {
   
@@ -148,6 +151,28 @@ public class LikePlugin extends AbstractNotificationPlugin {
       return false;
     }
     return true;
+  }
+
+  @Override
+  protected String makeUIMessage(NotificationContext ctx) {
+    NotificationInfo notification = ctx.getNotificationInfo();
+    
+    String language = getLanguage(notification);
+    TemplateContext templateContext = new TemplateContext(notification.getKey().getId(), language);
+    
+    String activityId = notification.getValueOwnerParameter(SocialNotificationUtils.ACTIVITY_ID.getKey());
+    ExoSocialActivity activity = Utils.getActivityManager().getActivity(activityId);
+    Identity identity = Utils.getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, notification.getValueOwnerParameter("likersId"), true);
+    
+    templateContext.put("NOTIFICATION_ID", notification.getId());
+    templateContext.put("LAST_UPDATED_TIME", TimeConvertUtils.convertXTimeAgo(activity.getUpdated(), "EE, dd yyyy", new Locale(language), TimeConvertUtils.YEAR));
+    templateContext.put("USER", identity.getProfile().getFullName());
+    templateContext.put("AVATAR", LinkProviderUtils.getUserAvatarUrl(identity.getProfile()));
+    templateContext.put("ACTIVITY", NotificationUtils.processLinkTitle(activity.getTitle()));
+    templateContext.put("PROFILE_URL", LinkProviderUtils.getRedirectUrl("user", identity.getRemoteId()));
+    templateContext.put("VIEW_FULL_DISCUSSION_ACTION_URL", LinkProviderUtils.getRedirectUrl("view_full_activity", activity.getId()));
+
+    return TemplateUtils.processIntranetGroovy(templateContext);
   }
 
 }

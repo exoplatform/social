@@ -41,8 +41,12 @@
                 <field name="templatePath">
                   <string>war:/notification/templates/ActivityMentionPlugin.gtmpl</string>
                 </field>
+                <field name="intranetTemplatePath">
+                  <string>war:/intranet-notification/templates/ActivityMentionPlugin.gtmpl</string>
+                </field>
               </object>
             </field>
+
           </object>
         </object-param>
       </init-params>
@@ -86,6 +90,9 @@
                 </field>
                 <field name="templatePath">
                   <string>war:/notification/templates/ActivityCommentPlugin.gtmpl</string>
+                </field>
+                <field name="intranetTemplatePath">
+                  <string>war:/intranet-notification/templates/ActivityCommentPlugin.gtmpl</string>
                 </field>
               </object>
             </field>
@@ -132,6 +139,9 @@
                 <field name="templatePath">
                   <string>war:/notification/templates/LikePlugin.gtmpl</string>
                 </field>
+                <field name="intranetTemplatePath">
+                  <string>war:/intranet-notification/templates/LikePlugin.gtmpl</string>
+                </field>
               </object>
             </field>
           </object>
@@ -176,6 +186,9 @@
                 </field>
                 <field name="templatePath">
                   <string>war:/notification/templates/PostActivityPlugin.gtmpl</string>
+                </field>
+                <field name="intranetTemplatePath">
+                  <string>war:/intranet-notification/templates/PostActivityPlugin.gtmpl</string>
                 </field>
               </object>
             </field>
@@ -222,6 +235,9 @@
                 <field name="templatePath">
                   <string>war:/notification/templates/PostActivitySpaceStreamPlugin.gtmpl</string>
                 </field>
+                <field name="intranetTemplatePath">
+                  <string>war:/intranet-notification/templates/PostActivitySpaceStreamPlugin.gtmpl</string>
+                </field>
               </object>
             </field>
           </object>
@@ -266,6 +282,9 @@
                 </field>
                 <field name="templatePath">
                   <string>war:/notification/templates/NewUserPlugin.gtmpl</string>
+                </field>
+                <field name="intranetTemplatePath">
+                  <string>war:/intranet-notification/templates/NewUserPlugin.gtmpl</string>
                 </field>
               </object>
             </field>
@@ -313,6 +332,9 @@
                 <field name="templatePath">
                   <string>war:/notification/templates/RelationshipReceivedRequestPlugin.gtmpl</string>
                 </field>
+                <field name="intranetTemplatePath">
+                  <string>war:/intranet-notification/templates/RelationshipReceivedRequestPlugin.gtmpl</string>
+                </field>
               </object>
             </field>
           </object>
@@ -359,6 +381,9 @@
                 <field name="templatePath">
                   <string>war:/notification/templates/SpaceInvitationPlugin.gtmpl</string>
                 </field>
+                <field name="intranetTemplatePath">
+                  <string>war:/intranet-notification/templates/SpaceInvitationPlugin.gtmpl</string>
+                </field>
               </object>
             </field>
           </object>
@@ -404,6 +429,9 @@
                 </field>
                 <field name="templatePath">
                   <string>war:/notification/templates/RequestJoinSpacePlugin.gtmpl</string>
+                </field>
+                <field name="intranetTemplatePath">
+                  <string>war:/intranet-notification/templates/RequestJoinSpacePlugin.gtmpl</string>
                 </field>
               </object>
             </field>
