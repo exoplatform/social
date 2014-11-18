@@ -840,11 +840,14 @@ public class ActivityResourcesTest extends AbstractResourceTest {
    * Test {@link ActivityResources#createCommentActivityById(javax.ws.rs.core.UriInfo, String, String, String, Comment)}
    */
   public void testCreateComment() throws Exception{
+    //john is poster and mary is streamOwner
     createActivities(johnIdentity, maryIdentity, 1);
     connectIdentities(johnIdentity, maryIdentity, true);
     connectIdentities(demoIdentity, maryIdentity, true);
     connectIdentities(demoIdentity, johnIdentity, true);
-    ExoSocialActivity expectedActivity = activityManager.getActivitiesWithListAccess(maryIdentity).load(0, 1)[0];
+    //the activity will not be available on Mary's user stream.
+    //it's on feed and connections stream for mary
+    ExoSocialActivity expectedActivity = activityManager.getActivitiesWithListAccess(johnIdentity).load(0, 1)[0];
     
     startSessionAs("mary");
     StringWriter writer = new StringWriter();

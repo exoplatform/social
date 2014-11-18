@@ -138,16 +138,16 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     IdentityEntity identityEntity = _findById(IdentityEntity.class, owner.getId());
 
     IdentityEntity posterIdentityEntity;
-    if (activity.getUserId() != null) {
+    if (activity.getPosterId() != null) {
+      posterIdentityEntity = _findById(IdentityEntity.class, activity.getPosterId());
+    } else if (activity.getUserId() != null) {
       posterIdentityEntity = _findById(IdentityEntity.class, activity.getUserId());
-    }
-    else {
+    } else {
       posterIdentityEntity = identityEntity;
     }
-
+    
     // Get ActivityList
     ActivityListEntity activityListEntity = identityEntity.getActivityList();
-
     //
     Collection<ActivityEntity> entities = new ActivityList(activityListEntity);
 
@@ -758,7 +758,6 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
           //don't need to get JCR to avoid NodeNotFoundException
           StreamInvocationHelper.savePoster(owner, entity);
           //run asynchronous: JCR session doesn't share in multi threading, in Stream service.
-          
           StreamInvocationHelper.save(owner, entity, mentioners.toArray(new String[0]));
         }
       }
@@ -1458,7 +1457,7 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     filter.with(ActivityFilter.ACTIVITY_UPDATED_POINT_FIELD).value(TimestampType.NEWER.from(baseActivity.getUpdated().getTime()));
 
     //
-    return getActivitiesOfIdentitiesQuery(ActivityBuilderWhere.simple().owners(spaceList), filter).objects().size();
+    return getActivitiesOfIdentitiesQuery(ActivityBuilderWhere.userSpaces().owners(spaceList), filter).objects().size();
     
   }
 
@@ -1480,7 +1479,7 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     filter.with(ActivityFilter.ACTIVITY_UPDATED_POINT_FIELD).value(TimestampType.NEWER.from(baseActivity.getUpdated().getTime()));
 
     //
-    return getActivitiesOfIdentities(ActivityBuilderWhere.simple().owners(spaceList), filter, 0, limit);
+    return getActivitiesOfIdentities(ActivityBuilderWhere.userSpaces().owners(spaceList), filter, 0, limit);
   }
 
   /**
@@ -1501,7 +1500,7 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     filter.with(ActivityFilter.ACTIVITY_UPDATED_POINT_FIELD).value(TimestampType.OLDER.from(baseActivity.getUpdated().getTime()));
 
     //
-    return getActivitiesOfIdentitiesQuery(ActivityBuilderWhere.simple().owners(spaceList), filter).objects().size();
+    return getActivitiesOfIdentitiesQuery(ActivityBuilderWhere.userSpaces().owners(spaceList), filter).objects().size();
   }
 
   /**
@@ -1523,7 +1522,7 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     filter.with(ActivityFilter.ACTIVITY_UPDATED_POINT_FIELD).value(TimestampType.OLDER.from(baseActivity.getUpdated().getTime()));
 
     //
-    return getActivitiesOfIdentities(ActivityBuilderWhere.simple().owners(spaceList), filter, 0, limit);
+    return getActivitiesOfIdentities(ActivityBuilderWhere.userSpaces().owners(spaceList), filter, 0, limit);
   }
 
   /**
@@ -2955,7 +2954,7 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     ActivityFilter filter = new ActivityFilter(){};
 
     //
-    return getActivitiesOfIdentities(ActivityBuilderWhere.simple().owners(spaceList), filter, offset, limit);
+    return getActivitiesOfIdentities(ActivityBuilderWhere.userSpaces().owners(spaceList), filter, offset, limit);
   }
 
   @Override

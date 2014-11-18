@@ -79,7 +79,7 @@ public class ActiviyBuilderWhereTest extends TestCase {
     identities.add(rootIdentity);
     where.owners(identities);
     
-    String expectedWhere = "(soc:identity = 'demo123456' OR soc:identity = 'root123456' ) AND soc:isComment = 'false' AND (soc:isHidden = 'false' OR soc:isHidden Is NULL ) ";
+    String expectedWhere = "(soc:posterIdentity = 'demo123456' OR soc:posterIdentity = 'root123456' ) AND soc:isComment = 'false' AND (soc:isHidden = 'false' OR soc:isHidden Is NULL ) ";
     String actualWhere =  where.build(filter);
     assertEquals(expectedWhere, actualWhere);
   }
@@ -99,7 +99,7 @@ public class ActiviyBuilderWhereTest extends TestCase {
     identities.add(rootIdentity);
     where.owners(identities);
     
-    String expectedWhere = "(soc:identity = 'demo123456' OR soc:identity = 'root123456' ) AND soc:isComment = 'false' AND (soc:isHidden = 'false' OR soc:isHidden Is NULL ) AND soc:lastUpdated > " + accessPoint + " ";
+    String expectedWhere = "(soc:posterIdentity = 'demo123456' OR soc:posterIdentity = 'root123456' ) AND soc:isComment = 'false' AND (soc:isHidden = 'false' OR soc:isHidden Is NULL ) AND soc:lastUpdated > " + accessPoint + " ";
     String actualWhere =  where.build(filter);
     assertEquals(expectedWhere, actualWhere);
     
@@ -121,7 +121,7 @@ public class ActiviyBuilderWhereTest extends TestCase {
     identities.add(rootIdentity);
     where.owners(identities);
     
-    String expectedWhere = "(soc:identity = 'demo123456' OR soc:identity = 'root123456' ) AND soc:isComment = 'false' AND (soc:isHidden = 'false' OR soc:isHidden Is NULL ) AND soc:lastUpdated < " + accessPoint + " ";
+    String expectedWhere = "(soc:posterIdentity = 'demo123456' OR soc:posterIdentity = 'root123456' ) AND soc:isComment = 'false' AND (soc:isHidden = 'false' OR soc:isHidden Is NULL ) AND soc:lastUpdated < " + accessPoint + " ";
     String actualWhere =  where.build(filter);
     assertEquals(expectedWhere, actualWhere);
     
@@ -140,7 +140,7 @@ public class ActiviyBuilderWhereTest extends TestCase {
     where.owners(identities);
     where.mentioner(maryIdentity);
     
-    String expectedWhere = "(soc:identity = 'demo123456' OR soc:identity = 'root123456' OR CONTAINS (soc:mentioners, 'mary123456') ) AND soc:isComment = 'false' AND (soc:isHidden = 'false' OR soc:isHidden Is NULL ) ";
+    String expectedWhere = "(soc:posterIdentity = 'demo123456' OR soc:posterIdentity = 'root123456' OR CONTAINS (soc:mentioners, 'mary123456') ) AND soc:isComment = 'false' AND (soc:isHidden = 'false' OR soc:isHidden Is NULL ) ";
     String actualWhere =  where.build(filter);
     assertEquals(expectedWhere, actualWhere);
     
@@ -200,7 +200,7 @@ public class ActiviyBuilderWhereTest extends TestCase {
     identities.add(demoIdentity);
     where.owners(identities);
     
-    String expectedWhere = "(soc:identity = 'demo123456' ) AND soc:isComment = 'false' AND (soc:isHidden = 'false' OR soc:isHidden Is NULL ) AND soc:lastUpdated > " + accessPoint + " ";
+    String expectedWhere = "(soc:posterIdentity = 'demo123456' ) AND soc:isComment = 'false' AND (soc:isHidden = 'false' OR soc:isHidden Is NULL ) AND soc:lastUpdated > " + accessPoint + " ";
     String actualWhere =  where.build(filter);
     assertEquals(expectedWhere, actualWhere);
     
@@ -221,7 +221,7 @@ public class ActiviyBuilderWhereTest extends TestCase {
     identities.add(demoIdentity);
     where.owners(identities);
     
-    String expectedWhere = "(soc:identity = 'demo123456' ) AND soc:isComment = 'false' AND (soc:isHidden = 'false' OR soc:isHidden Is NULL ) AND soc:lastUpdated < " + accessPoint + " ";
+    String expectedWhere = "(soc:posterIdentity = 'demo123456' ) AND soc:isComment = 'false' AND (soc:isHidden = 'false' OR soc:isHidden Is NULL ) AND soc:lastUpdated < " + accessPoint + " ";
     String actualWhere =  where.build(filter);
     assertEquals(expectedWhere, actualWhere);
     
@@ -231,7 +231,7 @@ public class ActiviyBuilderWhereTest extends TestCase {
   
   public void testUserSpaceOwner() throws Exception {
     ActivityFilter filter = ActivityFilter.space();
-    ActivityBuilderWhere where = ActivityBuilderWhere.simple();
+    ActivityBuilderWhere where = ActivityBuilderWhere.userSpaces();
 
     Identity spaceIdentity = new Identity("space_new1");
     spaceIdentity.setRemoteId("space_new1");
@@ -252,7 +252,7 @@ public class ActiviyBuilderWhereTest extends TestCase {
   
   public void testUserSpaceNewerOwner() throws Exception {
     ActivityFilter filter = ActivityFilter.spaceNewer();
-    ActivityBuilderWhere where = ActivityBuilderWhere.simple();
+    ActivityBuilderWhere where = ActivityBuilderWhere.userSpaces();
 
     long accessPoint = Calendar.getInstance().getTime().getTime();
     
@@ -274,7 +274,7 @@ public class ActiviyBuilderWhereTest extends TestCase {
   
   public void testUserSpaceOlderOwner() throws Exception {
     ActivityFilter filter = ActivityFilter.spaceOlder();
-    ActivityBuilderWhere where = ActivityBuilderWhere.simple();
+    ActivityBuilderWhere where = ActivityBuilderWhere.userSpaces();
 
     long accessPoint = Calendar.getInstance().getTime().getTime();
     
@@ -308,7 +308,7 @@ public class ActiviyBuilderWhereTest extends TestCase {
     identities.add(rootIdentity);
     where.owners(identities);
     
-    String expectedWhere = "(soc:identity = 'demo123456' OR soc:identity = 'root123456' ) AND soc:isComment = 'false' AND (soc:isHidden = 'false' OR soc:isHidden Is NULL ) AND soc:lastUpdated > " + accessPoint + " ";
+    String expectedWhere = "(soc:posterIdentity = 'demo123456' OR soc:posterIdentity = 'root123456' ) AND soc:isComment = 'false' AND (soc:isHidden = 'false' OR soc:isHidden Is NULL ) AND soc:lastUpdated > " + accessPoint + " ";
     String actualWhere =  where.build(filter);
     assertEquals(expectedWhere, actualWhere);
     
@@ -330,7 +330,7 @@ public class ActiviyBuilderWhereTest extends TestCase {
     identities.add(rootIdentity);
     where.owners(identities);
     
-    String expectedWhere = "(soc:identity = 'demo123456' OR soc:identity = 'root123456' ) AND soc:isComment = 'false' AND (soc:isHidden = 'false' OR soc:isHidden Is NULL ) AND soc:lastUpdated < " + accessPoint + " ";
+    String expectedWhere = "(soc:posterIdentity = 'demo123456' OR soc:posterIdentity = 'root123456' ) AND soc:isComment = 'false' AND (soc:isHidden = 'false' OR soc:isHidden Is NULL ) AND soc:lastUpdated < " + accessPoint + " ";
     String actualWhere =  where.build(filter);
     assertEquals(expectedWhere, actualWhere);
     
