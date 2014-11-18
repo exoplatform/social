@@ -1,35 +1,34 @@
 <%
-import org.exoplatform.social.core.identity.model.Profile;
 def profile = uicomponent.getProfileInfo();
 def keys = profile.keySet();
 %>
 <div class="uiSocApplication uiBasicProfilePortlet" id="$uicomponent.id">
+	<div class="head-container"><%=_ctx.appRes("UIBasicProfile.label.ContactInformation")%></div>
 	<div class="uiBasicInfoSection">
-	  <div class="form-horizontal">
-	  	<%
-	  		for(key in keys) {
-	  		  def values = profile.get(key);
-	  	%>
-	    <div class="control-group">
-	      <div class="control-label"><strong><%=_ctx.appRes("UIBasicProfile.label." + key)%>:</strong></div>
-	      <div class="controls">
-	      <%
-	      	if(uicomponent.isString(values)) {
-	      %>
-	      	<span><%=values%></span>
-	      <%
-	      	} else  {
-	      	  for(subKey in values.keySet()) {
-	      %>
-	      	<span><%=subKey%></span>: <span><%=values.get(subKey)%></span><br/>
-	      <%
-	      	  }
-	      	}
-	      %>
-	      </div>
-	    </div>
-    	<%} %>
-	  </div>
-	</div>
+  	<%
+  		for(key in keys) {
+  		  def values = profile.get(key);
+  	%>
+    <div class="group-user-info">
+      <div class="label-user-info"><strong><%=_ctx.appRes("UIBasicProfile.label." + key)%>:</strong></div>
+      <div class="value-user-info">
+      <%
+      	if(uicomponent.isString(values)) {
+      %>
+      	<div class=""><%=values%></div>
+      <%
+      	} else  {
+      	  for(subKey in values.keySet()) {
+      %>
+      	<div class=""><span><%=subKey%></span>: <span><%=values.get(subKey)%></span></div>
+      <%
+      	  }
+      	}
+      %>
+      </div>
+    </div>
+   	<%} %>
+  <div class="line-bottom"><span></span></div>
+  </div>
 </div>
 

@@ -17,14 +17,13 @@
 package org.exoplatform.social.user.portlet;
 
 import org.exoplatform.webui.config.annotation.ComponentConfig;
-import org.exoplatform.webui.core.UIPortletApplication;
 import org.exoplatform.webui.core.lifecycle.UIApplicationLifecycle;
 
 @ComponentConfig(
   lifecycle = UIApplicationLifecycle.class,
   template = "app:/groovy/social/portlet/user/UIEditUserProfilePortlet.gtmpl"
 )
-public class UIEditUserProfilePortlet extends UIPortletApplication {
+public class UIEditUserProfilePortlet extends UIAbstractUserPortlet {
 
   public UIEditUserProfilePortlet() throws Exception {
   }

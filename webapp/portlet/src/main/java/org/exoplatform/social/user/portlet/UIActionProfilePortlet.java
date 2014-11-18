@@ -17,16 +17,16 @@
 package org.exoplatform.social.user.portlet;
 
 import org.exoplatform.webui.config.annotation.ComponentConfig;
-import org.exoplatform.webui.core.UIPortletApplication;
 import org.exoplatform.webui.core.lifecycle.UIApplicationLifecycle;
 
 @ComponentConfig(
   lifecycle = UIApplicationLifecycle.class,
   template = "app:/groovy/social/portlet/user/UIActionProfilePortlet.gtmpl"
 )
-public class UIActionProfilePortlet extends UIPortletApplication {
+public class UIActionProfilePortlet extends UIAbstractUserPortlet {
 
   public UIActionProfilePortlet() throws Exception {
+    addChild(UIRelationshipAction.class, null, null);
   }
 
 }

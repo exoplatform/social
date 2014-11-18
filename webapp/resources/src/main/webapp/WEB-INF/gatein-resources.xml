@@ -35,6 +35,24 @@
   </module>
 
   <module>
+    <name>social-user-profile</name>
+    <script>
+       <path>/javascript/eXo/social/webui/UIUserProfile.js</path>
+    </script>
+    <depends>
+      <module>socialUtil</module>
+      <as>socialUtil</as>
+    </depends>
+    <depends>
+      <module>jquery</module>
+      <as>jQuery</as>
+    </depends>
+    <depends>
+       <module>webui</module>
+    </depends>
+  </module>
+
+  <module>
     <name>social-ui-profile</name>
     <script>
        <path>/javascript/eXo/social/webui/UIProfile.js</path>

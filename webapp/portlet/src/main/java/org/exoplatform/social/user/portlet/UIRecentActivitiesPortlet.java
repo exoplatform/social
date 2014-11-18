@@ -17,14 +17,13 @@
 package org.exoplatform.social.user.portlet;
 
 import org.exoplatform.webui.config.annotation.ComponentConfig;
-import org.exoplatform.webui.core.UIPortletApplication;
 import org.exoplatform.webui.core.lifecycle.UIApplicationLifecycle;
 
 @ComponentConfig(
   lifecycle = UIApplicationLifecycle.class,
   template = "app:/groovy/social/portlet/user/UIRecentActivitiesPortlet.gtmpl"
 )
-public class UIRecentActivitiesPortlet extends UIPortletApplication {
+public class UIRecentActivitiesPortlet extends UIAbstractUserPortlet {
 
   public UIRecentActivitiesPortlet() throws Exception {
   }

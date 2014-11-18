@@ -21,38 +21,16 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.portlet.PortletMode;
-
-import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
-import org.exoplatform.social.webui.Utils;
-import org.exoplatform.webui.application.WebuiApplication;
-import org.exoplatform.webui.application.WebuiRequestContext;
-import org.exoplatform.webui.application.portlet.PortletRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
-import org.exoplatform.webui.core.UIPortletApplication;
 import org.exoplatform.webui.core.lifecycle.UIApplicationLifecycle;
 
 @ComponentConfig(
   lifecycle = UIApplicationLifecycle.class,
   template = "app:/groovy/social/portlet/user/UIBasicProfilePortlet.gtmpl"
 )
-public class UIBasicProfilePortlet extends UIPortletApplication {
-  private Profile currentProfile;
-  
-
+public class UIBasicProfilePortlet extends UIAbstractUserPortlet {
   public UIBasicProfilePortlet() throws Exception {
-  }
-
-  public void processRender(WebuiApplication app, WebuiRequestContext context) throws Exception {
-    PortletRequestContext portletReqContext = (PortletRequestContext) context;
-    PortletMode portletMode = portletReqContext.getApplicationMode();
-    if (portletMode == PortletMode.VIEW) {
-      Identity ownerIdentity = Utils.getOwnerIdentity(false);
-      currentProfile = ownerIdentity.getProfile();
-    }
-    //
-    super.processRender(app, context);
   }
 
   protected Map<String, Object> getProfileInfo() {

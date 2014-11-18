@@ -16,17 +16,20 @@
  ***************************************************************************/
 package org.exoplatform.social.user.portlet;
 
+import org.exoplatform.services.user.UserStateService;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
-import org.exoplatform.webui.core.UIPortletApplication;
 import org.exoplatform.webui.core.lifecycle.UIApplicationLifecycle;
 
 @ComponentConfig(
   lifecycle = UIApplicationLifecycle.class,
   template = "app:/groovy/social/portlet/user/UIStatusProfilePortlet.gtmpl"
 )
-public class UIStatusProfilePortlet extends UIPortletApplication {
-
+public class UIStatusProfilePortlet extends UIAbstractUserPortlet {
   public UIStatusProfilePortlet() throws Exception {
   }
 
+  protected boolean isOnline() {
+    UserStateService stateService = getApplicationComponent(UserStateService.class);
+    return stateService.isOnline(currentProfile.getIdentity().getRemoteId());
+  }
 }
