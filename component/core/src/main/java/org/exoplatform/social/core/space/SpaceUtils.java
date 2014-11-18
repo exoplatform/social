@@ -1564,8 +1564,13 @@ public class SpaceUtils {
     String[] tab = input.split(" ");
     for (String s : tab){
       if (s.isEmpty()) continue;
-      String searchTerm = s.substring(0, s.lastIndexOf("~"));
-      builder.append(searchTerm).append(" ");
+      if (s.indexOf("~") > -1) {
+        String searchTerm = s.substring(0, s.lastIndexOf("~"));
+        builder.append(searchTerm).append(" ");
+      } else {
+        builder.append(s).append(" ");
+      }
+      
     }
     return builder.toString().trim();
   }
