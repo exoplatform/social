@@ -128,7 +128,8 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
       }
       
       if (OrganizationIdentityProvider.NAME.equals(owner.getProviderId())) {
-        user(owner, activityEntity);
+        Identity poster = identityStorage.findIdentityById(activityEntity.getPosterIdentity().getId());
+        user(poster, activityEntity);
         //mention case
         addMentioner(streamCtx.getMentioners(), activityEntity);
       } else if (SpaceIdentityProvider.NAME.equals(owner.getProviderId())) {
@@ -155,12 +156,10 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
       //so that, retrieves Entity directly from Stream context, don't spend time to get from JCR => impact performance.
       ActivityEntity activityEntity = streamCtx.getActivityEntity();
       if (OrganizationIdentityProvider.NAME.equals(owner.getProviderId())) {
-        createOwnerRefs(owner, activityEntity);
-        IdentityEntity poster = activityEntity.getPosterIdentity();
-        if (!poster.getName().equals(owner.getRemoteId())) {
-          addRefList(poster, activityEntity, ActivityRefType.MY_ACTIVITIES, false);
-        }
-        
+        //fixed for SOC-4494 post on viewer stream
+        Identity poster = identityStorage.findIdentityById(activityEntity.getPosterIdentity().getId());
+        manageRefList(new UpdateContext(owner, null), activityEntity, ActivityRefType.MY_ACTIVITIES);
+        createOwnerRefs(poster, activityEntity);
       } else if (SpaceIdentityProvider.NAME.equals(owner.getProviderId())) {
         //
         manageRefList(new UpdateContext(owner, null), activityEntity, ActivityRefType.SPACE_STREAM);
@@ -175,9 +174,9 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
     }
   }
 
-  private void user(Identity owner, ActivityEntity activityEntity) throws NodeNotFoundException {
+  private void user(Identity poster, ActivityEntity activityEntity) throws NodeNotFoundException {
     //
-    List<Identity> got = getRelationshipStorage().getConnections(owner);
+    List<Identity> got = getRelationshipStorage().getConnections(poster);
     if (got.size() > 0) {
       createConnectionsRefs(got, activityEntity);
     }

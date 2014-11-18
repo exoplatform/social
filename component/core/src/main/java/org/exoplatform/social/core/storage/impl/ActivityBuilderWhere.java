@@ -481,6 +481,94 @@ public abstract class ActivityBuilderWhere implements BuilderWhereExpression<JCR
               where.or();
             }
 
+            where.equals(ActivityEntity.poster, currentIdentity.getId());
+
+          }
+
+          if (poster != null) {
+            where.or();
+            where.equals(ActivityEntity.poster, poster.getId());
+          }
+
+          if (mentioner != null) {
+            where.or();
+            where.contains(ActivityEntity.mentioners, mentioner.getId());
+          }
+
+          if (commenter != null) {
+            where.or();
+            where.contains(ActivityEntity.commenters, commenter.getId());
+          }
+
+          if (liker != null) {
+            where.or();
+            where.contains(ActivityEntity.likes, liker.getId());
+          }
+
+          where.endGroup();
+
+        }
+        if (first == false) {
+          where.and();
+        }
+        
+        where.equals(ActivityEntity.isComment, Boolean.FALSE);
+
+        //
+        where.and();
+        //
+        where.startGroup();
+        {
+          where.equals(HidableEntity.isHidden, Boolean.FALSE);
+          where.or().isNull(HidableEntity.isHidden);
+        }
+        where.endGroup();
+
+        Object objFilter = filter.get(ActivityFilter.ACTIVITY_UPDATED_POINT_FIELD).getValue();
+        //
+        if (objFilter != null) {
+          TimestampType type = null;
+          if (objFilter instanceof TimestampType) {
+            type = (TimestampType) objFilter;
+            if (type != null) {
+              switch (type) {
+              case NEWER:
+                where.and().greater(ActivityEntity.lastUpdated, type.get());
+                break;
+              case OLDER:
+                where.and().lesser(ActivityEntity.lastUpdated, type.get());
+                break;
+              }
+            }
+          }
+        }
+        return where.toString();
+      }
+    };
+  }
+  
+  public static ActivityBuilderWhere userSpaces() {
+
+    return new ActivityBuilderWhere() {
+
+      @Override
+      public String make(JCRFilterLiteral filter) {
+        List<Identity> identities = getOwners();
+
+        boolean first = true;
+        //has relationship
+        if (identities != null && identities.size() > 0) {
+          
+          where.startGroup();
+          for (Identity currentIdentity : identities) {
+
+            if (first) {
+              first = false;
+            }
+            else {
+              where.or();
+            }
+
             where.equals(ActivityEntity.identity, currentIdentity.getId());
 
           }
