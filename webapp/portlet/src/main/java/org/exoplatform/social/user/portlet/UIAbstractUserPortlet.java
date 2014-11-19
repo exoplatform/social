@@ -11,7 +11,7 @@ import org.exoplatform.webui.application.portlet.PortletRequestContext;
 import org.exoplatform.webui.core.UIPortletApplication;
 
 public abstract class UIAbstractUserPortlet extends UIPortletApplication {
-  protected Profile currentProfile;
+  protected Profile currentProfile;// current user viewing
 
   public UIAbstractUserPortlet() throws Exception {
     super();
@@ -22,7 +22,7 @@ public abstract class UIAbstractUserPortlet extends UIPortletApplication {
     PortletRequestContext portletReqContext = (PortletRequestContext) context;
     PortletMode portletMode = portletReqContext.getApplicationMode();
     if (portletMode == PortletMode.VIEW) {
-      Identity ownerIdentity = Utils.getOwnerIdentity(false);
+      Identity ownerIdentity = Utils.getOwnerIdentity(true);
       currentProfile = ownerIdentity.getProfile();
     }
     //

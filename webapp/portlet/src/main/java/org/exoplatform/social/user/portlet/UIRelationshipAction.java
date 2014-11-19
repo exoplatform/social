@@ -40,15 +40,15 @@ public class UIRelationshipAction extends UIContainer {
 
   @Override
   public void processRender(WebuiRequestContext context) throws Exception {
-    Identity viewerIdentity = Utils.getViewerIdentity();
-    Identity ownerIdentity = Utils.getOwnerIdentity();
+    Identity viewerIdentity = Utils.getViewerIdentity();// current login user
+    Identity ownerIdentity = Utils.getOwnerIdentity(); // current user viewing
     //
     Writer writer = context.getWriter();
     writer.append("<div class=\"uiRelationshipAction clearfix\" id=\"").append(getId()).append("\">");
-    writer.append("<div class=\"user-actions pull-right\" data-user-action=\"").append(viewerIdentity.getRemoteId()).append("\">");
+    writer.append("<div class=\"user-actions pull-right\" data-user-action=\"").append(ownerIdentity.getRemoteId()).append("\">");
     //
     if (isRenderedActions && !ownerIdentity.equals(viewerIdentity)) {
-      Relationship relationship = Utils.getRelationshipManager().get(ownerIdentity, viewerIdentity);
+      Relationship relationship = Utils.getRelationshipManager().get(viewerIdentity, ownerIdentity);
       Type status = (relationship != null) ? relationship.getStatus() : null;
       
       if(status == null) {
@@ -56,7 +56,7 @@ public class UIRelationshipAction extends UIContainer {
               .append("<i class=\"uiIconStatusConnect\"></i>")
               .append(getLabel(context, "UIBasicProfile.action.label.Connect")).append("</button>");
       } else if(status == Type.PENDING) {//PENDING
-        if(relationship.getSender().equals(ownerIdentity)) {
+        if(relationship.getSender().equals(viewerIdentity)) {
           writer.append("<button class=\"btn show-default\">")
                 .append("<i class=\"uiIconStatusSent\"></i> ")
                 .append(getLabel(context, "UIBasicProfile.action.label.RequestSent")).append("</button>");
@@ -127,8 +127,8 @@ public class UIRelationshipAction extends UIContainer {
       return (relationship == null);
     }
     @Override
-    protected void doAction(Event<UIRelationshipAction> event) {
-      Utils.getRelationshipManager().inviteToConnect(Utils.getOwnerIdentity(), Utils.getViewerIdentity());
+    protected void doAction(Event<UIRelationshipAction> event) {// sender --> owner
+      Utils.getRelationshipManager().inviteToConnect(Utils.getViewerIdentity(), Utils.getOwnerIdentity());
     }
   }
 

@@ -1,6 +1,37 @@
 <%
+	String aboutMe = uicomponent.getAboutMe();
+	boolean isOwner = uicomponent.isOwner();
+	List experienceData = uicomponent.getExperience();
 %>
 <div class="uiSocApplication uiExperienceProfilePortlet" id="$uicomponent.id">
-	UIExperienceProfilePortlet
+<% if(aboutMe.length() > 0) { %>
+	<div class="head-container"><%=_ctx.appRes("UIBasicProfile.label.AboutMe")%></div>
+	<div class="the-content">$aboutMe</div>
+<% } else if(isOwner) { %>
+	<div class="no-content">
+		<div><%=_ctx.appRes("UIBasicProfile.info.HaveNotAbout")%></div>
+		<div>
+			<button class="btn btn-primary" onclick="window.location.href=window.location.origin + '/portal/intranet/edit-profile/'">
+				<i class="uiIconEdit uiIconLightGray"></i> <%=_ctx.appRes("UIBasicProfile.action.EditProfile")%></button>
+		</div>
+	</div>
+<% } 
+	 if(experienceData.size()  > 0) {
+	   print("<h5 class=\"head-container\">" + _ctx.appRes("UIBasicProfile.label.Experience") + "</h5>");
+	   for(experience in experienceData) {
+	     print("<div class=\"uiBox experience-container\"> <div class=\"uiContentBox\">");
+	     for(key in experience.keySet()) {
+	       if(uicomponent.EXPERIENCES_IS_CURRENT.equals(key)) {
+	         print(" " + _ctx.appRes("UIBasicProfile.label.untilNow"));
+	         continue;
+	       }
+	       String label = _ctx.appRes("UIBasicProfile.label." + key);
+%>
+				<div class=""><span><%=label%></span>: <span><%=experience.get(key)%></span></div>	
+<%
+       }
+	     print("</div></div>");
+		 }
+	 } %>
 </div>
 
