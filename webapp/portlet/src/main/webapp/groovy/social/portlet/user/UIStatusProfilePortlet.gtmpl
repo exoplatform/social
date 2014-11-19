@@ -1,10 +1,10 @@
 <%
-	String iconStatus = (uicomponent.isOnline()) ? "uiIconOnline" : "uiIconOffline";
+	String iconStatus = (uicomponent.isOnline()) ? "uiIconUserOnline" : "uiIconUserOffline";
 %>
 <div class="uiSocApplication uiStatusProfilePortlet" id="$uicomponent.id">
 	 <h3 class="user-status" style="display:inline-block;" data-userid="<%=uicomponent.currentProfile.getIdentity().getRemoteId()%>">
 	 	<span><%=uicomponent.currentProfile.getFullName()%></span>
-	 <i class="userStatus $iconStatus uiIconLightGray"></i>
+	 <i class="$iconStatus uiIconLightGray"></i>
 	 </h3>
 </div>
 

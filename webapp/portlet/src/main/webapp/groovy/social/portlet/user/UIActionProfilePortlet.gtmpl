@@ -1,6 +1,6 @@
-<%
-%>
 <div class="uiSocApplication uiActionProfilePortlet" id="$uicomponent.id">
-	UIActionProfilePortlet
+<%
+	uicomponent.renderChildren();
+%>
 </div>
 

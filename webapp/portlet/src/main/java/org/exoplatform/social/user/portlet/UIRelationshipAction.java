@@ -25,78 +25,69 @@ import org.exoplatform.webui.event.EventListener;
     @EventConfig(listeners = UIRelationshipAction.AcceptActionListener.class),
     @EventConfig(listeners = UIRelationshipAction.DenyActionListener.class),
     @EventConfig(listeners = UIRelationshipAction.DisconnectActionListener.class)
-    
   }
 )
 public class UIRelationshipAction extends UIContainer {
-/*
-  
-#
-UIBasicProfile.action.label.Connect=Connect
-#Display is label and when mouse-over is actions.
-UIBasicProfile.label.Connected=Connected
-UIBasicProfile.action.RemoveConnection=Disconnect
+  private boolean isRenderedActions = true;
 
-UIBasicProfile.action.label.RequestReceived=Request received
-UIBasicProfile.action.Accept=Accept
-UIBasicProfile.action.Deny=Deny
+  public UIRelationshipAction() {
+  }
 
-UIBasicProfile.action.label.RequestSent=Request sent
-UIBasicProfile.action.CancelRequest=Cancel
-#
-UIBasicProfile.action.EditProfile=Edit my profile
-UIBasicProfile.action.ViewAll=View All  
-  
-  
-   String label = res.getString("UIAllPeople.label.Ignore");
-      String action = uiAllPeople.event("Ignore", identity.getId());
-      String statusLabel = "", statusClass = "", btClass = "";
-      //
-      Type status = (relationship != null) ? relationship.getStatus() : null;
-      //
-      if (status == null) {
-        label = res.getString("UIAllPeople.label.Connect");
-        action = uiAllPeople.event("Connect", identity.getId());
-        btClass = "btn-primary";
-      } else if (status.equals(Type.PENDING)) {
-        label = res.getString("UIAllPeople.label.CancelRequest");
-        statusLabel = res.getString("UIAllPeople.label.InvitationSent");
-      } else if (status == Type.CONFIRMED) {
-        label = res.getString("UIAllPeople.label.RemoveConnection");
-        statusClass = "checkedBox";
-      }
-      
-     <%=uicomponent.event("AcceptContact")%>;return false;" >$connectLabel</button>  
-*/
+  public UIRelationshipAction setRenderedActions(boolean isRenderedActions) {
+    this.isRenderedActions = isRenderedActions;
+    return this;
+  }
+
   @Override
   public void processRender(WebuiRequestContext context) throws Exception {
+    Identity viewerIdentity = Utils.getViewerIdentity();
+    Identity ownerIdentity = Utils.getOwnerIdentity();
     //
     Writer writer = context.getWriter();
-    writer.append("<div class=\"uiRelationshipAction\" id=\"").append(getId()).append("\">");
+    writer.append("<div class=\"uiRelationshipAction clearfix\" id=\"").append(getId()).append("\">");
+    writer.append("<div class=\"user-actions pull-right\" data-user-action=\"").append(viewerIdentity.getRemoteId()).append("\">");
     //
-    Relationship relationship = getRelationship();
-    Type status = (relationship != null) ? relationship.getStatus() : null;
-    
-    if(status == null) {
-      writer.append("<button class=\"btn btn-primary connect-status hide-default\" onclick=\"").append(event("Connect")).append("\">")
-            .append(getLabel(context, "UIBasicProfile.action.label.Connect")).append("</button>");
-    } else if(status == Type.PENDING) {//PENDING
-      if(relationship.getSender().equals(Utils.getOwnerIdentity())) {
-        writer.append("<button class=\"btn sent-status show-default\">").append("<i class=\"uiIconSentStatus\"></i>")
-              .append(getLabel(context, "UIBasicProfile.action.label.RequestSent")).append("</button>");
-        writer.append("<button class=\"btn cancel-status hide-default\" onclick=\"").append(event("Cancel")).append("\">")
-              .append("<i class=\"uiIconCancelStatus\"></i>")
-              .append(getLabel(context, "UIBasicProfile.action.CancelRequest")).append("</button>");          
-      } else {
-        writer.append("<button class=\"btn sent-status show-default\">").append("<i class=\"uiIconSentStatus\"></i>")
-              .append(getLabel(context, "UIBasicProfile.action.label.RequestSent")).append("</button>");
-        writer.append("<button class=\"btn cancel-status hide-default\" onclick=\"").append(event("Cancel")).append("\">")
-              .append("<i class=\"uiIconCancelStatus\"></i>")
-              .append(getLabel(context, "UIBasicProfile.action.CancelRequest")).append("</button>");          
+    if (isRenderedActions && !ownerIdentity.equals(viewerIdentity)) {
+      Relationship relationship = Utils.getRelationshipManager().get(ownerIdentity, viewerIdentity);
+      Type status = (relationship != null) ? relationship.getStatus() : null;
+      
+      if(status == null) {
+        writer.append("<button class=\"btn btn-primary connect-status\" onclick=\"").append(event("Connect")).append("\">")
+              .append("<i class=\"uiIconStatusConnect\"></i>")
+              .append(getLabel(context, "UIBasicProfile.action.label.Connect")).append("</button>");
+      } else if(status == Type.PENDING) {//PENDING
+        if(relationship.getSender().equals(ownerIdentity)) {
+          writer.append("<button class=\"btn show-default\">")
+                .append("<i class=\"uiIconStatusSent\"></i> ")
+                .append(getLabel(context, "UIBasicProfile.action.label.RequestSent")).append("</button>");
+          writer.append("<button class=\"btn hide-default\" onclick=\"").append(event("Cancel")).append("\">")
+                .append("<i class=\"uiIconStatusCancel\"></i> ")
+                .append(getLabel(context, "UIBasicProfile.action.CancelRequest")).append("</button>");          
+        } else {
+          writer.append("<button class=\"btn btn-primary show-default\">")
+                .append("<i class=\"uiIconStatusReceived\"></i> ")
+                .append(getLabel(context, "UIBasicProfile.action.label.RequestReceived")).append("</button>");
+          
+          writer.append("<button class=\"btn hide-default\" onclick=\"").append(event("Deny")).append("\">")
+                .append("<i class=\"uiIconStatusDeny\"></i> ")
+                .append(getLabel(context, "UIBasicProfile.action.Deny")).append("</button>");          
+          writer.append("&nbsp;<button class=\"btn btn-primary hide-default\" onclick=\"").append(event("Accept")).append("\">")
+                .append("<i class=\"uiIconStatusAccept\"></i> ")
+                .append(getLabel(context, "UIBasicProfile.action.Accept")).append("</button>");          
+        }
+      } else if(status == Type.CONFIRMED) {
+        writer.append("<button class=\"btn show-default\">")
+              .append("<i class=\"uiIconStatusConnected\"></i> ")
+              .append(getLabel(context, "UIBasicProfile.label.Connected")).append("</button>");
+        writer.append("<button class=\"btn hide-default\" onclick=\"").append(event("Disconnect")).append("\">")
+              .append("<i class=\"uiIconStatusDisconnect\"></i> ")
+              .append(getLabel(context, "UIBasicProfile.action.RemoveConnection")).append("</button>");       
       }
+      writer.append("</div>");
+      writer.append("</div>");
+    } else {
+      super.processRender(context);
     }
-    writer.append("</div>");
-    super.processRender(context);
   }
 
   private String getLabel(WebuiRequestContext context, String key) {
@@ -104,20 +95,8 @@ UIBasicProfile.action.ViewAll=View All
     try {
       return res.getString(key);
     } catch (Exception e) {
-      return (key.indexOf(".") > 0) ? key.substring(key.lastIndexOf(".")) : key;
+      return (key.indexOf(".") > 0) ? key.substring(key.lastIndexOf(".") + 1) : key;
     }
-  }
-  
-  
-  /**
-   * Gets relationship between current user and viewer identity.<br>
-   * 
-   * @return relationship.
-   * 
-   * @throws Exception
-   */
-  protected Relationship getRelationship() throws Exception {
-    return Utils.getRelationshipManager().get(Utils.getOwnerIdentity(), Utils.getViewerIdentity());
   }
   
   public static abstract class AbstractActionListener extends EventListener<UIRelationshipAction> {
@@ -126,48 +105,47 @@ UIBasicProfile.action.ViewAll=View All
     @Override
     public void execute(Event<UIRelationshipAction> event) throws Exception {
       UIRelationshipAction uiAction = event.getSource();
-      relationship = uiAction.getRelationship();
-      if (!isValid()) {
+      relationship = Utils.getRelationshipManager().get(Utils.getOwnerIdentity(), Utils.getViewerIdentity());
+      if (isValid()) {
+        doAction(event);
+      } else {
         uiAction.getAncestorOfType(UIPortletApplication.class).addMessage(new ApplicationMessage(msgKey, new String[]{}, ApplicationMessage.WARNING));
-        return;
       }
       //
-      doAction(event, uiAction);
+      event.getRequestContext().addUIComponentToUpdateByAjax(uiAction.getParent());
     }
     protected boolean isValid() {
       return (relationship != null);
     }
-    protected abstract void doAction(Event<UIRelationshipAction> event, UIRelationshipAction uiAction);
+    protected abstract void doAction(Event<UIRelationshipAction> event);
   }
   
   public static class ConnectActionListener extends AbstractActionListener {
     @Override
     protected boolean isValid() {
       msgKey = "UIRelationshipAction.label.ConnectionExisted";
-      return (relationship != null);
+      return (relationship == null);
     }
     @Override
-    protected void doAction(Event<UIRelationshipAction> event, UIRelationshipAction uiAction) {
-      Utils.getRelationshipManager().inviteToConnect(relationship.getReceiver(), relationship.getSender());
-      event.getRequestContext().addUIComponentToUpdateByAjax(uiAction.getParent());
+    protected void doAction(Event<UIRelationshipAction> event) {
+      Utils.getRelationshipManager().inviteToConnect(Utils.getOwnerIdentity(), Utils.getViewerIdentity());
     }
   }
 
   public static class CancelActionListener extends AbstractActionListener {
     @Override
-    protected void doAction(Event<UIRelationshipAction> event, UIRelationshipAction uiAction) {
+    protected void doAction(Event<UIRelationshipAction> event) {
       Utils.getRelationshipManager().delete(relationship);
-      event.getRequestContext().addUIComponentToUpdateByAjax(event.getSource().getParent());
     }
   }
 
   public static class AcceptActionListener extends AbstractActionListener {
     @Override
     protected boolean isValid() {
-      return super.isValid() || relationship.getStatus().equals(Relationship.Type.IGNORED);
+      return super.isValid() && (relationship.getStatus() != Type.IGNORED);
     }
     @Override
-    protected void doAction(Event<UIRelationshipAction> event, UIRelationshipAction uiAction) {
+    protected void doAction(Event<UIRelationshipAction> event) {
       Utils.getRelationshipManager().confirm(relationship.getReceiver(), relationship.getSender());
       Utils.updateWorkingWorkSpace();
     }
@@ -175,7 +153,7 @@ UIBasicProfile.action.ViewAll=View All
 
   public static class DenyActionListener extends AbstractActionListener {
     @Override
-    protected void doAction(Event<UIRelationshipAction> event, UIRelationshipAction uiAction) {
+    protected void doAction(Event<UIRelationshipAction> event) {
       Utils.getRelationshipManager().deny(relationship.getReceiver(), relationship.getSender());
       Utils.updateWorkingWorkSpace();
     }
