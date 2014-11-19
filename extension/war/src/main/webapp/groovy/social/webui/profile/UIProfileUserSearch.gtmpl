@@ -30,14 +30,11 @@
 	def jsmanager = rcontext.getJavascriptManager();
   
 
-  def searchActionLabel = StringEscapeUtils.escapeJavaScript(_ctx.appRes("${uicomponentId}.label.Search"));
-	def searchByNameLabel = StringEscapeUtils.escapeJavaScript(_ctx.appRes("${uicomponentId}.label.SearchByName"));
+	def searchActionLabel = _ctx.appRes("${uicomponentId}.label.Search");
+	def searchByNameLabel = _ctx.appRes("${uicomponentId}.label.SearchByName");
 	def nameDefaultVal = StringEscapeUtils.escapeJavaScript(_ctx.appRes("${uicomponentId}.label.Name"));
-	def searchByRoleLabel = StringEscapeUtils.escapeJavaScript(_ctx.appRes("${uicomponentId}.label.SearchByRole"));
 	def positionDefaultVal = StringEscapeUtils.escapeJavaScript(_ctx.appRes("${uicomponentId}.label.Position"));
-	def andOrLabel = StringEscapeUtils.escapeJavaScript(_ctx.appRes("${uicomponentId}.label.AndOr"));
 	def skillsDefaultVal = StringEscapeUtils.escapeJavaScript(_ctx.appRes("${uicomponentId}.label.Skills"));
-	def contactsDirectory = StringEscapeUtils.escapeJavaScript(_ctx.appRes("${uicomponentId}.label.ContactDirectory"));
 	def searchId = "Search";
 	def positionId = "position";
 	def skillsId = "skills";
