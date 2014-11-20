@@ -27,7 +27,7 @@
 	       }
 	       String label = _ctx.appRes("UIBasicProfile.label." + key);
 %>
-				<div class=""><span><%=label%></span>: <span><%=experience.get(key)%></span></div>	
+				<div class="key"><span><%=label%></span>: <span><%=experience.get(key)%></span></div>	
 <%
        }
 	     print("</div></div>");

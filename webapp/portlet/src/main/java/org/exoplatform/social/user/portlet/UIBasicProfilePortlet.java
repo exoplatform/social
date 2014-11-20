@@ -16,12 +16,8 @@
  ***************************************************************************/
 package org.exoplatform.social.user.portlet;
 
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 
-import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.core.lifecycle.UIApplicationLifecycle;
 
@@ -34,66 +30,12 @@ public class UIBasicProfilePortlet extends UIAbstractUserPortlet {
   }
 
   protected Map<String, Object> getProfileInfo() {
-    Map<String, Object> infos = new LinkedHashMap<String, Object>();
-    infos.put(Profile.EMAIL, currentProfile.getEmail());
-    //
-    String jobTitle = currentProfile.getPosition();
-    if(!isEmpty(jobTitle)) {
-      infos.put(Profile.POSITION, jobTitle);
-    }
-    String gender = currentProfile.getGender();
-    if(!isEmpty(gender)) {
-      infos.put(Profile.GENDER, gender);
-    }
-    //
-    List<Map<String, String>> phones = currentProfile.getPhones();
-    if (phones != null && phones.size() > 0) {
-      Map<String, String> phoneInfos = new HashMap<String, String>();
-      for (Map<String, String> map : phones) {
-        for (String key : map.keySet()) {
-          phoneInfos.put(key, map.get(key));
-        }
-      }
-      //
-      infos.put(Profile.CONTACT_PHONES, phoneInfos);
-    }
-    //
-    List<Map<String, String>> ims = (List<Map<String, String>>) currentProfile.getProperty(Profile.CONTACT_IMS);
-    if (ims != null && ims.size() > 0) {
-      Map<String, String> imInfos = new HashMap<String, String>();
-      for (Map<String, String> map : ims) {
-        for (String key : map.keySet()) {
-          imInfos.put(key, map.get(key));
-        }
-      }
-      //
-      infos.put(Profile.CONTACT_IMS, imInfos);
-    }
-    //
-    List<Map<String, String>> urls = (List<Map<String, String>>) currentProfile.getProperty(Profile.CONTACT_URLS);
-    if (urls != null && urls.size() > 0) {
-      Map<String, String> urlInfos = new HashMap<String, String>();
-      for (Map<String, String> map : urls) {
-        for (String key : map.keySet()) {
-          urlInfos.put(key, map.get(key));
-        }
-      }
-      //
-      infos.put(Profile.CONTACT_URLS, urlInfos);
-    }
-    //
-    return infos;
-  }
-
-  private static boolean isEmpty(String s) {
-    return s == null || s.trim().length() == 0;
+    return UserProfileHelper.getDisplayProfileInfo(currentProfile);
   }
 
   protected boolean isString(Object s) {
     return s instanceof String;
   }
-  
-  
 
 }
 
