@@ -1,7 +1,6 @@
 package org.exoplatform.social.user.portlet;
 
 import java.io.Writer;
-import java.util.ResourceBundle;
 
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.relationship.model.Relationship;
@@ -54,34 +53,34 @@ public class UIRelationshipAction extends UIContainer {
       if(status == null) {
         writer.append("<button class=\"btn btn-primary connect-status\" onclick=\"").append(event("Connect")).append("\">")
               .append("<i class=\"uiIconStatusConnect\"></i>")
-              .append(getLabel(context, "UIBasicProfile.action.label.Connect")).append("</button>");
+              .append(UserProfileHelper.getLabel(context, "UIBasicProfile.action.label.Connect")).append("</button>");
       } else if(status == Type.PENDING) {//PENDING
         if(relationship.getSender().equals(viewerIdentity)) {
           writer.append("<button class=\"btn show-default\">")
                 .append("<i class=\"uiIconStatusSent\"></i> ")
-                .append(getLabel(context, "UIBasicProfile.action.label.RequestSent")).append("</button>");
+                .append(UserProfileHelper.getLabel(context, "UIBasicProfile.action.label.RequestSent")).append("</button>");
           writer.append("<button class=\"btn hide-default\" onclick=\"").append(event("Cancel")).append("\">")
                 .append("<i class=\"uiIconStatusCancel\"></i> ")
-                .append(getLabel(context, "UIBasicProfile.action.CancelRequest")).append("</button>");          
+                .append(UserProfileHelper.getLabel(context, "UIBasicProfile.action.CancelRequest")).append("</button>");          
         } else {
           writer.append("<button class=\"btn btn-primary show-default\">")
                 .append("<i class=\"uiIconStatusReceived\"></i> ")
-                .append(getLabel(context, "UIBasicProfile.action.label.RequestReceived")).append("</button>");
+                .append(UserProfileHelper.getLabel(context, "UIBasicProfile.action.label.RequestReceived")).append("</button>");
           
           writer.append("<button class=\"btn hide-default\" onclick=\"").append(event("Deny")).append("\">")
                 .append("<i class=\"uiIconStatusDeny\"></i> ")
-                .append(getLabel(context, "UIBasicProfile.action.Deny")).append("</button>");          
+                .append(UserProfileHelper.getLabel(context, "UIBasicProfile.action.Deny")).append("</button>");          
           writer.append("&nbsp;<button class=\"btn btn-primary hide-default\" onclick=\"").append(event("Accept")).append("\">")
                 .append("<i class=\"uiIconStatusAccept\"></i> ")
-                .append(getLabel(context, "UIBasicProfile.action.Accept")).append("</button>");          
+                .append(UserProfileHelper.getLabel(context, "UIBasicProfile.action.Accept")).append("</button>");          
         }
       } else if(status == Type.CONFIRMED) {
         writer.append("<button class=\"btn show-default\">")
               .append("<i class=\"uiIconStatusConnected\"></i> ")
-              .append(getLabel(context, "UIBasicProfile.label.Connected")).append("</button>");
+              .append(UserProfileHelper.getLabel(context, "UIBasicProfile.label.Connected")).append("</button>");
         writer.append("<button class=\"btn hide-default\" onclick=\"").append(event("Disconnect")).append("\">")
               .append("<i class=\"uiIconStatusDisconnect\"></i> ")
-              .append(getLabel(context, "UIBasicProfile.action.RemoveConnection")).append("</button>");       
+              .append(UserProfileHelper.getLabel(context, "UIBasicProfile.action.RemoveConnection")).append("</button>");       
       }
       writer.append("</div>");
       writer.append("</div>");
@@ -90,15 +89,6 @@ public class UIRelationshipAction extends UIContainer {
     }
   }
 
-  private String getLabel(WebuiRequestContext context, String key) {
-    ResourceBundle res = context.getApplicationResourceBundle();
-    try {
-      return res.getString(key);
-    } catch (Exception e) {
-      return (key.indexOf(".") > 0) ? key.substring(key.lastIndexOf(".") + 1) : key;
-    }
-  }
-  
   public static abstract class AbstractActionListener extends EventListener<UIRelationshipAction> {
     protected Relationship relationship = null;
     protected String msgKey = "UIRelationshipAction.label.ConnectNotExisting";

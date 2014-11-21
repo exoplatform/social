@@ -28,4 +28,12 @@ public abstract class UIAbstractUserPortlet extends UIPortletApplication {
     //
     super.processRender(app, context);
   }
+
+  protected boolean isOwner() {
+    return Utils.getViewerRemoteId().equals(getCurrentRemoteId());
+  }
+
+  protected String getCurrentRemoteId() {
+    return currentProfile.getIdentity().getRemoteId();
+  }
 }

@@ -1,5 +1,7 @@
 package org.exoplatform.social.user.portlet;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -8,8 +10,11 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.ResourceBundle;
 
+import org.apache.commons.lang.StringUtils;
 import org.exoplatform.social.core.identity.model.Profile;
+import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.utils.TimeConvertUtils;
 
 public class UserProfileHelper {
@@ -127,6 +132,26 @@ public class UserProfileHelper {
       } catch (Exception e) {
         destExperience.put(key, value);
       }
+    }
+  }
+
+  public static String getLabel(WebuiRequestContext context, String key) {
+    ResourceBundle res = context.getApplicationResourceBundle();
+    try {
+      return res.getString(key);
+    } catch (Exception e) {
+      return (key.indexOf(".") > 0) ? key.substring(key.lastIndexOf(".") + 1) : key;
+    }
+  }
+
+  protected static String encodeURI(String input) {
+    if (input == null || input.trim().length() == 0) {
+      return StringUtils.EMPTY;
+    }
+    try {
+      return URLEncoder.encode(input, "UTF-8");
+    } catch (UnsupportedEncodingException e) {
+      return input;
     }
   }
 }

@@ -16,16 +16,87 @@
  ***************************************************************************/
 package org.exoplatform.social.user.portlet;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.exoplatform.commons.utils.ListAccess;
+import org.exoplatform.social.core.identity.model.Identity;
+import org.exoplatform.social.core.identity.model.Profile;
+import org.exoplatform.social.core.profile.ProfileFilter;
+import org.exoplatform.social.webui.Utils;
+import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.core.lifecycle.UIApplicationLifecycle;
+import org.json.JSONObject;
 
 @ComponentConfig(
   lifecycle = UIApplicationLifecycle.class,
   template = "app:/groovy/social/portlet/user/UIMiniConnectionsPortlet.gtmpl"
 )
 public class UIMiniConnectionsPortlet extends UIAbstractUserPortlet {
+  protected final static int MAX_DISPLAY = 6;
+  private int allSize = 0;
 
   public UIMiniConnectionsPortlet() throws Exception {
   }
 
+  protected List<ProfileBean> loadPeoples() throws Exception {
+    ListAccess<Identity> listAccess = Utils.getRelationshipManager().getConnectionsByFilter(currentProfile.getIdentity(), new ProfileFilter());
+    Identity[] identities = listAccess.load(0, MAX_DISPLAY);
+    allSize = listAccess.getSize();
+    List<ProfileBean> profileBeans = new ArrayList<ProfileBean>();
+    for (int i = 0; i < identities.length; i++) {
+      profileBeans.add(new ProfileBean(identities[i]));
+    }
+    return profileBeans;
+  }
+  
+  protected int getAllSize() {
+    return allSize;
+  }
+  
+  protected void initProfilePopup() throws Exception {
+    JSONObject object = new JSONObject();
+    WebuiRequestContext context = WebuiRequestContext.getCurrentInstance();
+    object.put("StatusTitle", UserProfileHelper.encodeURI(UserProfileHelper.getLabel(context, "UserProfilePopup.label.Loading")));
+    String[] keys = new String[]{"Connect", "Confirm", "CancelRequest", "RemoveConnection", "Ignore"};
+    for (int i = 0; i < keys.length; i++) {
+      object.put(keys[i], UserProfileHelper.encodeURI(UserProfileHelper.getLabel(context, "UserProfilePopup.label." + keys[i])));
+    }
+    //
+    context.getJavascriptManager().getRequireJS().require("SHARED/social-ui-profile", "profile")
+           .addScripts("profile.initUserProfilePopup('" + getId() + "', " + object.toString() + ");");
+  }
+  
+  protected class ProfileBean {
+    private final String avatarURL;
+    private final String displayName;
+    private final String profileURL;
+    private final String userId;
+
+    public ProfileBean(Identity identity) {
+      this.userId = identity.getRemoteId();
+      //
+      Profile profile = identity.getProfile();
+      this.displayName = profile.getFullName();
+      this.profileURL = profile.getUrl();
+      String avatarURL = profile.getAvatarUrl();
+      if (UserProfileHelper.isEmpty(avatarURL) || avatarURL.equalsIgnoreCase("null")) {
+        avatarURL = "/social-resources/skin/images/ShareImages/UserAvtDefault.png";
+      }
+      this.avatarURL = avatarURL;
+    }
+    public String getUserId() {
+      return userId;
+    }
+    public String getAvatarURL() {
+      return avatarURL;
+    }
+    public String getDisplayName() {
+      return displayName;
+    }
+    public String getProfileURL() {
+      return profileURL;
+    }
+  }
 }

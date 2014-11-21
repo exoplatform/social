@@ -5,12 +5,14 @@
 %>
 <div class="uiSocApplication uiExperienceProfilePortlet" id="$uicomponent.id">
 <% if(aboutMe.length() > 0) { %>
-	<div class="head-container"><%=_ctx.appRes("UIBasicProfile.label.AboutMe")%></div>
-	<div class="the-content">$aboutMe</div>
+	<h5 class="head-container"><%=_ctx.appRes("UIBasicProfile.label.AboutMe")%></h5>
+	<div class="uiBox">
+	 	<div class="uiContentBox">$aboutMe</div>
+ 	</div>
 <% } else if(isOwner) { %>
 	<div class="no-content">
 		<div><%=_ctx.appRes("UIBasicProfile.info.HaveNotAbout")%></div>
-		<div>
+		<div  class="center">
 			<button class="btn btn-primary" onclick="window.location.href=window.location.origin + '/portal/intranet/edit-profile/'">
 				<i class="uiIconEdit uiIconLightGray"></i> <%=_ctx.appRes("UIBasicProfile.action.EditProfile")%></button>
 		</div>
@@ -27,7 +29,7 @@
 	       }
 	       String label = _ctx.appRes("UIBasicProfile.label." + key);
 %>
-				<div class="key"><span><%=label%></span>: <span><%=experience.get(key)%></span></div>	
+				<div class="$key"><span><%=label%></span>: <span><%=experience.get(key)%></span></div>	
 <%
        }
 	     print("</div></div>");

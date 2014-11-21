@@ -48,6 +48,9 @@ public class Profile {
   /** email key. */
   public static final String        EMAIL          = "email";
 
+  /** email key. */
+  public static final String        ABOUT_ME       = "aboutMe";
+
   /** profile of a deleted user */
   public static final String        DELETED        = "deleted";
 

@@ -23,8 +23,10 @@ var UIProfile = {
   },
   initUserProfilePopup : function(uicomponentId, labels) {
     //
-    labels = labels || UIProfile.labels;
-    UIProfile.labels = labels;
+    UIProfile.labels = settings = $.extend(true, {}, UIProfile.labels, labels);
+    $.each(UIProfile.labels, function(key) {
+      UIProfile.labels[key] =  window.decodeURIComponent(UIProfile.labels[key]);
+    });
     
     // User Profile Popup initialize
 	var portal = eXo.social.portal;
@@ -38,7 +40,7 @@ var UIProfile = {
         
         $(el).userPopup({
           restURL: restUrl,
-          labels: labels,
+          labels: UIProfile.labels,
           content: false,
           defaultPosition: "left",
           keepAlive: true,

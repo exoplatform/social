@@ -38,6 +38,7 @@
   def firstName = profile.getProperty(Profile.FIRST_NAME);
   def lastName = profile.getProperty(Profile.LAST_NAME);
   def email = profile.getProperty(Profile.EMAIL);
+  def about = profile.getProperty(Profile.ABOUT_ME);
   _ctx.getRequestContext().getJavascriptManager().require("SHARED/uiForm");
 %>
 <div class="uiBasicInfoSection">
@@ -84,9 +85,19 @@
           <% if (isEdit && isEditable) {
             uiform.renderField(children.get(4));
              } else { %>
-		<a href="mailto:${email}" class="email">
-		${email}
-		</a>
+						<a href="mailto:${email}" class="email">
+						${email}
+						</a>
+          <% } %>
+          </div>
+        </div>
+        <div class="control-group">
+          <label class="control-label" for="<%=Profile.ABOUT_ME%>"><strong>About me:</strong></label>
+          <div class="controls">
+          <% if (isEdit && isEditable) {
+            uiform.renderField(Profile.ABOUT_ME);
+             } else { %>
+						${about}
           <% } %>
           </div>
         </div>

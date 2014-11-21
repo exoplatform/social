@@ -19,9 +19,7 @@ package org.exoplatform.social.user.portlet;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang.StringUtils;
 import org.exoplatform.social.core.identity.model.Profile;
-import org.exoplatform.social.webui.Utils;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.core.lifecycle.UIApplicationLifecycle;
 
@@ -35,13 +33,9 @@ public class UIExperienceProfilePortlet extends UIAbstractUserPortlet {
   public UIExperienceProfilePortlet() throws Exception {
   }
 
-  protected boolean isOwner() {
-    return currentProfile.getIdentity().getRemoteId().equals(Utils.getViewerRemoteId());
-  }
-  
   protected String getAboutMe() {
-    String about = (String) currentProfile.getProperty("aboutMe");
-    return StringUtils.isEmpty(about) ? "" : about;
+    String about = (String) currentProfile.getProperty(Profile.ABOUT_ME);
+    return UserProfileHelper.isEmpty(about) ? "" : about;
   }
   
   protected List<Map<String, String>> getExperience() throws Exception {

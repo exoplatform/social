@@ -3,7 +3,7 @@ def profile = uicomponent.getProfileInfo();
 def keys = profile.keySet();
 %>
 <div class="uiSocApplication uiBasicProfilePortlet" id="$uicomponent.id">
-	<div class="head-container"><%=_ctx.appRes("UIBasicProfile.label.ContactInformation")%></div>
+	<h5 class="head-container"><%=_ctx.appRes("UIBasicProfile.label.ContactInformation")%></h5>
 	<div class="uiBasicInfoSection">
   	<%
   		for(key in keys) {
