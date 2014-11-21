@@ -1,6 +1,25 @@
 <%
+	List activities = uicomponent.getRecentActivities();
 %>
 <div class="uiSocApplication uiRecentActivitiesPortlet" id="$uicomponent.id">
-	UIRecentActivitiesPortlet
+	<h5 class="head-container"><%=_ctx.appRes("UIBasicProfile.label.RecentActivities")%></h5>
+	<div class="uiBox">
+	 	<div class="uiContentBox">
+	 	<%
+	 		if(activities.size() == 0) {
+	 		 String keyNoActivities = (uicomponent.isOwner()) ? "YouHaveNotActivities" : "UserHaveNotActivities";
+		%>
+			<div class="center"><%=_ctx.appRes("UIBasicProfile.info." + keyNoActivities)%></div>
+			<div class="center"><i class="glyphicon glyphicon-time"></i></div>
+		<%
+	 		} else {
+		%>
+		
+		
+		<%
+	 		}
+		%>
+		</div>
+	</div>
 </div>
 

@@ -149,7 +149,12 @@ public class UserProfileHelper {
       return StringUtils.EMPTY;
     }
     try {
-      return URLEncoder.encode(input, "UTF-8");
+      return URLEncoder.encode(input, "UTF-8")
+                      .replaceAll("\\+", "%20")
+                      .replaceAll("\\%21", "!")
+                      .replaceAll("\\%28", "(")
+                      .replaceAll("\\%29", ")")
+                      .replaceAll("\\%7E", "~");
     } catch (UnsupportedEncodingException e) {
       return input;
     }

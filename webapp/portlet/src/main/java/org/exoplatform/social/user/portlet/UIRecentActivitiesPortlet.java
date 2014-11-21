@@ -16,6 +16,10 @@
  ***************************************************************************/
 package org.exoplatform.social.user.portlet;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.core.lifecycle.UIApplicationLifecycle;
 
@@ -26,6 +30,13 @@ import org.exoplatform.webui.core.lifecycle.UIApplicationLifecycle;
 public class UIRecentActivitiesPortlet extends UIAbstractUserPortlet {
 
   public UIRecentActivitiesPortlet() throws Exception {
+  }
+  
+  private List<ExoSocialActivity> getRecentActivities() {
+    List<ExoSocialActivity> results = new ArrayList<ExoSocialActivity>();
+    
+    
+    return results; 
   }
 
 }

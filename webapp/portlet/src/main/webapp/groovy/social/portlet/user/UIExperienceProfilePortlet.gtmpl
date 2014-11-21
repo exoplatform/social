@@ -3,7 +3,7 @@
 	boolean isOwner = uicomponent.isOwner();
 	List experienceData = uicomponent.getExperience();
 %>
-<div class="uiSocApplication uiExperienceProfilePortlet" id="$uicomponent.id">
+<div class="uiSocApplication uiExperienceProfilePortlet" style="<%=((!isOwner && aboutMe.length() == 0) ? "padding:0px" : "")%>" id="$uicomponent.id">
 <% if(aboutMe.length() > 0) { %>
 	<h5 class="head-container"><%=_ctx.appRes("UIBasicProfile.label.AboutMe")%></h5>
 	<div class="uiBox">
