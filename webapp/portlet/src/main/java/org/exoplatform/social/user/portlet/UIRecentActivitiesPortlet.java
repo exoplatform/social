@@ -19,7 +19,10 @@ package org.exoplatform.social.user.portlet;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.exoplatform.social.common.RealtimeListAccess;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
+import org.exoplatform.social.core.identity.model.Identity;
+import org.exoplatform.social.webui.Utils;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.core.lifecycle.UIApplicationLifecycle;
 
@@ -28,15 +31,23 @@ import org.exoplatform.webui.core.lifecycle.UIApplicationLifecycle;
   template = "app:/groovy/social/portlet/user/UIRecentActivitiesPortlet.gtmpl"
 )
 public class UIRecentActivitiesPortlet extends UIAbstractUserPortlet {
+  private static int NUMBER_ACTIVITIES = 5;
 
   public UIRecentActivitiesPortlet() throws Exception {
   }
   
-  private List<ExoSocialActivity> getRecentActivities() {
+  protected List<ExoSocialActivity> getRecentActivities() {
     List<ExoSocialActivity> results = new ArrayList<ExoSocialActivity>();
+    RealtimeListAccess<ExoSocialActivity> activitiesListAccess = 
+        Utils.getActivityManager().getActivitiesWithListAccess(currentProfile.getIdentity(), Utils.getViewerIdentity());
     
+    results = activitiesListAccess.loadAsList(0, NUMBER_ACTIVITIES);
     
     return results; 
+  }
+
+  protected Identity getOwnerActivity(ExoSocialActivity activity) {
+    return Utils.getIdentityManager().getIdentity(activity.getUserId(), true);
   }
 
 }

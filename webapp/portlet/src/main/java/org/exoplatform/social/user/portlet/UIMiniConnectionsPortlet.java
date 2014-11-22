@@ -24,10 +24,8 @@ import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.profile.ProfileFilter;
 import org.exoplatform.social.webui.Utils;
-import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.core.lifecycle.UIApplicationLifecycle;
-import org.json.JSONObject;
 
 @ComponentConfig(
   lifecycle = UIApplicationLifecycle.class,
@@ -53,19 +51,6 @@ public class UIMiniConnectionsPortlet extends UIAbstractUserPortlet {
   
   protected int getAllSize() {
     return allSize;
-  }
-  
-  protected void initProfilePopup() throws Exception {
-    JSONObject object = new JSONObject();
-    WebuiRequestContext context = WebuiRequestContext.getCurrentInstance();
-    object.put("StatusTitle", UserProfileHelper.encodeURI(UserProfileHelper.getLabel(context, "UserProfilePopup.label.Loading")));
-    String[] keys = new String[]{"Connect", "Confirm", "CancelRequest", "RemoveConnection", "Ignore"};
-    for (int i = 0; i < keys.length; i++) {
-      object.put(keys[i], UserProfileHelper.encodeURI(UserProfileHelper.getLabel(context, "UserProfilePopup.label." + keys[i])));
-    }
-    //
-    context.getJavascriptManager().getRequireJS().require("SHARED/social-ui-profile", "profile")
-           .addScripts("profile.initUserProfilePopup('" + getId() + "', " + object.toString() + ");");
   }
   
   protected class ProfileBean {

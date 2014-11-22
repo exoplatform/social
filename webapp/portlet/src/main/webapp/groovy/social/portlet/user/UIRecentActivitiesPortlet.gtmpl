@@ -1,24 +1,51 @@
 <%
-	List activities = uicomponent.getRecentActivities();
+import org.exoplatform.social.core.service.LinkProvider
+
+List activities = uicomponent.getRecentActivities();
 %>
 <div class="uiSocApplication uiRecentActivitiesPortlet" id="$uicomponent.id">
 	<h5 class="head-container"><%=_ctx.appRes("UIBasicProfile.label.RecentActivities")%></h5>
 	<div class="uiBox">
 	 	<div class="uiContentBox">
-	 	<%
-	 		if(activities.size() == 0) {
-	 		 String keyNoActivities = (uicomponent.isOwner()) ? "YouHaveNotActivities" : "UserHaveNotActivities";
-		%>
+ 	<%
+ 		if(activities.size() == 0) {
+ 		 String keyNoActivities = (uicomponent.isOwner()) ? "YouHaveNotActivities" : "UserHaveNotActivities";
+	%>
 			<div class="center"><%=_ctx.appRes("UIBasicProfile.info." + keyNoActivities)%></div>
 			<div class="center"><i class="glyphicon glyphicon-time"></i></div>
-		<%
-	 		} else {
-		%>
-		
-		
-		<%
+	<%
+ 		} else {
+ 		  String activityURL = "/portal/intranet/activity?id=";
+ 			for (activity in activities) {
+ 				def profile = uicomponent.getOwnerActivity(activity).getProfile();
+ 				String avatarURL = profile.getAvatarUrl();
+ 				String profileURL = profile.getUrl();
+ 				String displayName = profile.getFullName();
+	%>
+			<div class="activityStream uiDefaultActivity" id="Activity<%=activity.id%>">
+			  <div class="activityTimeLine pull-left">
+					<div class="activityAvatar avatarCircle">
+						<a href="$profileURL">
+						  <img alt="$displayName" src="<%=((avatarURL == null || avatarURL.length() == 0) ? LinkProvider.PROFILE_DEFAULT_AVATAR_URL : avatarURL)%>">
+						</a>
+					</div>
+			  </div><!--end activityTimeLine-->
+			  <div class="boxContainer" id="boxContainer">
+					<div id="Content<%=activity.id%>" class="uiBox contentBox">
+						<div class="description"><a href="<%=(activityURL + activity.id)%>"><%=activity.title%></a></div><!--end description-->
+					</div>
+			  </div> <!-- #boxContainer-->	  
+			</div>
+	<%
 	 		}
-		%>
+ 			String activityStreamURL = "/portal/intranet/activities/" + uicomponent.getCurrentRemoteId();
+ 			print("<div style=\"margin:10px 0px 10px 63px\"><button class=\"btn btn-primary\" style=\"width:100%;\" onclick=\"window.location.href='" + activityStreamURL + "'\">" +
+	 						_ctx.appRes("UIBasicProfile.action.ViewAll") +
+	 				  "</button></div>");
+ 			//
+ 			uicomponent.initProfilePopup();
+ 		}
+	%>
 		</div>
 	</div>
 </div>
