@@ -31,7 +31,7 @@ public abstract class UIAbstractUserPortlet extends UIPortletApplication {
   }
 
   protected boolean isOwner() {
-    return Utils.getViewerRemoteId().equals(getCurrentRemoteId());
+    return Utils.isOwner();
   }
 
   protected String getCurrentRemoteId() {

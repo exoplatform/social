@@ -1,65 +1,30 @@
 <%
-/*
-<!--
-
-    Copyright (C) 2003-2007 eXo Platform SAS.
-
-    This program is free software; you can redistribute it and/or
-    modify it under the terms of the GNU Affero General Public License
-    as published by the Free Software Foundation; either version 3
-    of the License, or (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, see<http://www.gnu.org/licenses/>.
-
--->
-*/
-%>
-<% 
-  def fieldName
-  
   def jsManager = _ctx.getRequestContext().getJavascriptManager();
-	jsManager.require("SHARED/jquery", "jq")
-	         .require("SHARED/bts_tooltip").addScripts("jq('*[rel=\"tooltip\"]').tooltip();");
-  
-  _ctx.getRequestContext().getJavascriptManager().require("SHARED/uiForm");
+  jsManager.require("SHARED/jquery", "jQuery").require("SHARED/uiForm")
+           .require("SHARED/bts_tooltip").addScripts("jQuery('*[rel=\"tooltip\"]').tooltip();");
 %>
 <div class="uiForm uiAvatarUploader">
-      <%uiform.begin()%>
-      <div class="form-horizontal resizable">
-        <% 
-           for(field in uiform.getChildren()) { 
-             if(field.isRendered()) {
-        %>
-            <% fieldName = uicomponent.getLabel(field.getName());%>
-            <%
-               if(fieldName != null && fieldName.length() > 0 && !fieldName.equals(uicomponent.getId())) {
-            %>
-          <div class="control-group">
-          	<div class="controls-full"><% uiform.renderField(field) %></div>
-          </div>
-             <% } else { %>
-          <div class="control-group">
-          	<div class="controls-full"><% uiform.renderField(field) %></div>
-          </div>
-             <% } %>
-          <%
-              }
-            }
-          %>
-      </div>
-      <div class="uiAction uiActionBorder">
-      <% for(action in uicomponent.getActions()) { 
-                   def actionLabel = _ctx.appRes(uicomponent.getName() + ".action." + action);
-                   def link = uicomponent.event(action);
-              %>
-           <button class="btn" type="button" onclick="$link">$actionLabel</button>
-       		<% } %>
-        </div>
-  <%uiform.end()%>
+  <%uiform.begin();%>
+   <div class="form-horizontal resizable">
+   <% 
+      for(field in uiform.getChildren()) { 
+        if(field.isRendered()) {
+   %>
+       <div class="control-group">
+         <div class="controls-full"><%uiform.renderField(field);%></div>
+       </div>
+   <%
+       }
+     }
+   %>
+   </div>
+   <div class="uiAction uiActionBorder">
+   <% for(action in uicomponent.getActions()) { 
+        String actionLabel = _ctx.appRes(uicomponent.getName() + ".action." + action);
+        String link = uicomponent.event(action);
+   %>
+        <button class="btn" type="button" onclick="$link">$actionLabel</button>
+   <% } %>
+     </div>
+  <%uiform.end();%>
 </div>

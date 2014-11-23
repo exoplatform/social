@@ -1,6 +1,4 @@
-<%
-%>
 <div class="uiSocApplication uiEditUserProfilePortlet" id="$uicomponent.id">
-	UIEditUserProfilePortlet
+	<% uicomponent.renderChildren(); %>
 </div>
 

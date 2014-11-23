@@ -16,6 +16,8 @@
  ***************************************************************************/
 package org.exoplatform.social.user.portlet;
 
+import org.exoplatform.social.user.form.UIEditUserProfileForm;
+import org.exoplatform.social.webui.composer.PopupContainer;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.core.lifecycle.UIApplicationLifecycle;
 
@@ -26,6 +28,8 @@ import org.exoplatform.webui.core.lifecycle.UIApplicationLifecycle;
 public class UIEditUserProfilePortlet extends UIAbstractUserPortlet {
 
   public UIEditUserProfilePortlet() throws Exception {
+    addChild(UIEditUserProfileForm.class, null, null);
+    addChild(PopupContainer.class, null, "AvatarPopupContainer");
   }
 
 }

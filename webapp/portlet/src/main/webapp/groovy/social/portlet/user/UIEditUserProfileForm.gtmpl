@@ -1,0 +1,32 @@
+<div class="uiSocApplication uiEditUserProfileForm" >
+	<% uiform.begin() %>
+	<div class="form-horizontal">
+<%
+	for(field in uiform.getChildren()) {
+		if(field.isRendered()) {
+%>
+		<div class="control-group">
+				<label class="control-label" for="<%=field.getId()%>"><%=uicomponent.getLabel(field.getId())%>: </label>
+				<div class="controls">
+					<% uiform.renderField(field); %>
+				</div>
+		</div>
+<%
+		}
+	}
+%>
+	</div>
+	<div class="uiAction">
+	<% for(action in uicomponent.getActions()) {
+			 String actionLabel = _ctx.appRes(uicomponent.getName() + ".action." + action);
+			 String link = "window.location.href = '" + uicomponent.getViewProfileURL() + "';" ;
+			 if(action.equals("Save")) {
+			   link = uicomponent.event(action);
+			 }
+	%>
+		<button onclick="$link" class="btn" type="button">$actionLabel</button>
+  <%}%>
+    </div>
+	<%uiform.end()%>
+</div>
+
