@@ -22,7 +22,7 @@
   <parent>
     <artifactId>social-extras-widget</artifactId>
     <groupId>org.exoplatform.social</groupId>
-    <version>4.2.x-soc-notification-web-SNAPSHOT</version>
+    <version>4.2.x-soc-user-profile-redesign-SNAPSHOT</version>
   </parent>
   <groupId>org.exoplatform.social</groupId>
   <artifactId>social-extras-widget-resources</artifactId>
