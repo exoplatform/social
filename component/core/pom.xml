@@ -22,7 +22,7 @@
   <parent>
     <artifactId>social-component</artifactId>
     <groupId>org.exoplatform.social</groupId>
-    <version>4.2.x-SNAPSHOT</version>
+    <version>4.2.x-soc-notification-web-SNAPSHOT</version>
   </parent>
   <groupId>org.exoplatform.social</groupId>
   <artifactId>social-component-core</artifactId>
