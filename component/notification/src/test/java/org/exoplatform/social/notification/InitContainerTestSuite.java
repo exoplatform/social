@@ -18,14 +18,14 @@ import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
 @SuiteClasses({
+  ActivityMentionPluginTest.class,
+  ActivityCommentPluginTest.class,
   PostActivityPluginTest.class,
   NewUserPluginTest.class,
   RelationshipReceivedRequestPluginTest.class,
   RequestJoinSpacePluginTest.class,
   SpaceInvitationPluginTest.class,
   LikePluginTest.class,
-  ActivityMentionPluginTest.class,
-  ActivityCommentPluginTest.class,
   LinkProviderUtilsTest.class
 })
 @ConfigTestCase(AbstractCoreTest.class)

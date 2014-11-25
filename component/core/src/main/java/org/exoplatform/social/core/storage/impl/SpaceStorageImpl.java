@@ -1483,7 +1483,9 @@ public class SpaceStorageImpl extends AbstractStorage implements SpaceStorage {
 
     _applyUnifiedSearchFilter(whereExpression, spaceFilter);
 
-    builder.where(whereExpression.toString());
+    if (whereExpression.toString().trim().length() > 0) {
+      builder.where(whereExpression.toString());
+    }
     applyOrder(builder, spaceFilter);
     
     return builder.get();
@@ -1498,14 +1500,15 @@ public class SpaceStorageImpl extends AbstractStorage implements SpaceStorage {
 
         List<String> unifiedSearchConditions = this.processUnifiedSearchCondition(spaceNameSearchCondition);
         
+        if (unifiedSearchConditions.size() > 0) {
+          whereExpression.startGroup();
+        }
+        
         boolean first = true;
         for(String condition : unifiedSearchConditions) {
           //
           if (first == false) {
             whereExpression.and();
-          } else {
-            whereExpression.startGroup();
-            first = false;
           }
           
           //
@@ -1529,8 +1532,13 @@ public class SpaceStorageImpl extends AbstractStorage implements SpaceStorage {
                 .contains(whereExpression.callFunction(QueryFunction.LOWER, SpaceEntity.description), StringEscapeUtils.escapeHtml(condition).toLowerCase());
             whereExpression.endGroup();
           }
+          
+          first = false;
         } //end for
-        whereExpression.endGroup();
+        
+        if (unifiedSearchConditions.size() > 0) {
+          whereExpression.endGroup();
+        }
     }
     else if (!Character.isDigit(firstCharacterOfName)) {
       String firstCharacterOfNameString = Character.toString(firstCharacterOfName);

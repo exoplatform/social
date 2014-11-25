@@ -99,8 +99,8 @@
   </component>
   
   <component>
-    <key>org.exoplatform.social.notification.impl.RelationshipNotifictionImpl</key>
-    <type>org.exoplatform.social.notification.impl.RelationshipNotifictionImpl</type>
+    <key>org.exoplatform.social.notification.impl.RelationshipNotificationImpl</key>
+    <type>org.exoplatform.social.notification.impl.RelationshipNotificationImpl</type>
   </component>
 
   <component>

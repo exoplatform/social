@@ -45,7 +45,7 @@ import org.exoplatform.social.notification.plugin.LikePlugin;
 import org.exoplatform.social.notification.plugin.NewUserPlugin;
 import org.exoplatform.social.notification.plugin.PostActivityPlugin;
 import org.exoplatform.social.notification.plugin.PostActivitySpaceStreamPlugin;
-import org.exoplatform.social.notification.plugin.RelationshipRecievedRequestPlugin;
+import org.exoplatform.social.notification.plugin.RelationshipReceivedRequestPlugin;
 import org.exoplatform.social.notification.plugin.RequestJoinSpacePlugin;
 import org.exoplatform.social.notification.plugin.SpaceInvitationPlugin;
 
@@ -60,7 +60,7 @@ public class SocialNotificationTestCase extends AbstractPluginTest {
   private AbstractNotificationPlugin mentionPlugin;
   private AbstractNotificationPlugin likePlugin;
   private AbstractNotificationPlugin postSpaceActivityPlugin;
-  private AbstractNotificationPlugin relationshipRecievedRequestPlugin;
+  private AbstractNotificationPlugin relationshipReceivedRequestPlugin;
   private AbstractNotificationPlugin spaceInvitationPlugin;
   private AbstractNotificationPlugin requestJoinSpacePlugin;
   
@@ -100,8 +100,8 @@ public class SocialNotificationTestCase extends AbstractPluginTest {
     assertNotNull(likePlugin);
     postSpaceActivityPlugin = pluginService.getPlugin(NotificationKey.key(PostActivitySpaceStreamPlugin.ID));
     assertNotNull(postSpaceActivityPlugin);
-    relationshipRecievedRequestPlugin = pluginService.getPlugin(NotificationKey.key(RelationshipRecievedRequestPlugin.ID));
-    assertNotNull(relationshipRecievedRequestPlugin);
+    relationshipReceivedRequestPlugin = pluginService.getPlugin(NotificationKey.key(RelationshipReceivedRequestPlugin.ID));
+    assertNotNull(relationshipReceivedRequestPlugin);
     spaceInvitationPlugin = pluginService.getPlugin(NotificationKey.key(SpaceInvitationPlugin.ID));
     assertNotNull(spaceInvitationPlugin);
     requestJoinSpacePlugin = pluginService.getPlugin(NotificationKey.key(RequestJoinSpacePlugin.ID));
@@ -136,7 +136,7 @@ public class SocialNotificationTestCase extends AbstractPluginTest {
     mentionPlugin = null;
     likePlugin = null;
     postSpaceActivityPlugin = null;
-    relationshipRecievedRequestPlugin = null;
+    relationshipReceivedRequestPlugin = null;
     spaceInvitationPlugin = null;
     requestJoinSpacePlugin = null;
   }
@@ -372,7 +372,7 @@ public class SocialNotificationTestCase extends AbstractPluginTest {
     NotificationInfo message = messages.iterator().next();
     NotificationContext ctx = NotificationContextImpl.cloneInstance();
     ctx.setNotificationInfo(message.setTo("demo"));
-    MessageInfo info = relationshipRecievedRequestPlugin.buildMessage(ctx);
+    MessageInfo info = relationshipReceivedRequestPlugin.buildMessage(ctx);
     
     assertTrue(info.getBody().indexOf("New connection request") > 0);
   }
@@ -480,7 +480,7 @@ public class SocialNotificationTestCase extends AbstractPluginTest {
       NotificationContext ctx = NotificationContextImpl.cloneInstance();
       ctx.setNotificationInfos(list);
       Writer writer = new StringWriter();
-      relationshipRecievedRequestPlugin.buildDigest(ctx, writer);
+      relationshipReceivedRequestPlugin.buildDigest(ctx, writer);
 
 //      assertEquals("You've received a connection request from <a href=\"localhost/rest/social/notifications/redirectUrl/user/root\">Root Root</a>, <a href=\"localhost/rest/social/notifications/redirectUrl/user/john\">John Anthony</a>, <a href=\"localhost/rest/social/notifications/redirectUrl/user/mary\">Mary Kelly</a>.</br>", writer.toString());
     }

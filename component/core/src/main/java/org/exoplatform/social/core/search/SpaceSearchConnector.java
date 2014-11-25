@@ -174,9 +174,11 @@ public class SpaceSearchConnector extends AbstractSocialSearchConnector {
     //
     StringBuilder sb = new StringBuilder("SELECT ").append(JCRProperties.JCR_EXCERPT.getName()).append(" FROM ");
     sb.append(JCRProperties.SPACE_NODE_TYPE);
-    sb.append(" WHERE ");
-    //sb.append("CONTAINS(*, '").append(spaceFilter.getSpaceNameSearchCondition()).append("')");
-    sb.append(whereExpression.toString());
+    if (whereExpression.toString().trim().length() > 0) {
+      sb.append(" WHERE ");
+      //sb.append("CONTAINS(*, '").append(spaceFilter.getSpaceNameSearchCondition()).append("')");
+      sb.append(whereExpression.toString());
+    }
     sb.append(applyOrder(spaceFilter));
     
     //

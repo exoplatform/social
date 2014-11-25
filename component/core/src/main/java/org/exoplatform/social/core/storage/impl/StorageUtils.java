@@ -113,17 +113,18 @@ public class StorageUtils {
 
     if (profileFilter.getAll().length() != 0) {
       String value = escapeSpecialCharacter(profileFilter.getAll());
-
-      whereExpression.and().startGroup()
-          .contains(ProfileEntity.fullName, value.toLowerCase())
-          .or().contains(ProfileEntity.firstName, value.toLowerCase())
-          .or().contains(ProfileEntity.lastName, value.toLowerCase())
-          .or().contains(ProfileEntity.position, value.toLowerCase())
-          .or().contains(ProfileEntity.skills, value.toLowerCase())
-          .or().contains(ProfileEntity.positions, value.toLowerCase())
-          .or().contains(ProfileEntity.organizations, value.toLowerCase())
-          .or().contains(ProfileEntity.jobsDescription, value.toLowerCase())
-          .endGroup();
+      if (value.trim().length() > 0 || value.replaceAll(" ", "").trim().length() > 0) {
+        whereExpression.and().startGroup()
+            .contains(ProfileEntity.fullName, value.toLowerCase())
+            .or().contains(ProfileEntity.firstName, value.toLowerCase())
+            .or().contains(ProfileEntity.lastName, value.toLowerCase())
+            .or().contains(ProfileEntity.position, value.toLowerCase())
+            .or().contains(ProfileEntity.skills, value.toLowerCase())
+            .or().contains(ProfileEntity.positions, value.toLowerCase())
+            .or().contains(ProfileEntity.organizations, value.toLowerCase())
+            .or().contains(ProfileEntity.jobsDescription, value.toLowerCase())
+            .endGroup();
+      }
     }
 
   }

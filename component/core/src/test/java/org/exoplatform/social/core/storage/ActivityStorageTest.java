@@ -679,6 +679,50 @@ public class ActivityStorageTest extends AbstractCoreTest {
   }
   
   /**
+   * Test {@link ActivityStorage#testGetActivitiesRelationshipByFeed(Identity, int, int)}
+   */
+  @MaxQueryNumber(700)
+  public void testGetActivitiesRelationshipByFeed() throws Exception {
+    RelationshipManager relationshipManager = this.getRelationshipManager();
+    
+    Relationship rootDemoRelationship = relationshipManager.inviteToConnect(rootIdentity, demoIdentity);
+    relationshipManager.confirm(demoIdentity, rootIdentity);
+    
+    Relationship johnDemoRelationship = relationshipManager.inviteToConnect(demoIdentity, johnIdentity);
+    relationshipManager.confirm(demoIdentity, johnIdentity);
+    
+    Relationship johnMaryRelationship = relationshipManager.inviteToConnect(johnIdentity, maryIdentity);
+    relationshipManager.confirm(johnIdentity, maryIdentity);
+    
+    List<ExoSocialActivity> activities = activityStorage.getActivityFeed(maryIdentity, 0, 10);
+    assertEquals(0, activities.size());
+    
+    //
+    ExoSocialActivity demoActivity = new ExoSocialActivityImpl();
+    demoActivity.setTitle("Activity of root.");
+    demoActivity.setUserId(demoIdentity.getId());
+    activityStorage.saveActivity(johnIdentity, demoActivity);
+    
+    activities = activityStorage.getActivityFeed(demoIdentity, 0, 10);
+    assertEquals(1, activities.size());
+    
+    activities = activityStorage.getActivityFeed(rootIdentity, 0, 10);
+    assertEquals(1, activities.size());
+    
+    activities = activityStorage.getActivityFeed(johnIdentity, 0, 10);
+    assertEquals(1, activities.size());
+    
+    activities = activityStorage.getActivityFeed(maryIdentity, 0, 10);
+    assertEquals(0, activities.size());
+    
+    //
+    tearDownActivityList.add(demoActivity);
+    relationshipManager.delete(rootDemoRelationship);
+    relationshipManager.delete(johnMaryRelationship);
+    relationshipManager.delete(johnDemoRelationship);
+  }
+  
+  /**
    * Test {@link ActivityStorage#getActivitiesOfConnections(Identity, int, int)} for issue SOC-1995
    * 
    * @throws Exception
@@ -701,8 +745,7 @@ public class ActivityStorageTest extends AbstractCoreTest {
    
     ExoSocialActivity activity = new ExoSocialActivityImpl();
     activity.setTitle("Hello Demo from Mary");
-    activity.setUserId(maryIdentity.getId());
-    activity.setPosterId(demoIdentity.getId());
+    activity.setPosterId(maryIdentity.getId());
     activityStorage.saveActivity(demoIdentity, activity);
     tearDownActivityList.add(activity);
     
@@ -713,15 +756,16 @@ public class ActivityStorageTest extends AbstractCoreTest {
     
     List<ExoSocialActivity> johnConnectionActivities = activityStorage.getActivitiesOfConnections(johnIdentity, 0, 10);
     assertNotNull("johnConnectionActivities must not be null", johnConnectionActivities);
-    assertEquals("johnConnectionActivities.size() must return: 1", 1, johnConnectionActivities.size());
+    //john is 0 because John just have conntection with streamOwner not Poster
+    assertEquals("johnConnectionActivities.size() must return: 0", 0, johnConnectionActivities.size());
     
     List<ExoSocialActivity> demoConnectionActivities = activityStorage.getActivitiesOfConnections(demoIdentity, 0, 10);
     assertNotNull("demoConnectionActivities must not be null", demoConnectionActivities);
-    assertEquals(0, demoConnectionActivities.size());
+    assertEquals(1, demoConnectionActivities.size());
     
     List<ExoSocialActivity> maryConnectionActivities = activityStorage.getActivitiesOfConnections(maryIdentity, 0, 10);
     assertNotNull("maryConnectionActivities must not be null", maryConnectionActivities);
-    assertEquals("maryConnectionActivities.size() must return: 1", 1, maryConnectionActivities.size());
+    assertEquals("maryConnectionActivities.size() must return: 0", 0, maryConnectionActivities.size());
     
     for (Relationship rel : relationships) {
       relationshipManager.delete(rel);

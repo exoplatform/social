@@ -36,13 +36,13 @@ import org.exoplatform.social.core.relationship.model.Relationship;
 import org.exoplatform.social.notification.LinkProviderUtils;
 import org.exoplatform.social.notification.Utils;
 
-public class RelationshipRecievedRequestPlugin extends AbstractNotificationPlugin {
+public class RelationshipReceivedRequestPlugin extends AbstractNotificationPlugin {
   
-  public RelationshipRecievedRequestPlugin(InitParams initParams) {
+  public RelationshipReceivedRequestPlugin(InitParams initParams) {
     super(initParams);
   }
 
-  public static final String ID = "RelationshipRecievedRequestPlugin";
+  public static final String ID = "RelationshipReceivedRequestPlugin";
 
   @Override
   public String getId() {

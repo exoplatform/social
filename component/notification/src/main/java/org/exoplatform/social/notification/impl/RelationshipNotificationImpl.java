@@ -24,12 +24,12 @@ import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.relationship.RelationshipEvent;
 import org.exoplatform.social.core.relationship.RelationshipListenerPlugin;
 import org.exoplatform.social.core.relationship.model.Relationship;
-import org.exoplatform.social.notification.plugin.RelationshipRecievedRequestPlugin;
+import org.exoplatform.social.notification.plugin.RelationshipReceivedRequestPlugin;
 import org.exoplatform.social.notification.plugin.SocialNotificationUtils;
 
-public class RelationshipNotifictionImpl extends RelationshipListenerPlugin {
+public class RelationshipNotificationImpl extends RelationshipListenerPlugin {
 
-  private static final Log LOG = ExoLogger.getLogger(RelationshipNotifictionImpl.class);
+  private static final Log LOG = ExoLogger.getLogger(RelationshipNotificationImpl.class);
   
   @Override
   public void confirmed(RelationshipEvent event) {
@@ -51,7 +51,7 @@ public class RelationshipNotifictionImpl extends RelationshipListenerPlugin {
     Relationship relationship = event.getPayload();
     try {
       NotificationContext ctx = NotificationContextImpl.cloneInstance().append(SocialNotificationUtils.RELATIONSHIP, relationship);
-      ctx.getNotificationExecutor().with(ctx.makeCommand(NotificationKey.key(RelationshipRecievedRequestPlugin.ID)))
+      ctx.getNotificationExecutor().with(ctx.makeCommand(NotificationKey.key(RelationshipReceivedRequestPlugin.ID)))
                                    .execute(ctx);
     } catch (Exception e) {
       LOG.warn("Failed to get invite to connect information of " + event + ": " + e.getMessage());
