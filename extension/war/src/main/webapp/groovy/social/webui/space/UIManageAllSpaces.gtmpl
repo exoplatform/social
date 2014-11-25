@@ -138,7 +138,7 @@ import org.exoplatform.social.core.service.LinkProvider;
             }
 		        
 		        //if (uicomponent.hasEditPermission(space)) hasEditPermission = true
-		        if (visibility.equals(Space.PUBLIC) || uicomponent.hasEditPermission(space)) isPublic = true;
+		        if (visibility.equals(Space.PUBLIC) || uicomponent.hasEditPermission(space) || "MEMBER".equals(typeOfSpace.toString())) isPublic = true;
 		        if (registration.equals(Space.CLOSE)) isClose = true;
 		        
 		        def imageSource = uicomponent.getImageSource(space);
