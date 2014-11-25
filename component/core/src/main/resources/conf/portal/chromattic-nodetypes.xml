@@ -58,6 +58,9 @@
       <propertyDefinition name="soc:remoteId" requiredType="String" autoCreated="false" mandatory="false" onParentVersion="COPY" protected="false" multiple="false">
         <valueConstraints/>
       </propertyDefinition>
+      <propertyDefinition name="*" requiredType="undefined" autoCreated="false" mandatory="false" onParentVersion="COPY" protected="false" multiple="false">
+        <valueConstraints/>
+      </propertyDefinition>
     </propertyDefinitions>
     <childNodeDefinitions>
       <childNodeDefinition name="soc:profile" defaultPrimaryType="soc:profiledefinition" autoCreated="false" mandatory="false" onParentVersion="COPY" protected="false" sameNameSiblings="false">

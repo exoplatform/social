@@ -198,8 +198,8 @@ public class ActivityFilter extends JCRFilterLiteral {
       try {
         //
         this.append(ACTIVITY_UPDATED_POINT_FIELD.clone())
-        .with(LAST_UPDATED_ORDERBY.clone()).direction(DIRECTION.ASC)
-        .with(POSTED_TIME_ORDERBY.clone()).direction(DIRECTION.ASC);
+        .with(LAST_UPDATED_ORDERBY.clone()).direction(DIRECTION.DESC)
+        .with(POSTED_TIME_ORDERBY.clone()).direction(DIRECTION.DESC);
       } catch (Exception ex) {
         LOG.warn(ex);
       }

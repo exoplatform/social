@@ -16,9 +16,7 @@
  */
 package org.exoplatform.social.common.service.impl;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ThreadFactory;
@@ -33,7 +31,6 @@ import org.exoplatform.social.common.service.thread.ThreadPoolFactory;
 public class ExecutorServiceManagerImpl implements ExecutorServiceManager {
   
   private ThreadPoolFactory threadPoolFactory = new DefaultThreadPoolFactory();
-  private final List<ExecutorService> executorServices = new ArrayList<ExecutorService>();
   private String threadNamePattern;
   private final Map<String, ThreadPoolConfig> threadPoolProfiles = new HashMap<String, ThreadPoolConfig>();
   
@@ -45,10 +42,10 @@ public class ExecutorServiceManagerImpl implements ExecutorServiceManager {
     defaultConfig.setDefaultProfile(true);
     defaultConfig.setPoolSize(10);
     defaultConfig.setMaxPoolSize(20);
-    defaultConfig.setKeepAliveTime(60L);
+    defaultConfig.setKeepAliveTime(10L);
     defaultConfig.setTimeUnit(TimeUnit.SECONDS);
     defaultConfig.setMaxQueueSize(1000);
-    defaultConfig.setPriority(Thread.MAX_PRIORITY);
+    defaultConfig.setPriority(Thread.NORM_PRIORITY);
   }
 
   @Override

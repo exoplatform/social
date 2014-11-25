@@ -59,6 +59,7 @@ public class RelationshipIdentityKey extends ScopeCacheKey {
     if (identityId1 != null ? !identityId1.equals(that.identityId1) : that.identityId1 != null) {
       return false;
     }
+    
     if (identityId2 != null ? !identityId2.equals(that.identityId2) : that.identityId2 != null) {
       return false;
     }

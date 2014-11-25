@@ -17,13 +17,15 @@
 
 package org.exoplatform.social.core.storage.api;
 
+import java.util.List;
+import java.util.Map;
+
+import javax.jcr.RepositoryException;
+
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.profile.ProfileFilter;
 import org.exoplatform.social.core.relationship.model.Relationship;
 import org.exoplatform.social.core.storage.RelationshipStorageException;
-
-import java.util.List;
-import java.util.Map;
 
 /**
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
@@ -108,6 +110,18 @@ public interface RelationshipStorage {
    */
   public Relationship getRelationship(final Identity identity1, final Identity identity2)
       throws RelationshipStorageException;
+  
+  /**
+   * Has relationship by relationship path
+   *
+   * @param identity1 the identity1
+   * @param identity2 the identity2
+   * @param relationshipPath the relationship path
+   * @return TRUE/FALSE
+   * @throws RelationshipStorageException
+   */
+  public boolean hasRelationship(final Identity identity1, final Identity identity2, final String relationshipPath)
+      throws RepositoryException;
 
   /**
    * Gets the list of relationship by identity matching with checking

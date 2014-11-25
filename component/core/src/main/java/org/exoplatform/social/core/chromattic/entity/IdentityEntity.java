@@ -17,6 +17,8 @@
 
 package org.exoplatform.social.core.chromattic.entity;
 
+import java.util.Map;
+
 import org.chromattic.api.annotations.Create;
 import org.chromattic.api.annotations.Id;
 import org.chromattic.api.annotations.MappedBy;
@@ -25,6 +27,7 @@ import org.chromattic.api.annotations.OneToOne;
 import org.chromattic.api.annotations.Owner;
 import org.chromattic.api.annotations.Path;
 import org.chromattic.api.annotations.PrimaryType;
+import org.chromattic.api.annotations.Properties;
 import org.chromattic.api.annotations.Property;
 import org.exoplatform.social.core.storage.query.PropertyLiteralExpression;
 
@@ -34,6 +37,9 @@ import org.exoplatform.social.core.storage.query.PropertyLiteralExpression;
  */
 @PrimaryType(name = "soc:identitydefinition")
 public abstract class IdentityEntity {
+  public final static String RELATIONSHIP_NUMBER_PARAM = "relationshipNo";
+  public final static String LATEST_ACTIIVTY_CREATED_TIME_PARAM = "latestActivityCreatedTime";
+  public final static String LATEST_LAZY_CREATED_TIME_PARAM = "latestLazyCreatedTime";
 
   @Id
   public abstract String getId();
@@ -183,5 +189,78 @@ public abstract class IdentityEntity {
   
   @Create
   public abstract StreamsEntity createStreams();
+  
+  @Properties
+  public abstract Map<String, String> getProperties();
+  
+  /**
+   * Gets the time what latest activity created time
+   * if the properties is not existing, return 0
+   * otherwise return latest time.
+   * 
+   * @return long value
+   */
+  public long getLatestActivityCreatedTime() {
+    if (hasProperty(LATEST_ACTIIVTY_CREATED_TIME_PARAM)) {
+      String value = getProperty(LATEST_ACTIIVTY_CREATED_TIME_PARAM);
+      try {
+        return Long.parseLong(value);
+      } catch (NumberFormatException e) {
+        return 0;
+      }
+    }
+    return 0;
+  }
+  
+  /**
+   * Sets the latest activity created time.
+   * 1. it is set value in the case user loads Feed or Connections stream and is de-active state.
+   * 2. it is set value in the case the connections's post new activity, the latest post time will be set.
+   * 3. the case delete the activity, don't need update anything.
+   * 
+   * @param time the created time of the latest activity
+   */
+  public void setLatestActivityCreatedTime(long time) {
+    setProperty(LATEST_ACTIIVTY_CREATED_TIME_PARAM, String.valueOf(time));
+  }
+  
+  /**
+   * Gets the latest lazy created time.
+   * 
+   * @return
+   */
+  public long getLatestLazyCreatedTime() {
+    if (hasProperty(LATEST_LAZY_CREATED_TIME_PARAM)) {
+      String value = getProperty(LATEST_LAZY_CREATED_TIME_PARAM);
+      try {
+        return Long.parseLong(value);
+      } catch (NumberFormatException e) {
+        return 0;
+      }
+    }
+    return 0;
+  }
+  
+  /**
+   * Sets the latest lazy created time to execute the lazy creating activity ref
+   * - it is set value in the case user is de-active, and login first time
+   * 
+   * @param time the created time of the latest activity
+   */
+  public void setLatestLazyCreatedTime(long time) {
+    setProperty(LATEST_LAZY_CREATED_TIME_PARAM, String.valueOf(time));
+  }
+  
+  public String getProperty(String key) {
+    return getProperties().get(key);
+  }
+  
+  public boolean hasProperty(String key) {
+    return getProperties().containsKey(key);
+  }
+
+  public void setProperty(String key, String value) {
+    getProperties().put(key, value);
+  }
   
 }

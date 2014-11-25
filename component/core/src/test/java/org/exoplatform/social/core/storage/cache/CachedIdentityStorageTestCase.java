@@ -17,17 +17,21 @@
 
 package org.exoplatform.social.core.storage.cache;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+
+import org.exoplatform.commons.utils.CommonsUtils;
+import org.exoplatform.social.core.identity.model.ActiveIdentityFilter;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.profile.ProfileFilter;
 import org.exoplatform.social.core.storage.api.IdentityStorage;
+import org.exoplatform.social.core.storage.streams.StreamConfig;
 import org.exoplatform.social.core.test.AbstractCoreTest;
 import org.exoplatform.social.core.test.MaxQueryNumber;
 import org.exoplatform.social.core.test.QueryNumberTest;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
@@ -276,5 +280,12 @@ public class CachedIdentityStorageTestCase extends AbstractCoreTest {
     identityStorage.getIdentitiesByFirstCharacterOfName(OrganizationIdentityProvider.NAME, new ProfileFilter(), 0, 10, false);
     assertEquals(1, cacheService.getIdentitiesCache().getCacheSize());
 
+  }
+  
+  public void testGetActiveUsers() throws Exception {
+    ActiveIdentityFilter filter = new ActiveIdentityFilter("/platform/administrators");
+    Set<String> activeUsers = identityStorage.getActiveUsers(filter);
+    //expected root and john are active user.
+    assertEquals(2, activeUsers.size());
   }
 }

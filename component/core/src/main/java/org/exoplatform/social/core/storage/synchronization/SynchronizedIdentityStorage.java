@@ -18,7 +18,9 @@
 package org.exoplatform.social.core.storage.synchronization;
 
 import java.util.List;
+import java.util.Set;
 
+import org.exoplatform.social.core.identity.model.ActiveIdentityFilter;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.profile.ProfileFilter;
@@ -316,5 +318,10 @@ public class SynchronizedIdentityStorage extends IdentityStorageImpl {
       stopSynchronization(created);
     }
 
+  }
+  
+  @Override
+  public Set<String> getActiveUsers(ActiveIdentityFilter filter) {
+    return super.getActiveUsers(filter);
   }
 }

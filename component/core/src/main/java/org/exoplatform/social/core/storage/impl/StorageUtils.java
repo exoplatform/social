@@ -1,5 +1,9 @@
 package org.exoplatform.social.core.storage.impl;
 
+import java.lang.reflect.Method;
+import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Set;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -17,6 +21,7 @@ import org.apache.lucene.queryParser.QueryParser;
 import org.chromattic.api.ChromatticSession;
 import org.exoplatform.commons.chromattic.ChromatticManager;
 import org.exoplatform.commons.chromattic.Synchronization;
+import org.exoplatform.commons.utils.CommonsUtils;
 import org.exoplatform.container.ExoContainer;
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.PortalContainer;
@@ -36,7 +41,8 @@ import org.exoplatform.social.core.storage.query.WhereExpression;
  * @version $Revision$
  */
 public class StorageUtils {
-
+  //
+  private static final Log LOG = ExoLogger.getLogger(StorageUtils.class.getName());
   //
   public static final String ASTERISK_STR = "*";
   public static final String PERCENT_STR = "%";
@@ -50,8 +56,17 @@ public class StorageUtils {
   public static final String SOC_PREFIX = "soc:";
   private final static long DAY_MILISECONDS = 86400000;//a day = 24h x 60m x 60s x 1000 milisecond.
   
-  //
-  private static final Log LOG = ExoLogger.getLogger(StorageUtils.class.getName());
+  private static Class<?> cls;
+  
+  static {
+    try {
+      cls = Class.forName("org.exoplatform.platform.gadget.services.LoginHistory.LoginHistoryServiceImpl");
+    } catch (ClassNotFoundException e) {
+      cls = null;
+      LOG.error("org.exoplatform.platform.gadget.services.LoginHistory.LoginHistoryServiceImpl class not found."
+          + e.getMessage());
+    }
+  }
   
   public static void applyFilter(final WhereExpression whereExpression, final ProfileFilter profileFilter) {
     //
@@ -493,6 +508,80 @@ public class StorageUtils {
         list.remove(it.next());
     }
     return list;
+  }
+
+  /**
+   * Retrieves the user list who has last login around given days.
+   * @param aroundDays the given days.
+   * @return The list of users.
+   */
+  public static Set<String> getLastLogin(int aroundDays) {
+    Calendar calendar = Calendar.getInstance();
+    calendar.add(Calendar.DAY_OF_MONTH, 0 - aroundDays);
+    long fromDay = calendar.getTimeInMillis();
+    try {
+      if (cls != null) {
+        Class<?>[] params = new Class<?>[1];
+        params[0] = Long.TYPE;
+        Method method = cls.getMethod("getLastUsersLogin", params);
+        Object obj = CommonsUtils.getService(cls);
+        return (Set<String>) method.invoke(obj, fromDay);
+      } else {
+        return null;
+      }
+    } catch (Exception e) {
+      LOG.warn("Failed to invoke method " + e.getMessage());
+      return null;
+    }
+  }
+
+  /**
+   * 
+   * @param userId
+   * @param aroundDays
+   * @param lazilyCreatedTime
+   * @return
+   */
+  public static boolean isActiveUser(int aroundDays, long lazilyCreatedTime) {
+    Calendar cal = Calendar.getInstance();
+    cal.set(Calendar.DAY_OF_MONTH, cal.get(Calendar.DAY_OF_MONTH) - aroundDays);
+    long limitTime = cal.getTimeInMillis(); 
+    return lazilyCreatedTime >= limitTime;
+  }
+  
+  public static long getBeforeLastLogin(String userId) {
+    try {
+      if (cls != null) {
+        Class<?>[] params = new Class<?>[1];
+        params[0] = String.class;
+        Method method = cls.getMethod("getBeforeLastLogin", params);
+        Object obj = CommonsUtils.getService(cls);
+        return (Long) method.invoke(obj, userId);
+      } else {
+        return 0;
+      }
+    } catch (Exception e) {
+      LOG.error("Failed to invoke method " + e.getMessage(), e);
+      return 0;
+    }
+  }
+  
+  public static Map<String, Integer> getActiveUsers(int aroundDays) {
+    try {
+      if (cls != null) {
+        Class<?>[] params = new Class<?>[1];
+        params[0] = Integer.TYPE;
+        Method method = cls.getMethod("getActiveUsers", params);
+        Object obj = CommonsUtils.getService(cls);
+        return (Map<String, Integer>) method.invoke(obj, aroundDays);
+      } else {
+        return new HashMap<String, Integer>();
+      }
+      
+    } catch (Exception e) {
+      LOG.error("Failed to invoke method " + e.getMessage(), e);
+      return null;
+    }
   }
   
   /**

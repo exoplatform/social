@@ -52,6 +52,10 @@
   </component>
   
   <component>
+    <type>org.exoplatform.social.service.rest.SocialUpdaterRest</type>
+  </component>
+  
+  <component>
     <type>org.exoplatform.social.service.rest.IntranetNotificationRestService</type>
   </component>
 <!-- REST service -->

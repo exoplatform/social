@@ -17,10 +17,15 @@
 
 package org.exoplatform.social.core.storage.cache;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+
 import org.exoplatform.services.cache.ExoCache;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.identity.SpaceMemberFilterListAccess.Type;
+import org.exoplatform.social.core.identity.model.ActiveIdentityFilter;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.identity.model.Profile.AttachedActivityType;
@@ -32,10 +37,12 @@ import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.storage.IdentityStorageException;
 import org.exoplatform.social.core.storage.api.IdentityStorage;
 import org.exoplatform.social.core.storage.cache.loader.ServiceContext;
+import org.exoplatform.social.core.storage.cache.model.data.ActiveIdentitiesData;
 import org.exoplatform.social.core.storage.cache.model.data.IdentityData;
 import org.exoplatform.social.core.storage.cache.model.data.IntegerData;
 import org.exoplatform.social.core.storage.cache.model.data.ListIdentitiesData;
 import org.exoplatform.social.core.storage.cache.model.data.ProfileData;
+import org.exoplatform.social.core.storage.cache.model.key.ActiveIdentityKey;
 import org.exoplatform.social.core.storage.cache.model.key.IdentityCompositeKey;
 import org.exoplatform.social.core.storage.cache.model.key.IdentityFilterKey;
 import org.exoplatform.social.core.storage.cache.model.key.IdentityKey;
@@ -44,9 +51,6 @@ import org.exoplatform.social.core.storage.cache.model.key.ListSpaceMembersKey;
 import org.exoplatform.social.core.storage.cache.model.key.SpaceKey;
 import org.exoplatform.social.core.storage.cache.selector.IdentityCacheSelector;
 import org.exoplatform.social.core.storage.impl.IdentityStorageImpl;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Cache support for IdentityStorage.
@@ -64,12 +68,14 @@ public class CachedIdentityStorage implements IdentityStorage {
   private final ExoCache<IdentityKey, ProfileData> exoProfileCache;
   private final ExoCache<IdentityFilterKey, IntegerData> exoIdentitiesCountCache;
   private final ExoCache<ListIdentitiesKey, ListIdentitiesData> exoIdentitiesCache;
+  private final ExoCache<ActiveIdentityKey, ActiveIdentitiesData> exoActiveIdentitiesCache;
 
   private final FutureExoCache<IdentityKey, IdentityData, ServiceContext<IdentityData>> identityCache;
   private final FutureExoCache<IdentityCompositeKey, IdentityKey, ServiceContext<IdentityKey>> identityIndexCache;
   private final FutureExoCache<IdentityKey, ProfileData, ServiceContext<ProfileData>> profileCache;
   private final FutureExoCache<IdentityFilterKey, IntegerData, ServiceContext<IntegerData>> identitiesCountCache;
   private final FutureExoCache<ListIdentitiesKey, ListIdentitiesData, ServiceContext<ListIdentitiesData>> identitiesCache;
+  private final FutureExoCache<ActiveIdentityKey, ActiveIdentitiesData, ServiceContext<ActiveIdentitiesData>> activeIdentitiesCache;
 
   private final IdentityStorageImpl storage;
 
@@ -134,6 +140,7 @@ public class CachedIdentityStorage implements IdentityStorage {
     this.exoProfileCache = cacheService.getProfileCache();
     this.exoIdentitiesCountCache = cacheService.getCountIdentitiesCache();
     this.exoIdentitiesCache = cacheService.getIdentitiesCache();
+    this.exoActiveIdentitiesCache = cacheService.getActiveIdentitiesCache();
 
     //
     this.identityCache = CacheType.IDENTITY.createFutureCache(exoIdentityCache);
@@ -141,6 +148,7 @@ public class CachedIdentityStorage implements IdentityStorage {
     this.profileCache = CacheType.PROFILE.createFutureCache(exoProfileCache);
     this.identitiesCountCache = CacheType.IDENTITIES_COUNT.createFutureCache(exoIdentitiesCountCache);
     this.identitiesCache = CacheType.IDENTITIES.createFutureCache(exoIdentitiesCache);
+    this.activeIdentitiesCache = CacheType.ACTIVE_IDENTITIES.createFutureCache(exoActiveIdentitiesCache);
 
   }
 
@@ -553,5 +561,21 @@ public class CachedIdentityStorage implements IdentityStorage {
     //
     return buildIdentities(keys);
     
+  }
+  
+  @Override
+  public Set<String> getActiveUsers(final ActiveIdentityFilter filter) {
+    ActiveIdentityKey key = new ActiveIdentityKey(filter);
+
+    ActiveIdentitiesData data = activeIdentitiesCache.get(
+          new ServiceContext<ActiveIdentitiesData>() {
+            public ActiveIdentitiesData execute() {
+              Set<String> got = storage.getActiveUsers(filter);
+              return new ActiveIdentitiesData(got);
+            }
+          },
+          key);
+
+    return data.build();
   }
 }

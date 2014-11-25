@@ -19,6 +19,7 @@ package org.exoplatform.social.core.storage.synchronization;
 import java.util.List;
 
 import org.exoplatform.social.common.service.ProcessContext;
+import org.exoplatform.social.common.service.impl.SocialServiceContextImpl;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.storage.impl.ActivityStreamStorageImpl;
@@ -33,13 +34,15 @@ public class SynchronizedActivityStreamStorage extends ActivityStreamStorageImpl
   
   @Override
   public void save(ProcessContext ctx) {
-    
-    boolean created = startSynchronization();
-    try {
+    if (SocialServiceContextImpl.getInstance().isAsync()) {
       super.save(ctx);
-    }
-    finally {
-      stopSynchronization(created);
+    } else {
+      boolean created = startSynchronization();
+      try {
+        super.save(ctx);
+      } finally {
+        stopSynchronization(created);
+      }
     }
   }
   

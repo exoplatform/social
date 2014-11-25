@@ -28,6 +28,7 @@ import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.regex.Matcher;
@@ -49,6 +50,7 @@ import org.chromattic.api.query.Query;
 import org.chromattic.api.query.QueryBuilder;
 import org.chromattic.api.query.QueryResult;
 import org.chromattic.core.api.ChromatticSessionImpl;
+import org.exoplatform.commons.utils.CommonsUtils;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
@@ -71,6 +73,7 @@ import org.exoplatform.social.core.chromattic.entity.IdentityEntity;
 import org.exoplatform.social.core.chromattic.entity.LockableEntity;
 import org.exoplatform.social.core.chromattic.filter.JCRFilterLiteral;
 import org.exoplatform.social.core.chromattic.utils.ActivityList;
+import org.exoplatform.social.core.identity.model.ActiveIdentityFilter;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
@@ -86,6 +89,7 @@ import org.exoplatform.social.core.storage.api.RelationshipStorage;
 import org.exoplatform.social.core.storage.api.SpaceStorage;
 import org.exoplatform.social.core.storage.exception.NodeNotFoundException;
 import org.exoplatform.social.core.storage.query.WhereExpression;
+import org.exoplatform.social.core.storage.streams.StreamConfig;
 import org.exoplatform.social.core.storage.streams.StreamInvocationHelper;
 
 /**
@@ -1037,6 +1041,111 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     //
     return getActivitiesOfIdentities(ActivityBuilderWhere.simple().mentioner(ownerIdentity).owners(ownerIdentity), filter, 0, limit);
   }
+  
+  /**
+   * The loaded activities during the time the user is de-active status.
+   * 
+   * - latestLazyCreatedTime: 
+   *    + stored the latest lazy created time
+   * - latestActivityCreatedTime: 
+   *   + stored the latest activity created time of user's connections.
+   *   + is also sinceTime to get newer activities.
+   * 
+   * @param ownerIdentity
+   * @param offset
+   * @param limit
+   * @return
+   */
+  private List<ExoSocialActivity> getActivityOfInactiveUser(Identity ownerIdentity, int offset, int limit) {
+    StreamConfig streamConfig = CommonsUtils.getService(StreamConfig.class);
+    long beforeLastLogin = StorageUtils.getBeforeLastLogin(ownerIdentity.getRemoteId());
+    //if beforeLastLogin is 0, that's new user.
+    if (beforeLastLogin == 0) {
+      return new LinkedList<ExoSocialActivity>();
+    } else if (includedActiveGroups(streamConfig, ownerIdentity.getRemoteId())) {
+      //user is high priority
+      return new LinkedList<ExoSocialActivity>();
+    } else {
+      //"inactive" user
+      return getNewerActivitiesForInactiveUser(ownerIdentity, offset, limit, streamConfig, beforeLastLogin);
+    }
+  }
+
+  /**
+   * Gets the newer activities for "inactive" user
+   * sinceTime get from Identity#latestActivityCreatedTime property in jcr
+   * 
+   * @param ownerIdentity
+   * @param offset
+   * @param limit
+   * @param streamConfig
+   * @param beforeLastLogin
+   * @return
+   */
+  private List<ExoSocialActivity> getNewerActivitiesForInactiveUser(Identity ownerIdentity,
+                                                 int offset,
+                                                 int limit,
+                                                 StreamConfig streamConfig,
+                                                 long beforeLastLogin) {
+    try {
+      int days = streamConfig.getLastLoginAroundDays();
+      IdentityEntity entity = _findById(IdentityEntity.class, ownerIdentity.getId());
+      // gets the latest time to create the latest activity
+      long latestLazyCreatedTime = entity.getLatestLazyCreatedTime();
+      long maxBeforeLastLogin = Math.max(beforeLastLogin, latestLazyCreatedTime);
+      if (!StorageUtils.isActiveUser(days, maxBeforeLastLogin)) {
+        // load connection activities and save theirs references for current user
+        // Needs improves here load all (-1) or not
+        long sinceTime = entity.getLatestActivityCreatedTime();
+        if (sinceTime == 0) {
+          sinceTime = maxBeforeLastLogin;
+        }
+        List<ExoSocialActivity> activities = getNewerActivitiesOfConnections(ownerIdentity, sinceTime, -1);
+        StreamInvocationHelper.createFeedActivityRefSynchronous(ownerIdentity, activities);
+        StreamInvocationHelper.createConnectionsActivityRefSynchronous(ownerIdentity, activities);
+        // updates the current time in the case user is de-active
+        entity.setLatestLazyCreatedTime(System.currentTimeMillis());
+        //
+        int newlimit = Math.min(offset + limit, activities.size());
+        return activities.subList(offset, newlimit);
+      }
+      //return empty list
+      return new LinkedList<ExoSocialActivity>();
+    } catch (NodeNotFoundException e) {
+      LOG.error("Identity not found " + e.getMessage());
+      //return empty list
+      return new LinkedList<ExoSocialActivity>();
+    }
+  }
+
+  /**
+   * Checks the give user presents in activeGroups
+   * 
+   * @param streamConfig
+   * @param userId the userName
+   * @return TRUE/FALSE
+   */
+  private boolean includedActiveGroups(StreamConfig streamConfig, String userId) {
+    String userGroups = streamConfig.getActiveUserGroups();
+    ActiveIdentityFilter filter = new ActiveIdentityFilter(userGroups);
+    Set<String> activeGroups = identityStorage.getActiveUsers(filter);
+    return activeGroups.contains(userId);
+  }
+  
+  private List<ExoSocialActivity> buildList(List<ExoSocialActivity> target, List<ExoSocialActivity> source, int limit) {
+    if (target.size() == 0) {
+      return source;
+    }
+    for (ExoSocialActivity activity : source) {
+      if (target.contains(activity)) {
+        continue;
+      }
+      target.add(activity);
+      if (target.size() == limit)
+        break;
+    }
+    return target;
+  }
 
   /**
    * {@inheritDoc}
@@ -1078,6 +1187,48 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
    * {@inheritDoc}
    */
   public List<ExoSocialActivity> getActivityFeed(Identity ownerIdentity, int offset, int limit) {
+    //
+    List<ExoSocialActivity> activities = getActivityOfInactiveUser(ownerIdentity, offset, limit);
+    if (activities.size() >= limit) {
+      return activities;
+    }
+    //      
+    List<ExoSocialActivity> got = streamStorage.getFeed(ownerIdentity, offset, limit);
+    got = buildList(activities, got, limit);
+    
+    if (got.size() == limit) {
+      return got;
+    }
+
+    int remaind = limit - got.size();
+    if (remaind > 0) {
+      int newOffset = got.size() + offset;
+      List<ExoSocialActivity> origin = getActivityFeedForUpgrade(ownerIdentity, newOffset, limit);
+      List<ExoSocialActivity> migrateList = new LinkedList<ExoSocialActivity>();
+
+      int i = remaind;
+      // fill to enough limit
+      for (ExoSocialActivity activity : origin) {
+        if (got.contains(activity) == false) {
+          got.add(activity);
+          migrateList.add(activity);
+          if (--i == 0) {
+            break;
+          }
+        }
+
+      }
+
+      if (migrateList.size() > 0) {
+        StreamInvocationHelper.createFeedActivityRef(ownerIdentity, migrateList);
+      }
+
+    }
+
+    return got;
+  }
+  
+  private List<ExoSocialActivity> getActivityFeedForActiveUser(Identity ownerIdentity, int offset, int limit) {
     List<ExoSocialActivity> got = streamStorage.getFeed(ownerIdentity, offset, limit);
 
     if (got.size() == limit) {
@@ -1271,7 +1422,14 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
    * {@inheritDoc}
    */
   public List<ExoSocialActivity> getActivitiesOfConnections(Identity ownerIdentity, int offset, int limit) {
+    //
+    List<ExoSocialActivity> activities = getActivityOfInactiveUser(ownerIdentity, offset, limit);
+    if (activities.size() >= limit) {
+      return activities;
+    }
+    //
     List<ExoSocialActivity> got = streamStorage.getConnections(ownerIdentity, offset, limit);
+    got = buildList(activities, got, limit);
     //
     if (got.size() == limit) {
       return got;
