@@ -1,4 +1,4 @@
-<li class="clearfix" data-id="$NOTIFICATION_ID">
+<li class="$READ clearfix" data-id="$NOTIFICATION_ID">
   <div class="avatarSmall pull-left">
     <img src="$AVATAR" alt="$USER" />
   </div> 
@@ -8,60 +8,14 @@
   <div class="pull-left">
     <div class="contentSmall" data-link="">
       <div class="status"><%=_ctx.appRes("Notification.intranet.message.RelationshipReceivedRequestPlugin", profileUrl, PORTAL_HOME)%></div>
-      <div class="content"><a target="_blank" style="display: inline-block;
-                                               text-decoration: none;
-                                               font-size: 11px;
-                                               font-family:HelveticaNeue,arial,tahoma,serif;
-                                               color: #ffffff;
-                                               text-shadow: 0 -1px 0 rgba(23, 33, 37, .25);
-                                               background-color: #567ab6;
-                                               background-image: -moz-linear-gradient(top, #638acd, #426393);
-                                               background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#638acd), to(#426393));
-                                               background-image: -webkit-linear-gradient(top, #638acd, #426393);
-                                               background-image: -o-linear-gradient(top, #638acd, #426393);
-                                               background-image: linear-gradient(to bottom, #638acd, #426393);
-                                               background-repeat: repeat-x;
-                                               border-radius: 4px;
-                                               -moz-border-radius: 4px;
-                                               padding: 5px 8px;
-                                               line-height: 100%;
-                                               text-align: center;
-                                               border: 1px solid #224886;
-                                               font-weight: bold;
-                                               -webkit-box-shadow: inset 0 1px 0 rgba(255,255,255,.2), 0 1px 2px rgba(0,0,0,.05);
-                                               -moz-box-shadow: inset 0 1px 0 rgba(255,255,255,.2), 0 1px 2px rgba(0,0,0,.05);
-                                               box-shadow: inset 0 1px 0 rgba(255,255,255,.2), 0 1px 2px rgba(0,0,0,.05);
-                                               vertical-align: middle;" 
-                                               href="$ACCEPT_CONNECTION_REQUEST_ACTION_URL"><%=_ctx.appRes("Notification.label.Accept")%></a>
-                            <a target="_blank" style="display: inline-block;
-                                               text-decoration: none;
-                                               font-size: 11px;
-                                               font-family:HelveticaNeue,arial,tahoma,serif;
-                                               color: #333333;
-                                               background-color: #f1f1f1;
-                                               background-image: -moz-linear-gradient(top, #ffffff, #f1f1f1);
-                                               background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#ffffff), to(#f1f1f1));
-                                               background-image: -webkit-linear-gradient(top, #ffffff, #f1f1f1);
-                                               background-image: -o-linear-gradient(top, #ffffff, #f1f1f1);
-                                               background-image: linear-gradient(to bottom, #ffffff, #f1f1f1);
-                                               background-repeat: repeat-x;
-                                               border-radius: 4px;
-                                               -moz-border-radius: 4px;
-                                               padding: 5px 8px;
-                                               line-height: 100%;
-                                               text-align: center;
-                                               border: 1px solid #c7c7c7;
-                                               -webkit-box-shadow: inset 0 1px 0 rgba(255,255,255,.2), 0 1px 2px rgba(0,0,0,.05);
-                                               -moz-box-shadow: inset 0 1px 0 rgba(255,255,255,.2), 0 1px 2px rgba(0,0,0,.05);
-                                               box-shadow: inset 0 1px 0 rgba(255,255,255,.2), 0 1px 2px rgba(0,0,0,.05);
-                                               vertical-align: middle;
-                                               margin-left: 3px;" 
-                                               href="$REFUSE_CONNECTION_REQUEST_ACTION_URL"><%=_ctx.appRes("Notification.label.Refuse")%></a>
-       </div>
+      <div class="content">
+        <a class="btn btn-primary remove-item" data-rest="$ACCEPT_CONNECTION_REQUEST_ACTION_URL" href="javascript:void(0)"><%=_ctx.appRes("Notification.label.Accept")%></a>
+        <a class="btn remove-item" data-rest="$REFUSE_CONNECTION_REQUEST_ACTION_URL" href="javascript:void(0)"><%=_ctx.appRes("Notification.label.Refuse")%></a>
+      </div>
     </div>
     <div class="lastUpdatedTime">$LAST_UPDATED_TIME</div>
   </div> 
-  <a href="javascript:void(0)" class="remove-item" data-rest="">
+  <a href="javascript:void(0)" class="remove-item">
     <i class="uiIconClose uiIconLightGray"></i>
   </a>
 </li>

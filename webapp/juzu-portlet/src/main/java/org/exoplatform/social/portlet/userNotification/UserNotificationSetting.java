@@ -17,6 +17,7 @@
 package org.exoplatform.social.portlet.userNotification;
 
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -35,6 +36,7 @@ import juzu.request.ApplicationContext;
 import juzu.request.UserContext;
 import juzu.template.Template;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.exoplatform.commons.api.notification.model.GroupProvider;
 import org.exoplatform.commons.api.notification.model.PluginInfo;
 import org.exoplatform.commons.api.notification.model.UserSetting;
@@ -78,8 +80,6 @@ public class UserNotificationSetting {
 
   private static final String NEVER                   = "Never";
 
-  private static final String CHECK_BOX_DEACTIVATE_ID = "checkBoxDeactivate";
-
   private final static String SELECT_BOX_PREFIX       = "SelectBox";
   
   private Locale locale = Locale.ENGLISH;
@@ -98,15 +98,26 @@ public class UserNotificationSetting {
 
     return index.ok(parameters());
   }
- 
   
   @Ajax
   @Resource
   public Response saveSetting(String params) {
     JSON data = new JSON();
     try {
-      UserSetting setting = UserSetting.getInstance();
+      
       Map<String, String> datas = parserParams(params);
+      boolean isEmailActive = "on".equals((String)datas.get("email"));
+      boolean isIntranetActive = "on".equals((String)datas.get("intranet"));
+      
+      UserSetting setting = userSettingService.get(Utils.getOwnerRemoteId());
+      if (!isEmailActive && !isIntranetActive) {
+        return Response.ok(data.toString()).withMimeType("application/json");
+      } else if (isIntranetActive) {
+        setting.setIntranetPlugins(new ArrayList<String>());
+      } else if (isEmailActive) {
+        setting.setInstantlyProviders(new ArrayList<String>());
+      }
+      
       for (String pluginId : datas.keySet()) {
         if (pluginId.indexOf(SELECT_BOX_PREFIX) > 0) {
           String value = datas.get(pluginId);
@@ -118,21 +129,47 @@ public class UserNotificationSetting {
           if (DAILY.equals(value)) {
             setting.addProvider(pluginId, FREQUENCY.DAILY);
           }
-        } else if (CHECK_BOX_DEACTIVATE_ID.equals(pluginId) == false) {
+        } else if (!"intranet".equals(pluginId) && pluginId.indexOf("intranet") == 0) {
+          setting.addIntranetPlugin(pluginId.replace("intranet", ""));
+        } else if (!"email".equals(pluginId) && !"intranet".equals(pluginId)) {
           setting.addProvider(pluginId, FREQUENCY.INSTANTLY);
         }
       }
-      boolean status = "on".equals(datas.get(CHECK_BOX_DEACTIVATE_ID)) == false;
-      setting.setUserId(Utils.getOwnerRemoteId()).setActive(status);
+//      setting.setUserId(Utils.getOwnerRemoteId());
       //
       userSettingService.save(setting);
       data.set("ok", "true");
-      data.set("status", String.valueOf(status));
+      data.set("status", "true");
     } catch (Exception e) {
       data.set("ok", "false");
       data.set("status", e.toString());
     }
    
+    return Response.ok(data.toString()).withMimeType("application/json");
+  }
+  
+  @Ajax
+  @Resource
+  public Response saveActiveStatus(String type, String enable) {
+    JSON data = new JSON();
+    try {
+      UserSetting setting = userSettingService.get(Utils.getOwnerRemoteId());
+      if (enable.equals("true") || enable.equals("false")) {
+        if ("email".equals(type)) {
+          setting.setActive(Boolean.valueOf(enable));
+        } else if ("intranet".equals(type)) {
+          setting.setIntranetActive(Boolean.valueOf(enable));
+        }
+        userSettingService.save(setting);
+      }
+      data.set("ok", "true");
+      data.set("type", type);
+      data.set("enable", enable);
+    } catch (Exception e) {
+      data.set("ok", "false");
+      data.set("status", e.toString());
+      return new Response.Error("Exception in switching stat of provider " + type + ". " + e.toString());
+    }
     return Response.ok(data.toString()).withMimeType("application/json");
   }
   
@@ -160,53 +197,52 @@ public class UserNotificationSetting {
 
     UserSetting setting = userSettingService.get(Utils.getOwnerRemoteId());
     //
-    String checkbox = (setting.isActive() == true) ? "" : "checked";
-    parameters.put("checkbox", checkbox);
-    parameters.put("checkboxId", CHECK_BOX_DEACTIVATE_ID);
-    //
     List<GroupProvider> groups = providerSettingService.getGroupPlugins();
     parameters.put("groups", groups);
     //
     boolean hasActivePlugin = false;
-    for (GroupProvider group : groups) {
-      for (PluginInfo plugin : group.getProviderDatas()) {
-        if (plugin.isActive()) {
+    Map<String, String> selectBoxList = new HashMap<String, String>();
+    Map<String, String> checkBoxList = new HashMap<String, String>();
+    Map<String, String> intranetCheckBoxList = new HashMap<String, String>();
+    
+    Map<String, String> options = buildOptions(context);
+    boolean isActiveEmail = setting.isActive();
+    boolean isActiveIntranet = setting.isIntranetActive();
+    
+    for (GroupProvider groupProvider : providerSettingService.getGroupPlugins()) {
+      for (PluginInfo info : groupProvider.getProviderDatas()) {
+        String pluginId = info.getType();
+        if (info.isActive()) {
+          selectBoxList.put(pluginId, buildSelectBox(pluginId, options, getValue(setting, pluginId), isActiveEmail));
+          checkBoxList.put(pluginId, buildCheckBox(pluginId, setting.isInInstantly(pluginId), isActiveEmail));
           hasActivePlugin = true;
-          break;
+        }
+        if (info.isIntranetActive()) {
+          intranetCheckBoxList.put(pluginId, buildCheckBox("intranet" + pluginId, setting.isInIntranet(pluginId), isActiveIntranet));
+          hasActivePlugin = true;
         }
       }
     }
     parameters.put("hasActivePlugin", hasActivePlugin);
     
-    Map<String, String> selectBoxList = new HashMap<String, String>();
-    Map<String, String> checkBoxList = new HashMap<String, String>();
-    
-    Map<String, String> options = buildOptions(context);
-    
-    for (String pluginId : providerSettingService.getActivePluginIds()) {
-      selectBoxList.put(pluginId, buildSelectBox(pluginId, options, getValue(setting, pluginId)));
-      checkBoxList.put(pluginId, buildCheckBox(pluginId, isInInstantly(setting, pluginId)));
-    }
-    
     parameters.put("checkBoxs", checkBoxList);
+    parameters.put("intranetCheckBoxs", intranetCheckBoxList);
     parameters.put("selectBoxs", selectBoxList);
-
+    
+    parameters.put("enabledGetEmail", isActiveEmail);
+    parameters.put("enabledGetIntranet", isActiveIntranet);
+    
     return parameters;
   }
   
-  
-  private boolean isInInstantly(UserSetting setting, String pluginId) {
-    return (setting.isInInstantly(pluginId)) ? true : false;
-  }
-
-  private String makeSelectBoxId(String providerId) {
-    return new StringBuffer(providerId).append(SELECT_BOX_PREFIX).toString();
+  private String makeSelectBoxId(String pluginId) {
+    return new StringBuffer(pluginId).append(SELECT_BOX_PREFIX).toString();
   }
   
-  private String getValue(UserSetting setting, String providerId) {
-    if (setting.isInWeekly(providerId)) {
+  private String getValue(UserSetting setting, String pluginId) {
+    if (setting.isInWeekly(pluginId)) {
       return WEEKLY;
-    } else if (setting.isInDaily(providerId)) {
+    } else if (setting.isInDaily(pluginId)) {
       return DAILY;
     } else {
       return NEVER;
@@ -221,20 +257,21 @@ public class UserNotificationSetting {
     return options;
   }
   
-  private String buildCheckBox(String name, boolean isChecked) {
+  private String buildCheckBox(String name, boolean isChecked, boolean isActive) {
     StringBuffer buffer = new StringBuffer("<span class=\"uiCheckbox\">");
-    buffer.append(("<input type=\"checkbox\" class=\"checkbox\" "))
-          .append((isChecked == true) ? "checked " : "")
+    buffer.append("<input type=\"checkbox\" class=\"checkbox\" ")
+          .append((isChecked == true) ? "checked=\"checked\" " : "")
+          .append((isActive == false) ? "disabled " : "")
           .append("name=\"").append(name).append("\" id=\"").append(name).append("\" />")
           .append("<span></span></span>");
     return buffer.toString();
   }
 
-  private String buildSelectBox(String name, Map<String, String> options, String selectedId) {
+  private String buildSelectBox(String name, Map<String, String> options, String selectedId, boolean isActive) {
     String selected = "";
     String id = makeSelectBoxId(name);
     StringBuffer buffer = new StringBuffer("<span class=\"uiSelectbox\">");
-    buffer.append("<select name=\"").append(id).append("\" id=\"").append(id).append("\" class=\"selectbox\">");
+    buffer.append("<select name=\"").append(id).append("\" id=\"").append(id).append("\"").append((isActive == false) ? " disabled " : "").append(" class=\"selectbox\">");
     for (String key : options.keySet()) {
       selected = (key.equals(selectedId) == true) ? " selected=\"selected\" " : "";
       buffer.append("<option value=\"").append(key).append("\" class=\"option\"").append(selected).append(">").append(options.get(key)).append("</option>");

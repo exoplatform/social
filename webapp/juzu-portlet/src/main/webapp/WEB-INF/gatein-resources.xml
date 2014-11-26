@@ -14,11 +14,14 @@
         <module>juzu-ajax</module>
       </depends>
       <depends>
+        <module>iphonePlugin</module>
+      </depends>
+      <depends>
         <module>socialUtil</module>
       </depends>
       <depends>
         <module>jquery</module>
-        <as>jq</as>
+        <as>jQuery</as>
       </depends>
     </module>
   </portlet>

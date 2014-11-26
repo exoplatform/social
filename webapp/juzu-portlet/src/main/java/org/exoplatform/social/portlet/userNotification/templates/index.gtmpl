@@ -1,10 +1,11 @@
 #{param name=_ctx/}
-#{param name=checkbox/}
-#{param name=checkboxId/}
 #{param name=groups/}
 #{param name=hasActivePlugin/}
 #{param name=checkBoxs/}
+#{param name=intranetCheckBoxs/}
 #{param name=selectBoxs/}
+#{param name=enabledGetEmail/}
+#{param name=enabledGetIntranet/}
 
 <div id="userNotification" class="uiUserNotificationPortlet uiNotificationSettings">
 	<div class="UIPopupWindow UIDragObject uiPopup UISocialConfirmation" style="width: 550px; display: none;">
@@ -33,26 +34,29 @@
 			<h4>${_ctx.appRes("UINotification.msg.NoPluginIsActive")}</h4>
 		</div>
 		<%} else { %>		
-		<div>
-			<span class="uiCheckbox">
-				<input type="checkbox" ${checkbox} name="${checkboxId}" class="checkbox" id="${checkboxId}"/>
-				<span style="margin-left:10px">${_ctx.appRes("UINotification.label.DisableEmailNotifciation")}</span>
-			</span>
-		</div>
-		
-		<%
-			String display = "block";
-			if("checked".equals(checkbox)) {
-			  display = "none";
-			}
-		%>
-		<div class="form-horizontal" style="display:${display}">
+		<div class="form-horizontal">
 			<table class="uiGrid table table-striped">
 				<thead>
+					<tr>
+						<td></td>
+						<td colspan="2" class="clearfix">
+							<div class="pull-left" style="padding-left: 5px">${_ctx.appRes("UINotification.label.GetEmailNotification")}</div>
+							<div class="inputContainer pull-left" style="width: 60px;">
+								<input type="checkbox" class="iphoneStyle yesno staus-${enabledGetEmail}" ${(enabledGetEmail) ? "checked=\"checked\"" : "" } name="email">
+							</div>
+						</td>
+						<td class="clearfix">
+							<div class="pull-left" style="padding-left: 5px">${_ctx.appRes("UINotification.label.GetIntranetNotification")}</div>
+							<div class="inputContainer pull-left" style="width: 60px;">
+								<input type="checkbox" class="iphoneStyle yesno staus-${enabledGetIntranet}" ${(enabledGetIntranet) ? "checked=\"checked\"" : "" } name="intranet">
+							</div>
+						</td>
+					</tr>
 					<tr>
 						<th class="left">${_ctx.appRes("UINotification.label.NotificationsChose")}:</th>
 						<th width="200px" class="left">${_ctx.appRes("UINotification.label.SendMeAnEmailRightWay")}</th>
 						<th width="200px" class="left">${_ctx.appRes("UINotification.label.IncludeInMyDigestEmail")}</th>
+						<th width="200px" class="left">${_ctx.appRes("UINotification.label.SeeOnYourIntranet")}</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -66,39 +70,43 @@
 					</tr>	
 			<%} else {
 					for(def group : groups) {
-					  List pluginInfos = group.getProviderDatas();
-					  if(pluginInfos == null || pluginInfos.size() == 0) {
-					    continue;
-					  }
+						List pluginInfos = group.getProviderDatas();
+						if(pluginInfos == null || pluginInfos.size() == 0) {
+							continue;
+						}
 			
-					  int groupActive = 0;
+						int groupActive = 0;
 						for (def plugin : pluginInfos) {
-						  String pluginId = plugin.getType();
-						  if(plugin.isActive() == false) {
-						    continue;
-						  }
-						  groupActive = groupActive + 1;
-						  if (groupActive == 1) {
-						    %>
-				          <tr>
-				            <td class="left">
-				              <strong>${_ctx.pluginRes(group.getResourceBundleKey(), group.getGroupId())}</strong>
-				            </td>
-				            <td></td>
-				            <td></td>
-				          </tr>
-			          <%
-						  }
+							String pluginId = plugin.getType();
+							if(plugin.isActive() == false) {
+								continue;
+							}
+							groupActive = groupActive + 1;
+							if (groupActive == 1) {
+								%>
+									<tr>
+										<td class="left">
+											<strong>${_ctx.pluginRes(group.getResourceBundleKey(), group.getGroupId())}</strong>
+										</td>
+										<td></td>
+										<td></td>
+										<td></td>
+									</tr>
+								<%
+							}
 					%>
 					<tr>
 						<td class="left">
 							<label for="${pluginId}">${_ctx.pluginRes("UINotification.title." + pluginId, pluginId)}</label>
 						</td>
-						<td class="center">
+						<td class="center email">
 							${checkBoxs.get(pluginId)}
 						</td>
-						<td class="center">
+						<td class="center email">
 							${selectBoxs.get(pluginId)}
+						</td>
+						<td class="center intranet">
+							${intranetCheckBoxs.get(pluginId)}
 						</td>
 					</tr>
 			 	 <% } %>

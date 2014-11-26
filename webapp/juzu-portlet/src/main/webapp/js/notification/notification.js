@@ -25,11 +25,6 @@
             } else {
               $(Notification.parentId).find('div.form-horizontal:first').show();
             }
-            if(id !== 'checkBoxDeactivate') {
-              sUtils.feedbackMessageInline('userNotification', msgOk);
-            }
-          } else if(id !== 'checkBoxDeactivate') {
-            sUtils.feedbackMessageInline('userNotification', msgNOk);
           }
           if(jElm.is('button')) {
             jElm.addClass('disabled');
@@ -42,11 +37,9 @@
     onload : function() {
       Notification.formData = $(document.forms['uiNotificationSetting']).serialize();
       var parent = $(Notification.parentId);
-      var activeNotification = parent.find("input#checkBoxDeactivate"); 
       var save = parent.find("button#Save").addClass('disabled');
       var reset = parent.find("button#Reset");
       //
-      activeNotification.on('click', Notification.saveSetting) ;
       save.on('click', Notification.saveSetting) ;
       //
       reset.on('click', function(e) {
@@ -73,9 +66,47 @@
       });
       //
       var horizontal = parent.find('div.form-horizontal');
-      horizontal.find('input[type=checkbox]').on('click', Notification.checkActiveButton);
+      horizontal.find('tbody:first').find('input[type=checkbox]').on('click', Notification.checkActiveButton);
       horizontal.find('select').on('change', Notification.checkActiveButton);
+      //
+      horizontal.find('input.iphoneStyle').iphoneStyle({ 
+        checkedLabel:'YES', 
+        uncheckedLabel:'NO',
+        onChange : function() {
+          var input = $(this.elem);
+          Notification.switchStatus(input.attr('name'), input.hasClass("staus-false"));
+        }
+      });
     },
+    switchStatus : function(saveType, isEnable) {
+      $(Notification.parentId).jzAjax({   
+  	    url : "UserNotificationSetting.saveActiveStatus()",
+  	    data : {
+  	      "type" : saveType,
+  	      "enable" : isEnable
+  	    },
+  	    success : function(data) {
+  	      var parent = $(Notification.parentId);
+  	      var action = parent.find('input[name=' + data.type + ']');
+  	      var clazz = "enable", disabled = false;
+  	      if((data.enable == 'true')) {
+            action.attr('checked', 'checked');
+          } else {
+            action.removeAttr('checked');
+            clazz = "disabled";
+            disabled = true;
+          }
+  	      action.attr('class', 'iphoneStyle yesno staus-' + data.enable);
+          var plugin = parent.find("td." + data.type)
+                             .attr("class", data.type + ' center ' + clazz);
+          plugin.find('input').prop('disabled', disabled);
+          plugin.find('select').prop('disabled', disabled);
+          //
+  	    }
+  	  }).fail(function(jqXHR, textStatus) {
+  	    alert("Request failed: " + textStatus + ". " + jqXHR);
+  	  });
+  	},
     checkActiveButton : function(e) {
       var newData = $(document.forms['uiNotificationSetting']).serialize();
       var parent = $(Notification.parentId);
@@ -89,4 +120,4 @@
   };
   Notification.onload();
   return Notification;
-})(socialUtil, jq);
+})(socialUtil, jQuery);
