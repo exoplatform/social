@@ -104,7 +104,7 @@
           labelSimpleName = _ctx.appRes("UIActivityComposer.label.${simpleName}");
           clazz = simpleName.toLowerCase();
 
-          String action = acComposer.event((acComposer.isDisplayed()) ? "Close" : "Activate") + "; UIComposer.setCurrentValue(this)";
+          String action = acComposer.event("Activate") + "; UIComposer.setCurrentValue(this)";
           if(simpleName.equals("UILinkActivityComposer")) {
             print("<a id=\"actionLink\" onclick=\"$action\"><span></span></a>");
             action = "UIComposer.showLink()";
