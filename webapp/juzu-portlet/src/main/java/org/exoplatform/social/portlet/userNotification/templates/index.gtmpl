@@ -78,7 +78,7 @@
 						int groupActive = 0;
 						for (def plugin : pluginInfos) {
 							String pluginId = plugin.getType();
-							if(plugin.isActive() == false) {
+							if(plugin.isActive() == false && plugin.isIntranetActive() == false) {
 								continue;
 							}
 							groupActive = groupActive + 1;
@@ -100,13 +100,19 @@
 							<label for="${pluginId}">${_ctx.pluginRes("UINotification.title." + pluginId, pluginId)}</label>
 						</td>
 						<td class="center email">
+						<% if(plugin.isActive()) { %>
 							${checkBoxs.get(pluginId)}
+						<% } %>
 						</td>
 						<td class="center email">
+						<% if(plugin.isActive()) { %>
 							${selectBoxs.get(pluginId)}
+						<% } %>
 						</td>
 						<td class="center intranet">
+						<% if(plugin.isIntranetActive()) { %>
 							${intranetCheckBoxs.get(pluginId)}
+						<% } %>
 						</td>
 					</tr>
 			 	 <% } %>
