@@ -1,19 +1,18 @@
 <li class="$READ clearfix" data-id="$NOTIFICATION_ID">
-  <div class="avatarSmall pull-left">
-    <img src="$AVATAR" alt="$USER" />
-  </div> 
-  <%
-   String profileUrl = "<strong><a style=\"color: #2f5e92; font-size: 13px; text-decoration: none; font-family: 'HelveticaNeue Bold', Helvetica, Arial, sans-serif\" href=\"" + PROFILE_URL + "\">" + USER + "</a></strong>";
-   String spaceUrl = "<strong><a target=\"_blank\" style=\"color: #2f5e92; font-family: 'HelveticaNeue Bold', Helvetica, Arial, sans-serif; text-decoration: none; font-size: 13px; line-height: 18px;\" href=\""+ SPACE_URL + "\">" + SPACE + "</a></strong>";
-  %> 
-  <div class="pull-left">
-    <div class="contentSmall" data-link="$VIEW_FULL_DISCUSSION_ACTION_URL">
-      <div class="status"><%=_ctx.appRes("Notification.intranet.message.PostActivitySpaceStreamPlugin", profileUrl, spaceUrl)%></div>
-      <div class="content">$ACTIVITY</div>
+  <div class="media">
+    <div class="avatarSmall pull-left">
+      <img src="$AVATAR" alt="$USER" />
     </div>
-    <div class="lastUpdatedTime">$LAST_UPDATED_TIME</div>
-  </div> 
-  <a href="javascript:void(0)" class="remove-item" data-rest="">
-    <i class="uiIconClose uiIconLightGray"></i>
-  </a>
+    <div class="media-body">
+      <%
+       String profileUrl = "<a class=\"user-name text-bold\" href=\"" + PROFILE_URL + "\">" + USER + "</a>";
+       String spaceUrl = "<a class=\"space-name text-bold\" target=\"_blank\" href=\""+ SPACE_URL + "\">" + SPACE + "</a>";
+      %>
+      <div class="contentSmall" data-link="$VIEW_FULL_DISCUSSION_ACTION_URL">
+        <div class="status"><%=_ctx.appRes("Notification.intranet.message.PostActivitySpaceStreamPlugin", profileUrl, spaceUrl)%>  <span class="lastUpdatedTime">$LAST_UPDATED_TIME</span></div>
+        <div class="content">$ACTIVITY</div>
+      </div>
+    </div>
+  </div>
+  <span class="remove-item" data-rest=""><i class="uiIconClose uiIconLightGray"></i></span>
 </li>
