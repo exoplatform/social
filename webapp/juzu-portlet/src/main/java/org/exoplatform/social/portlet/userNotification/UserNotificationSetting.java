@@ -18,14 +18,18 @@ package org.exoplatform.social.portlet.userNotification;
 
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.Set;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.POST;
 
 import juzu.Path;
 import juzu.Resource;
@@ -53,7 +57,6 @@ import org.exoplatform.portal.application.PortalRequestContext;
 import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
-import org.exoplatform.social.webui.Utils;
 import org.exoplatform.web.application.JavascriptManager;
 import org.exoplatform.webui.application.WebuiRequestContext;
 
@@ -80,6 +83,8 @@ public class UserNotificationSetting {
   private static final String NEVER                   = "Never";
 
   private final static String SELECT_BOX_PREFIX       = "SelectBox";
+
+  private final static String CHANNEL_PREFIX          = "channel";
   
   private Locale locale = Locale.ENGLISH;
 
@@ -97,77 +102,81 @@ public class UserNotificationSetting {
 
     return index.ok(parameters());
   }
-  
+
   @Ajax
+  @POST
   @Resource
   public Response saveSetting(String params) {
     JSON data = new JSON();
     try {
-      
       Map<String, String> datas = parserParams(params);
-      boolean isEmailActive = "on".equals((String)datas.get("email"));
-      boolean isIntranetActive = "on".equals((String)datas.get("intranet"));
-      
-      UserSetting setting = userSettingService.get(Utils.getOwnerRemoteId());
-      if (!isEmailActive && !isIntranetActive) {
-        return Response.ok(data.toString()).withMimeType("application/json");
-      } else if (isIntranetActive) {
-        setting.setIntranetPlugins(new ArrayList<String>());
-      } else if (isEmailActive) {
-        setting.setInstantlyProviders(new ArrayList<String>());
+      Set<String> paramsName = datas.keySet();
+      Set<String> channels = new HashSet<String>();
+      UserSetting setting = userSettingService.get(getRemoteUser());
+      for (String channel : paramsName) {
+        if (channel.startsWith(CHANNEL_PREFIX) && "on".equals((String) datas.get(channel))) {
+          String channelId = channel.replaceFirst(CHANNEL_PREFIX, "");
+          channels.add(channelId);
+          setting.setChannelActive(channelId);
+        }
       }
       
-      for (String pluginId : datas.keySet()) {
+      for (String pluginId : paramsName) {
         if (pluginId.indexOf(SELECT_BOX_PREFIX) > 0) {
           String value = datas.get(pluginId);
           pluginId = pluginId.replaceFirst(SELECT_BOX_PREFIX, "");
           //
           if (WEEKLY.equals(value)) {
-            setting.addProvider(pluginId, FREQUENCY.WEEKLY);
+            setting.addPlugin(pluginId, FREQUENCY.WEEKLY);
           }
           if (DAILY.equals(value)) {
-            setting.addProvider(pluginId, FREQUENCY.DAILY);
+            setting.addPlugin(pluginId, FREQUENCY.DAILY);
           }
-        } else if (!"intranet".equals(pluginId) && pluginId.indexOf("intranet") == 0) {
-          setting.addIntranetPlugin(pluginId.replace("intranet", ""));
-        } else if (!"email".equals(pluginId) && !"intranet".equals(pluginId)) {
-          setting.addProvider(pluginId, FREQUENCY.INSTANTLY);
+        } else if (!pluginId.startsWith(CHANNEL_PREFIX)) {// check-box without channel active
+          for (String channelId : channels) {
+            if(pluginId.startsWith(channelId)) {
+              if(UserSetting.EMAIL_CHANNEL.equals(channelId)) {
+                setting.addPlugin(pluginId.replaceFirst(UserSetting.EMAIL_CHANNEL, ""), FREQUENCY.INSTANTLY);
+              } else {
+                setting.addChannelPlugin(channelId, pluginId.replaceFirst(channelId, ""));
+              }
+            }
+          }
         }
       }
-//      setting.setUserId(Utils.getOwnerRemoteId());
       //
       userSettingService.save(setting);
       data.set("ok", "true");
       data.set("status", "true");
     } catch (Exception e) {
+      LOG.error("Failed to save user settings: ", e);
       data.set("ok", "false");
       data.set("status", e.toString());
     }
-   
     return Response.ok(data.toString()).withMimeType("application/json");
   }
   
   @Ajax
   @Resource
-  public Response saveActiveStatus(String type, String enable) {
+  public Response saveActiveStatus(String channelId, String enable) {
     JSON data = new JSON();
     try {
-      UserSetting setting = userSettingService.get(Utils.getOwnerRemoteId());
+      UserSetting setting = userSettingService.get(getRemoteUser());
       if (enable.equals("true") || enable.equals("false")) {
-        if ("email".equals(type)) {
-          setting.setActive(Boolean.valueOf(enable));
-        } else if ("intranet".equals(type)) {
-          setting.setIntranetActive(Boolean.valueOf(enable));
+        if(enable.equals("true")) {
+          setting.setChannelActive(channelId);
+        } else {
+          setting.removeChannelActive(channelId);
         }
         userSettingService.save(setting);
       }
       data.set("ok", "true");
-      data.set("type", type);
+      data.set("type", channelId);
       data.set("enable", enable);
     } catch (Exception e) {
       data.set("ok", "false");
       data.set("status", e.toString());
-      return new Response.Error("Exception in switching stat of provider " + type + ". " + e.toString());
+      return new Response.Error("Exception in switching stat of provider " + channelId + ". " + e.toString());
     }
     return Response.ok(data.toString()).withMimeType("application/json");
   }
@@ -178,12 +187,17 @@ public class UserNotificationSetting {
     try {
       UserSetting setting = UserSetting.getDefaultInstance();
       //
-      userSettingService.save(setting.setUserId(Utils.getOwnerRemoteId()));
+      userSettingService.save(setting.setUserId(getRemoteUser()));
     } catch (Exception e) {
       return new Response.Error("Error to save default notification user setting" + e.toString());
     }
     
     return index.ok(parameters()).withMimeType("text/html");
+  }
+  
+  private String getRemoteUser() {
+    RequestContext requestContext = Request.getCurrent().getContext();
+    return requestContext.getSecurityContext().getRemoteUser();
   }
 
   private Map<String, Object> parameters() {
@@ -194,42 +208,54 @@ public class UserNotificationSetting {
     Context context = new Context(bundle);
     parameters.put("_ctx", context);
 
-    UserSetting setting = userSettingService.get(Utils.getOwnerRemoteId());
+    UserSetting setting = userSettingService.get(getRemoteUser());
     //
     List<GroupProvider> groups = providerSettingService.getGroupPlugins();
     parameters.put("groups", groups);
     //
     boolean hasActivePlugin = false;
-    Map<String, String> selectBoxList = new HashMap<String, String>();
-    Map<String, String> checkBoxList = new HashMap<String, String>();
-    Map<String, String> intranetCheckBoxList = new HashMap<String, String>();
+    Map<String, String> emailSelectBoxList = new HashMap<String, String>();
+    Map<String, String> emailCheckBoxList = new HashMap<String, String>();
+    //
+    
+    Map<String, String> channelCheckBoxList = new HashMap<String, String>();
     
     Map<String, String> options = buildOptions(context);
-    boolean isActiveEmail = setting.isActive();
-    boolean isActiveIntranet = setting.isIntranetActive();
+    
+    List<String> channels = Arrays.asList(UserSetting.EMAIL_CHANNEL, UserSetting.INTRANET_CHANNEL);
     
     for (GroupProvider groupProvider : providerSettingService.getGroupPlugins()) {
       for (PluginInfo info : groupProvider.getProviderDatas()) {
         String pluginId = info.getType();
-        if (info.isActive()) {
-          selectBoxList.put(pluginId, buildSelectBox(pluginId, options, getValue(setting, pluginId), isActiveEmail));
-          checkBoxList.put(pluginId, buildCheckBox(pluginId, setting.isInInstantly(pluginId), isActiveEmail));
-          hasActivePlugin = true;
-        }
-        if (info.isIntranetActive()) {
-          intranetCheckBoxList.put(pluginId, buildCheckBox("intranet" + pluginId, setting.isInIntranet(pluginId), isActiveIntranet));
-          hasActivePlugin = true;
+        for (String channelId : channels) {
+          if(info.isChannelActive(channelId)) {
+            if(UserSetting.EMAIL_CHANNEL.equals(channelId)) {
+              emailSelectBoxList.put(pluginId, buildSelectBox(channelId + pluginId, options, getValue(setting, pluginId), setting.isChannelActive(channelId)));
+              emailCheckBoxList.put(pluginId, buildCheckBox(channelId + pluginId, setting.isInInstantly(pluginId), setting.isChannelActive(channelId)));
+              hasActivePlugin = true;
+            } else {
+              channelCheckBoxList.put(channelId + pluginId, buildCheckBox(channelId + pluginId, setting.isInChannel(channelId, pluginId), setting.isChannelActive(channelId)));
+              hasActivePlugin = true;
+            }
+          }
         }
       }
     }
     parameters.put("hasActivePlugin", hasActivePlugin);
     
-    parameters.put("checkBoxs", checkBoxList);
-    parameters.put("intranetCheckBoxs", intranetCheckBoxList);
-    parameters.put("selectBoxs", selectBoxList);
-    
-    parameters.put("enabledGetEmail", isActiveEmail);
-    parameters.put("enabledGetIntranet", isActiveIntranet);
+    parameters.put("emailCheckBoxList", emailCheckBoxList);
+    parameters.put("emailSelectBoxList", emailSelectBoxList);
+    //
+    parameters.put("channelCheckBoxList", channelCheckBoxList);
+    //
+    Map<String, Boolean> channelStatus = new HashMap<String, Boolean>();
+    for (String channelId : channels) {
+      channelStatus.put(channelId, setting.isChannelActive(channelId));
+    }
+    parameters.put("channelStatus", channelStatus);
+
+    parameters.put("channels", channels);
+    parameters.put("emailChannel", UserSetting.EMAIL_CHANNEL);
     
     return parameters;
   }

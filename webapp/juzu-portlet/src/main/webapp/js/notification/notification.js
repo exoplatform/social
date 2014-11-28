@@ -78,16 +78,17 @@
         }
       });
     },
-    switchStatus : function(saveType, isEnable) {
+    switchStatus : function(channelId, isEnable) {
       $(Notification.parentId).jzAjax({   
   	    url : "UserNotificationSetting.saveActiveStatus()",
   	    data : {
-  	      "type" : saveType,
+  	      "type": "POST",
+  	      "channelId" : channelId.replace('channel', ''),
   	      "enable" : isEnable
   	    },
   	    success : function(data) {
   	      var parent = $(Notification.parentId);
-  	      var action = parent.find('input[name=' + data.type + ']');
+  	      var action = parent.find('input[name=channel' + data.type + ']');
   	      var clazz = "enable", disabled = false;
   	      if((data.enable == 'true')) {
             action.attr('checked', 'checked');

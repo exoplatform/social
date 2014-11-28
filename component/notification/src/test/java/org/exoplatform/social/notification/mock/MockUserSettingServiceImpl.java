@@ -68,8 +68,10 @@ public class MockUserSettingServiceImpl implements UserSettingService {
     return null;
   }
 
+
   @Override
-  public List<String> getUserHasIntranetNotifSetting(String pluginId) {
+  public List<String> getUserHasNotifSetting(String channelId, String pluginId) {
+    // TODO Auto-generated method stub
     return null;
   }
 }

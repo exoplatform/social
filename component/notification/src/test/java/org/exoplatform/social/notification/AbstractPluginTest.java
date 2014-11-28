@@ -204,7 +204,7 @@ public abstract class AbstractPluginTest extends AbstractCoreTest {
    * @param plugin
    */
   protected void turnON(AbstractNotificationPlugin plugin) {
-    pluginSettingService.savePlugin(plugin.getId(), true);
+    pluginSettingService.saveActivePlugin("email", plugin.getId(), true);
   }
   
   protected void turnFeatureOn() {
@@ -220,7 +220,7 @@ public abstract class AbstractPluginTest extends AbstractCoreTest {
    * @param plugin
    */
   protected void turnOFF(AbstractNotificationPlugin plugin) {
-    pluginSettingService.savePlugin(plugin.getId(), false);
+    pluginSettingService.saveActivePlugin("email", plugin.getId(), false);
   }
   
   /**
@@ -314,9 +314,9 @@ public abstract class AbstractPluginTest extends AbstractCoreTest {
       userSetting = UserSetting.getInstance();
       userSetting.setUserId(userId);
     }
-    userSetting.setActive(true);
+    userSetting.setChannelActive("email");
     //
-    userSetting.setInstantlyProviders(settings);
+    userSetting.setInstantlyPlugins(settings);
     userSettingService.save(userSetting);
   }
   
@@ -332,9 +332,9 @@ public abstract class AbstractPluginTest extends AbstractCoreTest {
       userSetting = UserSetting.getInstance();
       userSetting.setUserId(userId);
     }
-    userSetting.setActive(true);
+    userSetting.setChannelActive("email");
     
-    userSetting.setDailyProviders(settings);
+    userSetting.setDailyPlugins(settings);
     userSettingService.save(userSetting);
   }
   
@@ -350,9 +350,9 @@ public abstract class AbstractPluginTest extends AbstractCoreTest {
       userSetting = UserSetting.getInstance();
       userSetting.setUserId(userId);
     }
-    userSetting.setActive(true);
+    userSetting.setChannelActive("email");
     
-    userSetting.setWeeklyProviders(settings);
+    userSetting.setWeeklyPlugins(settings);
     userSettingService.save(userSetting);
   }
   
@@ -407,10 +407,10 @@ public abstract class AbstractPluginTest extends AbstractCoreTest {
 
   private void saveSetting(List<String> instantly, List<String> daily, List<String> weekly, String userId) {
     UserSetting model = UserSetting.getInstance();
-    model.setUserId(userId).setActive(true);
-    model.setInstantlyProviders(instantly);
-    model.setDailyProviders(daily);
-    model.setWeeklyProviders(weekly);
+    model.setUserId(userId).setChannelActive("email");
+    model.setInstantlyPlugins(instantly);
+    model.setDailyPlugins(daily);
+    model.setWeeklyPlugins(weekly);
     userSettingService.save(model);
   }
   

@@ -1,11 +1,12 @@
 #{param name=_ctx/}
 #{param name=groups/}
 #{param name=hasActivePlugin/}
-#{param name=checkBoxs/}
-#{param name=intranetCheckBoxs/}
-#{param name=selectBoxs/}
-#{param name=enabledGetEmail/}
-#{param name=enabledGetIntranet/}
+#{param name=emailCheckBoxList/}
+#{param name=emailSelectBoxList/}
+#{param name=emailChannel/}
+#{param name=channels/}
+#{param name=channelStatus/}
+#{param name=channelCheckBoxList/}
 
 <div id="userNotification" class="uiUserNotificationPortlet uiNotificationSettings">
 	<div class="UIPopupWindow UIDragObject uiPopup UISocialConfirmation" style="width: 550px; display: none;">
@@ -33,7 +34,9 @@
 		<div class="form-horizontal" >
 			<h4>${_ctx.appRes("UINotification.msg.NoPluginIsActive")}</h4>
 		</div>
-		<%} else { %>		
+		<%} else { 
+		  String enabledGetEmail = channelStatus.get(emailChannel);
+		%>		
 		<div class="form-horizontal">
 			<table class="uiGrid table table-striped">
 				<thead>
@@ -45,18 +48,37 @@
 								<input type="checkbox" class="iphoneStyle yesno staus-${enabledGetEmail}" ${(enabledGetEmail) ? "checked=\"checked\"" : "" } name="email">
 							</div>
 						</td>
+						<%
+							for(channel in channels) {
+							  if(channel.equals(emailChannel)) {
+							    continue;
+							  }
+							  String enabled = channelStatus.get(channel);
+						%>
 						<td class="clearfix">
-							<div class="pull-left" style="padding-left: 5px">${_ctx.appRes("UINotification.label.GetIntranetNotification")}</div>
+							<div class="pull-left" style="padding-left: 5px">${_ctx.appRes("UINotification.label." + channel)}</div>
 							<div class="inputContainer pull-left" style="width: 60px;">
-								<input type="checkbox" class="iphoneStyle yesno staus-${enabledGetIntranet}" ${(enabledGetIntranet) ? "checked=\"checked\"" : "" } name="intranet">
+								<input type="checkbox" class="iphoneStyle yesno staus-${enabled}" ${(enabled) ? "checked=\"checked\"" : "" } name="channel${channel}">
 							</div>
 						</td>
+						<%
+							}
+						%>
 					</tr>
 					<tr>
 						<th class="left">${_ctx.appRes("UINotification.label.NotificationsChose")}:</th>
 						<th width="200px" class="left">${_ctx.appRes("UINotification.label.SendMeAnEmailRightWay")}</th>
 						<th width="200px" class="left">${_ctx.appRes("UINotification.label.IncludeInMyDigestEmail")}</th>
-						<th width="200px" class="left">${_ctx.appRes("UINotification.label.SeeOnYourIntranet")}</th>
+						<%
+							for(channel in channels) {
+							  if(channel.equals(emailChannel)) {
+							    continue;
+							  }
+						%>
+						<th width="200px" class="left">${_ctx.appRes("UINotification.title." + channel)}</th>
+						<%
+							}
+						%>
 					</tr>
 				</thead>
 				<tbody>
@@ -78,7 +100,7 @@
 						int groupActive = 0;
 						for (def plugin : pluginInfos) {
 							String pluginId = plugin.getType();
-							if(plugin.isActive() == false && plugin.isIntranetActive() == false) {
+							if(plugin.getAllChannelActive().isEmpty()) {
 								continue;
 							}
 							groupActive = groupActive + 1;
@@ -90,7 +112,13 @@
 										</td>
 										<td></td>
 										<td></td>
+									<%
+										for(int i = 1; i < channels.size(); ++i) {
+									%>
 										<td></td>
+									<%
+										}
+									%>
 									</tr>
 								<%
 							}
@@ -100,20 +128,29 @@
 							<label for="${pluginId}">${_ctx.pluginRes("UINotification.title." + pluginId, pluginId)}</label>
 						</td>
 						<td class="center email">
-						<% if(plugin.isActive()) { %>
-							${checkBoxs.get(pluginId)}
+						<% if(plugin.isChannelActive(emailChannel)) { %>
+							${emailCheckBoxList.get(pluginId)}
 						<% } %>
 						</td>
 						<td class="center email">
-						<% if(plugin.isActive()) { %>
-							${selectBoxs.get(pluginId)}
+						<% if(plugin.isChannelActive(emailChannel)) { %>
+							${emailSelectBoxList.get(pluginId)}
 						<% } %>
 						</td>
-						<td class="center intranet">
-						<% if(plugin.isIntranetActive()) { %>
-							${intranetCheckBoxs.get(pluginId)}
+						<%
+							for(channel in channels) {
+							  if(channel.equals(emailChannel)) {
+							    continue;
+							  }
+						%>
+						<td class="center ${channel}">
+						<% if(plugin.isChannelActive(channel)) { %>
+								${channelCheckBoxList.get(channel + pluginId)}
 						<% } %>
 						</td>
+						<%
+							}
+						%>
 					</tr>
 			 	 <% } %>
 			 <% } %>
