@@ -179,7 +179,7 @@ public class ActivityMentionPlugin extends AbstractNotificationPlugin {
     templateContext.put("USER", identity.getProfile().getFullName());
     templateContext.put("AVATAR", LinkProviderUtils.getUserAvatarUrl(identity.getProfile()));
     templateContext.put("PROFILE_URL", LinkProviderUtils.getRedirectUrl("user", identity.getRemoteId()));
-    templateContext.put("ACTIVITY", NotificationUtils.processLinkTitle(activity.getTitle()));
+    templateContext.put("ACTIVITY", NotificationUtils.removeLinkTitle(activity.getTitle()));
     
     // In case of mention on a comment, we need provide the id of the activity, not of the comment
     if (activity.isComment()) {

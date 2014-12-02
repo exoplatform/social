@@ -168,7 +168,7 @@ public class LikePlugin extends AbstractNotificationPlugin {
     templateContext.put("LAST_UPDATED_TIME", TimeConvertUtils.convertXTimeAgo(notification.getLastModifiedDate().getTime(), "EE, dd yyyy", new Locale(language), TimeConvertUtils.YEAR));
     templateContext.put("USER", identity.getProfile().getFullName());
     templateContext.put("AVATAR", LinkProviderUtils.getUserAvatarUrl(identity.getProfile()));
-    templateContext.put("ACTIVITY", NotificationUtils.processLinkTitle(activity.getTitle()));
+    templateContext.put("ACTIVITY", NotificationUtils.removeLinkTitle(activity.getTitle()));
     templateContext.put("PROFILE_URL", LinkProviderUtils.getRedirectUrl("user", identity.getRemoteId()));
     templateContext.put("VIEW_FULL_DISCUSSION_ACTION_URL", LinkProviderUtils.getRedirectUrl("view_full_activity", activity.getId()));
 

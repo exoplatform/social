@@ -5,7 +5,7 @@
     </div>
     <div class="media-body">
       <%
-       String spaceUrl = "<a class=\"user-name text-bold\" target=\"_blank\" href=\""+ SPACE_URL + "\">" + SPACE + "</a>";
+       String spaceUrl = "<a class=\"user-name text-bold\" target=\"_blank\" href=\"javascript:void(0)\">" + SPACE + "</a>";
        String actions = (STATUS == "ACCEPTED") ? _ctx.appRes("Notification.intranet.message.accept.SpaceInvitationPlugin", spaceUrl)
                                               : _ctx.appRes("Notification.intranet.message.SpaceInvitationPlugin", spaceUrl);
       %>

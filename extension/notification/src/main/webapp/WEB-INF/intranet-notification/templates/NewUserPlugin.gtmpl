@@ -5,7 +5,7 @@
     </div>
     <div class="media-body">
       <%
-       String profileUrl = "<a class=\"user-name text-bold\" href=\"" + PROFILE_URL + "\">" + USER + "</a>";
+       String profileUrl = "<a class=\"user-name text-bold\" href=\"javascript:void(0)\">" + USER + "</a>";
       %>
         <div class="contentSmall" data-link="">
           <div class="status"><%=_ctx.appRes("Notification.intranet.message.NewUserPlugin", profileUrl, PORTAL_HOME)%></div>

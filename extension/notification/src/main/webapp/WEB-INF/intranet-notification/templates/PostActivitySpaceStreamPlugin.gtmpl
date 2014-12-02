@@ -5,8 +5,8 @@
     </div>
     <div class="media-body">
       <%
-       String profileUrl = "<a class=\"user-name text-bold\" href=\"" + PROFILE_URL + "\">" + USER + "</a>";
-       String spaceUrl = "<a class=\"space-name text-bold\" target=\"_blank\" href=\""+ SPACE_URL + "\">" + SPACE + "</a>";
+       String profileUrl = "<a class=\"user-name text-bold\" href=\"javascript:void(0)\">" + USER + "</a>";
+       String spaceUrl = "<a class=\"space-name text-bold\" target=\"_blank\" href=\"javascript:void(0)\">" + SPACE + "</a>";
       %>
       <div class="contentSmall" data-link="$VIEW_FULL_DISCUSSION_ACTION_URL">
         <div class="status"><%=_ctx.appRes("Notification.intranet.message.PostActivitySpaceStreamPlugin", profileUrl, spaceUrl)%>  <span class="lastUpdatedTime">$LAST_UPDATED_TIME</span></div>
