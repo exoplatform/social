@@ -17,7 +17,6 @@
 package org.exoplatform.social.portlet.userNotification;
 
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -127,10 +126,10 @@ public class UserNotificationSetting {
           pluginId = pluginId.replaceFirst(SELECT_BOX_PREFIX, "");
           //
           if (WEEKLY.equals(value)) {
-            setting.addPlugin(pluginId, FREQUENCY.WEEKLY);
+            setting.addPlugin(pluginId.replaceFirst(UserSetting.EMAIL_CHANNEL, ""), FREQUENCY.WEEKLY);
           }
           if (DAILY.equals(value)) {
-            setting.addPlugin(pluginId, FREQUENCY.DAILY);
+            setting.addPlugin(pluginId.replaceFirst(UserSetting.EMAIL_CHANNEL, ""), FREQUENCY.DAILY);
           }
         } else if (!pluginId.startsWith(CHANNEL_PREFIX)) {// check-box without channel active
           for (String channelId : channels) {
