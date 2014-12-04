@@ -7,7 +7,7 @@
       <%
        String profileUrl = "<a class=\"user-name text-bold\" href=\"javascript:void(0)\">" + USER + "</a>";
        String actions = (STATUS == "ACCEPTED")  ? _ctx.appRes("Notification.intranet.message.accept.RelationshipReceivedRequestPlugin", profileUrl)
-                                                : _ctx.appRes("Notification.intranet.message.RelationshipReceivedRequestPlugin", profileUrl, PORTAL_HOME);
+                                                : _ctx.appRes("Notification.intranet.message.RelationshipReceivedRequestPlugin", profileUrl);
       %>
       <div class="contentSmall" data-link="$PROFILE_URL">
         <div class="status"><%=actions%> <span class="lastUpdatedTime">$LAST_UPDATED_TIME</span></div>

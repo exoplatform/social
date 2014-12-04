@@ -22,5 +22,5 @@
       </div>
     </div>
   </div>
-  <a href="javascript:void(0)" class="remove-item" data-rest=""><i class="uiIconClose uiIconLightGray"></i></a>
+  <span class="remove-item" data-rest=""><i class="uiIconClose uiIconLightGray"></i></span>
 </li>

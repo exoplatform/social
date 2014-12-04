@@ -239,5 +239,14 @@
       </depends>
     </module>
   </portlet>
+  
+  <portlet>
+		<name>IntranetNotificationsPortlet</name>
+		<module>
+			<depends>
+				<module>intranetNotification</module>
+			</depends>
+		</module>
+	</portlet>
 </gatein-resources>
 

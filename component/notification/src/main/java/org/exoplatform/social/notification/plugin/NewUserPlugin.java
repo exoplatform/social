@@ -156,7 +156,8 @@ public class NewUserPlugin extends AbstractNotificationPlugin {
     templateContext.put("NOTIFICATION_ID", notification.getId());
     templateContext.put("LAST_UPDATED_TIME", TimeConvertUtils.convertXTimeAgo(TimeConvertUtils.getGreenwichMeanTime().getTime(), "EE, dd yyyy", new Locale(language), TimeConvertUtils.YEAR));
     templateContext.put("USER", userProfile.getFullName());
-    templateContext.put("PORTAL_HOME", NotificationUtils.getPortalHome(NotificationPluginUtils.getBrandingPortalName()));
+    templateContext.put("PORTAL_NAME", NotificationPluginUtils.getBrandingPortalName());
+    //templateContext.put("PORTAL_HOME", NotificationUtils.getPortalHome(NotificationPluginUtils.getBrandingPortalName()));
     templateContext.put("PROFILE_URL", LinkProviderUtils.getRedirectUrl("user", identity.getRemoteId()));
     templateContext.put("AVATAR", LinkProviderUtils.getUserAvatarUrl(userProfile));
     return TemplateUtils.processIntranetGroovy(templateContext);

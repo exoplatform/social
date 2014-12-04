@@ -8,9 +8,11 @@
        String profileUrl = "<a class=\"user-name text-bold\" href=\"javascript:void(0)\">" + USER + "</a>";
       %>
         <div class="contentSmall" data-link="">
-          <div class="status"><%=_ctx.appRes("Notification.intranet.message.NewUserPlugin", profileUrl, PORTAL_HOME)%></div>
+          <div class="status"><%=_ctx.appRes("Notification.intranet.message.NewUserPlugin", profileUrl, PORTAL_NAME)%>
+            <span class="lastUpdatedTime">$LAST_UPDATED_TIME</span>
+          </div>
+          <div class="content"></div>
         </div>
-        <div class="lastUpdatedTime">$LAST_UPDATED_TIME</div>
     </div>
   </div>
   <span class="remove-item" data-rest=""><i class="uiIconClose uiIconLightGray"></i></span>

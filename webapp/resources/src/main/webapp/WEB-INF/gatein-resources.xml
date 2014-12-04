@@ -73,6 +73,17 @@
   </module>
   
   <module>
+    <name>intranetNotification</name>
+    <script>
+       <path>/javascript/eXo/social/notification/IntranetNotification.js</path>
+    </script>
+    <depends>
+      <module>jquery</module>
+      <as>gj</as>
+    </depends>
+  </module>
+  
+  <module>
     <name>socialGadgetsUtil</name>
     <script>
        <path>/javascript/eXo/social/SocialGadgetsUtil.js</path>

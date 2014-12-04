@@ -1,8 +1,27 @@
 <%
     def requireJs = _ctx.getRequestContext().getJavascriptManager().getRequireJS();
-	requireJs.require("SHARED/socialUtil", "socialUtil")
-         	 .addScripts("socialUtil.alertEvent('" + uicomponent.id + "');");
+	requireJs.require("SHARED/intranetNotification", "intranetNotification")
+         	 .addScripts("intranetNotification.init('" + uicomponent.id + "');");
 %>
 
 <div class="UIIntranetNotificationsPortlet" id="$uicomponent.id">
+  <div style="display:none" class="all-actions">
+    <%
+      List actions = uicomponent.getActions();
+      for(action in actions) {
+        print("<div id=\"" + action + "\">" + uicomponent.getActionUrl(action) + "</div>");
+      }
+    %>
+  </div>
+  <%
+    List notifications = uicomponent.getNotifications();
+    String display = (notifications.size() == 0) ? "block" : "none";
+  %>
+  <ul class="displayItems">
+  <% 
+    for(notification in notifications) { 
+      print(notification);
+    }
+  %>
+  </ul>
 </div>
