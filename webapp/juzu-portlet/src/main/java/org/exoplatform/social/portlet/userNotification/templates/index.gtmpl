@@ -42,11 +42,11 @@
 				<thead>
 					<tr>
 						<td></td>
-						<td colspan="2" class="clearfix">
-							<div class="pull-left" style="padding-left: 5px">${_ctx.appRes("UINotification.label.GetEmailNotification")}</div>
-							<div class="inputContainer pull-left" style="width: 60px;">
+						<td colspan="2" class="center">
+							<div>${_ctx.appRes("UINotification.label.GetEmailNotification")}</div>
+							<span class="inputContainer" style="width: 60px;">
 								<input type="checkbox" class="iphoneStyle yesno staus-${enabledGetEmail}" ${(enabledGetEmail) ? "checked=\"checked\"" : "" } name="channel${emailChannel}">
-							</div>
+							</span>
 						</td>
 						<%
 							for(channel in channels) {
@@ -55,11 +55,11 @@
 							  }
 							  String enabled = channelStatus.get(channel);
 						%>
-						<td class="clearfix">
-							<div class="pull-left" style="padding-left: 5px">${_ctx.appRes("UINotification.label." + channel)}</div>
-							<div class="inputContainer pull-left" style="width: 60px;">
+						<td class="center">
+							<div>${_ctx.appRes("UINotification.label." + channel)}</div>
+							<span class="inputContainer" style="width: 60px;">
 								<input type="checkbox" class="iphoneStyle yesno staus-${enabled}" ${(enabled) ? "checked=\"checked\"" : "" } name="channel${channel}">
-							</div>
+							</span>
 						</td>
 						<%
 							}
@@ -67,15 +67,15 @@
 					</tr>
 					<tr>
 						<th class="left">${_ctx.appRes("UINotification.label.NotificationsChose")}:</th>
-						<th width="200px" class="left">${_ctx.appRes("UINotification.label.SendMeAnEmailRightWay")}</th>
-						<th width="200px" class="left">${_ctx.appRes("UINotification.label.IncludeInMyDigestEmail")}</th>
+						<th width="200px" class="center">${_ctx.appRes("UINotification.label.SendMeAnEmailRightWay")}</th>
+						<th width="200px" class="center">${_ctx.appRes("UINotification.label.IncludeInMyDigestEmail")}</th>
 						<%
 							for(channel in channels) {
 							  if(channel.equals(emailChannel)) {
 							    continue;
 							  }
 						%>
-						<th width="200px" class="left">${_ctx.appRes("UINotification.title." + channel)}</th>
+						<th width="200px" class="center">${_ctx.appRes("UINotification.title." + channel)}</th>
 						<%
 							}
 						%>

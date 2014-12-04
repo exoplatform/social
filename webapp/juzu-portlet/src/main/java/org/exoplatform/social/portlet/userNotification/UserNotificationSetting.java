@@ -295,7 +295,7 @@ public class UserNotificationSetting {
     String selected = "";
     String id = makeSelectBoxId(name);
     StringBuffer buffer = new StringBuffer("<span class=\"uiSelectbox\">");
-    buffer.append("<select name=\"").append(id).append("\" id=\"").append(id).append("\"").append((isActive == false) ? " disabled " : "").append(" class=\"selectbox\">");
+    buffer.append("<select name=\"").append(id).append("\" id=\"").append(id).append("\"").append((isActive == false) ? " disabled " : "").append(" class=\"selectbox input-small\">");
     for (String key : options.keySet()) {
       selected = (key.equals(selectedId) == true) ? " selected=\"selected\" " : "";
       buffer.append("<option value=\"").append(key).append("\" class=\"option\"").append(selected).append(">").append(options.get(key)).append("</option>");
