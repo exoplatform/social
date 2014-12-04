@@ -17,13 +17,11 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 -->
-
 <gatein-resources
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://www.gatein.org/xml/ns/gatein_resources_1_3 http://www.gatein.org/xml/ns/gatein_resources_1_3"
   xmlns="http://www.gatein.org/xml/ns/gatein_resources_1_3">
 
- 
   <!-- Portlet javascript -->
   <portlet>
     <name>PeopleToolbarPortlet</name>

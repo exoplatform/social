@@ -1,0 +1,76 @@
+// View All Notifications
+// -------------------------
+@import "../variables.less";
+@import "../mixins.less";
+// -------------------------
+.UIIntranetNotificationsPortlet {
+	padding: 20px;
+	.displayItems {
+		background-color: @white;
+		border: 1px solid @borderColor;
+		.border-radius(@borderRadiusSmall);
+		.text-bold {
+			font-weight: bold;
+		}
+		> li {
+			display: block;
+			padding: 11px 25px 15px 15px;
+			border-top: 1px solid @borderColor;
+			border-top: none;
+			position: relative;
+			&:first-child {
+				.border-top-radius(@borderRadiusSmall);
+			}
+			&:last-child {
+				.border-bottom-radius(@borderRadiusSmall);
+			}
+			> .remove-item {
+				right: 5px;
+				padding: 0px;
+				margin: 0px;
+				cursor: pointer;
+				> .uiIconClose {
+					margin: 0px;
+				}
+			}
+			.status {
+				display: block;
+				max-height: 40px;
+				overflow: hidden;
+			}
+			.content {
+				//.text-overflow;
+				.confirm {
+					margin: 3px 0;
+				}
+			}
+			.avatarSmall {
+				margin-top: 4px;
+  				.roundedCornerAvatar(45px, 2px);
+			}
+			.lastUpdatedTime {
+				color: @textLightColor;
+				font-size: 12px;
+				font-style: italic;
+				display: inline-block;
+			}
+			+ li {
+				border-top: 1px solid @borderColor;
+			}
+			&.unread {
+				background-color: @quoteSecondBackground;
+			}
+			&:hover {
+				background-color: @componentBackgroundLight;
+				> .remove-item {
+					> .uiIconClose, > .uiIconClose:hover {
+						background-image: url("@{images-path}/Icons/uiIconsWhite.png")!important;
+					}
+				}
+			}
+			&:first-child {
+				.border-top-radius(@borderRadiusSmall);
+			}
+		}
+	}
+}

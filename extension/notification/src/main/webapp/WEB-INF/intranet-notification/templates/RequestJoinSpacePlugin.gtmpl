@@ -5,13 +5,14 @@
     </div>
     <div class="media-body">
       <%
-       String profileUrl = "<a class=\"user-name text-bold\" href=\"javascript:void(0)\">" + USER + "</a>";
-       String spaceUrl = "<a class=\"space-name text-bold\" target=\"_blank\" href=\"javascript:void(0)\">" + SPACE + "</a>";
-       String actions = (STATUS == "ACCEPTED")  ? _ctx.appRes("Notification.intranet.message.accept.RequestJoinSpacePlugin", profileUrl, spaceUrl)
-                                                : _ctx.appRes("Notification.intranet.message.RequestJoinSpacePlugin", profileUrl, spaceUrl);
+        String profileUrl = "<a class=\"user-name text-bold\" href=\"javascript:void(0)\">" + USER + "</a>";
+        String spaceUrl = "<a class=\"space-name text-bold\" target=\"_blank\" href=\"javascript:void(0)\">" + SPACE + "</a>";
+        String actions = (STATUS == "ACCEPTED")   ? _ctx.appRes("Notification.intranet.message.accept.RequestJoinSpacePlugin", profileUrl, spaceUrl)
+                                                  : _ctx.appRes("Notification.intranet.message.RequestJoinSpacePlugin", profileUrl, spaceUrl);
+        String iconType = (STATUS == "ACCEPTED")  ? "uiIconTick" : "uiIconAddMembership";
       %>
       <div class="contentSmall" data-link="$PROFILE_URL">
-        <div class="status"><%=actions%> <span class="lastUpdatedTime">$LAST_UPDATED_TIME</span></div>
+        <div class="status"><%=actions%> <span class="lastUpdatedTime"><i class="uiIcon <%=iconType%> uiIconLightGray"></i>$LAST_UPDATED_TIME</span></div>
         <div class="content">
         <% if (STATUS != "ACCEPTED") { %>
           <div class="confirm">

@@ -5,12 +5,13 @@
     </div>
     <div class="media-body">
       <%
-       String spaceUrl = "<a class=\"user-name text-bold\" target=\"_blank\" href=\"javascript:void(0)\">" + SPACE + "</a>";
-       String actions = (STATUS == "ACCEPTED") ? _ctx.appRes("Notification.intranet.message.accept.SpaceInvitationPlugin", spaceUrl)
-                                              : _ctx.appRes("Notification.intranet.message.SpaceInvitationPlugin", spaceUrl);
+        String spaceUrl = "<a class=\"user-name text-bold\" target=\"_blank\" href=\"javascript:void(0)\">" + SPACE + "</a>";
+        String actions = (STATUS == "ACCEPTED") ? _ctx.appRes("Notification.intranet.message.accept.SpaceInvitationPlugin", spaceUrl)
+                                                : _ctx.appRes("Notification.intranet.message.SpaceInvitationPlugin", spaceUrl);
+        String iconType = (STATUS == "ACCEPTED")  ? "uiIconTick" : "uiIconGroup";
       %>
       <div class="contentSmall" data-link="$SPACE_URL">
-        <div class="status"><%=actions%> <span class="lastUpdatedTime">$LAST_UPDATED_TIME</span></div>
+        <div class="status"><%=actions%> <span class="lastUpdatedTime"><i class="uiIcon <%=iconType%> uiIconLightGray"></i>$LAST_UPDATED_TIME</span></div>
         <div class="content">
         <% if (STATUS != "ACCEPTED") { %>
           <div class="confirm">
