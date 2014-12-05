@@ -1,6 +1,6 @@
 <li class="$READ clearfix" data-id="$NOTIFICATION_ID">
   <div class="media">
-    <div class="avatarSmall pull-left">
+    <div class="avatarXSmall pull-left">
       <img src="$AVATAR" alt="$USER" />
     </div> 
     <div class="media-body">
