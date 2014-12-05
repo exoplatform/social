@@ -2,9 +2,12 @@
     def requireJs = _ctx.getRequestContext().getJavascriptManager().getRequireJS();
 	requireJs.require("SHARED/intranetNotification", "intranetNotification")
          	 .addScripts("intranetNotification.init('" + uicomponent.id + "');");
+	String userSettingUrl = uicomponent.getUserNotificationSettingUrl(); 
 %>
 
 <div class="UIIntranetNotificationsPortlet" id="$uicomponent.id">
+  <h3><%=_ctx.appRes("UIIntranetNotificationsPortlet.title.AllNotifications")%></h3>
+  <a class="user-setting" href="<%=userSettingUrl%>"><%=_ctx.appRes("UIIntranetNotificationsPortlet.title.NotificationsSetting")%></a>
   <div style="display:none" class="all-actions">
     <%
       List actions = uicomponent.getActions();

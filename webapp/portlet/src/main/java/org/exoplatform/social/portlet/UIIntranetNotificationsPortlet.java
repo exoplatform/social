@@ -16,26 +16,14 @@
  */
 package org.exoplatform.social.portlet;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 
-import org.exoplatform.commons.api.notification.NotificationContext;
-import org.exoplatform.commons.api.notification.model.ArgumentLiteral;
-import org.exoplatform.commons.api.notification.model.NotificationInfo;
-import org.exoplatform.commons.api.notification.model.NotificationKey;
-import org.exoplatform.commons.api.notification.model.UserSetting;
-import org.exoplatform.commons.api.notification.plugin.AbstractNotificationPlugin;
-import org.exoplatform.commons.api.notification.service.setting.UserSettingService;
 import org.exoplatform.commons.api.notification.service.storage.IntranetNotificationDataStorage;
-import org.exoplatform.commons.api.notification.service.storage.NotificationDataStorage;
-import org.exoplatform.commons.notification.impl.NotificationContextImpl;
 import org.exoplatform.portal.application.PortalRequestContext;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
+import org.exoplatform.social.core.service.LinkProvider;
 import org.exoplatform.webui.application.WebuiApplication;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
@@ -64,10 +52,6 @@ public class UIIntranetNotificationsPortlet extends UIPortletApplication {
   
   private IntranetNotificationDataStorage dataStorage;
   
-  private NotificationDataStorage storage;
-  
-  private UserSettingService userSettingService;
-  
   private String currentUser = "";
   
   private static final Log LOG = ExoLogger.getLogger(UIIntranetNotificationsPortlet.class);
@@ -75,8 +59,6 @@ public class UIIntranetNotificationsPortlet extends UIPortletApplication {
   public UIIntranetNotificationsPortlet() throws Exception {
     currentUser = WebuiRequestContext.getCurrentInstance().getRemoteUser();
     dataStorage = getApplicationComponent(IntranetNotificationDataStorage.class);
-    userSettingService = getApplicationComponent(UserSettingService.class);
-    storage = getApplicationComponent(NotificationDataStorage.class);
   }
   
   @Override
@@ -86,33 +68,12 @@ public class UIIntranetNotificationsPortlet extends UIPortletApplication {
   }
   
   protected List<String> getNotifications() throws Exception {
-    //return dataStorage.getNotificationContent(currentUser, true);
-    return createList();
+    return dataStorage.getNotificationContent(currentUser, false);
   }
   
-  private List<String> createList() {
-    List<String> result = new ArrayList<>();
-    
-    ArgumentLiteral<Boolean> JOB_DAILY = new ArgumentLiteral<Boolean>(Boolean.class, "jobDaily");
-    ArgumentLiteral<String> DAY_OF_JOB = new ArgumentLiteral<String>(String.class, "dayOfJob");
-    ArgumentLiteral<Boolean> JOB_WEEKLY = new ArgumentLiteral<Boolean>(Boolean.class, "jobWeekly");
-    
-    NotificationContext context = NotificationContextImpl.cloneInstance();
-    context.append(JOB_DAILY, false);
-    String dayName = String.valueOf(Calendar.getInstance().get(Calendar.DAY_OF_MONTH));
-    context.append(DAY_OF_JOB, dayName);
-    context.append(JOB_WEEKLY, true);
-    UserSetting userSetting = userSettingService.get(currentUser);
-    
-    Map<NotificationKey, List<NotificationInfo>> notificationMessageMap = storage.getByUser(context, userSetting);
-    for (Entry<NotificationKey, List<NotificationInfo>> entry : notificationMessageMap.entrySet()) {
-      for (NotificationInfo info : entry.getValue()) {
-        String s = buildNotificationMessage(info);
-        if (s.length() > 0)
-          result.add(s);
-      }
-    }
-    return result;
+  
+  protected String getUserNotificationSettingUrl() {
+    return LinkProvider.getUserNotificationSettingUri(currentUser);
   }
 
   private String buildNotificationMessage(NotificationInfo notification) {
@@ -127,7 +88,7 @@ public class UIIntranetNotificationsPortlet extends UIPortletApplication {
     }
     return "";
   }
-  
+
   protected List<String> getActions() {
     return Arrays.asList("MarkRead", "Remove");
   }
