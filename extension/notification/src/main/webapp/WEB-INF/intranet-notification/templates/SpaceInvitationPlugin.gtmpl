@@ -11,7 +11,7 @@
         String iconType = (STATUS == "ACCEPTED")  ? "uiIconTick" : "uiIconGroup";
       %>
       <div class="contentSmall" data-link="$SPACE_URL">
-        <div class="status"><%=actions%> <span class="lastUpdatedTime"><i class="uiIcon <%=iconType%> uiIconLightGray"></i>$LAST_UPDATED_TIME</span></div>
+        <div class="status"><%=actions%></div>
         <div class="content">
         <% if (STATUS != "ACCEPTED") { %>
           <div class="confirm">
@@ -20,6 +20,7 @@
           </div>
         <% } %>
         </div>
+        <div class="lastUpdatedTime"><i class="uiIcon <%=iconType%> uiIconLightGray"></i>$LAST_UPDATED_TIME</div>
       </div>
     </div>
   </div>

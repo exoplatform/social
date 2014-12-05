@@ -8,8 +8,9 @@
          String profileUrl = "<a class=\"user-name text-bold\" href=\"javascript:void(0)\">" + USER + "</a>";
         %>
         <div class="contentSmall" data-link="$VIEW_FULL_DISCUSSION_ACTION_URL">
-          <div class="status"><%=_ctx.appRes("Notification.intranet.message.ActivityMentionPlugin", profileUrl)%> <span class="lastUpdatedTime">$LAST_UPDATED_TIME</span></div>
+          <div class="status"><%=_ctx.appRes("Notification.intranet.message.ActivityMentionPlugin", profileUrl)%></div>
           <div class="content"><i class="uiIcon uiIconUser uiIconLightGray"></i>$ACTIVITY</div>
+          <div class="lastUpdatedTime">$LAST_UPDATED_TIME</div>
         </div>
     </div>
   </div>
