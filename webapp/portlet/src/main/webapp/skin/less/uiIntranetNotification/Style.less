@@ -5,10 +5,14 @@
 // -------------------------
 .UIIntranetNotificationsPortlet {
 	padding: 20px;
+	position: relative;
+	> .user-setting {
+		position: absolute;
+		right: 20px;
+		top: 37px;
+	}
 	.displayItems {
-		background-color: @white;
-		border: 1px solid @borderColor;
-		.border-radius(@borderRadiusSmall);
+		margin-bottom: 10px;
 		.text-bold {
 			font-weight: bold;
 		}
@@ -18,17 +22,13 @@
 			border-top: 1px solid @borderColor;
 			border-top: none;
 			position: relative;
-			&:first-child {
-				.border-top-radius(@borderRadiusSmall);
-			}
-			&:last-child {
-				.border-bottom-radius(@borderRadiusSmall);
-			}
+			cursor: pointer;
 			> .remove-item {
 				right: 5px;
 				padding: 0px;
 				margin: 0px;
 				cursor: pointer;
+				display: none;
 				> .uiIconClose {
 					margin: 0px;
 				}
@@ -39,38 +39,68 @@
 				overflow: hidden;
 			}
 			.content {
-				//.text-overflow;
+				font-size: 12px;
+				font-weight: bold;
+				.btn {
+					font-weight: normal;
+					&.btn-primary {
+						font-weight: bold;
+					}
+				}
 				.confirm {
 					margin: 3px 0;
 				}
 			}
-			.avatarSmall {
+			.avatarXSmall {
 				margin-top: 4px;
   				.roundedCornerAvatar(45px, 2px);
 			}
 			.lastUpdatedTime {
 				color: @textLightColor;
 				font-size: 12px;
-				font-style: italic;
 				display: inline-block;
 			}
 			+ li {
 				border-top: 1px solid @borderColor;
 			}
+			[class^="uiIcon"] {
+				vertical-align: -3px;
+				margin-right: 7px;
+			}
 			&.unread {
 				background-color: @quoteSecondBackground;
 			}
 			&:hover {
-				background-color: @componentBackgroundLight;
+				#gradient > .vertical(@dropdownLinkBackgroundHover, darken(@dropdownLinkBackgroundHover, 15%));
+				color: @white;
+				cursor: pointer;
 				> .remove-item {
 					> .uiIconClose, > .uiIconClose:hover {
 						background-image: url("@{images-path}/Icons/uiIconsWhite.png")!important;
 					}
 				}
-			}
-			&:first-child {
-				.border-top-radius(@borderRadiusSmall);
+				a {
+					color: @white!important;
+				}
+				.btn {
+					color: @textColor!important;
+					&.btn-primary {
+						color: @white!important;
+					}
+				}
+				.lastUpdatedTime {
+					color: @white;
+				}
+				.uiIconLightGray {
+					background-image: url("@{images-path}/Icons/uiIconsWhite.png");
+				}
+				.uiIconSocLightGray	{
+					background-image: url("/social-resources/skin/images/Icons/uiIconsSocWhite.png");
+				}
 			}
 		}
+	}
+	.loadingMoreNotification {
+		text-align: center;
 	}
 }
