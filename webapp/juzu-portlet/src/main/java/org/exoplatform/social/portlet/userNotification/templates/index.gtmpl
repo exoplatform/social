@@ -29,56 +29,35 @@
 			<span>${_ctx.appRes("UINotification.label.NotificationsDescription")}</span>
 		</div>
 		<% 
-			if (hasActivePlugin == false) { 
+			if (hasActivePlugin == false) {
 		%>
 		<div class="form-horizontal" >
 			<h4>${_ctx.appRes("UINotification.msg.NoPluginIsActive")}</h4>
 		</div>
 		<%} else { 
 		  String enabledGetEmail = channelStatus.get(emailChannel);
+		  String msgOK = _ctx.appRes("UINotification.msg.SaveOKSetting");
+			String msgNOK = _ctx.appRes("UINotification.msg.SaveNOKSetting");
 		%>		
 		<div class="form-horizontal">
+			<div class="channel-actives clearfix">
+				<%
+					for(channel in channels) {
+					  String enabled = channelStatus.get(channel);
+				%>
+				<div class="pull-left">
+					<span class="inputContainer" style="width: 60px;">
+						<input type="checkbox" class="iphoneStyle yesno staus-${enabled}" ${(enabled == 'true') ? "checked=\"checked\"" : "" } name="channel${channel}"/>
+					</span>
+					<span class="channel-label">${_ctx.appRes("UINotification.label.channel-" + channel)}</span>
+				</div>
+				<%} %>
+			</div>
 			<table class="uiGrid table table-striped">
 				<thead>
 					<tr>
-						<td></td>
-						<td colspan="2" class="center">
-							<div>${_ctx.appRes("UINotification.label.GetEmailNotification")}</div>
-							<span class="inputContainer" style="width: 60px;">
-								<input type="checkbox" class="iphoneStyle yesno staus-${enabledGetEmail}" ${(enabledGetEmail) ? "checked=\"checked\"" : "" } name="channel${emailChannel}">
-							</span>
-						</td>
-						<%
-							for(channel in channels) {
-							  if(channel.equals(emailChannel)) {
-							    continue;
-							  }
-							  String enabled = channelStatus.get(channel);
-						%>
-						<td class="center">
-							<div>${_ctx.appRes("UINotification.label." + channel)}</div>
-							<span class="inputContainer" style="width: 60px;">
-								<input type="checkbox" class="iphoneStyle yesno staus-${enabled}" ${(enabled) ? "checked=\"checked\"" : "" } name="channel${channel}">
-							</span>
-						</td>
-						<%
-							}
-						%>
-					</tr>
-					<tr>
-						<th class="left">${_ctx.appRes("UINotification.label.NotificationsChose")}:</th>
-						<th width="200px" class="center">${_ctx.appRes("UINotification.label.SendMeAnEmailRightWay")}</th>
-						<th width="200px" class="center">${_ctx.appRes("UINotification.label.IncludeInMyDigestEmail")}</th>
-						<%
-							for(channel in channels) {
-							  if(channel.equals(emailChannel)) {
-							    continue;
-							  }
-						%>
-						<th width="200px" class="center">${_ctx.appRes("UINotification.title." + channel)}</th>
-						<%
-							}
-						%>
+						<th>${_ctx.appRes("UINotification.label.NotifyMeWhen")}</th>
+						<th>${_ctx.appRes("UINotification.label.HowToGetNotification")}</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -86,17 +65,17 @@
 				if (groups == null || groups.size() == 0) { 
 			%>
 					<tr>
-						<td class="empty center" colspan="3">
+						<td class="empty center" colspan="2">
 						 ${_ctx.appRes("UINotification.label.Empty")}
 						</td>
 					</tr>	
-			<%} else {
-					for(def group : groups) {
-						List pluginInfos = group.getProviderDatas();
+				<%
+			  } else {
+				  for(def group : groups) {
+						List pluginInfos = group.getPluginInfos();
 						if(pluginInfos == null || pluginInfos.size() == 0) {
 							continue;
 						}
-			
 						int groupActive = 0;
 						for (def plugin : pluginInfos) {
 							String pluginId = plugin.getType();
@@ -105,73 +84,97 @@
 							}
 							groupActive = groupActive + 1;
 							if (groupActive == 1) {
-								%>
-									<tr>
-										<td class="left">
-											<strong>${_ctx.pluginRes(group.getResourceBundleKey(), group.getGroupId())}</strong>
-										</td>
-										<td></td>
-										<td></td>
-									<%
-										for(int i = 1; i < channels.size(); ++i) {
-									%>
-										<td></td>
-									<%
-										}
-									%>
-									</tr>
-								<%
-							}
-					%>
+			%>
+					<tr>
+						<td class="left">
+							<strong>${_ctx.pluginRes(group.getResourceBundleKey(), group.getGroupId())}</strong>
+						</td>
+						<td></td>
+					</tr>
+						<%}%>
 					<tr>
 						<td class="left">
 							<label for="${pluginId}">${_ctx.pluginRes("UINotification.title." + pluginId, pluginId)}</label>
 						</td>
-						<td class="center email">
-						<% if(plugin.isChannelActive(emailChannel)) { %>
-							${emailCheckBoxList.get(pluginId)}
-						<% } %>
+						<td>
+							<div class="channel-container clearfix view">
+								<div class="left-container pull-left">
+								<%
+									boolean isNotActive = true;
+									for(channel in channels) {
+									  String enabled = channelStatus.get(channel);
+								%>
+									<div class="view-mode status-${enabled}">
+									<% if(channel.equals(emailChannel)) {
+										  def checkBox = emailCheckBoxList.get(pluginId);
+											def selectBox = emailSelectBoxList.get(pluginId);
+											if(checkBox != null && checkBox.isChecked()) {
+											  isNotActive = false;
+											  print("<div class=\"the-checkbox\"><i class=\"uiIconPLF"+channel+"\"></i> " + _ctx.appRes("UINotification.label.checkbox-" + channel) + "</div>");
+											}
+											if(selectBox != null && selectBox.isActiveSend()) {
+											  isNotActive = false;
+											  print("<div class=\"the-selectBox\"><i class=\"uiIconPLF"+channel+"\"></i> " 
+															+ _ctx.appRes("UINotification.label.selectBox-" + channel) + ": <strong>" + selectBox.getValueLabel() + "</strong></div>");
+											}
+										} else {
+										  String checkBoxId = channel + pluginId;
+										  def channelCheckBox = channelCheckBoxList.get(checkBoxId);
+										  if(channelCheckBox != null && channelCheckBox.isChecked()) {
+											  isNotActive = false;
+											  print("<div class=\"the-checkbox\"><i class=\"uiIconPLF"+channel+"\"></i> " + _ctx.appRes("UINotification.label.checkbox-" + channel) + "</div>");
+											}
+										}
+									%>
+									</div>
+									<div class="edit-mode status-${enabled}">
+									 <% if(channel.equals(emailChannel)) {
+										  def checkBox = emailCheckBoxList.get(pluginId);
+											def selectBox = emailSelectBoxList.get(pluginId);
+											if(checkBox != null) {
+											  print("<div>" + checkBox.render() + " <span>" + _ctx.appRes("UINotification.label.checkbox-" + channel) + "</span></div>");
+											}
+											if(selectBox != null) {
+											  print("<div><span class=\"uiCheckbox\"></span><span>" + _ctx.appRes("UINotification.label.selectBox-" + channel) + " </span>"
+											      + selectBox.render() + "</div>");
+											}
+										} else {
+										  def channelCheckBox = channelCheckBoxList.get(channel + pluginId);
+										  if(channelCheckBox != null) {
+										    print(channelCheckBox.render() + " <span>" + _ctx.appRes("UINotification.label.checkbox-" + channel) + "</span>");
+											}
+										}
+									%>
+									</div>
+								<%}
+									if(isNotActive) {
+									  print("<span class=\"view-mode status-false\">No notifications</span>");
+									}
+								%>
+								</div>
+								<div class="right-container pull-right">
+									<button id="${pluginId}" data-ok="${msgOK}" data-nok="${msgNOK}" class="btn btn-primary save-setting" type="button">${_ctx.appRes("UINotification.action.Save")}</button>
+									<a href="javascript:void(0)" class="edit-setting"><i class="uiIconEdit uiIconLightGray"></i></a>
+								</div>
+							</div>
 						</td>
-						<td class="center email">
-						<% if(plugin.isChannelActive(emailChannel)) { %>
-							${emailSelectBoxList.get(pluginId)}
-						<% } %>
-						</td>
-						<%
-							for(channel in channels) {
-							  if(channel.equals(emailChannel)) {
-							    continue;
-							  }
-						%>
-						<td class="center ${channel}">
-						<% if(plugin.isChannelActive(channel)) { %>
-								${channelCheckBoxList.get(channel + pluginId)}
-						<% } %>
-						</td>
-						<%
-							}
-						%>
 					</tr>
-			 	 <% } %>
-			 <% } %>
-		 <% } %>
+					<%} %>
+				<%} %>
+			<%} %>
+				
 				</tbody>
-			</table>
+			</table>					
+			
 			<%
 				String inforTitle = _ctx.appRes("UINotification.title.Information");
 				String confTitle = _ctx.appRes("UINotification.title.Confirmation");
-	
-				String msgOK = _ctx.appRes("UINotification.msg.SaveOKSetting");
-				String msgNOK = _ctx.appRes("UINotification.msg.SaveNOKSetting");
-	
 				String close = _ctx.appRes("UINotification.action.Cancel");
 				String ok = _ctx.appRes("UINotification.action.OK");
-	
 				String confirm = _ctx.appRes("UINotification.msg.ResetSetting");
 				String confirmLabel = _ctx.appRes("UINotification.action.Confirm");
 			%>
 			<div class="uiAction" data-info="${inforTitle}" data-conf="${confTitle}" data-close="${close}" data-ok="${ok}">
-				<button id="Save" data-ok="${msgOK}" data-nok="${msgNOK}" class="btn" type="button">${_ctx.appRes("UINotification.action.Save")}</button>
 				<button id="Reset" data-confirm="${confirm}" data-confirm-label="${confirmLabel}" class="btn" type="button">${_ctx.appRes("UINotification.action.Reset")}</button>
 			</div>
 		<%} %>			

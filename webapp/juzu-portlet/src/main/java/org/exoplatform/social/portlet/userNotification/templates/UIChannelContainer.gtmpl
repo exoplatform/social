@@ -1,0 +1,67 @@
+#{param name=_ctx/}
+#{param name=emailCheckBox/}
+#{param name=emailSelectBox/}
+#{param name=emailChannel/}
+#{param name=channels/}
+#{param name=channelStatus/}
+#{param name=channelCheckBoxList/}
+#{param name=pluginId/}
+
+<div class="channel-container clearfix view">
+	<div class="left-container pull-left">
+	<%
+	  String msgOK = _ctx.appRes("UINotification.msg.SaveOKSetting");
+		String msgNOK = _ctx.appRes("UINotification.msg.SaveNOKSetting");
+		boolean isNotActive = true;
+		for(channel in channels) {
+			String enabled = channelStatus.get(channel);
+	%>
+		<div class="view-mode status-${enabled}">
+		<% 
+			if(channel.equals(emailChannel)) {
+				if(emailCheckBox != null && emailCheckBox.isChecked()) {
+				  isNotActive = false;
+				  print("<div class=\"the-checkbox\"><i class=\"uiIconPLF"+channel+"\"></i> " + _ctx.appRes("UINotification.label.checkbox-" + channel) + "</div>");
+				}
+				if(emailSelectBox != null && emailSelectBox.isActiveSend()) {
+				  isNotActive = false;
+				  print("<div class=\"the-selectBox\"><i class=\"uiIconPLF"+channel+"\"></i> " 
+								+ _ctx.appRes("UINotification.label.selectBox-" + channel) + ": <strong>" + emailSelectBox.getValueLabel() + "</strong></div>");
+				}
+			} else {
+			  def channelCheckBox = channelCheckBoxList.get(channel);
+			  if(channelCheckBox != null && channelCheckBox.isChecked()) {
+				  isNotActive = false;
+				  print("<div class=\"the-checkbox\"><i class=\"uiIconPLF"+channel+"\"></i> " + _ctx.appRes("UINotification.label.checkbox-" + channel) + "</div>");
+				}
+			}
+		%>
+		</div>
+		<div class="edit-mode status-${enabled}">
+		<%if(channel.equals(emailChannel)) {
+				if(emailCheckBox != null) {
+				  print("<div>" + emailCheckBox.render() + " <span>" + _ctx.appRes("UINotification.label.checkbox-" + channel) + "</span></div>");
+				}
+				if(emailSelectBox != null) {
+				  print("<div><span class=\"uiCheckbox\"></span><span>" + _ctx.appRes("UINotification.label.selectBox-" + channel) + " </span>"
+				      + emailSelectBox.render() + "</div>");
+				}
+			} else {
+			  def channelCheckBox = channelCheckBoxList.get(channel);
+			  if(channelCheckBox != null) {
+			    print(channelCheckBox.render() + " <span>" + _ctx.appRes("UINotification.label.checkbox-" + channel) + "</span>");
+				}
+			}
+		%>
+		</div>
+	<%}
+		if(isNotActive) {
+		  print("<span class=\"view-mode status-false\">No notifications</span>");
+		}
+	%>
+	</div>
+	<div class="right-container pull-right">
+		<button id="${pluginId}" data-ok="${msgOK}" data-nok="${msgNOK}" class="btn btn-primary save-setting" type="button">${_ctx.appRes("UINotification.action.Save")}</button>
+		<a href="javascript:void(0)" class="edit-setting"><i class="uiIconEdit uiIconLightGray"></i></a>
+	</div>
+</div>
