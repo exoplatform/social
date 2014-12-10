@@ -20,19 +20,19 @@
 		<% 
 			if(channel.equals(emailChannel)) {
 				if(emailCheckBox != null && emailCheckBox.isChecked()) {
-				  isNotActive = false;
-				  print("<div class=\"the-checkbox\"><i class=\"uiIconPLF"+channel+"\"></i> " + _ctx.appRes("UINotification.label.checkbox-" + channel) + "</div>");
+					isNotActive = false;
+				 	print("<div class=\"the-checkbox\"><i class=\"uiIconPLF"+channel+"\"></i> " + _ctx.appRes("UINotification.label.checkbox-" + channel) + "</div>");
 				}
 				if(emailSelectBox != null && emailSelectBox.isActiveSend()) {
-				  isNotActive = false;
-				  print("<div class=\"the-selectBox\"><i class=\"uiIconPLF"+channel+"\"></i> " 
+				 	isNotActive = false;
+				 	print("<div class=\"the-selectBox\"><i class=\"uiIconPLF"+channel+"\"></i> " 
 								+ _ctx.appRes("UINotification.label.selectBox-" + channel) + ": <strong>" + emailSelectBox.getValueLabel() + "</strong></div>");
 				}
 			} else {
 			  def channelCheckBox = channelCheckBoxList.get(channel);
 			  if(channelCheckBox != null && channelCheckBox.isChecked()) {
-				  isNotActive = false;
-				  print("<div class=\"the-checkbox\"><i class=\"uiIconPLF"+channel+"\"></i> " + _ctx.appRes("UINotification.label.checkbox-" + channel) + "</div>");
+				 	isNotActive = false;
+					print("<div class=\"the-checkbox\"><i class=\"uiIconPLF"+channel+"\"></i> " + _ctx.appRes("UINotification.label.checkbox-" + channel) + "</div>");
 				}
 			}
 		%>
@@ -40,16 +40,16 @@
 		<div class="edit-mode status-${enabled}">
 		<%if(channel.equals(emailChannel)) {
 				if(emailCheckBox != null) {
-				  print("<div>" + emailCheckBox.render() + " <span>" + _ctx.appRes("UINotification.label.checkbox-" + channel) + "</span></div>");
+				 	print(emailCheckBox.render(_ctx.appRes("UINotification.label.checkbox-" + channel)));
 				}
 				if(emailSelectBox != null) {
-				  print("<div><span class=\"uiCheckbox\"></span><span>" + _ctx.appRes("UINotification.label.selectBox-" + channel) + " </span>"
-				      + emailSelectBox.render() + "</div>");
+					print("<div><span class=\"uiCheckbox\"></span><span class=\"labelForm\">" +
+				  		_ctx.appRes("UINotification.label.selectBox-" + channel) + " </span>" + emailSelectBox.render() + "</div>");
 				}
 			} else {
 			  def channelCheckBox = channelCheckBoxList.get(channel);
-			  if(channelCheckBox != null) {
-			    print(channelCheckBox.render() + " <span>" + _ctx.appRes("UINotification.label.checkbox-" + channel) + "</span>");
+				if(channelCheckBox != null) {
+			    	print(channelCheckBox.render(_ctx.appRes("UINotification.label.checkbox-" + channel)));
 				}
 			}
 		%>

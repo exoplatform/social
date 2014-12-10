@@ -1,22 +1,22 @@
 @import "variables.less";
 @import "mixins.less";
-
+//================================
 .uiUserNotificationPortlet {
 	padding: 20px 30px;
 	.alert {
 		left: 60%;
-	    position: absolute;
-	    transform: translate(-50%);
-	    margin-top: -10px;
+		position: absolute;
+		transform: translate(-50%);
+		margin-top: -10px;
 	}
-	.form-horizontal [class^="uiIconPLF"] {
+	[class^="uiIconPLF"] {
 		display: inline-block;
 		width: 16px;
 		height: 16px;
 		*margin-right: .3em;
 		line-height: 16px;
 		vertical-align: text-top;
-		background-image: url("/eXoPlatformResources/skin/images/icons/uiIconsPLFDarkGray.png");
+		background-image: url("/eXoPlatformResources/skin/images/icons/uiIconsPLFLightGray.png");
 		background-repeat: no-repeat;
 	}
 	.uiIconPLFintranet {
@@ -27,47 +27,90 @@
 		background-image: url("/eXoResources/skin/images/Icons/uiIconsLightGray.png") !important;
 	}
 	.status-false {
-		color: #777;
+		.opacity(65);
 	}
 	.status-true {
 	}
-  .uiGrid.table {
-      tr.disable {
-        color: gray;
-      }
-      tr {
-        td.left label, td >label{
-          padding-left: 20px;
+	.uiGrid.table {
+		tr.disable {
+			color: gray;
+		}
+		tr {
+			td {
+				&:first-child{
+					>label{
+						padding-left: 20px;
+					}
+				}
+			}
+			td .view .edit-mode,
+			td .view .btn {
+				display: none;
+			}
+			td .edit .view-mode,
+			td .edit .edit-setting {
+				display: none;
+			}
+		}
+	}
+	.view-mode, .edit-mode {
+        > div {
+            padding: 2px 0;
         }
-        td .view .edit-mode,
-        td .view .btn {
-        	display: none;
+    }
+    .view-mode {
+    	[class^="uiIconPLF"] {
+    		margin-right: 4px;
+    	}
+    }
+    .edit-mode {
+    	.labelForm {
+    		line-height: 28px;
+    		margin-right: 10px;
+    	}
+    }
+    .channel-container {
+        position: relative;
+        .right-container {
+            position: absolute;
+            top: 50%;
+            right: 0;
+            .translate(0, -50%);
         }
-        td .edit .view-mode,
-        td .edit .edit-setting {
-        	display: none;
+    }
+    .form-horizontal {
+    	padding-top: 5px;
+    }
+    .channel-actives {
+    	margin-bottom: 15px;
+    	.pull-left + .pull-left {
+        	margin-left: 20px;
         }
-      }
-  }
-  
+    }
 }
-.uiNotificationSettings .uiSocTitleBar{
-	margin-bottom: 10px;
-}
-.uiNotificationSettings .uiSocTitleBar h4 {
-	color: @linkColor;
-	margin-bottom: 15px;
-}
-.uiNotificationSettings .uiCheckbox {
-	margin: 0;
-}
-.uiNotificationSettings .uiCheckbox > span {
-	margin-left: 1px!important;
-}
-.uiNotificationSettings .form-horizontal table thead tr th:last-child {
-	text-align: center;
-}
-.uiNotificationSettings .form-horizontal table tr td:last-child .uiSelectbox,
-.uiNotificationSettings .form-horizontal table tr td:last-child .uiSelectbox .selectbox {
-	width: 82px;
+.uiNotificationSettings {
+    .uiSocTitleBar {
+        margin-bottom: 10px;
+        h4 {
+            color: @linkColor;
+            margin-bottom: 15px;
+        }
+    }
+    .uiCheckbox {
+        margin: 0;
+        & > span {
+            margin-left: 1px!important;
+        }
+    }
+    .form-horizontal {
+        table {
+            thead {
+                tr {
+                    th:last-child {
+                        width: 50%;
+                    }
+                }
+            }
+        }
+    }
 }

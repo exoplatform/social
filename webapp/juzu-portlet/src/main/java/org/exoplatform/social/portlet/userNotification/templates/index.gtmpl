@@ -21,24 +21,24 @@
 				</li>
 			</ul>
 			<div class="uiAction uiActionBorder"></div>
-		</div>			
+		</div>
 	</div>
 	<form id="uiNotificationSetting" name="uiNotificationSetting" action="" method="post">
 		<div class="uiSocTitleBar clearfix">
 			<h3>${_ctx.appRes("UINotification.label.NotificationSettings")}</h3>
 			<span>${_ctx.appRes("UINotification.label.NotificationsDescription")}</span>
 		</div>
-		<% 
+		<%
 			if (hasActivePlugin == false) {
 		%>
 		<div class="form-horizontal" >
 			<h4>${_ctx.appRes("UINotification.msg.NoPluginIsActive")}</h4>
 		</div>
-		<%} else { 
+		<%} else {
 		  String enabledGetEmail = channelStatus.get(emailChannel);
 		  String msgOK = _ctx.appRes("UINotification.msg.SaveOKSetting");
 			String msgNOK = _ctx.appRes("UINotification.msg.SaveNOKSetting");
-		%>		
+		%>
 		<div class="form-horizontal">
 			<div class="channel-actives clearfix">
 				<%
@@ -61,14 +61,14 @@
 					</tr>
 				</thead>
 				<tbody>
-			<% 
-				if (groups == null || groups.size() == 0) { 
+			<%
+				if (groups == null || groups.size() == 0) {
 			%>
 					<tr>
 						<td class="empty center" colspan="2">
 						 ${_ctx.appRes("UINotification.label.Empty")}
 						</td>
-					</tr>	
+					</tr>
 				<%
 			  } else {
 				  for(def group : groups) {
@@ -114,7 +114,7 @@
 											}
 											if(selectBox != null && selectBox.isActiveSend()) {
 											  isNotActive = false;
-											  print("<div class=\"the-selectBox\"><i class=\"uiIconPLF"+channel+"\"></i> " 
+											  print("<div class=\"the-selectBox\"><i class=\"uiIconPLF"+channel+"\"></i> "
 															+ _ctx.appRes("UINotification.label.selectBox-" + channel) + ": <strong>" + selectBox.getValueLabel() + "</strong></div>");
 											}
 										} else {
@@ -132,23 +132,23 @@
 										  def checkBox = emailCheckBoxList.get(pluginId);
 											def selectBox = emailSelectBoxList.get(pluginId);
 											if(checkBox != null) {
-											  print("<div>" + checkBox.render() + " <span>" + _ctx.appRes("UINotification.label.checkbox-" + channel) + "</span></div>");
+											  print(checkBox.render(_ctx.appRes("UINotification.label.checkbox-" + channel)));
 											}
 											if(selectBox != null) {
-											  print("<div><span class=\"uiCheckbox\"></span><span>" + _ctx.appRes("UINotification.label.selectBox-" + channel) + " </span>"
+											  print("<div><span class=\"uiCheckbox\"></span><span class=\"labelForm\">" + _ctx.appRes("UINotification.label.selectBox-" + channel) + " </span>"
 											      + selectBox.render() + "</div>");
 											}
 										} else {
-										  def channelCheckBox = channelCheckBoxList.get(channel + pluginId);
-										  if(channelCheckBox != null) {
-										    print(channelCheckBox.render() + " <span>" + _ctx.appRes("UINotification.label.checkbox-" + channel) + "</span>");
+										    def channelCheckBox = channelCheckBoxList.get(channel + pluginId);
+										    if(channelCheckBox != null) {
+										    	print(channelCheckBox.render(_ctx.appRes("UINotification.label.checkbox-" + channel)));
 											}
 										}
 									%>
 									</div>
 								<%}
 									if(isNotActive) {
-									  print("<span class=\"view-mode status-false\">No notifications</span>");
+									 	print("<span class=\"view-mode status-false\">No notifications</span>");
 									}
 								%>
 								</div>
@@ -162,10 +162,10 @@
 					<%} %>
 				<%} %>
 			<%} %>
-				
+
 				</tbody>
-			</table>					
-			
+			</table>
+
 			<%
 				String inforTitle = _ctx.appRes("UINotification.title.Information");
 				String confTitle = _ctx.appRes("UINotification.title.Confirmation");
@@ -174,10 +174,10 @@
 				String confirm = _ctx.appRes("UINotification.msg.ResetSetting");
 				String confirmLabel = _ctx.appRes("UINotification.action.Confirm");
 			%>
-			<div class="uiAction" data-info="${inforTitle}" data-conf="${confTitle}" data-close="${close}" data-ok="${ok}">
+			<div class="text-center" data-info="${inforTitle}" data-conf="${confTitle}" data-close="${close}" data-ok="${ok}">
 				<button id="Reset" data-confirm="${confirm}" data-confirm-label="${confirmLabel}" class="btn" type="button">${_ctx.appRes("UINotification.action.Reset")}</button>
 			</div>
-		<%} %>			
+		<%} %>
 		</div>
 	</form>
 </div>
