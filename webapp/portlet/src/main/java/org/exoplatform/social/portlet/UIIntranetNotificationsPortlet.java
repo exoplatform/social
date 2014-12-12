@@ -76,19 +76,6 @@ public class UIIntranetNotificationsPortlet extends UIPortletApplication {
     return LinkProvider.getUserNotificationSettingUri(currentUser);
   }
 
-  private String buildNotificationMessage(NotificationInfo notification) {
-    NotificationContext nCtx = NotificationContextImpl.cloneInstance();
-    AbstractNotificationPlugin plugin = nCtx.getPluginContainer().getPlugin(notification.getKey());
-    try {
-      notification.setLastModifiedDate(Calendar.getInstance());
-      nCtx.setNotificationInfo(notification);
-      return plugin.buildUIMessage(nCtx);
-    } catch (Exception e) {
-      
-    }
-    return "";
-  }
-
   protected List<String> getActions() {
     return Arrays.asList("MarkRead", "Remove");
   }

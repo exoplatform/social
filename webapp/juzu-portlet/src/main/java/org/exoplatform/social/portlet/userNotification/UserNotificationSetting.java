@@ -17,6 +17,7 @@
 package org.exoplatform.social.portlet.userNotification;
 
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -39,12 +40,13 @@ import juzu.request.ApplicationContext;
 import juzu.request.UserContext;
 import juzu.template.Template;
 
+import org.exoplatform.commons.api.notification.channel.AbstractChannel;
+import org.exoplatform.commons.api.notification.channel.ChannelManager;
 import org.exoplatform.commons.api.notification.model.GroupProvider;
 import org.exoplatform.commons.api.notification.model.PluginInfo;
 import org.exoplatform.commons.api.notification.model.UserSetting;
 import org.exoplatform.commons.api.notification.model.UserSetting.FREQUENCY;
 import org.exoplatform.commons.api.notification.plugin.config.PluginConfig;
-import org.exoplatform.commons.api.notification.service.setting.ChannelManager;
 import org.exoplatform.commons.api.notification.service.setting.PluginSettingService;
 import org.exoplatform.commons.api.notification.service.setting.UserSettingService;
 import org.exoplatform.commons.juzu.ajax.Ajax;
@@ -128,17 +130,9 @@ public class UserNotificationSetting {
       Map<String, String> datas = parserParams(channels);
       for (String channelId : datas.keySet()) {
         if (Boolean.valueOf(datas.get(channelId))) {
-          if (UserSetting.EMAIL_CHANNEL.equals(channelId)) {
-            setting.addPlugin(pluginId, FREQUENCY.INSTANTLY);
-          } else {
-            setting.addChannelPlugin(channelId, pluginId);
-          }
+          setting.addChannelPlugin(channelId, pluginId);
         } else {
-          if (UserSetting.EMAIL_CHANNEL.equals(channelId)) {
-            setting.removePlugin(pluginId, FREQUENCY.INSTANTLY);
-          } else {
-            setting.removeChannelPlugin(channelId, pluginId);
-          }
+          setting.removeChannelPlugin(channelId, pluginId);
         }
       }
       userSettingService.save(setting);
@@ -152,9 +146,17 @@ public class UserNotificationSetting {
     }
     return Response.ok(data.toString()).withMimeType("application/json");
   }
+  
+  private List<String> getChannels() {
+    List<String> channels = new ArrayList<String>();
+    for (AbstractChannel channel : channelManager.getChannels()) {
+      channels.add(channel.getId());
+    }
+    return channels;
+  }
 
   private String getChannelContainer(UserSetting setting, String pluginId) {
-    List<String> channels = channelManager.getChannelIds();
+    List<String> channels = getChannels();
     Map<String, Object> parameters = new HashMap<String, Object>();
 
     //
@@ -165,15 +167,12 @@ public class UserNotificationSetting {
     Map<String, Boolean> channelStatus = new HashMap<String, Boolean>();
     Map<String, CheckBoxInput> channelCheckBoxList = new HashMap<String, CheckBoxInput>();
     parameters.put("emailSelectBox", null);
-    parameters.put("emailCheckBox", null);
     for (String channelId : channels) {
       boolean isChannelActive = setting.isChannelActive(channelId);
       channelStatus.put(channelId, isChannelActive);
+      channelCheckBoxList.put(channelId, new CheckBoxInput(channelId, pluginId, setting.isEnabled(channelId, pluginId), isChannelActive));
       if(UserSetting.EMAIL_CHANNEL.equals(channelId)) {
         parameters.put("emailSelectBox", new SelectBoxInput(channelId + pluginId, options, getValue(setting, pluginId), isChannelActive));
-        parameters.put("emailCheckBox", new CheckBoxInput(channelId, pluginId, setting.isInInstantly(pluginId), isChannelActive));
-      } else {
-        channelCheckBoxList.put(channelId, new CheckBoxInput(channelId, pluginId, setting.isInChannel(channelId, pluginId), isChannelActive));
       }
     }
     parameters.put("channels", channels);
@@ -249,30 +248,26 @@ public class UserNotificationSetting {
     //
     boolean hasActivePlugin = false;
     Map<String, SelectBoxInput> emailSelectBoxList = new HashMap<String, SelectBoxInput>();
-    Map<String, CheckBoxInput> emailCheckBoxList = new HashMap<String, CheckBoxInput>();
     //
     Map<String, CheckBoxInput> channelCheckBoxList = new HashMap<String, CheckBoxInput>();
     Map<String, String> options = buildOptions(context);
-    List<String> channels = channelManager.getChannelIds();
+    List<String> channels = getChannels();
     for (GroupProvider groupProvider : pluginSettingService.getGroupPlugins()) {
       for (PluginInfo info : groupProvider.getPluginInfos()) {
         String pluginId = info.getType();
         for (String channelId : channels) {
           if(info.isChannelActive(channelId)) {
+            hasActivePlugin = true;
+            boolean isChannelActive = setting.isChannelActive(channelId);
+            channelCheckBoxList.put(channelId + pluginId, new CheckBoxInput(channelId, pluginId, setting.isEnabled(channelId, pluginId), isChannelActive));
             if(UserSetting.EMAIL_CHANNEL.equals(channelId)) {
-              emailSelectBoxList.put(pluginId, new SelectBoxInput(channelId + pluginId, options, getValue(setting, pluginId), setting.isChannelActive(channelId)));
-              emailCheckBoxList.put(pluginId, new CheckBoxInput(channelId, pluginId, setting.isInInstantly(pluginId), setting.isChannelActive(channelId)));
-              hasActivePlugin = true;
-            } else {
-              channelCheckBoxList.put(channelId + pluginId, new CheckBoxInput(channelId, pluginId, setting.isInChannel(channelId, pluginId), setting.isChannelActive(channelId)));
-              hasActivePlugin = true;
+              emailSelectBoxList.put(pluginId, new SelectBoxInput(channelId + pluginId, options, getValue(setting, pluginId), isChannelActive));
             }
           }
         }
       }
     }
     parameters.put("hasActivePlugin", hasActivePlugin);
-    parameters.put("emailCheckBoxList", emailCheckBoxList);
     parameters.put("emailSelectBoxList", emailSelectBoxList);
     //
     parameters.put("channelCheckBoxList", channelCheckBoxList);
@@ -378,6 +373,14 @@ public class UserNotificationSetting {
     public String pluginRes(String key, String id) {
       String path = getBundlePath(id);
       return TemplateUtils.getResourceBundle(key, bundle.getLocale(), path);
+    }
+    
+    public String getChannelKey(String channelId) {
+      return channelId.replace("_CHANNEL", "").toLowerCase();
+    }
+
+    public String capitalizeFirstLetter(String original) {
+      return original.length() <= 1 ? original : original.substring(0, 1).toUpperCase() + original.substring(1);
     }
   }
   

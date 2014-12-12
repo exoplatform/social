@@ -138,6 +138,7 @@ public class RelationshipReceivedRequestPlugin extends AbstractNotificationPlugi
     String toUser = notification.getTo();
     Identity identity = Utils.getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, sender, true);
     Profile userProfile = identity.getProfile();
+    templateContext.put("isIntranet", "true");
     templateContext.put("READ", (notification.isHasRead()) ? "read" : "unread");
     templateContext.put("NOTIFICATION_ID", notification.getId());
     templateContext.put("STATUS", status != null && status.equals("accepted") ? "ACCEPTED" : "PENDING");
@@ -147,7 +148,7 @@ public class RelationshipReceivedRequestPlugin extends AbstractNotificationPlugi
     templateContext.put("AVATAR", LinkProviderUtils.getUserAvatarUrl(userProfile));
     templateContext.put("ACCEPT_CONNECTION_REQUEST_ACTION_URL", LinkProviderUtils.getRestUrl(ACCEPT_INVITATION_TO_CONNECT, sender, toUser));
     templateContext.put("REFUSE_CONNECTION_REQUEST_ACTION_URL", LinkProviderUtils.getRestUrl(REFUSE_INVITATION_TO_CONNECT, sender, toUser));
-    return TemplateUtils.processIntranetGroovy(templateContext);
+    return TemplateUtils.processGroovy(templateContext);
   }
 
 }

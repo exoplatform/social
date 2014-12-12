@@ -35,7 +35,7 @@ public class MockUserSettingServiceImpl implements UserSettingService {
     for (UserSetting userSetting : settings.values()) {
       if (userSetting.isInDaily(pluginId) 
           || userSetting.isInWeekly(pluginId) 
-          || userSetting.isInInstantly(pluginId)) {
+          || userSetting.isEnabled(UserSetting.EMAIL_CHANNEL, pluginId)) {
         userIds.add(userSetting.getUserId());
       }
     }
@@ -68,10 +68,9 @@ public class MockUserSettingServiceImpl implements UserSettingService {
     return null;
   }
 
-
   @Override
-  public List<String> getUserHasNotifSetting(String channelId, String pluginId) {
-    // TODO Auto-generated method stub
-    return null;
+  public List<String> getUserHasSettingPlugin(String channelId, String pluginId) {
+    return getUserSettingByPlugin(pluginId);
   }
+
 }

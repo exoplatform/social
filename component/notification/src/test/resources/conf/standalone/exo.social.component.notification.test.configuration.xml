@@ -38,10 +38,20 @@
   </component>
 
   <component>
+    <key>org.exoplatform.commons.api.notification.channel.ChannelManager</key>
+    <type>org.exoplatform.commons.notification.channel.ChannelManagerImpl</type>
+  </component>
+
+  <component>
     <key>org.exoplatform.commons.api.notification.service.storage.NotificationDataStorage</key>
     <type>org.exoplatform.social.notification.mock.MockNotificationDataStorage</type>
   </component>
-  
+
+  <component>
+		<key>org.exoplatform.commons.api.notification.service.storage.IntranetNotificationDataStorage</key>
+		<type>org.exoplatform.commons.notification.impl.service.storage.IntranetNotificationDataStorageImpl</type>
+	</component>
+
   <component>
     <key>org.exoplatform.commons.api.notification.service.storage.NotificationService</key>
     <type>org.exoplatform.social.notification.mock.MockNotificationService</type>
@@ -215,7 +225,24 @@
       <type>org.exoplatform.social.notification.impl.SpaceNotificationImpl</type>
     </component-plugin>
   </external-component-plugins>
-  
+ 
+  <!-- channel register -->
+  <external-component-plugins>
+    <target-component>org.exoplatform.commons.api.notification.channel.ChannelManager</target-component>
+    <component-plugin>
+      <name>mail.channel</name>
+      <set-method>register</set-method>
+      <type>org.exoplatform.commons.notification.channel.MailChannel</type>
+      <description>Register the email channel to manager.</description>
+    </component-plugin>
+    <component-plugin>
+      <name>web.channel</name>
+      <set-method>register</set-method>
+      <type>org.exoplatform.commons.notification.channel.WebChannel</type>
+      <description>Register the email channel to manager.</description>
+    </component-plugin>
+  </external-component-plugins>
+
   <external-component-plugins>
     <target-component>org.exoplatform.commons.api.notification.service.setting.PluginContainer</target-component>
     <component-plugin>

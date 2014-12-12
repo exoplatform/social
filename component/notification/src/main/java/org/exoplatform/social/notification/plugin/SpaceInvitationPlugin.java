@@ -132,6 +132,7 @@ public class SpaceInvitationPlugin extends AbstractNotificationPlugin {
     String status = notification.getValueOwnerParameter("status");
     String spaceId = notification.getValueOwnerParameter(SocialNotificationUtils.SPACE_ID.getKey());
     Space space = Utils.getSpaceService().getSpaceById(spaceId);
+    templateContext.put("isIntranet", "true");
     templateContext.put("READ", (notification.isHasRead()) ? "read" : "unread");
     templateContext.put("STATUS", status != null && status.equals("accepted") ? "ACCEPTED" : "PENDING");
     templateContext.put("NOTIFICATION_ID", notification.getId());
@@ -141,7 +142,7 @@ public class SpaceInvitationPlugin extends AbstractNotificationPlugin {
     templateContext.put("SPACE_AVATAR", LinkProviderUtils.getSpaceAvatarUrl(space));
     templateContext.put("ACCEPT_SPACE_INVITATION_ACTION_URL", LinkProviderUtils.getRestUrl(ACCEPT_SPACE_INVITATION, space.getId(), notification.getTo()));
     templateContext.put("REFUSE_SPACE_INVITATION_ACTION_URL", LinkProviderUtils.getRestUrl(REFUSE_SPACE_INVITATION, space.getId(), notification.getTo()));
-    return TemplateUtils.processIntranetGroovy(templateContext);
+    return TemplateUtils.processGroovy(templateContext);
     
   }
 

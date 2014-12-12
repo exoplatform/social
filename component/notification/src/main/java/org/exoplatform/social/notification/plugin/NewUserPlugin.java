@@ -152,6 +152,7 @@ public class NewUserPlugin extends AbstractNotificationPlugin {
     String remoteId = notification.getValueOwnerParameter(SocialNotificationUtils.REMOTE_ID.getKey());
     Identity identity = Utils.getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, remoteId, true);
     Profile userProfile = identity.getProfile();
+    templateContext.put("isIntranet", "true");
     templateContext.put("READ", (notification.isHasRead()) ? "read" : "unread");
     templateContext.put("NOTIFICATION_ID", notification.getId());
     templateContext.put("LAST_UPDATED_TIME", TimeConvertUtils.convertXTimeAgo(TimeConvertUtils.getGreenwichMeanTime().getTime(), "EE, dd yyyy", new Locale(language), TimeConvertUtils.YEAR));
@@ -160,7 +161,7 @@ public class NewUserPlugin extends AbstractNotificationPlugin {
     //templateContext.put("PORTAL_HOME", NotificationUtils.getPortalHome(NotificationPluginUtils.getBrandingPortalName()));
     templateContext.put("PROFILE_URL", LinkProviderUtils.getRedirectUrl("user", identity.getRemoteId()));
     templateContext.put("AVATAR", LinkProviderUtils.getUserAvatarUrl(userProfile));
-    return TemplateUtils.processIntranetGroovy(templateContext);
+    return TemplateUtils.processGroovy(templateContext);
   }
 
 }

@@ -186,7 +186,7 @@ public abstract class AbstractPluginTest extends AbstractCoreTest {
     //get notification then clear the notification list
     UserSetting setting = userSettingService.get(rootIdentity.getRemoteId());
     List<NotificationInfo> got = notificationService.storeDigestJCR();
-    if (setting.isInInstantly(getPlugin().getKey().getId())) {
+    if (setting.isEnabled(UserSetting.EMAIL_CHANNEL, getPlugin().getKey().getId())) {
       got = notificationService.storeInstantly();
       assertEquals(number, got.size());
     }
@@ -204,7 +204,7 @@ public abstract class AbstractPluginTest extends AbstractCoreTest {
    * @param plugin
    */
   protected void turnON(AbstractNotificationPlugin plugin) {
-    pluginSettingService.saveActivePlugin("email", plugin.getId(), true);
+    pluginSettingService.saveActivePlugin(UserSetting.EMAIL_CHANNEL, plugin.getId(), true);
   }
   
   protected void turnFeatureOn() {
@@ -220,7 +220,7 @@ public abstract class AbstractPluginTest extends AbstractCoreTest {
    * @param plugin
    */
   protected void turnOFF(AbstractNotificationPlugin plugin) {
-    pluginSettingService.saveActivePlugin("email", plugin.getId(), false);
+    pluginSettingService.saveActivePlugin(UserSetting.EMAIL_CHANNEL, plugin.getId(), false);
   }
   
   /**
@@ -314,9 +314,9 @@ public abstract class AbstractPluginTest extends AbstractCoreTest {
       userSetting = UserSetting.getInstance();
       userSetting.setUserId(userId);
     }
-    userSetting.setChannelActive("email");
+    userSetting.setChannelActive(UserSetting.EMAIL_CHANNEL);
     //
-    userSetting.setInstantlyPlugins(settings);
+    userSetting.setChannelPlugins(UserSetting.EMAIL_CHANNEL, settings);
     userSettingService.save(userSetting);
   }
   
@@ -332,7 +332,7 @@ public abstract class AbstractPluginTest extends AbstractCoreTest {
       userSetting = UserSetting.getInstance();
       userSetting.setUserId(userId);
     }
-    userSetting.setChannelActive("email");
+    userSetting.setChannelActive(UserSetting.EMAIL_CHANNEL);
     
     userSetting.setDailyPlugins(settings);
     userSettingService.save(userSetting);
@@ -350,7 +350,7 @@ public abstract class AbstractPluginTest extends AbstractCoreTest {
       userSetting = UserSetting.getInstance();
       userSetting.setUserId(userId);
     }
-    userSetting.setChannelActive("email");
+    userSetting.setChannelActive(UserSetting.EMAIL_CHANNEL);
     
     userSetting.setWeeklyPlugins(settings);
     userSettingService.save(userSetting);
@@ -407,8 +407,8 @@ public abstract class AbstractPluginTest extends AbstractCoreTest {
 
   private void saveSetting(List<String> instantly, List<String> daily, List<String> weekly, String userId) {
     UserSetting model = UserSetting.getInstance();
-    model.setUserId(userId).setChannelActive("email");
-    model.setInstantlyPlugins(instantly);
+    model.setUserId(userId).setChannelActive(UserSetting.EMAIL_CHANNEL);
+    model.setChannelPlugins(UserSetting.EMAIL_CHANNEL, instantly);
     model.setDailyPlugins(daily);
     model.setWeeklyPlugins(weekly);
     userSettingService.save(model);

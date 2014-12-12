@@ -155,6 +155,7 @@ public class ActivityCommentPlugin extends AbstractNotificationPlugin {
     Identity identity = Utils.getIdentityManager().getIdentity(activity.getPosterId(), true);
     
     TemplateContext templateContext = new TemplateContext(notification.getKey().getId(), language);
+    templateContext.put("isIntranet", "true");
     templateContext.put("READ", (notification.isHasRead()) ? "read" : "unread");
     templateContext.put("NOTIFICATION_ID", notification.getId());
     templateContext.put("LAST_UPDATED_TIME", TimeConvertUtils.convertXTimeAgo(notification.getLastModifiedDate().getTime(), "EE, dd yyyy", new Locale(language), TimeConvertUtils.YEAR));
@@ -164,7 +165,7 @@ public class ActivityCommentPlugin extends AbstractNotificationPlugin {
     templateContext.put("PROFILE_URL", LinkProviderUtils.getRedirectUrl("user", identity.getRemoteId()));
     templateContext.put("VIEW_FULL_DISCUSSION_ACTION_URL", LinkProviderUtils.getRedirectUrl("view_full_activity_highlight_comment", parentActivity.getId() + "-" + activity.getId()));
 
-    return TemplateUtils.processIntranetGroovy(templateContext);
+    return TemplateUtils.processGroovy(templateContext);
   }
   
   

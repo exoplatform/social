@@ -91,7 +91,7 @@ public class PostActivityMailBuilderTest extends AbstractTemplateBuilderTest {
     //config setting of root to receive notification daily
     UserSetting rootSetting = new UserSetting();
     rootSetting.setUserId(rootIdentity.getRemoteId());
-    rootSetting.setDailyProviders(Arrays.asList(getPlugin().getId()));
+    rootSetting.setDailyPlugins(Arrays.asList(getPlugin().getId()));
     userSettingService.save(rootSetting);
     
     //create new user

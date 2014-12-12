@@ -150,7 +150,7 @@ public class RequestJoinSpacePlugin extends AbstractNotificationPlugin {
     Space space = Utils.getSpaceService().getSpaceById(spaceId);
     Identity identity = Utils.getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, notification.getValueOwnerParameter("request_from"), true);
     Profile userProfile = identity.getProfile();
-    
+    templateContext.put("isIntranet", "true");
     templateContext.put("READ", (notification.isHasRead()) ? "read" : "unread");
     templateContext.put("STATUS", status != null && status.equals("accepted") ? "ACCEPTED" : "PENDING");
     templateContext.put("NOTIFICATION_ID", notification.getId());
@@ -162,7 +162,7 @@ public class RequestJoinSpacePlugin extends AbstractNotificationPlugin {
     templateContext.put("AVATAR", LinkProviderUtils.getUserAvatarUrl(userProfile));
     templateContext.put("VALIDATE_SPACE_REQUEST_ACTION_URL", LinkProviderUtils.getRestUrl(VALIDATE_SPACE_REQUEST, space.getId(), identity.getRemoteId()));
     templateContext.put("REFUSE_SPACE_REQUEST_ACTION_URL", LinkProviderUtils.getRestUrl(REFUSE_SPACE_REQUEST, space.getId(), identity.getRemoteId()));
-    return TemplateUtils.processIntranetGroovy(templateContext);
+    return TemplateUtils.processGroovy(templateContext);
   }
 
 }

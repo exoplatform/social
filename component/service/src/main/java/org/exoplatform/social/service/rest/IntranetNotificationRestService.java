@@ -29,7 +29,7 @@ import javax.ws.rs.core.Response.Status;
 
 import org.exoplatform.commons.api.notification.NotificationContext;
 import org.exoplatform.commons.api.notification.model.NotificationInfo;
-import org.exoplatform.commons.api.notification.model.NotificationKey;
+import org.exoplatform.commons.api.notification.model.PluginKey;
 import org.exoplatform.commons.api.notification.plugin.AbstractNotificationPlugin;
 import org.exoplatform.commons.notification.impl.NotificationContextImpl;
 import org.exoplatform.commons.notification.net.WebSocketBootstrap;
@@ -76,7 +76,7 @@ public class IntranetNotificationRestService implements ResourceContainer {
                                            @PathParam("receiverId") String receiverId) throws Exception {
     //update notification
     NotificationInfo info = new NotificationInfo();
-    info.key(new NotificationKey("RelationshipReceivedRequestPlugin"));
+    info.key(new PluginKey("RelationshipReceivedRequestPlugin"));
     info.setFrom(senderId);
     info.setTo(receiverId);
     Map<String, String> ownerParameter = new HashMap<String, String>();
@@ -133,7 +133,7 @@ public class IntranetNotificationRestService implements ResourceContainer {
     //update notification
     NotificationInfo info = new NotificationInfo();
     info.setTo(userId);
-    info.key(new NotificationKey("SpaceInvitationPlugin"));
+    info.key(new PluginKey("SpaceInvitationPlugin"));
     Map<String, String> ownerParameter = new HashMap<String, String>();
     ownerParameter.put("spaceId", spaceId);
     ownerParameter.put("status", "accepted");
@@ -186,7 +186,7 @@ public class IntranetNotificationRestService implements ResourceContainer {
     //update notification
     NotificationInfo info = new NotificationInfo();
     info.setTo(ConversationState.getCurrent().getIdentity().getUserId());
-    info.key(new NotificationKey("RequestJoinSpacePlugin"));
+    info.key(new PluginKey("RequestJoinSpacePlugin"));
     Map<String, String> ownerParameter = new HashMap<String, String>();
     ownerParameter.put("spaceId", spaceId);
     ownerParameter.put("request_from", userId);

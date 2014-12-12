@@ -64,14 +64,14 @@ public class MockNotificationService implements NotificationService {
     
     // if the provider is not active, do nothing
     PluginSettingService settingService = CommonsUtils.getService(PluginSettingService.class);
-    if (settingService.isActive(pluginId) == false)
+    if (settingService.isActive(UserSetting.EMAIL_CHANNEL, pluginId) == false)
       return;
     
     List<String> userIds = notification.getSendToUserIds();
     UserSettingService userSettingService = CommonsUtils.getService(UserSettingService.class);
     //
     if (notification.isSendAll()) {
-      userIds = userSettingService.getUserSettingByPlugin(pluginId);
+      userIds = userSettingService.getUserHasSettingPlugin(UserSetting.EMAIL_CHANNEL, pluginId);
     }
     
     for (String userId : userIds) {
@@ -82,7 +82,7 @@ public class MockNotificationService implements NotificationService {
         userSetting.setUserId(userId);
       }
       
-      if (userSetting.isInInstantly(pluginId)) {
+      if (userSetting.isEnabled(UserSetting.EMAIL_CHANNEL, pluginId)) {
         this.storeInstantly.add(notification);
       }
       
