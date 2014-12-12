@@ -145,8 +145,11 @@ var UIActivity = {
             id = "SocialCurrentConfirm";
             jElm.attr('id', id)
           }
-          var confirmText = jElm.attr('data-confirm');
-          eXo.social.PopupConfirmation.confirm(id, [{action: UIActivity.removeActivity, label : 'OK'}], 'Confirmation', confirmText, 'Close');
+            var confirmText = jElm.attr('data-confirm');
+            var captionText = jElm.attr('data-caption');
+            var confirmButton = jElm.attr('data-ok');
+            var cancelButton = jElm.attr('data-close');
+            eXo.social.PopupConfirmation.confirm(id, [{action: UIActivity.removeActivity, label : confirmButton}], captionText, confirmText, cancelButton);
         }
       );
     }
