@@ -67,4 +67,9 @@ public class MockUserSettingServiceImpl implements UserSettingService {
   public List<UserSetting> getUserSettingWithDeactivate() {
     return null;
   }
+
+  @Override
+  public List<String> getUserHasIntranetNotifSetting(String pluginId) {
+    return null;
+  }
 }

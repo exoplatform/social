@@ -155,8 +155,9 @@ public class ActivityCommentPlugin extends AbstractNotificationPlugin {
     Identity identity = Utils.getIdentityManager().getIdentity(activity.getPosterId(), true);
     
     TemplateContext templateContext = new TemplateContext(notification.getKey().getId(), language);
+    templateContext.put("READ", (notification.isHasRead()) ? "read" : "unread");
     templateContext.put("NOTIFICATION_ID", notification.getId());
-    templateContext.put("LAST_UPDATED_TIME", TimeConvertUtils.convertXTimeAgo(activity.getUpdated(), "EE, dd yyyy", new Locale(language), TimeConvertUtils.YEAR));
+    templateContext.put("LAST_UPDATED_TIME", TimeConvertUtils.convertXTimeAgo(notification.getLastModifiedDate().getTime(), "EE, dd yyyy", new Locale(language), TimeConvertUtils.YEAR));
     templateContext.put("USER", identity.getProfile().getFullName());
     templateContext.put("AVATAR", LinkProviderUtils.getUserAvatarUrl(identity.getProfile()));
     templateContext.put("ACTIVITY", NotificationUtils.processLinkTitle(parentActivity.getTitle()));

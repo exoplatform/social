@@ -158,9 +158,9 @@ public class PostActivitySpaceStreamPlugin extends AbstractNotificationPlugin {
     
     Identity spaceIdentity = Utils.getIdentityManager().getOrCreateIdentity(SpaceIdentityProvider.NAME, activity.getStreamOwner(), true);
     Space space = Utils.getSpaceService().getSpaceByPrettyName(spaceIdentity.getRemoteId());
-    
+    templateContext.put("READ", (notification.isHasRead()) ? "read" : "unread");
     templateContext.put("NOTIFICATION_ID", notification.getId());
-    templateContext.put("LAST_UPDATED_TIME", TimeConvertUtils.convertXTimeAgo(activity.getUpdated(), "EE, dd yyyy", new Locale(language), TimeConvertUtils.YEAR));
+    templateContext.put("LAST_UPDATED_TIME", TimeConvertUtils.convertXTimeAgo(notification.getLastModifiedDate().getTime(), "EE, dd yyyy", new Locale(language), TimeConvertUtils.YEAR));
     templateContext.put("USER", identity.getProfile().getFullName());
     templateContext.put("AVATAR", LinkProviderUtils.getUserAvatarUrl(identity.getProfile()));
     templateContext.put("ACTIVITY", NotificationUtils.processLinkTitle(activity.getTitle()));

@@ -1,4 +1,4 @@
-<li class="clearfix" data-id="$NOTIFICATION_ID">
+<li class="$READ clearfix" data-id="$NOTIFICATION_ID">
   <div class="avatarSmall pull-left">
     <img src="$AVATAR" alt="$USER" />
   </div> 
@@ -8,11 +8,15 @@
   %> 
   <div class="pull-left">
     <div class="contentSmall" data-link="">
+      <% if (STATUS == "ACCEPTED")  { %>
+      <div class="status"><%=_ctx.appRes("Notification.intranet.message.accept.RequestJoinSpacePlugin", profileUrl, spaceUrl)%></div>
+      <% } else { %>
       <div class="status"><%=_ctx.appRes("Notification.intranet.message.RequestJoinSpacePlugin", profileUrl, spaceUrl)%></div>
       <div class="content">
-        <a class="btn btn-primary remove-item" href="$VALIDATE_SPACE_REQUEST_ACTION_URL" href="javascript:void(0)"><%=_ctx.appRes("Notification.label.Accept")%></a>
-        <a class="btn remove-item" href="$REFUSE_SPACE_REQUEST_ACTION_URL" href="javascript:void(0)"><%=_ctx.appRes("Notification.label.Refuse")%></a>
+        <a class="btn btn-primary remove-item" data-rest="$VALIDATE_SPACE_REQUEST_ACTION_URL" href="javascript:void(0)"><%=_ctx.appRes("Notification.label.Accept")%></a>
+        <a class="btn remove-item" data-rest="$REFUSE_SPACE_REQUEST_ACTION_URL" href="javascript:void(0)"><%=_ctx.appRes("Notification.label.Refuse")%></a>
       </div>
+      <% } %>
     </div>
     <div class="lastUpdatedTime">$LAST_UPDATED_TIME</div>
   </div> 

@@ -1,4 +1,4 @@
-<li class="clearfix" data-id="$NOTIFICATION_ID">
+<li class="$READ clearfix" data-id="$NOTIFICATION_ID">
   <div class="avatarSmall pull-left">
     <img src="$AVATAR" alt="$USER" />
   </div> 
