@@ -102,6 +102,14 @@
           plugin.find('input').prop('disabled', disabled);
           plugin.find('select').prop('disabled', disabled);
           //
+          if (data.type == 'intranet') {
+            var intranetNotif = $('#UINotificationPopoverToolbarPortlet');
+            if (data.enable == 'true') {
+	    	  intranetNotif.show();
+		    } else {
+		      intranetNotif.hide();
+		    }
+          }
   	    }
   	  }).fail(function(jqXHR, textStatus) {
   	    alert("Request failed: " + textStatus + ". " + jqXHR);
