@@ -17,7 +17,7 @@
 package org.exoplatform.social.notification.impl;
 
 import org.exoplatform.commons.api.notification.NotificationContext;
-import org.exoplatform.commons.api.notification.model.NotificationKey;
+import org.exoplatform.commons.api.notification.model.PluginKey;
 import org.exoplatform.commons.notification.impl.NotificationContextImpl;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
@@ -60,7 +60,7 @@ public class ProfileNotificationImpl extends ProfileListenerPlugin {
     Profile profile = event.getProfile();
     
     NotificationContext ctx = NotificationContextImpl.cloneInstance().append(SocialNotificationUtils.PROFILE, profile);
-    ctx.getNotificationExecutor().with(ctx.makeCommand(NotificationKey.key(NewUserPlugin.ID))).execute(ctx);
+    ctx.getNotificationExecutor().with(ctx.makeCommand(PluginKey.key(NewUserPlugin.ID))).execute(ctx);
   }
 
 }

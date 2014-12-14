@@ -17,7 +17,7 @@
 package org.exoplatform.social.notification.impl;
 
 import org.exoplatform.commons.api.notification.NotificationContext;
-import org.exoplatform.commons.api.notification.model.NotificationKey;
+import org.exoplatform.commons.api.notification.model.PluginKey;
 import org.exoplatform.commons.notification.impl.NotificationContextImpl;
 import org.exoplatform.social.core.space.SpaceListenerPlugin;
 import org.exoplatform.social.core.space.model.Space;
@@ -78,7 +78,7 @@ public class SpaceNotificationImpl extends SpaceListenerPlugin {
     NotificationContext ctx = NotificationContextImpl.cloneInstance().append(SocialNotificationUtils.REMOTE_ID, userId)
                                                              .append(SocialNotificationUtils.SPACE, space);
     
-    ctx.getNotificationExecutor().with(ctx.makeCommand(NotificationKey.key(SpaceInvitationPlugin.ID))).execute(ctx);
+    ctx.getNotificationExecutor().with(ctx.makeCommand(PluginKey.key(SpaceInvitationPlugin.ID))).execute(ctx);
   }
   
   @Override
@@ -89,7 +89,7 @@ public class SpaceNotificationImpl extends SpaceListenerPlugin {
     NotificationContext ctx = NotificationContextImpl.cloneInstance().append(SocialNotificationUtils.REMOTE_ID, userId)
                                                              .append(SocialNotificationUtils.SPACE, space);
     
-    ctx.getNotificationExecutor().with(ctx.makeCommand(NotificationKey.key(RequestJoinSpacePlugin.ID))).execute(ctx);
+    ctx.getNotificationExecutor().with(ctx.makeCommand(PluginKey.key(RequestJoinSpacePlugin.ID))).execute(ctx);
     
   }
 }

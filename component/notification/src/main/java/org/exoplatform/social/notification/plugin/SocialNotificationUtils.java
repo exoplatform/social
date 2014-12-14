@@ -24,7 +24,7 @@ import java.util.Map.Entry;
 
 import org.exoplatform.commons.api.notification.NotificationContext;
 import org.exoplatform.commons.api.notification.model.ArgumentLiteral;
-import org.exoplatform.commons.api.notification.model.NotificationKey;
+import org.exoplatform.commons.api.notification.model.PluginKey;
 import org.exoplatform.commons.api.notification.plugin.AbstractNotificationChildPlugin;
 import org.exoplatform.commons.api.notification.plugin.AbstractNotificationPlugin;
 import org.exoplatform.commons.api.notification.service.setting.PluginContainer;
@@ -253,11 +253,11 @@ public class SocialNotificationUtils {
   }
   
   public static String getBody(NotificationContext ctx, TemplateContext context, ExoSocialActivity activity) {
-    NotificationKey childKey = new NotificationKey(activity.getType());
+    PluginKey childKey = new PluginKey(activity.getType());
     PluginContainer pluginContainer = CommonsUtils.getService(PluginContainer.class);
     AbstractNotificationPlugin child = pluginContainer.getPlugin(childKey);
     if (child == null || (child instanceof AbstractNotificationChildPlugin) == false) {
-      child = pluginContainer.getPlugin(new NotificationKey(DefaultActivityChildPlugin.ID));
+      child = pluginContainer.getPlugin(new PluginKey(DefaultActivityChildPlugin.ID));
     }
     context.put("ACTIVITY", ((AbstractNotificationChildPlugin) child).makeContent(ctx));
 

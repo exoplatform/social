@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2003-2013 eXo Platform SAS.
+ * Copyright (C) 2003-2014 eXo Platform SAS.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.exoplatform.social.notification.plugin;
+package org.exoplatform.social.notification.channel.template;
 
 import java.io.StringWriter;
 import java.io.Writer;
@@ -23,22 +23,53 @@ import java.util.List;
 import java.util.Map;
 
 import org.exoplatform.commons.api.notification.NotificationContext;
+import org.exoplatform.commons.api.notification.channel.AbstractChannel;
+import org.exoplatform.commons.api.notification.channel.ChannelManager;
+import org.exoplatform.commons.api.notification.channel.template.AbstractTemplateBuilder;
+import org.exoplatform.commons.api.notification.model.ChannelKey;
 import org.exoplatform.commons.api.notification.model.MessageInfo;
 import org.exoplatform.commons.api.notification.model.NotificationInfo;
 import org.exoplatform.commons.api.notification.model.PluginKey;
 import org.exoplatform.commons.api.notification.plugin.AbstractNotificationPlugin;
+import org.exoplatform.commons.notification.channel.MailChannel;
 import org.exoplatform.commons.notification.impl.NotificationContextImpl;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.activity.model.ExoSocialActivityImpl;
-import org.exoplatform.social.notification.AbstractPluginTest;
+import org.exoplatform.social.notification.plugin.LikePlugin;
 
 /**
  * Created by The eXo Platform SAS
  * Author : eXoPlatform
  *          thanhvc@exoplatform.com
- * Aug 20, 2013  
+ * Dec 14, 2014  
  */
-public class LikePluginTest extends AbstractPluginTest {
+public class LikeMailBuilderTest extends AbstractTemplateBuilderTest {
+  private ChannelManager manager;
+  
+  @Override
+  protected void setUp() throws Exception {
+    super.setUp();
+    manager = getService(ChannelManager.class);
+  }
+  
+  @Override
+  public void tearDown() throws Exception {
+    super.tearDown();
+  }
+  
+
+  @Override
+  public AbstractTemplateBuilder getTemplateBuilder() {
+    AbstractChannel channel = manager.getChannel(ChannelKey.key(MailChannel.ID));
+    assertTrue(channel != null);
+    assertTrue(channel.hasTemplateBuilder(PluginKey.key(LikePlugin.ID)));
+    return channel.getTemplateBuilder(PluginKey.key(LikePlugin.ID));
+  }
+  
+  @Override
+  public AbstractNotificationPlugin getPlugin() {
+    return pluginService.getPlugin(PluginKey.key(LikePlugin.ID));
+  }
   
   public void testSimpleCase() throws Exception {
     //STEP 1 post activity
@@ -57,66 +88,6 @@ public class LikePluginTest extends AbstractPluginTest {
     
     assertSubject(info, "Demo gtn likes one of your activities");
     assertBody(info, "New like on your activity stream");
-  }
-  
-  public void testPluginONOFF() throws Exception {
-    //STEP 1 post activity
-    ExoSocialActivity activity = makeActivity(maryIdentity, "root post an activity");
-    //asserEquals = 1 because mary post activity on root stream
-    assertMadeNotifications(1);
-    notificationService.clearAll();
-    
-    //STEP 2 like activity
-    activityManager.saveLike(activity, demoIdentity);
-    assertMadeNotifications(1);
-    notificationService.clearAll();
-    
-    //Turn off the plugin
-    turnOFF(getPlugin());
-    
-    ExoSocialActivity newActivity = makeActivity(johnIdentity, "root post an activity");
-    //asserEquals = 1 because mary post activity on root stream
-    assertMadeNotifications(1);
-    notificationService.clearAll();
-    
-    activityManager.saveLike(newActivity, demoIdentity);
-    assertMadeNotifications(0);
-    
-    //turn on the plugin then turn off the feature
-    turnON(getPlugin());
-    
-    activityManager.saveLike(newActivity, maryIdentity);
-    assertMadeNotifications(1);
-  }
-  
-  public void testFeatureONOFF() throws Exception {
-    //STEP 1 post activity
-    ExoSocialActivity activity = makeActivity(maryIdentity, "root post an activity");
-    //asserEquals = 1 because mary post activity on root stream
-    assertMadeNotifications(1);
-    notificationService.clearAll();
-    
-    //STEP 2 like activity
-    activityManager.saveLike(activity, demoIdentity);
-    assertMadeNotifications(1);
-    notificationService.clearAll();
-    
-    //turn off the feature == all plugins off
-    turnFeatureOff();
-    
-    ExoSocialActivity newActivity = makeActivity(johnIdentity, "root post an activity");
-    //postActivityPlugin off
-    assertMadeNotifications(0);
-    
-    activityManager.saveLike(newActivity, demoIdentity);
-    //likePlugin off
-    assertMadeNotifications(0);
-    
-    //turn on the feature
-    turnFeatureOn();
-    
-    activityManager.saveLike(newActivity, maryIdentity);
-    assertMadeNotifications(1);
   }
   
   public void testDigest() throws Exception {
@@ -188,10 +159,4 @@ public class LikePluginTest extends AbstractPluginTest {
     getPlugin().buildDigest(ctx, writer);
     assertDigest(writer, "Demo gtn likes your activity: root post an activity.");
   }
-  
-  @Override
-  public AbstractNotificationPlugin getPlugin() {
-    return pluginService.getPlugin(PluginKey.key(LikePlugin.ID));
-  }
-
 }

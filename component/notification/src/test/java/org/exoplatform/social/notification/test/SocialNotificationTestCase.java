@@ -28,7 +28,7 @@ import java.util.Map;
 import org.exoplatform.commons.api.notification.NotificationContext;
 import org.exoplatform.commons.api.notification.model.MessageInfo;
 import org.exoplatform.commons.api.notification.model.NotificationInfo;
-import org.exoplatform.commons.api.notification.model.NotificationKey;
+import org.exoplatform.commons.api.notification.model.PluginKey;
 import org.exoplatform.commons.api.notification.plugin.AbstractNotificationPlugin;
 import org.exoplatform.commons.notification.impl.NotificationContextImpl;
 import org.exoplatform.groovyscript.GroovyTemplate;
@@ -88,23 +88,23 @@ public class SocialNotificationTestCase extends AbstractPluginTest {
   }
 
   private void initPlugins() {
-    newUserPlugin = pluginService.getPlugin(NotificationKey.key(NewUserPlugin.ID));
+    newUserPlugin = pluginService.getPlugin(PluginKey.key(NewUserPlugin.ID));
     assertNotNull(newUserPlugin);
-    commentPlugin = pluginService.getPlugin(NotificationKey.key(ActivityCommentPlugin.ID));
+    commentPlugin = pluginService.getPlugin(PluginKey.key(ActivityCommentPlugin.ID));
     assertNotNull(commentPlugin);
-    postActivityPlugin = pluginService.getPlugin(NotificationKey.key(PostActivityPlugin.ID));
+    postActivityPlugin = pluginService.getPlugin(PluginKey.key(PostActivityPlugin.ID));
     assertNotNull(postActivityPlugin);
-    mentionPlugin = pluginService.getPlugin(NotificationKey.key(ActivityMentionPlugin.ID));
+    mentionPlugin = pluginService.getPlugin(PluginKey.key(ActivityMentionPlugin.ID));
     assertNotNull(mentionPlugin);
-    likePlugin = pluginService.getPlugin(NotificationKey.key(LikePlugin.ID));
+    likePlugin = pluginService.getPlugin(PluginKey.key(LikePlugin.ID));
     assertNotNull(likePlugin);
-    postSpaceActivityPlugin = pluginService.getPlugin(NotificationKey.key(PostActivitySpaceStreamPlugin.ID));
+    postSpaceActivityPlugin = pluginService.getPlugin(PluginKey.key(PostActivitySpaceStreamPlugin.ID));
     assertNotNull(postSpaceActivityPlugin);
-    relationshipReceivedRequestPlugin = pluginService.getPlugin(NotificationKey.key(RelationshipReceivedRequestPlugin.ID));
+    relationshipReceivedRequestPlugin = pluginService.getPlugin(PluginKey.key(RelationshipReceivedRequestPlugin.ID));
     assertNotNull(relationshipReceivedRequestPlugin);
-    spaceInvitationPlugin = pluginService.getPlugin(NotificationKey.key(SpaceInvitationPlugin.ID));
+    spaceInvitationPlugin = pluginService.getPlugin(PluginKey.key(SpaceInvitationPlugin.ID));
     assertNotNull(spaceInvitationPlugin);
-    requestJoinSpacePlugin = pluginService.getPlugin(NotificationKey.key(RequestJoinSpacePlugin.ID));
+    requestJoinSpacePlugin = pluginService.getPlugin(PluginKey.key(RequestJoinSpacePlugin.ID));
     assertNotNull(requestJoinSpacePlugin);
     
     rootIdentity = identityManager.getOrCreateIdentity("organization", "root", true);

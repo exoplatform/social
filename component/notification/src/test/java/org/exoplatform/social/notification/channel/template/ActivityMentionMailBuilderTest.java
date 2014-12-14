@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2003-2013 eXo Platform SAS.
+ * Copyright (C) 2003-2014 eXo Platform SAS.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.exoplatform.social.notification.plugin;
+package org.exoplatform.social.notification.channel.template;
 
 import java.io.StringWriter;
 import java.io.Writer;
@@ -22,21 +22,52 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.exoplatform.commons.api.notification.NotificationContext;
+import org.exoplatform.commons.api.notification.channel.AbstractChannel;
+import org.exoplatform.commons.api.notification.channel.ChannelManager;
+import org.exoplatform.commons.api.notification.channel.template.AbstractTemplateBuilder;
+import org.exoplatform.commons.api.notification.model.ChannelKey;
 import org.exoplatform.commons.api.notification.model.MessageInfo;
 import org.exoplatform.commons.api.notification.model.NotificationInfo;
 import org.exoplatform.commons.api.notification.model.PluginKey;
 import org.exoplatform.commons.api.notification.plugin.AbstractNotificationPlugin;
+import org.exoplatform.commons.notification.channel.MailChannel;
 import org.exoplatform.commons.notification.impl.NotificationContextImpl;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
-import org.exoplatform.social.notification.AbstractPluginTest;
+import org.exoplatform.social.notification.plugin.ActivityMentionPlugin;
 
 /**
  * Created by The eXo Platform SAS
  * Author : eXoPlatform
  *          thanhvc@exoplatform.com
- * Aug 20, 2013  
+ * Dec 14, 2014  
  */
-public class ActivityMentionPluginTest extends AbstractPluginTest {
+public class ActivityMentionMailBuilderTest extends AbstractTemplateBuilderTest {
+  private ChannelManager manager;
+  
+  @Override
+  protected void setUp() throws Exception {
+    super.setUp();
+    manager = getService(ChannelManager.class);
+  }
+  
+  @Override
+  public void tearDown() throws Exception {
+    super.tearDown();
+  }
+  
+
+  @Override
+  public AbstractTemplateBuilder getTemplateBuilder() {
+    AbstractChannel channel = manager.getChannel(ChannelKey.key(MailChannel.ID));
+    assertTrue(channel != null);
+    assertTrue(channel.hasTemplateBuilder(PluginKey.key(ActivityMentionPlugin.ID)));
+    return channel.getTemplateBuilder(PluginKey.key(ActivityMentionPlugin.ID));
+  }
+  
+  @Override
+  public AbstractNotificationPlugin getPlugin() {
+    return pluginService.getPlugin(PluginKey.key(ActivityMentionPlugin.ID));
+  }
   
   public void testActivityMention() throws Exception {
     //mary post activity on root stream and mention john and demo ==> 3 notifications
@@ -70,57 +101,6 @@ public class ActivityMentionPluginTest extends AbstractPluginTest {
     
     assertSubject(info, "You were mentioned by " + demoIdentity.getProfile().getFullName());
     assertBody(info, "New mention of you");
-  }
-  
-  public void testPluginONOFF() throws Exception {
-    //by default the plugin is on
-    
-    //mary post activity on root stream and mention john and demo ==> 3 notifications
-    makeActivity(maryIdentity, "first hello to @john and @demo");
-    assertMadeNotifications(3);
-    notificationService.clearAll();
-    
-    //turn of the plugin
-    turnOFF(getPlugin());
-    
-    //mary post new activity on root stream and mention john and demo
-    makeActivity(maryIdentity, "second hello to @john and @demo");
-    //only one notification for create activity, mentionPlugin is off
-    assertMadeNotifications(1);
-    notificationService.clearAll();
-    
-    //turn of the plugin
-    turnON(getPlugin());
-    
-    //mary post another new activity on root stream and mention john and demo ==> 3 notifications
-    makeActivity(maryIdentity, "third hello to @john and @demo");
-    //only one notification for create activity, mentionPlugin is off
-    assertMadeNotifications(3);
-  }
-  
-  public void testFeatureONOFF() throws Exception {
-    //by default the plugin is on
-    
-    //mary post activity on root stream and mention john and demo ==> 3 notifications
-    makeActivity(maryIdentity, "first hello to @john and @demo");
-    assertMadeNotifications(3);
-    notificationService.clearAll();
-    
-    //turn off the feature
-    turnFeatureOff();
-    
-    //mary post new activity on root stream and mention john and demo
-    makeActivity(maryIdentity, "second hello to @john and @demo");
-    //no notification all plugins are off
-    assertMadeNotifications(0);
-    
-    //turn on the feature
-    turnFeatureOn();
-    
-    //mary post another new activity on root stream and mention john and demo ==> 3 notifications
-    makeActivity(maryIdentity, "third hello to @john and @demo");
-    //only one notification for create activity, mentionPlugin is off
-    assertMadeNotifications(3);
   }
   
   public void testDigest() throws Exception {
@@ -212,10 +192,4 @@ public class ActivityMentionPluginTest extends AbstractPluginTest {
     getPlugin().buildDigest(ctx, writer);
     assertDigest(writer, "Mary Kelly, Root Root have mentioned you in an activity: mary mention John Anthony and Demo gtn.");
   }
-
-  @Override
-  public AbstractNotificationPlugin getPlugin() {
-    return pluginService.getPlugin(PluginKey.key(ActivityMentionPlugin.ID));
-  }
-
 }

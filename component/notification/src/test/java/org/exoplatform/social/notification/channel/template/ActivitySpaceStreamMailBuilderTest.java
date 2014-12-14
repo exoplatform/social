@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2003-2013 eXo Platform SAS.
+ * Copyright (C) 2003-2014 eXo Platform SAS.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -14,37 +14,63 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.exoplatform.social.notification.plugin;
+package org.exoplatform.social.notification.channel.template;
 
 import java.io.StringWriter;
 import java.io.Writer;
 import java.util.List;
 
 import org.exoplatform.commons.api.notification.NotificationContext;
+import org.exoplatform.commons.api.notification.channel.AbstractChannel;
+import org.exoplatform.commons.api.notification.channel.ChannelManager;
+import org.exoplatform.commons.api.notification.channel.template.AbstractTemplateBuilder;
+import org.exoplatform.commons.api.notification.model.ChannelKey;
 import org.exoplatform.commons.api.notification.model.NotificationInfo;
 import org.exoplatform.commons.api.notification.model.PluginKey;
 import org.exoplatform.commons.api.notification.plugin.AbstractNotificationPlugin;
+import org.exoplatform.commons.notification.channel.MailChannel;
 import org.exoplatform.commons.notification.impl.NotificationContextImpl;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.activity.model.ExoSocialActivityImpl;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
 import org.exoplatform.social.core.space.model.Space;
-import org.exoplatform.social.notification.AbstractPluginTest;
+import org.exoplatform.social.notification.plugin.PostActivitySpaceStreamPlugin;
 
 /**
  * Created by The eXo Platform SAS
  * Author : eXoPlatform
  *          thanhvc@exoplatform.com
- * Aug 20, 2013  
+ * Dec 14, 2014  
  */
-public class PostActivitySpaceStreamPluginTest extends AbstractPluginTest {
+public class ActivitySpaceStreamMailBuilderTest extends AbstractTemplateBuilderTest {
+  private ChannelManager manager;
+  
+  @Override
+  protected void setUp() throws Exception {
+    super.setUp();
+    manager = getService(ChannelManager.class);
+  }
+  
+  @Override
+  public void tearDown() throws Exception {
+    super.tearDown();
+  }
+  
 
+  @Override
+  public AbstractTemplateBuilder getTemplateBuilder() {
+    AbstractChannel channel = manager.getChannel(ChannelKey.key(MailChannel.ID));
+    assertTrue(channel != null);
+    assertTrue(channel.hasTemplateBuilder(PluginKey.key(PostActivitySpaceStreamPlugin.ID)));
+    return channel.getTemplateBuilder(PluginKey.key(PostActivitySpaceStreamPlugin.ID));
+  }
+  
   @Override
   public AbstractNotificationPlugin getPlugin() {
     return pluginService.getPlugin(PluginKey.key(PostActivitySpaceStreamPlugin.ID));
   }
-
+  
   public void testDigestWithDeletedActivity() throws Exception {
     Space space = getSpaceInstance(1);
     spaceService.addMember(space, demoIdentity.getRemoteId());
@@ -80,4 +106,5 @@ public class PostActivitySpaceStreamPluginTest extends AbstractPluginTest {
     getPlugin().buildDigest(ctx, writer);
     assertDigest(writer, "John Anthony posted in my space 1.");
   }
+
 }

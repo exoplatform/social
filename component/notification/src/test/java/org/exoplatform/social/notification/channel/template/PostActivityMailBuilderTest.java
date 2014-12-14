@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2003-2013 eXo Platform SAS.
+ * Copyright (C) 2003-2014 eXo Platform SAS.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.exoplatform.social.notification.plugin;
+package org.exoplatform.social.notification.channel.template;
 
 import java.io.StringWriter;
 import java.io.Writer;
@@ -22,23 +22,53 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.exoplatform.commons.api.notification.NotificationContext;
+import org.exoplatform.commons.api.notification.channel.AbstractChannel;
+import org.exoplatform.commons.api.notification.channel.ChannelManager;
+import org.exoplatform.commons.api.notification.channel.template.AbstractTemplateBuilder;
+import org.exoplatform.commons.api.notification.model.ChannelKey;
 import org.exoplatform.commons.api.notification.model.MessageInfo;
 import org.exoplatform.commons.api.notification.model.NotificationInfo;
 import org.exoplatform.commons.api.notification.model.PluginKey;
 import org.exoplatform.commons.api.notification.model.UserSetting;
 import org.exoplatform.commons.api.notification.plugin.AbstractNotificationPlugin;
+import org.exoplatform.commons.notification.channel.MailChannel;
 import org.exoplatform.commons.notification.impl.NotificationContextImpl;
-import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.identity.model.Identity;
-import org.exoplatform.social.notification.AbstractPluginTest;
+import org.exoplatform.social.notification.plugin.PostActivityPlugin;
 
 /**
  * Created by The eXo Platform SAS
  * Author : eXoPlatform
  *          thanhvc@exoplatform.com
- * Aug 20, 2013  
+ * Dec 14, 2014  
  */
-public class PostActivityPluginTest extends AbstractPluginTest {
+public class PostActivityMailBuilderTest extends AbstractTemplateBuilderTest {
+  private ChannelManager manager;
+  
+  @Override
+  protected void setUp() throws Exception {
+    super.setUp();
+    manager = getService(ChannelManager.class);
+  }
+  
+  @Override
+  public void tearDown() throws Exception {
+    super.tearDown();
+  }
+  
+
+  @Override
+  public AbstractTemplateBuilder getTemplateBuilder() {
+    AbstractChannel channel = manager.getChannel(ChannelKey.key(MailChannel.ID));
+    assertTrue(channel != null);
+    assertTrue(channel.hasTemplateBuilder(PluginKey.key(PostActivityPlugin.ID)));
+    return channel.getTemplateBuilder(PluginKey.key(PostActivityPlugin.ID));
+  }
+  
+  @Override
+  public AbstractNotificationPlugin getPlugin() {
+    return pluginService.getPlugin(PluginKey.key(PostActivityPlugin.ID));
+  }
   
   public void testSimpleCase() throws Exception {
     //STEP 1 post activity
@@ -55,43 +85,6 @@ public class PostActivityPluginTest extends AbstractPluginTest {
     assertSubject(info, "Demo gtn posted on your activity stream");
     assertBody(info, "New post on your activity stream");
     assertBody(info, "demo post activity on activity stream of root");
-  }
-  
-  public void testPluginONOFF() throws Exception {
-    //by default the plugin is on
-    makeActivity(demoIdentity, "demo post activity on activity stream of root");
-    assertMadeNotifications(1);
-    notificationService.clearAll();
-    
-    //turn off the plugin
-    turnOFF(getPlugin());
-    
-    makeActivity(johnIdentity, "john post activity on activity stream of root");
-    assertMadeNotifications(0);
-    
-    //turn on the plugin
-    turnON(getPlugin());
-    makeActivity(demoIdentity, "demo post activity on activity stream of root");
-    assertMadeNotifications(1);
-    notificationService.clearAll();
-  }
-  
-  public void testFeatureONOFF() throws Exception {
-    //by default the feature is ON
-    makeActivity(demoIdentity, "demo post activity on activity stream of root");
-    assertMadeNotifications(1);
-    notificationService.clearAll();
-    
-    //turn off the feature
-    turnFeatureOff();
-    makeActivity(maryIdentity, "mary post activity on activity stream of root");
-    assertMadeNotifications(0);
-    
-    //turn on the feature
-    turnFeatureOn();
-    makeActivity(johnIdentity, "john post activity on activity stream of root");
-    assertMadeNotifications(1);
-    notificationService.clearAll();
   }
   
   public void testDigest() throws Exception {
@@ -138,30 +131,7 @@ public class PostActivityPluginTest extends AbstractPluginTest {
     getPlugin().buildDigest(ctx, writer);
     assertDigest(writer, "Demo gtn, John Anthony posted on your activity stream.");
   }
-  
-  public void testDigestWithDeletedActivity() throws Exception {
-    ExoSocialActivity demoActivity = makeActivity(demoIdentity, "demo post activity on activity stream of root");
-    makeActivity(johnIdentity, "john post activity on activity stream of root");
-    
-    //Digest
-    List<NotificationInfo> list = assertMadeNotifications(2);
-    
-    NotificationContext ctx = NotificationContextImpl.cloneInstance();
-    list.set(0, list.get(0).setTo(rootIdentity.getRemoteId()));
-    ctx.setNotificationInfos(list);
-    
-    //demo delete his activity
-    activityManager.deleteActivity(demoActivity);
-    tearDownActivityList.remove(demoActivity);
-    
-    Writer writer = new StringWriter();
-    getPlugin().buildDigest(ctx, writer);
-    assertDigest(writer, "John Anthony posted on your activity stream.");
-  }
-  
-  @Override
-  public AbstractNotificationPlugin getPlugin() {
-    return pluginService.getPlugin(PluginKey.key(PostActivityPlugin.ID));
-  }
+
+ 
 
 }

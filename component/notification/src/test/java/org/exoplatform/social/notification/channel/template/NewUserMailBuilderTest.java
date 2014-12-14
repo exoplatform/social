@@ -1,4 +1,20 @@
-package org.exoplatform.social.notification.plugin;
+/*
+ * Copyright (C) 2003-2014 eXo Platform SAS.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+package org.exoplatform.social.notification.channel.template;
 
 import java.io.StringWriter;
 import java.io.Writer;
@@ -7,34 +23,53 @@ import java.util.LinkedHashSet;
 import java.util.List;
 
 import org.exoplatform.commons.api.notification.NotificationContext;
+import org.exoplatform.commons.api.notification.channel.AbstractChannel;
+import org.exoplatform.commons.api.notification.channel.ChannelManager;
+import org.exoplatform.commons.api.notification.channel.template.AbstractTemplateBuilder;
+import org.exoplatform.commons.api.notification.model.ChannelKey;
 import org.exoplatform.commons.api.notification.model.MessageInfo;
 import org.exoplatform.commons.api.notification.model.NotificationInfo;
 import org.exoplatform.commons.api.notification.model.PluginKey;
 import org.exoplatform.commons.api.notification.plugin.AbstractNotificationPlugin;
+import org.exoplatform.commons.notification.channel.MailChannel;
 import org.exoplatform.commons.notification.impl.NotificationContextImpl;
 import org.exoplatform.commons.utils.CommonsUtils;
 import org.exoplatform.services.organization.OrganizationService;
 import org.exoplatform.social.core.identity.model.Identity;
-import org.exoplatform.social.notification.AbstractPluginTest;
+import org.exoplatform.social.notification.plugin.NewUserPlugin;
 
-public class NewUserPluginTest extends AbstractPluginTest {
+/**
+ * Created by The eXo Platform SAS
+ * Author : eXoPlatform
+ *          thanhvc@exoplatform.com
+ * Dec 14, 2014  
+ */
+public class NewUserMailBuilderTest extends AbstractTemplateBuilderTest {
+  private ChannelManager manager;
   
   @Override
   protected void setUp() throws Exception {
     super.setUp();
-    
-    //By default the plugin and feature are active
-    assertTrue(pluginSettingService.isActive(getPlugin().getId()));
-    assertTrue(exoFeatureService.isActiveFeature("notification"));
+    manager = getService(ChannelManager.class);
   }
   
   @Override
-  protected void tearDown() throws Exception {
-    //
-    turnON(getPlugin());
-    turnFeatureOn();
-    
+  public void tearDown() throws Exception {
     super.tearDown();
+  }
+  
+
+  @Override
+  public AbstractTemplateBuilder getTemplateBuilder() {
+    AbstractChannel channel = manager.getChannel(ChannelKey.key(MailChannel.ID));
+    assertTrue(channel != null);
+    assertTrue(channel.hasTemplateBuilder(PluginKey.key(NewUserPlugin.ID)));
+    return channel.getTemplateBuilder(PluginKey.key(NewUserPlugin.ID));
+  }
+  
+  @Override
+  public AbstractNotificationPlugin getPlugin() {
+    return pluginService.getPlugin(PluginKey.key(NewUserPlugin.ID));
   }
   
   public void testSimpleCase() throws Exception {
@@ -52,51 +87,6 @@ public class NewUserPluginTest extends AbstractPluginTest {
     
     assertSubject(info, "Ghost gtn has joined eXo");
     assertBody(info, "New user on eXo");
-  }
-  
-  public void testPluginONOFF() throws Exception {
-    //by default the plugin is ON
-    Identity ghostIdentity = identityManager.getOrCreateIdentity("organization", "ghost", true);
-    tearDownIdentityList.add(ghostIdentity);
-    assertMadeNotifications(4);
-    notificationService.clearAll();
-    
-    //turn off the plugin
-    turnOFF(getPlugin());
-    
-    Identity raulIdentity = identityManager.getOrCreateIdentity("organization", "raul", true);
-    tearDownIdentityList.add(raulIdentity);
-    assertMadeNotifications(0);
-    
-    //turn on the plugin
-    turnON(getPlugin());
-    Identity paulIdentity = identityManager.getOrCreateIdentity("organization", "paul", true);
-    tearDownIdentityList.add(paulIdentity);
-    assertMadeNotifications(4);
-    notificationService.clearAll();
-  }
-  
-  public void testFeatureONOFF() throws Exception {
-    //by default the feature is ON
-    Identity ghostIdentity = identityManager.getOrCreateIdentity("organization", "ghost", true);
-    tearDownIdentityList.add(ghostIdentity);
-    
-    assertMadeNotifications(4);
-    notificationService.clearAll();
-    
-    //turn off the feature
-    turnFeatureOff();
-    
-    Identity raulIdentity = identityManager.getOrCreateIdentity("organization", "raul", true);
-    tearDownIdentityList.add(raulIdentity);
-    assertMadeNotifications(0);
-    
-    //turn on the feature
-    turnFeatureOn();
-    Identity paulIdentity = identityManager.getOrCreateIdentity("organization", "paul", true);
-    tearDownIdentityList.add(paulIdentity);
-    assertMadeNotifications(4);
-    notificationService.clearAll();
   }
   
   public void testDigest() throws Exception {
@@ -124,10 +114,5 @@ public class NewUserPluginTest extends AbstractPluginTest {
     tearDownIdentityList.add(ghostIdentity);
     tearDownIdentityList.add(raulIdentity);
     tearDownIdentityList.add(paulIdentity);
-  }
-  
-  @Override
-  public AbstractNotificationPlugin getPlugin() {
-    return pluginService.getPlugin(PluginKey.key(NewUserPlugin.ID));
   }
 }
