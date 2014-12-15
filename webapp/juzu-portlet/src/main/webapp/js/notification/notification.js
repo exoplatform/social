@@ -3,6 +3,8 @@
   var Notification = {
     formData: '',
     parentId: '#userNotification',
+    mailChannel: 'MAIL_CHANNEL',
+    webChannel: 'WEB_CHANNEL',
     onload : function() {
       Notification.formData = $(document.forms['uiNotificationSetting']).serialize();
       Notification.updateUIGrid();
@@ -119,7 +121,7 @@
           //
           Notification.updateUIGrid();
           //
-          if (data.type == 'intranet') {
+          if (data.type == Notification.webChannel) {
             var intranetNotif = $('#UINotificationPopoverToolbarPortlet');
             if (data.enable == 'true') {
     	    	  intranetNotif.show();

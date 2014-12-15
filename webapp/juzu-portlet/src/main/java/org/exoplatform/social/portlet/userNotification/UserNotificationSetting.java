@@ -168,11 +168,13 @@ public class UserNotificationSetting {
     Map<String, CheckBoxInput> channelCheckBoxList = new HashMap<String, CheckBoxInput>();
     parameters.put("emailSelectBox", null);
     for (String channelId : channels) {
-      boolean isChannelActive = setting.isChannelActive(channelId);
-      channelStatus.put(channelId, isChannelActive);
-      channelCheckBoxList.put(channelId, new CheckBoxInput(channelId, pluginId, setting.isActive(channelId, pluginId), isChannelActive));
-      if(UserSetting.EMAIL_CHANNEL.equals(channelId)) {
-        parameters.put("emailSelectBox", new SelectBoxInput(channelId + pluginId, options, getValue(setting, pluginId), isChannelActive));
+      if(pluginSettingService.isActive(channelId, pluginId)) {
+        boolean isChannelActive = setting.isChannelActive(channelId);
+        channelStatus.put(channelId, isChannelActive);
+        channelCheckBoxList.put(channelId, new CheckBoxInput(channelId, pluginId, setting.isActive(channelId, pluginId), isChannelActive));
+        if(UserSetting.EMAIL_CHANNEL.equals(channelId)) {
+          parameters.put("emailSelectBox", new SelectBoxInput(channelId + pluginId, options, getValue(setting, pluginId), isChannelActive));
+        }
       }
     }
     parameters.put("channels", channels);
