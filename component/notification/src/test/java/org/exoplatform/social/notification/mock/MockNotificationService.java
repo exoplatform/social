@@ -82,7 +82,7 @@ public class MockNotificationService implements NotificationService {
         userSetting.setUserId(userId);
       }
       
-      if (userSetting.isEnabled(UserSetting.EMAIL_CHANNEL, pluginId)) {
+      if (userSetting.isActive(UserSetting.EMAIL_CHANNEL, pluginId)) {
         this.storeInstantly.add(notification);
       }
       

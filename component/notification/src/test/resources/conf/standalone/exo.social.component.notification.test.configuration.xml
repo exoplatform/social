@@ -188,6 +188,17 @@
         </value-param>
       </init-params>
     </component-plugin>
+    <component-plugin>
+      <name>web.channel.social.template</name>
+      <set-method>registerTemplateProvider</set-method>
+      <type>org.exoplatform.social.notification.channel.template.WebTemplateProvider</type>
+      <init-params>
+        <value-param>
+          <name>channel-id</name>
+          <value>WEB_CHANNEL</value>
+        </value-param>
+      </init-params>
+    </component-plugin>
   </external-component-plugins>
   
   <external-component-plugins>

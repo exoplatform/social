@@ -35,7 +35,7 @@ public class MockUserSettingServiceImpl implements UserSettingService {
     for (UserSetting userSetting : settings.values()) {
       if (userSetting.isInDaily(pluginId) 
           || userSetting.isInWeekly(pluginId) 
-          || userSetting.isEnabled(UserSetting.EMAIL_CHANNEL, pluginId)) {
+          || userSetting.isActive(UserSetting.EMAIL_CHANNEL, pluginId)) {
         userIds.add(userSetting.getUserId());
       }
     }

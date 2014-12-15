@@ -186,7 +186,7 @@ public abstract class AbstractPluginTest extends AbstractCoreTest {
     //get notification then clear the notification list
     UserSetting setting = userSettingService.get(rootIdentity.getRemoteId());
     List<NotificationInfo> got = notificationService.storeDigestJCR();
-    if (setting.isEnabled(UserSetting.EMAIL_CHANNEL, getPlugin().getKey().getId())) {
+    if (setting.isActive(UserSetting.EMAIL_CHANNEL, getPlugin().getKey().getId())) {
       got = notificationService.storeInstantly();
       assertEquals(number, got.size());
     }

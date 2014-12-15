@@ -170,7 +170,7 @@ public class UserNotificationSetting {
     for (String channelId : channels) {
       boolean isChannelActive = setting.isChannelActive(channelId);
       channelStatus.put(channelId, isChannelActive);
-      channelCheckBoxList.put(channelId, new CheckBoxInput(channelId, pluginId, setting.isEnabled(channelId, pluginId), isChannelActive));
+      channelCheckBoxList.put(channelId, new CheckBoxInput(channelId, pluginId, setting.isActive(channelId, pluginId), isChannelActive));
       if(UserSetting.EMAIL_CHANNEL.equals(channelId)) {
         parameters.put("emailSelectBox", new SelectBoxInput(channelId + pluginId, options, getValue(setting, pluginId), isChannelActive));
       }
@@ -259,7 +259,7 @@ public class UserNotificationSetting {
           if(info.isChannelActive(channelId)) {
             hasActivePlugin = true;
             boolean isChannelActive = setting.isChannelActive(channelId);
-            channelCheckBoxList.put(channelId + pluginId, new CheckBoxInput(channelId, pluginId, setting.isEnabled(channelId, pluginId), isChannelActive));
+            channelCheckBoxList.put(channelId + pluginId, new CheckBoxInput(channelId, pluginId, setting.isActive(channelId, pluginId), isChannelActive));
             if(UserSetting.EMAIL_CHANNEL.equals(channelId)) {
               emailSelectBoxList.put(pluginId, new SelectBoxInput(channelId + pluginId, options, getValue(setting, pluginId), isChannelActive));
             }
