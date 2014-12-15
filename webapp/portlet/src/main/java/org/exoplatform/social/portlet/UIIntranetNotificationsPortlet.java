@@ -68,7 +68,9 @@ public class UIIntranetNotificationsPortlet extends UIPortletApplication {
   }
   
   protected List<String> getNotifications() throws Exception {
-    return dataStorage.getNotificationContent(currentUser, false);
+    //TODO Implement this process on the WebNotificationService
+    //return dataStorage.getNotificationContent(currentUser, false);
+    return null;
   }
   
   
