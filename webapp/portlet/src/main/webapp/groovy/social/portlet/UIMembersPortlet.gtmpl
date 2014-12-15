@@ -46,184 +46,187 @@ String selectedStartChar = uicomponent.getSelectedChar();
 //
 def jsManager = _ctx.getRequestContext().getJavascriptManager();
 jsManager.require("SHARED/jquery", "jq")
-		 .require("SHARED/bts_tooltip")
-		 .require("SHARED/socialUtil", "socialUtil")
-		 .addScripts("jq('*[rel=\"tooltip\"]').tooltip(); socialUtil.addfillUpFreeSpace('" + uicomponent.id + "');")
-		 .addScripts("socialUtil.addDynamicItemLayout('spaceManagerListBox');")
-		 .addScripts("socialUtil.addDynamicItemLayout('spaceMemberListBox');");
+     .require("SHARED/bts_tooltip")
+     .require("SHARED/socialUtil", "socialUtil")
+     .addScripts("jq('*[rel=\"tooltip\"]').tooltip(); socialUtil.addfillUpFreeSpace('" + uicomponent.id + "');")
+     .addScripts("socialUtil.addDynamicItemLayout('spaceManagerListBox');")
+     .addScripts("socialUtil.addDynamicItemLayout('spaceMemberListBox');");
 %>
-<div class="uiSocApplication uiMembersPortlet" id="$uicomponentId">
-    <h3 class="uiInputInfo">$spaceName</h3>
-    <span>$visibility</span>
-    <h4 class="titleWithBorder mgB220">$administratorLabel</h4>
-    <div class="memberList clearfix">
-   <% if (managerList.size() > 0) {
-        for(user in managerList) {
-          def userName = user.getProfile().getFullName();
-          position = user.getProfile().getPosition();
-          def profileURL = LinkProvider.getUserProfileUri(user.getRemoteId());
-          if (!position) position = "";
-          def leaderImageSource = user.profile.avatarUrl;
-          if (!leaderImageSource) leaderImageSource = LinkProvider.PROFILE_DEFAULT_AVATAR_URL;
-          leaderIdx += 1;
-          //
-          def connectAction = uicomponent.event("Connect", user.getId());
-          def relationship = Utils.getRelationship(user);
-          def contactStatus = null;
-          if (relationship != null) {
-            contactStatus = relationship.status;
-          }
-          String checkedBox = (contactStatus == Relationship.Type.CONFIRMED) ? "checkedBox" : "";
-        %>
-        <div class="itemContainer pull-left">
-          <div class="spaceBox $checkedBox">
-            <a class="avatarLarge pull-left" rel="tooltip" data-placement="bottom" title="$userName">
-              <img class="ImgAvatar" src="$leaderImageSource"/>
-            </a>
-            <div class="contentBox">
-              <h4 class="spaceTitle"><a href="${profileURL}" class="CommunityName InviteTitle">$userName</a></h4>
-              <% if(position.length() > 0) { %>
-               <div class="position">
-                   <%=_ctx.appRes(uicomponent.getId() + ".label.Position") + ": "%>${position}
-               </div>
-              <% } %>
-            </div>
-            
-          <% if (user.getRemoteId() != Utils.getViewerRemoteId()) { %>
-            <%
-              def connectTitle = _ctx.appRes(uicomponent.getId() + ".label.Connect")
-              def ignoreTitle = _ctx.appRes(uicomponent.getId() + ".label.Ignore")
-              def confirmTitle = _ctx.appRes(uicomponent.getId() + ".label.Confirm")
-              def pendingTitle = _ctx.appRes(uicomponent.getId() + ".label.Pending")
-              def removeTitle = _ctx.appRes(uicomponent.getId() + ".label.RemoveConnection")
-              def cancelRequestTitle = _ctx.appRes(uicomponent.getId() + ".label.CancelRequest")
-            %>
-            <div class="connectionBtn clearfix">
-            <% if (contactStatus == Relationship.Type.PENDING && relationship.isSender(user)) { %>
-                <button class="btn pull-right" onclick="<%=uicomponent.event("Ignore",user.getId())%>">$ignoreTitle</button>
-                <button class="btn btn-primary pull-right" rel="tooltip" onclick="<%=uicomponent.event("Confirm",user.getId())%>">$confirmTitle</button>
-            <% } else if (contactStatus == Relationship.Type.PENDING) { %>
-                <button class="btn pull-right" onclick="<%=uicomponent.event("Ignore",user.getId())%>">$cancelRequestTitle</button>
-            <% } else if (contactStatus == Relationship.Type.CONFIRMED) { %>
-                <button class="btn pull-right" onclick="<%=uicomponent.event("Ignore",user.getId())%>">$removeTitle</button>
-            <% } else if (contactStatus == null) { %>
-                <button class="btn pull-right" onclick="$connectAction">$connectTitle</button>
-            <% } %>
-            </div>
+<div class="uiSocApplication uiMembersPortlet" id="$uicomponent.id">
+  <h3 class="uiInputInfo">$spaceName</h3>
+  <span>$visibility</span>
+  <h4 class="titleWithBorder mgB220">$administratorLabel</h4>
+  <div id="spaceManagerListBox">
+   <% if (managerList.size() > 0) { %>
+    <div class="itemList memberList clearfix">
+   <%  for(user in managerList) {
+      String userName = user.getProfile().getFullName();
+      position = user.getProfile().getPosition();
+      String email = user.getProfile().getEmail();
+      String profileURL = LinkProvider.getUserProfileUri(user.getRemoteId());
+      if (!position) position = "";
+      String leaderImageSource = user.profile.avatarUrl;
+      if (!leaderImageSource) leaderImageSource = LinkProvider.PROFILE_DEFAULT_AVATAR_URL;
+      leaderIdx += 1;
+      //
+      String connectAction = uicomponent.event("Connect", user.getId());
+      def relationship = Utils.getRelationship(user);
+      def contactStatus = null;
+      if (relationship != null) {
+        contactStatus = relationship.status;
+      }
+      String checkedBox = (contactStatus == Relationship.Type.CONFIRMED) ? "checkedBox" : "";
+    %>
+      <div class="itemContainer pull-left">
+        <div class="spaceBox $checkedBox">
+          <a class="avatarLarge pull-left">
+            <img src="$leaderImageSource" alt="$userName"/>
+          </a>
+          <div class="contentBox">
+            <h4 class="spaceTitle"><a data-line="2" data-key="title" href="${profileURL}" class="limitText">$userName</a></h4>
+          <% if(position != null && position.length() > 0) { %>
+            <div class="position ellipsis">${position}</div>
+          <% } %>
+          <% if(email != null && email.length() > 0) { %>
+            <div class="email"><a class="ellipsis" href="mailto:${email}">${email}</a></div>
           <% } %>
           </div>
+          <div class="connectionBtn clearfix">
+        <% if (user.getRemoteId() != Utils.getViewerRemoteId()) { %>
+          <%
+            String connectTitle = _ctx.appRes("UIMembersPortlet.label.Connect");
+            String ignoreTitle = _ctx.appRes("UIMembersPortlet.label.Ignore");
+            String confirmTitle = _ctx.appRes("UIMembersPortlet.label.Confirm");
+            String pendingTitle = _ctx.appRes("UIMembersPortlet.label.Pending");
+            String removeTitle = _ctx.appRes("UIMembersPortlet.label.RemoveConnection");
+            String cancelRequestTitle = _ctx.appRes("UIMembersPortlet.label.CancelRequest");
+          %>
+          <% if (contactStatus == Relationship.Type.PENDING && relationship.isSender(user)) { %>
+            <button class="btn pull-right" onclick="<%=uicomponent.event("Ignore",user.getId())%>">$ignoreTitle</button>
+            <button class="btn btn-primary pull-right" onclick="<%=uicomponent.event("Confirm",user.getId())%>">$confirmTitle</button>
+          <% } else if (contactStatus == Relationship.Type.PENDING) { %>
+            <button class="btn pull-right" onclick="<%=uicomponent.event("Ignore",user.getId())%>">$cancelRequestTitle</button>
+          <% } else if (contactStatus == Relationship.Type.CONFIRMED) { %>
+            <button class="btn pull-right" onclick="<%=uicomponent.event("Ignore",user.getId())%>">$removeTitle</button>
+          <% } else if (contactStatus == null) { %>
+            <button class="btn btn-primary pull-right" onclick="$connectAction">$connectTitle</button>
+          <% } %>
+        <% } %>
+          </div>
         </div>
-      <% }%>
       </div>
-      <%
-      } else { %>
-        <!-- NEED TO BE ADD CODE HERE INSTEAD OF STATIC TEXT <div class="noneContentSpace"><%=_ctx.appRes(uicomponent.getId() + ".label.NotLeaderYet")%></div>-->
-        <div class="uiFilterList">
-            <div class="result clearfix"><span class="number">0</span><%=_ctx.appRes(uicomponent.getId() + ".label.Number_Member_In_Space")%></div>
-        </div>
+    <% }%>
+    </div>
+   <% } else { %>
+    <!-- NEED TO BE ADD CODE HERE INSTEAD OF STATIC TEXT <div class="noneContentSpace"><%=_ctx.appRes("UIMembersPortlet.label.NotLeaderYet")%></div>-->
+    <div class="uiFilterList">
+      <div class="result clearfix"><span class="number">0</span><%=_ctx.appRes("UIMembersPortlet.label.Number_Member_In_Space")%></div>
+    </div>
    <% } %>
-      <!-- End leaders section -->
-      <!-- Members section -->
-      <h4 class="titleWithBorder">$spaceMemberLabel</h4>
-      <% uicomponent.renderChild(UIProfileUserSearch.class); %>
-      <div class="memberList spaceMemberListBox clearfix">
-        <h4 class="titleWithBorder">$contactsDirectory</h4>
-        <!--div class="DirectoryNormalBox"-->
-        <div class="uiFilterList">
-          <div class="result clearfix"><span class="number"><%=uicomponent.memberNum; %></span><%=_ctx.appRes(uicomponent.getId() + ".label.DisplayInOrderOfAlphabet")%></div>
-          <ul class="letterList"> 
-             <li>
-             <% if (selectedStartChar == null || selectedStartChar == "All") { %>
-                <a href="#$searchAll" id="searchAll" class="selected" onclick="<%=uicomponent.event("Search", ""+"All")%>">$searchAll</a>
-             <%} else {%>
-                <a href="#$searchAll" id="searchAll" onclick="<%=uicomponent.event("Search", ""+"All")%>">$searchAll</a>
-             <% } %>
-             </li>
-             
-           <% for (ch in alphabets) { %>
-             <li>
-             <% if ((selectedStartChar != null) && (selectedStartChar == ch)) { %>
-                <a href="#$ch" class="selected" onclick="<%=uicomponent.event("Search", ""+ch)%>">$ch</a>
-             <%   } else {%>
-                <a href="#$ch" onclick="<%=uicomponent.event("Search", ""+ch)%>">$ch</a>
-             <%   } %>
-             </li>
-             <% } %>
-           </ul>
-        </div>
-  <% if(memberList.size() > 0) { 
-        for(user in memberList) {
-          def memberUserName = user.getProfile().getFullName();
-          position = user.getProfile().position;
-          if (!position) position = "";
-          def profileURL = LinkProvider.getUserProfileUri(user.getRemoteId());
-          def memberImageSource = user.getProfile().avatarUrl;
-          if (!memberImageSource) memberImageSource = LinkProvider.PROFILE_DEFAULT_AVATAR_URL;
-          memberIdx += 1;
-          //
-          def connectAction = uicomponent.event("Connect", user.getId());
-          def relationship = Utils.getRelationship(user);
-          def contactStatus = null;
-          if (relationship != null) {
-            contactStatus = relationship.status;
-          }
-          String checkedBox = (contactStatus == Relationship.Type.CONFIRMED) ? "checkedBox" : "";
-      %>
-	      <div class="itemContainer pull-left">
-          <div class="spaceBox $checkedBox pull-left">
-            <a class="avatarLarge pull-left" rel="tooltip" data-placement="bottom" title="$memberUserName">
-                <img src="$memberImageSource" alt="#"/>
-            </a>
-            <div class="contentBox">
-                <h4 class="spaceTitle">
-                    <a href="${profileURL}">$memberUserName</a>
-                </h4>
-                <% if(position.length() > 0) { %>
-                 <div class="position">
-                     <%=_ctx.appRes(uicomponent.getId() + ".label.Position") + ": "%>${position}
-                 </div>
-                 <% } %>
-            </div>
-          <% if (user.getRemoteId() != Utils.getViewerRemoteId()) { %>
-            <%
-              def connectTitle = _ctx.appRes(uicomponent.getId() + ".label.Connect")
-						  def ignoreTitle = _ctx.appRes(uicomponent.getId() + ".label.Ignore")
-						  def confirmTitle = _ctx.appRes(uicomponent.getId() + ".label.Confirm")
-						  def pendingTitle = _ctx.appRes(uicomponent.getId() + ".label.Pending")
-						  def removeTitle = _ctx.appRes(uicomponent.getId() + ".label.RemoveConnection")
-						  def cancelRequestTitle = _ctx.appRes(uicomponent.getId() + ".label.CancelRequest")
-            %>
-            <div class="connectionBtn clearfix">
-            <% if (contactStatus == Relationship.Type.PENDING && relationship.isSender(user)) { %>
-                <button class="btn pull-right" onclick="<%=uicomponent.event("Ignore",user.getId())%>">$ignoreTitle</button>
-                <button class="btn btn-primary pull-right" onclick="<%=uicomponent.event("Confirm",user.getId())%>">$confirmTitle</button>
-            <% } else if (contactStatus == Relationship.Type.PENDING) { %>
-                <button class="btn pull-right" onclick="<%=uicomponent.event("Ignore",user.getId())%>">$cancelRequestTitle</button>
-            <% } else if (contactStatus == Relationship.Type.CONFIRMED) { %>
-                <button class="btn pull-right" onclick="<%=uicomponent.event("Ignore",user.getId())%>">$removeTitle</button>
-            <% } else if (contactStatus == null) { %>
-                <button class="btn pull-right" onclick="$connectAction">$connectTitle</button>
-            <% } %>
-            </div>
+  </div>
+  <!-- End leaders section -->
+  <!-- Members section -->
+  <h4 class="titleWithBorder">$spaceMemberLabel</h4>
+  <% uicomponent.renderChild(UIProfileUserSearch.class); %>
+  <div id="spaceMemberListBox" class="memberList spaceMemberListBox clearfix">
+    <h4 class="titleWithBorder">$contactsDirectory</h4>
+    <!--div class="DirectoryNormalBox"-->
+    <div class="uiFilterList">
+      <div class="result clearfix"><span class="number"><%=uicomponent.memberNum%></span><%=_ctx.appRes("UIMembersPortlet.label.DisplayInOrderOfAlphabet")%></div>
+      <ul class="letterList"> 
+        <li>
+       <% if (selectedStartChar == null || selectedStartChar == "All") { %>
+          <a href="#$searchAll" id="searchAll" class="selected" onclick="<%=uicomponent.event("Search", ""+"All")%>">$searchAll</a>
+       <% } else {%>
+          <a href="#$searchAll" id="searchAll" onclick="<%=uicomponent.event("Search", ""+"All")%>">$searchAll</a>
+       <% } %>
+        </li>
+       <% for (ch in alphabets) { %>
+        <li>
+        <% if ((selectedStartChar != null) && (selectedStartChar == ch)) { %>
+          <a href="#$ch" class="selected" onclick="<%=uicomponent.event("Search", ""+ch)%>">$ch</a>
+        <%  } else {%>
+          <a href="#$ch" onclick="<%=uicomponent.event("Search", ""+ch)%>">$ch</a>
+        <%  } %>
+        </li>
+       <% } %>
+      </ul>
+    </div>
+  <% if(memberList.size() > 0) { %>
+    <div class="itemList clearfix">
+    <% for(user in memberList) {
+      String userName = user.getProfile().getFullName();
+      String email = user.getProfile().getEmail();
+      position = user.getProfile().position;
+      if (!position) position = "";
+      String profileURL = LinkProvider.getUserProfileUri(user.getRemoteId());
+      String memberImageSource = user.getProfile().avatarUrl;
+      if (!memberImageSource) memberImageSource = LinkProvider.PROFILE_DEFAULT_AVATAR_URL;
+      memberIdx += 1;
+      //
+      String connectAction = uicomponent.event("Connect", user.getId());
+      def relationship = Utils.getRelationship(user);
+      def contactStatus = null;
+      if (relationship != null) {
+        contactStatus = relationship.status;
+      }
+      String checkedBox = (contactStatus == Relationship.Type.CONFIRMED) ? "checkedBox" : "";
+    %>
+      <div class="itemContainer pull-left">
+        <div class="spaceBox $checkedBox">
+          <a class="avatarLarge pull-left">
+            <img src="$memberImageSource" alt="$userName"/>
+          </a>
+          <div class="contentBox">
+            <h4 class="spaceTitle"><a data-key="title" data-line="2" href="${profileURL}" class="limitText">$userName</a></h4>
+          <% if(position != null && position.length() > 0) { %>
+            <div class="position ellipsis">${position}</div>
+          <% } %>
+          <% if(email != null && email.length() > 0) { %>
+            <div class="email"><a class="ellipsis" href="mailto:${email}">${email}</a></div>
           <% } %>
           </div>
+        <% if (user.getRemoteId() != Utils.getViewerRemoteId()) { %>
+          <%
+            String connectTitle = _ctx.appRes("UIMembersPortlet.label.Connect");
+            String ignoreTitle = _ctx.appRes("UIMembersPortlet.label.Ignore");
+            String confirmTitle = _ctx.appRes("UIMembersPortlet.label.Confirm");
+            String pendingTitle = _ctx.appRes("UIMembersPortlet.label.Pending");
+            String removeTitle = _ctx.appRes("UIMembersPortlet.label.RemoveConnection");
+            String cancelRequestTitle = _ctx.appRes("UIMembersPortlet.label.CancelRequest");
+          %>
+          <div class="connectionBtn clearfix">
+          <% if (contactStatus == Relationship.Type.PENDING && relationship.isSender(user)) { %>
+            <button class="btn pull-right" onclick="<%=uicomponent.event("Ignore",user.getId())%>">$ignoreTitle</button>
+            <button class="btn btn-primary pull-right" onclick="<%=uicomponent.event("Confirm",user.getId())%>">$confirmTitle</button>
+          <% } else if (contactStatus == Relationship.Type.PENDING) { %>
+            <button class="btn pull-right" onclick="<%=uicomponent.event("Ignore",user.getId())%>">$cancelRequestTitle</button>
+          <% } else if (contactStatus == Relationship.Type.CONFIRMED) { %>
+            <button class="btn pull-right" onclick="<%=uicomponent.event("Ignore",user.getId())%>">$removeTitle</button>
+          <% } else if (contactStatus == null) { %>
+            <button class="btn btn-primary pull-right" onclick="$connectAction">$connectTitle</button>
+          <% } %>
+          </div>
+          <% } %>
         </div>
-        <% }
-      } %>
-       </div>
-       <% if(uicomponent.isEnableLoadNext()) { %>
-         <div id="LoadMoreButton" class="load-more-items MoreSpace btn" onclick="<%=uicomponent.event('LoadMoreMember')%>" >
-           <%=_ctx.appRes(uicomponent.getId() + ".label.ShowMore")%>
-         </div>
-     <% } else { %>
-           <script type="text/javascript">
-             var loadMoreButton = document.getElementById("LoadMoreButton");
-             if (loadMoreButton) {
-               try {
-                 loadMoreButton.style.display = "none";
-               }catch(e){};
-               }
-           </script>
-     <%  } %>
-      <!-- End members section -->
-     </div>
+      </div>
+    <% } %>
+    </div>
+  <% } %>
+  </div>
+<% if(uicomponent.isEnableLoadNext()) { %>
+   <div id="LoadMoreButton" class="load-more-items MoreSpace btn" onclick="<%=uicomponent.event("LoadMoreMember")%>">
+     <%=_ctx.appRes("UIMembersPortlet.label.ShowMore")%>
+   </div>
+<% } else { %>
+<script type="text/javascript">
+var loadMoreButton = document.getElementById("LoadMoreButton");
+if (loadMoreButton) {
+  try {
+    loadMoreButton.style.display = "none";
+  }catch(e){};
+}
+</script>
+<% } %>
+<!-- End members section -->
+</div>
