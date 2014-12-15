@@ -18,11 +18,7 @@
 (function($) {
 var UIProfileUserSearch = { 
     uicomponentId : '',
-    
-		COLOR : {
-		  FOCUS : "#000000",
-		  BLUR : "#C7C7C7"
-		},
+
 		INPUT_ID : {
 		  NAME : '#Search',
 		  POSITION : '#position',
@@ -56,51 +52,8 @@ var UIProfileUserSearch = {
 	    $(posEl).attr('autocomplete','off');
 	    $(skillEl).attr('autocomplete','off');
 	
-	    if(nameEl.val().trim() === defaultUserContact){
-	      nameEl.css('color', UIProfileUserSearch.COLOR.BLUR);
-	    }
-	    
-	    if(posEl.val().trim() === defaultPos){
-	      posEl.css('color', UIProfileUserSearch.COLOR.BLUR);
-	    }
-	    
-	    if(skillEl.val().trim() === defaultSkills){
-	      skillEl.css('color', UIProfileUserSearch.COLOR.BLUR);
-	    }
-	    
-			posEl.focus(function() {
-			  if ($(this).val().trim() == defaultPos) {
-			    $(this).val('');              
-			  }
-			  $(this).css('color', UIProfileUserSearch.COLOR.FOCUS);
-			});
-			 
-			skillEl.focus(function() {
-			  if ($(this).val() == defaultSkills) {
-			    $(this).val('');              
-			  }
-			  $(this).css('color', UIProfileUserSearch.COLOR.FOCUS);
-			});
-				        
-		  posEl.blur(function() {
-			  if ($(this).val() && $(this).val() != '') {
-			    $(this).css('color', UIProfileUserSearch.COLOR.FOCUS);                               
-			  } else {
-			    $(this).css('color', UIProfileUserSearch.COLOR.BLUR);  
-			    $(this).val(defaultPos);
-			  }
-			});
-			
-	    skillEl.blur(function() {
-			  if ($(this).val() && $(this).val() != '') {
-			    $(this).css('color', UIProfileUserSearch.COLOR.FOCUS);                               
-			  } else {
-			    $(this).css('color', UIProfileUserSearch.COLOR.BLUR);  
-			    $(this).val(defaultSkills);
-			  }
-			});
-			
-			posEl.keydown(function(event) {
+
+		  posEl.keydown(function(event) {
 		    keyDownAction(event);
 		  });
 			
