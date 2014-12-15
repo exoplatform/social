@@ -370,13 +370,13 @@ public class CachedRelationshipStorage extends AbstractStorage implements Relati
   public boolean hasRelationship(Identity identity1, Identity identity2, String relationshipPath) throws RelationshipStorageException {
     RelationshipIdentityKey key = new RelationshipIdentityKey(identity2.getId(), identity1.getId());
     RelationshipKey gotKey = exoRelationshipByIdentityCache.get(key);
-    if (gotKey != null && ! gotKey.equals(RELATIONSHIP_NOT_FOUND)) {
+    if (gotKey != null && ! gotKey.equals(RELATIONSHIP_NOT_FOUND) && getRelationship(identity1, identity2).getStatus().equals(Relationship.Type.CONFIRMED)) {
       return true;
     }
     
     key = new RelationshipIdentityKey(identity1.getId(), identity2.getId());
     gotKey = exoRelationshipByIdentityCache.get(key);
-    if (gotKey != null && ! gotKey.equals(RELATIONSHIP_NOT_FOUND)) {
+    if (gotKey != null && ! gotKey.equals(RELATIONSHIP_NOT_FOUND) && getRelationship(identity1, identity2).getStatus().equals(Relationship.Type.CONFIRMED)) {
       return true;
     }
     
