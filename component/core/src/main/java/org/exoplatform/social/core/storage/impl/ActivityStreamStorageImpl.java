@@ -838,7 +838,7 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
     ActivityFilter filter = ActivityFilter.newer();
 
     //
-    return getActivitiesOfIdentities(ActivityBuilderWhere.simple().owners(connections), filter, 0, -1);
+    return getActivitiesOfIdentities(ActivityBuilderWhere.owner().owners(connections), filter, 0, -1);
   }
   
   private QueryResult<ActivityEntity> getActivitiesOfSpace(Identity spaceIdentity) {

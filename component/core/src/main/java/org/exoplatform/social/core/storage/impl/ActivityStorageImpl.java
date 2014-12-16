@@ -2885,11 +2885,10 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
 
     identities.addAll(relationshipStorage.getConnections(ownerIdentity));
     identities.addAll(getSpacesId(ownerIdentity));
-    identities.add(ownerIdentity);
     
     ActivityFilter filter = new ActivityFilter(){};
     //
-    return getActivitiesOfIdentities(ActivityBuilderWhere.simple().mentioner(ownerIdentity).owners(identities), filter, offset, limit);
+    return getActivitiesOfIdentities(ActivityBuilderWhere.simple().poster(ownerIdentity).mentioner(ownerIdentity).owners(identities), filter, offset, limit);
   }
 
   @Override
