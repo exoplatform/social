@@ -1285,6 +1285,28 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
       int i = remaind;
       // fill to enough limit
       for (ExoSocialActivity activity : origin) {
+
+        //SOC-4525 : exclude all space activities that owner is not member
+        if (SpaceIdentityProvider.NAME.equals(activity.getActivityStream().getType().toString())) {
+          Space space = spaceStorage.getSpaceByPrettyName(activity.getStreamOwner());
+          if(null == space){
+            IdentityEntity spaceIdentity;
+            try {
+              spaceIdentity = _findById(ActivityEntity.class, activity.getId()).getIdentity();
+              space = spaceStorage.getSpaceByPrettyName(spaceIdentity.getName());
+            } catch (NodeNotFoundException e) {
+              LOG.debug(e);
+            }
+            if(space!=null){
+              LOG.info("SPACE was renamed before: " + space.getPrettyName());
+            }
+          }
+          if (space != null && ! ArrayUtils.contains(space.getMembers(), ownerIdentity.getRemoteId())) {
+            continue;
+          }
+        }
+        //
+
         if (got.contains(activity) == false) {
           got.add(activity);
           migrateList.add(activity);
@@ -1413,6 +1435,13 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
       int i = remaind;
       // fill to enough limit
       for (ExoSocialActivity activity : origin) {
+
+        //SOC-4525 : exclude all space activities that owner is not member
+        if (SpaceIdentityProvider.NAME.equals(activity.getActivityStream().getType().toString())) {
+          continue;
+        }
+        //
+
         if (got.contains(activity) == false) {
           got.add(activity);
           migrateList.add(activity);
@@ -2885,11 +2914,10 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
 
     identities.addAll(relationshipStorage.getConnections(ownerIdentity));
     identities.addAll(getSpacesId(ownerIdentity));
-    identities.add(ownerIdentity);
     
     ActivityFilter filter = new ActivityFilter(){};
     //
-    return getActivitiesOfIdentities(ActivityBuilderWhere.simple().mentioner(ownerIdentity).owners(identities), filter, offset, limit);
+    return getActivitiesOfIdentities(ActivityBuilderWhere.simple().poster(ownerIdentity).mentioner(ownerIdentity).owners(identities), filter, offset, limit);
   }
 
   @Override

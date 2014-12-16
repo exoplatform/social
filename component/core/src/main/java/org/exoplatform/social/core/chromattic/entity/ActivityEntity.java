@@ -245,11 +245,12 @@ public abstract class ActivityEntity implements NamedEntity {
   
   @Override
   public String toString() {
-    return String.format("\nAct{id=%s,type=%s,lastUpdated=%s,title='%s',poster=%s}",
+    return String.format("\nAct{id=%s,type=%s,lastUpdated=%s,title='%s',poster=%s,streamOwner=%s}",
                          getId(),
                          getTitleId(),
                          getLastUpdated(),
                          getTitle(),
-                         getPosterIdentity().getRemoteId());
+                         getPosterIdentity().getRemoteId(),
+                         getIdentity().getRemoteId());
   }
 }
