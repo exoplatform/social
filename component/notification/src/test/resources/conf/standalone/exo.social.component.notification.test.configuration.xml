@@ -48,8 +48,8 @@
   </component>
 
   <component>
-		<key>org.exoplatform.commons.api.notification.service.storage.IntranetNotificationDataStorage</key>
-		<type>org.exoplatform.commons.notification.impl.service.storage.IntranetNotificationDataStorageImpl</type>
+		<key>org.exoplatform.commons.api.notification.service.WebNotificationService</key>
+		<type>org.exoplatform.commons.notification.impl.service.WebNotificationServiceImpl</type>
 	</component>
 
   <component>

@@ -45,7 +45,6 @@ import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.manager.RelationshipManager;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
-import org.vertx.java.core.json.JsonObject;
 
 /**
  * Created by The eXo Platform SAS
@@ -282,9 +281,7 @@ public class IntranetNotificationRestService implements ResourceContainer {
       notification.setLastModifiedDate(Calendar.getInstance());
       nCtx.setNotificationInfo(notification);
       String message = plugin.buildUIMessage(nCtx);
-      JsonObject jsonObject = new JsonObject();
-      jsonObject.putString("message", message);
-      WebSocketBootstrap.sendMessage(WebSocketServer.NOTIFICATION_WEB_IDENTIFIER, notification.getTo(), jsonObject.encode());
+      WebSocketBootstrap.sendJsonMessage(WebSocketServer.NOTIFICATION_WEB_IDENTIFIER, notification.getTo(), message);
     } catch (Exception e) {
       System.out.println("error : " + e.getMessage());
     }

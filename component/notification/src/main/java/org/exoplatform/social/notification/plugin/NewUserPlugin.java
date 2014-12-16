@@ -31,6 +31,7 @@ import org.exoplatform.commons.api.notification.plugin.NotificationPluginUtils;
 import org.exoplatform.commons.api.notification.service.setting.UserSettingService;
 import org.exoplatform.commons.api.notification.service.template.TemplateContext;
 import org.exoplatform.commons.notification.NotificationUtils;
+import org.exoplatform.commons.notification.impl.AbstractService;
 import org.exoplatform.commons.notification.template.TemplateUtils;
 import org.exoplatform.commons.utils.CommonsUtils;
 import org.exoplatform.container.xml.InitParams;
@@ -153,7 +154,7 @@ public class NewUserPlugin extends AbstractNotificationPlugin {
     Identity identity = Utils.getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, remoteId, true);
     Profile userProfile = identity.getProfile();
     templateContext.put("isIntranet", "true");
-    templateContext.put("READ", (notification.isHasRead()) ? "read" : "unread");
+    templateContext.put("READ", Boolean.valueOf(notification.getValueOwnerParameter(AbstractService.NTF_READ)) ? "read" : "unread");
     templateContext.put("NOTIFICATION_ID", notification.getId());
     templateContext.put("LAST_UPDATED_TIME", TimeConvertUtils.convertXTimeAgo(TimeConvertUtils.getGreenwichMeanTime().getTime(), "EE, dd yyyy", new Locale(language), TimeConvertUtils.YEAR));
     templateContext.put("USER", userProfile.getFullName());

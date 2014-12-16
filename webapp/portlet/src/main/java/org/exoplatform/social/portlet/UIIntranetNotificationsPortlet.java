@@ -19,7 +19,7 @@ package org.exoplatform.social.portlet;
 import java.util.Arrays;
 import java.util.List;
 
-import org.exoplatform.commons.api.notification.service.storage.IntranetNotificationDataStorage;
+import org.exoplatform.commons.api.notification.service.WebNotificationService;
 import org.exoplatform.portal.application.PortalRequestContext;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
@@ -50,7 +50,7 @@ import org.exoplatform.webui.event.EventListener;
 )
 public class UIIntranetNotificationsPortlet extends UIPortletApplication {
   
-  private IntranetNotificationDataStorage dataStorage;
+  private WebNotificationService webNotifService;
   
   private String currentUser = "";
   
@@ -58,7 +58,7 @@ public class UIIntranetNotificationsPortlet extends UIPortletApplication {
 
   public UIIntranetNotificationsPortlet() throws Exception {
     currentUser = WebuiRequestContext.getCurrentInstance().getRemoteUser();
-    dataStorage = getApplicationComponent(IntranetNotificationDataStorage.class);
+    webNotifService = getApplicationComponent(WebNotificationService.class);
   }
   
   @Override
@@ -91,7 +91,7 @@ public class UIIntranetNotificationsPortlet extends UIPortletApplication {
       String notificationId = event.getRequestContext().getRequestParameter(OBJECTID);
       UIIntranetNotificationsPortlet portlet = event.getSource();
       LOG.info("Run action MarkReadActionListener");
-      portlet.dataStorage.saveRead(portlet.currentUser, notificationId);
+      portlet.webNotifService.markRead(notificationId);
       // Ignore reload portlet
       ((PortalRequestContext) event.getRequestContext().getParentAppRequestContext()).ignoreAJAXUpdateOnPortlets(true);
     }
@@ -102,7 +102,7 @@ public class UIIntranetNotificationsPortlet extends UIPortletApplication {
       String notificationId = event.getRequestContext().getRequestParameter(OBJECTID);
       UIIntranetNotificationsPortlet portlet = event.getSource();
       LOG.info("Run action RemoveActionListener: " + notificationId);
-      portlet.dataStorage.remove(portlet.currentUser, notificationId);
+      portlet.webNotifService.remove(portlet.currentUser, notificationId);
       // Ignore reload portlet
       ((PortalRequestContext) event.getRequestContext().getParentAppRequestContext()).ignoreAJAXUpdateOnPortlets(true);
     }
