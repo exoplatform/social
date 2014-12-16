@@ -178,7 +178,7 @@ public class SecurityManagerTest extends AbstractServiceTest {
     createActivities(spaceIdentity, spaceIdentity, 2);
     
     RealtimeListAccess<ExoSocialActivity> spaceActivitiesListAccess = activityManager.getActivitiesWithListAccess(spaceIdentity);
-    ExoSocialActivity activity = spaceActivitiesListAccess.loadAsList(0, spaceActivitiesListAccess.getSize()).get(0);
+    ExoSocialActivity activity = spaceActivitiesListAccess.loadAsList(0, 10).get(0);
 
     assertEquals(true, SecurityManager.canAccessActivity(getContainer(), demoIdentity, activity));
     assertEquals(true, SecurityManager.canAccessActivity(getContainer(), demoIdentity.getRemoteId(), activity));
@@ -270,7 +270,7 @@ public class SecurityManagerTest extends AbstractServiceTest {
     tearDownIdentityList.add(spaceIdentity);
     createActivities(spaceIdentity, spaceIdentity, 1);
     RealtimeListAccess<ExoSocialActivity> spaceActivitiesListAccess = activityManager.getActivitiesWithListAccess(spaceIdentity);
-    ExoSocialActivity spaceActivity = spaceActivitiesListAccess.loadAsList(0, spaceActivitiesListAccess.getSize()).get(0);
+    ExoSocialActivity spaceActivity = spaceActivitiesListAccess.loadAsList(0, 1).get(0);
     boolean demoDeleteSpaceActivity = SecurityManager.canDeleteActivity(getContainer(), demoIdentity, spaceActivity);
     assertTrue("demoDeleteDemoActivity must be true", demoDeleteSpaceActivity);
     boolean maryDeleteSpaceActivity = SecurityManager.canDeleteActivity(getContainer(), maryIdentity, spaceActivity);
@@ -279,7 +279,7 @@ public class SecurityManagerTest extends AbstractServiceTest {
     assertFalse("johnDeleteSpaceActivity must be false", johnDeleteSpaceActivity);
     createActivities(demoIdentity, spaceIdentity, 1);
     spaceActivitiesListAccess = activityManager.getActivitiesWithListAccess(spaceIdentity);
-    ExoSocialActivity demoToSpaceActivity = spaceActivitiesListAccess.loadAsList(0, spaceActivitiesListAccess.getSize()).get(0);
+    ExoSocialActivity demoToSpaceActivity = spaceActivitiesListAccess.loadAsList(0, 10).get(0);
     boolean demoDeleteDemoToSpaceActivity = SecurityManager.canDeleteActivity(getContainer(),
                                                                               demoIdentity, demoToSpaceActivity);
     assertTrue("demoDeleteDemoToSpaceActivity must be true", demoDeleteDemoToSpaceActivity);
