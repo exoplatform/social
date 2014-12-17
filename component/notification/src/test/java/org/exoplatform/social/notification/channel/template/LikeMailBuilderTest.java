@@ -35,6 +35,7 @@ import org.exoplatform.commons.notification.channel.MailChannel;
 import org.exoplatform.commons.notification.impl.NotificationContextImpl;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.activity.model.ExoSocialActivityImpl;
+import org.exoplatform.social.notification.AbstractPluginTest;
 import org.exoplatform.social.notification.plugin.LikePlugin;
 
 /**
@@ -43,7 +44,7 @@ import org.exoplatform.social.notification.plugin.LikePlugin;
  *          thanhvc@exoplatform.com
  * Dec 14, 2014  
  */
-public class LikeMailBuilderTest extends AbstractTemplateBuilderTest {
+public class LikeMailBuilderTest extends AbstractPluginTest {
   private ChannelManager manager;
   
   @Override
@@ -102,7 +103,7 @@ public class LikeMailBuilderTest extends AbstractTemplateBuilderTest {
     list.set(0, list.get(0).setTo(rootIdentity.getRemoteId()));
     ctx.setNotificationInfos(list);
     Writer writer = new StringWriter();
-    getPlugin().buildDigest(ctx, writer);
+    buildDigest(ctx, writer);
     assertDigest(writer, "Mary Kelly, Demo gtn, John Anthony like your activity: root post an activity.");
   }
   
@@ -156,7 +157,7 @@ public class LikeMailBuilderTest extends AbstractTemplateBuilderTest {
     list.set(0, list.get(0).setTo(rootIdentity.getRemoteId()));
     ctx.setNotificationInfos(list);
     Writer writer = new StringWriter();
-    getPlugin().buildDigest(ctx, writer);
+    buildDigest(ctx, writer);
     assertDigest(writer, "Demo gtn likes your activity: root post an activity.");
   }
 }

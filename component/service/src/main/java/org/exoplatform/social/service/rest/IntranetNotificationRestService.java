@@ -35,7 +35,7 @@ import org.exoplatform.commons.api.notification.model.PluginKey;
 import org.exoplatform.commons.api.notification.plugin.AbstractNotificationPlugin;
 import org.exoplatform.commons.notification.channel.WebChannel;
 import org.exoplatform.commons.notification.impl.NotificationContextImpl;
-import org.exoplatform.commons.notification.net.WebSocketBootstrap;
+import org.exoplatform.commons.notification.net.WebNotificationSender;
 import org.exoplatform.container.ExoContainer;
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.PortalContainer;
@@ -280,9 +280,9 @@ public class IntranetNotificationRestService implements ResourceContainer {
       return;
     }
     try {
-      AbstractChannel channel = nCtx.getChannelManager().getChannel(new ChannelKey(WebChannel.ID));
+      AbstractChannel channel = nCtx.getChannelManager().getChannel(ChannelKey.key(WebChannel.ID));
       AbstractTemplateBuilder builder = channel.getTemplateBuilder(notification.getKey());
-      WebSocketBootstrap.sendJsonMessage(notification.getTo(), builder.buildMessage(nCtx));
+      WebNotificationSender.sendJsonMessage(notification.getTo(), builder.buildMessage(nCtx));
     } catch (Exception e) {
       System.out.println("error : " + e.getMessage());
     }

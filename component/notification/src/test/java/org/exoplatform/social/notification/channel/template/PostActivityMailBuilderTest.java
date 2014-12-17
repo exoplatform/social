@@ -34,6 +34,7 @@ import org.exoplatform.commons.api.notification.plugin.AbstractNotificationPlugi
 import org.exoplatform.commons.notification.channel.MailChannel;
 import org.exoplatform.commons.notification.impl.NotificationContextImpl;
 import org.exoplatform.social.core.identity.model.Identity;
+import org.exoplatform.social.notification.AbstractPluginTest;
 import org.exoplatform.social.notification.plugin.PostActivityPlugin;
 
 /**
@@ -42,7 +43,7 @@ import org.exoplatform.social.notification.plugin.PostActivityPlugin;
  *          thanhvc@exoplatform.com
  * Dec 14, 2014  
  */
-public class PostActivityMailBuilderTest extends AbstractTemplateBuilderTest {
+public class PostActivityMailBuilderTest extends AbstractPluginTest {
   private ChannelManager manager;
   
   @Override
@@ -110,7 +111,7 @@ public class PostActivityMailBuilderTest extends AbstractTemplateBuilderTest {
     list.set(0, list.get(0).setTo(rootIdentity.getRemoteId()));
     ctx.setNotificationInfos(list);
     Writer writer = new StringWriter();
-    getPlugin().buildDigest(ctx, writer);
+    buildDigest(ctx, writer);
     assertDigest(writer, "Demo gtn, Mary Kelly, John Anthony and 1 others posted on your activity stream.");
     
     tearDownIdentityList.add(ghostIdentity);
@@ -128,7 +129,7 @@ public class PostActivityMailBuilderTest extends AbstractTemplateBuilderTest {
     list.set(0, list.get(0).setTo(rootIdentity.getRemoteId()));
     ctx.setNotificationInfos(list);
     Writer writer = new StringWriter();
-    getPlugin().buildDigest(ctx, writer);
+    buildDigest(ctx, writer);
     assertDigest(writer, "Demo gtn, John Anthony posted on your activity stream.");
   }
 

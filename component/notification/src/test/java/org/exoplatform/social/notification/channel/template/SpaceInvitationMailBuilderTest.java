@@ -33,6 +33,7 @@ import org.exoplatform.commons.api.notification.plugin.AbstractNotificationPlugi
 import org.exoplatform.commons.notification.channel.MailChannel;
 import org.exoplatform.commons.notification.impl.NotificationContextImpl;
 import org.exoplatform.social.core.space.model.Space;
+import org.exoplatform.social.notification.AbstractPluginTest;
 import org.exoplatform.social.notification.plugin.SpaceInvitationPlugin;
 
 /**
@@ -41,7 +42,7 @@ import org.exoplatform.social.notification.plugin.SpaceInvitationPlugin;
  *          thanhvc@exoplatform.com
  * Dec 14, 2014  
  */
-public class SpaceInvitationMailBuilderTest extends AbstractTemplateBuilderTest {
+public class SpaceInvitationMailBuilderTest extends AbstractPluginTest {
   private ChannelManager manager;
   
   @Override
@@ -115,7 +116,7 @@ public class SpaceInvitationMailBuilderTest extends AbstractTemplateBuilderTest 
     Writer writer = new StringWriter();
     NotificationContext ctx = NotificationContextImpl.cloneInstance();
     ctx.setNotificationInfos(messages);
-    getPlugin().buildDigest(ctx, writer);
+    buildDigest(ctx, writer);
     
     assertDigest(writer, "You have been asked to joing the following spaces: my space 2, my space 3.");
     notificationService.clearAll();
@@ -148,7 +149,7 @@ public class SpaceInvitationMailBuilderTest extends AbstractTemplateBuilderTest 
     Writer writer = new StringWriter();
     NotificationContext ctx = NotificationContextImpl.cloneInstance();
     ctx.setNotificationInfos(messages);
-    getPlugin().buildDigest(ctx, writer);
+    buildDigest(ctx, writer);
     
     assertDigest(writer, "You have been asked to joing the following spaces: my space 2, my space 3.");
     notificationService.clearAll();
@@ -181,7 +182,7 @@ public class SpaceInvitationMailBuilderTest extends AbstractTemplateBuilderTest 
     Writer writer = new StringWriter();
     NotificationContext ctx = NotificationContextImpl.cloneInstance();
     ctx.setNotificationInfos(messages);
-    getPlugin().buildDigest(ctx, writer);
+    buildDigest(ctx, writer);
     
     assertDigest(writer, "You have been asked to joing the following spaces: my space 1, my space 3, my space 4 and 1 others.");
     notificationService.clearAll();

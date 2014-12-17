@@ -36,6 +36,7 @@ import org.exoplatform.commons.notification.impl.NotificationContextImpl;
 import org.exoplatform.commons.utils.CommonsUtils;
 import org.exoplatform.services.organization.OrganizationService;
 import org.exoplatform.social.core.identity.model.Identity;
+import org.exoplatform.social.notification.AbstractPluginTest;
 import org.exoplatform.social.notification.plugin.NewUserPlugin;
 
 /**
@@ -44,7 +45,7 @@ import org.exoplatform.social.notification.plugin.NewUserPlugin;
  *          thanhvc@exoplatform.com
  * Dec 14, 2014  
  */
-public class NewUserMailBuilderTest extends AbstractTemplateBuilderTest {
+public class NewUserMailBuilderTest extends AbstractPluginTest {
   private ChannelManager manager;
   
   @Override
@@ -108,7 +109,7 @@ public class NewUserMailBuilderTest extends AbstractTemplateBuilderTest {
     
     ctx.setNotificationInfos(list);
     Writer writer = new StringWriter();
-    getPlugin().buildDigest(ctx, writer);
+    buildDigest(ctx, writer);
     assertDigest(writer, "Ghost gtn, Paul gtn have joined eXo.");
     
     tearDownIdentityList.add(ghostIdentity);

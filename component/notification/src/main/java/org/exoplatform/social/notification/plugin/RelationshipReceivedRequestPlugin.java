@@ -69,88 +69,8 @@ public class RelationshipReceivedRequestPlugin extends AbstractNotificationPlugi
   }
 
   @Override
-  public MessageInfo makeMessage(NotificationContext ctx) {
-    MessageInfo messageInfo = new MessageInfo();
-    
-    NotificationInfo notification = ctx.getNotificationInfo();
-    
-    String language = getLanguage(notification);
-    TemplateContext templateContext = new TemplateContext(notification.getKey().getId(), language);
-
-    String sender = notification.getValueOwnerParameter("sender");
-    String toUser = notification.getTo();
-    SocialNotificationUtils.addFooterAndFirstName(toUser, templateContext);
-    Identity identity = Utils.getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, sender, true);
-    Profile userProfile = identity.getProfile();
-    
-    templateContext.put("PORTAL_NAME", System.getProperty("exo.notifications.portalname", "eXo"));
-    templateContext.put("USER", userProfile.getFullName());
-    String subject = TemplateUtils.processSubject(templateContext);
-    
-    templateContext.put("PROFILE_URL", LinkProviderUtils.getRedirectUrl("user", identity.getRemoteId()));
-    templateContext.put("AVATAR", LinkProviderUtils.getUserAvatarUrl(userProfile));
-    templateContext.put("ACCEPT_CONNECTION_REQUEST_ACTION_URL", LinkProviderUtils.getConfirmInvitationToConnectUrl(sender, toUser));
-    templateContext.put("REFUSE_CONNECTION_REQUEST_ACTION_URL", LinkProviderUtils.getIgnoreInvitationToConnectUrl(sender, toUser));
-    String body = TemplateUtils.processGroovy(templateContext);
-
-    return messageInfo.subject(subject).body(body).end();
-  }
-
-  @Override
-  public boolean makeDigest(NotificationContext ctx, Writer writer) {
-    List<NotificationInfo> notifications = ctx.getNotificationInfos();
-    NotificationInfo first = notifications.get(0);
-    String language = getLanguage(first);
-    
-    TemplateContext templateContext = new TemplateContext(first.getKey().getId(), language);
-    Map<String, List<String>> receiverMap = new LinkedHashMap<String, List<String>>();
-
-    try {
-      for (NotificationInfo message : notifications) {
-        Relationship relationship = Utils.getRelationshipManager().get(message.getValueOwnerParameter(SocialNotificationUtils.RELATIONSHIP_ID.getKey()));
-        if (relationship == null || relationship.getStatus().name().equals("PENDING") == false) {
-          continue;
-        }
-        SocialNotificationUtils.processInforSendTo(receiverMap, first.getTo(), message.getValueOwnerParameter(SocialNotificationUtils.SENDER.getKey()));
-      }
-      writer.append(SocialNotificationUtils.getMessageByIds(receiverMap, templateContext, "connections_request"));
-    } catch (IOException e) {
-      ctx.setException(e);
-      return false;
-    }
-    return true;
-  }
-
-  @Override
   public boolean isValid(NotificationContext ctx) {
     return true;
-  }
-
-  @Override
-  protected String makeUIMessage(NotificationContext ctx) {
-    NotificationInfo notification = ctx.getNotificationInfo();
-    
-    String language = getLanguage(notification);
-    TemplateContext templateContext = new TemplateContext(notification.getKey().getId(), language);
-
-    String sender = notification.getValueOwnerParameter("sender");
-    String status = notification.getValueOwnerParameter("status");
-    String toUser = notification.getTo();
-    Identity identity = Utils.getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, sender, true);
-    Profile userProfile = identity.getProfile();
-    Calendar cal = Calendar.getInstance();
-    cal.setTimeInMillis(notification.getLastModifiedDate());
-    templateContext.put("isIntranet", "true");
-    templateContext.put("READ", Boolean.valueOf(notification.getValueOwnerParameter(AbstractService.NTF_READ)) ? "read" : "unread");
-    templateContext.put("NOTIFICATION_ID", notification.getId());
-    templateContext.put("STATUS", status != null && status.equals("accepted") ? "ACCEPTED" : "PENDING");
-    templateContext.put("LAST_UPDATED_TIME", TimeConvertUtils.convertXTimeAgo(cal.getTime(), "EE, dd yyyy", new Locale(language), TimeConvertUtils.YEAR));
-    templateContext.put("USER", userProfile.getFullName());
-    templateContext.put("PROFILE_URL", LinkProviderUtils.getRedirectUrl("user", identity.getRemoteId()));
-    templateContext.put("AVATAR", LinkProviderUtils.getUserAvatarUrl(userProfile));
-    templateContext.put("ACCEPT_CONNECTION_REQUEST_ACTION_URL", LinkProviderUtils.getRestUrl(ACCEPT_INVITATION_TO_CONNECT, sender, toUser));
-    templateContext.put("REFUSE_CONNECTION_REQUEST_ACTION_URL", LinkProviderUtils.getRestUrl(REFUSE_INVITATION_TO_CONNECT, sender, toUser));
-    return TemplateUtils.processGroovy(templateContext);
   }
 
 }

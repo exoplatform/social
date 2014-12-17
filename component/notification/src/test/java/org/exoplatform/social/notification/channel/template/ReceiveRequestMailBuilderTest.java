@@ -32,6 +32,7 @@ import org.exoplatform.commons.api.notification.model.PluginKey;
 import org.exoplatform.commons.api.notification.plugin.AbstractNotificationPlugin;
 import org.exoplatform.commons.notification.channel.MailChannel;
 import org.exoplatform.commons.notification.impl.NotificationContextImpl;
+import org.exoplatform.social.notification.AbstractPluginTest;
 import org.exoplatform.social.notification.plugin.RelationshipReceivedRequestPlugin;
 
 /**
@@ -40,7 +41,7 @@ import org.exoplatform.social.notification.plugin.RelationshipReceivedRequestPlu
  *          thanhvc@exoplatform.com
  * Dec 14, 2014  
  */
-public class ReceiveRequestMailBuilderTest extends AbstractTemplateBuilderTest {
+public class ReceiveRequestMailBuilderTest extends AbstractPluginTest {
   private ChannelManager manager;
   
   @Override
@@ -107,7 +108,7 @@ public class ReceiveRequestMailBuilderTest extends AbstractTemplateBuilderTest {
     Writer writer = new StringWriter();
     NotificationContext ctx = NotificationContextImpl.cloneInstance();
     ctx.setNotificationInfos(messages);
-    getPlugin().buildDigest(ctx, writer);
+    buildDigest(ctx, writer);
     
     assertDigest(writer, "You've received a connection request from Demo gtn, Mary Kelly.");
     notificationService.clearAll();
@@ -138,7 +139,7 @@ public class ReceiveRequestMailBuilderTest extends AbstractTemplateBuilderTest {
     Writer writer = new StringWriter();
     NotificationContext ctx = NotificationContextImpl.cloneInstance();
     ctx.setNotificationInfos(messages);
-    getPlugin().buildDigest(ctx, writer);
+    buildDigest(ctx, writer);
     
     assertDigest(writer, "You've received a connection request from John Anthony, Mary Kelly.");
     notificationService.clearAll();
@@ -166,7 +167,7 @@ public class ReceiveRequestMailBuilderTest extends AbstractTemplateBuilderTest {
     Writer writer = new StringWriter();
     NotificationContext ctx = NotificationContextImpl.cloneInstance();
     ctx.setNotificationInfos(messages);
-    getPlugin().buildDigest(ctx, writer);
+    buildDigest(ctx, writer);
     
     assertDigest(writer, "You've received a connection request from Mary Kelly.");
     notificationService.clearAll();

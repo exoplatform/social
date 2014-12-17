@@ -21,11 +21,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.exoplatform.commons.api.notification.NotificationContext;
+import org.exoplatform.commons.api.notification.channel.AbstractChannel;
+import org.exoplatform.commons.api.notification.channel.template.AbstractTemplateBuilder;
+import org.exoplatform.commons.api.notification.model.ChannelKey;
 import org.exoplatform.commons.api.notification.model.MessageInfo;
 import org.exoplatform.commons.api.notification.model.NotificationInfo;
 import org.exoplatform.commons.api.notification.model.UserSetting;
 import org.exoplatform.commons.api.notification.plugin.AbstractNotificationPlugin;
 import org.exoplatform.commons.api.notification.service.setting.UserSettingService;
+import org.exoplatform.commons.notification.channel.MailChannel;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.activity.model.ExoSocialActivityImpl;
 import org.exoplatform.social.core.identity.model.Identity;
@@ -134,20 +138,6 @@ public abstract class AbstractPluginTest extends AbstractCoreTest {
   
   protected List<NotificationInfo> getNotificationInfos() {
     return notificationService.storeDigestJCR();
-  }
-  
-  /**
-   * It will be invoked after the notification will be created.
-   * 
-   * Makes the Message Info by the plugin and NotificationContext
-   * @ctx the provided NotificationContext
-   * @return
-   */
-  protected MessageInfo buildMessageInfo(NotificationContext ctx) {
-    AbstractNotificationPlugin plugin = getPlugin();
-    MessageInfo massage = plugin.buildMessage(ctx);
-    assertNotNull(massage);
-    return massage;
   }
   
   /**
@@ -414,4 +404,37 @@ public abstract class AbstractPluginTest extends AbstractCoreTest {
     userSettingService.save(model);
   }
   
+  protected AbstractTemplateBuilder getTemplateBuilder(NotificationContext ctx) {
+    //
+    AbstractChannel channel = ctx.getChannelManager().getChannel(ChannelKey.key(MailChannel.ID));
+    assertNotNull(channel);
+    return channel.getTemplateBuilder(ctx.getNotificationInfo().getKey());
+  }
+  
+  /**
+   * It will be invoked after the notification will be created.
+   * 
+   * Makes the Message Info by the plugin and NotificationContext
+   * @ctx the provided NotificationContext
+   * @return
+   */
+  protected MessageInfo buildMessageInfo(NotificationContext ctx) {
+    AbstractTemplateBuilder templateBuilder = getTemplateBuilder();
+    if (templateBuilder == null) {
+      templateBuilder = getTemplateBuilder(ctx);
+    }
+    MessageInfo massage = templateBuilder.buildMessage(ctx);
+    assertNotNull(massage);
+    return massage;
+  }
+
+  protected void buildDigest(NotificationContext ctx, Writer writer) {
+    AbstractTemplateBuilder templateBuilder = getTemplateBuilder();
+    if (templateBuilder == null) {
+      templateBuilder = getTemplateBuilder(ctx);
+    }
+    templateBuilder.buildDigest(ctx, writer);
+  }
+
+  public abstract AbstractTemplateBuilder getTemplateBuilder();
 }

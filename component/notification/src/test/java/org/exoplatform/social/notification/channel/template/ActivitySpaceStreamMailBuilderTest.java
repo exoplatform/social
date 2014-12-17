@@ -35,6 +35,7 @@ import org.exoplatform.social.core.activity.model.ExoSocialActivityImpl;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
 import org.exoplatform.social.core.space.model.Space;
+import org.exoplatform.social.notification.AbstractPluginTest;
 import org.exoplatform.social.notification.plugin.PostActivitySpaceStreamPlugin;
 
 /**
@@ -43,7 +44,7 @@ import org.exoplatform.social.notification.plugin.PostActivitySpaceStreamPlugin;
  *          thanhvc@exoplatform.com
  * Dec 14, 2014  
  */
-public class ActivitySpaceStreamMailBuilderTest extends AbstractTemplateBuilderTest {
+public class ActivitySpaceStreamMailBuilderTest extends AbstractPluginTest {
   private ChannelManager manager;
   
   @Override
@@ -103,7 +104,7 @@ public class ActivitySpaceStreamMailBuilderTest extends AbstractTemplateBuilderT
     tearDownActivityList.remove(activity);
     
     Writer writer = new StringWriter();
-    getPlugin().buildDigest(ctx, writer);
+    buildDigest(ctx, writer);
     assertDigest(writer, "John Anthony posted in my space 1.");
   }
 

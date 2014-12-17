@@ -33,6 +33,7 @@ import org.exoplatform.commons.api.notification.plugin.AbstractNotificationPlugi
 import org.exoplatform.commons.notification.channel.MailChannel;
 import org.exoplatform.commons.notification.impl.NotificationContextImpl;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
+import org.exoplatform.social.notification.AbstractPluginTest;
 import org.exoplatform.social.notification.plugin.ActivityCommentPlugin;
 
 /**
@@ -41,7 +42,7 @@ import org.exoplatform.social.notification.plugin.ActivityCommentPlugin;
  *          thanhvc@exoplatform.com
  * Dec 14, 2014  
  */
-public class ActivityCommentMailBuilderTest extends AbstractTemplateBuilderTest {
+public class ActivityCommentMailBuilderTest extends AbstractPluginTest {
   private final static String ACTIVITY_TITLE = "my activity's title post today.";
   private final static String COMMENT_TITLE = "my comment's title add today.";
   private ChannelManager manager;
@@ -90,7 +91,7 @@ public class ActivityCommentMailBuilderTest extends AbstractTemplateBuilderTest 
     
     NotificationContext ctx = NotificationContextImpl.cloneInstance();
     ctx.setNotificationInfo(commentNotification.setTo(demoIdentity.getRemoteId()));
-    MessageInfo info = getPlugin().buildMessage(ctx);
+    MessageInfo info = buildMessageInfo(ctx);
     
     assertSubject(info, demoIdentity.getProfile().getFullName() + " commented one of your activities");
     assertBody(info, "New comment on your activity");
@@ -115,7 +116,7 @@ public class ActivityCommentMailBuilderTest extends AbstractTemplateBuilderTest 
     
     NotificationContext ctx = NotificationContextImpl.cloneInstance();
     ctx.setNotificationInfo(commentNotification.setTo(maryIdentity.getRemoteId()));
-    MessageInfo info = getPlugin().buildMessage(ctx);
+    MessageInfo info = buildMessageInfo(ctx);
     
     assertSubject(info, maryIdentity.getProfile().getFullName() + " commented one of your activities");
     assertBody(info, "New comment on your activity");
@@ -145,7 +146,7 @@ public class ActivityCommentMailBuilderTest extends AbstractTemplateBuilderTest 
     toRoot.set(0, toRoot.get(0).setTo(rootIdentity.getRemoteId()));
     ctx.setNotificationInfos(toRoot);
     Writer writer = new StringWriter();
-    getPlugin().buildDigest(ctx, writer);
+    buildDigest(ctx, writer);
     assertDigest(writer, "Demo gtn, John Anthony have commented on your activity: my activity's title post today.");
   }
   
@@ -176,7 +177,7 @@ public class ActivityCommentMailBuilderTest extends AbstractTemplateBuilderTest 
     toRoot.set(0, toRoot.get(0).setTo(rootIdentity.getRemoteId()));
     ctx.setNotificationInfos(toRoot);
     Writer writer = new StringWriter();
-    getPlugin().buildDigest(ctx, writer);
+    buildDigest(ctx, writer);
     assertDigest(writer, "Demo gtn has commented on your activity: my activity's title post today.");
   }
 }

@@ -33,6 +33,7 @@ import org.exoplatform.commons.api.notification.plugin.AbstractNotificationPlugi
 import org.exoplatform.commons.notification.channel.MailChannel;
 import org.exoplatform.commons.notification.impl.NotificationContextImpl;
 import org.exoplatform.social.core.space.model.Space;
+import org.exoplatform.social.notification.AbstractPluginTest;
 import org.exoplatform.social.notification.plugin.RequestJoinSpacePlugin;
 
 /**
@@ -41,7 +42,7 @@ import org.exoplatform.social.notification.plugin.RequestJoinSpacePlugin;
  *          thanhvc@exoplatform.com
  * Dec 14, 2014  
  */
-public class RequestJoinSpaceMailBuilderTest extends AbstractTemplateBuilderTest {
+public class RequestJoinSpaceMailBuilderTest extends AbstractPluginTest {
   private ChannelManager manager;
   
   @Override
@@ -114,7 +115,7 @@ public class RequestJoinSpaceMailBuilderTest extends AbstractTemplateBuilderTest
     Writer writer = new StringWriter();
     NotificationContext ctx = NotificationContextImpl.cloneInstance();
     ctx.setNotificationInfos(messages);
-    getPlugin().buildDigest(ctx, writer);
+    buildDigest(ctx, writer);
     
     assertDigest(writer, "The following users have asked to join the my space 1 space: John Anthony, Mary Kelly.");
     notificationService.clearAll();
@@ -144,7 +145,7 @@ public class RequestJoinSpaceMailBuilderTest extends AbstractTemplateBuilderTest
     Writer writer = new StringWriter();
     NotificationContext ctx = NotificationContextImpl.cloneInstance();
     ctx.setNotificationInfos(messages);
-    getPlugin().buildDigest(ctx, writer);
+    buildDigest(ctx, writer);
     
     assertDigest(writer, "The following users have asked to join the my space 1 space: John Anthony, Mary Kelly.");
     notificationService.clearAll();
@@ -170,7 +171,7 @@ public class RequestJoinSpaceMailBuilderTest extends AbstractTemplateBuilderTest
     Writer writer = new StringWriter();
     NotificationContext ctx = NotificationContextImpl.cloneInstance();
     ctx.setNotificationInfos(messages);
-    getPlugin().buildDigest(ctx, writer);
+    buildDigest(ctx, writer);
     
     assertDigest(writer, "The following users have asked to join the my space 1 space: Demo gtn, Mary Kelly.");
     notificationService.clearAll();

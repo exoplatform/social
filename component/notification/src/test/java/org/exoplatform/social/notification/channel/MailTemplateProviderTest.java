@@ -63,11 +63,11 @@ public class MailTemplateProviderTest extends AbstractCoreTest {
     assertTrue(channel != null);
     //check the daily
     String actual = channel.getTemplateFilePath(PluginKey.key(DigestDailyPlugin.ID));
-    String expected = "war:/notification/templates/DigestDailyPlugin.gtmpl";
+    String expected = "classpath:/notification/templates/DigestDailyPlugin.gtmpl";
     assertEquals(expected, actual);
     //check the weekly
     actual = channel.getTemplateFilePath(PluginKey.key(DigestWeeklyPlugin.ID));
-    expected = "war:/notification/templates/DigestWeeklyPlugin.gtmpl";
+    expected = "classpath:/notification/templates/DigestWeeklyPlugin.gtmpl";
     assertEquals(expected, actual);
   }
   
@@ -76,39 +76,39 @@ public class MailTemplateProviderTest extends AbstractCoreTest {
     assertTrue(channel != null);
     //check the daily
     String actual = channel.getTemplateFilePath(PluginKey.key(ActivityCommentPlugin.ID));
-    String expected = "war:/notification/templates/ActivityCommentPlugin.gtmpl";
+    String expected = "classpath:/notification/templates/ActivityCommentPlugin.gtmpl";
     assertEquals(expected, actual);
     //check the weekly
     actual = channel.getTemplateFilePath(PluginKey.key(ActivityMentionPlugin.ID));
-    expected = "war:/notification/templates/ActivityMentionPlugin.gtmpl";
+    expected = "classpath:/notification/templates/ActivityMentionPlugin.gtmpl";
     assertEquals(expected, actual);
     
     actual = channel.getTemplateFilePath(PluginKey.key(LikePlugin.ID));
-    expected = "war:/notification/templates/LikePlugin.gtmpl";
+    expected = "classpath:/notification/templates/LikePlugin.gtmpl";
     assertEquals(expected, actual);
     
     actual = channel.getTemplateFilePath(PluginKey.key(NewUserPlugin.ID));
-    expected = "war:/notification/templates/NewUserPlugin.gtmpl";
+    expected = "classpath:/notification/templates/NewUserPlugin.gtmpl";
     assertEquals(expected, actual);
     
     actual = channel.getTemplateFilePath(PluginKey.key(PostActivityPlugin.ID));
-    expected = "war:/notification/templates/PostActivityPlugin.gtmpl";
+    expected = "classpath:/notification/templates/PostActivityPlugin.gtmpl";
     assertEquals(expected, actual);
     
     actual = channel.getTemplateFilePath(PluginKey.key(PostActivitySpaceStreamPlugin.ID));
-    expected = "war:/notification/templates/PostActivitySpaceStreamPlugin.gtmpl";
+    expected = "classpath:/notification/templates/PostActivitySpaceStreamPlugin.gtmpl";
     assertEquals(expected, actual);
     
     actual = channel.getTemplateFilePath(PluginKey.key(RelationshipReceivedRequestPlugin.ID));
-    expected = "war:/notification/templates/RelationshipReceivedRequestPlugin.gtmpl";
+    expected = "classpath:/notification/templates/RelationshipReceivedRequestPlugin.gtmpl";
     assertEquals(expected, actual);
     
     actual = channel.getTemplateFilePath(PluginKey.key(RequestJoinSpacePlugin.ID));
-    expected = "war:/notification/templates/RequestJoinSpacePlugin.gtmpl";
+    expected = "classpath:/notification/templates/RequestJoinSpacePlugin.gtmpl";
     assertEquals(expected, actual);
     
     actual = channel.getTemplateFilePath(PluginKey.key(SpaceInvitationPlugin.ID));
-    expected = "war:/notification/templates/SpaceInvitationPlugin.gtmpl";
+    expected = "classpath:/notification/templates/SpaceInvitationPlugin.gtmpl";
     assertEquals(expected, actual);
   }
   

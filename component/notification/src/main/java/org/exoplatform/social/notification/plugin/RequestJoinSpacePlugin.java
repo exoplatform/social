@@ -16,37 +16,15 @@
  */
 package org.exoplatform.social.notification.plugin;
 
-import java.io.IOException;
-import java.io.Writer;
 import java.util.Arrays;
-import java.util.Calendar;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
 
-import org.apache.commons.lang.ArrayUtils;
 import org.exoplatform.commons.api.notification.NotificationContext;
-import org.exoplatform.commons.api.notification.model.MessageInfo;
 import org.exoplatform.commons.api.notification.model.NotificationInfo;
 import org.exoplatform.commons.api.notification.plugin.AbstractNotificationPlugin;
-import org.exoplatform.commons.api.notification.service.template.TemplateContext;
-import org.exoplatform.commons.notification.impl.AbstractService;
-import org.exoplatform.commons.notification.template.TemplateUtils;
 import org.exoplatform.container.xml.InitParams;
-import org.exoplatform.social.core.identity.model.Identity;
-import org.exoplatform.social.core.identity.model.Profile;
-import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.space.model.Space;
-import org.exoplatform.social.notification.LinkProviderUtils;
-import org.exoplatform.social.notification.Utils;
-import org.exoplatform.webui.utils.TimeConvertUtils;
 
 public class RequestJoinSpacePlugin extends AbstractNotificationPlugin {
-  
-  private static final String VALIDATE_SPACE_REQUEST = "social/intranet-notification/validateRequestToJoinSpace";
-
-  private static final String REFUSE_SPACE_REQUEST = "social/intranet-notification/refuseRequestToJoinSpace";
   
   public RequestJoinSpacePlugin(InitParams initParams) {
     super(initParams);
@@ -71,66 +49,6 @@ public class RequestJoinSpacePlugin extends AbstractNotificationPlugin {
   }
 
   @Override
-  public MessageInfo makeMessage(NotificationContext ctx) {
-    MessageInfo messageInfo = new MessageInfo();
-    
-    NotificationInfo notification = ctx.getNotificationInfo();
-    
-    String language = getLanguage(notification);
-    TemplateContext templateContext = new TemplateContext(notification.getKey().getId(), language);
-    SocialNotificationUtils.addFooterAndFirstName(notification.getTo(), templateContext);
-
-    String spaceId = notification.getValueOwnerParameter(SocialNotificationUtils.SPACE_ID.getKey());
-    Space space = Utils.getSpaceService().getSpaceById(spaceId);
-    Identity identity = Utils.getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, notification.getValueOwnerParameter("request_from"), true);
-    Profile userProfile = identity.getProfile();
-    
-    templateContext.put("SPACE", space.getDisplayName());
-    templateContext.put("USER", userProfile.getFullName());
-    String subject = TemplateUtils.processSubject(templateContext);
-    
-    templateContext.put("SPACE_URL", LinkProviderUtils.getRedirectUrl("space_members", space.getId()));
-    templateContext.put("PROFILE_URL", LinkProviderUtils.getRedirectUrl("user", identity.getRemoteId()));
-    templateContext.put("AVATAR", LinkProviderUtils.getUserAvatarUrl(userProfile));
-    templateContext.put("VALIDATE_SPACE_REQUEST_ACTION_URL", LinkProviderUtils.getValidateRequestToJoinSpaceUrl(space.getId(), identity.getRemoteId()));
-    templateContext.put("REFUSE_SPACE_REQUEST_ACTION_URL", LinkProviderUtils.getRefuseRequestToJoinSpaceUrl(space.getId(), identity.getRemoteId()));
-    String body = TemplateUtils.processGroovy(templateContext);
-    
-    return messageInfo.subject(subject).body(body).end();
-  }
-
-  @Override
-  public boolean makeDigest(NotificationContext ctx, Writer writer) {
-    List<NotificationInfo> notifications = ctx.getNotificationInfos();
-    NotificationInfo first = notifications.get(0);
-
-    String language = getLanguage(first);
-    TemplateContext templateContext = new TemplateContext(first.getKey().getId(), language);
-    
-    Map<String, List<String>> map = new LinkedHashMap<String, List<String>>();
-
-    try {
-      for (NotificationInfo message : notifications) {
-        String spaceId = message.getValueOwnerParameter(SocialNotificationUtils.SPACE_ID.getKey());
-        String fromUser = message.getValueOwnerParameter("request_from");
-        Space space = Utils.getSpaceService().getSpaceById(spaceId);
-        if (ArrayUtils.contains(space.getPendingUsers(), fromUser) == false) {
-          continue;
-        }
-        //
-        SocialNotificationUtils.processInforSendTo(map, spaceId, fromUser);
-      }
-      writer.append(SocialNotificationUtils.getMessageByIds(map, templateContext));
-    } catch (IOException e) {
-      ctx.setException(e);
-      return false;
-    }
-    
-    
-    return true;
-  }
-
-  @Override
   public boolean isValid(NotificationContext ctx) {
     //only sent when the space has the registration option "Validation"
     Space space = ctx.value(SocialNotificationUtils.SPACE);
@@ -138,35 +56,6 @@ public class RequestJoinSpacePlugin extends AbstractNotificationPlugin {
       return true;
     }
     return false;
-  }
-
-  @Override
-  protected String makeUIMessage(NotificationContext ctx) {
-    NotificationInfo notification = ctx.getNotificationInfo();
-    
-    String language = getLanguage(notification);
-    TemplateContext templateContext = new TemplateContext(notification.getKey().getId(), language);
-
-    String status = notification.getValueOwnerParameter("status");
-    String spaceId = notification.getValueOwnerParameter(SocialNotificationUtils.SPACE_ID.getKey());
-    Space space = Utils.getSpaceService().getSpaceById(spaceId);
-    Identity identity = Utils.getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, notification.getValueOwnerParameter("request_from"), true);
-    Profile userProfile = identity.getProfile();
-    Calendar cal = Calendar.getInstance();
-    cal.setTimeInMillis(notification.getLastModifiedDate());
-    templateContext.put("isIntranet", "true");
-    templateContext.put("READ", Boolean.valueOf(notification.getValueOwnerParameter(AbstractService.NTF_READ)) ? "read" : "unread");
-    templateContext.put("STATUS", status != null && status.equals("accepted") ? "ACCEPTED" : "PENDING");
-    templateContext.put("NOTIFICATION_ID", notification.getId());
-    templateContext.put("LAST_UPDATED_TIME", TimeConvertUtils.convertXTimeAgo(cal.getTime(), "EE, dd yyyy", new Locale(language), TimeConvertUtils.YEAR));
-    templateContext.put("SPACE", space.getDisplayName());
-    templateContext.put("USER", userProfile.getFullName());
-    templateContext.put("SPACE_URL", LinkProviderUtils.getRedirectUrl("space_members", space.getId()));
-    templateContext.put("PROFILE_URL", LinkProviderUtils.getRedirectUrl("user", identity.getRemoteId()));
-    templateContext.put("AVATAR", LinkProviderUtils.getUserAvatarUrl(userProfile));
-    templateContext.put("VALIDATE_SPACE_REQUEST_ACTION_URL", LinkProviderUtils.getRestUrl(VALIDATE_SPACE_REQUEST, space.getId(), identity.getRemoteId()));
-    templateContext.put("REFUSE_SPACE_REQUEST_ACTION_URL", LinkProviderUtils.getRestUrl(REFUSE_SPACE_REQUEST, space.getId(), identity.getRemoteId()));
-    return TemplateUtils.processGroovy(templateContext);
   }
 
 }

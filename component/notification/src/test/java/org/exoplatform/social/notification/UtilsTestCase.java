@@ -1,8 +1,8 @@
 package org.exoplatform.social.notification;
 
-import org.exoplatform.commons.utils.CommonsUtils;
-
 import junit.framework.TestCase;
+
+import org.exoplatform.commons.utils.CommonsUtils;
 
 public class UtilsTestCase extends TestCase {
   

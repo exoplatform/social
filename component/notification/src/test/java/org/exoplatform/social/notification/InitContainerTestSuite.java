@@ -2,14 +2,14 @@ package org.exoplatform.social.notification;
 
 import org.exoplatform.commons.testing.BaseExoContainerTestSuite;
 import org.exoplatform.commons.testing.ConfigTestCase;
-import org.exoplatform.social.notification.plugin.ActivityCommentPluginTest;
-import org.exoplatform.social.notification.plugin.ActivityMentionPluginTest;
-import org.exoplatform.social.notification.plugin.LikePluginTest;
-import org.exoplatform.social.notification.plugin.RelationshipReceivedRequestPluginTest;
-import org.exoplatform.social.notification.plugin.RequestJoinSpacePluginTest;
-import org.exoplatform.social.notification.plugin.SpaceInvitationPluginTest;
-import org.exoplatform.social.notification.plugin.NewUserPluginTest;
-import org.exoplatform.social.notification.plugin.PostActivityPluginTest;
+import org.exoplatform.social.notification.channel.template.ActivityCommentMailBuilderTest;
+import org.exoplatform.social.notification.channel.template.ActivityMentionMailBuilderTest;
+import org.exoplatform.social.notification.channel.template.LikeMailBuilderTest;
+import org.exoplatform.social.notification.channel.template.NewUserMailBuilderTest;
+import org.exoplatform.social.notification.channel.template.PostActivityMailBuilderTest;
+import org.exoplatform.social.notification.channel.template.ReceiveRequestMailBuilderTest;
+import org.exoplatform.social.notification.channel.template.RequestJoinSpaceMailBuilderTest;
+import org.exoplatform.social.notification.channel.template.SpaceInvitationMailBuilderTest;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
@@ -18,14 +18,14 @@ import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-  ActivityMentionPluginTest.class,
-  ActivityCommentPluginTest.class,
-  PostActivityPluginTest.class,
-  NewUserPluginTest.class,
-  RelationshipReceivedRequestPluginTest.class,
-  RequestJoinSpacePluginTest.class,
-  SpaceInvitationPluginTest.class,
-  LikePluginTest.class,
+  ActivityMentionMailBuilderTest.class,
+  ActivityCommentMailBuilderTest.class,
+  PostActivityMailBuilderTest.class,
+  NewUserMailBuilderTest.class,
+  ReceiveRequestMailBuilderTest.class,
+  RequestJoinSpaceMailBuilderTest.class,
+  SpaceInvitationMailBuilderTest.class,
+  LikeMailBuilderTest.class,
   LinkProviderUtilsTest.class
 })
 @ConfigTestCase(AbstractCoreTest.class)

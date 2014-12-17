@@ -33,6 +33,7 @@ import org.exoplatform.commons.api.notification.plugin.AbstractNotificationPlugi
 import org.exoplatform.commons.notification.channel.MailChannel;
 import org.exoplatform.commons.notification.impl.NotificationContextImpl;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
+import org.exoplatform.social.notification.AbstractPluginTest;
 import org.exoplatform.social.notification.plugin.ActivityMentionPlugin;
 
 /**
@@ -41,7 +42,7 @@ import org.exoplatform.social.notification.plugin.ActivityMentionPlugin;
  *          thanhvc@exoplatform.com
  * Dec 14, 2014  
  */
-public class ActivityMentionMailBuilderTest extends AbstractTemplateBuilderTest {
+public class ActivityMentionMailBuilderTest extends AbstractPluginTest {
   private ChannelManager manager;
   
   @Override
@@ -79,7 +80,7 @@ public class ActivityMentionMailBuilderTest extends AbstractTemplateBuilderTest 
     
     NotificationContext ctx = NotificationContextImpl.cloneInstance();
     ctx.setNotificationInfo(mentionNotification.setTo(demoIdentity.getRemoteId()));
-    MessageInfo info = getPlugin().buildMessage(ctx);
+    MessageInfo info = buildMessageInfo(ctx);
     
     assertSubject(info, "You were mentioned by " + maryIdentity.getProfile().getFullName());
     assertBody(info, "New mention of you");
@@ -97,7 +98,7 @@ public class ActivityMentionMailBuilderTest extends AbstractTemplateBuilderTest 
     
     NotificationContext ctx = NotificationContextImpl.cloneInstance();
     ctx.setNotificationInfo(commentNotification.setTo(johnIdentity.getRemoteId()));
-    MessageInfo info = getPlugin().buildMessage(ctx);
+    MessageInfo info = buildMessageInfo(ctx);
     
     assertSubject(info, "You were mentioned by " + demoIdentity.getProfile().getFullName());
     assertBody(info, "New mention of you");
@@ -128,7 +129,7 @@ public class ActivityMentionMailBuilderTest extends AbstractTemplateBuilderTest 
     toJohn.set(0, toJohn.get(0).setTo(johnIdentity.getRemoteId()));
     ctx.setNotificationInfos(toJohn);
     Writer writer = new StringWriter();
-    getPlugin().buildDigest(ctx, writer);
+    buildDigest(ctx, writer);
     assertDigest(writer, "Mary Kelly, Demo gtn, Root Root have mentioned you in an activity: mary mention John Anthony and Demo gtn.");
   }
   
@@ -157,7 +158,7 @@ public class ActivityMentionMailBuilderTest extends AbstractTemplateBuilderTest 
     toJohn.set(0, toJohn.get(0).setTo(johnIdentity.getRemoteId()));
     ctx.setNotificationInfos(toJohn);
     Writer writer = new StringWriter();
-    getPlugin().buildDigest(ctx, writer);
+    buildDigest(ctx, writer);
     assertDigest(writer, "Mary Kelly, Demo gtn have mentioned you in an activity: mary mention John Anthony and Demo gtn.");
   }
   
@@ -189,7 +190,7 @@ public class ActivityMentionMailBuilderTest extends AbstractTemplateBuilderTest 
     toJohn.set(0, toJohn.get(0).setTo(johnIdentity.getRemoteId()));
     ctx.setNotificationInfos(toJohn);
     Writer writer = new StringWriter();
-    getPlugin().buildDigest(ctx, writer);
+    buildDigest(ctx, writer);
     assertDigest(writer, "Mary Kelly, Root Root have mentioned you in an activity: mary mention John Anthony and Demo gtn.");
   }
 }

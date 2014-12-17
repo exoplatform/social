@@ -79,9 +79,9 @@ public class WebTemplateProvider extends TemplateProvider {
       ExoSocialActivity parentActivity = Utils.getActivityManager().getParentActivity(activity);
       Identity identity = Utils.getIdentityManager().getIdentity(activity.getPosterId(), true);
       
-      TemplateContext templateContext = new TemplateContext(notification.getKey().getId(), language);
+      TemplateContext templateContext = TemplateContext.newChannelInstance(getChannelKey(), notification.getKey().getId(), language);
       templateContext.put("isIntranet", "true");
-        Calendar cal = Calendar.getInstance();
+      Calendar cal = Calendar.getInstance();
       cal.setTimeInMillis(notification.getLastModifiedDate());
       templateContext.put("READ", Boolean.valueOf(notification.getValueOwnerParameter(AbstractService.NTF_READ)) ? "read" : "unread");
       templateContext.put("NOTIFICATION_ID", notification.getId());
@@ -112,7 +112,7 @@ public class WebTemplateProvider extends TemplateProvider {
       NotificationInfo notification = ctx.getNotificationInfo();
       String language = getLanguage(notification);
 
-      TemplateContext templateContext = new TemplateContext(notification.getKey().getId(), language);
+      TemplateContext templateContext = TemplateContext.newChannelInstance(getChannelKey(), notification.getKey().getId(), language);
       
       String activityId = notification.getValueOwnerParameter(SocialNotificationUtils.ACTIVITY_ID.getKey());
       ExoSocialActivity activity = Utils.getActivityManager().getActivity(activityId);
@@ -156,7 +156,7 @@ public class WebTemplateProvider extends TemplateProvider {
     protected MessageInfo makeMessage(NotificationContext ctx) {
       NotificationInfo notification = ctx.getNotificationInfo();
       String language = getLanguage(notification);
-      TemplateContext templateContext = new TemplateContext(notification.getKey().getId(), language);
+      TemplateContext templateContext = TemplateContext.newChannelInstance(getChannelKey(), notification.getKey().getId(), language);
       
       String activityId = notification.getValueOwnerParameter(SocialNotificationUtils.ACTIVITY_ID.getKey());
       ExoSocialActivity activity = Utils.getActivityManager().getActivity(activityId);
@@ -193,7 +193,7 @@ public class WebTemplateProvider extends TemplateProvider {
       NotificationInfo notification = ctx.getNotificationInfo();
       
       String language = getLanguage(notification);
-      TemplateContext templateContext = new TemplateContext(notification.getKey().getId(), language);
+      TemplateContext templateContext = TemplateContext.newChannelInstance(getChannelKey(), notification.getKey().getId(), language);
 
       String remoteId = notification.getValueOwnerParameter(SocialNotificationUtils.REMOTE_ID.getKey());
       Identity identity = Utils.getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, remoteId, true);
@@ -231,7 +231,7 @@ public class WebTemplateProvider extends TemplateProvider {
       NotificationInfo notification = ctx.getNotificationInfo();
       
       String language = getLanguage(notification);
-      TemplateContext templateContext = new TemplateContext(notification.getKey().getId(), language);
+      TemplateContext templateContext = TemplateContext.newChannelInstance(getChannelKey(), notification.getKey().getId(), language);
 
       String activityId = notification.getValueOwnerParameter(SocialNotificationUtils.ACTIVITY_ID.getKey());
       ExoSocialActivity activity = Utils.getActivityManager().getActivity(activityId);
@@ -269,7 +269,7 @@ public class WebTemplateProvider extends TemplateProvider {
       NotificationInfo notification = ctx.getNotificationInfo();
       
       String language = getLanguage(notification);
-      TemplateContext templateContext = new TemplateContext(notification.getKey().getId(), language);
+      TemplateContext templateContext = TemplateContext.newChannelInstance(getChannelKey(), notification.getKey().getId(), language);
 
       String activityId = notification.getValueOwnerParameter(SocialNotificationUtils.ACTIVITY_ID.getKey());
       ExoSocialActivity activity = Utils.getActivityManager().getActivity(activityId);
@@ -311,7 +311,7 @@ public class WebTemplateProvider extends TemplateProvider {
       NotificationInfo notification = ctx.getNotificationInfo();
       
       String language = getLanguage(notification);
-      TemplateContext templateContext = new TemplateContext(notification.getKey().getId(), language);
+      TemplateContext templateContext = TemplateContext.newChannelInstance(getChannelKey(), notification.getKey().getId(), language);
 
       String sender = notification.getValueOwnerParameter("sender");
       String status = notification.getValueOwnerParameter("status");
@@ -351,7 +351,7 @@ public class WebTemplateProvider extends TemplateProvider {
       NotificationInfo notification = ctx.getNotificationInfo();
       
       String language = getLanguage(notification);
-      TemplateContext templateContext = new TemplateContext(notification.getKey().getId(), language);
+      TemplateContext templateContext = TemplateContext.newChannelInstance(getChannelKey(), notification.getKey().getId(), language);
 
       String status = notification.getValueOwnerParameter("status");
       String spaceId = notification.getValueOwnerParameter(SocialNotificationUtils.SPACE_ID.getKey());
@@ -392,9 +392,9 @@ public class WebTemplateProvider extends TemplateProvider {
     @Override
     protected MessageInfo makeMessage(NotificationContext ctx) {
       NotificationInfo notification = ctx.getNotificationInfo();
-      
+
       String language = getLanguage(notification);
-      TemplateContext templateContext = new TemplateContext(notification.getKey().getId(), language);
+      TemplateContext templateContext = TemplateContext.newChannelInstance(getChannelKey(), notification.getKey().getId(), language);
 
       String status = notification.getValueOwnerParameter("status");
       String spaceId = notification.getValueOwnerParameter(SocialNotificationUtils.SPACE_ID.getKey());
