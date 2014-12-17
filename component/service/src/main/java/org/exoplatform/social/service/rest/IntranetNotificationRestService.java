@@ -16,7 +16,6 @@
  */
 package org.exoplatform.social.service.rest;
 
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -28,12 +27,15 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import org.exoplatform.commons.api.notification.NotificationContext;
+import org.exoplatform.commons.api.notification.channel.AbstractChannel;
+import org.exoplatform.commons.api.notification.channel.template.AbstractTemplateBuilder;
+import org.exoplatform.commons.api.notification.model.ChannelKey;
 import org.exoplatform.commons.api.notification.model.NotificationInfo;
 import org.exoplatform.commons.api.notification.model.PluginKey;
 import org.exoplatform.commons.api.notification.plugin.AbstractNotificationPlugin;
+import org.exoplatform.commons.notification.channel.WebChannel;
 import org.exoplatform.commons.notification.impl.NotificationContextImpl;
 import org.exoplatform.commons.notification.net.WebSocketBootstrap;
-import org.exoplatform.commons.notification.net.WebSocketServer;
 import org.exoplatform.container.ExoContainer;
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.PortalContainer;
@@ -272,16 +274,15 @@ public class IntranetNotificationRestService implements ResourceContainer {
   }
   
   private void sendBackNotif(NotificationInfo notification) {
-    NotificationContext nCtx = NotificationContextImpl.cloneInstance();
+    NotificationContext nCtx = NotificationContextImpl.cloneInstance().setNotificationInfo(notification);
     AbstractNotificationPlugin plugin = nCtx.getPluginContainer().getPlugin(notification.getKey());
     if (plugin == null) {
       return;
     }
     try {
-      notification.setLastModifiedDate(Calendar.getInstance());
-      nCtx.setNotificationInfo(notification);
-      String message = plugin.buildUIMessage(nCtx);
-      WebSocketBootstrap.sendJsonMessage(WebSocketServer.NOTIFICATION_WEB_IDENTIFIER, notification.getTo(), message);
+      AbstractChannel channel = nCtx.getChannelManager().getChannel(new ChannelKey(WebChannel.ID));
+      AbstractTemplateBuilder builder = channel.getTemplateBuilder(notification.getKey());
+      WebSocketBootstrap.sendJsonMessage(notification.getTo(), builder.buildMessage(nCtx));
     } catch (Exception e) {
       System.out.println("error : " + e.getMessage());
     }
