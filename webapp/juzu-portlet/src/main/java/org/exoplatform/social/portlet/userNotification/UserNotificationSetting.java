@@ -345,11 +345,17 @@ public class UserNotificationSetting {
       try {
         return rs.getString(key).replaceAll("'", "&#39;").replaceAll("\"", "&#34;");
       } catch (java.util.MissingResourceException e) {
-        LOG.warn("Can't find resource for bundle key " + key);
+        LOG.debug("Can't find resource for bundle key " + key);
+        if(key.indexOf("checkbox-") > 0) {
+          return appRes("UINotification.label.checkbox.default").replace("{0}", capitalizeFirstLetter(key.split("-")[1]));
+        }
+        if(key.indexOf("channel-") > 0) {
+          return appRes("UINotification.label.channel.default").replace("{0}", capitalizeFirstLetter(key.split("-")[1]));
+        }
       } catch (Exception e) {
         LOG.debug("Error when get resource bundle key " + key, e);
       }
-      return key;
+      return capitalizeFirstLetter(key.substring(key.lastIndexOf(".") + 1));
     }
     
     private String getBundlePath(String id) {
