@@ -102,7 +102,7 @@ public class UIIntranetNotificationsPortlet extends UIPortletApplication {
       String notificationId = event.getRequestContext().getRequestParameter(OBJECTID);
       UIIntranetNotificationsPortlet portlet = event.getSource();
       LOG.info("Run action RemoveActionListener: " + notificationId);
-      portlet.webNotifService.remove(portlet.currentUser, notificationId);
+      portlet.webNotifService.hidePopover(notificationId);
       // Ignore reload portlet
       ((PortalRequestContext) event.getRequestContext().getParentAppRequestContext()).ignoreAJAXUpdateOnPortlets(true);
     }
@@ -112,7 +112,6 @@ public class UIIntranetNotificationsPortlet extends UIPortletApplication {
     public void execute(Event<UIIntranetNotificationsPortlet> event) throws Exception {
       String notificationId = event.getRequestContext().getRequestParameter(OBJECTID);
       UIIntranetNotificationsPortlet portlet = event.getSource();
-      LOG.info("Run action LoadMoreActionListener");
       // Ignore reload portlet
       ((PortalRequestContext) event.getRequestContext().getParentAppRequestContext()).ignoreAJAXUpdateOnPortlets(true);
     }
