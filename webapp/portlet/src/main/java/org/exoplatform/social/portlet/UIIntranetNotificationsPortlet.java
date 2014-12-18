@@ -19,6 +19,7 @@ package org.exoplatform.social.portlet;
 import java.util.Arrays;
 import java.util.List;
 
+import org.exoplatform.commons.api.notification.model.WebFilter;
 import org.exoplatform.commons.api.notification.service.WebNotificationService;
 import org.exoplatform.portal.application.PortalRequestContext;
 import org.exoplatform.services.log.ExoLogger;
@@ -68,9 +69,8 @@ public class UIIntranetNotificationsPortlet extends UIPortletApplication {
   }
   
   protected List<String> getNotifications() throws Exception {
-    //TODO Implement this process on the WebNotificationService
-    //return dataStorage.getNotificationContent(currentUser, false);
-    return null;
+    WebFilter filter = new WebFilter(currentUser, 0, 20);
+    return webNotifService.getNotificationContents(filter);
   }
   
   
