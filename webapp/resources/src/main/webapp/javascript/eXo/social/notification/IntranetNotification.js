@@ -3,18 +3,60 @@
     popupItem : null,
     markReadLink : '',
     removeLink : '',
-    init : function(componentId) {
-      $('#' + componentId).find('span.remove-item').remove();
+    delta : 65,    
+    hasMore: false,
+    resourceURL : "",
+    scrollBottom : function() {
+      return $(document).height() - $(window).scrollTop() - $(window).height();  
+    },
+    init : function(componentId, hasMore) {
+      var portlet = $('#' + componentId); 
+      portlet.find('span.remove-item').remove();
       //
-      IntranetNotification.markReadLink = $('#' + componentId)
-          .find('#MarkRead').text();
-      IntranetNotification.removeLink = $('#' + componentId).find('#Remove')
-          .text();
+      IntranetNotification.markReadLink = portlet.find('#MarkRead').text();
+      IntranetNotification.removeLink = portlet.find('#Remove').text();
       //
-      IntranetNotification.popupItem = $('#' + componentId).find(
-          'ul.displayItems:first');
+      IntranetNotification.popupItem = portlet.find('ul.displayItems:first');
       IntranetNotification.popupItem.find('li').each(function(i) {
         IntranetNotification.applyAction($(this));
+      });
+      
+      IntranetNotification.dataLoadMore =  portlet.find('#ShowMoreLoader').hide();
+      //
+      IntranetNotification.initIndicator();
+    },
+    initIndicator : function() {
+      $('#UIIntranetNotificationsPortlet').find('div.ShowAllIndicator').remove();
+      var activityIndicator = $('<div class="ShowAllIndicator" id="ShowAllIndicator" style="display:none"></div>');
+      for (var i=1; i < 9; i++) {
+        activityIndicator.append($('<div id="rotateG_0' + i + '" class="blockG"></div>'));
+      }
+      activityIndicator.appendTo('#UIIntranetNotificationsPortlet');
+      
+      $(window).scroll(function(e) {
+        //
+        if(IntranetNotification.scrollBottom() <= IntranetNotification.delta) {
+          // check status
+          if(IntranetNotification.dataLoadMore.data('more') == true) {
+            //
+            IntranetNotification.dataLoadMore.show();
+            // call ajax
+            $.ajax({
+              url: IntranetNotification.dataLoadMore.data('url')
+            }).done(function(data) {
+              var html = data.context;
+              IntranetNotification.popupItem.append($('<ul></ul>').html(html).find('li'));
+              
+              IntranetNotification.popupItem.find('li').each(function(i) {
+                IntranetNotification.applyAction($(this));
+              });
+              
+              //
+              IntranetNotification.dataLoadMore.hide().data('more', data.hasMore);
+            });
+          }
+          
+        }
       });
     },
     applyAction : function(item) {

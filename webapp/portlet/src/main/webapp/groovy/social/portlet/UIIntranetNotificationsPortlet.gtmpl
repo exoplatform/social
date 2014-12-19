@@ -27,4 +27,6 @@
     }
   %>
   </ul>
+  <div id="ShowMoreLoader" data-more="<%=uicomponent.isHasMore()%>" data-url="<%=uicomponent.buildResourceURL()%>" class="showMore"><i class="uiIcon"></i></div>
+  <div class="bottomContainer"></div>
 </div>
