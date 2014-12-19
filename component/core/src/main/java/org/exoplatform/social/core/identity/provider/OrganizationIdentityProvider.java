@@ -26,6 +26,7 @@ import org.exoplatform.container.component.ComponentRequestLifecycle;
 import org.exoplatform.container.component.RequestLifeCycle;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
+import org.exoplatform.services.security.ConversationState;
 import org.exoplatform.services.organization.OrganizationService;
 import org.exoplatform.services.organization.User;
 import org.exoplatform.services.organization.UserHandler;
@@ -97,15 +98,25 @@ public class OrganizationIdentityProvider extends IdentityProvider<User> {
    */
   @Override
   public User findByRemoteId(String remoteId) {
-    User user;
+    User user = null;
     try {
-      RequestLifeCycle.begin((ComponentRequestLifecycle)organizationService);
-      UserHandler userHandler = organizationService.getUserHandler();
-      user = userHandler.findUserByName(remoteId);
+      ConversationState state = ConversationState.getCurrent();
+      if (state != null && state.getIdentity() != null && state.getIdentity().getUserId() != null && state.getIdentity().getUserId().equals(remoteId)) {
+        user = (User) state.getAttribute("UserProfile");
+      }
     } catch (Exception e) {
-      return null;
-    } finally {
-      RequestLifeCycle.end();
+      user = null;
+    }
+    if (user == null) {
+      try {
+        RequestLifeCycle.begin((ComponentRequestLifecycle) organizationService);
+        UserHandler userHandler = organizationService.getUserHandler();
+        user = userHandler.findUserByName(remoteId);
+      } catch (Exception e) {
+        return null;
+      } finally {
+        RequestLifeCycle.end();
+      }
     }
     return user;
   }
