@@ -45,6 +45,7 @@ import org.chromattic.api.query.QueryResult;
 import org.chromattic.core.query.QueryImpl;
 import org.chromattic.ext.ntdef.NTFile;
 import org.chromattic.ext.ntdef.Resource;
+
 import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.log.ExoLogger;
@@ -1476,11 +1477,15 @@ public class IdentityStorageImpl extends AbstractStorage implements IdentityStor
       StringTokenizer stringToken = new StringTokenizer(filter.getUserGroups(), ActiveIdentityFilter.COMMA_SEPARATOR);
       try {
         while(stringToken.hasMoreTokens()) {
-          ListAccess<User> listAccess = getOrganizationService().getUserHandler().findUsersByGroupId(stringToken.nextToken().trim());
-          User[] users = listAccess.load(0, listAccess.getSize());
-          //
-          for(User u : users) {
-            activeUsers.add(u.getUserName());
+          try {
+            ListAccess<User> listAccess = getOrganizationService().getUserHandler().findUsersByGroupId(stringToken.nextToken().trim());
+            User[] users = listAccess.load(0, listAccess.getSize());
+            //
+            for(User u : users) {
+              activeUsers.add(u.getUserName());
+            }
+          } catch (Exception e) {
+            LOG.info(e.getMessage());
           }
         }
       } catch (Exception e) {
