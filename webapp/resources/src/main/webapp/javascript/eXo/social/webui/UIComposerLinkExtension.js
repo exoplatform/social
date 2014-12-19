@@ -203,24 +203,10 @@
 	    } else {
 	      this.inputLink = $('#' + this.inputLinkId);
 	      this.attachButton = $('#' + this.attachButtonId);
-	      this.inputLink.val(UIComposerLinkExtension.HTTP);
-	      this.inputLink.css('color', UIComposerLinkExtension.GRAY_COLOR);
 	      var UIComposerLinkExtension = this;
 	      var inputLink = this.inputLink;
 	      var attachBtn = this.attachButton;
-	      inputLink.on('focus', function(evt) {
-	        if (inputLink.val() === UIComposerLinkExtension.HTTP) {
-	          inputLink.val('');
-	          inputLink.css('color', UIComposerLinkExtension.BLACK_COLOR);
-	        }
-	      });
-	      
-	      this.inputLink.on('blur', function(evt) {
-	        if (inputLink.val() === '') {
-	          inputLink.val(UIComposerLinkExtension.HTTP);
-	          inputLink.css('color', UIComposerLinkExtension.GRAY_COLOR);
-	        }
-	      });
+
 	      
 	      this.inputLink.on('keypress', function(evt) {
 	        //if enter submit link
@@ -231,7 +217,7 @@
 	      
 	      this.attachButton.removeAttr('disabled');
 	      this.attachButton.on( 'click', function(evt) {
-	        if (inputLink.val() === '' || inputLink.val() === UIComposerLinkExtension.HTTP) {
+	        if (inputLink.val() === '') {
 	          return;
 	        }
 	        var urlInput =  encodeURIComponent(encodeURI(inputLink.val()));
