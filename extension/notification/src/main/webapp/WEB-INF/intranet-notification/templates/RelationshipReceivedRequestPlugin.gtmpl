@@ -15,8 +15,8 @@
         <div class="content">
         <% if (STATUS != "ACCEPTED") { %>
           <div class="confirm">
-            <a class="btn btn-mini btn-primary remove-item" data-rest="$ACCEPT_CONNECTION_REQUEST_ACTION_URL" href="javascript:void(0)"><%=_ctx.appRes("Notification.label.Accept")%></a>
-            <a class="btn btn-mini remove-item" data-rest="$REFUSE_CONNECTION_REQUEST_ACTION_URL" href="javascript:void(0)"><%=_ctx.appRes("Notification.label.Refuse")%></a>
+            <a class="btn btn-mini btn-primary delete-item" data-rest="$ACCEPT_CONNECTION_REQUEST_ACTION_URL" href="javascript:void(0)"><%=_ctx.appRes("Notification.label.Accept")%></a>
+            <a class="btn btn-mini delete-item" data-rest="$REFUSE_CONNECTION_REQUEST_ACTION_URL" href="javascript:void(0)"><%=_ctx.appRes("Notification.label.Refuse")%></a>
           </div>
         <% } %>
         </div>

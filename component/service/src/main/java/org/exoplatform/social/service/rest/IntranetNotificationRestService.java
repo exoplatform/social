@@ -30,12 +30,16 @@ import org.exoplatform.commons.api.notification.NotificationContext;
 import org.exoplatform.commons.api.notification.channel.AbstractChannel;
 import org.exoplatform.commons.api.notification.channel.template.AbstractTemplateBuilder;
 import org.exoplatform.commons.api.notification.model.ChannelKey;
+import org.exoplatform.commons.api.notification.model.MessageInfo;
 import org.exoplatform.commons.api.notification.model.NotificationInfo;
 import org.exoplatform.commons.api.notification.model.PluginKey;
 import org.exoplatform.commons.api.notification.plugin.AbstractNotificationPlugin;
+import org.exoplatform.commons.api.notification.service.storage.WebNotificationStorage;
 import org.exoplatform.commons.notification.channel.WebChannel;
+import org.exoplatform.commons.notification.impl.AbstractService;
 import org.exoplatform.commons.notification.impl.NotificationContextImpl;
 import org.exoplatform.commons.notification.net.WebNotificationSender;
+import org.exoplatform.commons.utils.CommonsUtils;
 import org.exoplatform.container.ExoContainer;
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.PortalContainer;
@@ -282,7 +286,12 @@ public class IntranetNotificationRestService implements ResourceContainer {
     try {
       AbstractChannel channel = nCtx.getChannelManager().getChannel(ChannelKey.key(WebChannel.ID));
       AbstractTemplateBuilder builder = channel.getTemplateBuilder(notification.getKey());
-      WebNotificationSender.sendJsonMessage(notification.getTo(), builder.buildMessage(nCtx));
+      MessageInfo msg = builder.buildMessage(nCtx);
+      WebNotificationSender.sendJsonMessage(notification.getTo(), msg);
+      notification.setTitle(msg.getBody());
+      notification.with(AbstractService.NTF_SHOW_POPOVER, "true")
+                  .with(AbstractService.NTF_READ, "false");
+      CommonsUtils.getService(WebNotificationStorage.class).save(notification);
     } catch (Exception e) {
       System.out.println("error : " + e.getMessage());
     }
