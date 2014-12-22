@@ -16,8 +16,11 @@
  */
 package org.exoplatform.social.service.rest;
 
+import java.lang.reflect.Method;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -26,6 +29,7 @@ import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.exoplatform.commons.api.notification.NotificationContext;
 import org.exoplatform.commons.api.notification.channel.AbstractChannel;
 import org.exoplatform.commons.api.notification.channel.template.AbstractTemplateBuilder;
@@ -45,12 +49,23 @@ import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.rest.resource.ResourceContainer;
 import org.exoplatform.services.security.ConversationState;
+import org.exoplatform.social.core.activity.model.ExoSocialActivity;
+import org.exoplatform.social.core.chromattic.entity.ActivityRef;
+import org.exoplatform.social.core.chromattic.entity.ActivityRefListEntity;
+import org.exoplatform.social.core.chromattic.entity.IdentityEntity;
+import org.exoplatform.social.core.chromattic.utils.ActivityRefIterator;
+import org.exoplatform.social.core.chromattic.utils.ActivityRefList;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
+import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
+import org.exoplatform.social.core.manager.ActivityManager;
 import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.manager.RelationshipManager;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
+import org.exoplatform.social.core.storage.impl.AbstractStorage;
+import org.exoplatform.social.core.storage.impl.StorageUtils;
+import org.exoplatform.social.core.storage.impl.ActivityStreamStorageImpl.ActivityRefType;
 
 /**
  * Created by The eXo Platform SAS
@@ -59,11 +74,77 @@ import org.exoplatform.social.core.space.spi.SpaceService;
  * Nov 26, 2014  
  */
 @Path("social/intranet-notification")
-public class IntranetNotificationRestService implements ResourceContainer {
+public class IntranetNotificationRestService extends AbstractStorage implements ResourceContainer {
   
   private IdentityManager identityManager;
   private RelationshipManager relationshipManager;
   private SpaceService spaceService;
+  private ActivityManager activityManager;
+  
+  private ActivityManager getActivityManager() {
+    if (activityManager == null) {
+      activityManager = (ActivityManager) getPortalContainer().getComponentInstanceOfType(ActivityManager.class);
+    }
+    return activityManager;
+  }
+  
+  @GET
+  @Path("activity/{nbDays}")
+  public void cleanUpActivity(@PathParam("nbDays") int nbDays) throws Exception {
+    Set<String> lastLogins = getLastLogin(nbDays);
+    for (String user : lastLogins) {
+      Identity identity = getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, user, false);
+      IdentityEntity entity = _findById(IdentityEntity.class, identity.getId());
+      
+      //clean space activity ref in the feed stream
+      cleanSapceActivityRef(ActivityRefType.FEED, entity, user);
+      
+      //clean space activity ref in the connection stream
+      cleanSapceActivityRef(ActivityRefType.CONNECTION, entity, user);
+    }
+  }
+  
+  private void cleanSapceActivityRef(ActivityRefType type, IdentityEntity entity, String owner) {
+    ActivityRefListEntity refList = type.refsOf(entity);
+    ActivityRefList list = new ActivityRefList(refList);
+    int size = 0;
+    ActivityRefIterator it = list.iterator();
+    while (it.hasNext()) {
+      ActivityRef current = it.next();
+      size++;
+      ExoSocialActivity a = getActivityManager().getActivity(current.getActivityEntity().getId());
+      if (SpaceIdentityProvider.NAME.equals(a.getActivityStream().getType().toString())) {
+        Space space = getSpaceService().getSpaceByPrettyName(a.getStreamOwner());
+        if (space != null && ! ArrayUtils.contains(space.getMembers(), owner)) {
+          current.getDay().getActivityRefs().remove(current.getName());
+          size--;
+        }
+      }
+    }
+    //re-update size
+    refList.setNumber(size);
+    StorageUtils.persist();
+  }
+
+  private static Set<String> getLastLogin(int aroundDays) {
+    Calendar calendar = Calendar.getInstance();
+    calendar.add(Calendar.DAY_OF_MONTH, 0 - aroundDays);
+    long fromDay = calendar.getTimeInMillis();
+    try {
+      Class<?> cls = Class.forName("org.exoplatform.platform.gadget.services.LoginHistory.LoginHistoryServiceImpl");
+      if (cls != null) {
+        Class<?>[] params = new Class<?>[1];
+        params[0] = Long.TYPE;
+        Method method = cls.getMethod("getLastUsersLogin", params);
+        Object obj = CommonsUtils.getService(cls);
+        return (Set<String>) method.invoke(obj, fromDay);
+      } else {
+        return null;
+      }
+    } catch (Exception e) {
+      return null;
+    }
+  }
 
   /**
    * Processes the "Accept the invitation to connect" action between 2 users and update notification.
@@ -185,16 +266,17 @@ public class IntranetNotificationRestService implements ResourceContainer {
    * @throws Exception
    */
   @GET
-  @Path("validateRequestToJoinSpace/{spaceId}/{userId}")
+  @Path("validateRequestToJoinSpace/{spaceId}/{requestUserId}/{currentUserId}")
   public void validateRequestToJoinSpace(@PathParam("spaceId") String spaceId,
-                                              @PathParam("userId") String userId) throws Exception {
+                                            @PathParam("requestUserId") String requestUserId,
+                                            @PathParam("currentUserId") String currentUserId) throws Exception {
     //update notification
     NotificationInfo info = new NotificationInfo();
-    info.setTo(ConversationState.getCurrent().getIdentity().getUserId());
+    info.setTo(currentUserId);
     info.key(new PluginKey("RequestJoinSpacePlugin"));
     Map<String, String> ownerParameter = new HashMap<String, String>();
     ownerParameter.put("spaceId", spaceId);
-    ownerParameter.put("request_from", userId);
+    ownerParameter.put("request_from", requestUserId);
     ownerParameter.put("status", "accepted");
     info.setOwnerParameter(ownerParameter);
     sendBackNotif(info);
@@ -204,7 +286,7 @@ public class IntranetNotificationRestService implements ResourceContainer {
     if (space == null) {
       throw new WebApplicationException(Response.Status.BAD_REQUEST);
     }
-    getSpaceService().addMember(space, userId);
+    getSpaceService().addMember(space, requestUserId);
   }
   
   /**
