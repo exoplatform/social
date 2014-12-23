@@ -36,6 +36,7 @@ import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.identity.model.Profile.UpdateType;
 import org.exoplatform.social.core.service.LinkProvider;
+import org.exoplatform.web.CacheUserProfileFilter;
 import org.exoplatform.webui.exception.MessageException;
 
 
@@ -101,11 +102,13 @@ public class OrganizationIdentityProvider extends IdentityProvider<User> {
     User user = null;
     try {
       ConversationState state = ConversationState.getCurrent();
-      if (state != null && state.getIdentity() != null && state.getIdentity().getUserId() != null && state.getIdentity().getUserId().equals(remoteId)) {
-        user = (User) state.getAttribute("UserProfile");
+      if (state.getIdentity().getUserId().equals(remoteId)) {
+        user = (User) state.getAttribute(CacheUserProfileFilter.USER_PROFILE);
       }
     } catch (Exception e) {
-      user = null;
+      if (LOG.isDebugEnabled()) {
+        LOG.debug("Cannot get information of user " + remoteId + " from Converstation State!");  
+      }
     }
     if (user == null) {
       try {
@@ -113,6 +116,9 @@ public class OrganizationIdentityProvider extends IdentityProvider<User> {
         UserHandler userHandler = organizationService.getUserHandler();
         user = userHandler.findUserByName(remoteId);
       } catch (Exception e) {
+        if (LOG.isDebugEnabled()) {
+          LOG.debug("Cannot get information of user " + remoteId + " from Organization Service");
+        }
         return null;
       } finally {
         RequestLifeCycle.end();
@@ -201,6 +207,7 @@ public class OrganizationIdentityProvider extends IdentityProvider<User> {
       boolean hasUpdate = false;
 
       //
+      ConversationState state = ConversationState.getCurrent();
       User foundUser = organizationService.getUserHandler().findUserByName(this.userName);
       if(foundUser == null) {
         return;
@@ -222,7 +229,8 @@ public class OrganizationIdentityProvider extends IdentityProvider<User> {
 
       //
       if (hasUpdate) {
-        organizationService.getUserHandler().saveUser(foundUser, true);        
+        organizationService.getUserHandler().saveUser(foundUser, true);
+        state.setAttribute(CacheUserProfileFilter.USER_PROFILE, foundUser);
       }
       
       //
