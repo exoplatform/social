@@ -37,7 +37,7 @@ import org.exoplatform.commons.api.notification.model.ChannelKey;
 import org.exoplatform.commons.api.notification.model.MessageInfo;
 import org.exoplatform.commons.api.notification.model.NotificationInfo;
 import org.exoplatform.commons.api.notification.model.PluginKey;
-import org.exoplatform.commons.api.notification.plugin.AbstractNotificationPlugin;
+import org.exoplatform.commons.api.notification.plugin.BaseNotificationPlugin;
 import org.exoplatform.commons.api.notification.service.storage.WebNotificationStorage;
 import org.exoplatform.commons.notification.channel.WebChannel;
 import org.exoplatform.commons.notification.impl.AbstractService;
@@ -361,7 +361,7 @@ public class IntranetNotificationRestService extends AbstractStorage implements 
   
   private void sendBackNotif(NotificationInfo notification) {
     NotificationContext nCtx = NotificationContextImpl.cloneInstance().setNotificationInfo(notification);
-    AbstractNotificationPlugin plugin = nCtx.getPluginContainer().getPlugin(notification.getKey());
+    BaseNotificationPlugin plugin = nCtx.getPluginContainer().getPlugin(notification.getKey());
     if (plugin == null) {
       return;
     }

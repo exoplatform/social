@@ -21,12 +21,12 @@ import java.util.List;
 
 import org.exoplatform.commons.api.notification.NotificationContext;
 import org.exoplatform.commons.api.notification.model.NotificationInfo;
-import org.exoplatform.commons.api.notification.plugin.AbstractNotificationPlugin;
+import org.exoplatform.commons.api.notification.plugin.BaseNotificationPlugin;
 import org.exoplatform.container.xml.InitParams;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.notification.Utils;
 
-public class LikePlugin extends AbstractNotificationPlugin {
+public class LikePlugin extends BaseNotificationPlugin {
   
   public LikePlugin(InitParams initParams) {
     super(initParams);

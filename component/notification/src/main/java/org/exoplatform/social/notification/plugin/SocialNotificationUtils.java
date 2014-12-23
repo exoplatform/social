@@ -26,7 +26,7 @@ import org.exoplatform.commons.api.notification.NotificationContext;
 import org.exoplatform.commons.api.notification.model.ArgumentLiteral;
 import org.exoplatform.commons.api.notification.model.PluginKey;
 import org.exoplatform.commons.api.notification.plugin.AbstractNotificationChildPlugin;
-import org.exoplatform.commons.api.notification.plugin.AbstractNotificationPlugin;
+import org.exoplatform.commons.api.notification.plugin.BaseNotificationPlugin;
 import org.exoplatform.commons.api.notification.service.setting.PluginContainer;
 import org.exoplatform.commons.api.notification.service.template.TemplateContext;
 import org.exoplatform.commons.notification.template.TemplateUtils;
@@ -255,7 +255,7 @@ public class SocialNotificationUtils {
   public static String getBody(NotificationContext ctx, TemplateContext context, ExoSocialActivity activity) {
     PluginKey childKey = new PluginKey(activity.getType());
     PluginContainer pluginContainer = CommonsUtils.getService(PluginContainer.class);
-    AbstractNotificationPlugin child = pluginContainer.getPlugin(childKey);
+    BaseNotificationPlugin child = pluginContainer.getPlugin(childKey);
     if (child == null || (child instanceof AbstractNotificationChildPlugin) == false) {
       child = pluginContainer.getPlugin(new PluginKey(DefaultActivityChildPlugin.ID));
     }

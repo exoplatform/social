@@ -28,7 +28,7 @@ import org.apache.commons.lang.ArrayUtils;
 import org.exoplatform.commons.api.notification.NotificationContext;
 import org.exoplatform.commons.api.notification.model.MessageInfo;
 import org.exoplatform.commons.api.notification.model.NotificationInfo;
-import org.exoplatform.commons.api.notification.plugin.AbstractNotificationPlugin;
+import org.exoplatform.commons.api.notification.plugin.BaseNotificationPlugin;
 import org.exoplatform.commons.api.notification.service.template.TemplateContext;
 import org.exoplatform.commons.notification.impl.AbstractService;
 import org.exoplatform.commons.notification.template.TemplateUtils;
@@ -38,7 +38,7 @@ import org.exoplatform.social.notification.LinkProviderUtils;
 import org.exoplatform.social.notification.Utils;
 import org.exoplatform.webui.utils.TimeConvertUtils;
 
-public class SpaceInvitationPlugin extends AbstractNotificationPlugin {
+public class SpaceInvitationPlugin extends BaseNotificationPlugin {
   
   private static final String ACCEPT_SPACE_INVITATION = "social/intranet-notification/acceptInvitationToJoinSpace";
 

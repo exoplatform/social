@@ -20,11 +20,11 @@ import java.util.Arrays;
 
 import org.exoplatform.commons.api.notification.NotificationContext;
 import org.exoplatform.commons.api.notification.model.NotificationInfo;
-import org.exoplatform.commons.api.notification.plugin.AbstractNotificationPlugin;
+import org.exoplatform.commons.api.notification.plugin.BaseNotificationPlugin;
 import org.exoplatform.container.xml.InitParams;
 import org.exoplatform.social.core.space.model.Space;
 
-public class RequestJoinSpacePlugin extends AbstractNotificationPlugin {
+public class RequestJoinSpacePlugin extends BaseNotificationPlugin {
   
   public RequestJoinSpacePlugin(InitParams initParams) {
     super(initParams);

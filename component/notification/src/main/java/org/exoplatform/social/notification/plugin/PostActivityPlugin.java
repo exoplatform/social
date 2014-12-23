@@ -18,12 +18,12 @@ package org.exoplatform.social.notification.plugin;
 
 import org.exoplatform.commons.api.notification.NotificationContext;
 import org.exoplatform.commons.api.notification.model.NotificationInfo;
-import org.exoplatform.commons.api.notification.plugin.AbstractNotificationPlugin;
+import org.exoplatform.commons.api.notification.plugin.BaseNotificationPlugin;
 import org.exoplatform.container.xml.InitParams;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.notification.Utils;
 
-public class PostActivityPlugin extends AbstractNotificationPlugin {
+public class PostActivityPlugin extends BaseNotificationPlugin {
 
   public PostActivityPlugin(InitParams initParams) {
     super(initParams);

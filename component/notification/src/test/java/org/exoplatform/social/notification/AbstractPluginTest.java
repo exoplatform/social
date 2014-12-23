@@ -27,7 +27,7 @@ import org.exoplatform.commons.api.notification.model.ChannelKey;
 import org.exoplatform.commons.api.notification.model.MessageInfo;
 import org.exoplatform.commons.api.notification.model.NotificationInfo;
 import org.exoplatform.commons.api.notification.model.UserSetting;
-import org.exoplatform.commons.api.notification.plugin.AbstractNotificationPlugin;
+import org.exoplatform.commons.api.notification.plugin.BaseNotificationPlugin;
 import org.exoplatform.commons.api.notification.service.setting.UserSettingService;
 import org.exoplatform.commons.notification.channel.MailChannel;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
@@ -61,7 +61,7 @@ public abstract class AbstractPluginTest extends AbstractCoreTest {
   protected List<Identity>  tearDownIdentityList;
   protected List<Relationship>  tearDownRelationshipList;
   
-  public abstract AbstractNotificationPlugin getPlugin();
+  public abstract BaseNotificationPlugin getPlugin();
   
   @Override
   protected void setUp() throws Exception {
@@ -120,7 +120,7 @@ public abstract class AbstractPluginTest extends AbstractCoreTest {
     super.tearDown();
   }
   
-  public void destroyPlugins(AbstractNotificationPlugin plugin) {
+  public void destroyPlugins(BaseNotificationPlugin plugin) {
     plugin = null;
   }
   
@@ -193,7 +193,7 @@ public abstract class AbstractPluginTest extends AbstractCoreTest {
    * Turn on the plug in
    * @param plugin
    */
-  protected void turnON(AbstractNotificationPlugin plugin) {
+  protected void turnON(BaseNotificationPlugin plugin) {
     pluginSettingService.saveActivePlugin(UserSetting.EMAIL_CHANNEL, plugin.getId(), true);
   }
   
@@ -209,7 +209,7 @@ public abstract class AbstractPluginTest extends AbstractCoreTest {
    * Turn off the plugin
    * @param plugin
    */
-  protected void turnOFF(AbstractNotificationPlugin plugin) {
+  protected void turnOFF(BaseNotificationPlugin plugin) {
     pluginSettingService.saveActivePlugin(UserSetting.EMAIL_CHANNEL, plugin.getId(), false);
   }
   

@@ -18,13 +18,13 @@ package org.exoplatform.social.notification.plugin;
 
 import org.exoplatform.commons.api.notification.NotificationContext;
 import org.exoplatform.commons.api.notification.model.NotificationInfo;
-import org.exoplatform.commons.api.notification.plugin.AbstractNotificationPlugin;
+import org.exoplatform.commons.api.notification.plugin.BaseNotificationPlugin;
 import org.exoplatform.commons.api.notification.service.setting.UserSettingService;
 import org.exoplatform.commons.utils.CommonsUtils;
 import org.exoplatform.container.xml.InitParams;
 import org.exoplatform.social.core.identity.model.Profile;
 
-public class NewUserPlugin extends AbstractNotificationPlugin {
+public class NewUserPlugin extends BaseNotificationPlugin {
 
   public static final String ID = "NewUserPlugin";
   public NewUserPlugin(InitParams initParams) {

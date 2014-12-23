@@ -18,7 +18,7 @@ package org.exoplatform.social.notification.plugin;
 
 import org.exoplatform.commons.api.notification.NotificationContext;
 import org.exoplatform.commons.api.notification.model.NotificationInfo;
-import org.exoplatform.commons.api.notification.plugin.AbstractNotificationPlugin;
+import org.exoplatform.commons.api.notification.plugin.BaseNotificationPlugin;
 import org.exoplatform.container.xml.InitParams;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.identity.model.Identity;
@@ -26,7 +26,7 @@ import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.notification.Utils;
 
-public class PostActivitySpaceStreamPlugin extends AbstractNotificationPlugin {
+public class PostActivitySpaceStreamPlugin extends BaseNotificationPlugin {
   
   public PostActivitySpaceStreamPlugin(InitParams initParams) {
     super(initParams);

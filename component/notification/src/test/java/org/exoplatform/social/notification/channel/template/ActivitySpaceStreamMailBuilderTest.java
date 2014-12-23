@@ -27,7 +27,7 @@ import org.exoplatform.commons.api.notification.channel.template.AbstractTemplat
 import org.exoplatform.commons.api.notification.model.ChannelKey;
 import org.exoplatform.commons.api.notification.model.NotificationInfo;
 import org.exoplatform.commons.api.notification.model.PluginKey;
-import org.exoplatform.commons.api.notification.plugin.AbstractNotificationPlugin;
+import org.exoplatform.commons.api.notification.plugin.BaseNotificationPlugin;
 import org.exoplatform.commons.notification.channel.MailChannel;
 import org.exoplatform.commons.notification.impl.NotificationContextImpl;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
@@ -68,7 +68,7 @@ public class ActivitySpaceStreamMailBuilderTest extends AbstractPluginTest {
   }
   
   @Override
-  public AbstractNotificationPlugin getPlugin() {
+  public BaseNotificationPlugin getPlugin() {
     return pluginService.getPlugin(PluginKey.key(PostActivitySpaceStreamPlugin.ID));
   }
   

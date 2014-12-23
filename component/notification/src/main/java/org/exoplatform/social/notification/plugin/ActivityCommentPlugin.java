@@ -22,14 +22,14 @@ import java.util.Set;
 
 import org.exoplatform.commons.api.notification.NotificationContext;
 import org.exoplatform.commons.api.notification.model.NotificationInfo;
-import org.exoplatform.commons.api.notification.plugin.AbstractNotificationPlugin;
+import org.exoplatform.commons.api.notification.plugin.BaseNotificationPlugin;
 import org.exoplatform.container.xml.InitParams;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
 import org.exoplatform.social.notification.Utils;
 
-public class ActivityCommentPlugin extends AbstractNotificationPlugin {
+public class ActivityCommentPlugin extends BaseNotificationPlugin {
   
   public ActivityCommentPlugin(InitParams initParams) {
     super(initParams);
