@@ -23,11 +23,9 @@ import javax.portlet.MimeResponse;
 import javax.portlet.ResourceRequest;
 import javax.portlet.ResourceURL;
 
-import org.exoplatform.commons.api.notification.model.WebFilter;
+import org.exoplatform.commons.api.notification.model.WebNotificationFilter;
 import org.exoplatform.commons.api.notification.service.WebNotificationService;
 import org.exoplatform.portal.application.PortalRequestContext;
-import org.exoplatform.services.log.ExoLogger;
-import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.service.LinkProvider;
 import org.exoplatform.webui.application.WebuiApplication;
 import org.exoplatform.webui.application.WebuiRequestContext;
@@ -54,27 +52,23 @@ import org.json.JSONObject;
    }
 )
 public class UIIntranetNotificationsPortlet extends UIPortletApplication {
-  
-  private WebNotificationService webNotifService;
-  
-  private String currentUser = "";
-  
-  private static final Log LOG = ExoLogger.getLogger(UIIntranetNotificationsPortlet.class);
-
+  private final WebNotificationService webNotifService;
+  private static final String LOAD_MORE_KEY = "loadMoreNotif";
   private static final int ITEMS_LOADED_NUM = 21;
   private static final int ITEMS_PER_PAGE = 20;
+  private String currentUser = "";
   private int offset = 0;
-  private int limit;
-  private boolean hasMore;
+  private int currentPage = 1;
+  private boolean hasMore = false;
   
   public UIIntranetNotificationsPortlet() throws Exception {
-    currentUser = WebuiRequestContext.getCurrentInstance().getRemoteUser();
     webNotifService = getApplicationComponent(WebNotificationService.class);
   }
   
   @Override
   public void processRender(WebuiApplication app, WebuiRequestContext context) throws Exception {
     this.currentUser = context.getRemoteUser();
+    this.currentPage = 1;
     super.processRender(app, context);
   }
   
@@ -84,27 +78,23 @@ public class UIIntranetNotificationsPortlet extends UIPortletApplication {
     ResourceRequest req = context.getRequest();
     String resourceId = req.getResourceID();
     //
-    if ("loadMoreNotif".equals(resourceId)) {
-      offset = limit;
-      limit += ITEMS_LOADED_NUM;
-      
+    if (LOAD_MORE_KEY.equals(resourceId) && isHasMore()) {
+      ++currentPage;
       //
-      WebFilter filter = new WebFilter(currentUser, offset, limit);
-      List<String> moreNotifications = webNotifService.getNotificationContents(filter);
-      hasMore = (moreNotifications.size() > ITEMS_PER_PAGE);
-      
+      List<String> moreNotifications = getNotifications();
+      //
       StringBuffer sb = new StringBuffer();
       for (String notif : moreNotifications) {
         sb.append(notif);  
       }
-      
       //
       MimeResponse res = context.getResponse();
       res.setContentType("application/json");
       //
       JSONObject object = new JSONObject();
       object.put("context", sb.toString());
-      object.put("hasMore", String.valueOf(hasMore));
+      object.put("currentPage", String.valueOf(currentPage));
+      object.put("hasMore", String.valueOf(isHasMore()));
       //
       res.getWriter().write(object.toString());
     }
@@ -115,19 +105,20 @@ public class UIIntranetNotificationsPortlet extends UIPortletApplication {
       WebuiRequestContext ctx = WebuiRequestContext.getCurrentInstance();
       MimeResponse res = ctx.getResponse();
       ResourceURL rsURL = res.createResourceURL();
-      rsURL.setResourceID("loadMoreNotif");
+      rsURL.setResourceID(LOAD_MORE_KEY);
       return rsURL.toString();
     } catch (Exception e) {
       return "";
     }
   }
-  
+
   protected List<String> getNotifications() throws Exception {
-    offset = 0;
-    limit = ITEMS_LOADED_NUM;
-    WebFilter filter = new WebFilter(currentUser, offset, limit);
-    List<String> notificationContents = webNotifService.getNotificationContents(filter);
-    hasMore = (notificationContents.size() > ITEMS_PER_PAGE);
+    WebNotificationFilter filter = new WebNotificationFilter(currentUser);
+    List<String> notificationContents = webNotifService.get(filter, offset * currentPage, ITEMS_LOADED_NUM);
+    if (notificationContents.size() > ITEMS_PER_PAGE) {
+      notificationContents = notificationContents.subList(0, ITEMS_PER_PAGE);
+      hasMore = true;
+    }
     return notificationContents;
   }
   
@@ -149,10 +140,9 @@ public class UIIntranetNotificationsPortlet extends UIPortletApplication {
   
   public static class MarkReadActionListener extends EventListener<UIIntranetNotificationsPortlet> {
     public void execute(Event<UIIntranetNotificationsPortlet> event) throws Exception {
-      String notificationId = event.getRequestContext().getRequestParameter(OBJECTID);
+      String id = event.getRequestContext().getRequestParameter(OBJECTID);
       UIIntranetNotificationsPortlet portlet = event.getSource();
-      LOG.info("Run action MarkReadActionListener");
-      portlet.webNotifService.markRead(notificationId);
+      portlet.webNotifService.markRead(id);
       // Ignore reload portlet
       ((PortalRequestContext) event.getRequestContext().getParentAppRequestContext()).ignoreAJAXUpdateOnPortlets(true);
     }
@@ -160,10 +150,9 @@ public class UIIntranetNotificationsPortlet extends UIPortletApplication {
   
   public static class RemoveActionListener extends EventListener<UIIntranetNotificationsPortlet> {
     public void execute(Event<UIIntranetNotificationsPortlet> event) throws Exception {
-      String notificationId = event.getRequestContext().getRequestParameter(OBJECTID);
+      String id = event.getRequestContext().getRequestParameter(OBJECTID);
       UIIntranetNotificationsPortlet portlet = event.getSource();
-      LOG.info("Run action RemoveActionListener: " + notificationId);
-      portlet.webNotifService.hidePopover(notificationId);
+      portlet.webNotifService.hidePopover(id);
       // Ignore reload portlet
       ((PortalRequestContext) event.getRequestContext().getParentAppRequestContext()).ignoreAJAXUpdateOnPortlets(true);
     }
