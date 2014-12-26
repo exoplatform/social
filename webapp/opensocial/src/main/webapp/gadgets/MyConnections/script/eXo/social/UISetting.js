@@ -143,9 +143,6 @@
 		    };
 		    this.rejectDisabled();
 		    this.lastSelectedIndex = this.selectedIndex;
-		    $(this).children('option[disabled]').each(function(){
-		      $(this).css('color', '#CCC');
-		    });
 		    $(this).change(function() {
 		      this.rejectDisabled();
 		    });

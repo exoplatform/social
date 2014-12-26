@@ -42,10 +42,7 @@
       
 			// Turn off auto-complete attribute of text-box control
 			searchEl.attr('autocomplete','off');
-			
-			if (searchEl.val().trim() ==  defaultSpaceNameAndDesc) {
-			  searchEl.css('color', UISpaceSearch.COLOR.BLUR);
-			}
+
 			
       searchEl.placeholder();
 			

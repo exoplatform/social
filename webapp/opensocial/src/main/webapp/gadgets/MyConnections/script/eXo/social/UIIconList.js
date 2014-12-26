@@ -519,21 +519,7 @@
 		var userBlock = getMyConnectionDetailBlock();
 	  
 	  $(uiComponent.GadgetMemberMore).append(userBlock);
-	
-	  /**
-	   * Blur event.
-	   */
-	  $(uiComponent.QuickCommentInput).blur(function() {
-	  	$(uiComponent.QuickCommentInput).css('color', 'black');
-	  });
-	  
-	  /**
-	   * Focus event.
-	   */
-	  $(uiComponent.QuickCommentInput).focus(function() {
-	  	$(uiComponent.QuickCommentInput).css('color', 'black');
-	  });
-	  
+
 	  Comment.setOffset(0);
 	  Comment.setLimit(10);
 	  

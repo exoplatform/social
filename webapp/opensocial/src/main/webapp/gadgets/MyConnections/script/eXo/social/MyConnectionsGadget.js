@@ -100,7 +100,6 @@
   		UISearch.setNameToSearch(null);
   		
   		$(uiComponent.SearchTextBox).val('Quick Search');
-  		$(uiComponent.SearchTextBox).css('color', '#D5D5D5');
   		
   		$(uiComponent.GadgetUIIconList).css('display', 'block');
   		$(uiComponent.GadgetUITextList).css('display', 'none');
@@ -130,7 +129,6 @@
   		UISearch.setNameToSearch(null);
   		
   		$(uiComponent.SearchTextBox).val('Quick Search');
-  		$(uiComponent.SearchTextBox).css('color', '#D5D5D5');
   		
   		ActivityStream.initProfiles({offset: 0, limit: settingStored.itemPerViewNum,
   																viewType: "TEXT_LIST", updateTime: settingStored.updateTime,
