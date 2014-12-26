@@ -18,12 +18,17 @@ package org.exoplatform.social.notification.channel;
 
 import org.exoplatform.commons.api.notification.channel.AbstractChannel;
 import org.exoplatform.commons.api.notification.channel.ChannelManager;
+import org.exoplatform.commons.api.notification.channel.template.TemplateProvider;
 import org.exoplatform.commons.api.notification.model.ChannelKey;
 import org.exoplatform.commons.api.notification.model.PluginKey;
 import org.exoplatform.commons.notification.channel.MailChannel;
 import org.exoplatform.commons.notification.impl.DigestDailyPlugin;
 import org.exoplatform.commons.notification.impl.DigestWeeklyPlugin;
+import org.exoplatform.container.xml.InitParams;
+import org.exoplatform.container.xml.ValueParam;
 import org.exoplatform.social.notification.AbstractCoreTest;
+import org.exoplatform.social.notification.channel.template.MailTemplateProvider;
+import org.exoplatform.social.notification.mock.MockMailTemplateProvider;
 import org.exoplatform.social.notification.plugin.ActivityCommentPlugin;
 import org.exoplatform.social.notification.plugin.ActivityMentionPlugin;
 import org.exoplatform.social.notification.plugin.LikePlugin;
@@ -42,16 +47,27 @@ import org.exoplatform.social.notification.plugin.SpaceInvitationPlugin;
  */
 public class MailTemplateProviderTest extends AbstractCoreTest {
   private ChannelManager manager;
+  private InitParams initParams;
   
   @Override
   protected void setUp() throws Exception {
     super.setUp();
     manager = getService(ChannelManager.class);
+    
+    initParams = new InitParams();
+    
+    ValueParam valueParam = new ValueParam();
+    valueParam.setName(TemplateProvider.CHANNEL_ID_KEY);
+    valueParam.setValue(MailChannel.ID);
+    initParams.addParameter(valueParam);
+    manager.registerOverrideTemplateProvider(new MailTemplateProvider(initParams));
   }
   
   @Override
   public void tearDown() throws Exception {
     super.tearDown();
+    manager.registerOverrideTemplateProvider(new MockMailTemplateProvider(initParams));
+    
   }
   
   public void testChannelSize() throws Exception {
@@ -63,11 +79,11 @@ public class MailTemplateProviderTest extends AbstractCoreTest {
     assertTrue(channel != null);
     //check the daily
     String actual = channel.getTemplateFilePath(PluginKey.key(DigestDailyPlugin.ID));
-    String expected = "classpath:/notification/templates/DigestDailyPlugin.gtmpl";
+    String expected = "war:/notification/templates/DigestDailyPlugin.gtmpl";
     assertEquals(expected, actual);
     //check the weekly
     actual = channel.getTemplateFilePath(PluginKey.key(DigestWeeklyPlugin.ID));
-    expected = "classpath:/notification/templates/DigestWeeklyPlugin.gtmpl";
+    expected = "war:/notification/templates/DigestWeeklyPlugin.gtmpl";
     assertEquals(expected, actual);
   }
   
@@ -76,39 +92,39 @@ public class MailTemplateProviderTest extends AbstractCoreTest {
     assertTrue(channel != null);
     //check the daily
     String actual = channel.getTemplateFilePath(PluginKey.key(ActivityCommentPlugin.ID));
-    String expected = "classpath:/notification/templates/ActivityCommentPlugin.gtmpl";
+    String expected = "war:/notification/templates/ActivityCommentPlugin.gtmpl";
     assertEquals(expected, actual);
     //check the weekly
     actual = channel.getTemplateFilePath(PluginKey.key(ActivityMentionPlugin.ID));
-    expected = "classpath:/notification/templates/ActivityMentionPlugin.gtmpl";
+    expected = "war:/notification/templates/ActivityMentionPlugin.gtmpl";
     assertEquals(expected, actual);
     
     actual = channel.getTemplateFilePath(PluginKey.key(LikePlugin.ID));
-    expected = "classpath:/notification/templates/LikePlugin.gtmpl";
+    expected = "war:/notification/templates/LikePlugin.gtmpl";
     assertEquals(expected, actual);
     
     actual = channel.getTemplateFilePath(PluginKey.key(NewUserPlugin.ID));
-    expected = "classpath:/notification/templates/NewUserPlugin.gtmpl";
+    expected = "war:/notification/templates/NewUserPlugin.gtmpl";
     assertEquals(expected, actual);
     
     actual = channel.getTemplateFilePath(PluginKey.key(PostActivityPlugin.ID));
-    expected = "classpath:/notification/templates/PostActivityPlugin.gtmpl";
+    expected = "war:/notification/templates/PostActivityPlugin.gtmpl";
     assertEquals(expected, actual);
     
     actual = channel.getTemplateFilePath(PluginKey.key(PostActivitySpaceStreamPlugin.ID));
-    expected = "classpath:/notification/templates/PostActivitySpaceStreamPlugin.gtmpl";
+    expected = "war:/notification/templates/PostActivitySpaceStreamPlugin.gtmpl";
     assertEquals(expected, actual);
     
     actual = channel.getTemplateFilePath(PluginKey.key(RelationshipReceivedRequestPlugin.ID));
-    expected = "classpath:/notification/templates/RelationshipReceivedRequestPlugin.gtmpl";
+    expected = "war:/notification/templates/RelationshipReceivedRequestPlugin.gtmpl";
     assertEquals(expected, actual);
     
     actual = channel.getTemplateFilePath(PluginKey.key(RequestJoinSpacePlugin.ID));
-    expected = "classpath:/notification/templates/RequestJoinSpacePlugin.gtmpl";
+    expected = "war:/notification/templates/RequestJoinSpacePlugin.gtmpl";
     assertEquals(expected, actual);
     
     actual = channel.getTemplateFilePath(PluginKey.key(SpaceInvitationPlugin.ID));
-    expected = "classpath:/notification/templates/SpaceInvitationPlugin.gtmpl";
+    expected = "war:/notification/templates/SpaceInvitationPlugin.gtmpl";
     assertEquals(expected, actual);
   }
   

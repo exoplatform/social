@@ -18,10 +18,16 @@ package org.exoplatform.social.notification.channel;
 
 import org.exoplatform.commons.api.notification.channel.AbstractChannel;
 import org.exoplatform.commons.api.notification.channel.ChannelManager;
+import org.exoplatform.commons.api.notification.channel.template.TemplateProvider;
 import org.exoplatform.commons.api.notification.model.ChannelKey;
 import org.exoplatform.commons.api.notification.model.PluginKey;
+import org.exoplatform.commons.notification.channel.MailChannel;
 import org.exoplatform.commons.notification.channel.WebChannel;
+import org.exoplatform.container.xml.InitParams;
+import org.exoplatform.container.xml.ValueParam;
 import org.exoplatform.social.notification.AbstractCoreTest;
+import org.exoplatform.social.notification.channel.template.WebTemplateProvider;
+import org.exoplatform.social.notification.mock.MockWebTemplateProvider;
 import org.exoplatform.social.notification.plugin.ActivityCommentPlugin;
 import org.exoplatform.social.notification.plugin.ActivityMentionPlugin;
 import org.exoplatform.social.notification.plugin.LikePlugin;
@@ -40,20 +46,70 @@ import org.exoplatform.social.notification.plugin.SpaceInvitationPlugin;
  */
 public class WebTemplateProviderTest extends AbstractCoreTest {
   private ChannelManager manager;
+  private InitParams initParams;
   
   @Override
   protected void setUp() throws Exception {
     super.setUp();
     manager = getService(ChannelManager.class);
+    initParams = new InitParams();
+    
+    ValueParam valueParam = new ValueParam();
+    valueParam.setName(TemplateProvider.CHANNEL_ID_KEY);
+    valueParam.setValue(WebChannel.ID);
+    initParams.addParameter(valueParam);
+    manager.registerOverrideTemplateProvider(new WebTemplateProvider(initParams));
   }
   
   @Override
   public void tearDown() throws Exception {
     super.tearDown();
+    manager.registerOverrideTemplateProvider(new MockWebTemplateProvider(initParams));
   }
   
   public void testChannelSize() throws Exception {
     assertTrue(manager.sizeChannels() > 0);
+  }
+  
+  public void testMailTemplateProvider() throws Exception {
+    AbstractChannel channel = manager.getChannel(ChannelKey.key(WebChannel.ID));
+    assertTrue(channel != null);
+    
+    String actual = channel.getTemplateFilePath(PluginKey.key(ActivityCommentPlugin.ID));
+    String expected = "war:/intranet-notification/templates/ActivityCommentPlugin.gtmpl";
+    assertEquals(expected, actual);
+    
+    actual = channel.getTemplateFilePath(PluginKey.key(ActivityMentionPlugin.ID));
+    expected = "war:/intranet-notification/templates/ActivityMentionPlugin.gtmpl";
+    assertEquals(expected, actual);
+    
+    actual = channel.getTemplateFilePath(PluginKey.key(LikePlugin.ID));
+    expected = "war:/intranet-notification/templates/LikePlugin.gtmpl";
+    assertEquals(expected, actual);
+    
+    actual = channel.getTemplateFilePath(PluginKey.key(NewUserPlugin.ID));
+    expected = "war:/intranet-notification/templates/NewUserPlugin.gtmpl";
+    assertEquals(expected, actual);
+    
+    actual = channel.getTemplateFilePath(PluginKey.key(PostActivityPlugin.ID));
+    expected = "war:/intranet-notification/templates/PostActivityPlugin.gtmpl";
+    assertEquals(expected, actual);
+    
+    actual = channel.getTemplateFilePath(PluginKey.key(PostActivitySpaceStreamPlugin.ID));
+    expected = "war:/intranet-notification/templates/PostActivitySpaceStreamPlugin.gtmpl";
+    assertEquals(expected, actual);
+    
+    actual = channel.getTemplateFilePath(PluginKey.key(RelationshipReceivedRequestPlugin.ID));
+    expected = "war:/intranet-notification/templates/RelationshipReceivedRequestPlugin.gtmpl";
+    assertEquals(expected, actual);
+    
+    actual = channel.getTemplateFilePath(PluginKey.key(RequestJoinSpacePlugin.ID));
+    expected = "war:/intranet-notification/templates/RequestJoinSpacePlugin.gtmpl";
+    assertEquals(expected, actual);
+    
+    actual = channel.getTemplateFilePath(PluginKey.key(SpaceInvitationPlugin.ID));
+    expected = "war:/intranet-notification/templates/SpaceInvitationPlugin.gtmpl";
+    assertEquals(expected, actual);
   }
   
   public void testMailTemplateBuilder() throws Exception {
