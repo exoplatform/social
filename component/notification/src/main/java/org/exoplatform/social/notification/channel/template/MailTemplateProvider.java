@@ -100,7 +100,8 @@ public class MailTemplateProvider extends TemplateProvider {
       templateContext.put("VIEW_FULL_DISCUSSION_ACTION_URL", LinkProviderUtils.getRedirectUrl("view_full_activity_highlight_comment", parentActivity.getId() + "-" + activity.getId()));
 
       String body = SocialNotificationUtils.getBody(ctx, templateContext, parentActivity);
-      
+      //binding the exception throws by processing template
+      ctx.setException(templateContext.getException());
       return messageInfo.subject(subject).body(body).end();
     }
 
@@ -175,6 +176,8 @@ public class MailTemplateProvider extends TemplateProvider {
         body = SocialNotificationUtils.getBody(ctx, templateContext, activity);
       }
       
+      //binding the exception throws by processing template
+      ctx.setException(templateContext.getException());
       return messageInfo.subject(subject).body(body).end();
     }
 
@@ -240,6 +243,8 @@ public class MailTemplateProvider extends TemplateProvider {
 
       String body = SocialNotificationUtils.getBody(ctx, templateContext, activity);
       
+      //binding the exception throws by processing template
+      ctx.setException(templateContext.getException());
       return messageInfo.subject(subject).body(body).end();
     }
 
@@ -311,6 +316,8 @@ public class MailTemplateProvider extends TemplateProvider {
       templateContext.put("AVATAR", LinkProviderUtils.getUserAvatarUrl(userProfile));
       templateContext.put("CONNECT_ACTION_URL", LinkProviderUtils.getInviteToConnectUrl(identity.getRemoteId(), notification.getTo()));
       String body = TemplateUtils.processGroovy(templateContext);
+      //binding the exception throws by processing template
+      ctx.setException(templateContext.getException());
       
       return messageInfo.subject(subject).body(body).end();
     }
@@ -379,6 +386,8 @@ public class MailTemplateProvider extends TemplateProvider {
       templateContext.put("VIEW_FULL_DISCUSSION_ACTION_URL", LinkProviderUtils.getRedirectUrl("view_full_activity", activity.getId()));
       
       String body = SocialNotificationUtils.getBody(ctx, templateContext, activity);
+      //binding the exception throws by processing template
+      ctx.setException(templateContext.getException());
       
       return messageInfo.subject(subject).body(body).end();
     }
@@ -443,6 +452,8 @@ public class MailTemplateProvider extends TemplateProvider {
       templateContext.put("VIEW_FULL_DISCUSSION_ACTION_URL", LinkProviderUtils.getRedirectUrl("view_full_activity", activity.getId()));
 
       String body = SocialNotificationUtils.getBody(ctx, templateContext, activity);
+      //binding the exception throws by processing template
+      ctx.setException(templateContext.getException());
       
       return messageInfo.subject(subject).body(body).end();
     }
@@ -504,7 +515,8 @@ public class MailTemplateProvider extends TemplateProvider {
       templateContext.put("ACCEPT_CONNECTION_REQUEST_ACTION_URL", LinkProviderUtils.getConfirmInvitationToConnectUrl(sender, toUser));
       templateContext.put("REFUSE_CONNECTION_REQUEST_ACTION_URL", LinkProviderUtils.getIgnoreInvitationToConnectUrl(sender, toUser));
       String body = TemplateUtils.processGroovy(templateContext);
-
+      //binding the exception throws by processing template
+      ctx.setException(templateContext.getException());
       return messageInfo.subject(subject).body(body).end();
     }
 
@@ -562,6 +574,8 @@ public class MailTemplateProvider extends TemplateProvider {
       templateContext.put("VALIDATE_SPACE_REQUEST_ACTION_URL", LinkProviderUtils.getValidateRequestToJoinSpaceUrl(space.getId(), identity.getRemoteId()));
       templateContext.put("REFUSE_SPACE_REQUEST_ACTION_URL", LinkProviderUtils.getRefuseRequestToJoinSpaceUrl(space.getId(), identity.getRemoteId()));
       String body = TemplateUtils.processGroovy(templateContext);
+      //binding the exception throws by processing template
+      ctx.setException(templateContext.getException());
       
       return messageInfo.subject(subject).body(body).end();
     }
@@ -620,6 +634,8 @@ public class MailTemplateProvider extends TemplateProvider {
       templateContext.put("ACCEPT_SPACE_INVITATION_ACTION_URL", LinkProviderUtils.getAcceptInvitationToJoinSpaceUrl(space.getId(), notification.getTo()));
       templateContext.put("REFUSE_SPACE_INVITATION_ACTION_URL", LinkProviderUtils.getIgnoreInvitationToJoinSpaceUrl(space.getId(), notification.getTo()));
       String body = TemplateUtils.processGroovy(templateContext);
+      //binding the exception throws by processing template
+      ctx.setException(templateContext.getException());
       
       return messageInfo.subject(subject).body(body).end();
     }
