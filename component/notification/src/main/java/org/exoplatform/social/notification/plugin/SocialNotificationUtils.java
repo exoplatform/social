@@ -17,6 +17,7 @@
 package org.exoplatform.social.notification.plugin;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -24,11 +25,14 @@ import java.util.Map.Entry;
 
 import org.exoplatform.commons.api.notification.NotificationContext;
 import org.exoplatform.commons.api.notification.model.ArgumentLiteral;
+import org.exoplatform.commons.api.notification.model.NotificationInfo;
 import org.exoplatform.commons.api.notification.model.PluginKey;
 import org.exoplatform.commons.api.notification.plugin.AbstractNotificationChildPlugin;
 import org.exoplatform.commons.api.notification.plugin.BaseNotificationPlugin;
 import org.exoplatform.commons.api.notification.service.setting.PluginContainer;
+import org.exoplatform.commons.api.notification.service.storage.WebNotificationStorage;
 import org.exoplatform.commons.api.notification.service.template.TemplateContext;
+import org.exoplatform.commons.notification.NotificationUtils;
 import org.exoplatform.commons.notification.template.TemplateUtils;
 import org.exoplatform.commons.utils.CommonsUtils;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
@@ -45,6 +49,8 @@ import org.exoplatform.social.notification.plugin.child.DefaultActivityChildPlug
 public class SocialNotificationUtils {
 
   public final static ArgumentLiteral<String> ACTIVITY_ID = new ArgumentLiteral<String>(String.class, "activityId");
+  public final static ArgumentLiteral<String> COMMENT_ID = new ArgumentLiteral<String>(String.class, "commentId");
+  public final static ArgumentLiteral<String> PARENT_ACTIVITY_ID = new ArgumentLiteral<String>(String.class, "parentActivityId");
   public final static ArgumentLiteral<String> POSTER = new ArgumentLiteral<String>(String.class, "poster");
   public final static ArgumentLiteral<String> SENDER = new ArgumentLiteral<String>(String.class, "sender");
   public final static ArgumentLiteral<ExoSocialActivity> ACTIVITY = new ArgumentLiteral<ExoSocialActivity>(ExoSocialActivity.class, "activity");
@@ -264,4 +270,31 @@ public class SocialNotificationUtils {
     return TemplateUtils.processGroovy(context);
   }
   
+  public static List<String> mergeUsers(NotificationContext ctx, TemplateContext context, String propertyName, String activityId, String userId) {
+    NotificationInfo notification = ctx.getNotificationInfo();
+    List<String> users = null;
+    if (ctx.isWritingProcess()) {
+      WebNotificationStorage storage = CommonsUtils.getService(WebNotificationStorage.class); 
+      NotificationInfo previousNotification = storage.getUnreadNotification(notification.getKey().getId(), activityId, notification.getTo());
+      if (previousNotification != null) {
+        users = NotificationUtils.stringToList(previousNotification.getValueOwnerParameter(propertyName));
+        Identity userIdentity = Utils.getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, userId, true);
+        if (users.contains(userIdentity.getRemoteId())) {
+          users.remove(userIdentity.getRemoteId());
+        }
+        users.add(userIdentity.getRemoteId());
+        previousNotification.with(propertyName, NotificationUtils.listToString(users));
+        previousNotification.setLastModifiedDate(Calendar.getInstance());
+        context.put("NOTIFICATION_ID", previousNotification.getId());
+        ctx.setNotificationInfo(previousNotification);
+      } else {
+        users = NotificationUtils.stringToList(notification.getValueOwnerParameter(propertyName));
+      }
+      ctx.setWritingProcess(false);
+    } else {
+      users = NotificationUtils.stringToList(notification.getValueOwnerParameter(propertyName));
+    }
+    
+    return users;
+  }
 }

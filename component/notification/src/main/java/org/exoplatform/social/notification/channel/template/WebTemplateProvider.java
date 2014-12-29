@@ -18,6 +18,7 @@ package org.exoplatform.social.notification.channel.template;
 
 import java.io.Writer;
 import java.util.Calendar;
+import java.util.List;
 import java.util.Locale;
 
 import org.exoplatform.commons.api.notification.NotificationContext;
@@ -85,6 +86,7 @@ public class WebTemplateProvider extends TemplateProvider {
   
   /** Defines the template builder for ActivityCommentPlugin*/
   private AbstractTemplateBuilder comment = new AbstractTemplateBuilder() {
+    private static final String POSTER_PORPERTY = "poster";
 
     @Override
     protected MessageInfo makeMessage(NotificationContext ctx) {
@@ -93,21 +95,45 @@ public class WebTemplateProvider extends TemplateProvider {
 
       String activityId = notification.getValueOwnerParameter(SocialNotificationUtils.ACTIVITY_ID.getKey());
       ExoSocialActivity activity = Utils.getActivityManager().getActivity(activityId);
-      ExoSocialActivity parentActivity = Utils.getActivityManager().getParentActivity(activity);
-      Identity identity = Utils.getIdentityManager().getIdentity(activity.getPosterId(), true);
+      ExoSocialActivity comment = null;
+      if (activity.isComment()) {
+        comment = activity;
+        activity = Utils.getActivityManager().getParentActivity(comment);
+        notification.with(SocialNotificationUtils.ACTIVITY_ID.getKey(), activity.getId());
+        notification.with(SocialNotificationUtils.COMMENT_ID.getKey(), comment.getId());
+      } else {
+        comment = Utils.getActivityManager().getActivity(notification.getValueOwnerParameter(SocialNotificationUtils.COMMENT_ID.getKey()));
+      }
+      String pluginId = notification.getKey().getId();
       
-      TemplateContext templateContext = TemplateContext.newChannelInstance(getChannelKey(), notification.getKey().getId(), language);
+      TemplateContext templateContext = TemplateContext.newChannelInstance(getChannelKey(), pluginId, language);
       templateContext.put("isIntranet", "true");
       Calendar cal = Calendar.getInstance();
       cal.setTimeInMillis(notification.getLastModifiedDate());
       templateContext.put("READ", Boolean.valueOf(notification.getValueOwnerParameter(AbstractService.NTF_READ)) ? "read" : "unread");
       templateContext.put("NOTIFICATION_ID", notification.getId());
       templateContext.put("LAST_UPDATED_TIME", TimeConvertUtils.convertXTimeAgo(cal.getTime(), "EE, dd yyyy", new Locale(language), TimeConvertUtils.YEAR));
-      templateContext.put("USER", identity.getProfile().getFullName());
-      templateContext.put("AVATAR", LinkProviderUtils.getUserAvatarUrl(identity.getProfile()));
-      templateContext.put("ACTIVITY", NotificationUtils.removeLinkTitle(parentActivity.getTitle()));
-      templateContext.put("PROFILE_URL", LinkProviderUtils.getRedirectUrl("user", identity.getRemoteId()));
-      templateContext.put("VIEW_FULL_DISCUSSION_ACTION_URL", LinkProviderUtils.getRedirectUrl("view_full_activity_highlight_comment", parentActivity.getId() + "-" + activity.getId()));
+      templateContext.put("ACTIVITY", NotificationUtils.removeLinkTitle(activity.getTitle()));
+      templateContext.put("VIEW_FULL_DISCUSSION_ACTION_URL", LinkProviderUtils.getRedirectUrl("view_full_activity_highlight_comment", activity.getId() + "-" + comment.getId()));
+      List<String> users = SocialNotificationUtils.mergeUsers(ctx, templateContext, POSTER_PORPERTY, activity.getId(), notification.getValueOwnerParameter(POSTER_PORPERTY));
+      
+      //
+      int nbUsers = users.size();
+      if (nbUsers > 0) {
+        Identity lastIdentity = Utils.getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, users.get(nbUsers - 1), true);
+        templateContext.put("USER", lastIdentity.getProfile().getFullName());
+        templateContext.put("AVATAR", LinkProviderUtils.getUserAvatarUrl(lastIdentity.getProfile()));
+        templateContext.put("PROFILE_URL", LinkProviderUtils.getRedirectUrl("user", lastIdentity.getRemoteId()));
+        templateContext.put("NB_USERS", nbUsers);
+        //
+        if (nbUsers == 2) {
+          Identity beforeLastIdentity = Utils.getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, users.get(nbUsers - 2), true);
+          templateContext.put("LAST_USER", beforeLastIdentity.getProfile().getFullName());
+        } else if (nbUsers > 2) {
+          templateContext.put("COUNT", nbUsers - 2);
+        }
+      }
+      
       //
       String body = TemplateUtils.processGroovy(templateContext);
       //binding the exception throws by processing template
@@ -172,27 +198,43 @@ public class WebTemplateProvider extends TemplateProvider {
   
   /** Defines the template builder for LikePlugin*/
   private AbstractTemplateBuilder like = new AbstractTemplateBuilder() {
+    private static final String LIKERS_PORPERTY = "likersId";
 
     @Override
     protected MessageInfo makeMessage(NotificationContext ctx) {
       NotificationInfo notification = ctx.getNotificationInfo();
       String language = getLanguage(notification);
-      TemplateContext templateContext = TemplateContext.newChannelInstance(getChannelKey(), notification.getKey().getId(), language);
+      String pluginId = notification.getKey().getId();
+      TemplateContext templateContext = TemplateContext.newChannelInstance(getChannelKey(), pluginId, language);
       
       String activityId = notification.getValueOwnerParameter(SocialNotificationUtils.ACTIVITY_ID.getKey());
       ExoSocialActivity activity = Utils.getActivityManager().getActivity(activityId);
-      Identity identity = Utils.getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, notification.getValueOwnerParameter("likersId"), true);
       templateContext.put("isIntranet", "true");
       Calendar cal = Calendar.getInstance();
       cal.setTimeInMillis(notification.getLastModifiedDate());
       templateContext.put("READ", Boolean.valueOf(notification.getValueOwnerParameter(AbstractService.NTF_READ)) ? "read" : "unread");
       templateContext.put("NOTIFICATION_ID", notification.getId());
       templateContext.put("LAST_UPDATED_TIME", TimeConvertUtils.convertXTimeAgo(cal.getTime(), "EE, dd yyyy", new Locale(language), TimeConvertUtils.YEAR));
-      templateContext.put("USER", identity.getProfile().getFullName());
-      templateContext.put("AVATAR", LinkProviderUtils.getUserAvatarUrl(identity.getProfile()));
       templateContext.put("ACTIVITY", NotificationUtils.removeLinkTitle(activity.getTitle()));
-      templateContext.put("PROFILE_URL", LinkProviderUtils.getRedirectUrl("user", identity.getRemoteId()));
       templateContext.put("VIEW_FULL_DISCUSSION_ACTION_URL", LinkProviderUtils.getRedirectUrl("view_full_activity", activity.getId()));
+      List<String> users = SocialNotificationUtils.mergeUsers(ctx, templateContext, LIKERS_PORPERTY, activity.getId(), notification.getValueOwnerParameter(LIKERS_PORPERTY));
+      //
+      int nbUsers = users.size();
+      if (nbUsers > 0) {
+        Identity lastIdentity = Utils.getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, users.get(nbUsers - 1), true);
+        templateContext.put("USER", lastIdentity.getProfile().getFullName());
+        templateContext.put("AVATAR", LinkProviderUtils.getUserAvatarUrl(lastIdentity.getProfile()));
+        templateContext.put("PROFILE_URL", LinkProviderUtils.getRedirectUrl("user", lastIdentity.getRemoteId()));
+        templateContext.put("NB_USERS", nbUsers);
+        //
+        if (nbUsers == 2) {
+          Identity beforeLastIdentity = Utils.getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, users.get(nbUsers - 2), true);
+          templateContext.put("LAST_USER", beforeLastIdentity.getProfile().getFullName());
+        } else if (nbUsers > 2) {
+          templateContext.put("COUNT", nbUsers - 2);
+        }
+      }
+      
       //
       String body = TemplateUtils.processGroovy(templateContext);
       //binding the exception throws by processing template
