@@ -70,7 +70,8 @@ jsmanager.require("SHARED/jquery", "jq")
 		<!--label for="<%=childs.get(0).getId()%>" class="LeftContentInput">
 			$findSpaceLabel:&nbsp; 
 		</label-->
-		<div class="uiSearchInput pull-right">
+		<div class="uiSearchInput pull-right searchWithIcon">
+		    <a data-original-title="Search" class="advancedSearch" rel="tooltip" data-placement="bottom" href="javascript:void(0)"><i class="uiIconSearch uiIconLightGray"></i></a>
 			<%uiform.renderField(childs.get(0)); %>
 		</div>
 		<button type="button" class="btn hide" id="SearchButton" onclick="<%=uicomponent.event("Search")%>" ><%=searchLabel %></button>
