@@ -16,35 +16,13 @@
  */
 package org.exoplatform.social.notification.plugin;
 
-import java.io.IOException;
-import java.io.Writer;
-import java.util.Calendar;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-
 import org.exoplatform.commons.api.notification.NotificationContext;
-import org.exoplatform.commons.api.notification.model.MessageInfo;
 import org.exoplatform.commons.api.notification.model.NotificationInfo;
 import org.exoplatform.commons.api.notification.plugin.BaseNotificationPlugin;
-import org.exoplatform.commons.api.notification.service.template.TemplateContext;
-import org.exoplatform.commons.notification.impl.AbstractService;
-import org.exoplatform.commons.notification.template.TemplateUtils;
 import org.exoplatform.container.xml.InitParams;
-import org.exoplatform.social.core.identity.model.Identity;
-import org.exoplatform.social.core.identity.model.Profile;
-import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.relationship.model.Relationship;
-import org.exoplatform.social.notification.LinkProviderUtils;
-import org.exoplatform.social.notification.Utils;
-import org.exoplatform.webui.utils.TimeConvertUtils;
 
 public class RelationshipReceivedRequestPlugin extends BaseNotificationPlugin {
-  
-  private static final String ACCEPT_INVITATION_TO_CONNECT = "social/intranet-notification/confirmInvitationToConnect";
-  
-  private static final String REFUSE_INVITATION_TO_CONNECT = "social/intranet-notification/ignoreInvitationToConnect";
   
   public RelationshipReceivedRequestPlugin(InitParams initParams) {
     super(initParams);
@@ -63,7 +41,7 @@ public class RelationshipReceivedRequestPlugin extends BaseNotificationPlugin {
     return NotificationInfo.instance()
                               .key(getId())
                               .to(relation.getReceiver().getRemoteId())
-                              .with("sender", relation.getSender().getRemoteId())
+                              .with(SocialNotificationUtils.SENDER.getKey(), relation.getSender().getRemoteId())
                               .with(SocialNotificationUtils.RELATIONSHIP_ID.getKey(), relation.getId())
                               .end();
   }

@@ -53,7 +53,7 @@ public class ActivityMentionPlugin extends BaseNotificationPlugin {
 
     return NotificationInfo.instance().key(getKey())
            .to(new ArrayList<String>(receivers))
-           .with("poster", Utils.getUserId(activity.getPosterId()))
+           .with(SocialNotificationUtils.POSTER.getKey(), Utils.getUserId(activity.getPosterId()))
            .with(SocialNotificationUtils.ACTIVITY_ID.getKey(), activity.getId())
            .end();
   }

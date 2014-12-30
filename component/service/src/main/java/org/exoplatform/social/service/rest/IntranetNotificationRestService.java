@@ -31,6 +31,7 @@ import javax.ws.rs.core.Response.Status;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.exoplatform.commons.api.notification.NotificationContext;
+import org.exoplatform.commons.api.notification.NotificationMessageUtils;
 import org.exoplatform.commons.api.notification.channel.AbstractChannel;
 import org.exoplatform.commons.api.notification.channel.template.AbstractTemplateBuilder;
 import org.exoplatform.commons.api.notification.model.ChannelKey;
@@ -40,7 +41,6 @@ import org.exoplatform.commons.api.notification.model.PluginKey;
 import org.exoplatform.commons.api.notification.plugin.BaseNotificationPlugin;
 import org.exoplatform.commons.api.notification.service.storage.WebNotificationStorage;
 import org.exoplatform.commons.notification.channel.WebChannel;
-import org.exoplatform.commons.notification.impl.AbstractService;
 import org.exoplatform.commons.notification.impl.NotificationContextImpl;
 import org.exoplatform.commons.notification.net.WebNotificationSender;
 import org.exoplatform.commons.utils.CommonsUtils;
@@ -48,7 +48,6 @@ import org.exoplatform.container.ExoContainer;
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.rest.resource.ResourceContainer;
-import org.exoplatform.services.security.ConversationState;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.chromattic.entity.ActivityRef;
 import org.exoplatform.social.core.chromattic.entity.ActivityRefListEntity;
@@ -64,8 +63,8 @@ import org.exoplatform.social.core.manager.RelationshipManager;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
 import org.exoplatform.social.core.storage.impl.AbstractStorage;
-import org.exoplatform.social.core.storage.impl.StorageUtils;
 import org.exoplatform.social.core.storage.impl.ActivityStreamStorageImpl.ActivityRefType;
+import org.exoplatform.social.core.storage.impl.StorageUtils;
 
 /**
  * Created by The eXo Platform SAS
@@ -371,8 +370,8 @@ public class IntranetNotificationRestService extends AbstractStorage implements 
       MessageInfo msg = builder.buildMessage(nCtx);
       WebNotificationSender.sendJsonMessage(notification.getTo(), msg);
       notification.setTitle(msg.getBody());
-      notification.with(AbstractService.NTF_SHOW_POPOVER, "true")
-                  .with(AbstractService.NTF_READ, "false");
+      notification.with(NotificationMessageUtils.SHOW_POPOVER_PROPERTY.getKey(), "true")
+                  .with(NotificationMessageUtils.READ_PORPERTY.getKey(), "false");
       CommonsUtils.getService(WebNotificationStorage.class).save(notification);
     } catch (Exception e) {
       System.out.println("error : " + e.getMessage());

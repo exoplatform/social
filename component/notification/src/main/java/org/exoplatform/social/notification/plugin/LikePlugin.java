@@ -55,7 +55,7 @@ public class LikePlugin extends BaseNotificationPlugin {
     return NotificationInfo.instance()
                                .to(Utils.getUserId(activity.getPosterId()))
                                .with(SocialNotificationUtils.ACTIVITY_ID.getKey(), activity.getId())
-                               .with("likersId", liker)
+                               .with(SocialNotificationUtils.LIKER.getKey(), liker)
                                .key(getId()).end();
   }
 

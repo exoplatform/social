@@ -52,12 +52,14 @@ public class SocialNotificationUtils {
   public final static ArgumentLiteral<String> COMMENT_ID = new ArgumentLiteral<String>(String.class, "commentId");
   public final static ArgumentLiteral<String> PARENT_ACTIVITY_ID = new ArgumentLiteral<String>(String.class, "parentActivityId");
   public final static ArgumentLiteral<String> POSTER = new ArgumentLiteral<String>(String.class, "poster");
+  public final static ArgumentLiteral<String> LIKER = new ArgumentLiteral<String>(String.class, "likersId");
   public final static ArgumentLiteral<String> SENDER = new ArgumentLiteral<String>(String.class, "sender");
   public final static ArgumentLiteral<ExoSocialActivity> ACTIVITY = new ArgumentLiteral<ExoSocialActivity>(ExoSocialActivity.class, "activity");
   public final static ArgumentLiteral<Profile> PROFILE = new ArgumentLiteral<Profile>(Profile.class, "profile");
   public final static ArgumentLiteral<Space> SPACE = new ArgumentLiteral<Space>(Space.class, "space");
   public final static ArgumentLiteral<String> REMOTE_ID = new ArgumentLiteral<String>(String.class, "remoteId");
   public final static ArgumentLiteral<String> SPACE_ID = new ArgumentLiteral<String>(String.class, "spaceId");
+  public final static ArgumentLiteral<String> REQUEST_FROM = new ArgumentLiteral<String>(String.class, "request_from");
   public final static ArgumentLiteral<String> PRETTY_NAME = new ArgumentLiteral<String>(String.class, "prettyName");
   public final static ArgumentLiteral<Relationship> RELATIONSHIP = new ArgumentLiteral<Relationship>(Relationship.class, "relationship");
   
