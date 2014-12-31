@@ -77,10 +77,9 @@
            .require("SHARED/bts_tooltip").addScripts("jq('*[rel=\"tooltip\"]').tooltip();")
            .require("SHARED/social-ui-profile", "profile").addScripts("profile.initUserProfilePopup('$uicomponentId', $labels);")
            .require("SHARED/social-ui-user-search", "socialUIUserSearch").addScripts("socialUIUserSearch.init($params);")
-	         .require("SHARED/uiForm");
+	       .require("SHARED/uiForm");
 	
   def searchAction = uicomponent.event('Search');
-  uicomponent.resetUIComponentValues();
   def ownerIdentity = Utils.getOwnerIdentity();
   def myConnectionsLink = LinkProvider.getUserConnectionsYoursUri(ownerIdentity.getRemoteId());
   if (!Utils.isOwner()) {
