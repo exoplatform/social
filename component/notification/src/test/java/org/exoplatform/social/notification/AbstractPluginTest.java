@@ -30,6 +30,7 @@ import org.exoplatform.commons.api.notification.model.UserSetting;
 import org.exoplatform.commons.api.notification.plugin.BaseNotificationPlugin;
 import org.exoplatform.commons.api.notification.service.setting.UserSettingService;
 import org.exoplatform.commons.notification.channel.MailChannel;
+import org.exoplatform.commons.notification.channel.WebChannel;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.activity.model.ExoSocialActivityImpl;
 import org.exoplatform.social.core.identity.model.Identity;
@@ -183,6 +184,22 @@ public abstract class AbstractPluginTest extends AbstractCoreTest {
     //
     if (setting.isInDaily(getPlugin().getKey().getId())) {
       got = notificationService.storeDigestJCR();
+      assertEquals(number, got.size());
+    }
+    
+    return got;
+  }
+  
+  /**
+   * Asserts the number of web's notifications what made by the plugins.
+   * @param number
+   */
+  protected List<NotificationInfo> assertMadeWebNotifications(int number) {
+    //get web's notification then clear the notification list
+    UserSetting setting = userSettingService.get(rootIdentity.getRemoteId());
+    List<NotificationInfo> got = notificationService.storeWebNotifs();
+    if (setting.isActive(WebChannel.ID, getPlugin().getKey().getId())) {
+      got = notificationService.storeWebNotifs();
       assertEquals(number, got.size());
     }
     
@@ -382,25 +399,37 @@ public abstract class AbstractPluginTest extends AbstractCoreTest {
     weekly.add(RelationshipReceivedRequestPlugin.ID);
     weekly.add(PostActivitySpaceStreamPlugin.ID);
     
+    List<String> webNotifs = new ArrayList<String>();
+    webNotifs.add(NewUserPlugin.ID);
+    webNotifs.add(PostActivityPlugin.ID);
+    webNotifs.add(ActivityCommentPlugin.ID);
+    webNotifs.add(ActivityMentionPlugin.ID);
+    webNotifs.add(LikePlugin.ID);
+    webNotifs.add(RequestJoinSpacePlugin.ID);
+    webNotifs.add(SpaceInvitationPlugin.ID);
+    webNotifs.add(RelationshipReceivedRequestPlugin.ID);
+    webNotifs.add(PostActivitySpaceStreamPlugin.ID);
+    
     // root
-    saveSetting(instantly, daily, weekly, rootIdentity.getRemoteId());
+    saveSetting(instantly, daily, weekly, webNotifs, rootIdentity.getRemoteId());
 
     // mary
-    saveSetting(instantly, daily, weekly, maryIdentity.getRemoteId());
+    saveSetting(instantly, daily, weekly, webNotifs, maryIdentity.getRemoteId());
 
     // john
-    saveSetting(instantly, daily, weekly, johnIdentity.getRemoteId());
+    saveSetting(instantly, daily, weekly, webNotifs, johnIdentity.getRemoteId());
 
     // demo
-    saveSetting(instantly, daily, weekly, demoIdentity.getRemoteId());
+    saveSetting(instantly, daily, weekly, webNotifs, demoIdentity.getRemoteId());
   }
 
-  private void saveSetting(List<String> instantly, List<String> daily, List<String> weekly, String userId) {
+  private void saveSetting(List<String> instantly, List<String> daily, List<String> weekly, List<String> webNotifs, String userId) {
     UserSetting model = UserSetting.getInstance();
     model.setUserId(userId).setChannelActive(UserSetting.EMAIL_CHANNEL);
     model.setChannelPlugins(UserSetting.EMAIL_CHANNEL, instantly);
     model.setDailyPlugins(daily);
     model.setWeeklyPlugins(weekly);
+    model.setChannelPlugins(WebChannel.ID, webNotifs);
     userSettingService.save(model);
   }
   

@@ -21,7 +21,6 @@ import org.exoplatform.commons.api.notification.channel.ChannelManager;
 import org.exoplatform.commons.api.notification.channel.template.TemplateProvider;
 import org.exoplatform.commons.api.notification.model.ChannelKey;
 import org.exoplatform.commons.api.notification.model.PluginKey;
-import org.exoplatform.commons.notification.channel.MailChannel;
 import org.exoplatform.commons.notification.channel.WebChannel;
 import org.exoplatform.container.xml.InitParams;
 import org.exoplatform.container.xml.ValueParam;
@@ -71,7 +70,7 @@ public class WebTemplateProviderTest extends AbstractCoreTest {
     assertTrue(manager.sizeChannels() > 0);
   }
   
-  public void testMailTemplateProvider() throws Exception {
+  public void testWebTemplateProvider() throws Exception {
     AbstractChannel channel = manager.getChannel(ChannelKey.key(WebChannel.ID));
     assertTrue(channel != null);
     
@@ -112,7 +111,7 @@ public class WebTemplateProviderTest extends AbstractCoreTest {
     assertEquals(expected, actual);
   }
   
-  public void testMailTemplateBuilder() throws Exception {
+  public void testWebTemplateBuilder() throws Exception {
     AbstractChannel channel = manager.getChannel(ChannelKey.key(WebChannel.ID));
     assertTrue(channel != null);
     assertTrue(channel.hasTemplateBuilder(PluginKey.key(ActivityCommentPlugin.ID)));

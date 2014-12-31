@@ -26,12 +26,14 @@ import org.exoplatform.commons.api.notification.model.UserSetting;
 import org.exoplatform.commons.api.notification.service.setting.PluginSettingService;
 import org.exoplatform.commons.api.notification.service.setting.UserSettingService;
 import org.exoplatform.commons.api.notification.service.storage.NotificationService;
+import org.exoplatform.commons.notification.channel.WebChannel;
 import org.exoplatform.commons.utils.CommonsUtils;
 
 public class MockNotificationService implements NotificationService {
 
   private List<NotificationInfo> storeDigestJCR = new CopyOnWriteArrayList<NotificationInfo>();
   private List<NotificationInfo> storeInstantly = new CopyOnWriteArrayList<NotificationInfo>();
+  private List<NotificationInfo> storeWebNotifs = new CopyOnWriteArrayList<NotificationInfo>();
   
   public int sizeOfDigestJCR() {
     return this.storeDigestJCR.size();
@@ -40,6 +42,7 @@ public class MockNotificationService implements NotificationService {
   public void clearAll() {
     clearOfDigestJCR();
     clearOfInstantly();
+    clearOfWebNotifs();
   }
   
   public void clearOfDigestJCR() {
@@ -49,6 +52,10 @@ public class MockNotificationService implements NotificationService {
   public void clearOfInstantly() {
     this.storeInstantly.clear();
   }
+  
+  public void clearOfWebNotifs() {
+    this.storeWebNotifs.clear();
+  }
 
   public List<NotificationInfo> storeDigestJCR() {
     return this.storeDigestJCR;
@@ -56,6 +63,10 @@ public class MockNotificationService implements NotificationService {
   
   public List<NotificationInfo> storeInstantly() {
     return this.storeInstantly;
+  }
+  
+  public List<NotificationInfo> storeWebNotifs() {
+    return this.storeWebNotifs;
   }
 
   @Override
@@ -84,6 +95,10 @@ public class MockNotificationService implements NotificationService {
       
       if (userSetting.isActive(UserSetting.EMAIL_CHANNEL, pluginId)) {
         this.storeInstantly.add(notification);
+      }
+      
+      if (userSetting.isActive(WebChannel.ID, pluginId)) {
+        this.storeWebNotifs.add(notification);
       }
       
       if (userSetting.isInDaily(pluginId) || userSetting.isInWeekly(pluginId)) {
