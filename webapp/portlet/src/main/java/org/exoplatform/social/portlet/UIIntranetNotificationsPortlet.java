@@ -152,7 +152,7 @@ public class UIIntranetNotificationsPortlet extends UIPortletApplication {
     public void execute(Event<UIIntranetNotificationsPortlet> event) throws Exception {
       String id = event.getRequestContext().getRequestParameter(OBJECTID);
       UIIntranetNotificationsPortlet portlet = event.getSource();
-      portlet.webNotifService.hidePopover(id);
+      portlet.webNotifService.remove(id);
       // Ignore reload portlet
       ((PortalRequestContext) event.getRequestContext().getParentAppRequestContext()).ignoreAJAXUpdateOnPortlets(true);
     }

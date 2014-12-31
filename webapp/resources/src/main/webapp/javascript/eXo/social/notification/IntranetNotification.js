@@ -71,9 +71,18 @@
         }
       }).find('a').click(function(evt) {
         evt.stopPropagation();
-        var href = $(this).attr('href');
+        var elm = $(this);
+        var href = elm.attr('href');
         if (href && href.indexOf('javascript') !== 0) {
           window.location.href = href;
+        } else {
+          var rest = elm.data('rest');
+          if (rest && rest.length > 0) {
+            $.ajax(rest).done(function() {
+              IntranetNotification.removeItem(item);
+              var T = setTimeout(function() {clearTimeout(T); window.location.reload();}, 200);
+            });
+          } 
         }
       });
       //
