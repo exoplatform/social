@@ -33,29 +33,30 @@
       }
       activityIndicator.appendTo('#UIIntranetNotificationsPortlet');
       
+      var hasPreviousScrollEventDone = true, isDataAvailable = true;
+      
       $(window).scroll(function(e) {
-        //
-        if(IntranetNotification.scrollBottom() <= IntranetNotification.delta) {
-          // check status
-          if(IntranetNotification.dataLoadMore.data('more') == true) {
-            //
-            IntranetNotification.dataLoadMore.show();
-            // call ajax
+        if (IntranetNotification.scrollBottom() <= IntranetNotification.delta) {
+          if (hasPreviousScrollEventDone && isDataAvailable) {
+            hasPreviousScrollEventDone = false;
             $.ajax({
               url: IntranetNotification.dataLoadMore.data('url')
             }).done(function(data) {
-              var html = data.context;
-              IntranetNotification.popupItem.append($('<ul></ul>').html(html).find('li'));
+              if (data == '') {
+                isDataAvailable = false;
+              } else {
+                var html = data.context;
+                IntranetNotification.popupItem.append($('<ul></ul>').html(html).find('li'));
+              }
               
               IntranetNotification.popupItem.find('li').each(function(i) {
                 IntranetNotification.applyAction($(this));
               });
-              
               //
-              IntranetNotification.dataLoadMore.hide().data('more', data.hasMore);
+              hasPreviousScrollEventDone = true;
+              $('#ShowMoreLoader').data('more', data.hasMore);
             });
           }
-          
         }
       });
     },

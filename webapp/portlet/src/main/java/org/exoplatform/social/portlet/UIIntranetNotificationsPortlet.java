@@ -58,7 +58,7 @@ public class UIIntranetNotificationsPortlet extends UIPortletApplication {
   private static final int ITEMS_PER_PAGE = 20;
   private String currentUser = "";
   private int offset = 0;
-  private int currentPage = 1;
+  private int currentPage = 0;
   private boolean hasMore = false;
   
   public UIIntranetNotificationsPortlet() throws Exception {
@@ -68,7 +68,6 @@ public class UIIntranetNotificationsPortlet extends UIPortletApplication {
   @Override
   public void processRender(WebuiApplication app, WebuiRequestContext context) throws Exception {
     this.currentUser = context.getRemoteUser();
-    this.currentPage = 1;
     super.processRender(app, context);
   }
   
@@ -114,10 +113,20 @@ public class UIIntranetNotificationsPortlet extends UIPortletApplication {
 
   protected List<String> getNotifications() throws Exception {
     WebNotificationFilter filter = new WebNotificationFilter(currentUser);
+    
+    if (hasMore) {
+      offset = ITEMS_PER_PAGE;
+    } else {
+      offset = 0;
+      currentPage = 0;
+    }
+    
     List<String> notificationContents = webNotifService.get(filter, offset * currentPage, ITEMS_LOADED_NUM);
     if (notificationContents.size() > ITEMS_PER_PAGE) {
-      notificationContents = notificationContents.subList(0, ITEMS_PER_PAGE);
       hasMore = true;
+      return notificationContents.subList(0, ITEMS_PER_PAGE);
+    } else {
+      hasMore = false;
     }
     return notificationContents;
   }
