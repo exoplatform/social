@@ -23,7 +23,6 @@ import java.util.Map;
 
 import org.exoplatform.download.DownloadResource;
 import org.exoplatform.download.DownloadService;
-import org.exoplatform.portal.webui.container.UIContainer;
 import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.image.ImageUtils;
 import org.exoplatform.social.core.model.AvatarAttachment;
@@ -34,6 +33,7 @@ import org.exoplatform.social.webui.space.UISpaceInfo;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.EventConfig;
 import org.exoplatform.webui.core.UIComponent;
+import org.exoplatform.webui.core.UIContainer;
 import org.exoplatform.webui.core.UIPopupWindow;
 import org.exoplatform.webui.core.UIPortletApplication;
 import org.exoplatform.webui.event.Event;

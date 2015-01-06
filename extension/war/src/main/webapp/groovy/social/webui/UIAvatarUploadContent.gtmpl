@@ -1,41 +1,6 @@
 <%
-/*
-<!--
-
-    Copyright (C) 2003-2007 eXo Platform SAS.
-
-    This program is free software; you can redistribute it and/or
-    modify it under the terms of the GNU Affero General Public License
-    as published by the Free Software Foundation; either version 3
-    of the License, or (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, see<http://www.gnu.org/licenses/>.
-
--->
-*/
+  def avatarAttachment = uicomponent.avatarAttachment;
 %>
-<%
-  import org.exoplatform.social.core.model.AvatarAttachment;
-  def avatarAttachment = uicomponent.avatarAttachment
-  def uicomponentId = uicomponent.id
-  def lalbelFileName = _ctx.appRes("${uicomponentId}.label.file_name")
-  def labelFileType = _ctx.appRes("${uicomponentId}.label.file_type")
-  def labelImageSize = _ctx.appRes("${uicomponentId}.label.image_size")
-  def labelSave = _ctx.appRes("${uicomponentId}.label.save")
-  def labelCancel = _ctx.appRes("${uicomponentId}.label.cancel")
-  def avatarTitle = _ctx.appRes("${uicomponentId}.title.Avatar");
-  
-  def saveAction = uicomponent.event("Save")
-  def cancelAction = uicomponent.event("Cancel")
-  def imageSource = uicomponent.imageSource;
-%>
-
 <div id="$uicomponent.id" class="uiAvatarUploadContent">
 	<div class="form-horizontal  resizable">
 		<div class="media ">
@@ -57,7 +22,7 @@
 		</div>
 	</div>
 	<div class="uiAction uiActionBorder">
-		<button class="btn" type="button" onclick="$saveAction">$labelSave</button>
-		<button class="btn" type="button" onclick="$cancelAction">$labelCancel</button>
+		<button class="btn" type="button" onclick="<%=uicomponent.event("Save")%>"><%=_ctx.appRes("UIEditUserProfileForm.action.save")%></button>
+		<button class="btn" type="button" onclick="<%=uicomponent.event("Cancel")%>"><%=_ctx.appRes("UIEditUserProfileForm.action.cancel")%></button>
 	</div>
 </div>
