@@ -32,7 +32,7 @@ import org.exoplatform.webui.core.lifecycle.UIApplicationLifecycle;
   template = "app:/groovy/social/portlet/user/UIMiniConnectionsPortlet.gtmpl"
 )
 public class UIMiniConnectionsPortlet extends UIAbstractUserPortlet {
-  protected final static int MAX_DISPLAY = 6;
+  protected final static int MAX_DISPLAY = 12;
   private int allSize = 0;
 
   public UIMiniConnectionsPortlet() throws Exception {
