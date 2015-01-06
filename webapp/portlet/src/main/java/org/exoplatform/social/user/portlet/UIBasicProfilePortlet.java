@@ -26,6 +26,8 @@ import org.exoplatform.webui.core.lifecycle.UIApplicationLifecycle;
   template = "app:/groovy/social/portlet/user/UIBasicProfilePortlet.gtmpl"
 )
 public class UIBasicProfilePortlet extends UIAbstractUserPortlet {
+  final private static String URL_KEY = "url";
+  
   public UIBasicProfilePortlet() throws Exception {
   }
 
@@ -37,6 +39,10 @@ public class UIBasicProfilePortlet extends UIAbstractUserPortlet {
     return s instanceof String;
   }
 
+  protected boolean isURL(String key) {
+    if (key == null) return false;
+    return key.startsWith(URL_KEY);  
+  }
 }
 
 

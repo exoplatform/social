@@ -19,9 +19,15 @@ def keys = profile.keySet();
       <%
       	} else  {
       	  for(subKey in values.keySet()) {
-      %>
-      	<div class=""><span><%=subKey%></span>: <span><%=values.get(subKey)%></span></div>
-      <%
+      	    if (uicomponent.isURL(subKey)) {
+      	    %>
+              <div class=""><a href="<%=values.get(subKey)%>"><%=values.get(subKey)%></a></div>
+            <%	      
+      	    } else {
+            %>
+      	      <div class=""><span><%=subKey%></span>: <span><%=values.get(subKey)%></span></div>
+            <%
+      	    }
       	  }
       	}
       %>

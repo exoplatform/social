@@ -20,6 +20,9 @@ import org.exoplatform.webui.utils.TimeConvertUtils;
 public class UserProfileHelper {
   final private static String DATE_FORMAT_MMDDYYYY = "MM/dd/yyyy";
   final private static String DISPLAY_FORMAT_EEDDYYYY = "EE dd, yyyy";
+  final private static String KEY = "key";
+  final private static String VALUE = "value";
+  final private static String URL_KEY = "url";
 
   /**
    * @param currentProfile
@@ -82,16 +85,20 @@ public class UserProfileHelper {
   }
 
   private static void putInfoData(Profile currentProfile, Map<String, Object> infos, String mainKey) {
-    List<Map<String, String>> srcExperience = getMultiValues(currentProfile, mainKey);
-    if (srcExperience != null && srcExperience.size() > 0) {
-      Map<String, String> urlInfos = new HashMap<String, String>();
-      for (Map<String, String> map : srcExperience) {
-        for (String key : map.keySet()) {
-          urlInfos.put(key, map.get(key));
+    List<Map<String, String>> multiValues = getMultiValues(currentProfile, mainKey);
+    if (multiValues != null && multiValues.size() > 0) {
+      Map<String, String> mainValue = new HashMap<String, String>();
+      int counter = 0;
+      for (Map<String, String> map : multiValues) {
+        if (URL_KEY.equals(map.get(KEY))) {
+          ++counter;
+          mainValue.put(map.get(KEY) + counter, map.get(VALUE));
+        } else {
+          mainValue.put(map.get(KEY), map.get(VALUE));
         }
       }
       //
-      infos.put(mainKey, urlInfos);
+      infos.put(mainKey, mainValue);
     }
   }
 
