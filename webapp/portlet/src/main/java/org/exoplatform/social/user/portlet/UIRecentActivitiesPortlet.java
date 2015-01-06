@@ -38,8 +38,12 @@ public class UIRecentActivitiesPortlet extends UIAbstractUserPortlet {
   
   protected List<ExoSocialActivity> getRecentActivities() {
     List<ExoSocialActivity> results = new ArrayList<ExoSocialActivity>();
-    RealtimeListAccess<ExoSocialActivity> activitiesListAccess = 
-        Utils.getActivityManager().getActivitiesWithListAccess(currentProfile.getIdentity(), Utils.getViewerIdentity());
+    RealtimeListAccess<ExoSocialActivity> activitiesListAccess = null;
+    if (currentProfile.getIdentity().getId().equals(Utils.getViewerIdentity().getId())) {
+      activitiesListAccess = Utils.getActivityManager().getActivitiesWithListAccess(currentProfile.getIdentity());
+    } else {
+      activitiesListAccess = Utils.getActivityManager().getActivitiesWithListAccess(currentProfile.getIdentity(), Utils.getViewerIdentity());
+    }
     
     results = activitiesListAccess.loadAsList(0, NUMBER_ACTIVITIES);
     
