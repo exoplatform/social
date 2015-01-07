@@ -111,7 +111,7 @@ public class WebTemplateProvider extends TemplateProvider {
       cal.setTimeInMillis(notification.getLastModifiedDate());
       templateContext.put("READ", Boolean.valueOf(notification.getValueOwnerParameter(NotificationMessageUtils.READ_PORPERTY.getKey())) ? "read" : "unread");
       templateContext.put("NOTIFICATION_ID", notification.getId());
-      templateContext.put("LAST_UPDATED_TIME", TimeConvertUtils.convertXTimeAgo(cal.getTime(), "EE, dd yyyy", new Locale(language), TimeConvertUtils.YEAR));
+      templateContext.put("LAST_UPDATED_TIME", TimeConvertUtils.convertXTimeAgoByTimeServer(cal.getTime(), "EE, dd yyyy", new Locale(language), TimeConvertUtils.YEAR));
       templateContext.put("ACTIVITY", NotificationUtils.removeLinkTitle(activity.getTitle()));
       templateContext.put("VIEW_FULL_DISCUSSION_ACTION_URL", LinkProviderUtils.getRedirectUrl("view_full_activity_highlight_comment", activity.getId() + "-" + comment.getId()));
       List<String> users = SocialNotificationUtils.mergeUsers(ctx, templateContext, SocialNotificationUtils.POSTER.getKey(), activity.getId(), notification.getValueOwnerParameter(SocialNotificationUtils.POSTER.getKey()));
@@ -167,7 +167,7 @@ public class WebTemplateProvider extends TemplateProvider {
       cal.setTimeInMillis(notification.getLastModifiedDate());
       templateContext.put("READ", Boolean.valueOf(notification.getValueOwnerParameter(NotificationMessageUtils.READ_PORPERTY.getKey())) ? "read" : "unread");
       templateContext.put("NOTIFICATION_ID", notification.getId());
-      templateContext.put("LAST_UPDATED_TIME", TimeConvertUtils.convertXTimeAgo(cal.getTime(), "EE, dd yyyy", new Locale(language), TimeConvertUtils.YEAR));
+      templateContext.put("LAST_UPDATED_TIME", TimeConvertUtils.convertXTimeAgoByTimeServer(cal.getTime(), "EE, dd yyyy", new Locale(language), TimeConvertUtils.YEAR));
       templateContext.put("USER", identity.getProfile().getFullName());
       templateContext.put("AVATAR", LinkProviderUtils.getUserAvatarUrl(identity.getProfile()));
       templateContext.put("PROFILE_URL", LinkProviderUtils.getRedirectUrl("user", identity.getRemoteId()));
@@ -213,7 +213,7 @@ public class WebTemplateProvider extends TemplateProvider {
       cal.setTimeInMillis(notification.getLastModifiedDate());
       templateContext.put("READ", Boolean.valueOf(notification.getValueOwnerParameter(NotificationMessageUtils.READ_PORPERTY.getKey())) ? "read" : "unread");
       templateContext.put("NOTIFICATION_ID", notification.getId());
-      templateContext.put("LAST_UPDATED_TIME", TimeConvertUtils.convertXTimeAgo(cal.getTime(), "EE, dd yyyy", new Locale(language), TimeConvertUtils.YEAR));
+      templateContext.put("LAST_UPDATED_TIME", TimeConvertUtils.convertXTimeAgoByTimeServer(cal.getTime(), "EE, dd yyyy", new Locale(language), TimeConvertUtils.YEAR));
       templateContext.put("ACTIVITY", NotificationUtils.removeLinkTitle(activity.getTitle()));
       templateContext.put("VIEW_FULL_DISCUSSION_ACTION_URL", LinkProviderUtils.getRedirectUrl("view_full_activity", activity.getId()));
       List<String> users = SocialNotificationUtils.mergeUsers(ctx, templateContext, SocialNotificationUtils.LIKER.getKey(), activity.getId(), notification.getValueOwnerParameter(SocialNotificationUtils.LIKER.getKey()));
@@ -268,7 +268,7 @@ public class WebTemplateProvider extends TemplateProvider {
       cal.setTimeInMillis(notification.getLastModifiedDate());
       templateContext.put("READ", Boolean.valueOf(notification.getValueOwnerParameter(NotificationMessageUtils.READ_PORPERTY.getKey())) ? "read" : "unread");
       templateContext.put("NOTIFICATION_ID", notification.getId());
-      templateContext.put("LAST_UPDATED_TIME", TimeConvertUtils.convertXTimeAgo(TimeConvertUtils.getGreenwichMeanTime().getTime(), "EE, dd yyyy", new Locale(language), TimeConvertUtils.YEAR));
+      templateContext.put("LAST_UPDATED_TIME", TimeConvertUtils.convertXTimeAgoByTimeServer(cal.getTime(), "EE, dd yyyy", new Locale(language), TimeConvertUtils.YEAR));
       templateContext.put("USER", userProfile.getFullName());
       templateContext.put("PORTAL_NAME", NotificationPluginUtils.getBrandingPortalName());
       //templateContext.put("PORTAL_HOME", NotificationUtils.getPortalHome(NotificationPluginUtils.getBrandingPortalName()));
@@ -308,7 +308,7 @@ public class WebTemplateProvider extends TemplateProvider {
       cal.setTimeInMillis(notification.getLastModifiedDate());
       templateContext.put("READ", Boolean.valueOf(notification.getValueOwnerParameter(NotificationMessageUtils.READ_PORPERTY.getKey())) ? "read" : "unread");
       templateContext.put("NOTIFICATION_ID", notification.getId());
-      templateContext.put("LAST_UPDATED_TIME", TimeConvertUtils.convertXTimeAgo(cal.getTime(), "EE, dd yyyy", new Locale(language), TimeConvertUtils.YEAR));
+      templateContext.put("LAST_UPDATED_TIME", TimeConvertUtils.convertXTimeAgoByTimeServer(cal.getTime(), "EE, dd yyyy", new Locale(language), TimeConvertUtils.YEAR));
       templateContext.put("AVATAR", LinkProviderUtils.getUserAvatarUrl(identity.getProfile()));
       templateContext.put("ACTIVITY", NotificationUtils.removeLinkTitle(activity.getTitle()));
       templateContext.put("USER", identity.getProfile().getFullName());
@@ -351,7 +351,7 @@ public class WebTemplateProvider extends TemplateProvider {
       cal.setTimeInMillis(notification.getLastModifiedDate());
       templateContext.put("READ", Boolean.valueOf(notification.getValueOwnerParameter(NotificationMessageUtils.READ_PORPERTY.getKey())) ? "read" : "unread");
       templateContext.put("NOTIFICATION_ID", notification.getId());
-      templateContext.put("LAST_UPDATED_TIME", TimeConvertUtils.convertXTimeAgo(cal.getTime(), "EE, dd yyyy", new Locale(language), TimeConvertUtils.YEAR));
+      templateContext.put("LAST_UPDATED_TIME", TimeConvertUtils.convertXTimeAgoByTimeServer(cal.getTime(), "EE, dd yyyy", new Locale(language), TimeConvertUtils.YEAR));
       templateContext.put("USER", identity.getProfile().getFullName());
       templateContext.put("AVATAR", LinkProviderUtils.getUserAvatarUrl(identity.getProfile()));
       templateContext.put("ACTIVITY", NotificationUtils.removeLinkTitle(activity.getTitle()));
@@ -395,7 +395,7 @@ public class WebTemplateProvider extends TemplateProvider {
       templateContext.put("READ", Boolean.valueOf(notification.getValueOwnerParameter(NotificationMessageUtils.READ_PORPERTY.getKey())) ? "read" : "unread");
       templateContext.put("NOTIFICATION_ID", notification.getId());
       templateContext.put("STATUS", status != null && status.equals("accepted") ? "ACCEPTED" : "PENDING");
-      templateContext.put("LAST_UPDATED_TIME", TimeConvertUtils.convertXTimeAgo(cal.getTime(), "EE, dd yyyy", new Locale(language), TimeConvertUtils.YEAR));
+      templateContext.put("LAST_UPDATED_TIME", TimeConvertUtils.convertXTimeAgoByTimeServer(cal.getTime(), "EE, dd yyyy", new Locale(language), TimeConvertUtils.YEAR));
       templateContext.put("USER", userProfile.getFullName());
       templateContext.put("PROFILE_URL", LinkProviderUtils.getRedirectUrl("user", identity.getRemoteId()));
       templateContext.put("AVATAR", LinkProviderUtils.getUserAvatarUrl(userProfile));
@@ -437,7 +437,7 @@ public class WebTemplateProvider extends TemplateProvider {
       templateContext.put("READ", Boolean.valueOf(notification.getValueOwnerParameter(NotificationMessageUtils.READ_PORPERTY.getKey())) ? "read" : "unread");
       templateContext.put("STATUS", status != null && status.equals("accepted") ? "ACCEPTED" : "PENDING");
       templateContext.put("NOTIFICATION_ID", notification.getId());
-      templateContext.put("LAST_UPDATED_TIME", TimeConvertUtils.convertXTimeAgo(cal.getTime(), "EE, dd yyyy", new Locale(language), TimeConvertUtils.YEAR));
+      templateContext.put("LAST_UPDATED_TIME", TimeConvertUtils.convertXTimeAgoByTimeServer(cal.getTime(), "EE, dd yyyy", new Locale(language), TimeConvertUtils.YEAR));
       templateContext.put("SPACE", space.getDisplayName());
       templateContext.put("USER", userProfile.getFullName());
       templateContext.put("SPACE_URL", LinkProviderUtils.getRedirectUrl("space_members", space.getId()));
@@ -480,7 +480,7 @@ public class WebTemplateProvider extends TemplateProvider {
       templateContext.put("READ", Boolean.valueOf(notification.getValueOwnerParameter(NotificationMessageUtils.READ_PORPERTY.getKey())) ? "read" : "unread");
       templateContext.put("STATUS", status != null && status.equals("accepted") ? "ACCEPTED" : "PENDING");
       templateContext.put("NOTIFICATION_ID", notification.getId());
-      templateContext.put("LAST_UPDATED_TIME", TimeConvertUtils.convertXTimeAgo(cal.getTime(), "EE, dd yyyy", new Locale(language), TimeConvertUtils.YEAR));
+      templateContext.put("LAST_UPDATED_TIME", TimeConvertUtils.convertXTimeAgoByTimeServer(cal.getTime(), "EE, dd yyyy", new Locale(language), TimeConvertUtils.YEAR));
       templateContext.put("SPACE", space.getDisplayName());
       templateContext.put("SPACE_URL", LinkProviderUtils.getRedirectUrl("space", space.getId()));
       templateContext.put("SPACE_AVATAR", LinkProviderUtils.getSpaceAvatarUrl(space));
