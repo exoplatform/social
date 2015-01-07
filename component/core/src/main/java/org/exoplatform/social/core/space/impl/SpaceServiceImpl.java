@@ -64,8 +64,7 @@ import org.exoplatform.social.core.storage.api.SpaceStorage;
  * @author <a href="mailto:tungcnw@gmail.com">dang.tung</a>
  * @since  August 29, 2008
  */
-public class
-    SpaceServiceImpl implements SpaceService {
+public class SpaceServiceImpl implements SpaceService {
   private static final Log                     LOG                   = ExoLogger.getLogger(SpaceServiceImpl.class.getName());
 
   public static final String                   MEMBER                   = "member";
