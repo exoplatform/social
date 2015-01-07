@@ -64,7 +64,8 @@ import org.exoplatform.social.core.storage.api.SpaceStorage;
  * @author <a href="mailto:tungcnw@gmail.com">dang.tung</a>
  * @since  August 29, 2008
  */
-public class SpaceServiceImpl implements SpaceService {
+public class
+    SpaceServiceImpl implements SpaceService {
   private static final Log                     LOG                   = ExoLogger.getLogger(SpaceServiceImpl.class.getName());
 
   public static final String                   MEMBER                   = "member";
@@ -369,9 +370,11 @@ public class SpaceServiceImpl implements SpaceService {
    */
   @SuppressWarnings("deprecation")
   public Space createSpace(Space space, String creator, String invitedGroupId) {
-    //
-    String[] managers = new String[] {creator};
-    String[] members = new String[] {creator};
+    // Add creator as a manager and a member to this space
+    String[] managers = space.getManagers();
+    String[] members = space.getMembers();
+    managers = (String[]) ArrayUtils.add(managers,creator);
+    members = (String[]) ArrayUtils.add(members,creator);
     space.setManagers(managers);
     space.setMembers(members);
     
