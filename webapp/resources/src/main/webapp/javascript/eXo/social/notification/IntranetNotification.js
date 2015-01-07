@@ -2,59 +2,51 @@
   var IntranetNotification = {
     popupItem : null,
     markReadLink : '',
-    removeLink : '',
+    takeEventLink : '',
     delta : 65,    
     hasMore: false,
     resourceURL : "",
+    portlet : null,
     scrollBottom : function() {
       return $(document).height() - $(window).scrollTop() - $(window).height();  
     },
     init : function(componentId, hasMore) {
-      var portlet = $('#' + componentId); 
-      portlet.find('span.remove-item').remove();
+      IntranetNotification.portlet = $('#' + componentId); 
       //
-      IntranetNotification.markReadLink = portlet.find('#MarkRead').text();
-      IntranetNotification.removeLink = portlet.find('#Remove').text();
+      IntranetNotification.markReadLink = IntranetNotification.portlet.find('#MarkRead').text();
+      IntranetNotification.takeEventLink = IntranetNotification.portlet.find('#TakeEvent').text();
       //
-      IntranetNotification.popupItem = portlet.find('ul.displayItems:first');
+      IntranetNotification.popupItem = IntranetNotification.portlet.find('ul.displayItems:first');
       IntranetNotification.popupItem.find('li').each(function(i) {
         IntranetNotification.applyAction($(this));
       });
       
-      IntranetNotification.dataLoadMore =  portlet.find('#ShowMoreLoader').hide();
+      IntranetNotification.hasMore =  IntranetNotification.portlet.find('#ShowMoreLoader').data('more') === 'true';
       //
       IntranetNotification.initIndicator();
     },
     initIndicator : function() {
-      $('#UIIntranetNotificationsPortlet').find('div.ShowAllIndicator').remove();
+      IntranetNotification.portlet.find('div.ShowAllIndicator').remove();
       var activityIndicator = $('<div class="ShowAllIndicator" id="ShowAllIndicator" style="display:none"></div>');
       for (var i=1; i < 9; i++) {
         activityIndicator.append($('<div id="rotateG_0' + i + '" class="blockG"></div>'));
       }
-      activityIndicator.appendTo('#UIIntranetNotificationsPortlet');
-      
-      var hasPreviousScrollEventDone = true, isDataAvailable = true;
+      activityIndicator.appendTo(IntranetNotification.portlet);
       
       $(window).scroll(function(e) {
         if (IntranetNotification.scrollBottom() <= IntranetNotification.delta) {
-          if (hasPreviousScrollEventDone && isDataAvailable) {
-            hasPreviousScrollEventDone = false;
+          if (IntranetNotification.hasMore) {
+            IntranetNotification.hasMore = false;
             $.ajax({
               url: IntranetNotification.dataLoadMore.data('url')
             }).done(function(data) {
-              if (data == '') {
-                isDataAvailable = false;
-              } else {
-                var html = data.context;
-                IntranetNotification.popupItem.append($('<ul></ul>').html(html).find('li'));
-              }
-              
+              var html = data.context;
+              IntranetNotification.popupItem.append($('<ul></ul>').html(html).find('li'));
               IntranetNotification.popupItem.find('li').each(function(i) {
                 IntranetNotification.applyAction($(this));
               });
               //
-              hasPreviousScrollEventDone = true;
-              $('#ShowMoreLoader').data('more', data.hasMore);
+              IntranetNotification.hasMore = data.hasMore;
             });
           }
         }
@@ -66,47 +58,41 @@
         // mark read
         IntranetNotification.markItemRead($(this).parents('li:first'));
         //
-        var link = $(this).data('link');
-        if (link && link.length > 0) {
-          window.location.href = link;
-        }
-      }).find('a').click(function(evt) {
-        evt.stopPropagation();
-        var elm = $(this);
-        var href = elm.attr('href');
-        if (href && href.indexOf('javascript') !== 0) {
-          window.location.href = href;
-        } else {
-          var rest = elm.data('rest');
-          if (rest && rest.length > 0) {
-            $.ajax(rest).done(function() {
-              IntranetNotification.removeItem(item);
-              var T = setTimeout(function() {clearTimeout(T); window.location.reload();}, 200);
-            });
-          } 
-        }
+        IntranetNotification.openURL($(this).data('link'));
       });
-      //
-      item.find('.remove-item').off('click').on('click', function(evt) {
-        evt.stopPropagation();
-        //
-        var elm = $(this);
-        IntranetNotification.removeItem(elm.parents('li:first'));
-        //
-        var rest = elm.data('rest');
-        if (rest && rest.length > 0) {
-          $.ajax(rest);
-        }
-        //
-        var link = elm.data('link');
-        if (link && link.length > 0) {
-          window.location.href = link;
-        }
-        //
-        IntranetNotification.removeElm(elm.parents('li:first'));
-      });
-      //
+      //remove 'remove-icon'
+      item.find('.remove-item').remove();
+
+      item.find('.action-item').off('click')
+          .on('click', function(evt) { evt.stopPropagation(); IntranetNotification.doAction($(this), IntranetNotification.takeEventLink); });
       return item;
+    },
+    ajaxRequest : function (url, callBack) {
+      if(url && url.length > 0) {
+        $.ajax(url).done(function(data) {
+          if(callBack && typeof callBack === 'function') {
+            callBack(data);
+          }
+        });
+      }
+    },
+    openURL : function (url) {
+      if(url && url.length > 0) {
+        IntranetNotification.T = setTimeout(function() {
+          clearTimeout(IntranetNotification.T);
+          window.open(url, "_self");
+        }, 500);
+      }
+    },
+    doAction : function(elm, link) {
+      //call ajax to remove this notification, and do something in commons side
+      IntranetNotification.removeItem(elm.parents('li:first'), link);
+      //call rest on social side: for example accept/refuse relationship
+      IntranetNotification.ajaxRequest(elm.data('rest'));
+      //remove this element on UI
+      IntranetNotification.removeElm(elm.parents('li:first'));
+      //redirect to the uri, for example: view activity detail
+      IntranetNotification.openURL(elm.data('link'));
     },
     removeElm : function(elm) {
       elm.css('overflow', 'hidden').animate({
@@ -142,7 +128,7 @@
       window.ajaxGet(action);
     },
     removeItem : function(item) {
-      var action = IntranetNotification.removeLink + item.data('id');
+      var action = IntranetNotification.takeEventLink + item.data('id');
       window.ajaxGet(action);
     }
   };

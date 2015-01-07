@@ -48,7 +48,7 @@ import org.json.JSONObject;
  template = "app:/groovy/social/portlet/UIIntranetNotificationsPortlet.gtmpl",
  events = {
      @EventConfig(listeners = UIIntranetNotificationsPortlet.MarkReadActionListener.class),
-     @EventConfig(listeners = UIIntranetNotificationsPortlet.RemoveActionListener.class)
+     @EventConfig(listeners = UIIntranetNotificationsPortlet.TakeEventActionListener.class)
    }
 )
 public class UIIntranetNotificationsPortlet extends UIPortletApplication {
@@ -140,7 +140,7 @@ public class UIIntranetNotificationsPortlet extends UIPortletApplication {
   }
 
   protected List<String> getActions() {
-    return Arrays.asList("MarkRead", "Remove");
+    return Arrays.asList("MarkRead", "TakeEvent");
   }
   
   protected String getActionUrl(String actionName) throws Exception {
@@ -157,7 +157,7 @@ public class UIIntranetNotificationsPortlet extends UIPortletApplication {
     }
   }
   
-  public static class RemoveActionListener extends EventListener<UIIntranetNotificationsPortlet> {
+  public static class TakeEventActionListener extends EventListener<UIIntranetNotificationsPortlet> {
     public void execute(Event<UIIntranetNotificationsPortlet> event) throws Exception {
       String id = event.getRequestContext().getRequestParameter(OBJECTID);
       UIIntranetNotificationsPortlet portlet = event.getSource();

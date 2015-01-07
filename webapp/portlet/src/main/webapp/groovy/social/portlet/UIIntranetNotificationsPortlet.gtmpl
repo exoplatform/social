@@ -16,17 +16,14 @@
       }
     %>
   </div>
+  <ul class="displayItems">
   <%
     List notifications = uicomponent.getNotifications();
-    String display = (notifications.size() == 0) ? "block" : "none";
-  %>
-  <ul class="displayItems">
-  <% 
     for(notification in notifications) { 
       print(notification);
     }
   %>
   </ul>
-  <div id="ShowMoreLoader" data-more="<%=uicomponent.isHasMore()%>" data-url="<%=uicomponent.buildResourceURL()%>" class="showMore"><i class="uiIcon"></i></div>
+  <div id="ShowMoreLoader" data-more="<%=uicomponent.isHasMore()%>" data-url="<%=uicomponent.buildResourceURL()%>" class="showMore hide"></div>
   <div class="bottomContainer"></div>
 </div>
