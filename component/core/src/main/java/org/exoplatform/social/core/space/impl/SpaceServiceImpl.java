@@ -369,9 +369,11 @@ public class SpaceServiceImpl implements SpaceService {
    */
   @SuppressWarnings("deprecation")
   public Space createSpace(Space space, String creator, String invitedGroupId) {
-    //
-    String[] managers = new String[] {creator};
-    String[] members = new String[] {creator};
+    // Add creator as a manager and a member to this space
+    String[] managers = space.getManagers();
+    String[] members = space.getMembers();
+    managers = (String[]) ArrayUtils.add(managers,creator);
+    members = (String[]) ArrayUtils.add(members,creator);
     space.setManagers(managers);
     space.setMembers(members);
     
