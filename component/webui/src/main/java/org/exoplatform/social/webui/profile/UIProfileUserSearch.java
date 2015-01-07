@@ -21,17 +21,16 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.regex.Pattern;
 
 import org.exoplatform.container.PortalContainer;
+import org.exoplatform.portal.application.PortalRequestContext;
 import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.profile.ProfileFilter;
 import org.exoplatform.social.webui.Utils;
-import org.exoplatform.portal.application.PortalRequestContext;
 import org.exoplatform.web.application.RequestContext;
 import org.exoplatform.web.controller.QualifiedName;
 import org.exoplatform.webui.application.WebuiRequestContext;
@@ -225,7 +224,7 @@ public class UIProfileUserSearch extends UIForm {
    * Gets type of relation with current user.
    */
   public String getTypeOfRelation() {
-    return typeOfRelation;
+    return (typeOfRelation != null) ? typeOfRelation : "";
   }
 
   /**
@@ -241,7 +240,7 @@ public class UIProfileUserSearch extends UIForm {
    * Gets space url.
    */
   public String getSpaceURL() {
-    return spaceURL;
+    return (spaceURL != null) ? spaceURL : "";
   }
 
   /**
@@ -251,22 +250,6 @@ public class UIProfileUserSearch extends UIForm {
    */
   public void setSpaceURL(String spaceURL) {
     this.spaceURL = spaceURL;
-  }
-
-  /**
-   * Gets current user's name.
-   *
-   * @return
-   */
-  protected String getCurrentUserName() {
-    return RequestContext.getCurrentInstance().getRemoteUser();
-  }
-
-  /**
-   * Gets current Rest context name of portal container.
-   */
-  protected String getRestContextName() {
-    return PortalContainer.getCurrentRestContextName();
   }
 
   /**
@@ -293,23 +276,21 @@ public class UIProfileUserSearch extends UIForm {
    * @throws Exception
    */
   public UIProfileUserSearch() throws Exception {
-    ResourceBundle resourceBudle = PortalRequestContext.getCurrentInstance().getApplicationResourceBundle();
+    if (getId() == null) {
+      setId("UIProfileUserSearch");
+    }
 
-    String defaultName = resourceBudle.getString("UIProfileUserSearch.label.Name");
-    String defaultPos = resourceBudle.getString("UIProfileUserSearch.label.Position");
-    String defaultSkills = resourceBudle.getString("UIProfileUserSearch.label.Skills");
-
-    UIFormStringInput search = new UIFormStringInput(SEARCH, USER_CONTACT, "");
-    search.setHTMLAttribute("placeholder", defaultName);
-    search.setHTMLAttribute(HTML_ATTRIBUTE_TITLE, defaultName);
+    UIFormStringInput search = new UIFormStringInput(USER_CONTACT, USER_CONTACT, "");
+    search.setHTMLAttribute("placeholder", getLabel(USER_CONTACT));
+    search.setHTMLAttribute(HTML_ATTRIBUTE_TITLE, getLabel(USER_CONTACT));
     addUIFormInput(search);
     UIFormStringInput position = new UIFormStringInput(Profile.POSITION, Profile.POSITION, "");
-    position.setHTMLAttribute("placeholder", defaultPos);
-    position.setHTMLAttribute(HTML_ATTRIBUTE_TITLE, defaultPos);
+    position.setHTMLAttribute("placeholder", getLabel(Profile.POSITION));
+    position.setHTMLAttribute(HTML_ATTRIBUTE_TITLE, getLabel(Profile.POSITION));
     addUIFormInput(position);
     UIFormStringInput skills = new UIFormStringInput(Profile.EXPERIENCES_SKILLS, Profile.EXPERIENCES_SKILLS, "");
-    skills.setHTMLAttribute("placeholder", defaultSkills);
-    skills.setHTMLAttribute(HTML_ATTRIBUTE_TITLE, defaultSkills);
+    skills.setHTMLAttribute("placeholder", getLabel(Profile.EXPERIENCES_SKILLS));
+    skills.setHTMLAttribute(HTML_ATTRIBUTE_TITLE, getLabel(Profile.EXPERIENCES_SKILLS));
     addUIFormInput(skills);
     profileFilter = new ProfileFilter();
     setHasPeopleTab(false);
@@ -348,36 +329,30 @@ public class UIProfileUserSearch extends UIForm {
       
       uiSearch.invokeSetBindingBean(filter);
       normalizeInputValues(filter);
-      ResourceBundle resApp = ctx.getApplicationResourceBundle();
 
-      String defaultNameVal = resApp.getString(uiSearch.getId() + ".label.Name");
-      String defaultPosVal = resApp.getString(uiSearch.getId() + ".label.Position");
-      String defaultSkillsVal = resApp.getString(uiSearch.getId() + ".label.Skills");
       try {
           StringBuffer rawSearchMessageStringBuffer = new StringBuffer();
           String name = filter.getName();
           String pos = filter.getPosition();
           String skills = filter.getSkills();
           
-          if ((name == null) || name.equals(defaultNameVal) || ASTERIK_STR.equals(name) || PERCENTAGE_STR.equals(name)) {
+          if ((name == null) || ASTERIK_STR.equals(name) || PERCENTAGE_STR.equals(name)) {
             filter.setName("");
           } else {
-            rawSearchMessageStringBuffer.append(defaultNameVal + ":" + name);
+            rawSearchMessageStringBuffer.append(uiSearch.getLabel(USER_CONTACT) + ":" + name);
           }
-          
-          if ((pos == null) || pos.equals(defaultPosVal) || ASTERIK_STR.equals(pos) || PERCENTAGE_STR.equals(pos)) {
+          if ((pos == null) || ASTERIK_STR.equals(pos) || PERCENTAGE_STR.equals(pos)) {
             filter.setPosition("");
           } else {
             rawSearchMessageStringBuffer
-              .append((rawSearchMessageStringBuffer.length() > 0 ? " " : "") + defaultPosVal + ":" + pos);
+              .append((rawSearchMessageStringBuffer.length() > 0 ? " " : "") + uiSearch.getLabel(Profile.POSITION) + ":" + pos);
           }
-          if ((skills == null) || skills.equals(defaultSkillsVal) || ASTERIK_STR.equals(skills) || PERCENTAGE_STR.equals(skills)) {
+          if ((skills == null) || ASTERIK_STR.equals(skills) || PERCENTAGE_STR.equals(skills)) {
             filter.setSkills("");
           } else {
             rawSearchMessageStringBuffer
-              .append((rawSearchMessageStringBuffer.length() > 0 ? " " : "") + defaultSkillsVal + ":" + skills);
+              .append((rawSearchMessageStringBuffer.length() > 0 ? " " : "") + uiSearch.getLabel(Profile.EXPERIENCES_SKILLS) + ":" + skills);
           }
-          
           if(rawSearchMessageStringBuffer.length() > 0){
             uiSearch.setRawSearchConditional(rawSearchMessageStringBuffer.toString());
             // Eliminates space characters.
@@ -395,7 +370,6 @@ public class UIProfileUserSearch extends UIForm {
             filter.setSkills("");
             filter.setPosition("");
           }
-          
         uiSearch.setProfileFilter(filter);
         uiSearch.setNewSearch(true);
         

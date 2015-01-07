@@ -377,20 +377,11 @@ public class UIMyConnections extends UIContainer {
       
       String charSearch = ctx.getRequestParameter(OBJECTID);
       
-      ResourceBundle resApp = ctx.getApplicationResourceBundle();
-
-      String defaultNameVal = resApp.getString(uiSearch.getId() + ".label.Name");
-      String defaultPosVal = resApp.getString(uiSearch.getId() + ".label.Position");
-      String defaultSkillsVal = resApp.getString(uiSearch.getId() + ".label.Skills");
-      
       ProfileFilter filter = uiMyConnections.uiProfileUserSearch.getProfileFilter();
       
       try {
         uiMyConnections.setSelectedChar(charSearch);
         if (charSearch != null) { // search by alphabet
-          ((UIFormStringInput) uiSearch.getChildById(UIProfileUserSearch.SEARCH)).setValue(defaultNameVal);
-          ((UIFormStringInput) uiSearch.getChildById(Profile.POSITION)).setValue(defaultPosVal);
-          ((UIFormStringInput) uiSearch.getChildById(Profile.EXPERIENCES_SKILLS)).setValue(defaultSkillsVal);
           filter.setName(charSearch);
           filter.setPosition("");
           filter.setSkills("");

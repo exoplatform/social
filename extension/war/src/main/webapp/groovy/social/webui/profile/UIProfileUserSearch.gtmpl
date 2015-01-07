@@ -17,32 +17,17 @@
 -->
 
 <%
-  import org.exoplatform.web.application.JavascriptManager;
   import org.exoplatform.social.core.service.LinkProvider;
+  import org.exoplatform.social.core.identity.model.Profile;
   import org.exoplatform.social.webui.URLUtils;
   import org.exoplatform.social.webui.Utils;
-  import org.exoplatform.portal.application.PortalRequestContext;
   import org.apache.commons.lang.StringEscapeUtils;
 
 	def uicomponentId = uicomponent.id;
 	
 	def rcontext = _ctx.getRequestContext() ;
 	def jsmanager = rcontext.getJavascriptManager();
-  
 
-	def searchActionLabel = _ctx.appRes("${uicomponentId}.label.Search");
-	def searchByNameLabel = _ctx.appRes("${uicomponentId}.label.SearchByName");
-	def nameDefaultVal = StringEscapeUtils.escapeJavaScript(_ctx.appRes("${uicomponentId}.label.Name"));
-	def positionDefaultVal = StringEscapeUtils.escapeJavaScript(_ctx.appRes("${uicomponentId}.label.Position"));
-	def skillsDefaultVal = StringEscapeUtils.escapeJavaScript(_ctx.appRes("${uicomponentId}.label.Skills"));
-	def searchId = "Search";
-	def positionId = "position";
-	def skillsId = "skills";
-	def childs = uicomponent.getChildren();
-	
-	
-	def restContextName = uicomponent.getRestContextName();
-  def currentUserName = uicomponent.getCurrentUserName();
   def typeOfRelation = uicomponent.getTypeOfRelation();
   def spaceURL = uicomponent.getSpaceURL();
 	
@@ -52,7 +37,7 @@
   def cancelRequestLabel = StringEscapeUtils.escapeJavaScript(_ctx.appRes("UserProfilePopup.label.CancelRequest"));
   def removeConnectionLabel = StringEscapeUtils.escapeJavaScript(_ctx.appRes("UserProfilePopup.label.RemoveConnection"));
   def ignoreLabel = StringEscapeUtils.escapeJavaScript(_ctx.appRes("UserProfilePopup.label.Ignore"));
-  
+
 	def labels = """ {
 	  StatusTitle: '${statusTitle}',
 	  Connect: '${connectLabel}',
@@ -61,14 +46,9 @@
 	  RemoveConnection: '${removeConnectionLabel}',
 	  Ignore: '${ignoreLabel}'
 	} """
-  
+
 	def params = """ {
 	  uicomponentId: '${uicomponentId}',
-	  defaultUserContact: '${nameDefaultVal}',
-	  defaultPos: '${positionDefaultVal}',
-	  defaultSkills: '${skillsDefaultVal}',
-	  restContextName: '$restContextName',
-    currentUserName: '$currentUserName',
     typeOfRelation: '$typeOfRelation',
     spaceURL: '$spaceURL'
 	} """
@@ -77,26 +57,23 @@
            .require("SHARED/bts_tooltip").addScripts("jq('*[rel=\"tooltip\"]').tooltip();")
            .require("SHARED/social-ui-profile", "profile").addScripts("profile.initUserProfilePopup('$uicomponentId', $labels);")
            .require("SHARED/social-ui-user-search", "socialUIUserSearch").addScripts("socialUIUserSearch.init($params);")
-	       .require("SHARED/uiForm");
-	
+	         .require("SHARED/uiForm");
+
   def searchAction = uicomponent.event('Search');
   def ownerIdentity = Utils.getOwnerIdentity();
   def myConnectionsLink = LinkProvider.getUserConnectionsYoursUri(ownerIdentity.getRemoteId());
   if (!Utils.isOwner()) {
     myConnectionsLink = LinkProvider.getUserConnectionsYoursUri(URLUtils.getCurrentUser());
   }
-  
 %>
-
 <div class="uiProfileUserSearch">
 <% uiform.begin() %>
    <div class="uiGrayLightBox">	
-		<label for="<%=childs.get(0).getId()%>">${searchByNameLabel}:&nbsp;</label>
-		<% uiform.renderField(childs.get(0));%>&nbsp;&nbsp;
-		<% uiform.renderField(childs.get(1))%>&nbsp;&nbsp;
-		<% uiform.renderField(childs.get(2))%>&nbsp;&nbsp;
-		<button type="button" class="btn btn-primary" id="SearchButton" onclick="<%=uicomponent.event("Search")%>" ><%= searchActionLabel %></button>
+		<label for="<%=uicomponent.USER_CONTACT%>"><%=_ctx.appRes("UIProfileUserSearch.label.SearchByName")%>:&nbsp;</label>
+		<% uiform.renderField(uicomponent.USER_CONTACT);%>&nbsp;&nbsp;
+		<% uiform.renderField(Profile.POSITION)%>&nbsp;&nbsp;
+		<% uiform.renderField(Profile.EXPERIENCES_SKILLS)%>&nbsp;&nbsp;
+		<button type="button" class="btn btn-primary" id="SearchButton" onclick="<%=uicomponent.event("Search")%>"><%=_ctx.appRes("UIProfileUserSearch.label.Search")%></button>
    </div>
  <% uiform.end() %>
 </div>
-
