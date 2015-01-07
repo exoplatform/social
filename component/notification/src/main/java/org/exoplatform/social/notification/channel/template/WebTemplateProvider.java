@@ -40,6 +40,7 @@ import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
+import org.exoplatform.social.core.service.LinkProvider;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.notification.LinkProviderUtils;
 import org.exoplatform.social.notification.Utils;
@@ -113,16 +114,17 @@ public class WebTemplateProvider extends TemplateProvider {
       templateContext.put("NOTIFICATION_ID", notification.getId());
       templateContext.put("LAST_UPDATED_TIME", TimeConvertUtils.convertXTimeAgoByTimeServer(cal.getTime(), "EE, dd yyyy", new Locale(language), TimeConvertUtils.YEAR));
       templateContext.put("ACTIVITY", NotificationUtils.removeLinkTitle(activity.getTitle()));
-      templateContext.put("VIEW_FULL_DISCUSSION_ACTION_URL", LinkProviderUtils.getRedirectUrl("view_full_activity_highlight_comment", activity.getId() + "-" + comment.getId()));
+      templateContext.put("VIEW_FULL_DISCUSSION_ACTION_URL", LinkProvider.getSingleActivityUrl(activity.getId() + "#comment-" + comment.getId()));
       List<String> users = SocialNotificationUtils.mergeUsers(ctx, templateContext, SocialNotificationUtils.POSTER.getKey(), activity.getId(), notification.getValueOwnerParameter(SocialNotificationUtils.POSTER.getKey()));
       
       //
       int nbUsers = users.size();
       if (nbUsers > 0) {
         Identity lastIdentity = Utils.getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, users.get(nbUsers - 1), true);
-        templateContext.put("USER", lastIdentity.getProfile().getFullName());
-        templateContext.put("AVATAR", LinkProviderUtils.getUserAvatarUrl(lastIdentity.getProfile()));
-        templateContext.put("PROFILE_URL", LinkProviderUtils.getRedirectUrl("user", lastIdentity.getRemoteId()));
+        Profile profile = lastIdentity.getProfile();
+        templateContext.put("USER", profile.getFullName());
+        templateContext.put("AVATAR", profile.getAvatarUrl() != null ? profile.getAvatarUrl() : LinkProvider.PROFILE_DEFAULT_AVATAR_URL);
+        templateContext.put("PROFILE_URL", LinkProvider.getUserProfileUri(lastIdentity.getRemoteId()));
         templateContext.put("NB_USERS", nbUsers);
         //
         if (nbUsers >= 2) {
@@ -162,24 +164,25 @@ public class WebTemplateProvider extends TemplateProvider {
       String activityId = notification.getValueOwnerParameter(SocialNotificationUtils.ACTIVITY_ID.getKey());
       ExoSocialActivity activity = Utils.getActivityManager().getActivity(activityId);
       Identity identity = Utils.getIdentityManager().getIdentity(activity.getPosterId(), true);
+      Profile profile = identity.getProfile();
       templateContext.put("isIntranet", "true");
       Calendar cal = Calendar.getInstance();
       cal.setTimeInMillis(notification.getLastModifiedDate());
       templateContext.put("READ", Boolean.valueOf(notification.getValueOwnerParameter(NotificationMessageUtils.READ_PORPERTY.getKey())) ? "read" : "unread");
       templateContext.put("NOTIFICATION_ID", notification.getId());
       templateContext.put("LAST_UPDATED_TIME", TimeConvertUtils.convertXTimeAgoByTimeServer(cal.getTime(), "EE, dd yyyy", new Locale(language), TimeConvertUtils.YEAR));
-      templateContext.put("USER", identity.getProfile().getFullName());
-      templateContext.put("AVATAR", LinkProviderUtils.getUserAvatarUrl(identity.getProfile()));
-      templateContext.put("PROFILE_URL", LinkProviderUtils.getRedirectUrl("user", identity.getRemoteId()));
+      templateContext.put("USER", profile.getFullName());
+      templateContext.put("AVATAR", profile.getAvatarUrl() != null ? profile.getAvatarUrl() : LinkProvider.PROFILE_DEFAULT_AVATAR_URL);
+      templateContext.put("PROFILE_URL", LinkProvider.getUserProfileUri(identity.getRemoteId()));
       templateContext.put("ACTIVITY", NotificationUtils.removeLinkTitle(activity.getTitle()));
       
       // In case of mention on a comment, we need provide the id of the activity, not of the comment
       if (activity.isComment()) {
         ExoSocialActivity parentActivity = Utils.getActivityManager().getParentActivity(activity);
         activityId = parentActivity.getId();
-        templateContext.put("VIEW_FULL_DISCUSSION_ACTION_URL", LinkProviderUtils.getRedirectUrl("view_full_activity_highlight_comment", activityId + "-" + activity.getId()));
+        templateContext.put("VIEW_FULL_DISCUSSION_ACTION_URL", LinkProvider.getSingleActivityUrl(activityId + "#comment-" + activity.getId()));
       } else {
-        templateContext.put("VIEW_FULL_DISCUSSION_ACTION_URL", LinkProviderUtils.getRedirectUrl("view_full_activity", activityId));
+        templateContext.put("VIEW_FULL_DISCUSSION_ACTION_URL", LinkProvider.getSingleActivityUrl(activityId));
       }
       //
       String body = TemplateUtils.processGroovy(templateContext);
@@ -215,15 +218,16 @@ public class WebTemplateProvider extends TemplateProvider {
       templateContext.put("NOTIFICATION_ID", notification.getId());
       templateContext.put("LAST_UPDATED_TIME", TimeConvertUtils.convertXTimeAgoByTimeServer(cal.getTime(), "EE, dd yyyy", new Locale(language), TimeConvertUtils.YEAR));
       templateContext.put("ACTIVITY", NotificationUtils.removeLinkTitle(activity.getTitle()));
-      templateContext.put("VIEW_FULL_DISCUSSION_ACTION_URL", LinkProviderUtils.getRedirectUrl("view_full_activity", activity.getId()));
+      templateContext.put("VIEW_FULL_DISCUSSION_ACTION_URL", LinkProvider.getSingleActivityUrl(activity.getId()));
       List<String> users = SocialNotificationUtils.mergeUsers(ctx, templateContext, SocialNotificationUtils.LIKER.getKey(), activity.getId(), notification.getValueOwnerParameter(SocialNotificationUtils.LIKER.getKey()));
       //
       int nbUsers = users.size();
       if (nbUsers > 0) {
         Identity lastIdentity = Utils.getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, users.get(nbUsers - 1), true);
-        templateContext.put("USER", lastIdentity.getProfile().getFullName());
-        templateContext.put("AVATAR", LinkProviderUtils.getUserAvatarUrl(lastIdentity.getProfile()));
-        templateContext.put("PROFILE_URL", LinkProviderUtils.getRedirectUrl("user", lastIdentity.getRemoteId()));
+        Profile profile = lastIdentity.getProfile();
+        templateContext.put("USER", profile.getFullName());
+        templateContext.put("AVATAR", profile.getAvatarUrl() != null ? profile.getAvatarUrl() : LinkProvider.PROFILE_DEFAULT_AVATAR_URL);
+        templateContext.put("PROFILE_URL", LinkProvider.getUserProfileUri(lastIdentity.getRemoteId()));
         templateContext.put("NB_USERS", nbUsers);
         //
         if (nbUsers >= 2) {
@@ -271,9 +275,8 @@ public class WebTemplateProvider extends TemplateProvider {
       templateContext.put("LAST_UPDATED_TIME", TimeConvertUtils.convertXTimeAgoByTimeServer(cal.getTime(), "EE, dd yyyy", new Locale(language), TimeConvertUtils.YEAR));
       templateContext.put("USER", userProfile.getFullName());
       templateContext.put("PORTAL_NAME", NotificationPluginUtils.getBrandingPortalName());
-      //templateContext.put("PORTAL_HOME", NotificationUtils.getPortalHome(NotificationPluginUtils.getBrandingPortalName()));
-      templateContext.put("PROFILE_URL", LinkProviderUtils.getRedirectUrl("user", identity.getRemoteId()));
-      templateContext.put("AVATAR", LinkProviderUtils.getUserAvatarUrl(userProfile));
+      templateContext.put("PROFILE_URL", LinkProvider.getUserProfileUri(identity.getRemoteId()));
+      templateContext.put("AVATAR", userProfile.getAvatarUrl() != null ? userProfile.getAvatarUrl() : LinkProvider.PROFILE_DEFAULT_AVATAR_URL);
       //
       String body = TemplateUtils.processGroovy(templateContext);
       //binding the exception throws by processing template
@@ -303,17 +306,18 @@ public class WebTemplateProvider extends TemplateProvider {
       String activityId = notification.getValueOwnerParameter(SocialNotificationUtils.ACTIVITY_ID.getKey());
       ExoSocialActivity activity = Utils.getActivityManager().getActivity(activityId);
       Identity identity = Utils.getIdentityManager().getIdentity(activity.getPosterId(), true);
+      Profile profile = identity.getProfile();
       templateContext.put("isIntranet", "true");
       Calendar cal = Calendar.getInstance();
       cal.setTimeInMillis(notification.getLastModifiedDate());
       templateContext.put("READ", Boolean.valueOf(notification.getValueOwnerParameter(NotificationMessageUtils.READ_PORPERTY.getKey())) ? "read" : "unread");
       templateContext.put("NOTIFICATION_ID", notification.getId());
       templateContext.put("LAST_UPDATED_TIME", TimeConvertUtils.convertXTimeAgoByTimeServer(cal.getTime(), "EE, dd yyyy", new Locale(language), TimeConvertUtils.YEAR));
-      templateContext.put("AVATAR", LinkProviderUtils.getUserAvatarUrl(identity.getProfile()));
+      templateContext.put("AVATAR", profile.getAvatarUrl() != null ? profile.getAvatarUrl() : LinkProvider.PROFILE_DEFAULT_AVATAR_URL);
       templateContext.put("ACTIVITY", NotificationUtils.removeLinkTitle(activity.getTitle()));
-      templateContext.put("USER", identity.getProfile().getFullName());
-      templateContext.put("PROFILE_URL", LinkProviderUtils.getRedirectUrl("user", identity.getRemoteId()));
-      templateContext.put("VIEW_FULL_DISCUSSION_ACTION_URL", LinkProviderUtils.getRedirectUrl("view_full_activity", activity.getId()));
+      templateContext.put("USER", profile.getFullName());
+      templateContext.put("PROFILE_URL", LinkProvider.getUserProfileUri(identity.getRemoteId()));
+      templateContext.put("VIEW_FULL_DISCUSSION_ACTION_URL", LinkProvider.getSingleActivityUrl(activity.getId()));
       //
       String body = TemplateUtils.processGroovy(templateContext);
       //binding the exception throws by processing template
@@ -343,7 +347,7 @@ public class WebTemplateProvider extends TemplateProvider {
       String activityId = notification.getValueOwnerParameter(SocialNotificationUtils.ACTIVITY_ID.getKey());
       ExoSocialActivity activity = Utils.getActivityManager().getActivity(activityId);
       Identity identity = Utils.getIdentityManager().getIdentity(activity.getPosterId(), true);
-      
+      Profile profile = identity.getProfile();
       Identity spaceIdentity = Utils.getIdentityManager().getOrCreateIdentity(SpaceIdentityProvider.NAME, activity.getStreamOwner(), true);
       Space space = Utils.getSpaceService().getSpaceByPrettyName(spaceIdentity.getRemoteId());
       templateContext.put("isIntranet", "true");
@@ -352,13 +356,13 @@ public class WebTemplateProvider extends TemplateProvider {
       templateContext.put("READ", Boolean.valueOf(notification.getValueOwnerParameter(NotificationMessageUtils.READ_PORPERTY.getKey())) ? "read" : "unread");
       templateContext.put("NOTIFICATION_ID", notification.getId());
       templateContext.put("LAST_UPDATED_TIME", TimeConvertUtils.convertXTimeAgoByTimeServer(cal.getTime(), "EE, dd yyyy", new Locale(language), TimeConvertUtils.YEAR));
-      templateContext.put("USER", identity.getProfile().getFullName());
-      templateContext.put("AVATAR", LinkProviderUtils.getUserAvatarUrl(identity.getProfile()));
+      templateContext.put("USER", profile.getFullName());
+      templateContext.put("AVATAR", profile.getAvatarUrl() != null ? profile.getAvatarUrl() : LinkProvider.PROFILE_DEFAULT_AVATAR_URL);
       templateContext.put("ACTIVITY", NotificationUtils.removeLinkTitle(activity.getTitle()));
       templateContext.put("SPACE", spaceIdentity.getProfile().getFullName());
-      templateContext.put("SPACE_URL", LinkProviderUtils.getRedirectUrl("space", space.getId()));
-      templateContext.put("PROFILE_URL", LinkProviderUtils.getRedirectUrl("user", identity.getRemoteId()));
-      templateContext.put("VIEW_FULL_DISCUSSION_ACTION_URL", LinkProviderUtils.getRedirectUrl("view_full_activity", activity.getId()));
+      templateContext.put("SPACE_URL", LinkProvider.getSpaceUri(space.getPrettyName()));
+      templateContext.put("PROFILE_URL", LinkProvider.getUserProfileUri(identity.getRemoteId()));
+      templateContext.put("VIEW_FULL_DISCUSSION_ACTION_URL", LinkProvider.getSingleActivityUrl(activity.getId()));
       //
       String body = TemplateUtils.processGroovy(templateContext);
       //binding the exception throws by processing template
@@ -397,8 +401,8 @@ public class WebTemplateProvider extends TemplateProvider {
       templateContext.put("STATUS", status != null && status.equals("accepted") ? "ACCEPTED" : "PENDING");
       templateContext.put("LAST_UPDATED_TIME", TimeConvertUtils.convertXTimeAgoByTimeServer(cal.getTime(), "EE, dd yyyy", new Locale(language), TimeConvertUtils.YEAR));
       templateContext.put("USER", userProfile.getFullName());
-      templateContext.put("PROFILE_URL", LinkProviderUtils.getRedirectUrl("user", identity.getRemoteId()));
-      templateContext.put("AVATAR", LinkProviderUtils.getUserAvatarUrl(userProfile));
+      templateContext.put("PROFILE_URL", LinkProvider.getUserProfileUri(identity.getRemoteId()));
+      templateContext.put("AVATAR", userProfile.getAvatarUrl() != null ? userProfile.getAvatarUrl() : LinkProvider.PROFILE_DEFAULT_AVATAR_URL);
       templateContext.put("ACCEPT_CONNECTION_REQUEST_ACTION_URL", LinkProviderUtils.getRestUrl(ACCEPT_INVITATION_TO_CONNECT, sender, toUser));
       templateContext.put("REFUSE_CONNECTION_REQUEST_ACTION_URL", LinkProviderUtils.getRestUrl(REFUSE_INVITATION_TO_CONNECT, sender, toUser));
       //
@@ -440,9 +444,9 @@ public class WebTemplateProvider extends TemplateProvider {
       templateContext.put("LAST_UPDATED_TIME", TimeConvertUtils.convertXTimeAgoByTimeServer(cal.getTime(), "EE, dd yyyy", new Locale(language), TimeConvertUtils.YEAR));
       templateContext.put("SPACE", space.getDisplayName());
       templateContext.put("USER", userProfile.getFullName());
-      templateContext.put("SPACE_URL", LinkProviderUtils.getRedirectUrl("space_members", space.getId()));
-      templateContext.put("PROFILE_URL", LinkProviderUtils.getRedirectUrl("user", identity.getRemoteId()));
-      templateContext.put("AVATAR", LinkProviderUtils.getUserAvatarUrl(userProfile));
+      templateContext.put("SPACE_URL", LinkProvider.getSpaceUri(space.getPrettyName()));
+      templateContext.put("PROFILE_URL", LinkProvider.getUserProfileUri(identity.getRemoteId()));
+      templateContext.put("AVATAR", userProfile.getAvatarUrl() != null ? userProfile.getAvatarUrl() : LinkProvider.PROFILE_DEFAULT_AVATAR_URL);
       templateContext.put("VALIDATE_SPACE_REQUEST_ACTION_URL", LinkProviderUtils.getRestUrl(VALIDATE_SPACE_REQUEST, space.getId(), identity.getRemoteId()) + "/" + notification.getTo());
       templateContext.put("REFUSE_SPACE_REQUEST_ACTION_URL", LinkProviderUtils.getRestUrl(REFUSE_SPACE_REQUEST, space.getId(), identity.getRemoteId()));
       //
@@ -482,8 +486,8 @@ public class WebTemplateProvider extends TemplateProvider {
       templateContext.put("NOTIFICATION_ID", notification.getId());
       templateContext.put("LAST_UPDATED_TIME", TimeConvertUtils.convertXTimeAgoByTimeServer(cal.getTime(), "EE, dd yyyy", new Locale(language), TimeConvertUtils.YEAR));
       templateContext.put("SPACE", space.getDisplayName());
-      templateContext.put("SPACE_URL", LinkProviderUtils.getRedirectUrl("space", space.getId()));
-      templateContext.put("SPACE_AVATAR", LinkProviderUtils.getSpaceAvatarUrl(space));
+      templateContext.put("SPACE_URL", LinkProvider.getSpaceUri(space.getPrettyName()));
+      templateContext.put("SPACE_AVATAR", space.getAvatarUrl() != null ? space.getAvatarUrl() : LinkProvider.SPACE_DEFAULT_AVATAR_URL);
       templateContext.put("ACCEPT_SPACE_INVITATION_ACTION_URL", LinkProviderUtils.getRestUrl(ACCEPT_SPACE_INVITATION, space.getId(), notification.getTo()));
       templateContext.put("REFUSE_SPACE_INVITATION_ACTION_URL", LinkProviderUtils.getRestUrl(REFUSE_SPACE_INVITATION, space.getId(), notification.getTo()));
       //
