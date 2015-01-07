@@ -10,7 +10,6 @@
         ENTER : 13
       },
       init: function(params) {
-        console.log(params);
         UIProfileUserSearch.typeOfRelation = params.typeOfRelation || '';
         UIProfileUserSearch.spaceURL = params.spaceURL || '';
         UIProfileUserSearch.profileSearch = $("#" + params.uicomponentId);
@@ -42,7 +41,6 @@
           }
           return restURL;
         };
-        window.abc = UIProfileUserSearch.searchBtn
         function keyDownAction(evt) {
           //
           var keynum = evt.keyCode || evt.which;

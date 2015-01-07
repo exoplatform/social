@@ -24,14 +24,12 @@ import java.util.List;
 import java.util.Set;
 import java.util.regex.Pattern;
 
-import org.exoplatform.container.PortalContainer;
 import org.exoplatform.portal.application.PortalRequestContext;
 import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.profile.ProfileFilter;
 import org.exoplatform.social.webui.Utils;
-import org.exoplatform.web.application.RequestContext;
 import org.exoplatform.web.controller.QualifiedName;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
@@ -85,7 +83,7 @@ public class UIProfileUserSearch extends UIForm {
   private static final String PERCENTAGE_STR = "%";
   
   /** Html attribute title. */
-  private static final String HTML_ATTRIBUTE_TITLE   = "title";
+  private static final String HTML_ATTRIBUTE_PLACEHOLDER = "placeholder";
   
   /** All people filter. */
   public static final String ALL_FILTER = "All";
@@ -279,22 +277,18 @@ public class UIProfileUserSearch extends UIForm {
     if (getId() == null) {
       setId("UIProfileUserSearch");
     }
-
-    UIFormStringInput search = new UIFormStringInput(USER_CONTACT, USER_CONTACT, "");
-    search.setHTMLAttribute("placeholder", getLabel(USER_CONTACT));
-    search.setHTMLAttribute(HTML_ATTRIBUTE_TITLE, getLabel(USER_CONTACT));
-    addUIFormInput(search);
-    UIFormStringInput position = new UIFormStringInput(Profile.POSITION, Profile.POSITION, "");
-    position.setHTMLAttribute("placeholder", getLabel(Profile.POSITION));
-    position.setHTMLAttribute(HTML_ATTRIBUTE_TITLE, getLabel(Profile.POSITION));
-    addUIFormInput(position);
-    UIFormStringInput skills = new UIFormStringInput(Profile.EXPERIENCES_SKILLS, Profile.EXPERIENCES_SKILLS, "");
-    skills.setHTMLAttribute("placeholder", getLabel(Profile.EXPERIENCES_SKILLS));
-    skills.setHTMLAttribute(HTML_ATTRIBUTE_TITLE, getLabel(Profile.EXPERIENCES_SKILLS));
-    addUIFormInput(skills);
+    addUIFormInput(new UIFormStringInput(USER_CONTACT, USER_CONTACT, ""));
+    addUIFormInput(new UIFormStringInput(Profile.POSITION, Profile.POSITION, ""));
+    addUIFormInput(new UIFormStringInput(Profile.EXPERIENCES_SKILLS, Profile.EXPERIENCES_SKILLS, ""));
     profileFilter = new ProfileFilter();
     setHasPeopleTab(false);
     setSubmitAction("return false;");
+  }
+  
+  protected void initPlaceholder() throws Exception {
+    getUIStringInput(USER_CONTACT).setHTMLAttribute(HTML_ATTRIBUTE_PLACEHOLDER, getLabel(USER_CONTACT));
+    getUIStringInput(Profile.POSITION).setHTMLAttribute(HTML_ATTRIBUTE_PLACEHOLDER, getLabel(Profile.POSITION));
+    getUIStringInput(Profile.EXPERIENCES_SKILLS).setHTMLAttribute(HTML_ATTRIBUTE_PLACEHOLDER, getLabel(Profile.EXPERIENCES_SKILLS));
   }
 
   /**

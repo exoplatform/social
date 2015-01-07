@@ -1,42 +1,16 @@
-<!--
-    Copyright (C) 2003-2009 eXo Platform SAS.
-
-    This program is free software; you can redistribute it and/or
-    modify it under the terms of the GNU Affero General Public License
-    as published by the Free Software Foundation; either version 3
-    of the License, or (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, see<http://www.gnu.org/licenses/>.
-
--->
-
 <%
-  import org.exoplatform.social.core.service.LinkProvider;
   import org.exoplatform.social.core.identity.model.Profile;
-  import org.exoplatform.social.webui.URLUtils;
-  import org.exoplatform.social.webui.Utils;
   import org.apache.commons.lang.StringEscapeUtils;
 
-	def uicomponentId = uicomponent.id;
+	String typeOfRelation = uicomponent.getTypeOfRelation();
+  String spaceURL = uicomponent.getSpaceURL();
 	
-	def rcontext = _ctx.getRequestContext() ;
-	def jsmanager = rcontext.getJavascriptManager();
-
-  def typeOfRelation = uicomponent.getTypeOfRelation();
-  def spaceURL = uicomponent.getSpaceURL();
-	
-	def statusTitle = StringEscapeUtils.escapeJavaScript(_ctx.appRes("UserProfilePopup.label.Loading"));
-	def connectLabel = StringEscapeUtils.escapeJavaScript(_ctx.appRes("UserProfilePopup.label.Connect"));
-  def confirmLabel = StringEscapeUtils.escapeJavaScript(_ctx.appRes("UserProfilePopup.label.Confirm"));
-  def cancelRequestLabel = StringEscapeUtils.escapeJavaScript(_ctx.appRes("UserProfilePopup.label.CancelRequest"));
-  def removeConnectionLabel = StringEscapeUtils.escapeJavaScript(_ctx.appRes("UserProfilePopup.label.RemoveConnection"));
-  def ignoreLabel = StringEscapeUtils.escapeJavaScript(_ctx.appRes("UserProfilePopup.label.Ignore"));
+	String statusTitle = StringEscapeUtils.escapeJavaScript(_ctx.appRes("UserProfilePopup.label.Loading"));
+	String connectLabel = StringEscapeUtils.escapeJavaScript(_ctx.appRes("UserProfilePopup.label.Connect"));
+	String confirmLabel = StringEscapeUtils.escapeJavaScript(_ctx.appRes("UserProfilePopup.label.Confirm"));
+	String cancelRequestLabel = StringEscapeUtils.escapeJavaScript(_ctx.appRes("UserProfilePopup.label.CancelRequest"));
+	String removeConnectionLabel = StringEscapeUtils.escapeJavaScript(_ctx.appRes("UserProfilePopup.label.RemoveConnection"));
+	String ignoreLabel = StringEscapeUtils.escapeJavaScript(_ctx.appRes("UserProfilePopup.label.Ignore"));
 
 	def labels = """ {
 	  StatusTitle: '${statusTitle}',
@@ -48,26 +22,22 @@
 	} """
 
 	def params = """ {
-	  uicomponentId: '${uicomponentId}',
+	  uicomponentId: '${uicomponent.id}',
     typeOfRelation: '$typeOfRelation',
     spaceURL: '$spaceURL'
 	} """
-
-  jsmanager.require("SHARED/jquery", "jq")
-           .require("SHARED/bts_tooltip").addScripts("jq('*[rel=\"tooltip\"]').tooltip();")
-           .require("SHARED/social-ui-profile", "profile").addScripts("profile.initUserProfilePopup('$uicomponentId', $labels);")
-           .require("SHARED/social-ui-user-search", "socialUIUserSearch").addScripts("socialUIUserSearch.init($params);")
-	         .require("SHARED/uiForm");
-
-  def searchAction = uicomponent.event('Search');
-  def ownerIdentity = Utils.getOwnerIdentity();
-  def myConnectionsLink = LinkProvider.getUserConnectionsYoursUri(ownerIdentity.getRemoteId());
-  if (!Utils.isOwner()) {
-    myConnectionsLink = LinkProvider.getUserConnectionsYoursUri(URLUtils.getCurrentUser());
-  }
+	//
+	def rcontext = _ctx.getRequestContext() ;
+	rcontext.getJavascriptManager().require("SHARED/jquery", "jq")
+          .require("SHARED/bts_tooltip").addScripts("jq('*[rel=\"tooltip\"]').tooltip();")
+          .require("SHARED/social-ui-profile", "profile").addScripts("profile.initUserProfilePopup('$uicomponent.id', $labels);")
+          .require("SHARED/social-ui-user-search", "socialUIUserSearch").addScripts("socialUIUserSearch.init($params);")
+	        .require("SHARED/uiForm");
+  //
+  uicomponent.initPlaceholder();
 %>
 <div class="uiProfileUserSearch">
-<% uiform.begin() %>
+<% uiform.begin();%>
    <div class="uiGrayLightBox">	
 		<label for="<%=uicomponent.USER_CONTACT%>"><%=_ctx.appRes("UIProfileUserSearch.label.SearchByName")%>:&nbsp;</label>
 		<% uiform.renderField(uicomponent.USER_CONTACT);%>&nbsp;&nbsp;
@@ -75,5 +45,5 @@
 		<% uiform.renderField(Profile.EXPERIENCES_SKILLS)%>&nbsp;&nbsp;
 		<button type="button" class="btn btn-primary" id="SearchButton" onclick="<%=uicomponent.event("Search")%>"><%=_ctx.appRes("UIProfileUserSearch.label.Search")%></button>
    </div>
- <% uiform.end() %>
+ <% uiform.end();%>
 </div>

@@ -1,82 +1,39 @@
-<!--
-    Copyright (C) 2003-2009 eXo Platform SAS.
-
-    This program is free software; you can redistribute it and/or
-    modify it under the terms of the GNU Affero General Public License
-    as published by the Free Software Foundation; either version 3
-    of the License, or (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, see<http://www.gnu.org/licenses/>.
-
--->
-
 <%
-import org.exoplatform.portal.application.PortalRequestContext;
-import org.exoplatform.web.application.JavascriptManager;
-import org.exoplatform.social.core.service.LinkProvider;
 import org.exoplatform.webui.core.UIPopupWindow;
-import org.exoplatform.social.webui.Utils;
-import org.exoplatform.social.core.space.SpaceUtils;
 
-def uicomponentId = uicomponent.id;
-def labelActionAddSpace = _ctx.appRes("${uicomponentId}.label.AddNewSpace")
 def rcontext = _ctx.getRequestContext() ;
-def jsmanager = rcontext.getJavascriptManager();
-
-def defaultSpaceNameAndDesc = _ctx.appRes("${uicomponentId}.label.DefaultSpaceNameAndDesc");
-def findSpaceLabel = _ctx.appRes("${uicomponentId}.label.FindSpace");
-def searchLabel  = _ctx.appRes("${uicomponentId}.label.Search");
-def searchId = "SpaceSearch";
-def nameForSearch = uicomponent.getSpaceNameSearch();
-def spaceNum = uicomponent.getSpaceNum();
-def childs = uicomponent.getChildren();
-def searchAction = uicomponent.event('Search');
-
-def restContextName = uicomponent.getRestContextName();
-def currentUserName = uicomponent.getCurrentUserName();
 def typeOfRelation = uicomponent.getTypeOfRelation();
 def spaceURL = uicomponent.getSpaceURL();
-def portalName = uicomponent.getPortalName();
     
 def params = """ {
-  uicomponentId: '${uicomponentId}',
-  defaultSpaceNameAndDesc: '${defaultSpaceNameAndDesc}',
-  restContextName: '$restContextName',
-	currentUserName: '$currentUserName',
+  uicomponentId: '${uicomponent.id}',
 	typeOfRelation: '$typeOfRelation',
 	spaceURL: '$spaceURL',
-	portalName: '$portalName',
 	typeOfSuggest: 'space'
 } """
 
-jsmanager.require("SHARED/jquery", "jq")
-         .require("SHARED/bts_tooltip").addScripts("jq('*[rel=\"tooltip\"]').tooltip();")
-         .require("SHARED/social-ui-space-search", "socialUISpaceSearch").addScripts("socialUISpaceSearch.init($params);")
-         .require("SHARED/uiForm");
-
+rcontext.getJavascriptManager().require("SHARED/jquery", "jq")
+        .require("SHARED/bts_tooltip").addScripts("jq('*[rel=\"tooltip\"]').tooltip();")
+        .require("SHARED/social-ui-space-search", "socialUISpaceSearch").addScripts("socialUISpaceSearch.init($params);")
+        .require("SHARED/uiForm");
+//
+uicomponent.initPlaceholder();
 %>
 <div class="uiSpaceSearch">
-<% uiform.begin() %>
-    <!--search by name-->   
+<% uiform.begin();%>
 	<div class="uiGrayLightBox clearfix">
-		<button class="btn btn-primary pull-left" type="button" onclick="<%= uicomponent.event("AddSpace") %>" ><i class="uiIconSocSimplePlus uiIconSocWhite"></i><%= labelActionAddSpace %></button>
-		
-		<!--label for="<%=childs.get(0).getId()%>" class="LeftContentInput">
-			$findSpaceLabel:&nbsp; 
-		</label-->
+		<button class="btn btn-primary pull-left" type="button" onclick="<%= uicomponent.event("AddSpace") %>">
+			<i class="uiIconSocSimplePlus uiIconSocWhite"></i><%=_ctx.appRes("UISpaceSearch.label.AddNewSpace")%>
+		</button>
 		<div class="uiSearchInput pull-right searchWithIcon">
-		    <a data-original-title="Search" class="advancedSearch" rel="tooltip" data-placement="bottom" href="javascript:void(0)"><i class="uiIconSearch uiIconLightGray"></i></a>
-			<%uiform.renderField(childs.get(0)); %>
+		    <a data-original-title="Search" class="advancedSearch" rel="tooltip" data-placement="bottom" onclick="<%=uicomponent.event("Search")%>" href="javascript:void(0)">
+		    	<i class="uiIconSearch uiIconLightGray"></i>
+		    </a>
+			<%uiform.renderField(uicomponent.SPACE_SEARCH); %>
 		</div>
-		<button type="button" class="btn hide" id="SearchButton" onclick="<%=uicomponent.event("Search")%>" ><%=searchLabel %></button>
+		<button type="button" class="btn hide" id="SearchButton" onclick="<%=uicomponent.event("Search")%>"><%=_ctx.appRes("UISpaceSearch.label.Search")%></button>
 	</div>
  
-	<% uiform.end() %>
-	<div class="uiPopupMySpaces"><% uicomponent.renderChild(UIPopupWindow.class) %></div>
+	<% uiform.end();%>
+	<div class="uiPopupMySpaces"><%uicomponent.renderChild(UIPopupWindow.class);%></div>
 </div>

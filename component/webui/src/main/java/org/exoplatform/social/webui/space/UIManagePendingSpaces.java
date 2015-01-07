@@ -19,7 +19,6 @@ package org.exoplatform.social.webui.space;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.ResourceBundle;
 
 import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.portal.webui.util.Util;
@@ -36,7 +35,6 @@ import org.exoplatform.webui.core.UIApplication;
 import org.exoplatform.webui.core.UIContainer;
 import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.event.EventListener;
-import org.exoplatform.webui.form.UIFormStringInput;
 
 @ComponentConfig(
   template = "war:/groovy/social/webui/space/UIManagePendingSpaces.gtmpl",
@@ -340,11 +338,9 @@ public class UIManagePendingSpaces extends UIContainer {
       if (charSearch == null) {
         uiManagePendingSpaces.setSelectedChar(null);
       } else {
-        ResourceBundle resApp = ctx.getApplicationResourceBundle();
-        String defaultSpaceNameAndDesc = resApp.getString(uiManagePendingSpaces.getId() + ".label.DefaultSpaceNameAndDesc");
-        ((UIFormStringInput) uiManagePendingSpaces.uiSpaceSearch.getUIStringInput(SPACE_SEARCH)).setValue(defaultSpaceNameAndDesc);
-        uiManagePendingSpaces.setSelectedChar(charSearch);
+        uiManagePendingSpaces.uiSpaceSearch.getUIStringInput(SPACE_SEARCH).setValue("");
         uiManagePendingSpaces.uiSpaceSearch.setSpaceNameSearch(null);
+        uiManagePendingSpaces.setSelectedChar(charSearch);
       }
       
       uiManagePendingSpaces.loadSearch();

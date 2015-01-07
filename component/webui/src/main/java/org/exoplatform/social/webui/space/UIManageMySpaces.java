@@ -19,7 +19,6 @@ package org.exoplatform.social.webui.space;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.ResourceBundle;
 
 import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.portal.mop.user.UserNavigation;
@@ -40,7 +39,6 @@ import org.exoplatform.webui.core.UIContainer;
 import org.exoplatform.webui.core.UIPopupWindow;
 import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.event.EventListener;
-import org.exoplatform.webui.form.UIFormStringInput;
 
 @ComponentConfig(
   template="war:/groovy/social/webui/space/UIManageMySpaces.gtmpl",
@@ -349,11 +347,9 @@ public class UIManageMySpaces extends UIContainer {
       if (charSearch == null) {
         uiManageMySpaces.setSelectedChar(null);
       } else {
-        ResourceBundle resApp = ctx.getApplicationResourceBundle();
-        String defaultSpaceNameAndDesc = resApp.getString(uiManageMySpaces.getId() + ".label.DefaultSpaceNameAndDesc");
-        ((UIFormStringInput) uiManageMySpaces.uiSpaceSearch.getUIStringInput(SPACE_SEARCH)).setValue(defaultSpaceNameAndDesc);
-        uiManageMySpaces.setSelectedChar(charSearch);
+        uiManageMySpaces.uiSpaceSearch.getUIStringInput(SPACE_SEARCH).setValue("");
         uiManageMySpaces.uiSpaceSearch.setSpaceNameSearch(null);
+        uiManageMySpaces.setSelectedChar(charSearch);
       }
       
       uiManageMySpaces.loadSearch();

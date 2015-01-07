@@ -19,7 +19,6 @@ package org.exoplatform.social.webui.space;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.ResourceBundle;
 
 import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.portal.webui.util.Util;
@@ -39,7 +38,6 @@ import org.exoplatform.webui.core.UIApplication;
 import org.exoplatform.webui.core.UIContainer;
 import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.event.EventListener;
-import org.exoplatform.webui.form.UIFormStringInput;
 
 /**
  * UI component to list all spaces that is associated with current logged-in user: public spaces to join,
@@ -393,11 +391,9 @@ public class UIManageAllSpaces extends UIContainer {
       if (charSearch == null) {
         uiManageAllSpaces.setSelectedChar(null);
       } else {
-        ResourceBundle resApp = ctx.getApplicationResourceBundle();
-        String defaultSpaceNameAndDesc = resApp.getString(uiManageAllSpaces.getId() + ".label.DefaultSpaceNameAndDesc");
-        ((UIFormStringInput) uiManageAllSpaces.uiSpaceSearch.getUIStringInput(SPACE_SEARCH)).setValue(defaultSpaceNameAndDesc);
-        uiManageAllSpaces.setSelectedChar(charSearch);
+        uiManageAllSpaces.uiSpaceSearch.getUIStringInput(SPACE_SEARCH).setValue("");
         uiManageAllSpaces.uiSpaceSearch.setSpaceNameSearch(null);
+        uiManageAllSpaces.setSelectedChar(charSearch);
       }
       
       uiManageAllSpaces.loadSearch();
