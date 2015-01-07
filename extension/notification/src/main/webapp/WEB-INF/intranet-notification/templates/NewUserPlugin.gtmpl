@@ -7,7 +7,7 @@
       <%
        String profileUrl = "<a class=\"user-name text-bold\" href=\"javascript:void(0)\">" + USER + "</a>";
       %>
-        <div class="contentSmall" data-link="">
+        <div class="contentSmall" data-link="$PROFILE_URL">
           <div class="status"><%=_ctx.appRes("Notification.intranet.message.NewUserPlugin", profileUrl, PORTAL_NAME)%></div>
           <div class="content"></div>
           <div class="lastUpdatedTime"><i class="uiIcon uiIconTick uiIconLightGray"></i>$LAST_UPDATED_TIME</div>
