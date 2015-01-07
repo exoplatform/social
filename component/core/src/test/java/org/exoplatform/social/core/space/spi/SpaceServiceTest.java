@@ -34,6 +34,7 @@ import org.exoplatform.social.core.manager.ActivityManager;
 import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.model.AvatarAttachment;
 import org.exoplatform.social.core.service.LinkProvider;
+import org.exoplatform.social.core.space.SpaceException;
 import org.exoplatform.social.core.space.SpaceFilter;
 import org.exoplatform.social.core.space.SpaceListAccess;
 import org.exoplatform.social.core.space.SpaceUtils;
@@ -68,6 +69,11 @@ public class SpaceServiceTest extends AbstractCoreTest {
   private Identity user_new;
   private Identity user_new1;
   private Identity user_new_dot;
+  private Identity creator;
+  private Identity manager;
+  private Identity member1;
+  private Identity member2;
+  private Identity member3;
 
   @Override
   public void setUp() throws Exception {
@@ -95,6 +101,11 @@ public class SpaceServiceTest extends AbstractCoreTest {
     hearBreaker = new Identity(OrganizationIdentityProvider.NAME, "hearBreaker");
     newInvitedUser = new Identity(OrganizationIdentityProvider.NAME, "newInvitedUser");
     newPendingUser = new Identity(OrganizationIdentityProvider.NAME, "newPendingUser");
+    manager = new Identity(OrganizationIdentityProvider.NAME, "manager");
+    creator = new Identity(OrganizationIdentityProvider.NAME, "creator");
+    member1 = new Identity(OrganizationIdentityProvider.NAME, "member1");
+    member2 = new Identity(OrganizationIdentityProvider.NAME, "member2");
+    member3 = new Identity(OrganizationIdentityProvider.NAME, "member3");
 
     identityStorage.saveIdentity(demo);
     identityStorage.saveIdentity(tom);
@@ -115,6 +126,11 @@ public class SpaceServiceTest extends AbstractCoreTest {
     identityStorage.saveIdentity(user_new1);
     identityStorage.saveIdentity(user_new);
     identityStorage.saveIdentity(user_new_dot);
+    identityStorage.saveIdentity(manager);
+    identityStorage.saveIdentity(creator);
+    identityStorage.saveIdentity(member1);
+    identityStorage.saveIdentity(member2);
+    identityStorage.saveIdentity(member3);
 
     tearDownUserList = new ArrayList<Identity>();
     tearDownUserList.add(demo);
@@ -136,6 +152,11 @@ public class SpaceServiceTest extends AbstractCoreTest {
     tearDownUserList.add(user_new1);
     tearDownUserList.add(user_new);
     tearDownUserList.add(user_new_dot);
+    tearDownUserList.add(manager);
+    tearDownUserList.add(creator);
+    tearDownUserList.add(member1);
+    tearDownUserList.add(member2);
+    tearDownUserList.add(member3);
   }
 
   @Override
@@ -1378,6 +1399,37 @@ public class SpaceServiceTest extends AbstractCoreTest {
     assertNotNull("spaceListAccess must not be null", spaceListAccess);
     assertEquals("spaceListAccess.getSize() must return: 2", 2, spaceListAccess.getSize());
   }
+
+  /**
+   * Test {@link SpaceService#createSpace(org.exoplatform.social.core.space.model.Space, String, String)}
+   *
+   */
+   public void testCreateSpaceWithManagersAndMembers() throws SpaceException {
+     String[] managers = {"manager"};
+     String[] members = {"member1","member2","member3"};
+     String creator = "creator";
+     String invitedGroup = "invited";
+     Space space = new Space();
+     space.setDisplayName("testSpace");
+     space.setDescription("Space Description for Testing");
+     String shortName = SpaceUtils.cleanString(space.getDisplayName());
+     space.setGroupId("/spaces/" + shortName);
+     space.setManagers(managers);
+     space.setMembers(members);
+     space.setPrettyName(space.getDisplayName());
+     space.setPriority("3");
+     space.setRegistration("validation");
+     space.setTag("Space Tag for Testing");
+     space.setType("classic");
+     space.setUrl(shortName);
+     space.setVisibility("public");
+     spaceService.createSpace(space,creator,invitedGroup);
+     tearDownSpaceList.add(space);
+     // 2 = 1 creator + 1 managers
+     assertEquals(2,space.getManagers().length);
+     // 4 = 1 creator + 3 members
+     assertEquals(4,space.getMembers().length);
+   }
 
   /**
    * Test {@link SpaceService#saveSpace(Space, boolean)}
