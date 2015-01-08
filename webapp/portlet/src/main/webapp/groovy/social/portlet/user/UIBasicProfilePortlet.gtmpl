@@ -25,7 +25,7 @@ def keys = profile.keySet();
             <%	      
       	    } else {
             %>
-      	      <div class=""><span><%=subKey%></span>: <span><%=values.get(subKey)%></span></div>
+      	      <div class=""><span><%=_ctx.appRes("UIBasicProfile.label." + subKey)%></span>: <span><%=values.get(subKey)%></span></div>
             <%
       	    }
       	  }
