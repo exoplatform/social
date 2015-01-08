@@ -1,5 +1,6 @@
 <%
-import org.exoplatform.social.core.service.LinkProvider
+import org.exoplatform.social.core.service.LinkProvider;
+import org.exoplatform.social.user.portlet.RecentActivitiesHelper;
 
 List activities = uicomponent.getRecentActivities();
 %>
@@ -21,6 +22,8 @@ List activities = uicomponent.getRecentActivities();
  				String avatarURL = profile.getAvatarUrl();
  				String profileURL = profile.getUrl();
  				String displayName = profile.getFullName();
+ 				String activityTypeIcon =  RecentActivitiesHelper.getActivityTypeIcon(activity.getType());
+ 				String link = RecentActivitiesHelper.getLink(activity);
 	%>
 			<div class="activityStream uiDefaultActivity" id="Activity<%=activity.id%>">
 			  <div class="activityTimeLine pull-left">
@@ -29,12 +32,18 @@ List activities = uicomponent.getRecentActivities();
 						  <img alt="$displayName" src="<%=((avatarURL == null || avatarURL.length() == 0) ? LinkProvider.PROFILE_DEFAULT_AVATAR_URL : avatarURL)%>">
 						</a>
 					</div>
+          <% if (activityTypeIcon != null) { %>
+          <div class="activityType"><span><i class="<%=activityTypeIcon%> uiIconSocWhite"></i></span></div>
+          <% } %>
 			  </div><!--end activityTimeLine-->
-			  <div class="boxContainer" id="boxContainer">
-					<div id="Content<%=activity.id%>" class="uiBox contentBox">
-						<div class="description"><a href="<%=(activityURL + activity.id)%>"><%=activity.title%></a></div><!--end description-->
-					</div>
-			  </div> <!-- #boxContainer-->	  
+        <div class="boxContainer" id="boxContainer" onclick="window.open('<%=(activityURL + activity.id)%>', '_self')">
+          <div id="Content<%=activity.id%>" class="uiBox contentBox">
+            <div class="description"><%=activity.getTitle()%></div>
+          <%if (link != null) { %>
+            <div class="link"><a href="$link">$link</a></div>
+          <%} %>
+          </div>
+        </div> <!-- #boxContainer-->
 			</div>
 	<%
 	 		}
