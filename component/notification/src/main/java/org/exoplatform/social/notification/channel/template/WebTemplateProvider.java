@@ -445,7 +445,6 @@ public class WebTemplateProvider extends TemplateProvider {
       templateContext.put("SPACE", space.getDisplayName());
       templateContext.put("USER", userProfile.getFullName());
       templateContext.put("SPACE_URL", LinkProvider.getSpaceUri(space.getPrettyName()));
-      templateContext.put("PROFILE_URL", LinkProvider.getUserProfileUri(identity.getRemoteId()));
       templateContext.put("AVATAR", userProfile.getAvatarUrl() != null ? userProfile.getAvatarUrl() : LinkProvider.PROFILE_DEFAULT_AVATAR_URL);
       templateContext.put("VALIDATE_SPACE_REQUEST_ACTION_URL", LinkProviderUtils.getRestUrl(VALIDATE_SPACE_REQUEST, space.getId(), identity.getRemoteId()) + "/" + notification.getTo());
       templateContext.put("REFUSE_SPACE_REQUEST_ACTION_URL", LinkProviderUtils.getRestUrl(REFUSE_SPACE_REQUEST, space.getId(), identity.getRemoteId()));

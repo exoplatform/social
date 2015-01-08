@@ -11,7 +11,7 @@
                                                   : _ctx.appRes("Notification.intranet.message.RequestJoinSpacePlugin", profileUrl, spaceUrl);
         String iconType = (STATUS == "ACCEPTED")  ? "uiIconTick" : "uiIconAddMembership";
       %>
-      <div class="contentSmall" data-link="$PROFILE_URL">
+      <div class="contentSmall" data-link="$SPACE_URL">
         <div class="status"><%=actions%></div>
         <div class="content">
         <% if (STATUS != "ACCEPTED") { %>
