@@ -32,7 +32,7 @@ List activities = uicomponent.getRecentActivities();
 						  <img alt="$displayName" src="<%=((avatarURL == null || avatarURL.length() == 0) ? LinkProvider.PROFILE_DEFAULT_AVATAR_URL : avatarURL)%>">
 						</a>
 					</div>
-          <% if (activityTypeIcon != null) { %>
+          <% if (activityTypeIcon != null && activityTypeIcon.length() > 0) { %>
           <div class="activityType"><span><i class="<%=activityTypeIcon%> uiIconSocWhite"></i></span></div>
           <% } %>
 			  </div><!--end activityTimeLine-->

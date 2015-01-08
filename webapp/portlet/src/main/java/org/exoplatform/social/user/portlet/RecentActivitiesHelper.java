@@ -5,23 +5,22 @@ import java.util.Map;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 
 public class RecentActivitiesHelper {
-  private static final String LINK_PARAM         = "link";
+  private static final String LINK_PARAM = "link";
 
   enum IconType {
     DEFAULT("", ""),
-    LINK("LINK_ACTIVITY", "LinkMini"),
-    DOC("DOC_ACTIVITY", "FileSharing"),
-    SPACE("SPACE_ACTIVITY", "SpaceMini"),
-    PROFILE("USER_PROFILE_ACTIVITY", "UserProfile"),
-    FILE("files:spaces", "FileSharing"),
-    CONTENT("contents:spaces", "ContentMini"),
-    CALENDAR("cs-calendar:spaces", "CalendarMini"),
-    FORUM("ks-forum:spaces", "ForumMini"),
-    ANSWER("ks-answer:spaces", "AnswersMini"),
-    POLL("ks-poll:spaces", "Poll"),
-    WIKI("ks-wiki:spaces", "WikiMini");
+    LINK("LINK_ACTIVITY", "uiIconSocLinkMini"),
+    DOC("DOC_ACTIVITY", "uiIconSocFileSharing"),
+    SPACE("SPACE_ACTIVITY", "uiIconSocSpaceMini"),
+    PROFILE("USER_PROFILE_ACTIVITY", "uiIconSocUserProfile"),
+    FILE("files:spaces", "uiIconSocFileSharing"),
+    CONTENT("contents:spaces", "uiIconSocContentMini"),
+    CALENDAR("cs-calendar:spaces", "uiIconSocCalendarMini"),
+    FORUM("ks-forum:spaces", "uiIconSocForumMini"),
+    ANSWER("ks-answer:spaces", "uiIconSocAnswersMini"),
+    POLL("ks-poll:spaces", "uiIconSocPoll"),
+    WIKI("ks-wiki:spaces", "uiIconSocWikiMini");
 
-    private final static String UI_SOC = "uiIconSoc";
     private final String type;
     private final String iconClass;
     
@@ -33,7 +32,7 @@ public class RecentActivitiesHelper {
       return this.type;
     }
     public String getIconClass() {
-      return UI_SOC + iconClass;
+      return iconClass;
     }
     public static IconType getIconType(String type) {
       for (IconType iconType : IconType.values()) {
