@@ -1,0 +1,14 @@
+#{param name=isOnline/}
+#{param name=userFullName/}
+#{param name=remoteId/}
+
+<%
+  String iconStatus = isOnline ? "uiIconUserOnline" : "uiIconUserOffline";
+%>
+<div class="uiSocApplication uiStatusProfilePortlet" id="UIStatusProfilePortlet">
+   <h3 class="user-status" style="display:inline-block;" data-userid="<%=remoteId%>">
+    <span><%=userFullName%></span>
+   <i class="<%=iconStatus%> uiIconLightGray"></i>
+   </h3>
+</div>
+

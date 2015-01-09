@@ -1,0 +1,114 @@
+@import "variables.less";
+@import "mixins.less";
+
+td.left-column-containerTDContainer {
+  width: 300px;
+}
+td.right-column-containerTDContainer {
+  width: 260px;
+}
+#socialMainLayout, #socialTopLayout {
+  background: #fff;
+}
+
+.left-border-row {
+  position: absolute;
+  right: 0px;
+  top: 10px;
+  bottom: 0px;
+  border-left: solid 1px #aaa;
+}
+.uiSocApplication {
+  [class^="uiIconUser"] {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    .ie7-restore-right-whitespace();
+    line-height: 16px;
+    vertical-align: text-top;
+    background-image: url("/forum/skin/DefaultSkin/images/Icons/uiIconsForumColor.png");
+    background-repeat: no-repeat;
+  }
+  [class^="uiIconStatus"] {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    .ie7-restore-right-whitespace();
+    line-height: 16px;
+    vertical-align: text-top;
+    background-image: url("/eXoResources/skin/images/Icons/uiIconColor.png") !important;
+    background-repeat: no-repeat;
+  }
+  .uiIconStatusConnect {
+    display: none;
+  }
+  .uiIconStatusSent {
+    display: none;
+  }
+  .uiIconStatusCancel {
+    background-position:-80px -0px;
+  }
+  .uiIconStatusReceived {
+    background-position:-80px -0px;
+  }
+  .uiIconStatusDeny {
+    display: none;
+  }
+  .uiIconStatusAccept {
+    display: none;
+  }
+  .uiIconStatusConnected {
+    background-position:-60px -0px;
+  }
+  .uiIconStatusDisconnect {
+    background-position:-0px -0px;
+  }
+  .hide-default, .user-actions:HOVER .show-default {
+    display: none;
+  }
+  .user-actions:HOVER .hide-default, .show-default, .startDate {
+    display: inline-block;
+  }
+  .avatarXSmall {
+    display: inline-block;
+    padding: 0px 5px 
+  }
+}
+.uiSocApplication {
+  .head-container {
+    color:#333;
+    font-weight:bold;
+  }
+  .uiIconUserOnline {
+    background-position: -80px 0;
+  }
+  .uiIconUserOffline {
+    background-position: -40px 0;
+  }
+  .uiBasicInfoSection {
+    padding-top: 10px;
+    .group-user-info {
+      .label-user-info {
+        color:#7b7b7b;
+        font-weight:bold;
+      }
+    }
+    .line-bottom {
+      margin-top: 20px;
+      border-top: solid 1px #aaa;
+      width: 99%;
+    }
+  }
+}
+.uiRecentActivitiesPortlet {
+  .activityStream {
+    .boxContainer {
+      cursor: pointer;
+    }
+  }
+  .contentBox {
+    .link {
+      border-top: 1px solid #cccccc;
+    }
+  }
+}

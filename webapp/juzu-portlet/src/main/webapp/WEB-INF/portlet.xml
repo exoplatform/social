@@ -24,4 +24,23 @@
      </portlet-info>
      
    </portlet>
+
+   <portlet>
+     <description xml:lang="EN">Status Profile Portlet</description>
+     <portlet-name>StatusProfilePortlet</portlet-name>
+     <display-name xml:lang="EN">Status Profile Portlet</display-name>
+     <portlet-class>org.exoplatform.social.portlet.statusProfile.StatusProfilePortlet</portlet-class>
+          
+     <supports>
+       <mime-type>text/html</mime-type>
+     </supports>
+     
+     <supported-locale>en</supported-locale>
+     <resource-bundle>locale.portlet.statusProfile.StatusProfilePortlet</resource-bundle>
+     <portlet-info>
+       <title>Status Profile</title>
+       <keywords>social</keywords>
+     </portlet-info>
+     
+   </portlet>
 </portlet-app>
