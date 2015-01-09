@@ -56,9 +56,8 @@
       item.find('.contentSmall:first').on('click', function(evt) {
         evt.stopPropagation();
         // mark read
-        IntranetNotification.markItemRead($(this).parents('li:first'));
-        //
-        IntranetNotification.openURL($(this).data('link'));
+        IntranetNotification.markItemRead($(this).parents('li:first'))
+                            .openURL($(this).data('link'));
       });
       //remove 'remove-icon'
       item.find('.remove-item').remove();
@@ -83,6 +82,7 @@
           window.open(url, "_self");
         }, 500);
       }
+      return this;
     },
     doAction : function(elm, link) {
       //call ajax to remove this notification, and do something in commons side
@@ -126,6 +126,7 @@
     markItemRead : function(item) {
       var action = IntranetNotification.markReadLink + item.data('id');
       window.ajaxGet(action);
+      return this;
     },
     removeItem : function(item) {
       var action = IntranetNotification.takeEventLink + item.data('id');
