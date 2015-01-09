@@ -128,6 +128,7 @@ public class WebTemplateProvider extends TemplateProvider {
         templateContext.put("NB_USERS", nbUsers);
         //
         if (nbUsers >= 2) {
+          templateContext.put("VIEW_FULL_DISCUSSION_ACTION_URL", LinkProvider.getSingleActivityUrl(activity.getId()));
           Identity beforeLastIdentity = Utils.getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, users.get(nbUsers - 2), true);
           templateContext.put("LAST_USER", beforeLastIdentity.getProfile().getFullName());
           if (nbUsers > 2) {
