@@ -7,28 +7,9 @@
 
 <%
   import org.exoplatform.portal.webui.util.Util;
-
-  def youHaveSentAnInvitation=_ctx.appRes("UIBasicProfile.action.label.RequestSent");
-  def statusTitle=_ctx.appRes("UIBasicProfile.action.StatusTitle");
-  def connectLabel=_ctx.appRes("UIBasicProfile.action.label.Connect");
-  def confirmLabel=_ctx.appRes("UIBasicProfile.action.Confirm");
-  def cancelRequestLabel=_ctx.appRes("UIBasicProfile.action.CancelRequest");
-  def removeConnectionLabel=_ctx.appRes("UIBasicProfile.action.RemoveConnection");
-  def ignoreLabel=_ctx.appRes("UIBasicProfile.action.Ignore");
-
-  def labels = """ {
-                     youHaveSentAnInvitation: '${youHaveSentAnInvitation}',
-                     StatusTitle: '${statusTitle}',
-                     Connect: '${connectLabel}',
-                     Confirm: '${confirmLabel}',
-                     CancelRequest: '${cancelRequestLabel}',
-                     RemoveConnection: '${removeConnectionLabel}',
-                     Ignore: '${ignoreLabel}'
-               } """;
-
-  def pcontext = Util.getPortalRequestContext();
-  def jsManager = pcontext.getJavascriptManager();
-  jsManager.require("SHARED/miniConnections", "miniconnections").addScripts("miniconnections.initUserProfilePopup($labels);");
+  import org.exoplatform.social.portlet.userprofile.helpers.UserProfileHelper;
+  
+  UserProfileHelper.initProfilePopup("UIMiniConnectionsPortlet");
 %>
 <div class="uiSocApplication uiMiniConnectionsPortlet" id="UIMiniConnectionsPortlet">
 	<div class="uiBox">

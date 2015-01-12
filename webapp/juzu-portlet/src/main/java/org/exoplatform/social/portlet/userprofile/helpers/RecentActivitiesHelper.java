@@ -1,8 +1,10 @@
-package org.exoplatform.social.user.portlet;
+package org.exoplatform.social.portlet.userprofile.helpers;
 
 import java.util.Map;
 
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
+import org.exoplatform.social.core.identity.model.Profile;
+import org.exoplatform.social.webui.Utils;
 
 public class RecentActivitiesHelper {
   private static final String LINK_PARAM = "link";
@@ -60,5 +62,9 @@ public class RecentActivitiesHelper {
    */
   public static String getActivityTypeIcon(String activityType) {
     return IconType.getIconType(activityType).getIconClass();
+  }
+  
+  public static Profile getOwnerActivityProfile(ExoSocialActivity activity) {
+    return Utils.getIdentityManager().getIdentity(activity.getUserId(), true).getProfile();
   }
 }

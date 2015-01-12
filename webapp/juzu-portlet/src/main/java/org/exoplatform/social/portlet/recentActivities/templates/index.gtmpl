@@ -1,16 +1,21 @@
-<%
-import org.exoplatform.social.core.service.LinkProvider;
-import org.exoplatform.social.user.portlet.RecentActivitiesHelper;
+#{param name=_ctx/}
+#{param name=activities/}
 
-List activities = uicomponent.getRecentActivities();
+<%
+import org.exoplatform.social.webui.Utils;
+import org.exoplatform.portal.webui.util.Util;
+import org.exoplatform.social.core.service.LinkProvider;
+import org.exoplatform.social.portlet.userprofile.helpers.RecentActivitiesHelper;
+import org.exoplatform.social.portlet.userprofile.helpers.UserProfileHelper;
+
 %>
-<div class="uiSocApplication uiRecentActivitiesPortlet" id="$uicomponent.id">
+<div class="uiSocApplication uiRecentActivitiesPortlet" id="UIRecentActivitiesPortlet">
 	<h5 class="head-container"><%=_ctx.appRes("UIBasicProfile.label.RecentActivities")%></h5>
 	<div class="uiBox">
 	 	<div class="uiContentBox">
  	<%
  		if(activities.size() == 0) {
- 		 String keyNoActivities = (uicomponent.isOwner()) ? "YouHaveNotActivities" : "UserHaveNotActivities";
+ 		 String keyNoActivities = Utils.isOwner() ? "YouHaveNotActivities" : "UserHaveNotActivities";
 	%>
 			<div class="center"><%=_ctx.appRes("UIBasicProfile.info." + keyNoActivities)%></div>
 			<div class="center"><i class="glyphicon glyphicon-time"></i></div>
@@ -18,7 +23,7 @@ List activities = uicomponent.getRecentActivities();
  		} else {
  		  String activityURL = "/portal/intranet/activity?id=";
  			for (activity in activities) {
- 				def profile = uicomponent.getOwnerActivity(activity).getProfile();
+ 				def profile = RecentActivitiesHelper.getOwnerActivityProfile(activity);
  				String avatarURL = profile.getAvatarUrl();
  				String profileURL = profile.getUrl();
  				String displayName = profile.getFullName();
@@ -28,8 +33,8 @@ List activities = uicomponent.getRecentActivities();
 			<div class="activityStream uiDefaultActivity" id="Activity<%=activity.id%>">
 			  <div class="activityTimeLine pull-left">
 					<div class="activityAvatar avatarCircle">
-						<a href="$profileURL">
-						  <img alt="$displayName" src="<%=((avatarURL == null || avatarURL.length() == 0) ? LinkProvider.PROFILE_DEFAULT_AVATAR_URL : avatarURL)%>">
+						<a href="<%=profileURL%>">
+						  <img alt="<%=displayName%>" src="<%=((avatarURL == null || avatarURL.length() == 0) ? LinkProvider.PROFILE_DEFAULT_AVATAR_URL : avatarURL)%>">
 						</a>
 					</div>
           <% if (activityTypeIcon != null && activityTypeIcon.length() > 0) { %>
@@ -40,19 +45,18 @@ List activities = uicomponent.getRecentActivities();
           <div id="Content<%=activity.id%>" class="uiBox contentBox">
             <div class="description"><%=activity.getTitle()%></div>
           <%if (link != null) { %>
-            <div class="link"><a href="$link">$link</a></div>
+            <div class="link"><a href="<%=link%>"><%=link%></a></div>
           <%} %>
           </div>
         </div> <!-- #boxContainer-->
 			</div>
 	<%
 	 		}
- 			String activityStreamURL = "/portal/intranet/activities/" + uicomponent.getCurrentRemoteId();
+ 			String activityStreamURL = "/portal/intranet/activities/" + Utils.getOwnerIdentity(false).getRemoteId();
  			print("<div style=\"margin:10px 0px 10px 63px\"><button class=\"btn btn-primary\" style=\"width:100%;\" onclick=\"window.location.href='" + activityStreamURL + "'\">" +
 	 						_ctx.appRes("UIBasicProfile.action.ViewAll") +
 	 				  "</button></div>");
- 			//
- 			uicomponent.initProfilePopup();
+ 			UserProfileHelper.initProfilePopup("UIRecentActivitiesPortlet");
  		}
 	%>
 		</div>
