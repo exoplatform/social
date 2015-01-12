@@ -1,8 +1,10 @@
+#{param name=_ctx/}
+#{param name=profile/}
+
 <%
-def profile = uicomponent.getProfileInfo();
 def keys = profile.keySet();
 %>
-<div class="uiSocApplication uiBasicProfilePortlet" id="$uicomponent.id">
+<div class="uiSocApplication uiBasicProfilePortlet" id="UIBasicProfilePortlet">
 	<h5 class="head-container"><%=_ctx.appRes("UIBasicProfile.label.ContactInformation")%></h5>
 	<div class="uiBasicInfoSection">
   	<%
@@ -13,13 +15,13 @@ def keys = profile.keySet();
       <div class="label-user-info"><strong><%=_ctx.appRes("UIBasicProfile.label." + key)%>:</strong></div>
       <div class="value-user-info">
       <%
-      	if(uicomponent.isString(values)) {
+      	if(_ctx.isString(values)) {
       %>
       	<div class=""><%=values%></div>
       <%
       	} else  {
       	  for(subKey in values.keySet()) {
-      	    if (uicomponent.isURL(subKey)) {
+      	    if (_ctx.isURL(subKey)) {
       	    %>
               <div class=""><a href="<%=values.get(subKey)%>"><%=values.get(subKey)%></a></div>
             <%	      

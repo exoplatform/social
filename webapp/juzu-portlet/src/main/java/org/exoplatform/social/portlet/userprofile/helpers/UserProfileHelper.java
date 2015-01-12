@@ -223,5 +223,13 @@ public class UserProfileHelper {
       return key;
     }
     
+    public boolean isString(Object s) {
+      return s instanceof String;
+    }
+
+    public boolean isURL(String key) {
+      if (key == null) return false;
+      return key.startsWith(URL_KEY);  
+    }
   }
 }

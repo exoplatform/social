@@ -782,28 +782,6 @@
  </portlet>
 
   <portlet>
-    <description xml:lang="EN">Basic Profile Portlet</description>
-    <portlet-name>BasicProfilePortlet</portlet-name>
-    <display-name xml:lang="EN">Basic Profile Portlet</display-name>
-    <portlet-class>org.exoplatform.webui.application.portlet.PortletApplicationController</portlet-class>
-    <init-param>
-      <name>webui.configuration</name>
-      <value>/WEB-INF/conf/portlet/BasicProfilePortlet/webui/configuration.xml</value>
-    </init-param>
-    <expiration-cache>0</expiration-cache>
-    <supports>
-      <mime-type>text/html</mime-type>
-    </supports>
-    <supported-locale>en</supported-locale>
-    <resource-bundle>locale.portlet.Portlets</resource-bundle>
-    <portlet-info>
-      <title>Basic Profile Portlet</title>
-      <short-title>Basic Profile Portlet</short-title>
-      <keywords>social</keywords>
-    </portlet-info>
-  </portlet>
-
-  <portlet>
     <description xml:lang="EN">Recent Activities Portlet</description>
     <portlet-name>RecentActivitiesPortlet</portlet-name>
     <display-name xml:lang="EN">Recent Activities Portlet</display-name>

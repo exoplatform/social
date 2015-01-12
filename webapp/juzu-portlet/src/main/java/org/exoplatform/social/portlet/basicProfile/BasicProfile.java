@@ -15,10 +15,9 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.exoplatform.social.portlet.experienceProfile;
+package org.exoplatform.social.portlet.basicProfile;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
@@ -28,16 +27,10 @@ import juzu.View;
 import juzu.request.RenderContext;
 import juzu.template.Template;
 
-import org.exoplatform.services.log.ExoLogger;
-import org.exoplatform.services.log.Log;
-import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.portlet.userprofile.helpers.UserProfileHelper;
-import org.exoplatform.social.webui.Utils;
 
-public class ExperienceProfile {
-  private static final Log LOG = ExoLogger.getLogger(ExperienceProfile.class);
-  final protected static String EXPERIENCES_IS_CURRENT = Profile.EXPERIENCES_IS_CURRENT;
-
+public class BasicProfile {
+  
   @Inject
   @Path("index.gtmpl") Template index;
   
@@ -47,24 +40,31 @@ public class ExperienceProfile {
     Map<String, Object> parameters = new HashMap<String, Object>();
     
     parameters.put("_ctx", UserProfileHelper.getContext(renderContext));
-    try {
-      parameters.put("experiences", getExperience());
-    } catch (Exception e) {
-      LOG.error("Could not get experiences." + e);
-    }
-    parameters.put("aboutMe", getAboutMe());
-    parameters.put("EXPERIENCES_IS_CURRENT", EXPERIENCES_IS_CURRENT);
-    parameters.put("isOwner", Utils.isOwner());
+    parameters.put("profile", getProfileInfo());
 
     index.render(parameters);
   }
-  
-  protected String getAboutMe() {
-    String about = (String) UserProfileHelper.getCurrentProfile().getProperty(Profile.ABOUT_ME);
-    return UserProfileHelper.isEmpty(about) ? "" : about;
-  }
-  
-  protected List<Map<String, String>> getExperience() throws Exception {
-    return UserProfileHelper.getDisplayExperience(UserProfileHelper.getCurrentProfile());
+
+  protected Map<String, Object> getProfileInfo() {
+    return UserProfileHelper.getDisplayProfileInfo(UserProfileHelper.getCurrentProfile());
   }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -98,4 +98,23 @@
     </portlet-info>
   </portlet>
   
+  <portlet>
+    <description xml:lang="EN">Basic Profile Portlet</description>
+    <portlet-name>BasicProfilePortlet</portlet-name>
+    <display-name xml:lang="EN">Basic Profile Portlet</display-name>
+    <portlet-class>org.exoplatform.social.portlet.basicProfile.BasicProfilePortlet</portlet-class>
+
+    <supports>
+      <mime-type>text/html</mime-type>
+    </supports>
+
+    <supported-locale>en</supported-locale>
+    <resource-bundle>locale.portlet.userProfile.UserProfilePortlet</resource-bundle>
+    <portlet-info>
+      <title>Basic Profile Portlet</title>
+      <short-title>Basic Profile Portlet</short-title>
+      <keywords>social</keywords>
+    </portlet-info>
+  </portlet>
+  
 </portlet-app>
