@@ -20,9 +20,9 @@ import org.exoplatform.webui.utils.TimeConvertUtils;
 public class UserProfileHelper {
   final private static String DATE_FORMAT_MMDDYYYY = "MM/dd/yyyy";
   final private static String DISPLAY_FORMAT_EEDDYYYY = "EE dd, yyyy";
-  final private static String KEY = "key";
-  final private static String VALUE = "value";
-  final private static String URL_KEY = "url";
+  final public static String KEY = "key";
+  final public static String VALUE = "value";
+  final public static String URL_KEY = "url";
 
   /**
    * @param currentProfile
@@ -143,6 +143,9 @@ public class UserProfileHelper {
   }
 
   public static String getLabel(WebuiRequestContext context, String key) {
+    if (context == null) {
+      context = WebuiRequestContext.getCurrentInstance();
+    }
     ResourceBundle res = context.getApplicationResourceBundle();
     try {
       return res.getString(key);

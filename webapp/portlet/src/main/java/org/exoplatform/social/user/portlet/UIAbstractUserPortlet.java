@@ -20,14 +20,23 @@ public abstract class UIAbstractUserPortlet extends UIPortletApplication {
 
   @Override
   public void processRender(WebuiApplication app, WebuiRequestContext context) throws Exception {
+    beforeProcessRender(context);
+    //
+    super.processRender(app, context);
+    //
+    afterProcessRender(context);
+  }
+
+  public void beforeProcessRender(WebuiRequestContext context) {
     PortletRequestContext portletReqContext = (PortletRequestContext) context;
     PortletMode portletMode = portletReqContext.getApplicationMode();
     if (portletMode == PortletMode.VIEW) {
       Identity ownerIdentity = Utils.getOwnerIdentity(true);
       currentProfile = ownerIdentity.getProfile();
     }
-    //
-    super.processRender(app, context);
+  }
+
+  public void afterProcessRender(WebuiRequestContext context) {
   }
 
   protected boolean isOwner() {

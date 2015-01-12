@@ -22,7 +22,7 @@
 		</div>
 	</div>
 	<div class="uiAction uiActionBorder">
-		<button class="btn" type="button" onclick="<%=uicomponent.event("Save")%>"><%=_ctx.appRes("UIEditUserProfileForm.action.save")%></button>
-		<button class="btn" type="button" onclick="<%=uicomponent.event("Cancel")%>"><%=_ctx.appRes("UIEditUserProfileForm.action.cancel")%></button>
+		<button class="btn" type="button" onclick="<%=uicomponent.event("Save")%>"><%=_ctx.appRes("word.save")%></button>
+		<button class="btn" type="button" onclick="<%=uicomponent.event("Cancel")%>"><%=_ctx.appRes("word.cancel")%></button>
 	</div>
 </div>
