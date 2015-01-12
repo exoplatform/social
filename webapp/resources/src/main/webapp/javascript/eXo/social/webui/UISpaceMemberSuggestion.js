@@ -25,6 +25,7 @@ var UISpaceMemberSuggest = {
 	  var restContextName = params.restContextName || null;
     var currentUserName = params.currentUserName || null;
     var typeOfRelation = params.typeOfRelation || null;
+    var spaceURL = params.spaceURL || null;
       
 		var suggestEl = $('#user');
 		
@@ -39,6 +40,10 @@ var UISpaceMemberSuggest = {
 	
       if (currentUserName) {
         restURL += "&currentUser=" + currentUserName;
+      }
+
+      if (spaceURL) {
+         restURL += "&spaceURL=" + spaceURL;
       }
       
       if (typeOfRelation) {
