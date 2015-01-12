@@ -42,11 +42,13 @@
   def restContextName = uicomponent.getRestContextName();
 	def currentUserName = uicomponent.getCurrentUserName();
 	def typeOfRelation = uicomponent.getTypeOfRelation();
+	def spaceURL = uicomponent.getSpaceURL();
 	    
 	def params = """ {
 	  restContextName: '$restContextName',
     currentUserName: '$currentUserName',
-    typeOfRelation: '$typeOfRelation'
+    typeOfRelation: '$typeOfRelation',
+    spaceURL: '$spaceURL'
 	} """
   
   def rcontext = _ctx.getRequestContext();
