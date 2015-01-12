@@ -826,28 +826,6 @@
   </portlet>
 
   <portlet>
-    <description xml:lang="EN">Experience Profile Portlet</description>
-    <portlet-name>ExperienceProfilePortlet</portlet-name>
-    <display-name xml:lang="EN">Experience Profile Portlet</display-name>
-    <portlet-class>org.exoplatform.webui.application.portlet.PortletApplicationController</portlet-class>
-    <init-param>
-      <name>webui.configuration</name>
-      <value>/WEB-INF/conf/portlet/ExperienceProfilePortlet/webui/configuration.xml</value>
-    </init-param>
-    <expiration-cache>0</expiration-cache>
-    <supports>
-      <mime-type>text/html</mime-type>
-    </supports>
-    <supported-locale>en</supported-locale>
-    <resource-bundle>locale.portlet.Portlets</resource-bundle>
-    <portlet-info>
-      <title>Experience Profile Portlet</title>
-      <short-title>Experience Profile Portlet</short-title>
-      <keywords>social</keywords>
-    </portlet-info>
-  </portlet>
-
-  <portlet>
     <description xml:lang="EN">Recent Activities Portlet</description>
     <portlet-name>RecentActivitiesPortlet</portlet-name>
     <display-name xml:lang="EN">Recent Activities Portlet</display-name>

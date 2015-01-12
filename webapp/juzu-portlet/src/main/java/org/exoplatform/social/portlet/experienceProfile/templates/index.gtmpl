@@ -1,13 +1,15 @@
-<%
-	String aboutMe = uicomponent.getAboutMe();
-	boolean isOwner = uicomponent.isOwner();
-	List experienceData = uicomponent.getExperience();
-%>
-<div class="uiSocApplication uiExperienceProfilePortlet" style="<%//=((!isOwner && aboutMe.length() == 0) ? "padding:0px" : "")%>" id="$uicomponent.id">
+#{param name=_ctx/}
+#{param name=experiences/}
+#{param name=aboutMe/}
+#{param name=EXPERIENCES_IS_CURRENT/}
+#{param name=currentRemoteId/}
+#{param name=isOwner/}
+
+<div class="uiSocApplication uiExperienceProfilePortlet" id="UIExperienceProfilePortlet">
 <% if(aboutMe.length() > 0) { %>
 	<h5 class="head-container"><%=_ctx.appRes("UIBasicProfile.label.AboutMe")%></h5>
 	<div class="uiBox">
-	 	<div class="uiContentBox">$aboutMe</div>
+	 	<div class="uiContentBox"><%=aboutMe%></div>
  	</div>
 <% } else if(isOwner) { %>
 	<div class="no-content">
@@ -18,18 +20,18 @@
 		</div>
 	</div>
 <% } 
-	 if(experienceData.size()  > 0) {
+	 if(experiences.size()  > 0) {
 	   print("<h5 class=\"head-container\">" + _ctx.appRes("UIBasicProfile.label.Experience") + "</h5>");
-	   for(experience in experienceData) {
+	   for(experience in experiences) {
 	     print("<div class=\"uiBox experience-container\"> <div class=\"uiContentBox\">");
 	     for(key in experience.keySet()) {
-	       if(uicomponent.EXPERIENCES_IS_CURRENT.equals(key)) {
+	       if(EXPERIENCES_IS_CURRENT.equals(key)) {
 	         print(" " + _ctx.appRes("UIBasicProfile.label.untilNow"));
 	         continue;
 	       }
 	       String label = _ctx.appRes("UIBasicProfile.label." + key);
 %>
-				<div class="$key"><span><%=label%></span>: <span><%=experience.get(key)%></span></div>	
+				<div class="<%=key%>"><span><%=label%></span>: <span><%=experience.get(key)%></span></div>	
 <%
        }
 	     print("</div></div>");

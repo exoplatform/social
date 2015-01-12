@@ -10,7 +10,8 @@
         
         // User Profile Popup initialize
         var portal = eXo.social.portal;
-        var restUrl = '//' + window.location.host + portal.context + '/' + portal.rest + '/social/people' + '/getPeopleInfo/{0}.json';
+        var port = (window.location.port) ? window.location.port : '';
+        var restUrl = window.location.protocol + '//' + window.location.hostname + port + portal.context + '/' + portal.rest + '/social/people' + '/getPeopleInfo/{0}.json';
         
         var userLinks = $("#UIMiniConnectionsPortlet").find('a:[href*="/profile/"]');
         $.each(userLinks, function (idx, el) {

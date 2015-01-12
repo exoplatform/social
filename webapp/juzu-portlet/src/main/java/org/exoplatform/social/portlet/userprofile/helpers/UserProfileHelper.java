@@ -12,6 +12,10 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
 
+import juzu.impl.request.Request;
+import juzu.request.RenderContext;
+import juzu.request.RequestContext;
+
 import org.apache.commons.lang.StringUtils;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
@@ -98,18 +102,21 @@ public class UserProfileHelper {
     return ctx;
   }
   
-//  protected void initProfilePopup() throws Exception {
-//    JSONObject object = new JSONObject();
-//    WebuiRequestContext context = WebuiRequestContext.getCurrentInstance();
-//    object.put("StatusTitle", UserProfileHelper.encodeURI(UserProfileHelper.getLabel(context, "UserProfilePopup.label.Loading")));
-//    String[] keys = new String[]{"Connect", "Confirm", "CancelRequest", "RemoveConnection", "Ignore"};
-//    for (int i = 0; i < keys.length; i++) {
-//      object.put(keys[i], UserProfileHelper.encodeURI(UserProfileHelper.getLabel(context, "UserProfilePopup.label." + keys[i])));
-//    }
-//    //
-//    context.getJavascriptManager().getRequireJS().require("SHARED/social-ui-profile", "profile")
-//           .addScripts("profile.initUserProfilePopup('" + getId() + "', " + object.toString() + ");");
-//  }
+  public static Context getContext(RenderContext renderContext) {
+    Locale locale = Locale.ENGLISH;
+    RequestContext requestContext = Request.getCurrent().getContext();
+    ResourceBundle bundle= requestContext.getApplicationContext().resolveBundle(requestContext.getUserContext().getLocale()) ;
+
+    if (renderContext != null) {
+      locale = renderContext.getUserContext().getLocale();
+    }
+    if (bundle == null) {
+      bundle = renderContext.getApplicationContext().resolveBundle(locale);
+    }
+    
+    UserProfileHelper helper = new UserProfileHelper();
+    return helper.new Context(bundle);
+  }
   
   private static List<Map<String, String>> getMultiValues(Profile currentProfile, String key) {
     return (List<Map<String, String>>) currentProfile.getProperty(key);

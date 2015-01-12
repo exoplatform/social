@@ -62,4 +62,24 @@
      </portlet-info>
      
    </portlet>
+   
+   <portlet>
+    <description xml:lang="EN">Experience Profile Portlet</description>
+    <portlet-name>ExperienceProfilePortlet</portlet-name>
+    <display-name xml:lang="EN">Experience Profile Portlet</display-name>
+    <portlet-class>org.exoplatform.social.portlet.experienceProfile.ExperienceProfilePortlet</portlet-class>
+
+    <supports>
+      <mime-type>text/html</mime-type>
+    </supports>
+    
+    <supported-locale>en</supported-locale>
+    <resource-bundle>locale.portlet.userProfile.UserProfilePortlet</resource-bundle>
+    <portlet-info>
+      <title>Experience Profile Portlet</title>
+      <short-title>Experience Profile Portlet</short-title>
+      <keywords>social</keywords>
+    </portlet-info>
+  </portlet>
+  
 </portlet-app>
