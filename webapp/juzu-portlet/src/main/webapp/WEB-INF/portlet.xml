@@ -43,6 +43,22 @@
      </portlet-info>
      
    </portlet>
+
+   <portlet>
+     <description xml:lang="EN">Action Profile Portlet</description>
+     <portlet-name>ActionProfilePortlet</portlet-name>
+     <display-name xml:lang="EN">Action Profile Portlet</display-name>
+     <portlet-class>org.exoplatform.social.portlet.actionProfile.ActionProfilePortlet</portlet-class>
+     <supports>
+       <mime-type>text/html</mime-type>
+     </supports>
+     <supported-locale>en</supported-locale>
+     <resource-bundle>locale.portlet.userProfile.UserProfilePortlet</resource-bundle>
+     <portlet-info>
+       <title>Status Profile</title>
+       <keywords>social</keywords>
+     </portlet-info>
+   </portlet>
    
    <portlet>
      <description xml:lang="EN">Mini Connections Portlet</description>
