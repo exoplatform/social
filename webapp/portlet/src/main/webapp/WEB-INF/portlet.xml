@@ -848,28 +848,6 @@
   </portlet>
 
   <portlet>
-    <description xml:lang="EN">Connections User Portlet</description>
-    <portlet-name>MiniConnectionsPortlet</portlet-name>
-    <display-name xml:lang="EN">Connections User Portlet</display-name>
-    <portlet-class>org.exoplatform.webui.application.portlet.PortletApplicationController</portlet-class>
-    <init-param>
-      <name>webui.configuration</name>
-      <value>/WEB-INF/conf/portlet/MiniConnectionsPortlet/webui/configuration.xml</value>
-    </init-param>
-    <expiration-cache>0</expiration-cache>
-    <supports>
-      <mime-type>text/html</mime-type>
-    </supports>
-    <supported-locale>en</supported-locale>
-    <resource-bundle>locale.portlet.Portlets</resource-bundle>
-    <portlet-info>
-      <title>Connections Portlet</title>
-      <short-title>Connections User Portlet</short-title>
-      <keywords>social</keywords>
-    </portlet-info>
-  </portlet>
-
-  <portlet>
     <description xml:lang="EN">Recent Activities Portlet</description>
     <portlet-name>RecentActivitiesPortlet</portlet-name>
     <display-name xml:lang="EN">Recent Activities Portlet</display-name>

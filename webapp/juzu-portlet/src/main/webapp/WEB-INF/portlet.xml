@@ -36,9 +36,28 @@
      </supports>
      
      <supported-locale>en</supported-locale>
-     <resource-bundle>locale.portlet.statusProfile.StatusProfilePortlet</resource-bundle>
+     <resource-bundle>locale.portlet.userProfile.UserProfilePortlet</resource-bundle>
      <portlet-info>
        <title>Status Profile</title>
+       <keywords>social</keywords>
+     </portlet-info>
+     
+   </portlet>
+   
+   <portlet>
+     <description xml:lang="EN">Mini Connections Portlet</description>
+     <portlet-name>MiniConnectionsPortlet</portlet-name>
+     <display-name xml:lang="EN">Mini Connections Portlet</display-name>
+     <portlet-class>org.exoplatform.social.portlet.miniConnections.MiniConnectionsPortlet</portlet-class>
+          
+     <supports>
+       <mime-type>text/html</mime-type>
+     </supports>
+     
+     <supported-locale>en</supported-locale>
+     <resource-bundle>locale.portlet.userProfile.UserProfilePortlet</resource-bundle>
+     <portlet-info>
+       <title>Connections Profile</title>
        <keywords>social</keywords>
      </portlet-info>
      
