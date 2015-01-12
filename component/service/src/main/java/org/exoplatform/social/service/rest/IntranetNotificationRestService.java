@@ -47,6 +47,8 @@ import org.exoplatform.commons.utils.CommonsUtils;
 import org.exoplatform.container.ExoContainer;
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.PortalContainer;
+import org.exoplatform.services.log.ExoLogger;
+import org.exoplatform.services.log.Log;
 import org.exoplatform.services.rest.resource.ResourceContainer;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.chromattic.entity.ActivityRef;
@@ -74,7 +76,7 @@ import org.exoplatform.social.core.storage.impl.StorageUtils;
  */
 @Path("social/intranet-notification")
 public class IntranetNotificationRestService extends AbstractStorage implements ResourceContainer {
-  
+  private static final Log LOG = ExoLogger.getLogger(IntranetNotificationRestService.class);
   private IdentityManager identityManager;
   private RelationshipManager relationshipManager;
   private SpaceService spaceService;
@@ -150,17 +152,19 @@ public class IntranetNotificationRestService extends AbstractStorage implements 
    * 
    * @param senderId The sender's remote Id.
    * @param receiverId The receiver's remote Id.
+   * @notificationId of the web notification message
    * @authentication
    * @request
-   * GET: http://localhost:8080/rest/social/intranet-notifications/confirmInvitationToConnect/john/root
+   * GET: http://localhost:8080/rest/social/intranet-notifications/confirmInvitationToConnect/john/root/<notificationId>
    * @throws Exception
    */
   @GET
-  @Path("confirmInvitationToConnect/{senderId}/{receiverId}")
+  @Path("confirmInvitationToConnect/{senderId}/{receiverId}/{notificationId}")
   public void confirmInvitationToConnect(@PathParam("senderId") String senderId,
-                                           @PathParam("receiverId") String receiverId) throws Exception {
+                                           @PathParam("receiverId") String receiverId,
+                                           @PathParam("notificationId") String notificationId) throws Exception {
     //update notification
-    NotificationInfo info = new NotificationInfo();
+    NotificationInfo info = CommonsUtils.getService(WebNotificationStorage.class).get(notificationId);
     info.key(new PluginKey("RelationshipReceivedRequestPlugin"));
     info.setFrom(senderId);
     info.setTo(receiverId);
@@ -178,7 +182,6 @@ public class IntranetNotificationRestService extends AbstractStorage implements 
     }
     getRelationshipManager().confirm(sender, receiver);
   }
-  
   /**
    * Processes the "Deny the invitation to connect" action between 2 users
    * 
@@ -206,17 +209,19 @@ public class IntranetNotificationRestService extends AbstractStorage implements 
    * 
    * @param userId The invitee's remote Id.
    * @param spaceId Id of the space.
+   * @notificationId of the web notification message
    * @authentication
    * @request
-   * GET: localhost:8080/rest/social/intranet-notifications/acceptInvitationToJoinSpace/e1cacf067f0001015ac312536462fc6b/john
+   * GET: localhost:8080/rest/social/intranet-notifications/acceptInvitationToJoinSpace/e1cacf067f0001015ac312536462fc6b/john/<notificationId>
    * @throws Exception
    */
   @GET
-  @Path("acceptInvitationToJoinSpace/{spaceId}/{userId}")
+  @Path("acceptInvitationToJoinSpace/{spaceId}/{userId}/{notificationId}")
   public void acceptInvitationToJoinSpace(@PathParam("spaceId") String spaceId,
-                                               @PathParam("userId") String userId) throws Exception {
+                                               @PathParam("userId") String userId,
+                                               @PathParam("notificationId") String notificationId) throws Exception {
     //update notification
-    NotificationInfo info = new NotificationInfo();
+    NotificationInfo info = CommonsUtils.getService(WebNotificationStorage.class).get(notificationId);
     info.setTo(userId);
     info.key(new PluginKey("SpaceInvitationPlugin"));
     Map<String, String> ownerParameter = new HashMap<String, String>();
@@ -259,18 +264,21 @@ public class IntranetNotificationRestService extends AbstractStorage implements 
    * 
    * @param userId The remote Id of the user who requests for joining the space.
    * @param spaceId Id of the space.
+   * @param currentUserId the userId
+   * @notificationId of the web notification message
    * @authentication
    * @request
-   * GET: localhost:8080/rest/social/intranet-notifications/validateRequestToJoinSpace/e1cacf067f0001015ac312536462fc6b/john
+   * GET: localhost:8080/rest/social/intranet-notifications/validateRequestToJoinSpace/e1cacf067f0001015ac312536462fc6b/john/<notificationId>
    * @throws Exception
    */
   @GET
-  @Path("validateRequestToJoinSpace/{spaceId}/{requestUserId}/{currentUserId}")
+  @Path("validateRequestToJoinSpace/{spaceId}/{requestUserId}/{currentUserId}/{notificationId}")
   public void validateRequestToJoinSpace(@PathParam("spaceId") String spaceId,
                                             @PathParam("requestUserId") String requestUserId,
-                                            @PathParam("currentUserId") String currentUserId) throws Exception {
+                                            @PathParam("currentUserId") String currentUserId,
+                                            @PathParam("notificationId") String notificationId) throws Exception {
     //update notification
-    NotificationInfo info = new NotificationInfo();
+    NotificationInfo info = CommonsUtils.getService(WebNotificationStorage.class).get(notificationId);
     info.setTo(currentUserId);
     info.key(new PluginKey("RequestJoinSpacePlugin"));
     Map<String, String> ownerParameter = new HashMap<String, String>();
@@ -372,9 +380,9 @@ public class IntranetNotificationRestService extends AbstractStorage implements 
       notification.setTitle(msg.getBody());
       notification.with(NotificationMessageUtils.SHOW_POPOVER_PROPERTY.getKey(), "true")
                   .with(NotificationMessageUtils.READ_PORPERTY.getKey(), "false");
-      CommonsUtils.getService(WebNotificationStorage.class).save(notification);
+      CommonsUtils.getService(WebNotificationStorage.class).update(notification, false);
     } catch (Exception e) {
-      System.out.println("error : " + e.getMessage());
+      LOG.error("Can not send the message to Intranet.", e.getMessage());
     }
   }
 }
