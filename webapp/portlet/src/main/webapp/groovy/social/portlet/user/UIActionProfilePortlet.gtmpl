@@ -1,4 +1,0 @@
-<div class="uiSocApplication uiActionProfilePortlet" id="$uicomponent.id">
-<% uicomponent.renderChildren(); %>
-</div>
-
