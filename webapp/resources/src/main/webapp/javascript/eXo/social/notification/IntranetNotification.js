@@ -74,6 +74,8 @@
           }
         });
       }
+      
+      return this;
     },
     openURL : function (url) {
       if(url && url.length > 0) {
@@ -86,13 +88,13 @@
     },
     doAction : function(elm, link) {
       //call ajax to remove this notification, and do something in commons side
-      IntranetNotification.removeItem(elm.parents('li:first'), link);
       //call rest on social side: for example accept/refuse relationship
-      IntranetNotification.ajaxRequest(elm.data('rest'));
       //remove this element on UI
-      IntranetNotification.removeElm(elm.parents('li:first'));
       //redirect to the uri, for example: view activity detail
-      IntranetNotification.openURL(elm.data('link'));
+      IntranetNotification.removeItem(elm.parents('li:first'), link)
+                          .ajaxRequest(elm.data('rest'))
+                          .removeElm(elm.parents('li:first'))
+                          .openURL(elm.data('link'));
     },
     removeElm : function(elm) {
       elm.css('overflow', 'hidden').animate({
@@ -131,6 +133,7 @@
     removeItem : function(item) {
       var action = IntranetNotification.takeEventLink + item.data('id');
       window.ajaxGet(action);
+      return this;
     }
   };
 

@@ -376,6 +376,7 @@ public class IntranetNotificationRestService extends AbstractStorage implements 
       AbstractChannel channel = nCtx.getChannelManager().getChannel(ChannelKey.key(WebChannel.ID));
       AbstractTemplateBuilder builder = channel.getTemplateBuilder(notification.getKey());
       MessageInfo msg = builder.buildMessage(nCtx);
+      msg.setMoveTop(false);
       WebNotificationSender.sendJsonMessage(notification.getTo(), msg);
       notification.setTitle(msg.getBody());
       notification.with(NotificationMessageUtils.SHOW_POPOVER_PROPERTY.getKey(), "true")
