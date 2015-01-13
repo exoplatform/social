@@ -297,7 +297,12 @@ public class Utils {
   public static String getActivityID() {
     if ("activity".equals(getSelectedNode())) {
       return getValueFromRequestParam("id");
-    }
+    } else {
+      String uriActivity = Utils.getSelectedNode();      
+      if(uriActivity.indexOf("view_full_activity") >= 0 || uriActivity.indexOf("reply_activity") >= 0) {
+        return uriActivity.split("/")[3];          
+      }             
+    }    
     return null;
   }
   

@@ -71,16 +71,7 @@ public class UIUserActivityStreamPortlet extends UIPortletApplication {
     viewerName = Utils.getViewerRemoteId();
     ownerName = Utils.getOwnerRemoteId();
     uiComposer = addChild(UIComposer.class, null, null);
-    activityId = Utils.getActivityID();
-    
-    // Case when user doesn't login yet 
-    if(activityId == null){
-      Utils.getExoRouter();
-      String uriActivity = Utils.getSelectedNode();
-      if(uriActivity.indexOf("view_full_activity") >= 0) {
-        activityId = uriActivity.split("/")[3];
-      }      
-    }
+    activityId = Utils.getActivityID();    
     
     if (activityId != null) {
       uiComposer.setPostContext(PostContext.SINGLE);
