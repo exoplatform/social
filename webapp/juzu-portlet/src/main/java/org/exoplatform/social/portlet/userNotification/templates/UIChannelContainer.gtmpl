@@ -43,7 +43,7 @@
 		</div>
 	<%}
 		if(isNotActive) {
-		  print("<span class=\"view-mode status-false\">" + _ctx.appRes("UINotification.label.NoNotifications") + "</span>");
+		  print("<span class=\"view-mode status-false\"><i>" + _ctx.appRes("UINotification.label.NoNotifications") + "</i></span>");
 		}
 	%>
 	</div>
