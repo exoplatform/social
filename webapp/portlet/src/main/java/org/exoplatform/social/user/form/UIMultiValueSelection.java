@@ -158,7 +158,7 @@ public class UIMultiValueSelection extends UIFormInputSet {
     }
     UIForm uiForm = getAncestorOfType(UIForm.class);
     Writer w = context.getWriter();
-    w.append("<div id=\"").append(getId()).append("\">") ;
+    w.append("<div class=\"uiMulti-select\" id=\"").append(getId()).append("\">") ;
     for (Integer indexId : indexs) {
       w.append("<div class=\"controls-row\">") ;
       renderUIComponent(getUIFormSelectBox(FIELD_SELECT_KEY + indexId));

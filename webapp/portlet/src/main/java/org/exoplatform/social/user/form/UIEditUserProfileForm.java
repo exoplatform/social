@@ -1,6 +1,5 @@
 package org.exoplatform.social.user.form;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -22,8 +21,8 @@ import org.exoplatform.webui.core.UIComponent;
 import org.exoplatform.webui.core.lifecycle.UIFormLifecycle;
 import org.exoplatform.webui.core.model.SelectItemOption;
 import org.exoplatform.webui.event.Event;
-import org.exoplatform.webui.event.EventListener;
 import org.exoplatform.webui.event.Event.Phase;
+import org.exoplatform.webui.event.EventListener;
 import org.exoplatform.webui.form.UIForm;
 import org.exoplatform.webui.form.UIFormDateTimeInput;
 import org.exoplatform.webui.form.UIFormInputBase;
@@ -106,7 +105,6 @@ public class UIEditUserProfileForm extends UIForm {
     //
     addUIFormInput(aboutSection);
     addUIFormInput(baseSection);
-    getOrCreateExperienceSection(FIELD_EXPERIENCE_SECTION + index);
   }
   
   @Override
@@ -148,7 +146,7 @@ public class UIEditUserProfileForm extends UIForm {
     company.setLabel(Profile.EXPERIENCES_COMPANY);
     experienceSection.addUIFormInput(company , actions);
     //
-    experienceSection.addUIFormInput(createUIFormStringInput(Profile.EXPERIENCES_POSITION + id, false), Profile.EXPERIENCES_POSITION);
+    experienceSection.addUIFormInput(createUIFormStringInput(Profile.EXPERIENCES_POSITION + id, false), Profile.EXPERIENCES_POSITION + "Experience");
     //
     experienceSection.addUIFormInput(new UIFormTextAreaInput(Profile.EXPERIENCES_DESCRIPTION + id,
                                                              Profile.EXPERIENCES_DESCRIPTION + id, ""), Profile.EXPERIENCES_DESCRIPTION);
@@ -189,14 +187,15 @@ public class UIEditUserProfileForm extends UIForm {
     return (String) currentProfile.getProperty(key);
   }
 
-  protected void setValueBasicInfo() {
+  protected void setValueBasicInfo() throws Exception {
     //about me
     getUIInputSection(FIELD_ABOUT_SECTION).getUIFormTextAreaInput(Profile.ABOUT_ME)
                                           .setValue(getStringValueProfile(Profile.ABOUT_ME));
-    //
+    //Basic information
     UIInputSection baseSection = getUIInputSection(FIELD_BASE_SECTION);
     baseSection.getUIStringInput(Profile.FIRST_NAME).setValue(getStringValueProfile(Profile.FIRST_NAME));
     baseSection.getUIStringInput(Profile.LAST_NAME).setValue(getStringValueProfile(Profile.LAST_NAME));
+    baseSection.getUIStringInput(Profile.EMAIL).setValue(getStringValueProfile(Profile.EMAIL));
     baseSection.getUIStringInput(Profile.POSITION).setValue(getStringValueProfile(Profile.POSITION));
     //
     baseSection.getUIFormSelectBox(Profile.GENDER).setValue(getStringValueProfile(Profile.GENDER));
@@ -206,7 +205,16 @@ public class UIEditUserProfileForm extends UIForm {
     //
     List<Map<String, String>> ims = UserProfileHelper.getMultiValues(currentProfile, Profile.CONTACT_IMS);
     baseSection.getUIMultiValueSelection(Profile.CONTACT_IMS).setValues(ims);
+    //Experience
     
+    List<Map<String, String>> experiences = UserProfileHelper.getDisplayExperience(currentProfile);
+    if(experiences.size() > 0) {
+      for (Map<String, String> experience : experiences) {
+        setValueExperienceSection(FIELD_EXPERIENCE_SECTION + index, experience);
+      }
+    } else {
+      getOrCreateExperienceSection(FIELD_EXPERIENCE_SECTION + index);
+    }
   }
   
   protected Calendar stringToCalendar(String sDate) {
@@ -215,7 +223,7 @@ public class UIEditUserProfileForm extends UIForm {
       Calendar calendar = Calendar.getInstance();
       calendar.setTime(sd.parse(sDate));
       return calendar;
-    } catch (ParseException e) {
+    } catch (Exception e) {
       return null;
     }
   }
@@ -272,6 +280,9 @@ public class UIEditUserProfileForm extends UIForm {
   public void processRender(WebuiRequestContext context) throws Exception {
     this.currentProfile = Utils.getViewerIdentity(true).getProfile();
     this.initPlaceholder();
+    //
+    setValueBasicInfo();
+    //
     super.processRender(context);
   }
   
