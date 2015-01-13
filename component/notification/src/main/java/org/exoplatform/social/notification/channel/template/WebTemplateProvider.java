@@ -84,6 +84,7 @@ public class WebTemplateProvider extends TemplateProvider {
   private static final String REFUSE_SPACE_REQUEST = "social/intranet-notification/refuseRequestToJoinSpace";
   private static final String ACCEPT_SPACE_INVITATION = "social/intranet-notification/acceptInvitationToJoinSpace";
   private static final String REFUSE_SPACE_INVITATION = "social/intranet-notification/ignoreInvitationToJoinSpace";
+  private static final String MESSAGE_JSON_FILE_NAME = "message.json";
   
   /** Defines the template builder for ActivityCommentPlugin*/
   private AbstractTemplateBuilder comment = new AbstractTemplateBuilder() {
@@ -404,7 +405,7 @@ public class WebTemplateProvider extends TemplateProvider {
       templateContext.put("USER", userProfile.getFullName());
       templateContext.put("PROFILE_URL", LinkProvider.getUserProfileUri(identity.getRemoteId()));
       templateContext.put("AVATAR", userProfile.getAvatarUrl() != null ? userProfile.getAvatarUrl() : LinkProvider.PROFILE_DEFAULT_AVATAR_URL);
-      templateContext.put("ACCEPT_CONNECTION_REQUEST_ACTION_URL", LinkProviderUtils.getWebNotificationRestUrl(ACCEPT_INVITATION_TO_CONNECT, sender, toUser));
+      templateContext.put("ACCEPT_CONNECTION_REQUEST_ACTION_URL", LinkProviderUtils.getWebNotificationRestUrl(ACCEPT_INVITATION_TO_CONNECT, sender, toUser, notification.getId(), MESSAGE_JSON_FILE_NAME));
       templateContext.put("REFUSE_CONNECTION_REQUEST_ACTION_URL", LinkProviderUtils.getWebNotificationRestUrl(REFUSE_INVITATION_TO_CONNECT, sender, toUser));
       //
       String body = TemplateUtils.processGroovy(templateContext);
@@ -447,7 +448,7 @@ public class WebTemplateProvider extends TemplateProvider {
       templateContext.put("USER", userProfile.getFullName());
       templateContext.put("SPACE_URL", LinkProvider.getActivityUriForSpace(space.getPrettyName(), space.getGroupId().replace("/spaces/", "")));
       templateContext.put("AVATAR", userProfile.getAvatarUrl() != null ? userProfile.getAvatarUrl() : LinkProvider.PROFILE_DEFAULT_AVATAR_URL);
-      templateContext.put("VALIDATE_SPACE_REQUEST_ACTION_URL", LinkProviderUtils.getWebNotificationRestUrl(VALIDATE_SPACE_REQUEST, space.getId(), identity.getRemoteId()) + "/" + notification.getTo());
+      templateContext.put("VALIDATE_SPACE_REQUEST_ACTION_URL", LinkProviderUtils.getWebNotificationRestUrl(VALIDATE_SPACE_REQUEST, space.getId(), identity.getRemoteId()) + "/" + notification.getTo() + "/" + notification.getId() + "/" + MESSAGE_JSON_FILE_NAME);
       templateContext.put("REFUSE_SPACE_REQUEST_ACTION_URL", LinkProviderUtils.getWebNotificationRestUrl(REFUSE_SPACE_REQUEST, space.getId(), identity.getRemoteId()));
       //
       String body = TemplateUtils.processGroovy(templateContext);
@@ -488,7 +489,7 @@ public class WebTemplateProvider extends TemplateProvider {
       templateContext.put("SPACE", space.getDisplayName());
       templateContext.put("SPACE_URL", LinkProvider.getActivityUriForSpace(space.getPrettyName(), space.getGroupId().replace("/spaces/", "")));
       templateContext.put("SPACE_AVATAR", space.getAvatarUrl() != null ? space.getAvatarUrl() : LinkProvider.SPACE_DEFAULT_AVATAR_URL);
-      templateContext.put("ACCEPT_SPACE_INVITATION_ACTION_URL", LinkProviderUtils.getWebNotificationRestUrl(ACCEPT_SPACE_INVITATION, space.getId(), notification.getTo()));
+      templateContext.put("ACCEPT_SPACE_INVITATION_ACTION_URL", LinkProviderUtils.getWebNotificationRestUrl(ACCEPT_SPACE_INVITATION, space.getId(), notification.getTo(), notification.getId(), MESSAGE_JSON_FILE_NAME));
       templateContext.put("REFUSE_SPACE_INVITATION_ACTION_URL", LinkProviderUtils.getWebNotificationRestUrl(REFUSE_SPACE_INVITATION, space.getId(), notification.getTo()));
       //
       String body = TemplateUtils.processGroovy(templateContext);

@@ -63,8 +63,26 @@
       item.find('.remove-item').remove();
 
       item.find('.action-item').off('click')
-          .on('click', function(evt) { evt.stopPropagation(); IntranetNotification.doAction($(this), IntranetNotification.takeEventLink); });
+          .on('click', function(evt) { evt.stopPropagation(); IntranetNotification.doAction($(this)); });
+     item.find('.cancel-item').off('click')
+            .on('click', function(evt) { evt.stopPropagation(); IntranetNotification.doCancelAction($(this)); });
       return item;
+    },
+    appendMessage : function(message) {
+      console.log(message.body);
+      var newItem = $($('<ul></ul>').html(message.body).html());
+      var id = newItem.data('id');
+      newItem.find('.remove-item').remove();
+        //
+      var existItem = IntranetNotification.popupItem.find('li[data-id=' + id + ']');
+      var isExisting = existItem.length > 0;
+      if (isExisting) {
+        //this process only mentions case like or comment, 
+        //the content must be updated and NotificationID still kept
+        existItem.hide();
+        existItem.replaceWith(newItem);
+        IntranetNotification.showElm(IntranetNotification.applyAction(existItem));
+      }
     },
     ajaxRequest : function (url, callBack) {
       if(url && url.length > 0) {
@@ -86,15 +104,18 @@
       }
       return this;
     },
-    doAction : function(elm, link) {
+    doAction : function(elm) {
       //call ajax to remove this notification, and do something in commons side
       //call rest on social side: for example accept/refuse relationship
       //remove this element on UI
       //redirect to the uri, for example: view activity detail
-      IntranetNotification.removeItem(elm.parents('li:first'), link)
-                          .ajaxRequest(elm.data('rest'))
-                          .removeElm(elm.parents('li:first'))
+      IntranetNotification.ajaxRequest(elm.data('rest'), function(data) {IntranetNotification.appendMessage(data)})
                           .openURL(elm.data('link'));
+    },
+    doCancelAction : function(elm) {
+      var id = elm.parents('li:first').data('id');
+      IntranetNotification.ajaxRequest(elm.data('rest') + "/" + id)
+                          .removeElm(elm.parents('li:first'));
     },
     removeElm : function(elm) {
       elm.css('overflow', 'hidden').animate({
@@ -105,6 +126,7 @@
         }
         $(this).remove();
       });
+      return this;
     },
     showElm : function(elm) {
       elm.css({
@@ -127,11 +149,6 @@
     },
     markItemRead : function(item) {
       var action = IntranetNotification.markReadLink + item.data('id');
-      window.ajaxGet(action);
-      return this;
-    },
-    removeItem : function(item) {
-      var action = IntranetNotification.takeEventLink + item.data('id');
       window.ajaxGet(action);
       return this;
     }
