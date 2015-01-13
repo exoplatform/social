@@ -134,12 +134,6 @@ public class UIMultiValueSelection extends UIFormInputSet {
 
   private void removeChildren() {
     getChildren().clear();
-    //
-//    for (Integer id : indexs) {
-//      removeChildById(FIELD_SELECT_KEY + id);
-//      removeChildById(FIELD_INPUT_KEY + id);
-//    }
-    //
     indexs.clear();
   }
 

@@ -80,7 +80,7 @@ public class UserProfileHelper {
     return pastExperiences;
   }
   
-  private static List<Map<String, String>> getMultiValues(Profile currentProfile, String key) {
+  public static List<Map<String, String>> getMultiValues(Profile currentProfile, String key) {
     return (List<Map<String, String>>) currentProfile.getProperty(key);
   }
 

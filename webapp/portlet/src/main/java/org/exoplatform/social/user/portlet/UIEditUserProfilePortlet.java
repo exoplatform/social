@@ -18,6 +18,8 @@ package org.exoplatform.social.user.portlet;
 
 import org.exoplatform.social.user.form.UIEditUserProfileForm;
 import org.exoplatform.social.webui.composer.PopupContainer;
+import org.exoplatform.web.application.RequireJS;
+import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.core.lifecycle.UIApplicationLifecycle;
 
@@ -32,4 +34,13 @@ public class UIEditUserProfilePortlet extends UIAbstractUserPortlet {
     addChild(PopupContainer.class, null, "AvatarPopupContainer");
   }
 
+  @Override
+  public void beforeProcessRender(WebuiRequestContext context) {
+    super.beforeProcessRender(context);
+    //
+    RequireJS requireJs = context.getJavascriptManager().getRequireJS();
+    requireJs.require("SHARED/jquery", "jq")
+             .addScripts("(function(jq){jq('.uiEditUserProfileForm:first').find('.multiValueContainer').find('.uiIconTrash').attr('class', 'uiIconClose uiIconLightGray');})(jq);");
+  }
+  
 }

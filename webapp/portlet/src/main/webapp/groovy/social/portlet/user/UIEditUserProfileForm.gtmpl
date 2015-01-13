@@ -8,9 +8,6 @@
 			uiform.renderChild(child);
 		}
 	}
-	def requireJs = _ctx.getRequestContext().getJavascriptManager().getRequireJS();
-	requireJs.require("SHARED/jquery", "jq")
-	         .addScripts("(function(jq){jq('.uiEditUserProfileForm:first').find('.multiValueContainer').find('.uiIconTrash').attr('class', 'uiIconClose uiIconLightGray');})(jq);");
 	//
 %>
 	</div>

@@ -9,6 +9,7 @@ import java.util.Map;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.core.UIComponent;
 import org.exoplatform.webui.form.UIForm;
+import org.exoplatform.webui.form.UIFormDateTimeInput;
 import org.exoplatform.webui.form.UIFormInput;
 import org.exoplatform.webui.form.UIFormInputBase;
 import org.exoplatform.webui.form.UIFormInputSet;
@@ -30,9 +31,23 @@ public class UIInputSection extends UIFormInputSet {
     this.title = title;
   }
 
+  public UIFormDateTimeInput getUIFormDateTimeInput(String name) {
+    return (UIFormDateTimeInput) findComponentById(name);
+  }
+
+  public UIMultiValueSelection getUIMultiValueSelection(String id) {
+    return (UIMultiValueSelection) findComponentById(id);
+  }
+
   public UIFormInput<?> addUIFormInput(UIFormInput<?> input, List<ActionData> actions) {
     addUIFormInput(input);
     actionFields.put(input.getName(), actions);
+    return input;
+  }
+  
+  public UIFormInputBase<?> addUIFormInput(UIFormInputBase<?> input, String label) {
+    input.setLabel(label);
+    addUIFormInput(input);
     return input;
   }
 
@@ -58,7 +73,7 @@ public class UIInputSection extends UIFormInputSet {
     //The title
     w.append("<h4 class=\"titleWithBorder\">");
     if(title != null && title.length() > 0) {
-      w.append("<span class=\"nameTitle\">Contact</span>");
+      w.append("<span class=\"nameTitle\">").append(uiForm.getLabel(title)).append("</span>");
     }
     w.append("</h4>");
     String classLable = (useGroupControl) ? "control-label" : "input-label";
@@ -76,10 +91,10 @@ public class UIInputSection extends UIFormInputSet {
       } else {
         label = inputEntry.getId();
       }
+      w.append("<div class=\"").append(classControlGroup).append("\">");
       if (label != null && !label.isEmpty()) {
-        w.append("<div class=\"").append(classControlGroup).append("\">");
         w.append("<label class=\"").append(classLable).append("\" for=\"" + inputEntry.getId() + "\">");
-        w.append(uiForm.getLabel(label));
+        w.append(uiForm.getLabel(label)).append(":");
         w.append("</label>");
       }
       w.append("<div class=\"").append(classControl).append("\">");
@@ -108,7 +123,8 @@ public class UIInputSection extends UIFormInputSet {
           }
         }
       }
-      w.append("</div>");
+      w.append("  </div>");// end group
+      w.append("</div>"); // end control
     }
     w.append("</div>");
   }
