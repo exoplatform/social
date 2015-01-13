@@ -112,6 +112,12 @@ public static final String RESOURCE_URL = "social/notifications";
   public static String getRedirectUrl(String type, String objectId) {
     return getRestUrl(REDIRECT_URL, type, objectId);
   }
+  
+  public static String getWebNotificationRestUrl(String type, String objectId1, String objectId2) {
+    String restContext = CommonsUtils.getRestContextName();
+    return new StringBuffer("/").append(restContext).append("/").append(type)
+                                .append("/").append(objectId1).append("/").append(objectId2).toString();
+  }
 
   /**
    * Gets full rest url

@@ -361,7 +361,7 @@ public class WebTemplateProvider extends TemplateProvider {
       templateContext.put("AVATAR", profile.getAvatarUrl() != null ? profile.getAvatarUrl() : LinkProvider.PROFILE_DEFAULT_AVATAR_URL);
       templateContext.put("ACTIVITY", NotificationUtils.removeLinkTitle(activity.getTitle()));
       templateContext.put("SPACE", spaceIdentity.getProfile().getFullName());
-      templateContext.put("SPACE_URL", LinkProvider.getSpaceUri(space.getPrettyName()));
+      templateContext.put("SPACE_URL", LinkProvider.getActivityUriForSpace(space.getPrettyName(), space.getGroupId().replace("/spaces/", "")));
       templateContext.put("PROFILE_URL", LinkProvider.getUserProfileUri(identity.getRemoteId()));
       templateContext.put("VIEW_FULL_DISCUSSION_ACTION_URL", LinkProvider.getSingleActivityUrl(activity.getId()));
       //
@@ -404,8 +404,8 @@ public class WebTemplateProvider extends TemplateProvider {
       templateContext.put("USER", userProfile.getFullName());
       templateContext.put("PROFILE_URL", LinkProvider.getUserProfileUri(identity.getRemoteId()));
       templateContext.put("AVATAR", userProfile.getAvatarUrl() != null ? userProfile.getAvatarUrl() : LinkProvider.PROFILE_DEFAULT_AVATAR_URL);
-      templateContext.put("ACCEPT_CONNECTION_REQUEST_ACTION_URL", LinkProviderUtils.getRestUrl(ACCEPT_INVITATION_TO_CONNECT, sender, toUser));
-      templateContext.put("REFUSE_CONNECTION_REQUEST_ACTION_URL", LinkProviderUtils.getRestUrl(REFUSE_INVITATION_TO_CONNECT, sender, toUser));
+      templateContext.put("ACCEPT_CONNECTION_REQUEST_ACTION_URL", LinkProviderUtils.getWebNotificationRestUrl(ACCEPT_INVITATION_TO_CONNECT, sender, toUser));
+      templateContext.put("REFUSE_CONNECTION_REQUEST_ACTION_URL", LinkProviderUtils.getWebNotificationRestUrl(REFUSE_INVITATION_TO_CONNECT, sender, toUser));
       //
       String body = TemplateUtils.processGroovy(templateContext);
       //binding the exception throws by processing template
@@ -445,10 +445,10 @@ public class WebTemplateProvider extends TemplateProvider {
       templateContext.put("LAST_UPDATED_TIME", TimeConvertUtils.convertXTimeAgoByTimeServer(cal.getTime(), "EE, dd yyyy", new Locale(language), TimeConvertUtils.YEAR));
       templateContext.put("SPACE", space.getDisplayName());
       templateContext.put("USER", userProfile.getFullName());
-      templateContext.put("SPACE_URL", LinkProvider.getSpaceUri(space.getPrettyName()));
+      templateContext.put("SPACE_URL", LinkProvider.getActivityUriForSpace(space.getPrettyName(), space.getGroupId().replace("/spaces/", "")));
       templateContext.put("AVATAR", userProfile.getAvatarUrl() != null ? userProfile.getAvatarUrl() : LinkProvider.PROFILE_DEFAULT_AVATAR_URL);
-      templateContext.put("VALIDATE_SPACE_REQUEST_ACTION_URL", LinkProviderUtils.getRestUrl(VALIDATE_SPACE_REQUEST, space.getId(), identity.getRemoteId()) + "/" + notification.getTo());
-      templateContext.put("REFUSE_SPACE_REQUEST_ACTION_URL", LinkProviderUtils.getRestUrl(REFUSE_SPACE_REQUEST, space.getId(), identity.getRemoteId()));
+      templateContext.put("VALIDATE_SPACE_REQUEST_ACTION_URL", LinkProviderUtils.getWebNotificationRestUrl(VALIDATE_SPACE_REQUEST, space.getId(), identity.getRemoteId()) + "/" + notification.getTo());
+      templateContext.put("REFUSE_SPACE_REQUEST_ACTION_URL", LinkProviderUtils.getWebNotificationRestUrl(REFUSE_SPACE_REQUEST, space.getId(), identity.getRemoteId()));
       //
       String body = TemplateUtils.processGroovy(templateContext);
       //binding the exception throws by processing template
@@ -486,10 +486,10 @@ public class WebTemplateProvider extends TemplateProvider {
       templateContext.put("NOTIFICATION_ID", notification.getId());
       templateContext.put("LAST_UPDATED_TIME", TimeConvertUtils.convertXTimeAgoByTimeServer(cal.getTime(), "EE, dd yyyy", new Locale(language), TimeConvertUtils.YEAR));
       templateContext.put("SPACE", space.getDisplayName());
-      templateContext.put("SPACE_URL", LinkProvider.getSpaceUri(space.getPrettyName()));
+      templateContext.put("SPACE_URL", LinkProvider.getActivityUriForSpace(space.getPrettyName(), space.getGroupId().replace("/spaces/", "")));
       templateContext.put("SPACE_AVATAR", space.getAvatarUrl() != null ? space.getAvatarUrl() : LinkProvider.SPACE_DEFAULT_AVATAR_URL);
-      templateContext.put("ACCEPT_SPACE_INVITATION_ACTION_URL", LinkProviderUtils.getRestUrl(ACCEPT_SPACE_INVITATION, space.getId(), notification.getTo()));
-      templateContext.put("REFUSE_SPACE_INVITATION_ACTION_URL", LinkProviderUtils.getRestUrl(REFUSE_SPACE_INVITATION, space.getId(), notification.getTo()));
+      templateContext.put("ACCEPT_SPACE_INVITATION_ACTION_URL", LinkProviderUtils.getWebNotificationRestUrl(ACCEPT_SPACE_INVITATION, space.getId(), notification.getTo()));
+      templateContext.put("REFUSE_SPACE_INVITATION_ACTION_URL", LinkProviderUtils.getWebNotificationRestUrl(REFUSE_SPACE_INVITATION, space.getId(), notification.getTo()));
       //
       String body = TemplateUtils.processGroovy(templateContext);
       //binding the exception throws by processing template
