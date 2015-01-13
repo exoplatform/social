@@ -138,15 +138,20 @@ public class UserProfileHelper {
   private static void putInfoData(Profile currentProfile, Map<String, Object> infos, String mainKey) {
     List<Map<String, String>> multiValues = getMultiValues(currentProfile, mainKey);
     if (multiValues != null && multiValues.size() > 0) {
-      Map<String, String> mainValue = new HashMap<String, String>();
-      int counter = 0;
+      Map<String, List<String>> mainValue = new HashMap<String, List<String>>();
+      
       for (Map<String, String> map : multiValues) {
-        if (URL_KEY.equals(map.get(KEY))) {
-          ++counter;
-          mainValue.put(map.get(KEY) + counter, map.get(VALUE));
+        List<String> values = new ArrayList<String>();
+        String key = map.get(KEY);
+        String value = map.get(VALUE);
+        if (mainValue.containsKey(key)) {
+          values.addAll(mainValue.get(key));
+          values.add(value);
         } else {
-          mainValue.put(map.get(KEY), map.get(VALUE));
+          values.add(value);
         }
+        
+        mainValue.put(key, values);
       }
       //
       infos.put(mainKey, mainValue);

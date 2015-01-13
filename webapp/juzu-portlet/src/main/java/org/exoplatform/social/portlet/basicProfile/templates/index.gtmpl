@@ -21,14 +21,22 @@ def keys = profile.keySet();
       <%
       	} else  {
       	  for(subKey in values.keySet()) {
+      	    def listVal = values.get(subKey); 
+      	    int valueNum = 0;
       	    if (_ctx.isURL(subKey)) {
-      	    %>
-              <div class=""><a href="<%=values.get(subKey)%>"><%=values.get(subKey)%></a></div>
-            <%	      
+      	      for (url in listVal) { %>
+              <div class=""><a href="<%=url%>"><%=url%></a></div>
+            <%}
       	    } else {
-            %>
-      	      <div class=""><span><%=_ctx.appRes("UIBasicProfile.label." + subKey)%></span>: <span><%=values.get(subKey)%></span></div>
-            <%
+              for (val in listVal) { 
+                if (valueNum == 0) {
+              %>
+      	      <div class=""><span><%=_ctx.appRes("UIBasicProfile.label." + subKey)%></span>: <span><%=val%></span></div>
+      	      <%} else { %>
+      	      <div class=""><span><%=val%></span></div>
+            <%  }
+                valueNum++;
+              }
       	    }
       	  }
       	}
