@@ -48,6 +48,17 @@ public class UserProfileHelper {
     return (List<Map<String, String>>) currentProfile.getProperty(key);
   }
 
+  public static List<String> getURLValues(Profile currentProfile) {
+    List<Map<String, String>> mapUrls = getMultiValues(currentProfile, Profile.CONTACT_URLS);
+    List<String> urls = new ArrayList<String>();
+    if (mapUrls != null) {
+      for (Map<String, String> map : mapUrls) {
+        urls.add(map.get(VALUE));
+      }
+    }
+    return urls;
+  }
+
   private static Map<String, String> theExperienceData(Map<String, String> srcExperience, boolean isCurrent) {
     Map<String, String> experience = new LinkedHashMap<String, String>();
     putExperienceData(srcExperience, experience, Profile.EXPERIENCES_COMPANY);

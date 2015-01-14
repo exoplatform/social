@@ -13,6 +13,7 @@ import org.exoplatform.webui.form.UIFormDateTimeInput;
 import org.exoplatform.webui.form.UIFormInput;
 import org.exoplatform.webui.form.UIFormInputBase;
 import org.exoplatform.webui.form.UIFormInputSet;
+import org.exoplatform.webui.form.UIFormMultiValueInputSet;
 
 public class UIInputSection extends UIFormInputSet {
   private Map<String, List<ActionData>> actionFields = new HashMap<String, List<ActionData>>();
@@ -52,6 +53,10 @@ public class UIInputSection extends UIFormInputSet {
 
   public UIMultiValueSelection getUIMultiValueSelection(String id) {
     return (UIMultiValueSelection) findComponentById(id);
+  }
+
+  public UIFormMultiValueInputSet getUIFormMultiValueInputSet(String id) {
+    return (UIFormMultiValueInputSet) findComponentById(id);
   }
 
   public UIFormInput<?> addUIFormInput(UIFormInput<?> input, List<ActionData> actions) {

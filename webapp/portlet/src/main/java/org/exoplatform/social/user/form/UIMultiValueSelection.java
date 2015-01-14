@@ -98,7 +98,7 @@ public class UIMultiValueSelection extends UIFormInputSet {
   }
 
   private String getInputKey(int indexId) {
-    return getUIFormSelectBox(FIELD_INPUT_KEY + indexId).getValue();
+    return getUIFormSelectBox(FIELD_SELECT_KEY + indexId).getValue();
   }
 
   public List<Map<String, String>> getValues() {
@@ -142,7 +142,7 @@ public class UIMultiValueSelection extends UIFormInputSet {
     UIForm uiForm = getAncestorOfType(UIForm.class);
     //
     String indexId = context.getRequestParameter(OBJECTID);
-    if (!indexId.contains(getId())) {
+    if (indexId == null || !indexId.contains(getId())) {
       return;
     }
     String action = uiForm.getSubmitAction();

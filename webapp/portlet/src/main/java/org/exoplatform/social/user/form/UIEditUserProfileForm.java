@@ -4,6 +4,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -35,6 +37,7 @@ import org.exoplatform.webui.form.validator.EmailAddressValidator;
 import org.exoplatform.webui.form.validator.MandatoryValidator;
 import org.exoplatform.webui.form.validator.PersonalNameValidator;
 import org.exoplatform.webui.form.validator.StringLengthValidator;
+import org.json.JSONObject;
 
 @ComponentConfig(
    lifecycle = UIFormLifecycle.class,
@@ -42,6 +45,7 @@ import org.exoplatform.webui.form.validator.StringLengthValidator;
    events = {
      @EventConfig(listeners = UIEditUserProfileForm.AddExperienceActionListener.class, phase = Phase.DECODE),
      @EventConfig(listeners = UIEditUserProfileForm.RemoveExperienceActionListener.class, phase = Phase.DECODE),
+     @EventConfig(listeners = UIEditUserProfileForm.CancelActionListener.class, phase = Phase.DECODE),
      @EventConfig(listeners = UIEditUserProfileForm.SaveActionListener.class)
    }
 )
@@ -59,8 +63,8 @@ public class UIEditUserProfileForm extends UIForm {
   /** IM_TYPES. */
   public static final String[] IM_TYPES = new String[] {"gtalk","msn","skype","yahoo","other"};
   private Profile currentProfile;
+  private List<String> experiens = new LinkedList<String>();
   private int index = 0;
-  private int experienSize = 0;
   
   public UIEditUserProfileForm() throws Exception {
     if (getId() == null) {
@@ -118,9 +122,9 @@ public class UIEditUserProfileForm extends UIForm {
     }
   }
   
-  private List<ActionData> getExperienceActions(String experienId, boolean hasAdd) {
+  private List<ActionData> createExperienceActions(String experienId, boolean hasAdd) {
     List<ActionData> actions = new ArrayList<UIInputSection.ActionData>();
-    if (experienSize > 1) {
+    if (experiens.size() > 1) {
       ActionData removeAction = new ActionData();
       removeAction.setAction("RemoveExperience").setIcon("uiIconClose")
                   .setTooltip("Remove this experience").setObjectId(experienId);
@@ -140,15 +144,15 @@ public class UIEditUserProfileForm extends UIForm {
     if(experienceSection != null) {
       return experienceSection;
     }
-    String label = (experienSize == 0) ? "Experience" : "";
+    String label = (experiens.size() == 0) ? "Experience" : "";
     experienceSection = new UIInputSection(id, label, "uiExperien");
 
     //
-    UIFormStringInput company = createUIFormStringInput(Profile.EXPERIENCES_COMPANY + id, false);
+    UIFormStringInput company = createUIFormStringInput(Profile.EXPERIENCES_COMPANY + id, true);
     company.setLabel(Profile.EXPERIENCES_COMPANY);
     experienceSection.addUIFormInput(company);
     //
-    experienceSection.addUIFormInput(createUIFormStringInput(Profile.EXPERIENCES_POSITION + id, false), Profile.EXPERIENCES_POSITION + "Experience");
+    experienceSection.addUIFormInput(createUIFormStringInput(Profile.EXPERIENCES_POSITION + id, true), Profile.EXPERIENCES_POSITION + "Experience");
     //
     experienceSection.addUIFormInput(new UIFormTextAreaInput(Profile.EXPERIENCES_DESCRIPTION + id,
                                                              Profile.EXPERIENCES_DESCRIPTION + id, ""), Profile.EXPERIENCES_DESCRIPTION);
@@ -167,8 +171,8 @@ public class UIEditUserProfileForm extends UIForm {
     //
     addUIFormInput(experienceSection);
     //
-    ++experienSize;
     ++index;
+    experiens.add(id);
     return experienceSection;
   }
 
@@ -207,18 +211,25 @@ public class UIEditUserProfileForm extends UIForm {
     //
     List<Map<String, String>> ims = UserProfileHelper.getMultiValues(currentProfile, Profile.CONTACT_IMS);
     baseSection.getUIMultiValueSelection(Profile.CONTACT_IMS).setValues(ims);
+    
+    baseSection.getUIFormMultiValueInputSet(Profile.CONTACT_URLS).setValue(UserProfileHelper.getURLValues(currentProfile));
     //Experience
-    experienSize = 0; index = 0;
     List<Map<String, String>> experiences = UserProfileHelper.getDisplayExperience(currentProfile);
-    System.out.println(experiences.toString());
     if(experiences.size() > 0) {
+      int i = 0;
+      String experienId;
       for (Map<String, String> experience : experiences) {
-        setValueExperienceSection(FIELD_EXPERIENCE_SECTION + index, experience);
+        if (i < experiens.size()) {
+          experienId = experiens.get(i);
+        } else {
+          experienId = FIELD_EXPERIENCE_SECTION + index;
+        }
+        setValueExperienceSection(experienId, experience);
       }
       resetActionFileds();
-    } else {
+    } else if (experiens.size() == 0) {
       String experienId = FIELD_EXPERIENCE_SECTION + index;
-      getOrCreateExperienceSection(experienId).setActionField(experienId, getExperienceActions(experienId, true));
+      getOrCreateExperienceSection(experienId).setActionField(Profile.EXPERIENCES_COMPANY, createExperienceActions(experienId, true));
     }
   }
   
@@ -293,14 +304,18 @@ public class UIEditUserProfileForm extends UIForm {
 
   @Override
   public void processRender(WebuiRequestContext context) throws Exception {
-    this.currentProfile = Utils.getViewerIdentity(true).getProfile();
-    this.initPlaceholder();
+    if(this.currentProfile == null) {
+      this.currentProfile = Utils.getViewerIdentity(true).getProfile();
+      this.setValueBasicInfo();
+    }
     //
-    setValueBasicInfo();
+    String isAjax = context.getRequestParameter("ajaxRequest");
+    if (!Boolean.parseBoolean(isAjax)) {
+      initPlaceholder();
+    }
     //
     super.processRender(context);
   }
-  
   /**
    * 
    */
@@ -309,9 +324,33 @@ public class UIEditUserProfileForm extends UIForm {
     int i = 0;
     for (UIInputSection uiInputSection : experienceSections) {
       boolean hasAdd = (i == experienceSections.size() - 1);
-      uiInputSection.setActionField(uiInputSection.getId(), getExperienceActions(uiInputSection.getId(), hasAdd));
+      String experienId = uiInputSection.getName();
+      uiInputSection.setActionField(Profile.EXPERIENCES_COMPANY + experienId, createExperienceActions(uiInputSection.getName(), hasAdd));
       ++i;
     }
+  }
+  
+  private void putData(Map<String, String> map, String key, String value) {
+    if (value != null && !value.isEmpty()) {
+      map.put(key, value);
+    }
+  }
+  //TODO: check date time.
+  private Map<String, String> getValueExperience(UIInputSection experienceSection) {
+    String id = experienceSection.getId();
+    Map<String, String> map = new HashMap<String, String>();
+    putData(map, Profile.EXPERIENCES_COMPANY, experienceSection.getUIStringInput(Profile.EXPERIENCES_COMPANY + id).getValue());
+    putData(map, Profile.EXPERIENCES_POSITION, experienceSection.getUIStringInput(Profile.EXPERIENCES_POSITION + id).getValue());
+    putData(map, Profile.EXPERIENCES_DESCRIPTION, experienceSection.getUIFormTextAreaInput(Profile.EXPERIENCES_DESCRIPTION + id).getValue());
+    putData(map, Profile.EXPERIENCES_SKILLS, experienceSection.getUIFormTextAreaInput(Profile.EXPERIENCES_SKILLS + id).getValue());
+    putData(map, Profile.EXPERIENCES_START_DATE, experienceSection.getUIFormDateTimeInput(Profile.EXPERIENCES_START_DATE + id).getValue());
+    boolean isCurrent = experienceSection.getUICheckBoxInput(Profile.EXPERIENCES_IS_CURRENT + id).isChecked();
+    if(isCurrent) {
+      map.put(Profile.EXPERIENCES_IS_CURRENT, "true");
+    } else {
+      putData(map, Profile.EXPERIENCES_END_DATE, experienceSection.getUIFormDateTimeInput(Profile.EXPERIENCES_END_DATE + id).getValue());
+    }
+    return map;
   }
   
   /**
@@ -324,9 +363,61 @@ public class UIEditUserProfileForm extends UIForm {
   public static class SaveActionListener extends EventListener<UIEditUserProfileForm> {
     @Override
     public void execute(Event<UIEditUserProfileForm> event) throws Exception {
-      UIEditUserProfileForm avatarContainer = event.getSource();
+      UIEditUserProfileForm uiForm = event.getSource();
+      // About me
+      String aboutMe = uiForm.getUIInputSection(FIELD_ABOUT_SECTION).getUIFormTextAreaInput(Profile.ABOUT_ME).getValue();
+      // Basic information
+      UIInputSection baseSection = uiForm.getUIInputSection(FIELD_BASE_SECTION);
+      String firstName = baseSection.getUIStringInput(Profile.FIRST_NAME).getValue();
+      String lastName = baseSection.getUIStringInput(Profile.LAST_NAME).getValue();
+      String email = baseSection.getUIStringInput(Profile.EMAIL).getValue();
+      String position =  baseSection.getUIStringInput(Profile.POSITION).getValue();
       //
-      event.getRequestContext().addUIComponentToUpdateByAjax(avatarContainer);
+      String gender = baseSection.getUIFormSelectBox(Profile.GENDER).getValue();
+      //
+      List<Map<String, String>> phones = baseSection.getUIMultiValueSelection(Profile.CONTACT_PHONES).getValues();
+      //
+      List<Map<String, String>> ims = baseSection.getUIMultiValueSelection(Profile.CONTACT_IMS).getValues();
+      //
+      List<?> urls = baseSection.getUIFormMultiValueInputSet(Profile.CONTACT_URLS).getValue();
+      //Experiences
+      List<Map<String, String>> experiences = new ArrayList<Map<String, String>>();
+      List<UIInputSection> experienceSections = uiForm.getExperienceSections();
+      for (UIInputSection experienSection : experienceSections) {
+        Map<String, String> map = uiForm.getValueExperience(experienSection);
+        if (map.size() > 0) {
+          experiences.add(map);
+        }
+      }
+      JSONObject json = new JSONObject();
+      json.put(Profile.ABOUT_ME, aboutMe);
+      json.put(Profile.FIRST_NAME, firstName);
+      json.put(Profile.LAST_NAME, lastName);
+      json.put(Profile.EMAIL, email);
+      json.put(Profile.POSITION, position);
+      json.put(Profile.GENDER, gender);
+      json.put(Profile.CONTACT_PHONES, phones);
+      json.put(Profile.CONTACT_IMS, ims);
+      json.put(Profile.CONTACT_URLS, urls);
+      json.put(Profile.EXPERIENCES, experiences);
+      //
+      System.out.println("\n data: \n" + json.toString() + "\n\n");
+      //
+      event.getRequestContext().addUIComponentToUpdateByAjax(uiForm);
+    }
+  }
+
+  public static class CancelActionListener extends EventListener<UIEditUserProfileForm> {
+    @Override
+    public void execute(Event<UIEditUserProfileForm> event) throws Exception {
+      UIEditUserProfileForm editUserProfile = event.getSource();
+      String profileURL = editUserProfile.getViewProfileURL();
+      //
+      editUserProfile.currentProfile = null;
+      //
+      event.getRequestContext().getJavascriptManager().getRequireJS()
+           .addScripts("(function() {window.open(window.location.origin + '" + profileURL + "', '_self')})(window);");
+      event.getRequestContext().addUIComponentToUpdateByAjax(editUserProfile);
     }
   }
 
@@ -352,7 +443,8 @@ public class UIEditUserProfileForm extends UIForm {
       UIEditUserProfileForm editUserProfile = event.getSource();
       String objectId = event.getRequestContext().getRequestParameter(OBJECTID);
       editUserProfile.removeChildById(objectId);
-      --editUserProfile.experienSize;
+      editUserProfile.experiens.remove(objectId);
+      editUserProfile.getExperienceSections().get(0).setTitle("Experience");
       //
       editUserProfile.resetActionFileds();
       event.getRequestContext().addUIComponentToUpdateByAjax(editUserProfile);
