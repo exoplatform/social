@@ -5,7 +5,7 @@
 def keys = profile.keySet();
 %>
 <div class="uiSocApplication uiBasicProfilePortlet" id="UIBasicProfilePortlet">
-	<h5 class="head-container"><%=_ctx.appRes("UIBasicProfile.label.ContactInformation")%></h5>
+	<h4 class="head-container"><%=_ctx.appRes("UIBasicProfile.label.ContactInformation")%></h4>
 	<div class="uiBasicInfoSection">
   	<%
   		for(key in keys) {
@@ -31,7 +31,7 @@ def keys = profile.keySet();
               for (val in listVal) { 
                 if (valueNum == 0) {
               %>
-      	      <div class=""><span><%=_ctx.appRes("UIBasicProfile.label." + subKey)%></span>: <span><%=val%></span></div>
+      	      <div class="clearfix"><i class="uiIconSocGtalk uiIconSocLightGray"></i><span><%=_ctx.appRes("UIBasicProfile.label." + subKey)%></span>: <span><%=val%></span></div>
       	      <%} else { %>
       	      <div class=""><span><%=val%></span></div>
             <%  }
@@ -44,7 +44,6 @@ def keys = profile.keySet();
       </div>
     </div>
    	<%} %>
-  <div class="line-bottom"><span></span></div>
   </div>
 </div>
 

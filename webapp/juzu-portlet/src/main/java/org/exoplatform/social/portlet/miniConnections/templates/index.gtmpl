@@ -12,8 +12,7 @@
   UserProfileHelper.initProfilePopup("UIMiniConnectionsPortlet");
 %>
 <div class="uiSocApplication uiMiniConnectionsPortlet" id="UIMiniConnectionsPortlet">
-	<div class="uiBox">
-	 	<div class="uiContentBox">
+	<h4 class="head-container">Connections</h4>
 	<% if(size > 0) {
 		 for(profile in profiles) { %>
 	 		<a href="<%=profile.getProfileURL()%>" class="avatarXSmall">
@@ -27,12 +26,9 @@
 	<% } else {
 	  	String keyNoConnection = isOwner ? "YouHaveNotConnections" : "UserHaveNotConnections";
 	%>
-			<div class="center"><%=_ctx.appRes("UIBasicProfile.info." + keyNoConnection)%></div>
-			<div class="center"><i class="glyphicon glyphicon-user"></i></div>
-			<div class="center">
-				<a href="/portal/intranet/connexions"><%=_ctx.appRes("UIBasicProfile.label.FindConnections")%></a>
+			<div class="noConnection center">
+				<%=_ctx.appRes("UIBasicProfile.info." + keyNoConnection)%>
+				<div class="findConnection"><a href="/portal/intranet/connexions"><%=_ctx.appRes("UIBasicProfile.label.FindConnections")%></a></div>
 			</div>
 	<% } %>
-	 	</div>
-	</div>
 </div>

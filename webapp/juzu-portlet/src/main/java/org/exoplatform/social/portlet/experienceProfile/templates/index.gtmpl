@@ -7,23 +7,22 @@
 
 <div class="uiSocApplication uiExperienceProfilePortlet" id="UIExperienceProfilePortlet">
 <% if(aboutMe.length() > 0) { %>
-	<h5 class="head-container"><%=_ctx.appRes("UIBasicProfile.label.AboutMe")%></h5>
-	<div class="uiBox">
-	 	<div class="uiContentBox"><%=aboutMe%></div>
+	<h4 class="head-container"><%=_ctx.appRes("UIBasicProfile.label.AboutMe")%></h4>
+	<div class="simpleBox aboutMe">
+	 	<%=aboutMe%>
  	</div>
 <% } else if(isOwner) { %>
-	<div class="no-content">
-		<div><%=_ctx.appRes("UIBasicProfile.info.HaveNotAbout")%></div>
-		<div  class="center">
-			<button class="btn btn-primary" onclick="window.location.href=window.location.origin + '/portal/intranet/edit-profile/'">
+	<div class="no-content center">
+		<%=_ctx.appRes("UIBasicProfile.info.HaveNotAbout")%>
+		<button class="btn btn-primary" onclick="window.location.href=window.location.origin + '/portal/intranet/edit-profile/'">
 				<i class="uiIconEdit uiIconLightGray"></i> <%=_ctx.appRes("UIBasicProfile.action.EditProfile")%></button>
-		</div>
 	</div>
 <% } 
 	 if(experiences.size()  > 0) {
-	   print("<h5 class=\"head-container\">" + _ctx.appRes("UIBasicProfile.label.Experience") + "</h5>");
+	   print("<h4 class=\"head-container\">" + _ctx.appRes("UIBasicProfile.label.Experience") + "</h4>");
+	    print("<div class=\"simpleBox\"> ");
 	   for(experience in experiences) {
-	     print("<div class=\"uiBox experience-container\"> <div class=\"uiContentBox\">");
+	     print("<div class=\"experience-container\"> ");
 	     for(key in experience.keySet()) {
 	       if(EXPERIENCES_IS_CURRENT.equals(key)) {
 	         print(" " + _ctx.appRes("UIBasicProfile.label.untilNow"));
@@ -31,11 +30,12 @@
 	       }
 	       String label = _ctx.appRes("UIBasicProfile.label." + key);
 %>
-				<div class="<%=key%>"><span><%=label%></span>: <span><%=experience.get(key)%></span></div>	
+				<div class="<%=key%> clearfix"><div class="labelName pull-left"><%=label%>:</div> <div class="pull-left"><%=experience.get(key)%></div></div>	
 <%
        }
-	     print("</div></div>");
+	     print("</div>");
 		 }
+		print("</div>");
 	 } %>
 </div>
 

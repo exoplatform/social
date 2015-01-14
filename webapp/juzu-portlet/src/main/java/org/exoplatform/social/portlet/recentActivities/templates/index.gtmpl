@@ -10,15 +10,13 @@ import org.exoplatform.social.portlet.userprofile.helpers.UserProfileHelper;
 
 %>
 <div class="uiSocApplication uiRecentActivitiesPortlet" id="UIRecentActivitiesPortlet">
-	<h5 class="head-container"><%=_ctx.appRes("UIBasicProfile.label.RecentActivities")%></h5>
-	<div class="uiBox">
-	 	<div class="uiContentBox">
+	<h4 class="head-container"><%=_ctx.appRes("UIBasicProfile.label.RecentActivities")%></h4>
+	<div class="activityCont">
  	<%
  		if(activities.size() == 0) {
  		 String keyNoActivities = Utils.isOwner() ? "YouHaveNotActivities" : "UserHaveNotActivities";
 	%>
-			<div class="center"><%=_ctx.appRes("UIBasicProfile.info." + keyNoActivities)%></div>
-			<div class="center"><i class="glyphicon glyphicon-time"></i></div>
+			<div class="simpleBox noActivity center"><%=_ctx.appRes("UIBasicProfile.info." + keyNoActivities)%></div>
 	<%
  		} else {
  		  String activityURL = "/portal/intranet/activity?id=";
@@ -30,7 +28,7 @@ import org.exoplatform.social.portlet.userprofile.helpers.UserProfileHelper;
  				String activityTypeIcon =  RecentActivitiesHelper.getActivityTypeIcon(activity.getType());
  				String link = RecentActivitiesHelper.getLink(activity);
 	%>
-			<div class="activityStream uiDefaultActivity" id="Activity<%=activity.id%>">
+			<div class="activityStream uiDefaultActivity clearfix" id="Activity<%=activity.id%>">
 			  <div class="activityTimeLine pull-left">
 					<div class="activityAvatar avatarCircle">
 						<a href="<%=profileURL%>">
@@ -42,8 +40,8 @@ import org.exoplatform.social.portlet.userprofile.helpers.UserProfileHelper;
           <% } %>
 			  </div><!--end activityTimeLine-->
         <div class="boxContainer" id="boxContainer" onclick="window.open('<%=(activityURL + activity.id)%>', '_self')">
-          <div id="Content<%=activity.id%>" class="uiBox contentBox">
-            <div class="description"><%=activity.getTitle()%></div>
+          <div id="Content<%=activity.id%>" class="content">
+            <div class="status"><%=activity.getTitle()%></div>
           <%if (link != null) { %>
             <div class="link"><a href="<%=link%>"><%=link%></a></div>
           <%} %>
@@ -53,13 +51,12 @@ import org.exoplatform.social.portlet.userprofile.helpers.UserProfileHelper;
 	<%
 	 		}
  			String activityStreamURL = "/portal/intranet/activities/" + Utils.getOwnerIdentity(false).getRemoteId();
- 			print("<div style=\"margin:10px 0px 10px 63px\"><button class=\"btn btn-primary\" style=\"width:100%;\" onclick=\"window.location.href='" + activityStreamURL + "'\">" +
+ 			print("<div style=\"margin:10px 0px 10px 63px\"><button class=\"btn\" style=\"width:100%;\" onclick=\"window.location.href='" + activityStreamURL + "'\">" +
 	 						_ctx.appRes("UIBasicProfile.action.ViewAll") +
 	 				  "</button></div>");
  			UserProfileHelper.initProfilePopup("UIRecentActivitiesPortlet");
  		}
 	%>
 		</div>
-	</div>
 </div>
 
