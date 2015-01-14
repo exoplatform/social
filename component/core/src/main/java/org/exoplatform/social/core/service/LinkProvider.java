@@ -45,20 +45,20 @@ import org.exoplatform.web.url.navigation.NodeURL;
 public class LinkProvider {
   public static final String RESOURCE_URL = "/social-resources";
   public static final String JAVASCRIPT_RESOURCE_URL = RESOURCE_URL + "/javascript/";
-  public static final String PROFILE_DEFAULT_AVATAR_URL = "/eXoSkin/skin/images/social/skin/ShareImages/UserAvtDefault.png";
-  public static final String SPACE_DEFAULT_AVATAR_URL = "/eXoSkin/skin/images/social/skin/ShareImages/SpaceAvtDefault.png";
+  public static final String PROFILE_DEFAULT_AVATAR_URL = "/eXoSkin/skin/images/Default/social/skin/ShareImages/UserAvtDefault.png";
+  public static final String SPACE_DEFAULT_AVATAR_URL = "/eXoSkin/skin/images/Default/social/skin/ShareImages/SpaceAvtDefault.png";
   public static final String HAS_CONNECTION_ICON =
-          RESOURCE_URL + "/skin/social/webui/UIManageUsers/DefaultSkin/background/StatusIcon.png";
+          RESOURCE_URL + "/eXoSkin/skin/images/Default/social/skin/UIManageUsers/StatusIcon.png";
   public static final String WAITING_CONFIRMATION_ICON =
-          RESOURCE_URL + "/skin/social/webui/UIManageUsers/DefaultSkin/background/WaittingConfirm.png";
+          RESOURCE_URL + "/eXoSkin/skin/images/Default/social/skin/UIManageUsers/WaittingConfirm.png";
   public static final String SPACE_MANAGER_ICON =
-          RESOURCE_URL + "/skin/social/webui/UIManageSpaces/DefaultSkin/background/Manager.png";
+          RESOURCE_URL + "/eXoSkin/skin/images/Default/social/skin/UIManageSpaces/Manager.png";
   public static final String SPACE_MEMBER_ICON =
-          RESOURCE_URL + "/skin/social/webui/UIManageSpaces/DefaultSkin/background/Member.png";
+          RESOURCE_URL + "/eXoSkin/skin/images/Default/social/skin/UIManageSpaces/Member.png";
   public static final String SPACE_WAITING_CONFIRM_ICON =
-          RESOURCE_URL + "/skin/social/webui/UIManageSpaces/DefaultSkin/background/WaitingConfirm.png";
-  public static final String STARTER_ACTIVITY_AVATAR = "/eXoSkin/skin/images/social/skin/Activity/starterAvt.png";
-  public static final String STARTER_ACTIVITY_IMAGE = "/eXoSkin/skin/images/social/skin/Activity/starterActImg.png";
+          RESOURCE_URL + "/eXoSkin/skin/images/Default/social/skin/UIManageSpaces/WaitingConfirm.png";
+  public static final String STARTER_ACTIVITY_AVATAR = "/eXoSkin/skin/images/Default/social/skin/Activity/starterAvt.png";
+  public static final String STARTER_ACTIVITY_IMAGE = "/eXoSkin/skin/images/Default/social/skin/Activity/starterActImg.png";
 
   public static final String ROUTE_DELIMITER = "/";
   
