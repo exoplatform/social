@@ -218,7 +218,7 @@ public class IntranetNotificationRestService extends AbstractStorage implements 
    * @throws Exception
    */
   @GET
-  @Path("validateRequestToJoinSpace/{spaceId}/{requestUserId}/{currentUserId}/{notificationId}//message.{format}")
+  @Path("validateRequestToJoinSpace/{spaceId}/{requestUserId}/{currentUserId}/{notificationId}/message.{format}")
   public Response validateRequestToJoinSpace(@Context UriInfo uriInfo,
                                          @PathParam("spaceId") String spaceId,
                                          @PathParam("requestUserId") String requestUserId,
