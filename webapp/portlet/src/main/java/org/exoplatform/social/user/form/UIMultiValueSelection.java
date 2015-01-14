@@ -159,19 +159,23 @@ public class UIMultiValueSelection extends UIFormInputSet {
     UIForm uiForm = getAncestorOfType(UIForm.class);
     Writer w = context.getWriter();
     w.append("<div class=\"uiMulti-select\" id=\"").append(getId()).append("\">") ;
+    int i = 0;
     for (Integer indexId : indexs) {
       w.append("<div class=\"controls-row\">") ;
       renderUIComponent(getUIFormSelectBox(FIELD_SELECT_KEY + indexId));
       renderUIComponent(getUIStringInput(FIELD_INPUT_KEY + indexId));
-      if(indexId > 0) {
+      if(indexs.size() > 1) {
         // remove
-        w.append("<a class=\"uiAction\" href=\"javascript:void(0)\" onclick=\"").append(uiForm.event("RemoveValue", getId() + String.valueOf(indexId)))
+        w.append("<a class=\"actionIcon\" href=\"javascript:void(0)\" onclick=\"").append(uiForm.event("RemoveValue", getId() + String.valueOf(indexId)))
          .append("\"><i class=\"uiIconClose uiIconLightGray\"></i></a>");
       }
-      // add
-      w.append("<a class=\"uiAction\" href=\"javascript:void(0)\" onclick=\"").append(uiForm.event("AddValue", getId() + String.valueOf(indexId)))
-        .append("\"><i class=\"uiIconPlus uiIconLightGray\"></i></a>");
+      if(i == indexs.size() - 1) {
+        // add
+        w.append("<a class=\"actionIcon\" href=\"javascript:void(0)\" onclick=\"").append(uiForm.event("AddValue", getId() + String.valueOf(indexId)))
+         .append("\"><i class=\"uiIconPlus uiIconLightGray\"></i></a>");
+      }
       w.append("</div>");
+      ++i;
     }
     if (this.isMandatory())
         w.write(" *");

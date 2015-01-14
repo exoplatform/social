@@ -36,11 +36,11 @@ public class UIChangeAvatarContainer extends UIFormInputSet {
       avatarURL = LinkProvider.PROFILE_DEFAULT_AVATAR_URL;
     }
     Writer writer = context.getWriter();
-    writer.append("<div class=\"uiRelationshipAction clearfix\" id=\"").append(getId()).append("\">");
-    writer.append("  <div class=\"avatarLarge pull-left\">")
+    writer.append("<div class=\"uiRelationshipAction\" id=\"").append(getId()).append("\">");
+    writer.append("  <div class=\"avatarLarge\">")
           .append("    <img title=\"").append(fullName).append("\" alt=\"").append(fullName).append("\" src=\"").append(avatarURL).append("\"/>")
           .append("  </div>");
-    writer.append("  <div class=\"breadcumbEntry pull-left\">")
+    writer.append("  <div class=\"breadcumbEntry\">")
           .append("    <div class=\"uiActionWithLabel changeAvatar\" onclick=\"").append(event("ChangeAvatar")).append("\">")
           .append(UserProfileHelper.getLabel(context, "UIAvatarUploadContent.label.ChangeAvatar")).append("</div>")
           .append("  </div>");

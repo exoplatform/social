@@ -18,8 +18,18 @@ public class UIInputSection extends UIFormInputSet {
   private Map<String, List<ActionData>> actionFields = new HashMap<String, List<ActionData>>();
   private boolean useGroupControl = true;
   private String title;
+  private String cssClass;
 
   public UIInputSection() {
+  }
+
+  public String getCssClass() {
+    return cssClass;
+  }
+
+  public UIInputSection setCssClass(String cssClass) {
+    this.cssClass = cssClass;
+    return this;
   }
 
   public UIInputSection(String name) {
@@ -29,6 +39,11 @@ public class UIInputSection extends UIFormInputSet {
   public UIInputSection(String name, String title) {
     this(name);
     this.title = title;
+  }
+
+  public UIInputSection(String name, String title, String cssClass) {
+    this(name, title);
+    this.cssClass = cssClass;
   }
 
   public UIFormDateTimeInput getUIFormDateTimeInput(String name) {
@@ -43,6 +58,11 @@ public class UIInputSection extends UIFormInputSet {
     addUIFormInput(input);
     actionFields.put(input.getName(), actions);
     return input;
+  }
+  
+  public UIInputSection setActionField(String name, List<ActionData> actions) {
+    actionFields.put(name, actions);
+    return this;
   }
   
   public UIFormInputBase<?> addUIFormInput(UIFormInputBase<?> input, String label) {
@@ -69,7 +89,7 @@ public class UIInputSection extends UIFormInputSet {
     UIForm uiForm = getParent();
     Writer w = context.getWriter();
     
-    w.append("<div class=\"form-horizontal\"").append("id=\"").append(getName()).append("\">");
+    w.append("<div class=\"form-horizontal ").append((cssClass != null) ? cssClass : "").append("\" id=\"").append(getId()).append("\">");
     //The title
     w.append("<h4 class=\"titleWithBorder\">");
     if(title != null && title.length() > 0) {
