@@ -81,7 +81,7 @@
         //the content must be updated and NotificationID still kept
         existItem.hide();
         existItem.replaceWith(newItem);
-        IntranetNotification.showElm(IntranetNotification.applyAction(existItem));
+        IntranetNotification.showElm(IntranetNotification.applyAction(newItem));
       }
     },
     ajaxRequest : function (url, callBack) {
