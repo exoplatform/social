@@ -21,7 +21,7 @@
 		<% } 
 			 if(size > MAX_DISPLAY) {
 		%>
-			<a href="/portal/intranet/connections/network/<%=currentRemoteId%>"><%=_ctx.appRes("UIBasicProfile.label.ViewAll")%>(<%=size%>)</a>
+			<div class="viewAllConnection"><a href="/portal/intranet/connections/network/<%=currentRemoteId%>"><%=_ctx.appRes("UIBasicProfile.label.ViewAll")%>(<%=size%>)</a></div>
 		<% } %>
 	<% } else {
 	  	String keyNoConnection = isOwner ? "YouHaveNotConnections" : "UserHaveNotConnections";

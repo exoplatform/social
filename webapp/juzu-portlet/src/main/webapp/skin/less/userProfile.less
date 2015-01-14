@@ -28,15 +28,15 @@ td.right-column-containerTDContainer {
 	right: 0px;
 	top: 10px;
 	bottom: 0px;
-	border-left: solid 1px #aaa;
+	border-left: solid 1px @borderColor;
 }
 .uiSocApplication {
 	h4.head-container {
 		margin: 0 0 15px;
 	}
 	.simpleBox {
-		background: #fff;
-		border: 1px solid #ccc;
+		background: @white;
+		border: 1px solid @borderColor;
 		border-radius: 5px;
 		padding: 5px 10px;
 	}
@@ -90,10 +90,10 @@ td.right-column-containerTDContainer {
 	.uiIconStatusDisconnect {
 		background-position:-0px -0px;
 	}
-	.hide-default, .user-actions:HOVER .show-default {
+	.hide-default, .user-actions:hover .show-default {
 		display: none;
 	}
-	.user-actions:HOVER .hide-default, .show-default, .startDate {
+	.user-actions:hover .hide-default, .show-default, .startDate {
 		display: inline-block;
 	}
 	.avatarXSmall {
@@ -106,7 +106,7 @@ td.right-column-containerTDContainer {
 		.group-user-info {
 			margin: 0 0 15px;
 			.label-user-info {
-				color:#333;
+				color: @textColor;
 				font-weight:bold;
 			}
 		}
@@ -115,20 +115,20 @@ td.right-column-containerTDContainer {
 .uiRecentActivitiesPortlet {
 	.noActivity {
 		padding: 20px 20px 95px;
-		background: url("/social-juzu/skin/images/userProfile/noActivityIconBg.png") no-repeat center 50px #fff;
+		background: url("/social-juzu/skin/images/userProfile/noActivityIconBg.png") no-repeat center 50px @white;
 	}
 	.activityStream {
 		padding-bottom: 15px;
 		.content {
-			background: none repeat scroll 0 0 #fff;
-		    border: 1px solid #ccc;
+			background: none repeat scroll 0 0 @white;
+		    border: 1px solid @borderColor;
 		    border-radius: 5px;
 		    margin: 0;
 		    padding: 15px 20px;
 			position: relative;		    
 		    &:before {
 			    border-bottom: 6px solid transparent;
-			    border-right: 6px solid #ccc;
+			    border-right: 6px solid @borderColor;
 			    border-top: 6px solid transparent;
 			    content: "";
 			    height: 0;
@@ -139,7 +139,7 @@ td.right-column-containerTDContainer {
 			}
 			&:after {
 			    border-bottom: 8px solid transparent;
-			    border-right: 8px solid #fff;
+			    border-right: 8px solid @white;
 			    border-top: 8px solid transparent;
 			    content: "";
 			    height: 0;
@@ -149,7 +149,7 @@ td.right-column-containerTDContainer {
 			    width: 0;
 			}
 		    .link {
-				border-top: 1px solid #ccc;
+				border-top: 1px solid @borderColor;
 			    margin: 15px -20px 0;
 			    padding: 15px 20px 0;
 			}
@@ -164,7 +164,7 @@ td.right-column-containerTDContainer {
 		}
 	}
 	.experience-container {
-		border-top: 1px solid #ccc;
+		border-top: 1px solid @borderColor;
 	    margin: 0 -10px;
 	    padding: 10px 10px 0;
 	    &:first-child {
@@ -190,14 +190,18 @@ td.right-column-containerTDContainer {
 		margin: 0 0 20px;
 	}
 	.noConnection {
-		background: #fff url("/social-juzu/skin/images/userProfile/findFriendIconBg.png") no-repeat center 65px;
+		background: @white url("/social-juzu/skin/images/userProfile/findFriendIconBg.png") no-repeat center 65px;
 		padding: 20px;
 		border-radius: 5px;
-		border: 1px solid #ccc;
+		border: 1px solid @borderColor;
 		.findConnection {
 			padding-top: 40px;			
 		}
 	}
+	a.avatarXSmall {
+		margin: 0 0 10px;
+	}
+	
 }
 
 .uiEditUserProfileForm {
