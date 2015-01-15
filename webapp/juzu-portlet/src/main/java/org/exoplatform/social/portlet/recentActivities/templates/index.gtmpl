@@ -1,5 +1,6 @@
 #{param name=_ctx/}
 #{param name=activities/}
+#{param name=hasViewAll/}
 
 <%
 import org.exoplatform.social.webui.Utils;
@@ -50,10 +51,12 @@ import org.exoplatform.social.portlet.userprofile.helpers.UserProfileHelper;
 			</div>
 	<%
 	 		}
- 			String activityStreamURL = "/portal/intranet/activities/" + Utils.getOwnerIdentity(false).getRemoteId();
- 			print("<div style=\"margin:10px 0px 10px 63px\"><button class=\"btn\" style=\"width:100%;\" onclick=\"window.location.href='" + activityStreamURL + "'\">" +
-	 						_ctx.appRes("UIBasicProfile.action.ViewAll") +
-	 				  "</button></div>");
+ 			if (hasViewAll) {
+ 			  String activityStreamURL = "/portal/intranet/activities/" + Utils.getOwnerIdentity(false).getRemoteId();
+ 			  print("<div style=\"margin:10px 0px 10px 63px\"><button class=\"btn\" style=\"width:100%;\" onclick=\"window.location.href='" + activityStreamURL + "'\">" +
+	 			  			_ctx.appRes("UIBasicProfile.action.ViewAll") +
+	 				    "</button></div>");
+ 			}
  			UserProfileHelper.initProfilePopup("UIRecentActivitiesPortlet");
  		}
 	%>
