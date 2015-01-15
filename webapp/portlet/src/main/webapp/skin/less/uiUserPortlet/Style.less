@@ -114,22 +114,55 @@ td.right-column-containerTDContainer {
 }
 
 .uiEditUserProfileForm {
-	.form-horizontal {
-		.controls-row {
+	h4 {
+		margin-top: 25px;
+	}
+	#AboutSection textarea {
+		width: 460px;
+	}
+	#BaseSection .control-group {
+		.control-label {
+			font-weight: bold;
+		}
+		.controls {
+			input {
+				width: 280px;			
+			}
 			.uiSelectbox {
-				float: left;
-				margin-right: 10px;
-				.selectbox {
-					width: 90px;
+				float: left;			
+				select {
+					width: 100px;
 				}
 			}
-			input.span3 {
-				width: 170px;
-				margin-right: 5px;
+			.uiMulti-select {
+				.controls-row {
+					margin-bottom: 8px;
+					&:last-child {
+						margin-bottom: 0;	
+					}
+					input {
+						width: 175px;
+						margin-left: 5px;
+					}
+					.uiAction {
+						margin: left: 7px;				
+					}
+				}
 			}
-		
+			.uiRelationshipAction .changeAvatar {
+				font-size: 11px;
+			    margin-left: 2px;
+			    margin-top: 10px;
+			}
 		}
-	
+		.multiValueContainer li input {
+			margin-right: 0;
+		}
+	}
+	.uiExperien {
+		input, textarea {
+			width: 280px;
+		}
 	}
 	
 }
