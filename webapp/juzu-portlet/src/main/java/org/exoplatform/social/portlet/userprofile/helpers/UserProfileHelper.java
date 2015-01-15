@@ -33,8 +33,38 @@ public class UserProfileHelper {
   final private static String DISPLAY_FORMAT_EEDDYYYY = "EE dd, yyyy";
   final private static String KEY = "key";
   final private static String VALUE = "value";
-  final private static String URL_KEY = "url";
 
+  enum IconClass {
+    DEFAULT("", ""),
+    GTALK("gtalk", "uiIconSocGtalk"),
+    MSN("msn", "uiIconSocMSN"),
+    SKYPE("skype", "uiIconSocSkype"),
+    YAHOO("yahoo", "uiIconSocYahoo"),
+    OTHER("other", "uiIconSocOther");
+
+    private final String key;
+    private final String iconClass;
+    
+    IconClass(String key, String iconClass) {
+      this.key = key;
+      this.iconClass = iconClass;
+    }
+    String getKey() {
+      return this.key;
+    }
+    public String getIconClass() {
+      return iconClass;
+    }
+    public static String getIconClass(String key) {
+      for (IconClass iconClass : IconClass.values()) {
+        if (iconClass.getKey().equals(key)) {
+          return iconClass.getIconClass();
+        }
+      }
+      return DEFAULT.getIconClass();
+    }
+  }
+  
   /**
    * @param currentProfile
    * @return
@@ -247,7 +277,16 @@ public class UserProfileHelper {
 
     public boolean isURL(String key) {
       if (key == null) return false;
-      return key.startsWith(URL_KEY);  
+      return Profile.CONTACT_URLS.equals(key);
+    }
+    
+    public boolean isIMs(String key) {
+      if (key == null) return false;
+      return Profile.CONTACT_IMS.equals(key);
+    }
+    
+    public String getIconCss(String key) {
+      return IconClass.getIconClass(key);
     }
   }
 }

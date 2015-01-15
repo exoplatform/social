@@ -21,22 +21,41 @@ def keys = profile.keySet();
       <%
       	} else  {
       	  for(subKey in values.keySet()) {
+            def typeIconClzz = "";
+            if (_ctx.isIMs(key)) {
+              typeIconClzz = _ctx.getIconCss(subKey); 
+            }
+            
       	    def listVal = values.get(subKey); 
       	    int valueNum = 0;
-      	    if (_ctx.isURL(subKey)) {
+      	    if (_ctx.isURL(key)) {
       	      for (url in listVal) { %>
               <div class=""><a href="<%=url%>"><%=url%></a></div>
             <%}
       	    } else {
+      	    %>
+      	    <div class="clearfix">
+      	    <% 
+      	      if (typeIconClzz.length() > 0) {
+      	        typeIconClzz = typeIconClzz + " uiIconSocLightGray";
+      	      }
               for (val in listVal) { 
                 if (valueNum == 0) {
               %>
-      	      <div class="clearfix"><i class="uiIconSocGtalk uiIconSocLightGray"></i><span><%=_ctx.appRes("UIBasicProfile.label." + subKey)%></span>: <span><%=val%></span></div>
+      	      <div class="pull-left"><i class="<%=typeIconClzz%>"></i><span><%=_ctx.appRes("UIBasicProfile.label." + subKey)%></span>: </div>
+      	      <div class="pull-left"><span><%=val%></span>
       	      <%} else { %>
-      	      <div class=""><span><%=val%></span></div>
+      	      <br><span><%=val%></span>
             <%  }
                 valueNum++;
-              }
+                if (valueNum == listVal.size()) {
+                  %>
+               </div>
+                  <%
+                }
+              }%>
+            </div>
+            <%
       	    }
       	  }
       	}
