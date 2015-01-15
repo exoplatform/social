@@ -99,6 +99,8 @@ public class UIInputSection extends UIFormInputSet {
     w.append("<h4 class=\"titleWithBorder\">");
     if(title != null && title.length() > 0) {
       w.append("<span class=\"nameTitle\">").append(uiForm.getLabel(title)).append("</span>");
+    } else {
+      w.append("&nbsp;");
     }
     w.append("</h4>");
     String classLable = (useGroupControl) ? "control-label" : "input-label";
