@@ -131,7 +131,7 @@
     },
     doCancelAction : function(elm) {
       var id = elm.parents('li:first').data('id');
-      IntranetNotification.ajaxRequest(elm.data('rest') + "/" + id)
+      IntranetNotification.ajaxRequest(elm.data('rest'))
                           .removeElm(elm.parents('li:first'));
     },
     removeElm : function(elm) {

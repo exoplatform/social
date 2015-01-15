@@ -17,6 +17,7 @@
 package org.exoplatform.social.service.rest;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.ws.rs.GET;
@@ -37,6 +38,7 @@ import org.exoplatform.commons.api.notification.model.ChannelKey;
 import org.exoplatform.commons.api.notification.model.MessageInfo;
 import org.exoplatform.commons.api.notification.model.NotificationInfo;
 import org.exoplatform.commons.api.notification.model.PluginKey;
+import org.exoplatform.commons.api.notification.model.WebNotificationFilter;
 import org.exoplatform.commons.api.notification.plugin.BaseNotificationPlugin;
 import org.exoplatform.commons.api.notification.service.storage.WebNotificationStorage;
 import org.exoplatform.commons.notification.channel.WebChannel;
@@ -69,6 +71,7 @@ public class IntranetNotificationRestService extends AbstractStorage implements 
   private IdentityManager identityManager;
   private RelationshipManager relationshipManager;
   private SpaceService spaceService;
+  private WebNotificationStorage webNotificationStorage;
   public final static String MESSAGE_JSON_FILE_NAME = "message.json";
   /**
    * Processes the "Accept the invitation to connect" action between 2 users and update notification.
@@ -125,17 +128,24 @@ public class IntranetNotificationRestService extends AbstractStorage implements 
    * @throws Exception
    */
   @GET
-  @Path("ignoreInvitationToConnect/{senderId}/{receiverId}/{notificationId}")
-  public void ignoreInvitationToConnect(@PathParam("senderId") String senderId,
-                                             @PathParam("receiverId") String receiverId,
-                                             @PathParam("notificationId") String notificationId) throws Exception {
+  @Path("ignoreInvitationToConnect/{senderId}/{receiverId}/{notificationId}/message.{format}")
+  public Response ignoreInvitationToConnect(@Context UriInfo uriInfo,
+                                          @PathParam("senderId") String senderId,
+                                          @PathParam("receiverId") String receiverId,
+                                          @PathParam("notificationId") String notificationId,
+                                          @PathParam("format") String format) throws Exception {
+    String[] mediaTypes = new String[] { "json", "xml" };
+    MediaType mediaType = Util.getMediaType(format, mediaTypes);
+    //
     Identity sender = getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, senderId, true);
     Identity receiver = getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, receiverId, true);
     if (sender == null || receiver == null) {
       throw new WebApplicationException(Response.Status.BAD_REQUEST);
     }
     getRelationshipManager().deny(sender, receiver);
-    CommonsUtils.getService(WebNotificationStorage.class).remove(notificationId);
+    getWebNotificationStorage().remove(notificationId);
+    //
+    return Util.getResponse(getUserWebNotification(receiverId), uriInfo, mediaType, Response.Status.OK);
   }
   
   /**
@@ -192,17 +202,24 @@ public class IntranetNotificationRestService extends AbstractStorage implements 
    * @throws Exception
    */
   @GET
-  @Path("ignoreInvitationToJoinSpace/{spaceId}/{userId}/{notificationId}")
-  public void ignoreInvitationToJoinSpace(@PathParam("spaceId") String spaceId,
-                                              @PathParam("userId") String userId,
-                                              @PathParam("notificationId") String notificationId) throws Exception {
+  @Path("ignoreInvitationToJoinSpace/{spaceId}/{userId}/{notificationId}/message.{format}")
+  public Response ignoreInvitationToJoinSpace(@Context UriInfo uriInfo,
+                                           @PathParam("spaceId") String spaceId,
+                                           @PathParam("userId") String userId,
+                                           @PathParam("notificationId") String notificationId,
+                                           @PathParam("format") String format) throws Exception {
+    String[] mediaTypes = new String[] { "json", "xml" };
+    MediaType mediaType = Util.getMediaType(format, mediaTypes);
+    //
     Space space = getSpaceService().getSpaceById(spaceId);
     if (space == null) {
       throw new WebApplicationException(Response.Status.BAD_REQUEST);
     }
     getSpaceService().removeInvitedUser(space, userId);
     //
-    CommonsUtils.getService(WebNotificationStorage.class).remove(notificationId);
+    getWebNotificationStorage().remove(notificationId);
+    
+    return Util.getResponse(getUserWebNotification(userId), uriInfo, mediaType, Response.Status.OK);
   }
   
   /**
@@ -261,16 +278,24 @@ public class IntranetNotificationRestService extends AbstractStorage implements 
    * @throws Exception
    */
   @GET
-  @Path("refuseRequestToJoinSpace/{spaceId}/{userId}/{notificationId}")
-  public void refuseRequestToJoinSpace(@PathParam("spaceId") String spaceId,
-                                           @PathParam("userId") String userId,
-                                           @PathParam("notificationId") String notificationId) throws Exception {
+  @Path("refuseRequestToJoinSpace/{spaceId}/{requestUserId}/{currentUserId}/{notificationId}/message.{format}")
+  public Response refuseRequestToJoinSpace(@Context UriInfo uriInfo,
+                                        @PathParam("spaceId") String spaceId,
+                                        @PathParam("requestUserId") String requestUserId,
+                                        @PathParam("currentUserId") String currentUserId,
+                                        @PathParam("notificationId") String notificationId,
+                                        @PathParam("format") String format) throws Exception {
+    String[] mediaTypes = new String[] { "json", "xml" };
+    MediaType mediaType = Util.getMediaType(format, mediaTypes);
+    //
     Space space = getSpaceService().getSpaceById(spaceId);
     if (space == null) {
       throw new WebApplicationException(Response.Status.BAD_REQUEST);
     }
-    getSpaceService().removePendingUser(space, userId);
-    CommonsUtils.getService(WebNotificationStorage.class).remove(notificationId);
+    getSpaceService().removePendingUser(space, requestUserId);
+    getWebNotificationStorage().remove(notificationId);
+    //
+    return Util.getResponse(getUserWebNotification(currentUserId), uriInfo, mediaType, Response.Status.OK);
   }
   
   /**
@@ -309,6 +334,13 @@ public class IntranetNotificationRestService extends AbstractStorage implements 
     return relationshipManager;
   }
   
+  private WebNotificationStorage getWebNotificationStorage() {
+    if (webNotificationStorage == null) {
+      webNotificationStorage = (WebNotificationStorage) getPortalContainer().getComponentInstanceOfType(WebNotificationStorage.class);
+    }
+    return webNotificationStorage;
+  }
+  
   /**
    * Gets a Portal Container instance.
    * @return The PortalContainer.
@@ -337,11 +369,30 @@ public class IntranetNotificationRestService extends AbstractStorage implements 
       notification.setTitle(msg.getBody());
       notification.with(NotificationMessageUtils.SHOW_POPOVER_PROPERTY.getKey(), "true")
                   .with(NotificationMessageUtils.READ_PORPERTY.getKey(), "false");
-      CommonsUtils.getService(WebNotificationStorage.class).update(notification, false);
+      getWebNotificationStorage().update(notification, false);
       return msg;
     } catch (Exception e) {
       LOG.error("Can not send the message to Intranet.", e.getMessage());
       return null;
+    }
+  }
+  
+  private UserWebNotification getUserWebNotification(String userId) {
+    UserWebNotification userWebNotification = new UserWebNotification();
+    List<NotificationInfo> notifications = getWebNotificationStorage().get(new WebNotificationFilter(userId), 0, 1);
+    userWebNotification.setShowViewAll(notifications.size() > 0);
+    return userWebNotification;
+  }
+  
+  public class UserWebNotification {
+    private boolean showViewAll;
+
+    public boolean isShowViewAll() {
+      return showViewAll;
+    }
+
+    public void setShowViewAll(boolean showViewAll) {
+      this.showViewAll = showViewAll;
     }
   }
 }
