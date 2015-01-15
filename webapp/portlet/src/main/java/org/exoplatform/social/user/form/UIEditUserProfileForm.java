@@ -19,6 +19,7 @@ import org.exoplatform.social.user.form.UIInputSection.ActionData;
 import org.exoplatform.social.user.portlet.UserProfileHelper;
 import org.exoplatform.social.webui.Utils;
 import org.exoplatform.web.application.ApplicationMessage;
+import org.exoplatform.web.application.RequireJS;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.EventConfig;
@@ -40,7 +41,6 @@ import org.exoplatform.webui.form.validator.EmailAddressValidator;
 import org.exoplatform.webui.form.validator.MandatoryValidator;
 import org.exoplatform.webui.form.validator.PersonalNameValidator;
 import org.exoplatform.webui.form.validator.StringLengthValidator;
-import org.json.JSONObject;
 
 @ComponentConfig(
    lifecycle = UIFormLifecycle.class,
@@ -232,7 +232,7 @@ public class UIEditUserProfileForm extends UIForm {
       resetActionFileds();
     } else if (experiens.size() == 0) {
       String experienId = FIELD_EXPERIENCE_SECTION + index;
-      getOrCreateExperienceSection(experienId).setActionField(Profile.EXPERIENCES_COMPANY, createExperienceActions(experienId, true));
+      getOrCreateExperienceSection(experienId).setActionField(Profile.EXPERIENCES_COMPANY + experienId, createExperienceActions(experienId, true));
     }
   }
   
@@ -293,6 +293,15 @@ public class UIEditUserProfileForm extends UIForm {
       }
     }
     return experienceSections;
+  }
+  
+  private void clearExperiences() {
+    for (String string : experiens) {
+      removeChildById(string);
+    }
+    //
+    experiens.clear();
+    index = 0;
   }
   
   /**
@@ -366,6 +375,8 @@ public class UIEditUserProfileForm extends UIForm {
     UIFormDateTimeInput startDate = experienceSection.getUIFormDateTimeInput(Profile.EXPERIENCES_START_DATE + id);
     UIFormDateTimeInput endDate = experienceSection.getUIFormDateTimeInput(Profile.EXPERIENCES_END_DATE + id);
     boolean isCurrent = experienceSection.getUICheckBoxInput(Profile.EXPERIENCES_IS_CURRENT + id).isChecked();
+    
+    
     // start empty
     if ((startDate.getValue() == null || startDate.getValue().isEmpty())) {
       // current is checked or end date not empty
@@ -374,6 +385,12 @@ public class UIEditUserProfileForm extends UIForm {
         return null;
       }
     } else {
+      // Invalid-format-date
+      if (startDate.getCalendar() == null) {
+        warning("UIEditUserProfileForm.msg.Invalid-format-date", getLabel(Profile.EXPERIENCES_START_DATE), DATE_FORMAT_MMDDYYYY);
+        return null;
+      }
+      //
       putData(map, Profile.EXPERIENCES_START_DATE, startDate.getValue());
       // start after today
       if (startDate.getCalendar().after(Calendar.getInstance())) {
@@ -384,6 +401,11 @@ public class UIEditUserProfileForm extends UIForm {
         // end date empty
         if (endDate.getValue() == null || endDate.getValue().isEmpty()) {
           warning("EmptyFieldValidator.msg.empty-input", getLabel(Profile.EXPERIENCES_END_DATE));
+          return null;
+        }
+        // Invalid-format-date
+        if (startDate.getCalendar() == null) {
+          warning("UIEditUserProfileForm.msg.Invalid-format-date", getLabel(Profile.EXPERIENCES_START_DATE), DATE_FORMAT_MMDDYYYY);
           return null;
         }
         // end after today
@@ -397,7 +419,8 @@ public class UIEditUserProfileForm extends UIForm {
                   getLabel(Profile.EXPERIENCES_START_DATE), getLabel(Profile.EXPERIENCES_END_DATE));
           return null;
         }
-        putData(map, Profile.EXPERIENCES_START_DATE, startDate.getValue());
+        putData(map, Profile.EXPERIENCES_END_DATE, endDate.getValue());
+        map.put(Profile.EXPERIENCES_IS_CURRENT, "false");
       } else {
         map.put(Profile.EXPERIENCES_IS_CURRENT, "true");
       }
@@ -405,7 +428,7 @@ public class UIEditUserProfileForm extends UIForm {
     //
     return map;
   }
-  
+
   /**
    * @return
    */
@@ -470,22 +493,12 @@ public class UIEditUserProfileForm extends UIForm {
       Utils.getIdentityManager().updateProfile(profile);
       //
       uiForm.currentProfile = null;
+      uiForm.clearExperiences();
       //
-      JSONObject json = new JSONObject();
-      json.put(Profile.ABOUT_ME, aboutMe);
-      json.put(Profile.FIRST_NAME, firstName);
-      json.put(Profile.LAST_NAME, lastName);
-      json.put(Profile.EMAIL, email);
-      json.put(Profile.POSITION, position);
-      json.put(Profile.GENDER, gender);
-      json.put(Profile.CONTACT_PHONES, phones);
-      json.put(Profile.CONTACT_IMS, ims);
-      json.put(Profile.CONTACT_URLS, urls);
-      json.put(Profile.EXPERIENCES, experiences);
-      //
-      System.out.println("\n data: \n" + json.toString() + "\n\n");
-      //
-      ((PortalRequestContext) event.getRequestContext().getParentAppRequestContext()).ignoreAJAXUpdateOnPortlets(true);
+      event.getRequestContext().getJavascriptManager().getRequireJS()
+           .addScripts("setTimeout(function() {window.open(window.location.origin + '" +
+            profile.getUrl() + "', '_self')}, 200);");
+      event.getRequestContext().addUIComponentToUpdateByAjax(uiForm);
     }
   }
 
@@ -495,6 +508,7 @@ public class UIEditUserProfileForm extends UIForm {
       UIEditUserProfileForm editUserProfile = event.getSource();
       //
       editUserProfile.currentProfile = null;
+      editUserProfile.clearExperiences();
       //
       ((PortalRequestContext) event.getRequestContext().getParentAppRequestContext()).ignoreAJAXUpdateOnPortlets(true);
     }
@@ -512,6 +526,9 @@ public class UIEditUserProfileForm extends UIForm {
       editUserProfile.getOrCreateExperienceSection(FIELD_EXPERIENCE_SECTION + editUserProfile.index);
       //
       editUserProfile.resetActionFileds();
+      RequireJS requireJs = event.getRequestContext().getJavascriptManager().getRequireJS();
+      requireJs.require("SHARED/edit-user-profile", "profile")
+               .addScripts("profile.chechboxUtil('" + (FIELD_EXPERIENCE_SECTION + editUserProfile.index) + "');");
       event.getRequestContext().addUIComponentToUpdateByAjax(editUserProfile);
     }
   }

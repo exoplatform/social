@@ -30,7 +30,7 @@ public class UserProfileHelper {
   private static final Log LOG = ExoLogger.getLogger(UserProfileHelper.class);
   
   final private static String DATE_FORMAT_MMDDYYYY = "MM/dd/yyyy";
-  final private static String DISPLAY_FORMAT_EEDDYYYY = "EE dd, yyyy";
+  final private static String DISPLAY_FORMAT_EEDDYYYY = "EEEE dd, yyyy";
   final private static String KEY = "key";
   final private static String VALUE = "value";
 
@@ -151,10 +151,10 @@ public class UserProfileHelper {
   public static void initProfilePopup(String id) throws Exception {
     JSONObject object = new JSONObject();
     WebuiRequestContext context = WebuiRequestContext.getCurrentInstance();
-    object.put("StatusTitle", encodeURI(getLabel(context, "UserProfilePopup.label.Loading")));
+    object.put("StatusTitle", getLabel(context, "UserProfilePopup.label.Loading"));
     String[] keys = new String[]{"Connect", "Confirm", "CancelRequest", "RemoveConnection", "Ignore"};
     for (int i = 0; i < keys.length; i++) {
-      object.put(keys[i], encodeURI(getLabel(context, "UserProfilePopup.label." + keys[i])));
+      object.put(keys[i], getLabel(context, "UserProfilePopup.label." + keys[i]));
     }
     //
     context.getJavascriptManager().getRequireJS().require("SHARED/social-ui-profile", "profile")
@@ -221,7 +221,7 @@ public class UserProfileHelper {
       try {
         SimpleDateFormat sd = new SimpleDateFormat(DATE_FORMAT_MMDDYYYY, Locale.ENGLISH);
         Date date = sd.parse(value.trim());
-        destExperience.put(key, TimeConvertUtils.convertXTimeAgo(date, DISPLAY_FORMAT_EEDDYYYY, TimeConvertUtils.MONTH));
+        destExperience.put(key, TimeConvertUtils.getFormatDate(date, DISPLAY_FORMAT_EEDDYYYY));
       } catch (Exception e) {
         destExperience.put(key, value);
       }
@@ -234,22 +234,6 @@ public class UserProfileHelper {
       return res.getString(key);
     } catch (Exception e) {
       return (key.indexOf(".") > 0) ? key.substring(key.lastIndexOf(".") + 1) : key;
-    }
-  }
-
-  protected static String encodeURI(String input) {
-    if (input == null || input.trim().length() == 0) {
-      return StringUtils.EMPTY;
-    }
-    try {
-      return URLEncoder.encode(input, "UTF-8")
-                      .replaceAll("\\+", "%20")
-                      .replaceAll("\\%21", "!")
-                      .replaceAll("\\%28", "(")
-                      .replaceAll("\\%29", ")")
-                      .replaceAll("\\%7E", "~");
-    } catch (UnsupportedEncodingException e) {
-      return input;
     }
   }
   

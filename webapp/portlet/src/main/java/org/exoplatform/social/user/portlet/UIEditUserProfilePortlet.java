@@ -39,13 +39,7 @@ public class UIEditUserProfilePortlet extends UIAbstractUserPortlet {
     super.beforeProcessRender(context);
     //
     RequireJS requireJs = context.getJavascriptManager().getRequireJS();
-    requireJs.require("SHARED/jquery", "jq")
-             .addScripts(new StringBuilder("(function(jq){")
-                 .append("jq('.uiEditUserProfileForm:first').find('.multiValueContainer').find('.uiIconTrash').attr('class', 'uiIconClose uiIconLightGray');")
-                 .append("jq('.uiEditUserProfileForm:first').find('.uiExperien').find('.uiIconPlus:last').removeClass('hide');")
-                 .append("jq('#socialMainLayout').find('.right-column-containerTDContainer:first')")
-                 .append(".css('width', function(){if(jq(this).find('.UIRowContainer:last').find('div').length > 0) { return '40%'} return '0px';} );")
-                 .append("})(jq);").toString());
+    requireJs.require("SHARED/edit-user-profile", "profile").addScripts("profile.init('" + getId() + "');");
   }
   
 }

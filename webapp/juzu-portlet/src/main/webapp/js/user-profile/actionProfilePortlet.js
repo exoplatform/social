@@ -4,6 +4,8 @@
       init : function() {
         var portlet = $(ActionProfile.parentId);
         portlet.find('button.btn').on('click', ActionProfile.doAction);
+        //
+        ActionProfile.leftBorder();
       },
       doAction : function() {
         var action = $(this).data('action');
@@ -26,6 +28,13 @@
           }).fail(function(jqXHR, textStatus) {
             window.console.error( "Request failed: " + textStatus + " " + jqXHR);
           });
+        }
+      },
+      leftBorder : function() {
+        var leftRow = $('.left-column-containerTDContainer:first');
+        if(leftRow.length > 0) {
+          leftRow.css('position', 'relative');
+          leftRow.append($('<div class="left-border-row"></div>'))
         }
       }
   }

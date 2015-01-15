@@ -7,6 +7,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import org.exoplatform.services.log.ExoLogger;
+import org.exoplatform.services.log.Log;
 import org.exoplatform.social.user.portlet.UserProfileHelper;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
@@ -30,45 +32,53 @@ import org.exoplatform.webui.form.UIFormStringInput;
     }
 )
 public class UIMultiValueSelection extends UIFormInputSet {
+  private static final Log LOG = ExoLogger.getExoLogger(UIMultiValueSelection.class);
+  
   public static final String FIELD_SELECT_KEY = "selectKey_";
   public static final String FIELD_INPUT_KEY = "inputKey_";
   private List<Map<String, String>> values;
   private List<Integer> indexs = new LinkedList<Integer>();
-  private List<SelectItemOption<String>> options;
+  private List<String> optionValues = new ArrayList<String>();
 
   public UIMultiValueSelection() {
   }
 
   public UIMultiValueSelection(String name) {
     super(name);
-    this.options = new ArrayList<SelectItemOption<String>>();
   }
 
   public UIMultiValueSelection(String name, String uiFormId, List<String> options) {
     super(name);
     setComponentConfig(getClass(), null);
     //
-    this.options = new ArrayList<SelectItemOption<String>>();
-    if (options != null && options.size() > 0) {
-      for (String option : options) {
-        this.options.add(new SelectItemOption<String>(UserProfileHelper.getLabel(null, uiFormId + ".label." + option), option));
-      }
-    }
+    this.optionValues = options;
   }
   
-  private String getSelected(String uiFormId, String key) {
-    for (SelectItemOption<String> selectItemOption : options) {
-      if (selectItemOption.getValue().equals(key)) {
-        return key;
+  private List<SelectItemOption<String>> getOptions() {
+    String uiFormId = getAncestorOfType(UIForm.class).getId();
+    List<SelectItemOption<String>> options = new ArrayList<SelectItemOption<String>>();
+    if (optionValues != null) {
+      for (String option : optionValues) {
+        options.add(new SelectItemOption<String>(UserProfileHelper.getLabel(null, uiFormId + ".label." + option), option));
       }
     }
-    options.add(new SelectItemOption<String>(UserProfileHelper.getLabel(null, uiFormId + ".label." + key), key));
+    return options;
+  }
+
+  private String getSelected(String key) {
+    if (optionValues == null) {
+      optionValues = new ArrayList<String>();
+    }
+    if (optionValues.contains(key)) {
+      return key;
+    }
+    optionValues.add(key);
+    //
     return "";
   }
   
   public UIMultiValueSelection setValues(List<Map<String, String>> values) {
     this.values = values;
-    String uiFormId = getAncestorOfType(UIForm.class).getId();
     //
     try {
       //
@@ -80,7 +90,7 @@ public class UIMultiValueSelection extends UIFormInputSet {
           String key = map.get("key");
           String value = map.get("value");
           //
-          addInput(index, getSelected(uiFormId, key), value);
+          addInput(index, getSelected(key), value);
           //
           ++index;
         }
@@ -88,17 +98,17 @@ public class UIMultiValueSelection extends UIFormInputSet {
         addInput(index, "", "");
       }
     } catch (Exception e) {
-      e.printStackTrace();
+      LOG.warn("Failed to set values for " + getId(), e);
     }
     return this;
   }
 
   private String getInputValue(int indexId) {
-    return getUIStringInput(FIELD_INPUT_KEY + indexId).getValue();
+    return getUIStringInput(getInputId(indexId)).getValue();
   }
 
   private String getInputKey(int indexId) {
-    return getUIFormSelectBox(FIELD_SELECT_KEY + indexId).getValue();
+    return getUIFormSelectBox(getSelectId(indexId)).getValue();
   }
 
   public List<Map<String, String>> getValues() {
@@ -115,7 +125,16 @@ public class UIMultiValueSelection extends UIFormInputSet {
     return this.values;
   }
 
+  private String getSelectId(int index) {
+    return new StringBuilder(FIELD_SELECT_KEY).append(getId()).append(index).toString();
+  }
+
+  private String getInputId(int index) {
+    return new StringBuilder(FIELD_INPUT_KEY).append(getId()).append(index).toString();
+  }
+
   private void addInput(int indexId, String selected, String value) {
+    //
     int index = indexId;
     if (indexs.contains(Integer.valueOf(indexId))) {
       index = indexs.indexOf(indexId) + 1;
@@ -123,12 +142,10 @@ public class UIMultiValueSelection extends UIFormInputSet {
     }
     ((LinkedList<Integer>) indexs).add(index, indexId);
     //
-    UIFormSelectBox selectBox = new UIFormSelectBox(FIELD_SELECT_KEY + indexId, FIELD_SELECT_KEY + indexId, options).setValue(selected);
-    selectBox.setHTMLAttribute("class", "span2");
-    addUIFormInput(selectBox);
+    addUIFormInput(new UIFormSelectBox(getSelectId(indexId), getSelectId(indexId), getOptions()).setValue(selected));
     //
-    UIFormStringInput stringInput = new UIFormStringInput(FIELD_INPUT_KEY + indexId, FIELD_INPUT_KEY + indexId, value);
-    stringInput.setHTMLAttribute("class", "span3");
+    UIFormStringInput stringInput = new UIFormStringInput(getInputId(indexId), getInputId(indexId), value);
+    stringInput.setHTMLAttribute("class", "selectInput");
     addUIFormInput(stringInput);
   }
 
@@ -162,8 +179,8 @@ public class UIMultiValueSelection extends UIFormInputSet {
     int i = 0;
     for (Integer indexId : indexs) {
       w.append("<div class=\"controls-row\">") ;
-      renderUIComponent(getUIFormSelectBox(FIELD_SELECT_KEY + indexId));
-      renderUIComponent(getUIStringInput(FIELD_INPUT_KEY + indexId));
+      renderUIComponent(getUIFormSelectBox(getSelectId(indexId)));
+      renderUIComponent(getUIStringInput(getInputId(indexId)));
       if(indexs.size() > 1) {
         // remove
         w.append("<a class=\"actionIcon\" href=\"javascript:void(0)\" onclick=\"").append(uiForm.event("RemoveValue", getId() + String.valueOf(indexId)))
@@ -192,7 +209,7 @@ public class UIMultiValueSelection extends UIFormInputSet {
       String indexId = event.getRequestContext().getRequestParameter(OBJECTID);
       indexId = indexId.replace(uiSelection.getId(), "");
       uiSelection.addInput(Integer.valueOf(indexId.trim()), "", "");
-      event.getRequestContext().addUIComponentToUpdateByAjax(uiSelection.getParent());
+      event.getRequestContext().addUIComponentToUpdateByAjax(uiSelection);
     }
   }
 
@@ -202,8 +219,8 @@ public class UIMultiValueSelection extends UIFormInputSet {
       String indexId = event.getRequestContext().getRequestParameter(OBJECTID);
       indexId = indexId.replace(uiSelection.getId(), "");
       if(uiSelection.indexs.contains(Integer.valueOf(indexId))) {
-        uiSelection.removeChildById(FIELD_SELECT_KEY + indexId);
-        uiSelection.removeChildById(FIELD_INPUT_KEY + indexId);
+        uiSelection.removeChildById(uiSelection.getSelectId(Integer.valueOf(indexId)));
+        uiSelection.removeChildById(uiSelection.getInputId(Integer.valueOf(indexId)));
         uiSelection.indexs.remove(Integer.valueOf(indexId));
       }
       event.getRequestContext().addUIComponentToUpdateByAjax(uiSelection);
