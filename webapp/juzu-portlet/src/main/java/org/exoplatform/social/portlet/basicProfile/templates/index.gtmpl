@@ -21,8 +21,9 @@ def keys = profile.keySet();
       <%
       	} else  {
       	  for(subKey in values.keySet()) {
+      	    def isIms = _ctx.isIMs(key);
             def typeIconClzz = "";
-            if (_ctx.isIMs(key)) {
+            if (isIms) {
               typeIconClzz = _ctx.getIconCss(subKey); 
             }
             
@@ -33,29 +34,29 @@ def keys = profile.keySet();
               <div class=""><a href="<%=url%>"><%=url%></a></div>
             <%}
       	    } else {
-      	    %>
-      	    <div class="clearfix">
-      	    <% 
       	      if (typeIconClzz.length() > 0) {
       	        typeIconClzz = typeIconClzz + " uiIconSocLightGray";
       	      }
               for (val in listVal) { 
+              %>
+              <div class="listContent">
+              <%
                 if (valueNum == 0) {
               %>
-      	      <div class="pull-left"><i class="<%=typeIconClzz%>"></i><span><%=_ctx.appRes("UIBasicProfile.label." + subKey)%></span>: </div>
-      	      <div class="pull-left"><span><%=val%></span>
+                 <%if(isIms) {%>
+      	        <div><i class="<%=typeIconClzz%>"></i>&nbsp;&nbsp;<%=_ctx.appRes("UIBasicProfile.label." + subKey)%>:&nbsp;</div>
+      	         <%} else { %>
+      	        <div><%=_ctx.appRes("UIBasicProfile.label." + subKey)%>:&nbsp;</div>  
+      	         <%}%>
       	      <%} else { %>
-      	      <br><span><%=val%></span>
-            <%  }
+      	        <div></div>
+              <%}
                 valueNum++;
-                if (valueNum == listVal.size()) {
-                  %>
-               </div>
-                  <%
-                }
-              }%>
-            </div>
-            <%
+              %>
+                <div><%=val%></div>
+              </div>
+              <%
+              }
       	    }
       	  }
       	}

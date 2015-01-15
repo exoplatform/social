@@ -13,7 +13,7 @@
  	</div>
 <% } else if(isOwner) { %>
 	<div class="no-content center">
-		<%=_ctx.appRes("UIBasicProfile.info.HaveNotAbout")%>
+		<div><%=_ctx.appRes("UIBasicProfile.info.HaveNotAbout")%></div>
 		<button class="btn btn-primary" onclick="window.location.href=window.location.origin + '/portal/intranet/edit-profile/'">
 				<i class="uiIconEdit uiIconLightGray"></i> <%=_ctx.appRes("UIBasicProfile.action.EditProfile")%></button>
 	</div>

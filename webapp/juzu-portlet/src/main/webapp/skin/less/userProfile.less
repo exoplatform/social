@@ -2,10 +2,12 @@
 @import "mixins.less";
 
 td.left-column-containerTDContainer {
-	width: 300px;
+	border-right: 1px solid @borderColor;
+    width: 215px;
 }
 td.right-column-containerTDContainer {
-	width: 260px;
+	padding-right: 20px;
+    width: 166px;
 }
 #socialTopLayout {
 	padding: 10px 20px 0;
@@ -22,7 +24,7 @@ td.right-column-containerTDContainer {
 #socialMainLayout {
 	padding: 0 0 0 20px;
 }
-
+/**
 .left-border-row {
 	position: absolute;
 	right: 0px;
@@ -30,6 +32,7 @@ td.right-column-containerTDContainer {
 	bottom: 0px;
 	border-left: solid 1px @borderColor;
 }
+*/
 .uiSocApplication {
 	h4.head-container {
 		margin: 0 0 15px;
@@ -105,6 +108,23 @@ td.right-column-containerTDContainer {
 	.uiBasicInfoSection {
 		.group-user-info {
 			margin: 0 0 15px;
+			.value-user-info {
+				display: table;
+				.listContent {
+					display: table-row;
+					> div {
+						display: table-cell;
+						word-break: break-all;
+						&:first-child {
+							width: 80px;
+						}
+						&:last-child {
+							width: 120px;
+						}					
+											
+					}
+				}
+			}
 			.label-user-info {
 				color: @textColor;
 				font-weight:bold;
@@ -185,12 +205,11 @@ td.right-column-containerTDContainer {
 }
 
 .uiMiniConnectionsPortlet {
-	margin-right: 20px;
 	h4 {
 		margin: 0 0 20px;
 	}
 	.noConnection {
-		background: @white url("/social-juzu/skin/images/userProfile/findFriendIconBg.png") no-repeat center 65px;
+		background: url("/social-juzu/skin/images/userProfile/findFriendIconBg.png") no-repeat center 65px;
 		padding: 20px;
 		border-radius: 5px;
 		border: 1px solid @borderColor;
