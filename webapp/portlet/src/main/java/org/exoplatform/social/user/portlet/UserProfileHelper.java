@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.webui.application.WebuiRequestContext;
 
@@ -82,7 +83,7 @@ public class UserProfileHelper {
   private static void putExperienceData(Map<String, String> srcExperience, Map<String, String> destExperience, String key) {
     String value = srcExperience.get(key);
     if (!isEmpty(value)) {
-      destExperience.put(key, value);
+      destExperience.put(key, StringEscapeUtils.unescapeHtml(value));
     }
   }
 

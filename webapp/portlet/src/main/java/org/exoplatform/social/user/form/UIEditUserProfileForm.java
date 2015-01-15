@@ -12,10 +12,13 @@ import java.util.Map;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
+import org.apache.commons.lang.StringEscapeUtils;
+import org.exoplatform.portal.application.PortalRequestContext;
 import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.user.form.UIInputSection.ActionData;
 import org.exoplatform.social.user.portlet.UserProfileHelper;
 import org.exoplatform.social.webui.Utils;
+import org.exoplatform.web.application.ApplicationMessage;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.EventConfig;
@@ -252,7 +255,6 @@ public class UIEditUserProfileForm extends UIForm {
     firstName.setLabel(name);
     return firstName;
   }
-  
   /**
    * @throws Exception
    */
@@ -279,7 +281,6 @@ public class UIEditUserProfileForm extends UIForm {
       }
     }
   }
-  
   /**
    * @return
    */
@@ -329,27 +330,79 @@ public class UIEditUserProfileForm extends UIForm {
       ++i;
     }
   }
-  
+
+  /**
+   * @param messageKey
+   * @param args
+   */
+  private void warning(String messageKey, String... args) {
+    WebuiRequestContext context = WebuiRequestContext.getCurrentInstance();
+    context.getUIApplication().addMessage(new ApplicationMessage(messageKey, args, ApplicationMessage.WARNING));
+    ((PortalRequestContext) context.getParentAppRequestContext()).ignoreAJAXUpdateOnPortlets(true);
+  }
+  /**
+   * @param map
+   * @param key
+   * @param value
+   */
   private void putData(Map<String, String> map, String key, String value) {
     if (value != null && !value.isEmpty()) {
-      map.put(key, value);
+      map.put(key, StringEscapeUtils.escapeHtml(value));
     }
   }
-  //TODO: check date time.
-  private Map<String, String> getValueExperience(UIInputSection experienceSection) {
+  /**
+   * @param experienceSection
+   * @return
+   * @throws Exception
+   */
+  private Map<String, String> getValueExperience(UIInputSection experienceSection) throws Exception {
     String id = experienceSection.getId();
     Map<String, String> map = new HashMap<String, String>();
     putData(map, Profile.EXPERIENCES_COMPANY, experienceSection.getUIStringInput(Profile.EXPERIENCES_COMPANY + id).getValue());
     putData(map, Profile.EXPERIENCES_POSITION, experienceSection.getUIStringInput(Profile.EXPERIENCES_POSITION + id).getValue());
     putData(map, Profile.EXPERIENCES_DESCRIPTION, experienceSection.getUIFormTextAreaInput(Profile.EXPERIENCES_DESCRIPTION + id).getValue());
     putData(map, Profile.EXPERIENCES_SKILLS, experienceSection.getUIFormTextAreaInput(Profile.EXPERIENCES_SKILLS + id).getValue());
-    putData(map, Profile.EXPERIENCES_START_DATE, experienceSection.getUIFormDateTimeInput(Profile.EXPERIENCES_START_DATE + id).getValue());
+    //
+    UIFormDateTimeInput startDate = experienceSection.getUIFormDateTimeInput(Profile.EXPERIENCES_START_DATE + id);
+    UIFormDateTimeInput endDate = experienceSection.getUIFormDateTimeInput(Profile.EXPERIENCES_END_DATE + id);
     boolean isCurrent = experienceSection.getUICheckBoxInput(Profile.EXPERIENCES_IS_CURRENT + id).isChecked();
-    if(isCurrent) {
-      map.put(Profile.EXPERIENCES_IS_CURRENT, "true");
+    // start empty
+    if ((startDate.getValue() == null || startDate.getValue().isEmpty())) {
+      // current is checked or end date not empty
+      if ((isCurrent || endDate.getValue() != null || !endDate.getValue().isEmpty())) {
+        warning("EmptyFieldValidator.msg.empty-input", getLabel(Profile.EXPERIENCES_START_DATE));
+        return null;
+      }
     } else {
-      putData(map, Profile.EXPERIENCES_END_DATE, experienceSection.getUIFormDateTimeInput(Profile.EXPERIENCES_END_DATE + id).getValue());
+      putData(map, Profile.EXPERIENCES_START_DATE, startDate.getValue());
+      // start after today
+      if (startDate.getCalendar().after(Calendar.getInstance())) {
+        warning("UIEditUserProfileForm.msg.TheDateBeforeToday", getLabel(Profile.EXPERIENCES_START_DATE));
+        return null;
+      }
+      if (!isCurrent) {
+        // end date empty
+        if (endDate.getValue() == null || endDate.getValue().isEmpty()) {
+          warning("EmptyFieldValidator.msg.empty-input", getLabel(Profile.EXPERIENCES_END_DATE));
+          return null;
+        }
+        // end after today
+        if (endDate.getCalendar().after(Calendar.getInstance())) {
+          warning("UIEditUserProfileForm.msg.TheDateBeforeToday", getLabel(Profile.EXPERIENCES_END_DATE));
+          return null;
+        }
+        // end date before start date
+        if (endDate.getCalendar().before(startDate.getCalendar())) {
+          warning("UIEditUserProfileForm.msg.FromDateBeforeToDate",
+                  getLabel(Profile.EXPERIENCES_START_DATE), getLabel(Profile.EXPERIENCES_END_DATE));
+          return null;
+        }
+        putData(map, Profile.EXPERIENCES_START_DATE, startDate.getValue());
+      } else {
+        map.put(Profile.EXPERIENCES_IS_CURRENT, "true");
+      }
     }
+    //
     return map;
   }
   
@@ -379,16 +432,45 @@ public class UIEditUserProfileForm extends UIForm {
       //
       List<Map<String, String>> ims = baseSection.getUIMultiValueSelection(Profile.CONTACT_IMS).getValues();
       //
+      List<Map<String, String>> mapUrls = new ArrayList<Map<String,String>>();
       List<?> urls = baseSection.getUIFormMultiValueInputSet(Profile.CONTACT_URLS).getValue();
+      for (Object url : urls) {
+        Map<String, String> mUrl = new HashMap<String, String>();
+        mUrl.put(UserProfileHelper.KEY, UserProfileHelper.URL_KEY);
+        mUrl.put(UserProfileHelper.VALUE, (String) url);
+        mapUrls.add(mUrl);
+      }
       //Experiences
       List<Map<String, String>> experiences = new ArrayList<Map<String, String>>();
       List<UIInputSection> experienceSections = uiForm.getExperienceSections();
       for (UIInputSection experienSection : experienceSections) {
         Map<String, String> map = uiForm.getValueExperience(experienSection);
+        if (map == null) {
+          return;
+        }
         if (map.size() > 0) {
           experiences.add(map);
         }
       }
+      Profile profile =  uiForm.currentProfile;
+      //
+      profile.setProperty(Profile.ABOUT_ME, aboutMe);
+      profile.setProperty(Profile.FIRST_NAME, firstName);
+      profile.setProperty(Profile.LAST_NAME, lastName);
+      profile.setProperty(Profile.EMAIL, email);
+      profile.setProperty(Profile.POSITION, position);
+      profile.setProperty(Profile.GENDER, gender);
+      //
+      profile.setProperty(Profile.CONTACT_PHONES, phones);
+      profile.setProperty(Profile.CONTACT_IMS, ims);
+      profile.setProperty(Profile.CONTACT_URLS, mapUrls);
+      //
+      profile.setProperty(Profile.EXPERIENCES, experiences);
+      //
+      Utils.getIdentityManager().updateProfile(profile);
+      //
+      uiForm.currentProfile = null;
+      //
       JSONObject json = new JSONObject();
       json.put(Profile.ABOUT_ME, aboutMe);
       json.put(Profile.FIRST_NAME, firstName);
@@ -403,7 +485,7 @@ public class UIEditUserProfileForm extends UIForm {
       //
       System.out.println("\n data: \n" + json.toString() + "\n\n");
       //
-      event.getRequestContext().addUIComponentToUpdateByAjax(uiForm);
+      ((PortalRequestContext) event.getRequestContext().getParentAppRequestContext()).ignoreAJAXUpdateOnPortlets(true);
     }
   }
 
@@ -411,13 +493,10 @@ public class UIEditUserProfileForm extends UIForm {
     @Override
     public void execute(Event<UIEditUserProfileForm> event) throws Exception {
       UIEditUserProfileForm editUserProfile = event.getSource();
-      String profileURL = editUserProfile.getViewProfileURL();
       //
       editUserProfile.currentProfile = null;
       //
-      event.getRequestContext().getJavascriptManager().getRequireJS()
-           .addScripts("(function() {window.open(window.location.origin + '" + profileURL + "', '_self')})(window);");
-      event.getRequestContext().addUIComponentToUpdateByAjax(editUserProfile);
+      ((PortalRequestContext) event.getRequestContext().getParentAppRequestContext()).ignoreAJAXUpdateOnPortlets(true);
     }
   }
 

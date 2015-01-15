@@ -9,11 +9,14 @@
 		}
 	}
 	//
+	String profileURL = uicomponent.getViewProfileURL();
 %>
 	</div>
 	<div class="uiAction">
-		<button onclick="<%=uicomponent.event("Save")%>" class="btn" type="button"><%=_ctx.appRes("word.save")%></button>
-		<button onclick="<%=uicomponent.event("Cancel")%>" class="btn" type="button"><%=_ctx.appRes("word.cancel")%></button>
+		<button onclick="<%=uicomponent.event("Save")%>; setTimeout(function() {window.open(window.location.origin + '$profileURL', '_self')}, 200);"
+					  class="btn" type="button"><%=_ctx.appRes("word.save")%></button>
+		<button onclick="<%=uicomponent.event("Cancel")%>; setTimeout(function() {window.open(window.location.origin + '$profileURL', '_self')}, 200);"
+		        class="btn" type="button"><%=_ctx.appRes("word.cancel")%></button>
   </div>
 	<%uiform.end();%>
 </div>
