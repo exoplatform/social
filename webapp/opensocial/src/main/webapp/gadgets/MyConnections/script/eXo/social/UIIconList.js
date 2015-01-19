@@ -571,7 +571,7 @@
   	    if((typeof this.naturalWidth != "undefined" &&
   	        this.naturalWidth == 0 ) 
   	        || this.readyState == 'uninitialized' ) {
-  	        $(this).attr('src', '/eXoSkin/skin/less/social/skin/DefaultSkin/portal/background/UserlistAvatar.png');
+  	        $(this).attr('src', '/eXoSkin/skin/images/themes/default/social/skin/ShareImages/UserlistAvatar.png');
   	    }
   	}); 
   })
