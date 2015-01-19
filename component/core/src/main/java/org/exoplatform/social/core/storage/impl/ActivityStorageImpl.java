@@ -459,7 +459,7 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
         activityEntity.setIdentity(streamOwnerEntity);  
       }
     } catch (Exception e) {
-      //do nothing
+      LOG.error(e.getMessage(), e);
     }
     String remoteId = identityEntity.getRemoteId();
     String providerId = identityEntity.getProviderId();
