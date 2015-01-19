@@ -37,7 +37,7 @@ jsManager.require("SHARED/jquery", "jq")
   <h6 class="titleBox">$selectApplicationsLabel</h6>
   <div class="appList clearfix">
     <%
-      def srcErrorBG = "/eXoResources/skin/sharedImages/Icon80x80/DefaultPortlet.png";
+      def srcErrorBG = "/eXoSkin/skin/images/themes/default/Icons/Icon80x80/DefaultPortlet.png";
       for (application in applicationList) {
         def addApplicationAction = uicomponent.event("InstallApplication", application.applicationName);
         def appNameIco = application.getApplicationName().split(":")[0];
