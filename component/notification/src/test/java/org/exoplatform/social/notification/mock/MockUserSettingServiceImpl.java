@@ -73,4 +73,8 @@ public class MockUserSettingServiceImpl implements UserSettingService {
     return getUserSettingByPlugin(pluginId);
   }
 
+  @Override
+  public void saveLastReadDate(String userId, Long time) {
+  }
+
 }
