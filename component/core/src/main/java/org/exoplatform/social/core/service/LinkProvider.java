@@ -45,8 +45,8 @@ import org.exoplatform.web.url.navigation.NodeURL;
 public class LinkProvider {
   public static final String RESOURCE_URL = "/social-resources";
   public static final String JAVASCRIPT_RESOURCE_URL = RESOURCE_URL + "/javascript/";
-  public static final String PROFILE_DEFAULT_AVATAR_URL = "/eXoSkin/skin/images/themes/default/social/skin/ShareImages/UserAvtDefault.png";
-  public static final String SPACE_DEFAULT_AVATAR_URL = "/eXoSkin/skin/images/themes/default/social/skin/ShareImages/SpaceAvtDefault.png";
+  public static final String PROFILE_DEFAULT_AVATAR_URL = "/eXoSkin/skin/images/system/UserAvtDefault.png";
+  public static final String SPACE_DEFAULT_AVATAR_URL = "/eXoSkin/skin/images/system/SpaceAvtDefault.png";
   public static final String HAS_CONNECTION_ICON =
           RESOURCE_URL + "/eXoSkin/skin/images/themes/default/social/skin/UIManageUsers/StatusIcon.png";
   public static final String WAITING_CONFIRMATION_ICON =
