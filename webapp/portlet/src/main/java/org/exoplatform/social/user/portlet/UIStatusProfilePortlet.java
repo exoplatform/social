@@ -16,30 +16,20 @@
  */
 package org.exoplatform.social.user.portlet;
 
-import org.exoplatform.social.user.form.UIEditUserProfileForm;
-import org.exoplatform.social.webui.composer.PopupContainer;
-import org.exoplatform.web.application.RequireJS;
-import org.exoplatform.webui.application.WebuiRequestContext;
+import org.exoplatform.services.user.UserStateService;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.core.lifecycle.UIApplicationLifecycle;
 
 @ComponentConfig(
   lifecycle = UIApplicationLifecycle.class,
-  template = "app:/groovy/social/portlet/user/UIEditUserProfilePortlet.gtmpl"
+  template = "app:/groovy/social/portlet/user/UIStatusProfilePortlet.gtmpl"
 )
-public class UIEditUserProfilePortlet extends UIAbstractUserPortlet {
-
-  public UIEditUserProfilePortlet() throws Exception {
-    addChild(UIEditUserProfileForm.class, null, null);
-    addChild(PopupContainer.class, null, "AvatarPopupContainer");
+public class UIStatusProfilePortlet extends UIAbstractUserPortlet {
+  public UIStatusProfilePortlet() throws Exception {
   }
 
-  @Override
-  public void beforeProcessRender(WebuiRequestContext context) {
-    super.beforeProcessRender(context);
-    //
-    RequireJS requireJs = context.getJavascriptManager().getRequireJS();
-    requireJs.require("SHARED/edit-user-profile", "profile").addScripts("profile.init('" + getId() + "');");
+  protected boolean isOnline() {
+    UserStateService stateService = getApplicationComponent(UserStateService.class);
+    return stateService.isOnline(currentProfile.getIdentity().getRemoteId());
   }
-  
 }

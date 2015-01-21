@@ -1,0 +1,69 @@
+<%
+import org.exoplatform.social.user.portlet.UserProfileHelper;
+
+def profile = uicomponent.getProfileInfo();
+def keys = profile.keySet();
+%>
+<div class="uiSocApplication uiBasicProfilePortlet" id="$uicomponent.id">
+  <h5 class="head-container"><%=_ctx.appRes("UIBasicProfile.label.ContactInformation")%></h5>
+  <div class="uiBasicInfoSection">
+    <%
+      for(key in keys) {
+        def values = profile.get(key);
+    %>
+    <div class="group-user-info">
+      <div class="label-user-info"><strong><%=_ctx.appRes("UIBasicProfile.label." + key)%>:</strong></div>
+      <div class="value-user-info">
+      <%
+        if(UserProfileHelper.isString(values)) {
+      %>
+        <div class=""><%=values%></div>
+      <%
+        } else  {
+          for(subKey in values.keySet()) {
+            def isIms = UserProfileHelper.isIMs(key);
+            def typeIconClzz = "";
+            if (isIms) {
+              typeIconClzz = UserProfileHelper.getIconCss(subKey); 
+            }
+            
+            def listVal = values.get(subKey); 
+            int valueNum = 0;
+            if (UserProfileHelper.isURL(key)) {
+              for (url in listVal) { %>
+              <div class=""><a href="<%=url%>"><%=url%></a></div>
+            <%}
+            } else {
+              if (typeIconClzz.length() > 0) {
+                typeIconClzz = typeIconClzz + " uiIconSocLightGray";
+              }
+              for (val in listVal) { 
+              %>
+              <div class="listContent">
+              <%
+                if (valueNum == 0) {
+              %>
+                 <%if(isIms) {%>
+                <div><i class="<%=typeIconClzz%>"></i>&nbsp;&nbsp;<%=_ctx.appRes("UIBasicProfile.label." + subKey)%>:&nbsp;</div>
+                 <%} else { %>
+                <div><%=_ctx.appRes("UIBasicProfile.label." + subKey)%>:&nbsp;</div>  
+                 <%}%>
+              <%} else { %>
+                <div></div>
+              <%}
+                valueNum++;
+              %>
+                <div><%=val%></div>
+              </div>
+              <%
+              }
+            }
+          }
+        }
+      %>
+      </div>
+    </div>
+    <%} %>
+    <div class="line-bottom"><span></span></div>
+  </div>
+</div>

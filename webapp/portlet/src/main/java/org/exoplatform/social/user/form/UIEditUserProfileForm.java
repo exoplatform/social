@@ -120,7 +120,6 @@ public class UIEditUserProfileForm extends UIForm {
     try {
       return res.getString(label);
     } catch (MissingResourceException e) {
-      System.out.println("Missing: " + label);
       return id;
     }
   }

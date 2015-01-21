@@ -16,30 +16,17 @@
  */
 package org.exoplatform.social.user.portlet;
 
-import org.exoplatform.social.user.form.UIEditUserProfileForm;
-import org.exoplatform.social.webui.composer.PopupContainer;
-import org.exoplatform.web.application.RequireJS;
-import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.core.lifecycle.UIApplicationLifecycle;
 
 @ComponentConfig(
   lifecycle = UIApplicationLifecycle.class,
-  template = "app:/groovy/social/portlet/user/UIEditUserProfilePortlet.gtmpl"
+  template = "app:/groovy/social/portlet/user/UIActionProfilePortlet.gtmpl"
 )
-public class UIEditUserProfilePortlet extends UIAbstractUserPortlet {
+public class UIActionProfilePortlet extends UIAbstractUserPortlet {
 
-  public UIEditUserProfilePortlet() throws Exception {
-    addChild(UIEditUserProfileForm.class, null, null);
-    addChild(PopupContainer.class, null, "AvatarPopupContainer");
+  public UIActionProfilePortlet() throws Exception {
+    addChild(UIRelationshipAction.class, null, null);
   }
 
-  @Override
-  public void beforeProcessRender(WebuiRequestContext context) {
-    super.beforeProcessRender(context);
-    //
-    RequireJS requireJs = context.getJavascriptManager().getRequireJS();
-    requireJs.require("SHARED/edit-user-profile", "profile").addScripts("profile.init('" + getId() + "');");
-  }
-  
 }

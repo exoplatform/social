@@ -1,0 +1,31 @@
+<%
+  import org.exoplatform.social.core.service.LinkProvider;
+  import org.exoplatform.portal.webui.util.Util;
+  import org.exoplatform.social.webui.Utils;
+  import org.exoplatform.social.user.portlet.UserProfileHelper;
+  
+  List profiles = uicomponent.loadPeoples();
+  int size = uicomponent.getAllSize();
+  UserProfileHelper.initProfilePopup("UIMiniConnectionsPortlet");
+%>
+<div class="uiSocApplication uiMiniConnectionsPortlet" id="$uicomponent.id">
+  <h4 class="head-container"><%=_ctx.appRes("UIBasicProfile.label.Connections")%></h4>
+  <% if(size > 0) {
+     for(profile in profiles) { %>
+      <a href="<%=profile.getProfileURL()%>" class="avatarXSmall">
+        <img alt="<%=profile.getDisplayName()%>" src="<%=profile.getAvatarURL()%>">         
+      </a>
+    <% } 
+       if(size > uicomponent.MAX_DISPLAY) {
+    %>
+      <div class="viewAllConnection"><a href="<%=LinkProvider.getBaseUri(null, null)%>/connections/network/<%=uicomponent.getCurrentRemoteId()%>"><%=_ctx.appRes("UIBasicProfile.label.ViewAll")%>&nbsp;(<%=size%>)</a></div>
+    <% } %>
+  <% } else {
+      String keyNoConnection = Utils.isOwner() ? "YouHaveNotConnections" : "UserHaveNotConnections";
+  %>
+      <div class="noConnection center">
+        <%=_ctx.appRes("UIBasicProfile.info." + keyNoConnection)%>
+        <div class="findConnection"><a href="<%=LinkProvider.getBaseUri(null, null)%>/connexions"><%=_ctx.appRes("UIBasicProfile.label.FindConnections")%></a></div>
+      </div>
+  <% } %>
+</div>

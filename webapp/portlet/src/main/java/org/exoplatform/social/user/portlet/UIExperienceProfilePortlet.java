@@ -16,30 +16,29 @@
  */
 package org.exoplatform.social.user.portlet;
 
-import org.exoplatform.social.user.form.UIEditUserProfileForm;
-import org.exoplatform.social.webui.composer.PopupContainer;
-import org.exoplatform.web.application.RequireJS;
-import org.exoplatform.webui.application.WebuiRequestContext;
+import java.util.List;
+import java.util.Map;
+
+import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.core.lifecycle.UIApplicationLifecycle;
 
 @ComponentConfig(
   lifecycle = UIApplicationLifecycle.class,
-  template = "app:/groovy/social/portlet/user/UIEditUserProfilePortlet.gtmpl"
+  template = "app:/groovy/social/portlet/user/UIExperienceProfilePortlet.gtmpl"
 )
-public class UIEditUserProfilePortlet extends UIAbstractUserPortlet {
+public class UIExperienceProfilePortlet extends UIAbstractUserPortlet {
+  final protected static String EXPERIENCES_IS_CURRENT = Profile.EXPERIENCES_IS_CURRENT;
 
-  public UIEditUserProfilePortlet() throws Exception {
-    addChild(UIEditUserProfileForm.class, null, null);
-    addChild(PopupContainer.class, null, "AvatarPopupContainer");
+  public UIExperienceProfilePortlet() throws Exception {
   }
 
-  @Override
-  public void beforeProcessRender(WebuiRequestContext context) {
-    super.beforeProcessRender(context);
-    //
-    RequireJS requireJs = context.getJavascriptManager().getRequireJS();
-    requireJs.require("SHARED/edit-user-profile", "profile").addScripts("profile.init('" + getId() + "');");
+  protected String getAboutMe() {
+    String about = (String) currentProfile.getProperty(Profile.ABOUT_ME);
+    return UserProfileHelper.isEmpty(about) ? "" : about;
   }
   
+  protected List<Map<String, String>> getExperience() throws Exception {
+    return UserProfileHelper.getDisplayExperience(currentProfile);
+  }
 }

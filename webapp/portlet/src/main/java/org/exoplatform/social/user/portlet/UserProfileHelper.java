@@ -1,6 +1,7 @@
 package org.exoplatform.social.user.portlet;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -9,12 +10,69 @@ import java.util.ResourceBundle;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.webui.application.WebuiRequestContext;
+import org.json.JSONObject;
 
 public class UserProfileHelper {
   final public static String KEY = "key";
   final public static String VALUE = "value";
   final public static String URL_KEY = "url";
 
+  enum IconClass {
+    DEFAULT("", ""),
+    GTALK("gtalk", "uiIconSocGtalk"),
+    MSN("msn", "uiIconSocMSN"),
+    SKYPE("skype", "uiIconSocSkype"),
+    YAHOO("yahoo", "uiIconSocYahoo"),
+    OTHER("other", "uiIconSocOther");
+
+    private final String key;
+    private final String iconClass;
+    
+    IconClass(String key, String iconClass) {
+      this.key = key;
+      this.iconClass = iconClass;
+    }
+    String getKey() {
+      return this.key;
+    }
+    public String getIconClass() {
+      return iconClass;
+    }
+    public static String getIconClass(String key) {
+      for (IconClass iconClass : IconClass.values()) {
+        if (iconClass.getKey().equals(key)) {
+          return iconClass.getIconClass();
+        }
+      }
+      return DEFAULT.getIconClass();
+    }
+  }
+  
+  /**
+   * @param currentProfile
+   * @return
+   */
+  public static Map<String, Object> getDisplayProfileInfo(Profile currentProfile) {
+    Map<String, Object> infos = new LinkedHashMap<String, Object>();
+    infos.put(Profile.EMAIL, currentProfile.getEmail());
+    //
+    String jobTitle = currentProfile.getPosition();
+    if(!isEmpty(jobTitle)) {
+      infos.put(Profile.POSITION, jobTitle);
+    }
+    String gender = currentProfile.getGender();
+    if(!isEmpty(gender)) {
+      infos.put(Profile.GENDER, gender);
+    }
+    //
+    putInfoData(currentProfile, infos, Profile.CONTACT_PHONES);
+    //
+    putInfoData(currentProfile, infos, Profile.CONTACT_IMS);
+    //
+    putInfoData(currentProfile, infos, Profile.CONTACT_URLS);
+    //
+    return infos;
+  }
   /**
    * @param s
    * @return
@@ -60,6 +118,37 @@ public class UserProfileHelper {
     return urls;
   }
 
+  public static void initProfilePopup(String id) throws Exception {
+    JSONObject object = new JSONObject();
+    WebuiRequestContext context = WebuiRequestContext.getCurrentInstance();
+    object.put("StatusTitle", getLabel(context, "UserProfilePopup.label.Loading"));
+    String[] keys = new String[]{"Connect", "Confirm", "CancelRequest", "RemoveConnection", "Ignore"};
+    for (int i = 0; i < keys.length; i++) {
+      object.put(keys[i], getLabel(context, "UserProfilePopup.label." + keys[i]));
+    }
+    //
+    context.getJavascriptManager().getRequireJS().require("SHARED/social-ui-profile", "profile")
+           .addScripts("profile.initUserProfilePopup('" + id + "', " + object.toString() + ");");
+  }
+  
+  public static boolean isString(Object s) {
+    return s instanceof String;
+  }
+  
+  public static boolean isURL(String key) {
+    if (key == null) return false;
+    return Profile.CONTACT_URLS.equals(key);
+  }
+  
+  public static boolean isIMs(String key) {
+    if (key == null) return false;
+    return Profile.CONTACT_IMS.equals(key);
+  }
+  
+  public static String getIconCss(String key) {
+    return IconClass.getIconClass(key);
+  }
+    
   private static Map<String, String> theExperienceData(Map<String, String> srcExperience, boolean isCurrent) {
     Map<String, String> experience = new LinkedHashMap<String, String>();
     putExperienceData(srcExperience, experience, Profile.EXPERIENCES_COMPANY);
@@ -96,6 +185,29 @@ public class UserProfileHelper {
       return res.getString(key);
     } catch (Exception e) {
       return (key.indexOf(".") > 0) ? key.substring(key.lastIndexOf(".") + 1) : key;
+    }
+  }
+  
+  private static void putInfoData(Profile currentProfile, Map<String, Object> infos, String mainKey) {
+    List<Map<String, String>> multiValues = getMultiValues(currentProfile, mainKey);
+    if (multiValues != null && multiValues.size() > 0) {
+      Map<String, List<String>> mainValue = new HashMap<String, List<String>>();
+      
+      for (Map<String, String> map : multiValues) {
+        List<String> values = new ArrayList<String>();
+        String key = map.get(KEY);
+        String value = map.get(VALUE);
+        if (mainValue.containsKey(key)) {
+          values.addAll(mainValue.get(key));
+          values.add(value);
+        } else {
+          values.add(value);
+        }
+        
+        mainValue.put(key, values);
+      }
+      //
+      infos.put(mainKey, mainValue);
     }
   }
 }

@@ -16,30 +16,50 @@
  */
 package org.exoplatform.social.user.portlet;
 
-import org.exoplatform.social.user.form.UIEditUserProfileForm;
-import org.exoplatform.social.webui.composer.PopupContainer;
-import org.exoplatform.web.application.RequireJS;
-import org.exoplatform.webui.application.WebuiRequestContext;
+import java.util.Map;
+
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.core.lifecycle.UIApplicationLifecycle;
 
 @ComponentConfig(
   lifecycle = UIApplicationLifecycle.class,
-  template = "app:/groovy/social/portlet/user/UIEditUserProfilePortlet.gtmpl"
+  template = "app:/groovy/social/portlet/user/UIBasicProfilePortlet.gtmpl"
 )
-public class UIEditUserProfilePortlet extends UIAbstractUserPortlet {
-
-  public UIEditUserProfilePortlet() throws Exception {
-    addChild(UIEditUserProfileForm.class, null, null);
-    addChild(PopupContainer.class, null, "AvatarPopupContainer");
-  }
-
-  @Override
-  public void beforeProcessRender(WebuiRequestContext context) {
-    super.beforeProcessRender(context);
-    //
-    RequireJS requireJs = context.getJavascriptManager().getRequireJS();
-    requireJs.require("SHARED/edit-user-profile", "profile").addScripts("profile.init('" + getId() + "');");
-  }
+public class UIBasicProfilePortlet extends UIAbstractUserPortlet {
+  final private static String URL_KEY = "url";
   
+  public UIBasicProfilePortlet() throws Exception {
+  }
+
+  protected Map<String, Object> getProfileInfo() {
+    return UserProfileHelper.getDisplayProfileInfo(currentProfile);
+  }
+
+  protected boolean isString(Object s) {
+    return s instanceof String;
+  }
+
+  protected boolean isURL(String key) {
+    if (key == null) return false;
+    return key.startsWith(URL_KEY);  
+  }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
