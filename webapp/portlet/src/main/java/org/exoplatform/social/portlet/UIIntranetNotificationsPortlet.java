@@ -25,16 +25,12 @@ import javax.portlet.ResourceURL;
 
 import org.exoplatform.commons.api.notification.model.WebNotificationFilter;
 import org.exoplatform.commons.api.notification.service.WebNotificationService;
-import org.exoplatform.portal.application.PortalRequestContext;
 import org.exoplatform.social.core.service.LinkProvider;
 import org.exoplatform.webui.application.WebuiApplication;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
-import org.exoplatform.webui.config.annotation.EventConfig;
 import org.exoplatform.webui.core.UIPortletApplication;
 import org.exoplatform.webui.core.lifecycle.UIApplicationLifecycle;
-import org.exoplatform.webui.event.Event;
-import org.exoplatform.webui.event.EventListener;
 import org.json.JSONObject;
 
 /**
@@ -45,11 +41,7 @@ import org.json.JSONObject;
  */
 @ComponentConfig(
  lifecycle = UIApplicationLifecycle.class,
- template = "app:/groovy/social/portlet/UIIntranetNotificationsPortlet.gtmpl",
- events = {
-     @EventConfig(listeners = UIIntranetNotificationsPortlet.MarkReadActionListener.class),
-     @EventConfig(listeners = UIIntranetNotificationsPortlet.TakeEventActionListener.class)
-   }
+ template = "app:/groovy/social/portlet/UIIntranetNotificationsPortlet.gtmpl"
 )
 public class UIIntranetNotificationsPortlet extends UIPortletApplication {
   private final WebNotificationService webNotifService;
@@ -145,25 +137,5 @@ public class UIIntranetNotificationsPortlet extends UIPortletApplication {
   
   protected String getActionUrl(String actionName) throws Exception {
     return event(actionName).replace("javascript:ajaxGet('", "").replace("')", "&" + OBJECTID + "=");
-  }
-  
-  public static class MarkReadActionListener extends EventListener<UIIntranetNotificationsPortlet> {
-    public void execute(Event<UIIntranetNotificationsPortlet> event) throws Exception {
-      String id = event.getRequestContext().getRequestParameter(OBJECTID);
-      UIIntranetNotificationsPortlet portlet = event.getSource();
-      portlet.webNotifService.markRead(id);
-      // Ignore reload portlet
-      ((PortalRequestContext) event.getRequestContext().getParentAppRequestContext()).ignoreAJAXUpdateOnPortlets(true);
-    }
-  }
-  
-  public static class TakeEventActionListener extends EventListener<UIIntranetNotificationsPortlet> {
-    public void execute(Event<UIIntranetNotificationsPortlet> event) throws Exception {
-      String id = event.getRequestContext().getRequestParameter(OBJECTID);
-      UIIntranetNotificationsPortlet portlet = event.getSource();
-      portlet.webNotifService.remove(id);
-      // Ignore reload portlet
-      ((PortalRequestContext) event.getRequestContext().getParentAppRequestContext()).ignoreAJAXUpdateOnPortlets(true);
-    }
   }
 }

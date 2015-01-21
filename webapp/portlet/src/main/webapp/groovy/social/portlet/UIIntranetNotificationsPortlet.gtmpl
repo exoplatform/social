@@ -3,6 +3,8 @@
 	requireJs.require("SHARED/intranetNotification", "intranetNotification")
          	 .addScripts("intranetNotification.init('" + uicomponent.id + "');");
 	String userSettingUrl = uicomponent.getUserNotificationSettingUrl(); 
+	List notifications = uicomponent.getNotifications();
+	String display = (notifications.size() == 0) ? "block" : "none";
 %>
 
 <div class="UIIntranetNotificationsPortlet" id="$uicomponent.id">
@@ -17,8 +19,8 @@
     %>
   </div>
   <ul class="displayItems">
+  	<li class="alert alert-info no-items" style="display:$display;"><%=_ctx.appRes("UIIntranetNotificationsPortlet.label.NoNotifications") %></li>
   <%
-    List notifications = uicomponent.getNotifications();
     for(notification in notifications) { 
       print(notification);
     }
@@ -26,4 +28,11 @@
   </ul>
   <div id="ShowMoreLoader" data-more="<%=uicomponent.isHasMore()%>" data-url="<%=uicomponent.buildResourceURL()%>" class="showMore hide"></div>
   <div class="bottomContainer"></div>
+  <div class="ShowAllIndicator" id="ShowAllIndicator" style="display:none">
+  	<% for (int i = 0; i < 9; ++i) { %>
+  	<div id="rotateG_0$i" class="blockG"></div>
+  	<% } %>
+  </div>
+  
+  
 </div>
