@@ -3,18 +3,30 @@
       init : function(id) {
         var portlet = $('#' + id);
         if(portlet.length > 0) {
-          portlet.find('.multiValueContainer').find('.uiIconTrash').attr('class', 'uiIconClose uiIconLightGray');
-          portlet.find('.uiExperien').each(function(i) {
-            UserProfile.chechboxUtil($(this).attr('id'));
-          });
-          //
-          $('#socialMainLayout').find('.right-column-containerTDContainer:first')
+          if(portlet.parents('#left-column-container').length > 0) {
+            UserProfile.leftBorder();
+          } else {
+            portlet.find('.multiValueContainer').find('.uiIconTrash').attr('class', 'uiIconClose uiIconLightGray');
+            portlet.find('.uiExperien').each(function(i) {
+              UserProfile.chechboxUtil($(this).attr('id'));
+            });
+            //
+            $('#socialMainLayout').find('.right-column-containerTDContainer:first')
             .css('width', function(){
-                if($(this).find('.UIRowContainer:last').find('div').length > 0) {
-                  return '40%';
-                }
-                return '0px';
-             });
+              if($(this).find('.UIRowContainer:last').find('div').length > 0) {
+                return '40%';
+              }
+              return '0px';
+            });
+          }
+        }
+      },
+      leftBorder : function() {
+        var leftRow = $('.left-column-containerTDContainer:first');
+        if(leftRow.length > 0) {
+          leftRow.css('position', 'relative');
+          leftRow.append($('<div class="left-border-row"></div>'))
+          //RightBodyTDContainer
         }
       },
       chechboxUtil : function(parentId) {

@@ -105,7 +105,7 @@ public class UIInputSection extends UIFormInputSet {
     w.append("</h4>");
     String classLable = (useGroupControl) ? "control-label" : "input-label";
     String classControlGroup = (useGroupControl) ? "control-group" : "input-group";
-    String classControl = (useGroupControl) ? "controls" : "input-controls";
+    String classControl = (useGroupControl) ? "controls" : "input-controls clearfix";
     
     for (UIComponent inputEntry : getChildren()) {
       if (inputEntry.isRendered() == false) {

@@ -9,8 +9,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.MissingResourceException;
-import java.util.ResourceBundle;
 
 import org.apache.commons.lang.StringEscapeUtils;
 import org.exoplatform.portal.application.PortalRequestContext;
@@ -32,6 +30,7 @@ import org.exoplatform.webui.event.EventListener;
 import org.exoplatform.webui.form.UIForm;
 import org.exoplatform.webui.form.UIFormDateTimeInput;
 import org.exoplatform.webui.form.UIFormInputBase;
+import org.exoplatform.webui.form.UIFormInputInfo;
 import org.exoplatform.webui.form.UIFormMultiValueInputSet;
 import org.exoplatform.webui.form.UIFormSelectBox;
 import org.exoplatform.webui.form.UIFormStringInput;
@@ -41,6 +40,7 @@ import org.exoplatform.webui.form.validator.EmailAddressValidator;
 import org.exoplatform.webui.form.validator.MandatoryValidator;
 import org.exoplatform.webui.form.validator.PersonalNameValidator;
 import org.exoplatform.webui.form.validator.StringLengthValidator;
+import org.exoplatform.webui.form.validator.URLValidator;
 
 @ComponentConfig(
    lifecycle = UIFormLifecycle.class,
@@ -60,6 +60,8 @@ public class UIEditUserProfileForm extends UIForm {
   public static final String FIELD_EXPERIENCE_SECTION = "ExperienceSection";
   public static final String OPTION_MALE = "Male";
   public static final String OPTION_FEMALE = "Female";
+  public static final String FIELD_EMPTY_EXPERIENCE_SECTION = "emprySelection";
+  public static final String FIELD_INFO_EMPTY_EXPERIENCE = "infoExperien";
   public static final String DATE_FORMAT_MMDDYYYY = "MM/dd/yyyy";
   /** PHONE_TYPES. */
   public static final String[] PHONE_TYPES = new String[] {"work","home","other"};
@@ -99,43 +101,31 @@ public class UIEditUserProfileForm extends UIForm {
     baseSection.addUIFormInput(genderSelectBox);
     //
     UIMultiValueSelection phoneSelection = new UIMultiValueSelection(Profile.CONTACT_PHONES, getId(), Arrays.asList(PHONE_TYPES));
-    baseSection.addUIFormInput(phoneSelection);
+    baseSection.addUIFormInput(phoneSelection.addValidator(StringLengthValidator.class, 1, 20));
     //
     UIMultiValueSelection imsSelection = new UIMultiValueSelection(Profile.CONTACT_IMS, getId(), Arrays.asList(IM_TYPES));
-    baseSection.addUIFormInput(imsSelection);
+    baseSection.addUIFormInput(imsSelection.addValidator(StringLengthValidator.class, 1, 60));
     //
     UIFormMultiValueInputSet urlMultiValueInput = new UIFormMultiValueInputSet(Profile.CONTACT_URLS, Profile.CONTACT_URLS);
     urlMultiValueInput.setType(UIFormStringInput.class);
     urlMultiValueInput.setValue(Arrays.asList(""));
     urlMultiValueInput.setLabel(Profile.CONTACT_URLS);
-    baseSection.addUIFormInput(urlMultiValueInput);
+    baseSection.addUIFormInput(urlMultiValueInput.addValidator(URLValidator.class));
     //
     addUIFormInput(aboutSection);
     addUIFormInput(baseSection);
   }
   
-  @Override
-  public String getLabel(ResourceBundle res, String id) {
-    String label = getId() + ".label." + id;
-    try {
-      return res.getString(label);
-    } catch (MissingResourceException e) {
-      return id;
-    }
-  }
-  
   private List<ActionData> createExperienceActions(String experienId, boolean hasAdd) {
     List<ActionData> actions = new ArrayList<UIInputSection.ActionData>();
-    if (experiens.size() > 1) {
-      ActionData removeAction = new ActionData();
-      removeAction.setAction("RemoveExperience").setIcon("uiIconClose")
-                  .setTooltip("Remove this experience").setObjectId(experienId);
-      actions.add(removeAction);
-    }
+    ActionData removeAction = new ActionData();
+    removeAction.setAction("RemoveExperience").setIcon("uiIconClose")
+                .setTooltip(UserProfileHelper.getLabel(null, "UIEditUserProfileForm.title.RemoveExperience")).setObjectId(experienId);
+    actions.add(removeAction);
     if(hasAdd) {
       ActionData addAction = new ActionData();
       addAction.setAction("AddExperience").setIcon("uiIconPlus")
-               .setTooltip("Add more experience").setObjectId(experienId);
+               .setTooltip(UserProfileHelper.getLabel(null, "UIEditUserProfileForm.title.AddExperience")).setObjectId(experienId);
       actions.add(addAction);
     }
     return actions;
@@ -217,21 +207,39 @@ public class UIEditUserProfileForm extends UIForm {
     baseSection.getUIFormMultiValueInputSet(Profile.CONTACT_URLS).setValue(UserProfileHelper.getURLValues(currentProfile));
     //Experience
     List<Map<String, String>> experiences = UserProfileHelper.getDisplayExperience(currentProfile);
-    if(experiences.size() > 0) {
+    if(!experiences.isEmpty()) {
       int i = 0;
       String experienId;
+      removeChildById(FIELD_EMPTY_EXPERIENCE_SECTION);
+      int experienCurrentSize = experiens.size();
       for (Map<String, String> experience : experiences) {
-        if (i < experiens.size()) {
+        if (i < experienCurrentSize) {
           experienId = experiens.get(i);
+          ++i;
         } else {
           experienId = FIELD_EXPERIENCE_SECTION + index;
         }
         setValueExperienceSection(experienId, experience);
       }
       resetActionFileds();
-    } else if (experiens.size() == 0) {
-      String experienId = FIELD_EXPERIENCE_SECTION + index;
-      getOrCreateExperienceSection(experienId).setActionField(Profile.EXPERIENCES_COMPANY + experienId, createExperienceActions(experienId, true));
+    } else if (experiens.isEmpty()) {
+      addEmpryExperienceSection();
+    }
+  }
+  
+  private void addEmpryExperienceSection() throws Exception {
+    //
+    UIInputSection emprySelection = getChildById(FIELD_EMPTY_EXPERIENCE_SECTION);
+    if(emprySelection == null) {
+      emprySelection = new UIInputSection(FIELD_EMPTY_EXPERIENCE_SECTION, "Experience", "uiExperien").useGroupControl(false);
+      ActionData addAction = new ActionData();
+      addAction.setAction("AddExperience").setIcon("uiIconPlus")
+               .setTooltip(UserProfileHelper.getLabel(null, "UIEditUserProfileForm.title.AddExperience"))
+               .setObjectId(FIELD_EXPERIENCE_SECTION + "empty");
+      emprySelection.addUIFormInput(new UIFormInputInfo(FIELD_INFO_EMPTY_EXPERIENCE, FIELD_INFO_EMPTY_EXPERIENCE,
+                                                        getLabel("AddExperience")), Arrays.asList(addAction));
+      //
+      addUIFormInput(emprySelection);
     }
   }
   
@@ -267,7 +275,7 @@ public class UIEditUserProfileForm extends UIForm {
     List<UIComponent> children = urlMulti.getChildren();
     for (UIComponent uiComponent : children) {
       if(uiComponent instanceof UIFormInputBase) {
-        ((UIFormInputBase<?>)uiComponent).setHTMLAttribute(PLACEHOLDER_KEY, "Input your urls (http://sampleurl.com)");
+        ((UIFormInputBase<?>)uiComponent).setHTMLAttribute(PLACEHOLDER_KEY, getLabel("sampleUrl"));
       }
     }
     //
@@ -326,13 +334,14 @@ public class UIEditUserProfileForm extends UIForm {
     super.processRender(context);
   }
   /**
-   * 
+   * Reset actions on experience
    */
   private void resetActionFileds() {
     List<UIInputSection> experienceSections = getExperienceSections();
-    int i = 0;
+    int i = 1;
+    int experienceSize = experienceSections.size();
     for (UIInputSection uiInputSection : experienceSections) {
-      boolean hasAdd = (i == experienceSections.size() - 1);
+      boolean hasAdd = (i ==  experienceSize);
       String experienId = uiInputSection.getName();
       uiInputSection.setActionField(Profile.EXPERIENCES_COMPANY + experienId, createExperienceActions(uiInputSection.getName(), hasAdd));
       ++i;
@@ -521,6 +530,9 @@ public class UIEditUserProfileForm extends UIForm {
       if (objectId != null && !objectId.startsWith(FIELD_EXPERIENCE_SECTION)) {
         return;
       }
+      if (objectId.contains("empty")) {
+        editUserProfile.removeChildById(FIELD_EMPTY_EXPERIENCE_SECTION);
+      }
       //
       editUserProfile.getOrCreateExperienceSection(FIELD_EXPERIENCE_SECTION + editUserProfile.index);
       //
@@ -539,7 +551,12 @@ public class UIEditUserProfileForm extends UIForm {
       String objectId = event.getRequestContext().getRequestParameter(OBJECTID);
       editUserProfile.removeChildById(objectId);
       editUserProfile.experiens.remove(objectId);
-      editUserProfile.getExperienceSections().get(0).setTitle("Experience");
+      List<UIInputSection> experienceSections = editUserProfile.getExperienceSections();
+      if(experienceSections.size() > 0) {
+        experienceSections.get(0).setTitle("Experience");
+      } else {
+        editUserProfile.addEmpryExperienceSection();
+      }
       //
       editUserProfile.resetActionFileds();
       event.getRequestContext().addUIComponentToUpdateByAjax(editUserProfile);

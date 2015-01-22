@@ -1,6 +1,7 @@
 package org.exoplatform.social.user.form;
 
 import java.io.Writer;
+import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -23,6 +24,8 @@ import org.exoplatform.webui.form.UIForm;
 import org.exoplatform.webui.form.UIFormInputSet;
 import org.exoplatform.webui.form.UIFormSelectBox;
 import org.exoplatform.webui.form.UIFormStringInput;
+import org.exoplatform.webui.form.validator.SpecialCharacterValidator;
+import org.exoplatform.webui.form.validator.Validator;
 
 @ComponentConfig(
     lifecycle = UIContainerLifecycle.class,
@@ -34,6 +37,7 @@ import org.exoplatform.webui.form.UIFormStringInput;
 public class UIMultiValueSelection extends UIFormInputSet {
   private static final Log LOG = ExoLogger.getExoLogger(UIMultiValueSelection.class);
   
+  protected List<Validator> validators;
   public static final String FIELD_SELECT_KEY = "selectKey_";
   public static final String FIELD_INPUT_KEY = "inputKey_";
   private List<Map<String, String>> values;
@@ -53,7 +57,27 @@ public class UIMultiValueSelection extends UIFormInputSet {
     //
     this.optionValues = options;
   }
-  
+
+  public <E extends Validator> UIMultiValueSelection addValidator(Class<E> clazz, Object... params) throws Exception {
+    if (validators == null)
+      validators = new ArrayList<Validator>(3);
+    if (params.length > 0) {
+      Class<?>[] classes = new Class[params.length];
+      for (int i = 0; i < params.length; i++) {
+        classes[i] = params[i].getClass();
+      }
+      Constructor<E> constructor = clazz.getConstructor(classes);
+      validators.add(constructor.newInstance(params));
+      return this;
+    }
+    validators.add(clazz.newInstance());
+    return this;
+  }
+
+  public List<Validator> getValidators() {
+    return validators;
+  }
+
   private List<SelectItemOption<String>> getOptions() {
     String uiFormId = getAncestorOfType(UIForm.class).getId();
     List<SelectItemOption<String>> options = new ArrayList<SelectItemOption<String>>();
@@ -133,7 +157,7 @@ public class UIMultiValueSelection extends UIFormInputSet {
     return new StringBuilder(FIELD_INPUT_KEY).append(getId()).append(index).toString();
   }
 
-  private void addInput(int indexId, String selected, String value) {
+  private void addInput(int indexId, String selected, String value) throws Exception {
     //
     int index = indexId;
     if (indexs.contains(Integer.valueOf(indexId))) {
@@ -146,6 +170,12 @@ public class UIMultiValueSelection extends UIFormInputSet {
     //
     UIFormStringInput stringInput = new UIFormStringInput(getInputId(indexId), getInputId(indexId), value);
     stringInput.setHTMLAttribute("class", "selectInput");
+    if (validators != null && !validators.isEmpty()) {
+      stringInput.addValidator(SpecialCharacterValidator.class);
+      List<Validator> validators_ = stringInput.getValidators();
+      validators_.clear();
+      validators_.addAll(validators);
+    }
     addUIFormInput(stringInput);
   }
 

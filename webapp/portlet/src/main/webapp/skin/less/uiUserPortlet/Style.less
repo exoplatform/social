@@ -2,7 +2,6 @@
 @import "../mixins.less";
 
 td.left-column-containerTDContainer {
-	border-right: 1px solid @borderColor;
     width: 215px;
 }
 
@@ -33,7 +32,6 @@ td.right-column-containerTDContainer {
 #socialMainLayout {
 	padding: 0 0 0 20px;
 }
-/**
 .left-border-row {
 	position: absolute;
 	right: 0px;
@@ -41,7 +39,6 @@ td.right-column-containerTDContainer {
 	bottom: 0px;
 	border-left: solid 1px @borderColor;
 }
-*/
 .uiSocApplication {
 	h4.head-container {
 		margin: 0 0 15px;
@@ -291,6 +288,13 @@ td.right-column-containerTDContainer {
     }
     input, textarea {
       width: 280px;
+    }
+    .input-controls {
+    	line-height: 28px;
+	    .uiInputInfo {
+	    	float: left;
+	    	padding-right: 5px;
+	    }
     }
   }
   

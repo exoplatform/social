@@ -18,6 +18,8 @@ package org.exoplatform.social.user.portlet;
 
 import java.util.Map;
 
+import org.exoplatform.web.application.RequireJS;
+import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.core.lifecycle.UIApplicationLifecycle;
 
@@ -29,6 +31,14 @@ public class UIBasicProfilePortlet extends UIAbstractUserPortlet {
   final private static String URL_KEY = "url";
   
   public UIBasicProfilePortlet() throws Exception {
+  }
+
+  @Override
+  public void beforeProcessRender(WebuiRequestContext context) {
+    super.beforeProcessRender(context);
+    //
+    RequireJS requireJs = context.getJavascriptManager().getRequireJS();
+    requireJs.require("SHARED/edit-user-profile", "profile").addScripts("profile.init('" + getId() + "');");
   }
 
   protected Map<String, Object> getProfileInfo() {
