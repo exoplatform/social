@@ -1,4 +1,5 @@
 <div class="uiSocApplication uiEditUserProfileForm" >
+  <h3><%=_ctx.appRes("UIBasicProfile.label.EditProfile")%></h3>
 	<% uiform.begin();%>
 	<div class="form-horizontal">
 <%
