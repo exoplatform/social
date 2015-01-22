@@ -4,8 +4,9 @@
 	String aboutMe = uicomponent.getAboutMe();
 	boolean isOwner = uicomponent.isOwner();
 	List experienceData = uicomponent.getExperience();
+	def uiSocApplicationClzz = !isOwner && (aboutMe.length() == 0) && (experienceData.size() == 0) ? "" : "uiSocApplication";
 %>
-<div class="uiSocApplication uiExperienceProfilePortlet" id="$uicomponent.id">
+<div class="<%=uiSocApplicationClzz%> uiExperienceProfilePortlet" id="$uicomponent.id">
 <% if(aboutMe.length() > 0) { %>
   <h4 class="head-container"><%=_ctx.appRes("UIBasicProfile.label.AboutMe")%></h4>
   <div class="simpleBox aboutMe">
