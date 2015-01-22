@@ -28,7 +28,6 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
-import javax.ws.rs.core.Response.Status;
 
 import org.exoplatform.commons.api.notification.NotificationContext;
 import org.exoplatform.commons.api.notification.NotificationMessageUtils;
@@ -45,9 +44,6 @@ import org.exoplatform.commons.notification.channel.WebChannel;
 import org.exoplatform.commons.notification.impl.NotificationContextImpl;
 import org.exoplatform.commons.notification.net.WebNotificationSender;
 import org.exoplatform.commons.utils.CommonsUtils;
-import org.exoplatform.container.ExoContainer;
-import org.exoplatform.container.ExoContainerContext;
-import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.services.rest.resource.ResourceContainer;
@@ -58,6 +54,7 @@ import org.exoplatform.social.core.manager.RelationshipManager;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
 import org.exoplatform.social.core.storage.impl.AbstractStorage;
+import org.json.JSONObject;
 
 /**
  * Created by The eXo Platform SAS
@@ -68,10 +65,10 @@ import org.exoplatform.social.core.storage.impl.AbstractStorage;
 @Path("social/intranet-notification")
 public class IntranetNotificationRestService extends AbstractStorage implements ResourceContainer {
   private static final Log LOG = ExoLogger.getLogger(IntranetNotificationRestService.class);
-  private IdentityManager identityManager;
-  private RelationshipManager relationshipManager;
-  private SpaceService spaceService;
-  private WebNotificationStorage webNotificationStorage;
+  private static IdentityManager identityManager;
+  private static RelationshipManager relationshipManager;
+  private static SpaceService spaceService;
+  private static WebNotificationStorage webNotificationStorage;
   public final static String MESSAGE_JSON_FILE_NAME = "message.json";
   /**
    * Processes the "Accept the invitation to connect" action between 2 users and update notification.
@@ -94,7 +91,7 @@ public class IntranetNotificationRestService extends AbstractStorage implements 
     String[] mediaTypes = new String[] { "json", "xml" };
     MediaType mediaType = Util.getMediaType(format, mediaTypes);
     //update notification
-    NotificationInfo info = CommonsUtils.getService(WebNotificationStorage.class).get(notificationId);
+    NotificationInfo info = getWebNotificationStorage().get(notificationId);
     info.key(new PluginKey("RelationshipReceivedRequestPlugin"));
     info.setFrom(senderId);
     info.setTo(receiverId);
@@ -170,7 +167,7 @@ public class IntranetNotificationRestService extends AbstractStorage implements 
     MediaType mediaType = Util.getMediaType(format, mediaTypes);
     
     //update notification
-    NotificationInfo info = CommonsUtils.getService(WebNotificationStorage.class).get(notificationId);
+    NotificationInfo info = getWebNotificationStorage().get(notificationId);
     info.setTo(userId);
     info.key(new PluginKey("SpaceInvitationPlugin"));
     Map<String, String> ownerParameter = new HashMap<String, String>();
@@ -246,7 +243,7 @@ public class IntranetNotificationRestService extends AbstractStorage implements 
     String[] mediaTypes = new String[] { "json", "xml" };
     MediaType mediaType = Util.getMediaType(format, mediaTypes);
     //update notification
-    NotificationInfo info = CommonsUtils.getService(WebNotificationStorage.class).get(notificationId);
+    NotificationInfo info = getWebNotificationStorage().get(notificationId);
     info.setTo(currentUserId);
     info.key(new PluginKey("RequestJoinSpacePlugin"));
     Map<String, String> ownerParameter = new HashMap<String, String>();
@@ -303,9 +300,9 @@ public class IntranetNotificationRestService extends AbstractStorage implements 
    * @return The SpaceService.
    * @see SpaceService
    */
-  public SpaceService getSpaceService() {
+  public static SpaceService getSpaceService() {
     if (spaceService == null) {
-      spaceService = (SpaceService) getPortalContainer().getComponentInstanceOfType(SpaceService.class);
+      spaceService = CommonsUtils.getService(SpaceService.class);
     }
     return spaceService;
   }
@@ -315,9 +312,9 @@ public class IntranetNotificationRestService extends AbstractStorage implements 
    * @return The IdentityManager.
    * @see IdentityManager
    */
-  private IdentityManager getIdentityManager() {
+  private static IdentityManager getIdentityManager() {
     if (identityManager == null) {
-      identityManager = (IdentityManager) getPortalContainer().getComponentInstanceOfType(IdentityManager.class);
+      identityManager = CommonsUtils.getService(IdentityManager.class);
     }
     return identityManager;
   }
@@ -327,31 +324,18 @@ public class IntranetNotificationRestService extends AbstractStorage implements 
    * @return The RelationshipManager.
    * @see RelationshipManager
    */
-  private RelationshipManager getRelationshipManager() {
+  private static RelationshipManager getRelationshipManager() {
     if (relationshipManager == null) {
-      relationshipManager = (RelationshipManager) getPortalContainer().getComponentInstanceOfType(RelationshipManager.class);
+      relationshipManager = CommonsUtils.getService(RelationshipManager.class);
     }
     return relationshipManager;
   }
   
-  private WebNotificationStorage getWebNotificationStorage() {
+  private static WebNotificationStorage getWebNotificationStorage() {
     if (webNotificationStorage == null) {
-      webNotificationStorage = (WebNotificationStorage) getPortalContainer().getComponentInstanceOfType(WebNotificationStorage.class);
+      webNotificationStorage = CommonsUtils.getService(WebNotificationStorage.class);
     }
     return webNotificationStorage;
-  }
-  
-  /**
-   * Gets a Portal Container instance.
-   * @return The PortalContainer.
-   * @see PortalContainer
-   */
-  private ExoContainer getPortalContainer() {
-    ExoContainer exoContainer = ExoContainerContext.getCurrentContainer();
-    if (exoContainer == null) {
-      throw new WebApplicationException(Status.INTERNAL_SERVER_ERROR);
-    }
-    return exoContainer;
   }
   
   private MessageInfo sendBackNotif(NotificationInfo notification) {
@@ -376,23 +360,12 @@ public class IntranetNotificationRestService extends AbstractStorage implements 
       return null;
     }
   }
-  
-  private UserWebNotification getUserWebNotification(String userId) {
-    UserWebNotification userWebNotification = new UserWebNotification();
+
+  private JSONObject getUserWebNotification(String userId) throws Exception {
+    JSONObject json = new JSONObject();
     List<NotificationInfo> notifications = getWebNotificationStorage().get(new WebNotificationFilter(userId), 0, 1);
-    userWebNotification.setShowViewAll(notifications.size() > 0);
-    return userWebNotification;
+    json.put("showViewAll", (notifications.size() > 0));
+    return json;
   }
-  
-  public class UserWebNotification {
-    private boolean showViewAll;
 
-    public boolean isShowViewAll() {
-      return showViewAll;
-    }
-
-    public void setShowViewAll(boolean showViewAll) {
-      this.showViewAll = showViewAll;
-    }
-  }
 }

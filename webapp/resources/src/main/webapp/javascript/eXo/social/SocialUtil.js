@@ -133,19 +133,17 @@
         gadgets.window.adjustHeight();
       }
     },
-    
-    applyConfirmPopup : function(id) { 
+    applyConfirmPopup : function(id) {
       $('#' + id).find('.confirmPopup').on('click', function() {
-          var thizz = $(this);
-          var action_ = thizz.attr('data-onclick'); 
-          var label_ = thizz.attr('data-labelAction') || 'OK';
-          var close_ = thizz.attr('data-labelClose') || 'Close'; 
-          var title_ = thizz.attr('data-title') || 'Confirmation';
-          var message_ = thizz.attr('data-message');
-          eXo.social.PopupConfirmation.confirm('demo', [{action: action_, label : label_}], title_, message_, close_);
-        }); 
-      },
-      
+        var thizz = $(this);
+        var action_ = thizz.attr('data-onclick'); 
+        var label_ = thizz.attr('data-labelAction') || 'OK';
+        var close_ = thizz.attr('data-labelClose') || 'Close'; 
+        var title_ = thizz.attr('data-title') || 'Confirmation';
+        var message_ = thizz.attr('data-message');
+        eXo.social.PopupConfirmation.confirm('demo', [{action: action_, label : label_}], title_, message_, close_);
+      }); 
+    },
     feedbackMessagePopup : function(title, message, closeLabel) { 
       var popup = PopupConfirmation.makeTemplate();
       popup.find('.popupTitle').html(title);
@@ -156,45 +154,6 @@
       //
       PopupConfirmation.show(popup);
      },
-     
-     alertEvent : function(comId) {
-	 	var socketUrl = 'ws://' + location.hostname + ':8181/channels/notification-web/' + window.eXo.env.portal.userName;
-	 	var socket = new WebSocket(socketUrl);
-	 	
-	 	socket.onmessage = function(evt) {
-	 		var obj = JSON.parse(evt.data);
-	 		SocialUtils.updateNotificationList(comId, obj.message);
-		}
-	 	
-	 	socket.onopen = function(evt) {
-	 		if (socket.readyState == WebSocket.OPEN) {
-	            socket.send('{"action": "subscribe", "identifier" : "notification-web"}');
-	        } else {
-	            alert("The socket is not open.");
-	        }
-		}
-	 	
-	 	socket.onclose = function(evt) {
-	 		alert("Web Socket closed.");
-		}
-     },
-     updateNotificationList : function(parentId, message) { 
-         var msgEl = $('#feedbackmessageInline');
-
-         if(msgEl.length === 0) {
-           msgEl = $('<div id="feedbackMessageInline">' +
-                     '  <span class="message"></span>' +
-                     '</div>');
-           msgEl.prependTo($('#'+ parentId));
-         }
-
-         if($(window).scrollTop() > msgEl.offset().top) {
-           msgEl[0].scrollIntoView(true);
-         }
-         msgEl.stop().hide().find("span.message").html(message);
-         msgEl.show('fast').delay(450000).hide('slow');
-       },
-     
      feedbackMessageInline : function(parentId, message) { 
        message = message.replace("${simpleQuote}", "'");
 
@@ -535,7 +494,7 @@
       }
     }
   };
-  
+
   gj(window).resize(function(evt) {
     eXo.core.Browser.managerResize();
     if (SocialUtils.currentBrowseWidth != document.documentElement.clientWidth) {
