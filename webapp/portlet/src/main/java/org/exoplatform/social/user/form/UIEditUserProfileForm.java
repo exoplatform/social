@@ -58,8 +58,8 @@ public class UIEditUserProfileForm extends UIForm {
   public static final String FIELD_ABOUT_SECTION = "AboutSection";
   public static final String FIELD_BASE_SECTION = "BaseSection";
   public static final String FIELD_EXPERIENCE_SECTION = "ExperienceSection";
-  public static final String OPTION_MALE = "male";
-  public static final String OPTION_FEMALE = "female";
+  public static final String OPTION_MALE = "Male";
+  public static final String OPTION_FEMALE = "Female";
   public static final String DATE_FORMAT_MMDDYYYY = "MM/dd/yyyy";
   /** PHONE_TYPES. */
   public static final String[] PHONE_TYPES = new String[] {"work","home","other"};
