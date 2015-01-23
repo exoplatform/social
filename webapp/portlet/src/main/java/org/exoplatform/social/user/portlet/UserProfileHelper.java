@@ -1,5 +1,7 @@
 package org.exoplatform.social.user.portlet;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -16,6 +18,7 @@ public class UserProfileHelper {
   final public static String KEY = "key";
   final public static String VALUE = "value";
   final public static String URL_KEY = "url";
+  final public static String DEFAULT_PROTOCOL = "http://";
 
   enum IconClass {
     DEFAULT("", ""),
@@ -138,6 +141,20 @@ public class UserProfileHelper {
   public static boolean isURL(String key) {
     if (key == null) return false;
     return Profile.CONTACT_URLS.equals(key);
+  }
+  
+  public static String toAbsoluteURL(String url) {
+    URI uri;
+    try {
+      uri = new URI(url);
+      if (uri.isAbsolute()) {
+        return url;
+      }
+    } catch (URISyntaxException e) {
+      return DEFAULT_PROTOCOL + url;
+    }
+    
+    return DEFAULT_PROTOCOL + url;
   }
   
   public static boolean isIMs(String key) {

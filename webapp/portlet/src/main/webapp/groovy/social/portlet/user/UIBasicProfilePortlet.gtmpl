@@ -31,7 +31,7 @@ def keys = profile.keySet();
             int valueNum = 0;
             if (UserProfileHelper.isURL(key)) {
               for (url in listVal) { %>
-              <div class=""><a href="<%=url%>"><%=url%></a></div>
+              <div class=""><a href="<%=UserProfileHelper.toAbsoluteURL(url)%>" target="_blank"><%=url%></a></div>
             <%}
             } else {
               if (typeIconClzz.length() > 0) {
