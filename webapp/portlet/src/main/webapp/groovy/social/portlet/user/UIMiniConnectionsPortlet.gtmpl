@@ -6,7 +6,7 @@
   
   List profiles = uicomponent.loadPeoples();
   int size = uicomponent.getAllSize();
-  UserProfileHelper.initProfilePopup("UIMiniConnectionsPortlet");
+  uicomponent.initProfilePopup();
 %>
 <div class="uiSocApplication uiMiniConnectionsPortlet" id="$uicomponent.id">
   <h4 class="head-container"><%=_ctx.appRes("UIBasicProfile.label.Connections")%></h4>

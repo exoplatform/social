@@ -121,19 +121,6 @@ public class UserProfileHelper {
     return urls;
   }
 
-  public static void initProfilePopup(String id) throws Exception {
-    JSONObject object = new JSONObject();
-    WebuiRequestContext context = WebuiRequestContext.getCurrentInstance();
-    object.put("StatusTitle", getLabel(context, "UserProfilePopup.label.Loading"));
-    String[] keys = new String[]{"Connect", "Confirm", "CancelRequest", "RemoveConnection", "Ignore"};
-    for (int i = 0; i < keys.length; i++) {
-      object.put(keys[i], getLabel(context, "UserProfilePopup.label." + keys[i]));
-    }
-    //
-    context.getJavascriptManager().getRequireJS().require("SHARED/social-ui-profile", "profile")
-           .addScripts("profile.initUserProfilePopup('" + id + "', " + object.toString() + ");");
-  }
-  
   public static boolean isString(Object s) {
     return s instanceof String;
   }

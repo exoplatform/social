@@ -52,7 +52,7 @@ List activities = uicomponent.getRecentActivities();
       print("<div style=\"margin:10px 0px 10px 63px\"><button class=\"btn\" style=\"width:100%;\" onclick=\"window.location.href='" + activityStreamURL + "'\">" +
               _ctx.appRes("UIBasicProfile.action.ViewAll") +
             "</button></div>");
-      UserProfileHelper.initProfilePopup("UIRecentActivitiesPortlet");
+      uicomponent.initProfilePopup();
     }
   %>
     </div>

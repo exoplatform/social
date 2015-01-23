@@ -56,7 +56,7 @@ public abstract class UIAbstractUserPortlet extends UIPortletApplication {
       object.put(keys[i], UserProfileHelper.getLabel(context, "UserProfilePopup.label." + keys[i]));
     }
     //
-    context.getJavascriptManager().getRequireJS().require("SHARED/social-ui-profile", "profile")
-           .addScripts("profile.initUserProfilePopup('" + getId() + "', " + object.toString() + ");");
+    context.getJavascriptManager().getRequireJS().require("SHARED/social-ui-profile", "profile" + getId())
+           .addScripts("profile" + getId() + ".initUserProfilePopup('" + getId() + "', " + object.toString() + ");");
   }
 }

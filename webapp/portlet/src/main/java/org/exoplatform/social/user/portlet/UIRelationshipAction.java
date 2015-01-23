@@ -72,23 +72,15 @@ public class UIRelationshipAction extends UIContainer {
               .append(UserProfileHelper.getLabel(context, "UIBasicProfile.action.label.Connect")).append("</button>");
       } else if(status == Type.PENDING) {//PENDING
         if(relationship.getSender().equals(viewerIdentity)) {
-          writer.append("<button class=\"btn show-default\">")
-                .append("<i class=\"uiIconStatusSent\"></i> ")
-                .append(UserProfileHelper.getLabel(context, "UIBasicProfile.action.label.RequestSent")).append("</button>");
-          writer.append("<button class=\"btn hide-default\" onclick=\"").append(event("Cancel")).append("\">")
-                .append("<i class=\"uiIconStatusCancel\"></i> ")
+          writer.append("<button class=\"btn\" onclick=\"").append(event("Cancel")).append("\">")
                 .append(UserProfileHelper.getLabel(context, "UIBasicProfile.action.CancelRequest")).append("</button>");          
         } else {
-          writer.append("<button class=\"btn btn-primary show-default\">")
-                .append("<i class=\"uiIconStatusReceived\"></i> ")
-                .append(UserProfileHelper.getLabel(context, "UIBasicProfile.action.label.RequestReceived")).append("</button>");
-          
-          writer.append("<button class=\"btn hide-default\" onclick=\"").append(event("Deny")).append("\">")
+          writer.append("&nbsp;<button class=\"btn btn-primary\" onclick=\"").append(event("Accept")).append("\">")
+                .append("<i class=\"uiIconStatusAccept\"></i> ")
+                .append(UserProfileHelper.getLabel(context, "UIBasicProfile.action.AcceptRequest")).append("</button>");
+          writer.append("<button class=\"btn\" onclick=\"").append(event("Deny")).append("\">")
                 .append("<i class=\"uiIconStatusDeny\"></i> ")
                 .append(UserProfileHelper.getLabel(context, "UIBasicProfile.action.Deny")).append("</button>");          
-          writer.append("&nbsp;<button class=\"btn btn-primary hide-default\" onclick=\"").append(event("Accept")).append("\">")
-                .append("<i class=\"uiIconStatusAccept\"></i> ")
-                .append(UserProfileHelper.getLabel(context, "UIBasicProfile.action.Accept")).append("</button>");          
         }
       } else if(status == Type.CONFIRMED) {
         writer.append("<button class=\"btn show-default\">")
