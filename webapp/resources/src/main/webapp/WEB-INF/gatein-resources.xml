@@ -35,7 +35,7 @@
   </module>
 
   <module>
-    <name>edit-user-profile</name>
+    <name>user-profile</name>
     <script>
        <path>/javascript/eXo/social/webui/UIUserProfile.js</path>
     </script>

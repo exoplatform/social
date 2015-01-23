@@ -3,7 +3,7 @@
       init : function(id) {
         var portlet = $('#' + id);
         if(portlet.length > 0) {
-          if(portlet.parents('#left-column-container').length > 0) {
+          if(portlet.parents('#BasicProfilePortlet').length > 0) {
             UserProfile.leftBorder();
           } else {
             portlet.find('.multiValueContainer').find('.uiIconTrash').attr('class', 'uiIconClose uiIconLightGray');
