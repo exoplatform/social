@@ -39,7 +39,7 @@
 <div id="$uicomponent.id" class="uiAvatarUploadContent">
 	<div class="avatarInfo clearfix">
 		<a class="avatarLargeWithBorder pull-left"><img src="$imageSource" rel="tooltip" data-placement="bottom" title="$avatarTitle" alt="$avatarTitle" /></a>
-		<div class="form-horizontal pull-left">	
+		<div class="form-horizontal">	
 			<div class="control-group">
 				<label class="control-label">$lalbelFileName</label>
 				<div class="controls"><strong><%= avatarAttachment.fileName %></strong></div>
