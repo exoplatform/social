@@ -10,13 +10,13 @@ def keys = profile.keySet();
     <%
       for(key in keys) {
         def values = profile.get(key);
+        String clzz = key.substring(0, 1).toUpperCase() + key.substring(1);
     %>
     <div class="group-user-info">
       <div class="label-user-info"><strong><%=_ctx.appRes("UIBasicProfile.label." + key)%>:</strong></div>
       <div class="value-user-info">
       <%
         if(UserProfileHelper.isString(values)) {
-          String clzz = key.substring(0, 1).toUpperCase() + key.substring(1);
       %>
         <div class="ui<%=clzz%>"><%=values%></div>
       <%
@@ -32,7 +32,7 @@ def keys = profile.keySet();
             int valueNum = 0;
             if (UserProfileHelper.isURL(key)) {
               for (url in listVal) { %>
-              <div class=""><a href="<%=UserProfileHelper.toAbsoluteURL(url)%>" target="_blank"><%=url%></a></div>
+              <div class="ui<%=clzz%>"><a href="<%=UserProfileHelper.toAbsoluteURL(url)%>" target="_blank"><%=url%></a></div>
             <%}
             } else {
               if (typeIconClzz.length() > 0) {
