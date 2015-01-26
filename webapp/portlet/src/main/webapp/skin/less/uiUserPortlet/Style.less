@@ -118,6 +118,12 @@ td.right-column-containerTDContainer {
 				display: table;
 				> div {
 					word-break: break-all;
+					&.uiEmail, &.uiUrl {
+						overflow: hidden;
+					    text-overflow: ellipsis;
+					    white-space: nowrap;
+					    width: 190px;
+					}
 				}
 				
 				.listContent {
