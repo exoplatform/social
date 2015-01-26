@@ -306,7 +306,9 @@ public class ActivityManagerImpl implements ActivityManager {
    * {@inheritDoc}
    */
   public ExoSocialActivity saveActivity(Identity streamOwner, ExoSocialActivity newActivity) {
-    return activityStorage.saveActivity(streamOwner, newActivity);
+    ExoSocialActivity created = activityStorage.saveActivity(streamOwner, newActivity);
+    activityLifeCycle.saveActivity(getActivity(created.getId()));
+    return created;
   }
 
   /**
