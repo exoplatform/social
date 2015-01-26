@@ -37,21 +37,23 @@
 %>
 
 <div id="$uicomponent.id" class="uiAvatarUploadContent">
-	<div class="avatarInfo clearfix">
-		<a class="avatarLargeWithBorder pull-left"><img src="$imageSource" rel="tooltip" data-placement="bottom" title="$avatarTitle" alt="$avatarTitle" /></a>
-		<div class="form-horizontal">	
-			<div class="control-group">
-				<label class="control-label">$lalbelFileName</label>
-				<div class="controls"><strong><%= avatarAttachment.fileName %></strong></div>
-			</div>
-			<div class="control-group">
-				<label class="control-label">$labelFileType</label>
-				<div class="controls"><%= avatarAttachment.mimeType %></div>
-			</div>
-			<div class="control-group">
-				<label class="control-label">$labelImageSize</label>
-				<div class="controls"><%= avatarAttachment.size %></div>
-			</div>
+	<div class="form-horizontal  resizable">
+		<div class="media ">
+			<a class="avatarLargeWithBorder pull-left"><img src="$imageSource" rel="tooltip" data-placement="bottom" title="$avatarTitle" alt="$avatarTitle" /></a>
+			<div class="avatarInfo media-body">
+                <div class="control-group">
+                    <label class="control-label">$lalbelFileName</label>
+                    <div class="controls"><strong><%= avatarAttachment.fileName %></strong></div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label">$labelFileType</label>
+                    <div class="controls"><%= avatarAttachment.mimeType %></div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label">$labelImageSize</label>
+                    <div class="controls"><%= avatarAttachment.size %></div>
+                </div>
+            </div>
 		</div>
 	</div>
 	<div class="uiAction uiActionBorder">
