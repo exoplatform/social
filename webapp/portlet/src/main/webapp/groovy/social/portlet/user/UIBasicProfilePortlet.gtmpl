@@ -16,8 +16,9 @@ def keys = profile.keySet();
       <div class="value-user-info">
       <%
         if(UserProfileHelper.isString(values)) {
+          String clzz = key.substring(0, 1).toUpperCase() + key.substring(1);
       %>
-        <div class=""><%=values%></div>
+        <div class="ui<%=clzz%>"><%=values%></div>
       <%
         } else  {
           for(subKey in values.keySet()) {
