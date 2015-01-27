@@ -25,6 +25,8 @@ import javax.portlet.ResourceURL;
 
 import org.exoplatform.commons.api.notification.model.WebNotificationFilter;
 import org.exoplatform.commons.api.notification.service.WebNotificationService;
+import org.exoplatform.services.log.ExoLogger;
+import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.service.LinkProvider;
 import org.exoplatform.webui.application.WebuiApplication;
 import org.exoplatform.webui.application.WebuiRequestContext;
@@ -44,13 +46,15 @@ import org.json.JSONObject;
  template = "app:/groovy/social/portlet/UIIntranetNotificationsPortlet.gtmpl"
 )
 public class UIIntranetNotificationsPortlet extends UIPortletApplication {
+  private static final Log LOG = ExoLogger.getLogger(UIIntranetNotificationsPortlet.class);
   private final WebNotificationService webNotifService;
   private static final String LOAD_MORE_KEY = "loadMoreNotif";
+  private static final String REMOVE_ITEM_KEY = "removeNotif";
+  private static final String ADD_ITEM_KEY = "addNotif";
   private static final int ITEMS_LOADED_NUM = 21;
   private static final int ITEMS_PER_PAGE = 20;
   private String currentUser = "";
   private int offset = 0;
-  private int currentPage = 0;
   private boolean hasMore = false;
   
   public UIIntranetNotificationsPortlet() throws Exception {
@@ -60,6 +64,9 @@ public class UIIntranetNotificationsPortlet extends UIPortletApplication {
   @Override
   public void processRender(WebuiApplication app, WebuiRequestContext context) throws Exception {
     this.currentUser = context.getRemoteUser();
+    this.offset = 0;
+    this.hasMore = false;
+    //
     super.processRender(app, context);
   }
   
@@ -69,8 +76,7 @@ public class UIIntranetNotificationsPortlet extends UIPortletApplication {
     ResourceRequest req = context.getRequest();
     String resourceId = req.getResourceID();
     //
-    if (LOAD_MORE_KEY.equals(resourceId) && isHasMore()) {
-      ++currentPage;
+    if (LOAD_MORE_KEY.equals(resourceId) && hasMore) {
       //
       List<String> moreNotifications = getNotifications();
       //
@@ -84,19 +90,28 @@ public class UIIntranetNotificationsPortlet extends UIPortletApplication {
       //
       JSONObject object = new JSONObject();
       object.put("context", sb.toString());
-      object.put("currentPage", String.valueOf(currentPage));
-      object.put("hasMore", String.valueOf(isHasMore()));
+      object.put("hasMore", String.valueOf(hasMore));
       //
       res.getWriter().write(object.toString());
     }
+    if (REMOVE_ITEM_KEY.equals(resourceId) && (offset > 0)) {
+      --offset;
+    }
+    if (ADD_ITEM_KEY.equals(resourceId)) {
+      ++offset;
+    }
   }
-  
-  protected String buildResourceURL() {
+
+  protected String getLoadMoreURL() {
+    return buildResourceURL(LOAD_MORE_KEY);
+  }
+
+  protected String buildResourceURL(String key) {
     try {
       WebuiRequestContext ctx = WebuiRequestContext.getCurrentInstance();
       MimeResponse res = ctx.getResponse();
       ResourceURL rsURL = res.createResourceURL();
-      rsURL.setResourceID(LOAD_MORE_KEY);
+      rsURL.setResourceID(key);
       return rsURL.toString();
     } catch (Exception e) {
       return "";
@@ -105,26 +120,14 @@ public class UIIntranetNotificationsPortlet extends UIPortletApplication {
 
   protected List<String> getNotifications() throws Exception {
     WebNotificationFilter filter = new WebNotificationFilter(currentUser);
-    
     if (hasMore) {
-      offset = ITEMS_PER_PAGE;
-    } else {
-      offset = 0;
-      currentPage = 0;
+      offset += ITEMS_PER_PAGE;
     }
-    
-    List<String> notificationContents = webNotifService.get(filter, offset * currentPage, ITEMS_LOADED_NUM);
-    if (notificationContents.size() > ITEMS_PER_PAGE) {
-      hasMore = true;
-      return notificationContents.subList(0, ITEMS_PER_PAGE);
-    } else {
-      hasMore = false;
-    }
-    return notificationContents;
-  }
-  
-  public boolean isHasMore() {
-    return hasMore;
+    LOG.debug("Current offset of page: " + offset);
+    List<String> notificationContents = webNotifService.get(filter, offset, ITEMS_LOADED_NUM);
+    hasMore = (notificationContents.size() > ITEMS_PER_PAGE);
+    //
+    return (hasMore) ? notificationContents.subList(0, ITEMS_PER_PAGE) : notificationContents;
   }
   
   protected String getUserNotificationSettingUrl() {
@@ -132,10 +135,6 @@ public class UIIntranetNotificationsPortlet extends UIPortletApplication {
   }
 
   protected List<String> getActions() {
-    return Arrays.asList("MarkRead", "TakeEvent");
-  }
-  
-  protected String getActionUrl(String actionName) throws Exception {
-    return event(actionName).replace("javascript:ajaxGet('", "").replace("')", "&" + OBJECTID + "=");
+    return Arrays.asList(ADD_ITEM_KEY, REMOVE_ITEM_KEY);
   }
 }
