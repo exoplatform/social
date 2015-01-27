@@ -16,7 +16,11 @@
  */
 package org.exoplatform.social.user.portlet;
 
+import java.util.ResourceBundle;
+
+import org.exoplatform.portal.application.PortalRequestContext;
 import org.exoplatform.services.user.UserStateService;
+import org.exoplatform.social.user.portlet.UserProfileHelper.StatusIconCss;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.core.lifecycle.UIApplicationLifecycle;
 
@@ -25,11 +29,44 @@ import org.exoplatform.webui.core.lifecycle.UIApplicationLifecycle;
   template = "app:/groovy/social/portlet/user/UIStatusProfilePortlet.gtmpl"
 )
 public class UIStatusProfilePortlet extends UIAbstractUserPortlet {
+  public static final String OFFLINE_STATUS        = "offline";
+  public static final String OFFLINE_TITLE         = "UIStatusProfile.title.offline";
+  public static final String USER_STATUS_TITLE     = "UIStatusProfile.title.";
+
   public UIStatusProfilePortlet() throws Exception {
   }
 
-  protected boolean isOnline() {
+  protected StatusInfo getStatusInfo() {
+    StatusInfo si = new StatusInfo();
+    ResourceBundle rb = PortalRequestContext.getCurrentInstance().getApplicationResourceBundle();
     UserStateService stateService = getApplicationComponent(UserStateService.class);
-    return stateService.isOnline(currentProfile.getIdentity().getRemoteId());
+    boolean isOnline = stateService.isOnline(currentProfile.getIdentity().getRemoteId());
+    if (isOnline) {
+      String status = stateService.getUserState(currentProfile.getIdentity().getRemoteId()).getStatus();
+      si.setCssName(StatusIconCss.getIconCss(status));   
+      si.setTitle(rb.getString(USER_STATUS_TITLE + status));
+    } else {
+      si.setCssName(StatusIconCss.getIconCss(OFFLINE_STATUS));
+      si.setTitle(rb.getString(OFFLINE_TITLE));
+    }
+    
+    return si;
+  }
+  
+  class StatusInfo {
+    private String title;
+    private String cssName;
+    public String getTitle() {
+      return title;
+    }
+    public void setTitle(String title) {
+      this.title = title;
+    }
+    public String getCssName() {
+      return cssName;
+    }
+    public void setCssName(String cssName) {
+      this.cssName = cssName;
+    }
   }
 }

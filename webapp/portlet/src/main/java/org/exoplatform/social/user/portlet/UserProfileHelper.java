@@ -50,6 +50,38 @@ public class UserProfileHelper {
       return DEFAULT.getIconClass();
     }
   }
+
+  enum StatusIconCss {
+    DEFAULT("", ""),
+    ONLINE("online", "uiIconUserOnline"),
+    OFFLINE("offline", "uiIconUserOffline"),
+    AVAILABLE("available", "uiIconUserAvailable"),
+    INVISIBLE("invisible", "uiIconUserInvisible"),
+    AWAY("away", "uiIconUserAway"),
+    DONOTDISTURB("donotdisturb", "uiIconUserDonotdisturb");
+
+    private final String key;
+    private final String iconCss;
+    
+    StatusIconCss(String key, String iconCss) {
+      this.key = key;
+      this.iconCss = iconCss;
+    }
+    String getKey() {
+      return this.key;
+    }
+    public String getIconCss() {
+      return iconCss;
+    }
+    public static String getIconCss(String key) {
+      for (StatusIconCss iconClass : StatusIconCss.values()) {
+        if (iconClass.getKey().equals(key)) {
+          return iconClass.getIconCss();
+        }
+      }
+      return DEFAULT.getIconCss();
+    }
+  }
   
   /**
    * @param currentProfile

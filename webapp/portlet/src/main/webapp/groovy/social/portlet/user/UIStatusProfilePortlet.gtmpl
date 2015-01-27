@@ -1,9 +1,11 @@
 <%
-	String iconStatus = (uicomponent.isOnline()) ? "uiIconUserOnline" : "uiIconUserOffline";
+_ctx.getRequestContext().getJavascriptManager().require("SHARED/jquery", "jq")
+  .require("SHARED/bts_tooltip").addScripts("jq('*[rel=\"tooltip\"]').tooltip();");
+def si = uicomponent.getStatusInfo();
 %>
 <div class="uiSocApplication uiStatusProfilePortlet" id="$uicomponent.id">
 	 <h3 class="user-status" style="display:inline-block;" data-userid="<%=uicomponent.getCurrentRemoteId()%>">
 	 	<span><%=uicomponent.currentProfile.getFullName()%></span>
-	 <i class="$iconStatus uiIconLightGray"></i>
+	  <i class="<%=si.cssName%> uiIconLightGray" rel="tooltip" data-placement="right" title="<%=si.title%>"></i>
 	 </h3>
 </div>
