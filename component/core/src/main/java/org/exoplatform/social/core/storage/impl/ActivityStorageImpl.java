@@ -453,7 +453,7 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     //update new stream owner
     try {
       String streamId = activity.getStreamId();
-      if (! streamId.equals(identityEntity.getId())) {
+      if (streamId != null && !streamId.equals(identityEntity.getId())) {
         IdentityEntity streamOwnerEntity = _findById(IdentityEntity.class, streamId);
         identityEntity = streamOwnerEntity;
         activityEntity.setIdentity(streamOwnerEntity);  
