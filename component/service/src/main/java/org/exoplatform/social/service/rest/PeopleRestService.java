@@ -349,7 +349,7 @@ public class PeopleRestService implements ResourceContainer{
       
       String userType = ConversationState.getCurrent().getIdentity().getUserId();
       boolean isAnonymous = IdentityConstants.ANONIM.equals(userType) 
-          || securityContext.getUserPrincipal() == null;
+          || securityContext.getUserPrincipal() == null || !userType.equals(currentIdentity.getRemoteId());
       
       if (!isAnonymous) { // private information
         peopleInfo.setProfileUrl(LinkProvider.getUserActivityUri(identity.getRemoteId()));
