@@ -519,21 +519,7 @@
 		var userBlock = getMyConnectionDetailBlock();
 	  
 	  $(uiComponent.GadgetMemberMore).append(userBlock);
-	
-	  /**
-	   * Blur event.
-	   */
-	  $(uiComponent.QuickCommentInput).blur(function() {
-	  	$(uiComponent.QuickCommentInput).css('color', 'black');
-	  });
-	  
-	  /**
-	   * Focus event.
-	   */
-	  $(uiComponent.QuickCommentInput).focus(function() {
-	  	$(uiComponent.QuickCommentInput).css('color', 'black');
-	  });
-	  
+
 	  Comment.setOffset(0);
 	  Comment.setLimit(10);
 	  
@@ -585,7 +571,7 @@
   	    if((typeof this.naturalWidth != "undefined" &&
   	        this.naturalWidth == 0 ) 
   	        || this.readyState == 'uninitialized' ) {
-  	        $(this).attr('src', '/social-resources/skin/DefaultSkin/portal/background/UserlistAvatar.png');
+  	        $(this).attr('src', '/eXoSkin/skin/images/themes/default/social/skin/ShareImages/UserlistAvatar.png');
   	    }
   	}); 
   })

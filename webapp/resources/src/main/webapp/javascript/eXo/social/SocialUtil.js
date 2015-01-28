@@ -20,9 +20,9 @@
     var portal = eXo.env.portal
     
     eXo.social.portal = {
-      rest : (portal.rest) ? portal.rest : 'rest-socialdemo',
-      portalName : (portal.portalName) ? portal.portalName : 'classic',
-      context : (portal.context) ? portal.context : '/socialdemo',
+      rest : (portal.rest) ? portal.rest : 'rest',
+      portalName : (portal.portalName) ? portal.portalName : 'intranet',
+      context : (portal.context) ? portal.context : '/portal',
       accessMode : (portal.accessMode) ? portal.accessMode : 'public',
       userName : (portal.userName) ? portal.userName : ''
     };

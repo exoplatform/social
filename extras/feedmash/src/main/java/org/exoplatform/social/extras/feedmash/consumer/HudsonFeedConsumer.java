@@ -29,8 +29,8 @@ public class HudsonFeedConsumer extends AbstractFeedmashJob {
   private static final Log LOG = ExoLogger.getLogger(HudsonFeedConsumer.class);
   private static final String HUDSON_STATUS = "status";
 
-  private String successIcon = "/eXoResources/skin/DefaultSkin/skinIcons/16x16/icons/GreenFlag.gif";
-  private String failureIcon = "/eXoResources/skin/DefaultSkin/skinIcons/16x16/icons/RedFlag.gif";
+  private String successIcon = "/eXoSkin/skin/images/themes/default/Icons/skinIcons/16x16/GreenFlag.gif";
+  private String failureIcon = "/eXoSkin/skin/images/themes/default/Icons/skinIcons/16x16/RedFlag.gif";
   private String hudsonLogo = "http://wiki.hudson-ci.org/download/attachments/2916393/banner-100.png" +
                               "?version=1&modificationDate=1185846429000";
   private String baseUrl;

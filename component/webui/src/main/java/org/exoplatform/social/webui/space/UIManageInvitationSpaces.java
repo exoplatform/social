@@ -19,7 +19,6 @@ package org.exoplatform.social.webui.space;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.ResourceBundle;
 
 import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.portal.webui.util.Util;
@@ -40,7 +39,6 @@ import org.exoplatform.webui.core.UIApplication;
 import org.exoplatform.webui.core.UIContainer;
 import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.event.EventListener;
-import org.exoplatform.webui.form.UIFormStringInput;
 
 @ComponentConfig(
   template="war:/groovy/social/webui/space/UIManageInvitationSpaces.gtmpl",
@@ -346,11 +344,9 @@ public class UIManageInvitationSpaces extends UIContainer {
       if (charSearch == null) {
         uiManageInvitedSpaces.setSelectedChar(null);
       } else {
-        ResourceBundle resApp = ctx.getApplicationResourceBundle();
-        String defaultSpaceNameAndDesc = resApp.getString(uiManageInvitedSpaces.getId() + ".label.DefaultSpaceNameAndDesc");
-        ((UIFormStringInput) uiManageInvitedSpaces.uiSpaceSearch.getUIStringInput(SPACE_SEARCH)).setValue(defaultSpaceNameAndDesc);
-        uiManageInvitedSpaces.setSelectedChar(charSearch);
+        uiManageInvitedSpaces.uiSpaceSearch.getUIStringInput(SPACE_SEARCH).setValue("");
         uiManageInvitedSpaces.uiSpaceSearch.setSpaceNameSearch(null);
+        uiManageInvitedSpaces.setSelectedChar(charSearch);
       }
       
       uiManageInvitedSpaces.loadSearch();

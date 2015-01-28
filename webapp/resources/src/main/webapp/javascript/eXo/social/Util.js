@@ -143,7 +143,6 @@
 
 	                if ($(this).val().trim().length == 0) {
 	                  $(input).val(options.defaultVal);
-	                  $(input).css('color', COLOR.BLUR);
 	                }
 	           })
 	           .focus(function(e) {
@@ -158,7 +157,6 @@
 	                
 	                if (options.defaultVal && $(this).val() == options.defaultVal) {
 	                  $(this).val('');
-	                  $(this).css('color', COLOR.FOCUS);
 	                } 
 	                
 	           })

@@ -35,8 +35,7 @@
 
   <Content type="html" view="home">
   <![CDATA[
-    	<link rel="stylesheet" type="text/css" href="/eXoResources/skin/bootstrap/css/bootstrap.css" />    
-			<link rel="stylesheet" type="text/css" href="/eXoResources/skin/css/Core.css" />
+			<link rel="stylesheet" type="text/css" href="/eXoSkin/skin/css/Core.css" />
     	<link rel="stylesheet" type="text/css" href="style.css"></link>
     	<script language="javascript" type="text/javascript" src="/eXoResources/javascript/jquery-1.7.1.js"></script>
     	<script language="javascript" type="text/javascript" src="/eXoResources/skin/bootstrap/js/bootstrap-tooltip.js"></script>
@@ -62,8 +61,7 @@
 
   <Content type="html" view="canvas">
   <![CDATA[
-    <link rel="stylesheet" type="text/css" href="/eXoResources/skin/bootstrap/css/bootstrap.css" />    
-		<link rel="stylesheet" type="text/css" href="/eXoResources/skin/css/Core.css" />
+		<link rel="stylesheet" type="text/css" href="/eXoSkin/skin/css/Core.css" />
     <link rel="stylesheet" type="text/css" href="style.css"></link>
     <script language="javascript" type="text/javascript" src="/eXoResources/javascript/jquery-1.7.1.js"></script>
     	<script language="javascript" type="text/javascript" src="/eXoResources/skin/bootstrap/js/bootstrap-tooltip.js"></script>

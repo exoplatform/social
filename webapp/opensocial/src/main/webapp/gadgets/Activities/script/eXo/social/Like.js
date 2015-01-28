@@ -203,7 +203,7 @@ eXo.social.Like.renderListPeople = function(activityId, likes) {
       }
       var userName = likePerson.getDisplayName();
       var profileUrl = likePerson.getField(opensocial.Person.Field.PROFILE_URL);
-      var thumbnail = '/social-resources/skin/ShareImages/activity/AvatarPeople.gif';
+      var thumbnail = '/eXoSkin/skin/images/themes/default/social/skin/Activity/AvatarPeople.gif';
       if (likes[i].thumbnail !== null)	thumbnail = likes[i].thumbnail;
       html.push('<a href="' + profileUrl + '" target="_parent" title="' + profileUrl + '"  class="AvatarPeopleBG">');
         html.push('<img title="' + userName + '" alt="' + userName + '" height="47px" width="47px" src="' + thumbnail + '" />');

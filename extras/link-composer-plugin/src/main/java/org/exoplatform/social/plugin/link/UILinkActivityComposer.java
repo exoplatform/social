@@ -85,7 +85,7 @@ public class UILinkActivityComposer extends UIActivityComposer {
   private boolean isDisplayed;
   
   /** Html attribute title. */
-  private static final String HTML_ATTRIBUTE_TITLE   = "title";
+  private static final String HTML_ATTRIBUTE_TITLE   = "placeholder";
   
   /**
    * constructor

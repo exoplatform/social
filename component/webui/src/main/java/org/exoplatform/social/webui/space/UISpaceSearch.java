@@ -17,13 +17,10 @@
 package org.exoplatform.social.webui.space;
 
 import java.util.List;
-import java.util.ResourceBundle;
 
-import org.exoplatform.container.PortalContainer;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
 import org.exoplatform.social.webui.Utils;
-import org.exoplatform.web.application.RequestContext;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.EventConfig;
@@ -31,8 +28,8 @@ import org.exoplatform.webui.core.UIComponent;
 import org.exoplatform.webui.core.UIPopupWindow;
 import org.exoplatform.webui.core.lifecycle.UIFormLifecycle;
 import org.exoplatform.webui.event.Event;
-import org.exoplatform.webui.event.EventListener;
 import org.exoplatform.webui.event.Event.Phase;
+import org.exoplatform.webui.event.EventListener;
 import org.exoplatform.webui.form.UIForm;
 import org.exoplatform.webui.form.UIFormStringInput;
 
@@ -59,11 +56,6 @@ public class UISpaceSearch extends UIForm {
   
   private static final String PERCENTAGE_STR = "%";
   
-  /**
-   * DEFAULT SPACE NAME SEARCH.
-   */
-  public static final String DEFAULT_SPACE_NAME_SEARCH = "name or description";
-
   /**
    * INPUT PATTERN FOR CHECKING.
    */
@@ -162,7 +154,7 @@ public class UISpaceSearch extends UIForm {
    * Gets type of relation with current user.
    */
   public String getTypeOfRelation() {
-    return typeOfRelation;
+    return (typeOfRelation != null) ? typeOfRelation : "";
   }
 
   /**
@@ -178,7 +170,7 @@ public class UISpaceSearch extends UIForm {
    * Gets space url.
    */
   public String getSpaceURL() {
-    return spaceURL;
+    return (spaceURL != null) ? spaceURL : "";
   }
 
   /**
@@ -188,34 +180,6 @@ public class UISpaceSearch extends UIForm {
    */
   public void setSpaceURL(String spaceURL) {
     this.spaceURL = spaceURL;
-  }
-
-  /**
-   * Get current user name.
-   *
-   * @return
-   */
-  public String getCurrentUserName() {
-    RequestContext context = RequestContext.getCurrentInstance();
-    return context.getRemoteUser();
-  }
-
-  /**
-   * Get current rest context name.
-   *
-   * @return
-   */
-  protected String getRestContextName() {
-    return PortalContainer.getCurrentRestContextName();
-  }
-
-  /**
-   * Get portal name.
-   *
-   * @return
-   */
-  protected String getPortalName() {
-    return PortalContainer.getCurrentPortalContainerName();
   }
 
   /**
@@ -243,17 +207,23 @@ public class UISpaceSearch extends UIForm {
    * @throws Exception
    */
   public UISpaceSearch() throws Exception {
-    WebuiRequestContext requestContext = WebuiRequestContext.getCurrentInstance();
-    ResourceBundle resourceBundle = requestContext.getApplicationResourceBundle();
-    UIFormStringInput findSpace = new UIFormStringInput(SPACE_SEARCH, null, null);
-    findSpace.setHTMLAttribute(HTML_ATTRIBUTE_TITLE, resourceBundle.getString("UISpaceSearch.label.FindSpace"));
-    findSpace.setHTMLAttribute(HTML_ATTRIBUTE_PLACEHOLDER, resourceBundle.getString("UISpaceSearch.label.DefaultSpaceNameAndDesc"));
-    addUIFormInput(findSpace);
+    if (getId() == null) {
+      setId("UISpaceSearch");
+    }
+    //
+    addUIFormInput(new UIFormStringInput(SPACE_SEARCH, SPACE_SEARCH, ""));
+    //
     UIPopupWindow uiPopup = createUIComponent(UIPopupWindow.class, null, POPUP_ADD_SPACE);
     uiPopup.setShow(false);
     uiPopup.setWindowSize(400, 0);
     addChild(uiPopup);
     setSubmitAction("return false;");
+  }
+
+  protected void initPlaceholder() throws Exception {
+    UIFormStringInput findSpace = getUIStringInput(SPACE_SEARCH);
+    findSpace.setHTMLAttribute(HTML_ATTRIBUTE_TITLE, getLabel("FindSpace"));
+    findSpace.setHTMLAttribute(HTML_ATTRIBUTE_PLACEHOLDER, getLabel("DefaultSpaceNameAndDesc"));
   }
 
   /**
@@ -266,22 +236,17 @@ public class UISpaceSearch extends UIForm {
     public void execute(Event<UISpaceSearch> event) throws Exception {
       WebuiRequestContext ctx = event.getRequestContext();
       UISpaceSearch uiSpaceSearch = event.getSource();
-      ResourceBundle resApp = ctx.getApplicationResourceBundle();
-      String defaultSpaceNameAndDesc = resApp.getString(uiSpaceSearch.getId() + ".label.DefaultSpaceNameAndDesc");
-      String searchCondition = (((UIFormStringInput) uiSpaceSearch.getChildById(SPACE_SEARCH)).getValue());
-      if (searchCondition == null || searchCondition.equals(defaultSpaceNameAndDesc) || ASTERIK_STR
-          .equals(searchCondition) || PERCENTAGE_STR.equals(searchCondition)) {
+      String searchCondition = uiSpaceSearch.getUIStringInput(SPACE_SEARCH).getValue();
+      if (searchCondition == null || ASTERIK_STR.equals(searchCondition) || PERCENTAGE_STR.equals(searchCondition)) {
         uiSpaceSearch.setSpaceNameSearch(null);
         uiSpaceSearch.setNewSearch(true);
       } else {
         if (searchCondition != null) {
           searchCondition = Utils.normalizeString(searchCondition);
         }
-        
         uiSpaceSearch.setSpaceNameSearch(searchCondition);
         uiSpaceSearch.setNewSearch(true);
       }
-
       Event<UIComponent> searchEvent = uiSpaceSearch.<UIComponent>getParent().createEvent(SEARCH, Event.Phase.PROCESS, ctx);
       if (searchEvent != null) {
         searchEvent.broadcast();
@@ -295,7 +260,6 @@ public class UISpaceSearch extends UIForm {
    * UIAddSpaceForm will be displayed in a popup window
    */
   static public class AddSpaceActionListener extends EventListener<UISpaceSearch> {
-
     @Override
     public void execute(Event<UISpaceSearch> event) throws Exception {
       UISpaceSearch uiSpaceSearch = event.getSource();
@@ -305,7 +269,6 @@ public class UISpaceSearch extends UIForm {
       uiPopup.setWindowSize(625, 0);
       uiPopup.setShow(true);
     }
-
   }
 
   public boolean isNewSearch() {
@@ -315,5 +278,4 @@ public class UISpaceSearch extends UIForm {
   public void setNewSearch(boolean isNewSearch) {
     this.isNewSearch = isNewSearch;
   }
-  
 }
