@@ -1,7 +1,9 @@
 (function($, socialUtils) {
   var UserProfile = {
+      portlet : null,
       init : function(id) {
         var portlet = $('#' + id);
+        UserProfile.portlet = portlet;
         if(portlet.length > 0) {
           if(portlet.parents('#BasicProfilePortlet').length > 0) {
             UserProfile.leftBorder();
@@ -19,6 +21,8 @@
               return '0px';
             });
           }
+          //
+          UserProfile.changeInput();
         }
       },
       leftBorder : function() {
@@ -44,9 +48,29 @@
             }
           });
         }
+      },
+      changeInput : function() {
+        var status = UserProfile.portlet.data('btnStatus') || false;
+        UserProfile.updateBtnSaveStatus(status);
+        //
+        var form = UserProfile.portlet.find('form');
+        form.find('input, textarea, select').change(function(evt) {
+          UserProfile.updateBtnSaveStatus(true);
+        });
+        form.find('i.uiIconClose').click(function(evt) {
+          UserProfile.updateBtnSaveStatus(true);
+        });
+      },
+      updateBtnSaveStatus : function(status) {
+        UserProfile.portlet.data('btnStatus', status);
+        var btn = UserProfile.portlet.find('button.btn-save');
+        if (status) {
+          btn.removeAttr('disabled');
+        } else {
+          btn.attr('disabled', 'disabled');
+        }
       }
   };
   //
-  UserProfile.init();
   return UserProfile;
 })(jQuery, socialUtil);

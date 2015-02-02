@@ -12,6 +12,7 @@ import java.util.Map;
 
 import org.apache.commons.lang.StringEscapeUtils;
 import org.exoplatform.portal.application.PortalRequestContext;
+import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.user.form.UIInputSection.ActionData;
 import org.exoplatform.social.user.portlet.UserProfileHelper;
@@ -321,14 +322,16 @@ public class UIEditUserProfileForm extends UIForm {
 
   @Override
   public void processRender(WebuiRequestContext context) throws Exception {
+    //
+    if (!Util.getPortalRequestContext().useAjax()) {
+      resetForm();
+      //
+      initPlaceholder();
+    }
+    //
     if(this.currentProfile == null) {
       this.currentProfile = Utils.getViewerIdentity(true).getProfile();
       this.setValueBasicInfo();
-    }
-    //
-    String isAjax = context.getRequestParameter("ajaxRequest");
-    if (!Boolean.parseBoolean(isAjax)) {
-      initPlaceholder();
     }
     //
     super.processRender(context);
@@ -347,7 +350,14 @@ public class UIEditUserProfileForm extends UIForm {
       ++i;
     }
   }
-
+  /**
+   * Reset form
+   */
+  private void resetForm() {
+    currentProfile = null;
+    clearExperiences();
+  }
+  
   /**
    * @param messageKey
    * @param args
@@ -500,8 +510,7 @@ public class UIEditUserProfileForm extends UIForm {
       //
       Utils.getIdentityManager().updateProfile(profile);
       //
-      uiForm.currentProfile = null;
-      uiForm.clearExperiences();
+      uiForm.resetForm();
       //
       event.getRequestContext().getJavascriptManager().getRequireJS()
            .addScripts("setTimeout(function() {window.open(window.location.origin + '" +
@@ -515,8 +524,7 @@ public class UIEditUserProfileForm extends UIForm {
     public void execute(Event<UIEditUserProfileForm> event) throws Exception {
       UIEditUserProfileForm editUserProfile = event.getSource();
       //
-      editUserProfile.currentProfile = null;
-      editUserProfile.clearExperiences();
+      editUserProfile.resetForm();
       //
       ((PortalRequestContext) event.getRequestContext().getParentAppRequestContext()).ignoreAJAXUpdateOnPortlets(true);
     }
@@ -538,7 +546,7 @@ public class UIEditUserProfileForm extends UIForm {
       //
       editUserProfile.resetActionFileds();
       RequireJS requireJs = event.getRequestContext().getJavascriptManager().getRequireJS();
-      requireJs.require("SHARED/edit-user-profile", "profile")
+      requireJs.require("SHARED/user-profile", "profile")
                .addScripts("profile.chechboxUtil('" + (FIELD_EXPERIENCE_SECTION + editUserProfile.index) + "');");
       event.getRequestContext().addUIComponentToUpdateByAjax(editUserProfile);
     }
