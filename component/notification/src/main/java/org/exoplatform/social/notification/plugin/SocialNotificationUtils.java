@@ -286,10 +286,10 @@ public class SocialNotificationUtils {
         }
         users.add(userIdentity.getRemoteId());
         previousNotification.with(propertyName, NotificationUtils.listToString(users));
+        previousNotification.setUpdate(true);
         previousNotification.setLastModifiedDate(Calendar.getInstance());
         //update the created date of old notification then remove it from database
         previousNotification.setDateCreated(Calendar.getInstance());
-        storage.remove(previousNotification.getId());
         //
         context.put("NOTIFICATION_ID", previousNotification.getId());
         ctx.setNotificationInfo(previousNotification);
