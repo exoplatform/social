@@ -12,12 +12,12 @@ import java.util.ResourceBundle;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.webui.application.WebuiRequestContext;
-import org.json.JSONObject;
 
 public class UserProfileHelper {
   final public static String KEY = "key";
   final public static String VALUE = "value";
   final public static String URL_KEY = "url";
+  final public static String OTHER_KEY = "other";
   final public static String DEFAULT_PROTOCOL = "http://";
 
   enum IconClass {
@@ -229,6 +229,7 @@ public class UserProfileHelper {
     if (multiValues != null && multiValues.size() > 0) {
       Map<String, List<String>> mainValue = new HashMap<String, List<String>>();
       
+      List<String> valuesOfOther = new ArrayList<String>();
       for (Map<String, String> map : multiValues) {
         List<String> values = new ArrayList<String>();
         String key = map.get(KEY);
@@ -240,10 +241,22 @@ public class UserProfileHelper {
           values.add(value);
         }
         
-        mainValue.put(key, values);
+        if (OTHER_KEY.equals(key)) {
+          valuesOfOther.addAll(values);
+        } else {
+          mainValue.put(key, values);
+        }
       }
+      
       //
-      infos.put(mainKey, mainValue);
+      if (valuesOfOther.size() > 0) {
+        LinkedHashMap<String, List<String>> newValues = new LinkedHashMap<String, List<String>>();
+        newValues.putAll(mainValue);
+        newValues.put(OTHER_KEY, valuesOfOther);
+        infos.put(mainKey, newValues);
+      } else {
+        infos.put(mainKey, mainValue);
+      }
     }
   }
 }
