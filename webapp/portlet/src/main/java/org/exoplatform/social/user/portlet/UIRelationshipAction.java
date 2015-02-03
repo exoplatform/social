@@ -157,5 +157,11 @@ public class UIRelationshipAction extends UIContainer {
     }
   }
 
-  public static class DisconnectActionListener extends CancelActionListener {}
+  public static class DisconnectActionListener extends AbstractActionListener {
+    @Override
+    protected void doAction(Event<UIRelationshipAction> event) {
+      Utils.getRelationshipManager().delete(relationship);
+      Utils.updateWorkingWorkSpace();
+    }
+  }
 }
