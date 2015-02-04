@@ -54,7 +54,6 @@ import org.exoplatform.social.core.manager.RelationshipManager;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
 import org.exoplatform.social.core.storage.impl.AbstractStorage;
-import org.json.JSONObject;
 
 /**
  * Created by The eXo Platform SAS
@@ -361,11 +360,11 @@ public class IntranetNotificationRestService extends AbstractStorage implements 
     }
   }
 
-  private JSONObject getUserWebNotification(String userId) throws Exception {
-    JSONObject json = new JSONObject();
+  private Map<String, Boolean> getUserWebNotification(String userId) throws Exception {
+    Map<String, Boolean> data = new HashMap<>();
     List<NotificationInfo> notifications = getWebNotificationStorage().get(new WebNotificationFilter(userId), 0, 1);
-    json.put("showViewAll", (notifications.size() > 0));
-    return json;
+    data.put("showViewAll", (notifications.size() > 0));
+    return data;
   }
 
 }

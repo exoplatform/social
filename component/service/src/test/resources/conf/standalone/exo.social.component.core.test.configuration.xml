@@ -87,7 +87,7 @@
       </values-param>
     </init-params>
   </component>
-
+  
   <component>
     <key>org.exoplatform.social.core.storage.cache.SocialStorageCacheService</key>
     <type>org.exoplatform.social.core.storage.cache.SocialStorageCacheService</type>
@@ -410,7 +410,12 @@
     <key>org.exoplatform.social.core.application.SpaceActivityPublisher</key>
     <type>org.exoplatform.social.core.application.SpaceActivityPublisher</type>
   </component>
-
+  
+  <component>
+    <key>org.exoplatform.commons.api.notification.service.storage.WebNotificationStorage</key>
+    <type>org.exoplatform.social.webNotification.service.test.MockWebNotificationStorage</type>
+  </component>
+  
   <external-component-plugins>
     <target-component>org.exoplatform.social.core.manager.ActivityManager</target-component>
     <component-plugin>
