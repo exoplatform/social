@@ -228,7 +228,7 @@
 	}
 	%>
   <script type="text/javascript">
-		require(["PORTLET/social-portlet/SpaceSettingPortlet","SHARED/jquery", "SHARED/iphonePlugin"], function (spaceSetting, gj)
+		require(["SHARED/jquery", "SHARED/iphonePlugin"], function (gj)
 		{
 			gj('tr#existingUsersTable').find("div.spaceRole").children('input:checkbox').each(function()
 			{
