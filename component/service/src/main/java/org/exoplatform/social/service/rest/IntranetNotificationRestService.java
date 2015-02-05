@@ -361,7 +361,7 @@ public class IntranetNotificationRestService extends AbstractStorage implements 
   }
 
   private Map<String, Boolean> getUserWebNotification(String userId) throws Exception {
-    Map<String, Boolean> data = new HashMap<>();
+    Map<String, Boolean> data = new HashMap<String, Boolean>();
     List<NotificationInfo> notifications = getWebNotificationStorage().get(new WebNotificationFilter(userId), 0, 1);
     data.put("showViewAll", (notifications.size() > 0));
     return data;
