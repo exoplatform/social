@@ -24,6 +24,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.exoplatform.commons.api.notification.NotificationContext;
+import org.exoplatform.commons.api.notification.NotificationMessageUtils;
 import org.exoplatform.commons.api.notification.model.ArgumentLiteral;
 import org.exoplatform.commons.api.notification.model.NotificationInfo;
 import org.exoplatform.commons.api.notification.model.PluginKey;
@@ -286,6 +287,7 @@ public class SocialNotificationUtils {
         }
         users.add(userIdentity.getRemoteId());
         previousNotification.with(propertyName, NotificationUtils.listToString(users));
+        previousNotification.with(NotificationMessageUtils.NOT_HIGHLIGHT_COMMENT_PORPERTY.getKey(), "true");
         previousNotification.setUpdate(true);
         previousNotification.setLastModifiedDate(Calendar.getInstance());
         //update the created date of old notification then remove it from database

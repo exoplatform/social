@@ -115,7 +115,6 @@ public class WebTemplateProvider extends TemplateProvider {
       templateContext.put("NOTIFICATION_ID", notification.getId());
       templateContext.put("LAST_UPDATED_TIME", TimeConvertUtils.convertXTimeAgoByTimeServer(cal.getTime(), "EE, dd yyyy", new Locale(language), TimeConvertUtils.YEAR));
       templateContext.put("ACTIVITY", NotificationUtils.removeLinkTitle(activity.getTitle()));
-      templateContext.put("VIEW_FULL_DISCUSSION_ACTION_URL", LinkProvider.getSingleActivityUrl(activity.getId() + "#comment-" + comment.getId()));
       List<String> users = SocialNotificationUtils.mergeUsers(ctx, templateContext, SocialNotificationUtils.POSTER.getKey(), activity.getId(), notification.getValueOwnerParameter(SocialNotificationUtils.POSTER.getKey()));
       
       //
@@ -129,7 +128,6 @@ public class WebTemplateProvider extends TemplateProvider {
         templateContext.put("NB_USERS", nbUsers);
         //
         if (nbUsers >= 2) {
-          templateContext.put("VIEW_FULL_DISCUSSION_ACTION_URL", LinkProvider.getSingleActivityUrl(activity.getId()));
           Identity beforeLastIdentity = Utils.getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, users.get(nbUsers - 2), true);
           templateContext.put("LAST_USER", beforeLastIdentity.getProfile().getFullName());
           if (nbUsers > 2) {
@@ -137,6 +135,9 @@ public class WebTemplateProvider extends TemplateProvider {
           }
         }
       }
+      //
+      boolean notHighLightComment = Boolean.valueOf(notification.getValueOwnerParameter(NotificationMessageUtils.NOT_HIGHLIGHT_COMMENT_PORPERTY.getKey()));
+      templateContext.put("VIEW_FULL_DISCUSSION_ACTION_URL", LinkProvider.getSingleActivityUrl(notHighLightComment ?  activity.getId() : activity.getId() + "#comment-" + comment.getId()));
       
       //
       String body = TemplateUtils.processGroovy(templateContext);
