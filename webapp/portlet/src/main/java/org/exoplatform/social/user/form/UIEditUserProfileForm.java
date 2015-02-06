@@ -145,7 +145,7 @@ public class UIEditUserProfileForm extends UIForm {
     company.setLabel(Profile.EXPERIENCES_COMPANY);
     experienceSection.addUIFormInput(company);
     //
-    experienceSection.addUIFormInput(createUIFormStringInput(Profile.EXPERIENCES_POSITION + id, true), Profile.EXPERIENCES_POSITION + "Experience");
+    experienceSection.addUIFormInput(createUIFormStringInput(Profile.EXPERIENCES_POSITION + id, true), Profile.EXPERIENCES_POSITION);
     //
     experienceSection.addUIFormInput(new UIFormTextAreaInput(Profile.EXPERIENCES_DESCRIPTION + id,
                                                              Profile.EXPERIENCES_DESCRIPTION + id, ""), Profile.EXPERIENCES_DESCRIPTION);
