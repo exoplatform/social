@@ -28,20 +28,14 @@
         $(document).ready(function() {
           me.initIndicator();
         });
+        //
+        if(me.hasMore == false) {
+          me.portlet.find('div.bottomContainer').hide();
+        }
       },
       initIndicator : function() {
         var me = IntranetNotification;
         //
-        if (me.hasMore) {
-          $.ajaxSetup({
-            beforeSend : function() {
-              me.portlet.find('div.ShowAllIndicator:first').data('show', true).show();
-            },
-            complete : function() {
-              me.portlet.find('div.ShowAllIndicator:first').data('show', false).hide();
-            }
-          });
-        }
         $(window).scroll(function(e) {
           // wait 200ms before call load more.
           if (me.T) {
@@ -52,26 +46,25 @@
       },
       processScroll : function() {
         var me = IntranetNotification;
-        var loadAnimation = me.portlet.find('div.ShowAllIndicator');
-        var isLoading = loadAnimation.css("display") != "none";
-        if ((me.scrollBottom() <= me.delta) && !isLoading) {
-          if (me.hasMore) {
-            me.hasMore = false;
+        if (me.hasMore && (me.scrollBottom() <= me.delta)) {
+          me.hasMore = false;
+          var loadAnimation = me.portlet.find('div.loadingIndicator:first').show();
+          //
+          webNotif.ajaxRequest(me.dataLoadMore.data('url'), function(data) {
+            loadAnimation.hide();
+            var html = data.context;
+            if (html && html.length > 0) {
+              me.popupItem.append($('<ul></ul>').html(html).find('li'));
+              me.popupItem.find('li').each(function(i) {
+                me.applyAction($(this));
+              });
+            }
             //
-            $.ajax({
-              url : me.dataLoadMore.data('url')
-            }).done(function(data) {
-              var html = data.context;
-              if (html && html.length > 0) {
-                me.popupItem.append($('<ul></ul>').html(html).find('li'));
-                me.popupItem.find('li').each(function(i) {
-                  me.applyAction($(this));
-                });
-              }
-              //
-              me.hasMore = data.hasMore;
-            });
-          }
+            me.hasMore = data.hasMore;
+            if(me.hasMore == false) {
+              me.portlet.find('div.bottomContainer').hide();
+            }
+          });
         }
       },
       applyAction : function(item) {

@@ -24,12 +24,9 @@
   %>
   </ul>
   <div id="ShowMoreLoader" data-more="<%=uicomponent.hasMore%>" data-url="<%=uicomponent.getLoadMoreURL()%>" class="showMore hide"></div>
+ 	<div class="loadingIndicator" style="display:none">
+ 		<span class="uiLoadingIconLarge"></span>
+		<div class="loadingText"><%=_ctx.appRes("UIIntranetNotificationsPortlet.label.Loading") %>...</div>
+	</div>
   <div class="bottomContainer"></div>
-  <div class="ShowAllIndicator" id="ShowAllIndicator" style="display:none">
-  	<% for (int i = 0; i < 9; ++i) { %>
-  	<div id="rotateG_0$i" class="blockG"></div>
-  	<% } %>
-  </div>
-  
-  
 </div>
