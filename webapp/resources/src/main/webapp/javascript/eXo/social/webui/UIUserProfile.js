@@ -54,7 +54,7 @@
         UserProfile.updateBtnSaveStatus(status);
         //
         var form = UserProfile.portlet.find('form');
-        form.find('input, textarea, select').change(function(evt) {
+        form.find('input, textarea, select').on('change input', function(evt) {
           UserProfile.updateBtnSaveStatus(true);
         });
         form.find('i.uiIconClose').click(function(evt) {
