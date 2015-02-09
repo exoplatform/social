@@ -8,7 +8,7 @@ td.left-column-containerTDContainer {
 
 td.right-column-containerTDContainer {
 	padding-right: 20px;
-    width: 166px;
+    width: 170px;
 }
 
 @media all and (min-width: 1280px) {
@@ -117,9 +117,12 @@ td.right-column-containerTDContainer {
 	.hide-default, .user-actions:hover .show-default {
 		display: none;
 	}
-	.user-actions:hover .hide-default, .show-default, .startDate {
+	.user-actions:hover .hide-default, .show-default{
 		display: inline-block;
 		font-style: italic;
+	}
+	.startDate {
+		display: inline-block;
 	}
 	.avatarXSmall {
 		display: inline-block;
@@ -237,24 +240,28 @@ td.right-column-containerTDContainer {
 }
 
 .uiMiniConnectionsPortlet {
-	border: 1px solid @borderColor;
-	border-radius: 5px;
 	h4 {
 		margin: 0 0 20px;
 	}
+	.borderContainer {
+		border: 1px solid @borderColor;
+		border-radius: 5px;
+		padding: 15px 0px 10px 5.5px;
+	}
 	.noConnection {
 		background: url("/social-portlet/skin/images/userProfile/findFriendIconBg.png") no-repeat center 65px;
-		padding: 20px;
-		border-radius: 5px;
-		border: 1px solid @borderColor;
+		padding: 20px 20px 20px 20px;
 		.findConnection {
 			padding-top: 40px;			
 		}
 	}
 	a.avatarXSmall {
-		margin: 0 0 10px;
+		margin: 0 3.5px 10px 3.5px;
+		padding: 0px;
 	}
-	
+	.viewAllConnection {
+		margin-top: 0px;
+	}
 }
 
 .uiEditUserProfileForm {

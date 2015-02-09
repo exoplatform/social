@@ -10,17 +10,19 @@
 %>
 <div class="uiSocApplication uiMiniConnectionsPortlet" id="$uicomponent.id">
   <h4 class="head-container"><%=_ctx.appRes("UIBasicProfile.label.Connections")%></h4>
-  <% if(size > 0) {
-       for(profile in profiles) { %>
+  <% if(size > 0) { %>
+  	<div class="borderContainer">
+    <% for(profile in profiles) { %>
          <a href="<%=profile.getProfileURL()%>" class="avatarXSmall">
            <img alt="<%=profile.getDisplayName()%>" src="<%=profile.getAvatarURL()%>">         
          </a>
     <% } %>
        <div class="viewAllConnection"><a href="<%=LinkProvider.getBaseUri(null, null)%>/connections/network/<%=uicomponent.getCurrentRemoteId()%>"><%=_ctx.appRes("UIBasicProfile.label.ViewAll")%>&nbsp;(<%=size%>)</a></div>
+     </div>
   <% } else {
       String keyNoConnection = Utils.isOwner() ? "YouHaveNotConnections" : "UserHaveNotConnections";
   %>
-      <div class="noConnection center">
+      <div class="borderContainer noConnection center">
         <%=_ctx.appRes("UIBasicProfile.info." + keyNoConnection)%>
         <div class="findConnection"><a href="<%=LinkProvider.getBaseUri(null, null)%>/connexions"><%=_ctx.appRes("UIBasicProfile.label.FindConnections")%></a></div>
       </div>
