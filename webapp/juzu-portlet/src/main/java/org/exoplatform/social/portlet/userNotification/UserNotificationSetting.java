@@ -310,7 +310,7 @@ public class UserNotificationSetting {
 
     public String pluginRes(String key, String id) {
       String path = getBundlePath(id);
-      return TemplateUtils.getResourceBundle(key, locale, path);
+      return TemplateUtils.getResourceBundle(key, bundle.getLocale(), path);
     }
   }
      
