@@ -1167,6 +1167,7 @@ public class IdentityStorageImplTestCase extends AbstractCoreTest {
     profile.setProperty(Profile.USERNAME, "user");
     profile.setProperty(Profile.FIRST_NAME, "first");
     profile.setProperty(Profile.LAST_NAME, "last");
+    profile.setProperty(Profile.POSITION, "dev");
     // xps
     List<Map<String, Object>> xps = new ArrayList<Map<String, Object>>();
     Map<String, Object> xp1 = new HashMap<String, Object>();
