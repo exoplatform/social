@@ -120,7 +120,15 @@ public class UIAvatarUploadContent extends UIContainer {
       uiPopup.setShow(false);
       uiPopup.setUIComponent(null);
       uiPopup.setRendered(false);
-      Utils.updateWorkingWorkSpace();
+      if(uiPopup.getParent() instanceof PopupContainer) {
+        UIContainer container = uiPopup.getAncestorOfType(UIPortletApplication.class).findComponentById("Avatar");
+        if (container != null) {
+          event.getRequestContext().addUIComponentToUpdateByAjax(container);
+        }
+        event.getRequestContext().addUIComponentToUpdateByAjax(uiPopup.getParent());
+      } else {
+        Utils.updateWorkingWorkSpace();
+      }
     }
 
     private void saveAvatar(UIAvatarUploadContent uiAvatarUploadContent) throws Exception {
