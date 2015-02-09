@@ -33,7 +33,7 @@ import org.exoplatform.commons.api.notification.service.storage.WebNotificationS
  */
 public class MockWebNotificationStorage implements WebNotificationStorage {
   
-  private Map<String, NotificationInfo> map = new HashMap<>();
+  private Map<String, NotificationInfo> map = new HashMap<String, NotificationInfo>();
   
   public Map<String, NotificationInfo> getMap() {
     return this.map;
