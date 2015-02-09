@@ -17,15 +17,9 @@ def keys = profile.keySet();
       <div class="value-user-info">
       <%
         if(UserProfileHelper.isString(values)) {
-          if("email".equals(key)) {
       %>
         <div class="ui<%=clzz%> ellipsis" rel="tooltip" data-placement="top" title="" data-original-title="<%=values%>"><%=values%></div>
-      <%
-          } else {
-      %>
-        <div class="ui<%=clzz%>"><%=values%></div>
-      <%	}
-        } else  {
+      <%} else  {
           for(subKey in values.keySet()) {
             def isIms = UserProfileHelper.isIMs(key);
             def typeIconClzz = "";
