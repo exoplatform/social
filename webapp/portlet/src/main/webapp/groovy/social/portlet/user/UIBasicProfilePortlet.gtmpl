@@ -17,9 +17,14 @@ def keys = profile.keySet();
       <div class="value-user-info">
       <%
         if(UserProfileHelper.isString(values)) {
+          if("email".equals(key)) {
+      %>
+        <div class="ui<%=clzz%> ellipsis" rel="tooltip" data-placement="top" title="" data-original-title="<%=values%>"><%=values%></div>
+      <%
+          } else {
       %>
         <div class="ui<%=clzz%>"><%=values%></div>
-      <%
+      <%	}
         } else  {
           for(subKey in values.keySet()) {
             def isIms = UserProfileHelper.isIMs(key);
@@ -32,7 +37,8 @@ def keys = profile.keySet();
             int valueNum = 0;
             if (UserProfileHelper.isURL(key)) {
               for (url in listVal) { %>
-              <div class="ui<%=clzz%>"><a href="<%=UserProfileHelper.toAbsoluteURL(url)%>" target="_blank"><%=url%></a></div>
+              <div class="ui<%=clzz%> ellipsis"><a href="<%=UserProfileHelper.toAbsoluteURL(url)%>" target="_blank"
+                   rel="tooltip" data-placement="top" title="" data-original-title="<%=url%>"><%=url%></a></div>
             <%}
             } else {
               if (typeIconClzz.length() > 0) {
@@ -54,9 +60,9 @@ def keys = profile.keySet();
               <%}
                 valueNum++;
               %>
-                <div><%=val%></div>
+                <div class="ellipsis" rel="tooltip" data-placement="top" title="" data-original-title="<%=val%>"><%=val%></div>
               </div>
-              <%
+              <% 
               }
             }
           }
