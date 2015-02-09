@@ -111,7 +111,7 @@ public class UIEditUserProfileForm extends UIForm {
     urlMultiValueInput.setType(UIFormStringInput.class);
     urlMultiValueInput.setValue(Arrays.asList(""));
     urlMultiValueInput.setLabel(Profile.CONTACT_URLS);
-    baseSection.addUIFormInput(urlMultiValueInput.addValidator(URLValidator.class));
+    baseSection.addUIFormInput(urlMultiValueInput);
     //
     addUIFormInput(aboutSection);
     addUIFormInput(baseSection);
