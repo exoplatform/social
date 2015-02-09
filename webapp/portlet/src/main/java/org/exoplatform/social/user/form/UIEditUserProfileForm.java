@@ -398,7 +398,7 @@ public class UIEditUserProfileForm extends UIForm {
     // start empty
     if ((startDate.getValue() == null || startDate.getValue().isEmpty())) {
       // current is checked or end date not empty
-      if ((isCurrent || endDate.getValue() != null || !endDate.getValue().isEmpty())) {
+      if ((isCurrent || (endDate.getValue() != null && !endDate.getValue().isEmpty()))) {
         warning("EmptyFieldValidator.msg.empty-input", getLabel(Profile.EXPERIENCES_START_DATE));
         return null;
       }
