@@ -177,16 +177,18 @@ public class WebTemplateProvider extends TemplateProvider {
       templateContext.put("USER", profile.getFullName());
       templateContext.put("AVATAR", profile.getAvatarUrl() != null ? profile.getAvatarUrl() : LinkProvider.PROFILE_DEFAULT_AVATAR_URL);
       templateContext.put("PROFILE_URL", LinkProvider.getUserProfileUri(identity.getRemoteId()));
-      templateContext.put("ACTIVITY", NotificationUtils.removeLinkTitle(activity.getTitle()));
       
       // In case of mention on a comment, we need provide the id of the activity, not of the comment
+      String activityTitle = activity.getTitle();
       if (activity.isComment()) {
         ExoSocialActivity parentActivity = Utils.getActivityManager().getParentActivity(activity);
+        activityTitle = parentActivity.getTitle();
         activityId = parentActivity.getId();
         templateContext.put("VIEW_FULL_DISCUSSION_ACTION_URL", LinkProvider.getSingleActivityUrl(activityId + "#comment-" + activity.getId()));
       } else {
         templateContext.put("VIEW_FULL_DISCUSSION_ACTION_URL", LinkProvider.getSingleActivityUrl(activityId));
       }
+      templateContext.put("ACTIVITY", NotificationUtils.removeLinkTitle(activityTitle));
       //
       String body = TemplateUtils.processGroovy(templateContext);
       //binding the exception throws by processing template
