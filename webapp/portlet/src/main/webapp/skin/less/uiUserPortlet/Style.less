@@ -63,43 +63,29 @@ td.right-column-containerTDContainer {
 		border-radius: 5px;
 		padding: 5px 10px;
 	}
-	[class^="uiIconUser"] {
+	[class^="uiIconUser"], [class^="uiIconStatus"],
+	[class^="uiIconUser"]:hover, [class^="uiIconStatus"]:hover {
 		display: inline-block;
 		width: 16px;
 		height: 16px;
 		.ie7-restore-right-whitespace();
 		line-height: 16px;
 		vertical-align: text-top;
-		background-image: url("/forum/skin/DefaultSkin/images/Icons/uiIconsForumColor.png");
+		margin-top: 0;
+		background-image: url("/eXoResources/skin/images/Icons/uiIconColor.png");
 		background-repeat: no-repeat;
 	}
-	[class^="uiIconStatus"] {
-		display: inline-block;
-		width: 16px;
-		height: 16px;
-		.ie7-restore-right-whitespace();
-		line-height: 16px;
-		vertical-align: text-top;
-		background-image: url("/eXoResources/skin/images/Icons/uiIconColor.png") !important;
-		background-repeat: no-repeat;
+	.uiIconUserAvailable, .uiIconUserOnline {
+		background-position: 0 -60px;
 	}
-	.uiIconUserAvailable {
-		background-position: -80px 0;
-	}
-	.uiIconUserInvisible {
-		background-position: -40px 0;
-	}
-	.uiIconUserOnline {
-		background-position: -80px 0;
-	}
-	.uiIconUserOffline {
-		background-position: -40px 0;
+	.uiIconUserInvisible, .uiIconUserOffline {
+		background-position: -40px -60px;
 	}
 	.uiIconUserAway {
-		background-position: -100px 0;
+		background-position: -40px -60px;
 	}
 	.uiIconUserDonotdisturb {
-		background-position: -120px 0;
+		background-position: -60px -60px;
 	}
 	.uiIconStatusConnect {
 		display: none;
