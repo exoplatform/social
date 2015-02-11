@@ -8,8 +8,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.regex.Pattern;
 
-import org.apache.commons.lang.StringEscapeUtils;
 import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.webui.application.WebuiRequestContext;
 
@@ -19,6 +19,8 @@ public class UserProfileHelper {
   final public static String URL_KEY = "url";
   final public static String OTHER_KEY = "other";
   final public static String DEFAULT_PROTOCOL = "http://";
+  final private static Pattern ESCAPE_HTML_PATTERN = Pattern.compile("<(.*?)>", Pattern.CASE_INSENSITIVE);
+  final private static Pattern UNESCAPE_HTML_PATTERN = Pattern.compile("&lt;(.*?)&gt;", Pattern.CASE_INSENSITIVE);
 
   enum IconClass {
     DEFAULT("", ""),
@@ -93,11 +95,11 @@ public class UserProfileHelper {
     //
     String jobTitle = currentProfile.getPosition();
     if(!isEmpty(jobTitle)) {
-      infos.put(Profile.POSITION, jobTitle);
+      infos.put(Profile.POSITION, encodeHTML(jobTitle));
     }
     String gender = currentProfile.getGender();
     if(!isEmpty(gender)) {
-      infos.put(Profile.GENDER, gender);
+      infos.put(Profile.GENDER, encodeHTML(gender));
     }
     //
     putInfoData(currentProfile, infos, Profile.CONTACT_PHONES);
@@ -147,7 +149,7 @@ public class UserProfileHelper {
     List<String> urls = new ArrayList<String>();
     if (mapUrls != null) {
       for (Map<String, String> map : mapUrls) {
-        urls.add(map.get(VALUE));
+        urls.add(decodeHTML(map.get(VALUE)));
       }
     }
     return urls;
@@ -208,7 +210,7 @@ public class UserProfileHelper {
   private static void putExperienceData(Map<String, String> srcExperience, Map<String, String> destExperience, String key) {
     String value = srcExperience.get(key);
     if (!isEmpty(value)) {
-      destExperience.put(key, StringEscapeUtils.unescapeHtml(value));
+      destExperience.put(key, value);
     }
   }
 
@@ -233,7 +235,7 @@ public class UserProfileHelper {
       for (Map<String, String> map : multiValues) {
         List<String> values = new ArrayList<String>();
         String key = map.get(KEY);
-        String value = map.get(VALUE);
+        String value = encodeHTML(map.get(VALUE));
         if (mainValue.containsKey(key)) {
           values.addAll(mainValue.get(key));
           values.add(value);
@@ -258,5 +260,19 @@ public class UserProfileHelper {
         infos.put(mainKey, mainValue);
       }
     }
+  }
+
+  public static String encodeHTML(String s) {
+    if (isEmpty(s)) {
+      return s;
+    }
+    return ESCAPE_HTML_PATTERN.matcher(s).replaceAll("&lt;$1&gt;");
+  }
+
+  public static String decodeHTML(String s) {
+    if (isEmpty(s)) {
+      return s;
+    }
+    return UNESCAPE_HTML_PATTERN.matcher(s).replaceAll("<$1>");
   }
 }

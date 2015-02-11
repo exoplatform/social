@@ -112,7 +112,7 @@ public class UIMultiValueSelection extends UIFormInputSet {
       if (values != null && !values.isEmpty()) {
         for (Map<String, String> map : values) {
           String key = map.get("key");
-          String value = map.get("value");
+          String value = UserProfileHelper.decodeHTML(map.get("value"));
           //
           addInput(index, getSelected(key), value);
           //
@@ -142,7 +142,7 @@ public class UIMultiValueSelection extends UIFormInputSet {
       if (value != null && !value.isEmpty()) {
         Map<String, String> map = new HashMap<String, String>();
         map.put("key", getInputKey(indexId));
-        map.put("value", value);
+        map.put("value", UserProfileHelper.encodeHTML(value));
         values.add(map);
       }
     }

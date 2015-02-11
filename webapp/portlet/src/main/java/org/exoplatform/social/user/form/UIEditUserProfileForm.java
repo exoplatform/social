@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import org.apache.commons.lang.StringEscapeUtils;
 import org.exoplatform.portal.application.PortalRequestContext;
 import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.social.core.identity.model.Profile;
@@ -41,7 +40,6 @@ import org.exoplatform.webui.form.validator.EmailAddressValidator;
 import org.exoplatform.webui.form.validator.MandatoryValidator;
 import org.exoplatform.webui.form.validator.PersonalNameValidator;
 import org.exoplatform.webui.form.validator.StringLengthValidator;
-import org.exoplatform.webui.form.validator.URLValidator;
 
 @ComponentConfig(
    lifecycle = UIFormLifecycle.class,
@@ -169,21 +167,25 @@ public class UIEditUserProfileForm extends UIForm {
     return experienceSection;
   }
 
-  protected UIInputSection setValueExperienceSection(String id, Map<String, String> experiance) throws Exception {
+  protected UIInputSection setValueExperienceSection(String id, Map<String, String> experience) throws Exception {
     UIInputSection experienceSection = getOrCreateExperienceSection(id);
-    experienceSection.getUIStringInput(Profile.EXPERIENCES_COMPANY + id).setValue(experiance.get(Profile.EXPERIENCES_COMPANY));
-    experienceSection.getUIStringInput(Profile.EXPERIENCES_POSITION + id).setValue(experiance.get(Profile.EXPERIENCES_POSITION));
-    experienceSection.getUIFormTextAreaInput(Profile.EXPERIENCES_DESCRIPTION + id).setValue(experiance.get(Profile.EXPERIENCES_DESCRIPTION));
-    experienceSection.getUIFormTextAreaInput(Profile.EXPERIENCES_SKILLS + id).setValue(experiance.get(Profile.EXPERIENCES_SKILLS));
-    experienceSection.getUIFormDateTimeInput(Profile.EXPERIENCES_START_DATE + id).setCalendar(stringToCalendar(experiance.get(Profile.EXPERIENCES_START_DATE)));
-    experienceSection.getUIFormDateTimeInput(Profile.EXPERIENCES_END_DATE + id).setCalendar(stringToCalendar(experiance.get(Profile.EXPERIENCES_END_DATE)));
-    experienceSection.getUICheckBoxInput(Profile.EXPERIENCES_IS_CURRENT + id).setChecked(Boolean.valueOf(experiance.get(Profile.EXPERIENCES_IS_CURRENT)));
+    experienceSection.getUIStringInput(Profile.EXPERIENCES_COMPANY + id).setValue(getValueExperience(experience, Profile.EXPERIENCES_COMPANY));
+    experienceSection.getUIStringInput(Profile.EXPERIENCES_POSITION + id).setValue(getValueExperience(experience, Profile.EXPERIENCES_POSITION));
+    experienceSection.getUIFormTextAreaInput(Profile.EXPERIENCES_DESCRIPTION + id).setValue(getValueExperience(experience, Profile.EXPERIENCES_DESCRIPTION));
+    experienceSection.getUIFormTextAreaInput(Profile.EXPERIENCES_SKILLS + id).setValue(getValueExperience(experience, Profile.EXPERIENCES_SKILLS));
+    experienceSection.getUIFormDateTimeInput(Profile.EXPERIENCES_START_DATE + id).setCalendar(stringToCalendar(experience.get(Profile.EXPERIENCES_START_DATE)));
+    experienceSection.getUIFormDateTimeInput(Profile.EXPERIENCES_END_DATE + id).setCalendar(stringToCalendar(experience.get(Profile.EXPERIENCES_END_DATE)));
+    experienceSection.getUICheckBoxInput(Profile.EXPERIENCES_IS_CURRENT + id).setChecked(Boolean.valueOf(experience.get(Profile.EXPERIENCES_IS_CURRENT)));
     //
     return experienceSection;
   }
 
+  private String getValueExperience(Map<String, String> experience, String key) {
+    return UserProfileHelper.decodeHTML(experience.get(key));
+  }
+
   private String getStringValueProfile(String key) {
-    return (String) currentProfile.getProperty(key);
+    return UserProfileHelper.decodeHTML((String) currentProfile.getProperty(key));
   }
 
   protected void setValueBasicInfo() throws Exception {
@@ -374,7 +376,7 @@ public class UIEditUserProfileForm extends UIForm {
    */
   private void putData(Map<String, String> map, String key, String value) {
     if (value != null && !value.isEmpty()) {
-      map.put(key, StringEscapeUtils.escapeHtml(value));
+      map.put(key, UserProfileHelper.encodeHTML(value));
     }
   }
   /**
@@ -459,13 +461,13 @@ public class UIEditUserProfileForm extends UIForm {
     public void execute(Event<UIEditUserProfileForm> event) throws Exception {
       UIEditUserProfileForm uiForm = event.getSource();
       // About me
-      String aboutMe = uiForm.getUIInputSection(FIELD_ABOUT_SECTION).getUIFormTextAreaInput(Profile.ABOUT_ME).getValue();
+      String aboutMe = UserProfileHelper.encodeHTML(uiForm.getUIInputSection(FIELD_ABOUT_SECTION).getUIFormTextAreaInput(Profile.ABOUT_ME).getValue());
       // Basic information
       UIInputSection baseSection = uiForm.getUIInputSection(FIELD_BASE_SECTION);
-      String firstName = baseSection.getUIStringInput(Profile.FIRST_NAME).getValue();
-      String lastName = baseSection.getUIStringInput(Profile.LAST_NAME).getValue();
+      String firstName = UserProfileHelper.encodeHTML(baseSection.getUIStringInput(Profile.FIRST_NAME).getValue());
+      String lastName = UserProfileHelper.encodeHTML(baseSection.getUIStringInput(Profile.LAST_NAME).getValue());
       String email = baseSection.getUIStringInput(Profile.EMAIL).getValue();
-      String position =  baseSection.getUIStringInput(Profile.POSITION).getValue();
+      String position =  UserProfileHelper.encodeHTML(baseSection.getUIStringInput(Profile.POSITION).getValue());
       //
       String gender = baseSection.getUIFormSelectBox(Profile.GENDER).getValue();
       //
@@ -478,7 +480,7 @@ public class UIEditUserProfileForm extends UIForm {
       for (Object url : urls) {
         Map<String, String> mUrl = new HashMap<String, String>();
         mUrl.put(UserProfileHelper.KEY, UserProfileHelper.URL_KEY);
-        mUrl.put(UserProfileHelper.VALUE, (String) url);
+        mUrl.put(UserProfileHelper.VALUE, UserProfileHelper.encodeHTML((String) url));
         mapUrls.add(mUrl);
       }
       //Experiences
