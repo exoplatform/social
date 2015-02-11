@@ -7,8 +7,10 @@ td.left-column-containerTDContainer {
 
 
 td.right-column-containerTDContainer {
-	padding-right: 20px;
-		width: 170px;
+	width: 170px;
+    #MiniConnectionsPortlet {
+    	padding-right: 20px;
+    }
 }
 
 @media all and (min-width: 1280px) {
@@ -43,6 +45,12 @@ td.right-column-containerTDContainer {
 	border-left: solid 1px @borderColor;
 }
 .uiSocApplication {
+	&.uiEditUserProfilePortlet {
+		padding: 0;
+		.uiEditUserProfileForm {
+			padding: 0 0 0 10px;
+		}
+	}
 	.ellipsis {
 		display:inline-block !important;overflow:hidden;text-overflow:ellipsis;white-space:normal !important; word-break: normal !important;
 	}
