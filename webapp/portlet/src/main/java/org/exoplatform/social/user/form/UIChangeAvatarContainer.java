@@ -40,7 +40,7 @@ public class UIChangeAvatarContainer extends UIFormInputSet {
     writer.append("  <div class=\"avatarLarge\">")
           .append("    <img title=\"").append(fullName).append("\" alt=\"").append(fullName).append("\" src=\"").append(avatarURL).append("\"/>")
           .append("  </div>")
-          .append("  <div class=\"btn changeAvatar\" onclick=\"").append(event("ChangeAvatar")).append("\">")
+          .append("  <div class=\"btn btn-small changeAvatar\" onclick=\"").append(event("ChangeAvatar")).append("\">")
           .append(UserProfileHelper.getLabel(context, "UIChangeAvatarContainer.label.ChangeAvatar"))
           .append("  </div>");
     writer.append("</div>");
