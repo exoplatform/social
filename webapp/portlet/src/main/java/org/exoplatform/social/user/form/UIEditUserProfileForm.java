@@ -47,6 +47,7 @@ import org.exoplatform.webui.form.validator.StringLengthValidator;
    events = {
      @EventConfig(listeners = UIEditUserProfileForm.AddExperienceActionListener.class, phase = Phase.DECODE),
      @EventConfig(listeners = UIEditUserProfileForm.RemoveExperienceActionListener.class, phase = Phase.DECODE),
+     @EventConfig(listeners = UIEditUserProfileForm.RemoveActionListener.class, phase = Phase.DECODE),
      @EventConfig(listeners = UIEditUserProfileForm.CancelActionListener.class, phase = Phase.DECODE),
      @EventConfig(listeners = UIEditUserProfileForm.SaveActionListener.class)
    }
@@ -570,6 +571,16 @@ public class UIEditUserProfileForm extends UIForm {
       //
       editUserProfile.resetActionFileds();
       event.getRequestContext().addUIComponentToUpdateByAjax(editUserProfile);
+    }
+  }
+
+  /**
+   * The action support to reload only form when remove URLs.
+   */
+  public static class RemoveActionListener extends EventListener<UIEditUserProfileForm> {
+    public void execute(Event<UIEditUserProfileForm> event) throws Exception {
+      UIEditUserProfileForm editUserProfile = event.getSource();
+      event.getRequestContext().addUIComponentToUpdateByAjax(editUserProfile.getUIInputSection(FIELD_BASE_SECTION));
     }
   }
 }
