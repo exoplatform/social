@@ -21,10 +21,13 @@
      </div>
   <% } else {
       String keyNoConnection = Utils.isOwner() ? "YouHaveNotConnections" : "UserHaveNotConnections";
+      String noConnectionCSS = Utils.isOwner() ? "noConnection" : "";
   %>
-      <div class="borderContainer noConnection center">
+      <div class="borderContainer $noConnectionCSS center">
         <%=_ctx.appRes("UIBasicProfile.info." + keyNoConnection)%>
-        <div class="findConnection"><a href="<%=LinkProvider.getBaseUri(null, null)%>/connexions"><%=_ctx.appRes("UIBasicProfile.label.FindConnections")%></a></div>
+        <%if (Utils.isOwner()) { %>
+        <div class="findConnection"><a href="<%=LinkProvider.getBaseUri(null, null)%>/connections/all-people/"><%=_ctx.appRes("UIBasicProfile.label.FindConnections")%></a></div>
+        <%} %>
       </div>
   <% } %>
 </div>
