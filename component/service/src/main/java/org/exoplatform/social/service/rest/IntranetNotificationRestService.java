@@ -20,6 +20,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -47,6 +48,7 @@ import org.exoplatform.commons.utils.CommonsUtils;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.services.rest.resource.ResourceContainer;
+import org.exoplatform.services.security.ConversationState;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.manager.IdentityManager;
@@ -81,12 +83,16 @@ public class IntranetNotificationRestService extends AbstractStorage implements 
    * @throws Exception
    */
   @GET
+  @RolesAllowed("users")
   @Path("confirmInvitationToConnect/{senderId}/{receiverId}/{notificationId}/message.{format}")
   public Response confirmInvitationToConnect(@Context UriInfo uriInfo,
                                              @PathParam("senderId") String senderId,
                                              @PathParam("receiverId") String receiverId,
                                              @PathParam("notificationId") String notificationId,
                                              @PathParam("format") String format) throws Exception {
+    //Check authenticated user
+    checkAuthenticatedUserPermission(receiverId);
+    //
     String[] mediaTypes = new String[] { "json", "xml" };
     MediaType mediaType = Util.getMediaType(format, mediaTypes);
     //update notification
@@ -124,12 +130,16 @@ public class IntranetNotificationRestService extends AbstractStorage implements 
    * @throws Exception
    */
   @GET
+  @RolesAllowed("users")
   @Path("ignoreInvitationToConnect/{senderId}/{receiverId}/{notificationId}/message.{format}")
   public Response ignoreInvitationToConnect(@Context UriInfo uriInfo,
                                           @PathParam("senderId") String senderId,
                                           @PathParam("receiverId") String receiverId,
                                           @PathParam("notificationId") String notificationId,
                                           @PathParam("format") String format) throws Exception {
+    //Check authenticated user
+    checkAuthenticatedUserPermission(receiverId);
+    //
     String[] mediaTypes = new String[] { "json", "xml" };
     MediaType mediaType = Util.getMediaType(format, mediaTypes);
     //
@@ -156,12 +166,16 @@ public class IntranetNotificationRestService extends AbstractStorage implements 
    * @throws Exception
    */
   @GET
+  @RolesAllowed("users")
   @Path("acceptInvitationToJoinSpace/{spaceId}/{userId}/{notificationId}/message.{format}")
   public Response acceptInvitationToJoinSpace(@Context UriInfo uriInfo,
                                               @PathParam("spaceId") String spaceId,
                                                @PathParam("userId") String userId,
                                                @PathParam("notificationId") String notificationId,
                                                @PathParam("format") String format) throws Exception {
+    //Check authenticated user
+    checkAuthenticatedUserPermission(userId);
+    //
     String[] mediaTypes = new String[] { "json", "xml" };
     MediaType mediaType = Util.getMediaType(format, mediaTypes);
     
@@ -198,12 +212,16 @@ public class IntranetNotificationRestService extends AbstractStorage implements 
    * @throws Exception
    */
   @GET
+  @RolesAllowed("users")
   @Path("ignoreInvitationToJoinSpace/{spaceId}/{userId}/{notificationId}/message.{format}")
   public Response ignoreInvitationToJoinSpace(@Context UriInfo uriInfo,
                                            @PathParam("spaceId") String spaceId,
                                            @PathParam("userId") String userId,
                                            @PathParam("notificationId") String notificationId,
                                            @PathParam("format") String format) throws Exception {
+    //Check authenticated user
+    checkAuthenticatedUserPermission(userId);
+    //
     String[] mediaTypes = new String[] { "json", "xml" };
     MediaType mediaType = Util.getMediaType(format, mediaTypes);
     //
@@ -231,6 +249,7 @@ public class IntranetNotificationRestService extends AbstractStorage implements 
    * @throws Exception
    */
   @GET
+  @RolesAllowed("users")
   @Path("validateRequestToJoinSpace/{spaceId}/{requestUserId}/{currentUserId}/{notificationId}/message.{format}")
   public Response validateRequestToJoinSpace(@Context UriInfo uriInfo,
                                          @PathParam("spaceId") String spaceId,
@@ -238,7 +257,9 @@ public class IntranetNotificationRestService extends AbstractStorage implements 
                                          @PathParam("currentUserId") String currentUserId,
                                          @PathParam("notificationId") String notificationId,
                                          @PathParam("format") String format) throws Exception {
-    
+    //Check authenticated user
+    checkAuthenticatedUserPermission(currentUserId);
+    //
     String[] mediaTypes = new String[] { "json", "xml" };
     MediaType mediaType = Util.getMediaType(format, mediaTypes);
     //update notification
@@ -274,6 +295,7 @@ public class IntranetNotificationRestService extends AbstractStorage implements 
    * @throws Exception
    */
   @GET
+  @RolesAllowed("users")
   @Path("refuseRequestToJoinSpace/{spaceId}/{requestUserId}/{currentUserId}/{notificationId}/message.{format}")
   public Response refuseRequestToJoinSpace(@Context UriInfo uriInfo,
                                         @PathParam("spaceId") String spaceId,
@@ -281,6 +303,9 @@ public class IntranetNotificationRestService extends AbstractStorage implements 
                                         @PathParam("currentUserId") String currentUserId,
                                         @PathParam("notificationId") String notificationId,
                                         @PathParam("format") String format) throws Exception {
+    //Check authenticated user
+    checkAuthenticatedUserPermission(currentUserId);
+    //
     String[] mediaTypes = new String[] { "json", "xml" };
     MediaType mediaType = Util.getMediaType(format, mediaTypes);
     //
@@ -292,6 +317,13 @@ public class IntranetNotificationRestService extends AbstractStorage implements 
     getWebNotificationStorage().remove(notificationId);
     //
     return Util.getResponse(getUserWebNotification(currentUserId), uriInfo, mediaType, Response.Status.OK);
+  }
+  
+  private void checkAuthenticatedUserPermission(String targetUser) {
+    String authenticatedUser = ConversationState.getCurrent().getIdentity().getUserId();
+    if (! targetUser.equals(authenticatedUser)) {
+      throw new WebApplicationException(Response.Status.UNAUTHORIZED);
+    }
   }
   
   /**
