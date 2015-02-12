@@ -139,7 +139,7 @@ public class UIMultiValueSelection extends UIFormInputSet {
     this.values = new ArrayList<Map<String, String>>();
     for (Integer indexId : indexs) {
       String value = getInputValue(indexId);
-      if (value != null && !value.isEmpty()) {
+      if (!UserProfileHelper.isEmpty(value)) {
         Map<String, String> map = new HashMap<String, String>();
         map.put("key", getInputKey(indexId));
         map.put("value", UserProfileHelper.encodeHTML(value));

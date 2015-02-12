@@ -23,6 +23,7 @@
           }
           //
           UserProfile.changeInput();
+          UserProfile.handlerEnterKeydown();
         }
       },
       leftBorder : function() {
@@ -69,6 +70,14 @@
         } else {
           btn.attr('disabled', 'disabled');
         }
+      },
+      handlerEnterKeydown : function(status) {
+        var form = UserProfile.portlet.find('form');
+        form.find('input').on('keydown', function(evt) {
+          if(evt.which == 13) {
+            form.find('button.btn-save:first').trigger('click');
+          }
+        });
       }
   };
   //

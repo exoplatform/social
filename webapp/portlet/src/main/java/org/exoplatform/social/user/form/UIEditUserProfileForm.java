@@ -37,6 +37,7 @@ import org.exoplatform.webui.form.UIFormStringInput;
 import org.exoplatform.webui.form.UIFormTextAreaInput;
 import org.exoplatform.webui.form.input.UICheckBoxInput;
 import org.exoplatform.webui.form.validator.EmailAddressValidator;
+import org.exoplatform.webui.form.validator.ExpressionValidator;
 import org.exoplatform.webui.form.validator.MandatoryValidator;
 import org.exoplatform.webui.form.validator.PersonalNameValidator;
 import org.exoplatform.webui.form.validator.StringLengthValidator;
@@ -67,6 +68,12 @@ public class UIEditUserProfileForm extends UIForm {
   public static final String[] PHONE_TYPES = new String[] {"work","home","other"};
   /** IM_TYPES. */
   public static final String[] IM_TYPES = new String[] {"gtalk","msn","skype","yahoo","other"};
+  /** PHONE REGEX EXPRESSION. */
+  public static final String PHONE_REGEX_EXPRESSION = "^[\\d\\s ().+-]{3,20}+$";
+  /** URL REGEX EXPRESSION. */
+  public static final String URL_REGEX_EXPRESSION =
+  "\\b(?:(https?|ftp|file)://|www\\.)?[a-z0-9\\-\\.]+\\.[a-z]{2,3}(:[a-z0-9]*)?\\/?([a-z0-9\\-\\._\\?\\,\\'\\/\\\\+&amp;%\\$#\\=~])*$";
+  
   private Profile currentProfile;
   private List<String> experiens = new LinkedList<String>();
   private int index = 0;
@@ -101,12 +108,13 @@ public class UIEditUserProfileForm extends UIForm {
     baseSection.addUIFormInput(genderSelectBox);
     //
     UIMultiValueSelection phoneSelection = new UIMultiValueSelection(Profile.CONTACT_PHONES, getId(), Arrays.asList(PHONE_TYPES));
-    baseSection.addUIFormInput(phoneSelection.addValidator(StringLengthValidator.class, 1, 20));
+    baseSection.addUIFormInput(phoneSelection.addValidator(ExpressionValidator.class, PHONE_REGEX_EXPRESSION, "UIEditUserProfileForm.msg.Invalid-phone"));
     //
     UIMultiValueSelection imsSelection = new UIMultiValueSelection(Profile.CONTACT_IMS, getId(), Arrays.asList(IM_TYPES));
     baseSection.addUIFormInput(imsSelection.addValidator(StringLengthValidator.class, 1, 60));
     //
     UIFormMultiValueInputSet urlMultiValueInput = new UIFormMultiValueInputSet(Profile.CONTACT_URLS, Profile.CONTACT_URLS);
+    urlMultiValueInput.addValidator(ExpressionValidator.class, URL_REGEX_EXPRESSION, "UIEditUserProfileForm.msg.Invalid-url");
     urlMultiValueInput.setType(UIFormStringInput.class);
     urlMultiValueInput.setValue(Arrays.asList(""));
     urlMultiValueInput.setLabel(Profile.CONTACT_URLS);
@@ -479,9 +487,13 @@ public class UIEditUserProfileForm extends UIForm {
       List<Map<String, String>> mapUrls = new ArrayList<Map<String,String>>();
       List<?> urls = baseSection.getUIFormMultiValueInputSet(Profile.CONTACT_URLS).getValue();
       for (Object url : urls) {
+        String urlStr = (String)url;
+        if (urlStr == null || urlStr.isEmpty() || urlStr.trim().isEmpty()) {
+          continue;
+        }
         Map<String, String> mUrl = new HashMap<String, String>();
         mUrl.put(UserProfileHelper.KEY, UserProfileHelper.URL_KEY);
-        mUrl.put(UserProfileHelper.VALUE, UserProfileHelper.encodeHTML((String) url));
+        mUrl.put(UserProfileHelper.VALUE, UserProfileHelper.encodeHTML(urlStr));
         mapUrls.add(mUrl);
       }
       //Experiences
@@ -498,11 +510,11 @@ public class UIEditUserProfileForm extends UIForm {
       }
       Profile profile =  uiForm.currentProfile;
       //
-      profile.setProperty(Profile.ABOUT_ME, aboutMe);
+      profile.setProperty(Profile.ABOUT_ME, getValue(aboutMe));
       profile.setProperty(Profile.FIRST_NAME, firstName);
       profile.setProperty(Profile.LAST_NAME, lastName);
       profile.setProperty(Profile.EMAIL, email);
-      profile.setProperty(Profile.POSITION, position);
+      profile.setProperty(Profile.POSITION, getValue(position));
       profile.setProperty(Profile.GENDER, gender);
       //
       profile.setProperty(Profile.CONTACT_PHONES, phones);
@@ -520,8 +532,15 @@ public class UIEditUserProfileForm extends UIForm {
             profile.getUrl() + "', '_self')}, 200);");
       event.getRequestContext().addUIComponentToUpdateByAjax(uiForm);
     }
+    
+    private String getValue(String value) {
+      if (!UserProfileHelper.isEmpty(value)) {
+        return value;
+      }
+      return null;
+    }
   }
-
+  
   public static class CancelActionListener extends EventListener<UIEditUserProfileForm> {
     @Override
     public void execute(Event<UIEditUserProfileForm> event) throws Exception {
