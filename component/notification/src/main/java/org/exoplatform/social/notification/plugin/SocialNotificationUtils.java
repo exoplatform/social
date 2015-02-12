@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.exoplatform.commons.api.notification.NotificationContext;
 import org.exoplatform.commons.api.notification.model.ArgumentLiteral;
 import org.exoplatform.commons.api.notification.model.NotificationKey;
@@ -132,7 +133,7 @@ public class SocialNotificationUtils {
         } else {
           key = keys[i];
         }
-        value.append(SocialNotificationUtils.buildRedirecUrl("user", identity.getRemoteId(), identity.getProfile().getFullName()));
+        value.append(SocialNotificationUtils.buildRedirecUrl("user", identity.getRemoteId(), StringEscapeUtils.escapeHtml(identity.getProfile().getFullName())));
         if (count > (i + 1) && i < 2) {
           value.append(", ");
         }
