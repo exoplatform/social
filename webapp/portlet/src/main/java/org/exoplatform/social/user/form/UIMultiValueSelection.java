@@ -204,6 +204,11 @@ public class UIMultiValueSelection extends UIFormInputSet {
       setValues(null);
     }
     UIForm uiForm = getAncestorOfType(UIForm.class);
+    String addItem = UserProfileHelper.getLabel(context, "UIFormMultiValueInputSet.label.add");
+    String removeItem = UserProfileHelper.getLabel(context, "UIFormMultiValueInputSet.label.remove");
+    context.getJavascriptManager().require("SHARED/jquery", "jq").require("SHARED/bts_tooltip")
+           .addScripts("jq('.uiMulti-select').find('a[rel=\"tooltip\"]').tooltip();");
+    //
     Writer w = context.getWriter();
     w.append("<div class=\"uiMulti-select\" id=\"").append(getId()).append("\">") ;
     int i = 0;
@@ -213,12 +218,14 @@ public class UIMultiValueSelection extends UIFormInputSet {
       renderUIComponent(getUIStringInput(getInputId(indexId)));
       if(indexs.size() > 1) {
         // remove
-        w.append("<a class=\"actionIcon\" href=\"javascript:void(0)\" onclick=\"").append(uiForm.event("RemoveValue", getId() + String.valueOf(indexId)))
+        w.append("<a class=\"actionIcon\" data-placement=\"bottom\" rel=\"tooltip\" title=\"\" data-original-title=\"").append(removeItem)
+         .append("\" href=\"javascript:void(0)\" onclick=\"").append(uiForm.event("RemoveValue", getId() + String.valueOf(indexId)))
          .append("\"><i class=\"uiIconClose uiIconLightGray\"></i></a>");
       }
       if(i == indexs.size() - 1) {
         // add
-        w.append("<a class=\"actionIcon\" href=\"javascript:void(0)\" onclick=\"").append(uiForm.event("AddValue", getId() + String.valueOf(indexId)))
+        w.append("<a class=\"actionIcon\" data-placement=\"bottom\" rel=\"tooltip\" title=\"\" data-original-title=\"").append(addItem)
+         .append("\" href=\"javascript:void(0)\" onclick=\"").append(uiForm.event("AddValue", getId() + String.valueOf(indexId)))
          .append("\"><i class=\"uiIconPlus uiIconLightGray\"></i></a>");
       }
       w.append("</div>");
