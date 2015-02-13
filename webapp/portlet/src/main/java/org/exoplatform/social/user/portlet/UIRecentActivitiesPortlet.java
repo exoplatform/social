@@ -33,17 +33,13 @@ import org.exoplatform.webui.core.lifecycle.UIApplicationLifecycle;
 public class UIRecentActivitiesPortlet extends UIAbstractUserPortlet {
   private static int LATEST_ACTIVITIES_NUM = 5;
   private static int ACTIVITIES_NUM_TO_CHECK = 6;
-  private boolean hasViewAll = false;
+  protected boolean hasActivityBottomIcon = false;
 
   public UIRecentActivitiesPortlet() throws Exception {
   }
-  
-  public boolean isHasViewAll() {
-    return hasViewAll;
-  }
 
-  public void setHasViewAll(boolean hasViewAll) {
-    this.hasViewAll = hasViewAll;
+  public void setHasActivityBottomIcon(boolean hasActivityBottomIcon) {
+    this.hasActivityBottomIcon = hasActivityBottomIcon;
   }
 
   protected List<ExoSocialActivity> getRecentActivities() {
@@ -56,7 +52,7 @@ public class UIRecentActivitiesPortlet extends UIAbstractUserPortlet {
     }
     
     results = activitiesListAccess.loadAsList(0, LATEST_ACTIVITIES_NUM);
-    setHasViewAll(activitiesListAccess.loadAsList(0, ACTIVITIES_NUM_TO_CHECK).size() > LATEST_ACTIVITIES_NUM);
+    setHasActivityBottomIcon(activitiesListAccess.loadAsList(0, ACTIVITIES_NUM_TO_CHECK).size() <= LATEST_ACTIVITIES_NUM);
     return results; 
   }
 
