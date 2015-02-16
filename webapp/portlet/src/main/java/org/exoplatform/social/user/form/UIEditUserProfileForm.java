@@ -71,8 +71,17 @@ public class UIEditUserProfileForm extends UIForm {
   /** PHONE REGEX EXPRESSION. */
   public static final String PHONE_REGEX_EXPRESSION = "^[\\d\\s ().+-]{3,20}+$";
   /** URL REGEX EXPRESSION. */
-  public static final String URL_REGEX_EXPRESSION =
-  "\\b(?:(https?|ftp|file)://|www\\.)?[a-z0-9\\-\\.]+\\.[a-z]{2,3}(:[a-z0-9]*)?\\/?([a-z0-9\\-\\._\\?\\,\\'\\/\\\\+&amp;%\\$#\\=~])*$";
+  public static final String URL_REGEX_EXPRESSION ="^(?i)(" +
+      "((?:(?:ht)tp(?:s?)\\:\\/\\/)?" +                                                         // protolcol
+      "(?:\\w+:\\w+@)?" +                                                                       // username password
+      "(((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\." +  // IPAddress
+      "(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?))|" +     // IPAddress
+      "(?:(?:[-\\p{L}\\p{Digit}\\+\\$\\-\\*\\=]+\\.)+" +
+      "(?:com|org|net|edu|gov|mil|biz|info|mobi|name|aero|jobs|museum|travel|asia|cat|coop|int|pro|tel|xxx|[a-z]{2}))))|" + //Domain
+      "(?:(?:(?:ht)tp(?:s?)\\:\\/\\/)(?:\\w+:\\w+@)?(?:[-\\p{L}\\p{Digit}\\+\\$\\-\\*\\=]+))" + // Protocol with hostname
+      ")" +
+      "(?::[\\d]{1,5})?" +                                                                      // port
+      "(?:[\\/|\\?|\\#].*)?$";
   
   private Profile currentProfile;
   private List<String> experiens = new LinkedList<String>();
