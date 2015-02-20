@@ -139,7 +139,7 @@
 			             <a class="limitText" data-key="title" data-line="2" href="<%=spaceUrl%>"><%=spaceName%></a>
 			          </h4>
 			          <div class="membersCount" >$fieldLabelMembers <%=SpaceUtils.countMembers(space) %></div>
-			          <div class="content limitText" data-key="content" data-line="2">
+			          <div class="content limitText" data-key="content" data-line="2" title="<%=space.description%>">
 			            <% if (space.description != null && !space.description.isEmpty()) { 
 		                 print(space.description);
 		               } else { 
