@@ -2,27 +2,27 @@
   def avatarAttachment = uicomponent.avatarAttachment;
 %>
 <div id="$uicomponent.id" class="uiAvatarUploadContent">
-	<div class="form-horizontal  resizable">
-		<div class="media ">
-			<a class="avatarLargeWithBorder pull-left"><img src="$imageSource" rel="tooltip" data-placement="bottom" title="$avatarTitle" alt="$avatarTitle" /></a>
-			<div class="avatarInfo media-body">
-                <div class="control-group">
-                    <label class="control-label">$lalbelFileName</label>
-                    <div class="controls"><strong><%= avatarAttachment.fileName %></strong></div>
-                </div>
-                <div class="control-group">
-                    <label class="control-label">$labelFileType</label>
-                    <div class="controls"><%= avatarAttachment.mimeType %></div>
-                </div>
-                <div class="control-group">
-                    <label class="control-label">$labelImageSize</label>
-                    <div class="controls"><%= avatarAttachment.size %></div>
-                </div>
-            </div>
-		</div>
-	</div>
-	<div class="uiAction uiActionBorder">
-		<button class="btn" type="button" onclick="<%=uicomponent.event("Save")%>"><%=_ctx.appRes("word.save")%></button>
-		<button class="btn" type="button" onclick="<%=uicomponent.event("Cancel")%>"><%=_ctx.appRes("word.cancel")%></button>
-	</div>
+  <div class="avatarInfo clearfix">
+    <a class="avatarLargeWithBorder pull-left" rel="tooltip" data-placement="bottom" title="<%=_ctx.appRes("UIAvatarUploadContent.title.Avatar")%>">
+      <img src="<%=uicomponent.imageSource%>"/>
+    </a>
+    <div class="form-horizontal pull-left"> 
+      <div class="control-group">
+        <label class="control-label"><%=_ctx.appRes("UIAvatarUploadContent.label.file_name")%>:</label>
+        <div class="controls"><strong><%=avatarAttachment.fileName%></strong></div>
+      </div>
+      <div class="control-group">
+        <label class="control-label"><%=_ctx.appRes("UIAvatarUploadContent.label.file_type")%>:</label>
+        <div class="controls"><%=avatarAttachment.mimeType%></div>
+      </div>
+      <div class="control-group">
+        <label class="control-label"><%=_ctx.appRes("UIAvatarUploadContent.label.image_size")%>:</label>
+        <div class="controls"><%=avatarAttachment.size%></div>
+      </div>
+    </div>
+  </div>
+  <div class="uiAction uiActionBorder">
+    <button class="btn" type="button" onclick="<%=uicomponent.event("Save")%>"><%=_ctx.appRes("word.save")%></button>
+    <button class="btn" type="button" onclick="<%=uicomponent.event("Cancel")%>"><%=_ctx.appRes("word.cancel")%></button>
+  </div>
 </div>

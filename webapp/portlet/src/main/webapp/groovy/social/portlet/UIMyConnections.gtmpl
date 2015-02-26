@@ -81,7 +81,7 @@
 		      
 		    String imageSource = id.profile.avatarUrl;
         if (imageSource == null) {
-          imageSource = "/eXoSkin/skin/images/themes/default/social/skin/ShareImages/UserAvtDefault.png";
+          imageSource = "/eXoSkin/skin/images/system/UserAvtDefault.png";
         }
 		 %>
 		

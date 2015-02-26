@@ -67,7 +67,7 @@ public class UIMiniConnectionsPortlet extends UIAbstractUserPortlet {
       this.profileURL = profile.getUrl();
       String avatarURL = profile.getAvatarUrl();
       if (UserProfileHelper.isEmpty(avatarURL) || avatarURL.equalsIgnoreCase("null")) {
-        avatarURL = "/social-resources/skin/images/ShareImages/UserAvtDefault.png";
+        avatarURL = "/eXoSkin/skin/images/system/UserAvtDefault.png";
       }
       this.avatarURL = avatarURL;
     }

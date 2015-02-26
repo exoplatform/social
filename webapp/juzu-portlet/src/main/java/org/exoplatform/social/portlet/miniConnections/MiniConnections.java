@@ -44,7 +44,7 @@ public class MiniConnections {
   private static final Log LOG = ExoLogger.getLogger(MiniConnections.class);
   
   private final static int MAX_DISPLAY = 12;
-  private final static String DEFAULT_AVATAR_URL = "/social-resources/skin/images/ShareImages/UserAvtDefault.png";
+  private final static String DEFAULT_AVATAR_URL = "/eXoSkin/skin/images/system/UserAvtDefault.png";
   
   @Inject
   @Path("index.gtmpl") Template index;
