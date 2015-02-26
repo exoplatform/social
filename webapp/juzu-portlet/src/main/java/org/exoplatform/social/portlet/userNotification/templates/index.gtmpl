@@ -144,7 +144,7 @@
 								</div>
 								<div class="right-container pull-right">
 									<button id="${pluginId}" data-ok="${msgOK}" data-nok="${msgNOK}" class="btn btn-primary save-setting" type="button">${_ctx.appRes("UINotification.action.Save")}</button>
-									<a href="javascript:void(0)" class="edit-setting"><i class="uiIconEdit uiIconLightGray"></i></a>
+									<a href="javascript:void(0)" class="edit-setting actionIcon"><i class="uiIconEdit uiIconLightGray"></i></a>
 								</div>
 							</div>
 						</td>
