@@ -24,7 +24,7 @@
       },
       doCancelAction : function(id, restURL) {
         if (restURL && restURL.length > 0) {
-          WebNotification.ajaxRequest(restURL, function(data) {
+          WebNotification.ajaxReq(restURL, function(data) {
             WebNotification.evalMethod('doCancelAction', {
               data : data,
               id : id
@@ -51,7 +51,7 @@
         }
         return me;
       },
-      ajaxRequest : function (url, callBack) {
+      ajaxReq : function (url, callBack) {
         if(url && url.length > 0) {
           $.ajax(url).done(function(data) {
             if($.isFunction(callBack)) {

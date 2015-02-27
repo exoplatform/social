@@ -50,7 +50,7 @@
           me.hasMore = false;
           var loadAnimation = me.portlet.find('div.loadingIndicator:first').show();
           //
-          webNotif.ajaxRequest(me.dataLoadMore.data('url'), function(data) {
+          webNotif.ajaxReq(me.dataLoadMore.data('url'), function(data) {
             loadAnimation.hide();
             var html = data.context;
             if (html && html.length > 0) {
@@ -106,7 +106,7 @@
         }
         webNotif.showElm(IntranetNotification.applyAction(newItem));
         //
-        webNotif.ajaxRequest(IntranetNotification.addNotifURL);
+        webNotif.ajaxReq(IntranetNotification.addNotifURL);
       },
       doCancelAction : function(object) {
         var elm = IntranetNotification.portlet.find('li[data-id=' + object.id + ']');
@@ -117,7 +117,7 @@
           }
         });
         //
-        webNotif.ajaxRequest(IntranetNotification.removeNotifURL);
+        webNotif.ajaxReq(IntranetNotification.removeNotifURL);
       },
       markAllRead : function() {
         IntranetNotification.portlet.find('ul.displayItems:first').find('li.unread').removeClass('unread');
