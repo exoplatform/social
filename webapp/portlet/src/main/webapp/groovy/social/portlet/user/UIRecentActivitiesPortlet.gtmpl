@@ -49,18 +49,19 @@ List activities = uicomponent.getRecentActivities();
   <%
       }
       
-      if (uicomponent.hasActivityBottomIcon) {
-  %>
-      <div class="activityBottom" style="display: block;"><span></span></div>
-  <%      
-      }
-      
       String activityStreamURL = LinkProvider.getUserActivityUri(Utils.getOwnerIdentity(false).getRemoteId());
-      print("<div style=\"margin:10px 0px 10px 63px\"><button class=\"btn\" style=\"width:100%;\" onclick=\"window.location.href='" + activityStreamURL + "'\">" +
+      print("<div style=\"display: block;\" class=\"boxLoadMore\"><button class=\"btn\" style=\"width:100%;\" onclick=\"window.location.href='" + activityStreamURL + "'\">" +
               _ctx.appRes("UIBasicProfile.action.ViewAll") +
             "</button></div>");
       uicomponent.initProfilePopup();
     }
   %>
-    </div>
+    </div>    
+      <%
+      if (uicomponent.hasActivityBottomIcon && activities.size() != 0) {
+  %>
+      <div class="activityBottom" style="display: block;"><span></span></div>
+  <%      
+      }
+      %>
 </div>
