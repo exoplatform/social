@@ -15,10 +15,14 @@
             //
             $('#socialMainLayout').find('.right-column-containerTDContainer:first')
             .css('width', function(){
-              if($(this).find('.UIRowContainer:last').find('div').length > 0) {
-                return '40%';
+              if($(this).find('#right-editprofile-container').length > 0) {
+                if($(this).find('#right-editprofile-container').find('.UIRowContainer:last').find('div').length > 0) {
+                  return '40%';
+                }
+                return '0px';
+              } else {
+                return '';
               }
-              return '0px';
             });
           }
           //
