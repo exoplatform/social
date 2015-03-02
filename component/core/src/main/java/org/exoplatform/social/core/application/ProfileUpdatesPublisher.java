@@ -149,5 +149,12 @@ public class ProfileUpdatesPublisher extends ProfileListenerPlugin {
   @Override
   public void createProfile(ProfileLifeCycleEvent event) {
   }
+
+  @Override
+  public void aboutMeUpdated(ProfileLifeCycleEvent event) {
+    final String activityMessage = "About me has been updated.";
+    publishActivity(event, activityMessage, "aboutMe_section_updated");
+    
+  }
   
 }

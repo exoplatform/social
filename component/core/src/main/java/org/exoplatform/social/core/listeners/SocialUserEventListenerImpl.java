@@ -16,6 +16,8 @@
  */
 package org.exoplatform.social.core.listeners;
 
+import java.util.Arrays;
+
 import org.apache.commons.lang.StringUtils;
 import org.exoplatform.container.ExoContainer;
 import org.exoplatform.container.ExoContainerContext;
@@ -125,6 +127,7 @@ public class SocialUserEventListenerImpl extends UserEventListener {
       }
       
       if (hasUpdated) {
+        profile.setListUpdateTypes(Arrays.asList(Profile.UpdateType.CONTACT));
         idm.updateProfile(profile);
       }
     }

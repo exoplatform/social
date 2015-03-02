@@ -63,4 +63,9 @@ public class ProfileNotificationImpl extends ProfileListenerPlugin {
     ctx.getNotificationExecutor().with(ctx.makeCommand(PluginKey.key(NewUserPlugin.ID))).execute(ctx);
   }
 
+  @Override
+  public void aboutMeUpdated(ProfileLifeCycleEvent event) {
+    
+  }
+
 }

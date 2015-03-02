@@ -16,6 +16,11 @@
  */
 package org.exoplatform.social.core.manager;
 
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.log.ExoLogger;
@@ -27,6 +32,7 @@ import org.exoplatform.social.core.identity.SpaceMemberFilterListAccess;
 import org.exoplatform.social.core.identity.SpaceMemberFilterListAccess.Type;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
+import org.exoplatform.social.core.identity.model.Profile.UpdateType;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.profile.ProfileFilter;
 import org.exoplatform.social.core.profile.ProfileLifeCycle;
@@ -36,11 +42,6 @@ import org.exoplatform.social.core.search.Sorting;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.storage.api.IdentityStorage;
 import org.exoplatform.webui.exception.MessageException;
-
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Class IdentityManagerImpl implements IdentityManager without caching.
@@ -533,16 +534,8 @@ public class IdentityManagerImpl implements IdentityManager {
    * @since 1.2.0-GA
    */
   protected void broadcastUpdateProfileEvent(Profile profile) {
-    if (profile.getUpdateType().equals(Profile.UpdateType.POSITION)) {// updateHeaderSection
-      profileLifeCycle.headerUpdated(profile.getIdentity().getRemoteId(), profile);
-    } else if (profile.getUpdateType().equals(Profile.UpdateType.BASIC_INFOR)) { // updateBasicInfo
-      profileLifeCycle.basicUpdated(profile.getIdentity().getRemoteId(), profile);
-    } else if (profile.getUpdateType().equals(Profile.UpdateType.AVATAR)) { // updateAvatar
-      profileLifeCycle.avatarUpdated(profile.getIdentity().getRemoteId(), profile);
-    } else if (profile.getUpdateType().equals(Profile.UpdateType.CONTACT)) { // updateContactSection
-      profileLifeCycle.contactUpdated(profile.getIdentity().getRemoteId(), profile);
-    } else if (profile.getUpdateType().equals(Profile.UpdateType.EXPERIENCES)) { // updateExperienceSection
-      profileLifeCycle.experienceUpdated(profile.getIdentity().getRemoteId(), profile);
+    for (UpdateType type : profile.getListUpdateTypes()) {
+      type.updateActivity(profileLifeCycle, profile);
     }
   }
 

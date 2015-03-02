@@ -17,6 +17,7 @@
 package org.exoplatform.social.core.application;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.exoplatform.services.log.ExoLogger;
@@ -198,6 +199,7 @@ public class RelationshipPublisherTest extends  AbstractCoreTest {
 
     //update the profile for the first time
     profile.setProperty(Profile.POSITION, "developer");
+    profile.setListUpdateTypes(Arrays.asList(Profile.UpdateType.CONTACT));
     identityManager.updateProfile(profile);
 
     //from now, activity must not be null
@@ -209,7 +211,7 @@ public class RelationshipPublisherTest extends  AbstractCoreTest {
     List<ExoSocialActivity> comments = activityManager.getCommentsWithListAccess(activity).loadAsList(0, 20);
     //Number of comments must be 1
     assertEquals(1, comments.size());
-    assertEquals("Position is now: developer", comments.get(0).getTitle());
+    assertEquals("Contact informations has been updated.", comments.get(0).getTitle());
 
     Relationship rootToDemoRelationship = relationshipManager.inviteToConnect(rootIdentity, demoIdentity);
     relationshipManager.confirm(rootIdentity, demoIdentity);

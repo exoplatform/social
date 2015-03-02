@@ -19,6 +19,7 @@ package org.exoplatform.social.webui;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Arrays;
 import java.util.Map;
 
 import org.exoplatform.download.DownloadResource;
@@ -165,6 +166,7 @@ public class UIAvatarUploadContent extends UIContainer {
     
     Profile p = Utils.getOwnerIdentity().getProfile();
     p.setProperty(Profile.AVATAR, attacthment);
+    p.setListUpdateTypes(Arrays.asList(Profile.UpdateType.AVATAR));
     Map<String, Object> props = p.getProperties();
 
     // Removes avatar url and resized avatar

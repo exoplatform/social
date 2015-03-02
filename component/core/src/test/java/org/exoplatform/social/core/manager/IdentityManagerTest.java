@@ -17,6 +17,7 @@
 package org.exoplatform.social.core.manager;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -621,6 +622,7 @@ public class IdentityManagerTest extends AbstractCoreTest {
     assertEquals(1, identityListAccess.load(0, 10).length);
     
     profile.setProperty(Profile.POSITION, StringEscapeUtils.escapeHtml("!@#$%^&*()"));
+    profile.setListUpdateTypes(Arrays.asList(Profile.UpdateType.CONTACT));
     identityManager.updateProfile(profile);
     
     pf.setPosition("!@#$%^&*()");
@@ -634,6 +636,7 @@ public class IdentityManagerTest extends AbstractCoreTest {
     uiMap.put(Profile.EXPERIENCES_SKILLS, StringEscapeUtils.escapeHtml("!@#$%^&*()"));
     experiences.add(uiMap);
     profile.setProperty(Profile.EXPERIENCES, experiences);
+    profile.setListUpdateTypes(Arrays.asList(Profile.UpdateType.EXPERIENCES));
     identityManager.updateProfile(profile);
     
     pf = new ProfileFilter();
@@ -647,6 +650,7 @@ public class IdentityManagerTest extends AbstractCoreTest {
     uiMap.put(Profile.EXPERIENCES_SKILLS, StringEscapeUtils.escapeHtml("sale & marketing"));
     experiences.add(uiMap);
     profile.setProperty(Profile.EXPERIENCES, experiences);
+    profile.setListUpdateTypes(Arrays.asList(Profile.UpdateType.EXPERIENCES));
     identityManager.updateProfile(profile);
     
     pf = new ProfileFilter();
@@ -724,6 +728,7 @@ public class IdentityManagerTest extends AbstractCoreTest {
     Identity rootIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "root");
     Profile profile = rootIdentity.getProfile();
     profile.setProperty(Profile.POSITION, "CEO");
+    profile.setListUpdateTypes(Arrays.asList(Profile.UpdateType.CONTACT));
     identityManager.updateProfile(profile);
     
     Identity identityUpdated = identityManager.getOrCreateIdentity(rootIdentity.getProviderId(), rootIdentity.getRemoteId(), false);
@@ -986,6 +991,7 @@ public class IdentityManagerTest extends AbstractCoreTest {
         + newFirstName, newFirstName, gotRootIdentity.getProfile().getProperty(Profile.FIRST_NAME));
 
     try {
+      johnProfile.setListUpdateTypes(Arrays.asList(Profile.UpdateType.AVATAR));
       identityManager.updateAvatar(johnProfile);
     } catch (Exception e1) {
       assert false : "can't update avatar" + e1 ;
@@ -1046,6 +1052,7 @@ public class IdentityManagerTest extends AbstractCoreTest {
     //update profile name
     profile.setProperty(Profile.FIRST_NAME, "Mary-James");
     profile.setProperty(Profile.FULL_NAME, "Mary-James Williams");
+    profile.setListUpdateTypes(Arrays.asList(Profile.UpdateType.CONTACT));
     identityManager.updateProfile(profile);
     Identity alex = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "alex", true);
     assertEquals("Mary-James Williams", alex.getProfile().getFullName());

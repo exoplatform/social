@@ -18,7 +18,10 @@ package org.exoplatform.social.core.application;
 
 import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
@@ -87,6 +90,7 @@ public class ProfileUpdatesPublisherTest extends AbstractCoreTest {
     
     //update the profile for the first time
     profile.setProperty(Profile.POSITION, "developer");
+    profile.setListUpdateTypes(Arrays.asList(Profile.UpdateType.CONTACT));
     identityManager.updateProfile(profile);
     
     //from now, activity must not be null
@@ -98,40 +102,42 @@ public class ProfileUpdatesPublisherTest extends AbstractCoreTest {
     List<ExoSocialActivity> comments = activityManager.getCommentsWithListAccess(activity).loadAsList(0, 20);
     //Number of comments must be 1
     assertEquals(1, comments.size());
-    assertEquals("Position is now: developer", comments.get(0).getTitle());
+    assertEquals("Contact informations has been updated.", comments.get(0).getTitle());
     
-    //update header
-    profile.setProperty(Profile.POSITION, "CEO");
+    //update about me
+    profile.setProperty(Profile.ABOUT_ME, "Nothing to say");
+    profile.setListUpdateTypes(Arrays.asList(Profile.UpdateType.ABOUT_ME));
     activity = updateProfile(profile);
     comments = activityManager.getCommentsWithListAccess(activity).loadAsList(0, 20);
     assertNotNull(activity);
-    assertEquals("Position is now: CEO", comments.get(1).getTitle());
+    assertEquals("About me has been updated.", comments.get(1).getTitle());
     
     //Number of comments must be 2
     assertEquals(2, comments.size());
     
-    //update basic info
+    //update contact info and about me ==> 2 comments will be added
+    profile.setProperty(Profile.ABOUT_ME, "Don't want to say");
     profile.setProperty(Profile.EMAIL, "abc@gmail.com");
+    profile.setListUpdateTypes(Arrays.asList(Profile.UpdateType.ABOUT_ME, Profile.UpdateType.CONTACT));
     activity = updateProfile(profile);
     assertNotNull(activity);
     comments = activityManager.getCommentsWithListAccess(activity).loadAsList(0, 20);
-    assertEquals("Basic informations has been updated.", comments.get(2).getTitle());
-    
-    //Number of comments must be 3
-    assertEquals(3, comments.size());
-    
-    //update contact info
-    profile.setProperty(Profile.GENDER, "Male");
-    activity = updateProfile(profile);
-    assertNotNull(activity);
-    comments = activityManager.getCommentsWithListAccess(activity).loadAsList(0, 20);
+    assertEquals("About me has been updated.", comments.get(2).getTitle());
     assertEquals("Contact informations has been updated.", comments.get(3).getTitle());
     
     //Number of comments must be 4
     assertEquals(4, comments.size());
     
     //update experience
-    profile.setProperty(Profile.EXPERIENCES, new ArrayList<String>());
+    List<Map<String, String>> experiences = new ArrayList<Map<String, String>>();
+    Map<String, String> exp1 = new HashMap<String, String>();
+    exp1.put("company", "eXo");
+    exp1.put("position", "developer");
+    exp1.put("startDate", "1/1/2015");
+    exp1.put("isCurrent", "true");
+    experiences.add(exp1);
+    profile.setProperty(Profile.EXPERIENCES, experiences);
+    profile.setListUpdateTypes(Arrays.asList(Profile.UpdateType.EXPERIENCES));
     activity = updateProfile(profile);
     assertNotNull(activity);
     comments = activityManager.getCommentsWithListAccess(activity).loadAsList(0, 20);
@@ -145,6 +151,7 @@ public class ProfileUpdatesPublisherTest extends AbstractCoreTest {
     avatar.setMimeType("plain/text");
     avatar.setInputStream(new ByteArrayInputStream("Attachment content".getBytes()));
     profile.setProperty(Profile.AVATAR, avatar);
+    profile.setListUpdateTypes(Arrays.asList(Profile.UpdateType.AVATAR));
     activity = updateProfile(profile);
     assertNotNull(activity);
     comments = activityManager.getCommentsWithListAccess(activity).loadAsList(0, 20);

@@ -15,6 +15,9 @@ import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.user.form.UIInputSection.ActionData;
 import org.exoplatform.social.user.portlet.UserProfileHelper;
+import org.exoplatform.social.user.profile.AboutMeComparator;
+import org.exoplatform.social.user.profile.ContactComparator;
+import org.exoplatform.social.user.profile.ExperiencesComparator;
 import org.exoplatform.social.webui.Utils;
 import org.exoplatform.web.application.ApplicationMessage;
 import org.exoplatform.web.application.RequireJS;
@@ -461,6 +464,7 @@ public class UIEditUserProfileForm extends UIForm {
         map.put(Profile.EXPERIENCES_IS_CURRENT, "false");
       } else {
         map.put(Profile.EXPERIENCES_IS_CURRENT, "true");
+        map.put(Profile.EXPERIENCES_END_DATE, null);
       }
     }
     //
@@ -518,20 +522,27 @@ public class UIEditUserProfileForm extends UIForm {
         }
       }
       Profile profile =  uiForm.currentProfile;
+      List<Profile.UpdateType> list = new ArrayList<Profile.UpdateType>();
       //
-      profile.setProperty(Profile.ABOUT_ME, getValue(aboutMe));
-      profile.setProperty(Profile.FIRST_NAME, firstName);
-      profile.setProperty(Profile.LAST_NAME, lastName);
-      profile.setProperty(Profile.EMAIL, email);
-      profile.setProperty(Profile.POSITION, getValue(position));
-      profile.setProperty(Profile.GENDER, gender);
+      AboutMeComparator aboutMeSection = new AboutMeComparator(getValue(aboutMe), profile);
+      if (aboutMeSection.hasChanged()) {
+        list.add(Profile.UpdateType.ABOUT_ME);
+      }
+      profile = aboutMeSection.getProfile();
       //
-      profile.setProperty(Profile.CONTACT_PHONES, phones);
-      profile.setProperty(Profile.CONTACT_IMS, ims);
-      profile.setProperty(Profile.CONTACT_URLS, mapUrls);
+      ContactComparator contactSection = new ContactComparator(firstName, lastName, email, getValue(position), gender, phones, ims, mapUrls, profile);
+      if (contactSection.hasChanged()) {
+        list.add(Profile.UpdateType.CONTACT);
+      }
+      profile = contactSection.getProfile();
       //
-      profile.setProperty(Profile.EXPERIENCES, experiences);
+      ExperiencesComparator experiencesSection = new ExperiencesComparator(experiences, profile);
+      if (experiencesSection.hasChanged()) {
+        list.add(Profile.UpdateType.EXPERIENCES);
+      }
+      profile = experiencesSection.getProfile();
       //
+      profile.setListUpdateTypes(list);
       Utils.getIdentityManager().updateProfile(profile);
       //
       uiForm.resetForm();
