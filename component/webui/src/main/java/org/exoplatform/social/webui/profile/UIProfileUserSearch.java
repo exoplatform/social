@@ -68,16 +68,6 @@ public class UIProfileUserSearch extends UIForm {
    */
   public static final String REG_FOR_SPLIT = "[^_A-Za-z0-9-.\\s[\\n]]";
 
-  /**
-   * PATTERN FOR CHECK RIGHT INPUT VALUE
-   */
-  static final String RIGHT_INPUT_PATTERN = "^[\\p{L}][\\p{L}._\\- \\d]+$";
-
-  /**
-   * ADD PREFIX TO ENSURE ALWAY RIGHT THE PATTERN FOR CHECKING
-   */
-  static final String PREFIX_ADDED_FOR_CHECK = "PrefixAddedForCheck";
-
   /** Empty character. */
   public static final char EMPTY_CHARACTER = '\u0000';
   
@@ -397,14 +387,7 @@ public class UIProfileUserSearch extends UIForm {
           }
           
           if(rawSearchMessageStringBuffer.length() > 0){
-            uiSearch.setRawSearchConditional(rawSearchMessageStringBuffer.toString());
-            // Eliminates space characters.
-            if(!isValidInput(filter)){
-              filter.setName("@");
-              filter.setCompany("");
-              filter.setSkills("");
-              filter.setPosition("");
-            }
+            uiSearch.setRawSearchConditional(rawSearchMessageStringBuffer.toString());            
           } else {
             uiSearch.setRawSearchConditional(ALL_FILTER);
             filter.setFirstCharacterOfName(EMPTY_CHARACTER);
@@ -443,32 +426,7 @@ public class UIProfileUserSearch extends UIForm {
       if (skills != null && skills.length() > 0) {
         filter.setSkills(Utils.normalizeString(skills));
       }
-    }
-
-
-    /**
-     * Checks input values follow regular expression.
-     *
-     * @param input <code>Object</code>
-     * @return true if the input is properly to regular expression else return false.
-     */
-    private boolean isValidInput(final ProfileFilter input) {
-      // Check contact name
-      String contactName = input.getName();
-      
-      // Eliminate '*' and '%' character in string for checking
-      String contactNameForCheck = null;
-      if (contactName != null) {
-        contactNameForCheck = contactName.replaceAll("[/*%]", "").trim();
-        // Make sure string for checking is started by alphabet character
-        contactNameForCheck = PREFIX_ADDED_FOR_CHECK + contactNameForCheck;
-        if (!contactNameForCheck.matches(RIGHT_INPUT_PATTERN)) {
-          return false;
-        }
-      }
-
-      return true;
-    }
+    }    
   }
 
   /**
