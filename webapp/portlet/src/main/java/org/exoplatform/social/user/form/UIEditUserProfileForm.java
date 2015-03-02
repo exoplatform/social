@@ -113,6 +113,7 @@ public class UIEditUserProfileForm extends UIForm {
     baseSection.addUIFormInput(createUIFormStringInput(Profile.POSITION, false));
     //
     List<SelectItemOption<String>> options = new ArrayList<SelectItemOption<String>>();
+    options.add(new SelectItemOption<String>("", ""));
     options.add(new SelectItemOption<String>(getLabel(OPTION_MALE), OPTION_MALE));
     options.add(new SelectItemOption<String>(getLabel(OPTION_FEMALE), OPTION_FEMALE));
     UIFormSelectBox genderSelectBox = new UIFormSelectBox(Profile.GENDER, Profile.GENDER, options);
