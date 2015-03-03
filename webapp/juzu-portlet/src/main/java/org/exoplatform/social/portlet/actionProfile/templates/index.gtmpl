@@ -1,6 +1,0 @@
-#{param name=_ctx/}
-#{param name=content/}
-
-<div class="uiSocApplication uiActionProfilePortlet" id="ActionProfilePortlet">
-<%=content%>
-</div>
