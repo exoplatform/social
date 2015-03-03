@@ -62,17 +62,7 @@ public class UISpaceSearch extends UIForm {
   /**
    * DEFAULT SPACE NAME SEARCH.
    */
-  public static final String DEFAULT_SPACE_NAME_SEARCH = "name or description";
-
-  /**
-   * INPUT PATTERN FOR CHECKING.
-   */
-  static final String RIGHT_INPUT_PATTERN = "^[\\p{L}][\\p{L}._\\- \\d]+$";
-  
-  /**
-   * ADD PREFIX TO ENSURE ALWAY RIGHT THE PATTERN FOR CHECKING
-   */
-  static final String PREFIX_ADDED_FOR_CHECK = "PrefixAddedForCheck";
+  public static final String DEFAULT_SPACE_NAME_SEARCH = "name or description";  
   
   private final String POPUP_ADD_SPACE = "UIPopupAddSpace";
 
