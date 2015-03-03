@@ -68,6 +68,16 @@ public class UIProfileUserSearch extends UIForm {
    */
   public static final String REG_FOR_SPLIT = "[^_A-Za-z0-9-.\\s[\\n]]";
 
+  /**
+   * PATTERN FOR CHECK RIGHT INPUT VALUE
+   */
+  static final String RIGHT_INPUT_PATTERN = "^[\\p{L}][\\p{L}._\\- \\d]+$";
+
+  /**
+   * ADD PREFIX TO ENSURE ALWAY RIGHT THE PATTERN FOR CHECKING
+   */
+  static final String PREFIX_ADDED_FOR_CHECK = "PrefixAddedForCheck";
+
   /** Empty character. */
   public static final char EMPTY_CHARACTER = '\u0000';
   
