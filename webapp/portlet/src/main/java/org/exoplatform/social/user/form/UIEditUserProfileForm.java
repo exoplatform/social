@@ -72,7 +72,7 @@ public class UIEditUserProfileForm extends UIForm {
   /** IM_TYPES. */
   public static final String[] IM_TYPES = new String[] {"gtalk","msn","skype","yahoo","other"};
   /** PHONE REGEX EXPRESSION. */
-  public static final String PHONE_REGEX_EXPRESSION = "^[\\d\\s ().+-]{3,20}+$";
+  public static final String PHONE_REGEX_EXPRESSION = "^[\\d\\s ().+-]{0,25}+$";
   /** URL REGEX EXPRESSION. */
   public static final String URL_REGEX_EXPRESSION ="^(?i)(" +
       "((?:(?:ht)tp(?:s?)\\:\\/\\/)?" +                                                         // protolcol
@@ -96,21 +96,23 @@ public class UIEditUserProfileForm extends UIForm {
     }
     UIInputSection aboutSection = new UIInputSection(FIELD_ABOUT_SECTION, "AboutMe");
     aboutSection.useGroupControl(false)
-                .addUIFormInput(new UIFormTextAreaInput(Profile.ABOUT_ME, Profile.ABOUT_ME, null));
+                .addUIFormInput(new UIFormTextAreaInput(Profile.ABOUT_ME, Profile.ABOUT_ME, null)
+                .addValidator(StringLengthValidator.class, 1500));
     //
     UIInputSection baseSection = new UIInputSection(FIELD_BASE_SECTION, "ContactInfomation");
     baseSection.addUIFormInput(createUIFormStringInput(Profile.FIRST_NAME, true)
-                               .addValidator(PersonalNameValidator.class).addValidator(StringLengthValidator.class, 1, 45));
+                               .addValidator(PersonalNameValidator.class).addValidator(StringLengthValidator.class, 45));
     //
     baseSection.addUIFormInput(createUIFormStringInput(Profile.LAST_NAME, true)
-                               .addValidator(PersonalNameValidator.class).addValidator(StringLengthValidator.class, 1, 45));
+                               .addValidator(PersonalNameValidator.class).addValidator(StringLengthValidator.class, 45));
     //
-    baseSection.addUIFormInput(createUIFormStringInput(Profile.EMAIL, true).addValidator(EmailAddressValidator.class));
+    baseSection.addUIFormInput(createUIFormStringInput(Profile.EMAIL, true).addValidator(EmailAddressValidator.class)
+                                                                           .addValidator(StringLengthValidator.class, 100));
     //
     UIChangeAvatarContainer avatarContainer = createUIComponent(UIChangeAvatarContainer.class, null, "Avatar");
     baseSection.addUIFormInput(avatarContainer);
     //
-    baseSection.addUIFormInput(createUIFormStringInput(Profile.POSITION, false));
+    baseSection.addUIFormInput(createUIFormStringInput(Profile.POSITION, false).addValidator(StringLengthValidator.class, 100));
     //
     List<SelectItemOption<String>> options = new ArrayList<SelectItemOption<String>>();
     options.add(new SelectItemOption<String>("", ""));
@@ -124,10 +126,11 @@ public class UIEditUserProfileForm extends UIForm {
     baseSection.addUIFormInput(phoneSelection.addValidator(ExpressionValidator.class, PHONE_REGEX_EXPRESSION, "UIEditUserProfileForm.msg.Invalid-phone"));
     //
     UIMultiValueSelection imsSelection = new UIMultiValueSelection(Profile.CONTACT_IMS, getId(), Arrays.asList(IM_TYPES));
-    baseSection.addUIFormInput(imsSelection.addValidator(StringLengthValidator.class, 1, 60));
+    baseSection.addUIFormInput(imsSelection.addValidator(StringLengthValidator.class, 100));
     //
     UIFormMultiValueInputSet urlMultiValueInput = new UIFormMultiValueInputSet(Profile.CONTACT_URLS, Profile.CONTACT_URLS);
     urlMultiValueInput.addValidator(ExpressionValidator.class, URL_REGEX_EXPRESSION, "UIEditUserProfileForm.msg.Invalid-url");
+    urlMultiValueInput.addValidator(StringLengthValidator.class, 100);
     urlMultiValueInput.setType(UIFormStringInput.class);
     urlMultiValueInput.setValue(Arrays.asList(""));
     urlMultiValueInput.setLabel(Profile.CONTACT_URLS);
@@ -162,16 +165,18 @@ public class UIEditUserProfileForm extends UIForm {
 
     //
     UIFormStringInput company = createUIFormStringInput(Profile.EXPERIENCES_COMPANY + id, true);
+    company.addValidator(StringLengthValidator.class, 100);
     company.setLabel(Profile.EXPERIENCES_COMPANY);
     experienceSection.addUIFormInput(company);
     //
-    experienceSection.addUIFormInput(createUIFormStringInput(Profile.EXPERIENCES_POSITION + id, true), Profile.EXPERIENCES_POSITION);
+    experienceSection.addUIFormInput(createUIFormStringInput(Profile.EXPERIENCES_POSITION + id, true)
+                                       .addValidator(StringLengthValidator.class, 100), Profile.EXPERIENCES_POSITION);
     //
-    experienceSection.addUIFormInput(new UIFormTextAreaInput(Profile.EXPERIENCES_DESCRIPTION + id,
-                                                             Profile.EXPERIENCES_DESCRIPTION + id, ""), Profile.EXPERIENCES_DESCRIPTION);
+    experienceSection.addUIFormInput(new UIFormTextAreaInput(Profile.EXPERIENCES_DESCRIPTION + id, Profile.EXPERIENCES_DESCRIPTION + id, "")
+                                       .addValidator(StringLengthValidator.class, 1500), Profile.EXPERIENCES_DESCRIPTION);
     //
-    experienceSection.addUIFormInput(new UIFormTextAreaInput(Profile.EXPERIENCES_SKILLS + id,
-                                                             Profile.EXPERIENCES_SKILLS + id, ""), Profile.EXPERIENCES_SKILLS);
+    experienceSection.addUIFormInput(new UIFormTextAreaInput(Profile.EXPERIENCES_SKILLS + id, Profile.EXPERIENCES_SKILLS + id, "")
+                                       .addValidator(StringLengthValidator.class, 1500), Profile.EXPERIENCES_SKILLS);
     //
     experienceSection.addUIFormInput(new UIFormDateTimeInput(Profile.EXPERIENCES_START_DATE + id,
                                                              Profile.EXPERIENCES_START_DATE + id, null, false), Profile.EXPERIENCES_START_DATE);
