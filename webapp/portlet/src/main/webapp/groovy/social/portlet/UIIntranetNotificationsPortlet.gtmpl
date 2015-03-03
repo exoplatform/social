@@ -16,7 +16,7 @@
     %>
   </div>
   <ul class="displayItems">
-  	<li class="alert alert-info no-items" style="display:$display;"><%=_ctx.appRes("UIIntranetNotificationsPortlet.label.NoNotifications") %></li>
+  	<li class="no-items" style="display:$display;"><%=_ctx.appRes("UIIntranetNotificationsPortlet.label.NoNotifications") %></li>
   <%
     for(notification in notifications) { 
       print(notification);
