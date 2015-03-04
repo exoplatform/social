@@ -42,15 +42,21 @@
         var parent = $('#' + parentId);
         if(parent.length > 0) {
           var checkbox = parent.find('input[type=checkbox]');
-          if(checkbox.is(':checked')) {
-            parent.find('.control-group').eq(5).hide();
-          }
-          checkbox.change(function () {
-            if($(this).is(':checked')) {
+          var checkProcess = function(input) {
+        	if(input.is(':checked')) {
+              parent.find('.control-group').eq(4)
+              		.find('.controls').append($("<span> *  </span>"));
               parent.find('.control-group').eq(5).hide();
             } else {
               parent.find('.control-group').eq(5).show();
+              parent.find('.control-group').eq(4)
+              		.find('.controls').find('span').remove();
             }
+          }
+          //
+          checkProcess(checkbox);
+          checkbox.change(function () {
+        	  checkProcess($(this));
           });
         }
       },
