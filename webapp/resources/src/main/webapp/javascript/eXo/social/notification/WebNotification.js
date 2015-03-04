@@ -4,7 +4,7 @@
       register : function(plugin) {
         WebNotification.plugins.push(plugin);
         if ($.isFunction(plugin.init)) {
-          plugin.init();
+          setTimeout(plugin.init, 500);
         }
       },
       evalMethod : function(methodName, args) {
