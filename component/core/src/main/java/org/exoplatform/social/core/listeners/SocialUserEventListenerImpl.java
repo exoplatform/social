@@ -16,6 +16,7 @@
  */
 package org.exoplatform.social.core.listeners;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 
 import org.apache.commons.lang.StringUtils;
@@ -116,7 +117,6 @@ public class SocialUserEventListenerImpl extends UserEventListener {
         
         if(!uDisplayName.equals(pFullName)) {
           profile.setProperty(Profile.FULL_NAME, uDisplayName);
-          hasUpdated = true;
         }
         
         if ((pEmail == null) || (!pEmail.equals(uEmail))) {
@@ -128,8 +128,10 @@ public class SocialUserEventListenerImpl extends UserEventListener {
       
       if (hasUpdated) {
         profile.setListUpdateTypes(Arrays.asList(Profile.UpdateType.CONTACT));
-        idm.updateProfile(profile);
+      } else {
+        profile.setListUpdateTypes(new ArrayList<Profile.UpdateType>());
       }
+      idm.updateProfile(profile);
     }
     finally{
       RequestLifeCycle.end();

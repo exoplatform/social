@@ -160,6 +160,14 @@ public class ProfileUpdatesPublisherTest extends AbstractCoreTest {
     //Number of comments must be 6
     assertEquals(6, comments.size());
     
+    //update the first name
+    profile.setProperty(Profile.FIRST_NAME, "binh");
+    profile.setListUpdateTypes(Arrays.asList(Profile.UpdateType.CONTACT));
+    identityManager.updateProfile(profile);
+    comments = activityManager.getCommentsWithListAccess(activity).loadAsList(0, 20);
+    //Number of comments must be 6
+    assertEquals(7, comments.size());
+    
     // make sure just only one activity existing
     assertEquals(1, activityManager.getActivitiesWithListAccess(rootIdentity).getSize());
     
