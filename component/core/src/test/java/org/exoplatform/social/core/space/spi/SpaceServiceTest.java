@@ -1403,7 +1403,7 @@ public class SpaceServiceTest extends AbstractCoreTest {
    * Test {@link SpaceService#createSpace(org.exoplatform.social.core.space.model.Space, String, String)}
    *
    */
-   public void testCreateSpaceWithManagersAndMemebrs() throws SpaceException {
+   public void testCreateSpaceWithManagersAndMemebers() throws SpaceException {
      String[] managers = {"manager"};
      String[] members = {"member1","member2","member3"};
      String creator = "creator";
