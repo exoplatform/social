@@ -10,6 +10,9 @@ import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.regex.Pattern;
 
+import org.exoplatform.commons.utils.CommonsUtils;
+import org.exoplatform.services.organization.OrganizationService;
+import org.exoplatform.services.organization.Query;
 import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.webui.application.WebuiRequestContext;
 
@@ -274,5 +277,22 @@ public class UserProfileHelper {
       return s;
     }
     return UNESCAPE_HTML_PATTERN.matcher(s).replaceAll("<$1>");
+  }
+  
+  /**
+   * Checks if input email is existing already or not.
+   * 
+   * @param email Input email to check.
+   * @return true if email is existing in system.
+   */
+  public static boolean isExistingEmail(String email) {
+    try {
+      Query query = new Query();
+      query.setEmail(email);
+      OrganizationService service = CommonsUtils.getService(OrganizationService.class);
+      return service.getUserHandler().findUsersByQuery(query).getSize() > 0;
+    } catch (Exception e) {
+      return false;
+    }
   }
 }

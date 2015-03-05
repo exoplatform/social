@@ -488,13 +488,19 @@ public class UIEditUserProfileForm extends UIForm {
     @Override
     public void execute(Event<UIEditUserProfileForm> event) throws Exception {
       UIEditUserProfileForm uiForm = event.getSource();
+      UIInputSection baseSection = uiForm.getUIInputSection(FIELD_BASE_SECTION);
+      String email = baseSection.getUIStringInput(Profile.EMAIL).getValue();
+      // Checks input email existing or not 
+      String oldEmail = uiForm.currentProfile.getEmail();
+      if(!oldEmail.equals(email) && UserProfileHelper.isExistingEmail(email)) {
+        uiForm.warning("UIEditUserProfileForm.msg.email-exist", uiForm.getLabel(Profile.EMAIL));
+        return;
+      }
       // About me
       String aboutMe = UserProfileHelper.encodeHTML(uiForm.getUIInputSection(FIELD_ABOUT_SECTION).getUIFormTextAreaInput(Profile.ABOUT_ME).getValue());
       // Basic information
-      UIInputSection baseSection = uiForm.getUIInputSection(FIELD_BASE_SECTION);
       String firstName = UserProfileHelper.encodeHTML(baseSection.getUIStringInput(Profile.FIRST_NAME).getValue());
       String lastName = UserProfileHelper.encodeHTML(baseSection.getUIStringInput(Profile.LAST_NAME).getValue());
-      String email = baseSection.getUIStringInput(Profile.EMAIL).getValue();
       String position =  UserProfileHelper.encodeHTML(baseSection.getUIStringInput(Profile.POSITION).getValue());
       //
       String gender = baseSection.getUIFormSelectBox(Profile.GENDER).getValue();
