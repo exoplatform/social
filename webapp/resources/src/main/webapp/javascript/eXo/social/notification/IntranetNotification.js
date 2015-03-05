@@ -107,12 +107,14 @@
         webNotif.showElm(IntranetNotification.applyAction(newItem));
         //
         webNotif.ajaxReq(IntranetNotification.addNotifURL);
+        //
+        IntranetNotification.popupItem.find('li.no-items').hide();
       },
       doCancelAction : function(object) {
         var elm = IntranetNotification.portlet.find('li[data-id=' + object.id + ']');
         webNotif.removeElm(elm, function(elm) {
           var ul = elm.parents('ul:first');
-          if (ul.find('li').length == 1) {
+          if (ul.find('li').length == 2) {
             ul.find('li.no-items').show();
           }
         });
