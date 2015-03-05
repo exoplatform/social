@@ -25,6 +25,7 @@ List activities = uicomponent.getRecentActivities();
         String displayName = profile.getFullName();
         String activityTypeIcon =  RecentActivitiesHelper.getActivityTypeIcon(activity.getType());
         String link = RecentActivitiesHelper.getLink(activity);
+        String linkTitle = RecentActivitiesHelper.getLinkTitle(activity);
   %>
       <div class="activityStream uiDefaultActivity clearfix" id="Activity<%=activity.id%>">
         <div class="activityTimeLine pull-left">
@@ -39,9 +40,18 @@ List activities = uicomponent.getRecentActivities();
         </div><!--end activityTimeLine-->
         <div class="boxContainer" id="boxContainer" onclick="window.open('<%=(activityURL + activity.id)%>', '_self')">
           <div id="Content<%=activity.id%>" class="content">
-            <div class="status"><%=activity.getTitle()%></div>
-          <%if (link != null) { %>
-            <div class="link"><a href="<%=link%>"><%=link%></a></div>
+          <%if (link != null) { 
+              if (linkTitle != null) {
+          %> 
+                <div class="status"><%=linkTitle%></div>
+                <div class="link"><a href="javascript:void(0);" onclick="(function(evt){ evt.stopPropagation(); window.open('<%=link%>', '_blank');})(event)"><%=activity.getTitle()%></a></div>
+          <%
+              } else {
+          %>
+                <div><a href="javascript:void(0);" onclick="(function(evt){ evt.stopPropagation(); window.open('<%=link%>', '_blank');})(event)"><%=activity.getTitle()%></a></div>
+          <%  }
+            } else {%>
+                <div class="status"><%=activity.getTitle()%></div>
           <%} %>
           </div>
         </div> <!-- #boxContainer-->
