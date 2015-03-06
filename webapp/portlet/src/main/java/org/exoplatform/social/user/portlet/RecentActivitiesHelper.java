@@ -2,16 +2,14 @@ package org.exoplatform.social.user.portlet;
 
 import java.util.Map;
 
-import org.exoplatform.container.PortalContainer;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.identity.model.Profile;
+import org.exoplatform.social.core.service.LinkProvider;
 import org.exoplatform.social.webui.Utils;
 
 public class RecentActivitiesHelper {
   private static final String LINK_PARAM         = "link";
   private static final String LINK_TITLE         = "comment";
-  private static final String DOCLINK            = "DOCLINK";
-  private static final String CONTENT_LINK       = "contenLink";
   private static final String TOPIC_LINK         = "TopicLink";
   private static final String PAGE_URL           = "page_url";
   private static final String EVENT_LINK         = "EventLink";
@@ -58,14 +56,8 @@ public class RecentActivitiesHelper {
     Map<String, String> templateParams = activity.getTemplateParams();
     if (activityType.equals(Type.LINK.getType())) {
       return templateParams.get(LINK_PARAM);
-    } else if (activityType.equals(Type.DOC.getType())) {
-      return templateParams.get(DOCLINK);
-    } else if (activityType.equals(Type.FILE.getType())) {
-      String portalContainerName = PortalContainer.getCurrentPortalContainerName();
-      String restCtxName = PortalContainer.getRestContextName(portalContainerName);
-      StringBuilder sb = new StringBuilder("/").append(portalContainerName).append("/")
-        .append(restCtxName).append("/jcr/").append(templateParams.get(CONTENT_LINK));
-      return sb.toString();
+    } else if (activityType.equals(Type.DOC.getType()) || activityType.equals(Type.FILE.getType())) {
+      return LinkProvider.getSingleActivityUrl(activity.getId());
     } else if (activityType.equals(Type.CALENDAR.getType())) {
       return templateParams.get(EVENT_LINK);
     } else if (activityType.equals(Type.FORUM.getType())) {

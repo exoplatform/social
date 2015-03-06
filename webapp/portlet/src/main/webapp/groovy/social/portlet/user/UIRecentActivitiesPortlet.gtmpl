@@ -48,7 +48,7 @@ List activities = uicomponent.getRecentActivities();
           <%
               } else {
           %>
-                <div><a href="javascript:void(0);" onclick="(function(evt){ evt.stopPropagation(); window.open('<%=link%>', '_blank');})(event)"><%=activity.getTitle()%></a></div>
+                <div><a href="javascript:void(0);" onclick="(function(evt){ evt.stopPropagation(); window.open('<%=link%>', '_self');})(event)"><%=activity.getTitle()%></a></div>
           <%  }
             } else {%>
                 <div class="status"><%=activity.getTitle()%></div>
