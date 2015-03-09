@@ -13,7 +13,7 @@
   <% if(size > 0) { %>
   	<div class="borderContainer">
     <% for(profile in profiles) { %>
-         <a href="<%=profile.getProfileURL()%>" class="avatarXSmall">
+         <a href="<%=profile.getProfileURL()%>" class="avatarXSmall" data-link="<%=uicomponent.event("RemoveConnection")%>">
            <img alt="<%=profile.getDisplayName()%>" src="<%=profile.getAvatarURL()%>">         
          </a>
     <% } %>

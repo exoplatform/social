@@ -25,11 +25,17 @@ import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.profile.ProfileFilter;
 import org.exoplatform.social.webui.Utils;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
+import org.exoplatform.webui.config.annotation.EventConfig;
 import org.exoplatform.webui.core.lifecycle.UIApplicationLifecycle;
+import org.exoplatform.webui.event.Event;
+import org.exoplatform.webui.event.EventListener;
 
 @ComponentConfig(
   lifecycle = UIApplicationLifecycle.class,
-  template = "app:/groovy/social/portlet/user/UIMiniConnectionsPortlet.gtmpl"
+  template = "app:/groovy/social/portlet/user/UIMiniConnectionsPortlet.gtmpl",
+  events = {
+    @EventConfig(listeners = UIMiniConnectionsPortlet.RemoveConnectionActionListener.class)
+  }
 )
 public class UIMiniConnectionsPortlet extends UIAbstractUserPortlet {
   protected final static int MAX_DISPLAY = 12;
@@ -38,6 +44,13 @@ public class UIMiniConnectionsPortlet extends UIAbstractUserPortlet {
   public UIMiniConnectionsPortlet() throws Exception {
   }
 
+  public static class RemoveConnectionActionListener extends EventListener<UIMiniConnectionsPortlet> {
+    @Override
+    public void execute(Event<UIMiniConnectionsPortlet> event) throws Exception {
+      event.getRequestContext().addUIComponentToUpdateByAjax(event.getSource());
+    }
+  }
+  
   protected List<ProfileBean> loadPeoples() throws Exception {
     ListAccess<Identity> listAccess = Utils.getRelationshipManager().getConnectionsByFilter(currentProfile.getIdentity(), new ProfileFilter());
     Identity[] identities = listAccess.load(0, MAX_DISPLAY);
