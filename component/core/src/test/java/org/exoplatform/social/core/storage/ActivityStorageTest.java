@@ -681,7 +681,7 @@ public class ActivityStorageTest extends AbstractCoreTest {
   /**
    * Test {@link ActivityStorage#testGetActivitiesRelationshipByFeed(Identity, int, int)}
    */
-  @MaxQueryNumber(700)
+  @MaxQueryNumber(710)
   public void testGetActivitiesRelationshipByFeed() throws Exception {
     RelationshipManager relationshipManager = this.getRelationshipManager();
     
@@ -1334,7 +1334,7 @@ public class ActivityStorageTest extends AbstractCoreTest {
   /**
    * Tests {@link ActivityStorage#getNumberOfNewerOnUserActivities(Identity, Long)}
    */
-  @MaxQueryNumber(736)
+  @MaxQueryNumber(760)
   public void testGetNumberOfNewerOnUserActivitiesByTimestamp() {
     checkCleanData();
     createActivities(2, demoIdentity);
@@ -1921,7 +1921,7 @@ public class ActivityStorageTest extends AbstractCoreTest {
    * 
    * @throws ActivityStorageException
    */
-  @MaxQueryNumber(882)
+  @MaxQueryNumber(900)
   public void testGetActivitiesByPagingWithoutCreatingComments() throws ActivityStorageException {
     checkCleanData();
     final int totalActivityCount = 9;
@@ -2046,7 +2046,7 @@ public class ActivityStorageTest extends AbstractCoreTest {
   /**
    * Tests {@link ActivityStorage#getNewerOnUserActivities(Identity, Long, int)}
    */
-  @MaxQueryNumber(736)
+  @MaxQueryNumber(760)
   public void testGetNewerOnUserActivitiesWithTimestamp() {
     checkCleanData();
     createActivities(2, demoIdentity);
@@ -2075,7 +2075,7 @@ public class ActivityStorageTest extends AbstractCoreTest {
   /**
    * Tests {@link ActivityStorage#getOlderOnUserActivities(Identity, Long, int)}
    */
-  @MaxQueryNumber(736)
+  @MaxQueryNumber(760)
   public void testGetOlderOnUserActivitiesWithTimestamp() {
     checkCleanData();
     createActivities(2, demoIdentity);
@@ -2103,7 +2103,7 @@ public class ActivityStorageTest extends AbstractCoreTest {
   /**
    * Tests {@link ActivityStorage#getNewerOnActivityFeed(Identity, Long, int)}.
    */
-  @MaxQueryNumber(1322)
+  @MaxQueryNumber(1340)
   public void testGetNewerOnActivityFeedWithTimestamp() throws Exception {
     checkCleanData();
     createActivities(3, demoIdentity);
@@ -2133,7 +2133,7 @@ public class ActivityStorageTest extends AbstractCoreTest {
   /**
    * Tests {@link ActivityStorage#getOlderOnActivityFeed(Identity, Long, int)}.
    */
-  @MaxQueryNumber(764)
+  @MaxQueryNumber(780)
   public void testGetOlderOnActivityFeedWithTimestamp() throws Exception {
     checkCleanData();
     createActivities(5, demoIdentity);

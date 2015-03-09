@@ -468,7 +468,7 @@ public abstract class ActivityBuilderWhere implements BuilderWhereExpression<JCR
         List<Identity> identities = getOwners();
 
         boolean first = true;
-        
+
         //has relationship
         if (identities != null && identities.size() > 0) {
           where.startGroup();
@@ -525,13 +525,13 @@ public abstract class ActivityBuilderWhere implements BuilderWhereExpression<JCR
           }
           where.contains(ActivityEntity.likes, liker.getId());
         }
-        
+
         if (!first) {
           where.endGroup();
         }
         
        where.and();
-        
+
         where.equals(ActivityEntity.isComment, Boolean.FALSE);
 
         //
@@ -679,11 +679,11 @@ public abstract class ActivityBuilderWhere implements BuilderWhereExpression<JCR
             where.equals(ActivityEntity.identity, currentIdentity.getId());
 
           }
-          
+
           if (first == false) {
             where.and();
           }
-          
+
           where.equals(ActivityEntity.isComment, Boolean.FALSE);
 
           //

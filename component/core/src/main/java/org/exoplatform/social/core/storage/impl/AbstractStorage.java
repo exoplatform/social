@@ -59,6 +59,9 @@ public abstract class AbstractStorage {
   protected static final String SENDER = "sender";
   protected static final String RECEIVER = "receiver";
 
+  // for SOC-4525
+  protected static final String SPACE_NODETYPE_PATH = "/soc:providers/soc:space/";
+
   protected AbstractStorage() {
 
     this.lifeCycle = lifecycleLookup();
