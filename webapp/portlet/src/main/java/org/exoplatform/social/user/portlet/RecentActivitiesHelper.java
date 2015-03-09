@@ -56,7 +56,8 @@ public class RecentActivitiesHelper {
     Map<String, String> templateParams = activity.getTemplateParams();
     if (activityType.equals(Type.LINK.getType())) {
       return templateParams.get(LINK_PARAM);
-    } else if (activityType.equals(Type.DOC.getType()) || activityType.equals(Type.FILE.getType())) {
+    } else if (activityType.equals(Type.DOC.getType()) || activityType.equals(Type.FILE.getType())
+        || activityType.equals(Type.POLL.getType()) || activityType.equals(Type.ANSWER.getType())) {
       return LinkProvider.getSingleActivityUrl(activity.getId());
     } else if (activityType.equals(Type.CALENDAR.getType())) {
       return templateParams.get(EVENT_LINK);
