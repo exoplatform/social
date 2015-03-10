@@ -23,7 +23,7 @@ List activities = uicomponent.getRecentActivities();
         String avatarURL = profile.getAvatarUrl();
         String profileURL = profile.getUrl();
         String displayName = profile.getFullName();
-        String activityTypeIcon =  RecentActivitiesHelper.getActivityTypeIcon(activity.getType());
+        String activityTypeIcon =  RecentActivitiesHelper.getActivityTypeIcon(activity);
         String link = RecentActivitiesHelper.getLink(activity);
         String linkTitle = RecentActivitiesHelper.getLinkTitle(activity);
   %>

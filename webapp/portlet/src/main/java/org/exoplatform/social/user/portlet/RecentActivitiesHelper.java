@@ -13,6 +13,8 @@ public class RecentActivitiesHelper {
   private static final String TOPIC_LINK         = "TopicLink";
   private static final String PAGE_URL           = "page_url";
   private static final String EVENT_LINK         = "EventLink";
+  private static final String EVENT_TYPE         = "EventType";
+  private static final String TASK               = "TaskAdded";
 
   enum Type {
     DEFAULT("", ""),
@@ -23,6 +25,7 @@ public class RecentActivitiesHelper {
     FILE("files:spaces", "uiIconSocFileSharing"),
     CONTENT("contents:spaces", "uiIconSocContentMini"),
     CALENDAR("cs-calendar:spaces", "uiIconSocCalendarMini"),
+    TASK("TaskAdded", "uiIconSocTaskSharing"),
     FORUM("ks-forum:spaces", "uiIconSocForumMini"),
     ANSWER("ks-answer:spaces", "uiIconSocAnswersMini"),
     POLL("ks-poll:spaces", "uiIconSocPoll"),
@@ -83,7 +86,12 @@ public class RecentActivitiesHelper {
    * @param activityType
    * @return
    */
-  public static String getActivityTypeIcon(String activityType) {
+  public static String getActivityTypeIcon(ExoSocialActivity activity) {
+    String activityType = activity.getType();
+    if (activityType.equals(Type.CALENDAR.getType()) &&
+        TASK.equals(activity.getTemplateParams().get(EVENT_TYPE))) {
+      return Type.getIconType(TASK).getIconClass(); 
+    }
     return Type.getIconType(activityType).getIconClass();
   }
   
