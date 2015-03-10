@@ -23,7 +23,7 @@
       String keyNoConnection = Utils.isOwner() ? "YouHaveNotConnections" : "UserHaveNotConnections";
       String noConnectionCSS = Utils.isOwner() ? "noConnection" : "";
   %>
-      <div class="borderContainer $noConnectionCSS center">
+      <div class="borderContainer $noConnectionCSS empty center">
         <%=_ctx.appRes("UIBasicProfile.info." + keyNoConnection)%>
         <%if (Utils.isOwner()) { %>
         <div class="findConnection"><a href="<%=LinkProvider.getBaseUri(null, null)%>/connections/all-people/"><%=_ctx.appRes("UIBasicProfile.label.FindConnections")%></a></div>
