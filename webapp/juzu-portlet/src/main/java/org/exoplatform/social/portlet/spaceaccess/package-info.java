@@ -1,8 +1,5 @@
 @Application 
-@Portlet 
-@Assets(
-  location = juzu.asset.AssetLocation.SERVER
-)
+@Portlet
 package org.exoplatform.social.portlet.spaceaccess;
 
 import juzu.Application;

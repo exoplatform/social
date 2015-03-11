@@ -59,4 +59,6 @@
     <description>the admin role</description>
     <role-name>admin</role-name>
   </security-role-->
+  
+  <absolute-ordering/>
 </web-app>
