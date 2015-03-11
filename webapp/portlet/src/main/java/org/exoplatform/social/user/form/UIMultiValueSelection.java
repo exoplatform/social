@@ -176,6 +176,7 @@ public class UIMultiValueSelection extends UIFormInputSet {
       validators_.clear();
       validators_.addAll(validators);
     }
+    stringInput.setLabel(this.getId());
     addUIFormInput(stringInput);
   }
 
