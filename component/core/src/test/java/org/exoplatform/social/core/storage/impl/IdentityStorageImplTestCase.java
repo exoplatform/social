@@ -29,7 +29,6 @@ import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.organization.OrganizationService;
 import org.exoplatform.services.organization.User;
 import org.exoplatform.social.common.lifecycle.SocialChromatticLifeCycle;
-import org.exoplatform.social.core.chromattic.entity.DisabledEntity;
 import org.exoplatform.social.core.chromattic.entity.IdentityEntity;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
@@ -1223,24 +1222,24 @@ public class IdentityStorageImplTestCase extends AbstractCoreTest {
       relationshipStorage.removeRelationship(relationship);
       removeUserInfo(idA, idB);
     }
-    { // disabled user is not included in suggestions
-      Identity idA = new Identity(PROVIDER_ID, "userA");
-      Identity idB = new Identity(PROVIDER_ID, "userB");
-      storeUserInfo(idA, idB);
-      
-      assertEquals(1, relationshipStorage.getSuggestions(idB, 0, 5).size());
-      
-      identityStorage.processEnabledIdentity(idA, false);
-      
-      IdentityEntity got = lifecycle.getSession().findById(IdentityEntity.class, idA.getId());
-      DisabledEntity mixin = lifecycle.getSession().getEmbedded(got, DisabledEntity.class);
-      assertNotNull(mixin);
-      
-      assertEquals(0, relationshipStorage.getSuggestions(idB, 0, 5).size());
-      
-      identityStorage.processEnabledIdentity(idA, true);
-      removeUserInfo(idA, idB);
-    }
+//    { // disabled user is not included in suggestions
+//      Identity idA = new Identity(PROVIDER_ID, "userA");
+//      Identity idB = new Identity(PROVIDER_ID, "userB");
+//      storeUserInfo(idA, idB);
+//      
+//      assertEquals(1, relationshipStorage.getSuggestions(idB, 0, 5).size());
+//      
+//      identityStorage.processEnabledIdentity(idA, false);
+//      
+//      IdentityEntity got = lifecycle.getSession().findById(IdentityEntity.class, idA.getId());
+//      DisabledEntity mixin = lifecycle.getSession().getEmbedded(got, DisabledEntity.class);
+//      assertNotNull(mixin);
+//      
+//      assertEquals(0, relationshipStorage.getSuggestions(idB, 0, 5).size());
+//      
+//      identityStorage.processEnabledIdentity(idA, true);
+//      removeUserInfo(idA, idB);
+//    }
     { // disabled user is not included in Invtation's list
       Identity idA = new Identity(PROVIDER_ID, "userA");
       Identity idB = new Identity(PROVIDER_ID, "userB");

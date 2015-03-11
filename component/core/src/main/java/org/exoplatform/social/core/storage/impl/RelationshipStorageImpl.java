@@ -229,8 +229,7 @@ public class RelationshipStorageImpl extends AbstractStorage implements Relation
           identityEntity = relationshipEntity.getFrom();
           identity = createIdentityFromEntity(identityEntity);
           
-          //remove duplicated
-          if (identities.indexOf(identity) == -1 && identity.isEnable()) {
+          if (identity.isEnable()) {
             identities.add(identity);
           }
           break;
@@ -238,8 +237,8 @@ public class RelationshipStorageImpl extends AbstractStorage implements Relation
         case TO:
           identityEntity = relationshipEntity.getTo();
           identity = createIdentityFromEntity(identityEntity);
-          //remove duplicated
-          if (identities.indexOf(identity) == -1 && identity.isEnable()) {
+
+          if (identity.isEnable()) {
             identities.add(identity);
           }
           break;

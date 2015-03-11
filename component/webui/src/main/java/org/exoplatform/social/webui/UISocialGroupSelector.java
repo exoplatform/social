@@ -95,7 +95,6 @@ public class UISocialGroupSelector extends UIContainer {
     return selectGroup_;
   }
 
-  @SuppressWarnings("unchecked")
   public List<String> getListGroup() throws Exception {
     OrganizationService service = getApplicationComponent(OrganizationService.class);
     List<String> listGroup = new ArrayList<String>();
@@ -103,8 +102,7 @@ public class UISocialGroupSelector extends UIContainer {
     String remoteUser = reqCtx.getRemoteUser();
     if (getCurrentGroup() == null)
       return null;
-    Collection<Object> groups = service.getGroupHandler().findGroups(
-        getCurrentGroup());
+    Collection<Group> groups = service.getGroupHandler().findGroups(getCurrentGroup());
     if (groups.size() > 0) {
       for (Object child : groups) {
         Group childGroup = (Group) child;
