@@ -121,6 +121,40 @@ public class ActivityStorageTest extends AbstractCoreTest {
   }
 
   /**
+   * SOC-4525
+   * @throws Exception
+   */
+  public void testConnectionActivities() throws Exception {
+    relationshipManager.inviteToConnect(johnIdentity, demoIdentity);
+    relationshipManager.confirm(demoIdentity, johnIdentity);
+    
+    List<ExoSocialActivity> activities = activityStorage.getActivityFeed(johnIdentity, 0, 10);
+    assertEquals(0, activities.size());
+    
+    //demo posts 2 activities, john must have theses 2 activities on his AS
+    createActivities(2, demoIdentity);
+    activities = activityStorage.getActivityFeed(johnIdentity, 0, 10);
+    assertEquals(2, activities.size());
+    
+    //demo creates a space and posts 2 others activities, john must not see theses 2 new activities
+    SpaceService spaceService = this.getSpaceService();
+    Space space = this.getSpaceInstance(spaceService, 0);
+    tearDownSpaceList.add(space);
+    Identity spaceIdentity = this.identityManager.getOrCreateIdentity(SpaceIdentityProvider.NAME, space.getPrettyName(), false);
+    for (int i = 0; i < 2; i ++) {
+      ExoSocialActivity activity = new ExoSocialActivityImpl();
+      activity.setTitle("activity title " + i);
+      activity.setUserId(demoIdentity.getId());
+      activityStorage.saveActivity(spaceIdentity, activity);
+      tearDownActivityList.add(activity);
+    }
+    activities = activityStorage.getActivityFeed(johnIdentity, 0, 10);
+    assertEquals(2, activities.size());
+    activities = activityStorage.getUserSpacesActivities(johnIdentity, 0, 10);
+    assertEquals(0, activities.size());
+  }
+  
+  /**
    * Test {@link org.exoplatform.social.core.storage.ActivityStorage#saveActivity(org.exoplatform.social.core.identity.model.Identity, org.exoplatform.social.core.activity.model.ExoSocialActivity)}
    */
   @MaxQueryNumber(290)
