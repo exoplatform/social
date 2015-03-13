@@ -94,7 +94,7 @@ public class UIEditUserProfileForm extends UIForm {
     if (getId() == null) {
       setId("UIEditUserProfileForm");
     }
-    UIInputSection aboutSection = new UIInputSection(FIELD_ABOUT_SECTION, "AboutMe");
+    UIInputSection aboutSection = new UIInputSection(FIELD_ABOUT_SECTION, Profile.ABOUT_ME);
     aboutSection.useGroupControl(false)
                 .addUIFormInput(new UIFormTextAreaInput(Profile.ABOUT_ME, Profile.ABOUT_ME, null)
                 .addValidator(StringLengthValidator.class, 1500));
