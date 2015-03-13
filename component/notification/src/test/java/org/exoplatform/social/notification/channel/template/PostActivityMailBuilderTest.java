@@ -33,6 +33,7 @@ import org.exoplatform.commons.api.notification.model.UserSetting;
 import org.exoplatform.commons.api.notification.plugin.BaseNotificationPlugin;
 import org.exoplatform.commons.notification.channel.MailChannel;
 import org.exoplatform.commons.notification.impl.NotificationContextImpl;
+import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.notification.AbstractPluginTest;
 import org.exoplatform.social.notification.plugin.PostActivityPlugin;
@@ -124,7 +125,6 @@ public class PostActivityMailBuilderTest extends AbstractPluginTest {
     
     //Digest
     List<NotificationInfo> list = assertMadeNotifications(3);
-    
     NotificationContext ctx = NotificationContextImpl.cloneInstance();
     list.set(0, list.get(0).setTo(rootIdentity.getRemoteId()));
     ctx.setNotificationInfos(list);
@@ -133,6 +133,22 @@ public class PostActivityMailBuilderTest extends AbstractPluginTest {
     assertDigest(writer, "Demo gtn, John Anthony posted on your activity stream.");
   }
 
- 
-
+  public void testDigestWithDeletedActivity() throws Exception {
+    ExoSocialActivity demoActivity = makeActivity(demoIdentity, "demo post activity on activity stream of root");
+    makeActivity(johnIdentity, "john post activity on activity stream of root");
+    
+    //Digest
+    List<NotificationInfo> list = assertMadeNotifications(2);
+    
+    NotificationContext ctx = NotificationContextImpl.cloneInstance();
+    list.set(0, list.get(0).setTo(rootIdentity.getRemoteId()));
+    ctx.setNotificationInfos(list);
+    
+    //demo delete his activity
+    activityManager.deleteActivity(demoActivity);
+    tearDownActivityList.remove(demoActivity);
+    Writer writer = new StringWriter();
+    buildDigest(ctx, writer);
+    assertDigest(writer, "John Anthony posted on your activity stream.");
+  }
 }

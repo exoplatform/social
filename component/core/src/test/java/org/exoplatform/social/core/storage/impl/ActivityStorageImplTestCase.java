@@ -347,7 +347,7 @@ public class ActivityStorageImplTestCase extends AbstractCoreTest {
 
   }
 
-  @MaxQueryNumber(2367)
+  @MaxQueryNumber(2685)
   public void testActivityCount() throws Exception {
 
     // fill 10 activities
@@ -427,7 +427,7 @@ public class ActivityStorageImplTestCase extends AbstractCoreTest {
     }
   }
 
-  @MaxQueryNumber(1482)
+  @MaxQueryNumber(1500)
   public void testActivityOrderByPostedTime() throws Exception {
     // fill 10 activities
     Calendar cal = Calendar.getInstance();
@@ -460,7 +460,7 @@ public class ActivityStorageImplTestCase extends AbstractCoreTest {
   /* Today: the 1st of this month
      Yesterday: the last day of last month
   */
-  @MaxQueryNumber(1480)
+  @MaxQueryNumber(1494)
   public void testActivityOrderByPostedTime2() throws Exception {
     // fill 10 activities
     Calendar cal = Calendar.getInstance();
@@ -491,7 +491,7 @@ public class ActivityStorageImplTestCase extends AbstractCoreTest {
     }
   }
 
-  @MaxQueryNumber(4032)
+  @MaxQueryNumber(4155)
   public void testActivityOrder2() throws Exception {
     // fill 10 activities
     for (int i = 0; i < 10; ++i) {

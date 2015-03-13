@@ -556,7 +556,6 @@ public class IdentityStorageTest extends AbstractCoreTest {
     populateData();
 
     ProfileFilter pf = new ProfileFilter();
-    
     int idsCount = identityStorage.getIdentitiesByProfileFilterCount("organization", pf);
     assertEquals(5, idsCount);
     

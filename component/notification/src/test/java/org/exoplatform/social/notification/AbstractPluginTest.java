@@ -74,7 +74,8 @@ public abstract class AbstractPluginTest extends AbstractCoreTest {
     johnIdentity = identityManager.getOrCreateIdentity("organization", "john", true);
     maryIdentity = identityManager.getOrCreateIdentity("organization", "mary", true);
     demoIdentity = identityManager.getOrCreateIdentity("organization", "demo", true);
-    
+    ghostIdentity = identityManager.getOrCreateIdentity("organization", "ghost", true);
+
     // each new identity created, a notification will be raised
     assertNotNull(rootIdentity.getId());
     assertNotNull(johnIdentity.getId());

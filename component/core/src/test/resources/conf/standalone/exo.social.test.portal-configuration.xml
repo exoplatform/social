@@ -171,7 +171,7 @@
                     <field  name="password"><string>gtn</string></field>
                     <field  name="firstName"><string>Root</string></field>
                     <field  name="lastName"><string>Root</string></field>
-                    <field  name="email"><string>root@localhost</string></field>
+                    <field  name="email"><string>root@localhost.com</string></field>
                     <field  name="groups">
                       <string>manager:/platform/administrators,member:/platform/users</string>
                     </field>
@@ -183,7 +183,7 @@
                     <field  name="password"><string>gtn</string></field>
                     <field  name="firstName"><string>John</string></field>
                     <field  name="lastName"><string>Anthony</string></field>
-                    <field  name="email"><string>john@localhost</string></field>
+                    <field  name="email"><string>john@localhost.com</string></field>
                     <field  name="groups">
                       <string>member:/platform/administrators,member:/platform/users</string>
                     </field>
@@ -195,7 +195,7 @@
                     <field  name="password"><string>gtn</string></field>
                     <field  name="firstName"><string>Mary</string></field>
                     <field  name="lastName"><string>Kelly</string></field>
-                    <field  name="email"><string>mary@localhost</string></field>
+                    <field  name="email"><string>mary@localhost.com</string></field>
                     <field  name="groups">
                       <string>member:/platform/users</string>
                     </field>
@@ -207,7 +207,7 @@
                     <field  name="password"><string>gtn</string></field>
                     <field  name="firstName"><string>Demo</string></field>
                     <field  name="lastName"><string>gtn</string></field>
-                    <field  name="email"><string>demo@localhost</string></field>
+                    <field  name="email"><string>demo@localhost.com</string></field>
                     <field  name="groups">
                       <string>member:/platform/users</string>
                     </field>
@@ -219,7 +219,7 @@
                     <field  name="password"><string>gtn</string></field>
                     <field  name="firstName"><string>Ghost</string></field>
                     <field  name="lastName"><string>gtn</string></field>
-                    <field  name="email"><string>ghost@localhost</string></field>
+                    <field  name="email"><string>ghost@localhost.com</string></field>
                     <field  name="groups">
                       <string>member:/platform/users</string>
                     </field>
@@ -231,7 +231,7 @@
                     <field  name="password"><string>gtn</string></field>
                     <field  name="firstName"><string>Paul</string></field>
                     <field  name="lastName"><string>gtn</string></field>
-                    <field  name="email"><string>paul@localhost</string></field>
+                    <field  name="email"><string>paul@localhost.com</string></field>
                     <field  name="groups">
                       <string>member:/platform/users</string>
                     </field>
@@ -243,7 +243,7 @@
                     <field  name="password"><string>gtn</string></field>
                     <field  name="firstName"><string>Raul</string></field>
                     <field  name="lastName"><string>gtn</string></field>
-                    <field  name="email"><string>raul@localhost</string></field>
+                    <field  name="email"><string>raul@localhost.com</string></field>
                     <field  name="groups">
                       <string>member:/platform/users</string>
                     </field>
@@ -255,7 +255,7 @@
                     <field  name="password"><string>gtn</string></field>
                     <field  name="firstName"><string>Jame</string></field>
                     <field  name="lastName"><string>gtn</string></field>
-                    <field  name="email"><string>jame@localhost</string></field>
+                    <field  name="email"><string>jame@localhost.com</string></field>
                     <field  name="groups">
                       <string>member:/platform/users</string>
                     </field>

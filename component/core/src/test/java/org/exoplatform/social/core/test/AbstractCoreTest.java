@@ -96,6 +96,9 @@ public abstract class AbstractCoreTest extends BaseExoTestCase {
     end();
   }
   
+  protected <T> T getService(Class<T> clazz) {
+    return (T) getContainer().getComponentInstanceOfType(clazz);
+  }
 
   // Fork from Junit 3.8.2
   @Override

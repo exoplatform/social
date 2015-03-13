@@ -27,6 +27,8 @@ import org.exoplatform.services.log.Log;
 import org.exoplatform.services.organization.OrganizationService;
 import org.exoplatform.services.organization.User;
 import org.exoplatform.services.organization.UserProfile;
+import org.exoplatform.services.security.ConversationState;
+import org.exoplatform.services.security.IdentityRegistry;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
@@ -58,6 +60,8 @@ public class SocialUserProfileEventListenerImplTest extends AbstractCoreTest {
     tearDownIdentityList = new ArrayList<Identity>();
     tearDownIdentityList.add(paul);
     tearDownIdentityList.add(raul);
+    org.exoplatform.services.security.Identity identity = getService(IdentityRegistry.class).getIdentity("root");
+    ConversationState.setCurrent(new ConversationState(identity));
   }
   
   private void fakePlugins() throws Exception {

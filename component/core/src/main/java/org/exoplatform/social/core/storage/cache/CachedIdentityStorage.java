@@ -19,13 +19,9 @@ package org.exoplatform.social.core.storage.cache;
 
 import java.util.ArrayList;
 import java.util.List;
-<<<<<<< HEAD
 import java.util.Set;
 
-=======
-
 import org.exoplatform.container.PortalContainer;
->>>>>>> SOC-4151 | [Disable User - People] Add mixintypes to check relationships
 import org.exoplatform.services.cache.ExoCache;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;

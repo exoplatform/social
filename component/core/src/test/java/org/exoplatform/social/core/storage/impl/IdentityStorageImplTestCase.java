@@ -820,7 +820,7 @@ public class IdentityStorageImplTestCase extends AbstractCoreTest {
     return filter;
   }
 
-  @MaxQueryNumber(153)
+  @MaxQueryNumber(159)
   public void testProfileContact() throws Exception {
     Identity newIdentity = new Identity("organization", "withcontact");
 
@@ -1171,7 +1171,7 @@ public class IdentityStorageImplTestCase extends AbstractCoreTest {
    * 
    */
   @MaxQueryNumber(4740)
-  public void testIdentitiesOfDisabledUser() throws Exception {
+  public void TestIdentitiesOfDisabledUser() throws Exception {
     IdentityStorage identityStorage = (IdentityStorage) getContainer().getComponentInstanceOfType(IdentityStorage.class);
     final String PROVIDER_ID = "organization";
     
@@ -1332,7 +1332,7 @@ public class IdentityStorageImplTestCase extends AbstractCoreTest {
     return string.replace("[", "%5B").replace("]", "%5D").replace(":", "%3A");
   }
   
-  @MaxQueryNumber(100)
+  @MaxQueryNumber(132)
   public void testSearchByPositions() throws Exception {
     Identity newIdentity = new Identity("organization", "withPositions");
 

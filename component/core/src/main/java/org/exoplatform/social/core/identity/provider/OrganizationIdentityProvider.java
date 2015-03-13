@@ -101,9 +101,16 @@ public class OrganizationIdentityProvider extends IdentityProvider<User> {
   @Override
   public User findByRemoteId(String remoteId) {
     User user = null;
-    ConversationState state = ConversationState.getCurrent();
-    if (state.getIdentity().getUserId().equals(remoteId)) {
-      user = (User) state.getAttribute(CacheUserProfileFilter.USER_PROFILE);
+    
+    try {
+      ConversationState state = ConversationState.getCurrent();
+      if (state.getIdentity().getUserId().equals(remoteId)) {
+        user = (User) state.getAttribute(CacheUserProfileFilter.USER_PROFILE);
+      }
+    } catch (Exception e) {
+      if (LOG.isDebugEnabled()) {
+        LOG.debug("Cannot get information of user " + remoteId + " from Converstation State!");  
+      }
     }
     if (user == null) {
       try {
@@ -139,7 +146,7 @@ public class OrganizationIdentityProvider extends IdentityProvider<User> {
   public void populateProfile(Profile profile, User user) {
     profile.setProperty(Profile.FIRST_NAME, user.getFirstName());
     profile.setProperty(Profile.LAST_NAME, user.getLastName());
-    profile.setProperty(Profile.FULL_NAME, user.getFullName());
+    profile.setProperty(Profile.FULL_NAME, user.getDisplayName());
     profile.setProperty(Profile.USERNAME, user.getUserName());
     profile.setProperty(Profile.EMAIL, user.getEmail());
     ExoContainer container = ExoContainerContext.getCurrentContainer();
@@ -178,6 +185,7 @@ public class OrganizationIdentityProvider extends IdentityProvider<User> {
       try {
         if (updatedProfile.getListUpdateTypes().contains(Profile.UpdateType.CONTACT)) {
           updateBasicInfo();
+          updateContact();
         }
       } catch (Exception e) {
         if ( e instanceof MessageException) {
