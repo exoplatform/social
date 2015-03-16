@@ -131,12 +131,12 @@ public class ActivityStorageTest extends AbstractCoreTest {
     List<ExoSocialActivity> activities = activityStorage.getActivityFeed(johnIdentity, 0, 10);
     assertEquals(0, activities.size());
     
-    //demo posts 2 activities, john must have theses 2 activities on his AS
+    //demo posts 2 activities, john must have these 2 activities on his AS
     createActivities(2, demoIdentity);
     activities = activityStorage.getActivityFeed(johnIdentity, 0, 10);
     assertEquals(2, activities.size());
     
-    //demo creates a space and posts 2 others activities, john must not see theses 2 new activities
+    //demo creates a space and posts 2 other activities, john must not see these 2 new activities
     SpaceService spaceService = this.getSpaceService();
     Space space = this.getSpaceInstance(spaceService, 0);
     tearDownSpaceList.add(space);
