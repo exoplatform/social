@@ -155,6 +155,50 @@ public class ActivityStorageTest extends AbstractCoreTest {
   }
   
   /**
+   * SOC-4525
+   * demo creates a space and posts 5 activities to that space
+   * demo and john connect together
+   * @throws Exception
+   */
+  public void testConnectionActivities2() throws Exception {
+    //demo creates a space "space0" and posts 5 activities
+    SpaceService spaceService = this.getSpaceService();
+    Space space = this.getSpaceInstance(spaceService, 0);
+    tearDownSpaceList.add(space);
+
+    Identity spaceIdentity = this.identityManager.getOrCreateIdentity(SpaceIdentityProvider.NAME, space.getPrettyName(), false);
+    for (int i = 0; i < 5; i ++) {
+      ExoSocialActivity activity = new ExoSocialActivityImpl();
+      activity.setTitle("space activity title " + i);
+      activity.setUserId(demoIdentity.getId());
+      activityStorage.saveActivity(spaceIdentity, activity);
+      tearDownActivityList.add(activity);
+    }
+
+    List<ExoSocialActivity> activities = activityStorage.getActivityFeed(demoIdentity, 0, 10);
+    assertEquals(5, activities.size());
+
+    // john (in pending list of space0) must not see these 5 activities
+    activities = activityStorage.getActivityFeed(johnIdentity, 0, 10);
+    assertEquals(0, activities.size());
+
+    activities = activityStorage.getUserSpacesActivities(johnIdentity, 0, 10);
+    assertEquals(0, activities.size());
+
+    // demo and john are now connected
+    relationshipManager.inviteToConnect(johnIdentity, demoIdentity);
+    relationshipManager.confirm(demoIdentity, johnIdentity);
+
+    //demo posts 2 activities on his stream, john must have these 2 activities on his AS
+    createActivities(2, demoIdentity);
+    activities = activityStorage.getActivityFeed(johnIdentity, 0, 10);
+    assertEquals(2, activities.size());
+
+    activities = activityStorage.getUserSpacesActivities(johnIdentity, 0, 10);
+    assertEquals(0, activities.size());
+  }
+
+  /**
    * Test {@link org.exoplatform.social.core.storage.ActivityStorage#saveActivity(org.exoplatform.social.core.identity.model.Identity, org.exoplatform.social.core.activity.model.ExoSocialActivity)}
    */
   @MaxQueryNumber(290)
