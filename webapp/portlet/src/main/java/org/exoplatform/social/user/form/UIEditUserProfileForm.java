@@ -486,6 +486,9 @@ public class UIEditUserProfileForm extends UIForm {
     @Override
     public void execute(Event<UIEditUserProfileForm> event) throws Exception {
       UIEditUserProfileForm uiForm = event.getSource();
+      if(uiForm.currentProfile == null) {
+        return;
+      }
       UIInputSection baseSection = uiForm.getUIInputSection(FIELD_BASE_SECTION);
       String email = baseSection.getUIStringInput(Profile.EMAIL).getValue();
       // Checks input email existing or not 
@@ -628,8 +631,7 @@ public class UIEditUserProfileForm extends UIForm {
    */
   public static class RemoveActionListener extends EventListener<UIEditUserProfileForm> {
     public void execute(Event<UIEditUserProfileForm> event) throws Exception {
-      UIEditUserProfileForm editUserProfile = event.getSource();
-      event.getRequestContext().addUIComponentToUpdateByAjax(editUserProfile.getUIInputSection(FIELD_BASE_SECTION));
+      event.getRequestContext().addUIComponentToUpdateByAjax(event.getSource().getUIInputSection(FIELD_BASE_SECTION));
     }
   }
 }
