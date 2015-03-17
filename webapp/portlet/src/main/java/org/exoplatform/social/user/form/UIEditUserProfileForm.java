@@ -402,9 +402,7 @@ public class UIEditUserProfileForm extends UIForm {
    * @param value
    */
   private void putData(Map<String, String> map, String key, String value) {
-    if (value != null && !value.isEmpty()) {
-      map.put(key, UserProfileHelper.encodeHTML(value));
-    }
+    map.put(key, UserProfileHelper.encodeHTML(value));
   }
   /**
    * @param experienceSection
