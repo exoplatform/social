@@ -186,6 +186,11 @@ public class UserProfileHelper {
     return Profile.CONTACT_IMS.equals(key);
   }
   
+  public static boolean isGender(String key) {
+    if (key == null) return false;
+    return Profile.GENDER.equals(key);
+  }
+  
   public static String getIconCss(String key) {
     return IconClass.getIconClass(key);
   }

@@ -17,8 +17,12 @@ def keys = profile.keySet();
       <div class="value-user-info">
       <%
         if(UserProfileHelper.isString(values)) {
+          if (UserProfileHelper.isGender(key)) {
       %>
-        <div class="ui<%=clzz%> ellipsis" rel="tooltip" data-placement="top" title="" data-original-title="<%=values%>"><%=values%></div>
+            <div class="ui<%=clzz%> ellipsis" rel="tooltip" data-placement="top" title="" data-original-title="<%=_ctx.appRes("UIBasicProfile.label." + values)%>"><%=_ctx.appRes("UIBasicProfile.label." + values)%></div>
+      <%  } else { %>
+            <div class="ui<%=clzz%> ellipsis" rel="tooltip" data-placement="top" title="" data-original-title="<%=values%>"><%=values%></div>
+      <%  } %>
       <%} else  {
           for(subKey in values.keySet()) {
             def isIms = UserProfileHelper.isIMs(key);

@@ -116,8 +116,8 @@ public class UIEditUserProfileForm extends UIForm {
     //
     List<SelectItemOption<String>> options = new ArrayList<SelectItemOption<String>>();
     options.add(new SelectItemOption<String>("", ""));
-    options.add(new SelectItemOption<String>(getLabel(OPTION_MALE), OPTION_MALE));
-    options.add(new SelectItemOption<String>(getLabel(OPTION_FEMALE), OPTION_FEMALE));
+    options.add(new SelectItemOption<String>(getLabel(OPTION_MALE), Profile.MALE));
+    options.add(new SelectItemOption<String>(getLabel(OPTION_FEMALE), Profile.FEMALE));
     UIFormSelectBox genderSelectBox = new UIFormSelectBox(Profile.GENDER, Profile.GENDER, options);
     genderSelectBox.setLabel(Profile.GENDER);
     baseSection.addUIFormInput(genderSelectBox);
@@ -227,6 +227,7 @@ public class UIEditUserProfileForm extends UIForm {
     baseSection.getUIStringInput(Profile.POSITION).setValue(getStringValueProfile(Profile.POSITION));
     //
     baseSection.getUIFormSelectBox(Profile.GENDER).setValue(getStringValueProfile(Profile.GENDER));
+    baseSection.getUIFormSelectBox(Profile.GENDER).setSelectedValues(new String[] {getStringValueProfile(Profile.GENDER)});
     //
     List<Map<String, String>> phones = UserProfileHelper.getMultiValues(currentProfile, Profile.CONTACT_PHONES);
     baseSection.getUIMultiValueSelection(Profile.CONTACT_PHONES).setValues(phones);

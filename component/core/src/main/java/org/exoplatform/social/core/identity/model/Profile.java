@@ -33,6 +33,8 @@ public class Profile {
 
   /** gender key. */
   public static final String        GENDER         = "gender";
+  public static final String        MALE           = "male";
+  public static final String        FEMALE         = "female";
 
   /** username key. */
   public static final String        USERNAME       = "username";
