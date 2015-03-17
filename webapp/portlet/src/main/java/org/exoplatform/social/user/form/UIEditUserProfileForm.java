@@ -227,7 +227,9 @@ public class UIEditUserProfileForm extends UIForm {
     baseSection.getUIStringInput(Profile.POSITION).setValue(getStringValueProfile(Profile.POSITION));
     //
     baseSection.getUIFormSelectBox(Profile.GENDER).setValue(getStringValueProfile(Profile.GENDER));
-    baseSection.getUIFormSelectBox(Profile.GENDER).setSelectedValues(new String[] {getStringValueProfile(Profile.GENDER)});
+    if (getStringValueProfile(Profile.GENDER) != null) {
+      baseSection.getUIFormSelectBox(Profile.GENDER).setSelectedValues(new String[] {getStringValueProfile(Profile.GENDER)});
+    }
     //
     List<Map<String, String>> phones = UserProfileHelper.getMultiValues(currentProfile, Profile.CONTACT_PHONES);
     baseSection.getUIMultiValueSelection(Profile.CONTACT_PHONES).setValues(phones);
