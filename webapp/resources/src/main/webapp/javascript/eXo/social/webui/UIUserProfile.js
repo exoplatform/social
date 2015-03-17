@@ -44,8 +44,8 @@
           var checkbox = parent.find('input[type=checkbox]');
           var checkProcess = function(input) {
             if(input.is(':checked')) {
-              var mandatorySignalCharNum = parent.find('.control-group').eq(4).find('.controls').find('span').size();
-              if (mandatorySignalCharNum == 0) {
+              var existingMandatory = parent.find('.control-group').eq(4).find('.controls').find('>span').length > 0;
+              if (!existingMandatory) {
                 parent.find('.control-group').eq(4)
                   .find('.controls').append($("<span> *  </span>"));
               }
