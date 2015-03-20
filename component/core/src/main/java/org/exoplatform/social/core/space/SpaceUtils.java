@@ -1555,8 +1555,10 @@ public class SpaceUtils {
    * @return the search condition after process
    */
   public static String processUnifiedSearchCondition(String input) {
-    if (input.isEmpty() || input.indexOf("~") < 0 || input.indexOf("\\~") > 0) {
+    if (input.isEmpty()) {
       return input;
+    } else if (input.indexOf("~") < 0 || input.indexOf("\\~") > 0) {
+      return input.trim();
     }
     StringBuilder builder = new StringBuilder();
     //The similarity is added for each word in the search condition, ex : space~0.5 test~0.5
