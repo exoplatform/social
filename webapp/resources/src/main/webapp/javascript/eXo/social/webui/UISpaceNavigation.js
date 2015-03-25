@@ -19,7 +19,7 @@
 
 (function($) {
 var UISpaceNavigation = {
-    addEditability: function(id, moreLabel) {
+    addEditability: function(id, moreLabel, isSpaceManager) {
     var editedTab = $("#" + id);
   
     function autoMoveApps(){
@@ -73,7 +73,9 @@ var UISpaceNavigation = {
     
     editedTab.on("dblclick", ".active span", function() {
       var span = $(this);
-      showEditLabelInput(this, span.attr("id"), span.text()); 
+      if (isSpaceManager=='true') {
+          showEditLabelInput(this, span.attr("id"), span.text());
+      }
     });
     
 	  function showEditLabelInput(target, nodeName, currentLabel) {

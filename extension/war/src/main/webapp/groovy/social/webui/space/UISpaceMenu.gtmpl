@@ -31,6 +31,7 @@
   //SpaceUtils.reloadNavigation();
   def apps = uicomponent.getApps();
   def space = uicomponent.getSpace();
+  def isSpaceManager =  uicomponent.hasSettingPermission();
   
   String spaceHomeUrl = Utils.getSpaceHomeURL(space);
   String appSelected = uicomponent.getAppSelected();
@@ -67,7 +68,7 @@
   String moreLabel = _ctx.appRes("${uicomponentId}.label.More").replace("'", "\\47");
   _ctx.getRequestContext().getJavascriptManager()
   	  .require("SHARED/social-ui-space-nav", "spacenav")
-  	  .addScripts("spacenav.addEditability('" + uicomponent.id + "','" + moreLabel + "');");
+  	  .addScripts("spacenav.addEditability('" + uicomponent.id + "','" + moreLabel + "','" + isSpaceManager + "');");
   
   String srcAppIcon;
   String appName;
