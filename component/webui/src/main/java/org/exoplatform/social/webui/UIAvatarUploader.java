@@ -54,6 +54,8 @@ import org.exoplatform.webui.form.input.UIUploadInput;
 public class UIAvatarUploader extends UIForm {
   /** Message alert that mimetype is not accepted. */
   private static final String MSG_MIMETYPE_NOT_ACCEPTED = "UIAvatarUploader.msg.mimetype_not_accepted";
+  /** Message alert that image is not loaded. */
+  private static final String MSG_IMAGE_NOT_LOADED = "UIAvatarUploader.msg.img_not_loaded";
 /*  *//** Message alert that the file name is too long *//*
   *//** The number of characters allowed to rename *//*
 
@@ -123,6 +125,10 @@ public class UIAvatarUploader extends UIForm {
       WebuiRequestContext ctx = event.getRequestContext();
       UIAvatarUploader uiAvatarUploader = event.getSource();
       UIUploadInput uiAvatarUploadInput = uiAvatarUploader.getChild(UIUploadInput.class);
+      if (uiAvatarUploadInput.getUploadResources().length < 1) {
+        ctx.getUIApplication().addMessage(new ApplicationMessage(MSG_IMAGE_NOT_LOADED, null, ApplicationMessage.ERROR));
+        ctx.addUIComponentToUpdateByAjax(uiAvatarUploader);
+      }
       
       for (UploadResource uploadResource : uiAvatarUploadInput.getUploadResources()) {
         if (uploadResource == null) {
