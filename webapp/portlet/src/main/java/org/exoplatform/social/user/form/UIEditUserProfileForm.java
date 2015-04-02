@@ -434,7 +434,7 @@ public class UIEditUserProfileForm extends UIForm {
       }
     } else {
       // Invalid-format-date
-      if (startDate.getCalendar() == null) {
+      if (startDate.getCalendar() == null || (startDate.getValue().indexOf("-") >= 0)) {
         warning("UIEditUserProfileForm.msg.Invalid-format-date", getLabel(Profile.EXPERIENCES_START_DATE), DATE_FORMAT_MMDDYYYY);
         return null;
       }
@@ -452,8 +452,8 @@ public class UIEditUserProfileForm extends UIForm {
           return null;
         }
         // Invalid-format-date
-        if (startDate.getCalendar() == null) {
-          warning("UIEditUserProfileForm.msg.Invalid-format-date", getLabel(Profile.EXPERIENCES_START_DATE), DATE_FORMAT_MMDDYYYY);
+        if (endDate.getCalendar() == null || (endDate.getValue().indexOf("-") >= 0)) {
+          warning("UIEditUserProfileForm.msg.Invalid-format-date", getLabel(Profile.EXPERIENCES_END_DATE), DATE_FORMAT_MMDDYYYY);
           return null;
         }
         // end after today
