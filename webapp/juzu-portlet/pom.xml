@@ -4,7 +4,7 @@
   <parent>
     <artifactId>social-webapp</artifactId>
     <groupId>org.exoplatform.social</groupId>
-    <version>4.2.x-SNAPSHOT</version>
+    <version>4.2.x-soc-user-profile-redesign-SNAPSHOT</version>
   </parent>
   <artifactId>social-webapp-juzu-portlet</artifactId>
   <packaging>jar</packaging>
@@ -98,7 +98,7 @@
                 <resource>
                   <directory>${basedir}/src/main/webapp</directory>
                   <includes>
-                    <include>skin/less/**</include>
+                    <include>skin/**</include>
                   </includes>
                 </resource>
               </resources>

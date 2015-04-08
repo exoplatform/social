@@ -17,7 +17,7 @@
 package org.exoplatform.social.notification.impl;
 
 import org.exoplatform.commons.api.notification.NotificationContext;
-import org.exoplatform.commons.api.notification.model.NotificationKey;
+import org.exoplatform.commons.api.notification.model.PluginKey;
 import org.exoplatform.commons.notification.impl.NotificationContextImpl;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
@@ -51,7 +51,7 @@ public class RelationshipNotificationImpl extends RelationshipListenerPlugin {
     Relationship relationship = event.getPayload();
     try {
       NotificationContext ctx = NotificationContextImpl.cloneInstance().append(SocialNotificationUtils.RELATIONSHIP, relationship);
-      ctx.getNotificationExecutor().with(ctx.makeCommand(NotificationKey.key(RelationshipReceivedRequestPlugin.ID)))
+      ctx.getNotificationExecutor().with(ctx.makeCommand(PluginKey.key(RelationshipReceivedRequestPlugin.ID)))
                                    .execute(ctx);
     } catch (Exception e) {
       LOG.warn("Failed to get invite to connect information of " + event + ": " + e.getMessage());

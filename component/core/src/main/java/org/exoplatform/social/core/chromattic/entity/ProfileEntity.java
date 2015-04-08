@@ -125,6 +125,9 @@ public abstract class ProfileEntity {
   public static final PropertyLiteralExpression<String> fullName =
       new PropertyLiteralExpression<String>(String.class, "void-fullName");
 
+  public static final PropertyLiteralExpression<String> aboutMe =
+      new PropertyLiteralExpression<String>(String.class, "void-aboutMe");
+
   public static final PropertyLiteralExpression<String> position =
       new PropertyLiteralExpression<String>(String.class, "void-position");
   

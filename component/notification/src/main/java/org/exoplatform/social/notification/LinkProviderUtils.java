@@ -112,6 +112,36 @@ public static final String RESOURCE_URL = "social/notifications";
   public static String getRedirectUrl(String type, String objectId) {
     return getRestUrl(REDIRECT_URL, type, objectId);
   }
+  
+  public static String getWebNotificationRestUrl(String type, String objectId1, String objectId2) {
+    String restContext = CommonsUtils.getRestContextName();
+    return new StringBuffer("/").append(restContext).append("/").append(type)
+                                .append("/").append(objectId1).append("/").append(objectId2).toString();
+  }
+  /**
+   * Gets the rest service URI for the specified context
+   * 
+   * @param type
+   * @param objectId1
+   * @param objectId2
+   * @param jsonFile the json file name
+   * @return
+   */
+  public static String getWebNotificationRestUrl(String type, String objectId1, String objectId2, String notificationId, String jsonFile) {
+    String restContext = CommonsUtils.getRestContextName();
+    return new StringBuffer("/").append(restContext)
+                                .append("/")
+                                .append(type)
+                                .append("/")
+                                .append(objectId1)
+                                .append("/")
+                                .append(objectId2)
+                                .append("/")
+                                .append(notificationId)
+                                .append("/")
+                                .append(jsonFile)
+                                .toString();
+  }
 
   /**
    * Gets full rest url

@@ -385,6 +385,7 @@ public class SpaceServiceImpl implements SpaceService {
       LOG.error("Error while creating group", e);
     }
 
+    List<String> inviteds = new ArrayList<String>();
     if (invitedGroupId != null) { // Invites user in group join to new created
                                   // space.
       // Gets users in group and then invites user to join into space.
@@ -409,6 +410,7 @@ public class SpaceServiceImpl implements SpaceService {
               }
             } else if (!ArrayUtils.contains(invitedUsers, userId)) {
               invitedUsers = (String[]) ArrayUtils.add(invitedUsers, userId);
+              inviteds.add(userId);
               space.setInvitedUsers(invitedUsers);
             }
           }
@@ -444,6 +446,12 @@ public class SpaceServiceImpl implements SpaceService {
     
     saveSpace(space, true);
     spaceLifeCycle.spaceCreated(space, creator);
+    
+    //process invited user list
+    for (String invited : inviteds) {
+      spaceLifeCycle.addInvitedUser(space, invited);
+    }
+    
     return space;
   }
 

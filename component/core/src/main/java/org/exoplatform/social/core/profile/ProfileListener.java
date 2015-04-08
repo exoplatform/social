@@ -24,6 +24,12 @@ import org.exoplatform.social.common.lifecycle.LifeCycleListener;
  * @version $Revision$
  */
 public interface ProfileListener extends LifeCycleListener<ProfileLifeCycleEvent> {
+  
+  /**
+   * about me of the profile is updated
+   * @param event
+   */
+  public void aboutMeUpdated(ProfileLifeCycleEvent event) ;
 
   /**
    * avatar picture of the profile is updated

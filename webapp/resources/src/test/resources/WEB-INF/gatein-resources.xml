@@ -72,6 +72,31 @@
   </module>
   
   <module>
+    <name>intranetNotification</name>
+    <script>
+       <path>/javascript/eXo/social/notification/IntranetNotification.js</path>
+    </script>
+    <depends>
+      <module>webNotifications</module>
+    </depends>
+    <depends>
+      <module>jquery</module>
+      <as>gj</as>
+    </depends>
+  </module>
+
+  <module>
+    <name>webNotifications</name>
+    <script>
+       <path>/javascript/eXo/social/notification/WebNotification.js</path>
+    </script>
+    <depends>
+      <module>jquery</module>
+      <as>gj</as>
+    </depends>
+  </module>
+  
+  <module>
     <name>socialGadgetsUtil</name>
     <script>
        <path>/javascript/eXo/social/SocialGadgetsUtil.js</path>
@@ -151,7 +176,7 @@
     </depends>
     <depends>
       <module>jquery</module>
-      <as>$</as>
+      <as>jq</as>
     </depends>
     <depends>
       <module>bts_dropdown</module>

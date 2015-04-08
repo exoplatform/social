@@ -31,6 +31,9 @@ public class ProfileLifeCycle extends AbstractLifeCycle<ProfileListener, Profile
   @Override
   protected void dispatchEvent(ProfileListener listener, ProfileLifeCycleEvent event) {
     switch(event.getType()) {
+    case ABOUT_ME :
+      listener.aboutMeUpdated(event);
+      break;
     case AVATAR_UPDATED :
       listener.avatarUpdated(event);
       break;
@@ -52,6 +55,10 @@ public class ProfileLifeCycle extends AbstractLifeCycle<ProfileListener, Profile
     default:
       break;
     }
+  }
+  
+  public void aboutMeUpdated(String username, Profile profile) {
+    broadcast(new ProfileLifeCycleEvent(Type.ABOUT_ME, username, profile));
   }
 
   public void avatarUpdated(String username, Profile profile) {

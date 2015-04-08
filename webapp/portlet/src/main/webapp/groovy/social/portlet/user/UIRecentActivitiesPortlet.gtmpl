@@ -1,0 +1,77 @@
+<%
+import org.exoplatform.social.webui.Utils;
+import org.exoplatform.portal.webui.util.Util;
+import org.exoplatform.social.core.service.LinkProvider;
+import org.exoplatform.social.user.portlet.UserProfileHelper;
+import org.exoplatform.social.user.portlet.RecentActivitiesHelper;
+
+List activities = uicomponent.getRecentActivities();
+%>
+<div class="uiSocApplication uiRecentActivitiesPortlet" id="$uicomponent.id">
+  <h4 class="head-container"><%=_ctx.appRes("UIBasicProfile.label.RecentActivities")%></h4>
+  <div class="activityCont">
+  <%
+    if(activities.size() == 0) {
+     String keyNoActivities = Utils.isOwner() ? "YouHaveNotActivities" : "UserHaveNotActivities";
+  %>
+      <div class="simpleBox noActivity center"><%=_ctx.appRes("UIBasicProfile.info." + keyNoActivities)%></div>
+  <%
+    } else {
+      String activityURL = LinkProvider.getBaseUri(null, null) + "/activity?id=";
+      for (activity in activities) {
+        def profile = RecentActivitiesHelper.getOwnerActivityProfile(activity);
+        String avatarURL = profile.getAvatarUrl();
+        String profileURL = profile.getUrl();
+        String displayName = profile.getFullName();
+        String activityTypeIcon =  RecentActivitiesHelper.getActivityTypeIcon(activity);
+        String link = RecentActivitiesHelper.getLink(activity);
+        String linkTitle = RecentActivitiesHelper.getLinkTitle(activity);
+  %>
+      <div class="activityStream uiDefaultActivity clearfix" id="Activity<%=activity.id%>">
+        <div class="activityTimeLine pull-left">
+          <div class="activityAvatar avatarCircle">
+            <a href="<%=profileURL%>">
+              <img alt="<%=displayName%>" src="<%=((avatarURL == null || avatarURL.length() == 0) ? LinkProvider.PROFILE_DEFAULT_AVATAR_URL : avatarURL)%>">
+            </a>
+          </div>
+          <% if (activityTypeIcon != null && activityTypeIcon.length() > 0) { %>
+          <div class="activityType"><span><i class="<%=activityTypeIcon%> uiIconSocWhite"></i></span></div>
+          <% } %>
+        </div><!--end activityTimeLine-->
+        <div class="boxContainer" id="boxContainer" onclick="window.open('<%=(activityURL + activity.id)%>', '_self')">
+          <div id="Content<%=activity.id%>" class="content">
+          <%if (link != null) { 
+              if (linkTitle != null) {
+          %> 
+                <div class="status"><%=linkTitle%></div>
+                <div class="link"><a href="javascript:void(0);" onclick="(function(evt){ evt.stopPropagation(); window.open('<%=link%>', '_blank');})(event)"><%=activity.getTitle()%></a></div>
+          <%
+              } else {
+          %>
+                <div><a href="javascript:void(0);" onclick="(function(evt){ evt.stopPropagation(); window.open('<%=link%>', '_self');})(event)"><%=activity.getTitle()%></a></div>
+          <%  }
+            } else {%>
+                <div class="status"><%=activity.getTitle()%></div>
+          <%} %>
+          </div>
+        </div> <!-- #boxContainer-->
+      </div>
+  <%
+      }
+      
+      String activityStreamURL = LinkProvider.getUserActivityUri(Utils.getOwnerIdentity(false).getRemoteId());
+      print("<div style=\"display: block;\" class=\"boxLoadMore\"><button class=\"btn\" style=\"width:100%;\" onclick=\"window.location.href='" + activityStreamURL + "'\">" +
+              _ctx.appRes("UIBasicProfile.action.ViewAll") +
+            "</button></div>");
+      uicomponent.initProfilePopup();
+    }
+  %>
+    </div>    
+      <%
+      if (uicomponent.hasActivityBottomIcon && activities.size() != 0) {
+  %>
+      <div class="activityBottom" style="display: block;"><span></span></div>
+  <%      
+      }
+      %>
+</div>

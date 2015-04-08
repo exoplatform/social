@@ -16,27 +16,17 @@
  */
 package org.exoplatform.social.notification.plugin;
 
-import java.io.IOException;
-import java.io.Writer;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.exoplatform.commons.api.notification.NotificationContext;
-import org.exoplatform.commons.api.notification.model.MessageInfo;
 import org.exoplatform.commons.api.notification.model.NotificationInfo;
-import org.exoplatform.commons.api.notification.plugin.AbstractNotificationPlugin;
-import org.exoplatform.commons.api.notification.service.template.TemplateContext;
-import org.exoplatform.commons.notification.template.TemplateUtils;
+import org.exoplatform.commons.api.notification.plugin.BaseNotificationPlugin;
 import org.exoplatform.container.xml.InitParams;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
 import org.exoplatform.social.core.space.model.Space;
-import org.exoplatform.social.notification.LinkProviderUtils;
 import org.exoplatform.social.notification.Utils;
 
-public class PostActivitySpaceStreamPlugin extends AbstractNotificationPlugin {
+public class PostActivitySpaceStreamPlugin extends BaseNotificationPlugin {
   
   public PostActivitySpaceStreamPlugin(InitParams initParams) {
     super(initParams);
@@ -70,67 +60,6 @@ public class PostActivitySpaceStreamPlugin extends AbstractNotificationPlugin {
   }
 
   @Override
-  public MessageInfo makeMessage(NotificationContext ctx) {
-    MessageInfo messageInfo = new MessageInfo();
-    
-    NotificationInfo notification = ctx.getNotificationInfo();
-    
-    String language = getLanguage(notification);
-    TemplateContext templateContext = new TemplateContext(notification.getKey().getId(), language);
-    SocialNotificationUtils.addFooterAndFirstName(notification.getTo(), templateContext);
-
-    String activityId = notification.getValueOwnerParameter(SocialNotificationUtils.ACTIVITY_ID.getKey());
-    ExoSocialActivity activity = Utils.getActivityManager().getActivity(activityId);
-    Identity identity = Utils.getIdentityManager().getIdentity(activity.getPosterId(), true);
-    
-    Identity spaceIdentity = Utils.getIdentityManager().getOrCreateIdentity(SpaceIdentityProvider.NAME, activity.getStreamOwner(), true);
-    
-    templateContext.put("USER", identity.getProfile().getFullName());
-    templateContext.put("SPACE", spaceIdentity.getProfile().getFullName());
-    templateContext.put("SUBJECT", activity.getTitle());
-    String subject = TemplateUtils.processSubject(templateContext);
-    
-    Space space = Utils.getSpaceService().getSpaceByPrettyName(spaceIdentity.getRemoteId());
-    templateContext.put("SPACE_URL", LinkProviderUtils.getRedirectUrl("space", space.getId()));
-    templateContext.put("PROFILE_URL", LinkProviderUtils.getRedirectUrl("user", identity.getRemoteId()));
-    templateContext.put("REPLY_ACTION_URL", LinkProviderUtils.getRedirectUrl("reply_activity", activity.getId()));
-    templateContext.put("VIEW_FULL_DISCUSSION_ACTION_URL", LinkProviderUtils.getRedirectUrl("view_full_activity", activity.getId()));
-
-    String body = SocialNotificationUtils.getBody(ctx, templateContext, activity);
-    
-    return messageInfo.subject(subject).body(body).end();
-  }
-
-  @Override
-  public boolean makeDigest(NotificationContext ctx, Writer writer) {
-    List<NotificationInfo> notifications = ctx.getNotificationInfos();
-    NotificationInfo first = notifications.get(0);
-
-    String language = getLanguage(first);
-    TemplateContext templateContext = new TemplateContext(first.getKey().getId(), language);
-    
-    Map<String, List<String>> map = new LinkedHashMap<String, List<String>>();
-    
-    try {
-      for (NotificationInfo message : notifications) {
-        String activityId = message.getValueOwnerParameter(SocialNotificationUtils.ACTIVITY_ID.getKey());
-        ExoSocialActivity activity = Utils.getActivityManager().getActivity(activityId);
-        if (activity == null) {
-          continue;
-        }
-        Space space = Utils.getSpaceService().getSpaceByPrettyName(activity.getStreamOwner());
-        //
-        SocialNotificationUtils.processInforSendTo(map, space.getId(), message.getValueOwnerParameter(SocialNotificationUtils.POSTER.getKey()));
-      }
-      writer.append(SocialNotificationUtils.getMessageByIds(map, templateContext));
-    } catch (IOException e) {
-      ctx.setException(e);
-      return false;
-    }
-    return true;
-  }
-
-  @Override
   public boolean isValid(NotificationContext ctx) {
     ExoSocialActivity activity = ctx.value(SocialNotificationUtils.ACTIVITY);
     Identity spaceIdentity = Utils.getIdentityManager().getOrCreateIdentity(SpaceIdentityProvider.NAME, activity.getStreamOwner(), false);
@@ -141,5 +70,4 @@ public class PostActivitySpaceStreamPlugin extends AbstractNotificationPlugin {
     
     return false;
   }
-
 }

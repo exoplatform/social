@@ -21,7 +21,7 @@ import java.util.Map;
 
 import org.exoplatform.commons.api.notification.NotificationContext;
 import org.exoplatform.commons.api.notification.model.NotificationInfo;
-import org.exoplatform.commons.api.notification.model.NotificationKey;
+import org.exoplatform.commons.api.notification.model.PluginKey;
 import org.exoplatform.commons.api.notification.model.UserSetting;
 import org.exoplatform.commons.api.notification.service.storage.NotificationDataStorage;
 import org.exoplatform.commons.api.notification.service.storage.NotificationService;
@@ -42,7 +42,7 @@ public class MockNotificationDataStorage implements NotificationDataStorage {
   }
 
   @Override
-  public Map<NotificationKey, List<NotificationInfo>> getByUser(NotificationContext context,
+  public Map<PluginKey, List<NotificationInfo>> getByUser(NotificationContext context,
                                                                 UserSetting userSetting) {
     return null;
   }

@@ -238,6 +238,14 @@ public class LinkProvider {
     }
     return null;
   }
+  
+  /**
+   * @param activityId
+   * @return
+   */
+  public static String getSingleActivityUrl(String activityId) {
+    return getBaseUri(null, null) + "/activity?id=" + activityId;
+  }
 
   /**
    * Gets an activity URI of the space.

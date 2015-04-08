@@ -24,6 +24,7 @@ import java.util.Map;
 import org.apache.commons.lang.StringUtils;
 import org.exoplatform.social.core.chromattic.entity.ActivityProfileEntity;
 import org.exoplatform.social.core.model.AvatarAttachment;
+import org.exoplatform.social.core.profile.ProfileLifeCycle;
 
 /**
  * The Class Profile.
@@ -32,6 +33,8 @@ public class Profile {
 
   /** gender key. */
   public static final String        GENDER         = "gender";
+  public static final String        MALE           = "male";
+  public static final String        FEMALE         = "female";
 
   /** username key. */
   public static final String        USERNAME       = "username";
@@ -47,6 +50,9 @@ public class Profile {
   
   /** email key. */
   public static final String        EMAIL          = "email";
+
+  /** email key. */
+  public static final String        ABOUT_ME       = "aboutMe";
 
   /** profile of a deleted user */
   public static final String        DELETED        = "deleted";
@@ -120,7 +126,31 @@ public class Profile {
                                         BASIC_INFOR,
                                         CONTACT,
                                         EXPERIENCES,
-                                        AVATAR
+                                        AVATAR,
+                                        ABOUT_ME;
+                                        
+                                        public void updateActivity(ProfileLifeCycle profileLifeCycle, Profile profile) {
+                                          switch (this) {
+                                            case ABOUT_ME: {
+                                              profileLifeCycle.aboutMeUpdated(profile.getIdentity().remoteId, profile);
+                                              break;
+                                            }
+                                            case CONTACT: {
+                                              profileLifeCycle.contactUpdated(profile.getIdentity().getRemoteId(), profile);
+                                              break;
+                                            }
+                                            case EXPERIENCES: {
+                                              profileLifeCycle.experienceUpdated(profile.getIdentity().getRemoteId(), profile);
+                                              break;
+                                            }
+                                            case AVATAR: {
+                                              profileLifeCycle.avatarUpdated(profile.getIdentity().getRemoteId(), profile);
+                                              break;
+                                            }
+                                            default :
+                                              break;
+                                          }
+                                        }
                                       };
                                       
   public static enum                AttachedActivityType
@@ -218,6 +248,8 @@ public class Profile {
   
   /** Profile created time **/
   private long                      createdTime;
+  
+  private List<UpdateType> listUpdateTypes;
 
   /**
    * Instantiates a new profile.
@@ -563,5 +595,13 @@ public class Profile {
   @Override
   public final String toString() {
     return "[uuid : " + id + " identity : " + identity.getId() + " properties: " + properties;
+  }
+
+  public List<UpdateType> getListUpdateTypes() {
+    return listUpdateTypes;
+  }
+
+  public void setListUpdateTypes(List<UpdateType> listUpdateTypes) {
+    this.listUpdateTypes = listUpdateTypes;
   }
 }

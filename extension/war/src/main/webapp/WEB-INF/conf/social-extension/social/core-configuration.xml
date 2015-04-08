@@ -505,6 +505,10 @@
                     <key><string>experience_section_updated</string></key>
                     <value><string>ProfileUpdatesPublisher.experience_section_updated</string></value>
                   </entry>
+                  <entry>
+                    <key><string>aboutMe_section_updated</string></key>
+                    <value><string>ProfileUpdatesPublisher.aboutMe_section_updated</string></value>
+                  </entry>
                 </map>
               </field>
             </object>

@@ -151,11 +151,9 @@ public class OrganizationIdentityProvider extends IdentityProvider<User> {
   private class UpdateProfileProcess {
     
     private Profile updatedProfile = null;
-    private UpdateType updateType = null;
     private String userName = null;
     
     public UpdateProfileProcess(Profile updatedProfile) {
-      this.updateType = updatedProfile.getUpdateType();
       this.updatedProfile = updatedProfile;
       this.userName = (String) updatedProfile.getProperty(Profile.USERNAME);
     }
@@ -165,12 +163,8 @@ public class OrganizationIdentityProvider extends IdentityProvider<User> {
      */
     public void doUpdate() throws MessageException {
       try {
-        if (Profile.UpdateType.BASIC_INFOR == updateType) {
+        if (updatedProfile.getListUpdateTypes().contains(Profile.UpdateType.CONTACT)) {
           updateBasicInfo();
-        } else if (Profile.UpdateType.POSITION == updateType) {
-          updatePosition();
-        } else if (Profile.UpdateType.CONTACT == updateType) {
-          updateContact();
         }
       } catch (Exception e) {
         if ( e instanceof MessageException) {
@@ -181,7 +175,7 @@ public class OrganizationIdentityProvider extends IdentityProvider<User> {
         
       }
     }
-
+    
     /**
      * Updates profile in Basic Information section
      * 
@@ -197,6 +191,9 @@ public class OrganizationIdentityProvider extends IdentityProvider<User> {
 
       //
       User foundUser = organizationService.getUserHandler().findUserByName(this.userName);
+      if(foundUser == null) {
+        return;
+      }
      
       //
       if (!foundUser.getFirstName().equals(firstName)) {
@@ -216,31 +213,9 @@ public class OrganizationIdentityProvider extends IdentityProvider<User> {
       if (hasUpdate) {
         organizationService.getUserHandler().saveUser(foundUser, true);        
       }
-    }
-    
-    /**
-     * Updates profile in Contact section
-     * @throws Exception
-     */
-    private void updateContact() throws Exception {
-      //
-      String gender = (String) updatedProfile.getProperty(Profile.GENDER);
-
-
-      UserProfile foundUserProfile = organizationService.getUserProfileHandler()
-                                                        .findUserProfileByName(userName);
-      //
-      if(foundUserProfile == null) {
-        return;
-      }
-
-      String uGender = foundUserProfile.getAttribute(UserProfile.PERSONAL_INFO_KEYS[4]);// "user.gender"
       
-      if (gender !=null && !gender.equals(uGender)) {
-        foundUserProfile.setAttribute(UserProfile.PERSONAL_INFO_KEYS[4], gender);// "user.gender"
-        organizationService.getUserProfileHandler().saveUserProfile(foundUserProfile, false);
-      }
-      
+      //
+      updatePositionAndGender();
     }
     
     /**
@@ -248,9 +223,10 @@ public class OrganizationIdentityProvider extends IdentityProvider<User> {
      * 
      * @throws Exception
      */
-    private void updatePosition() throws Exception {
+    private void updatePositionAndGender() throws Exception {
       //
       String position = (String) updatedProfile.getProperty(Profile.POSITION);
+      String gender = (String) updatedProfile.getProperty(Profile.GENDER);
       UserProfile foundUserProfile = organizationService.getUserProfileHandler().findUserProfileByName(userName);
       
       //
@@ -258,9 +234,18 @@ public class OrganizationIdentityProvider extends IdentityProvider<User> {
         return;
       }
       
+      boolean hasUpdated = false;
       String uPosition = foundUserProfile.getAttribute(UserProfile.PERSONAL_INFO_KEYS[7]);//user.jobtitle
       if (position != null && !position.equals(uPosition)) {
         foundUserProfile.setAttribute(UserProfile.PERSONAL_INFO_KEYS[7], position);//user.jobtitle
+        hasUpdated = true;
+      }
+      String uGender = foundUserProfile.getAttribute(UserProfile.PERSONAL_INFO_KEYS[4]);// "user.gender"
+      if (gender !=null && !gender.equals(uGender)) {
+        foundUserProfile.setAttribute(UserProfile.PERSONAL_INFO_KEYS[4], gender);// "user.gender"
+        hasUpdated = true;
+      }
+      if (hasUpdated) {
         organizationService.getUserProfileHandler().saveUserProfile(foundUserProfile, false);
       }
     }

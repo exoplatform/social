@@ -77,5 +77,4 @@ public class DefaultActivityChildPlugin extends AbstractNotificationChildPlugin 
   public boolean isValid(NotificationContext ctx) {
     return false;
   }
-
 }

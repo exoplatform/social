@@ -35,6 +35,24 @@
   </module>
 
   <module>
+    <name>user-profile</name>
+    <script>
+       <path>/javascript/eXo/social/webui/UIUserProfile.js</path>
+    </script>
+    <depends>
+      <module>socialUtil</module>
+      <as>socialUtil</as>
+    </depends>
+    <depends>
+      <module>jquery</module>
+      <as>jQuery</as>
+    </depends>
+    <depends>
+       <module>webui</module>
+    </depends>
+  </module>
+
+  <module>
     <name>social-ui-profile</name>
     <script>
        <path>/javascript/eXo/social/webui/UIProfile.js</path>
@@ -70,6 +88,31 @@
       <module>uiPopupWindow</module>
       <as>popupWindow</as>
     </depends>    
+  </module>
+  
+  <module>
+    <name>intranetNotification</name>
+    <script>
+       <path>/javascript/eXo/social/notification/IntranetNotification.js</path>
+    </script>
+    <depends>
+      <module>webNotifications</module>
+    </depends>
+    <depends>
+      <module>jquery</module>
+      <as>gj</as>
+    </depends>
+  </module>
+
+  <module>
+    <name>webNotifications</name>
+    <script>
+       <path>/javascript/eXo/social/notification/WebNotification.js</path>
+    </script>
+    <depends>
+      <module>jquery</module>
+      <as>gj</as>
+    </depends>
   </module>
   
   <module>

@@ -424,6 +424,11 @@
                                     popup.fadeOut('fast', function () {
                                     });
 
+                                    if(updatedType === "Disconnect" && $(org_elem).data('link')) {
+                                      var actionLink = $(org_elem).data('link').replace('javascript:', '');
+                                      $.globalEval(actionLink);
+                                    }
+                                    
                                     // clear cache
                                     clearCache();
                                 }

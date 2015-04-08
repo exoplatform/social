@@ -22,7 +22,7 @@
   <parent>
     <artifactId>social</artifactId>
     <groupId>org.exoplatform.social</groupId>
-    <version>4.2.x-SNAPSHOT</version>
+    <version>4.2.x-soc-user-profile-redesign-SNAPSHOT</version>
   </parent>
   <artifactId>social-extras</artifactId>
   <packaging>pom</packaging>

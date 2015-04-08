@@ -28,6 +28,7 @@ import org.exoplatform.social.core.test.AbstractCoreTest;
 
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -432,6 +433,7 @@ public class RelationshipManagerTest extends AbstractCoreTest {
     
     Profile profile = maryIdentity.getProfile();
     profile.setProperty(Profile.AVATAR, avatarAttachment);
+    profile.setListUpdateTypes(Arrays.asList(Profile.UpdateType.AVATAR));
     identityManager.updateProfile(profile);
     
     Identity[] identities = demoIncoming.load(0, 10);
@@ -484,6 +486,7 @@ public class RelationshipManagerTest extends AbstractCoreTest {
     
     Profile profile = demoIdentity.getProfile();
     profile.setProperty(Profile.AVATAR, avatarAttachment);
+    profile.setListUpdateTypes(Arrays.asList(Profile.UpdateType.AVATAR));
     identityManager.updateProfile(profile);
     
     rootOutgoing = relationshipManager.getOutgoing(rootIdentity);
@@ -1379,6 +1382,7 @@ public class RelationshipManagerTest extends AbstractCoreTest {
      
      Profile profile = demoIdentity.getProfile();
      profile.setProperty(Profile.AVATAR, avatarAttachment);
+     profile.setListUpdateTypes(Arrays.asList(Profile.UpdateType.AVATAR));
      identityManager.updateProfile(profile);
      
      Identity[] identities = contactsList.load(0, 10);

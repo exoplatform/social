@@ -17,6 +17,9 @@
 
 package org.exoplatform.social.portlet;
 
+import javax.portlet.PortletMode;
+import javax.portlet.PortletPreferences;
+
 import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.portal.webui.workspace.UIPortalApplication;
 import org.exoplatform.web.application.ApplicationMessage;
@@ -31,9 +34,6 @@ import org.exoplatform.webui.exception.MessageException;
 import org.exoplatform.webui.form.UIForm;
 import org.exoplatform.webui.form.UIFormStringInput;
 import org.exoplatform.webui.form.validator.URLValidator;
-
-import javax.portlet.PortletMode;
-import javax.portlet.PortletPreferences;
 
 @ComponentConfig(
   lifecycle = UIFormLifecycle.class,

@@ -1,0 +1,24 @@
+<div class="uiSocApplication uiEditUserProfileForm" >
+  <h3><%=_ctx.appRes("UIBasicProfile.label.EditProfile")%></h3>
+	<% uiform.begin();%>
+	<div class="form-horizontal">
+<%
+	List children = uiform.getChildren(); 
+	for(child in children) {
+		if(child.isRendered()) {
+			uiform.renderChild(child);
+		}
+	}
+	//
+	String profileURL = uicomponent.getViewProfileURL();
+%>
+	</div>
+	<div class="uiAction">
+		<button onclick="<%=uicomponent.event("Save")%>"
+					  class="btn btn-save" type="button"><%=_ctx.appRes("word.save")%></button>
+		<button onclick="<%=uicomponent.event("Cancel")%>; setTimeout(function() {window.open(window.location.origin + '$profileURL', '_self')}, 200);"
+		        class="btn" type="button"><%=_ctx.appRes("word.cancel")%></button>
+  </div>
+	<%uiform.end();%>
+</div>
+

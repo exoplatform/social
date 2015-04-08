@@ -23,6 +23,11 @@
   xmlns="http://www.exoplatform.org/xml/ns/kernel_1_2.xsd">
   
   <component>
+    <key>org.exoplatform.commons.api.notification.channel.ChannelManager</key>
+    <type>org.exoplatform.commons.notification.channel.ChannelManagerImpl</type>
+  </component>
+  
+  <component>
     <key>org.exoplatform.commons.api.settings.ExoFeatureService</key>
     <type>org.exoplatform.settings.impl.ExoFeatureServiceImpl</type>
   </component>
@@ -33,10 +38,20 @@
   </component>
 
   <component>
+    <key>org.exoplatform.commons.api.notification.channel.ChannelManager</key>
+    <type>org.exoplatform.commons.notification.channel.ChannelManagerImpl</type>
+  </component>
+
+  <component>
     <key>org.exoplatform.commons.api.notification.service.storage.NotificationDataStorage</key>
     <type>org.exoplatform.social.notification.mock.MockNotificationDataStorage</type>
   </component>
-  
+
+  <component>
+		<key>org.exoplatform.commons.api.notification.service.WebNotificationService</key>
+		<type>org.exoplatform.commons.notification.impl.service.WebNotificationServiceImpl</type>
+	</component>
+
   <component>
     <key>org.exoplatform.commons.api.notification.service.storage.NotificationService</key>
     <type>org.exoplatform.social.notification.mock.MockNotificationService</type>
@@ -131,6 +146,61 @@
     <type>org.exoplatform.social.notification.mock.MockResourceBundleService</type>
   </component>
   
+  <!-- channel register -->
+  <external-component-plugins>
+    <target-component>org.exoplatform.commons.api.notification.channel.ChannelManager</target-component>
+    <component-plugin>
+      <name>mail.channel</name>
+      <set-method>register</set-method>
+      <type>org.exoplatform.commons.notification.channel.MailChannel</type>
+      <description>Register the email channel to manager.</description>
+    </component-plugin>
+    <component-plugin>
+      <name>web.channel</name>
+      <set-method>register</set-method>
+      <type>org.exoplatform.commons.notification.channel.WebChannel</type>
+      <description>Register the email channel to manager.</description>
+    </component-plugin>
+  </external-component-plugins>
+
+  <!-- template channel register -->
+  <external-component-plugins>
+    <target-component>org.exoplatform.commons.api.notification.channel.ChannelManager</target-component>
+    <component-plugin>
+      <name>mail.channel.template</name>
+      <set-method>registerTemplateProvider</set-method>
+      <type>org.exoplatform.commons.notification.channel.template.DigestMailTemplateProvider</type>
+      <init-params>
+        <value-param>
+          <name>channel-id</name>
+          <value>MAIL_CHANNEL</value>
+        </value-param>
+      </init-params>
+    </component-plugin>
+    <component-plugin>
+      <name>mail.channel.social.template</name>
+      <set-method>registerTemplateProvider</set-method>
+      <type>org.exoplatform.social.notification.mock.MockMailTemplateProvider</type>
+      <init-params>
+        <value-param>
+          <name>channel-id</name>
+          <value>MAIL_CHANNEL</value>
+        </value-param>
+      </init-params>
+    </component-plugin>
+    <component-plugin>
+      <name>web.channel.social.template</name>
+      <set-method>registerTemplateProvider</set-method>
+      <type>org.exoplatform.social.notification.mock.MockWebTemplateProvider</type>
+      <init-params>
+        <value-param>
+          <name>channel-id</name>
+          <value>WEB_CHANNEL</value>
+        </value-param>
+      </init-params>
+    </component-plugin>
+  </external-component-plugins>
+  
   <external-component-plugins>
     <target-component>org.exoplatform.social.core.manager.ActivityManager</target-component>
     <component-plugin>
@@ -166,7 +236,24 @@
       <type>org.exoplatform.social.notification.impl.SpaceNotificationImpl</type>
     </component-plugin>
   </external-component-plugins>
-  
+ 
+  <!-- channel register -->
+  <external-component-plugins>
+    <target-component>org.exoplatform.commons.api.notification.channel.ChannelManager</target-component>
+    <component-plugin>
+      <name>mail.channel</name>
+      <set-method>register</set-method>
+      <type>org.exoplatform.commons.notification.channel.MailChannel</type>
+      <description>Register the email channel to manager.</description>
+    </component-plugin>
+    <component-plugin>
+      <name>web.channel</name>
+      <set-method>register</set-method>
+      <type>org.exoplatform.commons.notification.channel.WebChannel</type>
+      <description>Register the email channel to manager.</description>
+    </component-plugin>
+  </external-component-plugins>
+
   <external-component-plugins>
     <target-component>org.exoplatform.commons.api.notification.service.setting.PluginContainer</target-component>
     <component-plugin>
@@ -196,15 +283,8 @@
             <field name="groupId">
               <string>activity_stream</string>
             </field>
-            <field name="templateConfig">
-              <object type="org.exoplatform.commons.api.notification.plugin.config.TemplateConfig">
-                <field name="bundlePath">
-                  <string>locale.notification.template.Notification</string>
-                </field>
-                <field name="templatePath">
-                  <string>classpath:/notification/templates/ActivityMentionPlugin.gtmpl</string>
-                </field>
-              </object>
+            <field name="bundlePath">
+              <string>locale.notification.template.Notification</string>
             </field>
           </object>
         </object-param>
@@ -242,15 +322,8 @@
             <field name="groupId">
               <string>activity_stream</string>
             </field>
-            <field name="templateConfig">
-              <object type="org.exoplatform.commons.api.notification.plugin.config.TemplateConfig">
-                <field name="bundlePath">
-                  <string>locale.notification.template.Notification</string>
-                </field>
-                <field name="templatePath">
-                  <string>classpath:/notification/templates/ActivityCommentPlugin.gtmpl</string>
-                </field>
-              </object>
+            <field name="bundlePath">
+              <string>locale.notification.template.Notification</string>
             </field>
           </object>
         </object-param>
@@ -287,15 +360,8 @@
             <field name="groupId">
               <string>activity_stream</string>
             </field>
-            <field name="templateConfig">
-              <object type="org.exoplatform.commons.api.notification.plugin.config.TemplateConfig">
-                <field name="bundlePath">
-                  <string>locale.notification.template.Notification</string>
-                </field>
-                <field name="templatePath">
-                  <string>classpath:/notification/templates/LikePlugin.gtmpl</string>
-                </field>
-              </object>
+            <field name="bundlePath">
+              <string>locale.notification.template.Notification</string>
             </field>
           </object>
         </object-param>
@@ -332,15 +398,8 @@
             <field name="groupId">
               <string>activity_stream</string>
             </field>
-            <field name="templateConfig">
-              <object type="org.exoplatform.commons.api.notification.plugin.config.TemplateConfig">
-                <field name="bundlePath">
-                  <string>locale.notification.template.Notification</string>
-                </field>
-                <field name="templatePath">
-                  <string>classpath:/notification/templates/PostActivityPlugin.gtmpl</string>
-                </field>
-              </object>
+            <field name="bundlePath">
+              <string>locale.notification.template.Notification</string>
             </field>
           </object>
         </object-param>
@@ -377,15 +436,8 @@
             <field name="groupId">
               <string>spaces</string>
             </field>
-            <field name="templateConfig">
-              <object type="org.exoplatform.commons.api.notification.plugin.config.TemplateConfig">
-                <field name="bundlePath">
-                  <string>locale.notification.template.Notification</string>
-                </field>
-                <field name="templatePath">
-                  <string>classpath:/notification/templates/PostActivitySpaceStreamPlugin.gtmpl</string>
-                </field>
-              </object>
+            <field name="bundlePath">
+              <string>locale.notification.template.Notification</string>
             </field>
           </object>
         </object-param>
@@ -422,15 +474,8 @@
             <field name="groupId">
               <string>general</string>
             </field>
-            <field name="templateConfig">
-              <object type="org.exoplatform.commons.api.notification.plugin.config.TemplateConfig">
-                <field name="bundlePath">
-                  <string>locale.notification.template.Notification</string>
-                </field>
-                <field name="templatePath">
-                  <string>classpath:/notification/templates/NewUserPlugin.gtmpl</string>
-                </field>
-              </object>
+            <field name="bundlePath">
+              <string>locale.notification.template.Notification</string>
             </field>
           </object>
         </object-param>
@@ -468,15 +513,8 @@
             <field name="groupId">
               <string>connections</string>
             </field>
-            <field name="templateConfig">
-              <object type="org.exoplatform.commons.api.notification.plugin.config.TemplateConfig">
-                <field name="bundlePath">
-                  <string>locale.notification.template.Notification</string>
-                </field>
-                <field name="templatePath">
-                  <string>classpath:/notification/templates/RelationshipReceivedRequestPlugin.gtmpl</string>
-                </field>
-              </object>
+            <field name="bundlePath">
+              <string>locale.notification.template.Notification</string>
             </field>
           </object>
         </object-param>
@@ -514,15 +552,8 @@
             <field name="groupId">
               <string>spaces</string>
             </field>
-            <field name="templateConfig">
-              <object type="org.exoplatform.commons.api.notification.plugin.config.TemplateConfig">
-                <field name="bundlePath">
-                  <string>locale.notification.template.Notification</string>
-                </field>
-                <field name="templatePath">
-                  <string>classpath:/notification/templates/SpaceInvitationPlugin.gtmpl</string>
-                </field>
-              </object>
+            <field name="bundlePath">
+              <string>locale.notification.template.Notification</string>
             </field>
           </object>
         </object-param>
@@ -560,49 +591,8 @@
             <field name="groupId">
               <string>spaces</string>
             </field>
-            <field name="templateConfig">
-              <object type="org.exoplatform.commons.api.notification.plugin.config.TemplateConfig">
-                <field name="bundlePath">
-                  <string>locale.notification.template.Notification</string>
-                </field>
-                <field name="templatePath">
-                  <string>classpath:/notification/templates/RequestJoinSpacePlugin.gtmpl</string>
-                </field>
-              </object>
-            </field>
-          </object>
-        </object-param>
-      </init-params>
-    </component-plugin>
-  </external-component-plugins>
-  
-  <external-component-plugins>
-    <target-component>org.exoplatform.commons.api.notification.service.setting.PluginContainer</target-component>
-    <component-plugin>
-      <name>notification.plugins</name>
-      <set-method>addPlugin</set-method>
-      <type>org.exoplatform.commons.notification.impl.DigestDailyPlugin</type>
-      <description>Initial information for plugin.</description>
-      <init-params>
-        <object-param>
-          <name>template.DigestDailyPlugin</name>
-          <description>The template of DigestDailyPlugin</description>
-          <object type="org.exoplatform.commons.api.notification.plugin.config.PluginConfig">
-            <field name="pluginId">
-              <string>DigestDailyPlugin</string>
-            </field>
-            <field name="groupId">
-              <string></string>
-            </field>
-            <field name="templateConfig">
-              <object type="org.exoplatform.commons.api.notification.plugin.config.TemplateConfig">
-                <field name="bundlePath">
-                  <string>locale.notification.template.CommonsNotification</string>
-                </field>
-                <field name="templatePath">
-                  <string>classpath:/notification/templates/DigestDailyPlugin.gtmpl</string>
-                </field>
-              </object>
+            <field name="bundlePath">
+              <string>locale.notification.template.Notification</string>
             </field>
           </object>
         </object-param>
@@ -610,100 +600,66 @@
     </component-plugin>
   </external-component-plugins>
 
-  <external-component-plugins>
-    <target-component>org.exoplatform.commons.api.notification.service.setting.PluginContainer</target-component>
-    <component-plugin>
-      <name>notification.plugins</name>
-      <set-method>addPlugin</set-method>
-      <type>org.exoplatform.commons.notification.impl.DigestWeeklyPlugin</type>
-      <description>Initial information for plugin.</description>
-      <init-params>
-        <object-param>
-          <name>template.DigestWeeklyPlugin</name>
-          <description>The template of DigestWeeklyPlugin</description>
-          <object type="org.exoplatform.commons.api.notification.plugin.config.PluginConfig">
-            <field name="pluginId">
-              <string>DigestWeeklyPlugin</string>
-            </field>
-            <field name="groupId">
-              <string></string>
-            </field>
-            <field name="templateConfig">
-              <object type="org.exoplatform.commons.api.notification.plugin.config.TemplateConfig">
-                <field name="bundlePath">
-                  <string>locale.notification.template.CommonsNotification</string>
-                </field>
-                <field name="templatePath">
-                  <string>classpath:/notification/templates/DigestWeeklyPlugin.gtmpl</string>
-                </field>
-              </object>
-            </field>
-          </object>
-        </object-param>
-      </init-params>
-    </component-plugin>
-  </external-component-plugins>
-  
-  <external-component-plugins>
+	<external-component-plugins>
 	  <target-component>org.exoplatform.commons.api.notification.service.setting.PluginContainer</target-component>
 	  <component-plugin>
 	    <name>notification.plugins</name>
 	    <set-method>addChildPlugin</set-method>
 	    <type>org.exoplatform.social.notification.plugin.child.DefaultActivityChildPlugin</type>
-	    <description>Initial information for default child notification plugin.</description>
+	    <description>Initial information for default child plugin.</description>
 	    <init-params>
-	      <object-param>
-	        <name>template.DefaultActivityChildPlugin</name>
-	        <description>The template of DefaultActivityChildPlugin</description>
-	        <object type="org.exoplatform.commons.api.notification.plugin.config.PluginConfig">
-	          <field name="pluginId">
-	            <string>DEFAULT_ACTIVITY</string>
-	          </field>
-	          <field name="templateConfig">
-	            <object type="org.exoplatform.commons.api.notification.plugin.config.TemplateConfig">
-	              <field name="bundlePath">
-	                <string>locale.notification.template.Notification</string>
-	              </field>
-	              <field name="templatePath">
-	                <string>classpath:/notification/templates/DefaultActivity.gtmpl</string>
-	              </field>
-	            </object>
-	          </field>
-	        </object>
-	      </object-param>
+	    	<value-param>
+          <name>templatePath</name>
+          <value><![CDATA[classpath:/notification/templates/DefaultActivity.gtmpl]]></value>
+        </value-param>
+        <object-param>
+          <name>template.DefaultActivityChildPlugin</name>
+          <description>The template of DefaultActivityChildPlugin</description>
+          <object type="org.exoplatform.commons.api.notification.plugin.config.PluginConfig">
+            <field name="pluginId">
+              <string>DEFAULT_ACTIVITY</string>
+            </field>
+            <field name="bundlePath">
+              <string>locale.notification.template.Notification</string>
+            </field>
+          </object>
+        </object-param>
 	    </init-params>
 	  </component-plugin>
 	</external-component-plugins>
 	
-	<external-component-plugins>
-	 <target-component>org.exoplatform.commons.api.notification.service.setting.PluginContainer</target-component>
-	 <component-plugin>
-	   <name>notification.plugins</name>
-	   <set-method>addChildPlugin</set-method>
-	   <type>org.exoplatform.social.notification.plugin.child.LinkActivityChildPlugin</type>
-	   <description>Initial information for link child notification plugin.</description>
-	   <init-params>
-	     <object-param>
-	       <name>template.LinkActivityChildPlugin</name>
-	       <description>The template of LinkActivityChildPlugin</description>
-	       <object type="org.exoplatform.commons.api.notification.plugin.config.PluginConfig">
-	         <field name="pluginId">
-	           <string>LINK_ACTIVITY</string>
-	         </field>
-	         <field name="templateConfig">
-	           <object type="org.exoplatform.commons.api.notification.plugin.config.TemplateConfig">
-	             <field name="bundlePath">
-	               <string>locale.notification.template.Notification</string>
-	             </field>
-	             <field name="templatePath">
-	               <string>classpath:/notification/templates/activities/NotificationLinkActivity.gtmpl</string>
-	             </field>
-	           </object>
-	         </field>
-	       </object>
-	     </object-param>
-	   </init-params>
-	 </component-plugin>
+  <external-component-plugins>
+	  <target-component>org.exoplatform.commons.api.notification.service.setting.PluginContainer</target-component>
+	  <component-plugin>
+	    <name>notification.plugins</name>
+	    <set-method>addChildPlugin</set-method>
+	    <type>org.exoplatform.social.notification.plugin.child.LinkActivityChildPlugin</type>
+	    <description>Initial information for link child notification plugin.</description>
+	    <init-params>
+	    	<value-param>
+          <name>templatePath</name>
+          <value><![CDATA[classpath:/notification/templates/activities/NotificationLinkActivity.gtmpl]]></value>
+        </value-param>
+	      <values-param>
+	        <name>parentIds</name>
+	        <description>The list parent plugin's id</description>
+	        <value>LikePlugin</value>
+	        <value>ActivityCommentPlugin</value>
+	      </values-param>
+        <object-param>
+          <name>template.LinkActivityChildPlugin</name>
+          <description>The template of LinkActivityChildPlugin</description>
+          <object type="org.exoplatform.commons.api.notification.plugin.config.PluginConfig">
+            <field name="pluginId">
+              <string>LINK_ACTIVITY</string>
+            </field>
+            <field name="bundlePath">
+              <string>locale.notification.template.Notification</string>
+            </field>
+          </object>
+        </object-param>
+	    </init-params>
+	  </component-plugin>
 	</external-component-plugins>
 	
 </configuration>
