@@ -594,10 +594,10 @@ public class SpaceServiceTest extends AbstractCoreTest {
    */
   public void testGetInvitedSpaces() throws Exception {
     tearDownSpaceList.add(populateData());
-    assertEquals(0, spaceService.getInvitedSpaces("root").size());
+    assertEquals(0, spaceService.getInvitedSpaces("paul").size());
     Space space = spaceService.getSpaceByDisplayName("Space1");
-    spaceService.inviteMember(space, "root");
-    assertEquals(1, spaceService.getInvitedSpaces("root").size());
+    spaceService.inviteMember(space, "paul");
+    assertEquals(1, spaceService.getInvitedSpaces("paul").size());
   }
 
   /**
@@ -1242,8 +1242,8 @@ public class SpaceServiceTest extends AbstractCoreTest {
   public void testGetPendingSpaces() throws Exception {
     tearDownSpaceList.add(populateData());
     Space space = spaceService.getSpaceByDisplayName("Space1");
-    spaceService.requestJoin(space, "root");
-    assertEquals(true, spaceService.isPending(space, "root"));
+    spaceService.requestJoin(space, "paul");
+    assertEquals(true, spaceService.isPending(space, "paul"));
   }
 
   /**
