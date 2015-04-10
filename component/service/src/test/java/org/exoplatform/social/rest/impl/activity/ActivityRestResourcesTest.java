@@ -2,7 +2,6 @@ package org.exoplatform.social.rest.impl.activity;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import org.exoplatform.services.rest.impl.ContainerResponse;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
@@ -14,15 +13,15 @@ import org.exoplatform.social.core.manager.RelationshipManager;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
 import org.exoplatform.social.core.storage.api.IdentityStorage;
-import org.exoplatform.social.rest.entity.ActivitiesCollections;
-import org.exoplatform.social.rest.entity.CommentsCollections;
-import org.exoplatform.social.rest.impl.activity.ActivityRestResourcesV1;
-import org.exoplatform.social.service.rest.RestProperties;
+import org.exoplatform.social.rest.entity.ActivityEntity;
+import org.exoplatform.social.rest.entity.CollectionEntity;
+import org.exoplatform.social.rest.entity.CommentEntity;
+import org.exoplatform.social.service.rest.api.VersionResources;
 import org.exoplatform.social.service.test.AbstractResourceTest;
 
 public class ActivityRestResourcesTest extends AbstractResourceTest {
   
-  private ActivityRestResourcesV1 activitySocialRestServiceV1;
+  private ActivityRestResourcesV1 activityRestResourcesV1;
   
   private IdentityStorage identityStorage;
   private ActivityManager activityManager;
@@ -57,8 +56,8 @@ public class ActivityRestResourcesTest extends AbstractResourceTest {
     identityStorage.saveIdentity(maryIdentity);
     identityStorage.saveIdentity(demoIdentity);
     
-    activitySocialRestServiceV1 = new ActivityRestResourcesV1();
-    registry(activitySocialRestServiceV1);
+    activityRestResourcesV1 = new ActivityRestResourcesV1();
+    registry(activityRestResourcesV1);
   }
 
   public void tearDown() throws Exception {
@@ -76,7 +75,7 @@ public class ActivityRestResourcesTest extends AbstractResourceTest {
     identityStorage.deleteIdentity(demoIdentity);
     
     super.tearDown();
-    unregistry(activitySocialRestServiceV1);
+    removeResource(activityRestResourcesV1.getClass());
   }
   
   public void testGetActivitiesOfCurrentUser() throws Exception {
@@ -97,58 +96,22 @@ public class ActivityRestResourcesTest extends AbstractResourceTest {
     maryActivity.setTitle("mary activity");
     activityManager.saveActivityNoReturn(maryIdentity, maryActivity);
     
-    ContainerResponse response = service("GET", "/v1/social/activities?limit=5&offset=0", "", null, null);
+    ContainerResponse response = service("GET", "/" + VersionResources.VERSION_ONE + "/social/activities?limit=5&offset=0", "", null, null);
     assertNotNull(response);
     assertEquals(200, response.getStatus());
     
-    ActivitiesCollections collections = (ActivitiesCollections) response.getEntity();
+    CollectionEntity collections = (CollectionEntity) response.getEntity();
     //must return one activity of root and one of demo
-    assertEquals(2, collections.getActivities().size());
-    Map<String, Object> result = collections.getActivities().get(0);
-    assertEquals("demo activity", result.get(RestProperties.TITLE));
-    result = collections.getActivities().get(1);
-    assertEquals("root activity", result.get(RestProperties.TITLE));
+    assertEquals(2, collections.getEntities().size());
+    ActivityEntity entity = getBaseEntity(collections.getEntities().get(0), ActivityEntity.class);
+    assertEquals("demo activity", entity.getTitle());
+    entity = getBaseEntity(collections.getEntities().get(1), ActivityEntity.class);
+    assertEquals("root activity", entity.getTitle());
     
     activityManager.deleteActivity(maryActivity);
     activityManager.deleteActivity(demoActivity);
     activityManager.deleteActivity(rootActivity);
   }
-
-  /*
-  public void testGetActivitiesWithFieldsLimited() throws Exception {
-    startSessionAs("root");
-    
-    relationshipManager.inviteToConnect(rootIdentity, demoIdentity);
-    relationshipManager.confirm(demoIdentity, rootIdentity);
-    
-    ExoSocialActivity rootActivity = new ExoSocialActivityImpl();
-    rootActivity.setTitle("root activity");
-    activityManager.saveActivityNoReturn(rootIdentity, rootActivity);
-    
-    ContainerResponse response = service("GET", "/v1/social/activities/" + rootActivity.getId() + "?fields=" + RestProperties.TITLE, "", null, null);
-    assertNotNull(response);
-    assertEquals(200, response.getStatus());
-    
-    Map<String, Object> entity = (Map<String, Object>)response.getEntity();
-//    assertEquals(1, entity.size());
-    assertEquals("root activity", entity.get(RestProperties.TITLE));
-    
-    //
-    ExoSocialActivity demoActivity = new ExoSocialActivityImpl();
-    demoActivity.setTitle("demo activity");
-    activityManager.saveActivityNoReturn(demoIdentity, demoActivity);
-    
-    response = service("GET", "/v1/social/activities?limit=5&offset=0", "", null, null);
-    assertNotNull(response);
-    assertEquals(200, response.getStatus());
-    ActivitiesCollections collections = (ActivitiesCollections) response.getEntity();
-    Map<String, Object> result = collections.getActivities().get(1);
-    assertEquals("root activity", result.get(RestProperties.TITLE));
-    
-    activityManager.deleteActivity(demoActivity);
-    activityManager.deleteActivity(rootActivity);
-  }
-  */
   
   public void testGetUpdatedDeletedActivityById() throws Exception {
     startSessionAs("root");
@@ -161,30 +124,30 @@ public class ActivityRestResourcesTest extends AbstractResourceTest {
     demoActivity.setTitle("demo activity");
     activityManager.saveActivityNoReturn(demoIdentity, demoActivity);
     
-    ContainerResponse response = service("GET", "/v1/social/activities/" + demoActivity.getId(), "", null, null);
+    ContainerResponse response = service("GET", "/" + VersionResources.VERSION_ONE + "/social/activities/" + demoActivity.getId(), "", null, null);
     assertNotNull(response);
     assertEquals(200, response.getStatus());
     
-    Map<String, Object> result = (Map<String, Object>) response.getEntity();
-    assertEquals(result.get(RestProperties.TITLE), "demo activity");
+    ActivityEntity result = getBaseEntity(response.getEntity(), ActivityEntity.class);
+    assertEquals(result.getTitle(), "demo activity");
     
     String input = "{\"title\":updated}";
     //root try to update demo activity
-    response = getResponse("PUT", "/v1/social/activities/" + demoActivity.getId(), input);
+    response = getResponse("PUT", "/" + VersionResources.VERSION_ONE + "/social/activities/" + demoActivity.getId(), input);
     assertNotNull(response);
     //root is not the poster of activity then he can't modify it
     assertEquals(401, response.getStatus());
     
     //demo try to update demo activity
     startSessionAs("demo");
-    response = getResponse("PUT", "/v1/social/activities/" + demoActivity.getId(), input);
+    response = getResponse("PUT", "/" + VersionResources.VERSION_ONE + "/social/activities/" + demoActivity.getId(), input);
     assertNotNull(response);
     assertEquals(200, response.getStatus());
-    result = (Map<String, Object>) response.getEntity();
-    assertEquals(result.get(RestProperties.TITLE), "updated");
+    result = getBaseEntity(response.getEntity(), ActivityEntity.class);
+    assertEquals(result.getTitle(), "updated");
     
     //demo delete his activity
-    response = service("DELETE", "/v1/social/activities/" + demoActivity.getId(), "", null, null);
+    response = service("DELETE", "/" + VersionResources.VERSION_ONE + "/social/activities/" + demoActivity.getId(), "", null, null);
     assertNotNull(response);
     assertEquals(200, response.getStatus());
     
@@ -206,14 +169,14 @@ public class ActivityRestResourcesTest extends AbstractResourceTest {
       activityManager.saveComment(rootActivity, comment);
     }
     
-    ContainerResponse response = service("GET", "/v1/social/activities/" + rootActivity.getId() + "/comments", "", null, null);
+    ContainerResponse response = service("GET", "/" + VersionResources.VERSION_ONE + "/social/activities/" + rootActivity.getId() + "/comments", "", null, null);
     assertNotNull(response);
     assertEquals(200, response.getStatus());
-    CommentsCollections collections = (CommentsCollections) response.getEntity();
-    assertEquals(5, collections.getComments().size());
+    CollectionEntity collections = (CollectionEntity) response.getEntity();
+    assertEquals(5, collections.getEntities().size());
     
     startSessionAs("demo");
-    response = service("GET", "/v1/social/activities/" + rootActivity.getId() + "/comments", "", null, null);
+    response = service("GET", "/" + VersionResources.VERSION_ONE + "/social/activities/" + rootActivity.getId() + "/comments", "", null, null);
     assertNotNull(response);
     //demo has no permission to view activity
     assertEquals(401, response.getStatus());
@@ -222,11 +185,11 @@ public class ActivityRestResourcesTest extends AbstractResourceTest {
     relationshipManager.inviteToConnect(demoIdentity, rootIdentity);
     relationshipManager.confirm(rootIdentity, demoIdentity);
     
-    response = service("GET", "/v1/social/activities/" + rootActivity.getId() + "/comments", "", null, null);
+    response = service("GET", "/" + VersionResources.VERSION_ONE + "/social/activities/" + rootActivity.getId() + "/comments", "", null, null);
     assertNotNull(response);
     assertEquals(200, response.getStatus());
-    collections = (CommentsCollections) response.getEntity();
-    assertEquals(5, collections.getComments().size());
+    collections = (CollectionEntity) response.getEntity();
+    assertEquals(5, collections.getEntities().size());
     
     //clean data
     activityManager.deleteActivity(rootActivity);
@@ -241,12 +204,12 @@ public class ActivityRestResourcesTest extends AbstractResourceTest {
     activityManager.saveActivityNoReturn(rootIdentity, rootActivity);
     
     //post a comment by root on the prevous activity
-    String input = "{\"text\":comment1}";
-    ContainerResponse response = getResponse("POST", "/v1/social/activities/" + rootActivity.getId() + "/comments", input);
+    String input = "{\"body\":comment1}";
+    ContainerResponse response = getResponse("POST", "/" + VersionResources.VERSION_ONE + "/social/activities/" + rootActivity.getId() + "/comments", input);
     assertNotNull(response);
     assertEquals(200, response.getStatus());
-    Map<String, Object> result = (Map<String, Object>) response.getEntity();
-    assertEquals("comment1", result.get(RestProperties.BODY));
+    CommentEntity result = getBaseEntity(response.getEntity(), CommentEntity.class);
+    assertEquals("comment1", result.getBody());
     
     assertEquals(1, activityManager.getCommentsWithListAccess(rootActivity).getSize());
     

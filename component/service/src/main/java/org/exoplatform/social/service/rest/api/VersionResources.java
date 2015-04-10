@@ -49,6 +49,8 @@ public class VersionResources implements ResourceContainer {
    */
   public static final String LATEST_VERSION = "v1-alpha3";
   
+  public static final String VERSION_ONE = "v1";
+
   public static final String CURRENT_VERSION = "v1";
 
 

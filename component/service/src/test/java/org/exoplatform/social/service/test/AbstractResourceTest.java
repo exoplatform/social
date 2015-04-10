@@ -40,7 +40,10 @@ import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.manager.ActivityManager;
+import org.exoplatform.social.rest.entity.BaseEntity;
+import org.exoplatform.social.rest.entity.DataEntity;
 import org.exoplatform.social.service.rest.Util;
+import org.exoplatform.social.service.rest.api.VersionResources;
 import org.exoplatform.social.service.rest.api.models.ActivityRestListOut;
 import org.exoplatform.social.service.rest.api.models.ActivityRestOut;
 import org.exoplatform.social.service.rest.api.models.IdentityRestOut;
@@ -57,7 +60,7 @@ import org.exoplatform.ws.frameworks.json.value.JsonValue;
  * @since Mar 3, 2010
  */
 public abstract class AbstractResourceTest extends AbstractServiceTest {
-  
+
   public ContainerResponse getResponse(String method, String restPath, String input) throws Exception {
     byte[] jsonData = input.getBytes("UTF-8");
     MultivaluedMap<String, String> h = new MultivaluedMapImpl();
@@ -65,6 +68,16 @@ public abstract class AbstractResourceTest extends AbstractServiceTest {
     h.putSingle("content-length", "" + jsonData.length);
     
     return service(method, restPath, "", h, jsonData);
+  }
+  
+  protected <T extends BaseEntity> T getBaseEntity(Object data, Class<T> clazz) throws Exception {
+    T entity = clazz.newInstance();
+    entity.setDataEntity((DataEntity) data);
+    return entity;
+  }
+
+  protected String getURLResource(String resourceURL) {
+    return "/" + VersionResources.VERSION_ONE + "/social/" + resourceURL;
   }
 
   /**

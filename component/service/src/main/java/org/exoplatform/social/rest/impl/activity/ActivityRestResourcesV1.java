@@ -18,7 +18,6 @@ package org.exoplatform.social.rest.impl.activity;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.DELETE;
@@ -42,18 +41,17 @@ import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.manager.ActivityManager;
 import org.exoplatform.social.core.manager.IdentityManager;
-import org.exoplatform.social.rest.api.AbstractSocialRestService;
 import org.exoplatform.social.rest.api.ActivityRestResources;
-import org.exoplatform.social.rest.entity.ActivitiesCollections;
-import org.exoplatform.social.rest.entity.CommentsCollections;
-import org.exoplatform.social.service.rest.RestProperties;
-import org.exoplatform.social.service.rest.RestUtils;
-import org.exoplatform.social.service.rest.Util;
-import org.exoplatform.social.service.rest.api.models.ActivityRestIn;
-import org.exoplatform.social.service.rest.api.models.CommentRestIn;
+import org.exoplatform.social.rest.api.EntityBuilder;
+import org.exoplatform.social.rest.api.RestUtils;
+import org.exoplatform.social.rest.entity.ActivityEntity;
+import org.exoplatform.social.rest.entity.CollectionEntity;
+import org.exoplatform.social.rest.entity.CommentEntity;
+import org.exoplatform.social.rest.entity.DataEntity;
+import org.exoplatform.social.service.rest.api.VersionResources;
 
-@Path("v1/social/activities")
-public class ActivityRestResourcesV1 extends AbstractSocialRestService implements ActivityRestResources {
+@Path(VersionResources.VERSION_ONE + "/social/activities")
+public class ActivityRestResourcesV1 implements ActivityRestResources {
   
   @GET
   @RolesAllowed("users")
@@ -62,34 +60,35 @@ public class ActivityRestResourcesV1 extends AbstractSocialRestService implement
     
     Identity currentUser = CommonsUtils.getService(IdentityManager.class).getOrCreateIdentity(OrganizationIdentityProvider.NAME, authenticatedUser, true);
     
-    int limit = getQueryValueLimit();
-    int offset = getQueryValueOffset();
+    int limit = RestUtils.getLimit(uriInfo);
+    int offset = RestUtils.getOffset(uriInfo);
     
     ActivityManager activityManager = CommonsUtils.getService(ActivityManager.class);
     RealtimeListAccess<ExoSocialActivity> listAccess = activityManager.getAllActivitiesWithListAccess();
     List<ExoSocialActivity> activities = listAccess.loadAsList(offset, limit);
     
-    List<Map<String, Object>> activitiesInfo = new ArrayList<Map<String, Object>>();
+    List<DataEntity> activityEntities = new ArrayList<DataEntity>();
     for (ExoSocialActivity activity : activities) {
-      Map<String, String> as = RestUtils.getActivityStream(activity, currentUser);
+      DataEntity as = EntityBuilder.getActivityStream(activity, currentUser);
       if (as == null) continue;
-      Map<String, Object> activityInfo = RestUtils.buildEntityFromActivity(activity, uriInfo.getPath(), getQueryParam("expand"));
-      activityInfo.put(RestProperties.ACTIVITY_STREAM, as);
+      ActivityEntity activityEntity = EntityBuilder.buildEntityFromActivity(activity, uriInfo.getPath(), RestUtils.getQueryParam(uriInfo, "expand"));
+      activityEntity.setActivityStream(as);
       //
-      activitiesInfo.add(activityInfo); 
+      activityEntities.add(activityEntity.getDataEntity()); 
     }
-    
-    ActivitiesCollections activitiesCollections = new ActivitiesCollections(getQueryValueReturnSize() ? listAccess.getSize() : -1, offset, limit);
-    activitiesCollections.setActivities(activitiesInfo);
-    
-    return Util.getResponse(activitiesCollections, uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
+    CollectionEntity collectionActivity = new CollectionEntity(activityEntities, EntityBuilder.ACTIVITIES_TYPE,  offset, limit);
+    if(RestUtils.isReturnSize(uriInfo)) {
+      collectionActivity.setSize(listAccess.getSize());
+    }
+
+    return EntityBuilder.getResponse(collectionActivity, uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
   }
   
   @GET
   @Path("{id}")
   @RolesAllowed("users")
   public Response getActivityById(@Context UriInfo uriInfo) throws Exception {
-    String id = getPathParam("id");
+    String id = RestUtils.getPathParam(uriInfo, "id");
     
     String authenticatedUser = ConversationState.getCurrent().getIdentity().getUserId();
     Identity currentUser = CommonsUtils.getService(IdentityManager.class).getOrCreateIdentity(OrganizationIdentityProvider.NAME, authenticatedUser, true);
@@ -100,16 +99,16 @@ public class ActivityRestResourcesV1 extends AbstractSocialRestService implement
       throw new WebApplicationException(Response.Status.UNAUTHORIZED);
     }
     
-    Map<String, String> as = RestUtils.getActivityStream(activity.isComment() ? activityManager.getParentActivity(activity) : activity, currentUser);
+    DataEntity as = EntityBuilder.getActivityStream(activity.isComment() ? activityManager.getParentActivity(activity) : activity, currentUser);
     if (as == null) { //current user doesn't have permission to view activity
       throw new WebApplicationException(Response.Status.UNAUTHORIZED);
     }
-    Map<String, Object> activityInfo = RestUtils.buildEntityFromActivity(activity, uriInfo.getPath(), getQueryParam("expand"));
-    if (! activity.isComment()) {
-      activityInfo.put(RestProperties.ACTIVITY_STREAM, as);
+    ActivityEntity activityEntity = EntityBuilder.buildEntityFromActivity(activity, uriInfo.getPath(), RestUtils.getQueryParam(uriInfo, "expand"));
+    if (!activity.isComment()) {
+      activityEntity.setActivityStream(as);
     }
-    
-    return Util.getResponse(activityInfo, uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
+
+    return EntityBuilder.getResponse(activityEntity.getDataEntity(), uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
   }
   
   @PUT
@@ -117,7 +116,7 @@ public class ActivityRestResourcesV1 extends AbstractSocialRestService implement
   @Produces(MediaType.APPLICATION_JSON)
   @RolesAllowed("users")
   public Response updateActivityById(@Context UriInfo uriInfo,
-                                      ActivityRestIn model) throws Exception {
+                                      ActivityEntity model) throws Exception {
     if (model == null || model.getTitle() == null || model.getTitle().length() == 0) {
       throw new WebApplicationException(Response.Status.UNAUTHORIZED);
     }
@@ -125,7 +124,7 @@ public class ActivityRestResourcesV1 extends AbstractSocialRestService implement
     String authenticatedUser = ConversationState.getCurrent().getIdentity().getUserId();
     Identity currentUser = CommonsUtils.getService(IdentityManager.class).getOrCreateIdentity(OrganizationIdentityProvider.NAME, authenticatedUser, true);
     
-    String id = getPathParam("id");
+    String id = RestUtils.getPathParam(uriInfo, "id");
     ActivityManager activityManager = CommonsUtils.getService(ActivityManager.class);
     ExoSocialActivity activity = activityManager.getActivity(id);
     if (activity == null || ! activity.getPosterId().equals(currentUser.getId())) {
@@ -136,18 +135,18 @@ public class ActivityRestResourcesV1 extends AbstractSocialRestService implement
     activity.setTitle(model.getTitle());
     activityManager.updateActivity(activity);
     
-    Map<String, String> as = RestUtils.getActivityStream(activity, currentUser);
-    Map<String, Object> activityInfo = RestUtils.buildEntityFromActivity(activity, uriInfo.getPath(), getQueryParam("expand"));
-    activityInfo.put(RestProperties.ACTIVITY_STREAM, as);
+    DataEntity as = EntityBuilder.getActivityStream(activity, currentUser);
+    ActivityEntity activityInfo = EntityBuilder.buildEntityFromActivity(activity, uriInfo.getPath(), RestUtils.getQueryParam(uriInfo, "expand"));
+    activityInfo.setActivityStream(as);
     
-    return Util.getResponse(activityInfo, uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
+    return EntityBuilder.getResponse(activityInfo.getDataEntity(), uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
   }
   
   @DELETE
   @Path("{id}")
   @RolesAllowed("users")
   public Response deleteActivityById(@Context UriInfo uriInfo) throws Exception {
-    String id = getPathParam("id");
+    String id = RestUtils.getPathParam(uriInfo, "id");
     
     String authenticatedUser = ConversationState.getCurrent().getIdentity().getUserId();
     Identity currentUser = CommonsUtils.getService(IdentityManager.class).getOrCreateIdentity(OrganizationIdentityProvider.NAME, authenticatedUser, true);
@@ -157,27 +156,26 @@ public class ActivityRestResourcesV1 extends AbstractSocialRestService implement
     if (activity == null || ! activity.getPosterId().equals(currentUser.getId()) || ! activity.getStreamOwner().equals(currentUser.getRemoteId())) {
       throw new WebApplicationException(Response.Status.UNAUTHORIZED);
     }
-    
-    Map<String, String> as = RestUtils.getActivityStream(activity, currentUser);
-    Map<String, Object> activityInfo = RestUtils.buildEntityFromActivity(activity, uriInfo.getPath(), getQueryParam("expand"));
-    activityInfo.put(RestProperties.ACTIVITY_STREAM, as);
-    
+    //
+    DataEntity as = EntityBuilder.getActivityStream(activity, currentUser);
+    ActivityEntity activityEntity = EntityBuilder.buildEntityFromActivity(activity, uriInfo.getPath(), RestUtils.getQueryParam(uriInfo, "expand"));
+    activityEntity.setActivityStream(as);
+    //
     activityManager.deleteActivity(activity);
-    
-    return Util.getResponse(activityInfo, uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
+    return EntityBuilder.getResponse(activityEntity.getDataEntity(), uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
   }
   
   @GET
   @Path("{id}/comments")
   @RolesAllowed("users")
   public Response getCommentsOfActivity(@Context UriInfo uriInfo) throws Exception {
-    String id = getPathParam("id");
+    String id = RestUtils.getPathParam(uriInfo, "id");
     
     String authenticatedUser = ConversationState.getCurrent().getIdentity().getUserId();
     Identity currentUser = CommonsUtils.getService(IdentityManager.class).getOrCreateIdentity(OrganizationIdentityProvider.NAME, authenticatedUser, true);
     
-    int limit = getQueryValueLimit();
-    int offset = getQueryValueOffset();
+    int limit = RestUtils.getLimit(uriInfo);
+    int offset = RestUtils.getOffset(uriInfo);
     
     ActivityManager activityManager = CommonsUtils.getService(ActivityManager.class);
     ExoSocialActivity activity = activityManager.getActivity(id);
@@ -185,24 +183,13 @@ public class ActivityRestResourcesV1 extends AbstractSocialRestService implement
       throw new WebApplicationException(Response.Status.UNAUTHORIZED);
     }
     
-    if (RestUtils.getActivityStream(activity, currentUser) == null) { //current user doesn't have permission to view activity
+    if (EntityBuilder.getActivityStream(activity, currentUser) == null) { //current user doesn't have permission to view activity
       throw new WebApplicationException(Response.Status.UNAUTHORIZED);
     }
-    
-    RealtimeListAccess<ExoSocialActivity> listAccess = activityManager.getCommentsWithListAccess(activity);
-    List<ExoSocialActivity> comments = listAccess.loadAsList(offset, limit);
-    
-    List<Map<String, Object>> commentsInfo = new ArrayList<Map<String, Object>>();
-    for (ExoSocialActivity comment : comments) {
-      Map<String, Object> commentInfo = RestUtils.buildEntityFromActivity(comment, uriInfo.getPath(), getQueryParam("expand"));
-      //
-      commentsInfo.add(commentInfo);
-    }
-    
-    CommentsCollections commentsCollections = new CommentsCollections(getQueryValueReturnSize() ? listAccess.getSize() : -1, offset, limit);
-    commentsCollections.setComments(commentsInfo);
-    
-    return Util.getResponse(commentsCollections, uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
+    List<DataEntity> commentsEntity = EntityBuilder.buildEntityFromComment(activity, uriInfo.getPath(), RestUtils.getQueryParam(uriInfo, "expand"), offset, limit);
+    CollectionEntity collectionComment = new CollectionEntity(commentsEntity, EntityBuilder.COMMENTS_TYPE, offset, limit);    
+    //
+    return EntityBuilder.getResponse(collectionComment, uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
   }
   
   @POST
@@ -210,11 +197,11 @@ public class ActivityRestResourcesV1 extends AbstractSocialRestService implement
   @Produces(MediaType.APPLICATION_JSON)
   @RolesAllowed("users")
   public Response postComment(@Context UriInfo uriInfo,
-                               CommentRestIn model) throws Exception {
-    if (model == null || model.getText() == null || model.getText().length() == 0) {
+                               CommentEntity model) throws Exception {
+    if (model == null || model.getBody() == null || model.getBody().length() == 0) {
       throw new WebApplicationException(Response.Status.UNAUTHORIZED);
     }
-    String id = getPathParam("id");
+    String id = RestUtils.getPathParam(uriInfo, "id");
     
     String authenticatedUser = ConversationState.getCurrent().getIdentity().getUserId();
     Identity currentUser = CommonsUtils.getService(IdentityManager.class).getOrCreateIdentity(OrganizationIdentityProvider.NAME, authenticatedUser, true);
@@ -225,15 +212,16 @@ public class ActivityRestResourcesV1 extends AbstractSocialRestService implement
       throw new WebApplicationException(Response.Status.UNAUTHORIZED);
     }
     
-    if (RestUtils.getActivityStream(activity, currentUser) == null) { //current user doesn't have permission to view activity
+    if (EntityBuilder.getActivityStream(activity, currentUser) == null) { //current user doesn't have permission to view activity
       throw new WebApplicationException(Response.Status.UNAUTHORIZED);
     }
     
     ExoSocialActivity comment = new ExoSocialActivityImpl();
-    comment.setTitle(model.getText());
+    comment.setTitle(model.getBody());
+    comment.setBody(model.getBody());
     comment.setUserId(currentUser.getId());
     activityManager.saveComment(activity, comment);
     
-    return Util.getResponse(RestUtils.buildEntityFromActivity(activityManager.getActivity(comment.getId()), uriInfo.getPath(), getQueryParam("expand")), uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
+    return EntityBuilder.getResponse(EntityBuilder.buildEntityFromActivity(activityManager.getActivity(comment.getId()), uriInfo.getPath(), RestUtils.getQueryParam(uriInfo, "expand")), uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
   }
 }
