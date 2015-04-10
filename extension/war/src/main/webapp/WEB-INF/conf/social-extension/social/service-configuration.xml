@@ -50,7 +50,7 @@
   <component>
     <type>org.exoplatform.social.service.rest.NotificationsRestService</type>
   </component>
-  
+
   <component>
     <type>org.exoplatform.social.service.rest.SocialUpdaterRest</type>
   </component>
@@ -64,25 +64,25 @@
   </component>
 
   <component>
-    <type>org.exoplatform.social.service.rest.impl.identity.IdentitySocialRestServiceV1</type>
+    <type>org.exoplatform.social.rest.impl.identity.IdentityRestResourcesV1</type>
   </component>
   <component>
-    <type>org.exoplatform.social.service.rest.impl.space.SpaceSocialRestServiceV1</type>
+    <type>org.exoplatform.social.rest.impl.space.SpaceRestResourcesV1</type>
   </component>
   <component>
-    <type>org.exoplatform.social.service.rest.impl.spacemembership.SpaceMembershipRestServiceV1</type>
+    <type>org.exoplatform.social.rest.impl.spacemembership.SpaceMembershipRestResourcesV1</type>
   </component>
   <component>
-    <type>org.exoplatform.social.service.rest.impl.user.UserSocialRestServiceV1</type>
+    <type>org.exoplatform.social.rest.impl.user.UserRestResourcesV1</type>
   </component>
   <component>
-    <type>org.exoplatform.social.service.rest.impl.userrelationship.UsersRelationshipsRestServiceV1</type>
+    <type>org.exoplatform.social.rest.impl.userrelationship.UsersRelationshipsRestResourcesV1</type>
   </component>
   <component>
-    <type>org.exoplatform.social.service.rest.impl.activity.ActivitySocialRestServiceV1</type>
+    <type>org.exoplatform.social.rest.impl.activity.ActivityRestResourcesV1</type>
   </component>
   <component>
-    <type>org.exoplatform.social.service.rest.impl.relationship.RelationshipsRestServiceV1</type>
+    <type>org.exoplatform.social.rest.impl.relationship.RelationshipsRestResourcesV1</type>
   </component>
 <!-- REST service -->
 
@@ -111,7 +111,7 @@
 	     <init-params>
 	        <value-param>
 	           <name>ws.rs.response.jsonp-response-filter</name>
-	           <value>org.exoplatform.social.service.rest.JSONPResponseFilter</value>
+	           <value>org.exoplatform.social.rest.filter.JSONPResponseFilter</value>
 	        </value-param>
 	     </init-params>
 	    </component-plugin>
@@ -122,7 +122,7 @@
        <init-params>
           <value-param>
              <name>ws.rs.response.jsonp-response-filter</name>
-             <value>org.exoplatform.social.service.rest.SocialRestResponseFilter</value>
+             <value>org.exoplatform.social.rest.filter.SocialRestResponseFilter</value>
           </value-param>
        </init-params>
       </component-plugin>

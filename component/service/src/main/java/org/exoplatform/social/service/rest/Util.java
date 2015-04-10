@@ -52,9 +52,9 @@ import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.manager.RelationshipManager;
 import org.exoplatform.social.core.service.LinkProvider;
 import org.exoplatform.social.core.space.spi.SpaceService;
+import org.exoplatform.social.rest.entity.ResourceCollections;
 import org.exoplatform.social.service.rest.api.models.IdentityRestOut;
 import org.exoplatform.social.service.rest.api.models.ProfileRestOut;
-import org.exoplatform.social.service.rest.api.models.ResourceCollections;
 
 /**
  * Util.java: utility class for rest <br />.

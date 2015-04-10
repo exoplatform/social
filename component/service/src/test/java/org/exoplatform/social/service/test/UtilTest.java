@@ -20,9 +20,9 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
+import org.exoplatform.social.rest.entity.IdentitiesCollections;
+import org.exoplatform.social.rest.entity.ResourceCollections;
 import org.exoplatform.social.service.rest.Util;
-import org.exoplatform.social.service.rest.api.models.IdentitiesCollections;
-import org.exoplatform.social.service.rest.api.models.ResourceCollections;
 
 import junit.framework.TestCase;
 

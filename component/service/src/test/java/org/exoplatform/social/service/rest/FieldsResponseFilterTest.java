@@ -14,13 +14,13 @@ import org.exoplatform.social.core.manager.RelationshipManager;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
 import org.exoplatform.social.core.storage.api.IdentityStorage;
-import org.exoplatform.social.service.rest.api.models.ActivitiesCollections;
-import org.exoplatform.social.service.rest.impl.activity.ActivitySocialRestServiceV1;
+import org.exoplatform.social.rest.entity.ActivitiesCollections;
+import org.exoplatform.social.rest.impl.activity.ActivityRestResourcesV1;
 import org.exoplatform.social.service.test.AbstractResourceTest;
 
 public class FieldsResponseFilterTest extends AbstractResourceTest {
 
-  static private ActivitySocialRestServiceV1 activitySocialRestServiceV1;
+  static private ActivityRestResourcesV1 activitySocialRestServiceV1;
   
   private IdentityStorage identityStorage;
   private ActivityManager activityManager;
@@ -54,7 +54,7 @@ public class FieldsResponseFilterTest extends AbstractResourceTest {
     identityStorage.saveIdentity(maryIdentity);
     identityStorage.saveIdentity(demoIdentity);
     
-    activitySocialRestServiceV1 = new ActivitySocialRestServiceV1();
+    activitySocialRestServiceV1 = new ActivityRestResourcesV1();
     registry(activitySocialRestServiceV1);
   }
 
