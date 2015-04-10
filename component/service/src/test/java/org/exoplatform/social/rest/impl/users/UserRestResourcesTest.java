@@ -2,7 +2,6 @@ package org.exoplatform.social.rest.impl.users;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import org.exoplatform.services.rest.impl.ContainerResponse;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
@@ -15,16 +14,16 @@ import org.exoplatform.social.core.manager.RelationshipManager;
 import org.exoplatform.social.core.space.impl.DefaultSpaceApplicationHandler;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
-import org.exoplatform.social.rest.entity.ActivitiesCollections;
-import org.exoplatform.social.rest.entity.SpacesCollections;
-import org.exoplatform.social.rest.entity.UsersCollections;
+import org.exoplatform.social.rest.entity.ActivityEntity;
+import org.exoplatform.social.rest.entity.CollectionEntity;
+import org.exoplatform.social.rest.entity.SpaceEntity;
+import org.exoplatform.social.rest.entity.UserEntity;
 import org.exoplatform.social.rest.impl.user.UserRestResourcesV1;
-import org.exoplatform.social.service.rest.RestProperties;
 import org.exoplatform.social.service.test.AbstractResourceTest;
 
 public class UserRestResourcesTest extends AbstractResourceTest {
   
-  static private UserRestResourcesV1 usersRestService;
+  static private UserRestResourcesV1 userRestResourcesV1;
   
   private ActivityManager activityManager;
   private IdentityManager identityManager;
@@ -54,8 +53,8 @@ public class UserRestResourcesTest extends AbstractResourceTest {
     maryIdentity = identityManager.getOrCreateIdentity("organization", "mary", true);
     demoIdentity = identityManager.getOrCreateIdentity("organization", "demo", true);
     
-    usersRestService = new UserRestResourcesV1();
-    registry(usersRestService);
+    userRestResourcesV1 = new UserRestResourcesV1();
+    registry(userRestResourcesV1);
   }
 
   public void tearDown() throws Exception {
@@ -73,25 +72,25 @@ public class UserRestResourcesTest extends AbstractResourceTest {
     identityManager.deleteIdentity(demoIdentity);
     
     super.tearDown();
-    unregistry(usersRestService);
+    removeResource(userRestResourcesV1.getClass());
   }
 
   public void testGetAllUsers() throws Exception {
     startSessionAs("root");
-    ContainerResponse response = service("GET", "/v1/social/users?limit=5&offset=0", "", null, null);
+    ContainerResponse response = service("GET", getURLResource("users?limit=5&offset=0"), "", null, null);
     assertNotNull(response);
     assertEquals(200, response.getStatus());
-    UsersCollections users = (UsersCollections) response.getEntity();
-    assertEquals(4, users.getUsers().size());
+    CollectionEntity collections = (CollectionEntity) response.getEntity();
+    assertEquals(4, collections.getEntities().size());
   }
   
   public void testGetUserById() throws Exception {
     startSessionAs("root");
-    ContainerResponse response = service("GET", "/v1/social/users/john", "", null, null);
+    ContainerResponse response = service("GET", getURLResource("users/john"), "", null, null);
     assertNotNull(response);
     assertEquals(200, response.getStatus());
-    Map<String, Object> result = (Map<String, Object>) response.getEntity();
-    assertEquals(result.get(RestProperties.USER_NAME), "john");
+    UserEntity userEntity = getBaseEntity(response.getEntity(), UserEntity.class);
+    assertEquals("john", userEntity.getUsername());
   }
   
   public void testGetConnectionsOfUser() throws Exception {
@@ -99,14 +98,14 @@ public class UserRestResourcesTest extends AbstractResourceTest {
     relationshipManager.inviteToConnect(rootIdentity, demoIdentity);
     relationshipManager.confirm(demoIdentity, rootIdentity);
     
-    ContainerResponse response = service("GET", "/v1/social/users/root/connections?limit=5&offset=0", "", null, null);
+    ContainerResponse response = service("GET", getURLResource("users/root/connections?limit=5&offset=0"), "", null, null);
     assertNotNull(response);
     assertEquals(200, response.getStatus());
     
-    UsersCollections collections = (UsersCollections) response.getEntity();
-    assertEquals(1, collections.getUsers().size());
-    Map<String, Object> result = collections.getUsers().get(0);
-    assertEquals("demo", result.get(RestProperties.USER_NAME));
+    CollectionEntity collections = (CollectionEntity) response.getEntity();
+    assertEquals(1, collections.getEntities().size());
+    UserEntity userEntity = getBaseEntity(collections.getEntities().get(0), UserEntity.class);
+    assertEquals("demo", userEntity.getUsername());
   }
   
   public void testGetActivitiesOfUser() throws Exception {
@@ -126,17 +125,17 @@ public class UserRestResourcesTest extends AbstractResourceTest {
     maryActivity.setTitle("mary activity");
     activityManager.saveActivityNoReturn(maryIdentity, maryActivity);
     
-    ContainerResponse response = service("GET", "/v1/social/users/root/activities?limit=5&offset=0", "", null, null);
+    ContainerResponse response = service("GET", getURLResource("users/root/activities?limit=5&offset=0"), "", null, null);
     assertNotNull(response);
     assertEquals(200, response.getStatus());
     
-    ActivitiesCollections collections = (ActivitiesCollections) response.getEntity();
+    CollectionEntity collections = (CollectionEntity) response.getEntity();
     //must return one activity of root and one of demo
-    assertEquals(2, collections.getActivities().size());
-    Map<String, Object> result = collections.getActivities().get(0);
-    assertEquals("demo activity", result.get(RestProperties.TITLE));
-    result = collections.getActivities().get(1);
-    assertEquals("root activity", result.get(RestProperties.TITLE));
+    assertEquals(2, collections.getEntities().size());
+    ActivityEntity activityEntity = getBaseEntity(collections.getEntities().get(0), ActivityEntity.class);
+    assertEquals("demo activity", activityEntity.getTitle());
+    activityEntity = getBaseEntity(collections.getEntities().get(1), ActivityEntity.class);
+    assertEquals("root activity", activityEntity.getTitle());
     
     activityManager.deleteActivity(maryActivity);
     activityManager.deleteActivity(demoActivity);
@@ -148,14 +147,14 @@ public class UserRestResourcesTest extends AbstractResourceTest {
     Space space = getSpaceInstance(0, "root");
     tearDownSpaceList.add(space);
     
-    ContainerResponse response = service("GET", "/v1/social/users/root/spaces?limit=5&offset=0", "", null, null);
+    ContainerResponse response = service("GET", getURLResource("users/root/spaces?limit=5&offset=0"), "", null, null);
     assertNotNull(response);
     assertEquals(200, response.getStatus());
     
-    SpacesCollections collections = (SpacesCollections) response.getEntity();
-    assertEquals(1, collections.getSpaces().size());
-    Map<String, Object> result = collections.getSpaces().get(0);
-    assertEquals(space.getDisplayName(), result.get(RestProperties.DISPLAY_NAME));
+    CollectionEntity collections = (CollectionEntity) response.getEntity();
+    assertEquals(1, collections.getEntities().size());
+    SpaceEntity spaceEntity = getBaseEntity(collections.getEntities().get(0), SpaceEntity.class);
+    assertEquals(space.getDisplayName(), spaceEntity.getDisplayName());
   }
   
   private Space getSpaceInstance(int number, String creator) throws Exception {

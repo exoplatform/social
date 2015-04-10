@@ -18,7 +18,6 @@ package org.exoplatform.social.rest.impl.user;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.DELETE;
@@ -50,16 +49,15 @@ import org.exoplatform.social.core.manager.RelationshipManager;
 import org.exoplatform.social.core.profile.ProfileFilter;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
-import org.exoplatform.social.rest.api.AbstractSocialRestService;
+import org.exoplatform.social.rest.api.EntityBuilder;
+import org.exoplatform.social.rest.api.RestUtils;
 import org.exoplatform.social.rest.api.UserRestResources;
-import org.exoplatform.social.rest.entity.ActivitiesCollections;
-import org.exoplatform.social.rest.entity.ProfileRestIn;
-import org.exoplatform.social.rest.entity.SpacesCollections;
-import org.exoplatform.social.rest.entity.UsersCollections;
-import org.exoplatform.social.service.rest.RestProperties;
-import org.exoplatform.social.service.rest.RestUtils;
-import org.exoplatform.social.service.rest.Util;
-import org.exoplatform.social.service.rest.api.models.ActivityRestIn;
+import org.exoplatform.social.rest.entity.ActivityEntity;
+import org.exoplatform.social.rest.entity.CollectionEntity;
+import org.exoplatform.social.rest.entity.DataEntity;
+import org.exoplatform.social.rest.entity.SpaceEntity;
+import org.exoplatform.social.rest.entity.UserEntity;
+import org.exoplatform.social.service.rest.api.VersionResources;
 
 /**
  * 
@@ -68,8 +66,8 @@ import org.exoplatform.social.service.rest.api.models.ActivityRestIn;
  * @anchor UsersRestService
  */
 
-@Path("v1/social/users")
-public class UserRestResourcesV1 extends AbstractSocialRestService implements UserRestResources {
+@Path(VersionResources.VERSION_ONE + "/social/users")
+public class UserRestResourcesV1 implements UserRestResources {
   
   public static enum ACTIVITY_STREAM_TYPE {
     all, owner, connections, spaces
@@ -82,35 +80,35 @@ public class UserRestResourcesV1 extends AbstractSocialRestService implements Us
   @GET
   @RolesAllowed("users")
   public Response getUsers(@Context UriInfo uriInfo) throws Exception {
-    String q = getQueryParam("q");
+    String q = RestUtils.getQueryParam(uriInfo, "q");
     
-    int limit = getQueryValueLimit();
-    int offset = getQueryValueOffset();
+    int limit = RestUtils.getLimit(uriInfo);
+    int offset = RestUtils.getOffset(uriInfo);
     
     ProfileFilter filter = new ProfileFilter();
     filter.setName(q == null || q.isEmpty() ? "" : q);
     
     ListAccess<Identity> list = CommonsUtils.getService(IdentityManager.class).getIdentitiesByProfileFilter(OrganizationIdentityProvider.NAME, filter, false);
-    
+
     Identity[] identities = list.load(offset, limit);
-    List<Map<String, Object>> profileInfos = new ArrayList<Map<String, Object>>();
+    List<DataEntity> profileInfos = new ArrayList<DataEntity>();
     for (Identity identity : identities) {
-      Map<String, Object> profileInfo = RestUtils.buildEntityFromIdentity(identity, uriInfo.getPath(), getQueryParam("expand"));
+      UserEntity profileInfo = EntityBuilder.buildEntityProfile(identity.getProfile(), uriInfo.getPath(), RestUtils.getQueryParam(uriInfo, "expand"));
       //
-      profileInfos.add(profileInfo);
+      profileInfos.add(profileInfo.getDataEntity());
     }
-    
-    UsersCollections users = new UsersCollections(getQueryValueReturnSize() ? list.getSize() : -1, offset, limit);
-    users.setUsers(profileInfos);
-    
-    return Util.getResponse(users, uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
+    CollectionEntity collectionUser = new CollectionEntity(profileInfos, EntityBuilder.USERS_TYPE, offset, limit);
+    if(RestUtils.isReturnSize(uriInfo)) {
+      collectionUser.setSize(list.getSize());
+    }
+    return EntityBuilder.getResponse(collectionUser, uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
   }
   
   @POST
   @Produces(MediaType.APPLICATION_JSON)
   @RolesAllowed("users")
   public Response addUser(@Context UriInfo uriInfo,
-                           ProfileRestIn model) throws Exception {
+                          UserEntity model) throws Exception {
     if (model.isNotValid()) {
       throw new WebApplicationException(Response.Status.UNAUTHORIZED);
     }
@@ -121,37 +119,35 @@ public class UserRestResourcesV1 extends AbstractSocialRestService implements Us
     }
     
     //check if the user is already exist
-    Identity identity = CommonsUtils.getService(IdentityManager.class).getOrCreateIdentity(OrganizationIdentityProvider.NAME, model.getUserName(), true);
+    Identity identity = CommonsUtils.getService(IdentityManager.class).getOrCreateIdentity(OrganizationIdentityProvider.NAME, model.getUsername(), true);
     if (identity != null) {
       throw new WebApplicationException(Response.Status.BAD_REQUEST);
     }
     
     //Create new user
     UserHandler userHandler = CommonsUtils.getService(OrganizationService.class).getUserHandler();
-    User user = userHandler.createUserInstance(model.getUserName());
-    user.setFirstName(model.getFirstName());
-    user.setLastName(model.getLastName());
+    User user = userHandler.createUserInstance(model.getUsername());
+    user.setFirstName(model.getFirstname());
+    user.setLastName(model.getLastname());
     user.setEmail(model.getEmail());
     user.setPassword(model.getPassword() == null || model.getPassword().isEmpty() ? "exo" : model.getPassword());
     userHandler.createUser(user, true);
-    
-    identity = CommonsUtils.getService(IdentityManager.class).getOrCreateIdentity(OrganizationIdentityProvider.NAME, model.getUserName(), true);
     //
-    return Util.getResponse(RestUtils.buildEntityFromIdentity(identity, uriInfo.getPath(), getQueryParam("expand")), uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
+    return EntityBuilder.getResponse(EntityBuilder.buildEntityProfile(model.getUsername(), uriInfo.getPath(), RestUtils.getQueryParam(uriInfo, "expand")), uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
   }
   
   @GET
   @Path("{id}")
   @RolesAllowed("users")
   public Response getUserById(@Context UriInfo uriInfo) throws Exception {
-    String id = getPathParam("id");
+    String id = RestUtils.getPathParam(uriInfo, "id");
     Identity identity = CommonsUtils.getService(IdentityManager.class).getOrCreateIdentity(OrganizationIdentityProvider.NAME, id, true);
     //
     if (identity == null) {
       throw new WebApplicationException(Response.Status.UNAUTHORIZED);
     }
     //
-    return Util.getResponse(RestUtils.buildEntityFromIdentity(identity, uriInfo.getPath(), getQueryParam("expand")), uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
+    return EntityBuilder.getResponse(EntityBuilder.buildEntityProfile(identity.getProfile(), uriInfo.getPath(), RestUtils.getQueryParam(uriInfo, "expand")), uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
   }
   
   @DELETE
@@ -163,7 +159,7 @@ public class UserRestResourcesV1 extends AbstractSocialRestService implements Us
       throw new WebApplicationException(Response.Status.FORBIDDEN);
     }
     
-    String id = getPathParam("id");
+    String id = RestUtils.getPathParam(uriInfo, "id");
     IdentityManager identityManager = CommonsUtils.getService(IdentityManager.class);
     Identity identity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, id, true);
     if (identity == null) {
@@ -172,7 +168,7 @@ public class UserRestResourcesV1 extends AbstractSocialRestService implements Us
     identityManager.hardDeleteIdentity(identity);
     identity.setDeleted(true);
     //
-    return Util.getResponse(RestUtils.buildEntityFromIdentity(identity, uriInfo.getPath(), getQueryParam("expand")), uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
+    return EntityBuilder.getResponse(EntityBuilder.buildEntityProfile(identity.getProfile(), uriInfo.getPath(), RestUtils.getQueryParam(uriInfo, "expand")), uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
   }
   
   @PUT
@@ -180,8 +176,8 @@ public class UserRestResourcesV1 extends AbstractSocialRestService implements Us
   @Produces(MediaType.APPLICATION_JSON)
   @RolesAllowed("users")
   public Response updateUserById(@Context UriInfo uriInfo,
-                                  ProfileRestIn model) throws Exception {
-    String id = getPathParam("id");
+                                 UserEntity model) throws Exception {
+    String id = RestUtils.getPathParam(uriInfo, "id");
     UserHandler userHandler = CommonsUtils.getService(OrganizationService.class).getUserHandler();
     User user = userHandler.findUserByName(id);
     if (user == null) {
@@ -194,44 +190,43 @@ public class UserRestResourcesV1 extends AbstractSocialRestService implements Us
     
     fillUserFromModel(user, model);
     userHandler.saveUser(user, true);
-    
-    Identity identity = CommonsUtils.getService(IdentityManager.class).getOrCreateIdentity(OrganizationIdentityProvider.NAME, id, true);
     //
-    return Util.getResponse(RestUtils.buildEntityFromIdentity(identity, uriInfo.getPath(), getQueryParam("expand")), uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
+    return EntityBuilder.getResponse(EntityBuilder.buildEntityProfile(id, uriInfo.getPath(), RestUtils.getQueryParam(uriInfo, "expand")), uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
   }
   
   @GET
   @Path("{id}/connections")
   @RolesAllowed("users")
   public Response getConnectionOfUser(@Context UriInfo uriInfo) throws Exception {
-    String id = getPathParam("id");
+    String id = RestUtils.getPathParam(uriInfo, "id");
     Identity target = CommonsUtils.getService(IdentityManager.class).getOrCreateIdentity(OrganizationIdentityProvider.NAME, id, true);
     if (target == null) {
       throw new WebApplicationException(Response.Status.BAD_REQUEST);
     }
     
-    int limit = getQueryValueLimit();
-    int offset = getQueryValueOffset();
+    int limit = RestUtils.getLimit(uriInfo);
+    int offset = RestUtils.getOffset(uriInfo);
     
-    List<Map<String, Object>> profileInfos = new ArrayList<Map<String, Object>>();
+    List<DataEntity> profileInfos = new ArrayList<DataEntity>();
     ListAccess<Identity> listAccess = CommonsUtils.getService(RelationshipManager.class).getConnectionsByFilter(target, new ProfileFilter());
-    for (Identity identity : listAccess.load(offset, limit)) {
-      Map<String, Object> profileInfo = RestUtils.buildEntityFromIdentity(identity, uriInfo.getPath(), getQueryParam("expand"));
+    Identity []identities = listAccess.load(offset, limit);
+    for (Identity identity : identities) {
+      UserEntity profileInfo = EntityBuilder.buildEntityProfile(identity.getProfile(), uriInfo.getPath(), RestUtils.getQueryParam(uriInfo, "expand"));
       //
-      profileInfos.add(profileInfo);
+      profileInfos.add(profileInfo.getDataEntity());
     }
-    
-    UsersCollections users = new UsersCollections(getQueryValueReturnSize() ? listAccess.getSize() : -1, offset, limit);
-    users.setUsers(profileInfos);
-    
-    return Util.getResponse(users, uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
+    CollectionEntity collectionUser = new CollectionEntity(profileInfos, EntityBuilder.USERS_TYPE, offset, limit);
+    if(RestUtils.isReturnSize(uriInfo)) {
+      collectionUser.setSize(listAccess.getSize());
+    }
+    return EntityBuilder.getResponse(collectionUser, uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
   }
   
   @GET
   @Path("{id}/spaces")
   @RolesAllowed("users")
   public Response getSpacesOfUser(@Context UriInfo uriInfo) throws Exception {
-    String id = getPathParam("id");
+    String id = RestUtils.getPathParam(uriInfo, "id");
     Identity target = CommonsUtils.getService(IdentityManager.class).getOrCreateIdentity(OrganizationIdentityProvider.NAME, id, true);
     //Check if the given user exists
     if (target == null) {
@@ -242,28 +237,30 @@ public class UserRestResourcesV1 extends AbstractSocialRestService implements Us
       throw new WebApplicationException(Response.Status.FORBIDDEN);
     }
     
-    int limit = getQueryValueLimit();
-    int offset = getQueryValueOffset();
+    int limit = RestUtils.getLimit(uriInfo);
+    int offset = RestUtils.getOffset(uriInfo);
     
-    List<Map<String, Object>> spaceInfos = new ArrayList<Map<String, Object>>();
+    List<DataEntity> spaceInfos = new ArrayList<DataEntity>();
     ListAccess<Space> listAccess = CommonsUtils.getService(SpaceService.class).getMemberSpaces(id);
+    
     for (Space space : listAccess.load(offset, limit)) {
-      Map<String, Object> spaceInfo = RestUtils.buildEntityFromSpace(space, id, uriInfo.getPath(), getQueryParam("expand"));
+      SpaceEntity spaceInfo = EntityBuilder.buildEntityFromSpace(space, id, uriInfo.getPath(), RestUtils.getQueryParam(uriInfo, "expand"));
       //
-      spaceInfos.add(spaceInfo);
+      spaceInfos.add(spaceInfo.getDataEntity()); 
+    }
+    CollectionEntity collectionSpace = new CollectionEntity(spaceInfos, EntityBuilder.SPACES_TYPE, offset, limit);
+    if (RestUtils.isReturnSize(uriInfo)) {
+      collectionSpace.setSize( listAccess.getSize());
     }
     
-    SpacesCollections spaces = new SpacesCollections(getQueryValueReturnSize() ? listAccess.getSize() : -1, offset, limit);
-    spaces.setSpaces(spaceInfos);
-    
-    return Util.getResponse(spaces, uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
+    return EntityBuilder.getResponse(collectionSpace, uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
   }
   
   @GET
   @Path("{id}/activities")
   @RolesAllowed("users")
   public Response getActivitiesOfUser(@Context UriInfo uriInfo) throws Exception {
-    String id = getPathParam("id");
+    String id = RestUtils.getPathParam(uriInfo, "id");
     
     String authenticatedUser = ConversationState.getCurrent().getIdentity().getUserId();
     //Check if the given user doesn't exist
@@ -271,15 +268,14 @@ public class UserRestResourcesV1 extends AbstractSocialRestService implements Us
     if (target == null) {
       throw new WebApplicationException(Response.Status.BAD_REQUEST);
     }
-    String type = getQueryParam("type");
+    String type = RestUtils.getQueryParam(uriInfo, "type");
     ACTIVITY_STREAM_TYPE streamType;
     try {
       streamType = ACTIVITY_STREAM_TYPE.valueOf(type);
     } catch (Exception e) {
       streamType = ACTIVITY_STREAM_TYPE.all;
     }
-    
-    
+
     ActivityManager activityManager = CommonsUtils.getService(ActivityManager.class);
     RealtimeListAccess<ExoSocialActivity> listAccess = null;
     List<ExoSocialActivity> activities = null;
@@ -300,49 +296,47 @@ public class UserRestResourcesV1 extends AbstractSocialRestService implements Us
         listAccess = activityManager.getActivitiesOfUserSpacesWithListAccess(target);
         break;
       }
-  
       default:
         break;
     }
     //
-    int limit = getQueryValueLimit();
-    int offset = getQueryValueOffset();
-    Integer after = getIntegerValue("after"); 
-    Integer before = getIntegerValue("before");
+    int limit = RestUtils.getLimit(uriInfo);
+    int offset = RestUtils.getOffset(uriInfo);
+    Long after = RestUtils.getLongValue(uriInfo, "after"); 
+    Long before = RestUtils.getLongValue(uriInfo, "before");
     if (after != null) {
-      activities = listAccess.loadNewer(after.longValue(), limit);
+      activities = listAccess.loadNewer(after, limit);
     } else if (before != null) {
-      activities = listAccess.loadOlder(before.longValue(), limit);
+      activities = listAccess.loadOlder(before, limit);
     } else {
       activities = listAccess.loadAsList(offset, limit);
     }
-    
-    List<Map<String, Object>> activitiesInfo = new ArrayList<Map<String, Object>>();
     Identity currentUser = CommonsUtils.getService(IdentityManager.class).getOrCreateIdentity(OrganizationIdentityProvider.NAME, authenticatedUser, true);
+    List<DataEntity> activityEntities = new ArrayList<DataEntity>();
     for (ExoSocialActivity activity : activities) {
-      Map<String, String> as = RestUtils.getActivityStream(activity, currentUser);
+      DataEntity as = EntityBuilder.getActivityStream(activity, currentUser);
       if (as == null) continue;
-      Map<String, Object> activityInfo = RestUtils.buildEntityFromActivity(activity, uriInfo.getPath(), getQueryParam("expand"));
-      activityInfo.put(RestProperties.ACTIVITY_STREAM, as);
+      ActivityEntity activityEntity = EntityBuilder.buildEntityFromActivity(activity, uriInfo.getPath(), RestUtils.getQueryParam(uriInfo, "expand"));
+      activityEntity.setActivityStream(as);
       //
-      activitiesInfo.add(activityInfo);
+      activityEntities.add(activityEntity.getDataEntity()); 
     }
-    
-    ActivitiesCollections activitiesCollections = new ActivitiesCollections(getQueryValueReturnSize() ? listAccess.getSize() : -1, offset, limit);
-    activitiesCollections.setActivities(activitiesInfo);
-    
-    return Util.getResponse(activitiesCollections, uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
+    CollectionEntity collectionActivity = new CollectionEntity(activityEntities, EntityBuilder.ACTIVITIES_TYPE,  offset, limit);
+    if(RestUtils.isReturnSize(uriInfo)) {
+      collectionActivity.setSize(listAccess.getSize());
+    }
+    return EntityBuilder.getResponse(collectionActivity, uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
   }
   
   @POST
   @Path("{id}/activities")
   @RolesAllowed("users")
   public Response addActivityByUser(@Context UriInfo uriInfo,
-                                     ActivityRestIn model) throws Exception {
+                                    ActivityEntity model) throws Exception {
     if (model == null || model.getTitle() == null || model.getTitle().length() ==0) {
       throw new WebApplicationException(Response.Status.UNAUTHORIZED);
     }
-    String id = getPathParam("id");
+    String id = RestUtils.getPathParam(uriInfo, "id");
     //Check if the given user doesn't exist
     Identity target = CommonsUtils.getService(IdentityManager.class).getOrCreateIdentity(OrganizationIdentityProvider.NAME, id, true);
     if (target == null || !ConversationState.getCurrent().getIdentity().getUserId().equals(id)) {
@@ -353,20 +347,20 @@ public class UserRestResourcesV1 extends AbstractSocialRestService implements Us
     activity.setTitle(model.getTitle());
     CommonsUtils.getService(ActivityManager.class).saveActivityNoReturn(target, activity);
     
-    return Util.getResponse(RestUtils.buildEntityFromActivity(activity, uriInfo.getPath(), getQueryParam("expand")), uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
+    return EntityBuilder.getResponse(EntityBuilder.buildEntityFromActivity(activity, uriInfo.getPath(), RestUtils.getQueryParam(uriInfo, "expand")), uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
   }
   
-  private void fillUserFromModel(User user, ProfileRestIn model) {
-    if (model.getFirstName() != null && model.getFirstName().length() > 0) {
-      user.setFirstName(model.getFirstName());
+  private void fillUserFromModel(User user, UserEntity model) {
+    if (model.getFirstname() != null && !model.getFirstname().isEmpty()) {
+      user.setFirstName(model.getFirstname());
     }
-    if (model.getLastName() != null && model.getLastName().length() > 0) {
-      user.setLastName(model.getLastName());
+    if (model.getLastname() != null && !model.getLastname().isEmpty()) {
+      user.setLastName(model.getLastname());
     }
-    if (model.getEmail() != null && model.getEmail().length() > 0) {
+    if (model.getEmail() != null && !model.getEmail().isEmpty()) {
       user.setEmail(model.getEmail());
     }
-    if (model.getPassword() != null && model.getPassword().length() > 0) {
+    if (model.getPassword() != null && !model.getPassword().isEmpty()) {
       user.setPassword(model.getPassword());
     }
   }

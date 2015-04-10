@@ -1,3 +1,20 @@
+/*
+ * Copyright (C) 2003-2015 eXo Platform SAS.
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Affero General Public License
+ * as published by the Free Software Foundation; either version 3
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, see<http://www.gnu.org/licenses/>.
+*/
+
 package org.exoplatform.social.rest.api;
 
 import javax.ws.rs.DELETE;
@@ -9,8 +26,8 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
-import org.exoplatform.social.rest.entity.ProfileRestIn;
-import org.exoplatform.social.service.rest.api.models.ActivityRestIn;
+import org.exoplatform.social.rest.entity.ActivityEntity;
+import org.exoplatform.social.rest.entity.UserEntity;
 
 public interface UserRestResources extends SocialRest {
 
@@ -19,8 +36,9 @@ public interface UserRestResources extends SocialRest {
    * 
    * @param q value that an user's name match
    * @authentication
-   * @request
-   * GET: http://localhost:8080/rest/social/notifications/inviteToConnect/john/root
+   * @request GET:
+   *          http://localhost:8080/rest/social/notifications/inviteToConnect
+   *          /john/root
    * @return List of users in json format.
    * @throws Exception
    */
@@ -35,8 +53,7 @@ public interface UserRestResources extends SocialRest {
    * @throws Exception
    */
   @POST
-  public abstract Response addUser(@Context UriInfo uriInfo,
-                                     ProfileRestIn model) throws Exception;
+  public abstract Response addUser(@Context UriInfo uriInfo, UserEntity model) throws Exception;
 
   @GET
   @Path("{id}")
@@ -48,8 +65,7 @@ public interface UserRestResources extends SocialRest {
 
   @PUT
   @Path("{id}")
-  public abstract Response updateUserById(@Context UriInfo uriInfo,
-                                            ProfileRestIn model) throws Exception;
+  public abstract Response updateUserById(@Context UriInfo uriInfo, UserEntity model) throws Exception;
 
   @GET
   @Path("{id}/connections")
@@ -65,7 +81,6 @@ public interface UserRestResources extends SocialRest {
 
   @POST
   @Path("{id}/activities")
-  public abstract Response addActivityByUser(@Context UriInfo uriInfo,
-                                               ActivityRestIn model) throws Exception;
+  public abstract Response addActivityByUser(@Context UriInfo uriInfo, ActivityEntity model) throws Exception;
 
 }
