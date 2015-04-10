@@ -18,7 +18,6 @@ package org.exoplatform.social.rest.impl.identity;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.DELETE;
@@ -40,17 +39,17 @@ import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.manager.RelationshipManager;
 import org.exoplatform.social.core.profile.ProfileFilter;
 import org.exoplatform.social.core.relationship.model.Relationship;
-import org.exoplatform.social.rest.api.AbstractSocialRestService;
+import org.exoplatform.social.rest.api.EntityBuilder;
 import org.exoplatform.social.rest.api.IdentityRestResources;
-import org.exoplatform.social.rest.entity.IdentitiesCollections;
-import org.exoplatform.social.rest.entity.RelationshipsCollections;
-import org.exoplatform.social.service.rest.RestProperties;
-import org.exoplatform.social.service.rest.RestUtils;
-import org.exoplatform.social.service.rest.Util;
+import org.exoplatform.social.rest.api.RestProperties;
+import org.exoplatform.social.rest.api.RestUtils;
+import org.exoplatform.social.rest.entity.CollectionEntity;
+import org.exoplatform.social.rest.entity.DataEntity;
+import org.exoplatform.social.rest.entity.IdentityEntity;
+import org.exoplatform.social.service.rest.api.VersionResources;
 
-@Path("v1/social/identities")
-public class IdentityRestResourcesV1 extends AbstractSocialRestService implements IdentityRestResources {
-  
+@Path(VersionResources.VERSION_ONE + "/social/identities")
+public class IdentityRestResourcesV1 implements IdentityRestResources {
 
   /**
    * {@inheritDoc}
@@ -58,32 +57,26 @@ public class IdentityRestResourcesV1 extends AbstractSocialRestService implement
   @GET
   @RolesAllowed("users")
   public Response getIdentities(@Context UriInfo uriInfo) throws Exception {
-    String type = getQueryParam("type");
+    String type = RestUtils.getQueryParam(uriInfo, "type");
     
-    int limit = getQueryValueLimit();
-    int offset = getQueryValueOffset();
+    int limit = RestUtils.getLimit(uriInfo);
+    int offset = RestUtils.getOffset(uriInfo);
     
     IdentityManager identityManager = CommonsUtils.getService(IdentityManager.class);
     String providerId = (type != null && type.equals("space")) ? SpaceIdentityProvider.NAME : OrganizationIdentityProvider.NAME;
     ListAccess<Identity> listAccess = identityManager.getIdentitiesByProfileFilter(providerId, new ProfileFilter(), true);
     Identity[] identities = listAccess.load(offset, limit);
-    
-    List<Map<String, Object>> identityInfos = new ArrayList<Map<String, Object>>();
+    List<DataEntity> identityEntities = new ArrayList<DataEntity>();
     for (Identity identity : identities) {
-      Map<String, Object> profileInfo = RestUtils.buildEntityFromIdentity(identity, uriInfo.getPath(), getQueryParam("expand"));
-      profileInfo.put(RestProperties.REMOTE_ID, identity.getRemoteId());
-      profileInfo.put(RestProperties.PROVIDER_ID, providerId);
-      profileInfo.put(RestProperties.GLOBAL_ID, identity.getGlobalId());
-      
-      identityInfos.add(profileInfo);
+      identityEntities.add(EntityBuilder.buildEntityIdentity(identity, uriInfo.getPath(), RestUtils.getQueryParam(uriInfo, "expand")).getDataEntity());
     }
-    
-    IdentitiesCollections collections = new IdentitiesCollections(getQueryValueReturnSize() ? listAccess.getSize() : -1, offset, limit);
-    collections.setIdentities(identityInfos);
-    
-    return Util.getResponse(collections, uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
+    CollectionEntity collectionIdentity = new CollectionEntity(identityEntities, EntityBuilder.IDENTITIES_TYPE, offset, limit);
+    if(RestUtils.isReturnSize(uriInfo)) {
+      collectionIdentity.setSize(listAccess.getSize());
+    }
+
+    return EntityBuilder.getResponse(collectionIdentity, uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
   }
-  
 
   /**
    * {@inheritDoc}
@@ -91,8 +84,8 @@ public class IdentityRestResourcesV1 extends AbstractSocialRestService implement
   @POST
   @RolesAllowed("users")
   public Response createIdentities(@Context UriInfo uriInfo) throws Exception {
-    String remoteId = getQueryParam("remoteId");
-    String providerId = getQueryParam("providerId"); 
+    String remoteId = RestUtils.getQueryParam(uriInfo, "remoteId");
+    String providerId = RestUtils.getQueryParam(uriInfo, "providerId"); 
     if (!RestUtils.isMemberOfAdminGroup()) {
       throw new WebApplicationException(Response.Status.UNAUTHORIZED);
     }
@@ -100,20 +93,14 @@ public class IdentityRestResourcesV1 extends AbstractSocialRestService implement
         || (! providerId.equals(SpaceIdentityProvider.NAME) && ! providerId.equals(OrganizationIdentityProvider.NAME))) {
       throw new WebApplicationException(Response.Status.BAD_REQUEST);
     }
-
     IdentityManager identityManager = CommonsUtils.getService(IdentityManager.class);
     //check if user already exist
     Identity identity = identityManager.getOrCreateIdentity(providerId, remoteId, true);
     if (identity.isDeleted()) {
       throw new WebApplicationException(Response.Status.FORBIDDEN);
     }
-
-    Map<String, Object> profileInfo = RestUtils.buildEntityFromIdentity(identity, uriInfo.getPath(), getQueryParam("expand"));
-    profileInfo.put(RestProperties.REMOTE_ID, identity.getRemoteId());
-    profileInfo.put(RestProperties.PROVIDER_ID, providerId);
-    profileInfo.put(RestProperties.GLOBAL_ID, identity.getGlobalId());
-    
-    return Util.getResponse(profileInfo, uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
+    IdentityEntity identityInfo = EntityBuilder.buildEntityIdentity(identity, uriInfo.getPath(), RestUtils.getQueryParam(uriInfo, "expand"));
+    return EntityBuilder.getResponse(identityInfo, uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
   }
   
 
@@ -124,7 +111,7 @@ public class IdentityRestResourcesV1 extends AbstractSocialRestService implement
   @Path("{id}")
   @RolesAllowed("users")
   public Response getIdentityById(@Context UriInfo uriInfo) throws Exception {
-    String id = getPathParam("id");
+    String id = RestUtils.getPathParam(uriInfo, "id");
     
     IdentityManager identityManager = CommonsUtils.getService(IdentityManager.class);
     Identity identity = identityManager.getIdentity(id, true);
@@ -132,12 +119,8 @@ public class IdentityRestResourcesV1 extends AbstractSocialRestService implement
       throw new WebApplicationException(Response.Status.UNAUTHORIZED);
     }
     
-    Map<String, Object> profileInfo = RestUtils.buildEntityFromIdentity(identity, uriInfo.getPath(), getQueryParam("expand"));
-    profileInfo.put(RestProperties.REMOTE_ID, identity.getRemoteId());
-    profileInfo.put(RestProperties.PROVIDER_ID, identity.getProviderId());
-    profileInfo.put(RestProperties.GLOBAL_ID, identity.getGlobalId());
-    
-    return Util.getResponse(profileInfo, uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
+    IdentityEntity profileInfo = EntityBuilder.buildEntityIdentity(identity, uriInfo.getPath(), RestUtils.getQueryParam(uriInfo, "expand"));
+    return EntityBuilder.getResponse(profileInfo, uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
   }
   
 
@@ -148,7 +131,7 @@ public class IdentityRestResourcesV1 extends AbstractSocialRestService implement
   @Path("{id}")
   @RolesAllowed("users")
   public Response updateIdentityById(@Context UriInfo uriInfo) throws Exception {
-    String id = getPathParam("id");
+    String id = RestUtils.getPathParam(uriInfo, "id");
     
     IdentityManager identityManager = CommonsUtils.getService(IdentityManager.class);
     Identity identity = identityManager.getIdentity(id, true);
@@ -158,12 +141,9 @@ public class IdentityRestResourcesV1 extends AbstractSocialRestService implement
     
     //TODO : process to update identity
     
-    Map<String, Object> profileInfo = RestUtils.buildEntityFromIdentity(identity, uriInfo.getPath(), getQueryParam("expand"));
-    profileInfo.put(RestProperties.REMOTE_ID, identity.getRemoteId());
-    profileInfo.put(RestProperties.PROVIDER_ID, identity.getProviderId());
-    profileInfo.put(RestProperties.GLOBAL_ID, identity.getGlobalId());
+    IdentityEntity profileInfo = EntityBuilder.buildEntityIdentity(identity, uriInfo.getPath(), RestUtils.getQueryParam(uriInfo, "expand"));
     
-    return Util.getResponse(profileInfo, uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
+    return EntityBuilder.getResponse(profileInfo, uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
   }
   
 
@@ -174,7 +154,7 @@ public class IdentityRestResourcesV1 extends AbstractSocialRestService implement
   @Path("{id}")
   @RolesAllowed("users")
   public Response deleteIdentityById(@Context UriInfo uriInfo) throws Exception {
-    String id = getPathParam("id");
+    String id = RestUtils.getPathParam(uriInfo, "id");
     if (! RestUtils.isMemberOfAdminGroup()) {
       throw new WebApplicationException(Response.Status.UNAUTHORIZED);
     }
@@ -188,16 +168,11 @@ public class IdentityRestResourcesV1 extends AbstractSocialRestService implement
     //delete identity
     identityManager.hardDeleteIdentity(identity);
     identity = identityManager.getIdentity(id, true);
-    
-    Map<String, Object> profileInfo = RestUtils.buildEntityFromIdentity(identity, uriInfo.getPath(), getQueryParam("expand"));
-    profileInfo.put(RestProperties.REMOTE_ID, identity.getRemoteId());
-    profileInfo.put(RestProperties.PROVIDER_ID, identity.getProviderId());
-    profileInfo.put(RestProperties.GLOBAL_ID, identity.getGlobalId());
-    
-    return Util.getResponse(profileInfo, uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
+    IdentityEntity profileInfo = EntityBuilder.buildEntityIdentity(identity, uriInfo.getPath(), RestUtils.getQueryParam(uriInfo, "expand"));
+
+    return EntityBuilder.getResponse(profileInfo, uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
   }
   
-
   /**
    * {@inheritDoc}
    */
@@ -205,8 +180,8 @@ public class IdentityRestResourcesV1 extends AbstractSocialRestService implement
   @Path("{id}/relationships")
   @RolesAllowed("users")
   public Response getRelationshipsOfIdentity(@Context UriInfo uriInfo) throws Exception {
-    String id = getPathParam("id");
-    String with = getQueryParam("with");
+    String id = RestUtils.getPathParam(uriInfo, "id");
+    String with = RestUtils.getQueryParam(uriInfo, "with");
     
     IdentityManager identityManager = CommonsUtils.getService(IdentityManager.class);
     Identity identity = identityManager.getIdentity(id, true);
@@ -226,28 +201,20 @@ public class IdentityRestResourcesV1 extends AbstractSocialRestService implement
       if (relationship == null) {
         throw new WebApplicationException(Response.Status.UNAUTHORIZED);
       }
-      return Util.getResponse(RestUtils.buildEntityFromRelationship(relationship, uriInfo.getPath(), getQueryParam("expand"), false), uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
+      return EntityBuilder.getResponse(EntityBuilder.buildEntityRelationship(relationship, uriInfo.getPath(),
+                                                                             RestUtils.getQueryParam(uriInfo, "expand"), false),
+                                                                             uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
     }
-    
-    int limit = getQueryValueLimit();
-    int offset = getQueryValueOffset();
-    
+
+    int limit = RestUtils.getLimit(uriInfo);
+    int offset = RestUtils.getOffset(uriInfo);
+
     List<Relationship> relationships = relationshipManager.getRelationshipsByStatus(identity, Relationship.Type.ALL, offset, limit);
-    int size = getQueryValueReturnSize() ? relationshipManager.getRelationshipsCountByStatus(identity, Relationship.Type.ALL) : -1;
-    
-    RelationshipsCollections collections = new RelationshipsCollections(size, offset, limit);
-    collections.setRelationships(buildRelationshipsCollections(relationships, uriInfo));
-    
-    return Util.getResponse(collections, uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
-  }
-  
-  private List<Map<String, Object>> buildRelationshipsCollections(List<Relationship> relationships, UriInfo uriInfo) {
-    List<Map<String, Object>> infos = new ArrayList<Map<String, Object>>();
-    for (Relationship relationship : relationships) {
-      Map<String, Object> map = RestUtils.buildEntityFromRelationship(relationship, uriInfo.getPath(), getQueryParam("expand"), true);
-      //
-      infos.add(map);
+    List<DataEntity> relationshipEntities = EntityBuilder.buildRelationshipEntities(relationships, uriInfo);
+    CollectionEntity collectionRelationship = new CollectionEntity(relationshipEntities, RestProperties.RELATIONSHIPS, offset, limit);
+    if (RestUtils.isReturnSize(uriInfo)) {
+      collectionRelationship.setSize(relationshipManager.getRelationshipsCountByStatus(identity, Relationship.Type.ALL));
     }
-    return infos;
+    return EntityBuilder.getResponse(collectionRelationship, uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
   }
 }

@@ -6,22 +6,18 @@ import java.util.List;
 import org.exoplatform.services.rest.impl.ContainerResponse;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
-import org.exoplatform.social.core.manager.ActivityManager;
 import org.exoplatform.social.core.manager.IdentityManager;
-import org.exoplatform.social.core.manager.RelationshipManager;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
-import org.exoplatform.social.rest.entity.IdentitiesCollections;
-import org.exoplatform.social.rest.impl.identity.IdentityRestResourcesV1;
+import org.exoplatform.social.rest.entity.CollectionEntity;
+import org.exoplatform.social.service.rest.api.VersionResources;
 import org.exoplatform.social.service.test.AbstractResourceTest;
 
 public class IdentityRestResourcesTest extends AbstractResourceTest {
   private IdentityManager identityManager;
-  private ActivityManager activityManager;
-  private RelationshipManager relationshipManager;
   private SpaceService spaceService;
   
-  private IdentityRestResourcesV1 identitySocialRestService;
+  private IdentityRestResourcesV1 identityRestResourcesV1;
   
   private List<Space> tearDownSpaceList;
   
@@ -37,8 +33,6 @@ public class IdentityRestResourcesTest extends AbstractResourceTest {
     tearDownSpaceList = new ArrayList<Space>();
     
     identityManager = (IdentityManager) getContainer().getComponentInstanceOfType(IdentityManager.class);
-    activityManager = (ActivityManager) getContainer().getComponentInstanceOfType(ActivityManager.class);
-    relationshipManager = (RelationshipManager) getContainer().getComponentInstanceOfType(RelationshipManager.class);
     spaceService = (SpaceService) getContainer().getComponentInstanceOfType(SpaceService.class);
     
     rootIdentity = identityManager.getOrCreateIdentity("organization", "root", true);
@@ -46,8 +40,8 @@ public class IdentityRestResourcesTest extends AbstractResourceTest {
     maryIdentity = identityManager.getOrCreateIdentity("organization", "mary", true);
     demoIdentity = identityManager.getOrCreateIdentity("organization", "demo", true);
     
-    identitySocialRestService = new IdentityRestResourcesV1();
-    registry(identitySocialRestService);
+    identityRestResourcesV1 = new IdentityRestResourcesV1();
+    registry(identityRestResourcesV1);
   }
 
   public void tearDown() throws Exception {
@@ -65,15 +59,15 @@ public class IdentityRestResourcesTest extends AbstractResourceTest {
     identityManager.deleteIdentity(demoIdentity);
     
     super.tearDown();
-    unregistry(identitySocialRestService);
+    removeResource(IdentityRestResourcesV1.class);
   }
 
   public void testGetIdentities() throws Exception {
     startSessionAs("root");
-    ContainerResponse response = service("GET", "/v1/social/identities?limit=5&offset=0", "", null, null);
+    ContainerResponse response = service("GET", "/" + VersionResources.VERSION_ONE + "/social/identities?limit=5&offset=0", "", null, null);
     assertNotNull(response);
     assertEquals(200, response.getStatus());
-    IdentitiesCollections collections = (IdentitiesCollections) response.getEntity();
-    assertEquals(4, collections.getIdentities().size());
+    CollectionEntity collections = (CollectionEntity) response.getEntity();
+    assertEquals(4, collections.getEntities().size());
   }
 }
