@@ -28,38 +28,38 @@ import org.json.JSONObject;
 
 public class CollectionEntity extends LinkedHashMap<String, Object> {
   private static final long serialVersionUID = 5157400162426650346L;
-  private int size   = -1;
-  private int limit  = -1;
-  private int offset = 0;
+  private final String key;
 
   public CollectionEntity(List<? extends DataEntity> entities, String key, int offset, int limit) {
      put(key, entities);
-     this.offset = offset;
-     this.limit = limit;
+     put("offset", offset);
+     put("limit", limit);
+     this.key = key;
   }
 
   public int getSize() {
-    return size;
+    Integer size = (Integer) get("size");
+    return (size == null) ? -1 : size;
   }
 
   public void setSize(int size) {
-    this.size = size;
+    put("size", size);
   }
 
   public int getLimit() {
-    return limit;
+    return (Integer) get("limit");
   }
 
   public void setLimit(int limit) {
-    this.limit = limit;
+    put("limit", limit);
   }
 
   public int getOffset() {
-    return offset;
+    return (Integer) get("offset");
   }
-
+  
   public void setOffset(int offset) {
-    this.offset = offset;
+    put("offset", offset);
   }
 
   public List<? extends DataEntity> getEntities() {
@@ -71,12 +71,13 @@ public class CollectionEntity extends LinkedHashMap<String, Object> {
     return new ArrayList<DataEntity>();
   }
 
-  public List<DataEntity> extractInfo(List<String> returnedProperties) {
+  public CollectionEntity extractInfo(List<String> returnedProperties) {
     List<DataEntity> returnedInfos = new ArrayList<DataEntity>();
     for (DataEntity inEntity : getEntities()) {
       returnedInfos.add(RestUtils.extractInfo(inEntity, returnedProperties));
     }
-    return returnedInfos;
+    put(key, returnedInfos);
+    return this;
   }
 
   @Override
@@ -85,7 +86,7 @@ public class CollectionEntity extends LinkedHashMap<String, Object> {
   }
 
   public JSONObject toJSONObject() {
-    if (offset == 0 && limit == 0) {
+    if (getOffset() == 0 && getLimit() == 0) {
       return new JSONObject(getEntities());
     }
     return new JSONObject(this);

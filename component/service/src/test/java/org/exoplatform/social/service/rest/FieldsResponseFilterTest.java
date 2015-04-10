@@ -2,7 +2,6 @@ package org.exoplatform.social.service.rest;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import org.exoplatform.services.rest.impl.ContainerResponse;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
@@ -14,7 +13,8 @@ import org.exoplatform.social.core.manager.RelationshipManager;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
 import org.exoplatform.social.core.storage.api.IdentityStorage;
-import org.exoplatform.social.rest.entity.ActivitiesCollections;
+import org.exoplatform.social.rest.entity.ActivityEntity;
+import org.exoplatform.social.rest.entity.CollectionEntity;
 import org.exoplatform.social.rest.impl.activity.ActivityRestResourcesV1;
 import org.exoplatform.social.service.test.AbstractResourceTest;
 
@@ -73,7 +73,7 @@ public class FieldsResponseFilterTest extends AbstractResourceTest {
     identityStorage.deleteIdentity(demoIdentity);
     
     super.tearDown();
-    unregistry(activitySocialRestServiceV1);
+    removeResource(activitySocialRestServiceV1.getClass());
   }
   
   public void testGetActivitiesWithFields() throws Exception {
@@ -94,29 +94,30 @@ public class FieldsResponseFilterTest extends AbstractResourceTest {
     maryActivity.setTitle("mary activity");
     activityManager.saveActivityNoReturn(maryIdentity, maryActivity);
     
-    ContainerResponse response = service("GET", "/v1/social/activities?limit=5&offset=0", "", null, null);
+    ContainerResponse response = service("GET", getURLResource("activities?limit=5&offset=0"), "", null, null);
     assertNotNull(response);
     assertEquals(200, response.getStatus());
     
-    ActivitiesCollections collections = (ActivitiesCollections) response.getEntity();
+    CollectionEntity collections = (CollectionEntity) response.getEntity();
     //must return one activity of root and one of demo
-    assertEquals(2, collections.getActivities().size());
-    Map<String, Object> result = collections.getActivities().get(0);
-    assertEquals("demo activity", result.get(RestProperties.TITLE));
-    result = collections.getActivities().get(1);
-    assertEquals("root activity", result.get(RestProperties.TITLE));
+    assertEquals(2, collections.getEntities().size());
+    ActivityEntity activityEntity = getBaseEntity(collections.getEntities().get(0), ActivityEntity.class);
+    
+    assertEquals("demo activity", activityEntity.getTitle());
+    activityEntity = getBaseEntity(collections.getEntities().get(1), ActivityEntity.class);
+    assertEquals("root activity", activityEntity.getTitle());
     
     //
-    response = service("GET", "/v1/social/activities?limit=5&offset=0&fields=id,title", "", null, null);
+    response = service("GET", getURLResource("activities?limit=5&offset=0&fields=id,title"), "", null, null);
     assertNotNull(response);
     assertEquals(200, response.getStatus());
     
-    collections = (ActivitiesCollections) response.getEntity();
-    result = collections.getActivities().get(0);
+    collections = (CollectionEntity) response.getEntity();
+    activityEntity = getBaseEntity(collections.getEntities().get(0), ActivityEntity.class);
     
-    assertNotNull(result.get(RestProperties.ID));
-    assertNotNull(result.get(RestProperties.TITLE));
-    assertNull(result.get(RestProperties.COMMENTS));
+    assertNotNull(activityEntity.getId());
+    assertNotNull(activityEntity.getTitle());
+//    assertNull(activityEntity.getComments());
     
     activityManager.deleteActivity(maryActivity);
     activityManager.deleteActivity(demoActivity);
