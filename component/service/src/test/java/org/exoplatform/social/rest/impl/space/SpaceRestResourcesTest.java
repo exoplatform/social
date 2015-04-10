@@ -2,7 +2,6 @@ package org.exoplatform.social.rest.impl.space;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import org.exoplatform.services.rest.impl.ContainerResponse;
 import org.exoplatform.social.common.RealtimeListAccess;
@@ -15,11 +14,8 @@ import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.space.impl.DefaultSpaceApplicationHandler;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
-import org.exoplatform.social.rest.entity.ActivitiesCollections;
-import org.exoplatform.social.rest.entity.SpacesCollections;
-import org.exoplatform.social.rest.entity.UsersCollections;
-import org.exoplatform.social.rest.impl.space.SpaceRestResourcesV1;
-import org.exoplatform.social.service.rest.RestProperties;
+import org.exoplatform.social.rest.entity.CollectionEntity;
+import org.exoplatform.social.rest.entity.SpaceEntity;
 import org.exoplatform.social.service.test.AbstractResourceTest;
 
 public class SpaceRestResourcesTest extends AbstractResourceTest {
@@ -27,7 +23,7 @@ public class SpaceRestResourcesTest extends AbstractResourceTest {
   private ActivityManager activityManager;
   private SpaceService spaceService;
   
-  private SpaceRestResourcesV1 spaceSocialRestService;
+  private SpaceRestResourcesV1 spaceRestResources;
   
   private List<Space> tearDownSpaceList;
   private List<ExoSocialActivity> tearDownActivitiesList;
@@ -53,8 +49,8 @@ public class SpaceRestResourcesTest extends AbstractResourceTest {
     maryIdentity = identityManager.getOrCreateIdentity("organization", "mary", true);
     demoIdentity = identityManager.getOrCreateIdentity("organization", "demo", true);
     
-    spaceSocialRestService = new SpaceRestResourcesV1();
-    registry(spaceSocialRestService);
+    spaceRestResources = new SpaceRestResourcesV1();
+    registry(spaceRestResources);
   }
 
   public void tearDown() throws Exception {
@@ -74,7 +70,7 @@ public class SpaceRestResourcesTest extends AbstractResourceTest {
     identityManager.deleteIdentity(demoIdentity);
     
     super.tearDown();
-    unregistry(spaceSocialRestService);
+    removeResource(spaceRestResources.getClass());
   }
 
   public void testGetSpaces() throws Exception {
@@ -82,32 +78,32 @@ public class SpaceRestResourcesTest extends AbstractResourceTest {
     getSpaceInstance(1, "root");
     getSpaceInstance(2, "root");
     startSessionAs("root");
-    ContainerResponse response = service("GET", "/v1/social/spaces?limit=5&offset=0", "", null, null);
+    ContainerResponse response = service("GET", getURLResource("spaces?limit=5&offset=0"), "", null, null);
     assertNotNull(response);
     assertEquals(200, response.getStatus());
-    SpacesCollections spaces = (SpacesCollections) response.getEntity();
-    assertEquals(2, spaces.getSpaces().size());
+    CollectionEntity collections = (CollectionEntity) response.getEntity();
+    assertEquals(2, collections.getEntities().size());
     
     //demo creates 1 space
     startSessionAs("demo");
     getSpaceInstance(3, "demo");
-    response = service("GET", "/v1/social/spaces?limit=5&offset=0", "", null, null);
+    response = service("GET", getURLResource("spaces?limit=5&offset=0"), "", null, null);
     assertEquals(200, response.getStatus());
-    spaces = (SpacesCollections) response.getEntity();
+    collections = (CollectionEntity) response.getEntity();
     //demo is member of only one space then he got just 1 result
-    assertEquals(1, spaces.getSpaces().size());
+    assertEquals(1, collections.getEntities().size());
   }
   
   public void testCreateSpace() throws Exception {
     startSessionAs("root");
     String input = "{\"displayName\":social}";
     //root try to update demo activity
-    ContainerResponse response = getResponse("POST", "/v1/social/spaces/", input);
+    ContainerResponse response = getResponse("POST", getURLResource("spaces/"), input);
     assertNotNull(response);
     assertEquals(200, response.getStatus());
     
-    Map<String, Object> result = (Map<String, Object>) response.getEntity();
-    Space space = spaceService.getSpaceById(result.get(RestProperties.ID).toString());
+    SpaceEntity spaceEntity = getBaseEntity(response.getEntity(), SpaceEntity.class);
+    Space space = spaceService.getSpaceById(spaceEntity.getId());
     assertNotNull(space);
     assertEquals("social", space.getDisplayName());
     
@@ -119,17 +115,18 @@ public class SpaceRestResourcesTest extends AbstractResourceTest {
     //root creates 1 spaces
     Space space = getSpaceInstance(1, "root");
     startSessionAs("root");
-    ContainerResponse response = service("GET", "/v1/social/spaces/" + space.getId(), "", null, null);
+    ContainerResponse response = service("GET", getURLResource("spaces/" + space.getId()), "", null, null);
     assertNotNull(response);
     assertEquals(200, response.getStatus());
-    Map<String, Object> result = (Map<String, Object>) response.getEntity();
-    assertEquals("space1", result.get(RestProperties.DISPLAY_NAME).toString());
-    assertEquals(Space.PRIVATE, result.get(RestProperties.VISIBILITY).toString());
+    
+    SpaceEntity spaceEntity = getBaseEntity(response.getEntity(), SpaceEntity.class);
+    assertEquals("space1", spaceEntity.getDisplayName());
+    assertEquals(Space.PRIVATE, spaceEntity.getVisibility());
     
     //root update space's description and name
-    String spaceId = result.get(RestProperties.ID).toString();
+    String spaceId = spaceEntity.getId();
     String input = "{\"displayName\":displayName_updated, \"description\":description_updated}";
-    response = getResponse("PUT", "/v1/social/spaces/" + spaceId, input);
+    response = getResponse("PUT", getURLResource("spaces/" + spaceId), input);
     assertNotNull(response);
     assertEquals(200, response.getStatus());
     space = spaceService.getSpaceById(spaceId);
@@ -137,7 +134,7 @@ public class SpaceRestResourcesTest extends AbstractResourceTest {
     assertEquals("description_updated", space.getDescription());
     
     //root delete his space
-    response = service("DELETE", "/v1/social/spaces/" + space.getId(), "", null, null);
+    response = service("DELETE", getURLResource("spaces/" + space.getId()), "", null, null);
     assertNotNull(response);
     assertEquals(200, response.getStatus());
     space = spaceService.getSpaceById(spaceId);
@@ -155,17 +152,17 @@ public class SpaceRestResourcesTest extends AbstractResourceTest {
     spaceService.updateSpace(space);
     
     startSessionAs("root");
-    ContainerResponse response = service("GET", "/v1/social/spaces/" + space.getId() + "/users", "", null, null);
+    ContainerResponse response = service("GET", getURLResource("spaces/" + space.getId() + "/users"), "", null, null);
     assertNotNull(response);
     assertEquals(200, response.getStatus());
-    UsersCollections collections = (UsersCollections) response.getEntity();
-    assertEquals(4, collections.getUsers().size());
+    CollectionEntity collections = (CollectionEntity) response.getEntity();
+    assertEquals(4, collections.getEntities().size());
     
-    response = service("GET", "/v1/social/spaces/" + space.getId() + "/users?role=manager", "", null, null);
+    response = service("GET", getURLResource("spaces/" + space.getId() + "/users?role=manager"), "", null, null);
     assertNotNull(response);
     assertEquals(200, response.getStatus());
-    collections = (UsersCollections) response.getEntity();
-    assertEquals(2, collections.getUsers().size());
+    collections = (CollectionEntity) response.getEntity();
+    assertEquals(2, collections.getEntities().size());
   }
   
   public void testGetActivitiesSpaceById() throws Exception {
@@ -181,15 +178,15 @@ public class SpaceRestResourcesTest extends AbstractResourceTest {
     }
     
     startSessionAs("root");
-    ContainerResponse response = service("GET", "/v1/social/spaces/" + space.getId() + "/activities", "", null, null);
+    ContainerResponse response = service("GET", getURLResource("spaces/" + space.getId() + "/activities"), "", null, null);
     assertNotNull(response);
     assertEquals(200, response.getStatus());
-    ActivitiesCollections activitiesCollections = (ActivitiesCollections) response.getEntity();
-    assertEquals(5, activitiesCollections.getActivities().size());
+    CollectionEntity activitiesCollections = (CollectionEntity) response.getEntity();
+    assertEquals(5, activitiesCollections.getEntities().size());
     
     //root posts another activity
     String input = "{\"title\":title6}";
-    response = getResponse("POST", "/v1/social/spaces/" + space.getId() + "/activities", input);
+    response = getResponse("POST", getURLResource("spaces/" + space.getId() + "/activities"), input);
     assertNotNull(response);
     assertEquals(200, response.getStatus());
     

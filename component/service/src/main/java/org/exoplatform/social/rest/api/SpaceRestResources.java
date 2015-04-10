@@ -1,3 +1,20 @@
+/*
+ * Copyright (C) 2003-2015 eXo Platform SAS.
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Affero General Public License
+ * as published by the Free Software Foundation; either version 3
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, see<http://www.gnu.org/licenses/>.
+*/
+
 package org.exoplatform.social.rest.api;
 
 import javax.ws.rs.DELETE;
@@ -9,7 +26,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
-import org.exoplatform.social.service.rest.SpaceRestIn;
+import org.exoplatform.social.rest.entity.SpaceEntity;
 import org.exoplatform.social.service.rest.api.models.ActivityRestIn;
 
 public interface SpaceRestResources extends SocialRest {
@@ -32,8 +49,7 @@ public interface SpaceRestResources extends SocialRest {
    * @throws Exception
    */
   @POST
-  public abstract Response createSpace(@Context UriInfo uriInfo,
-                                         SpaceRestIn model) throws Exception;
+  public abstract Response createSpace(@Context UriInfo uriInfo, SpaceEntity model) throws Exception;
 
   /**
    * Process to return a space by id
@@ -55,8 +71,7 @@ public interface SpaceRestResources extends SocialRest {
    */
   @PUT
   @Path("{id}")
-  public abstract Response updateSpaceById(@Context UriInfo uriInfo,
-                                             SpaceRestIn model) throws Exception;
+  public abstract Response updateSpaceById(@Context UriInfo uriInfo, SpaceEntity model) throws Exception;
 
   /**
    * Process to delete a space by id
@@ -78,8 +93,7 @@ public interface SpaceRestResources extends SocialRest {
    */
   @GET
   @Path("{id}/users")
-  public abstract Response getSpaceMembers(@Context UriInfo uriInfo)
-      throws Exception;
+  public abstract Response getSpaceMembers(@Context UriInfo uriInfo) throws Exception;
 
   /**
    * Process to return a space by id
@@ -94,7 +108,6 @@ public interface SpaceRestResources extends SocialRest {
 
   @POST
   @Path("{id}/activities")
-  public abstract Response postActivityOnSpace(@Context UriInfo uriInfo,
-                                                 ActivityRestIn model) throws Exception;
+  public abstract Response postActivityOnSpace(@Context UriInfo uriInfo, ActivityRestIn model) throws Exception;
 
 }
