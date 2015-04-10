@@ -19,7 +19,6 @@ package org.exoplatform.social.rest.impl.spacemembership;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.DELETE;
@@ -41,15 +40,16 @@ import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvide
 import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
-import org.exoplatform.social.rest.api.AbstractSocialRestService;
+import org.exoplatform.social.rest.api.EntityBuilder;
+import org.exoplatform.social.rest.api.RestUtils;
 import org.exoplatform.social.rest.api.SpaceMembershipRestResources;
-import org.exoplatform.social.rest.entity.SpaceMembershipRestIn;
-import org.exoplatform.social.rest.entity.SpaceMembershipsCollections;
-import org.exoplatform.social.service.rest.RestUtils;
-import org.exoplatform.social.service.rest.Util;
+import org.exoplatform.social.rest.entity.CollectionEntity;
+import org.exoplatform.social.rest.entity.DataEntity;
+import org.exoplatform.social.rest.entity.SpaceMembershipEntity;
+import org.exoplatform.social.service.rest.api.VersionResources;
 
-@Path("v1/social/spacesMemberships")
-public class SpaceMembershipRestResourcesV1 extends AbstractSocialRestService implements SpaceMembershipRestResources {
+@Path(VersionResources.VERSION_ONE + "/social/spacesMemberships")
+public class SpaceMembershipRestResourcesV1 implements SpaceMembershipRestResources {
   
   private static final String SPACE_PREFIX = "/space/";
   
@@ -64,12 +64,12 @@ public class SpaceMembershipRestResourcesV1 extends AbstractSocialRestService im
   @RolesAllowed("users")
   public Response getSpacesMemberships(@Context UriInfo uriInfo) throws Exception {
     //
-    int limit = getQueryValueLimit();
-    int offset = getQueryValueOffset();
+    int limit = RestUtils.getLimit(uriInfo);
+    int offset = RestUtils.getOffset(uriInfo);
 
     SpaceService spaceService = CommonsUtils.getService(SpaceService.class);
     Space givenSpace = null;
-    String space= getQueryParam("space");
+    String space= RestUtils.getQueryParam(uriInfo, "space");
     if (space != null) {
       givenSpace = spaceService.getSpaceByDisplayName(space);
       if (givenSpace == null) {
@@ -79,7 +79,7 @@ public class SpaceMembershipRestResourcesV1 extends AbstractSocialRestService im
     
     IdentityManager identityManager = CommonsUtils.getService(IdentityManager.class);
     Identity identity = null;
-    String user = getQueryParam("user");
+    String user = RestUtils.getQueryParam(uriInfo, "user");
     if (user != null) {
       identity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, user, true);
       if (identity == null) {
@@ -88,31 +88,28 @@ public class SpaceMembershipRestResourcesV1 extends AbstractSocialRestService im
     }
     
     int size;
-    String status = getQueryParam("status");
+//    String status = RestUtils.getQueryParam(uriInfo, "status");
     ListAccess<Space> listAccess = null;
     List<Space> spaces = new ArrayList<Space>();
     if (givenSpace == null) {
       listAccess = (identity == null) ? spaceService.getAllSpacesWithListAccess() : spaceService.getMemberSpaces(user);
       spaces = Arrays.asList(listAccess.load(offset, limit));
-      size = getQueryValueReturnSize() ? listAccess.getSize() : -1;
+      size = RestUtils.isReturnSize(uriInfo) ? listAccess.getSize() : -1;
     } else {
       spaces.add(givenSpace);
-      size = getQueryValueReturnSize() ? spaces.size() : -1;
+      size = RestUtils.isReturnSize(uriInfo) ? spaces.size() : -1;
     }
     
-    List<Map<String, Object>> spaceMemberships = new ArrayList<Map<String, Object>>();
-    setSpaceMemberships(spaceMemberships, spaces, user, uriInfo);
-    
-    SpaceMembershipsCollections membershipsCollections = new SpaceMembershipsCollections(size, offset, limit);
-    membershipsCollections.setSpaceMemberships(spaceMemberships);
-    
-    return Util.getResponse(membershipsCollections, uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
+    List<DataEntity> spaceMemberships = getSpaceMemberships(spaces, user, uriInfo);
+    CollectionEntity spacesMemberships = new CollectionEntity(spaceMemberships, EntityBuilder.SPACES_MEMBERSHIP_TYPE, offset, limit);
+    spacesMemberships.setSize(size);
+    return EntityBuilder.getResponse(spacesMemberships, uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
   }
   
   @POST
   @RolesAllowed("users")
   public Response addSpacesMemberships(@Context UriInfo uriInfo,
-                                        SpaceMembershipRestIn model) throws Exception {
+                                        SpaceMembershipEntity model) throws Exception {
     if (model == null || model.getUser() == null || model.getSpace() == null) {
       throw new WebApplicationException(Response.Status.UNAUTHORIZED);
     }
@@ -140,15 +137,16 @@ public class SpaceMembershipRestResourcesV1 extends AbstractSocialRestService im
     } else {
       throw new WebApplicationException(Response.Status.UNAUTHORIZED);
     }
-    
-    return Util.getResponse(RestUtils.buildEntityFromSpaceMembership(givenSpace, user, "", uriInfo.getPath(), getQueryParam("expand")), uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
+    SpaceMembershipEntity membershipEntity = EntityBuilder.buildEntityFromSpaceMembership(givenSpace, user, "", uriInfo.getPath(),
+                                                                                          RestUtils.getQueryParam(uriInfo, "expand"));
+    return EntityBuilder.getResponse(membershipEntity, uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
   }
   
   @GET
   @Path("{id}") //id must have this format spaceName:userName:type
   @RolesAllowed("users")
   public Response getSpaceMembershipById(@Context UriInfo uriInfo) throws Exception {
-    String[] idParams = getPathParam("id").split(":");
+    String[] idParams = RestUtils.getPathParam(uriInfo, "id").split(":");
     if (idParams.length != 3) {
       throw new WebApplicationException(Response.Status.UNAUTHORIZED);
     }
@@ -169,15 +167,17 @@ public class SpaceMembershipRestResourcesV1 extends AbstractSocialRestService im
       throw new WebApplicationException(Response.Status.UNAUTHORIZED);
     }
     //
-    return Util.getResponse(RestUtils.buildEntityFromSpaceMembership(space, idParams[1], idParams[2], uriInfo.getPath(), getQueryParam("expand")), uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
+    SpaceMembershipEntity membershipEntity = EntityBuilder.buildEntityFromSpaceMembership(space, idParams[1], idParams[2], uriInfo.getPath(),
+                                                                                          RestUtils.getQueryParam(uriInfo, "expand"));
+    return EntityBuilder.getResponse(membershipEntity, uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
   }
   
   @PUT
   @Path("{id}")
   @RolesAllowed("users")
   public Response updateSpaceMembershipById(@Context UriInfo uriInfo,
-                                             SpaceMembershipRestIn model) throws Exception {
-    String[] idParams = getPathParam("id").split(":");
+                                            SpaceMembershipEntity model) throws Exception {
+    String[] idParams = RestUtils.getPathParam(uriInfo, "id").split(":");
     if (idParams.length != 3) {
       throw new WebApplicationException(Response.Status.UNAUTHORIZED);
     }
@@ -209,14 +209,16 @@ public class SpaceMembershipRestResourcesV1 extends AbstractSocialRestService im
     }
     //
     String role = idParams[2];
-    return Util.getResponse(RestUtils.buildEntityFromSpaceMembership(space, targetUser, role, uriInfo.getPath(), getQueryParam("expand")), uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
+    SpaceMembershipEntity membershipEntity = EntityBuilder.buildEntityFromSpaceMembership(space, targetUser, role, uriInfo.getPath(),
+                                                                                          RestUtils.getQueryParam(uriInfo, "expand"));    
+    return EntityBuilder.getResponse(membershipEntity, uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
   }
   
   @DELETE
   @Path("{id}")
   @RolesAllowed("users")
   public Response deleteSpaceMembershipById(@Context UriInfo uriInfo) throws Exception {
-    String[] idParams = getPathParam("id").split(":");
+    String[] idParams = RestUtils.getPathParam(uriInfo, "id").split(":");
     if (idParams.length != 3) {
       throw new WebApplicationException(Response.Status.UNAUTHORIZED);
     }
@@ -251,36 +253,35 @@ public class SpaceMembershipRestResourcesV1 extends AbstractSocialRestService im
       spaceService.removeMember(space, targetUser);
     }
     //
-    return Util.getResponse(RestUtils.buildEntityFromSpaceMembership(space, targetUser, role, uriInfo.getPath(), getQueryParam("expand")), uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
+    SpaceMembershipEntity membershipEntity = EntityBuilder.buildEntityFromSpaceMembership(space, targetUser, role, uriInfo.getPath(),
+                                                                                          RestUtils.getQueryParam(uriInfo, "expand"));    
+    return EntityBuilder.getResponse(membershipEntity, uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
   }
   
-  private void setSpaceMemberships(List<Map<String, Object>> spaceMemberships, List<Space> spaces, 
-      String userId, UriInfo uriInfo) {
+  private List<DataEntity> getSpaceMemberships(List<Space> spaces, String userId, UriInfo uriInfo) {
+    List<DataEntity> spaceMemberships = new ArrayList<DataEntity>();
+    SpaceMembershipEntity membershipEntity = null;
     for (Space space : spaces) {
       if (userId != null) {
         if (ArrayUtils.contains(space.getMembers(), userId)) {
-          spaceMemberships.add(RestUtils.buildEntityFromSpaceMembership(space, userId, "member", uriInfo.getPath(), getQueryParam("expand")));
+          membershipEntity = EntityBuilder.buildEntityFromSpaceMembership(space, userId, "member", uriInfo.getPath(), RestUtils.getQueryParam(uriInfo, "expand"));
+          spaceMemberships.add(membershipEntity.getDataEntity());
         }
         if (ArrayUtils.contains(space.getManagers(), userId)) {
-          spaceMemberships.add(RestUtils.buildEntityFromSpaceMembership(space, userId, "manager", uriInfo.getPath(), getQueryParam("expand")));
+          membershipEntity = EntityBuilder.buildEntityFromSpaceMembership(space, userId, "manager", uriInfo.getPath(), RestUtils.getQueryParam(uriInfo, "expand"));
+          spaceMemberships.add(membershipEntity.getDataEntity());
         }
       } else {
         for (String user : space.getMembers()) {
-          spaceMemberships.add(RestUtils.buildEntityFromSpaceMembership(space, user, "member", uriInfo.getPath(), getQueryParam("expand")));
+          membershipEntity = EntityBuilder.buildEntityFromSpaceMembership(space, user, "member", uriInfo.getPath(), RestUtils.getQueryParam(uriInfo, "expand"));
+          spaceMemberships.add(membershipEntity.getDataEntity());
         }
         for (String user : space.getManagers()) {
-          spaceMemberships.add(RestUtils.buildEntityFromSpaceMembership(space, user, "manager", uriInfo.getPath(), getQueryParam("expand")));
+          membershipEntity = EntityBuilder.buildEntityFromSpaceMembership(space, user, "manager", uriInfo.getPath(), RestUtils.getQueryParam(uriInfo, "expand"));
+          spaceMemberships.add(membershipEntity.getDataEntity());
         }
       }
     }
+    return spaceMemberships;
   }
-  
-  private MembershipType getMembershipType(String status) {
-    try {
-      return MembershipType.valueOf(status);
-    } catch (Exception e) {
-      return MembershipType.ALL;
-    }
-  }
-  
 }

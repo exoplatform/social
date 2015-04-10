@@ -2,7 +2,6 @@ package org.exoplatform.social.rest.impl.spacemembership;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import javax.ws.rs.core.Response;
 
@@ -14,16 +13,14 @@ import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.space.impl.DefaultSpaceApplicationHandler;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
-import org.exoplatform.social.rest.entity.SpaceMembershipsCollections;
-import org.exoplatform.social.rest.impl.spacemembership.SpaceMembershipRestResourcesV1;
-import org.exoplatform.social.service.rest.RestProperties;
+import org.exoplatform.social.rest.entity.CollectionEntity;
 import org.exoplatform.social.service.test.AbstractResourceTest;
 
 public class SpaceMembershipRestResourcesTest extends AbstractResourceTest {
   private IdentityManager identityManager;
   private SpaceService spaceService;
   
-  private SpaceMembershipRestResourcesV1 spaceMembershipRestService;
+  private SpaceMembershipRestResourcesV1 membershipRestResources;
   
   private List<Space> tearDownSpaceList;
   
@@ -46,8 +43,8 @@ public class SpaceMembershipRestResourcesTest extends AbstractResourceTest {
     maryIdentity = identityManager.getOrCreateIdentity("organization", "mary", true);
     demoIdentity = identityManager.getOrCreateIdentity("organization", "demo", true);
     
-    spaceMembershipRestService = new SpaceMembershipRestResourcesV1();
-    registry(spaceMembershipRestService);
+    membershipRestResources = new SpaceMembershipRestResourcesV1();
+    registry(membershipRestResources);
   }
 
   public void tearDown() throws Exception {
@@ -65,7 +62,7 @@ public class SpaceMembershipRestResourcesTest extends AbstractResourceTest {
     identityManager.deleteIdentity(demoIdentity);
     
     super.tearDown();
-    unregistry(spaceMembershipRestService);
+    removeResource(membershipRestResources.getClass());
   }
 
   public void testGetSpaceMembersShip() throws Exception {
@@ -76,23 +73,23 @@ public class SpaceMembershipRestResourcesTest extends AbstractResourceTest {
     getSpaceInstance(4, "mary");
     
     startSessionAs("root");
-    ContainerResponse response = service("GET", "/v1/social/spacesMemberships", "", null, null);
+    ContainerResponse response = service("GET", getURLResource("spacesMemberships"), "", null, null);
     assertNotNull(response);
     assertEquals(200, response.getStatus());
-    SpaceMembershipsCollections collections = (SpaceMembershipsCollections) response.getEntity();
-    assertEquals(8, collections.getSpaceMemberships().size());
+    CollectionEntity collections = (CollectionEntity) response.getEntity();
+    assertEquals(8, collections.getEntities().size());
     
-    response = service("GET", "/v1/social/spacesMemberships?user=root", "", null, null);
+    response = service("GET", getURLResource("spacesMemberships?user=root"), "", null, null);
     assertNotNull(response);
     assertEquals(200, response.getStatus());
-    collections = (SpaceMembershipsCollections) response.getEntity();
-    assertEquals(4, collections.getSpaceMemberships().size());
+    collections = (CollectionEntity) response.getEntity();
+    assertEquals(4, collections.getEntities().size());
     
-    response = service("GET", "/v1/social/spacesMemberships?space=space3", "", null, null);
+    response = service("GET", getURLResource("spacesMemberships?space=space3"), "", null, null);
     assertNotNull(response);
     assertEquals(200, response.getStatus());
-    collections = (SpaceMembershipsCollections) response.getEntity();
-    assertEquals(2, collections.getSpaceMemberships().size());
+    collections = (CollectionEntity) response.getEntity();
+    assertEquals(2, collections.getEntities().size());
   }
   
   public void testAddSpaceMemberShip() throws Exception {
@@ -102,7 +99,7 @@ public class SpaceMembershipRestResourcesTest extends AbstractResourceTest {
     //root add demo as member of his space
     startSessionAs("root");
     String input = "{\"space\":space1, \"user\":demo}";
-    ContainerResponse response = getResponse("POST", "/v1/social/spacesMemberships", input);
+    ContainerResponse response = getResponse("POST", getURLResource("spacesMemberships"), input);
     assertNotNull(response);
     assertEquals(200, response.getStatus());
     
@@ -112,7 +109,7 @@ public class SpaceMembershipRestResourcesTest extends AbstractResourceTest {
     //demo add mary as member of space1 but has no permission
     startSessionAs("demo");
     input = "{\"space\":space1, \"user\":mary}";
-    response = getResponse("POST", "/v1/social/spacesMemberships", input);
+    response = getResponse("POST", getURLResource("spacesMemberships"), input);
     assertEquals(Response.Status.UNAUTHORIZED.getStatusCode(), response.getStatus());
   }
   
@@ -124,18 +121,18 @@ public class SpaceMembershipRestResourcesTest extends AbstractResourceTest {
     //root add demo as member of his space
     startSessionAs("root");
     String id = "space1:demo:member";
-    ContainerResponse response = service("GET", "/v1/social/spacesMemberships/" + id, "", null, null);
+    ContainerResponse response = service("GET", getURLResource("spacesMemberships/" + id), "", null, null);
     assertNotNull(response);
     assertEquals(200, response.getStatus());
     
     //update demo to manager
     String input = "{\"role\":manager}";
-    response = getResponse("PUT", "/v1/social/spacesMemberships/" + id, input);
+    response = getResponse("PUT", getURLResource("spacesMemberships/" + id), input);
     assertEquals(200, response.getStatus());
     assertTrue(spaceService.isManager(spaceService.getSpaceById(space.getId()), "demo"));
     
     //delete membership of demo from space1
-    response = service("DELETE", "/v1/social/spacesMemberships/" + id, "", null, null);
+    response = service("DELETE", getURLResource("spacesMemberships/" + id), "", null, null);
     assertEquals(200, response.getStatus());
     assertFalse(spaceService.isMember(spaceService.getSpaceById(space.getId()), "demo"));
   }
