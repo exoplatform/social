@@ -60,10 +60,6 @@
   </component>
 
   <component>
-    <type>org.exoplatform.social.service.rest.UsersRestService</type>
-  </component>
-
-  <component>
     <type>org.exoplatform.social.rest.impl.identity.IdentityRestResourcesV1</type>
   </component>
   <component>

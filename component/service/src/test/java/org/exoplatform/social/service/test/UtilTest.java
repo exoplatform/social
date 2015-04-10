@@ -16,15 +16,14 @@
  */
 package org.exoplatform.social.service.test;
 
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriInfo;
-
-import org.exoplatform.social.rest.entity.IdentitiesCollections;
-import org.exoplatform.social.rest.entity.ResourceCollections;
-import org.exoplatform.social.service.rest.Util;
+import java.util.Arrays;
 
 import junit.framework.TestCase;
+
+import org.exoplatform.social.rest.api.EntityBuilder;
+import org.exoplatform.social.rest.entity.CollectionEntity;
+import org.exoplatform.social.rest.entity.DataEntity;
+import org.exoplatform.social.service.rest.Util;
 
 
 /**
@@ -78,23 +77,23 @@ public class UtilTest extends TestCase {
    * Performs testing for {@link Util#buildLinkForHeader(Object, String)}
    */
   public void testBuildLinkForHeader() throws Exception {
-    IdentitiesCollections rc = new IdentitiesCollections(60, 0, 20);
-
+    CollectionEntity rc = new CollectionEntity(Arrays.asList(new DataEntity()), "key", 0, 20);
+    rc.setSize(60);
     String requestPath = "https://localhost:8080/rest/private/v1/social/identities";
     
     //
     rc.setOffset(0);
-    String linkForHeader = Util.buildLinkForHeader(rc, requestPath).toString();
+    String linkForHeader = EntityBuilder.buildLinkForHeader(rc, requestPath).toString();
     assertEquals("<https://localhost:8080/rest/private/v1/social/identities?offset=20&limit=20>; rel=\"next\", <https://localhost:8080/rest/private/v1/social/identities?offset=40&limit=20>; rel=\"last\"", linkForHeader);
 
     //
     rc.setOffset(60);
-    linkForHeader = Util.buildLinkForHeader(rc, requestPath).toString();
+    linkForHeader = EntityBuilder.buildLinkForHeader(rc, requestPath).toString();
     assertEquals("<https://localhost:8080/rest/private/v1/social/identities?offset=40&limit=20>; rel=\"prev\", <https://localhost:8080/rest/private/v1/social/identities?offset=0&limit=20>; rel=\"first\"", linkForHeader);
     
     //
     rc.setOffset(20);
-    linkForHeader = Util.buildLinkForHeader(rc, requestPath).toString();
+    linkForHeader = EntityBuilder.buildLinkForHeader(rc, requestPath).toString();
     assertEquals("<https://localhost:8080/rest/private/v1/social/identities?offset=40&limit=20>; rel=\"next\", <https://localhost:8080/rest/private/v1/social/identities?offset=0&limit=20>; rel=\"prev\", <https://localhost:8080/rest/private/v1/social/identities?offset=0&limit=20>; rel=\"first\", <https://localhost:8080/rest/private/v1/social/identities?offset=40&limit=20>; rel=\"last\"", linkForHeader);
   }
 }
