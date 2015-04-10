@@ -1,23 +1,24 @@
 package org.exoplatform.social.rest.impl.relationship;
 
 import java.util.List;
-import java.util.Map;
 
 import org.exoplatform.services.rest.impl.ContainerResponse;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.manager.RelationshipManager;
 import org.exoplatform.social.core.relationship.model.Relationship;
 import org.exoplatform.social.core.storage.api.IdentityStorage;
-import org.exoplatform.social.rest.entity.RelationshipsCollections;
-import org.exoplatform.social.rest.impl.relationship.RelationshipsRestResourcesV1;
-import org.exoplatform.social.service.rest.RestProperties;
+import org.exoplatform.social.rest.api.RestProperties;
+import org.exoplatform.social.rest.entity.CollectionEntity;
+import org.exoplatform.social.rest.entity.DataEntity;
+import org.exoplatform.social.rest.entity.RelationshipEntity;
+import org.exoplatform.social.service.rest.api.VersionResources;
 import org.exoplatform.social.service.test.AbstractResourceTest;
 
 public class RelationshipsRestResourcesTest extends AbstractResourceTest {
 
   private IdentityStorage identityStorage;
   private RelationshipManager relationshipManager;
-  private RelationshipsRestResourcesV1 relationshipsRestService;
+  private RelationshipsRestResourcesV1  relationshipsRestResources;
   
   private Identity rootIdentity;
   private Identity johnIdentity;
@@ -42,8 +43,8 @@ public class RelationshipsRestResourcesTest extends AbstractResourceTest {
     identityStorage.saveIdentity(maryIdentity);
     identityStorage.saveIdentity(demoIdentity);
     
-    relationshipsRestService = new RelationshipsRestResourcesV1();
-    registry(relationshipsRestService);
+    relationshipsRestResources = new RelationshipsRestResourcesV1();
+    registry(relationshipsRestResources);
   }
 
   public void tearDown() throws Exception {
@@ -53,7 +54,7 @@ public class RelationshipsRestResourcesTest extends AbstractResourceTest {
     identityStorage.deleteIdentity(demoIdentity);
     
     super.tearDown();
-    unregistry(relationshipsRestService);
+    removeResource(relationshipsRestResources.getClass());
   }
   
   public void testGetRelationships() throws Exception {
@@ -65,14 +66,15 @@ public class RelationshipsRestResourcesTest extends AbstractResourceTest {
     relationshipManager.update(relationship3);
     
     startSessionAs("root");
-    ContainerResponse response = service("GET", "/v1/social/relationships", "", null, null);
+    ContainerResponse response = service("GET", "/" + VersionResources.VERSION_ONE + "/social/relationships", "", null, null);
     assertNotNull(response);
     assertEquals(200, response.getStatus());
-    RelationshipsCollections result = (RelationshipsCollections) response.getEntity();
-    List<Map<String, Object>> relationships = result.getRelationships();
+    CollectionEntity collections = (CollectionEntity) response.getEntity();
+    List<? extends DataEntity> relationships = collections.getEntities();
     assertEquals(3, relationships.size());
-    assertEquals("localhost:8080/rest/v1/social/users/root", result.getRelationships().get(0).get(RestProperties.SENDER));
-    assertEquals("localhost:8080/rest/v1/social/users/mary", result.getRelationships().get(0).get(RestProperties.RECEIVER));
+    
+    assertEquals("/rest/" + VersionResources.VERSION_ONE + "/social/users/root", relationships.get(0).get(RestProperties.SENDER));
+    assertEquals("/rest/" + VersionResources.VERSION_ONE + "/social/users/mary", relationships.get(0).get(RestProperties.RECEIVER));
     
     //clean
     relationshipManager.delete(relationship1);
@@ -83,16 +85,17 @@ public class RelationshipsRestResourcesTest extends AbstractResourceTest {
   public void testCreateRelationship() throws Exception {
     startSessionAs("root");
     //
-    String input = "{\"sender\":root, \"receiver\":demo, \"status\":CONFIRMED}";
-    ContainerResponse response = getResponse("POST", "/v1/social/relationships/", input);
+    String input = "{\"sender\":\"root\", \"receiver\":\"demo\", \"status\":\"CONFIRMED\"}";
+    ContainerResponse response = getResponse("POST", "/" + VersionResources.VERSION_ONE + "/social/relationships/", input);
     assertNotNull(response);
     assertEquals(200, response.getStatus());
-    Map<String, Object> result = (Map<String, Object>) response.getEntity();
-    assertEquals("localhost:8080/rest/v1/social/users/root", result.get(RestProperties.SENDER));
-    assertEquals("localhost:8080/rest/v1/social/users/demo", result.get(RestProperties.RECEIVER));
-    assertEquals("CONFIRMED", result.get(RestProperties.STATUS));
     
-    Relationship relationship = relationshipManager.get(result.get(RestProperties.ID).toString());
+    RelationshipEntity result = getBaseEntity(response.getEntity(), RelationshipEntity.class);
+    assertEquals("/rest/" + VersionResources.VERSION_ONE + "/social/users/root", result.getSender());
+    assertEquals("/rest/" + VersionResources.VERSION_ONE + "/social/users/demo", result.getReceiver());
+    assertEquals("CONFIRMED", result.getStatus());
+    
+    Relationship relationship = relationshipManager.get(result.getId());
     assertNotNull(relationship);
     assertEquals("root", relationship.getSender().getRemoteId());
     assertEquals("demo", relationship.getReceiver().getRemoteId());
@@ -107,11 +110,12 @@ public class RelationshipsRestResourcesTest extends AbstractResourceTest {
     relationshipManager.update(relationship);
     
     startSessionAs("root");
-    ContainerResponse response = service("GET", "/v1/social/relationships/" + relationship.getId(), "", null, null);
+    ContainerResponse response = service("GET", "/" + VersionResources.VERSION_ONE + "/social/relationships/" + relationship.getId(), "", null, null);
     assertNotNull(response);
     assertEquals(200, response.getStatus());
-    Map<String, Object> result = (Map<String, Object>) response.getEntity();
-    assertEquals(result.get(RestProperties.STATUS), "CONFIRMED");
+    
+    RelationshipEntity result = getBaseEntity(response.getEntity(), RelationshipEntity.class) ;
+    assertEquals("CONFIRMED", result.getStatus());
     
     //clean
     relationshipManager.delete(relationship);
@@ -122,12 +126,11 @@ public class RelationshipsRestResourcesTest extends AbstractResourceTest {
     relationshipManager.update(relationship);
     
     startSessionAs("root");
-    ContainerResponse response = service("DELETE", "/v1/social/relationships/" + relationship.getId(), "", null, null);
+    ContainerResponse response = service("DELETE", "/" + VersionResources.VERSION_ONE + "/social/relationships/" + relationship.getId(), "", null, null);
     assertNotNull(response);
     assertEquals(200, response.getStatus());
-    Map<String, Object> result = (Map<String, Object>) response.getEntity();
-    
-    relationship = relationshipManager.get(result.get(RestProperties.ID).toString());
+    RelationshipEntity entity = getBaseEntity(response.getEntity(), RelationshipEntity.class) ;
+    relationship = relationshipManager.get(entity.getId());
     assertNull(relationship);
   }
 }

@@ -18,7 +18,6 @@ package org.exoplatform.social.rest.impl.relationship;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.DELETE;
@@ -40,15 +39,17 @@ import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvide
 import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.manager.RelationshipManager;
 import org.exoplatform.social.core.relationship.model.Relationship;
-import org.exoplatform.social.rest.api.AbstractSocialRestService;
+import org.exoplatform.social.rest.api.EntityBuilder;
 import org.exoplatform.social.rest.api.RelationshipsRestResources;
-import org.exoplatform.social.rest.entity.RelationshipRestIn;
-import org.exoplatform.social.rest.entity.RelationshipsCollections;
-import org.exoplatform.social.service.rest.RestUtils;
-import org.exoplatform.social.service.rest.Util;
+import org.exoplatform.social.rest.api.RestProperties;
+import org.exoplatform.social.rest.api.RestUtils;
+import org.exoplatform.social.rest.entity.CollectionEntity;
+import org.exoplatform.social.rest.entity.DataEntity;
+import org.exoplatform.social.rest.entity.RelationshipEntity;
+import org.exoplatform.social.service.rest.api.VersionResources;
 
-@Path("v1/social/relationships")
-public class RelationshipsRestResourcesV1 extends AbstractSocialRestService implements RelationshipsRestResources {
+@Path(VersionResources.VERSION_ONE + "/social/relationships")
+public class RelationshipsRestResourcesV1 implements RelationshipsRestResources {
 
   public RelationshipsRestResourcesV1() {
   }
@@ -56,9 +57,9 @@ public class RelationshipsRestResourcesV1 extends AbstractSocialRestService impl
   @GET
   @RolesAllowed("users")
   public Response getRelationships(@Context UriInfo uriInfo) throws Exception {
-    String status = getQueryParam("status");
-    int limit = getQueryValueLimit();
-    int offset = getQueryValueOffset();
+    String status = RestUtils.getQueryParam(uriInfo, "status");
+    int limit = RestUtils.getLimit(uriInfo);
+    int offset = RestUtils.getOffset(uriInfo);
     //
     RelationshipManager relationshipManager = CommonsUtils.getService(RelationshipManager.class);
     Relationship.Type type;
@@ -74,27 +75,29 @@ public class RelationshipsRestResourcesV1 extends AbstractSocialRestService impl
       relationships = relationshipManager.getRelationshipsByStatus(null, type, offset, limit);
       size = relationshipManager.getRelationshipsCountByStatus(null, type);
     } else {
-      Identity authenticatedUser = CommonsUtils.getService(IdentityManager.class).getOrCreateIdentity(OrganizationIdentityProvider.NAME, ConversationState.getCurrent().getIdentity().getUserId(), true);
+      String currentUser = ConversationState.getCurrent().getIdentity().getUserId();
+      Identity authenticatedUser = CommonsUtils.getService(IdentityManager.class)
+                                               .getOrCreateIdentity(OrganizationIdentityProvider.NAME, currentUser , true);
       relationships = relationshipManager.getRelationshipsByStatus(authenticatedUser, type, offset, limit);
       size = relationshipManager.getRelationshipsCountByStatus(authenticatedUser, type);
     }
-    
-    RelationshipsCollections collections = new RelationshipsCollections(getQueryValueReturnSize() ? size : -1, offset, limit);
-    collections.setRelationships(buildRelationshipsCollections(relationships, uriInfo));
+    List<DataEntity> relationshipEntities = EntityBuilder.buildRelationshipEntities(relationships, uriInfo);
+    CollectionEntity collectionRelationship = new CollectionEntity(relationshipEntities, RestProperties.RELATIONSHIPS, offset, limit);
+    if (RestUtils.isReturnSize(uriInfo)) {
+      collectionRelationship.setSize(size);
+    }
     //
-    return Util.getResponse(collections, uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
+    return EntityBuilder.getResponse(collectionRelationship, uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
   }
-  
+
   @POST
   @Produces(MediaType.APPLICATION_JSON)
   @RolesAllowed("users")
   public Response createRelationship(@Context UriInfo uriInfo,
-                                      RelationshipRestIn model) throws Exception {
-    
-    String senderRemoteId = model.getSender();
-    String receiverRemoteId = model.getReceiver();
-    if (model == null || senderRemoteId == null || senderRemoteId.isEmpty()
-                       || receiverRemoteId == null || receiverRemoteId.isEmpty()) {
+                                     RelationshipEntity model) throws Exception {
+    String senderRemoteId, receiverRemoteId;
+    if (model == null || (senderRemoteId = model.getSender()) == null || senderRemoteId.isEmpty()
+                      || (receiverRemoteId = model.getReceiver()) == null || receiverRemoteId.isEmpty()) {
       throw new WebApplicationException(Response.Status.UNAUTHORIZED);
     }
     //
@@ -113,23 +116,23 @@ public class RelationshipsRestResourcesV1 extends AbstractSocialRestService impl
     IdentityManager identityManager = CommonsUtils.getService(IdentityManager.class);
     Identity receiver = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, receiverRemoteId, true);
     Identity sender = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, senderRemoteId, true);
-    
+
     Relationship relationship = relationshipManager.get(sender, receiver);
     if (relationship != null) {
       throw new WebApplicationException(Response.Status.FORBIDDEN);
     }
-    
+
     relationship = new Relationship(sender, receiver, type);
     relationshipManager.update(relationship);
-    
-    return Util.getResponse(RestUtils.buildEntityFromRelationship(relationship, uriInfo.getPath(), getQueryParam("expand"), true), uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
+
+    return EntityBuilder.getResponse(EntityBuilder.buildEntityRelationship(relationship, uriInfo.getPath(), RestUtils.getQueryParam(uriInfo, "expand"), true), uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
   }
   
   @GET
   @Path("{id}")
   @RolesAllowed("users")
   public Response getRelationshipById(@Context UriInfo uriInfo) throws Exception {
-    String id = getPathParam("id");
+    String id = RestUtils.getPathParam(uriInfo, "id");
     
     Identity authenticatedUser = CommonsUtils.getService(IdentityManager.class).getOrCreateIdentity(OrganizationIdentityProvider.NAME, ConversationState.getCurrent().getIdentity().getUserId(), true);
     RelationshipManager relationshipManager = CommonsUtils.getService(RelationshipManager.class);
@@ -137,7 +140,7 @@ public class RelationshipsRestResourcesV1 extends AbstractSocialRestService impl
     if (relationship == null || ! hasPermissionOnRelationship(authenticatedUser, relationship)) {
       throw new WebApplicationException(Response.Status.UNAUTHORIZED);
     }
-    return Util.getResponse(RestUtils.buildEntityFromRelationship(relationship, uriInfo.getPath(), getQueryParam("expand"), true), uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
+    return EntityBuilder.getResponse(EntityBuilder.buildEntityRelationship(relationship, uriInfo.getPath(), RestUtils.getQueryParam(uriInfo, "expand"), true), uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
   }
   
   @PUT
@@ -145,13 +148,13 @@ public class RelationshipsRestResourcesV1 extends AbstractSocialRestService impl
   @Produces(MediaType.APPLICATION_JSON)
   @RolesAllowed("users")
   public Response updateRelationshipById(@Context UriInfo uriInfo,
-                                          RelationshipRestIn model) throws Exception {
+                                         RelationshipEntity model) throws Exception {
     
     if(model == null || model.getStatus() == null || model.getStatus().length() == 0) {
       throw new WebApplicationException(Response.Status.UNAUTHORIZED);
     }
     
-    String id = getPathParam("id");
+    String id = RestUtils.getPathParam(uriInfo, "id");
     Identity authenticatedUser = CommonsUtils.getService(IdentityManager.class).getOrCreateIdentity(OrganizationIdentityProvider.NAME, ConversationState.getCurrent().getIdentity().getUserId(), true);
     RelationshipManager relationshipManager = CommonsUtils.getService(RelationshipManager.class);
     Relationship relationship = relationshipManager.get(id);
@@ -175,14 +178,14 @@ public class RelationshipsRestResourcesV1 extends AbstractSocialRestService impl
       }
     }
     
-    return Util.getResponse(RestUtils.buildEntityFromRelationship(relationship, uriInfo.getPath(), getQueryParam("expand"), false), uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
+    return EntityBuilder.getResponse(EntityBuilder.buildEntityRelationship(relationship, uriInfo.getPath(), RestUtils.getQueryParam(uriInfo, "expand"), false), uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
   }
   
   @DELETE
   @Path("{id}")
   @RolesAllowed("users")
   public Response deleteRelationshipById(@Context UriInfo uriInfo) throws Exception {
-    String id = getPathParam("id");
+    String id = RestUtils.getPathParam(uriInfo, "id");
     
     Identity authenticatedUser = CommonsUtils.getService(IdentityManager.class).getOrCreateIdentity(OrganizationIdentityProvider.NAME, ConversationState.getCurrent().getIdentity().getUserId(), true);
     RelationshipManager relationshipManager = CommonsUtils.getService(RelationshipManager.class);
@@ -193,7 +196,7 @@ public class RelationshipsRestResourcesV1 extends AbstractSocialRestService impl
     //delete the relationship
     relationshipManager.delete(relationship);
     
-    return Util.getResponse(RestUtils.buildEntityFromRelationship(relationship, uriInfo.getPath(), getQueryParam("expand"), false), uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
+    return EntityBuilder.getResponse(EntityBuilder.buildEntityRelationship(relationship, uriInfo.getPath(), RestUtils.getQueryParam(uriInfo, "expand"), false), uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
   }
 
   /**
@@ -210,15 +213,5 @@ public class RelationshipsRestResourcesV1 extends AbstractSocialRestService impl
       return true;
     }
     return false;
-  }
-  
-  private List<Map<String, Object>> buildRelationshipsCollections(List<Relationship> relationships, UriInfo uriInfo) {
-    List<Map<String, Object>> infos = new ArrayList<Map<String, Object>>();
-    for (Relationship relationship : relationships) {
-      Map<String, Object> map = RestUtils.buildEntityFromRelationship(relationship, uriInfo.getPath(), getQueryParam("expand"), true);
-      //
-      infos.add(map);
-    }
-    return infos;
   }
 }
