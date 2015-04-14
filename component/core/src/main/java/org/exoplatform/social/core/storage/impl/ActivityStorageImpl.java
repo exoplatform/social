@@ -757,6 +757,7 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
           //due to run in the same thread then pass AcitivityEntity to Stream service to create ActivityRef
           //don't need to get JCR to avoid NodeNotFoundException
           StreamInvocationHelper.savePoster(owner, entity);
+          StorageUtils.persist(true);
           //run asynchronous: JCR session doesn't share in multi threading, in Stream service.
           StreamInvocationHelper.save(owner, entity, mentioners.toArray(new String[0]));
         }
