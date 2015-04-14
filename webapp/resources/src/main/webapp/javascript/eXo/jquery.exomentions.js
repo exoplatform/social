@@ -470,9 +470,10 @@
           return;
         }
         var text = after.substr(info.from, info.to);
+        text = text.replace(/<br\s*[\/]?>/gi, '\n');
         var textValidated = $('<div/>').html(text).text();
         if (textValidated.length < text.length) {
-          textValidated = textValidated.replace(/</gi, '&lt;').replace(/>/gi, '&gt;');
+          textValidated = textValidated.replace(/</gi, '&lt;').replace(/>/gi, '&gt;').replace(/\n/g, ' <br/>');
           after = after.substr(0, info.from) + textValidated + ' ' + cursor + after.substr(info.to);
           elmInputBox.val(after);
           setCaretPosition(elmInputBox);
