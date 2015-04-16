@@ -586,4 +586,9 @@ public class RelationshipManagerImpl implements RelationshipManager {
     }
     return result;
   }
+
+  @Override
+  public List<Identity> getLastConnections(Identity identity, int limit) {
+    return storage.getLastConnections(identity, limit);
+  }
 }

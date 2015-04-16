@@ -668,4 +668,14 @@ public interface RelationshipManager {
    */
   @Deprecated
   public Map<Identity, Integer> getSuggestions(Identity identity, int offset, int limit);
+  
+  /**
+   * Get the list of identities who are most recently connected with given user
+   * the limit number of results must be greater than 0 or an empty list will be returned   
+   * 
+   * @param identity
+   * @param limit 
+   * @return
+   */
+  List<Identity> getLastConnections(Identity identity, int limit);
 }

@@ -1565,4 +1565,30 @@ public class RelationshipManagerTest extends AbstractCoreTest {
     tearDownRelationshipList.add(johnToMaryRelationship);
     tearDownRelationshipList.add(rootToMaryRelationship);
   }
+  
+  public void testGetLastConnections() throws Exception {
+    Relationship maryToGhostRelationship = relationshipManager.inviteToConnect(ghostIdentity, maryIdentity);
+    relationshipManager.confirm(maryIdentity, ghostIdentity);
+    Relationship maryToDemoRelationship = relationshipManager.inviteToConnect(demoIdentity, maryIdentity);
+    relationshipManager.confirm(maryIdentity, demoIdentity);
+    Relationship paulToMaryRelationship = relationshipManager.inviteToConnect(paulIdentity, maryIdentity);
+    relationshipManager.confirm(maryIdentity, paulIdentity);
+    
+    List<Identity> identities = relationshipManager.getLastConnections(maryIdentity, 10);
+    assertEquals(3, identities.size());
+    assertEquals(paulIdentity.getRemoteId(), identities.get(0).getRemoteId());
+    assertEquals(demoIdentity.getRemoteId(), identities.get(1).getRemoteId());
+    assertEquals(ghostIdentity.getRemoteId(), identities.get(2).getRemoteId());
+    
+    Relationship johnToMaryRelationship = relationshipManager.inviteToConnect(maryIdentity, johnIdentity);
+    relationshipManager.confirm(johnIdentity, maryIdentity);
+    identities = relationshipManager.getLastConnections(maryIdentity, 10);
+    assertEquals(4, identities.size());
+    assertEquals(johnIdentity.getRemoteId(), identities.get(0).getRemoteId());
+    
+    tearDownRelationshipList.add(maryToGhostRelationship);
+    tearDownRelationshipList.add(maryToDemoRelationship);
+    tearDownRelationshipList.add(paulToMaryRelationship);
+    tearDownRelationshipList.add(johnToMaryRelationship);
+  }
 }

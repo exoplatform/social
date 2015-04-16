@@ -329,4 +329,13 @@ public interface RelationshipStorage {
                                                int maxConnectionsToLoad, 
                                                int maxSuggestions) throws RelationshipStorageException;
   
+  /**
+   * Get the list of identities who are most recently connected with given user
+   * the limit number of results must be greater than 0 or an empty list will be returned   
+   * 
+   * @param identity
+   * @param limit 
+   * @return
+   */
+  public List<Identity> getLastConnections(Identity identity, int limit) throws RelationshipStorageException;
 }

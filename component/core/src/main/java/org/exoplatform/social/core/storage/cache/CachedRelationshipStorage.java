@@ -715,5 +715,24 @@ public class CachedRelationshipStorage implements RelationshipStorage {
     //
     return buildSuggestions(keys);
   }
+
+  @Override
+  public List<Identity> getLastConnections(final Identity identity, final int limit) throws RelationshipStorageException {
+    //
+    IdentityKey key = new IdentityKey(identity);
+    ListRelationshipsKey<IdentityKey> listKey =
+        new ListRelationshipsKey<IdentityKey>(key, RelationshipType.LAST_CONNECTIONS, 0, limit);
+    ListIdentitiesData keys = relationshipsCache.get(
+        new ServiceContext<ListIdentitiesData>() {
+          public ListIdentitiesData execute() {
+            List<Identity> got = storage.getLastConnections(identity, limit);
+            return buildIds(got);
+          }
+        },
+        listKey);
+
+    //
+    return buildRelationships(keys);
+  }
   
 }

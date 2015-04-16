@@ -44,6 +44,8 @@ public class StorageUtils {
   public static final String SPACE_STR = " ";
   public static final String EMPTY_STR = "";
   public static final String SLASH_STR = "/";
+  public static final String COLON_STR = ":";
+  public static final String SOC_RELATIONSHIP = "soc:relationship";
   public static final String SOC_ACTIVITY_INFO = "soc:activityInfo";
   public static final String SOC_PREFIX = "soc:";
   private final static long DAY_MILISECONDS = 86400000;//a day = 24h x 60m x 60s x 1000 milisecond.
