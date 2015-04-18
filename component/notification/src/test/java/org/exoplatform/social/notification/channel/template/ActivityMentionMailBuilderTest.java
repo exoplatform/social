@@ -86,7 +86,7 @@ public class ActivityMentionMailBuilderTest extends AbstractPluginTest {
     assertBody(info, "New mention of you");
   }
   
-  public void testCommentMention() throws Exception {
+  public void TestCommentMention() throws Exception {
     ExoSocialActivity activity = makeActivity(maryIdentity, "mary post activity on root stream");
     assertMadeNotifications(1);
     notificationService.clearAll();
