@@ -56,16 +56,6 @@ public class UISpaceSearch extends UIForm {
   
   private static final String PERCENTAGE_STR = "%";
   
-  /**
-   * INPUT PATTERN FOR CHECKING.
-   */
-  static final String RIGHT_INPUT_PATTERN = "^[\\p{L}][\\p{L}._\\- \\d]+$";
-  
-  /**
-   * ADD PREFIX TO ENSURE ALWAY RIGHT THE PATTERN FOR CHECKING
-   */
-  static final String PREFIX_ADDED_FOR_CHECK = "PrefixAddedForCheck";
-  
   private final String POPUP_ADD_SPACE = "UIPopupAddSpace";
 
   /** Html attribute title. */
