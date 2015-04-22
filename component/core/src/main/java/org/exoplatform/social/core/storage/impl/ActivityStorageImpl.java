@@ -1202,19 +1202,14 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
 
     int remaind = limit - got.size();
     if (remaind > 0) {
-      int newOffset = got.size() + offset;
-      List<ExoSocialActivity> origin = getActivityFeedForUpgrade(ownerIdentity, newOffset, limit);
+      List<ExoSocialActivity> origin = getActivityFeedForUpgrade(ownerIdentity, offset, limit);
       List<ExoSocialActivity> migrateList = new LinkedList<ExoSocialActivity>();
 
-      int i = remaind;
       // fill to enough limit
       for (ExoSocialActivity activity : origin) {
         if (got.contains(activity) == false) {
           got.add(activity);
           migrateList.add(activity);
-          if (--i == 0) {
-            break;
-          }
         }
 
       }
@@ -1225,44 +1220,9 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
 
     }
 
-    return got;
+    return StorageUtils.sortActivitiesByTime(got, limit);
   }
   
-  private List<ExoSocialActivity> getActivityFeedForActiveUser(Identity ownerIdentity, int offset, int limit) {
-    List<ExoSocialActivity> got = streamStorage.getFeed(ownerIdentity, offset, limit);
-
-    if (got.size() == limit) {
-      return got;
-    }
-
-    int remaind = limit - got.size();
-    if (remaind > 0) {
-      int newOffset = got.size() + offset;
-      List<ExoSocialActivity> origin = getActivityFeedForUpgrade(ownerIdentity, newOffset, limit);
-      List<ExoSocialActivity> migrateList = new LinkedList<ExoSocialActivity>();
-
-      int i = remaind;
-      // fill to enough limit
-      for (ExoSocialActivity activity : origin) {
-        if (got.contains(activity) == false) {
-          got.add(activity);
-          migrateList.add(activity);
-          if (--i == 0) {
-            break;
-          }
-        }
-
-      }
-
-      if (migrateList.size() > 0) {
-        StreamInvocationHelper.createFeedActivityRef(ownerIdentity, migrateList);
-      }
-
-    }
-
-    return got;
-  }
-
   /**
    * {@inheritDoc}
    */
@@ -1437,11 +1397,9 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     
     int remaind = limit - got.size();
     if (remaind > 0) {
-      int newOffset = got.size() + offset;
-      List<ExoSocialActivity> origin = getActivitiesOfConnectionsForUpgrade(ownerIdentity, newOffset, limit);
+      List<ExoSocialActivity> origin = getActivitiesOfConnectionsForUpgrade(ownerIdentity, offset, limit);
       List<ExoSocialActivity> migrateList = new LinkedList<ExoSocialActivity>();
 
-      int i = remaind;
       // fill to enough limit
       for (ExoSocialActivity activity : origin) {
 
@@ -1469,9 +1427,6 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
         if (got.contains(activity) == false) {
           got.add(activity);
           migrateList.add(activity);
-          if (--i == 0) {
-            break;
-          }
         }
 
       }
@@ -1482,7 +1437,7 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
 
     }
 
-    return got;
+    return StorageUtils.sortActivitiesByTime(got, limit);
   }
 
   /**

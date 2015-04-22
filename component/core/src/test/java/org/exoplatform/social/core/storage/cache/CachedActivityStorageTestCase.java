@@ -150,7 +150,7 @@ public class CachedActivityStorageTestCase extends AbstractCoreTest {
 
   }
 
-  @MaxQueryNumber(314)
+  @MaxQueryNumber(326)
   public void testRelationshipActivity() throws Exception {
 
     //

@@ -1,19 +1,19 @@
 package org.exoplatform.social.core.storage.impl;
 
 import java.lang.reflect.Method;
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.Set;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringEscapeUtils;
@@ -28,6 +28,7 @@ import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.social.common.lifecycle.SocialChromatticLifeCycle;
+import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.chromattic.entity.ProfileEntity;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.profile.ProfileFilter;
@@ -348,6 +349,23 @@ public class StorageUtils {
     });
 
     return list;
+  }
+  
+  /**
+   * Sort a list of activity by updated time
+   * 
+   * @param list
+   * @return
+   */
+  public static List<ExoSocialActivity> sortActivitiesByTime(List<ExoSocialActivity> list, int limit) {
+    //
+    Collections.sort(list, new Comparator<ExoSocialActivity>() {
+      public int compare(ExoSocialActivity a1, ExoSocialActivity a2) {
+        return ((Long)a1.getUpdated().getTime()).compareTo((Long)a2.getUpdated().getTime()) / -1;
+      }
+    });
+
+    return list.size() > limit ? list.subList(0, limit - 1) : list;
   }
   
   /**
