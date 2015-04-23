@@ -213,3 +213,15 @@
   <% } %>
 <% } %>
 </div>
+
+  <!-- add more for devices -->
+  <div class="clearfix activityTop">
+	<div class="pull-right">
+	  <% uicomponent.renderChild(UIDropDownControl.class);%>
+	</div>
+	<div class="activityStreamStatus pull-left">
+	  <div class="arrowBottom"></div>
+	  <a class="uiIconRefresh uiIconLightGray" href="javascript:void(0);" rel="tooltip" title="$refreshTooltipButton" id="RefreshButton" onclick="<%=uicomponent.event("RefreshStream")%>" ></a>
+	</div>
+	<div class="pull-left"><a href="#" class="btn btn-primary" title="share something"><i class="uiIconShare uiIconLightGray"></i>&nbsp;Status</a></div>
+  </div>
