@@ -35,7 +35,7 @@ public class MockUserSettingServiceImpl implements UserSettingService {
     for (UserSetting userSetting : settings.values()) {
       if (userSetting.isInDaily(pluginId) 
           || userSetting.isInWeekly(pluginId) 
-          || userSetting.isInInstantly(pluginId)) {
+          || userSetting.isActive(UserSetting.EMAIL_CHANNEL, pluginId)) {
         userIds.add(userSetting.getUserId());
       }
     }
@@ -67,4 +67,14 @@ public class MockUserSettingServiceImpl implements UserSettingService {
   public List<UserSetting> getUserSettingWithDeactivate() {
     return null;
   }
+
+  @Override
+  public List<String> getUserHasSettingPlugin(String channelId, String pluginId) {
+    return getUserSettingByPlugin(pluginId);
+  }
+
+  @Override
+  public void saveLastReadDate(String userId, Long time) {
+  }
+
 }

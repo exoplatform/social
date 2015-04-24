@@ -20,7 +20,9 @@ import org.exoplatform.commons.testing.BaseExoContainerTestSuite;
 import org.exoplatform.commons.testing.ConfigTestCase;
 import org.exoplatform.social.service.rest.ActivitiesRestServiceTest;
 import org.exoplatform.social.service.rest.IdentityRestServiceTest;
+import org.exoplatform.social.service.rest.IntranetNotificationsRestServiceTest;
 import org.exoplatform.social.service.rest.LinkShareRestServiceTest;
+import org.exoplatform.social.service.rest.NotificationsRestServiceTest;
 import org.exoplatform.social.service.rest.PeopleRestServiceTest;
 import org.exoplatform.social.service.rest.RestCheckerTest;
 import org.exoplatform.social.service.rest.SecurityManagerTest;
@@ -49,7 +51,9 @@ import org.junit.runners.Suite.SuiteClasses;
   PeopleRestServiceTest.class,
   RestCheckerTest.class,
   SecurityManagerTest.class,
-  UtilTest.class
+  UtilTest.class,
+  IntranetNotificationsRestServiceTest.class,
+  NotificationsRestServiceTest.class
   })
 @ConfigTestCase(AbstractServiceTest.class)
 public class InitContainerTestSuite extends BaseExoContainerTestSuite {

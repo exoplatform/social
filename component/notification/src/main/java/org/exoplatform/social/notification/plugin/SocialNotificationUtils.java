@@ -17,18 +17,23 @@
 package org.exoplatform.social.notification.plugin;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
 import org.exoplatform.commons.api.notification.NotificationContext;
+import org.exoplatform.commons.api.notification.NotificationMessageUtils;
 import org.exoplatform.commons.api.notification.model.ArgumentLiteral;
-import org.exoplatform.commons.api.notification.model.NotificationKey;
+import org.exoplatform.commons.api.notification.model.NotificationInfo;
+import org.exoplatform.commons.api.notification.model.PluginKey;
 import org.exoplatform.commons.api.notification.plugin.AbstractNotificationChildPlugin;
-import org.exoplatform.commons.api.notification.plugin.AbstractNotificationPlugin;
+import org.exoplatform.commons.api.notification.plugin.BaseNotificationPlugin;
 import org.exoplatform.commons.api.notification.service.setting.PluginContainer;
+import org.exoplatform.commons.api.notification.service.storage.WebNotificationStorage;
 import org.exoplatform.commons.api.notification.service.template.TemplateContext;
+import org.exoplatform.commons.notification.NotificationUtils;
 import org.exoplatform.commons.notification.template.TemplateUtils;
 import org.exoplatform.commons.utils.CommonsUtils;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
@@ -45,13 +50,17 @@ import org.exoplatform.social.notification.plugin.child.DefaultActivityChildPlug
 public class SocialNotificationUtils {
 
   public final static ArgumentLiteral<String> ACTIVITY_ID = new ArgumentLiteral<String>(String.class, "activityId");
+  public final static ArgumentLiteral<String> COMMENT_ID = new ArgumentLiteral<String>(String.class, "commentId");
+  public final static ArgumentLiteral<String> PARENT_ACTIVITY_ID = new ArgumentLiteral<String>(String.class, "parentActivityId");
   public final static ArgumentLiteral<String> POSTER = new ArgumentLiteral<String>(String.class, "poster");
+  public final static ArgumentLiteral<String> LIKER = new ArgumentLiteral<String>(String.class, "likersId");
   public final static ArgumentLiteral<String> SENDER = new ArgumentLiteral<String>(String.class, "sender");
   public final static ArgumentLiteral<ExoSocialActivity> ACTIVITY = new ArgumentLiteral<ExoSocialActivity>(ExoSocialActivity.class, "activity");
   public final static ArgumentLiteral<Profile> PROFILE = new ArgumentLiteral<Profile>(Profile.class, "profile");
   public final static ArgumentLiteral<Space> SPACE = new ArgumentLiteral<Space>(Space.class, "space");
   public final static ArgumentLiteral<String> REMOTE_ID = new ArgumentLiteral<String>(String.class, "remoteId");
   public final static ArgumentLiteral<String> SPACE_ID = new ArgumentLiteral<String>(String.class, "spaceId");
+  public final static ArgumentLiteral<String> REQUEST_FROM = new ArgumentLiteral<String>(String.class, "request_from");
   public final static ArgumentLiteral<String> PRETTY_NAME = new ArgumentLiteral<String>(String.class, "prettyName");
   public final static ArgumentLiteral<Relationship> RELATIONSHIP = new ArgumentLiteral<Relationship>(Relationship.class, "relationship");
   
@@ -253,15 +262,47 @@ public class SocialNotificationUtils {
   }
   
   public static String getBody(NotificationContext ctx, TemplateContext context, ExoSocialActivity activity) {
-    NotificationKey childKey = new NotificationKey(activity.getType());
+    PluginKey childKey = new PluginKey(activity.getType());
     PluginContainer pluginContainer = CommonsUtils.getService(PluginContainer.class);
-    AbstractNotificationPlugin child = pluginContainer.getPlugin(childKey);
+    BaseNotificationPlugin child = pluginContainer.getPlugin(childKey);
     if (child == null || (child instanceof AbstractNotificationChildPlugin) == false) {
-      child = pluginContainer.getPlugin(new NotificationKey(DefaultActivityChildPlugin.ID));
+      child = pluginContainer.getPlugin(new PluginKey(DefaultActivityChildPlugin.ID));
     }
     context.put("ACTIVITY", ((AbstractNotificationChildPlugin) child).makeContent(ctx));
 
     return TemplateUtils.processGroovy(context);
   }
   
+  public static List<String> mergeUsers(NotificationContext ctx, TemplateContext context, String propertyName, String activityId, String userId) {
+    NotificationInfo notification = ctx.getNotificationInfo();
+    List<String> users = null;
+    if (ctx.isWritingProcess()) {
+      WebNotificationStorage storage = CommonsUtils.getService(WebNotificationStorage.class); 
+      NotificationInfo previousNotification = storage.getUnreadNotification(notification.getKey().getId(), activityId, notification.getTo());
+      if (previousNotification != null) {
+        users = NotificationUtils.stringToList(previousNotification.getValueOwnerParameter(propertyName));
+        Identity userIdentity = Utils.getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, userId, true);
+        if (users.contains(userIdentity.getRemoteId())) {
+          users.remove(userIdentity.getRemoteId());
+        }
+        users.add(userIdentity.getRemoteId());
+        previousNotification.with(propertyName, NotificationUtils.listToString(users));
+        previousNotification.with(NotificationMessageUtils.NOT_HIGHLIGHT_COMMENT_PORPERTY.getKey(), "true");
+        previousNotification.setUpdate(true);
+        previousNotification.setLastModifiedDate(Calendar.getInstance());
+        //update the created date of old notification then remove it from database
+        previousNotification.setDateCreated(Calendar.getInstance());
+        //
+        context.put("NOTIFICATION_ID", previousNotification.getId());
+        ctx.setNotificationInfo(previousNotification);
+      } else {
+        users = NotificationUtils.stringToList(notification.getValueOwnerParameter(propertyName));
+      }
+      ctx.setWritingProcess(false);
+    } else {
+      users = NotificationUtils.stringToList(notification.getValueOwnerParameter(propertyName));
+    }
+    
+    return users;
+  }
 }

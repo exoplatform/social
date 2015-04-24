@@ -24,6 +24,6 @@ package org.exoplatform.social.core.storage.cache.model.key;
  * @version $Revision$
  */
 public enum RelationshipType {
-  CONNECTION, INCOMMING, OUTGOING, RELATIONSHIP,
+  CONNECTION, INCOMMING, OUTGOING, RELATIONSHIP, LAST_CONNECTIONS,
   CONNECTION_WITH_FILTER, OUTGOING_WITH_FILTER, INCOMMING_WITH_FILTER
 }

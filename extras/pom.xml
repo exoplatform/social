@@ -33,6 +33,5 @@
     <module>feedmash</module>
     <module>samples</module>
     <module>widget</module>
-    <module>link-composer-plugin</module>
   </modules>
 </project>

@@ -21,6 +21,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import org.exoplatform.commons.chromattic.ChromatticLifeCycle;
 import org.exoplatform.commons.chromattic.ChromatticManager;
 import org.exoplatform.container.PortalContainer;
+import org.exoplatform.services.log.ExoLogger;
+import org.exoplatform.services.log.Log;
 import org.exoplatform.social.common.lifecycle.SocialChromatticLifeCycle;
 import org.exoplatform.social.common.service.AsyncCallback;
 import org.exoplatform.social.common.service.AsyncProcessor;
@@ -28,7 +30,10 @@ import org.exoplatform.social.common.service.ProcessContext;
 import org.exoplatform.social.common.service.SocialServiceContext;
 
 public abstract class SocialChromatticAsyncProcessor implements AsyncProcessor {
-
+  
+  /** Logger */
+  private static final Log LOG = ExoLogger.getLogger(SocialChromatticAsyncProcessor.class);
+  
   protected SocialServiceContext socialContext;
   final String name;
   protected final PortalContainer container;
@@ -60,6 +65,7 @@ public abstract class SocialChromatticAsyncProcessor implements AsyncProcessor {
       //execute
       processContext = execute(processContext);
     } catch (Exception e) {
+      LOG.error(e.getMessage(), e);
       processContext.setException(e);
     } finally {
     //end Session
@@ -79,6 +85,7 @@ public abstract class SocialChromatticAsyncProcessor implements AsyncProcessor {
         callback.done(processContext);
       }
     } catch (Exception e) {
+      LOG.error(e.getMessage(), e);
       processContext.setException(e);
       return processContext;
     }

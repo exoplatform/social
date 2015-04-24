@@ -51,6 +51,10 @@
   </component>
   
   <component>
+    <type>org.exoplatform.social.service.rest.SocialUpdaterRest</type>
+  </component>
+  
+  <component>
     <key>org.exoplatform.services.jcr.ext.app.SessionProviderService</key>
     <type>org.exoplatform.services.jcr.ext.app.ThreadLocalSessionProviderService</type>
   </component>
@@ -74,7 +78,33 @@
   <component>
      <type>org.exoplatform.services.rest.impl.provider.JAXBContextResolver</type>
   </component>
-
+  
+  <component>
+    <key>org.exoplatform.social.core.storage.streams.StreamConfig</key>
+    <type>org.exoplatform.social.core.storage.streams.StreamConfig</type>
+    <init-params>
+      <value-param>
+        <name>connections-threshold-param</name>
+        <value>1000</value> <!-- connections threshold -->
+      </value-param>
+      <value-param>
+        <name>last-login-around-days</name>
+        <value>15</value> <!-- the last login around days of an user -->
+      </value-param>
+      <value-param>
+        <name>limit-per-loading-param</name>
+        <value>10</value><!-- batch limit to persist to storage when CRUD node -->
+      </value-param>
+      <!-- /platform/administrators,/platform/users -->
+      <!-- 
+      <value-param>
+        <name>active-user-groups-param</name>
+        <value>/platform/administrators</value>
+      </value-param>
+       -->
+    </init-params>
+  </component>
+  
   <external-component-plugins>
      <target-component>org.exoplatform.services.rest.impl.provider.JAXBContextResolver</target-component>
      <component-plugin>

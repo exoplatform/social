@@ -1,0 +1,29 @@
+<li class="$READ clearfix" data-id="$NOTIFICATION_ID">
+  <div class="media">
+    <div class="avatarXSmall pull-left">
+      <img src="$AVATAR" alt="$USER" />
+    </div>
+    <div class="media-body">
+      <%
+       String message = "";
+       String profileUrl = "<a class=\"user-name text-bold\" href=\"javascript:void(0)\">" + USER + "</a>";
+       String lastProfile = "";
+       if (NB_USERS > 2) {
+         lastProfile = "<a class=\"user-name text-bold\" href=\"javascript:void(0)\">" + LAST_USER + "</a>";
+         message = _ctx.appRes("Notification.intranet.message.more.ActivityCommentPlugin", profileUrl, lastProfile, ""+COUNT);
+       } else if (NB_USERS == 2) {
+         lastProfile = "<a class=\"user-name text-bold\" href=\"javascript:void(0)\">" + LAST_USER + "</a>";
+         message = _ctx.appRes("Notification.intranet.message.two.ActivityCommentPlugin", profileUrl, lastProfile);
+       } else {
+         message = _ctx.appRes("Notification.intranet.message.one.ActivityCommentPlugin", profileUrl);
+       }
+      %>
+      <div class="contentSmall" data-link="$VIEW_FULL_DISCUSSION_ACTION_URL">
+        <div class="status"><%= message %></div>
+        <div class="content"><i class="uiIcon uiIconComment uiIconLightGray"></i>$ACTIVITY</div>
+        <div class="lastUpdatedTime">$LAST_UPDATED_TIME</div>
+      </div>
+    </div>
+  </div>
+  <span class="remove-item" data-rest=""><i class="uiIconClose uiIconLightGray"></i></span>
+</li>

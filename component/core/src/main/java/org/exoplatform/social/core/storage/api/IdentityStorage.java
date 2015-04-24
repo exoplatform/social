@@ -18,8 +18,10 @@
 package org.exoplatform.social.core.storage.api;
 
 import java.util.List;
+import java.util.Set;
 
 import org.exoplatform.social.core.identity.SpaceMemberFilterListAccess.Type;
+import org.exoplatform.social.core.identity.model.ActiveIdentityFilter;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.identity.model.Profile.AttachedActivityType;
@@ -271,4 +273,18 @@ public interface IdentityStorage {
    * @since 4.0.0.Alpha1
    */
   public String getProfileActivityId(Profile profile, AttachedActivityType type);
+  
+
+  /**
+   * Gets the active user list base on the given ActiveIdentityFilter.
+   * 1. N days who last login less than N days.
+   * 2. UserGroup who belongs to this group.
+   * 
+   * @param filter
+   * @return 
+   * @since 4.1.0
+   */
+  public Set<String> getActiveUsers(ActiveIdentityFilter filter);
+  
+  
 }

@@ -311,6 +311,21 @@ public class StreamInvocationHelper {
     return processCtx;
   }
   
+  public static ProcessContext createFeedActivityRefSynchronous(Identity owner, List<ExoSocialActivity> list) {
+    //
+    SocialServiceContext ctx = SocialServiceContextImpl.getInstance();
+    StreamProcessContext processCtx = StreamProcessContext.getIntance(StreamProcessContext.LAZY_UPGRADE_STREAM_PROCESS, ctx);
+    processCtx.identity(owner).activities(list);
+    
+    try {
+      ctx.getServiceExecutor().execute(StreamProcessorFactory.createFeedActivityRef(), processCtx);
+    } finally {
+      LOG.debug(processCtx.getTraceLog());
+    }
+    
+    return processCtx;
+  }
+  
   public static ProcessContext createConnectionsActivityRef(Identity owner, List<ExoSocialActivity> list) {
     //
     SocialServiceContext ctx = SocialServiceContextImpl.getInstance();
@@ -327,6 +342,21 @@ public class StreamInvocationHelper {
         ctx.getServiceExecutor().execute(StreamProcessorFactory.createConnectionsActivityRef(), processCtx);
       }
       
+    } finally {
+      LOG.debug(processCtx.getTraceLog());
+    }
+    
+    return processCtx;
+  }
+  
+  public static ProcessContext createConnectionsActivityRefSynchronous(Identity owner, List<ExoSocialActivity> list) {
+    //
+    SocialServiceContext ctx = SocialServiceContextImpl.getInstance();
+    StreamProcessContext processCtx = StreamProcessContext.getIntance(StreamProcessContext.LAZY_UPGRADE_STREAM_PROCESS, ctx);
+    processCtx.identity(owner).activities(list);
+    
+    try {
+        ctx.getServiceExecutor().execute(StreamProcessorFactory.createConnectionsActivityRef(), processCtx);
     } finally {
       LOG.debug(processCtx.getTraceLog());
     }

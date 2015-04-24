@@ -814,6 +814,7 @@ public class IdentityStorageImplTestCase extends AbstractCoreTest {
     profile.setProperty(Profile.USERNAME, "user");
     profile.setProperty(Profile.FIRST_NAME, "first");
     profile.setProperty(Profile.LAST_NAME, "last");
+    profile.setProperty(Profile.ABOUT_ME, "About me test");
 
     // urls
     List<Map<String, String>> urls = new ArrayList<Map<String, String>>();
@@ -876,6 +877,8 @@ public class IdentityStorageImplTestCase extends AbstractCoreTest {
     assertNotNull(toLoadProfile.getProperty(Profile.USERNAME));
     assertNotNull(toLoadProfile.getProperty(Profile.FIRST_NAME));
     assertNotNull(toLoadProfile.getProperty(Profile.LAST_NAME));
+    //
+    assertEquals("About me test", toLoadProfile.getProperty(Profile.ABOUT_ME));
 
     // No avatar saved
     assertNull(toLoadProfile.getAvatarUrl());
@@ -1164,6 +1167,7 @@ public class IdentityStorageImplTestCase extends AbstractCoreTest {
     profile.setProperty(Profile.USERNAME, "user");
     profile.setProperty(Profile.FIRST_NAME, "first");
     profile.setProperty(Profile.LAST_NAME, "last");
+    profile.setProperty(Profile.POSITION, "dev");
     // xps
     List<Map<String, Object>> xps = new ArrayList<Map<String, Object>>();
     Map<String, Object> xp1 = new HashMap<String, Object>();

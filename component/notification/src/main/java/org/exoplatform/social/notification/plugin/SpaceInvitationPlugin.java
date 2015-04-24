@@ -16,25 +16,18 @@
  */
 package org.exoplatform.social.notification.plugin;
 
-import java.io.IOException;
-import java.io.Writer;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.apache.commons.lang.ArrayUtils;
 import org.exoplatform.commons.api.notification.NotificationContext;
-import org.exoplatform.commons.api.notification.model.MessageInfo;
 import org.exoplatform.commons.api.notification.model.NotificationInfo;
-import org.exoplatform.commons.api.notification.plugin.AbstractNotificationPlugin;
-import org.exoplatform.commons.api.notification.service.template.TemplateContext;
-import org.exoplatform.commons.notification.template.TemplateUtils;
+import org.exoplatform.commons.api.notification.plugin.BaseNotificationPlugin;
 import org.exoplatform.container.xml.InitParams;
 import org.exoplatform.social.core.space.model.Space;
-import org.exoplatform.social.notification.LinkProviderUtils;
-import org.exoplatform.social.notification.Utils;
 
-public class SpaceInvitationPlugin extends AbstractNotificationPlugin {
+public class SpaceInvitationPlugin extends BaseNotificationPlugin {
+  
+  private static final String ACCEPT_SPACE_INVITATION = "social/intranet-notification/acceptInvitationToJoinSpace";
+
+  private static final String REFUSE_SPACE_INVITATION = "social/intranet-notification/ignoreInvitationToJoinSpace";
+  
   public static final String ID = "SpaceInvitationPlugin";
 
   public SpaceInvitationPlugin(InitParams initParams) {
@@ -58,61 +51,7 @@ public class SpaceInvitationPlugin extends AbstractNotificationPlugin {
   }
 
   @Override
-  public MessageInfo makeMessage(NotificationContext ctx) {
-    MessageInfo messageInfo = new MessageInfo();
-    
-    NotificationInfo notification = ctx.getNotificationInfo();
-    
-    String language = getLanguage(notification);
-    TemplateContext templateContext = new TemplateContext(notification.getKey().getId(), language);
-    SocialNotificationUtils.addFooterAndFirstName(notification.getTo(), templateContext);
-
-    String spaceId = notification.getValueOwnerParameter(SocialNotificationUtils.SPACE_ID.getKey());
-    Space space = Utils.getSpaceService().getSpaceById(spaceId);
-    
-    templateContext.put("SPACE", space.getDisplayName());
-    templateContext.put("SPACE_URL", LinkProviderUtils.getRedirectUrl("space", space.getId()));
-    String subject = TemplateUtils.processSubject(templateContext);
-    
-    templateContext.put("SPACE_AVATAR", LinkProviderUtils.getSpaceAvatarUrl(space));
-    templateContext.put("ACCEPT_SPACE_INVITATION_ACTION_URL", LinkProviderUtils.getAcceptInvitationToJoinSpaceUrl(space.getId(), notification.getTo()));
-    templateContext.put("REFUSE_SPACE_INVITATION_ACTION_URL", LinkProviderUtils.getIgnoreInvitationToJoinSpaceUrl(space.getId(), notification.getTo()));
-    String body = TemplateUtils.processGroovy(templateContext);
-    
-    return messageInfo.subject(subject).body(body).end();
-  }
-
-  @Override
-  public boolean makeDigest(NotificationContext ctx, Writer writer) {
-    List<NotificationInfo> notifications = ctx.getNotificationInfos();
-    NotificationInfo first = notifications.get(0);
-    String language = getLanguage(first);
-    
-    TemplateContext templateContext = new TemplateContext(first.getKey().getId(), language);
-    Map<String, List<String>> receiverMap = new LinkedHashMap<String, List<String>>();
-    
-    try {
-      for (NotificationInfo message : notifications) {
-        String spaceId = message.getValueOwnerParameter(SocialNotificationUtils.SPACE_ID.getKey());
-        Space space = Utils.getSpaceService().getSpaceById(spaceId);
-        if (ArrayUtils.contains(space.getInvitedUsers(), first.getTo()) == false) {
-          continue;
-        }
-
-        SocialNotificationUtils.processInforSendTo(receiverMap, first.getTo(), spaceId);
-      }
-      writer.append(SocialNotificationUtils.getMessageByIds(receiverMap, templateContext, "space"));
-    } catch (IOException e) {
-      ctx.setException(e);
-      return false;
-    }
-    
-    return true;
-  }
-
-  @Override
   public boolean isValid(NotificationContext ctx) {
     return true;
   }
-
 }

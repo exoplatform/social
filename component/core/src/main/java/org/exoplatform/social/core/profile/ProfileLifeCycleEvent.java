@@ -28,7 +28,7 @@ import org.exoplatform.social.core.identity.model.Profile;
  */
 public class ProfileLifeCycleEvent extends LifeCycleEvent<String, Profile> {
 
-  public enum Type {AVATAR_UPDATED, BASIC_UPDATED, CONTACT_UPDATED, EXPERIENCE_UPDATED, HEADER_UPDATED, CREATED}
+  public enum Type {ABOUT_ME, AVATAR_UPDATED, BASIC_UPDATED, CONTACT_UPDATED, EXPERIENCE_UPDATED, HEADER_UPDATED, CREATED}
 
   private Type type;
 

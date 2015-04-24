@@ -19,6 +19,7 @@ package org.exoplatform.social.core.storage.impl;
 
 import java.util.Iterator;
 
+import javax.jcr.Node;
 import javax.jcr.NodeIterator;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryManager;
@@ -58,6 +59,9 @@ public abstract class AbstractStorage {
   //
   protected static final String SENDER = "sender";
   protected static final String RECEIVER = "receiver";
+
+  // for SOC-4525
+  protected static final String SPACE_NODETYPE_PATH = "/soc:providers/soc:space/";
 
   protected AbstractStorage() {
 
@@ -254,6 +258,23 @@ public abstract class AbstractStorage {
       
       //
       return query.execute().getNodes();
+    } catch (Exception ex) {
+      return null;
+    }
+  }
+  
+  /**
+   * Gets Node by the node path (jcr path)
+   * 
+   * @param jcrPath
+   * @return
+   * @throws Exception
+   */
+  protected Node node(String jcrPath) {
+    //
+    if (jcrPath == null) return null;
+    try {
+      return (Node) getSession().getJCRSession().getItem(jcrPath);
     } catch (Exception ex) {
       return null;
     }

@@ -1,0 +1,43 @@
+<%
+  import org.exoplatform.social.core.service.LinkProvider;
+
+  String aboutMe = uicomponent.getAboutMe();
+  boolean isOwner = uicomponent.isOwner();
+  List experienceData = uicomponent.getExperience();
+  def uiSocApplicationClzz = !isOwner && (aboutMe.length() == 0) && (experienceData.size() == 0) ? "" : "uiSocApplication";
+%>
+<div class="<%=uiSocApplicationClzz%> uiExperienceProfilePortlet" id="$uicomponent.id">
+<% if(aboutMe.length() > 0) { %>
+  <h4 class="head-container"><%=_ctx.appRes("UIBasicProfile.label.AboutMe")%></h4>
+  <div class="simpleBox aboutMe"><%=aboutMe%></div>
+<% } else if(isOwner) { %>
+  <div class="no-content center">
+    <div><%=_ctx.appRes("UIBasicProfile.info.HaveNotAbout")%></div>
+    <button class="btn btn-primary" onclick="window.location.href=window.location.origin + '<%=LinkProvider.getBaseUri(null, null)%>/edit-profile/'">
+      <i class="uiIconEdit uiIconLightGray"></i> <%=_ctx.appRes("UIBasicProfile.action.EditProfile")%></button>
+  </div>
+<% } 
+   if(experienceData.size() > 0) {
+      print("<h4 class=\"head-container\">" + _ctx.appRes("UIBasicProfile.label.Experience") + "</h4>");
+      print("<div class=\"simpleBox\"> ");
+      for(experience in experienceData) {
+        print("<div class=\"experience-container\"> ");
+        String utilNow = experience.get(uicomponent.EXPERIENCES_IS_CURRENT);
+        for(key in experience.keySet()) {
+          if(uicomponent.EXPERIENCES_IS_CURRENT.equals(key)) {
+            continue;
+          }
+          String label = _ctx.appRes("UIBasicProfile.label." + key);
+%>
+        <div class="<%=key%> clearfix"><div class="labelName pull-left"><%=label%>:</div>
+          <div rel="tooltip" data-placement="top" title="" data-original-title="<%=experience.get(key)%>"
+            class="pull-left ellipsis"><%=experience.get(key)%><%=(utilNow != null && "startDate".equals(key)) ? (" " + _ctx.appRes("UIBasicProfile.label.untilNow")) : "" %></div>
+         </div> 
+<%
+        }
+        print("</div>");
+      }
+      print("</div>");
+    }
+%>
+</div>

@@ -1,0 +1,32 @@
+<%
+	String userSettingUrl = uicomponent.getUserNotificationSettingUrl(); 
+	List notifications = uicomponent.getNotifications();
+	String display = (notifications.size() == 0) ? "block" : "none";
+%>
+
+<div class="uiIntranetNotificationsPortlet" id="$uicomponent.id">
+  <h3><%=_ctx.appRes("UIIntranetNotificationsPortlet.title.AllNotifications")%></h3>
+  <a class="user-setting" href="<%=userSettingUrl%>"><%=_ctx.appRes("UIIntranetNotificationsPortlet.title.NotificationsSetting")%></a>
+  <div style="display:none" class="all-actions">
+    <%
+      List actions = uicomponent.getActions();
+      for(action in actions) {
+        print("<div id=\"" + action + "\">" + uicomponent.buildResourceURL(action) + "</div>");
+      }
+    %>
+  </div>
+  <ul class="displayItems">
+  	<li class="no-items" style="display:$display;"><%=_ctx.appRes("UIIntranetNotificationsPortlet.label.NoNotifications") %></li>
+  <%
+    for(notification in notifications) { 
+      print(notification);
+    }
+  %>
+  </ul>
+  <div id="ShowMoreLoader" data-more="<%=uicomponent.hasMore%>" data-url="<%=uicomponent.getLoadMoreURL()%>" class="showMore hide"></div>
+ 	<div class="loadingIndicator" style="display:none">
+ 		<span class="uiLoadingIconLarge"></span>
+		<div class="loadingText"><%=_ctx.appRes("UIIntranetNotificationsPortlet.label.Loading") %>...</div>
+	</div>
+  <div class="bottomContainer"></div>
+</div>

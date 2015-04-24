@@ -26,6 +26,7 @@ import org.exoplatform.social.core.processor.ActivityResourceBundlePluginTest;
 import org.exoplatform.social.core.processor.I18NActivityProcessorTest;
 import org.exoplatform.social.core.relationship.RelationshipTest;
 import org.exoplatform.social.core.space.SpaceUtilsTest;
+import org.exoplatform.social.core.storage.ChromatticNameEncodeTest;
 import org.exoplatform.social.core.storage.StorageUtilsTest;
 import org.exoplatform.social.core.storage.query.ExpressionConstructorTestCase;
 import org.exoplatform.social.core.storage.query.WhereExpressionTypesafetyTestCase;
@@ -51,7 +52,8 @@ import org.junit.runners.Suite.SuiteClasses;
   WhereExpressionValuesTestCase.class,
   ActiviyBuilderWhereTest.class,
   ActivityIteratorTest.class,
-  IdentityResultTest.class
+  IdentityResultTest.class,
+  ChromatticNameEncodeTest.class
   })
 public class NoContainerTestSuite {
   

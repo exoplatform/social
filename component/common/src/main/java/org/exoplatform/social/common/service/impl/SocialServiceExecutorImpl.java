@@ -120,7 +120,7 @@ public class SocialServiceExecutorImpl implements SocialServiceExecutor {
   public ProcessContext async(AsyncProcessor asyncProcessor, ProcessContext processContext) {
     Future<ProcessContext> future = asyncProcess(asyncProcessor, processContext);
     try {
-      future.get(10, TimeUnit.MILLISECONDS);
+      future.get(20, TimeUnit.MILLISECONDS);
       //
       return future.get();
     } catch (InterruptedException e) {
@@ -130,7 +130,6 @@ public class SocialServiceExecutorImpl implements SocialServiceExecutor {
     } catch (TimeoutException e) {
       processContext.setException(e);
     }
-    
     return processContext;
   }
 
@@ -153,7 +152,7 @@ public class SocialServiceExecutorImpl implements SocialServiceExecutor {
     
     try {
       //Change timeout for Future when run debug mode
-      future.get(10, TimeUnit.MILLISECONDS);
+      future.get(20, TimeUnit.MILLISECONDS);
       //
       return future.get();
     } catch (InterruptedException e) {

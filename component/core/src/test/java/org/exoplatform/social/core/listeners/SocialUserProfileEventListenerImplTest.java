@@ -17,6 +17,7 @@
 package org.exoplatform.social.core.listeners;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.exoplatform.container.PortalContainer;
@@ -163,15 +164,18 @@ public class SocialUserProfileEventListenerImplTest extends AbstractCoreTest {
     profile.setProperty(Profile.FIRST_NAME, "FirstName");
     profile.setProperty(Profile.LAST_NAME, "LastName");
     profile.setProperty(Profile.FULL_NAME, "FirstName" + " " +  "LastName");
+    profile.setListUpdateTypes(Arrays.asList(Profile.UpdateType.CONTACT));
     identityManager.updateProfile(profile);
     
     //CONTACT INFO
     profile.setProperty(Profile.GENDER, "fmale");
+    profile.setListUpdateTypes(Arrays.asList(Profile.UpdateType.CONTACT));
     identityManager.updateProfile(profile);
     
 
     //POSITION
     profile.setProperty(Profile.POSITION, "developer");
+    profile.setListUpdateTypes(Arrays.asList(Profile.UpdateType.CONTACT));
     identityManager.updateProfile(profile);
 
     RequestLifeCycle.end();
@@ -187,6 +191,7 @@ public class SocialUserProfileEventListenerImplTest extends AbstractCoreTest {
     assertNotNull(profile);
     //
     profile.setProperty(Profile.POSITION, position);
+    profile.setListUpdateTypes(Arrays.asList(Profile.UpdateType.CONTACT));
     identityManager.updateProfile(profile);
     
     //profile.setProperty(Profile.CONTACT_PHONES, new String[]{"098939179"});
@@ -204,6 +209,7 @@ public class SocialUserProfileEventListenerImplTest extends AbstractCoreTest {
     assertNotNull(profile);
         
     profile.setProperty(Profile.GENDER, gender);
+    profile.setListUpdateTypes(Arrays.asList(Profile.UpdateType.CONTACT));
     identityManager.updateProfile(profile);
     
     RequestLifeCycle.end();
@@ -218,6 +224,7 @@ public class SocialUserProfileEventListenerImplTest extends AbstractCoreTest {
     assertNotNull(profile);
         
     profile.setProperty(key, value);
+    profile.setListUpdateTypes(Arrays.asList(Profile.UpdateType.CONTACT));
     identityManager.updateProfile(profile);
     
     RequestLifeCycle.end();

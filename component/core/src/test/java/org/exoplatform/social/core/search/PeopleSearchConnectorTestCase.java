@@ -101,11 +101,11 @@ public class PeopleSearchConnectorTestCase extends AbstractCoreTest {
 
   public void testFilter() throws Exception {
     assertEquals(1, peopleSearchConnector.search(null, "foo", Collections.EMPTY_LIST, 0, 10, "relevancy", "asc").size());
+    assertEquals(1, peopleSearchConnector.search(null, " foo", Collections.EMPTY_LIST, 0, 10, "relevancy", "asc").size());
     assertEquals(1, peopleSearchConnector.search(null, "bar", Collections.EMPTY_LIST, 0, 10, "relevancy", "asc").size());
     assertEquals(2, peopleSearchConnector.search(null, "bar position", Collections.EMPTY_LIST, 0, 10, "relevancy", "asc").size());
     assertEquals(2, peopleSearchConnector.search(null, "position", Collections.EMPTY_LIST, 0, 10, "relevancy", "asc").size());
     assertEquals(2, peopleSearchConnector.search(null, "doSomething", Collections.EMPTY_LIST, 0, 10, "relevancy", "asc").size());
-    assertEquals(2, peopleSearchConnector.search(null, "dev", Collections.EMPTY_LIST, 0, 10, "relevancy", "asc").size());
     assertEquals(2, peopleSearchConnector.search(null, "exo", Collections.EMPTY_LIST, 0, 10, "relevancy", "asc").size());
     assertEquals(2, peopleSearchConnector.search(null, "job description", Collections.EMPTY_LIST, 0, 10, "relevancy", "asc").size());
     //

@@ -133,19 +133,17 @@
         gadgets.window.adjustHeight();
       }
     },
-    
-    applyConfirmPopup : function(id) { 
+    applyConfirmPopup : function(id) {
       $('#' + id).find('.confirmPopup').on('click', function() {
-          var thizz = $(this);
-          var action_ = thizz.attr('data-onclick'); 
-          var label_ = thizz.attr('data-labelAction') || 'OK';
-          var close_ = thizz.attr('data-labelClose') || 'Close'; 
-          var title_ = thizz.attr('data-title') || 'Confirmation';
-          var message_ = thizz.attr('data-message');
-          eXo.social.PopupConfirmation.confirm('demo', [{action: action_, label : label_}], title_, message_, close_);
-        }); 
-      },
-      
+        var thizz = $(this);
+        var action_ = thizz.attr('data-onclick'); 
+        var label_ = thizz.attr('data-labelAction') || 'OK';
+        var close_ = thizz.attr('data-labelClose') || 'Close'; 
+        var title_ = thizz.attr('data-title') || 'Confirmation';
+        var message_ = thizz.attr('data-message');
+        eXo.social.PopupConfirmation.confirm('demo', [{action: action_, label : label_}], title_, message_, close_);
+      }); 
+    },
     feedbackMessagePopup : function(title, message, closeLabel) { 
       var popup = PopupConfirmation.makeTemplate();
       popup.find('.popupTitle').html(title);
@@ -156,7 +154,6 @@
       //
       PopupConfirmation.show(popup);
      },
-     
      feedbackMessageInline : function(parentId, message) { 
        message = message.replace("${simpleQuote}", "'");
 
@@ -497,7 +494,7 @@
       }
     }
   };
-  
+
   gj(window).resize(function(evt) {
     eXo.core.Browser.managerResize();
     if (SocialUtils.currentBrowseWidth != document.documentElement.clientWidth) {

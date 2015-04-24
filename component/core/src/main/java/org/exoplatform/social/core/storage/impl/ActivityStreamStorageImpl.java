@@ -18,8 +18,11 @@ package org.exoplatform.social.core.storage.impl;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
+import javax.jcr.RepositoryException;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.chromattic.api.ChromatticException;
@@ -27,11 +30,14 @@ import org.chromattic.api.query.Ordering;
 import org.chromattic.api.query.Query;
 import org.chromattic.api.query.QueryBuilder;
 import org.chromattic.api.query.QueryResult;
+
 import org.exoplatform.container.PortalContainer;
+import org.exoplatform.commons.utils.CommonsUtils;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.social.common.service.ProcessContext;
 import org.exoplatform.social.common.service.utils.ObjectHelper;
+import org.exoplatform.social.common.service.utils.TraceElement;
 import org.exoplatform.social.core.activity.filter.ActivityFilter;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.chromattic.entity.ActivityEntity;
@@ -43,6 +49,7 @@ import org.exoplatform.social.core.chromattic.entity.StreamsEntity;
 import org.exoplatform.social.core.chromattic.filter.JCRFilterLiteral;
 import org.exoplatform.social.core.chromattic.utils.ActivityRefIterator;
 import org.exoplatform.social.core.chromattic.utils.ActivityRefList;
+import org.exoplatform.social.core.identity.model.ActiveIdentityFilter;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
@@ -54,8 +61,10 @@ import org.exoplatform.social.core.storage.api.ActivityStreamStorage;
 import org.exoplatform.social.core.storage.api.RelationshipStorage;
 import org.exoplatform.social.core.storage.api.SpaceStorage;
 import org.exoplatform.social.core.storage.exception.NodeNotFoundException;
+import org.exoplatform.social.core.storage.query.ChromatticNameEncode;
 import org.exoplatform.social.core.storage.query.JCRProperties;
 import org.exoplatform.social.core.storage.query.WhereExpression;
+import org.exoplatform.social.core.storage.streams.StreamConfig;
 import org.exoplatform.social.core.storage.streams.StreamProcessContext;
 
 public class ActivityStreamStorageImpl extends AbstractStorage implements ActivityStreamStorage {
@@ -90,7 +99,7 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
   
   private ActivityStorage getStorage() {
     if (activityStorage == null) {
-      activityStorage = (ActivityStorage) PortalContainer.getInstance().getComponentInstanceOfType(ActivityStorage.class);
+      activityStorage = CommonsUtils.getService(ActivityStorage.class);
     }
     
     return activityStorage;
@@ -98,7 +107,7 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
   
   private SpaceStorage getSpaceStorage() {
     if (spaceStorage == null) {
-      spaceStorage = (SpaceStorage) PortalContainer.getInstance().getComponentInstanceOfType(SpaceStorage.class);
+      spaceStorage = CommonsUtils.getService(SpaceStorage.class);
     }
     
     return this.spaceStorage;
@@ -106,7 +115,7 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
   
   private RelationshipStorage getRelationshipStorage() {
     if (relationshipStorage == null) {
-      relationshipStorage = (RelationshipStorage) PortalContainer.getInstance().getComponentInstanceOfType(RelationshipStorage.class);
+      relationshipStorage = CommonsUtils.getService(RelationshipStorage.class);
     }
     
     return this.relationshipStorage;
@@ -139,9 +148,9 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
         addMentioner(streamCtx.getMentioners(), activityEntity);
       }
       
-    } catch (NodeNotFoundException e) {
+    } catch (Exception e) {
       ctx.setException(e);
-      LOG.warn("Failed to add Activity references.");
+      LOG.warn("Failed to add Activity references.", e);
       LOG.debug("Failed to add Activity references.", e);
     }
   }
@@ -174,13 +183,165 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
     }
   }
 
-  private void user(Identity poster, ActivityEntity activityEntity) throws NodeNotFoundException {
-    //
-    List<Identity> got = getRelationshipStorage().getConnections(poster);
-    if (got.size() > 0) {
-      createConnectionsRefs(got, activityEntity);
-    }
-  }
+  /**
+  * Making the Activity Reference for the user's connections
+  * 
+  * @param owner
+  * @param activityEntity
+  * @throws NodeNotFoundException
+  */
+ private void user(Identity poster, ActivityEntity activityEntity) throws NodeNotFoundException, RepositoryException {
+   //
+   TraceElement trace = TraceElement.getInstance("creating ref-" + poster.getRemoteId() + "-" + activityEntity.getTitle());
+   trace.start();
+   //
+   StreamConfig streamConfig = CommonsUtils.getService(StreamConfig.class);
+   //get multiple user groups separates by comma. Using StringTokenizer to split
+   String userGroups = streamConfig.getActiveUserGroups();
+   ActiveIdentityFilter filer = new ActiveIdentityFilter(userGroups);
+   Set<String> activeGroups = identityStorage.getActiveUsers(filer);
+   //
+   int days = streamConfig.getLastLoginAroundDays();
+   filer = new ActiveIdentityFilter(days);
+   int i = createRefForActiveUsers(poster, activityEntity, filer, activeGroups);
+   trace.end();
+   if (i > 0) {
+     LOG.info("loop times = " + i + trace.toString());
+   }
+ }
+ /**
+  * Creates the activity ref for active users
+  * 
+  * @param owner
+  * @param activityEntity
+  * @param filer the days filter
+  * @param activeGroups
+  * @return
+  * @throws NodeNotFoundException
+  */
+ private int createRefForActiveUsers(Identity owner,
+                               ActivityEntity activityEntity,
+                               ActiveIdentityFilter filer, Set<String> activeGroups) throws NodeNotFoundException, RepositoryException {
+   Set<String> activeUsers = identityStorage.getActiveUsers(filer);
+   //just for testing
+   /**
+   List<Identity> relationships = getRelationshipStorage().getConnections(owner, 0, 500);
+   Set<String> activeUsers = new HashSet<String>();
+   for(Identity identity : relationships) {
+     activeUsers.add(identity.getRemoteId());
+   }*/
+   
+   if (activeUsers == null) {
+     activeUsers = new HashSet<String>();
+   }
+   //eliminate duplicate "active" user between N days list and group list 
+   if (activeGroups.size() > 0) {
+     activeUsers.addAll(activeGroups);
+   }
+   int i = activeUsers.size() > 0 ? createRefWithActiveUser(owner, activityEntity, activeUsers) : createRefWithoutActiveUser(owner, activityEntity);
+   return i;
+ }
+
+ /**
+  * Creates the activity ref for connections in the case.
+  * Don't found any active users around days.
+  *  
+  * @param owner
+  * @param activityEntity
+  * @return
+  * @throws NodeNotFoundException
+  */
+ private int createRefWithoutActiveUser(Identity owner,
+                                        ActivityEntity activityEntity) throws NodeNotFoundException {
+   StreamConfig streamConfig = CommonsUtils.getService(StreamConfig.class);
+   int limitLoading = streamConfig.getLimitThresholdLoading();
+   int connectionsThreshold = streamConfig.getConnectionsThreshold();
+
+   int timesLoop = connectionsThreshold / limitLoading;
+   LOG.info("Identity:" + owner.getRemoteId());
+   int offset = 0;
+   int i = 0;
+   for (i = 0; i < timesLoop; i++) {
+     List<Identity> got = getRelationshipStorage().getConnections(owner, offset, limitLoading);
+     if (got.size() > 0) {
+       createConnectionsRefs(got, activityEntity);
+     } else {
+       break;
+     }
+     // increase offset
+     offset += limitLoading;
+     StorageUtils.persist();
+   }
+   return i;
+ }
+
+  /**
+  * Creates the activity ref for connections in the case.
+  * Don't found any active users around days.
+  * 
+  * @param owner
+  * @param activityEntity
+  * @return
+  * @throws NodeNotFoundException
+  */
+ private int createRefWithActiveUser(Identity owner, ActivityEntity activityEntity, Set<String> activeUsers) throws NodeNotFoundException, RepositoryException {
+   StreamConfig streamConfig = CommonsUtils.getService(StreamConfig.class);
+   int connectionsThreshold = streamConfig.getConnectionsThreshold();
+   int limitLoading = streamConfig.getLimitThresholdLoading();
+
+   LOG.debug("active users: " + (activeUsers.size() -1));
+   int offset = 0;
+   
+   IdentityEntity ownerEntity = _findById(IdentityEntity.class, owner.getId());
+   String nodePath = ownerEntity.getPath();
+   StringBuilder relationshipPath = new StringBuilder();
+   int batchIndex = 0;
+   
+   List<Identity> inputIdentities = new ArrayList<Identity>();
+   
+   for(String userName : activeUsers) {
+     //userName is the same owner, ignore.
+     if (owner.getRemoteId().equals(userName)) continue;
+     //reset StringBuilder with delete(0, length)
+     relationshipPath.delete(0, relationshipPath.length());
+     //
+     relationshipPath.append(nodePath).append("/").append(JCRProperties.RELATIONSHIP_NODE_TYPE).append("/").append("soc:").append(ChromatticNameEncode.encodeNodeName(userName));
+     
+     Identity identity2 = identityStorage.findIdentity(OrganizationIdentityProvider.NAME, userName);
+     
+     boolean hasRelationship = getRelationshipStorage().hasRelationship(owner, identity2, relationshipPath.toString());
+     
+     if(hasRelationship) {
+       LOG.debug("creates activity ref: " + userName);
+       
+       if (identity2 != null) {
+         inputIdentities.add(identity2);
+         batchIndex++;
+         
+         //handle loading limit
+         if (batchIndex == limitLoading) {
+           createConnectionsRefs(inputIdentities, activityEntity);
+           batchIndex = 0;
+           inputIdentities.clear();
+           LOG.debug("start - persist to storage...");
+           StorageUtils.persist();
+           LOG.debug("end - persist to storage...");
+         }
+       }
+       offset++;
+       //handle connections threshold
+       if (offset == connectionsThreshold) {
+         break;
+       }
+     }//end if(relationshipNode != null)
+   }
+   
+   if (batchIndex > 0 && inputIdentities.size() > 0) {
+     createConnectionsRefs(inputIdentities, activityEntity);
+   }
+
+   return offset;
+ }
   
   /**
    * Remove activity reference from "my activity stream" of an user and if he is not connected with the
@@ -542,6 +703,11 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
           //has on sender stream
           if (isExistingActivityRef(receiverEntity, entity, ActivityRefType.CONNECTION)) continue;
           
+          //exclude activity of space
+          // for SOC-4525
+          if (entity.getPath().contains(SPACE_NODETYPE_PATH)) {
+            continue;
+          }
           //
           createConnectionsRefs(receiver, entity);
         }
@@ -557,6 +723,10 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
           //has on receiver stream
           if (isExistingActivityRef(senderEntity, entity, ActivityRefType.CONNECTION)) continue;
           
+          // for SOC-4525
+          if (entity.getPath().contains(SPACE_NODETYPE_PATH)) {
+            continue;
+          }
           //
           createConnectionsRefs(sender, entity);
         }
@@ -733,31 +903,63 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
       int nb = 0;
       ActivityRefIterator it = list.iterator();
       _skip(it, offset);
+      int size = refList.getNumber()>0? refList.getNumber(): 0;
+      boolean sizeIsZero = (size==0)?true:false;
       while (it.hasNext()) {
-        ActivityRef current = it.next();
-        // take care in the case, current.getActivityEntity() = null the same
-        // SpaceRef, need to remove it out
-        if (current.getActivityEntity() == null) {
-          current.getDay().getActivityRefs().remove(current.getName());
-          continue;
-        }
+        if(sizeIsZero) size ++;
+        try {
+          ActivityRef current = it.next();
+          // take care in the case, current.getActivityEntity() = null the same
+          // SpaceRef, need to remove it out
+          if (current.getActivityEntity() == null) {
+            current.getDay().getActivityRefs().remove(current.getName());
+            continue;
+          }
 
-        ExoSocialActivity a = getStorage().getActivity(current.getActivityEntity().getId());
-        if (!got.contains(a)) {
-          if (!a.isHidden()) {
-            got.add(a);
-            if (++nb == limit) {
-              break;
+          ExoSocialActivity a = getStorage().getActivity(current.getActivityEntity().getId());
+
+          //SOC-4525 : exclude all space activities that owner is not member
+          if (SpaceIdentityProvider.NAME.equals(a.getActivityStream().getType().toString())) {
+            Space space = getSpaceStorage().getSpaceByPrettyName(a.getStreamOwner());
+            if(null == space){
+              IdentityEntity spaceIdentity = current.getActivityEntity().getIdentity();
+              LOG.info("SPACE PATH:" + spaceIdentity.getPath());
+              space = getSpaceStorage().getSpaceByPrettyName(spaceIdentity.getName());
+              if(space!=null){
+                LOG.info("SPACE was renamed before: " + space.getPrettyName());
+              }
+            }
+            if (ActivityRefType.CONNECTION.equals(type) || ActivityRefType.FEED.equals(type)) {
+              if (space != null && !ArrayUtils.contains(space.getMembers(), owner.getRemoteId())) {
+                LOG.info("Cleanup leak activities " + current.getName() + " of space: " + space.getPrettyName());
+                current.getDay().getActivityRefs().remove(current.getName());
+                getSession().save();
+                size--;
+                continue;
+              }
             }
           }
-        } else {
-          //remove if we have duplicate activity on stream.
-          //some of cases on PLF 3.5.x migration has duplicated Activity
-          current.getDay().getActivityRefs().remove(current.getName());
+
+          if (!got.contains(a)) {
+            if (!a.isHidden()) {
+              got.add(a);
+              if (++nb == limit) {
+                break;
+              }
+            }
+          } else {
+            //remove if we have duplicate activity on stream.
+            //some of cases on PLF 3.5.x migration has duplicated Activity
+            current.getDay().getActivityRefs().remove(current.getName());
+          }
+        } catch (Exception e) {
+          LOG.warn("Exception while loading activities for user: " + owner.getRemoteId());
         }
-        
-        
       }
+
+      //re-update size
+      refList.setNumber(size);
+
     } catch (NodeNotFoundException e) {
       LOG.warn("Failed to activities!");
     }
@@ -838,7 +1040,7 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
     ActivityFilter filter = ActivityFilter.newer();
 
     //
-    return getActivitiesOfIdentities(ActivityBuilderWhere.simple().owners(connections), filter, 0, -1);
+    return getActivitiesOfIdentities(ActivityBuilderWhere.owner().owners(connections), filter, 0, -1);
   }
   
   private QueryResult<ActivityEntity> getActivitiesOfSpace(Identity spaceIdentity) {
@@ -910,13 +1112,13 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
   }
   
   private void createConnectionsRefs(List<Identity> identities, ActivityEntity activityEntity) throws NodeNotFoundException {
-    manageRefList(new UpdateContext(identities, null), activityEntity, ActivityRefType.FEED, true);
-    manageRefList(new UpdateContext(identities, null), activityEntity, ActivityRefType.CONNECTION, false);
+    manageRefList(new UpdateContext(identities, null), activityEntity, ActivityRefType.FEED);
+    manageRefList(new UpdateContext(identities, null), activityEntity, ActivityRefType.CONNECTION);
   }
   
   private void createConnectionsRefs(Identity identity, ActivityEntity activityEntity) throws NodeNotFoundException {
-    manageRefList(new UpdateContext(identity, null), activityEntity, ActivityRefType.FEED, true);
-    manageRefList(new UpdateContext(identity, null), activityEntity, ActivityRefType.CONNECTION, false);
+    manageRefList(new UpdateContext(identity, null), activityEntity, ActivityRefType.FEED);
+    manageRefList(new UpdateContext(identity, null), activityEntity, ActivityRefType.CONNECTION);
   }
   
   private void removeRelationshipRefs(Identity identity, ActivityEntity activityEntity) throws NodeNotFoundException {
@@ -971,7 +1173,11 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
     if (context.getAdded() != null) {
       for (Identity identity : context.getAdded()) {
         IdentityEntity identityEntity = identityStorage._findIdentityEntity(identity.getProviderId(), identity.getRemoteId());
-
+        
+        //keep the latest activity posted time
+        if (type.equals(ActivityRefType.CONNECTION)) {
+          identityEntity.setLatestActivityCreatedTime(activityEntity.getLastUpdated());
+        }
         //
         if (mustCheck) {
           //to avoid add back activity to given stream what has already existing

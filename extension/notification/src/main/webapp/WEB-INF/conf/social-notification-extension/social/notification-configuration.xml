@@ -39,4 +39,31 @@
       <type>org.exoplatform.social.notification.impl.SpaceNotificationImpl</type>
     </component-plugin>
   </external-component-plugins>
+  
+  <!-- template channel register -->
+  <external-component-plugins>
+    <target-component>org.exoplatform.commons.api.notification.channel.ChannelManager</target-component>
+    <component-plugin>
+      <name>mail.channel.social.template</name>
+      <set-method>registerTemplateProvider</set-method>
+      <type>org.exoplatform.social.notification.channel.template.MailTemplateProvider</type>
+      <init-params>
+        <value-param>
+          <name>channel-id</name>
+          <value>MAIL_CHANNEL</value>
+        </value-param>
+      </init-params>
+    </component-plugin>
+    <component-plugin>
+      <name>web.channel.social.template</name>
+      <set-method>registerTemplateProvider</set-method>
+      <type>org.exoplatform.social.notification.channel.template.WebTemplateProvider</type>
+      <init-params>
+        <value-param>
+          <name>channel-id</name>
+          <value>WEB_CHANNEL</value>
+        </value-param>
+      </init-params>
+    </component-plugin>
+  </external-component-plugins>
 </configuration>

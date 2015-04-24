@@ -1,0 +1,74 @@
+<%
+import org.exoplatform.social.user.portlet.UserProfileHelper;
+
+def profile = uicomponent.getProfileInfo();
+def keys = profile.keySet();
+%>
+<div class="uiSocApplication uiBasicProfilePortlet" id="$uicomponent.id">
+  <h4 class="head-container"><%=_ctx.appRes("UIBasicProfile.label.ContactInformation")%></h4>
+  <div class="uiBasicInfoSection">
+    <%
+      for(key in keys) {
+        def values = profile.get(key);
+        String clzz = key.substring(0, 1).toUpperCase() + key.substring(1);
+    %>
+    <div class="group-user-info">
+      <div class="label-user-info"><strong><%=_ctx.appRes("UIBasicProfile.label." + key)%>:</strong></div>
+      <div class="value-user-info">
+      <%
+        if(UserProfileHelper.isString(values)) {
+          if (UserProfileHelper.isGender(key)) {
+      %>
+            <div class="ui<%=clzz%> ellipsis" rel="tooltip" data-placement="top" title="" data-original-title="<%=_ctx.appRes("UIBasicProfile.label." + values)%>"><%=_ctx.appRes("UIBasicProfile.label." + values)%></div>
+      <%  } else { %>
+            <div class="ui<%=clzz%> ellipsis" rel="tooltip" data-placement="top" title="" data-original-title="<%=values%>"><%=values%></div>
+      <%  } %>
+      <%} else  {
+          for(subKey in values.keySet()) {
+            def isIms = UserProfileHelper.isIMs(key);
+            def typeIconClzz = "";
+            if (isIms) {
+              typeIconClzz = UserProfileHelper.getIconCss(subKey); 
+            }
+            
+            def listVal = values.get(subKey); 
+            int valueNum = 0;
+            if (UserProfileHelper.isURL(key)) {
+              for (url in listVal) { %>
+              <div class="ui<%=clzz%>"><a class="ellipsis" href="<%=UserProfileHelper.toAbsoluteURL(url)%>" target="_blank"
+                   rel="tooltip" data-placement="top" title="" data-original-title="<%=url%>"><%=url%></a></div>
+            <%}
+            } else {
+              if (typeIconClzz.length() > 0) {
+                typeIconClzz = typeIconClzz + " uiIconSocLightGray";
+              }
+              for (val in listVal) { 
+              %>
+              <div class="listContent">
+              <%
+                if (valueNum == 0) {
+              %>
+                 <%if(isIms) {%>
+                <div><i class="<%=typeIconClzz%>"></i>&nbsp;&nbsp;<%=_ctx.appRes("UIBasicProfile.label." + subKey)%>:&nbsp;</div>
+                 <%} else { %>
+                <div><%=_ctx.appRes("UIBasicProfile.label." + subKey)%>:&nbsp;</div>  
+                 <%}%>
+              <%} else { %>
+                <div></div>
+              <%}
+                valueNum++;
+              %>
+                <div class="ellipsis" rel="tooltip" data-placement="top" title="" data-original-title="<%=val%>"><%=val%></div>
+              </div>
+              <% 
+              }
+            }
+          }
+        }
+      %>
+      </div>
+    </div>
+    <%} %>
+    <div class="line-bottom"><span></span></div>
+  </div>
+</div>

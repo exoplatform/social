@@ -231,7 +231,7 @@ public class Utils {
     UIWorkingWorkspace uiWorkingWS = Util.getUIPortalApplication().getChildById(UIPortalApplication.UI_WORKING_WS_ID);
     PortalRequestContext pContext = Util.getPortalRequestContext();
     pContext.addUIComponentToUpdateByAjax(uiWorkingWS);
-    pContext.setFullRender(true);
+    pContext.ignoreAJAXUpdateOnPortlets(true);
   }
 
   /**

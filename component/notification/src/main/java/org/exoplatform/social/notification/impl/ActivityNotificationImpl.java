@@ -17,7 +17,7 @@
 package org.exoplatform.social.notification.impl;
 
 import org.exoplatform.commons.api.notification.NotificationContext;
-import org.exoplatform.commons.api.notification.model.NotificationKey;
+import org.exoplatform.commons.api.notification.model.PluginKey;
 import org.exoplatform.commons.notification.impl.NotificationContextImpl;
 import org.exoplatform.social.core.activity.ActivityLifeCycleEvent;
 import org.exoplatform.social.core.activity.ActivityListenerPlugin;
@@ -36,9 +36,9 @@ public class ActivityNotificationImpl extends ActivityListenerPlugin {
     ExoSocialActivity activity = event.getSource();    
     NotificationContext ctx = NotificationContextImpl.cloneInstance().append(SocialNotificationUtils.ACTIVITY, activity);
 
-    ctx.getNotificationExecutor().with(ctx.makeCommand(NotificationKey.key(PostActivityPlugin.ID)))
-                                 .with(ctx.makeCommand(NotificationKey.key(PostActivitySpaceStreamPlugin.ID)))
-                                 .with(ctx.makeCommand(NotificationKey.key(ActivityMentionPlugin.ID)))
+    ctx.getNotificationExecutor().with(ctx.makeCommand(PluginKey.key(PostActivityPlugin.ID)))
+                                 .with(ctx.makeCommand(PluginKey.key(PostActivitySpaceStreamPlugin.ID)))
+                                 .with(ctx.makeCommand(PluginKey.key(ActivityMentionPlugin.ID)))
                                  .execute(ctx);
   }
 
@@ -51,8 +51,8 @@ public class ActivityNotificationImpl extends ActivityListenerPlugin {
     ExoSocialActivity activity = event.getSource();    
     NotificationContext ctx = NotificationContextImpl.cloneInstance().append(SocialNotificationUtils.ACTIVITY, activity);
 
-    ctx.getNotificationExecutor().with(ctx.makeCommand(NotificationKey.key(ActivityCommentPlugin.ID)))
-                                 .with(ctx.makeCommand(NotificationKey.key(ActivityMentionPlugin.ID)))
+    ctx.getNotificationExecutor().with(ctx.makeCommand(PluginKey.key(ActivityCommentPlugin.ID)))
+                                 .with(ctx.makeCommand(PluginKey.key(ActivityMentionPlugin.ID)))
                                  .execute(ctx);
   }
 
@@ -61,7 +61,7 @@ public class ActivityNotificationImpl extends ActivityListenerPlugin {
     ExoSocialActivity activity = event.getSource();    
     NotificationContext ctx = NotificationContextImpl.cloneInstance().append(SocialNotificationUtils.ACTIVITY, activity);
     
-    ctx.getNotificationExecutor().with(ctx.makeCommand(NotificationKey.key(LikePlugin.ID)))
+    ctx.getNotificationExecutor().with(ctx.makeCommand(PluginKey.key(LikePlugin.ID)))
                                  .execute(ctx);
   }
 }

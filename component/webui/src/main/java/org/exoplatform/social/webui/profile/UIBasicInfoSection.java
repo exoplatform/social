@@ -33,6 +33,7 @@ import org.exoplatform.webui.core.lifecycle.UIFormLifecycle;
 import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.event.Event.Phase;
 import org.exoplatform.webui.form.UIFormStringInput;
+import org.exoplatform.webui.form.UIFormTextAreaInput;
 import org.exoplatform.webui.form.validator.EmailAddressValidator;
 import org.exoplatform.webui.form.validator.MandatoryValidator;
 import org.exoplatform.webui.form.validator.PersonalNameValidator;
@@ -81,6 +82,9 @@ public class UIBasicInfoSection extends UIProfileSection {
     addUIFormInput(new UIFormStringInput(Profile.EMAIL, Profile.EMAIL, null).
                    addValidator(MandatoryValidator.class).
                    addValidator(EmailAddressValidator.class));
+    
+    addUIFormInput(new UIFormTextAreaInput(Profile.ABOUT_ME, Profile.ABOUT_ME, null).
+                   addValidator(MandatoryValidator.class));
   }
 
   /**
@@ -94,6 +98,7 @@ public class UIBasicInfoSection extends UIProfileSection {
       this.getUIStringInput(Profile.FIRST_NAME).setValue((String) profile.getProperty(Profile.FIRST_NAME));
       this.getUIStringInput(Profile.LAST_NAME).setValue((String) profile.getProperty(Profile.LAST_NAME));
       this.getUIStringInput(Profile.EMAIL).setValue((String) profile.getProperty(Profile.EMAIL));
+      this.getUIFormTextAreaInput(Profile.ABOUT_ME).setValue((String) profile.getProperty(Profile.ABOUT_ME));
       if (isEditMode())
         setFirstLoad(true);
     }
@@ -140,6 +145,7 @@ public class UIBasicInfoSection extends UIProfileSection {
       String firstName = uiForm.getUIStringInput(Profile.FIRST_NAME).getValue();
       String lastName = uiForm.getUIStringInput(Profile.LAST_NAME).getValue();
       String newEmail = uiForm.getUIStringInput(Profile.EMAIL).getValue();
+      String aboutme = uiForm.getUIFormTextAreaInput(Profile.ABOUT_ME).getValue();
       String fullName = firstName + " " + lastName;
       
       Identity viewerIdentity = Utils.getViewerIdentity(true);
@@ -157,6 +163,10 @@ public class UIBasicInfoSection extends UIProfileSection {
       }
       if (!(profile.getProperty(Profile.EMAIL)).equals(newEmail)) {
         profile.setProperty(Profile.EMAIL, newEmail);
+        profileHasUpdated = true;
+      }
+      if (!(aboutme).equals(profile.getProperty(Profile.ABOUT_ME))) {
+        profile.setProperty(Profile.ABOUT_ME, aboutme);
         profileHasUpdated = true;
       }
       if (profileHasUpdated) {

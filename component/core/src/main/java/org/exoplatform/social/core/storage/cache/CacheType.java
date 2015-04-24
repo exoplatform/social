@@ -37,6 +37,7 @@ public enum CacheType {
   PROFILE("ProfileCache"),
   IDENTITIES_COUNT("IdentitiesCountCache"),
   IDENTITIES("IdentitiesCache"),
+  ACTIVE_IDENTITIES("ActiveIdentitiesCache"),
 
   //
   RELATIONSHIP("RelationshipCache"),

@@ -425,7 +425,7 @@ public class BaseUIActivity extends UIForm {
     setCommentListStatus(CommentStatus.ALL);
   }
 
-  protected void setLike(boolean isLiked) throws Exception {
+  public void setLike(boolean isLiked) throws Exception {
     Identity viewerIdentity = Utils.getViewerIdentity();
     activity.setBody(null);
     activity.setTitle(null);

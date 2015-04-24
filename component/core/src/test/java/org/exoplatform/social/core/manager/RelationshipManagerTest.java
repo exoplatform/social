@@ -28,6 +28,7 @@ import org.exoplatform.social.core.test.AbstractCoreTest;
 
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -432,6 +433,7 @@ public class RelationshipManagerTest extends AbstractCoreTest {
     
     Profile profile = maryIdentity.getProfile();
     profile.setProperty(Profile.AVATAR, avatarAttachment);
+    profile.setListUpdateTypes(Arrays.asList(Profile.UpdateType.AVATAR));
     identityManager.updateProfile(profile);
     
     Identity[] identities = demoIncoming.load(0, 10);
@@ -484,6 +486,7 @@ public class RelationshipManagerTest extends AbstractCoreTest {
     
     Profile profile = demoIdentity.getProfile();
     profile.setProperty(Profile.AVATAR, avatarAttachment);
+    profile.setListUpdateTypes(Arrays.asList(Profile.UpdateType.AVATAR));
     identityManager.updateProfile(profile);
     
     rootOutgoing = relationshipManager.getOutgoing(rootIdentity);
@@ -1379,6 +1382,7 @@ public class RelationshipManagerTest extends AbstractCoreTest {
      
      Profile profile = demoIdentity.getProfile();
      profile.setProperty(Profile.AVATAR, avatarAttachment);
+     profile.setListUpdateTypes(Arrays.asList(Profile.UpdateType.AVATAR));
      identityManager.updateProfile(profile);
      
      Identity[] identities = contactsList.load(0, 10);
@@ -1560,5 +1564,31 @@ public class RelationshipManagerTest extends AbstractCoreTest {
     tearDownRelationshipList.add(paulToMaryRelationship);
     tearDownRelationshipList.add(johnToMaryRelationship);
     tearDownRelationshipList.add(rootToMaryRelationship);
+  }
+  
+  public void testGetLastConnections() throws Exception {
+    Relationship maryToGhostRelationship = relationshipManager.inviteToConnect(ghostIdentity, maryIdentity);
+    relationshipManager.confirm(maryIdentity, ghostIdentity);
+    Relationship maryToDemoRelationship = relationshipManager.inviteToConnect(demoIdentity, maryIdentity);
+    relationshipManager.confirm(maryIdentity, demoIdentity);
+    Relationship paulToMaryRelationship = relationshipManager.inviteToConnect(paulIdentity, maryIdentity);
+    relationshipManager.confirm(maryIdentity, paulIdentity);
+    
+    List<Identity> identities = relationshipManager.getLastConnections(maryIdentity, 10);
+    assertEquals(3, identities.size());
+    assertEquals(paulIdentity.getRemoteId(), identities.get(0).getRemoteId());
+    assertEquals(demoIdentity.getRemoteId(), identities.get(1).getRemoteId());
+    assertEquals(ghostIdentity.getRemoteId(), identities.get(2).getRemoteId());
+    
+    Relationship johnToMaryRelationship = relationshipManager.inviteToConnect(maryIdentity, johnIdentity);
+    relationshipManager.confirm(johnIdentity, maryIdentity);
+    identities = relationshipManager.getLastConnections(maryIdentity, 10);
+    assertEquals(4, identities.size());
+    assertEquals(johnIdentity.getRemoteId(), identities.get(0).getRemoteId());
+    
+    tearDownRelationshipList.add(maryToGhostRelationship);
+    tearDownRelationshipList.add(maryToDemoRelationship);
+    tearDownRelationshipList.add(paulToMaryRelationship);
+    tearDownRelationshipList.add(johnToMaryRelationship);
   }
 }

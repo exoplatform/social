@@ -21,9 +21,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.StringTokenizer;
 
 import javax.jcr.PropertyType;
 import javax.jcr.RepositoryException;
@@ -33,6 +36,7 @@ import javax.jcr.nodetype.NodeTypeManager;
 import javax.jcr.nodetype.PropertyDefinition;
 
 import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.lucene.queryParser.QueryParser;
 import org.chromattic.api.UndeclaredRepositoryException;
 import org.chromattic.api.query.Ordering;
@@ -41,10 +45,13 @@ import org.chromattic.api.query.QueryResult;
 import org.chromattic.core.query.QueryImpl;
 import org.chromattic.ext.ntdef.NTFile;
 import org.chromattic.ext.ntdef.Resource;
+
+import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.services.organization.OrganizationService;
+import org.exoplatform.services.organization.User;
 import org.exoplatform.social.core.chromattic.entity.ActivityProfileEntity;
 import org.exoplatform.social.core.chromattic.entity.IdentityEntity;
 import org.exoplatform.social.core.chromattic.entity.ProfileEntity;
@@ -55,6 +62,7 @@ import org.exoplatform.social.core.chromattic.entity.RelationshipListEntity;
 import org.exoplatform.social.core.chromattic.entity.SpaceRef;
 import org.exoplatform.social.core.identity.IdentityResult;
 import org.exoplatform.social.core.identity.SpaceMemberFilterListAccess.Type;
+import org.exoplatform.social.core.identity.model.ActiveIdentityFilter;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.identity.model.Profile.AttachedActivityType;
@@ -577,7 +585,6 @@ public class IdentityStorageImpl extends AbstractStorage implements IdentityStor
 
           // create
           List<String> skills = new ArrayList<String>();
-          List<String> positions = new ArrayList<String>();
           List<String> organizations = new ArrayList<String>();
           List<String> jobsDescription = new ArrayList<String>();
           for (Map<String, String> currentXp : (List<Map<String, String>>) value) {
@@ -596,10 +603,6 @@ public class IdentityStorageImpl extends AbstractStorage implements IdentityStor
               skills.add(xpEntity.getSkills());
             }
             //
-            if (xpEntity.getPosition() != null) {
-              positions.add(xpEntity.getPosition());
-            }
-            //
             if (xpEntity.getCompany() != null) {
               organizations.add(xpEntity.getCompany());
             }
@@ -610,7 +613,6 @@ public class IdentityStorageImpl extends AbstractStorage implements IdentityStor
 
           }
           profileEntity.setProperty(PropNs.INDEX.nameOf(Profile.EXPERIENCES_SKILLS), skills);
-          profileEntity.setProperty(PropNs.INDEX.nameOf(Profile.EXPERIENCES_POSITION), positions);
           profileEntity.setProperty(PropNs.INDEX.nameOf(Profile.EXPERIENCES_COMPANY), organizations);
           profileEntity.setProperty(PropNs.INDEX.nameOf(Profile.EXPERIENCES_DESCRIPTION), jobsDescription);
 
@@ -1467,4 +1469,35 @@ public class IdentityStorageImpl extends AbstractStorage implements IdentityStor
     return true;
   }
 
+  @Override
+  public Set<String> getActiveUsers(ActiveIdentityFilter filter) {
+    Set<String> activeUsers = new HashSet<String>();
+    //by userGroups
+    if (filter.getUserGroups() != null) {
+      StringTokenizer stringToken = new StringTokenizer(filter.getUserGroups(), ActiveIdentityFilter.COMMA_SEPARATOR);
+      try {
+        while(stringToken.hasMoreTokens()) {
+          try {
+            ListAccess<User> listAccess = getOrganizationService().getUserHandler().findUsersByGroupId(stringToken.nextToken().trim());
+            User[] users = listAccess.load(0, listAccess.getSize());
+            //
+            for(User u : users) {
+              activeUsers.add(u.getUserName());
+            }
+          } catch (Exception e) {
+            LOG.info(e.getMessage());
+          }
+        }
+      } catch (Exception e) {
+        LOG.error(e.getMessage());
+      }
+    }
+    
+    //by N days
+    if (filter.getDays() > 0) {
+      activeUsers = StorageUtils.getLastLogin(filter.getDays());
+    } 
+
+    return activeUsers;
+  }
 }

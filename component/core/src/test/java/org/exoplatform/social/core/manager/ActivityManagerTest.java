@@ -1488,6 +1488,39 @@ public class ActivityManagerTest extends AbstractCoreTest {
     assertEquals("1", commenters[0].split("@")[1]);
     assertEquals("1", mentioners[0].split("@")[1]);
   }
+  
+  public void testMentionActivityOnOthersStream() throws Exception {
+    relationshipManager.inviteToConnect(rootIdentity, demoIdentity);
+    relationshipManager.confirm(demoIdentity, rootIdentity);
+    
+    List<ExoSocialActivity> activities = activityManager.getActivityFeedWithListAccess(rootIdentity).loadAsList(0, 10);
+    assertEquals(0, activities.size());
+    activities = activityManager.getActivitiesWithListAccess(rootIdentity).loadAsList(0, 10);
+    assertEquals(0, activities.size());
+    activities = activityManager.getActivityFeedWithListAccess(demoIdentity).loadAsList(0, 10);
+    assertEquals(0, activities.size());
+    activities = activityManager.getActivitiesWithListAccess(demoIdentity).loadAsList(0, 10);
+    assertEquals(0, activities.size());
+    
+    //root post on demo's stream
+    ExoSocialActivity activity = new ExoSocialActivityImpl();
+    activity.setTitle("hello @demo");
+    activity.setUserId(rootIdentity.getId());
+    activityManager.saveActivityNoReturn(demoIdentity, activity);
+    tearDownActivityList.add(activity);
+    
+    activity = activityManager.getActivity(activity.getId());
+    assertEquals(1, activity.getMentionedIds().length);
+    
+    activities = activityManager.getActivityFeedWithListAccess(rootIdentity).loadAsList(0, 10);
+    assertEquals(1, activities.size());
+    activities = activityManager.getActivitiesWithListAccess(rootIdentity).loadAsList(0, 10);
+    assertEquals(1, activities.size());
+    activities = activityManager.getActivityFeedWithListAccess(demoIdentity).loadAsList(0, 10);
+    assertEquals(1, activities.size());
+    activities = activityManager.getActivitiesWithListAccess(demoIdentity).loadAsList(0, 10);
+    assertEquals(1, activities.size());
+  }
 
   /**
    *
