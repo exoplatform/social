@@ -152,7 +152,7 @@
                 <object-param profiles="cluster">
                     <name>ActiveIdentitiesCache</name>
                     <description></description>
-                    <object type="org.exoplatform.services.cache.ExoCacheConfig">
+                    <object type="org.exoplatform.services.cache.impl.infinispan.generic.GenericExoCacheConfig">
                         <field name="name"><string>ActiveIdentitiesCache</string></field>
                         <field name="strategy"><string>LIRS</string></field>
                         <field name="maxEntries"><int>${cache.exo.social.IdentitiesCache.Capacity:5}</int></field>
