@@ -88,8 +88,8 @@ import org.junit.runners.Suite.SuiteClasses;
   ProfileUpdatesPublisherTest.class,
   MentionsProcessorTest.class,
   LinkProviderTest.class,
-//  PeopleSearchConnectorTestCase.class,
-//  SpaceSearchConnectorTestCase.class,
+  PeopleSearchConnectorTestCase.class,
+  SpaceSearchConnectorTestCase.class,
   SpaceUtilsWildCardMembershipTest.class
   })
 @ConfigTestCase(AbstractCoreTest.class)
