@@ -16,16 +16,14 @@
  */
 package org.exoplatform.social.service.rest.api.models;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import org.exoplatform.social.common.RealtimeListAccess;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.manager.ActivityManager;
 import org.exoplatform.social.core.manager.IdentityManager;
+import org.exoplatform.social.core.processor.I18NActivityProcessor;
 import org.exoplatform.social.service.rest.Util;
 
 
@@ -431,13 +429,13 @@ public class ActivityRestOut extends HashMap<String, Object>{
     setLikedByIdentities(identityRests);
   }
 
- /**
-  * Sets the number of comments to be returned.
-  *
-  * @param numberOfComments the number of comments
-  * @param activity the existing activity
-  * @param portalContainerName the portal container name
-  */
+  /**
+   * Sets the number of comments to be returned.
+   *
+   * @param numberOfComments the number of comments
+   * @param activity the existing activity
+   * @param portalContainerName the portal container name
+   */
   public void setNumberOfComments(int numberOfComments, ExoSocialActivity activity, String portalContainerName) {
     if (numberOfComments <= 0) {
       return;
@@ -452,6 +450,34 @@ public class ActivityRestOut extends HashMap<String, Object>{
       ExoSocialActivity currentComment = comments[i];
       CommentRestOut commentRestOut = new CommentRestOut(comments[i], portalContainerName);
       commentRestOut.setPosterIdentity(new IdentityRestOut(identityManager.getIdentity(currentComment.getUserId(), false)));
+      commentRests.add(commentRestOut);
+    }
+    setComments(commentRests);
+  }
+
+ /**
+  * Sets the number of comments to be returned (localized version).
+  *
+  * @param numberOfComments the number of comments
+  * @param activity the existing activity
+  * @param portalContainerName the portal container name
+  * @param i18NActivityProcessor : the processor for localization
+  * @param locale : the locale to use
+  */
+  public void setNumberOfComments(int numberOfComments, ExoSocialActivity activity, String portalContainerName, I18NActivityProcessor i18NActivityProcessor, Locale locale) {
+    if (numberOfComments <= 0) {
+      return;
+    }
+    ActivityManager activityManager = Util.getActivityManager(portalContainerName);
+    IdentityManager identityManager = Util.getIdentityManager(portalContainerName);
+    RealtimeListAccess<ExoSocialActivity> rcla = activityManager.getCommentsWithListAccess(activity);
+    ExoSocialActivity[] comments = rcla.load(0, numberOfComments);
+    numberOfComments = Math.min(comments.length, numberOfComments);
+    List<CommentRestOut> commentRests = new ArrayList<CommentRestOut>(numberOfComments);
+    for (int i = 0; i < numberOfComments; i++) {
+      ExoSocialActivity currentLocalizedComment = i18NActivityProcessor.process(comments[i],locale);
+      CommentRestOut commentRestOut = new CommentRestOut(currentLocalizedComment, portalContainerName);
+      commentRestOut.setPosterIdentity(new IdentityRestOut(identityManager.getIdentity(currentLocalizedComment.getUserId(), false)));
       commentRests.add(commentRestOut);
     }
     setComments(commentRests);

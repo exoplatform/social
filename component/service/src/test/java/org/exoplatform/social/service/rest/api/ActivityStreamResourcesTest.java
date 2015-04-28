@@ -37,6 +37,7 @@ import org.exoplatform.social.service.test.AbstractResourceTest;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
+import javax.ws.rs.core.HttpHeaders;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -636,7 +637,7 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
   }
 
   /**
-   * Test {@link ActivityStreamResources#getActivityFeedOfAuthenticated(UriInfo, String, String, int, String, String, int, int)}
+   * Test {@link ActivityStreamResources#getActivityFeedOfAuthenticated(UriInfo, HttpHeaders, String, String, int, String, String, int, int)}
    *
    * @throws Exception
    */
@@ -655,7 +656,7 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
   }
   
   /**
-   * Test {@link ActivityStreamResources#getActivityFeedOfAuthenticated(javax.ws.rs.core.UriInfo, String, String, int, String, String, int, int)}
+   * Test {@link ActivityStreamResources#getActivityFeedOfAuthenticated(javax.ws.rs.core.UriInfo, HttpHeaders, String, String, int, String, String, int, int)}
    * 
    * @throws Exception
    */
@@ -715,7 +716,7 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
   }
   
   /**
-   * Test {@link ActivityStreamResources#getActivityFeedOfAuthenticated(javax.ws.rs.core.UriInfo, String, String, int, String, String, int, int)}
+   * Test {@link ActivityStreamResources#getActivityFeedOfAuthenticated(javax.ws.rs.core.UriInfo, HttpHeaders, String, String, int, String, String, int, int)}
    * 
    * @throws Exception
    */
@@ -776,7 +777,7 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
   }
   
   /**
-   * Test {@link ActivityStreamResources#getActivityFeedOfAuthenticated(javax.ws.rs.core.UriInfo, String, String, int, String, String, int, int)}
+   * Test {@link ActivityStreamResources#getActivityFeedOfAuthenticated(javax.ws.rs.core.UriInfo, HttpHeaders, String, String, int, String, String, int, int)}
    * 
    * @throws Exception
    */
@@ -844,7 +845,7 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
   }
   
   /**
-   * Test {@link ActivityStreamResources#getActivityFeedOfAuthenticated(javax.ws.rs.core.UriInfo, String, String, int, String, String, int, int)}
+   * Test {@link ActivityStreamResources#getActivityFeedOfAuthenticated(javax.ws.rs.core.UriInfo, HttpHeaders, String, String, int, String, String, int, int)}
    * 
    * @throws Exception
    */
@@ -899,7 +900,7 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
   }
   
   /**
-   * Test {@link ActivityStreamResources#getActivityFeedOfAuthenticated(javax.ws.rs.core.UriInfo, String, String, int, String, String, int, int)}
+   * Test {@link ActivityStreamResources#getActivityFeedOfAuthenticated(javax.ws.rs.core.UriInfo, HttpHeaders, String, String, int, String, String, int, int)}
    * 
    * @throws Exception
    */
@@ -975,7 +976,7 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
   }
   
   /**
-   * Test {@link ActivityStreamResources#getActivityFeedOfAuthenticated(javax.ws.rs.core.UriInfo, String, String, int, String, String, int, int)}
+   * Test {@link ActivityStreamResources#getActivityFeedOfAuthenticated(javax.ws.rs.core.UriInfo, HttpHeaders, String, String, int, String, String, int, int)}
    * 
    * @throws Exception
    */
@@ -1062,7 +1063,7 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
   }
   
   /**
-   * Test {@link ActivityStreamResources#getActivityFeedOfAuthenticated(javax.ws.rs.core.UriInfo, String, String, int, String, String, int, int)}
+   * Test {@link ActivityStreamResources#getActivityFeedOfAuthenticated(javax.ws.rs.core.UriInfo, HttpHeaders, String, String, int, String, String, int, int)}
    * 
    * @throws Exception
    */
@@ -1786,7 +1787,7 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
   
   /**
    * Test
-   * {@link ActivityStreamResources#getActivityFeedByTimestampOfAuthenticated(javax.ws.rs.core.UriInfo, String, String, int, Long, Long, int, int)}
+   * {@link ActivityStreamResources#getActivityFeedOfAuthenticatedByTimestamp(javax.ws.rs.core.UriInfo, HttpHeaders headers, String, String, int, Long, Long, int, int)}
    * 
    * @throws Exception
    */
@@ -1856,7 +1857,7 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
 
   /**
    * Test
-   * {@link ActivityStreamResources#getActivityFeedByTimestampOfAuthenticated(javax.ws.rs.core.UriInfo, String, String, int, Long, Long, int, int)}
+   * {@link ActivityStreamResources#getActivityFeedOfAuthenticatedByTimestamp(javax.ws.rs.core.UriInfo, HttpHeaders headers, String, String, int, Long, Long, int, int)}
    * 
    * @throws Exception
    */
@@ -1926,7 +1927,7 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
 
   /**
    * Test
-   * {@link ActivityStreamResources#getActivityFeedByTimestampOfAuthenticated(javax.ws.rs.core.UriInfo, String, String, int, Long, Long, int, int)}
+   * {@link ActivityStreamResources#getActivityFeedOfAuthenticatedByTimestamp(javax.ws.rs.core.UriInfo, HttpHeaders headers, String, String, int, Long, Long, int, int)}
    * 
    * @throws Exception
    */
@@ -2013,7 +2014,7 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
 
   /**
    * Test
-   * {@link ActivityStreamResources#getActivityFeedByTimestampOfAuthenticated(javax.ws.rs.core.UriInfo, String, String, int, Long, Long, int, int)}
+   * {@link ActivityStreamResources#getActivityFeedOfAuthenticatedByTimestamp(javax.ws.rs.core.UriInfo, HttpHeaders headers, String, String, int, Long, Long, int, int)}
    * 
    * @throws Exception
    */

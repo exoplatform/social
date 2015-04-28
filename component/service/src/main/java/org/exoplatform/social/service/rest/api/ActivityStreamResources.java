@@ -24,6 +24,7 @@ import org.exoplatform.social.common.RealtimeListAccess;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.manager.ActivityManager;
+import org.exoplatform.social.core.processor.I18NActivityProcessor;
 import org.exoplatform.social.core.storage.ActivityStorageException;
 import org.exoplatform.social.service.rest.RestChecker;
 import org.exoplatform.social.service.rest.SecurityManager;
@@ -31,12 +32,10 @@ import org.exoplatform.social.service.rest.Util;
 import org.exoplatform.social.service.rest.api.models.ActivityRestListOut;
 
 import javax.ws.rs.*;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriInfo;
+import javax.ws.rs.core.*;
 import java.lang.reflect.UndeclaredThrowableException;
 import java.util.List;
+import java.util.Locale;
 
 import static org.exoplatform.social.service.rest.RestChecker.*;
 
@@ -55,11 +54,14 @@ public class ActivityStreamResources implements ResourceContainer {
   private static final String[] SUPPORTED_FORMATS = new String[] {"json"};
   private static final int MAX_LIMIT = 100;
 
+  private static final Locale DEFAULT_LOCALE = Locale.getDefault();
+
 
   /**
    * Gets activities of a defined identity based on an specific activity called baseActivity.
    *
    * @param uriInfo             The URI information.
+   * @param headers             HttpHeaders headers,
    * @param portalContainerName The portal container name.
    * @param identityId          The identity Id.
    *                            There is one special *identityId*: "me" standing for the authenticated user who makes this request.
@@ -204,6 +206,7 @@ public class ActivityStreamResources implements ResourceContainer {
   @Path("{identityId}.{format}")
   @Produces(MediaType.APPLICATION_JSON)
   public Response getActivityStreamByIdentityId(@Context UriInfo uriInfo,
+                                                @Context HttpHeaders headers,
                                                 @PathParam("portalContainerName") String portalContainerName,
                                                 @PathParam("identityId") String identityId,
                                                 @PathParam("format") String format,
@@ -266,8 +269,19 @@ public class ActivityStreamResources implements ResourceContainer {
       activityList = rala.loadAsList(0, maxLimit);
     }
 
+    I18NActivityProcessor i18NActivityProcessor = Util.getI18NActivityProcessor(portalContainerName);
+    Locale locale = null;
+    List<Locale> locales = headers != null ? headers.getAcceptableLanguages() : null;
+    if (locales != null && locales.size()>0) {
+      //use first locale of headers
+      locale = locales.get(0).getLanguage().equals("*") ? null : locales.get(0);
+    }
+    if (locale==null) {
+      locale = Util.getLocaleOfCurrentUser(Util.getAuthenticatedUserIdentity(portalContainerName).getRemoteId(),portalContainerName);
+    }
+
     ActivityRestListOut arlo = new ActivityRestListOut(activityList, numberOfComments,
-                                                       numberOfLikes, portalContainerName);
+                                                       numberOfLikes, portalContainerName, i18NActivityProcessor, locale);
 
     return Util.getResponse(arlo, uriInfo, mediaType, Response.Status.OK);
   }
@@ -276,6 +290,7 @@ public class ActivityStreamResources implements ResourceContainer {
    * Gets the activity stream feed of the authenticated user identity based on an specific activity called "baseActivity".
    *
    * @param uriInfo             The URI information.
+   * @param headers             HttpHeaders headers,
    * @param portalContainerName The portal container name.
    * @param format              The format of the returned result, for example, JSON, or XML.
    * @param limit               Specifies the number of activities to retrieve. It must be less than or equal to 100.
@@ -418,6 +433,7 @@ public class ActivityStreamResources implements ResourceContainer {
   @Path("feed.{format}")
   @Produces(MediaType.APPLICATION_JSON)
   public Response getActivityFeedOfAuthenticated(@Context UriInfo uriInfo,
+                                                 @Context HttpHeaders headers,
                                                  @PathParam("portalContainerName") String portalContainerName,
                                                  @PathParam("format") String format,
                                                  @QueryParam("limit") int limit,
@@ -473,8 +489,21 @@ public class ActivityStreamResources implements ResourceContainer {
     } catch (Exception e) {
       throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
     }
+
+
+    I18NActivityProcessor i18NActivityProcessor = Util.getI18NActivityProcessor(portalContainerName);
+    Locale locale = null;
+    List<Locale> locales = headers != null ? headers.getAcceptableLanguages() : null;
+    if (locales != null && locales.size()>0) {
+      //use first locale of headers
+      locale = locales.get(0).getLanguage().equals("*") ? null : locales.get(0);
+    }
+    if (locale==null) {
+      locale = Util.getLocaleOfCurrentUser(Util.getAuthenticatedUserIdentity(portalContainerName).getRemoteId(),portalContainerName);
+    }
+
     ActivityRestListOut activityRestListOut = new ActivityRestListOut(activities, numberOfComments,
-                                                       numberOfLikes, portalContainerName);
+                                                       numberOfLikes, portalContainerName,i18NActivityProcessor,locale);
     return Util.getResponse(activityRestListOut, uriInfo, mediaType, Response.Status.OK);
   }
 
@@ -482,6 +511,7 @@ public class ActivityStreamResources implements ResourceContainer {
    * Gets space activities of spaces based on an specific activity called "baseActivity".
    *
    * @param uriInfo             The URI information.
+   * @param headers             HttpHeaders headers,
    * @param portalContainerName The portal container name.
    * @param format              The format of the returned result, for example, JSON, or XML.
    * @param limit               Specifies the number of activities to retrieve. It must be less than or equal to 100.
@@ -624,6 +654,7 @@ public class ActivityStreamResources implements ResourceContainer {
   @Path("spaces.{format}")
   @Produces(MediaType.APPLICATION_JSON)
   public Response getActivitySpacesOfAuthenticated(@Context UriInfo uriInfo,
+                                                   @Context HttpHeaders headers,
                                                    @PathParam("portalContainerName") String portalContainerName,
                                                    @PathParam("format") String format,
                                                    @QueryParam("limit") int limit,
@@ -676,7 +707,17 @@ public class ActivityStreamResources implements ResourceContainer {
       activityList = rala.loadAsList(0, maxLimit);
     }
 
-   ActivityRestListOut arlo = new ActivityRestListOut(activityList, numberOfComments, numberOfLikes, portalContainerName);
+    I18NActivityProcessor i18NActivityProcessor = Util.getI18NActivityProcessor(portalContainerName);
+    Locale locale = null;
+    List<Locale> locales = headers != null ? headers.getAcceptableLanguages() : null;
+    if (locales != null && locales.size()>0) {
+      //use first locale of headers
+      locale = locales.get(0).getLanguage().equals("*") ? null : locales.get(0);
+    }
+    if (locale==null) {
+      locale = Util.getLocaleOfCurrentUser(Util.getAuthenticatedUserIdentity(portalContainerName).getRemoteId(),portalContainerName);
+    }
+   ActivityRestListOut arlo = new ActivityRestListOut(activityList, numberOfComments, numberOfLikes, portalContainerName,i18NActivityProcessor,locale);
 
    return Util.getResponse(arlo, uriInfo, mediaType, Response.Status.OK);
   }
@@ -685,6 +726,7 @@ public class ActivityStreamResources implements ResourceContainer {
    * Gets activities of connections of a specified identity based on an specific activity called "baseActivity".
    *
    * @param uriInfo             The URI information.
+   * @param headers             HttpHeaders headers,
    * @param portalContainerName The portal container name.
    * @param format              The response format type, for example: JSON, or XML.
    * @param limit               Specifies the number of activities to retrieve. It must be less than or equal to 100.
@@ -827,6 +869,7 @@ public class ActivityStreamResources implements ResourceContainer {
   @Path("connections.{format}")
   @Produces(MediaType.APPLICATION_JSON)
   public Response getActivityConnectionsOfAuthenticated(@Context UriInfo uriInfo,
+                                                        @Context HttpHeaders headers,
                                                         @PathParam("portalContainerName") String portalContainerName,
                                                         @PathParam("format") String format,
                                                         @QueryParam("limit") int limit,
@@ -885,8 +928,18 @@ public class ActivityStreamResources implements ResourceContainer {
       activityList = realtimeListAccess.loadAsList(0, maxLimit);
     }
 
+    I18NActivityProcessor i18NActivityProcessor = Util.getI18NActivityProcessor(portalContainerName);
+    Locale locale = null;
+    List<Locale> locales = headers != null ? headers.getAcceptableLanguages() : null;
+    if (locales != null && locales.size()>0) {
+      //use first locale of headers
+      locale = locales.get(0).getLanguage().equals("*") ? null : locales.get(0);
+    }
+    if (locale==null) {
+      locale = Util.getLocaleOfCurrentUser(Util.getAuthenticatedUserIdentity(portalContainerName).getRemoteId(),portalContainerName);
+    }
     ActivityRestListOut activityRestListOut = new ActivityRestListOut(activityList, numberOfComments,
-            numberOfLikes, portalContainerName);
+            numberOfLikes, portalContainerName, i18NActivityProcessor, locale);
 
     return Util.getResponse(activityRestListOut, uriInfo, mediaType, Response.Status.OK);
   }
@@ -895,6 +948,7 @@ public class ActivityStreamResources implements ResourceContainer {
    * Gets activities of a defined identity based on a specific time.
    *
    * @param uriInfo             The URI information.
+   * @param headers             HttpHeaders headers,
    * @param portalContainerName The portal container name.
    * @param identityId          The identity Id.
    *                            There is one special *identityId* called "me" standing for the authenticated user who makes this request.
@@ -1039,6 +1093,7 @@ public class ActivityStreamResources implements ResourceContainer {
   @Path("{identityId}ByTimestamp.{format}")
   @Produces(MediaType.APPLICATION_JSON)
   public Response getActivityStreamOfIdentityByTimestamp(@Context UriInfo uriInfo,
+                                                @Context HttpHeaders headers,
                                                 @PathParam("portalContainerName") String portalContainerName,
                                                 @PathParam("identityId") String identityId,
                                                 @PathParam("format") String format,
@@ -1088,8 +1143,18 @@ public class ActivityStreamResources implements ResourceContainer {
       throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
     }
 
+    I18NActivityProcessor i18NActivityProcessor = Util.getI18NActivityProcessor(portalContainerName);
+    Locale locale = null;
+    List<Locale> locales = headers != null ? headers.getAcceptableLanguages() : null;
+    if (locales != null && locales.size()>0) {
+      //use first locale of headers
+      locale = locales.get(0).getLanguage().equals("*") ? null : locales.get(0);
+    }
+    if (locale==null) {
+      locale = Util.getLocaleOfCurrentUser(Util.getAuthenticatedUserIdentity(portalContainerName).getRemoteId(),portalContainerName);
+    }
     ActivityRestListOut arlo = new ActivityRestListOut(activities, numberOfComments,
-                                                       numberOfLikes, portalContainerName);
+                                                       numberOfLikes, portalContainerName,i18NActivityProcessor,locale);
 
     return Util.getResponse(arlo, uriInfo, mediaType, Response.Status.OK);
   }
@@ -1098,6 +1163,7 @@ public class ActivityStreamResources implements ResourceContainer {
    * Gets the activity stream feed of the authenticated user identity based on a specific time.
    *
    * @param uriInfo             The URI information.
+   * @param headers             HttpHeaders headers,
    * @param portalContainerName The portal container name.
    * @param format              The format of the returned result, for example, JSON or XML.
    * @param limit               Specifies the number of activities to retrieve. It must be less than or equal to 100.
@@ -1240,6 +1306,7 @@ public class ActivityStreamResources implements ResourceContainer {
   @Path("feedByTimestamp.{format}")
   @Produces(MediaType.APPLICATION_JSON)
   public Response getActivityFeedOfAuthenticatedByTimestamp(@Context UriInfo uriInfo,
+                                                 @Context HttpHeaders headers,
                                                  @PathParam("portalContainerName") String portalContainerName,
                                                  @PathParam("format") String format,
                                                  @QueryParam("limit") int limit,
@@ -1272,8 +1339,19 @@ public class ActivityStreamResources implements ResourceContainer {
     } catch (Exception e) {
       throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
     }
+
+    I18NActivityProcessor i18NActivityProcessor = Util.getI18NActivityProcessor(portalContainerName);
+    Locale locale = null;
+    List<Locale> locales = headers != null ? headers.getAcceptableLanguages() : null;
+    if (locales != null && locales.size()>0) {
+      //use first locale of headers
+      locale = locales.get(0).getLanguage().equals("*") ? null : locales.get(0);
+    }
+    if (locale==null) {
+      locale = Util.getLocaleOfCurrentUser(Util.getAuthenticatedUserIdentity(portalContainerName).getRemoteId(),portalContainerName);
+    }
     ActivityRestListOut activityRestListOut = new ActivityRestListOut(activities, numberOfComments,
-                                                       numberOfLikes, portalContainerName);
+                                                       numberOfLikes, portalContainerName,i18NActivityProcessor,locale);
     return Util.getResponse(activityRestListOut, uriInfo, mediaType, Response.Status.OK);
   }
   
@@ -1281,6 +1359,7 @@ public class ActivityStreamResources implements ResourceContainer {
    * Gets space activities based on a specific time.
    *
    * @param uriInfo             The URI information.
+   * @param headers             HttpHeaders headers,
    * @param portalContainerName The portal container name.
    * @param format              The format of the returned result, for example, JSON or XML.
    * @param limit               Specifies the number of activities to retrieve. It must be less than or equal to 100.
@@ -1423,6 +1502,7 @@ public class ActivityStreamResources implements ResourceContainer {
   @Path("spacesByTimestamp.{format}")
   @Produces(MediaType.APPLICATION_JSON)
   public Response getActivitySpacesOfAuthenticatedByTimestamp(@Context UriInfo uriInfo,
+                                                   @Context HttpHeaders headers,
                                                    @PathParam("portalContainerName") String portalContainerName,
                                                    @PathParam("format") String format,
                                                    @QueryParam("limit") int limit,
@@ -1454,8 +1534,18 @@ public class ActivityStreamResources implements ResourceContainer {
     } catch (Exception e) {
       throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
     }
-   
-   ActivityRestListOut arlo = new ActivityRestListOut(activities, numberOfComments, numberOfLikes, portalContainerName);
+
+    I18NActivityProcessor i18NActivityProcessor = Util.getI18NActivityProcessor(portalContainerName);
+    Locale locale = null;
+    List<Locale> locales = headers != null ? headers.getAcceptableLanguages() : null;
+    if (locales != null && locales.size()>0) {
+      //use first locale of headers
+      locale = locales.get(0).getLanguage().equals("*") ? null : locales.get(0);
+    }
+    if (locale==null) {
+      locale = Util.getLocaleOfCurrentUser(Util.getAuthenticatedUserIdentity(portalContainerName).getRemoteId(),portalContainerName);
+    }
+   ActivityRestListOut arlo = new ActivityRestListOut(activities, numberOfComments, numberOfLikes, portalContainerName,i18NActivityProcessor,locale);
 
    return Util.getResponse(arlo, uriInfo, mediaType, Response.Status.OK);
   }
@@ -1464,6 +1554,7 @@ public class ActivityStreamResources implements ResourceContainer {
    * Gets activities of connections of a specified identity based on a specific time.
    *
    * @param uriInfo             The URI information.
+   * @param headers             HttpHeaders headers,
    * @param portalContainerName The portal container name
    * @param format              The format of the returned result, for example, JSON or XML.
    * @param limit               Specifies the number of activities to retrieve. It must be less than or equal to 100.
@@ -1606,6 +1697,7 @@ public class ActivityStreamResources implements ResourceContainer {
   @Path("connectionsByTimestamp.{format}")
   @Produces(MediaType.APPLICATION_JSON)
   public Response getActivityConnectionsOfAuthenticatedByTimestamp(@Context UriInfo uriInfo,
+                                                        @Context HttpHeaders headers,
                                                         @PathParam("portalContainerName") String portalContainerName,
                                                         @PathParam("format") String format,
                                                         @QueryParam("limit") int limit,
@@ -1638,9 +1730,18 @@ public class ActivityStreamResources implements ResourceContainer {
     } catch (Exception e) {
       throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
     }
-
+    I18NActivityProcessor i18NActivityProcessor = Util.getI18NActivityProcessor(portalContainerName);
+    Locale locale = null;
+    List<Locale> locales = headers != null ? headers.getAcceptableLanguages() : null;
+    if (locales != null && locales.size()>0) {
+      //use first locale of headers
+      locale = locales.get(0).getLanguage().equals("*") ? null : locales.get(0);
+    }
+    if (locale==null) {
+      locale = Util.getLocaleOfCurrentUser(Util.getAuthenticatedUserIdentity(portalContainerName).getRemoteId(),portalContainerName);
+    }
     ActivityRestListOut activityRestListOut = new ActivityRestListOut(activities, numberOfComments,
-            numberOfLikes, portalContainerName);
+            numberOfLikes, portalContainerName,i18NActivityProcessor,locale);
 
     return Util.getResponse(activityRestListOut, uriInfo, mediaType, Response.Status.OK);
   }

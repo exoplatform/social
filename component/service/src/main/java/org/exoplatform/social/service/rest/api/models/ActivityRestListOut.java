@@ -19,8 +19,10 @@ package org.exoplatform.social.service.rest.api.models;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
+import org.exoplatform.social.core.processor.I18NActivityProcessor;
 
 /**
  * The activity rest list out model for Social Rest APIs.
@@ -80,7 +82,7 @@ public class ActivityRestListOut extends HashMap<String, Object> {
    * @param numberOfLikes    the number of likes
    */
   public ActivityRestListOut(List<ExoSocialActivity> activityList, int numberOfComments,
-                             int numberOfLikes, String portalContainerName) {
+                             int numberOfLikes, String portalContainerName, I18NActivityProcessor i18NActivityProcessor, Locale locale) {
     if (activityList == null || activityList.size() == 0) {
       initialize();
       return;
@@ -91,7 +93,7 @@ public class ActivityRestListOut extends HashMap<String, Object> {
     numberOfComments = Math.min(numberOfComments, MAX_NUMBER_OF_COMMENTS);
     numberOfLikes = numberOfLikes >= 0 ? numberOfLikes : 0;
     numberOfLikes = Math.min(numberOfLikes, MAX_NUMBER_OF_LIKES);
-    initialize(activityList, numberOfComments, numberOfLikes, portalContainerName);
+    initialize(activityList, numberOfComments, numberOfLikes, portalContainerName, i18NActivityProcessor, locale);
   }
 
 
@@ -111,14 +113,15 @@ public class ActivityRestListOut extends HashMap<String, Object> {
    * @param portalContainerName the portal container name
    */
   private void initialize(List<ExoSocialActivity> activityList, int numberOfComments,
-                          int numberOfLikes, String portalContainerName) {
+                          int numberOfLikes, String portalContainerName,I18NActivityProcessor i18NActivityProcessor, Locale locale) {
     List<ActivityRestOut> activityItems = new ArrayList<ActivityRestOut>();
     for (ExoSocialActivity activity : activityList) {
-      ActivityRestOut activityItem = new ActivityRestOut(activity, portalContainerName);
-      activityItem.setPosterIdentity(new IdentityRestOut(activity.getUserId(), portalContainerName));
-      activityItem.setActivityStream(new ActivityStreamRestOut(activity.getActivityStream(), portalContainerName));
-      activityItem.setNumberOfComments(numberOfComments, activity, portalContainerName);
-      activityItem.setNumberOfLikes(numberOfLikes, activity, portalContainerName);
+      ExoSocialActivity localizedActivity = i18NActivityProcessor.process(activity,locale);
+      ActivityRestOut activityItem = new ActivityRestOut(localizedActivity, portalContainerName);
+      activityItem.setPosterIdentity(new IdentityRestOut(localizedActivity.getUserId(), portalContainerName));
+      activityItem.setActivityStream(new ActivityStreamRestOut(localizedActivity.getActivityStream(), portalContainerName));
+      activityItem.setNumberOfComments(numberOfComments, localizedActivity, portalContainerName, i18NActivityProcessor, locale);
+      activityItem.setNumberOfLikes(numberOfLikes, localizedActivity, portalContainerName);
       activityItems.add(activityItem);
 
     }
