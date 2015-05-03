@@ -8,15 +8,15 @@
     </a>
     <div class="form-horizontal pull-left"> 
       <div class="control-group">
-        <label class="control-label"><%=_ctx.appRes("UIAvatarUploadContent.label.file_name")%>:</label>
+        <label class="control-label"><%=_ctx.appRes("UIAvatarUploadContent.label.file_name")%></label>
         <div class="controls"><strong><%=avatarAttachment.fileName%></strong></div>
       </div>
       <div class="control-group">
-        <label class="control-label"><%=_ctx.appRes("UIAvatarUploadContent.label.file_type")%>:</label>
+        <label class="control-label"><%=_ctx.appRes("UIAvatarUploadContent.label.file_type")%></label>
         <div class="controls"><%=avatarAttachment.mimeType%></div>
       </div>
       <div class="control-group">
-        <label class="control-label"><%=_ctx.appRes("UIAvatarUploadContent.label.image_size")%>:</label>
+        <label class="control-label"><%=_ctx.appRes("UIAvatarUploadContent.label.image_size")%></label>
         <div class="controls"><%=avatarAttachment.size%></div>
       </div>
     </div>
