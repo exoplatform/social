@@ -44,6 +44,7 @@ import org.exoplatform.webui.form.validator.ExpressionValidator;
 import org.exoplatform.webui.form.validator.MandatoryValidator;
 import org.exoplatform.webui.form.validator.PersonalNameValidator;
 import org.exoplatform.webui.form.validator.StringLengthValidator;
+import org.exoplatform.webui.utils.TimeConvertUtils;
 
 @ComponentConfig(
    lifecycle = UIFormLifecycle.class,
@@ -439,7 +440,7 @@ public class UIEditUserProfileForm extends UIForm {
         return null;
       }
       //
-      putData(map, Profile.EXPERIENCES_START_DATE, startDate.getValue());
+      putData(map, Profile.EXPERIENCES_START_DATE, TimeConvertUtils.getFormatDate(startDate.getCalendar().getTime(), DATE_FORMAT_MMDDYYYY, Locale.ENGLISH));
       // start after today
       if (startDate.getCalendar().after(Calendar.getInstance())) {
         warning("UIEditUserProfileForm.msg.TheDateBeforeToday", getLabel(Profile.EXPERIENCES_START_DATE));
@@ -467,7 +468,7 @@ public class UIEditUserProfileForm extends UIForm {
                   getLabel(Profile.EXPERIENCES_START_DATE), getLabel(Profile.EXPERIENCES_END_DATE));
           return null;
         }
-        putData(map, Profile.EXPERIENCES_END_DATE, endDate.getValue());
+        putData(map, Profile.EXPERIENCES_END_DATE, TimeConvertUtils.getFormatDate(endDate.getCalendar().getTime(), DATE_FORMAT_MMDDYYYY, Locale.ENGLISH));
         map.put(Profile.EXPERIENCES_IS_CURRENT, "false");
       } else {
         map.put(Profile.EXPERIENCES_IS_CURRENT, "true");
