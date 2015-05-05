@@ -133,7 +133,7 @@ public class UIRelationshipAction extends UIContainer {
   public static class CancelActionListener extends AbstractActionListener {
     @Override
     protected void doAction(Event<UIRelationshipAction> event) {
-      Utils.getRelationshipManager().delete(relationship);
+      Utils.getRelationshipManager().deny(relationship.getReceiver(), relationship.getSender());
     }
   }
 

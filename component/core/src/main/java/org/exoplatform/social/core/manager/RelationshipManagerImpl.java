@@ -474,7 +474,7 @@ public class RelationshipManagerImpl implements RelationshipManager {
       //    relationship.setStatus(Relationship.Type.IGNORED);
       //  save(relationship);
       // TODO: now just remove, implement later
-      this.delete(relationship);
+      storage.removeRelationship(relationship);
       lifeCycle.relationshipDenied(this, relationship);
     }
   }

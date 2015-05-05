@@ -176,6 +176,7 @@ public class RelationshipPublisherTest extends  AbstractCoreTest {
     assertEquals("I'm now connected with Root Root",johnComments.get(0).getTitle());
     
     //remove a connection will re-updated activity's title
+    rootToJohnRelationship = relationshipManager.get(rootIdentity, johnIdentity);
     relationshipManager.delete(rootToJohnRelationship);
     relationshipPublisher.removed(new RelationshipEvent(Type.REMOVE, relationshipManager, rootToJohnRelationship));
     
