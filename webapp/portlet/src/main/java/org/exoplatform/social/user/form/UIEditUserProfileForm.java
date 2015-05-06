@@ -302,7 +302,7 @@ public class UIEditUserProfileForm extends UIForm {
   private void initPlaceholder() throws Exception {
     //
     getUIInputSection(FIELD_ABOUT_SECTION).getUIFormTextAreaInput(Profile.ABOUT_ME)
-                   .setHTMLAttribute(PLACEHOLDER_KEY, "Introduce yourself to others");
+                   .setHTMLAttribute(PLACEHOLDER_KEY, getLabel("aboutMePlaceholder"));
     //
     UIInputSection baseSection = getUIInputSection(FIELD_BASE_SECTION);
     UIFormMultiValueInputSet urlMulti = baseSection.getChildById(Profile.CONTACT_URLS);
