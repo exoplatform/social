@@ -422,9 +422,9 @@ public class UIMembersPortlet extends UIPortletApplication {
       
       ResourceBundle resApp = ctx.getApplicationResourceBundle();
 
-      String defaultNameVal = resApp.getString(uiSearch.getId() + ".label.Name");
-      String defaultPosVal = resApp.getString(uiSearch.getId() + ".label.Position");
-      String defaultSkillsVal = resApp.getString(uiSearch.getId() + ".label.Skills");
+      String defaultNameVal = resApp.getString(uiSearch.getId() + ".label.name");
+      String defaultPosVal = resApp.getString(uiSearch.getId() + ".label.position");
+      String defaultSkillsVal = resApp.getString(uiSearch.getId() + ".label.skills");
       
       ProfileFilter filter = uiSearch.getProfileFilter();
       

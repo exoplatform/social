@@ -17,14 +17,13 @@
 package org.exoplatform.social.webui.space;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
+import org.exoplatform.commons.utils.CommonsUtils;
 import org.exoplatform.commons.utils.LazyPageList;
 import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.container.ExoContainer;
@@ -274,14 +273,14 @@ public class UISpaceMember extends UIForm {
       return new ArrayList<String>(0);
     }
     
-    String[] pendingUsers = space.getPendingUsers();
-    if (pendingUsers == null || pendingUsers.length == 0) {
-      return Collections.<String>emptyList();
+    List<String> pendingUsers = filterDisabledUsers(space.getPendingUsers());
+    if (pendingUsers.size() == 0) {
+      return pendingUsers;
     }
     
     int currentPage = iteratorPendingUsers.getCurrentPage();
     LazyPageList<String> pageList = new LazyPageList<String>(
-                                      new StringListAccess(Arrays.asList(pendingUsers)),
+                                      new StringListAccess(pendingUsers),
                                       ITEMS_PER_PAGE);
     iteratorPendingUsers.setPageList(pageList);
     int pageCount = iteratorPendingUsers.getAvailablePage();
@@ -307,14 +306,14 @@ public class UISpaceMember extends UIForm {
       return new ArrayList<String>(0);
     }
     
-    String[] invitedUsers = space.getInvitedUsers();
-    if (invitedUsers == null || invitedUsers.length == 0) {
-      return Collections.<String>emptyList();
+    List<String> invitedUsers = filterDisabledUsers(space.getInvitedUsers());
+    if (invitedUsers.size() == 0) {
+      return invitedUsers;
     }
     
     int currentPage = iteratorInvitedUsers.getCurrentPage();
     LazyPageList<String> pageList = new LazyPageList<String>(
-                                      new StringListAccess(Arrays.asList(invitedUsers)),
+                                      new StringListAccess(invitedUsers),
                                       ITEMS_PER_PAGE);
     iteratorInvitedUsers.setPageList(pageList);
     int pageCount = iteratorInvitedUsers.getAvailablePage();
@@ -341,13 +340,13 @@ public class UISpaceMember extends UIForm {
       return new ArrayList<String>(0);
     }
     
-    String[] memberUsers = space.getMembers();
-    if (memberUsers == null || memberUsers.length == 0) {
-      return Collections.<String>emptyList();
+    List<String> memberUsers = filterDisabledUsers(space.getMembers());
+    if (memberUsers.size() == 0) {
+      return memberUsers;
     }
     
     int currentPage = iteratorExistingUsers.getCurrentPage();
-    Set<String> users = new HashSet<String>(Arrays.asList(memberUsers));
+    Set<String> users = new HashSet<String>(memberUsers);
     users.addAll(SpaceUtils.findMembershipUsersByGroupAndTypes(space.getGroupId(), MembershipTypeHandler.ANY_MEMBERSHIP_TYPE));
     
     LazyPageList<String> pageList = new LazyPageList<String>(new StringListAccess(new ArrayList<String>(users)), ITEMS_PER_PAGE);
@@ -359,6 +358,25 @@ public class UISpaceMember extends UIForm {
     }
     this.setNewSearch(false);
     return iteratorExistingUsers.getCurrentPageData();
+  }
+  
+  private List<String> filterDisabledUsers(String[] users) {
+    if (users == null || users.length == 0) {
+      return new ArrayList<String>();
+    }
+    List<String> result = new ArrayList<String>();
+    OrganizationService orgService = CommonsUtils.getService(OrganizationService.class);
+    for (String user : users) {
+      try {
+        User u = orgService.getUserHandler().findUserByName(user);
+        if (u.isEnabled()) {
+          result.add(user);
+        }
+      } catch (Exception e) {
+        
+      }
+    }
+    return result;
   }
 
   /**
