@@ -272,11 +272,11 @@ public class RelationshipStorageImpl extends AbstractStorage implements Relation
       identity = createIdentityFromEntity(entity);
       if (identity.isEnable()) {
         identities.add(identity);
+        if (limit != -1 && limit > 0 && ++i >= limit) {
+          break;
+        }
       }
 
-      if (limit != -1 && limit > 0 && ++i >= limit) {
-        break;
-     }
     }
 
     return new ArrayList<Identity>(identities);
