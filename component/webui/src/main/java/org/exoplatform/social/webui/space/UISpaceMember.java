@@ -443,6 +443,18 @@ public class UISpaceMember extends UIForm {
     return spaceService.isManager(space, userName);
   }
 
+  /**
+   * Checks if user has wild card membership.
+   * 
+   * @param userId target user to check.
+   * @return true if user has wild card membership in space.
+   */
+  protected boolean hasWildCardMembership(String userId) {
+    SpaceService spaceService = getSpaceService();
+    Space space = spaceService.getSpaceById(spaceId);
+    return SpaceUtils.isUserHasMembershipTypesInGroup(userId, space.getGroupId(), MembershipTypeHandler.ANY_MEMBERSHIP_TYPE);
+  }
+  
   public boolean isCurrentUser(String userName) throws Exception {
     return (getRemoteUser().equals(userName));
   }
