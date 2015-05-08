@@ -838,7 +838,7 @@ public class Utils {
    * @param confirmationMsg Confirmation message.
    * @throws Exception
    */
-  public static void initConfirmationPopup(String componentId, String confirmationMsg) throws Exception {
+  public static void initConfirmationPopup(String componentId) throws Exception {
     WebuiRequestContext context = WebuiRequestContext.getCurrentInstance();
     ResourceBundle res = context.getApplicationResourceBundle();
     JSONObject object = new JSONObject();
