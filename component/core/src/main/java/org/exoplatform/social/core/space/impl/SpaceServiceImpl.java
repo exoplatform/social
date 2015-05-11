@@ -731,7 +731,8 @@ public class SpaceServiceImpl implements SpaceService {
    * {@inheritDoc}
    */
   public boolean isMember(Space space, String userId) {
-    return ArrayUtils.contains(space.getMembers(), userId);
+    return ArrayUtils.contains(space.getMembers(), userId)
+        || SpaceUtils.isUserHasMembershipTypesInGroup(userId, space.getGroupId(), MembershipTypeHandler.ANY_MEMBERSHIP_TYPE);
   }
 
   /**
