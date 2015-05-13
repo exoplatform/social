@@ -21,7 +21,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
-import java.util.ResourceBundle;
 
 import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.container.PortalContainer;
@@ -33,7 +32,6 @@ import org.exoplatform.services.organization.MembershipHandler;
 import org.exoplatform.services.organization.OrganizationService;
 import org.exoplatform.social.core.identity.SpaceMemberFilterListAccess.Type;
 import org.exoplatform.social.core.identity.model.Identity;
-import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.profile.ProfileFilter;
 import org.exoplatform.social.core.relationship.model.Relationship;
@@ -52,7 +50,6 @@ import org.exoplatform.webui.core.UIPortletApplication;
 import org.exoplatform.webui.core.lifecycle.UIApplicationLifecycle;
 import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.event.EventListener;
-import org.exoplatform.webui.form.UIFormStringInput;
 
 
 @ComponentConfigs ({
@@ -419,21 +416,12 @@ public class UIMembersPortlet extends UIPortletApplication {
       UIProfileUserSearch uiSearch = uiMembersPortlet.uiSearchMemberOfSpace;
       
       String charSearch = ctx.getRequestParameter(OBJECTID);
-      
-      ResourceBundle resApp = ctx.getApplicationResourceBundle();
 
-      String defaultNameVal = resApp.getString(uiSearch.getId() + ".label.Name");
-      String defaultPosVal = resApp.getString(uiSearch.getId() + ".label.Position");
-      String defaultSkillsVal = resApp.getString(uiSearch.getId() + ".label.Skills");
-      
       ProfileFilter filter = uiSearch.getProfileFilter();
       
       try {
         uiMembersPortlet.setSelectedChar(charSearch);
         if (charSearch != null) { // search by alphabet
-          ((UIFormStringInput) uiSearch.getChildById(SEARCH)).setValue(defaultNameVal);
-          ((UIFormStringInput) uiSearch.getChildById(Profile.POSITION)).setValue(defaultPosVal);
-          ((UIFormStringInput) uiSearch.getChildById(Profile.EXPERIENCES_SKILLS)).setValue(defaultSkillsVal);
           filter.setName(charSearch);
           filter.setPosition("");
           filter.setSkills("");
