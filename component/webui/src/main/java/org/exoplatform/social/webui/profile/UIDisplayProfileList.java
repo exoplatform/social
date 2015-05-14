@@ -21,13 +21,14 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.exoplatform.commons.utils.ListAccess;
-import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.profile.ProfileFilter;
 import org.exoplatform.social.core.relationship.model.Relationship;
 import org.exoplatform.social.webui.Utils;
+import org.exoplatform.social.webui.connections.UIAllPeople;
+import org.exoplatform.social.webui.connections.UIUpdateRelationship;
 import org.exoplatform.web.application.ApplicationMessage;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
@@ -44,9 +45,14 @@ import org.exoplatform.webui.event.EventListener;
  * @author <a href="mailto:hanhvq@exoplatform.com">Hanh Vi Quoc</a>
  * @since Aug 25, 2011
  * @since 1.2.2
+ * @deprecated deprecated by {@link UIAllPeople}
+ *  This class will remove on major version 4.3.0
+ *  + Remove this java class
+ *  + Remove resource bundle keys
+ *  + Remove groovy template UIDisplayProfileList.gtmpl
  */
 @ComponentConfig(
-  template = "war:/groovy/social/webui/connections/UIAllPeople.gtmpl",
+  template = "war:/groovy/social/webui/profile/UIDisplayProfileList.gtmpl",
   events = {
     @EventConfig(listeners = UIDisplayProfileList.ConnectActionListener.class),
     @EventConfig(listeners = UIDisplayProfileList.ConfirmActionListener.class),
@@ -55,6 +61,7 @@ import org.exoplatform.webui.event.EventListener;
     @EventConfig(listeners = UIDisplayProfileList.LoadMorePeopleActionListener.class)
   }
 )
+@Deprecated
 public class UIDisplayProfileList extends UIContainer {
   
   private static final Log LOG = ExoLogger.getLogger(UIDisplayProfileList.class);
@@ -62,7 +69,7 @@ public class UIDisplayProfileList extends UIContainer {
   /**
    * Label for display invoke action
    */
-  private static final String INVITATION_REVOKED_INFO = "UIDisplayProfileList.label.RevokedInfo"; 
+  private static final String INVITATION_REVOKED_INFO = "UIDisplayProfileList.label.RevokedInfo";
 
   /**
    * Label for display established invitation
@@ -73,15 +80,13 @@ public class UIDisplayProfileList extends UIContainer {
    * Number element per page.
    */
   private static final Integer PEOPLE_PER_PAGE = 45;
-  
+
   /** All people filter. */
   private static final String ALL_FILTER = "All";
-
+  
   public static final String SEARCH = "Search";
-
+  
   private static final char EMPTY_CHARACTER = '\u0000';
-
-  private Identity lastOwner = null;
   
   /**
    * The search object variable.
@@ -96,7 +101,8 @@ public class UIDisplayProfileList extends UIContainer {
   private ListAccess<Identity> peopleListAccess;
   private int peopleNum;
   String selectedChar = null;
-
+  private Identity lastOwner = null;
+  
   /**
    * Gets selected character when search by alphabet.
    *
@@ -114,24 +120,14 @@ public class UIDisplayProfileList extends UIContainer {
   public final void setSelectedChar(final String selectedChar) {
     this.selectedChar = selectedChar;
   }
-
-  /**
-   * Returns the current selected node.<br>
-   *
-   * @return selected node.
-   * @throws Exception 
-   * @since 1.2.2
-   */
-  public String getSelectedNode() throws Exception {
-    return Util.getUIPortal().getSelectedUserNode().getName();
-  }
-
+  
   /**
    * Constructor to initialize iterator.
    *
    * @throws Exception
    */
   public UIDisplayProfileList() throws Exception {
+    addChild(UIUpdateRelationship.class, null, null);
     uiProfileUserSearch = addChild(UIProfileUserSearch.class, null, null);
     uiProfileUserSearch.setHasConnectionLink(false);
     setSelectedChar(ALL_FILTER);
@@ -151,6 +147,7 @@ public class UIDisplayProfileList extends UIContainer {
       List<Identity> excludedIdentityList = new ArrayList<Identity>();
       excludedIdentityList.add(Utils.getViewerIdentity());
       uiProfileUserSearch.getProfileFilter().setExcludedIdentityList(excludedIdentityList);
+      //setPeopleList(loadPeople(currentLoadIndex, loadingCapacity));
     } catch (Exception e) {
       LOG.error(e.getMessage(), e);
     }
@@ -201,7 +198,6 @@ public class UIDisplayProfileList extends UIContainer {
     this.loadAtEnd = loadAtEnd;
   }
 
-
   /**
    * Gets list of all type of people.
    * 
@@ -209,7 +205,7 @@ public class UIDisplayProfileList extends UIContainer {
    * @throws Exception 
    */
   public List<Identity> getPeopleList() throws Exception {
-    this.peopleList = loadPeople(0, currentLoadIndex + loadingCapacity); 
+    this.peopleList = loadPeople(0, currentLoadIndex + loadingCapacity);
     
     int realPeopleListSize = this.peopleList.size();
 
@@ -262,21 +258,13 @@ public class UIDisplayProfileList extends UIContainer {
   public void setPeopleListAccess(ListAccess<Identity> peopleListAccess) {
     this.peopleListAccess = peopleListAccess;
   }
-
+  
   /**
-   * Increases offset.
-   * 
+   * increase offset.
    * @throws Exception
    */
   public void increaseOffset() throws Exception {
     currentLoadIndex += loadingCapacity;
-    if (currentLoadIndex <= getPeopleNum()) {
-      List<Identity> currentPeopleList = new ArrayList<Identity>(this.peopleList);
-      List<Identity> loadedPeople = new ArrayList<Identity>(Arrays.asList(getPeopleListAccess()
-                    .load(currentLoadIndex, loadingCapacity)));
-      currentPeopleList.addAll(loadedPeople);
-      setPeopleList(currentPeopleList);
-    }
   }
   
   /**
@@ -288,17 +276,8 @@ public class UIDisplayProfileList extends UIContainer {
     setPeopleList(loadPeople(currentLoadIndex, loadingCapacity));
   }
   
-  /**
-   * Checks need to refresh relationship list or not.
-   * @return
-   */
-  protected boolean isNewOwner() {
-    Identity current = Utils.getOwnerIdentity();
-    if (this.lastOwner == null || current == null) return false;
-    return !this.lastOwner.getRemoteId().equals(current.getRemoteId());
-  }
-  
   private List<Identity> loadPeople(int index, int length) throws Exception {
+
     lastOwner = Utils.getOwnerIdentity();
 
     ProfileFilter filter = uiProfileUserSearch.getProfileFilter();
@@ -312,6 +291,17 @@ public class UIDisplayProfileList extends UIContainer {
     uiProfileUserSearch.setPeopleNum(listAccess.getSize());
 
     return Arrays.asList(identities);
+
+  }
+  
+  /**
+   * Checks need to refresh relationship list or not.
+   * @return
+   */
+  protected boolean isNewOwner() {
+    Identity current = Utils.getOwnerIdentity();
+    if (this.lastOwner == null || current == null) return false;
+    return !this.lastOwner.getRemoteId().equals(current.getRemoteId());
   }
   
   /**
@@ -352,8 +342,12 @@ public class UIDisplayProfileList extends UIContainer {
         return;
       }
       
-      Utils.getRelationshipManager().inviteToConnect(invitingIdentity, invitedIdentity);
-      event.getRequestContext().addUIComponentToUpdateByAjax(uiAllPeople);
+      relationship = Utils.getRelationshipManager().inviteToConnect(invitingIdentity, invitedIdentity);
+      Utils.clearCacheOnUserPopup();
+      //
+      UIUpdateRelationship updateUserRelationship = uiAllPeople.getChild(UIUpdateRelationship.class);
+      updateUserRelationship.setIdentity(invitedIdentity).setRelationship(relationship);
+      event.getRequestContext().addUIComponentToUpdateByAjax(updateUserRelationship);
     }
   }
 
@@ -379,8 +373,12 @@ public class UIDisplayProfileList extends UIContainer {
       }
       
       Utils.getRelationshipManager().confirm(invitedIdentity, invitingIdentity);
-      
-      event.getRequestContext().addUIComponentToUpdateByAjax(uiAllPeople);
+      Utils.clearCacheOnUserPopup();
+      //
+      relationship = Utils.getRelationshipManager().get(invitingIdentity, invitedIdentity);
+      UIUpdateRelationship updateUserRelationship = uiAllPeople.getChild(UIUpdateRelationship.class);
+      updateUserRelationship.setIdentity(invitedIdentity).setRelationship(relationship);
+      event.getRequestContext().addUIComponentToUpdateByAjax(updateUserRelationship);
     }
   }
 
@@ -405,14 +403,15 @@ public class UIDisplayProfileList extends UIContainer {
       }
       
       uiAllPeople.setLoadAtEnd(false);
-
       if (relationship.getStatus() == Relationship.Type.CONFIRMED) {
         Utils.getRelationshipManager().delete(relationship);
       } else {
         Utils.getRelationshipManager().deny(inviIdentityIdentity, invitingIdentity);
       }
-      
-      event.getRequestContext().addUIComponentToUpdateByAjax(uiAllPeople);
+      Utils.clearCacheOnUserPopup();
+      UIUpdateRelationship updateUserRelationship = uiAllPeople.getChild(UIUpdateRelationship.class);
+      updateUserRelationship.setIdentity(inviIdentityIdentity).setRelationship(null);
+      event.getRequestContext().addUIComponentToUpdateByAjax(updateUserRelationship);
     }
   }
 
@@ -428,11 +427,10 @@ public class UIDisplayProfileList extends UIContainer {
       WebuiRequestContext ctx = event.getRequestContext();
       UIDisplayProfileList uiAllPeople = event.getSource();
       UIProfileUserSearch uiSearch = uiAllPeople.uiProfileUserSearch;
-
+      
       String charSearch = ctx.getRequestParameter(OBJECTID);
-
       ProfileFilter filter = uiAllPeople.uiProfileUserSearch.getProfileFilter();
-
+      
       try {
         uiAllPeople.setSelectedChar(charSearch);
         if (charSearch != null) { // search by alphabet
@@ -445,7 +443,7 @@ public class UIDisplayProfileList extends UIContainer {
             filter.setName("");
           }
           uiSearch.setRawSearchConditional("");
-        }  else if (ALL_FILTER.equals(uiSearch.getRawSearchConditional())) {
+        } else if (ALL_FILTER.equals(uiSearch.getRawSearchConditional())) {
           uiAllPeople.setSelectedChar(ALL_FILTER);
         }
         
@@ -454,7 +452,6 @@ public class UIDisplayProfileList extends UIContainer {
       } catch (Exception e) {
         uiSearch.setIdentityList(new ArrayList<Identity>());
       }
-
       uiAllPeople.loadSearch();
       uiAllPeople.setLoadAtEnd(false);
     }
@@ -471,5 +468,4 @@ public class UIDisplayProfileList extends UIContainer {
     }
     return Utils.getRelationshipManager().get(identity, Utils.getViewerIdentity());
   }
-
 }

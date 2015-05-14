@@ -19,10 +19,12 @@
 
 <%
 
+
 def requireJs = _ctx.getRequestContext().getJavascriptManager().getRequireJS();
 requireJs.require("SHARED/socialUtil", "socialUtil")
+         .addScripts("socialUtil.addDynamicItemLayout('" + uicomponent.id + "');")
          .addScripts("socialUtil.addfillUpFreeSpace('" + uicomponent.id + "');");
 %>
-<div class="uiSocApplication uiPeoplePortlet" id="$uicomponent.id">
+<div class="uiSocApplication uiPeoplePortlet uiAllPeoplePortlet" id="$uicomponent.id">
   <% uicomponent.renderChildren(); %>
 </div>
