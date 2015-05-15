@@ -152,7 +152,7 @@ public class ActivityManagerImpl implements ActivityManager {
   public void saveComment(ExoSocialActivity existingActivity, ExoSocialActivity newComment) throws
           ActivityStorageException {
     activityStorage.saveComment(existingActivity, newComment);
-    activityLifeCycle.saveComment(activityStorage.getActivity(newComment.getId()));
+    activityLifeCycle.saveComment(activityStorage.getComment(newComment.getId()));
   }
 
   /**
