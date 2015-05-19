@@ -763,7 +763,7 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
           StreamInvocationHelper.savePoster(owner, entity);
           StorageUtils.persist(true);
           //run asynchronous: JCR session doesn't share in multi threading, in Stream service.
-          StreamInvocationHelper.save(owner, entity, mentioners.toArray(new String[0]));
+          StreamInvocationHelper.save(owner, activity, mentioners.toArray(new String[0]));
         }
       }
       else {

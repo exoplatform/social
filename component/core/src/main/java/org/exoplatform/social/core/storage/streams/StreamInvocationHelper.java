@@ -42,11 +42,11 @@ public class StreamInvocationHelper {
    * @param mentioners NULL is empty mentioner.
    * @return
    */
-  public static ProcessContext save(Identity owner, ActivityEntity entity, String[] mentioners) {
+  public static ProcessContext save(Identity owner, ExoSocialActivity activity, String[] mentioners) {
     //
     SocialServiceContext ctx = SocialServiceContextImpl.getInstance();
     StreamProcessContext processCtx = StreamProcessContext.getIntance(StreamProcessContext.NEW_ACTIVITY_RELATIONS_PROCESS, ctx);
-    processCtx.identity(owner).activityEntity(entity).mentioners(mentioners);
+    processCtx.identity(owner).activity(activity).mentioners(mentioners);
     
     try {
       if (ctx.isAsync()) {
