@@ -27,16 +27,16 @@ import org.exoplatform.webui.form.validator.MandatoryValidator;
 import org.exoplatform.webui.form.validator.StringLengthValidator;
 
 public class UISpaceSettings extends UIFormInputSet {
-  private final String SPACE_DISPLAY_NAME             = "displayName";
+  public static final String  SPACE_DISPLAY_NAME         = "displayName";
 
-  private final String SPACE_DESCRIPTION      = "description";
+  public static final String  SPACE_DESCRIPTION          = "description";
 
   // Message
-  private final String MSG_INVALID_SPACE_NAME = "UISpaceSettings.msg.invalid_space_name";
+  private final String        MSG_INVALID_SPACE_NAME     = "UISpaceSettings.msg.invalid_space_name";
 
   /** Html attribute title. */
-  private static final String HTML_ATTRIBUTE_PLACEHOLDER   = "placeholder";
-  
+  private static final String HTML_ATTRIBUTE_PLACEHOLDER = "placeholder";
+
   /**
    * constructor
    *
@@ -45,17 +45,28 @@ public class UISpaceSettings extends UIFormInputSet {
    */
   public UISpaceSettings(String name) throws Exception {
     super(name);
-    WebuiRequestContext requestContext = WebuiRequestContext.getCurrentInstance();
-    ResourceBundle resourceBundle = requestContext.getApplicationResourceBundle();
-    UIFormStringInput spaceDisplayName = new UIFormStringInput(SPACE_DISPLAY_NAME, SPACE_DISPLAY_NAME, null);
-    spaceDisplayName.setHTMLAttribute(HTML_ATTRIBUTE_PLACEHOLDER, resourceBundle.getString("UISpaceSettings.label.spaceDisplayName"));
-    addUIFormInput(spaceDisplayName.
+    //
+    addUIFormInput(new UIFormStringInput(SPACE_DISPLAY_NAME, SPACE_DISPLAY_NAME, "").
                    addValidator(MandatoryValidator.class).
                    addValidator(ExpressionValidator.class, "^([\\p{L}\\s\\d\']+[\\s]?)+$", MSG_INVALID_SPACE_NAME).
                    addValidator(StringLengthValidator.class, 3, 30));
-
-    UIFormTextAreaInput description = new UIFormTextAreaInput(SPACE_DESCRIPTION, SPACE_DESCRIPTION, null);
-    description.setHTMLAttribute(HTML_ATTRIBUTE_PLACEHOLDER, resourceBundle.getString("UISpaceSettings.label.spaceDescription"));
-    addUIFormInput(description.addValidator(StringLengthValidator.class, 0, 255));
+    addUIFormInput(new UIFormTextAreaInput(SPACE_DESCRIPTION, SPACE_DESCRIPTION, ""));
   }
+  
+  @Override
+  public void processRender(WebuiRequestContext context) throws Exception {
+    ResourceBundle resourceBundle = context.getApplicationResourceBundle();
+    getUIStringInput(SPACE_DISPLAY_NAME).setHTMLAttribute(HTML_ATTRIBUTE_PLACEHOLDER, resourceBundle.getString("UISpaceSettings.label.spaceDisplayName"));
+    //Fix bug SOC-4821
+    String scripts = new StringBuilder("(function(jq){jq(\"textarea#") 
+                        .append(SPACE_DESCRIPTION)
+                        .append("\").attr(\"placeholder\", \"")
+                        .append(resourceBundle.getString("UISpaceSettings.label.spaceDescription"))
+                        .append("\");})(jq);").toString();
+    context.getJavascriptManager().getRequireJS()
+           .require("SHARED/jquery", "jq")
+           .addScripts(scripts);
+    super.processRender(context);
+  }
+  
 }

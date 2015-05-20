@@ -21,11 +21,11 @@ import java.util.List;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
 import org.exoplatform.social.webui.Utils;
+import org.exoplatform.social.webui.composer.PopupContainer;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.EventConfig;
 import org.exoplatform.webui.core.UIComponent;
-import org.exoplatform.webui.core.UIPopupWindow;
 import org.exoplatform.webui.core.lifecycle.UIFormLifecycle;
 import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.event.Event.Phase;
@@ -56,7 +56,7 @@ public class UISpaceSearch extends UIForm {
   
   private static final String PERCENTAGE_STR = "%";
   
-  private final String POPUP_ADD_SPACE = "UIPopupAddSpace";
+  private static final String POPUP_ADD_SPACE = "UIPopupAddSpace";
 
   /** Html attribute title. */
   private static final String HTML_ATTRIBUTE_TITLE   = "title";
@@ -202,11 +202,8 @@ public class UISpaceSearch extends UIForm {
     }
     //
     addUIFormInput(new UIFormStringInput(SPACE_SEARCH, SPACE_SEARCH, ""));
+    addChild(PopupContainer.class, null, "PopupContainer_SpaceSearch");
     //
-    UIPopupWindow uiPopup = createUIComponent(UIPopupWindow.class, null, POPUP_ADD_SPACE);
-    uiPopup.setShow(false);
-    uiPopup.setWindowSize(400, 0);
-    addChild(uiPopup);
     setSubmitAction("return false;");
   }
 
@@ -253,11 +250,9 @@ public class UISpaceSearch extends UIForm {
     @Override
     public void execute(Event<UISpaceSearch> event) throws Exception {
       UISpaceSearch uiSpaceSearch = event.getSource();
-      UIPopupWindow uiPopup = uiSpaceSearch.getChild(UIPopupWindow.class);
-      UISpaceAddForm uiAddSpaceForm = uiSpaceSearch.createUIComponent(UISpaceAddForm.class, null, null);
-      uiPopup.setUIComponent(uiAddSpaceForm);
-      uiPopup.setWindowSize(625, 0);
-      uiPopup.setShow(true);
+      PopupContainer uiPopup = uiSpaceSearch.getChild(PopupContainer.class);
+      uiPopup.activate(UISpaceAddForm.class, 625, POPUP_ADD_SPACE);
+      event.getRequestContext().addUIComponentToUpdateByAjax(uiPopup);
     }
   }
 

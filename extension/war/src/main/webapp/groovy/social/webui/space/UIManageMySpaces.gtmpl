@@ -41,6 +41,7 @@
   def labelInvitationsReceived = _ctx.appRes("${uicomponent.id}.label.Invitations_Received");
   def labelRequestsPending = _ctx.appRes("${uicomponent.id}.label.Requests_Pending");
   def deleteMessagePopup = _ctx.appRes("UIManageMySpaces.msg.confirm_space_delete");
+
   def selectedNode = Utils.getSelectedNode();
   if (userSpaces.size() == uicomponent.getMySpacesNum()) {
     uicomponent.setLoadAtEnd(true);
@@ -51,8 +52,8 @@
 					 .require("SHARED/bts_tooltip")
 					 .require("SHARED/socialUtil", "socialUtil")
 					 .addScripts("jq('*[rel=\"tooltip\"]').tooltip();")
-					 .addScripts("socialUtil.addDynamicItemLayout('" + uicomponent.id + "');")
-					 .addScripts("socialUtil.applyConfirmPopup('" + uicomponent.id + "');");
+					 .addScripts("socialUtil.addDynamicItemLayout('" + uicomponent.id + "');");
+	Utils.initConfirmationPopup(uicomponent.id);
 %>
 <div class="uiManageSpace" id="$uicomponent.id">
   <% uicomponent.renderChild(UISpaceSearch.class); %>

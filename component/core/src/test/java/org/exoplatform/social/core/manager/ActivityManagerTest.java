@@ -23,15 +23,20 @@ import org.exoplatform.services.organization.User;
 import org.exoplatform.social.common.RealtimeListAccess;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.activity.model.ExoSocialActivityImpl;
+import org.exoplatform.social.core.application.RelationshipPublisher;
 import org.exoplatform.social.core.identity.model.Identity;
+import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
+import org.exoplatform.social.core.relationship.RelationshipEvent;
+import org.exoplatform.social.core.relationship.RelationshipEvent.Type;
 import org.exoplatform.social.core.relationship.model.Relationship;
 import org.exoplatform.social.core.space.SpaceUtils;
 import org.exoplatform.social.core.space.impl.DefaultSpaceApplicationHandler;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
 import org.exoplatform.social.core.storage.ActivityStorageException;
+import org.exoplatform.social.core.storage.api.IdentityStorage;
 import org.exoplatform.social.core.test.AbstractCoreTest;
 
 import java.util.ArrayList;
@@ -1053,6 +1058,61 @@ public class ActivityManagerTest extends AbstractCoreTest {
    
    relationshipManager.remove(demoJohnRelationship);
    relationshipManager.remove(demoMaryRelationship);
+ }
+ 
+ public void testRelationshipActivities() throws Exception {
+   RelationshipPublisher relationshipPublisher = (RelationshipPublisher) getContainer().getComponentInstanceOfType(RelationshipPublisher.class);
+   Relationship rootDemoRelationship = relationshipManager.inviteToConnect(rootIdentity, demoIdentity);
+   relationshipManager.confirm(demoIdentity, rootIdentity);
+   relationshipPublisher.confirmed(new RelationshipEvent(Type.CONFIRM, relationshipManager, rootDemoRelationship));
+   Relationship demoJohnRelationship = relationshipManager.inviteToConnect(demoIdentity, johnIdentity);
+   relationshipManager.confirm(johnIdentity, demoIdentity);
+   relationshipPublisher.confirmed(new RelationshipEvent(Type.CONFIRM, relationshipManager, demoJohnRelationship));
+   
+   IdentityStorage identityStorage =  (IdentityStorage) getContainer().getComponentInstanceOfType(IdentityStorage.class);
+   String johnActivityId =  identityStorage.getProfileActivityId(johnIdentity.getProfile(), Profile.AttachedActivityType.RELATIONSHIP);
+   ExoSocialActivity johnActivity = activityManager.getActivity(johnActivityId);
+   assertNotNull(johnActivity);
+   tearDownActivityList.add(johnActivity);
+   String rootActivityId =  identityStorage.getProfileActivityId(rootIdentity.getProfile(), Profile.AttachedActivityType.RELATIONSHIP);
+   ExoSocialActivity rootActivity = activityManager.getActivity(rootActivityId);
+   tearDownActivityList.add(rootActivity);
+   assertNotNull(rootActivity);
+   String demoActivityId =  identityStorage.getProfileActivityId(demoIdentity.getProfile(), Profile.AttachedActivityType.RELATIONSHIP);
+   ExoSocialActivity maryActivity = activityManager.getActivity(demoActivityId);
+   tearDownActivityList.add(maryActivity);
+   assertNotNull(maryActivity);
+   
+   List<ExoSocialActivity> activities = activityManager.getActivityFeedWithListAccess(demoIdentity).loadAsList(0, 10);
+   assertEquals(3, activities.size());
+   activities = activityManager.getActivityFeedWithListAccess(rootIdentity).loadAsList(0, 10);
+   assertEquals(2, activities.size());
+   
+   //on john's stream, there are 2 activities, one of john and one of demo
+   activities = activityManager.getActivityFeedWithListAccess(johnIdentity).loadAsList(0, 10);
+   assertEquals(2, activities.size());
+   assertEquals(johnActivityId, activities.get(0).getId());
+   assertEquals(demoActivityId, activities.get(1).getId());
+   
+   //root posts on demo stream
+   ExoSocialActivity activity = new ExoSocialActivityImpl();
+   activity.setTitle("Root posts on demo");
+   activity.setUserId(rootIdentity.getId());
+   activityManager.saveActivityNoReturn(demoIdentity, activity);
+   tearDownActivityList.add(activity);
+   
+   //john must see this activity but NOK
+   activities = activityManager.getActivityFeedWithListAccess(johnIdentity).loadAsList(0, 10);
+   assertEquals(3, activities.size());
+
+   //delete 2 activities on john's stream, the activity posted by root appears now ==> NOK
+   activityManager.deleteActivity(demoActivityId);
+   activityManager.deleteActivity(johnActivityId);
+   activities = activityManager.getActivityFeedWithListAccess(johnIdentity).loadAsList(0, 10);
+   assertEquals(1, activities.size());
+   
+   relationshipManager.delete(rootDemoRelationship);
+   relationshipManager.delete(demoJohnRelationship);
  }
  
  /**

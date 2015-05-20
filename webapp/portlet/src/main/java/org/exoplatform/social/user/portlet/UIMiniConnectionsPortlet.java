@@ -22,6 +22,7 @@ import java.util.List;
 import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
+import org.exoplatform.social.core.profile.ProfileFilter;
 import org.exoplatform.social.webui.Utils;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.EventConfig;
@@ -51,7 +52,7 @@ public class UIMiniConnectionsPortlet extends UIAbstractUserPortlet {
   }
   
   protected List<ProfileBean> loadPeoples() throws Exception {
-    ListAccess<Identity> listAccess = Utils.getRelationshipManager().getConnections(currentProfile.getIdentity());
+    ListAccess<Identity> listAccess = Utils.getRelationshipManager().getConnectionsByFilter(currentProfile.getIdentity(), new ProfileFilter());
     allSize = listAccess.getSize();
     List<Identity> identities = Utils.getRelationshipManager().getLastConnections(currentProfile.getIdentity(), MAX_DISPLAY);
     List<ProfileBean> profileBeans = new ArrayList<ProfileBean>();

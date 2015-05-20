@@ -41,12 +41,12 @@ import org.exoplatform.social.core.space.spi.SpaceService;
 import org.exoplatform.social.webui.UIAvatarUploadContent;
 import org.exoplatform.social.webui.UIAvatarUploader;
 import org.exoplatform.social.webui.Utils;
+import org.exoplatform.social.webui.composer.PopupContainer;
 import org.exoplatform.web.application.ApplicationMessage;
 import org.exoplatform.web.url.navigation.NodeURL;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.EventConfig;
-import org.exoplatform.webui.core.UIPopupWindow;
 import org.exoplatform.webui.core.UIPortletApplication;
 import org.exoplatform.webui.core.UITabPane;
 import org.exoplatform.webui.core.lifecycle.UIFormLifecycle;
@@ -73,13 +73,13 @@ public class UISpaceInfo extends UIForm {
   
   private static final Log LOG = ExoLogger.getLogger(UISpaceInfo.class);
   
-  private static final String SPACE_ID = "id";
+  public static final String SPACE_ID = "id";
 
   private static final String SPACE_DISPLAY_NAME            = "displayName";
   private static final String SPACE_DESCRIPTION             = "description";
   private static final String SPACE_TAG                     = "tag";
   private SpaceService spaceService = null;
-  private final String POPUP_AVATAR_UPLOADER = "UIPopupAvatarUploader";
+  private final static String POPUP_AVATAR_UPLOADER = "UIPopupAvatarUploader";
   private static final String MSG_DEFAULT_SPACE_DESCRIPTION = "UISpaceAddForm.msg.default_space_description";
   
   /** Html attribute title. */
@@ -114,9 +114,8 @@ public class UISpaceInfo extends UIForm {
     tag.setHTMLAttribute(HTML_ATTRIBUTE_TITLE, resourceBundle.getString("UISpaceInfo.label.tag"));
     addUIFormInput(tag);
 
-    UIPopupWindow uiPopup = createUIComponent(UIPopupWindow.class, null, POPUP_AVATAR_UPLOADER);
-    uiPopup.setWindowSize(500, 0);
-    addChild(uiPopup);
+    PopupContainer popupContainer = createUIComponent(PopupContainer.class, null, null);
+    addChild(popupContainer);
   }
 
   /**
@@ -282,10 +281,9 @@ public class UISpaceInfo extends UIForm {
     @Override
     public void execute(Event<UISpaceInfo> event) throws Exception {
       UISpaceInfo uiSpaceInfo = event.getSource();
-      UIPopupWindow uiPopup = uiSpaceInfo.getChild(UIPopupWindow.class);
-      UIAvatarUploader uiAvatarUploader = uiSpaceInfo.createUIComponent(UIAvatarUploader.class, null, null);
-      uiPopup.setUIComponent(uiAvatarUploader);
-      uiPopup.setShow(true);
+      PopupContainer popupContainer = uiSpaceInfo.getChild(PopupContainer.class);
+      popupContainer.activate(UIAvatarUploader.class, 500, POPUP_AVATAR_UPLOADER);
+      event.getRequestContext().addUIComponentToUpdateByAjax(popupContainer);
     }
   }
 

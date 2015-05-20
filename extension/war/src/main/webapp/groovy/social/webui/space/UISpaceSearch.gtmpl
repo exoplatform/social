@@ -1,5 +1,4 @@
 <%
-import org.exoplatform.webui.core.UIPopupWindow;
 
 def rcontext = _ctx.getRequestContext() ;
 def typeOfRelation = uicomponent.getTypeOfRelation();
@@ -35,5 +34,5 @@ uicomponent.initPlaceholder();
 	</div>
  
 	<% uiform.end();%>
-	<div class="uiPopupMySpaces"><%uicomponent.renderChild(UIPopupWindow.class);%></div>
+	<div class="uiPopupMySpaces"><%uicomponent.renderChild(org.exoplatform.social.webui.composer.PopupContainer.class);%></div>
 </div>

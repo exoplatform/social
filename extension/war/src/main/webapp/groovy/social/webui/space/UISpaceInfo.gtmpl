@@ -21,7 +21,6 @@
 */
 %>
 <%
-  import org.exoplatform.webui.core.UIPopupWindow;
   import org.exoplatform.social.core.service.LinkProvider;
 
 	def uicomponentId = uicomponent.id;
@@ -64,5 +63,5 @@
 	</div>
 	<div class="uiAction uiActionBorder"><button class="btn" type="button" onclick="$saveAction">$saveLabel</button></div>
   <% uiform.end(); %>
-  <div class="uiAvatarUploader"><% uicomponent.renderChild(UIPopupWindow.class); %></div>
+  <div class="uiAvatarUploader"><% uicomponent.renderChild(org.exoplatform.social.webui.composer.PopupContainer.class); %></div>
 </div>

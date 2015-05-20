@@ -63,6 +63,7 @@ import org.exoplatform.web.url.navigation.NavigationResource;
 import org.exoplatform.web.url.navigation.NodeURL;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.application.portlet.PortletRequestContext;
+import org.json.JSONObject;
 
 /**
  * Contains some common methods for using as utility.<br>
@@ -828,5 +829,25 @@ public class Utils {
     }
     
     return null;
+  }
+
+  /**
+   * Initializes confirmation popup.
+   *  
+   * @param componentId Target component.
+   * @param confirmationMsg Confirmation message.
+   * @throws Exception
+   */
+  public static void initConfirmationPopup(String componentId) throws Exception {
+    WebuiRequestContext context = WebuiRequestContext.getCurrentInstance();
+    ResourceBundle res = context.getApplicationResourceBundle();
+    JSONObject object = new JSONObject();
+    object.put("componentId", componentId);
+    object.put("Caption", res.getString("Confirmation.label.Caption"));
+    object.put("OK", res.getString("Confirmation.label.OK"));
+    object.put("Cancel", res.getString("Confirmation.label.Cancel"));
+    
+    context.getJavascriptManager().getRequireJS().require("SHARED/socialUtil", "socialUtil")
+           .addScripts("socialUtil.applyConfirmPopup(" + object.toString() + ");");
   }
 }
