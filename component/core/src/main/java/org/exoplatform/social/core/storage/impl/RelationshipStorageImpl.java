@@ -891,8 +891,10 @@ public class RelationshipStorageImpl extends AbstractStorage implements Relation
         if (relNode.getName().contains(StorageUtils.COLON_STR)) {
           String remoteId = relNode.getName().split(StorageUtils.COLON_STR)[1];
           Identity newIdentity = identityStorage.findIdentity(OrganizationIdentityProvider.NAME, remoteId);
-          identities.add(newIdentity);
-          limit--;
+          if (newIdentity != null) {//SOC-4865 : avoid the case that user has been deleted but the relationship is kept
+            identities.add(newIdentity);
+            limit--;
+          }
         }
       }
     }
