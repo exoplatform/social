@@ -264,7 +264,7 @@ public class CachedActivityStorage implements ActivityStorage {
     storage.saveComment(activity, comment);
 
     //
-    exoActivityCache.put(new ActivityKey(comment.getId()), new ActivityData(getComment(comment.getId())));
+    exoActivityCache.put(new ActivityKey(comment.getId()), new ActivityData(getActivity(comment.getId())));
     ActivityKey activityKey = new ActivityKey(activity.getId());
     exoActivityCache.remove(activityKey);
     exoActivityCache.put(activityKey, new ActivityData(getActivity(activity.getId())));
@@ -293,7 +293,7 @@ public class CachedActivityStorage implements ActivityStorage {
    * {@inheritDoc}
    */
   public ExoSocialActivity getParentActivity(final ExoSocialActivity comment) throws ActivityStorageException {
-    return getActivity(getComment(comment.getId()).getParentId());
+    return getActivity(getActivity(comment.getId()).getParentId());
   }
 
   /**
@@ -1835,46 +1835,10 @@ public class CachedActivityStorage implements ActivityStorage {
   @Override
   public void setInjectStreams(boolean mustInject) {
     storage.setInjectStreams(mustInject);
-    
   }
 
   @Override
   public List<ExoSocialActivity> getAllActivities(int index, int limit) {
     return storage.getAllActivities(index, limit);
-  }
-  
-  /**
-   * {@inheritDoc}
-   */
-  public ExoSocialActivity getComment(final String commentId) throws ActivityStorageException {
-
-    if (commentId == null || commentId.length() == 0) {
-      return ActivityData.NULL.build();
-    }
-    //
-    ActivityKey key = new ActivityKey(commentId);
-
-    //
-    ActivityData activity = activityCache.get(
-        new ServiceContext<ActivityData>() {
-          public ActivityData execute() {
-            try {
-              ExoSocialActivity got = storage.getActivity(commentId);
-              if (got != null) {
-                return new ActivityData(got);
-              }
-              else {
-                return ActivityData.NULL;
-              }
-            } catch (Exception e) {
-              throw new RuntimeException(e);
-            }
-          }
-        },
-        key);
-
-    //
-    return activity.build();
-
   }
 }

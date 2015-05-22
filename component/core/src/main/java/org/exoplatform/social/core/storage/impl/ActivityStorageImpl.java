@@ -44,7 +44,6 @@ import javax.jcr.RepositoryException;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.Validate;
-import org.apache.shindig.gadgets.UnsupportedFeatureException;
 import org.chromattic.api.ChromatticException;
 import org.chromattic.api.query.Ordering;
 import org.chromattic.api.query.Query;
