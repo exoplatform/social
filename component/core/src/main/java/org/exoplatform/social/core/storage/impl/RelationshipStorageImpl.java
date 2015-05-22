@@ -39,6 +39,7 @@ import org.chromattic.api.query.QueryBuilder;
 import org.chromattic.api.query.QueryResult;
 import org.chromattic.core.query.QueryImpl;
 import org.exoplatform.commons.notification.impl.AbstractService;
+import org.exoplatform.commons.utils.CommonsUtils;
 import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.log.ExoLogger;
@@ -58,11 +59,9 @@ import org.exoplatform.social.core.relationship.model.Relationship;
 import org.exoplatform.social.core.storage.IdentityStorageException;
 import org.exoplatform.social.core.storage.RelationshipStorageException;
 import org.exoplatform.social.core.storage.api.ActivityStorage;
-import org.exoplatform.social.core.storage.api.ActivityStreamStorage;
 import org.exoplatform.social.core.storage.api.IdentityStorage;
 import org.exoplatform.social.core.storage.api.RelationshipStorage;
 import org.exoplatform.social.core.storage.cache.CachedActivityStorage;
-import org.exoplatform.social.core.storage.cache.CachedActivityStreamStorage;
 import org.exoplatform.social.core.storage.exception.NodeNotFoundException;
 import org.exoplatform.social.core.storage.query.JCRProperties;
 import org.exoplatform.social.core.storage.query.WhereExpression;
@@ -80,8 +79,7 @@ public class RelationshipStorageImpl extends AbstractStorage implements Relation
   private final IdentityStorage identityStorage;
   private RelationshipManager relationshipManager;
   private RelationshipStorage relationshipStorage;
-  private CachedActivityStorage cachedActivityStorage;
-  private CachedActivityStreamStorage streamStorage;
+  private ActivityStorage activityStorage;
 
   public RelationshipStorageImpl(IdentityStorage identityStorage) {
    this.identityStorage = identityStorage;
@@ -98,26 +96,19 @@ public class RelationshipStorageImpl extends AbstractStorage implements Relation
     return relationshipManager;
   }
 
-  private CachedActivityStorage getCachedActivityStorage() {
-    
-    if (this.cachedActivityStorage == null) {
-      PortalContainer container = PortalContainer.getInstance();
-      this.cachedActivityStorage  = (CachedActivityStorage) container.getComponentInstanceOfType(ActivityStorage.class);
+  private ActivityStorage getCachedActivityStorage() {
+    if (activityStorage == null) {
+      activityStorage = CommonsUtils.getService(ActivityStorage.class);
     }
-    
-    return this.cachedActivityStorage;
+    return activityStorage;
   }
   
-  private CachedActivityStreamStorage getCachedActivityStreamStorage() {
-    
-    if (this.streamStorage == null) {
-      PortalContainer container = PortalContainer.getInstance();
-      this.streamStorage  = (CachedActivityStreamStorage) container.getComponentInstanceOfType(ActivityStreamStorage.class);
+  private void clearActivityStorageCache() {
+    if (getCachedActivityStorage() instanceof CachedActivityStorage) {
+      ((CachedActivityStorage) getCachedActivityStorage()).clearCache();
     }
-    
-    return this.streamStorage;
   }
-  
+
   private void putRelationshipToList(List<Relationship> relationships, RelationshipListEntity list) {
     if (list != null) {
       for (Map.Entry<String, RelationshipEntity> entry : list.getRelationships().entrySet()) {
@@ -694,6 +685,9 @@ public class RelationshipStorageImpl extends AbstractStorage implements Relation
     relationship.setReceiver(receiver);
 
     relationship.setStatus(Relationship.Type.valueOf(got.getStatus()));
+    //TODO
+//    clearActivityStorageCache();
+
     return relationship;
   }
 
@@ -750,8 +744,7 @@ public class RelationshipStorageImpl extends AbstractStorage implements Relation
       //getCachedActivityStreamStorage().deleteConnect(relationship.getSender(), relationship.getReceiver());
       StreamInvocationHelper.deleteConnect(relationship.getSender(), relationship.getReceiver());
       
-      getCachedActivityStorage().clearCache();
-      
+      clearActivityStorageCache();
       
 
       //
