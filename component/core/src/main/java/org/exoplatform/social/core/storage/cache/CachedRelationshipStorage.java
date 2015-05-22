@@ -87,7 +87,6 @@ public class CachedRelationshipStorage extends AbstractStorage implements Relati
   //
   private final RelationshipStorageImpl storage;
   private final IdentityStorage identityStorage;
-  private ActivityStorage activityStorage;
 
   //
   private static final RelationshipKey RELATIONSHIP_NOT_FOUND = new RelationshipKey(null);
@@ -192,20 +191,7 @@ public class CachedRelationshipStorage extends AbstractStorage implements Relati
     return suggestions;
 
   }
-
-  public ActivityStorage getCachedActivityStorage() {
-    if (activityStorage == null) {
-      activityStorage = CommonsUtils.getService(ActivityStorage.class);
-    }
-    return activityStorage;
-  }
   
-  private void clearActivityStorageCache() {
-    if (getCachedActivityStorage() instanceof CachedActivityStorage) {
-      ((CachedActivityStorage) getCachedActivityStorage()).clearCache();
-    }
-  }
-
   public CachedRelationshipStorage(final RelationshipStorageImpl storage, final IdentityStorage identityStorage,
                                    final SocialStorageCacheService cacheService) {
 
@@ -248,8 +234,6 @@ public class CachedRelationshipStorage extends AbstractStorage implements Relati
     exoRelationshipByIdentityCache.put(identityKey1, key);
     exoRelationshipByIdentityCache.put(identityKey2, key);
     clearCacheFor(relationship);
-    //
-    clearActivityStorageCache();
 
     return r;
 
@@ -276,8 +260,6 @@ public class CachedRelationshipStorage extends AbstractStorage implements Relati
     
     //
     clearCacheFor(relationship);
-    //
-    clearActivityStorageCache();
     
   }
 
