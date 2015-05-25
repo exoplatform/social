@@ -213,6 +213,16 @@ public interface IdentityManager {
    * @LevelAPI Platform 
    */
   void registerIdentityProviders(IdentityProviderPlugin plugin);
+  
+  /**
+   * Process status of Identity when enable/disable user.
+   * 
+   * @param remoteId The user remote id
+   * @param isEnable true if the user is enable, false if not
+   * @LevelAPI Platform
+   * @since 4.1.x
+   */
+  void processEnabledIdentity(String remoteId, boolean isEnable);
 
   /**
    * Gets an identity by Id and also loads his profile.

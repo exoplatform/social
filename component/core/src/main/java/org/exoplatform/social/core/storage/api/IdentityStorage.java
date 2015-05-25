@@ -274,7 +274,6 @@ public interface IdentityStorage {
    */
   public String getProfileActivityId(Profile profile, AttachedActivityType type);
   
-
   /**
    * Gets the active user list base on the given ActiveIdentityFilter.
    * 1. N days who last login less than N days.
@@ -286,5 +285,12 @@ public interface IdentityStorage {
    */
   public Set<String> getActiveUsers(ActiveIdentityFilter filter);
   
-  
+  /**
+   * Process enable/disable Identity
+   * 
+   * @param identity The Identity enable
+   * @param isEnable true if the user is enable, false if not
+   * @since 4.2.x
+   */
+  public void processEnabledIdentity(Identity identity, boolean isEnable);
 }

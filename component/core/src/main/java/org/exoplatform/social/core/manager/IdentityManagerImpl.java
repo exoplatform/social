@@ -539,4 +539,9 @@ public class IdentityManagerImpl implements IdentityManager {
     }
   }
 
+  @Override
+  public void processEnabledIdentity(String remoteId, boolean isEnable) {
+    Identity identity = getOrCreateIdentity(OrganizationIdentityProvider.NAME, remoteId, false);
+    this.getIdentityStorage().processEnabledIdentity(identity, isEnable);
+  }
 }

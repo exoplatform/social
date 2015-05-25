@@ -42,6 +42,7 @@ import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
+import org.exoplatform.social.core.chromattic.entity.DisabledEntity;
 import org.exoplatform.social.core.chromattic.entity.IdentityEntity;
 import org.exoplatform.social.core.chromattic.entity.ProfileEntity;
 import org.exoplatform.social.core.chromattic.entity.RelationshipEntity;
@@ -124,7 +125,11 @@ public class RelationshipStorageImpl extends AbstractStorage implements Relation
         RelationshipEntity relationshipEntity = entry.getValue();
         IdentityEntity senderEntity = relationshipEntity.getFrom();
         IdentityEntity receiverEntity = relationshipEntity.getTo();
-
+        //
+        if (_getMixin(senderEntity, DisabledEntity.class, false) != null ||
+            _getMixin(receiverEntity, DisabledEntity.class, false) != null) {
+          continue;
+        }
         Identity sender = new Identity(senderEntity.getId());
         sender.setRemoteId(senderEntity.getRemoteId());
         sender.setProviderId(senderEntity.getProviderId());
@@ -216,17 +221,26 @@ public class RelationshipStorageImpl extends AbstractStorage implements Relation
     while (it.hasNext()) {
 
       RelationshipEntity relationshipEntity = it.next();
+      IdentityEntity identityEntity;
 
       switch (origin) {
 
         case FROM:
-          identity = createIdentityFromEntity(relationshipEntity.getFrom());
-          identities.add(identity);
+          identityEntity = relationshipEntity.getFrom();
+          identity = createIdentityFromEntity(identityEntity);
+          
+          if (identity.isEnable()) {
+            identities.add(identity);
+          }
           break;
 
         case TO:
-          identity = createIdentityFromEntity(relationshipEntity.getTo());
-          identities.add(identity);
+          identityEntity = relationshipEntity.getTo();
+          identity = createIdentityFromEntity(identityEntity);
+
+          if (identity.isEnable()) {
+            identities.add(identity);
+          }
           break;
       }
 
@@ -256,7 +270,9 @@ public class RelationshipStorageImpl extends AbstractStorage implements Relation
       }
       
       identity = createIdentityFromEntity(entity);
-      identities.add(identity);
+      if (identity.isEnable()) {
+        identities.add(identity);
+      }
 
       if (limit != -1 && limit > 0 && ++i >= limit) {
         break;
@@ -300,6 +316,9 @@ public class RelationshipStorageImpl extends AbstractStorage implements Relation
     
     while(result.hasNext()) {
       IdentityEntity current = result.next().getIdentity();
+      if (_getMixin(current, DisabledEntity.class, false) != null) {
+        continue;
+      }
       Identity i = new Identity(current.getProviderId(), current.getRemoteId());
       i.setId(current.getId());
       found.add(i);
@@ -325,10 +344,17 @@ public class RelationshipStorageImpl extends AbstractStorage implements Relation
 
     //
     StorageUtils.applyFilter(whereExpression, filter);
-
     //
-    return builder.where(whereExpression.toString()).get().objects().size();
-
+    QueryResult<ProfileEntity> result = builder.where(whereExpression.toString()).get().objects();
+    int number = 0;
+    while (result.hasNext()) {
+      IdentityEntity current = result.next().getIdentity();
+      if (_getMixin(current, DisabledEntity.class, false) == null) {
+        ++number;
+      }
+    }
+    //
+    return number;
   }
 
   private RelationshipStorage getStorage() {
@@ -937,6 +963,10 @@ public class RelationshipStorageImpl extends AbstractStorage implements Relation
         else {
           gotIdentityEntity = currentRelationshipEntity.getTo();
         }
+        //
+        if (_getMixin(gotIdentityEntity, DisabledEntity.class, false) != null) {
+          continue;
+        }
 
         Identity newIdentity = new Identity(gotIdentityEntity.getId());
         newIdentity.setProviderId(gotIdentityEntity.getProviderId());
@@ -982,20 +1012,10 @@ public class RelationshipStorageImpl extends AbstractStorage implements Relation
   /**
    * {@inheritDoc}
    */
-   public int getIncomingRelationshipsCount(Identity receiver) throws RelationshipStorageException {
-
-     try {
-
-       IdentityEntity receiverEntity = _findById(IdentityEntity.class, receiver.getId());
-       return receiverEntity.getReceiver().getRelationships().size();
-       
-     }
-     catch (NodeNotFoundException e) {
-       throw new RelationshipStorageException(
-           RelationshipStorageException.Type.FAILED_TO_GET_RELATIONSHIP,
-           e.getMessage());
-     }
-   }
+  public int getIncomingRelationshipsCount(Identity receiver) throws RelationshipStorageException {
+    //
+    return getIncomingRelationships(receiver, 0, -1).size();
+  }
 
   /**
    * {@inheritDoc}
@@ -1023,19 +1043,7 @@ public class RelationshipStorageImpl extends AbstractStorage implements Relation
    * {@inheritDoc}
    */
   public int getOutgoingRelationshipsCount(Identity sender) throws RelationshipStorageException {
-
-    try {
-
-       IdentityEntity receiverEntity = _findById(IdentityEntity.class, sender.getId());
-       return receiverEntity.getSender().getRelationships().size();
-
-     }
-     catch (NodeNotFoundException e) {
-       throw new RelationshipStorageException(
-           RelationshipStorageException.Type.FAILED_TO_GET_RELATIONSHIP,
-           e.getMessage());
-     }
-
+    return getOutgoingRelationships(sender, 0, -1).size();
   }
 
   /**
@@ -1096,7 +1104,6 @@ public class RelationshipStorageImpl extends AbstractStorage implements Relation
    * {@inheritDoc}
    */
   public int getConnectionsCount(Identity identity) throws RelationshipStorageException {
-
     try {
       // TODO : use property to improve the perfs
       IdentityEntity identityEntity = _findById(IdentityEntity.class, identity.getId());

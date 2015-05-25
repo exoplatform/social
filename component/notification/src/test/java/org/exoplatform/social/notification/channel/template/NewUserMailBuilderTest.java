@@ -35,6 +35,8 @@ import org.exoplatform.commons.notification.channel.MailChannel;
 import org.exoplatform.commons.notification.impl.NotificationContextImpl;
 import org.exoplatform.commons.utils.CommonsUtils;
 import org.exoplatform.services.organization.OrganizationService;
+import org.exoplatform.services.organization.User;
+import org.exoplatform.services.organization.UserHandler;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.notification.AbstractPluginTest;
 import org.exoplatform.social.notification.plugin.NewUserPlugin;
@@ -52,6 +54,12 @@ public class NewUserMailBuilderTest extends AbstractPluginTest {
   protected void setUp() throws Exception {
     super.setUp();
     manager = getService(ChannelManager.class);
+    
+    //By default the plugin and feature are active
+    assertTrue(pluginSettingService.isActive(getPlugin().getId()));
+    assertTrue(exoFeatureService.isActiveFeature("notification"));
+    //
+    notificationService.clearAll();
   }
   
   @Override
@@ -75,25 +83,68 @@ public class NewUserMailBuilderTest extends AbstractPluginTest {
   
   public void testSimpleCase() throws Exception {
     //STEP 1 create new user
-    Identity ghostIdentity = identityManager.getOrCreateIdentity("organization", "ghost", true);
-    tearDownIdentityList.add(ghostIdentity);
+    createUser("user_1");
     // will sent 4 mails to 4 users existing.
     List<NotificationInfo> list = assertMadeNotifications(4);
     NotificationInfo newUserNotification = list.get(0);
-    
     //STEP 2 assert Message info
     NotificationContext ctx = NotificationContextImpl.cloneInstance();
     ctx.setNotificationInfo(newUserNotification.setTo("mary"));
     MessageInfo info = buildMessageInfo(ctx);
     
-    assertSubject(info, "Ghost gtn has joined eXo");
+    assertSubject(info, "USER_1 gtn has joined eXo");
     assertBody(info, "New user on eXo");
+    //
+    removeUser("user_1");
+  }
+  
+  public void testPluginONOFF() throws Exception {
+    //by default the plugin is ON
+    createUser("user_11");
+    assertMadeNotifications(4);
+    notificationService.clearAll();
+    removeUser("user_11");
+    //turn off the plugin
+    turnOFF(getPlugin());
+    
+    createUser("user_12");
+    assertMadeNotifications(0);
+    removeUser("user_12");
+    
+    //turn on the plugin
+    turnON(getPlugin());
+    createUser("user_123");
+    assertMadeNotifications(4);
+    notificationService.clearAll();
+    removeUser("user_123");
+  }
+  
+  public void testFeatureONOFF() throws Exception {
+    //by default the feature is ON
+    createUser("user_13");
+    assertMadeNotifications(4);
+    notificationService.clearAll();
+    removeUser("user_13");
+    
+    //turn off the feature
+    turnFeatureOff();
+    
+    createUser("user_23");
+    assertMadeNotifications(0);
+    removeUser("user_23");
+    //turn on the feature
+    turnFeatureOn();
+    //
+    createUser("user_234");
+    assertMadeNotifications(4);
+    notificationService.clearAll();
+    removeUser("user_234");
   }
   
   public void testDigest() throws Exception {
-    Identity ghostIdentity = identityManager.getOrCreateIdentity("organization", "ghost", true);
-    Identity raulIdentity = identityManager.getOrCreateIdentity("organization", "raul", true);
-    Identity paulIdentity = identityManager.getOrCreateIdentity("organization", "paul", true);
+    createUser("user_111");
+    createUser("user_222");
+    createUser("user_333");
     
     //Digest
     // will sent 12 mails to 4 users existing.
@@ -104,16 +155,33 @@ public class NewUserMailBuilderTest extends AbstractPluginTest {
     list = new ArrayList<NotificationInfo>(new LinkedHashSet<NotificationInfo>(list));
 
     list.get(0).setTo(rootIdentity.getRemoteId());
-    
-    CommonsUtils.getService(OrganizationService.class).getUserHandler().removeUser("raul", true);
+    //
+    removeUser("user_111");
     
     ctx.setNotificationInfos(list);
     Writer writer = new StringWriter();
     buildDigest(ctx, writer);
-    assertDigest(writer, "Ghost gtn, Paul gtn have joined eXo.");
-    
-    tearDownIdentityList.add(ghostIdentity);
-    tearDownIdentityList.add(raulIdentity);
-    tearDownIdentityList.add(paulIdentity);
+    assertDigest(writer, "USER_222 gtn, USER_333 gtn have joined eXo.");
+    removeUser("user_222");
+    removeUser("user_333");
+  }
+  
+  private void createUser(String userName) throws Exception {
+    UserHandler userHandler = CommonsUtils.getService(OrganizationService.class).getUserHandler();
+    User user = userHandler.createUserInstance(userName);
+    user.setEmail(userName + "@plf.com");
+    user.setFirstName(userName.toUpperCase());
+    user.setLastName("gtn");
+    user.setPassword("exo");
+    //
+    userHandler.createUser(user, true);
+    //
+    Identity identity = identityManager.getOrCreateIdentity("organization", userName, true);
+    tearDownIdentityList.add(identity);
+  }
+
+  private void removeUser(String userName) throws Exception {
+    UserHandler userHandler = CommonsUtils.getService(OrganizationService.class).getUserHandler();
+    userHandler.removeUser(userName, true);
   }
 }

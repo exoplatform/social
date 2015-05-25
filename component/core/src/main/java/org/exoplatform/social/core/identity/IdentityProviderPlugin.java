@@ -41,7 +41,7 @@ public class IdentityProviderPlugin extends BaseComponentPlugin {
       LOG.warn("Missing expected <values-param>. : providers");
       return;
     }
-    ArrayList<String> classes = values.getValues();
+    List<String> classes = values.getValues();
     for (String className : classes) {
       try {
         Class t = Class.forName(className);

@@ -31,6 +31,7 @@ import org.exoplatform.services.organization.OrganizationService;
 import org.exoplatform.services.organization.User;
 import org.exoplatform.services.organization.UserHandler;
 import org.exoplatform.services.organization.UserProfile;
+import org.exoplatform.services.organization.UserStatus;
 import org.exoplatform.social.core.identity.IdentityProvider;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
@@ -100,6 +101,7 @@ public class OrganizationIdentityProvider extends IdentityProvider<User> {
   @Override
   public User findByRemoteId(String remoteId) {
     User user = null;
+    
     try {
       ConversationState state = ConversationState.getCurrent();
       if (state.getIdentity().getUserId().equals(remoteId)) {
@@ -114,7 +116,7 @@ public class OrganizationIdentityProvider extends IdentityProvider<User> {
       try {
         RequestLifeCycle.begin((ComponentRequestLifecycle) organizationService);
         UserHandler userHandler = organizationService.getUserHandler();
-        user = userHandler.findUserByName(remoteId);
+        user = userHandler.findUserByName(remoteId, UserStatus.ANY);
       } catch (Exception e) {
         if (LOG.isDebugEnabled()) {
           LOG.debug("Cannot get information of user " + remoteId + " from Organization Service");
@@ -133,6 +135,7 @@ public class OrganizationIdentityProvider extends IdentityProvider<User> {
   @Override
   public Identity createIdentity(User user) {
     Identity identity = new Identity(NAME, user.getUserName());
+    identity.setEnable(user.isEnabled());
     return identity;
   }
 
@@ -143,7 +146,7 @@ public class OrganizationIdentityProvider extends IdentityProvider<User> {
   public void populateProfile(Profile profile, User user) {
     profile.setProperty(Profile.FIRST_NAME, user.getFirstName());
     profile.setProperty(Profile.LAST_NAME, user.getLastName());
-    profile.setProperty(Profile.FULL_NAME, user.getFullName());
+    profile.setProperty(Profile.FULL_NAME, user.getDisplayName());
     profile.setProperty(Profile.USERNAME, user.getUserName());
     profile.setProperty(Profile.EMAIL, user.getEmail());
     ExoContainer container = ExoContainerContext.getCurrentContainer();
@@ -182,6 +185,7 @@ public class OrganizationIdentityProvider extends IdentityProvider<User> {
       try {
         if (updatedProfile.getListUpdateTypes().contains(Profile.UpdateType.CONTACT)) {
           updateBasicInfo();
+          updateContact();
         }
       } catch (Exception e) {
         if ( e instanceof MessageException) {
@@ -232,7 +236,30 @@ public class OrganizationIdentityProvider extends IdentityProvider<User> {
         organizationService.getUserHandler().saveUser(foundUser, true);
         state.setAttribute(CacheUserProfileFilter.USER_PROFILE, foundUser);
       }
+    }
+    
+    /**
+     * Updates profile in Contact section
+     * @throws Exception
+     */
+    private void updateContact() throws Exception {
+      //
+      String gender = (String) updatedProfile.getProperty(Profile.GENDER);
+
+
+      UserProfile foundUserProfile = organizationService.getUserProfileHandler()
+                                                        .findUserProfileByName(userName);
+      //
+      if(foundUserProfile == null) {
+        foundUserProfile = organizationService.getUserProfileHandler().createUserProfileInstance(userName);
+      }
+
+      String uGender = foundUserProfile.getAttribute(UserProfile.PERSONAL_INFO_KEYS[4]);// "user.gender"
       
+      if (gender !=null && !gender.equals(uGender)) {
+        foundUserProfile.setAttribute(UserProfile.PERSONAL_INFO_KEYS[4], gender);// "user.gender"
+        organizationService.getUserProfileHandler().saveUserProfile(foundUserProfile, false);
+      }
       //
       updatePositionAndGender();
     }
@@ -250,7 +277,7 @@ public class OrganizationIdentityProvider extends IdentityProvider<User> {
       
       //
       if(foundUserProfile == null) {
-        return;
+        foundUserProfile = organizationService.getUserProfileHandler().createUserProfileInstance(userName);
       }
       
       boolean hasUpdated = false;

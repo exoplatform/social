@@ -21,6 +21,7 @@ import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.portal.config.UserACL;
 import org.exoplatform.services.organization.Membership;
 import org.exoplatform.services.organization.MembershipEventListener;
+import org.exoplatform.services.organization.MembershipTypeHandler;
 import org.exoplatform.services.security.ConversationState;
 import org.exoplatform.social.core.space.SpaceUtils;
 import org.exoplatform.social.core.space.model.Space;
@@ -61,6 +62,8 @@ public class SocialMembershipListenerImpl extends MembershipEventListener {
         spaceService.removeMember(space, m.getUserName());
         spaceService.setManager(space, m.getUserName(), false);
         SpaceUtils.refreshNavigation();
+      } else if (MembershipTypeHandler.ANY_MEMBERSHIP_TYPE.equalsIgnoreCase(m.getMembershipType())) {
+        clearIdentityCaching();
       }
     } else if (m.getGroupId().startsWith(SpaceUtils.PLATFORM_USERS_GROUP)) {
       clearIdentityCaching();
@@ -97,7 +100,10 @@ public class SocialMembershipListenerImpl extends MembershipEventListener {
             return;
           }
           spaceService.addMember(space, userName);
+        } else if (MembershipTypeHandler.ANY_MEMBERSHIP_TYPE.equalsIgnoreCase(m.getMembershipType())) {
+          clearIdentityCaching();
         }
+        
         //Refresh GroupNavigation
         SpaceUtils.refreshNavigation();
       }

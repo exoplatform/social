@@ -34,6 +34,10 @@ import org.exoplatform.component.test.ContainerScope;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.jcr.RepositoryService;
 import org.exoplatform.services.jcr.core.ManageableRepository;
+import org.exoplatform.services.log.ExoLogger;
+import org.exoplatform.services.organization.OrganizationService;
+import org.exoplatform.services.organization.User;
+import org.exoplatform.services.organization.UserHandler;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.manager.ActivityManagerImpl;
 import org.exoplatform.social.core.manager.IdentityManager;
@@ -44,7 +48,7 @@ import org.exoplatform.social.notification.mock.MockNotificationService;
 @ConfiguredBy({
   @ConfigurationUnit(scope = ContainerScope.PORTAL, path = "conf/exo.portal.component.identity-configuration.xml"),
   @ConfigurationUnit(scope = ContainerScope.PORTAL, path = "conf/exo.portal.component.portal-configuration.xml"),
-  @ConfigurationUnit(scope = ContainerScope.PORTAL, path = "conf/standalone/exo.social.component.test.jcr-configuration.xml"),
+  @ConfigurationUnit(scope = ContainerScope.PORTAL, path = "conf/exo.portal.component.test.jcr-configuration.xml"),
   @ConfigurationUnit(scope = ContainerScope.PORTAL, path = "conf/standalone/exo.social.test.portal-configuration.xml"),
   @ConfigurationUnit(scope = ContainerScope.PORTAL, path = "conf/standalone/exo.social.test.jcr-configuration.xml"),
   @ConfigurationUnit(scope = ContainerScope.PORTAL, path = "conf/standalone/exo.social.component.common.test.configuration.xml"),
@@ -67,6 +71,7 @@ public abstract class AbstractCoreTest extends BaseExoTestCase {
   protected Identity johnIdentity;
   protected Identity maryIdentity;
   protected Identity demoIdentity;
+  protected Identity ghostIdentity;
   
   @Override
   protected void setUp() throws Exception {
@@ -81,6 +86,8 @@ public abstract class AbstractCoreTest extends BaseExoTestCase {
     pluginSettingService = getService(PluginSettingService.class);
     exoFeatureService = getService(ExoFeatureService.class);
     System.setProperty(CommonsUtils.CONFIGURED_DOMAIN_URL_KEY, "http://exoplatform.com");
+    //
+    checkAndCreateDefaultUsers();
   }
 
   @Override
@@ -89,9 +96,30 @@ public abstract class AbstractCoreTest extends BaseExoTestCase {
     end();
   }
   
-  @SuppressWarnings("unchecked")
   public <T> T getService(Class<T> clazz) {
     return (T) getContainer().getComponentInstanceOfType(clazz);
+  }
+  
+  private void checkAndCreateDefaultUsers() {
+    //
+    UserHandler handler = getService(OrganizationService.class).getUserHandler();
+    String[] users = new String[] { "root", "demo", "mary", "john", "ghost" };
+    try {
+      for (String userName : users) {
+        if (handler.findUserByName(userName) == null) {
+          User user = handler.createUserInstance(userName);
+          user.setPassword(userName);
+          user.setFirstName(userName);
+          user.setLastName(userName);
+          user.setEmail(userName + "@plf.com");
+          handler.createUser(user, true);
+        }
+        //
+        handler.setEnabled(userName, true, true);
+      }
+    } catch (Exception e) {
+      ExoLogger.getExoLogger(getClass()).debug(e);
+    }
   }
 
   // Fork from Junit 3.8.2

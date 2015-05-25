@@ -17,9 +17,11 @@
 package org.exoplatform.social.core.space;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -37,6 +39,7 @@ import org.exoplatform.application.registry.ApplicationCategory;
 import org.exoplatform.application.registry.ApplicationRegistryService;
 import org.exoplatform.commons.chromattic.ChromatticManager;
 import org.exoplatform.commons.chromattic.Synchronization;
+import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.container.ExoContainer;
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.PortalContainer;
@@ -79,6 +82,7 @@ import org.exoplatform.services.organization.MembershipType;
 import org.exoplatform.services.organization.OrganizationService;
 import org.exoplatform.services.organization.User;
 import org.exoplatform.services.organization.UserHandler;
+import org.exoplatform.services.organization.UserStatus;
 import org.exoplatform.services.security.ConversationState;
 import org.exoplatform.social.common.router.ExoRouter;
 import org.exoplatform.social.common.router.ExoRouter.Route;
@@ -1658,5 +1662,64 @@ public class SpaceUtils {
   public static UserACL getUserACL() {
     ExoContainer container = ExoContainerContext.getCurrentContainer();
     return (UserACL) container.getComponentInstanceOfType(UserACL.class);
+  }
+  
+  /**
+   * Checks if an specific user has membership in group group with input membership types.
+   * 
+   * @param remoteId User to be checked.
+   * @param groupId Group information.
+   * @param membershipTypes membership types to be checked.
+   * @return true if user has membership in group with input type.
+   */
+  public static boolean isUserHasMembershipTypesInGroup(String remoteId, String groupId, String... membershipTypes) {
+    try {
+      for (String membershipType : membershipTypes) {
+        Membership membership = getOrganizationService().getMembershipHandler()
+            .findMembershipByUserGroupAndType(remoteId, groupId, membershipType);  
+        if (membership != null) return true;
+      }
+    } catch (Exception e) {
+      return false;
+    }
+    return false;
+  }
+  
+  /**
+   * Get users that have membership with group by input membership types.
+   * 
+   * @param groupId Group information.
+   * @param membershipTypes membership types to be get.
+   * @return List of users that have membership with group is input membership type.
+   */
+  public static List<String> findMembershipUsersByGroupAndTypes(String groupId, String... membershipTypes) {
+    if (groupId == null || membershipTypes == null) return Collections.<String>emptyList();
+    
+    Set<String> userNames = new HashSet<String>();
+    try {
+      Group group = getOrganizationService().getGroupHandler().findGroupById(groupId);
+      ListAccess<Membership> membershipsListAccess = getOrganizationService()
+          .getMembershipHandler().findAllMembershipsByGroup(group);
+      
+      Membership[] memberships = membershipsListAccess.load(0, membershipsListAccess.getSize());
+      
+      List<String> types = Arrays.asList(membershipTypes);
+      
+      for (Membership membership : memberships) {
+        if (!types.contains(membership.getMembershipType())) continue;
+        
+        String userName = membership.getUserName();
+        User user = getOrganizationService().getUserHandler()
+            .findUserByName(userName, UserStatus.ENABLED);
+        
+        if (user != null) {
+          userNames.add(userName);
+        }
+      }
+    } catch (Exception e) {
+      return new ArrayList<String>();
+    }
+    
+    return new ArrayList<String>(userNames);
   }
 }

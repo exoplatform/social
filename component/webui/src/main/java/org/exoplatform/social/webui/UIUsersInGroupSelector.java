@@ -20,7 +20,6 @@ package org.exoplatform.social.webui;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
@@ -35,14 +34,14 @@ import org.exoplatform.webui.config.annotation.ComponentConfigs;
 import org.exoplatform.webui.config.annotation.EventConfig;
 import org.exoplatform.webui.core.UIApplication;
 import org.exoplatform.webui.core.UIBreadcumbs;
+import org.exoplatform.webui.core.UIBreadcumbs.LocalPath;
 import org.exoplatform.webui.core.UIComponent;
 import org.exoplatform.webui.core.UIContainer;
 import org.exoplatform.webui.core.UIPopupWindow;
 import org.exoplatform.webui.core.UITree;
-import org.exoplatform.webui.core.UIBreadcumbs.LocalPath;
 import org.exoplatform.webui.event.Event;
-import org.exoplatform.webui.event.EventListener;
 import org.exoplatform.webui.event.Event.Phase;
+import org.exoplatform.webui.event.EventListener;
 import org.exoplatform.webui.form.UIForm;
 
 @ComponentConfigs({
@@ -72,17 +71,15 @@ public class UIUsersInGroupSelector extends UIContainer {
   private Group selectGroup_;
   private String currentGroupId;
 
-  @SuppressWarnings("unchecked")
   public UIUsersInGroupSelector() throws Exception {
     UIBreadcumbs uiBreadcumbs = addChild(UIBreadcumbs.class,
         "BreadcumbGroupSelector", "BreadcumbGroupSelector");
     UITree tree = addChild(UIFilterableTree.class, "UITreeGroupSelector",
         "TreeGroupSelector");
     OrganizationService service = getApplicationComponent(OrganizationService.class);
-    Collection<?> sibblingsGroup = service.getGroupHandler().findGroups(
-        null);
+    Collection<Group> sibblingsGroup = service.getGroupHandler().findGroups(null);
 
-    tree.setSibbling((List) sibblingsGroup);
+    tree.setSibbling(sibblingsGroup);
     tree.setIcon("GroupAdminIcon");
     tree.setSelectedIcon("PortalIcon");
     tree.setBeanIdField("id");
@@ -111,12 +108,10 @@ public class UIUsersInGroupSelector extends UIContainer {
     String remoteUser = reqCtx.getRemoteUser();
     if (getCurrentGroup() == null)
       return null;
-    Collection<Object> groups = service.getGroupHandler().findGroups(
-        getCurrentGroup());
+    Collection<Group> groups = service.getGroupHandler().findGroups(getCurrentGroup());
     groups.remove(service.getGroupHandler().findGroupById(getCurrentGroupId()));
     if (groups.size() > 0) {
-      for (Object child : groups) {
-        Group childGroup = (Group) child;
+      for (Group childGroup : groups) {
         Membership membership = service.getMembershipHandler()
             .findMembershipByUserGroupAndType(remoteUser,
                 childGroup.getId(), MANAGER);
@@ -148,11 +143,11 @@ public class UIUsersInGroupSelector extends UIContainer {
     uiBreadcumb.setPath(getPath(null, groupId));
 
     UITree tree = getChild(UIFilterableTree.class);
-    Collection<?> sibblingGroup;
+    Collection<Group> sibblingGroup;
 
     if (groupId == null) {
       sibblingGroup = service.getGroupHandler().findGroups(null);
-      tree.setSibbling((List) sibblingGroup);
+      tree.setSibbling((List<Group>) sibblingGroup);
       tree.setChildren(null);
       tree.setSelected(null);
       selectGroup_ = null;
@@ -168,7 +163,7 @@ public class UIUsersInGroupSelector extends UIContainer {
       parentGroup = service.getGroupHandler()
           .findGroupById(parentGroupId);
 
-    Collection childrenGroup = service.getGroupHandler().findGroups(
+    Collection<Group> childrenGroup = service.getGroupHandler().findGroups(
         selectGroup_);
     Group currentAccessedGroup = service.getGroupHandler().findGroupById(getCurrentGroupId());
     childrenGroup.remove(currentAccessedGroup);
@@ -177,8 +172,8 @@ public class UIUsersInGroupSelector extends UIContainer {
 
     sibblingGroup.remove(currentAccessedGroup);
     
-    tree.setSibbling((List) sibblingGroup);
-    tree.setChildren((List) childrenGroup);
+    tree.setSibbling((List<Group>) sibblingGroup);
+    tree.setChildren((List<Group>) childrenGroup);
     tree.setSelected(selectGroup_);
     tree.setParentSelected(parentGroup);
     setupFilterableTree();

@@ -90,7 +90,7 @@ public class MentionsProcessor extends BaseActivityProcessorPlugin {
       IdentityManager identityManager = (IdentityManager) PortalContainer.getInstance()
           .getComponentInstanceOfType(IdentityManager.class);
       Identity identity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, replaceStr, false);
-      if (identity == null) {
+      if (identity == null || !identity.isEnable()) {
         continue;
       }
       
