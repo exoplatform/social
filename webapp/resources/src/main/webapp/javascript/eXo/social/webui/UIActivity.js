@@ -255,29 +255,31 @@ var UIActivity = {
       }
     }
   },
-	
-	replyByURL : function(activityId) {
-	  $(document).ready( function() {
-  	    var actionComment = '#CommentLink' + activityId;
-  	    var cmAction = $(actionComment);
-  	    if(cmAction.length > 0) {
-  	      cmAction.trigger('click');
-  	    }
-  	  }
-	  );
-	},
+
+  replyByURL : function(activityId) {
+    $(document).ready(function() {
+      var actionComment = '#CommentLink' + activityId;
+      var cmAction = $(actionComment);
+      if (cmAction.length > 0) {
+        setTimeout(function() {
+          cmAction.trigger('click');
+        }, 500);
+      }
+    });
+  },
 
 	setPageTitle : function(activityTitle) {
 		$(document).attr('title', 'Activity: ' + $('<div></div>').html(window.decodeURIComponent(activityTitle)).text());
 	},
-	
-	loadLikersByURL : function() {
-    $(document).ready( function() {
-      var contentBoxEl = $('#'+UIActivity.contentBoxId);
+  
+  loadLikersByURL : function() {
+    $(document).ready(function() {
+      var contentBoxEl = $('#' + UIActivity.contentBoxId);
       var listLiked = $(contentBoxEl).find('.listLiked');
-      listLiked.find('.btn').trigger('click');
-      }
-    );
+      setTimeout(function() {
+        listLiked.find('.btn').trigger('click');
+      }, 500);
+    });
   }
 };
 
