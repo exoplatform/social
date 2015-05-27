@@ -106,7 +106,7 @@ public class UserNotificationSetting {
       bundle = applicationContext.resolveBundle(locale);
     }
 
-    return index.ok(parameters());
+    return index.ok(parameters()).withCharset(Tools.UTF_8);
   }
 
   @Ajax
@@ -144,7 +144,7 @@ public class UserNotificationSetting {
       data.set("ok", "false");
       data.set("status", e.toString());
     }
-    return Response.ok(data.toString()).withMimeType("application/json");
+    return Response.ok(data.toString()).withMimeType("application/json").withCharset(Tools.UTF_8);
   }
   
   private List<String> getChannels() {
@@ -214,7 +214,7 @@ public class UserNotificationSetting {
       data.set("status", e.toString());
       return new Response.Error("Exception in switching stat of provider " + channelId + ". " + e.toString());
     }
-    return Response.ok(data.toString()).withMimeType("application/json");
+    return Response.ok(data.toString()).withMimeType("application/json").withCharset(Tools.UTF_8);
   }
   
   @Ajax
@@ -228,7 +228,7 @@ public class UserNotificationSetting {
       return new Response.Error("Error to save default notification user setting" + e.toString());
     }
     
-    return index.ok(parameters()).withMimeType("text/html");
+    return index.ok(parameters()).withMimeType("text/html").withCharset(Tools.UTF_8);
   }
   
   private String getRemoteUser() {
