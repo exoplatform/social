@@ -730,7 +730,16 @@ public class IdentityStorageImpl extends AbstractStorage implements IdentityStor
       throw new NodeNotFoundException("The node " + providerId + "/" + remoteId + " doesn't be found");
     }
 
-    IdentityEntity identityEntity = providerEntity.getIdentities().get(remoteId);
+    IdentityEntity identityEntity = null;
+    Map<String, IdentityEntity> listIdentities =  providerEntity.getIdentities();
+    Iterator keys = listIdentities.keySet().iterator();
+    String key;
+    while (keys.hasNext()) {
+      key = (String) keys.next();
+      if (key.equalsIgnoreCase(remoteId)) {
+        return listIdentities.get(key);
+      }
+    }
 
     if (identityEntity == null) {
       throw new NodeNotFoundException("The node " + providerId + "/" + remoteId + " doesn't be found");
