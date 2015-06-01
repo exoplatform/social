@@ -898,7 +898,7 @@ public class UISpaceMember extends UIForm {
     SpaceService spaceService = getSpaceService();
     Space space = spaceService.getSpaceById(spaceId);
     try {
-      if (spaceService.isMember(space, userId)) {
+      if (ArrayUtils.contains(space.getMembers(), userId)) {
         return true;
       }
     } catch (Exception e) {
