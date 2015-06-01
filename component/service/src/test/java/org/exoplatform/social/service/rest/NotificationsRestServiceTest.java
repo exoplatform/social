@@ -174,7 +174,7 @@ public class NotificationsRestServiceTest extends AbstractResourceTest {
     List<String> listPendings = Arrays.asList(space.getPendingUsers());
     assertTrue(listPendings.contains("root"));
     
-    startSessionAs("root");
+    startSessionAs("john");
     ContainerResponse response = service("GET", "/social/notifications/validateRequestToJoinSpace/" + space.getId() +"/" + rootIdentity.getRemoteId(), "", null, null);
     
     assertNotNull(response);

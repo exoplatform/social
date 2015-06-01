@@ -17,6 +17,7 @@
 package org.exoplatform.social.service.rest;
 
 import static org.exoplatform.social.service.rest.RestChecker.checkAuthenticatedRequest;
+import static org.exoplatform.social.service.rest.RestChecker.checkAuthenticatedUserPermission;
 
 import java.net.URI;
 
@@ -116,7 +117,8 @@ public class NotificationsRestService implements ResourceContainer {
   @Path("confirmInvitationToConnect/{senderId}/{receiverId}")
   public Response confirmInvitationToConnect(@PathParam("senderId") String senderId,
                                              @PathParam("receiverId") String receiverId) throws Exception {
-    checkAuthenticatedRequest();
+    //Check authenticated user
+    checkAuthenticatedUserPermission(receiverId);
     
     Identity sender = getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, senderId, true); 
     Identity receiver = getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, receiverId, true);
@@ -147,7 +149,8 @@ public class NotificationsRestService implements ResourceContainer {
   @Path("ignoreInvitationToConnect/{senderId}/{receiverId}")
   public Response ignoreInvitationToConnect(@PathParam("senderId") String senderId,
                                             @PathParam("receiverId") String receiverId) throws Exception {
-    checkAuthenticatedRequest();
+    //Check authenticated user
+    checkAuthenticatedUserPermission(receiverId);
 
     Identity sender = getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, senderId, true);
     Identity receiver = getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, receiverId, true);
@@ -178,7 +181,8 @@ public class NotificationsRestService implements ResourceContainer {
   @Path("acceptInvitationToJoinSpace/{spaceId}/{userId}")
   public Response acceptInvitationToJoinSpace(@PathParam("spaceId") String spaceId,
                                               @PathParam("userId") String userId) throws Exception {
-    checkAuthenticatedRequest();
+    //Check authenticated user
+    checkAuthenticatedUserPermission(userId);
 
     Space space = getSpaceService().getSpaceById(spaceId);
     if (space == null) {
@@ -208,7 +212,8 @@ public class NotificationsRestService implements ResourceContainer {
   @Path("ignoreInvitationToJoinSpace/{spaceId}/{userId}")
   public Response ignoreInvitationToJoinSpace(@PathParam("spaceId") String spaceId,
                                               @PathParam("userId") String userId) throws Exception {
-    checkAuthenticatedRequest();
+    //Check authenticated user
+    checkAuthenticatedUserPermission(userId);
 
     Space space = getSpaceService().getSpaceById(spaceId);
     if (space == null) {
@@ -252,6 +257,12 @@ public class NotificationsRestService implements ResourceContainer {
       throw new WebApplicationException(Response.Status.BAD_REQUEST);
     }
     
+    //check user permission
+    String authenticatedUser = ConversationState.getCurrent().getIdentity().getUserId();
+    if (! getSpaceService().isManager(space, authenticatedUser)) {
+      throw new WebApplicationException(Response.Status.UNAUTHORIZED);
+    }
+    
     StringBuilder sb = new StringBuilder().append("?feedbackMessage=");
     if (getSpaceService().isMember(space, userId)) {
       sb.append("SpaceRequestAlreadyMember&spaceId=").append(spaceId);
@@ -291,6 +302,12 @@ public class NotificationsRestService implements ResourceContainer {
     if (space == null) {
       throw new WebApplicationException(Response.Status.BAD_REQUEST);
     }
+    //check user permission
+    String authenticatedUser = ConversationState.getCurrent().getIdentity().getUserId();
+    if (! getSpaceService().isManager(space, authenticatedUser)) {
+      throw new WebApplicationException(Response.Status.UNAUTHORIZED);
+    }
+    
     String baseUrl = Util.getBaseUrl();
     String spaceHomeUrl = LinkProvider.getActivityUriForSpace(space.getPrettyName(), space.getGroupId().replace("/spaces/", ""));
     StringBuilder targetURL = new StringBuilder().append(baseUrl).append(spaceHomeUrl).append("/settings/members?feedbackMessage=");

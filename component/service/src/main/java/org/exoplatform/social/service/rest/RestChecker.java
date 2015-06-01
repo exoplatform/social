@@ -95,4 +95,14 @@ public final class RestChecker {
             ConversationState.getCurrent().getIdentity().getUserId() != null);
   }
 
+  public static void checkAuthenticatedUserPermission(String targetUser) {
+    try {
+      String authenticatedUser = ConversationState.getCurrent().getIdentity().getUserId();
+      if (! targetUser.equals(authenticatedUser)) {
+        throw new WebApplicationException(Response.Status.UNAUTHORIZED);
+      }
+    } catch (Exception e) {
+      throw new WebApplicationException(Response.Status.UNAUTHORIZED);
+    }
+  }
 }
