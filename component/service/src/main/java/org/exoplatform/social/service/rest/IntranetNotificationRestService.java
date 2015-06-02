@@ -30,6 +30,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
+import static org.exoplatform.social.service.rest.RestChecker.checkAuthenticatedUserPermission;
 import org.exoplatform.commons.api.notification.NotificationContext;
 import org.exoplatform.commons.api.notification.NotificationMessageUtils;
 import org.exoplatform.commons.api.notification.channel.AbstractChannel;
@@ -48,7 +49,6 @@ import org.exoplatform.commons.utils.CommonsUtils;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.services.rest.resource.ResourceContainer;
-import org.exoplatform.services.security.ConversationState;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.manager.IdentityManager;
@@ -317,13 +317,6 @@ public class IntranetNotificationRestService extends AbstractStorage implements 
     getWebNotificationStorage().remove(notificationId);
     //
     return Util.getResponse(getUserWebNotification(currentUserId), uriInfo, mediaType, Response.Status.OK);
-  }
-  
-  private void checkAuthenticatedUserPermission(String targetUser) {
-    String authenticatedUser = ConversationState.getCurrent().getIdentity().getUserId();
-    if (! targetUser.equals(authenticatedUser)) {
-      throw new WebApplicationException(Response.Status.UNAUTHORIZED);
-    }
   }
   
   /**

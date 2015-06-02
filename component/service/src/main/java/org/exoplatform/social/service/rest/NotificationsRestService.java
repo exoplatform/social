@@ -17,6 +17,7 @@
 package org.exoplatform.social.service.rest;
 
 import static org.exoplatform.social.service.rest.RestChecker.checkAuthenticatedRequest;
+import static org.exoplatform.social.service.rest.RestChecker.checkAuthenticatedUserPermission;
 
 import java.net.URI;
 
@@ -116,15 +117,15 @@ public class NotificationsRestService implements ResourceContainer {
   @Path("confirmInvitationToConnect/{senderId}/{receiverId}")
   public Response confirmInvitationToConnect(@PathParam("senderId") String senderId,
                                              @PathParam("receiverId") String receiverId) throws Exception {
-    checkAuthenticatedRequest();
-    
     Identity sender = getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, senderId, true); 
     Identity receiver = getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, receiverId, true);
     if (sender == null || receiver == null) {
       throw new WebApplicationException(Response.Status.BAD_REQUEST);
     }
-    getRelationshipManager().confirm(sender, receiver);
-  
+    String authenticatedUser = ConversationState.getCurrent().getIdentity().getUserId();
+    if (receiverId.equals(authenticatedUser)) {
+      getRelationshipManager().confirm(sender, receiver);
+    }
     String targetURL = Util.getBaseUrl() + LinkProvider.getUserActivityUri(sender.getRemoteId());
     
     // redirect to target page
@@ -147,14 +148,15 @@ public class NotificationsRestService implements ResourceContainer {
   @Path("ignoreInvitationToConnect/{senderId}/{receiverId}")
   public Response ignoreInvitationToConnect(@PathParam("senderId") String senderId,
                                             @PathParam("receiverId") String receiverId) throws Exception {
-    checkAuthenticatedRequest();
-
     Identity sender = getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, senderId, true);
     Identity receiver = getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, receiverId, true);
     if (sender == null || receiver == null) {
       throw new WebApplicationException(Response.Status.BAD_REQUEST);
     }
-    getRelationshipManager().deny(sender, receiver);
+    String authenticatedUser = ConversationState.getCurrent().getIdentity().getUserId();
+    if (receiverId.equals(authenticatedUser)) {
+      getRelationshipManager().deny(sender, receiver);
+    }
 
     //redirect to the requesters list and display a feedback message
     String targetURL = Util.getBaseUrl() + LinkProvider.getRedirectUri("connexions/receivedInvitations/" + receiver.getRemoteId() + "?feedbackMessage=ConnectionRequestRefuse&userName=" + sender.getRemoteId());
@@ -178,14 +180,14 @@ public class NotificationsRestService implements ResourceContainer {
   @Path("acceptInvitationToJoinSpace/{spaceId}/{userId}")
   public Response acceptInvitationToJoinSpace(@PathParam("spaceId") String spaceId,
                                               @PathParam("userId") String userId) throws Exception {
-    checkAuthenticatedRequest();
-
     Space space = getSpaceService().getSpaceById(spaceId);
     if (space == null) {
       throw new WebApplicationException(Response.Status.BAD_REQUEST);
     }
-    getSpaceService().addMember(space, userId);
-
+    String authenticatedUser = ConversationState.getCurrent().getIdentity().getUserId();
+    if (userId.equals(authenticatedUser)) {
+      getSpaceService().addMember(space, userId);
+    }
     String targetURL = Util.getBaseUrl() + LinkProvider.getActivityUriForSpace(space.getPrettyName(), space.getGroupId().replace("/spaces/", ""));
 
     // redirect to target page
@@ -208,19 +210,20 @@ public class NotificationsRestService implements ResourceContainer {
   @Path("ignoreInvitationToJoinSpace/{spaceId}/{userId}")
   public Response ignoreInvitationToJoinSpace(@PathParam("spaceId") String spaceId,
                                               @PathParam("userId") String userId) throws Exception {
-    checkAuthenticatedRequest();
-
     Space space = getSpaceService().getSpaceById(spaceId);
     if (space == null) {
       throw new WebApplicationException(Response.Status.BAD_REQUEST);
     }
     String targetURL = Util.getBaseUrl();
-    if (getSpaceService().isMember(space, userId)) {
-      targetURL = targetURL + LinkProvider.getRedirectUri("all-spaces?feedbackMessage=SpaceInvitationAlreadyMember&spaceId=" + spaceId);
-    } else {
-      getSpaceService().removeInvitedUser(space, userId);
-      //redirect to all spaces and display a feedback message
-      targetURL = targetURL + LinkProvider.getRedirectUri("all-spaces?feedbackMessage=SpaceInvitationRefuse&spaceId=" + spaceId);
+    String authenticatedUser = ConversationState.getCurrent().getIdentity().getUserId();
+    if (userId.equals(authenticatedUser)) {
+      if (getSpaceService().isMember(space, userId)) {
+        targetURL = targetURL + LinkProvider.getRedirectUri("all-spaces?feedbackMessage=SpaceInvitationAlreadyMember&spaceId=" + spaceId);
+      } else {
+        getSpaceService().removeInvitedUser(space, userId);
+        //redirect to all spaces and display a feedback message
+        targetURL = targetURL + LinkProvider.getRedirectUri("all-spaces?feedbackMessage=SpaceInvitationRefuse&spaceId=" + spaceId);
+      }
     }
     
     // redirect to target page
@@ -250,6 +253,12 @@ public class NotificationsRestService implements ResourceContainer {
     
     if (space == null) {
       throw new WebApplicationException(Response.Status.BAD_REQUEST);
+    }
+    
+    //check user permission
+    String authenticatedUser = ConversationState.getCurrent().getIdentity().getUserId();
+    if (! getSpaceService().isManager(space, authenticatedUser)) {
+      throw new WebApplicationException(Response.Status.UNAUTHORIZED);
     }
     
     StringBuilder sb = new StringBuilder().append("?feedbackMessage=");
@@ -291,6 +300,12 @@ public class NotificationsRestService implements ResourceContainer {
     if (space == null) {
       throw new WebApplicationException(Response.Status.BAD_REQUEST);
     }
+    //check user permission
+    String authenticatedUser = ConversationState.getCurrent().getIdentity().getUserId();
+    if (! getSpaceService().isManager(space, authenticatedUser)) {
+      throw new WebApplicationException(Response.Status.UNAUTHORIZED);
+    }
+    
     String baseUrl = Util.getBaseUrl();
     String spaceHomeUrl = LinkProvider.getActivityUriForSpace(space.getPrettyName(), space.getGroupId().replace("/spaces/", ""));
     StringBuilder targetURL = new StringBuilder().append(baseUrl).append(spaceHomeUrl).append("/settings/members?feedbackMessage=");
