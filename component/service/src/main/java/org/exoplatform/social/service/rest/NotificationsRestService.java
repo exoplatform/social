@@ -20,6 +20,8 @@ import static org.exoplatform.social.service.rest.RestChecker.checkAuthenticated
 import static org.exoplatform.social.service.rest.RestChecker.checkAuthenticatedUserPermission;
 
 import java.net.URI;
+import java.util.Arrays;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.GET;
@@ -31,6 +33,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.exoplatform.container.ExoContainer;
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.PortalContainer;
@@ -41,6 +44,7 @@ import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvide
 import org.exoplatform.social.core.manager.ActivityManager;
 import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.manager.RelationshipManager;
+import org.exoplatform.social.core.relationship.model.Relationship;
 import org.exoplatform.social.core.service.LinkProvider;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
@@ -122,8 +126,7 @@ public class NotificationsRestService implements ResourceContainer {
     if (sender == null || receiver == null) {
       throw new WebApplicationException(Response.Status.BAD_REQUEST);
     }
-    String authenticatedUser = ConversationState.getCurrent().getIdentity().getUserId();
-    if (receiverId.equals(authenticatedUser)) {
+    if (isAcceptedUser(sender, receiver)) {
       getRelationshipManager().confirm(sender, receiver);
     }
     String targetURL = Util.getBaseUrl() + LinkProvider.getUserActivityUri(sender.getRemoteId());
@@ -153,8 +156,7 @@ public class NotificationsRestService implements ResourceContainer {
     if (sender == null || receiver == null) {
       throw new WebApplicationException(Response.Status.BAD_REQUEST);
     }
-    String authenticatedUser = ConversationState.getCurrent().getIdentity().getUserId();
-    if (receiverId.equals(authenticatedUser)) {
+    if (isAcceptedUser(sender, receiver)) {
       getRelationshipManager().deny(sender, receiver);
     }
 
@@ -184,8 +186,7 @@ public class NotificationsRestService implements ResourceContainer {
     if (space == null) {
       throw new WebApplicationException(Response.Status.BAD_REQUEST);
     }
-    String authenticatedUser = ConversationState.getCurrent().getIdentity().getUserId();
-    if (userId.equals(authenticatedUser)) {
+    if (isAcceptedUser(userId, space.getInvitedUsers())) {
       getSpaceService().addMember(space, userId);
     }
     String targetURL = Util.getBaseUrl() + LinkProvider.getActivityUriForSpace(space.getPrettyName(), space.getGroupId().replace("/spaces/", ""));
@@ -215,8 +216,7 @@ public class NotificationsRestService implements ResourceContainer {
       throw new WebApplicationException(Response.Status.BAD_REQUEST);
     }
     String targetURL = Util.getBaseUrl();
-    String authenticatedUser = ConversationState.getCurrent().getIdentity().getUserId();
-    if (userId.equals(authenticatedUser)) {
+    if (isAcceptedUser(userId, space.getInvitedUsers())) {
       if (getSpaceService().isMember(space, userId)) {
         targetURL = targetURL + LinkProvider.getRedirectUri("all-spaces?feedbackMessage=SpaceInvitationAlreadyMember&spaceId=" + spaceId);
       } else {
@@ -498,5 +498,18 @@ public class NotificationsRestService implements ResourceContainer {
       throw new WebApplicationException(Status.INTERNAL_SERVER_ERROR);
     }
     return exoContainer;
+  }
+  
+  private boolean isAcceptedUser(String userId, String...invitedUsers) {
+    if (userId == null) return false;
+    String authenticatedUser = ConversationState.getCurrent().getIdentity().getUserId();
+    List<String> invitedUserList = Arrays.asList(invitedUsers);
+    return userId.equals(authenticatedUser) && invitedUserList.contains(authenticatedUser);
+  }
+  
+  private boolean isAcceptedUser(Identity sender, Identity receiver) {
+    String authenticatedUser = ConversationState.getCurrent().getIdentity().getUserId();
+    return receiver.getRemoteId().equals(authenticatedUser) 
+        && Relationship.Type.PENDING.equals(getRelationshipManager().getStatus(sender, receiver));
   }
 }
