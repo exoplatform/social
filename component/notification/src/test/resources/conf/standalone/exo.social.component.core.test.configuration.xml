@@ -123,7 +123,7 @@
     <key>org.exoplatform.social.core.application.RelationshipPublisher</key>
     <type>org.exoplatform.social.core.application.RelationshipPublisher</type>
   </component>
-  
+
   <component>
     <key>org.exoplatform.social.notification.impl.RelationshipNotificationImpl</key>
     <type>org.exoplatform.social.notification.impl.RelationshipNotificationImpl</type>
@@ -172,7 +172,7 @@
       </value-param>
     </init-params>
   </component>
-  
+
   <!--
     Activity Stream storage components.
   -->
@@ -184,7 +184,7 @@
     <key>org.exoplatform.social.core.storage.impl.ActivityStreamStorageImpl</key>
     <type>org.exoplatform.social.core.storage.synchronization.SynchronizedActivityStreamStorage</type>
   </component>
-
+  
   <!--
     Activity storage components.
   -->
@@ -440,6 +440,12 @@
       </component-plugin>
 
       <component-plugin>
+        <name>SpaceActivityPublisher</name>
+        <set-method>addSpaceListener</set-method>
+        <type>org.exoplatform.social.core.application.SpaceActivityPublisher</type>
+      </component-plugin>
+
+      <component-plugin>
         <name>portlets.prefs.required</name>
         <set-method>setPortletsPrefsRequired</set-method>
         <type>org.exoplatform.social.core.application.PortletPreferenceRequiredPlugin</type>
@@ -509,6 +515,15 @@
           <value>1</value>
         </value-param>
       </init-params>
+    </component-plugin>
+  </external-component-plugins>
+
+  <external-component-plugins>
+    <target-component>org.exoplatform.social.core.manager.IdentityManager</target-component>
+    <component-plugin>
+      <name>ProfileUpdatesPublisher</name>
+      <set-method>addProfileListener</set-method>
+      <type>org.exoplatform.social.core.application.ProfileUpdatesPublisher</type>
     </component-plugin>
   </external-component-plugins>
 
@@ -648,17 +663,20 @@
   -->
   <external-component-plugins>
     <target-component>org.exoplatform.services.jcr.RepositoryService</target-component>
-    <component-plugin>
- 		  <name>add.namespaces</name>
- 		  <set-method>addPlugin</set-method>
- 		  <type>org.exoplatform.services.jcr.impl.AddNamespacesPlugin</type>
- 		  <init-params>
- 		    <properties-param>
- 		      <name>namespaces</name>
+ 		<component-plugin>
+			<name>add.namespaces</name>
+			<set-method>addPlugin</set-method>
+			<type>org.exoplatform.services.jcr.impl.AddNamespacesPlugin</type>
+			<init-params>
+				<properties-param>
+					<name>namespaces</name>
           <property name="soc" value="http://www.social.org/jcr/soc/1.0/"/>
-        </properties-param>
-      </init-params>
- 		</component-plugin>
+					<property name="stg" value="http://www.gatein.org/jcr/stg/1.0/" />
+					<property name="ntf" value="http://www.gatein.org/jcr/ntf/1.0/" />
+				</properties-param>
+			</init-params>
+		</component-plugin>
+		
     <component-plugin>
       <name>add.social.nodeType</name>
       <set-method>addPlugin</set-method>
@@ -667,6 +685,9 @@
         <values-param>
           <name>autoCreatedInNewRepository</name>
           <description>Node types configuration file</description>
+          <value>jar:/conf/notification-nodetypes.xml</value>
+          <value>jar:/conf/settings-nodetypes.xml</value>
+          <value>jar:/conf/portal/activity-extension-nodetypes.xml</value>
           <value>jar:/conf/portal/chromattic-nodetypes.xml</value>
           <value>jar:/conf/standalone/nodetypes-override-init.xml</value>
         </values-param>
@@ -694,6 +715,7 @@
           <value>org.exoplatform.social.core.chromattic.entity.ProviderRootEntity</value>
           <value>org.exoplatform.social.core.chromattic.entity.ProviderEntity</value>
 
+          <value>org.exoplatform.social.core.chromattic.entity.DisabledEntity</value>
           <value>org.exoplatform.social.core.chromattic.entity.IdentityEntity</value>
           <value>org.exoplatform.social.core.chromattic.entity.ProfileEntity</value>
           <value>org.exoplatform.social.core.chromattic.entity.ActivityProfileEntity</value>

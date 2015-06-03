@@ -125,6 +125,9 @@
       </childNodeDefinition>
     </childNodeDefinitions>
   </nodeType>
+  <!-- Node type generated for the class org.exoplatform.social.core.chromattic.entity.DisabledEntity -->
+  <nodeType name="soc:isDisabled" isMixin="true" hasOrderableChildNodes="false">
+  </nodeType>
   <!-- Node type generated for the class org.exoplatform.social.core.chromattic.entity.StreamsEntity -->
   <nodeType name="soc:streamsdefinition" isMixin="false" hasOrderableChildNodes="false">
     <supertypes>

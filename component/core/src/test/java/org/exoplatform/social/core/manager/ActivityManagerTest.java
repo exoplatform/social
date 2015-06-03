@@ -1583,6 +1583,122 @@ public class ActivityManagerTest extends AbstractCoreTest {
   }
 
   /**
+   *  Test posting activities in case of user is disabled.
+   *  
+   *  Activity streams of disabled users should not receive any new activity 
+   *  until the user account is re-enabled.
+   *  - john and demo post some activities on each user's stream.
+   *  - make connection between demo and john and check activities count.
+   *  - disable demo and check the number of activities of john.
+   *  - demo and john post activities on demo (disabled) and check if posting successfully or not.
+   *  - re-enable demo and post activities on demo stream to check if posting successfully or not.
+   */
+  public void testActivitiesOfDisableUsers() throws Exception {
+    this.populateActivityMass(demoIdentity, 3);
+    this.populateActivityMass(johnIdentity, 3);
+    
+    RealtimeListAccess<ExoSocialActivity> demoActivities = activityManager.getActivityFeedWithListAccess(demoIdentity);
+    assertEquals(3, demoActivities.getSize());
+    
+    RealtimeListAccess<ExoSocialActivity> johnActivities = activityManager.getActivityFeedWithListAccess(johnIdentity);
+    assertEquals(3, johnActivities.getSize());
+    
+    // john post activity with mention case.
+    createActivityHasMention(johnIdentity, demoIdentity);
+    
+    demoActivities = activityManager.getActivityFeedWithListAccess(demoIdentity);
+    assertEquals(4, demoActivities.getSize());
+    
+    // demo connect to john
+    Relationship demoJohnConnection = relationshipManager.inviteToConnect(demoIdentity, johnIdentity);
+    relationshipManager.confirm(demoIdentity, johnIdentity);
+    
+    demoActivities = activityManager.getActivityFeedWithListAccess(demoIdentity);
+    assertEquals(7, demoActivities.getSize());
+    
+    johnActivities = activityManager.getActivityFeedWithListAccess(johnIdentity);
+    assertEquals(7, johnActivities.getSize());
+    
+    // john post activity.
+    createActivity(johnIdentity);
+    
+    demoActivities = activityManager.getActivityFeedWithListAccess(demoIdentity);
+    assertEquals(8, demoActivities.getSize());
+    johnActivities = activityManager.getActivityFeedWithListAccess(johnIdentity);
+    assertEquals(8, johnActivities.getSize());
+    
+    // disable demo
+    identityManager.processEnabledIdentity(demoIdentity.getRemoteId(), false);
+    demoIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, demoIdentity.getRemoteId(), true);
+    
+    // john get all activities. existing activities of demo still included.
+    johnActivities = activityManager.getActivityFeedWithListAccess(johnIdentity);
+    assertEquals(8, johnActivities.getSize());
+    
+    // john post activity, demo is in disabling status so activity reference is not created.
+    createActivity(johnIdentity);
+    
+    // john post activity with mention case, demo is in disabling status so activity reference is not created.
+    createActivityHasMention(johnIdentity, demoIdentity);
+    
+    //
+    demoActivities = activityManager.getActivityFeedWithListAccess(demoIdentity);
+    assertEquals(8, demoActivities.getSize());
+    johnActivities = activityManager.getActivityFeedWithListAccess(johnIdentity);
+    assertEquals(10, johnActivities.getSize());
+    
+    // check if john can post on demo stream
+    ExoSocialActivity johnPostOnDemoActivity = new ExoSocialActivityImpl();
+
+    johnPostOnDemoActivity.setTitle("john post on demo's stream.");
+    johnPostOnDemoActivity.setUserId(johnIdentity.getId());
+    activityManager.saveActivityNoReturn(demoIdentity, johnPostOnDemoActivity);
+    
+    demoActivities = activityManager.getActivityFeedWithListAccess(demoIdentity);
+    assertEquals(8, demoActivities.getSize());
+    johnActivities = activityManager.getActivityFeedWithListAccess(johnIdentity);
+    assertEquals(10, johnActivities.getSize());
+    
+    // check if demo still can post activity on his stream
+    ExoSocialActivity activity = new ExoSocialActivityImpl();
+    activity.setTitle("demo post on his stream.");
+    activity.setUserId(demoIdentity.getId());
+    activityManager.saveActivityNoReturn(demoIdentity, activity);
+    
+    demoActivities = activityManager.getActivityFeedWithListAccess(demoIdentity);
+    assertEquals(8, demoActivities.getSize());
+    johnActivities = activityManager.getActivityFeedWithListAccess(johnIdentity);
+    assertEquals(10, johnActivities.getSize());
+    
+    // re-enable user
+    identityManager.processEnabledIdentity(demoIdentity.getRemoteId(), true);
+    demoIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, demoIdentity.getRemoteId(), true);
+    
+    demoActivities = activityManager.getActivityFeedWithListAccess(demoIdentity);
+    assertEquals(8, demoActivities.getSize());
+    johnActivities = activityManager.getActivityFeedWithListAccess(johnIdentity);
+    assertEquals(10, johnActivities.getSize());
+    
+    // demo post on his stream
+    createActivity(demoIdentity);
+    
+    demoActivities = activityManager.getActivityFeedWithListAccess(demoIdentity);
+    assertEquals(9, demoActivities.getSize());
+    johnActivities = activityManager.getActivityFeedWithListAccess(johnIdentity);
+    assertEquals(11, johnActivities.getSize());
+    
+    // john post on demo stream
+    createActivityToOtherIdentity(johnIdentity, demoIdentity, 1);
+    demoActivities = activityManager.getActivityFeedWithListAccess(demoIdentity);
+    assertEquals(10, demoActivities.getSize());
+    johnActivities = activityManager.getActivityFeedWithListAccess(johnIdentity);
+    assertEquals(12, johnActivities.getSize());
+    
+    //
+    relationshipManager.delete(demoJohnConnection);
+  }
+  
+  /**
    *
    */
   /*public void testAddProviders() {
@@ -1611,6 +1727,18 @@ public class ActivityManagerTest extends AbstractCoreTest {
   }
 */
   
+  private void createActivityHasMention(Identity poster, Identity mentionedUser) {
+    ExoSocialActivity activity = new ExoSocialActivityImpl();
+    activity.setTitle("Hi @" + mentionedUser.getRemoteId());
+    activity.setUserId(poster.getId());
+    try {
+      activityManager.saveActivityNoReturn(poster, activity);
+      tearDownActivityList.add(activity);
+    } catch (Exception e) {
+      LOG.error("can not save activity.", e);
+    }
+  }
+
   /**
    * Populates activity.
    * 
@@ -1628,6 +1756,23 @@ public class ActivityManagerTest extends AbstractCoreTest {
       } catch (Exception e) {
         LOG.error("can not save activity.", e);
       }
+    }
+  }
+  
+  /**
+   * Creates activity on user's stream.
+   * 
+   * @param user
+   */
+  private void createActivity(Identity user) {
+    ExoSocialActivity activity = new ExoSocialActivityImpl();
+    activity.setTitle("title " + System.currentTimeMillis());
+    activity.setUserId(user.getId());
+    try {
+      activityManager.saveActivityNoReturn(user, activity);
+      tearDownActivityList.add(activity);
+    } catch (Exception e) {
+      LOG.error("can not save activity.", e);
     }
   }
   

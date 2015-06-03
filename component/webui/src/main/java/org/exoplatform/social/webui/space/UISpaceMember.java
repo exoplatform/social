@@ -17,30 +17,33 @@
 package org.exoplatform.social.webui.space;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
+import org.exoplatform.commons.utils.CommonsUtils;
 import org.exoplatform.commons.utils.LazyPageList;
 import org.exoplatform.commons.utils.ListAccess;
-import org.exoplatform.commons.utils.PageList;
 import org.exoplatform.container.ExoContainer;
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.portal.application.PortalRequestContext;
 import org.exoplatform.portal.config.UserACL;
 import org.exoplatform.portal.webui.util.Util;
-import org.exoplatform.social.webui.UIUsersInGroupSelector;
-import org.exoplatform.social.webui.Utils;
+import org.exoplatform.services.organization.MembershipTypeHandler;
 import org.exoplatform.services.organization.OrganizationService;
 import org.exoplatform.services.organization.User;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.manager.IdentityManager;
+import org.exoplatform.social.core.space.SpaceUtils;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
 import org.exoplatform.social.webui.StringListAccess;
+import org.exoplatform.social.webui.UIUsersInGroupSelector;
+import org.exoplatform.social.webui.Utils;
 import org.exoplatform.web.application.ApplicationMessage;
 import org.exoplatform.web.application.RequestContext;
 import org.exoplatform.webui.application.WebuiRequestContext;
@@ -56,7 +59,6 @@ import org.exoplatform.webui.event.Event.Phase;
 import org.exoplatform.webui.event.EventListener;
 import org.exoplatform.webui.form.UIForm;
 import org.exoplatform.webui.form.UIFormStringInput;
-import org.exoplatform.webui.form.validator.ExpressionValidator;
 import org.exoplatform.webui.form.validator.MandatoryValidator;
 import org.exoplatform.webui.organization.account.UIUserSelector;
 
@@ -265,20 +267,20 @@ public class UISpaceMember extends UIForm {
    */
   @SuppressWarnings("unchecked")
   public List<String> getPendingUsers() throws Exception {
-    List<String> pendingUsersList = new ArrayList<String>();
     SpaceService spaceService = getSpaceService();
     Space space = spaceService.getSpaceById(spaceId);
     if (space == null) {
       return new ArrayList<String>(0);
     }
-    String[] pendingUsers = space.getPendingUsers();
-    if (pendingUsers != null) {
-      pendingUsersList.addAll(Arrays.asList(pendingUsers));
+    
+    List<String> pendingUsers = filterDisabledUsers(space.getPendingUsers());
+    if (pendingUsers.size() == 0) {
+      return pendingUsers;
     }
-
+    
     int currentPage = iteratorPendingUsers.getCurrentPage();
     LazyPageList<String> pageList = new LazyPageList<String>(
-                                      new StringListAccess(pendingUsersList),
+                                      new StringListAccess(pendingUsers),
                                       ITEMS_PER_PAGE);
     iteratorPendingUsers.setPageList(pageList);
     int pageCount = iteratorPendingUsers.getAvailablePage();
@@ -298,20 +300,20 @@ public class UISpaceMember extends UIForm {
    */
   @SuppressWarnings("unchecked")
   public List<String> getInvitedUsers() throws Exception {
-    List<String> invitedUsersList = new ArrayList<String>();
     SpaceService spaceService = getSpaceService();
     Space space = spaceService.getSpaceById(spaceId);
     if (space == null) {
       return new ArrayList<String>(0);
     }
-    String[] invitedUsers = space.getInvitedUsers();
-    if (invitedUsers != null) {
-      invitedUsersList.addAll(Arrays.asList(invitedUsers));
+    
+    List<String> invitedUsers = filterDisabledUsers(space.getInvitedUsers());
+    if (invitedUsers.size() == 0) {
+      return invitedUsers;
     }
-
+    
     int currentPage = iteratorInvitedUsers.getCurrentPage();
     LazyPageList<String> pageList = new LazyPageList<String>(
-                                      new StringListAccess(invitedUsersList),
+                                      new StringListAccess(invitedUsers),
                                       ITEMS_PER_PAGE);
     iteratorInvitedUsers.setPageList(pageList);
     int pageCount = iteratorInvitedUsers.getAvailablePage();
@@ -337,20 +339,44 @@ public class UISpaceMember extends UIForm {
     if (space == null) {
       return new ArrayList<String>(0);
     }
-    int currentPage = iteratorExistingUsers.getCurrentPage();
-    if (space.getMembers() != null) {
-      LazyPageList<String> pageList = new LazyPageList<String>(
-          new StringListAccess(Arrays.asList(space.getMembers())),
-          ITEMS_PER_PAGE);
-      iteratorExistingUsers.setPageList(pageList);
-      if (this.isNewSearch()) {
-        iteratorExistingUsers.setCurrentPage(FIRST_PAGE);
-      } else {
-        iteratorExistingUsers.setCurrentPage(currentPage);
-      }
-      this.setNewSearch(false);
+    
+    List<String> memberUsers = filterDisabledUsers(space.getMembers());
+    if (memberUsers.size() == 0) {
+      return memberUsers;
     }
+    
+    int currentPage = iteratorExistingUsers.getCurrentPage();
+    Set<String> users = new HashSet<String>(memberUsers);
+    users.addAll(SpaceUtils.findMembershipUsersByGroupAndTypes(space.getGroupId(), MembershipTypeHandler.ANY_MEMBERSHIP_TYPE));
+    
+    LazyPageList<String> pageList = new LazyPageList<String>(new StringListAccess(new ArrayList<String>(users)), ITEMS_PER_PAGE);
+    iteratorExistingUsers.setPageList(pageList);
+    if (this.isNewSearch()) {
+      iteratorExistingUsers.setCurrentPage(FIRST_PAGE);
+    } else {
+      iteratorExistingUsers.setCurrentPage(currentPage);
+    }
+    this.setNewSearch(false);
     return iteratorExistingUsers.getCurrentPageData();
+  }
+  
+  private List<String> filterDisabledUsers(String[] users) {
+    if (users == null || users.length == 0) {
+      return new ArrayList<String>();
+    }
+    List<String> result = new ArrayList<String>();
+    OrganizationService orgService = CommonsUtils.getService(OrganizationService.class);
+    for (String user : users) {
+      try {
+        User u = orgService.getUserHandler().findUserByName(user);
+        if (u.isEnabled()) {
+          result.add(user);
+        }
+      } catch (Exception e) {
+        
+      }
+    }
+    return result;
   }
 
   /**
@@ -417,6 +443,18 @@ public class UISpaceMember extends UIForm {
     return spaceService.isManager(space, userName);
   }
 
+  /**
+   * Checks if user has wild card membership.
+   * 
+   * @param userId target user to check.
+   * @return true if user has wild card membership in space.
+   */
+  protected boolean hasWildCardMembership(String userId) {
+    SpaceService spaceService = getSpaceService();
+    Space space = spaceService.getSpaceById(spaceId);
+    return SpaceUtils.isUserHasMembershipTypesInGroup(userId, space.getGroupId(), MembershipTypeHandler.ANY_MEMBERSHIP_TYPE);
+  }
+  
   public boolean isCurrentUser(String userName) throws Exception {
     return (getRemoteUser().equals(userName));
   }
@@ -856,11 +894,11 @@ public class UISpaceMember extends UIForm {
     }
   }
   
-  private boolean isMember(String userId) {
+  protected boolean isMember(String userId) {
     SpaceService spaceService = getSpaceService();
     Space space = spaceService.getSpaceById(spaceId);
     try {
-      if (spaceService.isMember(space, userId)) {
+      if (ArrayUtils.contains(space.getMembers(), userId)) {
         return true;
       }
     } catch (Exception e) {

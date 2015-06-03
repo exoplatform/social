@@ -16,6 +16,7 @@
  */
 package org.exoplatform.social.extras.feedmash;
 
+import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
@@ -106,6 +107,7 @@ public abstract class AbstractFeedmashJob implements Job {
       
       InputStream is = urlConnection.getInputStream();
       SyndFeed feed = input.build(new XmlReader(is));
+      
       List<SyndEntryImpl> entries = feed.getEntries();
 
       // process what we are interested in

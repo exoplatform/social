@@ -34,6 +34,8 @@ public class IdentityData implements CacheData<Identity> {
   private final String remoteId;
 
   private final boolean isDeleted;
+  
+  private final boolean isEnabled;
 
   public IdentityData(final Identity identity) {
     if (identity != null) {
@@ -41,12 +43,14 @@ public class IdentityData implements CacheData<Identity> {
       this.providerId = identity.getProviderId();
       this.remoteId = identity.getRemoteId();
       this.isDeleted = identity.isDeleted();
+      this.isEnabled = identity.isEnable();
     }
     else {
       this.id = null;
       this.providerId = null;
       this.remoteId = null;
       this.isDeleted = false;
+      this.isEnabled = true;
     }
   }
 
@@ -72,6 +76,7 @@ public class IdentityData implements CacheData<Identity> {
     identity.setProviderId(providerId);
     identity.setRemoteId(remoteId);
     identity.setDeleted(isDeleted);
+    identity.setEnable(isEnabled);
     return identity;
   }
 

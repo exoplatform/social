@@ -69,7 +69,7 @@ public class CachedIdentityStorageTestCase extends AbstractCoreTest {
     super.tearDown();
   }
 
-  @MaxQueryNumber(50)
+  @MaxQueryNumber(69)
   public void testSaveIdentity() throws Exception {
 
     assertEquals(0, cacheService.getIdentityCache().getCacheSize());
@@ -82,7 +82,7 @@ public class CachedIdentityStorageTestCase extends AbstractCoreTest {
 
   }
 
-  @MaxQueryNumber(60)
+  @MaxQueryNumber(72)
   public void testFindIdentityById() throws Exception {
 
     assertEquals(0, cacheService.getIdentityCache().getCacheSize());
@@ -99,7 +99,7 @@ public class CachedIdentityStorageTestCase extends AbstractCoreTest {
 
   }
 
-  @MaxQueryNumber(60)
+  @MaxQueryNumber(72)
   public void testFindIdentity() throws Exception {
 
     assertEquals(0, cacheService.getIdentityCache().getCacheSize());
@@ -119,7 +119,7 @@ public class CachedIdentityStorageTestCase extends AbstractCoreTest {
 
   }
 
-  @MaxQueryNumber(248)
+  @MaxQueryNumber(372)
   public void testRemoveIdentity() throws Exception {
 
     assertEquals(0, cacheService.getIdentityCache().getCacheSize());
@@ -138,7 +138,7 @@ public class CachedIdentityStorageTestCase extends AbstractCoreTest {
 
   }
 
-  @MaxQueryNumber(60)
+  @MaxQueryNumber(81)
   public void testUpdateIdentity() throws Exception {
 
     assertEquals(0, cacheService.getIdentityCache().getCacheSize());
@@ -152,7 +152,7 @@ public class CachedIdentityStorageTestCase extends AbstractCoreTest {
 
   }
 
-  @MaxQueryNumber(60)
+  @MaxQueryNumber(90)
   public void testLoadProfile() throws Exception {
 
     assertEquals(0, cacheService.getIdentityCache().getCacheSize());
@@ -169,7 +169,7 @@ public class CachedIdentityStorageTestCase extends AbstractCoreTest {
 
   }
 
-  @MaxQueryNumber(60)
+  @MaxQueryNumber(90)
   public void testSaveProfile() throws Exception {
 
     assertEquals(0, cacheService.getIdentityCache().getCacheSize());
@@ -186,7 +186,7 @@ public class CachedIdentityStorageTestCase extends AbstractCoreTest {
 
   }
 
-  @MaxQueryNumber(60)
+  @MaxQueryNumber(90)
   public void testUpdateProfile() throws Exception {
 
     assertEquals(0, cacheService.getIdentityCache().getCacheSize());
@@ -203,7 +203,7 @@ public class CachedIdentityStorageTestCase extends AbstractCoreTest {
 
   }
 
-  @MaxQueryNumber(180)
+  @MaxQueryNumber(258)
   public void testGetIdentitiesByFilterCount() throws Exception {
 
     assertEquals(0, cacheService.getIdentityCache().getCacheSize());
@@ -231,7 +231,7 @@ public class CachedIdentityStorageTestCase extends AbstractCoreTest {
 
   }
 
-  @MaxQueryNumber(100)
+  @MaxQueryNumber(138)
   public void testGetIdentitiesByFilter() throws Exception {
 
     assertEquals(0, cacheService.getIdentityCache().getCacheSize());
@@ -252,7 +252,7 @@ public class CachedIdentityStorageTestCase extends AbstractCoreTest {
 
   }
 
-  @MaxQueryNumber(60)
+  @MaxQueryNumber(84)
   public void testGetIdentitiesByFirstCharacterOfNameCount() throws Exception {
 
     assertEquals(0, cacheService.getIdentityCache().getCacheSize());
@@ -267,7 +267,7 @@ public class CachedIdentityStorageTestCase extends AbstractCoreTest {
 
   }
 
-  @MaxQueryNumber(60)
+  @MaxQueryNumber(84)
   public void testGetIdentitiesByFirstCharacterOfName() throws Exception {
 
     assertEquals(0, cacheService.getIdentityCache().getCacheSize());
