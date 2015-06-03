@@ -232,7 +232,8 @@ public class UISpaceInfo extends UIForm {
         space.setDescription(resourceBundle.getString(MSG_DEFAULT_SPACE_DESCRIPTION));
         uiSpaceInfo.getUIFormTextAreaInput(SPACE_DESCRIPTION).setValue(space.getDescription());
       } else {
-        space.setDescription(StringEscapeUtils.escapeHtml(space.getDescription()));
+        spaceDescription = StringEscapeUtils.escapeHtml(spaceDescription);
+        space.setDescription(spaceDescription);
         if (!existingDescription.equals(spaceDescription)) {
           space.setField(UpdatedField.DESCRIPTION);  
         }
