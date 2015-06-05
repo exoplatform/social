@@ -266,7 +266,14 @@ var UIActivity = {
   	  }
 	  );
 	},
-
+	
+	focusToComment : function() {  
+	  var comment = $('#commentContainer' + $.getQuery('commentId'));
+	  if(comment.length > 0) {
+	    comment.addClass('focus')[0].scrollIntoView(true);
+	  }
+	},
+	  
 	setPageTitle : function(activityTitle) {
 		$(document).attr('title', 'Activity: ' + $('<div></div>').html(window.decodeURIComponent(activityTitle)).text());
 	},

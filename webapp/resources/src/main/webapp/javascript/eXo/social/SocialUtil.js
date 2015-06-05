@@ -34,7 +34,20 @@
     foundNoMatch : 'Found no matching users for '
   };
 
-  
+  // Parse URL Queries Method
+  $.getQuery = function( query ) {
+      query = query.replace(/[\[]/,"\\\[").replace(/[\]]/,"\\\]");
+      var expr = "[\\?&]"+query+"=([^&#]*)";
+      var regex = new RegExp( expr );
+      var results = regex.exec( window.location.href );
+      if( results !== null ) {
+          return results[1];
+          return decodeURIComponent(results[1].replace(/\+/g, " "));
+      } else {
+          return false;
+      }
+  };
+
   var SocialUtils = {
     /**
      * Constants
