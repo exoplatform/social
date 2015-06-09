@@ -46,10 +46,9 @@ public class Relationship {
     PENDING,
     /** The CONFIRMED. */
     CONFIRMED,
-    /** The IGNORED. */
-    IGNORED,
     /** The ALL. */
     ALL,
+    IGNORED, INCOMING, OUTGOING
   }
 
   /**
