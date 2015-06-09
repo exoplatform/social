@@ -87,7 +87,7 @@ public abstract class ActivityMonthEntity implements NamedEntity, IndexNumber {
     if (dayEntity == null) {
       dayEntity = newDay();
       getDays().put(day, dayEntity);
-      getDaysList().add(dayEntity);
+      //getDaysList().add(dayEntity);
     }
 
     return dayEntity;

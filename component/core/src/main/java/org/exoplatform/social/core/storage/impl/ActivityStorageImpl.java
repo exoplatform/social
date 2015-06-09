@@ -17,8 +17,10 @@
 
 package org.exoplatform.social.core.storage.impl;
 
+import java.text.DateFormatSymbols;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -27,6 +29,7 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.SortedSet;
@@ -34,6 +37,7 @@ import java.util.TreeSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.jcr.AccessDeniedException;
 import javax.jcr.InvalidItemStateException;
 import javax.jcr.ItemExistsException;
 import javax.jcr.Node;
@@ -41,6 +45,8 @@ import javax.jcr.NodeIterator;
 import javax.jcr.Property;
 import javax.jcr.PropertyIterator;
 import javax.jcr.RepositoryException;
+import javax.jcr.UnsupportedRepositoryOperationException;
+import javax.jcr.lock.LockException;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.Validate;
@@ -102,6 +108,7 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
   private static final Log LOG = ExoLogger.getLogger(ActivityStorageImpl.class);
   private static final Pattern MENTION_PATTERN = Pattern.compile("@([^\\s]+)|@([^\\s]+)$");
   public static final Pattern USER_NAME_VALIDATOR_REGEX = Pattern.compile("^[\\p{L}][\\p{L}._\\-\\d]+$");
+  private String[] MONTH_NAME = new DateFormatSymbols(Locale.ENGLISH).getMonths();
   private ActivityStorage activityStorage;
 
   private final SortedSet<ActivityProcessor> activityProcessors;
@@ -149,7 +156,7 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     } else {
       posterIdentityEntity = identityEntity;
     }
-    
+
     // Get ActivityList
     ActivityListEntity activityListEntity = identityEntity.getActivityList();
     //
@@ -165,27 +172,24 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     activityEntity.setPostedTime(activityMillis);
     activityEntity.setLastUpdated(activityMillis);
     activityEntity.setPosterIdentity(posterIdentityEntity);
-    
 
     // Fill activity model
     activity.setId(activityEntity.getId());
     activity.setStreamOwner(identityEntity.getRemoteId());
     activity.setStreamId(identityEntity.getId());
     activity.setPostedTime(activityMillis);
-    activity.setReplyToId(new String[]{});
+    activity.setReplyToId(new String[] {});
     activity.setUpdated(activityMillis);
-    
-    //records activity for mention case.
-    
+
+    // records activity for mention case.
+
     activity.setMentionedIds(processMentions(activity.getMentionedIds(), activity.getTitle(), mentioners, true));
-    
     //
     activity.setPosterId(activity.getUserId() != null ? activity.getUserId() : owner.getId());
-      
     //
     fillActivityEntityFromActivity(activity, activityEntity);
-    
     return activityEntity;
+
   }
 
   protected void _saveActivity(ExoSocialActivity activity) throws NodeNotFoundException {
@@ -763,7 +767,7 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
           StreamInvocationHelper.savePoster(owner, entity);
           StorageUtils.persist(true);
           //run asynchronous: JCR session doesn't share in multi threading, in Stream service.
-          StreamInvocationHelper.save(owner, entity, mentioners.toArray(new String[0]));
+          StreamInvocationHelper.save(owner, activity, mentioners.toArray(new String[0]));
         }
       }
       else {

@@ -17,14 +17,16 @@
 
 package org.exoplatform.social.core.chromattic.utils;
 
-import org.exoplatform.social.core.chromattic.entity.ActivityDayEntity;
-import org.exoplatform.social.core.chromattic.entity.ActivityEntity;
-import org.exoplatform.social.core.chromattic.entity.ActivityListEntity;
-
 import java.text.DateFormatSymbols;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Locale;
+
+import org.exoplatform.social.core.chromattic.entity.ActivityDayEntity;
+import org.exoplatform.social.core.chromattic.entity.ActivityEntity;
+import org.exoplatform.social.core.chromattic.entity.ActivityListEntity;
+import org.exoplatform.social.core.chromattic.entity.IdentityEntity;
+import org.exoplatform.social.core.storage.impl.AbstractStorage;
 
 /**
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
@@ -32,7 +34,7 @@ import java.util.Locale;
  */
 public class ActivityList implements Collection<ActivityEntity> {
 
-  protected String[] MONTH_NAME = new DateFormatSymbols(Locale.ENGLISH).getMonths();
+  protected static String[] MONTH_NAME = new DateFormatSymbols(Locale.ENGLISH).getMonths();
 
   private ActivityListEntity listEntity;
 
@@ -63,6 +65,21 @@ public class ActivityList implements Collection<ActivityEntity> {
   public <T> T[] toArray(final T[] ts) {
     throw new RuntimeException();
   }
+  
+  public static void initStreamPath(String  identityId) {
+    Calendar calendar = Calendar.getInstance(Locale.ENGLISH);
+    
+    calendar.setTimeInMillis(System.currentTimeMillis());
+
+    String year = String.valueOf(calendar.get(Calendar.YEAR));
+    String month = MONTH_NAME[calendar.get(Calendar.MONTH)];
+    String day = String.valueOf(calendar.get(Calendar.DAY_OF_MONTH));
+    
+    IdentityEntity identityEntity = AbstractStorage.lifecycleLookup().getSession().findById(IdentityEntity.class, identityId);
+    
+    identityEntity.getActivityList().getYear(year).getMonth(month).getDay(day);
+    
+  }
 
   public boolean add(final ActivityEntity activityEntity) {
     Calendar calendar = Calendar.getInstance(Locale.ENGLISH);
@@ -75,7 +92,6 @@ public class ActivityList implements Collection<ActivityEntity> {
     ActivityDayEntity dayEntity = listEntity.getYear(year).getMonth(month).getDay(day);
     dayEntity.getActivities().add(activityEntity);
     dayEntity.inc();
-
     return true;
   }
 

@@ -80,7 +80,7 @@ public abstract class ActivityListEntity {
     if (yearEntity == null) {
       yearEntity = newYear();
       getYears().put(year, yearEntity);
-      getYearsList().add(yearEntity);
+      //getYearsList().add(yearEntity);
     }
 
     return yearEntity;

@@ -96,7 +96,7 @@ public abstract class ActivityYearEntity implements NamedEntity, IndexNumber {
     if (monthEntity == null) {
       monthEntity = newMonth();
       getMonths().put(month, monthEntity);
-      getMonthsList().add(monthEntity);
+      //getMonthsList().add(monthEntity);
     }
 
     return monthEntity;

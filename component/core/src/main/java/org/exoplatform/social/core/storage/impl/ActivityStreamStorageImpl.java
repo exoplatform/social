@@ -129,12 +129,7 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
       Identity owner = streamCtx.getIdentity();
       //It has been invoked by Activity Service with the multi-threading.
       //so that, gets Entity from JCR, prevent Session.logout exception.
-      ActivityEntity activityEntity = null;
-      try {
-        activityEntity = _findById(ActivityEntity.class, streamCtx.getActivityEntity().getId());
-      } catch (Exception e) {
-        activityEntity = streamCtx.getActivityEntity();
-      }
+      ActivityEntity activityEntity = _findById(ActivityEntity.class, streamCtx.getActivity().getId()); 
       
       if (OrganizationIdentityProvider.NAME.equals(owner.getProviderId())) {
         Identity poster = identityStorage.findIdentityById(activityEntity.getPosterIdentity().getId());
