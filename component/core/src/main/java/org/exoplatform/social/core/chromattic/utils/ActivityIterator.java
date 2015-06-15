@@ -41,7 +41,7 @@ public class ActivityIterator implements Iterator<ActivityEntity> {
   private Iterator<ActivityDayEntity> dayIterator;
   private Iterator<ActivityEntity> entityIterator;
 
-  ActivityIterator(final ActivityListEntity listEntity) {
+  public ActivityIterator(final ActivityListEntity listEntity) {
 
     this.listEntity = listEntity;
     this.yearIterator = listEntity.getYears().values().iterator();
