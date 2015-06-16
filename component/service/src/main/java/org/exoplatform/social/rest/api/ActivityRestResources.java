@@ -22,6 +22,8 @@ import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
@@ -39,7 +41,11 @@ public interface ActivityRestResources extends SocialRest {
    * @throws Exception
    */
   @GET
-  public Response getActivitiesOfCurrentUser(@Context UriInfo uriInfo) throws Exception;
+  public Response getActivitiesOfCurrentUser(@Context UriInfo uriInfo, 
+                                             @QueryParam("offset") int offset,
+                                             @QueryParam("limit") int limit,
+                                             @QueryParam("returnSize") boolean returnSize,
+                                             @QueryParam("expand") String expand) throws Exception;
 
   /**
    * Process to return an activity by id in json format
@@ -50,7 +56,9 @@ public interface ActivityRestResources extends SocialRest {
    */
   @GET
   @Path("{id}")
-  public Response getActivityById(@Context UriInfo uriInfo) throws Exception;
+  public Response getActivityById(@Context UriInfo uriInfo,
+                                  @PathParam("id") String id,
+                                  @QueryParam("expand") String expand) throws Exception;
 
   /**
    * Process to update the title of an activity by id
@@ -61,7 +69,10 @@ public interface ActivityRestResources extends SocialRest {
    */
   @PUT
   @Path("{id}")
-  public Response updateActivityById(@Context UriInfo uriInfo, ActivityEntity model) throws Exception;
+  public Response updateActivityById(@Context UriInfo uriInfo, 
+                                     @PathParam("id") String id,
+                                     @QueryParam("expand") String expand,
+                                     ActivityEntity model) throws Exception;
 
   /**
    * Process to delete an activity by id
@@ -72,7 +83,9 @@ public interface ActivityRestResources extends SocialRest {
    */
   @DELETE
   @Path("{id}")
-  public Response deleteActivityById(@Context UriInfo uriInfo) throws Exception;
+  public Response deleteActivityById(@Context UriInfo uriInfo, 
+                                     @PathParam("id") String id,
+                                     @QueryParam("expand") String expand) throws Exception;
 
   /**
    * Process to return all comments of an activity in json format
@@ -83,7 +96,11 @@ public interface ActivityRestResources extends SocialRest {
    */
   @GET
   @Path("{id}/comments")
-  public Response getCommentsOfActivity(@Context UriInfo uriInfo) throws Exception;
+  public Response getCommentsOfActivity(@Context UriInfo uriInfo,
+                                        @PathParam("id") String id,
+                                        @QueryParam("offset") int offset,
+                                        @QueryParam("limit") int limit,
+                                        @QueryParam("expand") String expand) throws Exception;
 
   /**
    * Process to create new comment
@@ -94,6 +111,9 @@ public interface ActivityRestResources extends SocialRest {
    */
   @POST
   @Path("{id}/comments")
-  public Response postComment(@Context UriInfo uriInfo, CommentEntity model) throws Exception;
+  public Response postComment(@Context UriInfo uriInfo, 
+                              @PathParam("id") String id,
+                              @QueryParam("expand") String expand,
+                              CommentEntity model) throws Exception;
 
 }

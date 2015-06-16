@@ -22,11 +22,15 @@ import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
 import org.exoplatform.social.rest.entity.SpaceMembershipEntity;
+
+import com.wordnik.swagger.annotations.ApiParam;
 
 public interface SpaceMembershipRestResources extends SocialRest {
 
@@ -38,10 +42,18 @@ public interface SpaceMembershipRestResources extends SocialRest {
    * @throws Exception
    */
   @GET
-  public abstract Response getSpacesMemberships(@Context UriInfo uriInfo) throws Exception;
+  public abstract Response getSpacesMemberships(@Context UriInfo uriInfo,
+                                                @QueryParam("space") String space,
+                                                @QueryParam("user") String user,
+                                                @QueryParam("offset") int offset,
+                                                @QueryParam("limit") int limit,
+                                                @QueryParam("expand") String expand,
+                                                @QueryParam("returnSize") boolean returnSize) throws Exception;
 
   @POST
-  public abstract Response addSpacesMemberships(@Context UriInfo uriInfo, SpaceMembershipEntity model) throws Exception;
+  public abstract Response addSpacesMemberships(@Context UriInfo uriInfo, 
+                                                @QueryParam("expand") String expand,
+                                                SpaceMembershipEntity model) throws Exception;
 
   /**
    * Process to return a spaceMembership by id
@@ -52,7 +64,9 @@ public interface SpaceMembershipRestResources extends SocialRest {
    */
   @GET
   @Path("{id}/{spacesPrefix}/{spacePrettyName}")
-  public abstract Response getSpaceMembershipById(@Context UriInfo uriInfo) throws Exception;
+  public abstract Response getSpaceMembershipById(@Context UriInfo uriInfo,
+                                                  @PathParam("id") String id,
+                                                  @QueryParam("expand") String expand) throws Exception;
 
   /**
    * Process to update a spaceMembership by id
@@ -63,7 +77,10 @@ public interface SpaceMembershipRestResources extends SocialRest {
    */
   @PUT
   @Path("{id}/{spacesPrefix}/{spacePrettyName}")
-  public abstract Response updateSpaceMembershipById(@Context UriInfo uriInfo, SpaceMembershipEntity model) throws Exception;
+  public abstract Response updateSpaceMembershipById(@Context UriInfo uriInfo, 
+                                                     @PathParam("id") String id,
+                                                     @QueryParam("expand") String expand,
+                                                     SpaceMembershipEntity model) throws Exception;
 
   /**
    * Process to delete a spaceMembership by id
@@ -74,6 +91,8 @@ public interface SpaceMembershipRestResources extends SocialRest {
    */
   @DELETE
   @Path("{id}/{spacesPrefix}/{spacePrettyName}")
-  public abstract Response deleteSpaceMembershipById(@Context UriInfo uriInfo) throws Exception;
+  public abstract Response deleteSpaceMembershipById(@Context UriInfo uriInfo,
+                                                     @PathParam("id") String id,
+                                                     @QueryParam("expand") String expand) throws Exception;
 
 }

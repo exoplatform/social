@@ -22,9 +22,13 @@ import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
+
+import com.wordnik.swagger.annotations.ApiParam;
 
 public interface IdentityRestResources extends SocialRest {
 
@@ -36,7 +40,12 @@ public interface IdentityRestResources extends SocialRest {
    * @throws Exception
    */
   @GET
-  public abstract Response getIdentities(@Context UriInfo uriInfo) throws Exception;
+  public abstract Response getIdentities(@Context UriInfo uriInfo,
+                                         @QueryParam("type") String type,
+                                         @QueryParam("offset") int offset,
+                                         @QueryParam("limit") int limit,
+                                         @QueryParam("returnSize") boolean returnSize,
+                                         @QueryParam("expand") String expand) throws Exception;
 
   /**
    * Process to create an identity
@@ -46,7 +55,10 @@ public interface IdentityRestResources extends SocialRest {
    * @throws Exception
    */
   @POST
-  public abstract Response createIdentities(@Context UriInfo uriInfo) throws Exception;
+  public abstract Response createIdentities(@Context UriInfo uriInfo,
+                                            @QueryParam("remoteId") String remoteId,
+                                            @QueryParam("providerId") String providerId,
+                                            @QueryParam("expand") String expand ) throws Exception;
 
   /**
    * Process to return an identity in json format
@@ -57,7 +69,9 @@ public interface IdentityRestResources extends SocialRest {
    */
   @GET
   @Path("{id}")
-  public abstract Response getIdentityById(@Context UriInfo uriInfo) throws Exception;
+  public abstract Response getIdentityById(@Context UriInfo uriInfo,
+                                           @PathParam("id") String id,
+                                           @QueryParam("expand") String expand) throws Exception;
 
   /**
    * Process to update an identity by id
@@ -68,7 +82,9 @@ public interface IdentityRestResources extends SocialRest {
    */
   @PUT
   @Path("{id}")
-  public abstract Response updateIdentityById(@Context UriInfo uriInfo) throws Exception;
+  public abstract Response updateIdentityById(@Context UriInfo uriInfo,
+                                              @PathParam("id") String id,
+                                              @QueryParam("expand") String expand) throws Exception;
 
   /**
    * Process to delete an identity
@@ -79,7 +95,9 @@ public interface IdentityRestResources extends SocialRest {
    */
   @DELETE
   @Path("{id}")
-  public abstract Response deleteIdentityById(@Context UriInfo uriInfo) throws Exception;
+  public abstract Response deleteIdentityById(@Context UriInfo uriInfo,
+                                              @PathParam("id") String id,
+                                              @QueryParam("expand") String expand) throws Exception;
 
   /**
    * Process to return all relationships of an identity in json format
@@ -90,6 +108,12 @@ public interface IdentityRestResources extends SocialRest {
    */
   @GET
   @Path("{id}/relationships")
-  public abstract Response getRelationshipsOfIdentity(@Context UriInfo uriInfo) throws Exception;
+  public abstract Response getRelationshipsOfIdentity(@Context UriInfo uriInfo,
+                                                      @PathParam("id") String id,
+                                                      @QueryParam("with") String with,
+                                                      @QueryParam("returnSize") boolean returnSize,
+                                                      @QueryParam("offset") int offset,
+                                                      @QueryParam("limit") int limit,
+                                                      @QueryParam("expand") String expand) throws Exception;
 
 }

@@ -22,11 +22,15 @@ import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
 import org.exoplatform.social.rest.entity.RelationshipEntity;
+
+import com.wordnik.swagger.annotations.ApiParam;
 
 public interface UsersRelationshipsRestResources extends SocialRest {
 
@@ -36,7 +40,13 @@ public interface UsersRelationshipsRestResources extends SocialRest {
    * @throws Exception
    */
   @GET
-  public abstract Response getUsersRelationships(@Context UriInfo uriInfo) throws Exception;
+  public abstract Response getUsersRelationships(@Context UriInfo uriInfo,
+                                                 @QueryParam("status") String status,
+                                                 @QueryParam("user") String user,
+                                                 @QueryParam("offset") int offset,
+                                                 @QueryParam("limit") int limit,
+                                                 @QueryParam("returnSize") boolean returnSize,
+                                                 @QueryParam("expand") String expand) throws Exception;
 
   /**
    * @param uriInfo
@@ -44,7 +54,9 @@ public interface UsersRelationshipsRestResources extends SocialRest {
    * @throws Exception
    */
   @POST
-  public abstract Response createUsersRelationships(@Context UriInfo uriInfo, RelationshipEntity model) throws Exception;
+  public abstract Response createUsersRelationships(@Context UriInfo uriInfo,
+                                                    @QueryParam("expand") String expand,
+                                                    RelationshipEntity model) throws Exception;
 
   /**
    * Get a relationship by id
@@ -55,7 +67,9 @@ public interface UsersRelationshipsRestResources extends SocialRest {
    */
   @GET
   @Path("{id}")
-  public abstract Response getUsersRelationshipsById(@Context UriInfo uriInfo) throws Exception;
+  public abstract Response getUsersRelationshipsById(@Context UriInfo uriInfo,
+                                                     @PathParam("id") String id,
+                                                     @QueryParam("expand") String expand) throws Exception;
 
   /**
    * Process to update a relationship by id
@@ -66,7 +80,10 @@ public interface UsersRelationshipsRestResources extends SocialRest {
    */
   @PUT
   @Path("{id}")
-  public abstract Response updateUsersRelationshipsById(@Context UriInfo uriInfo, RelationshipEntity model) throws Exception;
+  public abstract Response updateUsersRelationshipsById(@Context UriInfo uriInfo, 
+                                                        @PathParam("id") String id,
+                                                        @QueryParam("expand") String expand,
+                                                        RelationshipEntity model) throws Exception;
 
   /**
    * Process to delete a relationship by id
@@ -77,6 +94,8 @@ public interface UsersRelationshipsRestResources extends SocialRest {
    */
   @DELETE
   @Path("{id}")
-  public abstract Response deleteUsersRelationshipsById(@Context UriInfo uriInfo) throws Exception;
+  public abstract Response deleteUsersRelationshipsById(@Context UriInfo uriInfo,
+                                                        @PathParam("id") String id,
+                                                        @QueryParam("expand") String expand) throws Exception;
 
 }

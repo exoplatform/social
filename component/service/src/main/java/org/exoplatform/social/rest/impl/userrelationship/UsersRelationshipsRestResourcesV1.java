@@ -26,6 +26,8 @@ import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
@@ -46,7 +48,16 @@ import org.exoplatform.social.rest.entity.DataEntity;
 import org.exoplatform.social.rest.entity.RelationshipEntity;
 import org.exoplatform.social.service.rest.api.VersionResources;
 
+import com.wordnik.swagger.annotations.Api;
+import com.wordnik.swagger.annotations.ApiImplicitParam;
+import com.wordnik.swagger.annotations.ApiImplicitParams;
+import com.wordnik.swagger.annotations.ApiOperation;
+import com.wordnik.swagger.annotations.ApiParam;
+import com.wordnik.swagger.annotations.ApiResponse;
+import com.wordnik.swagger.annotations.ApiResponses;
+
 @Path(VersionResources.VERSION_ONE + "/social/usersRelationships")
+@Api(value=VersionResources.VERSION_ONE + "/social/usersRelationships", description = "Operations eXo Platform user relationships.")
 public class UsersRelationshipsRestResourcesV1 implements UsersRelationshipsRestResources {
 
   public UsersRelationshipsRestResourcesV1() {
@@ -54,12 +65,21 @@ public class UsersRelationshipsRestResourcesV1 implements UsersRelationshipsRest
   
   @RolesAllowed("users")
   @GET
-  public Response getUsersRelationships(@Context UriInfo uriInfo) throws Exception {
-    String status = RestUtils.getQueryParam(uriInfo, "status");
-    String user = RestUtils.getQueryParam(uriInfo, "user");
-    
-    int limit = RestUtils.getLimit(uriInfo);
-    int offset = RestUtils.getOffset(uriInfo);
+  @ApiOperation(value = "Get relationships",
+                httpMethod = "GET",
+                response = Response.class,
+                notes = "This can only be done by the logged in user.")
+  @ApiResponses(value = { 
+    @ApiResponse (code = 200, message = "Given request relationships found"),
+    @ApiResponse (code = 500, message = "Internal server error"),
+    @ApiResponse (code = 400, message = "Invalid query input to find relationships.") })
+  public Response getUsersRelationships(@Context UriInfo uriInfo,
+                                        @ApiParam(value = "Status of relationship: pending, cofirmed, ignored, all") @QueryParam("status") String status,
+                                        @ApiParam(value = "User to get relationship (remoteId such as root, demo..)") @QueryParam("user") String user,
+                                        @ApiParam(value = "Offset", required = false, defaultValue = "0") @QueryParam("offset") int offset,
+                                        @ApiParam(value = "Limit", required = false, defaultValue = "20") @QueryParam("limit") int limit,
+                                        @ApiParam(value = "Size of returned result list.", defaultValue = "false") @QueryParam("returnSize") boolean returnSize,
+                                        @ApiParam(value = "Expand param : ask for a full representation of a subresource", required = false) @QueryParam("expand") String expand) throws Exception {
     
     IdentityManager identityManager = CommonsUtils.getService(IdentityManager.class);
     Identity givenUser = (user == null) ? null : identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, user, true);
@@ -68,9 +88,9 @@ public class UsersRelationshipsRestResourcesV1 implements UsersRelationshipsRest
     RelationshipManager relationshipManager = CommonsUtils.getService(RelationshipManager.class);
     if (givenUser != null && ! RestUtils.isMemberOfAdminGroup()) {
       Relationship relationship = relationshipManager.get(givenUser, authenticatedUser);
-      RelationshipEntity relationshipEntity = EntityBuilder.buildEntityRelationship(relationship, uriInfo.getPath(), RestUtils.getQueryParam(uriInfo, "expand"), false);
+      RelationshipEntity relationshipEntity = EntityBuilder.buildEntityRelationship(relationship, uriInfo.getPath(), expand, false);
       CollectionEntity collectionRelationship = new CollectionEntity(Arrays.asList(relationshipEntity.getDataEntity()), EntityBuilder.USERS_RELATIONSHIP_TYPE, offset, limit);
-      if (RestUtils.isReturnSize(uriInfo)) {
+      if (returnSize) {
         collectionRelationship.setSize(1);
       }
       return EntityBuilder.getResponse(collectionRelationship, uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
@@ -87,19 +107,19 @@ public class UsersRelationshipsRestResourcesV1 implements UsersRelationshipsRest
     if (givenUser == null & RestUtils.isMemberOfAdminGroup()) {
       //gets all relationships from database by status
       relationships = relationshipManager.getRelationshipsByStatus(null, type, offset, limit);
-      size = RestUtils.isReturnSize(uriInfo) ? relationshipManager.getRelationshipsCountByStatus(null, type) : -1;
+      size = returnSize ? relationshipManager.getRelationshipsCountByStatus(null, type) : -1;
     } else {
       if (givenUser == null) {
         relationships = relationshipManager.getRelationshipsByStatus(authenticatedUser, type, offset, limit);
-        size = RestUtils.isReturnSize(uriInfo) ? relationshipManager.getRelationshipsCountByStatus(authenticatedUser, type) : -1;
+        size = returnSize ? relationshipManager.getRelationshipsCountByStatus(authenticatedUser, type) : -1;
       } else {
         relationships = relationshipManager.getRelationshipsByStatus(givenUser, type, offset, limit);
-        size = RestUtils.isReturnSize(uriInfo) ? relationshipManager.getRelationshipsCountByStatus(givenUser, type) : -1;
+        size = returnSize ? relationshipManager.getRelationshipsCountByStatus(givenUser, type) : -1;
       }
     }
     List<DataEntity> relationshipEntities = EntityBuilder.buildRelationshipEntities(relationships, uriInfo);
     CollectionEntity collectionRelationship = new CollectionEntity(relationshipEntities, EntityBuilder.USERS_RELATIONSHIP_TYPE, offset, limit);
-    if (RestUtils.isReturnSize(uriInfo)) {
+    if (returnSize) {
       collectionRelationship.setSize(size);
     }    
     return EntityBuilder.getResponse(collectionRelationship, uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
@@ -107,8 +127,17 @@ public class UsersRelationshipsRestResourcesV1 implements UsersRelationshipsRest
   
   @POST
   @RolesAllowed("users")
+  @ApiOperation(value = "Create relationship of user",
+                httpMethod = "POST",
+                response = Response.class,
+                notes = "This can only be done by the logged in user.")
+  @ApiResponses(value = { 
+    @ApiResponse (code = 200, message = "Relationship of user created successfully"),
+    @ApiResponse (code = 500, message = "Internal server error"),
+    @ApiResponse (code = 400, message = "Invalid query input to create user relationship.") })
   public Response createUsersRelationships(@Context UriInfo uriInfo,
-                                           RelationshipEntity model) throws Exception {
+                                           @ApiParam(value = "Expand param : ask for a full representation of a subresource", required = false) @QueryParam("expand") String expand,
+                                           @ApiParam(value = "Created relationship object", required = true) RelationshipEntity model) throws Exception {
     if (model == null || model.getReceiver() == null || model.getSender() == null) {
       throw new WebApplicationException(Response.Status.UNAUTHORIZED);
     }
@@ -133,14 +162,23 @@ public class UsersRelationshipsRestResourcesV1 implements UsersRelationshipsRest
     Relationship relationship = new Relationship(sender, receiver, status);
     relationshipManager.update(relationship);
     
-    return EntityBuilder.getResponse(EntityBuilder.buildEntityRelationship(relationship, uriInfo.getPath(), RestUtils.getQueryParam(uriInfo, "expand"), false), uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
+    return EntityBuilder.getResponse(EntityBuilder.buildEntityRelationship(relationship, uriInfo.getPath(), expand, false), uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
   }
   
   @GET
   @RolesAllowed("users")
   @Path("{id}")
-  public Response getUsersRelationshipsById(@Context UriInfo uriInfo) throws Exception {
-    String id = RestUtils.getPathParam(uriInfo, "id");
+  @ApiOperation(value = "Get relationship of user by Id",
+                httpMethod = "GET",
+                response = Response.class,
+                notes = "This can only be done by the logged in user.")
+  @ApiResponses(value = { 
+    @ApiResponse (code = 200, message = "Given request user relationships found"),
+    @ApiResponse (code = 500, message = "Internal server error"),
+    @ApiResponse (code = 400, message = "Invalid query input to find user relationship.") })
+  public Response getUsersRelationshipsById(@Context UriInfo uriInfo,
+                                            @ApiParam(value = "User remoteId", required = true) @PathParam("id") String id,
+                                            @ApiParam(value = "Expand param : ask for a full representation of a subresource", required = false) @QueryParam("expand") String expand) throws Exception {
     
     Identity authenticatedUser = CommonsUtils.getService(IdentityManager.class).getOrCreateIdentity(OrganizationIdentityProvider.NAME, ConversationState.getCurrent().getIdentity().getUserId(), true);
     RelationshipManager relationshipManager = CommonsUtils.getService(RelationshipManager.class);
@@ -148,19 +186,28 @@ public class UsersRelationshipsRestResourcesV1 implements UsersRelationshipsRest
     if (relationship == null || ! hasPermissionOnRelationship(authenticatedUser, relationship)) {
       throw new WebApplicationException(Response.Status.UNAUTHORIZED);
     }
-    return EntityBuilder.getResponse(EntityBuilder.buildEntityRelationship(relationship, uriInfo.getPath(), RestUtils.getQueryParam(uriInfo, "expand"), false), uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
+    return EntityBuilder.getResponse(EntityBuilder.buildEntityRelationship(relationship, uriInfo.getPath(), expand, false), uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
   }
   
   @PUT
   @RolesAllowed("users")
   @Path("{id}")
+  @ApiOperation(value = "Update relationship by Id",
+                httpMethod = "PUT",
+                response = Response.class,
+                notes = "This can only be done by the logged in user.")
+  @ApiResponses(value = { 
+    @ApiResponse (code = 200, message = "Given request relationship updated successfully"),
+    @ApiResponse (code = 500, message = "Internal server error"),
+    @ApiResponse (code = 400, message = "Invalid query input to upudate relationship.") })
   public Response updateUsersRelationshipsById(@Context UriInfo uriInfo,
-                                               RelationshipEntity model) throws Exception {
+                                               @ApiParam(value = "User name", required = true) @PathParam("id") String id,
+                                               @ApiParam(value = "Expand param : ask for a full representation of a subresource", required = false) @QueryParam("expand") String expand,
+                                               @ApiParam(value = "Relationship object for updating", required = true) RelationshipEntity model) throws Exception {
     if (model == null || model.getStatus() == null) {
       throw new WebApplicationException(Response.Status.UNAUTHORIZED);
     }
     //
-    String id = RestUtils.getPathParam(uriInfo, "id");
     Identity authenticatedUser = CommonsUtils.getService(IdentityManager.class).getOrCreateIdentity(OrganizationIdentityProvider.NAME, ConversationState.getCurrent().getIdentity().getUserId(), true);
     RelationshipManager relationshipManager = CommonsUtils.getService(RelationshipManager.class);
     Relationship relationship = relationshipManager.get(id);
@@ -177,14 +224,26 @@ public class UsersRelationshipsRestResourcesV1 implements UsersRelationshipsRest
     //update relationship by status
     updateRelationshipByStatus(relationship, status, relationshipManager);
     
-    return EntityBuilder.getResponse(EntityBuilder.buildEntityRelationship(relationship, uriInfo.getPath(), RestUtils.getQueryParam(uriInfo, "expand"), false), uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
+    return EntityBuilder.getResponse(EntityBuilder.buildEntityRelationship(relationship, uriInfo.getPath(), expand, false), uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
   }
   
   @DELETE
   @RolesAllowed("users")
   @Path("{id}")
-  public Response deleteUsersRelationshipsById(@Context UriInfo uriInfo) throws Exception {
-    String id = RestUtils.getPathParam(uriInfo, "id");
+  @ApiOperation(value = "Delete a relationship of user by Id",
+                httpMethod = "DELETE",
+                response = Response.class,
+                notes = "This can only be done by the logged in user.")
+  @ApiResponses(value = { 
+    @ApiResponse (code = 200, message = "Given request relationship deleted successfully"),
+    @ApiResponse (code = 500, message = "Internal server error"),
+    @ApiResponse (code = 400, message = "Invalid query input to delete relationship.") })
+  @ApiImplicitParams({
+    @ApiImplicitParam(name = "id", value = "Id of relationship to delete", dataType = "string", paramType = "path"),
+    @ApiImplicitParam(name = "expand", value = "Expand param : ask for a full representation of a subresource", dataType = "string", paramType = "query") })
+  public Response deleteUsersRelationshipsById(@Context UriInfo uriInfo,
+                                               @ApiParam(value = "User name", required = true) @PathParam("id") String id,
+                                               @ApiParam(value = "Expand param : ask for a full representation of a subresource", required = false) @QueryParam("expand") String expand) throws Exception {
     
     Identity authenticatedUser = CommonsUtils.getService(IdentityManager.class).getOrCreateIdentity(OrganizationIdentityProvider.NAME, ConversationState.getCurrent().getIdentity().getUserId(), true);
     RelationshipManager relationshipManager = CommonsUtils.getService(RelationshipManager.class);
@@ -195,7 +254,7 @@ public class UsersRelationshipsRestResourcesV1 implements UsersRelationshipsRest
     //delete the relationship
     relationshipManager.delete(relationship);
     
-    return EntityBuilder.getResponse(EntityBuilder.buildEntityRelationship(relationship, uriInfo.getPath(), RestUtils.getQueryParam(uriInfo, "expand"), false), uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
+    return EntityBuilder.getResponse(EntityBuilder.buildEntityRelationship(relationship, uriInfo.getPath(), expand, false), uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
   }
 
   /**

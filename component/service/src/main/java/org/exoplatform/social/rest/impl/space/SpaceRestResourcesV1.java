@@ -26,7 +26,9 @@ import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
@@ -62,7 +64,14 @@ import org.exoplatform.social.rest.entity.SpaceEntity;
 import org.exoplatform.social.service.rest.api.VersionResources;
 import org.exoplatform.social.service.rest.api.models.ActivityRestIn;
 
+import com.wordnik.swagger.annotations.Api;
+import com.wordnik.swagger.annotations.ApiOperation;
+import com.wordnik.swagger.annotations.ApiParam;
+import com.wordnik.swagger.annotations.ApiResponse;
+import com.wordnik.swagger.annotations.ApiResponses;
+
 @Path(VersionResources.VERSION_ONE + "/social/spaces")
+@Api(value=VersionResources.VERSION_ONE + "/social/spaces", description = "Operations eXo social space.")
 public class SpaceRestResourcesV1 implements SpaceRestResources {
 
   public SpaceRestResourcesV1() {
@@ -72,11 +81,22 @@ public class SpaceRestResourcesV1 implements SpaceRestResources {
    * {@inheritDoc}
    */
   @RolesAllowed("users")
-  public Response getSpaces(@Context UriInfo uriInfo) throws Exception {
-    String q = RestUtils.getQueryParam(uriInfo, "q");
+  @ApiOperation(value = "Get spaces",
+                httpMethod = "GET",
+                response = Response.class,
+                notes = "This can only be done by the logged in user.")
+  @ApiResponses(value = { 
+    @ApiResponse (code = 200, message = "Given request space found"),
+    @ApiResponse (code = 500, message = "Internal server error"),
+    @ApiResponse (code = 400, message = "Invalid query input to find spaces.") })
+  public Response getSpaces(@Context UriInfo uriInfo,
+                            @ApiParam(value = "Space name search condition.", required = false) @QueryParam("q") String q,
+                            @ApiParam(value = "Offset", required = false, defaultValue = "0") @QueryParam("offset") int offset,
+                            @ApiParam(value = "Limit", required = false, defaultValue = "20") @QueryParam("limit") int limit,
+                            @ApiParam(value = "Size of returned result list.", defaultValue = "false") @QueryParam("returnSize") boolean returnSize,
+                            @ApiParam(value = "Expand param : ask for a full representation of a subresource", required = false) @QueryParam("expand") String expand) throws Exception {
+
     SpaceService spaceService = CommonsUtils.getService(SpaceService.class);
-    int limit = RestUtils.getLimit(uriInfo);
-    int offset = RestUtils.getOffset(uriInfo);
     
     ListAccess<Space> listAccess = null;
     SpaceFilter spaceFilter = null;
@@ -92,12 +112,12 @@ public class SpaceRestResourcesV1 implements SpaceRestResources {
     }
     List<DataEntity> spaceInfos = new ArrayList<DataEntity>();
     for (Space space : listAccess.load(offset, limit)) {
-      SpaceEntity spaceInfo = EntityBuilder.buildEntityFromSpace(space, authenticatedUser, uriInfo.getPath(), RestUtils.getQueryParam(uriInfo, "expand"));
+      SpaceEntity spaceInfo = EntityBuilder.buildEntityFromSpace(space, authenticatedUser, uriInfo.getPath(), expand);
       //
       spaceInfos.add(spaceInfo.getDataEntity()); 
     }
     CollectionEntity collectionSpace = new CollectionEntity(spaceInfos, EntityBuilder.SPACES_TYPE, offset, limit);
-    if (RestUtils.isReturnSize(uriInfo)) {
+    if (returnSize) {
       collectionSpace.setSize( listAccess.getSize());
     }
     
@@ -110,8 +130,23 @@ public class SpaceRestResourcesV1 implements SpaceRestResources {
   @POST
   @Produces(MediaType.APPLICATION_JSON)
   @RolesAllowed("users")
+  @ApiOperation(value = "Create space",
+                httpMethod = "POST",
+                response = Response.class,
+                notes = "This can only be done by the logged in user.")
+  @ApiResponses(value = { 
+    @ApiResponse (code = 200, message = "Space created successfully"),
+    @ApiResponse (code = 500, message = "Internal server error"),
+    @ApiResponse (code = 400, message = "Invalid query input to create space.") })
   public Response createSpace(@Context UriInfo uriInfo,
-                               SpaceEntity model) throws Exception {
+                              @ApiParam(value = "Expand param : ask for a full representation of a subresource", required = false) @QueryParam("expand") String expand,
+                              @ApiParam(value = "Created space object. Space object named \"my space\" as below:<br />" +
+                              		              "{<br />\"displayName\": \"my space\"," +
+                                                "<br />\"description\": \"This is my space\"," +
+                                                "<br />\"groupId\": \"/spaces/my_space\"," +
+                                                "<br />\"visibility\": \"private\"," +
+                                                "<br />\"subscription\": \"validation\"<br />}" 
+                                                , required = true) SpaceEntity model) throws Exception {
     if (model == null || model.getDisplayName() == null || model.getDisplayName().length() == 0) {
       throw new WebApplicationException(Response.Status.UNAUTHORIZED);
     }
@@ -136,7 +171,7 @@ public class SpaceRestResourcesV1 implements SpaceRestResources {
     //
     spaceService.createSpace(space, authenticatedUser);
 
-    return EntityBuilder.getResponse(EntityBuilder.buildEntityFromSpace(space, authenticatedUser, uriInfo.getPath(), RestUtils.getQueryParam(uriInfo, "expand")), uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
+    return EntityBuilder.getResponse(EntityBuilder.buildEntityFromSpace(space, authenticatedUser, uriInfo.getPath(), expand), uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
   }
   
   /**
@@ -145,8 +180,17 @@ public class SpaceRestResourcesV1 implements SpaceRestResources {
   @GET
   @Path("{id}")
   @RolesAllowed("users")
-  public Response getSpaceById(@Context UriInfo uriInfo) throws Exception {
-    String id = RestUtils.getPathParam(uriInfo, "id");
+  @ApiOperation(value = "Get space by id",
+                httpMethod = "GET",
+                response = Response.class,
+                notes = "This can only be done by the logged in user.")
+  @ApiResponses(value = { 
+    @ApiResponse (code = 200, message = "Given request space found"),
+    @ApiResponse (code = 500, message = "Internal server error"),
+    @ApiResponse (code = 400, message = "Invalid query input to find space by Id") })
+  public Response getSpaceById(@Context UriInfo uriInfo,
+                               @ApiParam(value = "space id", required = true) @PathParam("id") String id,
+                               @ApiParam(value = "Expand param : ask for a full representation of a subresource", required = false) @QueryParam("expand") String expand) throws Exception {
     
     String authenticatedUser = ConversationState.getCurrent().getIdentity().getUserId();
     SpaceService spaceService = CommonsUtils.getService(SpaceService.class);
@@ -154,7 +198,7 @@ public class SpaceRestResourcesV1 implements SpaceRestResources {
     if (space == null || (Space.HIDDEN.equals(space.getVisibility()) && ! spaceService.isMember(space, authenticatedUser) && ! RestUtils.isMemberOfAdminGroup())) {
       throw new WebApplicationException(Response.Status.UNAUTHORIZED);
     }
-    return EntityBuilder.getResponse(EntityBuilder.buildEntityFromSpace(space, authenticatedUser, uriInfo.getPath(), RestUtils.getQueryParam(uriInfo, "expand")), uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
+    return EntityBuilder.getResponse(EntityBuilder.buildEntityFromSpace(space, authenticatedUser, uriInfo.getPath(), expand), uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
   }
   
   /**
@@ -164,8 +208,18 @@ public class SpaceRestResourcesV1 implements SpaceRestResources {
   @Path("{id}")
   @Produces(MediaType.APPLICATION_JSON)
   @RolesAllowed("users")
+  @ApiOperation(value = "Update space by Id",
+                httpMethod = "PUT",
+                response = Response.class,
+                notes = "This can only be done by the logged in user.")
+  @ApiResponses(value = { 
+    @ApiResponse (code = 200, message = "Space updated successfully"),
+    @ApiResponse (code = 500, message = "Internal server error"),
+    @ApiResponse (code = 400, message = "Invalid query input to find space.") })
   public Response updateSpaceById(@Context UriInfo uriInfo,
-                                  SpaceEntity model) throws Exception {
+                                  @ApiParam(value = "space id", required = true) @PathParam("id") String id,
+                                  @ApiParam(value = "Expand param : ask for a full representation of a subresource", required = false) @QueryParam("expand") String expand,
+                                  @ApiParam(value = "Space entity for updating", required = true) SpaceEntity model) throws Exception {
     
     if (model == null) {
       throw new WebApplicationException(Response.Status.UNAUTHORIZED);
@@ -173,7 +227,6 @@ public class SpaceRestResourcesV1 implements SpaceRestResources {
     
     String authenticatedUser = ConversationState.getCurrent().getIdentity().getUserId();
     //
-    String id = RestUtils.getPathParam(uriInfo, "id");
     SpaceService spaceService = CommonsUtils.getService(SpaceService.class);
     Space space = spaceService.getSpaceById(id);
     if (space == null || (! spaceService.isManager(space, authenticatedUser) && ! RestUtils.isMemberOfAdminGroup())) {
@@ -183,7 +236,7 @@ public class SpaceRestResourcesV1 implements SpaceRestResources {
     fillSpaceFromModel(space, model);
     spaceService.updateSpace(space);
     
-    return EntityBuilder.getResponse(EntityBuilder.buildEntityFromSpace(space, authenticatedUser, uriInfo.getPath(), RestUtils.getQueryParam(uriInfo, "expand")), uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
+    return EntityBuilder.getResponse(EntityBuilder.buildEntityFromSpace(space, authenticatedUser, uriInfo.getPath(), expand), uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
   }
   
   /**
@@ -192,8 +245,19 @@ public class SpaceRestResourcesV1 implements SpaceRestResources {
   @DELETE
   @Path("{id}")
   @RolesAllowed("users")
-  public Response deleteSpaceById(@Context UriInfo uriInfo) throws Exception {
-    String id = RestUtils.getPathParam(uriInfo, "id");
+
+  @ApiOperation(value = "Delete space by Id",
+                httpMethod = "DELETE",
+                response = Response.class,
+                notes = "This can only be done by the logged in user.")
+  @ApiResponses(value = { 
+    @ApiResponse (code = 200, message = "Space deleted successfully"),
+    @ApiResponse (code = 500, message = "Internal server error"),
+    @ApiResponse (code = 400, message = "Invalid query input to delete space.") })
+  public Response deleteSpaceById(@Context UriInfo uriInfo,
+                                  @ApiParam(value = "space id", required = true) @PathParam("id") String id,
+                                  @ApiParam(value = "Expand param : ask for a full representation of a subresource", required = false) @QueryParam("expand") String expand) throws Exception {
+
     String authenticatedUser = ConversationState.getCurrent().getIdentity().getUserId();
     //
     SpaceService spaceService = CommonsUtils.getService(SpaceService.class);
@@ -203,7 +267,7 @@ public class SpaceRestResourcesV1 implements SpaceRestResources {
     }
     spaceService.deleteSpace(space);
     
-    return EntityBuilder.getResponse(EntityBuilder.buildEntityFromSpace(space, authenticatedUser, uriInfo.getPath(), RestUtils.getQueryParam(uriInfo, "expand")), uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
+    return EntityBuilder.getResponse(EntityBuilder.buildEntityFromSpace(space, authenticatedUser, uriInfo.getPath(), expand), uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
   }
   
   /**
@@ -212,9 +276,22 @@ public class SpaceRestResourcesV1 implements SpaceRestResources {
   @GET
   @Path("{id}/users")
   @RolesAllowed("users")
-  public Response getSpaceMembers(@Context UriInfo uriInfo) throws Exception {
-    String id = RestUtils.getPathParam(uriInfo, "id");
-    String role = RestUtils.getQueryParam(uriInfo, "role");
+  @ApiOperation(value = "Get members of a space",
+                httpMethod = "GET",
+                response = Response.class,
+                notes = "This can only be done by the logged in user.")
+  @ApiResponses(value = { 
+    @ApiResponse (code = 200, message = "Given request space members found"),
+    @ApiResponse (code = 500, message = "Internal server error"),
+    @ApiResponse (code = 400, message = "Invalid query input to find space members.") })
+  public Response getSpaceMembers(@Context UriInfo uriInfo,
+                                  @ApiParam(value = "space id", required = true) @PathParam("id") String id,
+                                  @ApiParam(value = "Role of user in space. ex: manager", required = false, defaultValue = "0") @QueryParam("role") String role,
+                                  @ApiParam(value = "Offset", required = false, defaultValue = "0") @QueryParam("offset") int offset,
+                                  @ApiParam(value = "Limit", required = false, defaultValue = "20") @QueryParam("limit") int limit,
+                                  @ApiParam(value = "Size of returned result list.", defaultValue = "false") @QueryParam("returnSize") boolean returnSize,
+                                  @ApiParam(value = "Expand param : ask for a full representation of a subresource", required = false) @QueryParam("expand") String expand) throws Exception {
+    
     String authenticatedUser = ConversationState.getCurrent().getIdentity().getUserId();
     //
     SpaceService spaceService = CommonsUtils.getService(SpaceService.class);
@@ -222,16 +299,14 @@ public class SpaceRestResourcesV1 implements SpaceRestResources {
     if (space == null || (! spaceService.isMember(space, authenticatedUser) && ! RestUtils.isMemberOfAdminGroup())) {
       throw new WebApplicationException(Response.Status.UNAUTHORIZED);
     }
-    int limit = RestUtils.getLimit(uriInfo);
-    int offset = RestUtils.getOffset(uriInfo);
     
     String[] users = (role != null && role.equals("manager")) ? space.getManagers() : space.getMembers();
     int size = users.length;
     //
     users = Arrays.copyOfRange(users, offset > size - 1 ? size - 1 : offset, (offset + limit > size) ? size : (offset + limit));
-    List<DataEntity> profileInfos = EntityBuilder.buildEntityProfiles(users, uriInfo.getPath(), RestUtils.getQueryParam(uriInfo, "expand"));
+    List<DataEntity> profileInfos = EntityBuilder.buildEntityProfiles(users, uriInfo.getPath(), expand);
     CollectionEntity collectionUser = new CollectionEntity(profileInfos, EntityBuilder.USERS_TYPE, offset, limit);
-    if (RestUtils.isReturnSize(uriInfo)) {
+    if (returnSize) {
       collectionUser.setSize(size);
     }    
     return EntityBuilder.getResponse(collectionUser, uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
@@ -243,9 +318,23 @@ public class SpaceRestResourcesV1 implements SpaceRestResources {
   @GET
   @Path("{id}/activities")
   @RolesAllowed("users")
-  public Response getSpaceActivitiesById(@Context UriInfo uriInfo) throws Exception {
+  @ApiOperation(value = "Get space activities by Id",
+                httpMethod = "GET",
+                response = Response.class,
+                notes = "This can only be done by the logged in user.")
+  @ApiResponses(value = { 
+    @ApiResponse (code = 200, message = "Given request space activities found"),
+    @ApiResponse (code = 500, message = "Internal server error"),
+    @ApiResponse (code = 400, message = "Invalid query input to find get space activities.") })
+  public Response getSpaceActivitiesById(@Context UriInfo uriInfo,
+      @ApiParam(value = "space id", required = true) @PathParam("id") String id,
+      @ApiParam(value = "Offset", required = false, defaultValue = "0") @QueryParam("offset") int offset,
+      @ApiParam(value = "Limit", required = false, defaultValue = "20") @QueryParam("limit") int limit,
+      @ApiParam(value = "Older base time to load activity", required = false) @QueryParam("before") long before,
+      @ApiParam(value = "Newer base time to load activity.", required = false) @QueryParam("after") long after,
+      @ApiParam(value = "Size of returned result list.", defaultValue = "false") @QueryParam("returnSize") boolean returnSize,
+      @ApiParam(value = "Expand param : ask for a full representation of a subresource", required = false) @QueryParam("expand") String expand) throws Exception {
     
-    String id = RestUtils.getPathParam(uriInfo, "id");
     String authenticatedUser = ConversationState.getCurrent().getIdentity().getUserId();
     //
     SpaceService spaceService = CommonsUtils.getService(SpaceService.class);
@@ -254,18 +343,13 @@ public class SpaceRestResourcesV1 implements SpaceRestResources {
       throw new WebApplicationException(Response.Status.UNAUTHORIZED);
     }
     
-    int limit = RestUtils.getLimit(uriInfo);
-    int offset = RestUtils.getOffset(uriInfo);
-    
     Identity spaceIdentity = CommonsUtils.getService(IdentityManager.class).getOrCreateIdentity(SpaceIdentityProvider.NAME, space.getPrettyName(), false);
     RealtimeListAccess<ExoSocialActivity> listAccess = CommonsUtils.getService(ActivityManager.class).getActivitiesOfSpaceWithListAccess(spaceIdentity);
-    Long after = RestUtils.getLongValue(uriInfo, "after"); 
-    Long before = RestUtils.getLongValue(uriInfo, "before");
     List<ExoSocialActivity> activities = null;
-    if (after != null) {
-      activities = listAccess.loadNewer(after.longValue(), limit);
-    } else if (before != null) {
-      activities = listAccess.loadOlder(before.longValue(), limit);
+    if (after > 0) {
+      activities = listAccess.loadNewer(after, limit);
+    } else if (before > 0) {
+      activities = listAccess.loadOlder(before, limit);
     } else {
       activities = listAccess.loadAsList(offset, limit);
     }
@@ -275,13 +359,13 @@ public class SpaceRestResourcesV1 implements SpaceRestResources {
     as.setProperty(RestProperties.TYPE, EntityBuilder.SPACE_ACTIVITY_TYPE);
     //
     for (ExoSocialActivity activity : activities) {
-      ActivityEntity activityInfo = EntityBuilder.buildEntityFromActivity(activity, uriInfo.getPath(), RestUtils.getQueryParam(uriInfo, "expand"));
+      ActivityEntity activityInfo = EntityBuilder.buildEntityFromActivity(activity, uriInfo.getPath(), expand);
       activityInfo.setActivityStream(as.getDataEntity());
       //
       activityEntities.add(activityInfo.getDataEntity());
     }
     CollectionEntity collectionActivity = new CollectionEntity(activityEntities, EntityBuilder.ACTIVITIES_TYPE,  offset, limit);
-    if(RestUtils.isReturnSize(uriInfo)) {
+    if(returnSize) {
       collectionActivity.setSize(listAccess.getSize());
     }
     return EntityBuilder.getResponse(collectionActivity, uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
@@ -294,13 +378,22 @@ public class SpaceRestResourcesV1 implements SpaceRestResources {
   @Path("{id}/activities")
   @Produces(MediaType.APPLICATION_JSON)
   @RolesAllowed("users")
+  @ApiOperation(value = "Post activity to space",
+                httpMethod = "POST",
+                response = Response.class,
+                notes = "This can only be done by the logged in user.")
+  @ApiResponses(value = { 
+    @ApiResponse (code = 200, message = "Activity posted successfully on space"),
+    @ApiResponse (code = 500, message = "Internal server error"),
+    @ApiResponse (code = 400, message = "Invalid query input to post activity on space.") })
   public Response postActivityOnSpace(@Context UriInfo uriInfo,
-                                       ActivityRestIn model) throws Exception {
+                                      @ApiParam(value = "space id", required = true) @PathParam("id") String id,
+                                      @ApiParam(value = "Expand param : ask for a full representation of a subresource", required = false) @QueryParam("expand") String expand,
+                                      @ApiParam(value = "Created activity object", required = true) ActivityRestIn model) throws Exception {
     if (model == null || model.getTitle() == null || model.getTitle().length() == 0) {
       throw new WebApplicationException(Response.Status.UNAUTHORIZED);
     }
     //
-    String id = RestUtils.getPathParam(uriInfo, "id");
     String authenticatedUser = ConversationState.getCurrent().getIdentity().getUserId();
     //
     SpaceService spaceService = CommonsUtils.getService(SpaceService.class);
@@ -317,7 +410,7 @@ public class SpaceRestResourcesV1 implements SpaceRestResources {
     activity.setUserId(poster.getId());
     CommonsUtils.getService(ActivityManager.class).saveActivityNoReturn(spaceIdentity, activity);
     
-    return EntityBuilder.getResponse(EntityBuilder.buildEntityFromActivity(activity, uriInfo.getPath(), RestUtils.getQueryParam(uriInfo, "expand")), uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
+    return EntityBuilder.getResponse(EntityBuilder.buildEntityFromActivity(activity, uriInfo.getPath(), expand), uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
   }
 
   private void fillSpaceFromModel(Space space, SpaceEntity model) {

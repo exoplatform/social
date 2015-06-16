@@ -22,12 +22,16 @@ import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
 import org.exoplatform.social.rest.entity.SpaceEntity;
 import org.exoplatform.social.service.rest.api.models.ActivityRestIn;
+
+import com.wordnik.swagger.annotations.ApiParam;
 
 public interface SpaceRestResources extends SocialRest {
 
@@ -39,7 +43,12 @@ public interface SpaceRestResources extends SocialRest {
    * @throws Exception
    */
   @GET
-  public abstract Response getSpaces(@Context UriInfo uriInfo) throws Exception;
+  public abstract Response getSpaces(@Context UriInfo uriInfo,
+                                     @QueryParam("q") String q,
+                                     @QueryParam("offset") int offset,
+                                     @QueryParam("limit") int limit,
+                                     @QueryParam("returnSize") boolean returnSize,
+                                     @QueryParam("expand") String expand) throws Exception;
 
   /**
    * Process to create a new space
@@ -49,7 +58,9 @@ public interface SpaceRestResources extends SocialRest {
    * @throws Exception
    */
   @POST
-  public abstract Response createSpace(@Context UriInfo uriInfo, SpaceEntity model) throws Exception;
+  public abstract Response createSpace(@Context UriInfo uriInfo, 
+                                       @QueryParam("expand") String expand,
+                                       SpaceEntity model) throws Exception;
 
   /**
    * Process to return a space by id
@@ -60,7 +71,9 @@ public interface SpaceRestResources extends SocialRest {
    */
   @GET
   @Path("{id}")
-  public abstract Response getSpaceById(@Context UriInfo uriInfo) throws Exception;
+  public abstract Response getSpaceById(@Context UriInfo uriInfo,
+                                        @PathParam("id") String id,
+                                        @QueryParam("expand") String expand) throws Exception;
 
   /**
    * Process to update a space by id
@@ -71,7 +84,10 @@ public interface SpaceRestResources extends SocialRest {
    */
   @PUT
   @Path("{id}")
-  public abstract Response updateSpaceById(@Context UriInfo uriInfo, SpaceEntity model) throws Exception;
+  public abstract Response updateSpaceById(@Context UriInfo uriInfo,
+                                           @PathParam("id") String id,
+                                           @QueryParam("expand") String expand, 
+                                           SpaceEntity model) throws Exception;
 
   /**
    * Process to delete a space by id
@@ -82,7 +98,9 @@ public interface SpaceRestResources extends SocialRest {
    */
   @DELETE
   @Path("{id}")
-  public abstract Response deleteSpaceById(@Context UriInfo uriInfo) throws Exception;
+  public abstract Response deleteSpaceById(@Context UriInfo uriInfo,
+                                           @PathParam("id") String id,
+                                           @QueryParam("expand") String expand) throws Exception;
 
   /**
    * Process to return a space by id
@@ -93,7 +111,13 @@ public interface SpaceRestResources extends SocialRest {
    */
   @GET
   @Path("{id}/users")
-  public abstract Response getSpaceMembers(@Context UriInfo uriInfo) throws Exception;
+  public abstract Response getSpaceMembers(@Context UriInfo uriInfo,
+                                           @PathParam("id") String id,
+                                           @QueryParam("role") String role,
+                                           @QueryParam("offset") int offset,
+                                           @QueryParam("limit") int limit,
+                                           @QueryParam("returnSize") boolean returnSize,
+                                           @QueryParam("expand") String expand) throws Exception;
 
   /**
    * Process to return a space by id
@@ -104,10 +128,20 @@ public interface SpaceRestResources extends SocialRest {
    */
   @GET
   @Path("{id}/activities")
-  public abstract Response getSpaceActivitiesById(@Context UriInfo uriInfo) throws Exception;
+  public abstract Response getSpaceActivitiesById(@Context UriInfo uriInfo,
+                                                  @PathParam("id") String id,
+                                                  @QueryParam("offset") int offset,
+                                                  @QueryParam("limit") int limit,
+                                                  @QueryParam("before") long before,
+                                                  @QueryParam("after") long after,
+      @ApiParam(value = "Size of returned result list.", defaultValue = "false") @QueryParam("returnSize") boolean returnSize,
+      @ApiParam(value = "Expand param : ask for a full representation of a subresource", required = false) @QueryParam("expand") String expand) throws Exception;
 
   @POST
   @Path("{id}/activities")
-  public abstract Response postActivityOnSpace(@Context UriInfo uriInfo, ActivityRestIn model) throws Exception;
+  public abstract Response postActivityOnSpace(@Context UriInfo uriInfo,
+                                               @PathParam("id") String id,
+                                               @QueryParam("expand") String expand,  
+                                               ActivityRestIn model) throws Exception;
 
 }

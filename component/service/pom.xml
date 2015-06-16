@@ -331,6 +331,11 @@
       <artifactId>jackson-databind</artifactId>
       <version>2.3.1</version>
     </dependency>
+    <dependency>
+      <groupId>com.wordnik</groupId>
+      <artifactId>swagger-jaxrs</artifactId>
+      <version>1.5.1-M2</version>
+    </dependency>
   </dependencies>
   <build>
     <plugins>
@@ -401,6 +406,49 @@
           </includes>
         </configuration>
       </plugin>
+      <plugin>
+	        <groupId>com.github.kongchen</groupId>
+	        <artifactId>swagger-maven-plugin</artifactId>
+	        <version>3.0.0</version> 
+	        <configuration>
+	            <apiSources>
+	                <apiSource>
+                      <springmvc>false</springmvc>
+                      <locations>org.exoplatform.social.rest.impl</locations>
+                      <schemes>http,https</schemes>
+                      <host>localhost:8080</host>
+                      <basePath>/rest</basePath>
+                      <info>
+                          <title>eXo Social REST API</title>
+                          <version>1</version>
+                          <description>Social REST API documentation</description>
+                          <termsOfService>
+                              https://github.com/exoplatform/social
+                          </termsOfService>
+                          <contact>
+                              <name>eXo Platform</name>
+                              <url>http://www.exoplatform.org</url>
+                          </contact>
+                          <license>
+                              <url>http://www.gnu.org/licenses</url>
+                              <name>GNU Affero General Public License</name>
+                          </license>
+                      </info>
+                      <templatePath>${basedir}/src/main/resources/swagger-doc-template/strapdown.html.hbs</templatePath>
+                      <outputPath>${basedir}/target/generated/document.html</outputPath>
+                      <swaggerDirectory>${basedir}/target/generated/swagger-ui</swaggerDirectory>
+                  </apiSource>
+	            </apiSources>
+	        </configuration>
+	        <executions>
+	            <execution>
+	                <phase>compile</phase>
+	                <goals>
+	                    <goal>generate</goal>
+	                </goals>
+	            </execution>
+	        </executions>
+	    </plugin>
     </plugins>
   </build>
 </project>

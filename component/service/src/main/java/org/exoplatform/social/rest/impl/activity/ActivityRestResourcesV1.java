@@ -25,7 +25,9 @@ import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
@@ -50,34 +52,51 @@ import org.exoplatform.social.rest.entity.CommentEntity;
 import org.exoplatform.social.rest.entity.DataEntity;
 import org.exoplatform.social.service.rest.api.VersionResources;
 
+import com.wordnik.swagger.annotations.Api;
+import com.wordnik.swagger.annotations.ApiOperation;
+import com.wordnik.swagger.annotations.ApiParam;
+import com.wordnik.swagger.annotations.ApiResponse;
+import com.wordnik.swagger.annotations.ApiResponses;
+
 @Path(VersionResources.VERSION_ONE + "/social/activities")
+@Api(value=VersionResources.VERSION_ONE + "/social/activities")
 public class ActivityRestResourcesV1 implements ActivityRestResources {
   
   @GET
   @RolesAllowed("users")
-  public Response getActivitiesOfCurrentUser(@Context UriInfo uriInfo) throws Exception {
+  @ApiOperation(value = "Get activities of current user",
+                httpMethod = "GET",
+                response = Response.class,
+                notes = "This can only be done by the logged in user.")
+  @ApiResponses(value = { 
+    @ApiResponse (code = 200, message = "Given request activities found"),
+    @ApiResponse (code = 500, message = "Internal server error"),
+    @ApiResponse (code = 400, message = "Invalid query input to find activities.") })
+  public Response getActivitiesOfCurrentUser(@Context UriInfo uriInfo,
+                                             @ApiParam(value = "Offset", required = false, defaultValue = "0") @QueryParam("offset") int offset,
+                                             @ApiParam(value = "Limit", required = false, defaultValue = "20") @QueryParam("limit") int limit,
+                                             @ApiParam(value = "Size of returned result list.", defaultValue = "false") @QueryParam("returnSize") boolean returnSize,
+                                             @ApiParam(value = "Expand param : ask for a full representation of a subresource", required = false) @QueryParam("expand") String expand) throws Exception {
+    
     String authenticatedUser = ConversationState.getCurrent().getIdentity().getUserId();
     
     Identity currentUser = CommonsUtils.getService(IdentityManager.class).getOrCreateIdentity(OrganizationIdentityProvider.NAME, authenticatedUser, true);
-    
-    int limit = RestUtils.getLimit(uriInfo);
-    int offset = RestUtils.getOffset(uriInfo);
-    
+
     ActivityManager activityManager = CommonsUtils.getService(ActivityManager.class);
-    RealtimeListAccess<ExoSocialActivity> listAccess = activityManager.getAllActivitiesWithListAccess();
+    RealtimeListAccess<ExoSocialActivity> listAccess = activityManager.getActivitiesWithListAccess(currentUser);
     List<ExoSocialActivity> activities = listAccess.loadAsList(offset, limit);
     
     List<DataEntity> activityEntities = new ArrayList<DataEntity>();
     for (ExoSocialActivity activity : activities) {
       DataEntity as = EntityBuilder.getActivityStream(activity, currentUser);
       if (as == null) continue;
-      ActivityEntity activityEntity = EntityBuilder.buildEntityFromActivity(activity, uriInfo.getPath(), RestUtils.getQueryParam(uriInfo, "expand"));
+      ActivityEntity activityEntity = EntityBuilder.buildEntityFromActivity(activity, uriInfo.getPath(), expand);
       activityEntity.setActivityStream(as);
       //
       activityEntities.add(activityEntity.getDataEntity()); 
     }
     CollectionEntity collectionActivity = new CollectionEntity(activityEntities, EntityBuilder.ACTIVITIES_TYPE,  offset, limit);
-    if(RestUtils.isReturnSize(uriInfo)) {
+    if(returnSize) {
       collectionActivity.setSize(listAccess.getSize());
     }
 
@@ -87,9 +106,18 @@ public class ActivityRestResourcesV1 implements ActivityRestResources {
   @GET
   @Path("{id}")
   @RolesAllowed("users")
-  public Response getActivityById(@Context UriInfo uriInfo) throws Exception {
-    String id = RestUtils.getPathParam(uriInfo, "id");
-    
+  @ApiOperation(value = "Get activity by Id",
+                httpMethod = "GET",
+                response = Response.class,
+                notes = "This can only be done by the logged in user.")
+  @ApiResponses(value = { 
+    @ApiResponse (code = 200, message = "Given request activity found"),
+    @ApiResponse (code = 500, message = "Internal server error"),
+    @ApiResponse (code = 400, message = "Invalid query input to get activity.") })
+  public Response getActivityById(@Context UriInfo uriInfo,
+                                  @ApiParam(value = "activity id", required = true) @PathParam("id") String id,
+                                  @ApiParam(value = "Expand param : ask for a full representation of a subresource", required = false) @QueryParam("expand") String expand) throws Exception {
+
     String authenticatedUser = ConversationState.getCurrent().getIdentity().getUserId();
     Identity currentUser = CommonsUtils.getService(IdentityManager.class).getOrCreateIdentity(OrganizationIdentityProvider.NAME, authenticatedUser, true);
     
@@ -103,7 +131,7 @@ public class ActivityRestResourcesV1 implements ActivityRestResources {
     if (as == null) { //current user doesn't have permission to view activity
       throw new WebApplicationException(Response.Status.UNAUTHORIZED);
     }
-    ActivityEntity activityEntity = EntityBuilder.buildEntityFromActivity(activity, uriInfo.getPath(), RestUtils.getQueryParam(uriInfo, "expand"));
+    ActivityEntity activityEntity = EntityBuilder.buildEntityFromActivity(activity, uriInfo.getPath(), expand);
     if (!activity.isComment()) {
       activityEntity.setActivityStream(as);
     }
@@ -115,8 +143,19 @@ public class ActivityRestResourcesV1 implements ActivityRestResources {
   @Path("{id}")
   @Produces(MediaType.APPLICATION_JSON)
   @RolesAllowed("users")
+  @ApiOperation(value = "Update activity by Id",
+                httpMethod = "PUT",
+                response = Response.class,
+                notes = "This can only be done by the logged in user.")
+  @ApiResponses(value = { 
+    @ApiResponse (code = 200, message = "Given request activity updated successfully"),
+    @ApiResponse (code = 500, message = "Internal server error"),
+    @ApiResponse (code = 400, message = "Invalid query input to update activity") })
   public Response updateActivityById(@Context UriInfo uriInfo,
-                                      ActivityEntity model) throws Exception {
+                                     @ApiParam(value = "activity id", required = true) @PathParam("id") String id,
+                                     @ApiParam(value = "Expand param : ask for a full representation of a subresource", required = false) @QueryParam("expand") String expand,
+                                     @ApiParam(value = "Activity object for updating", required = true) ActivityEntity model) throws Exception {
+  
     if (model == null || model.getTitle() == null || model.getTitle().length() == 0) {
       throw new WebApplicationException(Response.Status.UNAUTHORIZED);
     }
@@ -124,7 +163,6 @@ public class ActivityRestResourcesV1 implements ActivityRestResources {
     String authenticatedUser = ConversationState.getCurrent().getIdentity().getUserId();
     Identity currentUser = CommonsUtils.getService(IdentityManager.class).getOrCreateIdentity(OrganizationIdentityProvider.NAME, authenticatedUser, true);
     
-    String id = RestUtils.getPathParam(uriInfo, "id");
     ActivityManager activityManager = CommonsUtils.getService(ActivityManager.class);
     ExoSocialActivity activity = activityManager.getActivity(id);
     if (activity == null || ! activity.getPosterId().equals(currentUser.getId())) {
@@ -136,7 +174,7 @@ public class ActivityRestResourcesV1 implements ActivityRestResources {
     activityManager.updateActivity(activity);
     
     DataEntity as = EntityBuilder.getActivityStream(activity, currentUser);
-    ActivityEntity activityInfo = EntityBuilder.buildEntityFromActivity(activity, uriInfo.getPath(), RestUtils.getQueryParam(uriInfo, "expand"));
+    ActivityEntity activityInfo = EntityBuilder.buildEntityFromActivity(activity, uriInfo.getPath(), expand);
     activityInfo.setActivityStream(as);
     
     return EntityBuilder.getResponse(activityInfo.getDataEntity(), uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
@@ -145,8 +183,17 @@ public class ActivityRestResourcesV1 implements ActivityRestResources {
   @DELETE
   @Path("{id}")
   @RolesAllowed("users")
-  public Response deleteActivityById(@Context UriInfo uriInfo) throws Exception {
-    String id = RestUtils.getPathParam(uriInfo, "id");
+  @ApiOperation(value = "Delete acitivty y Id",
+                httpMethod = "DELETE",
+                response = Response.class,
+                notes = "This can only be done by the logged in user.")
+  @ApiResponses(value = { 
+    @ApiResponse (code = 200, message = "Given request activity deleted successfully"),
+    @ApiResponse (code = 500, message = "Internal server error"),
+    @ApiResponse (code = 400, message = "Invalid query input to delete activity.") })
+  public Response deleteActivityById(@Context UriInfo uriInfo,
+                                     @ApiParam(value = "activity id", required = true) @PathParam("id") String id,
+                                     @ApiParam(value = "Expand param : ask for a full representation of a subresource", required = false) @QueryParam("expand") String expand) throws Exception {
     
     String authenticatedUser = ConversationState.getCurrent().getIdentity().getUserId();
     Identity currentUser = CommonsUtils.getService(IdentityManager.class).getOrCreateIdentity(OrganizationIdentityProvider.NAME, authenticatedUser, true);
@@ -158,7 +205,7 @@ public class ActivityRestResourcesV1 implements ActivityRestResources {
     }
     //
     DataEntity as = EntityBuilder.getActivityStream(activity, currentUser);
-    ActivityEntity activityEntity = EntityBuilder.buildEntityFromActivity(activity, uriInfo.getPath(), RestUtils.getQueryParam(uriInfo, "expand"));
+    ActivityEntity activityEntity = EntityBuilder.buildEntityFromActivity(activity, uriInfo.getPath(), expand);
     activityEntity.setActivityStream(as);
     //
     activityManager.deleteActivity(activity);
@@ -168,14 +215,22 @@ public class ActivityRestResourcesV1 implements ActivityRestResources {
   @GET
   @Path("{id}/comments")
   @RolesAllowed("users")
-  public Response getCommentsOfActivity(@Context UriInfo uriInfo) throws Exception {
-    String id = RestUtils.getPathParam(uriInfo, "id");
+  @ApiOperation(value = "Get comments of an activity",
+                httpMethod = "GET",
+                response = Response.class,
+                notes = "This can only be done by the logged in user.")
+  @ApiResponses(value = { 
+    @ApiResponse (code = 200, message = "Given request comments of an activity found"),
+    @ApiResponse (code = 500, message = "Internal server error"),
+    @ApiResponse (code = 400, message = "Invalid query input to find comments of an activity.") })
+  public Response getCommentsOfActivity(@Context UriInfo uriInfo,
+                                        @ApiParam(value = "activity id", required = true) @PathParam("id") String id,
+                                        @ApiParam(value = "Offset", required = false, defaultValue = "0") @QueryParam("offset") int offset,
+                                        @ApiParam(value = "Limit", required = false, defaultValue = "20") @QueryParam("limit") int limit,
+                                        @ApiParam(value = "Expand param : ask for a full representation of a subresource", required = false) @QueryParam("expand") String expand) throws Exception {
     
     String authenticatedUser = ConversationState.getCurrent().getIdentity().getUserId();
     Identity currentUser = CommonsUtils.getService(IdentityManager.class).getOrCreateIdentity(OrganizationIdentityProvider.NAME, authenticatedUser, true);
-    
-    int limit = RestUtils.getLimit(uriInfo);
-    int offset = RestUtils.getOffset(uriInfo);
     
     ActivityManager activityManager = CommonsUtils.getService(ActivityManager.class);
     ExoSocialActivity activity = activityManager.getActivity(id);
@@ -186,7 +241,7 @@ public class ActivityRestResourcesV1 implements ActivityRestResources {
     if (EntityBuilder.getActivityStream(activity, currentUser) == null) { //current user doesn't have permission to view activity
       throw new WebApplicationException(Response.Status.UNAUTHORIZED);
     }
-    List<DataEntity> commentsEntity = EntityBuilder.buildEntityFromComment(activity, uriInfo.getPath(), RestUtils.getQueryParam(uriInfo, "expand"), offset, limit);
+    List<DataEntity> commentsEntity = EntityBuilder.buildEntityFromComment(activity, uriInfo.getPath(), expand, offset, limit);
     CollectionEntity collectionComment = new CollectionEntity(commentsEntity, EntityBuilder.COMMENTS_TYPE, offset, limit);    
     //
     return EntityBuilder.getResponse(collectionComment, uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
@@ -196,12 +251,22 @@ public class ActivityRestResourcesV1 implements ActivityRestResources {
   @Path("{id}/comments")
   @Produces(MediaType.APPLICATION_JSON)
   @RolesAllowed("users")
+  @ApiOperation(value = "Post comment on activity",
+                httpMethod = "POST",
+                response = Response.class,
+                notes = "This can only be done by the logged in user.")
+  @ApiResponses(value = { 
+    @ApiResponse (code = 200, message = "Given request to post comment successfully"),
+    @ApiResponse (code = 500, message = "Internal server error"),
+    @ApiResponse (code = 400, message = "Invalid query input to post comment.") })
   public Response postComment(@Context UriInfo uriInfo,
-                               CommentEntity model) throws Exception {
+                              @ApiParam(value = "activity id", required = true) @PathParam("id") String id,
+                              @ApiParam(value = "Expand param : ask for a full representation of a subresource", required = false) @QueryParam("expand") String expand,
+                              @ApiParam(value = "Comment object to post", required = true) CommentEntity model) throws Exception {
+    
     if (model == null || model.getBody() == null || model.getBody().length() == 0) {
       throw new WebApplicationException(Response.Status.UNAUTHORIZED);
     }
-    String id = RestUtils.getPathParam(uriInfo, "id");
     
     String authenticatedUser = ConversationState.getCurrent().getIdentity().getUserId();
     Identity currentUser = CommonsUtils.getService(IdentityManager.class).getOrCreateIdentity(OrganizationIdentityProvider.NAME, authenticatedUser, true);
@@ -222,6 +287,6 @@ public class ActivityRestResourcesV1 implements ActivityRestResources {
     comment.setUserId(currentUser.getId());
     activityManager.saveComment(activity, comment);
     
-    return EntityBuilder.getResponse(EntityBuilder.buildEntityFromActivity(activityManager.getActivity(comment.getId()), uriInfo.getPath(), RestUtils.getQueryParam(uriInfo, "expand")), uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
+    return EntityBuilder.getResponse(EntityBuilder.buildEntityFromActivity(activityManager.getActivity(comment.getId()), uriInfo.getPath(), expand), uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
   }
 }

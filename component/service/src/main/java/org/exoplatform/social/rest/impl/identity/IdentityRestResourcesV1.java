@@ -25,6 +25,8 @@ import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
@@ -48,7 +50,14 @@ import org.exoplatform.social.rest.entity.DataEntity;
 import org.exoplatform.social.rest.entity.IdentityEntity;
 import org.exoplatform.social.service.rest.api.VersionResources;
 
+import com.wordnik.swagger.annotations.Api;
+import com.wordnik.swagger.annotations.ApiOperation;
+import com.wordnik.swagger.annotations.ApiParam;
+import com.wordnik.swagger.annotations.ApiResponse;
+import com.wordnik.swagger.annotations.ApiResponses;
+
 @Path(VersionResources.VERSION_ONE + "/social/identities")
+@Api(value=VersionResources.VERSION_ONE + "/social/identities", description = "Operations eXo social identities.")
 public class IdentityRestResourcesV1 implements IdentityRestResources {
 
   /**
@@ -56,11 +65,20 @@ public class IdentityRestResourcesV1 implements IdentityRestResources {
    */
   @GET
   @RolesAllowed("users")
-  public Response getIdentities(@Context UriInfo uriInfo) throws Exception {
-    String type = RestUtils.getQueryParam(uriInfo, "type");
-    
-    int limit = RestUtils.getLimit(uriInfo);
-    int offset = RestUtils.getOffset(uriInfo);
+  @ApiOperation(value = "Get identities",
+                httpMethod = "GET",
+                response = Response.class,
+                notes = "This can only be done by the logged in user.")
+  @ApiResponses(value = { 
+    @ApiResponse (code = 200, message = "Given request identities found"),
+    @ApiResponse (code = 500, message = "Internal server error"),
+    @ApiResponse (code = 400, message = "Invalid query input to find relationships.") })
+  public Response getIdentities(@Context UriInfo uriInfo,
+                                @ApiParam(value = "Provider type (space, organization...)", required = false) @QueryParam("type") String type,
+                                @ApiParam(value = "Offset", required = false, defaultValue = "0") @QueryParam("offset") int offset,
+                                @ApiParam(value = "Limit", required = false, defaultValue = "20") @QueryParam("limit") int limit,
+                                @ApiParam(value = "Size of returned result list.", defaultValue = "false") @QueryParam("returnSize") boolean returnSize,
+                                @ApiParam(value = "Expand param : ask for a full representation of a subresource", required = false) @QueryParam("expand") String expand) throws Exception {
     
     IdentityManager identityManager = CommonsUtils.getService(IdentityManager.class);
     String providerId = (type != null && type.equals("space")) ? SpaceIdentityProvider.NAME : OrganizationIdentityProvider.NAME;
@@ -68,10 +86,10 @@ public class IdentityRestResourcesV1 implements IdentityRestResources {
     Identity[] identities = listAccess.load(offset, limit);
     List<DataEntity> identityEntities = new ArrayList<DataEntity>();
     for (Identity identity : identities) {
-      identityEntities.add(EntityBuilder.buildEntityIdentity(identity, uriInfo.getPath(), RestUtils.getQueryParam(uriInfo, "expand")).getDataEntity());
+      identityEntities.add(EntityBuilder.buildEntityIdentity(identity, uriInfo.getPath(), expand).getDataEntity());
     }
     CollectionEntity collectionIdentity = new CollectionEntity(identityEntities, EntityBuilder.IDENTITIES_TYPE, offset, limit);
-    if(RestUtils.isReturnSize(uriInfo)) {
+    if(returnSize) {
       collectionIdentity.setSize(listAccess.getSize());
     }
 
@@ -83,14 +101,23 @@ public class IdentityRestResourcesV1 implements IdentityRestResources {
    */
   @POST
   @RolesAllowed("users")
-  public Response createIdentities(@Context UriInfo uriInfo) throws Exception {
-    String remoteId = RestUtils.getQueryParam(uriInfo, "remoteId");
-    String providerId = RestUtils.getQueryParam(uriInfo, "providerId"); 
+  @ApiOperation(value = "Create identity",
+                httpMethod = "POST",
+                response = Response.class,
+                notes = "This can only be done by the logged in user.")
+  @ApiResponses(value = { 
+    @ApiResponse (code = 200, message = "Given request created successfully"),
+    @ApiResponse (code = 500, message = "Internal server error"),
+    @ApiResponse (code = 400, message = "Invalid query input to find relationships.") })
+  public Response createIdentities(@Context UriInfo uriInfo,
+                                   @ApiParam(value = "Remote user Id", required = true) @QueryParam("remoteId") String remoteId,
+                                   @ApiParam(value = "Provider Id", required = true) @QueryParam("providerId") String providerId,
+                                   @ApiParam(value = "Expand param : ask for a full representation of a subresource", required = false) @QueryParam("expand") String expand) throws Exception {
+    
     if (!RestUtils.isMemberOfAdminGroup()) {
       throw new WebApplicationException(Response.Status.UNAUTHORIZED);
     }
-    if (providerId == null || remoteId == null 
-        || (! providerId.equals(SpaceIdentityProvider.NAME) && ! providerId.equals(OrganizationIdentityProvider.NAME))) {
+    if ((! providerId.equals(SpaceIdentityProvider.NAME) && ! providerId.equals(OrganizationIdentityProvider.NAME))) {
       throw new WebApplicationException(Response.Status.BAD_REQUEST);
     }
     IdentityManager identityManager = CommonsUtils.getService(IdentityManager.class);
@@ -99,7 +126,7 @@ public class IdentityRestResourcesV1 implements IdentityRestResources {
     if (identity.isDeleted()) {
       throw new WebApplicationException(Response.Status.FORBIDDEN);
     }
-    IdentityEntity identityInfo = EntityBuilder.buildEntityIdentity(identity, uriInfo.getPath(), RestUtils.getQueryParam(uriInfo, "expand"));
+    IdentityEntity identityInfo = EntityBuilder.buildEntityIdentity(identity, uriInfo.getPath(), expand);
     return EntityBuilder.getResponse(identityInfo, uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
   }
   
@@ -110,8 +137,17 @@ public class IdentityRestResourcesV1 implements IdentityRestResources {
   @GET
   @Path("{id}")
   @RolesAllowed("users")
-  public Response getIdentityById(@Context UriInfo uriInfo) throws Exception {
-    String id = RestUtils.getPathParam(uriInfo, "id");
+  @ApiOperation(value = "Get an identity by Id",
+                httpMethod = "GET",
+                response = Response.class,
+                notes = "This can only be done by the logged in user.")
+  @ApiResponses(value = { 
+    @ApiResponse (code = 200, message = "Given request identity found"),
+    @ApiResponse (code = 500, message = "Internal server error"),
+    @ApiResponse (code = 400, message = "Invalid query input to get identity.") })
+  public Response getIdentityById(@Context UriInfo uriInfo,
+                                  @ApiParam(value = "identity id", required = true) @PathParam("id") String id,
+                                  @ApiParam(value = "Expand param : ask for a full representation of a subresource", required = false) @QueryParam("expand") String expand) throws Exception {
     
     IdentityManager identityManager = CommonsUtils.getService(IdentityManager.class);
     Identity identity = identityManager.getIdentity(id, true);
@@ -119,7 +155,7 @@ public class IdentityRestResourcesV1 implements IdentityRestResources {
       throw new WebApplicationException(Response.Status.UNAUTHORIZED);
     }
     
-    IdentityEntity profileInfo = EntityBuilder.buildEntityIdentity(identity, uriInfo.getPath(), RestUtils.getQueryParam(uriInfo, "expand"));
+    IdentityEntity profileInfo = EntityBuilder.buildEntityIdentity(identity, uriInfo.getPath(), expand);
     return EntityBuilder.getResponse(profileInfo, uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
   }
   
@@ -130,8 +166,17 @@ public class IdentityRestResourcesV1 implements IdentityRestResources {
   @PUT
   @Path("{id}")
   @RolesAllowed("users")
-  public Response updateIdentityById(@Context UriInfo uriInfo) throws Exception {
-    String id = RestUtils.getPathParam(uriInfo, "id");
+  @ApiOperation(value = "Update an indentity by Id",
+                httpMethod = "PUT",
+                response = Response.class,
+                notes = "This can only be done by the logged in user.")
+  @ApiResponses(value = { 
+    @ApiResponse (code = 200, message = "Given request updated successfully"),
+    @ApiResponse (code = 500, message = "Internal server error"),
+    @ApiResponse (code = 400, message = "Invalid query input to update identity.") })
+  public Response updateIdentityById(@Context UriInfo uriInfo,
+                                     @ApiParam(value = "identity id", required = true) @PathParam("id") String id,
+                                     @ApiParam(value = "Expand param : ask for a full representation of a subresource", required = false) @QueryParam("expand") String expand) throws Exception {
     
     IdentityManager identityManager = CommonsUtils.getService(IdentityManager.class);
     Identity identity = identityManager.getIdentity(id, true);
@@ -141,7 +186,7 @@ public class IdentityRestResourcesV1 implements IdentityRestResources {
     
     //TODO : process to update identity
     
-    IdentityEntity profileInfo = EntityBuilder.buildEntityIdentity(identity, uriInfo.getPath(), RestUtils.getQueryParam(uriInfo, "expand"));
+    IdentityEntity profileInfo = EntityBuilder.buildEntityIdentity(identity, uriInfo.getPath(), expand);
     
     return EntityBuilder.getResponse(profileInfo, uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
   }
@@ -153,8 +198,18 @@ public class IdentityRestResourcesV1 implements IdentityRestResources {
   @DELETE
   @Path("{id}")
   @RolesAllowed("users")
-  public Response deleteIdentityById(@Context UriInfo uriInfo) throws Exception {
-    String id = RestUtils.getPathParam(uriInfo, "id");
+  @ApiOperation(value = "Delete an identity by Id",
+                httpMethod = "DELETE",
+                response = Response.class,
+                notes = "This can only be done by the logged in user.")
+  @ApiResponses(value = { 
+    @ApiResponse (code = 200, message = "Given request identity deleted successfully"),
+    @ApiResponse (code = 500, message = "Internal server error"),
+    @ApiResponse (code = 400, message = "Invalid query input to delete identity.") })
+  public Response deleteIdentityById(@Context UriInfo uriInfo,
+                                     @ApiParam(value = "identity id", required = true) @PathParam("id") String id,
+                                     @ApiParam(value = "Expand param : ask for a full representation of a subresource", required = false) @QueryParam("expand") String expand) throws Exception {
+
     if (! RestUtils.isMemberOfAdminGroup()) {
       throw new WebApplicationException(Response.Status.UNAUTHORIZED);
     }
@@ -168,7 +223,7 @@ public class IdentityRestResourcesV1 implements IdentityRestResources {
     //delete identity
     identityManager.hardDeleteIdentity(identity);
     identity = identityManager.getIdentity(id, true);
-    IdentityEntity profileInfo = EntityBuilder.buildEntityIdentity(identity, uriInfo.getPath(), RestUtils.getQueryParam(uriInfo, "expand"));
+    IdentityEntity profileInfo = EntityBuilder.buildEntityIdentity(identity, uriInfo.getPath(), expand);
 
     return EntityBuilder.getResponse(profileInfo, uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
   }
@@ -179,9 +234,21 @@ public class IdentityRestResourcesV1 implements IdentityRestResources {
   @GET
   @Path("{id}/relationships")
   @RolesAllowed("users")
-  public Response getRelationshipsOfIdentity(@Context UriInfo uriInfo) throws Exception {
-    String id = RestUtils.getPathParam(uriInfo, "id");
-    String with = RestUtils.getQueryParam(uriInfo, "with");
+  @ApiOperation(value = "Get relationships",
+                httpMethod = "GET",
+                response = Response.class,
+                notes = "This can only be done by the logged in user.")
+  @ApiResponses(value = { 
+    @ApiResponse (code = 200, message = "Given request relationships found"),
+    @ApiResponse (code = 500, message = "Internal server error"),
+    @ApiResponse (code = 400, message = "Invalid query input to find relationships.") })
+  public Response getRelationshipsOfIdentity(@Context UriInfo uriInfo,
+                                             @ApiParam(value = "identity id", required = true) @PathParam("id") String id,
+                                             @ApiParam(value = "id identity to get relationship") @QueryParam("with") String with,
+                                             @ApiParam(value = "Size of returned result list.", defaultValue = "false") @QueryParam("returnSize") boolean returnSize,
+                                             @ApiParam(value = "Offset", required = false, defaultValue = "0") @QueryParam("offset") int offset,
+                                             @ApiParam(value = "Limit", required = false, defaultValue = "20") @QueryParam("limit") int limit,
+                                             @ApiParam(value = "Expand param : ask for a full representation of a subresource", required = false) @QueryParam("expand") String expand) throws Exception {
     
     IdentityManager identityManager = CommonsUtils.getService(IdentityManager.class);
     Identity identity = identityManager.getIdentity(id, true);
@@ -202,17 +269,14 @@ public class IdentityRestResourcesV1 implements IdentityRestResources {
         throw new WebApplicationException(Response.Status.UNAUTHORIZED);
       }
       return EntityBuilder.getResponse(EntityBuilder.buildEntityRelationship(relationship, uriInfo.getPath(),
-                                                                             RestUtils.getQueryParam(uriInfo, "expand"), false),
+                                                                             expand, false),
                                                                              uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
     }
-
-    int limit = RestUtils.getLimit(uriInfo);
-    int offset = RestUtils.getOffset(uriInfo);
 
     List<Relationship> relationships = relationshipManager.getRelationshipsByStatus(identity, Relationship.Type.ALL, offset, limit);
     List<DataEntity> relationshipEntities = EntityBuilder.buildRelationshipEntities(relationships, uriInfo);
     CollectionEntity collectionRelationship = new CollectionEntity(relationshipEntities, RestProperties.RELATIONSHIPS, offset, limit);
-    if (RestUtils.isReturnSize(uriInfo)) {
+    if (returnSize) {
       collectionRelationship.setSize(relationshipManager.getRelationshipsCountByStatus(identity, Relationship.Type.ALL));
     }
     return EntityBuilder.getResponse(collectionRelationship, uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);

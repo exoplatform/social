@@ -26,6 +26,8 @@ import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
@@ -48,7 +50,14 @@ import org.exoplatform.social.rest.entity.DataEntity;
 import org.exoplatform.social.rest.entity.SpaceMembershipEntity;
 import org.exoplatform.social.service.rest.api.VersionResources;
 
+import com.wordnik.swagger.annotations.Api;
+import com.wordnik.swagger.annotations.ApiOperation;
+import com.wordnik.swagger.annotations.ApiParam;
+import com.wordnik.swagger.annotations.ApiResponse;
+import com.wordnik.swagger.annotations.ApiResponses;
+
 @Path(VersionResources.VERSION_ONE + "/social/spacesMemberships")
+@Api(value=VersionResources.VERSION_ONE + "/social/spacesMemberships", description = "Operations membership of space.")
 public class SpaceMembershipRestResourcesV1 implements SpaceMembershipRestResources {
   
   private static final String SPACE_PREFIX = "/space/";
@@ -62,14 +71,25 @@ public class SpaceMembershipRestResourcesV1 implements SpaceMembershipRestResour
 
   @GET
   @RolesAllowed("users")
-  public Response getSpacesMemberships(@Context UriInfo uriInfo) throws Exception {
-    //
-    int limit = RestUtils.getLimit(uriInfo);
-    int offset = RestUtils.getOffset(uriInfo);
+  @ApiOperation(value = "Get space memberships",
+                httpMethod = "GET",
+                response = Response.class,
+                notes = "This can only be done by the logged in user.")
+  @ApiResponses(value = { 
+    @ApiResponse (code = 200, message = "Given request membership found"),
+    @ApiResponse (code = 404, message = "Not found membership of space"),
+    @ApiResponse (code = 500, message = "Internal server error"),
+    @ApiResponse (code = 400, message = "Invalid query input to find memberships.") })
+  public Response getSpacesMemberships(@Context UriInfo uriInfo,
+                                       @ApiParam(value = "Space name to get membership", required = true) @QueryParam("space") String space,
+                                       @ApiParam(value = "User name to get membership", required = true) @QueryParam("user") String user,
+                                       @ApiParam(value = "Offset", required = false, defaultValue = "0") @QueryParam("offset") int offset,
+                                       @ApiParam(value = "Limit", required = false, defaultValue = "20") @QueryParam("limit") int limit,
+                                       @ApiParam(value = "Expand param : ask for a full representation of a subresource", required = false) @QueryParam("expand") String expand,
+                                       @ApiParam(value = "Size of returned result list.", defaultValue = "false") @QueryParam("returnSize") boolean returnSize) throws Exception {
 
     SpaceService spaceService = CommonsUtils.getService(SpaceService.class);
     Space givenSpace = null;
-    String space= RestUtils.getQueryParam(uriInfo, "space");
     if (space != null) {
       givenSpace = spaceService.getSpaceByDisplayName(space);
       if (givenSpace == null) {
@@ -79,7 +99,6 @@ public class SpaceMembershipRestResourcesV1 implements SpaceMembershipRestResour
     
     IdentityManager identityManager = CommonsUtils.getService(IdentityManager.class);
     Identity identity = null;
-    String user = RestUtils.getQueryParam(uriInfo, "user");
     if (user != null) {
       identity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, user, true);
       if (identity == null) {
@@ -94,13 +113,13 @@ public class SpaceMembershipRestResourcesV1 implements SpaceMembershipRestResour
     if (givenSpace == null) {
       listAccess = (identity == null) ? spaceService.getAllSpacesWithListAccess() : spaceService.getMemberSpaces(user);
       spaces = Arrays.asList(listAccess.load(offset, limit));
-      size = RestUtils.isReturnSize(uriInfo) ? listAccess.getSize() : -1;
+      size = returnSize ? listAccess.getSize() : -1;
     } else {
       spaces.add(givenSpace);
-      size = RestUtils.isReturnSize(uriInfo) ? spaces.size() : -1;
+      size = returnSize ? spaces.size() : -1;
     }
     
-    List<DataEntity> spaceMemberships = getSpaceMemberships(spaces, user, uriInfo);
+    List<DataEntity> spaceMemberships = getSpaceMemberships(spaces, user, uriInfo.getPath(), expand);
     CollectionEntity spacesMemberships = new CollectionEntity(spaceMemberships, EntityBuilder.SPACES_MEMBERSHIP_TYPE, offset, limit);
     spacesMemberships.setSize(size);
     return EntityBuilder.getResponse(spacesMemberships, uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
@@ -108,8 +127,18 @@ public class SpaceMembershipRestResourcesV1 implements SpaceMembershipRestResour
   
   @POST
   @RolesAllowed("users")
+  @ApiOperation(value = "Add space memberships",
+                httpMethod = "POST",
+                response = Response.class,
+                notes = "This can only be done by the logged in user.")
+  @ApiResponses(value = { 
+    @ApiResponse (code = 200, message = "Given request membership added successfully"),
+    @ApiResponse (code = 500, message = "Internal server error"),
+    @ApiResponse (code = 400, message = "Invalid query input to add memberships.") })
   public Response addSpacesMemberships(@Context UriInfo uriInfo,
-                                        SpaceMembershipEntity model) throws Exception {
+                                       @ApiParam(value = "Expand param : ask for a full representation of a subresource", required = false) @QueryParam("expand") String expand,
+                                       @ApiParam(value = "Created space membership object", required = true) SpaceMembershipEntity model) throws Exception {
+
     if (model == null || model.getUser() == null || model.getSpace() == null) {
       throw new WebApplicationException(Response.Status.UNAUTHORIZED);
     }
@@ -137,15 +166,24 @@ public class SpaceMembershipRestResourcesV1 implements SpaceMembershipRestResour
     } else {
       throw new WebApplicationException(Response.Status.UNAUTHORIZED);
     }
-    SpaceMembershipEntity membershipEntity = EntityBuilder.buildEntityFromSpaceMembership(givenSpace, user, "", uriInfo.getPath(),
-                                                                                          RestUtils.getQueryParam(uriInfo, "expand"));
+    SpaceMembershipEntity membershipEntity = EntityBuilder.buildEntityFromSpaceMembership(givenSpace, user, "", uriInfo.getPath(), expand);
     return EntityBuilder.getResponse(membershipEntity, uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
   }
   
   @GET
   @Path("{id}") //id must have this format spaceName:userName:type
   @RolesAllowed("users")
-  public Response getSpaceMembershipById(@Context UriInfo uriInfo) throws Exception {
+  @ApiOperation(value = "Get space memberships by id",
+                httpMethod = "GET",
+                response = Response.class,
+                notes = "This can only be done by the logged in user.")
+  @ApiResponses(value = { 
+    @ApiResponse (code = 200, message = "Given request membership found"),
+    @ApiResponse (code = 404, message = "Not found membership of space"),
+    @ApiResponse (code = 500, message = "Internal server error due to encoding the data") })
+  public Response getSpaceMembershipById(@Context UriInfo uriInfo,
+                                         @ApiParam(value = "id in format spaceName:userName:type", required = true) @PathParam("id") String id,
+                                         @ApiParam(value = "Expand param : ask for a full representation of a subresource", required = false) @QueryParam("expand") String expand) throws Exception {
     String[] idParams = RestUtils.getPathParam(uriInfo, "id").split(":");
     if (idParams.length != 3) {
       throw new WebApplicationException(Response.Status.UNAUTHORIZED);
@@ -168,15 +206,24 @@ public class SpaceMembershipRestResourcesV1 implements SpaceMembershipRestResour
     }
     //
     SpaceMembershipEntity membershipEntity = EntityBuilder.buildEntityFromSpaceMembership(space, idParams[1], idParams[2], uriInfo.getPath(),
-                                                                                          RestUtils.getQueryParam(uriInfo, "expand"));
+                                                                                          expand);
     return EntityBuilder.getResponse(membershipEntity, uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
   }
   
   @PUT
   @Path("{id}")
   @RolesAllowed("users")
+  @ApiOperation(value = "Update space memberships by id",
+                httpMethod = "PUT",
+                response = Response.class,
+                notes = "This can only be done by the logged in user.")
+  @ApiResponses(value = { 
+    @ApiResponse (code = 200, message = "Given request membership updated successfully"),
+    @ApiResponse (code = 500, message = "Internal server error due to encoding the data") })
   public Response updateSpaceMembershipById(@Context UriInfo uriInfo,
-                                            SpaceMembershipEntity model) throws Exception {
+                                            @ApiParam(value = "id in format spaceName:userName:type", required = true) @PathParam("id") String id,
+                                            @ApiParam(value = "Expand param : ask for a full representation of a subresource", required = false) @QueryParam("expand") String expand,
+                                            @ApiParam(value = "Updated space membership object", required = true) SpaceMembershipEntity model) throws Exception {
     String[] idParams = RestUtils.getPathParam(uriInfo, "id").split(":");
     if (idParams.length != 3) {
       throw new WebApplicationException(Response.Status.UNAUTHORIZED);
@@ -210,14 +257,24 @@ public class SpaceMembershipRestResourcesV1 implements SpaceMembershipRestResour
     //
     String role = idParams[2];
     SpaceMembershipEntity membershipEntity = EntityBuilder.buildEntityFromSpaceMembership(space, targetUser, role, uriInfo.getPath(),
-                                                                                          RestUtils.getQueryParam(uriInfo, "expand"));    
+                                                                                          expand);    
     return EntityBuilder.getResponse(membershipEntity, uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
   }
   
   @DELETE
   @Path("{id}")
   @RolesAllowed("users")
-  public Response deleteSpaceMembershipById(@Context UriInfo uriInfo) throws Exception {
+  @ApiOperation(value = "Delete space memberships by id",
+                httpMethod = "DELETE",
+                response = Response.class,
+                notes = "This can only be done by the logged in user.")
+  @ApiResponses(value = { 
+    @ApiResponse (code = 200, message = "Given request membership deleted successfully"),
+    @ApiResponse (code = 404, message = "Not found membership of space"),
+    @ApiResponse (code = 500, message = "Internal server error due to encoding the data") })
+  public Response deleteSpaceMembershipById(@Context UriInfo uriInfo,
+                                            @ApiParam(value = "id in format spaceName:userName:type", required = true) @PathParam("id") String id,
+                                            @ApiParam(value = "Expand param : ask for a full representation of a subresource", required = false) @QueryParam("expand") String expand) throws Exception {
     String[] idParams = RestUtils.getPathParam(uriInfo, "id").split(":");
     if (idParams.length != 3) {
       throw new WebApplicationException(Response.Status.UNAUTHORIZED);
@@ -254,30 +311,30 @@ public class SpaceMembershipRestResourcesV1 implements SpaceMembershipRestResour
     }
     //
     SpaceMembershipEntity membershipEntity = EntityBuilder.buildEntityFromSpaceMembership(space, targetUser, role, uriInfo.getPath(),
-                                                                                          RestUtils.getQueryParam(uriInfo, "expand"));    
+                                                                                          expand);    
     return EntityBuilder.getResponse(membershipEntity, uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
   }
   
-  private List<DataEntity> getSpaceMemberships(List<Space> spaces, String userId, UriInfo uriInfo) {
+  private List<DataEntity> getSpaceMemberships(List<Space> spaces, String userId, String path, String expand) {
     List<DataEntity> spaceMemberships = new ArrayList<DataEntity>();
     SpaceMembershipEntity membershipEntity = null;
     for (Space space : spaces) {
       if (userId != null) {
         if (ArrayUtils.contains(space.getMembers(), userId)) {
-          membershipEntity = EntityBuilder.buildEntityFromSpaceMembership(space, userId, "member", uriInfo.getPath(), RestUtils.getQueryParam(uriInfo, "expand"));
+          membershipEntity = EntityBuilder.buildEntityFromSpaceMembership(space, userId, "member", path, expand);
           spaceMemberships.add(membershipEntity.getDataEntity());
         }
         if (ArrayUtils.contains(space.getManagers(), userId)) {
-          membershipEntity = EntityBuilder.buildEntityFromSpaceMembership(space, userId, "manager", uriInfo.getPath(), RestUtils.getQueryParam(uriInfo, "expand"));
+          membershipEntity = EntityBuilder.buildEntityFromSpaceMembership(space, userId, "manager", path, expand);
           spaceMemberships.add(membershipEntity.getDataEntity());
         }
       } else {
         for (String user : space.getMembers()) {
-          membershipEntity = EntityBuilder.buildEntityFromSpaceMembership(space, user, "member", uriInfo.getPath(), RestUtils.getQueryParam(uriInfo, "expand"));
+          membershipEntity = EntityBuilder.buildEntityFromSpaceMembership(space, user, "member", path, expand);
           spaceMemberships.add(membershipEntity.getDataEntity());
         }
         for (String user : space.getManagers()) {
-          membershipEntity = EntityBuilder.buildEntityFromSpaceMembership(space, user, "manager", uriInfo.getPath(), RestUtils.getQueryParam(uriInfo, "expand"));
+          membershipEntity = EntityBuilder.buildEntityFromSpaceMembership(space, user, "manager", path, expand);
           spaceMemberships.add(membershipEntity.getDataEntity());
         }
       }
