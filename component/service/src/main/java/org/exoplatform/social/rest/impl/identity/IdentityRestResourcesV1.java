@@ -74,7 +74,7 @@ public class IdentityRestResourcesV1 implements IdentityRestResources {
     @ApiResponse (code = 500, message = "Internal server error"),
     @ApiResponse (code = 400, message = "Invalid query input to find relationships.") })
   public Response getIdentities(@Context UriInfo uriInfo,
-                                @ApiParam(value = "Provider type (space, organization...)", required = false) @QueryParam("type") String type,
+                                @ApiParam(value = "Provider type (space, organization...)", required = false, defaultValue="organization") @QueryParam("type") String type,
                                 @ApiParam(value = "Offset", required = false, defaultValue = "0") @QueryParam("offset") int offset,
                                 @ApiParam(value = "Limit", required = false, defaultValue = "20") @QueryParam("limit") int limit,
                                 @ApiParam(value = "Size of returned result list.", defaultValue = "false") @QueryParam("returnSize") boolean returnSize,
@@ -259,7 +259,7 @@ public class IdentityRestResourcesV1 implements IdentityRestResources {
     RelationshipManager relationshipManager = CommonsUtils.getService(RelationshipManager.class);
     
     if (with != null && with.length() > 0) {
-      Identity withUser = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, with, true);
+      Identity withUser = identityManager.getIdentity(with, true);
       if (withUser == null) {
         throw new WebApplicationException(Response.Status.UNAUTHORIZED);
       }

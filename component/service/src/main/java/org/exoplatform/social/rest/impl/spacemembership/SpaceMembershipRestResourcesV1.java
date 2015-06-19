@@ -81,7 +81,7 @@ public class SpaceMembershipRestResourcesV1 implements SpaceMembershipRestResour
     @ApiResponse (code = 500, message = "Internal server error"),
     @ApiResponse (code = 400, message = "Invalid query input to find memberships.") })
   public Response getSpacesMemberships(@Context UriInfo uriInfo,
-                                       @ApiParam(value = "Space name to get membership", required = true) @QueryParam("space") String space,
+                                       @ApiParam(value = "Space name to get membership. Ex: my space", required = true) @QueryParam("space") String space,
                                        @ApiParam(value = "User name to get membership", required = true) @QueryParam("user") String user,
                                        @ApiParam(value = "Offset", required = false, defaultValue = "0") @QueryParam("offset") int offset,
                                        @ApiParam(value = "Limit", required = false, defaultValue = "20") @QueryParam("limit") int limit,
@@ -137,7 +137,12 @@ public class SpaceMembershipRestResourcesV1 implements SpaceMembershipRestResour
     @ApiResponse (code = 400, message = "Invalid query input to add memberships.") })
   public Response addSpacesMemberships(@Context UriInfo uriInfo,
                                        @ApiParam(value = "Expand param : ask for a full representation of a subresource", required = false) @QueryParam("expand") String expand,
-                                       @ApiParam(value = "Created space membership object", required = true) SpaceMembershipEntity model) throws Exception {
+                                       @ApiParam(value = "Created space membership object. Ex: {<br />" +
+                                                                                               "<br />\"role\": \"manager\"," +
+                                                                                               "<br />\"user\": \"usera\"," +
+                                                                                               "<br />\"space\": \"my space\"" +
+                                                                                               "<br />}" 
+                                                 , required = true) SpaceMembershipEntity model) throws Exception {
 
     if (model == null || model.getUser() == null || model.getSpace() == null) {
       throw new WebApplicationException(Response.Status.UNAUTHORIZED);
@@ -182,7 +187,7 @@ public class SpaceMembershipRestResourcesV1 implements SpaceMembershipRestResour
     @ApiResponse (code = 404, message = "Not found membership of space"),
     @ApiResponse (code = 500, message = "Internal server error due to encoding the data") })
   public Response getSpaceMembershipById(@Context UriInfo uriInfo,
-                                         @ApiParam(value = "id in format spaceName:userName:type", required = true) @PathParam("id") String id,
+                                         @ApiParam(value = "id in format spaceName:userName:role. Ex: my_space:root:manager", required = true) @PathParam("id") String id,
                                          @ApiParam(value = "Expand param : ask for a full representation of a subresource", required = false) @QueryParam("expand") String expand) throws Exception {
     String[] idParams = RestUtils.getPathParam(uriInfo, "id").split(":");
     if (idParams.length != 3) {

@@ -303,7 +303,9 @@ public class SpaceRestResourcesV1 implements SpaceRestResources {
     String[] users = (role != null && role.equals("manager")) ? space.getManagers() : space.getMembers();
     int size = users.length;
     //
-    users = Arrays.copyOfRange(users, offset > size - 1 ? size - 1 : offset, (offset + limit > size) ? size : (offset + limit));
+    if (limit > 0) {
+      users = Arrays.copyOfRange(users, offset > size - 1 ? size - 1 : offset, (offset + limit > size) ? size : (offset + limit));
+    }
     List<DataEntity> profileInfos = EntityBuilder.buildEntityProfiles(users, uriInfo.getPath(), expand);
     CollectionEntity collectionUser = new CollectionEntity(profileInfos, EntityBuilder.USERS_TYPE, offset, limit);
     if (returnSize) {
@@ -330,8 +332,8 @@ public class SpaceRestResourcesV1 implements SpaceRestResources {
       @ApiParam(value = "space id", required = true) @PathParam("id") String id,
       @ApiParam(value = "Offset", required = false, defaultValue = "0") @QueryParam("offset") int offset,
       @ApiParam(value = "Limit", required = false, defaultValue = "20") @QueryParam("limit") int limit,
-      @ApiParam(value = "Older base time to load activity", required = false) @QueryParam("before") long before,
-      @ApiParam(value = "Newer base time to load activity.", required = false) @QueryParam("after") long after,
+      @ApiParam(value = "Older base time to load activity (yyyy-MM-dd HH:mm:ss)", required = false) @QueryParam("before") String before,
+      @ApiParam(value = "Newer base time to load activity (yyyy-MM-dd HH:mm:ss)", required = false) @QueryParam("after") String after,
       @ApiParam(value = "Size of returned result list.", defaultValue = "false") @QueryParam("returnSize") boolean returnSize,
       @ApiParam(value = "Expand param : ask for a full representation of a subresource", required = false) @QueryParam("expand") String expand) throws Exception {
     
@@ -346,10 +348,10 @@ public class SpaceRestResourcesV1 implements SpaceRestResources {
     Identity spaceIdentity = CommonsUtils.getService(IdentityManager.class).getOrCreateIdentity(SpaceIdentityProvider.NAME, space.getPrettyName(), false);
     RealtimeListAccess<ExoSocialActivity> listAccess = CommonsUtils.getService(ActivityManager.class).getActivitiesOfSpaceWithListAccess(spaceIdentity);
     List<ExoSocialActivity> activities = null;
-    if (after > 0) {
-      activities = listAccess.loadNewer(after, limit);
-    } else if (before > 0) {
-      activities = listAccess.loadOlder(before, limit);
+    if (after != null && RestUtils.getBaseTime(after) > 0) {
+      activities = listAccess.loadNewer(RestUtils.getBaseTime(after), limit);
+    } else if (before != null && RestUtils.getBaseTime(before) > 0) {
+      activities = listAccess.loadOlder(RestUtils.getBaseTime(before), limit);
     } else {
       activities = listAccess.loadAsList(offset, limit);
     }

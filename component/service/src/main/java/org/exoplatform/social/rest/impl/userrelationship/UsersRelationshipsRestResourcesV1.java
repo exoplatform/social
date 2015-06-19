@@ -137,7 +137,7 @@ public class UsersRelationshipsRestResourcesV1 implements UsersRelationshipsRest
     @ApiResponse (code = 400, message = "Invalid query input to create user relationship.") })
   public Response createUsersRelationships(@Context UriInfo uriInfo,
                                            @ApiParam(value = "Expand param : ask for a full representation of a subresource", required = false) @QueryParam("expand") String expand,
-                                           @ApiParam(value = "Created relationship object", required = true) RelationshipEntity model) throws Exception {
+                                           @ApiParam(value = "Created relationship object. Sender(username), Receiver(username) and Status(pending, confirmed, ignored)) are required.", required = true) RelationshipEntity model) throws Exception {
     if (model == null || model.getReceiver() == null || model.getSender() == null) {
       throw new WebApplicationException(Response.Status.UNAUTHORIZED);
     }
@@ -157,7 +157,7 @@ public class UsersRelationshipsRestResourcesV1 implements UsersRelationshipsRest
     Relationship.Type status = model.getStatus() != null && model.getStatus().equalsIgnoreCase("pending") ? Relationship.Type.PENDING : Relationship.Type.CONFIRMED;
     RelationshipManager relationshipManager = CommonsUtils.getService(RelationshipManager.class);
     if (relationshipManager.get(sender, receiver) != null) {
-      throw new WebApplicationException(Response.Status.UNAUTHORIZED);
+      throw new WebApplicationException(Response.Status.PRECONDITION_FAILED);
     }
     Relationship relationship = new Relationship(sender, receiver, status);
     relationshipManager.update(relationship);
@@ -217,7 +217,7 @@ public class UsersRelationshipsRestResourcesV1 implements UsersRelationshipsRest
     
     Relationship.Type status;
     try {
-      status = Relationship.Type.valueOf(model.getStatus());
+      status = Relationship.Type.valueOf(model.getStatus().toUpperCase());
     } catch (Exception e) {
       throw new WebApplicationException(Response.Status.UNAUTHORIZED);
     }

@@ -128,7 +128,7 @@ public class EntityBuilder {
   public static UserEntity buildEntityProfile(Profile profile, String restPath, String expand) {
     UserEntity userEntity = new UserEntity(profile.getId());
     userEntity.setHref(RestUtils.getRestUrl(USERS_TYPE, profile.getIdentity().getRemoteId(), restPath));
-    userEntity.setIdentity(RestUtils.getRestUrl(IDENTITIES_TYPE, profile.getIdentity().getRemoteId(), restPath));
+    userEntity.setIdentity(RestUtils.getRestUrl(IDENTITIES_TYPE, profile.getIdentity().getId(), restPath));
     userEntity.setUsername(profile.getIdentity().getRemoteId());
     userEntity.setFirstname(profile.getProperty(Profile.FIRST_NAME).toString());
     userEntity.setLastname(profile.getProperty(Profile.LAST_NAME).toString());
@@ -411,7 +411,7 @@ public class EntityBuilder {
       SpaceService spaceService = CommonsUtils.getService(SpaceService.class);
       owner = identityManager.getOrCreateIdentity(SpaceIdentityProvider.NAME, activity.getStreamOwner(), true);
       Space space = spaceService.getSpaceByPrettyName(owner.getRemoteId());
-      if (!spaceService.isMember(space, authentiatedUsed.getRemoteId())) { //the viewer is not member of space
+      if (space == null || !spaceService.isMember(space, authentiatedUsed.getRemoteId())) { //the viewer is not member of space
         return null;
       }
       as.put(RestProperties.TYPE, SPACE_ACTIVITY_TYPE);

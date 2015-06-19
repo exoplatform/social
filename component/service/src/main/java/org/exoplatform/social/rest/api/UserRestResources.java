@@ -107,8 +107,8 @@ public interface UserRestResources extends SocialRest {
                                                @PathParam("id") String id,
                                                @QueryParam("offset") int offset,
                                                @QueryParam("limit") int limit,
-                                               @QueryParam("before") long before,
-                                               @QueryParam("after") long after,
+                                               @QueryParam("before") String before,
+                                               @QueryParam("after") String after,
                                                @QueryParam("returnSize") boolean returnSize,
                                                @QueryParam("expand") String expand) throws Exception;
 

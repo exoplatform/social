@@ -17,10 +17,13 @@
 
 package org.exoplatform.social.rest.api;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.TimeZone;
 
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
@@ -212,5 +215,12 @@ public class RestUtils {
       }
     }
     return outEntity;
+  }
+  
+  public static long getBaseTime(String baseDateTime) throws ParseException {
+    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
+    Date date = sdf.parse(baseDateTime);
+    return date.getTime(); 
   }
 }

@@ -83,7 +83,7 @@ public class ActivityRestResourcesV1 implements ActivityRestResources {
     Identity currentUser = CommonsUtils.getService(IdentityManager.class).getOrCreateIdentity(OrganizationIdentityProvider.NAME, authenticatedUser, true);
 
     ActivityManager activityManager = CommonsUtils.getService(ActivityManager.class);
-    RealtimeListAccess<ExoSocialActivity> listAccess = activityManager.getActivitiesWithListAccess(currentUser);
+    RealtimeListAccess<ExoSocialActivity> listAccess = activityManager.getActivityFeedWithListAccess(currentUser);
     List<ExoSocialActivity> activities = listAccess.loadAsList(offset, limit);
     
     List<DataEntity> activityEntities = new ArrayList<DataEntity>();
@@ -262,7 +262,7 @@ public class ActivityRestResourcesV1 implements ActivityRestResources {
   public Response postComment(@Context UriInfo uriInfo,
                               @ApiParam(value = "activity id", required = true) @PathParam("id") String id,
                               @ApiParam(value = "Expand param : ask for a full representation of a subresource", required = false) @QueryParam("expand") String expand,
-                              @ApiParam(value = "Comment object to post", required = true) CommentEntity model) throws Exception {
+                              @ApiParam(value = "Comment object to post. Ex: { \"body\" : \"post comment on activity\"}", required = true) CommentEntity model) throws Exception {
     
     if (model == null || model.getBody() == null || model.getBody().length() == 0) {
       throw new WebApplicationException(Response.Status.UNAUTHORIZED);

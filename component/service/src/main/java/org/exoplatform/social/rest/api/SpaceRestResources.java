@@ -132,8 +132,8 @@ public interface SpaceRestResources extends SocialRest {
                                                   @PathParam("id") String id,
                                                   @QueryParam("offset") int offset,
                                                   @QueryParam("limit") int limit,
-                                                  @QueryParam("before") long before,
-                                                  @QueryParam("after") long after,
+                                                  @QueryParam("before") String before,
+                                                  @QueryParam("after") String after,
       @ApiParam(value = "Size of returned result list.", defaultValue = "false") @QueryParam("returnSize") boolean returnSize,
       @ApiParam(value = "Expand param : ask for a full representation of a subresource", required = false) @QueryParam("expand") String expand) throws Exception;
 
