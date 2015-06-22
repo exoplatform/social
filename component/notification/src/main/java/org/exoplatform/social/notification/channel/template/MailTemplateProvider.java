@@ -18,10 +18,7 @@ package org.exoplatform.social.notification.channel.template;
 
 import java.io.IOException;
 import java.io.Writer;
-import java.util.Arrays;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.exoplatform.commons.api.notification.NotificationContext;
@@ -36,6 +33,7 @@ import org.exoplatform.commons.api.notification.plugin.NotificationPluginUtils;
 import org.exoplatform.commons.api.notification.service.template.TemplateContext;
 import org.exoplatform.commons.notification.NotificationUtils;
 import org.exoplatform.commons.notification.template.TemplateUtils;
+import org.exoplatform.container.PortalContainer;
 import org.exoplatform.container.xml.InitParams;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.identity.model.Identity;
@@ -43,6 +41,7 @@ import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
 import org.exoplatform.social.core.manager.IdentityManager;
+import org.exoplatform.social.core.processor.I18NActivityProcessor;
 import org.exoplatform.social.core.relationship.model.Relationship;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.notification.LinkProviderUtils;
@@ -168,12 +167,12 @@ public class MailTemplateProvider extends TemplateProvider {
         activityId = parentActivity.getId();
         templateContext.put("REPLY_ACTION_URL", LinkProviderUtils.getRedirectUrl("reply_activity_highlight_comment", activityId + "-" + activity.getId()));
         templateContext.put("VIEW_FULL_DISCUSSION_ACTION_URL", LinkProviderUtils.getRedirectUrl("view_full_activity_highlight_comment", activityId + "-" + activity.getId()));
-        templateContext.put("ACTIVITY", NotificationUtils.processLinkTitle(activity.getTitle()));
+        templateContext.put("ACTIVITY", NotificationUtils.processLinkTitle(getI18N(activity,new Locale(language)).getTitle()));
         body = TemplateUtils.processGroovy(templateContext);
       } else {
         templateContext.put("REPLY_ACTION_URL", LinkProviderUtils.getRedirectUrl("reply_activity", activityId));
         templateContext.put("VIEW_FULL_DISCUSSION_ACTION_URL", LinkProviderUtils.getRedirectUrl("view_full_activity", activityId));
-        body = SocialNotificationUtils.getBody(ctx, templateContext, activity);
+        body = SocialNotificationUtils.getBody(ctx, templateContext, getI18N(activity,new Locale(language)));
       }
       
       //binding the exception throws by processing template
@@ -216,7 +215,7 @@ public class MailTemplateProvider extends TemplateProvider {
     }
     
   };
-  
+
   /** Defines the template builder for LikePlugin*/
   private AbstractTemplateBuilder like = new AbstractTemplateBuilder() {
     @Override
@@ -669,6 +668,16 @@ public class MailTemplateProvider extends TemplateProvider {
     }
     
   };
+
+  protected ExoSocialActivity getI18N(ExoSocialActivity activity,Locale locale) {
+
+    I18NActivityProcessor i18NActivityProcessor =(I18NActivityProcessor) PortalContainer.getInstance().getComponentInstanceOfType(I18NActivityProcessor.class);
+    if (activity.getTitleId() != null) {
+
+      activity = i18NActivityProcessor.process(activity, locale);
+    }
+    return activity;
+  }
   
   public MailTemplateProvider(InitParams initParams) {
     super(initParams);
