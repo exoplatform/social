@@ -123,7 +123,10 @@ public class IdentityRestResourcesV1 implements IdentityRestResources {
     IdentityManager identityManager = CommonsUtils.getService(IdentityManager.class);
     //check if user already exist
     Identity identity = identityManager.getOrCreateIdentity(providerId, remoteId, true);
-    if (identity.isDeleted()) {
+    if (identity == null) {
+      identity = new Identity(providerId, remoteId);
+      identityManager.saveIdentity(identity);
+    } else if (identity.isDeleted()) {
       throw new WebApplicationException(Response.Status.FORBIDDEN);
     }
     IdentityEntity identityInfo = EntityBuilder.buildEntityIdentity(identity, uriInfo.getPath(), expand);

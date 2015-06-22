@@ -135,7 +135,7 @@ public class UserRestResourcesV1 implements UserRestResources {
     @ApiResponse (code = 400, message = "Invalid query input to add new user.") })
   public Response addUser(@Context UriInfo uriInfo,
                           @ApiParam(value = "Expand param : ask for a full representation of a subresource", required = false) @QueryParam("expand") String expand,
-                          @ApiParam(value = "Added user object ex:" +
+                          @ApiParam(value = "Added user object ex:<br />" +
                                             "{<br />\"username\": \"john\"," +
                                             "<br />\"password\": \"abc123\"," +
                                             "<br />\"email\": \"exoplatform@exo.com\"," +
@@ -215,6 +215,9 @@ public class UserRestResourcesV1 implements UserRestResources {
     }
     identityManager.hardDeleteIdentity(identity);
     identity.setDeleted(true);
+    // Deletes the user on Portal side
+    UserHandler userHandler = CommonsUtils.getService(OrganizationService.class).getUserHandler();
+    userHandler.removeUser(id, false);
     //
     return EntityBuilder.getResponse(EntityBuilder.buildEntityProfile(identity.getProfile(), uriInfo.getPath(), expand), uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
   }

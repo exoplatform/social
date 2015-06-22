@@ -130,7 +130,9 @@ public class EntityBuilder {
     userEntity.setHref(RestUtils.getRestUrl(USERS_TYPE, profile.getIdentity().getRemoteId(), restPath));
     userEntity.setIdentity(RestUtils.getRestUrl(IDENTITIES_TYPE, profile.getIdentity().getId(), restPath));
     userEntity.setUsername(profile.getIdentity().getRemoteId());
+    if (profile.getProperty(Profile.FIRST_NAME) != null)
     userEntity.setFirstname(profile.getProperty(Profile.FIRST_NAME).toString());
+    if (profile.getProperty(Profile.LAST_NAME) != null)
     userEntity.setLastname(profile.getProperty(Profile.LAST_NAME).toString());
     userEntity.setFullname(profile.getFullName());
     userEntity.setGender(profile.getGender());
