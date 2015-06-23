@@ -18,6 +18,7 @@
 package org.exoplatform.social.rest.api;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -333,6 +334,17 @@ public class EntityBuilder {
     return commentsEntity;
   }
 
+  public static List<DataEntity> buildEntityFromLike(ExoSocialActivity activity, String restPath, String expand, int offset, int limit) {
+    List<DataEntity> likesEntity = new ArrayList<DataEntity>();
+    List<String> likerIds = Arrays.asList(activity.getLikeIdentityIds());
+    IdentityManager identityManager = CommonsUtils.getService(IdentityManager.class);
+    for (String likerId : likerIds) {
+      UserEntity likerInfo = buildEntityProfile(identityManager.getIdentity(likerId, false).getRemoteId(), restPath, expand);
+      likesEntity.add(likerInfo.getDataEntity());
+    }
+    return likesEntity;
+  }
+  
   /**
    * Get a RelationshipEntity from a relationship in order to build a json object for the rest service
    * 

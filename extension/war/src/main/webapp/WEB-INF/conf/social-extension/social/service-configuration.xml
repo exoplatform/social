@@ -78,6 +78,9 @@
     <type>org.exoplatform.social.rest.impl.activity.ActivityRestResourcesV1</type>
   </component>
   <component>
+    <type>org.exoplatform.social.rest.impl.comment.CommentRestResourcesV1</type>
+  </component>
+  <component>
     <type>org.exoplatform.social.rest.impl.relationship.RelationshipsRestResourcesV1</type>
   </component>
 <!-- REST service -->

@@ -1,6 +1,7 @@
 package org.exoplatform.social.rest.impl.activity;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.exoplatform.services.rest.impl.ContainerResponse;
@@ -212,6 +213,64 @@ public class ActivityRestResourcesTest extends AbstractResourceTest {
     assertEquals("comment1", result.getBody());
     
     assertEquals(1, activityManager.getCommentsWithListAccess(rootActivity).getSize());
+    
+    //clean data
+    activityManager.deleteActivity(rootActivity);
+  }
+  
+  public void testGetLikes() throws Exception {
+    startSessionAs("root");
+    //root posts one activity and some comments
+    ExoSocialActivity rootActivity = new ExoSocialActivityImpl();
+    rootActivity.setTitle("root activity");
+    activityManager.saveActivityNoReturn(rootIdentity, rootActivity);
+    
+    List<String> likerIds = new ArrayList<String>();
+    likerIds.add(demoIdentity.getId());
+    rootActivity.setLikeIdentityIds(likerIds.toArray(new String[likerIds.size()]));
+    activityManager.updateActivity(rootActivity);
+    
+    ContainerResponse response = service("GET", "/" + VersionResources.VERSION_ONE + "/social/activities/" + rootActivity.getId() + "/likes", "", null, null);
+    assertNotNull(response);
+    assertEquals(200, response.getStatus());
+    CollectionEntity collections = (CollectionEntity) response.getEntity();
+    assertEquals(1, collections.getEntities().size());
+    
+    //clean data
+    activityManager.deleteActivity(rootActivity);
+  }
+  
+  public void testPostLike() throws Exception {
+    startSessionAs("root");
+    
+    //root posts one activity
+    ExoSocialActivity rootActivity = new ExoSocialActivityImpl();
+    rootActivity.setTitle("root activity");
+    activityManager.saveActivityNoReturn(rootIdentity, rootActivity);
+    
+    List<String> likerIds = new ArrayList<String>();
+    likerIds.add(demoIdentity.getId());
+    rootActivity.setLikeIdentityIds(likerIds.toArray(new String[likerIds.size()]));
+    activityManager.updateActivity(rootActivity);
+    
+    ContainerResponse response = service("GET", "/" + VersionResources.VERSION_ONE + "/social/activities/" + rootActivity.getId() + "/likes", "", null, null);
+    assertNotNull(response);
+    assertEquals(200, response.getStatus());
+    CollectionEntity collections = (CollectionEntity) response.getEntity();
+    assertEquals(1, collections.getEntities().size());
+    
+    //post a like by root on the activity
+    List<String> updatedLikes = new ArrayList<String>();
+    updatedLikes.add(activityManager.getActivity(rootActivity.getId()).getLikeIdentityIds()[0]);
+    updatedLikes.add(maryIdentity.getId());
+    rootActivity.setLikeIdentityIds(updatedLikes.toArray(new String[updatedLikes.size()]));
+    activityManager.updateActivity(rootActivity);
+    
+    response = service("GET", "/" + VersionResources.VERSION_ONE + "/social/activities/" + rootActivity.getId() + "/likes", "", null, null);
+    assertNotNull(response);
+    assertEquals(200, response.getStatus());
+    collections = (CollectionEntity) response.getEntity();
+    assertEquals(2, collections.getEntities().size());
     
     //clean data
     activityManager.deleteActivity(rootActivity);
