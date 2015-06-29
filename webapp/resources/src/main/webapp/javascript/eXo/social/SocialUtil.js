@@ -34,6 +34,13 @@
     foundNoMatch : 'Found no matching users for '
   };
 
+  // Disable json cache on IE11
+  if (!!navigator.userAgent.match(/Trident\/7\./)) { // Browser is IE11 
+    $.ajaxSetup({
+      cache:false
+    });
+  }
+  
   // Parse URL Queries Method
   $.getQuery = function( query ) {
       query = query.replace(/[\[]/,"\\\[").replace(/[\]]/,"\\\]");
