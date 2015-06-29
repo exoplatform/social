@@ -41,6 +41,7 @@ import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.space.SpaceUtils;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
+import org.exoplatform.social.core.storage.impl.IdentityStorageImpl;
 import org.exoplatform.social.webui.StringListAccess;
 import org.exoplatform.social.webui.UIUsersInGroupSelector;
 import org.exoplatform.social.webui.Utils;
@@ -823,6 +824,7 @@ public class UISpaceMember extends UIForm {
     List<String> invitedUsers = new ArrayList<String>();
     List<String> memberUsers = new ArrayList<String>();
     List<String> notExistUsers = new ArrayList<String>();
+    List<String> notSynchronizedUsers = new ArrayList<String>();
     
     for (String userStr : invitedUserList) {
       invitedUser = userStr.trim();
@@ -837,6 +839,8 @@ public class UISpaceMember extends UIForm {
         notExistUsers.add(invitedUser);
       } else if (hasInvited(invitedUser)) {
         invitedUsers.add(invitedUser);
+      } else if (isNotSynchronized(invitedUser)) {
+        notSynchronizedUsers.add(invitedUser);
       } else {
         validUsers.add(invitedUser);
       }
@@ -869,6 +873,15 @@ public class UISpaceMember extends UIForm {
       setHasErr(true);
       appMsg = new ApplicationMessage("UISpaceMember.msg.user-is-member",
                                       memberUsers.toArray(new String[memberUsers.size()]),
+                                      ApplicationMessage.WARNING);
+      appMsg.setArgsLocalized(false);
+      uiApp.addMessage(appMsg);
+    }
+
+    if (notSynchronizedUsers.size() > 0) {
+      setHasErr(true);
+      appMsg = new ApplicationMessage("UISpaceMember.msg.user-not-synchronized",
+                                      notSynchronizedUsers.toArray(new String[notSynchronizedUsers.size()]),
                                       ApplicationMessage.WARNING);
       appMsg.setArgsLocalized(false);
       uiApp.addMessage(appMsg);
@@ -907,6 +920,19 @@ public class UISpaceMember extends UIForm {
       User user = orgService.getUserHandler().findUserByName(userId);
       
       if (user != null) {
+        return false;
+      }
+    } catch (Exception e) {
+      return true;
+    }
+    return true;
+  }
+
+  private boolean isNotSynchronized(String userId) {
+    try {
+      IdentityStorageImpl identityStorage = getApplicationComponent(IdentityStorageImpl.class);
+      Identity identity = identityStorage.findIdentity(OrganizationIdentityProvider.NAME, userId);
+      if (identity != null) {
         return false;
       }
     } catch (Exception e) {
