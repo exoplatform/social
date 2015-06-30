@@ -722,7 +722,7 @@
       </init-params>
     </component-plugin>
   </external-component-plugins>
-  
+  <!--  
    <external-component-plugins>
     <target-component>org.exoplatform.services.listener.ListenerService</target-component>
     <component-plugin>
@@ -731,5 +731,6 @@
       <type>org.exoplatform.social.core.listeners.AsynchronousLoadActivitiesListener</type>
       <description>loading activities into caching with asynchronous</description>      
     </component-plugin>       
-  </external-component-plugins>    
+  </external-component-plugins>
+  -->
 </configuration>
