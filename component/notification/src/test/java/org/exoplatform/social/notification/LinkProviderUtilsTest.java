@@ -35,25 +35,25 @@ public class LinkProviderUtilsTest extends AbstractCoreTest {
 
   public void testGetConfirmInvitationToConnectUrl() {
     String receiverId = "demo", senderId = "root";
-    String expected = "http://exoplatform.com/rest/social/notifications/confirmInvitationToConnect/root/demo";
+    String expected = "http://exoplatform.com/rest/private/social/notifications/confirmInvitationToConnect/root/demo";
     assertEquals(expected, LinkProviderUtils.getConfirmInvitationToConnectUrl(senderId, receiverId));
   }
 
   public void testGetIgnoreInvitationToConnectUrl() {
     String receiverId = "demo", senderId = "root";
-    String expected = "http://exoplatform.com/rest/social/notifications/ignoreInvitationToConnect/root/demo";
+    String expected = "http://exoplatform.com/rest/private/social/notifications/ignoreInvitationToConnect/root/demo";
     assertEquals(expected, LinkProviderUtils.getIgnoreInvitationToConnectUrl(senderId, receiverId));
   }
 
   public void testGetAcceptInvitationToJoinSpaceUrl() {
     String spaceId = "5fc9eef07f000101", userId = "root";
-    String expected = "http://exoplatform.com/rest/social/notifications/acceptInvitationToJoinSpace/5fc9eef07f000101/root";
+    String expected = "http://exoplatform.com/rest/private/social/notifications/acceptInvitationToJoinSpace/5fc9eef07f000101/root";
     assertEquals(expected, LinkProviderUtils.getAcceptInvitationToJoinSpaceUrl(spaceId, userId));
   }
 
   public void testGetIgnoreInvitationToJoinSpaceUrl() {
     String spaceId = "5fc9eef07f000101", userId = "root";
-    String expected = "http://exoplatform.com/rest/social/notifications/ignoreInvitationToJoinSpace/5fc9eef07f000101/root";
+    String expected = "http://exoplatform.com/rest/private/social/notifications/ignoreInvitationToJoinSpace/5fc9eef07f000101/root";
     assertEquals(expected, LinkProviderUtils.getIgnoreInvitationToJoinSpaceUrl(spaceId, userId));
   }
 

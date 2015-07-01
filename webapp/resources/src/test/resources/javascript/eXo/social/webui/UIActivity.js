@@ -146,10 +146,10 @@ var UIActivity = {
             jElm.attr('id', id)
           }
           var confirmText = jElm.attr('data-confirm');
-            var captionText = jElm.attr('data-caption');
-            var confirmButton = jElm.attr('data-ok');
-            var cancelButton = jElm.attr('data-close');
-            eXo.social.PopupConfirmation.confirm(id, [{action: UIActivity.removeActivity, label : confirmButton}], captionText, confirmText, cancelButton);
+          var captionText = jElm.attr('data-caption');
+          var confirmButton = jElm.attr('data-ok');
+          var cancelButton = jElm.attr('data-close');
+          eXo.social.PopupConfirmation.confirm(id, [{action: UIActivity.removeActivity, label : confirmButton}], captionText, confirmText, cancelButton);
         }
       );
     }
@@ -189,7 +189,7 @@ var UIActivity = {
       items.show();
       var allMumber = items.length;
       if(allMumber > 0) {
-        var maxItemDisplay = Math.floor(mWith/(items.eq(0).outerWidth() + 12))*2;
+        var maxItemDisplay = Math.floor(mWith/(items.eq(0).outerWidth() + 12))*1;
         for(var i = maxItemDisplay; i < allMumber; ++i) {
           items.eq(i).hide();
           if (i === (allMumber - 1)) {
@@ -199,6 +199,11 @@ var UIActivity = {
         }
       }
     }
+  },
+  loadLikes : function () {
+      var contentBoxEl = $('#'+UIActivity.contentBoxId);
+      var listLiked = $(contentBoxEl).find('.listLiked').find('a').show();
+      UIActivity.isLoadLike = true;
   },
   removeActivity : function () {
     var jElm = $('.currentDeleteActivity:first');
@@ -229,6 +234,52 @@ var UIActivity = {
         }
       );
     }
+  },
+  
+  hightlightComment : function(activityId) {
+    var isReply = window.location.href.indexOf("comment=1") > 0;
+    var anchor = window.location.hash;
+    var anchor_pattern = "#comment-([\\w|/]+|)";
+    var result = anchor.match(anchor_pattern);
+    if (result != null) {
+      var commentId = result[1];
+      var actionComment = '#commentContainer' + commentId;
+      $(actionComment).css("background-color","#f0f0f0");
+      if (isReply) {
+        this.replyByURL(activityId);
+      } else {
+        var obj = document.getElementById('commentContainer'+ commentId);
+        if (obj) {
+          obj.scrollIntoView(true);
+        }
+      }
+    }
+  },
+
+  replyByURL : function(activityId) {
+    $(document).ready(function() {
+      var actionComment = '#CommentLink' + activityId;
+      var cmAction = $(actionComment);
+      if (cmAction.length > 0) {
+        setTimeout(function() {
+          cmAction.trigger('click');
+        }, 500);
+      }
+    });
+  },
+
+  setPageTitle : function(activityTitle) {
+    $(document).attr('title', 'Activity: ' + $('<div></div>').html(window.decodeURIComponent(activityTitle)).text());
+  },
+  
+  loadLikersByURL : function() {
+    $(document).ready(function() {
+      var contentBoxEl = $('#' + UIActivity.contentBoxId);
+      var listLiked = $(contentBoxEl).find('.listLiked');
+      setTimeout(function() {
+        listLiked.find('.btn').trigger('click');
+      }, 500);
+    });
   }
 };
 

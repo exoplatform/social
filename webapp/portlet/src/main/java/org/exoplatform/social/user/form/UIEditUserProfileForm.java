@@ -97,7 +97,7 @@ public class UIEditUserProfileForm extends UIForm {
     }
     UIInputSection aboutSection = new UIInputSection(FIELD_ABOUT_SECTION, Profile.ABOUT_ME);
     aboutSection.useGroupControl(false)
-                .addUIFormInput(new UIFormTextAreaInput(Profile.ABOUT_ME, Profile.ABOUT_ME, null)
+                .addUIFormInput(new UIFormTextAreaInput(Profile.ABOUT_ME, Profile.ABOUT_ME, "")
                 .addValidator(StringLengthValidator.class, 1500));
     //
     UIInputSection baseSection = new UIInputSection(FIELD_BASE_SECTION, "ContactInfomation");
@@ -220,6 +220,7 @@ public class UIEditUserProfileForm extends UIForm {
     //about me
     getUIInputSection(FIELD_ABOUT_SECTION).getUIFormTextAreaInput(Profile.ABOUT_ME)
                                           .setValue(getStringValueProfile(Profile.ABOUT_ME));
+      
     //Basic information
     UIInputSection baseSection = getUIInputSection(FIELD_BASE_SECTION);
     baseSection.getUIStringInput(Profile.FIRST_NAME).setValue(getStringValueProfile(Profile.FIRST_NAME));
@@ -361,6 +362,8 @@ public class UIEditUserProfileForm extends UIForm {
       //
       initPlaceholder();
     }
+    
+    
     //
     if(this.currentProfile == null) {
       this.currentProfile = Utils.getViewerIdentity(true).getProfile();
@@ -369,6 +372,7 @@ public class UIEditUserProfileForm extends UIForm {
     //
     super.processRender(context);
   }
+  
   /**
    * Reset actions on experience
    */
@@ -607,6 +611,7 @@ public class UIEditUserProfileForm extends UIForm {
       RequireJS requireJs = event.getRequestContext().getJavascriptManager().getRequireJS();
       requireJs.require("SHARED/user-profile", "profile")
                .addScripts("profile.chechboxUtil('" + (FIELD_EXPERIENCE_SECTION + editUserProfile.index) + "');");
+      editUserProfile.initAboutMeTextArea(event.getRequestContext());
       event.getRequestContext().addUIComponentToUpdateByAjax(editUserProfile);
     }
   }
@@ -626,6 +631,7 @@ public class UIEditUserProfileForm extends UIForm {
       }
       //
       editUserProfile.resetActionFileds();
+      editUserProfile.initAboutMeTextArea(event.getRequestContext());
       event.getRequestContext().addUIComponentToUpdateByAjax(editUserProfile);
     }
   }
@@ -638,4 +644,19 @@ public class UIEditUserProfileForm extends UIForm {
       event.getRequestContext().addUIComponentToUpdateByAjax(event.getSource().getUIInputSection(FIELD_BASE_SECTION));
     }
   }
+  
+  private void initAboutMeTextArea(WebuiRequestContext context) throws Exception {
+    String aboutMe = getUIInputSection(FIELD_ABOUT_SECTION).getUIFormTextAreaInput(Profile.ABOUT_ME).getValue();
+    if (aboutMe == null || getLabel("aboutMePlaceholder").equals(aboutMe) || aboutMe.length() == 0) {
+      String scripts = new StringBuilder("(function(jq){jq(\"textarea#").append(Profile.ABOUT_ME)
+                                                                        .append("\").val('')")
+                                                                        .append(".attr(\"placeholder\", \"")
+                                                                        .append(getLabel("aboutMePlaceholder"))
+                                                                        .append("\");})(jq);").toString();
+      
+      context.getJavascriptManager().getRequireJS()
+             .require("SHARED/jquery", "jq")
+             .addScripts(scripts);
+    }
+  }   
 }

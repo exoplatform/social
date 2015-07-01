@@ -116,7 +116,11 @@ public class SpaceUtilsRestTest extends AbstractCoreTest {
         mgr.clearCache();
 
         //
-        mopSession = mgr.openSession();
+        if (mgr.getLifeCycle().getContext() == null) {
+          mopSession = mgr.openSession();
+        } else {
+          mopSession = mgr.getSession();
+        }
 
         //
         ConversationState.setCurrent(conversationState);

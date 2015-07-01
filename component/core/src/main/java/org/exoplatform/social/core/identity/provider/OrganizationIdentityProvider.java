@@ -26,18 +26,14 @@ import org.exoplatform.container.component.ComponentRequestLifecycle;
 import org.exoplatform.container.component.RequestLifeCycle;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
-import org.exoplatform.services.security.ConversationState;
 import org.exoplatform.services.organization.OrganizationService;
 import org.exoplatform.services.organization.User;
 import org.exoplatform.services.organization.UserHandler;
 import org.exoplatform.services.organization.UserProfile;
-import org.exoplatform.services.organization.UserStatus;
 import org.exoplatform.social.core.identity.IdentityProvider;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
-import org.exoplatform.social.core.identity.model.Profile.UpdateType;
 import org.exoplatform.social.core.service.LinkProvider;
-import org.exoplatform.web.CacheUserProfileFilter;
 import org.exoplatform.webui.exception.MessageException;
 
 
@@ -100,31 +96,15 @@ public class OrganizationIdentityProvider extends IdentityProvider<User> {
    */
   @Override
   public User findByRemoteId(String remoteId) {
-    User user = null;
-    
+    User user;
     try {
-      ConversationState state = ConversationState.getCurrent();
-      if (state.getIdentity().getUserId().equals(remoteId)) {
-        user = (User) state.getAttribute(CacheUserProfileFilter.USER_PROFILE);
-      }
+      RequestLifeCycle.begin((ComponentRequestLifecycle)organizationService);
+      UserHandler userHandler = organizationService.getUserHandler();
+      user = userHandler.findUserByName(remoteId);
     } catch (Exception e) {
-      if (LOG.isDebugEnabled()) {
-        LOG.debug("Cannot get information of user " + remoteId + " from Converstation State!");  
-      }
-    }
-    if (user == null) {
-      try {
-        RequestLifeCycle.begin((ComponentRequestLifecycle) organizationService);
-        UserHandler userHandler = organizationService.getUserHandler();
-        user = userHandler.findUserByName(remoteId, UserStatus.ANY);
-      } catch (Exception e) {
-        if (LOG.isDebugEnabled()) {
-          LOG.debug("Cannot get information of user " + remoteId + " from Organization Service");
-        }
-        return null;
-      } finally {
-        RequestLifeCycle.end();
-      }
+      return null;
+    } finally {
+      RequestLifeCycle.end();
     }
     return user;
   }
@@ -211,7 +191,6 @@ public class OrganizationIdentityProvider extends IdentityProvider<User> {
       boolean hasUpdate = false;
 
       //
-      ConversationState state = ConversationState.getCurrent();
       User foundUser = organizationService.getUserHandler().findUserByName(this.userName);
       if(foundUser == null) {
         return;
@@ -233,8 +212,7 @@ public class OrganizationIdentityProvider extends IdentityProvider<User> {
 
       //
       if (hasUpdate) {
-        organizationService.getUserHandler().saveUser(foundUser, true);
-        state.setAttribute(CacheUserProfileFilter.USER_PROFILE, foundUser);
+        organizationService.getUserHandler().saveUser(foundUser, true);        
       }
     }
     

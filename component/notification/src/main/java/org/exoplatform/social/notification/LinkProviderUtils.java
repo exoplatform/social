@@ -28,6 +28,8 @@ public static final String RESOURCE_URL = "social/notifications";
   public static final String VIEW_FULL_DISCUSSION = RESOURCE_URL + "/viewFullDiscussion";
   
   public static final String REDIRECT_URL = RESOURCE_URL + "/redirectUrl";
+  
+  public static final String PRIVATE_PATH = "/private";
 
   /**
    * Gets the url to the user's profile page of the receiver
@@ -47,7 +49,7 @@ public static final String RESOURCE_URL = "social/notifications";
    * @return
    */
   public static String getConfirmInvitationToConnectUrl(String senderId, String receiverId) {
-    return getRestUrl(CONFIRM_INVITATION_TO_CONNECT, senderId, receiverId);
+    return getPrivateRestUrl(CONFIRM_INVITATION_TO_CONNECT, senderId, receiverId);
   }
   
   /**
@@ -58,7 +60,7 @@ public static final String RESOURCE_URL = "social/notifications";
    * @return
    */
   public static String getIgnoreInvitationToConnectUrl(String senderId, String receiverId) {
-    return getRestUrl(IGNORE_INVITATION_TO_CONNECT, senderId, receiverId);
+    return getPrivateRestUrl(IGNORE_INVITATION_TO_CONNECT, senderId, receiverId);
   }
   
   /**
@@ -69,7 +71,7 @@ public static final String RESOURCE_URL = "social/notifications";
    * @return
    */
   public static String getAcceptInvitationToJoinSpaceUrl(String spaceId, String userId) {
-    return getRestUrl(ACCEPT_INVITATION_JOIN_SPACE, spaceId, userId);
+    return getPrivateRestUrl(ACCEPT_INVITATION_JOIN_SPACE, spaceId, userId);
   }
   
   /**
@@ -80,7 +82,7 @@ public static final String RESOURCE_URL = "social/notifications";
    * @return
    */
   public static String getIgnoreInvitationToJoinSpaceUrl(String spaceId, String userId) {
-    return getRestUrl(IGNORE_INVITATION_JOIN_SPACE, spaceId, userId);
+    return getPrivateRestUrl(IGNORE_INVITATION_JOIN_SPACE, spaceId, userId);
   }
   
   /**
@@ -164,6 +166,29 @@ public static final String RESOURCE_URL = "social/notifications";
    */
   public static String getBaseRestUrl() {
     return new StringBuffer(CommonsUtils.getCurrentDomain()).append("/").append(CommonsUtils.getRestContextName()).toString();
+  }
+  
+  /**
+   * Gets private absolute rest url
+   * 
+   * @param type
+   * @param objectId1
+   * @param objectId2
+   * @return
+   */
+  public static String getPrivateRestUrl(String type, String objectId1, String objectId2) {
+    String baseUrl = getBasePrivateRestUrl();
+    return new StringBuffer(baseUrl).append("/").append(type).append("/").append(objectId1)
+                                    .append("/").append(objectId2).toString();
+  }
+  
+  /** 
+   * Get private absolute base url of rest service
+   * 
+   * @return base rest url like : http://localhost:8080/rest/private
+   */
+  public static String getBasePrivateRestUrl() {
+    return new StringBuffer(CommonsUtils.getCurrentDomain()).append("/").append(CommonsUtils.getRestContextName()).append(PRIVATE_PATH).toString();
   }
   
   /**
