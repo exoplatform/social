@@ -265,7 +265,7 @@ public class ActivityRestResourcesV1 implements ActivityRestResources {
                               @ApiParam(value = "Expand param : ask for a full representation of a subresource", required = false) @QueryParam("expand") String expand,
                               @ApiParam(value = "Comment object to post. Ex: { \"body\" : \"post comment on activity\"}", required = true) CommentEntity model) throws Exception {
     
-    if (model == null || model.getBody() == null || model.getBody().length() == 0) {
+    if (model == null || model.getTitle() == null || model.getTitle().length() == 0) {
       throw new WebApplicationException(Response.Status.UNAUTHORIZED);
     }
     
@@ -283,8 +283,7 @@ public class ActivityRestResourcesV1 implements ActivityRestResources {
     }
     
     ExoSocialActivity comment = new ExoSocialActivityImpl();
-    comment.setTitle(model.getBody());
-    comment.setBody(model.getBody());
+    comment.setTitle(model.getTitle());
     comment.setUserId(currentUser.getId());
     activityManager.saveComment(activity, comment);
     

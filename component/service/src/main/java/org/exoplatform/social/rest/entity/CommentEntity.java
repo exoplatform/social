@@ -41,6 +41,15 @@ public class CommentEntity extends BaseEntity {
   public void setIdentity(String identity) {
     setProperty("identity", identity);
   }
+  
+  public CommentEntity setTitle(String title) {
+    setProperty("title", title);
+    return this;
+  }
+
+  public String getTitle() {
+    return getString("title");
+  }
 
   public CommentEntity setBody(String body) {
     setProperty("body", body);
