@@ -111,17 +111,17 @@ public class SpaceSearchConnectorTestCase extends AbstractCoreTest {
 
   public void testFilter() throws Exception {
     setCurrentUser("demo");
-    assertEquals(0, spaceSearchConnector.search(context, "foo bar", Collections.EMPTY_LIST, 0, 10, "relevancy", "ASC").size());
-    assertEquals(1, spaceSearchConnector.search(context, "foo", Collections.EMPTY_LIST, 0, 10, "relevancy", "ASC").size());
-    assertEquals(1, spaceSearchConnector.search(context, "bar", Collections.EMPTY_LIST, 0, 10, "relevancy", "ASC").size());
-    assertEquals(1, spaceSearchConnector.search(context, "foo description", Collections.EMPTY_LIST, 0, 10, "relevancy", "ASC").size());
-    assertEquals(0, spaceSearchConnector.search(context, "foo space", Collections.EMPTY_LIST, 0, 10, "relevancy", "ASC").size());
-    assertEquals(2, spaceSearchConnector.search(context, "description", Collections.EMPTY_LIST, 0, 10, "relevancy", "ASC").size());
+    assertEquals(0, spaceSearchConnector.search(context, "foo bar", Collections.EMPTY_LIST, 0, 10, "relevancy", "ASC", "en").size());
+    assertEquals(1, spaceSearchConnector.search(context, "foo", Collections.EMPTY_LIST, 0, 10, "relevancy", "ASC", "en").size());
+    assertEquals(1, spaceSearchConnector.search(context, "bar", Collections.EMPTY_LIST, 0, 10, "relevancy", "ASC", "en").size());
+    assertEquals(1, spaceSearchConnector.search(context, "foo description", Collections.EMPTY_LIST, 0, 10, "relevancy", "ASC", "en").size());
+    assertEquals(0, spaceSearchConnector.search(context, "foo space", Collections.EMPTY_LIST, 0, 10, "relevancy", "ASC", "en").size());
+    assertEquals(2, spaceSearchConnector.search(context, "description", Collections.EMPTY_LIST, 0, 10, "relevancy", "ASC", "en").size());
   }
 
   public void testData() throws Exception {
     setCurrentUser("demo");
-    Collection<SearchResult> cFoo = spaceSearchConnector.search(context, "foo", Collections.EMPTY_LIST, 0, 10, "relevancy", "ASC");
+    Collection<SearchResult> cFoo = spaceSearchConnector.search(context, "foo", Collections.EMPTY_LIST, 0, 10, "relevancy", "ASC", "en");
     SearchResult rFoo = cFoo.iterator().next();
     assertEquals("foo", rFoo.getTitle());
     assertTrue(rFoo.getExcerpt().indexOf("foo description") >= 0);
@@ -131,7 +131,7 @@ public class SpaceSearchConnectorTestCase extends AbstractCoreTest {
     assertEquals(LinkProvider.SPACE_DEFAULT_AVATAR_URL, rFoo.getImageUrl());
     assertEquals("foo - 1 Member(s) - Free to Join", rFoo.getDetail());
 
-    Collection<SearchResult> cBar = spaceSearchConnector.search(context, "bar", Collections.EMPTY_LIST, 0, 10, "relevancy", "ASC");
+    Collection<SearchResult> cBar = spaceSearchConnector.search(context, "bar", Collections.EMPTY_LIST, 0, 10, "relevancy", "ASC", "en");
     SearchResult rBar = cBar.iterator().next();
     Profile pBar = identityManager.getProfile(identityManager.getOrCreateIdentity(SpaceIdentityProvider.NAME, "bar"));
     Space sBar = spaceService.getSpaceByDisplayName("bar");
@@ -142,26 +142,26 @@ public class SpaceSearchConnectorTestCase extends AbstractCoreTest {
 
   public void testOrder() throws Exception {
     setCurrentUser("demo");
-    List<SearchResult> rTitleAsc = (List<SearchResult>) spaceSearchConnector.search(context, "description", Collections.EMPTY_LIST, 0, 10, "title", "ASC");
+    List<SearchResult> rTitleAsc = (List<SearchResult>) spaceSearchConnector.search(context, "description", Collections.EMPTY_LIST, 0, 10, "title", "ASC", "en");
     assertEquals("bar", rTitleAsc.get(0).getTitle());
     assertEquals("foo", rTitleAsc.get(1).getTitle());
 
-    List<SearchResult> rTitleDesc = (List<SearchResult>) spaceSearchConnector.search(context, "description", Collections.EMPTY_LIST, 0, 10, "title", "DESC");
+    List<SearchResult> rTitleDesc = (List<SearchResult>) spaceSearchConnector.search(context, "description", Collections.EMPTY_LIST, 0, 10, "title", "DESC", "en");
     assertEquals("foo", rTitleDesc.get(0).getTitle());
     assertEquals("bar", rTitleDesc.get(1).getTitle());
 
-    List<SearchResult> rDateAsc = (List<SearchResult>) spaceSearchConnector.search(context, "description", Collections.EMPTY_LIST, 0, 10, "date", "ASC");
+    List<SearchResult> rDateAsc = (List<SearchResult>) spaceSearchConnector.search(context, "description", Collections.EMPTY_LIST, 0, 10, "date", "ASC", "en");
     assertEquals("foo", rDateAsc.get(0).getTitle());
     assertEquals("bar", rDateAsc.get(1).getTitle());
 
-    List<SearchResult> rDateDesc = (List<SearchResult>) spaceSearchConnector.search(context, "description", Collections.EMPTY_LIST, 0, 10, "date", "DESC");
+    List<SearchResult> rDateDesc = (List<SearchResult>) spaceSearchConnector.search(context, "description", Collections.EMPTY_LIST, 0, 10, "date", "DESC", "en");
     assertEquals("bar", rDateDesc.get(0).getTitle());
     assertEquals("foo", rDateDesc.get(1).getTitle());
   }
-  
+
   public void testUnicodeData() throws Exception {
     Identity maryIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "mary", false);
-    
+
     Space space = new Space();
     space.setDisplayName("広いニーズ");
     space.setPrettyName("広いニーズ");
@@ -172,7 +172,7 @@ public class SpaceSearchConnectorTestCase extends AbstractCoreTest {
     space.setRegistration(Space.OPEN);
     createSpaceNonInitApps(space, maryIdentity.getRemoteId(), null);
     tearDown.add(space);
-    
+
     Space newSpace = new Space();
     newSpace.setDisplayName("close");
     newSpace.setPrettyName("close");
@@ -183,21 +183,21 @@ public class SpaceSearchConnectorTestCase extends AbstractCoreTest {
     newSpace.setRegistration(Space.OPEN);
     createSpaceNonInitApps(newSpace, maryIdentity.getRemoteId(), null);
     tearDown.add(newSpace);
-    
+
     setCurrentUser("mary");
-    assertEquals(1, spaceSearchConnector.search(context, "広", Collections.EMPTY_LIST, 0, 10, "relevancy", "ASC").size());
-    assertEquals(1, spaceSearchConnector.search(context, "%広いニー", Collections.EMPTY_LIST, 0, 10, "relevancy", "ASC").size());
-    assertEquals(1, spaceSearchConnector.search(context, "広いニーズ", Collections.EMPTY_LIST, 0, 10, "relevancy", "ASC").size());
-    assertEquals(1, spaceSearchConnector.search(context, "広いニーズに応えます。", Collections.EMPTY_LIST, 0, 10, "relevancy", "ASC").size());
-    
-    assertEquals(1, spaceSearchConnector.search(context, "clo", Collections.EMPTY_LIST, 0, 10, "relevancy", "ASC").size());
+    assertEquals(1, spaceSearchConnector.search(context, "広", Collections.EMPTY_LIST, 0, 10, "relevancy", "ASC", "en").size());
+    assertEquals(1, spaceSearchConnector.search(context, "%広いニー", Collections.EMPTY_LIST, 0, 10, "relevancy", "ASC", "en").size());
+    assertEquals(1, spaceSearchConnector.search(context, "広いニーズ", Collections.EMPTY_LIST, 0, 10, "relevancy", "ASC", "en").size());
+    assertEquals(1, spaceSearchConnector.search(context, "広いニーズに応えます。", Collections.EMPTY_LIST, 0, 10, "relevancy", "ASC", "en").size());
+
+    assertEquals(1, spaceSearchConnector.search(context, "clo", Collections.EMPTY_LIST, 0, 10, "relevancy", "ASC", "en").size());
     identityManager.deleteIdentity(maryIdentity);
   }
-  
+
   public void testUnifiedSearch() throws Exception {
     Identity maryIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "mary", false);
     Identity rootIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "root", false);
-    
+
     Space space = new Space();
     space.setDisplayName("広いニーズ");
     space.setPrettyName("広いニーズ");
@@ -207,12 +207,12 @@ public class SpaceSearchConnectorTestCase extends AbstractCoreTest {
     space.setRegistration(Space.OPEN);
     createSpaceNonInitApps(space, "mary", null);
     tearDown.add(space);
-    
+
     setCurrentUser("root");
-    assertEquals(1, spaceSearchConnector.search(context, "広いニーズ", Collections.EMPTY_LIST, 0, 10, "relevancy", "ASC").size());
+    assertEquals(1, spaceSearchConnector.search(context, "広いニーズ", Collections.EMPTY_LIST, 0, 10, "relevancy", "ASC", "en").size());
     setCurrentUser("mary");
-    assertEquals(1, spaceSearchConnector.search(context, "広いニーズ", Collections.EMPTY_LIST, 0, 10, "relevancy", "ASC").size());
-    
+    assertEquals(1, spaceSearchConnector.search(context, "広いニーズ", Collections.EMPTY_LIST, 0, 10, "relevancy", "ASC", "en").size());
+
     Space space2 = new Space();
     space2.setDisplayName("space2");
     space2.setPrettyName("space2");
@@ -223,16 +223,16 @@ public class SpaceSearchConnectorTestCase extends AbstractCoreTest {
     space2.setRegistration(Space.OPEN);
     createSpaceNonInitApps(space2, "mary", null);
     tearDown.add(space2);
-    
+
     SpaceListAccess list = spaceService.getUnifiedSearchSpacesWithListAccess("root", new SpaceFilter("! . , : ; ( ) ^}{[] -, \" '% *"));
     assertEquals(1, list.getSize());
     assertEquals(1, list.load(0, 10).length);
-    
+
     setCurrentUser("root");
-    assertEquals(1, spaceSearchConnector.search(context, "! . , : ; ( ) ^}{[] -, \" '% *", Collections.EMPTY_LIST, 0, 10, "relevancy", "ASC").size());
-    
-    assertEquals(5, spaceSearchConnector.search(context, "%", Collections.EMPTY_LIST, 0, 10, "relevancy", "ASC").size());
-    
+    assertEquals(1, spaceSearchConnector.search(context, "! . , : ; ( ) ^}{[] -, \" '% *", Collections.EMPTY_LIST, 0, 10, "relevancy", "ASC", "en").size());
+
+    assertEquals(5, spaceSearchConnector.search(context, "%", Collections.EMPTY_LIST, 0, 10, "relevancy", "ASC", "en").size());
+
     identityManager.deleteIdentity(maryIdentity);
     identityManager.deleteIdentity(rootIdentity);
   }
@@ -240,11 +240,11 @@ public class SpaceSearchConnectorTestCase extends AbstractCoreTest {
   private void setCurrentUser(final String name) {
     ConversationState.setCurrent(new ConversationState(new org.exoplatform.services.security.Identity(name)));
   }
-  
+
   private String getCurrentUserName() {
     return ConversationState.getCurrent().getIdentity().getUserId();
   }
-  
+
   private void loadController() throws Exception {
     ClassLoader loader = getClass().getClassLoader();
     InputStream in = loader.getResourceAsStream(CONTROLLER_PATH);
@@ -258,57 +258,57 @@ public class SpaceSearchConnectorTestCase extends AbstractCoreTest {
       in.close();
     }
   }
-  
+
   public void testAllWordsMatchedSpaces() throws Exception {
     setCurrentUser("demo");
     Space space1 = this.getSpaceInstance(1, "Cluster" , "This is cluster space");
     Space space2 = this.getSpaceInstance(2, "availability" , "This is availability space");
     Space space3 = this.getSpaceInstance(3, "Cluster 3" , "This is cluster availability ");
-    
+
     //case 1: keyword = "cluster"
-    List<SearchResult> results = (List<SearchResult>) spaceSearchConnector.search(context, "cluster", Collections.EMPTY_LIST, 0, 10, "title", "ASC");
+    List<SearchResult> results = (List<SearchResult>) spaceSearchConnector.search(context, "cluster", Collections.EMPTY_LIST, 0, 10, "title", "ASC", "en");
     assertEquals(2, results.size());
-    
+
     //case 2: keyword = "availability"
-    results = (List<SearchResult>) spaceSearchConnector.search(context, "availability", Collections.EMPTY_LIST, 0, 10, "title", "ASC");
+    results = (List<SearchResult>) spaceSearchConnector.search(context, "availability", Collections.EMPTY_LIST, 0, 10, "title", "ASC", "en");
     assertEquals(2, results.size());
-    
+
     //case 3: keyword = "cluster availability"
-    results = (List<SearchResult>) spaceSearchConnector.search(context, "cluster availability", Collections.EMPTY_LIST, 0, 10, "title", "ASC");
+    results = (List<SearchResult>) spaceSearchConnector.search(context, "cluster availability", Collections.EMPTY_LIST, 0, 10, "title", "ASC", "en");
     assertEquals(1, results.size());
-    
+
     Space space4 = this.getSpaceInstance(4, "Availability 4" , "This is availability a cluster space");
     Space space5 = this.getSpaceInstance(5, "Bla bla space" , "This is availability space bla bla bla bla bla bla cluster");
-    
+
     //case 4: keyword = "Availability Cluster"
-    results = (List<SearchResult>) spaceSearchConnector.search(context, "Availability Cluster", Collections.EMPTY_LIST, 0, 10, "title", "ASC");
+    results = (List<SearchResult>) spaceSearchConnector.search(context, "Availability Cluster", Collections.EMPTY_LIST, 0, 10, "title", "ASC", "en");
     assertEquals(3, results.size());
-    
+
     //case 5: keyword = "AVAILABILITY CLUSTER" (insensitive)
-    results = (List<SearchResult>) spaceSearchConnector.search(context, "AVAILABILITY CLUSTER", Collections.EMPTY_LIST, 0, 10, "title", "ASC");
+    results = (List<SearchResult>) spaceSearchConnector.search(context, "AVAILABILITY CLUSTER", Collections.EMPTY_LIST, 0, 10, "title", "ASC", "en");
     assertEquals(3, results.size());
-    
+
     //case 6: keyword = "Availability bla bla Cluster"
-    results = (List<SearchResult>) spaceSearchConnector.search(context, "Availability bla bla Cluster", Collections.EMPTY_LIST, 0, 10, "title", "ASC");
+    results = (List<SearchResult>) spaceSearchConnector.search(context, "Availability bla bla Cluster", Collections.EMPTY_LIST, 0, 10, "title", "ASC", "en");
     assertEquals(1, results.size());
-    
+
     //case 7: keyword = "cluster bla bla Cluster"
-    results = (List<SearchResult>) spaceSearchConnector.search(context, "cluster bla bla Cluster", Collections.EMPTY_LIST, 0, 10, "title", "ASC");
+    results = (List<SearchResult>) spaceSearchConnector.search(context, "cluster bla bla Cluster", Collections.EMPTY_LIST, 0, 10, "title", "ASC", "en");
     assertEquals(1, results.size());
-    
+
     //case 8: keyword = "Availability clu" (uncompleted word)
-    results = (List<SearchResult>) spaceSearchConnector.search(context, "Availability clu", Collections.EMPTY_LIST, 0, 10, "title", "ASC");
+    results = (List<SearchResult>) spaceSearchConnector.search(context, "Availability clu", Collections.EMPTY_LIST, 0, 10, "title", "ASC", "en");
     assertEquals(3, results.size());
-    
+
     //case 9: keyword contains in the Space's name
     Space space6 = this.getSpaceInstance(6, "Availability a cluster" , "This is the 6th space");
     Space space7 = this.getSpaceInstance(7, "Availability bla bla bla cluster" , "This is the 7th space");
-    
-    results = (List<SearchResult>) spaceSearchConnector.search(context, "Availability cluster", Collections.EMPTY_LIST, 0, 10, "title", "ASC");
+
+    results = (List<SearchResult>) spaceSearchConnector.search(context, "Availability cluster", Collections.EMPTY_LIST, 0, 10, "title", "ASC", "en");
     assertEquals(5, results.size());
-    results = (List<SearchResult>) spaceSearchConnector.search(context, "Availability bla cluster", Collections.EMPTY_LIST, 0, 10, "title", "ASC");
+    results = (List<SearchResult>) spaceSearchConnector.search(context, "Availability bla cluster", Collections.EMPTY_LIST, 0, 10, "title", "ASC", "en");
     assertEquals(2, results.size());
-    
+
     tearDown.add(space1);
     tearDown.add(space2);
     tearDown.add(space3);
@@ -316,13 +316,13 @@ public class SpaceSearchConnectorTestCase extends AbstractCoreTest {
     tearDown.add(space5);
     tearDown.add(space6);
     tearDown.add(space7);
-    
+
   }
-  
+
   public void testFuzzySearch() throws Exception {
     setCurrentUser("demo");
-    assertEquals(1, spaceSearchConnector.search(context, "foo~0.5", Collections.EMPTY_LIST, 0, 10, "relevancy", "ASC").size());
-    assertEquals(1, spaceSearchConnector.search(context, "foo~0.5 description~0.5", Collections.EMPTY_LIST, 0, 10, "relevancy", "ASC").size());
+    assertEquals(1, spaceSearchConnector.search(context, "foo~0.5", Collections.EMPTY_LIST, 0, 10, "relevancy", "ASC", "en").size());
+    assertEquals(1, spaceSearchConnector.search(context, "foo~0.5 description~0.5", Collections.EMPTY_LIST, 0, 10, "relevancy", "ASC", "en").size());
   }
   
   /**

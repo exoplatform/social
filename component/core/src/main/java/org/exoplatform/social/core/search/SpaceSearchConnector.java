@@ -4,6 +4,8 @@ import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Locale;
+import java.util.ResourceBundle;
 
 import javax.jcr.query.Row;
 import javax.jcr.query.RowIterator;
@@ -16,6 +18,7 @@ import org.exoplatform.container.xml.InitParams;
 import org.exoplatform.portal.mop.SiteType;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
+import org.exoplatform.services.resources.ResourceBundleService;
 import org.exoplatform.services.security.ConversationState;
 import org.exoplatform.social.core.chromattic.entity.SpaceEntity;
 import org.exoplatform.social.core.service.LinkProvider;
@@ -59,7 +62,7 @@ public class SpaceSearchConnector extends AbstractSocialSearchConnector {
 
 
     ListAccess<Space> la = spaceService.getUnifiedSearchSpacesWithListAccess(getCurrentUserName(), filter);
-    
+
     //
     try {
       Space[] spaces = la.load(range.offset, range.limit);
@@ -73,20 +76,32 @@ public class SpaceSearchConnector extends AbstractSocialSearchConnector {
 
         //
         if (Space.HIDDEN.equals(s.getVisibility()) && !spaceService.isMember(s, getCurrentUserName())) continue;
-        
+
+        ResourceBundle resourceBundle = null;
+        ResourceBundleService resourceBundleService = (ResourceBundleService) ExoContainerContext.getCurrentContainer().getComponentInstance(ResourceBundleService.class);
+        if(resourceBundleService != null){
+          String[] sharedResourceBundleNames = resourceBundleService.getSharedResourceBundleNames();
+          for (String resourceBundleName : sharedResourceBundleNames) {
+            if(resourceBundleName.equals("locale.social.Core")){
+              resourceBundle = resourceBundleService.getResourceBundle(resourceBundleName, Locale.forLanguageTag(getLanguage()));
+              break;
+            }
+          }
+        }
+
         //
         StringBuilder sb = new StringBuilder(s.getDisplayName());
-        sb.append(String.format(" - %s Member(s)", s.getMembers().length));
+        sb.append(String.format(" - %s " + (resourceBundle != null ? resourceBundle.getString("SpaceSearchConnector.members") : "Member(s)"), s.getMembers().length));
         if (Space.OPEN.equals(s.getRegistration())) {
-          sb.append(" - Free to Join");
+          sb.append(" - " + (resourceBundle != null ? resourceBundle.getString("SpaceSearchConnector.free_to_join") : "Free to Join"));
         } else if (Space.VALIDATION.equals(s.getRegistration())) {
-          sb.append(" - Register");
+          sb.append(" - " + (resourceBundle != null ? resourceBundle.getString("SpaceSearchConnector.register") : "Register"));
         } else if (Space.CLOSE.equals(s.getRegistration())) {
-          sb.append(" - Invitation Only");
+          sb.append(" - " + (resourceBundle != null ? resourceBundle.getString("SpaceSearchConnector.invitation_only") : "Invitation Only"));
         } else {
           LOG.debug(s.getRegistration() + " registration unknown");
         }
-        
+
         //
         row = (rowIt != null && rowIt.hasNext()) ? rowIt.nextRow() : null;
         

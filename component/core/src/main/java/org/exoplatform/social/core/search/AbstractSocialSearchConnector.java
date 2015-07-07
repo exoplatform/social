@@ -31,7 +31,8 @@ import org.exoplatform.social.core.storage.query.JCRProperties;
 public abstract class AbstractSocialSearchConnector extends SearchServiceConnector {
 
   private static final Log LOG = ExoLogger.getLogger(AbstractSocialSearchConnector.class);
-  
+
+  protected String language;
   protected final class Range {
 
     public final int offset;
@@ -57,8 +58,9 @@ public abstract class AbstractSocialSearchConnector extends SearchServiceConnect
   }
 
   @Override
-  public final Collection<SearchResult> search(SearchContext context, String query, Collection<String> sites, int offset, int limit, String sort, String order) {
+  public final Collection<SearchResult> search(SearchContext context, String query, Collection<String> sites, int offset, int limit, String sort, String order, String language) {
 
+    setLanguage(language);
     //
     SortBy sortBy = null;
     if ("relevancy".equalsIgnoreCase(sort)) {
@@ -218,4 +220,12 @@ public abstract class AbstractSocialSearchConnector extends SearchServiceConnect
   }
   
   protected abstract Collection<SearchResult> search(SearchContext context, String query, Range range, Sorting sort);
+
+  public String getLanguage() {
+    return language;
+  }
+
+  public void setLanguage(String language) {
+    this.language = language;
+  }
 }
