@@ -201,7 +201,7 @@
 		%>
 		<tr id="existingUsersTable">
 			<td><%= uicomponent.getFullName(user) %></td>
-		<% if(uicomponent.isMember(user)) { %>
+		<% if(uicomponent.isMember(user) && Utils.isEnableUser(user)) { %>
 			<td class="center" width="15%">
 				<div class="spaceRole" onclick="$toggleLeadership">
 				<% if(isLeader) { %>
@@ -218,10 +218,14 @@
 				<a  onclick="$removeAction" title="$labelRemoveMember" href="javascript:void(0);" class="actionIcon"  data-placement="bottom" rel="tooltip" ><i class="uiIconDelete uiIconLightGray"></i></a>
 				<% } %>
 			</td>
-		<% } else if (uicomponent.hasWildCardMembership(user)){ %>
+		<% } else if (uicomponent.hasWildCardMembership(user) || !Utils.isEnableUser(user)){ %>
 		  <td class="center" width="15%">
         <div class="spaceRole">
+        <% if(isLeader) { %>
           <input type="checkbox" class="yesno" checked="checked" style="visibility: hidden;" disabled>
+        <% }else { %>
+          <input type="checkbox" class="yesno" style="visibility: hidden;" disabled>
+        <% } %>  
         </div>
       </td>
       <td class="center" width="15%"></td>
