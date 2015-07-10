@@ -56,6 +56,9 @@ import org.exoplatform.social.core.space.SpaceListAccess;
 import org.exoplatform.social.core.space.SpaceUtils;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
+import org.exoplatform.social.rest.impl.activity.ActivityRestResourcesV1;
+import org.exoplatform.social.rest.impl.space.SpaceRestResourcesV1;
+import org.exoplatform.social.rest.impl.user.UserRestResourcesV1;
 import org.exoplatform.web.WebAppController;
 import org.exoplatform.web.controller.QualifiedName;
 import org.exoplatform.web.controller.metadata.ControllerDescriptor;
@@ -151,6 +154,7 @@ public class SpacesRestService implements ResourceContainer {
    * @throws Exception
    * 
    * @LevelAPI Platform
+   * @deprecated Deprecated from 4.3.x. Replaced by a new API {@link UserRestResourcesV1#getSpacesOfUser(org.exoplatform.social.rest.impl.user.UriInfo, String, int, int, boolean, String)}
    */
   @GET
   @Path("mySpaces/show.{format}")
@@ -289,7 +293,7 @@ public class SpacesRestService implements ResourceContainer {
    * @throws Exception
    * @LevelAPI Platform
    * @anchor SpacesRestService.suggestSpacenames
-   *
+   * @deprecated Deprecated from 4.3.x. Replaced by a new API {@link SpaceRestResourcesV1#getSpaces(org.exoplatform.social.rest.impl.space.UriInfo, String, int, int, boolean, String)}
    */
   @GET
   @Path("suggest.{format}")

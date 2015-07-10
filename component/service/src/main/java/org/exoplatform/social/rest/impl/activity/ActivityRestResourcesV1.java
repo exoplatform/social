@@ -409,7 +409,7 @@ public class ActivityRestResourcesV1 implements ActivityRestResources {
     @ApiResponse (code = 200, message = "Given request like of activity of user deleted successfully"),
     @ApiResponse (code = 500, message = "Internal server error"),
     @ApiResponse (code = 400, message = "Invalid query input to delete like of activity of user.") })
-  public Response deleteActivityById(@Context UriInfo uriInfo,
+  public Response deleteLike(@Context UriInfo uriInfo,
                                      @ApiParam(value = "activity id", required = true) @PathParam("id") String id,
                                      @ApiParam(value = "username", required = true) @PathParam("username") String username,
                                      @ApiParam(value = "Expand param : ask for a full representation of a subresource", required = false) @QueryParam("expand") String expand) throws Exception {

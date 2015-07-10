@@ -25,6 +25,9 @@ import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.manager.ActivityManager;
 import org.exoplatform.social.core.storage.ActivityStorageException;
+import org.exoplatform.social.rest.impl.activity.ActivityRestResourcesV1;
+import org.exoplatform.social.rest.impl.space.SpaceRestResourcesV1;
+import org.exoplatform.social.rest.impl.user.UserRestResourcesV1;
 import org.exoplatform.social.service.rest.RestChecker;
 import org.exoplatform.social.service.rest.SecurityManager;
 import org.exoplatform.social.service.rest.Util;
@@ -35,6 +38,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
+
 import java.lang.reflect.UndeclaredThrowableException;
 import java.util.List;
 
@@ -198,7 +202,8 @@ public class ActivityStreamResources implements ResourceContainer {
    * @return the response
    * @LevelAPI Platform
    * @anchor ActivityStreamResources.getActivityStreamByIdentityId
-   *
+   * @deprecated Deprecated from 4.3.x. Replaced by a new API {@link UserRestResourcesV1#getActivitiesOfUser(org.exoplatform.social.rest.impl.user.UriInfo, String, String, int, int, String, String, boolean, String)}
+   * Or with space {@link SpaceRestResourcesV1#getSpaceActivitiesById(org.exoplatform.social.rest.impl.space.UriInfo, String, int, int, String, String, boolean, String)}}
    */
   @GET
   @Path("{identityId}.{format}")
@@ -412,6 +417,7 @@ public class ActivityStreamResources implements ResourceContainer {
    * @return the response
    * @LevelAPI Platform
    * @anchor ActivityStreamResources.getActivityFeedOfAuthenticated
+   * @deprecated Deprecated from 4.3.x. Replaced by a new API {@link UserRestResourcesV1#getActivitiesOfUser(org.exoplatform.social.rest.impl.user.UriInfo, String, String, int, int, String, String, boolean, String)} with type="owner"
    *
    */
   @GET
@@ -618,6 +624,7 @@ public class ActivityStreamResources implements ResourceContainer {
    * @return the response
    * @LevelAPI Platform
    * @anchor ActivityStreamResources.getActivitySpacesOfAuthenticated
+   * @deprecated Deprecated from 4.3.x. Replaced by a new API {@link SpaceRestResourcesV1#getSpaceActivitiesById(org.exoplatform.social.rest.impl.space.UriInfo, String, int, int, String, String, boolean, String)}
    *
    */
   @GET
@@ -821,7 +828,7 @@ public class ActivityStreamResources implements ResourceContainer {
    * @return the response
    * @LevelAPI Platform
    * @anchor ActivityStreamResources.getActivityConnectionsOfAuthenticated
-   *
+   * @deprecated Deprecated from 4.3.x. Replaced by a new API {@link UserRestResourcesV1#getActivitiesOfUser(org.exoplatform.social.rest.impl.user.UriInfo, String, String, int, int, String, String, boolean, String)} with type="connections";after=xxx;before=yyy
    */
   @GET
   @Path("connections.{format}")
@@ -1033,7 +1040,7 @@ public class ActivityStreamResources implements ResourceContainer {
    * @return the response
    * @LevelAPI Platform
    * @anchor ActivityStreamResources.getActivityStreamOfIdentityByTimestamp
-   *
+   * @deprecated Deprecated from 4.3.x. Replaced by a new API {@link UserRestResourcesV1#getActivitiesOfUser(org.exoplatform.social.rest.impl.user.UriInfo, String, String, int, int, String, String, boolean, String)} with type=owner
    */
   @GET
   @Path("{identityId}ByTimestamp.{format}")
@@ -1417,7 +1424,7 @@ public class ActivityStreamResources implements ResourceContainer {
    * @return the response
    * @LevelAPI Platform
    * @anchor ActivityStreamResources.getActivitySpacesOfAuthenticatedByTimestamp
-   *
+   * @deprecated Deprecated from 4.3.x. Replaced by a new API {@link SpaceRestResourcesV1#getSpaceActivitiesById(org.exoplatform.social.rest.impl.space.UriInfo, String, int, int, String, String, boolean, String)} with before=xxx; after=yyy
    */
   @GET
   @Path("spacesByTimestamp.{format}")
@@ -1600,7 +1607,7 @@ public class ActivityStreamResources implements ResourceContainer {
    * @return the response
    * @LevelAPI Platform
    * @anchor ActivityStreamResource.getActivityConnectionsOfAuthenticatedByTimestamp
-   *
+   * @deprecated Deprecated from 4.3.x. Replaced by a new API {@link UserRestResourcesV1#getActivitiesOfUser(org.exoplatform.social.rest.impl.user.UriInfo, String, String, int, int, String, String, boolean, String)} with type="connections"; before=xxx;after=yyy
    */
   @GET
   @Path("connectionsByTimestamp.{format}")

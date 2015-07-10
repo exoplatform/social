@@ -30,6 +30,7 @@ import javax.ws.rs.core.UriInfo;
 
 import org.exoplatform.social.rest.entity.ActivityEntity;
 import org.exoplatform.social.rest.entity.UserEntity;
+import org.exoplatform.social.rest.impl.user.UserRestResourcesV1.ACTIVITY_STREAM_TYPE;
 
 import com.wordnik.swagger.annotations.ApiParam;
 
@@ -105,6 +106,7 @@ public interface UserRestResources extends SocialRest {
   @Path("{id}/activities")
   public abstract Response getActivitiesOfUser(@Context UriInfo uriInfo,
                                                @PathParam("id") String id,
+                                               @QueryParam("type") String type,
                                                @QueryParam("offset") int offset,
                                                @QueryParam("limit") int limit,
                                                @QueryParam("before") String before,

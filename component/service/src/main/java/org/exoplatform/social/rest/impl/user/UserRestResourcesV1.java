@@ -332,6 +332,7 @@ public class UserRestResourcesV1 implements UserRestResources {
                 notes = "This can only be done by the logged in user.")
   public Response getActivitiesOfUser(@Context UriInfo uriInfo,
                                       @ApiParam(value = "User remoteId", required = true) @PathParam("id") String id,
+                                      @ApiParam(value = "Stream type", required = false) @QueryParam("type") String type,
                                       @ApiParam(value = "Offset", required = false, defaultValue = "0") @QueryParam("offset") int offset,
                                       @ApiParam(value = "Limit", required = false, defaultValue = "20") @QueryParam("limit") int limit,
                                       @ApiParam(value = "Older base time to load activity (yyyy-MM-dd HH:mm:ss)", required = false) @QueryParam("before") String before,
@@ -345,7 +346,6 @@ public class UserRestResourcesV1 implements UserRestResources {
     if (target == null) {
       throw new WebApplicationException(Response.Status.BAD_REQUEST);
     }
-    String type = RestUtils.getQueryParam(uriInfo, "type");
     ACTIVITY_STREAM_TYPE streamType;
     try {
       streamType = ACTIVITY_STREAM_TYPE.valueOf(type);

@@ -51,6 +51,8 @@ import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvide
 import org.exoplatform.social.core.manager.ActivityManager;
 import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.storage.ActivityStorageException;
+import org.exoplatform.social.rest.impl.activity.ActivityRestResourcesV1;
+import org.exoplatform.social.rest.impl.comment.CommentRestResourcesV1;
 import org.exoplatform.social.service.rest.api.models.ActivityRestOut;
 import org.exoplatform.social.service.rest.api.models.ActivityRestOut.Field;
 import org.exoplatform.social.service.rest.api.models.ActivityStreamRestOut;
@@ -91,6 +93,7 @@ public class ActivitiesRestService implements ResourceContainer {
    * @throws Exception
    * @LevelAPI Platform
    * @anchor ActivitiesRestService.destroyActivity
+   * @deprecated Deprecated from 4.3.x. Replaced by a new API {@link ActivityRestResourcesV1#deleteActivityById(org.exoplatform.social.rest.impl.activity.UriInfo, String, String)}
    */
   @POST
   @Path("destroy/{activityId}.{format}")
@@ -115,6 +118,7 @@ public class ActivitiesRestService implements ResourceContainer {
    * @throws Exception
    * @LevelAPI Platform
    * @anchor ActivitiesRestService.showLikes
+   * @deprecated Deprecated from 4.3.x. Replaced by a new API {@link ActivityRestResourcesV1#getLikesOfActivity(org.exoplatform.social.rest.impl.activity.UriInfo, String, int, int, String)}
    */
   @GET
   @Path("{activityId}/likes/show.{format}")
@@ -141,6 +145,7 @@ public class ActivitiesRestService implements ResourceContainer {
    * @throws Exception
    * @LevelAPI Platform
    * @anchor ActivitiesRestService.updateLike
+   * @deprecated Deprecated from 4.3.x. Replaced by a new API {@link ActivityRestResourcesV1#addLike(org.exoplatform.social.rest.impl.activity.UriInfo, String, String)}
    */
   @POST
   @Path("{activityId}/likes/update.{format}")
@@ -168,6 +173,7 @@ public class ActivitiesRestService implements ResourceContainer {
    * @throws Exception
    * @LevelAPI Platform
    * @anchor ActivitiesRestService.destroyLike
+   * @deprecated Deprecated from 4.3.x. Replaced by a new API {@link ActivityRestResourcesV1#deleteLike(org.exoplatform.social.rest.impl.activity.UriInfo, String, String, String)}
    */
   @POST
   @Path("{activityId}/likes/destroy/{identityId}.{format}")
@@ -194,6 +200,7 @@ public class ActivitiesRestService implements ResourceContainer {
    * @throws Exception
    * @LevelAPI Platform
    * @anchor ActivitiesRestService.showComments
+   * @deprecated Deprecated from 4.3.x. Replaced by a new API {@link ActivityRestResourcesV1#getCommentsOfActivity(org.exoplatform.social.rest.impl.activity.UriInfo, String, int, int, String)}
    */
   @GET
   @Path("{activityId}/comments/show.{format}")
@@ -221,6 +228,7 @@ public class ActivitiesRestService implements ResourceContainer {
    * @throws Exception
    * @LevelAPI Platform
    * @anchor ActivitiesRestService.showComments
+   * @deprecated Deprecated from 4.3.x. Replaced by a new API {@link ActivityRestResourcesV1#getCommentsOfActivity(org.exoplatform.social.rest.impl.activity.UriInfo, String, int, int, String)}
    */
   @GET
   @Path("{activityId}/comments.{format}")
@@ -299,6 +307,7 @@ public class ActivitiesRestService implements ResourceContainer {
    * @return The response contains a returned result.
    * @LevelAPI Platform
    * @anchor ActivitiesRestService.getActivityById
+   * @deprecated Deprecated from 4.3.x. Replaced by a new API {@link ActivityRestResourcesV1#getActivityById(org.exoplatform.social.rest.impl.activity.UriInfo, String, String)}
    */
   @GET
   @Path("{activityId}.{format}")
@@ -392,6 +401,7 @@ public class ActivitiesRestService implements ResourceContainer {
    * @throws Exception
    * @LevelAPI Platform
    * @anchor ActivitiesRestService.updateComment
+   * @deprecated Deprecated from 4.3.x. Replaced by a new API {@link CommentRestResourcesV1#updateCommentById(org.exoplatform.social.rest.impl.comment.UriInfo, String, String, org.exoplatform.social.rest.entity.ActivityEntity)}
    */
   @POST
   @Path("{activityId}/comments/update.{format}")
@@ -419,6 +429,7 @@ public class ActivitiesRestService implements ResourceContainer {
    * @return The response contains a returned result.
    * @LevelAPI Platform
    * @anchor ActivitiesRestService.createCommentActivityById
+   * @deprecated Deprecated from 4.3.x. Replaced by a new API {@link ActivityRestResourcesV1#postComment(org.exoplatform.social.rest.impl.activity.UriInfo, String, String, org.exoplatform.social.rest.entity.CommentEntity)}
    */
   @GET
   @Path("{activityId}/comments/create.{format}")
@@ -473,6 +484,7 @@ public class ActivitiesRestService implements ResourceContainer {
    * @throws Exception
    * @LevelAPI Platform
    * @anchor ActivitiesRestService.destroyComment
+   * @deprecated Deprecated from 4.3.x. Replaced by a new API {@link CommentRestResourcesV1#deleteCommentById(org.exoplatform.social.rest.impl.comment.UriInfo, String, String)}
    */
   @POST
   @Path("{activityId}/comments/destroy/{commentId}.{format}")

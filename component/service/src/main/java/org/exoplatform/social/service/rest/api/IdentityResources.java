@@ -32,6 +32,8 @@ import org.exoplatform.services.rest.resource.ResourceContainer;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.storage.IdentityStorageException;
+import org.exoplatform.social.rest.impl.identity.IdentityRestResourcesV1;
+import org.exoplatform.social.rest.impl.user.UserRestResourcesV1;
 import org.exoplatform.social.service.rest.RestChecker;
 import org.exoplatform.social.service.rest.Util;
 import org.exoplatform.social.service.rest.api.models.IdentityRestOut;
@@ -69,6 +71,7 @@ public class IdentityResources implements ResourceContainer {
    * @return a response object
    * @LevelAPI Platform
    * @anchor IdentityResources.getIdentityById
+   * @deprecated Deprecated from 4.3.x. Replaced by a new API {@link IdentityRestResourcesV1#getIdentityById(org.exoplatform.social.rest.impl.identity.UriInfo, String, String)} 
    */
   @GET
   @Path("{identityId}.{format}")

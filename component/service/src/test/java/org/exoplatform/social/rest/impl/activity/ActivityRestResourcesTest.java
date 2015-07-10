@@ -205,12 +205,12 @@ public class ActivityRestResourcesTest extends AbstractResourceTest {
     activityManager.saveActivityNoReturn(rootIdentity, rootActivity);
     
     //post a comment by root on the prevous activity
-    String input = "{\"body\":comment1}";
+    String input = "{\"body\":comment1, \"title\":comment1}";
     ContainerResponse response = getResponse("POST", "/" + VersionResources.VERSION_ONE + "/social/activities/" + rootActivity.getId() + "/comments", input);
     assertNotNull(response);
     assertEquals(200, response.getStatus());
     CommentEntity result = getBaseEntity(response.getEntity(), CommentEntity.class);
-    assertEquals("comment1", result.getBody());
+    assertEquals("comment1", result.getTitle());
     
     assertEquals(1, activityManager.getCommentsWithListAccess(rootActivity).getSize());
     

@@ -43,6 +43,8 @@ import org.exoplatform.social.core.service.LinkProvider;
 import org.exoplatform.social.core.space.SpaceException;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
+import org.exoplatform.social.rest.impl.activity.ActivityRestResourcesV1;
+import org.exoplatform.social.rest.impl.user.UserRestResourcesV1;
 import org.exoplatform.webui.utils.TimeConvertUtils;
 
 import javax.annotation.security.RolesAllowed;
@@ -50,6 +52,7 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.*;
 import javax.ws.rs.core.Response.Status;
 import javax.xml.bind.annotation.XmlRootElement;
+
 import java.util.*;
 
 /**
@@ -177,6 +180,8 @@ public class PeopleRestService implements ResourceContainer{
    * @throws Exception
    * @LevelAPI Platform
    * @anchor PeopleRestService.suggestUsernames
+   * @deprecated Deprecated from 4.3.x. Replaced by a new API {@link UserRestResourcesV1#getUsers(org.exoplatform.social.rest.impl.user.UriInfo, String, int, int, boolean, String)}
+   * 
    */
   @GET
   @Path("getprofile/data.json")
@@ -230,6 +235,7 @@ public class PeopleRestService implements ResourceContainer{
    * @throws Exception
    * @LevelAPI Platform
    * @anchor PeopleRestService.searchConnection
+   * @deprecated Deprecated from 4.3.x. Replaced by a new API {@link UserRestResourcesV1#getConnectionOfUser(org.exoplatform.social.rest.impl.user.UriInfo, String, boolean, String)}
    */
   @GET
   @Path("{portalName}/getConnections.{format}")
