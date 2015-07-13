@@ -1207,6 +1207,11 @@ public class SpaceServiceImpl implements SpaceService {
    * {@inheritDoc}
    */
   public void addInvitedUser(Space space, String userId) {
+
+    if (ArrayUtils.contains(space.getMembers(),userId)) {
+      //user is already member. Do nothing
+      return;
+    }
     if (ArrayUtils.contains(space.getInvitedUsers(), userId)) {
       LOG.warn("User already invited");
       return;
@@ -1228,6 +1233,11 @@ public class SpaceServiceImpl implements SpaceService {
    * {@inheritDoc}
    */
   public void addPendingUser(Space space, String userId) {
+    if (ArrayUtils.contains(space.getMembers(),userId)) {
+        //user is already member. Do nothing
+        return;
+    }
+
     if (ArrayUtils.contains(space.getPendingUsers(), userId)) {
       this.addMember(space, userId);
       space = removeInvited(space, userId);
