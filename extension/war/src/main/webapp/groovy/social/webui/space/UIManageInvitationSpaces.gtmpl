@@ -113,7 +113,7 @@
 									<a class="limitText" data-key="title" data-line="2" href="<%=spaceUrl%>"><%=spaceName%></a>
 								</h4>
 								<div class="membersCount">$fieldLabelMembers <%= SpaceUtils.countMembers(space) %></div>
-								<div class="content limitText" data-key="content" data-line="2" >
+								<div class="content limitText" data-key="content" data-line="2" data-toggle="popover" data-content="<%=space.description%>" data-placement="left" data-trigger="hover">
 								<% if (space.description != null && !space.description.isEmpty()) { 
 										 print(space.description);
 									 } else { 
@@ -146,3 +146,11 @@
 		</div>
 	</div>
 </div>
+
+<script type="text/javascript">
+            require(['SHARED/jquery'], function(jQuery){
+			jQuery(document).ready(function(){
+			    jQuery('[data-toggle="popover"]').popover();
+			});
+		});
+</script>

@@ -167,7 +167,7 @@ import org.exoplatform.social.core.service.LinkProvider;
 		            <a class="limitText" data-key="title" data-line="2" href="<%=spaceUrl%>"><%=spaceName%></a>
 		          </h4>
 		          <div class="membersCount">$fieldLabelMembers <%= SpaceUtils.countMembers(space) %></div>
-		          <div class="content limitText" data-key="content" data-line="$maxLineDes">
+		          <div class="content limitText" data-key="content" data-line="$maxLineDes" data-toggle="popover" data-content="<%=space.description%>" data-placement="left" data-trigger="hover">
 		            <% if (space.description != null && !space.description.isEmpty()) { 
 		                 print(space.description);
 		               } else { 
@@ -234,3 +234,11 @@ import org.exoplatform.social.core.service.LinkProvider;
   </div>
   <% _ctx.include("war:/groovy/social/webui/UISocialConfirmation.gtmpl"); %>  
 </div>
+
+<script type="text/javascript">
+            require(['SHARED/jquery'], function(jQuery){
+			jQuery(document).ready(function(){
+			    jQuery('[data-toggle="popover"]').popover();
+			});
+		});
+</script>
