@@ -24,6 +24,7 @@ import java.net.URLConnection;
 import java.net.URLDecoder;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 import java.util.TimeZone;
 import java.util.regex.Pattern;
 
@@ -36,6 +37,8 @@ import javax.ws.rs.core.UriInfo;
 
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.PortalContainer;
+import org.exoplatform.services.organization.OrganizationService;
+import org.exoplatform.services.organization.UserProfile;
 import org.exoplatform.services.rest.impl.EnvironmentContext;
 import org.exoplatform.services.security.ConversationState;
 import org.exoplatform.social.core.activity.model.ActivityStream;
@@ -47,6 +50,7 @@ import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
 import org.exoplatform.social.core.manager.ActivityManager;
 import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.manager.RelationshipManager;
+import org.exoplatform.social.core.processor.I18NActivityProcessor;
 import org.exoplatform.social.core.service.LinkProvider;
 import org.exoplatform.social.core.space.spi.SpaceService;
 import org.exoplatform.social.service.rest.api.models.IdentityRestOut;
@@ -282,6 +286,18 @@ public final class Util {
     return (SpaceService) getPortalContainerByName(portalContainerName).getComponentInstanceOfType(SpaceService.class);
   }
 
+  /**
+   * Gets {@link OrganizationService} with specified portal container name.
+   *
+   * @param portalContainerName the specified portal container name
+   * @return the organizationService
+   * @since  4.1.2
+   */
+  public static final OrganizationService getOrganizationService(String portalContainerName) {
+    return (OrganizationService) getPortalContainerByName(portalContainerName).getComponentInstanceOfType(OrganizationService.class);
+  }
+
+
 
   /**
    * Gets {@link ActivityManager} with default portal container.
@@ -332,6 +348,18 @@ public final class Util {
   public static final RelationshipManager getRelationshipManager(String portalContainerName) {
     return (RelationshipManager) getPortalContainerByName(portalContainerName).
                                  getComponentInstanceOfType(RelationshipManager.class);
+  }
+
+  /**
+   * Gets {@link I18NActivityProcessor} with specified portal container name.
+   *
+   * @param portalContainerName the specified portal container name
+   * @return the I18NActivityProcessor
+   * @since  4.1.2
+   */
+  public static final I18NActivityProcessor getI18NActivityProcessor (String portalContainerName) {
+    return (I18NActivityProcessor) getPortalContainerByName(portalContainerName).
+            getComponentInstanceOfType(I18NActivityProcessor.class);
   }
 
   /**
@@ -614,5 +642,25 @@ public final class Util {
       }
     }
     return false;
+  }
+
+  /**
+   * Checks the locale of a user. If locale is not set, return default locale
+   *
+   * @param userId The id of the user
+   * @param portalContainerName The portalContainerName
+   *
+   * @return the locale of the user or default locale is user locale is not set
+   */
+  public static Locale getLocaleOfCurrentUser(String userId, String portalContainerName) {
+
+    try {
+      OrganizationService organizationService = getOrganizationService(portalContainerName);
+      UserProfile profile = organizationService.getUserProfileHandler().findUserProfileByName(userId);
+      String lang = profile.getAttribute(UserProfile.PERSONAL_INFO_KEYS[8]);
+      return (lang != null && lang.trim().length() > 0) ? new Locale(lang) : Locale.getDefault();
+    } catch (Exception e) {
+      return Locale.getDefault();
+    }
   }
 }
