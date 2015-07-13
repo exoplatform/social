@@ -1196,30 +1196,6 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     List<ExoSocialActivity> got = streamStorage.getFeed(ownerIdentity, offset, limit);
     got = buildList(activities, got, limit);
     
-    if (got.size() == limit) {
-      return got;
-    }
-
-    int remaind = limit - got.size();
-    if (remaind > 0) {
-      List<ExoSocialActivity> origin = getActivityFeedForUpgrade(ownerIdentity, offset, limit);
-      List<ExoSocialActivity> migrateList = new LinkedList<ExoSocialActivity>();
-
-      // fill to enough limit
-      for (ExoSocialActivity activity : origin) {
-        if (got.contains(activity) == false) {
-          got.add(activity);
-          migrateList.add(activity);
-        }
-
-      }
-
-      if (migrateList.size() > 0) {
-        StreamInvocationHelper.createFeedActivityRef(ownerIdentity, migrateList);
-      }
-
-    }
-
     return StorageUtils.sortActivitiesByTime(got, limit);
   }
   
@@ -1391,52 +1367,6 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     List<ExoSocialActivity> got = streamStorage.getConnections(ownerIdentity, offset, limit);
     got = buildList(activities, got, limit);
     //
-    if (got.size() == limit) {
-      return got;
-    }
-    
-    int remaind = limit - got.size();
-    if (remaind > 0) {
-      List<ExoSocialActivity> origin = getActivitiesOfConnectionsForUpgrade(ownerIdentity, offset, limit);
-      List<ExoSocialActivity> migrateList = new LinkedList<ExoSocialActivity>();
-
-      // fill to enough limit
-      for (ExoSocialActivity activity : origin) {
-
-        //SOC-4525 : exclude all space activities that owner is not member
-        if (SpaceIdentityProvider.NAME.equals(activity.getActivityStream().getType().toString())) {
-          Space space = spaceStorage.getSpaceByPrettyName(activity.getStreamOwner());
-          if(null == space){
-            IdentityEntity spaceIdentity;
-            try {
-              spaceIdentity = _findById(ActivityEntity.class, activity.getId()).getIdentity();
-              space = spaceStorage.getSpaceByPrettyName(spaceIdentity.getName());
-            } catch (NodeNotFoundException e) {
-              LOG.debug(e);
-            }
-            if(space!=null){
-              LOG.info("SPACE was renamed before: " + space.getPrettyName());
-            }
-          }
-          if (space != null && ! ArrayUtils.contains(space.getMembers(), ownerIdentity.getRemoteId())) {
-            continue;
-          }
-        }
-        //
-
-        if (got.contains(activity) == false) {
-          got.add(activity);
-          migrateList.add(activity);
-        }
-
-      }
-
-      if (migrateList.size() > 0) {
-        StreamInvocationHelper.createConnectionsActivityRef(ownerIdentity, migrateList);
-      }
-
-    }
-
     return StorageUtils.sortActivitiesByTime(got, limit);
   }
 

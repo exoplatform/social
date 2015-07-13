@@ -791,7 +791,7 @@ public class ActivityStorageTest extends AbstractCoreTest {
     assertEquals(1, activities.size());
     
     activities = activityStorage.getActivityFeed(maryIdentity, 0, 10);
-    assertEquals(1, activities.size());
+    assertEquals(0, activities.size());
     
     //
     tearDownActivityList.add(demoActivity);
@@ -834,7 +834,7 @@ public class ActivityStorageTest extends AbstractCoreTest {
     
     List<ExoSocialActivity> johnConnectionActivities = activityStorage.getActivitiesOfConnections(johnIdentity, 0, 10);
     assertNotNull("johnConnectionActivities must not be null", johnConnectionActivities);
-    assertEquals("johnConnectionActivities.size() must return: 1", 1, johnConnectionActivities.size());
+    assertEquals("johnConnectionActivities.size() must return: 0", 0, johnConnectionActivities.size());
     
     List<ExoSocialActivity> demoConnectionActivities = activityStorage.getActivitiesOfConnections(demoIdentity, 0, 10);
     assertNotNull("demoConnectionActivities must not be null", demoConnectionActivities);
@@ -842,7 +842,7 @@ public class ActivityStorageTest extends AbstractCoreTest {
     
     List<ExoSocialActivity> maryConnectionActivities = activityStorage.getActivitiesOfConnections(maryIdentity, 0, 10);
     assertNotNull("maryConnectionActivities must not be null", maryConnectionActivities);
-    assertEquals("maryConnectionActivities.size() must return: 1", 1, maryConnectionActivities.size());
+    assertEquals("maryConnectionActivities.size() must return: 0", 0, maryConnectionActivities.size());
     
     for (Relationship rel : relationships) {
       relationshipManager.delete(rel);
