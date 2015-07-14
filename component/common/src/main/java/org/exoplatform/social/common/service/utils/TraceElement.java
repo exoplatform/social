@@ -107,6 +107,13 @@ public class TraceElement {
   }
   
   @Override
+  public int hashCode() {
+    int result = super.hashCode();
+    result = 31 * result + (traceName != null ? traceName.hashCode() : 0);
+    return result;
+  }
+  
+  @Override
   public String toString() {
     return String.format("%s - %s ", this.traceName, logWatch.toString(getElapsedTime(), TimeUnit.MILLISECONDS));
   }

@@ -197,6 +197,12 @@ public interface FilterLiteral<P> {
       return this.p.equals(other.p);
     }
     
+    @Override
+    public int hashCode() {
+      int result = super.hashCode();
+      result = 31 * result + (p != null ? p.hashCode() : 0);
+      return result;
+    }
     
     public OrderByOption<P> clone() throws CloneNotSupportedException {
       Object obj = super.clone();

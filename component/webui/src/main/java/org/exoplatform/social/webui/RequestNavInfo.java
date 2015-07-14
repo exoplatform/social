@@ -47,4 +47,13 @@ public class RequestNavInfo {
           && path.equals(data.path);
     }
   }
+  
+  
+  @Override
+  public int hashCode() {
+    int result = super.hashCode();
+    result = 31 * result + (siteType != null ? siteType.hashCode() : 0);
+    result = 31 * result + (siteName != null ? siteName.hashCode() : 0);
+    return result;
+  }
 }
