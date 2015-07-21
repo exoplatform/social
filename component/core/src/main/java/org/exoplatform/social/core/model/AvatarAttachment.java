@@ -19,11 +19,10 @@ package org.exoplatform.social.core.model;
 import java.io.InputStream;
 
 import javax.jcr.ItemNotFoundException;
-import javax.jcr.Node;
 import javax.jcr.Session;
 
+import org.exoplatform.commons.utils.CommonsUtils;
 import org.exoplatform.container.PortalContainer;
-import org.exoplatform.services.jcr.RepositoryService;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 
@@ -101,16 +100,10 @@ public class AvatarAttachment {
    *
    * @return the data path
    * @throws Exception the exception
+   * @deprecated
    */
   public String getDataPath(PortalContainer portalContainer) throws Exception {
-    Node attachmentData;
-    try {
-      attachmentData = (Node) getSession(portalContainer).getItem(getId());
-    } catch (ItemNotFoundException e) {
-      LOG.warn("Failed to get data path", e);
-      return null;
-    }
-    return attachmentData.getPath();
+    return getDataPath();
   }
 
   /**
@@ -120,14 +113,12 @@ public class AvatarAttachment {
    * @throws Exception the exception
    */
   public String getDataPath() throws Exception {
-    Node attachmentData;
     try {
-      attachmentData = (Node) getSession().getItem(getId());
+      return getSession().getItem(getId()).getPath();
     } catch (ItemNotFoundException e) {
       LOG.warn("Failed to get data path", e);
       return null;
     }
-    return attachmentData.getPath();
   }
 
   /**
@@ -266,27 +257,13 @@ public class AvatarAttachment {
   }
 
   /**
-   * Gets the session from a portal container.
-   *
-   * @return the session
-   * @throws Exception the exception
-   */
-  private Session getSession(PortalContainer portalcontainer) throws Exception {
-    RepositoryService repoService = (RepositoryService) portalcontainer
-                                    .getComponentInstanceOfType(RepositoryService.class);
-    return repoService.getDefaultRepository().getSystemSession(workspace);
-  }
-
-  /**
    * Gets the session.
    *
    * @return the session
    * @throws Exception the exception
    */
   private Session getSession() throws Exception {
-    RepositoryService repoService = (RepositoryService) PortalContainer.getInstance()
-                                    .getComponentInstanceOfType(RepositoryService.class);
-    return repoService.getDefaultRepository().getSystemSession(workspace);
+    return CommonsUtils.getSystemSessionProvider().getSession(workspace, CommonsUtils.getRepository());
   }
 
 }

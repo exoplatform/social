@@ -123,7 +123,7 @@ public class LazyActivityStorageTest extends AbstractCoreTest {
     
     ValueParam param = new ValueParam();
     param.setName("limit");
-    param.setValue("20");
+    param.setValue("54");
     InitParams params = new InitParams();
     params.addParameter(param);
     
@@ -267,7 +267,7 @@ public class LazyActivityStorageTest extends AbstractCoreTest {
     
     ValueParam param = new ValueParam();
     param.setName("limit");
-    param.setValue("20");
+    param.setValue("34");
     InitParams params = new InitParams();
     params.addParameter(param);
     
@@ -309,6 +309,17 @@ public class LazyActivityStorageTest extends AbstractCoreTest {
       activityStorage.saveActivity(rootIdentity, activity);
       tearDownActivityList.add(activity);
     }
+    
+    ValueParam param = new ValueParam();
+    param.setName("limit");
+    param.setValue("54");
+    InitParams params = new InitParams();
+    params.addParameter(param);
+    
+    UserActivityStreamUpdaterPlugin updaterPlugin = new UserActivityStreamUpdaterPlugin(params);
+    
+    assertNotNull(updaterPlugin);
+    updaterPlugin.processUpgrade("1.2.x", "4.0");
     
     List<ExoSocialActivity> list = activityStorage.getActivityFeed(rootIdentity, 0, 100);
     assertEquals(54, list.size());

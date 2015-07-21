@@ -313,6 +313,7 @@
 						$commentMessage
 					</p>          
 				</div><!--end commentRight-->
+				<a id="Permalink${it.id}" class="uiIconLink uiIconLightGray" href="<%=uicomponent.getCommentPermalink(activity.id, it.id)%>"></a>
 			  <%
 				if (uicomponent.isCommentDeletable(it.userId)) {
 				  String idDeleteComment = "DeleteCommentButton${it.id}";

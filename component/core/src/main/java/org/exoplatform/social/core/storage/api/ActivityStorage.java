@@ -263,7 +263,9 @@ public interface ActivityStorage {
    * @param limit
    * @return
    * @since 4.1.x, 4.0.2
+   * @deprecated not used anymore
    */
+  @Deprecated
   public List<ExoSocialActivity> getActivityFeedForUpgrade(Identity ownerIdentity, int offset, int limit);
 
   /**
@@ -342,7 +344,9 @@ public interface ActivityStorage {
    * @param limit
    * @return
    * @since 4.1.x, 4.0.2
+   * @deprecated not used anymore
    */
+  @Deprecated
   public List<ExoSocialActivity> getActivitiesOfConnectionsForUpgrade(Identity ownerIdentity, int offset, int limit);
   
   /**

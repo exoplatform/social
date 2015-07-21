@@ -16,8 +16,6 @@
  */
 package org.exoplatform.social.core.identity.model;
 
-import org.exoplatform.social.core.storage.cache.model.key.ActiveIdentityKey;
-
 /**
  * Created by The eXo Platform SAS
  * Author : eXoPlatform
@@ -72,7 +70,7 @@ public class ActiveIdentityFilter {
     if (this == o) {
       return true;
     }
-    if (!(o instanceof ActiveIdentityKey)) {
+    if (!(o instanceof ActiveIdentityFilter)) {
       return false;
     }
 

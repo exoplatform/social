@@ -1101,15 +1101,15 @@ public class ActivityManagerTest extends AbstractCoreTest {
    activityManager.saveActivityNoReturn(demoIdentity, activity);
    tearDownActivityList.add(activity);
    
-   //john must see this activity but NOK
+   //john must not see this activity
    activities = activityManager.getActivityFeedWithListAccess(johnIdentity).loadAsList(0, 10);
-   assertEquals(3, activities.size());
+   assertEquals(2, activities.size());
 
-   //delete 2 activities on john's stream, the activity posted by root appears now ==> NOK
+   //delete 2 activities on john's stream
    activityManager.deleteActivity(demoActivityId);
    activityManager.deleteActivity(johnActivityId);
    activities = activityManager.getActivityFeedWithListAccess(johnIdentity).loadAsList(0, 10);
-   assertEquals(1, activities.size());
+   assertEquals(0, activities.size());
    
    relationshipManager.delete(rootDemoRelationship);
    relationshipManager.delete(demoJohnRelationship);

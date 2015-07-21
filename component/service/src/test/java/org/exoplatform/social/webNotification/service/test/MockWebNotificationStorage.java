@@ -111,4 +111,10 @@ public class MockWebNotificationStorage implements WebNotificationStorage {
     // TODO Auto-generated method stub
     
   }
+
+  @Override
+  public boolean remove(long seconds) {
+    // TODO Auto-generated method stub
+    return false;
+  }
 }

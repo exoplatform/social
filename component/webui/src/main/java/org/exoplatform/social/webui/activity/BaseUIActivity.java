@@ -36,6 +36,7 @@ import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
 import org.exoplatform.social.core.processor.I18NActivityProcessor;
 import org.exoplatform.social.core.relationship.model.Relationship;
 import org.exoplatform.social.core.relationship.model.Relationship.Type;
+import org.exoplatform.social.core.service.LinkProvider;
 import org.exoplatform.social.core.space.SpaceException;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
@@ -439,6 +440,14 @@ public class BaseUIActivity extends UIForm {
     activity = getI18N(activity);
   }
 
+  protected String getActivityPermalink(String activityId) {
+    return LinkProvider.getSingleActivityUrl(activityId);
+  }
+
+  protected String getCommentPermalink(String activityId, String commentId) {
+    return LinkProvider.getSingleActivityUrl(activityId) + "&commentId=" + commentId;
+  }
+  
   /**
    * Checks if this activity is liked by the remote user.
    * 

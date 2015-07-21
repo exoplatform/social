@@ -52,11 +52,11 @@
 		</div>
 		<div class="form-horizontal pull-left">
 			<div class="control-group">
-				<label class="control-label" for="<%=uiform.SPACE_DISPLAY_NAME%>"><%=_ctx.appRes(uicomponent.getId() + ".label.name")%>:</label>
+				<label class="control-label" for="<%=uiform.SPACE_DISPLAY_NAME%>"><%=_ctx.appRes(uicomponent.getId() + ".label.name")%></label>
 				<div class="controls"><% uiform.renderField(uiform.SPACE_DISPLAY_NAME)%></div>
 			</div>
 			<div class="control-group">
-				<label class="control-label" for="<%=uiform.SPACE_DESCRIPTION%>"><%=_ctx.appRes(uicomponent.getId() + ".label.description")%>:</label>
+				<label class="control-label" for="<%=uiform.SPACE_DESCRIPTION%>"><%=_ctx.appRes(uicomponent.getId() + ".label.description")%></label>
 				<div class="controls"><% uiform.renderField(uiform.SPACE_DESCRIPTION); %></div>
 			</div>
 		</div>

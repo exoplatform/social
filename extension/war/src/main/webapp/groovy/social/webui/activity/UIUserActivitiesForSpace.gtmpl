@@ -183,6 +183,7 @@
 		<div id="ActivityContextBox${activity.id}">
 		  <div class="heading">
 				<span class="arrowLeft"></span>
+				<a id="Permalink${activity.id}" class="uiIconLink uiIconLightGray" href="<%=uicomponent.getActivityPermalink(activity.id)%>"></a>
 				 <% if (activityDeletable) {%>
 					<a href="javascript:void(0)" data-confirm="$labelToDeleteThisActivity" data-caption="$captionConfirmation" data-close="$labelClosebutton" data-ok="$labelConfirmbutton"  data-delete="<%=uicomponent.event("DeleteActivity", uicomponent.getId(), "");%>" class="uiIconClose uiIconLightGray controllDelete" id="DeleteActivityButton${activity.id}"></a>
 				  <%}%>
@@ -310,6 +311,7 @@
 						$commentMessage
 					</p>          
 				</div><!--end commentRight-->
+				<a id="Permalink${it.id}" class="uiIconLink uiIconLightGray" href="<%=uicomponent.getCommentPermalink(activity.id, it.id)%>"></a>
 			  <%
 				if (uicomponent.isCommentDeletable(it.userId)) {
 				  String idDeleteComment = "DeleteCommentButton${it.id}";

@@ -132,7 +132,7 @@ public class ActivityStreamUpdaterTest extends AbstractCoreTest {
     
     ValueParam param = new ValueParam();
     param.setName("limit");
-    param.setValue("20");
+    param.setValue("100");
     InitParams params = new InitParams();
     params.addParameter(param);
     
