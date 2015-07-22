@@ -353,7 +353,7 @@ public class ActivityRestResourcesV1 implements ActivityRestResources {
     if (EntityBuilder.getActivityStream(activity, currentUser) == null) { //current user doesn't have permission to view activity
       throw new WebApplicationException(Response.Status.UNAUTHORIZED);
     }
-    List<String> likerIds = Arrays.asList(activity.getLikeIdentityIds());
+    List<String> likerIds = new ArrayList<String>(Arrays.asList(activity.getLikeIdentityIds()));
     if (!likerIds.contains(currentUser.getId())) {
       likerIds.add(currentUser.getId());
       String[] identityIds = new String[likerIds.size()];
