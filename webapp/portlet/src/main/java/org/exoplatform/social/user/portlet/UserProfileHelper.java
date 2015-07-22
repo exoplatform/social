@@ -94,7 +94,11 @@ public class UserProfileHelper {
    */
   public static Map<String, Object> getDisplayProfileInfo(Profile currentProfile) {
     Map<String, Object> infos = new LinkedHashMap<String, Object>();
-    infos.put(Profile.EMAIL, currentProfile.getEmail());
+    String email = currentProfile.getEmail();
+    // LDAP user might not have email
+    if(!isEmpty(email)) {
+      infos.put(Profile.EMAIL, email);
+    }
     //
     String jobTitle = currentProfile.getPosition();
     if(!isEmpty(jobTitle)) {
