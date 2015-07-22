@@ -415,7 +415,7 @@ public class ActivityRestResourcesV1 implements ActivityRestResources {
                                      @ApiParam(value = "Expand param : ask for a full representation of a subresource", required = false) @QueryParam("expand") String expand) throws Exception {
     
     String authenticatedUser = ConversationState.getCurrent().getIdentity().getUserId();
-    if (authenticatedUser.equals(username)) {
+    if (!authenticatedUser.equals(username)) {
       throw new WebApplicationException(Response.Status.UNAUTHORIZED);
     }
     Identity currentUser = CommonsUtils.getService(IdentityManager.class).getOrCreateIdentity(OrganizationIdentityProvider.NAME, authenticatedUser, true);
@@ -426,7 +426,7 @@ public class ActivityRestResourcesV1 implements ActivityRestResources {
       throw new WebApplicationException(Response.Status.UNAUTHORIZED);
     }
     
-    List<String> likerIds = Arrays.asList(activity.getLikeIdentityIds());
+    List<String> likerIds = new ArrayList<String>(Arrays.asList(activity.getLikeIdentityIds()));
     if (likerIds.contains(currentUser.getId())) {
       likerIds.remove(currentUser.getId());
       String[] identityIds = new String[likerIds.size()];
