@@ -155,10 +155,10 @@ public class ActivityRestResourcesV1 implements ActivityRestResources {
   public Response updateActivityById(@Context UriInfo uriInfo,
                                      @ApiParam(value = "activity id", required = true) @PathParam("id") String id,
                                      @ApiParam(value = "Expand param : ask for a full representation of a subresource", required = false) @QueryParam("expand") String expand,
-                                     @ApiParam(value = "Activity object for updating", required = true) ActivityEntity model) throws Exception {
+                                     @ApiParam(value = "Activity object for updating. Ex: { \"title\" : \"Activity object to update\"}", required = true) ActivityEntity model) throws Exception {
   
     if (model == null || model.getTitle() == null || model.getTitle().length() == 0) {
-      throw new WebApplicationException(Response.Status.UNAUTHORIZED);
+      throw new WebApplicationException(Response.Status.BAD_REQUEST);
     }
     //
     String authenticatedUser = ConversationState.getCurrent().getIdentity().getUserId();
@@ -263,10 +263,10 @@ public class ActivityRestResourcesV1 implements ActivityRestResources {
   public Response postComment(@Context UriInfo uriInfo,
                               @ApiParam(value = "activity id", required = true) @PathParam("id") String id,
                               @ApiParam(value = "Expand param : ask for a full representation of a subresource", required = false) @QueryParam("expand") String expand,
-                              @ApiParam(value = "Comment object to post. Ex: { \"body\" : \"post comment on activity\"}", required = true) CommentEntity model) throws Exception {
+                              @ApiParam(value = "Comment object to post. Ex: { \"title\" : \"post comment on activity\"}", required = true) CommentEntity model) throws Exception {
     
     if (model == null || model.getTitle() == null || model.getTitle().length() == 0) {
-      throw new WebApplicationException(Response.Status.UNAUTHORIZED);
+      throw new WebApplicationException(Response.Status.BAD_REQUEST);
     }
     
     String authenticatedUser = ConversationState.getCurrent().getIdentity().getUserId();
