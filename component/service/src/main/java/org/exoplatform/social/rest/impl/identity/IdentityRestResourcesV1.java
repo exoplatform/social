@@ -35,6 +35,7 @@ import javax.ws.rs.core.UriInfo;
 import org.exoplatform.commons.utils.CommonsUtils;
 import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.social.core.identity.model.Identity;
+import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
 import org.exoplatform.social.core.manager.IdentityManager;
@@ -79,21 +80,24 @@ public class IdentityRestResourcesV1 implements IdentityRestResources {
                                 @ApiParam(value = "Limit", required = false, defaultValue = "20") @QueryParam("limit") int limit,
                                 @ApiParam(value = "Size of returned result list.", defaultValue = "false") @QueryParam("returnSize") boolean returnSize,
                                 @ApiParam(value = "Expand param : ask for a full representation of a subresource", required = false) @QueryParam("expand") String expand) throws Exception {
-    
-    IdentityManager identityManager = CommonsUtils.getService(IdentityManager.class);
-    String providerId = (type != null && type.equals("space")) ? SpaceIdentityProvider.NAME : OrganizationIdentityProvider.NAME;
-    ListAccess<Identity> listAccess = identityManager.getIdentitiesByProfileFilter(providerId, new ProfileFilter(), true);
-    Identity[] identities = listAccess.load(offset, limit);
-    List<DataEntity> identityEntities = new ArrayList<DataEntity>();
-    for (Identity identity : identities) {
-      identityEntities.add(EntityBuilder.buildEntityIdentity(identity, uriInfo.getPath(), expand).getDataEntity());
-    }
-    CollectionEntity collectionIdentity = new CollectionEntity(identityEntities, EntityBuilder.IDENTITIES_TYPE, offset, limit);
-    if(returnSize) {
-      collectionIdentity.setSize(listAccess.getSize());
-    }
+    try {
+      IdentityManager identityManager = CommonsUtils.getService(IdentityManager.class);
+      String providerId = (type != null && type.equals("space")) ? SpaceIdentityProvider.NAME : OrganizationIdentityProvider.NAME;
+      ListAccess<Identity> listAccess = identityManager.getIdentitiesByProfileFilter(providerId, new ProfileFilter(), true);
+      Identity[] identities = listAccess.load(offset, limit);
+      List<DataEntity> identityEntities = new ArrayList<DataEntity>();
+      for (Identity identity : identities) {
+        identityEntities.add(EntityBuilder.buildEntityIdentity(identity, uriInfo.getPath(), expand).getDataEntity());
+      }
+      CollectionEntity collectionIdentity = new CollectionEntity(identityEntities, EntityBuilder.IDENTITIES_TYPE, offset, limit);
+      if(returnSize) {
+        collectionIdentity.setSize(listAccess.getSize());
+      }
 
-    return EntityBuilder.getResponse(collectionIdentity, uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
+      return EntityBuilder.getResponse(collectionIdentity, uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
+    } catch (Exception e) {
+   	  return EntityBuilder.getResponse(new CollectionEntity(new ArrayList<DataEntity>(), EntityBuilder.IDENTITIES_TYPE, offset, limit), uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
+	}
   }
 
   /**
@@ -125,7 +129,8 @@ public class IdentityRestResourcesV1 implements IdentityRestResources {
     Identity identity = identityManager.getOrCreateIdentity(providerId, remoteId, true);
     if (identity == null) {
       identity = new Identity(providerId, remoteId);
-      identityManager.saveIdentity(identity);
+      identityManager.updateIdentity(identity);
+      identityManager.getProfile(identity);
     } else if (identity.isDeleted()) {
       throw new WebApplicationException(Response.Status.FORBIDDEN);
     }
