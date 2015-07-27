@@ -64,12 +64,16 @@ public class SpaceAccessApplicationLifecycle implements ApplicationLifecycle<Web
     Utils.setCurrentNavigationData(siteType, siteName, requestPath);
     
     //
-    Route route = ExoRouter.route(requestPath);
-    if (route == null) { 
-      return;
+    String spacePrettyName = "";
+    synchronized (this) {
+      Route route = ExoRouter.route(requestPath);
+      if (route == null) { 
+        return;
+      }
+      
+       spacePrettyName = route.localArgs.get("spacePrettyName");
+      
     }
-    
-    String spacePrettyName = route.localArgs.get("spacePrettyName");
     
     if (pcontext.getSiteType().equals(SiteType.GROUP)
         && pcontext.getSiteName().startsWith("/spaces") && spacePrettyName != null
