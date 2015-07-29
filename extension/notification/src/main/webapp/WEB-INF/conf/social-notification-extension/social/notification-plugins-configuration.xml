@@ -31,6 +31,9 @@
 								<value>
 									<string>Instantly</string>
 								</value>
+								<value>
+									<string>onsite</string>
+								</value>															
 							</collection>
 						</field>
 						<field name="groupId">
@@ -71,6 +74,9 @@
 							<collection type="java.util.ArrayList">
 								<value>
 									<string>Instantly</string>
+								</value>
+								<value>
+									<string>onsite</string>
 								</value>
 								<value>
 									<string>daily</string>
@@ -157,6 +163,9 @@
 								<value>
 									<string>Instantly</string>
 								</value>
+								<value>
+									<string>onsite</string>
+								</value>
 							</collection>
 						</field>
 						<field name="groupId">
@@ -197,6 +206,9 @@
 							<collection type="java.util.ArrayList">
 								<value>
 									<string>Instantly</string>
+								</value>
+								<value>
+									<string>onsite</string>
 								</value>
 							</collection>
 						</field>
@@ -281,6 +293,9 @@
 									<string>Instantly</string>
 								</value>
 								<value>
+									<string>onsite</string>
+								</value>
+								<value>
 									<string>daily</string>
 								</value>
 							</collection>
@@ -325,6 +340,9 @@
 									<string>Instantly</string>
 								</value>
 								<value>
+									<string>onsite</string>
+								</value>
+								<value>
 									<string>weekly</string>
 								</value>
 							</collection>
@@ -367,6 +385,9 @@
 							<collection type="java.util.ArrayList">
 								<value>
 									<string>Instantly</string>
+								</value>
+								<value>
+									<string>onsite</string>
 								</value>
 								<value>
 									<string>weekly</string>
