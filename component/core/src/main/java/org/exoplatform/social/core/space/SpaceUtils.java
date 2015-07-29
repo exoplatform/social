@@ -1665,19 +1665,23 @@ public class SpaceUtils {
   }
   
   /**
-   * Checks if an specific user has membership in group group with input membership types.
+   * Checks if an specific user has membership in group group with input membership type.
    * 
    * @param remoteId User to be checked.
    * @param groupId Group information.
-   * @param membershipTypes membership types to be checked.
+   * @param membershipType input membership type to check.
    * @return true if user has membership in group with input type.
    */
-  public static boolean isUserHasMembershipTypesInGroup(String remoteId, String groupId, String... membershipTypes) {
+  public static boolean isUserHasMembershipTypesInGroup(String remoteId, String groupId, String membershipType) {
+	  if (remoteId == null || groupId == null || membershipType == null) return false;
+	
     try {
-      for (String membershipType : membershipTypes) {
-        Membership membership = getOrganizationService().getMembershipHandler()
-            .findMembershipByUserGroupAndType(remoteId, groupId, membershipType);  
-        if (membership != null) return true;
+      Collection<Membership> membershipsList = getOrganizationService()
+        .getMembershipHandler().findMembershipsByUserAndGroup(remoteId, groupId);
+      
+      for (Membership membership : membershipsList) {
+        if (membershipType.equals(membership.getMembershipType())) 
+          return true;
       }
     } catch (Exception e) {
       return false;
