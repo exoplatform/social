@@ -16,6 +16,12 @@
  */
 package org.exoplatform.social.rest.impl.spacemembership;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -49,12 +55,6 @@ import org.exoplatform.social.rest.entity.CollectionEntity;
 import org.exoplatform.social.rest.entity.DataEntity;
 import org.exoplatform.social.rest.entity.SpaceMembershipEntity;
 import org.exoplatform.social.service.rest.api.VersionResources;
-
-import com.wordnik.swagger.annotations.Api;
-import com.wordnik.swagger.annotations.ApiOperation;
-import com.wordnik.swagger.annotations.ApiParam;
-import com.wordnik.swagger.annotations.ApiResponse;
-import com.wordnik.swagger.annotations.ApiResponses;
 
 @Path(VersionResources.VERSION_ONE + "/social/spacesMemberships")
 @Api(value=VersionResources.VERSION_ONE + "/social/spacesMemberships", description = "Operations membership of space.")

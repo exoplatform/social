@@ -48,11 +48,6 @@ import org.exoplatform.social.rest.entity.CollectionEntity;
 import org.exoplatform.social.rest.entity.CommentEntity;
 import org.exoplatform.social.rest.entity.DataEntity;
 
-import com.wordnik.swagger.annotations.ApiOperation;
-import com.wordnik.swagger.annotations.ApiParam;
-import com.wordnik.swagger.annotations.ApiResponse;
-import com.wordnik.swagger.annotations.ApiResponses;
-
 public interface ActivityRestResources extends SocialRest {
 
   /**

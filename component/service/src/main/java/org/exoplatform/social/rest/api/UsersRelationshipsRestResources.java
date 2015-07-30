@@ -30,8 +30,6 @@ import javax.ws.rs.core.UriInfo;
 
 import org.exoplatform.social.rest.entity.RelationshipEntity;
 
-import com.wordnik.swagger.annotations.ApiParam;
-
 public interface UsersRelationshipsRestResources extends SocialRest {
 
   /**

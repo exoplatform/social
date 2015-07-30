@@ -32,8 +32,6 @@ import org.exoplatform.social.rest.entity.ActivityEntity;
 import org.exoplatform.social.rest.entity.UserEntity;
 import org.exoplatform.social.rest.impl.user.UserRestResourcesV1.ACTIVITY_STREAM_TYPE;
 
-import com.wordnik.swagger.annotations.ApiParam;
-
 public interface UserRestResources extends SocialRest {
 
   /**

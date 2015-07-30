@@ -28,8 +28,6 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
-import com.wordnik.swagger.annotations.ApiParam;
-
 public interface IdentityRestResources extends SocialRest {
 
   /**

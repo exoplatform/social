@@ -31,8 +31,6 @@ import javax.ws.rs.core.UriInfo;
 import org.exoplatform.social.rest.entity.SpaceEntity;
 import org.exoplatform.social.service.rest.api.models.ActivityRestIn;
 
-import com.wordnik.swagger.annotations.ApiParam;
-
 public interface SpaceRestResources extends SocialRest {
 
   /**
@@ -134,8 +132,8 @@ public interface SpaceRestResources extends SocialRest {
                                                   @QueryParam("limit") int limit,
                                                   @QueryParam("before") String before,
                                                   @QueryParam("after") String after,
-      @ApiParam(value = "Size of returned result list.", defaultValue = "false") @QueryParam("returnSize") boolean returnSize,
-      @ApiParam(value = "Expand param : ask for a full representation of a subresource", required = false) @QueryParam("expand") String expand) throws Exception;
+                                                  @QueryParam("returnSize") boolean returnSize,
+                                                  @QueryParam("expand") String expand) throws Exception;
 
   @POST
   @Path("{id}/activities")
