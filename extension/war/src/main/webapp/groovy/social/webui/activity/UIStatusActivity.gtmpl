@@ -161,8 +161,8 @@
       <h5 class="TitleContent clearfix">
         <a class="Text"  href="$ownerUri">$ownerName</a><br>
         <span class="DateTime">$activityPostedTime</span>
-        <a id="Permalink${activity.id}" class="uiIconLink uiIconLightGray" href="<%=uicomponent.getActivityPermalink(activity.id)%>"></a>
       <% if (activityDeletable) {%>
+        <a id="Permalink${activity.id}" class="uiIconLink uiIconLightGray" href="<%=uicomponent.getActivityPermalink(activity.id)%>"></a>
         <span onclick="<%= uicomponent.event("DeleteActivity", uicomponent.getId(), ""); %>" class="CloseContentBoxNormal" id="DeleteActivityButton${activity.id}"></span>
       <%}%>
       </h5>
@@ -293,7 +293,9 @@
         </div>
       <%
         if (uicomponent.isCommentDeletable(it.userId)) {
+          String viewActivityTip = _ctx.appRes("UIActivity.msg.ViewActivity");
       %>
+        <a id="Permalink${it.id}" rel="tooltip" data-placement="left" title="$viewActivityTip" class="uiIconLink uiIconLightGray" href="<%=uicomponent.getCommentPermalink(activity.id, it.id)%>"></a>
         <span id="DeleteCommentButton${activity.id}${commentCounter}" onclick="<%= uicomponent.event("DeleteComment", uicomponent.id, it.id); %>" class="CloseContentBoxNormal"></span>
       <% } %>
       </div>
