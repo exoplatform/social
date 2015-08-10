@@ -23,7 +23,11 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringEscapeUtils;
+import org.exoplatform.commons.chromattic.ChromatticManager;
+import org.exoplatform.commons.utils.CommonsUtils;
 import org.exoplatform.commons.utils.ListAccess;
+import org.exoplatform.container.ExoContainerContext;
+import org.exoplatform.container.component.RequestLifeCycle;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
@@ -41,6 +45,7 @@ import org.exoplatform.social.core.space.SpaceUtils;
 import org.exoplatform.social.core.space.impl.DefaultSpaceApplicationHandler;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.storage.api.IdentityStorage;
+import org.exoplatform.social.core.storage.impl.StorageUtils;
 import org.exoplatform.social.core.test.AbstractCoreTest;
 
 public class SpaceServiceTest extends AbstractCoreTest {
@@ -597,6 +602,7 @@ public class SpaceServiceTest extends AbstractCoreTest {
     assertEquals(0, spaceService.getInvitedSpaces("paul").size());
     Space space = spaceService.getSpaceByDisplayName("Space1");
     spaceService.inviteMember(space, "paul");
+    StorageUtils.persist();
     assertEquals(1, spaceService.getInvitedSpaces("paul").size());
   }
 
@@ -1591,6 +1597,7 @@ public class SpaceServiceTest extends AbstractCoreTest {
     space.setDisplayName(updateSpaceDisplayName);
     space.setPrettyName(space.getDisplayName());
     spaceService.updateSpace(space);
+    StorageUtils.persist();
     savedSpace = spaceService.getSpaceByDisplayName(updateSpaceDisplayName);
     assertNotNull("savedSpace must not be null", savedSpace);
     assertEquals("savedSpace.getDisplayName() must return: " + updateSpaceDisplayName, updateSpaceDisplayName, savedSpace.getDisplayName());
@@ -2729,6 +2736,7 @@ public class SpaceServiceTest extends AbstractCoreTest {
         listSpace[i] = this.getSpaceInstance(i, Space.HIDDEN, Space.OPEN, "demo");
       
       spaceService.saveSpace(listSpace[i], true);
+      StorageUtils.persist();
       tearDownSpaceList.add(listSpace[i]);
     }
     
@@ -2765,6 +2773,7 @@ public class SpaceServiceTest extends AbstractCoreTest {
         listSpace[i] = this.getSpaceInstance(i, Space.HIDDEN, Space.CLOSE, "demo");
       
       spaceService.saveSpace(listSpace[i], true);
+      StorageUtils.persist();
       tearDownSpaceList.add(listSpace[i]);
     }
     
@@ -2807,6 +2816,7 @@ public class SpaceServiceTest extends AbstractCoreTest {
         listSpace[i] = this.getSpaceInstance(i, Space.HIDDEN, Space.CLOSE, "demo");
       
       spaceService.saveSpace(listSpace[i], true);
+      StorageUtils.persist();
       tearDownSpaceList.add(listSpace[i]);
     }
     
@@ -2881,29 +2891,36 @@ public class SpaceServiceTest extends AbstractCoreTest {
   }
 
   private Space populateData() throws Exception {
-    String spaceDisplayName = "Space1";
-    Space space1 = new Space();
-    space1.setApp("Calendar;FileSharing");
-    space1.setDisplayName(spaceDisplayName);
-    space1.setPrettyName(space1.getDisplayName());
-    String shortName = SpaceUtils.cleanString(spaceDisplayName);
-    space1.setGroupId("/spaces/" + shortName);
-    space1.setUrl(shortName);
-    space1.setRegistration("validation");
-    space1.setDescription("This is my first space for testing");
-    space1.setType("classic");
-    space1.setVisibility("public");
-    space1.setPriority("2");
-    String[] manager = new String []{"root"};
-    String[] members = new String []{"demo", "john", "mary", "tom", "harry"};
-    space1.setManagers(manager);
-    space1.setMembers(members);
+    try {
+      String spaceDisplayName = "Space1";
+      Space space1 = new Space();
+      space1.setApp("Calendar;FileSharing");
+      space1.setDisplayName(spaceDisplayName);
+      space1.setPrettyName(space1.getDisplayName());
+      String shortName = SpaceUtils.cleanString(spaceDisplayName);
+      space1.setGroupId("/spaces/" + shortName);
+      space1.setUrl(shortName);
+      space1.setRegistration("validation");
+      space1.setDescription("This is my first space for testing");
+      space1.setType("classic");
+      space1.setVisibility("public");
+      space1.setPriority("2");
+      String[] manager = new String []{"root"};
+      String[] members = new String []{"demo", "john", "mary", "tom", "harry"};
+      space1.setManagers(manager);
+      space1.setMembers(members);
 
-    spaceService.saveSpace(space1, true);
-    return space1;
+      spaceService.saveSpace(space1, true);
+      return space1;
+      
+    } finally {
+      StorageUtils.persist();
+    }
+    
   }
   
   private Space createSpace(String spaceName, String creator) throws Exception {
+    try {
     Space space = new Space();
     space.setDisplayName(spaceName);
     space.setPrettyName(spaceName);
@@ -2920,6 +2937,9 @@ public class SpaceServiceTest extends AbstractCoreTest {
     space.setMembers(members);
     spaceService.saveSpace(space, true);
     return space;
+    } finally {
+      StorageUtils.persist();
+    }
   }
 
   /**
@@ -2931,27 +2951,31 @@ public class SpaceServiceTest extends AbstractCoreTest {
    * @since 1.2.0-GA
    */
   private Space getSpaceInstance(int number) throws Exception {
-    Space space = new Space();
-    space.setDisplayName("my space " + number);
-    space.setPrettyName(space.getDisplayName());
-    space.setRegistration(Space.OPEN);
-    space.setDescription("add new space " + number);
-    space.setType(DefaultSpaceApplicationHandler.NAME);
-    space.setVisibility(Space.PUBLIC);
-    space.setRegistration(Space.VALIDATION);
-    space.setPriority(Space.INTERMEDIATE_PRIORITY);
-    space.setGroupId("/space/space" + number);
-    String[] managers = new String[] {"demo", "tom"};
-    String[] members = new String[] {"demo", "raul", "ghost", "dragon"};
-    String[] invitedUsers = new String[] {"register1", "mary"};
-    String[] pendingUsers = new String[] {"jame", "paul", "hacker"};
-    space.setInvitedUsers(invitedUsers);
-    space.setPendingUsers(pendingUsers);
-    space.setManagers(managers);
-    space.setMembers(members);
-    space.setUrl(space.getPrettyName());
-    this.spaceService.saveSpace(space, true);
-    return space;
+    try {
+      Space space = new Space();
+      space.setDisplayName("my space " + number);
+      space.setPrettyName(space.getDisplayName());
+      space.setRegistration(Space.OPEN);
+      space.setDescription("add new space " + number);
+      space.setType(DefaultSpaceApplicationHandler.NAME);
+      space.setVisibility(Space.PUBLIC);
+      space.setRegistration(Space.VALIDATION);
+      space.setPriority(Space.INTERMEDIATE_PRIORITY);
+      space.setGroupId("/space/space" + number);
+      String[] managers = new String[] {"demo", "tom"};
+      String[] members = new String[] {"demo", "raul", "ghost", "dragon"};
+      String[] invitedUsers = new String[] {"register1", "mary"};
+      String[] pendingUsers = new String[] {"jame", "paul", "hacker"};
+      space.setInvitedUsers(invitedUsers);
+      space.setPendingUsers(pendingUsers);
+      space.setManagers(managers);
+      space.setMembers(members);
+      space.setUrl(space.getPrettyName());
+      this.spaceService.saveSpace(space, true);
+      return space;
+    } finally {
+      StorageUtils.persist();
+    }
   }
   
   /**
@@ -2961,25 +2985,30 @@ public class SpaceServiceTest extends AbstractCoreTest {
    * @return an instance of space
    */
   private Space getSpaceInstance(int number, String visible, String registration, String manager, String...members) {
-    Space space = new Space();
-    space.setApp("app");
-    space.setDisplayName("my space " + number);
-    space.setPrettyName(space.getDisplayName());
-    space.setRegistration(registration);
-    space.setDescription("add new space " + number);
-    space.setType(DefaultSpaceApplicationHandler.NAME);
-    space.setVisibility(visible);
-    space.setPriority(Space.INTERMEDIATE_PRIORITY);
-    space.setGroupId("/spaces/space" + number);
-    String[] managers = new String[] {manager};
-    String[] invitedUsers = new String[] {};
-    String[] pendingUsers = new String[] {};
-    space.setInvitedUsers(invitedUsers);
-    space.setPendingUsers(pendingUsers);
-    space.setManagers(managers);
-    space.setMembers(members);
-    space.setUrl(space.getPrettyName());
-    return space;
+    try {
+      Space space = new Space();
+      space.setApp("app");
+      space.setDisplayName("my space " + number);
+      space.setPrettyName(space.getDisplayName());
+      space.setRegistration(registration);
+      space.setDescription("add new space " + number);
+      space.setType(DefaultSpaceApplicationHandler.NAME);
+      space.setVisibility(visible);
+      space.setPriority(Space.INTERMEDIATE_PRIORITY);
+      space.setGroupId("/spaces/space" + number);
+      String[] managers = new String[] {manager};
+      String[] invitedUsers = new String[] {};
+      String[] pendingUsers = new String[] {};
+      space.setInvitedUsers(invitedUsers);
+      space.setPendingUsers(pendingUsers);
+      space.setManagers(managers);
+      space.setMembers(members);
+      space.setUrl(space.getPrettyName());
+      return space;
+    } finally {
+      StorageUtils.persist();
+    }
+    
   }
   
   /**
@@ -2989,43 +3018,53 @@ public class SpaceServiceTest extends AbstractCoreTest {
    * @return an instance of space
    */
   private Space getSpaceInstanceInvitedMember(int number, String visible, String registration, String[] invitedMember, String manager, String...members) {
-    Space space = new Space();
-    space.setApp("app");
-    space.setDisplayName("my space " + number);
-    space.setPrettyName(space.getDisplayName());
-    space.setRegistration(registration);
-    space.setDescription("add new space " + number);
-    space.setType(DefaultSpaceApplicationHandler.NAME);
-    space.setVisibility(visible);
-    space.setPriority(Space.INTERMEDIATE_PRIORITY);
-    space.setGroupId("/spaces/space" + number);
-    space.setUrl(space.getPrettyName());
-    String[] managers = new String[] {manager};
-    //String[] invitedUsers = new String[] {invitedMember};
-    String[] pendingUsers = new String[] {};
-    space.setInvitedUsers(invitedMember);
-    space.setPendingUsers(pendingUsers);
-    space.setManagers(managers);
-    space.setMembers(members);
-    return space;
+    try {
+      Space space = new Space();
+      space.setApp("app");
+      space.setDisplayName("my space " + number);
+      space.setPrettyName(space.getDisplayName());
+      space.setRegistration(registration);
+      space.setDescription("add new space " + number);
+      space.setType(DefaultSpaceApplicationHandler.NAME);
+      space.setVisibility(visible);
+      space.setPriority(Space.INTERMEDIATE_PRIORITY);
+      space.setGroupId("/spaces/space" + number);
+      space.setUrl(space.getPrettyName());
+      String[] managers = new String[] {manager};
+      //String[] invitedUsers = new String[] {invitedMember};
+      String[] pendingUsers = new String[] {};
+      space.setInvitedUsers(invitedMember);
+      space.setPendingUsers(pendingUsers);
+      space.setManagers(managers);
+      space.setMembers(members);
+      return space;
+    } finally {
+      StorageUtils.persist();
+    }
+    
   }
 
   private Space createMoreSpace(String spaceName) throws Exception {
-    Space space2 = new Space();
-    space2.setApp("Contact,Forum");
-    space2.setDisplayName(spaceName);
-    space2.setPrettyName(space2.getDisplayName());
-    String shortName = SpaceUtils.cleanString(spaceName);
-    space2.setGroupId("/spaces/" + shortName );
-    space2.setUrl(shortName);
-    space2.setRegistration("open");
-    space2.setDescription("This is my second space for testing");
-    space2.setType("classic");
-    space2.setVisibility("public");
-    space2.setPriority("2");
+    try {
+      Space space2 = new Space();
+      space2.setApp("Contact,Forum");
+      space2.setDisplayName(spaceName);
+      space2.setPrettyName(space2.getDisplayName());
+      String shortName = SpaceUtils.cleanString(spaceName);
+      space2.setGroupId("/spaces/" + shortName );
+      space2.setUrl(shortName);
+      space2.setRegistration("open");
+      space2.setDescription("This is my second space for testing");
+      space2.setType("classic");
+      space2.setVisibility("public");
+      space2.setPriority("2");
 
-    spaceService.saveSpace(space2, true);
+      spaceService.saveSpace(space2, true);
 
-    return space2;
+      return space2;
+    } finally {
+      StorageUtils.persist();
+    }
+    
   }
 }

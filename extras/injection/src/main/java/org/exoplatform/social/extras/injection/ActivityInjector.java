@@ -1,21 +1,24 @@
 package org.exoplatform.social.extras.injection;
 
-import org.exoplatform.container.xml.InitParams;
+import java.util.HashMap;
+
+import org.exoplatform.container.ExoContainerContext;
+import org.exoplatform.container.component.RequestLifeCycle;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.activity.model.ExoSocialActivityImpl;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
-import org.exoplatform.social.core.space.SpaceUtils;
+import org.exoplatform.social.core.storage.impl.StorageUtils;
 import org.exoplatform.social.extras.injection.utils.LoremIpsum4J;
-
-import java.util.HashMap;
 
 /**
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
  * @version $Revision$
  */
 public class ActivityInjector extends AbstractSocialInjector {
+  
+  private final int FLUSH_LIMIT = 20;
 
   /** . */
   private static final String NUMBER = "number";
@@ -66,29 +69,47 @@ public class ActivityInjector extends AbstractSocialInjector {
     }
 
     String fromUser;
-    
-    for(int i = from; i <= to; ++i) {
-      //
-      if (provider.equalsIgnoreCase(OrganizationIdentityProvider.NAME)) {
-        fromUser = this.userNameSuffixPattern(i);
-      } else {
-        fromUser = this.spaceNameSuffixPattern(i);
-        fromUser = fromUser.replace(".", "");
+    int counter = 0;
+    try {
+      for(int i = from; i <= to; ++i) {
+        //
+        if (provider.equalsIgnoreCase(OrganizationIdentityProvider.NAME)) {
+          fromUser = this.userNameSuffixPattern(i);
+        } else {
+          fromUser = this.spaceNameSuffixPattern(i);
+          fromUser = fromUser.replace(".", "");
+        }
+        
+        Identity identity = identityManager.getOrCreateIdentity(provider, fromUser, false);
+
+        for (int j = 0; j < number; ++j) {
+          //
+          ExoSocialActivity activity = new ExoSocialActivityImpl();
+          lorem = new LoremIpsum4J();
+          activity.setBody(lorem.getWords(10));
+          activity.setTitle(lorem.getParagraphs());
+          activityManager.saveActivity(identity, "DEFAULT_ACTIVITY", activity.getTitle());        //
+          if (++counter == FLUSH_LIMIT) {
+            counter = 0;
+            //
+            StorageUtils.persist();
+            RequestLifeCycle.end();
+            RequestLifeCycle.begin(ExoContainerContext.getCurrentContainer());
+            getLog().info("Flush session...");
+          }
+          getLog().info("Activity for " + fromUser + " generated");
+        }
       }
       
-      Identity identity = identityManager.getOrCreateIdentity(provider, fromUser, false);
-
-      for (int j = 0; j < number; ++j) {
-        //
-        ExoSocialActivity activity = new ExoSocialActivityImpl();
-        lorem = new LoremIpsum4J();
-        activity.setBody(lorem.getWords(10));
-        activity.setTitle(lorem.getParagraphs());
-        activityManager.saveActivity(identity, "DEFAULT_ACTIVITY", activity.getTitle());        //
-        getLog().info("Activity for " + fromUser + " generated");
-
+    } finally {
+      if (counter > 0) {
+        StorageUtils.persist();
+        RequestLifeCycle.end();
+        RequestLifeCycle.begin(ExoContainerContext.getCurrentContainer());
       }
     }
+    
+    
 
   }
 }

@@ -256,13 +256,14 @@ public class StreamInvocationHelper {
     processCtx.identity(owner).spaceIdentity(spaceIdentity);
     
     try {
-      if(ctx.isAsync()) {
-        beforeAsync();
-        //
-        ctx.getServiceExecutor().async(StreamProcessorFactory.addSpaceMemberStream(), processCtx);
-      } else {
-        ctx.getServiceExecutor().execute(StreamProcessorFactory.addSpaceMemberStream(), processCtx);
-      }
+//      if(ctx.isAsync()) {
+//        beforeAsync();
+//        //
+//        ctx.getServiceExecutor().async(StreamProcessorFactory.addSpaceMemberStream(), processCtx);
+//      } else {
+//        ctx.getServiceExecutor().execute(StreamProcessorFactory.addSpaceMemberStream(), processCtx);
+//      }
+      ctx.getServiceExecutor().execute(StreamProcessorFactory.addSpaceMemberStream(), processCtx);
       
     } finally {
       LOG.debug(processCtx.getTraceLog());

@@ -35,6 +35,7 @@ import org.exoplatform.social.core.space.SpaceException;
 import org.exoplatform.social.core.space.impl.DefaultSpaceApplicationHandler;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
+import org.exoplatform.social.core.storage.impl.StorageUtils;
 import org.exoplatform.social.service.test.AbstractServiceTest;
 
 /**
@@ -510,6 +511,7 @@ public class SecurityManagerTest extends AbstractServiceTest {
       space.setMembers(members);
       try {
         spaceService.saveSpace(space, true);
+        StorageUtils.persist();
         tearDownSpaceList.add(space);
       } catch (SpaceException e) {
         fail("Could not create a new space");

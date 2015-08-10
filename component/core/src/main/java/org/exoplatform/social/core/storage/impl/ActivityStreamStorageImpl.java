@@ -22,16 +22,17 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
+
 import javax.jcr.RepositoryException;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.chromattic.api.ChromatticException;
-import org.chromattic.api.query.Ordering;
 import org.chromattic.api.query.Query;
 import org.chromattic.api.query.QueryBuilder;
 import org.chromattic.api.query.QueryResult;
-
-import org.exoplatform.container.PortalContainer;
 import org.exoplatform.commons.utils.CommonsUtils;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
@@ -63,7 +64,6 @@ import org.exoplatform.social.core.storage.api.SpaceStorage;
 import org.exoplatform.social.core.storage.exception.NodeNotFoundException;
 import org.exoplatform.social.core.storage.query.ChromatticNameEncode;
 import org.exoplatform.social.core.storage.query.JCRProperties;
-import org.exoplatform.social.core.storage.query.WhereExpression;
 import org.exoplatform.social.core.storage.streams.StreamConfig;
 import org.exoplatform.social.core.storage.streams.StreamProcessContext;
 
@@ -93,8 +93,17 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
   /** Logger */
   private static final Log LOG = ExoLogger.getLogger(ActivityStreamStorageImpl.class);
   
+  /** */
+  private Lock activityWriteLock;
+  
+  /** */
+  private Lock activityReadLock;
+  
   public ActivityStreamStorageImpl(IdentityStorageImpl identityStorage) {
     this.identityStorage = identityStorage;
+    ReadWriteLock activityLock = new ReentrantReadWriteLock();
+    activityWriteLock = activityLock.writeLock();
+    activityReadLock = activityLock.readLock();
   }
   
   private ActivityStorage getStorage() {
@@ -124,6 +133,7 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
   @Override
   public void save(ProcessContext ctx) {
     //must call with asynchronous
+    this.activityWriteLock.lock();
     try {
       StreamProcessContext streamCtx = ObjectHelper.cast(StreamProcessContext.class, ctx);
       Identity owner = streamCtx.getIdentity();
@@ -152,12 +162,15 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
       ctx.setException(e);
       LOG.warn("Failed to add Activity references.", e);
       LOG.debug("Failed to add Activity references.", e);
+    } finally {
+      this.activityWriteLock.unlock();
     }
   }
   
   @Override
   public void savePoster(ProcessContext ctx) {
     //call synchronous
+    this.activityWriteLock.lock();
     try {
       StreamProcessContext streamCtx = ObjectHelper.cast(StreamProcessContext.class, ctx);
       Identity owner = streamCtx.getIdentity();
@@ -180,6 +193,8 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
       ctx.setException(e);
       LOG.warn("Failed to add Activity references.");
       LOG.debug("Failed to add Activity references.", e);
+    } finally {
+      this.activityWriteLock.unlock();
     }
   }
 
@@ -398,6 +413,7 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
   
   @Override
   public void delete(String activityId) {
+    this.activityWriteLock.lock();
     try {
       //
       ActivityEntity activityEntity = _findById(ActivityEntity.class, activityId);
@@ -420,11 +436,14 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
       
     } catch (NodeNotFoundException e) {
       LOG.warn("Failed to delete Activities references.", e);
+    } finally {
+      this.activityWriteLock.unlock();
     }
   }
   
   @Override
   public void like(Identity liker, ExoSocialActivity activity) {
+    this.activityWriteLock.lock();
     try {
       //
       ActivityEntity entity = _findById(ActivityEntity.class, activity.getId());
@@ -434,12 +453,15 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
       
     } catch (NodeNotFoundException e) {
       LOG.warn("Failed to make Activity References for like case.");
+    } finally {
+      this.activityWriteLock.unlock();
     }
     
   }
   
   @Override
   public void unLike(Identity removedLike, ExoSocialActivity activity) {
+    this.activityWriteLock.lock();
     try {
       //
       ActivityEntity entity = _findById(ActivityEntity.class, activity.getId());
@@ -455,6 +477,8 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
       
     } catch (NodeNotFoundException e) {
       LOG.warn("Failed to delete Activity References for unlike case.");
+    } finally {
+      this.activityWriteLock.unlock();
     }
   }
   
@@ -469,6 +493,7 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
 
   @Override
   public void updateCommenter(ProcessContext ctx) {
+    this.activityWriteLock.lock();
     try {
       StreamProcessContext streamCtx = ObjectHelper.cast(StreamProcessContext.class, ctx);
       Identity commenter = streamCtx.getIdentity();
@@ -491,6 +516,8 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
     } catch (ChromatticException ex) {
       LOG.warn("Probably was updated activity reference by another session");
       LOG.debug(ex.getMessage(), ex);
+    } finally {
+      this.activityWriteLock.unlock();
     }
   }
   
@@ -527,6 +554,8 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
   
   @Override
   public void update(ProcessContext ctx) {
+    
+    this.activityWriteLock.lock();
     try {
       StreamProcessContext streamCtx = ObjectHelper.cast(StreamProcessContext.class, ctx);
       //It has been invoked by Activity Service with the multi-threading.
@@ -556,35 +585,10 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
     } catch (ChromatticException ex) {
         LOG.warn("Probably was updated activity reference by another session");
         LOG.debug(ex.getMessage(), ex);
+    } finally {
+      this.activityWriteLock.unlock();
     }
   }
-
-  /**
-  @Override
-  public void update(ProcessContext ctx) {
-    
-    try {
-      StreamProcessContext streamCtx = ObjectHelper.cast(StreamProcessContext.class, ctx);
-      ExoSocialActivity activity = streamCtx.getActivity();
-
-      ActivityEntity activityEntity = _findById(ActivityEntity.class, activity.getId());
-      Collection<ActivityRef> references = activityEntity.getActivityRefs();
-        
-      for (ActivityRef ref : references) {
-        if (_hasMixin(ref, HidableEntity.class) == false) {
-          _getMixin(ref, HidableEntity.class, true);
-        }
-        
-        ref.setName("" + activity.getUpdated().getTime());
-        ref.setLastUpdated(activity.getUpdated().getTime());
-
-      }
-      //mentioners
-      addMentioner(streamCtx.getMentioners(), activityEntity);
-    } catch (NodeNotFoundException e) {
-      LOG.warn("Failed to update Activity references.");
-    }
-  }*/
   
   @Override
   public void deleteComment(ProcessContext ctx) {
@@ -607,6 +611,7 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
   
   @Override
   public void addSpaceMember(ProcessContext ctx) {
+    this.activityWriteLock.lock();
     try {
       
       StreamProcessContext streamCtx = ObjectHelper.cast(StreamProcessContext.class, ctx);
@@ -614,17 +619,22 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
       
     } catch (NodeNotFoundException e) {
       LOG.warn("Failed to addSpaceMember Activity references.");
+    } finally {
+      this.activityWriteLock.unlock();
     }
     
   }
   
   @Override
   public void removeSpaceMember(ProcessContext ctx) {
+    this.activityWriteLock.lock();
     try {
       StreamProcessContext streamCtx = ObjectHelper.cast(StreamProcessContext.class, ctx);
       removeSpaceMemberRefs(streamCtx.getIdentity(), streamCtx.getSpaceIdentity());
     } catch (NodeNotFoundException e) {
       LOG.warn("Failed to removeSpaceMember Activity references.");
+    } finally {
+      this.activityWriteLock.unlock();
     }
     
   }
@@ -643,7 +653,6 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
 
   @Override
   public List<ExoSocialActivity> getConnections(Identity owner, int offset, int limit) {
-    
     return getActivitiesNotQuery(ActivityRefType.CONNECTION, owner, offset, limit);
   }
 
@@ -894,6 +903,8 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
   
   private List<ExoSocialActivity> getActivitiesNotQuery(ActivityRefType type, Identity owner, int offset, int limit) {
     List<ExoSocialActivity> got = new LinkedList<ExoSocialActivity>();
+    //
+    this.activityReadLock.lock();
     try {
       IdentityEntity identityEntity = identityStorage._findIdentityEntity(owner.getProviderId(), owner.getRemoteId());
       
@@ -962,6 +973,8 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
 
     } catch (NodeNotFoundException e) {
       LOG.warn("Failed to activities!");
+    } finally {
+      this.activityReadLock.unlock();
     }
     return got;
   }
@@ -1011,6 +1024,7 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
   
   
   private int getNumberOfActivities(ActivityRefType type, Identity owner) {
+    this.activityReadLock.lock();
     try {
       IdentityEntity identityEntity = identityStorage._findIdentityEntity(owner.getProviderId(), owner.getRemoteId());
       ActivityRefListEntity refList = type.refsOf(identityEntity);
@@ -1020,6 +1034,8 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
       return refList.getNumber().intValue();
     } catch (NodeNotFoundException e) {
       LOG.warn("Failed to getNumberOfActivities()");
+    } finally {
+      this.activityReadLock.unlock();
     }
     
     return 0;
@@ -1086,29 +1102,10 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
     ActivityRef ref = refList.get(activityEntity, oldUpdated);
     return ref != null && ref.getActivityEntity().getId() == activityEntity.getId();
   }
-  
-  private QueryResult<ActivityRef> getActivityRefs(IdentityEntity identityEntity, ActivityRefType type, long offset, long limit) throws NodeNotFoundException {
 
-    QueryBuilder<ActivityRef> builder = getSession().createQueryBuilder(ActivityRef.class);
-
-    WhereExpression whereExpression = new WhereExpression();
-    ActivityRefListEntity refList = type.refsOf(identityEntity);
-    whereExpression.like(JCRProperties.path, refList.getPath() + "/%");
-
-    builder.where(whereExpression.toString());
-    builder.orderBy(ActivityRef.lastUpdated.getName(), Ordering.DESC);
-    builder.orderBy(JCRProperties.name.getName(), Ordering.DESC);
-    return builder.get().objects(offset, limit);
-  }
-  
   private void createOwnerRefs(Identity owner, ActivityEntity activityEntity) throws NodeNotFoundException {
     manageRefList(new UpdateContext(owner, null), activityEntity, ActivityRefType.FEED);
     manageRefList(new UpdateContext(owner, null), activityEntity, ActivityRefType.MY_ACTIVITIES);
-  }
-  
-  private void removeOwnerRefs(Identity owner, ActivityEntity activityEntity) throws NodeNotFoundException {
-    manageRefList(new UpdateContext(null, owner), activityEntity, ActivityRefType.FEED);
-    manageRefList(new UpdateContext(null, owner), activityEntity, ActivityRefType.MY_ACTIVITIES);
   }
   
   private void createConnectionsRefs(List<Identity> identities, ActivityEntity activityEntity) throws NodeNotFoundException {
@@ -1379,6 +1376,7 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
   
   @Override
   public void updateHidable(ProcessContext ctx) {
+    this.activityWriteLock.lock();
     try {
       StreamProcessContext streamCtx = ObjectHelper.cast(StreamProcessContext.class, ctx);
       ExoSocialActivity activity = streamCtx.getActivity();
@@ -1405,13 +1403,14 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
       
     } catch (Exception e) {
       LOG.warn("Failed to update Activity references when change the visibility of activity.", e);
-      //turnOffLock to get increase perf
-      //turnOnUpdateLock = false;
-    } 
+    } finally {
+      this.activityWriteLock.unlock();
+    }
   }
 
   @Override
   public void addMentioners(ProcessContext ctx) {
+    this.activityWriteLock.lock();
     try {
       StreamProcessContext streamCtx = ObjectHelper.cast(StreamProcessContext.class, ctx);
       //
@@ -1424,7 +1423,9 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
     } catch (NodeNotFoundException ex) {
       LOG.warn("Probably was updated activity reference by another session");
       LOG.debug(ex.getMessage(), ex);
-    } 
+    } finally {
+      this.activityWriteLock.unlock();
+    }
     
   }
   

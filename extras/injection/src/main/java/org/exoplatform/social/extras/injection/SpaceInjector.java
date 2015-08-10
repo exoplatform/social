@@ -2,7 +2,8 @@ package org.exoplatform.social.extras.injection;
 
 import java.util.HashMap;
 
-import org.exoplatform.container.xml.InitParams;
+import org.exoplatform.container.ExoContainerContext;
+import org.exoplatform.container.component.RequestLifeCycle;
 import org.exoplatform.social.core.space.impl.DefaultSpaceApplicationHandler;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.storage.impl.StorageUtils;
@@ -46,7 +47,6 @@ public class SpaceInjector extends AbstractSocialInjector {
     init(userPrefix, spacePrefix, userSuffixValue, spaceSuffixValue);
     
     int spaceCounter = 0;
-
     try {
       //
       for(int i = from; i <= to; ++i) {
@@ -74,7 +74,8 @@ public class SpaceInjector extends AbstractSocialInjector {
           if (++spaceCounter == FLUSH_LIMIT) {
             spaceCounter = 0;
             //
-            StorageUtils.persistJCR(true);
+            RequestLifeCycle.end();
+            RequestLifeCycle.begin(ExoContainerContext.getCurrentContainer());
             getLog().info("Flush session...");
           }
           //
@@ -83,7 +84,8 @@ public class SpaceInjector extends AbstractSocialInjector {
         }
       }
     } finally {
-      StorageUtils.persistJCR(false);
+        RequestLifeCycle.end();
+        RequestLifeCycle.begin(ExoContainerContext.getCurrentContainer());
     }
     
     

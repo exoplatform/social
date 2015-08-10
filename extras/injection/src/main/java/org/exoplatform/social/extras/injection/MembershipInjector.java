@@ -2,15 +2,17 @@ package org.exoplatform.social.extras.injection;
 
 import java.util.HashMap;
 
-import org.apache.poi.hslf.record.CurrentUserAtom;
-import org.exoplatform.container.xml.InitParams;
-import org.exoplatform.services.security.ConversationState;
+import org.exoplatform.container.ExoContainerContext;
+import org.exoplatform.container.component.RequestLifeCycle;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.space.SpaceUtils;
 import org.exoplatform.social.core.space.model.Space;
+import org.exoplatform.social.core.storage.impl.StorageUtils;
 
 public class MembershipInjector extends AbstractSocialInjector {
+  
+  private final int FLUSH_LIMIT = 5;
 
   /** . */
   private static final String MEMBERSHIP_TYPE = "type";
@@ -87,21 +89,38 @@ public class MembershipInjector extends AbstractSocialInjector {
       return;
     }
     
-    //space.setEditor(ConversationState.getCurrent().getIdentity().getUserId());
-    
-    Identity identity = null;
-    for(int i = from; i <= to; ++i) {
-      String username = this.userNameSuffixPattern(i);
-      identity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, username, false);
-      space.setEditor(username);
-      getLog().info("added user(s) " + identity.getRemoteId() + " to " + type + " of '" + spaceName + "' space.");
-      if ("member".endsWith(type)) {
-        spaceService.addMember(space, identity.getRemoteId());
-      } else if ("manager".endsWith(type)) {
-        spaceService.setManager(space, identity.getRemoteId(), true);
+    int counter = 0;
+    try {
+      Identity identity = null;
+      for(int i = from; i <= to; ++i) {
+        String username = this.userNameSuffixPattern(i);
+        identity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, username, false);
+        space.setEditor(username);
+        getLog().info("added user(s) " + identity.getRemoteId() + " to " + type + " of '" + spaceName + "' space.");
+        if ("member".endsWith(type)) {
+          spaceService.addMember(space, identity.getRemoteId());
+        } else if ("manager".endsWith(type)) {
+          spaceService.setManager(space, identity.getRemoteId(), true);
+        }
+        
+        if (++counter == FLUSH_LIMIT) {
+          counter = 0;
+          //
+          StorageUtils.persist();
+          RequestLifeCycle.end();
+          RequestLifeCycle.begin(ExoContainerContext.getCurrentContainer());
+          getLog().info("Flush session...");
+        }
+      }
+    } finally {
+      if (counter > 0) {
+        StorageUtils.persist();
+        RequestLifeCycle.end();
+        RequestLifeCycle.begin(ExoContainerContext.getCurrentContainer());
       }
       
     }
+    
 
   }
 }
