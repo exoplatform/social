@@ -197,6 +197,7 @@
     var currentSelection = {elm: null, offset : 0};
     var isBlockMenu = false;
     var isInput = false;
+    var showHideButtonEvent = [];
     // action add link
     var ActionLink = {
       isRun : false,
@@ -1083,13 +1084,27 @@
       if(hasFileAttachment === false && isLinked === false && action.length > 0 && action.attr('disabled') === undefined) {
         $('#' + settings.idAction).attr('disabled', 'disabled').addClass('DisableButton');
       }
+      if(showHideButtonEvent.length > 0) {
+        for(var i in showHideButtonEvent) {
+          if(_.isFunction(showHideButtonEvent[i])) {
+            showHideButtonEvent[i](false);
+          }
+        }
+      }
     }
-    
+
     function disabledPlaceholder() {
       elmInputBox.parent().find('div.placeholder:first').hide().css('top', '-100px');
       var action = $('#' + settings.idAction);
       if (action.length > 0 && action.attr('disabled') === 'disabled') {
         action.removeAttr('disabled').removeClass('DisableButton');
+      }
+      if(showHideButtonEvent.length > 0) {
+        for(var i in showHideButtonEvent) {
+          if(_.isFunction(showHideButtonEvent[i])) {
+            showHideButtonEvent[i](true);
+          }
+        }
       }
     }
 
@@ -1328,6 +1343,13 @@
           return;
         }
         callback.call(this, mentionsCollection);
+      },
+
+      registerControlButton : function(controlMethod) {
+        if (!_.isFunction(controlMethod)) {
+          return;
+        }
+        showHideButtonEvent.push(controlMethod);
       }
     };
   };

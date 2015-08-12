@@ -127,11 +127,10 @@
 		 $composer_Hint_Text	
 	</div>
   </div>
-  
   <div class="clearfix activityTop">
+    <button class="btn btn-primary visible-phone changeStatus pull-left pull-right"><i class="uiIconEdit"></i> <%=_ctx.appRes("UIUserActivitiesDisplay.label.Status")%></button>
     <div class="activityStreamStatus pull-left">
-    
-    <div class="arrowBottom"></div>
+      <div class="arrowBottom"></div>
       <!--<span id="noUpdates"><%=noUpdates%></span>-->
       <a class="uiIconRefresh uiIconLightGray" href="javascript:void(0);" rel="tooltip" title="$refreshTooltipButton" id="RefreshButton" onclick="<%=uicomponent.event("RefreshStream")%>" ></a>
     </div>
@@ -186,6 +185,7 @@
 <% } else { %>
  <% if (Utils.isHomePage()) { %>
 	<div class="clearfix activityTop">
+    <button class="btn btn-primary visible-phone changeStatus pull-left"><i class="uiIconEdit"></i> <%=_ctx.appRes("UIUserActivitiesDisplay.label.Status")%></button>
     <div class="pull-right">
       <% uicomponent.renderChild(UIDropDownControl.class);%>
     </div>
@@ -216,6 +216,7 @@
 
   <!-- add more for devices -->
   <div class="clearfix activityTop">
+  <button class="btn btn-primary visible-phone changeStatus pull-left"><i class="uiIconEdit"></i> <%=_ctx.appRes("UIUserActivitiesDisplay.label.Status")%></button>
 	<div class="pull-right">
 	  <% uicomponent.renderChild(UIDropDownControl.class);%>
 	</div>
