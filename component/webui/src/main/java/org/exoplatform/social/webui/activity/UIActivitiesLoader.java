@@ -213,16 +213,10 @@ public class UIActivitiesLoader extends UIContainer {
       activities = loadActivities(currentLoadIndex, loadingCapacity);
     }
 
-    UIActivitiesContainer lastActivitiesContainer = lastActivitiesLoader.getActivitiesContainer();
-    lastActivitiesContainer.setPostContext(postContext);
-    lastActivitiesContainer.setSpace(space);
-    
-    lastActivitiesLoader.setActivities(activities);
+    lastActivitiesLoader.getActivitiesContainer().setPostContext(postContext);
+    lastActivitiesLoader.getActivitiesContainer().setSpace(space);
+    lastActivitiesLoader.getActivitiesContainer().setActivityList(activities);
     lastActivitiesLoader.setHasMore(isHasMore());
-  }
-
-  private void setActivities(List<ExoSocialActivity> activities) throws Exception {
-    activitiesContainer.setActivityList(activities);
   }
 
   private List<ExoSocialActivity> loadActivities(int index, int length) throws Exception {

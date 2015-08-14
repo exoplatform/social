@@ -21,11 +21,15 @@
 */
 def labelNotAnyUpdatesPostedYet = _ctx.appRes("UIActivitiesLoader.label.Not_Any_Updates_Posted_Yet");
 
-
 %>
 <div class="$uicomponent.id" id="$uicomponent.id">
-<% if (uicomponent.getChildren().size() > 0) {
-     uicomponent.renderChildren();
+<% 
+   List children = uicomponent.getChildrenId();
+	 if (children.size() > 0) {
+     for(uiActivityId in children) {
+       print("<div class=\"uiActivityLoader uiBox activity-loadding\" style=\"position:relative; height: 100px\" id=\"$uiActivityId\"><span style=\"position:absolute;top:30px;left:45%\" class=\"uiLoadingIconMedium\"></span></div>");
+     }
+     print("<div class=\"uiActivitiesLoaderURL\" data-url=\"" + uicomponent.getLoadActivityUrl() + "\"></div>");
    } else {
 %>
 <div class="NoActivity">$labelNotAnyUpdatesPostedYet</div>

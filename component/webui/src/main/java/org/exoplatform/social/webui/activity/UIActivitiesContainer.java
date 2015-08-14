@@ -21,7 +21,6 @@ import java.util.Calendar;
 import java.util.List;
 
 import org.exoplatform.container.PortalContainer;
-import org.exoplatform.portal.webui.container.UIContainer;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
@@ -29,9 +28,17 @@ import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.webui.Utils;
 import org.exoplatform.social.webui.composer.PopupContainer;
 import org.exoplatform.social.webui.composer.UIComposer.PostContext;
+import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
+import org.exoplatform.webui.config.annotation.EventConfig;
+import org.exoplatform.webui.core.UIComponent;
+import org.exoplatform.webui.core.UIContainer;
 import org.exoplatform.webui.core.UIPopupWindow;
 import org.exoplatform.webui.core.UIPortletApplication;
+import org.exoplatform.webui.event.Event;
+import org.exoplatform.webui.event.EventListener;
+
+import com.google.caja.util.Lists;
 
 /**
  * UIActivitiesContainer.java
@@ -40,7 +47,10 @@ import org.exoplatform.webui.core.UIPortletApplication;
  * @since Apr 12, 2010
  */
 @ComponentConfig(
-  template = "war:/groovy/social/webui/UIActivitiesContainer.gtmpl"
+  template = "war:/groovy/social/webui/UIActivitiesContainer.gtmpl",
+    events = {
+    @EventConfig(listeners = UIActivitiesContainer.LoadActivityActionListener.class)
+  }
 )
 public class UIActivitiesContainer extends UIContainer {
   private static final Log LOG = ExoLogger.getLogger(UIActivitiesContainer.class);
@@ -126,8 +136,8 @@ public class UIActivitiesContainer extends UIContainer {
    * @throws Exception
    */
   private void init() throws Exception {
-    while (getChild(BaseUIActivity.class) != null) {
-      removeChild(BaseUIActivity.class);
+    while (getChild(UIActivityLoader.class) != null) {
+      removeChild(UIActivityLoader.class);
     }
 
     if (activityList == null) {
@@ -138,7 +148,8 @@ public class UIActivitiesContainer extends UIContainer {
     UIActivityFactory factory = (UIActivityFactory) portalContainer.getComponentInstanceOfType(UIActivityFactory.class);
 
     for (ExoSocialActivity activity : activityList) {
-      factory.addChild(activity, this);
+      UIActivityLoader activityLoader = addChild(UIActivityLoader.class, null, "UIActivityLoader" + activity.getId());
+      factory.addChild(activity, activityLoader);
     }
 
     lastVisited = getLastVisited(this.selectedDisplayMode);
@@ -173,5 +184,36 @@ public class UIActivitiesContainer extends UIContainer {
   
   public String getCookiesKey(String displayMode) {
     return String.format(ACTIVITY_STREAM_VISITED_PREFIX_COOKIED, displayMode, Utils.getViewerRemoteId());
+  }
+
+  @Override
+  public void processRender(WebuiRequestContext context) throws Exception {
+    context.getJavascriptManager().getRequireJS().require("SHARED/social-ui-activities-loader", "socialUiActivitiesLoader")
+           .addScripts("socialUiActivitiesLoader.loaddingActivity('" + this.getId() + "');");
+    super.processRender(context);
+  }
+
+  protected String getLoadActivityUrl() throws Exception {
+    return event("LoadActivity").replace("javascript:ajaxGet('", "").replace("')", "&" + OBJECTID + "=");
+  }
+
+  protected List<String> getChildrenId() {
+    List<String> ids = Lists.newLinkedList();
+    List<UIComponent> children = getChildren();
+    for (UIComponent uiComponent : children) {
+      ids.add(uiComponent.getId());
+    }
+    return ids;
+  }
+
+  public static class LoadActivityActionListener extends EventListener<UIActivitiesContainer> {
+    @Override
+    public void execute(Event<UIActivitiesContainer> event) throws Exception {
+      UIActivitiesContainer uiActivitiesContainer = event.getSource();
+      String uiActivityId = event.getRequestContext().getRequestParameter(OBJECTID);
+      UIActivityLoader uiActivityLoader = uiActivitiesContainer.getChildById(uiActivityId);
+      //
+      event.getRequestContext().addUIComponentToUpdateByAjax(uiActivityLoader);
+    }
   }
 }

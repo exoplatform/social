@@ -62,6 +62,16 @@
         $('div.activityBottom').show();
         $('#ActivitiesLoader').parent().hide();
       }
+	  },
+	  loaddingActivity : function(id) {
+	    var container = $('#' + id);
+	    var url = container.find('div.uiActivitiesLoaderURL:first').data('url');
+	    container.find('div.activity-loadding').each(function(i) {
+	      window.ajaxGet(url + $(this).attr('id'), function(data) {
+	        container.find('div.activity-loadding').attr('style', '').removeClass('uiBox');
+	      });
+	    });
+	    
 	  }
 	};
   return UIActivityLoader;
