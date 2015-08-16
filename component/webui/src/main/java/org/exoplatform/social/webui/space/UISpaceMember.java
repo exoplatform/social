@@ -475,7 +475,14 @@ public class UISpaceMember extends UIForm {
           }
         }
         for (String userName : usersForInviting) {
-          spaceService.addInvitedUser(space, userName);
+          // create Identity and Profile nodes if not exist
+          ExoContainer container = ExoContainerContext.getCurrentContainer();
+          IdentityManager idm = (IdentityManager) container.getComponentInstanceOfType(IdentityManager.class);
+          Identity identity = idm.getOrCreateIdentity(OrganizationIdentityProvider.NAME, userName, false);
+          if (identity != null) {
+            // add userName to InvitedUser list of the space
+            spaceService.addInvitedUser(space, userName);
+          }
         }
         uiSpaceMember.setUsersName(StringUtils.EMPTY);
       }
