@@ -24,7 +24,6 @@ import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.exoplatform.commons.utils.LazyPageList;
 import org.exoplatform.commons.utils.ListAccess;
-import org.exoplatform.commons.utils.PageList;
 import org.exoplatform.container.ExoContainer;
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.PortalContainer;
@@ -56,7 +55,6 @@ import org.exoplatform.webui.event.Event.Phase;
 import org.exoplatform.webui.event.EventListener;
 import org.exoplatform.webui.form.UIForm;
 import org.exoplatform.webui.form.UIFormStringInput;
-import org.exoplatform.webui.form.validator.ExpressionValidator;
 import org.exoplatform.webui.form.validator.MandatoryValidator;
 import org.exoplatform.webui.organization.account.UIUserSelector;
 
@@ -456,7 +454,14 @@ public class UISpaceMember extends UIForm {
           }
         }
         for (String userName : usersForInviting) {
-          spaceService.addInvitedUser(space, userName);
+          // create Identity and Profile nodes if not exist
+          ExoContainer container = ExoContainerContext.getCurrentContainer();
+          IdentityManager idm = (IdentityManager) container.getComponentInstanceOfType(IdentityManager.class);
+          Identity identity = idm.getOrCreateIdentity(OrganizationIdentityProvider.NAME, userName, false);
+          if (identity != null) {
+            // add userName to InvitedUser list of the space
+            spaceService.addInvitedUser(space, userName);
+          }
         }
         uiSpaceMember.setUsersName(StringUtils.EMPTY);
       }
