@@ -226,7 +226,7 @@ public class UIActivitiesLoader extends UIContainer {
     
     int size = activityListAccess.getSize();
     boolean hasMore = size > currentLoadIndex;
-    setHasMore(hasMore);
+    lastActivitiesLoader.setHasMore(hasMore);
   }
 
   private List<ExoSocialActivity> loadActivities(int index, int length) throws Exception {

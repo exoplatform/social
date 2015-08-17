@@ -21,7 +21,6 @@ import java.util.Calendar;
 import java.util.List;
 
 import org.exoplatform.commons.utils.CommonsUtils;
-import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
@@ -90,6 +89,10 @@ public class UIActivitiesContainer extends UIContainer {
 
   public UIActivitiesContainer setActivityList(List<ExoSocialActivity> activityList) throws Exception {
     this.activityList = activityList;
+    this.activityIdList = Lists.newLinkedList();
+    for (ExoSocialActivity activity : activityList) {
+      activityIdList.add(activity.getId());
+    }
     init();
     return this;
   }
