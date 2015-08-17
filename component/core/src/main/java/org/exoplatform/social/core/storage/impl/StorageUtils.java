@@ -622,4 +622,18 @@ public class StorageUtils {
       long diffValue = newDate - oldDate;
       return diffValue >= DAY_MILISECONDS;
     }
+    
+  /**
+   * Gets the list of activity's id from the activities  
+   * @param activities
+   * @return list of ids
+   */
+  public static List<String> getIds(List<ExoSocialActivity> activities) {
+    List<String> ids = new ArrayList<String>();
+    for (ExoSocialActivity a : activities) {
+      ids.add(a.getId());
+    }
+
+    return ids;
+  }
 }

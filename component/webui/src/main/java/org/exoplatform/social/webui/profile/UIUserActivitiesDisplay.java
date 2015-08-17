@@ -464,9 +464,4 @@ public class UIUserActivitiesDisplay extends UIContainer {
     
     return Long.parseLong(strValue);
   }
-  
-  private void setLastUpdatedNum(String mode, String value) {
-    String cookieKey = String.format(Utils.LAST_UPDATED_ACTIVITIES_NUM, mode, Utils.getViewerRemoteId());
-    Utils.setCookies(cookieKey, value);
-  }
 }

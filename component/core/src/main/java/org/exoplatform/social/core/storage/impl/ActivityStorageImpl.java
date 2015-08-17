@@ -1221,6 +1221,36 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     return StorageUtils.sortActivitiesByTime(got, limit);
   }
   
+  @Override
+  public List<String> getActivityIdsFeed(Identity ownerIdentity, int offset, int limit) {
+    //
+    List<ExoSocialActivity> activities = getActivityOfInactiveUser(ownerIdentity, offset, limit);
+    
+    List<String> ids = StorageUtils.getIds(activities);
+    if (ids.size() >= limit) {
+      return ids;
+    }
+    //      
+    List<String> got = streamStorage.getIdsFeed(ownerIdentity, offset, limit);
+    return buildIdList(ids, got, limit);
+    
+  }
+  
+  private List<String> buildIdList(List<String> target, List<String> source, int limit) {
+    if (target.size() == 0) {
+      return source;
+    }
+    for (String activity : source) {
+      if (target.contains(activity)) {
+        continue;
+      }
+      target.add(activity);
+      if (target.size() == limit)
+        break;
+    }
+    return target;
+  }
+  
   /**
    * {@inheritDoc}
    */

@@ -563,6 +563,29 @@ public class ActivityStorageTest extends AbstractCoreTest {
     List<ExoSocialActivity> maryActivityFeed = activityStorage.getActivityFeed(maryIdentity, 0, 10);
     assertEquals("maryActivityFeed.size() must return 6", 6, maryActivityFeed.size());
   }
+  
+  /**
+   * Tests {@link ActivityStorage#getActivityFeed(Identity, int, int)}.
+   */
+  @MaxQueryNumber(1608)
+  public void testGetActivityIdsFeed() throws Exception {
+    createActivities(3, demoIdentity);
+    createActivities(3, maryIdentity);
+    createActivities(2, johnIdentity);
+
+    List<String> demoActivityFeed = activityStorage.getActivityIdsFeed(demoIdentity, 0, 10);
+    assertEquals("demoActivityFeed.size() must be 3", 3, demoActivityFeed.size());
+
+    Relationship demoMaryConnection = relationshipManager.invite(demoIdentity, maryIdentity);
+    assertEquals(3, activityStorage.getActivityIdsFeed(demoIdentity, 0, 10).size());
+
+    relationshipManager.confirm(demoMaryConnection);
+    
+    List<String> demoActivityFeed2 = activityStorage.getActivityIdsFeed(demoIdentity, 0, 10);
+    assertEquals("demoActivityFeed2.size() must return 6", 6, demoActivityFeed2.size());
+    List<String> maryActivityFeed = activityStorage.getActivityIdsFeed(maryIdentity, 0, 10);
+    assertEquals("maryActivityFeed.size() must return 6", 6, maryActivityFeed.size());
+  }
 
   /**
    * Tests {@link ActivityStorage#getNumberOfActivitesOnActivityFeed(Identity)}.

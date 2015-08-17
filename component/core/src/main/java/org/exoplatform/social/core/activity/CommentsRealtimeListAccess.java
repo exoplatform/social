@@ -54,6 +54,11 @@ public class CommentsRealtimeListAccess implements RealtimeListAccess<ExoSocialA
     this.activityStorage = theActivityStorage;
     this.existingActivity = theExistingActivity;
   }
+  
+  @Override
+  public List<String> loadIdsAsList(int index, int limit) {
+    return null;
+  }
 
   /**
    * {@inheritDoc}

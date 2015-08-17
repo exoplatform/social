@@ -20,10 +20,12 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
+import org.exoplatform.commons.utils.CommonsUtils;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
+import org.exoplatform.social.core.manager.ActivityManager;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.webui.Utils;
 import org.exoplatform.social.webui.composer.PopupContainer;
@@ -59,12 +61,13 @@ public class UIActivitiesContainer extends UIContainer {
   private static final String ACTIVITIES_NODE = "activities";
   
   private List<ExoSocialActivity> activityList;
+  
+  private List<String> activityIdList;
   private PostContext postContext;
   //hold activities for user or space
   private Space space;
   private String ownerName;
   private String selectedDisplayMode;
-  private long lastVisited = 0;
 
   /**
    * constructor
@@ -86,6 +89,17 @@ public class UIActivitiesContainer extends UIContainer {
 
   public UIActivitiesContainer setActivityList(List<ExoSocialActivity> activityList) throws Exception {
     this.activityList = activityList;
+    init();
+    return this;
+  }
+  
+  
+  public List<String> getActivityIdList() {
+    return activityIdList;
+  }
+
+  public UIActivitiesContainer setActivityIdList(List<String> activityIdList) throws Exception {
+    this.activityIdList = activityIdList;
     init();
     return this;
   }
@@ -140,19 +154,23 @@ public class UIActivitiesContainer extends UIContainer {
       removeChild(UIActivityLoader.class);
     }
 
-    if (activityList == null) {
+    if (activityIdList == null) {
       return;
     }
 
-    PortalContainer portalContainer = PortalContainer.getInstance();
-    UIActivityFactory factory = (UIActivityFactory) portalContainer.getComponentInstanceOfType(UIActivityFactory.class);
+//    PortalContainer portalContainer = PortalContainer.getInstance();
+//    UIActivityFactory factory = (UIActivityFactory) portalContainer.getComponentInstanceOfType(UIActivityFactory.class);
+//
+//    for (ExoSocialActivity activity : activityList) {
+//      UIActivityLoader activityLoader = addChild(UIActivityLoader.class, null, "UIActivityLoader" + activity.getId());
+//      factory.addChild(activity, activityLoader);
+//    }
+    
 
-    for (ExoSocialActivity activity : activityList) {
-      UIActivityLoader activityLoader = addChild(UIActivityLoader.class, null, "UIActivityLoader" + activity.getId());
-      factory.addChild(activity, activityLoader);
+    for (String activityId : activityIdList) {
+      addChild(UIActivityLoader.class, null, "UIActivityLoader" + activityId);
     }
 
-    lastVisited = getLastVisited(this.selectedDisplayMode);
   }
 
   public void addActivity(ExoSocialActivity activity) throws Exception {
@@ -172,16 +190,6 @@ public class UIActivitiesContainer extends UIContainer {
     }
   }
 
-  private long getLastVisited(String mode) {
-    long currentVisited = Calendar.getInstance().getTimeInMillis();
-    String strValue = Utils.getCookies(getCookiesKey(mode));
-    if(strValue == null) {
-      return currentVisited;
-    }
-    
-    return Long.parseLong(strValue);
-  }
-  
   public String getCookiesKey(String displayMode) {
     return String.format(ACTIVITY_STREAM_VISITED_PREFIX_COOKIED, displayMode, Utils.getViewerRemoteId());
   }
@@ -212,6 +220,14 @@ public class UIActivitiesContainer extends UIContainer {
       UIActivitiesContainer uiActivitiesContainer = event.getSource();
       String uiActivityId = event.getRequestContext().getRequestParameter(OBJECTID);
       UIActivityLoader uiActivityLoader = uiActivitiesContainer.getChildById(uiActivityId);
+      
+      PortalContainer portalContainer = PortalContainer.getInstance();
+      UIActivityFactory factory = (UIActivityFactory) portalContainer.getComponentInstanceOfType(UIActivityFactory.class);
+      String activityId = uiActivityId.replace("UIActivityLoader", "");
+      ExoSocialActivity activity = CommonsUtils.getService(ActivityManager.class)
+                                               .getActivity(activityId);
+
+      factory.addChild(activity, uiActivityLoader);
       //
       event.getRequestContext().addUIComponentToUpdateByAjax(uiActivityLoader);
     }

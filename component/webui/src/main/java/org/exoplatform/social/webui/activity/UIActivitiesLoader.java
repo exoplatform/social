@@ -25,6 +25,7 @@ import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
+import org.exoplatform.social.common.RealtimeListAccess;
 import org.exoplatform.social.core.activity.ActivitiesRealtimeListAccess;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.identity.model.Identity;
@@ -175,15 +176,16 @@ public class UIActivitiesLoader extends UIContainer {
 
       List<ExoSocialActivity> activities = new ArrayList<ExoSocialActivity>(0);
       
-      if (isShowActivities(space)) {
-        if (this.postContext == PostContext.SINGLE) {
-          activities = loadActivity();
-        } else {
-          activities = loadActivities(currentLoadIndex, loadingCapacity);
-        }
+      if (this.postContext == PostContext.SINGLE) {
+        activities = loadActivity();
+        activitiesContainer.setActivityList(activities);
+      } else if (isShowActivities(space)) {
+        activities = loadActivities(currentLoadIndex, loadingCapacity);
+        activitiesContainer.setActivityList(activities);
+      } else {
+        List<String> activityIds = loadActivityIds(currentLoadIndex, loadingCapacity);
+        activitiesContainer.setActivityIdList(activityIds);
       }
-      
-      activitiesContainer.setActivityList(activities);
     } catch (Exception e) {
       LOG.error(e.getMessage(), e);
     }
@@ -221,14 +223,29 @@ public class UIActivitiesLoader extends UIContainer {
 
   private List<ExoSocialActivity> loadActivities(int index, int length) throws Exception {
     if (activityListAccess != null) {
-      int newLength = length + 1;
-      ExoSocialActivity[] activities = activityListAccess.load(index, newLength);
+      ExoSocialActivity[] activities = activityListAccess.load(index, length);
       if (activities != null) {
-        int size = activities.length;
+        int size = activityListAccess.getSize();
         boolean hasMore = size > length;
         setHasMore(hasMore);
         
         return hasMore ? new ArrayList<ExoSocialActivity>(Arrays.asList(activities)).subList(0, length) : new ArrayList<ExoSocialActivity>(Arrays.asList(activities)) ;
+      }
+    }
+    return null;
+  }
+  
+  private List<String> loadActivityIds(int index, int length) throws Exception {
+    if (activityListAccess != null) {
+      if (activityListAccess instanceof ActivitiesRealtimeListAccess) {
+        ActivitiesRealtimeListAccess listAccess = (ActivitiesRealtimeListAccess) activityListAccess;
+        List<String> activityIds = listAccess.loadIdsAsList(index, length);
+        if (activityIds != null) {
+          int size = listAccess.getSize();
+          boolean hasMore = size > length;
+          setHasMore(hasMore);
+          return activityIds;
+        }
       }
     }
     return null;
@@ -247,7 +264,7 @@ public class UIActivitiesLoader extends UIContainer {
     if (space == null) {
       space = getSpaceByActivityId(Utils.getActivityID());
       if (space == null)
-        return true;
+        return false;
     }
     
     String remoteId = Util.getPortalRequestContext().getRemoteUser();

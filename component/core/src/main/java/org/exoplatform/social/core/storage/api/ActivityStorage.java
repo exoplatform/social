@@ -263,6 +263,16 @@ public interface ActivityStorage {
   public List<ExoSocialActivity> getActivityFeed(Identity ownerIdentity, int offset, int limit);
   
   /**
+   * Gets activity ids feed from an identity.
+   *
+   * @param ownerIdentity
+   * @param offset
+   * @param limit
+   * @return
+   */
+  public List<String> getActivityIdsFeed(Identity ownerIdentity, int offset, int limit);
+  
+  /**
    * Gets activity feed from an identity for upgrade Activity Stream feature
    *
    * @param ownerIdentity

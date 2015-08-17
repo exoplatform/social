@@ -206,6 +206,17 @@ public interface ActivityStreamStorage {
    * @since 4.0.2, 4.1.0
    */
   public List<ExoSocialActivity> getFeed(Identity owner, int offset, int limit);
+  
+  /**
+   * Gets Ids Feed stream by target identity
+   * @param owner the owner's stream
+   * @param offset
+   * @param limit
+   * @return
+   * @since 4.3.0
+   */
+  public List<String> getIdsFeed(Identity owner, int offset, int limit);
+  
   /**
    * Gets the number of owner's feed stream
    * @param owner

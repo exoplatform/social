@@ -133,6 +133,32 @@ public class ActivitiesRealtimeListAccess implements RealtimeListAccess<ExoSocia
     this.ownerIdentity = chosenOwnerIdentity;
     this.viewerIdentity = viewerIndentity;
   }
+  
+  @Override
+  public List<String> loadIdsAsList(int index, int limit) {
+    switch (activityType) {
+    case ACTIVITY_FEED: {
+      return activityStorage.getActivityIdsFeed(ownerIdentity, index, limit);
+    }
+    case USER_ACTIVITIES: {
+      return Collections.emptyList();
+    }
+    case VIEW_USER_ACTIVITIES: {
+      return Collections.emptyList();
+    }
+    case CONNECTIONS_ACTIVITIES: {
+      return Collections.emptyList();
+    }
+    case USER_SPACE_ACTIVITIES: {
+      return Collections.emptyList();
+    }
+    case SPACE_ACTIVITIES: {
+      return Collections.emptyList();
+    }
+    }
+    return Collections.emptyList();
+
+  }
 
   /**
    * {@inheritDoc}

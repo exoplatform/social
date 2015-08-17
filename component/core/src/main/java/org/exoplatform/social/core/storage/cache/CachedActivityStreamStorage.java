@@ -89,6 +89,11 @@ public class CachedActivityStreamStorage implements ActivityStreamStorage {
   public List<ExoSocialActivity> getFeed(Identity owner, int offset, int limit) {
     return storage.getFeed(owner, offset, limit);
   }
+  
+  @Override
+  public List<String> getIdsFeed(Identity owner, int offset, int limit) {
+    return storage.getIdsFeed(owner, offset, limit);
+  }
 
   @Override
   public int getNumberOfFeed(Identity owner) {
