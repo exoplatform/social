@@ -201,10 +201,6 @@ public class UIActivitiesLoader extends UIContainer {
   }
 
   private void loadNext() throws Exception {
-    if (activityListAccess != null && activityListAccess instanceof ActivitiesRealtimeListAccess) {
-      ActivitiesRealtimeListAccess listAccess = (ActivitiesRealtimeListAccess) activityListAccess;
-      listAccess.getNumberOfUpgrade();
-    }
     currentLoadIndex += loadingCapacity;
     List<ExoSocialActivity> activities = new ArrayList<ExoSocialActivity>(0);
     lastActivitiesLoader = extendContainer.addChild(UIActivitiesLoader.class, null, UIActivitiesLoader.genereateId());
@@ -223,10 +219,7 @@ public class UIActivitiesLoader extends UIContainer {
 
     lastActivitiesLoader.getActivitiesContainer().setPostContext(postContext);
     lastActivitiesLoader.getActivitiesContainer().setSpace(space);
-    
-    int size = activityListAccess.getSize();
-    boolean hasMore = size > currentLoadIndex;
-    lastActivitiesLoader.setHasMore(hasMore);
+    lastActivitiesLoader.setHasMore(isHasMore());
   }
 
   private List<ExoSocialActivity> loadActivities(int index, int length) throws Exception {
@@ -234,7 +227,7 @@ public class UIActivitiesLoader extends UIContainer {
       ExoSocialActivity[] activities = activityListAccess.load(index, length);
       if (activities != null) {
         int size = activityListAccess.getSize();
-        boolean hasMore = size > length;
+        boolean hasMore = size > (length + index);
         setHasMore(hasMore);
         
         return new ArrayList<ExoSocialActivity>(Arrays.asList(activities));
@@ -250,7 +243,7 @@ public class UIActivitiesLoader extends UIContainer {
         List<String> activityIds = listAccess.loadIdsAsList(index, length);
         if (activityIds != null) {
           int size = listAccess.getSize();
-          boolean hasMore = size > length;
+          boolean hasMore = size > (length + index);
           setHasMore(hasMore);
           return activityIds;
         }
