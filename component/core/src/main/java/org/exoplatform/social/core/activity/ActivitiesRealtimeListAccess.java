@@ -26,6 +26,7 @@ import org.exoplatform.social.core.activity.filter.ActivityUpdateFilter;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.storage.api.ActivityStorage;
+import org.exoplatform.social.core.storage.impl.StorageUtils;
 
 /**
  * The real time list access for activities.
@@ -141,19 +142,19 @@ public class ActivitiesRealtimeListAccess implements RealtimeListAccess<ExoSocia
       return activityStorage.getActivityIdsFeed(ownerIdentity, index, limit);
     }
     case USER_ACTIVITIES: {
-      return Collections.emptyList();
+      return activityStorage.getUserIdsActivities(ownerIdentity, index, limit);
     }
     case VIEW_USER_ACTIVITIES: {
-      return Collections.emptyList();
+      return StorageUtils.getIds(activityStorage.getActivities(ownerIdentity, viewerIdentity, index, limit));
     }
     case CONNECTIONS_ACTIVITIES: {
-      return Collections.emptyList();
+      return StorageUtils.getIds(activityStorage.getActivitiesOfConnections(ownerIdentity, index, limit));
     }
     case USER_SPACE_ACTIVITIES: {
-      return Collections.emptyList();
+      return StorageUtils.getIds(activityStorage.getUserSpacesActivities(ownerIdentity, index, limit));
     }
     case SPACE_ACTIVITIES: {
-      return Collections.emptyList();
+      return StorageUtils.getIds(activityStorage.getSpaceActivities(ownerIdentity, index, limit));
     }
     }
     return Collections.emptyList();

@@ -646,6 +646,11 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     return got;
   }
   
+  @Override
+  public List<String> getUserIdsActivities(Identity owner, long offset, long limit) throws ActivityStorageException {
+    return streamStorage.getIdsMyActivities(owner, (int)offset, (int)limit);
+  }
+  
   /**
    * {@inheritDoc}
    */

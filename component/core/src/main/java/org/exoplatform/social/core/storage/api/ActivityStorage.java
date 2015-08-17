@@ -94,6 +94,18 @@ public interface ActivityStorage {
       Identity owner, long offset, long limit) throws ActivityStorageException;
   
   /**
+   * Gets the activity ids by identity.
+   *
+   * Access a user's activity stream by specifying the offset and limit.
+   *
+   * @param owner the identity
+   * @param offset
+   * @param limit
+   * @return the activity ids list
+   */
+  public List<String> getUserIdsActivities(Identity owner, long offset, long limit) throws ActivityStorageException;
+  
+  /**
    * Gets the activities by identity for upgrade Activity Stream feature
    *
    * Access a user's activity stream by specifying the offset and limit.

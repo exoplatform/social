@@ -270,6 +270,27 @@ public class CachedActivityStorage implements ActivityStorage {
     return buildActivities(keys);
 
   }
+  
+  public List<String> getUserIdsActivities(final Identity owner,
+                                                      final long offset,
+                                                      final long limit) throws ActivityStorageException {
+    
+    //
+    ActivityCountKey key = new ActivityCountKey(new IdentityKey(owner), ActivityType.USER);
+    ListActivitiesKey listKey = new ListActivitiesKey(key, offset, limit);
+    //
+    ListActivitiesData keys = activitiesCache.get(
+        new ServiceContext<ListActivitiesData>() {
+          public ListActivitiesData execute() {
+            List<String> got = storage.getUserIdsActivities(owner, offset, limit);
+            return buildActivityIds(got);
+          }
+        },
+        listKey);
+
+    //
+    return buildActivityIds(keys);
+  }
 
   /**
    * {@inheritDoc}

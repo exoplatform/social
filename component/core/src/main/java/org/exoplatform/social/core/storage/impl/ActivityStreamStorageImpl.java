@@ -693,6 +693,11 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
   public List<ExoSocialActivity> getMyActivities(Identity owner, int offset, int limit) {
     return getActivitiesNotQuery(ActivityRefType.MY_ACTIVITIES, owner, offset, limit);
   }
+  
+  @Override
+  public List<String> getIdsMyActivities(Identity owner, int offset, int limit) {
+    return getIdsNotQuery(ActivityRefType.MY_ACTIVITIES, owner, offset, limit);
+  }
 
   @Override
   public int getNumberOfMyActivities(Identity owner) {
