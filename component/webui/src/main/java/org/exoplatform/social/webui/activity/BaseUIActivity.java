@@ -846,9 +846,9 @@ public class BaseUIActivity extends UIForm {
   @Override
   public void processRender(WebuiRequestContext context) throws Exception {
     try {
+      Utils.initUserProfilePopup(getId());
       super.processRender(context);
-    }
-    catch (Exception e) {
+    } catch (Exception e) {
       LOG.error(e.getMessage(), e);
     }
   }

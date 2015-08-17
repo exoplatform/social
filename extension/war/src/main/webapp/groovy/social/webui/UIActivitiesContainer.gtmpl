@@ -37,7 +37,7 @@ def labelNotAnyUpdatesPostedYet = _ctx.appRes("UIActivitiesLoader.label.Not_Any_
 		      </div>
 		    </div>
 		  </div><!--end activityTimeLine-->
-		  <span style="position:absolute;top:30px;left:50%;z-index:10;" class="uiLoadingIconMedium"></span>
+		  <span style="position:absolute;top:40px;left:50%;z-index:10;" class="uiLoadingIconMedium"></span>
 		  <div class="boxContainer" id="boxContainer">
 		    <div id="ContextBox1901" class="uiBox contentBox">
 		      <div id="ActivityContextBox${uiActivityId}">
