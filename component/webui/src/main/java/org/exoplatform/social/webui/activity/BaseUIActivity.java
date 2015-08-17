@@ -50,6 +50,7 @@ import org.exoplatform.web.application.JavascriptManager;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.application.portlet.PortletRequestContext;
 import org.exoplatform.webui.core.UIApplication;
+import org.exoplatform.webui.core.UIPortletApplication;
 import org.exoplatform.webui.core.lifecycle.WebuiBindingContext;
 import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.event.EventListener;
@@ -670,7 +671,7 @@ public class BaseUIActivity extends UIForm {
     public void execute(Event<BaseUIActivity> event) throws Exception {
       BaseUIActivity uiActivity = event.getSource();
       String activityId = uiActivity.getActivity().getId();
-      if (uiActivity.isNoLongerExisting(activityId, event)) {
+      if (uiActivity.isNoLongerExisting(activityId)) {
         return;
       }
       //uiActivity.refresh();
@@ -690,7 +691,7 @@ public class BaseUIActivity extends UIForm {
     public void execute(Event<BaseUIActivity> event) throws Exception {
       BaseUIActivity uiActivity = event.getSource();
       String activityId = uiActivity.getActivity().getId();
-      if (uiActivity.isNoLongerExisting(activityId, event)) {
+      if (uiActivity.isNoLongerExisting(activityId)) {
         return;
       }
       //uiActivity.refresh();
@@ -713,7 +714,7 @@ public class BaseUIActivity extends UIForm {
     public void execute(Event<BaseUIActivity> event) throws Exception {
       BaseUIActivity uiActivity = event.getSource();
       String activityId = uiActivity.getActivity().getId();
-      if (uiActivity.isNoLongerExisting(activityId, event)) {
+      if (uiActivity.isNoLongerExisting(activityId)) {
         return;
       }
       //uiActivity.refresh();
@@ -768,7 +769,7 @@ public class BaseUIActivity extends UIForm {
     public void execute(Event<BaseUIActivity> event) throws Exception {
       BaseUIActivity uiActivity = event.getSource();
       String activityId = uiActivity.getActivity().getId();
-      if (uiActivity.isNoLongerExisting(activityId, event)) {
+      if (uiActivity.isNoLongerExisting(activityId)) {
         return;
       }
       //uiActivity.refresh();
@@ -802,7 +803,7 @@ public class BaseUIActivity extends UIForm {
     public void execute(Event<BaseUIActivity> event) throws Exception {
       BaseUIActivity uiActivity = event.getSource();
       String activityId = uiActivity.getActivity().getId();
-      if (uiActivity.isNoLongerExisting(activityId, event)) {
+      if (uiActivity.isNoLongerExisting(activityId)) {
         return;
       }
       Utils.getActivityManager().deleteActivity(activityId);
@@ -825,16 +826,15 @@ public class BaseUIActivity extends UIForm {
 
     @Override
     public void execute(Event<BaseUIActivity> event) throws Exception {
+      WebuiRequestContext requestContext = event.getRequestContext();
+      String commentId = requestContext.getRequestParameter(OBJECTID);
       BaseUIActivity uiActivity = event.getSource();
       String activityId = uiActivity.getActivity().getId();
-      String commentId = event.getRequestContext().getRequestParameter(OBJECTID);
-      if (uiActivity.isNoLongerExisting(activityId, event) || 
-          uiActivity.isNoLongerExisting(commentId, event)) {
+      if (uiActivity.isNoLongerExisting(activityId) || 
+          uiActivity.isNoLongerExisting(commentId)) {
         return;
       }
-      WebuiRequestContext requestContext = event.getRequestContext();
-      Utils.getActivityManager().deleteComment(uiActivity.getActivity().getId(),
-                                               requestContext.getRequestParameter(OBJECTID));
+      Utils.getActivityManager().deleteComment(activityId, commentId);
       //uiActivity.refresh();
       requestContext.addUIComponentToUpdateByAjax(uiActivity);
       
@@ -853,13 +853,18 @@ public class BaseUIActivity extends UIForm {
     }
   }
 
+  /**
+   * @deprecated : Replace by {@link #isNoLongerExisting(String)}
+  */
   protected boolean isNoLongerExisting(String activityId, Event<BaseUIActivity> event) {
+    return isNoLongerExisting(activityId);
+  }
+
+  protected boolean isNoLongerExisting(String activityId) {
     ExoSocialActivity existingActivity = Utils.getActivityManager().getActivity(activityId);
     if (existingActivity == null) {
-      UIApplication uiApplication = event.getRequestContext().getUIApplication();
-      uiApplication.addMessage(new ApplicationMessage("BaseUIActivity.msg.info.Activity_No_Longer_Exist",
-                                                    null,
-                                                    ApplicationMessage.INFO));
+      getAncestorOfType(UIPortletApplication.class)
+        .addMessage(new ApplicationMessage("BaseUIActivity.msg.info.Activity_No_Longer_Exist", null, ApplicationMessage.INFO));
       return true;
     }
     return false;
