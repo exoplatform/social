@@ -25,7 +25,6 @@ import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
-import org.exoplatform.social.common.RealtimeListAccess;
 import org.exoplatform.social.core.activity.ActivitiesRealtimeListAccess;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.identity.model.Identity;
@@ -211,14 +210,23 @@ public class UIActivitiesLoader extends UIContainer {
     lastActivitiesLoader = extendContainer.addChild(UIActivitiesLoader.class, null, UIActivitiesLoader.genereateId());
     lastActivitiesLoader.setExtendLoader(true);
     
-    if (isShowActivities(space)) {
+    if (this.postContext == PostContext.SINGLE) {
+      activities = loadActivity();
+      lastActivitiesLoader.getActivitiesContainer().setActivityList(activities);
+    } else if (isShowActivities(space)) {
       activities = loadActivities(currentLoadIndex, loadingCapacity);
+      lastActivitiesLoader.getActivitiesContainer().setActivityList(activities);
+    } else {
+      List<String> activityIds = loadActivityIds(currentLoadIndex, loadingCapacity);
+      lastActivitiesLoader.getActivitiesContainer().setActivityIdList(activityIds);
     }
 
     lastActivitiesLoader.getActivitiesContainer().setPostContext(postContext);
     lastActivitiesLoader.getActivitiesContainer().setSpace(space);
-    lastActivitiesLoader.getActivitiesContainer().setActivityList(activities);
-    lastActivitiesLoader.setHasMore(isHasMore());
+    
+    int size = activityListAccess.getSize();
+    boolean hasMore = size > currentLoadIndex;
+    setHasMore(hasMore);
   }
 
   private List<ExoSocialActivity> loadActivities(int index, int length) throws Exception {
@@ -229,7 +237,7 @@ public class UIActivitiesLoader extends UIContainer {
         boolean hasMore = size > length;
         setHasMore(hasMore);
         
-        return hasMore ? new ArrayList<ExoSocialActivity>(Arrays.asList(activities)).subList(0, length) : new ArrayList<ExoSocialActivity>(Arrays.asList(activities)) ;
+        return new ArrayList<ExoSocialActivity>(Arrays.asList(activities));
       }
     }
     return null;
