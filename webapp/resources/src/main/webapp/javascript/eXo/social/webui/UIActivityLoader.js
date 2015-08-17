@@ -32,16 +32,27 @@
 	          }
 	        }
 	      });
+	      //check if need to load more
+	      UIActivityLoader.processLoadMore();
 	      
 	      UIActivityLoader.processBottomTimeLine();
 	    });
-	
+	  },
+	  //check the distance between the last activity and the bottom of screen size 
+	  processLoadMore : function() {
+	    // activityBottom
+	    var mustLoadMore = $(window).height() - $('.activityBottom:first').offset().top > 0;
+	    if (mustLoadMore === true) {
+        var t = setTimeout(function() {
+          $('#ActivitiesLoader').click();
+        }, 200);
+      }
 	  },
 	  setStatus : function(hasMore) {
 	    if(UIActivityLoader.scrollBottom() <= UIActivityLoader.delta) {
 	      $(window).scrollTop($(window).scrollTop()-5);
 	    }
-      UIActivityLoader.hasMore = (hasMore === true || hasMore === 'true') ? true : false;
+        UIActivityLoader.hasMore = (hasMore === true || hasMore === 'true') ? true : false;
 	    UIActivityLoader.initIndicator();
 	    UIActivityLoader.processBottomTimeLine();
 	  },
@@ -71,7 +82,6 @@
 	        container.find('div.activity-loadding').attr('style', '').removeClass('uiBox');
 	      });
 	    });
-	    
 	  }
 	};
   return UIActivityLoader;

@@ -278,7 +278,10 @@ public class UIActivitiesLoader extends UIContainer {
       RequireJS require = context.getJavascriptManager()
                                  .require("SHARED/social-ui-activities-loader", "activitiesLoader");
       require.addScripts("activitiesLoader.setStatus('" + uiActivitiesLoader.isHasMore() + "');");
-      
+      if(uiActivitiesLoader.currentLoadIndex < 15 && uiActivitiesLoader.hasMore) {
+        require.addScripts("activitiesLoader.processLoadMore();");
+      }
+      //
       Utils.resizeHomePage();
     }
   }
