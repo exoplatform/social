@@ -40,8 +40,8 @@
 	  },
 	  //check the distance between the last activity and the bottom of screen size 
 	  processLoadMore : function() {
-	    // activityBottom
-	    var mustLoadMore = $(window).height() - $('.activityBottom:first').offset().top > 0;
+	    // bottomContainer
+	    var mustLoadMore = $(window).height() - $('.bottomContainer:last').offset().top > 0;
 	    if (mustLoadMore === true) {
         var t = setTimeout(function() {
           $('#ActivitiesLoader').click();

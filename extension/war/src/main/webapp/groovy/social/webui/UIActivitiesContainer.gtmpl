@@ -27,7 +27,30 @@ def labelNotAnyUpdatesPostedYet = _ctx.appRes("UIActivitiesLoader.label.Not_Any_
    List children = uicomponent.getChildrenId();
 	 if (children.size() > 0) {
      for(uiActivityId in children) {
-       print("<div class=\"uiActivityLoader uiBox activity-loadding\" style=\"position:relative; height: 100px\" id=\"$uiActivityId\"><span style=\"position:absolute;top:30px;left:45%\" class=\"uiLoadingIconMedium\"></span></div>");
+%>
+	<div class="uiActivityLoader activity-loadding" style="position:relative;" id="$uiActivityId">
+		<div class="activityStream uiDefaultActivity" id="activityContainer${uiActivityId}">
+		  <div class="activityTimeLine pull-left">
+		    <div class="activityAvatar avatarCircle">
+		      <div>
+		        <img src="/eXoSkin/skin/images/system/UserAvtDefault.png">
+		      </div>
+		    </div>
+		  </div><!--end activityTimeLine-->
+		  <span style="position:absolute;top:30px;left:50%;z-index:10;" class="uiLoadingIconMedium"></span>
+		  <div class="boxContainer" id="boxContainer">
+		    <div id="ContextBox1901" class="uiBox contentBox">
+		      <div id="ActivityContextBox${uiActivityId}">
+		        <div class="heading" style="height:60px;">
+		          <span class="arrowLeft"></span>
+		          <a id="Permalink${uiActivityId}" class="uiIconLink uiIconLightGray" href="/portal/intranet/activity?id=${uiActivityId}"></a> 
+		        </div><!--end heading-->
+		      </div><!--end #ActivityContextBox${uiActivityId}-->
+		    </div> <!--end ContextBox${uiActivityId}-->	
+		  </div>
+		</div>
+	</div>
+<%
      }
      print("<div class=\"uiActivitiesLoaderURL\" data-url=\"" + uicomponent.getLoadActivityUrl() + "\"></div>");
    } else {
