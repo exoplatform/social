@@ -32,21 +32,9 @@
 	          }
 	        }
 	      });
-	      //check if need to load more
-	      UIActivityLoader.processLoadMore();
 	      
 	      UIActivityLoader.processBottomTimeLine();
 	    });
-	  },
-	  //check the distance between the last activity and the bottom of screen size 
-	  processLoadMore : function() {
-	    // bottomContainer
-	    var mustLoadMore = $(window).height() - $('.bottomContainer:last').offset().top > 0;
-	    if (mustLoadMore === true) {
-        var t = setTimeout(function() {
-          $('#ActivitiesLoader').click();
-        }, 200);
-      }
 	  },
 	  setStatus : function(hasMore) {
 	    if(UIActivityLoader.scrollBottom() <= UIActivityLoader.delta) {

@@ -75,7 +75,7 @@ import org.exoplatform.webui.event.EventListener;
 public class UIUserActivitiesDisplay extends UIContainer {
 
   static private final Log      LOG = ExoLogger.getLogger(UIUserActivitiesDisplay.class);
-  private static final int      ACTIVITY_PER_PAGE = 5;
+  private static final int      ACTIVITY_PER_PAGE = 20;
   private static final String   SLASH = "/";
   public static final String ACTIVITY_STREAM_VISITED_PREFIX_COOKIED = "exo_social_activity_stream_%s_visited_%s";
   
