@@ -141,11 +141,11 @@ public class BaseUIActivity extends UIForm {
     UIFormTextAreaInput commentTextArea = new UIFormTextAreaInput("CommentTextarea" + activity.getId(), "CommentTextarea", null);
     commentTextArea.setHTMLAttribute(HTML_ATTRIBUTE_TITLE, resourceBundle.getString("BaseUIActivity.label.Add_your_comment"));
     addChild(commentTextArea);
-    try {
-      refresh();
-    } catch (ActivityStorageException e) {
-      LOG.error(e.getMessage(), e);
-    }
+//    try {
+//      refresh();
+//    } catch (ActivityStorageException e) {
+//      LOG.error(e.getMessage(), e);
+//    }
   }
 
   public ExoSocialActivity getActivity() {

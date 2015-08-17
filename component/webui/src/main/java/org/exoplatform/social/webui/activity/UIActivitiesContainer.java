@@ -27,6 +27,7 @@ import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.manager.ActivityManager;
 import org.exoplatform.social.core.space.model.Space;
+import org.exoplatform.social.core.storage.ActivityStorageException;
 import org.exoplatform.social.webui.Utils;
 import org.exoplatform.social.webui.composer.PopupContainer;
 import org.exoplatform.social.webui.composer.UIComposer.PostContext;
@@ -220,14 +221,19 @@ public class UIActivitiesContainer extends UIContainer {
       UIActivitiesContainer uiActivitiesContainer = event.getSource();
       String uiActivityId = event.getRequestContext().getRequestParameter(OBJECTID);
       UIActivityLoader uiActivityLoader = uiActivitiesContainer.getChildById(uiActivityId);
-      
-      PortalContainer portalContainer = PortalContainer.getInstance();
-      UIActivityFactory factory = (UIActivityFactory) portalContainer.getComponentInstanceOfType(UIActivityFactory.class);
+      //
+      UIActivityFactory factory = CommonsUtils.getService(UIActivityFactory.class);
       String activityId = uiActivityId.replace("UIActivityLoader", "");
       ExoSocialActivity activity = CommonsUtils.getService(ActivityManager.class)
                                                .getActivity(activityId);
-
       factory.addChild(activity, uiActivityLoader);
+      //
+      BaseUIActivity uiActivity = uiActivityLoader.getChild(BaseUIActivity.class);
+      try {
+        uiActivity.refresh();
+      } catch (ActivityStorageException e) {
+        LOG.error(e.getMessage(), e);
+      }
       //
       event.getRequestContext().addUIComponentToUpdateByAjax(uiActivityLoader);
     }
