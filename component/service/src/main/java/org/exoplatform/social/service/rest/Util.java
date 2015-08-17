@@ -165,6 +165,10 @@ public final class Util {
    * @return
    */
   public static String getViewerId (UriInfo uriInfo) {
+    ConversationState state = ConversationState.getCurrent();
+    if (state != null) {
+      return state.getIdentity().getUserId();
+    }
     URI uri = uriInfo.getRequestUri();
     String requestString = uri.getQuery();
     if (requestString == null) return null;
