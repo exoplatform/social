@@ -200,8 +200,8 @@ public class UIActivitiesContainer extends UIContainer {
 
   @Override
   public void processRender(WebuiRequestContext context) throws Exception {
-    context.getJavascriptManager().getRequireJS().require("SHARED/social-ui-activities-loader", "socialUiActivitiesLoader")
-           .addScripts("socialUiActivitiesLoader.loaddingActivity('" + this.getId() + "');");
+    context.getJavascriptManager().getRequireJS().require("SHARED/social-ui-activities-loader", "activitiesLoader")
+           .addScripts("activitiesLoader.loaddingActivity('" + this.getId() + "');");
     super.processRender(context);
   }
 

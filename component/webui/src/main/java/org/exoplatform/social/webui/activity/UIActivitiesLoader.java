@@ -160,7 +160,8 @@ public class UIActivitiesLoader extends UIContainer {
       hasMore = false;
       currentLoadIndex = 0;
       isExtendLoader = false;
-      
+      //first load
+      int loadingCapacity = 5;
       String activityId = getSingleActivityId();
       if (activityId != null && activityId.length() > 0) {
         postContext = PostContext.SINGLE;
@@ -201,6 +202,11 @@ public class UIActivitiesLoader extends UIContainer {
   }
 
   private void loadNext() throws Exception {
+    int loadingCapacity = 5;
+    if (currentLoadIndex >= this.loadingCapacity - loadingCapacity) {
+      loadingCapacity = this.loadingCapacity;
+    }
+    //
     currentLoadIndex += loadingCapacity;
     List<ExoSocialActivity> activities = new ArrayList<ExoSocialActivity>(0);
     lastActivitiesLoader = extendContainer.addChild(UIActivitiesLoader.class, null, UIActivitiesLoader.genereateId());
@@ -296,6 +302,9 @@ public class UIActivitiesLoader extends UIContainer {
       RequireJS require = context.getJavascriptManager()
                                  .require("SHARED/social-ui-activities-loader", "activitiesLoader");
       require.addScripts("activitiesLoader.setStatus('" + uiActivitiesLoader.isHasMore() + "');");
+      if (uiActivitiesLoader.hasMore && uiActivitiesLoader.currentLoadIndex < uiActivitiesLoader.loadingCapacity - 5) {
+        require.addScripts("activitiesLoader.processLoadMore();");
+      }
       //
       Utils.resizeHomePage();
     }

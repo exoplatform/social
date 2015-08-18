@@ -261,7 +261,7 @@
   
   <module>
     <name>social-ui-activities-loader</name>
-      <as>socialUiActivitiesLoader</as>
+      <as>activitiesLoader</as>
     <script>
       <path>/javascript/eXo/social/webui/UIActivityLoader.js</path>
     </script>

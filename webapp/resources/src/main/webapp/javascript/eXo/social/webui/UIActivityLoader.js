@@ -32,9 +32,21 @@
 	          }
 	        }
 	      });
+	      //check if need to load more
+	      UIActivityLoader.processLoadMore();
 	      
 	      UIActivityLoader.processBottomTimeLine();
 	    });
+	  },
+	  //check the distance between the last activity and the bottom of screen size 
+	  processLoadMore : function() {
+	    // bottomContainer
+	    var mustLoadMore = $(window).height() - $('div.bottomContainer:last').offset().top > 0;
+	    if (mustLoadMore === true) {
+        var t = setTimeout(function() {
+          $('#ActivitiesLoader').click();
+        }, 200);
+      }
 	  },
 	  setStatus : function(hasMore) {
 	    if(UIActivityLoader.scrollBottom() <= UIActivityLoader.delta) {
@@ -56,7 +68,12 @@
 	    //
       if ( UIActivityLoader.hasMore ) {
         $('div.activityBottom').hide();
-        $('#ActivitiesLoader').parent().show();
+        //
+        var loaderButton = $('#ActivitiesLoader');
+        var isShow = $('.activityStream').length - loaderButton.data('loading-capacity') >= 0;
+        if(isShow === true) {
+          loaderButton.parent().show();
+        }
       } else {
         $('div.activityBottom').show();
         $('#ActivitiesLoader').parent().hide();

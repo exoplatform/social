@@ -78,16 +78,15 @@
   if(uicomponent.id.equals("UIActivitiesLoader")) {
     if(!uicomponent.isExtendLoader()){
       %>
-        <div class="boxLoadMore">
-      	  <div id="ActivitiesLoader" class="showMore" onclick="<%=uicomponent.event('LoadMore')%>">
-      	  <a href="javascript:void(0);">$labelLoadMore</a>
+        <div class="boxLoadMore" style="display:none">
+      	  <div id="ActivitiesLoader" class="showMore" data-loading-capacity="${uicomponent.loadingCapacity}" onclick="<%=uicomponent.event('LoadMore')%>">
+      	  	<a href="javascript:void(0);">$labelLoadMore</a>
       	  </div>
       	</div>
-        
       <%
     }
 		_ctx.include("war:/groovy/social/webui/UISocialConfirmation.gtmpl");
+		print("<div class=\"bottomContainer\"></div>");
 	}
 %>
-	<div class="bottomContainer"></div>
 </div>
