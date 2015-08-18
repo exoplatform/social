@@ -26,7 +26,6 @@ import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.manager.ActivityManager;
 import org.exoplatform.social.core.space.model.Space;
-import org.exoplatform.social.core.storage.ActivityStorageException;
 import org.exoplatform.social.webui.Utils;
 import org.exoplatform.social.webui.composer.PopupContainer;
 import org.exoplatform.social.webui.composer.UIComposer.PostContext;
@@ -234,7 +233,7 @@ public class UIActivitiesContainer extends UIContainer {
       BaseUIActivity uiActivity = uiActivityLoader.getChild(BaseUIActivity.class);
       try {
         uiActivity.refresh();
-      } catch (ActivityStorageException e) {
+      } catch (Exception e) {
         LOG.error(e.getMessage(), e);
       }
       //

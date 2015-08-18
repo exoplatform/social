@@ -1,35 +1,12 @@
-<%
-/*
-<!--
-
-    Copyright (C) 2003-2010 eXo Platform SAS.
-
-    This program is free software; you can redistribute it and/or
-    modify it under the terms of the GNU Affero General Public License
-    as published by the Free Software Foundation; either version 3
-    of the License, or (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, see<http://www.gnu.org/licenses/>.
-
--->
-*/
-def labelNotAnyUpdatesPostedYet = _ctx.appRes("UIActivitiesLoader.label.Not_Any_Updates_Posted_Yet");
-
-%>
 <div class="$uicomponent.id" id="$uicomponent.id">
 <% 
    List children = uicomponent.getChildrenId();
 	 if (children.size() > 0) {
      for(uiActivityId in children) {
+       String activityId = uiActivityId.replace("UIActivityLoader", "");
 %>
 	<div class="uiActivityLoader activity-loadding" style="position:relative;" id="$uiActivityId">
-		<div class="activityStream uiDefaultActivity" id="activityContainer${uiActivityId}">
+		<div class="activityStream uiDefaultActivity" id="activityContainer${activityId}">
 		  <div class="activityTimeLine pull-left">
 		    <div class="activityAvatar avatarCircle">
 		      <div>
@@ -40,10 +17,10 @@ def labelNotAnyUpdatesPostedYet = _ctx.appRes("UIActivitiesLoader.label.Not_Any_
 		  <span style="position:absolute;top:40px;left:50%;z-index:10;" class="uiLoadingIconMedium"></span>
 		  <div class="boxContainer" id="boxContainer">
 		    <div id="ContextBox1901" class="uiBox contentBox">
-		      <div id="ActivityContextBox${uiActivityId}">
+		      <div id="ActivityContextBox${activityId}">
 		        <div class="heading" style="height:60px;">
 		          <span class="arrowLeft"></span>
-		          <a id="Permalink${uiActivityId}" class="uiIconLink uiIconLightGray" href="/portal/intranet/activity?id=${uiActivityId}"></a> 
+		          <a id="Permalink${activityId}" class="uiIconLink uiIconLightGray" href="/portal/intranet/activity?id=${activityId}"></a> 
 		        </div><!--end heading-->
 		      </div><!--end #ActivityContextBox${uiActivityId}-->
 		    </div> <!--end ContextBox${uiActivityId}-->	
@@ -55,7 +32,7 @@ def labelNotAnyUpdatesPostedYet = _ctx.appRes("UIActivitiesLoader.label.Not_Any_
      print("<div class=\"uiActivitiesLoaderURL\" data-url=\"" + uicomponent.getLoadActivityUrl() + "\"></div>");
    } else {
 %>
-<div class="NoActivity">$labelNotAnyUpdatesPostedYet</div>
+	<div class="NoActivity"><%=_ctx.appRes("UIActivitiesLoader.label.Not_Any_Updates_Posted_Yet")%></div>
 <% } %>
 
 </div>
