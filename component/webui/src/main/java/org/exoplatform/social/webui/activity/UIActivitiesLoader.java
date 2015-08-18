@@ -161,7 +161,7 @@ public class UIActivitiesLoader extends UIContainer {
       currentLoadIndex = 0;
       isExtendLoader = false;
       //first load
-      int loadingCapacity = 5;
+      int loadingCapacity = (this.loadingCapacity <= 5) ? this.loadingCapacity : 5;
       String activityId = getSingleActivityId();
       if (activityId != null && activityId.length() > 0) {
         postContext = PostContext.SINGLE;
@@ -202,7 +202,7 @@ public class UIActivitiesLoader extends UIContainer {
   }
 
   private void loadNext() throws Exception {
-    int loadingCapacity = 5;
+    int loadingCapacity = (this.loadingCapacity > 5) ? this.loadingCapacity - 5 : this.loadingCapacity;
     if (currentLoadIndex >= this.loadingCapacity - loadingCapacity) {
       loadingCapacity = this.loadingCapacity;
     }

@@ -18,17 +18,18 @@
         }
         $(window).scroll(function(e) {
           var distanceToBottom = me.scrollBottom();
-          
-          var loadAnimation = $('#UIActivitiesLoader').find('div.ActivityIndicator'); 
+          var isFirstPage = (me.loaderButton.data('loading-capacity') - $('.activityStream').length >= 0);
+          var delta = (isFirstPage === true) ? 500 : me.delta;
+          var loadAnimation = $('#UIActivitiesLoader').find('div.ActivityIndicator');
           if (me.hasMore === true &&
-                distanceToBottom <= me.delta &&
+                distanceToBottom <= delta &&
                   loadAnimation.css("display") === 'none') {
             //
-            var time = ($('.activityStream').length - me.loaderButton.data('loading-capacity') >= 0) ? 500 : 200;
+            var time = (isFirstPage === true) ? 200 : 500;
             loadAnimation.css('visibility', 'hidden');
             loadAnimation.stop(true, true).fadeIn(time, function() {
               setTimeout(function(){loadAnimation.css('visibility', 'visible'); }, 800 - time);
-              $('div.bottomContainer:last')[0].scrollIntoView(true);
+              //$('div.bottomContainer:last')[0].scrollIntoView(true);
               var action = me.loaderButton.data('action');
               window.ajaxGet(action, function(data) {
                 $('div.ActivityIndicator').hide();
