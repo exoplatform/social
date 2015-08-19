@@ -247,6 +247,17 @@ public interface ActivityStreamStorage {
   public List<ExoSocialActivity> getConnections(Identity owner, int offset, int limit);
   
   /**
+   * Gets Activity Ids of connections stream by target identity
+   * 
+   * @param owner
+   * @param offset
+   * @param limit
+   * @return
+   * @since 4.3.0
+   */
+  public List<String> getIdsConnections(Identity owner, int offset, int limit);
+  
+  /**
    * The number of the activities on the owner's connection stream
    * @param owner
    * @return
@@ -271,6 +282,16 @@ public interface ActivityStreamStorage {
    * @since 4.0.2, 4.1.0
    */
   public List<ExoSocialActivity> getMySpaces(Identity owner, int offset, int limit);
+  
+  /**
+   * Gets the activity ids of My Space's stream by the owner
+   * @param owner
+   * @param offset
+   * @param limit
+   * @return
+   * @since 4.3.0
+   */
+  public List<String> getIdsMySpaces(Identity owner, int offset, int limit);
   
   /**
    * The number of the activity on the owner's my space stream
@@ -298,6 +319,17 @@ public interface ActivityStreamStorage {
    * @since 4.0.2, 4.1.0
    */
   public List<ExoSocialActivity> getSpaceStream(Identity owner, int offset, int limit);
+  
+  /**
+   * The activity ids of Space's stream by the owner
+   * @param owner
+   * @param offset
+   * @param limit
+   * @return
+   * @since 4.3.0
+   */
+  public List<String> getIdsSpaceStream(Identity owner, int offset, int limit);
+  
   
   /**
    * 

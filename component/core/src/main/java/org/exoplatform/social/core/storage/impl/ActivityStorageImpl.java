@@ -1426,7 +1426,23 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     //
     return StorageUtils.sortActivitiesByTime(got, limit);
   }
-
+  
+  @Override
+  public List<String> getActivityIdsOfConnections(Identity ownerIdentity,
+                                                             int offset,
+                                                             int limit) {
+    //
+    List<ExoSocialActivity> activities = getActivityOfInactiveUser(ownerIdentity, offset, limit);
+    
+    List<String> ids = StorageUtils.getIds(activities);
+    if (ids.size() >= limit) {
+      return ids;
+    }
+    //      
+    List<String> got = streamStorage.getIdsConnections(ownerIdentity, offset, limit);
+    return buildIdList(ids, got, limit);
+  }
+  
   /**
    * {@inheritDoc}
    */
@@ -1560,6 +1576,11 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     }
 
     return got;
+  }
+  
+  @Override
+  public List<String> getUserSpacesActivityIds(Identity ownerIdentity, int offset, int limit) {
+    return streamStorage.getIdsMySpaces(ownerIdentity, offset, limit);
   }
 
   /**
@@ -2078,6 +2099,12 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
 
     return got;
   }
+  
+  @Override
+  public List<String> getSpaceActivityIds(Identity spaceIdentity, int index, int limit) {
+    return streamStorage.getIdsSpaceStream(spaceIdentity, index, limit);
+  }
+  
   
   @Override
   public List<ExoSocialActivity> getSpaceActivitiesForUpgrade(Identity spaceIdentity, int index, int limit) {

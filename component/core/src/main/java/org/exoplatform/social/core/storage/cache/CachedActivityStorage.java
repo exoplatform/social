@@ -701,6 +701,25 @@ public class CachedActivityStorage implements ActivityStorage {
     return buildActivities(keys);
     
   }
+  
+  @Override
+  public List<String> getActivityIdsOfConnections(final Identity ownerIdentity, final int offset, final int limit) {
+    //
+    ActivityCountKey key = new ActivityCountKey(new IdentityKey(ownerIdentity), ActivityType.CONNECTION);
+    ListActivitiesKey listKey = new ListActivitiesKey(key, offset, limit);
+    //
+    ListActivitiesData keys = activitiesCache.get(
+        new ServiceContext<ListActivitiesData>() {
+          public ListActivitiesData execute() {
+            List<String> got = storage.getActivityIdsOfConnections(ownerIdentity, offset, limit);
+            return buildActivityIds(got);
+          }
+        },
+        listKey);
+
+    //
+    return buildActivityIds(keys);
+  }
 
   /**
    * {@inheritDoc}
@@ -847,6 +866,25 @@ public class CachedActivityStorage implements ActivityStorage {
     //
     return buildActivities(keys);
 
+  }
+  
+  @Override
+  public List<String> getUserSpacesActivityIds(final Identity ownerIdentity, final int offset, final int limit) {
+    //
+    ActivityCountKey key = new ActivityCountKey(new IdentityKey(ownerIdentity), ActivityType.SPACES);
+    ListActivitiesKey listKey = new ListActivitiesKey(key, offset, limit);
+    //
+    ListActivitiesData keys = activitiesCache.get(
+        new ServiceContext<ListActivitiesData>() {
+          public ListActivitiesData execute() {
+            List<String> got = storage.getUserSpacesActivityIds(ownerIdentity, offset, limit);
+            return buildActivityIds(got);
+          }
+        },
+        listKey);
+
+    //
+    return buildActivityIds(keys);
   }
 
   /**
@@ -1203,6 +1241,25 @@ public class CachedActivityStorage implements ActivityStorage {
 
     //
     return buildActivities(keys);
+  }
+  
+  @Override
+  public List<String> getSpaceActivityIds(final Identity spaceIdentity, final int offset, final int limit) {
+    //
+    ActivityCountKey key = new ActivityCountKey(new IdentityKey(spaceIdentity), ActivityType.SPACE);
+    ListActivitiesKey listKey = new ListActivitiesKey(key, offset, limit);
+    //
+    ListActivitiesData keys = activitiesCache.get(
+        new ServiceContext<ListActivitiesData>() {
+          public ListActivitiesData execute() {
+            List<String> got = storage.getSpaceActivityIds(spaceIdentity, offset, limit);
+            return buildActivityIds(got);
+          }
+        },
+        listKey);
+
+    //
+    return buildActivityIds(keys);
   }
   
   @Override

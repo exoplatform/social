@@ -422,6 +422,20 @@ public class ActivityStorageTest extends AbstractCoreTest {
     }
 
   }
+  
+  public void testGetUserActivityIds() throws ActivityStorageException {
+    final int totalNumber = 10;
+    final String activityTitle = "activity title";
+    //John posts activity to root's activity stream
+    for (int i = 0; i < totalNumber; i++) {
+      ExoSocialActivity activity = new ExoSocialActivityImpl();
+      activity.setTitle(activityTitle + i);
+      activityStorage.saveActivity(rootIdentity, activity);
+      tearDownActivityList.add(activity);
+    }
+
+    assertEquals(10, activityStorage.getUserIdsActivities(rootIdentity, 0, 20).size());
+  }
 
   /**
    * Test {@link org.exoplatform.social.core.storage.ActivityStorage#getNumberOfUserActivities(org.exoplatform.social.core.identity.model.Identity)}
@@ -726,6 +740,32 @@ public class ActivityStorageTest extends AbstractCoreTest {
     activities = activityStorage.getActivitiesOfConnections(rootIdentity, 0, 10);
     assertNotNull("activities must not be null", activities);
     assertEquals("activities.size() must return: 6", 6, activities.size());
+    
+    for (Relationship rel : relationships) {
+      relationshipManager.remove(rel);
+    }
+  }
+  
+  public void testGetActivityIdsOfConnections() throws Exception {
+    List<Relationship> relationships = new ArrayList<Relationship> ();
+    
+    this.createActivities(2, rootIdentity);
+    this.createActivities(1, demoIdentity);
+    
+    List<String> activities = activityStorage.getActivityIdsOfConnections(demoIdentity, 0, 10);
+    assertEquals(0, activities.size());
+    
+    RelationshipManager relationshipManager = this.getRelationshipManager();
+    
+    Relationship rootDemoRelationship = relationshipManager.invite(rootIdentity, demoIdentity);
+    relationshipManager.confirm(rootDemoRelationship);
+    relationships.add(rootDemoRelationship);
+    
+    activities = activityStorage.getActivityIdsOfConnections(rootIdentity, 0, 10);
+    assertEquals("activities.size() must return: 1", 1, activities.size());
+    
+    activities = activityStorage.getActivityIdsOfConnections(demoIdentity, 0, 10);
+    assertEquals(2, activities.size());
     
     for (Relationship rel : relationships) {
       relationshipManager.remove(rel);
@@ -1215,6 +1255,27 @@ public class ActivityStorageTest extends AbstractCoreTest {
     
     tearDownSpaceList.add(space);
     tearDownSpaceList.add(space2);
+  }
+  
+  public void testGetUserSpacesActivityIds() throws Exception {
+    SpaceService spaceService = this.getSpaceService();
+    Space space = this.getSpaceInstance(spaceService, 0);
+    Identity spaceIdentity = this.identityManager.getOrCreateIdentity(SpaceIdentityProvider.NAME, space.getPrettyName(), false);
+    int totalNumber = 10;
+    
+    //demo posts activities to space
+    for (int i = 0; i < totalNumber; i ++) {
+      ExoSocialActivity activity = new ExoSocialActivityImpl();
+      activity.setTitle("activity title " + i);
+      activity.setUserId(demoIdentity.getId());
+      activityStorage.saveActivity(spaceIdentity, activity);
+      tearDownActivityList.add(activity);
+    }
+    
+    List<String> demoActivities = activityStorage.getUserSpacesActivityIds(demoIdentity, 0, 10);
+    assertNotNull("demoActivities must not be null", demoActivities);
+    assertEquals("demoActivities.size() must return: 10", 10, demoActivities.size());
+    tearDownSpaceList.add(space);
   }
   
   public void testGetActivitiesAfterRemoveSpace() throws Exception {
