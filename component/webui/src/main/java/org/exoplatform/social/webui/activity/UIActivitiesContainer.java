@@ -218,14 +218,8 @@ public class UIActivitiesContainer extends UIContainer {
       String activityId = uiActivityId.replace("UIActivityLoader", "");
       ExoSocialActivity activity = CommonsUtils.getService(ActivityManager.class)
                                                .getActivity(activityId);
+      
       factory.addChild(activity, uiActivityLoader);
-      //
-      BaseUIActivity uiActivity = uiActivityLoader.getChild(BaseUIActivity.class);
-      try {
-        uiActivity.refresh();
-      } catch (Exception e) {
-        LOG.error(e.getMessage(), e);
-      }
       //
       event.getRequestContext().addUIComponentToUpdateByAjax(uiActivityLoader);
     }
