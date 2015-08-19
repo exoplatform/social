@@ -70,7 +70,6 @@ public class UIActivitiesLoader extends UIContainer {
   private UIActivitiesContainer activitiesContainer;
   private UIContainer extendContainer;
   private int loadingCapacity;
-  private int pageSize;
   private Space space;
   
   public UIActivitiesLoader() {
@@ -119,7 +118,6 @@ public class UIActivitiesLoader extends UIContainer {
   }
 
   public void setLoadingCapacity(int loadingCapacity) {
-    this.pageSize = loadingCapacity;
     this.loadingCapacity = loadingCapacity;
   }
 
@@ -161,7 +159,6 @@ public class UIActivitiesLoader extends UIContainer {
       currentLoadIndex = 0;
       isExtendLoader = false;
       //first load
-      int loadingCapacity = (this.loadingCapacity <= 5) ? this.loadingCapacity : 5;
       String activityId = getSingleActivityId();
       if (activityId != null && activityId.length() > 0) {
         postContext = PostContext.SINGLE;
@@ -202,11 +199,6 @@ public class UIActivitiesLoader extends UIContainer {
   }
 
   private void loadNext() throws Exception {
-    int loadingCapacity = (this.loadingCapacity > 5) ? this.loadingCapacity - 5 : this.loadingCapacity;
-    if (currentLoadIndex >= this.loadingCapacity - loadingCapacity) {
-      loadingCapacity = this.loadingCapacity;
-    }
-    //
     currentLoadIndex += loadingCapacity;
     List<ExoSocialActivity> activities = new ArrayList<ExoSocialActivity>(0);
     lastActivitiesLoader = extendContainer.addChild(UIActivitiesLoader.class, null, UIActivitiesLoader.genereateId());
@@ -302,9 +294,6 @@ public class UIActivitiesLoader extends UIContainer {
       RequireJS require = context.getJavascriptManager()
                                  .require("SHARED/social-ui-activities-loader", "activitiesLoader");
       require.addScripts("activitiesLoader.setStatus('" + uiActivitiesLoader.isHasMore() + "');");
-      if (uiActivitiesLoader.hasMore && uiActivitiesLoader.currentLoadIndex < uiActivitiesLoader.loadingCapacity - 5) {
-        require.addScripts("activitiesLoader.processLoadMore();");
-      }
       //
       Utils.resizeHomePage();
     }

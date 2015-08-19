@@ -1,15 +1,17 @@
 (function ($){
   var UIActivityLoader = {
-    delta : 65,    
+    delta : 65,
+    numberOfReqsPerSec : 10,//Perfect range: 5 -> 20
     hasMore: false,
-    loaderButton: null,
+    loaderButton: $('#ActivitiesLoader'),
+    parentContainer : $('#UIActivitiesLoader'),
     scrollBottom : function() {
       return $(document).height() - $(window).scrollTop() - $(window).height();  
     },
     init: function (parentId, hasMore) {
       var me = UIActivityLoader;
       me.hasMore = (hasMore === true || hasMore === 'true');
-      me.loaderButton = $('#ActivitiesLoader');
+      me.parentContainer = $('#' + parentId);
 
       $(document).ready(function() {
         // check onLoad page.
@@ -18,39 +20,23 @@
         }
         $(window).scroll(function(e) {
           var distanceToBottom = me.scrollBottom();
-          var isFirstPage = (me.loaderButton.data('loading-capacity') - $('.activityStream').length >= 0);
-          var delta = (isFirstPage === true) ? 500 : me.delta;
-          var loadAnimation = $('#UIActivitiesLoader').find('div.ActivityIndicator');
+          var loadAnimation = me.parentContainer.find('div.ActivityIndicator');
           if (me.hasMore === true &&
-                distanceToBottom <= delta &&
+                distanceToBottom <= me.delta &&
                   loadAnimation.css("display") === 'none') {
             //
-            var time = (isFirstPage === true) ? 200 : 500;
-            loadAnimation.css('visibility', 'hidden');
-            loadAnimation.stop(true, true).fadeIn(time, function() {
-              setTimeout(function(){loadAnimation.css('visibility', 'visible'); }, 800 - time);
-              //$('div.bottomContainer:last')[0].scrollIntoView(true);
+            loadAnimation.css('visibility', 'hidden').stop(true, true).fadeIn(500, function() {
+              setTimeout(function(){loadAnimation.css('visibility', 'visible'); }, 300);
               var action = me.loaderButton.data('action');
               window.ajaxGet(action, function(data) {
-                $('div.ActivityIndicator').hide();
+                me.parentContainer.find('div.ActivityIndicator').hide();
               });
             });
           }
         });
-        //check if need to load more
-        me.processLoadMore();
         //
         me.processBottomTimeLine();
       });
-    },
-    //check the distance between the last activity and the bottom of screen size 
-    processLoadMore : function() {
-      var mustLoadMore = ($(window).height() - $('div.bottomContainer:last').offset().top > 0);
-      if (mustLoadMore === true) {
-        var t = setTimeout(function() {
-          UIActivityLoader.loaderButton.click();
-        }, 200);
-      }
     },
     setStatus : function(hasMore) {
       var me = UIActivityLoader;
@@ -64,25 +50,33 @@
       var me = UIActivityLoader;
       if (me.hasMore) {
         $('div.activityBottom').hide();
-        //
-        var isShow = $('.activityStream').length - me.loaderButton.data('loading-capacity') >= 0;
-        if(isShow === true) {
-          me.loaderButton.parent().show();
-        }
+        me.loaderButton.parent().show();
       } else {
         $('div.activityBottom').show();
         me.loaderButton.parent().hide();
       }
     },
-    loaddingActivity : function(id) {
+    renderActivity : function(activityItem) {
+      window.ajaxGet(activityItem.data('url') + activityItem.attr('id'), function(data) {
+        activityItem.attr('style', '');
+      });
+    },
+    loadingActivities : function(id) {
+      var me = UIActivityLoader;
       var container = $('#' + id);
       var url = container.find('div.uiActivitiesLoaderURL:first').data('url');
-      container.find('div.activity-loadding').each(function(i) {
-        var item = $(this);
-        window.ajaxGet(url + item.attr('id'), function(data) {
-          item.attr('style', '');
-        });
-      });
+      var items = container.find('div.activity-loadding').data('url', url);
+      var batchDelay = 1000;// 1000ms ~ 1s
+      me.renderActivity(items.eq(0));
+      var index = 1;
+      var interval = window.setInterval(function() {
+        if (index < items.length) {
+          me.renderActivity(items.eq(index));
+        } else {
+          window.clearInterval(interval);
+        }
+        ++index;
+      }, 1000 / me.numberOfReqsPerSec);
     }
   };
   return UIActivityLoader;

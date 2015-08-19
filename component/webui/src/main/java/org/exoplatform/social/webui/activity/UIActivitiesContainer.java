@@ -161,19 +161,9 @@ public class UIActivitiesContainer extends UIContainer {
       return;
     }
 
-//    PortalContainer portalContainer = PortalContainer.getInstance();
-//    UIActivityFactory factory = (UIActivityFactory) portalContainer.getComponentInstanceOfType(UIActivityFactory.class);
-//
-//    for (ExoSocialActivity activity : activityList) {
-//      UIActivityLoader activityLoader = addChild(UIActivityLoader.class, null, "UIActivityLoader" + activity.getId());
-//      factory.addChild(activity, activityLoader);
-//    }
-    
-
     for (String activityId : activityIdList) {
       addChild(UIActivityLoader.class, null, "UIActivityLoader" + activityId);
     }
-
   }
 
   public void addActivity(ExoSocialActivity activity) throws Exception {
@@ -200,7 +190,7 @@ public class UIActivitiesContainer extends UIContainer {
   @Override
   public void processRender(WebuiRequestContext context) throws Exception {
     context.getJavascriptManager().getRequireJS().require("SHARED/social-ui-activities-loader", "activitiesLoader")
-           .addScripts("activitiesLoader.loaddingActivity('" + this.getId() + "');");
+           .addScripts("activitiesLoader.loadingActivities('" + getId() + "');");
     super.processRender(context);
   }
 

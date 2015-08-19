@@ -57,7 +57,7 @@ public class CommentsRealtimeListAccess implements RealtimeListAccess<ExoSocialA
   
   @Override
   public List<String> loadIdsAsList(int index, int limit) {
-    return null;
+    throw new UnsupportedOperationException("Unsupported this method.");
   }
 
   /**
