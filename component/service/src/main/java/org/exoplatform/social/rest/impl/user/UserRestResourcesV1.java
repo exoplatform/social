@@ -104,6 +104,9 @@ public class UserRestResourcesV1 implements UserRestResources {
                            @ApiParam(value = "Size of returned result list.", defaultValue = "false") @QueryParam("returnSize") boolean returnSize,
                            @ApiParam(value = "Expand param : ask for a full representation of a subresource", required = false) @QueryParam("expand") String expand) throws Exception {
 
+    offset = offset > 0 ? offset : RestUtils.getOffset(uriInfo);
+    limit = limit > 0 ? limit : RestUtils.getLimit(uriInfo);
+    
     ProfileFilter filter = new ProfileFilter();
     filter.setName(q == null || q.isEmpty() ? "" : q);
     
@@ -297,6 +300,10 @@ public class UserRestResourcesV1 implements UserRestResources {
                                   @ApiParam(value = "Limit", required = false, defaultValue = "20") @QueryParam("limit") int limit,
                                   @ApiParam(value = "Size of returned result list.", defaultValue = "false") @QueryParam("returnSize") boolean returnSize,
                                   @ApiParam(value = "Expand param : ask for a full representation of a subresource", required = false) @QueryParam("expand") String expand) throws Exception {
+    
+    offset = offset > 0 ? offset : RestUtils.getOffset(uriInfo);
+    limit = limit > 0 ? limit : RestUtils.getLimit(uriInfo);
+    
     Identity target = CommonsUtils.getService(IdentityManager.class).getOrCreateIdentity(OrganizationIdentityProvider.NAME, id, true);
     //Check if the given user exists
     if (target == null) {
@@ -339,6 +346,9 @@ public class UserRestResourcesV1 implements UserRestResources {
                                       @ApiParam(value = "Newer base time to load activity (yyyy-MM-dd HH:mm:ss)", required = false) @QueryParam("after") String after,
                                       @ApiParam(value = "Size of returned result list.", defaultValue = "false") @QueryParam("returnSize") boolean returnSize,
                                       @ApiParam(value = "Expand param : ask for a full representation of a subresource", required = false) @QueryParam("expand") String expand) throws Exception {
+    
+    offset = offset > 0 ? offset : RestUtils.getOffset(uriInfo);
+    limit = limit > 0 ? limit : RestUtils.getLimit(uriInfo);
     
     String authenticatedUser = ConversationState.getCurrent().getIdentity().getUserId();
     //Check if the given user doesn't exist

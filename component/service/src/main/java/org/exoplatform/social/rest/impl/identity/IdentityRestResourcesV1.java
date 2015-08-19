@@ -51,6 +51,7 @@ import org.exoplatform.social.rest.api.EntityBuilder;
 import org.exoplatform.social.rest.api.IdentityRestResources;
 import org.exoplatform.social.rest.api.RestProperties;
 import org.exoplatform.social.rest.api.RestUtils;
+import org.exoplatform.social.rest.api.SocialRest;
 import org.exoplatform.social.rest.entity.CollectionEntity;
 import org.exoplatform.social.rest.entity.DataEntity;
 import org.exoplatform.social.rest.entity.IdentityEntity;
@@ -80,6 +81,9 @@ public class IdentityRestResourcesV1 implements IdentityRestResources {
                                 @ApiParam(value = "Size of returned result list.", defaultValue = "false") @QueryParam("returnSize") boolean returnSize,
                                 @ApiParam(value = "Expand param : ask for a full representation of a subresource", required = false) @QueryParam("expand") String expand) throws Exception {
     try {
+      offset = offset > 0 ? offset : RestUtils.getOffset(uriInfo);
+      limit = limit > 0 ? limit : RestUtils.getLimit(uriInfo);
+      
       IdentityManager identityManager = CommonsUtils.getService(IdentityManager.class);
       String providerId = (type != null && type.equals("space")) ? SpaceIdentityProvider.NAME : OrganizationIdentityProvider.NAME;
       ListAccess<Identity> listAccess = identityManager.getIdentitiesByProfileFilter(providerId, new ProfileFilter(), true);
@@ -256,6 +260,9 @@ public class IdentityRestResourcesV1 implements IdentityRestResources {
                                              @ApiParam(value = "Offset", required = false, defaultValue = "0") @QueryParam("offset") int offset,
                                              @ApiParam(value = "Limit", required = false, defaultValue = "20") @QueryParam("limit") int limit,
                                              @ApiParam(value = "Expand param : ask for a full representation of a subresource", required = false) @QueryParam("expand") String expand) throws Exception {
+    
+    offset = offset > 0 ? offset : RestUtils.getOffset(uriInfo);
+    limit = limit > 0 ? limit : RestUtils.getLimit(uriInfo);
     
     IdentityManager identityManager = CommonsUtils.getService(IdentityManager.class);
     Identity identity = identityManager.getIdentity(id, true);

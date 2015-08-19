@@ -80,6 +80,9 @@ public class RelationshipsRestResourcesV1 implements RelationshipsRestResources 
                                    @ApiParam(value = "Size of returned result list.", defaultValue = "false") @QueryParam("returnSize") boolean returnSize) throws Exception {
 
     //
+    offset = offset > 0 ? offset : RestUtils.getOffset(uriInfo);
+    limit = limit > 0 ? limit : RestUtils.getLimit(uriInfo);
+    
     RelationshipManager relationshipManager = CommonsUtils.getService(RelationshipManager.class);
     Relationship.Type type;
     try {

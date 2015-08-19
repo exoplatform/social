@@ -81,6 +81,9 @@ public class UsersRelationshipsRestResourcesV1 implements UsersRelationshipsRest
                                         @ApiParam(value = "Size of returned result list.", defaultValue = "false") @QueryParam("returnSize") boolean returnSize,
                                         @ApiParam(value = "Expand param : ask for a full representation of a subresource", required = false) @QueryParam("expand") String expand) throws Exception {
     
+    offset = offset > 0 ? offset : RestUtils.getOffset(uriInfo);
+    limit = limit > 0 ? limit : RestUtils.getLimit(uriInfo);
+    
     IdentityManager identityManager = CommonsUtils.getService(IdentityManager.class);
     Identity givenUser = (user == null) ? null : identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, user, true);
     Identity authenticatedUser = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, ConversationState.getCurrent().getIdentity().getUserId(), true);

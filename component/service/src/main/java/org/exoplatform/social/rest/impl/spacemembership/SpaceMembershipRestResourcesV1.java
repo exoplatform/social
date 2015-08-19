@@ -88,6 +88,9 @@ public class SpaceMembershipRestResourcesV1 implements SpaceMembershipRestResour
                                        @ApiParam(value = "Expand param : ask for a full representation of a subresource", required = false) @QueryParam("expand") String expand,
                                        @ApiParam(value = "Size of returned result list.", defaultValue = "false") @QueryParam("returnSize") boolean returnSize) throws Exception {
 
+    offset = offset > 0 ? offset : RestUtils.getOffset(uriInfo);
+    limit = limit > 0 ? limit : RestUtils.getLimit(uriInfo);
+    
     SpaceService spaceService = CommonsUtils.getService(SpaceService.class);
     Space givenSpace = null;
     if (space != null) {

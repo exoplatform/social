@@ -96,6 +96,9 @@ public class SpaceRestResourcesV1 implements SpaceRestResources {
                             @ApiParam(value = "Size of returned result list.", defaultValue = "false") @QueryParam("returnSize") boolean returnSize,
                             @ApiParam(value = "Expand param : ask for a full representation of a subresource", required = false) @QueryParam("expand") String expand) throws Exception {
 
+    offset = offset > 0 ? offset : RestUtils.getOffset(uriInfo);
+    limit = limit > 0 ? limit : RestUtils.getLimit(uriInfo);
+    
     SpaceService spaceService = CommonsUtils.getService(SpaceService.class);
     
     ListAccess<Space> listAccess = null;
@@ -292,6 +295,9 @@ public class SpaceRestResourcesV1 implements SpaceRestResources {
                                   @ApiParam(value = "Size of returned result list.", defaultValue = "false") @QueryParam("returnSize") boolean returnSize,
                                   @ApiParam(value = "Expand param : ask for a full representation of a subresource", required = false) @QueryParam("expand") String expand) throws Exception {
     
+    offset = offset > 0 ? offset : RestUtils.getOffset(uriInfo);
+    limit = limit > 0 ? limit : RestUtils.getLimit(uriInfo);
+    
     String authenticatedUser = ConversationState.getCurrent().getIdentity().getUserId();
     //
     SpaceService spaceService = CommonsUtils.getService(SpaceService.class);
@@ -336,6 +342,9 @@ public class SpaceRestResourcesV1 implements SpaceRestResources {
       @ApiParam(value = "Newer base time to load activity (yyyy-MM-dd HH:mm:ss)", required = false) @QueryParam("after") String after,
       @ApiParam(value = "Size of returned result list.", defaultValue = "false") @QueryParam("returnSize") boolean returnSize,
       @ApiParam(value = "Expand param : ask for a full representation of a subresource", required = false) @QueryParam("expand") String expand) throws Exception {
+    
+    offset = offset > 0 ? offset : RestUtils.getOffset(uriInfo);
+    limit = limit > 0 ? limit : RestUtils.getLimit(uriInfo);
     
     String authenticatedUser = ConversationState.getCurrent().getIdentity().getUserId();
     //
