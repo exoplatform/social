@@ -63,7 +63,7 @@
   
   requireJs.addScripts("activity.hightlightComment('"+ uicomponent.getActivityId() + "');");
 %>
-<div class="uiSocApplication uiUserActivityStreamPortlet" id="$uicomponent.id">
+<div class="uiSocApplication uiUserActivityStreamPortlet uiUserActivityDetail" id="$uicomponent.id">
   <div class="uiTabPane $uiTabClazz">
  	 <div class="uiUserActivitiesContainer">
       <% uicomponent.renderChild(PopupContainer.class); %>
