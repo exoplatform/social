@@ -16,13 +16,11 @@
  */
 package org.exoplatform.social.webui.activity;
 
-import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.LinkedList;
 import java.util.List;
 
 import org.exoplatform.commons.utils.CommonsUtils;
-import org.exoplatform.services.log.ExoLogger;
-import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.manager.ActivityManager;
 import org.exoplatform.social.core.space.model.Space;
@@ -39,8 +37,6 @@ import org.exoplatform.webui.core.UIPortletApplication;
 import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.event.EventListener;
 
-import com.google.caja.util.Lists;
-
 /**
  * UIActivitiesContainer.java
  *
@@ -54,8 +50,6 @@ import com.google.caja.util.Lists;
   }
 )
 public class UIActivitiesContainer extends UIContainer {
-  private static final Log LOG = ExoLogger.getLogger(UIActivitiesContainer.class);
-  
   public static final String ACTIVITY_STREAM_VISITED_PREFIX_COOKIED = "exo_social_activity_stream_%s_visited_%s";
   private static final String ACTIVITIES_NODE = "activities";
   
@@ -88,7 +82,7 @@ public class UIActivitiesContainer extends UIContainer {
 
   public UIActivitiesContainer setActivityList(List<ExoSocialActivity> activityList) throws Exception {
     this.activityList = activityList;
-    this.activityIdList = Lists.newLinkedList();
+    this.activityIdList = new LinkedList<String>();
     for (ExoSocialActivity activity : activityList) {
       activityIdList.add(activity.getId());
     }
@@ -99,6 +93,14 @@ public class UIActivitiesContainer extends UIContainer {
   
   public List<String> getActivityIdList() {
     return activityIdList;
+  }
+
+  public void addFirstActivityId(String activityId) {
+    if (activityIdList.contains(activityId)) {
+      activityIdList.remove(activityId);
+    }
+    //
+    ((LinkedList<String>) activityIdList).addFirst(activityId);
   }
 
   public UIActivitiesContainer setActivityIdList(List<String> activityIdList) throws Exception {
@@ -146,7 +148,7 @@ public class UIActivitiesContainer extends UIContainer {
   public boolean isOnMyActivities() {
     return (Utils.getSelectedNode() != null && Utils.getSelectedNode().startsWith(ACTIVITIES_NODE));
   }
-  
+
   /**
    * Initializes ui component child
    *
@@ -168,17 +170,23 @@ public class UIActivitiesContainer extends UIContainer {
 
   public void addActivity(ExoSocialActivity activity) throws Exception {
     if (activityList == null) {
-      activityList = new ArrayList<ExoSocialActivity>();
+      activityList = new LinkedList<ExoSocialActivity>();
     }
     activityList.add(0, activity);
+    addFirstActivityId(activity.getId());
     init();
   }
 
   public void removeActivity(ExoSocialActivity removedActivity) {
-    for (ExoSocialActivity activity : activityList) {
-      if (activity.getId().equals(removedActivity.getId())) {
-        activityList.remove(activity);
-        break;
+    if(activityIdList != null) {
+      activityIdList.remove(removedActivity.getId());
+    }
+    if(activityList != null) {
+      for (ExoSocialActivity activity : activityList) {
+        if (activity.getId().equals(removedActivity.getId())) {
+          activityList.remove(activity);
+          break;
+        }
       }
     }
   }
@@ -199,7 +207,7 @@ public class UIActivitiesContainer extends UIContainer {
   }
 
   protected List<String> getChildrenId() {
-    List<String> ids = Lists.newLinkedList();
+    List<String> ids = new LinkedList<String>();
     List<UIComponent> children = getChildren();
     for (UIComponent uiComponent : children) {
       ids.add(uiComponent.getId());
