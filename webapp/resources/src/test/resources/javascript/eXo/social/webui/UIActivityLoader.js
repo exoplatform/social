@@ -65,6 +65,9 @@
       var me = UIActivityLoader;
       var container = $('#' + id);
       var url = container.find('div.uiActivitiesLoaderURL:first').data('url');
+      if (url === undefined || url.length === 0) {
+        return;
+      }
       var items = container.find('div.activity-loadding').data('url', url);
       var batchDelay = 1000;// 1000ms ~ 1s
       me.renderActivity(items.eq(0));
@@ -76,7 +79,7 @@
           window.clearInterval(interval);
         }
         ++index;
-      }, 1000 / me.numberOfReqsPerSec);
+      }, batchDelay / me.numberOfReqsPerSec);
     }
   };
   return UIActivityLoader;

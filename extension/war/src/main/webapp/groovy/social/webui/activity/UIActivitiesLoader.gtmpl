@@ -12,7 +12,6 @@
     requireJS.addScripts("activity.displayLikes();");
     requireJS.addScripts("jq(window).resize(function() {activity.displayLikes();});");
   }
-  
   boolean hasActivities = uicomponent.getActivitiesContainer().getChildren().size() > 0;
 
   String statusTitle = StringEscapeUtils.escapeJavaScript(_ctx.appRes("UserProfilePopup.label.Loading"));

@@ -808,14 +808,19 @@ public class BaseUIActivity extends UIForm {
       }
       Utils.getActivityManager().deleteActivity(activityId);
       UIActivitiesContainer activitiesContainer = uiActivity.getAncestorOfType(UIActivitiesContainer.class);
-      activitiesContainer.removeChildById("UIActivityLoader" + uiActivity.getId());
       activitiesContainer.removeActivity(uiActivity.getActivity());
-      if (activitiesContainer.getActivityList().size() == 0) {
+      activitiesContainer.removeChildById("UIActivityLoader" + activityId);
+      boolean isEmptyListActivity = (activitiesContainer.getActivityIdList().size() == 0) && (activitiesContainer.getActivityList().size() == 0);
+      //
+      if (isEmptyListActivity) {
         event.getRequestContext().addUIComponentToUpdateByAjax(activitiesContainer.getParent().getParent());
       } else {
+        AbstractActivitiesDisplay uiActivitiesDisplay = activitiesContainer.getAncestorOfType(AbstractActivitiesDisplay.class);
+        activitiesContainer.setRenderFull(true, true);
+        uiActivitiesDisplay.setRenderFull(true);
         event.getRequestContext().addUIComponentToUpdateByAjax(activitiesContainer.getParent());
       }
-      
+      //
       Utils.clearUserProfilePopup();
       Utils.resizeHomePage();
     }

@@ -2,8 +2,11 @@
 <% 
    List children = uicomponent.getChildrenId();
 	 if (children.size() > 0) {
-     for(uiActivityId in children) {
-       String activityId = uiActivityId.replace("UIActivityLoader", "");
+	   if(uicomponent.isRenderFull) {
+		   uicomponent.renderChildren();
+	   } else {
+	     for(uiActivityId in children) {
+	       String activityId = uiActivityId.replace("UIActivityLoader", "");
 %>
 	<div class="uiActivityLoader activity-loadding" style="position:relative;" id="$uiActivityId">
 		<div class="activityStream uiDefaultActivity" id="activityContainer${activityId}">
@@ -27,12 +30,13 @@
 		  </div>
 		</div>
 	</div>
+	<div class="uiActivitiesLoaderURL" data-url="<%=uicomponent.getLoadActivityUrl()%>"></div>
 <%
+			 }
      }
      print("<div class=\"uiActivitiesLoaderURL\" data-url=\"" + uicomponent.getLoadActivityUrl() + "\"></div>");
    } else {
 %>
 	<div class="NoActivity"><%=_ctx.appRes("UIActivitiesLoader.label.Not_Any_Updates_Posted_Yet")%></div>
 <% } %>
-
 </div>

@@ -68,7 +68,6 @@ public class UIDefaultActivityComposer extends UIActivityComposer {
                                    null);
       activity.setType(UIDefaultActivity.ACTIVITY_TYPE);
       Utils.getActivityManager().saveActivityNoReturn(spaceIdentity, activity);
-      uiDisplaySpaceActivities.init();
     } else if (postContext == PostContext.USER) {
       UIUserActivitiesDisplay uiUserActivitiesDisplay = (UIUserActivitiesDisplay) getActivityDisplay();
       Identity ownerIdentity = Utils.getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME,

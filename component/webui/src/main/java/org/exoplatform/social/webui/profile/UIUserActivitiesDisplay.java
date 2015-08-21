@@ -36,6 +36,7 @@ import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvide
 import org.exoplatform.social.core.manager.ActivityManager;
 import org.exoplatform.social.webui.URLUtils;
 import org.exoplatform.social.webui.Utils;
+import org.exoplatform.social.webui.activity.AbstractActivitiesDisplay;
 import org.exoplatform.social.webui.activity.UIActivitiesContainer;
 import org.exoplatform.social.webui.activity.UIActivitiesLoader;
 import org.exoplatform.social.webui.composer.UIComposer.PostContext;
@@ -43,7 +44,6 @@ import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.ComponentConfigs;
 import org.exoplatform.webui.config.annotation.EventConfig;
-import org.exoplatform.webui.core.UIContainer;
 import org.exoplatform.webui.core.UIDropDownControl;
 import org.exoplatform.webui.core.model.SelectItemOption;
 import org.exoplatform.webui.event.Event;
@@ -72,7 +72,7 @@ import org.exoplatform.webui.event.EventListener;
     }
   )
 })
-public class UIUserActivitiesDisplay extends UIContainer {
+public class UIUserActivitiesDisplay extends AbstractActivitiesDisplay {
 
   static private final Log      LOG = ExoLogger.getLogger(UIUserActivitiesDisplay.class);
   private static final int      ACTIVITY_PER_PAGE = 20;
@@ -211,6 +211,7 @@ public class UIUserActivitiesDisplay extends UIContainer {
     synchronized (locker) {
       removeChild(UIActivitiesLoader.class);
       activitiesLoader = addChild(UIActivitiesLoader.class, null, "UIActivitiesLoader");
+      activitiesLoader.getChild(UIActivitiesContainer.class).setRenderFull(isRenderFull(), true);
     }
     //
     String activityId = Utils.getActivityID();
