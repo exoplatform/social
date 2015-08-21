@@ -13,5 +13,6 @@ public abstract class AbstractActivitiesDisplay extends UIContainer {
     this.isRenderFull = isRenderFull;
   }
 
-  public abstract void init() throws Exception;
+  public void init() throws Exception {
+  }
 }

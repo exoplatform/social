@@ -16,11 +16,13 @@
  */
 package org.exoplatform.social.webui.composer;
 
+import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.web.application.ApplicationMessage;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.core.UIApplication;
 import org.exoplatform.webui.core.UIComponent;
 import org.exoplatform.webui.core.UIContainer;
+import org.exoplatform.webui.core.UIPortletApplication;
 import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.event.EventListener;
 
@@ -86,12 +88,12 @@ public abstract class UIActivityComposer extends UIContainer {
     return activityComposerManager;
   }
 
-  public void postActivity(UIComposer.PostContext postContext, UIComponent source,
-                           WebuiRequestContext requestContext, String postedMessage) throws Exception {
-    onPostActivity(postContext, source, requestContext, postedMessage);
+  public ExoSocialActivity postActivity(UIComposer.PostContext postContext, String postedMessage) throws Exception {
+    ExoSocialActivity activity = onPostActivity(postContext, postedMessage);
     setReadyForPostingActivity(false);
     setDisplayed(false);
     activityComposerManager.setDefaultActivityComposer();
+    return activity;
   }
 
   public static class CloseActionListener extends EventListener<UIActivityComposer> {
@@ -143,6 +145,12 @@ public abstract class UIActivityComposer extends UIContainer {
 
       event.getRequestContext().addUIComponentToUpdateByAjax(composer);
     }
+  }
+
+  protected ExoSocialActivity onPostActivity(UIComposer.PostContext postContext, String postedMessage) throws Exception {
+    UIComposer uiComposer = getAncestorOfType(UIPortletApplication.class).findFirstComponentOfType(UIComposer.class);
+    onPostActivity(postContext, uiComposer, (WebuiRequestContext) WebuiRequestContext.getCurrentInstance(), postedMessage);
+    return null;
   }
 
   protected abstract void onPostActivity(UIComposer.PostContext postContext, UIComponent source,

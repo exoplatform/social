@@ -629,7 +629,7 @@ public class StorageUtils {
    * @return list of ids
    */
   public static List<String> getIds(List<ExoSocialActivity> activities) {
-    List<String> ids = new ArrayList<String>();
+    List<String> ids = new LinkedList<String>();
     for (ExoSocialActivity a : activities) {
       ids.add(a.getId());
     }

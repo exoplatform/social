@@ -1,4 +1,4 @@
-<div class="$uicomponent.id" id="$uicomponent.id">
+<div class="$uicomponent.id uiActivitiesContainer" id="$uicomponent.id">
 <% 
    List children = uicomponent.getChildrenId();
 	 if (children.size() > 0) {

@@ -19,13 +19,22 @@ package org.exoplatform.social.webui.composer;
 
 import java.util.List;
 
+import org.exoplatform.commons.utils.CommonsUtils;
 import org.exoplatform.container.PortalContainer;
+import org.exoplatform.social.core.activity.model.ExoSocialActivity;
+import org.exoplatform.social.core.manager.ActivityManager;
 import org.exoplatform.social.webui.Utils;
+import org.exoplatform.social.webui.activity.BaseUIActivity;
+import org.exoplatform.social.webui.activity.UIActivitiesContainer;
+import org.exoplatform.social.webui.activity.UIActivitiesLoader;
+import org.exoplatform.social.webui.activity.UIActivityFactory;
+import org.exoplatform.social.webui.activity.UIActivityLoader;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.application.portlet.PortletRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.EventConfig;
 import org.exoplatform.webui.core.UIContainer;
+import org.exoplatform.webui.core.UIPortletApplication;
 import org.exoplatform.webui.core.lifecycle.UIFormLifecycle;
 import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.event.EventListener;
@@ -187,6 +196,7 @@ public class UIComposer extends UIForm {
       if ( activityComposer.isDisplayed() && !activityComposer.isReadyForPostingActivity() ) {
         activityComposerManager.setDefaultActivityComposer();
       }
+      activityComposer = activityComposerManager.getCurrentActivityComposer();
       
       //get posted message
       UIFormTextAreaInput textAreaInput = uiComposer.getUIFormTextAreaInput(COMPOSER_TEXT_AREA_INPUT);
@@ -198,13 +208,32 @@ public class UIComposer extends UIForm {
                  uiComposer.getLabel("What_Are_You_Working_On").equals(message)) ? "" : message;
 
       //post activity via the current activity composer
-      activityComposerManager.getCurrentActivityComposer().postActivity(postContext, uiComposer, event.getRequestContext(), message);
+      ExoSocialActivity activity = activityComposer.postActivity(postContext, message);
       
       //clear client cache
       Utils.clearUserProfilePopup();
       
       Utils.initUserProfilePopup(uiComposer.getId());
       Utils.resizeHomePage();
+      //
+      if(activity != null) {
+        //
+        WebuiRequestContext context = event.getRequestContext();
+        UIPortletApplication uiPortlet = uiComposer.getAncestorOfType(UIPortletApplication.class);
+        
+        if(uiPortlet.findFirstComponentOfType(BaseUIActivity.class) == null) {
+          context.addUIComponentToUpdateByAjax(uiPortlet);
+        } else {
+          UIActivitiesContainer uiActivitiesContainer = uiPortlet.findFirstComponentOfType(UIActivitiesContainer.class);
+          //
+          uiActivitiesContainer.addFirstActivityId(activity.getId());
+          UIActivityLoader uiActivityLoader = uiActivitiesContainer.addChild(UIActivityLoader.class, null, "UIActivityLoader" + activity.getId());
+          //
+          context.getJavascriptManager().getRequireJS().require("SHARED/social-ui-activities-loader", "activitiesLoader")
+                 .addScripts("activitiesLoader.loadingActivity('" + uiActivityLoader.getId() + "');");
+          context.addUIComponentToUpdateByAjax(uiComposer);
+        }
+      }
     }
   }
 }

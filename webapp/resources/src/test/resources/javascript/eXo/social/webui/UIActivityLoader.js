@@ -80,6 +80,26 @@
         }
         ++index;
       }, batchDelay / me.numberOfReqsPerSec);
+    },
+    loadingActivity : function(activityItemId) {
+      var activityContainer = UIActivityLoader.parentContainer.find('div.uiActivitiesContainer:first');
+      if($('#welcomeActivity').length === 0) {
+        var url = activityContainer.find('div.uiActivitiesLoaderURL:first').data('url');
+        if(activityContainer.find('#' + activityItemId).length <= 0 && url && url.length > 0) {
+          var activityItem = $('<div class="uiActivityLoader activity-loadding" style="position:relative;" id="' + activityItemId + '"></div>');
+          activityItem.data('url', url);
+          //
+          activityContainer.prepend(activityItem);
+          if(UIActivityLoader.hasMore) {
+            //Remove last
+            UIActivityLoader.parentContainer.find('.uiActivitiesContainer:last').find('.uiActivityLoader:last').remove();
+          }
+          //
+          UIActivityLoader.renderActivity(activityItem);
+        }
+      } else {
+        // reload UIActivitiesLoader;
+      }
     }
   };
   return UIActivityLoader;
