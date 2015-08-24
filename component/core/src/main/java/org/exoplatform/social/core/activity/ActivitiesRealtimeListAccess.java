@@ -28,6 +28,8 @@ import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.storage.api.ActivityStorage;
 import org.exoplatform.social.core.storage.impl.StorageUtils;
 
+import com.google.caja.util.Lists;
+
 /**
  * The real time list access for activities.
  *
@@ -156,9 +158,9 @@ public class ActivitiesRealtimeListAccess implements RealtimeListAccess<ExoSocia
     case SPACE_ACTIVITIES: {
       return activityStorage.getSpaceActivityIds(ownerIdentity, index, limit);
     }
+    default:
+      return Lists.newLinkedList();
     }
-    return Collections.emptyList();
-
   }
 
   /**

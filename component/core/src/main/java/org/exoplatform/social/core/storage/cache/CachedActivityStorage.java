@@ -18,6 +18,7 @@
 package org.exoplatform.social.core.storage.cache;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.SortedSet;
@@ -557,7 +558,7 @@ public class CachedActivityStorage implements ActivityStorage {
   }
   
   private List<String> buildActivityIds(ListActivitiesData data) {
-    List<String> ids = new ArrayList<String>();
+    List<String> ids = new LinkedList<String>();
     for (ActivityKey k : data.getIds()) {
       ids.add(k.getId());
     }
