@@ -243,12 +243,11 @@ var UIActivity = {
     var result = anchor.match(anchor_pattern);
     if (result != null) {
       var commentId = result[1];
-      var actionComment = '#commentContainer' + commentId;
-      $(actionComment).css("background-color","#f0f0f0");
+      $('#commentContainer' + commentId).css("background-color","#f0f0f0");
       if (isReply) {
         this.replyByURL(activityId);
       } else {
-        var obj = document.getElementById('commentContainer'+ commentId);
+        var obj = document.getElementById('commentContainer' + commentId);
         if (obj) {
           obj.scrollIntoView(true);
         }

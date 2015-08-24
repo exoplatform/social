@@ -853,6 +853,15 @@ public class BaseUIActivity extends UIForm {
     try {
       Utils.initUserProfilePopup(getId());
       super.processRender(context);
+      String focusActivityId = Utils.getActivityID();
+      if (getActivity().getId().equals(focusActivityId)) {
+        context.getJavascriptManager().require("SHARED/social-ui-activity", "activity")
+               .addScripts("setTimeout(function() { " +
+                            "activity.hightlightComment('"+ focusActivityId + "');" +
+                            ((Utils.isFocusCommentBox()) ? "activity.replyByURL('"+ focusActivityId + "');" : "") +
+                            ((Utils.isExpandLikers()) ? "activity.loadLikersByURL();" : "") +
+                           "}, 100);");
+      }
     } catch (Exception e) {
       LOG.error(e.getMessage(), e);
     }

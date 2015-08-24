@@ -57,9 +57,21 @@
       }
     },
     renderActivity : function(activityItem) {
-      window.ajaxGet(activityItem.data('url') + activityItem.attr('id'), function(data) {
+      var url = activityItem.data('url') + activityItem.attr('id') + ((UIActivityLoader.getRequestParam().length > 0) ? UIActivityLoader.getRequestParam() : "")
+      window.ajaxGet(url, function(data) {
         activityItem.attr('style', '');
       });
+    },
+    getRequestParam : function() {
+      if (UIActivityLoader.requestParams === undefined) {
+        var h = window.location.href;
+        if(h.indexOf('?') > 0) {
+          UIActivityLoader.requestParams = '&' + h.substring(h.indexOf('?') + 1);
+        } else {
+          UIActivityLoader.requestParams = "";
+        }
+      }
+      return UIActivityLoader.requestParams;
     },
     loadingActivities : function(id) {
       var me = UIActivityLoader;

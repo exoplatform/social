@@ -55,13 +55,6 @@
     requireJs.addScripts("activity.setPageTitle(window.encodeURIComponent(\""+ activityTitle.replace("\"", "\\42") +"\").replace(/'/, '%27'));");
   }
   
-  if (Utils.isFocusCommentBox()) {
-    requireJs.addScripts("activity.replyByURL('"+ uicomponent.getActivityId() + "');");
-  } else if (Utils.isExpandLikers()) {
-    requireJs.addScripts("activity.loadLikersByURL();");
-  } 
-  
-  requireJs.addScripts("activity.hightlightComment('"+ uicomponent.getActivityId() + "');");
 %>
 <div class="uiSocApplication uiUserActivityStreamPortlet uiUserActivityDetail" id="$uicomponent.id">
   <div class="uiTabPane $uiTabClazz">
