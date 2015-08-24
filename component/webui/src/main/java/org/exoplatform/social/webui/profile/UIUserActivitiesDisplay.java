@@ -306,9 +306,13 @@ public class UIUserActivitiesDisplay extends AbstractActivitiesDisplay {
   }
   
   protected boolean hasActivities() {
-    UIActivitiesLoader uiActivitiesLoader = getChild(UIActivitiesLoader.class);
-    UIActivitiesContainer activitiesContainer = uiActivitiesLoader.getChild(UIActivitiesContainer.class);
-    return activitiesContainer.getChildren().size() > 0; 
+    try {
+      UIActivitiesLoader uiActivitiesLoader = getChild(UIActivitiesLoader.class);
+      UIActivitiesContainer activitiesContainer = uiActivitiesLoader.getChild(UIActivitiesContainer.class);
+      return (activitiesContainer != null && activitiesContainer.getChildren().size() > 0);
+    } catch (Exception e) {
+      return false;
+    }
   }
   
   public static class ChangeOptionActionListener extends EventListener<UIDropDownControl> {
