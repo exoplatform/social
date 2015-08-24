@@ -21,6 +21,7 @@ import java.util.Calendar;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.exoplatform.commons.utils.CommonsUtils;
 import org.exoplatform.portal.application.PortalRequestContext;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
@@ -187,7 +188,7 @@ public class UIActivitiesContainer extends UIContainer {
     }
     ActivityManager activityManager = getApplicationComponent(ActivityManager.class);
     for (String activityId : activityIdList) {
-      UIActivityLoader uiActivityLoader = addChild(UIActivityLoader.class, null, "UIActivityLoader" + activityId);
+      UIActivityLoader uiActivityLoader = addChild(UIActivityLoader.class, null, UIActivityLoader.buildComponentId(activityId));
       if (isRenderFull()) {
         UIActivityFactory factory = CommonsUtils.getService(UIActivityFactory.class);
         factory.addChild(activityManager.getActivity(activityId), uiActivityLoader);
@@ -230,7 +231,7 @@ public class UIActivitiesContainer extends UIContainer {
   }
 
   protected String getLoadActivityUrl() throws Exception {
-    return event("LoadActivity").replace("javascript:ajaxGet('", "").replace("')", "&" + OBJECTID + "=");
+    return event("LoadActivity").replace("javascript:ajaxGet('", StringUtils.EMPTY).replace("')", "&" + OBJECTID + "=");
   }
 
   protected List<String> getChildrenId() {
@@ -251,26 +252,22 @@ public class UIActivitiesContainer extends UIContainer {
         ((PortalRequestContext) event.getRequestContext().getParentAppRequestContext()).ignoreAJAXUpdateOnPortlets(true);
       }
       //
-      String activityId = uiActivityId.replace("UIActivityLoader", "");
+      String activityId = uiActivityId.replace(UIActivityLoader.COMPONENT_ID, StringUtils.EMPTY);
       ExoSocialActivity activity = CommonsUtils.getService(ActivityManager.class).getActivity(activityId);
       //
       UIActivityLoader uiActivityLoader = uiActivitiesContainer.getChildById(uiActivityId);
+      if (uiActivityLoader != null) {
+        uiActivitiesContainer.removeChildById(uiActivityId);
+      }
       if (activity != null) {
-        if (uiActivityLoader == null) {
-          uiActivityLoader = uiActivitiesContainer.addChild(UIActivityLoader.class, null, "UIActivityLoader" + activityId);
-        } else if (uiActivityLoader.getChildren().size() > 0) {
-          uiActivityLoader.removeChild(BaseUIActivity.class);
-        }
+        uiActivityLoader = uiActivitiesContainer.addChild(UIActivityLoader.class, null, UIActivityLoader.buildComponentId(activityId));
         UIActivityFactory factory = CommonsUtils.getService(UIActivityFactory.class);
         factory.addChild(activity, uiActivityLoader);
         event.getRequestContext().addUIComponentToUpdateByAjax(uiActivityLoader);
       } else {
-        if (uiActivityLoader != null) {
-          uiActivitiesContainer.removeChildById(uiActivityLoader.getId());
-          activity = new ExoSocialActivityImpl();
-          activity.setId(activityId);
-          uiActivitiesContainer.removeActivity(activity);
-        }
+        activity = new ExoSocialActivityImpl();
+        activity.setId(activityId);
+        uiActivitiesContainer.removeActivity(activity);
         event.getRequestContext().addUIComponentToUpdateByAjax(uiActivitiesContainer.getParent());
       }
     }

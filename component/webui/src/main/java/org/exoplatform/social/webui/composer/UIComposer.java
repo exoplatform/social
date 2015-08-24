@@ -19,15 +19,11 @@ package org.exoplatform.social.webui.composer;
 
 import java.util.List;
 
-import org.exoplatform.commons.utils.CommonsUtils;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
-import org.exoplatform.social.core.manager.ActivityManager;
 import org.exoplatform.social.webui.Utils;
 import org.exoplatform.social.webui.activity.BaseUIActivity;
 import org.exoplatform.social.webui.activity.UIActivitiesContainer;
-import org.exoplatform.social.webui.activity.UIActivitiesLoader;
-import org.exoplatform.social.webui.activity.UIActivityFactory;
 import org.exoplatform.social.webui.activity.UIActivityLoader;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.application.portlet.PortletRequestContext;
@@ -227,10 +223,11 @@ public class UIComposer extends UIForm {
           UIActivitiesContainer uiActivitiesContainer = uiPortlet.findFirstComponentOfType(UIActivitiesContainer.class);
           //
           uiActivitiesContainer.addFirstActivityId(activity.getId());
-          UIActivityLoader uiActivityLoader = uiActivitiesContainer.addChild(UIActivityLoader.class, null, "UIActivityLoader" + activity.getId());
+          UIActivityLoader uiActivityLoader = uiActivitiesContainer.addChild(UIActivityLoader.class, null,
+                                                                             UIActivityLoader.buildComponentId(activity.getId()));
           //
           context.getJavascriptManager().getRequireJS().require("SHARED/social-ui-activities-loader", "activitiesLoader")
-                 .addScripts("activitiesLoader.loadingActivity('" + uiActivityLoader.getId() + "');");
+                 .addScripts("activitiesLoader.addTopActivity('" + uiActivityLoader.getId() + "');");
           context.addUIComponentToUpdateByAjax(uiComposer);
         }
       }

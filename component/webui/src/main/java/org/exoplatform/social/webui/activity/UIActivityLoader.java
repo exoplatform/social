@@ -10,6 +10,7 @@ import org.exoplatform.webui.core.lifecycle.UIContainerLifecycle;
 @ComponentConfig(lifecycle = UIContainerLifecycle.class)
 @Serialized
 public class UIActivityLoader extends UIContainer {
+  public static String COMPONENT_ID = "UIActivityLoader";
   public UIActivityLoader() {
   }
 
@@ -23,5 +24,9 @@ public class UIActivityLoader extends UIContainer {
     writer.append("<div class=\"uiActivityLoader\" id=\"").append(getId()).append("\">");
     renderChildren(context);
     writer.append("</div>");
+  }
+
+  public static String buildComponentId(String activityId) {
+    return COMPONENT_ID + activityId;
   }
 }

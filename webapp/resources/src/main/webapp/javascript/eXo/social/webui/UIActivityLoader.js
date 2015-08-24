@@ -93,7 +93,7 @@
         ++index;
       }, batchDelay / me.numberOfReqsPerSec);
     },
-    loadingActivity : function(activityItemId) {
+    addTopActivity : function(activityItemId) {
       var activityContainer = UIActivityLoader.parentContainer.find('div.uiActivitiesContainer:first');
       if($('#welcomeActivity').length === 0) {
         var url = activityContainer.find('div.uiActivitiesLoaderURL:first').data('url');
@@ -109,8 +109,6 @@
           //
           UIActivityLoader.renderActivity(activityItem);
         }
-      } else {
-        // reload UIActivitiesLoader;
       }
     }
   };

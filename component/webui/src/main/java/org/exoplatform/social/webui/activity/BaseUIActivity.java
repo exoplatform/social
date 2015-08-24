@@ -809,7 +809,7 @@ public class BaseUIActivity extends UIForm {
       Utils.getActivityManager().deleteActivity(activityId);
       UIActivitiesContainer activitiesContainer = uiActivity.getAncestorOfType(UIActivitiesContainer.class);
       activitiesContainer.removeActivity(uiActivity.getActivity());
-      activitiesContainer.removeChildById("UIActivityLoader" + activityId);
+      activitiesContainer.removeChildById(UIActivityLoader.buildComponentId(activityId));
       boolean isEmptyListActivity = (activitiesContainer.getActivityIdList().size() == 0) && (activitiesContainer.getActivityList().size() == 0);
       //
       if (isEmptyListActivity) {
@@ -818,7 +818,7 @@ public class BaseUIActivity extends UIForm {
         AbstractActivitiesDisplay uiActivitiesDisplay = activitiesContainer.getAncestorOfType(AbstractActivitiesDisplay.class);
         activitiesContainer.setRenderFull(true, true);
         uiActivitiesDisplay.setRenderFull(true);
-        event.getRequestContext().addUIComponentToUpdateByAjax(activitiesContainer.getParent());
+        event.getRequestContext().addUIComponentToUpdateByAjax(uiActivitiesDisplay);
       }
       //
       Utils.clearUserProfilePopup();
