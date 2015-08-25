@@ -227,7 +227,7 @@ public class UIComposer extends UIForm {
                                                                              UIActivityLoader.buildComponentId(activity.getId()));
           //
           context.getJavascriptManager().getRequireJS().require("SHARED/social-ui-activities-loader", "activitiesLoader")
-                 .addScripts("activitiesLoader.addTopActivity('" + uiActivityLoader.getId() + "');");
+                 .addScripts("activitiesLoader.addTop('" + uiActivityLoader.getId() + "');");
           context.addUIComponentToUpdateByAjax(uiComposer);
         }
       }

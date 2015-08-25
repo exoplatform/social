@@ -57,12 +57,26 @@
       }
     },
     renderActivity : function(activityItem) {
-      window.ajaxGet(activityItem.data('url') + activityItem.attr('id'), function(data) {
+      var url = activityItem.data('url') + activityItem.attr('id') + ((UIActivityLoader.getRequestParam().length > 0) ? UIActivityLoader.getRequestParam() : "")
+      window.ajaxGet(url, function(data) {
         activityItem.attr('style', '');
       });
     },
+    getRequestParam : function() {
+      var me = UIActivityLoader;
+      if (me.requestParams === undefined || me.requestParams === null) {
+        var h = window.location.href;
+        if(h.indexOf('?') > 0) {
+          me.requestParams = '&' + h.substring(h.indexOf('?') + 1);
+        } else {
+          me.requestParams = "";
+        }
+      }
+      return me.requestParams;
+    },
     loadingActivities : function(id) {
       var me = UIActivityLoader;
+      me.requestParams = null;
       var container = $('#' + id);
       var url = container.find('div.uiActivitiesLoaderURL:first').data('url');
       if (url === undefined || url.length === 0) {
@@ -81,7 +95,7 @@
         ++index;
       }, batchDelay / me.numberOfReqsPerSec);
     },
-    loadingActivity : function(activityItemId) {
+    addTop : function(activityItemId) {
       var activityContainer = UIActivityLoader.parentContainer.find('div.uiActivitiesContainer:first');
       if($('#welcomeActivity').length === 0) {
         var url = activityContainer.find('div.uiActivitiesLoaderURL:first').data('url');
@@ -90,6 +104,7 @@
           activityItem.data('url', url);
           //
           activityContainer.prepend(activityItem);
+          UIActivityLoader.requestParams = null;
           if(UIActivityLoader.hasMore) {
             //Remove last
             UIActivityLoader.parentContainer.find('.uiActivitiesContainer:last').find('.uiActivityLoader:last').remove();
@@ -97,8 +112,6 @@
           //
           UIActivityLoader.renderActivity(activityItem);
         }
-      } else {
-        // reload UIActivitiesLoader;
       }
     }
   };

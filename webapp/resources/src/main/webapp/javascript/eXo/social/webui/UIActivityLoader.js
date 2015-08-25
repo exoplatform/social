@@ -63,18 +63,20 @@
       });
     },
     getRequestParam : function() {
-      if (UIActivityLoader.requestParams === undefined) {
+      var me = UIActivityLoader;
+      if (me.requestParams === undefined || me.requestParams === null) {
         var h = window.location.href;
         if(h.indexOf('?') > 0) {
-          UIActivityLoader.requestParams = '&' + h.substring(h.indexOf('?') + 1);
+          me.requestParams = '&' + h.substring(h.indexOf('?') + 1);
         } else {
-          UIActivityLoader.requestParams = "";
+          me.requestParams = "";
         }
       }
-      return UIActivityLoader.requestParams;
+      return me.requestParams;
     },
     loadingActivities : function(id) {
       var me = UIActivityLoader;
+      me.requestParams = null;
       var container = $('#' + id);
       var url = container.find('div.uiActivitiesLoaderURL:first').data('url');
       if (url === undefined || url.length === 0) {
@@ -93,7 +95,7 @@
         ++index;
       }, batchDelay / me.numberOfReqsPerSec);
     },
-    addTopActivity : function(activityItemId) {
+    addTop : function(activityItemId) {
       var activityContainer = UIActivityLoader.parentContainer.find('div.uiActivitiesContainer:first');
       if($('#welcomeActivity').length === 0) {
         var url = activityContainer.find('div.uiActivitiesLoaderURL:first').data('url');
@@ -102,6 +104,7 @@
           activityItem.data('url', url);
           //
           activityContainer.prepend(activityItem);
+          UIActivityLoader.requestParams = null;
           if(UIActivityLoader.hasMore) {
             //Remove last
             UIActivityLoader.parentContainer.find('.uiActivitiesContainer:last').find('.uiActivityLoader:last').remove();
