@@ -32,7 +32,6 @@
   def requireJs = _ctx.getRequestContext().getJavascriptManager().getRequireJS();
   requireJs.require("SHARED/socialUtil", "socialUtil").require("SHARED/social-ui-activity", "activity")
            .addScripts("socialUtil.addfillUpFreeSpace('" + uicomponent.id + "');");
-  requireJs.addScripts("activity.focusToComment();");
   uicomponent.refresh();
   String uiTabClazz = (Utils.isHomePage() == true) ? "uiTabPaneHomePage" : "";
   

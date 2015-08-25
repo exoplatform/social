@@ -242,17 +242,19 @@ var UIActivity = {
     var anchor_pattern = "#comment-([\\w|/]+|)";
     var result = anchor.match(anchor_pattern);
     if (result != null) {
-      var commentId = result[1];
-      var actionComment = '#commentContainer' + commentId;
-      $(actionComment).css("background-color","#f0f0f0");
+      var jcomment = $('#commentContainer' + result[1]).addClass('focus');
       if (isReply) {
         this.replyByURL(activityId);
-      } else {
-        var obj = document.getElementById('commentContainer'+ commentId);
-        if (obj) {
-          obj.scrollIntoView(true);
-        }
+      } else if (jcomment.length > 0) {
+        jcomment[0].scrollIntoView(true);
       }
+    }
+  },
+
+  focusToComment : function() {  
+    var comment = $('#commentContainer' + $.getQuery('commentId'));
+    if(comment.length > 0) {
+      comment.addClass('focus')[0].scrollIntoView(true);
     }
   },
 

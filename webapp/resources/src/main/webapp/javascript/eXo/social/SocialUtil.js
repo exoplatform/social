@@ -52,10 +52,9 @@
       var regex = new RegExp( expr );
       var results = regex.exec( window.location.href );
       if( results !== null ) {
-          return results[1];
           return decodeURIComponent(results[1].replace(/\+/g, " "));
       } else {
-          return false;
+          return "";
       }
   };
 

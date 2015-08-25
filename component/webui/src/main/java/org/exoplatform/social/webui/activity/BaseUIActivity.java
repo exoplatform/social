@@ -858,6 +858,7 @@ public class BaseUIActivity extends UIForm {
         context.getJavascriptManager().require("SHARED/social-ui-activity", "activity")
                .addScripts("setTimeout(function() { " +
                             "activity.hightlightComment('"+ focusActivityId + "');" +
+                            "activity.focusToComment();" +
                             ((Utils.isFocusCommentBox()) ? "activity.replyByURL('"+ focusActivityId + "');" : "") +
                             ((Utils.isExpandLikers()) ? "activity.loadLikersByURL();" : "") +
                            "}, 100);");
