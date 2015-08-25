@@ -46,7 +46,7 @@ public class StreamInvocationHelper {
     //
     SocialServiceContext ctx = SocialServiceContextImpl.getInstance();
     StreamProcessContext processCtx = StreamProcessContext.getIntance(StreamProcessContext.NEW_ACTIVITY_RELATIONS_PROCESS, ctx);
-    processCtx.identity(owner).activityEntity(entity).mentioners(mentioners);
+    processCtx.identity(owner).activityEntity(entity).posterId(entity.getPosterIdentity().getId()).mentioners(mentioners);
     
     try {
       if (ctx.isAsync()) {

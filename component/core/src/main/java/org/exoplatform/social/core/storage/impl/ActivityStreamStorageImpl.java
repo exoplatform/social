@@ -59,6 +59,7 @@ import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.storage.ActivityStorageException;
 import org.exoplatform.social.core.storage.api.ActivityStorage;
 import org.exoplatform.social.core.storage.api.ActivityStreamStorage;
+import org.exoplatform.social.core.storage.api.IdentityStorage;
 import org.exoplatform.social.core.storage.api.RelationshipStorage;
 import org.exoplatform.social.core.storage.api.SpaceStorage;
 import org.exoplatform.social.core.storage.exception.NodeNotFoundException;
@@ -147,7 +148,7 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
       }
       
       if (OrganizationIdentityProvider.NAME.equals(owner.getProviderId())) {
-        Identity poster = identityStorage.findIdentityById(activityEntity.getPosterIdentity().getId());
+        Identity poster = CommonsUtils.getService(IdentityStorage.class).findIdentityById(streamCtx.getPosterId());
         user(poster, activityEntity);
         //mention case
         addMentioner(streamCtx.getMentioners(), activityEntity);
@@ -179,14 +180,14 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
       ActivityEntity activityEntity = streamCtx.getActivityEntity();
       if (OrganizationIdentityProvider.NAME.equals(owner.getProviderId())) {
         //fixed for SOC-4494 post on viewer stream
-        Identity poster = identityStorage.findIdentityById(activityEntity.getPosterIdentity().getId());
+        Identity poster = CommonsUtils.getService(IdentityStorage.class).findIdentityById(activityEntity.getPosterIdentity().getId());
         manageRefList(new UpdateContext(owner, null), activityEntity, ActivityRefType.MY_ACTIVITIES);
         createOwnerRefs(poster, activityEntity);
       } else if (SpaceIdentityProvider.NAME.equals(owner.getProviderId())) {
         //
         manageRefList(new UpdateContext(owner, null), activityEntity, ActivityRefType.SPACE_STREAM);
         //
-        Identity ownerPosterOnSpace = identityStorage.findIdentityById(activityEntity.getPosterIdentity().getId());
+        Identity ownerPosterOnSpace = CommonsUtils.getService(IdentityStorage.class).findIdentityById(activityEntity.getPosterIdentity().getId());
         ownerSpaceMembersRefs(ownerPosterOnSpace, activityEntity);
       }
     } catch (NodeNotFoundException e) {
@@ -207,14 +208,14 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
   */
  private void user(Identity poster, ActivityEntity activityEntity) throws NodeNotFoundException, RepositoryException {
    //
-   TraceElement trace = TraceElement.getInstance("creating ref-" + poster.getRemoteId() + "-" + activityEntity.getTitle());
+   TraceElement trace = TraceElement.getInstance("creating ref-" + poster.getRemoteId());
    trace.start();
    //
    StreamConfig streamConfig = CommonsUtils.getService(StreamConfig.class);
    //get multiple user groups separates by comma. Using StringTokenizer to split
    String userGroups = streamConfig.getActiveUserGroups();
    ActiveIdentityFilter filer = new ActiveIdentityFilter(userGroups);
-   Set<String> activeGroups = identityStorage.getActiveUsers(filer);
+   Set<String> activeGroups = CommonsUtils.getService(IdentityStorage.class).getActiveUsers(filer);
    //
    int days = streamConfig.getLastLoginAroundDays();
    filer = new ActiveIdentityFilter(days);
@@ -237,7 +238,7 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
  private int createRefForActiveUsers(Identity owner,
                                ActivityEntity activityEntity,
                                ActiveIdentityFilter filer, Set<String> activeGroups) throws NodeNotFoundException, RepositoryException {
-   Set<String> activeUsers = identityStorage.getActiveUsers(filer);
+   Set<String> activeUsers = CommonsUtils.getService(IdentityStorage.class).getActiveUsers(filer);
    //just for testing
    /**
    List<Identity> relationships = getRelationshipStorage().getConnections(owner, 0, 500);
@@ -322,7 +323,7 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
      //
      relationshipPath.append(nodePath).append("/").append(JCRProperties.RELATIONSHIP_NODE_TYPE).append("/").append("soc:").append(ChromatticNameEncode.encodeNodeName(userName));
      
-     Identity identity2 = identityStorage.findIdentity(OrganizationIdentityProvider.NAME, userName);
+     Identity identity2 = CommonsUtils.getService(IdentityStorage.class).findIdentity(OrganizationIdentityProvider.NAME, userName);
      
      boolean hasRelationship = getRelationshipStorage().hasRelationship(owner, identity2, relationshipPath.toString());
      
@@ -368,12 +369,12 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
    */
   private void removeActivityRefs(String[] identityIds, ActivityEntity activityEntity) throws NodeNotFoundException {
     if (identityIds != null && identityIds.length > 0) {
-      Identity owner = identityStorage.findIdentityById(activityEntity.getIdentity().getId());
+      Identity owner = CommonsUtils.getService(IdentityStorage.class).findIdentityById(activityEntity.getIdentity().getId());
       for(String identityId : identityIds) {
         if (identityId.equals(owner.getId()) || identityId.equals(activityEntity.getPosterIdentity().getId())) {
           continue;
         }
-        Identity identity = identityStorage.findIdentityById(identityId);
+        Identity identity = CommonsUtils.getService(IdentityStorage.class).findIdentityById(identityId);
         manageRefList(new UpdateContext(null, identity), activityEntity, ActivityRefType.MY_ACTIVITIES);
         Relationship relationship = relationshipStorage.getRelationship(owner, identity);
         if (relationship == null || ! relationship.getStatus().equals(Relationship.Type.CONFIRMED)) {
@@ -386,7 +387,7 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
   private void addMentioner(String[] identityIds, ActivityEntity activityEntity) throws NodeNotFoundException {
     if (identityIds != null && identityIds.length > 0) {
       for(String identityId : identityIds) {
-        Identity identity = identityStorage.findIdentityById(identityId);
+        Identity identity = CommonsUtils.getService(IdentityStorage.class).findIdentityById(identityId);
         createOwnerRefs(identity, activityEntity);
       }
     }
@@ -404,7 +405,7 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
   private List<Identity> getMemberIdentities(Space space) {
     List<Identity> identities = new ArrayList<Identity>();
     for(String remoteId : space.getMembers()) {
-      //improves performance here just load indentity data without profile
+      //improves performance here just load identity data without profile (UT will be failed if load profile)
       identities.add(identityStorage._findIdentityEntity(OrganizationIdentityProvider.NAME, remoteId, false));
     }
     

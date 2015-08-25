@@ -1541,7 +1541,7 @@ public class IdentityStorageImpl extends AbstractStorage implements IdentityStor
               activeUsers.add(u.getUserName());
             }
           } catch (Exception e) {
-            LOG.info(e.getMessage());
+            LOG.error(e.getMessage(), e);
           }
         }
       } catch (Exception e) {
