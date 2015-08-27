@@ -57,10 +57,13 @@
       }
     },
     renderActivity : function(activityItem) {
-      var url = activityItem.data('url') + activityItem.attr('id') + ((UIActivityLoader.getRequestParam().length > 0) ? UIActivityLoader.getRequestParam() : "")
-      window.ajaxGet(url, function(data) {
-        activityItem.attr('style', '');
-      });
+      var url = activityItem.data('url');
+      if (url && url.indexOf('objectId') > 0) {
+        url += activityItem.attr('id') + ((UIActivityLoader.getRequestParam().length > 0) ? UIActivityLoader.getRequestParam() : "");
+        window.ajaxGet(url, function(data) {
+          activityItem.attr('style', '');
+        });
+      }
     },
     getRequestParam : function() {
       var me = UIActivityLoader;
@@ -74,8 +77,11 @@
       }
       return me.requestParams;
     },
-    loadingActivities : function(id) {
+    loadingActivities : function(id, numberOfReqsPerSec) {
       var me = UIActivityLoader;
+      if (numberOfReqsPerSec === undefined) {
+        numberOfReqsPerSec = me.numberOfReqsPerSec;
+      }
       me.requestParams = null;
       var container = $('#' + id);
       var url = container.find('div.uiActivitiesLoaderURL:first').data('url');
@@ -93,7 +99,7 @@
           window.clearInterval(interval);
         }
         ++index;
-      }, batchDelay / me.numberOfReqsPerSec);
+      }, batchDelay / numberOfReqsPerSec);
     },
     addTop : function(activityItemId) {
       var activityContainer = UIActivityLoader.parentContainer.find('div.uiActivitiesContainer:first');
