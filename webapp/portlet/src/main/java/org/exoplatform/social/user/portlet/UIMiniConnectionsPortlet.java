@@ -16,14 +16,16 @@
  */
 package org.exoplatform.social.user.portlet;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import org.exoplatform.commons.utils.ListAccess;
+import javax.portlet.MimeResponse;
+import javax.portlet.ResourceRequest;
+
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.profile.ProfileFilter;
 import org.exoplatform.social.webui.Utils;
+import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.EventConfig;
 import org.exoplatform.webui.core.lifecycle.UIApplicationLifecycle;
@@ -39,9 +41,61 @@ import org.exoplatform.webui.event.EventListener;
 )
 public class UIMiniConnectionsPortlet extends UIAbstractUserPortlet {
   protected final static int MAX_DISPLAY = 12;
+  private static final String PROFILE_LOADING_RESOURCE = "profile-loading";
   private int allSize = 0;
 
   public UIMiniConnectionsPortlet() throws Exception {
+  }
+  
+  @Override
+  public void beforeProcessRender(WebuiRequestContext context) {
+    super.beforeProcessRender(context);
+    try {
+      allSize = Utils.getRelationshipManager().getConnectionsByFilter(currentProfile.getIdentity(), new ProfileFilter()).getSize();
+    } catch (Exception e) {
+      log.error(e.getMessage(), e);
+    }
+  }
+  
+  @Override
+  public void afterProcessRender(WebuiRequestContext context) {
+    super.afterProcessRender(context);
+    context.getJavascriptManager().getRequireJS()
+           .require("SHARED/user-profile", "userprofile").addScripts("userprofile.loadingProfile('" + getId() + "');");
+  }
+
+  protected int getAllSize() {
+    return allSize;
+  }
+
+  protected int canDisplay() {
+    return (MAX_DISPLAY < allSize) ? MAX_DISPLAY : allSize;
+  }
+
+  @Override
+  public void serveResource(WebuiRequestContext context) throws Exception {
+    super.serveResource(context);
+    ResourceRequest req = context.getRequest();
+    String resourceId = req.getResourceID();
+    if (PROFILE_LOADING_RESOURCE.equals(resourceId)) {
+      //
+      MimeResponse res = context.getResponse();
+      res.setContentType("text/html");
+      //
+      res.getWriter().write(profileListHTML());
+    }
+  }
+
+  private String profileListHTML() throws Exception {
+    StringBuilder html = new StringBuilder();
+    List<Identity> identities = Utils.getRelationshipManager().getLastConnections(currentProfile.getIdentity(), MAX_DISPLAY);
+    for (Identity identity : identities) {
+      ProfileBean profile = new ProfileBean(identity);
+      html.append("<a href=\"").append(profile.getProfileURL()).append("\" class=\"avatarXSmall\" data-link=\"")
+          .append(event("RemoveConnection")).append("\">\n  <img alt=\"").append(profile.getDisplayName())
+          .append("\" src=\"").append(profile.getAvatarURL()).append("\"/>\n</a>\n");
+    }
+    return html.toString();
   }
 
   public static class RemoveConnectionActionListener extends EventListener<UIMiniConnectionsPortlet> {
@@ -50,22 +104,7 @@ public class UIMiniConnectionsPortlet extends UIAbstractUserPortlet {
       event.getRequestContext().addUIComponentToUpdateByAjax(event.getSource());
     }
   }
-  
-  protected List<ProfileBean> loadPeoples() throws Exception {
-    ListAccess<Identity> listAccess = Utils.getRelationshipManager().getConnectionsByFilter(currentProfile.getIdentity(), new ProfileFilter());
-    allSize = listAccess.getSize();
-    List<Identity> identities = Utils.getRelationshipManager().getLastConnections(currentProfile.getIdentity(), MAX_DISPLAY);
-    List<ProfileBean> profileBeans = new ArrayList<ProfileBean>();
-    for (Identity identity : identities) {
-      profileBeans.add(new ProfileBean(identity));
-    }
-    return profileBeans;
-  }
-  
-  protected int getAllSize() {
-    return allSize;
-  }
-  
+
   protected class ProfileBean {
     private final String avatarURL;
     private final String displayName;

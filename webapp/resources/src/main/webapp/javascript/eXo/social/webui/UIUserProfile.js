@@ -1,4 +1,4 @@
-(function($, socialUtils) {
+(function($, socialUtils, uiProfile) {
   var UserProfile = {
       portlet : null,
       init : function(id) {
@@ -91,8 +91,22 @@
             form.find('button.btn-save:first').trigger('click');
           }
         });
+      },
+      loadingProfile : function(componentId) {
+        var portlet = $('#' + componentId);
+        var url = portlet.find('div.loadingProfilesLink:first').text();
+        console.log(url);
+        var container = portlet.find('div.borderContainer:first');
+        if(url && url.length > 0) {
+          $.ajax(url).done(function(html) {
+            container.find('> a').remove();
+            container.prepend($(html));
+            //
+            uiProfile.initUserProfilePopup(componentId, {});
+          });
+        }
       }
   };
   //
   return UserProfile;
-})(jQuery, socialUtil);
+})(jQuery, socialUtil, socialUIProfile);

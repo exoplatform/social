@@ -4,22 +4,27 @@
   import org.exoplatform.social.webui.Utils;
   import org.exoplatform.social.user.portlet.UserProfileHelper;
   
-  List profiles = uicomponent.loadPeoples();
   int size = uicomponent.getAllSize();
+  int canDisplay = uicomponent.canDisplay();
   uicomponent.initProfilePopup();
 %>
 <div class="uiSocApplication uiMiniConnectionsPortlet" id="$uicomponent.id">
   <h4 class="head-container"><%=_ctx.appRes("UIBasicProfile.label.Connections")%></h4>
   <% if(size > 0) { %>
   	<div class="borderContainer">
-    <% for(profile in profiles) { %>
-         <a href="<%=profile.getProfileURL()%>" class="avatarXSmall" data-link="<%=uicomponent.event("RemoveConnection")%>">
-           <img alt="<%=profile.getDisplayName()%>" src="<%=profile.getAvatarURL()%>">         
+    <% for(int i = 0; i < canDisplay; ++i) { %>
+         <a href="javascript:void(0)" class="avatarXSmall">
+           <img src="/eXoSkin/skin/images/system/UserAvtDefault.png"/>         
          </a>
     <% } %>
-       <div class="viewAllConnection"><a href="<%=LinkProvider.getBaseUri(null, null)%>/connections/network/<%=uicomponent.getCurrentRemoteId()%>"><%=_ctx.appRes("UIBasicProfile.label.ViewAll")%>&nbsp;(<%=size%>)</a></div>
-     </div>
-  <% } else {
+      <div class="viewAllConnection"><a href="<%=LinkProvider.getBaseUri(null, null)%>/connections/network/<%=uicomponent.getCurrentRemoteId()%>"><%=_ctx.appRes("UIBasicProfile.label.ViewAll")%>&nbsp;(<%=size%>)</a></div>
+    </div>
+    <div class="loadingProfilesLink" style="display:none"><%=uicomponent.buildResourceURL(uicomponent.PROFILE_LOADING_RESOURCE)%></div>
+  <%
+  _ctx.getRequestContext().getJavascriptManager().getRequireJS()
+		  .require("SHARED/social-ui-activities-loader", "activitiesLoader")
+		  .addScripts("activitiesLoader.loadingActivities('" + uicomponent.id + "', 5);");
+  	} else {
       String keyNoConnection = Utils.isOwner() ? "YouHaveNotConnections" : "UserHaveNotConnections";
       String noConnectionCSS = Utils.isOwner() ? "noConnection" : "";
   %>

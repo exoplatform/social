@@ -46,6 +46,10 @@
       <as>socialUtil</as>
     </depends>
     <depends>
+      <module>social-ui-profile</module>
+      <as>socialUIProfile</as>
+    </depends>
+    <depends>
       <module>jquery</module>
       <as>jQuery</as>
     </depends>
