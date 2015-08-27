@@ -1,38 +1,28 @@
 <%
   import org.exoplatform.social.core.service.LinkProvider;
-  import org.exoplatform.portal.webui.util.Util;
   import org.exoplatform.social.webui.Utils;
-  import org.exoplatform.social.user.portlet.UserProfileHelper;
   
-  int size = uicomponent.getAllSize();
-  int canDisplay = uicomponent.canDisplay();
   uicomponent.initProfilePopup();
 %>
 <div class="uiSocApplication uiMiniConnectionsPortlet" id="$uicomponent.id">
   <h4 class="head-container"><%=_ctx.appRes("UIBasicProfile.label.Connections")%></h4>
-  <% if(size > 0) { %>
-  	<div class="borderContainer">
-    <% for(int i = 0; i < canDisplay; ++i) { %>
-         <a href="javascript:void(0)" class="avatarXSmall">
-           <img src="/eXoSkin/skin/images/system/UserAvtDefault.png"/>         
-         </a>
-    <% } %>
-      <div class="viewAllConnection"><a href="<%=LinkProvider.getBaseUri(null, null)%>/connections/network/<%=uicomponent.getCurrentRemoteId()%>"><%=_ctx.appRes("UIBasicProfile.label.ViewAll")%>&nbsp;(<%=size%>)</a></div>
+  	<div class="borderContainer profileContainer">
+  		<div class="uiLoadingIconMedium" style="margin:20px auto;display:block"></div>
+      <div class="viewAllConnection" style="display:none">
+      	<a href="<%=LinkProvider.getBaseUri(null, null)%>/connections/network/<%=uicomponent.getCurrentRemoteId()%>"
+      	   data-text="<%=_ctx.appRes("UIBasicProfile.label.ViewAll")%>">&nbsp;</a>
+      </div>
     </div>
     <div class="loadingProfilesLink" style="display:none"><%=uicomponent.buildResourceURL(uicomponent.PROFILE_LOADING_RESOURCE)%></div>
+    <div class="loadingSizeLink" style="display:none"><%=uicomponent.buildResourceURL(uicomponent.SIZE_LOADING_RESOURCE)%></div>
   <%
-  _ctx.getRequestContext().getJavascriptManager().getRequireJS()
-		  .require("SHARED/social-ui-activities-loader", "activitiesLoader")
-		  .addScripts("activitiesLoader.loadingActivities('" + uicomponent.id + "', 5);");
-  	} else {
-      String keyNoConnection = Utils.isOwner() ? "YouHaveNotConnections" : "UserHaveNotConnections";
-      String noConnectionCSS = Utils.isOwner() ? "noConnection" : "";
+   String keyNoConnection = Utils.isOwner() ? "YouHaveNotConnections" : "UserHaveNotConnections";
+   String noConnectionCSS = Utils.isOwner() ? "noConnection" : "";
   %>
-      <div class="borderContainer $noConnectionCSS empty center">
-        <%=_ctx.appRes("UIBasicProfile.info." + keyNoConnection)%>
-        <%if (Utils.isOwner()) { %>
-        <div class="findConnection"><a href="<%=LinkProvider.getBaseUri(null, null)%>/connections/all-people/"><%=_ctx.appRes("UIBasicProfile.label.FindConnections")%></a></div>
-        <%} %>
-      </div>
-  <% } %>
+  <div class="borderContainer $noConnectionCSS empty center" style="display:none">
+    <%=_ctx.appRes("UIBasicProfile.info." + keyNoConnection)%>
+    <%if (Utils.isOwner()) { %>
+    <div class="findConnection"><a href="<%=LinkProvider.getBaseUri(null, null)%>/connections/all-people/"><%=_ctx.appRes("UIBasicProfile.label.FindConnections")%></a></div>
+    <%} %>
+  </div>
 </div>

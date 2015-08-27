@@ -31,7 +31,7 @@
         }
       },
       leftBorder : function() {
-        var leftRow = $('.left-column-containerTDContainer:first');
+        var leftRow = $('.LeftColumnContainerTDContainer:first');
         if(leftRow.length > 0) {
           leftRow.css('position', 'relative');
           leftRow.append($('<div class="left-border-row"></div>'))
@@ -92,17 +92,42 @@
           }
         });
       },
+      loadingProfileSize : function(componentId) {
+        var portlet = $('#' + componentId);
+        var loadSizeUrl = portlet.find('div.loadingSizeLink:first').text();
+        if(loadSizeUrl && loadSizeUrl.length > 0) {
+          $.ajax(loadSizeUrl).done(function(data) {
+            if(data && data.showAll == true) {
+              //
+              var textA = portlet.find('div.viewAllConnection:first').show().find('a:first');
+              textA.html(textA.data('text') + '&nbsp;(' + data.size + ')' );
+            }
+          });
+        }
+      },
       loadingProfile : function(componentId) {
         var portlet = $('#' + componentId);
-        var url = portlet.find('div.loadingProfilesLink:first').text();
-        console.log(url);
-        var container = portlet.find('div.borderContainer:first');
-        if(url && url.length > 0) {
-          $.ajax(url).done(function(html) {
-            container.find('> a').remove();
-            container.prepend($(html));
-            //
-            uiProfile.initUserProfilePopup(componentId, {});
+        var loadProfileUrl = portlet.find('div.loadingProfilesLink:first').text();
+        var container = portlet.find('div.profileContainer:first');
+        if(loadProfileUrl && loadProfileUrl.length > 0) {
+          $.ajax(loadProfileUrl).done(function(html) {
+            container.find('.uiLoadingIconMedium').remove();
+            if(html && html.length > 0) {
+              var items = $(html);
+              container.prepend(items);
+              //
+              if(items.length > 12) {
+                UserProfile.loadingProfileSize(componentId);
+              } else {
+                var textA = portlet.find('div.viewAllConnection:first').show().find('a:first');
+                textA.html(textA.data('text') + '&nbsp;(' + items.length + ')' );
+              }
+              //
+              uiProfile.initUserProfilePopup(componentId, {});
+            } else {
+              container.hide();
+              portlet.find('div.borderContainer.empty:first').show();
+            }
           });
         }
       }

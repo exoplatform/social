@@ -31,6 +31,7 @@ import org.exoplatform.webui.config.annotation.EventConfig;
 import org.exoplatform.webui.core.lifecycle.UIApplicationLifecycle;
 import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.event.EventListener;
+import org.json.JSONObject;
 
 @ComponentConfig(
   lifecycle = UIApplicationLifecycle.class,
@@ -42,19 +43,9 @@ import org.exoplatform.webui.event.EventListener;
 public class UIMiniConnectionsPortlet extends UIAbstractUserPortlet {
   protected final static int MAX_DISPLAY = 12;
   private static final String PROFILE_LOADING_RESOURCE = "profile-loading";
-  private int allSize = 0;
+  private static final String SIZE_LOADING_RESOURCE = "size-loading";
 
   public UIMiniConnectionsPortlet() throws Exception {
-  }
-  
-  @Override
-  public void beforeProcessRender(WebuiRequestContext context) {
-    super.beforeProcessRender(context);
-    try {
-      allSize = Utils.getRelationshipManager().getConnectionsByFilter(currentProfile.getIdentity(), new ProfileFilter()).getSize();
-    } catch (Exception e) {
-      log.error(e.getMessage(), e);
-    }
   }
   
   @Override
@@ -64,30 +55,33 @@ public class UIMiniConnectionsPortlet extends UIAbstractUserPortlet {
            .require("SHARED/user-profile", "userprofile").addScripts("userprofile.loadingProfile('" + getId() + "');");
   }
 
-  protected int getAllSize() {
-    return allSize;
-  }
-
-  protected int canDisplay() {
-    return (MAX_DISPLAY < allSize) ? MAX_DISPLAY : allSize;
+  private int getAllSize() throws Exception {
+    return Utils.getRelationshipManager().getConnectionsByFilter(currentProfile.getIdentity(), new ProfileFilter()).getSize();
   }
 
   @Override
   public void serveResource(WebuiRequestContext context) throws Exception {
     super.serveResource(context);
     ResourceRequest req = context.getRequest();
+    MimeResponse res = context.getResponse();
     String resourceId = req.getResourceID();
     if (PROFILE_LOADING_RESOURCE.equals(resourceId)) {
-      //
-      MimeResponse res = context.getResponse();
       res.setContentType("text/html");
       //
       res.getWriter().write(profileListHTML());
+    } else if (SIZE_LOADING_RESOURCE.equals(resourceId)) {
+      res.setContentType("application/json");
+      int size = getAllSize();
+      JSONObject object = new JSONObject();
+      object.put("size", size);
+      object.put("showAll", (size > 0));
+      //
+      res.getWriter().write(object.toString());
     }
   }
 
   private String profileListHTML() throws Exception {
-    StringBuilder html = new StringBuilder();
+    StringBuilder html = new StringBuilder("");
     List<Identity> identities = Utils.getRelationshipManager().getLastConnections(currentProfile.getIdentity(), MAX_DISPLAY);
     for (Identity identity : identities) {
       ProfileBean profile = new ProfileBean(identity);
