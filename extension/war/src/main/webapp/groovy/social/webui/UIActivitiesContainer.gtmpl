@@ -1,41 +1,43 @@
 <div class="$uicomponent.id uiActivitiesContainer" id="$uicomponent.id">
 <% 
    List children = uicomponent.getChildrenId();
-	 if (children.size() > 0) {
-	   if(uicomponent.isRenderFull) {
-		   uicomponent.renderChildren();
-	   } else {
-	     for(uiActivityId in children) {
-	       String activityId = uiActivityId.replace("UIActivityLoader", "");
+   if (children.size() > 0) {
+     if(uicomponent.isRenderFull) {
+       uicomponent.renderChildren();
+     } else {
+       for(uiActivityId in children) {
+         String activityId = uiActivityId.replace("UIActivityLoader", "");
 %>
-	<div class="uiActivityLoader activity-loadding" style="position:relative;" id="$uiActivityId">
-		<div class="activityStream uiDefaultActivity" id="activityContainer${activityId}">
-		  <div class="activityTimeLine pull-left">
-		    <div class="activityAvatar avatarCircle">
-		      <div>
-		        <img src="/eXoSkin/skin/images/system/UserAvtDefault.png">
-		      </div>
-		    </div>
-		  </div><!--end activityTimeLine-->
-		  <span style="position:absolute;top:40px;left:50%;z-index:10;" class="uiLoadingIconMedium"></span>
-		  <div class="boxContainer" id="boxContainer">
-		    <div id="ContextBox1901" class="uiBox contentBox">
-		      <div id="ActivityContextBox${activityId}">
-		        <div class="heading" style="height:60px;">
-		          <span class="arrowLeft"></span>
-		          <a id="Permalink${activityId}" class="uiIconLink uiIconLightGray" href="/portal/intranet/activity?id=${activityId}"></a> 
-		        </div><!--end heading-->
-		      </div><!--end #ActivityContextBox${uiActivityId}-->
-		    </div> <!--end ContextBox${uiActivityId}-->	
-		  </div>
-		</div>
-	</div>
+  <div class="uiActivityLoader activity-loadding" style="position:relative;" id="$uiActivityId">
+    <div class="activityStream uiDefaultActivity" id="activityContainer${activityId}">
+      <div class="activityTimeLine pull-left">
+        <div class="activityAvatar avatarCircle">
+          <div>
+            <img src="/eXoSkin/skin/images/system/UserAvtDefault.png">
+          </div>
+        </div>
+      </div><!--end activityTimeLine-->
+      <span style="position:absolute;top:40px;left:50%;z-index:10;" class="uiLoadingIconMedium"></span>
+      <div class="boxContainer" id="boxContainer">
+        <div id="ContextBox1901" class="uiBox contentBox">
+          <div id="ActivityContextBox${activityId}">
+            <div class="heading" style="height:60px;">
+              <span class="arrowLeft"></span>
+              <div class="actLink">
+                <a id="Permalink${activityId}" class="uiIconLink uiIconLightGray" href="/portal/intranet/activity?id=${activityId}"></a> 
+              </div>
+            </div><!--end heading-->
+          </div><!--end #ActivityContextBox${uiActivityId}-->
+        </div> <!--end ContextBox${uiActivityId}-->  
+      </div>
+    </div>
+  </div>
 <%
-			 }
+       }
      print("<div class=\"uiActivitiesLoaderURL\" data-url=\"" + uicomponent.getLoadActivityUrl() + "\"></div>");
      }
    } else {
 %>
-	<div class="NoActivity"><%=_ctx.appRes("UIActivitiesLoader.label.Not_Any_Updates_Posted_Yet")%></div>
+  <div class="NoActivity"><%=_ctx.appRes("UIActivitiesLoader.label.Not_Any_Updates_Posted_Yet")%></div>
 <% } %>
 </div>
