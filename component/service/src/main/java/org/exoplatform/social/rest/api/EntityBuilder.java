@@ -174,7 +174,7 @@ public class EntityBuilder {
     }
     List<DataEntity> userEntities = new ArrayList<DataEntity>();
     for (int i = 0; i < userNames.length; i++) {
-      userEntities.add(buildEntityProfile(userNames[0], restPath, expand).getDataEntity());
+      userEntities.add(buildEntityProfile(userNames[i], restPath, expand).getDataEntity());
     }
     return userEntities;
   }
