@@ -25,7 +25,7 @@ var UISpaceNavigation = {
     function autoMoveApps(){
 	    var ul = $('#spaceMenuTab');
 	    
-	    var maxWith = ul.outerWidth();
+	    var maxWith = ul.outerWidth() + 10;
 	    var liElements = ul.find('li.item');
 	    var w = 0, index = 0;
 	    for (var i = 0; i < liElements.length; ++i) {
