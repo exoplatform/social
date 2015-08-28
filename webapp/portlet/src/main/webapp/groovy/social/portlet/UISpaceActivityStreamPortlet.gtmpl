@@ -26,12 +26,19 @@
   def labelOutOfSpaceContext = _ctx.appRes("UISpacePortlet.label.OutOfSpaceContext"); 
   
   uicomponent.refresh();
+
+  print("<div class=\"visible-desktop\"></div>");
+  print("<div class=\"visible-tablet\"></div>");
+  print("<div class=\"visible-phone\"></div>");
 %>
 <div class="uiSocApplication uiSpaceActivityStreamPortlet" id="$uicomponent.id">
   <div class="uiTabPane">
  	  <div class="uiSpaceActivitiesContainer">
       <%
         if (Utils.isSpaceContext()) { 
+          def requireJs = _ctx.getRequestContext().getJavascriptManager().getRequireJS();
+          requireJs.require("SHARED/social-ui-activity", "activity")
+                   .addScripts("activity.responsiveMobile('" + uicomponent.id + "');");
           uicomponent.renderChildren();
         } else {
       %>

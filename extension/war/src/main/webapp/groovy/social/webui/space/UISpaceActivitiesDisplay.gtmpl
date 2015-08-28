@@ -31,7 +31,7 @@
   def hasActivities = uicomponent.getActivitiesLoader().getActivitiesContainer().getChildren().size() > 0;
  %>
 
-<div class="uiDisplaySpaceActivities" id="$uicomponent.id">
+<div class="uiDisplaySpaceActivities uiActivitiesDisplay" id="$uicomponent.id">
   <div class="clearfix activityTop">
   <% if (hasActivities) { 
        def refreshTooltipButton = _ctx.appRes("UIActivity.label.Refresh");

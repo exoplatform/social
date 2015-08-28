@@ -118,7 +118,7 @@
         
   jsManager.require("SHARED/jquery", "jq").addScripts(hint_text_script);
 %>
-<div id="$uicomponent.id" class="uiUserActivitiesDisplay clearfix"> <!-- use js to add beside one class that named "notSeen" if having some new updates  -->
+<div id="$uicomponent.id" class="uiUserActivitiesDisplay uiActivitiesDisplay clearfix"> <!-- use js to add beside one class that named "notSeen" if having some new updates  -->
 <% if (uicomponent.isWelcomeActivity()) { %>
   <div class="composerHintCont">
 	<span class="arrowLeft"></span>
