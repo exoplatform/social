@@ -44,6 +44,7 @@ public class UIMiniConnectionsPortlet extends UIAbstractUserPortlet {
   protected final static int MAX_DISPLAY = 12;
   private static final String PROFILE_LOADING_RESOURCE = "profile-loading";
   private static final String SIZE_LOADING_RESOURCE = "size-loading";
+  private static int connectionSize = 0;
 
   public UIMiniConnectionsPortlet() throws Exception {
   }
@@ -71,7 +72,7 @@ public class UIMiniConnectionsPortlet extends UIAbstractUserPortlet {
       res.getWriter().write(profileListHTML());
     } else if (SIZE_LOADING_RESOURCE.equals(resourceId)) {
       res.setContentType("application/json");
-      int size = getAllSize();
+      int size = (connectionSize < MAX_DISPLAY) ? connectionSize : getAllSize();
       JSONObject object = new JSONObject();
       object.put("size", size);
       object.put("showAll", (size > 0));
@@ -83,6 +84,7 @@ public class UIMiniConnectionsPortlet extends UIAbstractUserPortlet {
   private String profileListHTML() throws Exception {
     StringBuilder html = new StringBuilder("");
     List<Identity> identities = Utils.getRelationshipManager().getLastConnections(currentProfile.getIdentity(), MAX_DISPLAY);
+    connectionSize = identities.size();
     for (Identity identity : identities) {
       ProfileBean profile = new ProfileBean(identity);
       html.append("<a href=\"").append(profile.getProfileURL()).append("\" class=\"avatarXSmall\" data-link=\"")

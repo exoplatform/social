@@ -116,12 +116,7 @@
               var items = $(html);
               container.prepend(items);
               //
-              if(items.length > 12) {
-                UserProfile.loadingProfileSize(componentId);
-              } else {
-                var textA = portlet.find('div.viewAllConnection:first').show().find('a:first');
-                textA.html(textA.data('text') + '&nbsp;(' + items.length + ')' );
-              }
+              UserProfile.loadingProfileSize(componentId);
               //
               uiProfile.initUserProfilePopup(componentId, {});
             } else {
