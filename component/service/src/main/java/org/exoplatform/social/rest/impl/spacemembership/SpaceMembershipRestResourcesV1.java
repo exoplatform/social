@@ -60,7 +60,7 @@ import org.exoplatform.social.service.rest.api.VersionResources;
 @Api(value=VersionResources.VERSION_ONE + "/social/spacesMemberships", description = "Operations membership of space.")
 public class SpaceMembershipRestResourcesV1 implements SpaceMembershipRestResources {
   
-  private static final String SPACE_PREFIX = "/space/";
+  private static final String SPACE_PREFIX = "/spaces/";
   
   private enum MembershipType {
     ALL, PENDING, APPROVED

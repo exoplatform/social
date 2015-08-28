@@ -147,7 +147,7 @@ public class SpaceMembershipRestResourcesTest extends AbstractResourceTest {
     space.setVisibility(Space.PRIVATE);
     space.setRegistration(Space.VALIDATION);
     space.setPriority(Space.INTERMEDIATE_PRIORITY);
-    space.setGroupId("/space/space" + number);
+    space.setGroupId("/spaces/space" + number);
     String[] managers = new String[] {creator};
     String[] members = new String[] {creator};
     space.setManagers(managers);
