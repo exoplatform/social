@@ -41,6 +41,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
+
 import org.apache.commons.lang.StringEscapeUtils;
 import org.exoplatform.commons.utils.CommonsUtils;
 import org.exoplatform.commons.utils.ListAccess;
@@ -425,7 +426,9 @@ public class SpaceRestResourcesV1 implements SpaceRestResources {
   }
 
   private void fillSpaceFromModel(Space space, SpaceEntity model) {
-    space.setDisplayName(model.getDisplayName());
+    if (model.getDisplayName() != null && model.getDisplayName().length() > 0) {
+      space.setDisplayName(model.getDisplayName());
+    }
     if (model.getDescription() != null && model.getDescription().length() > 0) {
       space.setDescription(StringEscapeUtils.escapeHtml(model.getDescription()));
     }
