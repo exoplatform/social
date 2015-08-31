@@ -32,5 +32,6 @@ public enum SpaceType {
   ALL,
   UNIFIED_SEARCH,
   LATEST_ACCESSED,
-  VISITED
+  VISITED,
+  MEMBER_IDS
 }

@@ -91,6 +91,16 @@ public class CachedSpaceStorage implements SpaceStorage {
 
   }
   
+  private List<String> buildSpaceIdentityIds(ListSpacesData data) {
+
+    List<String> identityIds = new ArrayList<String>();
+    for (SpaceKey k : data.getIds()) {
+      identityIds.add(k.getId());
+    }
+    return identityIds;
+
+  }
+  
   /**
    * Build the activity list from the caches Ids.
    *
@@ -142,6 +152,23 @@ public class CachedSpaceStorage implements SpaceStorage {
     for (Space s : spaces) {
       SpaceKey k = new SpaceKey(s.getId());
       exoSpaceCache.put(k, new SpaceData(s));
+      data.add(k);
+    }
+    return new ListSpacesData(data);
+
+  }
+  
+  /**
+   * Build the ids from the space identity id list.
+   *
+   * @param spaces spaces
+   * @return identities
+   */
+  private ListSpacesData buildListIdentityIds(List<String> identities) {
+
+    List<SpaceKey> data = new ArrayList<SpaceKey>();
+    for (String identityId : identities) {
+      SpaceKey k = new SpaceKey(identityId);
       data.add(k);
     }
     return new ListSpacesData(data);
@@ -1367,6 +1394,26 @@ public class CachedSpaceStorage implements SpaceStorage {
 
     //
     return buildSpaces(keys);
+  }
+
+  @Override
+  public List<String> getMemberSpaceIds(final String identityId, final int offset, final int limit) throws SpaceStorageException {
+    //
+    SpaceFilterKey key = new SpaceFilterKey(identityId, null, SpaceType.MEMBER_IDS);
+    ListSpacesKey listKey = new ListSpacesKey(key, offset, limit);
+
+    //
+    ListSpacesData keys = spacesCache.get(
+        new ServiceContext<ListSpacesData>() {
+          public ListSpacesData execute() {
+            List<String> got = storage.getMemberSpaceIds(identityId, offset, limit);
+            return buildListIdentityIds(got);
+          }
+        },
+        listKey);
+
+    //
+    return buildSpaceIdentityIds(keys);
   }
 }
 
