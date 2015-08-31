@@ -155,12 +155,13 @@ public class CommentRestResourcesV1 implements CommentRestResources {
                                     @ApiParam(value = "comment id", required = true) @PathParam("id") String id,
                                     @ApiParam(value = "Expand param : ask for a full representation of a subresource", required = false) @QueryParam("expand") String expand) throws Exception {
     
+    String authenticatedUser = ConversationState.getCurrent().getIdentity().getUserId();
+    Identity currentUser = CommonsUtils.getService(IdentityManager.class).getOrCreateIdentity(OrganizationIdentityProvider.NAME, authenticatedUser, true);
     ActivityManager activityManager = CommonsUtils.getService(ActivityManager.class);
     ExoSocialActivity act = activityManager.getActivity(id);
-    if (act == null || !act.isComment()) {
+    if (act == null || !act.isComment() || ! act.getPosterId().equals(currentUser.getId())) {
       throw new WebApplicationException(Response.Status.NOT_FOUND);
     }
-    
     ActivityEntity activityEntity = EntityBuilder.buildEntityFromActivity(act, uriInfo.getPath(), expand);
 
     activityManager.deleteActivity(act);
