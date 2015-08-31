@@ -236,7 +236,9 @@ public class SpaceRestResourcesV1 implements SpaceRestResources {
     if (space == null || (! spaceService.isManager(space, authenticatedUser) && ! RestUtils.isMemberOfAdminGroup())) {
       throw new WebApplicationException(Response.Status.UNAUTHORIZED);
     }
-    
+    if(model.getGroupId() != null && model.getGroupId().length() > 0) {
+      throw new WebApplicationException(Response.Status.UNAUTHORIZED);
+    }
     fillSpaceFromModel(space, model);
     spaceService.updateSpace(space);
     
