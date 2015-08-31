@@ -165,18 +165,28 @@ public final class Util {
    * @return
    */
   public static String getViewerId (UriInfo uriInfo) {
+    String viewerId = null;
+
     URI uri = uriInfo.getRequestUri();
     String requestString = uri.getQuery();
-    if (requestString == null) return null;
-    String[] queryParts = requestString.split("&");
-    String viewerId = null;
-    for (String queryPart : queryParts) {
-      if (queryPart.startsWith("opensocial_viewer_id")) {
-        viewerId = queryPart.substring(queryPart.indexOf("=") + 1, queryPart.length());
-        break;
+    if (requestString != null) {
+      String[] queryParts = requestString.split("&");
+    
+      for (String queryPart : queryParts) {
+        if (queryPart.startsWith("opensocial_viewer_id")) {
+          viewerId = queryPart.substring(queryPart.indexOf("=") + 1, queryPart.length());
+          break;
+        }
       }
     }
     
+    if (viewerId == null) {
+      ConversationState state = ConversationState.getCurrent();
+      if (state != null) {
+        viewerId = state.getIdentity().getUserId();
+      }
+    }
+
     return viewerId;
   }
 
