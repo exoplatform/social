@@ -50,6 +50,8 @@ import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.manager.ActivityManager;
 import org.exoplatform.social.core.manager.IdentityManager;
+import org.exoplatform.social.core.space.model.Space;
+import org.exoplatform.social.core.space.spi.SpaceService;
 import org.exoplatform.social.rest.api.ActivityRestResources;
 import org.exoplatform.social.rest.api.EntityBuilder;
 import org.exoplatform.social.rest.api.RestUtils;
@@ -62,6 +64,10 @@ import org.exoplatform.social.service.rest.api.VersionResources;
 @Path(VersionResources.VERSION_ONE + "/social/activities")
 @Api(value=VersionResources.VERSION_ONE + "/social/activities")
 public class ActivityRestResourcesV1 implements ActivityRestResources {
+  
+  private static final String SPACE_PREFIX = "/spaces/";
+  private static final String TYPE = "space";
+
   
   @GET
   @RolesAllowed("users")
@@ -169,10 +175,10 @@ public class ActivityRestResourcesV1 implements ActivityRestResources {
     
     ActivityManager activityManager = CommonsUtils.getService(ActivityManager.class);
     ExoSocialActivity activity = activityManager.getActivity(id);
-    if (activity == null || ! activity.getPosterId().equals(currentUser.getId())) {
+    if (activity == null) {
       throw new WebApplicationException(Response.Status.UNAUTHORIZED);
     }
-    
+    checkPermissionToModifyActivity(activity, currentUser);
     //update activity's title
     activity.setTitle(model.getTitle());
     activityManager.updateActivity(activity);
@@ -204,14 +210,15 @@ public class ActivityRestResourcesV1 implements ActivityRestResources {
     
     ActivityManager activityManager = CommonsUtils.getService(ActivityManager.class);
     ExoSocialActivity activity = activityManager.getActivity(id);
-    if (activity == null || ! activity.getPosterId().equals(currentUser.getId()) || ! activity.getStreamOwner().equals(currentUser.getRemoteId())) {
+    if (activity == null) {
       throw new WebApplicationException(Response.Status.UNAUTHORIZED);
     }
+    checkPermissionToModifyActivity(activity, currentUser);
     //
     DataEntity as = EntityBuilder.getActivityStream(activity, currentUser);
     ActivityEntity activityEntity = EntityBuilder.buildEntityFromActivity(activity, uriInfo.getPath(), expand);
     activityEntity.setActivityStream(as);
-    //
+    //Delete activity
     activityManager.deleteActivity(activity);
     return EntityBuilder.getResponse(activityEntity.getDataEntity(), uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
   }
@@ -443,5 +450,22 @@ public class ActivityRestResourcesV1 implements ActivityRestResources {
       activityManager.updateActivity(activity);
     }
     return EntityBuilder.getResponse(EntityBuilder.buildEntityFromActivity(activityManager.getActivity(id), uriInfo.getPath(), expand), uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
+  }
+  private void checkPermissionToModifyActivity(ExoSocialActivity activity, Identity currentUser) {
+    if (activity.getActivityStream().getType().toString().equalsIgnoreCase(TYPE)) {
+      SpaceService spaceService = CommonsUtils.getService(SpaceService.class);
+      String spaceGroupId = SPACE_PREFIX + activity.getActivityStream().getPrettyId();;
+      Space space = spaceService.getSpaceByGroupId(spaceGroupId);
+      if (space == null) {
+        throw new WebApplicationException(Response.Status.UNAUTHORIZED);
+      }
+      if(!activity.getPosterId().equals(currentUser.getId()) && !spaceService.isManager(space, currentUser.getRemoteId())) {
+        throw new WebApplicationException(Response.Status.UNAUTHORIZED);
+      }
+    }else {
+      if(!activity.getPosterId().equals(currentUser.getId())) {
+        throw new WebApplicationException(Response.Status.UNAUTHORIZED);
+      }
+    }
   }
 }
