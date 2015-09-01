@@ -42,6 +42,7 @@ import javax.ws.rs.core.UriInfo;
 
 import org.exoplatform.commons.utils.CommonsUtils;
 import org.exoplatform.commons.utils.ListAccess;
+import org.exoplatform.services.organization.Query;
 import org.exoplatform.services.organization.OrganizationService;
 import org.exoplatform.services.organization.User;
 import org.exoplatform.services.organization.UserHandler;
@@ -77,6 +78,8 @@ import org.exoplatform.social.service.rest.api.VersionResources;
 @Path(VersionResources.VERSION_ONE + "/social/users")
 @Api(value=VersionResources.VERSION_ONE + "/social/users", description = "Operations eXo Platform users information.")
 public class UserRestResourcesV1 implements UserRestResources {
+  
+  private static final Log LOG = ExoLogger.getLogger(UserRestResourcesV1.class);
   
   public static enum ACTIVITY_STREAM_TYPE {
     all, owner, connections, spaces
@@ -158,6 +161,9 @@ public class UserRestResourcesV1 implements UserRestResources {
     Identity identity = CommonsUtils.getService(IdentityManager.class).getOrCreateIdentity(OrganizationIdentityProvider.NAME, model.getUsername(), true);
     if (identity != null) {
       throw new WebApplicationException(Response.Status.BAD_REQUEST);
+    }
+    if(isExistingEmail(model.getEmail())) {
+      throw new WebApplicationException(Response.Status.FORBIDDEN);
     }
     
     //Create new user
@@ -244,6 +250,9 @@ public class UserRestResourcesV1 implements UserRestResources {
     }
     //Check if the current user is the authenticated user
     if (!ConversationState.getCurrent().getIdentity().getUserId().equals(id)) {
+      throw new WebApplicationException(Response.Status.FORBIDDEN);
+    }
+    if(isExistingEmail(model.getEmail())) {
       throw new WebApplicationException(Response.Status.FORBIDDEN);
     }
     
@@ -450,6 +459,23 @@ public class UserRestResourcesV1 implements UserRestResources {
     }
     if (model.getPassword() != null && !model.getPassword().isEmpty()) {
       user.setPassword(model.getPassword());
+    }
+  }
+  
+  /**
+   * Checks if input email is existing already or not.
+   * 
+   * @param email Input email to check.
+   * @return true if email is existing in system.
+   */
+  public static boolean isExistingEmail(String email) {
+    try {
+      Query query = new Query();
+      query.setEmail(email);
+      OrganizationService service = CommonsUtils.getService(OrganizationService.class);
+      return service.getUserHandler().findUsersByQuery(query).getSize() > 0;
+    } catch (Exception e) {
+      return false;
     }
   }
 }
