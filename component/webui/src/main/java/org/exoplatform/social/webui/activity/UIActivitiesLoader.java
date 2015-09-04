@@ -248,9 +248,7 @@ public class UIActivitiesLoader extends UIContainer {
         ActivitiesRealtimeListAccess listAccess = (ActivitiesRealtimeListAccess) activityListAccess;
         List<String> activityIds = listAccess.loadIdsAsList(index, length);
         if (activityIds != null) {
-          int size = listAccess.getSize();
-          boolean hasMore = size > (length + index);
-          setHasMore(hasMore);
+          setHasMore(activityIds.size() >= loadingCapacity);
           return activityIds;
         }
       }
