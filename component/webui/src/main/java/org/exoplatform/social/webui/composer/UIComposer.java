@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2003-2010 eXo Platform SAS.
+getActivityComposers * Copyright (C) 2003-2010 eXo Platform SAS.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Affero General Public License
@@ -86,7 +86,7 @@ public class UIComposer extends UIForm {
       initActivityComposerManager();
     }
 
-    activityComposerManager.setDefaultActivityComposer();
+    //activityComposerManager.setDefaultActivityComposer();
   }
 
   public void isActivityStreamOwner(boolean isActivityStreamOwner) {
@@ -113,13 +113,13 @@ public class UIComposer extends UIForm {
           UIActivityComposer uiDefaultComposer = (UIActivityComposer) uiExtensionManager.
                                                  addUIExtension(composerExtension, null, composerContainer);
           composerContainer.removeChildById(uiDefaultComposer.getId());
-          uiDefaultComposer.setRendered(false);
           uiDefaultComposer.setActivityComposerManager(activityComposerManager);
           activityComposerManager.setDefaultActivityComposer(uiDefaultComposer);
+          //activityComposerManager.registerActivityComposer(uiDefaultComposer);
         } else{
           UIActivityComposer uiActivityComposer = (UIActivityComposer) uiExtensionManager.
                                                   addUIExtension(composerExtension, null, composerContainer);
-          uiActivityComposer.setRendered(false);
+          
           uiActivityComposer.setActivityComposerManager(activityComposerManager);
           activityComposerManager.registerActivityComposer(uiActivityComposer);
         }
