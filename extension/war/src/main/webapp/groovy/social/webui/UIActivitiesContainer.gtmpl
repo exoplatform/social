@@ -1,11 +1,15 @@
 <div class="$uicomponent.id uiActivitiesContainer" id="$uicomponent.id">
+<div class="uiActivitiesLoaderURL" data-url="<%=uicomponent.getLoadActivityUrl()%>"></div>
 <% 
-   List children = uicomponent.getChildrenId();
-   if (children.size() > 0) {
+   if (uicomponent.uiActivityIdFirstList.size() > 0 || uicomponent.uiActivityIdNextList.size() > 0) {
      if(uicomponent.isRenderFull) {
        uicomponent.renderChildren();
      } else {
-       for(uiActivityId in children) {
+        for (uiActivityId in uicomponent.uiActivityIdFirstList) {
+          uicomponent.renderChild(uiActivityId);
+        }
+       //
+       for(uiActivityId in uicomponent.uiActivityIdNextList) {
          String activityId = uiActivityId.replace("UIActivityLoader", "");
 %>
   <div class="uiActivityLoader activity-loadding" style="position:relative;" id="$uiActivityId">
@@ -34,7 +38,6 @@
   </div>
 <%
        }
-     print("<div class=\"uiActivitiesLoaderURL\" data-url=\"" + uicomponent.getLoadActivityUrl() + "\"></div>");
      }
    } else {
 %>

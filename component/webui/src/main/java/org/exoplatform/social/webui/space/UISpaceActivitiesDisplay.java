@@ -16,6 +16,7 @@
  */
 package org.exoplatform.social.webui.space;
 
+import org.exoplatform.commons.utils.PrivilegedSystemHelper;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.identity.model.Identity;
@@ -50,8 +51,9 @@ import org.exoplatform.webui.event.EventListener;
 public class UISpaceActivitiesDisplay extends AbstractActivitiesDisplay {
   static private final Log LOG = ExoLogger.getLogger(UISpaceActivitiesDisplay.class);
 
+  private static final String ACTIVITIES_PER_PAGE_KEY = "social.activities.per.page";
+  private static int ACTIVITY_PER_PAGE = 10;
   private Space space;
-  private static final int ACTIVITY_PER_PAGE = 10;
   private UIActivitiesLoader activitiesLoader;
 
   /**
@@ -60,6 +62,7 @@ public class UISpaceActivitiesDisplay extends AbstractActivitiesDisplay {
    * @throws Exception
    */
   public UISpaceActivitiesDisplay() throws Exception {
+    ACTIVITY_PER_PAGE = Integer.valueOf(PrivilegedSystemHelper.getProperty(ACTIVITIES_PER_PAGE_KEY, "10").trim());
   }
 
   /**

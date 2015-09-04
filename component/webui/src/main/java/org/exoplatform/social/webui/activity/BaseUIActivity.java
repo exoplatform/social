@@ -477,8 +477,10 @@ public class BaseUIActivity extends UIForm {
   }
   
   private void initSingleActivity() {
-    UIActivitiesContainer uiActivitiesContainer = getAncestorOfType(UIActivitiesContainer.class);
-    PostContext postContext = uiActivitiesContainer.getPostContext();
+    PostContext postContext = (PostContext) WebuiRequestContext.getCurrentInstance().getAttribute(UIActivitiesLoader.ACTIVITY_POST_CONTEXT_KEY);
+    if (postContext == null) {
+      postContext = getAncestorOfType(UIPortletApplication.class).findFirstComponentOfType(UIActivitiesLoader.class).getPostContext();
+    }
     if (postContext == PostContext.SINGLE) {
       if (! Utils.isExpandLikers() && ! Utils.isFocusCommentBox()) {
         // expand all comments
@@ -808,16 +810,14 @@ public class BaseUIActivity extends UIForm {
       }
       Utils.getActivityManager().deleteActivity(activityId);
       UIActivitiesContainer activitiesContainer = uiActivity.getAncestorOfType(UIActivitiesContainer.class);
-      activitiesContainer.removeActivity(uiActivity.getActivity());
-      activitiesContainer.removeChildById(UIActivityLoader.buildComponentId(activityId));
       boolean isEmptyListActivity = (activitiesContainer.getActivityIdList().size() == 0) && (activitiesContainer.getActivityList().size() == 0);
       //
       if (isEmptyListActivity) {
         event.getRequestContext().addUIComponentToUpdateByAjax(activitiesContainer.getParent().getParent());
       } else {
         AbstractActivitiesDisplay uiActivitiesDisplay = activitiesContainer.getAncestorOfType(AbstractActivitiesDisplay.class);
-        activitiesContainer.setRenderFull(true, true);
-        uiActivitiesDisplay.setRenderFull(true);
+//        uiActivitiesDisplay.setRenderFull(true);
+        uiActivitiesDisplay.init();
         event.getRequestContext().addUIComponentToUpdateByAjax(uiActivitiesDisplay);
       }
       //

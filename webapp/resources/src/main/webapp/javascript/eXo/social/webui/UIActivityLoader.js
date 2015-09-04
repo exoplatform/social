@@ -3,7 +3,6 @@
     delta : 65,
     numberOfReqsPerSec : 10,//Perfect range: 5 -> 20
     hasMore: false,
-    loaderButton: $('#ActivitiesLoader'),
     parentContainer : $('#UIActivitiesLoader'),
     scrollBottom : function() {
       return $(document).height() - $(window).scrollTop() - $(window).height();  
@@ -12,31 +11,7 @@
       var me = UIActivityLoader;
       me.hasMore = (hasMore === true || hasMore === 'true');
       me.parentContainer = $('#' + parentId);
-
-      $(document).ready(function() {
-        // check onLoad page.
-        if(me.scrollBottom() <= me.delta) {
-          $(window).scrollTop($(document).height() - $(window).height() - (me.delta+1));
-        }
-        $(window).scroll(function(e) {
-          var distanceToBottom = me.scrollBottom();
-          var loadAnimation = me.parentContainer.find('div.ActivityIndicator');
-          if (me.hasMore === true &&
-                distanceToBottom <= me.delta &&
-                  loadAnimation.css("display") === 'none') {
-            //
-            loadAnimation.css('visibility', 'hidden').stop(true, true).fadeIn(500, function() {
-              setTimeout(function(){loadAnimation.css('visibility', 'visible'); }, 300);
-              var action = me.loaderButton.data('action');
-              window.ajaxGet(action, function(data) {
-                me.parentContainer.find('div.ActivityIndicator').hide();
-              });
-            });
-          }
-        });
-        //
-        me.processBottomTimeLine();
-      });
+      me.processBottomTimeLine();
     },
     setStatus : function(hasMore) {
       var me = UIActivityLoader;
@@ -48,12 +23,13 @@
     },
     processBottomTimeLine : function() {
       var me = UIActivityLoader;
+      var loaderButton = $('#ActivitiesLoader');
       if (me.hasMore) {
         $('div.activityBottom').hide();
-        me.loaderButton.parent().show();
+        loaderButton.parent().show();
       } else {
         $('div.activityBottom').show();
-        me.loaderButton.parent().hide();
+        loaderButton.parent().hide();
       }
     },
     renderActivity : function(activityItem) {
@@ -61,7 +37,7 @@
       if (url && url.indexOf('objectId') > 0) {
         url += activityItem.attr('id') + ((UIActivityLoader.getRequestParam().length > 0) ? UIActivityLoader.getRequestParam() : "");
         window.ajaxGet(url, function(data) {
-          activityItem.attr('style', '');
+          activityItem.attr('style', '').removeClass('activity-loadding');
         });
       }
     },
@@ -102,7 +78,8 @@
       }, batchDelay / numberOfReqsPerSec);
     },
     addTop : function(activityItemId) {
-      var activityContainer = UIActivityLoader.parentContainer.find('div.uiActivitiesContainer:first');
+      var parentContainer = $('#UIActivitiesLoader');
+      var activityContainer = parentContainer.find('div.uiActivitiesContainer:first');
       if($('#welcomeActivity').length === 0) {
         var url = activityContainer.find('div.uiActivitiesLoaderURL:first').data('url');
         if(activityContainer.find('#' + activityItemId).length <= 0 && url && url.length > 0) {
@@ -113,7 +90,7 @@
           UIActivityLoader.requestParams = null;
           if(UIActivityLoader.hasMore) {
             //Remove last
-            UIActivityLoader.parentContainer.find('.uiActivitiesContainer:last').find('.uiActivityLoader:last').remove();
+            parentContainer.find('.uiActivitiesContainer:last').find('.uiActivityLoader:last').remove();
           }
           //
           UIActivityLoader.renderActivity(activityItem);

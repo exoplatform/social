@@ -52,7 +52,7 @@ import org.exoplatform.webui.event.EventListener;
 
 public class UIActivitiesLoader extends UIContainer {
   private static final Log LOG = ExoLogger.getLogger(UIActivitiesLoader.class);
-
+  public static final String ACTIVITY_POST_CONTEXT_KEY = "postContext";
   private int currentLoadIndex;
   private boolean hasMore;
   private UIActivitiesLoader lastActivitiesLoader;
@@ -129,6 +129,10 @@ public class UIActivitiesLoader extends UIContainer {
     this.loadingCapacity = loadingCapacity;
   }
 
+  public int getLoadingCapacity() {
+    return loadingCapacity;
+  }
+
   public boolean isHasMore() {
     return hasMore;
   }
@@ -171,7 +175,8 @@ public class UIActivitiesLoader extends UIContainer {
       if (activityId != null && activityId.length() > 0) {
         postContext = PostContext.SINGLE;
       }
-      
+      //
+      WebuiRequestContext.getCurrentInstance().setAttribute(ACTIVITY_POST_CONTEXT_KEY, postContext);
       activitiesContainer.setPostContext(postContext);
       activitiesContainer.setOwnerName(ownerName);
       activitiesContainer.setSelectedDisplayMode(selectedDisplayMode);

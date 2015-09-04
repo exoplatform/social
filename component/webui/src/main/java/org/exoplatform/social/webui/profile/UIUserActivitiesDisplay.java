@@ -22,6 +22,7 @@ import java.util.List;
 
 import org.apache.commons.lang.Validate;
 import org.exoplatform.commons.utils.ListAccess;
+import org.exoplatform.commons.utils.PrivilegedSystemHelper;
 import org.exoplatform.portal.application.PortalRequestContext;
 import org.exoplatform.portal.mop.SiteType;
 import org.exoplatform.portal.webui.util.Util;
@@ -73,12 +74,12 @@ import org.exoplatform.webui.event.EventListener;
   )
 })
 public class UIUserActivitiesDisplay extends AbstractActivitiesDisplay {
-
-  static private final Log      LOG = ExoLogger.getLogger(UIUserActivitiesDisplay.class);
-  private static final int      ACTIVITY_PER_PAGE = 10;
-  private static final String   SLASH = "/";
+  private static final Log LOG = ExoLogger.getLogger(UIUserActivitiesDisplay.class);
+  private static final String SLASH = "/";
+  private static final String ACTIVITIES_PER_PAGE_KEY = "social.activities.display.per.page";
+  private static int ACTIVITY_PER_PAGE = 10;
   public static final String ACTIVITY_STREAM_VISITED_PREFIX_COOKIED = "exo_social_activity_stream_%s_visited_%s";
-  
+
   private Object locker = new Object();
   private boolean notChangedMode;
   private boolean postActivity;
@@ -104,6 +105,8 @@ public class UIUserActivitiesDisplay extends AbstractActivitiesDisplay {
    * @throws Exception 
    */
   public UIUserActivitiesDisplay() throws Exception {
+    ACTIVITY_PER_PAGE = Integer.valueOf(PrivilegedSystemHelper.getProperty(ACTIVITIES_PER_PAGE_KEY, "10").trim());
+    //
     List<SelectItemOption<String>> displayModes = new ArrayList<SelectItemOption<String>>(4);
     displayModes.add(new SelectItemOption<String>("All_Updates", DisplayMode.ALL_ACTIVITIES.toString()));
     displayModes.add(new SelectItemOption<String>("Space_Updates", DisplayMode.MY_SPACE.toString()));
@@ -129,6 +132,7 @@ public class UIUserActivitiesDisplay extends AbstractActivitiesDisplay {
     // set lastUpdatedNumber after init() method invoked inside setSelectedDisplayMode() method
     //int numberOfUpdates = this.getNumberOfUpdatedActivities();
     //setLastUpdatedNum(selectedDisplayMode.toString(), "" + numberOfUpdates);
+    //
   }
 
   public UIActivitiesLoader getActivitiesLoader() {
