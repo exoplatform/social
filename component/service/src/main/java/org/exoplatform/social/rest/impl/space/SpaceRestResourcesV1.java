@@ -268,7 +268,7 @@ public class SpaceRestResourcesV1 implements SpaceRestResources {
     //
     SpaceService spaceService = CommonsUtils.getService(SpaceService.class);
     Space space = spaceService.getSpaceById(id);
-    if (space == null || (! spaceService.isManager(space, authenticatedUser) && ! RestUtils.isMemberOfAdminGroup())) {
+    if (space == null || ! spaceService.isManager(space, authenticatedUser)) {
       throw new WebApplicationException(Response.Status.UNAUTHORIZED);
     }
     spaceService.deleteSpace(space);
