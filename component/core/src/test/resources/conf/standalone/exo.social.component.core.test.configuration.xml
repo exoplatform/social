@@ -23,6 +23,11 @@
    xmlns="http://www.exoplatform.org/xml/ns/kernel_1_2.xsd">
 
   <component>
+    <key>org.exoplatform.services.user.UserStateService</key>
+     <type>org.exoplatform.services.user.UserStateService</type>
+  </component>
+  
+  <component>
     <key>org.exoplatform.portal.config.UserACL</key>
     <type>org.exoplatform.portal.config.UserACL</type>
     <init-params>

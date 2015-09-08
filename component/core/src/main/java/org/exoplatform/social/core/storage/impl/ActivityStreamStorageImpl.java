@@ -214,12 +214,12 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
    StreamConfig streamConfig = CommonsUtils.getService(StreamConfig.class);
    //get multiple user groups separates by comma. Using StringTokenizer to split
    String userGroups = streamConfig.getActiveUserGroups();
-   ActiveIdentityFilter filer = new ActiveIdentityFilter(userGroups);
-   Set<String> activeGroups = CommonsUtils.getService(IdentityStorage.class).getActiveUsers(filer);
+   ActiveIdentityFilter filter = new ActiveIdentityFilter(userGroups);
+   Set<String> activeGroups = CommonsUtils.getService(IdentityStorage.class).getActiveUsers(filter);
    //
    int days = streamConfig.getLastLoginAroundDays();
-   filer = new ActiveIdentityFilter(days);
-   int i = createRefForActiveUsers(poster, activityEntity, filer, activeGroups);
+   filter = new ActiveIdentityFilter(days);
+   int i = createRefForActiveUsers(poster, activityEntity, filter, activeGroups);
    trace.end();
    if (i > 0) {
      LOG.info("loop times = " + i + trace.toString());
