@@ -827,7 +827,7 @@ public class UISpaceMember extends UIForm {
       setUsersName(StringUtils.join(validUsers, ','));
       invitedUserNames = StringUtils.join(validUsers, ',');
     } else {
-      setUersName("");
+      setUsersName(StringUtils.EMPTY);
     }
     
     if (notExistUsers.size() > 0) {
