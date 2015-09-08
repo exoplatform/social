@@ -701,7 +701,7 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
   public void connect(Identity sender, Identity receiver) {
     try {
       //
-      QueryResult<ActivityEntity> activities = getActivitiesOfConnections(sender);
+      QueryResult<ActivityEntity> activities = getActivitiesByPoster(sender);
       
       
       IdentityEntity receiverEntity = identityStorage._findIdentityEntity(receiver.getProviderId(), receiver.getRemoteId());
@@ -725,7 +725,7 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
       
       //
       IdentityEntity senderEntity = identityStorage._findIdentityEntity(sender.getProviderId(), sender.getRemoteId());
-      activities = getActivitiesOfConnections(receiver);
+      activities = getActivitiesByPoster(receiver);
       if (activities != null) {
         while(activities.hasNext()) {
           ActivityEntity entity = activities.next();
@@ -1057,7 +1057,14 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
     ActivityFilter filter = ActivityFilter.newer();
 
     //
-    return getActivitiesOfIdentities(ActivityBuilderWhere.owner().owners(connections), filter, 0, -1);
+    return getActivitiesOfIdentities(ActivityBuilderWhere.simple().owners(connections).poster(ownerIdentity), filter, 0, -1);
+  }
+  
+  private QueryResult<ActivityEntity> getActivitiesByPoster(Identity ownerIdentity) {
+
+    ActivityFilter filter = ActivityFilter.newer();
+    //
+    return getActivitiesOfIdentities(ActivityBuilderWhere.simple().poster(ownerIdentity), filter, 0, -1);
   }
   
   private QueryResult<ActivityEntity> getActivitiesOfSpace(Identity spaceIdentity) {

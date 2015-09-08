@@ -759,7 +759,7 @@ public class ActivityStorageTest extends AbstractCoreTest {
   /**
    * Test {@link ActivityStorage#testGetActivitiesRelationshipByFeed(Identity, int, int)}
    */
-  @MaxQueryNumber(1077)
+  @MaxQueryNumber(1107)
   public void testGetActivitiesRelationshipByFeed() throws Exception {
     RelationshipManager relationshipManager = this.getRelationshipManager();
     
@@ -2722,6 +2722,36 @@ public class ActivityStorageTest extends AbstractCoreTest {
     
     demoActivities = activityStorage.getActivityFeed(demoIdentity, 0, 10);
     assertEquals(3, demoActivities.size());*/
+  }
+  
+  @MaxQueryNumber(1053)
+  public void testPostActivityOnConnectionStream() throws Exception {
+    Relationship rootDemoRelationship = relationshipManager.inviteToConnect(rootIdentity, demoIdentity);
+    relationshipManager.confirm(demoIdentity, rootIdentity);
+    Relationship demoJohnRelationship = relationshipManager.inviteToConnect(demoIdentity, johnIdentity);
+    relationshipManager.confirm(johnIdentity, demoIdentity);
+    
+    //root posts an activity on demo's stream
+    ExoSocialActivity activity = new ExoSocialActivityImpl();
+    activity.setTitle("activity title");
+    activity.setUserId(rootIdentity.getId());
+    activityStorage.saveActivity(demoIdentity, activity);
+    tearDownActivityList.add(activity);
+    
+    List<ExoSocialActivity> demoActivities = activityStorage.getActivityFeed(demoIdentity, 0, 10);
+    assertEquals(1, demoActivities.size());
+    List<ExoSocialActivity> johnActivities = activityStorage.getActivityFeed(johnIdentity, 0, 10);
+    assertEquals(0, johnActivities.size());
+    
+    Relationship maryDemoRelationship = relationshipManager.inviteToConnect(maryIdentity, demoIdentity);
+    relationshipManager.confirm(demoIdentity, maryIdentity);
+    
+    List<ExoSocialActivity> maryActivities = activityStorage.getActivityFeed(maryIdentity, 0, 10);
+    assertEquals(0, maryActivities.size());
+    
+    relationshipManager.delete(rootDemoRelationship);
+    relationshipManager.delete(demoJohnRelationship);
+    relationshipManager.delete(maryDemoRelationship);
   }
 
   /**
