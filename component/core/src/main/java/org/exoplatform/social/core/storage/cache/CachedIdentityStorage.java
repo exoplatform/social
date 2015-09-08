@@ -21,10 +21,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import org.exoplatform.commons.utils.CommonsUtils;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.cache.ExoCache;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
+import org.exoplatform.services.user.UserStateModel;
+import org.exoplatform.services.user.UserStateService;
 import org.exoplatform.social.core.identity.SpaceMemberFilterListAccess.Type;
 import org.exoplatform.social.core.identity.model.ActiveIdentityFilter;
 import org.exoplatform.social.core.identity.model.Identity;
@@ -578,6 +581,7 @@ public class CachedIdentityStorage implements IdentityStorage {
   public Set<String> getActiveUsers(final ActiveIdentityFilter filter) {
     ActiveIdentityKey key = new ActiveIdentityKey(filter);
 
+    boolean isExistFromCache = activeIdentitiesCache.get(key) != null;
     ActiveIdentitiesData data = activeIdentitiesCache.get(
           new ServiceContext<ActiveIdentitiesData>() {
             public ActiveIdentitiesData execute() {
@@ -587,7 +591,17 @@ public class CachedIdentityStorage implements IdentityStorage {
           },
           key);
 
-    return data.build();
+    Set<String> users = data.build();
+    if (isExistFromCache) {
+    //Gets online users and push to activate users
+      if (CommonsUtils.getService(UserStateService.class) != null) {
+        List<UserStateModel> onlines = CommonsUtils.getService(UserStateService.class).online();
+        for (UserStateModel user : onlines) {
+          users.add(user.getUserId());
+        }
+      }
+    }
+    return users;
   }
   /**
    * {@inheritDoc}
