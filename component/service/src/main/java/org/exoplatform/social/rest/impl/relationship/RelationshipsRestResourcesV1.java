@@ -75,6 +75,7 @@ public class RelationshipsRestResourcesV1 implements RelationshipsRestResources 
     @ApiResponse (code = 400, message = "Invalid query input to find relationships.") })
   public Response getRelationships(@Context UriInfo uriInfo,
                                    @ApiParam(value = "Status of relationship: pending, cofirmed, ignored, all") @QueryParam("status") String status,
+                                   @ApiParam(value = "Identity id") @QueryParam("identityId") String identityId,
                                    @ApiParam(value = "Offset", required = false, defaultValue = "0") @QueryParam("offset") int offset,
                                    @ApiParam(value = "Limit", required = false, defaultValue = "20") @QueryParam("limit") int limit,
                                    @ApiParam(value = "Size of returned result list.", defaultValue = "false") @QueryParam("returnSize") boolean returnSize) throws Exception {
@@ -93,9 +94,10 @@ public class RelationshipsRestResourcesV1 implements RelationshipsRestResources 
     
     List<Relationship> relationships = new ArrayList<Relationship>();
     int size = 0;
-    if (RestUtils.isMemberOfAdminGroup()) {
-      relationships = relationshipManager.getRelationshipsByStatus(null, type, offset, limit);
-      size = relationshipManager.getRelationshipsCountByStatus(null, type);
+    if (identityId != null & RestUtils.isMemberOfAdminGroup()) {
+      Identity identity = CommonsUtils.getService(IdentityManager.class).getIdentity(identityId, false);
+      relationships = relationshipManager.getRelationshipsByStatus(identity, type, offset, limit);
+      size = relationshipManager.getRelationshipsCountByStatus(identity, type);
     } else {
       String currentUser = ConversationState.getCurrent().getIdentity().getUserId();
       Identity authenticatedUser = CommonsUtils.getService(IdentityManager.class)

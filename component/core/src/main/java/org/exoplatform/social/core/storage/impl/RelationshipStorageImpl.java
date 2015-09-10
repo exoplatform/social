@@ -32,9 +32,9 @@ import java.util.TreeMap;
 
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
+import javax.jcr.Session;
 
 import org.chromattic.api.query.Ordering;
-import org.chromattic.api.query.Query;
 import org.chromattic.api.query.QueryBuilder;
 import org.chromattic.api.query.QueryResult;
 import org.chromattic.core.query.QueryImpl;
@@ -1324,63 +1324,177 @@ public class RelationshipStorageImpl extends AbstractStorage implements Relation
     this.relationshipStorage = storage;
   }
   
-  private Query<RelationshipEntity> buildRelationshipQuery(String path, Relationship.Type type) {
-    QueryBuilder<RelationshipEntity> builder = getSession().createQueryBuilder(RelationshipEntity.class);
-
-    boolean hasAnd = false;
-    WhereExpression whereExpression = new WhereExpression();
-    if (path != null && path.length() > 0) {
-      whereExpression.like(JCRProperties.path, path + StorageUtils.SLASH_STR + StorageUtils.PERCENT_STR);
-      hasAnd = true;
-    }
-    if (hasAnd) {
-      whereExpression.and();
-    }
-    if (Relationship.Type.ALL.equals(type)) {
-      whereExpression.startGroup();
-      whereExpression.like(JCRProperties.status, Relationship.Type.CONFIRMED.name());
-      whereExpression.or();
-      whereExpression.like(JCRProperties.status, Relationship.Type.PENDING.name());
-      whereExpression.endGroup();
-    } else {
-      whereExpression.like(JCRProperties.status, type.name());
-    }
-
-    builder.where(whereExpression.toString());
-    builder.orderBy(RelationshipEntity.createdTime.getName(), Ordering.DESC);
-    
-    return builder.get();
-  }
-  
-  private String getPathFromIdentity(Identity identity) {
-    if (identity == null) return null;
-    try {
-      IdentityEntity identityEntity = _findById(IdentityEntity.class, identity.getId());
-      return identityEntity.getPath();
-    } catch (Exception e) {
-      return null;
-    }
-  }
-
   /**
    * {@inheritDoc}
    */
   public List<Relationship> getRelationshipsByStatus(Identity identity, Relationship.Type type, long offset, long limit) {
-    List<Relationship> relationships = new ArrayList<Relationship>();
 
-    QueryResult<RelationshipEntity> results = buildRelationshipQuery(getPathFromIdentity(identity), type).objects(offset, limit);
+    try {
+      Session jcrSession = getSession().getJCRSession();
+      List<Relationship> relationships = new ArrayList<Relationship>();
 
-    while (results.hasNext()) {
-      relationships.add(getStorage().getRelationship(results.next().getId()));
+      //
+      IdentityEntity receiverEntity = _findById(IdentityEntity.class, identity.getId());
+      String relationshipNodePath = receiverEntity.getPath() + StorageUtils.SLASH_STR + StorageUtils.SOC_RELATIONSHIP;;
+      String receiverNodePath = receiverEntity.getPath() + StorageUtils.SLASH_STR + StorageUtils.SOC_RELCEIVER;
+      String senderNodePath = receiverEntity.getPath() + StorageUtils.SLASH_STR + StorageUtils.SOC_SENDER;
+      Node node = null;
+      NodeIterator relationIterator = null;
+      NodeIterator senderIterator = null;
+      NodeIterator receiverIterator = null;
+      
+      switch (type) {
+
+      case ALL:
+        node = (Node) jcrSession.getItem(relationshipNodePath);
+        relationIterator = AbstractService.getNodeIteratorOrderDESC(node);
+        node = (Node) jcrSession.getItem(receiverNodePath);
+        senderIterator = AbstractService.getNodeIteratorOrderDESC(node);
+        node = (Node) jcrSession.getItem(senderNodePath);
+        receiverIterator = AbstractService.getNodeIteratorOrderDESC(node);
+        getRelationships(relationships, new IteratorIterator<Node>(relationIterator, senderIterator, receiverIterator), offset, limit);
+        break;
+
+      case CONFIRMED:
+        node = (Node) jcrSession.getItem(relationshipNodePath);
+        relationIterator = AbstractService.getNodeIteratorOrderDESC(node);
+        
+        getRelationships(relationships, new IteratorIterator<Node>(relationIterator), offset, limit);
+        break;
+
+      case PENDING:
+        node = (Node) jcrSession.getItem(receiverNodePath);
+        receiverIterator = AbstractService.getNodeIteratorOrderDESC(node);
+        node = (Node) jcrSession.getItem(senderNodePath);
+        senderIterator = AbstractService.getNodeIteratorOrderDESC(node);
+        getRelationships(relationships, new IteratorIterator<Node>(receiverIterator, senderIterator), offset, limit);
+        break;
+
+      case IGNORED:
+        break;
+      }
+
+      return relationships;
+    } catch (NodeNotFoundException e) {
+      return new ArrayList<Relationship>();
+    } catch (Exception e) {
+      throw new RelationshipStorageException(RelationshipStorageException.Type.FAILED_TO_GET_RELATIONSHIP,
+                                             e.getMessage());
     }
-
-    return relationships;
   }
   
   /**
    * {@inheritDoc}
    */
   public int getRelationshipsCountByStatus(Identity identity, Relationship.Type type) {
-    return buildRelationshipQuery(getPathFromIdentity(identity), type).objects().size();
+    try {
+      IdentityEntity receiverEntity = _findById(IdentityEntity.class, identity.getId());
+
+      switch (type) {
+
+      case ALL:
+        return receiverEntity.getRelationship().getRelationships().size()
+            + receiverEntity.getReceiver().getRelationships().size()
+            + receiverEntity.getSender().getRelationships().size();
+      case CONFIRMED:
+        return receiverEntity.getRelationship().getRelationships().size();
+      case PENDING:
+        return receiverEntity.getReceiver().getRelationships().size()
+            + receiverEntity.getSender().getRelationships().size();
+      case IGNORED:
+        return receiverEntity.getIgnored().getRelationships().size();
+      }
+    } catch (Exception e) {
+      return 0;
+    }
+    
+    return 0;
+  }
+  
+  private void getRelationships(List<Relationship> relationships, IteratorIterator<Node> nodeIt, long offset, long limit) {
+    //
+    int i = 0;
+
+    _skip(nodeIt, offset);
+
+    Relationship relationship = null;
+    try {
+      while (nodeIt.hasNext()) {
+        Node relationshipNode = (Node) nodeIt.next();
+        relationship = new Relationship(relationshipNode.getUUID());
+        IdentityEntity senderEntity = _findById(IdentityEntity.class, relationshipNode.getProperty(StorageUtils.SOC_FROM).getString());
+        IdentityEntity receiverEntity = _findById(IdentityEntity.class, relationshipNode.getProperty(StorageUtils.SOC_TO).getString());
+        //
+        if (_getMixin(senderEntity, DisabledEntity.class, false) != null ||
+            _getMixin(receiverEntity, DisabledEntity.class, false) != null) {
+          continue;
+        }
+        Identity sender = new Identity(senderEntity.getId());
+        sender.setRemoteId(senderEntity.getRemoteId());
+        sender.setProviderId(senderEntity.getProviderId());
+        ProfileEntity senderProfileEntity = senderEntity.getProfile();
+  
+        if (senderProfileEntity != null) {
+          loadProfile(sender);
+        }
+  
+        Identity receiver = new Identity(receiverEntity.getId());
+        receiver.setRemoteId(receiverEntity.getRemoteId());
+        receiver.setProviderId(receiverEntity.getProviderId());
+        ProfileEntity receiverProfileEntity = receiverEntity.getProfile();
+  
+        if (receiverProfileEntity != null) {
+          loadProfile(receiver);
+        }
+  
+        relationship.setSender(sender);
+        relationship.setReceiver(receiver);
+  
+        if (relationshipNode.getParent().hasNode(StorageUtils.SOC_SENDER) ||
+            relationshipNode.getParent().hasNode(StorageUtils.SOC_RELCEIVER)) {
+          relationship.setStatus(Relationship.Type.PENDING);
+        }
+        else {
+          relationship.setStatus(Relationship.Type.CONFIRMED);
+        }
+  
+        relationships.add(relationship);
+        
+        if (limit != -1 && limit > 0 && ++i >= limit) {
+          break;
+        }
+      }
+    } catch (Exception e) {
+      throw new RelationshipStorageException(RelationshipStorageException.Type.FAILED_TO_GET_RELATIONSHIP,
+                                             e.getMessage());
+    }
+  }
+  
+  class IteratorIterator<T> implements Iterator<T> {
+    private final Iterator<T> is[];
+
+    private int               current;
+
+    public IteratorIterator(Iterator<T>... iterators) {
+      is = iterators;
+      current = 0;
+    }
+
+    public boolean hasNext() {
+      while (current < is.length && !is[current].hasNext())
+        current++;
+
+      return current < is.length;
+    }
+
+    public T next() {
+      while (current < is.length && !is[current].hasNext())
+        current++;
+
+      return is[current].next();
+    }
+
+    public void remove() { /* not implemented */
+    }
   }
 }

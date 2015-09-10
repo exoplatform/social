@@ -85,41 +85,28 @@ public class UsersRelationshipsRestResourcesV1 implements UsersRelationshipsRest
     limit = limit > 0 ? limit : RestUtils.getLimit(uriInfo);
     
     IdentityManager identityManager = CommonsUtils.getService(IdentityManager.class);
-    Identity givenUser = (user == null) ? null : identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, user, true);
-    Identity authenticatedUser = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, ConversationState.getCurrent().getIdentity().getUserId(), true);
-    
     RelationshipManager relationshipManager = CommonsUtils.getService(RelationshipManager.class);
-    if (givenUser != null && ! RestUtils.isMemberOfAdminGroup()) {
-      Relationship relationship = relationshipManager.get(givenUser, authenticatedUser);
-      RelationshipEntity relationshipEntity = EntityBuilder.buildEntityRelationship(relationship, uriInfo.getPath(), expand, false);
-      CollectionEntity collectionRelationship = new CollectionEntity(Arrays.asList(relationshipEntity.getDataEntity()), EntityBuilder.USERS_RELATIONSHIP_TYPE, offset, limit);
-      if (returnSize) {
-        collectionRelationship.setSize(1);
-      }
-      return EntityBuilder.getResponse(collectionRelationship, uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
-    }
-    
     Relationship.Type type;
+    
     try {
       type = Relationship.Type.valueOf(status.toUpperCase());
     } catch (Exception e) {
       type = Relationship.Type.ALL;
     }
+    
     List<Relationship> relationships = new ArrayList<Relationship>();
     int size = 0;
-    if (givenUser == null & RestUtils.isMemberOfAdminGroup()) {
-      //gets all relationships from database by status
-      relationships = relationshipManager.getRelationshipsByStatus(null, type, offset, limit);
-      size = returnSize ? relationshipManager.getRelationshipsCountByStatus(null, type) : -1;
+    
+    if (user != null & RestUtils.isMemberOfAdminGroup()) {
+      Identity givenUser = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, user, true);
+      relationships = relationshipManager.getRelationshipsByStatus(givenUser, type, offset, limit);
+      size = returnSize ? relationshipManager.getRelationshipsCountByStatus(givenUser, type) : -1;
     } else {
-      if (givenUser == null) {
-        relationships = relationshipManager.getRelationshipsByStatus(authenticatedUser, type, offset, limit);
-        size = returnSize ? relationshipManager.getRelationshipsCountByStatus(authenticatedUser, type) : -1;
-      } else {
-        relationships = relationshipManager.getRelationshipsByStatus(givenUser, type, offset, limit);
-        size = returnSize ? relationshipManager.getRelationshipsCountByStatus(givenUser, type) : -1;
-      }
+      Identity authenticatedUser = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, ConversationState.getCurrent().getIdentity().getUserId(), true);
+      relationships = relationshipManager.getRelationshipsByStatus(authenticatedUser, type, offset, limit);
+      size = returnSize ? relationshipManager.getRelationshipsCountByStatus(authenticatedUser, type) : -1;
     }
+    
     List<DataEntity> relationshipEntities = EntityBuilder.buildRelationshipEntities(relationships, uriInfo);
     CollectionEntity collectionRelationship = new CollectionEntity(relationshipEntities, EntityBuilder.USERS_RELATIONSHIP_TYPE, offset, limit);
     if (returnSize) {

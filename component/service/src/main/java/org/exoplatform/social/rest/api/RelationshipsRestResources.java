@@ -40,6 +40,7 @@ public interface RelationshipsRestResources extends SocialRest {
   @GET
   public abstract Response getRelationships(@Context UriInfo uriInfo,
                                             @QueryParam("status") String expand,
+                                            @QueryParam("identityId") String identityId,
                                             @QueryParam("offset") int offset,
                                             @QueryParam("limit") int limit,
                                             @QueryParam("returnSize") boolean returnSize) throws Exception;
