@@ -513,6 +513,7 @@ public class UIEditUserProfileForm extends UIForm {
       String position =  UserProfileHelper.encodeHTML(baseSection.getUIStringInput(Profile.POSITION).getValue());
       //
       String gender = baseSection.getUIFormSelectBox(Profile.GENDER).getValue();
+      gender = gender != null && gender.length() > 0 ? gender : null;
       //
       List<Map<String, String>> phones = baseSection.getUIMultiValueSelection(Profile.CONTACT_PHONES).getValues();
       //
