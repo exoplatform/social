@@ -223,6 +223,7 @@ var UIActivity = {
         function() {
           $(this).removeClass('activityStream');
           window.eval(jElm.attr('data-delete').replace('javascript:', ''));
+          $('.iconReturn').trigger('click');
         });
     } else if (idElm.indexOf('Comment') > 0) { // remove comment
       var idComment = idElm.replace('DeleteCommentButton', '')
@@ -288,17 +289,17 @@ var UIActivity = {
     });
   },
   checkDevice : function() {
-    var body = $('body:first').removeClass('phoneDisplay').removeClass('tabletDisplay');
+    var body = $('body:first').removeClass('phoneDisplay').removeClass('tabletDisplay').removeClass('tabletLDisplay');
     var isMobile = body.find('.visible-phone:first').css('display') !== 'none';
     var isTablet = body.find('.visible-tablet:first').css('display') !== 'none';
-	var isTabletL = body.find('.visible-tabletL:first').css('display') !== 'none';
+	  var isTabletL = body.find('.visible-tabletL:first').css('display') !== 'none';
     if (isMobile) {
       body.addClass('phoneDisplay');
     }
     if (isTablet) {
       body.addClass('tabletDisplay');
     }
-	if (isTabletL) {
+    if (isTabletL) {
       body.addClass('tabletLDisplay');
     }
     return {'isMobile' : isMobile, 'isTablet' : isTablet, 'isTabletL' : isTabletL};

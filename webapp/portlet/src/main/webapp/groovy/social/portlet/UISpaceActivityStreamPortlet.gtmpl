@@ -29,6 +29,7 @@
 
   print("<div class=\"visible-desktop\"></div>");
   print("<div class=\"visible-tablet\"></div>");
+  print("<div class=\"visible-tabletL\"></div>");
   print("<div class=\"visible-phone\"></div>");
 %>
 <div class="uiSocApplication uiSpaceActivityStreamPortlet" id="$uicomponent.id">

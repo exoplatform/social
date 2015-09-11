@@ -809,22 +809,26 @@ public class BaseUIActivity extends UIForm {
         return;
       }
       Utils.getActivityManager().deleteActivity(activityId);
-      UIActivitiesContainer activitiesContainer = uiActivity.getAncestorOfType(UIActivitiesContainer.class);
-      boolean isEmptyListActivity = (activitiesContainer.getActivityIdList().size() == 0) && (activitiesContainer.getActivityList().size() == 0);
+
+      UIActivitiesContainer activitiesContainer = uiActivity.getParent();
+      activitiesContainer.removeChildById(uiActivity.getId());
+      activitiesContainer.removeActivity(uiActivity.getActivity());
+      WebuiRequestContext context = event.getRequestContext();
+      context.getJavascriptManager().require("SHARED/social-ui-activity", "activity")
+             .addScripts("activity.responsiveMobile('" + activitiesContainer.getAncestorOfType(UIPortletApplication.class).getId() + "');");
       //
+      boolean isEmptyListActivity = (activitiesContainer.getActivityIdList().size() == 0) && (activitiesContainer.getActivityList().size() == 0);
       if (isEmptyListActivity) {
-        event.getRequestContext().addUIComponentToUpdateByAjax(activitiesContainer.getParent().getParent());
+        context.addUIComponentToUpdateByAjax(activitiesContainer.getParent().getParent());
       } else {
         AbstractActivitiesDisplay uiActivitiesDisplay = activitiesContainer.getAncestorOfType(AbstractActivitiesDisplay.class);
 //        uiActivitiesDisplay.setRenderFull(true);
         uiActivitiesDisplay.init();
         event.getRequestContext().addUIComponentToUpdateByAjax(uiActivitiesDisplay);
       }
-      //
       Utils.clearUserProfilePopup();
       Utils.resizeHomePage();
     }
-
   }
 
   public static class DeleteCommentActionListener extends EventListener<BaseUIActivity> {

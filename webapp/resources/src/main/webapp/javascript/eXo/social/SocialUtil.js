@@ -469,6 +469,8 @@
   
     show : function(popup) {
       $('#UIPortalApplication').append(popup);
+      $(document.body).addClass('modal-open');
+      popup = popup.show().find('.UIPopupWindow:first');
       popup.css({
         height : 'auto',
         width : '400px',
@@ -485,16 +487,18 @@
         'visibility' : 'visible',
         'overflow' : 'hidden'
       });
-      popup.animate({ height : pHeight + 'px' }, 500, function() { });
+      popup.animate({ height : pHeight + 'px' }, 500, function() {
+        $('.MaskLayer').click(PopupConfirmation.hiden);
+      });
       uiMaskLayer.createMask(popup[0].parentNode, popup[0], 1);
       popupWindow.initDND(popup.find('.popupTitle')[0], popup[0]);
     },
   
     hiden : function(e) {
       var thiz = $(this);
+      $(document.body).removeClass('modal-open');
       var popup = thiz.parents('#UISocialPopupConfirmation')
       if (popup.length > 0) {
-        uiMaskLayer.removeMask(popup[0].previousSibling);
         popup.animate({
           height : '0px'
         }, 300, function() {
