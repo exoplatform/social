@@ -190,8 +190,8 @@ public class UIActivitiesLoader extends UIContainer {
         activities = loadActivity();
         activitiesContainer.setActivityList(activities);
       } else if (isShowActivities(space)) {
-        activities = loadActivities(currentLoadIndex, loadingCapacity);
-        activitiesContainer.setActivityList(activities);
+        List<String> activityIds = loadActivities(currentLoadIndex, loadingCapacity);
+        activitiesContainer.setActivityIdList(activityIds);
       } else {
         List<String> activityIds = loadActivityIds(currentLoadIndex, loadingCapacity);
         activitiesContainer.setActivityIdList(activityIds);
@@ -221,8 +221,8 @@ public class UIActivitiesLoader extends UIContainer {
       activities = loadActivity();
       lastActivitiesLoader.getActivitiesContainer().setActivityList(activities);
     } else if (isShowActivities(space)) {
-      activities = loadActivities(currentLoadIndex, loadingCapacity);
-      lastActivitiesLoader.getActivitiesContainer().setActivityList(activities);
+      List<String> activityIds = loadActivities(currentLoadIndex, loadingCapacity);
+      lastActivitiesLoader.getActivitiesContainer().setActivityIdList(activityIds);
     } else {
       List<String> activityIds = loadActivityIds(currentLoadIndex, loadingCapacity);
       lastActivitiesLoader.getActivitiesContainer().setActivityIdList(activityIds);
@@ -233,15 +233,15 @@ public class UIActivitiesLoader extends UIContainer {
     lastActivitiesLoader.setHasMore(isHasMore());
   }
 
-  private List<ExoSocialActivity> loadActivities(int index, int length) throws Exception {
+  private List<String> loadActivities(int index, int length) throws Exception {
     if (activityListAccess != null) {
-      ExoSocialActivity[] activities = activityListAccess.load(index, length);
-      if (activities != null) {
-        int size = activityListAccess.getSize();
-        boolean hasMore = size > (length + index);
-        setHasMore(hasMore);
-        
-        return new ArrayList<ExoSocialActivity>(Arrays.asList(activities));
+      if (activityListAccess instanceof ActivitiesRealtimeListAccess) {
+        ActivitiesRealtimeListAccess listAccess = (ActivitiesRealtimeListAccess) activityListAccess;
+        List<String> activityIds = listAccess.loadIdsAsList(index, length);
+        if (activityIds != null) {
+          setHasMore(activityIds.size() >= loadingCapacity);
+          return activityIds;
+        }
       }
     }
     return null;
