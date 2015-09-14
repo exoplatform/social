@@ -30,7 +30,7 @@
           String label = _ctx.appRes("UIBasicProfile.label." + key);
 %>
         <div class="<%=key%> clearfix"><div class="labelName pull-left"><%=label%>:</div>
-          <div rel="tooltip" data-placement="top" title="" data-original-title="<%=experience.get(key)%>"
+          <div title="" data-original-title="<%=experience.get(key)%>"
             class="pull-left ellipsis"><%=experience.get(key)%><%=(utilNow != null && "startDate".equals(key)) ? (" " + _ctx.appRes("UIBasicProfile.label.untilNow")) : "" %></div>
          </div> 
 <%
