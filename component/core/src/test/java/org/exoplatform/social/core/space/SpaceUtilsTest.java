@@ -16,11 +16,20 @@
  */
 package org.exoplatform.social.core.space;
 
-import junit.framework.TestCase;
-
+import org.exoplatform.portal.mop.page.PageContext;
+import org.exoplatform.portal.mop.page.PageService;
+import org.exoplatform.portal.mop.user.UserNode;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
+import org.exoplatform.services.security.ConversationState;
+import org.exoplatform.services.security.MembershipEntry;
+import org.exoplatform.social.core.identity.model.Identity;
+import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
+import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.space.model.Space;
+import org.exoplatform.social.core.test.AbstractCoreTest;
+
+import java.util.*;
 
 /**
  * Unit Test for {@link SpaceUtilsTest}
@@ -29,9 +38,55 @@ import org.exoplatform.social.core.space.model.Space;
  * @since Jan 27, 2011
  * @since 1.2.0-GA
  */
-public class SpaceUtilsTest extends TestCase {
+public class SpaceUtilsTest extends AbstractCoreTest {
 
   private static final Log LOG = ExoLogger.getLogger(SpaceUtilsTest.class);
+
+  private List<Space> tearDown = new ArrayList<Space>();
+
+  private org.exoplatform.services.security.Identity identity;
+  private Identity rootIdentity;
+  private IdentityManager identityManager;
+  private PageService pageService;
+
+  @Override
+  protected void setUp() throws Exception {
+    super.setUp();
+    Collection<String> roles = Collections.emptySet();
+    Set<MembershipEntry> memberships = new HashSet<MembershipEntry>();
+    identity = new org.exoplatform.services.security.Identity("root", memberships, roles);
+    identityManager = (IdentityManager) getContainer().getComponentInstanceOfType(IdentityManager.class);
+    rootIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "root", false);
+    String spaceDisplayName = "Space1";
+    Space space1 = new Space();
+    space1.setApp("Members:true,Contact:true");
+    space1.setDisplayName(spaceDisplayName);
+    space1.setPrettyName(space1.getDisplayName());
+    String shortName = SpaceUtils.cleanString(spaceDisplayName);
+    space1.setGroupId("/spaces/" + shortName);
+    space1.setUrl(shortName);
+    space1.setRegistration("validation");
+    space1.setDescription("This is my first space for testing");
+    space1.setType("classic");
+    space1.setVisibility("public");
+    space1.setPriority("2");
+    String[] manager = new String []{"root"};
+    String[] members = new String []{"demo", "john", "mary"};
+    space1.setManagers(manager);
+    space1.setMembers(members);
+
+    spaceService.createSpace(space1, "root");
+    tearDown.add(space1);
+  }
+
+  @Override
+  protected  void tearDown() throws Exception {
+    for(Space space : tearDown) {
+      spaceService.deleteSpace(space);
+    }
+    identityManager.deleteIdentity(rootIdentity);
+    super.tearDown();
+  }
 
   public void testGetDisplayAppName() throws Exception {
 
@@ -92,5 +147,30 @@ public class SpaceUtilsTest extends TestCase {
     assertEquals("space", SpaceUtils.processUnifiedSearchCondition(input));
     input = "space~0.5 test~0.5";
     assertEquals("space test", SpaceUtils.processUnifiedSearchCondition(input));
+  }
+
+  public void testchangeAppPageTitle() throws Exception {
+    Space space1 = tearDown.get(0);
+
+    ConversationState.setCurrent(new ConversationState(identity));
+    List<UserNode> childNodes = SpaceUtils.getSpaceUserNodeChildren(space1);
+
+    PageService pageService = (PageService) getContainer().getComponentInstanceOfType(PageService.class);
+    PageContext pc = null;
+    String AppName ="";
+
+    for (UserNode childNode : childNodes)
+    {
+      pc = pageService.loadPage(childNode.getPageRef());
+      AppName = pc.getState().getDisplayName().split("-")[0].trim();
+
+      assertEquals("Space1", AppName);
+      SpaceUtils.changeAppPageTitle(childNode,"newspacetitle");
+      pc = pageService.loadPage(childNode.getPageRef());
+      AppName = pc.getState().getDisplayName().split("-")[0].trim();
+
+      assertEquals("newspacetitle", AppName);
+    }
+
   }
 }
