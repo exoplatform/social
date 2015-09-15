@@ -16,10 +16,6 @@
  */
 package org.exoplatform.social.webui.space;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.ResourceBundle;
-
 import org.apache.commons.lang.StringEscapeUtils;
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.portal.application.PortalRequestContext;
@@ -59,6 +55,10 @@ import org.exoplatform.webui.form.UIFormTextAreaInput;
 import org.exoplatform.webui.form.validator.ExpressionValidator;
 import org.exoplatform.webui.form.validator.MandatoryValidator;
 import org.exoplatform.webui.form.validator.StringLengthValidator;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.ResourceBundle;
 
 
 @ComponentConfig(
@@ -358,10 +358,12 @@ public class UISpaceInfo extends UIForm {
 
       space.setUrl(newNodeName);
       SpaceUtils.changeSpaceUrlPreference(renamedNode, space, newNodeLabel);
+      SpaceUtils.changeAppPageTitle(renamedNode, newNodeLabel);
       
       List<UserNode> userNodes =  new ArrayList<UserNode>(renamedNode.getChildren());
       for (UserNode childNode : userNodes) {
         SpaceUtils.changeSpaceUrlPreference(childNode, space, newNodeLabel);
+        SpaceUtils.changeAppPageTitle(childNode, newNodeLabel);
       }
       return renamedNode;
     } catch (Exception e) {
