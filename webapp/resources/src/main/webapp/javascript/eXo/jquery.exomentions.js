@@ -1077,9 +1077,10 @@
       var parent = elmInputBox.parent();
       parent.find('div.placeholder:first').show().css('top', '5px');;
       
+      var hasFileAttachment = parent.closest('#UIComposer').find('div.uiActivityFileAttachment').length > 0;
       var isLinked = ($('#LinkTitle').length > 0);
       var action = $('#' + settings.idAction);
-      if(isLinked === false && action.length > 0 && action.attr('disabled') === undefined) {
+      if(hasFileAttachment === false && isLinked === false && action.length > 0 && action.attr('disabled') === undefined) {
         $('#' + settings.idAction).attr('disabled', 'disabled').addClass('DisableButton');
       }
     }

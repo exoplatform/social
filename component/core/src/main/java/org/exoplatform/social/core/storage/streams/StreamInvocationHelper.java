@@ -46,7 +46,7 @@ public class StreamInvocationHelper {
     //
     SocialServiceContext ctx = SocialServiceContextImpl.getInstance();
     StreamProcessContext processCtx = StreamProcessContext.getIntance(StreamProcessContext.NEW_ACTIVITY_RELATIONS_PROCESS, ctx);
-    processCtx.identity(owner).activityEntity(entity).mentioners(mentioners);
+    processCtx.identity(owner).activityEntity(entity).posterId(entity.getPosterIdentity().getId()).mentioners(mentioners);
     
     try {
       if (ctx.isAsync()) {
@@ -256,13 +256,14 @@ public class StreamInvocationHelper {
     processCtx.identity(owner).spaceIdentity(spaceIdentity);
     
     try {
-      if(ctx.isAsync()) {
-        beforeAsync();
-        //
-        ctx.getServiceExecutor().async(StreamProcessorFactory.addSpaceMemberStream(), processCtx);
-      } else {
-        ctx.getServiceExecutor().execute(StreamProcessorFactory.addSpaceMemberStream(), processCtx);
-      }
+//      if(ctx.isAsync()) {
+//        beforeAsync();
+//        //
+//        ctx.getServiceExecutor().async(StreamProcessorFactory.addSpaceMemberStream(), processCtx);
+//      } else {
+//        ctx.getServiceExecutor().execute(StreamProcessorFactory.addSpaceMemberStream(), processCtx);
+//      }
+      ctx.getServiceExecutor().execute(StreamProcessorFactory.addSpaceMemberStream(), processCtx);
       
     } finally {
       LOG.debug(processCtx.getTraceLog());

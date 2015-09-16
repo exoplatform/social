@@ -32,6 +32,7 @@ import org.exoplatform.social.core.space.impl.DefaultSpaceApplicationHandler;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.storage.api.IdentityStorage;
 import org.exoplatform.social.core.storage.api.SpaceStorage;
+import org.exoplatform.social.core.storage.impl.StorageUtils;
 import org.exoplatform.social.core.test.AbstractCoreTest;
 import org.exoplatform.social.core.test.MaxQueryNumber;
 import org.exoplatform.social.core.test.QueryNumberTest;
@@ -229,6 +230,7 @@ public class SpaceStorageTest extends AbstractCoreTest {
     for (int i = 1; i <= totalSpaces; i++) {
       Space space = this.getSpaceInstance(i);
       spaceStorage.saveSpace(space, true);
+      StorageUtils.persist();
       tearDownSpaceList.add(space);
     }
     assertEquals("spaceStorage.getAllSpaces().size() must return: " + totalSpaces,
@@ -247,6 +249,7 @@ public class SpaceStorageTest extends AbstractCoreTest {
     for (int i = 1; i <= totalSpaces; i++) {
       Space space = this.getSpaceInstance(i);
       spaceStorage.saveSpace(space, true);
+      StorageUtils.persist();
       tearDownSpaceList.add(space);
     }
     int offset = 0;
@@ -276,6 +279,7 @@ public class SpaceStorageTest extends AbstractCoreTest {
     for (int i = 1; i <= totalSpaces; i++) {
       Space space = this.getSpaceInstance(i);
       spaceStorage.saveSpace(space, true);
+      StorageUtils.persist();
       tearDownSpaceList.add(space);
     }
     int spacesCount = spaceStorage.getAllSpacesCount();
@@ -294,6 +298,7 @@ public class SpaceStorageTest extends AbstractCoreTest {
     for (int i = 1; i <= totalSpaces; i++) {
       Space space = this.getSpaceInstance(i);
       spaceStorage.saveSpace(space, true);
+      StorageUtils.persist();
       tearDownSpaceList.add(space);
     }
     List<Space> foundSpaces = spaceStorage.getSpacesByFilter(new SpaceFilter("add"), 0, 10);
@@ -337,6 +342,7 @@ public class SpaceStorageTest extends AbstractCoreTest {
     for (int i = 1; i <= totalSpaces; i++) {
       Space space = this.getSpaceInstance(i);
       spaceStorage.saveSpace(space, true);
+      StorageUtils.persist();
       tearDownSpaceList.add(space);
     }
     int count = spaceStorage.getAllSpacesByFilterCount(new SpaceFilter("add"));
@@ -374,6 +380,7 @@ public class SpaceStorageTest extends AbstractCoreTest {
     for (int i = 0; i < countSpace; i ++) {
       listSpace[i] = this.getSpaceInstance(i);
       spaceStorage.saveSpace(listSpace[i], true);
+      StorageUtils.persist();
       tearDownSpaceList.add(listSpace[i]);
     }
     List<Space> accessibleSpaces = spaceStorage.getAccessibleSpaces("demo");
@@ -394,6 +401,7 @@ public class SpaceStorageTest extends AbstractCoreTest {
     for (int i = 0; i < countSpace; i ++) {
       listSpace[i] = this.getSpaceInstance(i);
       spaceStorage.saveSpace(listSpace[i], true);
+      StorageUtils.persist();
       tearDownSpaceList.add(listSpace[i]);
     }
     List<Space> accessibleSpacesByFilter = spaceStorage.getAccessibleSpacesByFilter("demo", new SpaceFilter("my space"), 0, 10);
@@ -433,6 +441,7 @@ public class SpaceStorageTest extends AbstractCoreTest {
   public void testGetAccessibleSpacesByFilterApp() throws Exception {
     Space space = this.getSpaceInstance(1);
     spaceStorage.saveSpace(space, true);
+    StorageUtils.persist();
     tearDownSpaceList.add(space);
     
     SpaceFilter filter = new SpaceFilter("my space");
@@ -455,6 +464,7 @@ public class SpaceStorageTest extends AbstractCoreTest {
     for (int i = 0; i < countSpace; i ++) {
       listSpace[i] = this.getSpaceInstance(i);
       spaceStorage.saveSpace(listSpace[i], true);
+      StorageUtils.persist();
       tearDownSpaceList.add(listSpace[i]);
     }
     int accessibleSpacesByFilterCount = spaceStorage.getAccessibleSpacesByFilterCount("demo", new SpaceFilter("my space"));
@@ -495,6 +505,7 @@ public class SpaceStorageTest extends AbstractCoreTest {
     for (int i = 0; i < countSpace; i ++) {
       listSpace[i] = this.getSpaceInstance(i);
       spaceStorage.saveSpace(listSpace[i], true);
+      StorageUtils.persist();
       tearDownSpaceList.add(listSpace[i]);
     }
     int accessibleSpacesCount = spaceStorage.getAccessibleSpacesCount("demo");
@@ -520,6 +531,7 @@ public class SpaceStorageTest extends AbstractCoreTest {
     for (int i = 0; i < countSpace; i ++) {
       listSpace[i] = this.getSpaceInstance(i);
       spaceStorage.saveSpace(listSpace[i], true);
+      StorageUtils.persist();
       tearDownSpaceList.add(listSpace[i]);
     }
     List<Space> accessibleSpaces = spaceStorage.getAccessibleSpaces("demo", 0, 5);
@@ -540,6 +552,7 @@ public class SpaceStorageTest extends AbstractCoreTest {
     for (int i = 0; i < countSpace; i ++) {
       listSpace[i] = this.getSpaceInstance(i);
       spaceStorage.saveSpace(listSpace[i], true);
+      StorageUtils.persist();
       tearDownSpaceList.add(listSpace[i]);
     }
     List<Space> editableSpaces = spaceStorage.getEditableSpaces("demo");
@@ -568,6 +581,7 @@ public class SpaceStorageTest extends AbstractCoreTest {
     for (int i = 0; i < countSpace; i ++) {
       listSpace[i] = this.getSpaceInstance(i);
       spaceStorage.saveSpace(listSpace[i], true);
+      StorageUtils.persist();
       tearDownSpaceList.add(listSpace[i]);
     }
     List<Space> editableSpaces = spaceStorage.getEditableSpacesByFilter("demo", new SpaceFilter("add new"), 0 , 10);
@@ -632,6 +646,7 @@ public class SpaceStorageTest extends AbstractCoreTest {
     for (int i = 0; i < countSpace; i ++) {
       listSpace[i] = this.getSpaceInstance(i);
       spaceStorage.saveSpace(listSpace[i], true);
+      StorageUtils.persist();
       tearDownSpaceList.add(listSpace[i]);
     }
     int editableSpacesCount = spaceStorage.getEditableSpacesByFilterCount("demo", new SpaceFilter("add new"));
@@ -684,6 +699,7 @@ public class SpaceStorageTest extends AbstractCoreTest {
     for (int i = 0; i < countSpace; i ++) {
       listSpace[i] = this.getSpaceInstance(i);
       spaceStorage.saveSpace(listSpace[i], true);
+      StorageUtils.persist();
       tearDownSpaceList.add(listSpace[i]);
     }
     List<Space> editableSpaces = spaceStorage.getEditableSpaces("demo", 0, countSpace);
@@ -712,6 +728,7 @@ public class SpaceStorageTest extends AbstractCoreTest {
     for (int i = 0; i < countSpace; i ++) {
       listSpace[i] = this.getSpaceInstance(i);
       spaceStorage.saveSpace(listSpace[i], true);
+      StorageUtils.persist();
       tearDownSpaceList.add(listSpace[i]);
     }
     List<Space> invitedSpaces = spaceStorage.getInvitedSpaces("register1");
@@ -744,6 +761,7 @@ public class SpaceStorageTest extends AbstractCoreTest {
     for (int i = 0; i < countSpace; i ++) {
       listSpace[i] = this.getSpaceInstance(i);
       spaceStorage.saveSpace(listSpace[i], true);
+      StorageUtils.persist();
       tearDownSpaceList.add(listSpace[i]);
     }
     List<Space> invitedSpaces = spaceStorage.getInvitedSpacesByFilter("register1", new SpaceFilter("add new"), 0, 10);
@@ -788,6 +806,7 @@ public class SpaceStorageTest extends AbstractCoreTest {
     for (int i = 0; i < countSpace; i ++) {
       listSpace[i] = this.getSpaceInstance(i);
       spaceStorage.saveSpace(listSpace[i], true);
+      StorageUtils.persist();
       tearDownSpaceList.add(listSpace[i]);
     }
     int invitedSpacesCount = spaceStorage.getInvitedSpacesByFilterCount("register1", new SpaceFilter("add new"));
@@ -825,6 +844,7 @@ public class SpaceStorageTest extends AbstractCoreTest {
     for (int i = 0; i < countSpace; i ++) {
       listSpace[i] = this.getSpaceInstance(i);
       spaceStorage.saveSpace(listSpace[i], true);
+      StorageUtils.persist();
       tearDownSpaceList.add(listSpace[i]);
     }
     List<Space> invitedSpaces = spaceStorage.getInvitedSpaces("register1", 0, 5);
@@ -857,6 +877,7 @@ public class SpaceStorageTest extends AbstractCoreTest {
     for (int i = 0; i < countSpace; i ++) {
       listSpace[i] = this.getSpaceInstance(i);
       spaceStorage.saveSpace(listSpace[i], true);
+      StorageUtils.persist();
       tearDownSpaceList.add(listSpace[i]);
     }
     int invitedSpacesCount = spaceStorage.getInvitedSpacesCount("register1");
@@ -882,6 +903,7 @@ public class SpaceStorageTest extends AbstractCoreTest {
     for (int i = 0; i < countSpace; i ++) {
       listSpace[i] = this.getSpaceInstance(i);
       spaceStorage.saveSpace(listSpace[i], true);
+      StorageUtils.persist();
       tearDownSpaceList.add(listSpace[i]);
     }
     List<Space> pendingSpaces = spaceStorage.getPendingSpaces("hacker");
@@ -918,6 +940,7 @@ public class SpaceStorageTest extends AbstractCoreTest {
     for (int i = 0; i < countSpace; i ++) {
       listSpace[i] = this.getSpaceInstance(i);
       spaceStorage.saveSpace(listSpace[i], true);
+      StorageUtils.persist();
       tearDownSpaceList.add(listSpace[i]);
     }
     List<Space> pendingSpaces = spaceStorage.getPendingSpacesByFilter("hacker", new SpaceFilter("add new"), 0, 10);
@@ -978,6 +1001,7 @@ public class SpaceStorageTest extends AbstractCoreTest {
     for (int i = 0; i < countSpace; i ++) {
       listSpace[i] = this.getSpaceInstance(i);
       spaceStorage.saveSpace(listSpace[i], true);
+      StorageUtils.persist();
       tearDownSpaceList.add(listSpace[i]);
     }
     int pendingSpacesCount = spaceStorage.getPendingSpacesByFilterCount("hacker", new SpaceFilter("add new"));
@@ -1027,6 +1051,7 @@ public class SpaceStorageTest extends AbstractCoreTest {
     for (int i = 0; i < countSpace; i ++) {
       listSpace[i] = this.getSpaceInstance(i);
       spaceStorage.saveSpace(listSpace[i], true);
+      StorageUtils.persist();
       tearDownSpaceList.add(listSpace[i]);
     }
     List<Space> pendingSpaces = spaceStorage.getPendingSpaces("hacker", 0, 5);
@@ -1059,6 +1084,7 @@ public class SpaceStorageTest extends AbstractCoreTest {
     for (int i = 0; i < countSpace; i ++) {
       listSpace[i] = this.getSpaceInstance(i);
       spaceStorage.saveSpace(listSpace[i], true);
+      StorageUtils.persist();
       tearDownSpaceList.add(listSpace[i]);
     }
     int pendingSpaceCount = spaceStorage.getPendingSpacesCount("jame");
@@ -1087,6 +1113,7 @@ public class SpaceStorageTest extends AbstractCoreTest {
     for (int i = 0; i < countSpace; i ++) {
       listSpace[i] = this.getSpaceInstance(i);
       spaceStorage.saveSpace(listSpace[i], true);
+      StorageUtils.persist();
       tearDownSpaceList.add(listSpace[i]);
     }
     List<Space> publicSpaces = spaceStorage.getPublicSpaces("mary");
@@ -1111,6 +1138,7 @@ public class SpaceStorageTest extends AbstractCoreTest {
     for (int i = 0; i < countSpace; i ++) {
       listSpace[i] = this.getSpaceInstance(i);
       spaceStorage.saveSpace(listSpace[i], true);
+      StorageUtils.persist();
       tearDownSpaceList.add(listSpace[i]);
     }
     List<Space> publicSpaces = spaceStorage.getPublicSpacesByFilter(mary.getRemoteId(), new SpaceFilter("add new"), 0, 10);
@@ -1163,6 +1191,7 @@ public class SpaceStorageTest extends AbstractCoreTest {
     for (int i = 0; i < countSpace; i ++) {
       listSpace[i] = this.getSpaceInstance(i);
       spaceStorage.saveSpace(listSpace[i], true);
+      StorageUtils.persist();
       tearDownSpaceList.add(listSpace[i]);
     }
     int publicSpacesByFilterCount = spaceStorage.getPublicSpacesByFilterCount("mary", new SpaceFilter("add new"));
@@ -1206,6 +1235,7 @@ public class SpaceStorageTest extends AbstractCoreTest {
     for (int i = 0; i < countSpace; i ++) {
       listSpace[i] = this.getSpaceInstance(i);
       spaceStorage.saveSpace(listSpace[i], true);
+      StorageUtils.persist();
       tearDownSpaceList.add(listSpace[i]);
     }
     List<Space> publicSpaces = spaceStorage.getPublicSpaces("mary", 0, 5);
@@ -1238,6 +1268,7 @@ public class SpaceStorageTest extends AbstractCoreTest {
     for (int i = 0; i < countSpace; i ++) {
       listSpace[i] = this.getSpaceInstance(i);
       spaceStorage.saveSpace(listSpace[i], true);
+      StorageUtils.persist();
       tearDownSpaceList.add(listSpace[i]);
     }
     int publicSpacesCount = spaceStorage.getPublicSpacesCount("jame");
@@ -1266,6 +1297,7 @@ public class SpaceStorageTest extends AbstractCoreTest {
     for (int i = 0; i < countSpace; i ++) {
       listSpace[i] = this.getSpaceInstance(i);
       spaceStorage.saveSpace(listSpace[i], true);
+      StorageUtils.persist();
       tearDownSpaceList.add(listSpace[i]);
     }
 
@@ -1299,6 +1331,7 @@ public class SpaceStorageTest extends AbstractCoreTest {
     for (int i = 0; i < countSpace; i ++) {
       listSpace[i] = this.getSpaceInstance(i);
       spaceStorage.saveSpace(listSpace[i], true);
+      StorageUtils.persist();
       tearDownSpaceList.add(listSpace[i]);
     }
 
@@ -1352,6 +1385,7 @@ public class SpaceStorageTest extends AbstractCoreTest {
     for (int i = 0; i < countSpace; i ++) {
       listSpace[i] = this.getSpaceInstance(i);
       spaceStorage.saveSpace(listSpace[i], true);
+      StorageUtils.persist();
       tearDownSpaceList.add(listSpace[i]);
     }
 
@@ -1395,6 +1429,7 @@ public class SpaceStorageTest extends AbstractCoreTest {
     for (int i = 0; i < countSpace; i++) {
       Space space = this.getSpaceInstance(i);
       spaceStorage.saveSpace(space, true);
+      StorageUtils.persist();
       tearDownSpaceList.add(space);
     }
 
@@ -1426,6 +1461,7 @@ public class SpaceStorageTest extends AbstractCoreTest {
     Space space = this.getSpaceInstance(number);
 
     spaceStorage.saveSpace(space, true);
+    StorageUtils.persist();
     tearDownSpaceList.add(space);
 
     Space savedSpace = spaceStorage.getSpaceById(space.getId());
@@ -1450,7 +1486,7 @@ public class SpaceStorageTest extends AbstractCoreTest {
   public void testGetSpaceByGroupId() throws Exception {
     Space space = getSpaceInstance(1);
     spaceStorage.saveSpace(space, true);
-
+    StorageUtils.persist();
     Space savedSpace = spaceStorage.getSpaceByGroupId(space.getGroupId());
 
     assertNotNull("savedSpace must not be null", savedSpace);
@@ -1471,6 +1507,7 @@ public class SpaceStorageTest extends AbstractCoreTest {
     Space space = this.getSpaceInstance(number);
     space.setUrl("http://fake.com.vn");
     spaceStorage.saveSpace(space, true);
+    StorageUtils.persist();
     tearDownSpaceList.add(space);
 
     // get saved space
@@ -1521,6 +1558,7 @@ public class SpaceStorageTest extends AbstractCoreTest {
     tearDownSpaceList.add(space);
     // save to space activityStorage
     spaceStorage.saveSpace(space, true);
+    StorageUtils.persist();
 
     // get space saved by name
     Space foundSpaceList = spaceStorage.getSpaceByPrettyName(space.getPrettyName());
@@ -1559,6 +1597,7 @@ public class SpaceStorageTest extends AbstractCoreTest {
     int number = 1;
     Space space = this.getSpaceInstance(number);
     spaceStorage.saveSpace(space, true);
+    StorageUtils.persist();
     spaceStorage.deleteSpace(space.getId());
   }
 
@@ -1578,6 +1617,7 @@ public class SpaceStorageTest extends AbstractCoreTest {
     space.setDisplayName(newName);
     space.setPrettyName(space.getDisplayName());
     spaceStorage.saveSpace(space, false);
+    StorageUtils.persist();
     assertEquals(newName, spaceStorage.getSpaceById(space.getId()).getName());
     assertEquals(newName, space.getName());
 
@@ -1591,7 +1631,7 @@ public class SpaceStorageTest extends AbstractCoreTest {
    * @throws Exception
    * @since 1.2.8
    */
-  @MaxQueryNumber(477)
+  @MaxQueryNumber(560)
   public void testRenameSpace() throws Exception {
     int number = 1;
     Space space = this.getSpaceInstance(number);
@@ -1602,6 +1642,7 @@ public class SpaceStorageTest extends AbstractCoreTest {
     space.setDisplayName(newName);
     space.setPrettyName(space.getDisplayName());
     spaceStorage.saveSpace(space, false);
+    StorageUtils.persist();
     assertEquals("spaceStorage.getSpaceById(space.getId()).getName() must return: "
         + newName, newName, spaceStorage.getSpaceById(space.getId())
                                                                 .getPrettyName());
@@ -1644,6 +1685,7 @@ public class SpaceStorageTest extends AbstractCoreTest {
     
     tearDownIdentityList.add(identity);
     spaceStorage.saveSpace(space, true);
+    StorageUtils.persist();
 
     Space got = spaceStorage.getSpaceByPrettyName(space.getPrettyName());
     tearDownSpaceList.add(got);
@@ -1670,7 +1712,7 @@ public class SpaceStorageTest extends AbstractCoreTest {
    *
    * @throws Exception
    */
-  @MaxQueryNumber(288)
+  @MaxQueryNumber(291)
   public void testUpdateSpace() throws Exception {
     int number = 1;
     Space space = this.getSpaceInstance(number);
@@ -1680,6 +1722,7 @@ public class SpaceStorageTest extends AbstractCoreTest {
     space.setAvatarAttachment(avatarAttachment);
     tearDownSpaceList.add(space);
     spaceStorage.saveSpace(space, true);
+    StorageUtils.persist();
     
     Identity identity = new Identity(SpaceIdentityProvider.NAME, space.getPrettyName());
     Profile profile = new Profile(identity);
@@ -1692,6 +1735,7 @@ public class SpaceStorageTest extends AbstractCoreTest {
     //
     Space spaceForUpdate = spaceStorage.getSpaceById(space.getId());
     spaceStorage.saveSpace(spaceForUpdate, false);
+    StorageUtils.persist();
 
     //
     Space got = spaceStorage.getSpaceById(spaceForUpdate.getId());
@@ -1721,6 +1765,7 @@ public class SpaceStorageTest extends AbstractCoreTest {
         listSpace[i] = this.getSpaceInstance(i, Space.HIDDEN, Space.OPEN, "demo");
       
       spaceStorage.saveSpace(listSpace[i], true);
+      StorageUtils.persist();
       tearDownSpaceList.add(listSpace[i]);
     }
     
@@ -1795,6 +1840,7 @@ public class SpaceStorageTest extends AbstractCoreTest {
         listSpace[i] = this.getSpaceInstance(i, Space.HIDDEN, Space.VALIDATION, "demo");
       
       spaceStorage.saveSpace(listSpace[i], true);
+      StorageUtils.persist();
       tearDownSpaceList.add(listSpace[i]);
     }
     
@@ -1869,6 +1915,7 @@ public class SpaceStorageTest extends AbstractCoreTest {
         listSpace[i] = this.getSpaceInstance(i, Space.HIDDEN, Space.OPEN, "demo");
       
       spaceStorage.saveSpace(listSpace[i], true);
+      StorageUtils.persist();
       tearDownSpaceList.add(listSpace[i]);
     }
     
@@ -1943,6 +1990,7 @@ public class SpaceStorageTest extends AbstractCoreTest {
         listSpace[i] = this.getSpaceInstance(i, Space.HIDDEN, Space.CLOSE, "demo");
       
       spaceStorage.saveSpace(listSpace[i], true);
+      StorageUtils.persist();
       tearDownSpaceList.add(listSpace[i]);
     }
     
@@ -1986,6 +2034,7 @@ public class SpaceStorageTest extends AbstractCoreTest {
         listSpace[i] = this.getSpaceInstance(i, Space.HIDDEN, Space.CLOSE, "demo");
       
       spaceStorage.saveSpace(listSpace[i], true);
+      StorageUtils.persist();
       tearDownSpaceList.add(listSpace[i]);
     }
     
@@ -2082,6 +2131,7 @@ public class SpaceStorageTest extends AbstractCoreTest {
         listSpace[i] = this.getSpaceInstance(i, Space.HIDDEN, Space.CLOSE, "demo");
       
       spaceStorage.saveSpace(listSpace[i], true);
+      StorageUtils.persist();
       tearDownSpaceList.add(listSpace[i]);
     }
     

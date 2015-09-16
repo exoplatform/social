@@ -36,8 +36,6 @@ import javax.jcr.nodetype.NodeTypeManager;
 import javax.jcr.nodetype.PropertyDefinition;
 
 import org.apache.commons.lang.StringEscapeUtils;
-import org.apache.commons.lang.StringUtils;
-import org.apache.lucene.queryParser.QueryParser;
 import org.chromattic.api.UndeclaredRepositoryException;
 import org.chromattic.api.query.Ordering;
 import org.chromattic.api.query.QueryBuilder;
@@ -45,7 +43,7 @@ import org.chromattic.api.query.QueryResult;
 import org.chromattic.core.query.QueryImpl;
 import org.chromattic.ext.ntdef.NTFile;
 import org.chromattic.ext.ntdef.Resource;
-
+import org.exoplatform.commons.utils.CommonsUtils;
 import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.log.ExoLogger;
@@ -53,6 +51,8 @@ import org.exoplatform.services.log.Log;
 import org.exoplatform.services.organization.MembershipTypeHandler;
 import org.exoplatform.services.organization.OrganizationService;
 import org.exoplatform.services.organization.User;
+import org.exoplatform.services.user.UserStateModel;
+import org.exoplatform.services.user.UserStateService;
 import org.exoplatform.social.core.chromattic.entity.ActivityProfileEntity;
 import org.exoplatform.social.core.chromattic.entity.DisabledEntity;
 import org.exoplatform.social.core.chromattic.entity.IdentityEntity;
@@ -1541,7 +1541,7 @@ public class IdentityStorageImpl extends AbstractStorage implements IdentityStor
               activeUsers.add(u.getUserName());
             }
           } catch (Exception e) {
-            LOG.info(e.getMessage());
+            LOG.error(e.getMessage(), e);
           }
         }
       } catch (Exception e) {
@@ -1552,8 +1552,17 @@ public class IdentityStorageImpl extends AbstractStorage implements IdentityStor
     //by N days
     if (filter.getDays() > 0) {
       activeUsers = StorageUtils.getLastLogin(filter.getDays());
-    } 
+    }
 
+    //Gets online users and push to activate users
+    if (CommonsUtils.getService(UserStateService.class) != null) {
+      List<UserStateModel> onlines = CommonsUtils.getService(UserStateService.class).online();
+      for (UserStateModel user : onlines) {
+        activeUsers.add(user.getUserId());
+      }
+    }
+    
+    
     return activeUsers;
   }
 }

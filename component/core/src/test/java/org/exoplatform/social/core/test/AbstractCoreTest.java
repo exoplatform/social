@@ -44,6 +44,7 @@ import org.exoplatform.social.core.space.SpaceException;
 import org.exoplatform.social.core.space.SpaceUtils;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
+import org.exoplatform.social.core.storage.impl.StorageUtils;
 import org.jboss.byteman.contrib.bmunit.BMUnit;
 
 /**
@@ -206,6 +207,8 @@ public abstract class AbstractCoreTest extends BaseExoTestCase {
       spaceService.saveSpace(space, true);
     } catch (SpaceException e) {
       LOG.warn("Error while saving space", e);
+    } finally {
+      StorageUtils.persist();
     }
     return space;
   }

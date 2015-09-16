@@ -25,6 +25,7 @@ import org.exoplatform.social.core.space.SpaceFilter;
 import org.exoplatform.social.core.space.SpaceListAccess;
 import org.exoplatform.social.core.space.impl.DefaultSpaceApplicationHandler;
 import org.exoplatform.social.core.space.model.Space;
+import org.exoplatform.social.core.storage.impl.StorageUtils;
 import org.exoplatform.social.core.test.AbstractCoreTest;
 import org.exoplatform.web.controller.metadata.ControllerDescriptor;
 import org.exoplatform.web.controller.metadata.DescriptorBuilder;
@@ -346,6 +347,7 @@ public class SpaceSearchConnectorTestCase extends AbstractCoreTest {
     space.setGroupId("/spaces/space" + number);
     space.setUrl(space.getPrettyName());
     this.spaceService.saveSpace(space, true);
+    StorageUtils.persist();
     return space;
   }
   

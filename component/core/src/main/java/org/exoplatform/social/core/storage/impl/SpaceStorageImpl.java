@@ -845,11 +845,9 @@ public class SpaceStorageImpl extends AbstractStorage implements SpaceStorage {
       createRefs(entity, space);
       
       fillEntityFromSpace(space, entity);
-
-      //
-      getSession().save();
-
-      //
+      
+      //getSession().save();
+      
       LOG.debug(String.format(
           "Space %s (%s) saved",
           space.getPrettyName(),

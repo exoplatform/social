@@ -414,9 +414,7 @@ public class StorageUtils {
   public static boolean persist() {
     try {
       ChromatticSession chromatticSession = AbstractStorage.lifecycleLookup().getSession();
-      if (chromatticSession.getJCRSession().hasPendingChanges()) {
-        chromatticSession.save();
-      }
+      chromatticSession.save();
     } catch (Exception e) {
       return false;
     }

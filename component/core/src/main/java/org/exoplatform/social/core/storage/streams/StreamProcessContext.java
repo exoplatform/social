@@ -45,6 +45,7 @@ public class StreamProcessContext extends ProcessorContextImpl {
   public static String LOAD_ACTIVITIES_STREAM_PROCESS = "LOAD_ACTIVITIES_STREAM_ACTIVITY";
   
   public final static String OWNER = "OWNER";
+  public final static String POSTER_ID = "POSTER_ID";
   public final static String ACTIVITY = "ACTIVITY";
   public final static String ACTIVITY_ENTITY = "ACTIVITY_ENTITY";
   public final static String ACTIVITY_ID = "ACTIVITY_ID";
@@ -66,6 +67,14 @@ public class StreamProcessContext extends ProcessorContextImpl {
     return new StreamProcessContext(name, context);
   }
 
+  public String getPosterId() {
+    return getProperty(POSTER_ID, String.class);
+  }
+
+  public StreamProcessContext posterId(String posterId) {
+    setProperty(POSTER_ID, posterId);
+    return this;
+  }
   
   public StreamProcessContext identity(Identity owner) {
     setProperty(OWNER, owner);
