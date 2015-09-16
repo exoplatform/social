@@ -651,7 +651,11 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
       //
       long oldUpdated = getLastUpdatedTime(activityEntity);
       activityEntity.getComments().add(commentEntity);
-      activityEntity.setLastUpdated(currentMillis);
+      //
+      if (!comment.isHidden()) {
+        activityEntity.setLastUpdated(currentMillis);
+        activity.setUpdated(currentMillis);
+      }
       commentEntity.setTitle(comment.getTitle());
       commentEntity.setType(comment.getType());
       commentEntity.setTitleId(comment.getTitleId());
@@ -686,9 +690,6 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
       }
       listIds.add(commentEntity.getId());
       activity.setReplyToId(listIds.toArray(new String[]{}));
-      
-      //
-      activity.setUpdated(currentMillis);
       
       //SOC-3915 empty stream when post comment but lost it.
       //Resolved SOC-3915 empty stream when post comment but lost it.
@@ -1802,6 +1803,16 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
       if (changedActivity.getBody() == null) changedActivity.setBody(activityEntity.getBody());
       
       boolean isHidden = getActivity(changedActivity.getId()).isHidden();
+      //case when show the comment/activity
+      if (changedActivity.isHidden() != isHidden && !changedActivity.isHidden()) {
+        changedActivity.setUpdated(System.currentTimeMillis());
+        //if it's a comment, update the lastUpdate of activity
+        if (changedActivity.isComment()) {
+          ExoSocialActivity parentActivity = getParentActivity(changedActivity);
+          parentActivity.setUpdated(System.currentTimeMillis());
+          getStorage().updateActivity(parentActivity);
+        }
+      }
       _saveActivity(changedActivity);
 
       //if update comment, no need to update stream

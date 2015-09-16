@@ -2753,6 +2753,41 @@ public class ActivityStorageTest extends AbstractCoreTest {
     relationshipManager.delete(demoJohnRelationship);
     relationshipManager.delete(maryDemoRelationship);
   }
+  
+  @MaxQueryNumber(450)
+  public void testSaveHiddenComment() throws Exception {
+    //root posts 2 activities
+    ExoSocialActivity activity1 = new ExoSocialActivityImpl();
+    activity1.setTitle("activity 1");
+    activity1.setUserId(rootIdentity.getId());
+    activityStorage.saveActivity(rootIdentity, activity1);
+    tearDownActivityList.add(activity1);
+    
+    ExoSocialActivity activity2 = new ExoSocialActivityImpl();
+    activity2.setTitle("activity 2");
+    activity2.setUserId(rootIdentity.getId());
+    activityStorage.saveActivity(rootIdentity, activity2);
+    tearDownActivityList.add(activity2);
+    
+    //demo add a hidden comment on activity 1 of root
+    ExoSocialActivity comment = new ExoSocialActivityImpl();
+    comment.setTitle("comment is hidden");
+    comment.setUserId(demoIdentity.getId());
+    comment.isHidden(true);
+    activityStorage.saveComment(activity1, comment);
+    
+    List<ExoSocialActivity> activities = activityStorage.getActivityFeed(rootIdentity, 0, 10);
+    assertEquals("activity 2", activities.get(0).getTitle());
+    assertEquals("activity 1", activities.get(1).getTitle());
+    
+    comment = activityStorage.getActivity(comment.getId());
+    comment.isHidden(false);
+    activityStorage.updateActivity(comment);
+    
+    activities = activityStorage.getActivityFeed(rootIdentity, 0, 10);
+    assertEquals("activity 1", activities.get(0).getTitle());
+    assertEquals("activity 2", activities.get(1).getTitle());
+  }
 
   /**
    * Creates activities.
