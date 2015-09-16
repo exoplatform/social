@@ -45,7 +45,7 @@
       var me = UIActivityLoader;
       if (me.requestParams === undefined || me.requestParams === null) {
         var h = window.location.href;
-        if(h.indexOf('?') > 0) {
+        if(h.indexOf('?') > 0 && h.indexOf('portal:componentId') < 0) {
           me.requestParams = '&' + h.substring(h.indexOf('?') + 1);
         } else {
           me.requestParams = "";
