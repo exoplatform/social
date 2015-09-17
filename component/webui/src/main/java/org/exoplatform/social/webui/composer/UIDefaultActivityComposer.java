@@ -33,8 +33,8 @@ import org.exoplatform.social.webui.space.UISpaceActivitiesDisplay;
 import org.exoplatform.web.application.ApplicationMessage;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
+import org.exoplatform.webui.core.UIApplication;
 import org.exoplatform.webui.core.UIComponent;
-import org.exoplatform.webui.core.UIPortletApplication;
 import org.exoplatform.webui.event.Event;
 
 @ComponentConfig()
@@ -48,8 +48,9 @@ public class UIDefaultActivityComposer extends UIActivityComposer {
   public ExoSocialActivity onPostActivity(PostContext postContext, String postedMessage) throws Exception {
     ExoSocialActivity activity = null;
     if (postedMessage.equals("")) {
-      getAncestorOfType(UIPortletApplication.class)
-        .addMessage(new ApplicationMessage("UIComposer.msg.error.Empty_Message", null, ApplicationMessage.WARNING));
+      WebuiRequestContext requestContext = (WebuiRequestContext) WebuiRequestContext.getCurrentInstance();
+      UIApplication uiApplication = requestContext.getUIApplication();
+      uiApplication.addMessage(new ApplicationMessage("UIComposer.msg.error.Empty_Message", null, ApplicationMessage.WARNING));
       return activity;
     }
     if (postContext == UIComposer.PostContext.SPACE) {
