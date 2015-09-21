@@ -708,6 +708,43 @@ public class IdentityStorageTest extends AbstractCoreTest {
     assertEquals(1, identities.size());
   }
   
+  @MaxQueryNumber(700)
+  public void testGetSpaceMemberAfterDeleteAllManagersAndMembers() throws Exception {
+    populateData(1);
+    
+    Space space = new Space();
+    space.setApp("app");
+    space.setDisplayName("my space");
+    space.setPrettyName(space.getDisplayName());
+    space.setRegistration(Space.OPEN);
+    space.setDescription("add new space ");
+    space.setType(DefaultSpaceApplicationHandler.NAME);
+    space.setVisibility(Space.PUBLIC);
+    space.setPriority(Space.INTERMEDIATE_PRIORITY);
+    space.setGroupId("/space/space");
+    space.setUrl(space.getPrettyName());
+    String[] managers = new String[] {"username0"};
+    String[] members = new String[] {"username0"};
+    String[] invitedUsers = new String[] {};
+    String[] pendingUsers = new String[] {};
+    space.setInvitedUsers(invitedUsers);
+    space.setPendingUsers(pendingUsers);
+    space.setManagers(managers);
+    space.setMembers(members);
+    spaceStorage.saveSpace(space, true);
+    tearDownSpaceList.add(space);
+    
+    
+    ProfileFilter profileFilter = new ProfileFilter();
+    
+    List<Identity> identities = identityStorage.getSpaceMemberIdentitiesByProfileFilter(space, profileFilter, Type.MANAGER, 0, 2);
+    assertEquals(1, identities.size());
+    
+    identityStorage.hardDeleteIdentity(identities.get(0));
+    List<Identity> identities2 = identityStorage.getSpaceMemberIdentitiesByProfileFilter(space, profileFilter, Type.MANAGER, 0, 2);
+    assertEquals(0, identities2.size());
+  }
+  
   /**
    * Populate one identity with remoteId.
    * 
