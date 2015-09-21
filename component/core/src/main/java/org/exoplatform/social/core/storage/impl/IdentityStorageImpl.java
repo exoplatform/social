@@ -412,15 +412,6 @@ public class IdentityStorageImpl extends AbstractStorage implements IdentityStor
 
     IdentityEntity identityEntity = _findById(IdentityEntity.class, identity.getId());
 
-    // Check if last manager
-    Collection<SpaceRef> refs = identityEntity.getManagerSpaces().getRefs().values();
-    for (SpaceRef ref : refs) {
-      if (ref.getSpaceRef() != null && ref.getSpaceRef().getManagerMembersId().length == 1) {
-        throw new IdentityStorageException(IdentityStorageException.Type.FAIL_TO_DELETE_IDENTITY,
-                                           "Unable to remove the last manager of space " + ref.getSpaceRef().getName());
-      }
-    }
-
     // Remove relationships
     _removeRelationshipList(identityEntity.getSender());
     _removeRelationshipList(identityEntity.getReceiver());
