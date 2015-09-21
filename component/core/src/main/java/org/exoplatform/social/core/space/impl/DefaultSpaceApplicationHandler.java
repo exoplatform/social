@@ -49,6 +49,7 @@ import org.exoplatform.portal.mop.page.PageContext;
 import org.exoplatform.portal.mop.page.PageKey;
 import org.exoplatform.portal.mop.page.PageService;
 import org.exoplatform.portal.mop.page.PageState;
+import org.exoplatform.portal.mop.user.UserNode;
 import org.exoplatform.portal.pom.config.Utils;
 import org.exoplatform.portal.pom.spi.gadget.Gadget;
 import org.exoplatform.portal.pom.spi.portlet.Portlet;
@@ -291,35 +292,28 @@ public class DefaultSpaceApplicationHandler implements SpaceApplicationHandler {
    */
   private void removeApplicationClassic(Space space, String appId, String appName) throws SpaceException {
     try {
-      String groupId = space.getGroupId();
-      NavigationContext navCtx = SpaceUtils.getGroupNavigationContext(groupId);
       
-      NodeContext<NodeContext<?>> homeNodeCtx = SpaceUtils.getHomeNodeWithChildren(navCtx, space.getUrl());
-      String nodeName = appName;
-           
-      ExoContainer container = ExoContainerContext.getCurrentContainer();
-
-      NodeContext<?> removedNode = homeNodeCtx.getNode(nodeName);
-      if (removedNode == null) {
-        removedNode = homeNodeCtx.getNode(nodeName.toLowerCase());
-      }
+      UserNode spaceUserNode = SpaceUtils.getSpaceUserNode(space);
+      UserNode removedNode = spaceUserNode.getChild(appName);
       
-      // In case of cannot find the removed node, try one more time
       if (removedNode == null) {
+        // In case of cannot find the removed node, try one more time
         for (SpaceApplication spaceApplication : spaceApplications) {
           if (appId.equals(spaceApplication.getPortletName())) {
-            removedNode = homeNodeCtx.getNode(spaceApplication.getUri());
+            removedNode = spaceUserNode.getChild(spaceApplication.getUri());
           }
         }
       }
       
       if (removedNode != null) {
-        homeNodeCtx.removeNode(removedNode.getName());
+        spaceUserNode.removeChild(removedNode.getName());
+      } else {
+        return;
       }
       
       //remove page
       if (removedNode != null) {
-        PageKey pageRef = removedNode.getState().getPageRef();
+        PageKey pageRef = removedNode.getPageRef();
         if (pageRef.format() != null && pageRef.format().length() > 0) {
           //only clear UI caching when it's in UI context
           if (WebuiRequestContext.getCurrentInstance() != null) {
@@ -330,9 +324,8 @@ public class DefaultSpaceApplicationHandler implements SpaceApplicationHandler {
           pageService.destroyPage(pageRef);
         }
       }
-
-      NavigationService navService = (NavigationService) container.getComponentInstance(NavigationService.class);
-      navService.saveNode(homeNodeCtx, null);
+      
+      SpaceUtils.getUserPortal().saveNode(spaceUserNode, null);
 
     } catch (Exception e) {
       throw new SpaceException(SpaceException.Code.UNABLE_TO_REMOVE_APPLICATION, e);
