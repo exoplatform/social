@@ -368,8 +368,10 @@ public class UIUserActivitiesDisplay extends AbstractActivitiesDisplay {
     public void execute(Event<UIUserActivitiesDisplay> event) throws Exception {
      UIUserActivitiesDisplay uiUserActivities = event.getSource();
      uiUserActivities.init();
+     event.getRequestContext().getJavascriptManager()
+     .require("SHARED/social-ui-activity", "activity")
+     .addScripts("activity.responsiveMobile('" + uiUserActivities.getAncestorOfType(UIPortletApplication.class).getId() + "');");
      event.getRequestContext().addUIComponentToUpdateByAjax(uiUserActivities);
-     
      Utils.resizeHomePage();
    }
  }
