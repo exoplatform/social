@@ -170,13 +170,18 @@ public class StorageUtils {
 
     //
     whereExpression.startGroup();
-    for (int i = 0; identities.size() > i; ++i) {
-      Identity current = identities.get(i);
-      whereExpression.equals(JCRProperties.id, current.getProfile().getId());
-      if (i + 1 < identities.size()) {
-        whereExpression.or();
-      }
+    if (identities.size() > 0) {
+      for (int i = 0; identities.size() > i; ++i) {
+        Identity current = identities.get(i);
+        whereExpression.equals(JCRProperties.id, current.getProfile().getId());
+        if (i + 1 < identities.size()) {
+          whereExpression.or();
+        }
+      }      
+    } else {
+      whereExpression.equals(JCRProperties.id, "");
     }
+    
     whereExpression.endGroup();
     
   }
