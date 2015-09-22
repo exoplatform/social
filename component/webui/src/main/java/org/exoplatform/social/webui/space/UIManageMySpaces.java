@@ -105,7 +105,6 @@ public class UIManageMySpaces extends UIContainer {
       currentLoadIndex = 0;
       loadingCapacity = SPACES_PER_PAGE;
       mySpacesList = new ArrayList<Space>();
-      setMySpacesList(loadMySpaces(currentLoadIndex, loadingCapacity));
       if (this.selectedChar != null){
         setSelectedChar(this.selectedChar);
       } else {
