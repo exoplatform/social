@@ -1184,6 +1184,10 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
         }
         IdentityEntity identityEntity = identityStorage._findIdentityEntity(identity.getProviderId(), identity.getRemoteId());
         
+        if (identityEntity == null) {
+          continue;
+        }
+        
         //keep the latest activity posted time
         if (type.equals(ActivityRefType.CONNECTION)) {
           identityEntity.setLatestActivityCreatedTime(activityEntity.getLastUpdated());
