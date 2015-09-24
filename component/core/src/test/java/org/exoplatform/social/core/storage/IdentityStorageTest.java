@@ -669,11 +669,11 @@ public class IdentityStorageTest extends AbstractCoreTest {
     
     ProfileFilter profileFilter = new ProfileFilter();
     
-    List<Identity> identities = identityStorage.getSpaceMemberIdentitiesByProfileFilter(space, profileFilter, Type.MEMBER, 0, 2);
+    List<Identity> identities = identityStorage.getSpaceMemberIdentitiesByProfileFilter(space, profileFilter, Type.MANAGER, 0, 2);
     assertEquals(1, identities.size());
     
     identityStorage.hardDeleteIdentity(identities.get(0));
-    List<Identity> identities2 = identityStorage.getSpaceMemberIdentitiesByProfileFilter(space, profileFilter, Type.MEMBER, 0, 2);
+    List<Identity> identities2 = identityStorage.getSpaceMemberIdentitiesByProfileFilter(space, profileFilter, Type.MANAGER, 0, 2);
     assertEquals(0, identities2.size());
   }
   
