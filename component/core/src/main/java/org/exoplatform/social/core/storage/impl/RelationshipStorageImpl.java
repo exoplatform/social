@@ -1449,9 +1449,8 @@ public class RelationshipStorageImpl extends AbstractStorage implements Relation
   
         relationship.setSender(sender);
         relationship.setReceiver(receiver);
-  
-        if (relationshipNode.getParent().hasNode(StorageUtils.SOC_SENDER) ||
-            relationshipNode.getParent().hasNode(StorageUtils.SOC_RELCEIVER)) {
+        if (StorageUtils.SOC_SENDER.equals(relationshipNode.getParent().getName()) ||
+            StorageUtils.SOC_RELCEIVER.equals(relationshipNode.getParent().getName())) {
           relationship.setStatus(Relationship.Type.PENDING);
         }
         else {
