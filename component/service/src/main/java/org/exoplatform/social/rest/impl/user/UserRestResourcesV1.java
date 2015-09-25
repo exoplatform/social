@@ -79,8 +79,6 @@ import org.exoplatform.social.service.rest.api.VersionResources;
 @Api(value=VersionResources.VERSION_ONE + "/social/users", description = "Operations eXo Platform users information.")
 public class UserRestResourcesV1 implements UserRestResources {
   
-  private static final Log LOG = ExoLogger.getLogger(UserRestResourcesV1.class);
-  
   public static enum ACTIVITY_STREAM_TYPE {
     all, owner, connections, spaces
   }
