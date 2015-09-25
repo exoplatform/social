@@ -54,25 +54,6 @@ import org.exoplatform.social.service.rest.api.VersionResources;
 public class CommentRestResourcesV1 implements CommentRestResources {
   
   @GET
-  @RolesAllowed("users")
-  @ApiOperation(value = "Get comments of current user",
-                httpMethod = "GET",
-                response = Response.class,
-                notes = "This can only be done by the logged in user.")
-  @ApiResponses(value = { 
-    @ApiResponse (code = 200, message = "Given request comments found"),
-    @ApiResponse (code = 500, message = "Internal server error"),
-    @ApiResponse (code = 400, message = "Invalid query input to find comments.") })
-  public Response getCommentsOfCurrentUser(@Context UriInfo uriInfo,
-                                           @ApiParam(value = "Offset", required = false, defaultValue = "0") @QueryParam("offset") int offset,
-                                           @ApiParam(value = "Limit", required = false, defaultValue = "20") @QueryParam("limit") int limit,
-                                           @ApiParam(value = "Size of returned result list.", defaultValue = "false") @QueryParam("returnSize") boolean returnSize,
-                                           @ApiParam(value = "Expand param : ask for a full representation of a subresource", required = false) @QueryParam("expand") String expand) throws Exception {
-    
-    throw new WebApplicationException(Response.Status.SERVICE_UNAVAILABLE);
-  }
-  
-  @GET
   @Path("{id}")
   @RolesAllowed("users")
   @ApiOperation(value = "Gets a comment with the given id",

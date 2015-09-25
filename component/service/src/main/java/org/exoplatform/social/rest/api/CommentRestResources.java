@@ -32,20 +32,6 @@ import org.exoplatform.social.rest.entity.ActivityEntity;
 public interface CommentRestResources extends SocialRest {
 
   /**
-   * Process to return all comments in json format
-   * 
-   * @param uriInfo
-   * @return
-   * @throws Exception
-   */
-  @GET
-  public Response getCommentsOfCurrentUser(@Context UriInfo uriInfo, 
-                                             @QueryParam("offset") int offset,
-                                             @QueryParam("limit") int limit,
-                                             @QueryParam("returnSize") boolean returnSize,
-                                             @QueryParam("expand") String expand) throws Exception;
-
-  /**
    * Process to return a commnet by id in json format
    * 
    * @param uriInfo
