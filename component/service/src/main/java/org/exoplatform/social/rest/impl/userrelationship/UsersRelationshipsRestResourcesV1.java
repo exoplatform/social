@@ -25,7 +25,6 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import javax.annotation.security.RolesAllowed;
@@ -146,11 +145,10 @@ public class UsersRelationshipsRestResourcesV1 implements UsersRelationshipsRest
     
     Relationship.Type status = model.getStatus() != null && model.getStatus().equalsIgnoreCase("pending") ? Relationship.Type.PENDING : Relationship.Type.CONFIRMED;
     RelationshipManager relationshipManager = CommonsUtils.getService(RelationshipManager.class);
-    if (relationshipManager.get(sender, receiver) != null) {
+    if (relationshipManager.get(sender, receiver) != null && !Relationship.Type.CONFIRMED.equals(status)) {
       throw new WebApplicationException(Response.Status.PRECONDITION_FAILED);
     }
-    Relationship relationship = new Relationship(sender, receiver, status);
-    relationshipManager.update(relationship);
+    Relationship relationship = createRelationshipByStatus(sender, receiver, status);
     
     return EntityBuilder.getResponse(EntityBuilder.buildEntityRelationship(relationship, uriInfo.getPath(), expand, false), uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
   }
@@ -280,5 +278,32 @@ public class UsersRelationshipsRestResourcesV1 implements UsersRelationshipsRest
       default:
         break;
       }
+  }
+  
+  private Relationship createRelationshipByStatus(Identity sender, Identity receiver, Relationship.Type status) {
+    RelationshipManager relationshipManager = CommonsUtils.getService(RelationshipManager.class);
+    
+    switch (status) {
+      case IGNORED: {
+        break;
+      }
+      case PENDING: {//from confirm to pending but this case doesn't exist
+        return relationshipManager.inviteToConnect(sender, receiver);
+      }
+      case CONFIRMED: {//from pending to confirm
+        Relationship relationship = relationshipManager.get(sender, receiver);
+        if (relationship == null) {
+          relationshipManager.inviteToConnect(sender, receiver);
+          relationshipManager.confirm(receiver, sender);
+        } else {
+          relationshipManager.confirm(receiver, sender);
+        }
+        return relationshipManager.get(sender, receiver);
+      }
+      default:
+        break;
+      }
+    
+    return new Relationship(sender, receiver, status);
   }
 }
