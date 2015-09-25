@@ -99,7 +99,7 @@ public class ActivityRestResourcesV1 implements ActivityRestResources {
     List<DataEntity> activityEntities = new ArrayList<DataEntity>();
     for (ExoSocialActivity activity : activities) {
       DataEntity as = EntityBuilder.getActivityStream(activity, currentUser);
-      if (as == null) continue;
+      if (as == null && !hasMention(currentUser, activity)) continue;
       ActivityEntity activityEntity = EntityBuilder.buildEntityFromActivity(activity, uriInfo.getPath(), expand);
       activityEntity.setActivityStream(as);
       //
@@ -138,7 +138,7 @@ public class ActivityRestResourcesV1 implements ActivityRestResources {
     }
     
     DataEntity as = EntityBuilder.getActivityStream(activity.isComment() ? activityManager.getParentActivity(activity) : activity, currentUser);
-    if (as == null) { //current user doesn't have permission to view activity
+    if (as == null && !hasMention(currentUser, activity)) { //current user doesn't have permission to view activity
       throw new WebApplicationException(Response.Status.UNAUTHORIZED);
     }
     ActivityEntity activityEntity = EntityBuilder.buildEntityFromActivity(activity, uriInfo.getPath(), expand);
@@ -148,7 +148,7 @@ public class ActivityRestResourcesV1 implements ActivityRestResources {
 
     return EntityBuilder.getResponse(activityEntity.getDataEntity(), uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
   }
-  
+
   @PUT
   @Path("{id}")
   @Produces(MediaType.APPLICATION_JSON)
@@ -252,7 +252,7 @@ public class ActivityRestResourcesV1 implements ActivityRestResources {
       throw new WebApplicationException(Response.Status.UNAUTHORIZED);
     }
     
-    if (EntityBuilder.getActivityStream(activity, currentUser) == null) { //current user doesn't have permission to view activity
+    if (EntityBuilder.getActivityStream(activity, currentUser) == null && !hasMention(currentUser, activity)) { //current user doesn't have permission to view activity
       throw new WebApplicationException(Response.Status.UNAUTHORIZED);
     }
     List<DataEntity> commentsEntity = EntityBuilder.buildEntityFromComment(activity, uriInfo.getPath(), expand, offset, limit);
@@ -291,7 +291,7 @@ public class ActivityRestResourcesV1 implements ActivityRestResources {
       throw new WebApplicationException(Response.Status.UNAUTHORIZED);
     }
     
-    if (EntityBuilder.getActivityStream(activity, currentUser) == null) { //current user doesn't have permission to view activity
+    if (EntityBuilder.getActivityStream(activity, currentUser) == null && !hasMention(currentUser, activity)) { //current user doesn't have permission to view activity
       throw new WebApplicationException(Response.Status.UNAUTHORIZED);
     }
     
@@ -332,7 +332,7 @@ public class ActivityRestResourcesV1 implements ActivityRestResources {
       throw new WebApplicationException(Response.Status.UNAUTHORIZED);
     }
     
-    if (EntityBuilder.getActivityStream(activity, currentUser) == null) { //current user doesn't have permission to view activity
+    if (EntityBuilder.getActivityStream(activity, currentUser) == null && !hasMention(currentUser, activity)) { //current user doesn't have permission to view activity
       throw new WebApplicationException(Response.Status.UNAUTHORIZED);
     }
     List<DataEntity> likesEntity = EntityBuilder.buildEntityFromLike(activity, uriInfo.getPath(), expand, offset, limit);
@@ -366,7 +366,7 @@ public class ActivityRestResourcesV1 implements ActivityRestResources {
       throw new WebApplicationException(Response.Status.UNAUTHORIZED);
     }
     
-    if (EntityBuilder.getActivityStream(activity, currentUser) == null) { //current user doesn't have permission to view activity
+    if (EntityBuilder.getActivityStream(activity, currentUser) == null && !hasMention(currentUser, activity)) { //current user doesn't have permission to view activity
       throw new WebApplicationException(Response.Status.UNAUTHORIZED);
     }
     List<String> likerIds = new ArrayList<String>(Arrays.asList(activity.getLikeIdentityIds()));
@@ -467,5 +467,13 @@ public class ActivityRestResourcesV1 implements ActivityRestResources {
         throw new WebApplicationException(Response.Status.UNAUTHORIZED);
       }
     }
+  }
+  
+  private boolean hasMention(Identity currentUser, ExoSocialActivity activity) {
+    String[] mentionerIds = activity.getMentionedIds();
+    for (String id : mentionerIds) {
+      if (id.startsWith(currentUser.getId())) return true;
+    }
+    return false;
   }
 }

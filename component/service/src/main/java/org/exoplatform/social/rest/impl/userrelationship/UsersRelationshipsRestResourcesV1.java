@@ -167,7 +167,7 @@ public class UsersRelationshipsRestResourcesV1 implements UsersRelationshipsRest
     @ApiResponse (code = 500, message = "Internal server error"),
     @ApiResponse (code = 400, message = "Invalid query input to find user relationship.") })
   public Response getUsersRelationshipsById(@Context UriInfo uriInfo,
-                                            @ApiParam(value = "User remoteId", required = true) @PathParam("id") String id,
+                                            @ApiParam(value = "Relationship Id", required = true) @PathParam("id") String id,
                                             @ApiParam(value = "Expand param : ask for a full representation of a subresource", required = false) @QueryParam("expand") String expand) throws Exception {
     
     Identity authenticatedUser = CommonsUtils.getService(IdentityManager.class).getOrCreateIdentity(OrganizationIdentityProvider.NAME, ConversationState.getCurrent().getIdentity().getUserId(), true);
