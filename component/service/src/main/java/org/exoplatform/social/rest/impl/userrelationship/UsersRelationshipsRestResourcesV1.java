@@ -272,7 +272,7 @@ public class UsersRelationshipsRestResourcesV1 implements UsersRelationshipsRest
       }
       case CONFIRMED: {//from pending to confirm
         relationship.setStatus(status);
-        relationshipManager.update(relationship);
+        relationshipManager.confirm(relationship.getReceiver(), relationship.getSender());
         break;
       }
       default:
