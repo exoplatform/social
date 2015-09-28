@@ -34,10 +34,12 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
+import org.exoplatform.commons.utils.CommonsUtils;
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.rest.impl.EnvironmentContext;
 import org.exoplatform.services.security.ConversationState;
+import org.exoplatform.services.security.IdentityConstants;
 import org.exoplatform.social.core.activity.model.ActivityStream;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.identity.model.Identity;
@@ -74,7 +76,6 @@ public final class Util {
       "(?::[\\d]{1,5})?" +                                                                        // port
       "(?:[\\/|\\?|\\#].*)?$");                                                               // path and query
 
-  
   /**
    * Prevents constructing a new instance.
    */
@@ -102,13 +103,14 @@ public final class Util {
    * @return response the response object
    */
   public static Response getResponse(Object entity, UriInfo uriInfo, MediaType mediaType, Response.Status status) {
-    return Response.created(uriInfo.getAbsolutePath())
+    Response resp = Response.created(uriInfo.getAbsolutePath())
                    .entity(entity)
                    .type(mediaType.toString() + "; charset=utf-8")
                    .status(status)
                    .build();
+    
+    return resp;
   }
-  
   /**
    * Gets mediaType from string format.
    * Currently supports json and xml only.
@@ -624,5 +626,67 @@ public final class Util {
       }
     }
     return false;
+  }
+  
+  /** 
+   * Get base url of rest service
+   * 
+   * @param type the type of rest service
+   * @param id the id of object
+   * 
+   * @return base rest url like : http://localhost:8080/rest/v1/social/users/123456
+   */
+  public static String getRestUrl(String type, String id, String restPath) {
+    String version = restPath.split("/")[1]; // path /v1/social/identities
+    String socialResource = restPath.split("/")[2]; // path /v1/social/identities
+    
+    return new StringBuffer(getBaseRestUrl())
+    .append("/").append(version)
+    .append("/").append(socialResource)
+    .append("/").append(type)
+    .append("/").append(id).toString();
+  }
+  
+  /** 
+   * Get base url of rest service
+   * 
+   * @return base rest url like : http://localhost:8080/rest
+   */
+  public static String getBaseRestUrl() {
+    return new StringBuffer(CommonsUtils.getCurrentDomain()).append("/").append(CommonsUtils.getRestContextName()).toString();
+  }
+  
+  /**
+   * Get the rest url to load all members or managers of a space
+   * 
+   * @param id the id of space
+   * @param returnManager return managers or members
+   * @return rest url to load all members or managers of a space
+   */
+  public static String getMembersSpaceRestUrl(String id, boolean returnManager, String restPath) {
+    StringBuffer spaceMembersRestUrl = new StringBuffer(getRestUrl(RestUtils.SPACES_TYPE, id, restPath)).append("/").append(RestUtils.USERS_TYPE);
+    if (returnManager) {
+      return spaceMembersRestUrl.append("?role=manager").toString();
+    }
+    return spaceMembersRestUrl.toString();
+  }
+  
+  /**
+   * Get the rest url in order to load all comments of an activity
+   * 
+   * @param activityId activity's id
+   * @return
+   */
+  public static String getCommentsActivityRestUrl(String activityId, String restPath) {
+    return new StringBuffer(getRestUrl(RestUtils.ACTIVITIES_TYPE, activityId, restPath)).append("/").append("comments").toString();
+  }
+  
+  /**
+   * Check if the current user is authenticated
+   * 
+   * @return true if user not authenticated
+   */
+  public static boolean isAnonymous() {
+    return IdentityConstants.ANONIM.equals(ConversationState.getCurrent().getIdentity().getUserId());
   }
 }

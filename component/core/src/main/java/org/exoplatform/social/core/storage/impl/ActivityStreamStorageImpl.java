@@ -418,7 +418,7 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
     try {
       //
       ActivityEntity activityEntity = _findById(ActivityEntity.class, activityId);
-      HidableEntity hidableActivity = _getMixin(activityEntity, HidableEntity.class, false);
+      HidableEntity hidableActivity = _getMixin(activityEntity, HidableEntity.class, true);
       
       Collection<ActivityRef> references = activityEntity.getActivityRefs();
       
@@ -527,7 +527,7 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
     IdentityEntity identityEntity = identityStorage._findIdentityEntity(identity.getProviderId(), identity.getRemoteId());
     ActivityRefListEntity refList = type.refsOf(identityEntity);
     ActivityRef ref = refList.get(activityEntity, oldUpdated);
-    HidableEntity hidableActivity = _getMixin(activityEntity, HidableEntity.class, false);
+    HidableEntity hidableActivity = _getMixin(activityEntity, HidableEntity.class, true);
     if (ref != null) {
       LOG.trace("remove activityRefId " +  ref.getId() +" for commenter: " + identityEntity.getRemoteId());
       refList.remove(activityEntity, hidableActivity.getHidden(), oldUpdated);
@@ -562,21 +562,23 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
       //It has been invoked by Activity Service with the multi-threading.
       //so that, gets Entity from JCR, prevent Session.logout exception when retrieves its references
       ActivityEntity activityEntity = _findById(ActivityEntity.class, streamCtx.getActivity().getId());
-      HidableEntity hidableActivity = _getMixin(activityEntity, HidableEntity.class, false);
+      HidableEntity hidableActivity = _getMixin(activityEntity, HidableEntity.class, true);
       //ActivityEntity activityEntity = streamCtx.getActivity();
       Collection<ActivityRef> references = activityEntity.getActivityRefs();
       long oldUpdated = streamCtx.getOldLastUpdated();
       ActivityRef newRef = null;
-      for (ActivityRef old : references) {
-        ActivityRefListEntity refList = old.getDay().getMonth().getYear().getList();
-        //ActivityRef.getName equals ActivityId or not
-        if (old.getName().equalsIgnoreCase(activityEntity.getId())) {
-          refList.update(activityEntity, old, oldUpdated, hidableActivity.getHidden());
-        } else {
-          newRef = refList.getOrCreated(activityEntity, hidableActivity.getHidden());
-          newRef.setLastUpdated(activityEntity.getLastUpdated());
-          newRef.setActivityEntity(activityEntity);
-          refList.remove(activityEntity, hidableActivity.getHidden(), oldUpdated);
+      synchronized (references) {
+        for (ActivityRef old : references) {
+          ActivityRefListEntity refList = old.getDay().getMonth().getYear().getList();
+          //ActivityRef.getName equals ActivityId or not
+          if (old.getName().equalsIgnoreCase(activityEntity.getId())) {
+            refList.update(activityEntity, old, oldUpdated, hidableActivity.getHidden());
+          } else {
+            newRef = refList.getOrCreated(activityEntity, hidableActivity.getHidden());
+            newRef.setLastUpdated(activityEntity.getLastUpdated());
+            newRef.setActivityEntity(activityEntity);
+            refList.remove(activityEntity, hidableActivity.getHidden(), oldUpdated);
+          }
         }
       }
     } catch (NodeNotFoundException ex) {
@@ -1182,6 +1184,10 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
         }
         IdentityEntity identityEntity = identityStorage._findIdentityEntity(identity.getProviderId(), identity.getRemoteId());
         
+        if (identityEntity == null) {
+          continue;
+        }
+        
         //keep the latest activity posted time
         if (type.equals(ActivityRefType.CONNECTION)) {
           identityEntity.setLatestActivityCreatedTime(activityEntity.getLastUpdated());
@@ -1224,7 +1230,7 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
         return;
     }
     
-    HidableEntity hidableActivity = _getMixin(activityEntity, HidableEntity.class, false);
+    HidableEntity hidableActivity = _getMixin(activityEntity, HidableEntity.class, true);
 
     ActivityRefListEntity listRef = type.refsOf(identityEntity);
     ActivityRef ref = listRef.getOrCreated(activityEntity, hidableActivity.getHidden());

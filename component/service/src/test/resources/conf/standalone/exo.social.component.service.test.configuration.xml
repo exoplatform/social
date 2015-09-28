@@ -104,6 +104,26 @@
        -->
     </init-params>
   </component>
+
+  <!-- Request/Response filters. -->
+  <component>
+     <type>org.exoplatform.services.rest.impl.ProvidersRegistry</type>
+  </component>
+  <external-component-plugins>
+      <target-component>org.exoplatform.services.rest.impl.RequestHandlerImpl</target-component>
+      <component-plugin>
+       <name>ws.rs.response.filter</name>
+       <set-method>addPlugin</set-method>
+       <type>org.exoplatform.services.rest.impl.ResponseFilterComponentPlugin</type>
+       <init-params>
+          <value-param>
+             <name>ws.rs.response.social-response-filter</name>
+             <value>org.exoplatform.social.rest.filter.SocialResponseFilter</value>
+          </value-param>
+       </init-params>
+      </component-plugin>
+  </external-component-plugins>
+  <!-- Request/Response filters. -->
   
   <external-component-plugins>
      <target-component>org.exoplatform.services.rest.impl.provider.JAXBContextResolver</target-component>
@@ -141,32 +161,6 @@
         <name>ws.rs.method.filter</name>
         <set-method>addPlugin</set-method>
         <type>org.exoplatform.services.rest.impl.method.MethodInvokerFilterComponentPlugin</type>
-        <!--
-        <init-params>
-           <value-param>
-              <name>name</name>
-              <value>filter class</value>
-           </value-param>
-        </init-params>
-        -->
-     </component-plugin>
-     <component-plugin>
-        <name>ws.rs.request.filter</name>
-        <set-method>addPlugin</set-method>
-        <type>org.exoplatform.services.rest.impl.RequestFilterComponentPlugin</type>
-        <!--
-        <init-params>
-           <value-param>
-              <name>name</name>
-              <value>filter class</value>
-           </value-param>
-        </init-params>
-        -->
-     </component-plugin>
-     <component-plugin>
-        <name>ws.rs.response.filter</name>
-        <set-method>addPlugin</set-method>
-        <type>org.exoplatform.services.rest.impl.ResponseFilterComponentPlugin</type>
         <!--
         <init-params>
            <value-param>

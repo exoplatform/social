@@ -50,13 +50,38 @@
   <component>
     <type>org.exoplatform.social.service.rest.NotificationsRestService</type>
   </component>
-  
+
   <component>
     <type>org.exoplatform.social.service.rest.SocialUpdaterRest</type>
   </component>
   
   <component>
     <type>org.exoplatform.social.service.rest.IntranetNotificationRestService</type>
+  </component>
+
+  <component>
+    <type>org.exoplatform.social.rest.impl.identity.IdentityRestResourcesV1</type>
+  </component>
+  <component>
+    <type>org.exoplatform.social.rest.impl.space.SpaceRestResourcesV1</type>
+  </component>
+  <component>
+    <type>org.exoplatform.social.rest.impl.spacemembership.SpaceMembershipRestResourcesV1</type>
+  </component>
+  <component>
+    <type>org.exoplatform.social.rest.impl.user.UserRestResourcesV1</type>
+  </component>
+  <component>
+    <type>org.exoplatform.social.rest.impl.userrelationship.UsersRelationshipsRestResourcesV1</type>
+  </component>
+  <component>
+    <type>org.exoplatform.social.rest.impl.activity.ActivityRestResourcesV1</type>
+  </component>
+  <component>
+    <type>org.exoplatform.social.rest.impl.comment.CommentRestResourcesV1</type>
+  </component>
+  <component>
+    <type>org.exoplatform.social.rest.impl.relationship.RelationshipsRestResourcesV1</type>
   </component>
 <!-- REST service -->
 
@@ -75,4 +100,20 @@
   </component>
 <!-- Social Rest API resources for latest -->
 
+<!-- Social request/response filter -->
+  <external-component-plugins>
+      <target-component>org.exoplatform.services.rest.impl.RequestHandlerImpl</target-component>
+	    <component-plugin>
+       <name>ws.rs.response.filter</name>
+       <set-method>addPlugin</set-method>
+       <type>org.exoplatform.services.rest.impl.ResponseFilterComponentPlugin</type>
+       <init-params>
+          <value-param>
+             <name>ws.rs.response.social-response-filter</name>
+             <value>org.exoplatform.social.rest.filter.SocialResponseFilter</value>
+          </value-param>
+       </init-params>
+      </component-plugin>
+  </external-component-plugins>
+<!-- Social request/response filter -->
 </configuration>

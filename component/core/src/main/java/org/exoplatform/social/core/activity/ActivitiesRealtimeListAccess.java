@@ -43,7 +43,8 @@ public class ActivitiesRealtimeListAccess implements RealtimeListAccess<ExoSocia
     USER_SPACE_ACTIVITIES,
     SPACE_ACTIVITIES,
     POSTER_ACTIVITIES,
-    POSTER_AND_TYPES_ACTIVITIES
+    POSTER_AND_TYPES_ACTIVITIES,
+    ALL
   }
 
   /**
@@ -68,6 +69,19 @@ public class ActivitiesRealtimeListAccess implements RealtimeListAccess<ExoSocia
   private Identity viewerIdentity;
   
   private String[] activityTypes;
+  
+  /**
+   * Constructor.
+   *
+   * @param existingActivityStorage
+   * @param chosenActivityType
+   * @param chosenOwnerIdentity
+   */
+  public ActivitiesRealtimeListAccess(final ActivityStorage existingActivityStorage,
+                                      final ActivityType chosenActivityType) {
+    this.activityStorage = existingActivityStorage;
+    this.activityType = chosenActivityType;
+  }
 
   /**
    * Constructor.
@@ -148,6 +162,9 @@ public class ActivitiesRealtimeListAccess implements RealtimeListAccess<ExoSocia
       } 
       case POSTER_AND_TYPES_ACTIVITIES: {
         return activityStorage.getActivitiesByPoster(ownerIdentity, index, limit, activityTypes);
+      }
+      case ALL: {
+        return activityStorage.getAllActivities(index, limit);
       }
     }
     return Collections.emptyList();

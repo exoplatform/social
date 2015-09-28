@@ -32,6 +32,7 @@ import java.util.TreeMap;
 
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
+import javax.jcr.Session;
 
 import org.chromattic.api.query.Ordering;
 import org.chromattic.api.query.QueryBuilder;
@@ -709,10 +710,9 @@ public class RelationshipStorageImpl extends AbstractStorage implements Relation
         _createRelationship(relationship);
       }
       else {
+        _saveRelationship(relationship);
         //
         StorageUtils.persist();
-        
-        _saveRelationship(relationship);
       }
     }
     catch (NodeNotFoundException e) {
@@ -1322,5 +1322,178 @@ public class RelationshipStorageImpl extends AbstractStorage implements Relation
 
   public void setStorage(RelationshipStorage storage) {
     this.relationshipStorage = storage;
+  }
+  
+  /**
+   * {@inheritDoc}
+   */
+  public List<Relationship> getRelationshipsByStatus(Identity identity, Relationship.Type type, long offset, long limit) {
+
+    try {
+      Session jcrSession = getSession().getJCRSession();
+      List<Relationship> relationships = new ArrayList<Relationship>();
+
+      //
+      IdentityEntity receiverEntity = _findById(IdentityEntity.class, identity.getId());
+      String relationshipNodePath = receiverEntity.getPath() + StorageUtils.SLASH_STR + StorageUtils.SOC_RELATIONSHIP;;
+      String receiverNodePath = receiverEntity.getPath() + StorageUtils.SLASH_STR + StorageUtils.SOC_RELCEIVER;
+      String senderNodePath = receiverEntity.getPath() + StorageUtils.SLASH_STR + StorageUtils.SOC_SENDER;
+      Node node = null;
+      NodeIterator relationIterator = null;
+      NodeIterator senderIterator = null;
+      NodeIterator receiverIterator = null;
+      
+      switch (type) {
+
+      case ALL:
+        node = (Node) jcrSession.getItem(relationshipNodePath);
+        relationIterator = AbstractService.getNodeIteratorOrderDESC(node);
+        node = (Node) jcrSession.getItem(receiverNodePath);
+        senderIterator = AbstractService.getNodeIteratorOrderDESC(node);
+        node = (Node) jcrSession.getItem(senderNodePath);
+        receiverIterator = AbstractService.getNodeIteratorOrderDESC(node);
+        getRelationships(relationships, new IteratorIterator<Node>(relationIterator, senderIterator, receiverIterator), offset, limit);
+        break;
+
+      case CONFIRMED:
+        node = (Node) jcrSession.getItem(relationshipNodePath);
+        relationIterator = AbstractService.getNodeIteratorOrderDESC(node);
+        
+        getRelationships(relationships, new IteratorIterator<Node>(relationIterator), offset, limit);
+        break;
+
+      case PENDING:
+        node = (Node) jcrSession.getItem(receiverNodePath);
+        receiverIterator = AbstractService.getNodeIteratorOrderDESC(node);
+        node = (Node) jcrSession.getItem(senderNodePath);
+        senderIterator = AbstractService.getNodeIteratorOrderDESC(node);
+        getRelationships(relationships, new IteratorIterator<Node>(receiverIterator, senderIterator), offset, limit);
+        break;
+
+      case IGNORED:
+        break;
+      }
+
+      return relationships;
+    } catch (NodeNotFoundException e) {
+      return new ArrayList<Relationship>();
+    } catch (Exception e) {
+      throw new RelationshipStorageException(RelationshipStorageException.Type.FAILED_TO_GET_RELATIONSHIP,
+                                             e.getMessage());
+    }
+  }
+  
+  /**
+   * {@inheritDoc}
+   */
+  public int getRelationshipsCountByStatus(Identity identity, Relationship.Type type) {
+    try {
+      IdentityEntity receiverEntity = _findById(IdentityEntity.class, identity.getId());
+
+      switch (type) {
+
+      case ALL:
+        return receiverEntity.getRelationship().getRelationships().size()
+            + receiverEntity.getReceiver().getRelationships().size()
+            + receiverEntity.getSender().getRelationships().size();
+      case CONFIRMED:
+        return receiverEntity.getRelationship().getRelationships().size();
+      case PENDING:
+        return receiverEntity.getReceiver().getRelationships().size()
+            + receiverEntity.getSender().getRelationships().size();
+      case IGNORED:
+        return receiverEntity.getIgnored().getRelationships().size();
+      }
+    } catch (Exception e) {
+      return 0;
+    }
+    
+    return 0;
+  }
+  
+  private void getRelationships(List<Relationship> relationships, IteratorIterator<Node> nodeIt, long offset, long limit) {
+    //
+    int i = 0;
+
+    _skip(nodeIt, offset);
+
+    Relationship relationship = null;
+    try {
+      while (nodeIt.hasNext()) {
+        Node relationshipNode = (Node) nodeIt.next();
+        relationship = new Relationship(relationshipNode.getUUID());
+        IdentityEntity senderEntity = _findById(IdentityEntity.class, relationshipNode.getProperty(StorageUtils.SOC_FROM).getString());
+        IdentityEntity receiverEntity = _findById(IdentityEntity.class, relationshipNode.getProperty(StorageUtils.SOC_TO).getString());
+        //
+        if (_getMixin(senderEntity, DisabledEntity.class, false) != null ||
+            _getMixin(receiverEntity, DisabledEntity.class, false) != null) {
+          continue;
+        }
+        Identity sender = new Identity(senderEntity.getId());
+        sender.setRemoteId(senderEntity.getRemoteId());
+        sender.setProviderId(senderEntity.getProviderId());
+        ProfileEntity senderProfileEntity = senderEntity.getProfile();
+  
+        if (senderProfileEntity != null) {
+          loadProfile(sender);
+        }
+  
+        Identity receiver = new Identity(receiverEntity.getId());
+        receiver.setRemoteId(receiverEntity.getRemoteId());
+        receiver.setProviderId(receiverEntity.getProviderId());
+        ProfileEntity receiverProfileEntity = receiverEntity.getProfile();
+  
+        if (receiverProfileEntity != null) {
+          loadProfile(receiver);
+        }
+  
+        relationship.setSender(sender);
+        relationship.setReceiver(receiver);
+        if (StorageUtils.SOC_SENDER.equals(relationshipNode.getParent().getName()) ||
+            StorageUtils.SOC_RELCEIVER.equals(relationshipNode.getParent().getName())) {
+          relationship.setStatus(Relationship.Type.PENDING);
+        }
+        else {
+          relationship.setStatus(Relationship.Type.CONFIRMED);
+        }
+  
+        relationships.add(relationship);
+        
+        if (limit != -1 && limit > 0 && ++i >= limit) {
+          break;
+        }
+      }
+    } catch (Exception e) {
+      throw new RelationshipStorageException(RelationshipStorageException.Type.FAILED_TO_GET_RELATIONSHIP,
+                                             e.getMessage());
+    }
+  }
+  
+  class IteratorIterator<T> implements Iterator<T> {
+    private final Iterator<T> is[];
+
+    private int               current;
+
+    public IteratorIterator(Iterator<T>... iterators) {
+      is = iterators;
+      current = 0;
+    }
+
+    public boolean hasNext() {
+      while (current < is.length && !is[current].hasNext())
+        current++;
+
+      return current < is.length;
+    }
+
+    public T next() {
+      while (current < is.length && !is[current].hasNext())
+        current++;
+
+      return is[current].next();
+    }
+
+    public void remove() { /* not implemented */
+    }
   }
 }

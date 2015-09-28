@@ -53,6 +53,11 @@ public class StorageUtils {
   public static final String SLASH_STR = "/";
   public static final String COLON_STR = ":";
   public static final String SOC_RELATIONSHIP = "soc:relationship";
+  public static final String SOC_RELCEIVER    = "soc:receiver";
+  public static final String SOC_SENDER       = "soc:sender";
+  public static final String SOC_IGNORED      = "soc:ignored";
+  public static final String SOC_FROM         = "soc:from";
+  public static final String SOC_TO           = "soc:to";
   public static final String SOC_ACTIVITY_INFO = "soc:activityInfo";
   public static final String SOC_PREFIX = "soc:";
   private final static long DAY_MILISECONDS = 86400000;//a day = 24h x 60m x 60s x 1000 milisecond.

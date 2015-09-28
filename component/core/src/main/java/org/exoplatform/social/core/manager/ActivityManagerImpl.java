@@ -496,4 +496,9 @@ public class ActivityManagerImpl implements ActivityManager {
     return identityManager.getIdentity(newActivity.getUserId(), false);
   }
 
+  @Override
+  public RealtimeListAccess<ExoSocialActivity> getAllActivitiesWithListAccess() {
+    return new ActivitiesRealtimeListAccess(activityStorage, ActivityType.ALL);
+  }
+
 }
