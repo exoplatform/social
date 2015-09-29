@@ -333,7 +333,7 @@ var UIActivity = {
           UIActivity.hasClass(target, 'uiIconClose')) {
         return true;
       }
-      $('html, body').animate({scrollTop: 16}, 'slow');
+      //$('html, body').animate({scrollTop: 16}, 'slow');
       //
       var parent = $('#' + UIActivity.responsiveId);
       parent.find('.activityStream').addClass('hidden-phone');
