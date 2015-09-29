@@ -154,7 +154,7 @@ public class SocialUserEventListenerImpl extends UserEventListener {
         // Nothing executed (user not deleted) when facing this case now with code commit by SOC-1507.
         // Will be implemented by SOC-2276.
         
-        LOG.debug("Problem occurred when deleting user named " + identity.getRemoteId());
+        LOG.warn("Problem occurred when deleting user named " + identity.getRemoteId());
       }
       
     }finally{
