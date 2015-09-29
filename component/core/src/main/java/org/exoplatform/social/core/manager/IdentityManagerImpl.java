@@ -534,8 +534,10 @@ public class IdentityManagerImpl implements IdentityManager {
    * @since 1.2.0-GA
    */
   protected void broadcastUpdateProfileEvent(Profile profile) {
-    for (UpdateType type : profile.getListUpdateTypes()) {
-      type.updateActivity(profileLifeCycle, profile);
+    if(profile.getListUpdateTypes() != null) {
+      for (UpdateType type : profile.getListUpdateTypes()) {
+        type.updateActivity(profileLifeCycle, profile);
+      }
     }
   }
 

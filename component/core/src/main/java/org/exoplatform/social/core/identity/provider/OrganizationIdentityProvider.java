@@ -163,8 +163,10 @@ public class OrganizationIdentityProvider extends IdentityProvider<User> {
      */
     public void doUpdate() throws MessageException {
       try {
-        if (updatedProfile.getListUpdateTypes().contains(Profile.UpdateType.CONTACT)) {
-          updateBasicInfo();
+        if(updatedProfile.getListUpdateTypes() != null) {
+          if (updatedProfile.getListUpdateTypes().contains(Profile.UpdateType.CONTACT)) {
+            updateBasicInfo();
+          }
         }
       } catch (Exception e) {
         if ( e instanceof MessageException) {
