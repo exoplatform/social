@@ -166,7 +166,7 @@ public class SpaceRestResourcesV1 implements SpaceRestResources {
     Space space = new Space();
     fillSpaceFromModel(space, model);
     space.setPriority(Space.INTERMEDIATE_PRIORITY);
-    space.setGroupId("/space/space" + space.getPrettyName());
+    space.setGroupId("/spaces/space" + space.getPrettyName());
     space.setType(DefaultSpaceApplicationHandler.NAME);
     String[] managers = new String[] {authenticatedUser};
     String[] members = new String[] {authenticatedUser};
