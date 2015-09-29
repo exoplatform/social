@@ -182,7 +182,7 @@ public class SpaceRestResourcesTest extends AbstractResourceTest {
     assertNotNull(response);
     assertEquals(200, response.getStatus());
     CollectionEntity activitiesCollections = (CollectionEntity) response.getEntity();
-    assertEquals(5, activitiesCollections.getEntities().size());
+    assertEquals(6, activitiesCollections.getEntities().size());
     
     //root posts another activity
     String input = "{\"title\":title6}";
@@ -191,7 +191,7 @@ public class SpaceRestResourcesTest extends AbstractResourceTest {
     assertEquals(200, response.getStatus());
     
     RealtimeListAccess<ExoSocialActivity> listAccess = activityManager.getActivitiesOfSpaceWithListAccess(spaceIdentity);
-    assertEquals(6, listAccess.getSize());
+    assertEquals(7, listAccess.getSize());
     ExoSocialActivity activity = listAccess.load(0, 10)[0];
     assertEquals("title6", activity.getTitle());
     
@@ -209,14 +209,15 @@ public class SpaceRestResourcesTest extends AbstractResourceTest {
     space.setVisibility(Space.PRIVATE);
     space.setRegistration(Space.VALIDATION);
     space.setPriority(Space.INTERMEDIATE_PRIORITY);
-    space.setGroupId("/space/space" + number);
-    String[] managers = new String[] {creator};
-    String[] members = new String[] {creator};
-    space.setManagers(managers);
-    space.setMembers(members);
-    space.setUrl(space.getPrettyName());
-    this.spaceService.saveSpace(space, true);
+    this.spaceService.createSpace(space, creator);
     tearDownSpaceList.add(space);
+    tearDownActivitiesList.addAll(getCreatedSpaceActivities(space));
     return space;
+  }
+  
+  private List<ExoSocialActivity> getCreatedSpaceActivities(Space space) {
+    Identity spaceIdentity = identityManager.getOrCreateIdentity(SpaceIdentityProvider.NAME, space.getPrettyName(), false);
+    RealtimeListAccess<ExoSocialActivity> listAccess = activityManager.getActivitiesOfSpaceWithListAccess(spaceIdentity);
+    return listAccess.loadAsList(0, 10);
   }
 }

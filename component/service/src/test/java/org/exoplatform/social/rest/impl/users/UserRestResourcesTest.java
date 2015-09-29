@@ -167,13 +167,13 @@ public class UserRestResourcesTest extends AbstractResourceTest {
     space.setVisibility(Space.PUBLIC);
     space.setRegistration(Space.VALIDATION);
     space.setPriority(Space.INTERMEDIATE_PRIORITY);
-    space.setGroupId("/space/space" + number);
+    space.setGroupId("/spaces/space" + number);
     String[] managers = new String[] {creator};
     String[] members = new String[] {creator};
     space.setManagers(managers);
     space.setMembers(members);
     space.setUrl(space.getPrettyName());
-    this.spaceService.saveSpace(space, true);
+    this.spaceService.createSpace(space, creator);
     return space;
   }
 }
