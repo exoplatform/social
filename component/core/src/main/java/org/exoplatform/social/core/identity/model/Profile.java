@@ -16,6 +16,7 @@
  */
 package org.exoplatform.social.core.identity.model;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -598,7 +599,7 @@ public class Profile {
   }
 
   public List<UpdateType> getListUpdateTypes() {
-    return listUpdateTypes;
+    return listUpdateTypes != null ? listUpdateTypes : new ArrayList<UpdateType>();
   }
 
   public void setListUpdateTypes(List<UpdateType> listUpdateTypes) {
