@@ -794,7 +794,7 @@ public class BaseUIActivity extends UIForm {
       
       Utils.initUserProfilePopup(uiActivity.getId());
       Utils.resizeHomePage();
-      
+      uiActivity.focusToLatestComment(activityId);
       uiActivity.getParent().broadcast(event, event.getExecutionPhase());
     }
   }
@@ -927,4 +927,20 @@ public class BaseUIActivity extends UIForm {
     }
     return cmts;
   }
+  
+  protected void focusToLatestComment(String activityId) {
+    PortletRequestContext pContext = (PortletRequestContext) WebuiRequestContext.getCurrentInstance();
+    JavascriptManager jm = pContext.getJavascriptManager();
+    StringBuilder script = new StringBuilder("setTimeout(function() {")
+      .append("var activityBox = jq('#ActivityContextBox"+activityId+"' );")
+      .append("var commentList = jq(activityBox).find('.commentList').not('.inputContainer');")
+      .append("var lastComment = commentList.children().last();")
+      .append("if(lastComment.length > 0) {")
+      .append("  lastComment[0].scrollIntoView(true);")
+      .append("}")
+      .append("}, 200);");
+    jm.require("SHARED/jquery", "jq")
+      .addScripts(script.toString());  
+  }
+  
 }
