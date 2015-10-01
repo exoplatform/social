@@ -742,6 +742,28 @@ public class IdentityManagerTest extends AbstractCoreTest {
     tearDownIdentityList.add(rootIdentity);
   }
   
+  public void testUpdateProfileActivity() throws Exception {
+    Identity rootIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "root", false);
+    Profile profile = rootIdentity.getProfile();
+    profile.setProperty(Profile.POSITION, "CEO");  
+    assertEquals(0, profile.getListUpdateTypes().size());
+    identityManager.updateProfile(profile);
+    assertEquals(0, profile.getListUpdateTypes().size());
+    
+    profile.setListUpdateTypes(Arrays.asList(Profile.UpdateType.CONTACT));
+    assertEquals(1, profile.getListUpdateTypes().size());
+    
+    Identity identityUpdated = identityManager.getOrCreateIdentity(rootIdentity.getProviderId(), rootIdentity.getRemoteId(), false);
+    assertEquals("CEO", identityUpdated.getProfile().getProperty(Profile.POSITION));
+
+    end();
+    begin();
+
+    List<ExoSocialActivity> rootActivityList = activityManager.getActivities(rootIdentity);
+
+    tearDownIdentityList.add(rootIdentity);
+  }
+  
   /**
    * Populate list of identities.
    *
