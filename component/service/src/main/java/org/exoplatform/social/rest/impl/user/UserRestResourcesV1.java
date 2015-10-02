@@ -413,7 +413,11 @@ public class UserRestResourcesV1 implements UserRestResources {
     }
     CollectionEntity collectionActivity = new CollectionEntity(activityEntities, EntityBuilder.ACTIVITIES_TYPE,  offset, limit);
     if(returnSize) {
-      collectionActivity.setSize(listAccess.getSize());
+      if (before != null || after != null) {
+        collectionActivity.setSize(activities.size());
+      } else {
+        collectionActivity.setSize(listAccess.getSize());
+      }
     }
     return EntityBuilder.getResponse(collectionActivity, uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
   }
