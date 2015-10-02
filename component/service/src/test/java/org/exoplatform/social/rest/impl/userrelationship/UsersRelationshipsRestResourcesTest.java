@@ -105,7 +105,7 @@ public class UsersRelationshipsRestResourcesTest extends AbstractResourceTest {
   }
   
   public void testGetUpdateDeleteUserRelationship() throws Exception {
-    Relationship relationship = new Relationship(rootIdentity, demoIdentity, Relationship.Type.PENDING);
+    Relationship relationship = new Relationship(demoIdentity, rootIdentity, Relationship.Type.PENDING);
     relationshipManager.update(relationship);
     //
     startSessionAs("root");

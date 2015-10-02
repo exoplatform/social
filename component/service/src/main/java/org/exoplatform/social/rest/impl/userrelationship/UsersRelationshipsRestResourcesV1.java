@@ -209,6 +209,13 @@ public class UsersRelationshipsRestResourcesV1 implements UsersRelationshipsRest
     } catch (Exception e) {
       throw new WebApplicationException(Response.Status.UNAUTHORIZED);
     }
+    
+    if (Relationship.Type.CONFIRMED.equals(status)) {
+      if (!RestUtils.isMemberOfAdminGroup() && !authenticatedUser.getId().equals(relationship.getReceiver().getId())) {
+        throw new WebApplicationException(Response.Status.UNAUTHORIZED);
+      }
+    }
+    
     //update relationship by status
     updateRelationshipByStatus(relationship, status, relationshipManager);
     
