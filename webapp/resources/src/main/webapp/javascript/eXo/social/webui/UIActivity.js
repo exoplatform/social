@@ -433,7 +433,7 @@ var UIActivity = {
     var root = $('#'+id);
     if(root.length > 0 && deviceInfo.isMobile === true) {
       var hidenComposer = function(elm) {
-        $('#UIUserActivitiesDisplay').removeClass('hidden-phone');
+        $('#' + UIActivity.responsiveId).find('.uiActivitiesDisplay:first').removeClass('hidden-phone');
         return elm.parents('.uiComposer:first').addClass('hidden-phone');
       };
       //
@@ -441,7 +441,7 @@ var UIActivity = {
         UIActivity.resetRightHeight();
         //
         var parent = $(this).parents('#' + UIActivity.responsiveId);
-        parent.find('#UIUserActivitiesDisplay').addClass('hidden-phone');
+        parent.find('.uiActivitiesDisplay:first').addClass('hidden-phone');
         if(parent.find('div.uiComposer.hidden-phone').length > 0) {
           parent.find('div.uiComposer.hidden-phone').removeClass('hidden-phone');
         }
