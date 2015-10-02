@@ -160,7 +160,7 @@ public class UserRestResourcesV1 implements UserRestResources {
     if (identity != null) {
       throw new WebApplicationException(Response.Status.BAD_REQUEST);
     }
-    if(isExistingEmail(model.getEmail())) {
+    if(getUserByEmail(model.getEmail()) != null) {
       throw new WebApplicationException(Response.Status.FORBIDDEN);
     }
     
@@ -250,7 +250,8 @@ public class UserRestResourcesV1 implements UserRestResources {
     if (!ConversationState.getCurrent().getIdentity().getUserId().equals(id)) {
       throw new WebApplicationException(Response.Status.FORBIDDEN);
     }
-    if(isExistingEmail(model.getEmail())) {
+    if(getUserByEmail(model.getEmail()) != null && 
+        !user.getUserName().equals(getUserByEmail(model.getEmail()).getUserName())) {
       throw new WebApplicationException(Response.Status.FORBIDDEN);
     }
     
@@ -470,14 +471,16 @@ public class UserRestResourcesV1 implements UserRestResources {
    * @param email Input email to check.
    * @return true if email is existing in system.
    */
-  public static boolean isExistingEmail(String email) {
+  public static User getUserByEmail(String email) {
+    if (email == null) return null;
     try {
       Query query = new Query();
       query.setEmail(email);
       OrganizationService service = CommonsUtils.getService(OrganizationService.class);
-      return service.getUserHandler().findUsersByQuery(query).getSize() > 0;
+      User[] users = service.getUserHandler().findUsersByQuery(query).load(0, 10);
+      return users[0];
     } catch (Exception e) {
-      return false;
+      return null;
     }
   }
 }
