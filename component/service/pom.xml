@@ -436,7 +436,7 @@
                       </info>
                       <templatePath>${basedir}/src/main/resources/swagger-doc-template/strapdown.html.hbs</templatePath>
                       <outputPath>${basedir}/target/generated/document.html</outputPath>
-                      <swaggerDirectory>${basedir}/target/generated/swagger-ui</swaggerDirectory>
+                      <swaggerDirectory>${basedir}/target/generated-sources/annotations/generated</swaggerDirectory>
                   </apiSource>
 	            </apiSources>
 	        </configuration>
