@@ -111,6 +111,7 @@ public class UIPendingRelation extends UIContainer {
     uiProfileUserSearch.setTypeOfRelation(PENDING_STATUS);
     setHasPeopleTab(true);
     uiProfileUserSearch.setHasConnectionLink(false);
+    uiProfileUserSearch.setLoadFromSearch(false);
     addChild(uiProfileUserSearch);
     init();
   }
@@ -193,7 +194,10 @@ public class UIPendingRelation extends UIContainer {
    * @since 1.2.2
    */
   public List<Identity> getPeopleList() throws Exception {
-    this.peopleList = loadPeople(0, currentLoadIndex + loadingCapacity);
+    if (!uiProfileUserSearch.isLoadFromSearch()) {
+      this.peopleList = loadPeople(0, currentLoadIndex + loadingCapacity);
+    }
+    uiProfileUserSearch.setLoadFromSearch(false);
     
     int realPeopleListSize = this.peopleList.size();
 
@@ -379,6 +383,7 @@ public class UIPendingRelation extends UIContainer {
         
         uiSearch.setProfileFilter(filter);
         uiSearch.setNewSearch(true);
+        uiPendingRelation.uiProfileUserSearch.setLoadFromSearch(true);
       } catch (Exception e) {
         uiSearch.setIdentityList(new ArrayList<Identity>());
       }
