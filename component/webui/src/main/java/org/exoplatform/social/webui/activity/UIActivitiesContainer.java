@@ -56,9 +56,7 @@ import org.exoplatform.webui.event.EventListener;
 public class UIActivitiesContainer extends UIContainer {
   public static final String ACTIVITY_STREAM_VISITED_PREFIX_COOKIED = "exo_social_activity_stream_%s_visited_%s";
   private static final String ACTIVITIES_NODE = "activities";
-
-  private static final String ACTIVITIES_FIRST_AJAX_LOAD_KEY = "social.activities.ajax.loader";
-  private static int ACTIVITIES_FIRST_AJAX_LOAD = 7;
+  
   
   private List<ExoSocialActivity> activityList;
   
@@ -76,7 +74,6 @@ public class UIActivitiesContainer extends UIContainer {
    * constructor
    */
   public UIActivitiesContainer() {
-    ACTIVITIES_FIRST_AJAX_LOAD = Integer.valueOf(PrivilegedSystemHelper.getProperty(ACTIVITIES_FIRST_AJAX_LOAD_KEY, "7").trim());
   }
 
   public PopupContainer getPopupContainer() {
@@ -201,7 +198,7 @@ public class UIActivitiesContainer extends UIContainer {
       return;
     }
     UIActivitiesLoader activitiesLoader = getParent();
-    int activityFullRender = activitiesLoader.getLoadingCapacity() - ACTIVITIES_FIRST_AJAX_LOAD;
+    int activityFullRender = activitiesLoader.getLoadingCapacity();
     boolean isFirstLoader = (activitiesLoader.getClass().getSimpleName().equals(activitiesLoader.getId()));
     int index = 0;
     uiActivityIdFirstList = new LinkedList<String>();
