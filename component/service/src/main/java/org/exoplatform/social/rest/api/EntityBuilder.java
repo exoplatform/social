@@ -314,6 +314,7 @@ public class EntityBuilder {
     commentEntity.setMentions(getActivityMentions(comment, restPath));
     commentEntity.setCreateDate(RestUtils.formatISO8601(new Date(comment.getPostedTime())));
     commentEntity.setUpdateDate(RestUtils.formatISO8601(comment.getUpdated()));
+    commentEntity.setActivity(RestUtils.getRestUrl(ACTIVITIES_TYPE, comment.getParentId(), restPath));
     //
     if(!isBuildList) {
       updateCachedLastModifiedValue(comment.getUpdated());

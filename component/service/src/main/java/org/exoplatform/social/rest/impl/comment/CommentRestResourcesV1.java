@@ -47,6 +47,7 @@ import org.exoplatform.social.rest.api.CommentRestResources;
 import org.exoplatform.social.rest.api.EntityBuilder;
 import org.exoplatform.social.rest.api.RestUtils;
 import org.exoplatform.social.rest.entity.ActivityEntity;
+import org.exoplatform.social.rest.entity.CommentEntity;
 import org.exoplatform.social.service.rest.api.VersionResources;
 
 @Path(VersionResources.VERSION_ONE + "/social/comments")
@@ -75,9 +76,9 @@ public class CommentRestResourcesV1 implements CommentRestResources {
       throw new WebApplicationException(Response.Status.NOT_FOUND);
     }
     
-    ActivityEntity activityEntity = EntityBuilder.buildEntityFromActivity(act, uriInfo.getPath(), expand);
+    CommentEntity commentEntity = EntityBuilder.buildEntityFromComment(act, uriInfo.getPath(), expand, false);
 
-    return EntityBuilder.getResponse(activityEntity.getDataEntity(), uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
+    return EntityBuilder.getResponse(commentEntity.getDataEntity(), uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
   }
   
   @PUT
