@@ -117,6 +117,7 @@ public interface ActivityRestResources extends SocialRest {
                                         @PathParam("id") String id,
                                         @QueryParam("offset") int offset,
                                         @QueryParam("limit") int limit,
+                                        @QueryParam("returnSize") boolean returnSize,
                                         @QueryParam("expand") String expand) throws Exception;
 
   /**

@@ -238,6 +238,7 @@ public class ActivityRestResourcesV1 implements ActivityRestResources {
                                         @ApiParam(value = "activity id", required = true) @PathParam("id") String id,
                                         @ApiParam(value = "Offset", required = false, defaultValue = "0") @QueryParam("offset") int offset,
                                         @ApiParam(value = "Limit", required = false, defaultValue = "20") @QueryParam("limit") int limit,
+                                        @ApiParam(value = "Size of returned result list.", defaultValue = "false") @QueryParam("returnSize") boolean returnSize,
                                         @ApiParam(value = "Expand param : ask for a full representation of a subresource", required = false) @QueryParam("expand") String expand) throws Exception {
     
     offset = offset > 0 ? offset : RestUtils.getOffset(uriInfo);
@@ -255,8 +256,19 @@ public class ActivityRestResourcesV1 implements ActivityRestResources {
     if (EntityBuilder.getActivityStream(activity, currentUser) == null && !hasMention(currentUser, activity)) { //current user doesn't have permission to view activity
       throw new WebApplicationException(Response.Status.UNAUTHORIZED);
     }
-    List<DataEntity> commentsEntity = EntityBuilder.buildEntityFromComment(activity, uriInfo.getPath(), expand, offset, limit);
+    
+    List<DataEntity> commentsEntity = new ArrayList<DataEntity>();
+    RealtimeListAccess<ExoSocialActivity> listAccess = activityManager.getCommentsWithListAccess(activity);
+    List<ExoSocialActivity> comments = listAccess.loadAsList(offset, limit);
+    for (ExoSocialActivity comment : comments) {
+      CommentEntity commentInfo = EntityBuilder.buildEntityFromComment(comment, uriInfo.getPath(), expand, true);
+      commentsEntity.add(commentInfo.getDataEntity());
+    }
+    
     CollectionEntity collectionComment = new CollectionEntity(commentsEntity, EntityBuilder.COMMENTS_TYPE, offset, limit);    
+    if(returnSize) {
+      collectionComment.setSize(listAccess.getSize());
+    }
     //
     return EntityBuilder.getResponse(collectionComment, uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
   }
