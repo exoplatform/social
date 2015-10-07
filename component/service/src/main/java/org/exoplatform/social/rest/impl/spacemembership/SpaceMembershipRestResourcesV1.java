@@ -278,6 +278,7 @@ public class SpaceMembershipRestResourcesV1 implements SpaceMembershipRestResour
   @ApiResponses(value = { 
     @ApiResponse (code = 200, message = "Given request membership deleted successfully"),
     @ApiResponse (code = 404, message = "Not found membership of space"),
+    @ApiResponse (code = 412, message = "Precondition is not acceptible. For instance, the last manager membership could not be removed."),
     @ApiResponse (code = 500, message = "Internal server error due to encoding the data") })
   public Response deleteSpaceMembershipById(@Context UriInfo uriInfo,
                                             @ApiParam(value = "id in format spaceName:userName:type", required = true) @PathParam("id") String id,
@@ -303,6 +304,9 @@ public class SpaceMembershipRestResourcesV1 implements SpaceMembershipRestResour
     String authenticatedUser = ConversationState.getCurrent().getIdentity().getUserId();
     if (! authenticatedUser.equals(targetUser) && ! RestUtils.isMemberOfAdminGroup() && ! spaceService.isManager(space, authenticatedUser)) {
       throw new WebApplicationException(Response.Status.UNAUTHORIZED);
+    }
+    if (spaceService.isOnlyManager(space, targetUser)) {
+      throw new WebApplicationException(Response.Status.PRECONDITION_FAILED);
     }
     //
     String role = idParams[2];
