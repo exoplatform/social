@@ -109,22 +109,21 @@ public class SpaceMembershipRestResourcesV1 implements SpaceMembershipRestResour
       }
     }
     
-    int size;
-//    String status = RestUtils.getQueryParam(uriInfo, "status");
-    ListAccess<Space> listAccess = null;
     List<Space> spaces = new ArrayList<Space>();
     if (givenSpace == null) {
-      listAccess = (identity == null) ? spaceService.getAllSpacesWithListAccess() : spaceService.getMemberSpaces(user);
+      ListAccess<Space> listAccess = (identity == null) ? spaceService.getAllSpacesWithListAccess() : spaceService.getMemberSpaces(user);
       spaces = Arrays.asList(listAccess.load(offset, limit));
-      size = returnSize ? listAccess.getSize() : -1;
     } else {
       spaces.add(givenSpace);
-      size = returnSize ? spaces.size() : -1;
     }
     
     List<DataEntity> spaceMemberships = getSpaceMemberships(spaces, user, uriInfo.getPath(), expand);
     CollectionEntity spacesMemberships = new CollectionEntity(spaceMemberships, EntityBuilder.SPACES_MEMBERSHIP_TYPE, offset, limit);
-    spacesMemberships.setSize(size);
+    
+    if (returnSize) {
+      spacesMemberships.setSize(spaceMemberships.size());
+    }
+    
     return EntityBuilder.getResponse(spacesMemberships, uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
   }
   
