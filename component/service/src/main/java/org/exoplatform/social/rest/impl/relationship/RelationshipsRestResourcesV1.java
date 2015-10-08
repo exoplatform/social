@@ -72,10 +72,11 @@ public class RelationshipsRestResourcesV1 implements RelationshipsRestResources 
   @ApiResponses(value = { 
     @ApiResponse (code = 200, message = "Given request relationships found"),
     @ApiResponse (code = 500, message = "Internal server error"),
-    @ApiResponse (code = 400, message = "Invalid query input to find relationships.") })
+    @ApiResponse (code = 400, message = "Invalid query input to find relationships."),
+    @ApiResponse (code = 412, message = "Precondition Failed. Check your input params")})
   public Response getRelationships(@Context UriInfo uriInfo,
                                    @ApiParam(value = "Status of relationship: pending, cofirmed, ignored, all") @QueryParam("status") String status,
-                                   @ApiParam(value = "Identity id") @QueryParam("identityId") String identityId,
+                                   @ApiParam(value = "Identity id is UUID such as 40487b7e7f00010104499b339f056aa4 for example") @QueryParam("identityId") String identityId,
                                    @ApiParam(value = "Offset", required = false, defaultValue = "0") @QueryParam("offset") int offset,
                                    @ApiParam(value = "Limit", required = false, defaultValue = "20") @QueryParam("limit") int limit,
                                    @ApiParam(value = "Size of returned result list.", defaultValue = "false") @QueryParam("returnSize") boolean returnSize) throws Exception {
@@ -96,6 +97,9 @@ public class RelationshipsRestResourcesV1 implements RelationshipsRestResources 
     int size = 0;
     if (identityId != null & RestUtils.isMemberOfAdminGroup()) {
       Identity identity = CommonsUtils.getService(IdentityManager.class).getIdentity(identityId, false);
+      if (identity == null) {
+        throw new WebApplicationException(Response.Status.PRECONDITION_FAILED);
+      }
       relationships = relationshipManager.getRelationshipsByStatus(identity, type, offset, limit);
       size = relationshipManager.getRelationshipsCountByStatus(identity, type);
     } else {
