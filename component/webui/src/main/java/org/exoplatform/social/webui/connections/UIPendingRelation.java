@@ -285,7 +285,7 @@ public class UIPendingRelation extends UIContainer {
     ListAccess<Identity> listAccess = Utils.getRelationshipManager().getOutgoingByFilter(lastOwner, filter);
     Identity[] identities = listAccess.load(index, length);
 
-    setPeopleNum(listAccess.getSize());
+    setPeopleNum(identities.length < SENT_INVITATION_PER_PAGE? identities.length : listAccess.getSize());
     setPeopleListAccess(listAccess);
     uiProfileUserSearch.setPeopleNum(listAccess.getSize());
 

@@ -284,7 +284,8 @@ public class UIInvitations extends UIContainer {
     ListAccess<Identity> listAccess = Utils.getRelationshipManager().getIncomingByFilter(lastOwner, filter);
     Identity[] identities = listAccess.load(index, length);
 
-    setPeopleNum(listAccess.getSize());
+    setPeopleNum(identities.length < RECEIVED_INVITATION_PER_PAGE ? identities.length : listAccess.getSize());
+    
     setPeopleListAccess(listAccess);
     uiProfileUserSearch.setPeopleNum(listAccess.getSize());
 

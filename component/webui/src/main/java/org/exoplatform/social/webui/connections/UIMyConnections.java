@@ -298,7 +298,7 @@ public class UIMyConnections extends UIContainer {
     ListAccess<Identity> listAccess = Utils.getRelationshipManager().getConnectionsByFilter(lastOwner, filter);
     Identity[] identities = listAccess.load(index, length);
 
-    setPeopleNum(listAccess.getSize());
+    setPeopleNum(identities.length < MY_CONNECTION_PER_PAGE ? identities.length : listAccess.getSize());
     setPeopleListAccess(listAccess);
     uiProfileUserSearch.setPeopleNum(listAccess.getSize());
 
