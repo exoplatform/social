@@ -76,7 +76,7 @@ import org.exoplatform.social.service.rest.api.VersionResources;
  */
 
 @Path(VersionResources.VERSION_ONE + "/social/users")
-@Api(value=VersionResources.VERSION_ONE + "/social/users", description = "Operations eXo Platform users information.")
+@Api(tags = "user: Operations on users with their activities, connections and spaces", value=VersionResources.VERSION_ONE + "/social/users")
 public class UserRestResourcesV1 implements UserRestResources {
   
   public static enum ACTIVITY_STREAM_TYPE {
@@ -89,21 +89,21 @@ public class UserRestResourcesV1 implements UserRestResources {
   
   @GET
   @RolesAllowed("users")
-  @ApiOperation(value = "Get list of user by query",
+  @ApiOperation(value = "Searches for users by user name information",
                 httpMethod = "GET",
                 response = Response.class,
                 notes = "This can only be done by the logged in user.")
   @ApiResponses(value = { 
-    @ApiResponse (code = 200, message = "Given request user found"),
-    @ApiResponse (code = 404, message = "User not found"),
-    @ApiResponse (code = 500, message = "Internal server error due to encoding the data"),
-    @ApiResponse (code = 400, message = "Invalid query input to find users.") })
+    @ApiResponse (code = 200, message = "Request fulfilled"),
+    @ApiResponse (code = 404, message = "Resource not found"),
+    @ApiResponse (code = 500, message = "Internal server error due to data encoding"),
+    @ApiResponse (code = 400, message = "Invalid query input") })
   public Response getUsers(@Context UriInfo uriInfo,
-                           @ApiParam(value = "User name to search.", required = false) @QueryParam("q") String q,
+                           @ApiParam(value = "User name information to search, ex: user name, last name, first name or full name", required = false) @QueryParam("q") String q,
                            @ApiParam(value = "Offset", required = false, defaultValue = "0") @QueryParam("offset") int offset,
                            @ApiParam(value = "Limit", required = false, defaultValue = "20") @QueryParam("limit") int limit,
-                           @ApiParam(value = "Size of returned result list.", defaultValue = "false") @QueryParam("returnSize") boolean returnSize,
-                           @ApiParam(value = "Expand param : ask for a full representation of a subresource", required = false) @QueryParam("expand") String expand) throws Exception {
+                           @ApiParam(value = "Returning the number of users found or not", defaultValue = "false") @QueryParam("returnSize") boolean returnSize,
+                           @ApiParam(value = "Asking for a full representation of a specific subresource if any", required = false) @QueryParam("expand") String expand) throws Exception {
 
     offset = offset > 0 ? offset : RestUtils.getOffset(uriInfo);
     limit = limit > 0 ? limit : RestUtils.getLimit(uriInfo);
@@ -130,21 +130,21 @@ public class UserRestResourcesV1 implements UserRestResources {
   @POST
   @Produces(MediaType.APPLICATION_JSON)
   @RolesAllowed("users")
-  @ApiOperation(value = "Adds a new user.",
+  @ApiOperation(value = "Creates a new user",
                 httpMethod = "POST",
                 response = Response.class,
                 notes = "This can only be done by the logged in user.")
   @ApiResponses(value = { 
-    @ApiResponse (code = 200, message = "New user added"),
-    @ApiResponse (code = 400, message = "Invalid query input to add new user.") })
+    @ApiResponse (code = 200, message = "Request fulfilled"),
+    @ApiResponse (code = 400, message = "Invalid query input") })
   public Response addUser(@Context UriInfo uriInfo,
-                          @ApiParam(value = "Expand param : ask for a full representation of a subresource", required = false) @QueryParam("expand") String expand,
-                          @ApiParam(value = "Added user object ex:<br />" +
+                          @ApiParam(value = "Asking for a full representation of a specific subresource if any", required = false) @QueryParam("expand") String expand,
+                          @ApiParam(value = "User object to be created, ex:<br />" +
                                             "{<br />\"username\": \"john\"," +
-                                            "<br />\"password\": \"abc123\"," +
-                                            "<br />\"email\": \"exoplatform@exo.com\"," +
-                                            "<br />\"lastname\": \"gtn\"," +
-                                            "<br />\"firstname\": \"john\"<br />}"
+                                            "<br />\"password\": \"gtngtn\"," +
+                                            "<br />\"email\": \"john@exoplatform.com\"," +
+                                            "<br />\"firstname\": \"John\"," +
+                                            "<br />\"lastname\": \"Smith\"<br />}"
                           		              , required = true) UserEntity model) throws Exception {
     if (model.isNotValid()) {
       throw new WebApplicationException(Response.Status.UNAUTHORIZED);
@@ -179,18 +179,18 @@ public class UserRestResourcesV1 implements UserRestResources {
   @GET
   @Path("{id}")
   @RolesAllowed("users")
-  @ApiOperation(value = "Get user by id",
+  @ApiOperation(value = "Gets a specific user by user name",
                 httpMethod = "GET",
                 response = Response.class,
                 notes = "This can only be done by the logged in user.")
   @ApiResponses(value = { 
-    @ApiResponse (code = 200, message = "Given request user found"),
-    @ApiResponse (code = 404, message = "User not found"),
-    @ApiResponse (code = 500, message = "Internal server error due to encoding the data"),
-    @ApiResponse (code = 400, message = "Invalid query input to find user.") })
+    @ApiResponse (code = 200, message = "Request fulfilled"),
+    @ApiResponse (code = 404, message = "Resource not found"),
+    @ApiResponse (code = 500, message = "Internal server error due to data encoding"),
+    @ApiResponse (code = 400, message = "Invalid query input") })
   public Response getUserById(@Context UriInfo uriInfo,
-                              @ApiParam(value = "User remoteId", required = true) @PathParam("id") String id,
-                              @ApiParam(value = "Expand param : ask for a full representation of a subresource", required = false) @QueryParam("expand") String expand) throws Exception {
+                              @ApiParam(value = "User name", required = true) @PathParam("id") String id,
+                              @ApiParam(value = "Asking for a full representation of a specific subresource if any", required = false) @QueryParam("expand") String expand) throws Exception {
     Identity identity = CommonsUtils.getService(IdentityManager.class).getOrCreateIdentity(OrganizationIdentityProvider.NAME, id, true);
     //
     if (identity == null) {
@@ -203,13 +203,13 @@ public class UserRestResourcesV1 implements UserRestResources {
   @DELETE
   @Path("{id}")
   @RolesAllowed("users")
-  @ApiOperation(value = "Delete user by id",
+  @ApiOperation(value = "Deletes a specific user by user name",
                 httpMethod = "DELETE",
                 response = Response.class,
                 notes = "This can only be done by the logged in user.")
   public Response deleteUserById(@Context UriInfo uriInfo,
-                                 @ApiParam(value = "remote id", required = true) @PathParam("id") String id,
-                                 @ApiParam(value = "Expand param : ask for a full representation of a subresource", required = false) @QueryParam("expand") String expand) throws Exception {
+                                 @ApiParam(value = "User name", required = true) @PathParam("id") String id,
+                                 @ApiParam(value = "Asking for a full representation of a specific subresource if any", required = false) @QueryParam("expand") String expand) throws Exception {
     //Check permission of current user
     if (!RestUtils.isMemberOfAdminGroup()) {
       throw new WebApplicationException(Response.Status.FORBIDDEN);
@@ -233,14 +233,19 @@ public class UserRestResourcesV1 implements UserRestResources {
   @Path("{id}")
   @Produces(MediaType.APPLICATION_JSON)
   @RolesAllowed("users")
-  @ApiOperation(value = "Update user by id",
+  @ApiOperation(value = "Updates a specific user by user name",
                 httpMethod = "PUT",
                 response = Response.class,
                 notes = "This can only be done by the logged in user.")
   public Response updateUserById(@Context UriInfo uriInfo,
                                  @ApiParam(value = "User name", required = true) @PathParam("id") String id,
-                                 @ApiParam(value = "Expand param : ask for a full representation of a subresource", required = false) @QueryParam("expand") String expand,
-                                 @ApiParam(value = "Updated user object. firstname, lastname, username, password, email are required.", required = true) UserEntity model) throws Exception {
+                                 @ApiParam(value = "Asking for a full representation of a specific subresource if any", required = false) @QueryParam("expand") String expand,
+                                 @ApiParam(value = "User object to be updated, ex:<br />" +
+                                            "{<br />\"username\": \"john\"," +
+                                            "<br />\"password\": \"gtngtn\"," +
+                                            "<br />\"email\": \"john@exoplatform.com\"," +
+                                            "<br />\"firstname\": \"John\"," +
+                                            "<br />\"lastname\": \"Smith\"<br />}", required = true) UserEntity model) throws Exception {
     UserHandler userHandler = CommonsUtils.getService(OrganizationService.class).getUserHandler();
     User user = userHandler.findUserByName(id);
     if (user == null) {
@@ -264,14 +269,14 @@ public class UserRestResourcesV1 implements UserRestResources {
   @GET
   @Path("{id}/connections")
   @RolesAllowed("users")
-  @ApiOperation(value = "Get connections of user.",
+  @ApiOperation(value = "Gets connections of a specific user",
                 httpMethod = "GET",
                 response = Response.class,
                 notes = "This can only be done by the logged in user.")
   public Response getConnectionOfUser(@Context UriInfo uriInfo,
-                                      @ApiParam(value = "User remoteId", required = true) @PathParam("id") String id,
-                                      @ApiParam(value = "Size of returned result list.", defaultValue = "false") @QueryParam("returnSize") boolean returnSize,
-                                      @ApiParam(value = "Expand param : ask for a full representation of a subresource", required = false) @QueryParam("expand") String expand) throws Exception {
+                                      @ApiParam(value = "User name", required = true) @PathParam("id") String id,
+                                      @ApiParam(value = "Returning the number of connections or not", defaultValue = "false") @QueryParam("returnSize") boolean returnSize,
+                                      @ApiParam(value = "Asking for a full representation of a specific subresource if any", required = false) @QueryParam("expand") String expand) throws Exception {
     Identity target = CommonsUtils.getService(IdentityManager.class).getOrCreateIdentity(OrganizationIdentityProvider.NAME, id, true);
     if (target == null) {
       throw new WebApplicationException(Response.Status.BAD_REQUEST);
@@ -298,16 +303,16 @@ public class UserRestResourcesV1 implements UserRestResources {
   @GET
   @Path("{id}/spaces")
   @RolesAllowed("users")
-  @ApiOperation(value = "Get spaces of user",
+  @ApiOperation(value = "Gets spaces of a specific user",
                 httpMethod = "GET",
                 response = Response.class,
                 notes = "This can only be done by the logged in user.")
   public Response getSpacesOfUser(@Context UriInfo uriInfo,
-                                  @ApiParam(value = "User remoteId", required = true) @PathParam("id") String id,
+                                  @ApiParam(value = "User name", required = true) @PathParam("id") String id,
                                   @ApiParam(value = "Offset", required = false, defaultValue = "0") @QueryParam("offset") int offset,
                                   @ApiParam(value = "Limit", required = false, defaultValue = "20") @QueryParam("limit") int limit,
-                                  @ApiParam(value = "Size of returned result list.", defaultValue = "false") @QueryParam("returnSize") boolean returnSize,
-                                  @ApiParam(value = "Expand param : ask for a full representation of a subresource", required = false) @QueryParam("expand") String expand) throws Exception {
+                                  @ApiParam(value = "Returning the number of spaces or not", defaultValue = "false") @QueryParam("returnSize") boolean returnSize,
+                                  @ApiParam(value = "Asking for a full representation of a specific subresource, ex: <em>members</em> or <em>managers</em>", required = false) @QueryParam("expand") String expand) throws Exception {
     
     offset = offset > 0 ? offset : RestUtils.getOffset(uriInfo);
     limit = limit > 0 ? limit : RestUtils.getLimit(uriInfo);
@@ -341,19 +346,19 @@ public class UserRestResourcesV1 implements UserRestResources {
   @GET
   @Path("{id}/activities")
   @RolesAllowed("users")
-  @ApiOperation(value = "Get activities of user",
+  @ApiOperation(value = "Gets activities of a specific user",
                 httpMethod = "GET",
                 response = Response.class,
                 notes = "This can only be done by the logged in user.")
   public Response getActivitiesOfUser(@Context UriInfo uriInfo,
-                                      @ApiParam(value = "User remoteId", required = true) @PathParam("id") String id,
-                                      @ApiParam(value = "Stream type", required = false) @QueryParam("type") String type,
+                                      @ApiParam(value = "User name", required = true) @PathParam("id") String id,
+                                      @ApiParam(value = "Activity stream type, ex: <em>owner, connections, spaces</em> or <em>all</em>", required = false, defaultValue = "all") @QueryParam("type") String type,
                                       @ApiParam(value = "Offset", required = false, defaultValue = "0") @QueryParam("offset") int offset,
                                       @ApiParam(value = "Limit", required = false, defaultValue = "20") @QueryParam("limit") int limit,
-                                      @ApiParam(value = "Older base time to load activity (yyyy-MM-dd HH:mm:ss)", required = false) @QueryParam("before") String before,
-                                      @ApiParam(value = "Newer base time to load activity (yyyy-MM-dd HH:mm:ss)", required = false) @QueryParam("after") String after,
-                                      @ApiParam(value = "Size of returned result list.", defaultValue = "false") @QueryParam("returnSize") boolean returnSize,
-                                      @ApiParam(value = "Expand param : ask for a full representation of a subresource", required = false) @QueryParam("expand") String expand) throws Exception {
+                                      @ApiParam(value = "Base time to load older activities (yyyy-MM-dd HH:mm:ss)", required = false) @QueryParam("before") String before,
+                                      @ApiParam(value = "Base time to load newer activities (yyyy-MM-dd HH:mm:ss)", required = false) @QueryParam("after") String after,
+                                      @ApiParam(value = "Returning the number of activities or not", defaultValue = "false") @QueryParam("returnSize") boolean returnSize,
+                                      @ApiParam(value = "Asking for a full representation of a specific subresource, ex: <em>comments</em> or <em>likes</em>", required = false) @QueryParam("expand") String expand) throws Exception {
     
     offset = offset > 0 ? offset : RestUtils.getOffset(uriInfo);
     limit = limit > 0 ? limit : RestUtils.getLimit(uriInfo);
@@ -426,14 +431,14 @@ public class UserRestResourcesV1 implements UserRestResources {
   @POST
   @Path("{id}/activities")
   @RolesAllowed("users")
-  @ApiOperation(value = "Add activity by user.",
+  @ApiOperation(value = "Creates an activity by a specific user",
                 httpMethod = "POST",
                 response = Response.class,
                 notes = "This can only be done by the logged in user.")
   public Response addActivityByUser(@Context UriInfo uriInfo,
                                     @ApiParam(value = "User name", required = true) @PathParam("id") String id,
-                                    @ApiParam(value = "Expand param : ask for a full representation of a subresource", required = false) @QueryParam("expand") String expand,
-                                    @ApiParam(value = "Created activity object. Title of activity is required. {\"title\": \"act4 posted\"}", required = true) ActivityEntity model) throws Exception {
+                                    @ApiParam(value = "Asking for a full representation of a specific subresource, ex: <em>comments</em> or <em>likes</em>", required = false) @QueryParam("expand") String expand,
+                                    @ApiParam(value = "Activity object to be created, in which the title of activity is required, ex: <br/>{\"title\": \"act4 posted\"}", required = true) ActivityEntity model) throws Exception {
     if (model == null || model.getTitle() == null || model.getTitle().length() ==0) {
       throw new WebApplicationException(Response.Status.UNAUTHORIZED);
     }

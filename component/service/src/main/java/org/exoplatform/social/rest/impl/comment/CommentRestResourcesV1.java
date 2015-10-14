@@ -51,23 +51,23 @@ import org.exoplatform.social.rest.entity.CommentEntity;
 import org.exoplatform.social.service.rest.api.VersionResources;
 
 @Path(VersionResources.VERSION_ONE + "/social/comments")
-@Api(value=VersionResources.VERSION_ONE + "/social/comments")
+@Api(tags = "comment: Operations on a comment", value=VersionResources.VERSION_ONE + "/social/comments")
 public class CommentRestResourcesV1 implements CommentRestResources {
   
   @GET
   @Path("{id}")
   @RolesAllowed("users")
-  @ApiOperation(value = "Gets a comment with the given id",
+  @ApiOperation(value = "Gets a specific comment by id",
                 httpMethod = "GET",
                 response = Response.class,
-                notes = "This can only be done by the logged in user.")
+                notes = "This returns the comment if the authenticated user has permissions to see the related activity.")
   @ApiResponses(value = { 
-    @ApiResponse (code = 200, message = "Given request comment found"),
+    @ApiResponse (code = 200, message = "Request fulfilled"),
     @ApiResponse (code = 500, message = "Internal server error"),
-    @ApiResponse (code = 400, message = "Invalid query input to get comment.") })
+    @ApiResponse (code = 400, message = "Invalid query input") })
   public Response getCommentById(@Context UriInfo uriInfo,
-                                 @ApiParam(value = "comment id", required = true) @PathParam("id") String id,
-                                 @ApiParam(value = "Expand param : ask for a full representation of a subresource", required = false) @QueryParam("expand") String expand) throws Exception {
+                                 @ApiParam(value = "Comment id", required = true) @PathParam("id") String id,
+                                 @ApiParam(value = "Asking for a full representation of a specific subresource if any", required = false) @QueryParam("expand") String expand) throws Exception {
 
     ActivityManager activityManager = CommonsUtils.getService(ActivityManager.class);
     ExoSocialActivity act = activityManager.getActivity(id);
@@ -85,18 +85,18 @@ public class CommentRestResourcesV1 implements CommentRestResources {
   @Path("{id}")
   @Produces(MediaType.APPLICATION_JSON)
   @RolesAllowed("users")
-  @ApiOperation(value = "Updates a comment with the given id",
+  @ApiOperation(value = "Updates a specific comment by id",
                 httpMethod = "PUT",
                 response = Response.class,
-                notes = "This can only be done by the logged in user.")
+                notes = "This updates the comment in the following cases: <br/><ul><li>the authenticated user is the owner of the comment</li><li>the authenticated user is the super user</li></ul>")
   @ApiResponses(value = { 
-    @ApiResponse (code = 200, message = "Given request comment updated successfully"),
+    @ApiResponse (code = 200, message = "Request fulfilled"),
     @ApiResponse (code = 500, message = "Internal server error"),
-    @ApiResponse (code = 400, message = "Invalid query input to update comment") })
+    @ApiResponse (code = 400, message = "Invalid query input") })
   public Response updateCommentById(@Context UriInfo uriInfo,
-                                    @ApiParam(value = "comment id", required = true) @PathParam("id") String id,
-                                    @ApiParam(value = "Expand param : ask for a full representation of a subresource", required = false) @QueryParam("expand") String expand,
-                                    @ApiParam(value = "Comment object for updating. Title of comment is required.", required = true) ActivityEntity model) throws Exception {
+                                    @ApiParam(value = "Comment id", required = true) @PathParam("id") String id,
+                                    @ApiParam(value = "Asking for a full representation of a subresource if any", required = false) @QueryParam("expand") String expand,
+                                    @ApiParam(value = "Comment object to be updated, in which the title of comment is required.", required = true) ActivityEntity model) throws Exception {
   
     if (model == null || model.getTitle() == null || model.getTitle().length() == 0) {
       throw new WebApplicationException(Response.Status.UNAUTHORIZED);
@@ -125,17 +125,17 @@ public class CommentRestResourcesV1 implements CommentRestResources {
   @DELETE
   @Path("{id}")
   @RolesAllowed("users")
-  @ApiOperation(value = "Deletes a comment with the given id",
+  @ApiOperation(value = "Deletes a specific comment by id",
                 httpMethod = "DELETE",
                 response = Response.class,
-                notes = "This can only be done by the logged in user.")
+                notes = "This deletes the comment in the following cases: <br/><ul><li>the authenticated user is the owner of the comment</li><li>the authenticated user is the super user</li></ul>")
   @ApiResponses(value = { 
-    @ApiResponse (code = 200, message = "Given request comment deleted successfully"),
+    @ApiResponse (code = 200, message = "Request fulfilled"),
     @ApiResponse (code = 500, message = "Internal server error"),
-    @ApiResponse (code = 400, message = "Invalid query input to delete comment.") })
+    @ApiResponse (code = 400, message = "Invalid query input") })
   public Response deleteCommentById(@Context UriInfo uriInfo,
-                                    @ApiParam(value = "comment id", required = true) @PathParam("id") String id,
-                                    @ApiParam(value = "Expand param : ask for a full representation of a subresource", required = false) @QueryParam("expand") String expand) throws Exception {
+                                    @ApiParam(value = "Comment id", required = true) @PathParam("id") String id,
+                                    @ApiParam(value = "Asking for a full representation of a specific subresource if any", required = false) @QueryParam("expand") String expand) throws Exception {
     
     String authenticatedUser = ConversationState.getCurrent().getIdentity().getUserId();
     Identity currentUser = CommonsUtils.getService(IdentityManager.class).getOrCreateIdentity(OrganizationIdentityProvider.NAME, authenticatedUser, true);

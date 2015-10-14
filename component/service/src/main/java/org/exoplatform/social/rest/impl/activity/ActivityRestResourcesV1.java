@@ -62,7 +62,7 @@ import org.exoplatform.social.rest.entity.DataEntity;
 import org.exoplatform.social.service.rest.api.VersionResources;
 
 @Path(VersionResources.VERSION_ONE + "/social/activities")
-@Api(value=VersionResources.VERSION_ONE + "/social/activities")
+@Api(tags = "activity"+" : Managing an activity with its comments and likes", value = VersionResources.VERSION_ONE + "/social/activities")
 public class ActivityRestResourcesV1 implements ActivityRestResources {
   
   private static final String SPACE_PREFIX = "/spaces/";
@@ -71,19 +71,19 @@ public class ActivityRestResourcesV1 implements ActivityRestResources {
   
   @GET
   @RolesAllowed("users")
-  @ApiOperation(value = "Get activities of current user",
+  @ApiOperation(value = "Gets activities of the currently logged in user",
                 httpMethod = "GET",
                 response = Response.class,
                 notes = "This can only be done by the logged in user.")
   @ApiResponses(value = { 
-    @ApiResponse (code = 200, message = "Given request activities found"),
+    @ApiResponse (code = 200, message = "Request fulfilled"),
     @ApiResponse (code = 500, message = "Internal server error"),
-    @ApiResponse (code = 400, message = "Invalid query input to find activities.") })
+    @ApiResponse (code = 400, message = "Invalid query input") })
   public Response getActivitiesOfCurrentUser(@Context UriInfo uriInfo,
                                              @ApiParam(value = "Offset", required = false, defaultValue = "0") @QueryParam("offset") int offset,
                                              @ApiParam(value = "Limit", required = false, defaultValue = "20") @QueryParam("limit") int limit,
-                                             @ApiParam(value = "Size of returned result list.", defaultValue = "false") @QueryParam("returnSize") boolean returnSize,
-                                             @ApiParam(value = "Expand param : ask for a full representation of a subresource", required = false) @QueryParam("expand") String expand) throws Exception {
+                                             @ApiParam(value = "Returning the number of activities or not", defaultValue = "false") @QueryParam("returnSize") boolean returnSize,
+                                             @ApiParam(value = "Asking for a full representation of a specific subresource, ex: comments or likes", required = false) @QueryParam("expand") String expand) throws Exception {
     
     offset = offset > 0 ? offset : RestUtils.getOffset(uriInfo);
     limit = limit > 0 ? limit : RestUtils.getLimit(uriInfo);
@@ -116,17 +116,17 @@ public class ActivityRestResourcesV1 implements ActivityRestResources {
   @GET
   @Path("{id}")
   @RolesAllowed("users")
-  @ApiOperation(value = "Get activity by Id",
+  @ApiOperation(value = "Gets a specific activity by id",
                 httpMethod = "GET",
                 response = Response.class,
-                notes = "This can only be done by the logged in user.")
+				notes = "This returns the activity in the following cases: <br/><ul><li>this is a user activity and the owner of the activity is the authenticated user or one of his connections</li><li>this is a space activity and the authenticated user is a member of the space</li><li>the authenticated user is the super user</li></ul>")
   @ApiResponses(value = { 
-    @ApiResponse (code = 200, message = "Given request activity found"),
+    @ApiResponse (code = 200, message = "Request fulfilled"),
     @ApiResponse (code = 500, message = "Internal server error"),
-    @ApiResponse (code = 400, message = "Invalid query input to get activity.") })
+    @ApiResponse (code = 400, message = "Invalid query input") })
   public Response getActivityById(@Context UriInfo uriInfo,
-                                  @ApiParam(value = "activity id", required = true) @PathParam("id") String id,
-                                  @ApiParam(value = "Expand param : ask for a full representation of a subresource", required = false) @QueryParam("expand") String expand) throws Exception {
+                                  @ApiParam(value = "Activity id", required = true) @PathParam("id") String id,
+                                  @ApiParam(value = "Asking for a full representation of a specific subresource, ex: comments or likes", required = false) @QueryParam("expand") String expand) throws Exception {
 
     String authenticatedUser = ConversationState.getCurrent().getIdentity().getUserId();
     Identity currentUser = CommonsUtils.getService(IdentityManager.class).getOrCreateIdentity(OrganizationIdentityProvider.NAME, authenticatedUser, true);
@@ -153,18 +153,18 @@ public class ActivityRestResourcesV1 implements ActivityRestResources {
   @Path("{id}")
   @Produces(MediaType.APPLICATION_JSON)
   @RolesAllowed("users")
-  @ApiOperation(value = "Update activity by Id",
+  @ApiOperation(value = "Updates a specific activity by id",
                 httpMethod = "PUT",
                 response = Response.class,
-                notes = "This can only be done by the logged in user.")
+				notes = "This updates the activity in the following cases: <br/><ul><li>this is a user activity and the owner of the activity is the authenticated user</li><li>the authenticated user is the super user</li></ul>")
   @ApiResponses(value = { 
-    @ApiResponse (code = 200, message = "Given request activity updated successfully"),
+    @ApiResponse (code = 200, message = "Request fulfilled"),
     @ApiResponse (code = 500, message = "Internal server error"),
-    @ApiResponse (code = 400, message = "Invalid query input to update activity") })
+    @ApiResponse (code = 400, message = "Invalid query input") })
   public Response updateActivityById(@Context UriInfo uriInfo,
-                                     @ApiParam(value = "activity id", required = true) @PathParam("id") String id,
-                                     @ApiParam(value = "Expand param : ask for a full representation of a subresource", required = false) @QueryParam("expand") String expand,
-                                     @ApiParam(value = "Activity object for updating. Ex: { \"title\" : \"Activity object to update\"}", required = true) ActivityEntity model) throws Exception {
+                                     @ApiParam(value = "Activity id", required = true) @PathParam("id") String id,
+                                     @ApiParam(value = "Asking for a full representation of a specific subresource, ex: comments or likes", required = false) @QueryParam("expand") String expand,
+                                     @ApiParam(value = "Activity object to be updated, ex: <br/>{<br/>\"title\" : \"My activity\"<br/>}", required = true) ActivityEntity model) throws Exception {
   
     if (model == null || model.getTitle() == null || model.getTitle().length() == 0) {
       throw new WebApplicationException(Response.Status.BAD_REQUEST);
@@ -193,17 +193,17 @@ public class ActivityRestResourcesV1 implements ActivityRestResources {
   @DELETE
   @Path("{id}")
   @RolesAllowed("users")
-  @ApiOperation(value = "Delete acitivty y Id",
+  @ApiOperation(value = "Deletes a specific activity by id",
                 httpMethod = "DELETE",
                 response = Response.class,
-                notes = "This can only be done by the logged in user.")
+				notes = "This deletes the activity in the following cases: <br/><ul><li>this is a user activity and the owner of the activity is the authenticated user</li><li>the authenticated user is the super user</li></ul>")
   @ApiResponses(value = { 
-    @ApiResponse (code = 200, message = "Given request activity deleted successfully"),
+    @ApiResponse (code = 200, message = "Request fulfilled"),
     @ApiResponse (code = 500, message = "Internal server error"),
-    @ApiResponse (code = 400, message = "Invalid query input to delete activity.") })
+    @ApiResponse (code = 400, message = "Invalid query input") })
   public Response deleteActivityById(@Context UriInfo uriInfo,
-                                     @ApiParam(value = "activity id", required = true) @PathParam("id") String id,
-                                     @ApiParam(value = "Expand param : ask for a full representation of a subresource", required = false) @QueryParam("expand") String expand) throws Exception {
+                                     @ApiParam(value = "Activity id", required = true) @PathParam("id") String id,
+                                     @ApiParam(value = "Asking for a full representation of a specific subresource if any", required = false) @QueryParam("expand") String expand) throws Exception {
     
     String authenticatedUser = ConversationState.getCurrent().getIdentity().getUserId();
     Identity currentUser = CommonsUtils.getService(IdentityManager.class).getOrCreateIdentity(OrganizationIdentityProvider.NAME, authenticatedUser, true);
@@ -226,20 +226,20 @@ public class ActivityRestResourcesV1 implements ActivityRestResources {
   @GET
   @Path("{id}/comments")
   @RolesAllowed("users")
-  @ApiOperation(value = "Get comments of an activity",
+  @ApiOperation(value = "Gets comments of a specific activity",
                 httpMethod = "GET",
                 response = Response.class,
-                notes = "This can only be done by the logged in user.")
+				notes = "This returns a list of comments if the authenticated user has permissions to see the activity.")
   @ApiResponses(value = { 
-    @ApiResponse (code = 200, message = "Given request comments of an activity found"),
+    @ApiResponse (code = 200, message = "Request fulfilled"),
     @ApiResponse (code = 500, message = "Internal server error"),
-    @ApiResponse (code = 400, message = "Invalid query input to find comments of an activity.") })
+    @ApiResponse (code = 400, message = "Invalid query input") })
   public Response getCommentsOfActivity(@Context UriInfo uriInfo,
-                                        @ApiParam(value = "activity id", required = true) @PathParam("id") String id,
+                                        @ApiParam(value = "Activity id", required = true) @PathParam("id") String id,
                                         @ApiParam(value = "Offset", required = false, defaultValue = "0") @QueryParam("offset") int offset,
                                         @ApiParam(value = "Limit", required = false, defaultValue = "20") @QueryParam("limit") int limit,
-                                        @ApiParam(value = "Size of returned result list.", defaultValue = "false") @QueryParam("returnSize") boolean returnSize,
-                                        @ApiParam(value = "Expand param : ask for a full representation of a subresource", required = false) @QueryParam("expand") String expand) throws Exception {
+                                        @ApiParam(value = "Returning the number of activities or not", defaultValue = "false") @QueryParam("returnSize") boolean returnSize,
+                                        @ApiParam(value = "Asking for a full representation of a specific subresource if any", required = false) @QueryParam("expand") String expand) throws Exception {
     
     offset = offset > 0 ? offset : RestUtils.getOffset(uriInfo);
     limit = limit > 0 ? limit : RestUtils.getLimit(uriInfo);
@@ -277,18 +277,18 @@ public class ActivityRestResourcesV1 implements ActivityRestResources {
   @Path("{id}/comments")
   @Produces(MediaType.APPLICATION_JSON)
   @RolesAllowed("users")
-  @ApiOperation(value = "Post comment on activity",
+  @ApiOperation(value = "Posts a comment on a specific activity",
                 httpMethod = "POST",
                 response = Response.class,
-                notes = "This can only be done by the logged in user.")
+				notes = "This posts the comment if the authenticated user has permissions to see the activity.")
   @ApiResponses(value = { 
-    @ApiResponse (code = 200, message = "Given request to post comment successfully"),
+    @ApiResponse (code = 200, message = "Request fulfilled"),
     @ApiResponse (code = 500, message = "Internal server error"),
-    @ApiResponse (code = 400, message = "Invalid query input to post comment.") })
+    @ApiResponse (code = 400, message = "Invalid query input") })
   public Response postComment(@Context UriInfo uriInfo,
-                              @ApiParam(value = "activity id", required = true) @PathParam("id") String id,
-                              @ApiParam(value = "Expand param : ask for a full representation of a subresource", required = false) @QueryParam("expand") String expand,
-                              @ApiParam(value = "Comment object to post. Ex: { \"title\" : \"post comment on activity\"}", required = true) CommentEntity model) throws Exception {
+                              @ApiParam(value = "Activity id", required = true) @PathParam("id") String id,
+                              @ApiParam(value = "Asking for a full representation of a specific subresource if any", required = false) @QueryParam("expand") String expand,
+                              @ApiParam(value = "Comment object to be posted, ex: <br/>{<br/>\"title\" : \"My comment\"<br/>}", required = true) CommentEntity model) throws Exception {
     
     if (model == null || model.getTitle() == null || model.getTitle().length() == 0) {
       throw new WebApplicationException(Response.Status.BAD_REQUEST);
@@ -318,19 +318,19 @@ public class ActivityRestResourcesV1 implements ActivityRestResources {
   @GET
   @Path("{id}/likes")
   @RolesAllowed("users")
-  @ApiOperation(value = "Gets all the likes of the activity with the given id",
+  @ApiOperation(value = "Gets likes of a specific activity",
                 httpMethod = "GET",
                 response = Response.class,
-                notes = "This can only be done by the logged in user.")
+				notes = "This returns a list of likes if the authenticated user has permissions to see the activity.")
   @ApiResponses(value = { 
-    @ApiResponse (code = 200, message = "Given request likes of an activity found"),
+    @ApiResponse (code = 200, message = "Request fulfilled"),
     @ApiResponse (code = 500, message = "Internal server error"),
-    @ApiResponse (code = 400, message = "Invalid query input to find likes of an activity.") })
+    @ApiResponse (code = 400, message = "Invalid query input") })
   public Response getLikesOfActivity(@Context UriInfo uriInfo,
-                                     @ApiParam(value = "activity id", required = true) @PathParam("id") String id,
+                                     @ApiParam(value = "Activity id", required = true) @PathParam("id") String id,
                                      @ApiParam(value = "Offset", required = false, defaultValue = "0") @QueryParam("offset") int offset,
                                      @ApiParam(value = "Limit", required = false, defaultValue = "20") @QueryParam("limit") int limit,
-                                     @ApiParam(value = "Expand param : ask for a full representation of a subresource", required = false) @QueryParam("expand") String expand) throws Exception {
+                                     @ApiParam(value = "Asking for a full representation of a specific subresource if any", required = false) @QueryParam("expand") String expand) throws Exception {
     
     offset = offset > 0 ? offset : RestUtils.getOffset(uriInfo);
     limit = limit > 0 ? limit : RestUtils.getLimit(uriInfo);
@@ -357,17 +357,17 @@ public class ActivityRestResourcesV1 implements ActivityRestResources {
   @Path("{id}/likes")
   @Produces(MediaType.APPLICATION_JSON)
   @RolesAllowed("users")
-  @ApiOperation(value = "Add a like for the activity with the given id",
+  @ApiOperation(value = "Adds a like to a specific activity",
                 httpMethod = "POST",
                 response = Response.class,
-                notes = "This can only be done by the logged in user.")
+				notes = "This adds the like if the authenticated user has permissions to see the activity.")
   @ApiResponses(value = { 
-    @ApiResponse (code = 200, message = "Given request to add a like successfully"),
+    @ApiResponse (code = 200, message = "Request fulfilled"),
     @ApiResponse (code = 500, message = "Internal server error"),
-    @ApiResponse (code = 400, message = "Invalid query input to add like.") })
+    @ApiResponse (code = 400, message = "Invalid query input") })
   public Response addLike(@Context UriInfo uriInfo,
-                          @ApiParam(value = "activity id", required = true) @PathParam("id") String id,
-                          @ApiParam(value = "Expand param : ask for a full representation of a subresource", required = false) @QueryParam("expand") String expand) throws Exception {
+                          @ApiParam(value = "Activity id", required = true) @PathParam("id") String id,
+                          @ApiParam(value = "Asking for a full representation of a subresource if any", required = false) @QueryParam("expand") String expand) throws Exception {
     
     String authenticatedUser = ConversationState.getCurrent().getIdentity().getUserId();
     Identity currentUser = CommonsUtils.getService(IdentityManager.class).getOrCreateIdentity(OrganizationIdentityProvider.NAME, authenticatedUser, true);
@@ -394,18 +394,18 @@ public class ActivityRestResourcesV1 implements ActivityRestResources {
   @GET
   @Path("{id}/likes/{username}")
   @RolesAllowed("users")
-  @ApiOperation(value = "Gets the like of the user with the given username for the activity with the given activity id",
+  @ApiOperation(value = "Gets a like of a specific user for a given activity",
                 httpMethod = "GET",
                 response = Response.class,
-                notes = "This can only be done by the logged in user.")
+                notes = "This returns the like if the authenticated user has permissions to see the activity.")
   @ApiResponses(value = { 
-    @ApiResponse (code = 200, message = "Given request likes of an activity of an user found"),
+    @ApiResponse (code = 200, message = "Request fulfilled"),
     @ApiResponse (code = 500, message = "Internal server error"),
-    @ApiResponse (code = 400, message = "Invalid query input to find likes of an activity of an user.") })
+    @ApiResponse (code = 400, message = "Invalid query input") })
   public Response getLikesActivityOfUser(@Context UriInfo uriInfo,
-                                         @ApiParam(value = "activity id", required = true) @PathParam("id") String id,
-                                         @ApiParam(value = "username", required = true) @PathParam("username") String username,
-                                         @ApiParam(value = "Expand param : ask for a full representation of a subresource", required = false) @QueryParam("expand") String expand) throws Exception {
+                                         @ApiParam(value = "Activity id", required = true) @PathParam("id") String id,
+                                         @ApiParam(value = "User name", required = true) @PathParam("username") String username,
+                                         @ApiParam(value = "Asking for a full representation of a specific subresource if any", required = false) @QueryParam("expand") String expand) throws Exception {
     
     Identity userToGetLike = CommonsUtils.getService(IdentityManager.class).getOrCreateIdentity(OrganizationIdentityProvider.NAME, username, true);
     
@@ -429,18 +429,18 @@ public class ActivityRestResourcesV1 implements ActivityRestResources {
   @DELETE
   @Path("{id}/likes/{username}")
   @RolesAllowed("users")
-  @ApiOperation(value = "Delete a like from the user with the given username on the activity with the given activity id",
+  @ApiOperation(value = "Deletes a like of a specific user for a given activity",
                 httpMethod = "DELETE",
                 response = Response.class,
-                notes = "This can only be done by the logged in user.")
+                notes = "This deletes the like if the authenticated user is the given user or the super user.")
   @ApiResponses(value = { 
-    @ApiResponse (code = 200, message = "Given request like of activity of user deleted successfully"),
+    @ApiResponse (code = 200, message = "Request fulfilled"),
     @ApiResponse (code = 500, message = "Internal server error"),
-    @ApiResponse (code = 400, message = "Invalid query input to delete like of activity of user.") })
+    @ApiResponse (code = 400, message = "Invalid query input") })
   public Response deleteLike(@Context UriInfo uriInfo,
-                                     @ApiParam(value = "activity id", required = true) @PathParam("id") String id,
-                                     @ApiParam(value = "username", required = true) @PathParam("username") String username,
-                                     @ApiParam(value = "Expand param : ask for a full representation of a subresource", required = false) @QueryParam("expand") String expand) throws Exception {
+                                     @ApiParam(value = "Activity id", required = true) @PathParam("id") String id,
+                                     @ApiParam(value = "User name", required = true) @PathParam("username") String username,
+                                     @ApiParam(value = "Asking for a full representation of a specific subresource if any", required = false) @QueryParam("expand") String expand) throws Exception {
     
     String authenticatedUser = ConversationState.getCurrent().getIdentity().getUserId();
     if (!authenticatedUser.equals(username)) {

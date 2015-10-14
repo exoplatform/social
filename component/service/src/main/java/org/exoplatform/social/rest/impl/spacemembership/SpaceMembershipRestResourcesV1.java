@@ -57,7 +57,7 @@ import org.exoplatform.social.rest.entity.SpaceMembershipEntity;
 import org.exoplatform.social.service.rest.api.VersionResources;
 
 @Path(VersionResources.VERSION_ONE + "/social/spacesMemberships")
-@Api(value=VersionResources.VERSION_ONE + "/social/spacesMemberships", description = "Operations membership of space.")
+@Api(tags = "space membership: Managing memberships of users in a space", value=VersionResources.VERSION_ONE + "/social/spacesMemberships")
 public class SpaceMembershipRestResourcesV1 implements SpaceMembershipRestResources {
   
   private static final String SPACE_PREFIX = "/spaces/";
@@ -71,22 +71,22 @@ public class SpaceMembershipRestResourcesV1 implements SpaceMembershipRestResour
 
   @GET
   @RolesAllowed("users")
-  @ApiOperation(value = "Get space memberships",
+  @ApiOperation(value = "Gets space memberships of a specific space",
                 httpMethod = "GET",
                 response = Response.class,
                 notes = "This can only be done by the logged in user.")
   @ApiResponses(value = { 
-    @ApiResponse (code = 200, message = "Given request membership found"),
-    @ApiResponse (code = 404, message = "Not found membership of space"),
+    @ApiResponse (code = 200, message = "Request fulfilled"),
+    @ApiResponse (code = 404, message = "Resource not found"),
     @ApiResponse (code = 500, message = "Internal server error"),
-    @ApiResponse (code = 400, message = "Invalid query input to find memberships.") })
+    @ApiResponse (code = 400, message = "Invalid query input") })
   public Response getSpacesMemberships(@Context UriInfo uriInfo,
-                                       @ApiParam(value = "Space name to get membership. Ex: my space", required = true) @QueryParam("space") String space,
-                                       @ApiParam(value = "User name to get membership", required = true) @QueryParam("user") String user,
+                                       @ApiParam(value = "Space display name to get membership, ex: my space", required = true) @QueryParam("space") String space,
+                                       @ApiParam(value = "User name to filter only memberships of the given user", required = false) @QueryParam("user") String user,
                                        @ApiParam(value = "Offset", required = false, defaultValue = "0") @QueryParam("offset") int offset,
                                        @ApiParam(value = "Limit", required = false, defaultValue = "20") @QueryParam("limit") int limit,
-                                       @ApiParam(value = "Expand param : ask for a full representation of a subresource", required = false) @QueryParam("expand") String expand,
-                                       @ApiParam(value = "Size of returned result list.", defaultValue = "false") @QueryParam("returnSize") boolean returnSize) throws Exception {
+                                       @ApiParam(value = "Asking for a full representation of a specific subresource if any", required = false) @QueryParam("expand") String expand,
+                                       @ApiParam(value = "Returning the number of memberships or not", defaultValue = "false") @QueryParam("returnSize") boolean returnSize) throws Exception {
 
     offset = offset > 0 ? offset : RestUtils.getOffset(uriInfo);
     limit = limit > 0 ? limit : RestUtils.getLimit(uriInfo);
@@ -129,19 +129,19 @@ public class SpaceMembershipRestResourcesV1 implements SpaceMembershipRestResour
   
   @POST
   @RolesAllowed("users")
-  @ApiOperation(value = "Add space memberships",
+  @ApiOperation(value = "Creates a space membership for a specific user",
                 httpMethod = "POST",
                 response = Response.class,
                 notes = "This can only be done by the logged in user.")
   @ApiResponses(value = { 
-    @ApiResponse (code = 200, message = "Given request membership added successfully"),
+    @ApiResponse (code = 200, message = "Request fulfilled"),
     @ApiResponse (code = 500, message = "Internal server error"),
-    @ApiResponse (code = 400, message = "Invalid query input to add memberships.") })
+    @ApiResponse (code = 400, message = "Invalid query input") })
   public Response addSpacesMemberships(@Context UriInfo uriInfo,
-                                       @ApiParam(value = "Expand param : ask for a full representation of a subresource", required = false) @QueryParam("expand") String expand,
-                                       @ApiParam(value = "Created space membership object. Ex: {<br />" +
+                                       @ApiParam(value = "Asking for a full representation of a specific subresource if any", required = false) @QueryParam("expand") String expand,
+                                       @ApiParam(value = "Space membership object to be created, ex:<br />{" +
                                                                                                "<br />\"role\": \"manager\"," +
-                                                                                               "<br />\"user\": \"usera\"," +
+                                                                                               "<br />\"user\": \"john\"," +
                                                                                                "<br />\"space\": \"my space\"" +
                                                                                                "<br />}" 
                                                  , required = true) SpaceMembershipEntity model) throws Exception {
@@ -180,17 +180,17 @@ public class SpaceMembershipRestResourcesV1 implements SpaceMembershipRestResour
   @GET
   @Path("{id}") //id must have this format spaceName:userName:type
   @RolesAllowed("users")
-  @ApiOperation(value = "Get space memberships by id",
+  @ApiOperation(value = "Gets a specific space membership by id",
                 httpMethod = "GET",
                 response = Response.class,
                 notes = "This can only be done by the logged in user.")
   @ApiResponses(value = { 
-    @ApiResponse (code = 200, message = "Given request membership found"),
-    @ApiResponse (code = 404, message = "Not found membership of space"),
-    @ApiResponse (code = 500, message = "Internal server error due to encoding the data") })
+    @ApiResponse (code = 200, message = "Request fulfilled"),
+    @ApiResponse (code = 404, message = "Resource not found"),
+    @ApiResponse (code = 500, message = "Internal server error due to data encoding") })
   public Response getSpaceMembershipById(@Context UriInfo uriInfo,
-                                         @ApiParam(value = "id in format spaceName:userName:role. Ex: my_space:root:manager", required = true) @PathParam("id") String id,
-                                         @ApiParam(value = "Expand param : ask for a full representation of a subresource", required = false) @QueryParam("expand") String expand) throws Exception {
+                                         @ApiParam(value = "Space membership id which is in format spaceName:userName:role, ex: my_space:root:manager", required = true) @PathParam("id") String id,
+                                         @ApiParam(value = "Asking for a full representation of a specific subresource if any", required = false) @QueryParam("expand") String expand) throws Exception {
     String[] idParams = RestUtils.getPathParam(uriInfo, "id").split(":");
     if (idParams.length != 3) {
       throw new WebApplicationException(Response.Status.UNAUTHORIZED);
@@ -220,17 +220,17 @@ public class SpaceMembershipRestResourcesV1 implements SpaceMembershipRestResour
   @PUT
   @Path("{id}")
   @RolesAllowed("users")
-  @ApiOperation(value = "Update space memberships by id",
+  @ApiOperation(value = "Updates a specific space membership by id",
                 httpMethod = "PUT",
                 response = Response.class,
                 notes = "This can only be done by the logged in user.")
   @ApiResponses(value = { 
-    @ApiResponse (code = 200, message = "Given request membership updated successfully"),
-    @ApiResponse (code = 500, message = "Internal server error due to encoding the data") })
+    @ApiResponse (code = 200, message = "Request fulfilled"),
+    @ApiResponse (code = 500, message = "Internal server error due to data encoding") })
   public Response updateSpaceMembershipById(@Context UriInfo uriInfo,
-                                            @ApiParam(value = "id in format spaceName:userName:type", required = true) @PathParam("id") String id,
-                                            @ApiParam(value = "Expand param : ask for a full representation of a subresource", required = false) @QueryParam("expand") String expand,
-                                            @ApiParam(value = "Updated space membership object", required = true) SpaceMembershipEntity model) throws Exception {
+                                            @ApiParam(value = "Space membership id which is in format spaceName:userName:role, ex: my_space:root:manager", required = true) @PathParam("id") String id,
+                                            @ApiParam(value = "Asking for a full representation of a specific subresource if any", required = false) @QueryParam("expand") String expand,
+                                            @ApiParam(value = "Space membership object to be updated", required = true) SpaceMembershipEntity model) throws Exception {
     String[] idParams = RestUtils.getPathParam(uriInfo, "id").split(":");
     if (idParams.length != 3) {
       throw new WebApplicationException(Response.Status.UNAUTHORIZED);
@@ -271,18 +271,18 @@ public class SpaceMembershipRestResourcesV1 implements SpaceMembershipRestResour
   @DELETE
   @Path("{id}")
   @RolesAllowed("users")
-  @ApiOperation(value = "Delete space memberships by id",
+  @ApiOperation(value = "Deletes a specific space membership by id",
                 httpMethod = "DELETE",
                 response = Response.class,
                 notes = "This can only be done by the logged in user.")
   @ApiResponses(value = { 
-    @ApiResponse (code = 200, message = "Given request membership deleted successfully"),
-    @ApiResponse (code = 404, message = "Not found membership of space"),
-    @ApiResponse (code = 412, message = "Precondition is not acceptible. For instance, the last manager membership could not be removed."),
-    @ApiResponse (code = 500, message = "Internal server error due to encoding the data") })
+    @ApiResponse (code = 200, message = "Request fulfilled"),
+    @ApiResponse (code = 404, message = "Resource not found"),
+    @ApiResponse (code = 412, message = "Precondition is not acceptable. For instance, the last manager membership could not be removed."),
+    @ApiResponse (code = 500, message = "Internal server error due to data encoding") })
   public Response deleteSpaceMembershipById(@Context UriInfo uriInfo,
-                                            @ApiParam(value = "id in format spaceName:userName:type", required = true) @PathParam("id") String id,
-                                            @ApiParam(value = "Expand param : ask for a full representation of a subresource", required = false) @QueryParam("expand") String expand) throws Exception {
+                                            @ApiParam(value = "Space membership id which is in format spaceName:userName:role, ex: my_space:root:manager", required = true) @PathParam("id") String id,
+                                            @ApiParam(value = "Asking for a full representation of a specific subresource if any", required = false) @QueryParam("expand") String expand) throws Exception {
     String[] idParams = RestUtils.getPathParam(uriInfo, "id").split(":");
     if (idParams.length != 3) {
       throw new WebApplicationException(Response.Status.UNAUTHORIZED);
