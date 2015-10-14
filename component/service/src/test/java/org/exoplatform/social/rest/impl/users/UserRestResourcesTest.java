@@ -16,8 +16,8 @@ import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
 import org.exoplatform.social.rest.entity.ActivityEntity;
 import org.exoplatform.social.rest.entity.CollectionEntity;
+import org.exoplatform.social.rest.entity.ProfileEntity;
 import org.exoplatform.social.rest.entity.SpaceEntity;
-import org.exoplatform.social.rest.entity.UserEntity;
 import org.exoplatform.social.rest.impl.user.UserRestResourcesV1;
 import org.exoplatform.social.service.test.AbstractResourceTest;
 
@@ -89,7 +89,7 @@ public class UserRestResourcesTest extends AbstractResourceTest {
     ContainerResponse response = service("GET", getURLResource("users/john"), "", null, null);
     assertNotNull(response);
     assertEquals(200, response.getStatus());
-    UserEntity userEntity = getBaseEntity(response.getEntity(), UserEntity.class);
+    ProfileEntity userEntity = getBaseEntity(response.getEntity(), ProfileEntity.class);
     assertEquals("john", userEntity.getUsername());
   }
   
@@ -104,7 +104,7 @@ public class UserRestResourcesTest extends AbstractResourceTest {
     
     CollectionEntity collections = (CollectionEntity) response.getEntity();
     assertEquals(1, collections.getEntities().size());
-    UserEntity userEntity = getBaseEntity(collections.getEntities().get(0), UserEntity.class);
+    ProfileEntity userEntity = getBaseEntity(collections.getEntities().get(0), ProfileEntity.class);
     assertEquals("demo", userEntity.getUsername());
   }
   

@@ -61,12 +61,12 @@ public class IdentityEntity extends BaseEntity {
     return getString("deleted");
   }
 
-  public IdentityEntity setProfile(DataEntity profile) {
+  public IdentityEntity setProfile(ProfileEntity profile) {
     setProperty("profile", profile);
     return this;
   }
 
-  public DataEntity getProfile() {
-    return (DataEntity) getProperty("profile");
+  public ProfileEntity getProfile() {
+    return (ProfileEntity) getProperty("profile");
   }
 }

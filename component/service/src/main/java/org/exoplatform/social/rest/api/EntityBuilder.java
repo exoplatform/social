@@ -55,6 +55,7 @@ import org.exoplatform.social.rest.entity.CommentEntity;
 import org.exoplatform.social.rest.entity.DataEntity;
 import org.exoplatform.social.rest.entity.IdentityEntity;
 import org.exoplatform.social.rest.entity.LinkEntity;
+import org.exoplatform.social.rest.entity.ProfileEntity;
 import org.exoplatform.social.rest.entity.RelationshipEntity;
 import org.exoplatform.social.rest.entity.SpaceEntity;
 import org.exoplatform.social.rest.entity.SpaceMembershipEntity;
@@ -107,7 +108,7 @@ public class EntityBuilder {
     idntityEntity.setGlobalId(identity.getGlobalId());
     idntityEntity.setDeleted(identity.isDeleted());
     if(OrganizationIdentityProvider.NAME.equals(identity.getProviderId())) {
-      idntityEntity.setProfile(buildEntityProfile(identity.getProfile(), restPath, "").getDataEntity());//
+      idntityEntity.setProfile(buildEntityProfile(identity.getProfile(), restPath, ""));//
     }
     
     updateCachedEtagValue(getEtagValue(identity.getId()));
@@ -126,8 +127,8 @@ public class EntityBuilder {
     return buildEntityIdentity(userIdentity, restPath, expand);
   }
 
-  public static UserEntity buildEntityProfile(Profile profile, String restPath, String expand) {
-    UserEntity userEntity = new UserEntity(profile.getId());
+  public static ProfileEntity buildEntityProfile(Profile profile, String restPath, String expand) {
+    ProfileEntity userEntity = new ProfileEntity(profile.getId());
     userEntity.setHref(RestUtils.getRestUrl(USERS_TYPE, profile.getIdentity().getRemoteId(), restPath));
     userEntity.setIdentity(RestUtils.getRestUrl(IDENTITIES_TYPE, profile.getIdentity().getId(), restPath));
     userEntity.setUsername(profile.getIdentity().getRemoteId());
@@ -156,7 +157,7 @@ public class EntityBuilder {
    * @param expand
    * @return
    */
-  public static UserEntity buildEntityProfile(String userName, String restPath, String expand) {
+  public static ProfileEntity buildEntityProfile(String userName, String restPath, String expand) {
     IdentityManager identityManager = CommonsUtils.getService(IdentityManager.class);
     Identity userIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, userName, true);
     return buildEntityProfile(userIdentity.getProfile(), restPath, expand);
@@ -340,7 +341,7 @@ public class EntityBuilder {
     List<String> likerIds = Arrays.asList(activity.getLikeIdentityIds());
     IdentityManager identityManager = CommonsUtils.getService(IdentityManager.class);
     for (String likerId : likerIds) {
-      UserEntity likerInfo = buildEntityProfile(identityManager.getIdentity(likerId, false).getRemoteId(), restPath, expand);
+      ProfileEntity likerInfo = buildEntityProfile(identityManager.getIdentity(likerId, false).getRemoteId(), restPath, expand);
       likesEntity.add(likerInfo.getDataEntity());
     }
     return likesEntity;

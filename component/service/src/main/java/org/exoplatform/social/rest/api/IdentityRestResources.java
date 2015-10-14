@@ -17,6 +17,8 @@
 
 package org.exoplatform.social.rest.api;
 
+import io.swagger.annotations.ApiParam;
+
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -27,6 +29,8 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
+
+import org.exoplatform.social.rest.entity.ProfileEntity;
 
 public interface IdentityRestResources extends SocialRest {
 
@@ -82,7 +86,8 @@ public interface IdentityRestResources extends SocialRest {
   @Path("{id}")
   public abstract Response updateIdentityById(@Context UriInfo uriInfo,
                                               @PathParam("id") String id,
-                                              @QueryParam("expand") String expand) throws Exception;
+                                              @QueryParam("expand") String expand,
+                                              @ApiParam(value = "Updated profile object.", required = false) ProfileEntity model) throws Exception;
 
   /**
    * Process to delete an identity

@@ -64,6 +64,7 @@ import org.exoplatform.social.rest.api.UserRestResources;
 import org.exoplatform.social.rest.entity.ActivityEntity;
 import org.exoplatform.social.rest.entity.CollectionEntity;
 import org.exoplatform.social.rest.entity.DataEntity;
+import org.exoplatform.social.rest.entity.ProfileEntity;
 import org.exoplatform.social.rest.entity.SpaceEntity;
 import org.exoplatform.social.rest.entity.UserEntity;
 import org.exoplatform.social.service.rest.api.VersionResources;
@@ -116,7 +117,7 @@ public class UserRestResourcesV1 implements UserRestResources {
     Identity[] identities = list.load(offset, limit);
     List<DataEntity> profileInfos = new ArrayList<DataEntity>();
     for (Identity identity : identities) {
-      UserEntity profileInfo = EntityBuilder.buildEntityProfile(identity.getProfile(), uriInfo.getPath(), expand);
+      ProfileEntity profileInfo = EntityBuilder.buildEntityProfile(identity.getProfile(), uriInfo.getPath(), expand);
       //
       profileInfos.add(profileInfo.getDataEntity());
     }
@@ -289,7 +290,7 @@ public class UserRestResourcesV1 implements UserRestResources {
     ListAccess<Identity> listAccess = CommonsUtils.getService(RelationshipManager.class).getConnectionsByFilter(target, new ProfileFilter());
     Identity []identities = listAccess.load(offset, limit);
     for (Identity identity : identities) {
-      UserEntity profileInfo = EntityBuilder.buildEntityProfile(identity.getProfile(), uriInfo.getPath(), expand);
+      ProfileEntity profileInfo = EntityBuilder.buildEntityProfile(identity.getProfile(), uriInfo.getPath(), expand);
       //
       profileInfos.add(profileInfo.getDataEntity());
     }

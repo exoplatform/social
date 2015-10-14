@@ -41,6 +41,7 @@ import javax.ws.rs.core.UriInfo;
 import org.exoplatform.commons.utils.CommonsUtils;
 import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.social.core.identity.model.Identity;
+import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
 import org.exoplatform.social.core.manager.IdentityManager;
@@ -51,11 +52,12 @@ import org.exoplatform.social.rest.api.EntityBuilder;
 import org.exoplatform.social.rest.api.IdentityRestResources;
 import org.exoplatform.social.rest.api.RestProperties;
 import org.exoplatform.social.rest.api.RestUtils;
-import org.exoplatform.social.rest.api.SocialRest;
 import org.exoplatform.social.rest.entity.CollectionEntity;
 import org.exoplatform.social.rest.entity.DataEntity;
 import org.exoplatform.social.rest.entity.IdentityEntity;
+import org.exoplatform.social.rest.entity.ProfileEntity;
 import org.exoplatform.social.service.rest.api.VersionResources;
+
 
 @Path(VersionResources.VERSION_ONE + "/social/identities")
 @Api(tags = "identity: Managing identities", value=VersionResources.VERSION_ONE + "/social/identities")
@@ -187,7 +189,8 @@ public class IdentityRestResourcesV1 implements IdentityRestResources {
     @ApiResponse (code = 400, message = "Invalid query input") })
   public Response updateIdentityById(@Context UriInfo uriInfo,
                                      @ApiParam(value = "Identity id which is a UUID such as 40487b7e7f00010104499b339f056aa4", required = true) @PathParam("id") String id,
-                                     @ApiParam(value = "Asking for a full representation of a specific subresource if any", required = false) @QueryParam("expand") String expand) throws Exception {
+                                     @ApiParam(value = "Asking for a full representation of a specific subresource if any", required = false) @QueryParam("expand") String expand,
+                                     @ApiParam(value = "Updated profile object.", required = false) ProfileEntity model) throws Exception {
     
     IdentityManager identityManager = CommonsUtils.getService(IdentityManager.class);
     Identity identity = identityManager.getIdentity(id, true);
@@ -195,14 +198,34 @@ public class IdentityRestResourcesV1 implements IdentityRestResources {
       throw new WebApplicationException(Response.Status.NOT_FOUND);
     }
     
-    //TODO : process to update identity
+    identityManager.updateProfile(fillProfileFromEntity(model, identity));
     
-    IdentityEntity profileInfo = EntityBuilder.buildEntityIdentity(identity, uriInfo.getPath(), expand);
+    IdentityEntity identityInfo = EntityBuilder.buildEntityIdentity(identity, uriInfo.getPath(), expand);
     
-    return EntityBuilder.getResponse(profileInfo, uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
+    return EntityBuilder.getResponse(identityInfo, uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
   }
   
+  private Profile fillProfileFromEntity(ProfileEntity model, Identity identity) {
+    Profile profile = identity.getProfile();
+    setProperty(profile, Profile.FIRST_NAME, model.getFirstname());
+    setProperty(profile, Profile.LAST_NAME, model.getLastname());
+    setProperty(profile, Profile.EMAIL, model.getEmail());
+    setProperty(profile, Profile.POSITION, model.getPosition());
+    setProperty(profile, Profile.GENDER, model.getGender());
+//    setProperty(profile, Profile.CONTACT_PHONES, model.getPhones());
+//    setProperty(profile, Profile.CONTACT_IMS, model.getIMs());
+//    setProperty(profile, Profile.CONTACT_URLS, model.getUrls());
+    setProperty(profile, Profile.DELETED, model.getDeleted());
+    return profile;
+  }
 
+  private Profile setProperty(Profile profile, String key, Object value) {
+    if (value != null) {
+      profile.setProperty(key, value);
+    }
+    return profile;
+  }
+  
   /**
    * {@inheritDoc}
    */
