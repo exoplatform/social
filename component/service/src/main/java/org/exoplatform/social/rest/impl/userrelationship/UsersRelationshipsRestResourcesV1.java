@@ -64,10 +64,10 @@ public class UsersRelationshipsRestResourcesV1 implements UsersRelationshipsRest
   
   @RolesAllowed("users")
   @GET
-  @ApiOperation(value = "Gets relationships of a specific user",
+  @ApiOperation(value = "Gets all user relationships",
                 httpMethod = "GET",
                 response = Response.class,
-                notes = "This can only be done by the logged in user.")
+                notes = "This returns a list of relationships in the following cases: <br/><ul><li>if the query param \"user\" is not defined: returns the relationships of the authenticated user</li><li>if the \"user\" is defined and the authenticated user is not an administrator: returns the relationships of the authenticated user</li><li>if the \"user\" is defined and the authenticated user is an administrator: returns the relationships of the defined user</li></ul>")
   @ApiResponses(value = { 
     @ApiResponse (code = 200, message = "Request fulfilled"),
     @ApiResponse (code = 500, message = "Internal server error"),
@@ -119,7 +119,7 @@ public class UsersRelationshipsRestResourcesV1 implements UsersRelationshipsRest
   @ApiOperation(value = "Creates a relationship between two specific users",
                 httpMethod = "POST",
                 response = Response.class,
-                notes = "This can only be done by the logged in user.")
+                notes = "This creates the relationship in the following cases: <br/><ul><li>the sender or the receiver of the user relationship is the authenticated user</li><li>the authenticated user is in the group /platform/administrators</li></ul>")
   @ApiResponses(value = { 
     @ApiResponse (code = 200, message = "Request fulfilled"),
     @ApiResponse (code = 500, message = "Internal server error"),
@@ -159,7 +159,7 @@ public class UsersRelationshipsRestResourcesV1 implements UsersRelationshipsRest
   @ApiOperation(value = "Gets a specific relationship of user by id",
                 httpMethod = "GET",
                 response = Response.class,
-                notes = "This can only be done by the logged in user.")
+                notes = "This returns the relationship in the following cases: <br/><ul><li>the sender or the receiver of the user relationship is the authenticated user</li><li>the authenticated user is in the group /platform/administrators</li></ul>")
   @ApiResponses(value = { 
     @ApiResponse (code = 200, message = "Request fulfilled"),
     @ApiResponse (code = 500, message = "Internal server error"),
@@ -183,7 +183,7 @@ public class UsersRelationshipsRestResourcesV1 implements UsersRelationshipsRest
   @ApiOperation(value = "Updates a specific relationship of user by id",
                 httpMethod = "PUT",
                 response = Response.class,
-                notes = "This can only be done by the logged in user.")
+                notes = "This updates the relationship in the following cases: <br/><ul><li>the sender or the receiver of the user relationship is the authenticated user</li><li>the authenticated user is in the group /platform/administrators</li></ul>")
   @ApiResponses(value = { 
     @ApiResponse (code = 200, message = "Request fulfilled"),
     @ApiResponse (code = 500, message = "Internal server error"),
@@ -228,7 +228,7 @@ public class UsersRelationshipsRestResourcesV1 implements UsersRelationshipsRest
   @ApiOperation(value = "Deletes a specific relationship of user by id",
                 httpMethod = "DELETE",
                 response = Response.class,
-                notes = "This can only be done by the logged in user.")
+                notes = "This deletes the relationship in the following cases: <br/><ul><li>the sender or the receiver of the user relationship is the authenticated user</li><li>the authenticated user is in the group /platform/administrators</li></ul>")
   @ApiResponses(value = { 
     @ApiResponse (code = 200, message = "Request fulfilled"),
     @ApiResponse (code = 500, message = "Internal server error"),

@@ -89,17 +89,17 @@ public class UserRestResourcesV1 implements UserRestResources {
   
   @GET
   @RolesAllowed("users")
-  @ApiOperation(value = "Searches for users by user name information",
+  @ApiOperation(value = "Gets all users",
                 httpMethod = "GET",
                 response = Response.class,
-                notes = "This can only be done by the logged in user.")
+                notes = "Using the query param \"q\" to filter the target users, ex: \"q=jo*\" returns all the users beginning by \"jo\".")
   @ApiResponses(value = { 
     @ApiResponse (code = 200, message = "Request fulfilled"),
     @ApiResponse (code = 404, message = "Resource not found"),
     @ApiResponse (code = 500, message = "Internal server error due to data encoding"),
     @ApiResponse (code = 400, message = "Invalid query input") })
   public Response getUsers(@Context UriInfo uriInfo,
-                           @ApiParam(value = "User name information to search, ex: user name, last name, first name or full name", required = false) @QueryParam("q") String q,
+                           @ApiParam(value = "User name information to filter, ex: user name, last name, first name or full name", required = false) @QueryParam("q") String q,
                            @ApiParam(value = "Offset", required = false, defaultValue = "0") @QueryParam("offset") int offset,
                            @ApiParam(value = "Limit", required = false, defaultValue = "20") @QueryParam("limit") int limit,
                            @ApiParam(value = "Returning the number of users found or not", defaultValue = "false") @QueryParam("returnSize") boolean returnSize,
@@ -133,7 +133,7 @@ public class UserRestResourcesV1 implements UserRestResources {
   @ApiOperation(value = "Creates a new user",
                 httpMethod = "POST",
                 response = Response.class,
-                notes = "This can only be done by the logged in user.")
+                notes = "This creates the user if the authenticated user is in the /platform/administrators group.")
   @ApiResponses(value = { 
     @ApiResponse (code = 200, message = "Request fulfilled"),
     @ApiResponse (code = 400, message = "Invalid query input") })
@@ -206,7 +206,7 @@ public class UserRestResourcesV1 implements UserRestResources {
   @ApiOperation(value = "Deletes a specific user by user name",
                 httpMethod = "DELETE",
                 response = Response.class,
-                notes = "This can only be done by the logged in user.")
+                notes = "This deletes the user if the authenticated user is in the /platform/administrators group.")
   public Response deleteUserById(@Context UriInfo uriInfo,
                                  @ApiParam(value = "User name", required = true) @PathParam("id") String id,
                                  @ApiParam(value = "Asking for a full representation of a specific subresource if any", required = false) @QueryParam("expand") String expand) throws Exception {
@@ -236,7 +236,7 @@ public class UserRestResourcesV1 implements UserRestResources {
   @ApiOperation(value = "Updates a specific user by user name",
                 httpMethod = "PUT",
                 response = Response.class,
-                notes = "This can only be done by the logged in user.")
+                notes = "This updates the user if he is the authenticated user.")
   public Response updateUserById(@Context UriInfo uriInfo,
                                  @ApiParam(value = "User name", required = true) @PathParam("id") String id,
                                  @ApiParam(value = "Asking for a full representation of a specific subresource if any", required = false) @QueryParam("expand") String expand,
@@ -306,7 +306,7 @@ public class UserRestResourcesV1 implements UserRestResources {
   @ApiOperation(value = "Gets spaces of a specific user",
                 httpMethod = "GET",
                 response = Response.class,
-                notes = "This can only be done by the logged in user.")
+                notes = "This returns a list of spaces in the following cases: <br/><ul><li>the given user is the authenticated user</li><li>the authenticated user is in the group /platform/administrators</li></ul>")
   public Response getSpacesOfUser(@Context UriInfo uriInfo,
                                   @ApiParam(value = "User name", required = true) @PathParam("id") String id,
                                   @ApiParam(value = "Offset", required = false, defaultValue = "0") @QueryParam("offset") int offset,
@@ -349,7 +349,7 @@ public class UserRestResourcesV1 implements UserRestResources {
   @ApiOperation(value = "Gets activities of a specific user",
                 httpMethod = "GET",
                 response = Response.class,
-                notes = "This can only be done by the logged in user.")
+                notes = "This returns an activity in the list in the following cases: <br/><ul><li>this is a user activity and the owner of the activity is the authenticated user or one of his connections</li><li>this is a space activity and the authenticated user is a member of the space</li></ul>")
   public Response getActivitiesOfUser(@Context UriInfo uriInfo,
                                       @ApiParam(value = "User name", required = true) @PathParam("id") String id,
                                       @ApiParam(value = "Activity stream type, ex: <em>owner, connections, spaces</em> or <em>all</em>", required = false, defaultValue = "all") @QueryParam("type") String type,
@@ -434,7 +434,7 @@ public class UserRestResourcesV1 implements UserRestResources {
   @ApiOperation(value = "Creates an activity by a specific user",
                 httpMethod = "POST",
                 response = Response.class,
-                notes = "This can only be done by the logged in user.")
+                notes = "This creates the activity if the given user is the authenticated user.")
   public Response addActivityByUser(@Context UriInfo uriInfo,
                                     @ApiParam(value = "User name", required = true) @PathParam("id") String id,
                                     @ApiParam(value = "Asking for a full representation of a specific subresource, ex: <em>comments</em> or <em>likes</em>", required = false) @QueryParam("expand") String expand,

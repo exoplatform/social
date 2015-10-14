@@ -62,7 +62,7 @@ import org.exoplatform.social.rest.entity.DataEntity;
 import org.exoplatform.social.service.rest.api.VersionResources;
 
 @Path(VersionResources.VERSION_ONE + "/social/activities")
-@Api(tags = "activity"+" : Managing an activity with its comments and likes", value = VersionResources.VERSION_ONE + "/social/activities")
+@Api(tags = "activity"+" : Managing activities together with comments and likes", value = VersionResources.VERSION_ONE + "/social/activities")
 public class ActivityRestResourcesV1 implements ActivityRestResources {
   
   private static final String SPACE_PREFIX = "/spaces/";
@@ -71,10 +71,10 @@ public class ActivityRestResourcesV1 implements ActivityRestResources {
   
   @GET
   @RolesAllowed("users")
-  @ApiOperation(value = "Gets activities of the currently logged in user",
+  @ApiOperation(value = "Gets all activities",
                 httpMethod = "GET",
                 response = Response.class,
-                notes = "This can only be done by the logged in user.")
+                notes = "This returns an activity in the list in the following cases: <br/><ul><li>the authenticated user is the super user, so he can see all the activities</li><li>this is a user activity and the owner of the activity is the authenticated user or one of his connections</li><li>this is a space activity and the authenticated user is a member of the space</li></ul>")
   @ApiResponses(value = { 
     @ApiResponse (code = 200, message = "Request fulfilled"),
     @ApiResponse (code = 500, message = "Internal server error"),

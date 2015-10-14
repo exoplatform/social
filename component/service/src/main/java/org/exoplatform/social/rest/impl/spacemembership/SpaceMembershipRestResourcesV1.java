@@ -71,17 +71,17 @@ public class SpaceMembershipRestResourcesV1 implements SpaceMembershipRestResour
 
   @GET
   @RolesAllowed("users")
-  @ApiOperation(value = "Gets space memberships of a specific space",
+  @ApiOperation(value = "Gets space memberships",
                 httpMethod = "GET",
                 response = Response.class,
-                notes = "This can only be done by the logged in user.")
+                notes = "This returns space memberships in the following cases: <br/><ul><li>the sender of the space membership is the authenticated user</li><li>the authenticated user is a manager of the space</li><li>the authenticated user is the super user</li></ul>")
   @ApiResponses(value = { 
     @ApiResponse (code = 200, message = "Request fulfilled"),
     @ApiResponse (code = 404, message = "Resource not found"),
     @ApiResponse (code = 500, message = "Internal server error"),
     @ApiResponse (code = 400, message = "Invalid query input") })
   public Response getSpacesMemberships(@Context UriInfo uriInfo,
-                                       @ApiParam(value = "Space display name to get membership, ex: my space", required = true) @QueryParam("space") String space,
+                                       @ApiParam(value = "Space display name to get membership, ex: my space", required = false) @QueryParam("space") String space,
                                        @ApiParam(value = "User name to filter only memberships of the given user", required = false) @QueryParam("user") String user,
                                        @ApiParam(value = "Offset", required = false, defaultValue = "0") @QueryParam("offset") int offset,
                                        @ApiParam(value = "Limit", required = false, defaultValue = "20") @QueryParam("limit") int limit,
@@ -132,7 +132,7 @@ public class SpaceMembershipRestResourcesV1 implements SpaceMembershipRestResour
   @ApiOperation(value = "Creates a space membership for a specific user",
                 httpMethod = "POST",
                 response = Response.class,
-                notes = "This can only be done by the logged in user.")
+                notes = "This creates the space membership in the following cases: <br/><ul><li>the sender of the space membership is the authenticated user and the space subscription is open</li><li>the authenticated user is a manager of the space</li><li>the authenticated user is the super user</li></ul>")
   @ApiResponses(value = { 
     @ApiResponse (code = 200, message = "Request fulfilled"),
     @ApiResponse (code = 500, message = "Internal server error"),
@@ -183,7 +183,7 @@ public class SpaceMembershipRestResourcesV1 implements SpaceMembershipRestResour
   @ApiOperation(value = "Gets a specific space membership by id",
                 httpMethod = "GET",
                 response = Response.class,
-                notes = "This can only be done by the logged in user.")
+                notes = "This returns the space membership in the following cases: <br/><ul><li>the user of the space membership is the authenticated user</li><li>the authenticated user is a manager of the space</li><li>the authenticated user is the super user</li></ul>")
   @ApiResponses(value = { 
     @ApiResponse (code = 200, message = "Request fulfilled"),
     @ApiResponse (code = 404, message = "Resource not found"),
@@ -223,7 +223,7 @@ public class SpaceMembershipRestResourcesV1 implements SpaceMembershipRestResour
   @ApiOperation(value = "Updates a specific space membership by id",
                 httpMethod = "PUT",
                 response = Response.class,
-                notes = "This can only be done by the logged in user.")
+                notes = "This updates the space membership in the following cases: <br/><ul><li>the user of the space membership is the authenticated user  but he cannot update his own membership to \"approved\" for a space with a \"validation\" subscription</li><li>the authenticated user is a manager of the space</li><li>the authenticated user is the super user</li></ul>")
   @ApiResponses(value = { 
     @ApiResponse (code = 200, message = "Request fulfilled"),
     @ApiResponse (code = 500, message = "Internal server error due to data encoding") })
@@ -274,7 +274,7 @@ public class SpaceMembershipRestResourcesV1 implements SpaceMembershipRestResour
   @ApiOperation(value = "Deletes a specific space membership by id",
                 httpMethod = "DELETE",
                 response = Response.class,
-                notes = "This can only be done by the logged in user.")
+                notes = "This deletes the space membership in the following cases: <br/><ul><li>the user of the space membership is the authenticated user</li><li>the authenticated user is a manager of the space</li><li>the authenticated user is the super user</li></ul>")
   @ApiResponses(value = { 
     @ApiResponse (code = 200, message = "Request fulfilled"),
     @ApiResponse (code = 404, message = "Resource not found"),

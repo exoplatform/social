@@ -85,7 +85,7 @@ public class SpaceRestResourcesV1 implements SpaceRestResources {
   @ApiOperation(value = "Gets spaces of user",
                 httpMethod = "GET",
                 response = Response.class,
-                notes = "This returns a list of spaces in the following cases: <br/><ul><li>the authenticated user is member of the space</li><li>the space is \"public\"</li><li>the authenticated user is the super user</li></ul>")
+                notes = "This returns a list of spaces in the following cases: <br/><ul><li>the authenticated user is a member of the spaces</li><li>the spaces are \"public\"</li><li>the authenticated user is the super user</li></ul>")
   @ApiResponses(value = { 
     @ApiResponse (code = 200, message = "Request fulfilled"),
     @ApiResponse (code = 500, message = "Internal server error"),
@@ -187,7 +187,7 @@ public class SpaceRestResourcesV1 implements SpaceRestResources {
   @ApiOperation(value = "Gets a specific space by id",
                 httpMethod = "GET",
                 response = Response.class,
-                notes = "This returns the space in the following cases: <br/><ul><li>the authenticated user is member of the space</li><li>the space is \"public\"</li><li>the authenticated user is the super user</li></ul>")
+                notes = "This returns the space in the following cases: <br/><ul><li>the authenticated user is a member of the space</li><li>the space is \"public\"</li><li>the authenticated user is the super user</li></ul>")
   @ApiResponses(value = { 
     @ApiResponse (code = 200, message = "Request fulfilled"),
     @ApiResponse (code = 500, message = "Internal server error"),

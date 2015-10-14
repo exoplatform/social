@@ -65,7 +65,7 @@ public class RelationshipsRestResourcesV1 implements RelationshipsRestResources 
   
   @GET
   @RolesAllowed("users")
-  @ApiOperation(value = "Gets relationships of a specific identity",
+  @ApiOperation(value = "Gets relationships of identities",
                 httpMethod = "GET",
                 response = Response.class,
                 notes = "This returns a list of relationships in the following cases: <br/><ul><li>the authenticated user has permissions to view the 2 objects linked to the 2 identities</li><li>the authenticated user is in the group /platform/administrators</li></ul>")

@@ -66,10 +66,10 @@ public class IdentityRestResourcesV1 implements IdentityRestResources {
    */
   @GET
   @RolesAllowed("users")
-  @ApiOperation(value = "Gets identities by type",
+  @ApiOperation(value = "Gets all identities",
                 httpMethod = "GET",
                 response = Response.class,
-                notes = "This returns a list of identities in the following cases: <br/><ul><li>the authenticated user has permissions to view the object linked to this identity</li><li>the authenticated user is in the group /platform/administrators</li></ul>")
+                notes = "This returns a list of identities in the following cases: <br/><ul><li>the authenticated user has permissions to view the object linked to these identities</li><li>the authenticated user is in the group /platform/administrators</li></ul>")
   @ApiResponses(value = { 
     @ApiResponse (code = 200, message = "Request fulfilled"),
     @ApiResponse (code = 500, message = "Internal server error"),
