@@ -232,7 +232,7 @@
 	          });
 	          setTimeout(function(){ 
 	            called = false;
-	          },300);
+	          },3000);
             }
 	      });
 	      
