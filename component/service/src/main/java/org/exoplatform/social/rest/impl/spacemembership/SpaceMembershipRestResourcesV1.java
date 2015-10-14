@@ -43,9 +43,9 @@ import org.apache.commons.lang.ArrayUtils;
 import org.exoplatform.commons.utils.CommonsUtils;
 import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.services.security.ConversationState;
-import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.manager.IdentityManager;
+import org.exoplatform.social.core.space.SpaceFilter;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
 import org.exoplatform.social.rest.api.EntityBuilder;
@@ -81,8 +81,9 @@ public class SpaceMembershipRestResourcesV1 implements SpaceMembershipRestResour
     @ApiResponse (code = 500, message = "Internal server error"),
     @ApiResponse (code = 400, message = "Invalid query input") })
   public Response getSpacesMemberships(@Context UriInfo uriInfo,
-                                       @ApiParam(value = "Space display name to get membership, ex: my space", required = false) @QueryParam("space") String space,
+                                       @ApiParam(value = "Space display name to get membership, ex: my space", required = false) @QueryParam("space") String spaceDisplayName,
                                        @ApiParam(value = "User name to filter only memberships of the given user", required = false) @QueryParam("user") String user,
+                                       @ApiParam(value = "Type of membership to get (All, Pending, Approved)", required = false) @QueryParam("status") String status,
                                        @ApiParam(value = "Offset", required = false, defaultValue = "0") @QueryParam("offset") int offset,
                                        @ApiParam(value = "Limit", required = false, defaultValue = "20") @QueryParam("limit") int limit,
                                        @ApiParam(value = "Asking for a full representation of a specific subresource if any", required = false) @QueryParam("expand") String expand,
@@ -91,33 +92,46 @@ public class SpaceMembershipRestResourcesV1 implements SpaceMembershipRestResour
     offset = offset > 0 ? offset : RestUtils.getOffset(uriInfo);
     limit = limit > 0 ? limit : RestUtils.getLimit(uriInfo);
     
+    MembershipType membershipType;
+      try {
+        membershipType = MembershipType.valueOf(status.toUpperCase());
+      } catch (Exception e) {
+      membershipType = MembershipType.ALL;
+    }
+    
+    if (user == null) {
+      user = ConversationState.getCurrent().getIdentity().getUserId();
+    }
+    
     SpaceService spaceService = CommonsUtils.getService(SpaceService.class);
-    Space givenSpace = null;
-    if (space != null) {
-      givenSpace = spaceService.getSpaceByDisplayName(space);
-      if (givenSpace == null) {
-        throw new WebApplicationException(Response.Status.BAD_REQUEST);
+    ListAccess<Space> listAccess = null;
+    
+    switch (membershipType) {
+    case PENDING: {
+      listAccess = spaceDisplayName != null ? spaceService.getPendingSpacesByFilter(
+        user, new SpaceFilter(spaceDisplayName)) : spaceService.getPendingSpacesWithListAccess(user);
+      break;
+    }
+    
+    case APPROVED: {
+      listAccess = spaceDisplayName != null ? spaceService.getAccessibleSpacesByFilter(
+        user, new SpaceFilter(spaceDisplayName)) : spaceService.getAccessibleSpacesWithListAccess(user);
+      break;
+    }
+    
+    default:
+      if (spaceDisplayName != null) {
+        SpaceFilter spaceFilter = new SpaceFilter(spaceDisplayName);
+        spaceFilter.setRemoteId(user);
+        listAccess = spaceService.getAllSpacesByFilter(spaceFilter);
+      } else {
+        listAccess = spaceService.getAllSpacesWithListAccess();
       }
+       
+      break;
     }
     
-    IdentityManager identityManager = CommonsUtils.getService(IdentityManager.class);
-    Identity identity = null;
-    if (user != null) {
-      identity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, user, true);
-      if (identity == null) {
-        throw new WebApplicationException(Response.Status.BAD_REQUEST);
-      }
-    }
-    
-    List<Space> spaces = new ArrayList<Space>();
-    if (givenSpace == null) {
-      ListAccess<Space> listAccess = (identity == null) ? spaceService.getAllSpacesWithListAccess() : spaceService.getMemberSpaces(user);
-      spaces = Arrays.asList(listAccess.load(offset, limit));
-    } else {
-      spaces.add(givenSpace);
-    }
-    
-    List<DataEntity> spaceMemberships = getSpaceMemberships(spaces, user, uriInfo.getPath(), expand);
+    List<DataEntity> spaceMemberships = getSpaceMemberships(Arrays.asList(listAccess.load(offset, limit)), user, uriInfo.getPath(), expand);
     CollectionEntity spacesMemberships = new CollectionEntity(spaceMemberships, EntityBuilder.SPACES_MEMBERSHIP_TYPE, offset, limit);
     
     if (returnSize) {

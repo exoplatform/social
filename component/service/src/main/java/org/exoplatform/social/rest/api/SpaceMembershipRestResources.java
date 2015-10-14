@@ -43,6 +43,7 @@ public interface SpaceMembershipRestResources extends SocialRest {
   public abstract Response getSpacesMemberships(@Context UriInfo uriInfo,
                                                 @QueryParam("space") String space,
                                                 @QueryParam("user") String user,
+                                                @QueryParam("status") String status,
                                                 @QueryParam("offset") int offset,
                                                 @QueryParam("limit") int limit,
                                                 @QueryParam("expand") String expand,

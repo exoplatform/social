@@ -77,7 +77,7 @@ public class SpaceMembershipRestResourcesTest extends AbstractResourceTest {
     assertNotNull(response);
     assertEquals(200, response.getStatus());
     CollectionEntity collections = (CollectionEntity) response.getEntity();
-    assertEquals(8, collections.getEntities().size());
+    assertEquals(4, collections.getEntities().size());
     
     response = service("GET", getURLResource("spacesMemberships?user=root"), "", null, null);
     assertNotNull(response);
@@ -85,6 +85,7 @@ public class SpaceMembershipRestResourcesTest extends AbstractResourceTest {
     collections = (CollectionEntity) response.getEntity();
     assertEquals(4, collections.getEntities().size());
     
+    startSessionAs("john");
     response = service("GET", getURLResource("spacesMemberships?space=space3"), "", null, null);
     assertNotNull(response);
     assertEquals(200, response.getStatus());
