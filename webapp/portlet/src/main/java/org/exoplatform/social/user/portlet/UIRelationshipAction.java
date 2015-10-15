@@ -57,44 +57,47 @@ public class UIRelationshipAction extends UIContainer {
   public void processRender(WebuiRequestContext context) throws Exception {
     Identity viewerIdentity = Utils.getViewerIdentity();// current login user
     Identity ownerIdentity = Utils.getOwnerIdentity(); // current user viewing
-    //
-    Writer writer = context.getWriter();
-    writer.append("<div class=\"uiRelationshipAction clearfix\" id=\"").append(getId()).append("\">");
-    writer.append("<div class=\"user-actions pull-right\" data-user-action=\"").append(ownerIdentity.getRemoteId()).append("\">");
-    //
-    if (isRenderedActions && !ownerIdentity.equals(viewerIdentity)) {
-      Relationship relationship = Utils.getRelationshipManager().get(viewerIdentity, ownerIdentity);
-      Type status = (relationship != null) ? relationship.getStatus() : null;
-      
-      if(status == null) {
-        writer.append("<button class=\"btn btn-primary connect-status\" onclick=\"").append(event("Connect")).append("\">")
-              .append("<i class=\"uiIconStatusConnect\"></i>")
-              .append(UserProfileHelper.getLabel(context, "UIBasicProfile.action.label.Connect")).append("</button>");
-      } else if(status == Type.PENDING) {//PENDING
-        if(relationship.getSender().equals(viewerIdentity)) {
-          writer.append("<button class=\"btn\" onclick=\"").append(event("Cancel")).append("\">")
-                .append(UserProfileHelper.getLabel(context, "UIBasicProfile.action.CancelRequest")).append("</button>");          
-        } else {
-          writer.append("&nbsp;<button class=\"btn btn-primary\" onclick=\"").append(event("Accept")).append("\">")
-                .append("<i class=\"uiIconStatusAccept\"></i> ")
-                .append(UserProfileHelper.getLabel(context, "UIBasicProfile.action.AcceptRequest")).append("</button>");
-          writer.append("<button class=\"btn\" onclick=\"").append(event("Deny")).append("\">")
-                .append("<i class=\"uiIconStatusDeny\"></i> ")
-                .append(UserProfileHelper.getLabel(context, "UIBasicProfile.action.Deny")).append("</button>");          
+    
+    if(!(ownerIdentity.isDeleted() || ownerIdentity.isEnable())){
+      //
+      Writer writer = context.getWriter();
+      writer.append("<div class=\"uiRelationshipAction clearfix\" id=\"").append(getId()).append("\">");
+      writer.append("<div class=\"user-actions pull-right\" data-user-action=\"").append(ownerIdentity.getRemoteId()).append("\">");
+      //
+      if (isRenderedActions && !ownerIdentity.equals(viewerIdentity)) {
+        Relationship relationship = Utils.getRelationshipManager().get(viewerIdentity, ownerIdentity);
+        Type status = (relationship != null) ? relationship.getStatus() : null;
+        
+        if(status == null) {
+          writer.append("<button class=\"btn btn-primary connect-status\" onclick=\"").append(event("Connect")).append("\">")
+                .append("<i class=\"uiIconStatusConnect\"></i>")
+                .append(UserProfileHelper.getLabel(context, "UIBasicProfile.action.label.Connect")).append("</button>");
+        } else if(status == Type.PENDING) {//PENDING
+          if(relationship.getSender().equals(viewerIdentity)) {
+            writer.append("<button class=\"btn\" onclick=\"").append(event("Cancel")).append("\">")
+                  .append(UserProfileHelper.getLabel(context, "UIBasicProfile.action.CancelRequest")).append("</button>");          
+          } else {
+            writer.append("&nbsp;<button class=\"btn btn-primary\" onclick=\"").append(event("Accept")).append("\">")
+                  .append("<i class=\"uiIconStatusAccept\"></i> ")
+                  .append(UserProfileHelper.getLabel(context, "UIBasicProfile.action.AcceptRequest")).append("</button>");
+            writer.append("<button class=\"btn\" onclick=\"").append(event("Deny")).append("\">")
+                  .append("<i class=\"uiIconStatusDeny\"></i> ")
+                  .append(UserProfileHelper.getLabel(context, "UIBasicProfile.action.Deny")).append("</button>");          
+          }
+        } else if(status == Type.CONFIRMED) {
+          writer.append("<button class=\"btn show-default\">")
+                .append("<i class=\"uiIconStatusConnected\"></i> ")
+                .append(UserProfileHelper.getLabel(context, "UIBasicProfile.label.Connected")).append("</button>");
+          writer.append("<button class=\"btn hide-default\" onclick=\"").append(event("Disconnect")).append("\">")
+                .append("<i class=\"uiIconStatusDisconnect\"></i> ")
+                .append(UserProfileHelper.getLabel(context, "UIBasicProfile.action.RemoveConnection")).append("</button>");       
         }
-      } else if(status == Type.CONFIRMED) {
-        writer.append("<button class=\"btn show-default\">")
-              .append("<i class=\"uiIconStatusConnected\"></i> ")
-              .append(UserProfileHelper.getLabel(context, "UIBasicProfile.label.Connected")).append("</button>");
-        writer.append("<button class=\"btn hide-default\" onclick=\"").append(event("Disconnect")).append("\">")
-              .append("<i class=\"uiIconStatusDisconnect\"></i> ")
-              .append(UserProfileHelper.getLabel(context, "UIBasicProfile.action.RemoveConnection")).append("</button>");       
+        writer.append("</div>");
+        writer.append("</div>");
+      } else {
+        super.processRender(context);
       }
-      writer.append("</div>");
-      writer.append("</div>");
-    } else {
-      super.processRender(context);
-    }
+    }    
   }
 
   public static abstract class AbstractActionListener extends EventListener<UIRelationshipAction> {
