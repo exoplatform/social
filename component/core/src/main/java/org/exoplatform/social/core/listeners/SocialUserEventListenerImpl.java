@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 import org.apache.commons.lang.StringUtils;
+import org.exoplatform.commons.utils.CommonsUtils;
 import org.exoplatform.container.ExoContainer;
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.PortalContainer;
@@ -140,20 +141,13 @@ public class SocialUserEventListenerImpl extends UserEventListener {
 
   @Override
   public void preDelete(final User user) throws Exception {
-
     RequestLifeCycle.begin(PortalContainer.getInstance());
-    try{
-      ExoContainer container = ExoContainerContext.getCurrentContainer();
-      IdentityManager idm = (IdentityManager) container.getComponentInstanceOfType(IdentityManager.class);
-      Identity identity = idm.getOrCreateIdentity(OrganizationIdentityProvider.NAME, user.getUserName(), true);
-      
-      try {
-        idm.hardDeleteIdentity(identity);
-      } catch (Exception e) {
-        LOG.warn("Problem occurred when deleting user named " + identity.getRemoteId(), e);
-      }
-      
-    }finally{
+    try {
+      Identity identity = CommonsUtils.getService(IdentityStorage.class).findIdentity(OrganizationIdentityProvider.NAME, user.getUserName());
+      CommonsUtils.getService(IdentityManager.class).hardDeleteIdentity(identity);
+    } catch (Exception e) {
+      LOG.warn("Problem occurred when deleting user named " + user.getUserName(), e);
+    } finally{
       RequestLifeCycle.end();
     }
 

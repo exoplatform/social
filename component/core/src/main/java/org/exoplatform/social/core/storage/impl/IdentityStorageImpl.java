@@ -412,6 +412,21 @@ public class IdentityStorageImpl extends AbstractStorage implements IdentityStor
 
     IdentityEntity identityEntity = _findById(IdentityEntity.class, identity.getId());
 
+    try {
+      // Remove identity
+      identity.setProviderId(identityEntity.getProviderId());
+      identity.setRemoteId(identityEntity.getRemoteId());
+      //
+      identityEntity.setDeleted(Boolean.TRUE);
+      Profile profile = loadProfile(new Profile(new Identity(identityEntity.getId())));
+      profile.setProperty(Profile.DELETED, "true");
+      saveProfile(profile);
+    } catch (Exception e) {
+      LOG.warn("Problem occurred when deleting user named " + identityEntity.getName(), e);
+    } finally {
+      getSession().save();
+    }
+
     // Remove relationships
     _removeRelationshipList(identityEntity.getSender());
     _removeRelationshipList(identityEntity.getReceiver());
@@ -425,26 +440,14 @@ public class IdentityStorageImpl extends AbstractStorage implements IdentityStor
     _removeSpaceMembership(SpaceStorageImpl.RefType.PENDING, identityEntity);
     _removeSpaceMembership(SpaceStorageImpl.RefType.INVITED, identityEntity);
 
-    // Remove identity
-    identity.setProviderId(identityEntity.getProviderId());
-    identity.setRemoteId(identityEntity.getRemoteId());
-    //
-    identityEntity.setDeleted(Boolean.TRUE);
-    Profile profile = loadProfile(new Profile(new Identity(identityEntity.getId())));
-    profile.setProperty(Profile.DELETED, "true");
-    saveProfile(profile);
-
-    //
     getSession().save();
 
     //
-    LOG.debug(String.format(
-        "Identity %s:%s (%s) deleted",
-        identity.getProviderId(),
-        identity.getRemoteId(),
-        identity.getId()
-    ));
-    
+    LOG.info(String.format("Identity %s:%s (%s) deleted",
+                            identity.getProviderId(),
+                            identity.getRemoteId(),
+                            identity.getId()));
+
   }
 
   protected void _removeRelationshipList(RelationshipListEntity listEntity) {
