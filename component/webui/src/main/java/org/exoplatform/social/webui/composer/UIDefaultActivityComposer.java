@@ -45,48 +45,35 @@ public class UIDefaultActivityComposer extends UIActivityComposer {
   }
 
   @Override
-  public void onPostActivity(PostContext postContext, UIComponent source,
-                             WebuiRequestContext requestContext, String postedMessage) throws Exception {
+  public ExoSocialActivity onPostActivity(PostContext postContext, String postedMessage) throws Exception {
+    ExoSocialActivity activity = null;
     if (postedMessage.equals("")) {
+      WebuiRequestContext requestContext = (WebuiRequestContext) WebuiRequestContext.getCurrentInstance();
       UIApplication uiApplication = requestContext.getUIApplication();
-      uiApplication.addMessage(new ApplicationMessage("UIComposer.msg.error.Empty_Message",
-                                                    null,
-                                                    ApplicationMessage.WARNING));
-      return;
+      uiApplication.addMessage(new ApplicationMessage("UIComposer.msg.error.Empty_Message", null, ApplicationMessage.WARNING));
+      return activity;
     }
-
-    if (postContext == UIComposer.PostContext.SPACE){
+    if (postContext == UIComposer.PostContext.SPACE) {
       UISpaceActivitiesDisplay uiDisplaySpaceActivities = (UISpaceActivitiesDisplay) getActivityDisplay();
       Space space = uiDisplaySpaceActivities.getSpace();
 
-      Identity spaceIdentity = Utils.getIdentityManager().getOrCreateIdentity(SpaceIdentityProvider.NAME,
-                                                               space.getPrettyName(),
-                                                               false);
-      ExoSocialActivity activity = new ExoSocialActivityImpl(Utils.getViewerIdentity().getId(),
-                                   SpaceActivityPublisher.SPACE_APP_ID,
-                                   postedMessage,
-                                   null);
+      Identity spaceIdentity = Utils.getIdentityManager().getOrCreateIdentity(SpaceIdentityProvider.NAME, space.getPrettyName(), false);
+      activity = new ExoSocialActivityImpl(Utils.getViewerIdentity().getId(), SpaceActivityPublisher.SPACE_APP_ID, postedMessage, null);
       activity.setType(UIDefaultActivity.ACTIVITY_TYPE);
       Utils.getActivityManager().saveActivityNoReturn(spaceIdentity, activity);
-      uiDisplaySpaceActivities.init();
     } else if (postContext == PostContext.USER) {
       UIUserActivitiesDisplay uiUserActivitiesDisplay = (UIUserActivitiesDisplay) getActivityDisplay();
-      Identity ownerIdentity = Utils.getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME,
-                                                                   uiUserActivitiesDisplay.getOwnerName(), false);
-      ExoSocialActivity activity = new ExoSocialActivityImpl(Utils.getViewerIdentity().getId(),
-                                       PeopleService.PEOPLE_APP_ID,
-                                       postedMessage,
-                                       null);
+      Identity ownerIdentity = Utils.getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, uiUserActivitiesDisplay.getOwnerName(), false);
+      activity = new ExoSocialActivityImpl(Utils.getViewerIdentity().getId(), PeopleService.PEOPLE_APP_ID, postedMessage, null);
       activity.setType(UIDefaultActivity.ACTIVITY_TYPE);
-      Utils.getActivityManager().saveActivityNoReturn(ownerIdentity, activity);
-
       //
-      //uiUserActivitiesDisplay.setPostActivity(true);
+      Utils.getActivityManager().saveActivityNoReturn(ownerIdentity, activity);
 
       if (uiUserActivitiesDisplay.getSelectedDisplayMode() == DisplayMode.MY_SPACE) {
         uiUserActivitiesDisplay.setSelectedDisplayMode(DisplayMode.ALL_ACTIVITIES);
       }
     }
+    return activity;
   }
 
   @Override
@@ -99,5 +86,9 @@ public class UIDefaultActivityComposer extends UIActivityComposer {
 
   @Override
   protected void onActivate(Event<UIActivityComposer> event) {
+  }
+
+  @Override
+  protected void onPostActivity(PostContext postContext, UIComponent source, WebuiRequestContext requestContext, String postedMessage) throws Exception {
   }
 }

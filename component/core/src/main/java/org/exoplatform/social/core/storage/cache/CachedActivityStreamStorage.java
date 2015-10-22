@@ -89,6 +89,11 @@ public class CachedActivityStreamStorage implements ActivityStreamStorage {
   public List<ExoSocialActivity> getFeed(Identity owner, int offset, int limit) {
     return storage.getFeed(owner, offset, limit);
   }
+  
+  @Override
+  public List<String> getIdsFeed(Identity owner, int offset, int limit) {
+    return storage.getIdsFeed(owner, offset, limit);
+  }
 
   @Override
   public int getNumberOfFeed(Identity owner) {
@@ -98,6 +103,11 @@ public class CachedActivityStreamStorage implements ActivityStreamStorage {
   @Override
   public List<ExoSocialActivity> getConnections(Identity owner, int offset, int limit) {
     return storage.getConnections(owner, offset, limit);
+  }
+  
+  @Override
+  public List<String> getIdsConnections(Identity owner, int offset, int limit) {
+    return storage.getIdsConnections(owner, offset, limit);
   }
 
   @Override
@@ -109,6 +119,11 @@ public class CachedActivityStreamStorage implements ActivityStreamStorage {
   public List<ExoSocialActivity> getMySpaces(Identity owner, int offset, int limit) {
     return storage.getMySpaces(owner, offset, limit);
   }
+  
+  @Override
+  public List<String> getIdsMySpaces(Identity owner, int offset, int limit) {
+    return storage.getIdsMySpaces(owner, offset, limit);
+  }
 
   @Override
   public int getNumberOfMySpaces(Identity owner) {
@@ -119,6 +134,11 @@ public class CachedActivityStreamStorage implements ActivityStreamStorage {
   public List<ExoSocialActivity> getSpaceStream(Identity owner, int offset, int limit) {
     return storage.getSpaceStream(owner, offset, limit);
   }
+  
+  @Override
+  public List<String> getIdsSpaceStream(Identity owner, int offset, int limit) {
+    return storage.getIdsSpaceStream(owner, offset, limit);
+  }
 
   @Override
   public int getNumberOfSpaceStream(Identity owner) {
@@ -128,6 +148,11 @@ public class CachedActivityStreamStorage implements ActivityStreamStorage {
   @Override
   public List<ExoSocialActivity> getMyActivities(Identity owner, int offset, int limit) {
     return storage.getMyActivities(owner, offset, limit);
+  }
+  
+  @Override
+  public List<String> getIdsMyActivities(Identity owner, int offset, int limit) {
+    return storage.getIdsMyActivities(owner, offset, limit);
   }
 
   @Override

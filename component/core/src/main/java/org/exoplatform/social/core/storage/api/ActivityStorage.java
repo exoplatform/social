@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.SortedSet;
 
+import org.exoplatform.container.component.BaseComponentPlugin;
 import org.exoplatform.social.core.ActivityProcessor;
 import org.exoplatform.social.core.activity.filter.ActivityFilter;
 import org.exoplatform.social.core.activity.filter.ActivityUpdateFilter;
@@ -51,6 +52,12 @@ public interface ActivityStorage {
   }
 
   static final String MENTION_CHAR = "@";
+  
+  /**
+   * Implements the mechanism to plugin the component.
+   * @param baseComponent
+   */
+  void addPlugin(BaseComponentPlugin baseComponent);
   /**
    * //sets value to tell this storage to inject Streams or not
    * @param mustInject
@@ -85,6 +92,18 @@ public interface ActivityStorage {
    */
   public List<ExoSocialActivity> getUserActivities(
       Identity owner, long offset, long limit) throws ActivityStorageException;
+  
+  /**
+   * Gets the activity ids by identity.
+   *
+   * Access a user's activity stream by specifying the offset and limit.
+   *
+   * @param owner the identity
+   * @param offset
+   * @param limit
+   * @return the activity ids list
+   */
+  public List<String> getUserIdsActivities(Identity owner, long offset, long limit) throws ActivityStorageException;
   
   /**
    * Gets the activities by identity for upgrade Activity Stream feature
@@ -256,6 +275,16 @@ public interface ActivityStorage {
   public List<ExoSocialActivity> getActivityFeed(Identity ownerIdentity, int offset, int limit);
   
   /**
+   * Gets activity ids feed from an identity.
+   *
+   * @param ownerIdentity
+   * @param offset
+   * @param limit
+   * @return
+   */
+  public List<String> getActivityIdsFeed(Identity ownerIdentity, int offset, int limit);
+  
+  /**
    * Gets activity feed from an identity for upgrade Activity Stream feature
    *
    * @param ownerIdentity
@@ -335,6 +364,17 @@ public interface ActivityStorage {
    * @since 1.2.0-Beta3
    */
   public List<ExoSocialActivity> getActivitiesOfConnections(Identity ownerIdentity, int offset, int limit);
+  
+  /**
+   * Gets activity id list of connections of an identity with offset, limit.
+   *
+   * @param ownerIdentity
+   * @param offset
+   * @param limit
+   * @return list of activity id
+   * @since 4.3.0
+   */
+  public List<String> getActivityIdsOfConnections(Identity ownerIdentity, int offset, int limit);
   
   /**
    * Gets activities of connections of an identity with offset, limit for upgrade Activity Stream feature.
@@ -433,6 +473,17 @@ public interface ActivityStorage {
    * @since 1.2.0-Beta3
    */
   public List<ExoSocialActivity> getUserSpacesActivities(Identity ownerIdentity, int offset, int limit);
+  
+  /**
+   * Gets the activity id list of spaces where identity can access (manager or member).
+   *
+   * @param ownerIdentity
+   * @param offset
+   * @param limit
+   * @return the activity id list
+   * @since 4.3.0
+   */
+  public List<String> getUserSpacesActivityIds(Identity ownerIdentity, int offset, int limit);
 
   /**
    * Gets the activities of spaces where identity can access (manager or member) for upgrade Activity Stream feature
@@ -669,6 +720,19 @@ public interface ActivityStorage {
    * 
    */
   public List<ExoSocialActivity> getSpaceActivities(Identity spaceIdentity, int index, int limit);
+  
+  /**
+   * Gets list of activity ids of spaces where the identity can
+   * access.
+   * @param spaceIdentity
+   * @param index
+   * @param limit
+   * 
+   * @return
+   * @since 4.3.0
+   * 
+   */
+  public List<String> getSpaceActivityIds(Identity spaceIdentity, int index, int limit);
   
   /**
    * Gets list of activities of spaces where the identity can

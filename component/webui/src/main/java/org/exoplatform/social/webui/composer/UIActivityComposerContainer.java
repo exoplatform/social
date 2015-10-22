@@ -16,11 +16,32 @@
  */
 package org.exoplatform.social.webui.composer;
 
+import java.util.List;
+
 import org.exoplatform.portal.webui.container.UIContainer;
+import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
+import org.exoplatform.webui.core.UIComponent;
 
 @ComponentConfig(
   template = "war:/groovy/social/webui/composer/UIActivityComposerContainer.gtmpl"
 )
 public class UIActivityComposerContainer extends UIContainer {
+  
+  private final static String LINK_UI_ACTIVITY_COMPOSER = "UILinkActivityComposer";
+  @Override
+  public void processRender(WebuiRequestContext context) throws Exception {
+    UIComposer uiComposer = (UIComposer)getParent();
+    UIActivityComposer uiActivityComposer = uiComposer.getActivityComposerManager().getCurrentActivityComposer();
+    
+    List<UIComponent> children = getChildren();
+    for(UIComponent ui : children) {
+      if (ui.getClass().getSimpleName().equals(uiActivityComposer.getClass().getSimpleName()) || ui.getClass().getSimpleName().equals(LINK_UI_ACTIVITY_COMPOSER)) {
+        ui.setRendered(true);
+      } else {
+        ui.setRendered(false);
+      }
+    }
+    super.processRender(context);
+  }
 }

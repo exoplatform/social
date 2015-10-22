@@ -61,7 +61,7 @@
             if (UIComposer.clickOn == null || UIComposer.clickOn == "") {
               var UIComposerComp = $('#UIPageCreationWizard');
               if (UIComposerComp.find('#UIPagePreview').length == 0) {
-                actionLink.trigger('click');
+                //actionLink.trigger('click');
               }
             }
           } else {
@@ -115,17 +115,12 @@
       var container = $('#ComposerContainer')
       var link = container.find('#LinkExtensionContainer');
       if (link.length > 0) {
-        if (link.data('isShow').isShow) {
-          link.hide().data('isShow', {
-            isShow : false
-          });
+        if (link.css('display') !== 'none') {
+          link.hide();
         } else {
-          link.show().data('isShow', {
-            isShow : true
-          });
+          link.show();
         }
       } else {
-      
         var cmp = container.find('.uiLinkShareDisplay');
         if (cmp.length > 0) {
           $('textarea#composerInput').exoMentions('clearLink', function() {

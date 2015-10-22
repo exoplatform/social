@@ -648,6 +648,11 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
   public List<ExoSocialActivity> getFeed(Identity owner, int offset, int limit) {
     return getActivitiesNotQuery(ActivityRefType.FEED, owner, offset, limit);
   }
+  
+  @Override
+  public List<String> getIdsFeed(Identity owner, int offset, int limit) {
+    return getIdsNotQuery(ActivityRefType.FEED, owner, offset, limit);
+  }
 
   @Override
   public int getNumberOfFeed(Identity owner) {
@@ -657,6 +662,11 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
   @Override
   public List<ExoSocialActivity> getConnections(Identity owner, int offset, int limit) {
     return getActivitiesNotQuery(ActivityRefType.CONNECTION, owner, offset, limit);
+  }
+  
+  @Override
+  public List<String> getIdsConnections(Identity owner, int offset, int limit) {
+    return getIdsNotQuery(ActivityRefType.CONNECTION, owner, offset, limit);
   }
 
   @Override
@@ -668,6 +678,11 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
   public List<ExoSocialActivity> getMySpaces(Identity owner, int offset, int limit) {
     return getActivitiesNotQuery(ActivityRefType.MY_SPACES, owner, offset, limit);
   }
+  
+  @Override
+  public List<String> getIdsMySpaces(Identity owner, int offset, int limit) {
+    return getIdsNotQuery(ActivityRefType.MY_SPACES, owner, offset, limit);
+  }
 
   @Override
   public int getNumberOfMySpaces(Identity owner) {
@@ -678,6 +693,11 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
   public List<ExoSocialActivity> getSpaceStream(Identity owner, int offset, int limit) {
     return getActivitiesNotQuery(ActivityRefType.SPACE_STREAM, owner, offset, limit);
   }
+  
+  @Override
+  public List<String> getIdsSpaceStream(Identity owner, int offset, int limit) {
+    return getIdsNotQuery(ActivityRefType.SPACE_STREAM, owner, offset, limit);
+  }
 
   @Override
   public int getNumberOfSpaceStream(Identity owner) {
@@ -687,6 +707,11 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
   @Override
   public List<ExoSocialActivity> getMyActivities(Identity owner, int offset, int limit) {
     return getActivitiesNotQuery(ActivityRefType.MY_ACTIVITIES, owner, offset, limit);
+  }
+  
+  @Override
+  public List<String> getIdsMyActivities(Identity owner, int offset, int limit) {
+    return getIdsNotQuery(ActivityRefType.MY_ACTIVITIES, owner, offset, limit);
   }
 
   @Override
@@ -901,6 +926,58 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
     public abstract ActivityRefListEntity refsOf(IdentityEntity identityEntity);
     
     public abstract ActivityRefListEntity create(IdentityEntity identityEntity);
+  }
+  
+  private List<String> getIdsNotQuery(ActivityRefType type, Identity owner, int offset, int limit) {
+    List<String> got = new LinkedList<String>();
+    try {
+      IdentityEntity identityEntity = _findById(IdentityEntity.class, owner.getId());
+      ActivityRefListEntity refList = type.refsOf(identityEntity);
+      ActivityRefList list = new ActivityRefList(refList);
+
+      int nb = 0;
+      ActivityRefIterator it = list.iterator();
+      _skip(it, offset);
+      int size = refList.getNumber() > 0 ? refList.getNumber(): 0;
+      boolean sizeIsZero = (size == 0);
+      boolean isHide = false;
+      
+      while (it.hasNext()) {
+        if(sizeIsZero) size ++;
+        try {
+          ActivityRef current = it.next();
+          // take care in the case, current.getActivityEntity() = null the same
+          // SpaceRef, need to remove it out
+          if (current.getActivityEntity() == null) {
+            current.getDay().getActivityRefs().remove(current.getName());
+            continue;
+          }
+          
+          ActivityEntity entity = current.getActivityEntity();
+          HidableEntity hidable = _getMixin(entity, HidableEntity.class, false);
+          if (hidable != null) {
+            isHide = hidable.getHidden();
+          } else {
+            isHide = false;
+          }
+
+          if (!got.contains(entity.getId())) {
+            if (!isHide) {
+              got.add(entity.getId());
+              if (++nb == limit) {
+                break;
+              }
+            }
+          }
+        } catch (Exception e) {
+          LOG.warn("Exception while loading activities for user: " + owner.getRemoteId());
+        }
+      }
+
+    } catch (NodeNotFoundException e) {
+      LOG.warn("Failed to activities!");
+    }
+    return got;
   }
   
   

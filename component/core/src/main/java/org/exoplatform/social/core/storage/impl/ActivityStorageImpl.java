@@ -52,6 +52,7 @@ import org.chromattic.api.query.QueryResult;
 import org.chromattic.core.api.ChromatticSessionImpl;
 import org.exoplatform.commons.utils.CommonsUtils;
 import org.exoplatform.container.PortalContainer;
+import org.exoplatform.container.component.BaseComponentPlugin;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.ActivityProcessor;
@@ -109,7 +110,7 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
   private final RelationshipStorage relationshipStorage;
   private final IdentityStorage identityStorage;
   private final SpaceStorage spaceStorage;
-  private final ActivityStreamStorage streamStorage;
+  private ActivityStreamStorage streamStorage;
   //sets value to tell this storage to inject Streams or not
   private boolean mustInjectStreams = true;
 
@@ -124,6 +125,26 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     this.spaceStorage = spaceStorage;
     this.streamStorage = streamStorage;
     this.activityProcessors = new TreeSet<ActivityProcessor>(processorComparator());
+  }
+  
+  public ActivityStorageImpl(
+       final RelationshipStorage relationshipStorage,
+       final IdentityStorage identityStorage,
+       final SpaceStorage spaceStorage) {
+
+     this.relationshipStorage = relationshipStorage;
+     this.identityStorage = identityStorage;
+     this.spaceStorage = spaceStorage;
+     this.streamStorage = getStreamStorage();
+     this.activityProcessors = new TreeSet<ActivityProcessor>(processorComparator());
+   }
+  
+  private ActivityStreamStorage getStreamStorage() {
+    if (streamStorage == null) {
+      streamStorage = (ActivityStreamStorage) PortalContainer.getInstance().getComponentInstanceOfType(ActivityStreamStorage.class);
+    }
+
+    return streamStorage;
   }
   
   /**
@@ -623,6 +644,11 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
       }
     }
     return got;
+  }
+  
+  @Override
+  public List<String> getUserIdsActivities(Identity owner, long offset, long limit) throws ActivityStorageException {
+    return streamStorage.getIdsMyActivities(owner, (int)offset, (int)limit);
   }
   
   /**
@@ -1200,6 +1226,36 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     return StorageUtils.sortActivitiesByTime(got, limit);
   }
   
+  @Override
+  public List<String> getActivityIdsFeed(Identity ownerIdentity, int offset, int limit) {
+    //
+    List<ExoSocialActivity> activities = getActivityOfInactiveUser(ownerIdentity, offset, limit);
+    
+    List<String> ids = StorageUtils.getIds(activities);
+    if (ids.size() >= limit) {
+      return ids;
+    }
+    //      
+    List<String> got = streamStorage.getIdsFeed(ownerIdentity, offset, limit);
+    return buildIdList(ids, got, limit);
+    
+  }
+  
+  private List<String> buildIdList(List<String> target, List<String> source, int limit) {
+    if (target.size() == 0) {
+      return source;
+    }
+    for (String activity : source) {
+      if (target.contains(activity)) {
+        continue;
+      }
+      target.add(activity);
+      if (target.size() == limit)
+        break;
+    }
+    return target;
+  }
+  
   /**
    * {@inheritDoc}
    */
@@ -1370,7 +1426,23 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     //
     return StorageUtils.sortActivitiesByTime(got, limit);
   }
-
+  
+  @Override
+  public List<String> getActivityIdsOfConnections(Identity ownerIdentity,
+                                                             int offset,
+                                                             int limit) {
+    //
+    List<ExoSocialActivity> activities = getActivityOfInactiveUser(ownerIdentity, offset, limit);
+    
+    List<String> ids = StorageUtils.getIds(activities);
+    if (ids.size() >= limit) {
+      return ids;
+    }
+    //      
+    List<String> got = streamStorage.getIdsConnections(ownerIdentity, offset, limit);
+    return buildIdList(ids, got, limit);
+  }
+  
   /**
    * {@inheritDoc}
    */
@@ -1504,6 +1576,11 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     }
 
     return got;
+  }
+  
+  @Override
+  public List<String> getUserSpacesActivityIds(Identity ownerIdentity, int offset, int limit) {
+    return streamStorage.getIdsMySpaces(ownerIdentity, offset, limit);
   }
 
   /**
@@ -2022,6 +2099,12 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
 
     return got;
   }
+  
+  @Override
+  public List<String> getSpaceActivityIds(Identity spaceIdentity, int index, int limit) {
+    return streamStorage.getIdsSpaceStream(spaceIdentity, index, limit);
+  }
+  
   
   @Override
   public List<ExoSocialActivity> getSpaceActivitiesForUpgrade(Identity spaceIdentity, int index, int limit) {
@@ -3062,5 +3145,10 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     ActivityFilter filter = new ActivityFilter(){};
     //
     return getActivitiesOfIdentities(ActivityBuilderWhere.simple(), filter, index, limit);
+  }
+
+  @Override
+  public void addPlugin(BaseComponentPlugin baseComponent) {
+    //unsupported this method now
   }
 }

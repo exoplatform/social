@@ -46,6 +46,10 @@
       <as>socialUtil</as>
     </depends>
     <depends>
+      <module>social-ui-profile</module>
+      <as>socialUIProfile</as>
+    </depends>
+    <depends>
       <module>jquery</module>
       <as>jQuery</as>
     </depends>
@@ -261,7 +265,7 @@
   
   <module>
     <name>social-ui-activities-loader</name>
-      <as>socialUiActivitiesLoader</as>
+      <as>activitiesLoader</as>
     <script>
       <path>/javascript/eXo/social/webui/UIActivityLoader.js</path>
     </script>

@@ -119,7 +119,6 @@ public class ProfileFilterListAccess implements ListAccess<Identity> {
    * {@inheritDoc}
    */
   public Identity[] load(int offset, int limit) throws Exception, IllegalArgumentException {
-    ListAccessValidator.validateIndex(offset, limit, getSize());
     List<Identity> identities = new ArrayList<Identity>();
     //
     if(type != null) {

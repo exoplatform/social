@@ -187,6 +187,7 @@ public class OrganizationIdentityProvider extends IdentityProvider<User> {
       String firstName = (String) updatedProfile.getProperty(Profile.FIRST_NAME);
       String lastName = (String) updatedProfile.getProperty(Profile.LAST_NAME);
       String email = (String) updatedProfile.getProperty(Profile.EMAIL);
+      String fullName = firstName + " " + lastName;
       
       boolean hasUpdate = false;
 
@@ -207,6 +208,11 @@ public class OrganizationIdentityProvider extends IdentityProvider<User> {
       }
       if (!foundUser.getEmail().equals(email)) {
         foundUser.setEmail(email);
+        hasUpdate = true;
+      }
+      
+      if (!foundUser.getDisplayName().equals(fullName)) {
+        foundUser.setDisplayName(fullName);
         hasUpdate = true;
       }
 

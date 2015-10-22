@@ -52,7 +52,7 @@ import org.exoplatform.webui.event.EventListener;
 
 public class UIActivitiesLoader extends UIContainer {
   private static final Log LOG = ExoLogger.getLogger(UIActivitiesLoader.class);
-
+  public static final String ACTIVITY_POST_CONTEXT_KEY = "postContext";
   private int currentLoadIndex;
   private boolean hasMore;
   private UIActivitiesLoader lastActivitiesLoader;
@@ -70,7 +70,6 @@ public class UIActivitiesLoader extends UIContainer {
   private UIActivitiesContainer activitiesContainer;
   private UIContainer extendContainer;
   private int loadingCapacity;
-  private int pageSize;
   private Space space;
   
   public UIActivitiesLoader() {
@@ -79,6 +78,14 @@ public class UIActivitiesLoader extends UIContainer {
       extendContainer = addChild(UIContainer.class, null, "ExtendContainer_"+ hashCode());
     } catch (Exception e) {
       LOG.error(e);
+    }
+  }
+
+  @Override
+  public void processRender(WebuiRequestContext context) throws Exception {
+    super.processRender(context);
+    if (getParent() instanceof AbstractActivitiesDisplay) {
+      ((AbstractActivitiesDisplay) getParent()).setRenderFull(false);
     }
   }
 
@@ -119,8 +126,11 @@ public class UIActivitiesLoader extends UIContainer {
   }
 
   public void setLoadingCapacity(int loadingCapacity) {
-    this.pageSize = loadingCapacity;
     this.loadingCapacity = loadingCapacity;
+  }
+
+  public int getLoadingCapacity() {
+    return loadingCapacity;
   }
 
   public boolean isHasMore() {
@@ -160,12 +170,13 @@ public class UIActivitiesLoader extends UIContainer {
       hasMore = false;
       currentLoadIndex = 0;
       isExtendLoader = false;
-      
+      //first load
       String activityId = getSingleActivityId();
       if (activityId != null && activityId.length() > 0) {
         postContext = PostContext.SINGLE;
       }
-      
+      //
+      WebuiRequestContext.getCurrentInstance().setAttribute(ACTIVITY_POST_CONTEXT_KEY, postContext);
       activitiesContainer.setPostContext(postContext);
       activitiesContainer.setOwnerName(ownerName);
       activitiesContainer.setSelectedDisplayMode(selectedDisplayMode);
@@ -175,15 +186,16 @@ public class UIActivitiesLoader extends UIContainer {
 
       List<ExoSocialActivity> activities = new ArrayList<ExoSocialActivity>(0);
       
-      if (isShowActivities(space)) {
-        if (this.postContext == PostContext.SINGLE) {
-          activities = loadActivity();
-        } else {
-          activities = loadActivities(currentLoadIndex, loadingCapacity);
-        }
+      if (this.postContext == PostContext.SINGLE) {
+        activities = loadActivity();
+        activitiesContainer.setActivityList(activities);
+      } else if (isShowActivities(space)) {
+        List<String> activityIds = loadActivities(currentLoadIndex, loadingCapacity);
+        activitiesContainer.setActivityIdList(activityIds);
+      } else {
+        List<String> activityIds = loadActivityIds(currentLoadIndex, loadingCapacity);
+        activitiesContainer.setActivityIdList(activityIds);
       }
-      
-      activitiesContainer.setActivityList(activities);
     } catch (Exception e) {
       LOG.error(e.getMessage(), e);
     }
@@ -200,41 +212,50 @@ public class UIActivitiesLoader extends UIContainer {
   }
 
   private void loadNext() throws Exception {
-    if (activityListAccess != null && activityListAccess instanceof ActivitiesRealtimeListAccess) {
-      ActivitiesRealtimeListAccess listAccess = (ActivitiesRealtimeListAccess) activityListAccess;
-      listAccess.getNumberOfUpgrade();
-    }
     currentLoadIndex += loadingCapacity;
     List<ExoSocialActivity> activities = new ArrayList<ExoSocialActivity>(0);
     lastActivitiesLoader = extendContainer.addChild(UIActivitiesLoader.class, null, UIActivitiesLoader.genereateId());
     lastActivitiesLoader.setExtendLoader(true);
     
-    if (isShowActivities(space)) {
-      activities = loadActivities(currentLoadIndex, loadingCapacity);
+    if (this.postContext == PostContext.SINGLE) {
+      activities = loadActivity();
+      lastActivitiesLoader.getActivitiesContainer().setActivityList(activities);
+    } else if (isShowActivities(space)) {
+      List<String> activityIds = loadActivities(currentLoadIndex, loadingCapacity);
+      lastActivitiesLoader.getActivitiesContainer().setActivityIdList(activityIds);
+    } else {
+      List<String> activityIds = loadActivityIds(currentLoadIndex, loadingCapacity);
+      lastActivitiesLoader.getActivitiesContainer().setActivityIdList(activityIds);
     }
 
-    UIActivitiesContainer lastActivitiesContainer = lastActivitiesLoader.getActivitiesContainer();
-    lastActivitiesContainer.setPostContext(postContext);
-    lastActivitiesContainer.setSpace(space);
-    
-    lastActivitiesLoader.setActivities(activities);
+    lastActivitiesLoader.getActivitiesContainer().setPostContext(postContext);
+    lastActivitiesLoader.getActivitiesContainer().setSpace(space);
     lastActivitiesLoader.setHasMore(isHasMore());
   }
 
-  private void setActivities(List<ExoSocialActivity> activities) throws Exception {
-    activitiesContainer.setActivityList(activities);
-  }
-
-  private List<ExoSocialActivity> loadActivities(int index, int length) throws Exception {
+  private List<String> loadActivities(int index, int length) throws Exception {
     if (activityListAccess != null) {
-      int newLength = length + 1;
-      ExoSocialActivity[] activities = activityListAccess.load(index, newLength);
-      if (activities != null) {
-        int size = activities.length;
-        boolean hasMore = size > length;
-        setHasMore(hasMore);
-        
-        return hasMore ? new ArrayList<ExoSocialActivity>(Arrays.asList(activities)).subList(0, length) : new ArrayList<ExoSocialActivity>(Arrays.asList(activities)) ;
+      if (activityListAccess instanceof ActivitiesRealtimeListAccess) {
+        ActivitiesRealtimeListAccess listAccess = (ActivitiesRealtimeListAccess) activityListAccess;
+        List<String> activityIds = listAccess.loadIdsAsList(index, length);
+        if (activityIds != null) {
+          setHasMore(activityIds.size() >= loadingCapacity);
+          return activityIds;
+        }
+      }
+    }
+    return null;
+  }
+  
+  private List<String> loadActivityIds(int index, int length) throws Exception {
+    if (activityListAccess != null) {
+      if (activityListAccess instanceof ActivitiesRealtimeListAccess) {
+        ActivitiesRealtimeListAccess listAccess = (ActivitiesRealtimeListAccess) activityListAccess;
+        List<String> activityIds = listAccess.loadIdsAsList(index, length);
+        if (activityIds != null) {
+          setHasMore(activityIds.size() >= loadingCapacity);
+          return activityIds;
+        }
       }
     }
     return null;
@@ -253,7 +274,7 @@ public class UIActivitiesLoader extends UIContainer {
     if (space == null) {
       space = getSpaceByActivityId(Utils.getActivityID());
       if (space == null)
-        return true;
+        return false;
     }
     
     String remoteId = Util.getPortalRequestContext().getRemoteUser();
@@ -284,7 +305,7 @@ public class UIActivitiesLoader extends UIContainer {
       RequireJS require = context.getJavascriptManager()
                                  .require("SHARED/social-ui-activities-loader", "activitiesLoader");
       require.addScripts("activitiesLoader.setStatus('" + uiActivitiesLoader.isHasMore() + "');");
-      
+      //
       Utils.resizeHomePage();
     }
   }

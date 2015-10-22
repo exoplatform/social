@@ -18,20 +18,28 @@ package org.exoplatform.social.webui.activity;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.LinkedList;
 import java.util.List;
 
-import org.exoplatform.container.PortalContainer;
-import org.exoplatform.portal.webui.container.UIContainer;
-import org.exoplatform.services.log.ExoLogger;
-import org.exoplatform.services.log.Log;
+import org.apache.commons.lang.StringUtils;
+import org.exoplatform.commons.utils.CommonsUtils;
+import org.exoplatform.commons.utils.PrivilegedSystemHelper;
+import org.exoplatform.portal.application.PortalRequestContext;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
+import org.exoplatform.social.core.activity.model.ExoSocialActivityImpl;
+import org.exoplatform.social.core.manager.ActivityManager;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.webui.Utils;
 import org.exoplatform.social.webui.composer.PopupContainer;
 import org.exoplatform.social.webui.composer.UIComposer.PostContext;
+import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
+import org.exoplatform.webui.config.annotation.EventConfig;
+import org.exoplatform.webui.core.UIContainer;
 import org.exoplatform.webui.core.UIPopupWindow;
 import org.exoplatform.webui.core.UIPortletApplication;
+import org.exoplatform.webui.event.Event;
+import org.exoplatform.webui.event.EventListener;
 
 /**
  * UIActivitiesContainer.java
@@ -40,21 +48,27 @@ import org.exoplatform.webui.core.UIPortletApplication;
  * @since Apr 12, 2010
  */
 @ComponentConfig(
-  template = "war:/groovy/social/webui/UIActivitiesContainer.gtmpl"
+  template = "war:/groovy/social/webui/UIActivitiesContainer.gtmpl",
+    events = {
+    @EventConfig(listeners = UIActivitiesContainer.LoadActivityActionListener.class)
+  }
 )
 public class UIActivitiesContainer extends UIContainer {
-  private static final Log LOG = ExoLogger.getLogger(UIActivitiesContainer.class);
-  
   public static final String ACTIVITY_STREAM_VISITED_PREFIX_COOKIED = "exo_social_activity_stream_%s_visited_%s";
   private static final String ACTIVITIES_NODE = "activities";
   
+  
   private List<ExoSocialActivity> activityList;
+  
+  private List<String> activityIdList;
+  private List<String> uiActivityIdFirstList;
+  private List<String> uiActivityIdNextList;
   private PostContext postContext;
   //hold activities for user or space
   private Space space;
   private String ownerName;
   private String selectedDisplayMode;
-  private long lastVisited = 0;
+  private boolean isRenderFull = false;
 
   /**
    * constructor
@@ -71,11 +85,61 @@ public class UIActivitiesContainer extends UIContainer {
   }
   
   public List<ExoSocialActivity> getActivityList() {
-    return activityList;
+    return (activityList != null) ? activityList : new LinkedList<ExoSocialActivity>();
   }
 
   public UIActivitiesContainer setActivityList(List<ExoSocialActivity> activityList) throws Exception {
     this.activityList = activityList;
+    this.activityIdList = new LinkedList<String>();
+    for (ExoSocialActivity activity : activityList) {
+      activityIdList.add(activity.getId());
+    }
+    init();
+    return this;
+  }
+  
+  public boolean isRenderFull() {
+    return isRenderFull;
+  }
+
+  public void setRenderFull(boolean isRenderFull, boolean isFirst) {
+    if (isFirst) {
+      List<UIActivitiesContainer> containers = new ArrayList<UIActivitiesContainer>();
+      getAncestorOfType(UIPortletApplication.class).findComponentOfType(containers, UIActivitiesContainer.class);
+      for (UIActivitiesContainer uiActivitiesContainer : containers) {
+        uiActivitiesContainer.setRenderFull(isRenderFull, false);
+      }
+    } else {
+      this.isRenderFull = isRenderFull;
+    }
+  }
+
+  public boolean isFirstUIActivitiesContainer() {
+    return getParent().getId().equals("UIActivitiesLoader");
+  }
+
+  public List<String> getActivityIdList() {
+    return (activityIdList != null) ? activityIdList : new LinkedList<String>();
+  }
+
+  public List<String> getUiActivityIdFirstList() {
+    return new LinkedList<String>(uiActivityIdFirstList);
+  }
+
+  public List<String> getUiActivityIdNextList() {
+    return new LinkedList<String>(uiActivityIdNextList);
+  }
+
+  public void addFirstActivityId(String activityId) {
+    if (activityIdList.contains(activityId)) {
+      activityIdList.remove(activityId);
+    }
+    //
+    ((LinkedList<String>) activityIdList).addFirst(activityId);
+  }
+
+  public UIActivitiesContainer setActivityIdList(List<String> activityIdList) throws Exception {
+    this.activityIdList = activityIdList;
     init();
     return this;
   }
@@ -119,59 +183,114 @@ public class UIActivitiesContainer extends UIContainer {
   public boolean isOnMyActivities() {
     return (Utils.getSelectedNode() != null && Utils.getSelectedNode().startsWith(ACTIVITIES_NODE));
   }
-  
+
   /**
    * Initializes ui component child
    *
    * @throws Exception
    */
   private void init() throws Exception {
-    while (getChild(BaseUIActivity.class) != null) {
-      removeChild(BaseUIActivity.class);
+    while (getChild(UIActivityLoader.class) != null) {
+      removeChild(UIActivityLoader.class);
     }
 
-    if (activityList == null) {
+    if (activityIdList == null) {
       return;
     }
-
-    PortalContainer portalContainer = PortalContainer.getInstance();
-    UIActivityFactory factory = (UIActivityFactory) portalContainer.getComponentInstanceOfType(UIActivityFactory.class);
-
-    for (ExoSocialActivity activity : activityList) {
-      factory.addChild(activity, this);
-    }
-
-    lastVisited = getLastVisited(this.selectedDisplayMode);
-  }
-
-  public void addActivity(ExoSocialActivity activity) throws Exception {
-    if (activityList == null) {
-      activityList = new ArrayList<ExoSocialActivity>();
-    }
-    activityList.add(0, activity);
-    init();
-  }
-
-  public void removeActivity(ExoSocialActivity removedActivity) {
-    for (ExoSocialActivity activity : activityList) {
-      if (activity.getId().equals(removedActivity.getId())) {
-        activityList.remove(activity);
-        break;
+    UIActivitiesLoader activitiesLoader = getParent();
+    int activityFullRender = activitiesLoader.getLoadingCapacity();
+    boolean isFirstLoader = (activitiesLoader.getClass().getSimpleName().equals(activitiesLoader.getId()));
+    int index = 0;
+    uiActivityIdFirstList = new LinkedList<String>();
+    uiActivityIdNextList = new LinkedList<String>();
+    
+    ActivityManager activityManager = getApplicationComponent(ActivityManager.class);
+    for (String activityId : activityIdList) {
+      UIActivityLoader uiActivityLoader = addChild(UIActivityLoader.class, null, UIActivityLoader.buildComponentId(activityId));
+      if (isRenderFull()) {
+        UIActivityFactory factory = CommonsUtils.getService(UIActivityFactory.class);
+        factory.addChild(activityManager.getActivity(activityId), uiActivityLoader);
+      } else if (activityFullRender > 0 && isFirstLoader) {
+        if (index < activityFullRender) {
+          UIActivityFactory factory = CommonsUtils.getService(UIActivityFactory.class);
+          factory.addChild(activityManager.getActivity(activityId), uiActivityLoader);
+          uiActivityIdFirstList.add(uiActivityLoader.getId());
+        } else {
+          uiActivityIdNextList.add(uiActivityLoader.getId());
+        }
+        ++index;
+      } else {
+        uiActivityIdNextList.add(uiActivityLoader.getId());
       }
     }
   }
 
-  private long getLastVisited(String mode) {
-    long currentVisited = Calendar.getInstance().getTimeInMillis();
-    String strValue = Utils.getCookies(getCookiesKey(mode));
-    if(strValue == null) {
-      return currentVisited;
+  public void addActivity(ExoSocialActivity activity) throws Exception {
+    if (activityList == null) {
+      activityList = new LinkedList<ExoSocialActivity>();
     }
-    
-    return Long.parseLong(strValue);
+    activityList.add(0, activity);
+    addFirstActivityId(activity.getId());
+    init();
   }
-  
+
+  public void removeActivity(ExoSocialActivity removedActivity) {
+    if(activityIdList != null) {
+      activityIdList.remove(removedActivity.getId());
+    }
+    if(activityList != null) {
+      for (ExoSocialActivity activity : activityList) {
+        if (activity.getId().equals(removedActivity.getId())) {
+          activityList.remove(activity);
+          break;
+        }
+      }
+    }
+  }
+
   public String getCookiesKey(String displayMode) {
     return String.format(ACTIVITY_STREAM_VISITED_PREFIX_COOKIED, displayMode, Utils.getViewerRemoteId());
+  }
+
+  @Override
+  public void processRender(WebuiRequestContext context) throws Exception {
+    context.getJavascriptManager().getRequireJS().require("SHARED/social-ui-activities-loader", "activitiesLoader")
+           .addScripts("activitiesLoader.loadingActivities('" + getId() + "');");
+    //
+    super.processRender(context);
+  }
+
+  protected String getLoadActivityUrl() throws Exception {
+    return event("LoadActivity").replace("javascript:ajaxGet('", StringUtils.EMPTY).replace("')", "&" + OBJECTID + "=");
+  }
+
+  public static class LoadActivityActionListener extends EventListener<UIActivitiesContainer> {
+    @Override
+    public void execute(Event<UIActivitiesContainer> event) throws Exception {
+      UIActivitiesContainer uiActivitiesContainer = event.getSource();
+      String uiActivityId = event.getRequestContext().getRequestParameter(OBJECTID);
+      if (uiActivityId == null || uiActivityId.isEmpty()) {
+        ((PortalRequestContext) event.getRequestContext().getParentAppRequestContext()).ignoreAJAXUpdateOnPortlets(true);
+      }
+      //
+      String activityId = uiActivityId.replace(UIActivityLoader.COMPONENT_ID, StringUtils.EMPTY);
+      ExoSocialActivity activity = CommonsUtils.getService(ActivityManager.class).getActivity(activityId);
+      //
+      UIActivityLoader uiActivityLoader = uiActivitiesContainer.getChildById(uiActivityId);
+      if (uiActivityLoader != null) {
+        uiActivitiesContainer.removeChildById(uiActivityId);
+      }
+      if (activity != null) {
+        uiActivityLoader = uiActivitiesContainer.addChild(UIActivityLoader.class, null, UIActivityLoader.buildComponentId(activityId));
+        UIActivityFactory factory = CommonsUtils.getService(UIActivityFactory.class);
+        factory.addChild(activity, uiActivityLoader);
+        event.getRequestContext().addUIComponentToUpdateByAjax(uiActivityLoader);
+      } else {
+        activity = new ExoSocialActivityImpl();
+        activity.setId(activityId);
+        uiActivitiesContainer.removeActivity(activity);
+        event.getRequestContext().addUIComponentToUpdateByAjax(uiActivitiesContainer.getParent());
+      }
+    }
   }
 }

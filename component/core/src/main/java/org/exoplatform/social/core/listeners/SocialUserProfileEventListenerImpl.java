@@ -16,6 +16,10 @@
  */
 package org.exoplatform.social.core.listeners;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.exoplatform.commons.utils.CommonsUtils;
 import org.exoplatform.container.ExoContainer;
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.PortalContainer;
@@ -61,17 +65,23 @@ public class SocialUserProfileEventListenerImpl extends UserProfileEventListener
       //
       if (uGender != null && !uGender.equals(pGender)) {
         profile.setProperty(Profile.GENDER, uGender);
+        List<Profile.UpdateType> list = new ArrayList<Profile.UpdateType>();
+        list.add(Profile.UpdateType.CONTACT);
+        profile.setListUpdateTypes(list);
         hasUpdated = true;
       }
       
       if (uPosition != null && !uPosition.equals(pPosition)) {
         profile.setProperty(Profile.POSITION, uPosition);
+        List<Profile.UpdateType> list = new ArrayList<Profile.UpdateType>();
+        list.add(Profile.UpdateType.CONTACT);
+        profile.setListUpdateTypes(list);
         hasUpdated = true;
       }
   
       if (hasUpdated) {
-        IdentityStorage storage = (IdentityStorage) container.getComponentInstanceOfType(IdentityStorage.class);
-        storage.updateProfile(profile);
+        IdentityManager identityManager = CommonsUtils.getService(IdentityManager.class);
+        identityManager.updateProfile(profile);
       }
     }finally{
       RequestLifeCycle.end();

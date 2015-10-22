@@ -22,7 +22,6 @@ import org.exoplatform.container.PortalContainer;
 import org.exoplatform.container.xml.InitParams;
 import org.exoplatform.portal.mop.SiteType;
 import org.exoplatform.portal.webui.util.Util;
-import org.exoplatform.services.jcr.RepositoryService;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.identity.model.Identity;
@@ -89,15 +88,14 @@ public class LinkProvider {
    * @since 1.2.0 GA
    */
   public static String getSpaceUri(final String prettyName) {
-    SpaceService spaceService = getSpaceService();
+    SpaceService spaceService = CommonsUtils.getService(SpaceService.class);
     Space space = spaceService.getSpaceByPrettyName(prettyName);
     RequestContext ctx = RequestContext.getCurrentInstance();
     if (ctx != null) {
-      NodeURL nodeURL =  ctx.createURL(NodeURL.TYPE);
+      NodeURL nodeURL = ctx.createURL(NodeURL.TYPE);
       NavigationResource resource = new NavigationResource(SiteType.GROUP, space.getGroupId(), space.getUrl());
       return nodeURL.setResource(resource).toString();
-    }
-    else {
+    } else {
       return null;
     }
   }
@@ -261,17 +259,6 @@ public class LinkProvider {
   }
   
   /**
-   * Builds URI to the avatar image from avatarAttachment.
-   *
-   * @param avatarAttachment The attachment used to build the link to avatar.
-   * @return The URI.
-   * @LevelAPI Platform
-   */
-  public static String buildAvatarImageUri(final AvatarAttachment avatarAttachment) {
-    return buildAvatarImageUri(PortalContainer.getInstance(), avatarAttachment);
-  }
-
-  /**
    * Gets URI to the provided space's avatar.
    *
    * @param space The target object to get its avatar based on the attachment information.
@@ -323,7 +310,7 @@ public class LinkProvider {
   public static String getAvatarImageSource(final PortalContainer portalContainer, final Profile profile) {
     final AvatarAttachment avatarAttachment = (AvatarAttachment) profile.getProperty(Profile.AVATAR);
     if (avatarAttachment != null) {
-      return buildAvatarImageUri(portalContainer, avatarAttachment);
+      return buildAvatarImageUri(avatarAttachment);
     }
     return null;
   }
@@ -355,22 +342,24 @@ public class LinkProvider {
   /**
    * Builds URI to the avatar image from avatarAttachment.
    *
-   * @param container The portal container getting the repository where the avatar image URI is stored.
    * @param avatarAttachment The object which stores information of the avatar image.
    * @return The URI.
    */
-  private static String buildAvatarImageUri(final PortalContainer container, final AvatarAttachment avatarAttachment) {
+  public static String buildAvatarImageUri(final AvatarAttachment avatarAttachment) {
     String avatarUrl = null;
     try {
       if (avatarAttachment != null) {
-        final String repository = ((RepositoryService) container.getComponentInstanceOfType(RepositoryService.class)).
-        getCurrentRepository().getConfiguration().getName();
-
-
-        avatarUrl = "/" + container.getRestContextName() + "/jcr/" + repository + "/"
-        + avatarAttachment.getWorkspace() + avatarAttachment.getDataPath() + "/?upd="
-        + avatarAttachment.getLastModified();
-        avatarUrl = escapeJCRSpecialCharacters(avatarUrl);
+        final String repository = CommonsUtils.getRepository().getConfiguration().getName();
+        //
+        avatarUrl = escapeJCRSpecialCharacters(new StringBuilder("/").append(CommonsUtils.getRestContextName())
+                                                                     .append("/jcr/")
+                                                                     .append(repository)
+                                                                     .append("/")
+                                                                     .append(avatarAttachment.getWorkspace())
+                                                                     .append(avatarAttachment.getDataPath())
+                                                                     .append("/?upd=")
+                                                                     .append(avatarAttachment.getLastModified())
+                                                                     .toString());
       }
     } catch (Exception e) {
       LOG.warn("Failed to build avatar url from avatar attachment for: " + e.getMessage());
@@ -431,24 +420,13 @@ public class LinkProvider {
    *
    * @return The IdentityManager.
    */
-  private static IdentityManager getIdentityManager() {
-    if (LinkProvider.identityManager == null) {
-      LinkProvider.identityManager = (IdentityManager) PortalContainer.getInstance()
-      .getComponentInstanceOfType(IdentityManager.class);
+  public static IdentityManager getIdentityManager() {
+    if (identityManager == null) {
+      identityManager = CommonsUtils.getService(IdentityManager.class);
     }
     return LinkProvider.identityManager;
   }
 
-  /**
-   * Gets a SpaceService instance.
-   * 
-   * @return The SpaceService.
-   * @since 1.2.2
-   */
-  private static SpaceService getSpaceService() {
-    return (SpaceService) PortalContainer.getInstance().getComponentInstanceOfType(SpaceService.class);
-  }
-  
   /**
    * Gets a portal owner. If the parameter is null or "", the method returns a default portal owner.
    *

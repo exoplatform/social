@@ -358,7 +358,7 @@ public class Utils {
   
   public static String getValueFromRequestParam(String param) {
     PortalRequestContext request = Util.getPortalRequestContext();
-    return request.getRequest().getParameter(param);
+    return request.getRequestParameter(param);
   }
   
   /**

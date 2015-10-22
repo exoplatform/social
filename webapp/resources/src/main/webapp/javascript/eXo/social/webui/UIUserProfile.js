@@ -1,4 +1,4 @@
-(function($, socialUtils) {
+(function($, socialUtils, uiProfile) {
   var UserProfile = {
       portlet : null,
       init : function(id) {
@@ -31,7 +31,7 @@
         }
       },
       leftBorder : function() {
-        var leftRow = $('.left-column-containerTDContainer:first');
+        var leftRow = $('.LeftColumnContainerTDContainer:first');
         if(leftRow.length > 0) {
           leftRow.css('position', 'relative');
           leftRow.append($('<div class="left-border-row"></div>'))
@@ -91,8 +91,42 @@
             form.find('button.btn-save:first').trigger('click');
           }
         });
+      },
+      loadingProfileSize : function(componentId) {
+        var portlet = $('#' + componentId);
+        var loadSizeUrl = portlet.find('div.loadingSizeLink:first').text();
+        if(loadSizeUrl && loadSizeUrl.length > 0) {
+          $.ajax(loadSizeUrl).done(function(data) {
+            if(data && data.showAll == true) {
+              //
+              var textA = portlet.find('div.viewAllConnection:first').show().find('a:first');
+              textA.html(textA.data('text') + '&nbsp;(' + data.size + ')' );
+            }
+          });
+        }
+      },
+      loadingProfile : function(componentId) {
+        var portlet = $('#' + componentId);
+        var loadProfileUrl = portlet.find('div.loadingProfilesLink:first').text();
+        var container = portlet.find('div.profileContainer:first');
+        if(loadProfileUrl && loadProfileUrl.length > 0) {
+          $.ajax(loadProfileUrl).done(function(html) {
+            container.find('.uiLoadingIconMedium').remove();
+            if(html && html.length > 0) {
+              var items = $(html);
+              container.prepend(items);
+              //
+              UserProfile.loadingProfileSize(componentId);
+              //
+              uiProfile.initUserProfilePopup(componentId, {});
+            } else {
+              container.hide();
+              portlet.find('div.borderContainer.empty:first').show();
+            }
+          });
+        }
       }
   };
   //
   return UserProfile;
-})(jQuery, socialUtil);
+})(jQuery, socialUtil, socialUIProfile);

@@ -500,5 +500,4 @@ public class ActivityManagerImpl implements ActivityManager {
   public RealtimeListAccess<ExoSocialActivity> getAllActivitiesWithListAccess() {
     return new ActivitiesRealtimeListAccess(activityStorage, ActivityType.ALL);
   }
-
 }

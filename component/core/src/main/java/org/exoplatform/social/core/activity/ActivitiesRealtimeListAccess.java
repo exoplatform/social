@@ -26,6 +26,9 @@ import org.exoplatform.social.core.activity.filter.ActivityUpdateFilter;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.storage.api.ActivityStorage;
+import org.exoplatform.social.core.storage.impl.StorageUtils;
+
+import com.google.caja.util.Lists;
 
 /**
  * The real time list access for activities.
@@ -132,6 +135,32 @@ public class ActivitiesRealtimeListAccess implements RealtimeListAccess<ExoSocia
     this.activityType = chosenActivityType;
     this.ownerIdentity = chosenOwnerIdentity;
     this.viewerIdentity = viewerIndentity;
+  }
+  
+  @Override
+  public List<String> loadIdsAsList(int index, int limit) {
+    switch (activityType) {
+    case ACTIVITY_FEED: {
+      return activityStorage.getActivityIdsFeed(ownerIdentity, index, limit);
+    }
+    case USER_ACTIVITIES: {
+      return activityStorage.getUserIdsActivities(ownerIdentity, index, limit);
+    }
+    case VIEW_USER_ACTIVITIES: {
+      return StorageUtils.getIds(activityStorage.getActivities(ownerIdentity, viewerIdentity, index, limit));
+    }
+    case CONNECTIONS_ACTIVITIES: {
+      return activityStorage.getActivityIdsOfConnections(ownerIdentity, index, limit);
+    }
+    case USER_SPACE_ACTIVITIES: {
+      return activityStorage.getUserSpacesActivityIds(ownerIdentity, index, limit);
+    }
+    case SPACE_ACTIVITIES: {
+      return activityStorage.getSpaceActivityIds(ownerIdentity, index, limit);
+    }
+    default:
+      return Lists.newLinkedList();
+    }
   }
 
   /**

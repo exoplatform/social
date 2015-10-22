@@ -78,19 +78,12 @@
       <% uiform.renderField(uicomponent.COMPOSER_TEXT_AREA_INPUT) %>
     </div>
     
-    <%
-      def currentActivityComposer = uicomponent.getActivityComposerManager().getCurrentActivityComposer();
 
-      if (!(currentActivityComposer instanceof UIDefaultActivityComposer)) {
-    %>
         <div id="ComposerContainer" class="clearfix">
           <%
             uicomponent.renderChild(UIActivityComposerContainer.class);
           %>
         </div>
-    <%
-      }
-    %>
     
 		<div  class="blastShare clearfix">
 		 <button class="pull-right btn btn-primary" id="ShareButton" type="submit" onclick="<%= uicomponent.event("PostMessage");%>; UIComposer.post()">$shareLabel</button>
