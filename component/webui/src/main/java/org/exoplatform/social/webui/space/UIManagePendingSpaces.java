@@ -27,6 +27,7 @@ import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.space.SpaceFilter;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
+import org.exoplatform.social.webui.Utils;
 import org.exoplatform.web.application.ApplicationMessage;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
@@ -80,6 +81,8 @@ public class UIManagePendingSpaces extends UIContainer {
     uiSpaceSearch.setTypeOfRelation(PENDING_STATUS);
     addChild(uiSpaceSearch);
     init();
+    //keeps the navigation, in the case switch from other, the space list must be refreshed
+    Utils.setCurrentNavigationData(Util.getPortalRequestContext());
   }
 
   /**
@@ -160,6 +163,11 @@ public class UIManagePendingSpaces extends UIContainer {
   public List<Space> getPendingSpacesList() throws Exception {
     if (isHasUpdatedSpace()) {
       setPendingSpacesList(loadPendingSpaces(0, this.pendingSpacesList.size()));
+    } else if (!Utils.isRefreshPage()) {
+      //Must be refreshed the space list because switched from others page.
+      this.uiSpaceSearch.setSpaceNameSearch(null);
+      this.uiSpaceSearch.getUIStringInput(SPACE_SEARCH).setValue("");
+      setPendingSpacesList(loadPendingSpaces(0, SPACES_PER_PAGE));
     }
     
     return this.pendingSpacesList;

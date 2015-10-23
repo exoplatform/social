@@ -30,6 +30,7 @@ import org.exoplatform.social.core.space.SpaceFilter;
 import org.exoplatform.social.core.space.SpaceUtils;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
+import org.exoplatform.social.webui.Utils;
 import org.exoplatform.web.application.ApplicationMessage;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
@@ -89,6 +90,8 @@ public class UIManageMySpaces extends UIContainer {
     uiSpaceSearch.setTypeOfRelation(CONFIRMED_STATUS);
     addChild(uiSpaceSearch);
     init();
+    //keeps the navigation, in the case switch from other, the space list must be refreshed
+    Utils.setCurrentNavigationData(Util.getPortalRequestContext());
   }
 
   /**
@@ -169,6 +172,11 @@ public class UIManageMySpaces extends UIContainer {
   public List<Space> getMySpacesList() throws Exception {
     if (isHasUpdatedSpace()) {
       setMySpacesList(loadMySpaces(0, this.mySpacesList.size()));
+    } else if (!Utils.isRefreshPage()) {
+      //Must be refreshed the space list because switched from others page.
+      this.uiSpaceSearch.setSpaceNameSearch(null);
+      this.uiSpaceSearch.getUIStringInput(SPACE_SEARCH).setValue("");
+      setMySpacesList(loadMySpaces(0, SPACES_PER_PAGE));
     }
     return this.mySpacesList;
   }

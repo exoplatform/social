@@ -103,6 +103,8 @@ public class UIManageAllSpaces extends UIContainer {
     uiSpaceSearch.setTypeOfRelation(ALL_SPACES_STATUS);
     addChild(uiSpaceSearch);
     init();
+    //keeps the navigation, in the case switch from other, the space list must be refreshed
+    Utils.setCurrentNavigationData(Util.getPortalRequestContext());
   }
   
   /**
@@ -110,6 +112,7 @@ public class UIManageAllSpaces extends UIContainer {
    */
   public void init() {
     try {
+      LOG.info("Init() method invoked....."); 
       setHasUpdatedSpace(true);
       enableLoadNext = false;
       currentLoadIndex = 0;
@@ -181,6 +184,11 @@ public class UIManageAllSpaces extends UIContainer {
   public List<Space> getSpacesList() throws Exception {
     if (isHasUpdatedSpace()) {
       setSpacesList(loadSpaces(0, this.spacesList.size()));
+    } else if (!Utils.isRefreshPage()) {
+      //Must be refreshed the space list because switched from others page.
+      this.uiSpaceSearch.setSpaceNameSearch(null);
+      this.uiSpaceSearch.getUIStringInput(SPACE_SEARCH).setValue("");
+      setSpacesList(loadSpaces(0, SPACES_PER_PAGE));
     }
     
     return this.spacesList;

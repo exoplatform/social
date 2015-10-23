@@ -86,6 +86,8 @@ public class UIManageInvitationSpaces extends UIContainer {
     uiSpaceSearch.setTypeOfRelation(INCOMING_STATUS);
     addChild(uiSpaceSearch);
     init();
+    //keeps the navigation, in the case switch from other, the space list must be refreshed
+    Utils.setCurrentNavigationData(Util.getPortalRequestContext());
   }
 
   /**
@@ -166,6 +168,11 @@ public class UIManageInvitationSpaces extends UIContainer {
   public List<Space> getInvitedSpacesList() throws Exception {
     if (isHasUpdatedSpace()) {
       setInvitedSpacesList(loadInvitedSpaces(0, this.invitedSpacesList.size()));
+    } else if (!Utils.isRefreshPage()) {
+      //Must be refreshed the space list because switched from others page.
+      this.uiSpaceSearch.setSpaceNameSearch(null);
+      this.uiSpaceSearch.getUIStringInput(SPACE_SEARCH).setValue("");
+      setInvitedSpacesList(loadInvitedSpaces(0, SPACES_PER_PAGE));
     }
     
     return this.invitedSpacesList;

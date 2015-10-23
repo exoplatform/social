@@ -598,6 +598,17 @@ public class Utils {
     }
     return sb.toString();
   }
+
+  /**
+   * Sets current navigation
+   * @param pcontext
+   */
+  public static void setCurrentNavigationData(PortalRequestContext pcontext) {
+    String siteName = pcontext.getControllerContext().getParameter(RequestNavigationData.REQUEST_SITE_NAME);
+    String siteType = pcontext.getControllerContext().getParameter(RequestNavigationData.REQUEST_SITE_TYPE);
+    String requestPath = pcontext.getControllerContext().getParameter(RequestNavigationData.REQUEST_PATH);
+    setCurrentNavigationData(siteType, siteName, requestPath);
+  }
   
   /**
    * 
