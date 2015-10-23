@@ -19,10 +19,6 @@
   
   def labelShowMoreSpace = _ctx.appRes("${uicomponentId}.label.Show_More");
   def fieldLabelMembers = _ctx.appRes("${uicomponentId}.fieldLabel.members");
-  
-  if (uicomponent.isLoadAtEnd()) {
-    uicomponent.init();
-  }
 
   def pendingSpaces = uicomponent.getPendingSpacesList();
   def selectedChar = uicomponent.getSelectedChar();
@@ -36,10 +32,6 @@
   def labelInvitationsReceived = _ctx.appRes("${uicomponent.id}.label.Invitations_Received");
   def labelRequestsPending = _ctx.appRes("${uicomponent.id}.label.Requests_Pending");
   def selectedNode = Utils.getSelectedNode();
-  if (pendingSpaces.size() == uicomponent.getPendingSpacesNum()) {
-    uicomponent.setLoadAtEnd(true);
-  }
-  
   
 	def jsManager = _ctx.getRequestContext().getJavascriptManager();
 	jsManager.require("SHARED/jquery", "jq")

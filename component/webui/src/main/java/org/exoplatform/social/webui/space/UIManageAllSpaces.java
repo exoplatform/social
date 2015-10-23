@@ -73,10 +73,8 @@ public class UIManageAllSpaces extends UIContainer {
   private String userId = null;
   private final Integer SPACES_PER_PAGE = 20;
   private static final String ALL_SPACES_STATUS = "all_spaces";
-  private List<Space> spaces; // for search result
   private UISpaceSearch uiSpaceSearch = null;
 
-  private boolean loadAtEnd = false;
   private boolean hasUpdatedSpace = false;
   private int currentLoadIndex;
   private boolean enableLoadNext;
@@ -112,18 +110,18 @@ public class UIManageAllSpaces extends UIContainer {
    */
   public void init() {
     try {
-      setHasUpdatedSpace(false);
-      setLoadAtEnd(false);
+      setHasUpdatedSpace(true);
       enableLoadNext = false;
       currentLoadIndex = 0;
       loadingCapacity = SPACES_PER_PAGE;
       spacesList = new ArrayList<Space>();
-      setSpacesList(loadSpaces(currentLoadIndex, loadingCapacity));
+      this.uiSpaceSearch.setSpaceNameSearch(null);
+      this.uiSpaceSearch.getUIStringInput(SPACE_SEARCH).setValue("");
       if (this.selectedChar != null){
         setSelectedChar(this.selectedChar);
       } else {
         setSelectedChar(SEARCH_ALL);
-      }   
+      }
     } catch (Exception e) {
       LOG.error(e.getMessage(), e);
     }
@@ -155,25 +153,7 @@ public class UIManageAllSpaces extends UIContainer {
   public void setEnableLoadNext(boolean enableLoadNext) {
     this.enableLoadNext = enableLoadNext;
   }
-
-  /**
-   * Gets flags to clarify that load at the last space or not. 
-   * 
-   * @return the loadAtEnd
-   */
-  public boolean isLoadAtEnd() {
-    return loadAtEnd;
-  }
-
-  /**
-   * Sets flags to clarify that load at the last space or not.
-   * 
-   * @param loadAtEnd the loadAtEnd to set
-   */
-  public void setLoadAtEnd(boolean loadAtEnd) {
-    this.loadAtEnd = loadAtEnd;
-  }
-
+  
   /**
    * Gets information that clarify one space is updated or not.
    * 
@@ -199,15 +179,9 @@ public class UIManageAllSpaces extends UIContainer {
    * @throws Exception 
    */
   public List<Space> getSpacesList() throws Exception {
-    this.spacesList = loadSpaces(0, this.spacesList.size());
-    int realSpacesListSize = this.spacesList.size();
-    
     if (isHasUpdatedSpace()) {
-      setHasUpdatedSpace(false);
+      setSpacesList(loadSpaces(0, this.spacesList.size()));
     }
-    
-    setEnableLoadNext((realSpacesListSize >= SPACES_PER_PAGE)
-            && (realSpacesListSize < getSpacesNum()));
     
     return this.spacesList;
   }
@@ -299,8 +273,9 @@ public class UIManageAllSpaces extends UIContainer {
   public void loadNext() throws Exception {
     currentLoadIndex += loadingCapacity;
     if (currentLoadIndex <= getSpacesNum()) {
-      this.spacesList.addAll(new ArrayList<Space>(Arrays.asList(getSpacesListAccess()
-                                                 .load(currentLoadIndex, loadingCapacity))));
+      List<Space> loaded = new ArrayList<Space>(Arrays.asList(getSpacesListAccess().load(currentLoadIndex, loadingCapacity)));
+      this.spacesList.addAll(loaded);
+      setEnableLoadNext(loaded.size() < SPACES_PER_PAGE ? false : this.spacesList.size() < getSpacesNum());
     }
   }
   
@@ -361,6 +336,7 @@ public class UIManageAllSpaces extends UIContainer {
     uiSpaceSearch.setSpaceNum(getSpacesNum());
     Space[] spaces = getSpacesListAccess().load(index, length);
     
+    setEnableLoadNext(spaces.length < SPACES_PER_PAGE ? false : getSpacesNum() > SPACES_PER_PAGE);
     return new ArrayList<Space>(Arrays.asList(spaces));
   }
   
@@ -403,7 +379,7 @@ public class UIManageAllSpaces extends UIContainer {
       }
       
       uiManageAllSpaces.loadSearch();
-      uiManageAllSpaces.setLoadAtEnd(false);
+      uiManageAllSpaces.setHasUpdatedSpace(false);
       event.getRequestContext().addUIComponentToUpdateByAjax(uiManageAllSpaces);
     }
   }
@@ -452,7 +428,6 @@ public class UIManageAllSpaces extends UIContainer {
       String spaceId = ctx.getRequestParameter(OBJECTID);
       String userId = uiManageAllSpaces.getUserId();
       Space space = spaceService.getSpaceById(spaceId);
-      uiManageAllSpaces.setLoadAtEnd(false);
       
       if (space == null) {
         uiApp.addMessage(new ApplicationMessage(SPACE_DELETED_INFO, null, ApplicationMessage.INFO));
@@ -470,7 +445,6 @@ public class UIManageAllSpaces extends UIContainer {
    * confirmation, if yes delete that space; otherwise, do nothing.
    */
   static public class DeleteSpaceActionListener extends EventListener<UIManageAllSpaces> {
-
     @Override
     public void execute(Event<UIManageAllSpaces> event) throws Exception {
       UIManageAllSpaces uiManageAllSpaces = event.getSource();
@@ -480,7 +454,6 @@ public class UIManageAllSpaces extends UIContainer {
       String spaceId = ctx.getRequestParameter(OBJECTID);
       Space space = spaceService.getSpaceById(spaceId);
       String userId = uiManageAllSpaces.getUserId();
-      uiManageAllSpaces.setLoadAtEnd(false);
       
       if (space == null) {
         uiApp.addMessage(new ApplicationMessage(SPACE_DELETED_INFO, null, ApplicationMessage.INFO));
@@ -512,7 +485,6 @@ public class UIManageAllSpaces extends UIContainer {
       String spaceId = ctx.getRequestParameter(OBJECTID);
       String userId = uiManageAllSpaces.getUserId();
       Space space = spaceService.getSpaceById(spaceId);
-      uiManageAllSpaces.setLoadAtEnd(false);
 
       if (space == null) {
         uiApp.addMessage(new ApplicationMessage(SPACE_DELETED_INFO, null, ApplicationMessage.INFO));
@@ -550,7 +522,6 @@ public class UIManageAllSpaces extends UIContainer {
       String userId = uiManageAllSpaces.getUserId();
 
       Space space = spaceService.getSpaceById(spaceId);
-      uiManageAllSpaces.setLoadAtEnd(false);
       
       if (space == null) {
         uiApp.addMessage(new ApplicationMessage(SPACE_DELETED_INFO, null, ApplicationMessage.INFO));
@@ -579,7 +550,6 @@ public class UIManageAllSpaces extends UIContainer {
       String userId = Utils.getViewerRemoteId();
 
       Space space = spaceService.getSpaceById(spaceId);
-      uiManageAllSpaces.setLoadAtEnd(false);
       
       if (space == null) {
         uiApp.addMessage(new ApplicationMessage(SPACE_DELETED_INFO, null, ApplicationMessage.INFO));
@@ -616,7 +586,6 @@ public class UIManageAllSpaces extends UIContainer {
       String spaceId = ctx.getRequestParameter(OBJECTID);
       String userId = Utils.getViewerRemoteId();
       Space space = spaceService.getSpaceById(spaceId);
-      uiManageAllSpaces.setLoadAtEnd(false);
       
       if (space == null) {
         uiApp.addMessage(new ApplicationMessage(SPACE_DELETED_INFO, null, ApplicationMessage.INFO));
@@ -631,24 +600,6 @@ public class UIManageAllSpaces extends UIContainer {
       spaceService.removeInvitedUser(space, userId);
       uiManageAllSpaces.setHasUpdatedSpace(true);
    }
-  }
-
-  /**
-   * Sets space lists.
-   *
-   * @param spaces
-   */
-  public void setSpaces(List<Space> spaces) {
-    this.spaces = spaces;
-  }
-
-  /**
-   * Gets space list.
-   *
-   * @return space list
-   */
-  public List<Space> getSpaces() {
-    return spaces;
   }
 
   /**

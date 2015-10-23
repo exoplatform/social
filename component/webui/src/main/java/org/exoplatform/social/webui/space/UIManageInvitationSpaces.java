@@ -63,11 +63,9 @@ public class UIManageInvitationSpaces extends UIContainer {
   static public final Integer LEADER = 1, MEMBER = 2;
 
   private final Integer SPACES_PER_PAGE = 20;
-  private List<Space> spaces; // for search result
   private UISpaceSearch uiSpaceSearch = null;
   private SpaceService spaceService = null;
   private String userId = null;
-  private boolean loadAtEnd = false;
   private boolean hasUpdatedSpace = false;
   private int currentLoadIndex;
   private boolean enableLoadNext;
@@ -96,13 +94,13 @@ public class UIManageInvitationSpaces extends UIContainer {
    */
   public void init() {
     try {
-      setHasUpdatedSpace(false);
-      setLoadAtEnd(false);
+      setHasUpdatedSpace(true);
       enableLoadNext = false;
       currentLoadIndex = 0;
       loadingCapacity = SPACES_PER_PAGE;
       invitedSpacesList = new ArrayList<Space>();
-      setInvitedSpacesList(loadInvitedSpaces(currentLoadIndex, loadingCapacity));
+      this.uiSpaceSearch.setSpaceNameSearch(null);
+      this.uiSpaceSearch.getUIStringInput(SPACE_SEARCH).setValue("");
       if (this.selectedChar != null){
         setSelectedChar(this.selectedChar);
       } else {
@@ -141,24 +139,6 @@ public class UIManageInvitationSpaces extends UIContainer {
   }
 
   /**
-   * Gets flags to clarify that load at the last space or not. 
-   * 
-   * @return the loadAtEnd
-   */
-  public boolean isLoadAtEnd() {
-    return loadAtEnd;
-  }
-
-  /**
-   * Sets flags to clarify that load at the last space or not. 
-   * 
-   * @param loadAtEnd
-   */
-  public void setLoadAtEnd(boolean loadAtEnd) {
-    this.loadAtEnd = loadAtEnd;
-  }
-
-  /**
    * Gets information that clarify one space is updated or not.
    * 
    * @return the hasUpdatedSpace
@@ -184,15 +164,9 @@ public class UIManageInvitationSpaces extends UIContainer {
    * @since 1.2.2
    */
   public List<Space> getInvitedSpacesList() throws Exception {
-    this.invitedSpacesList = loadInvitedSpaces(0, this.invitedSpacesList.size());
-    int realInvitedSpacesListSize = this.invitedSpacesList.size();
-    
     if (isHasUpdatedSpace()) {
-      setHasUpdatedSpace(false);
+      setInvitedSpacesList(loadInvitedSpaces(0, this.invitedSpacesList.size()));
     }
-    
-    setEnableLoadNext((realInvitedSpacesListSize >= SPACES_PER_PAGE)
-            && (realInvitedSpacesListSize < getInvitedSpacesNum()));
     
     return this.invitedSpacesList;
   }
@@ -286,8 +260,9 @@ public class UIManageInvitationSpaces extends UIContainer {
   public void loadNext() throws Exception {
     currentLoadIndex += loadingCapacity;
     if (currentLoadIndex <= getInvitedSpacesNum()) {
-      this.invitedSpacesList.addAll(new ArrayList<Space>(Arrays.asList(getInvitedSpacesListAccess()
-                                                              .load(currentLoadIndex, loadingCapacity))));
+      List<Space> loaded = new ArrayList<Space>(Arrays.asList(getInvitedSpacesListAccess().load(currentLoadIndex, loadingCapacity)));
+      this.invitedSpacesList.addAll(loaded);
+      setEnableLoadNext(loaded.size() < SPACES_PER_PAGE ? false : this.invitedSpacesList.size() < getInvitedSpacesNum());
     }
   }
   
@@ -316,6 +291,8 @@ public class UIManageInvitationSpaces extends UIContainer {
     setInvitedSpacesNum(getInvitedSpacesListAccess().getSize());
     uiSpaceSearch.setSpaceNum(getInvitedSpacesNum());
     Space[] spaces = getInvitedSpacesListAccess().load(index, length);
+    
+    setEnableLoadNext(spaces.length < SPACES_PER_PAGE ? false : getInvitedSpacesNum() > SPACES_PER_PAGE);
     
     return new ArrayList<Space>(Arrays.asList(spaces));
   }
@@ -356,7 +333,7 @@ public class UIManageInvitationSpaces extends UIContainer {
       }
       
       uiManageInvitedSpaces.loadSearch();
-      uiManageInvitedSpaces.setLoadAtEnd(false);
+      uiManageInvitedSpaces.setHasUpdatedSpace(false);
       ctx.addUIComponentToUpdateByAjax(uiManageInvitedSpaces);
     }
   }
@@ -377,7 +354,6 @@ public class UIManageInvitationSpaces extends UIContainer {
       String userId = Utils.getViewerRemoteId();
 
       Space space = spaceService.getSpaceById(spaceId);
-      uiManageInvitationSpaces.setLoadAtEnd(false);
       
       if (space == null) {
         uiApp.addMessage(new ApplicationMessage(SPACE_DELETED_INFO, null, ApplicationMessage.INFO));
@@ -414,7 +390,6 @@ public class UIManageInvitationSpaces extends UIContainer {
       String spaceId = ctx.getRequestParameter(OBJECTID);
       String userId = Utils.getViewerRemoteId();
       Space space = spaceService.getSpaceById(spaceId);
-      uiManageInvitationSpaces.setLoadAtEnd(false);
       
       if (space == null) {
         uiApp.addMessage(new ApplicationMessage(SPACE_DELETED_INFO, null, ApplicationMessage.INFO));
@@ -457,24 +432,6 @@ public class UIManageInvitationSpaces extends UIContainer {
       spaceService = getApplicationComponent(SpaceService.class);
     }
     return spaceService;
-  }
-  
-  /**
-   * Sets space list.
-   *
-   * @param spaces
-   */
-  public void setSpaces(List<Space> spaces) {
-    this.spaces = spaces;
-  }
-
-  /**
-   * Gets space list.
-   *
-   * @return space list
-   */
-  public List<Space> getSpaces() {
-    return spaces;
   }
 
   /**
