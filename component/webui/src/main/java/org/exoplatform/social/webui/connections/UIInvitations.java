@@ -57,6 +57,9 @@ public class UIInvitations extends UIContainer {
 
   /** Stores UIProfileUserSearch object. */
   UIProfileUserSearch uiProfileUserSearch = null;
+  
+  /** Invitation Status information */
+  private static final String INCOMING_STATUS = "incoming";
 
   /**
    * Default the number of relationships per page.
@@ -109,6 +112,7 @@ public class UIInvitations extends UIContainer {
    */
   public UIInvitations() throws Exception {
     uiProfileUserSearch = createUIComponent(UIProfileUserSearch.class, null, "UIProfileUserSearch");
+    uiProfileUserSearch.setTypeOfRelation(INCOMING_STATUS);
     setHasPeopleTab(true);
     uiProfileUserSearch.setHasConnectionLink(false);
     uiProfileUserSearch.setLoadFromSearch(false);
