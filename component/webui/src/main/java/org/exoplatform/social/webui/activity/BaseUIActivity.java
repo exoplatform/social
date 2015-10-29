@@ -810,7 +810,7 @@ public class BaseUIActivity extends UIForm {
       }
       Utils.getActivityManager().deleteActivity(activityId);
 
-      UIActivitiesContainer activitiesContainer = uiActivity.getParent();
+      UIActivitiesContainer activitiesContainer = uiActivity.getAncestorOfType(UIActivitiesContainer.class);
       activitiesContainer.removeChildById(uiActivity.getId());
       activitiesContainer.removeActivity(uiActivity.getActivity());
       WebuiRequestContext context = event.getRequestContext();
