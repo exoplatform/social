@@ -220,14 +220,14 @@ public class UIComposer extends UIForm {
         if(uiPortlet.findFirstComponentOfType(BaseUIActivity.class) == null) {
           context.addUIComponentToUpdateByAjax(uiPortlet);
         } else {
-          UIActivitiesContainer uiActivitiesContainer = uiPortlet.findFirstComponentOfType(UIActivitiesContainer.class);
+          UIActivitiesContainer uiActivitiesContainer = uiPortlet.findFirstComponentOfType(UIActivitiesContainer.class);         
           //
           uiActivitiesContainer.addFirstActivityId(activity.getId());
           UIActivityLoader uiActivityLoader = uiActivitiesContainer.addChild(UIActivityLoader.class, null,
                                                                              UIActivityLoader.buildComponentId(activity.getId()));
           //
           context.getJavascriptManager().getRequireJS().require("SHARED/social-ui-activities-loader", "activitiesLoader")
-                 .addScripts("activitiesLoader.addTop('" + uiActivityLoader.getId() + "');");
+                 .addScripts("activitiesLoader.addTop('" + uiActivityLoader.getId() + "', '" + uiActivitiesContainer.getAncestorOfType(UIPortletApplication.class).getId() + "');");
           context.addUIComponentToUpdateByAjax(uiComposer);
         }
       }

@@ -376,67 +376,6 @@ public class UIUserActivitiesDisplay extends AbstractActivitiesDisplay {
    }
  }
   
-  private int getActivitiesUpdatedNum(boolean hasRefresh) {
-    if (this.postActivity) {
-      resetCookies();
-      this.postActivity = false;
-      
-      return 0;
-    }
-
-    //
-    UIActivitiesLoader activitiesLoader = getChild(UIActivitiesLoader.class);
-    ActivitiesRealtimeListAccess activitiesListAccess = (ActivitiesRealtimeListAccess) activitiesLoader.getActivityListAccess();
-    
-    String mode = DisplayMode.ALL_ACTIVITIES.toString();
-    ActivityFilterType.ACTIVITY_FEED
-                    .oldFromSinceTime(Utils.getLastVisited(Utils.OLD_FROM, mode))
-                    .fromSinceTime(Utils.getLastVisited(Utils.FROM, mode))
-                    .toSinceTime(Utils.getLastVisited(Utils.TO, mode)).lastNumberOfUpdated(getLastUpdatedNum(mode));
-    
-    //
-    mode = DisplayMode.CONNECTIONS.toString();
-    ActivityFilterType.CONNECTIONS_ACTIVITIES
-                   .oldFromSinceTime(Utils.getLastVisited(Utils.OLD_FROM, mode))
-                   .fromSinceTime(Utils.getLastVisited(Utils.FROM, mode))
-                   .toSinceTime(Utils.getLastVisited(Utils.TO, mode))
-                   .lastNumberOfUpdated(getLastUpdatedNum(mode));
-    
-    //
-    mode = DisplayMode.MY_ACTIVITIES.toString();
-    ActivityFilterType.USER_ACTIVITIES
-                   .oldFromSinceTime(Utils.getLastVisited(Utils.OLD_FROM, mode))
-                   .fromSinceTime(Utils.getLastVisited(Utils.FROM, mode))
-                   .toSinceTime(Utils.getLastVisited(Utils.TO, mode))
-                   .lastNumberOfUpdated(getLastUpdatedNum(mode));
-    
-    //
-    mode = DisplayMode.MY_SPACE.toString();
-    ActivityFilterType.USER_SPACE_ACTIVITIES
-                  .oldFromSinceTime(Utils.getLastVisited(Utils.OLD_FROM, mode))
-                  .fromSinceTime(Utils.getLastVisited(Utils.FROM, mode))
-                  .toSinceTime(Utils.getLastVisited(Utils.TO, mode))
-                  .lastNumberOfUpdated(getLastUpdatedNum(mode));
-    
-    ActivityUpdateFilter updatedFilter = new ActivityUpdateFilter(hasRefresh);
-   
-    int gotNumber = activitiesListAccess.getNumberOfUpdated(updatedFilter);
-    
-    
-    //
-    if (gotNumber == 0 && hasRefresh) {
-      //only in case lastUpdatedNumber > 0 then reset cookies
-      long lastNumber = getLastUpdatedNum(selectedDisplayMode.toString());
-      if (lastNumber > 0) {
-        resetCookies();
-      }
-      
-    }
-    
-    
-    return gotNumber;
-  }
-  
   public void resetCookies() {
     Utils.setLastVisited(this.selectedDisplayMode.toString());
     

@@ -66,6 +66,7 @@
     ITEM_BOX_MAX_WIDTH : 380,
     ITEM_BOX_MIN_WIDTH : 300,
     
+    isLoadMore : false,
     currentBrowseWidth : 0,
     onResizeWidth : new Array(),
     upFreeSpace : new Array(),
@@ -424,6 +425,124 @@
         fake.remove();
         parent.css('position', '');
       }
+    },
+    checkDevice : function() {
+      var body = $('body:first').removeClass('phoneDisplay').removeClass('tabletDisplay').removeClass('tabletLDisplay');
+      var isMobile = body.find('.visible-phone:first').css('display') !== 'none';
+      var isTablet = body.find('.visible-tablet:first').css('display') !== 'none';
+      var isTabletL = body.find('.visible-tabletL:first').css('display') !== 'none';
+      if (isMobile) {
+        body.addClass('phoneDisplay');
+      }
+      if (isTablet) {
+        body.addClass('tabletDisplay');
+      }
+      if (isTabletL) {
+        body.addClass('tabletLDisplay');
+      }
+      return {'isMobile' : isMobile, 'isTablet' : isTablet, 'isTabletL' : isTabletL};
+    },
+    onViewActivity: function(responsiveId) {
+      var root = $('#'+responsiveId);
+      if(root.length > 0 && eXo.social.SocialUtil.checkDevice().isMobile === true) {
+      root.find('.activityStream').off('click').on('click', function(evt) {     
+          var activity = $(this);                  
+          if(activity.hasClass('block-activity')) {
+            return true;
+          }
+          $('html, body').animate({scrollTop: 16}, 'slow');
+          //
+          var parent = root;
+          parent.find('.activityStream').addClass('hidden-phone');
+          //
+          var activityLoadMore = $('#ActivitiesLoader');
+          if (activityLoadMore != null) {
+             this.isLoadMore = (activityLoadMore.css('display') !== 'none');
+             activityLoadMore.hide();
+       
+          }
+          //
+          var activityDisplay = parent.find('#UIUserActivitiesDisplay:first');
+          activityDisplay.find('.activityTop').addClass('hidden-phone');
+
+          if(activityDisplay.find('.iconReturn').length === 0) {
+            activityDisplay.prepend($('<div class="visible-phone" style="cursor:pointer"><i class="uiIconEcmsDarkGray uiIconEcmsReturn iconReturn"></i></div>').click(function() {
+              var parent = root;
+              parent.find('.activityStream').removeClass('hidden-phone');
+              parent.find('.activityTop').removeClass('hidden-phone');
+              var activity = parent.find('.block-activity').removeClass('block-activity');
+              if (activity.length > 0) {
+                $('html, body').animate({scrollTop:activity.offset().top - activity.height() + 62}, 'slow');
+              }
+              //
+              $('.footComment').html('');
+              $(this).remove();
+              if (this.isLoadMore) {
+                var activityLoadMore = $('#ActivitiesLoader');
+                if (activityLoadMore != null) {
+                  activityLoadMore.show();
+                }
+                
+              }
+            }));
+          }
+          //
+          activity.removeClass('hidden-phone').addClass('block-activity');
+          //
+          var footComment = $('.footComment');
+          if(footComment.length === 0) {
+            footComment = $('<div class="footComment visible-phone" style="z-index:1000"></div>');
+            $('body').append(footComment);
+          }
+          var input = activity.find('.inputContainer:first').clone().removeClass('hidden-phone');
+          window.inputId = input.attr('id');
+          input.attr('id', 'CurrentCommentInput');
+          input.find('.exo-mentions').remove();
+          input.find('button.btn:first').attr('id', 'CurrentCommentButton');
+          footComment.html('').append(input);
+          footComment.find('textarea.textarea:first').attr('id', 'CurrentCommentTextare').exoMentions({
+            onDataRequest:function (mode, query, callback) {
+              var url = window.location.protocol + '//' + window.location.host + '/' + eXo.social.portal.rest + '/social/people/getprofile/data.json?search='+query;
+              $.getJSON(url, function(responseData) {
+                responseData = _.filter(responseData, function(item) { 
+                  return item.name.toLowerCase().indexOf(query.toLowerCase()) > -1;
+                });
+                callback.call(this, responseData);
+              });
+            },
+            idAction : ('CurrentCommentButton'),
+            elasticStyle : {
+              maxHeight : '42px',
+              minHeight : '32px',
+              marginButton: '4px',
+              enableMargin: false
+            },
+            messages : window.eXo.social.I18n.mentions
+          });
+          //
+          var widthBtn = footComment.find('#CurrentCommentButton').on('click keyup', function(evt) {
+            if(evt.type === 'keyup' && evt.keyCode !== 13) {
+              return false;
+            }
+            var value = $(this).parents('.footComment').find('textarea.textarea:first').val();
+            $('#' + window.inputId).find('textarea.textarea:first').val(value);
+            var t = setTimeout(function() {
+              clearTimeout(t);
+              $.globalEval($('#' + window.inputId).find('button.btn:first').data('action-link'));
+            }, 100);
+          }).outerWidth();
+          footComment.find('.commentInput:first').css('margin-right', widthBtn + 18 + 'px');
+          //
+          var commentList = activity.find('.commentListInfo:first');
+          if(commentList.length > 0 && commentList.find('a:first').length > 0) {
+            var action = commentList.find('a:first').attr('onclick');
+            if(action && action.length > 0) {
+              $.globalEval(action.replace('objectId=none', 'objectId=all'));
+            }
+          }
+      }); 
+      }
+       
     }
   };
 

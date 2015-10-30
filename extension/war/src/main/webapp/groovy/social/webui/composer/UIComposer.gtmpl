@@ -67,6 +67,7 @@
   jsManager.require("SHARED/uiForm")
            .require("SHARED/jquery", "jq")
            .require("SHARED/bts_tooltip").addScripts("jq('*[rel=\"tooltip\"]').tooltip();")
+           .require("SHARED/social-ui-activity", "activity")
            .require("SHARED/social-ui-activity-composer", "composer")
            .addScripts("UIComposer.onLoadI18n({ helpSearch: \"$helpSearch\", searching: \"searching\", foundNoMatch: \"$foundNoMatch\"});") 
            .addScripts("UIComposer.onLoad($params);");

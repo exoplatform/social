@@ -88,7 +88,7 @@ var UIActivity = {
     var commentLinkEl = $("#" + UIActivity.commentLinkId);
     if (commentLinkEl.length > 0) {
       commentLinkEl.off('click').on('click', function (evt) {
-        if (UIActivity.checkDevice().isMobile === true) {
+        if (eXo.social.SocialUtil.checkDevice().isMobile === true) {
           $('.footComment').find('div.replaceTextArea:first').focus();
           return true;
         }
@@ -288,22 +288,6 @@ var UIActivity = {
       }, 500);
     });
   },
-  checkDevice : function() {
-    var body = $('body:first').removeClass('phoneDisplay').removeClass('tabletDisplay').removeClass('tabletLDisplay');
-    var isMobile = body.find('.visible-phone:first').css('display') !== 'none';
-    var isTablet = body.find('.visible-tablet:first').css('display') !== 'none';
-	  var isTabletL = body.find('.visible-tabletL:first').css('display') !== 'none';
-    if (isMobile) {
-      body.addClass('phoneDisplay');
-    }
-    if (isTablet) {
-      body.addClass('tabletDisplay');
-    }
-    if (isTabletL) {
-      body.addClass('tabletLDisplay');
-    }
-    return {'isMobile' : isMobile, 'isTablet' : isTablet, 'isTabletL' : isTabletL};
-  },
   hasClass : function(target, cssClass) {
     return (target.hasClass(cssClass) || target.find('>.' + cssClass).length > 0)
   },
@@ -318,7 +302,7 @@ var UIActivity = {
     },1200);
   },
   activityOnClick : function(evt) {
-    if(UIActivity.checkDevice().isMobile === true) {
+    if(eXo.social.SocialUtil.checkDevice().isMobile === true) {
       var activity = $(this);
       if(activity.hasClass('uiActivityLoader')) {
         activity = activity.find('.activityStream:first');
@@ -427,7 +411,7 @@ var UIActivity = {
       UIActivity.responsiveId = id;
     }
     var root = $('#'+id);
-    if(root.length > 0 && UIActivity.checkDevice().isMobile === true) {
+    if(root.length > 0 && eXo.social.SocialUtil.checkDevice().isMobile === true) {
       var hidenComposer = function(elm) {
         $('#UIUserActivitiesDisplay').removeClass('hidden-phone');
         return elm.parents('.uiComposer:first').addClass('hidden-phone');
@@ -471,94 +455,17 @@ var UIActivity = {
       //
       $('.inputContainer').addClass('hidden-phone');
       //activityStream
-      root.find('.activityStream').click(function(evt) {
-        if(UIActivity.checkDevice().isMobile === true) {
-          var activity = $(this);                  
-          if(activity.hasClass('block-activity')) {
-            return true;
-          }
-          $('html, body').animate({scrollTop: 16}, 'slow');
-          //
-          var parent = $('#' + UIActivity.responsiveId);
-          parent.find('.activityStream').addClass('hidden-phone');
-          //
-          resetRightHeight();
-          //
-          var activityDisplay = parent.find('#UIUserActivitiesDisplay:first');
-          activityDisplay.find('.activityTop').addClass('hidden-phone');
+      if (typeof id === 'undefined' && UIActivity.responsiveId) {
+        id = UIActivity.responsiveId
+      } else {
+        UIActivity.responsiveId = id;
+      }
 
-          if(activityDisplay.find('.iconReturn').length === 0) {
-            activityDisplay.prepend($('<div class="visible-phone" style="cursor:pointer"><i class="uiIconEcmsDarkGray uiIconEcmsReturn iconReturn"></i></div>').click(function() {
-              var parent = $('#' + UIActivity.responsiveId);
-              parent.find('.activityStream').removeClass('hidden-phone');
-              parent.find('.activityTop').removeClass('hidden-phone');
-              var activity = parent.find('.block-activity').removeClass('block-activity');
-              if (activity.length > 0) {
-                $('html, body').animate({scrollTop:activity.offset().top - activity.height() + 62}, 'slow');
-              }
-              //
-              $('.footComment').html('');
-              $(this).remove();
-            }));
-          }
-          //
-          activity.removeClass('hidden-phone').addClass('block-activity');
-          //
-          var footComment = $('.footComment');
-          if(footComment.length === 0) {
-            footComment = $('<div class="footComment visible-phone" style="z-index:1000"></div>');
-            $('body').append(footComment);
-          }
-          var input = activity.find('.inputContainer:first').clone().removeClass('hidden-phone');
-          window.inputId = input.attr('id');
-          input.attr('id', 'CurrentCommentInput');
-          input.find('.exo-mentions').remove();
-          input.find('button.btn:first').attr('id', 'CurrentCommentButton');
-          footComment.html('').append(input);
-          footComment.find('textarea.textarea:first').attr('id', 'CurrentCommentTextare').exoMentions({
-            onDataRequest:function (mode, query, callback) {
-              var url = window.location.protocol + '//' + window.location.host + '/' + eXo.social.portal.rest + '/social/people/getprofile/data.json?search='+query;
-              $.getJSON(url, function(responseData) {
-                responseData = _.filter(responseData, function(item) { 
-                  return item.name.toLowerCase().indexOf(query.toLowerCase()) > -1;
-                });
-                callback.call(this, responseData);
-              });
-            },
-            idAction : ('CurrentCommentButton'),
-            elasticStyle : {
-              maxHeight : '42px',
-              minHeight : '32px',
-              marginButton: '4px',
-              enableMargin: false
-            },
-            messages : window.eXo.social.I18n.mentions
-          });
-          //
-          var widthBtn = footComment.find('#CurrentCommentButton').on('click keyup', function(evt) {
-            if(evt.type === 'keyup' && evt.keyCode !== 13) {
-              return false;
-            }
-            var value = $(this).parents('.footComment').find('textarea.textarea:first').val();
-            $('#' + window.inputId).find('textarea.textarea:first').val(value);
-            var t = setTimeout(function() {
-              clearTimeout(t);
-              $.globalEval($('#' + window.inputId).find('button.btn:first').data('action-link'));
-            }, 100);
-          }).outerWidth();
-          footComment.find('.commentInput:first').css('margin-right', widthBtn + 18 + 'px');
-          //
-          var commentList = activity.find('.commentListInfo:first');
-          if(commentList.length > 0 && commentList.find('a:first').length > 0) {
-            var action = commentList.find('a:first').attr('onclick');
-            if(action && action.length > 0) {
-              $.globalEval(action.replace('objectId=none', 'objectId=all'));
-            }
-          }
-        }
-      });
+      eXo.social.SocialUtil.onViewActivity(UIActivity.responsiveId);
+      
     }
   }
+  
 };
 //
 eXo.social.SocialUtil.addOnResizeWidth(function(evt){UIActivity.responsiveMobile()});
