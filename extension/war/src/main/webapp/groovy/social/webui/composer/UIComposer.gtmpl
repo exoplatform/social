@@ -71,12 +71,23 @@
            .addScripts("UIComposer.onLoadI18n({ helpSearch: \"$helpSearch\", searching: \"searching\", foundNoMatch: \"$foundNoMatch\"});") 
            .addScripts("UIComposer.onLoad($params);");
 %>
-<div class="uiComposer uiGrayLightBox">
+<div class="uiComposer uiGrayLightBox hidden-phone">
   <% uiform.begin() %>
+  <div class="button-group clearfix visible-phone">
+  	<button class="btn btn-cancel"><%=_ctx.appRes("word.cancel")%></button>
+  	<button class="btn btn-primary btn-submit">$shareLabel</button>
+  </div>
   <div class="blastContainer">
-    <div class="$blastInput">
-      <% uiform.renderField(uicomponent.COMPOSER_TEXT_AREA_INPUT) %>
-    </div>
+  	<div class="desktop-input">
+	    <div class="$blastInput">
+	      <% uiform.renderField(uicomponent.COMPOSER_TEXT_AREA_INPUT); %>
+	    </div>
+	    
+	    <%
+      def currentActivityComposer = uicomponent.getActivityComposerManager().getCurrentActivityComposer();
+
+      if (!(currentActivityComposer instanceof UIDefaultActivityComposer)) {
+    %>
     
 
         <div id="ComposerContainer" class="clearfix">
@@ -84,9 +95,12 @@
             uicomponent.renderChild(UIActivityComposerContainer.class);
           %>
         </div>
-    
+    <%
+      }
+    %>
+  	</div>   
 		<div  class="blastShare clearfix">
-		 <button class="pull-right btn btn-primary" id="ShareButton" type="submit" onclick="<%= uicomponent.event("PostMessage");%>; UIComposer.post()">$shareLabel</button>
+		 	<button class="pull-right btn btn-primary hidden-phone" id="ShareButton" type="submit" onclick="<%= uicomponent.event("PostMessage");%>; UIComposer.post()">$shareLabel</button>
 		  <div id="ActivityComposerExt" class="attachMents pull-left">
 		  <%
 			  def simpleName, labelSimpleName, actionEvent, clazz;
@@ -102,7 +116,9 @@
             print("<a id=\"actionLink\" onclick=\"$action\"><span></span></a>");
             action = "UIComposer.showLink()";
           }
-		
+          if("uidocactivitycomposer".equals(clazz)) {
+            clazz += " hidden-phone";
+          }
 		      %>
           <a href="javascript:void(0)" rel="tooltip" data-placement="bottom" title="$labelSimpleName" class="actionIcon $clazz" onclick="$action"><i class="uiIconSoc$simpleName uiIconSocLightGray"></i></a>
       <%
@@ -113,4 +129,76 @@
 		</div>
 	</div>
   <% uiform.end()%>
+</div>
+
+
+
+<!-- share page -->
+<div class="shareStt clearfix">
+	<div class="pull-right"><a href="#" class="btn" title="cancel">Cancel</a></div>
+	<div class="pull-left">
+		<div class="dropdown open">
+			<a href="#" class="btn btn-primary" title="share something">Share</a>
+			<ul class="dropdown-menu">
+				<li>
+					<textarea title="What are you working on?" cols="30" rows="10" class="textarea"></textarea> 
+				</li>
+				<li>
+					<div class="attachments">
+						<a class="actionIcon uilinkactivitycomposer" title="" data-placement="bottom" rel="tooltip" href="javascript:void(0)" data-original-title="Link"><i class="uiIconSocUILinkActivityComposer uiIconSocLightGray"></i></a>
+						<a href="javascript:void(0);" rel="tooltip" data-placement="bottom" title="" class="actionIcon" data-original-title="Mention"><i class="uiIconSocMention uiIconSocLightGray"></i></a>
+					</div>				
+				</li>
+			</ul>
+		</div>
+	</div>
+</div>
+
+<!-- comment page -->
+
+<div class="uiCommentBox">
+	<div class="highlightBox">
+		<div class="profile clearfix">
+			<a class="avatarMedium pull-left" href="#" title="Root Root"><img src="/eXoSkin/skin/images/system/UserAvtDefault.png" alt="Root Root"></a>
+			<div class="rightBlock">
+				<a href="#">Root Root</a>
+				<p class="dateTime">less than a minute ago</p>
+			</div>
+		</div>
+		  <p title="" class="descript" style="max-height: 50px;">describle</p>
+	</div>
+	<div class="actionBar clearfix ">
+		<ul class="pull-right">
+			<li>
+				<a id="previewCommentLink" href="#">
+					<i class="uiIconComment uiIconLightGray"></i>&nbsp;2
+				</a>
+			</li>
+			<li>
+				<a href="javascript:void(0);">
+					<i class="uiIconThumbUp uiIconLightGray"></i>&nbsp;0
+				</a>
+			</li>
+		</ul>
+	</div>
+	<ul class="commentList" style="max-height: 353px;">
+		<li class="clearfix">
+			<a title="Root Root" href="#" class="avatarXSmall pull-left"><img alt="" src="/eXoSkin/skin/images/system/UserAvtDefault.png"></a>
+			<div class="rightBlock">
+				<div class="tit">
+					<a href="#">Root Root</a>
+					<span class="pull-right dateTime">less than a minute ago</span>
+				</div>
+				<p class="cont">abc</p>
+				<a class="close previewControllDelete" href="javascript:void(0)"><i class="uiIconLightGray uiIconClose "></i></a>
+			</div>
+		</li>
+	</ul>
+  
+	<div class="commentInputBox">
+		<a title="Root Root" href="#" class="avatarXSmall pull-left"><img alt="Root Root" src="/eXoSkin/skin/images/system/UserAvtDefault.png"></a>
+		<div class="commentBox">
+			<textarea class="textarea" rows="10" cols="30" placeholder="Add your comment..."></textarea>
+		</div>
+	</div>
 </div>

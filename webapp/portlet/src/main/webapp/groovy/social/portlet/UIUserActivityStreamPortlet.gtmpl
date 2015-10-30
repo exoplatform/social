@@ -31,9 +31,15 @@
   
   def requireJs = _ctx.getRequestContext().getJavascriptManager().getRequireJS();
   requireJs.require("SHARED/socialUtil", "socialUtil").require("SHARED/social-ui-activity", "activity")
+           .addScripts("activity.responsiveMobile('" + uicomponent.id + "');")
            .addScripts("socialUtil.addfillUpFreeSpace('" + uicomponent.id + "');");
   uicomponent.refresh();
   String uiTabClazz = (Utils.isHomePage() == true) ? "uiTabPaneHomePage" : "";
+  //
+  print("<div class=\"visible-desktop\"></div>");
+  print("<div class=\"visible-tablet\"></div>");
+  print("<div class=\"visible-tabletL\"></div>");
+  print("<div class=\"visible-phone\"></div>");
   
   if (uicomponent.isSingleActivity()) {
     String activityTitle = uicomponent.getSingleActivityTitle();

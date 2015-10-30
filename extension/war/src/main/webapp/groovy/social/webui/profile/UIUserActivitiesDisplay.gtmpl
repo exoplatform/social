@@ -118,7 +118,7 @@
         
   jsManager.require("SHARED/jquery", "jq").addScripts(hint_text_script);
 %>
-<div id="$uicomponent.id" class="uiUserActivitiesDisplay clearfix"> <!-- use js to add beside one class that named "notSeen" if having some new updates  -->
+<div id="$uicomponent.id" class="uiUserActivitiesDisplay uiActivitiesDisplay clearfix"> <!-- use js to add beside one class that named "notSeen" if having some new updates  -->
 <% if (uicomponent.isWelcomeActivity()) { %>
   <div class="composerHintCont">
 	<span class="arrowLeft"></span>
@@ -127,11 +127,10 @@
 		 $composer_Hint_Text	
 	</div>
   </div>
-  
   <div class="clearfix activityTop">
+    <button class="btn btn-primary visible-phone changeStatus pull-left pull-right"><i class="uiIconEdit"></i> <%=_ctx.appRes("UIUserActivitiesDisplay.label.Status")%></button>
     <div class="activityStreamStatus pull-left">
-    
-    <div class="arrowBottom"></div>
+      <div class="arrowBottom"></div>
       <!--<span id="noUpdates"><%=noUpdates%></span>-->
       <a class="uiIconRefresh uiIconLightGray" href="javascript:void(0);" rel="tooltip" title="$refreshTooltipButton" id="RefreshButton" onclick="<%=uicomponent.event("RefreshStream")%>" ></a>
     </div>
@@ -184,8 +183,9 @@
   </div>
   <div class="activityBottom"><span></span></div>
 <% } else { %>
+  <div class="clearfix activityTop">
+    <button class="btn btn-primary visible-phone changeStatus pull-left"><i class="uiIconEdit"></i> <%=_ctx.appRes("UIUserActivitiesDisplay.label.Status")%></button>
  <% if (Utils.isHomePage()) { %>
-	<div class="clearfix activityTop">
     <div class="pull-right">
       <% uicomponent.renderChild(UIDropDownControl.class);%>
     </div>
@@ -204,8 +204,8 @@
       <a class="uiIconRefresh uiIconLightGray" href="javascript:void(0);" rel="tooltip" title="$refreshTooltipButton" id="RefreshButton" onclick="<%=uicomponent.event("RefreshStream")%>" ></a>
     </div>
     <% } %>
-  </div>
  <% } %>
+  </div>
   <% uicomponent.renderChild(UIActivitiesLoader.class);%>
   <% if ( hasActivities ) { %>
   <% Utils.resizeHomePage();%>
@@ -213,3 +213,16 @@
   <% } %>
 <% } %>
 </div>
+
+  <!-- add more for devices -->
+  <div class="clearfix activityTop">
+  <button class="btn btn-primary visible-phone changeStatus pull-left"><i class="uiIconEdit"></i> <%=_ctx.appRes("UIUserActivitiesDisplay.label.Status")%></button>
+	<div class="pull-right">
+	  <% uicomponent.renderChild(UIDropDownControl.class);%>
+	</div>
+	<div class="activityStreamStatus pull-left">
+	  <div class="arrowBottom"></div>
+	  <a class="uiIconRefresh uiIconLightGray" href="javascript:void(0);" rel="tooltip" title="$refreshTooltipButton" id="RefreshButton" onclick="<%=uicomponent.event("RefreshStream")%>" ></a>
+	</div>
+	<div class="pull-left"><a href="#" class="btn btn-primary" title="share something"><i class="uiIconShare uiIconLightGray"></i>&nbsp;Status</a></div>
+  </div>

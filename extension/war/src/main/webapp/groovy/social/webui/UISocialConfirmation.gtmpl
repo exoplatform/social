@@ -1,14 +1,16 @@
-<div class="UIPopupWindow UIDragObject uiPopup UISocialConfirmation" id="UISocialConfirmation" style="width: 550px; display: none;">
-	<div class="popupHeader clearfix">
-		<a class="uiIconClose pull-right" title="<%=_ctx.appRes("UIConfirmation.Close")%>"></a>
-		<span class="PopupTitle popupTitle"></span>
-	</div>
-	<div class="PopupContent popupContent">
-		<ul class="singleMessage popupMessage resizable">
-			<li>
-				<span class="confirmationIcon contentMessage"></span>
-			</li>
-		</ul>
-		<div class="uiAction uiActionBorder"></div>
-	</div>			
+<div class="uiPopupWrapper UISocialConfirmation" style="display: none;">
+    <div class="UIPopupWindow UIDragObject uiPopup " style="width: 550px;">
+        <div class="popupHeader clearfix">
+            <a class="uiIconClose pull-right" title="<%=_ctx.appRes("UIConfirmation.Close")%>"></a>
+            <span class="PopupTitle popupTitle"></span>
+        </div>
+        <div class="PopupContent popupContent">
+            <ul class="singleMessage popupMessage resizable">
+                <li>
+                    <span class="confirmationIcon contentMessage"></span>
+                </li>
+            </ul>
+            <div class="uiAction uiActionBorder"></div>
+        </div>
+    </div>
 </div>
