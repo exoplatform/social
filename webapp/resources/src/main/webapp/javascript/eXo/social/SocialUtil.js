@@ -462,12 +462,14 @@
        
           }
           //
-          var activityDisplay = parent.find('#UIUserActivitiesDisplay:first');
+          var activityDisplay = parent.find('div.uiActivitiesDisplay:first').addClass('activityDisplay');
           activityDisplay.find('.activityTop').addClass('hidden-phone');
 
+      
           if(activityDisplay.find('.iconReturn').length === 0) {
             activityDisplay.prepend($('<div class="visible-phone" style="cursor:pointer"><i class="uiIconEcmsDarkGray uiIconEcmsReturn iconReturn"></i></div>').click(function() {
               var parent = root;
+              parent.find('div.uiActivitiesDisplay:first').removeClass('activityDisplay');
               parent.find('.activityStream').removeClass('hidden-phone');
               parent.find('.activityTop').removeClass('hidden-phone');
               var activity = parent.find('.block-activity').removeClass('block-activity');

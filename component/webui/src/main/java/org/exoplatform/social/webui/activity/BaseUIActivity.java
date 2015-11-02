@@ -813,6 +813,7 @@ public class BaseUIActivity extends UIForm {
       UIActivitiesContainer activitiesContainer = uiActivity.getAncestorOfType(UIActivitiesContainer.class);
       activitiesContainer.removeChildById(uiActivity.getId());
       activitiesContainer.removeActivity(uiActivity.getActivity());
+      
       WebuiRequestContext context = event.getRequestContext();
       context.getJavascriptManager().require("SHARED/social-ui-activity", "activity")
              .addScripts("activity.responsiveMobile('" + activitiesContainer.getAncestorOfType(UIPortletApplication.class).getId() + "');");
@@ -822,7 +823,6 @@ public class BaseUIActivity extends UIForm {
         context.addUIComponentToUpdateByAjax(activitiesContainer.getParent().getParent());
       } else {
         AbstractActivitiesDisplay uiActivitiesDisplay = activitiesContainer.getAncestorOfType(AbstractActivitiesDisplay.class);
-//        uiActivitiesDisplay.setRenderFull(true);
         uiActivitiesDisplay.init();
         event.getRequestContext().addUIComponentToUpdateByAjax(uiActivitiesDisplay);
       }

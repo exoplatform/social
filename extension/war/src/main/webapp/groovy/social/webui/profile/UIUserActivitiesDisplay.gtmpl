@@ -184,7 +184,10 @@
   <div class="activityBottom"><span></span></div>
 <% } else { %>
   <div class="clearfix activityTop">
-    <button class="btn btn-primary visible-phone changeStatus pull-left"><i class="uiIconEdit"></i> <%=_ctx.appRes("UIUserActivitiesDisplay.label.Status")%></button>
+    <!--hide Share button when show activity detail in responsive device -->
+    <%if (!uicomponent.isSingleContext()) { %>   
+      <button class="btn btn-primary visible-phone changeStatus pull-left"><i class="uiIconEdit"></i> <%=_ctx.appRes("UIUserActivitiesDisplay.label.Status")%></button>
+    <% } %>
  <% if (Utils.isHomePage()) { %>
     <div class="pull-right">
       <% uicomponent.renderChild(UIDropDownControl.class);%>
@@ -214,9 +217,10 @@
 <% } %>
 </div>
 
+
   <!-- add more for devices -->
   <div class="clearfix activityTop">
-  <button class="btn btn-primary visible-phone changeStatus pull-left"><i class="uiIconEdit"></i> <%=_ctx.appRes("UIUserActivitiesDisplay.label.Status")%></button>
+    <button class="btn btn-primary visible-phone changeStatus pull-left"><i class="uiIconEdit"></i> <%=_ctx.appRes("UIUserActivitiesDisplay.label.Status")%></button>  
 	<div class="pull-right">
 	  <% uicomponent.renderChild(UIDropDownControl.class);%>
 	</div>
@@ -226,3 +230,4 @@
 	</div>
 	<div class="pull-left"><a href="#" class="btn btn-primary" title="share something"><i class="uiIconShare uiIconLightGray"></i>&nbsp;Status</a></div>
   </div>
+

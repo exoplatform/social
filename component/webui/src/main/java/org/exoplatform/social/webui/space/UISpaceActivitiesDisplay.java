@@ -26,6 +26,7 @@ import org.exoplatform.social.webui.Utils;
 import org.exoplatform.social.webui.activity.AbstractActivitiesDisplay;
 import org.exoplatform.social.webui.activity.UIActivitiesContainer;
 import org.exoplatform.social.webui.activity.UIActivitiesLoader;
+import org.exoplatform.social.webui.composer.UIComposer;
 import org.exoplatform.social.webui.composer.UIComposer.PostContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.EventConfig;
@@ -86,6 +87,15 @@ public class UISpaceActivitiesDisplay extends AbstractActivitiesDisplay {
 
   public UIActivitiesLoader getActivitiesLoader() {
     return activitiesLoader;
+  }
+  
+  /**
+   * Checks the Stream Context to make 
+   * the decision Share button shows or not.
+   * @return TRUE/FALSE
+   */
+  public boolean isSingleContext() {
+    return (getActivitiesLoader().getPostContext() == UIComposer.PostContext.SINGLE);
   }
 
   /**
