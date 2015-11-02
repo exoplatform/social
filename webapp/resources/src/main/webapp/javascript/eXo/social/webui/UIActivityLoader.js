@@ -74,8 +74,7 @@
         url += activityItem.attr('id') + ((UIActivityLoader.getRequestParam().length > 0) ? UIActivityLoader.getRequestParam() : "");
         window.ajaxGet(url, function(data) {
           activityItem.attr('style', '').removeClass('activity-loadding');
-          if (UIActivityLoader.resposiveId) {
-            console.log('run here!');
+          if (UIActivityLoader.responsiveId) {
             eXo.social.SocialUtil.onViewActivity(UIActivityLoader.responsiveId);
           }
         });
