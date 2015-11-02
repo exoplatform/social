@@ -311,6 +311,7 @@ var UIActivity = {
     },1200);
   },
   hideLink : function() {
+    $('textarea#composerInput').exoMentions('reset');
     var container = $('#ComposerContainer')
     var link = container.find('#LinkExtensionContainer');
     if (link.length > 0) {
@@ -318,6 +319,14 @@ var UIActivity = {
         link.hide();
       }
     } 
+
+    var cmp = container.find('.uiLinkShareDisplay');
+    if (cmp.length > 0) {s
+      var closeLink = cmp.find('a.uiIconClose');
+      if (closeLink) {
+        closeLink.trigger('click');
+      }
+    }
   }, 
   responsiveMobile : function(id) {
     //
