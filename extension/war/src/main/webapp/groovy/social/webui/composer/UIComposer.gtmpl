@@ -86,8 +86,6 @@
 	    
 	    <%
       def currentActivityComposer = uicomponent.getActivityComposerManager().getCurrentActivityComposer();
-
-      if (!(currentActivityComposer instanceof UIDefaultActivityComposer)) {
     %>
     
 
@@ -96,9 +94,6 @@
             uicomponent.renderChild(UIActivityComposerContainer.class);
           %>
         </div>
-    <%
-      }
-    %>
   	</div>   
 		<div  class="blastShare clearfix">
 		 	<button class="pull-right btn btn-primary hidden-phone" id="ShareButton" type="submit" onclick="<%= uicomponent.event("PostMessage");%>; UIComposer.post()">$shareLabel</button>
