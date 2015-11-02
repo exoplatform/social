@@ -309,6 +309,15 @@ var UIActivity = {
       rightTD.css('min-height', Math.max(wHeight, leftBody.height()) + 'px');
       clearTimeout(T);
     },1200);
+  },
+  hideLink : function() {
+    var container = $('#ComposerContainer')
+    var link = container.find('#LinkExtensionContainer');
+    if (link.length > 0) {
+      if (link.css('display') !== 'none') {
+        link.hide();
+      }
+    } 
   }, 
   responsiveMobile : function(id) {
     //
@@ -324,7 +333,8 @@ var UIActivity = {
     var root = $('#'+id);
     if(root.length > 0 && deviceInfo.isMobile === true) {
       var hidenComposer = function(elm) {
-        $('#' + UIActivity.responsiveId).find('.uiActivitiesDisplay:first').removeClass('hidden-phone');
+        UIActivity.hideLink();
+        root.find('.uiActivitiesDisplay:first').removeClass('hidden-phone');
         return elm.parents('.uiComposer:first').addClass('hidden-phone');
       };
       //
