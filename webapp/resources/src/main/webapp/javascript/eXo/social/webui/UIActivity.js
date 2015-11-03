@@ -362,7 +362,8 @@ var UIActivity = {
           hidenComposer($(this));
         });
         composer.find('.button-group').find('.btn-submit').prop('disabled', true).off('click').click(function() {
-          hidenComposer($(this)).find('#ShareButton').trigger('mousedown');
+          parent.find('#ShareButton').trigger('mousedown');
+          hidenComposer($(this));
         });
         //
         composer.find('textarea#composerInput').exoMentions('registerControlButton', function(status) {
