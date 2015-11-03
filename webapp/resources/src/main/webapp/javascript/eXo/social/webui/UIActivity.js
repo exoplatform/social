@@ -321,7 +321,7 @@ var UIActivity = {
     } 
 
     var cmp = container.find('.uiLinkShareDisplay');
-    if (cmp.length > 0) {s
+    if (cmp.length > 0) {
       var closeLink = cmp.find('a.uiIconClose');
       if (closeLink) {
         closeLink.trigger('click');
