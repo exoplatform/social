@@ -88,9 +88,6 @@ var UIActivity = {
     }
 
     UIActivity.permaLinkActivityButtonEl.off('click').on('click', function(evt) {
-      if (eXo.social.SocialUtil.checkDevice().isMobile === true) {
-        //need to hide the Status share button on the stream
-      }
       evt.stopPropagation();
     });
     
@@ -147,8 +144,8 @@ var UIActivity = {
   
     var actionDeletes = $('a.controllDelete');
     if (actionDeletes.length > 0) {
-      actionDeletes.off('click').on('click',
-        function(e) {
+      actionDeletes.off('click').on('click', function(e) {
+          e.stopPropagation();
           $('.currentDeleteActivity:first').removeClass('currentDeleteActivity');
           var jElm = $(this);
           jElm.addClass('currentDeleteActivity');
@@ -350,12 +347,12 @@ var UIActivity = {
       root.find('.changeStatus').click(function(evt) {
         UIActivity.resetRightHeight();
         //
-        var parent = $(this).parents('#' + UIActivity.responsiveId);
+        var parent = root;
         parent.find('.uiActivitiesDisplay:first').addClass('hidden-phone');
         if(parent.find('div.uiComposer.hidden-phone').length > 0) {
           parent.find('div.uiComposer.hidden-phone').removeClass('hidden-phone');
         }
-        //
+        
         var composer = parent.find('.uiComposer:first');
         composer.find('.replaceTextArea').focus();
         composer.find('.button-group').find('.btn-cancel').off('click').click(function() {
@@ -375,6 +372,17 @@ var UIActivity = {
           }
         });
       });
+      //
+      var btnGroup = root.find('.button-group');
+      if (btnGroup) {
+        btnGroup.find('.btn-cancel').off('click').click(function() {
+          hidenComposer($(this));
+        });
+        btnGroup.find('.btn-submit').off('click').click(function() {
+          root.find('#ShareButton').trigger('mousedown');
+          hidenComposer($(this));
+        });
+      }
       //
       if ($('.activityDisplay').length === 0) {
         $('.inputContainer').addClass('hidden-phone');
