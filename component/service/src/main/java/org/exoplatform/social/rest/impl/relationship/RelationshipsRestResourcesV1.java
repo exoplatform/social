@@ -57,7 +57,7 @@ import org.exoplatform.social.rest.entity.RelationshipEntity;
 import org.exoplatform.social.service.rest.api.VersionResources;
 
 @Path(VersionResources.VERSION_ONE + "/social/relationships")
-@Api(tags = "relationship: Managing relationships of identities", value=VersionResources.VERSION_ONE + "/social/relationships")
+@Api(tags = VersionResources.VERSION_ONE + "/social/relationships", value = VersionResources.VERSION_ONE + "/social/relationships", description = "Managing relationships of identities")
 public class RelationshipsRestResourcesV1 implements RelationshipsRestResources {
 
   public RelationshipsRestResourcesV1() {

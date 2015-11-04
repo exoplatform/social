@@ -57,7 +57,7 @@ import org.exoplatform.social.rest.entity.SpaceMembershipEntity;
 import org.exoplatform.social.service.rest.api.VersionResources;
 
 @Path(VersionResources.VERSION_ONE + "/social/spacesMemberships")
-@Api(tags = "space membership: Managing memberships of users in a space", value=VersionResources.VERSION_ONE + "/social/spacesMemberships")
+@Api(tags = VersionResources.VERSION_ONE + "/social/spacesMemberships", value = VersionResources.VERSION_ONE + "/social/spacesMemberships", description = "Managing memberships of users in a space")
 public class SpaceMembershipRestResourcesV1 implements SpaceMembershipRestResources {
   
   private static final String SPACE_PREFIX = "/spaces/";

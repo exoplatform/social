@@ -51,7 +51,7 @@ import org.exoplatform.social.rest.entity.CommentEntity;
 import org.exoplatform.social.service.rest.api.VersionResources;
 
 @Path(VersionResources.VERSION_ONE + "/social/comments")
-@Api(tags = "comment: Operations on a comment", value=VersionResources.VERSION_ONE + "/social/comments")
+@Api(tags = VersionResources.VERSION_ONE + "/social/comments", value = VersionResources.VERSION_ONE + "/social/comments", description = "Operations on a comment")
 public class CommentRestResourcesV1 implements CommentRestResources {
   
   @GET
