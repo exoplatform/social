@@ -56,7 +56,7 @@ import org.exoplatform.social.rest.entity.RelationshipEntity;
 import org.exoplatform.social.service.rest.api.VersionResources;
 
 @Path(VersionResources.VERSION_ONE + "/social/usersRelationships")
-@Api(tags = "user relationship: Managing relationships of users", value=VersionResources.VERSION_ONE + "/social/usersRelationships")
+@Api(tags = VersionResources.VERSION_ONE + "/social/usersRelationships", value = VersionResources.VERSION_ONE + "/social/usersRelationships", description = "Managing relationships of users")
 public class UsersRelationshipsRestResourcesV1 implements UsersRelationshipsRestResources {
 
   public UsersRelationshipsRestResourcesV1() {

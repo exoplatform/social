@@ -62,7 +62,7 @@ import org.exoplatform.social.rest.entity.DataEntity;
 import org.exoplatform.social.service.rest.api.VersionResources;
 
 @Path(VersionResources.VERSION_ONE + "/social/activities")
-@Api(tags = "activity"+" : Managing activities together with comments and likes", value = VersionResources.VERSION_ONE + "/social/activities")
+@Api(tags = VersionResources.VERSION_ONE + "/social/activities", value = VersionResources.VERSION_ONE + "/social/activities", description = "Managing activities together with comments and likes")
 public class ActivityRestResourcesV1 implements ActivityRestResources {
   
   private static final String SPACE_PREFIX = "/spaces/";

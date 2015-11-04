@@ -60,7 +60,7 @@ import org.exoplatform.social.service.rest.api.VersionResources;
 
 
 @Path(VersionResources.VERSION_ONE + "/social/identities")
-@Api(tags = "identity: Managing identities", value=VersionResources.VERSION_ONE + "/social/identities")
+@Api(tags = VersionResources.VERSION_ONE + "/social/identities", value = VersionResources.VERSION_ONE + "/social/identities", description = "Managing identities")
 public class IdentityRestResourcesV1 implements IdentityRestResources {
 
   /**

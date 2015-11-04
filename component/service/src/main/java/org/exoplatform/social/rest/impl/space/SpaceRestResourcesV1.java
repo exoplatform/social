@@ -72,7 +72,7 @@ import org.exoplatform.social.service.rest.api.VersionResources;
 import org.exoplatform.social.service.rest.api.models.ActivityRestIn;
 
 @Path(VersionResources.VERSION_ONE + "/social/spaces")
-@Api(tags = "space: Operations on spaces with their activities and users", value=VersionResources.VERSION_ONE + "/social/spaces")
+@Api(tags = VersionResources.VERSION_ONE + "/social/spaces", value = VersionResources.VERSION_ONE + "/social/spaces", description = "Operations on spaces with their activities and users")
 public class SpaceRestResourcesV1 implements SpaceRestResources {
 
   public SpaceRestResourcesV1() {

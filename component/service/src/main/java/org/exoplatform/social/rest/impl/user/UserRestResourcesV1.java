@@ -77,7 +77,7 @@ import org.exoplatform.social.service.rest.api.VersionResources;
  */
 
 @Path(VersionResources.VERSION_ONE + "/social/users")
-@Api(tags = "user: Operations on users with their activities, connections and spaces", value=VersionResources.VERSION_ONE + "/social/users")
+@Api(tags = VersionResources.VERSION_ONE + "/social/users", value = VersionResources.VERSION_ONE + "/social/users", description = "Operations on users with their activities, connections and spaces")
 public class UserRestResourcesV1 implements UserRestResources {
   
   public static enum ACTIVITY_STREAM_TYPE {
