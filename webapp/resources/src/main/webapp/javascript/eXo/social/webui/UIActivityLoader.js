@@ -17,23 +17,6 @@
         if(UIActivityLoader.scrollBottom() <= UIActivityLoader.delta) {
           $(window).scrollTop($(document).height() - $(window).height() - (UIActivityLoader.delta+1));
         }
-        $(window).scroll(function(e) {
-          var distanceToBottom = UIActivityLoader.scrollBottom();
-          var loadAnimation = $('#UIActivitiesLoader').find('div.ActivityIndicator'); 
-          var isLoading = loadAnimation.css("display") != "none";
-          var isSingleActivityOnPhone = ($('.activityDisplay').length > 0);
-          if (distanceToBottom <= UIActivityLoader.delta && !isLoading && !isSingleActivityOnPhone) {
-            if (UIActivityLoader.hasMore === true) {
-              $(loadAnimation).stop(true, true).fadeIn(
-                    500, function() {
-                    $(this).show();
-                    $('div.bottomContainer:last')[0].scrollIntoView(true);
-                    $('#ActivitiesLoader').click();
-                  });
-            }
-          }
-        });
-        
         UIActivityLoader.processBottomTimeLine();
       });
   

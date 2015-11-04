@@ -1,42 +1,25 @@
 (function ($){
   var UIActivityLoader = {
     delta : 65,
+    responsiveId : null,
     numberOfReqsPerSec : 10,//Perfect range: 5 -> 20
     hasMore: false,
-    loaderButton: $('#ActivitiesLoader'),
     parentContainer : $('#UIActivitiesLoader'),
     scrollBottom : function() {
-      return $(document).height() - $(window).scrollTop() - $(window).height();  
+    return $(document).height() - $(window).scrollTop() - $(window).height();  
     },
     init: function (parentId, hasMore) {
-      var me = UIActivityLoader;
-      me.hasMore = (hasMore === true || hasMore === 'true');
-      me.parentContainer = $('#' + parentId);
-
+      UIActivityLoader.hasMore = (hasMore === true || hasMore === 'true') ? true : false;
+      UIActivityLoader.initIndicator();
+  
       $(document).ready(function() {
         // check onLoad page.
-        if(me.scrollBottom() <= me.delta) {
-          $(window).scrollTop($(document).height() - $(window).height() - (me.delta+1));
+        if(UIActivityLoader.scrollBottom() <= UIActivityLoader.delta) {
+          $(window).scrollTop($(document).height() - $(window).height() - (UIActivityLoader.delta+1));
         }
-        $(window).scroll(function(e) {
-          var distanceToBottom = me.scrollBottom();
-          var loadAnimation = me.parentContainer.find('div.ActivityIndicator');
-          if (me.hasMore === true &&
-                distanceToBottom <= me.delta &&
-                  loadAnimation.css("display") === 'none') {
-            //
-            loadAnimation.css('visibility', 'hidden').stop(true, true).fadeIn(500, function() {
-              setTimeout(function(){loadAnimation.css('visibility', 'visible'); }, 300);
-              var action = me.loaderButton.data('action');
-              window.ajaxGet(action, function(data) {
-                me.parentContainer.find('div.ActivityIndicator').hide();
-              });
-            });
-          }
-        });
-        //
-        me.processBottomTimeLine();
+        UIActivityLoader.processBottomTimeLine();
       });
+  
     },
     setStatus : function(hasMore) {
       var me = UIActivityLoader;
@@ -44,29 +27,47 @@
         $(window).scrollTop($(window).scrollTop()-5);
       }
       me.hasMore = (hasMore === true || hasMore === 'true');
+      UIActivityLoader.initIndicator();
       me.processBottomTimeLine();
+      
+    },
+    initIndicator : function() {
+      $('#UIActivitiesLoader').find('div.ActivityIndicator').remove();
+      var activityIndicator = $('<div class="ActivityIndicator" id="ActivityIndicator" style="display:none"></div>');
+      for (var i=1; i < 9; i++) {
+        activityIndicator.append($('<div id="rotateG_0' + i + '" class="blockG"></div>'));
+      }
+      activityIndicator.appendTo('#UIActivitiesLoader');
     },
     processBottomTimeLine : function() {
+      //
       var me = UIActivityLoader;
-      if (me.hasMore) {
+      var loaderButton = $('#ActivitiesLoader');
+      if ( me.hasMore ) {
         $('div.activityBottom').hide();
-        me.loaderButton.parent().show();
+        loaderButton.parent().show();
       } else {
         $('div.activityBottom').show();
-        me.loaderButton.parent().hide();
+        loaderButton.parent().hide();
       }
     },
     renderActivity : function(activityItem) {
-      var url = activityItem.data('url') + activityItem.attr('id') + ((UIActivityLoader.getRequestParam().length > 0) ? UIActivityLoader.getRequestParam() : "")
-      window.ajaxGet(url, function(data) {
-        activityItem.attr('style', '');
-      });
+      var url = activityItem.data('url');
+      if (url && url.indexOf('objectId') > 0) {
+        url += activityItem.attr('id') + ((UIActivityLoader.getRequestParam().length > 0) ? UIActivityLoader.getRequestParam() : "");
+        window.ajaxGet(url, function(data) {
+          activityItem.attr('style', '').removeClass('activity-loadding');
+          if (UIActivityLoader.responsiveId) {
+            eXo.social.SocialUtil.onViewActivity(UIActivityLoader.responsiveId);
+          }
+        });
+      }
     },
     getRequestParam : function() {
       var me = UIActivityLoader;
       if (me.requestParams === undefined || me.requestParams === null) {
         var h = window.location.href;
-        if(h.indexOf('?') > 0) {
+        if(h.indexOf('?') > 0 && h.indexOf('portal:componentId') < 0) {
           me.requestParams = '&' + h.substring(h.indexOf('?') + 1);
         } else {
           me.requestParams = "";
@@ -74,8 +75,11 @@
       }
       return me.requestParams;
     },
-    loadingActivities : function(id) {
+    loadingActivities : function(id, numberOfReqsPerSec) {
       var me = UIActivityLoader;
+      if (numberOfReqsPerSec === undefined) {
+        numberOfReqsPerSec = me.numberOfReqsPerSec;
+      }
       me.requestParams = null;
       var container = $('#' + id);
       var url = container.find('div.uiActivitiesLoaderURL:first').data('url');
@@ -93,10 +97,12 @@
           window.clearInterval(interval);
         }
         ++index;
-      }, batchDelay / me.numberOfReqsPerSec);
+      }, batchDelay / numberOfReqsPerSec);
     },
-    addTop : function(activityItemId) {
-      var activityContainer = UIActivityLoader.parentContainer.find('div.uiActivitiesContainer:first');
+    addTop : function(activityItemId, responsiveId) {
+      UIActivityLoader.responsiveId = responsiveId;
+      var parentContainer = $('#UIActivitiesLoader');
+      var activityContainer = parentContainer.find('div.uiActivitiesContainer:first');
       if($('#welcomeActivity').length === 0) {
         var url = activityContainer.find('div.uiActivitiesLoaderURL:first').data('url');
         if(activityContainer.find('#' + activityItemId).length <= 0 && url && url.length > 0) {
@@ -107,7 +113,7 @@
           UIActivityLoader.requestParams = null;
           if(UIActivityLoader.hasMore) {
             //Remove last
-            UIActivityLoader.parentContainer.find('.uiActivitiesContainer:last').find('.uiActivityLoader:last').remove();
+            parentContainer.find('.uiActivitiesContainer:last').find('.uiActivityLoader:last').remove();
           }
           //
           UIActivityLoader.renderActivity(activityItem);
