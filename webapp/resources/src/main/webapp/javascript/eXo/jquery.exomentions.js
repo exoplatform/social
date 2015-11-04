@@ -65,9 +65,9 @@
     }
   };
 
-  var regexpURL = /(https?:\/\/)?((www\.[\w+]+\.[\w+]+\.?(:\d+)?)|([\w+]+\.[\w+]+\.?(\w+)?(:\d+)?))(\/\S*)?/g;
-  // /^(ht|f)tps?:\/\/[a-z0-9-\.]+\.[a-z]{2,4}\/?([^\s<>\#%"\,\{\}\\|\\\^\[\]`]+)?$/
-  // /(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/
+  //var regexpURL = /(https?:\/\/)?((www\.[\w+]+\.[\w+]+\.?(:\d+)?)|([\w+]+\.[\w+]+\.?(\w+)?(:\d+)?))(\/\S*)?/g;
+  //var regexpURL = /^(ht|f)tps?:\/\/[a-z0-9-\.]+\.[a-z]{2,4}\/?([^\s<>\#%"\,\{\}\\|\\\^\[\]`]+)?$/;
+  var regexpURL = /(http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/;
 
   function log(v) {
     if(window.console && window.console.log) {
@@ -679,6 +679,8 @@
         triggerOninputMention(valueBeforMention, currentValue);
         isReset = false;
       } else if (isBackKey === true) {
+        //reset link status when the Delete or Backspace keypress 
+        ActionLink.hasNotLink = true;
         var textSizeMention = 63;
         if (delta > textSizeMention && !utils.isFirefox) {
           var indexChanged = utils.getCursorIndexOfText(valueBeforMention, currentValue);
