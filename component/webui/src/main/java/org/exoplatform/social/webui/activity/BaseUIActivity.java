@@ -428,6 +428,7 @@ public class BaseUIActivity extends UIForm {
 
   public void setLike(boolean isLiked) throws Exception {
     Identity viewerIdentity = Utils.getViewerIdentity();
+    activity = Utils.getActivityManager().getActivity(activity.getId());
     activity.setBody(null);
     activity.setTitle(null);
     if (isLiked) {
@@ -435,7 +436,6 @@ public class BaseUIActivity extends UIForm {
     } else {
       Utils.getActivityManager().deleteLike(activity, viewerIdentity);
     }
-    activity = Utils.getActivityManager().getActivity(activity.getId());
     setIdenityLikes(activity.getLikeIdentityIds());
     activity = getI18N(activity);
   }
