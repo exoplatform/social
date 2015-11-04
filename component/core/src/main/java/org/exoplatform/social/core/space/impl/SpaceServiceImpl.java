@@ -89,12 +89,15 @@ public class SpaceServiceImpl implements SpaceService {
   List<String>                                 portletPrefsRequired = null;
 
   private SpaceApplicationConfigPlugin         spaceApplicationConfigPlugin;
+  
+  private SpaceApplication spaceHomeApplication;
 
   /** The offset for list access loading. */
   private static final int                   OFFSET = 0;
   
   /** The limit for list access loading. */
   private static final int                   LIMIT = 200;
+  
   
   /**
    * SpaceServiceImpl constructor Initialize
@@ -122,7 +125,7 @@ public class SpaceServiceImpl implements SpaceService {
         String name = param.getName();
         if (name.endsWith("homeNodeApp")) {
           String homeNodeApp = param.getValue();
-          SpaceApplication spaceHomeApplication = new SpaceApplication();
+          spaceHomeApplication = new SpaceApplication();
           spaceHomeApplication.setPortletName(homeNodeApp);
           spaceHomeApplication.setAppTitle(homeNodeApp);
           spaceHomeApplication.setIcon("SpaceHomeIcon");
@@ -1052,9 +1055,9 @@ public class SpaceServiceImpl implements SpaceService {
    * {@inheritDoc}
    */
   public void setSpaceApplicationConfigPlugin(SpaceApplicationConfigPlugin spaceApplicationConfigPlugin) {
-    // If not specify homeApplication config, use default from Social
+    // If not specify homeApplication configuration, use default from Social
     if (spaceApplicationConfigPlugin.getHomeApplication() == null) {
-      spaceApplicationConfigPlugin.setHomeApplication(spaceApplicationConfigPlugin.getHomeApplication());
+      spaceApplicationConfigPlugin.setHomeApplication(this.spaceHomeApplication);
     }
     this.spaceApplicationConfigPlugin = spaceApplicationConfigPlugin;
   }
