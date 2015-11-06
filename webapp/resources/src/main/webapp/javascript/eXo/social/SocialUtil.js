@@ -450,8 +450,6 @@
           if(activity.hasClass('block-activity')) {
             return true;
           }
-          $('html, body').animate({scrollTop: 16}, 'slow');
-          //
           var parent = root;
           parent.find('.activityStream').addClass('hidden-phone');
           //
@@ -473,10 +471,6 @@
               parent.find('.activityStream').removeClass('hidden-phone');
               parent.find('.activityTop').removeClass('hidden-phone');
               var activity = parent.find('.block-activity').removeClass('block-activity');
-              if (activity.length > 0) {
-                $('html, body').animate({scrollTop:activity.offset().top - activity.height() + 62}, 'slow');
-              }
-              //
               $('.footComment').html('');
               $(this).remove();
               if (this.isLoadMore) {
