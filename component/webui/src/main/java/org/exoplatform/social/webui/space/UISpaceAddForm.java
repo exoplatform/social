@@ -74,7 +74,6 @@ public class UISpaceAddForm extends UIFormTabPane {
 
   private static final Log LOG = ExoLogger.getLogger(UISpaceAddForm.class);
   
-  static private final String MSG_DEFAULT_SPACE_DESCRIPTION = "UISpaceAddForm.msg.default_space_description";
   static private final String MSG_ERROR_SPACE_CREATION = "UISpaceAddForm.msg.error_space_creation";
   static private final String MSG_ERROR_DATASTORE = "UISpaceAddForm.msg.error_space_not_saved";
   static private final String MSG_ERROR_UNABLE_TO_INIT_APP = "UISpaceAddForm.msg.error_unable_to_init_app";
@@ -99,7 +98,7 @@ public class UISpaceAddForm extends UIFormTabPane {
    */
   public UISpaceAddForm() throws Exception {
     super("UISpaceAddForm");
-    UIFormInputSet uiSpaceSettings = new UISpaceSettings(SPACE_SETTINGS);
+    UISpaceSettings uiSpaceSettings = new UISpaceSettings(SPACE_SETTINGS);
     addChild(uiSpaceSettings);
 
     UIFormInputSet uiSpaceVisibility = new UISpaceVisibility(SPACE_VISIBILITY);
@@ -129,20 +128,15 @@ public class UISpaceAddForm extends UIFormTabPane {
       SpaceService spaceService = uiAddForm.getApplicationComponent(SpaceService.class);
       UISpaceGroupBound uiGroupBound = uiAddForm.getChild(UISpaceGroupBound.class);
       String selectedGroup = uiGroupBound.getSelectedGroup();
-      String creator = ctx.getRemoteUser();
-      ResourceBundle resApp = ctx.getApplicationResourceBundle();
-      String defaultDescription = resApp.getString(MSG_DEFAULT_SPACE_DESCRIPTION);
+      String creator = ctx.getRemoteUser();          
       Space space = new Space();
       uiAddForm.invokeSetBindingBean(space);
       space.setDisplayName(space.getDisplayName().trim());
-      space.setPrettyName(space.getDisplayName());
-      String spaceDescription = space.getDescription();
-      if ((spaceDescription == null) || (spaceDescription.trim().length() == 0) 
-                                     || spaceDescription.trim().equals(defaultDescription)) {
-        space.setDescription(StringUtils.EMPTY);
-      } else {
-        space.setDescription(StringEscapeUtils.escapeHtml(spaceDescription));  
-      }
+      String spaceDisplayName = uiAddForm.getUIStringInput(UISpaceSettings.SPACE_DISPLAY_NAME).getValue();
+      String spaceDescription = uiAddForm.getUIFormTextAreaInput(UISpaceSettings.SPACE_DESCRIPTION).getValue();
+      space.setDisplayName(spaceDisplayName.trim());
+      space.setDescription(StringEscapeUtils.escapeHtml(spaceDescription));
+      space.setPrettyName(space.getDisplayName());     
       String msg = MSG_SPACE_CREATION_SUCCESS;
       try {
         // Checks user is still existing or not.
@@ -205,6 +199,8 @@ public class UISpaceAddForm extends UIFormTabPane {
       }
       SpaceUtils.endRequest();
       UIPopupWindow uiPopup = uiAddForm.getParent();
+      uiPopup.setUIComponent(null);
+      uiPopup.setRendered(false);
       uiPopup.setShow(false);
       Utils.updateWorkingWorkSpace();
       // TODO Re-check and re-confirm that navigation is ok then re-direct into Home of space.

@@ -112,7 +112,6 @@ public class UIManageAllSpaces extends UIContainer {
    */
   public void init() {
     try {
-      LOG.info("Init() method invoked....."); 
       setHasUpdatedSpace(true);
       enableLoadNext = false;
       currentLoadIndex = 0;

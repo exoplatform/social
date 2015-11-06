@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 import org.apache.commons.lang.StringEscapeUtils;
+import org.exoplatform.commons.utils.CommonsUtils;
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.portal.application.PortalRequestContext;
 import org.exoplatform.portal.config.DataStorage;
@@ -80,7 +81,6 @@ public class UISpaceInfo extends UIForm {
   private static final String SPACE_TAG                     = "tag";
   private SpaceService spaceService = null;
   private final static String POPUP_AVATAR_UPLOADER = "UIPopupAvatarUploader";
-  private static final String MSG_DEFAULT_SPACE_DESCRIPTION = "UISpaceAddForm.msg.default_space_description";
   
   /** Html attribute title. */
   private static final String HTML_ATTRIBUTE_TITLE          = "title";
@@ -191,14 +191,17 @@ public class UISpaceInfo extends UIForm {
       String id = uiSpaceInfo.getUIStringInput(SPACE_ID).getValue();
       String name = uiSpaceInfo.getUIStringInput(SPACE_DISPLAY_NAME).getValue();
       Space space = spaceService.getSpaceById(id);
-      String oldDisplayName = space.getDisplayName();
-      String existingDescription = space.getDescription();
       
       if (space == null) {
         //redirect to spaces
         event.getRequestContext().sendRedirect(Utils.getURI("all-spaces"));
         return;
       }
+      
+      String displayName = uiSpaceInfo.getUIStringInput(SPACE_DISPLAY_NAME).getValue();
+      String spaceDescription = uiSpaceInfo.getUIFormTextAreaInput(SPACE_DESCRIPTION).getValue();
+      String oldDisplayName = space.getDisplayName();
+      String oldDescription = space.getDescription();
       
       UserNode selectedNode = uiPortal.getSelectedUserNode();
       UserNode renamedNode = null;
@@ -211,7 +214,7 @@ public class UISpaceInfo extends UIForm {
         if (spaceService.getSpaceByUrl(cleanedString) != null) {
           // reset to origin values
           uiSpaceInfo.getUIStringInput(SPACE_DISPLAY_NAME).setValue(oldDisplayName);
-          uiSpaceInfo.getUIFormTextAreaInput(SPACE_DESCRIPTION).setValue(existingDescription);
+          uiSpaceInfo.getUIFormTextAreaInput(SPACE_DESCRIPTION).setValue(oldDescription);
 
           // 
           uiApp.addMessage(new ApplicationMessage("UISpaceInfo.msg.current-name-exist", null, ApplicationMessage.INFO));
@@ -226,16 +229,11 @@ public class UISpaceInfo extends UIForm {
       }
       uiSpaceInfo.invokeSetBindingBean(space);
       
-      String spaceDescription = space.getDescription();
-      if (spaceDescription == null || spaceDescription.trim().length() == 0) {
-        ResourceBundle resourceBundle = event.getRequestContext().getApplicationResourceBundle();
-        space.setDescription(resourceBundle.getString(MSG_DEFAULT_SPACE_DESCRIPTION));
-        uiSpaceInfo.getUIFormTextAreaInput(SPACE_DESCRIPTION).setValue(space.getDescription());
-      } else {
-        space.setDescription(StringEscapeUtils.escapeHtml(space.getDescription()));
-        if (!existingDescription.equals(spaceDescription)) {
-          space.setField(UpdatedField.DESCRIPTION);  
-        }
+      space.setDisplayName(displayName);
+      spaceDescription = StringEscapeUtils.escapeHtml(spaceDescription);
+      space.setDescription(spaceDescription);
+      if (oldDescription != null && !oldDescription.equals(spaceDescription)) {
+        space.setField(UpdatedField.DESCRIPTION);  
       }
 
       space.setEditor(Utils.getViewerRemoteId());
@@ -243,11 +241,10 @@ public class UISpaceInfo extends UIForm {
       if (nameChanged) {
         space.setDisplayName(oldDisplayName);
         String remoteId = Utils.getViewerRemoteId();
-        spaceService.renameSpace(remoteId, space, name);
+        spaceService.renameSpace(remoteId, space, displayName);
         
         // rename group label
-        OrganizationService organizationService = (OrganizationService) ExoContainerContext.getCurrentContainer().
-            getComponentInstanceOfType(OrganizationService.class);
+        OrganizationService organizationService = CommonsUtils.getService(OrganizationService.class);
         GroupHandler groupHandler = organizationService.getGroupHandler();
         Group group = groupHandler.findGroupById(space.getGroupId());
         group.setLabel(space.getDisplayName());
