@@ -300,7 +300,7 @@ public class UIMyConnections extends UIContainer {
 
     setPeopleNum(identities.length < MY_CONNECTION_PER_PAGE ? identities.length : listAccess.getSize());
     setPeopleListAccess(listAccess);
-    uiProfileUserSearch.setPeopleNum(listAccess.getSize());
+    uiProfileUserSearch.setPeopleNum(getPeopleNum());
 
     return Arrays.asList(identities);
 

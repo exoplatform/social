@@ -285,7 +285,7 @@ public class UIAllPeople extends UIContainer {
     setPeopleNum(identities.length < PEOPLE_PER_PAGE? identities.length : listAccess.getSize());
     //
     setPeopleListAccess(listAccess);
-    uiProfileUserSearch.setPeopleNum(listAccess.getSize());
+    uiProfileUserSearch.setPeopleNum(getPeopleNum());
 
     return Arrays.asList(identities);
 

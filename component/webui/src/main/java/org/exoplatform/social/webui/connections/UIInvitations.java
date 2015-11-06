@@ -291,7 +291,7 @@ public class UIInvitations extends UIContainer {
     setPeopleNum(identities.length < RECEIVED_INVITATION_PER_PAGE ? identities.length : listAccess.getSize());
     
     setPeopleListAccess(listAccess);
-    uiProfileUserSearch.setPeopleNum(listAccess.getSize());
+    uiProfileUserSearch.setPeopleNum(getPeopleNum());
 
     return Arrays.asList(identities);
 
