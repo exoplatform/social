@@ -500,8 +500,8 @@ public class UIEditUserProfileForm extends UIForm {
       UIInputSection baseSection = uiForm.getUIInputSection(FIELD_BASE_SECTION);
       String email = baseSection.getUIStringInput(Profile.EMAIL).getValue();
       // Checks input email existing or not 
-      String oldEmail = uiForm.currentProfile.getEmail();
-      if(!oldEmail.equals(email) && UserProfileHelper.isExistingEmail(email)) {
+      String oldEmail = uiForm.currentProfile.getEmail();       
+      if(oldEmail != null && !oldEmail.isEmpty() && !oldEmail.equals(email) && UserProfileHelper.isExistingEmail(email) ) {
         uiForm.warning("UIEditUserProfileForm.msg.email-exist", uiForm.getLabel(Profile.EMAIL));
         return;
       }
