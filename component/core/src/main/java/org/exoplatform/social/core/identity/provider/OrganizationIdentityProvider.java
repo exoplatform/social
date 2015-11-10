@@ -207,7 +207,7 @@ public class OrganizationIdentityProvider extends IdentityProvider<User> {
         foundUser.setLastName(lastName);
         hasUpdate = true;
       }
-      if (!foundUser.getEmail().equals(email)) {
+      if (foundUser.getEmail() == null || !foundUser.getEmail().equals(email)) {
         foundUser.setEmail(email);
         hasUpdate = true;
       }
