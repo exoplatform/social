@@ -103,7 +103,7 @@ public class Utils {
     if (currentUserName != null && currentUserName.length() > 0) {
       Identity identity = getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, currentUserName, false);
       //if the user's deleted
-      if (identity.isDeleted()) {
+      if (identity.isDeleted() && identity.isEnable()) {
         currentUserName = null;
       }
     }
