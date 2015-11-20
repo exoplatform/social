@@ -99,7 +99,16 @@ public class Utils {
    * @since 1.2.0 GA
    */
   public static String getOwnerRemoteId() {
-    String currentUserName = URLUtils.getCurrentUser();
+    String currentUserName = URLUtils.getCurrentUser(); 
+    if (currentUserName != null && currentUserName.length() > 0) {
+      Identity identity = getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, currentUserName, false);
+      //if the user's deleted
+      if (identity.isDeleted()) {
+        currentUserName = null;
+      }
+    }
+    
+    //
     if (currentUserName == null || currentUserName.equals("")) {
       return getViewerRemoteId();
     }
