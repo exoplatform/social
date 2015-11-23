@@ -30,6 +30,7 @@ import org.exoplatform.services.organization.OrganizationService;
 import org.exoplatform.services.organization.User;
 import org.exoplatform.services.organization.UserHandler;
 import org.exoplatform.services.organization.UserProfile;
+import org.exoplatform.services.organization.UserStatus;
 import org.exoplatform.social.core.identity.IdentityProvider;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
@@ -100,7 +101,7 @@ public class OrganizationIdentityProvider extends IdentityProvider<User> {
     try {
       RequestLifeCycle.begin((ComponentRequestLifecycle)organizationService);
       UserHandler userHandler = organizationService.getUserHandler();
-      user = userHandler.findUserByName(remoteId);
+      user = userHandler.findUserByName(remoteId, UserStatus.ANY);
     } catch (Exception e) {
       return null;
     } finally {

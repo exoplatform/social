@@ -331,6 +331,48 @@ public class IdentityManagerTest extends AbstractCoreTest {
     // globalId.toString(), gotIdentity.getId());
     tearDownIdentityList.add(gotIdentity);
   }
+  
+  /**
+   * Test {@link IdentityManager#deleteIdentity(Identity)}
+   */
+  public void testDisabledIdentity() throws Exception {
+    final String username = "demo";
+    Identity disabledIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, username, false);
+    userHandler.setEnabled(username, false, true);
+    identityManager.processEnabledIdentity(username, false);
+    //
+    disabledIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, username, false);
+    //
+    assertFalse(disabledIdentity.isDeleted());
+    assertFalse(disabledIdentity.isEnable());
+    
+    identityManager.deleteIdentity(disabledIdentity); 
+  }
+  
+  /**
+   * Test {@link IdentityManager#deleteIdentity(Identity)}
+   */
+  public void testEnabledIdentity() throws Exception {
+    final String username = "demo";
+    Identity enbledIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, username, false);
+    //disable demo
+    userHandler.setEnabled(username, false, true);
+    identityManager.processEnabledIdentity(username, false);
+    //
+    enbledIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, username, false);
+    
+    //enable demo
+    userHandler.setEnabled(username, true, true);
+    identityManager.processEnabledIdentity(username, true);
+    
+    //
+    enbledIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, username, false);
+    assertFalse(enbledIdentity.isDeleted());
+    assertTrue(enbledIdentity.isEnable());
+    
+    
+    identityManager.deleteIdentity(enbledIdentity);
+  }
 
   /**
    * Test
