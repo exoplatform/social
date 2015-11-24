@@ -7,15 +7,20 @@
       UISpaceSearch.profileSearch = $("#" + params.uicomponentId);
       UISpaceSearch.searchBtn = UISpaceSearch.profileSearch.find('#SearchButton');
       var searchEl = UISpaceSearch.profileSearch.find('#SpaceSearch');
-      // Turn off auto-complete attribute of text-box control
-      searchEl.attr('autocomplete', 'off');
-      //
+      //    
+      $(searchEl).keypress(function(event) {
+        var e = event || window.event;
+        var keynum = e.keyCode || e.which;  
+        if(keynum == 13) {
+          UISpaceSearch.searchBtn.click();     
+          event.stopPropagation();
+        }
+      });
+      
       $(searchEl).autosuggest(buildURL(), {
-        onSelect : function() {
-          UISpaceSearch.searchBtn.trigger("click");
-        },
         defaultVal : ''
       });
+
       //
       function buildURL() {
         var restURL = "/" + eXo.social.portal.rest + eXo.social.portal.context + '/social/spaces/suggest.json?conditionToSearch=input_value';
@@ -33,15 +38,6 @@
           }
         }
         return restURL;
-      }
-      function keyDownAction(evt) {
-        //
-        var keynum = evt.keyCode || evt.which;
-        if (keynum == 13) {
-          //
-          evt.stopPropagation();
-          UISpaceSearch.searchBtn.trigger("click");
-        }
       }
     }
 };

@@ -1,34 +1,46 @@
-<%
-/*
-<!--
-
-    Copyright (C) 2003-2010 eXo Platform SAS.
-
-    This program is free software; you can redistribute it and/or
-    modify it under the terms of the GNU Affero General Public License
-    as published by the Free Software Foundation; either version 3
-    of the License, or (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, see<http://www.gnu.org/licenses/>.
-
--->
-*/
-def labelNotAnyUpdatesPostedYet = _ctx.appRes("UIActivitiesLoader.label.Not_Any_Updates_Posted_Yet");
-
-
+<div class="$uicomponent.id uiActivitiesContainer" id="$uicomponent.id">
+<div class="uiActivitiesLoaderURL" data-url="<%=uicomponent.getLoadActivityUrl()%>"></div>
+<% 
+   if (uicomponent.uiActivityIdFirstList.size() > 0 || uicomponent.uiActivityIdNextList.size() > 0) {
+     if(uicomponent.isRenderFull) {
+       uicomponent.renderChildren();
+     } else {
+        for (uiActivityId in uicomponent.uiActivityIdFirstList) {
+          uicomponent.renderChild(uiActivityId);
+        }
+       //
+       for(uiActivityId in uicomponent.uiActivityIdNextList) {
+         String activityId = uiActivityId.replace("UIActivityLoader", "");
 %>
-<div class="$uicomponent.id" id="$uicomponent.id">
-<% if (uicomponent.getChildren().size() > 0) {
-     uicomponent.renderChildren();
+  <div class="uiActivityLoader activity-loadding" style="position:relative;" id="$uiActivityId">
+    <div class="activityStream uiDefaultActivity" id="activityContainer${activityId}">
+      <div class="activityTimeLine pull-left">
+        <div class="activityAvatar avatarCircle">
+          <div>
+            <img src="/eXoSkin/skin/images/system/UserAvtDefault.png">
+          </div>
+        </div>
+      </div><!--end activityTimeLine-->
+      <span style="position:absolute;top:40px;left:50%;z-index:10;" class="uiLoadingIconMedium"></span>
+      <div class="boxContainer" id="boxContainer">
+        <div id="ContextBox1901" class="uiBox contentBox">
+          <div id="ActivityContextBox${activityId}">
+            <div class="heading" style="height:60px;">
+              <span class="arrowLeft"></span>
+              <div class="actLink">
+                <a id="Permalink${activityId}" class="uiIconLink uiIconLightGray" href="/portal/intranet/activity?id=${activityId}"></a> 
+              </div>
+            </div><!--end heading-->
+          </div><!--end #ActivityContextBox${uiActivityId}-->
+        </div> <!--end ContextBox${uiActivityId}-->  
+      </div>
+    </div>
+  </div>
+<%
+       }
+     }
    } else {
 %>
-<div class="NoActivity">$labelNotAnyUpdatesPostedYet</div>
+  <div class="NoActivity"><%=_ctx.appRes("UIActivitiesLoader.label.Not_Any_Updates_Posted_Yet")%></div>
 <% } %>
-
 </div>

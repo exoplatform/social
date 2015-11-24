@@ -19,16 +19,28 @@ package org.exoplatform.social.user.portlet;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
+import org.exoplatform.commons.utils.CommonsUtils;
+import org.exoplatform.portal.application.PortalRequestContext;
 import org.exoplatform.social.common.RealtimeListAccess;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.identity.model.Identity;
+import org.exoplatform.social.core.manager.ActivityManager;
+import org.exoplatform.social.user.UIRecentActivity;
 import org.exoplatform.social.webui.Utils;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
+import org.exoplatform.webui.config.annotation.EventConfig;
+import org.exoplatform.webui.core.UIComponent;
 import org.exoplatform.webui.core.lifecycle.UIApplicationLifecycle;
+import org.exoplatform.webui.event.Event;
+import org.exoplatform.webui.event.EventListener;
 
 @ComponentConfig(
   lifecycle = UIApplicationLifecycle.class,
-  template = "app:/groovy/social/portlet/user/UIRecentActivitiesPortlet.gtmpl"
+  template = "app:/groovy/social/portlet/user/UIRecentActivitiesPortlet.gtmpl",
+  events = {
+    @EventConfig(listeners = UIRecentActivitiesPortlet.LoadActivityActionListener.class)
+  }
 )
 public class UIRecentActivitiesPortlet extends UIAbstractUserPortlet {
   private static int LATEST_ACTIVITIES_NUM = 5;
@@ -38,26 +50,80 @@ public class UIRecentActivitiesPortlet extends UIAbstractUserPortlet {
   public UIRecentActivitiesPortlet() throws Exception {
   }
 
-  public void setHasActivityBottomIcon(boolean hasActivityBottomIcon) {
-    this.hasActivityBottomIcon = hasActivityBottomIcon;
-  }
-
-  protected List<ExoSocialActivity> getRecentActivities() {
-    List<ExoSocialActivity> results = new ArrayList<ExoSocialActivity>();
+  protected List<String> getRecentActivities() throws Exception {
     RealtimeListAccess<ExoSocialActivity> activitiesListAccess = null;
     if (currentProfile.getIdentity().getId().equals(Utils.getViewerIdentity().getId())) {
       activitiesListAccess = Utils.getActivityManager().getActivitiesWithListAccess(currentProfile.getIdentity());
     } else {
       activitiesListAccess = Utils.getActivityManager().getActivitiesWithListAccess(currentProfile.getIdentity(), Utils.getViewerIdentity());
     }
-    
-    results = activitiesListAccess.loadAsList(0, LATEST_ACTIVITIES_NUM);
-    setHasActivityBottomIcon(activitiesListAccess.loadAsList(0, ACTIVITIES_NUM_TO_CHECK).size() <= LATEST_ACTIVITIES_NUM);
-    return results; 
+    List<String> results = activitiesListAccess.loadIdsAsList(0, ACTIVITIES_NUM_TO_CHECK);
+    hasActivityBottomIcon = (results.size() <= LATEST_ACTIVITIES_NUM);
+    if (!hasActivityBottomIcon) {
+      results = results.subList(0, LATEST_ACTIVITIES_NUM);
+    }
+    for (String activityId : results) {
+      String childId = UIRecentActivity.buildComponentId(activityId);
+      if (getChildById(childId) == null) {
+        addChild(UIRecentActivity.class, null, childId);
+      }
+    }
+    //
+    removeIfExisting(results);
+    //
+    return results;
+  }
+
+  protected String getLoadActivityUrl() throws Exception {
+    return event("LoadActivity").replace("javascript:ajaxGet('", StringUtils.EMPTY).replace("')", "&" + OBJECTID + "=");
   }
 
   protected Identity getOwnerActivity(ExoSocialActivity activity) {
     return Utils.getIdentityManager().getIdentity(activity.getUserId(), true);
   }
 
+  private void removeIfExisting(List<String> results) {
+    List<UIComponent> removeChilds = new ArrayList<UIComponent>();
+    for (UIComponent uiComponent : getChildren()) {
+      if (results.contains(uiComponent.getId())) {
+        continue;
+      }
+      removeChilds.add(uiComponent);
+    }
+    for (UIComponent uiComponent : removeChilds) {
+      uiComponent.setParent(null);
+      getChildren().remove(uiComponent);
+    }
+  }
+
+  @Override
+  public void initProfilePopup() throws Exception {
+    super.initProfilePopup();
+  }
+
+  public static class LoadActivityActionListener extends EventListener<UIRecentActivitiesPortlet> {
+    @Override
+    public void execute(Event<UIRecentActivitiesPortlet> event) throws Exception {
+      UIRecentActivitiesPortlet uiPortlet = event.getSource();
+      String uiActivityId = event.getRequestContext().getRequestParameter(OBJECTID);
+      if (uiActivityId == null || uiActivityId.isEmpty()) {
+        ((PortalRequestContext) event.getRequestContext().getParentAppRequestContext()).ignoreAJAXUpdateOnPortlets(true);
+      }
+      //
+      String activityId = uiActivityId.replace(UIRecentActivity.COMPONENT_ID, StringUtils.EMPTY);
+      ExoSocialActivity activity = CommonsUtils.getService(ActivityManager.class).getActivity(activityId);
+      //
+      if (activity != null) {
+        UIRecentActivity uiRecentActivity = uiPortlet.getChildById(uiActivityId);
+        if (uiRecentActivity == null) {
+          uiRecentActivity = uiPortlet.addChild(UIRecentActivity.class, null, uiActivityId);
+        }
+        uiRecentActivity.setActivity(activity);
+        event.getRequestContext().addUIComponentToUpdateByAjax(uiRecentActivity);
+      } else {
+        uiPortlet.removeChildById(uiActivityId);
+        event.getRequestContext().addUIComponentToUpdateByAjax(uiPortlet);
+      }
+    }
+  }
 }

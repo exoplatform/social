@@ -678,4 +678,24 @@ public interface RelationshipManager {
    * @return
    */
   List<Identity> getLastConnections(Identity identity, int limit);
+  
+  /**
+   * Gets a list which contains all relationships by status.
+   *
+   * @param identity The provided identity.
+   * @param type type of the relationship : ALL, PENDING or CONFIRMED.
+   * @param offset The starting point.
+   * @param limit The limitation.
+   * @return The list of relationships.
+   */
+  public List<Relationship> getRelationshipsByStatus(Identity identity, Relationship.Type type, int offset, int limit);
+  
+  /**
+   * Gets number of relationships by status.
+   *
+   * @param identity The provided identity.
+   * @param type type of the relationship : ALL, PENDING or CONFIRMED.
+   * @return The number of relationships.
+   */
+  public int getRelationshipsCountByStatus(Identity identity, Relationship.Type type);
 }

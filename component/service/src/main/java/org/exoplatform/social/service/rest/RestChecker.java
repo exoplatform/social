@@ -39,6 +39,20 @@ import org.exoplatform.services.security.ConversationState;
  * @since 1.2.3
  */
 public final class RestChecker {
+  
+  public enum SUPPORT_VERSION {
+    v1(1), v2(2);
+    
+    private int version;
+    
+    SUPPORT_VERSION(int version) {
+      this.version = version;
+    }
+    
+    public int getVersion() {
+      return version;
+    }
+  }
 
   /**
    * Checks if the request is authenticated or not.
@@ -47,6 +61,14 @@ public final class RestChecker {
   public static void checkAuthenticatedRequest() {
     if (!isAuthenticatedRequest()) {
       throw new WebApplicationException(Response.Status.UNAUTHORIZED);
+    }
+  }
+  
+  public static int checkSupportedVersion(String version) {
+    try {
+      return SUPPORT_VERSION.valueOf(version).getVersion();
+    } catch (Exception e) {
+      throw new WebApplicationException(Response.Status.SERVICE_UNAVAILABLE);
     }
   }
 

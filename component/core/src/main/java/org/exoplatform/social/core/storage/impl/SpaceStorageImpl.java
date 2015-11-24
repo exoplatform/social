@@ -846,7 +846,9 @@ public class SpaceStorageImpl extends AbstractStorage implements SpaceStorage {
       
       fillEntityFromSpace(space, entity);
       
-      //getSession().save();
+      if (!isNew) {
+        getSession().save();
+      }
       
       LOG.debug(String.format(
           "Space %s (%s) saved",
@@ -2139,5 +2141,24 @@ public class SpaceStorageImpl extends AbstractStorage implements SpaceStorage {
       LOG.error(String.format("Get property %s failed", propertyName));
     }
     return null;
+  }
+
+  @Override
+  public List<String> getMemberSpaceIds(String identityId, int offset, int limit) throws SpaceStorageException {
+    List<String> identitiesId = new ArrayList<String>();
+    try {
+      IdentityEntity identityEntity = _findById(IdentityEntity.class, identityId);
+      Set<String> spaceNames = identityEntity.getSpaces().getRefs().keySet();
+      ProviderEntity providerEntity = getProviderRoot().getProvider(SpaceIdentityProvider.NAME);
+      for (String spacePrettyName : spaceNames) {
+        IdentityEntity spaceIdentity = providerEntity.getIdentities().get(spacePrettyName);
+        if (spaceIdentity != null) {
+          identitiesId.add(spaceIdentity.getId());
+        }
+      }
+    } catch (Exception e) {
+      LOG.error("Failed to get list of space identity of current user");
+    }
+    return identitiesId;
   }
 }

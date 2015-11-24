@@ -16,6 +16,7 @@
  */
 package org.exoplatform.social.common;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
@@ -38,6 +39,15 @@ public interface RealtimeListAccess<E> extends ListAccess<E> {
    * @return a list
    */
   List<E> loadAsList(int index, int limit);
+  
+  /**
+   * Loads items as Ids list instead of array as from {@link #load(int, int)}.
+   *
+   * @param index the index
+   * @param limit the number to load
+   * @return a Ids list
+   */
+  List<String> loadIdsAsList(int index, int limit);
 
   /**
    * Overrides its parent interface to avoid checked-exception.

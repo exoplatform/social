@@ -368,5 +368,7 @@
   <% uiform.end() %>
 </div><!--activityStream-->
 <% } else { %> <!-- activity deleted -->
+<% uiform.begin() %>
 <div class="activityStream deleted">$labelActivityHasBeenDeleted</div>
-<% }%>
+<% uiform.end() %>
+<% } %>

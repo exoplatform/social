@@ -17,6 +17,7 @@
 package org.exoplatform.social.webui.composer;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.exoplatform.container.component.BaseComponentPlugin;
@@ -41,12 +42,10 @@ public class UIActivityComposerManager extends BaseComponentPlugin {
   public void setDefaultActivityComposer(UIActivityComposer activityComposer){
     defaultActivityComposer = activityComposer;
     setDefaultActivityComposer();
+    
   }
 
   public void setDefaultActivityComposer(){
-    for (UIActivityComposer uiActivityComposer : activityComposers) {
-      uiActivityComposer.setRendered(false);
-    }
     currentActivityComposer = defaultActivityComposer;
   }
 
@@ -55,10 +54,6 @@ public class UIActivityComposerManager extends BaseComponentPlugin {
   }
 
   public void setCurrentActivityComposer(UIActivityComposer activityComposer) {
-    for (UIActivityComposer uiActivityComposer : activityComposers) {
-        uiActivityComposer.setRendered(false);
-    }
-
     activityComposer.setRendered(true);
     this.currentActivityComposer = activityComposer;
   }
@@ -71,7 +66,7 @@ public class UIActivityComposerManager extends BaseComponentPlugin {
     activityComposers.remove(activityComposer);
   }
 
-  public List<UIActivityComposer> getAllComposers(){
+  public List<UIActivityComposer> getAllComposers() {
     return activityComposers;
   }
 

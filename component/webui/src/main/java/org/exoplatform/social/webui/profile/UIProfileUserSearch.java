@@ -128,6 +128,16 @@ public class UIProfileUserSearch extends UIForm {
    */
   private int peopleNum;
   
+  private boolean isLoadFromSearch = false;
+  
+  public boolean isLoadFromSearch() {
+    return isLoadFromSearch;
+  }
+
+  public void setLoadFromSearch(boolean isLoadFromSearch) {
+    this.isLoadFromSearch = isLoadFromSearch;
+  }
+  
   /**
    * Gets the flags to clarify including people tab or not. 
    * @return

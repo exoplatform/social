@@ -61,8 +61,8 @@ public class VersionResourcesTest extends AbstractResourceTest {
 
     Object entity = containerResponse.getEntity();
     assertNotNull("entity must not be null", entity);
-
-    final String expectedResponse = "{\"version\": \"v1-alpha3\"}";
+    final String expectedResponse = "{\"version\":\"" + VersionResources.LATEST_VERSION + "\"}";
+    
     assertJsonStringEqualsEntity(expectedResponse, entity);
   }
 
@@ -104,7 +104,8 @@ public class VersionResourcesTest extends AbstractResourceTest {
     Object entity = containerResponse.getEntity();
     assertNotNull("entity must not be null", entity);
 
-    final String expectedResponse = "{\"versions\": [\"v1-alpha3\"]}";
+    final String expectedResponse = "{\"versions\": [\"" + VersionResources.LATEST_VERSION + "\",\"" + VersionResources.VERSION_ONE + "\"]}";
+    
     assertJsonStringEqualsEntity(expectedResponse, entity);
   }
 

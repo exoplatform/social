@@ -48,7 +48,8 @@ public class VersionResources implements ResourceContainer {
    * The latest social rest api version.
    */
   public static final String LATEST_VERSION = "v1-alpha3";
-
+  
+  public static final String VERSION_ONE = "v1";
 
   /**
    * The supported versions
@@ -57,6 +58,7 @@ public class VersionResources implements ResourceContainer {
 
   static {
     SUPPORTED_VERSIONS.add(LATEST_VERSION);
+    SUPPORTED_VERSIONS.add(VERSION_ONE);
   }
 
   /**

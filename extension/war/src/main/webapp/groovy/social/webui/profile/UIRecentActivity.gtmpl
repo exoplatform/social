@@ -1,0 +1,52 @@
+<%
+import org.exoplatform.social.core.service.LinkProvider;
+import org.exoplatform.social.user.portlet.RecentActivitiesHelper;
+
+def activity = uicomponent.getActivity();
+if(activity == null) {
+  print("<div id=\"" + uicomponent.id + "\"></div>");
+  return;
+}
+%>
+
+<div id="${uicomponent.id}" class="uiRecentActivity">
+<%
+  String activityURL = LinkProvider.getBaseUri(null, null) + "/activity?id=";
+  def profile = RecentActivitiesHelper.getOwnerActivityProfile(activity);
+  String avatarURL = profile.getAvatarUrl();
+  String profileURL = profile.getUrl();
+  String displayName = profile.getFullName();
+  String activityTypeIcon =  RecentActivitiesHelper.getActivityTypeIcon(activity);
+  String link = RecentActivitiesHelper.getLink(activity);
+  String linkTitle = RecentActivitiesHelper.getLinkTitle(activity);
+%>
+   <div class="activityStream uiDefaultActivity clearfix" id="Activity<%=activity.id%>">
+     <div class="activityTimeLine pull-left">
+       <div class="activityAvatar avatarCircle">
+         <a href="<%=profileURL%>">
+           <img alt="<%=displayName%>" src="<%=((avatarURL == null || avatarURL.length() == 0) ? LinkProvider.PROFILE_DEFAULT_AVATAR_URL : avatarURL)%>">
+         </a>
+       </div>
+       <% if (activityTypeIcon != null && activityTypeIcon.length() > 0) { %>
+       <div class="activityType"><span><i class="<%=activityTypeIcon%> uiIconSocWhite"></i></span></div>
+       <% } %>
+     </div><!--end activityTimeLine-->
+     <div class="boxContainer" id="boxContainer" onclick="window.open('<%=(activityURL + activity.id)%>', '_self')">
+       <div id="Content<%=activity.id%>" class="content">
+       <%if (link != null) { 
+           if (linkTitle != null) {
+       %> 
+             <div class="status"><%=linkTitle%></div>
+             <div class="link"><a href="javascript:void(0);" onclick="(function(evt){ evt.stopPropagation(); window.open('<%=link%>', '_blank');})(event)"><%=activity.getTitle()%></a></div>
+       <%
+           } else {
+       %>
+             <div><a href="javascript:void(0);" onclick="(function(evt){ evt.stopPropagation(); window.open('<%=link%>', '_self');})(event)"><%=activity.getTitle()%></a></div>
+       <%  }
+         } else {%>
+             <div class="status"><%=activity.getTitle()%></div>
+       <%} %>
+       </div>
+     </div> <!-- #boxContainer-->
+   </div>
+</div>

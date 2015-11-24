@@ -18,6 +18,13 @@ package org.exoplatform.social.service.test;
 
 import org.exoplatform.commons.testing.BaseExoContainerTestSuite;
 import org.exoplatform.commons.testing.ConfigTestCase;
+import org.exoplatform.social.rest.impl.activity.ActivityRestResourcesTest;
+import org.exoplatform.social.rest.impl.identity.IdentityRestResourcesTest;
+import org.exoplatform.social.rest.impl.relationship.RelationshipsRestResourcesTest;
+import org.exoplatform.social.rest.impl.space.SpaceRestResourcesTest;
+import org.exoplatform.social.rest.impl.spacemembership.SpaceMembershipRestResourcesTest;
+import org.exoplatform.social.rest.impl.userrelationship.UsersRelationshipsRestResourcesTest;
+import org.exoplatform.social.rest.impl.users.UserRestResourcesTest;
 import org.exoplatform.social.service.rest.ActivitiesRestServiceTest;
 import org.exoplatform.social.service.rest.IdentityRestServiceTest;
 import org.exoplatform.social.service.rest.IntranetNotificationsRestServiceTest;
@@ -53,7 +60,14 @@ import org.junit.runners.Suite.SuiteClasses;
   SecurityManagerTest.class,
   UtilTest.class,
   IntranetNotificationsRestServiceTest.class,
-  NotificationsRestServiceTest.class
+  NotificationsRestServiceTest.class,
+  ActivityRestResourcesTest.class,
+  IdentityRestResourcesTest.class,
+  RelationshipsRestResourcesTest.class,
+  SpaceRestResourcesTest.class,
+  SpaceMembershipRestResourcesTest.class,
+  UsersRelationshipsRestResourcesTest.class,
+  UserRestResourcesTest.class
   })
 @ConfigTestCase(AbstractServiceTest.class)
 public class InitContainerTestSuite extends BaseExoContainerTestSuite {

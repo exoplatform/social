@@ -28,17 +28,10 @@ import org.exoplatform.social.core.service.LinkProvider;
 	def labelShowMoreSpace = _ctx.appRes("${uicomponentId}.label.Show_More");
 	def spacesFoundLabel = _ctx.appRes("${uicomponentId}.label.SpaceListing");
 	
-	if (uicomponent.isLoadAtEnd()) {
-	  uicomponent.init();
-	}
-	
 	def allSpaces = uicomponent.getSpacesList();
 	def selectedChar = uicomponent.getSelectedChar();
 	def searchAll = _ctx.appRes("${uicomponentId}.label.SearchAll");
-	if (allSpaces.size() == uicomponent.getSpacesNum()) {
-	  uicomponent.setLoadAtEnd(true);
-	}
-	
+
 	def allSpaceIdx = 0;
 	def allSpacesURL = Utils.getURI("all-spaces");
 	def mySpaceURL = Utils.getURI("spaces");

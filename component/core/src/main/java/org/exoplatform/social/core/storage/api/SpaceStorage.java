@@ -607,4 +607,13 @@ public interface SpaceStorage {
    * @since 4.0.x
    */
   List<Space> getLastSpaces(int limit);
+  
+  /**
+   * @param identityId
+   * @param offset
+   * @param limit
+   * @return
+   * @throws SpaceStorageException
+   */
+  public List<String> getMemberSpaceIds(String identityId, int offset, int limit) throws SpaceStorageException;
 }

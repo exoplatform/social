@@ -65,9 +65,9 @@
     }
   };
 
-  var regexpURL = /(https?:\/\/)?((www\.[\w+]+\.[\w+]+\.?(:\d+)?)|([\w+]+\.[\w+]+\.?(\w+)?(:\d+)?))(\/\S*)?/g;
-  // /^(ht|f)tps?:\/\/[a-z0-9-\.]+\.[a-z]{2,4}\/?([^\s<>\#%"\,\{\}\\|\\\^\[\]`]+)?$/
-  // /(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/
+  //var regexpURL = /(https?:\/\/)?((www\.[\w+]+\.[\w+]+\.?(:\d+)?)|([\w+]+\.[\w+]+\.?(\w+)?(:\d+)?))(\/\S*)?/g;
+  //var regexpURL = /^(ht|f)tps?:\/\/[a-z0-9-\.]+\.[a-z]{2,4}\/?([^\s<>\#%"\,\{\}\\|\\\^\[\]`]+)?$/;
+  var regexpURL = /(http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/;
 
   function log(v) {
     if(window.console && window.console.log) {
@@ -197,6 +197,7 @@
     var currentSelection = {elm: null, offset : 0};
     var isBlockMenu = false;
     var isInput = false;
+    var showHideButtonEvent = [];
     // action add link
     var ActionLink = {
       isRun : false,
@@ -678,6 +679,8 @@
         triggerOninputMention(valueBeforMention, currentValue);
         isReset = false;
       } else if (isBackKey === true) {
+        //reset link status when the Delete or Backspace keypress 
+        ActionLink.hasNotLink = true;
         var textSizeMention = 63;
         if (delta > textSizeMention && !utils.isFirefox) {
           var indexChanged = utils.getCursorIndexOfText(valueBeforMention, currentValue);
@@ -1083,13 +1086,27 @@
       if(hasFileAttachment === false && isLinked === false && action.length > 0 && action.attr('disabled') === undefined) {
         $('#' + settings.idAction).attr('disabled', 'disabled').addClass('DisableButton');
       }
+      if(showHideButtonEvent.length > 0) {
+        for(var i in showHideButtonEvent) {
+          if(_.isFunction(showHideButtonEvent[i])) {
+            showHideButtonEvent[i](false);
+          }
+        }
+      }
     }
-    
+
     function disabledPlaceholder() {
       elmInputBox.parent().find('div.placeholder:first').hide().css('top', '-100px');
       var action = $('#' + settings.idAction);
       if (action.length > 0 && action.attr('disabled') === 'disabled') {
         action.removeAttr('disabled').removeClass('DisableButton');
+      }
+      if(showHideButtonEvent.length > 0) {
+        for(var i in showHideButtonEvent) {
+          if(_.isFunction(showHideButtonEvent[i])) {
+            showHideButtonEvent[i](true);
+          }
+        }
       }
     }
 
@@ -1328,6 +1345,13 @@
           return;
         }
         callback.call(this, mentionsCollection);
+      },
+
+      registerControlButton : function(controlMethod) {
+        if (!_.isFunction(controlMethod)) {
+          return;
+        }
+        showHideButtonEvent.push(controlMethod);
       }
     };
   };

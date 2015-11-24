@@ -16,14 +16,17 @@
  */
 package org.exoplatform.social.webui.space;
 
-import org.exoplatform.portal.webui.container.UIContainer;
+import org.exoplatform.commons.utils.PrivilegedSystemHelper;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.webui.Utils;
+import org.exoplatform.social.webui.activity.AbstractActivitiesDisplay;
+import org.exoplatform.social.webui.activity.UIActivitiesContainer;
 import org.exoplatform.social.webui.activity.UIActivitiesLoader;
+import org.exoplatform.social.webui.composer.UIComposer;
 import org.exoplatform.social.webui.composer.UIComposer.PostContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.EventConfig;
@@ -46,11 +49,12 @@ import org.exoplatform.webui.event.EventListener;
   }
 )
 
-public class UISpaceActivitiesDisplay extends UIContainer {
+public class UISpaceActivitiesDisplay extends AbstractActivitiesDisplay {
   static private final Log LOG = ExoLogger.getLogger(UISpaceActivitiesDisplay.class);
 
+  private static final String ACTIVITIES_PER_PAGE_KEY = "social.activities.per.page";
+  private static int ACTIVITY_PER_PAGE = 10;
   private Space space;
-  private static final int ACTIVITY_PER_PAGE = 20;
   private UIActivitiesLoader activitiesLoader;
 
   /**
@@ -59,6 +63,7 @@ public class UISpaceActivitiesDisplay extends UIContainer {
    * @throws Exception
    */
   public UISpaceActivitiesDisplay() throws Exception {
+    ACTIVITY_PER_PAGE = Integer.valueOf(PrivilegedSystemHelper.getProperty(ACTIVITIES_PER_PAGE_KEY, "10").trim());
   }
 
   /**
@@ -83,6 +88,15 @@ public class UISpaceActivitiesDisplay extends UIContainer {
   public UIActivitiesLoader getActivitiesLoader() {
     return activitiesLoader;
   }
+  
+  /**
+   * Checks the Stream Context to make 
+   * the decision Share button shows or not.
+   * @return TRUE/FALSE
+   */
+  public boolean isSingleContext() {
+    return (getActivitiesLoader().getPostContext() == UIComposer.PostContext.SINGLE);
+  }
 
   /**
    * initialize
@@ -104,6 +118,7 @@ public class UISpaceActivitiesDisplay extends UIContainer {
     activitiesLoader.setLoadingCapacity(ACTIVITY_PER_PAGE);
     activitiesLoader.setActivityListAccess(Utils.getActivityManager().getActivitiesOfSpaceWithListAccess(spaceIdentity));
     activitiesLoader.init();
+    activitiesLoader.getChild(UIActivitiesContainer.class).setRenderFull(isRenderFull(), true);
     
     //
     String remoteId = Utils.getOwnerRemoteId();

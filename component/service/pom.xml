@@ -331,6 +331,11 @@
       <artifactId>jackson-databind</artifactId>
       <version>2.3.1</version>
     </dependency>
+    <dependency>
+      <groupId>io.swagger</groupId>
+      <artifactId>swagger-jaxrs</artifactId>
+      <version>1.5.0</version>
+    </dependency>
   </dependencies>
   <build>
     <plugins>
@@ -401,6 +406,39 @@
           </includes>
         </configuration>
       </plugin>
+      <plugin>
+	        <groupId>com.github.kongchen</groupId>
+	        <artifactId>swagger-maven-plugin</artifactId>
+	        <version>3.1.0</version> 
+	        <configuration>
+	            <apiSources>
+	                <apiSource>
+                      <springmvc>false</springmvc>
+                      <locations>org.exoplatform.social.rest.impl</locations>
+                      <schemes>http,https</schemes>
+                      <host>localhost:8080</host>
+                      <basePath>/rest</basePath>
+                      <info>
+                          <title>eXo Social REST API</title>
+                          <version>1</version>
+                          <description>The Social REST API provides methods for accessing social resources such as users, spaces or activities. Here are the descriptions of a full representation of each of the social resources available.</description>
+                          
+                      </info>
+                      <templatePath>${basedir}/src/main/resources/swagger-doc-template/strapdown.html.hbs</templatePath>
+                      <outputPath>${basedir}/target/generated/document.html</outputPath>
+                      <swaggerDirectory>${basedir}/target/generated-sources/annotations/generated</swaggerDirectory>
+                  </apiSource>
+	            </apiSources>
+	        </configuration>
+	        <executions>
+	            <execution>
+	                <phase>compile</phase>
+	                <goals>
+	                    <goal>generate</goal>
+	                </goals>
+	            </execution>
+	        </executions>
+	    </plugin>
     </plugins>
   </build>
 </project>

@@ -22,6 +22,7 @@ import java.util.List;
 
 import org.apache.commons.lang.Validate;
 import org.exoplatform.commons.utils.ListAccess;
+import org.exoplatform.commons.utils.PrivilegedSystemHelper;
 import org.exoplatform.portal.application.PortalRequestContext;
 import org.exoplatform.portal.mop.SiteType;
 import org.exoplatform.portal.webui.util.Util;
@@ -36,15 +37,17 @@ import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvide
 import org.exoplatform.social.core.manager.ActivityManager;
 import org.exoplatform.social.webui.URLUtils;
 import org.exoplatform.social.webui.Utils;
+import org.exoplatform.social.webui.activity.AbstractActivitiesDisplay;
 import org.exoplatform.social.webui.activity.UIActivitiesContainer;
 import org.exoplatform.social.webui.activity.UIActivitiesLoader;
+import org.exoplatform.social.webui.composer.UIComposer;
 import org.exoplatform.social.webui.composer.UIComposer.PostContext;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.ComponentConfigs;
 import org.exoplatform.webui.config.annotation.EventConfig;
-import org.exoplatform.webui.core.UIContainer;
 import org.exoplatform.webui.core.UIDropDownControl;
+import org.exoplatform.webui.core.UIPortletApplication;
 import org.exoplatform.webui.core.model.SelectItemOption;
 import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.event.EventListener;
@@ -72,13 +75,13 @@ import org.exoplatform.webui.event.EventListener;
     }
   )
 })
-public class UIUserActivitiesDisplay extends UIContainer {
-
-  static private final Log      LOG = ExoLogger.getLogger(UIUserActivitiesDisplay.class);
-  private static final int      ACTIVITY_PER_PAGE = 20;
-  private static final String   SLASH = "/";
+public class UIUserActivitiesDisplay extends AbstractActivitiesDisplay {
+  private static final Log LOG = ExoLogger.getLogger(UIUserActivitiesDisplay.class);
+  private static final String SLASH = "/";
+  private static final String ACTIVITIES_PER_PAGE_KEY = "social.activities.display.per.page";
+  private static int ACTIVITY_PER_PAGE = 10;
   public static final String ACTIVITY_STREAM_VISITED_PREFIX_COOKIED = "exo_social_activity_stream_%s_visited_%s";
-  
+
   private Object locker = new Object();
   private boolean notChangedMode;
   private boolean postActivity;
@@ -104,6 +107,8 @@ public class UIUserActivitiesDisplay extends UIContainer {
    * @throws Exception 
    */
   public UIUserActivitiesDisplay() throws Exception {
+    ACTIVITY_PER_PAGE = Integer.valueOf(PrivilegedSystemHelper.getProperty(ACTIVITIES_PER_PAGE_KEY, "10").trim());
+    //
     List<SelectItemOption<String>> displayModes = new ArrayList<SelectItemOption<String>>(4);
     displayModes.add(new SelectItemOption<String>("All_Updates", DisplayMode.ALL_ACTIVITIES.toString()));
     displayModes.add(new SelectItemOption<String>("Space_Updates", DisplayMode.MY_SPACE.toString()));
@@ -129,10 +134,20 @@ public class UIUserActivitiesDisplay extends UIContainer {
     // set lastUpdatedNumber after init() method invoked inside setSelectedDisplayMode() method
     //int numberOfUpdates = this.getNumberOfUpdatedActivities();
     //setLastUpdatedNum(selectedDisplayMode.toString(), "" + numberOfUpdates);
+    //
   }
 
   public UIActivitiesLoader getActivitiesLoader() {
     return activitiesLoader;
+  }
+  
+  /**
+   * Checks the Stream Context to make 
+   * the decision Share button shows or not.
+   * @return TRUE/FALSE
+   */
+  public boolean isSingleContext() {
+    return (getActivitiesLoader().getPostContext() == UIComposer.PostContext.SINGLE);
   }
 
   public boolean isActivityStreamOwner() {
@@ -211,6 +226,7 @@ public class UIUserActivitiesDisplay extends UIContainer {
     synchronized (locker) {
       removeChild(UIActivitiesLoader.class);
       activitiesLoader = addChild(UIActivitiesLoader.class, null, "UIActivitiesLoader");
+      activitiesLoader.getChild(UIActivitiesContainer.class).setRenderFull(isRenderFull(), true);
     }
     //
     String activityId = Utils.getActivityID();
@@ -305,9 +321,13 @@ public class UIUserActivitiesDisplay extends UIContainer {
   }
   
   protected boolean hasActivities() {
-    UIActivitiesLoader uiActivitiesLoader = getChild(UIActivitiesLoader.class);
-    UIActivitiesContainer activitiesContainer = uiActivitiesLoader.getChild(UIActivitiesContainer.class);
-    return activitiesContainer.getChildren().size() > 0; 
+    try {
+      UIActivitiesLoader uiActivitiesLoader = getChild(UIActivitiesLoader.class);
+      UIActivitiesContainer activitiesContainer = uiActivitiesLoader.getChild(UIActivitiesContainer.class);
+      return (activitiesContainer != null && activitiesContainer.getChildren().size() > 0);
+    } catch (Exception e) {
+      return false;
+    }
   }
   
   public static class ChangeOptionActionListener extends EventListener<UIDropDownControl> {
@@ -338,7 +358,10 @@ public class UIUserActivitiesDisplay extends UIContainer {
        
        //
        event.getRequestContext().getJavascriptManager()
-       .require("SHARED/social-ui-activity-updates", "activityUpdates").addScripts("activityUpdates.resetCookie('" + String.format(Utils.ACTIVITY_STREAM_TAB_SELECTED_COOKIED, Utils.getViewerRemoteId()) + "','" + selectedDisplayMode + "');");
+            .require("SHARED/social-ui-activity-updates", "activityUpdates")
+            .require("SHARED/social-ui-activity", "activity")
+            .addScripts("activity.responsiveMobile('" + uiUserActivities.getAncestorOfType(UIPortletApplication.class).getId() + "');")
+            .addScripts("activityUpdates.resetCookie('" + String.format(Utils.ACTIVITY_STREAM_TAB_SELECTED_COOKIED, Utils.getViewerRemoteId()) + "','" + selectedDisplayMode + "');");
 //       
 //       event.getRequestContext().getJavascriptManager()
 //       .require("SHARED/social-ui-activity-updates", "activityUpdates").addScripts("activityUpdates.resetCookie('" + String.format(Utils.LAST_UPDATED_ACTIVITIES_NUM, selectedDisplayMode, Utils.getViewerRemoteId()) + "','" + numberOfUpdates + "');");
@@ -355,72 +378,13 @@ public class UIUserActivitiesDisplay extends UIContainer {
     public void execute(Event<UIUserActivitiesDisplay> event) throws Exception {
      UIUserActivitiesDisplay uiUserActivities = event.getSource();
      uiUserActivities.init();
+     event.getRequestContext().getJavascriptManager()
+     .require("SHARED/social-ui-activity", "activity")
+     .addScripts("activity.responsiveMobile('" + uiUserActivities.getAncestorOfType(UIPortletApplication.class).getId() + "');");
      event.getRequestContext().addUIComponentToUpdateByAjax(uiUserActivities);
-     
      Utils.resizeHomePage();
    }
  }
-  
-  private int getActivitiesUpdatedNum(boolean hasRefresh) {
-    if (this.postActivity) {
-      resetCookies();
-      this.postActivity = false;
-      
-      return 0;
-    }
-
-    //
-    UIActivitiesLoader activitiesLoader = getChild(UIActivitiesLoader.class);
-    ActivitiesRealtimeListAccess activitiesListAccess = (ActivitiesRealtimeListAccess) activitiesLoader.getActivityListAccess();
-    
-    String mode = DisplayMode.ALL_ACTIVITIES.toString();
-    ActivityFilterType.ACTIVITY_FEED
-                    .oldFromSinceTime(Utils.getLastVisited(Utils.OLD_FROM, mode))
-                    .fromSinceTime(Utils.getLastVisited(Utils.FROM, mode))
-                    .toSinceTime(Utils.getLastVisited(Utils.TO, mode)).lastNumberOfUpdated(getLastUpdatedNum(mode));
-    
-    //
-    mode = DisplayMode.CONNECTIONS.toString();
-    ActivityFilterType.CONNECTIONS_ACTIVITIES
-                   .oldFromSinceTime(Utils.getLastVisited(Utils.OLD_FROM, mode))
-                   .fromSinceTime(Utils.getLastVisited(Utils.FROM, mode))
-                   .toSinceTime(Utils.getLastVisited(Utils.TO, mode))
-                   .lastNumberOfUpdated(getLastUpdatedNum(mode));
-    
-    //
-    mode = DisplayMode.MY_ACTIVITIES.toString();
-    ActivityFilterType.USER_ACTIVITIES
-                   .oldFromSinceTime(Utils.getLastVisited(Utils.OLD_FROM, mode))
-                   .fromSinceTime(Utils.getLastVisited(Utils.FROM, mode))
-                   .toSinceTime(Utils.getLastVisited(Utils.TO, mode))
-                   .lastNumberOfUpdated(getLastUpdatedNum(mode));
-    
-    //
-    mode = DisplayMode.MY_SPACE.toString();
-    ActivityFilterType.USER_SPACE_ACTIVITIES
-                  .oldFromSinceTime(Utils.getLastVisited(Utils.OLD_FROM, mode))
-                  .fromSinceTime(Utils.getLastVisited(Utils.FROM, mode))
-                  .toSinceTime(Utils.getLastVisited(Utils.TO, mode))
-                  .lastNumberOfUpdated(getLastUpdatedNum(mode));
-    
-    ActivityUpdateFilter updatedFilter = new ActivityUpdateFilter(hasRefresh);
-   
-    int gotNumber = activitiesListAccess.getNumberOfUpdated(updatedFilter);
-    
-    
-    //
-    if (gotNumber == 0 && hasRefresh) {
-      //only in case lastUpdatedNumber > 0 then reset cookies
-      long lastNumber = getLastUpdatedNum(selectedDisplayMode.toString());
-      if (lastNumber > 0) {
-        resetCookies();
-      }
-      
-    }
-    
-    
-    return gotNumber;
-  }
   
   public void resetCookies() {
     Utils.setLastVisited(this.selectedDisplayMode.toString());
@@ -463,10 +427,5 @@ public class UIUserActivitiesDisplay extends UIContainer {
     }
     
     return Long.parseLong(strValue);
-  }
-  
-  private void setLastUpdatedNum(String mode, String value) {
-    String cookieKey = String.format(Utils.LAST_UPDATED_ACTIVITIES_NUM, mode, Utils.getViewerRemoteId());
-    Utils.setCookies(cookieKey, value);
   }
 }

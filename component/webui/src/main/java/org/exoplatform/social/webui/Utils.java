@@ -99,7 +99,16 @@ public class Utils {
    * @since 1.2.0 GA
    */
   public static String getOwnerRemoteId() {
-    String currentUserName = URLUtils.getCurrentUser();
+    String currentUserName = URLUtils.getCurrentUser(); 
+    if (currentUserName != null && currentUserName.length() > 0) {
+      Identity identity = getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, currentUserName, false);
+      //if the user's deleted
+      if (identity.isDeleted()) {
+        currentUserName = null;
+      }
+    }
+    
+    //
     if (currentUserName == null || currentUserName.equals("")) {
       return getViewerRemoteId();
     }
@@ -358,7 +367,7 @@ public class Utils {
   
   public static String getValueFromRequestParam(String param) {
     PortalRequestContext request = Util.getPortalRequestContext();
-    return request.getRequest().getParameter(param);
+    return request.getRequestParameter(param);
   }
   
   /**
@@ -597,6 +606,17 @@ public class Utils {
         }
     }
     return sb.toString();
+  }
+
+  /**
+   * Sets current navigation
+   * @param pcontext
+   */
+  public static void setCurrentNavigationData(PortalRequestContext pcontext) {
+    String siteName = pcontext.getControllerContext().getParameter(RequestNavigationData.REQUEST_SITE_NAME);
+    String siteType = pcontext.getControllerContext().getParameter(RequestNavigationData.REQUEST_SITE_TYPE);
+    String requestPath = pcontext.getControllerContext().getParameter(RequestNavigationData.REQUEST_PATH);
+    setCurrentNavigationData(siteType, siteName, requestPath);
   }
   
   /**

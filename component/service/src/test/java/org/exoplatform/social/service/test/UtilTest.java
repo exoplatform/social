@@ -16,9 +16,14 @@
  */
 package org.exoplatform.social.service.test;
 
-import org.exoplatform.social.service.rest.Util;
+import java.util.Arrays;
 
 import junit.framework.TestCase;
+
+import org.exoplatform.social.rest.api.EntityBuilder;
+import org.exoplatform.social.rest.entity.CollectionEntity;
+import org.exoplatform.social.rest.entity.DataEntity;
+import org.exoplatform.social.service.rest.Util;
 
 
 /**
@@ -66,5 +71,29 @@ public class UtilTest extends TestCase {
     
     url = "http://google.com?%3Cscript%3Ealert(%22Link_attached%22)%3C/script%3E";
     assertEquals("http://google.com?<script>alert(\"Link_attached\")</script>", Util.getDecodeQueryURL(url));
+  }
+  
+  /*
+   * Performs testing for {@link Util#buildLinkForHeader(Object, String)}
+   */
+  public void testBuildLinkForHeader() throws Exception {
+    CollectionEntity rc = new CollectionEntity(Arrays.asList(new DataEntity()), "key", 0, 20);
+    rc.setSize(60);
+    String requestPath = "https://localhost:8080/rest/private/v1/social/identities";
+    
+    //
+    rc.setOffset(0);
+    String linkForHeader = EntityBuilder.buildLinkForHeader(rc, requestPath).toString();
+    assertEquals("<https://localhost:8080/rest/private/v1/social/identities?offset=20&limit=20>; rel=\"next\", <https://localhost:8080/rest/private/v1/social/identities?offset=40&limit=20>; rel=\"last\"", linkForHeader);
+
+    //
+    rc.setOffset(60);
+    linkForHeader = EntityBuilder.buildLinkForHeader(rc, requestPath).toString();
+    assertEquals("<https://localhost:8080/rest/private/v1/social/identities?offset=40&limit=20>; rel=\"prev\", <https://localhost:8080/rest/private/v1/social/identities?offset=0&limit=20>; rel=\"first\"", linkForHeader);
+    
+    //
+    rc.setOffset(20);
+    linkForHeader = EntityBuilder.buildLinkForHeader(rc, requestPath).toString();
+    assertEquals("<https://localhost:8080/rest/private/v1/social/identities?offset=40&limit=20>; rel=\"next\", <https://localhost:8080/rest/private/v1/social/identities?offset=0&limit=20>; rel=\"prev\", <https://localhost:8080/rest/private/v1/social/identities?offset=0&limit=20>; rel=\"first\", <https://localhost:8080/rest/private/v1/social/identities?offset=40&limit=20>; rel=\"last\"", linkForHeader);
   }
 }

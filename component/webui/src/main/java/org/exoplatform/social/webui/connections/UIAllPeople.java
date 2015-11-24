@@ -123,6 +123,7 @@ public class UIAllPeople extends UIContainer {
     addChild(UIUpdateRelationship.class, null, null);
     uiProfileUserSearch = addChild(UIProfileUserSearch.class, null, null);
     uiProfileUserSearch.setHasConnectionLink(false);
+    uiProfileUserSearch.setLoadFromSearch(false);
     setSelectedChar(ALL_FILTER);
     init();
   }
@@ -198,7 +199,10 @@ public class UIAllPeople extends UIContainer {
    * @throws Exception 
    */
   public List<Identity> getPeopleList() throws Exception {
-    this.peopleList = loadPeople(0, currentLoadIndex + loadingCapacity);
+    if (!uiProfileUserSearch.isLoadFromSearch()) {
+      this.peopleList = loadPeople(0, currentLoadIndex + loadingCapacity);
+    }
+    uiProfileUserSearch.setLoadFromSearch(false);
     
     int realPeopleListSize = this.peopleList.size();
 
@@ -278,10 +282,10 @@ public class UIAllPeople extends UIContainer {
     ListAccess<Identity> listAccess = Utils.getIdentityManager().getIdentitiesByProfileFilter(lastOwner.getProviderId(), filter,
                                                                                               false);
     Identity[] identities = listAccess.load(index, length);
-
-    setPeopleNum(listAccess.getSize());
+    setPeopleNum(identities.length < PEOPLE_PER_PAGE? identities.length : listAccess.getSize());
+    //
     setPeopleListAccess(listAccess);
-    uiProfileUserSearch.setPeopleNum(listAccess.getSize());
+    uiProfileUserSearch.setPeopleNum(getPeopleNum());
 
     return Arrays.asList(identities);
 
@@ -442,6 +446,7 @@ public class UIAllPeople extends UIContainer {
         
         uiSearch.setProfileFilter(filter);
         uiSearch.setNewSearch(true);
+        uiAllPeople.uiProfileUserSearch.setLoadFromSearch(true);
       } catch (Exception e) {
         uiSearch.setIdentityList(new ArrayList<Identity>());
       }

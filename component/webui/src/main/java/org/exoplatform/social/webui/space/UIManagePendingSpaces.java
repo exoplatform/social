@@ -27,6 +27,7 @@ import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.space.SpaceFilter;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
+import org.exoplatform.social.webui.Utils;
 import org.exoplatform.web.application.ApplicationMessage;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
@@ -58,10 +59,8 @@ public class UIManagePendingSpaces extends UIContainer {
   SpaceService spaceService = null;
   String userId = null;
   private final Integer SPACES_PER_PAGE = 20;
-  private List<Space> spaces; // for search result
   private UISpaceSearch uiSpaceSearch = null;
-  
-  private boolean loadAtEnd = false;
+  //
   private boolean hasUpdatedSpace = false;
   private int currentLoadIndex;
   private boolean enableLoadNext;
@@ -82,6 +81,8 @@ public class UIManagePendingSpaces extends UIContainer {
     uiSpaceSearch.setTypeOfRelation(PENDING_STATUS);
     addChild(uiSpaceSearch);
     init();
+    //keeps the navigation, in the case switch from other, the space list must be refreshed
+    Utils.setCurrentNavigationData(Util.getPortalRequestContext());
   }
 
   /**
@@ -90,13 +91,13 @@ public class UIManagePendingSpaces extends UIContainer {
    */
   public void init() {
     try {
-      setHasUpdatedSpace(false);
-      setLoadAtEnd(false);
+      setHasUpdatedSpace(true);
       enableLoadNext = true;
       currentLoadIndex = 0;
       loadingCapacity = SPACES_PER_PAGE;
       pendingSpacesList = new ArrayList<Space>();
-      setPendingSpacesList(loadPendingSpaces(currentLoadIndex, loadingCapacity));
+      this.uiSpaceSearch.setSpaceNameSearch(null);
+      this.uiSpaceSearch.getUIStringInput(SPACE_SEARCH).setValue("");
       if (this.selectedChar != null){
         setSelectedChar(this.selectedChar);
       } else {
@@ -135,24 +136,6 @@ public class UIManagePendingSpaces extends UIContainer {
   }
 
   /**
-   * Gets flags to clarify that load at the last space or not. 
-   * 
-   * @return the loadAtEnd
-   */
-  public boolean isLoadAtEnd() {
-    return loadAtEnd;
-  }
-
-  /**
-   * Sets flags to clarify that load at the last space or not. 
-   * 
-   * @return the loadAtEnd
-   */
-  public void setLoadAtEnd(boolean loadAtEnd) {
-    this.loadAtEnd = loadAtEnd;
-  }
-
-  /**
    * Gets information that clarify one space is updated or not.
    * 
    * @return the hasUpdatedSpace
@@ -178,15 +161,14 @@ public class UIManagePendingSpaces extends UIContainer {
    * @since 1.2.2
    */
   public List<Space> getPendingSpacesList() throws Exception {
-    this.pendingSpacesList = loadPendingSpaces(0, this.pendingSpacesList.size());
-    int realPendingSpacesListSize = this.pendingSpacesList.size();
-    
     if (isHasUpdatedSpace()) {
-      setHasUpdatedSpace(false); 
+      setPendingSpacesList(loadPendingSpaces(0, this.pendingSpacesList.size()));
+    } else if (!Utils.isRefreshPage()) {
+      //Must be refreshed the space list because switched from others page.
+      this.uiSpaceSearch.setSpaceNameSearch(null);
+      this.uiSpaceSearch.getUIStringInput(SPACE_SEARCH).setValue("");
+      setPendingSpacesList(loadPendingSpaces(0, SPACES_PER_PAGE));
     }
-        
-    setEnableLoadNext((realPendingSpacesListSize >= SPACES_PER_PAGE)
-            && (realPendingSpacesListSize < getPendingSpacesNum()));
     
     return this.pendingSpacesList;
   }
@@ -280,8 +262,9 @@ public class UIManagePendingSpaces extends UIContainer {
   public void loadNext() throws Exception {
     currentLoadIndex += loadingCapacity;
     if (currentLoadIndex <= getPendingSpacesNum()) {
-      this.pendingSpacesList.addAll(new ArrayList<Space>(Arrays.asList(getPendingSpacesListAccess()
-                                                              .load(currentLoadIndex, loadingCapacity))));
+      List<Space> loaded = new ArrayList<Space>(Arrays.asList(getPendingSpacesListAccess().load(currentLoadIndex, loadingCapacity)));
+      this.pendingSpacesList.addAll(loaded);
+      setEnableLoadNext(loaded.size() < SPACES_PER_PAGE ? false : this.pendingSpacesList.size() < getPendingSpacesNum());
     }
   }
   
@@ -310,6 +293,8 @@ public class UIManagePendingSpaces extends UIContainer {
     setPendingSpacesNum(getPendingSpacesListAccess().getSize());
     uiSpaceSearch.setSpaceNum(getPendingSpacesNum());
     Space[] spaces = getPendingSpacesListAccess().load(index, length);
+    
+    setEnableLoadNext(spaces.length < SPACES_PER_PAGE ? false : getPendingSpacesNum() > SPACES_PER_PAGE);
     
     return new ArrayList<Space>(Arrays.asList(spaces));
   }
@@ -350,7 +335,7 @@ public class UIManagePendingSpaces extends UIContainer {
       }
       
       uiManagePendingSpaces.loadSearch();
-      uiManagePendingSpaces.setLoadAtEnd(false);
+      uiManagePendingSpaces.setHasUpdatedSpace(false);
       event.getRequestContext().addUIComponentToUpdateByAjax(uiManagePendingSpaces);
     }
   }
@@ -369,8 +354,7 @@ public class UIManagePendingSpaces extends UIContainer {
       String userId = uiPendingSpaces.getUserId();
 
       Space space = spaceService.getSpaceById(spaceId);
-      uiPendingSpaces.setLoadAtEnd(false);
-      
+            
       if (space == null) {
         uiApp.addMessage(new ApplicationMessage(SPACE_DELETED_INFO, null, ApplicationMessage.INFO));
         return;
@@ -389,23 +373,6 @@ public class UIManagePendingSpaces extends UIContainer {
    */
   public String getImageSource(Space space) throws Exception {
     return space.getAvatarUrl();
-  }
-
-  /**
-   * Sets space list.
-   * 
-   * @param spaces
-   */
-  public void setSpaces(List<Space> spaces) {
-    this.spaces = spaces;
-  }
-  /**
-   * Gets space list.
-   * 
-   * @return space list
-   */
-  public List<Space> getSpaces() {
-    return spaces;
   }
 
   /**

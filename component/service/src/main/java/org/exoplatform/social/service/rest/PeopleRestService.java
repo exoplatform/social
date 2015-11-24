@@ -16,10 +16,32 @@
  */
 package org.exoplatform.social.service.rest;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+
+import javax.annotation.security.RolesAllowed;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.QueryParam;
+import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
+import javax.ws.rs.core.SecurityContext;
+import javax.ws.rs.core.UriInfo;
+import javax.xml.bind.annotation.XmlRootElement;
+
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.shindig.social.opensocial.model.Activity;
+import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.container.ExoContainer;
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.PortalContainer;
@@ -43,14 +65,8 @@ import org.exoplatform.social.core.service.LinkProvider;
 import org.exoplatform.social.core.space.SpaceException;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
+import org.exoplatform.social.rest.impl.user.UserRestResourcesV1;
 import org.exoplatform.webui.utils.TimeConvertUtils;
-
-import javax.annotation.security.RolesAllowed;
-import javax.ws.rs.*;
-import javax.ws.rs.core.*;
-import javax.ws.rs.core.Response.Status;
-import javax.xml.bind.annotation.XmlRootElement;
-import java.util.*;
 
 /**
  * 
@@ -131,7 +147,9 @@ public class PeopleRestService implements ResourceContainer{
                     @QueryParam("typeOfRelation") String typeOfRelation,
                     @QueryParam("spaceURL") String spaceURL,
                     @PathParam("format") String format) throws Exception {
-    MediaType mediaType = Util.getMediaType(format);
+    String[] mediaTypes = new String[] { "json", "xml" };
+    MediaType mediaType = Util.getMediaType(format, mediaTypes);
+    
     List<Identity> excludedIdentityList = new ArrayList<Identity>();
     excludedIdentityList.add(Util.getViewerIdentity(currentUser));
     UserNameList nameList = new UserNameList();
@@ -142,29 +160,36 @@ public class PeopleRestService implements ResourceContainer{
     filter.setPosition("");
     filter.setSkills("");
     filter.setExcludedIdentityList(excludedIdentityList);
-    List<Identity> identities = Arrays.asList(getIdentityManager().getIdentitiesByProfileFilter(
-                                  OrganizationIdentityProvider.NAME, filter, false).load(0, (int)SUGGEST_LIMIT));
-
+    
     Identity currentIdentity = getIdentityManager().getOrCreateIdentity(
                                  OrganizationIdentityProvider.NAME, currentUser, false);
 
-    Space space = getSpaceService().getSpaceByUrl(spaceURL);
+    Identity[] result;
     if (PENDING_STATUS.equals(typeOfRelation)) {
-      addToNameList(currentIdentity, getRelationshipManager().getPending(currentIdentity, identities), nameList);
+      ListAccess<Identity> listAccess = getRelationshipManager().getOutgoingByFilter(currentIdentity, filter);
+      result = listAccess.load(0, (int)SUGGEST_LIMIT);
+      addToNameList(nameList, result);
     } else if (INCOMING_STATUS.equals(typeOfRelation)) {
-      addToNameList(currentIdentity, getRelationshipManager().getIncoming(currentIdentity, identities), nameList);
+      ListAccess<Identity> listAccess = getRelationshipManager().getIncomingByFilter(currentIdentity, filter);
+      result = listAccess.load(0, (int)SUGGEST_LIMIT);
+      addToNameList(nameList, result);
     } else if (CONFIRMED_STATUS.equals(typeOfRelation)){
-      addToNameList(currentIdentity, getRelationshipManager().getConfirmed(currentIdentity, identities), nameList);
+      ListAccess<Identity> listAccess = getRelationshipManager().getConnectionsByFilter(currentIdentity, filter);
+      result = listAccess.load(0, (int)SUGGEST_LIMIT);
+      addToNameList(nameList, result);
     } else if (SPACE_MEMBER.equals(typeOfRelation)) {  // Use in search space member
-      addSpaceUserToList (identities, nameList, space, typeOfRelation);
+      List<Identity> identities = Arrays.asList(getIdentityManager().getIdentitiesByProfileFilter(OrganizationIdentityProvider.NAME, filter, false).load(0, (int)SUGGEST_LIMIT));
+      Space space = getSpaceService().getSpaceByUrl(spaceURL);
+      addSpaceUserToList(identities, nameList, space, typeOfRelation);
     } else if (USER_TO_INVITE.equals(typeOfRelation)) { 
-      addSpaceUserToList (identities, nameList, space, typeOfRelation);
+      List<Identity> identities = Arrays.asList(getIdentityManager().getIdentitiesByProfileFilter(OrganizationIdentityProvider.NAME, filter, false).load(0, (int)SUGGEST_LIMIT));
+      Space space = getSpaceService().getSpaceByUrl(spaceURL);
+      addSpaceUserToList(identities, nameList, space, typeOfRelation);
     } else { // Identities that match the keywords.
-      for (Identity identity : identities) {
-        nameList.addName(identity.getProfile().getFullName());
-      }
+      ListAccess<Identity> listAccess = getIdentityManager().getIdentitiesByProfileFilter(currentIdentity.getProviderId(), filter, false);
+      result = listAccess.load(0, (int)SUGGEST_LIMIT);
+      addToNameList(nameList, result);
     }
-    
     return Util.getResponse(nameList, uriInfo, mediaType, Response.Status.OK);
   }
   
@@ -177,6 +202,8 @@ public class PeopleRestService implements ResourceContainer{
    * @throws Exception
    * @LevelAPI Platform
    * @anchor PeopleRestService.suggestUsernames
+   * @deprecated Deprecated from 4.3.x. Replaced by a new API {@link UserRestResourcesV1#getUsers(org.exoplatform.social.rest.impl.user.UriInfo, String, int, int, boolean, String)}
+   * 
    */
   @GET
   @Path("getprofile/data.json")
@@ -230,6 +257,7 @@ public class PeopleRestService implements ResourceContainer{
    * @throws Exception
    * @LevelAPI Platform
    * @anchor PeopleRestService.searchConnection
+   * @deprecated Deprecated from 4.3.x. Replaced by a new API {@link UserRestResourcesV1#getConnectionOfUser(org.exoplatform.social.rest.impl.user.UriInfo, String, boolean, String)}
    */
   @GET
   @Path("{portalName}/getConnections.{format}")
@@ -595,6 +623,13 @@ public class PeopleRestService implements ResourceContainer{
   private void addToNameList(Identity currentIdentity, List<Relationship> identitiesHasRelation, UserNameList nameList) {
     for (Relationship relationship : identitiesHasRelation) {
       Identity identity = relationship.getPartner(currentIdentity);
+      String fullName = identity.getProfile().getFullName();
+      nameList.addName(fullName);
+    }
+  }
+  
+  private void addToNameList(UserNameList nameList, Identity ...identities) {
+    for (Identity identity : identities) {
       String fullName = identity.getProfile().getFullName();
       nameList.addName(fullName);
     }

@@ -53,6 +53,11 @@ public class StorageUtils {
   public static final String SLASH_STR = "/";
   public static final String COLON_STR = ":";
   public static final String SOC_RELATIONSHIP = "soc:relationship";
+  public static final String SOC_RELCEIVER    = "soc:receiver";
+  public static final String SOC_SENDER       = "soc:sender";
+  public static final String SOC_IGNORED      = "soc:ignored";
+  public static final String SOC_FROM         = "soc:from";
+  public static final String SOC_TO           = "soc:to";
   public static final String SOC_ACTIVITY_INFO = "soc:activityInfo";
   public static final String SOC_PREFIX = "soc:";
   private final static long DAY_MILISECONDS = 86400000;//a day = 24h x 60m x 60s x 1000 milisecond.
@@ -170,13 +175,18 @@ public class StorageUtils {
 
     //
     whereExpression.startGroup();
-    for (int i = 0; identities.size() > i; ++i) {
-      Identity current = identities.get(i);
-      whereExpression.equals(JCRProperties.id, current.getProfile().getId());
-      if (i + 1 < identities.size()) {
-        whereExpression.or();
-      }
+    if (identities.size() > 0) {
+      for (int i = 0; identities.size() > i; ++i) {
+        Identity current = identities.get(i);
+        whereExpression.equals(JCRProperties.id, current.getProfile().getId());
+        if (i + 1 < identities.size()) {
+          whereExpression.or();
+        }
+      }      
+    } else {
+      whereExpression.equals(JCRProperties.id, "");
     }
+    
     whereExpression.endGroup();
     
   }
@@ -612,4 +622,18 @@ public class StorageUtils {
       long diffValue = newDate - oldDate;
       return diffValue >= DAY_MILISECONDS;
     }
+    
+  /**
+   * Gets the list of activity's id from the activities  
+   * @param activities
+   * @return list of ids
+   */
+  public static List<String> getIds(List<ExoSocialActivity> activities) {
+    List<String> ids = new LinkedList<String>();
+    for (ExoSocialActivity a : activities) {
+      ids.add(a.getId());
+    }
+
+    return ids;
+  }
 }

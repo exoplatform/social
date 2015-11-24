@@ -214,7 +214,10 @@
                    if ( cachingData ) {
                      buildPopup(cachingData, userId);
                    } else {
-		                 $.ajax({
+                     if (window.profileXHR && window.profileXHR.abort) {
+                       window.profileXHR.abort();
+                     }
+		                 window.profileXHR = $.ajax({
 		                     type: "GET",
 		                     cache: false,
 		                     url: restUrl
@@ -308,7 +311,7 @@
 				                                "text":"" + labels.Ignore,
 				                                "data-action":"Deny:" + ownerUserId,
 				                                "onclick":"takeAction(this)"
-                                            });
+                                      });
                         }
 
                     }
@@ -392,47 +395,48 @@
                     var focusedUserBlock = focusedUserLink.parents('div.spaceBox:first');
                     
                     if (focusedUserBlock.length > 0) {
-                      var actionBtn = $(focusedUserBlock).find('div.connectionBtn');
-                      
-                      // invoke onclick()
-                      var btn = actionBtn.find('button.btn-confirm:first');
-                      if(btn.length === 0) {
-                        actionBtn.find('button.btn:first').trigger('click');
-                      } else {
-                        btn.trigger('click');
-                      }
-                      
-                      // clear cache and hide popup
-                      var popup = $(el).closest('#tiptip_holder');
-                      popup.fadeOut('fast');
-                      // clear cache
-                      clearCache();
-                      return;
+                        var actionBtn = $(focusedUserBlock).find('div.connectionBtn');
+                        
+                        // invoke onclick()
+                        var btn = actionBtn.find('button.btn-confirm:first');
+                        if(btn.length === 0) {
+                            actionBtn.find('button.btn:first').trigger('click');
+                        } else {
+                            btn.trigger('click');
+                        }
+                        
+                        // clear cache and hide popup
+                        var popup = $(el).closest('#tiptip_holder');
+                        popup.fadeOut('fast');
+                        // clear cache
+                        clearCache();
+                        return;
                     }
 
                     var dataAction = $(el).attr('data-action');
                     var updatedType = dataAction.split(":")[0];
                     var ownerUserId = dataAction.split(":")[1];
 
-                    $.ajax({
-                        type:"GET",
+                    if (window.profileActionXHR && window.profileActionXHR.abort) {
+                        window.profileActionXHR.abort();
+                    }
+                    window.profileActionXHR = $.ajax({
+                        type: "GET",
                         cache: false,
-                        url:opts.restURL.replace('{0}', ownerUserId) + '?updatedType=' + updatedType
+                        url: opts.restURL.replace('{0}', ownerUserId) + '?updatedType=' + updatedType
                     }).complete(function (jqXHR) {
-                                if (jqXHR.readyState === 4) {
-                                    var popup = $(el).closest('#tiptip_holder');
-                                    popup.fadeOut('fast', function () {
-                                    });
-
-                                    if(updatedType === "Disconnect" && $(org_elem).data('link')) {
-                                      var actionLink = $(org_elem).data('link').replace('javascript:', '');
-                                      $.globalEval(actionLink);
-                                    }
-                                    
-                                    // clear cache
-                                    clearCache();
-                                }
+                        if (jqXHR.readyState === 4) {
+                            var popup = $(el).closest('#tiptip_holder');
+                            popup.fadeOut('fast', function () {
                             });
+                            if(updatedType === "Disconnect" && $(org_elem).data('link')) {
+                                var actionLink = $(org_elem).data('link').replace('javascript:', '');
+                                $.globalEval(actionLink);
+                            }
+                            // clear cache
+                            clearCache();
+                        }
+                    });
                 }
 
                 function putToCache(key, data) {
@@ -461,7 +465,6 @@
                         $(this).data("CacheSearch", {});
                     });
                 }
-
                 window.takeAction = takeAction;
             }
         })

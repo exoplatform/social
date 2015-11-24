@@ -1,6 +1,8 @@
 package org.exoplatform.social.user.portlet;
 
+import javax.portlet.MimeResponse;
 import javax.portlet.PortletMode;
+import javax.portlet.ResourceURL;
 
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
@@ -58,5 +60,17 @@ public abstract class UIAbstractUserPortlet extends UIPortletApplication {
     //
     context.getJavascriptManager().getRequireJS().require("SHARED/social-ui-profile", "profile" + getId())
            .addScripts("profile" + getId() + ".initUserProfilePopup('" + getId() + "', " + object.toString() + ");");
+  }
+
+  protected String buildResourceURL(String key) {
+    try {
+      WebuiRequestContext ctx = WebuiRequestContext.getCurrentInstance();
+      MimeResponse res = ctx.getResponse();
+      ResourceURL rsURL = res.createResourceURL();
+      rsURL.setResourceID(key);
+      return rsURL.toString();
+    } catch (Exception e) {
+      return "";
+    }
   }
 }

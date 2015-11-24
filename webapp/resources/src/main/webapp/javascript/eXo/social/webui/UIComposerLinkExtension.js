@@ -216,17 +216,24 @@
 	      });
 	      
 	      this.attachButton.removeAttr('disabled');
+	      var called = false;
 	      this.attachButton.on( 'click', function(evt) {
-	        if (inputLink.val() === '') {
-	          return;
-	        }
-	        var urlInput =  encodeURIComponent(encodeURI(inputLink.val()));
-	        var url = UIComposerLinkExtension.attachUrl.replace(/&amp;/g, "&") + '&objectId=' + urlInput + '&ajaxRequest=true';
-	        ajaxGet(url, function(){
-	          try {
-	            $('textarea#composerInput').exoMentions('showButton', function() {});
-	          } catch (e) {}
-	        });
+            if (!called) {
+              called = true;
+	          if (inputLink.val() === '') {
+	            return;
+	          }
+	          var urlInput =  encodeURIComponent(encodeURI(inputLink.val()));
+	          var url = UIComposerLinkExtension.attachUrl.replace(/&amp;/g, "&") + '&objectId=' + urlInput + '&ajaxRequest=true';
+	          ajaxGet(url, function(){
+	            try {
+	              $('textarea#composerInput').exoMentions('showButton', function() {});
+	            } catch (e) {}
+	          });
+	          setTimeout(function(){ 
+	            called = false;
+	          },3000);
+            }
 	      });
 	      
 	    }

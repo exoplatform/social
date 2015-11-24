@@ -118,6 +118,7 @@ public class UIMyConnections extends UIContainer {
       setHasPeopleTab(false);
     }
     uiProfileUserSearch.setHasConnectionLink(false);
+    uiProfileUserSearch.setLoadFromSearch(false);
     addChild(uiProfileUserSearch);
     init();
   }
@@ -206,7 +207,10 @@ public class UIMyConnections extends UIContainer {
    * @since 1.2.2
    */
   public List<Identity> getPeopleList() throws Exception {
-    this.peopleList = loadPeople(0, currentLoadIndex + loadingCapacity);
+    if (!uiProfileUserSearch.isLoadFromSearch()) {
+      this.peopleList = loadPeople(0, currentLoadIndex + loadingCapacity);
+    }
+    uiProfileUserSearch.setLoadFromSearch(false);
     
     int realPeopleListSize = this.peopleList.size();
 
@@ -294,9 +298,9 @@ public class UIMyConnections extends UIContainer {
     ListAccess<Identity> listAccess = Utils.getRelationshipManager().getConnectionsByFilter(lastOwner, filter);
     Identity[] identities = listAccess.load(index, length);
 
-    setPeopleNum(listAccess.getSize());
+    setPeopleNum(identities.length < MY_CONNECTION_PER_PAGE ? identities.length : listAccess.getSize());
     setPeopleListAccess(listAccess);
-    uiProfileUserSearch.setPeopleNum(listAccess.getSize());
+    uiProfileUserSearch.setPeopleNum(getPeopleNum());
 
     return Arrays.asList(identities);
 
@@ -394,10 +398,10 @@ public class UIMyConnections extends UIContainer {
         
         uiSearch.setProfileFilter(filter);
         uiSearch.setNewSearch(true);
+        uiMyConnections.uiProfileUserSearch.setLoadFromSearch(true);
       } catch (Exception e) {
         uiSearch.setIdentityList(new ArrayList<Identity>());
       }
-      
       
       uiMyConnections.loadSearch();
       uiMyConnections.setLoadAtEnd(false);
@@ -412,4 +416,5 @@ public class UIMyConnections extends UIContainer {
   public boolean isEditable () {
     return Utils.isOwner();
   }
+
 }

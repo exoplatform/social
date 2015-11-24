@@ -16,7 +16,7 @@
  */
 package org.exoplatform.social.portlet;
 
-import org.exoplatform.social.webui.profile.UIDisplayProfileList;
+import org.exoplatform.social.webui.connections.UIAllPeople;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.core.UIPortletApplication;
 import org.exoplatform.webui.core.lifecycle.UIApplicationLifecycle;
@@ -34,7 +34,7 @@ public class UIPeoplePortlet extends UIPortletApplication {
    * @throws Exception
    */
   public UIPeoplePortlet() throws Exception {
-    addChild(UIDisplayProfileList.class, null, null);
+    addChild(UIAllPeople.class, null, null);
   }
 
 }

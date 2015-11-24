@@ -55,7 +55,7 @@ public class ContactComparator extends UserProfileComparator {
 
   public boolean hasChanged() {
     boolean hasChanged = false;
-    //
+    String fullName = firstName + " " + lastName;
     hasChanged |= hasChanged(profile, Profile.FIRST_NAME, firstName);
     hasChanged |= hasChanged(profile, Profile.LAST_NAME, lastName);
     hasChanged |= hasChanged(profile, Profile.EMAIL, email);
@@ -64,7 +64,7 @@ public class ContactComparator extends UserProfileComparator {
     hasChanged |= hasChanged(profile, Profile.CONTACT_PHONES, phones);
     hasChanged |= hasChanged(profile, Profile.CONTACT_IMS, ims);
     hasChanged |= hasChanged(profile, Profile.CONTACT_URLS, urls);
-    //
+    profile.setProperty(Profile.FULL_NAME, fullName);
     return hasChanged;
   }
   

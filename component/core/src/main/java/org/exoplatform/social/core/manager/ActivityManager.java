@@ -476,4 +476,11 @@ public interface ActivityManager {
    */
   @Deprecated
   void processActivitiy(ExoSocialActivity activity);
+  
+  /**
+   * Get the list access of all activities
+   * 
+   * @return
+   */
+  RealtimeListAccess<ExoSocialActivity> getAllActivitiesWithListAccess();
 }

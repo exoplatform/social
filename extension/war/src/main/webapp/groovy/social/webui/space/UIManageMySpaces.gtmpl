@@ -25,9 +25,6 @@
   def hasInvited = false;
   def style="display:none;";
   def labelShowMoreSpace = _ctx.appRes("${uicomponentId}.label.Show_More");
-  if (uicomponent.isLoadAtEnd()) {
-    uicomponent.init();
-  }
 
   def userSpaces = uicomponent.getMySpacesList();
   def selectedChar = uicomponent.getSelectedChar();
@@ -41,11 +38,7 @@
   def labelInvitationsReceived = _ctx.appRes("${uicomponent.id}.label.Invitations_Received");
   def labelRequestsPending = _ctx.appRes("${uicomponent.id}.label.Requests_Pending");
   def deleteMessagePopup = _ctx.appRes("UIManageMySpaces.msg.confirm_space_delete");
-
   def selectedNode = Utils.getSelectedNode();
-  if (userSpaces.size() == uicomponent.getMySpacesNum()) {
-    uicomponent.setLoadAtEnd(true);
-  }
   
 	def jsManager = _ctx.getRequestContext().getJavascriptManager();
 	jsManager.require("SHARED/jquery", "jq")

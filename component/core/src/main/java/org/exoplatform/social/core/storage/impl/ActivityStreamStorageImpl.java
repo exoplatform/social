@@ -418,7 +418,7 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
     try {
       //
       ActivityEntity activityEntity = _findById(ActivityEntity.class, activityId);
-      HidableEntity hidableActivity = _getMixin(activityEntity, HidableEntity.class, false);
+      HidableEntity hidableActivity = _getMixin(activityEntity, HidableEntity.class, true);
       
       Collection<ActivityRef> references = activityEntity.getActivityRefs();
       
@@ -527,7 +527,7 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
     IdentityEntity identityEntity = identityStorage._findIdentityEntity(identity.getProviderId(), identity.getRemoteId());
     ActivityRefListEntity refList = type.refsOf(identityEntity);
     ActivityRef ref = refList.get(activityEntity, oldUpdated);
-    HidableEntity hidableActivity = _getMixin(activityEntity, HidableEntity.class, false);
+    HidableEntity hidableActivity = _getMixin(activityEntity, HidableEntity.class, true);
     if (ref != null) {
       LOG.trace("remove activityRefId " +  ref.getId() +" for commenter: " + identityEntity.getRemoteId());
       refList.remove(activityEntity, hidableActivity.getHidden(), oldUpdated);
@@ -562,21 +562,23 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
       //It has been invoked by Activity Service with the multi-threading.
       //so that, gets Entity from JCR, prevent Session.logout exception when retrieves its references
       ActivityEntity activityEntity = _findById(ActivityEntity.class, streamCtx.getActivity().getId());
-      HidableEntity hidableActivity = _getMixin(activityEntity, HidableEntity.class, false);
+      HidableEntity hidableActivity = _getMixin(activityEntity, HidableEntity.class, true);
       //ActivityEntity activityEntity = streamCtx.getActivity();
       Collection<ActivityRef> references = activityEntity.getActivityRefs();
       long oldUpdated = streamCtx.getOldLastUpdated();
       ActivityRef newRef = null;
-      for (ActivityRef old : references) {
-        ActivityRefListEntity refList = old.getDay().getMonth().getYear().getList();
-        //ActivityRef.getName equals ActivityId or not
-        if (old.getName().equalsIgnoreCase(activityEntity.getId())) {
-          refList.update(activityEntity, old, oldUpdated, hidableActivity.getHidden());
-        } else {
-          newRef = refList.getOrCreated(activityEntity, hidableActivity.getHidden());
-          newRef.setLastUpdated(activityEntity.getLastUpdated());
-          newRef.setActivityEntity(activityEntity);
-          refList.remove(activityEntity, hidableActivity.getHidden(), oldUpdated);
+      synchronized (references) {
+        for (ActivityRef old : references) {
+          ActivityRefListEntity refList = old.getDay().getMonth().getYear().getList();
+          //ActivityRef.getName equals ActivityId or not
+          if (old.getName().equalsIgnoreCase(activityEntity.getId())) {
+            refList.update(activityEntity, old, oldUpdated, hidableActivity.getHidden());
+          } else {
+            newRef = refList.getOrCreated(activityEntity, hidableActivity.getHidden());
+            newRef.setLastUpdated(activityEntity.getLastUpdated());
+            newRef.setActivityEntity(activityEntity);
+            refList.remove(activityEntity, hidableActivity.getHidden(), oldUpdated);
+          }
         }
       }
     } catch (NodeNotFoundException ex) {
@@ -646,6 +648,11 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
   public List<ExoSocialActivity> getFeed(Identity owner, int offset, int limit) {
     return getActivitiesNotQuery(ActivityRefType.FEED, owner, offset, limit);
   }
+  
+  @Override
+  public List<String> getIdsFeed(Identity owner, int offset, int limit) {
+    return getIdsNotQuery(ActivityRefType.FEED, owner, offset, limit);
+  }
 
   @Override
   public int getNumberOfFeed(Identity owner) {
@@ -655,6 +662,11 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
   @Override
   public List<ExoSocialActivity> getConnections(Identity owner, int offset, int limit) {
     return getActivitiesNotQuery(ActivityRefType.CONNECTION, owner, offset, limit);
+  }
+  
+  @Override
+  public List<String> getIdsConnections(Identity owner, int offset, int limit) {
+    return getIdsNotQuery(ActivityRefType.CONNECTION, owner, offset, limit);
   }
 
   @Override
@@ -666,6 +678,11 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
   public List<ExoSocialActivity> getMySpaces(Identity owner, int offset, int limit) {
     return getActivitiesNotQuery(ActivityRefType.MY_SPACES, owner, offset, limit);
   }
+  
+  @Override
+  public List<String> getIdsMySpaces(Identity owner, int offset, int limit) {
+    return getIdsNotQuery(ActivityRefType.MY_SPACES, owner, offset, limit);
+  }
 
   @Override
   public int getNumberOfMySpaces(Identity owner) {
@@ -676,6 +693,11 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
   public List<ExoSocialActivity> getSpaceStream(Identity owner, int offset, int limit) {
     return getActivitiesNotQuery(ActivityRefType.SPACE_STREAM, owner, offset, limit);
   }
+  
+  @Override
+  public List<String> getIdsSpaceStream(Identity owner, int offset, int limit) {
+    return getIdsNotQuery(ActivityRefType.SPACE_STREAM, owner, offset, limit);
+  }
 
   @Override
   public int getNumberOfSpaceStream(Identity owner) {
@@ -685,6 +707,11 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
   @Override
   public List<ExoSocialActivity> getMyActivities(Identity owner, int offset, int limit) {
     return getActivitiesNotQuery(ActivityRefType.MY_ACTIVITIES, owner, offset, limit);
+  }
+  
+  @Override
+  public List<String> getIdsMyActivities(Identity owner, int offset, int limit) {
+    return getIdsNotQuery(ActivityRefType.MY_ACTIVITIES, owner, offset, limit);
   }
 
   @Override
@@ -899,6 +926,58 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
     public abstract ActivityRefListEntity refsOf(IdentityEntity identityEntity);
     
     public abstract ActivityRefListEntity create(IdentityEntity identityEntity);
+  }
+  
+  private List<String> getIdsNotQuery(ActivityRefType type, Identity owner, int offset, int limit) {
+    List<String> got = new LinkedList<String>();
+    try {
+      IdentityEntity identityEntity = _findById(IdentityEntity.class, owner.getId());
+      ActivityRefListEntity refList = type.refsOf(identityEntity);
+      ActivityRefList list = new ActivityRefList(refList);
+
+      int nb = 0;
+      ActivityRefIterator it = list.iterator();
+      _skip(it, offset);
+      int size = refList.getNumber() > 0 ? refList.getNumber(): 0;
+      boolean sizeIsZero = (size == 0);
+      boolean isHide = false;
+      
+      while (it.hasNext()) {
+        if(sizeIsZero) size ++;
+        try {
+          ActivityRef current = it.next();
+          // take care in the case, current.getActivityEntity() = null the same
+          // SpaceRef, need to remove it out
+          if (current.getActivityEntity() == null) {
+            current.getDay().getActivityRefs().remove(current.getName());
+            continue;
+          }
+          
+          ActivityEntity entity = current.getActivityEntity();
+          HidableEntity hidable = _getMixin(entity, HidableEntity.class, false);
+          if (hidable != null) {
+            isHide = hidable.getHidden();
+          } else {
+            isHide = false;
+          }
+
+          if (!got.contains(entity.getId())) {
+            if (!isHide) {
+              got.add(entity.getId());
+              if (++nb == limit) {
+                break;
+              }
+            }
+          }
+        } catch (Exception e) {
+          LOG.warn("Exception while loading activities for user: " + owner.getRemoteId());
+        }
+      }
+
+    } catch (NodeNotFoundException e) {
+      LOG.warn("Failed to activities!");
+    }
+    return got;
   }
   
   
@@ -1182,6 +1261,10 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
         }
         IdentityEntity identityEntity = identityStorage._findIdentityEntity(identity.getProviderId(), identity.getRemoteId());
         
+        if (identityEntity == null) {
+          continue;
+        }
+        
         //keep the latest activity posted time
         if (type.equals(ActivityRefType.CONNECTION)) {
           identityEntity.setLatestActivityCreatedTime(activityEntity.getLastUpdated());
@@ -1224,7 +1307,7 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
         return;
     }
     
-    HidableEntity hidableActivity = _getMixin(activityEntity, HidableEntity.class, false);
+    HidableEntity hidableActivity = _getMixin(activityEntity, HidableEntity.class, true);
 
     ActivityRefListEntity listRef = type.refsOf(identityEntity);
     ActivityRef ref = listRef.getOrCreated(activityEntity, hidableActivity.getHidden());

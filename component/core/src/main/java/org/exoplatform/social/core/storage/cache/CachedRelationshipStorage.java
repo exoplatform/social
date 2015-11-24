@@ -17,7 +17,16 @@
 
 package org.exoplatform.social.core.storage.cache;
 
-import org.exoplatform.container.PortalContainer;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+
+import javax.jcr.Node;
+import javax.jcr.RepositoryException;
+
+import org.exoplatform.commons.utils.CommonsUtils;
 import org.exoplatform.services.cache.ExoCache;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
@@ -25,6 +34,7 @@ import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.profile.ProfileFilter;
 import org.exoplatform.social.core.relationship.model.Relationship;
 import org.exoplatform.social.core.storage.RelationshipStorageException;
+import org.exoplatform.social.core.storage.api.ActivityStorage;
 import org.exoplatform.social.core.storage.api.IdentityStorage;
 import org.exoplatform.social.core.storage.api.RelationshipStorage;
 import org.exoplatform.social.core.storage.cache.loader.ServiceContext;
@@ -45,16 +55,6 @@ import org.exoplatform.social.core.storage.cache.selector.RelationshipCacheSelec
 import org.exoplatform.social.core.storage.cache.selector.SuggestionCacheSelector;
 import org.exoplatform.social.core.storage.impl.AbstractStorage;
 import org.exoplatform.social.core.storage.impl.RelationshipStorageImpl;
-
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-
-import javax.jcr.Node;
-import javax.jcr.RepositoryException;
-import javax.jcr.UnsupportedRepositoryOperationException;
 
 /**
  * Cache support for RelationshipStorage.
@@ -87,7 +87,6 @@ public class CachedRelationshipStorage extends AbstractStorage implements Relati
   //
   private final RelationshipStorageImpl storage;
   private final IdentityStorage identityStorage;
-  private CachedActivityStorage cachedActivityStorage;
 
   //
   private static final RelationshipKey RELATIONSHIP_NOT_FOUND = new RelationshipKey(null);
@@ -192,15 +191,7 @@ public class CachedRelationshipStorage extends AbstractStorage implements Relati
     return suggestions;
 
   }
-
-  public CachedActivityStorage getCachedActivityStorage() {
-    if (cachedActivityStorage == null) {
-      cachedActivityStorage = (CachedActivityStorage)
-          PortalContainer.getInstance().getComponentInstanceOfType(CachedActivityStorage.class);
-    }
-    return cachedActivityStorage;
-  }
-
+  
   public CachedRelationshipStorage(final RelationshipStorageImpl storage, final IdentityStorage identityStorage,
                                    final SocialStorageCacheService cacheService) {
 
@@ -243,7 +234,6 @@ public class CachedRelationshipStorage extends AbstractStorage implements Relati
     exoRelationshipByIdentityCache.put(identityKey1, key);
     exoRelationshipByIdentityCache.put(identityKey2, key);
     clearCacheFor(relationship);
-    getCachedActivityStorage().clearCache();
 
     return r;
 
@@ -270,7 +260,6 @@ public class CachedRelationshipStorage extends AbstractStorage implements Relati
     
     //
     clearCacheFor(relationship);
-    getCachedActivityStorage().clearCache();
     
   }
 
@@ -783,4 +772,11 @@ public class CachedRelationshipStorage extends AbstractStorage implements Relati
     return buildRelationships(keys);
   }
   
+  public List<Relationship> getRelationshipsByStatus(Identity identity, Relationship.Type type, long offset, long limit) {
+    return storage.getRelationshipsByStatus(identity, type, offset, limit);
+  }
+  
+  public int getRelationshipsCountByStatus(Identity identity, Relationship.Type type) {
+    return storage.getRelationshipsCountByStatus(identity, type);
+  }
 }

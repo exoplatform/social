@@ -57,6 +57,9 @@ public class UIInvitations extends UIContainer {
 
   /** Stores UIProfileUserSearch object. */
   UIProfileUserSearch uiProfileUserSearch = null;
+  
+  /** Invitation Status information */
+  private static final String INCOMING_STATUS = "incoming";
 
   /**
    * Default the number of relationships per page.
@@ -109,8 +112,10 @@ public class UIInvitations extends UIContainer {
    */
   public UIInvitations() throws Exception {
     uiProfileUserSearch = createUIComponent(UIProfileUserSearch.class, null, "UIProfileUserSearch");
+    uiProfileUserSearch.setTypeOfRelation(INCOMING_STATUS);
     setHasPeopleTab(true);
     uiProfileUserSearch.setHasConnectionLink(false);
+    uiProfileUserSearch.setLoadFromSearch(false);
     addChild(uiProfileUserSearch);
     init();
   }
@@ -193,7 +198,10 @@ public class UIInvitations extends UIContainer {
    * @since 1.2.2
    */
   public List<Identity> getPeopleList() throws Exception {
-    this.peopleList = loadPeople(0, currentLoadIndex + loadingCapacity);
+    if (!uiProfileUserSearch.isLoadFromSearch()) {
+      this.peopleList = loadPeople(0, currentLoadIndex + loadingCapacity);
+    }
+    uiProfileUserSearch.setLoadFromSearch(false);
     
     int realPeopleListSize = this.peopleList.size();
 
@@ -280,9 +288,10 @@ public class UIInvitations extends UIContainer {
     ListAccess<Identity> listAccess = Utils.getRelationshipManager().getIncomingByFilter(lastOwner, filter);
     Identity[] identities = listAccess.load(index, length);
 
-    setPeopleNum(listAccess.getSize());
+    setPeopleNum(identities.length < RECEIVED_INVITATION_PER_PAGE ? identities.length : listAccess.getSize());
+    
     setPeopleListAccess(listAccess);
-    uiProfileUserSearch.setPeopleNum(listAccess.getSize());
+    uiProfileUserSearch.setPeopleNum(getPeopleNum());
 
     return Arrays.asList(identities);
 
@@ -410,6 +419,7 @@ public class UIInvitations extends UIContainer {
         
         uiSearch.setProfileFilter(filter);
         uiSearch.setNewSearch(true);
+        uiInvitations.uiProfileUserSearch.setLoadFromSearch(true);
       } catch (Exception e) {
         uiSearch.setIdentityList(new ArrayList<Identity>());
       }

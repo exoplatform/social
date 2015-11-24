@@ -16,6 +16,7 @@
  */
 package org.exoplatform.social.core.manager;
 
+import org.chromattic.api.RelationshipType;
 import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
@@ -1589,6 +1590,37 @@ public class RelationshipManagerTest extends AbstractCoreTest {
     tearDownRelationshipList.add(maryToGhostRelationship);
     tearDownRelationshipList.add(maryToDemoRelationship);
     tearDownRelationshipList.add(paulToMaryRelationship);
-    tearDownRelationshipList.add(johnToMaryRelationship);
+    tearDownRelationshipList.add(johnToMaryRelationship); 
+  }
+
+  public void testGetRelationshipByStatus() throws Exception {
+    Relationship maryToGhostRelationship = relationshipManager.inviteToConnect(ghostIdentity, maryIdentity);
+    Relationship ghostToJohnRelationship = relationshipManager.inviteToConnect(ghostIdentity, johnIdentity);
+    Relationship maryToDemoRelationship = relationshipManager.inviteToConnect(demoIdentity, maryIdentity);
+    
+    //check all relationships of ghost
+    List<Relationship>  list = relationshipManager.getRelationshipsByStatus(ghostIdentity, Relationship.Type.ALL, 0, 10);
+    assertEquals(2, list.size());
+    list = relationshipManager.getRelationshipsByStatus(ghostIdentity, Relationship.Type.PENDING, 0, 10);
+    assertEquals(2, list.size());
+    list = relationshipManager.getRelationshipsByStatus(ghostIdentity, Relationship.Type.CONFIRMED, 0, 10);
+    assertEquals(0, list.size());
+    
+    relationshipManager.confirm(maryIdentity, ghostIdentity);
+    relationshipManager.confirm(johnIdentity, ghostIdentity);
+    
+    //check all relationships of ghost
+    list = relationshipManager.getRelationshipsByStatus(ghostIdentity, Relationship.Type.ALL, 0, 10);
+    assertEquals(2, list.size());
+    list = relationshipManager.getRelationshipsByStatus(ghostIdentity, Relationship.Type.PENDING, 0, 10);
+    assertEquals(0, list.size());
+    list = relationshipManager.getRelationshipsByStatus(ghostIdentity, Relationship.Type.CONFIRMED, 0, 10);
+    assertEquals(2, list.size());
+    
+    assertEquals(1, relationshipManager.getRelationshipsCountByStatus(demoIdentity, Relationship.Type.ALL));
+    
+    tearDownRelationshipList.add(maryToGhostRelationship);
+    tearDownRelationshipList.add(maryToDemoRelationship);
+    tearDownRelationshipList.add(ghostToJohnRelationship);
   }
 }
