@@ -182,7 +182,7 @@ public class UIManageAllSpaces extends UIContainer {
    */
   public List<Space> getSpacesList() throws Exception {
     if (isHasUpdatedSpace()) {
-      setSpacesList(loadSpaces(0, this.spacesList.size()));
+      setSpacesList(loadSpaces(0, SPACES_PER_PAGE));
     } else if (!Utils.isRefreshPage()) {
       //Must be refreshed the space list because switched from others page.
       this.uiSpaceSearch.setSpaceNameSearch(null);

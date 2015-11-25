@@ -167,7 +167,7 @@ public class UIManageInvitationSpaces extends UIContainer {
    */
   public List<Space> getInvitedSpacesList() throws Exception {
     if (isHasUpdatedSpace()) {
-      setInvitedSpacesList(loadInvitedSpaces(0, this.invitedSpacesList.size()));
+      setInvitedSpacesList(loadInvitedSpaces(0, SPACES_PER_PAGE));
     } else if (!Utils.isRefreshPage()) {
       //Must be refreshed the space list because switched from others page.
       this.uiSpaceSearch.setSpaceNameSearch(null);
