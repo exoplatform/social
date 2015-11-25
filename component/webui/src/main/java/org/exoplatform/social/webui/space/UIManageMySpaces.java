@@ -171,7 +171,7 @@ public class UIManageMySpaces extends UIContainer {
    */
   public List<Space> getMySpacesList() throws Exception {
     if (isHasUpdatedSpace()) {
-      setMySpacesList(loadMySpaces(0, this.mySpacesList.size()));
+      setMySpacesList(loadMySpaces(0, SPACES_PER_PAGE));
     } else if (!Utils.isRefreshPage()) {
       //Must be refreshed the space list because switched from others page.
       this.uiSpaceSearch.setSpaceNameSearch(null);
