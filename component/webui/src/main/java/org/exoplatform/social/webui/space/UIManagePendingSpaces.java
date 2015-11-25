@@ -162,7 +162,7 @@ public class UIManagePendingSpaces extends UIContainer {
    */
   public List<Space> getPendingSpacesList() throws Exception {
     if (isHasUpdatedSpace()) {
-      setPendingSpacesList(loadPendingSpaces(0, this.pendingSpacesList.size()));
+      setPendingSpacesList(loadPendingSpaces(0, SPACES_PER_PAGE));
     } else if (!Utils.isRefreshPage()) {
       //Must be refreshed the space list because switched from others page.
       this.uiSpaceSearch.setSpaceNameSearch(null);
