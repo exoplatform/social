@@ -60,6 +60,7 @@ import org.exoplatform.social.rest.entity.RelationshipEntity;
 import org.exoplatform.social.rest.entity.SpaceEntity;
 import org.exoplatform.social.rest.entity.SpaceMembershipEntity;
 import org.exoplatform.social.rest.entity.UserEntity;
+import org.exoplatform.social.service.rest.api.VersionResources;
 
 public class EntityBuilder {
   public static final String USERS_TYPE              = "users";
@@ -290,8 +291,9 @@ public class EntityBuilder {
     } else {
       commentLink = new LinkEntity(getCommentsActivityRestUrl(activity.getId(), restPath));
     }
+    //getBaseRestUrl
     activityEntity.setComments(commentLink);
-    activityEntity.setLikes(new LinkEntity(RestUtils.getBaseUrl() + "/" + restPath + "/likers"));
+    activityEntity.setLikes(new LinkEntity(RestUtils.getBaseRestUrl() + "/" + VersionResources.VERSION_ONE + "/social/activities/" + activity.getId() + "/likes"));
     activityEntity.setCreateDate(RestUtils.formatISO8601(new Date(activity.getPostedTime())));
     activityEntity.setUpdateDate(RestUtils.formatISO8601(activity.getUpdated()));
     //
