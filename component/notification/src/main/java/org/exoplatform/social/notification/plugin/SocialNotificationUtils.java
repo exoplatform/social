@@ -103,21 +103,23 @@ public class SocialNotificationUtils {
     StringBuilder sb = new StringBuilder();
     ExoSocialActivity activity = null;
     Space space = null;
+    String typeActivityDisplay = (templateContext.getPluginId().equals("LikePlugin")) ? "view_likers_activity" : "view_full_activity";
+    String typeSpaceDisplay = (templateContext.getPluginId().equals("PostActivitySpaceStreamPlugin")) ? "space" : "space_members";
+    
     for (Entry<String, List<String>> entry : receiversMap.entrySet()) {
       sb.append("<li style=\"margin: 0 0 13px 14px; font-size: 13px; line-height: 18px; font-family: HelveticaNeue, Helvetica, Arial, sans-serif;\">");
       String id = entry.getKey();
       try {
-        activity = Utils.getActivityManager().getActivity(id);
-        space = null;
+        if (templateContext.getPluginId().equals("PostActivitySpaceStreamPlugin")) {
+          space = Utils.getSpaceService().getSpaceById(id);
+        } else {
+          activity = Utils.getActivityManager().getActivity(id);        
+        }
       } catch (Exception e) {
-        space = Utils.getSpaceService().getSpaceById(id);
-        activity = null;
+        continue;
       }
       List<String> values = entry.getValue();
       int count = values.size();
-
-      String typeActivityDisplay = (templateContext.getPluginId().equals("LikePlugin")) ? "view_likers_activity" : "view_full_activity";
-      String typeSpaceDisplay = (templateContext.getPluginId().equals("PostActivitySpaceStreamPlugin")) ? "space" : "space_members";
       if (activity != null) {
         String title = activity.getTitle();
         // removes a href link from title. Just for digest building case.
