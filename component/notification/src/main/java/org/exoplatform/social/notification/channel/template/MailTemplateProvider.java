@@ -482,7 +482,7 @@ public class MailTemplateProvider extends TemplateProvider {
           //
           SocialNotificationUtils.processInforSendTo(map, space.getId(), message.getValueOwnerParameter(SocialNotificationUtils.POSTER.getKey()));
         }
-        writer.append(SocialNotificationUtils.getMessageByIds(map, templateContext));
+        writer.append(SocialNotificationUtils.getMessageInSpace(map, templateContext));
       } catch (IOException e) {
         ctx.setException(e);
         return false;
@@ -604,7 +604,7 @@ public class MailTemplateProvider extends TemplateProvider {
           //
           SocialNotificationUtils.processInforSendTo(map, spaceId, fromUser);
         }
-        writer.append(SocialNotificationUtils.getMessageByIds(map, templateContext));
+        writer.append(SocialNotificationUtils.getMessageInSpace(map, templateContext));
       } catch (IOException e) {
         ctx.setException(e);
         return false;

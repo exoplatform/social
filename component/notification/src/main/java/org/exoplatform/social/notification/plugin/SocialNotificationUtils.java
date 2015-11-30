@@ -99,6 +99,58 @@ public class SocialNotificationUtils {
    * @param templateContext
    * @return
    */
+  public static String getMessageInSpace(Map<String, List<String>> receiversMap, TemplateContext templateContext) {
+    StringBuilder sb = new StringBuilder();
+    Space space = null;
+    String typeSpaceDisplay = (templateContext.getPluginId().equals("PostActivitySpaceStreamPlugin")) ? "space" : "space_members";
+    
+    for (Entry<String, List<String>> entry : receiversMap.entrySet()) {
+      sb.append("<li style=\"margin: 0 0 13px 14px; font-size: 13px; line-height: 18px; font-family: HelveticaNeue, Helvetica, Arial, sans-serif;\">");
+      String id = entry.getKey();
+      try {       
+        space = Utils.getSpaceService().getSpaceById(id);      
+      } catch (Exception e) {
+        continue;
+      }
+      List<String> values = entry.getValue();
+      int count = values.size();     
+      templateContext.put("SPACE", SocialNotificationUtils.buildRedirecUrl(typeSpaceDisplay, space.getId(), space.getDisplayName()));
+      
+      String[] keys = {"USER", "USER_LIST", "LAST3_USERS"};
+      String key = "";
+      StringBuilder value = new StringBuilder();
+      
+      for (int i = 0; i < count && i < 3; i++) {
+        Identity identity = Utils.getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, values.get(i), true);
+        if (i > 1 && count == 3) {
+          key = keys[i - 1];
+        } else {
+          key = keys[i];
+        }
+        value.append(SocialNotificationUtils.buildRedirecUrl("user", identity.getRemoteId(), identity.getProfile().getFullName()));
+        if (count > (i + 1) && i < 2) {
+          value.append(", ");
+        }
+      }
+      templateContext.put(key, value.toString());
+      if(count > 3) {       
+        templateContext.put("COUNT", SocialNotificationUtils.buildRedirecUrl(typeSpaceDisplay, space.getId(), String.valueOf((count - 3))));
+      }
+
+      String digester = TemplateUtils.processDigest(templateContext.digestType(count));
+      sb.append(digester);
+      sb.append("</li>");
+    }
+    
+    return sb.toString();
+  }
+  
+  /**
+   * 
+   * @param receiversMap
+   * @param templateContext
+   * @return
+   */
   public static String getMessageByIds(Map<String, List<String>> receiversMap, TemplateContext templateContext) {
     StringBuilder sb = new StringBuilder();
     ExoSocialActivity activity = null;
