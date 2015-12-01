@@ -57,8 +57,7 @@ public class SocialUserProfileEventListenerImpl extends UserProfileEventListener
       
       //
       String pGender = (String) profile.getProperty(Profile.GENDER);
-      String pPosition = (String) profile.getProperty(Profile.POSITION);
-      
+      String pPosition = (String) profile.getProperty(Profile.POSITION);     
       //
       boolean hasUpdated = false;
   
@@ -79,10 +78,16 @@ public class SocialUserProfileEventListenerImpl extends UserProfileEventListener
         hasUpdated = true;
       }
   
-      if (hasUpdated) {
+      if (hasUpdated && !isNew) {
         IdentityManager identityManager = CommonsUtils.getService(IdentityManager.class);
         identityManager.updateProfile(profile);
       }
+      
+      if (isNew) {
+        IdentityStorage identityStorage = CommonsUtils.getService(IdentityStorage.class);
+        identityStorage.updateProfile(profile);
+      }
+      
     }finally{
       RequestLifeCycle.end();
     }
