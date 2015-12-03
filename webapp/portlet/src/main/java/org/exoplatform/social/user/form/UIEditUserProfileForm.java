@@ -54,7 +54,7 @@ import org.exoplatform.webui.utils.TimeConvertUtils;
      @EventConfig(listeners = UIEditUserProfileForm.RemoveExperienceActionListener.class, phase = Phase.DECODE),
      @EventConfig(listeners = UIEditUserProfileForm.RemoveActionListener.class, phase = Phase.DECODE),
      @EventConfig(listeners = UIEditUserProfileForm.CancelActionListener.class, phase = Phase.DECODE),
-     @EventConfig(listeners = UIEditUserProfileForm.SaveActionListener.class)
+     @EventConfig(listeners = UIEditUserProfileForm.SaveActionListener.class, csrfCheck = true)
    }
 )
 public class UIEditUserProfileForm extends UIForm {
