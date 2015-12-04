@@ -164,8 +164,15 @@ public class SocialUserEventListenerImpl extends UserEventListener {
   public void postSetEnabled(User user) throws Exception {
     RequestLifeCycle.begin(PortalContainer.getInstance());
     try {
-      IdentityManager idm = CommonsUtils.getService(IdentityManager.class);
-      idm.processEnabledIdentity(user.getUserName(), user.isEnabled());
+      //Makes sure the user has been synchronized in LDAP, then to enable/disable it.
+      IdentityStorage storage = CommonsUtils.getService(IdentityStorage.class);
+      Identity identity = storage.findIdentity(OrganizationIdentityProvider.NAME, user.getUserName());
+      if (identity != null) {
+        IdentityManager idm = CommonsUtils.getService(IdentityManager.class);
+        idm.processEnabledIdentity(user.getUserName(), user.isEnabled());
+      } else {
+        LOG.warn(String.format("Social's Identity(%s) not found!", user.getUserName()));
+      }
     } finally {
       RequestLifeCycle.end();
     }
