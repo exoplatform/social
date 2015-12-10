@@ -16,8 +16,6 @@
  */
 package org.exoplatform.social.common.service.utils;
 
-import java.util.concurrent.CountDownLatch;
-
 import org.exoplatform.social.common.service.AsyncCallback;
 import org.exoplatform.social.common.service.AsyncProcessor;
 import org.exoplatform.social.common.service.ProcessContext;
@@ -33,23 +31,15 @@ public class AsyncProcessorTool {
    * @throws Exception can be thrown if waiting is interrupted
    */
   public static void process(final AsyncProcessor processor, final ProcessContext processContext) throws Exception {
-      final CountDownLatch latch = new CountDownLatch(1);
       processor.start(processContext);
-      ProcessContext got = processor.process(processContext, new AsyncCallback() {
-          public void done(ProcessContext processContext) {
-              if (processContext.isFailed() == false) {
-                  latch.countDown();
-              }
-          }
+      processor.process(processContext, new AsyncCallback() {
+          public void done(ProcessContext processContext) {}
 
           @Override
           public String toString() {
               return "Done " + processor;
           }
       });
-      if (got.isInProgress()) {
-          latch.await();
-      }
       
       processor.end(processContext);
   }
