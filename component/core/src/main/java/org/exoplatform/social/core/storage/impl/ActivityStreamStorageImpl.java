@@ -728,6 +728,7 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
   @Override
   public void connect(Identity sender, Identity receiver) {
     try {
+      this.activityWriteLock.lock();
       //
       List<ActivityEntity> activities = getActivitiesByPoster(sender);
       IdentityEntity receiverEntity = identityStorage._findIdentityEntity(receiver.getProviderId(), receiver.getRemoteId());
@@ -772,6 +773,8 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
       
     } catch (NodeNotFoundException e) {
       LOG.warn("Failed to add Activity references when create relationship.");
+    } finally {
+      this.activityWriteLock.unlock();
     }
   }
   
@@ -1281,7 +1284,12 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
         
         //keep the latest activity posted time
         if (type.equals(ActivityRefType.CONNECTION)) {
-          identityEntity.setLatestActivityCreatedTime(activityEntity.getLastUpdated());
+          if (activityEntity.getLastUpdated() != null) {
+            identityEntity.setLatestActivityCreatedTime(activityEntity.getLastUpdated());
+          } else {
+            identityEntity.setLatestActivityCreatedTime(activityEntity.getPostedTime());
+          }
+          
         }
         //
         if (mustCheck) {
