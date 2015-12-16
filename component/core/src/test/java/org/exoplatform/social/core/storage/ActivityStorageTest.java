@@ -822,7 +822,7 @@ public class ActivityStorageTest extends AbstractCoreTest {
   /**
    * Test {@link ActivityStorage#testGetActivitiesRelationshipByFeed(Identity, int, int)}
    */
-  @MaxQueryNumber(1107)
+  @MaxQueryNumber(1115)
   public void testGetActivitiesRelationshipByFeed() throws Exception {
     RelationshipManager relationshipManager = this.getRelationshipManager();
     
@@ -1525,7 +1525,7 @@ public class ActivityStorageTest extends AbstractCoreTest {
   /**
    * Tests {@link ActivityStorage#getNewerOnActivityFeed(Identity, Long, int)}.
    */
-  @MaxQueryNumber(1995)
+  @MaxQueryNumber(2005)
   public void testGetNumberOfNewerOnActivityFeedByTimestamp() {
     createActivities(3, demoIdentity);
     Long sinceTime = activityStorage.getActivityFeed(demoIdentity, 0, 10).get(0).getPostedTime();
@@ -2265,7 +2265,7 @@ public class ActivityStorageTest extends AbstractCoreTest {
   /**
    * Tests {@link ActivityStorage#getNewerOnActivityFeed(Identity, Long, int)}.
    */
-  @MaxQueryNumber(2025)
+  @MaxQueryNumber(2035)
   public void testGetNewerOnActivityFeedWithTimestamp() throws Exception {
     checkCleanData();
     createActivities(3, demoIdentity);
@@ -2808,7 +2808,7 @@ public class ActivityStorageTest extends AbstractCoreTest {
     assertEquals(3, demoActivities.size());*/
   }
   
-  @MaxQueryNumber(1053)
+  @MaxQueryNumber(1140)
   public void testPostActivityOnConnectionStream() throws Exception {
     Relationship rootDemoRelationship = relationshipManager.inviteToConnect(rootIdentity, demoIdentity);
     relationshipManager.confirm(demoIdentity, rootIdentity);
@@ -2831,7 +2831,8 @@ public class ActivityStorageTest extends AbstractCoreTest {
     relationshipManager.confirm(demoIdentity, maryIdentity);
     
     List<ExoSocialActivity> maryActivities = activityStorage.getActivityFeed(maryIdentity, 0, 10);
-    assertEquals(0, maryActivities.size());
+    //Mary can see the demo's activity in her stream
+    assertEquals(1, maryActivities.size());
     
     relationshipManager.delete(rootDemoRelationship);
     relationshipManager.delete(demoJohnRelationship);

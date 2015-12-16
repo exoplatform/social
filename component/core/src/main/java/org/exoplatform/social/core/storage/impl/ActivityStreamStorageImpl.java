@@ -19,6 +19,7 @@ package org.exoplatform.social.core.storage.impl;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
@@ -727,15 +728,14 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
   @Override
   public void connect(Identity sender, Identity receiver) {
     try {
+      this.activityWriteLock.lock();
       //
-      QueryResult<ActivityEntity> activities = getActivitiesByPoster(sender);
-      
-      
+      List<ActivityEntity> activities = getActivitiesByPoster(sender);
       IdentityEntity receiverEntity = identityStorage._findIdentityEntity(receiver.getProviderId(), receiver.getRemoteId());
-      
       if (activities != null) {
-        while(activities.hasNext()) {
-          ActivityEntity entity = activities.next();
+        Iterator<ActivityEntity> it = activities.iterator();
+        while(it.hasNext()) {
+          ActivityEntity entity = it.next();
           
           //has on sender stream
           if (isExistingActivityRef(receiverEntity, entity, ActivityRefType.CONNECTION)) continue;
@@ -753,9 +753,11 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
       //
       IdentityEntity senderEntity = identityStorage._findIdentityEntity(sender.getProviderId(), sender.getRemoteId());
       activities = getActivitiesByPoster(receiver);
+      
       if (activities != null) {
-        while(activities.hasNext()) {
-          ActivityEntity entity = activities.next();
+        Iterator<ActivityEntity> it = activities.iterator();
+        while(it.hasNext()) {
+          ActivityEntity entity = it.next();
 
           //has on receiver stream
           if (isExistingActivityRef(senderEntity, entity, ActivityRefType.CONNECTION)) continue;
@@ -771,6 +773,8 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
       
     } catch (NodeNotFoundException e) {
       LOG.warn("Failed to add Activity references when create relationship.");
+    } finally {
+      this.activityWriteLock.unlock();
     }
   }
   
@@ -1139,11 +1143,24 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
     return getActivitiesOfIdentities(ActivityBuilderWhere.simple().owners(connections).poster(ownerIdentity), filter, 0, -1);
   }
   
-  private QueryResult<ActivityEntity> getActivitiesByPoster(Identity ownerIdentity) {
+  private List<ActivityEntity> getActivitiesByPoster(Identity ownerIdentity) {
+    List<ActivityEntity> got = new LinkedList<ActivityEntity>();
+    try {
+      IdentityEntity identityEntity = identityStorage._findIdentityEntity(ownerIdentity.getProviderId(),
+                                                                          ownerIdentity.getRemoteId());
 
-    ActivityFilter filter = ActivityFilter.newer();
-    //
-    return getActivitiesOfIdentities(ActivityBuilderWhere.simple().poster(ownerIdentity), filter, 0, -1);
+      ActivityRefListEntity refList = ActivityRefType.MY_ACTIVITIES.refsOf(identityEntity);
+      ActivityRefList list = new ActivityRefList(refList);
+
+      ActivityRefIterator it = list.iterator();
+      while (it.hasNext()) {
+        ActivityRef current = it.next();
+        got.add(current.getActivityEntity());
+      }
+    } catch (NodeNotFoundException e) {
+      LOG.warn("Failed to get the activities!");
+    }
+    return got;
   }
   
   private QueryResult<ActivityEntity> getActivitiesOfSpace(Identity spaceIdentity) {
@@ -1267,7 +1284,12 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
         
         //keep the latest activity posted time
         if (type.equals(ActivityRefType.CONNECTION)) {
-          identityEntity.setLatestActivityCreatedTime(activityEntity.getLastUpdated());
+          if (activityEntity.getLastUpdated() != null) {
+            identityEntity.setLatestActivityCreatedTime(activityEntity.getLastUpdated());
+          } else {
+            identityEntity.setLatestActivityCreatedTime(activityEntity.getPostedTime());
+          }
+          
         }
         //
         if (mustCheck) {
