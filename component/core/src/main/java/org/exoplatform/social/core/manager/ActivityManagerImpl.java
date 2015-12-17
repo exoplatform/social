@@ -89,7 +89,10 @@ public class ActivityManagerImpl implements ActivityManager {
       return;
     }
     activityStorage.saveActivity(streamOwner, newActivity);
-    activityLifeCycle.saveActivity(getActivity(newActivity.getId()));
+    //if there is any the listener to get the activity's title to do something for example: show message, send mail ...
+    //Just call the Social API to get the activity by Id and then to do by yourself.
+    //SOC-5209
+    activityLifeCycle.saveActivity(newActivity);
   }
 
   /**
@@ -152,7 +155,10 @@ public class ActivityManagerImpl implements ActivityManager {
   public void saveComment(ExoSocialActivity existingActivity, ExoSocialActivity newComment) throws
           ActivityStorageException {
     activityStorage.saveComment(existingActivity, newComment);
-    activityLifeCycle.saveComment(activityStorage.getActivity(newComment.getId()));
+    //if there is any the listener to get the activity's title to do something for example: show message, send mail ...
+    //Just call the Social API to get the activity by Id and then to do by yourself.
+    //SOC-5209
+    activityLifeCycle.saveComment(newComment);
   }
 
   /**

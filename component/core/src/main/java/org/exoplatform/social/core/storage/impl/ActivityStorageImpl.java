@@ -682,6 +682,7 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
         activityEntity.setLastUpdated(currentMillis);
         activity.setUpdated(currentMillis);
       }
+      comment.setPosterId(comment.getUserId());
       commentEntity.setTitle(comment.getTitle());
       commentEntity.setType(comment.getType());
       commentEntity.setTitleId(comment.getTitleId());
@@ -693,7 +694,9 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
       commentEntity.setLastUpdated(commentMillis);
       comment.setParentId(activity.getId());
       
-      commentEntity.setMentioners(processMentions(ArrayUtils.EMPTY_STRING_ARRAY, comment.getTitle(), new ArrayList<String>(), true));
+      String[] mentionerList = processMentions(ArrayUtils.EMPTY_STRING_ARRAY, comment.getTitle(), new ArrayList<String>(), true);
+      comment.setMentionedIds(mentionerList);
+      commentEntity.setMentioners(mentionerList);
       
       HidableEntity hidable = _getMixin(commentEntity, HidableEntity.class, true);
       hidable.setHidden(comment.isHidden());

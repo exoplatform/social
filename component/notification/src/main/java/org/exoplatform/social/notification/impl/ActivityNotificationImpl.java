@@ -19,9 +19,11 @@ package org.exoplatform.social.notification.impl;
 import org.exoplatform.commons.api.notification.NotificationContext;
 import org.exoplatform.commons.api.notification.model.PluginKey;
 import org.exoplatform.commons.notification.impl.NotificationContextImpl;
+import org.exoplatform.commons.utils.CommonsUtils;
 import org.exoplatform.social.core.activity.ActivityLifeCycleEvent;
 import org.exoplatform.social.core.activity.ActivityListenerPlugin;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
+import org.exoplatform.social.core.manager.ActivityManager;
 import org.exoplatform.social.notification.plugin.ActivityCommentPlugin;
 import org.exoplatform.social.notification.plugin.ActivityMentionPlugin;
 import org.exoplatform.social.notification.plugin.LikePlugin;
@@ -33,7 +35,8 @@ public class ActivityNotificationImpl extends ActivityListenerPlugin {
 
   @Override
   public void saveActivity(ActivityLifeCycleEvent event) {
-    ExoSocialActivity activity = event.getSource();    
+    ExoSocialActivity activity = event.getSource();
+    activity = CommonsUtils.getService(ActivityManager.class).getActivity(activity.getId());
     NotificationContext ctx = NotificationContextImpl.cloneInstance().append(SocialNotificationUtils.ACTIVITY, activity);
 
     ctx.getNotificationExecutor().with(ctx.makeCommand(PluginKey.key(PostActivityPlugin.ID)))
@@ -48,7 +51,8 @@ public class ActivityNotificationImpl extends ActivityListenerPlugin {
 
   @Override
   public void saveComment(ActivityLifeCycleEvent event) {
-    ExoSocialActivity activity = event.getSource();    
+    ExoSocialActivity activity = event.getSource();
+    activity = CommonsUtils.getService(ActivityManager.class).getActivity(activity.getId());
     NotificationContext ctx = NotificationContextImpl.cloneInstance().append(SocialNotificationUtils.ACTIVITY, activity);
 
     ctx.getNotificationExecutor().with(ctx.makeCommand(PluginKey.key(ActivityCommentPlugin.ID)))
