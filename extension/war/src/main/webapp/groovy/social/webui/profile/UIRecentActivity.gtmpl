@@ -36,7 +36,7 @@ if(activity == null) {
        <%if (link != null) { 
            if (linkTitle != null) {
        %> 
-             <div class="status"><%=_ctx.appRes("ProfileUpdatesPublisher.contact_section_updated")%></div>
+             <div class="status"><%=linkTitle%></div>
              <div class="link"><a href="javascript:void(0);" onclick="(function(evt){ evt.stopPropagation(); window.open('<%=link%>', '_blank');})(event)"><%=_ctx.appRes("ProfileUpdatesPublisher.contact_section_updated")%></a></div>
        <%
            } else {
