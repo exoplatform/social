@@ -47,6 +47,7 @@ import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
+import org.exoplatform.services.organization.User;
 import org.exoplatform.services.rest.resource.ResourceContainer;
 import org.exoplatform.services.security.ConversationState;
 import org.exoplatform.services.security.IdentityConstants;
@@ -147,10 +148,18 @@ public class PeopleRestService implements ResourceContainer{
                     @QueryParam("typeOfRelation") String typeOfRelation,
                     @QueryParam("spaceURL") String spaceURL,
                     @PathParam("format") String format) throws Exception {
-    String[] mediaTypes = new String[] { "json", "xml" };
-    MediaType mediaType = Util.getMediaType(format, mediaTypes);
-    
-    List<Identity> excludedIdentityList = new ArrayList<Identity>();
+      String[] mediaTypes = new String[]{"json", "xml"};
+      MediaType mediaType = Util.getMediaType(format, mediaTypes);
+
+      List<Identity> excludedIdentityList = new ArrayList<Identity>();
+      ConversationState state = ConversationState.getCurrent();
+      User user = (User) state.getAttribute("UserProfile");
+      if(currentUser == null || (state != null && state.getIdentity() != null && !IdentityConstants.ANONIM.equals(state.getIdentity().getUserId()))) {
+          currentUser = user.getUserName();
+      }else{
+          LOG.error("currentUser can not be null");
+          return Util.getResponse("currentUser can not be null", uriInfo, mediaType, Response.Status.OK);
+      }
     excludedIdentityList.add(Util.getViewerIdentity(currentUser));
     UserNameList nameList = new UserNameList();
     ProfileFilter filter = new ProfileFilter();
@@ -161,6 +170,7 @@ public class PeopleRestService implements ResourceContainer{
     filter.setSkills("");
     filter.setExcludedIdentityList(excludedIdentityList);
     
+    if ((name != null)) {
     Identity currentIdentity = getIdentityManager().getOrCreateIdentity(
                                  OrganizationIdentityProvider.NAME, currentUser, false);
 
@@ -189,9 +199,12 @@ public class PeopleRestService implements ResourceContainer{
       ListAccess<Identity> listAccess = getIdentityManager().getIdentitiesByProfileFilter(currentIdentity.getProviderId(), filter, false);
       result = listAccess.load(0, (int)SUGGEST_LIMIT);
       addToNameList(nameList, result);
-    }
-    return Util.getResponse(nameList, uriInfo, mediaType, Response.Status.OK);
-  }
+          }
+        return Util.getResponse(nameList, uriInfo, mediaType, Response.Status.OK);
+      }else{
+         return Util.getResponse("nameToSearch query parameter should not be null", uriInfo, mediaType, Response.Status.OK);
+     }
+   }
   
   /**
    * Gets users' information that matches the input string.
