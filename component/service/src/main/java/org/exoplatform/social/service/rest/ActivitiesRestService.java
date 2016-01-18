@@ -153,11 +153,10 @@ public class ActivitiesRestService implements ResourceContainer {
   public Response updateLike(@Context UriInfo uriInfo,
                              @PathParam("portalName") String portalName,
                              @PathParam("activityId") String activityId,
-                             @PathParam("format") String format,
-                             Like like) throws Exception {
+                             @PathParam("format") String format) throws Exception {
     MediaType mediaType = Util.getMediaType(format);
     portalName_ = portalName;
-    LikeList likeList = updateLike(activityId, like);
+    LikeList likeList = updateLike(activityId, uriInfo, portalName);
     return Util.getResponse(likeList, uriInfo, mediaType, Response.Status.OK);
   }
 
@@ -553,28 +552,37 @@ public class ActivitiesRestService implements ResourceContainer {
    * @param like
    * @throws Exception
    */
-  private LikeList updateLike(String activityId, Like like) throws Exception {
+  private LikeList updateLike(String activityId, UriInfo uriInfo, String portalName) throws Exception {
 
     _activityManager = getActivityManager();
     _identityManager = getIdentityManager();
 
-    //
     ExoSocialActivity activity = _activityManager.getActivity(activityId);
     if (activity == null) {
       throw new WebApplicationException(Response.Status.NOT_FOUND);
     }
-
-    //
-    String identityId = like.getIdentityId();
-    if (identityId == null) {
-      throw new WebApplicationException(Response.Status.NOT_ACCEPTABLE);
+    ConversationState state = ConversationState.getCurrent();
+    String userId = null;
+    if (state != null) {
+      userId = state.getIdentity().getUserId();
+    } else {
+      try {
+        userId = Util.getViewerId(uriInfo);
+      } catch (Exception e) {
+        LOG.warn(e.getMessage(), e);
+      }
+    }  
+    Identity identity = null;
+    try {
+      identity = getIdentityManager(portalName).getOrCreateIdentity(OrganizationIdentityProvider.NAME, userId);
+    } catch (Exception e1) {
+      LOG.warn(e1.getMessage(), e1);
     }
-    Identity identity = _identityManager.getIdentity(like.getIdentityId(), false);
-
-    //
+    
+    if (identity == null) {
+      identity = getIdentityManager(portalName).getOrCreateIdentity(OrganizationIdentityProvider.NAME, Util.getViewerId(uriInfo), false);
+    }
     _activityManager.saveLike(activity, identity);
-
-    //
     LikeList likeList = new LikeList();
     likeList.setActivityId(activityId);
     likeList.setLikes(getLikes(activity.getLikeIdentityIds()));
