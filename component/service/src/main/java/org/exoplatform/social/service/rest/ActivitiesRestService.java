@@ -148,16 +148,16 @@ public class ActivitiesRestService implements ResourceContainer {
    * @deprecated Deprecated from 4.3.x. Replaced by a new API {@link ActivityRestResourcesV1#addLike(org.exoplatform.social.rest.impl.activity.UriInfo, String, String)}
    */
   @POST
-  @Path("{activityId}/likes/update.{format}")
+  @Path("{activityId}/{identity}/update.{format}")
   @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
   public Response updateLike(@Context UriInfo uriInfo,
                              @PathParam("portalName") String portalName,
                              @PathParam("activityId") String activityId,
                              @PathParam("format") String format,
-                             Like like) throws Exception {
+                             @PathParam("identity") String identity) throws Exception {
     MediaType mediaType = Util.getMediaType(format);
     portalName_ = portalName;
-    LikeList likeList = updateLike(activityId, like);
+    LikeList likeList = updateLike(activityId, identity);
     return Util.getResponse(likeList, uriInfo, mediaType, Response.Status.OK);
   }
 
@@ -553,28 +553,21 @@ public class ActivitiesRestService implements ResourceContainer {
    * @param like
    * @throws Exception
    */
-  private LikeList updateLike(String activityId, Like like) throws Exception {
+  private LikeList updateLike(String activityId,  String identity) throws Exception {
 
     _activityManager = getActivityManager();
     _identityManager = getIdentityManager();
 
-    //
     ExoSocialActivity activity = _activityManager.getActivity(activityId);
     if (activity == null) {
       throw new WebApplicationException(Response.Status.NOT_FOUND);
     }
 
-    //
-    String identityId = like.getIdentityId();
-    if (identityId == null) {
+    if (identity == null) {
       throw new WebApplicationException(Response.Status.NOT_ACCEPTABLE);
     }
-    Identity identity = _identityManager.getIdentity(like.getIdentityId(), false);
-
-    //
-    _activityManager.saveLike(activity, identity);
-
-    //
+    Identity identityUser = _identityManager.getIdentity(identity, false);
+    _activityManager.saveLike(activity, identityUser);
     LikeList likeList = new LikeList();
     likeList.setActivityId(activityId);
     likeList.setLikes(getLikes(activity.getLikeIdentityIds()));
