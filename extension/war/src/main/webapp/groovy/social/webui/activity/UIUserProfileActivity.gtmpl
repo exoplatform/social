@@ -236,7 +236,7 @@
 						</div>
 						<% if (ownerGender) {%>
 						  <p class="userGender">
-							<span><%=_ctx.appRes("UIActivity.label.Gender") %> $ownerGender</span>
+							<span><%=_ctx.appRes("UIActivity.label.Gender") %> <%=_ctx.appRes("UIContactSection.label.option." + ownerGender) %></span>
 						  </p>
 						<%}%>
 					  </div><!--end text-->
