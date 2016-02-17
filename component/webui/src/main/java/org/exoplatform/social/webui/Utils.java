@@ -444,7 +444,7 @@ public class Utils {
   /**
    * Gets selected node name.
    * 
-   * @returns
+   * @return
    * @since 1.2.2
    */
   public static String getSelectedNode() {
@@ -529,7 +529,7 @@ public class Utils {
 
   /**
    * 
-   * @param value
+   * @param key
    */
   public static String getCookies(String key) {
     PortalRequestContext request = Util.getPortalRequestContext() ;
@@ -621,7 +621,9 @@ public class Utils {
   
   /**
    * 
-   * @param requestNavData
+   * @param siteType
+   * @param siteName
+   * @param path
    */
   public static void setCurrentNavigationData(String siteType, String siteName, String path) {
     lastRequestNavData = currentRequestNavData;
@@ -783,7 +785,6 @@ public class Utils {
   /**
    * Clear user profile popup.
    * 
-   * @param uiActivityId Id of activity component.
    * @since 4.1.x
    */
   public static void clearUserProfilePopup() {
@@ -886,7 +887,6 @@ public class Utils {
    * Initializes confirmation popup.
    *  
    * @param componentId Target component.
-   * @param confirmationMsg Confirmation message.
    * @throws Exception
    */
   public static void initConfirmationPopup(String componentId) throws Exception {

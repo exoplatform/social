@@ -416,7 +416,7 @@ public class UIManageInvitationSpaces extends UIContainer {
    * Gets role of the user in a specific space for displaying in template.
    *
    * @param spaceId
-   * @return UIManageMySpaces.LEADER if the remote user is the space's leader <br />
+   * @return UIManageMySpaces.LEADER if the remote user is the space's leader <br>
    *         UIManageMySpaces.MEMBER if the remote user is the space's member
    * @throws SpaceException
    */

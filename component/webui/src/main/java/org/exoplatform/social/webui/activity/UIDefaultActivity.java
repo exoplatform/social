@@ -25,7 +25,6 @@ import org.exoplatform.webui.core.lifecycle.UIFormLifecycle;
  *
  * @author    zun
  * @since     Jul 22, 2010
- * @copyright eXo Platform SAS
  */
 @ComponentConfig(
   lifecycle = UIFormLifecycle.class,

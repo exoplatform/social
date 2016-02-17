@@ -148,13 +148,13 @@ public class SpacesRestService implements ResourceContainer {
    * @param format The format of the returned result.
    * 
    * @anchor SpacesRestService.showMySpaceList
-   * 
+   *
    * @return response
    * 
    * @throws Exception
    * 
    * @LevelAPI Platform
-   * @deprecated Deprecated from 4.3.x. Replaced by a new API {@link UserRestResourcesV1#getSpacesOfUser(org.exoplatform.social.rest.impl.user.UriInfo, String, int, int, boolean, String)}
+   * @deprecated Deprecated from 4.3.x. Replaced by a new API {@link UserRestResourcesV1#getSpacesOfUser(UriInfo, String, int, int, boolean, String)}
    */
   @GET
   @Path("mySpaces/show.{format}")
@@ -193,7 +193,7 @@ public class SpacesRestService implements ResourceContainer {
    * @param limit Specifies the ending point of the returned results. It must be less than or equal to 10.
    * @param appId The application Id which is contained in spaces to filter, such as, Wiki, Discussion, Documents, Agenda and more.
    * @authentication
-   * @request GET: http://localhost:8080/rest/private/social/spaces/lastVisitedSpace/list.json?appId=Wiki&offset=0&limit=10
+   * @request GET: {@code http://localhost:8080/rest/private/social/spaces/lastVisitedSpace/list.json?appId=Wiki&offset=0&limit=10}
    * @response
    * {
    * "spaces":[
@@ -258,7 +258,7 @@ public class SpacesRestService implements ResourceContainer {
    * @param format The format of the returned result, for example, JSON, or XML.
    * 
    * @anchor SpacesRestService.showPendingSpaceList
-   * 
+   *
    * @return response
    * 
    * @throws Exception
@@ -293,7 +293,7 @@ public class SpacesRestService implements ResourceContainer {
    * @throws Exception
    * @LevelAPI Platform
    * @anchor SpacesRestService.suggestSpacenames
-   * @deprecated Deprecated from 4.3.x. Replaced by a new API {@link SpaceRestResourcesV1#getSpaces(org.exoplatform.social.rest.impl.space.UriInfo, String, int, int, boolean, String)}
+   * @deprecated Deprecated from 4.3.x. Replaced by a new API {@link SpaceRestResourcesV1#getSpaces(UriInfo, String, int, int, boolean, String)}
    */
   @GET
   @Path("suggest.{format}")
@@ -401,7 +401,7 @@ public class SpacesRestService implements ResourceContainer {
     /**
      * Sets space name list
      *
-     * @param space name list
+     * @param names name list
      */
     public void setNames(List<String> names) {
       this._names = names;
@@ -419,7 +419,7 @@ public class SpacesRestService implements ResourceContainer {
     /**
      * Add name to space name list
      *
-     * @param space name
+     * @param name name
      */
     public void addName(String name) {
       if (_names == null) {

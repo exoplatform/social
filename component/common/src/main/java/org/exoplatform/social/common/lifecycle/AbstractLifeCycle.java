@@ -30,9 +30,9 @@ import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 
 /**
- * Generic implementation a Lifecycle<br/>
+ * Generic implementation a Lifecycle<br>
  * Events are dispatched asynchronously but sequentially to their listeners
- * according to their type. <br/>
+ * according to their type. <br>
  * Listeners may fail, this is safe for the lifecycle, subsequent listeners will
  * still be called.
  *

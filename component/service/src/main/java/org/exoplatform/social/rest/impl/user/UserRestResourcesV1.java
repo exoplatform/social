@@ -73,7 +73,6 @@ import org.exoplatform.social.service.rest.api.VersionResources;
  * 
  * Provides REST Services for manipulating jobs related to users.
  * 
- * @anchor UsersRestService
  */
 
 @Path(VersionResources.VERSION_ONE + "/social/users")

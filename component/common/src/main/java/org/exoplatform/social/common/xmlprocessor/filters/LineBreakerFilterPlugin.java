@@ -19,7 +19,7 @@ package org.exoplatform.social.common.xmlprocessor.filters;
 import org.exoplatform.social.common.xmlprocessor.BaseXMLFilterPlugin;
 
 /**
- * This Filter repace native line break character in String input and replace it with HTML /<br/> tag.
+ * This Filter repace native line break character in String input and replace it with HTML /<br> tag.
  *
  * @author Ly Minh Phuong - http://phuonglm.net
  */

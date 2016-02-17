@@ -543,7 +543,6 @@ public class Space {
   /**
    * Sets the creator of a space.
    *  
-   * @return
    * @since 1.2.0-GA
    * @deprecated Use {@link #getManagers()} instead.
    *             Will be removed by 1.2.8
@@ -586,7 +585,6 @@ public class Space {
   /**
    * Sets the managers of a space.
    * 
-   * @return
    * @since 1.2.0-GA
    */
   public void setManagers(String[] managers) {
@@ -606,7 +604,6 @@ public class Space {
   /**
    * Sets the members of a space.
    * 
-   * @return
    * @since 1.2.0-GA
    */
   public void setMembers(String[] members) {

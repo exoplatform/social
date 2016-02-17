@@ -42,7 +42,6 @@ import org.exoplatform.social.core.test.QueryNumberTest;
  *
  * @author    <a href="http://hoatle.net">hoatle (hoatlevan at gmail dot com)</a>
  * @since     Oct 17, 2010
- * @copyright eXo SAS
  */
 @QueryNumberTest
 public class RelationshipStorageTest extends AbstractCoreTest {

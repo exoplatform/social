@@ -36,12 +36,8 @@ public interface UserRestResources extends SocialRest {
 
   /**
    * Get all users, filter by name if exists.
-   * 
+   *
    * @param q value that an user's name match
-   * @authentication
-   * @request GET:
-   *          http://localhost:8080/rest/social/notifications/inviteToConnect
-   *          /john/root
    * @return List of users in json format.
    * @throws Exception
    */

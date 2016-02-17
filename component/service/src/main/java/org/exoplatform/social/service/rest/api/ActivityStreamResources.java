@@ -91,7 +91,7 @@ public class ActivityStreamResources implements ResourceContainer {
    *                            use *activity/\:activityId/likes.format* instead.
    * @authentication
    * @request
-   * GET: http://localhost:8080/rest/private/api/social/v1-alpha3/portal/activity_stream/f92cd6f0c0a80137102696ac26430766.json?limit=30&since_id=12345&number_of_likes=5
+   * GET: {@code http://localhost:8080/rest/private/api/social/v1-alpha3/portal/activity_stream/f92cd6f0c0a80137102696ac26430766.json?limit=30&since_id=12345&number_of_likes=5}
    * @response
    * {
    * "activities":[
@@ -306,7 +306,7 @@ public class ActivityStreamResources implements ResourceContainer {
    *                            "*activity/\:activityId/likes.format*" instead.
    * @authentication
    * @request
-   * GET: http://localhost:8080/rest/private/api/social/v1-alpha3/portal/activity_stream/feed.json?limit=30&since_id=12345&number_of_comments=5&number_of_likes=5
+   * GET: {@code http://localhost:8080/rest/private/api/social/v1-alpha3/portal/activity_stream/feed.json?limit=30&since_id=12345&number_of_comments=5&number_of_likes=5}
    * @response
    * {
    *   "activities":[
@@ -513,7 +513,7 @@ public class ActivityStreamResources implements ResourceContainer {
    *                            "*activity/\:activityId/likes.format*" instead.
    * @authentication
    * @request
-   * GET: http://localhost:8080/rest/private/api/social/v1-alpha3/portal/activity_stream/spaces.json?limit=30&since_id=12345&number_of_comments=5&number_of_likes=5
+   * GET: {@code http://localhost:8080/rest/private/api/social/v1-alpha3/portal/activity_stream/spaces.json?limit=30&since_id=12345&number_of_comments=5&number_of_likes=5}
    * @response
    * {
    *   "activities":[
@@ -717,7 +717,7 @@ public class ActivityStreamResources implements ResourceContainer {
    *                            "*activity/\:activityId/likes.format*" instead.
    * @authentication
    * @request
-   * GET: http://localhost:8080/rest/private/api/social/v1-alpha3/portal/activity_stream/connections.json?limit=30&since_id=12345&number_of_comments=5&number_of_likes=5
+   * GET: {@code http://localhost:8080/rest/private/api/social/v1-alpha3/portal/activity_stream/connections.json?limit=30&since_id=12345&number_of_comments=5&number_of_likes=5}
    * @response
    * {
    *   "activities":[
@@ -929,7 +929,7 @@ public class ActivityStreamResources implements ResourceContainer {
    *                            use *activity/\:activityId/likes.format* instead.
    * @authentication
    * @request
-   * GET: http://localhost:8080/rest/private/api/social/v1-alpha3/socialdemo/activity_stream/f92cd6f0c0a80137102696ac26430766.json?limit=30&since_id=12345&number_of_likes=5
+   * GET: {@code http://localhost:8080/rest/private/api/social/v1-alpha3/socialdemo/activity_stream/f92cd6f0c0a80137102696ac26430766.json?limit=30&since_id=12345&number_of_likes=5}
    * @response
    * {
    * "activities":[
@@ -1130,7 +1130,7 @@ public class ActivityStreamResources implements ResourceContainer {
    *                            "*activity/\:activityId/likes.format*" instead.
    * @authentication
    * @request
-   * GET: http://localhost:8080/rest/private/api/social/v1-alpha3/socialdemo/activity_stream/feedByTimestamp.json?limit=30&sinceTime=12345&number_of_comments=5&number_of_likes=5
+   * GET: {@code http://localhost:8080/rest/private/api/social/v1-alpha3/socialdemo/activity_stream/feedByTimestamp.json?limit=30&sinceTime=12345&number_of_comments=5&number_of_likes=5}
    * @response
    * {
    *   "activities":[
@@ -1313,7 +1313,7 @@ public class ActivityStreamResources implements ResourceContainer {
    *                            "*activity/\:activityId/likes.format*" instead.
    * @authentication
    * @request
-   * GET: http://localhost:8080/rest/private/api/social/v1-alpha3/socialdemo/activity_stream/spaces.json?limit=30&since_id=12345&number_of_comments=5&number_of_likes=5
+   * GET: {@code http://localhost:8080/rest/private/api/social/v1-alpha3/socialdemo/activity_stream/spaces.json?limit=30&since_id=12345&number_of_comments=5&number_of_likes=5}
    * @response
    * {
    *   "activities":[
@@ -1496,7 +1496,7 @@ public class ActivityStreamResources implements ResourceContainer {
    *                            "*activity/\:activityId/likes.format*" instead.
    * @authentication
    * @request
-   * GET: http://localhost:8080/rest/private/api/social/v1-alpha3/socialdemo/activity_stream/connections.json?limit=30&sinceTime=12345&number_of_comments=5&number_of_likes=5
+   * GET: {@code http://localhost:8080/rest/private/api/social/v1-alpha3/socialdemo/activity_stream/connections.json?limit=30&sinceTime=12345&number_of_comments=5&number_of_likes=5}
    * @response
    * {
    *   "activities":[

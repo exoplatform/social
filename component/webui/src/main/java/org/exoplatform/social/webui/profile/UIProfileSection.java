@@ -88,7 +88,7 @@ public abstract class UIProfileSection extends UIForm {
   /**
    * Sets the first load for form.<br>
    * 
-   * @param editMode
+   * @param firstLoad
    */
   public void setFirstLoad(boolean firstLoad) {
     this.isFirstLoad = firstLoad;

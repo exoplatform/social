@@ -104,7 +104,7 @@ public class ExoSocialActivityImpl extends ActivityImpl implements ExoSocialActi
 
   /**
    * Instantiates a new activity based on userId, type, title.
-   * <p/>
+   * <br>
    * The fields <code>postedTime</code> and <code>updatedTimestamp</code> is
    * automatically initialized.
    *
@@ -125,7 +125,7 @@ public class ExoSocialActivityImpl extends ActivityImpl implements ExoSocialActi
 
   /**
    * Instantiates a new activity based on userId, type, title and its body.
-   * <p/>
+   * <br>
    * The fields <code>postedTime</code> and <code>updatedTimestamp</code> is
    * automatically initialized.
    *
@@ -143,7 +143,7 @@ public class ExoSocialActivityImpl extends ActivityImpl implements ExoSocialActi
   /**
    * Instantiates a new activity based on userId, type, title, its body 
    * and check activity is a comment or not.
-   * <p/>
+   * <br>
    * The fields <code>postedTime</code> and <code>updatedTimestamp</code> is
    * automatically initialized.
    *

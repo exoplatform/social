@@ -220,7 +220,7 @@ public class UIMembersPortlet extends UIPortletApplication {
   /**
    * sets leader list
    *
-   * @param leaderList
+   * @param managerList
    */
   public void setManagerList(List<Identity> managerList) {
     this.managerList = managerList;
@@ -239,7 +239,7 @@ public class UIMembersPortlet extends UIPortletApplication {
   
 
   /**
-   * initialize members, called from {@link #getMembers()}
+   * initialize members, called from {@link #getMemberList()}}
    *
    * @throws Exception
    */
@@ -258,7 +258,7 @@ public class UIMembersPortlet extends UIPortletApplication {
   }
 
   /**
-   * initialize leaders, called from {@link #getLeaderList()}
+   * initialize leaders, called from {@link #getManagerList()}}
    *
    * @throws Exception
    */

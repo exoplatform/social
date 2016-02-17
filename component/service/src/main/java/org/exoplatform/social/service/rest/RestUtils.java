@@ -252,7 +252,6 @@ public class RestUtils {
    * 
    * @param authentiatedUsed the viewer
    * @param activity
-   * @param target the owner of the stream that we want to display
    * @return activityStream object, null if the viewer has no permission to view activity
    */
   public static Map<String, String> getActivityStream(ExoSocialActivity activity, Identity authentiatedUsed) {

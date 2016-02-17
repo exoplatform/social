@@ -1344,18 +1344,6 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
 
     ref.setActivityEntity(activityEntity);
   }
-  /**
-  private void printDebug(ActivityRefListEntity list, long oldUpdated) {
-    LOG.info("printDebug::OLD Date = " + oldUpdated);
-    LOG.info("printDebug::SIZE = " + list.refs(oldUpdated).size());
-    LOG.info("printDebug::path = " + list.getPath());
-    
-    Map<String, ActivityRef> refs = list.refs(oldUpdated);
-    for(Entry<String, ActivityRef> entry : refs.entrySet()) {
-      if (entry.getValue() != null && entry.getValue().getActivityEntity() != null )
-      LOG.info(String.format("printDebug::KEY = %s| %s", entry.getKey(), entry.getValue().toString()));
-    }
-  }*/
   
   @Override
   public void createFeedActivityRef(Identity owner,

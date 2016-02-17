@@ -479,9 +479,9 @@ public class UIManageAllSpaces extends UIContainer {
   }
 
   /**
-   * This action is triggered when user click on LeaveSpace <br /> The leaving space will remove
-   * that user in the space. <br /> If that user is the only leader -> can't not leave that space
-   * <br />
+   * This action is triggered when user click on LeaveSpace <br> The leaving space will remove
+   * that user in the space. <br> If that user is the only leader, then he can't not leave that space
+   * <br>
    */
   static public class LeaveSpaceActionListener extends EventListener<UIManageAllSpaces> {
     public void execute(Event<UIManageAllSpaces> event) throws Exception {

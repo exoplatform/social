@@ -57,7 +57,6 @@ public interface IdentityStorage {
    * Updates existing identity's membership in OrganizationService.
    *
    * @param remoteId the remoteId to be updated membership.
-   * @return the updated identity.
    * @throws IdentityStorageException
    * @since  4.0.0
    */
@@ -246,7 +245,6 @@ public interface IdentityStorage {
    * @param limit
    * @return
    * @throws IdentityStorageException
-   * @throws org.exoplatform.social.core.storage.exception.NodeNotFoundException
    */
   public List<Identity> getSpaceMemberIdentitiesByProfileFilter(final Space space, 
                                                                 final ProfileFilter profileFilter,

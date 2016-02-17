@@ -20,7 +20,6 @@ import org.exoplatform.social.common.ExoSocialException;
 
 /**
  * @author <a href="http://hoatle.net">hoatle (hoatlevan at gmail dot com)</a>
- * @copyright eXo SAS
  * @since Nov 9, 2010
  */
 public class ActivityStorageException extends ExoSocialException {

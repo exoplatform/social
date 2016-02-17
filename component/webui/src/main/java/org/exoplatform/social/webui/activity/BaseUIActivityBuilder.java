@@ -23,7 +23,6 @@ import org.exoplatform.social.core.activity.model.ExoSocialActivity;
  *
  * @author    zun
  * @since     Jul 22, 2010
- * @copyright eXo Platform SAS
  */
 public abstract class BaseUIActivityBuilder {
   public BaseUIActivity populateData(BaseUIActivity uiActivity, ExoSocialActivity activity){

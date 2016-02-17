@@ -73,13 +73,13 @@ public class IntranetNotificationRestService extends AbstractStorage implements 
   public final static String MESSAGE_JSON_FILE_NAME = "message.json";
   /**
    * Processes the "Accept the invitation to connect" action between 2 users and update notification.
-   * 
+   *
    * @param senderId The sender's remote Id.
    * @param receiverId The receiver's remote Id.
    * @notificationId of the web notification message
    * @authentication
    * @request
-   * GET: http://localhost:8080/rest/social/intranet-notifications/confirmInvitationToConnect/john/root/<notificationId>/message.json
+   * GET: {@code http://localhost:8080/rest/social/intranet-notifications/confirmInvitationToConnect/john/root/<notificationId>/message.json}
    * @throws Exception
    */
   @GET
@@ -121,7 +121,7 @@ public class IntranetNotificationRestService extends AbstractStorage implements 
   }
   /**
    * Processes the "Deny the invitation to connect" action between 2 users
-   * 
+   *
    * @param senderId The sender's remote Id.
    * @param receiverId The receiver's remote Id.
    * @authentication
@@ -156,13 +156,13 @@ public class IntranetNotificationRestService extends AbstractStorage implements 
   
   /**
    * Processes the "Accept the invitation to join a space" action and update notification.
-   * 
+   *
    * @param userId The invitee's remote Id.
    * @param spaceId Id of the space.
    * @notificationId of the web notification message
    * @authentication
    * @request
-   * GET: localhost:8080/rest/social/intranet-notifications/acceptInvitationToJoinSpace/e1cacf067f0001015ac312536462fc6b/john/<notificationId>/message.json
+   * GET: {@code localhost:8080/rest/social/intranet-notifications/acceptInvitationToJoinSpace/e1cacf067f0001015ac312536462fc6b/john/<notificationId>/message.json}
    * @throws Exception
    */
   @GET
@@ -203,7 +203,7 @@ public class IntranetNotificationRestService extends AbstractStorage implements 
   
   /**
    * Processes the "Deny the invitation to join a space" action.
-   * 
+   *
    * @param userId The invitee's remote Id.
    * @param spaceId Id of the space.
    * @authentication
@@ -238,14 +238,17 @@ public class IntranetNotificationRestService extends AbstractStorage implements 
   
   /**
    * Adds a member to a space and update notification.
-   * 
-   * @param userId The remote Id of the user who requests for joining the space.
+   *
+   * @param uriInfo
    * @param spaceId Id of the space.
+   * @param requestUserId The remote Id of the user who requests for joining the space.
    * @param currentUserId the userId
+   * @param notificationId
+   * @param format
    * @notificationId of the web notification message
    * @authentication
    * @request
-   * GET: localhost:8080/rest/social/intranet-notifications/validateRequestToJoinSpace/e1cacf067f0001015ac312536462fc6b/john/<notificationId>/message.json
+   * GET: {@code localhost:8080/rest/social/intranet-notifications/validateRequestToJoinSpace/e1cacf067f0001015ac312536462fc6b/john/<notificationId>/message.json}
    * @throws Exception
    */
   @GET
@@ -286,9 +289,13 @@ public class IntranetNotificationRestService extends AbstractStorage implements 
   
   /**
    * Refuses a user's request for joining a space. 
-   * 
-   * @param userId The remote Id of the user who requests for joining the space.
+   *
+   * @param uriInfo
    * @param spaceId Id of the space.
+   * @param requestUserId The remote Id of the user who requests for joining the space.
+   * @param currentUserId
+   * @param notificationId
+   * @param format
    * @authentication
    * @request
    * GET: localhost:8080/rest/social/intranet-notifications/refuseRequestToJoinSpace/e1cacf067f0001015ac312536462fc6b/john

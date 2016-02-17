@@ -64,8 +64,7 @@ public class UIAvatarUploadContent extends UIContainer {
   /**
    * Initializes object at the first run time.<br>
    *
-   * @param AvatarAttachment
-   *        Information about attachment.
+   * @param avatarAttachment Information about attachment.
    *
    * @throws Exception
    */
@@ -87,7 +86,7 @@ public class UIAvatarUploadContent extends UIContainer {
   /**
    * Sets information of AvatarAttachment.<br>
    *
-   * @param AvatarAttachment
+   * @param avatarAttachment
    *
    * @throws Exception
    */

@@ -30,7 +30,7 @@ public class Tokenizer {
    * Splits tag of XML String to an arrayList
    *
    * @param html
-   * @return List<String> which each item is a token of HTML tag
+   * @return list of HTML tags
    */
   public static List<String> tokenize(String html) {
     ArrayList<String> tokens = new ArrayList<String>();

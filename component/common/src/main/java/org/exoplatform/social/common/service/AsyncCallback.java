@@ -21,9 +21,9 @@ public interface AsyncCallback {
 
   /**
    * This method is invoked once the proccessor is done.
-   * <p/>
+   * <br>
    * If an exception occurred while processing the exchange, the exception field of the
-   * {@Service} being processed will hold the caused exception.
+   * Service being processed will hold the caused exception.
    *
    * @param processContext 
    */

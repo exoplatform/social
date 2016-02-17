@@ -242,8 +242,8 @@ public class UISpaceSearch extends UIForm {
   }
 
   /**
-   * This action is triggered when user clicks on AddSpace <br />
-   * <p/>
+   * This action is triggered when user clicks on AddSpace <br>
+   * <br>
    * UIAddSpaceForm will be displayed in a popup window
    */
   static public class AddSpaceActionListener extends EventListener<UISpaceSearch> {

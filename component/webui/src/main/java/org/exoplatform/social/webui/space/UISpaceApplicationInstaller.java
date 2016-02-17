@@ -97,8 +97,6 @@ public class UISpaceApplicationInstaller extends UIContainer implements UIPopupC
 
   /**
    * Triggers callback event when popup ui is activated.
-   *
-   * @throws Exception
    */
   @Override
   public void activate() {
@@ -107,8 +105,6 @@ public class UISpaceApplicationInstaller extends UIContainer implements UIPopupC
 
   /**
    * Triggers callback event when popup ui is deactivated.
-   *
-   * @throws Exception
    */
   @Override
   public void deActivate() {

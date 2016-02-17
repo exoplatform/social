@@ -41,9 +41,9 @@ import org.exoplatform.webui.form.UIFormSelectBox;
 import org.exoplatform.webui.form.UIFormStringInput;
 
 /**
- * {@link UISpaceUserSearch} used for searching users in a space. <br />
+ * {@link UISpaceUserSearch} used for searching users in a space. <br>
  * The search event should broadcast for the parent one to catch and
- * get searched userList from UISpaceUserSearch <br />
+ * get searched userList from UISpaceUserSearch <br>
  * @author <a href="mailto:hoatlevan@gmail.com">hoatle</a>
  * @since Sep 18, 2009
  */
@@ -163,7 +163,7 @@ public class UISpaceUserSearch extends UIForm {
   }
 
   /**
-   * triggers this action when user clicks on search button. <br />
+   * triggers this action when user clicks on search button. <br>
    * gets the keyword and filter from the form and search by this criteria.
    * @author hoatle
    */

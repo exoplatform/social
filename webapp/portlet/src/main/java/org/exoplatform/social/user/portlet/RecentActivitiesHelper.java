@@ -83,7 +83,7 @@ public class RecentActivitiesHelper {
   }
   /**
    * 
-   * @param activityType
+   * @param activity
    * @return
    */
   public static String getActivityTypeIcon(ExoSocialActivity activity) {

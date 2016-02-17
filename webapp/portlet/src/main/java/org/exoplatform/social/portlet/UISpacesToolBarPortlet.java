@@ -55,7 +55,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 /**
- * {@link UISpaceToolBarPortlet} used as a portlet displaying spaces.<br />
+ * {@link UISpacesToolBarPortlet} used as a portlet displaying spaces.<br>
  * @author <a href="mailto:hanhvq@gmail.com">hanhvq</a>
  * @since Oct 7, 2009
  */

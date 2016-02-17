@@ -138,7 +138,7 @@ public class UIManageMySpaces extends UIContainer {
   /**
    * Sets flag to display LoadNext button or not.
    * 
-   * @param enableLoadNext
+   * @param unableLoadNext
    */
   public void setEnableLoadNext(boolean unableLoadNext) {
     this.enableLoadNext = unableLoadNext;
@@ -408,9 +408,9 @@ public class UIManageMySpaces extends UIContainer {
   }
 
   /**
-   * This action is triggered when user click on LeaveSpace <br /> The leaving space will remove
-   * that user in the space. <br /> If that user is the only leader -> can't not leave that space
-   * <br />
+   * This action is triggered when user click on LeaveSpace <br> The leaving space will remove
+   * that user in the space. <br> If that user is the only leader, then he cannot leave that space
+   * <br>
    */
   static public class LeaveSpaceActionListener extends EventListener<UIManageMySpaces> {
     public void execute(Event<UIManageMySpaces> event) throws Exception {
@@ -448,7 +448,7 @@ public class UIManageMySpaces extends UIContainer {
    * Gets role of the user in a specific space for displaying in template.
    *
    * @param spaceId
-   * @return UIManageMySpaces.LEADER if the remote user is the space's leader <br />
+   * @return UIManageMySpaces.LEADER if the remote user is the space's leader <br>
    *         UIManageMySpaces.MEMBER if the remote user is the space's member
    * @throws SpaceException
    */

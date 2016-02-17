@@ -31,9 +31,6 @@ public class ActivityCounter implements Collection<ExoSocialActivity> {
 
   /**
    * Constructor with offset and limit
-   * @param offset
-   * @param limit
-   * @param totalSize total size of nodes matched filter.
    */
   public ActivityCounter() {
     ids = new String[0];

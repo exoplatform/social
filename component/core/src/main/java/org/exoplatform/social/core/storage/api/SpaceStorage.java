@@ -62,7 +62,7 @@ public interface SpaceStorage {
   /**
    * Renames a space.
    * 
-   * @remoteId who update Space information
+   * @param remoteId who update Space information
    * @param space
    * @param newDisplayName
    * @throws SpaceStorageException
@@ -590,7 +590,7 @@ public interface SpaceStorage {
   /**
    * Get the visited spaces
    * 
-   * @param spaceFilter
+   * @param filter
    * @param offset
    * @param limit
    * @return list of browsed spaces

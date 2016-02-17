@@ -37,7 +37,6 @@ import java.util.List;
  *
  * @author <a href="http://hoatle.net">hoatle</a>
  * @since  Mar 4, 2010
- * @copyright eXo Platform SAS
  */
 public class ActivitiesRestServiceTest extends AbstractResourceTest {
   static private PortalContainer container;

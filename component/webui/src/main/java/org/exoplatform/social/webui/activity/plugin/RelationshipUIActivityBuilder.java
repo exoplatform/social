@@ -28,7 +28,6 @@ import org.exoplatform.social.webui.activity.BaseUIActivityBuilder;
  *
  * @author    <a href="http://hoatle.net">hoatle (hoatlevan at gmail dot com)</a>
  * @since     Aug 31, 2010
- * @copyright eXo SAS
  */
 public class RelationshipUIActivityBuilder extends BaseUIActivityBuilder {
 

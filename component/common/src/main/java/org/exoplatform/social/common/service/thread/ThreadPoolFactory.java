@@ -24,7 +24,7 @@ public interface ThreadPoolFactory {
 
   /**
    * Creates a new cached thread pool
-   * <p/>
+   * <br>
    * The cached thread pool is a term from the JDK from the method {@link java.util.concurrent.Executors#newCachedThreadPool()}.
    * Typically it will have no size limit (this is why it is handled separately
    *

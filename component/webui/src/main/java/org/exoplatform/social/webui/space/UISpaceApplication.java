@@ -231,7 +231,7 @@ public class UISpaceApplication extends UIForm {
    * - If the label of application is changed then return new label.<br> - Else return display name
    * of application.<br>
    *
-   * @param application
+   * @param appId
    * @return application name depend on the display name is changed or not.
    * @throws Exception 
    */
@@ -314,7 +314,7 @@ public class UISpaceApplication extends UIForm {
   }
 
   /**
-   * Handles the event broadcasted from {@inheritDoc UISpaceApplicationInstaller}.
+   * Handles the event broadcasted from UISpaceApplicationInstaller.
    */
   public static class InstallApplicationActionListener extends EventListener<UISpaceApplication> {
     @Override

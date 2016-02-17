@@ -34,7 +34,7 @@ import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 
 /**
  * Processes any i18n on activity to a dynamic new activity with the i18n title.
- * <p/>
+ * <br>
  * How to I18N-ize an activity:
  * <ul>
  *   <li>
@@ -44,14 +44,14 @@ import org.exoplatform.social.core.activity.model.ExoSocialActivity;
  *   <li>
  *     If that resource bundle message is a compound resource bundle message, provide templateParams. The argument number will
  *     be counted as it appears on the map.
- *     For example: templateParams = {"key1": "value1", "key2": "value2"} => message bundle arguments = ["value1", "value2"].
+ *     For example: {@code templateParams = {"key1": "value1", "key2": "value2"} => message bundle arguments = ["value1", "value2"]}.
  *     Note: To reserve the order of elements, LinkedHashMap must be used to create templateParams.
  *   </li>
  *   <li>
  *     Create a resource bundle file and this file name is called "resourceBundleKeyFile" for configuration later.
  *   </li>
  *   <li>
- *     Register the resource bundle file with {@link BaseResourceBundlePlugin} to
+ *     Register the resource bundle file with {@link org.exoplatform.services.resources.impl.BaseResourceBundlePlugin} to
  *     {@link ResourceBundleService}.
  *   </li>
  *   <li>

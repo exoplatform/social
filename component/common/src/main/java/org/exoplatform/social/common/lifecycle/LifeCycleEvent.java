@@ -19,7 +19,7 @@ package org.exoplatform.social.common.lifecycle;
 /**
  * An event fired at different stages of the lifecycle
  *
- * @see {@link LifeCycleListener}
+ * @see LifeCycleListener
  * @author <a href="mailto:patrice.lamarque@exoplatform.com">Patrice  Lamarque</a>
  * @version $Revision$
  */

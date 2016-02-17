@@ -73,7 +73,7 @@ public class VersionResources implements ResourceContainer {
    * @response
    * {"version": "v1-alpha3"}
    * or
-   * <version>v1-alpha3</version>
+   * {@code <version>v1-alpha3</version>}
    * @return The information of the latest REST version.
    * @LevelAPI Platform
    * @anchor VersionResources.getLatestVersion
@@ -105,9 +105,11 @@ public class VersionResources implements ResourceContainer {
    * @response
    * {"versions": ["v1-alpha3"]}
    * or
+   * {@code
    * <versions>
    *   <version>v1-alpha3</version>
    * </versions>
+   * }
    * @return The information of the REST service versions supported by eXo Platform.
    * @LevelAPI Platform
    * @anchor VersionResources.getSupportedVersions

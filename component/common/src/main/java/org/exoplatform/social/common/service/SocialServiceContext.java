@@ -37,7 +37,7 @@ public interface SocialServiceContext {
   /**
    * Adds the given lifecycle services to be used.
    *
-   * @param lifecycleServices the service
+   * @param lifecycleService the service
    */
   void addLifecycleService(LifecycleService lifecycleService);
   

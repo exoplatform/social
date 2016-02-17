@@ -23,7 +23,6 @@ import org.exoplatform.social.core.activity.model.ExoSocialActivity;
  *
  * @author    zun
  * @since     Jul 28, 2010
- * @copyright eXo Platform SAS
  */
 public class DefaultUIActivityBuilder extends BaseUIActivityBuilder {
   @Override

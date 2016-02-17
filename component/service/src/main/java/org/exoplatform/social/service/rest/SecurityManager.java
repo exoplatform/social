@@ -52,10 +52,10 @@ public class SecurityManager {
   /**
    * <p>Checks if an authenticated remoteId of user can access an existing activity.</p>
    *
-   * If the authenticated identity is the one who posted that existing activity, return true.<br />
-   * If the existing activity belongs to that authenticated identity's activity stream, return true.<br />
-   * If the existing activity belongs to that authenticated identity's connections' activity stream, return true.<br />
-   * If the existing activity belongs to a space stream that the authenticated is a space member, return true.<br />
+   * If the authenticated identity is the one who posted that existing activity, return true.<br>
+   * If the existing activity belongs to that authenticated identity's activity stream, return true.<br>
+   * If the existing activity belongs to that authenticated identity's connections' activity stream, return true.<br>
+   * If the existing activity belongs to a space stream that the authenticated is a space member, return true.<br>
    * Otherwise, return false.
    *
    * @param portalContainer the specified portal container
@@ -82,10 +82,10 @@ public class SecurityManager {
   /**
    * <p>Checks if an authenticated identity can access an existing activity.</p>
    *
-   * If the authenticated identity is the one who posted that existing activity, return true.<br />
-   * If the existing activity belongs to that authenticated identity's activity stream, return true.<br />
-   * If the existing activity belongs to that authenticated identity's connections' activity stream, return true.<br />
-   * If the existing activity belongs to a space stream that the authenticated is a space member, return true.<br />
+   * If the authenticated identity is the one who posted that existing activity, return true.<br>
+   * If the existing activity belongs to that authenticated identity's activity stream, return true.<br>
+   * If the existing activity belongs to that authenticated identity's connections' activity stream, return true.<br>
+   * If the existing activity belongs to a space stream that the authenticated is a space member, return true.<br>
    * Otherwise, return false.
    *
    * @param portalContainer the specified portal container
@@ -134,10 +134,10 @@ public class SecurityManager {
   /**
    * <p>Checks if an poster identity has the permission to post activities on an owner identity stream.</p>
    *
-   * If posterIdentity is the same as ownerIdentityStream, return true.<br />
+   * If posterIdentity is the same as ownerIdentityStream, return true.<br>
    * If ownerIdentityStream is a user identity, and poster identity is connected to owner identity stream, return true.
-   * <br />
-   * If ownerIdentityStream is a space identity, and poster identity is a member of that space, return true.<br />
+   * <br>
+   * If ownerIdentityStream is a space identity, and poster identity is a member of that space, return true.<br>
    * Otherwise, return false.
    *
    * @param portalContainer the specified portal container
@@ -181,8 +181,8 @@ public class SecurityManager {
   /**
    * <p>Checks if an authenticated identity has the permission to delete an existing activity.</p>
    *
-   * If the authenticated identity is the identity who creates that existing activity, return true.<br />
-   * If the authenticated identity is the stream owner of that existing activity, return true. <br />
+   * If the authenticated identity is the identity who creates that existing activity, return true.<br>
+   * If the authenticated identity is the stream owner of that existing activity, return true. <br>
    * Otherwise, return false.
    *
    * @param portalContainer the specified portal container
@@ -224,9 +224,9 @@ public class SecurityManager {
   /**
    * <p>Checks if an authenticated identity has the permission to comment on an existing activity.</p>
    *
-   * If commenterIdentity is the one who creates the existing activity, return true.<br />
-   * If commenterIdentity is the one who is connected to existing activity's user identity, return true.<br />
-   * If commenterIdentity is the one who is a member of the existing activity's space identity, return true.<br />
+   * If commenterIdentity is the one who creates the existing activity, return true.<br>
+   * If commenterIdentity is the one who is connected to existing activity's user identity, return true.<br>
+   * If commenterIdentity is the one who is a member of the existing activity's space identity, return true.<br>
    * Otherwise, return false.
    *
    * @param portalContainer the specified portal container
@@ -294,10 +294,10 @@ public class SecurityManager {
   /**
    * <p>Checks if an authenticated identity has the permission to delete an existing comment.</p>
    *
-   * If authenticatedIdentity is the one who creates the existing comment, return true.<br />
+   * If authenticatedIdentity is the one who creates the existing comment, return true.<br>
    * If authenticatedIdentity is the one who create the activity for that existing comment, return true.
-   * If authenticatedIdentity is the one who is the stream owner of that comment to an activity, return true.<br />
-   * If authenticatedIdentity is the one who is a manager of the existing activity's space identity, return true.<br />
+   * If authenticatedIdentity is the one who is the stream owner of that comment to an activity, return true.<br>
+   * If authenticatedIdentity is the one who is a manager of the existing activity's space identity, return true.<br>
    * Otherwise, return false.
    *
    * @param portalContainer the specified portal container

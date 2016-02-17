@@ -350,8 +350,8 @@ public class DefaultSpaceApplicationHandler implements SpaceApplicationHandler {
   }
 
   /**
-   * Creates page node from application. - Creates Application instance from appId. <br /> - Creates Page instance and set
-   * the newly-created application for that page; adds application to container. <br /> - Creates PageNode instance and
+   * Creates page node from application. - Creates Application instance from appId. <br> - Creates Page instance and set
+   * the newly-created application for that page; adds application to container. <br> - Creates PageNode instance and
    * returns that pageNode.
    *
    * @param space

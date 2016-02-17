@@ -29,7 +29,6 @@ import org.exoplatform.webui.event.Event;
  *
  * @author    <a href="http://hoatuicomponent.getActivityComposersle.net">hoatle (hoatlevan at gmail dot com)</a>
  * @since     Jul 22, 2010
- * @copyright eXo SAS
  */
 @ComponentConfig(
                  lifecycle = UIApplicationLifecycle.class,

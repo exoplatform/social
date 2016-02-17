@@ -280,7 +280,6 @@ public class UISpaceMenu extends UIContainer {
    * Gets image source url.
    *
    * @return image source url
-   * @throws Exception
    */
   protected String getImageSource() {
     Space space = getSpace();

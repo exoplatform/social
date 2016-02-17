@@ -24,9 +24,9 @@ import org.exoplatform.social.core.space.spi.SpaceLifeCycleEvent.Type;
 
 
 /**
- * Implementation of the lifecycle of spaces. <br/>
+ * Implementation of the lifecycle of spaces. <br>
  * Events are dispatched asynchronously but sequentially to their listeners
- * according to their type.<br/>
+ * according to their type.<br>
  * Listeners may fail, this is safe for the lifecycle, subsequent listeners will
  * still be called.
  *

@@ -103,8 +103,6 @@ public class BaseUIActivity extends UIForm {
   
   /**
    * Constructor
-   * 
-   * @throws Exception
    */
   public BaseUIActivity(){
     //tricktip for gatein bug

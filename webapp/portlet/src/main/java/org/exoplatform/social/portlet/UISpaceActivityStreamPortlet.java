@@ -28,11 +28,10 @@ import org.exoplatform.webui.core.lifecycle.UIApplicationLifecycle;
 
 /**
  * UISpaceActivityPortlet.java
- * <p/>
+ * <br>
  * Displaying space activities and its member's posts
  *
  * @author <a href="http://hoatle.net">hoatle</a>
- * @copyright eXo Platform SAS
  * @since Apr 6, 2010
  */
 @ComponentConfig(

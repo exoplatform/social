@@ -22,7 +22,7 @@ import org.exoplatform.webui.core.UIPortletApplication;
 import org.exoplatform.webui.core.lifecycle.UIApplicationLifecycle;
 
 /**
- * {@link UIMySpacePortlet} used as a portlet containing {@link UIManageMySpaces}.
+ * {@link UIMySpacesPortlet} used as a portlet containing {@link UIManageMySpaces}.
  * @author hoatle
  *
  */

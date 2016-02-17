@@ -9,31 +9,31 @@ import java.util.ArrayList;
 /**
  * Description: This class generates random names from syllables, and provides programmer a simple way to set a group of
  * rules for generator to avoid unpronounceable and bizarre names.
- * <p/>
+ * <br>
  * SYLLABLE FILE REQUIREMENTS/FORMAT: 1) all syllables are separated by line break. 2) Syllable should not contain or
  * start with whitespace, as this character is ignored and only first part of the syllable is read. 3) + and -
  * characters are used to set rules, and using them in other way, may result in unpredictable results. 4) Empty lines
  * are ignored.
- * <p/>
+ * <br>
  * SYLLABLE CLASSIFICATION: Name is usually composed from 3 different class of syllables, which include prefix, middle
  * part and suffix. To declare syllable a prefix in the file, insert "-" as a first character of the line. To declare
  * syllable a suffix in the file, insert "+" as a first character of the line. everything else is read as middle part.
- * <p/>
+ * <br>
  * NUMBER OF SYLLABLES: Names may have any positive number of syllables. In case of 2 syllables, name will be composed
  * from prefix and suffix. In case of 1 syllable, name will be chosen from amongst the prefixes. In case of 3 and more
  * syllables, name will begin with prefix, is filled with middle parts and ended with suffix.
- * <p/>
+ * <br>
  * ASSIGNING RULES: I included a way to set 4 kind of rules for every syllable. To add rules to the syllables, write
  * them right after the syllable and SEPARATE WITH WHITESPACE. (example: "aad +v -c"). The order of rules is not
  * important.
- * <p/>
+ * <br>
  * RULES: 1) +v means that next syllable must definitely start with a vocal. 2) +c means that next syllable must
  * definitely start with a consonant. 3) -v means that this syllable can only added to another syllable, that ends with
  * a vocal. 4) -c means that this syllable can only added to another syllable, that ends with a consonant. So, our
  * example: "aad +v -c" means that "aad" can only be after consonant and next syllable must start with vocal. Beware of
  * creating logical mistakes, like providing only syllables ending with consonants, but expecting only vocals, which
  * will be detected and RuntimeException will be thrown.
- * <p/>
+ * <br>
  * TO START: Create a new GenName object, provide the syllable file, and create names using compose() method.
  *
  * @author Joonas Vali, August 2009.
@@ -71,8 +71,6 @@ public class NameGenerator {
 
   /**
    * Change the file. refresh() is automatically called during the process.
-   *
-   * @throws java.io.IOException
    */
   public void changeSyllabes(String syllabes) {
     if (syllabes == null) {
@@ -85,8 +83,6 @@ public class NameGenerator {
   /**
    * Refresh names from file. No need to call that method, if you are not changing the file during the operation of
    * program, as this method is called every time file name is changed or new GenName object created.
-   *
-   * @throws java.io.IOException
    */
   public void refresh() {
     try {

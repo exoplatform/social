@@ -27,7 +27,7 @@ public class AsyncProcessorTool {
    * objects to implement their sync version of the process method.
    *
    * @param processor the processor
-   * @param exchange  the exchange
+   * @param processContext  the context
    * @throws Exception can be thrown if waiting is interrupted
    */
   public static void process(final AsyncProcessor processor, final ProcessContext processContext) throws Exception {

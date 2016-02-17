@@ -20,10 +20,10 @@ import java.util.Arrays;
 
 /**
  * The top exception class to handle exception for eXo Social.
- * <p/>
+ * <br>
  * Using this for displaying any error to user by using key for message bundle
  * display;
- * <p/>
+ * <br>
  * The exception message and cause for displaying more information.
  *
  * @author <a href="http://hoatle.net">hoatle (hoatlevan at gmail dot com)</a>

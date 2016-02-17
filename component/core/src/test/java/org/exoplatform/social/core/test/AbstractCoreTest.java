@@ -51,7 +51,6 @@ import org.jboss.byteman.contrib.bmunit.BMUnit;
  *
  * @author    <a href="http://hoatle.net">hoatle (hoatlevan at gmail dot com)</a>
  * @since     Jul 6, 2010
- * @copyright eXo SAS
  */
 @ConfiguredBy({
   @ConfigurationUnit(scope = ContainerScope.PORTAL, path = "conf/exo.portal.component.identity-configuration.xml"),

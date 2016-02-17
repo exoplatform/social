@@ -24,7 +24,6 @@ import org.exoplatform.social.webui.activity.BaseUIActivityBuilder;
  *
  * @author    <a href="http://hoatle.net">hoatle (hoatlevan at gmail dot com)</a>
  * @since     Jul 22, 2010
- * @copyright eXo SAS
  */
 public class EmotionUIActivityBuider extends BaseUIActivityBuilder {
 

@@ -33,7 +33,6 @@ import org.exoplatform.webui.event.EventListener;
  * </p>
  * @author    <a href="http://hoatle.net">hoatle</a>
  * @since     Apr 19, 2010
- * @copyright eXo Platform SAS
  */
 
 public abstract class UIActivityComposer extends UIContainer {

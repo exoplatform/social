@@ -28,7 +28,7 @@ public interface FilterLiteral<P> {
   
   /**
    * Append the filter option.
-   * @param param
+   * @param filter
    * @return
    */
   FilterLiteral<P> append(FilterOption<P> filter);
@@ -42,28 +42,28 @@ public interface FilterLiteral<P> {
   
   /**
    * Append the orderBy option.
-   * @param param
+   * @param orderBy
    * @return
    */
   FilterLiteral<P> append(OrderByOption<P> orderBy);
   
   /**
    * plug a filter in FilterLiteral
-   * @param filter
+   * @param orderBy
    * @return
    */
   OrderByOption<P> with(OrderByOption<P> orderBy);
   
   /**
    * Removes the query parameter.
-   * @param param
+   * @param filter
    * @return
    */
   FilterLiteral<P> remove(FilterOption<P> filter);
   
   /**
    * Removes the query parameter.
-   * @param param
+   * @param orderBy
    * @return
    */
   FilterLiteral<P> remove(OrderByOption<P> orderBy);
@@ -74,7 +74,7 @@ public interface FilterLiteral<P> {
   void clear();
   /**
    * Gets FilterOption which was existing.
-   * @param param
+   * @param filter
    * @return
    */
   FilterOption<P> get(FilterOption<P> filter);

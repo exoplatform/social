@@ -331,11 +331,11 @@ public interface RelationshipStorage {
    * of sub connections we could not find what we expect
    * @param identity The provided identity.
    * @param maxConnections Maximum of connections that we can treat per identity. If set
-   * to a value <= 0, the limit will be disabled
+   * to a value {@literal <=} 0, the limit will be disabled
    * @param maxConnectionsToLoad In case, the maxConnections are not enough to find enough suggestion, 
    * we load more connections at the first level. If maxConnectionsToLoad or maxConnections has been 
-   * set to a value <= 0, the limit will be disabled
-   * @param maxSuggestions The total amount of expected suggestions. If set to a value <= 0, the limit 
+   * set to a value {@literal <=} 0, the limit will be disabled
+   * @param maxSuggestions The total amount of expected suggestions. If set to a value {@literal <=} 0, the limit
    * will be disabled
    * @since 4.0.x
    */

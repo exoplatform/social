@@ -24,7 +24,6 @@ import java.util.List;
  *
  * @author    <a href="http://hoatle.net">hoatle (hoatlevan at gmail dot com)</a>
  * @since     Aug 31, 2010
- * @copyright eXo SAS
  */
 public class ResourceBundleUtil {
 
@@ -71,7 +70,7 @@ public class ResourceBundleUtil {
    * then it needs to replace single quote by double single quotes
    * 
    * Sample:
-   *      I'm connected with {0} => I''m connected with {0}
+   *      {@literal I'm connected with {0} => I''m connected with {0}}
    * @param message given message replacement
    * @return add double single quotes.
    */

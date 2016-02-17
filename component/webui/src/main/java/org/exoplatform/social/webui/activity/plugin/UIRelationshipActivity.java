@@ -39,7 +39,6 @@ import org.exoplatform.webui.event.EventListener;
  *
  * @author    <a href="http://hoatle.net">hoatle (hoatlevan at gmail dot com)</a>
  * @since     Aug 31, 2010
- * @copyright eXo SAS
  */
 @ComponentConfig(
   lifecycle = UIFormLifecycle.class,

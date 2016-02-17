@@ -54,30 +54,32 @@ import org.exoplatform.services.log.Log;
  * 
  * - media (from popular sites: youtube, vimeo, flickr...) - low priority (NOT IMPLEMENTED YET)
  *    This should be implemented from the client side to display preview and media player.
- * <p>
+ * <br>
  * In order to provide this preview, always looks for
  * the title of the page, a summary of the main content, and an image.
  * Looks for preview information by the following priority:
- * <p>
+ * <br>
  * 1.
- * <pre> 
- * &lt;meta name="title" content="page_title" />
- * &lt;meta name="description" content="page_description" />
- * &lt;link rel="image_src" href="image_source" />
+ * <pre>
+ * {@code
+ * <meta name="title" content="page_title" />
+ * <meta name="description" content="page_description" />
+ * <link rel="image_src" href="image_source" />
+ * }
  * </pre>
- * <p>
+ * <br>
  * 2.
- * If title not found -> find in <title> tag.
- * If description not found -> find first <p> tag. If no description -> return ""
- * If img_src not found -> find all images in page with max, min specified width + height
- * <p>
+ * If title not found, then find in {@code <title>} tag.
+ * If description not found, then find first <p> tag. If no description, then return ""
+ * If img_src not found, then find all images in page with max, min specified width + height
+ * <br>
  * 3. 
  * To specify medium, use tag:
  * <pre>
- * &lt;meta name="medium" content="medium_type" />
+ * {@code <meta name="medium" content="medium_type" />}
  * </pre>
  * In which: medium_type can be "audio", "image", "video", "news", "blog" and "mult".
- * <p>
+ * <br>
  * Created by The eXo Platform SEA
  * TODO: hoatle improvement:
  * + scans description with MIN_CHARACTER
@@ -576,7 +578,6 @@ public class LinkShare extends DefaultFilter {
   
   /**
    * Gets absolute link from the provided link
-   * @param base
    * @param link
    * @return absolute link
    */

@@ -451,7 +451,7 @@ public interface SpaceService {
 
   /**
    * Sets a space application config plugin for configuring the home and space applications.
-   * <p/>
+   * <br>
    * By configuring this, the space service will know how to create a new page node with title, URL and portlet.
    *
    * @param spaceApplicationConfigPlugin The space application config plugin to be set.

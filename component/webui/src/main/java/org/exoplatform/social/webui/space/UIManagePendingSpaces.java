@@ -128,8 +128,6 @@ public class UIManagePendingSpaces extends UIContainer {
 
   /**
    * Sets flag to display LoadNext button or not.
-   * 
-   * @return the enableLoadNext
    */
   public void setEnableLoadNext(boolean enableLoadNext) {
     this.enableLoadNext = enableLoadNext;
@@ -146,8 +144,6 @@ public class UIManagePendingSpaces extends UIContainer {
 
   /**
    * Sets information that clarify one space is updated or not.
-   * 
-   * @return the hasUpdatedSpace
    */
   public void setHasUpdatedSpace(boolean hasUpdatedSpace) {
     this.hasUpdatedSpace = hasUpdatedSpace;

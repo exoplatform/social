@@ -35,7 +35,7 @@ import org.exoplatform.social.common.xmlprocessor.model.Node;
 /**
  * This URLConverterFilterPlugin is a plugin for XMLProcessor which will auto convert any detected text link into real links,
  * for example:
- * http://abc.com => <a href="http://abc.com" title="http://abc.com">http://abc.com</a>
+ * {@literal http://abc.com => <a href="http://abc.com" title="http://abc.com">http://abc.com</a>}
  * Moreover, this plugin can trim any link to a fix size when it's too long by specifying the urlMaxLength via init params.
  * the urlMaxLength = url.length() + "...".length(), if urlMaxLength less than 3 the filter will no trim the url for display.
  *   
@@ -64,7 +64,7 @@ public class URLConverterFilterPlugin extends BaseXMLFilterPlugin {
   private static final String DEFAULT_PROTOCOL = "http://";
   
   /**
-   * Constructor with max length of URL, if url.length > UrlMaxLength then the url display will be shorten.
+   * Constructor with max length of URL, if {@literal url.length > UrlMaxLength} then the url display will be shorten.
    * @param urlMaxLength
    */
   public URLConverterFilterPlugin(int urlMaxLength){
@@ -72,8 +72,8 @@ public class URLConverterFilterPlugin extends BaseXMLFilterPlugin {
   }
   
   /**
-   * Constructor with InitParams from container, if url.length > UrlMaxLength then the url display will be shorten.
-   * @param urlMaxLength
+   * Constructor with InitParams from container, if {@literal url.length > UrlMaxLength} then the url display will be shorten.
+   * @param params
    */
   public URLConverterFilterPlugin(InitParams params){
     try {
@@ -95,7 +95,7 @@ public class URLConverterFilterPlugin extends BaseXMLFilterPlugin {
     }
   }
   /**
-   * Gets max length of URL, if url.length > urlMaxLength and urlMaxLength >= 3 then the url display will be shorten
+   * Gets max length of URL, if {@literal url.length > urlMaxLength and urlMaxLength >= 3} then the url display will be shorten
    * @return
    */
   public int getUrlMaxLength() {
@@ -103,7 +103,7 @@ public class URLConverterFilterPlugin extends BaseXMLFilterPlugin {
   }
   
   /**
-   * Sets max length of URL, if url.length > urlMaxLength and urlMaxLength >= 3 then the url display will be shorten.
+   * Sets max length of URL, if {@literal url.length > urlMaxLength and urlMaxLength >= 3} then the url display will be shorten.
    * @param urlMaxLength
    */
   public void setUrlMaxLength(int urlMaxLength) {

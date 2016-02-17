@@ -35,7 +35,7 @@ public final class ThreadHelper {
 
   /**
    * Creates a new thread name with the given pattern
-   * <p/>
+   * <br>
    * @param pattern the pattern
    * @param name    the name
    * @return the thread name, which is unique

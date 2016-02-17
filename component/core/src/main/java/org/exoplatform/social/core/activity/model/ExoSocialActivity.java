@@ -197,7 +197,7 @@ public interface ExoSocialActivity extends org.apache.shindig.social.opensocial.
 
   /**
    * Gets the permanent link.
-   * <p/>
+   * <br>
    * Could be the link to the doc, the jira task, or the link
    *
    * @return a permalink string, possibly null

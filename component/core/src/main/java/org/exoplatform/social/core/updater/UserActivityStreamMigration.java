@@ -59,10 +59,10 @@ public class UserActivityStreamMigration extends AbstractStorage {
   }
   /**
    * Upgrade base on range
+   * @param limit
    * @param from
    * @param to
    * @param prefix
-   * @param numberOfActivities
    */
   public void upgrade(int limit, int from, int to, String prefix) {
     StringBuffer sb = new StringBuffer().append("SELECT * FROM soc:identitydefinition WHERE ");

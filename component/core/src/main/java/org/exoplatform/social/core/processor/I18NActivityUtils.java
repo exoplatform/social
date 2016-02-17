@@ -50,7 +50,7 @@ public class I18NActivityUtils {
   
   /**
    * Gets list of values in template params
-   * @param activity
+   * @param valueParam
    * @return
    */
   public static String[] getParamValues(String valueParam) {

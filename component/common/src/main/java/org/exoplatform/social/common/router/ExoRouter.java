@@ -79,7 +79,7 @@ public class ExoRouter implements Startable {
    * @param path /{pageID}/ForumService
    * @param action /{pageID}/ForumService
    * @param params the action which appends to patch after "ForumService" string
-   *          ex: /{pageID}/{ForumService|}/{action} =>/{pageID}/ForumService/{}
+   *          ex: {@literal /{pageID}/{ForumService|}/{action} =>/{pageID}/ForumService/{}}
    */
   public static void addRoute(String path, String action, String params) {
     appendRoute(path, action, params);
@@ -137,7 +137,7 @@ public class ExoRouter implements Startable {
 
   /**
    * Generates ActionBuilder base on the action name and arguments list.
-   * Example: invokes reverse("show.topic", new HashMap<String, Object>{topicId, "topicId321"}) method. 
+   * Example: invokes {@code reverse("show.topic", new HashMap<String, Object>{topicId, "topicId321"})} method.
    *           
    * @param action
    * @param args
@@ -217,12 +217,12 @@ public class ExoRouter implements Startable {
     public String url;
 
     /**
-     * @todo - what is this? does it include the class and package?
+     * TODO - what is this? does it include the class and package?
      */
     public String action;
 
     /**
-     * @todo - are these the required args in the routing file, or the query
+     * TODO - are these the required args in the routing file, or the query
      *       string in a request?
      */
     public Map<String, Object> args;
@@ -250,7 +250,7 @@ public class ExoRouter implements Startable {
   }
   
   /**
-   * Route class which contains path, action & argument list.
+   * Route class which contains path, action and argument list.
    * 
    * @author thanhvc
    *
@@ -330,7 +330,7 @@ public class ExoRouter implements Startable {
      * Example: 
      * defined Pattern = "/{pageID}/topic/{topicID}"
      * invokes:: matches("1256/topic/topic544343");
-     * result: Map<String, String> = {"pageID" -> "1256"}, {"topicID" -> "topic544343"}
+     * result: {@code Map<String, String> = {"pageID" -> "1256"}, {"topicID" -> "topic544343"}}
      * 
      * @param path : given URI path
      * @return

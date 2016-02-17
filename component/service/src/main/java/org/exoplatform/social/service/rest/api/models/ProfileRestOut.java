@@ -112,7 +112,6 @@ public class ProfileRestOut extends HashMap<String, Object>{
 
   /**
    * Gets avatarURL of profile
-   * @param avatarUrl
    * @since 1.2.2
    */
   public String getAvatarUrl(){

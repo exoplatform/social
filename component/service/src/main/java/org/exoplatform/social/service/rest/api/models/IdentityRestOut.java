@@ -135,7 +135,6 @@ public class IdentityRestOut extends HashMap<String, Object> {
   
   /**
    * Gets providerId of Identity
-   * @param remoteId
    */
   public String getProviderId() {
     return (String) this.get(Field.PROVIDER_ID.toString());
@@ -143,8 +142,8 @@ public class IdentityRestOut extends HashMap<String, Object> {
   
   /**
    * Sets providerId of Identity
-   * @param remoteId
-   */  
+   * @param providerId
+   */
   public void setProviderId(String providerId) {
     if(providerId != null){
       this.put(Field.PROVIDER_ID.toString(), providerId);
@@ -155,7 +154,6 @@ public class IdentityRestOut extends HashMap<String, Object> {
 
   /**
    * Gets profile of Identity
-   * @param remoteId
    */
   public ProfileRestOut getProfile(){
     return (ProfileRestOut) this.get(Field.PROFILE.toString());
@@ -163,7 +161,7 @@ public class IdentityRestOut extends HashMap<String, Object> {
   
   /**
    * Sets profile of Identity
-   * @param remoteId
+   * @param profile
    * 
    */  
   public void setProfile(ProfileRestOut profile){

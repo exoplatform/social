@@ -65,10 +65,7 @@ public abstract class AbstractUpdaterPlugin extends UpgradeProductPlugin {
    * Gets NodeIterator with Statement with offset and limit
    * 
    * @param statement
-   * @param offset
-   * @param limit
    * @return
-   * @throws Exception
    */
   protected NodeIterator nodes(String statement) {
     //
@@ -100,7 +97,6 @@ public abstract class AbstractUpdaterPlugin extends UpgradeProductPlugin {
    * @param offset
    * @param limit
    * @return
-   * @throws Exception
    */
   protected NodeIterator nodes(String statement, long offset, long limit) {
     //

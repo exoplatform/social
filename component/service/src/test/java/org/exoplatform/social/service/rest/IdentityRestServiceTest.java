@@ -28,7 +28,6 @@ import org.exoplatform.social.service.test.AbstractResourceTest;
  *
  * @author     <a href="http://hoatle.net">hoatle</a>
  * @since      Mar 2, 2010
- * @copyright  eXo Platform SAS
  */
 public class IdentityRestServiceTest extends AbstractResourceTest {
   static private PortalContainer container;

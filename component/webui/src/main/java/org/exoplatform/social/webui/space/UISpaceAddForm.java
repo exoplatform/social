@@ -87,7 +87,7 @@ public class UISpaceAddForm extends UIFormTabPane {
   
   /**
    * Constructor: add 3 UI component to this UIFormTabPane:
-   * <p/>
+   * <br>
    * <pre>
    * {@link UISpaceSettings}
    * {@link UISpaceVisibility}

@@ -62,8 +62,9 @@ public class SpaceMemberFilterListAccess implements ListAccess<Identity> {
   /**
    * The constructor.
    * 
-   * @param relationshipStorage Storage object of Relationship.
-   * @param identity Identity to get connection. 
+   * @param identityStorage Storage object of Relationship.
+   * @param space Space to get connection.
+   * @param filter Profile filter.
    */
   public SpaceMemberFilterListAccess(IdentityStorage identityStorage, Space space, ProfileFilter filter) {
     this.identityStorage = identityStorage;
@@ -74,8 +75,9 @@ public class SpaceMemberFilterListAccess implements ListAccess<Identity> {
   /**
    * The constructor.
    * 
-   * @param relationshipStorage
-   * @param identity
+   * @param identityStorage
+   * @param space
+   * @param filter
    * @param type
    * @since 1.2.3
    */

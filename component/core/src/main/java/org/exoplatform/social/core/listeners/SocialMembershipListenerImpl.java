@@ -33,8 +33,8 @@ import org.exoplatform.social.core.storage.api.IdentityStorage;
 /**
  * SocialMembershipListenerImpl is registered to OrganizationService to handle membership operation associated
  * with space's groups.
- * - When a user's membership is removed (member or manager membership) => that user membership will be removed from spaces.
- * - When a user's membership is updated (member or manager membership) -> that user membership will be added to spaces.
+ * {@literal - When a user's membership is removed (member or manager membership) => that user membership will be removed from spaces.}
+ * {@literal - When a user's membership is updated (member or manager membership) -> that user membership will be added to spaces.}
  *
  * @author <a href="mailto:hoatlevan@gmail.com">hoatle</a>
  * @since Jan 11, 2012

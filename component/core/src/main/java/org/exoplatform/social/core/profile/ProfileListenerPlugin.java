@@ -20,9 +20,9 @@ import org.exoplatform.container.component.ComponentPlugin;
 import org.exoplatform.social.common.lifecycle.AbstractListenerPlugin;
 
 /**
- * Convenience class to write and wire {@link ProfileListener} plugin. <br/>
+ * Convenience class to write and wire {@link ProfileListener} plugin. <br>
  * This base class is a valid {@link ComponentPlugin} and implements {@link ProfileListener}.
- * @see IdentityManager#registerProfileListener(ProfileListener)
+ * @see org.exoplatform.social.core.manager.IdentityManager#registerProfileListener(ProfileListener)
  */
 public abstract class ProfileListenerPlugin extends AbstractListenerPlugin implements ProfileListener {
 

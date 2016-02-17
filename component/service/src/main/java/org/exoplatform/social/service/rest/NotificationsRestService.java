@@ -16,24 +16,6 @@
  */
 package org.exoplatform.social.service.rest;
 
-import static org.exoplatform.social.service.rest.RestChecker.checkAuthenticatedRequest;
-import static org.exoplatform.social.service.rest.RestChecker.checkAuthenticatedUserPermission;
-
-import java.net.URI;
-import java.util.Arrays;
-import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
-import javax.ws.rs.core.UriInfo;
-
-import org.apache.commons.lang.ArrayUtils;
 import org.exoplatform.container.ExoContainer;
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.PortalContainer;
@@ -49,10 +31,25 @@ import org.exoplatform.social.core.service.LinkProvider;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
+import javax.ws.rs.core.UriInfo;
+import java.net.URI;
+import java.util.Arrays;
+import java.util.List;
+
+import static org.exoplatform.social.service.rest.RestChecker.checkAuthenticatedRequest;
+
 /**
  * 
  * Provides REST Services for manipulating jobs related to notifications.
- * 
+ *
  * @anchor NotificationRestService
  */
 
@@ -77,7 +74,7 @@ public class NotificationsRestService implements ResourceContainer {
   
   /**
    * Processes the "Invite to connect" action between two users, sender and receiver, then redirects to the receiver's profile page.
-   * 
+   *
    * @param senderId The sender's remote Id.
    * @param receiverId The receiver's remote Id. 
    * @authentication
@@ -108,7 +105,7 @@ public class NotificationsRestService implements ResourceContainer {
   
   /**
    * Processes the "Accept the invitation to connect" action between 2 users, then redirects to the sender's activity stream.
-   * 
+   *
    * @param senderId The sender's remote Id.
    * @param receiverId The receiver's remote Id.
    * @authentication
@@ -138,7 +135,7 @@ public class NotificationsRestService implements ResourceContainer {
   /**
    * Processes the "Deny the invitation to connect" action between 2 users, then redirects to the receiver's page of received invitations.
    * A message informing that the receiver ignored the sender's invitation will be displayed.
-   * 
+   *
    * @param senderId The sender's remote Id.
    * @param receiverId The receiver's remote Id.
    * @authentication
@@ -169,7 +166,7 @@ public class NotificationsRestService implements ResourceContainer {
   
   /**
    * Processes the "Accept the invitation to join a space" action and redirects to the space homepage.
-   * 
+   *
    * @param userId The invitee's remote Id.
    * @param spaceId Id of the space.
    * @authentication
@@ -198,7 +195,7 @@ public class NotificationsRestService implements ResourceContainer {
   /**
    * Processes the "Deny the invitation to join a space" action, then redirects to the page of all spaces.
    * A message informing that the invitee has denied to join the space will be displayed.
-   * 
+   *
    * @param userId The invitee's remote Id.
    * @param spaceId Id of the space.
    * @authentication
@@ -234,7 +231,7 @@ public class NotificationsRestService implements ResourceContainer {
    * Adds a member to a space, then redirects to the space's members page. 
    * A message informing the added user is already member of the space or not will be displayed.
    * This action is only for the space manager. 
-   * 
+   *
    * @param userId The remote Id of the user who requests for joining the space.
    * @param spaceId Id of the space.
    * @authentication
@@ -281,7 +278,7 @@ public class NotificationsRestService implements ResourceContainer {
   /**
    * Refuses a user's request for joining a space, then redirects to 
    * the space's members page. This action is only for the space manager. 
-   * 
+   *
    * @param userId The remote Id of the user who requests for joining the space.
    * @param spaceId Id of the space.
    * @authentication
@@ -324,7 +321,7 @@ public class NotificationsRestService implements ResourceContainer {
   /**
    * Redirects the current user to an associated page, such as user activity stream, portal homepage,
    * space homepage and user profile.
-   * 
+   *
    * @param type Type of the redirected page.
    * @param objectId Id of the associated type that can be activity Id, space Id, or user remote Id.
    * @authentication

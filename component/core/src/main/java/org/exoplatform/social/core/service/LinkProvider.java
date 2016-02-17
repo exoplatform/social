@@ -162,7 +162,7 @@ public class LinkProvider {
   /**
    * Gets an absolute profile URL of a user.
    *
-   * @param username The name of user (remoteId).
+   * @param userName The name of user (remoteId).
    * @param portalName The name of current portal.
    * @param portalOwner The portal owner (for example, classic or public).
    * @param host The name of the provided host.

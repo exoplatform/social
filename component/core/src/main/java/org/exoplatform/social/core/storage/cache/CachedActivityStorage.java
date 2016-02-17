@@ -71,7 +71,7 @@ public class CachedActivityStorage implements ActivityStorage {
   
   /**
    * Register the other Activity Manager 
-   * @param activityManager
+   * @param baseComponent
    */
   public void addPlugin(BaseComponentPlugin baseComponent) {
     if (baseComponent instanceof ActivityStorageImpl) {

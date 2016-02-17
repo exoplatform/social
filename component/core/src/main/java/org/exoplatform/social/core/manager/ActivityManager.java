@@ -262,7 +262,7 @@ public interface ActivityManager {
    * Gets activities of a given poster that are specified by activity types.
    * The type of returned result is <code>ListAccess</code>  which can be lazy loaded.
    * 
-   * @param poster The identity who posted activities.
+   * @param posterIdentity The identity who posted activities.
    * @param activityTypes The types to get activities.
    * @return The activities of the poster. 
    * @LevelAPI Platform

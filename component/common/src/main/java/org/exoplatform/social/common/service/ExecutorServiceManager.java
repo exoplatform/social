@@ -24,7 +24,7 @@ public interface ExecutorServiceManager {
 
   /**
    * Sets the thread name pattern used for creating the full thread name.
-   * <p/>
+   * <br>
    * @param pattern the pattern
    * @throws IllegalArgumentException if the pattern is invalid.
    */
@@ -48,7 +48,6 @@ public interface ExecutorServiceManager {
   /**
    * Creates a new thread pool using the default thread pool profile.
    *
-   * @param source the source object, usually it should be <tt>this</tt> passed in as parameter
    * @param name   name which is appended to the thread name
    * @return the created thread pool
    */

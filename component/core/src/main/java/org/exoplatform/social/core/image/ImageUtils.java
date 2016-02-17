@@ -41,7 +41,7 @@ public class ImageUtils {
   private static final Log LOG = ExoLogger.getLogger(ImageUtils.class);
 
   /**
-   * @param string Make string params not null
+   * @param str Make string params not null
    */
   private static void makeNotNull(String... str)
   {
@@ -52,8 +52,9 @@ public class ImageUtils {
   }
 
   /**
-   * @param width
-   * @param height
+   * @param oldFileName
+   * @param subfix
+   * @param postfix
    * @return name of resized image name like from "avatar.jpg" to
    *         "RESIZED_avatar_100x100.jpg"
    */

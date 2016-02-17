@@ -70,8 +70,7 @@ public class StreamInvocationHelper {
    * Invokes to records the activity to Stream
    * 
    * @param owner
-   * @param activity
-   * @param mentioners NULL is empty mentioner.
+   * @param entity
    * @return
    */
   public static ProcessContext savePoster(Identity owner, ActivityEntity entity) {

@@ -236,7 +236,7 @@ public class StorageUtils {
    * Encodes Url to conform to the generated Url of WEBDAV.
    * Currently, Could not load data from generated url that contain dot character (.) cause by not consist with WEBDAV.
    * This method replace any percent character (%) by (%25) to solve this problem. 
-   * @param avatar
+   * @param path
    * @return
    */
   public static String encodeUrl(String path) {
@@ -563,7 +563,6 @@ public class StorageUtils {
 
   /**
    * 
-   * @param userId
    * @param aroundDays
    * @param lazilyCreatedTime
    * @return

@@ -40,7 +40,6 @@ import org.exoplatform.webui.event.EventListener;
  *
  * @author <a href="http://hoatle.net">hoatle</a>
  * @since Apr 6, 2010
- * @copyright eXo Platform SAS
  */
 @ComponentConfig(
   template = "war:/groovy/social/webui/space/UISpaceActivitiesDisplay.gtmpl",

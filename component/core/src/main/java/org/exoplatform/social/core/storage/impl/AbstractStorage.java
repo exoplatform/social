@@ -203,10 +203,7 @@ public abstract class AbstractStorage extends BaseComponentPlugin {
    * Gets NodeIterator with Statement with offset and limit
    * 
    * @param statement
-   * @param offset
-   * @param limit
    * @return
-   * @throws Exception
    */
   protected NodeIterator nodes(String statement) {
     //
@@ -237,7 +234,6 @@ public abstract class AbstractStorage extends BaseComponentPlugin {
    * @param offset
    * @param limit
    * @return
-   * @throws Exception
    */
   protected NodeIterator nodes(String statement, long offset, long limit) {
     //
@@ -269,7 +265,6 @@ public abstract class AbstractStorage extends BaseComponentPlugin {
    * 
    * @param jcrPath
    * @return
-   * @throws Exception
    */
   protected Node node(String jcrPath) {
     //

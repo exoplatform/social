@@ -141,7 +141,7 @@ public interface ActivityStream {
 
   /**
    * Gets the link to the UI endpoint of the stream in portal.
-   * <p/>
+   * <br>
    * A string specifying the stream's URL
    *
    * @return the permanent link for this activity stream
@@ -150,7 +150,7 @@ public interface ActivityStream {
 
   /**
    * Sets the link to the UI endpoint of the stream in portal.
-   * <p/>
+   * <br>
    * A string specifying the stream's URL
    *
    * @param permaLink the permanent link for this activity stream

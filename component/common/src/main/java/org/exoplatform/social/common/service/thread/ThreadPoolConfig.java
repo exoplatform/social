@@ -203,7 +203,7 @@ public class ThreadPoolConfig implements Serializable {
 
   /**
    * Gets the maximum number of tasks in the work queue.
-   * <p/>
+   * <br>
    * Use <tt>-1</tt> or <tt>Integer.MAX_VALUE</tt> for an unbounded queue
    *
    * @return the max queue size
@@ -214,7 +214,7 @@ public class ThreadPoolConfig implements Serializable {
 
   /**
    * Sets the maximum number of tasks in the work queue.
-   * <p/>
+   * <br>
    * Use <tt>-1</tt> or <tt>Integer.MAX_VALUE</tt> for an unbounded queue
    *
    * @param maxQueueSize the max queue size

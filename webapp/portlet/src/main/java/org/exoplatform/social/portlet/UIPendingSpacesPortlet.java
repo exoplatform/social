@@ -22,7 +22,7 @@ import org.exoplatform.webui.core.UIPortletApplication;
 import org.exoplatform.webui.core.lifecycle.UIApplicationLifecycle;
 
 /**
- * {@link UIPendingSpacePortlet} used as a portlet containing {@link UIManagePendingSpaces}.
+ * {@link UIPendingSpacesPortlet} used as a portlet containing {@link UIManagePendingSpaces}.
  * @author hoatle
  *
  */

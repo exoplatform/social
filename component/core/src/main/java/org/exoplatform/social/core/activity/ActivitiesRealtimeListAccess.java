@@ -78,7 +78,6 @@ public class ActivitiesRealtimeListAccess implements RealtimeListAccess<ExoSocia
    *
    * @param existingActivityStorage
    * @param chosenActivityType
-   * @param chosenOwnerIdentity
    */
   public ActivitiesRealtimeListAccess(final ActivityStorage existingActivityStorage,
                                       final ActivityType chosenActivityType) {

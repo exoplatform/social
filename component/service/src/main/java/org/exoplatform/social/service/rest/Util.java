@@ -55,9 +55,9 @@ import org.exoplatform.social.service.rest.api.models.IdentityRestOut;
 import org.exoplatform.social.service.rest.api.models.ProfileRestOut;
 
 /**
- * Util.java: utility class for rest <br />.
+ * Util.java: utility class for rest <br>.
  *
- * @author hoatle <hoatlevan at gmail dot com>
+ * @author hoatle
  * @since  Jan 5, 2009
  */
 public final class Util {
@@ -415,7 +415,7 @@ public final class Util {
 
   /**
    * Gets base url (host + post) from a context uriInfo.
-   * <p/>
+   * <br>
    * For example: http://localhost:8080
    *
    * @return the base url (host + port)
@@ -588,8 +588,9 @@ public final class Util {
   
   /**
    * Decode query parameters of string URL
-   * Example: Input: http://google.com?%3Cscript%3E
-   *         Output: http://google.com?<script>
+   * Example:
+   * - Input: {@code http://google.com?%3Cscript%3E}
+   * - Output: {@code http://google.com?<script>}
    *
    * @param url The string URL to decode
    * @return The URL decoded query parameters

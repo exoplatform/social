@@ -19,9 +19,8 @@ package org.exoplatform.social.service.rest;
 /**
  * LinkShareRequest.java - LikeShareRequest model
  *
- * @author     hoatle <hoatlevan at gmail dot com>
+ * @author     hoatle
  * @since      Jan 5, 2010
- * @copyright  eXo Platform SAS 
  */
 public class LinkShareRequest {
   private String _link, _lang;

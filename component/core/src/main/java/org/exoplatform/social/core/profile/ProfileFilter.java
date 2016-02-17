@@ -160,7 +160,7 @@ public class ProfileFilter {
    * Sets the onlineRemoteIds
    *
    * @param onlineRemoteIds
-   * @since  4.0.2-GA & 4.1.0-GA
+   * @since  4.0.2-GA and 4.1.0-GA
    */
   public void setOnlineRemoteIds(List<String> onlineRemoteIds) {
     this.onlineRemoteIds = onlineRemoteIds;
@@ -169,7 +169,7 @@ public class ProfileFilter {
   /**
    * Gets the onlineRemoteIds
    * @return the onlineRemoteIds
-   * @since  4.0.2-GA & 4.1.0-GA
+   * @since  4.0.2-GA and 4.1.0-GA
    */
   public List<String> getOnlineRemoteIds() {
     return this.onlineRemoteIds;

@@ -20,7 +20,6 @@ import org.exoplatform.social.common.ExoSocialException;
 
 /**
  * @author tuan_nguyenxuan
- * @copyright eXo SAS
  * @since Nov 25, 2010
  */
 public class RelationshipStorageException extends ExoSocialException {

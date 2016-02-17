@@ -23,7 +23,6 @@ import java.util.Comparator;
  *
  * @author    <a href="http://hoatle.net">hoatle (hoatlevan at gmail dot com)</a>
  * @since     Aug 9, 2010
- * @copyright eXo SAS
  */
 public class Util {
   /**

@@ -35,7 +35,7 @@ import org.exoplatform.social.core.manager.IdentityManager;
 
 /**
  * Provides services to work with identities.
- * 
+ *
  * @anchor IdentityRestService
  */
 @Path("{portalName}/social/identity/{username}/id")
@@ -53,7 +53,7 @@ public class IdentityRestService implements ResourceContainer {
    * @param username The name of the target user.
    * @param portalName The name of the current portal.
    * @anchor IdentityRestService.getId
-   * 
+   *
    * @return UserId The information of provided user.
    * 
    * @throws Exception

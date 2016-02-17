@@ -20,7 +20,6 @@ package org.exoplatform.social.service.rest;
  * Like.java - Like model
  * @author     hoatle <hoatlevan at gmail dot com>
  * @since      Dec 29, 2009
- * @copyright  eXo Platform SAS 
  */
 /**
  * Model contain like detail information.

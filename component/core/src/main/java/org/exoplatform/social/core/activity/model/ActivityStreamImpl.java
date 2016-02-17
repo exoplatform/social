@@ -77,7 +77,7 @@ public class ActivityStreamImpl implements ActivityStream {
   }
 
   /**
-   * @{inheritDoc}
+   * {@inheritDoc}
    */
   public final String getId() {
     return id;

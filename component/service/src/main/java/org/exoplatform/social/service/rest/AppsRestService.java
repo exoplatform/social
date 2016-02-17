@@ -60,9 +60,9 @@ public class AppsRestService implements ResourceContainer {
    *
    * @param uriInfo The requested URI information.
    * @param format The type of a returned result.
-   * 
+   *
    * @anchor AppsRestService.showApps
-   * 
+   *
    * @return The response contains returned results.
    * 
    * @throws Exception

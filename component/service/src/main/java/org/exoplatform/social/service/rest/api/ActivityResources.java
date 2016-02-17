@@ -97,7 +97,7 @@ public class ActivityResources implements ResourceContainer {
    *   "type": "exosocial:core",
    *   "postedTime": 123456789, //timestamp
    *   "createdAt": "Fri Jun 17 06:42:26 +0000 2011", //The Date follows ISO 8601
-   *   "priority": 0.5, //between 0.0 and 1.0, higher value => higher priority.
+   *   "priority": 0.5, //between 0.0 and 1.0, higher value = higher priority.
    *   "templateParams": {},
    *   "titleId": "",
    *   "identityId": "123456789abcdefghi", //the identity id of the user who created this activity
@@ -202,7 +202,7 @@ public class ActivityResources implements ResourceContainer {
    *   "type": "exosocial:core",
    *   "postedTime": 123456789, //timestamp
    *   "createdAt": "Fri Jun 17 06:42:26 +0000 2011",
-   *   "priority": 0.5, //between 0.0 and 1.0, higher value => higher priority.
+   *   "priority": 0.5, //between 0.0 and 1.0, higher value = higher priority.
    *   "templateParams": {},
    *   "titleId": "",
    *   "identityId": "123456789abcdefghi" //the identity id of the user who created this activity
@@ -280,7 +280,7 @@ public class ActivityResources implements ResourceContainer {
    *   "type": "exosocial:core",
    *   "postedTime": 123456789, //timestamp
    *   "createdAt": "Fri Jun 17 06:42:26 +0000 2011", //The Date follows ISO 8601
-   *   "priority": 0.5, //between 0.0 and 1.0, higher value => higher priority.
+   *   "priority": 0.5, //between 0.0 and 1.0, higher value = higher priority.
    *   "templateParams": {},
    *   "titleId": "",
    *   "identityId": "123456789abcdefghi", //the identity id of the user who created this activity
@@ -358,7 +358,7 @@ public class ActivityResources implements ResourceContainer {
    *   "type": "exosocial:core",
    *   "postedTime": 123456789, //timestamp
    *   "createdAt": "Fri Jun 17 06:42:26 +0000 2011", //The Date follows ISO 8601
-   *   "priority": 0.5, //between 0.0 and 1.0, higher value => higher priority.
+   *   "priority": 0.5, //between 0.0 and 1.0, higher value = higher priority.
    *   "templateParams": {},
    *   "titleId": "",
    *   "identityId": "123456789abcdefghi", //the identity id of the user who created this activity

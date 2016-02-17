@@ -407,9 +407,8 @@ public class EntityBuilder {
   /**
    * Get the activityStream's information related to the activity.
    * 
-   * @param authentiatedUsed the viewer
    * @param activity
-   * @param target the owner of the stream that we want to display
+   * @param authentiatedUsed the viewer
    * @return activityStream object, null if the viewer has no permission to view activity
    */
   public static DataEntity getActivityStream(ExoSocialActivity activity, Identity authentiatedUsed) {
@@ -619,13 +618,15 @@ public class EntityBuilder {
   }
 
   /**
+   * {@code
    * "https://localhost:8080/rest/users?offset=50&limit=25"
    * 
-   * Link: <https://localhost:8080/rest/users?offset=25&limit=25>; rel="previous", 
+   * Link: <https://localhost:8080/rest/users?offset=25&limit=25>; rel="previous",
    * <https://localhost:8080/rest/users?offset=75&limit=25>; rel="next"
+   * }
    * 
    * @param entity
-   * @param restPath
+   * @param requestPath
    * @return
    */
   public static Object buildLinkForHeader(Object entity, String requestPath) {

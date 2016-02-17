@@ -24,7 +24,7 @@ import org.exoplatform.social.core.space.model.Space;
 /**
  * An event fired at different stages of the lifecycle of a space.
  *
- * @see {@link SpaceLifeCycleListener}
+ * @see org.exoplatform.social.core.space.spi.SpaceLifeCycleListener
  * @author <a href="mailto:patrice.lamarque@exoplatform.com">Patrice
  *         Lamarque</a>
  * @version $Revision$

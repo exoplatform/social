@@ -71,7 +71,7 @@ import org.exoplatform.webui.utils.TimeConvertUtils;
 /**
  * 
  * Provides REST Services for manipulating jobs relates to people.
- * 
+ *
  * @anchor PeopleRestService
  */
 
@@ -202,7 +202,7 @@ public class PeopleRestService implements ResourceContainer{
    * @throws Exception
    * @LevelAPI Platform
    * @anchor PeopleRestService.suggestUsernames
-   * @deprecated Deprecated from 4.3.x. Replaced by a new API {@link UserRestResourcesV1#getUsers(org.exoplatform.social.rest.impl.user.UriInfo, String, int, int, boolean, String)}
+   * @deprecated Deprecated from 4.3.x. Replaced by a new API {@link UserRestResourcesV1#getUsers(UriInfo, String, int, int, boolean, String)}
    * 
    */
   @GET
@@ -257,7 +257,7 @@ public class PeopleRestService implements ResourceContainer{
    * @throws Exception
    * @LevelAPI Platform
    * @anchor PeopleRestService.searchConnection
-   * @deprecated Deprecated from 4.3.x. Replaced by a new API {@link UserRestResourcesV1#getConnectionOfUser(org.exoplatform.social.rest.impl.user.UriInfo, String, boolean, String)}
+   * @deprecated Deprecated from 4.3.x. Replaced by a new API {@link UserRestResourcesV1#getConnectionOfUser(UriInfo, String, boolean, String)}
    */
   @GET
   @Path("{portalName}/getConnections.{format}")
@@ -782,7 +782,7 @@ public class PeopleRestService implements ResourceContainer{
   }
   
   /**
-   * UserNameList class. < /br>
+   * UserNameList class
    * 
    * Contains list of user's name that match the input string.
    *
@@ -793,7 +793,7 @@ public class PeopleRestService implements ResourceContainer{
     private List<String> _fullNames;
     /**
      * Sets user name list
-     * @param user name list
+     * @param names name list
      */
     public void setNames(List<String> names) {
       this._names = names; 
@@ -823,7 +823,7 @@ public class PeopleRestService implements ResourceContainer{
     
     /**
      * Add name to user name list
-     * @param user name
+     * @param name
      */
     public void addName(String name) {
       if (_names == null) {
@@ -845,7 +845,7 @@ public class PeopleRestService implements ResourceContainer{
   }
 
   /**
-   * PeopleInfo class. < /br>
+   * PeopleInfo class
    * 
    * Contains people's information that relate to specific user.
    *

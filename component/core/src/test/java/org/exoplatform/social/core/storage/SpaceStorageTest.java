@@ -41,7 +41,6 @@ import org.exoplatform.social.core.test.QueryNumberTest;
  * Unit Tests for {@link org.exoplatform.social.core.storage.api.SpaceStorage}
  *
  * @since Nov 3, 2010
- * @copyright eXo SAS
  */
 @QueryNumberTest
 public class SpaceStorageTest extends AbstractCoreTest {

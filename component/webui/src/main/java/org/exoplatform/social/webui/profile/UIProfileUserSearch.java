@@ -262,7 +262,7 @@ public class UIProfileUserSearch extends UIForm {
   /**
    * Sets filter object.
    *
-   * @param profileFilter <code>Object<code>
+   * @param profileFilter <code>Object</code>
    */
   public final void setProfileFilter(final ProfileFilter profileFilter) {
     this.profileFilter = profileFilter;
@@ -392,7 +392,6 @@ public class UIProfileUserSearch extends UIForm {
   /**
    * Filter identity follow skills information.
    *
-   * @param skills     <code>String</code>
    * @param identities <code>Object</code>
    * @return List of identities that has skills information match.
    */

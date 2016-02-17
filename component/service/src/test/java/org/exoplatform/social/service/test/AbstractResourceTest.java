@@ -54,7 +54,7 @@ import org.exoplatform.ws.frameworks.json.impl.JsonParserImpl;
 import org.exoplatform.ws.frameworks.json.value.JsonValue;
 
 /**
- * AbstractResourceTest.java <br />
+ * AbstractResourceTest.java <br>
  * Provides <code>service</code> method to test rest service.
  * @author <a href="http://hoatle.net">hoatle</a>
  * @since Mar 3, 2010

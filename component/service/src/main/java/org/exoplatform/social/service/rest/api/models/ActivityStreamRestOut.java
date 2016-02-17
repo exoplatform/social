@@ -167,7 +167,7 @@ public class ActivityStreamRestOut extends HashMap<String, Object> {
   /**
    * Sets the full name.
    *
-   * @param prettyId the full name.
+   * @param fullName the full name.
    */
   public void setFullName(final String fullName) {
     if (fullName == null) {

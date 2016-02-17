@@ -751,7 +751,7 @@ public interface ActivityStorage {
    * Gets activities by poster.
    * 
    * @param posterIdentity The identity of given poster.
-   * @param offsset The start point to load.
+   * @param offset The start point to load.
    * @param limit The range to load.
    *  
    * @return The activities that match the given poster.
@@ -763,7 +763,7 @@ public interface ActivityStorage {
    * Gets activities by poster and activity's types
    * 
    * @param posterIdentity The identity of given poster.
-   * @param offsset The start point to load.
+   * @param offset The start point to load.
    * @param limit The range to load.
    * @param activityTypes: type of activities
    *  
@@ -856,7 +856,7 @@ public interface ActivityStorage {
    * access and based on an existing since time.
    * 
    * @param owner
-   * @param sinceTime
+   * @param filter
    * @return
    * @since 4.0 Alpha01
    */
@@ -867,7 +867,7 @@ public interface ActivityStorage {
    * access and based on an existing since time.
    * 
    * @param owner
-   * @param sinceTime
+   * @param filter
    * @return
    * @since 4.0 Alpha01
    */
@@ -878,7 +878,7 @@ public interface ActivityStorage {
    * access and based on an existing since time.
    * 
    * @param owner
-   * @param sinceTime
+   * @param filter
    * @return
    * @since 4.0 Alpha01
    */
@@ -889,7 +889,7 @@ public interface ActivityStorage {
    * access and based on an existing since time.
    * 
    * @param owner
-   * @param sinceTime
+   * @param filter
    * @return
    * @since 4.0 Alpha01
    */
@@ -900,7 +900,7 @@ public interface ActivityStorage {
    * access and based on an existing since time.
    * 
    * @param owner
-   * @param sinceTime
+   * @param filter
    * @return
    * @since 4.0 Alpha01
    */
@@ -988,7 +988,6 @@ public interface ActivityStorage {
    * @param owner
    * @param sinceTime
    * @param limit
-   * @param offset
    * @return
    * @since 4.0
    */

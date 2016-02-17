@@ -86,9 +86,7 @@ public abstract class AbstractSocialSearchConnector extends SearchServiceConnect
   
   /**
    * Gets RowIterator base on Statement
-   * @param query
-   * @param offset
-   * @param limit
+   * @param statement
    * @return
    */
   protected RowIterator rows(String statement) throws Exception {
@@ -124,7 +122,6 @@ public abstract class AbstractSocialSearchConnector extends SearchServiceConnect
    * @param offset
    * @param limit
    * @return
-   * @throws Exception
    */
   protected RowIterator rows(String statement, long offset, long limit) {
     //

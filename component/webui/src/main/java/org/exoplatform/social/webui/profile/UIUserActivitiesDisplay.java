@@ -57,7 +57,6 @@ import org.exoplatform.webui.event.EventListener;
  *
  * @author <a href="http://hoatle.net">hoatle (hoatlevan at gmail dot com)</a>
  * @since Jul 30, 2010
- * @copyright eXo SAS
  */
 @ComponentConfigs({
   @ComponentConfig(

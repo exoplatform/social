@@ -35,7 +35,6 @@ import org.exoplatform.webui.ext.UIExtensionManager;
  *
  * @author    zun
  * @since     Jul 22, 2010
- * @copyright eXo Platform SAS
  */
 public class UIActivityFactory extends BaseComponentPlugin {
   

@@ -426,7 +426,7 @@ public class SpaceUtils {
    * Gets spaceName by portletPreference.
    *
    * @return
-   * @deprecated Use {@link org.exoplatform.social.webui.Utils.getSpaceUrlByContext() } instead.
+   * @deprecated Use {@link #getSpaceUrlByContext()} instead.
    */
   public static String getSpaceUrl() {
     //
@@ -833,7 +833,6 @@ public class SpaceUtils {
    *
    * @param creator String
    * @param groupId String
-   * @throws SpaceException with code UNABLE_TO_ADD_CREATOR
    */
   public static void addCreatorToGroup(String creator, String groupId) {
     addUserToGroupWithMemberMembership(creator, groupId);
@@ -1175,7 +1174,7 @@ public class SpaceUtils {
   /**
    * Retrieving the UserNode of Space when is given Space instance
    *  
-   * @param parentNodeCtx parent NodeContext
+   * @param space space
    * @return
    */
   public static UserNode getSpaceUserNode(Space space) throws Exception {

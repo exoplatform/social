@@ -22,7 +22,7 @@ import org.exoplatform.webui.core.UIPortletApplication;
 import org.exoplatform.webui.core.lifecycle.UIApplicationLifecycle;
 
 /**
- * {@link UIInvitationSpacePortlet} used as a porltet for containing {@link UIManageInvitationSpaces}.
+ * {@link UIInvitationSpacesPortlet} used as a porltet for containing {@link UIManageInvitationSpaces}.
  * @author hoatle
  *
  */

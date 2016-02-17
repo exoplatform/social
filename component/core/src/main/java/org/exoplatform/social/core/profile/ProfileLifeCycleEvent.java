@@ -21,8 +21,8 @@ import org.exoplatform.social.core.identity.model.Profile;
 
 
 /**
- * event propagated along the {@link ProfileLifeCycle}
- * @see {@link ProfileListener}
+ * event propagated along the {@link org.exoplatform.social.core.profile.ProfileLifeCycle}
+ * @see org.exoplatform.social.core.profile.ProfileListener
  * @author <a href="mailto:patrice.lamarque@exoplatform.com">Patrice Lamarque</a>
  * @version $Revision$
  */

@@ -35,7 +35,6 @@ import java.util.*;
 /**
  * The Class RelationshipManager implements RelationshipManager without caching.
  * 
- * @modifier tuan_nguyenxuan
  * @since Nov 24, 2010
  * @version 1.2.0-GA
  */

@@ -22,9 +22,9 @@ import java.util.LinkedHashMap;
 
 /**
  * The attributes of an Node.
- * <p/>
+ * <br>
  * Attributes are treated as a map: there can be only one value associated with an attribute key.
- * <p/>
+ * <br>
  * Attribute key and value comparisons are done case insensitively, and keys are normalised to lower-case.
  *
  * @author Ly Minh Phuong - http://phuonglm.net
@@ -89,7 +89,7 @@ public class Attributes {
   /**
    * Gets the KeySet iterator of attributes
    *
-   * @return Iterator<String>
+   * @return iterator of keys
    */
   public Iterator<String> getKeyIterator() {
     return attributes.keySet().iterator();
