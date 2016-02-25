@@ -76,7 +76,6 @@ public class UIManageAllSpaces extends UIContainer {
   private UISpaceSearch uiSpaceSearch = null;
 
   private boolean hasUpdatedSpace = false;
-  private int currentLoadIndex;
   private boolean enableLoadNext;
   private int loadingCapacity;
   private String spaceNameSearch;
@@ -112,11 +111,8 @@ public class UIManageAllSpaces extends UIContainer {
    */
   public void init() {
     try {
-      setHasUpdatedSpace(true);
-      enableLoadNext = false;
-      currentLoadIndex = 0;
+      enableLoadNext = true;
       loadingCapacity = SPACES_PER_PAGE;
-      spacesList = new ArrayList<Space>();
       this.uiSpaceSearch.setSpaceNameSearch(null);
       this.uiSpaceSearch.getUIStringInput(SPACE_SEARCH).setValue("");
       if (this.selectedChar != null){
@@ -124,6 +120,7 @@ public class UIManageAllSpaces extends UIContainer {
       } else {
         setSelectedChar(SEARCH_ALL);
       }
+      spacesList = loadSpaces(0, loadingCapacity);
     } catch (Exception e) {
       LOG.error(e.getMessage(), e);
     }
@@ -278,9 +275,9 @@ public class UIManageAllSpaces extends UIContainer {
    * @throws Exception
    */
   public void loadNext() throws Exception {
-    currentLoadIndex += loadingCapacity;
-    if (currentLoadIndex <= getSpacesNum()) {
-      List<Space> loaded = new ArrayList<Space>(Arrays.asList(getSpacesListAccess().load(currentLoadIndex, loadingCapacity)));
+    int _currentIndex = spacesList.size();
+    if (_currentIndex <= getSpacesNum()) {
+      List<Space> loaded = new ArrayList<Space>(Arrays.asList(getSpacesListAccess().load(_currentIndex, loadingCapacity)));
       this.spacesList.addAll(loaded);
       setEnableLoadNext(loaded.size() < SPACES_PER_PAGE ? false : this.spacesList.size() < getSpacesNum());
     }
@@ -291,8 +288,7 @@ public class UIManageAllSpaces extends UIContainer {
    * @throws Exception
    */
   public void loadSearch() throws Exception {
-    currentLoadIndex = 0;
-    setSpacesList(loadSpaces(currentLoadIndex, loadingCapacity));
+    setSpacesList(loadSpaces(0, loadingCapacity));
   }
   
   /**
@@ -356,7 +352,7 @@ public class UIManageAllSpaces extends UIContainer {
   static public class LoadMoreSpaceActionListener extends EventListener<UIManageAllSpaces> {
     public void execute(Event<UIManageAllSpaces> event) throws Exception {
       UIManageAllSpaces uiManageAllSpaces = event.getSource();
-      if (uiManageAllSpaces.currentLoadIndex > uiManageAllSpaces.spacesNum) {
+      if (uiManageAllSpaces.spacesList.size() > uiManageAllSpaces.spacesNum) {
         return;
       }
       uiManageAllSpaces.loadNext();

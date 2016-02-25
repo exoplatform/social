@@ -70,7 +70,6 @@ public class UIManageMySpaces extends UIContainer {
   private UISpaceSearch uiSpaceSearch = null;
 
   private boolean hasUpdatedSpace = false;
-  private int currentLoadIndex;
   private boolean enableLoadNext;
   private int loadingCapacity;
   private String spaceNameSearch;
@@ -100,18 +99,16 @@ public class UIManageMySpaces extends UIContainer {
    */
   public void init() {
     try {
-      setHasUpdatedSpace(true);
       enableLoadNext = true;
-      currentLoadIndex = 0;
       loadingCapacity = SPACES_PER_PAGE;
-      mySpacesList = new ArrayList<Space>();
       this.uiSpaceSearch.setSpaceNameSearch(null);
       this.uiSpaceSearch.getUIStringInput(SPACE_SEARCH).setValue("");
       if (this.selectedChar != null){
         setSelectedChar(this.selectedChar);
       } else {
         setSelectedChar(SEARCH_ALL);
-      }      
+      }
+      mySpacesList = loadMySpaces(0, loadingCapacity);
     } catch (Exception e) {
       LOG.error(e.getMessage(), e);
     }
@@ -268,9 +265,9 @@ public class UIManageMySpaces extends UIContainer {
    * @since 1.2.2
    */
   public void loadNext() throws Exception {
-    currentLoadIndex += loadingCapacity;
-    if (currentLoadIndex <= getMySpacesNum()) {
-      List<Space> loaded = new ArrayList<Space>(Arrays.asList(getMySpacesListAccess().load(currentLoadIndex, loadingCapacity)));
+    int _currentIndex = this.mySpacesList.size();
+    if (_currentIndex <= getMySpacesNum()) {
+      List<Space> loaded = new ArrayList<Space>(Arrays.asList(getMySpacesListAccess().load(_currentIndex, loadingCapacity)));
       this.mySpacesList.addAll(loaded);
       setEnableLoadNext(loaded.size() < SPACES_PER_PAGE ? false : this.mySpacesList.size() < getMySpacesNum());
     }
@@ -282,8 +279,7 @@ public class UIManageMySpaces extends UIContainer {
    * @since 1.2.2
    */
   public void loadSearch() throws Exception {
-    currentLoadIndex = 0;
-    setMySpacesList(loadMySpaces(currentLoadIndex, loadingCapacity));
+    setMySpacesList(loadMySpaces(0, loadingCapacity));
   }
   
   private List<Space> loadMySpaces(int index, int length) throws Exception {
