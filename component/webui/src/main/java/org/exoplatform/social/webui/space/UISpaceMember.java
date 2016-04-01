@@ -115,7 +115,9 @@ public class UISpaceMember extends UIForm {
   private final String iteratorPendingID = "UIIteratorPendding";
   private final String iteratorInvitedID = "UIIteratorInvited";
   private final String iteratorExistingID = "UIIteratorExisting";
-  private final Integer ITEMS_PER_PAGE = 3;
+  private final Integer PENDING_PER_PAGE = 10;
+  private final Integer INVITATION_PER_PAGE = 10;
+  private final Integer MEMBERS_PER_PAGE = 20;
   private static final String USER_TO_INVITE = "user_to_invite";
   String typeOfRelation = null;
   String spaceURL = null;
@@ -281,7 +283,7 @@ public class UISpaceMember extends UIForm {
     int currentPage = iteratorPendingUsers.getCurrentPage();
     LazyPageList<String> pageList = new LazyPageList<String>(
                                       new StringListAccess(Arrays.asList(pendingUsers)),
-                                      ITEMS_PER_PAGE);
+                                      PENDING_PER_PAGE);
     iteratorPendingUsers.setPageList(pageList);
     int pageCount = iteratorPendingUsers.getAvailablePage();
     if (pageCount >= currentPage) {
@@ -314,7 +316,7 @@ public class UISpaceMember extends UIForm {
     int currentPage = iteratorInvitedUsers.getCurrentPage();
     LazyPageList<String> pageList = new LazyPageList<String>(
                                       new StringListAccess(Arrays.asList(invitedUsers)),
-                                      ITEMS_PER_PAGE);
+                                      INVITATION_PER_PAGE);
     iteratorInvitedUsers.setPageList(pageList);
     int pageCount = iteratorInvitedUsers.getAvailablePage();
     if (pageCount >= currentPage) {
@@ -349,7 +351,7 @@ public class UISpaceMember extends UIForm {
     Set<String> users = new HashSet<String>(Arrays.asList(memberUsers));
     users.addAll(SpaceUtils.findMembershipUsersByGroupAndTypes(space.getGroupId(), MembershipTypeHandler.ANY_MEMBERSHIP_TYPE));
     
-    LazyPageList<String> pageList = new LazyPageList<String>(new StringListAccess(new ArrayList<String>(users)), ITEMS_PER_PAGE);
+    LazyPageList<String> pageList = new LazyPageList<String>(new StringListAccess(new ArrayList<String>(users)), MEMBERS_PER_PAGE);
     iteratorExistingUsers.setPageList(pageList);
     if (this.isNewSearch()) {
       iteratorExistingUsers.setCurrentPage(FIRST_PAGE);
