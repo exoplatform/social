@@ -16,7 +16,16 @@
  */
 package org.exoplatform.social.core.test;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.util.List;
+
+import javax.jcr.RepositoryException;
+import javax.jcr.Session;
+
 import junit.framework.AssertionFailedError;
+
 import org.apache.commons.lang.ArrayUtils;
 import org.exoplatform.commons.testing.BaseExoTestCase;
 import org.exoplatform.commons.utils.PageList;
@@ -38,13 +47,6 @@ import org.exoplatform.social.core.space.spi.SpaceService;
 import org.exoplatform.social.core.storage.impl.StorageUtils;
 import org.jboss.byteman.contrib.bmunit.BMUnit;
 
-import javax.jcr.RepositoryException;
-import javax.jcr.Session;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-import java.util.List;
-
 /**
  *
  * @author    <a href="http://hoatle.net">hoatle (hoatlevan at gmail dot com)</a>
@@ -58,8 +60,7 @@ import java.util.List;
   @ConfigurationUnit(scope = ContainerScope.PORTAL, path = "conf/standalone/exo.social.test.portal-configuration.xml"),
   @ConfigurationUnit(scope = ContainerScope.PORTAL, path = "conf/standalone/exo.social.test.jcr-configuration.xml"),
   @ConfigurationUnit(scope = ContainerScope.PORTAL, path = "conf/standalone/exo.social.component.common.test.configuration.xml"),
-  @ConfigurationUnit(scope = ContainerScope.PORTAL, path = "conf/standalone/exo.social.component.core.test.configuration.xml"),
-  @ConfigurationUnit(scope = ContainerScope.PORTAL, path = "conf/standalone/exo.social.component.core.test.application.registry.configuration.xml")
+  @ConfigurationUnit(scope = ContainerScope.PORTAL, path = "conf/standalone/exo.social.component.core.test.configuration.xml")
 })
 public abstract class AbstractCoreTest extends BaseExoTestCase {
 

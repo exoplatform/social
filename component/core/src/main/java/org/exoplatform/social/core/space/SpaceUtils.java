@@ -63,8 +63,6 @@ import org.exoplatform.portal.mop.navigation.NavigationServiceException;
 import org.exoplatform.portal.mop.navigation.NavigationState;
 import org.exoplatform.portal.mop.navigation.NodeContext;
 import org.exoplatform.portal.mop.navigation.Scope;
-import org.exoplatform.portal.mop.page.PageContext;
-import org.exoplatform.portal.mop.page.PageService;
 import org.exoplatform.portal.mop.user.UserNavigation;
 import org.exoplatform.portal.mop.user.UserNode;
 import org.exoplatform.portal.mop.user.UserPortal;
@@ -539,31 +537,6 @@ public class SpaceUtils {
       applicationContainer = findContainerById(pageChildren, SPACE_APPLICATIONS);
     }
   }
-
-  /**
-   * Change the page title of the application referring to the current spacePageNode
-   * @param spacePageNode
-   * @param newSpaceName
-   * @throws Exception
-  */
-
-  @SuppressWarnings("unchecked")
-  public static void changeAppPageTitle(UserNode spacePageNode, String newSpaceName) throws Exception {
-    DataStorage dataStorage = getDataStorage();
-    Page page = dataStorage.getPage(spacePageNode.getPageRef().format());
-
-    ExoContainer container = ExoContainerContext.getCurrentContainer();
-    PageService pageService = (PageService) container.getComponentInstanceOfType(PageService.class);
-    PageContext pageContext = pageService.loadPage(page.getPageKey());
-    if(pageContext != null && pageContext.getState() != null){
-          String dispalyname = pageContext.getState().getDisplayName();
-          if(dispalyname != null && !dispalyname.isEmpty() && dispalyname.indexOf("-") != -1) {
-                String newPageTitle = newSpaceName+" -"+dispalyname.split("-")[1];
-                pageContext.setState(pageContext.getState().builder().displayName(newPageTitle).build());
-                pageService.savePage(pageContext);
-            }
-      }
-  }  
 
   /**
    * Change menu portlet preference.
