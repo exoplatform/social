@@ -45,7 +45,6 @@ import org.junit.runners.Suite.SuiteClasses;
   ActivityResourceBundlePluginTest.class,
   I18NActivityProcessorTest.class,
   RelationshipTest.class,
-  SpaceUtilsTest.class,
   StorageUtilsTest.class,
   ExpressionConstructorTestCase.class,
   WhereExpressionTypesafetyTestCase.class,
