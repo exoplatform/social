@@ -35,6 +35,7 @@ import org.exoplatform.social.core.search.SpaceSearchConnectorTestCase;
 import org.exoplatform.social.core.service.LinkProviderTest;
 import org.exoplatform.social.core.space.SpaceLifeCycleTest;
 import org.exoplatform.social.core.space.SpaceUtilsRestTest;
+import org.exoplatform.social.core.space.SpaceUtilsTest;
 import org.exoplatform.social.core.space.SpaceUtilsWildCardMembershipTest;
 import org.exoplatform.social.core.space.spi.SpaceServiceTest;
 import org.exoplatform.social.core.storage.ActivityStorageTest;
@@ -80,6 +81,7 @@ import org.junit.runners.Suite.SuiteClasses;
   RelationshipPublisherTest.class,
   RelationshipStorageImplTestCase.class,
   SpaceUtilsRestTest.class,
+  SpaceUtilsTest.class,
   SpaceActivityPublisherTest.class,
   SpaceLifeCycleTest.class,
   SocialUserProfileEventListenerImplTest.class,
