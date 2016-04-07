@@ -124,7 +124,7 @@
                     .css({
                       'top': input.position().top + input.outerHeight() + 'px',
                       'left': input.position().left + 'px',
-                      'width': input.outerWidth() + 'px'
+                      'min-width': input.outerWidth() + 'px'
                     })
                     .hide();
 
@@ -166,9 +166,11 @@
 	          var i, iFound = 0,
 	              usedList,
 	              searchResultsNames = searchedResults.names,
-	              searchedResultsFullNames = searchedResults.fullNames;
+	              searchedResultsFullNames = searchedResults.fullNames,
+	              searchResultAvatars = searchedResults.avatars;
 
-	            $(results).html('').hide();
+
+              $(results).html('').hide();
 
               /* If the "names" array object is null, then no results to show */
               if (searchResultsNames == null) {
@@ -188,10 +190,21 @@
                 var item = $('<div />'),
                 text = usedList[i];
 
-                $(item).append('<p class="text">' + text + '</p>');
+                var avatar = '/eXoSkin/skin/images/system/UserAvtDefault.png';
+                if (searchResultAvatars && searchResultAvatars[i]) {
+                  avatar = searchResultAvatars[i];
+                }
+                avatar = '<span class="avatarSmall"><img src="'+avatar+'"/>&nbsp;&nbsp;</span>';
+
+                var username = '';
+                if (searchedResultsFullNames && text != searchResultsNames[i]) {
+                  username = '&nbsp;<span class="username">(' + searchResultsNames[i] + ')</span>';
+                }
+
+                $(item).append('<p class="text">' + avatar + text + username + '</p>');
 
                 if (typeof usedList[i].extra === 'string') {
-                  $(item).append('<p class="extra">' + usedList[i].extra + '</p>');
+                  $(item).append('<p class="extra">' + avatar + usedList[i].extra + username + '</p>');
                 }
 
                 $(item).addClass('resultItem')
