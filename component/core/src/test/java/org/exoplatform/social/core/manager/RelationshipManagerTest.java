@@ -16,23 +16,21 @@
  */
 package org.exoplatform.social.core.manager;
 
-import org.chromattic.api.RelationshipType;
-import org.exoplatform.commons.utils.ListAccess;
-import org.exoplatform.social.core.identity.model.Identity;
-import org.exoplatform.social.core.identity.model.Profile;
-import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
-import org.exoplatform.social.core.model.AvatarAttachment;
-import org.exoplatform.social.core.profile.ProfileFilter;
-import org.exoplatform.social.core.relationship.model.Relationship;
-import org.exoplatform.social.core.relationship.model.Relationship.Type;
-import org.exoplatform.social.core.test.AbstractCoreTest;
-
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+
+import org.exoplatform.commons.utils.ListAccess;
+import org.exoplatform.social.core.identity.model.Identity;
+import org.exoplatform.social.core.identity.model.Profile;
+import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
+import org.exoplatform.social.core.model.AvatarAttachment;
+import org.exoplatform.social.core.relationship.model.Relationship;
+import org.exoplatform.social.core.relationship.model.Relationship.Type;
+import org.exoplatform.social.core.test.AbstractCoreTest;
 
 /**
  * Unit Tests for {@link RelationshipManager}
@@ -370,10 +368,7 @@ public class RelationshipManagerTest extends AbstractCoreTest {
     
     relationshipManager.confirm(johnIdentity, rootIdentity);
     relationshipManager.deny(johnIdentity, rootIdentity);
-    assertNotNull(relationshipManager.get(rootToJohnRelationship.getId()));
-    
-    rootToJohnRelationship.setStatus(Relationship.Type.PENDING);
-    relationshipManager.update(rootToJohnRelationship);
+    assertNull(relationshipManager.get(rootToJohnRelationship.getId()));
     
     relationshipManager.deny(demoIdentity, rootIdentity);
     rootToDemoRelationship = relationshipManager.get(rootIdentity, demoIdentity);
@@ -395,23 +390,48 @@ public class RelationshipManagerTest extends AbstractCoreTest {
    * @since 1.2.0-Beta3
    */
   public void testIgnore() throws Exception {
-    Relationship rootToDemoRelationship = relationshipManager.inviteToConnect(rootIdentity, demoIdentity);
-    Relationship maryToRootRelationship = relationshipManager.inviteToConnect(maryIdentity, rootIdentity);
-    Relationship rootToJohnRelationship = relationshipManager.inviteToConnect(rootIdentity, johnIdentity);
-    
+    Relationship relationship = relationshipManager.get(rootIdentity, demoIdentity);
+    assertNull(relationship);
+
+    //
+    relationshipManager.ignore(rootIdentity, demoIdentity);
+    relationship = relationshipManager.get(rootIdentity, demoIdentity);
+    assertNotNull(relationship);
+    assertEquals(rootIdentity, relationship.getSender());
+    assertEquals(demoIdentity, relationship.getReceiver());
+    assertEquals(Relationship.Type.IGNORED, relationship.getStatus());
+
+    relationship = relationshipManager.get(demoIdentity, rootIdentity);
+    assertNotNull(relationship);
+    assertEquals(rootIdentity, relationship.getSender());
+    assertEquals(demoIdentity, relationship.getReceiver());
+    assertEquals(Relationship.Type.IGNORED, relationship.getStatus());
+
+    //
     relationshipManager.ignore(demoIdentity, rootIdentity);
-    rootToDemoRelationship = relationshipManager.get(rootIdentity, demoIdentity);
-    assertNull("rootToDemoRelationship must be null", rootToDemoRelationship);
+    relationship = relationshipManager.get(demoIdentity, rootIdentity);
+    assertNotNull(relationship);
+    assertEquals(rootIdentity, relationship.getSender());
+    assertEquals(demoIdentity, relationship.getReceiver());
+    assertEquals(Relationship.Type.IGNORED, relationship.getStatus());
     
-    relationshipManager.ignore(maryIdentity, rootIdentity);
-    maryToRootRelationship = relationshipManager.get(maryIdentity, rootIdentity);
-    assertNull("maryToRootRelationship must be null", maryToRootRelationship);
-    
-    relationshipManager.ignore(rootIdentity, johnIdentity);
-    rootToJohnRelationship = relationshipManager.get(rootIdentity, johnIdentity);
-    assertNull("rootToJohnRelationship must be null", rootToJohnRelationship);
+    relationshipManager.inviteToConnect(rootIdentity, demoIdentity);
+    relationship = relationshipManager.get(rootIdentity, demoIdentity);
+    assertNotNull(relationship);
+    assertEquals(Relationship.Type.PENDING, relationship.getStatus());
+
+    // Second ignore will not make any exception.
+    relationshipManager.deny(rootIdentity, demoIdentity);
+    relationship = relationshipManager.get(rootIdentity, demoIdentity);
+    assertNotNull(relationship);
+    assertEquals(Relationship.Type.IGNORED, relationship.getStatus());
+
+    relationshipManager.ignore(rootIdentity, demoIdentity);
+    relationship = relationshipManager.get(rootIdentity, demoIdentity);
+    assertNotNull(relationship);
+    assertEquals(Relationship.Type.IGNORED, relationship.getStatus());
   }
-  
+
   /**
    * Test {@link RelationshipManager#getIncomingWithListAccess(Identity)}
    * 
@@ -628,31 +648,7 @@ public class RelationshipManagerTest extends AbstractCoreTest {
     rootToJohnRelationship = relationshipManager.get(rootIdentity, johnIdentity);
     assertNull("rootToJohnRelationship must be null", rootToJohnRelationship);
   }
-  
-  /**
-   * Test {@link RelationshipManager#ignore(Relationship)}
-   * 
-   * @throws Exception
-   * @since 1.2.0-Beta3
-   */
-  public void testIgnoreWithRelationship() throws Exception {
-    Relationship rootToDemoRelationship = relationshipManager.inviteToConnect(rootIdentity, demoIdentity);
-    Relationship maryToRootRelationship = relationshipManager.inviteToConnect(maryIdentity, rootIdentity);
-    Relationship rootToJohnRelationship = relationshipManager.inviteToConnect(rootIdentity, johnIdentity);
-    
-    relationshipManager.ignore(rootToDemoRelationship);
-    rootToDemoRelationship = relationshipManager.get(rootIdentity, demoIdentity);
-    assertNull("rootToDemoRelationship must be null", rootToDemoRelationship);
-    
-    relationshipManager.ignore(maryToRootRelationship);
-    maryToRootRelationship = relationshipManager.get(maryIdentity, rootIdentity);
-    assertNull("maryToRootRelationship must be null", maryToRootRelationship);
-    
-    relationshipManager.ignore(rootToJohnRelationship);
-    rootToJohnRelationship = relationshipManager.get(rootIdentity, johnIdentity);
-    assertNull("rootToJohnRelationship must be null", rootToJohnRelationship);
-  }
-  
+
   /**
    * Test {@link RelationshipManager#getPendingRelationships(Identity)}
    * 

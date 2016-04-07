@@ -64,7 +64,7 @@ public class UIUpdateRelationship extends UIContainer {
       //
       Type status = (relationship != null) ? relationship.getStatus() : null;
       //
-      if (status == null) {
+      if (status == null || Type.IGNORED.equals(status)) {
         label = res.getString("UIAllPeople.label.Connect");
         action = uiAllPeople.event("Connect", identity.getId());
         btClass = "btn-primary";

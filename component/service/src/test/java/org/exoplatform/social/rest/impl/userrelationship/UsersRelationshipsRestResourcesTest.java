@@ -78,6 +78,7 @@ public class UsersRelationshipsRestResourcesTest extends AbstractResourceTest {
   
   public void testCreateUserRelationship() throws Exception {
     startSessionAs("root");
+
     //
     String input = "{\"sender\":root, \"receiver\":demo, \"status\":CONFIRMED}";
     ContainerResponse response = getResponse("POST", getURLResource("usersRelationships/"), input);
@@ -88,6 +89,7 @@ public class UsersRelationshipsRestResourcesTest extends AbstractResourceTest {
     assertEquals("root", rootDemo.getSender().getRemoteId());
     assertEquals("demo", rootDemo.getReceiver().getRemoteId());
     assertEquals("CONFIRMED", rootDemo.getStatus().name());
+
     //
     input = "{\"sender\":mary, \"receiver\":root, \"status\":PENDING}";
     response = getResponse("POST", getURLResource("usersRelationships/"), input);
@@ -98,10 +100,22 @@ public class UsersRelationshipsRestResourcesTest extends AbstractResourceTest {
     assertEquals("mary", maryRoot.getSender().getRemoteId());
     assertEquals("root", maryRoot.getReceiver().getRemoteId());
     assertEquals("PENDING", maryRoot.getStatus().name());
-    
+
+    //
+    input = "{\"sender\":root, \"receiver\":john, \"status\":IGNORED}";
+    response = getResponse("POST", getURLResource("usersRelationships/"), input);
+    assertNotNull(response);
+    assertEquals(200, response.getStatus());
+    Relationship rootJohn = relationshipManager.get(rootIdentity, johnIdentity);
+    assertNotNull(rootJohn);
+    assertEquals("root", rootJohn.getSender().getRemoteId());
+    assertEquals("john", rootJohn.getReceiver().getRemoteId());
+    assertEquals("IGNORED", rootJohn.getStatus().name());
+
     //clean
     relationshipManager.delete(rootDemo);
     relationshipManager.delete(maryRoot);
+    relationshipManager.delete(rootJohn);
   }
   
   public void testGetUpdateDeleteUserRelationship() throws Exception {

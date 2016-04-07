@@ -170,7 +170,7 @@ _ctx.getRequestContext().getJavascriptManager()
 								}
 							} else if(contactStatus == Relationship.Type.CONFIRMED) {
 								label = _ctx.appRes("UIAllPeople.label.RemoveConnection");
-							} else if(contactStatus == null) {
+							} else if (contactStatus == null || contactStatus == Relationship.Type.IGNORED) {
 								label = _ctx.appRes("UIAllPeople.label.Connect");
 								action = uicomponent.event("Connect", identity.getId());
 								primary = "btn-primary";

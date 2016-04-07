@@ -142,8 +142,16 @@ public class UsersRelationshipsRestResourcesV1 implements UsersRelationshipsRest
     if (sender == null || receiver == null) {
       throw new WebApplicationException(Response.Status.UNAUTHORIZED);
     }
+
+    Relationship.Type status = null;
+    if (model.getStatus() != null) {
+      try {
+        status = Relationship.Type.valueOf(model.getStatus().toUpperCase());
+      } catch (Exception e) {
+        throw new WebApplicationException(Response.Status.PRECONDITION_FAILED);
+      }
+    }
     
-    Relationship.Type status = model.getStatus() != null && model.getStatus().equalsIgnoreCase("pending") ? Relationship.Type.PENDING : Relationship.Type.CONFIRMED;
     RelationshipManager relationshipManager = CommonsUtils.getService(RelationshipManager.class);
     if (relationshipManager.get(sender, receiver) != null && !Relationship.Type.CONFIRMED.equals(status)) {
       throw new WebApplicationException(Response.Status.PRECONDITION_FAILED);
@@ -286,9 +294,10 @@ public class UsersRelationshipsRestResourcesV1 implements UsersRelationshipsRest
   
   private Relationship createRelationshipByStatus(Identity sender, Identity receiver, Relationship.Type status) {
     RelationshipManager relationshipManager = CommonsUtils.getService(RelationshipManager.class);
-    
+
     switch (status) {
       case IGNORED: {
+        relationshipManager.ignore(sender, receiver);
         break;
       }
       case PENDING: {//from confirm to pending but this case doesn't exist
