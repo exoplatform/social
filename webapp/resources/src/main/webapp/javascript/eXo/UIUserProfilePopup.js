@@ -308,8 +308,8 @@
 							            } else if (relationStatus == "ignored") { // Connection is removed
 							                action = $('<div/>', {
 				                                "class":"connect btn",
-				                                "text":"" + labels.Ignore,
-				                                "data-action":"Deny:" + ownerUserId,
+				                                "text":"" + labels.Connect,
+				                                "data-action":"Invite:" + ownerUserId,
 				                                "onclick":"takeAction(this)"
                                       });
                         }

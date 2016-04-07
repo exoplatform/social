@@ -38,6 +38,7 @@ import org.chromattic.api.query.Ordering;
 import org.chromattic.api.query.QueryBuilder;
 import org.chromattic.api.query.QueryResult;
 import org.chromattic.core.query.QueryImpl;
+
 import org.exoplatform.commons.notification.impl.AbstractService;
 import org.exoplatform.commons.utils.CommonsUtils;
 import org.exoplatform.commons.utils.ListAccess;
@@ -647,7 +648,6 @@ public class RelationshipStorageImpl extends AbstractStorage implements Relation
 
   protected Relationship _getRelationship(final Identity identity1, final Identity identity2)
       throws RelationshipStorageException, NodeNotFoundException {
-
     IdentityEntity identityEntity1 = _findById(IdentityEntity.class, identity1.getId());
     IdentityEntity identityEntity2 = _findById(IdentityEntity.class, identity2.getId());
 
@@ -662,6 +662,14 @@ public class RelationshipStorageImpl extends AbstractStorage implements Relation
       got = identityEntity2.getSender().getRelationships().get(identity1.getRemoteId());
     }
 
+    // IGNORED
+    if (got == null) {
+      got = identityEntity1.getIgnore().getRelationships().get(identity2.getRemoteId());
+    }
+    if (got == null) {
+      got = identityEntity2.getIgnore().getRelationships().get(identity1.getRemoteId());
+    }
+    
     // NOT FOUND
     if (got == null) {
       throw new NodeNotFoundException();

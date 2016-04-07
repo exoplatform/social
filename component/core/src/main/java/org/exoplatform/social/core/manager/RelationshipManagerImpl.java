@@ -470,7 +470,7 @@ public class RelationshipManagerImpl implements RelationshipManager {
    */
   public void deny(Identity invitedIdentity, Identity invitingIdentity) {
     Relationship relationship = this.get(invitedIdentity, invitingIdentity);
-    if (relationship != null && relationship.getStatus() == Relationship.Type.PENDING) {
+    if (relationship != null) {
       //    relationship.setStatus(Relationship.Type.IGNORED);
       //  save(relationship);
       // TODO: now just remove, implement later
@@ -503,13 +503,12 @@ public class RelationshipManagerImpl implements RelationshipManager {
   /**
    * {@inheritDoc}
    */
-  public void ignore(Identity invitedIdentity, Identity invitingIdentity) {
-    Relationship relationship = this.get(invitedIdentity, invitingIdentity);
-    if (relationship != null) {
-      //    relationship.setStatus(Relationship.Type.IGNORED);
-      //  save(relationship);
-      // TODO: now just remove, implement later
-      this.delete(relationship);
+  public void ignore(Identity sender, Identity receiver) {
+    Relationship relationship = this.get(sender, receiver);
+    if (relationship == null || !Type.IGNORED.equals(relationship.getStatus())) {
+      relationship = new Relationship(sender, receiver);
+      relationship.setStatus(Type.IGNORED);
+      save(relationship);
       lifeCycle.relationshipIgnored(this, relationship);
     }
   }
@@ -519,7 +518,7 @@ public class RelationshipManagerImpl implements RelationshipManager {
    */
   public Relationship inviteToConnect(Identity invitingIdentity, Identity invitedIdentity) {
     Relationship relationship = get(invitingIdentity, invitedIdentity);
-    if (relationship == null) {
+    if (relationship == null || Type.IGNORED.equals(relationship.getStatus())) {
       relationship = new Relationship(invitingIdentity, invitedIdentity);
       relationship.setStatus(Type.PENDING);
       this.update(relationship);

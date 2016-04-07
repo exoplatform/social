@@ -42,13 +42,12 @@ public class Relationship {
    * The Relationship Type Enum
    */
   public enum Type {
-    /** The PENDING. */
-    PENDING,
-    /** The CONFIRMED. */
-    CONFIRMED,
-    /** The ALL. */
+    PENDING,  // A connection request is sent and waiting for the other's approval.
+    CONFIRMED,  // A connection is setup
     ALL,
-    IGNORED, INCOMING, OUTGOING
+    IGNORED,  // Ignore user in the list of connection suggestion.
+    INCOMING,
+    OUTGOING
   }
 
   /**

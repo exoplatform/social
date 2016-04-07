@@ -333,7 +333,7 @@ public class UIAllPeople extends UIContainer {
       Relationship relationship = Utils.getRelationshipManager().get(invitingIdentity, invitedIdentity);
       uiAllPeople.setLoadAtEnd(false);
       
-      if (relationship != null) {
+      if (relationship != null && (Relationship.Type.CONFIRMED.equals(relationship.getStatus()) || Relationship.Type.PENDING.equals(relationship.getStatus())) ) {
         UIApplication uiApplication = event.getRequestContext().getUIApplication();
         uiApplication.addMessage(new ApplicationMessage(INVITATION_ESTABLISHED_INFO, null, ApplicationMessage.INFO));
         return;
@@ -388,10 +388,10 @@ public class UIAllPeople extends UIContainer {
     public void execute(Event<UIAllPeople> event) throws Exception {
       UIAllPeople   uiAllPeople = event.getSource();
       String userId = event.getRequestContext().getRequestParameter(OBJECTID);
-      Identity inviIdentityIdentity = Utils.getIdentityManager().getIdentity(userId, true);
-      Identity invitingIdentity = Utils.getViewerIdentity();
+      Identity receiver = Utils.getIdentityManager().getIdentity(userId, true);
+      Identity sender = Utils.getViewerIdentity();
 
-      Relationship relationship = Utils.getRelationshipManager().get(invitingIdentity, inviIdentityIdentity);
+      Relationship relationship = Utils.getRelationshipManager().get(sender, receiver);
       
       if (relationship == null) {
         UIApplication uiApplication = event.getRequestContext().getUIApplication();
@@ -400,14 +400,10 @@ public class UIAllPeople extends UIContainer {
       }
       
       uiAllPeople.setLoadAtEnd(false);
-      if (relationship.getStatus() == Relationship.Type.CONFIRMED) {
-        Utils.getRelationshipManager().delete(relationship);
-      } else {
-        Utils.getRelationshipManager().deny(inviIdentityIdentity, invitingIdentity);
-      }
+      Utils.getRelationshipManager().deny(sender, receiver);
       Utils.clearCacheOnUserPopup();
       UIUpdateRelationship updateUserRelationship = uiAllPeople.getChild(UIUpdateRelationship.class);
-      updateUserRelationship.setIdentity(inviIdentityIdentity).setRelationship(null);
+      updateUserRelationship.setIdentity(receiver).setRelationship(null);
       event.getRequestContext().addUIComponentToUpdateByAjax(updateUserRelationship);
     }
   }
