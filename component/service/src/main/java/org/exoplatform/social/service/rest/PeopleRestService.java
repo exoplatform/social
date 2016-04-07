@@ -619,12 +619,18 @@ public class PeopleRestService implements ResourceContainer{
     }
     return userId;
   }
-  
+
+  private String getAvatarURL(Identity identity) {
+    Profile p = identityManager.getProfile(identity);
+    return p == null ? null : p.getAvatarUrl();
+  }
+
   private void addToNameList(Identity currentIdentity, List<Relationship> identitiesHasRelation, UserNameList nameList) {
     for (Relationship relationship : identitiesHasRelation) {
       Identity identity = relationship.getPartner(currentIdentity);
       String fullName = identity.getProfile().getFullName();
       nameList.addName(fullName);
+      nameList.addAvatar(getAvatarURL(identity));
     }
   }
   
@@ -632,6 +638,7 @@ public class PeopleRestService implements ResourceContainer{
     for (Identity identity : identities) {
       String fullName = identity.getProfile().getFullName();
       nameList.addName(fullName);
+      nameList.addAvatar(getAvatarURL(identity));
     }
   }
   
@@ -643,11 +650,13 @@ public class PeopleRestService implements ResourceContainer{
       String userName = (String) identity.getProfile().getProperty(Profile.USERNAME); 
       if (SPACE_MEMBER.equals(typeOfRelation) && spaceSrv.isMember(space, userName)) {
         nameList.addName(fullName);
+        nameList.addAvatar(getAvatarURL(identity));
         continue;
       } else if (USER_TO_INVITE.equals(typeOfRelation) && !spaceSrv.isInvited(space, userName)
                  && !spaceSrv.isPending(space, userName) && !spaceSrv.isMember(space, userName)) {
         nameList.addName(userName);
         nameList.addFullName(fullName);
+        nameList.addAvatar(getAvatarURL(identity));
       }
     }
   }
@@ -791,6 +800,7 @@ public class PeopleRestService implements ResourceContainer{
   static public class UserNameList {
     private List<String> _names;
     private List<String> _fullNames;
+    private List<String> _avatars;
     /**
      * Sets user name list
      * @param names name list
@@ -820,7 +830,15 @@ public class PeopleRestService implements ResourceContainer{
      * @return _fullNames list
      */
     public List<String> getFullNames() { return _fullNames; }
-    
+
+    public List<String> getAvatars() {
+      return _avatars;
+    }
+
+    public void setAvatars(List<String> _avatars) {
+      this._avatars = _avatars;
+    }
+
     /**
      * Add name to user name list
      * @param name
@@ -841,6 +859,13 @@ public class PeopleRestService implements ResourceContainer{
         _fullNames = new ArrayList<String>();
       }
       _fullNames.add(fullName);
+    }
+
+    public void addAvatar(String avatar) {
+      if (_avatars == null) {
+        _avatars = new ArrayList<>();
+      }
+      _avatars.add(avatar);
     }
   }
 
