@@ -16,12 +16,6 @@
  */
 package org.exoplatform.social.webui.activity;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
-import java.util.ResourceBundle;
-
 import org.apache.commons.lang.ArrayUtils;
 import org.exoplatform.commons.utils.CommonsUtils;
 import org.exoplatform.services.log.ExoLogger;
@@ -56,6 +50,8 @@ import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.event.EventListener;
 import org.exoplatform.webui.form.UIForm;
 import org.exoplatform.webui.form.UIFormTextAreaInput;
+
+import java.util.*;
 
 /**
  * Base UI Activity for other custom activity ui to extend for displaying.
@@ -434,6 +430,7 @@ public class BaseUIActivity extends UIForm {
     } else {
       Utils.getActivityManager().deleteLike(activity, viewerIdentity);
     }
+    activity = Utils.getActivityManager().getActivity(activity.getId());
     setIdenityLikes(activity.getLikeIdentityIds());
     activity = getI18N(activity);
   }
