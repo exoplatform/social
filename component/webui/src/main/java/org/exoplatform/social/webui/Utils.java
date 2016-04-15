@@ -813,6 +813,11 @@ public class Utils {
       String groupId = String.format("%s/%s", SpaceUtils.SPACE_GROUP, spacePrettyName);
       space = spaceService.getSpaceByGroupId(groupId); 
     }
+
+    if(!pcontext.getControllerContext().getParameter(RequestNavigationData.REQUEST_SITE_TYPE).equals("group")) {
+      //If the URL is not from Group Site like /portal/intranet/{SpaceName}
+      return null;
+    }
      
     
     return space;
