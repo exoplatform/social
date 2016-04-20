@@ -1,7 +1,11 @@
 package org.exoplatform.social.rest.impl.space;
 
+
+
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.exoplatform.services.rest.impl.ContainerResponse;
 import org.exoplatform.social.common.RealtimeListAccess;
@@ -71,6 +75,37 @@ public class SpaceRestResourcesTest extends AbstractResourceTest {
     
     super.tearDown();
     removeResource(spaceRestResources.getClass());
+  }
+
+  public void testSpaceVisibilityUpdateWithDifferentCases () throws Exception {
+    startSessionAs("root");
+    /*
+    *
+    * Test of 'private' and 'hidden' fields with a mix of upper/lower cases
+    */
+
+    Space space = getSpaceInstance(1, "root");
+
+    Map<String,String> listOfResponses = new HashMap<String,String>() {{
+      put("{\"visibility\":PRIVATE}", Space.PRIVATE);
+      put("{\"visibility\":private}", Space.PRIVATE);
+      put("{\"visibility\":PriVatE}", Space.PRIVATE);
+      put("{\"visibility\":HIDDEN}", Space.HIDDEN);
+      put("{\"visibility\":hidden}", Space.HIDDEN);
+      put("{\"visibility\":HiDdEn}", Space.HIDDEN);
+    }};
+
+    ContainerResponse response = null;
+
+    for (Map.Entry<String, String> entry : listOfResponses.entrySet()) {
+      String input = entry.getKey();
+      String expectedOutput = entry.getValue();
+      response = getResponse("PUT", getURLResource("spaces/" + space.getId()), input);
+      assertNotNull(response);
+      assertEquals(200, response.getStatus());
+      SpaceEntity spaceEntity = getBaseEntity(response.getEntity(), SpaceEntity.class);
+      assertEquals(expectedOutput, spaceEntity.getVisibility());
+    }
   }
 
   public void testGetSpaces() throws Exception {
