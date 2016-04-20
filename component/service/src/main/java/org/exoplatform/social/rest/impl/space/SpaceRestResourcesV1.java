@@ -451,14 +451,13 @@ public class SpaceRestResourcesV1 implements SpaceRestResources {
       }
       space.setPrettyName(groupId);
     }
-    
-    if (model.getVisibility() != null && (model.getVisibility().equals(Space.HIDDEN) 
-        || model.getVisibility().equals(Space.PRIVATE))) {
-      space.setVisibility(model.getVisibility());
-    } else if (space.getVisibility() == null || space.getVisibility().length() == 0) {
+
+    if (Space.HIDDEN.equalsIgnoreCase(model.getVisibility())) {
+      space.setVisibility(Space.HIDDEN);
+    } else {
       space.setVisibility(Space.PRIVATE);
     }
-    
+
     if (Space.OPEN.equals(model.getSubscription()) || Space.CLOSE.equals(model.getSubscription())) {
       space.setRegistration(model.getSubscription());
     } else if (space.getRegistration() == null || space.getRegistration().length() == 0) {
