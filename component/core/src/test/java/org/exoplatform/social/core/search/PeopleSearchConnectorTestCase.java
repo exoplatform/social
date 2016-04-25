@@ -100,21 +100,21 @@ public class PeopleSearchConnectorTestCase extends AbstractCoreTest {
   }
 
   public void testFilter() throws Exception {
-    assertEquals(1, peopleSearchConnector.search(null, "foo", Collections.EMPTY_LIST, 0, 10, "relevancy", "asc").size());
-    assertEquals(1, peopleSearchConnector.search(null, " foo", Collections.EMPTY_LIST, 0, 10, "relevancy", "asc").size());
-    assertEquals(1, peopleSearchConnector.search(null, "bar", Collections.EMPTY_LIST, 0, 10, "relevancy", "asc").size());
-    assertEquals(2, peopleSearchConnector.search(null, "bar position", Collections.EMPTY_LIST, 0, 10, "relevancy", "asc").size());
-    assertEquals(2, peopleSearchConnector.search(null, "position", Collections.EMPTY_LIST, 0, 10, "relevancy", "asc").size());
-    assertEquals(2, peopleSearchConnector.search(null, "doSomething", Collections.EMPTY_LIST, 0, 10, "relevancy", "asc").size());
-    assertEquals(2, peopleSearchConnector.search(null, "exo", Collections.EMPTY_LIST, 0, 10, "relevancy", "asc").size());
-    assertEquals(2, peopleSearchConnector.search(null, "job description", Collections.EMPTY_LIST, 0, 10, "relevancy", "asc").size());
+    assertEquals(1, peopleSearchConnector.search(null, "foo", Collections.EMPTY_LIST, 0, 10, "relevancy", "asc", "en").size());
+    assertEquals(1, peopleSearchConnector.search(null, " foo", Collections.EMPTY_LIST, 0, 10, "relevancy", "asc", "en").size());
+    assertEquals(1, peopleSearchConnector.search(null, "bar", Collections.EMPTY_LIST, 0, 10, "relevancy", "asc", "en").size());
+    assertEquals(2, peopleSearchConnector.search(null, "bar position", Collections.EMPTY_LIST, 0, 10, "relevancy", "asc", "en").size());
+    assertEquals(2, peopleSearchConnector.search(null, "position", Collections.EMPTY_LIST, 0, 10, "relevancy", "asc", "en").size());
+    assertEquals(2, peopleSearchConnector.search(null, "doSomething", Collections.EMPTY_LIST, 0, 10, "relevancy", "asc", "en").size());
+    assertEquals(2, peopleSearchConnector.search(null, "exo", Collections.EMPTY_LIST, 0, 10, "relevancy", "asc", "en").size());
+    assertEquals(2, peopleSearchConnector.search(null, "job description", Collections.EMPTY_LIST, 0, 10, "relevancy", "asc", "en").size());
     //
-    assertEquals(2, peopleSearchConnector.search(null, "posi", Collections.EMPTY_LIST, 0, 10, "relevancy", "asc").size());
-    assertEquals(2, peopleSearchConnector.search(null, "do", Collections.EMPTY_LIST, 0, 10, "relevancy", "asc").size());
+    assertEquals(2, peopleSearchConnector.search(null, "posi", Collections.EMPTY_LIST, 0, 10, "relevancy", "asc", "en").size());
+    assertEquals(2, peopleSearchConnector.search(null, "do", Collections.EMPTY_LIST, 0, 10, "relevancy", "asc", "en").size());
   }
 
   public void testData() throws Exception {
-    Collection<SearchResult> cFoo = peopleSearchConnector.search(null, "foo", Collections.EMPTY_LIST, 0, 10, "relevancy", "asc");
+    Collection<SearchResult> cFoo = peopleSearchConnector.search(null, "foo", Collections.EMPTY_LIST, 0, 10, "relevancy", "asc", "en");
     SearchResult rFoo = cFoo.iterator().next();
     assertEquals("foo", rFoo.getTitle());
     assertTrue(rFoo.getExcerpt().indexOf("foo") >= 0);
@@ -127,7 +127,7 @@ public class PeopleSearchConnectorTestCase extends AbstractCoreTest {
     assertTrue(rFoo.getDate() != 0);
     assertEquals(pFoo.getCreatedTime(), rFoo.getDate());
 
-    Collection<SearchResult> cBar = peopleSearchConnector.search(null, "bar", Collections.EMPTY_LIST, 0, 10, "relevancy", "asc");
+    Collection<SearchResult> cBar = peopleSearchConnector.search(null, "bar", Collections.EMPTY_LIST, 0, 10, "relevancy", "asc", "en");
     SearchResult rBar = cBar.iterator().next();
     Profile pBar = identityManager.getProfile(identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "bar"));
     assertEquals(pBar.getAvatarUrl(), rBar.getImageUrl());
@@ -135,19 +135,19 @@ public class PeopleSearchConnectorTestCase extends AbstractCoreTest {
 
   public void testOrder() throws Exception {
     
-    List<SearchResult> rTitleAsc = (List<SearchResult>) peopleSearchConnector.search(null, "position", Collections.EMPTY_LIST, 0, 10, "title", "asc");
+    List<SearchResult> rTitleAsc = (List<SearchResult>) peopleSearchConnector.search(null, "position", Collections.EMPTY_LIST, 0, 10, "title", "asc", "en");
     assertEquals("bar", rTitleAsc.get(0).getTitle());
     assertEquals("foo", rTitleAsc.get(1).getTitle());
 
-    List<SearchResult> rTitleDesc = (List<SearchResult>) peopleSearchConnector.search(null, "position", Collections.EMPTY_LIST, 0, 10, "title", "desc");
+    List<SearchResult> rTitleDesc = (List<SearchResult>) peopleSearchConnector.search(null, "position", Collections.EMPTY_LIST, 0, 10, "title", "desc", "en");
     assertEquals("foo", rTitleDesc.get(0).getTitle());
     assertEquals("bar", rTitleDesc.get(1).getTitle());
 
-    List<SearchResult> rDateAsc = (List<SearchResult>) peopleSearchConnector.search(null, "position", Collections.EMPTY_LIST, 0, 10, "date", "asc");
+    List<SearchResult> rDateAsc = (List<SearchResult>) peopleSearchConnector.search(null, "position", Collections.EMPTY_LIST, 0, 10, "date", "asc", "en");
     assertEquals("foo", rDateAsc.get(0).getTitle());
     assertEquals("bar", rDateAsc.get(1).getTitle());
 
-    List<SearchResult> rDateDesc = (List<SearchResult>) peopleSearchConnector.search(null, "position", Collections.EMPTY_LIST, 0, 10, "date", "desc");
+    List<SearchResult> rDateDesc = (List<SearchResult>) peopleSearchConnector.search(null, "position", Collections.EMPTY_LIST, 0, 10, "date", "desc", "en");
     assertEquals("bar", rDateDesc.get(0).getTitle());
     assertEquals("foo", rDateDesc.get(1).getTitle());
   }
@@ -181,15 +181,15 @@ public class PeopleSearchConnectorTestCase extends AbstractCoreTest {
     identityManager.saveProfile(rootProfile);
     tearDown.add(rootIdentity.getId());
     
-    assertEquals(1, peopleSearchConnector.search(null, "広いニーズ", Collections.EMPTY_LIST, 0, 10, "relevancy", "asc").size());
+    assertEquals(1, peopleSearchConnector.search(null, "広いニーズ", Collections.EMPTY_LIST, 0, 10, "relevancy", "asc", "en").size());
 
     rootProfile.setProperty(Profile.POSITION, StringEscapeUtils.escapeHtml("広いニーズ"));
     rootProfile.setProperty(Profile.FIRST_NAME, "root");
     identityManager.saveProfile(rootProfile);
-    assertEquals(1, peopleSearchConnector.search(null, "広いニーズ", Collections.EMPTY_LIST, 0, 10, "relevancy", "asc").size());
+    assertEquals(1, peopleSearchConnector.search(null, "広いニーズ", Collections.EMPTY_LIST, 0, 10, "relevancy", "asc", "en").size());
     
     rootProfile.setProperty(Profile.EXPERIENCES_SKILLS, StringEscapeUtils.escapeHtml("! . , : ; ( ) ^}{[] -, \" '% *"));
     identityManager.saveProfile(rootProfile);
-    assertEquals(1, peopleSearchConnector.search(null, "! . , : ; ( ) ^}{[] -, \" '% *", Collections.EMPTY_LIST, 0, 10, "relevancy", "asc").size());
+    assertEquals(1, peopleSearchConnector.search(null, "! . , : ; ( ) ^}{[] -, \" '% *", Collections.EMPTY_LIST, 0, 10, "relevancy", "asc", "en").size());
   }
 }
