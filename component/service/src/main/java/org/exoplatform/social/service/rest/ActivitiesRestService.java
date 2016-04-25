@@ -103,8 +103,15 @@ public class ActivitiesRestService implements ResourceContainer {
                                   @PathParam("format") String format) throws Exception {
     MediaType mediaType = Util.getMediaType(format);
     portalName_ = portalName;
-    ExoSocialActivity activity = destroyActivity(activityId);
-    return Util.getResponse(activity, uriInfo, mediaType, Response.Status.OK);
+    ActivityManager activityManager = Util.getActivityManager(portalName);
+    ExoSocialActivity activity = activityManager.getActivity(activityId);
+    if (activity == null){
+      LOG.error("No activity is found for this activityId. You should enter a valid and a correct value for the activityId parameter.");
+      return Util.getResponse("No id is found for this activityId. You should enter a valid and a correct value for the activityId parameter.", uriInfo, mediaType, Response.Status.OK);
+    } else {
+      activity = destroyActivity(activityId);
+      return Util.getResponse(activity, uriInfo, mediaType, Response.Status.OK);
+    }
   }
 
   /**
@@ -239,59 +246,53 @@ public class ActivitiesRestService implements ResourceContainer {
                                @QueryParam("offset") Integer offset,
                                @QueryParam("limit") Integer limit) throws Exception {
     MediaType mediaType = RestChecker.checkSupportedFormat(format, new String[]{"json"});
-    
     ActivityManager activityManager = Util.getActivityManager(portalName);
-    
-    if(offset == null || limit == null ){
-      offset = 0;
-      limit = 10;
-    }
-    
-    if(offset < 0 || limit < 0){
-      throw new WebApplicationException(Response.Status.BAD_REQUEST);
-    }
-    
-    ExoSocialActivity activity = null;
-    try {
-      activity = activityManager.getActivity(activityId);
-      
-      int total;
-      List<CommentRestOut> commentWrapers = null;
-      ListAccess<ExoSocialActivity> comments =  activityManager.getCommentsWithListAccess(activity);
-      
-      if(offset > comments.getSize()){
-        offset = 0;
-        limit = 0;
-      } else if(offset + limit > comments.getSize()){
-        limit = comments.getSize() - offset;
+    ExoSocialActivity activity = activityManager.getActivity(activityId);
+    if (activity == null) {
+      LOG.error("No activity is found for this activityId. You should enter a valid and a correct value for the activityId parameter.");
+      return Util.getResponse("No id is found for this activityId. You should enter a valid and a correct value for the activityId parameter.", uriInfo, mediaType, Response.Status.OK);
+    } else {
+      if(offset == null || limit == null) {
+         offset = 0;
+         limit = 10;
       }
-      
-      total = limit;
-      
-      ExoSocialActivity[] commentsLimited =  comments.load(offset, total + offset);
-      commentWrapers = new ArrayList<CommentRestOut>(total);
-      for(int i = 0; i < total; i++){
-        CommentRestOut commentRestOut = new CommentRestOut(commentsLimited[i], portalName);
-        commentRestOut.setPosterIdentity(commentsLimited[i], portalName);
-        commentWrapers.add(commentRestOut);      
+      if(offset < 0 || limit < 0) {
+         throw new WebApplicationException(Response.Status.BAD_REQUEST);
       }
-      
-      HashMap<String, Object> resultJson = new HashMap<String, Object>();
-      resultJson.put("totalNumberOfComments", commentWrapers.size());
-      resultJson.put("comments", commentWrapers);
-      return Util.getResponse(resultJson, uriInfo, mediaType, Response.Status.OK);
-      
-    } catch (UndeclaredThrowableException undeclaredThrowableException){
-      if(undeclaredThrowableException.getCause() instanceof ActivityStorageException){
-        throw new WebApplicationException(Response.Status.NOT_FOUND);
-      } else {
-        throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
-      }
-    } catch (Exception e){
-      throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
+      try {
+        activity = activityManager.getActivity(activityId);
+        int total;
+        List<CommentRestOut> commentWrapers = null;
+        ListAccess<ExoSocialActivity> comments = activityManager.getCommentsWithListAccess(activity);
+        if(offset > comments.getSize()) {
+          offset = 0;
+          limit = 0;
+        } else if (offset + limit > comments.getSize()) {
+          limit = comments.getSize() - offset;
+        }
+        total = limit;
+        ExoSocialActivity[] commentsLimited = comments.load(offset, total + offset);
+        commentWrapers = new ArrayList<CommentRestOut>(total);
+        for (int i = 0; i < total; i++) {
+          CommentRestOut commentRestOut = new CommentRestOut(commentsLimited[i], portalName);
+          commentRestOut.setPosterIdentity(commentsLimited[i], portalName);
+          commentWrapers.add(commentRestOut);
+        }
+        HashMap<String, Object> resultJson = new HashMap<String, Object>();
+        resultJson.put("totalNumberOfComments", commentWrapers.size());
+        resultJson.put("comments", commentWrapers);
+        return Util.getResponse(resultJson, uriInfo, mediaType, Response.Status.OK);
+      } catch (UndeclaredThrowableException undeclaredThrowableException) {
+         if (undeclaredThrowableException.getCause() instanceof ActivityStorageException) {
+           throw new WebApplicationException(Response.Status.NOT_FOUND);
+         } else {
+           throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
+         }
+      } catch (Exception e) {
+           throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
+     }
     }
   }
-  
   /**
    * Gets an activity by its Id.
    *

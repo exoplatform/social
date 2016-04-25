@@ -25,9 +25,10 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
-
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.PortalContainer;
+import org.exoplatform.services.log.ExoLogger;
+import org.exoplatform.services.log.Log;
 import org.exoplatform.services.rest.resource.ResourceContainer;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
@@ -41,6 +42,7 @@ import org.exoplatform.social.core.manager.IdentityManager;
 @Path("{portalName}/social/identity/{username}/id")
 public class IdentityRestService implements ResourceContainer {
   private IdentityManager _identityManager;
+  private static final Log LOG = ExoLogger.getLogger(IdentityRestService.class);
   /**
    * constructor
    */
@@ -63,27 +65,36 @@ public class IdentityRestService implements ResourceContainer {
   @GET
   @Path("show.json")
   @Produces({MediaType.APPLICATION_JSON})
-  public UserId getId(@Context UriInfo uriInfo,
+  public Response getId(@Context UriInfo uriInfo,
                       @PathParam("username") String username,
                       @PathParam("portalName") String portalName) throws Exception {
       _identityManager = getIdentityManager(portalName);
+      MediaType mediaType = Util.getMediaType("json");
       String id = null;
       String viewerId = Util.getViewerId(uriInfo);
       if (viewerId != null) {
+        if(getIdentityManager(portalName).getOrCreateIdentity(OrganizationIdentityProvider.NAME, username, true) == null ) {
+           LOG.error("No id is found for this username. You should enter a valid and a correct value for the username parameter.");
+           return Util.getResponse("No id is found for this username. You should enter a valid and a correct value for the username parameter.", uriInfo, mediaType, Response.Status.OK);
+        } else {
+          try {
+           id = _identityManager.getOrCreateIdentity("organization", username).getId();
+          } catch(Exception ex) {
+           throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
+          }
+        }
         Identity identity = getIdentityManager(portalName).getOrCreateIdentity(OrganizationIdentityProvider.NAME, viewerId, true);
         if (identity == null) {
           throw new WebApplicationException(Response.Status.NOT_FOUND);
         }
-
       }
-            
       try {
         id = _identityManager.getOrCreateIdentity("organization", username).getId();
       } catch(Exception ex) {
         throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
       }
       UserId userId = new UserId(id);
-      return userId;
+      return Util.getResponse(userId, uriInfo, mediaType, Response.Status.OK);
   }
 
   /**
