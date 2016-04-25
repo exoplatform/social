@@ -100,10 +100,10 @@ public class ActivitiesRestServiceTest extends AbstractResourceTest {
 
   public void testDestroyActivity() throws Exception {
     ContainerResponse response = service("POST", "/portal/social/activities/destroy/123.json", "", null, null);
-    assertEquals(500, response.getStatus());
+    assertEquals(200, response.getStatus());
 
     response = service("POST", "/portal/social/activities/destroy/123.xml", "", null, null);
-    assertEquals(500, response.getStatus());
+    assertEquals(200, response.getStatus());
   }
 
   public void testShowLikes() throws Exception {

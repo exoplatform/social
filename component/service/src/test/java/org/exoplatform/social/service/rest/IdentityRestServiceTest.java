@@ -58,7 +58,7 @@ public class IdentityRestServiceTest extends AbstractResourceTest {
     ContainerResponse response = service("GET", "/portal/social/identity/root/id/show.json", "", null, null, writer);
     UserId returnedUserId = (UserId) response.getEntity();
     assertEquals(200, response.getStatus());
-    assertEquals("application/json", response.getContentType().toString());
+    assertEquals("application/json;charset=utf-8", response.getContentType().toString());
     assertEquals(rootId, returnedUserId.getId());
   }
 
@@ -67,7 +67,7 @@ public class IdentityRestServiceTest extends AbstractResourceTest {
     ContainerResponse response = service("GET", "/portal/social/identity/john/id/show.json", "", null, null, writer);
     UserId returnedUserId = (UserId) response.getEntity();
     assertEquals(200, response.getStatus());
-    assertEquals("application/json", response.getContentType().toString());
+    assertEquals("application/json;charset=utf-8", response.getContentType().toString());
     assertEquals(johnId, returnedUserId.getId());
   }
 }
