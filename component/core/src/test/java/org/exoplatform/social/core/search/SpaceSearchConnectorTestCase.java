@@ -186,12 +186,12 @@ public class SpaceSearchConnectorTestCase extends AbstractCoreTest {
     tearDown.add(newSpace);
     
     setCurrentUser("mary");
-    assertEquals(1, spaceSearchConnector.search(context, "広", Collections.EMPTY_LIST, 0, 10, "relevancy", "ASC").size());
-    assertEquals(1, spaceSearchConnector.search(context, "%広いニー", Collections.EMPTY_LIST, 0, 10, "relevancy", "ASC").size());
+    assertEquals(0, spaceSearchConnector.search(context, "広", Collections.EMPTY_LIST, 0, 10, "relevancy", "ASC").size());
+    assertEquals(0, spaceSearchConnector.search(context, "%広いニー", Collections.EMPTY_LIST, 0, 10, "relevancy", "ASC").size());
     assertEquals(1, spaceSearchConnector.search(context, "広いニーズ", Collections.EMPTY_LIST, 0, 10, "relevancy", "ASC").size());
     assertEquals(1, spaceSearchConnector.search(context, "広いニーズに応えます。", Collections.EMPTY_LIST, 0, 10, "relevancy", "ASC").size());
     
-    assertEquals(1, spaceSearchConnector.search(context, "clo", Collections.EMPTY_LIST, 0, 10, "relevancy", "ASC").size());
+    assertEquals(0, spaceSearchConnector.search(context, "clo", Collections.EMPTY_LIST, 0, 10, "relevancy", "ASC").size());
     identityManager.deleteIdentity(maryIdentity);
   }
   
@@ -232,7 +232,7 @@ public class SpaceSearchConnectorTestCase extends AbstractCoreTest {
     setCurrentUser("root");
     assertEquals(1, spaceSearchConnector.search(context, "! . , : ; ( ) ^}{[] -, \" '% *", Collections.EMPTY_LIST, 0, 10, "relevancy", "ASC").size());
     
-    assertEquals(5, spaceSearchConnector.search(context, "%", Collections.EMPTY_LIST, 0, 10, "relevancy", "ASC").size());
+    assertEquals(1, spaceSearchConnector.search(context, "'%", Collections.EMPTY_LIST, 0, 10, "relevancy", "ASC").size());
     
     identityManager.deleteIdentity(maryIdentity);
     identityManager.deleteIdentity(rootIdentity);
@@ -258,6 +258,28 @@ public class SpaceSearchConnectorTestCase extends AbstractCoreTest {
     } finally {
       in.close();
     }
+  }
+
+  public void testSearchAccentSpace() throws Exception {
+    Identity maryIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "mary", false);
+
+    Space space = new Space();
+    space.setDisplayName("Employée");
+    space.setPrettyName("Employée");
+    space.setDescription(StringEscapeUtils.escapeHtml("Space Des Employées"));
+    space.setManagers(new String[]{"mary"});
+    space.setMembers(new String[]{"mary"});
+    space.setType(DefaultSpaceApplicationHandler.NAME);
+    space.setRegistration(Space.OPEN);
+    createSpaceNonInitApps(space, maryIdentity.getRemoteId(), null);
+    tearDown.add(space);
+
+    setCurrentUser("mary");
+    assertEquals(1, spaceSearchConnector.search(context, "employée", Collections.EMPTY_LIST, 0, 10, "relevancy", "ASC").size());
+    assertEquals(1, spaceSearchConnector.search(context, "employèe", Collections.EMPTY_LIST, 0, 10, "relevancy", "ASC").size());
+    assertEquals(1, spaceSearchConnector.search(context, "employee", Collections.EMPTY_LIST, 0, 10, "relevancy", "ASC").size());
+
+    identityManager.deleteIdentity(maryIdentity);
   }
   
   public void testAllWordsMatchedSpaces() throws Exception {
@@ -298,7 +320,7 @@ public class SpaceSearchConnectorTestCase extends AbstractCoreTest {
     assertEquals(1, results.size());
     
     //case 8: keyword = "Availability clu" (uncompleted word)
-    results = (List<SearchResult>) spaceSearchConnector.search(context, "Availability clu", Collections.EMPTY_LIST, 0, 10, "title", "ASC");
+    results = (List<SearchResult>) spaceSearchConnector.search(context, "Availability cluster", Collections.EMPTY_LIST, 0, 10, "title", "ASC");
     assertEquals(3, results.size());
     
     //case 9: keyword contains in the Space's name

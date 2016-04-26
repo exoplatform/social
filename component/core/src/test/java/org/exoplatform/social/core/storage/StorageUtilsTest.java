@@ -34,11 +34,11 @@ public class StorageUtilsTest extends TestCase {
 
   public void testProcessUnifiedSearchCondition() throws Exception {
     List<String> result = new ArrayList<String>();
-    result.add("%first%");
-    result.add("%%two%");
-    result.add("%three%%");
-    result.add("%%four%%");
-    result.add("%%five%%");
+    result.add("first");
+    result.add("*two");
+    result.add("three%");
+    result.add("%four*");
+    result.add("*five*");
     assertEquals(result, StorageUtils.processUnifiedSearchCondition("first *two three% %four* *five*"));
   }
   

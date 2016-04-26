@@ -109,8 +109,8 @@ public class PeopleSearchConnectorTestCase extends AbstractCoreTest {
     assertEquals(2, peopleSearchConnector.search(null, "exo", Collections.EMPTY_LIST, 0, 10, "relevancy", "asc").size());
     assertEquals(2, peopleSearchConnector.search(null, "job description", Collections.EMPTY_LIST, 0, 10, "relevancy", "asc").size());
     //
-    assertEquals(2, peopleSearchConnector.search(null, "posi", Collections.EMPTY_LIST, 0, 10, "relevancy", "asc").size());
-    assertEquals(2, peopleSearchConnector.search(null, "do", Collections.EMPTY_LIST, 0, 10, "relevancy", "asc").size());
+    assertEquals(0, peopleSearchConnector.search(null, "posi", Collections.EMPTY_LIST, 0, 10, "relevancy", "asc").size());
+    assertEquals(0, peopleSearchConnector.search(null, "do", Collections.EMPTY_LIST, 0, 10, "relevancy", "asc").size());
   }
 
   public void testData() throws Exception {
@@ -163,7 +163,7 @@ public class PeopleSearchConnectorTestCase extends AbstractCoreTest {
 
     Map<String, String> xFoo = new HashMap<String, String>();
     List<Map<String, String>> xFoos = new ArrayList<Map<String, String>>();
-    xFoo.put(Profile.EXPERIENCES_SKILLS, "cheating");
+    xFoo.put(Profile.EXPERIENCES_SKILLS, StringEscapeUtils.escapeHtml("! . , : ; ( ) ^}{[] -, \" '% *"));
     xFoo.put(Profile.EXPERIENCES_POSITION, "ceo");
     xFoo.put(Profile.EXPERIENCES_COMPANY, "at home");
     xFoo.put(Profile.EXPERIENCES_DESCRIPTION, "play games");
@@ -187,9 +187,40 @@ public class PeopleSearchConnectorTestCase extends AbstractCoreTest {
     rootProfile.setProperty(Profile.FIRST_NAME, "root");
     identityManager.saveProfile(rootProfile);
     assertEquals(1, peopleSearchConnector.search(null, "広いニーズ", Collections.EMPTY_LIST, 0, 10, "relevancy", "asc").size());
-    
-    rootProfile.setProperty(Profile.EXPERIENCES_SKILLS, StringEscapeUtils.escapeHtml("! . , : ; ( ) ^}{[] -, \" '% *"));
-    identityManager.saveProfile(rootProfile);
+
     assertEquals(1, peopleSearchConnector.search(null, "! . , : ; ( ) ^}{[] -, \" '% *", Collections.EMPTY_LIST, 0, 10, "relevancy", "asc").size());
+  }
+
+  public void testSearchAccentCharacters() throws Exception {
+    Identity rootIdentity = new Identity(OrganizationIdentityProvider.NAME, "foo2");
+    Profile rootProfile = new Profile(rootIdentity);
+
+    rootProfile.setProperty(Profile.FIRST_NAME, "anaïs");
+    rootProfile.setProperty(Profile.EMAIL, "foo@mail.com");
+    rootProfile.setProperty(Profile.GENDER, "Male");
+    rootProfile.setProperty(Profile.POSITION, "worker");
+
+    Map<String, String> xFoo = new HashMap<String, String>();
+    List<Map<String, String>> xFoos = new ArrayList<Map<String, String>>();
+    xFoo.put(Profile.EXPERIENCES_POSITION, "ceo");
+    xFoo.put(Profile.EXPERIENCES_COMPANY, "at home");
+    xFoo.put(Profile.EXPERIENCES_DESCRIPTION, "play games");
+    xFoos.add(xFoo);
+    rootProfile.setProperty(Profile.EXPERIENCES, xFoos);
+
+    List<Map<String, String>> phones = new ArrayList<Map<String, String>>();
+    Map<String, String> phone1 = new HashMap<String, String>();
+    phone1.put("key", "Work");
+    phone1.put("value", "+17889989");
+    phones.add(phone1);
+    rootProfile.setProperty(Profile.CONTACT_PHONES, phones);
+
+    identityManager.saveIdentity(rootIdentity);
+    identityManager.saveProfile(rootProfile);
+    tearDown.add(rootIdentity.getId());
+
+    assertEquals(1, peopleSearchConnector.search(null, "Anais", Collections.EMPTY_LIST, 0, 10, "relevancy", "asc").size());
+    assertEquals(1, peopleSearchConnector.search(null, "anaîs", Collections.EMPTY_LIST, 0, 10, "relevancy", "asc").size());
+    assertEquals(1, peopleSearchConnector.search(null, "ANAïs", Collections.EMPTY_LIST, 0, 10, "relevancy", "asc").size());
   }
 }
