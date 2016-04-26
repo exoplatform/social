@@ -70,7 +70,7 @@ public class SpaceFilter {
    */
   public SpaceFilter(String spaceNameSearchCondition) {
     this.firstCharacterOfSpaceName = CHAR_DEFAULT_VALUE;
-    this.spaceNameSearchCondition = SpaceUtils.removeSpecialCharacterInSpaceFilter(spaceNameSearchCondition);
+    this.spaceNameSearchCondition = SpaceUtils.processUnifiedSearchCondition(spaceNameSearchCondition);
   }
   
   /**

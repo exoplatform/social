@@ -1465,37 +1465,22 @@ public class IdentityStorageImpl extends AbstractStorage implements IdentityStor
           //
           if (first == false) {
             whereExpression.or();
-          } 
-          
-          //
-          if (condition.contains(StorageUtils.PERCENT_STR)) {
+          }
+
             String conditionEscapeHtml = StringEscapeUtils.escapeHtml(condition).toLowerCase();
             whereExpression.startGroup();
             whereExpression
-                .like(whereExpression.callFunction(QueryFunction.LOWER, ProfileEntity.fullName), condition.toLowerCase())
-                .or().like(whereExpression.callFunction(QueryFunction.LOWER, ProfileEntity.firstName), condition.toLowerCase())
-                .or().like(whereExpression.callFunction(QueryFunction.LOWER, ProfileEntity.lastName), condition.toLowerCase())
-                .or().like(whereExpression.callFunction(QueryFunction.LOWER, ProfileEntity.position), conditionEscapeHtml)
-                .or().like(whereExpression.callFunction(QueryFunction.LOWER, ProfileEntity.skills), conditionEscapeHtml)
-                .or().like(whereExpression.callFunction(QueryFunction.LOWER, ProfileEntity.positions), conditionEscapeHtml)
-                .or().like(whereExpression.callFunction(QueryFunction.LOWER, ProfileEntity.organizations), conditionEscapeHtml)
-                .or().like(whereExpression.callFunction(QueryFunction.LOWER, ProfileEntity.jobsDescription), conditionEscapeHtml);
+                .contains(ProfileEntity.fullName, condition.toLowerCase())
+                .or().contains(ProfileEntity.firstName, condition.toLowerCase())
+                .or().contains(ProfileEntity.lastName, condition.toLowerCase())
+                .or().contains(ProfileEntity.position, conditionEscapeHtml)
+                .or().contains(ProfileEntity.skills, conditionEscapeHtml)
+                .or().contains(ProfileEntity.positions, conditionEscapeHtml)
+                .or().contains(ProfileEntity.organizations, conditionEscapeHtml)
+                .or().contains(ProfileEntity.jobsDescription, conditionEscapeHtml);
             whereExpression.endGroup();
-          }
-          else {
-            whereExpression.startGroup();
-            whereExpression
-                .contains(ProfileEntity.fullName, condition)
-                .or().contains(ProfileEntity.firstName, condition)
-                .or().contains(ProfileEntity.lastName, condition)
-                .or().contains(ProfileEntity.position, condition)
-                .or().contains(ProfileEntity.skills, condition)
-                .or().contains(ProfileEntity.positions, condition)
-                .or().contains(ProfileEntity.organizations, condition)
-                .or().contains(ProfileEntity.jobsDescription, condition);
-            whereExpression.endGroup();
-          }
-          
+
+
           first = false;
         } //end for
         

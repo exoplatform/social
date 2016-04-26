@@ -526,24 +526,9 @@ public class SpaceStorageImpl extends AbstractStorage implements SpaceStorage {
   private List<String> processUnifiedSearchCondition(String searchCondition) {
     String[] spaceConditions = searchCondition.split(" ");
     List<String> result = new ArrayList<String>(spaceConditions.length);
-    
-    //
-    StringBuffer searchConditionBuffer = null;
     for (String conditionValue : spaceConditions) {
-      
-      //
-      searchConditionBuffer = new StringBuffer();
-      
-      //
-      searchConditionBuffer.append(StorageUtils.PERCENT_STR).append(conditionValue).append(StorageUtils.PERCENT_STR);
-      
-      //
-      result.add(searchConditionBuffer.toString());
-      
+      result.add(conditionValue.toString());
     }
-    
-    
-    
     return result;
   }
 
@@ -1493,7 +1478,10 @@ public class SpaceStorageImpl extends AbstractStorage implements SpaceStorage {
   
   private void _applyUnifiedSearchFilter(WhereExpression whereExpression, SpaceFilter spaceFilter) {
 
-    String spaceNameSearchCondition = spaceFilter.getSpaceNameSearchCondition();
+    if (spaceFilter == null) return;
+
+    String spaceNameSearchCondition = StorageUtils.escapeSpecialCharacter(spaceFilter.getSpaceNameSearchCondition());
+
     char firstCharacterOfName = spaceFilter.getFirstCharacterOfSpaceName();
 
     if (spaceNameSearchCondition != null && spaceNameSearchCondition.length() != 0) {
@@ -1510,28 +1498,14 @@ public class SpaceStorageImpl extends AbstractStorage implements SpaceStorage {
           if (first == false) {
             whereExpression.and();
           }
-          
-          //
-          if (condition.contains(StorageUtils.PERCENT_STR)) {
-            whereExpression.startGroup();
-            whereExpression
-                .like(whereExpression.callFunction(QueryFunction.LOWER, SpaceEntity.name), condition.toLowerCase())
-                .or()
-                .like(whereExpression.callFunction(QueryFunction.LOWER, SpaceEntity.displayName), condition.toLowerCase())
-                .or()
-                .like(whereExpression.callFunction(QueryFunction.LOWER, SpaceEntity.description), StringEscapeUtils.escapeHtml(condition).toLowerCase());
-            whereExpression.endGroup();
-          }
-          else {
-            whereExpression.startGroup();
-            whereExpression
-                .contains(whereExpression.callFunction(QueryFunction.LOWER, SpaceEntity.name), condition.toLowerCase())
-                .or()
-                .like(whereExpression.callFunction(QueryFunction.LOWER, SpaceEntity.displayName), condition.toLowerCase())
-                .or()
-                .contains(whereExpression.callFunction(QueryFunction.LOWER, SpaceEntity.description), StringEscapeUtils.escapeHtml(condition).toLowerCase());
-            whereExpression.endGroup();
-          }
+          whereExpression.startGroup();
+          whereExpression
+             .contains(SpaceEntity.name, condition.toLowerCase())
+             .or()
+             .contains(SpaceEntity.displayName, condition.toLowerCase())
+             .or()
+             .contains(SpaceEntity.description, StringEscapeUtils.escapeHtml(condition).toLowerCase());
+          whereExpression.endGroup();
           
           first = false;
         } //end for
