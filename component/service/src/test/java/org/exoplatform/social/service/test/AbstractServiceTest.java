@@ -16,6 +16,9 @@
  */
 package org.exoplatform.social.service.test;
 
+import java.util.Collection;
+import java.util.HashSet;
+
 import javax.ws.rs.core.MultivaluedMap;
 
 import org.exoplatform.commons.testing.BaseExoTestCase;
@@ -35,6 +38,7 @@ import org.exoplatform.services.rest.impl.RequestHandlerImpl;
 import org.exoplatform.services.rest.impl.ResourceBinder;
 import org.exoplatform.services.security.ConversationState;
 import org.exoplatform.services.security.Identity;
+import org.exoplatform.services.security.MembershipEntry;
 
 /**
  * AbstractServiceTest.java
@@ -191,7 +195,11 @@ public abstract class AbstractServiceTest extends BaseExoTestCase {
   }
 
   protected void startSessionAs(String user) {
-    Identity identity = new Identity(user);
+    startSessionAs(user, new HashSet<MembershipEntry>());
+  }
+
+  protected void startSessionAs(String user, Collection<MembershipEntry> memberships) {
+    Identity identity = new Identity(user, memberships);
     ConversationState state = new ConversationState(identity);
     ConversationState.setCurrent(state);
     sessionProviderService.setSessionProvider(null, new SessionProvider(state));

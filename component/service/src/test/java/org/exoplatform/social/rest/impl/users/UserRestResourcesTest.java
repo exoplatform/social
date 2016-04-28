@@ -3,6 +3,7 @@ package org.exoplatform.social.rest.impl.users;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.exoplatform.portal.config.UserACL;
 import org.exoplatform.services.rest.impl.ContainerResponse;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.activity.model.ExoSocialActivityImpl;
@@ -27,6 +28,7 @@ public class UserRestResourcesTest extends AbstractResourceTest {
   
   private ActivityManager activityManager;
   private IdentityManager identityManager;
+  private UserACL userACL;
   private RelationshipManager relationshipManager;
   private SpaceService spaceService;
   
@@ -45,6 +47,7 @@ public class UserRestResourcesTest extends AbstractResourceTest {
     
     activityManager = (ActivityManager) getContainer().getComponentInstanceOfType(ActivityManager.class);
     identityManager = (IdentityManager) getContainer().getComponentInstanceOfType(IdentityManager.class);
+    userACL = (UserACL) getContainer().getComponentInstanceOfType(UserACL.class);
     relationshipManager = (RelationshipManager) getContainer().getComponentInstanceOfType(RelationshipManager.class);
     spaceService = (SpaceService) getContainer().getComponentInstanceOfType(SpaceService.class);
     
@@ -53,7 +56,7 @@ public class UserRestResourcesTest extends AbstractResourceTest {
     maryIdentity = identityManager.getOrCreateIdentity("organization", "mary", true);
     demoIdentity = identityManager.getOrCreateIdentity("organization", "demo", true);
     
-    userRestResourcesV1 = new UserRestResourcesV1();
+    userRestResourcesV1 = new UserRestResourcesV1(userACL);
     registry(userRestResourcesV1);
   }
 
@@ -143,18 +146,43 @@ public class UserRestResourcesTest extends AbstractResourceTest {
   }
   
   public void testGetSpacesOfUser() throws Exception {
-    startSessionAs("root");
-    Space space = getSpaceInstance(0, "root");
-    tearDownSpaceList.add(space);
+    getSpaceInstance(0, "root");
+    getSpaceInstance(1, "john");
+    getSpaceInstance(2, "demo");
+    getSpaceInstance(3, "demo");
     
+    startSessionAs("root");
     ContainerResponse response = service("GET", getURLResource("users/root/spaces?limit=5&offset=0"), "", null, null);
     assertNotNull(response);
     assertEquals(200, response.getStatus());
-    
     CollectionEntity collections = (CollectionEntity) response.getEntity();
     assertEquals(1, collections.getEntities().size());
-    SpaceEntity spaceEntity = getBaseEntity(collections.getEntities().get(0), SpaceEntity.class);
-    assertEquals(space.getDisplayName(), spaceEntity.getDisplayName());
+
+    startSessionAs("john");
+    response = service("GET", getURLResource("users/john/spaces?limit=5&offset=0"), "", null, null);
+    assertNotNull(response);
+    assertEquals(200, response.getStatus());
+    collections = (CollectionEntity) response.getEntity();
+    assertEquals(1, collections.getEntities().size());
+
+    startSessionAs("demo");
+    response = service("GET", getURLResource("users/demo/spaces?limit=5&offset=0"), "", null, null);
+    assertNotNull(response);
+    assertEquals(200, response.getStatus());
+    collections = (CollectionEntity) response.getEntity();
+    assertEquals(2, collections.getEntities().size());
+
+    startSessionAs("john");
+    response = service("GET", getURLResource("users/demo/spaces?limit=5&offset=0"), "", null, null);
+    assertNotNull(response);
+    assertEquals(403, response.getStatus());
+
+    startSessionAs("root");
+    response = service("GET", getURLResource("users/demo/spaces?limit=5&offset=0"), "", null, null);
+    assertNotNull(response);
+    assertEquals(200, response.getStatus());
+    collections = (CollectionEntity) response.getEntity();
+    assertEquals(2, collections.getEntities().size());
   }
   
   private Space getSpaceInstance(int number, String creator) throws Exception {
@@ -174,6 +202,7 @@ public class UserRestResourcesTest extends AbstractResourceTest {
     space.setMembers(members);
     space.setUrl(space.getPrettyName());
     this.spaceService.createSpace(space, creator);
+    tearDownSpaceList.add(space);
     return space;
   }
 }
