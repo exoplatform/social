@@ -42,6 +42,7 @@ import javax.ws.rs.core.UriInfo;
 
 import org.exoplatform.commons.utils.CommonsUtils;
 import org.exoplatform.commons.utils.ListAccess;
+import org.exoplatform.portal.config.UserACL;
 import org.exoplatform.services.organization.Query;
 import org.exoplatform.services.organization.OrganizationService;
 import org.exoplatform.services.organization.User;
@@ -79,13 +80,15 @@ import org.exoplatform.social.service.rest.api.VersionResources;
 @Path(VersionResources.VERSION_ONE + "/social/users")
 @Api(tags = VersionResources.VERSION_ONE + "/social/users", value = VersionResources.VERSION_ONE + "/social/users", description = "Operations on users with their activities, connections and spaces")
 public class UserRestResourcesV1 implements UserRestResources {
-  
+
+  private UserACL userACL;
+
   public static enum ACTIVITY_STREAM_TYPE {
     all, owner, connections, spaces
   }
   
-  public UserRestResourcesV1() {
-    
+  public UserRestResourcesV1(UserACL userACL) {
+    this.userACL = userACL;
   }
   
   @GET
@@ -324,7 +327,8 @@ public class UserRestResourcesV1 implements UserRestResources {
       throw new WebApplicationException(Response.Status.BAD_REQUEST);
     }
     //Check permission of authenticated user : he must be an admin or he is the given user
-    if (!RestUtils.isMemberOfAdminGroup() && !ConversationState.getCurrent().getIdentity().getUserId().equals(id) ) {
+    String authenticatedUser = ConversationState.getCurrent().getIdentity().getUserId();
+    if (!userACL.getSuperUser().equals(authenticatedUser) && !authenticatedUser.equals(id) ) {
       throw new WebApplicationException(Response.Status.FORBIDDEN);
     }
     

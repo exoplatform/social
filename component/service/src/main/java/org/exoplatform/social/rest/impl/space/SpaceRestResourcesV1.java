@@ -45,6 +45,7 @@ import javax.ws.rs.core.UriInfo;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.exoplatform.commons.utils.CommonsUtils;
 import org.exoplatform.commons.utils.ListAccess;
+import org.exoplatform.portal.config.UserACL;
 import org.exoplatform.services.security.ConversationState;
 import org.exoplatform.social.common.RealtimeListAccess;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
@@ -75,9 +76,12 @@ import org.exoplatform.social.service.rest.api.models.ActivityRestIn;
 @Api(tags = VersionResources.VERSION_ONE + "/social/spaces", value = VersionResources.VERSION_ONE + "/social/spaces", description = "Operations on spaces with their activities and users")
 public class SpaceRestResourcesV1 implements SpaceRestResources {
 
-  public SpaceRestResourcesV1() {
+  private UserACL userACL;
+
+  public SpaceRestResourcesV1(UserACL userACL) {
+    this.userACL = userACL;
   }
-  
+
   /**
    * {@inheritDoc}
    */
@@ -86,7 +90,7 @@ public class SpaceRestResourcesV1 implements SpaceRestResources {
                 httpMethod = "GET",
                 response = Response.class,
                 notes = "This returns a list of spaces in the following cases: <br/><ul><li>the authenticated user is a member of the spaces</li><li>the spaces are \"public\"</li><li>the authenticated user is the super user</li></ul>")
-  @ApiResponses(value = { 
+  @ApiResponses(value = {
     @ApiResponse (code = 200, message = "Request fulfilled"),
     @ApiResponse (code = 500, message = "Internal server error"),
     @ApiResponse (code = 400, message = "Invalid query input") })
@@ -99,9 +103,9 @@ public class SpaceRestResourcesV1 implements SpaceRestResources {
 
     offset = offset > 0 ? offset : RestUtils.getOffset(uriInfo);
     limit = limit > 0 ? limit : RestUtils.getLimit(uriInfo);
-    
+
     SpaceService spaceService = CommonsUtils.getService(SpaceService.class);
-    
+
     ListAccess<Space> listAccess = null;
     SpaceFilter spaceFilter = null;
     if (q != null) {
@@ -109,7 +113,7 @@ public class SpaceRestResourcesV1 implements SpaceRestResources {
       spaceFilter.setSpaceNameSearchCondition(q);
     }
     String authenticatedUser = ConversationState.getCurrent().getIdentity().getUserId();
-    if (RestUtils.isMemberOfAdminGroup()) {
+    if (userACL.getSuperUser().equals(authenticatedUser)) {
       listAccess = spaceService.getAllSpacesByFilter(spaceFilter);
     } else {
       listAccess = spaceService.getAccessibleSpacesByFilter(authenticatedUser, spaceFilter);
@@ -199,7 +203,7 @@ public class SpaceRestResourcesV1 implements SpaceRestResources {
     String authenticatedUser = ConversationState.getCurrent().getIdentity().getUserId();
     SpaceService spaceService = CommonsUtils.getService(SpaceService.class);
     Space space = spaceService.getSpaceById(id);
-    if (space == null || (Space.HIDDEN.equals(space.getVisibility()) && ! spaceService.isMember(space, authenticatedUser) && ! RestUtils.isMemberOfAdminGroup())) {
+    if (space == null || (Space.HIDDEN.equals(space.getVisibility()) && ! spaceService.isMember(space, authenticatedUser) && ! userACL.getSuperUser().equals(authenticatedUser))) {
       throw new WebApplicationException(Response.Status.UNAUTHORIZED);
     }
     return EntityBuilder.getResponse(EntityBuilder.buildEntityFromSpace(space, authenticatedUser, uriInfo.getPath(), expand), uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
@@ -233,7 +237,7 @@ public class SpaceRestResourcesV1 implements SpaceRestResources {
     //
     SpaceService spaceService = CommonsUtils.getService(SpaceService.class);
     Space space = spaceService.getSpaceById(id);
-    if (space == null || (! spaceService.isManager(space, authenticatedUser) && ! RestUtils.isMemberOfAdminGroup())) {
+    if (space == null || (! spaceService.isManager(space, authenticatedUser) && ! userACL.getSuperUser().equals(authenticatedUser))) {
       throw new WebApplicationException(Response.Status.UNAUTHORIZED);
     }
     if(model.getGroupId() != null && model.getGroupId().length() > 0) {
@@ -268,7 +272,7 @@ public class SpaceRestResourcesV1 implements SpaceRestResources {
     //
     SpaceService spaceService = CommonsUtils.getService(SpaceService.class);
     Space space = spaceService.getSpaceById(id);
-    if (space == null || ! spaceService.isManager(space, authenticatedUser)) {
+    if (space == null || (! spaceService.isManager(space, authenticatedUser) && ! userACL.getSuperUser().equals(authenticatedUser))) {
       throw new WebApplicationException(Response.Status.UNAUTHORIZED);
     }
     spaceService.deleteSpace(space);
@@ -305,7 +309,7 @@ public class SpaceRestResourcesV1 implements SpaceRestResources {
     //
     SpaceService spaceService = CommonsUtils.getService(SpaceService.class);
     Space space = spaceService.getSpaceById(id);
-    if (space == null || (! spaceService.isMember(space, authenticatedUser) && ! RestUtils.isMemberOfAdminGroup())) {
+    if (space == null || (! spaceService.isMember(space, authenticatedUser) && ! userACL.getSuperUser().equals(authenticatedUser))) {
       throw new WebApplicationException(Response.Status.UNAUTHORIZED);
     }
     
@@ -353,7 +357,7 @@ public class SpaceRestResourcesV1 implements SpaceRestResources {
     //
     SpaceService spaceService = CommonsUtils.getService(SpaceService.class);
     Space space = spaceService.getSpaceById(id);
-    if (space == null || ! spaceService.isMember(space, authenticatedUser)) {
+    if (space == null || (! spaceService.isMember(space, authenticatedUser) && ! userACL.getSuperUser().equals(authenticatedUser))) {
       throw new WebApplicationException(Response.Status.UNAUTHORIZED);
     }
     
@@ -416,7 +420,7 @@ public class SpaceRestResourcesV1 implements SpaceRestResources {
     //
     SpaceService spaceService = CommonsUtils.getService(SpaceService.class);
     Space space = spaceService.getSpaceById(id);
-    if (space == null || ! spaceService.isMember(space, authenticatedUser)) {
+    if (space == null || (! spaceService.isMember(space, authenticatedUser) && ! userACL.getSuperUser().equals(authenticatedUser))) {
       throw new WebApplicationException(Response.Status.UNAUTHORIZED);
     }
     

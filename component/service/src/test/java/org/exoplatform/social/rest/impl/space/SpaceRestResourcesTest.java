@@ -1,9 +1,13 @@
 package org.exoplatform.social.rest.impl.space;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 
+import org.exoplatform.portal.config.UserACL;
 import org.exoplatform.services.rest.impl.ContainerResponse;
+import org.exoplatform.services.security.MembershipEntry;
 import org.exoplatform.social.common.RealtimeListAccess;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.activity.model.ExoSocialActivityImpl;
@@ -20,6 +24,7 @@ import org.exoplatform.social.service.test.AbstractResourceTest;
 
 public class SpaceRestResourcesTest extends AbstractResourceTest {
   private IdentityManager identityManager;
+  private UserACL userACL;
   private ActivityManager activityManager;
   private SpaceService spaceService;
   
@@ -41,6 +46,7 @@ public class SpaceRestResourcesTest extends AbstractResourceTest {
     tearDownActivitiesList = new ArrayList<ExoSocialActivity>();
     
     identityManager = (IdentityManager) getContainer().getComponentInstanceOfType(IdentityManager.class);
+    userACL = (UserACL) getContainer().getComponentInstanceOfType(UserACL.class);
     activityManager = (ActivityManager) getContainer().getComponentInstanceOfType(ActivityManager.class);
     spaceService = (SpaceService) getContainer().getComponentInstanceOfType(SpaceService.class);
     
@@ -49,7 +55,7 @@ public class SpaceRestResourcesTest extends AbstractResourceTest {
     maryIdentity = identityManager.getOrCreateIdentity("organization", "mary", true);
     demoIdentity = identityManager.getOrCreateIdentity("organization", "demo", true);
     
-    spaceRestResources = new SpaceRestResourcesV1();
+    spaceRestResources = new SpaceRestResourcesV1(userACL);
     registry(spaceRestResources);
   }
 
@@ -74,24 +80,33 @@ public class SpaceRestResourcesTest extends AbstractResourceTest {
   }
 
   public void testGetSpaces() throws Exception {
-    //root creates 2 spaces
     getSpaceInstance(1, "root");
-    getSpaceInstance(2, "root");
-    startSessionAs("root");
+    getSpaceInstance(2, "john");
+    getSpaceInstance(3, "demo");
+
+    startSessionAs("demo");
     ContainerResponse response = service("GET", getURLResource("spaces?limit=5&offset=0"), "", null, null);
-    assertNotNull(response);
     assertEquals(200, response.getStatus());
     CollectionEntity collections = (CollectionEntity) response.getEntity();
-    assertEquals(2, collections.getEntities().size());
-    
-    //demo creates 1 space
-    startSessionAs("demo");
-    getSpaceInstance(3, "demo");
-    response = service("GET", getURLResource("spaces?limit=5&offset=0"), "", null, null);
-    assertEquals(200, response.getStatus());
-    collections = (CollectionEntity) response.getEntity();
     //demo is member of only one space then he got just 1 result
     assertEquals(1, collections.getEntities().size());
+
+    HashSet<MembershipEntry> ms = new HashSet<MembershipEntry>();
+    ms.add(new MembershipEntry("/platform/administrators"));
+    startSessionAs("john", ms);
+    response = service("GET", getURLResource("spaces?limit=5&offset=0"), "", null, null);
+    assertNotNull(response);
+    assertEquals(200, response.getStatus());
+    collections = (CollectionEntity) response.getEntity();
+    assertEquals(1, collections.getEntities().size());
+
+    // Only the super user can see all the spaces.
+    startSessionAs("root", ms);
+    response = service("GET", getURLResource("spaces?limit=5&offset=0"), "", null, null);
+    assertNotNull(response);
+    assertEquals(200, response.getStatus());
+    collections = (CollectionEntity) response.getEntity();
+    assertEquals(3, collections.getEntities().size());
   }
   
   public void testCreateSpace() throws Exception {
