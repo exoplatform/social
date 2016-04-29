@@ -553,9 +553,9 @@
 
     function onInputBoxKeyPress(e) {
       var keyCode = (e.which || e.keyCode);
-      if (keyCode !== KEY.BACKSPACE && keyCode !== KEY.LEFT && keyCode !== KEY.RIGHT &&
-          keyCode !== KEY.DELETE && keyCode !== KEY.UP && keyCode !== KEY.DOWN) {
-        var typedValue = String.fromCharCode(keyCode);
+      var typedValue = String.fromCharCode(keyCode);
+      if ((keyCode !== KEY.BACKSPACE && keyCode !== KEY.LEFT && keyCode !== KEY.RIGHT &&
+          keyCode !== KEY.DELETE && keyCode !== KEY.UP && keyCode !== KEY.DOWN) || typedValue == "'") {
         if(keyCode === KEY.RETURN) {
           inputBuffer = [];
           typedValue = ' ';
