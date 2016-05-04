@@ -16,9 +16,6 @@
  */
 package org.exoplatform.social.core.application;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
-
 import org.apache.commons.lang.StringEscapeUtils;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.container.xml.InitParams;
@@ -33,6 +30,7 @@ import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvide
 import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
 import org.exoplatform.social.core.manager.ActivityManager;
 import org.exoplatform.social.core.manager.IdentityManager;
+import org.exoplatform.social.core.processor.I18NActivityUtils;
 import org.exoplatform.social.core.space.SpaceListenerPlugin;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.model.Space.UpdatedField;
@@ -40,6 +38,10 @@ import org.exoplatform.social.core.space.spi.SpaceLifeCycleEvent;
 import org.exoplatform.social.core.space.spi.SpaceLifeCycleEvent.Type;
 import org.exoplatform.social.core.storage.api.IdentityStorage;
 import org.exoplatform.social.core.storage.api.SpaceStorage;
+
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
  * This listener is responsible for initializing and notifying activity stream for the space. We create a special
@@ -224,7 +226,7 @@ public class SpaceActivityPublisher extends SpaceListenerPlugin {
     if (activityId != null) {
       try {
         ExoSocialActivity activity = (ExoSocialActivityImpl) activityManager.getActivity(activityId);
-        activity.setTitle(getActivityTitleBySpace(space.getPrettyName()));
+        updateActivity(activity, space.getPrettyName());
         activityManager.updateActivity(activity);
       } catch (Exception e) {
         LOG.debug("Cannot update space activity.");
@@ -364,7 +366,7 @@ public class SpaceActivityPublisher extends SpaceListenerPlugin {
         
         // When update number of members in case of join and left space ==> update the activity's title
         if (USER_JOINED_TITLE_ID.equals(titleId)) {
-          activity.setTitle(getActivityTitleBySpace(space.getPrettyName()));
+          updateActivity(activity, space.getPrettyName());
           activityManager.updateActivity(activity);
         } 
         
@@ -377,15 +379,12 @@ public class SpaceActivityPublisher extends SpaceListenerPlugin {
     if (activityId == null) {
       ExoSocialActivity activity = new ExoSocialActivityImpl();
       activity.setType(SPACE_PROFILE_ACTIVITY);
-      activity.setTitle(getActivityTitleBySpace(space.getPrettyName())); 
+      updateActivity(activity, space.getPrettyName());
       if (Space.HIDDEN.equals(space.getVisibility())) {
         activity.isHidden(true);
       }
-      
-      Map<String, String> tmplParams = new LinkedHashMap<String, String>();
-      tmplParams.put(Space.CREATOR, event.getTarget());
-      activity.setTemplateParams(tmplParams);
-      
+      activity.getTemplateParams().put(Space.CREATOR, event.getTarget());
+
       activityManager.saveActivityNoReturn(spaceIdentity, activity);
       getStorage().updateProfileActivityId(spaceIdentity, activity.getId(), Profile.AttachedActivityType.SPACE);
       if (SPACE_CREATED_TITLE_ID.equals(titleId))
@@ -394,13 +393,23 @@ public class SpaceActivityPublisher extends SpaceListenerPlugin {
       activityManager.saveComment(activity, comment);
     }
   }
-  
-  private String getActivityTitleBySpace(String spacePrettyName) {
+
+  private void updateActivity(ExoSocialActivity activity, String spacePrettyName) {
     Space sp = getSpaceStorage().getSpaceByPrettyName(spacePrettyName);
-    StringBuilder sb = new StringBuilder();
-    sb.append(sp.getMembers().length).append(" Member(s)");
-    return sb.toString();
-  } 
+    //The value of the title is not used at the end and it is replaced by the  translation from the resource bundle, but is is necessary to avoid null check when saving the activity
+    String title = " ";
+    String titleId;
+    if ((sp.getMembers().length) > 1) {
+      titleId = "space_members";
+    } else {
+      titleId = "space_member";
+    }
+    Map<String, String> params = new HashMap<String, String>();
+    activity.setTitle(title);
+    activity.setTitleId(null);
+    activity.setTemplateParams(params);
+    I18NActivityUtils.addResourceKey(activity, titleId, "" + sp.getMembers().length);
+  }
   
   private ExoSocialActivity createComment(String title, String titleId, String spacePrettyName, String type, Identity identity, Map<String, String> templateParams) {
     ExoSocialActivityImpl comment = new ExoSocialActivityImpl();
