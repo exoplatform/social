@@ -532,6 +532,31 @@
           </object-param>
         </init-params>
       </component-plugin>
+      <component-plugin>
+        <name>SPACE_ACTIVITY</name> <!-- activity type -->
+        <set-method>addActivityResourceBundlePlugin</set-method>
+        <type>org.exoplatform.social.core.processor.ActivityResourceBundlePlugin</type>
+        <init-params>
+          <object-param>
+            <name>locale.social.Core</name> <!-- resource bundle key file -->
+            <description>activity key type resource bundle mapping for space activity</description>
+            <object type="org.exoplatform.social.core.processor.ActivityResourceBundlePlugin">
+              <field name="activityKeyTypeMapping">
+                <map type="java.util.HashMap">
+                  <entry>
+                    <key><string>space_members</string></key>
+                    <value><string>SpaceActivityPublisher.members</string></value>
+                  </entry>
+                  <entry>
+                    <key><string>space_member</string></key>
+                    <value><string>SpaceActivityPublisher.member</string></value>
+                  </entry>
+                </map>
+              </field>
+            </object>
+          </object-param>
+        </init-params>
+      </component-plugin>
     </component-plugins>
   </component>
 
