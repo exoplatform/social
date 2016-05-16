@@ -219,6 +219,9 @@ public class UIUserActivitiesDisplay extends AbstractActivitiesDisplay {
    * @throws Exception
    */
   public void init() throws Exception {
+    viewerName = Utils.getViewerRemoteId();
+    ownerName = Utils.getOwnerRemoteId();
+
     Validate.notNull(ownerName, "ownerName must not be null.");
     Validate.notNull(viewerName, "viewerName must not be null.");
     //
