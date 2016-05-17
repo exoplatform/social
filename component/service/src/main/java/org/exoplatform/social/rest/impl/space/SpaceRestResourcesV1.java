@@ -114,9 +114,11 @@ public class SpaceRestResourcesV1 implements SpaceRestResources {
     }
     String authenticatedUser = ConversationState.getCurrent().getIdentity().getUserId();
     if (userACL.getSuperUser().equals(authenticatedUser)) {
-      listAccess = spaceService.getAllSpacesByFilter(spaceFilter);
+      listAccess = spaceFilter != null ? spaceService.getAllSpacesByFilter(spaceFilter):
+         spaceService.getAllSpacesWithListAccess();
     } else {
-      listAccess = spaceService.getAccessibleSpacesByFilter(authenticatedUser, spaceFilter);
+      listAccess = spaceFilter != null ? spaceService.getAccessibleSpacesByFilter(authenticatedUser, spaceFilter):
+         spaceService.getAccessibleSpacesWithListAccess(authenticatedUser);
     }
     List<DataEntity> spaceInfos = new ArrayList<DataEntity>();
     for (Space space : listAccess.load(offset, limit)) {

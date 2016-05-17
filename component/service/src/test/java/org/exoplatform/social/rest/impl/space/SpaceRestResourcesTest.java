@@ -141,6 +141,12 @@ public class SpaceRestResourcesTest extends AbstractResourceTest {
     assertEquals(200, response.getStatus());
     collections = (CollectionEntity) response.getEntity();
     assertEquals(3, collections.getEntities().size());
+
+    response = service("GET", getURLResource("spaces?limit=5&offset=1"), "", null, null);
+    assertNotNull(response);
+    assertEquals(200, response.getStatus());
+    collections = (CollectionEntity) response.getEntity();
+    assertEquals(2, collections.getEntities().size());
   }
   
   public void testCreateSpace() throws Exception {
