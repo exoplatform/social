@@ -186,11 +186,11 @@
         <% } %>
         |
       <% if (uicomponent.isLiked()) { %>
-        <a onclick="$unlikeActivityAction" id="UnLikeLink${activity.id}" href="javascript:void(0);">
+        <a onclick="$unlikeActivityAction" rel="tooltip" data-placement="bottom" title="<%=_ctx.appRes("UIActivity.msg.UnlikeActivity"); %>" id="UnLikeLink${activity.id}" href="javascript:void(0);">
           $labelUnlike
         </a>
       <% } else { %>
-        <a onclick="$likeActivityAction" id="LikeLink${activity.id}" href="javascript:void(0);">
+        <a onclick="$likeActivityAction" rel="tooltip" data-placement="bottom" title="<%=_ctx.appRes("UIActivity.msg.LikeActivity"); %>" id="LikeLink${activity.id}" href="javascript:void(0);">
           $labelLike
         </a>
       <% }%>
