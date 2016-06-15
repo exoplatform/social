@@ -18,6 +18,7 @@ package org.exoplatform.social.webui.activity;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.exoplatform.commons.utils.CommonsUtils;
+import org.exoplatform.commons.utils.StringCommonUtils;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.social.common.RealtimeListAccess;
@@ -783,7 +784,7 @@ public class BaseUIActivity extends UIForm {
       }
       
       uiFormComment.reset();
-      uiActivity.saveComment(requestContext.getRemoteUser(), message);
+      uiActivity.saveComment(requestContext.getRemoteUser(),  StringCommonUtils.sanitize(message));
       uiActivity.setCommentFormFocused(true);
       requestContext.addUIComponentToUpdateByAjax(uiActivity);
       
