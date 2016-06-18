@@ -161,12 +161,12 @@
 	            <%  } %>
 		      </div>
 		
-		      <% if (isEditable) {%>
 		      <div class="connectionBtn clearfix">
+		        <% if (isEditable) {%>
 			      <button class="btn pull-right" onclick="<%=uicomponent.event("Ignore",identity.getId())%>">$ignoreLabel</button>
 			      <button class="btn pull-right btn-primary" onclick="<%=uicomponent.event("Confirm",identity.getId())%>">$confirmLabel</button>    
+		        <% } %>
 		      </div>
-		      <% } %>
         </div>
       </div>
       <% } %> 

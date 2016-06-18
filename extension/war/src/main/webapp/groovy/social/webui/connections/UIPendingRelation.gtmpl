@@ -142,11 +142,11 @@
 	                <div class="email"><a class="ellipsis" href="mailto:${email}">${email}</a></div>
                 <% } %>
 			      </div>
-		       <% if (isEditable) {%>
 		       	<div class="connectionBtn clearfix">
+		          <% if (isEditable) {%>
 		          <button class="btn pull-right" onclick="<%=uicomponent.event("Ignore",identity.getId())%>">$cancelRequestLabel</button>
+		          <% } %>
 		        </div>
-		      <% } %>
   		    </div>
 		    </div>
       <% } %>

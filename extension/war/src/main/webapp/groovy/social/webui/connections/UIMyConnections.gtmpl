@@ -148,11 +148,11 @@
 	            <%  } %>
 	          </div>
 	          
-		        <% if (isEditable) {%>
 		        <div class="connectionBtn clearfix">
+		          <% if (isEditable) {%>
 	            <button class="btn pull-right" onclick="$removeConnectionAction">$removeTitle</button>
+		          <% } %>
 	          </div>
-		        <% } %>	         
 	        </div>
         </div>
     <%  } %>
