@@ -204,10 +204,14 @@
                     <span class="dateTime"><i class="uiIconClock  uiIconLightGray"></i>&nbsp;$activityPostedTime</span> 
                     <% if (uicomponent.isUserActivity() && uicomponent.isSpaceStreamOwner() && !uicomponent.isUISpaceActivitiesDisplay()) {
                             Space spaceSource = Utils.getSpaceService().getSpaceByPrettyName(streamOwner);
-                                def spaceSourceURI = LinkProvider.getSpaceUri(spaceSource.url);
-                                def spaceName = spaceSource.displayName;
+                            def spaceSourceURI = LinkProvider.getSpaceUri(spaceSource.url);
+                            def spaceName = spaceSource.displayName;
+                            def spaceImageSource = spaceSource.getAvatarUrl();
+                            if (spaceImageSource == null) {
+                              spaceImageSource = LinkProvider.SPACE_DEFAULT_AVATAR_URL;
+                            }
                     %>
-                    <a class="spaceName" href="$spaceSourceURI"><i class="uiIconSocGroup uiIconSocLightGray"></i>&nbsp;$spaceName</a>
+                    <a class="spaceName" href="$spaceSourceURI"><img title="" alt="" src="$spaceImageSource" class="spaceIcon avatarMini" />&nbsp;$spaceName</a>
                     <%} %>
                 </div>
             </div><!--end heading-->
