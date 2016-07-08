@@ -423,8 +423,8 @@ var UIActivity = {
     })
   },
 
-  previewDoc: function(docPath) {
-    documentPreview.init(docPath);
+  previewDoc: function(docId, docPath, downloadUrl, openUrl) {
+    documentPreview.init(docId, docPath, downloadUrl, openUrl);
     documentPreview.show();
   }
 };
