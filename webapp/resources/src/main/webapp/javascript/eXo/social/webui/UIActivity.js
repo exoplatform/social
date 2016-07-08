@@ -17,7 +17,7 @@
 /**
  * UIActivity.js
  */
-(function ($, _) {  
+(function ($, _, documentPreview) {
 var UIActivity = {
   COMMENT_BLOCK_BOUND_CLASS_NAME : "commentBox commentBlockBound ",
   COMMENT_BLOCK_BOUND_NONE_CLASS_NAME : " commentBox commentBlockBoundNone",
@@ -420,12 +420,16 @@ var UIActivity = {
           ellipsis.removeClass('active');
         }
       }
-    });
-  }
+    })
+  },
 
+  previewDoc: function(docPath) {
+    documentPreview.init(docPath);
+    documentPreview.show();
+  }
 };
 //
 eXo.social.SocialUtil.addOnResizeWidth(function(evt){UIActivity.responsiveMobile()});
 eXo.social.SocialUtil.addOnResizeWidth(function(evt){UIActivity.adaptFileBreadCrumb()});
 return UIActivity;
-})($, mentions._);
+})($, mentions._, documentPreview);

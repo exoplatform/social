@@ -261,6 +261,9 @@
       <module>mentionsLib</module>
       <as>mentions</as>
     </depends>
+    <depends>
+      <module>documentPreview</module>
+    </depends>
   </module>
   
   <module>
