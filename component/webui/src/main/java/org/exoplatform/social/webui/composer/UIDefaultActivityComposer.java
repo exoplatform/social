@@ -16,6 +16,7 @@
  */
 package org.exoplatform.social.webui.composer;
 
+import org.exoplatform.commons.utils.HTMLSanitizer;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.activity.model.ExoSocialActivityImpl;
 import org.exoplatform.social.core.application.PeopleService;
@@ -57,14 +58,24 @@ public class UIDefaultActivityComposer extends UIActivityComposer {
       UISpaceActivitiesDisplay uiDisplaySpaceActivities = (UISpaceActivitiesDisplay) getActivityDisplay();
       Space space = uiDisplaySpaceActivities.getSpace();
 
-      Identity spaceIdentity = Utils.getIdentityManager().getOrCreateIdentity(SpaceIdentityProvider.NAME, space.getPrettyName(), false);
-      activity = new ExoSocialActivityImpl(Utils.getViewerIdentity().getId(), SpaceActivityPublisher.SPACE_APP_ID, postedMessage, null);
+      Identity spaceIdentity = Utils.getIdentityManager().getOrCreateIdentity(SpaceIdentityProvider.NAME,
+                                                                              space.getPrettyName(),
+                                                                              false);
+      activity = new ExoSocialActivityImpl(Utils.getViewerIdentity().getId(),
+                                           SpaceActivityPublisher.SPACE_APP_ID,
+                                           HTMLSanitizer.sanitize(postedMessage),
+                                           null);
       activity.setType(UIDefaultActivity.ACTIVITY_TYPE);
       Utils.getActivityManager().saveActivityNoReturn(spaceIdentity, activity);
     } else if (postContext == PostContext.USER) {
       UIUserActivitiesDisplay uiUserActivitiesDisplay = (UIUserActivitiesDisplay) getActivityDisplay();
-      Identity ownerIdentity = Utils.getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, uiUserActivitiesDisplay.getOwnerName(), false);
-      activity = new ExoSocialActivityImpl(Utils.getViewerIdentity().getId(), PeopleService.PEOPLE_APP_ID, postedMessage, null);
+      Identity ownerIdentity = Utils.getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME,
+                                                                              uiUserActivitiesDisplay.getOwnerName(),
+                                                                              false);
+      activity = new ExoSocialActivityImpl(Utils.getViewerIdentity().getId(),
+                                           PeopleService.PEOPLE_APP_ID,
+                                           HTMLSanitizer.sanitize(postedMessage),
+                                           null);
       activity.setType(UIDefaultActivity.ACTIVITY_TYPE);
       //
       Utils.getActivityManager().saveActivityNoReturn(ownerIdentity, activity);
@@ -89,6 +100,9 @@ public class UIDefaultActivityComposer extends UIActivityComposer {
   }
 
   @Override
-  protected void onPostActivity(PostContext postContext, UIComponent source, WebuiRequestContext requestContext, String postedMessage) throws Exception {
+  protected void onPostActivity(PostContext postContext,
+                                UIComponent source,
+                                WebuiRequestContext requestContext,
+                                String postedMessage) throws Exception {
   }
 }
