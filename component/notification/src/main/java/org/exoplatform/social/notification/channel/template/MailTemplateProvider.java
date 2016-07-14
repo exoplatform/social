@@ -37,8 +37,12 @@ import org.exoplatform.commons.api.notification.plugin.NotificationPluginUtils;
 import org.exoplatform.commons.api.notification.service.template.TemplateContext;
 import org.exoplatform.commons.notification.NotificationUtils;
 import org.exoplatform.commons.notification.template.TemplateUtils;
+import org.exoplatform.commons.utils.CommonsUtils;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.container.xml.InitParams;
+import org.exoplatform.forum.service.ForumService;
+import org.exoplatform.services.log.ExoLogger;
+import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
@@ -78,7 +82,9 @@ import org.exoplatform.social.notification.plugin.SpaceInvitationPlugin;
     @TemplateConfig(pluginId = RequestJoinSpacePlugin.ID, template = "war:/notification/templates/RequestJoinSpacePlugin.gtmpl"),
     @TemplateConfig(pluginId = SpaceInvitationPlugin.ID, template = "war:/notification/templates/SpaceInvitationPlugin.gtmpl")})
 public class MailTemplateProvider extends TemplateProvider {
-  
+
+  private static final Log LOG = ExoLogger.getLogger(MailTemplateProvider.class);
+
   /** Defines the template builder for ActivityCommentPlugin*/
   private AbstractTemplateBuilder comment = new AbstractTemplateBuilder() {
     @Override
@@ -95,10 +101,15 @@ public class MailTemplateProvider extends TemplateProvider {
       TemplateContext templateContext = new TemplateContext(notification.getKey().getId(), language);
       templateContext.put("USER", identity.getProfile().getFullName());
       String subject = TemplateUtils.processSubject(templateContext);
-      
+
       SocialNotificationUtils.addFooterAndFirstName(notification.getTo(), templateContext);
       templateContext.put("PROFILE_URL", LinkProviderUtils.getRedirectUrl("user", identity.getRemoteId()));
       templateContext.put("COMMENT", NotificationUtils.processLinkTitle(activity.getTitle()));
+      try {
+        openInAppLinks(activity, templateContext, true);
+      } catch (Exception e) {
+        LOG.error(e.getMessage(), e);
+      }
       templateContext.put("REPLY_ACTION_URL", LinkProviderUtils.getRedirectUrl("reply_activity_highlight_comment", parentActivity.getId() + "-" + activity.getId()));
       templateContext.put("VIEW_FULL_DISCUSSION_ACTION_URL", LinkProviderUtils.getRedirectUrl("view_full_activity_highlight_comment", parentActivity.getId() + "-" + activity.getId()));
 
@@ -178,7 +189,12 @@ public class MailTemplateProvider extends TemplateProvider {
         templateContext.put("VIEW_FULL_DISCUSSION_ACTION_URL", LinkProviderUtils.getRedirectUrl("view_full_activity", activityId));
         body = SocialNotificationUtils.getBody(ctx, templateContext, getI18N(activity,new Locale(language)));
       }
-      
+      try {
+        openInAppLinks(activity, templateContext, false);
+      } catch (Exception e) {
+        LOG.error(e.getMessage(), e);
+      }
+
       //binding the exception throws by processing template
       ctx.setException(templateContext.getException());
       return messageInfo.subject(subject).body(body).end();
@@ -241,6 +257,11 @@ public class MailTemplateProvider extends TemplateProvider {
       String subject = TemplateUtils.processSubject(templateContext);
 
       templateContext.put("PROFILE_URL", LinkProviderUtils.getRedirectUrl("user", identity.getRemoteId()));
+      try {
+        openInAppLinks(activity, templateContext, false);
+      } catch (Exception e) {
+        LOG.error(e.getMessage(), e);
+      }
       templateContext.put("REPLY_ACTION_URL", LinkProviderUtils.getRedirectUrl("reply_activity", activity.getId()));
       templateContext.put("VIEW_FULL_DISCUSSION_ACTION_URL", LinkProviderUtils.getRedirectUrl("view_full_activity", activity.getId()));
 
@@ -385,6 +406,11 @@ public class MailTemplateProvider extends TemplateProvider {
       String subject = TemplateUtils.processSubject(templateContext);
       
       templateContext.put("PROFILE_URL", LinkProviderUtils.getRedirectUrl("user", identity.getRemoteId()));
+      try {
+        openInAppLinks(activity, templateContext, false);
+      } catch (Exception e) {
+        LOG.error(e.getMessage(), e);
+      }
       templateContext.put("REPLY_ACTION_URL", LinkProviderUtils.getRedirectUrl("reply_activity", activity.getId()));
       templateContext.put("VIEW_FULL_DISCUSSION_ACTION_URL", LinkProviderUtils.getRedirectUrl("view_full_activity", activity.getId()));
       
@@ -450,6 +476,11 @@ public class MailTemplateProvider extends TemplateProvider {
       
       Space space = Utils.getSpaceService().getSpaceByPrettyName(spaceIdentity.getRemoteId());
       templateContext.put("SPACE_URL", LinkProviderUtils.getRedirectUrl("space", space.getId()));
+      try {
+        openInAppLinks(activity, templateContext, false);
+      } catch (Exception e) {
+        e.printStackTrace();
+      }
       templateContext.put("PROFILE_URL", LinkProviderUtils.getRedirectUrl("user", identity.getRemoteId()));
       templateContext.put("REPLY_ACTION_URL", LinkProviderUtils.getRedirectUrl("reply_activity", activity.getId()));
       templateContext.put("VIEW_FULL_DISCUSSION_ACTION_URL", LinkProviderUtils.getRedirectUrl("view_full_activity", activity.getId()));
@@ -491,7 +522,96 @@ public class MailTemplateProvider extends TemplateProvider {
     }
     
   };
-  
+
+  private void openInAppLinks(ExoSocialActivity activity, TemplateContext templateContext, boolean isComment) throws Exception {
+    if (activity.getType() != null) {
+      if (activity.getType().equals("ks-wiki:spaces")) {
+          templateContext.put("OPEN_APP", "wiki");
+          templateContext.put("OPEN_URL", CommonsUtils.getCurrentDomain() + activity.getTemplateParams().get("page_url"));
+        } else if (activity.getType().equals("ks-forum:spaces")) {
+          templateContext.put("OPEN_APP", "forum");
+          if (isComment) {
+            if (!activity.getTitleId().equals("forum.remove-poll")) {
+              templateContext.put("OPEN_URL", activity.getTemplateParams().get("PostLink"));
+            }
+          } else {
+            templateContext.put("OPEN_URL", CommonsUtils.getCurrentDomain() + activity.getTemplateParams().get("TopicLink"));
+          }
+        } else if (activity.getType().equals("cs-calendar:spaces")) {
+          templateContext.put("OPEN_APP", "calendar");
+          templateContext.put("OPEN_URL", CommonsUtils.getCurrentDomain() + activity.getTemplateParams().get("EventLink"));
+        } else if (activity.getType().contains("contents:spaces")) {
+          templateContext.put("OPEN_APP", "documents");
+          Map<String,String> templateParams = activity.getTemplateParams();
+          String workspace = templateParams.get("workspace");
+          String nodePath = templateParams.get("nodePath");
+          String[] splitedPath = nodePath.split("/");
+          if (splitedPath[1].equals("Groups") && splitedPath[2].equals("spaces")) {
+            templateContext.put("OPEN_URL", getContentSpacePath(workspace, nodePath));
+          } else {
+            templateContext.put("OPEN_URL", getContentPath(workspace, nodePath));
+          }
+        } else if (activity.getType().contains("answer:spaces")) {
+          templateContext.put("OPEN_APP", "answers");
+          if (isComment) {
+            templateContext.put("OPEN_URL", CommonsUtils.getCurrentDomain() + Utils.getActivityManager().getParentActivity(activity).getTemplateParams().get("Link"));
+          } else {
+            templateContext.put("OPEN_URL", activity.getTemplateParams().get("Link"));
+          }
+        } else if (activity.getType().equals("ks-poll:spaces")) {
+          templateContext.put("OPEN_APP", "poll");
+          try {
+            templateContext.put("OPEN_URL", CommonsUtils.getCurrentDomain() + CommonsUtils.getService(ForumService.class)
+                    .getTopicByPath(activity.getTemplateParams().get("PollLink"), false).getLink());
+          } catch (Exception e) {
+            e.printStackTrace();
+          }
+      } else if (activity.getType().equals("files:spaces")) {
+        templateContext.put("OPEN_APP", "files");
+        Map<String, String> templateParams = activity.getTemplateParams();
+        String workspace = templateParams.get("WORKSPACE");
+        String nodePath = templateParams.get("DOCPATH");
+        if (workspace !=null && nodePath != null) {
+          String[] splitedPath = nodePath.split("/");
+          if (splitedPath[1].equals("Groups") && splitedPath[2].equals("spaces")) {
+            templateContext.put("OPEN_URL", getContentSpacePath(workspace, nodePath));
+          } else {
+            templateContext.put("OPEN_URL", getContentPath(workspace, nodePath));
+          }
+        } else {
+          workspace = templateParams.get("workspace");
+          nodePath = templateParams.get("nodePath");
+          String[] splitedPath = nodePath.split("/");
+          if (splitedPath[1].equals("Groups") && splitedPath[2].equals("spaces")) {
+            templateContext.put("OPEN_URL", getContentSpacePath(workspace, nodePath));
+          } else {
+            templateContext.put("OPEN_URL", getContentPath(workspace, nodePath));
+          }
+        }
+      }
+    }
+    if ((templateContext.get("OPEN_URL") == null) || (templateContext.get("OPEN_APP") == null)) {
+      templateContext.put("OPEN_URL", "none");
+      templateContext.put("OPEN_APP", "none");
+    }
+  }
+
+  private String getContentPath(String workspace, String nodepath) throws Exception {
+    String space = nodepath.split("/")[3];
+    return CommonsUtils.getCurrentDomain() + "/" + PortalContainer.getCurrentPortalContainerName() + "/documents?path="
+            + capitalizeFirstLetter(workspace) + nodepath + "&notification=true";
+  }
+
+  private String getContentSpacePath(String workspace, String nodepath) throws Exception {
+    String space = nodepath.split("/")[3];
+    return CommonsUtils.getCurrentDomain() + "/" + PortalContainer.getCurrentPortalContainerName() + "/g/:spaces:"
+            + space + "/" +space + "/documents?path=" + capitalizeFirstLetter(workspace) + nodepath + "&notification=true";
+  }
+
+  private String capitalizeFirstLetter(String str) throws Exception {
+    return str.substring(0, 1).toUpperCase() + str.substring(1);
+  }
+
   /** Defines the template builder for RelationshipReceivedRequestPlugin*/
   private AbstractTemplateBuilder relationshipReceived = new AbstractTemplateBuilder() {
     @Override
