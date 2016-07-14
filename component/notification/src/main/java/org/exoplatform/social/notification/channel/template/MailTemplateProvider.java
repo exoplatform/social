@@ -583,9 +583,6 @@ public class MailTemplateProvider extends TemplateProvider {
         } else {
           workspace = templateParams.get("workspace");
           nodePath = templateParams.get("nodePath");
-          if (nodePath.contains(" ")) {
-            nodePath = nodePath.replace(" ","%20");
-          }
           String[] splitedPath = nodePath.split("/");
           if (splitedPath[1].equals("Groups") && splitedPath[2].equals("spaces")) {
             templateContext.put("OPEN_URL", LinkProvider.getRedirectSpaceUri(getSpaceDocuments(splitedPath[3]) + "?path=" + capitalizeFirstLetter(workspace) + nodePath + "&notification=true"));
