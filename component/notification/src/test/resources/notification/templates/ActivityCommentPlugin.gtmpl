@@ -30,19 +30,23 @@
                                             <tr>
                                                 <td align="left" bgcolor="#ffffff" style="background-color: #f9f9f9; padding: 15px 20px;">
                                                     <p style="margin: 5px 0; line-height: 16px; font-family: HelveticaNeue, Helvetica, Arial, sans-serif">$ACTIVITY</p>
-                                                    <p style="margin: 5px 0; line-height: 16px; font-family: HelveticaNeue, Helvetica, Arial, sans-serif">$COMMENT</p>
+                                                    <p style="margin: 5px 0; line-height: 16px; font-family: HelveticaNeue, Helvetica, Arial, sans-serif"><% if (!OPEN_URL.equals("none") && !OPEN_APP.equals("files")) { %>
+                                                                                                                                                            <a href="$OPEN_URL">$COMMENT</a>
+                                                                                                                                                          <% } else { %>
+                                                                                                                                                            $COMMENT
+                                                                                                                                                          <% } %></p>
                                                 </td>
                                             </tr>
                                         </tbody>
                                     </table>
                                     <p style="margin: 0 0 20px;">
-                                        <a target="_blank" style="
+                                        <% if (!OPEN_APP.equals(OPEN_URL)) { %>
+                                            <a target="_blank" style="
                                             display: inline-block;
                                             text-decoration: none;
                                             font-size: 11px;
                                             font-family: 'HelveticaNeue Bold', Helvetica, Arial, sans-serif;
                                             color: #ffffff;
-                                            text-shadow: 0 -1px 0 rgba(23, 33, 37, .25);
                                             background-color: #567ab6;
                                             background-image: -moz-linear-gradient(top, #638acd, #426393);
                                             background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#638acd), to(#426393));
@@ -52,8 +56,10 @@
                                             background-repeat: repeat-x;
                                             border-radius: 4px;
                                             -moz-border-radius: 4px;
-                                            padding: 4px 8px;
-                                            line-height: 100%;
+                                            padding: 5px 8px;
+                                            height: 11px;
+                                            line-height: 11px;
+                                            max-height: 11px;
                                             text-align: center;
                                             border: 1px solid #224886;
                                             font-weight: bold;
@@ -61,6 +67,47 @@
                                             -moz-box-shadow: inset 0 1px 0 rgba(255,255,255,.2), 0 1px 2px rgba(0,0,0,.05);
                                             box-shadow: inset 0 1px 0 rgba(255,255,255,.2), 0 1px 2px rgba(0,0,0,.05);
                                             vertical-align: middle;
+                                            " href="$OPEN_URL" title="Open in Application""">
+                                            <% if (OPEN_APP.equals("forum")) { %>
+                                                <%=_ctx.appRes("Notification.label.Open.Forum")%></a>
+                                            <% } else if ((OPEN_APP.equals("documents")) || (OPEN_APP.equals("files"))) { %>
+                                                <%=_ctx.appRes("Notification.label.Open.Documents")%></a>
+                                            <% } else if (OPEN_APP.equals("wiki")) { %>
+                                                <%=_ctx.appRes("Notification.label.Open.Wiki")%></a>
+                                            <% } else if (OPEN_APP.equals("calendar")) { %>
+                                                <%=_ctx.appRes("Notification.label.Open.Calendar")%></a>
+                                            <% } else if (OPEN_APP.equals("answers")) { %>
+                                                <%=_ctx.appRes("Notification.label.Open.Answers")%></a>
+                                            <% } else if (OPEN_APP.equals("poll")) { %>
+                                                <%=_ctx.appRes("Notification.label.Open.Poll")%></a>
+                                            <% }%>
+                                        <% } %>
+                                        <a target="_blank" style="
+                                            display: inline-block;
+                                            text-decoration: none;
+                                            font-size: 11px;
+                                            font-family: HelveticaNeue, Helvetica, Arial, sans-serif,serif;
+                                            color: #333333;
+                                            background-color: #f1f1f1;
+                                            background-image: -moz-linear-gradient(top, #ffffff, #f1f1f1);
+                                            background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#ffffff), to(#f1f1f1));
+                                            background-image: -webkit-linear-gradient(top, #ffffff, #f1f1f1);
+                                            background-image: -o-linear-gradient(top, #ffffff, #f1f1f1);
+                                            background-image: linear-gradient(to bottom, #ffffff, #f1f1f1);
+                                            background-repeat: repeat-x;
+                                            border-radius: 4px;
+                                            -moz-border-radius: 4px;
+                                            padding: 5px 8px;
+                                            height: 11px;
+                                            line-height: 12px;
+                                            max-height: 11px;
+                                            text-align: center;
+                                            border: 1px solid #c7c7c7;
+                                            -webkit-box-shadow: inset 0 1px 0 rgba(255,255,255,.2), 0 1px 2px rgba(0,0,0,.05);
+                                            -moz-box-shadow: inset 0 1px 0 rgba(255,255,255,.2), 0 1px 2px rgba(0,0,0,.05);
+                                            box-shadow: inset 0 1px 0 rgba(255,255,255,.2), 0 1px 2px rgba(0,0,0,.05);
+                                            vertical-align: middle;
+                                            margin-left: 3px;
                                         " href="$REPLY_ACTION_URL" title="Reply"><%=_ctx.appRes("Notification.label.Reply")%></a>
                                         <a target="_blank" style="
                                             display: inline-block;
@@ -96,8 +143,8 @@
                         </table>
                     </td>
                 </tr>
-            </table>            
-            
+            </table>
+
         </td>
     </tr><!--end content area-->
     <tr>
@@ -107,10 +154,10 @@
                     <td align="left" valign="top" style="font-family: HelveticaNeue, Helvetica, Arial, sans-serif,serif;color:#ffffff;font-size:13px;" >
                         <h3 style="text-align: center; margin: 0; padding: 10px 0;">
                             <a target="_blank" style="color: #ffffff; font-size: 13px;font-family:'HelveticaNeue Bold',arial,tahoma,serif; font-weight: bold; text-decoration: none;" href="http://www.exoplatform.com/company/en/home" title="eXo Platform"><%=_ctx.appRes("Notification.label.CompanyName")%></a>
-                        </h3>               
+                        </h3>
                     </td>
                 </tr>
             </table>
         </td>
-    </tr><!--end footer area-->     
+    </tr><!--end footer area-->
 </table>
