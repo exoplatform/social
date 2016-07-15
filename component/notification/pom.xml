@@ -161,9 +161,9 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.exoplatform.ks</groupId>
-      <artifactId>exo.ks.eXoApplication.forum.service</artifactId>
-      <version>2.2.0-SNAPSHOT</version>
+      <groupId>org.exoplatform.forum</groupId>
+      <artifactId>forum-forum-service</artifactId>
+      <version>4.4.x-open-in-emails-SNAPSHOT</version>
     </dependency>
   </dependencies>
   <build>
