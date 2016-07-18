@@ -31,7 +31,7 @@
                                         <tbody>
                                             <tr>
                                                 <td align="left" bgcolor="#ffffff" style="background-color: #f9f9f9; padding: 15px 20px;">
-                                                    <% if (!OPEN_URL.equals("none") && !OPEN_APP.equals("files")) { %>
+                                                    <% if (!OPEN_URL.equals("none") && !IS_FILE.equals("true")) { %>
                                                         <a href="$OPEN_URL">$ACTIVITY</a>
                                                     <% } else { %>
                                                         $ACTIVITY
@@ -41,7 +41,7 @@
                                         </tbody>
                                     </table>
                                     <p style="margin: 0 0 20px;">
-                                        <% if (!OPEN_APP.equals(OPEN_URL)) { %>
+                                        <% if (!OPEN_URL.equals("none")) { %>
                                             <a target="_blank" style="
                                                 display: inline-block;
                                                 text-decoration: none;
@@ -68,20 +68,7 @@
                                                 -moz-box-shadow: inset 0 1px 0 rgba(255,255,255,.2), 0 1px 2px rgba(0,0,0,.05);
                                                 box-shadow: inset 0 1px 0 rgba(255,255,255,.2), 0 1px 2px rgba(0,0,0,.05);
                                                 vertical-align: middle;
-                                                " href="$OPEN_URL" title="Open in Application""">
-                                                <% if (OPEN_APP.equals("forum")) { %>
-                                                    <%=_ctx.appRes("Notification.label.Open.Forum")%></a>
-                                                <% } else if ((OPEN_APP.equals("documents")) || (OPEN_APP.equals("files"))) { %>
-                                                    <%=_ctx.appRes("Notification.label.Open.Documents")%></a>
-                                                <% } else if (OPEN_APP.equals("wiki")) { %>
-                                                    <%=_ctx.appRes("Notification.label.Open.Wiki")%></a>
-                                                <% } else if (OPEN_APP.equals("calendar")) { %>
-                                                    <%=_ctx.appRes("Notification.label.Open.Calendar")%></a>
-                                                <% } else if (OPEN_APP.equals("answers")) { %>
-                                                    <%=_ctx.appRes("Notification.label.Open.Answers")%></a>
-                                                <% } else if (OPEN_APP.equals("poll")) { %>
-                                                    <%=_ctx.appRes("Notification.label.Open.Poll")%></a>
-                                                <% }%>
+                                                " href="$OPEN_URL" title=<%=_ctx.appRes("Notification.label.Open.Title")%>""><%=_ctx.appRes("Notification.label.Open")%></a>
                                             <% } %>
                                         <a target="_blank" style="
                                             display: inline-block;
