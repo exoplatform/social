@@ -24,10 +24,12 @@ import org.chromattic.api.query.Query;
 import org.chromattic.api.query.QueryBuilder;
 import org.chromattic.api.query.QueryResult;
 import org.chromattic.core.api.ChromatticSessionImpl;
+
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.chromattic.entity.IdentityEntity;
+import org.exoplatform.social.core.chromattic.entity.ProfileEntity;
 import org.exoplatform.social.core.chromattic.entity.ProviderEntity;
 import org.exoplatform.social.core.chromattic.entity.SpaceEntity;
 import org.exoplatform.social.core.chromattic.entity.SpaceListEntity;
@@ -501,6 +503,13 @@ public class SpaceStorageImpl extends AbstractStorage implements SpaceStorage {
             .or()
             .like(whereExpression.callFunction(QueryFunction.LOWER, SpaceEntity.description), StringEscapeUtils.escapeHtml(spaceNameSearchCondition));
         whereExpression.endGroup();
+
+        List<Space> exclusions = spaceFilter.getExclusions();
+        if (exclusions != null) {
+          for (Space space : exclusions) {
+            whereExpression.and().not().equals(SpaceEntity.name, space.getPrettyName());
+          }
+        }
       }
     }
     else if (!Character.isDigit(firstCharacterOfName)) {

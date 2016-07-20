@@ -41,6 +41,7 @@ import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.shindig.social.opensocial.model.Activity;
+
 import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.container.ExoContainer;
 import org.exoplatform.container.ExoContainerContext;
@@ -63,6 +64,7 @@ import org.exoplatform.social.core.profile.ProfileFilter;
 import org.exoplatform.social.core.relationship.model.Relationship;
 import org.exoplatform.social.core.service.LinkProvider;
 import org.exoplatform.social.core.space.SpaceException;
+import org.exoplatform.social.core.space.SpaceFilter;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
 import org.exoplatform.social.rest.impl.user.UserRestResourcesV1;
@@ -153,46 +155,96 @@ public class PeopleRestService implements ResourceContainer{
     List<Identity> excludedIdentityList = new ArrayList<Identity>();
     excludedIdentityList.add(Util.getViewerIdentity(currentUser));
     UserNameList nameList = new UserNameList();
-    ProfileFilter filter = new ProfileFilter();
-    
-    filter.setName(name);
-    filter.setCompany("");
-    filter.setPosition("");
-    filter.setSkills("");
-    filter.setExcludedIdentityList(excludedIdentityList);
+    ProfileFilter identityFilter = new ProfileFilter();
+
+    identityFilter.setName(name);
+    identityFilter.setCompany("");
+    identityFilter.setPosition("");
+    identityFilter.setSkills("");
+    identityFilter.setExcludedIdentityList(excludedIdentityList);
     
     Identity currentIdentity = getIdentityManager().getOrCreateIdentity(
                                  OrganizationIdentityProvider.NAME, currentUser, false);
 
     Identity[] result;
     if (PENDING_STATUS.equals(typeOfRelation)) {
-      ListAccess<Identity> listAccess = getRelationshipManager().getOutgoingByFilter(currentIdentity, filter);
+      ListAccess<Identity> listAccess = getRelationshipManager().getOutgoingByFilter(currentIdentity, identityFilter);
       result = listAccess.load(0, (int)SUGGEST_LIMIT);
       addToNameList(nameList, result);
     } else if (INCOMING_STATUS.equals(typeOfRelation)) {
-      ListAccess<Identity> listAccess = getRelationshipManager().getIncomingByFilter(currentIdentity, filter);
+      ListAccess<Identity> listAccess = getRelationshipManager().getIncomingByFilter(currentIdentity, identityFilter);
       result = listAccess.load(0, (int)SUGGEST_LIMIT);
       addToNameList(nameList, result);
     } else if (CONFIRMED_STATUS.equals(typeOfRelation)){
-      ListAccess<Identity> listAccess = getRelationshipManager().getConnectionsByFilter(currentIdentity, filter);
+      ListAccess<Identity> listAccess = getRelationshipManager().getConnectionsByFilter(currentIdentity, identityFilter);
       result = listAccess.load(0, (int)SUGGEST_LIMIT);
       addToNameList(nameList, result);
     } else if (SPACE_MEMBER.equals(typeOfRelation)) {  // Use in search space member
-      List<Identity> identities = Arrays.asList(getIdentityManager().getIdentitiesByProfileFilter(OrganizationIdentityProvider.NAME, filter, false).load(0, (int)SUGGEST_LIMIT));
+      List<Identity> identities = Arrays.asList(getIdentityManager().getIdentitiesByProfileFilter(OrganizationIdentityProvider.NAME, identityFilter, false).load(0, (int)SUGGEST_LIMIT));
       Space space = getSpaceService().getSpaceByUrl(spaceURL);
       addSpaceUserToList(identities, nameList, space, typeOfRelation);
-    } else if (USER_TO_INVITE.equals(typeOfRelation)) { 
-      List<Identity> identities = Arrays.asList(getIdentityManager().getIdentitiesByProfileFilter(OrganizationIdentityProvider.NAME, filter, false).load(0, (int)SUGGEST_LIMIT));
+    } else if (USER_TO_INVITE.equals(typeOfRelation)) {
       Space space = getSpaceService().getSpaceByUrl(spaceURL);
-      addSpaceUserToList(identities, nameList, space, typeOfRelation);
+
+      // Search in connections first
+      ListAccess<Identity> connections = getRelationshipManager().getConnectionsByFilter(currentIdentity, identityFilter);
+      if (connections != null && connections.getSize() > 0) {
+        int size = connections.getSize();
+        Identity[] identities = connections.load(0, size < SUGGEST_LIMIT ? size : (int)SUGGEST_LIMIT);
+        for (Identity id : identities) {
+          addSpaceUserToList(Arrays.asList(id), nameList, space, typeOfRelation);
+          excludedIdentityList.add(id);
+        }
+      }
+
+      List<Space> exclusions = new ArrayList<Space>();
+      // Includes spaces the current user is member.
+      long remain = SUGGEST_LIMIT - (nameList.getNames() != null ? nameList.getNames().size() : 0);
+      if (remain > 0) {
+        SpaceFilter spaceFilter = new SpaceFilter();
+        spaceFilter.setSpaceNameSearchCondition(name);
+        ListAccess<Space> list = getSpaceService().getMemberSpacesByFilter(currentUser, spaceFilter);
+        Space[] spaces = list.load(0, (int) remain);
+        for (Space s : spaces) {
+          nameList.addName("space::" + s.getPrettyName());
+          nameList.addFullName(s.getDisplayName());
+          nameList.addAvatar(s.getAvatarUrl());
+          exclusions.add(s);
+        }
+      }
+
+      // Adding all non hidden spaces.
+      remain = SUGGEST_LIMIT - (nameList.getNames() != null ? nameList.getNames().size() : 0);
+      if (remain > 0) {
+        SpaceFilter spaceFilter = new SpaceFilter();
+        spaceFilter.setSpaceNameSearchCondition(name);
+        spaceFilter.addExclusions(exclusions);
+        ListAccess<Space> list = getSpaceService().getVisibleSpacesWithListAccess(currentUser, spaceFilter);
+        Space[] spaces = list.load(0, (int) remain);
+        for (Space s : spaces) {
+          nameList.addName("space::" + s.getPrettyName());
+          nameList.addFullName(s.getDisplayName());
+          nameList.addAvatar(s.getAvatarUrl());
+        }
+      }
+
+      remain = SUGGEST_LIMIT - (nameList.getNames() != null ? nameList.getNames().size() : 0);
+      if (remain > 0) {
+        identityFilter.setExcludedIdentityList(excludedIdentityList);
+        ListAccess<Identity> listAccess = getIdentityManager().getIdentitiesByProfileFilter(OrganizationIdentityProvider.NAME, identityFilter, false);
+        List<Identity> identities = Arrays.asList(listAccess.load(0, (int) remain));
+        addSpaceUserToList(identities, nameList, space, typeOfRelation);
+      }
+
     } else { // Identities that match the keywords.
-      ListAccess<Identity> listAccess = getIdentityManager().getIdentitiesByProfileFilter(currentIdentity.getProviderId(), filter, false);
+      ListAccess<Identity> listAccess = getIdentityManager().getIdentitiesByProfileFilter(currentIdentity.getProviderId(), identityFilter, false);
       result = listAccess.load(0, (int)SUGGEST_LIMIT);
       addToNameList(nameList, result);
     }
+
     return Util.getResponse(nameList, uriInfo, mediaType, Response.Status.OK);
   }
-  
+
   /**
    * Gets users' information that matches the input string.
    * 

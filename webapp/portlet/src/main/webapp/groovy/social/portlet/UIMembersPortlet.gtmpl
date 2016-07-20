@@ -127,7 +127,7 @@ jsManager.require("SHARED/jquery", "jq")
   <!-- End leaders section -->
   <!-- Members section -->
   <h4 class="titleWithBorder">$spaceMemberLabel</h4>
-  <% uicomponent.renderChild(UIProfileUserSearch.class); %>
+  <% uicomponent.renderChildren(); %>
   <div id="spaceMemberListBox" class="memberList spaceMemberListBox clearfix">
     <h4 class="titleWithBorder">$contactsDirectory</h4>
     <!--div class="DirectoryNormalBox"-->

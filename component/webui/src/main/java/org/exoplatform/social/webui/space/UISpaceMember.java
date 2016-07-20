@@ -24,6 +24,7 @@ import java.util.Set;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
+
 import org.exoplatform.commons.utils.LazyPageList;
 import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.container.ExoContainer;
@@ -35,9 +36,11 @@ import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.services.organization.MembershipTypeHandler;
 import org.exoplatform.services.organization.OrganizationService;
 import org.exoplatform.services.organization.User;
+import org.exoplatform.social.core.identity.SpaceMemberFilterListAccess.Type;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.manager.IdentityManager;
+import org.exoplatform.social.core.profile.ProfileFilter;
 import org.exoplatform.social.core.space.SpaceUtils;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
@@ -828,26 +831,48 @@ public class UISpaceMember extends UIForm {
     String invitedUser = null;
     ApplicationMessage appMsg = null;
     invitedUserNames = null;
-    List<String> validUsers = new ArrayList<String>();
-    List<String> invitedUsers = new ArrayList<String>();
+    Set<String> validUsers = new HashSet<String>();
+    Set<String> invitedUsers = new HashSet<String>();
     List<String> memberUsers = new ArrayList<String>();
     List<String> notExistUsers = new ArrayList<String>();
     
     for (String userStr : invitedUserList) {
-      invitedUser = userStr.trim();
-
-      if (invitedUser.length() == 0) {
-        continue;
-      }
-      
-      if (isMember(invitedUser)) {
-        memberUsers.add(invitedUser);
-      } else if (isNotExisted(invitedUser)){
-        notExistUsers.add(invitedUser);
-      } else if (hasInvited(invitedUser)) {
-        invitedUsers.add(invitedUser);
-      } else {
-        validUsers.add(invitedUser);
+      // If it's a space
+      if (userStr.startsWith("space::")) {
+        String spaceName = userStr.substring("space::".length());
+        Space space = spaceService.getSpaceByPrettyName(spaceName);
+        ProfileFilter filter = new ProfileFilter();
+        filter.getExcludedIdentityList().add(Utils.getViewerIdentity());
+        ListAccess<Identity> loader = Utils.getIdentityManager().getSpaceIdentityByProfileFilter(space, filter, Type.MEMBER, true);
+        Identity[] identities = loader.load(0, loader.getSize());
+        for (Identity i : identities) {
+          invitedUser = i.getRemoteId();
+          if (isMember(invitedUser)) {
+            memberUsers.add(invitedUser);
+          } else if (isNotExisted(invitedUser)){
+            notExistUsers.add(invitedUser);
+          } else if (hasInvited(invitedUser)) {
+            invitedUsers.add(invitedUser);
+          } else {
+            validUsers.add(invitedUser);
+          }
+        }
+      } else { // Otherwise, it's an user
+        invitedUser = userStr.trim();
+        
+        if (invitedUser.length() == 0) {
+          continue;
+        }
+        
+        if (isMember(invitedUser)) {
+          memberUsers.add(invitedUser);
+        } else if (isNotExisted(invitedUser)){
+          notExistUsers.add(invitedUser);
+        } else if (hasInvited(invitedUser)) {
+          invitedUsers.add(invitedUser);
+        } else {
+          validUsers.add(invitedUser);
+        }
       }
     }
     
