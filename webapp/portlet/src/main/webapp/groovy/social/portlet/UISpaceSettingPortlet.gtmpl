@@ -25,6 +25,7 @@
   def uicomponentId = uicomponent.id;
 %>
 <div class="uiSpaceSettingPortlet" id="$uicomponent.id">
+  <div id="NotifyAnchor" style="text-align: center; height: 0px"></div>
   <h3 class="mgB15"><%=_ctx.appRes("${uicomponentId}.label.SpaceConfiguration");%></h3>
   <% 
   uicomponent.renderChild(UISpaceSetting.class);

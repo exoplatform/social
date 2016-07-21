@@ -22,6 +22,7 @@
 %>
 <% 
   import org.exoplatform.social.webui.Utils;
+  import org.exoplatform.social.webui.UIUserInvitation;
   import org.exoplatform.webui.core.UIPopupWindow;
   import org.exoplatform.webui.core.UIPageIterator;
   import org.exoplatform.web.application.JavascriptManager;
@@ -57,13 +58,9 @@
   jsmanager.require("SHARED/uiForm");
   jsmanager.require("SHARED/social-ui-space-member-suggestion", "memberSuggestion").addScripts("memberSuggestion.onLoad($params);");
   
-  def invitedUserNames = uicomponent.invitedUserNames;
-  
   Utils.displayFeedbackMessageInline("$uicomponent.id");
 %>
-<div class="uiSpaceMember">
-<% uiform.begin() %>
-
+<div id="$uicomponent.id" class="uiSpaceMember">
 	<%
 	String searchUserAction = uicomponent.event("SearchUser") + "; return false;";
 	String searchGroupAction = uicomponent.event("SearchGroup") + "; return false;";
@@ -73,25 +70,8 @@
 	         .require("SHARED/bts_tooltip").addScripts("jq('*[rel=\"tooltip\"]').tooltip();");
 	%>
 	<div class="addInvite">
-		<% uiform.renderField("user") %>
-		<span class="groupPermissionBox">
-			<a rel="tooltip" type="button" data-placement="bottom" href="javascript:void(0);" onclick="$searchUserAction" title="$labelSearchUserAction" class="actionIcon"><i class="uiIconUser uiIconLightGray"></i></a>
-			<a rel="tooltip" type="button" data-placement="bottom" href="javascript:void(0);" onclick="$searchGroupAction" title="$labelSearchGroupAction" class="actionIcon"><i class="uiIconGroup uiIconLightGray"></i></a>	 			
-		</span>
-		<button class="btn" type="button" onclick="$inviteAction">$labelInviteAction</button>
+		<% uicomponent.renderChild(UIUserInvitation.class) %>
 	</div>	
-	<%
-    if ((invitedUserNames != null) && uicomponent.isHasErr()) {
-  %>
-      <script type="text/javascript">
-        try{
-          var userEl = document.getElementById("user");
-          userEl.value = "$invitedUserNames";
-        }catch(e){};
-      </script>
-  <%
-    } 
-  %>
 
 	<!-- Pending users table -->
 	<% if (pendingUsers.size() > 0) { %>
@@ -188,9 +168,6 @@
 		manageSpacesUrl = uicomponent.manageSpacesUrl;
 		homeSpaceUrl = uicomponent.homeSpaceUrl;
 		}
-		String removeLeader = uicomponent.event("RemoveLeader", user) + "; return false;";
-		String selfRemoveLeader = uicomponent.url('RemoveLeader');
-		String makeLeader = uicomponent.event("MakeLeader", user) + "; return false;";
 		String removeAction = uicomponent.event("RemoveUser", user) + "; return false;";
 		String removeOwnerAction = uicomponent.url('RemoveUser');
 		String toggleLeadership = uicomponent.event("ToggleLeadership", user);
@@ -260,8 +237,4 @@
 		});
   </script>
 <% } %>
-
-
-	<% uiform.end(); %>
-  <% uiform.renderChild(UIPopupWindow.class); %>
 </div>

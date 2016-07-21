@@ -1,0 +1,39 @@
+<%
+String inviteAction = uicomponent.event("Invite") + "; return false;";
+
+String restUrl = uicomponent.getRestURL();
+String value = uicomponent.getValue();
+String placeholder = _ctx.appRes("UIUserInvitation.input.placeholder");
+%>
+<div class="uiUserInvitation">
+  <%
+  def rcontext = _ctx.getRequestContext();
+  def jsManager = rcontext.getJavascriptManager();
+  def requireJs = jsManager.getRequireJS();
+  %>
+    <%
+    if (uicomponent.getMessage() != null) {
+      %>
+      <div class="UINotify alert alert-success">
+      <%=uicomponent.getMessage().getMessage();%>
+      </div>
+      <%
+      uicomponent.addMessage(null);
+      requireJs.require("SHARED/userInvitation", "invite");
+      requireJs.addScripts("invite.notify('.UINotify', '#NotifyAnchor');");
+    }
+    %>
+
+  <% uiform.begin();%>
+  <div class="uiGrayLightBox">
+		<div class="pull-right"><button class="btn" type="button" onclick="$inviteAction">Invite</button></div>
+		<div class="mention-input">
+			<% uiform.renderField("user"); %>
+		</div>
+  </div>
+  <% uiform.end();%>
+  <%
+   requireJs.require("SHARED/userInvitation", "invite");
+   requireJs.addScripts("invite.build('user', '$restUrl', '$placeholder');");
+  %>
+</div>

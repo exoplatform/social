@@ -14,11 +14,12 @@
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, see<http://www.gnu.org/licenses/>.
  */
-package org.exoplatform.social.portlet;
+package org.exoplatform.social.webui;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.ResourceBundle;
 import java.util.Set;
 
 import org.apache.commons.lang.ArrayUtils;
@@ -38,23 +39,20 @@ import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.profile.ProfileFilter;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
-import org.exoplatform.social.webui.Utils;
 import org.exoplatform.web.application.ApplicationMessage;
 import org.exoplatform.web.application.RequestContext;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.EventConfig;
-import org.exoplatform.webui.core.UIApplication;
 import org.exoplatform.webui.core.lifecycle.UIFormLifecycle;
 import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.event.EventListener;
 import org.exoplatform.webui.form.UIForm;
 import org.exoplatform.webui.form.UIFormStringInput;
-import org.exoplatform.webui.form.validator.MandatoryValidator;
 
 @ComponentConfig(
   lifecycle = UIFormLifecycle.class,
-  template = "app:/groovy/social/portlet/UIUserInvitation.gtmpl",
+  template = "war:/groovy/social/webui/UIUserInvitation.gtmpl",
   events = {
       @EventConfig(listeners = UIUserInvitation.InviteActionListener.class)
   }
@@ -63,9 +61,12 @@ public class UIUserInvitation extends UIForm {
   private static final String USER = "user";
   private SpaceService spaceService;
   private String spaceUrl;
+  private ApplicationMessage msg;
+
+  private static final String SPACE_PREFIX = "space::";
 
   public UIUserInvitation() throws Exception {
-    addUIFormInput(new UIFormStringInput(USER, null, null).addValidator(MandatoryValidator.class));
+    addUIFormInput(new UIFormStringInput(USER, null, null));
 
     spaceUrl = org.exoplatform.social.core.space.SpaceUtils.getSpaceUrlByContext();
   }
@@ -92,12 +93,20 @@ public class UIUserInvitation extends UIForm {
     return builder.toString();
   }
 
-  public void addMessage(String msg) {
-    UIMembersPortlet parent = getAncestorOfType(UIMembersPortlet.class);
-    UINotify notify = parent.getChild(UINotify.class);
-    notify.notify(msg);
-    WebuiRequestContext context = WebuiRequestContext.getCurrentInstance();
-    context.addUIComponentToUpdateByAjax(notify);
+  public void addMessage(ApplicationMessage msg) {
+    if (msg != null) {
+      ResourceBundle rb = WebuiRequestContext.getCurrentInstance().getApplicationResourceBundle();
+      msg.setResourceBundle(rb);
+    }
+    this.msg = msg;
+  }
+
+  public ApplicationMessage getMessage() {
+    return this.msg;
+  }
+
+  public String getValue() {
+    return getUIStringInput(USER).getValue();
   }
 
   /**
@@ -117,11 +126,11 @@ public class UIUserInvitation extends UIForm {
     Invalid:
     for (String userStr : invitedUserList) {
       // If it's a space
-      if (userStr.startsWith("space::")) {
-        String spaceName = userStr.substring("space::".length());
+      if (userStr.startsWith(SPACE_PREFIX)) {
+        String spaceName = userStr.substring(SPACE_PREFIX.length());
         Space space = spaceService.getSpaceByPrettyName(spaceName);
         if (space == null) {
-          addMessage("Sorry, could not recognise '" + spaceName + "' as a valid user or space");
+          addMessage(new ApplicationMessage("UIUserInvitation.msg.invalid-input", new String[]{spaceName}));
           return null;
         }
         ProfileFilter filter = new ProfileFilter();
@@ -158,7 +167,7 @@ public class UIUserInvitation extends UIForm {
     }
     
     if (notExistUsers != null) {
-      addMessage("Sorry, could not recognise '" + notExistUsers + "' as a valid user or space");
+      addMessage(new ApplicationMessage("UIUserInvitation.msg.invalid-input", new String[]{notExistUsers}));
       return null;
     } else {
       if (validUsers.size() > 0) {
@@ -215,11 +224,16 @@ public class UIUserInvitation extends UIForm {
    */
   static public class InviteActionListener extends EventListener<UIUserInvitation> {
     public void execute(Event<UIUserInvitation> event) throws Exception {
-      UIUserInvitation uiComponent = event.getSource();
-      WebuiRequestContext requestContext = event.getRequestContext();
-      SpaceService spaceService = uiComponent.getApplicationComponent(SpaceService.class);
-      UIFormStringInput input = uiComponent.getUIStringInput(USER);
-      String invitedUserNames = uiComponent.validateInvitedUser(input.getValue());
+      UIUserInvitation uicomponent = event.getSource();
+      UIFormStringInput input = uicomponent.getUIStringInput(USER);
+      String value = input.getValue();
+      if (value == null || value.trim().isEmpty()) {
+        uicomponent.addMessage(new ApplicationMessage("UIUserInvitation.msg.empty-input", null));
+        return;
+      }
+
+      SpaceService spaceService = uicomponent.getApplicationComponent(SpaceService.class);
+      String invitedUserNames = uicomponent.validateInvitedUser(value);
       Space space = org.exoplatform.social.webui.Utils.getSpaceByContext();
       
       if (invitedUserNames != null) {
@@ -230,7 +244,7 @@ public class UIUserInvitation extends UIForm {
           for (int idx = 0; idx < invitedUsers.length; idx++) {
             name = invitedUsers[idx].trim();
             if (name.length() > 0) {
-              UserACL userACL = uiComponent.getApplicationComponent(UserACL.class);
+              UserACL userACL = uicomponent.getApplicationComponent(UserACL.class);
               if (name.equals(userACL.getSuperUser())) {
                 spaceService.addMember(space, name);
                 continue;
@@ -245,10 +259,10 @@ public class UIUserInvitation extends UIForm {
         }
 
         if (usersForInviting.size() > 0) {
+          ExoContainer container = ExoContainerContext.getCurrentContainer();
+          IdentityManager idm = (IdentityManager) container.getComponentInstanceOfType(IdentityManager.class);
           for (String userName : usersForInviting) {
             // create Identity and Profile nodes if not exist
-            ExoContainer container = ExoContainerContext.getCurrentContainer();
-            IdentityManager idm = (IdentityManager) container.getComponentInstanceOfType(IdentityManager.class);
             Identity identity = idm.getOrCreateIdentity(OrganizationIdentityProvider.NAME, userName, false);
             if (identity != null) {
               // add userName to InvitedUser list of the space
@@ -257,16 +271,15 @@ public class UIUserInvitation extends UIForm {
           }
 
           if (usersForInviting.size() == 1) {
-            uiComponent.addMessage("FULL NAME has been invited to this space.");
+            Identity identity = idm.getOrCreateIdentity(OrganizationIdentityProvider.NAME, usersForInviting.get(0), true);
+            uicomponent.addMessage(new ApplicationMessage("UIUserInvitation.msg.user-invited", new String[]{identity.getProfile().getFullName()}));
           } else {
-            uiComponent.addMessage(usersForInviting.size() + " users have been invited to this space.");
+            uicomponent.addMessage(new ApplicationMessage("UIUserInvitation.msg.users-invited", new String[]{String.valueOf(usersForInviting.size())}));
           }
         }
 
         input.setValue(StringUtils.EMPTY);
       }
-      
-      requestContext.addUIComponentToUpdateByAjax(uiComponent);
     }
   }
 }
