@@ -425,7 +425,6 @@ var UIActivity = {
 
   previewDoc: function(docId, docPath, downloadUrl, openUrl) {
     documentPreview.init(docId, docPath, downloadUrl, openUrl);
-    documentPreview.show();
   }
 };
 //
