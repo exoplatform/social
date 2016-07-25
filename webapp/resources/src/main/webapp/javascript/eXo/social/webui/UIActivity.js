@@ -395,10 +395,35 @@ var UIActivity = {
       //
       activities.off('click').click(eXo.social.SocialUtil.onViewActivity(UIActivity.responsiveId));
     }
+  },
+
+  /**
+   * show/hide the ellipsis on the left of file breadcrumb is it is overflowed on window resizing
+   */
+  adaptFileBreadCrumb : function() {
+    var breadcrumbs = $('.fileBreadCrumb');
+    // for each breadcrumb of the page...
+    breadcrumbs.each(function() {
+      var breadcrumbContent = $(this).find('.fileBreadCrumbContent');
+      // do not process empty breadcrumbs
+      if(breadcrumbContent.length > 0) {
+        var breadcrumbSpan = breadcrumbContent.find('span');
+        if(breadcrumbContent.width() < breadcrumbSpan.width()) {
+          // if the breadcrumb is overflowed, display the ellipsis
+          var ellipsis = $(this).find('.fixedBreadCrumb');
+          ellipsis.addClass('active');
+        } else {
+          // otherwise, hide it
+          var ellipsis = $(this).find('.fixedBreadCrumb');
+          ellipsis.removeClass('active');
+        }
+      }
+    });
   }
-  
+
 };
 //
 eXo.social.SocialUtil.addOnResizeWidth(function(evt){UIActivity.responsiveMobile()});
+eXo.social.SocialUtil.addOnResizeWidth(function(evt){UIActivity.adaptFileBreadCrumb()});
 return UIActivity;
 })($, mentions._);
