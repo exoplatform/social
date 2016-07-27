@@ -16,7 +16,6 @@
  */
 package org.exoplatform.social.webui.composer;
 
-import org.exoplatform.commons.utils.HTMLSanitizer;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.activity.model.ExoSocialActivityImpl;
 import org.exoplatform.social.core.application.PeopleService;
@@ -63,7 +62,7 @@ public class UIDefaultActivityComposer extends UIActivityComposer {
                                                                               false);
       activity = new ExoSocialActivityImpl(Utils.getViewerIdentity().getId(),
                                            SpaceActivityPublisher.SPACE_APP_ID,
-                                           HTMLSanitizer.sanitize(postedMessage),
+                                           postedMessage,
                                            null);
       activity.setType(UIDefaultActivity.ACTIVITY_TYPE);
       Utils.getActivityManager().saveActivityNoReturn(spaceIdentity, activity);
@@ -74,7 +73,7 @@ public class UIDefaultActivityComposer extends UIActivityComposer {
                                                                               false);
       activity = new ExoSocialActivityImpl(Utils.getViewerIdentity().getId(),
                                            PeopleService.PEOPLE_APP_ID,
-                                           HTMLSanitizer.sanitize(postedMessage),
+                                           postedMessage,
                                            null);
       activity.setType(UIDefaultActivity.ACTIVITY_TYPE);
       //
