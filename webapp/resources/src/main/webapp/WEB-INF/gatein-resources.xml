@@ -24,27 +24,6 @@
         xmlns="http://www.gatein.org/xml/ns/gatein_resources_1_3">
 
   <module>
-    <name>selectize</name>
-    <script>
-      <adapter>
-        (function() {
-          var oldJQuery = this.jQuery;
-          this.jQuery = jquery;
-
-          <include>/javascript/selectize.js</include>
-
-          this.jQuery = oldJQuery;
-          return this.Selectize;
-        })();
-      </adapter>
-    </script>
-    <depends>
-      <module>jquery</module>
-      <as>jquery</as>
-    </depends>
-  </module>
-
-  <module>
     <name>userInvitation</name>
     <script>
       <path>/javascript/eXo/social/webui/UIUserInvitation.js</path>
@@ -53,7 +32,7 @@
       <module>jquery</module>
     </depends>
     <depends>
-      <module>selectize</module>
+      <module>suggester</module>
     </depends>
   </module>
 

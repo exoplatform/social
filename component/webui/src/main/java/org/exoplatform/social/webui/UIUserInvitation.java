@@ -119,7 +119,6 @@ public class UIUserInvitation extends UIForm {
     String invitedUser = null;
     String invitedUserNames = null;
     Set<String> validUsers = new HashSet<String>();
-    Set<String> invitedUsers = new HashSet<String>();
     String notExistUsers = null;
     SpaceService spaceService = getSpaceService();
 
@@ -134,19 +133,11 @@ public class UIUserInvitation extends UIForm {
           return null;
         }
         ProfileFilter filter = new ProfileFilter();
-        filter.getExcludedIdentityList().add(Utils.getViewerIdentity());
         ListAccess<Identity> loader = Utils.getIdentityManager().getSpaceIdentityByProfileFilter(space, filter, Type.MEMBER, true);
         Identity[] identities = loader.load(0, loader.getSize());
         for (Identity i : identities) {
           invitedUser = i.getRemoteId();
-          if (isNotExisted(invitedUser)){
-            notExistUsers = invitedUser;
-            break Invalid;
-          } else if (hasInvited(invitedUser)) {
-            invitedUsers.add(invitedUser);
-          } else {
-            validUsers.add(invitedUser);
-          }
+          validUsers.add(invitedUser);
         }
       } else { // Otherwise, it's an user
         invitedUser = userStr.trim();
@@ -158,8 +149,6 @@ public class UIUserInvitation extends UIForm {
         if (isNotExisted(invitedUser)){
           notExistUsers = invitedUser;
           break Invalid;
-        } else if (hasInvited(invitedUser)) {
-          invitedUsers.add(invitedUser);
         } else {
           validUsers.add(invitedUser);
         }
@@ -194,7 +183,7 @@ public class UIUserInvitation extends UIForm {
     SpaceService spaceService = getSpaceService();
     Space space = org.exoplatform.social.webui.Utils.getSpaceByContext();
     try {
-      if (spaceService.isInvitedUser(space, userId)) {
+      if (spaceService.isInvitedUser(space, userId) || spaceService.isMember(space, userId)) {
         return true;
       }
     } catch (Exception e) {
@@ -251,7 +240,7 @@ public class UIUserInvitation extends UIForm {
               }
               
               if (!usersForInviting.contains(name) &&
-                  !ArrayUtils.contains(space.getPendingUsers(), name)) {
+                  !ArrayUtils.contains(space.getPendingUsers(), name) && !uicomponent.hasInvited(name)) {
                 usersForInviting.add(name);
               }
             }
