@@ -141,7 +141,7 @@ var UIActivity = {
         },
         messages : window.eXo.social.I18n.mentions
     });
-  
+
     var actionDeletes = $('a.controllDelete');
     if (actionDeletes.length > 0) {
       actionDeletes.off('click').on('click', function(e) {
@@ -163,6 +163,8 @@ var UIActivity = {
         }
       );
     }
+
+    this.adaptFileBreadCrumb();
   },
   loadLikes : function (activity) {
     var likeBox = $(activity).find('.listLikedBox:first');
