@@ -141,7 +141,7 @@ var UIActivity = {
         },
         messages : window.eXo.social.I18n.mentions
     });
-  
+
     var actionDeletes = $('a.controllDelete');
     if (actionDeletes.length > 0) {
       actionDeletes.off('click').on('click', function(e) {
@@ -163,6 +163,8 @@ var UIActivity = {
         }
       );
     }
+
+    this.adaptFileBreadCrumb();
   },
   loadLikes : function (activity) {
     var likeBox = $(activity).find('.listLikedBox:first');
@@ -395,10 +397,35 @@ var UIActivity = {
       //
       activities.off('click').click(eXo.social.SocialUtil.onViewActivity(UIActivity.responsiveId));
     }
+  },
+
+  /**
+   * show/hide the ellipsis on the left of file breadcrumb is it is overflowed on window resizing
+   */
+  adaptFileBreadCrumb : function() {
+    var breadcrumbs = $('.fileBreadCrumb');
+    // for each breadcrumb of the page...
+    breadcrumbs.each(function() {
+      var breadcrumbContent = $(this).find('.fileBreadCrumbContent');
+      // do not process empty breadcrumbs
+      if(breadcrumbContent.length > 0) {
+        var breadcrumbSpan = breadcrumbContent.find('span');
+        if(breadcrumbContent.width() < breadcrumbSpan.width()) {
+          // if the breadcrumb is overflowed, display the ellipsis
+          var ellipsis = $(this).find('.fixedBreadCrumb');
+          ellipsis.addClass('active');
+        } else {
+          // otherwise, hide it
+          var ellipsis = $(this).find('.fixedBreadCrumb');
+          ellipsis.removeClass('active');
+        }
+      }
+    });
   }
-  
+
 };
 //
 eXo.social.SocialUtil.addOnResizeWidth(function(evt){UIActivity.responsiveMobile()});
+eXo.social.SocialUtil.addOnResizeWidth(function(evt){UIActivity.adaptFileBreadCrumb()});
 return UIActivity;
 })($, mentions._);
