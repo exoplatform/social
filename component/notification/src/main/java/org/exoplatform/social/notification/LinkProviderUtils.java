@@ -261,8 +261,15 @@ public static final String RESOURCE_URL = "social/notifications";
       } else if (activity.getType().equals("files:spaces")) {
         Map<String, String> templateParams = activity.getTemplateParams();
         String workspace = templateParams.get("WORKSPACE");
+        if(workspace == null) {
+          workspace = templateParams.get("workspace");
+        }
         String nodePath = templateParams.get("DOCPATH");
-        if (workspace !=null && nodePath != null) {
+        if(nodePath == null) {
+          nodePath = templateParams.get("nodePath");
+        }
+
+        if(workspace != null && nodePath != null) {
           String[] splitedPath = nodePath.split("/");
           if (splitedPath[1].equals("Groups") && splitedPath[2].equals("spaces")) {
             return CommonsUtils.getCurrentDomain() + LinkProvider.getRedirectSpaceUri(getSpaceDocuments(splitedPath[3]) +
@@ -270,15 +277,6 @@ public static final String RESOURCE_URL = "social/notifications";
           } else {
             return CommonsUtils.getCurrentDomain() + LinkProvider.getRedirectUri("documents" +
                     "?path=" + capitalizeFirstLetter(workspace) + nodePath + "&notification=true");
-          }
-        } else {
-          workspace = templateParams.get("workspace");
-          nodePath = templateParams.get("nodePath");
-          String[] splitedPath = nodePath.split("/");
-          if (splitedPath[1].equals("Groups") && splitedPath[2].equals("spaces")) {
-            return LinkProvider.getRedirectSpaceUri(getSpaceDocuments(splitedPath[3]) + "?path=" + capitalizeFirstLetter(workspace) + nodePath + "&notification=true");
-          } else {
-            return LinkProvider.getRedirectUri("documents" + "?path=" + capitalizeFirstLetter(workspace) + nodePath + "&notification=true");
           }
         }
       }
