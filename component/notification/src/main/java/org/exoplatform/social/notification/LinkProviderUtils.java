@@ -274,10 +274,10 @@ public static final String RESOURCE_URL = "social/notifications";
             String[] splitedPath = nodePath.split("/");
             if (splitedPath[1].equals("Groups") && splitedPath[2].equals("spaces")) {
               return CommonsUtils.getCurrentDomain() + LinkProvider.getRedirectSpaceUri(getSpaceDocuments(splitedPath[3]) +
-                      "?path=" + capitalizeFirstLetter(workspace) + nodePath + "&notification=true");
+                      "?path=" + capitalizeFirstLetter(workspace) + nodePath);
             } else {
               return CommonsUtils.getCurrentDomain() + LinkProvider.getRedirectUri("documents" +
-                      "?path=" + capitalizeFirstLetter(workspace) + nodePath + "&notification=true");
+                      "?path=" + capitalizeFirstLetter(workspace) + nodePath);
             }
           }
         }
@@ -296,13 +296,13 @@ public static final String RESOURCE_URL = "social/notifications";
 
   private static String getContentPath(String workspace, String nodepath) throws Exception {
     return CommonsUtils.getCurrentDomain() + "/" + PortalContainer.getCurrentPortalContainerName() + "/documents?path="
-            + capitalizeFirstLetter(workspace) + nodepath + "&notification=true";
+            + capitalizeFirstLetter(workspace) + nodepath;
   }
 
   private static String getContentSpacePath(String workspace, String nodepath) throws Exception {
     String space = nodepath.split("/")[3];
     return CommonsUtils.getCurrentDomain() + "/" + PortalContainer.getCurrentPortalContainerName() + "/g/:spaces:"
-            + space + "/" +space + "/documents?path=" + capitalizeFirstLetter(workspace) + nodepath + "&notification=true";
+            + space + "/" +space + "/documents?path=" + capitalizeFirstLetter(workspace) + nodepath;
   }
 
   private static String capitalizeFirstLetter(String str) throws Exception {
