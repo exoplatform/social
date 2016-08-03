@@ -104,13 +104,8 @@ public class MailTemplateProvider extends TemplateProvider {
       SocialNotificationUtils.addFooterAndFirstName(notification.getTo(), templateContext);
       templateContext.put("PROFILE_URL", LinkProviderUtils.getRedirectUrl("user", identity.getRemoteId()));
       templateContext.put("COMMENT", NotificationUtils.processLinkTitle(activity.getTitle()));
-      try {
-        templateContext.put("OPEN_URL", LinkProviderUtils.getOpenLink(activity, true));
-        templateContext.put("IS_FILE", activity.getType().equals("files:spaces"));
-
-      } catch (Exception e) {
-        LOG.error(e.getMessage(), e);
-      }
+      templateContext.put("OPEN_URL", LinkProviderUtils.getOpenLink(activity, true));
+      templateContext.put("IS_FILE", "files:spaces".equals(activity.getType()));
       templateContext.put("REPLY_ACTION_URL", LinkProviderUtils.getRedirectUrl("reply_activity_highlight_comment", parentActivity.getId() + "-" + activity.getId()));
       templateContext.put("VIEW_FULL_DISCUSSION_ACTION_URL", LinkProviderUtils.getRedirectUrl("view_full_activity_highlight_comment", parentActivity.getId() + "-" + activity.getId()));
 
@@ -175,13 +170,9 @@ public class MailTemplateProvider extends TemplateProvider {
       
       templateContext.put("AVATAR", LinkProviderUtils.getUserAvatarUrl(identity.getProfile()));
       templateContext.put("PROFILE_URL", LinkProviderUtils.getRedirectUrl("user", identity.getRemoteId()));
+      templateContext.put("OPEN_URL", LinkProviderUtils.getOpenLink(activity, false));
+      templateContext.put("IS_FILE", "files:spaces".equals(activity.getType()));
       String body = "";
-      try {
-        templateContext.put("OPEN_URL", LinkProviderUtils.getOpenLink(activity, false));
-        templateContext.put("IS_FILE", activity.getType().equals("files:spaces"));
-      } catch (Exception e) {
-        LOG.error(e.getMessage(), e);
-      }
       // In case of mention on a comment, we need provide the id of the activity, not of the comment
       if (activity.isComment()) {
         ExoSocialActivity parentActivity = Utils.getActivityManager().getParentActivity(activity);
@@ -258,12 +249,8 @@ public class MailTemplateProvider extends TemplateProvider {
       String subject = TemplateUtils.processSubject(templateContext);
 
       templateContext.put("PROFILE_URL", LinkProviderUtils.getRedirectUrl("user", identity.getRemoteId()));
-      try {
-        templateContext.put("OPEN_URL", LinkProviderUtils.getOpenLink(activity, false));
-        templateContext.put("IS_FILE", activity.getType().equals("files:spaces"));
-      } catch (Exception e) {
-        LOG.error(e.getMessage(), e);
-      }
+      templateContext.put("OPEN_URL", LinkProviderUtils.getOpenLink(activity, false));
+      templateContext.put("IS_FILE", "files:spaces".equals(activity.getType()));
       templateContext.put("REPLY_ACTION_URL", LinkProviderUtils.getRedirectUrl("reply_activity", activity.getId()));
       templateContext.put("VIEW_FULL_DISCUSSION_ACTION_URL", LinkProviderUtils.getRedirectUrl("view_full_activity", activity.getId()));
 
@@ -408,12 +395,8 @@ public class MailTemplateProvider extends TemplateProvider {
       String subject = TemplateUtils.processSubject(templateContext);
       
       templateContext.put("PROFILE_URL", LinkProviderUtils.getRedirectUrl("user", identity.getRemoteId()));
-      try {
-        templateContext.put("OPEN_URL", LinkProviderUtils.getOpenLink(activity, false));
-        templateContext.put("IS_FILE", activity.getType().equals("files:spaces"));
-      } catch (Exception e) {
-        LOG.error(e.getMessage(), e);
-      }
+      templateContext.put("OPEN_URL", LinkProviderUtils.getOpenLink(activity, false));
+      templateContext.put("IS_FILE", "files:spaces".equals(activity.getType()));
       templateContext.put("REPLY_ACTION_URL", LinkProviderUtils.getRedirectUrl("reply_activity", activity.getId()));
       templateContext.put("VIEW_FULL_DISCUSSION_ACTION_URL", LinkProviderUtils.getRedirectUrl("view_full_activity", activity.getId()));
       
@@ -479,12 +462,8 @@ public class MailTemplateProvider extends TemplateProvider {
       
       Space space = Utils.getSpaceService().getSpaceByPrettyName(spaceIdentity.getRemoteId());
       templateContext.put("SPACE_URL", LinkProviderUtils.getRedirectUrl("space", space.getId()));
-      try {
-        templateContext.put("OPEN_URL", LinkProviderUtils.getOpenLink(activity, false));
-        templateContext.put("IS_FILE", activity.getType().equals("files:spaces"));
-      } catch (Exception e) {
-        LOG.error(e.getMessage(), e);
-      }
+      templateContext.put("OPEN_URL", LinkProviderUtils.getOpenLink(activity, false));
+      templateContext.put("IS_FILE", "files:spaces".equals(activity.getType()));
       templateContext.put("PROFILE_URL", LinkProviderUtils.getRedirectUrl("user", identity.getRemoteId()));
       templateContext.put("REPLY_ACTION_URL", LinkProviderUtils.getRedirectUrl("reply_activity", activity.getId()));
       templateContext.put("VIEW_FULL_DISCUSSION_ACTION_URL", LinkProviderUtils.getRedirectUrl("view_full_activity", activity.getId()));

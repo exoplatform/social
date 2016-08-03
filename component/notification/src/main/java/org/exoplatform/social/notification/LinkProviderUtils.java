@@ -221,64 +221,69 @@ public static final String RESOURCE_URL = "social/notifications";
     return CommonsUtils.getCurrentDomain() + ((space != null && space.getAvatarUrl() != null) ? space.getAvatarUrl() : LinkProvider.SPACE_DEFAULT_AVATAR_URL);
   }
 
-  public static String getOpenLink(ExoSocialActivity activity, boolean isComment) throws Exception {
+  public static String getOpenLink(ExoSocialActivity activity, boolean isComment) {
     if (activity.getType() != null) {
-      if (activity.getType().equals("ks-wiki:spaces")) {
-        return CommonsUtils.getCurrentDomain() + activity.getTemplateParams().get("page_url");
-      } else if (activity.getType().equals("ks-forum:spaces")) {
-        if (isComment) {
-          if (!activity.getTitleId().equals("forum.remove-poll")) {
-            return activity.getTemplateParams().get("PostLink");
+      try {
+        if (activity.getType().equals("ks-wiki:spaces")) {
+          return CommonsUtils.getCurrentDomain() + activity.getTemplateParams().get("page_url");
+        } else if (activity.getType().equals("ks-forum:spaces")) {
+          if (isComment) {
+            if (!activity.getTitleId().equals("forum.remove-poll")) {
+              return activity.getTemplateParams().get("PostLink");
+            }
+          } else {
+            return CommonsUtils.getCurrentDomain() + activity.getTemplateParams().get("TopicLink");
           }
-        } else {
-          return CommonsUtils.getCurrentDomain() + activity.getTemplateParams().get("TopicLink");
-        }
-      } else if (activity.getType().equals("cs-calendar:spaces")) {
-        return CommonsUtils.getCurrentDomain() + activity.getTemplateParams().get("EventLink");
-      } else if (activity.getType().contains("contents:spaces")) {
-        Map<String,String> templateParams = activity.getTemplateParams();
-        String workspace = templateParams.get("workspace");
-        String nodePath = templateParams.get("nodePath");
-        String[] splitedPath = nodePath.split("/");
-        if (splitedPath[1].equals("Groups") && splitedPath[2].equals("spaces")) {
-          return getContentSpacePath(workspace, nodePath);
-        } else {
-          return getContentPath(workspace, nodePath);
-        }
-      } else if (activity.getType().contains("answer:spaces")) {
-        if (isComment) {
-          return CommonsUtils.getCurrentDomain() + Utils.getActivityManager().getParentActivity(activity).getTemplateParams().get("Link");
-        } else {
-          return activity.getTemplateParams().get("Link");
-        }
-      } else if (activity.getType().equals("ks-poll:spaces")) {
-        try {
-          return CommonsUtils.getCurrentDomain() + CommonsUtils.getService(ForumService.class)
-                  .getTopicByPath(activity.getTemplateParams().get("PollLink"), false).getLink();
-        } catch (Exception e) {
-          LOG.error(e.getMessage(), e);
-        }
-      } else if (activity.getType().equals("files:spaces")) {
-        Map<String, String> templateParams = activity.getTemplateParams();
-          String workspace = templateParams.get("WORKSPACE");
-        if(workspace == null) {
-          workspace = templateParams.get("workspace");
-        }
-        String nodePath = templateParams.get("DOCPATH");
-        if(nodePath == null) {
-          nodePath = templateParams.get("nodePath");
-        }
-
-        if(workspace != null && nodePath != null) {
+        } else if (activity.getType().equals("cs-calendar:spaces")) {
+          return CommonsUtils.getCurrentDomain() + activity.getTemplateParams().get("EventLink");
+        } else if (activity.getType().contains("contents:spaces")) {
+          Map<String, String> templateParams = activity.getTemplateParams();
+          String workspace = templateParams.get("workspace");
+          String nodePath = templateParams.get("nodePath");
           String[] splitedPath = nodePath.split("/");
           if (splitedPath[1].equals("Groups") && splitedPath[2].equals("spaces")) {
-            return CommonsUtils.getCurrentDomain() + LinkProvider.getRedirectSpaceUri(getSpaceDocuments(splitedPath[3]) +
-                    "?path=" + capitalizeFirstLetter(workspace) + nodePath + "&notification=true");
+            return getContentSpacePath(workspace, nodePath);
           } else {
-            return CommonsUtils.getCurrentDomain() + LinkProvider.getRedirectUri("documents" +
-                    "?path=" + capitalizeFirstLetter(workspace) + nodePath + "&notification=true");
+            return getContentPath(workspace, nodePath);
+          }
+        } else if (activity.getType().contains("answer:spaces")) {
+          if (isComment) {
+            return CommonsUtils.getCurrentDomain() + Utils.getActivityManager().getParentActivity(activity).getTemplateParams().get("Link");
+          } else {
+            return activity.getTemplateParams().get("Link");
+          }
+        } else if (activity.getType().equals("ks-poll:spaces")) {
+          try {
+            return CommonsUtils.getCurrentDomain() + CommonsUtils.getService(ForumService.class)
+                    .getTopicByPath(activity.getTemplateParams().get("PollLink"), false).getLink();
+          } catch (Exception e) {
+            LOG.error(e.getMessage(), e);
+          }
+        } else if (activity.getType().equals("files:spaces")) {
+          Map<String, String> templateParams = activity.getTemplateParams();
+          String workspace = templateParams.get("WORKSPACE");
+          if (workspace == null) {
+            workspace = templateParams.get("workspace");
+          }
+          String nodePath = templateParams.get("DOCPATH");
+          if (nodePath == null) {
+            nodePath = templateParams.get("nodePath");
+          }
+
+          if (workspace != null && nodePath != null) {
+            String[] splitedPath = nodePath.split("/");
+            if (splitedPath[1].equals("Groups") && splitedPath[2].equals("spaces")) {
+              return CommonsUtils.getCurrentDomain() + LinkProvider.getRedirectSpaceUri(getSpaceDocuments(splitedPath[3]) +
+                      "?path=" + capitalizeFirstLetter(workspace) + nodePath + "&notification=true");
+            } else {
+              return CommonsUtils.getCurrentDomain() + LinkProvider.getRedirectUri("documents" +
+                      "?path=" + capitalizeFirstLetter(workspace) + nodePath + "&notification=true");
+            }
           }
         }
+      } catch (Exception e) {
+        LOG.error("Cannot get open link for activity " + activity.getId() + " : " + e.getMessage(), e);
+        return null;
       }
     }
 
