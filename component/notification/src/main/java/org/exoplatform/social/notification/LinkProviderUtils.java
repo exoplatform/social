@@ -260,7 +260,7 @@ public static final String RESOURCE_URL = "social/notifications";
         }
       } else if (activity.getType().equals("files:spaces")) {
         Map<String, String> templateParams = activity.getTemplateParams();
-        String workspace = templateParams.get("WORKSPACE");
+          String workspace = templateParams.get("WORKSPACE");
         if(workspace == null) {
           workspace = templateParams.get("workspace");
         }
@@ -280,10 +280,9 @@ public static final String RESOURCE_URL = "social/notifications";
           }
         }
       }
-    } else {
-      return  "none";
     }
-    return "none";
+
+    return null;
   }
 
   private static String getSpaceDocuments(String space) {

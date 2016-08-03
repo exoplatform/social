@@ -61,7 +61,7 @@
 																														<p style="margin: 0 0 5px;line-height:16px;font-family:HelveticaNeue,Helvetica,Arial,sans-serif;color:#333333">
 																															<%=profileUrl%><strong style="color: #2f5e92; font-size: 13px;">:</strong>
 																														</p>
-                                                                                                                        <% if (!OPEN_URL.equals("none") && !IS_FILE.equals("true")) { %>
+                                                                                                                        <% if (OPEN_URL != null && !IS_FILE.equals("true")) { %>
                                                                                                                             <a href="$OPEN_URL">$COMMENT</a>
                                                                                                                         <% } else { %>
                                                                                                                             $COMMENT
@@ -76,7 +76,7 @@
                                     </table>
                                     <br/>
                                     <p style="margin: 0 0 20px;">
-                                        <% if (!OPEN_URL.equals("none")) { %>
+                                        <% if (OPEN_URL != null) { %>
                                             <a target="_blank" style="
                                                 display: inline-block;
                                                 text-decoration: none;
