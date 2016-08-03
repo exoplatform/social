@@ -61,11 +61,7 @@
 																														<p style="margin: 0 0 5px;line-height:16px;font-family:HelveticaNeue,Helvetica,Arial,sans-serif;color:#333333">
 																															<%=profileUrl%><strong style="color: #2f5e92; font-size: 13px;">:</strong>
 																														</p>
-                                                                                                                        <% if (OPEN_URL != null) { %>
-                                                                                                                            <a href="$OPEN_URL">$COMMENT</a>
-                                                                                                                        <% } else { %>
-                                                                                                                            $COMMENT
-                                                                                                                        <% } %>
+                                                            $COMMENT
 																													</td>
 																												</tr>
 																											</tbody>

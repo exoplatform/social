@@ -29,12 +29,7 @@
                                         <tbody>
                                             <tr>
                                                 <td align="left" bgcolor="#ffffff" style="background-color: #f9f9f9; padding: 15px 20px;">
-                                                    <p style="margin: 5px 0; line-height: 16px; font-family: HelveticaNeue, Helvetica, Arial, sans-serif"><% if (OPEN_URL != null) { %>
-                                                                                                                                                            <a href="$OPEN_URL">$ACTIVITY</ a >
-                                                                                                                                                          <% } else { %>
-                                                                                                                                                            $ACTIVITY
-                                                                                                                                                          <% } %>
-                                                    </p>
+                                                    <p style="margin: 5px 0; line-height: 16px; font-family: HelveticaNeue, Helvetica, Arial, sans-serif">$ACTIVITY</p>
                                                 </td>
                                             </tr>
                                         </tbody>
