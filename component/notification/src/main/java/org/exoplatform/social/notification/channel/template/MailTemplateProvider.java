@@ -105,7 +105,6 @@ public class MailTemplateProvider extends TemplateProvider {
       templateContext.put("PROFILE_URL", LinkProviderUtils.getRedirectUrl("user", identity.getRemoteId()));
       templateContext.put("COMMENT", NotificationUtils.processLinkTitle(activity.getTitle()));
       templateContext.put("OPEN_URL", LinkProviderUtils.getOpenLink(activity, true));
-      templateContext.put("IS_FILE", "files:spaces".equals(activity.getType()));
       templateContext.put("REPLY_ACTION_URL", LinkProviderUtils.getRedirectUrl("reply_activity_highlight_comment", parentActivity.getId() + "-" + activity.getId()));
       templateContext.put("VIEW_FULL_DISCUSSION_ACTION_URL", LinkProviderUtils.getRedirectUrl("view_full_activity_highlight_comment", parentActivity.getId() + "-" + activity.getId()));
 
@@ -171,7 +170,6 @@ public class MailTemplateProvider extends TemplateProvider {
       templateContext.put("AVATAR", LinkProviderUtils.getUserAvatarUrl(identity.getProfile()));
       templateContext.put("PROFILE_URL", LinkProviderUtils.getRedirectUrl("user", identity.getRemoteId()));
       templateContext.put("OPEN_URL", LinkProviderUtils.getOpenLink(activity, false));
-      templateContext.put("IS_FILE", "files:spaces".equals(activity.getType()));
       String body = "";
       // In case of mention on a comment, we need provide the id of the activity, not of the comment
       if (activity.isComment()) {
@@ -250,7 +248,6 @@ public class MailTemplateProvider extends TemplateProvider {
 
       templateContext.put("PROFILE_URL", LinkProviderUtils.getRedirectUrl("user", identity.getRemoteId()));
       templateContext.put("OPEN_URL", LinkProviderUtils.getOpenLink(activity, false));
-      templateContext.put("IS_FILE", "files:spaces".equals(activity.getType()));
       templateContext.put("REPLY_ACTION_URL", LinkProviderUtils.getRedirectUrl("reply_activity", activity.getId()));
       templateContext.put("VIEW_FULL_DISCUSSION_ACTION_URL", LinkProviderUtils.getRedirectUrl("view_full_activity", activity.getId()));
 
@@ -396,7 +393,6 @@ public class MailTemplateProvider extends TemplateProvider {
       
       templateContext.put("PROFILE_URL", LinkProviderUtils.getRedirectUrl("user", identity.getRemoteId()));
       templateContext.put("OPEN_URL", LinkProviderUtils.getOpenLink(activity, false));
-      templateContext.put("IS_FILE", "files:spaces".equals(activity.getType()));
       templateContext.put("REPLY_ACTION_URL", LinkProviderUtils.getRedirectUrl("reply_activity", activity.getId()));
       templateContext.put("VIEW_FULL_DISCUSSION_ACTION_URL", LinkProviderUtils.getRedirectUrl("view_full_activity", activity.getId()));
       
@@ -463,7 +459,6 @@ public class MailTemplateProvider extends TemplateProvider {
       Space space = Utils.getSpaceService().getSpaceByPrettyName(spaceIdentity.getRemoteId());
       templateContext.put("SPACE_URL", LinkProviderUtils.getRedirectUrl("space", space.getId()));
       templateContext.put("OPEN_URL", LinkProviderUtils.getOpenLink(activity, false));
-      templateContext.put("IS_FILE", "files:spaces".equals(activity.getType()));
       templateContext.put("PROFILE_URL", LinkProviderUtils.getRedirectUrl("user", identity.getRemoteId()));
       templateContext.put("REPLY_ACTION_URL", LinkProviderUtils.getRedirectUrl("reply_activity", activity.getId()));
       templateContext.put("VIEW_FULL_DISCUSSION_ACTION_URL", LinkProviderUtils.getRedirectUrl("view_full_activity", activity.getId()));

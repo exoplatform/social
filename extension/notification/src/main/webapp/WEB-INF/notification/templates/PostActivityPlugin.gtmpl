@@ -29,7 +29,7 @@
                                         <tbody>
                                             <tr>
                                                 <td align="left" bgcolor="#ffffff" style="background-color: #f9f9f9; padding: 0;">
-                                                    <% if (OPEN_URL != null && !IS_FILE.equals("true")) { %>
+                                                    <% if (OPEN_URL != null) { %>
                                                         <a href="$OPEN_URL">$ACTIVITY</a>
                                                     <% } else { %>
                                                         $ACTIVITY
