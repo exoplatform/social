@@ -1,8 +1,6 @@
 package org.exoplatform.social.notification;
 
-import org.exoplatform.commons.api.notification.service.template.TemplateContext;
 import org.exoplatform.commons.utils.CommonsUtils;
-import org.exoplatform.container.PortalContainer;
 import org.exoplatform.forum.service.ForumService;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
@@ -10,6 +8,7 @@ import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.service.LinkProvider;
 import org.exoplatform.social.core.space.model.Space;
+import org.exoplatform.social.core.activity.model.ActivityPluginType;
 
 import java.util.Map;
 
@@ -221,36 +220,43 @@ public static final String RESOURCE_URL = "social/notifications";
     return CommonsUtils.getCurrentDomain() + ((space != null && space.getAvatarUrl() != null) ? space.getAvatarUrl() : LinkProvider.SPACE_DEFAULT_AVATAR_URL);
   }
 
+  /**
+   * Get the open link for each type of notification
+   * @param activity The activity of the notification
+   * @param isComment Is the activity a comment
+   * @return The link to open the related resource (file, event, wiki page, ...)
+   */
   public static String getOpenLink(ExoSocialActivity activity, boolean isComment) {
-    if (activity.getType() != null) {
+    String activityType = activity.getType();
+    if (activityType != null) {
       try {
-        if (activity.getType().equals("ks-wiki:spaces")) {
-          return CommonsUtils.getCurrentDomain() + activity.getTemplateParams().get("page_url");
-        } else if (activity.getType().equals("ks-forum:spaces")) {
+        Map<String, String> templateParams = activity.getTemplateParams();
+        if (activityType.equals(ActivityPluginType.WIKI.getName())) {
+          return CommonsUtils.getCurrentDomain() + templateParams.get("page_url");
+        } else if (activityType.equals(ActivityPluginType.FORUM.getName())) {
           if (isComment) {
             if (!activity.getTitleId().equals("forum.remove-poll")) {
-              return activity.getTemplateParams().get("PostLink");
+              return templateParams.get("PostLink");
             }
           } else {
-            return CommonsUtils.getCurrentDomain() + activity.getTemplateParams().get("TopicLink");
+            return CommonsUtils.getCurrentDomain() + templateParams.get("TopicLink");
           }
-        } else if (activity.getType().equals("cs-calendar:spaces")) {
-          return CommonsUtils.getCurrentDomain() + activity.getTemplateParams().get("EventLink");
-        } else if (activity.getType().contains("answer:spaces")) {
+        } else if (activityType.equals(ActivityPluginType.CALENDAR.getName())) {
+          return CommonsUtils.getCurrentDomain() + templateParams.get("EventLink");
+        } else if (activityType.contains(ActivityPluginType.ANSWER.getName())) {
           if (isComment) {
             return CommonsUtils.getCurrentDomain() + Utils.getActivityManager().getParentActivity(activity).getTemplateParams().get("Link");
           } else {
-            return activity.getTemplateParams().get("Link");
+            return templateParams.get("Link");
           }
-        } else if (activity.getType().equals("ks-poll:spaces")) {
+        } else if (activityType.equals(ActivityPluginType.POLL.getName())) {
           try {
             return CommonsUtils.getCurrentDomain() + CommonsUtils.getService(ForumService.class)
-                    .getTopicByPath(activity.getTemplateParams().get("PollLink"), false).getLink();
+                    .getTopicByPath(templateParams.get("PollLink"), false).getLink();
           } catch (Exception e) {
             LOG.error(e.getMessage(), e);
           }
-        } else if (activity.getType().equals("files:spaces") || activity.getType().contains("contents:spaces")) {
-          Map<String, String> templateParams = activity.getTemplateParams();
+        } else if (activityType.equals(ActivityPluginType.FILE.getName()) || activityType.equals(ActivityPluginType.CONTENT.getName())) {
           return CommonsUtils.getCurrentDomain() + templateParams.get("contenLink");
         }
       } catch (Exception e) {
