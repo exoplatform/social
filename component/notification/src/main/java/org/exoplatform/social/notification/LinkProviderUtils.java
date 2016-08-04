@@ -236,16 +236,6 @@ public static final String RESOURCE_URL = "social/notifications";
           }
         } else if (activity.getType().equals("cs-calendar:spaces")) {
           return CommonsUtils.getCurrentDomain() + activity.getTemplateParams().get("EventLink");
-        } else if (activity.getType().contains("contents:spaces")) {
-          Map<String, String> templateParams = activity.getTemplateParams();
-          String workspace = templateParams.get("workspace");
-          String nodePath = templateParams.get("nodePath");
-          String[] splitedPath = nodePath.split("/");
-          if (splitedPath[1].equals("Groups") && splitedPath[2].equals("spaces")) {
-            return getContentSpacePath(workspace, nodePath);
-          } else {
-            return getContentPath(workspace, nodePath);
-          }
         } else if (activity.getType().contains("answer:spaces")) {
           if (isComment) {
             return CommonsUtils.getCurrentDomain() + Utils.getActivityManager().getParentActivity(activity).getTemplateParams().get("Link");
@@ -259,27 +249,9 @@ public static final String RESOURCE_URL = "social/notifications";
           } catch (Exception e) {
             LOG.error(e.getMessage(), e);
           }
-        } else if (activity.getType().equals("files:spaces")) {
+        } else if (activity.getType().equals("files:spaces") || activity.getType().contains("contents:spaces")) {
           Map<String, String> templateParams = activity.getTemplateParams();
-          String workspace = templateParams.get("WORKSPACE");
-          if (workspace == null) {
-            workspace = templateParams.get("workspace");
-          }
-          String nodePath = templateParams.get("DOCPATH");
-          if (nodePath == null) {
-            nodePath = templateParams.get("nodePath");
-          }
-
-          if (workspace != null && nodePath != null) {
-            String[] splitedPath = nodePath.split("/");
-            if (splitedPath[1].equals("Groups") && splitedPath[2].equals("spaces")) {
-              return CommonsUtils.getCurrentDomain() + LinkProvider.getRedirectSpaceUri(getSpaceDocuments(splitedPath[3]) +
-                      "?path=" + capitalizeFirstLetter(workspace) + nodePath);
-            } else {
-              return CommonsUtils.getCurrentDomain() + LinkProvider.getRedirectUri("documents" +
-                      "?path=" + capitalizeFirstLetter(workspace) + nodePath);
-            }
-          }
+          return CommonsUtils.getCurrentDomain() + templateParams.get("contenLink");
         }
       } catch (Exception e) {
         LOG.error("Cannot get open link for activity " + activity.getId() + " : " + e.getMessage(), e);
@@ -288,24 +260,5 @@ public static final String RESOURCE_URL = "social/notifications";
     }
 
     return null;
-  }
-
-  private static String getSpaceDocuments(String space) {
-    return "g/:spaces:" + space + "/" +space + "/" + "documents";
-  }
-
-  private static String getContentPath(String workspace, String nodepath) throws Exception {
-    return CommonsUtils.getCurrentDomain() + "/" + PortalContainer.getCurrentPortalContainerName() + "/documents?path="
-            + capitalizeFirstLetter(workspace) + nodepath;
-  }
-
-  private static String getContentSpacePath(String workspace, String nodepath) throws Exception {
-    String space = nodepath.split("/")[3];
-    return CommonsUtils.getCurrentDomain() + "/" + PortalContainer.getCurrentPortalContainerName() + "/g/:spaces:"
-            + space + "/" +space + "/documents?path=" + capitalizeFirstLetter(workspace) + nodepath;
-  }
-
-  private static String capitalizeFirstLetter(String str) throws Exception {
-    return str.substring(0, 1).toUpperCase() + str.substring(1);
   }
 }
