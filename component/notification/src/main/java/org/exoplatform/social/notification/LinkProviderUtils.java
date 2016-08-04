@@ -223,10 +223,9 @@ public static final String RESOURCE_URL = "social/notifications";
   /**
    * Get the open link for each type of notification
    * @param activity The activity of the notification
-   * @param isComment Is the activity a comment
    * @return The link to open the related resource (file, event, wiki page, ...)
    */
-  public static String getOpenLink(ExoSocialActivity activity, boolean isComment) {
+  public static String getOpenLink(ExoSocialActivity activity) {
     String activityType = activity.getType();
     if (activityType != null) {
       try {
@@ -234,7 +233,7 @@ public static final String RESOURCE_URL = "social/notifications";
         if (activityType.equals(ActivityPluginType.WIKI.getName())) {
           return CommonsUtils.getCurrentDomain() + templateParams.get("page_url");
         } else if (activityType.equals(ActivityPluginType.FORUM.getName())) {
-          if (isComment) {
+          if (activity.isComment()) {
             if (!activity.getTitleId().equals("forum.remove-poll")) {
               return templateParams.get("PostLink");
             }
@@ -244,7 +243,7 @@ public static final String RESOURCE_URL = "social/notifications";
         } else if (activityType.equals(ActivityPluginType.CALENDAR.getName())) {
           return CommonsUtils.getCurrentDomain() + templateParams.get("EventLink");
         } else if (activityType.contains(ActivityPluginType.ANSWER.getName())) {
-          if (isComment) {
+          if (activity.isComment()) {
             return CommonsUtils.getCurrentDomain() + Utils.getActivityManager().getParentActivity(activity).getTemplateParams().get("Link");
           } else {
             return templateParams.get("Link");
