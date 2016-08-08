@@ -11,7 +11,7 @@
                 labelField: 'text',
                 searchField: ['text'],
                 sourceProviders: ['exo:social'],
-                create: true,
+                create: false,
                 renderMenuItem: function(item, escape) {
                   var avatar = item.avatarUrl;
                   if (avatar == null) {
@@ -31,47 +31,48 @@
                   '<img width="20px" height="20px" src="' + avatar + '"> ' +
                   escape(text) + '</div>';
               },
-              sortField: [{field: 'order'}, {field: '$score'}]
-            });
-            
-            $('#' + selector).suggester('addProvider', 'exo:social', function(query, callback) {
-                if (query == '') {
-                  var thizz = this;
-                  // Pre-load options for initial users
-                  if (!this.items.length) {
-                      $.ajax({
-                          type: "GET",
-                          url: url,
-                          data: { nameToSearch : this.items.join() },
-                          complete: function(jqXHR) {
-                              if(jqXHR.readyState === 4) {
-                                  var json = $.parseJSON(jqXHR.responseText)
-                                  if (json.options != null) {
-                                      callback(json.options);
-                                      for (var i = 0; i < json.options.length; i++) {
-                                          thizz.updateOption(json.options[i].value, json.options[i]);
+              sortField: [{field: 'order'}, {field: '$score'}],
+              providers: {
+                'exo:social': function(query, callback) {
+                    if (query == '') {
+                      var thizz = this;
+                      // Pre-load options for initial users
+                      if (this.items && this.items.length > 0) {
+                          $.ajax({
+                              type: "GET",
+                              url: url,
+                              data: { nameToSearch : this.items.join() },
+                              complete: function(jqXHR) {
+                                  if(jqXHR.readyState === 4) {
+                                      var json = $.parseJSON(jqXHR.responseText)
+                                      if (json.options != null) {
+                                          callback(json.options);
+                                          for (var i = 0; i < json.options.length; i++) {
+                                              thizz.updateOption(json.options[i].value, json.options[i]);
+                                          }
                                       }
                                   }
                               }
-                          }
-                      });
-                  }
-                } else {
-                    $.ajax({
-                        type: "GET",
-                        url: url,
-                        data: { nameToSearch : query },
-                        complete: function(jqXHR) {
-                            if(jqXHR.readyState === 4) {
-                                var json = $.parseJSON(jqXHR.responseText)
-                                if (json.options != null) {
-                                    callback(json.options);
+                          });
+                      }
+                    } else {
+                        $.ajax({
+                            type: "GET",
+                            url: url,
+                            data: { nameToSearch : query },
+                            complete: function(jqXHR) {
+                                if(jqXHR.readyState === 4) {
+                                    var json = $.parseJSON(jqXHR.responseText)
+                                    if (json.options != null) {
+                                        callback(json.options);
+                                    }
                                 }
                             }
-                        }
-                    });
+                        });
+                    }
+                  } 
                 }
-            });
+            });            
         },
 
         notify: function(selector, anchor) {
