@@ -9,9 +9,9 @@
                 maxItems: null,
                 valueField: 'value',
                 labelField: 'text',
-                searchField: ['text'],
+                searchField: ['text', 'value'],
                 sourceProviders: ['exo:social'],
-                create: false,
+                create: true,
                 renderMenuItem: function(item, escape) {
                   var avatar = item.avatarUrl;
                   if (avatar == null) {
