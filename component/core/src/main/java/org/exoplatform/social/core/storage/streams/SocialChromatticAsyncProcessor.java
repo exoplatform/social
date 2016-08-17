@@ -21,6 +21,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import org.exoplatform.commons.chromattic.ChromatticLifeCycle;
 import org.exoplatform.commons.chromattic.ChromatticManager;
 import org.exoplatform.container.PortalContainer;
+import org.exoplatform.services.cache.ExoCache;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.social.common.lifecycle.SocialChromatticLifeCycle;
@@ -28,6 +29,9 @@ import org.exoplatform.social.common.service.AsyncCallback;
 import org.exoplatform.social.common.service.AsyncProcessor;
 import org.exoplatform.social.common.service.ProcessContext;
 import org.exoplatform.social.common.service.SocialServiceContext;
+import org.exoplatform.social.core.storage.cache.SocialStorageCacheService;
+import org.exoplatform.social.core.storage.cache.model.data.ListActivitiesData;
+import org.exoplatform.social.core.storage.cache.model.key.ListActivitiesKey;
 
 public abstract class SocialChromatticAsyncProcessor implements AsyncProcessor {
   
@@ -40,6 +44,7 @@ public abstract class SocialChromatticAsyncProcessor implements AsyncProcessor {
   protected ChromatticManager manager;
   protected ChromatticLifeCycle lifeCycle;
   private AtomicBoolean startedRequest = new AtomicBoolean(false);
+  private SocialStorageCacheService storageCacheService;
 
   public SocialChromatticAsyncProcessor(SocialServiceContext socialContext) {
     this("SocialChromatticAsyncProcessor", socialContext);
@@ -55,6 +60,7 @@ public abstract class SocialChromatticAsyncProcessor implements AsyncProcessor {
     if (manager != null) {
       this.lifeCycle = manager.getLifeCycle(SocialChromatticLifeCycle.SOCIAL_LIFECYCLE_NAME);
     }
+    this.storageCacheService = container.getComponentInstanceOfType(SocialStorageCacheService.class);
   }
   
   @Override
@@ -103,6 +109,8 @@ public abstract class SocialChromatticAsyncProcessor implements AsyncProcessor {
   @Override
   public void end(ProcessContext processContext) {
     stopSynchronization(startedRequest.get());
+    ExoCache<ListActivitiesKey, ListActivitiesData> exoActivitiesCache = storageCacheService.getActivitiesCache();
+    exoActivitiesCache.clearCache();
   }
   
   private boolean startSynchronization() {
