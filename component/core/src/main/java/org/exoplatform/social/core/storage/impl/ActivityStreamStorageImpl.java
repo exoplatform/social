@@ -100,6 +100,9 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
   
   /** */
   private Lock activityReadLock;
+
+  /** */
+  private static int BATCH = 20;
   
   public ActivityStreamStorageImpl(IdentityStorageImpl identityStorage) {
     this.identityStorage = identityStorage;
@@ -1271,8 +1274,10 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
   
   private void manageRefList(UpdateContext context, ActivityEntity activityEntity, ActivityRefType type, boolean mustCheck) throws NodeNotFoundException {
     HidableEntity hidableActivity = _getMixin(activityEntity, HidableEntity.class, true);
+    int counter = 0;
     if (context.getAdded() != null) {
       for (Identity identity : context.getAdded()) {
+        counter ++;
         if (!identity.isEnable()) {
           continue;
         }
@@ -1300,6 +1305,10 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
         
         ActivityRefListEntity listRef = type.refsOf(identityEntity);
         listRef.getOrCreated(activityEntity,  hidableActivity.getHidden());
+        if(counter == BATCH){
+          StorageUtils.persist();
+          counter = 0;
+        }
       }
     }
     
