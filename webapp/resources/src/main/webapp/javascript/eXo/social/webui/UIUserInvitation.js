@@ -9,7 +9,7 @@
                 maxItems: null,
                 valueField: 'value',
                 labelField: 'text',
-                searchField: ['text', 'value'],
+                searchField: ['text'],
                 sourceProviders: ['exo:social'],
                 create: true,
                 renderMenuItem: function(item, escape) {
@@ -22,14 +22,9 @@
                       }
                   }
 
-                  var text = item.text;
-                  if (item.type == 'user') {
-                      text += ' (' + item.value + ')';
-                  }
-
                   return '<div class="option">' +
                   '<img width="20px" height="20px" src="' + avatar + '"> ' +
-                  escape(text) + '</div>';
+                  escape(item.text) + '</div>';
               },
               sortField: [{field: 'order'}, {field: '$score'}],
               providers: {

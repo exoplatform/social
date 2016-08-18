@@ -207,7 +207,7 @@ public class PeopleRestService implements ResourceContainer{
             if (identity != null) {
               Profile p = identity.getProfile();
               opt.setValue((String) p.getProperty(Profile.USERNAME));
-              opt.setText(p.getFullName());
+              opt.setText(p.getFullName() + " (" + (String) p.getProperty(Profile.USERNAME) + ")");
               opt.setAvatarUrl(p.getAvatarUrl());
             } else {
               opt.setValue(item);
@@ -285,6 +285,32 @@ public class PeopleRestService implements ResourceContainer{
     }
 
     return Util.getResponse(nameList, uriInfo, mediaType, Response.Status.OK);
+  }
+
+  private void addSpaceUserToList(List<Identity> identities, UserNameList options,
+                                   Space space, String typeOfRelation, int order) throws SpaceException {
+    SpaceService spaceSrv = getSpaceService(); 
+    for (Identity identity : identities) {
+      String fullName = identity.getProfile().getFullName();
+      String userName = (String) identity.getProfile().getProperty(Profile.USERNAME); 
+      Option opt = new Option();
+      if (SPACE_MEMBER.equals(typeOfRelation) && spaceSrv.isMember(space, userName)) {
+        opt.setType("user");
+        opt.setValue(fullName);
+        opt.setText(fullName);
+        opt.setAvatarUrl(getAvatarURL(identity));
+      } else if (USER_TO_INVITE.equals(typeOfRelation) && !spaceSrv.isInvited(space, userName)
+                 && !spaceSrv.isPending(space, userName) && !spaceSrv.isMember(space, userName)) {
+        opt.setType("user");
+        opt.setValue(userName);
+        opt.setText(fullName + " (" + userName + ")");
+        opt.setAvatarUrl(getAvatarURL(identity));
+      } else {
+        continue;
+      }
+      opt.setOrder(order);
+      options.addOption(opt);
+    }
   }
 
   /**
@@ -727,30 +753,6 @@ public class PeopleRestService implements ResourceContainer{
       opt.setValue(fullName);
       opt.setAvatarUrl(getAvatarURL(identity));
       nameList.addOption(opt);
-    }
-  }
-  
-  private void addSpaceUserToList (List<Identity> identities, UserNameList options,
-                                   Space space, String typeOfRelation, int order) throws SpaceException {
-    SpaceService spaceSrv = getSpaceService(); 
-    for (Identity identity : identities) {
-      String fullName = identity.getProfile().getFullName();
-      String userName = (String) identity.getProfile().getProperty(Profile.USERNAME); 
-      Option opt = new Option();
-      if (SPACE_MEMBER.equals(typeOfRelation) && spaceSrv.isMember(space, userName)) {
-        opt.setType("user");
-        opt.setValue(fullName);
-        opt.setText(fullName);
-        opt.setAvatarUrl(getAvatarURL(identity));
-      } else if (USER_TO_INVITE.equals(typeOfRelation) && !spaceSrv.isInvited(space, userName)
-                 && !spaceSrv.isPending(space, userName) && !spaceSrv.isMember(space, userName)) {
-        opt.setType("user");
-        opt.setValue(userName);
-        opt.setText(fullName);
-        opt.setAvatarUrl(getAvatarURL(identity));
-      }
-      opt.setOrder(order);
-      options.addOption(opt);
     }
   }
   
