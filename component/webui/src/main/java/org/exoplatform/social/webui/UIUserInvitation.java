@@ -22,9 +22,10 @@ import java.util.List;
 import java.util.ResourceBundle;
 import java.util.Set;
 
+import org.exoplatform.webui.core.UIPortletApplication;
+
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
-
 import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.container.ExoContainer;
 import org.exoplatform.container.ExoContainerContext;
@@ -67,7 +68,6 @@ public class UIUserInvitation extends UIForm {
 
   public UIUserInvitation() throws Exception {
     addUIFormInput(new UIFormStringInput(USER, null, null));
-
     spaceUrl = org.exoplatform.social.core.space.SpaceUtils.getSpaceUrlByContext();
   }
 
@@ -129,7 +129,11 @@ public class UIUserInvitation extends UIForm {
         String spaceName = userStr.substring(SPACE_PREFIX.length());
         Space space = spaceService.getSpaceByPrettyName(spaceName);
         if (space == null) {
-          addMessage(new ApplicationMessage("UIUserInvitation.msg.invalid-input", new String[]{spaceName}));
+          getAncestorOfType(UIPortletApplication.class)
+              .addMessage(
+                      new ApplicationMessage("UIUserInvitation.msg.invalid-input", 
+                                              new String[]{spaceName},
+                                              ApplicationMessage.ERROR));
           return null;
         }
         ProfileFilter filter = new ProfileFilter();
@@ -156,7 +160,11 @@ public class UIUserInvitation extends UIForm {
     }
     
     if (notExistUsers != null) {
-      addMessage(new ApplicationMessage("UIUserInvitation.msg.invalid-input", new String[]{notExistUsers}));
+      getAncestorOfType(UIPortletApplication.class)
+          .addMessage(
+                  new ApplicationMessage("UIUserInvitation.msg.invalid-input", 
+                                          new String[]{notExistUsers},
+                                          ApplicationMessage.ERROR));
       return null;
     } else {
       if (validUsers.size() > 0) {
@@ -217,7 +225,9 @@ public class UIUserInvitation extends UIForm {
       UIFormStringInput input = uicomponent.getUIStringInput(USER);
       String value = input.getValue();
       if (value == null || value.trim().isEmpty()) {
-        uicomponent.addMessage(new ApplicationMessage("UIUserInvitation.msg.empty-input", null));
+          uicomponent.getAncestorOfType(UIPortletApplication.class)
+                   .addMessage(
+                           new ApplicationMessage("UIUserInvitation.msg.empty-input", null));
         return;
       }
 
