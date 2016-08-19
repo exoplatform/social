@@ -40,23 +40,30 @@
 <% uiform.begin();%>
    <div class="uiGrayLightBox">
    		<div class="uiTableProfileUserSearch">
-			<div class="column"><label for="<%=uicomponent.USER_CONTACT%>"><%=_ctx.appRes("UIProfileUserSearch.label.SearchByName")%>:</label></div>
-			<div class="column input-wrap">
-				<div class="has-suggestions">
-					<% uiform.renderField(uicomponent.USER_CONTACT);%>
-				</div>
+			<div class="column">
+			    <label for="<%=uicomponent.USER_CONTACT%>"><%=_ctx.appRes("UIProfileUserSearch.label.SearchByName")%>:</label>
+			    <i id="uiTableProfileUserSearchArrow" class="uiIconArrowDown uiTableProfileUserSearchArrow">
+			        <span></span>
+			    </i>
 			</div>
-			<div class="column input-wrap">
-				<div class="has-suggestions">
-					<% uiform.renderField(Profile.POSITION)%>
-				</div>
+                        <div id="uiTableProfileUserSearchInput" class="uiTableProfileUserSearchInput">
+        			<div class="column input-wrap">
+        				<div class="has-suggestions">
+        					<% uiform.renderField(uicomponent.USER_CONTACT);%>
+        				</div>
+        			</div>
+        			<div class="column input-wrap">
+        				<div class="has-suggestions">
+        					<% uiform.renderField(Profile.POSITION)%>
+        				</div>
+        			</div>
+        			<div class="column input-wrap">
+        				<div class="has-suggestions">
+        					<% uiform.renderField(Profile.EXPERIENCES_SKILLS)%>
+        				</div>
+        			</div>
+        			<div class="column"><button type="button" class="btn btn-primary" id="SearchButton" onclick="<%=uicomponent.event("Search")%>"><%=_ctx.appRes("UIProfileUserSearch.label.Search")%></button></div>
 			</div>
-			<div class="column input-wrap">
-				<div class="has-suggestions">
-					<% uiform.renderField(Profile.EXPERIENCES_SKILLS)%>
-				</div>
-			</div>
-			<div class="column"><button type="button" class="btn btn-primary" id="SearchButton" onclick="<%=uicomponent.event("Search")%>"><%=_ctx.appRes("UIProfileUserSearch.label.Search")%></button></div>
    		</div>
    </div>
  <% uiform.end();%>
