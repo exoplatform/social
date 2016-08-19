@@ -212,7 +212,7 @@
 					<%} %>
 				</div>
 			</div><!--end heading-->
-			<div class="description">$activity.title</div><!--end description-->
+			<div class="description"><%=StringEscapeUtils.unescapeHtml(activity.title);%></div><!--end description-->
 			<div class="actionBar clearfix ">
 				 <% def toggleDisplayCommentAction = uicomponent.event('ToggleDisplayCommentForm', null, false);
 								 def commentLink = "";
