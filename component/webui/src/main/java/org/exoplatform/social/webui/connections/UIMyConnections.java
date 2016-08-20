@@ -136,7 +136,7 @@ public class UIMyConnections extends UIContainer {
       loadingCapacity = MY_CONNECTION_PER_PAGE;
       peopleList = new ArrayList<Identity>();
       List<Identity> excludedIdentityList = new ArrayList<Identity>();
-      excludedIdentityList.add(Utils.getViewerIdentity());
+      //excludedIdentityList.add(Utils.getViewerIdentity());
       uiProfileUserSearch.getProfileFilter().setExcludedIdentityList(excludedIdentityList);
       //setPeopleList(loadPeople(currentLoadIndex, loadingCapacity));
       if (Utils.isOwner()) {
