@@ -15,7 +15,7 @@ String placeholder = _ctx.appRes("UIUserInvitation.input.placeholder");
     if (uicomponent.getMessage() != null) {
       %>
       <div class="UINotify alert alert-success">
-      <%=uicomponent.getMessage().getMessage();%>
+      <i class="uiIconSuccess"></i> <%=uicomponent.getMessage().getMessage();%>
       </div>
       <%
       uicomponent.addMessage(null);

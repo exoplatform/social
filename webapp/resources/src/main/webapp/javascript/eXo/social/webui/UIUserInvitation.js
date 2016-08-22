@@ -72,6 +72,7 @@
 
         notify: function(selector, anchor) {
             $(anchor).append($(selector));
+            setTimeout(function(){ $(anchor).fadeOut() }, 5000);
         }
     };
 
