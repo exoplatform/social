@@ -235,7 +235,11 @@ public static final String RESOURCE_URL = "social/notifications";
         } else if (activityType.equals(ActivityPluginType.FORUM.getName())) {
           if (activity.isComment()) {
             if (!activity.getTitleId().equals("forum.remove-poll")) {
-              return templateParams.get("PostLink");
+              if (activity.getTitleId().equals("forum.add-poll")) {
+                return getOpenLink(Utils.getActivityManager().getParentActivity(activity));
+              } else {
+                return templateParams.get("PostLink");
+              }
             }
           } else {
             return CommonsUtils.getCurrentDomain() + templateParams.get("TopicLink");
