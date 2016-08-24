@@ -261,6 +261,8 @@ public static final String RESOURCE_URL = "social/notifications";
           }
         } else if (activityType.equals(ActivityPluginType.FILE.getName()) || activityType.equals(ActivityPluginType.CONTENT.getName())) {
           return CommonsUtils.getCurrentDomain() + templateParams.get("contenLink");
+        } else if (activity.isComment()) {
+          return getOpenLink(Utils.getActivityManager().getParentActivity(activity));
         }
       } catch (Exception e) {
         LOG.error("Cannot get open link for activity " + activity.getId() + " : " + e.getMessage(), e);
