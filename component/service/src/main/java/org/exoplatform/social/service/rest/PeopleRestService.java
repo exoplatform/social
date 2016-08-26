@@ -212,6 +212,7 @@ public class PeopleRestService implements ResourceContainer{
             } else {
               opt.setValue(item);
               opt.setText(item);
+              opt.setInvalid(true);
             }
           }
           nameList.addOption(opt);
@@ -891,6 +892,15 @@ public class PeopleRestService implements ResourceContainer{
     private String text;
     private String avatarUrl;
     private int order;
+    private boolean isInvalid;
+
+    public boolean isInvalid() {
+      return isInvalid;
+    }
+
+    public void setInvalid(boolean isInvalid) {
+      this.isInvalid = isInvalid;
+    }
 
     public int getOrder() {
       return order;

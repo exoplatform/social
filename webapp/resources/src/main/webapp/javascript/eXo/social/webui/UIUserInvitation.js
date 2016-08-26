@@ -11,7 +11,17 @@
                 labelField: 'text',
                 searchField: ['text'],
                 sourceProviders: ['exo:social'],
-                create: true,
+                create: function(input) {
+                    return {'value': input, 'text': input, 'invalid': true};
+                },
+                createOnBlur: true,
+                renderItem: function(item, escape) {
+                    if (item.invalid) {
+                        return '<div class="item invalid">' + item.text + '</div>';
+                    } else {
+                        return '<div class="item">' + item.text + '</div>';                         
+                    }
+                },
                 renderMenuItem: function(item, escape) {
                   var avatar = item.avatarUrl;
                   if (avatar == null) {
