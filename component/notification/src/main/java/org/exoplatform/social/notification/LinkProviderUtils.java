@@ -261,6 +261,8 @@ public static final String RESOURCE_URL = "social/notifications";
           }
         } else if (activityType.equals(ActivityPluginType.FILE.getName()) || activityType.equals(ActivityPluginType.CONTENT.getName())) {
           return CommonsUtils.getCurrentDomain() + templateParams.get("contenLink");
+        } else if (activity.isComment() && (activityType.contains("answer:"))) {
+          return CommonsUtils.getCurrentDomain() + Utils.getActivityManager().getParentActivity(activity).getTemplateParams().get("Link");
         } else if (activity.isComment()) {
           return getOpenLink(Utils.getActivityManager().getParentActivity(activity));
         }
@@ -268,8 +270,11 @@ public static final String RESOURCE_URL = "social/notifications";
         LOG.error("Cannot get open link for activity " + activity.getId() + " : " + e.getMessage(), e);
         return null;
       }
+    } else if (activity.isComment()) {
+      String type = Utils.getActivityManager().getParentActivity(activity).getType();
+      if ((type != null) && (type.equals(ActivityPluginType.ANSWER.getName())))
+      return CommonsUtils.getCurrentDomain() + Utils.getActivityManager().getParentActivity(activity).getTemplateParams().get("Link");
     }
-
     return null;
   }
 }
