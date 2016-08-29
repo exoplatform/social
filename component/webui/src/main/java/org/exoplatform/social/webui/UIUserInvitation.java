@@ -119,29 +119,26 @@ public class UIUserInvitation extends UIForm {
     String invitedUser = null;
     String invitedUserNames = null;
     Set<String> validUsers = new HashSet<String>();
-    String notExistUsers = null;
+    Set<String> notExistUsers = new HashSet<String>();
     SpaceService spaceService = getSpaceService();
 
-    Invalid:
+    boolean isValidInput = true;
     for (String userStr : invitedUserList) {
       // If it's a space
       if (userStr.startsWith(SPACE_PREFIX)) {
         String spaceName = userStr.substring(SPACE_PREFIX.length());
         Space space = spaceService.getSpaceByPrettyName(spaceName);
         if (space == null) {
-          getAncestorOfType(UIPortletApplication.class)
-              .addMessage(
-                      new ApplicationMessage("UIUserInvitation.msg.invalid-input", 
-                                              new String[]{spaceName},
-                                              ApplicationMessage.ERROR));
-          return null;
-        }
-        ProfileFilter filter = new ProfileFilter();
-        ListAccess<Identity> loader = Utils.getIdentityManager().getSpaceIdentityByProfileFilter(space, filter, Type.MEMBER, true);
-        Identity[] identities = loader.load(0, loader.getSize());
-        for (Identity i : identities) {
-          invitedUser = i.getRemoteId();
-          validUsers.add(invitedUser);
+          notExistUsers.add(spaceName);
+          isValidInput = false;
+        } else if (isValidInput == true) {
+          ProfileFilter filter = new ProfileFilter();
+          ListAccess<Identity> loader = Utils.getIdentityManager().getSpaceIdentityByProfileFilter(space, filter, Type.MEMBER, true);
+          Identity[] identities = loader.load(0, loader.getSize());
+          for (Identity i : identities) {
+            invitedUser = i.getRemoteId();
+            validUsers.add(invitedUser);
+          }
         }
       } else { // Otherwise, it's an user
         invitedUser = userStr.trim();
@@ -151,19 +148,28 @@ public class UIUserInvitation extends UIForm {
         }
         
         if (isNotExisted(invitedUser)){
-          notExistUsers = invitedUser;
-          break Invalid;
-        } else {
+          notExistUsers.add(invitedUser);
+          isValidInput = false;
+        } else if (isValidInput == true) {
           validUsers.add(invitedUser);
         }
       }
     }
     
-    if (notExistUsers != null) {
+    if (notExistUsers.size() > 0) {
+      StringBuilder sb = new StringBuilder();
+      boolean isSeparated = false;
+      for (String i : notExistUsers) {
+        if (isSeparated) {
+          sb.append(", ");
+        }
+        sb.append("'").append(i).append("'");
+        isSeparated = true;
+      }
       getAncestorOfType(UIPortletApplication.class)
           .addMessage(
                   new ApplicationMessage("UIUserInvitation.msg.invalid-input", 
-                                          new String[]{notExistUsers},
+                                          new String[]{sb.toString()},
                                           ApplicationMessage.ERROR));
       return null;
     } else {
