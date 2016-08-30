@@ -13,6 +13,7 @@ public enum ActivityPluginType {
   SPACE("SPACE_ACTIVITY"),
   PROFILE("USER_PROFILE_ACTIVITY"),
   FILE("files:spaces"),
+  SHARE_FILE("sharefiles:spaces"),
   CONTENT("contents:spaces"),
   CALENDAR("cs-calendar:spaces"),
   TASK("TaskAdded"),

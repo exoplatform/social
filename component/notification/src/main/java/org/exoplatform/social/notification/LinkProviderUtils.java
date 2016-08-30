@@ -259,7 +259,9 @@ public static final String RESOURCE_URL = "social/notifications";
           } catch (Exception e) {
             LOG.error(e.getMessage(), e);
           }
-        } else if (activityType.equals(ActivityPluginType.FILE.getName()) || activityType.equals(ActivityPluginType.CONTENT.getName())) {
+        } else if (activityType.equals(ActivityPluginType.FILE.getName())
+                || activityType.equals(ActivityPluginType.SHARE_FILE.getName())
+                || activityType.equals(ActivityPluginType.CONTENT.getName())) {
           return CommonsUtils.getCurrentDomain() + templateParams.get("contenLink");
         } else if (activity.isComment() && (activityType.contains("answer:"))) {
           return CommonsUtils.getCurrentDomain() + Utils.getActivityManager().getParentActivity(activity).getTemplateParams().get("Link");
