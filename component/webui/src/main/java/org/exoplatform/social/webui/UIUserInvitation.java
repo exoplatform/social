@@ -167,8 +167,7 @@ public class UIUserInvitation extends UIForm {
         isSeparated = true;
       }
       getAncestorOfType(UIPortletApplication.class)
-          .addMessage(
-                  new ApplicationMessage("UIUserInvitation.msg.invalid-input", 
+          .addMessage(new ApplicationMessage("UIUserInvitation.msg.invalid-input", 
                                           new String[]{sb.toString()},
                                           ApplicationMessage.ERROR));
       return null;
@@ -220,11 +219,6 @@ public class UIUserInvitation extends UIForm {
     return true;
   }
 
-  /**
-   * Triggers this action when user click on "invite" button.
-   *
-   * @author hoatle
-   */
   static public class InviteActionListener extends EventListener<UIUserInvitation> {
     public void execute(Event<UIUserInvitation> event) throws Exception {
       UIUserInvitation uicomponent = event.getSource();
@@ -255,8 +249,7 @@ public class UIUserInvitation extends UIForm {
                 continue;
               }
               
-              if (!usersForInviting.contains(name) &&
-                  !ArrayUtils.contains(space.getPendingUsers(), name) && !uicomponent.hasInvited(name)) {
+              if (!usersForInviting.contains(name) && !spaceService.isMember(space, name)) {
                 usersForInviting.add(name);
               }
             }
@@ -280,6 +273,12 @@ public class UIUserInvitation extends UIForm {
             uicomponent.addMessage(new ApplicationMessage("UIUserInvitation.msg.user-invited", new String[]{identity.getProfile().getFullName()}));
           } else {
             uicomponent.addMessage(new ApplicationMessage("UIUserInvitation.msg.users-invited", new String[]{String.valueOf(usersForInviting.size())}));
+          }
+        } else {
+          if (invitedUsers.length == 1) {
+            uicomponent.addMessage(new ApplicationMessage("UIUserInvitation.msg.user-is-member", new String[]{invitedUsers[0]}));
+          } else {
+            uicomponent.addMessage(new ApplicationMessage("UIUserInvitation.msg.users-already-members", null));
           }
         }
 

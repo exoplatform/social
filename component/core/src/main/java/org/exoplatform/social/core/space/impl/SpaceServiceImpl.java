@@ -1225,13 +1225,7 @@ public class SpaceServiceImpl implements SpaceService {
       //user is already member. Do nothing
       return;
     }
-    if (ArrayUtils.contains(space.getInvitedUsers(), userId)) {
-      LOG.warn("User already invited");
-      return;
-    } else if (ArrayUtils.contains(space.getMembers(), userId) && !userId.equals(getUserACL().getSuperUser())) {
-      LOG.warn("User already member");
-      return;
-    }
+
     if (isPending(space, userId)) {
       space = removePending(space, userId);
       addMember(space, userId);
