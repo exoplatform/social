@@ -42,9 +42,9 @@
    		<div class="uiTableProfileUserSearch">
 			<div class="column">
 			    <label for="<%=uicomponent.USER_CONTACT%>"><%=_ctx.appRes("UIProfileUserSearch.label.SearchByName")%>:</label>
-			    <i id="uiTableProfileUserSearchArrow" class="uiIconArrowDown uiTableProfileUserSearchArrow">
-			        <span></span>
-			    </i>
+			    <a href="#" id="uiTableProfileUserSearchArrow" class="uiTableProfileUserSearchArrow">
+            <i class="uiIconArrowDown"></i><i class="uiIconArrowRight"></i>
+          </a>
 			</div>
                         <div id="uiTableProfileUserSearchInput" class="uiTableProfileUserSearchInput">
         			<div class="column input-wrap">

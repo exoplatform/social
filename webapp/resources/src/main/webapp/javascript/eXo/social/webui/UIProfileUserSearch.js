@@ -52,7 +52,10 @@
         }
         //
         UIProfileUserSearch.resizeForm();
-        $("#uiTableProfileUserSearchArrow").on("click", UIProfileUserSearch.toggleProfileUserSearch);
+        $("#uiTableProfileUserSearchArrow").on("click", function() {
+          $(this).closest(".uiProfileUserSearch").toggleClass("open");
+          return false;
+        });
       },
       resizeForm : function() {
         var parent = UIProfileUserSearch.profileSearch;
@@ -61,11 +64,6 @@
         var staticSize = label.outerWidth() + searchBtn.outerWidth() + 64;
         var inputSize = (parent.width() - staticSize) / 3;
         parent.find('input[type=text]').css( {'width': inputSize + 'px', 'minWidth' : '80px'});
-      },
-      
-      toggleProfileUserSearch: function() {
-        console.log("toggle profile!");
-          $("#uiTableProfileUserSearchInput").toggleClass("uiTableProfileUserSearchInput");
       }
   };
   //
