@@ -160,6 +160,11 @@
       <artifactId>slf4j-simple</artifactId>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>org.exoplatform.forum</groupId>
+      <artifactId>forum-forum-service</artifactId>
+      <version>4.4.x-open-in-emails-SNAPSHOT</version>
+    </dependency>
   </dependencies>
   <build>
     <pluginManagement>

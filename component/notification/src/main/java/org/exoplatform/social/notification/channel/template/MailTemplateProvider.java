@@ -37,8 +37,11 @@ import org.exoplatform.commons.api.notification.plugin.NotificationPluginUtils;
 import org.exoplatform.commons.api.notification.service.template.TemplateContext;
 import org.exoplatform.commons.notification.NotificationUtils;
 import org.exoplatform.commons.notification.template.TemplateUtils;
+import org.exoplatform.commons.utils.CommonsUtils;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.container.xml.InitParams;
+import org.exoplatform.services.log.ExoLogger;
+import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
@@ -78,7 +81,9 @@ import org.exoplatform.social.notification.plugin.SpaceInvitationPlugin;
     @TemplateConfig(pluginId = RequestJoinSpacePlugin.ID, template = "war:/notification/templates/RequestJoinSpacePlugin.gtmpl"),
     @TemplateConfig(pluginId = SpaceInvitationPlugin.ID, template = "war:/notification/templates/SpaceInvitationPlugin.gtmpl")})
 public class MailTemplateProvider extends TemplateProvider {
-  
+
+  private static final Log LOG = ExoLogger.getLogger(MailTemplateProvider.class);
+
   /** Defines the template builder for ActivityCommentPlugin*/
   private AbstractTemplateBuilder comment = new AbstractTemplateBuilder() {
     @Override
@@ -95,10 +100,11 @@ public class MailTemplateProvider extends TemplateProvider {
       TemplateContext templateContext = new TemplateContext(notification.getKey().getId(), language);
       templateContext.put("USER", identity.getProfile().getFullName());
       String subject = TemplateUtils.processSubject(templateContext);
-      
+
       SocialNotificationUtils.addFooterAndFirstName(notification.getTo(), templateContext);
       templateContext.put("PROFILE_URL", LinkProviderUtils.getRedirectUrl("user", identity.getRemoteId()));
       templateContext.put("COMMENT", NotificationUtils.processLinkTitle(activity.getTitle()));
+      templateContext.put("OPEN_URL", LinkProviderUtils.getOpenLink(activity));
       templateContext.put("REPLY_ACTION_URL", LinkProviderUtils.getRedirectUrl("reply_activity_highlight_comment", parentActivity.getId() + "-" + activity.getId()));
       templateContext.put("VIEW_FULL_DISCUSSION_ACTION_URL", LinkProviderUtils.getRedirectUrl("view_full_activity_highlight_comment", parentActivity.getId() + "-" + activity.getId()));
 
@@ -163,8 +169,8 @@ public class MailTemplateProvider extends TemplateProvider {
       
       templateContext.put("AVATAR", LinkProviderUtils.getUserAvatarUrl(identity.getProfile()));
       templateContext.put("PROFILE_URL", LinkProviderUtils.getRedirectUrl("user", identity.getRemoteId()));
+      templateContext.put("OPEN_URL", LinkProviderUtils.getOpenLink(activity));
       String body = "";
-      
       // In case of mention on a comment, we need provide the id of the activity, not of the comment
       if (activity.isComment()) {
         ExoSocialActivity parentActivity = Utils.getActivityManager().getParentActivity(activity);
@@ -178,7 +184,7 @@ public class MailTemplateProvider extends TemplateProvider {
         templateContext.put("VIEW_FULL_DISCUSSION_ACTION_URL", LinkProviderUtils.getRedirectUrl("view_full_activity", activityId));
         body = SocialNotificationUtils.getBody(ctx, templateContext, getI18N(activity,new Locale(language)));
       }
-      
+
       //binding the exception throws by processing template
       ctx.setException(templateContext.getException());
       return messageInfo.subject(subject).body(body).end();
@@ -241,6 +247,7 @@ public class MailTemplateProvider extends TemplateProvider {
       String subject = TemplateUtils.processSubject(templateContext);
 
       templateContext.put("PROFILE_URL", LinkProviderUtils.getRedirectUrl("user", identity.getRemoteId()));
+      templateContext.put("OPEN_URL", LinkProviderUtils.getOpenLink(activity));
       templateContext.put("REPLY_ACTION_URL", LinkProviderUtils.getRedirectUrl("reply_activity", activity.getId()));
       templateContext.put("VIEW_FULL_DISCUSSION_ACTION_URL", LinkProviderUtils.getRedirectUrl("view_full_activity", activity.getId()));
 
@@ -385,6 +392,7 @@ public class MailTemplateProvider extends TemplateProvider {
       String subject = TemplateUtils.processSubject(templateContext);
       
       templateContext.put("PROFILE_URL", LinkProviderUtils.getRedirectUrl("user", identity.getRemoteId()));
+      templateContext.put("OPEN_URL", LinkProviderUtils.getOpenLink(activity));
       templateContext.put("REPLY_ACTION_URL", LinkProviderUtils.getRedirectUrl("reply_activity", activity.getId()));
       templateContext.put("VIEW_FULL_DISCUSSION_ACTION_URL", LinkProviderUtils.getRedirectUrl("view_full_activity", activity.getId()));
       
@@ -450,6 +458,7 @@ public class MailTemplateProvider extends TemplateProvider {
       
       Space space = Utils.getSpaceService().getSpaceByPrettyName(spaceIdentity.getRemoteId());
       templateContext.put("SPACE_URL", LinkProviderUtils.getRedirectUrl("space", space.getId()));
+      templateContext.put("OPEN_URL", LinkProviderUtils.getOpenLink(activity));
       templateContext.put("PROFILE_URL", LinkProviderUtils.getRedirectUrl("user", identity.getRemoteId()));
       templateContext.put("REPLY_ACTION_URL", LinkProviderUtils.getRedirectUrl("reply_activity", activity.getId()));
       templateContext.put("VIEW_FULL_DISCUSSION_ACTION_URL", LinkProviderUtils.getRedirectUrl("view_full_activity", activity.getId()));
@@ -491,7 +500,7 @@ public class MailTemplateProvider extends TemplateProvider {
     }
     
   };
-  
+
   /** Defines the template builder for RelationshipReceivedRequestPlugin*/
   private AbstractTemplateBuilder relationshipReceived = new AbstractTemplateBuilder() {
     @Override

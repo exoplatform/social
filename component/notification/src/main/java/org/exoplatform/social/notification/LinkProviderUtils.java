@@ -1,9 +1,16 @@
 package org.exoplatform.social.notification;
 
 import org.exoplatform.commons.utils.CommonsUtils;
+import org.exoplatform.forum.service.ForumService;
+import org.exoplatform.services.log.ExoLogger;
+import org.exoplatform.services.log.Log;
+import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.service.LinkProvider;
 import org.exoplatform.social.core.space.model.Space;
+import org.exoplatform.social.core.activity.model.ActivityPluginType;
+
+import java.util.Map;
 
 public class LinkProviderUtils {
   
@@ -30,6 +37,8 @@ public static final String RESOURCE_URL = "social/notifications";
   public static final String REDIRECT_URL = RESOURCE_URL + "/redirectUrl";
   
   public static final String PRIVATE_PATH = "/private";
+
+  private static final Log LOG = ExoLogger.getLogger(LinkProviderUtils.class);
 
   /**
    * Gets the url to the user's profile page of the receiver
@@ -209,5 +218,65 @@ public static final String RESOURCE_URL = "social/notifications";
    */
   public static String getSpaceAvatarUrl(Space space) {
     return CommonsUtils.getCurrentDomain() + ((space != null && space.getAvatarUrl() != null) ? space.getAvatarUrl() : LinkProvider.SPACE_DEFAULT_AVATAR_URL);
+  }
+
+  /**
+   * Get the open link for each type of notification
+   * @param activity The activity of the notification
+   * @return The link to open the related resource (file, event, wiki page, ...)
+   */
+  public static String getOpenLink(ExoSocialActivity activity) {
+    String activityType = activity.getType();
+    if (activityType != null) {
+      try {
+        Map<String, String> templateParams = activity.getTemplateParams();
+        if (activityType.equals(ActivityPluginType.WIKI.getName())) {
+          return CommonsUtils.getCurrentDomain() + templateParams.get("page_url");
+        } else if (activityType.equals(ActivityPluginType.FORUM.getName())) {
+          if (activity.isComment()) {
+            if (!activity.getTitleId().equals("forum.remove-poll")) {
+              if (activity.getTitleId().equals("forum.add-poll")) {
+                return getOpenLink(Utils.getActivityManager().getParentActivity(activity));
+              } else {
+                return templateParams.get("PostLink");
+              }
+            }
+          } else {
+            return CommonsUtils.getCurrentDomain() + templateParams.get("TopicLink");
+          }
+        } else if (activityType.equals(ActivityPluginType.CALENDAR.getName())) {
+          return CommonsUtils.getCurrentDomain() + templateParams.get("EventLink");
+        } else if (activityType.contains(ActivityPluginType.ANSWER.getName())) {
+          if (activity.isComment()) {
+            return CommonsUtils.getCurrentDomain() + Utils.getActivityManager().getParentActivity(activity).getTemplateParams().get("Link");
+          } else {
+            return templateParams.get("Link");
+          }
+        } else if (activityType.equals(ActivityPluginType.POLL.getName())) {
+          try {
+            return CommonsUtils.getCurrentDomain() + CommonsUtils.getService(ForumService.class)
+                    .getTopicByPath(templateParams.get("PollLink"), false).getLink();
+          } catch (Exception e) {
+            LOG.error(e.getMessage(), e);
+          }
+        } else if (activityType.equals(ActivityPluginType.FILE.getName())
+                || activityType.equals(ActivityPluginType.SHARE_FILE.getName())
+                || activityType.equals(ActivityPluginType.CONTENT.getName())) {
+          return CommonsUtils.getCurrentDomain() + templateParams.get("contenLink");
+        } else if (activity.isComment() && (activityType.contains("answer:"))) {
+          return CommonsUtils.getCurrentDomain() + Utils.getActivityManager().getParentActivity(activity).getTemplateParams().get("Link");
+        } else if (activity.isComment()) {
+          return getOpenLink(Utils.getActivityManager().getParentActivity(activity));
+        }
+      } catch (Exception e) {
+        LOG.error("Cannot get open link for activity " + activity.getId() + " : " + e.getMessage(), e);
+        return null;
+      }
+    } else if (activity.isComment()) {
+      String type = Utils.getActivityManager().getParentActivity(activity).getType();
+      if ((type != null) && (type.equals(ActivityPluginType.ANSWER.getName())))
+      return CommonsUtils.getCurrentDomain() + Utils.getActivityManager().getParentActivity(activity).getTemplateParams().get("Link");
+    }
+    return null;
   }
 }

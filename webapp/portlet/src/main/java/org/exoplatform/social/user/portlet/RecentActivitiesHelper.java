@@ -2,6 +2,7 @@ package org.exoplatform.social.user.portlet;
 
 import java.util.Map;
 
+import org.exoplatform.social.core.activity.model.ActivityPluginType;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.service.LinkProvider;
@@ -18,18 +19,18 @@ public class RecentActivitiesHelper {
 
   enum Type {
     DEFAULT("", ""),
-    LINK("LINK_ACTIVITY", "uiIconSocLinkMini"),
-    DOC("DOC_ACTIVITY", "uiIconSocFileSharing"),
-    SPACE("SPACE_ACTIVITY", "uiIconSocSpaceMini"),
-    PROFILE("USER_PROFILE_ACTIVITY", "uiIconSocUserProfile"),
-    FILE("files:spaces", "uiIconSocFileSharing"),
-    CONTENT("contents:spaces", "uiIconSocContentMini"),
-    CALENDAR("cs-calendar:spaces", "uiIconSocCalendarMini"),
-    TASK("TaskAdded", "uiIconSocTaskSharing"),
-    FORUM("ks-forum:spaces", "uiIconSocForumMini"),
-    ANSWER("ks-answer:spaces", "uiIconSocAnswersMini"),
-    POLL("ks-poll:spaces", "uiIconSocPoll"),
-    WIKI("ks-wiki:spaces", "uiIconSocWikiMini");
+    LINK(ActivityPluginType.LINK.getName(), "uiIconSocLinkMini"),
+    DOC(ActivityPluginType.DOC.getName(), "uiIconSocFileSharing"),
+    SPACE(ActivityPluginType.SPACE.getName(), "uiIconSocSpaceMini"),
+    PROFILE(ActivityPluginType.PROFILE.getName(), "uiIconSocUserProfile"),
+    FILE(ActivityPluginType.FILE.getName(), "uiIconSocFileSharing"),
+    CONTENT(ActivityPluginType.CONTENT.getName(), "uiIconSocContentMini"),
+    CALENDAR(ActivityPluginType.CALENDAR.getName(), "uiIconSocCalendarMini"),
+    TASK(ActivityPluginType.TASK.getName(), "uiIconSocTaskSharing"),
+    FORUM(ActivityPluginType.FORUM.getName(), "uiIconSocForumMini"),
+    ANSWER(ActivityPluginType.ANSWER.getName(), "uiIconSocAnswersMini"),
+    POLL(ActivityPluginType.POLL.getName(), "uiIconSocPoll"),
+    WIKI(ActivityPluginType.WIKI.getName(), "uiIconSocWikiMini");
 
     private final String type;
     private final String iconClass;
