@@ -46,7 +46,7 @@
                           $.ajax({
                               type: "GET",
                               url: url,
-                              data: { nameToSearch : this.items.join() },
+                              data: { nameToSearch : this.items.join() + "," },
                               complete: function(jqXHR) {
                                   if(jqXHR.readyState === 4) {
                                       var json = $.parseJSON(jqXHR.responseText)
