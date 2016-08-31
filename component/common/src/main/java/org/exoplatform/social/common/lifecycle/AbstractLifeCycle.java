@@ -90,8 +90,8 @@ public abstract class AbstractLifeCycle<T extends LifeCycleListener<E>, E extend
   protected void broadcast(final E event) {
 
     //
-    SessionContext ctx = lifeCycle.getContext();
     if (completionService.isAsync()) {
+      SessionContext ctx = lifeCycle.getContext();
       ctx.addSynchronizationListener(new SynchronizationListener() {
 
         public void beforeSynchronization() {}
