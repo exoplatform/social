@@ -1,7 +1,6 @@
 package org.exoplatform.social.notification;
 
 import org.exoplatform.commons.utils.CommonsUtils;
-import org.exoplatform.forum.service.ForumService;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
@@ -253,12 +252,7 @@ public static final String RESOURCE_URL = "social/notifications";
             return templateParams.get("Link");
           }
         } else if (activityType.equals(ActivityPluginType.POLL.getName())) {
-          try {
-            return CommonsUtils.getCurrentDomain() + CommonsUtils.getService(ForumService.class)
-                    .getTopicByPath(templateParams.get("PollLink"), false).getLink();
-          } catch (Exception e) {
-            LOG.error(e.getMessage(), e);
-          }
+          return CommonsUtils.getCurrentDomain() + templateParams.get("Link");
         } else if (activityType.equals(ActivityPluginType.FILE.getName())
                 || activityType.equals(ActivityPluginType.SHARE_FILE.getName())
                 || activityType.equals(ActivityPluginType.CONTENT.getName())) {
