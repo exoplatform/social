@@ -72,13 +72,37 @@
            .addScripts("UIComposer.onLoadI18n({ helpSearch: \"$helpSearch\", searching: \"searching\", foundNoMatch: \"$foundNoMatch\"});") 
            .addScripts("UIComposer.onLoad($params);");
 %>
-<div class="uiComposer uiGrayLightBox hidden-phone">
+<div class="uiComposer hidden-phone">
   <% uiform.begin() %>
   <div class="button-group clearfix visible-phone">
   	<button class="btn btn-cancel"><%=_ctx.appRes("word.cancel")%></button>
   	<button class="btn btn-primary btn-submit">$shareLabel</button>
   </div>
   <div class="blastContainer">
+		<div id="ActivityComposerExt" class="attachMents">
+		<%
+			def simpleName, labelSimpleName, actionEvent, clazz;
+			def counter = 0;
+			for(acComposer in uicomponent.getActivityComposers()) {
+				counter++;
+				simpleName = acComposer.getClass().getSimpleName();
+				labelSimpleName = _ctx.appRes("UIActivityComposer.label.${simpleName}");
+				clazz = simpleName.toLowerCase();
+
+				String action = acComposer.event("Activate") + "; UIComposer.setCurrentValue(this)";
+				if(simpleName.equals("UILinkActivityComposer")) {
+					print("<a id=\"actionLink\" onclick=\"$action\"><span></span></a>");
+					action = "UIComposer.showLink()";
+				}
+				if("uidocactivitycomposer".equals(clazz)) {
+					clazz += " hidden-phone";
+				}
+			%>
+				<a href="javascript:void(0)" rel="tooltip" data-placement="bottom" title="$labelSimpleName" class="actionIcon $clazz" onclick="$action"><i class="uiIconSoc$simpleName uiIconSocLightGray"></i></a>
+			<%
+			}
+			%>
+		</div>
   	<div class="desktop-input">
 	    <div class="$blastInput">
 	      <% uiform.renderField(uicomponent.COMPOSER_TEXT_AREA_INPUT); %>
@@ -96,32 +120,7 @@
         </div>
   	</div>   
 		<div  class="blastShare clearfix">
-		 	<button class="pull-right btn btn-primary hidden-phone" id="ShareButton" type="submit" onclick="<%= uicomponent.event("PostMessage");%>; UIComposer.post()">$shareLabel</button>
-		  <div id="ActivityComposerExt" class="attachMents pull-left">
-		  <%
-			  def simpleName, labelSimpleName, actionEvent, clazz;
-        def counter = 0;
-        for(acComposer in uicomponent.getActivityComposers()) {
-          counter++;
-          simpleName = acComposer.getClass().getSimpleName();
-          labelSimpleName = _ctx.appRes("UIActivityComposer.label.${simpleName}");
-          clazz = simpleName.toLowerCase();
-
-          String action = acComposer.event("Activate") + "; UIComposer.setCurrentValue(this)";
-          if(simpleName.equals("UILinkActivityComposer")) {
-            print("<a id=\"actionLink\" onclick=\"$action\"><span></span></a>");
-            action = "UIComposer.showLink()";
-          }
-          if("uidocactivitycomposer".equals(clazz)) {
-            clazz += " hidden-phone";
-          }
-		      %>
-          <a href="javascript:void(0)" rel="tooltip" data-placement="bottom" title="$labelSimpleName" class="actionIcon $clazz" onclick="$action"><i class="uiIconSoc$simpleName uiIconSocLightGray"></i></a>
-      <%
-        }
-      %>
-      </div>
-      
+		 	<button class="btn btn-primary hidden-phone" id="ShareButton" type="submit" onclick="<%= uicomponent.event("PostMessage");%>; UIComposer.post()">$shareLabel</button>
 		</div>
 	</div>
   <% uiform.end()%>
