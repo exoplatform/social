@@ -38,20 +38,6 @@
     },
     init : function() {
 
-      // add @ button using js
-      var mentionButton = $('<a />', {
-          'href' : 'javascript:void(0);',
-          'rel':'tooltip',
-          'data-placement':'bottom',
-          'title': UIComposer.mentionBtnLabel,
-          'class':'actionIcon',
-          'id': 'mentionButton'
-        }
-      ).append($('<i />',{
-        'class':'uiIconSocMention uiIconSocLightGray'
-      }));
-      $('div#ActivityComposerExt>a:last-child').before(mentionButton);
-
       UIComposer.composer = $('#' + UIComposer.composerId);
 
       $(document).ready(function() {
@@ -115,7 +101,6 @@
        },
        idAction : 'ShareButton',
        actionLink : 'AttachButton',
-       actionMention : 'mentionButton',
        elasticStyle : {
        maxHeight : '64px',
        minHeight : '35px',
