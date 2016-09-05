@@ -27,15 +27,7 @@ import org.exoplatform.container.xml.ValueParam;
 import org.exoplatform.social.notification.AbstractCoreTest;
 import org.exoplatform.social.notification.channel.template.WebTemplateProvider;
 import org.exoplatform.social.notification.mock.MockWebTemplateProvider;
-import org.exoplatform.social.notification.plugin.ActivityCommentPlugin;
-import org.exoplatform.social.notification.plugin.ActivityMentionPlugin;
-import org.exoplatform.social.notification.plugin.LikePlugin;
-import org.exoplatform.social.notification.plugin.NewUserPlugin;
-import org.exoplatform.social.notification.plugin.PostActivityPlugin;
-import org.exoplatform.social.notification.plugin.PostActivitySpaceStreamPlugin;
-import org.exoplatform.social.notification.plugin.RelationshipReceivedRequestPlugin;
-import org.exoplatform.social.notification.plugin.RequestJoinSpacePlugin;
-import org.exoplatform.social.notification.plugin.SpaceInvitationPlugin;
+import org.exoplatform.social.notification.plugin.*;
 
 /**
  * Created by The eXo Platform SAS
