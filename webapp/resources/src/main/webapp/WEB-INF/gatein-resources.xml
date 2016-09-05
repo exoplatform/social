@@ -251,6 +251,10 @@
       <module>mentionsLib</module>
       <as>mentions</as>
     </depends>
+    <depends>
+      <module>commons-editor</module>
+      <as>editor</as>
+    </depends>
   </module>
 
   <module>

@@ -37,27 +37,53 @@
       UIComposer.userTyped = false;
     },
     init : function() {
-    
+
       // add @ button using js
-			var mentionButton = $('<a />', {
-				'href' : 'javascript:void(0);',
-				'rel':'tooltip',
-				'data-placement':'bottom',
-				'title': UIComposer.mentionBtnLabel,
-				'class':'actionIcon',
-				'id': 'mentionButton'
-			}
-			).append($('<i />',{
-			'class':'uiIconSocMention uiIconSocLightGray'
-			}));
-			$('div#ActivityComposerExt>a:last-child').before(mentionButton);
+      var mentionButton = $('<a />', {
+          'href' : 'javascript:void(0);',
+          'rel':'tooltip',
+          'data-placement':'bottom',
+          'title': UIComposer.mentionBtnLabel,
+          'class':'actionIcon',
+          'id': 'mentionButton'
+        }
+      ).append($('<i />',{
+        'class':'uiIconSocMention uiIconSocLightGray'
+      }));
+      $('div#ActivityComposerExt>a:last-child').before(mentionButton);
 
       UIComposer.composer = $('#' + UIComposer.composerId);
 
       $(document).ready(function() {
+        var composerInput = $('#composerInput');
+        // TODO this line is mandatory when a custom skin is defined, it should not be mandatory
+        CKEDITOR.basePath = '/commons-extension/ckeditor/';
+        composerInput.ckeditor({
+          customConfig: '/social-resources/javascript/eXo/social/ckeditorCustom/config.js',
+          on : {
+            instanceReady : function ( evt ) {
+              // Hide the editor top bar.
+              document.getElementById( evt.editor.id + '_bottom' ).style.display = 'none';
+              document.getElementById( evt.editor.id + '_contents' ).style.height = '47px';
+            },
+            focus : function ( evt ) {
+              // Show the editor top bar.
+              document.getElementById( evt.editor.id + '_bottom' ).style.display = 'block';
+              document.getElementById( evt.editor.id + '_contents' ).style.height = '150px';
+            },
+            blur : function ( evt ) {
+              // Show the editor top bar.
+              document.getElementById( evt.editor.id + '_bottom' ).style.display = 'none';
+              document.getElementById( evt.editor.id + '_contents' ).style.height = '47px';
+            }
+          }
+        });
+
+
+
         var actionLink = $('#actionLink');
         if(actionLink.length > 0 && $(UIComposer.clickOn).hasClass('uidocactivitycomposer') === false) {
-          if ($('#InputLink').length == 0) {            
+          if ($('#InputLink').length == 0) {
             if (UIComposer.clickOn == null || UIComposer.clickOn == "") {
               var UIComposerComp = $('#UIPageCreationWizard');
               if (UIComposerComp.find('#UIPagePreview').length == 0) {
@@ -75,25 +101,30 @@
         }
       });
 
-      //
-      $('textarea#' + UIComposer.textareaId).exoMentions({
-        onDataRequest : function(mode, query, callback) {
-          var url = window.location.protocol + '//' + window.location.host + '/' + eXo.social.portal.rest + '/social/people/getprofile/data.json?search=' + query;
-          $.getJSON(url, function(responseData) {
-            callback.call(this, responseData);
-          });
-        },
-        idAction : 'ShareButton',
-        actionLink : 'AttachButton',
-        actionMention : 'mentionButton',
-        elasticStyle : {
-          maxHeight : '64px',
-          minHeight : '35px',
-          marginButton: '4px',
-          enableMargin: false
-        },
-        messages : window.eXo.social.I18n.mentions
-      });
+      /*
+       //
+       $('textarea#' + UIComposer.textareaId).exoMentions({
+       onDataRequest : function(mode, query, callback) {
+       var url = window.location.protocol + '//' + window.location.host + '/' + eXo.social.portal.rest + '/social/people/getprofile/data.json?search=' + query;
+       $.getJSON(url, function(responseData) {
+       responseData = _.filter(responseData, function(item) {
+       return item.name.toLowerCase().indexOf(query.toLowerCase()) > -1;
+       });
+       callback.call(this, responseData);
+       });
+       },
+       idAction : 'ShareButton',
+       actionLink : 'AttachButton',
+       actionMention : 'mentionButton',
+       elasticStyle : {
+       maxHeight : '64px',
+       minHeight : '35px',
+       marginButton: '4px',
+       enableMargin: false
+       },
+       messages : window.eXo.social.I18n.mentions
+       });
+       */
     },
     post : function() {
       UIComposer.isReady = false;
@@ -128,9 +159,9 @@
       }
     },
     activeShareButton : function() {
-	    try {
-	      $('textarea#composerInput').exoMentions('showButton', function() {});
-	    } catch (e) {}
+      try {
+        $('textarea#composerInput').exoMentions('showButton', function() {});
+      } catch (e) {}
     }
   };
 
