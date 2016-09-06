@@ -59,7 +59,12 @@ public class UIActivityComposerManager extends BaseComponentPlugin {
   }
 
   public void registerActivityComposer(UIActivityComposer activityComposer){
-    activityComposers.add(activityComposer);
+    if(activityComposer instanceof UIDefaultActivityComposer) {
+      // add the default composer at the first composer
+      activityComposers.add(0, activityComposer);
+    } else {
+      activityComposers.add(activityComposer);
+    }
   }
 
   public void removeActivityComposer(UIActivityComposer activityComposer){
