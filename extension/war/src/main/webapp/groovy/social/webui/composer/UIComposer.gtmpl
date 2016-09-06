@@ -90,9 +90,7 @@
 				clazz = simpleName.toLowerCase();
 
 				String action = acComposer.event("Activate") + "; UIComposer.setCurrentValue(this)";
-				if(simpleName.equals("UILinkActivityComposer")) {
-					action = "UIComposer.showLink()";
-				}
+
 				if("uidocactivitycomposer".equals(clazz)) {
 					clazz += " hidden-phone";
 				}

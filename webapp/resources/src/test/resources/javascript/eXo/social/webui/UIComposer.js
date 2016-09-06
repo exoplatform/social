@@ -87,31 +87,6 @@
       UIComposer.clickOn = elm;
       UIComposer.currentValue = uiInputText.val();
     },
-
-    showLink : function() {
-      var container = $('#ComposerContainer')
-      var link = container.find('#LinkExtensionContainer');
-      if (link.length > 0) {
-        if (link.data('isShow').isShow) {
-          link.hide().data('isShow', {
-            isShow : false
-          });
-        } else {
-          link.show().data('isShow', {
-            isShow : true
-          });
-        }
-      } else {
-      
-        var cmp = container.find('.uiLinkShareDisplay');
-        if (cmp.length > 0) {
-          $('textarea#composerInput').exoMentions('clearLink', function() {
-          });
-        } else {
-          $('#actionLink').trigger('click');
-        }
-      }
-    },
     activeShareButton : function() {
 	    try {
 	      $('textarea#composerInput').exoMentions('showButton', function() {});
