@@ -91,14 +91,15 @@
 
 				String action = acComposer.event("Activate") + "; UIComposer.setCurrentValue(this)";
 				if(simpleName.equals("UILinkActivityComposer")) {
-					print("<a id=\"actionLink\" onclick=\"$action\"><span></span></a>");
 					action = "UIComposer.showLink()";
 				}
 				if("uidocactivitycomposer".equals(clazz)) {
 					clazz += " hidden-phone";
 				}
 			%>
-				<a href="javascript:void(0)" rel="tooltip" data-placement="bottom" title="$labelSimpleName" class="actionIcon $clazz" onclick="$action"><i class="uiIconSoc$simpleName uiIconSocLightGray"></i></a>
+				<div class="pull-left ActivityComposerExtItem $simpleName">
+					<a href="javascript:void(0)" rel="tooltip" data-placement="bottom" title="$labelSimpleName" class="$clazz" onclick="$action"><i class="uiIconSoc$simpleName uiIconSocLightGray"></i>$labelSimpleName</a>
+				</div>
 			<%
 			}
 			%>
