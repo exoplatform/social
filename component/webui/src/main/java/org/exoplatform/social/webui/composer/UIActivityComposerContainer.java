@@ -28,15 +28,14 @@ import org.exoplatform.webui.core.UIComponent;
 )
 public class UIActivityComposerContainer extends UIContainer {
   
-  private final static String LINK_UI_ACTIVITY_COMPOSER = "UILinkActivityComposer";
   @Override
   public void processRender(WebuiRequestContext context) throws Exception {
-    UIComposer uiComposer = (UIComposer)getParent();
+    UIComposer uiComposer = getParent();
     UIActivityComposer uiActivityComposer = uiComposer.getActivityComposerManager().getCurrentActivityComposer();
     
     List<UIComponent> children = getChildren();
     for(UIComponent ui : children) {
-      if (ui.getClass().getSimpleName().equals(uiActivityComposer.getClass().getSimpleName()) || ui.getClass().getSimpleName().equals(LINK_UI_ACTIVITY_COMPOSER)) {
+      if (ui.getClass().getSimpleName().equals(uiActivityComposer.getClass().getSimpleName())) {
         ui.setRendered(true);
       } else {
         ui.setRendered(false);

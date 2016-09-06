@@ -33,11 +33,19 @@ import org.exoplatform.social.webui.space.UISpaceActivitiesDisplay;
 import org.exoplatform.web.application.ApplicationMessage;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
+import org.exoplatform.webui.config.annotation.EventConfig;
 import org.exoplatform.webui.core.UIApplication;
 import org.exoplatform.webui.core.UIComponent;
 import org.exoplatform.webui.event.Event;
 
-@ComponentConfig()
+@ComponentConfig(
+  template = "war:groovy/social/webui/composer/UIDefaultActivityComposer.gtmpl",
+  events = {
+    @EventConfig(listeners = UIActivityComposer.CloseActionListener.class),
+    @EventConfig(listeners = UIActivityComposer.SubmitContentActionListener.class),
+    @EventConfig(listeners = UIActivityComposer.ActivateActionListener.class)
+  }
+)
 public class UIDefaultActivityComposer extends UIActivityComposer {
 
   public UIDefaultActivityComposer() {

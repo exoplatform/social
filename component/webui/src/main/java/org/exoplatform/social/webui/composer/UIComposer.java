@@ -112,20 +112,13 @@ public class UIComposer extends UIForm {
     if (extensionList != null) {
       for (int i = 0, j = extensionList.size(); i < j; i++) {
         final UIExtension composerExtension = extensionList.get(i);
+        UIActivityComposer uiActivityComposer = (UIActivityComposer) uiExtensionManager.
+                                               addUIExtension(composerExtension, null, composerContainer);
         if(composerExtension.getName().equals(UIActivityComposerManager.DEFAULT_ACTIVITY_COMPOSER)){
-          UIActivityComposer uiDefaultComposer = (UIActivityComposer) uiExtensionManager.
-                                                 addUIExtension(composerExtension, null, composerContainer);
-          composerContainer.removeChildById(uiDefaultComposer.getId());
-          uiDefaultComposer.setActivityComposerManager(activityComposerManager);
-          activityComposerManager.setDefaultActivityComposer(uiDefaultComposer);
-          //activityComposerManager.registerActivityComposer(uiDefaultComposer);
-        } else{
-          UIActivityComposer uiActivityComposer = (UIActivityComposer) uiExtensionManager.
-                                                  addUIExtension(composerExtension, null, composerContainer);
-          
-          uiActivityComposer.setActivityComposerManager(activityComposerManager);
-          activityComposerManager.registerActivityComposer(uiActivityComposer);
+          activityComposerManager.setDefaultActivityComposer(uiActivityComposer);
         }
+        uiActivityComposer.setActivityComposerManager(activityComposerManager);
+        activityComposerManager.registerActivityComposer(uiActivityComposer);
       }
     }
     activityComposerManager.setUiComposer(this);

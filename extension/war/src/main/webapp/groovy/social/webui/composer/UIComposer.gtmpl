@@ -80,27 +80,27 @@
   </div>
   <div class="blastContainer">
 		<div id="ActivityComposerExt" class="attachMents">
-		<%
-			def simpleName, labelSimpleName, actionEvent, clazz;
-			def counter = 0;
-			for(acComposer in uicomponent.getActivityComposers()) {
-				counter++;
-				simpleName = acComposer.getClass().getSimpleName();
-				labelSimpleName = _ctx.appRes("UIActivityComposer.label.${simpleName}");
-				clazz = simpleName.toLowerCase();
-
-				String action = acComposer.event("Activate") + "; UIComposer.setCurrentValue(this)";
-
-				if("uidocactivitycomposer".equals(clazz)) {
-					clazz += " hidden-phone";
-				}
-			%>
-				<div class="pull-left ActivityComposerExtItem $simpleName">
-					<a href="javascript:void(0)" rel="tooltip" data-placement="bottom" title="$labelSimpleName" class="$clazz" onclick="$action"><i class="uiIconSoc$simpleName uiIconSocLightGray"></i>$labelSimpleName</a>
-				</div>
 			<%
-			}
-			%>
+				def simpleName, labelSimpleName, actionEvent, clazz;
+				def counter = 0;
+				for(acComposer in uicomponent.getActivityComposers()) {
+					counter++;
+					simpleName = acComposer.getClass().getSimpleName();
+					labelSimpleName = _ctx.appRes("UIActivityComposer.label.${simpleName}");
+					clazz = simpleName.toLowerCase();
+
+					String action = acComposer.event("Activate") + "; UIComposer.setCurrentValue(this)";
+
+					if("uidocactivitycomposer".equals(clazz)) {
+						clazz += " hidden-phone";
+					}
+				%>
+					<div class="pull-left ActivityComposerExtItem $simpleName">
+						<a href="javascript:void(0)" rel="tooltip" data-placement="bottom" title="$labelSimpleName" class="$clazz" onclick="$action"><i class="uiIconSoc$simpleName uiIconSocLightGray"></i>$labelSimpleName</a>
+					</div>
+				<%
+				}
+				%>
 		</div>
   	<div class="desktop-input">
 	    <div class="$blastInput">
