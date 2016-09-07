@@ -135,7 +135,7 @@ public class UIUserActivityStreamPortlet extends UIPortletApplication {
         uiComposer.setRendered(false);
       }
     }
-    uiUserActivitiesDisplay.setOwnerName(ownerName);
+    uiUserActivitiesDisplay.init();
   }
 
   /**
