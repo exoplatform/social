@@ -139,7 +139,6 @@ public abstract class UIActivityComposer extends UIContainer {
       if (!(activityComposer.getClass().getSimpleName().equals(UI_DOCUMENT_ACTIVITY_COMPOSER))) {
         activityComposer.setDisplayed(true);
       }
-      final UIComposer composer = activityComposerManager.getUIComposer();
       if (activityComposer.getClass().getSimpleName().equals(UI_DOCUMENT_ACTIVITY_COMPOSER)) {
         Event<UIComponent> selectDocEvent = activityComposer.createEvent(SELECT_DOCUMENT_ACTION, event.getExecutionPhase(), ctx);
         if (selectDocEvent != null) {
@@ -147,7 +146,8 @@ public abstract class UIActivityComposer extends UIContainer {
         }
       } 
 
-      event.getRequestContext().addUIComponentToUpdateByAjax(composer);
+      // update the parent of the activated UIActivityComposer (component UIActivityComposerContainer)
+      event.getRequestContext().addUIComponentToUpdateByAjax(activityComposer.getParent());
     }
   }
 
