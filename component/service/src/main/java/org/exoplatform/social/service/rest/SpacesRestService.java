@@ -25,6 +25,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -39,6 +40,8 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 import javax.xml.bind.annotation.XmlRootElement;
+
+import org.exoplatform.social.core.service.LinkProvider;
 
 import org.apache.commons.collections.map.HashedMap;
 import org.exoplatform.commons.utils.Safe;
@@ -132,7 +135,9 @@ public class SpacesRestService implements ResourceContainer {
    */
   private static final QualifiedName REQUEST_SITE_NAME = QualifiedName.create("gtn", "sitename");
   
-  private static final String ALL_SPACES = "all-spaces"; 
+  private static final String ALL_SPACES = "all-spaces";
+  
+  private static final String JSON = "json";
   
   /**
    * constructor
@@ -249,7 +254,51 @@ public class SpacesRestService implements ResourceContainer {
     SpaceList mySpaceList = getLastVisitedSpace(userId, newAppId, newOffset, newLimit);
     return Util.getResponse(mySpaceList, uriInfo, mediaType, Response.Status.OK);
   }
-
+  
+  /**
+   * Gets space display info
+   *
+   * @param uriInfo The requested URI information.
+   * @authentication
+   * @request GET: {@code http://localhost:8080/rest/private/social/spaces/spaceInfo/?spaceName=space1}
+   * @response
+   * {
+   * {"displayName":"space 2","url":"","imageSource":""},
+   * }
+   * @return the response
+   * @LevelAPI Platform
+   * @anchor SpacesRestService.getSpaceInfo
+   *
+   */
+  @GET
+  @Path("spaceInfo")
+  public Response getSpaceInfo(@Context UriInfo uriInfo,
+          @PathParam("portalName") String portalName,
+          @QueryParam("spaceName") String spaceName) throws Exception {
+    checkAuthenticatedRequest();
+    
+    MediaType mediaType = Util.getMediaType(JSON, new String[]{JSON});
+    portalContainerName = portalName;
+    
+    Space space = getSpaceService().getSpaceByPrettyName(spaceName);
+    
+    Map<String, String> spaceInfo = new HashMap<>();
+    spaceInfo.put("displayName", space.getDisplayName());
+    //spaceInfo.put("url", LinkProvider.getSpaceUri(space.getUrl()));
+    spaceInfo.put("url", buildSpaceUrl(space.getUrl()));
+    
+    spaceInfo.put("imageSource", space.getAvatarUrl() != null ? space.getAvatarUrl() :
+                                 LinkProvider.SPACE_DEFAULT_AVATAR_URL);
+    
+    return Util.getResponse(spaceInfo, uriInfo, mediaType, Response.Status.OK);
+  }
+  
+  private String buildSpaceUrl(final String spaceUrl) {
+      //http://localhost:8080/portal/g/:spaces:space1/space1
+      return "/" + portalContainerName + "/g/:spaces:" +
+                   spaceUrl + "/" + spaceUrl;
+  }
+  
   /**
    * Gets a user's pending spaces.
    * 
