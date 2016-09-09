@@ -21,6 +21,9 @@
       <div class="contentSmall" data-link="$VIEW_FULL_DISCUSSION_ACTION_URL">
         <div class="status"><%= message %></div>
         <div class="content"><i class="uiIcon uiIconComment uiIconLightGray"></i>$ACTIVITY</div>
+        <div class="quote">
+            $COMMENT
+        </div>
         <div class="lastUpdatedTime">$LAST_UPDATED_TIME</div>
       </div>
     </div>
