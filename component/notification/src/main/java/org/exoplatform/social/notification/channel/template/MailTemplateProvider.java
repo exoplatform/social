@@ -111,6 +111,7 @@ public class MailTemplateProvider extends TemplateProvider {
       
       //Store the activity id as key, and the list all identities who posted to the activity.
       Map<String, List<String>> receiverMap = new LinkedHashMap<String, List<String>>();
+      Map<String, String> userComments = new LinkedHashMap<String, String>();
       
       try {
         for (NotificationInfo message : notifications) {
@@ -119,11 +120,14 @@ public class MailTemplateProvider extends TemplateProvider {
           if (activity == null) {
             continue;
           }
+
+          String poster = message.getValueOwnerParameter("poster");
+          userComments.put(poster, activity.getTitle());
           ExoSocialActivity parentActivity = Utils.getActivityManager().getParentActivity(activity);
           //
-          SocialNotificationUtils.processInforSendTo(receiverMap, parentActivity.getId(), message.getValueOwnerParameter("poster"));
+          SocialNotificationUtils.processInforSendTo(receiverMap, parentActivity.getId(), poster);
         }
-        writer.append(SocialNotificationUtils.getMessageByIds(receiverMap, templateContext));
+        writer.append(SocialNotificationUtils.getMessageByIds(receiverMap, userComments, templateContext));
       } catch (IOException e) {
         ctx.setException(e);
         return false;

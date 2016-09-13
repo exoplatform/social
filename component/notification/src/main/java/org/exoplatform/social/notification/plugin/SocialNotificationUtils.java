@@ -18,6 +18,7 @@ package org.exoplatform.social.notification.plugin;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -144,14 +145,22 @@ public class SocialNotificationUtils {
     
     return sb.toString();
   }
+
+  public static String getMessageByIds(Map<String, List<String>> receiversMap, 
+          TemplateContext templateContext) {
+      return getMessageByIds(receiversMap, new HashMap<String, String>(), templateContext);
+  }  
   
   /**
    * 
    * @param receiversMap
+   * @param userComments
    * @param templateContext
    * @return
    */
-  public static String getMessageByIds(Map<String, List<String>> receiversMap, TemplateContext templateContext) {
+  public static String getMessageByIds(Map<String, List<String>> receiversMap, 
+                                       Map<String, String> userComments,
+                                       TemplateContext templateContext) {
     StringBuilder sb = new StringBuilder();
     ExoSocialActivity activity = null;
     Space space = null;
@@ -211,6 +220,26 @@ public class SocialNotificationUtils {
 
       String digester = TemplateUtils.processDigest(templateContext.digestType(count));
       sb.append(digester);
+      if (userComments.size() > 0) {
+          sb.append("<br/>");
+          sb.append("<div style=\"background-color:#f9f9f9;padding: 10px\">");  
+          sb.append("<div style=\"border-left:5px solid #AACDED; padding-left: 15px; color:black\">");
+              //<i><b>vu : </b><span style=\"color:#333333\"><font face="verdana,arial,sans-serif">share lam the</font></span></i>
+          for (Map.Entry<String, String> e: userComments.entrySet()) {
+              sb.append("<i>");
+              if (userComments.size() > 1) {
+                  sb.append("<b>").append(e.getKey()).append(" : </b>");
+              }
+              sb.append("<span style=\"color:#333333\"><font face=\"verdana,arial,sans-serif\">")
+                .append(e.getValue())
+                .append("</font></span>")
+                .append("</i>")
+                .append("<br/>");
+          }
+          sb.append("  </div>");
+          sb.append("</div>");
+          sb.append("<br/");
+      }
       sb.append("</li>");
     }
     
@@ -302,7 +331,7 @@ public class SocialNotificationUtils {
   
   public static String buildRedirecActivityUrl(String type, String id, String activityTitle) {
     String link = LinkProviderUtils.getRedirectUrl(type, id);
-    return "<a target=\"_blank\" style=\"text-decoration: none; color: #2f5e92; font-family: 'HelveticaNeue Bold', Helvetica, Arial, sans-serif; font-size: 13px; line-height: 18px;\" href=\""+ link + "\">" + activityTitle + "</a>";
+    return "<a target=\"_blank\" style=\"text-decoration: none; color: #2f5e92; font-family: 'HelveticaNeue Bold', Helvetica, Arial, sans-serif; font-size: 13px; line-height: 18px;\" href=\""+ link + "\"><b>" + activityTitle + "</b></a>";
   }
   
   public static void addFooterAndFirstName(String remoteId, TemplateContext templateContext) {
