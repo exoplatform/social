@@ -27,7 +27,7 @@
   <groupId>org.exoplatform.social</groupId>
   <artifactId>social-notification-extension</artifactId>
   <packaging>war</packaging>
-  <name>eXo Social Notification Extension</name>
+  <name>eXo PLF:: Social Notification Extension</name>
   <description>eXo Social Notification Extension</description>
   <dependencies>
     <dependency>

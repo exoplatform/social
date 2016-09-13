@@ -27,7 +27,7 @@
   <groupId>org.exoplatform.social</groupId>
   <artifactId>social-extension-war</artifactId>
   <packaging>war</packaging>
-  <name>eXo Social Extension WAR</name>
+  <name>eXo PLF:: Social Extension WAR</name>
   <description>eXo Social Extension WAR</description>
   <dependencies>
     <dependency>

@@ -8,7 +8,7 @@
   </parent>
   <artifactId>social-webapp-juzu-portlet</artifactId>
   <packaging>jar</packaging>
-  <name>eXo Social Juzu Portlet</name>
+  <name>eXo PLF:: Social Juzu Portlet</name>
   <dependencies>
   
     <dependency>

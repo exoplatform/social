@@ -27,7 +27,7 @@
   <groupId>org.exoplatform.social</groupId>
   <artifactId>social-component-webui</artifactId>
   <packaging>jar</packaging>
-  <name>eXo Social Web UI Component</name>
+  <name>eXo PLF:: Social Web UI Component</name>
   <description>eXo Social Web UI Component</description>
   <dependencies>
     <dependency>

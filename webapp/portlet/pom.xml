@@ -27,7 +27,7 @@
   <groupId>org.exoplatform.social</groupId>
   <artifactId>social-webapp-portlet</artifactId>
   <packaging>war</packaging>
-  <name>eXo Social Portlet Web App</name>
+  <name>eXo PLF:: Social Portlet Web App</name>
   <description>eXo Social Portlet Web App</description>
   <dependencies>
     <dependency>

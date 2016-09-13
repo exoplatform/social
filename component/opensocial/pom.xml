@@ -26,7 +26,7 @@
   </parent>
   <groupId>org.exoplatform.social</groupId>
   <artifactId>social-component-opensocial</artifactId>
-  <name>eXo Social OpenSocial Component</name>
+  <name>eXo PLF:: Social OpenSocial Component</name>
   <description>eXo Social OpenSocial Component</description>
   <dependencies>
     <dependency>

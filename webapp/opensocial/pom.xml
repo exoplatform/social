@@ -27,7 +27,7 @@
   <groupId>org.exoplatform.social</groupId>
   <artifactId>social-webapp-opensocial</artifactId>
   <packaging>war</packaging>
-  <name>eXo Social OpenSocial Web App</name>
+  <name>eXo PLF:: Social OpenSocial Web App</name>
   <description>eXo Social OpenSocial Web App</description>
   <dependencies>
     <dependency>

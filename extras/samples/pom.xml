@@ -27,7 +27,7 @@
   <groupId>org.exoplatform.social</groupId>
   <artifactId>social-extras-samples</artifactId>
   <packaging>jar</packaging>
-  <name>eXo Social Samples Code</name>
+  <name>eXo PLF:: Social Samples Code</name>
   <description>eXo Social Samples Code</description>
   <dependencies>
     <dependency>

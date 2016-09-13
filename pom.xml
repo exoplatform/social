@@ -29,7 +29,7 @@
   <artifactId>social</artifactId>
   <version>4.4.x-SNAPSHOT</version>
   <packaging>pom</packaging>
-  <name>eXo Social</name>
+  <name>eXo PLF:: Social</name>
   <description>eXo Social - Enterprise Social Networking</description>
   <modules>
     <module>extension</module>

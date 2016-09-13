@@ -26,7 +26,7 @@
   </parent>
   <artifactId>social-webapp</artifactId>
   <packaging>pom</packaging>
-  <name>eXo Social Web Apps</name>
+  <name>eXo PLF:: Social Web Apps</name>
   <description>eXo Social Web Apps</description>
   <modules>
     <module>resources</module>

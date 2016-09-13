@@ -29,6 +29,6 @@
   <groupId>org.exoplatform.social</groupId>
   <artifactId>social-extension-jar</artifactId>
   <packaging>jar</packaging>
-  <name>eXo Social Extension JAR</name>
+  <name>eXo PLF:: Social Extension JAR</name>
   <description>eXo Social Extension JAR</description>
 </project>

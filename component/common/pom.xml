@@ -26,7 +26,7 @@
   </parent>
   <groupId>org.exoplatform.social</groupId>
   <artifactId>social-component-common</artifactId>
-  <name>eXo Social Common Component</name>
+  <name>eXo PLF:: Social Common Component</name>
   <description>eXo Social Common Component</description>
   <dependencies>
     <dependency>

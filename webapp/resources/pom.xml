@@ -27,7 +27,7 @@
   <groupId>org.exoplatform.social</groupId>
   <artifactId>social-webapp-resources</artifactId>
   <packaging>war</packaging>
-  <name>eXo Social Resources Web App</name>
+  <name>eXo PLF:: Social Resources Web App</name>
   <description>eXo Social Resources Web App</description>
   <dependencies>
     <!-- We want to be sure to use the right version in the dependency plugin but it's not required in the package -->
