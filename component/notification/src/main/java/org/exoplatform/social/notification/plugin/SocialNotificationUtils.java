@@ -224,7 +224,6 @@ public class SocialNotificationUtils {
           sb.append("<br/>");
           sb.append("<div style=\"background-color:#f9f9f9;padding: 10px\">");  
           sb.append("<div style=\"border-left:5px solid #AACDED; padding-left: 15px; color:black\">");
-              //<i><b>vu : </b><span style=\"color:#333333\"><font face="verdana,arial,sans-serif">share lam the</font></span></i>
           for (Map.Entry<String, String> e: userComments.entrySet()) {
               sb.append("<i>");
               if (userComments.size() > 1) {
