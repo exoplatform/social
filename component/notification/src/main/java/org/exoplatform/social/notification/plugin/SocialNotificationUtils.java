@@ -147,8 +147,8 @@ public class SocialNotificationUtils {
   }
 
   public static String getMessageByIds(Map<String, List<String>> receiversMap, 
-          TemplateContext templateContext) {
-      return getMessageByIds(receiversMap, new HashMap<String, String>(), templateContext);
+                                       TemplateContext templateContext) {
+    return getMessageByIds(receiversMap, new HashMap<String, String>(), templateContext);
   }  
   
   /**
