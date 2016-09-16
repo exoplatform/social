@@ -2,6 +2,9 @@
 	String userSettingUrl = uicomponent.getUserNotificationSettingUrl(); 
 	List notifications = uicomponent.getNotifications();
 	String display = (notifications.size() == 0) ? "block" : "none";
+def jsManager = _ctx.getRequestContext().getJavascriptManager();
+jsManager.require("SHARED/jquery", "jq")
+         .addScripts("jq(\".uiIntranetNotificationsPortlet .share-comment\").show();");
 %>
 
 <div class="uiIntranetNotificationsPortlet" id="$uicomponent.id">
