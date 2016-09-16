@@ -22,9 +22,6 @@
         <div class="status"><%= message %></div>
         <div class="content"><i class="uiIcon uiIconComment uiIconLightGray"></i>$ACTIVITY</div>
         <div class="quoteContainer">
-          <div class="leftStick">
-            &nbsp;
-          </div>
           <div class="comment">
             $COMMENT
           </div>
