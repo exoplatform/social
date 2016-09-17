@@ -337,7 +337,8 @@
                         var divDescription = $('<div/>', {
                             "text": json.spaceDescription.replace(/<[^>]+>/g, '')
                         });
-                        divDescription.css({'max-height': '100px',  'overflow-y': 'auto' });
+                        divDescription.css({'max-height': '100px',  'overflow-y': 'auto','overflow-x': 'hidden',
+                            'max-width': '95%'});
                     }
                     tr.append(tdAvatar).append(tdProfile);
 

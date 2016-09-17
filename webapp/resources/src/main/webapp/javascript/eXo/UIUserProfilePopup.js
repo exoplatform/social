@@ -363,7 +363,8 @@
                          });
                          var activityDiv=$("<div/>");
                          activityDiv.append(blockquote);
-                         activityDiv.css({'max-height': '100px', 'overflow-y': 'auto', 'overflow-x': 'hidden', 'padding-right': '15px'});
+                         activityDiv.css({'max-height': '100px', 'overflow-y': 'auto', 'overflow-x': 'hidden', 'padding-right': '15px',
+                             'max-width': '95%'});
                      }
 
                      if (activityDiv) {
