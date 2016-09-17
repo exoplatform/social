@@ -337,6 +337,7 @@
                     tdAvatar.append(aAvatar.append(img));
 
                     var tdProfile = $("<td/>");
+                    tdProfile.css({'overflow': 'hidden','white-space': 'nowrap','text-overflow': 'ellipsis', 'max-width': '20px'});
                     var aProfile = $("<a/>", {
                         "target":"_self",
                         "href":json.profileUrl,
@@ -354,22 +355,31 @@
                     }
 
                     tr.append(tdAvatar).append(tdProfile);
-
                     tbody.append(tr);
 
+                     if (json.activityTitle) {
+                         var blockquote = $("<blockquote/>", {
+                             "text": json.activityTitle.replace(/<[^>]+>/g, '')
+                         });
+                         var activityDiv=$("<div/>");
+                         activityDiv.append(blockquote);
+                         activityDiv.css({'max-height': '100px', 'overflow-y': 'auto', 'overflow-x': 'hidden', 'padding-right': '15px'});
+                     }
+
+                     if (activityDiv) {
+                         var trDesc = $("<tr/>");
+                         var td = $("<td/>", {
+                             "width":"50px"
+                         });
+                         trDesc.append(td);
+                         var tdDesc = $("<td/>");
+                         tdDesc.append(activityDiv)
+                         trDesc.append(tdDesc);
+                         tbody.append(trDesc);
+                     }
+
                     popupContent.append(tbody);
-
-                    if (json.activityTitle) {
-                        var blockquote = $("<blockquote/>", {
-                          "text" :json.activityTitle.replace(/<[^>]+>/g, '')
-                        });
-                    }
-
                     popupContentContainer.append(popupContent);
-
-                    if (blockquote) {
-                        popupContentContainer.append(blockquote);
-                    }
 
                     if (currentViewerId != ownerUserId && !isDeleted) {
                         var divUIAction = $("<div/>", {

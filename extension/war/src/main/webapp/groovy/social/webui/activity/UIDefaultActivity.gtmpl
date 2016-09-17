@@ -162,6 +162,23 @@
   }
   def currentTime = System.currentTimeMillis();
   String viewActivityTip = _ctx.appRes("UIActivity.msg.ViewActivity");
+
+  def spaceSourceURI, spaceName, spaceImageSource;
+  if (uicomponent.isUserActivity() && uicomponent.isSpaceStreamOwner() && !uicomponent.isUISpaceActivitiesDisplay()) {
+         	Space spaceSource = Utils.getSpaceService().getSpaceByPrettyName(streamOwner);
+          if (spaceSource != null) {
+            spaceSourceURI = LinkProvider.getSpaceUri(spaceSource.url);
+             spaceName = spaceSource.displayName;
+      		spaceImageSource = spaceSource.getAvatarUrl();
+      		if (spaceImageSource == null) {
+      			spaceImageSource = LinkProvider.SPACE_DEFAULT_AVATAR_URL;
+      		}
+            } else {
+                spaceSourceURI = LinkProvider.getActivityUriForSpace(streamOwner, streamOwner);
+                spaceName = Utils.getSpaceIdentity(streamOwner, false).profile.fullName;
+      		    spaceImageSource = LinkProvider.SPACE_DEFAULT_AVATAR_URL;
+            }
+   }
 %>
 
 <div class="activityStream uiDefaultActivity" id="activityContainer${activity.id}">
@@ -172,7 +189,15 @@
 		  <img alt="$ownerName" src="$ownerAvatar"/>
 		</a>
 	</div>
-	
+	<%  if (uicomponent.isUserActivity() && uicomponent.isSpaceStreamOwner() && !uicomponent.isUISpaceActivitiesDisplay()) {%>
+	<div class="activityType">
+	<div>
+    		<a  href="$spaceSourceURI">
+    		  <img alt="$spaceName" src="$spaceImageSource"/>
+    		</a>
+    </div>
+    </div>
+    <%}%>
   </div><!--end activityTimeLine-->
   <div class="boxContainer" id="boxContainer">
 	<div id="ContextBox${activity.id}" class="uiBox contentBox">
@@ -188,28 +213,13 @@
 				</div>
 				
 				<div class="author">
-					<a  href="$ownerUri">$ownerName</a>                
+					<a  href="$ownerUri">$ownerName</a>
+					<%  if (uicomponent.isUserActivity() && uicomponent.isSpaceStreamOwner() && !uicomponent.isUISpaceActivitiesDisplay()) {%>
+						<a class="spaceName" href="$spaceSourceURI"><span class="uiIconArrowRightMini uiIconLightGray"></span>&nbsp;$spaceName</a>
+					<%}%>
 				</div>
 				<div class="dataInfor">
-					<span class="dateTime"><i class="uiIconClock  uiIconLightGray"></i>&nbsp;$activityPostedTime</span> 
-					<% if (uicomponent.isUserActivity() && uicomponent.isSpaceStreamOwner() && !uicomponent.isUISpaceActivitiesDisplay()) {
-						    Space spaceSource = Utils.getSpaceService().getSpaceByPrettyName(streamOwner);
-                def spaceSourceURI, spaceName, spaceImageSource;
-                if (spaceSource != null) {
-                  spaceSourceURI = LinkProvider.getSpaceUri(spaceSource.url);
-                  spaceName = spaceSource.displayName;
-									spaceImageSource = spaceSource.getAvatarUrl();
-									if (spaceImageSource == null) {
-										spaceImageSource = LinkProvider.SPACE_DEFAULT_AVATAR_URL;
-									}
-                } else {
-                  spaceSourceURI = LinkProvider.getActivityUriForSpace(streamOwner, streamOwner);
-                  spaceName = Utils.getSpaceIdentity(streamOwner, false).profile.fullName;
-									spaceImageSource = LinkProvider.SPACE_DEFAULT_AVATAR_URL;
-                }
-					%>
-					<a class="spaceName" href="$spaceSourceURI"><img title="" alt="" src="$spaceImageSource" class="spaceIcon avatarMini" />&nbsp;$spaceName</a>
-					<%} %>
+					<span class="dateTime"><i class="uiIconClock  uiIconLightGray"></i>&nbsp;$activityPostedTime</span>
 				</div>
 			</div><!--end heading-->
 			<div class="description">$activity.title</div><!--end description-->

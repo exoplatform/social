@@ -20,6 +20,12 @@
   String cancelRequestLabel = StringEscapeUtils.escapeJavaScript(_ctx.appRes("UserProfilePopup.label.CancelRequest"));
   String removeConnectionLabel = StringEscapeUtils.escapeJavaScript(_ctx.appRes("UserProfilePopup.label.RemoveConnection"));
   String ignoreLabel = StringEscapeUtils.escapeJavaScript(_ctx.appRes("UserProfilePopup.label.Ignore"));
+
+  String followersLabel = StringEscapeUtils.escapeJavaScript(_ctx.appRes("UIActivitiesLoader.label.Space_INFO_Followers"));
+  String leaveLabel = StringEscapeUtils.escapeJavaScript(_ctx.appRes("UIActivitiesLoader.label.Space_INFO_Leave_Space"));
+  String cancelLabel = StringEscapeUtils.escapeJavaScript(_ctx.appRes("UISpaceMember.label.CancelRequest"));
+  String joinLabel = StringEscapeUtils.escapeJavaScript(_ctx.appRes("UIManageAllSpaces.label.action_join"));
+  String requestJoinLabel = StringEscapeUtils.escapeJavaScript(_ctx.appRes("UIManageAllSpaces.label.action_request_to_join"));
   
   String labels = """ {
     StatusTitle: '${statusTitle}',
@@ -29,8 +35,18 @@
     RemoveConnection: '${removeConnectionLabel}',
     Ignore: '${ignoreLabel}'
   } """
+
+  String spaceLabels = """ {
+    StatusTitle: '${statusTitle}',
+    followers : '${followersLabel}',
+    leave: '${leaveLabel}',
+    join: '${joinLabel}',
+    cancel: '${cancelLabel}',
+    request: '${requestJoinLabel}'
+   } """
   
-  requireJS.require("SHARED/social-ui-profile", "profile").addScripts("profile.initUserProfilePopup('$uicomponent.id', $labels);");
+  requireJS.require("SHARED/social-ui-profile", "profile").addScripts("profile.initUserProfilePopup('$uicomponent.id',$labels);");
+  requireJS.require("SHARED/social-ui-profile", "socialProfile").addScripts("socialProfile.initSpaceInfoPopup('$uicomponent.id', $spaceLabels);");
   String clearClass = "clearBG";
   if(hasActivities && !uicomponent.isExtendLoader() && (!uicomponent.isUIUserActivityDisplay() || Utils.isHomePage())) {
     clearClass = "clearfix";
