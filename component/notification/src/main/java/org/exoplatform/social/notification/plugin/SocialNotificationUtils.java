@@ -24,6 +24,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.apache.commons.lang3.tuple.Pair;
+
 import org.exoplatform.commons.api.notification.NotificationContext;
 import org.exoplatform.commons.api.notification.NotificationMessageUtils;
 import org.exoplatform.commons.api.notification.model.ArgumentLiteral;
@@ -147,8 +149,8 @@ public class SocialNotificationUtils {
   }
 
   public static String getMessageByIds(Map<String, List<String>> receiversMap, 
-                                       TemplateContext templateContext) {
-    return getMessageByIds(receiversMap, new HashMap<String, String>(), templateContext);
+          TemplateContext templateContext) {
+    return getMessageByIds(receiversMap, new HashMap<String, List<Pair<String, String>>>(), templateContext);
   }  
   
   /**
@@ -159,7 +161,7 @@ public class SocialNotificationUtils {
    * @return
    */
   public static String getMessageByIds(Map<String, List<String>> receiversMap, 
-                                       Map<String, String> userComments,
+                                       Map<String, List<Pair<String, String>>> activityUserComments,
                                        TemplateContext templateContext) {
     StringBuilder sb = new StringBuilder();
     ExoSocialActivity activity = null;
@@ -220,17 +222,18 @@ public class SocialNotificationUtils {
 
       String digester = TemplateUtils.processDigest(templateContext.digestType(count));
       sb.append(digester);
-      if (userComments.size() > 0) {
+      List<Pair<String, String>> userComments = activityUserComments.get(id);
+      if (userComments != null && userComments.size() > 0) {
           sb.append("<br/>");
           sb.append("<div style=\"background-color:#f9f9f9;padding: 10px\">");  
           sb.append("<div style=\"border-left:5px solid #AACDED; padding-left: 15px; color:black\">");
-          for (Map.Entry<String, String> e: userComments.entrySet()) {
+          for (Pair<String, String> pair: userComments) {
               sb.append("<i>");
               if (userComments.size() > 1) {
-                  sb.append("<b>").append(e.getKey()).append(" : </b>");
+                  sb.append("<b>").append(pair.getKey()).append(" : </b>");
               }
               sb.append("<span style=\"color:#333333\"><font face=\"verdana,arial,sans-serif\">")
-                .append(e.getValue())
+                .append(pair.getValue())
                 .append("</font></span>")
                 .append("</i>")
                 .append("<br/>");
@@ -321,6 +324,15 @@ public class SocialNotificationUtils {
       list.add(value);
     }
     map.put(key, new ArrayList<String>(list));
+  }
+  
+  public static void processInforUserComments(Map<String, List<Pair<String, String>>> map, String key, Pair<String, String> value) {
+      List<Pair<String, String>> list = new ArrayList<Pair<String, String>>();
+      if (map.containsKey(key)) {
+        list.addAll(map.get(key));
+      }
+      list.add(value);
+      map.put(key, list);
   }
   
   public static String buildRedirecUrl(String type, String id, String name) {

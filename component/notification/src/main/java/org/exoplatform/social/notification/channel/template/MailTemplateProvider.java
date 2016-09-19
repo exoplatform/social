@@ -16,7 +16,10 @@
  */
 package org.exoplatform.social.notification.channel.template;
 
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang.ArrayUtils;
+
 import org.exoplatform.commons.api.notification.NotificationContext;
 import org.exoplatform.commons.api.notification.annotation.TemplateConfig;
 import org.exoplatform.commons.api.notification.annotation.TemplateConfigs;
@@ -111,7 +114,8 @@ public class MailTemplateProvider extends TemplateProvider {
       
       //Store the activity id as key, and the list all identities who posted to the activity.
       Map<String, List<String>> receiverMap = new LinkedHashMap<String, List<String>>();
-      Map<String, String> userComments = new LinkedHashMap<String, String>();
+      Map<String, List<Pair<String, String>>> activityUserComments = new LinkedHashMap<String, List<Pair<String, String>>>();
+      
       
       try {
         for (NotificationInfo message : notifications) {
@@ -122,12 +126,13 @@ public class MailTemplateProvider extends TemplateProvider {
           }
 
           String poster = message.getValueOwnerParameter("poster");
-          userComments.put(poster, activity.getTitle());
+          Pair<String, String> userComment = new ImmutablePair<String, String>(poster, activity.getTitle());
           ExoSocialActivity parentActivity = Utils.getActivityManager().getParentActivity(activity);
           //
           SocialNotificationUtils.processInforSendTo(receiverMap, parentActivity.getId(), poster);
+          SocialNotificationUtils.processInforUserComments(activityUserComments, parentActivity.getId(), userComment);
         }
-        writer.append(SocialNotificationUtils.getMessageByIds(receiverMap, userComments, templateContext));
+        writer.append(SocialNotificationUtils.getMessageByIds(receiverMap, activityUserComments, templateContext));
       } catch (IOException e) {
         ctx.setException(e);
         return false;
