@@ -156,7 +156,7 @@ public class SocialNotificationUtils {
   /**
    * 
    * @param receiversMap
-   * @param userComments
+   * @param activityUserComments
    * @param templateContext
    * @return
    */
@@ -252,6 +252,7 @@ public class SocialNotificationUtils {
    * 
    * @param receiversMap
    * @param templateContext
+   * @param type
    * @return
    */
   public static String getMessageByIds(Map<String, List<String>> receiversMap, TemplateContext templateContext, String type) {
