@@ -26,7 +26,6 @@ import java.util.Map.Entry;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
-import org.exoplatform.commons.utils.CommonsUtils;
 import org.exoplatform.services.cache.ExoCache;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
@@ -34,7 +33,6 @@ import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.profile.ProfileFilter;
 import org.exoplatform.social.core.relationship.model.Relationship;
 import org.exoplatform.social.core.storage.RelationshipStorageException;
-import org.exoplatform.social.core.storage.api.ActivityStorage;
 import org.exoplatform.social.core.storage.api.IdentityStorage;
 import org.exoplatform.social.core.storage.api.RelationshipStorage;
 import org.exoplatform.social.core.storage.cache.loader.ServiceContext;
@@ -89,7 +87,14 @@ public class CachedRelationshipStorage extends AbstractStorage implements Relati
   private final IdentityStorage identityStorage;
 
   //
-  private static final RelationshipKey RELATIONSHIP_NOT_FOUND = new RelationshipKey(null);
+  private static RelationshipKey RELATIONSHIP_NOT_FOUND;
+
+  private static RelationshipKey relationshipNotFoundKey() {
+    if (RELATIONSHIP_NOT_FOUND == null) {
+      RELATIONSHIP_NOT_FOUND = new RelationshipKey(null);
+    }
+    return RELATIONSHIP_NOT_FOUND;
+  }
 
   void clearCacheFor(Relationship r) {
 
@@ -350,8 +355,8 @@ public class CachedRelationshipStorage extends AbstractStorage implements Relati
               return k;
             }
             else {
-              exoRelationshipByIdentityCache.put(key, RELATIONSHIP_NOT_FOUND);
-              return RELATIONSHIP_NOT_FOUND;
+              exoRelationshipByIdentityCache.put(key, CachedRelationshipStorage.relationshipNotFoundKey());
+              return CachedRelationshipStorage.relationshipNotFoundKey();
             }
           }
         },
@@ -359,7 +364,7 @@ public class CachedRelationshipStorage extends AbstractStorage implements Relati
     );
 
     //
-    if (gotKey != null && !gotKey.equals(RELATIONSHIP_NOT_FOUND)) {
+    if (gotKey != null && !gotKey.equals(CachedRelationshipStorage.relationshipNotFoundKey())) {
       return getRelationship(gotKey.getId());
     }
     else {
@@ -372,13 +377,13 @@ public class CachedRelationshipStorage extends AbstractStorage implements Relati
   public boolean hasRelationship(Identity identity1, Identity identity2, String relationshipPath) throws RelationshipStorageException {
     RelationshipIdentityKey key = new RelationshipIdentityKey(identity2.getId(), identity1.getId());
     RelationshipKey gotKey = exoRelationshipByIdentityCache.get(key);
-    if (gotKey != null && ! gotKey.equals(RELATIONSHIP_NOT_FOUND) && getRelationship(identity1, identity2).getStatus().equals(Relationship.Type.CONFIRMED)) {
+    if (gotKey != null && ! gotKey.equals(CachedRelationshipStorage.relationshipNotFoundKey()) && getRelationship(identity1, identity2).getStatus().equals(Relationship.Type.CONFIRMED)) {
       return true;
     }
     
     key = new RelationshipIdentityKey(identity1.getId(), identity2.getId());
     gotKey = exoRelationshipByIdentityCache.get(key);
-    if (gotKey != null && ! gotKey.equals(RELATIONSHIP_NOT_FOUND) && getRelationship(identity1, identity2).getStatus().equals(Relationship.Type.CONFIRMED)) {
+    if (gotKey != null && ! gotKey.equals(CachedRelationshipStorage.relationshipNotFoundKey()) && getRelationship(identity1, identity2).getStatus().equals(Relationship.Type.CONFIRMED)) {
       return true;
     }
     
