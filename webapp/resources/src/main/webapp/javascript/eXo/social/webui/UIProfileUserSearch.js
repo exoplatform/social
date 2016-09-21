@@ -52,6 +52,10 @@
         }
         //
         UIProfileUserSearch.resizeForm();
+        $("#uiTableProfileUserSearchArrow").on("click", function() {
+          $(this).closest(".uiProfileUserSearch").toggleClass("open");
+          return false;
+        });
       },
       resizeForm : function() {
         var parent = UIProfileUserSearch.profileSearch;
@@ -64,6 +68,8 @@
   };
   //
   $(window).on('resize', UIProfileUserSearch.resizeForm );
+  
+//  $("#uiTableProfileUserSearchArrow").on("click", UIProfileUserSearch.toggleProfileUserSearch);
   
   return UIProfileUserSearch;
 })($);

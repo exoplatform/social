@@ -34,6 +34,8 @@ public class SpaceFilter {
   
   private List<Space> includeSpaces;
   
+  private List<Space> exclusions;
+  
   /** The remoteId search condition. */
   private String remoteId;
   
@@ -44,7 +46,6 @@ public class SpaceFilter {
   private static char CHAR_DEFAULT_VALUE = '\u0000';
 
   private Sorting sorting;
-  
   /**
    * The constructor.
    */
@@ -186,14 +187,21 @@ public class SpaceFilter {
   }
 
   public Sorting getSorting() {
-     if (sorting == null) {
-       return sorting = new Sorting(Sorting.SortBy.TITLE, Sorting.OrderBy.ASC);
-     }
-     return sorting;
-   }
+    if (sorting == null) {
+      return sorting = new Sorting(Sorting.SortBy.TITLE, Sorting.OrderBy.ASC);
+    }
+    return sorting;
+  }
 
-   public void setSorting(Sorting sorting) {
-     this.sorting = sorting;
-   }
+  public void setSorting(Sorting sorting) {
+    this.sorting = sorting;
+  }
 
+  public List<Space> getExclusions() {
+    return this.exclusions;
+  }
+
+  public void addExclusions(List<Space> exclusions) {
+    this.exclusions = exclusions;
+  }
 }

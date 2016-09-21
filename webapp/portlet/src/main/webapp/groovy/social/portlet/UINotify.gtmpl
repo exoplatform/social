@@ -1,0 +1,18 @@
+<%
+def rcontext = _ctx.getRequestContext();
+def jsManager = rcontext.getJavascriptManager();
+def requireJs = jsManager.getRequireJS();
+
+%>
+<div class="UINotify" id="$uicomponent.id">
+  <%
+  if (uicomponent.getNotify() != null) {
+    %>
+    <%=uicomponent.getNotify();%>
+    <%
+    uicomponent.notify(null);
+    //requireJs.require("SHARED/notify", "notify");
+    //requireJs.addScripts("notify.notify('$uicomponent.id');");
+  }
+  %>
+</div>

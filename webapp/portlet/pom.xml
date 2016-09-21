@@ -187,4 +187,7 @@
     </dependency>
     
   </dependencies>
+  <build>
+    <finalName>social-portlet</finalName>
+  </build>
 </project>

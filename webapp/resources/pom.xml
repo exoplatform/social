@@ -147,4 +147,7 @@
       <scope>runtime</scope>
     </dependency>
   </dependencies>
+  <build>
+    <finalName>social-resources</finalName>
+  </build>
 </project>

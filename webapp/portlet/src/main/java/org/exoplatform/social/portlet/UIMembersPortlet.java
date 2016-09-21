@@ -38,6 +38,7 @@ import org.exoplatform.social.core.relationship.model.Relationship;
 import org.exoplatform.social.core.space.SpaceException;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
+import org.exoplatform.social.webui.UIUserInvitation;
 import org.exoplatform.social.webui.Utils;
 import org.exoplatform.social.webui.profile.UIProfileUserSearch;
 import org.exoplatform.web.application.ApplicationMessage;
@@ -96,8 +97,39 @@ public class UIMembersPortlet extends UIPortletApplication {
   boolean enableLoadNext;
   private boolean loadAtEnd;
   private String selectedChar = null;
+
+  private String msg;
   
 //  private static final int FIRST_PAGE = 1;
+
+  /**
+   * constructor
+   *
+   * @throws Exception
+   */
+  public UIMembersPortlet() throws Exception {    
+    uiSearchMemberOfSpace = createUIComponent(UIProfileUserSearch.class, null, "UIProfileUserSearch");
+    uiSearchMemberOfSpace.setTypeOfRelation(SPACE_MEMBER);
+    uiSearchMemberOfSpace.setSpaceURL(getSpace().getUrl());
+    uiSearchMemberOfSpace.setHasPeopleTab(false);
+    addChild(uiSearchMemberOfSpace);
+
+    initMember();
+    initManager();
+
+    boolean isAdmin = false;
+    for (Identity user: managerList) {
+      String currentUser = Utils.getViewerRemoteId();
+      if (currentUser.equals(user.getRemoteId())) {
+        isAdmin = true;
+        break;
+      }
+    }
+
+    if (isAdmin) {
+      addChild(UIUserInvitation.class, null, null);
+    }
+  }
 
   public void setMemberListAccess(ListAccess<Identity> memberListAccess){
     this.memberListAccess = memberListAccess;
@@ -175,23 +207,6 @@ public class UIMembersPortlet extends UIPortletApplication {
    */
   public void setIdentityList(ListAccess<Identity> identityList) {
     this.memberListAccess = identityList;
-  }
-
-  /**
-   * constructor
-   *
-   * @throws Exception
-   */
-  public UIMembersPortlet() throws Exception {
-    uiSearchMemberOfSpace = createUIComponent(UIProfileUserSearch.class, null, "UIProfileUserSearch");
-    uiSearchMemberOfSpace.setTypeOfRelation(SPACE_MEMBER);
-    uiSearchMemberOfSpace.setSpaceURL(getSpace().getUrl());
-    uiSearchMemberOfSpace.setHasPeopleTab(false);
-    addChild(uiSearchMemberOfSpace);
-    
-    initMember();
-    initManager();
-    
   }
 
   /**
