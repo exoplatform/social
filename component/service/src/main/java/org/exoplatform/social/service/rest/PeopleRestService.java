@@ -16,32 +16,10 @@
  */
 package org.exoplatform.social.service.rest;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-
-import javax.annotation.security.RolesAllowed;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.QueryParam;
-import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
-import javax.ws.rs.core.SecurityContext;
-import javax.ws.rs.core.UriInfo;
-import javax.xml.bind.annotation.XmlRootElement;
-
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.shindig.social.opensocial.model.Activity;
-
 import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.container.ExoContainer;
 import org.exoplatform.container.ExoContainerContext;
@@ -69,6 +47,13 @@ import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
 import org.exoplatform.social.rest.impl.user.UserRestResourcesV1;
 import org.exoplatform.webui.utils.TimeConvertUtils;
+
+import javax.annotation.security.RolesAllowed;
+import javax.ws.rs.*;
+import javax.ws.rs.core.*;
+import javax.ws.rs.core.Response.Status;
+import javax.xml.bind.annotation.XmlRootElement;
+import java.util.*;
 
 /**
  * 
@@ -106,6 +91,8 @@ public class PeopleRestService implements ResourceContainer{
   private static final String SPACE_MEMBER = "member_of_space";
   /** User to invite to join the space Status information */
   private static final String USER_TO_INVITE = "user_to_invite";
+  /** User or space to share document with */
+  private static final String SHARE_DOCUMENT = "share_document";
   /** No action */
   private static final String NO_ACTION = "NoAction";
   /** No information */
@@ -277,6 +264,119 @@ public class PeopleRestService implements ResourceContainer{
         ListAccess<Identity> listAccess = getIdentityManager().getIdentitiesByProfileFilter(OrganizationIdentityProvider.NAME, identityFilter, false);
         List<Identity> identities = Arrays.asList(listAccess.load(0, (int) remain));
         addSpaceUserToList(identities, nameList, space, typeOfRelation, 4);
+      }
+
+    } else if (SHARE_DOCUMENT.equals(typeOfRelation)) {
+
+      // This is for pre-loading data
+      if (name != null && name.contains(",")) {
+        String[] items = name.split(",");
+        for (String item : items) {
+          Option opt = new Option();
+          if (item.startsWith(SPACE_PREFIX)) {
+            Space s = getSpaceService().getSpaceByPrettyName(item.substring(7));
+            opt.setType("space");
+            opt.setValue(SPACE_PREFIX + s.getPrettyName());
+            opt.setText(s.getDisplayName());
+            opt.setAvatarUrl(s.getAvatarUrl());
+            opt.setOrder(2);
+          } else {
+            Identity identity = getIdentityManager().getOrCreateIdentity(
+                OrganizationIdentityProvider.NAME, item, false);
+            opt.setType("user");
+            opt.setOrder(1);
+            if (identity != null) {
+              Profile p = identity.getProfile();
+              opt.setValue((String) p.getProperty(Profile.USERNAME));
+              opt.setText(p.getFullName() + " (" + (String) p.getProperty(Profile.USERNAME) + ")");
+              opt.setAvatarUrl(p.getAvatarUrl());
+            } else {
+              opt.setValue(item);
+              opt.setText(item);
+              opt.setInvalid(true);
+            }
+          }
+          nameList.addOption(opt);
+        }
+
+        return Util.getResponse(nameList, uriInfo, mediaType, Response.Status.OK);
+      }
+
+      // Search in connections first
+      ListAccess<Identity> connections = getRelationshipManager().getConnectionsByFilter(currentIdentity, identityFilter);
+      if (connections != null && connections.getSize() > 0) {
+        int size = connections.getSize();
+        Identity[] identities = connections.load(0, size < SUGGEST_LIMIT ? size : (int)SUGGEST_LIMIT);
+        for (Identity id : identities) {
+          Option opt = new Option();
+          String fullName = id.getProfile().getFullName();
+          String userName = (String) id.getProfile().getProperty(Profile.USERNAME);
+          opt.setType("user");
+          opt.setValue(userName);
+          opt.setText(fullName + " (" + userName + ")");
+          opt.setAvatarUrl(getAvatarURL(id));
+          excludedIdentityList.add(id);
+          opt.setOrder(1);
+          nameList.addOption(opt);
+        }
+      }
+
+      List<Space> exclusions = new ArrayList<Space>();
+      // Includes spaces the current user is member.
+      long remain = SUGGEST_LIMIT - (nameList.getOptions() != null ? nameList.getOptions().size() : 0);
+      if (remain > 0) {
+        SpaceFilter spaceFilter = new SpaceFilter();
+        spaceFilter.setSpaceNameSearchCondition(name);
+        ListAccess<Space> list = getSpaceService().getMemberSpacesByFilter(currentUser, spaceFilter);
+        Space[] spaces = list.load(0, (int) remain);
+        for (Space s : spaces) {
+          Option opt = new Option();
+          opt.setType("space");
+          opt.setValue(SPACE_PREFIX + s.getPrettyName());
+          opt.setText(s.getDisplayName());
+          opt.setAvatarUrl(s.getAvatarUrl());
+          opt.setOrder(2);
+          nameList.addOption(opt);
+          exclusions.add(s);
+        }
+      }
+
+      // Adding all non hidden spaces.
+      remain = SUGGEST_LIMIT - (nameList.getOptions() != null ? nameList.getOptions().size() : 0);
+      if (remain > 0) {
+        SpaceFilter spaceFilter = new SpaceFilter();
+        spaceFilter.setSpaceNameSearchCondition(name);
+        spaceFilter.addExclusions(exclusions);
+        ListAccess<Space> list = getSpaceService().getVisibleSpacesWithListAccess(currentUser, spaceFilter);
+        Space[] spaces = list.load(0, (int) remain);
+        for (Space s : spaces) {
+          Option opt = new Option();
+          opt.setType("space");
+          opt.setValue(SPACE_PREFIX + s.getPrettyName());
+          opt.setText(s.getDisplayName());
+          opt.setAvatarUrl(s.getAvatarUrl());
+          opt.setOrder(3);
+          nameList.addOption(opt);
+        }
+      }
+
+      remain = SUGGEST_LIMIT - (nameList.getOptions() != null ? nameList.getOptions().size() : 0);
+      if (remain > 0) {
+        identityFilter.setExcludedIdentityList(excludedIdentityList);
+        ListAccess<Identity> listAccess = getIdentityManager().getIdentitiesByProfileFilter(OrganizationIdentityProvider.NAME, identityFilter, false);
+        List<Identity> identities = Arrays.asList(listAccess.load(0, (int) remain));
+        for (Identity id : identities) {
+          Option opt = new Option();
+          String fullName = id.getProfile().getFullName();
+          String userName = (String) id.getProfile().getProperty(Profile.USERNAME);
+          opt.setType("user");
+          opt.setValue(userName);
+          opt.setText(fullName);
+          opt.setAvatarUrl(getAvatarURL(id));
+          excludedIdentityList.add(id);
+          opt.setOrder(4);
+          nameList.addOption(opt);
+        }
       }
 
     } else { // Identities that match the keywords.
