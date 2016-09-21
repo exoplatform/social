@@ -25,7 +25,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.apache.commons.lang3.tuple.Pair;
-
 import org.exoplatform.commons.api.notification.NotificationContext;
 import org.exoplatform.commons.api.notification.NotificationMessageUtils;
 import org.exoplatform.commons.api.notification.model.ArgumentLiteral;
@@ -370,6 +369,7 @@ public class SocialNotificationUtils {
   
   public static List<String> mergeUsers(NotificationContext ctx, TemplateContext context, String propertyName, String activityId, String userId) {
     NotificationInfo notification = ctx.getNotificationInfo();
+    String commentId = notification.getValueOwnerParameter(SocialNotificationUtils.COMMENT_ID.getKey());
     List<String> users = null;
     if (ctx.isWritingProcess()) {
       WebNotificationStorage storage = CommonsUtils.getService(WebNotificationStorage.class); 
@@ -387,6 +387,7 @@ public class SocialNotificationUtils {
         previousNotification.setLastModifiedDate(Calendar.getInstance());
         //update the created date of old notification then remove it from database
         previousNotification.setDateCreated(Calendar.getInstance());
+        previousNotification.with(SocialNotificationUtils.COMMENT_ID.getKey(), commentId);
         //
         context.put("NOTIFICATION_ID", previousNotification.getId());
         ctx.setNotificationInfo(previousNotification);
