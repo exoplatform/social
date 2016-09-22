@@ -1,23 +1,7 @@
- /*
-  * TipTip
-  * Copyright 2010 Drew Wilson
-  * www.drewwilson.com
-  * code.drewwilson.com/entry/tiptip-jquery-plugin
-  *
-  * Version 1.3   -   Updated: Mar. 23, 2010
-  *
-  * This Plug-In will create a custom tooltip to replace the default
-  * browser tooltip. It is extremely lightweight and very smart in
-  * that it detects the edges of the browser window and will make sure
-  * the tooltip stays within the current window size. As a result the
-  * tooltip will adjust itself to be displayed above, below, to the left 
-  * or to the right depending on what is necessary to stay within the
-  * browser window. It is completely customizable as well via CSS.
-  *
-  * This TipTip jQuery plug-in is dual licensed under the MIT and GPL licenses:
-  *   http://www.opensource.org/licenses/mit-license.php
-  *   http://www.gnu.org/licenses/gpl.html
-  */ (function ($) {
+/**
+ * Component displaying a popup with the user profile info and some actions.
+ */
+(function ($) {
      $.fn.userPopup = function (options) {
          var defaults = {
              restURL: "",
@@ -336,8 +320,9 @@
 
                     tdAvatar.append(aAvatar.append(img));
 
-                    var tdProfile = $("<td/>");
-                    tdProfile.css({'overflow': 'hidden','white-space': 'nowrap','text-overflow': 'ellipsis', 'max-width': '20px'});
+                    var tdProfile = $("<td/>",{
+                        "id": "profileName"
+                    });
                     var aProfile = $("<a/>", {
                         "target":"_self",
                         "href":json.profileUrl,
@@ -361,10 +346,10 @@
                          var blockquote = $("<blockquote/>", {
                              "text": json.activityTitle.replace(/<[^>]+>/g, '')
                          });
-                         var activityDiv=$("<div/>");
+                         var activityDiv=$("<div/>",{
+                             "id": "recentActivity"
+                         });
                          activityDiv.append(blockquote);
-                         activityDiv.css({'max-height': '100px', 'overflow-y': 'auto', 'overflow-x': 'hidden', 'padding-right': '15px',
-                             'max-width': '95%'});
                      }
 
                      if (activityDiv) {

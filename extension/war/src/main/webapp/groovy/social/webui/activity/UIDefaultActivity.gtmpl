@@ -26,7 +26,7 @@
   import org.exoplatform.social.core.service.LinkProvider;
   import org.exoplatform.social.core.space.model.Space;
   import org.exoplatform.social.webui.Utils;
-  import org.exoplatform.social.core.service.LinkProvider;
+
   import org.apache.commons.lang.StringEscapeUtils;
 
   def pcontext = Util.getPortalRequestContext();
@@ -142,7 +142,7 @@
   }
 
   activityPostedTime = uicomponent.getPostedTimeString(_ctx, activity.postedTime);
-
+  def spaceID;
   def ownerIdentity = uicomponent.ownerIdentity;
   if (uicomponent.isUserActivity()) {
     ownerUri = LinkProvider.getUserProfileUri(ownerIdentity.getRemoteId());
@@ -165,7 +165,8 @@
 
   def spaceSourceURI, spaceName, spaceImageSource;
   if (uicomponent.isUserActivity() && uicomponent.isSpaceStreamOwner() && !uicomponent.isUISpaceActivitiesDisplay()) {
-         	Space spaceSource = Utils.getSpaceService().getSpaceByPrettyName(streamOwner);
+          Space spaceSource = Utils.getSpaceService().getSpaceByPrettyName(streamOwner);
+          spaceID = spaceSource.getId();
           if (spaceSource != null) {
             spaceSourceURI = LinkProvider.getSpaceUri(spaceSource.url);
              spaceName = spaceSource.displayName;
@@ -191,11 +192,9 @@
 	</div>
 	<%  if (uicomponent.isUserActivity() && uicomponent.isSpaceStreamOwner() && !uicomponent.isUISpaceActivitiesDisplay()) {%>
 	<div class="activityType">
-	<div>
-    		<a  href="$spaceSourceURI">
-    		  <img alt="$spaceName" src="$spaceImageSource"/>
-    		</a>
-    </div>
+    	<a  class="space-avatar" href="$spaceSourceURI" space-data="$spaceID">
+    		<img alt="$spaceName" src="$spaceImageSource"/>
+    	</a>
     </div>
     <%}%>
   </div><!--end activityTimeLine-->
@@ -213,9 +212,12 @@
 				</div>
 				
 				<div class="author">
+				    <a class="circleSpaceAvatar hidden-desktop" href="$spaceSourceURI" space-data="$spaceID">
+                      <img alt="$spaceName" src="$spaceImageSource"/>
+                    </a>
 					<a  href="$ownerUri">$ownerName</a>
 					<%  if (uicomponent.isUserActivity() && uicomponent.isSpaceStreamOwner() && !uicomponent.isUISpaceActivitiesDisplay()) {%>
-						<a class="spaceName" href="$spaceSourceURI"><span class="uiIconArrowRightMini uiIconLightGray"></span>&nbsp;$spaceName</a>
+						<a class="space-avatar  spaceName" href="$spaceSourceURI" space-data="$spaceID"><span class="uiIconArrowRightMini uiIconLightGray"></span>&nbsp;$spaceName</a>
 					<%}%>
 				</div>
 				<div class="dataInfor">

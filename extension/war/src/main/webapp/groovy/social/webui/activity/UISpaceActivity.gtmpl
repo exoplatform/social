@@ -145,10 +145,14 @@
 
   activityPostedTime = uicomponent.getPostedTimeString(_ctx, activity.postedTime);
 
+  def spaceID;
   def ownerIdentity = uicomponent.ownerIdentity;
   def profile = ownerIdentity.profile;
   def spaceCreatorIdentity = uicomponent.getSpaceCreatorIdentity();
   Space space = Utils.getSpaceService().getSpaceByPrettyName(ownerIdentity.remoteId);
+  if (space != null) {
+  	spaceID = space.getId();
+  }
   if (uicomponent.isUserActivity()) {
     ownerUri = LinkProvider.getUserProfileUri(ownerIdentity.getRemoteId());
     ownerAvatar = profile.avatarUrl;
@@ -217,7 +221,7 @@
 				<%}%>
 				</div>
 				<div class="author">
-					<a  href="$ownerUri">
+					<a class="space-avatar" href="$ownerUri" space-data="$spaceID">
 						$ownerName
 					</a>         
 				</div>	

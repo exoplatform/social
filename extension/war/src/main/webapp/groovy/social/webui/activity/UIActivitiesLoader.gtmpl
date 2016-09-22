@@ -1,6 +1,7 @@
 <%
   import org.exoplatform.social.webui.Utils;
   import org.apache.commons.lang.StringEscapeUtils;
+    import org.exoplatform.social.core.service.LinkProvider;
 
   def requireJS = _ctx.getRequestContext().getJavascriptManager().getRequireJS();
   if(uicomponent.id.equals("UIActivitiesLoader")) {
@@ -21,12 +22,13 @@
   String removeConnectionLabel = StringEscapeUtils.escapeJavaScript(_ctx.appRes("UserProfilePopup.label.RemoveConnection"));
   String ignoreLabel = StringEscapeUtils.escapeJavaScript(_ctx.appRes("UserProfilePopup.label.Ignore"));
 
-  String followersLabel = StringEscapeUtils.escapeJavaScript(_ctx.appRes("UIActivitiesLoader.label.Space_INFO_Followers"));
-  String leaveLabel = StringEscapeUtils.escapeJavaScript(_ctx.appRes("UIActivitiesLoader.label.Space_INFO_Leave_Space"));
+  String membersLabel = StringEscapeUtils.escapeJavaScript(_ctx.appRes("UIActivity.label.Members"));
+  String leaveLabel = StringEscapeUtils.escapeJavaScript(_ctx.appRes("UIManageAllSpaces.label.action_leave_space"));
   String cancelLabel = StringEscapeUtils.escapeJavaScript(_ctx.appRes("UISpaceMember.label.CancelRequest"));
   String joinLabel = StringEscapeUtils.escapeJavaScript(_ctx.appRes("UIManageAllSpaces.label.action_join"));
   String requestJoinLabel = StringEscapeUtils.escapeJavaScript(_ctx.appRes("UIManageAllSpaces.label.action_request_to_join"));
-  
+  String defaultAvatarUrl = "'"+LinkProvider.SPACE_DEFAULT_AVATAR_URL+"'"
+
   String labels = """ {
     StatusTitle: '${statusTitle}',
     Connect: '${connectLabel}',
@@ -38,15 +40,13 @@
 
   String spaceLabels = """ {
     StatusTitle: '${statusTitle}',
-    followers : '${followersLabel}',
+    members : '${membersLabel}',
     leave: '${leaveLabel}',
-    join: '${joinLabel}',
-    cancel: '${cancelLabel}',
-    request: '${requestJoinLabel}'
+    join: '${joinLabel}'
    } """
-  
+
   requireJS.require("SHARED/social-ui-profile", "profile").addScripts("profile.initUserProfilePopup('$uicomponent.id',$labels);");
-  requireJS.require("SHARED/social-ui-profile", "socialProfile").addScripts("socialProfile.initSpaceInfoPopup('$uicomponent.id', $spaceLabels);");
+  requireJS.require("SHARED/social-ui-profile", "socialProfile").addScripts("socialProfile.initSpaceInfoPopup('$uicomponent.id', $spaceLabels, $defaultAvatarUrl);");
   String clearClass = "clearBG";
   if(hasActivities && !uicomponent.isExtendLoader() && (!uicomponent.isUIUserActivityDisplay() || Utils.isHomePage())) {
     clearClass = "clearfix";

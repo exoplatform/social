@@ -1,23 +1,7 @@
-/*
- * TipTip
- * Copyright 2010 Drew Wilson
- * www.drewwilson.com
- * code.drewwilson.com/entry/tiptip-jquery-plugin
- *
- * Version 1.3   -   Updated: Mar. 23, 2010
- *
- * This Plug-In will create a custom tooltip to replace the default
- * browser tooltip. It is extremely lightweight and very smart in
- * that it detects the edges of the browser window and will make sure
- * the tooltip stays within the current window size. As a result the
- * tooltip will adjust itself to be displayed above, below, to the left
- * or to the right depending on what is necessary to stay within the
- * browser window. It is completely customizable as well via CSS.
- *
- * This TipTip jQuery plug-in is dual licensed under the MIT and GPL licenses:
- *   http://www.opensource.org/licenses/mit-license.php
- *   http://www.gnu.org/licenses/gpl.html
- */ (function ($) {
+/**
+ * Component displaying a popup with the space info and some actions.
+ */
+(function ($) {
     $.fn.spacePopup = function (options) {
         var defaults = {
             restURL: "",
@@ -202,8 +186,10 @@
 
                 function loadData(el) {
                     var spaceUrl = $(el).attr('href');
-                    var spaceId = spaceUrl.substring(spaceUrl.lastIndexOf('/') + 1);
-                    var restUrl = opts.restURL.replace('{0}', window.encodeURI(spaceId));
+                    var spaceId= opts.spaceID;
+                    var spaceRestUrl = opts.restURL.replace('{0}', window.encodeURI(spaceId));
+                    var membersRestUrl = opts.membersRestURL.replace('{0}', window.encodeURI(spaceId));
+                    var managerRestUrl = opts.managerRestUrl.replace('{0}', window.encodeURI(spaceId));
 
                     //
                     initPopup();
@@ -212,7 +198,7 @@
                     var cachingData = getCache(spaceId);
 
                     if ( cachingData ) {
-                        buildPopup(cachingData, spaceId, spaceUrl);
+                        buildPopup(cachingData, spaceUrl);
                     } else {
                         if (window.profileXHR && window.profileXHR.abort) {
                             window.profileXHR.abort();
@@ -220,19 +206,70 @@
                         window.profileXHR = $.ajax({
                             type: "GET",
                             cache: false,
-                            url: restUrl
+                            url: spaceRestUrl
                         }).complete(function (jqXHR) {
                             if (jqXHR.readyState === 4) {
                                 var spaceData = $.parseJSON(jqXHR.responseText);
-
+                                var membersData = null;
+                                var managerData = null;
+                                var membership = null;
                                 if (!spaceData) {
                                     return;
                                 }
+                                window.profileXHR = $.ajax({
+                                    type: "GET",
+                                    cache: false,
+                                    url: membersRestUrl
+                                }).complete(function (jqXHR) {
+                                    if (jqXHR.readyState === 4) {
+                                        membersData = $.parseJSON(jqXHR.responseText);
+                                    }
+                                    window.profileXHR = $.ajax({
+                                        type: "GET",
+                                        cache: false,
+                                        url: managerRestUrl
+                                    }).complete(function (jqXHR) {
+                                        if (jqXHR.readyState === 4) {
+                                            managerData = $.parseJSON(jqXHR.responseText);
+                                        }
+                                        var membershipRestUrl = opts.membershipRestUrl.replace('{0}', window.encodeURI(spaceData.displayName));
+                                        window.profileXHR = $.ajax({
+                                            type: "GET",
+                                            cache: false,
+                                            url: membershipRestUrl
+                                        }).complete(function (jqXHR) {
+                                            if (jqXHR.readyState === 4) {
+                                                membership = $.parseJSON(jqXHR.responseText);
+                                            }
+                                            var rolesArray = {
+                                                roles: []
+                                            };
+                                            for (var i = 0; i < membership.spacesMemberships.length; i++) {
+                                                rolesArray.roles.push(membership.spacesMemberships[i].role);
+                                            }
 
-                                //
-                                putToCache(spaceId, spaceData);
+                                            if(!spaceData.avatarUrl){
 
-                                buildPopup(spaceData, spaceId, spaceUrl);
+                                                spaceData.avatarUrl= opts.defaultAvatarUrl;
+                                            }
+                                            if(membersData){
+                                                spaceData.member = membersData.size;
+                                            } else {
+                                                spaceData.member =0;
+                                            }
+                                            if(managerData){
+                                                spaceData.manager = managerData.size;
+                                            }else {
+                                                spaceData.manager =0;
+                                            }
+
+                                            spaceData.membership = rolesArray;
+
+                                            buildPopup(spaceData, spaceUrl);
+                                            putToCache(spaceId, spaceData);
+                                        });
+                                    });
+                                });
                             }
                         });
                     }
@@ -264,35 +301,36 @@
                     tiptip_content.html(profile_popup);
                 }
 
-                function buildPopup(json, spaceId, spaceUrl) {
+                function buildPopup(json, spaceUrl) {
                     var action = null;
+                    var isManager = false;
+                    var isMember = false;
                     var labels = opts.labels;
+                    var spaceName = spaceUrl.substring(spaceUrl.lastIndexOf('/')+1);
+                    if(json.membership.roles.indexOf('manager')>=0) {
+                        isManager = true;
+                    }
+
+                    if(json.membership.roles.indexOf('member')>=0) {
+                        isMember = true;
+                    }
 
                     tiptip_content.empty();
 
-                    if (json.onlyManger==false) {
+                    if ((isManager && json.manager >1)|| (!isManager && isMember)) {
                         action = $('<div/>', {
                             "class": "btn btn-primary",
                             "text": "" + labels.leave,
-                            "data-action": "Leave:" + spaceId,
+                            "data-action": spaceName+":" + opts.userName+":member",
                             "onclick": "executeAction(this)"
                         });
                     }
 
-                    if (json.status == "NONE") {
+                    if (!isMember) {
                         action = $('<div/>', {
                             "class": "btn btn-primary",
                             "text": "" + labels.join,
-                            "data-action": "request:" + spaceId,
-                            "onclick": "executeAction(this)"
-                        });
-                    }
-
-                    if(json.status == "SENT") {
-                        action = $('<div/>', {
-                            "class": "btn btn-primary",
-                            "text": "" + labels.cancel,
-                            "data-action": "cancel:" + spaceId,
+                            "data-action": spaceName+":" + opts.userName+":member",
                             "onclick": "executeAction(this)"
                         });
                     }
@@ -307,7 +345,7 @@
                         "width":"50px"
                     });
                     var img = $("<img/>", {
-                        "src":json.avatarURL
+                        "src":json.avatarUrl
                     });
 
                     var aAvatar = $("<a/>", {
@@ -317,8 +355,9 @@
 
                     tdAvatar.append(aAvatar.append(img));
 
-                    var tdProfile = $("<td/>");
-                    tdProfile.css({'overflow': 'hidden','white-space': 'nowrap','text-overflow': 'ellipsis', 'max-width': '20px'});
+                    var tdProfile = $("<td/>",{
+                        "id": "profileName"
+                    });
                     var aProfile = $("<a/>", {
                         "target":"_self",
                         "href":spaceUrl,
@@ -326,19 +365,22 @@
                     });
 
                     tdProfile.append(aProfile);
-
-                     var divMembersCount = $("<div/>", {
+                    var divMembersCount;
+                    if(json.member > 0){
+                        divMembersCount = $("<div/>", {
                             "font-weight":"normal",
-                            "text":json.spaceMemberCount + " " + opts.labels.followers
+                            "text":json.member + " " + opts.labels.members
                         });
+                    } else {
+                        divMembersCount = $("<div/>");
+                    }
                     tdProfile.append(divMembersCount);
 
-                    if (json.spaceDescription) {
+                    if (json.description) {
                         var divDescription = $('<div/>', {
-                            "text": json.spaceDescription.replace(/<[^>]+>/g, '')
+                            "id": "description",
+                            "text": json.description.replace(/<[^>]+>/g, '')
                         });
-                        divDescription.css({'max-height': '100px',  'overflow-y': 'auto','overflow-x': 'hidden',
-                            'max-width': '95%'});
                     }
                     tr.append(tdAvatar).append(tdProfile);
 
@@ -377,28 +419,27 @@
 
 
                     var dataAction = $(el).attr('data-action');
-                    var updatedType = dataAction.split(":")[0];
-                    var spaceId = dataAction.split(":")[1];
+                    var spaceName = dataAction.split(":")[0];
+                    var userName = dataAction.split(":")[1];
+                    var role =  dataAction.split(":")[2];
 
                     if (window.profileActionXHR && window.profileActionXHR.abort) {
                         window.profileActionXHR.abort();
                     }
                     window.profileActionXHR = $.ajax({
-                        type: "GET",
+                        type: "DELETE",
                         cache: false,
-                        url: opts.restURL.replace('{0}', spaceId) + '?updatedType=' + updatedType
-                    }).complete(function (jqXHR) {
-                        if (jqXHR.readyState === 4) {
+                        url: opts.deleteMembershipRestUrl.replace('{0}', spaceName).replace('{1}', userName).replace('{2}', role)
+                    }).success(function (jqXHR) {
                             var popup = $(el).closest('#tiptip_holder');
                             popup.fadeOut('fast', function () {
                             });
-                            if(updatedType === "Leave" && $(org_elem).data('link')) {
+                            if($(org_elem).data('link')) {
                                 var actionLink = $(org_elem).data('link').replace('javascript:', '');
                                 $.globalEval(actionLink);
                             }
                             // clear cache
                             clearCache();
-                        }
                     });
                 }
 

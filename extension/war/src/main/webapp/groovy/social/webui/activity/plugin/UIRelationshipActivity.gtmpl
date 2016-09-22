@@ -151,7 +151,7 @@
   }
 
   activityPostedTime = uicomponent.getPostedTimeString(_ctx, activity.postedTime);
-
+  def spaceID;;
   def ownerIdentity = uicomponent.ownerIdentity;
   if (uicomponent.isUserActivity()) {
     ownerUri = LinkProvider.getUserProfileUri(ownerIdentity.getRemoteId());
@@ -180,6 +180,7 @@
   def spaceSourceURI, spaceName, spaceImageSource;
     if (uicomponent.isUserActivity() && uicomponent.isSpaceStreamOwner() && !uicomponent.isUISpaceActivitiesDisplay()) {
       Space spaceSource = Utils.getSpaceService().getSpaceByPrettyName(streamOwner);
+      spaceID = spaceSource.getId();
       if (spaceSource != null) {
         spaceSourceURI = LinkProvider.getSpaceUri(spaceSource.url);
         spaceName = spaceSource.displayName;
@@ -217,7 +218,7 @@
 				<div class="author">
 					<a  href="$ownerUri">$ownerName</a>
 					<%  if (uicomponent.isUserActivity() && uicomponent.isSpaceStreamOwner() && !uicomponent.isUISpaceActivitiesDisplay()) {%>
-						<a class="spaceName" href="$spaceSourceURI"><span class="uiIconArrowRightMini uiIconLightGray"></span>&nbsp;$spaceName</a>
+						<a class="space-avatar spaceName" href="$spaceSourceURI" space-data="$spaceID"><span class="uiIconArrowRightMini uiIconLightGray"></span>&nbsp;$spaceName</a>
 					<%}%>
 				</div>
 				<div class="dataInfor">
