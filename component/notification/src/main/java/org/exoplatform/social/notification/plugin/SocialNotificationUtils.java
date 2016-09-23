@@ -224,7 +224,7 @@ public class SocialNotificationUtils {
       List<Pair<String, String>> userComments = activityUserComments.get(id);
       if (userComments != null && userComments.size() > 0) {
           sb.append("<br/>");
-          sb.append("<div style=\"background-color:#f9f9f9;padding: 10px\">");  
+          sb.append("<div style=\"background-color:#f9f9f9;padding: 10px;max-height:44px;overflow:hidden\">");  
           sb.append("<div style=\"border-left:5px solid #AACDED; padding-left: 15px; color:black\">");
           for (Pair<String, String> pair: userComments) {
               sb.append("<i>");
