@@ -1,27 +1,4 @@
 <%
-/*
-<!--
-
-    Copyright (C) 2003-2007 eXo Platform SAS.
-
-    This program is free software; you can redistribute it and/or
-    modify it under the terms of the GNU Affero General Public License
-    as published by the Free Software Foundation; either version 3
-    of the License, or (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, see<http://www.gnu.org/licenses/>.
-
--->
-*/
-%>
-
-<%
 def selectedTab = uicomponent.getSelectedTabId();
 %>
 <div class="uiTabNormal uiTabInPage" id="$uicomponent.id">
@@ -29,16 +6,14 @@ def selectedTab = uicomponent.getSelectedTabId();
 		<%
 		for(child in uicomponent.getChildren())
 		{
-		if(child.isRendered())
-		{
-		String childID = child.getId();
-		String link = uicomponent.event("SelectTab", childID);
-		%>
-		<li class='<%= selectedTab.equals(childID) ? "active" : "" %>' onclick="$link">
-			<a data-toggle="tab" data-target="#$childID-tab"><%=_ctx.appRes("UITabPane.title." + childID);%></a>
-		</li>
-		<%
-		}
+  		String tabID = child.getId();
+  		String link = uicomponent.event("SelectTab", tabID);
+  		String childID = child.getUIComponent().getId();
+  		%>
+  		<li class='<%= selectedTab.equals(tabID) ? "active" : "" %>' onclick="$link">
+  			<a data-toggle="tab" data-target="#$tabID-tab"><%=_ctx.appRes("UITabPane.title." + childID);%></a>
+  		</li>
+  		<%
 		}
 		%>
 	</ul>
@@ -50,7 +25,15 @@ def selectedTab = uicomponent.getSelectedTabId();
 		String childID = child.getId();
 		%>
 		<div id="$childID-tab" class='tab-pane fade <%= selectedTab.equals(childID)? "in active" : "" %>'>
-			<% uicomponent.renderUIComponent(child); %>
+			<%
+      if (selectedTab.equals(childID)) {
+        uicomponent.renderUIComponent(child); 
+      } else {
+      %>
+        <div id="$childID"></div>
+      <%
+      }
+      %>
 		</div>
 		<%
 		}

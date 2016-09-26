@@ -26,11 +26,14 @@ import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
 import org.exoplatform.social.webui.Utils;
 import org.exoplatform.web.application.JavascriptManager;
+import org.exoplatform.webui.application.WebuiApplication;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.ComponentConfigs;
 import org.exoplatform.webui.config.annotation.EventConfig;
 import org.exoplatform.webui.core.UIComponent;
+import org.exoplatform.webui.core.UIComponentDecorator;
+import org.exoplatform.webui.core.UIContainer;
 import org.exoplatform.webui.core.UIPopupContainer;
 import org.exoplatform.webui.core.UITabPane;
 import org.exoplatform.webui.event.Event;
@@ -45,9 +48,11 @@ import org.exoplatform.webui.event.Event;
     template = "war:/groovy/social/webui/space/UISpaceSettingPane.gtmpl",
     events = { @EventConfig(listeners = UISpaceSetting.SelectTabActionListener.class) })
   })
-public class UISpaceSetting extends UITabPane {
+public class UISpaceSetting extends UIContainer {
 
   private Space space;
+
+  private UITabPane uiTabPane;
 
   /**
    * constructor
@@ -55,13 +60,13 @@ public class UISpaceSetting extends UITabPane {
    * @throws Exception
    */
   public UISpaceSetting() throws Exception {
-    UITabPane uiTabPane = addChild(UITabPane.class, null, null);
+    uiTabPane = addChild(UITabPane.class, null, null);
     uiTabPane.setComponentConfig(UITabPane.class, "UISpaceSettingTabPane");
-    uiTabPane.addChild(UISpaceInfo.class, null, null);
-    uiTabPane.addChild(UISpacePermission.class, null, null);
-    uiTabPane.addChild(UISpaceMember.class, null, null);
-    uiTabPane.addChild(UISpaceApplication.class, null, null);
-    uiTabPane.addChild(UISpaceNavigationManagement.class, null, null);
+    addTab(UISpaceInfo.class, null, null);
+    addTab(UISpacePermission.class, null, null);
+    addTab(UISpaceMember.class, null, null);
+    addTab(UISpaceApplication.class, null, null);
+    addTab(UISpaceNavigationManagement.class, null, null);
     uiTabPane.setSelectedTab(1);
     
     String spaceUrl = SpaceUtils.getSpaceUrl();
@@ -69,6 +74,13 @@ public class UISpaceSetting extends UITabPane {
     if (space != null) {
       setValues(space);
     }
+  }
+
+  public void addTab(Class type, String configId, String componentId) throws Exception {
+    String tabId = uiTabPane.getId() + "tab" + uiTabPane.getChildren().size();
+    UIComponentDecorator comp = uiTabPane.addChild(UIComponentDecorator.class, null, tabId);
+    UIComponent child = comp.createUIComponent(type, configId, componentId);
+    comp.setUIComponent(child);
   }
   
   public void initTabByContext() {
@@ -91,19 +103,19 @@ public class UISpaceSetting extends UITabPane {
    * @throws Exception
    */
   public void setValues(Space space) throws Exception {
-    UISpaceInfo uiSpaceInfo = getChild(UITabPane.class).getChild(UISpaceInfo.class);
+    UISpaceInfo uiSpaceInfo = getChild(UITabPane.class).findFirstComponentOfType(UISpaceInfo.class);
     uiSpaceInfo.setValue(space);
-    UISpaceMember uiSpaceMember = getChild(UITabPane.class).getChild(UISpaceMember.class);
+    UISpaceMember uiSpaceMember = getChild(UITabPane.class).findFirstComponentOfType(UISpaceMember.class);
     uiSpaceMember.setValue(space.getId());
     uiSpaceMember.setSpaceURL(space.getUrl());
-    UISpaceApplication uiSpaceApplication = getChild(UITabPane.class).getChild(UISpaceApplication.class);
+    UISpaceApplication uiSpaceApplication = getChild(UITabPane.class).findFirstComponentOfType(UISpaceApplication.class);
     uiSpaceApplication.setValue(space);
-    UISpacePermission uiSpacePermission = getChild(UITabPane.class).getChild(UISpacePermission.class);
+    UISpacePermission uiSpacePermission = getChild(UITabPane.class).findFirstComponentOfType(UISpacePermission.class);
     uiSpacePermission.setValue(space);
     this.space = space;
     
     PortalRequestContext pContext = Util.getPortalRequestContext();
-    UISpaceNavigationManagement uiSpaceNavigation = getChild(UITabPane.class).getChild(UISpaceNavigationManagement.class);
+    UISpaceNavigationManagement uiSpaceNavigation = getChild(UITabPane.class).findFirstComponentOfType(UISpaceNavigationManagement.class);
     uiSpaceNavigation.reloadTreeData();
     UISpaceSetting uiSpaceSetting = (UISpaceSetting)getChild(UITabPane.class).getParent();
     uiSpaceNavigation.setSpace(uiSpaceSetting.getSpace());
@@ -173,14 +185,14 @@ public class UISpaceSetting extends UITabPane {
       //SOC-1759 when user chooses the Space Navigation Tab.
       //The content must have to refresh.
       if (renderTab.equals(UISpaceNavigationManagement.class.getSimpleName())) {
-        UISpaceNavigationManagement uiSpaceNavigation = uiTabPane.getChild(UISpaceNavigationManagement.class);
+        UISpaceNavigationManagement uiSpaceNavigation = uiTabPane.findFirstComponentOfType(UISpaceNavigationManagement.class);
         UISpaceSetting uiSpaceSetting = (UISpaceSetting)uiTabPane.getParent();
         uiSpaceNavigation.setSpace(uiSpaceSetting.getSpace());
         event.getRequestContext().addUIComponentToUpdateByAjax(uiSpaceNavigation);
       }
      
       if (!renderTab.equals(UISpaceApplication.class.getSimpleName())) {
-        UISpaceApplication uiApplication = uiTabPane.getChild(UISpaceApplication.class);
+        UISpaceApplication uiApplication = uiTabPane.findFirstComponentOfType(UISpaceApplication.class);
         if (uiApplication != null) {
           UIPopupContainer uiPopupContainer = uiApplication.getChild(UIPopupContainer.class);
           uiPopupContainer.deActivate();
@@ -188,7 +200,7 @@ public class UISpaceSetting extends UITabPane {
       }
       uiTabPane.setSelectedTab(renderTab);
       //Not a good solution but let's accept it as temporary solution.
-      context.addUIComponentToUpdateByAjax(uiTabPane);
+      context.addUIComponentToUpdateByAjax(uiTabPane.getChildById(renderTab));
     }
   }
 }

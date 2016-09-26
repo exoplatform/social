@@ -129,14 +129,14 @@ public class UISpaceInfo extends UIForm {
     // reset current space to component of uispacesetting.
     UITabPane uiTabPane = this.getAncestorOfType(UITabPane.class);
     uiTabPane.setSelectedTab(1);
-    UISpaceInfo uiSpaceInfo = uiTabPane.getChild(UISpaceInfo.class);
+    UISpaceInfo uiSpaceInfo = uiTabPane.findFirstComponentOfType(UISpaceInfo.class);
     uiSpaceInfo.setValue(space);
-    UISpaceMember uiSpaceMember = uiTabPane.getChild(UISpaceMember.class);
+    UISpaceMember uiSpaceMember = uiTabPane.findFirstComponentOfType(UISpaceMember.class);
     uiSpaceMember.setValue(space.getId());
     uiSpaceMember.setSpaceURL(space.getUrl());
-    UISpaceApplication uiSpaceApplication = uiTabPane.getChild(UISpaceApplication.class);
+    UISpaceApplication uiSpaceApplication = uiTabPane.findFirstComponentOfType(UISpaceApplication.class);
     uiSpaceApplication.setValue(space);
-    UISpacePermission uiSpacePermission = uiTabPane.getChild(UISpacePermission.class);
+    UISpacePermission uiSpacePermission = uiTabPane.findFirstComponentOfType(UISpacePermission.class);
     uiSpacePermission.setValue(space);
   }
   

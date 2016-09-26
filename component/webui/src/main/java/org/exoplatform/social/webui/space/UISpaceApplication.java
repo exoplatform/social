@@ -69,6 +69,8 @@ public class UISpaceApplication extends UIForm {
   private UIPageIterator iterator;
   private final String iteratorID = "UIIteratorSpaceApplication";
 
+  private boolean requiredRefresh;
+
 
   /**
    * Constructor.
@@ -89,8 +91,7 @@ public class UISpaceApplication extends UIForm {
    */
   @SuppressWarnings("unchecked")
   public List<Application> getApplications() throws Exception {
-    setValue(this.space);
-    return iterator.getCurrentPageData();
+    return getUIPageIterator().getCurrentPageData();
   }
 
 
@@ -118,82 +119,7 @@ public class UISpaceApplication extends UIForm {
     // Get space to update space's information.
     space = spaceService.getSpaceById(space.getId());
     this.space = space;
-    List<String> appIdList = SpaceUtils.getAppIdList(space);
-    List<String> notAvailableAppIdList = new ArrayList<String>(appIdList);
-    List<Application> installedAppList = new ArrayList<Application>();
-    Map<ApplicationCategory, List<Application>> appStore = SpaceUtils.getAppStore(space);
-    Iterator<Entry<ApplicationCategory, List<Application>>> appCategoryEntrySetItr = appStore.entrySet().iterator();
-    List<Application> appList;
-    String appStatus;
-    while (appCategoryEntrySetItr.hasNext()) {
-      Entry<ApplicationCategory, List<Application>> appCategoryEntrySet = appCategoryEntrySetItr.next();
-      appList = appCategoryEntrySet.getValue();
-      for (Application app : appList) {
-        if (!isExisted(installedAppList, app)) {
-          if (appIdList.contains(app.getApplicationName())) {
-            appStatus = SpaceUtils.getAppStatus(space, app.getApplicationName());
-            if (appStatus.equals(Space.ACTIVE_STATUS)) {
-              installedAppList.add(app);
-              notAvailableAppIdList.remove(app.getApplicationName());
-            }
-          }
-        }
-      }
-    }
-
-    List<String> availableAppIdList = new ArrayList<String>();
-
-    for (String appId : appIdList) {
-      if (!availableAppIdList.contains(appId)) {
-        availableAppIdList.add(appId);
-      }
-    }
-    for (String appId : availableAppIdList) {
-      if (SpaceUtils.getAppStatus(space, appId).equals(Space.ACTIVE_STATUS)) {
-        installedAppList.add(SpaceUtils.getAppFromPortalContainer(appId));
-      }
-    }
-
-    // Change name of application fit for issue SOC-739
-    String apps = space.getApp();
-    String[] listApp = apps.split(",");
-    List<Application> installedApps = new ArrayList<Application>();
-    String appName;
-    String spaceAppName;
-    String[] appParts;
-    // make unique installedAppList
-    // loop and check, if duplicate then create
-    Application application;
-    for (int index = 0; index < listApp.length; index++) {
-      for (int idx = 0; idx < installedAppList.size(); idx++) {
-        application = installedAppList.get(idx);
-        if (application == null) continue;
-        String temporalSpaceName = application.getApplicationName();
-
-        appParts = listApp[index].split(":");
-        spaceAppName = appParts[0];
-        if (temporalSpaceName.equals(spaceAppName)) {
-          String newName = appParts[0] + ":" + appParts[1];
-          installedApps.add(setAppName(application, newName));
-          break;
-        }
-      }
-    }
-    
-    int currentPage = iterator.getCurrentPage();
-    Collections.sort(installedApps, new ApplicationComparator());
-    
-    PageList pageList = new ObjectPageList(installedApps, APPLICATIONS_PER_PAGE);
-    iterator.setPageList(pageList);
-    
-    int availablePage = iterator.getAvailablePage();
-    
-    if (currentPage > availablePage) {
-      iterator.setCurrentPage(availablePage);
-    } else {
-      iterator.setCurrentPage(currentPage);
-    }
-
+    requiredRefresh = true;
   }
   
   /**
@@ -211,8 +137,88 @@ public class UISpaceApplication extends UIForm {
    * Gets uiPageIterator.
    *
    * @return uiPageIterator
+   * @throws Exception 
    */
-  public UIPageIterator getUIPageIterator() {
+  public UIPageIterator getUIPageIterator() throws Exception {
+    if (requiredRefresh) {
+      List<String> appIdList = SpaceUtils.getAppIdList(space);
+      List<String> notAvailableAppIdList = new ArrayList<String>(appIdList);
+      List<Application> installedAppList = new ArrayList<Application>();
+      Map<ApplicationCategory, List<Application>> appStore = SpaceUtils.getAppStore(space);
+      Iterator<Entry<ApplicationCategory, List<Application>>> appCategoryEntrySetItr = appStore.entrySet().iterator();
+      List<Application> appList;
+      String appStatus;
+      while (appCategoryEntrySetItr.hasNext()) {
+        Entry<ApplicationCategory, List<Application>> appCategoryEntrySet = appCategoryEntrySetItr.next();
+        appList = appCategoryEntrySet.getValue();
+        for (Application app : appList) {
+          if (!isExisted(installedAppList, app)) {
+            if (appIdList.contains(app.getApplicationName())) {
+              appStatus = SpaceUtils.getAppStatus(space, app.getApplicationName());
+              if (appStatus.equals(Space.ACTIVE_STATUS)) {
+                installedAppList.add(app);
+                notAvailableAppIdList.remove(app.getApplicationName());
+              }
+            }
+          }
+        }
+      }
+
+      List<String> availableAppIdList = new ArrayList<String>();
+
+      for (String appId : appIdList) {
+        if (!availableAppIdList.contains(appId)) {
+          availableAppIdList.add(appId);
+        }
+      }
+      for (String appId : availableAppIdList) {
+        if (SpaceUtils.getAppStatus(space, appId).equals(Space.ACTIVE_STATUS)) {
+          installedAppList.add(SpaceUtils.getAppFromPortalContainer(appId));
+        }
+      }
+
+      // Change name of application fit for issue SOC-739
+      String apps = space.getApp();
+      String[] listApp = apps.split(",");
+      List<Application> installedApps = new ArrayList<Application>();
+      String appName;
+      String spaceAppName;
+      String[] appParts;
+      // make unique installedAppList
+      // loop and check, if duplicate then create
+      Application application;
+      for (int index = 0; index < listApp.length; index++) {
+        for (int idx = 0; idx < installedAppList.size(); idx++) {
+          application = installedAppList.get(idx);
+          if (application == null) continue;
+          String temporalSpaceName = application.getApplicationName();
+
+          appParts = listApp[index].split(":");
+          spaceAppName = appParts[0];
+          if (temporalSpaceName.equals(spaceAppName)) {
+            String newName = appParts[0] + ":" + appParts[1];
+            installedApps.add(setAppName(application, newName));
+            break;
+          }
+        }
+      }
+
+      int currentPage = iterator.getCurrentPage();
+      Collections.sort(installedApps, new ApplicationComparator());
+
+      PageList pageList = new ObjectPageList(installedApps, APPLICATIONS_PER_PAGE);
+      iterator.setPageList(pageList);
+
+      int availablePage = iterator.getAvailablePage();
+
+      if (currentPage > availablePage) {
+        iterator.setCurrentPage(availablePage);
+      } else {
+        iterator.setCurrentPage(currentPage);
+      }
+
+      requiredRefresh = false;
+    }
     return iterator;
   }
 
