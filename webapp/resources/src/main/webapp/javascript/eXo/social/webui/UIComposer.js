@@ -51,6 +51,7 @@
               // Hide the editor top bar.
               document.getElementById( evt.editor.id + '_bottom' ).style.display = 'none';
               document.getElementById( evt.editor.id + '_contents' ).style.height = '47px';
+              $("#ShareButton").prop("disabled", true);
             },
             focus : function ( evt ) {
               // Show the editor top bar.
@@ -61,6 +62,13 @@
               // Show the editor top bar.
               document.getElementById( evt.editor.id + '_bottom' ).style.display = 'none';
               document.getElementById( evt.editor.id + '_contents' ).style.height = '47px';
+            },
+            change: function( evt) {
+                if (evt.editor.getData() && evt.editor.getData().length > 0) {
+                    $("#ShareButton").removeAttr("disabled");
+                } else {
+                    $("#ShareButton").prop("disabled", true);
+                }
             }
           }
         });
