@@ -22,6 +22,7 @@
 
 (function($, _) {
   var UIComposer = {
+    MAX_LENGTH : 2000,
     clickOn : null,
     onLoadI18n : function(i18n) {
       window.eXo.social.I18n.mentions = $.extend(true, {}, window.eXo.social.I18n.mentions, i18n);
@@ -64,12 +65,22 @@
               document.getElementById( evt.editor.id + '_contents' ).style.height = '47px';
             },
             change: function( evt) {
-                if (evt.editor.getData() && evt.editor.getData().length > 0) {
+                var newData = evt.editor.getData();
+                if (newData && newData.length > 0) {
                     $("#ShareButton").removeAttr("disabled");
                 } else {
                     $("#ShareButton").prop("disabled", true);
                 }
+            },
+            key: function( evt) {
+                var newData = evt.editor.getData();
+                if (newData && $(newData).text().length > UIComposer.MAX_LENGTH) {
+                    if ([8, 46, 33, 34, 35, 36, 37,38,39,40].indexOf(evt.data.keyCode) < 0) {
+                        evt.cancel();
+                    }
+                }
             }
+            
           }
         });
 
