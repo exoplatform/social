@@ -23,7 +23,7 @@ CKEDITOR.editorConfig = function( config ) {
 
 	// Remove some buttons provided by the standard plugins, which are
 	// not needed in the Standard(s) toolbar.
-	config.removeButtons = 'Subscript,Superscript,Cut,Copy,Paste,PasteText,PasteFromWord,Undo,Redo,Scayt,Link,Unlink,Anchor,Image,Table,HorizontalRule,SpecialChar,Maximize,Source,Strike,RemoveFormat,Outdent,Indent,Format,BGColor,About';
+	config.removeButtons = 'Subscript,Superscript,Cut,Copy,Paste,PasteText,PasteFromWord,Undo,Redo,Scayt,Unlink,Anchor,Table,HorizontalRule,SpecialChar,Maximize,Source,Strike,Outdent,Indent,Format,BGColor,About';
 
 	// Set the most common block elements.
 	config.format_tags = 'p;h1;h2;h3;pre';
@@ -41,4 +41,10 @@ CKEDITOR.editorConfig = function( config ) {
 	config.contentsCss = '/social-resources/javascript/eXo/social/ckeditorCustom/contents.css';
 	
 	config.enterMode = CKEDITOR.ENTER_BR;
+	
+	config.toolbar = [
+	                  ['Bold','Italic','RemoveFormat',],
+	                  ['-','NumberedList','BulletedList','Blockquote'],
+	                  ['-','Image','Link'],
+	           ] ;
 };
