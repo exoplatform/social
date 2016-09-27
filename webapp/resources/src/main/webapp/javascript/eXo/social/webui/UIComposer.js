@@ -50,8 +50,12 @@
           on : {
             instanceReady : function ( evt ) {
               // Hide the editor top bar.
-              document.getElementById( evt.editor.id + '_bottom' ).style.display = 'none';
-              document.getElementById( evt.editor.id + '_contents' ).style.height = '47px';
+              var windowWidth = $(window).width();
+              var windowHeight = $(window).height();
+              if (windowWidth > 767 || windowWidth > 481 && windowWidth > windowHeight) {
+                  document.getElementById( evt.editor.id + '_bottom' ).style.display = 'none';
+                  document.getElementById( evt.editor.id + '_contents' ).style.height = '47px';
+              }
               $("#ShareButton").prop("disabled", true);
             },
             focus : function ( evt ) {
@@ -60,9 +64,13 @@
               document.getElementById( evt.editor.id + '_contents' ).style.height = '150px';
             },
             blur : function ( evt ) {
-              // Show the editor top bar.
-              document.getElementById( evt.editor.id + '_bottom' ).style.display = 'none';
-              document.getElementById( evt.editor.id + '_contents' ).style.height = '47px';
+              // Hide the editor top bar.
+              var windowWidth = $(window).width();
+              var windowHeight = $(window).height();
+              if (windowWidth > 767 || windowWidth > 481 && windowWidth > windowHeight) {
+                  document.getElementById( evt.editor.id + '_bottom' ).style.display = 'none';
+                  document.getElementById( evt.editor.id + '_contents' ).style.height = '47px';
+              }
             },
             change: function( evt) {
                 var newData = evt.editor.getData();
