@@ -211,28 +211,44 @@
           <img alt="$spaceCreatorName" src="$spaceCreatorAvatar"/>
         </a>
 		</div>
-		<div class="activityType"><span><i class="uiIconSocGroup uiIconSocWhite"></i></span></div>
+     	<div class="activityType">
+         	<a  class="space-avatar" href="$ownerUri" space-data="$spaceID">
+         		<img alt="$ownerName" src="$spaceImageSource"/>
+         	</a>
+         </div>
 	</div><!--end activityTimeLine-->
 	<div id="boxContainer" class="boxContainer">
 		<div id="ContextBox${activity.id}" class="uiBox contentBox">
 			<div class="heading">
 				<span class="arrowLeft"></span>
-				<div class="actLink">
-				    <a id="Permalink${activity.id}" class="uiIconLink uiIconLightGray" rel="tooltip" data-placement="bottom" title="$viewActivityTip" href="<%=uicomponent.getActivityPermalink(activity.id)%>"></a>
-				 <% if (activityDeletable) {%>
-					<a href="javascript:void(0)" data-confirm="$labelToDeleteThisActivity" data-caption="$captionConfirmation" data-close="$labelClosebutton" data-ok="$labelConfirmbutton" data-delete="<%=uicomponent.event("DeleteActivity", uicomponent.getId(), "");%>" class="uiIconClose uiIconLightGray controllDelete" id="DeleteActivityButton${activity.id}"></a>
-				<%}%>
+				<div class="actLink hidden-phone hidden-tablet">
+					 <a id="Permalink${activity.id}" class="uiIconLink uiIconLightGray" rel="tooltip" data-placement="bottom" title="$viewActivityTip" href="<%=uicomponent.getActivityPermalink(activity.id)%>"></a>
+					 <% if (activityDeletable) {
+					 %>
+						<a href="javascript:void(0)" data-confirm="$labelToDeleteThisActivity" data-caption="$captionConfirmation" data-close="$labelClosebutton" data-ok="$labelConfirmbutton"  data-delete="<%=uicomponent.event("DeleteActivity", uicomponent.getId(), "");%>" class="uiIconEcmsDelete uiIconLightGray controllDelete" id="DeleteActivityButton${activity.id}"></a>
+					  <%}%>
 				</div>
 				<div class="author">
-				    <a class="circleSpaceAvatar hidden-desktop" href="$ownerUri" space-data="$spaceID">
+				 <div class="hidden-desktop circleSpaceAvatar">
+				    <a  href="$ownerUri" space-data="$spaceID">
                       <img alt="$ownerName" src="$spaceImageSource"/>
                     </a>
+                 </div>
+                 <div class="owner">
 					<a class="space-avatar" href="$ownerUri" space-data="$spaceID">
 						$ownerName
-					</a>         
+					</a>
+				</div>
 				</div>	
 				<div class="dataInfor">
-					<span class="dateTime"><i class="uiIconClock uiIconLightGray"></i>&nbsp;$activityPostedTime</span>											
+					<span class="dateTime"><i class="uiIconClock uiIconLightGray"></i>&nbsp;$activityPostedTime</span>
+				<div class=" actionLink hidden-desktop visible-tablet visible-phone">
+					 <a id="Permalink${activity.id}" class="uiIconLink uiIconLightGray" rel="tooltip" data-placement="bottom" title="$viewActivityTip" href="<%=uicomponent.getActivityPermalink(activity.id)%>"></a>
+					 <% if (activityDeletable) {
+					 %>
+						<a href="javascript:void(0)" data-confirm="$labelToDeleteThisActivity" data-caption="$captionConfirmation" data-close="$labelClosebutton" data-ok="$labelConfirmbutton"  data-delete="<%=uicomponent.event("DeleteActivity", uicomponent.getId(), "");%>" class="uiIconEcmsDelete uiIconLightGray controllDelete" id="DeleteActivityButton${activity.id}"></a>
+					  <%}%>
+				</div>
 				</div>
 			</div><!--end heading-->
 		<div class="uiBox roundedBottom introBox contentShare">	
