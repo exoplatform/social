@@ -28,6 +28,8 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpUtils;
 
 import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.StringUtils;
+
 import org.exoplatform.commons.utils.ExpressionUtil;
 import org.exoplatform.commons.utils.PropertyManager;
 import org.exoplatform.container.ExoContainer;
@@ -802,18 +804,26 @@ public class Utils {
     Route route = ExoRouter.route(requestPath);
     
     if (route == null) {
-      String groupId = pcontext.getControllerContext().getParameter(RequestNavigationData.REQUEST_SITE_NAME);
-      return spaceService.getSpaceByGroupId(groupId);
+      String siteType = pcontext.getControllerContext().getParameter(RequestNavigationData.REQUEST_SITE_TYPE);
+      if(SiteType.GROUP.getName().equalsIgnoreCase(siteType)) {
+        String groupId = pcontext.getControllerContext().getParameter(RequestNavigationData.REQUEST_SITE_NAME);
+        if(StringUtils.isNotBlank(groupId) && groupId.startsWith(SpaceUtils.SPACE_GROUP)) {
+          return spaceService.getSpaceByGroupId(groupId);
+        }
+      }
+      return null;
     }
 
     //
     String spacePrettyName = route.localArgs.get("spacePrettyName");
-    Space space = spaceService.getSpaceByPrettyName(spacePrettyName);
-    if (space == null) {
-      String groupId = String.format("%s/%s", SpaceUtils.SPACE_GROUP, spacePrettyName);
-      space = spaceService.getSpaceByGroupId(groupId); 
+    Space space = null;
+    if(StringUtils.isNotBlank(spacePrettyName) && !spacePrettyName.startsWith(";jsessionid=")) {
+      space = spaceService.getSpaceByPrettyName(spacePrettyName);
+      if (space == null) {
+        String groupId = String.format("%s/%s", SpaceUtils.SPACE_GROUP, spacePrettyName);
+        space = spaceService.getSpaceByGroupId(groupId); 
+      }
     }
-     
     
     return space;
   }

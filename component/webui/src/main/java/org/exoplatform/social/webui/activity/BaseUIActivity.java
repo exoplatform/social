@@ -516,7 +516,7 @@ public class BaseUIActivity extends UIForm {
 
     if (postContext == PostContext.SPACE) {
       space = uiActivitiesContainer.getSpace();
-    } else {
+    } else if(org.exoplatform.social.core.activity.model.ActivityStream.Type.SPACE.equals(this.getActivity().getActivityStream().getType())) {
       Identity identityStreamOwner = Utils.getIdentityManager().getOrCreateIdentity(SpaceIdentityProvider.NAME,
                                                                                     this.getActivity().getStreamOwner(),
                                                                                     false);
@@ -602,7 +602,7 @@ public class BaseUIActivity extends UIForm {
       if (postContext == PostContext.SPACE) {
         space = uiActivitiesContainer.getSpace();
         spaceService = getApplicationComponent(SpaceService.class);
-      } else {
+      } else if(org.exoplatform.social.core.activity.model.ActivityStream.Type.SPACE.equals(this.getActivity().getActivityStream().getType())) {
         Identity identityStreamOwner = Utils.getIdentityManager().getOrCreateIdentity(SpaceIdentityProvider.NAME,
                                                                                       this.getActivity().getStreamOwner(),
                                                                                       false);
