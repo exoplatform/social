@@ -24,7 +24,7 @@ import java.util.Set;
 
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.social.common.AbstractCommonTest;
-import org.exoplatform.social.common.xmlprocessor.filters.DOMContentEscapeFilterPlugin;
+import org.exoplatform.social.common.xmlprocessor.filters.SanitizeFilterPlugin;
 import org.exoplatform.social.common.xmlprocessor.filters.DOMLineBreakerFilterPlugin;
 import org.exoplatform.social.common.xmlprocessor.filters.DOMXMLTagFilterPlugin;
 import org.exoplatform.social.common.xmlprocessor.filters.LineBreakerFilterPlugin;
@@ -133,15 +133,18 @@ public class XMLProcessorTest extends AbstractCommonTest {
     XMLTagFilterPlugin xmlFilter = new XMLTagFilterPlugin(tagFilterPolicy);
     xmlProcessor.addFilter(xmlFilter);
 
+    Filter contentEscapeFilter = new SanitizeFilterPlugin();
+    xmlProcessor.addFilter(contentEscapeFilter);
+
     assertEquals(null, xmlProcessor.process(null));
 
     assertEquals("hello 1", xmlProcessor.process("hello 1"));
     assertEquals("hello 1\n hello2", xmlProcessor.process("hello 1\n hello2"));
-    assertEquals("<a>hello 1", xmlProcessor.process("<a>hello 1"));
-    assertEquals("hello 1</a>", xmlProcessor.process("hello 1</a>"));
-    assertEquals("<a>Hello 2<a><b>", xmlProcessor.process("<a<b>Hello 2<a><b>"));
-    assertEquals("<a>Hello 2&lt;i&gt;<b>", xmlProcessor.process("<a<b>Hello 2<i><b>"));
-    assertEquals("<a>Hello 2<b /><b>", xmlProcessor.process("<a<b>Hello 2<b /><b>"));
+    assertEquals("hello 1", xmlProcessor.process("<a>hello 1"));
+    assertEquals("hello 1", xmlProcessor.process("hello 1</a>"));
+    assertEquals("Hello 2<b></b>", xmlProcessor.process("<a<b>Hello 2<a><b>"));
+    assertEquals("Hello 2&lt;i&gt;<b></b>", xmlProcessor.process("<a<b>Hello 2<i><b>"));
+    assertEquals("Hello 2<b><b></b></b>", xmlProcessor.process("<a<b>Hello 2<b /><b>"));
   }
 
   /**
@@ -168,7 +171,7 @@ public class XMLProcessorTest extends AbstractCommonTest {
   /**
    * Tests {@link XMLProcessor#process(Object)} with:
    * {@link org.exoplatform.social.common.xmlprocessor.filters.XMLTagFilterPlugin} for allowed tags and its allowed attributes,
-   * {@link org.exoplatform.social.common.xmlprocessor.filters.DOMContentEscapeFilterPlugin}, {@link org.exoplatform.social.common.xmlprocessor.filters.DOMLineBreakerFilterPlugin}.
+   * {@link SanitizeFilterPlugin}, {@link org.exoplatform.social.common.xmlprocessor.filters.DOMLineBreakerFilterPlugin}.
    */
   public void testXMLDOMFilterAndEscapeWithTagAndAttributes() {
     XMLTagFilterPolicy tagFilterPolicy = new XMLTagFilterPolicy();
@@ -180,18 +183,16 @@ public class XMLProcessorTest extends AbstractCommonTest {
 
 
     Filter domXmlTagFilter = new DOMXMLTagFilterPlugin(tagFilterPolicy);
-    Filter domContentEscapeFilter = new DOMContentEscapeFilterPlugin();
     Filter domLineBreakerFilter = new DOMLineBreakerFilterPlugin();
 
     xmlProcessor.addFilter(domLineBreakerFilter);
     xmlProcessor.addFilter(domXmlTagFilter);
-    xmlProcessor.addFilter(domContentEscapeFilter);
 
     assertEquals("hello 1", xmlProcessor.process(DOMParser.createDOMTree(Tokenizer.tokenize("hello 1"))).toString());
     assertEquals("hello 1<br /> hello2", xmlProcessor.process(DOMParser.createDOMTree(Tokenizer.tokenize("hello 1\n hello2"))).toString());
-    assertEquals("&lt;a&gt;hello 1", xmlProcessor.process(DOMParser.createDOMTree(Tokenizer.tokenize("<a>hello 1"))).toString());
-    assertEquals("hello 1&lt;/a&gt;", xmlProcessor.process(DOMParser.createDOMTree(Tokenizer.tokenize("hello 1</a>"))).toString());
-    assertEquals("&lt;a&lt;b&gt;Hello 2&lt;a&gt;&lt;b&gt;", xmlProcessor.process(DOMParser.createDOMTree(Tokenizer.tokenize("<a<b>Hello 2<a><b>"))).toString());
+    assertEquals("<a>hello 1", xmlProcessor.process(DOMParser.createDOMTree(Tokenizer.tokenize("<a>hello 1"))).toString());
+    assertEquals("hello 1</a>", xmlProcessor.process(DOMParser.createDOMTree(Tokenizer.tokenize("hello 1</a>"))).toString());
+    assertEquals("<a<b>Hello 2<a><b>", xmlProcessor.process(DOMParser.createDOMTree(Tokenizer.tokenize("<a<b>Hello 2<a><b>"))).toString());
     assertEquals("<a>Hello 2</a>", xmlProcessor.process(DOMParser.createDOMTree(Tokenizer.tokenize("<a>Hello 2</a>"))).toString());
     assertEquals("<a>Hello 2</a>", xmlProcessor.process(DOMParser.createDOMTree(Tokenizer.tokenize("<a>Hello 2</a>"))).toString());
     assertEquals("<a href=\"abc\">Hello 2</a>", xmlProcessor.process(DOMParser.createDOMTree(Tokenizer.tokenize("<a href='abc' id='def'>Hello 2</a>"))).toString());

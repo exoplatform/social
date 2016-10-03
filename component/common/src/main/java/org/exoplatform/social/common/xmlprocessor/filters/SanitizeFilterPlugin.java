@@ -16,50 +16,35 @@
  */
 package org.exoplatform.social.common.xmlprocessor.filters;
 
-import java.util.LinkedList;
-
-import org.apache.commons.lang.StringEscapeUtils;
+import org.exoplatform.commons.utils.HTMLSanitizer;
+import org.exoplatform.services.log.ExoLogger;
+import org.exoplatform.services.log.Log;
 import org.exoplatform.social.common.xmlprocessor.BaseXMLFilterPlugin;
-import org.exoplatform.social.common.xmlprocessor.model.Node;
 
 
 /**
- * The filter escapes all content of the DOMTree to make sure it cleaned.
+ * The filter escapes all the DOMTree to make sure it cleaned.
  * <b>Note:</b> this filter cannot detect that content escaped or not so make sure that you don't use it twice or
  * using it with escaped content.
  *
  * @author Ly Minh Phuong - http://phuonglm.net
- * @since  1.2.1
  */
-public class DOMContentEscapeFilterPlugin extends BaseXMLFilterPlugin {
+public class SanitizeFilterPlugin extends BaseXMLFilterPlugin {
+
+  private static final Log LOG = ExoLogger.getLogger(SanitizeFilterPlugin.class);
 
   /**
    * {@inheritDoc}
    */
   @Override
   public Object doFilter(Object input) {
-    if (input instanceof Node) {
-      nodeFilter((Node) input);
+    if (input instanceof String) {
+      try {
+        return HTMLSanitizer.sanitize((String) input);
+      } catch (Exception e) {
+        LOG.error("Error while sanitizing input : " + e.getMessage(), e);
+      }
     }
     return input;
   }
-
-  /**
-   * Filter by nodes.
-   *
-   * @param node a node
-   */
-  private void nodeFilter(Node node) {
-    LinkedList<Node> currentChildNode = node.getChildNodes();
-    if (node.getParentNode() != null) {
-      if (!node.getContent().isEmpty()) {
-        node.setContent(StringEscapeUtils.escapeHtml(node.getContent()));
-      }
-    }
-    for (int i = 0; i < currentChildNode.size(); i++) {
-      nodeFilter(currentChildNode.get(i));
-    }
-
-  }
-
 }

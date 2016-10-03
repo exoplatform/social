@@ -23,29 +23,29 @@ import org.exoplatform.social.common.xmlprocessor.model.Node;
 import junit.framework.TestCase;
 
 /**
- * Unit test for {@link DOMContentEscapeFilterPlugin}.
+ * Unit test for {@link SanitizeFilterPlugin}.
  */
-public class DOMContentEscapeFilterPluginTest extends TestCase {
+public class SanitizeFilterPluginTest extends TestCase {
 
   /**
-   * Tests {@link DOMContentEscapeFilterPlugin#doFilter(Object)}.
+   * Tests {@link SanitizeFilterPlugin#doFilter(Object)}.
    */
-  public void testDOMContentEscape() {
+  public void testContentEscape() {
     assertEquals(
             "",
-            new DOMContentEscapeFilterPlugin().doFilter(
+            new SanitizeFilterPlugin().doFilter(
                     DOMParser.createDOMTree(new Node(), Tokenizer.tokenize("")))
                     .toString());
 
     assertEquals(
             "hello 1\r\nhello 2",
-            new DOMContentEscapeFilterPlugin().doFilter(
+            new SanitizeFilterPlugin().doFilter(
                     DOMParser.createDOMTree(new Node(),
                             Tokenizer.tokenize("hello 1\r\nhello 2"))).toString());
 
     assertEquals(
-            "&lt;b&gt; = hello 1 &amp;&quot;\\ hello 2 &lt;a&gt;",
-            new DOMContentEscapeFilterPlugin().doFilter(
+            "<b> = hello 1 &\"\\ hello 2 <a>",
+            new SanitizeFilterPlugin().doFilter(
                     DOMParser.createDOMTree(new Node(),
                             Tokenizer.tokenize("<b> = hello 1 &\"\\ hello 2 <a>")))
                     .toString());

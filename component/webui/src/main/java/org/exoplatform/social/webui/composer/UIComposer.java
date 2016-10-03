@@ -201,7 +201,7 @@ public class UIComposer extends UIForm {
       UIFormTextAreaInput textAreaInput = uiComposer.getUIFormTextAreaInput(COMPOSER_TEXT_AREA_INPUT);
       //--- Processing outcome here aims to avoid escaping '@' symbol while preventing any undesirable side effects due to CSS sanitization.
       //--- The goal is to avoid escape '@' occurrences in microblog application, this enables to keep mention feature working as expected in the specification
-      String message = HTMLSanitizer.sanitize(textAreaInput.getValue()).replaceAll(HTML_AT_SYMBOL_ESCAPED_PATTERN,HTML_AT_SYMBOL_PATTERN);
+      String message = textAreaInput.getValue().replaceAll(HTML_AT_SYMBOL_ESCAPED_PATTERN,HTML_AT_SYMBOL_PATTERN);
       textAreaInput.setValue("");
       //
       message = (message == null || 

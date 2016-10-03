@@ -226,7 +226,12 @@
           <value>-1</value>
         </value-param>
       </init-params>
-    </component-plugin>    
+    </component-plugin>
+    <component-plugin>
+      <name>DOMContentEscapeFilterPlugin</name>
+      <set-method>addFilterPlugin</set-method>
+      <type>org.exoplatform.social.common.xmlprocessor.filters.SanitizeFilterPlugin</type>
+    </component-plugin>
   </external-component-plugins>
 
   <external-component-plugins>

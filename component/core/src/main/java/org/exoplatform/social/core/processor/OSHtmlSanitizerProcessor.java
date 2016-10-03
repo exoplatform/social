@@ -25,7 +25,7 @@ import org.exoplatform.social.common.xmlprocessor.XMLProcessor;
 import org.exoplatform.social.core.BaseActivityProcessorPlugin;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 
-public class OSHtmlSanitizerProcessor extends BaseActivityProcessorPlugin {  
+public class OSHtmlSanitizerProcessor extends BaseActivityProcessorPlugin {
   private XMLProcessor xmlProcessor;
 
   public OSHtmlSanitizerProcessor(InitParams params) {
@@ -38,9 +38,9 @@ public class OSHtmlSanitizerProcessor extends BaseActivityProcessorPlugin {
     }
     activity.setTitle((String) xmlProcessor.process(activity.getTitle()));
     activity.setBody((String) xmlProcessor.process(activity.getBody()));
-    
+
     Map<String, String> templateParams = activity.getTemplateParams();
-    
+
     List<String> templateParamKeys = getTemplateParamKeysToFilter(activity);
     for(String key : templateParamKeys){
       templateParams.put(key, (String) xmlProcessor.process(templateParams.get(key)));

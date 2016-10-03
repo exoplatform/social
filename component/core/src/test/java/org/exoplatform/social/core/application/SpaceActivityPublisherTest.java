@@ -159,7 +159,7 @@ public class SpaceActivityPublisherTest extends  AbstractCoreTest {
    assertEquals("Name has been updated to: "+space.getDisplayName(), comments.get(1).getTitle());
    
    //Update space's description
-   space.setDescription("social's team");
+   space.setDescription("social&#39;s team");
    space.setField(UpdatedField.DESCRIPTION);
    spaceService.updateSpace(space);
    comments = activityManager.getCommentsWithListAccess(activity).loadAsList(0, 20);
@@ -201,7 +201,7 @@ public class SpaceActivityPublisherTest extends  AbstractCoreTest {
      comments = activityManager.getCommentsWithListAccess(newActivity).loadAsList(0, 20);
      
      assertEquals(2, activityManager.getCommentsWithListAccess(newActivity).getSize());
-     assertEquals("<a href=\"/portal/classic/profile/demo\">Demo gtn</a> has been promoted as space's manager.", comments.get(1).getTitle());
+     assertEquals("<a href=\"/portal/classic/profile/demo\" rel=\"nofollow\">Demo gtn</a> has been promoted as space&#39;s manager.", comments.get(1).getTitle());
      assertEquals(identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "root", false).getId(), comments.get(1).getUserId());
      
      //
@@ -210,12 +210,12 @@ public class SpaceActivityPublisherTest extends  AbstractCoreTest {
      comments = activityManager.getCommentsWithListAccess(newActivity).loadAsList(0, 20);
      
      assertEquals(3, activityManager.getCommentsWithListAccess(newActivity).getSize());
-     assertEquals("<a href=\"/portal/classic/profile/demo\">Demo gtn</a> has been revoked as space's manager.", comments.get(2).getTitle());
+     assertEquals("<a href=\"/portal/classic/profile/demo\" rel=\"nofollow\">Demo gtn</a> has been revoked as space&#39;s manager.", comments.get(2).getTitle());
      assertEquals(identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "root", false).getId(), comments.get(2).getUserId());
    }
    
    {// update both name and description
-     assertEquals("social's team", space.getDescription());
+     assertEquals("social&#39;s team", space.getDescription());
      
      String newDescription = "new description";
      space.setDescription(newDescription);
@@ -236,7 +236,7 @@ public class SpaceActivityPublisherTest extends  AbstractCoreTest {
      spaceService.updateSpace(space);
      comments = activityManager.getCommentsWithListAccess(newActivity).loadAsList(0, 20);
      assertEquals(6, comments.size());
-     assertEquals("Description has been updated to: Cet espace est &agrave; chercher des bugs", comments.get(5).getTitle());
+     assertEquals("Description has been updated to: Cet espace est à chercher des bugs", comments.get(5).getTitle());
    }
    
    //clean up

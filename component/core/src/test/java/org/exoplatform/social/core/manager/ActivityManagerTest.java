@@ -544,7 +544,7 @@ public class ActivityManagerTest extends AbstractCoreTest {
     
     demoActivity = activityManager.getActivity(demoActivity.getId());
     assertEquals("demoActivity.getLikeIdentityIds().length must return: 1", 1, demoActivity.getLikeIdentityIds().length);
-    assertEquals("&amp;&quot;demo activity", demoActivity.getTitle());
+    assertEquals("&amp;&#34;demo activity", demoActivity.getTitle());
   }
   /**
    * Test {@link ActivityManager#saveLike(ExoSocialActivity, Identity)}
@@ -879,7 +879,7 @@ public class ActivityManagerTest extends AbstractCoreTest {
    */
   public  void testGetCommentWithHtmlContent() throws ActivityStorageException {
     String htmlString = "<span><strong>foo</strong>bar<script>zed</script></span>";
-    String htmlRemovedString = "<span><strong>foo</strong>bar&lt;script&gt;zed&lt;/script&gt;</span>";
+    String htmlRemovedString = "<strong>foo</strong>bar&lt;script&gt;zed&lt;/script&gt;";
     
     ExoSocialActivity activity = new ExoSocialActivityImpl();
     activity.setTitle("blah blah");
