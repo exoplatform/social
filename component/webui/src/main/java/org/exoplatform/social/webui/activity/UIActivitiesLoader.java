@@ -18,6 +18,7 @@ package org.exoplatform.social.webui.activity;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
@@ -266,7 +267,7 @@ public class UIActivitiesLoader extends UIContainer {
     String activityId = getSingleActivityId();
     ExoSocialActivity activity = (activityId != null) ? activityManager.getActivity(activityId) : null;
     if (activity == null)
-      return null;
+      return Collections.emptyList();
     return new ArrayList<ExoSocialActivity>(Arrays.asList(activity));
   }
   
