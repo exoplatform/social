@@ -340,26 +340,6 @@ public class PeopleRestService implements ResourceContainer{
           exclusions.add(s);
         }
       }
-
-      // Adding all non hidden spaces.
-      remain = SUGGEST_LIMIT - (nameList.getOptions() != null ? nameList.getOptions().size() : 0);
-      if (remain > 0) {
-        SpaceFilter spaceFilter = new SpaceFilter();
-        spaceFilter.setSpaceNameSearchCondition(name);
-        spaceFilter.addExclusions(exclusions);
-        ListAccess<Space> list = getSpaceService().getVisibleSpacesWithListAccess(currentUser, spaceFilter);
-        Space[] spaces = list.load(0, (int) remain);
-        for (Space s : spaces) {
-          Option opt = new Option();
-          opt.setType("space");
-          opt.setValue(SPACE_PREFIX + s.getPrettyName());
-          opt.setText(s.getDisplayName());
-          opt.setAvatarUrl(s.getAvatarUrl());
-          opt.setOrder(3);
-          nameList.addOption(opt);
-        }
-      }
-
       remain = SUGGEST_LIMIT - (nameList.getOptions() != null ? nameList.getOptions().size() : 0);
       if (remain > 0) {
         identityFilter.setExcludedIdentityList(excludedIdentityList);
