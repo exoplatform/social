@@ -87,6 +87,22 @@
           var id = $(this).parents('li:first').data('id');
           webNotif.doCancelAction(id, $(this).data('rest'));
         });
+        
+        var comment = item.find('.comment')[0];
+        var readMore = item.find('.readMore')[0];
+        
+        if (comment) { 
+            if (comment.offsetWidth < comment.scrollWidth || comment.offsetHeight < comment.scrollHeight) {
+                $(readMore).show();
+                $(readMore).on('click', function(evt) {
+                    $(comment).css("max-height", "none");
+                    evt.stopPropagation();
+                });
+            } else {
+                $(readMore).hide();
+            }
+        }
+        
         return item;
       },
       appendMessage : function(message) {
