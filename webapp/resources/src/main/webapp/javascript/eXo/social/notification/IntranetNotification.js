@@ -89,12 +89,20 @@
         });
         
         var comment = item.find('.comment')[0];
+        var commentNoHtml = item.find('.commentNoHtml')[0];
         var readMore = item.find('.readMore')[0];
         
         if (comment) { 
             if (comment.offsetWidth < comment.scrollWidth || comment.offsetHeight < comment.scrollHeight) {
+                $(comment).hide();
+                $(commentNoHtml).html(comment.textContent + "...");
+                $(commentNoHtml).show();
                 $(readMore).show();
+                
                 $(readMore).on('click', function(evt) {
+                    $(comment).show();
+                    $(readMore).hide();
+                    $(commentNoHtml).hide();
                     $(comment).css("max-height", "none");
                     evt.stopPropagation();
                 });

@@ -25,6 +25,9 @@
           <div class="comment">
             $COMMENT
           </div>
+          <div class="commentNoHtml">
+            $COMMENT
+          </div>
           <div class="readMore">
             Read more
           </div>
