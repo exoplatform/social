@@ -224,7 +224,7 @@ public class SocialNotificationUtils {
       List<Pair<String, String>> userComments = activityUserComments.get(id);
       if (userComments != null && userComments.size() > 0) {
           sb.append("<br/>");
-          sb.append("<div style=\"background-color:#f9f9f9;padding: 10px;max-height:44px;overflow:hidden\">");  
+          sb.append("<div style=\"background-color:#f9f9f9;padding: 10px;max-height:11px;overflow:hidden;text-overflow:ellipsis;\">");  
           sb.append("<div style=\"border-left:5px solid #AACDED; padding-left: 15px; color:black\">");
           for (Pair<String, String> pair: userComments) {
               sb.append("<i>");
@@ -232,10 +232,14 @@ public class SocialNotificationUtils {
                   sb.append("<b>").append(pair.getKey()).append(" : </b>");
               }
               sb.append("<span style=\"color:#333333\"><font face=\"verdana,arial,sans-serif\">")
-                .append(pair.getValue())
-                .append("</font></span>")
+                .append(pair.getValue());
+              if (userComments.size() > 1) {
+                  sb.append("...");
+              }
+              sb.append("</font></span>")
                 .append("</i>")
                 .append("<br/>");
+              break;
           }
           sb.append("  </div>");
           sb.append("</div>");
