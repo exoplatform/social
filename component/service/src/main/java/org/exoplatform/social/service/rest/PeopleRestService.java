@@ -501,7 +501,7 @@ public class PeopleRestService implements ResourceContainer{
           || securityContext.getUserPrincipal() == null || !userType.equals(currentIdentity.getRemoteId());
       
       if (!isAnonymous) { // private information
-        peopleInfo.setProfileUrl(LinkProvider.getUserActivityUri(identity.getRemoteId()));
+        peopleInfo.setProfileUrl(LinkProvider.getProfileUri(identity.getRemoteId()));
         
         peopleInfo.setRelationshipType(NO_ACTION);
         
