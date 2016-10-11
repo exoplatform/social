@@ -28,12 +28,14 @@ import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.manager.ActivityManager;
 import org.exoplatform.social.user.UIRecentActivity;
 import org.exoplatform.social.webui.Utils;
+import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.EventConfig;
 import org.exoplatform.webui.core.UIComponent;
 import org.exoplatform.webui.core.lifecycle.UIApplicationLifecycle;
 import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.event.EventListener;
+import org.json.JSONObject;
 
 @ComponentConfig(
   lifecycle = UIApplicationLifecycle.class,
@@ -99,6 +101,11 @@ public class UIRecentActivitiesPortlet extends UIAbstractUserPortlet {
   @Override
   public void initProfilePopup() throws Exception {
     super.initProfilePopup();
+  }
+
+  @Override
+  public void initSpacePopup() throws Exception {
+    super.initSpacePopup();
   }
 
   public static class LoadActivityActionListener extends EventListener<UIRecentActivitiesPortlet> {

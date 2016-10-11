@@ -18,43 +18,26 @@ if(activity == null) {
   String avatarURL = profile.getAvatarUrl();
   String profileURL = profile.getUrl();
   String displayName = profile.getFullName();
-  String activityTypeIcon =  RecentActivitiesHelper.getActivityTypeIcon(activity);
   String link = RecentActivitiesHelper.getLink(activity);
   String linkTitle = RecentActivitiesHelper.getLinkTitle(activity);
 
-  def spaceSourceURI, spaceName, spaceImageSource;
-  def streamOwner = activity.getStreamOwner();
-          Space spaceSource = Utils.getSpaceService().getSpaceByPrettyName(streamOwner);
-          if(spaceSource != null){
-          spaceID = spaceSource.getId();
-          if (spaceSource != null) {
-            spaceSourceURI = LinkProvider.getSpaceUri(spaceSource.url);
-             spaceName = spaceSource.displayName;
-      		spaceImageSource = spaceSource.getAvatarUrl();
-      		if (spaceImageSource == null) {
-      			spaceImageSource = LinkProvider.SPACE_DEFAULT_AVATAR_URL;
-      		}
-            } else {
-                spaceSourceURI = LinkProvider.getActivityUriForSpace(streamOwner, streamOwner);
-                spaceName = Utils.getSpaceIdentity(streamOwner, false).profile.fullName;
-      		    spaceImageSource = LinkProvider.SPACE_DEFAULT_AVATAR_URL;
-            }
+  def spaceID;
+  Space spaceSource = Utils.getSpaceService().getSpaceByDisplayName(displayName);
+   if(spaceSource != null){
+       spaceID = spaceSource.getId();
    }
 %>
    <div class="activityStream uiDefaultActivity clearfix" id="Activity<%=activity.id%>">
      <div class="activityTimeLine pull-left">
-       <div class="activityAvatar avatarCircle">
-         <a href="<%=profileURL%>">
+        <div class="activityAvatar avatarCircle">
+     <%if(spaceID != null){%>
+            <a class="space-avatar" href="<%=profileURL%>" space-data="$spaceID">
+       <%} else {%>
+            <a  href="<%=profileURL%>">
+       <%}%>
            <img alt="<%=displayName%>" src="<%=((avatarURL == null || avatarURL.length() == 0) ? LinkProvider.PROFILE_DEFAULT_AVATAR_URL : avatarURL)%>">
          </a>
        </div>
-      	<%  if (spaceSource != null) {%>
-      	<div class="activityType">
-          	<a  class="space-avatar" href="$spaceSourceURI" space-data="$spaceID">
-          		<img alt="$spaceName" src="$spaceImageSource"/>
-          	</a>
-          </div>
-          <%}%>
      </div><!--end activityTimeLine-->
      <div class="boxContainer" id="boxContainer" onclick="window.open('<%=(activityURL + activity.id)%>', '_self')">
        <div id="Content<%=activity.id%>" class="content">

@@ -23,6 +23,7 @@ public class UIRecentActivity extends UIContainer {
   public void processRender(WebuiRequestContext context) throws Exception {
     super.processRender(context);
     ((UIRecentActivitiesPortlet) getParent()).initProfilePopup();
+    ((UIRecentActivitiesPortlet) getParent()).initSpacePopup();
   }
 
   public static String buildComponentId(String activityId) {
