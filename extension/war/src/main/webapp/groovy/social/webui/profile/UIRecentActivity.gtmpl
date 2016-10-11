@@ -1,6 +1,8 @@
 <%
 import org.exoplatform.social.core.service.LinkProvider;
 import org.exoplatform.social.user.portlet.RecentActivitiesHelper;
+import org.exoplatform.social.core.space.model.Space;
+import org.exoplatform.social.webui.Utils;
 
 def activity = uicomponent.getActivity();
 if(activity == null) {
@@ -19,6 +21,25 @@ if(activity == null) {
   String activityTypeIcon =  RecentActivitiesHelper.getActivityTypeIcon(activity);
   String link = RecentActivitiesHelper.getLink(activity);
   String linkTitle = RecentActivitiesHelper.getLinkTitle(activity);
+
+  def spaceSourceURI, spaceName, spaceImageSource;
+  def streamOwner = activity.getStreamOwner();
+          Space spaceSource = Utils.getSpaceService().getSpaceByPrettyName(streamOwner);
+          if(spaceSource != null){
+          spaceID = spaceSource.getId();
+          if (spaceSource != null) {
+            spaceSourceURI = LinkProvider.getSpaceUri(spaceSource.url);
+             spaceName = spaceSource.displayName;
+      		spaceImageSource = spaceSource.getAvatarUrl();
+      		if (spaceImageSource == null) {
+      			spaceImageSource = LinkProvider.SPACE_DEFAULT_AVATAR_URL;
+      		}
+            } else {
+                spaceSourceURI = LinkProvider.getActivityUriForSpace(streamOwner, streamOwner);
+                spaceName = Utils.getSpaceIdentity(streamOwner, false).profile.fullName;
+      		    spaceImageSource = LinkProvider.SPACE_DEFAULT_AVATAR_URL;
+            }
+   }
 %>
    <div class="activityStream uiDefaultActivity clearfix" id="Activity<%=activity.id%>">
      <div class="activityTimeLine pull-left">
@@ -27,6 +48,13 @@ if(activity == null) {
            <img alt="<%=displayName%>" src="<%=((avatarURL == null || avatarURL.length() == 0) ? LinkProvider.PROFILE_DEFAULT_AVATAR_URL : avatarURL)%>">
          </a>
        </div>
+      	<%  if (spaceSource != null) {%>
+      	<div class="activityType">
+          	<a  class="space-avatar" href="$spaceSourceURI" space-data="$spaceID">
+          		<img alt="$spaceName" src="$spaceImageSource"/>
+          	</a>
+          </div>
+          <%}%>
      </div><!--end activityTimeLine-->
      <div class="boxContainer" id="boxContainer" onclick="window.open('<%=(activityURL + activity.id)%>', '_self')">
        <div id="Content<%=activity.id%>" class="content">
