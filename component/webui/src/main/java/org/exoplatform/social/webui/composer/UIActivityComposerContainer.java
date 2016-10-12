@@ -34,11 +34,14 @@ public class UIActivityComposerContainer extends UIContainer {
     UIActivityComposer uiActivityComposer = uiComposer.getActivityComposerManager().getCurrentActivityComposer();
     
     List<UIComponent> children = getChildren();
-    for(UIComponent ui : children) {
-      if (ui.getClass().getSimpleName().equals(uiActivityComposer.getClass().getSimpleName())) {
-        ui.setRendered(true);
-      } else {
-        ui.setRendered(false);
+    for(UIComponent child : children) { 
+      if (child instanceof UIActivityComposer) {
+          UIActivityComposer ui = (UIActivityComposer) child;
+          if (ui.getClass().getSimpleName().equals(uiActivityComposer.getClass().getSimpleName())) {
+            ui.setDisplayed(true);
+          } else {
+            ui.setDisplayed(false);
+          }
       }
     }
     super.processRender(context);

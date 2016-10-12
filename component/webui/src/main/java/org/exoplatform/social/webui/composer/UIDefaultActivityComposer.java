@@ -112,4 +112,7 @@ public class UIDefaultActivityComposer extends UIActivityComposer {
                                 WebuiRequestContext requestContext,
                                 String postedMessage) throws Exception {
   }
+  
+  protected void clearComposerData() {
+  }
 }

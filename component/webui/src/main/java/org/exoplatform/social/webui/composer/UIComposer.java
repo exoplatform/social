@@ -226,6 +226,7 @@ public class UIComposer extends UIForm {
                  .addScripts("activitiesLoader.addTop('" + uiActivityLoader.getId() + "', '" + uiActivitiesContainer.getAncestorOfType(UIPortletApplication.class).getId() + "');");
           context.addUIComponentToUpdateByAjax(uiComposer);
         }
+        activityComposerManager.clearComposerData();
       }
     }
   }

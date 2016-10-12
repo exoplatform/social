@@ -22,6 +22,25 @@
 
 (function($, _) {
   var UIComposer = {
+    regexpURL : /(http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/,
+    validateWWWURL : function(url) {
+      if (url.indexOf('www.') > 0) {
+        return /(https?:\/\/)?(www\.[\w+]+\.[\w+]+\.?(:\d+)?)/.test(url);
+      }
+      return true;
+    },
+    searchFirstURL : function(x) {
+      var result = String(x).match(UIComposer.regexpURL);
+      if (result && result.length > 0) {
+        for ( var i = 0; i < result.length; ++i) {
+          if (result[i].length > 0 && x.indexOf('@'+result[i]) < 0 && UIComposer.validateWWWURL(result[i])) {
+            return result[i];
+          }
+        }
+      }
+      return "";
+    },
+    showedLink: false,    
     MAX_LENGTH : 2000,
     clickOn : null,
     onLoadI18n : function(i18n) {
@@ -82,6 +101,15 @@
                 if (newData && $(newData).text().length > UIComposer.MAX_LENGTH) {
                     if ([8, 46, 33, 34, 35, 36, 37,38,39,40].indexOf(evt.data.keyCode) < 0) {
                         evt.cancel();
+                    }
+                }
+                if (!$(".uiLinkShareDisplay").length && evt.data.keyCode == 32) {
+                    var firstUrl = UIComposer.searchFirstURL(newData);
+                    if (firstUrl !== "") {
+                        console.log(firstUrl);
+                        $('#InputLink').val(firstUrl);
+                        $('#AttachButton').trigger('click');
+                        UIComposer.showedLink = true;
                     }
                 }
             }

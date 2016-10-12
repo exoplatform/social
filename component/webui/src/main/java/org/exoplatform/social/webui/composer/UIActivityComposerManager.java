@@ -98,4 +98,10 @@ public class UIActivityComposerManager extends BaseComponentPlugin {
   public void setUiComposer(UIComposer uiComposer) {
     this.uiComposer = uiComposer;
   }
+
+  public void clearComposerData() {
+    for (UIActivityComposer activityComposer : activityComposers) {
+        activityComposer.clearComposerData();
+    }
+  }
 }
