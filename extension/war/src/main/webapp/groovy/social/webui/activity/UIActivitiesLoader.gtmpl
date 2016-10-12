@@ -1,6 +1,7 @@
 <%
   import org.exoplatform.social.webui.Utils;
   import org.apache.commons.lang.StringEscapeUtils;
+    import org.exoplatform.social.core.service.LinkProvider;
 
   def requireJS = _ctx.getRequestContext().getJavascriptManager().getRequireJS();
   if(uicomponent.id.equals("UIActivitiesLoader")) {
@@ -20,7 +21,14 @@
   String cancelRequestLabel = StringEscapeUtils.escapeJavaScript(_ctx.appRes("UserProfilePopup.label.CancelRequest"));
   String removeConnectionLabel = StringEscapeUtils.escapeJavaScript(_ctx.appRes("UserProfilePopup.label.RemoveConnection"));
   String ignoreLabel = StringEscapeUtils.escapeJavaScript(_ctx.appRes("UserProfilePopup.label.Ignore"));
-  
+
+  String membersLabel = StringEscapeUtils.escapeJavaScript(_ctx.appRes("UIActivity.label.Members"));
+  String leaveLabel = StringEscapeUtils.escapeJavaScript(_ctx.appRes("UIManageAllSpaces.label.action_leave_space"));
+  String cancelLabel = StringEscapeUtils.escapeJavaScript(_ctx.appRes("UISpaceMember.label.CancelRequest"));
+  String joinLabel = StringEscapeUtils.escapeJavaScript(_ctx.appRes("UIManageAllSpaces.label.action_join"));
+  String requestJoinLabel = StringEscapeUtils.escapeJavaScript(_ctx.appRes("UIManageAllSpaces.label.action_request_to_join"));
+  String defaultAvatarUrl = "'"+LinkProvider.SPACE_DEFAULT_AVATAR_URL+"'"
+
   String labels = """ {
     StatusTitle: '${statusTitle}',
     Connect: '${connectLabel}',
@@ -29,8 +37,16 @@
     RemoveConnection: '${removeConnectionLabel}',
     Ignore: '${ignoreLabel}'
   } """
-  
-  requireJS.require("SHARED/social-ui-profile", "profile").addScripts("profile.initUserProfilePopup('$uicomponent.id', $labels);");
+
+  String spaceLabels = """ {
+    StatusTitle: '${statusTitle}',
+    members : '${membersLabel}',
+    leave: '${leaveLabel}',
+    join: '${joinLabel}'
+   } """
+
+  requireJS.require("SHARED/social-ui-profile", "profile").addScripts("profile.initUserProfilePopup('$uicomponent.id',$labels);");
+  requireJS.require("SHARED/social-ui-profile", "socialProfile").addScripts("socialProfile.initSpaceInfoPopup('$uicomponent.id', $spaceLabels, $defaultAvatarUrl);");
   String clearClass = "clearBG";
   if(hasActivities && !uicomponent.isExtendLoader() && (!uicomponent.isUIUserActivityDisplay() || Utils.isHomePage())) {
     clearClass = "clearfix";

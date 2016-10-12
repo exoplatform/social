@@ -1,23 +1,7 @@
- /*
-  * TipTip
-  * Copyright 2010 Drew Wilson
-  * www.drewwilson.com
-  * code.drewwilson.com/entry/tiptip-jquery-plugin
-  *
-  * Version 1.3   -   Updated: Mar. 23, 2010
-  *
-  * This Plug-In will create a custom tooltip to replace the default
-  * browser tooltip. It is extremely lightweight and very smart in
-  * that it detects the edges of the browser window and will make sure
-  * the tooltip stays within the current window size. As a result the
-  * tooltip will adjust itself to be displayed above, below, to the left 
-  * or to the right depending on what is necessary to stay within the
-  * browser window. It is completely customizable as well via CSS.
-  *
-  * This TipTip jQuery plug-in is dual licensed under the MIT and GPL licenses:
-  *   http://www.opensource.org/licenses/mit-license.php
-  *   http://www.gnu.org/licenses/gpl.html
-  */ (function ($) {
+/**
+ * Component displaying a popup with the user profile info and some actions.
+ */
+(function ($) {
      $.fn.userPopup = function (options) {
          var defaults = {
              restURL: "",
@@ -336,7 +320,9 @@
 
                     tdAvatar.append(aAvatar.append(img));
 
-                    var tdProfile = $("<td/>");
+                    var tdProfile = $("<td/>",{
+                        "id": "profileName"
+                    });
                     var aProfile = $("<a/>", {
                         "target":"_self",
                         "href":json.profileUrl,
@@ -354,22 +340,32 @@
                     }
 
                     tr.append(tdAvatar).append(tdProfile);
-
                     tbody.append(tr);
 
+                     if (json.activityTitle) {
+                         var blockquote = $("<blockquote/>", {
+                             "text": json.activityTitle.replace(/<[^>]+>/g, '')
+                         });
+                         var activityDiv=$("<div/>",{
+                             "id": "recentActivity"
+                         });
+                         activityDiv.append(blockquote);
+                     }
+
+                     if (activityDiv) {
+                         var trDesc = $("<tr/>");
+                         var td = $("<td/>", {
+                             "width":"50px"
+                         });
+                         trDesc.append(td);
+                         var tdDesc = $("<td/>");
+                         tdDesc.append(activityDiv)
+                         trDesc.append(tdDesc);
+                         tbody.append(trDesc);
+                     }
+
                     popupContent.append(tbody);
-
-                    if (json.activityTitle) {
-                        var blockquote = $("<blockquote/>", {
-                          "text" :json.activityTitle.replace(/<[^>]+>/g, '')
-                        });
-                    }
-
                     popupContentContainer.append(popupContent);
-
-                    if (blockquote) {
-                        popupContentContainer.append(blockquote);
-                    }
 
                     if (currentViewerId != ownerUserId && !isDeleted) {
                         var divUIAction = $("<div/>", {

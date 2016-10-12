@@ -89,6 +89,9 @@
     <depends>
       <module>userPopupPlugin</module>
     </depends>
+    <depends>
+      <module>spacePopupPlugin</module>
+    </depends>
   </module>
   
   <module>
@@ -414,6 +417,16 @@
     <name>userPopupPlugin</name>
     <script>
       <path>/javascript/eXo/UIUserProfilePopup.js</path>
+    </script>
+    <depends>
+      <module>jquery</module>
+      <as>jQuery</as>
+    </depends>
+  </module>
+  <module>
+    <name>spacePopupPlugin</name>
+    <script>
+      <path>/javascript/eXo/UISpaceInfoPopup.js</path>
     </script>
     <depends>
       <module>jquery</module>

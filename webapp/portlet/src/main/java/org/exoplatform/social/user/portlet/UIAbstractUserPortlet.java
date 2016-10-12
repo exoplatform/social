@@ -6,6 +6,7 @@ import javax.portlet.ResourceURL;
 
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
+import org.exoplatform.social.core.service.LinkProvider;
 import org.exoplatform.social.webui.Utils;
 import org.exoplatform.webui.application.WebuiApplication;
 import org.exoplatform.webui.application.WebuiRequestContext;
@@ -60,6 +61,20 @@ public abstract class UIAbstractUserPortlet extends UIPortletApplication {
     //
     context.getJavascriptManager().getRequireJS().require("SHARED/social-ui-profile", "profile" + getId())
            .addScripts("profile" + getId() + ".initUserProfilePopup('" + getId() + "', " + object.toString() + ");");
+  }
+
+
+  public void initSpacePopup() throws Exception {
+    JSONObject object = new JSONObject();
+    WebuiRequestContext context = WebuiRequestContext.getCurrentInstance();
+    object.put("StatusTitle", UserProfileHelper.getLabel(context, "UserProfilePopup.label.Loading"));
+    object.put("members", UserProfileHelper.getLabel(context, "UIActivity.label.Members"));
+    object.put("leave", UserProfileHelper.getLabel(context, "UIManageAllSpaces.label.action_leave_space"));
+    object.put("join", UserProfileHelper.getLabel(context, "UIManageAllSpaces.label.action_join"));
+    String defaultUrl = LinkProvider.SPACE_DEFAULT_AVATAR_URL;
+
+    context.getJavascriptManager().getRequireJS().require("SHARED/social-ui-profile", "socialProfile" + getId())
+            .addScripts("profile" + getId() + ".initSpaceInfoPopup('" + getId() + "', " + object.toString() + ", '"+defaultUrl+"');");
   }
 
   protected String buildResourceURL(String key) {
