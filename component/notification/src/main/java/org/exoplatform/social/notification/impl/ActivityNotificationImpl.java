@@ -24,12 +24,7 @@ import org.exoplatform.social.core.activity.ActivityLifeCycleEvent;
 import org.exoplatform.social.core.activity.ActivityListenerPlugin;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.manager.ActivityManager;
-import org.exoplatform.social.notification.plugin.ActivityCommentPlugin;
-import org.exoplatform.social.notification.plugin.ActivityMentionPlugin;
-import org.exoplatform.social.notification.plugin.LikePlugin;
-import org.exoplatform.social.notification.plugin.PostActivityPlugin;
-import org.exoplatform.social.notification.plugin.PostActivitySpaceStreamPlugin;
-import org.exoplatform.social.notification.plugin.SocialNotificationUtils;
+import org.exoplatform.social.notification.plugin.*;
 
 public class ActivityNotificationImpl extends ActivityListenerPlugin {
 
@@ -45,7 +40,7 @@ public class ActivityNotificationImpl extends ActivityListenerPlugin {
                                  .execute(ctx);
   }
 
-  @Override
+    @Override
   public void updateActivity(ActivityLifeCycleEvent event) {
   }
 

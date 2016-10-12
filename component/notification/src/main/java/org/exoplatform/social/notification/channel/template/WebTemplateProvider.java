@@ -16,11 +16,6 @@
  */
 package org.exoplatform.social.notification.channel.template;
 
-import java.io.Writer;
-import java.util.Calendar;
-import java.util.List;
-import java.util.Locale;
-
 import org.exoplatform.commons.api.notification.NotificationContext;
 import org.exoplatform.commons.api.notification.NotificationMessageUtils;
 import org.exoplatform.commons.api.notification.annotation.TemplateConfig;
@@ -44,17 +39,13 @@ import org.exoplatform.social.core.service.LinkProvider;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.notification.LinkProviderUtils;
 import org.exoplatform.social.notification.Utils;
-import org.exoplatform.social.notification.plugin.ActivityCommentPlugin;
-import org.exoplatform.social.notification.plugin.ActivityMentionPlugin;
-import org.exoplatform.social.notification.plugin.LikePlugin;
-import org.exoplatform.social.notification.plugin.NewUserPlugin;
-import org.exoplatform.social.notification.plugin.PostActivityPlugin;
-import org.exoplatform.social.notification.plugin.PostActivitySpaceStreamPlugin;
-import org.exoplatform.social.notification.plugin.RelationshipReceivedRequestPlugin;
-import org.exoplatform.social.notification.plugin.RequestJoinSpacePlugin;
-import org.exoplatform.social.notification.plugin.SocialNotificationUtils;
-import org.exoplatform.social.notification.plugin.SpaceInvitationPlugin;
+import org.exoplatform.social.notification.plugin.*;
 import org.exoplatform.webui.utils.TimeConvertUtils;
+
+import java.io.Writer;
+import java.util.Calendar;
+import java.util.List;
+import java.util.Locale;
 
 /**
  * Created by The eXo Platform SAS
@@ -383,6 +374,8 @@ public class WebTemplateProvider extends TemplateProvider {
     
     
   };
+
+
   
   /** Defines the template builder for RelationshipReceivedRequestPlugin*/
   private AbstractTemplateBuilder relationshipReceived = new AbstractTemplateBuilder() {
