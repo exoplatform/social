@@ -16,6 +16,8 @@
  */
 package org.exoplatform.social.notification.channel.template;
 
+import org.apache.commons.lang.StringEscapeUtils;
+
 import org.exoplatform.commons.api.notification.NotificationContext;
 import org.exoplatform.commons.api.notification.NotificationMessageUtils;
 import org.exoplatform.commons.api.notification.annotation.TemplateConfig;
@@ -140,8 +142,9 @@ public class WebTemplateProvider extends TemplateProvider {
       return messageInfo.body(body).end();
     }
     
-    private String cutStringByMaxLength(final String st, final int maxLength) {
+    private String cutStringByMaxLength(String st, int maxLength) {
         if (st == null) return st;
+        st = StringEscapeUtils.unescapeHtml(st);
         if (st.length() <= maxLength) return st;
         String noHtmlSt = st.replaceAll("\\<.*?\\>", "");
         if (noHtmlSt.length() <= maxLength) return noHtmlSt;
