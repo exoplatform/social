@@ -1,0 +1,15 @@
+RULE enter JDBC PreparedStatement executeQuery
+INTERFACE ^java.sql.PreparedStatement
+METHOD executeQuery()
+AT ENTRY
+IF org.exoplatform.social.core.jpa.test.BaseCoreTest.wantCount
+DO org.exoplatform.social.core.jpa.test.BaseCoreTest.count()
+ENDRULE
+
+RULE SQLMan enter JDBC PreparedStatement execute
+INTERFACE ^java.sql.PreparedStatement
+METHOD execute()
+AT ENTRY
+IF org.exoplatform.social.core.jpa.test.BaseCoreTest.wantCount
+DO org.exoplatform.social.core.jpa.test.BaseCoreTest.count()
+ENDRULE

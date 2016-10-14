@@ -96,6 +96,88 @@
     <type>org.exoplatform.social.core.storage.cache.SocialStorageCacheService</type>
   </component>
 
+  <component>
+    <type>org.exoplatform.commons.persistence.impl.EntityManagerService</type>
+  </component>
+
+  <component>
+    <key>org.exoplatform.social.core.jpa.storage.dao.StreamItemDAO</key>
+    <type>org.exoplatform.social.core.jpa.storage.dao.jpa.StreamItemDAOImpl</type>
+  </component>
+
+  <component>
+    <key>org.exoplatform.social.core.jpa.storage.dao.ConnectionDAO</key>
+    <type>org.exoplatform.social.core.jpa.storage.dao.jpa.ConnectionDAOImpl</type>
+  </component>
+
+  <component>
+    <key>org.exoplatform.social.core.jpa.storage.dao.ActivityDAO</key>
+    <type>org.exoplatform.social.core.jpa.storage.dao.jpa.ActivityDAOImpl</type>
+  </component>
+
+  <component>
+    <key>org.exoplatform.social.core.jpa.storage.dao.IdentityDAO</key>
+    <type>org.exoplatform.social.core.jpa.storage.dao.jpa.IdentityDAOImpl</type>
+  </component>
+
+  <component>
+    <key>org.exoplatform.social.core.jpa.storage.dao.SpaceDAO</key>
+    <type>org.exoplatform.social.core.jpa.storage.dao.jpa.SpaceDAOImpl</type>
+  </component>
+
+  <component>
+    <key>org.exoplatform.social.core.jpa.storage.dao.SpaceMemberDAO</key>
+    <type>org.exoplatform.social.core.jpa.storage.dao.jpa.SpaceMemberDAOImpl</type>
+  </component>
+
+  <!--
+    Identity storage components.
+  -->
+  <component>
+    <type>org.exoplatform.social.core.jpa.storage.RDBMSIdentityStorageImpl</type>
+  </component>
+
+  <component>
+    <key>org.exoplatform.social.core.storage.api.IdentityStorage</key>
+    <type>org.exoplatform.social.core.jpa.cache.RDBMSCachedIdentityStorage</type>
+  </component>
+
+  <!--
+    Relationship storage components.
+  -->
+  <component>
+    <type>org.exoplatform.social.core.jpa.storage.RDBMSRelationshipStorageImpl</type>
+  </component>
+
+  <component>
+    <key>org.exoplatform.social.core.storage.api.RelationshipStorage</key>
+    <type>org.exoplatform.social.core.jpa.cache.RDBMSCachedRelationshipStorage</type>
+  </component>
+
+  <!--
+    Activity storage components.
+  -->
+  <component>
+    <key>org.exoplatform.social.core.storage.api.ActivityStorage</key>
+    <type>org.exoplatform.social.core.jpa.cache.RDBMSCachedActivityStorage</type>
+  </component>
+
+  <component>
+    <type>org.exoplatform.social.core.jpa.storage.RDBMSActivityStorageImpl</type>
+  </component>
+
+  <!--
+    Space storage components.
+  -->
+  <component>
+    <type>org.exoplatform.social.core.jpa.storage.RDBMSSpaceStorageImpl</type>
+  </component>
+
+  <component>
+    <key>org.exoplatform.social.core.storage.api.SpaceStorage</key>
+    <type>org.exoplatform.social.core.jpa.cache.RDBMSCachedSpaceStorage</type>
+  </component>
+
   <!--
     Activity Stream storage components.
   -->
@@ -107,57 +189,9 @@
     <key>org.exoplatform.social.core.storage.impl.ActivityStreamStorageImpl</key>
     <type>org.exoplatform.social.core.storage.synchronization.SynchronizedActivityStreamStorage</type>
   </component>
-  
-  <!--
-    Activity storage components.
-  -->
-  <component>
-    <key>org.exoplatform.social.core.storage.api.ActivityStorage</key>
-    <type>org.exoplatform.social.core.storage.cache.CachedActivityStorage</type>
-  </component>
 
   <component>
-    <key>org.exoplatform.social.core.storage.impl.ActivityStorageImpl</key>
-    <type>org.exoplatform.social.core.storage.synchronization.SynchronizedActivityStorage</type>
-  </component>
- 
-  <!--
-    Identity storage components.
-  -->
-  <component>
-    <key>org.exoplatform.social.core.storage.api.IdentityStorage</key>
-    <type>org.exoplatform.social.core.storage.cache.CachedIdentityStorage</type>
-  </component>
-
-  <component>
-    <key>org.exoplatform.social.core.storage.impl.IdentityStorageImpl</key>
-    <type>org.exoplatform.social.core.storage.synchronization.SynchronizedIdentityStorage</type>
-  </component>
-
-  <!--
-    Relationship storage components.
-  -->
-  <component>
-    <key>org.exoplatform.social.core.storage.api.RelationshipStorage</key>
-    <type>org.exoplatform.social.core.storage.cache.CachedRelationshipStorage</type>
-  </component>
-
-  <component>
-    <key>org.exoplatform.social.core.storage.impl.RelationshipStorageImpl</key>
-    <type>org.exoplatform.social.core.storage.synchronization.SynchronizedRelationshipStorage</type>
-  </component>
-
-  <!--
-    Space storage components.
-  -->
-  <component>
-    <key>org.exoplatform.social.core.storage.api.SpaceStorage</key>
-    <type>org.exoplatform.social.core.storage.cache.CachedSpaceStorage</type>
-  </component>
-
-  <component>
-    <key>org.exoplatform.social.core.storage.impl.SpaceStorageImpl</key>
-    <type>org.exoplatform.social.core.storage.synchronization.SynchronizedSpaceStorage</type>
+    <type>org.exoplatform.social.core.jpa.rest.IdentityAvatarRestService</type>
   </component>
   
   <component>
@@ -675,6 +709,8 @@
           <value>org.exoplatform.social.core.chromattic.entity.SpaceEntity</value>
           <value>org.exoplatform.social.core.chromattic.entity.SpaceListEntity</value>
           <value>org.exoplatform.social.core.chromattic.entity.SpaceRef</value>
+
+          <value>org.exoplatform.social.core.jpa.updater.ActivityUpdaterEntity</value>
         </values-param>
         <properties-param>
           <name>options</name>
@@ -747,15 +783,21 @@
       </init-params>
     </component-plugin>
   </external-component-plugins>
-  <!--  
-   <external-component-plugins>
-    <target-component>org.exoplatform.services.listener.ListenerService</target-component>
+
+  <external-component-plugins>
+    <target-component>org.exoplatform.commons.file.services.NameSpaceService</target-component>
     <component-plugin>
-      <name>exo.core.security.ConversationRegistry.register</name>
-      <set-method>addListener</set-method>
-      <type>org.exoplatform.social.core.listeners.AsynchronousLoadActivitiesListener</type>
-      <description>loading activities into caching with asynchronous</description>      
-    </component-plugin>       
+      <name>SocialNameSpacePlugin</name>
+      <set-method>addNameSpacePlugin</set-method>
+      <type>org.exoplatform.commons.file.services.NameSpacePlugin</type>
+      <init-params>
+        <properties-param>
+          <name>fileNameSpace.params</name>
+          <property name="name" value="social"/>
+          <property name="description" value="social files storage"/>
+        </properties-param>
+      </init-params>
+    </component-plugin>
   </external-component-plugins>
-  -->
+
 </configuration>

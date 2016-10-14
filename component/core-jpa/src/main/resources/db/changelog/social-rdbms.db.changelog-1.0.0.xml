@@ -1,0 +1,432 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (C) 2003-2016 eXo Platform SAS.
+
+    This is free software; you can redistribute it and/or modify it
+    under the terms of the GNU Lesser General Public License as
+    published by the Free Software Foundation; either version 2.1 of
+    the License, or (at your option) any later version.
+
+    This software is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+    Lesser General Public License for more details.
+
+    You should have received a copy of the GNU Lesser General Public
+    License along with this software; if not, write to the Free
+    Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+    02110-1301 USA, or see the FSF site: http://www.fsf.org.
+
+-->
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+
+  <!-- Managing both DB that use sequences and db that use auto increment -->
+  <property name="autoIncrement" value="true" dbms="mysql,mssql,h2,sybase,db2,hsqldb"/>
+  <property name="autoIncrement" value="false" dbms="oracle,postgresql"/>    
+    
+    <changeSet author="social" id="1.0.0-1">
+        <createTable tableName="SOC_ACTIVITIES">
+            <column name="ACTIVITY_ID" type="BIGINT" autoIncrement="${autoIncrement}" startWith="1">
+              <constraints nullable="false" primaryKey="true" primaryKeyName="PK_SOC_ACTIVITIES"/>
+            </column>
+            <column name="APP_ID" type="NVARCHAR(200)"/>
+            <column name="BODY" type="LONGTEXT"/>
+            <column name="EXTERNAL_ID" type="NVARCHAR(200)"/>
+            <column name="PROVIDER_ID" type="NVARCHAR(200)"/>
+            <column name="HIDDEN" type="BOOLEAN">
+              <constraints nullable="false"/>
+            </column>
+            <column name="UPDATED_DATE" type="BIGINT">
+              <constraints nullable="false"/>
+            </column>
+            <column name="LOCKED" type="BOOLEAN">
+              <constraints nullable="false"/>
+            </column>
+            <column name="OWNER_ID" type="NVARCHAR(200)">
+              <constraints nullable="true"/>
+            </column>
+            <column name="PERMALINK" type="NVARCHAR(500)"/>
+            <column name="POSTED" type="BIGINT">
+              <constraints nullable="false"/>
+            </column>
+            <column name="POSTER_ID" type="NVARCHAR(200)">
+              <constraints nullable="false"/>
+            </column>
+            <column name="TITLE" type="LONGTEXT">
+              <constraints nullable="false"/>
+            </column>
+            <column name="TITLE_ID" type="NVARCHAR(1024)"/>
+            <column name="TYPE" type="NVARCHAR(255)"/>
+            <column name="IS_COMMENT" type="BOOLEAN">
+              <constraints nullable="false"/>
+            </column>
+            <column name="PARENT_ID" type="BIGINT">
+              <constraints foreignKeyName="FK_ACTIVITY_PARENT_ID" references="SOC_ACTIVITIES(ACTIVITY_ID)" nullable="true"/>
+            </column>
+        </createTable>
+        <modifySql dbms="mysql">
+            <append value=" ENGINE=INNODB CHARSET=UTF8 COLLATE utf8_general_ci"/>
+        </modifySql>
+    </changeSet>
+    <changeSet author="social" id="1.0.0-1.1">
+        <createIndex tableName="SOC_ACTIVITIES" indexName="IDX_SOC_ACTIVITIES_01">
+            <column name="UPDATED_DATE" descending="true"/>
+        </createIndex>
+        <createIndex tableName="SOC_ACTIVITIES" indexName="IDX_SOC_ACTIVITIES_02">
+            <column name="POSTER_ID"/>
+        </createIndex>
+        <createIndex tableName="SOC_ACTIVITIES" indexName="IDX_SOC_ACTIVITIES_03">
+            <column name="OWNER_ID"/>
+        </createIndex>
+        <createIndex tableName="SOC_ACTIVITIES" indexName="IDX_SOC_ACTIVITIES_04">
+            <column name="HIDDEN"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet author="social" id="1.0.0-2">
+        <createTable tableName="SOC_ACTIVITY_LIKERS">
+            <column name="ACTIVITY_ID" type="BIGINT"> 
+                <constraints nullable="false"/>
+            </column>
+            <column name="LIKER_ID" type="NVARCHAR(200)">
+            	<constraints nullable="false"/>
+            </column>
+            <column name="CREATED_DATE" type="TIMESTAMP">
+	          <constraints nullable="false"/>
+	        </column>
+        </createTable>
+        <addPrimaryKey columnNames="ACTIVITY_ID, LIKER_ID" constraintName="PK_SOC_ACTIVITY_LIKER_01" tableName="SOC_ACTIVITY_LIKERS"/>
+        <createIndex tableName="SOC_ACTIVITY_LIKERS" indexName="IDX_SOC_ACTIVITY_LIKERS_01">
+            <column name="ACTIVITY_ID"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="social" id="1.0.0-3">
+        <createTable tableName="SOC_MENTIONS">
+            <column name="MENTION_ID" type="BIGINT" autoIncrement="${autoIncrement}" startWith="1">
+              <constraints nullable="false" primaryKey="true" primaryKeyName="PK_SOC_MENTIONS"/>
+            </column>
+            <column name="ACTIVITY_ID" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="MENTIONER_ID" type="NVARCHAR(200)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addUniqueConstraint columnNames="ACTIVITY_ID, MENTIONER_ID"
+                         constraintName="UK_ACTIVITY_MENTIONER_01"
+                         tableName="SOC_MENTIONS"/>
+        <createIndex tableName="SOC_MENTIONS" indexName="IDX_SOC_MENTIONS_01">
+            <column name="MENTIONER_ID"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="social" id="1.0.0-4">
+        <createTable tableName="SOC_ACTIVITY_TEMPLATE_PARAMS">
+            <column name="ACTIVITY_ID" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="TEMPLATE_PARAM_VALUE" type="NVARCHAR(1024)"/>
+            <column name="TEMPLATE_PARAM_KEY" type="NVARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <modifySql dbms="mysql">
+            <append value=" ENGINE=INNODB CHARSET=UTF8 COLLATE utf8_general_ci"/>
+        </modifySql>
+    </changeSet>
+    <changeSet author="social" id="1.0.0-8">
+        <createTable tableName="SOC_STREAM_ITEMS">
+            <column name="STREAM_ITEM_ID" type="BIGINT" autoIncrement="${autoIncrement}" startWith="1">
+              <constraints nullable="false" primaryKey="true" primaryKeyName="PK_SOC_STREAM_ITEMS"/>
+            </column>
+            <column name="OWNER_ID" type="BIGINT">
+              <constraints nullable="false"/>
+            </column>
+            <column name="STREAM_TYPE" type="INT">
+              <constraints nullable="false"/>
+            </column>
+            <column name="ACTIVITY_ID" type="BIGINT">
+              <constraints nullable="false"/>
+            </column>
+            <column name="UPDATED_DATE" type="BIGINT">
+              <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="social" id="1.0.0-8.1">
+        <createIndex tableName="SOC_STREAM_ITEMS" indexName="IDX_SOC_STREAM_ITEMS_01">
+            <column name="UPDATED_DATE" descending="true"/>
+        </createIndex>
+        <createIndex tableName="SOC_STREAM_ITEMS" indexName="IDX_SOC_STREAM_ITEMS_02">
+            <column name="STREAM_TYPE"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="social" id="1.0.0-9">
+        <addPrimaryKey columnNames="ACTIVITY_ID, TEMPLATE_PARAM_KEY" constraintName="PK_SOC_ACT_TEMPLATE_PARAMS_01" tableName="SOC_ACTIVITY_TEMPLATE_PARAMS"/>
+    </changeSet>
+    <changeSet author="social" id="1.0.0-11">
+        <addForeignKeyConstraint baseColumnNames="ACTIVITY_ID" baseTableName="SOC_ACTIVITY_LIKERS" constraintName="FK_SOC_ACT_LIKERS_ACT_01" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="ACTIVITY_ID" referencedTableName="SOC_ACTIVITIES"/>
+    </changeSet>
+    <changeSet author="social" id="1.0.0-12">
+        <addForeignKeyConstraint baseColumnNames="ACTIVITY_ID" baseTableName="SOC_MENTIONS" constraintName="FK_SOC_MENTIONS_ACT_01" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="ACTIVITY_ID" referencedTableName="SOC_ACTIVITIES"/>
+    </changeSet>
+    <changeSet author="social" id="1.0.0-14">
+        <addForeignKeyConstraint baseColumnNames="ACTIVITY_ID" baseTableName="SOC_ACTIVITY_TEMPLATE_PARAMS" constraintName="FK_SOC_ACT_TEMP_PAR_ACT_01" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="ACTIVITY_ID" referencedTableName="SOC_ACTIVITIES"/>
+    </changeSet>
+
+    <changeSet author="social" id="1.0.0-17">
+        <addForeignKeyConstraint baseColumnNames="ACTIVITY_ID" baseTableName="SOC_STREAM_ITEMS" constraintName="FK_SOC_STREAM_ITEMS_ACT_01" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="ACTIVITY_ID" referencedTableName="SOC_ACTIVITIES"/>
+    </changeSet>
+  <!-- defines PK -->
+  <changeSet author="social" id="1.0.0-18" dbms="oracle,postgresql">
+    <createSequence sequenceName="SEQ_SOC_ACTIVITIES_ID" startValue="1"/>
+  </changeSet>
+  <changeSet author="social" id="1.0.0-19" dbms="oracle,postgresql">
+    <createSequence sequenceName="SEQ_SOC_MENTIONS_ID" startValue="1"/>
+  </changeSet>
+  <changeSet author="social" id="1.0.0-22" dbms="oracle,postgresql">
+    <createSequence sequenceName="SEQ_SOC_STREAM_ITEMS_ID" startValue="1"/>
+  </changeSet>
+  
+  <changeSet author="social" id="1.0.0-23">
+    <createTable tableName="SOC_SPACES">
+        <column name="SPACE_ID" type="BIGINT" autoIncrement="${autoIncrement}" startWith="1">
+          <constraints nullable="false" primaryKey="true" primaryKeyName="PK_SOC_SPACES"/>
+        </column>
+        <column name="PRETTY_NAME" type="NVARCHAR(200)">
+          <constraints nullable="false" unique="true" uniqueConstraintName="UK_SOC_SPACE_PRETTY_NAME"/>
+        </column>
+        <column name="DISPLAY_NAME" type="NVARCHAR(200)">
+          <constraints nullable="false"/>
+        </column>
+        <column name="REGISTRATION" type="TINYINT">
+          <constraints nullable="false"/>
+        </column>
+        <column name="DESCRIPTION" type="NVARCHAR(2000)"/>
+        <column name="AVATAR_LAST_UPDATED" type="TIMESTAMP"/>
+        <column name="VISIBILITY" type="TINYINT">
+          <constraints nullable="false"/>
+        </column>
+        <column name="PRIORITY" type="TINYINT"/>
+        <column name="GROUP_ID" type="NVARCHAR(200)">
+          <constraints nullable="false"/>
+        </column>
+        <column name="URL" type="NVARCHAR(500)"/>
+        <column name="CREATED_DATE" type="TIMESTAMP">
+          <constraints nullable="false"/>
+        </column>
+    </createTable>
+    <modifySql dbms="mysql">
+        <append value=" ENGINE=INNODB CHARSET=UTF8 COLLATE utf8_general_ci"/>
+    </modifySql>
+  </changeSet>
+  <changeSet author="social" id="1.0.0-24">
+    <createTable tableName="SOC_APPS">
+        <column name="SPACE_ID" type="BIGINT">
+          <constraints foreignKeyName="FK_SOC_APP_SPACE_01" references="SOC_SPACES(SPACE_ID)" nullable="false"/>
+        </column>
+        <column name="APP_ID" type="NVARCHAR(200)">
+ 	      <constraints nullable="false"/>        	
+        </column>
+        <column name="APP_NAME" type="NVARCHAR(550)">
+          <constraints nullable="false"/>
+        </column>
+        <column name="REMOVABLE" type="BOOLEAN">
+          <constraints nullable="false"/>
+        </column>
+        <column name="STATUS" type="TINYINT">
+          <constraints nullable="false"/>
+        </column>
+    </createTable>    
+    <modifySql dbms="mysql">
+        <append value=" ENGINE=INNODB CHARSET=UTF8 COLLATE utf8_general_ci"/>
+    </modifySql>
+  </changeSet>
+  <changeSet author="social" id="1.0.0-25">
+    <createTable tableName="SOC_SPACES_MEMBERS">
+      <column name="SPACE_MEMBER_ID" type="BIGINT" autoIncrement="${autoIncrement}" startWith="1">
+        <constraints nullable="false" primaryKey="true" primaryKeyName="PK_SOC_SPACES_MEMBERS"/>
+      </column>
+      <column name="SPACE_ID" type="BIGINT">
+        <constraints foreignKeyName="FK_SOC_MEM_SPACE_01" references="SOC_SPACES(SPACE_ID)" nullable="false"/>
+      </column>
+      <column name="USER_ID" type="NVARCHAR(200)">
+      	<constraints nullable="false"/>
+      </column>
+      <column name="STATUS" type="INT">
+      	<constraints nullable="false"/>
+      </column>
+      <column name="LAST_ACCESS" type="TIMESTAMP"/>
+      <column name="VISITED" type="BOOLEAN"/>
+    </createTable>    
+    <modifySql dbms="mysql">
+      <append value=" ENGINE=INNODB CHARSET=UTF8 COLLATE utf8_bin"/>
+    </modifySql>    
+  </changeSet>
+
+  <changeSet author="social" id="1.0.0-26">
+    <createTable tableName="SOC_IDENTITIES">
+      <column name="IDENTITY_ID" type="BIGINT" autoIncrement="${autoIncrement}" startWith="1">
+        <constraints nullable="false" primaryKey="true" primaryKeyName="PK_SOC_IDENTITIES"/>
+      </column>
+      <column name="PROVIDER_ID" type="NVARCHAR(200)">
+        <constraints nullable="false"/>
+      </column>
+      <column name="REMOTE_ID" type="NVARCHAR(200)">
+        <constraints nullable="false"/>
+      </column>
+      <column name="ENABLED"  type="BOOLEAN" defaultValue="1">
+        <constraints nullable="false"/>
+      </column>
+      <column name="DELETED" type="BOOLEAN" defaultValue="0">
+        <constraints nullable="false"/>
+      </column>
+      
+      <!-- profile -->
+      <column name="AVATAR_FILE_ID" type="BIGINT">
+        <constraints nullable="true"/>
+      </column>
+      <column name="CREATED_DATE" type="TIMESTAMP">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
+    <modifySql dbms="mysql">
+      <append value=" ENGINE=INNODB CHARSET=UTF8 COLLATE utf8_general_ci"/>
+    </modifySql>
+  </changeSet>
+  <changeSet author="social" id="1.0.0-27">
+    <addUniqueConstraint columnNames="PROVIDER_ID, REMOTE_ID"
+                         constraintName="UK_PROVIDER_ID_REMOTE_ID_01"
+                         tableName="SOC_IDENTITIES"/>
+  </changeSet>
+  <changeSet author="social" id="1.0.0-28" dbms="oracle,postgresql">
+    <createSequence sequenceName="SEQ_SOC_IDENTITY_ID" startValue="1"/>
+  </changeSet>
+
+  <changeSet author="social" id="1.0.0-31">
+    <createTable tableName="SOC_IDENTITY_PROPERTIES">
+      <column name="IDENTITY_ID" type="BIGINT">
+        <constraints foreignKeyName="FK_SOC_IDENTITY_PROPERTIES" references="SOC_IDENTITIES(IDENTITY_ID)" nullable="false"/>
+      </column>
+      <column name="NAME" type="NVARCHAR(200)">
+        <constraints nullable="false"/>
+      </column>
+      <column name="VALUE" type="NVARCHAR(2000)"/>
+    </createTable>    
+    <modifySql dbms="mysql">
+      <append value=" ENGINE=INNODB CHARSET=UTF8 COLLATE utf8_general_ci"/>
+    </modifySql>
+  </changeSet>
+
+  <changeSet author="social" id="1.0.0-32">
+    <createTable tableName="SOC_IDENTITY_EXPERIENCES">
+      <column name="IDENTITY_ID" type="BIGINT">
+        <constraints foreignKeyName="FK_SOC_IDENTITY_EXPERIENCES" references="SOC_IDENTITIES(IDENTITY_ID)" nullable="false"/>
+      </column>
+      <column name="COMPANY" type="NVARCHAR(250)"/>
+      <column name="POSITION" type="NVARCHAR(500)"/>
+      <column name="START_DATE" type="NCHAR(10)"/>
+      <column name="END_DATE" type="NCHAR(10)"/>
+      <column name="SKILLS" type="NVARCHAR(2000)"/>
+      <column name="DESCRIPTION" type="LONGTEXT"/>
+    </createTable>
+    <modifySql dbms="mysql">
+      <append value=" ENGINE=INNODB CHARSET=UTF8 COLLATE utf8_general_ci"/>
+    </modifySql>
+  </changeSet>
+  
+  <changeSet author="social" id="1.0.0-33">
+    <addUniqueConstraint columnNames="SPACE_ID, APP_ID"
+                         constraintName="UK_SPACE_APP_01"
+                         tableName="SOC_APPS"/>
+
+    <!--
+     I have to add sql here because liquibase does not support to set the COLLATE
+     And seem the problem is happened on MySQL only
+    -->
+    <sql dbms="mysql">
+      ALTER TABLE SOC_SPACES_MEMBERS MODIFY USER_ID varchar(100) CHARACTER SET utf8 NOT NULL COLLATE utf8_bin;
+    </sql>
+    <addUniqueConstraint columnNames="SPACE_ID, USER_ID, STATUS"
+                         constraintName="UK_SPACE_USER_STATUS_01"
+                         tableName="SOC_SPACES_MEMBERS"/>                         
+    <addPrimaryKey columnNames="IDENTITY_ID, NAME" constraintName="PK_SOC_IDENTITY_PROPERTIES_01" tableName="SOC_IDENTITY_PROPERTIES"/>                                                    
+  </changeSet>
+
+  <changeSet author="social" id="1.0.0-34">
+    <createTable tableName="SOC_CONNECTIONS">
+      <column name="CONNECTION_ID" type="BIGINT" autoIncrement="${autoIncrement}" startWith="1">
+        <constraints nullable="false" primaryKey="true" primaryKeyName="PK_SOC_CONNECTIONS"/>
+      </column>
+      <column name="SENDER_ID" type="BIGINT">
+        <constraints foreignKeyName="FK_SOC_CONNECTION_SENDER" references="SOC_IDENTITIES(IDENTITY_ID)" nullable="false"/>
+      </column>
+      <column name="RECEIVER_ID" type="BIGINT">
+        <constraints foreignKeyName="FK_SOC_CONNECTION_RECEIVER" references="SOC_IDENTITIES(IDENTITY_ID)" nullable="false"/>
+      </column>
+      <column name="STATUS" type="INT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="UPDATED_DATE" type="TIMESTAMP">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
+    <createIndex tableName="SOC_CONNECTIONS" indexName="IDX_SOC_CONNECTIONS_01">
+      <column name="RECEIVER_ID"/>
+    </createIndex>
+    <createIndex tableName="SOC_CONNECTIONS" indexName="IDX_SOC_CONNECTIONS_02">
+      <column name="SENDER_ID"/>
+    </createIndex>
+    <createIndex tableName="SOC_CONNECTIONS" indexName="IDX_SOC_CONNECTIONS_03">
+      <column name="UPDATED_DATE" descending="true"/>
+    </createIndex>
+    <createIndex tableName="SOC_CONNECTIONS" indexName="IDX_SOC_CONNECTIONS_04">
+      <column name="STATUS"/>
+    </createIndex>
+  </changeSet>
+  <changeSet author="social" id="1.0.0-35">
+    <addUniqueConstraint columnNames="SENDER_ID, RECEIVER_ID"
+                         constraintName="UK_SENDER_ID_RECEIVER_ID_01"
+                         tableName="SOC_CONNECTIONS"/>
+  </changeSet>
+  <changeSet author="social" id="1.0.0-36" dbms="oracle,postgresql">
+    <createSequence sequenceName="SEQ_SOC_CONNECTIONS_ID" startValue="1"/>
+  </changeSet>
+  <changeSet author="social" id="1.0.0-37" dbms="oracle,postgresql">
+    <createSequence sequenceName="SEQ_SOC_SPACES_ID" startValue="1"/>
+  </changeSet>
+  <changeSet author="social" id="1.0.0-38" dbms="oracle,postgresql">
+    <createSequence sequenceName="SEQ_SOC_SPACE_MEMBER_ID" startValue="1"/>
+  </changeSet>
+
+  <changeSet author="social" id="1.0.0-39">
+    <createIndex tableName="SOC_STREAM_ITEMS" indexName="IDX_SOC_STREAM_ITEMS_03">
+      <column name="OWNER_ID" />
+    </createIndex>
+  </changeSet>
+
+  <changeSet author="social" id="1.0.0-40">
+    <createIndex tableName="SOC_CONNECTIONS" indexName="IDX_SOC_CONNECTIONS_05">
+      <column name="RECEIVER_ID"/>
+      <column name="STATUS"/>
+    </createIndex>
+    <createIndex tableName="SOC_CONNECTIONS" indexName="IDX_SOC_CONNECTIONS_06">
+      <column name="SENDER_ID"/>
+      <column name="STATUS"/>
+    </createIndex>
+  </changeSet>
+
+  <changeSet author="social" id="1.0.0-41">
+    <createIndex tableName="SOC_ACTIVITIES" indexName="IDX_SOC_ACTIVITIES_05">
+      <column name="PROVIDER_ID" />
+    </createIndex>
+  </changeSet>
+
+  <changeSet author="social" id="1.0.0-42">
+    <modifyDataType tableName="SOC_ACTIVITY_TEMPLATE_PARAMS" columnName="TEMPLATE_PARAM_VALUE" newDataType="LONGTEXT"/>
+  </changeSet>
+
+</databaseChangeLog>
