@@ -54,14 +54,12 @@
               var windowHeight = $(window).height();
               if (windowWidth > 767 || windowWidth > 481 && windowWidth > windowHeight) {
                   document.getElementById( evt.editor.id + '_bottom' ).style.display = 'none';
-                  document.getElementById( evt.editor.id + '_contents' ).style.height = '47px';
               }
               $("#ShareButton").prop("disabled", true);
             },
             focus : function ( evt ) {
               // Show the editor top bar.
               document.getElementById( evt.editor.id + '_bottom' ).style.display = 'block';
-              document.getElementById( evt.editor.id + '_contents' ).style.height = '150px';
             },
             blur : function ( evt ) {
               // Hide the editor top bar.
@@ -69,7 +67,6 @@
               var windowHeight = $(window).height();
               if (windowWidth > 767 || windowWidth > 481 && windowWidth > windowHeight) {
                   document.getElementById( evt.editor.id + '_bottom' ).style.display = 'none';
-                  document.getElementById( evt.editor.id + '_contents' ).style.height = '47px';
               }
             },
             change: function( evt) {
