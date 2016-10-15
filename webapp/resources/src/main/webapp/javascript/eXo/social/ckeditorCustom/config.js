@@ -11,7 +11,7 @@ CKEDITOR.editorConfig = function( config ) {
     CKEDITOR.plugins.addExternal('simpleLink','/commons-extension/eXoPlugins/simpleLink/','plugin.js');
     CKEDITOR.plugins.addExternal('simpleImage','/commons-extension/eXoPlugins/simpleImage/','plugin.js');
 	config.extraPlugins = 'simpleLink,simpleImage';
-	//config.skin = 'moono-for-social-composer,/social-resources/javascript/eXo/social/ckeditorCustom/skins/moono-for-social-composer/';
+	config.skin = 'moono-exo,/commons-extension/ckeditor/skins/moono-exo/';
 	// %REMOVE_END%
 
 	// Define changes to default configuration here.
