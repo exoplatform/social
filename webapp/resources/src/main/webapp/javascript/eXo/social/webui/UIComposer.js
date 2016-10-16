@@ -142,12 +142,18 @@
     getValue : function() {
       return (UIComposer.currentValue) ? UIComposer.currentValue : '';
     },
-    setCurrentValue : function(elm) {
+    setCurrentValue : function() {
       var uiInputText = $('textarea#' + UIComposer.textareaId);
-      UIComposer.clickOn = elm;
       UIComposer.currentValue = uiInputText.val();
     },
+    setSelectedComposer : function(elm) {
+      // remove ActivityComposerExtItemSelected class from previous selected composer
+      $(UIComposer.composer).find('.ActivityComposerExtItem').removeClass('ActivityComposerExtItemSelected');
+      // add ActivityComposerExtItemSelected class to newly selected composer
+      UIComposer.clickOn = elm;
+      $(UIComposer.clickOn).closest('.ActivityComposerExtItem').addClass('ActivityComposerExtItemSelected');
 
+    },
     showLink : function() {
       var container = $('#ComposerContainer')
       var link = container.find('#LinkExtensionContainer');

@@ -83,18 +83,24 @@
 				def simpleName, labelSimpleName, actionEvent, clazz;
 				def counter = 0;
 				for(acComposer in uicomponent.getActivityComposers()) {
-					counter++;
 					simpleName = acComposer.getClass().getSimpleName();
 					labelSimpleName = _ctx.appRes("UIActivityComposer.label.${simpleName}");
 					clazz = simpleName.toLowerCase();
 
-					String action = acComposer.event("Activate") + "; UIComposer.setCurrentValue(this)";
+					String action = acComposer.event("Activate") + ";  UIComposer.setSelectedComposer(this); UIComposer.setCurrentValue()";
 
 					if("uidocactivitycomposer".equals(clazz)) {
 						clazz += " hidden-phone";
 					}
+
+					// the first composer is always the one activated by default
+					def selectedComposerClass = "";
+					if(counter == 0) {
+						selectedComposerClass = "ActivityComposerExtItemSelected";
+					}
+					counter++;
 				%>
-					<div class="pull-left ActivityComposerExtItem $simpleName">
+					<div class="pull-left ActivityComposerExtItem $simpleName $selectedComposerClass">
 						<a href="javascript:void(0)" rel="tooltip" data-placement="bottom" title="$labelSimpleName" class="$clazz" onclick="$action"><i class="uiIconSoc$simpleName uiIconSocLightGray"></i>$labelSimpleName</a>
 					</div>
 				<%
