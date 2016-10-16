@@ -36,7 +36,7 @@
   uicomponent.changeTitleTextAreInput();
 
   def jsManager = requestContext.getJavascriptManager();
-  def defaultInput = _ctx.appRes("${uicomponent.id}.label.Write_Something");
+  def defaultMessage = _ctx.appRes("${uicomponent.id}.label.DefaultMessage");
   def addLabel = _ctx.appRes("${uicomponent.id}.label.Add");
   def shareLabel = _ctx.appRes("${uicomponent.id}.label.Share");
   def mentionBtnLabel = _ctx.appRes("${uicomponent.id}.label.Mention");
@@ -44,7 +44,6 @@
   def shareStatusLabel = _ctx.appRes("${uicomponent.id}.label.ShareStatus");
 
   if (uicomponent.getPostContext().toString().equals("USER") && uicomponent.isActivityStreamOwner()) {
-    defaultInput = _ctx.appRes("${uicomponent.id}.label.What_Are_You_Working_On");
     blastInput = "blastInputPeople";
   }
 
@@ -69,7 +68,7 @@
            .require("SHARED/bts_tooltip").addScripts("jq('*[rel=\"tooltip\"]').tooltip();")
            .require("SHARED/social-ui-activity", "activity")
            .require("SHARED/social-ui-activity-composer", "composer")
-           .addScripts("UIComposer.onLoadI18n({ helpSearch: \"$helpSearch\", searching: \"searching\", foundNoMatch: \"$foundNoMatch\"});") 
+           .addScripts("UIComposer.onLoadI18n({ defaultMessage: \"$defaultMessage\", helpSearch: \"$helpSearch\", searching: \"searching\", foundNoMatch: \"$foundNoMatch\"});")
            .addScripts("UIComposer.onLoad($params);");
 %>
 <div class="uiComposer hidden-phone">

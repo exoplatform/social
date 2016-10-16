@@ -197,9 +197,7 @@ public class UIComposer extends UIForm {
       String message = textAreaInput.getValue().replaceAll(HTML_AT_SYMBOL_ESCAPED_PATTERN,HTML_AT_SYMBOL_PATTERN);
       textAreaInput.setValue("");
       //
-      message = (message == null || 
-                 uiComposer.getLabel("Write_Something").equals(message) || 
-                 uiComposer.getLabel("What_Are_You_Working_On").equals(message)) ? "" : message;
+      message = message == null ? "" : message;
 
       //post activity via the current activity composer
       ExoSocialActivity activity = activityComposer.postActivity(postContext, message);
