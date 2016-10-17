@@ -101,7 +101,7 @@
 					counter++;
 				%>
 					<div class="pull-left ActivityComposerExtItem $simpleName $selectedComposerClass">
-						<a href="javascript:void(0)" rel="tooltip" data-placement="bottom" title="$labelSimpleName" class="$clazz" onclick="$action"><i class="uiIconSoc$simpleName uiIconSocLightGray"></i>$labelSimpleName</a>
+						<a href="javascript:void(0)" class="$clazz" onclick="$action"><i class="uiIconSoc$simpleName uiIconSocLightGray"></i>$labelSimpleName</a>
 					</div>
 				<%
 				}
