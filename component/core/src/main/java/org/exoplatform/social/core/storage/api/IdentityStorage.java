@@ -312,5 +312,5 @@ public interface IdentityStorage {
    * @throws Exception
    * @since 4.4.0
    */
-  int countIdentitiesWithRelationships(String id) throws Exception;
+  int countIdentitiesWithRelationships(String identityId) throws Exception;
 }
