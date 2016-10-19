@@ -166,6 +166,6 @@ public abstract class UIActivityComposer extends UIContainer {
 
   protected abstract void onActivate(Event<UIActivityComposer> event);
 
-  protected abstract void clearComposerData();
+  protected void clearComposerData() {};
   
 }
