@@ -630,7 +630,7 @@ public class CachedIdentityStorage implements IdentityStorage {
    * {@inheritDoc}
    */
   @Override
-  public int countIdentitiesWithRelationships(String id) throws Exception {
-    return storage.countIdentitiesWithRelationships(id);
+  public int countIdentitiesWithRelationships(String identityId) throws Exception {
+    return storage.countIdentitiesWithRelationships(identityId);
   }
 }
