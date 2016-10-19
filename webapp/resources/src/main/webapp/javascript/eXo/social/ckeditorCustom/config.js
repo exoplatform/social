@@ -51,6 +51,8 @@ CKEDITOR.editorConfig = function( config ) {
 	                  ['-','simpleLink', 'simpleImage'],
 	           ] ;
 
+	config.height = 80;
+
 	config.autoGrow_onStartup = true;
 	config.autoGrow_minHeight = 80;
 
