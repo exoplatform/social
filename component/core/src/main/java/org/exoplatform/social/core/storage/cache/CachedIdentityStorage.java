@@ -31,6 +31,7 @@ import org.exoplatform.services.user.UserStateService;
 import org.exoplatform.social.core.identity.SpaceMemberFilterListAccess.Type;
 import org.exoplatform.social.core.identity.model.ActiveIdentityFilter;
 import org.exoplatform.social.core.identity.model.Identity;
+import org.exoplatform.social.core.identity.model.IdentityWithRelationship;
 import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.identity.model.Profile.AttachedActivityType;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
@@ -615,5 +616,21 @@ public class CachedIdentityStorage implements IdentityStorage {
     identitiesCache.clear();
     clearCache();
     getCachedRelationshipStorage().clearAllRelationshipCache();
+  }
+  
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public List<IdentityWithRelationship> getIdentitiesWithRelationships(String identityId, int offset, int limit) {
+    return storage.getIdentitiesWithRelationships(identityId, offset, limit);
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public int countIdentitiesWithRelationships(String id) throws Exception {
+    return storage.countIdentitiesWithRelationships(id);
   }
 }

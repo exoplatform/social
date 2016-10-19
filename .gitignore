@@ -45,3 +45,4 @@ pom.xml.versionsBackup
 *.log
 rebel.xml
 transaction.log
+rebel-remote.xml
