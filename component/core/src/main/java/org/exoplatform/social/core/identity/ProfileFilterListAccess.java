@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.exoplatform.commons.utils.ListAccess;
-import org.exoplatform.social.common.ListAccessValidator;
 import org.exoplatform.social.common.jcr.Util;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.profile.ProfileFilter;
@@ -119,7 +118,7 @@ public class ProfileFilterListAccess implements ListAccess<Identity> {
    * {@inheritDoc}
    */
   public Identity[] load(int offset, int limit) throws Exception, IllegalArgumentException {
-    List<Identity> identities = new ArrayList<Identity>();
+    List<? extends Identity> identities = new ArrayList<>();
     //
     if(type != null) {
       switch(type) {
@@ -129,17 +128,22 @@ public class ProfileFilterListAccess implements ListAccess<Identity> {
           break;
       }
     }else {
-      //TODO: Need move follow logic into switch type for consistency logic
       if (profileFilter.getFirstCharacterOfName() != EMPTY_CHARACTER) {
         identities = identityStorage.getIdentitiesByFirstCharacterOfName(providerId, profileFilter, offset,
                                                                          limit, forceLoadProfile);
+      } else if (profileFilter.isEmpty()) {
+        if(profileFilter.getViewerIdentity() == null) {
+          identities = identityStorage.getIdentitiesByProfileFilter(providerId, profileFilter, offset, limit, forceLoadProfile);
+        } else {
+          identities = identityStorage.getIdentitiesWithRelationships(profileFilter.getViewerIdentity().getId(), offset, limit);
+        }
       } else {
         identities = identityStorage.getIdentitiesForMentions(providerId, profileFilter, offset,
                                                               limit, forceLoadProfile);
       }
     }
     
-    return Util.convertListToArray(identities, Identity.class);
+    return identities.toArray(new Identity[0]);
   }
 
   /**
@@ -150,9 +154,13 @@ public class ProfileFilterListAccess implements ListAccess<Identity> {
     if (profileFilter.getFirstCharacterOfName() != EMPTY_CHARACTER) {
       size = identityStorage.getIdentitiesByFirstCharacterOfNameCount(providerId, profileFilter);
     } else {
-      size = identityStorage.getIdentitiesByProfileFilterCount(providerId, profileFilter);
+      if(profileFilter.getViewerIdentity() == null) {
+        size = identityStorage.getIdentitiesByProfileFilterCount(providerId, profileFilter);
+      } else {
+        size = identityStorage.countIdentitiesWithRelationships(profileFilter.getViewerIdentity().getId());
+      }
     }
-    
+
     return size;
   }
 }

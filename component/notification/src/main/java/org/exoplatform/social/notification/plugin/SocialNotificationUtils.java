@@ -18,11 +18,13 @@ package org.exoplatform.social.notification.plugin;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.apache.commons.lang3.tuple.Pair;
 import org.exoplatform.commons.api.notification.NotificationContext;
 import org.exoplatform.commons.api.notification.NotificationMessageUtils;
 import org.exoplatform.commons.api.notification.model.ArgumentLiteral;
@@ -144,14 +146,22 @@ public class SocialNotificationUtils {
     
     return sb.toString();
   }
+
+  public static String getMessageByIds(Map<String, List<String>> receiversMap, 
+          TemplateContext templateContext) {
+    return getMessageByIds(receiversMap, new HashMap<String, List<Pair<String, String>>>(), templateContext);
+  }  
   
   /**
    * 
    * @param receiversMap
+   * @param activityUserComments
    * @param templateContext
    * @return
    */
-  public static String getMessageByIds(Map<String, List<String>> receiversMap, TemplateContext templateContext) {
+  public static String getMessageByIds(Map<String, List<String>> receiversMap, 
+                                       Map<String, List<Pair<String, String>>> activityUserComments,
+                                       TemplateContext templateContext) {
     StringBuilder sb = new StringBuilder();
     ExoSocialActivity activity = null;
     Space space = null;
@@ -211,6 +221,31 @@ public class SocialNotificationUtils {
 
       String digester = TemplateUtils.processDigest(templateContext.digestType(count));
       sb.append(digester);
+      List<Pair<String, String>> userComments = activityUserComments.get(id);
+      if (userComments != null && userComments.size() > 0) {
+          sb.append("<br/>");
+          sb.append("<div style=\"background-color:#f9f9f9;padding: 10px;max-height:11px;\">");  
+          sb.append("<div style=\"border-left:5px solid #AACDED; padding-left: 15px; color:black;");
+          sb.append("overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:500px\">");
+          for (Pair<String, String> pair: userComments) {
+              sb.append("<i>");
+              if (userComments.size() > 1) {
+                  sb.append("<b>").append(pair.getKey()).append(" : </b>");
+              }
+              sb.append("<span style=\"color:#333333\"><font face=\"verdana,arial,sans-serif\">")
+                .append(pair.getValue());
+              if (userComments.size() > 1) {
+                  sb.append("...");
+              }
+              sb.append("</font></span>")
+                .append("</i>")
+                .append("<br/>");
+              break;
+          }
+          sb.append("  </div>");
+          sb.append("</div>");
+          sb.append("<br/");
+      }
       sb.append("</li>");
     }
     
@@ -221,6 +256,7 @@ public class SocialNotificationUtils {
    * 
    * @param receiversMap
    * @param templateContext
+   * @param type
    * @return
    */
   public static String getMessageByIds(Map<String, List<String>> receiversMap, TemplateContext templateContext, String type) {
@@ -295,6 +331,15 @@ public class SocialNotificationUtils {
     map.put(key, new ArrayList<String>(list));
   }
   
+  public static void processInforUserComments(Map<String, List<Pair<String, String>>> map, String key, Pair<String, String> value) {
+      List<Pair<String, String>> list = new ArrayList<Pair<String, String>>();
+      if (map.containsKey(key)) {
+        list.addAll(map.get(key));
+      }
+      list.add(value);
+      map.put(key, list);
+  }
+  
   public static String buildRedirecUrl(String type, String id, String name) {
     String link = LinkProviderUtils.getRedirectUrl(type, id);
     return "<a target=\"_blank\" style=\"text-decoration: none; font-weight: bold; color: #2f5e92; font-family: 'HelveticaNeue Bold', Helvetica, Arial, sans-serif; font-size: 13px; line-height: 18px;\" href=\""+ link + "\">" + name + "</a>";
@@ -302,7 +347,7 @@ public class SocialNotificationUtils {
   
   public static String buildRedirecActivityUrl(String type, String id, String activityTitle) {
     String link = LinkProviderUtils.getRedirectUrl(type, id);
-    return "<a target=\"_blank\" style=\"text-decoration: none; color: #2f5e92; font-family: 'HelveticaNeue Bold', Helvetica, Arial, sans-serif; font-size: 13px; line-height: 18px;\" href=\""+ link + "\">" + activityTitle + "</a>";
+    return "<a target=\"_blank\" style=\"text-decoration: none; color: #2f5e92; font-family: 'HelveticaNeue Bold', Helvetica, Arial, sans-serif; font-size: 13px; line-height: 18px;\" href=\""+ link + "\"><b>" + activityTitle + "</b></a>";
   }
   
   public static void addFooterAndFirstName(String remoteId, TemplateContext templateContext) {
@@ -329,6 +374,7 @@ public class SocialNotificationUtils {
   
   public static List<String> mergeUsers(NotificationContext ctx, TemplateContext context, String propertyName, String activityId, String userId) {
     NotificationInfo notification = ctx.getNotificationInfo();
+    String commentId = notification.getValueOwnerParameter(SocialNotificationUtils.COMMENT_ID.getKey());
     List<String> users = null;
     if (ctx.isWritingProcess()) {
       WebNotificationStorage storage = CommonsUtils.getService(WebNotificationStorage.class); 
@@ -346,6 +392,7 @@ public class SocialNotificationUtils {
         previousNotification.setLastModifiedDate(Calendar.getInstance());
         //update the created date of old notification then remove it from database
         previousNotification.setDateCreated(Calendar.getInstance());
+        previousNotification.with(SocialNotificationUtils.COMMENT_ID.getKey(), commentId);
         //
         context.put("NOTIFICATION_ID", previousNotification.getId());
         ctx.setNotificationInfo(previousNotification);

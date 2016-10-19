@@ -50,6 +50,9 @@ public class ProfileFilter {
   /** the list of remoteId who online on system**/
   private List<String> onlineRemoteIds;
 
+  /** Current viewer identity */
+  private Identity viewerIdentity;
+
   /** Filter by first character of name. */
   private char firstCharacterOfName;
 
@@ -214,6 +217,18 @@ public class ProfileFilter {
     this.sorting = sorting;
   }
   
+  public Identity getViewerIdentity() {
+    return viewerIdentity;
+  }
+
+  public void setViewerIdentity(Identity currentIdentity) {
+    this.viewerIdentity = currentIdentity;
+    if(this.excludedIdentityList == null) {
+      this.excludedIdentityList = new ArrayList<Identity>();
+    }
+    this.excludedIdentityList.add(this.viewerIdentity);
+  }
+
   public boolean isEmpty() {
     return isEmpty;
   }

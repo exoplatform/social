@@ -16,6 +16,8 @@
  */
 package org.exoplatform.social.notification.channel.template;
 
+import org.apache.commons.lang.StringEscapeUtils;
+
 import org.exoplatform.commons.api.notification.NotificationContext;
 import org.exoplatform.commons.api.notification.NotificationMessageUtils;
 import org.exoplatform.commons.api.notification.annotation.TemplateConfig;
@@ -106,6 +108,8 @@ public class WebTemplateProvider extends TemplateProvider {
       templateContext.put("NOTIFICATION_ID", notification.getId());
       templateContext.put("LAST_UPDATED_TIME", TimeConvertUtils.convertXTimeAgoByTimeServer(cal.getTime(), "EE, dd yyyy", new Locale(language), TimeConvertUtils.YEAR));
       templateContext.put("ACTIVITY", NotificationUtils.getNotificationActivityTitle(activity.getTitle(), activity.getType()));
+      templateContext.put("COMMENT", ctx.getNotificationInfo().isOnPopOver() ? cutStringByMaxLength(comment.getTitle(), 30) : 
+                                                                               comment.getTitle());
       List<String> users = SocialNotificationUtils.mergeUsers(ctx, templateContext, SocialNotificationUtils.POSTER.getKey(), activity.getId(), notification.getValueOwnerParameter(SocialNotificationUtils.POSTER.getKey()));
       
       //
@@ -136,6 +140,15 @@ public class WebTemplateProvider extends TemplateProvider {
       ctx.setException(templateContext.getException());
       MessageInfo messageInfo = new MessageInfo();
       return messageInfo.body(body).end();
+    }
+    
+    private String cutStringByMaxLength(String st, int maxLength) {
+        if (st == null) return st;
+        st = StringEscapeUtils.unescapeHtml(st);
+        if (st.length() <= maxLength) return st;
+        String noHtmlSt = st.replaceAll("\\<.*?\\>", "");
+        if (noHtmlSt.length() <= maxLength) return noHtmlSt;
+        return noHtmlSt.substring(0, maxLength) + "...";
     }
 
     @Override

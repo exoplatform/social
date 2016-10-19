@@ -24,6 +24,7 @@ import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.identity.model.Identity;
+import org.exoplatform.social.core.identity.model.IdentityWithRelationship;
 import org.exoplatform.social.core.profile.ProfileFilter;
 import org.exoplatform.social.core.relationship.model.Relationship;
 import org.exoplatform.social.webui.Utils;
@@ -138,10 +139,7 @@ public class UIAllPeople extends UIContainer {
       currentLoadIndex = 0;
       loadingCapacity = PEOPLE_PER_PAGE;
       peopleList = new ArrayList<Identity>();
-      List<Identity> excludedIdentityList = new ArrayList<Identity>();
-      excludedIdentityList.add(Utils.getViewerIdentity());
-      uiProfileUserSearch.getProfileFilter().setExcludedIdentityList(excludedIdentityList);
-      //setPeopleList(loadPeople(currentLoadIndex, loadingCapacity));
+      uiProfileUserSearch.getProfileFilter().setViewerIdentity(Utils.getViewerIdentity());
     } catch (Exception e) {
       LOG.error(e.getMessage(), e);
     }
@@ -460,6 +458,10 @@ public class UIAllPeople extends UIContainer {
     if (identity.equals(Utils.getViewerIdentity())) {
       return null;
     }
-    return Utils.getRelationshipManager().get(identity, Utils.getViewerIdentity());
+    if(identity instanceof IdentityWithRelationship) {
+      return ((IdentityWithRelationship) identity).getRelationship();
+    } else {
+      return Utils.getRelationshipManager().get(identity, Utils.getViewerIdentity());
+    }
   }
 }

@@ -66,12 +66,14 @@ import org.exoplatform.social.core.identity.IdentityResult;
 import org.exoplatform.social.core.identity.SpaceMemberFilterListAccess.Type;
 import org.exoplatform.social.core.identity.model.ActiveIdentityFilter;
 import org.exoplatform.social.core.identity.model.Identity;
+import org.exoplatform.social.core.identity.model.IdentityWithRelationship;
 import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.identity.model.Profile.AttachedActivityType;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
 import org.exoplatform.social.core.model.AvatarAttachment;
 import org.exoplatform.social.core.profile.ProfileFilter;
+import org.exoplatform.social.core.relationship.model.Relationship;
 import org.exoplatform.social.core.search.Sorting;
 import org.exoplatform.social.core.service.LinkProvider;
 import org.exoplatform.social.core.space.SpaceUtils;
@@ -1542,5 +1544,45 @@ public class IdentityStorageImpl extends AbstractStorage implements IdentityStor
     
     
     return activeUsers;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public List<IdentityWithRelationship> getIdentitiesWithRelationships(String identityId, int offset, int limit) {
+    Identity currentUserIdentity = findIdentity(OrganizationIdentityProvider.NAME, identityId);
+
+    ProfileFilter profileFilter = new ProfileFilter();
+    profileFilter.getExcludedIdentityList().add(currentUserIdentity);
+    List<Identity> identitiesByProfileFilter = getIdentitiesByProfileFilter(OrganizationIdentityProvider.NAME,
+                                                                            profileFilter,
+                                                                            offset,
+                                                                            limit,
+                                                                            false);
+
+    List<IdentityWithRelationship> identities = new ArrayList<IdentityWithRelationship>();
+    for (Identity identity : identitiesByProfileFilter) {
+      if (identity.getRemoteId().equals(currentUserIdentity.getRemoteId())) {
+        continue;
+      }
+      IdentityWithRelationship identityWithRelationship = new IdentityWithRelationship(identity);
+      Relationship relationship = relationshipStorage.getRelationship(identity, currentUserIdentity);
+      identityWithRelationship.setRelationship(relationship);
+      identities.add(identityWithRelationship);
+    }
+    return identities;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public int countIdentitiesWithRelationships(String identityId) throws Exception {
+    Identity currentUserIdentity = findIdentity(OrganizationIdentityProvider.NAME, identityId);
+
+    ProfileFilter profileFilter = new ProfileFilter();
+    profileFilter.getExcludedIdentityList().add(currentUserIdentity);
+    return getIdentitiesByProfileFilterCount(OrganizationIdentityProvider.NAME, profileFilter);
   }
 }
