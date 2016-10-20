@@ -60,6 +60,34 @@
 
       UIComposer.composer = $('#' + UIComposer.composerId);
 
+      var peopleSearchCached = {};
+      var lastNoResultQuery = false;
+      $('body').suggester('addProvider', 'exo:people', function(query, callback) {
+        if (lastNoResultQuery && query.length > lastNoResultQuery.length) {
+          if (query.substr(0, lastNoResultQuery.length) === lastNoResultQuery) {
+            callback.call(this, []);
+            return;
+          }
+        }
+        if (peopleSearchCached[query]) {
+          callback.call(this, peopleSearchCached[query]);
+        } else {
+          var url = window.location.protocol + '//' + window.location.host + '/' + eXo.social.portal.rest + '/social/people/getprofile/data.json?search=' + query;
+          $.getJSON(url, function(responseData) {
+            responseData = _.filter(responseData, function(item) {
+              return item.name.toLowerCase().indexOf(query.toLowerCase()) > -1;
+            });
+            peopleSearchCached[query] = responseData;
+            if (peopleSearchCached[query].length == 0) {
+              lastNoResultQuery = query;
+            } else {
+              lastNoResultQuery = false;
+            }
+            callback.call(this, peopleSearchCached[query]);
+          });
+        }
+      });
+
       $(document).ready(function() {
         var composerInput = $('#composerInput');
         // TODO this line is mandatory when a custom skin is defined, it should not be mandatory
@@ -71,6 +99,7 @@
               // Hide the editor toolbar
               $('#' + evt.editor.id + '_bottom').css('display', 'none');
               $("#ShareButton").prop("disabled", true);
+
             },
             focus : function ( evt ) {
               // Show the editor toolbar, except for smartphones in landscape mode
