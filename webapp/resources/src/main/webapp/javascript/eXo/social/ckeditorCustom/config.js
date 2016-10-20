@@ -56,5 +56,6 @@ CKEDITOR.editorConfig = function( config ) {
 	config.autoGrow_onStartup = true;
 	config.autoGrow_minHeight = 80;
 
-  config.placeholder = window.eXo.social.I18n.mentions.defaultMessage;
+    config.placeholder = window.eXo.social.I18n.mentions.defaultMessage;
+    config.language = eXo.env.portal.language || 'en';
 };
