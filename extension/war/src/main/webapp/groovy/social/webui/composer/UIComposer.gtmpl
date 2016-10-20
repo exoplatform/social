@@ -89,10 +89,6 @@
 
 					String action = acComposer.event("Activate") + ";  UIComposer.setSelectedComposer(this); UIComposer.setCurrentValue()";
 
-					if("uidocactivitycomposer".equals(clazz)) {
-						clazz += " hidden-phone";
-					}
-
 					// the first composer is always the one activated by default
 					def selectedComposerClass = "";
 					if(counter == 0) {
