@@ -338,7 +338,7 @@ var UIActivity = {
     }
     var root = $('#'+id);
     if(root.length > 0 && deviceInfo.isMobile === true) {
-      var hidenComposer = function(elm) {
+      var hideComposer = function(elm) {
         UIActivity.hideLink();
         root.find('.uiActivitiesDisplay:first').removeClass('hidden-phone');
         return elm.parents('.uiComposer:first').addClass('hidden-phone');
@@ -356,11 +356,14 @@ var UIActivity = {
         var composer = parent.find('.uiComposer:first');
         composer.find('.replaceTextArea').focus();
         composer.find('.button-group').find('.btn-cancel').off('click').click(function() {
-          hidenComposer($(this));
+          hideComposer($(this));
         });
-        composer.find('.button-group').find('.btn-submit').prop('disabled', true).off('click').click(function() {
-          parent.find('#ShareButton').trigger('mousedown');
-          hidenComposer($(this));
+        composer.find('.button-group').find('.btn-submit').prop('disabled', true);
+        composer.find('.share-buttons-top').find('.btn-submit').off('click').click(function() {
+          parent.find('#ShareButton').trigger('click');
+        });
+        composer.find('#ShareButton').off('click').click(function() {
+          hideComposer($(this));
         });
         //
         CKEDITOR.instances["composerInput"].focus();
@@ -378,11 +381,11 @@ var UIActivity = {
       var btnGroup = root.find('.button-group');
       if (btnGroup) {
         btnGroup.find('.btn-cancel').off('click').click(function() {
-          hidenComposer($(this));
+          hideComposer($(this));
         });
         btnGroup.find('.btn-submit').off('click').click(function() {
           root.find('#ShareButton').trigger('mousedown');
-          hidenComposer($(this));
+          hideComposer($(this));
         });
       }
       //

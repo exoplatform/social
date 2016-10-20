@@ -92,9 +92,9 @@
                 var newData = evt.editor.getData();
                 var pureText = newData? newData.replace(/<[^>]*>/g, "").replace(/&nbsp;/g,"").trim() : "";
                 if (pureText.length > 0) {
-                    $("#ShareButton").removeAttr("disabled");
+                    $(".share-button").removeAttr("disabled");
                 } else {
-                    $("#ShareButton").prop("disabled", true);
+                    $(".share-button").prop("disabled", true);
                 }
             },
             key: function( evt) {
