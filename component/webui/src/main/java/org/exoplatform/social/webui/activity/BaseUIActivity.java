@@ -16,10 +16,7 @@
  */
 package org.exoplatform.social.webui.activity;
 
-import java.util.*;
-
 import org.apache.commons.lang.ArrayUtils;
-
 import org.exoplatform.commons.utils.CommonsUtils;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
@@ -53,6 +50,8 @@ import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.event.EventListener;
 import org.exoplatform.webui.form.UIForm;
 import org.exoplatform.webui.form.UIFormTextAreaInput;
+
+import java.util.*;
 
 /**
  * Base UI Activity for other custom activity ui to extend for displaying.
@@ -937,6 +936,44 @@ public class BaseUIActivity extends UIForm {
         event.getRequestContext().addUIComponentToUpdateByAjax(uiActivitiesDisplay);
       }
       Utils.clearUserProfilePopup();
+      Utils.resizeHomePage();
+    }
+  }
+
+  //TODO
+  public static class EditCommentActionListener extends EventListener<BaseUIActivity> {
+
+    @Override
+    public void execute(Event<BaseUIActivity> event) throws Exception {
+      WebuiRequestContext requestContext = event.getRequestContext();
+      String commentId = requestContext.getRequestParameter(OBJECTID);
+      BaseUIActivity uiActivity = event.getSource();
+      ExoSocialActivity comment = null;
+      for (int i=0; i<uiActivity.getComments().size(); i++) {
+        if (uiActivity.getComments().get(i).getId().equals(commentId)) {
+          comment = uiActivity.getComments().get(i);
+          break;
+        }
+      }
+      if (comment != null) {
+        requestContext.getJavascriptManager()
+            .require("SHARED/social-ui-activity", "activity")
+            .addScripts("activity.editComment('"
+                + comment.getTitle() + "' , '"+ comment.getId().replace("CommentLink", "") +"');");
+      } else {
+
+      }
+      /*String oldComment = uiActivity.getActivity().getId();
+      if (uiActivity.isNoLongerExisting(activityId) || uiActivity.isNoLongerExisting(commentId)) {
+        return;
+      }
+      Utils.getActivityManager().deleteComment(activityId, commentId);*/
+      // uiActivity.refresh();
+//      uiActivity.getComments().get(0).setTitle("cc Walid");
+//      uiActivity.refresh();
+      requestContext.addUIComponentToUpdateByAjax(uiActivity);
+
+      Utils.initUserProfilePopup(uiActivity.getId());
       Utils.resizeHomePage();
     }
   }

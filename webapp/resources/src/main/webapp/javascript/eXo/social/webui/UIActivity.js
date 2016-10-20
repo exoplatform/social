@@ -38,6 +38,7 @@ var UIActivity = {
     UIActivity.commentFormDisplayed = params.commentFormDisplayed == "true" ? true : false || false;
     UIActivity.allCommentsDisplayed = params.allCommentsDisplayed = "true" ? true : false || false;
     UIActivity.commentFormFocused = params.commentFormFocused = "true" ? true : false  || false;
+    UIActivity.commentPlaceholder = params.placeholderComment || null;
 
     if (UIActivity.activityId == null) {
       alert('err: activityId is null!');
@@ -92,6 +93,30 @@ var UIActivity = {
     });
     
     var commentLinkEl = $("#" + UIActivity.commentLinkId);
+    // TODO this line is mandatory when a custom skin is defined, it should not be mandatory
+    CKEDITOR.basePath = '/commons-extension/ckeditor/';
+    $('textarea#CommentTextarea' + UIActivity.activityId).ckeditor({
+      customConfig: '/social-resources/javascript/eXo/social/ckeditorCustom/config.js',
+      placeholder: UIActivity.commentPlaceholder != null ? UIActivity.commentPlaceholder : window.eXo.social.I18n.mentions.defaultMessage,
+      on : {
+        instanceReady : function ( evt ) {
+          // Hide the editor top bar.
+          document.getElementById( evt.editor.id + '_bottom' ).style.display = 'none';
+          document.getElementById( evt.editor.id + '_contents' ).style.height = '47px';
+        },
+        focus : function ( evt ) {
+          // Show the editor top bar.
+          document.getElementById( evt.editor.id + '_bottom' ).style.display = 'block';
+          document.getElementById( evt.editor.id + '_contents' ).style.height = '150px';
+        },
+        blur : function ( evt ) {
+          // Show the editor top bar.
+          document.getElementById( evt.editor.id + '_bottom' ).style.display = 'none';
+          document.getElementById( evt.editor.id + '_contents' ).style.height = '47px';
+        }
+      }
+    });
+
     if (commentLinkEl.length > 0) {
       commentLinkEl.off('click').on('click', function (evt) {
         if (eXo.social.SocialUtil.checkDevice().isMobile === true) {
@@ -121,7 +146,7 @@ var UIActivity = {
       });
     }
     
-    //
+    /*//
     $('textarea#CommentTextarea' + UIActivity.activityId).exoMentions({
         onDataRequest:function (mode, query, callback) {
           var url = window.location.protocol + '//' + window.location.host + '/' + eXo.social.portal.rest + '/social/people/getprofile/data.json?search='+query;
@@ -138,7 +163,7 @@ var UIActivity = {
         },
         messages : window.eXo.social.I18n.mentions
     });
-
+*/
     var actionDeletes = $('a.controllDelete');
     if (actionDeletes.length > 0) {
       actionDeletes.off('click').on('click', function(e) {
@@ -410,6 +435,35 @@ var UIActivity = {
       //
       activities.off('click').click(eXo.social.SocialUtil.onViewActivity(UIActivity.responsiveId));
     }
+  },
+
+  //TODO
+  editComment : function(comment, activity) {
+    //
+    if (eXo.social.SocialUtil.checkDevice().isMobile === true) {
+      $('.footComment').find('div.replaceTextArea:first').focus();
+      return true;
+    }
+    //
+    //var currentActivityId = $(this).attr('id').replace('CommentLink', '');
+    var inputContainer = $('#InputContainer' + activity).fadeToggle('fast', function () {
+      var thiz = $(this);
+      if(thiz.css('display') === 'block') {
+        var blockInput = thiz.parents('.uiActivityStream:first').find('.inputContainerShow');
+        if(blockInput.length > 0) {
+          blockInput.removeClass('inputContainerShow').hide();
+        }
+        thiz.addClass('inputContainerShow');
+        thiz.find('div.replaceTextArea:first').focus();
+        var ctTop = ($(window).height()- thiz.height())/2;
+        var nTop = thiz.offset().top - ctTop - 20;
+        nTop = (nTop > 0) ? nTop : 0;
+
+        $('html, body').animate({scrollTop:nTop}, 'slow');
+      } else {
+        thiz.removeClass('inputContainerShow')
+      }
+    });
   },
 
   /**

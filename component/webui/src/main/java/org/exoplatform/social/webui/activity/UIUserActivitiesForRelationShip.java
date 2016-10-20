@@ -16,14 +16,14 @@
  */
 package org.exoplatform.social.webui.activity;
 
-import java.util.Locale;
-
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.processor.I18NActivityProcessor;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.EventConfig;
 import org.exoplatform.webui.core.lifecycle.UIFormLifecycle;
+
+import java.util.Locale;
 
 @ComponentConfig(
   lifecycle = UIFormLifecycle.class,
@@ -35,6 +35,7 @@ import org.exoplatform.webui.core.lifecycle.UIFormLifecycle;
     @EventConfig(listeners = BaseUIActivity.SetCommentListStatusActionListener.class),
     @EventConfig(listeners = BaseUIActivity.PostCommentActionListener.class),
     @EventConfig(listeners = BaseUIActivity.DeleteActivityActionListener.class),
+    @EventConfig(listeners = BaseUIActivity.EditCommentActionListener.class),
     @EventConfig(listeners = BaseUIActivity.DeleteCommentActionListener.class)
   }
 )

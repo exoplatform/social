@@ -31,6 +31,7 @@ import org.exoplatform.webui.core.lifecycle.UIFormLifecycle;
     @EventConfig(listeners = BaseUIActivity.SetCommentListStatusActionListener.class),
     @EventConfig(listeners = BaseUIActivity.PostCommentActionListener.class),
     @EventConfig(listeners = BaseUIActivity.DeleteActivityActionListener.class),
+    @EventConfig(listeners = BaseUIActivity.EditCommentActionListener.class),
     @EventConfig(listeners = BaseUIActivity.DeleteCommentActionListener.class)
   }
 )
