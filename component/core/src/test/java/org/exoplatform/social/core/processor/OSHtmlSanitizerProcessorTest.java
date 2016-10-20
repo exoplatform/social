@@ -107,7 +107,7 @@ public class OSHtmlSanitizerProcessorTest extends AbstractCoreTest {
     processor.processActivity(activity);
     
     templateParams = activity.getTemplateParams();
-    assertEquals("a<br />b", templateParams.get("a"));
+    assertEquals("a\nb", templateParams.get("a"));
     assertEquals("<a href=\"http://exoplatform.com\" rel=\"nofollow\">exoplatform.com</a>", templateParams.get("b"));
     assertEquals("exoplatform.com", templateParams.get("d"));
   }
