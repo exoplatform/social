@@ -90,7 +90,8 @@
             },
             change: function( evt) {
                 var newData = evt.editor.getData();
-                if (newData && newData.length > 0) {
+                var pureText = newData? newData.replace(/<[^>]*>/g, "").replace(/&nbsp;/g,"").trim() : "";
+                if (pureText.length > 0) {
                     $("#ShareButton").removeAttr("disabled");
                 } else {
                     $("#ShareButton").prop("disabled", true);
@@ -98,7 +99,8 @@
             },
             key: function( evt) {
                 var newData = evt.editor.getData();
-                if (newData && $(newData).text().length > UIComposer.MAX_LENGTH) {
+                var pureText = newData? newData.replace(/<[^>]*>/g, "").replace(/&nbsp;/g,"").trim() : "";
+                if (pureText.length > UIComposer.MAX_LENGTH) {
                     if ([8, 46, 33, 34, 35, 36, 37,38,39,40].indexOf(evt.data.keyCode) < 0) {
                         evt.cancel();
                     }
