@@ -106,7 +106,7 @@
                     }
                 }
                 if (!$(".uiLinkShareDisplay").length && evt.data.keyCode == 32) {
-                    var firstUrl = UIComposer.searchFirstURL(newData);
+                    var firstUrl = UIComposer.searchFirstURL(pureText);
                     if (firstUrl !== "") {
                         console.log(firstUrl);
                         $('#InputLink').val(firstUrl);
