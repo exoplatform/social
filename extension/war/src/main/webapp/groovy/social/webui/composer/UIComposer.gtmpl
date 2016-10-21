@@ -31,6 +31,8 @@
 
   def requestContext = _ctx.getRequestContext();
 
+  def currentActivityComposer = uicomponent.getActivityComposerManager().getCurrentActivityComposer();
+  
   //trick here, uiform does not keep submitAction for second render, portal bug?
   uicomponent.setSubmitAction("return false;");
   uicomponent.changeTitleTextAreInput();
@@ -81,7 +83,7 @@
 		<div id="ActivityComposerExt" class="attachMents">
 			<%
 				def simpleName, labelSimpleName, actionEvent, clazz;
-				def counter = 0;
+				
 				for(acComposer in uicomponent.getActivityComposers()) {
 					simpleName = acComposer.getClass().getSimpleName();
 					labelSimpleName = _ctx.appRes("UIActivityComposer.label.${simpleName}");
@@ -91,10 +93,9 @@
 
 					// the first composer is always the one activated by default
 					def selectedComposerClass = "";
-					if(counter == 0) {
+					if(acComposer == currentActivityComposer) {
 						selectedComposerClass = "ActivityComposerExtItemSelected";
 					}
-					counter++;
 				%>
 					<div class="pull-left ActivityComposerExtItem $simpleName $selectedComposerClass">
 						<a href="javascript:void(0)" class="$clazz" onclick="$action"><i class="uiIconSoc$simpleName uiIconSocLightGray"></i>$labelSimpleName</a>
@@ -109,7 +110,6 @@
 	    </div>
 	    
 	    <%
-      def currentActivityComposer = uicomponent.getActivityComposerManager().getCurrentActivityComposer();
     %>
     
 
