@@ -68,25 +68,21 @@
           customConfig: '/social-resources/javascript/eXo/social/ckeditorCustom/config.js',
           on : {
             instanceReady : function ( evt ) {
-              // Hide the editor top bar.
-              var windowWidth = $(window).width();
-              var windowHeight = $(window).height();
-              if (windowWidth > 767 || windowWidth > 481 && windowWidth > windowHeight) {
-                  document.getElementById( evt.editor.id + '_bottom' ).style.display = 'none';
-              }
+              // Hide the editor toolbar
+              $('#' + evt.editor.id + '_bottom').css('display', 'none');
               $("#ShareButton").prop("disabled", true);
             },
             focus : function ( evt ) {
-              // Show the editor top bar.
-              document.getElementById( evt.editor.id + '_bottom' ).style.display = 'block';
-            },
-            blur : function ( evt ) {
-              // Hide the editor top bar.
+              // Show the editor toolbar, except for smartphones in landscape mode
               var windowWidth = $(window).width();
               var windowHeight = $(window).height();
-              if (windowWidth > 767 || windowWidth > 481 && windowWidth > windowHeight) {
-                  document.getElementById( evt.editor.id + '_bottom' ).style.display = 'none';
+              if (windowWidth > 767 || windowWidth < windowHeight) {
+                $('#' + evt.editor.id + '_bottom').css('display', 'block');
               }
+            },
+            blur : function ( evt ) {
+              // Hide the editor toolbar
+              $('#' + evt.editor.id + '_bottom').css('display', 'none');
             },
             change: function( evt) {
                 var newData = evt.editor.getData();
