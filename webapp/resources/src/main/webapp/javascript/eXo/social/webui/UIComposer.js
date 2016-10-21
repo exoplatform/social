@@ -105,7 +105,7 @@
                         evt.cancel();
                     }
                 }
-                if (!$(".uiLinkShareDisplay").length && evt.data.keyCode == 32) {
+                if (!$(".uiLinkShareDisplay").length && (evt.data.keyCode == 32 || evt.data.keyCode == 13)) {
                     var firstUrl = UIComposer.searchFirstURL(pureText);
                     if (firstUrl !== "") {
                         console.log(firstUrl);
