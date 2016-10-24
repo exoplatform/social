@@ -113,6 +113,8 @@
 
         // TODO this line is mandatory when a custom skin is defined, it should not be mandatory
         CKEDITOR.basePath = '/commons-extension/ckeditor/';
+        // force compatibility in any environment to make it works in smartphones webview
+        CKEDITOR.env.isCompatible = true;
         composerInput.ckeditor({
           customConfig: '/social-resources/javascript/eXo/social/ckeditorCustom/config.js',
           extraPlugins: extraPlugins,
