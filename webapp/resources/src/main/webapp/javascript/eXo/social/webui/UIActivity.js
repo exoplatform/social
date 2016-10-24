@@ -75,6 +75,7 @@ var UIActivity = {
     UIActivity.permaLinkActivityButtonEl = $("#" + UIActivity.permaLinkActivityButtonId);
     UIActivity.commentBlockBoundEl = $("#" + UIActivity.commentBlockBoundId);
     UIActivity.inputContainer = $("#InputContainer" + UIActivity.activityId);
+    UIActivity.editInputContainer = $("#EditInputContainer" + UIActivity.activityId);
     UIActivity.commentBlockEls = [];
     UIActivity.activityContextBoxEl = $("#" + UIActivity.activityContextBoxId);
     if(UIActivity.allCommentSize > 0) {
@@ -113,9 +114,27 @@ var UIActivity = {
           // Show the editor top bar.
           document.getElementById( evt.editor.id + '_bottom' ).style.display = 'none';
           document.getElementById( evt.editor.id + '_contents' ).style.height = '47px';
+        },
+        change: function( evt) {
+          var newData = evt.editor.getData();
+          if (newData && newData.length > 0) {
+            var elId = this.element.$.id.replace('CommentTextarea','');
+            $('#CommentButton' + elId).removeAttr("disabled");
+          } else {
+            $('#CommentButton' + elId).prop("disabled", true);
+          }
         }
       }
     });
+    try {
+      var arr = $('.commentRight .contentComment img');
+      if (arr.length > 0) {
+        for (var i = 0, len = arr.length; i < len; i++) {
+            arr[i].closest('.commentRight')[0].style.height = arr[i].height + 3 + "px;";
+          }
+        }
+    } catch(e) {
+    };
 
     if (commentLinkEl.length > 0) {
       commentLinkEl.off('click').on('click', function (evt) {
@@ -144,26 +163,61 @@ var UIActivity = {
           }
         });
       });
+      $("a[id^='EditComment']" ).off('click').on('click', function (evt) {
+        if (eXo.social.SocialUtil.checkDevice().isMobile === true) {
+          $('.footComment').find('div.replaceTextArea:first').focus();
+          return true;
+        }
+        var comment = $('#'+evt.target.parentElement.id.replace('EditComment',''))[0];
+        var currentActivityId = evt.target.parentElement.id.split("-")[0].replace('EditComment', '');
+        CKEDITOR.instances['CommentTextarea' + currentActivityId].insertHtml(comment.innerHTML);
+        var editInputContainer = $('#EditInputContainer' + currentActivityId).fadeToggle('fast', function () {
+          var thiz = $(this);
+          if(thiz.css('display') === 'block') {
+            var blockInput = thiz.parents('.uiActivityStream:first').find('.inputContainerShow');
+            if(blockInput.length > 0) {
+              blockInput.removeClass('inputContainerShow').hide();
+            }
+            thiz.addClass('inputContainerShow');
+            thiz.find('div.replaceTextArea:first').focus();
+            var ctTop = ($(window).height()- thiz.height())/2;
+            var nTop = thiz.offset().top - ctTop - 20;
+            nTop = (nTop > 0) ? nTop : 0;
+
+            $('html, body').animate({scrollTop:nTop}, 'slow');
+          } else {
+            thiz.removeClass('inputContainerShow')
+          }
+        });
+      });
+      $("button[id^='CancelButton']" ).on('click', function (evt) {
+        if (eXo.social.SocialUtil.checkDevice().isMobile === true) {
+          $('.footComment').close();
+          return true;
+        }
+        var currentActivityId = evt.target.id.replace('CancelButton', '');
+        //CKEDITOR.instances['CommentTextarea' + currentActivityId].insertHtml(comment.innerHTML);
+        var editInputContainer = $('#EditInputContainer' + currentActivityId).fadeToggle('fast', function () {
+          var thiz = $(this);
+          if(thiz.css('display') === 'block') {
+            var blockInput = thiz.parents('.uiActivityStream:first').find('.inputContainerShow');
+            if(blockInput.length > 0) {
+              blockInput.removeClass('inputContainerShow').hide();
+            }
+            thiz.addClass('inputContainerShow');
+            thiz.find('div.replaceTextArea:first').focus();
+            var ctTop = ($(window).height()- thiz.height())/2;
+            var nTop = thiz.offset().top - ctTop - 20;
+            nTop = (nTop > 0) ? nTop : 0;
+
+            $('html, body').animate({scrollTop:nTop}, 'slow');
+          } else {
+            thiz.removeClass('inputContainerShow')
+          }
+        });
+      });
     }
-    
-    /*//
-    $('textarea#CommentTextarea' + UIActivity.activityId).exoMentions({
-        onDataRequest:function (mode, query, callback) {
-          var url = window.location.protocol + '//' + window.location.host + '/' + eXo.social.portal.rest + '/social/people/getprofile/data.json?search='+query;
-          $.getJSON(url, function(responseData) {
-            callback.call(this, responseData);
-          });
-        },
-        idAction : ('CommentButton'+UIActivity.activityId),
-        elasticStyle : {
-          maxHeight : '52px',
-          minHeight : '22px',
-          marginButton: '4px',
-          enableMargin: false
-        },
-        messages : window.eXo.social.I18n.mentions
-    });
-*/
+
     var actionDeletes = $('a.controllDelete');
     if (actionDeletes.length > 0) {
       actionDeletes.off('click').on('click', function(e) {
@@ -386,7 +440,7 @@ var UIActivity = {
         if(parent.find('div.uiComposer.hidden-phone').length > 0) {
           parent.find('div.uiComposer.hidden-phone').removeClass('hidden-phone');
         }
-        
+
         var composer = parent.find('.uiComposer:first');
         composer.find('.replaceTextArea').focus();
         composer.find('.button-group').find('.btn-cancel').off('click').click(function() {
@@ -438,33 +492,33 @@ var UIActivity = {
   },
 
   //TODO
-  editComment : function(comment, activity) {
-    //
-    if (eXo.social.SocialUtil.checkDevice().isMobile === true) {
-      $('.footComment').find('div.replaceTextArea:first').focus();
-      return true;
-    }
-    //
-    //var currentActivityId = $(this).attr('id').replace('CommentLink', '');
-    var inputContainer = $('#InputContainer' + activity).fadeToggle('fast', function () {
-      var thiz = $(this);
-      if(thiz.css('display') === 'block') {
-        var blockInput = thiz.parents('.uiActivityStream:first').find('.inputContainerShow');
-        if(blockInput.length > 0) {
-          blockInput.removeClass('inputContainerShow').hide();
-        }
-        thiz.addClass('inputContainerShow');
-        thiz.find('div.replaceTextArea:first').focus();
-        var ctTop = ($(window).height()- thiz.height())/2;
-        var nTop = thiz.offset().top - ctTop - 20;
-        nTop = (nTop > 0) ? nTop : 0;
-
-        $('html, body').animate({scrollTop:nTop}, 'slow');
-      } else {
-        thiz.removeClass('inputContainerShow')
-      }
-    });
-  },
+  // editComment : function(comment, activity) {
+  //   //
+  //   if (eXo.social.SocialUtil.checkDevice().isMobile === true) {
+  //     $('.footComment').find('div.replaceTextArea:first').focus();
+  //     return true;
+  //   }
+  //   //
+  //   //var currentActivityId = $(this).attr('id').replace('CommentLink', '');
+  //   var inputContainer = $('#InputContainer' + activity).fadeToggle('fast', function () {
+  //     var thiz = $(this);
+  //     if(thiz.css('display') === 'block') {
+  //       var blockInput = thiz.parents('.uiActivityStream:first').find('.inputContainerShow');
+  //       if(blockInput.length > 0) {
+  //         blockInput.removeClass('inputContainerShow').hide();
+  //       }
+  //       thiz.addClass('inputContainerShow');
+  //       thiz.find('div.replaceTextArea:first').focus();
+  //       var ctTop = ($(window).height()- thiz.height())/2;
+  //       var nTop = thiz.offset().top - ctTop - 20;
+  //       nTop = (nTop > 0) ? nTop : 0;
+  //
+  //       $('html, body').animate({scrollTop:nTop}, 'slow');
+  //     } else {
+  //       thiz.removeClass('inputContainerShow')
+  //     }
+  //   });
+  // },
 
   /**
    * show/hide the ellipsis on the left of file breadcrumb is it is overflowed on window resizing
