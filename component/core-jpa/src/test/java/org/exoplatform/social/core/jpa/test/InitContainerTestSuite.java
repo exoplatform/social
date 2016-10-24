@@ -20,6 +20,7 @@ import org.exoplatform.social.core.jpa.storage.RelationshipStorageTest;
 import org.exoplatform.social.core.jpa.storage.SpaceActivityMySqlPublisherTest;
 import org.exoplatform.social.core.jpa.storage.dao.ActivityDAOTest;
 import org.exoplatform.social.core.jpa.storage.dao.IdentityDAOTest;
+import org.exoplatform.social.core.jpa.storage.dao.SpaceMemberDAOTest;
 import org.exoplatform.social.core.jpa.storage.dao.StreamItemDAOTest;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -43,7 +44,8 @@ import org.exoplatform.social.core.jpa.storage.RDBMSSpaceStorageTest;
   RelationshipStorageTest.class,
   RDBMSRelationshipManagerTest.class,
   IdentityStorageTest.class,
-  RDBMSSpaceStorageTest.class
+  RDBMSSpaceStorageTest.class,
+  SpaceMemberDAOTest.class
   })
 @ConfigTestCase(AbstractCoreTest.class)
 public class InitContainerTestSuite extends BaseExoContainerTestSuite {

@@ -17,6 +17,8 @@
 
 package org.exoplatform.social.core.jpa.storage.dao.jpa;
 
+import java.util.List;
+
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
@@ -42,7 +44,23 @@ public class SpaceMemberDAOImpl extends GenericDAOJPAImpl<SpaceMemberEntity, Lon
     query.setParameter("spaceId", spaceId);
     query.setParameter("status", SpaceMemberEntity.Status.MEMBER);
     try {
-      return query.getSingleResult();      
+      return query.getSingleResult();
+    } catch (NoResultException ex) {
+      return null;
+    }
+  }
+
+  @Override
+  public List<Long> getSpacesIdsByUserName(String userId, int offset, int limit) {
+    TypedQuery<Long> query = getEntityManager().createNamedQuery("SpaceMember.getSpaceIdentitiesIdByMemberId", Long.class);
+    query.setParameter("userId", userId);
+    query.setParameter("status", SpaceMemberEntity.Status.MEMBER);
+    try {
+      if (limit > 0) {
+        query.setFirstResult(offset);
+        query.setMaxResults(limit);
+      }
+      return query.getResultList();
     } catch (NoResultException ex) {
       return null;
     }

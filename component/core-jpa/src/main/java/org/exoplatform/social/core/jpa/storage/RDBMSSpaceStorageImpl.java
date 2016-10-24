@@ -36,6 +36,7 @@ import org.exoplatform.social.core.jpa.storage.dao.SpaceMemberDAO;
 import org.exoplatform.social.core.jpa.storage.dao.jpa.query.SpaceQueryBuilder;
 import org.exoplatform.social.core.jpa.storage.entity.SpaceEntity;
 import org.exoplatform.social.core.jpa.storage.entity.SpaceMemberEntity;
+import org.exoplatform.social.core.jpa.storage.entity.SpaceMemberEntity.Status;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
@@ -54,7 +55,7 @@ public class RDBMSSpaceStorageImpl extends SpaceStorageImpl implements SpaceStor
   /** Logger */
   private static final Log     LOG = ExoLogger.getLogger(RDBMSSpaceStorageImpl.class);
 
-  private SpaceDAO spaceDAO;
+  private SpaceDAO             spaceDAO;
 
   private SpaceMemberDAO       spaceMemberDAO;
 
@@ -93,12 +94,12 @@ public class RDBMSSpaceStorageImpl extends SpaceStorageImpl implements SpaceStor
 
   @Override
   public List<Space> getAccessibleSpacesByFilter(String userId, SpaceFilter spaceFilter, long offset, long limit) {
-    return getSpaces(userId, Arrays.asList(SpaceMemberEntity.Status.MANAGER, SpaceMemberEntity.Status.MEMBER), spaceFilter, offset, limit);
+    return getSpaces(userId, Arrays.asList(Status.MANAGER, Status.MEMBER), spaceFilter, offset, limit);
   }
 
   @Override
   public int getAccessibleSpacesByFilterCount(String userId, SpaceFilter spaceFilter) {
-    return getSpacesCount(userId, Arrays.asList(SpaceMemberEntity.Status.MANAGER, SpaceMemberEntity.Status.MEMBER), spaceFilter);
+    return getSpacesCount(userId, Arrays.asList(Status.MANAGER, Status.MEMBER), spaceFilter);
   }
 
   @Override
@@ -133,12 +134,12 @@ public class RDBMSSpaceStorageImpl extends SpaceStorageImpl implements SpaceStor
 
   @Override
   public List<Space> getEditableSpacesByFilter(String userId, SpaceFilter spaceFilter, long offset, long limit) {
-    return getSpaces(userId, Arrays.asList(SpaceMemberEntity.Status.MANAGER), spaceFilter, offset, limit);
+    return getSpaces(userId, Arrays.asList(Status.MANAGER), spaceFilter, offset, limit);
   }
 
   @Override
   public int getEditableSpacesByFilterCount(String userId, SpaceFilter spaceFilter) {
-    return getSpacesCount(userId, Arrays.asList(SpaceMemberEntity.Status.MANAGER), spaceFilter);
+    return getSpacesCount(userId, Arrays.asList(Status.MANAGER), spaceFilter);
   }
 
   @Override
@@ -158,12 +159,12 @@ public class RDBMSSpaceStorageImpl extends SpaceStorageImpl implements SpaceStor
 
   @Override
   public List<Space> getInvitedSpacesByFilter(String userId, SpaceFilter spaceFilter, long offset, long limit) {
-    return getSpaces(userId, Arrays.asList(SpaceMemberEntity.Status.INVITED), spaceFilter, offset, limit);
+    return getSpaces(userId, Arrays.asList(Status.INVITED), spaceFilter, offset, limit);
   }
 
   @Override
   public int getInvitedSpacesByFilterCount(String userId, SpaceFilter spaceFilter) {
-    return getSpacesCount(userId, Arrays.asList(SpaceMemberEntity.Status.INVITED), spaceFilter);
+    return getSpacesCount(userId, Arrays.asList(Status.INVITED), spaceFilter);
   }
 
   @Override
@@ -193,13 +194,12 @@ public class RDBMSSpaceStorageImpl extends SpaceStorageImpl implements SpaceStor
   @Override
   public List<String> getMemberSpaceIds(String identityId, int offset, int limit) throws SpaceStorageException {
     Identity identity = identityStorage.findIdentityById(identityId);
-    List<Space> spaces = getMemberSpaces(identity.getRemoteId(), offset, limit);
+    List<Long> spaceIds = spaceMemberDAO.getSpacesIdsByUserName(identity.getRemoteId(), offset, limit);
 
     List<String> ids = new LinkedList<>();
-    for (Space space : spaces) {
-      Identity spaceIdentity = identityStorage.findIdentity(SpaceIdentityProvider.NAME, space.getPrettyName());
-      if (spaceIdentity != null) {
-        ids.add(spaceIdentity.getId());
+    if (spaceIds != null && !spaceIds.isEmpty()) {
+      for (Long spaceId : spaceIds) {
+        ids.add(String.valueOf(spaceId));
       }
     }
     return ids;
@@ -217,12 +217,12 @@ public class RDBMSSpaceStorageImpl extends SpaceStorageImpl implements SpaceStor
 
   @Override
   public List<Space> getMemberSpacesByFilter(String userId, SpaceFilter spaceFilter, long offset, long limit) {
-    return getSpaces(userId, Arrays.asList(SpaceMemberEntity.Status.MEMBER), spaceFilter, offset, limit);
+    return getSpaces(userId, Arrays.asList(Status.MEMBER), spaceFilter, offset, limit);
   }
 
   @Override
   public int getMemberSpacesByFilterCount(String userId, SpaceFilter spaceFilter) {
-    return getSpacesCount(userId, Arrays.asList(SpaceMemberEntity.Status.MEMBER), spaceFilter);
+    return getSpacesCount(userId, Arrays.asList(Status.MEMBER), spaceFilter);
   }
 
   @Override
@@ -234,7 +234,7 @@ public class RDBMSSpaceStorageImpl extends SpaceStorageImpl implements SpaceStor
   public int getNumberOfMemberPublicSpaces(String userId) {
     XSpaceFilter filter = new XSpaceFilter();
     filter.setNotHidden(true);
-    return getSpacesCount(userId, Arrays.asList(SpaceMemberEntity.Status.MEMBER), filter);
+    return getSpacesCount(userId, Arrays.asList(Status.MEMBER), filter);
   }
 
   @Override
@@ -249,12 +249,12 @@ public class RDBMSSpaceStorageImpl extends SpaceStorageImpl implements SpaceStor
 
   @Override
   public List<Space> getPendingSpacesByFilter(String userId, SpaceFilter spaceFilter, long offset, long limit) {
-    return getSpaces(userId, Arrays.asList(SpaceMemberEntity.Status.PENDING), spaceFilter, offset, limit);
+    return getSpaces(userId, Arrays.asList(Status.PENDING), spaceFilter, offset, limit);
   }
 
   @Override
   public int getPendingSpacesByFilterCount(String userId, SpaceFilter spaceFilter) {
-    return getSpacesCount(userId, Arrays.asList(SpaceMemberEntity.Status.PENDING), spaceFilter);
+    return getSpacesCount(userId, Arrays.asList(Status.PENDING), spaceFilter);
   }
 
   @Override
@@ -384,7 +384,7 @@ public class RDBMSSpaceStorageImpl extends SpaceStorageImpl implements SpaceStor
                                       long limit) throws SpaceStorageException {
     XSpaceFilter xFilter = new XSpaceFilter();
     xFilter.setSpaceFilter(spaceFilter).setRemoteId(userId);
-    xFilter.addStatus(SpaceMemberEntity.Status.MEMBER, SpaceMemberEntity.Status.MANAGER, SpaceMemberEntity.Status.INVITED);
+    xFilter.addStatus(Status.MEMBER, Status.MANAGER, Status.INVITED);
     xFilter.setIncludePrivate(true);
     return getSpacesByFilter(xFilter, offset, limit);
   }
@@ -393,7 +393,7 @@ public class RDBMSSpaceStorageImpl extends SpaceStorageImpl implements SpaceStor
   public int getVisibleSpacesCount(String userId, SpaceFilter spaceFilter) throws SpaceStorageException {
     XSpaceFilter xFilter = new XSpaceFilter();
     xFilter.setSpaceFilter(spaceFilter).setRemoteId(userId);
-    xFilter.addStatus(SpaceMemberEntity.Status.MEMBER, SpaceMemberEntity.Status.MANAGER, SpaceMemberEntity.Status.INVITED);
+    xFilter.addStatus(Status.MEMBER, Status.MANAGER, Status.INVITED);
     xFilter.setIncludePrivate(true);
     return getSpacesCount(userId, null, xFilter);
   }
@@ -527,7 +527,7 @@ public class RDBMSSpaceStorageImpl extends SpaceStorageImpl implements SpaceStor
 
   /**
    * Add this method to resolve SOC-3439
-   * 
+   *
    * @param identity
    * @throws NodeNotFoundException
    */
@@ -543,12 +543,12 @@ public class RDBMSSpaceStorageImpl extends SpaceStorageImpl implements SpaceStor
      */
   }
 
-  private List<Space> getSpaces(String userId, List<SpaceMemberEntity.Status> status, SpaceFilter spaceFilter, long offset, long limit) {
+  private List<Space> getSpaces(String userId, List<Status> status, SpaceFilter spaceFilter, long offset, long limit) {
     XSpaceFilter filter = new XSpaceFilter();
     filter.setSpaceFilter(spaceFilter);
     if (userId != null && status != null) {
       filter.setRemoteId(userId);
-      filter.addStatus(status.toArray(new SpaceMemberEntity.Status[status.size()]));
+      filter.addStatus(status.toArray(new Status[status.size()]));
     }
 
     if (filter.isUnifiedSearch()) {
@@ -561,12 +561,12 @@ public class RDBMSSpaceStorageImpl extends SpaceStorageImpl implements SpaceStor
     }
   }
 
-  private int getSpacesCount(String userId, List<SpaceMemberEntity.Status> status, SpaceFilter spaceFilter) {
+  private int getSpacesCount(String userId, List<Status> status, SpaceFilter spaceFilter) {
     XSpaceFilter filter = new XSpaceFilter();
     filter.setSpaceFilter(spaceFilter);
     if (userId != null && status != null) {
       filter.setRemoteId(userId);
-      filter.addStatus(status.toArray(new SpaceMemberEntity.Status[status.size()]));
+      filter.addStatus(status.toArray(new Status[status.size()]));
     }
 
     if (filter.isUnifiedSearch()) {
@@ -601,7 +601,7 @@ public class RDBMSSpaceStorageImpl extends SpaceStorageImpl implements SpaceStor
     space.setDisplayName(entity.getDisplayName());
     space.setPrettyName(entity.getPrettyName());
     if (entity.getRegistration() != null) {
-      space.setRegistration(entity.getRegistration().name().toLowerCase());      
+      space.setRegistration(entity.getRegistration().name().toLowerCase());
     }
     space.setDescription(entity.getDescription());
     space.setType(DefaultSpaceApplicationHandler.NAME);
@@ -610,17 +610,17 @@ public class RDBMSSpaceStorageImpl extends SpaceStorageImpl implements SpaceStor
     }
     if (entity.getPriority() != null) {
       switch (entity.getPriority()) {
-      case HIGH:
-        space.setPriority(Space.HIGH_PRIORITY);
-        break;
-      case INTERMEDIATE:
-        space.setPriority(Space.INTERMEDIATE_PRIORITY);
-        break;
-      case LOW:
-        space.setPriority(Space.LOW_PRIORITY);
-        break;
-      default:
-        space.setPriority(null);
+        case HIGH:
+          space.setPriority(Space.HIGH_PRIORITY);
+          break;
+        case INTERMEDIATE:
+          space.setPriority(Space.INTERMEDIATE_PRIORITY);
+          break;
+        case LOW:
+          space.setPriority(Space.LOW_PRIORITY);
+          break;
+        default:
+          space.setPriority(null);
       }
     }
     space.setGroupId(entity.getGroupId());
@@ -636,7 +636,7 @@ public class RDBMSSpaceStorageImpl extends SpaceStorageImpl implements SpaceStor
     }
     if (entity.getAvatarLastUpdated() != null) {
       space.setAvatarLastUpdated(entity.getAvatarLastUpdated().getTime());
-    }      
+    }
     return space;
   }
 
