@@ -77,7 +77,19 @@
             responseData = _.filter(responseData, function(item) {
               return item.name.toLowerCase().indexOf(query.toLowerCase()) > -1;
             });
-            peopleSearchCached[query] = responseData;
+
+            var result = [];
+            for (var i = 0; i < responseData.length; i++) {
+              var d = responseData[i];
+              var item = {
+                uid: d.id.substr(1),
+                name: d.name,
+                avatar: d.avatar
+              };
+              result.push(item);
+            }
+
+            peopleSearchCached[query] = result;
             if (peopleSearchCached[query].length == 0) {
               lastNoResultQuery = query;
             } else {
@@ -89,11 +101,21 @@
       });
 
       $(document).ready(function() {
+        var windowWidth = $(window).width();
+        var windowHeight = $(window).height();
+
         var composerInput = $('#composerInput');
+        var extraPlugins = 'simpleLink,simpleImage,suggester';
+        if (windowWidth > windowHeight && windowWidth < 768) {
+          // Disable suggester on smart-phone landscape
+          extraPlugins = 'simpleLink,simpleImage';
+        }
+
         // TODO this line is mandatory when a custom skin is defined, it should not be mandatory
         CKEDITOR.basePath = '/commons-extension/ckeditor/';
         composerInput.ckeditor({
           customConfig: '/social-resources/javascript/eXo/social/ckeditorCustom/config.js',
+          extraPlugins: extraPlugins,
           on : {
             instanceReady : function ( evt ) {
               // Hide the editor toolbar
@@ -103,8 +125,6 @@
             },
             focus : function ( evt ) {
               // Show the editor toolbar, except for smartphones in landscape mode
-              var windowWidth = $(window).width();
-              var windowHeight = $(window).height();
               if (windowWidth > 767 || windowWidth < windowHeight) {
                 $('#' + evt.editor.id + '_bottom').css('display', 'block');
               }
