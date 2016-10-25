@@ -39,6 +39,7 @@ import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvide
 import org.exoplatform.social.core.jpa.storage.RDBMSActivityStorageImpl;
 import org.exoplatform.social.core.jpa.storage.RDBMSIdentityStorageImpl;
 import org.exoplatform.social.core.jpa.storage.dao.ActivityDAO;
+import org.exoplatform.social.core.jpa.updater.utils.IdentityUtil;
 import org.exoplatform.social.core.jpa.updater.utils.MigrationCounter;
 import org.exoplatform.social.core.jpa.updater.utils.StringUtil;
 import org.exoplatform.social.core.storage.api.ActivityStorage;
@@ -765,7 +766,7 @@ public class ActivityMigrationService extends AbstractMigrationService<ExoSocial
     try {
       IdentityEntity entity = _findById(IdentityEntity.class, oldId);
       if (entity != null) {
-        Identity id = identityJPAStorage.findIdentity(entity.getProviderId(), entity.getRemoteId());
+        Identity id = identityJPAStorage.findIdentity(entity.getProviderId(), IdentityUtil.getIdentityName(entity.getName()));
         if (id != null) {
           return id.getId();
         }

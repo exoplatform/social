@@ -28,6 +28,7 @@ import java.util.Set;
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
 import javax.jcr.PropertyIterator;
+import javax.jcr.Session;
 
 import org.chromattic.ext.ntdef.NTFile;
 import org.chromattic.ext.ntdef.Resource;
@@ -43,6 +44,7 @@ import org.exoplatform.management.annotations.Managed;
 import org.exoplatform.management.annotations.ManagedDescription;
 import org.exoplatform.management.jmx.annotations.NameTemplate;
 import org.exoplatform.management.jmx.annotations.Property;
+import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
 import org.exoplatform.social.core.jpa.search.ProfileIndexingServiceConnector;
 import org.exoplatform.social.core.jpa.storage.RDBMSIdentityStorageImpl;
 import org.exoplatform.social.core.chromattic.entity.DisabledEntity;
@@ -51,7 +53,11 @@ import org.exoplatform.social.core.chromattic.entity.ProfileEntity;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
+import org.exoplatform.social.core.jpa.storage.RDBMSSpaceStorageImpl;
+import org.exoplatform.social.core.jpa.updater.utils.IdentityUtil;
 import org.exoplatform.social.core.model.AvatarAttachment;
+import org.exoplatform.social.core.space.model.Space;
+import org.exoplatform.social.core.storage.api.SpaceStorage;
 import org.exoplatform.social.core.storage.exception.NodeNotFoundException;
 import org.exoplatform.social.core.storage.impl.IdentityStorageImpl;
 
@@ -74,6 +80,8 @@ public class IdentityMigrationService extends AbstractMigrationService<Identity>
   private final RDBMSIdentityStorageImpl identityStorage;
   private final IdentityStorageImpl jcrIdentityStorage;
 
+  private SpaceStorage spaceStorage;
+
   private String identityQuery;
 
   private long numberIdentities = 0;
@@ -83,12 +91,14 @@ public class IdentityMigrationService extends AbstractMigrationService<Identity>
   public IdentityMigrationService(InitParams initParams,
                                   RDBMSIdentityStorageImpl identityStorage,
                                   IdentityStorageImpl jcrIdentityStorage,
+                                  RDBMSSpaceStorageImpl spaceStorage,
                                   EventManager<Identity, String> eventManager, EntityManagerService entityManagerService) {
     super(initParams, identityStorage, eventManager, entityManagerService);
     this.LIMIT_THRESHOLD = getInteger(initParams, LIMIT_THRESHOLD_KEY, 200);
     this.REMOVE_LIMIT_THRESHOLD = getInteger(initParams, REMOVE_LIMIT_THRESHOLD_KEY, 20);
     this.identityStorage = identityStorage;
     this.jcrIdentityStorage = jcrIdentityStorage;
+    this.spaceStorage = spaceStorage;
   }
 
   @Override
@@ -305,15 +315,60 @@ public class IdentityMigrationService extends AbstractMigrationService<Identity>
 
   private Identity migrateIdentity(Node node, String jcrId) throws Exception {
     String providerId = node.getProperty("soc:providerId").getString();
+    // The node name is the identity id.
+    // Node name is soc:<name>, only the <name> is relevant
+    // Node name should equals to remoteId on all identities
+    String name = IdentityUtil.getIdentityName(node.getName());
     String remoteId = node.getProperty("soc:remoteId").getString();
 
-    Identity identity = identityStorage.findIdentity(providerId, remoteId);
+    if (!name.equals(remoteId)) {
+      LOG.info(String.format("Node name(%s) does not equals to remoteId(%s), need to adjust and make them equally before migrate", name, remoteId));
+      boolean needUpdateRemoteId = true;
+
+      if (SpaceIdentityProvider.NAME.equals(providerId)) {
+        Space space = spaceStorage.getSpaceByPrettyName(name);
+        if (space == null) {
+          space = spaceStorage.getSpaceByPrettyName(remoteId);
+          // If we can not find the space for this identity, we could ignore to migrate
+          if (space == null) {
+            LOG.warn("The space with prettyName=" + remoteId + " does not exists, this identity will not be migrated.");
+            return null;
+          } else {
+            needUpdateRemoteId = false;
+            name = remoteId;
+          }
+        }
+      }
+
+      if (needUpdateRemoteId) {
+        // Node name is more accurate in case user identity. Will update the remoteId and make it the same
+        LOG.info("Update remoteId to " + name + " to make it equals to node name");
+        node.setProperty("soc:remoteId", name);
+        node.getSession().save();
+
+      } else {
+        // RemoteId is more accurate in case space identity and we found a space for this remoteName, we have to update node name to remoteId
+        LOG.info("Update node name to soc:" + name + " to make it equals to remoteId because we found a space with prettyName=" + name);
+        Session session = node.getSession();
+        Node parent = node.getParent();
+
+        String parentId = parent.getUUID();
+        String path = node.getPath();
+        String parentPath = parent.getPath();
+        session.move(path, parentPath + "/soc:" + name);
+        session.save();
+
+        node = session.getNodeByUUID(parentId).getNode("soc:" + name);
+      }
+    }
+
+    Identity identity = identityStorage.findIdentity(providerId, name);
     if (identity != null) {
       LOG.info("Identity with providerId = " + identity.getProviderId() + " and remoteId=" + identity.getRemoteId() + " has already been migrated.");
       return identity;
     }
 
-    identity = new Identity(providerId, remoteId);
+    identity = new Identity(providerId, name);
     identity.setDeleted(node.getProperty("soc:isDeleted").getBoolean());
 
     if (node.isNodeType("soc:isDisabled")) {
