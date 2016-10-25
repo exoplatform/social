@@ -72,6 +72,7 @@ CKEDITOR.editorConfig = function( config ) {
     config.placeholder = window.eXo.social.I18n.mentions.defaultMessage;
     config.language = eXo.env.portal.language || 'en';
     config.suggester = {
+        suffix: ' ',
         renderMenuItem: '<li data-value="${uid}"><div class="avatarSmall" style="display: inline-block;"><img src="${avatar}"></div>${name} (${uid})</li>',
         renderItem: '<span class="exo-mention">${name}<a href="#" class="remove"><i class="uiIconClose uiIconLightGray"></i></a></span>',
         sourceProviders: ['exo:people']
