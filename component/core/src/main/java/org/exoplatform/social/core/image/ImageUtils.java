@@ -17,18 +17,17 @@
  */
 package org.exoplatform.social.core.image;
 
-import java.awt.RenderingHints;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
-
-import javax.imageio.ImageIO;
-
 import org.exoplatform.commons.utils.MimeTypeResolver;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.model.AvatarAttachment;
+
+import javax.imageio.ImageIO;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
 
 /**
  * @author tuan_nguyenxuan Oct 29, 2010
@@ -39,6 +38,7 @@ public class ImageUtils {
 
   public static final String GIF_EXTENDSION          = "gif";
   private static final Log LOG = ExoLogger.getLogger(ImageUtils.class);
+  public static BufferedImage image = null;
 
   /**
    * @param str Make string params not null
@@ -83,8 +83,8 @@ public class ImageUtils {
 
   /**
    * @param imageStream
-   * @param width
-   * @param height
+   * @param maxWidth
+   * @param maxHeight
    * @param avatarId
    * @param avatarFileName
    * @param avatarMimeType
@@ -93,64 +93,45 @@ public class ImageUtils {
    *         avatar
    */
   public static AvatarAttachment createResizedAvatarAttachment(InputStream imageStream,
-                                                               int width,
-                                                               int height,
+                                                               int maxWidth,
+                                                               int maxHeight,
                                                                String avatarId,
                                                                String avatarFileName,
                                                                String avatarMimeType,
                                                                String avatarWorkspace) {
+    if (maxHeight <= 0 || maxWidth <= 0) {
+      LOG.warn("Fail to resize image to avatar attachment with dimension <= 0");
+      return null;
+    }
+
     try {
       MimeTypeResolver mimeTypeResolver = new MimeTypeResolver();
-
-      BufferedImage image = null;
-      int minSize = 0;
       String extension = mimeTypeResolver.getExtension(avatarMimeType);
       // TODO: Resize gif image. Now we skip gif because we can't resize it now
-      if (extension.equalsIgnoreCase(GIF_EXTENDSION))
-        return null;
-      image = ImageIO.read(imageStream);
-      if (height <= minSize & width <= minSize) {
-        LOG.warn("Fail to resize image to avatar attachment with dimention <= 0x0");
+      if (extension.equalsIgnoreCase(GIF_EXTENDSION)) {
         return null;
       }
-      
-      if (height <= minSize)
-        height = image.getHeight() * width / image.getWidth();
-      else if (width <= minSize)
-        width = image.getWidth() * height / image.getHeight();
+
+      image = ImageIO.read(imageStream);
+
+      int targetHeight = image.getHeight();
+      int targetWidth = image.getWidth();
+
+      double maxDimensionsRatio =  (double) maxHeight / (double) maxWidth;
+      double imageRatio =  (double) image.getHeight() / (double) image.getWidth();
+
+      if(imageRatio > maxDimensionsRatio && image.getHeight() > maxHeight) {
+        targetHeight = maxHeight;
+        targetWidth = (maxHeight * image.getWidth()) / image.getHeight();
+      } else if(imageRatio < maxDimensionsRatio && image.getWidth() > maxWidth) {
+        targetHeight = (maxWidth * image.getHeight()) / image.getWidth();
+        targetWidth = maxWidth;
+      }
 
       // Create temp file to store resized image to put to avatar attachment
       File tmp = File.createTempFile("RESIZED", null);
-      image = org.apache.shindig.gadgets.rewrite.image.ImageUtils.getScaledInstance(image,
-                                                 width,
-                                                 height,
-                                                 RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR,
-                                                 false,
-                                                 BufferedImage.TYPE_INT_RGB);
+      image = resizeImage(image, targetWidth, targetHeight);
 
-      int imgWidth = image.getWidth();
-      int imgHeight = image.getHeight();
-      
-      if (imgWidth != imgHeight) { // in case of image has width and height not the same
-        int x,y,w,h;
-        int cropDimension = imgWidth > imgHeight ? imgHeight : imgWidth;
-        int offset = (cropDimension == imgWidth) ? imgHeight - cropDimension : imgWidth - cropDimension;
-        
-        if (imgWidth < imgHeight) {
-          x = 0;
-          y = (int)(offset/2);
-          w = imgWidth;
-          h = imgHeight - offset;
-        } else {
-          x = (int)(offset/2);
-          y = 0;
-          w = imgWidth - offset;
-          h = imgHeight;
-        }
-        
-        image = image.getSubimage(x, y, w, h);
-      }
-      
       ImageIO.write(image, extension, tmp);
       
       // Create new avatar attachment
@@ -168,5 +149,18 @@ public class ImageUtils {
       LOG.error("Fail to resize image to avatar attachment: " + e);
       return null;
     }
+  }
+
+  private static BufferedImage resizeImage(BufferedImage image, int width, int height) {
+    final BufferedImage bufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+    final Graphics2D graphics2D = bufferedImage.createGraphics();
+    graphics2D.setComposite(AlphaComposite.Src);
+    //below three lines are for RenderingHints for better image quality
+    graphics2D.setRenderingHint(RenderingHints.KEY_INTERPOLATION,RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+    graphics2D.setRenderingHint(RenderingHints.KEY_RENDERING,RenderingHints.VALUE_RENDER_QUALITY);
+    graphics2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING,RenderingHints.VALUE_ANTIALIAS_ON);
+    graphics2D.drawImage(image, 0, 0, width, height, null);
+    graphics2D.dispose();
+    return bufferedImage;
   }
 }

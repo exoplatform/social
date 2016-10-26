@@ -18,6 +18,13 @@ package org.exoplatform.social.core.image;
 
 
 import junit.framework.TestCase;
+import org.exoplatform.social.core.model.AvatarAttachment;
+
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 
 public class ImageUtilsTest extends TestCase {
 
@@ -36,5 +43,21 @@ public class ImageUtilsTest extends TestCase {
     assertEquals("_100x0", postfix);
   }
 
-  // TODO: Write unit test for function
+  public void testCreateResizedAvatarAttachment() throws IOException {
+    // image 144x40
+    InputStream inputStream = getClass().getResourceAsStream("/eXo-Social.png");
+    int width = 100;
+    int height = 100;
+    String avatarId = "null";
+    String avatarMimeType = "image/jpeg";
+    String avatarFileName = "eXo-Social.png";
+    String avatarWorkspace = "null";
+    AvatarAttachment avatar = ImageUtils.createResizedAvatarAttachment(inputStream, width, height, avatarId, avatarFileName, avatarMimeType, avatarWorkspace);
+    assertNotNull(avatar);
+    assertNotNull(avatar.getImageBytes());
+    BufferedImage image = ImageIO.read(new ByteArrayInputStream(avatar.getImageBytes()));
+    assertEquals(100, image.getWidth());
+    assertEquals(27, image.getHeight());
+  }
+
 }

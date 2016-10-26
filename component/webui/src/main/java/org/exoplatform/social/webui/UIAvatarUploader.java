@@ -117,8 +117,9 @@ public class UIAvatarUploader extends UIForm {
    * inform user to upload image.
    */
   public static class ConfirmActionListener extends EventListener<UIAvatarUploader> {
-    // The width of resized avatar fix 200px like facebook avatar
+    // The width and height of resized avatar fix 200px like facebook avatar
     private static final int WIDTH = 200;
+    private static final int HEIGHT = 200;
 
     @Override
     public void execute(Event<UIAvatarUploader> event) throws Exception {
@@ -154,7 +155,7 @@ public class UIAvatarUploader extends UIForm {
               mimeType = uiAvatarUploader.getStandardMimeType(mimeType);
             }
 
-            AvatarAttachment avatarAttachment = ImageUtils.createResizedAvatarAttachment(uploadedStream, WIDTH, 0, null,
+            AvatarAttachment avatarAttachment = ImageUtils.createResizedAvatarAttachment(uploadedStream, WIDTH, HEIGHT, null,
                                                                                          fileName, mimeType, null);
             if (avatarAttachment == null) {
               avatarAttachment = new AvatarAttachment(null, fileName, mimeType, uploadedStream, null, System.currentTimeMillis());
