@@ -130,18 +130,35 @@ var UIActivity = {
       var arr = $('.commentRight .contentComment img');
       if (arr.length > 0) {
         for (var i = 0, len = arr.length; i < len; i++) {
-            arr[i].closest('.commentRight')[0].style.height = arr[i].height + 3 + "px;";
+          var children = arr[i].closest('.contentComment').childNodes;
+          var firstChildTop;
+          var lastChildTop;
+          var lastchildHeight;
+          for (var j = 0, len = children.length; j < len; j++) {
+            firstChildTop = children[j].offsetTop;
+            if (typeof firstChildTop !== 'undefined') break;
+          }
+          for (var k = children.length-1; k > 0; k--) {
+            lastchildHeight = children[k].clientHeight;
+            lastChildTop = children[k].offsetTop;
+            if ((typeof lastchildHeight !== 'undefined') && (typeof lastChildTop !== 'undefined')) break;
+          }
+          if (lastChildTop != firstChildTop) {
+            arr[i].closest('.contentComment').style.height = lastChildTop - firstChildTop + lastchildHeight + "px";
+          } else {
+            arr[i].closest('.contentComment').style.height = arr[i].height + 3 + "px";
           }
         }
+      }
     } catch(e) {
     };
 
     if (commentLinkEl.length > 0) {
       commentLinkEl.off('click').on('click', function (evt) {
-        if (eXo.social.SocialUtil.checkDevice().isMobile === true) {
-          $('.footComment').find('div.replaceTextArea:first').focus();
-          return true;
-        }
+        // if (eXo.social.SocialUtil.checkDevice().isMobile === true) {
+        //   $('.footComment').find('div.replaceTextArea:first').focus();
+        //   return true;
+        // }
         //
         var currentActivityId = $(this).attr('id').replace('CommentLink', '');
         var inputContainer = $('#InputContainer' + currentActivityId).fadeToggle('fast', function () {
@@ -164,10 +181,10 @@ var UIActivity = {
         });
       });
       $("a[id^='EditComment']" ).off('click').on('click', function (evt) {
-        if (eXo.social.SocialUtil.checkDevice().isMobile === true) {
-          $('.footComment').find('div.replaceTextArea:first').focus();
-          return true;
-        }
+        // if (eXo.social.SocialUtil.checkDevice().isMobile === true) {
+        //   $('.footComment').find('div.replaceTextArea:first').focus();
+        //   return true;
+        // }
         var comment = $('#'+evt.target.parentElement.id.replace('EditComment',''))[0];
         var currentActivityId = evt.target.parentElement.id.split("-")[0].replace('EditComment', '');
         CKEDITOR.instances['CommentTextarea' + currentActivityId].insertHtml(comment.innerHTML);
@@ -191,13 +208,13 @@ var UIActivity = {
         });
       });
       $("button[id^='CancelButton']" ).on('click', function (evt) {
-        if (eXo.social.SocialUtil.checkDevice().isMobile === true) {
-          $('.footComment').close();
-          return true;
-        }
+        // if (eXo.social.SocialUtil.checkDevice().isMobile === true) {
+        //   $('.footComment').close();
+        //   return true;
+        // }
         var currentActivityId = evt.target.id.replace('CancelButton', '');
         //CKEDITOR.instances['CommentTextarea' + currentActivityId].insertHtml(comment.innerHTML);
-        var editInputContainer = $('#EditInputContainer' + currentActivityId).fadeToggle('fast', function () {
+        var inputContainer = $('#InputContainer' + currentActivityId);
           var thiz = $(this);
           if(thiz.css('display') === 'block') {
             var blockInput = thiz.parents('.uiActivityStream:first').find('.inputContainerShow');
@@ -214,7 +231,7 @@ var UIActivity = {
           } else {
             thiz.removeClass('inputContainerShow')
           }
-        });
+        
       });
     }
 
@@ -421,9 +438,9 @@ var UIActivity = {
       UIActivity.responsiveId = id;
     }
     var deviceInfo = eXo.social.SocialUtil.checkDevice();
-    if(deviceInfo.isMobile === true || deviceInfo.isTablet === true ||  deviceInfo.isTabletL === true  ) {
-      UIActivity.resetRightHeight();
-    }
+    // if(deviceInfo.isMobile === true || deviceInfo.isTablet === true ||  deviceInfo.isTabletL === true  ) {
+    //   UIActivity.resetRightHeight();
+    // }
     var root = $('#'+id);
     if(root.length > 0 && deviceInfo.isMobile === true) {
       var hideComposer = function(elm) {
