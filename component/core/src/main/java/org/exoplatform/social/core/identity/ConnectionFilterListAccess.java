@@ -22,9 +22,12 @@ import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.social.common.ListAccessValidator;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.profile.ProfileFilter;
+import org.exoplatform.social.core.storage.api.IdentityStorage;
 import org.exoplatform.social.core.storage.api.RelationshipStorage;
 
 public class ConnectionFilterListAccess implements ListAccess<Identity> {
+  
+  private IdentityStorage identityStorage; 
   
   private RelationshipStorage relationshipStorage; 
   
@@ -66,8 +69,9 @@ public class ConnectionFilterListAccess implements ListAccess<Identity> {
    * @param relationshipStorage Storage object of Relationship.
    * @param identity Identity to get connection. 
    */
-  public ConnectionFilterListAccess(RelationshipStorage relationshipStorage, Identity identity, ProfileFilter filter) {
+  public ConnectionFilterListAccess(IdentityStorage identityStorage, RelationshipStorage relationshipStorage, Identity identity, ProfileFilter filter) {
     this.relationshipStorage = relationshipStorage;
+    this.identityStorage = identityStorage;
     this.identity = identity;
     this.profileFilter = filter;
   }
@@ -80,27 +84,53 @@ public class ConnectionFilterListAccess implements ListAccess<Identity> {
    * @param type
    * @since 1.2.3
    */
-  public ConnectionFilterListAccess(RelationshipStorage relationshipStorage, Identity identity, ProfileFilter filter, Type type) {
-    this(relationshipStorage, identity, filter);
+  public ConnectionFilterListAccess(IdentityStorage identityStorage, RelationshipStorage relationshipStorage, Identity identity, ProfileFilter filter, Type type) {
+    this(identityStorage, relationshipStorage, identity, filter);
+    if(type == null) {
+      throw new IllegalArgumentException("Type of Connection list access is mandatory");
+    }
     this.type = type;
   }
-  
+
   /**
    * {@inheritDoc}
    */
   public Identity[] load(int offset, int limit) throws Exception, IllegalArgumentException {
     ListAccessValidator.validateIndex(offset, limit, getSize());
     List<Identity> identities = null;
-    switch (type) {
-      case PROFILE_FILTER_CONNECTION: identities = relationshipStorage.
-                                                   getConnectionsByFilter(identity, profileFilter, offset, limit);
+    if (profileFilter.isEmpty()) {
+      switch (type) {
+      case PROFILE_FILTER_CONNECTION:
+        identities = relationshipStorage.getConnectionsByFilter(identity, profileFilter, offset, limit);
         break;
-      case PROFILE_FILTER_INCOMMING: identities = relationshipStorage.getIncomingByFilter(identity, profileFilter, offset, limit);
+      case PROFILE_FILTER_INCOMMING:
+        identities = relationshipStorage.getIncomingByFilter(identity, profileFilter, offset, limit);
         break;
-      case PROFILE_FILTER_OUTGOING: identities = relationshipStorage.getOutgoingByFilter(identity, profileFilter, offset, limit);
+      case PROFILE_FILTER_OUTGOING:
+        identities = relationshipStorage.getOutgoingByFilter(identity, profileFilter, offset, limit);
         break;
+      }
+    } else {
+      org.exoplatform.social.core.relationship.model.Relationship.Type relationShipType = null;
+      switch (type) {
+      case PROFILE_FILTER_CONNECTION:
+        relationShipType = org.exoplatform.social.core.relationship.model.Relationship.Type.CONFIRMED;
+        break;
+      case PROFILE_FILTER_INCOMMING:
+        relationShipType = org.exoplatform.social.core.relationship.model.Relationship.Type.INCOMING;
+        break;
+      case PROFILE_FILTER_OUTGOING:
+        relationShipType = org.exoplatform.social.core.relationship.model.Relationship.Type.OUTGOING;
+        break;
+      }
+      identities = identityStorage.getIdentitiesForMentions(providerId, profileFilter, relationShipType, offset, limit, true);
     }
-    return identities.toArray(new Identity[identities.size()]);
+
+    if (identities == null) {
+      return null;
+    } else {
+      return identities.toArray(new Identity[identities.size()]);
+    }
   }
 
   /**
@@ -112,6 +142,7 @@ public class ConnectionFilterListAccess implements ListAccess<Identity> {
       case PROFILE_FILTER_INCOMMING: return relationshipStorage.getIncomingCountByFilter(identity, profileFilter);
       case PROFILE_FILTER_OUTGOING: return relationshipStorage.getOutgoingCountByFilter(identity, profileFilter);
       default:
+        // This never happens. Type can't be null
         return 0;
     }
   }

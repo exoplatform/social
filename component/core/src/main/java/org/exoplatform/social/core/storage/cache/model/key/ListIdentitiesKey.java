@@ -31,6 +31,9 @@ public class ListIdentitiesKey extends ListCacheKey {
 
   public ListIdentitiesKey(final IdentityFilterKey key, final long offset, final long limit) {
     super(offset, limit);
+    if(key == null) {
+      throw new IllegalArgumentException("Cache Key can't be null");
+    }
     this.key = key;
   }
 

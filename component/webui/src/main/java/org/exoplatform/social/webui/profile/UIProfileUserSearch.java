@@ -281,6 +281,7 @@ public class UIProfileUserSearch extends UIForm {
     addUIFormInput(new UIFormStringInput(Profile.POSITION, Profile.POSITION, ""));
     addUIFormInput(new UIFormStringInput(Profile.EXPERIENCES_SKILLS, Profile.EXPERIENCES_SKILLS, ""));
     profileFilter = new ProfileFilter();
+    profileFilter.setViewerIdentity(Utils.getViewerIdentity());
     setHasPeopleTab(false);
     setSubmitAction("return false;");
   }
@@ -317,9 +318,7 @@ public class UIProfileUserSearch extends UIForm {
       WebuiRequestContext ctx = event.getRequestContext();
       UIProfileUserSearch uiSearch = event.getSource();
       ProfileFilter filter = new ProfileFilter();
-      List<Identity> excludedIdentityList = new ArrayList<Identity>();
-      excludedIdentityList.add(Utils.getViewerIdentity());
-      filter.setExcludedIdentityList(excludedIdentityList);
+      filter.setViewerIdentity(Utils.getViewerIdentity());
       
       uiSearch.invokeSetBindingBean(filter);
       normalizeInputValues(filter);

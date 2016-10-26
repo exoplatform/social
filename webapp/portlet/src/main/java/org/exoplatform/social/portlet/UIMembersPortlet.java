@@ -265,7 +265,7 @@ public class UIMembersPortlet extends UIPortletApplication {
       currentLoadIndex = 0;
       setSelectedChar(ALL_FILTER);
       memberProfileFilter = new ProfileFilter();
-      memberProfileFilter.getExcludedIdentityList().add(Utils.getViewerIdentity());
+      memberProfileFilter.setViewerIdentity(Utils.getViewerIdentity());
       uiSearchMemberOfSpace.setProfileFilter(memberProfileFilter);
     } catch (Exception e) {
       LOG.error(e.getMessage(), e);

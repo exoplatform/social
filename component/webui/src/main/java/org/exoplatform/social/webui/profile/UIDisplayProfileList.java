@@ -144,10 +144,7 @@ public class UIDisplayProfileList extends UIContainer {
       currentLoadIndex = 0;
       loadingCapacity = PEOPLE_PER_PAGE;
       peopleList = new ArrayList<Identity>();
-      List<Identity> excludedIdentityList = new ArrayList<Identity>();
-      excludedIdentityList.add(Utils.getViewerIdentity());
-      uiProfileUserSearch.getProfileFilter().setExcludedIdentityList(excludedIdentityList);
-      //setPeopleList(loadPeople(currentLoadIndex, loadingCapacity));
+      uiProfileUserSearch.getProfileFilter().setViewerIdentity(Utils.getViewerIdentity());
     } catch (Exception e) {
       LOG.error(e.getMessage(), e);
     }

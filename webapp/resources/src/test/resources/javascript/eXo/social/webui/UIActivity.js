@@ -120,9 +120,6 @@ var UIActivity = {
         onDataRequest:function (mode, query, callback) {
           var url = window.location.protocol + '//' + window.location.host + '/' + eXo.social.portal.rest + '/social/people/getprofile/data.json?search='+query;
           $.getJSON(url, function(responseData) {
-            responseData = _.filter(responseData, function(item) { 
-              return item.name.toLowerCase().indexOf(query.toLowerCase()) > -1;
-            });
             callback.call(this, responseData);
           });
         },
@@ -388,9 +385,6 @@ var UIActivity = {
         onDataRequest:function (mode, query, callback) {
           var url = window.location.protocol + '//' + window.location.host + '/' + eXo.social.portal.rest + '/social/people/getprofile/data.json?search='+query;
           $.getJSON(url, function(responseData) {
-            responseData = _.filter(responseData, function(item) { 
-              return item.name.toLowerCase().indexOf(query.toLowerCase()) > -1;
-            });
             callback.call(this, responseData);
           });
         },

@@ -163,16 +163,17 @@
 	           .attr('autocomplete', 'off');
 
 	        function buildResults(searchedResults) {
-	          var i, iFound = 0,
-	              usedList,
-	              searchResultsNames = searchedResults.names,
-	              searchedResultsFullNames = searchedResults.fullNames,
-	              searchResultAvatars = searchedResults.avatars;
 
+              if(!searchedResults) {
+                return;
+              }
 
-              $(results).html('').hide();
+              var i, iFound = 0,usedList;
+              var searchResultsNames = searchedResults.names == null ? searchedResults.options : searchedResults.names;
+              var searchedResultsFullNames = searchedResults.fullNames;
+              var searchResultAvatars = searchedResults.avatars;
 
-              /* If the "names" array object is null, then no results to show */
+              /* If the "names" and "options" arrays are null, then no results to show */
               if (searchResultsNames == null) {
                 return;
               }
@@ -188,9 +189,9 @@
               }
               for (i = 0; i < usedList.length; i += 1) {
                 var item = $('<div />'),
-                text = usedList[i];
+                text = (usedList[i].text ? usedList[i].text : usedList[i]);
 
-                var avatar = '/eXoSkin/skin/images/system/UserAvtDefault.png';
+                var avatar = (usedList[i].avatarUrl ? usedList[i].avatarUrl : '/eXoSkin/skin/images/system/UserAvtDefault.png');
                 if (searchResultAvatars && searchResultAvatars[i]) {
                   avatar = searchResultAvatars[i];
                 }
@@ -208,9 +209,9 @@
                 }
 
                 $(item).addClass('resultItem')
-                    .click(function(n) { return function() {
-                      selectResultItem(searchResultsNames[n]);
-                    };}(i))
+                    .click(function(selectedText) { return function() {
+                      selectResultItem(selectedText);
+                    };}(text))
                     .mouseover(function(el) { return function() {
                       changeHover(el);
                     };}(item));

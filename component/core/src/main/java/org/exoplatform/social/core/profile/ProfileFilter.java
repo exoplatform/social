@@ -16,9 +16,10 @@
  */
 package org.exoplatform.social.core.profile;
 
-
 import java.util.ArrayList;
 import java.util.List;
+
+import org.apache.commons.lang.StringUtils;
 
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.search.Sorting;
@@ -57,8 +58,6 @@ public class ProfileFilter {
   private char firstCharacterOfName;
 
   private Sorting sorting;
-  
-  private boolean isEmpty;
 
   public ProfileFilter() {
     this.name = "";
@@ -69,7 +68,6 @@ public class ProfileFilter {
     this.excludedIdentityList = new ArrayList<Identity>();
     this.onlineRemoteIds = new ArrayList<String>();
     this.all = "";
-    this.isEmpty = true;
   }
   /**
    * Gets the position.
@@ -85,7 +83,6 @@ public class ProfileFilter {
    */
   public void setPosition(String position) { 
     this.position = position; 
-    this.isEmpty = false;
   }
 
   /**
@@ -102,7 +99,6 @@ public class ProfileFilter {
    */
   public void setCompany(String company) {
     this.company = company;
-    this.isEmpty = false;
   }
 
   /**
@@ -119,7 +115,6 @@ public class ProfileFilter {
    */
   public void setSkills(String skills) {
     this.skills = skills;
-    this.isEmpty = false;
   }
 
   /**
@@ -129,7 +124,6 @@ public class ProfileFilter {
    */
   public void setName(String name) {
     this.name = name;
-    this.isEmpty = false;
   }
 
   /**
@@ -147,7 +141,6 @@ public class ProfileFilter {
    */
   public void setExcludedIdentityList(List<Identity> excludedIdentityList) {
     this.excludedIdentityList = excludedIdentityList;
-    this.isEmpty = false;
   }
 
   /**
@@ -194,7 +187,6 @@ public class ProfileFilter {
    */
   public void setFirstCharacterOfName(char firstCharacterOfName) {
     this.firstCharacterOfName = firstCharacterOfName;
-    this.isEmpty = false;
   }
 
   public String getAll() {
@@ -203,7 +195,6 @@ public class ProfileFilter {
 
   public void setAll(String all) {
     this.all = SpaceUtils.processUnifiedSearchCondition(all);
-    this.isEmpty = false;
   }
 
   public Sorting getSorting() {
@@ -230,6 +221,12 @@ public class ProfileFilter {
   }
 
   public boolean isEmpty() {
-    return isEmpty;
+    return StringUtils.isBlank(this.all)
+        && StringUtils.isBlank(this.name)
+        && StringUtils.isBlank(this.company)
+        && StringUtils.isBlank(this.position)
+        && StringUtils.isBlank(this.skills)
+        && this.firstCharacterOfName == '\u0000'
+        && (this.excludedIdentityList == null || this.excludedIdentityList.isEmpty() || (this.excludedIdentityList.size() == 1 && this.viewerIdentity != null));
   }
 }

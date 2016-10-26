@@ -46,7 +46,6 @@ import org.exoplatform.social.core.jpa.storage.dao.ActivityDAO;
 import org.exoplatform.social.core.jpa.storage.dao.IdentityDAO;
 import org.exoplatform.social.core.jpa.storage.dao.SpaceDAO;
 import org.exoplatform.social.core.jpa.storage.entity.*;
-import org.exoplatform.social.core.jpa.storage.entity.ProfileExperienceEntity;
 import org.exoplatform.social.core.identity.SpaceMemberFilterListAccess;
 import org.exoplatform.social.core.identity.model.ActiveIdentityFilter;
 import org.exoplatform.social.core.identity.model.Identity;
@@ -56,6 +55,7 @@ import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvide
 import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
 import org.exoplatform.social.core.model.AvatarAttachment;
 import org.exoplatform.social.core.profile.ProfileFilter;
+import org.exoplatform.social.core.relationship.model.Relationship.Type;
 import org.exoplatform.social.core.space.SpaceUtils;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.storage.IdentityStorageException;
@@ -578,10 +578,32 @@ public class RDBMSIdentityStorageImpl extends IdentityStorageImpl {
   @Override
   public List<Identity> getIdentitiesForMentions(String providerId,
                                                  ProfileFilter profileFilter,
+                                                 Type type,
                                                  long offset,
                                                  long limit,
                                                  boolean forceLoadOrReloadProfile) throws IdentityStorageException {
-    return getIdentitiesByProfileFilter(providerId, profileFilter, offset, limit, forceLoadOrReloadProfile);
+    Identity identity = null;
+    if (profileFilter.getViewerIdentity() != null) {
+      identity = profileFilter.getViewerIdentity();
+    }
+    if (OrganizationIdentityProvider.NAME.equals(providerId)) {
+      return profileSearchConnector.search(identity, profileFilter, type, offset, limit);
+    } else {
+      throw new IllegalStateException("Can't search identities with provider id = " + providerId);
+    }
+  }
+
+  @Override
+  public int getIdentitiesForMentionsCount(String providerId, ProfileFilter profileFilter, Type type) throws IdentityStorageException {
+    Identity identity = null;
+    if(profileFilter.getViewerIdentity() != null) {
+      identity = profileFilter.getViewerIdentity();
+    }
+    if (OrganizationIdentityProvider.NAME.equals(providerId)) {
+      return profileSearchConnector.count(identity, profileFilter, type);
+    } else {
+      throw new IllegalStateException("Can't search identities with provider id = " + providerId);
+    }
   }
 
   @Override

@@ -92,7 +92,7 @@ public class CachedIdentityStorage implements IdentityStorage {
       exoIdentitiesCountCache.select(new IdentityCacheSelector(OrganizationIdentityProvider.NAME));
     }
     catch (Exception e) {
-      LOG.error(e);
+      LOG.error("Error when clearing cache", e);
     }
 
   }
@@ -406,28 +406,21 @@ public class CachedIdentityStorage implements IdentityStorage {
   /**
    * {@inheritDoc}
    */
-  public List<Identity> getIdentitiesForMentions(final String providerId, final ProfileFilter profileFilter,
+  @Override
+  public List<Identity> getIdentitiesForMentions(final String providerId, final ProfileFilter profileFilter, final org.exoplatform.social.core.relationship.model.Relationship.Type type,
       final long offset, final long limit, final boolean forceLoadOrReloadProfile) throws IdentityStorageException {
-
-    //
-    IdentityFilterKey key = new IdentityFilterKey(providerId, profileFilter);
-    ListIdentitiesKey listKey = new ListIdentitiesKey(key, offset, limit);
-
-    //
-    ListIdentitiesData keys = identitiesCache.get(
-        new ServiceContext<ListIdentitiesData>() {
-          public ListIdentitiesData execute() {
-            List<Identity> got = storage.getIdentitiesForMentions(
-                providerId, profileFilter, offset, limit, forceLoadOrReloadProfile);
-            return buildIds(got);
-          }
-        },
-        listKey);
-
-    //
-    LOG.trace("getIdentitiesForMentions:: return " + keys.getIds().size());
-    return buildIdentities(keys);
-    
+    // Avoid using cache when requesting indexes
+    return storage.getIdentitiesForMentions(providerId, profileFilter, type, offset, limit, forceLoadOrReloadProfile);
+  }
+  
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public int getIdentitiesForMentionsCount(String providerId,
+                                           ProfileFilter profileFilter,
+                                           org.exoplatform.social.core.relationship.model.Relationship.Type type) throws IdentityStorageException {
+    return storage.getIdentitiesForMentionsCount(providerId, profileFilter, type);
   }
 
   /**
@@ -559,23 +552,8 @@ public class CachedIdentityStorage implements IdentityStorage {
                                                       final ProfileFilter profileFilter,
                                                       final long offset,
                                                       final long limit) throws IdentityStorageException {
-    //
-    IdentityFilterKey key = new IdentityFilterKey(providerId, profileFilter);
-    ListIdentitiesKey listKey = new ListIdentitiesKey(key, offset, limit);
-
-    //
-    ListIdentitiesData keys = identitiesCache.get(
-        new ServiceContext<ListIdentitiesData>() {
-          public ListIdentitiesData execute() {
-            List<Identity> got = storage.getIdentitiesForUnifiedSearch(providerId, profileFilter, offset, limit);
-            return buildIds(got);
-          }
-        },
-        listKey);
-
-    //
-    return buildIdentities(keys);
-    
+    // Avoid using cache when requesting ES
+    return storage.getIdentitiesForUnifiedSearch(providerId, profileFilter, offset, limit);
   }
   
   @Override

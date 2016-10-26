@@ -41,6 +41,7 @@ import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.service.LinkProvider;
+import org.exoplatform.social.core.storage.impl.StorageUtils;
 
 public class PeopleElasticUnifiedSearchServiceConnector extends ElasticSearchServiceConnector {
 
@@ -79,6 +80,13 @@ public class PeopleElasticUnifiedSearchServiceConnector extends ElasticSearchSer
   }
   
   protected String buildFilteredQuery(String query, Collection<String> sites, List<ElasticSearchFilter> filters, int offset, int limit, String sort, String order) {
+    if(query.contains("~")) {
+      query = query.substring(0, query.lastIndexOf("~"));
+    }
+    query = query.trim();
+    if(StringUtils.isNotBlank(query)) {
+      query = StorageUtils.ASTERISK_STR + query + StorageUtils.ASTERISK_STR;
+    }
     StringBuilder esQuery = new StringBuilder();
     esQuery.append("{\n");
     esQuery.append("     \"from\" : " + offset + ", \"size\" : " + limit + ",\n");

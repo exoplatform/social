@@ -138,7 +138,7 @@ public class ProfileFilterListAccess implements ListAccess<Identity> {
           identities = identityStorage.getIdentitiesWithRelationships(profileFilter.getViewerIdentity().getId(), offset, limit);
         }
       } else {
-        identities = identityStorage.getIdentitiesForMentions(providerId, profileFilter, offset,
+        identities = identityStorage.getIdentitiesForMentions(providerId, profileFilter, null, offset,
                                                               limit, forceLoadProfile);
       }
     }
@@ -153,12 +153,14 @@ public class ProfileFilterListAccess implements ListAccess<Identity> {
     int size = 0; 
     if (profileFilter.getFirstCharacterOfName() != EMPTY_CHARACTER) {
       size = identityStorage.getIdentitiesByFirstCharacterOfNameCount(providerId, profileFilter);
-    } else {
+    } else if (profileFilter.isEmpty()) {
       if(profileFilter.getViewerIdentity() == null) {
         size = identityStorage.getIdentitiesByProfileFilterCount(providerId, profileFilter);
       } else {
         size = identityStorage.countIdentitiesWithRelationships(profileFilter.getViewerIdentity().getId());
       }
+    } else {
+      size = identityStorage.getIdentitiesForMentionsCount(providerId, profileFilter, null);
     }
 
     return size;

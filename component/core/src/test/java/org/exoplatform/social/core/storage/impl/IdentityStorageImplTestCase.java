@@ -1286,20 +1286,20 @@ public class IdentityStorageImplTestCase extends AbstractCoreTest {
     filter.setPosition("");
     filter.setSkills("");
     
-    List<Identity> identities = storage.getIdentitiesForMentions(providerId, filter, 0, 10, true);
+    List<Identity> identities = storage.getIdentitiesForMentions(providerId, filter, null, 0, 10, true);
     assertEquals(4, identities.size());
     
     //disable user1
     IdentityStorage identityStorage = (IdentityStorage) getContainer().getComponentInstanceOfType(IdentityStorage.class);
     identityStorage.processEnabledIdentity(identity1, false);
     
-    identities = storage.getIdentitiesForMentions(providerId, filter, 0, 10, true);
+    identities = storage.getIdentitiesForMentions(providerId, filter, null, 0, 10, true);
     assertEquals(3, identities.size());
     
     //re-enable user1
     identityStorage.processEnabledIdentity(identity1, true);
     
-    identities = storage.getIdentitiesForMentions(providerId, filter, 0, 10, true);
+    identities = storage.getIdentitiesForMentions(providerId, filter, null, 0, 10, true);
     assertEquals(4, identities.size());
   }
 

@@ -29,6 +29,7 @@ import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.IdentityWithRelationship;
 import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.profile.ProfileFilter;
+import org.exoplatform.social.core.relationship.model.Relationship.Type;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.storage.IdentityStorageException;
 import org.exoplatform.social.core.storage.api.IdentityStorage;
@@ -129,8 +130,8 @@ public class MigrationIdentityStorage implements IdentityStorage {
   }
 
   @Override
-  public List<Identity> getIdentitiesForMentions(String providerId, ProfileFilter profileFilter, long offset, long limit, boolean forceLoadOrReloadProfile) throws IdentityStorageException {
-    return jpaStorage.getIdentitiesForMentions(providerId, profileFilter, offset, limit, forceLoadOrReloadProfile);
+  public List<Identity> getIdentitiesForMentions(String providerId, ProfileFilter profileFilter, Type type, long offset, long limit, boolean forceLoadOrReloadProfile) throws IdentityStorageException {
+    return jpaStorage.getIdentitiesForMentions(providerId, profileFilter, type, offset, limit, forceLoadOrReloadProfile);
   }
 
   @Override
@@ -196,5 +197,10 @@ public class MigrationIdentityStorage implements IdentityStorage {
   @Override
   public int countIdentitiesWithRelationships(String identityId) throws Exception {
     return jpaStorage.countIdentitiesWithRelationships(identityId);
+  }
+  
+  @Override
+  public int getIdentitiesForMentionsCount(String providerId, ProfileFilter profileFilter, Type type) throws IdentityStorageException {
+    return jpaStorage.getIdentitiesForMentionsCount(providerId, profileFilter, type);
   }
 }

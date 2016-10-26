@@ -23,23 +23,12 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.exoplatform.social.core.jpa.updater.RelationshipMigrationService;
 import org.mockito.Mockito;
 
-import org.exoplatform.addons.es.index.IndexingOperationProcessor;
-import org.exoplatform.addons.es.index.IndexingService;
 import org.exoplatform.commons.api.search.data.SearchContext;
-import org.exoplatform.commons.utils.PropertyManager;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
-import org.exoplatform.services.organization.User;
 import org.exoplatform.services.security.ConversationState;
-import org.exoplatform.social.core.jpa.test.AbstractCoreTest;
-import org.exoplatform.social.core.identity.IdentityProvider;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.identity.model.Profile.UpdateType;
@@ -47,59 +36,25 @@ import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvide
 import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.profile.ProfileFilter;
 import org.exoplatform.social.core.relationship.model.Relationship;
+import org.exoplatform.social.core.space.impl.DefaultSpaceApplicationHandler;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.storage.api.SpaceStorage;
-import org.exoplatform.social.core.storage.impl.IdentityStorageImpl;
-import org.exoplatform.social.core.storage.impl.RelationshipStorageImpl;
 
 /**
  * Created by The eXo Platform SAS Author : eXoPlatform exo@exoplatform.com Sep
  * 30, 2015
  */
-public class SearchTestIT extends AbstractCoreTest {
+public class SearchTestIT extends BaseESTest {
 
   protected final Log                               LOG    = ExoLogger.getLogger(SearchTestIT.class);
 
-  private IndexingService                           indexingService;
-
-  private IndexingOperationProcessor                indexingProcessor;
-
-  private ProfileSearchConnector                    searchConnector;
-  
-  private PeopleElasticUnifiedSearchServiceConnector peopleSearchConnector;
-
-  private SpaceElasticUnifiedSearchServiceConnector spaceSearchConnector;
-
-  private String                                    urlClient;
-
-  private HttpClient                                client = new DefaultHttpClient();
-
   private SpaceStorage                              spaceStorage;
-
-  private IdentityStorageImpl                       identityStorageImpl;
-
-  private RelationshipStorageImpl                   relationshipStorageImpl;
-
-  private RelationshipMigrationService relationshipMigration;
-
-  private IdentityProvider<User>                    identityProvider;
   
   private SearchContext searchContext = Mockito.mock(SearchContext.class);
 
   @Override
   protected void setUp() throws Exception {
     super.setUp();
-    indexingService = getService(IndexingService.class);
-    indexingProcessor = getService(IndexingOperationProcessor.class);
-    identityManager = getService(IdentityManager.class);
-    searchConnector = getService(ProfileSearchConnector.class);
-    peopleSearchConnector = getService(PeopleElasticUnifiedSearchServiceConnector.class);
-    spaceSearchConnector = getService(SpaceElasticUnifiedSearchServiceConnector.class);
-    deleteAllProfilesInES();
-    deleteAllSpaceInES();
-
-    assertNotNull("identityManager must not be null", identityManager);
-    urlClient = PropertyManager.getProperty("exo.es.search.server.url");
 
     org.exoplatform.services.security.Identity identity = new org.exoplatform.services.security.Identity("root");
     ConversationState.setCurrent(new ConversationState(identity));
@@ -113,11 +68,6 @@ public class SearchTestIT extends AbstractCoreTest {
 
     identityManager = getService(IdentityManager.class);
     spaceStorage = getService(SpaceStorage.class);
-    //
-    identityProvider = getService(IdentityProvider.class);
-    identityStorageImpl = getService(IdentityStorageImpl.class);
-    relationshipStorageImpl = getService(RelationshipStorageImpl.class);
-    relationshipMigration = getService(RelationshipMigrationService.class);
   }
 
   @Override
@@ -126,7 +76,6 @@ public class SearchTestIT extends AbstractCoreTest {
     for (Space space : spaces) {
       spaceStorage.deleteSpace(space.getId());
     }
-    deleteAllSpaceInES();
     super.tearDown();
   }
 
@@ -134,9 +83,8 @@ public class SearchTestIT extends AbstractCoreTest {
     // Given
     Identity ghostIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "ghost", true);
     Identity paulIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "paul", true);
-    indexingService.index(ProfileIndexingServiceConnector.TYPE, paulIdentity.getId());
-    indexingProcessor.process();
-    refreshIndices();
+    reindexProfileById(paulIdentity.getId());
+
     ProfileFilter filter = new ProfileFilter();
     // When
     List<Identity> results = searchConnector.search(ghostIdentity, filter, null, 0, 10);
@@ -148,10 +96,9 @@ public class SearchTestIT extends AbstractCoreTest {
     // Given
     relationshipManager.inviteToConnect(johnIdentity, maryIdentity);
 
-    indexingService.index(ProfileIndexingServiceConnector.TYPE, johnIdentity.getId());
-    indexingService.index(ProfileIndexingServiceConnector.TYPE, maryIdentity.getId());
-    indexingProcessor.process();
-    refreshIndices();
+    reindexProfileById(johnIdentity.getId());
+    reindexProfileById(maryIdentity.getId());
+
     ProfileFilter filter = new ProfileFilter();
     // When
     // All the users that have an incoming request from John
@@ -162,11 +109,12 @@ public class SearchTestIT extends AbstractCoreTest {
     List<Identity> resultsOutMary = searchConnector.search(maryIdentity, filter, Relationship.Type.INCOMING, 0, 10);
     // All the users that have sent an outgoing request to Mary
     List<Identity> resultsInMary = searchConnector.search(maryIdentity, filter, Relationship.Type.OUTGOING, 0, 10);
+
     // Then
-    assertThat(resultsOutJohn.size(), is(1));
-    assertThat(resultsInJohn.size(), is(0));
-    assertThat(resultsOutMary.size(), is(0));
-    assertThat(resultsInMary.size(), is(1));
+    assertThat(resultsOutJohn.size(), is(0));
+    assertThat(resultsInJohn.size(), is(1));
+    assertThat(resultsOutMary.size(), is(1));
+    assertThat(resultsInMary.size(), is(0));
   }
 
   
@@ -178,11 +126,9 @@ public class SearchTestIT extends AbstractCoreTest {
     profile.setListUpdateTypes(Arrays.asList(UpdateType.ABOUT_ME));
     profile.setProperty(Profile.FULL_NAME, "Root Root");
     identityManager.updateProfile(profile);
-    indexingService.index(ProfileIndexingServiceConnector.TYPE, rootIdentity.getId());
-    
-    indexingProcessor.process();
-    refreshIndices();
-    
+
+    reindexProfileById(rootIdentity.getId());
+
     assertEquals(1, peopleSearchConnector.search(searchContext, "Root Root", null, 0, 10, null, null).size());
   }
 
@@ -220,37 +166,15 @@ public class SearchTestIT extends AbstractCoreTest {
     space.setDescription(description);
     space.setManagers(new String[] { "root" });
     space.setGroupId("/platform/users");
+    space.setRegistration(Space.OPEN);
+    space.setType(DefaultSpaceApplicationHandler.NAME);
+    space.setVisibility(Space.PUBLIC);
+    space.setPriority(Space.INTERMEDIATE_PRIORITY);
+    space.setUrl(space.getPrettyName());
     spaceStorage.saveSpace(space, true);
-    space = spaceStorage.getAllSpaces().get(0);
 
-    indexingService.index(SpaceIndexingServiceConnector.TYPE, space.getId());
-    indexingProcessor.process();
-    refreshSpaceIndices();
+    reindexSpaceById(space.getId());
     return space;
-  }
-
-  private void deleteAllSpaceInES() {
-    indexingService.unindexAll(SpaceIndexingServiceConnector.TYPE);
-    indexingProcessor.process();
-  }
-
-  private void refreshSpaceIndices() throws IOException {
-    HttpPost request = new HttpPost(urlClient + "/space/_refresh");
-    LOG.info("Refreshing ES by calling {}", request.getURI());
-    HttpResponse response = client.execute(request);
-    assertThat(response.getStatusLine().getStatusCode(), is(200));
-  }
-
-  private void refreshIndices() throws IOException {
-    HttpPost request = new HttpPost(urlClient + "/profile/_refresh");
-    LOG.info("Refreshing ES by calling {}", request.getURI());
-    HttpResponse response = client.execute(request);
-    assertThat(response.getStatusLine().getStatusCode(), is(200));
-  }
-
-  private void deleteAllProfilesInES() {
-    indexingService.unindexAll(ProfileIndexingServiceConnector.TYPE);
-    indexingProcessor.process();
   }
 
 }

@@ -50,14 +50,12 @@ public class RDBMSRelationshipStorageImpl extends RelationshipStorageImpl {
   private final ConnectionDAO connectionDAO;
   private final IdentityDAO identityDAO;
   private final RDBMSIdentityStorageImpl identityStorage;
-  private final ProfileSearchConnector profileESConnector;
 
-  public RDBMSRelationshipStorageImpl(RDBMSIdentityStorageImpl identityStorage, ConnectionDAO connectionDAO, IdentityDAO identityDAO, ProfileSearchConnector profileESConnector) {
+  public RDBMSRelationshipStorageImpl(RDBMSIdentityStorageImpl identityStorage, ConnectionDAO connectionDAO, IdentityDAO identityDAO) {
     super(identityStorage);
     this.connectionDAO = connectionDAO;
     this.identityDAO = identityDAO;
     this.identityStorage = identityStorage;
-    this.profileESConnector = profileESConnector;
   }
 
   @Override

@@ -24,6 +24,7 @@ import org.exoplatform.social.core.identity.model.ActiveIdentityFilter;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.profile.ProfileFilter;
+import org.exoplatform.social.core.relationship.model.Relationship.Type;
 import org.exoplatform.social.core.storage.IdentityStorageException;
 import org.exoplatform.social.core.storage.impl.IdentityStorageImpl;
 
@@ -220,13 +221,13 @@ public class SynchronizedIdentityStorage extends IdentityStorageImpl {
    */
   @Override
   public List<Identity> getIdentitiesForMentions(
-      final String providerId, final ProfileFilter profileFilter, final long offset, final long limit,
+      final String providerId, final ProfileFilter profileFilter, final Type type, final long offset, final long limit,
       final boolean forceLoadOrReloadProfile)
       throws IdentityStorageException {
 
     boolean created = startSynchronization();
     try {
-       return super.getIdentitiesForMentions(providerId, profileFilter, offset, limit, forceLoadOrReloadProfile);
+       return super.getIdentitiesForMentions(providerId, profileFilter, type, offset, limit, forceLoadOrReloadProfile);
     }
     finally {
       stopSynchronization(created);

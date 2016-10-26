@@ -17,9 +17,9 @@
 
 package org.exoplatform.social.core.storage.cache.selector;
 
+import org.apache.commons.lang.StringUtils;
+
 import org.exoplatform.services.cache.ObjectCacheInfo;
-import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
-import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
 import org.exoplatform.social.core.storage.cache.model.key.IdentityFilterKey;
 import org.exoplatform.social.core.storage.cache.model.key.ListIdentitiesKey;
 import org.exoplatform.social.core.storage.cache.model.key.ScopeCacheKey;
@@ -34,12 +34,8 @@ public class IdentityCacheSelector extends ScopeCacheSelector<ScopeCacheKey, Obj
 
   public IdentityCacheSelector(final String provider) {
 
-    if (provider == null) {
-      throw new NullPointerException();
-    }
-
-    if (!provider.equals(OrganizationIdentityProvider.NAME) && !provider.equals(SpaceIdentityProvider.NAME)) {
-      throw new IllegalArgumentException();
+    if (StringUtils.isBlank(provider)) {
+      throw new IllegalArgumentException("Provider id is empty");
     }
 
     this.provider = provider;
@@ -48,17 +44,20 @@ public class IdentityCacheSelector extends ScopeCacheSelector<ScopeCacheKey, Obj
   @Override
   public boolean select(final ScopeCacheKey key, final ObjectCacheInfo<? extends Object> ocinfo) {
 
+    if (key == null) {
+      return false;
+    }
+
     if (!super.select(key, ocinfo)) {
       return false;
     }
 
     if (key instanceof IdentityFilterKey) {
-      return ((IdentityFilterKey)key).getProviderId().equals(OrganizationIdentityProvider.NAME);
+      return provider.equals(((IdentityFilterKey)key).getProviderId());
     }
 
     if (key instanceof ListIdentitiesKey) {
-      return ((ListIdentitiesKey)key).getKey().getProviderId().equals(OrganizationIdentityProvider.NAME) || 
-                                      ((ListIdentitiesKey)key).getKey().getProviderId().equals(SpaceIdentityProvider.NAME);
+      return provider.equals(((ListIdentitiesKey)key).getKey().getProviderId());
     }
 
     return false;

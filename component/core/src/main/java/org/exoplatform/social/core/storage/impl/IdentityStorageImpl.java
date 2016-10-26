@@ -19,7 +19,6 @@ package org.exoplatform.social.core.storage.impl;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -85,7 +84,6 @@ import org.exoplatform.social.core.storage.api.SpaceStorage;
 import org.exoplatform.social.core.storage.exception.NodeAlreadyExistsException;
 import org.exoplatform.social.core.storage.exception.NodeNotFoundException;
 import org.exoplatform.social.core.storage.query.JCRProperties;
-import org.exoplatform.social.core.storage.query.QueryFunction;
 import org.exoplatform.social.core.storage.query.WhereExpression;
 
 /**
@@ -1083,37 +1081,31 @@ public class IdentityStorageImpl extends AbstractStorage implements IdentityStor
   /**
    * {@inheritDoc}
    */
+  @Override
   public List<Identity> getIdentitiesForMentions(
-      final String providerId, final ProfileFilter profileFilter, long offset, long limit,
+      final String providerId, final ProfileFilter profileFilter,
+      org.exoplatform.social.core.relationship.model.Relationship.Type type,
+      long offset, long limit,
       boolean forceLoadOrReloadProfile)
       throws IdentityStorageException {
+    if(type != null) {
+      switch (type) {
+      case CONFIRMED:
+        return getRelationshipStorage().getConnectionsByFilter(null, profileFilter, offset, limit);
+      case INCOMING:
+        return getRelationshipStorage().getIncomingByFilter(null, profileFilter, offset, limit);
+      case OUTGOING:
+        return getRelationshipStorage().getOutgoingByFilter(null, profileFilter, offset, limit);
+      default:
+        break;
+      }
+    }
 
     if (offset < 0) {
       offset = 0;
     }
 
-    QueryBuilder<ProfileEntity> builder = getSession().createQueryBuilder(ProfileEntity.class);
-    WhereExpression whereExpression = new WhereExpression();
-
-    whereExpression
-        .like(JCRProperties.path, getProviderRoot().getProviders().get(
-                                                    providerId).getPath() + StorageUtils.SLASH_STR + StorageUtils.PERCENT_STR)
-        .and()
-        .not().equals(ProfileEntity.deleted, "true");
-
-    if (profileFilter != null) {
-      List<Identity> excludedIdentityList = profileFilter.getExcludedIdentityList();
-      StorageUtils.applyExcludes(whereExpression, excludedIdentityList);
-      StorageUtils.applyFilter(whereExpression, profileFilter);
-    }
-
-    builder.where(whereExpression.toString());
-    applyOrder(builder, profileFilter);
-
-    QueryImpl<ProfileEntity> queryImpl = (QueryImpl<ProfileEntity>) builder.get();
-    ((org.exoplatform.services.jcr.impl.core.query.QueryImpl) queryImpl.getNativeQuery()).setCaseInsensitiveOrder(true);
-    
-    QueryResult<ProfileEntity> results = queryImpl.objects();
+    QueryResult<ProfileEntity> results = getFilteredProfiles(providerId, profileFilter);
 
     //QueryResult<ProfileEntity> results = builder.get().objects();
     
@@ -1142,6 +1134,52 @@ public class IdentityStorageImpl extends AbstractStorage implements IdentityStor
     }
 
     return identityResult.result();
+  }
+
+  @Override
+  public int getIdentitiesForMentionsCount(String providerId,
+                                           ProfileFilter profileFilter,
+                                           org.exoplatform.social.core.relationship.model.Relationship.Type type) throws IdentityStorageException {
+    if(type != null) {
+      switch (type) {
+      case CONFIRMED:
+        return getRelationshipStorage().getConnectionsCountByFilter(null, profileFilter);
+      case INCOMING:
+        return getRelationshipStorage().getIncomingCountByFilter(null, profileFilter);
+      case OUTGOING:
+        return getRelationshipStorage().getOutgoingCountByFilter(null, profileFilter);
+      default:
+        break;
+      }
+    }
+
+    return getFilteredProfiles(providerId, profileFilter).size();
+  }
+
+  private QueryResult<ProfileEntity> getFilteredProfiles(final String providerId, final ProfileFilter profileFilter) {
+    QueryBuilder<ProfileEntity> builder = getSession().createQueryBuilder(ProfileEntity.class);
+    WhereExpression whereExpression = new WhereExpression();
+
+    whereExpression
+        .like(JCRProperties.path, getProviderRoot().getProviders().get(
+                                                    providerId).getPath() + StorageUtils.SLASH_STR + StorageUtils.PERCENT_STR)
+        .and()
+        .not().equals(ProfileEntity.deleted, "true");
+
+    if (profileFilter != null) {
+      List<Identity> excludedIdentityList = profileFilter.getExcludedIdentityList();
+      StorageUtils.applyExcludes(whereExpression, excludedIdentityList);
+      StorageUtils.applyFilter(whereExpression, profileFilter);
+    }
+
+    builder.where(whereExpression.toString());
+    applyOrder(builder, profileFilter);
+
+    QueryImpl<ProfileEntity> queryImpl = (QueryImpl<ProfileEntity>) builder.get();
+    ((org.exoplatform.services.jcr.impl.core.query.QueryImpl) queryImpl.getNativeQuery()).setCaseInsensitiveOrder(true);
+    
+    QueryResult<ProfileEntity> results = queryImpl.objects();
+    return results;
   }
   
 
@@ -1266,29 +1304,7 @@ public class IdentityStorageImpl extends AbstractStorage implements IdentityStor
       long offset, long limit, boolean forceLoadOrReloadProfile) throws IdentityStorageException {
 
 
-    //
-    QueryBuilder<ProfileEntity> builder = getSession().createQueryBuilder(ProfileEntity.class);
-    WhereExpression whereExpression = new WhereExpression();
-
-    whereExpression
-        .like(JCRProperties.path, getProviderRoot().getProviders().get(
-                                                    providerId).getPath() + StorageUtils.SLASH_STR + StorageUtils.PERCENT_STR)
-        .and()
-        .not().equals(ProfileEntity.deleted, "true");
-
-    if (profileFilter != null) {
-      List<Identity> excludedIdentityList = profileFilter.getExcludedIdentityList();
-      StorageUtils.applyExcludes(whereExpression, excludedIdentityList);
-      StorageUtils.applyFilter(whereExpression, profileFilter);
-    }
-
-    builder.where(whereExpression.toString());
-    applyOrder(builder, profileFilter);
-
-    QueryImpl<ProfileEntity> queryImpl = (QueryImpl<ProfileEntity>) builder.get();
-    ((org.exoplatform.services.jcr.impl.core.query.QueryImpl) queryImpl.getNativeQuery()).setCaseInsensitiveOrder(true);
-    
-    QueryResult<ProfileEntity> results = queryImpl.objects();
+    QueryResult<ProfileEntity> results = getFilteredProfiles(providerId, profileFilter);
     
     //
     IdentityResult identityResult = new IdentityResult(offset, limit, results.size());
@@ -1554,7 +1570,7 @@ public class IdentityStorageImpl extends AbstractStorage implements IdentityStor
     Identity currentUserIdentity = findIdentity(OrganizationIdentityProvider.NAME, identityId);
 
     ProfileFilter profileFilter = new ProfileFilter();
-    profileFilter.getExcludedIdentityList().add(currentUserIdentity);
+    profileFilter.setViewerIdentity(currentUserIdentity);
     List<Identity> identitiesByProfileFilter = getIdentitiesByProfileFilter(OrganizationIdentityProvider.NAME,
                                                                             profileFilter,
                                                                             offset,
@@ -1582,7 +1598,7 @@ public class IdentityStorageImpl extends AbstractStorage implements IdentityStor
     Identity currentUserIdentity = findIdentity(OrganizationIdentityProvider.NAME, identityId);
 
     ProfileFilter profileFilter = new ProfileFilter();
-    profileFilter.getExcludedIdentityList().add(currentUserIdentity);
+    profileFilter.setViewerIdentity(currentUserIdentity);
     return getIdentitiesByProfileFilterCount(OrganizationIdentityProvider.NAME, profileFilter);
   }
 }

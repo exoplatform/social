@@ -27,6 +27,7 @@ import org.exoplatform.social.core.relationship.RelationshipListener;
 import org.exoplatform.social.core.relationship.RelationshipListenerPlugin;
 import org.exoplatform.social.core.relationship.model.Relationship;
 import org.exoplatform.social.core.relationship.model.Relationship.Type;
+import org.exoplatform.social.core.storage.api.IdentityStorage;
 import org.exoplatform.social.core.storage.api.RelationshipStorage;
 import org.exoplatform.social.core.storage.RelationshipStorageException;
 
@@ -41,6 +42,8 @@ import java.util.*;
 public class RelationshipManagerImpl implements RelationshipManager {
   /** The activityStorage. */
   protected RelationshipStorage   storage;
+
+  protected IdentityStorage identityStorage;
 
   /**
    * lifecycle of a relationship.
@@ -68,8 +71,9 @@ public class RelationshipManagerImpl implements RelationshipManager {
    * 
    * @param relationshipStorage
    */
-  public RelationshipManagerImpl(RelationshipStorage relationshipStorage) {
+  public RelationshipManagerImpl(IdentityStorage identityStorage, RelationshipStorage relationshipStorage) {
     this.storage = relationshipStorage;
+    this.identityStorage = identityStorage;
   }
 
   /**
@@ -540,18 +544,18 @@ public class RelationshipManagerImpl implements RelationshipManager {
   }
 
   public ListAccess<Identity> getConnectionsByFilter(Identity existingIdentity, ProfileFilter profileFilter) {
-    return new ConnectionFilterListAccess(this.storage, existingIdentity, profileFilter,
+    return new ConnectionFilterListAccess(identityStorage, this.storage, existingIdentity, profileFilter,
                                           ConnectionFilterListAccess.Type.PROFILE_FILTER_CONNECTION);
   }
 
   public ListAccess<Identity> getIncomingByFilter(Identity existingIdentity, ProfileFilter profileFilter) {
-    return new ConnectionFilterListAccess(this.storage, existingIdentity, profileFilter,
+    return new ConnectionFilterListAccess(identityStorage, this.storage, existingIdentity, profileFilter,
                                           ConnectionFilterListAccess.Type.PROFILE_FILTER_INCOMMING);
   }
 
   public ListAccess<Identity> getOutgoingByFilter(Identity existingIdentity, ProfileFilter profileFilter) {
     
-    return new ConnectionFilterListAccess(this.storage, existingIdentity, profileFilter,
+    return new ConnectionFilterListAccess(identityStorage, this.storage, existingIdentity, profileFilter,
                                           ConnectionFilterListAccess.Type.PROFILE_FILTER_OUTGOING);
   }
 

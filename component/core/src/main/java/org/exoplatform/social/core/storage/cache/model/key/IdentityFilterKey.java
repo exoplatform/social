@@ -34,6 +34,8 @@ import org.exoplatform.social.core.search.Sorting;
  */
 public class IdentityFilterKey extends ScopeCacheKey {
 
+  private static final long serialVersionUID = 6711481249085725845L;
+
   private final String providerId;
   private final String remoteId;
   private final String name;
@@ -77,7 +79,7 @@ public class IdentityFilterKey extends ScopeCacheKey {
   public IdentityFilterKey(final String providerId, final ProfileFilter filter) {
 
     this.providerId = providerId;
-    this.remoteId = null;
+    this.remoteId = ( filter.getViewerIdentity() == null ) ? null : filter.getViewerIdentity().getRemoteId();
     this.name = filter.getName();
     this.position = filter.getPosition();
     this.company = filter.getCompany();

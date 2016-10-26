@@ -16,6 +16,7 @@
  */
 package org.exoplatform.social.core.jpa.search;
 
+import java.text.Normalizer;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -25,6 +26,7 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import org.apache.commons.lang.StringUtils;
 
 import org.exoplatform.addons.es.client.ElasticSearchingClient;
 import org.exoplatform.addons.es.search.ElasticSearchException;
@@ -63,10 +65,14 @@ public class ProfileSearchConnector {
                                      Type type,
                                      long offset,
                                      long limit) {
+    if(identity == null && filter.getViewerIdentity() != null) {
+      identity = filter.getViewerIdentity();
+    }
     String esQuery = buildQueryStatement(identity, filter, type, offset, limit);
     String jsonResponse = this.client.sendRequest(esQuery, this.index, this.searchType);
     return buildResult(jsonResponse);
   }
+
   /**
    * TODO it will be remove to use "_count" query
    * 
@@ -174,7 +180,7 @@ public class ProfileSearchConnector {
       esQuery.append("\"query\" : {\n");
       esQuery.append("\"filtered\" :{\n");
       esQuery.append("  \"query\" : {\n");
-        esQuery.append("    \"bool\" : {\n");
+      esQuery.append("    \"bool\" : {\n");
       esQuery.append("\"must_not\": [\n");
       esQuery.append("        {\n");
       esQuery.append("          \"ids\" : {\n");
@@ -254,10 +260,14 @@ public class ProfileSearchConnector {
         result = "connections";
         break;
       case INCOMING:
-        result = "incomings";
+        // Search for identity of current user viewer
+        // in the outgoings relationships field of other identities
+        result = "outgoings";
         break;
       case OUTGOING:
-        result = "outgoings";
+        // Search for identity of current user viewer
+        // in the incomings relationships field of other identities
+        result = "incomings";
         break;
       default:
         throw new IllegalArgumentException("Type ["+type+"] not supported");
@@ -273,30 +283,37 @@ public class ProfileSearchConnector {
       esExp.append("lastName:").append(firstChar).append(StorageUtils.ASTERISK_STR);
       return esExp.toString();
     }
+
     //
-    String inputName = filter.getName().replace(StorageUtils.ASTERISK_STR, StorageUtils.EMPTY_STR);
-    if (inputName != null && inputName.length() > 0) {
-      esExp.append("name:").append(StorageUtils.ASTERISK_STR).append(inputName).append(StorageUtils.ASTERISK_STR);
+    String inputName = StringUtils.isBlank(filter.getName()) ? null : filter.getName().replace(StorageUtils.ASTERISK_STR, StorageUtils.EMPTY_STR);
+    if (StringUtils.isNotBlank(inputName)) {
+      esExp.append("name:").append(StorageUtils.ASTERISK_STR).append(removeAccents(inputName)).append(StorageUtils.ASTERISK_STR);
     }
 
     //skills
-    String skills = filter.getSkills().replace(StorageUtils.ASTERISK_STR, StorageUtils.EMPTY_STR);
-    if (skills != null && skills.length() > 0) {
+    String skills = StringUtils.isBlank(filter.getSkills()) ? null : filter.getSkills().replace(StorageUtils.ASTERISK_STR, StorageUtils.EMPTY_STR);
+    if (StringUtils.isNotBlank(skills)) {
       if (esExp.length() > 0) {
         esExp.append(" AND ");
       }
       //
-      esExp.append("skills:").append(StorageUtils.ASTERISK_STR).append(skills).append(StorageUtils.ASTERISK_STR);
+      esExp.append("skills:").append(StorageUtils.ASTERISK_STR).append(removeAccents(skills)).append(StorageUtils.ASTERISK_STR);
     }
     
     //position
-    String position = filter.getPosition().replace(StorageUtils.ASTERISK_STR, StorageUtils.EMPTY_STR);
-    if (position != null && position.length() > 0) {
+    String position = StringUtils.isBlank(filter.getPosition()) ? null : filter.getPosition().replace(StorageUtils.ASTERISK_STR, StorageUtils.EMPTY_STR);
+    if (StringUtils.isNotBlank(position)) {
       if (esExp.length() > 0) {
         esExp.append(" AND ");
       }
-      esExp.append("position:").append(StorageUtils.ASTERISK_STR).append(position).append(StorageUtils.ASTERISK_STR);
+      esExp.append("position:").append(StorageUtils.ASTERISK_STR).append(removeAccents(position)).append(StorageUtils.ASTERISK_STR);
     }
     return esExp.toString();
+  }
+
+  private static String removeAccents(String string) {
+    string = Normalizer.normalize(string, Normalizer.Form.NFD);
+    string = string.replaceAll("[\\p{InCombiningDiacriticalMarks}]", "");
+    return string;
   }
 }

@@ -160,9 +160,23 @@ public interface IdentityStorage {
    */
   public List<Identity> getIdentitiesForMentions(final String providerId,
                                                  final ProfileFilter profileFilter,
+                                                 org.exoplatform.social.core.relationship.model.Relationship.Type type,
                                                  long offset,
                                                  long limit,
                                                  boolean forceLoadOrReloadProfile) throws IdentityStorageException;
+  
+  /**
+   * Gets the count identities by profile filter.
+   *
+   * @param providerId Id of provider.
+   * @param profileFilter    Information of profile that used in filtering.
+   * @return the number of filtered identities
+   * @throws IdentityStorageException
+   * @since 4.4.0
+   */
+  public int getIdentitiesForMentionsCount(final String providerId,
+                                           final ProfileFilter profileFilter,
+                                           org.exoplatform.social.core.relationship.model.Relationship.Type type) throws IdentityStorageException;
   
   /**
    * Gets the identities for Unified Search.
