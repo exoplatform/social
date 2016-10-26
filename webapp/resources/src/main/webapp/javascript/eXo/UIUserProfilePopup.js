@@ -455,11 +455,7 @@
                 }
 
                 function clearCache() {
-                    $('div#socialUsersData').stop().animate({
-                        'cursor':'none'
-                    }, 1000, function () {
-                        $(this).data("CacheSearch", {});
-                    });
+                  $('div#socialUsersData').data("CacheSearch", {});
                 }
                 window.takeAction = takeAction;
             }
