@@ -64,10 +64,10 @@ CKEDITOR.editorConfig = function( config ) {
 	                  ['-','simpleLink', 'simpleImage'],
 	           ] ;
 
-	config.height = 80;
+	config.height = 110;
 
 	config.autoGrow_onStartup = true;
-	config.autoGrow_minHeight = 80;
+	config.autoGrow_minHeight = 110;
 
     config.placeholder = window.eXo.social.I18n.mentions.defaultMessage;
     config.language = eXo.env.portal.language || 'en';

@@ -118,19 +118,31 @@
           on : {
             instanceReady : function ( evt ) {
               // Hide the editor toolbar
-              $('#' + evt.editor.id + '_bottom').css('display', 'none');
               $("#ShareButton").prop("disabled", true);
-
+              $('#' + evt.editor.id + '_bottom').addClass('cke_bottom_hidden');
             },
             focus : function ( evt ) {
               // Show the editor toolbar, except for smartphones in landscape mode
               if (windowWidth > 767 || windowWidth < windowHeight) {
-                $('#' + evt.editor.id + '_bottom').css('display', 'block');
+                //$('#' + evt.editor.id + '_bottom').css('display', 'block');
+                evt.editor.execCommand('autogrow');
+                $('#' + evt.editor.id + '_contents').animate({
+                  height: "-=38"
+                }, 315);
+                $('#' + evt.editor.id + '_bottom').animate({
+                  height: "39"
+                }, 300, function() {
+                  $('#' + evt.editor.id + '_bottom').removeClass('cke_bottom_hidden');
+                });
               }
             },
             blur : function ( evt ) {
               // Hide the editor toolbar
-              $('#' + evt.editor.id + '_bottom').css('display', 'none');
+              if (windowWidth > 767 || windowWidth < windowHeight) {
+                $('#' + evt.editor.id + '_contents').css('height', $('#' + evt.editor.id + '_contents').height() + 38);
+                $('#' + evt.editor.id + '_bottom').css('height', '0px');
+                $('#' + evt.editor.id + '_bottom').addClass('cke_bottom_hidden');
+              }
             },
             change: function( evt) {
                 var newData = evt.editor.getData();
