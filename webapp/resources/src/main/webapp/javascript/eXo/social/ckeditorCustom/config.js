@@ -56,7 +56,7 @@ CKEDITOR.editorConfig = function( config ) {
 	// style inside the editor
 	config.contentsCss = '/social-resources/javascript/eXo/social/ckeditorCustom/contents.css';
 	
-	config.enterMode = CKEDITOR.ENTER_BR;
+	//config.enterMode = CKEDITOR.ENTER_BR;
 	
 	config.toolbar = [
 	                  ['Bold','Italic','RemoveFormat',],
