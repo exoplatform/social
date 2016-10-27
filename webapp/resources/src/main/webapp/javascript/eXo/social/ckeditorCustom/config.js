@@ -22,7 +22,7 @@ CKEDITOR.editorConfig = function( config ) {
 	config.plugins = 'dialogui,dialog,about,a11yhelp,basicstyles,blockquote,clipboard,panel,floatpanel,menu,contextmenu,button,toolbar,enterkey,entities,popup,filebrowser,floatingspace,listblock,richcombo,format,horizontalrule,htmlwriter,wysiwygarea,image,indent,indentlist,fakeobjects,link,list,maximize,pastetext,pastefromword,removeformat,showborders,sourcearea,specialchar,menubutton,scayt,stylescombo,tab,table,tabletools,undo,wsc,panelbutton,colorbutton,colordialog,autogrow,confighelper';
     CKEDITOR.plugins.addExternal('simpleLink','/commons-extension/eXoPlugins/simpleLink/','plugin.js');
     CKEDITOR.plugins.addExternal('simpleImage','/commons-extension/eXoPlugins/simpleImage/','plugin.js');
-    CKEDITOR.plugins.addExternal('suggester','/commons-extension/javascript/eXo/suggester/','ckeditor_plugin.js');
+    CKEDITOR.plugins.addExternal('suggester','/commons-extension/eXoPlugins/suggester/','plugin.js');
     config.extraPlugins = 'simpleLink,simpleImage,suggester';
 	config.skin = 'moono-exo,/commons-extension/ckeditor/skins/moono-exo/';
 	// %REMOVE_END%
