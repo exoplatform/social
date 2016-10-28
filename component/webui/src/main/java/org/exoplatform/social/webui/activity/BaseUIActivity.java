@@ -921,10 +921,6 @@ public class BaseUIActivity extends UIForm {
       activitiesContainer.removeActivity(uiActivity.getActivity());
 
       WebuiRequestContext context = event.getRequestContext();
-      context.getJavascriptManager()
-             .require("SHARED/social-ui-activity", "activity")
-             .addScripts("activity.responsiveMobile('"
-                 + activitiesContainer.getAncestorOfType(UIPortletApplication.class).getId() + "');");
       //
       boolean isEmptyListActivity = (activitiesContainer.getActivityIdList().size() == 0)
           && (activitiesContainer.getActivityList().size() == 0);
@@ -936,44 +932,6 @@ public class BaseUIActivity extends UIForm {
         event.getRequestContext().addUIComponentToUpdateByAjax(uiActivitiesDisplay);
       }
       Utils.clearUserProfilePopup();
-      Utils.resizeHomePage();
-    }
-  }
-
-  //TODO
-  public static class EditCommentActionListener extends EventListener<BaseUIActivity> {
-
-    @Override
-    public void execute(Event<BaseUIActivity> event) throws Exception {
-      WebuiRequestContext requestContext = event.getRequestContext();
-      String commentId = requestContext.getRequestParameter(OBJECTID);
-      BaseUIActivity uiActivity = event.getSource();
-      ExoSocialActivity comment = null;
-      for (int i=0; i<uiActivity.getComments().size(); i++) {
-        if (uiActivity.getComments().get(i).getId().equals(commentId)) {
-          comment = uiActivity.getComments().get(i);
-          break;
-        }
-      }
-      if (comment != null) {
-        requestContext.getJavascriptManager()
-            .require("SHARED/social-ui-activity", "activity")
-            .addScripts("activity.editComment('"
-                + comment.getTitle() + "' , '"+ comment.getId().replace("CommentLink", "") +"');");
-      } else {
-
-      }
-      /*String oldComment = uiActivity.getActivity().getId();
-      if (uiActivity.isNoLongerExisting(activityId) || uiActivity.isNoLongerExisting(commentId)) {
-        return;
-      }
-      Utils.getActivityManager().deleteComment(activityId, commentId);*/
-      // uiActivity.refresh();
-//      uiActivity.getComments().get(0).setTitle("cc Walid");
-//      uiActivity.refresh();
-      requestContext.addUIComponentToUpdateByAjax(uiActivity);
-
-      Utils.initUserProfilePopup(uiActivity.getId());
       Utils.resizeHomePage();
     }
   }

@@ -84,7 +84,7 @@ var UIActivity = {
         UIActivity.commentBlockEls[i] = $("#" + UIActivity.commentBlockIds[i]);
       }
     }
-    
+
     if (!(UIActivity.commentFormBlockEl && UIActivity.commentTextareaEl && UIActivity.commentButtonEl)) {
       alert('err: init UIActivity!');
     }
@@ -92,7 +92,7 @@ var UIActivity = {
     UIActivity.permaLinkActivityButtonEl.off('click').on('click', function(evt) {
       evt.stopPropagation();
     });
-    
+
     var commentLinkEl = $("#" + UIActivity.commentLinkId);
     // TODO this line is mandatory when a custom skin is defined, it should not be mandatory
     CKEDITOR.basePath = '/commons-extension/ckeditor/';
@@ -126,6 +126,79 @@ var UIActivity = {
         }
       }
     });
+    this.resizeComment();
+
+    if (commentLinkEl.length > 0) {
+      commentLinkEl.off('click').on('click', function (evt) {
+        var currentActivityId = $(this).attr('id').replace('CommentLink', '');
+        var inputContainer = $('#InputContainer' + currentActivityId).fadeToggle('fast', function () {
+          var thiz = $(this);
+          if(thiz.css('display') === 'block') {
+            var blockInput = thiz.parents('.uiActivityStream:first').find('.inputContainerShow');
+            if(blockInput.length > 0) {
+              blockInput.removeClass('inputContainerShow').hide();
+            }
+            thiz.addClass('inputContainerShow');
+            thiz.find('div.replaceTextArea:first').focus();
+            var ctTop = ($(window).height()- thiz.height())/2;
+            var nTop = thiz.offset().top - ctTop - 20;
+            nTop = (nTop > 0) ? nTop : 0;
+
+            $('html, body').animate({scrollTop:nTop}, 'slow');
+          } else {
+            thiz.removeClass('inputContainerShow')
+          }
+        });
+      });
+      $("button[id^='CancelButton']" ).on('click', function (evt) {
+        var currentActivityId = evt.target.id.replace('CancelButton', '');
+        var inputContainer = $('#InputContainer' + currentActivityId);
+        var thiz = $(this);
+        if(thiz.css('display') === 'block') {
+          var blockInput = thiz.parents('.uiActivityStream:first').find('.inputContainerShow');
+          if(blockInput.length > 0) {
+            blockInput.removeClass('inputContainerShow').hide();
+          }
+          thiz.addClass('inputContainerShow');
+          thiz.find('div.replaceTextArea:first').focus();
+          var ctTop = ($(window).height()- thiz.height())/2;
+          var nTop = thiz.offset().top - ctTop - 20;
+          nTop = (nTop > 0) ? nTop : 0;
+
+          $('html, body').animate({scrollTop:nTop}, 'slow');
+        } else {
+          thiz.removeClass('inputContainerShow')
+        }
+
+      });
+    }
+
+    var actionDeletes = $('a.controllDelete');
+    if (actionDeletes.length > 0) {
+      actionDeletes.off('click').on('click', function(e) {
+            e.stopPropagation();
+            $('.currentDeleteActivity:first').removeClass('currentDeleteActivity');
+            var jElm = $(this);
+            jElm.addClass('currentDeleteActivity');
+            var id = jElm.attr('id');
+            if(id == null || id.length == 0) {
+              $('#SocialCurrentConfirm').removeAttr('id');
+              id = "SocialCurrentConfirm";
+              jElm.attr('id', id)
+            }
+            var confirmText = jElm.attr('data-confirm');
+            var captionText = jElm.attr('data-caption');
+            var confirmButton = jElm.attr('data-ok');
+            var cancelButton = jElm.attr('data-close');
+            eXo.social.PopupConfirmation.confirm(id, [{action: UIActivity.removeActivity, label : confirmButton}], captionText, confirmText, cancelButton);
+          }
+      );
+    }
+
+    this.adaptFileBreadCrumb();
+  },
+
+  resizeComment: function (){
     try {
       var arr = $('.commentRight .contentComment img');
       if (arr.length > 0) {
@@ -151,114 +224,10 @@ var UIActivity = {
         }
       }
     } catch(e) {
+      console.error(e);
     };
-
-    if (commentLinkEl.length > 0) {
-      commentLinkEl.off('click').on('click', function (evt) {
-        // if (eXo.social.SocialUtil.checkDevice().isMobile === true) {
-        //   $('.footComment').find('div.replaceTextArea:first').focus();
-        //   return true;
-        // }
-        //
-        var currentActivityId = $(this).attr('id').replace('CommentLink', '');
-        var inputContainer = $('#InputContainer' + currentActivityId).fadeToggle('fast', function () {
-          var thiz = $(this);
-          if(thiz.css('display') === 'block') {
-            var blockInput = thiz.parents('.uiActivityStream:first').find('.inputContainerShow');
-            if(blockInput.length > 0) {
-              blockInput.removeClass('inputContainerShow').hide();
-            }
-            thiz.addClass('inputContainerShow');
-            thiz.find('div.replaceTextArea:first').focus();
-            var ctTop = ($(window).height()- thiz.height())/2;
-            var nTop = thiz.offset().top - ctTop - 20;
-            nTop = (nTop > 0) ? nTop : 0;
-            
-            $('html, body').animate({scrollTop:nTop}, 'slow');
-          } else {
-            thiz.removeClass('inputContainerShow')
-          }
-        });
-      });
-      $("a[id^='EditComment']" ).off('click').on('click', function (evt) {
-        // if (eXo.social.SocialUtil.checkDevice().isMobile === true) {
-        //   $('.footComment').find('div.replaceTextArea:first').focus();
-        //   return true;
-        // }
-        var comment = $('#'+evt.target.parentElement.id.replace('EditComment',''))[0];
-        var currentActivityId = evt.target.parentElement.id.split("-")[0].replace('EditComment', '');
-        CKEDITOR.instances['CommentTextarea' + currentActivityId].insertHtml(comment.innerHTML);
-        var editInputContainer = $('#EditInputContainer' + currentActivityId).fadeToggle('fast', function () {
-          var thiz = $(this);
-          if(thiz.css('display') === 'block') {
-            var blockInput = thiz.parents('.uiActivityStream:first').find('.inputContainerShow');
-            if(blockInput.length > 0) {
-              blockInput.removeClass('inputContainerShow').hide();
-            }
-            thiz.addClass('inputContainerShow');
-            thiz.find('div.replaceTextArea:first').focus();
-            var ctTop = ($(window).height()- thiz.height())/2;
-            var nTop = thiz.offset().top - ctTop - 20;
-            nTop = (nTop > 0) ? nTop : 0;
-
-            $('html, body').animate({scrollTop:nTop}, 'slow');
-          } else {
-            thiz.removeClass('inputContainerShow')
-          }
-        });
-      });
-      $("button[id^='CancelButton']" ).on('click', function (evt) {
-        // if (eXo.social.SocialUtil.checkDevice().isMobile === true) {
-        //   $('.footComment').close();
-        //   return true;
-        // }
-        var currentActivityId = evt.target.id.replace('CancelButton', '');
-        //CKEDITOR.instances['CommentTextarea' + currentActivityId].insertHtml(comment.innerHTML);
-        var inputContainer = $('#InputContainer' + currentActivityId);
-          var thiz = $(this);
-          if(thiz.css('display') === 'block') {
-            var blockInput = thiz.parents('.uiActivityStream:first').find('.inputContainerShow');
-            if(blockInput.length > 0) {
-              blockInput.removeClass('inputContainerShow').hide();
-            }
-            thiz.addClass('inputContainerShow');
-            thiz.find('div.replaceTextArea:first').focus();
-            var ctTop = ($(window).height()- thiz.height())/2;
-            var nTop = thiz.offset().top - ctTop - 20;
-            nTop = (nTop > 0) ? nTop : 0;
-
-            $('html, body').animate({scrollTop:nTop}, 'slow');
-          } else {
-            thiz.removeClass('inputContainerShow')
-          }
-        
-      });
-    }
-
-    var actionDeletes = $('a.controllDelete');
-    if (actionDeletes.length > 0) {
-      actionDeletes.off('click').on('click', function(e) {
-          e.stopPropagation();
-          $('.currentDeleteActivity:first').removeClass('currentDeleteActivity');
-          var jElm = $(this);
-          jElm.addClass('currentDeleteActivity');
-          var id = jElm.attr('id');
-          if(id == null || id.length == 0) {
-            $('#SocialCurrentConfirm').removeAttr('id');
-            id = "SocialCurrentConfirm";
-            jElm.attr('id', id)
-          }
-          var confirmText = jElm.attr('data-confirm');
-          var captionText = jElm.attr('data-caption');
-          var confirmButton = jElm.attr('data-ok');
-          var cancelButton = jElm.attr('data-close');
-          eXo.social.PopupConfirmation.confirm(id, [{action: UIActivity.removeActivity, label : confirmButton}], captionText, confirmText, cancelButton);
-        }
-      );
-    }
-
-    this.adaptFileBreadCrumb();
-  },
+  }, 
+  
   loadLikes : function (activity) {
     var likeBox = $(activity).find('.listLikedBox:first');
     if(likeBox.length > 0) {
@@ -508,35 +477,6 @@ var UIActivity = {
     }
   },
 
-  //TODO
-  // editComment : function(comment, activity) {
-  //   //
-  //   if (eXo.social.SocialUtil.checkDevice().isMobile === true) {
-  //     $('.footComment').find('div.replaceTextArea:first').focus();
-  //     return true;
-  //   }
-  //   //
-  //   //var currentActivityId = $(this).attr('id').replace('CommentLink', '');
-  //   var inputContainer = $('#InputContainer' + activity).fadeToggle('fast', function () {
-  //     var thiz = $(this);
-  //     if(thiz.css('display') === 'block') {
-  //       var blockInput = thiz.parents('.uiActivityStream:first').find('.inputContainerShow');
-  //       if(blockInput.length > 0) {
-  //         blockInput.removeClass('inputContainerShow').hide();
-  //       }
-  //       thiz.addClass('inputContainerShow');
-  //       thiz.find('div.replaceTextArea:first').focus();
-  //       var ctTop = ($(window).height()- thiz.height())/2;
-  //       var nTop = thiz.offset().top - ctTop - 20;
-  //       nTop = (nTop > 0) ? nTop : 0;
-  //
-  //       $('html, body').animate({scrollTop:nTop}, 'slow');
-  //     } else {
-  //       thiz.removeClass('inputContainerShow')
-  //     }
-  //   });
-  // },
-
   /**
    * show/hide the ellipsis on the left of file breadcrumb is it is overflowed on window resizing
    */
@@ -566,7 +506,6 @@ var UIActivity = {
   }
 };
 //
-eXo.social.SocialUtil.addOnResizeWidth(function(evt){UIActivity.responsiveMobile()});
 eXo.social.SocialUtil.addOnResizeWidth(function(evt){UIActivity.adaptFileBreadCrumb()});
 return UIActivity;
 })($, mentions._, documentPreview);

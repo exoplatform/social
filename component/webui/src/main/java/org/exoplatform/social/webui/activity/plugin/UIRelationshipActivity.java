@@ -50,7 +50,6 @@ import org.exoplatform.webui.event.EventListener;
     @EventConfig(listeners = BaseUIActivity.SetCommentListStatusActionListener.class),
     @EventConfig(listeners = BaseUIActivity.PostCommentActionListener.class),
     @EventConfig(listeners = BaseUIActivity.DeleteActivityActionListener.class),
-    @EventConfig(listeners = BaseUIActivity.EditCommentActionListener.class),
     @EventConfig(listeners = BaseUIActivity.DeleteCommentActionListener.class),
     @EventConfig(listeners = UIRelationshipActivity.AcceptActionListener.class),
     @EventConfig(listeners = UIRelationshipActivity.RefuseActionListener.class),
