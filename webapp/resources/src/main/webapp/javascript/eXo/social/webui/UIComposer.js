@@ -136,10 +136,17 @@
             change: function( evt) {
                 var newData = evt.editor.getData();
                 var pureText = newData? newData.replace(/<[^>]*>/g, "").replace(/&nbsp;/g,"").trim() : "";
-                if (pureText.length > 0) {
+
+                if (pureText.length > 0 && pureText.length <= UIComposer.MAX_LENGTH) {
                     $(".share-button").removeAttr("disabled");
                 } else {
                     $(".share-button").prop("disabled", true);
+                }
+                
+                if (pureText.length <= UIComposer.MAX_LENGTH) {
+                    evt.editor.getCommand('simpleImage').enable();
+                } else {
+                    evt.editor.getCommand('simpleImage').disable();
                 }
             },
             key: function( evt) {
