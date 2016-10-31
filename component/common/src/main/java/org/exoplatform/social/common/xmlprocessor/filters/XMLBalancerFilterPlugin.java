@@ -104,7 +104,9 @@ public class XMLBalancerFilterPlugin extends BaseXMLFilterPlugin {
       } else {
         parsingNode = new Node();
         parsingNode.setParentNode(currentNode);
-        parsingNode.setContent(StringEscapeUtils.escapeHtml(token));
+        // make sure the content part which was escaped before don't be escaped again
+        String content = StringEscapeUtils.unescapeHtml(token);
+        parsingNode.setContent(StringEscapeUtils.escapeHtml(content));
 
         currentNode.addChildNode(parsingNode);
       }
