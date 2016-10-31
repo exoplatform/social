@@ -1548,6 +1548,34 @@ public class ActivityManagerTest extends AbstractCoreTest {
     assertEquals("1", commenters[0].split("@")[1]);
     assertEquals("1", mentioners[0].split("@")[1]);
   }
+
+  public void testDisableActivityType(){
+    String activityTitle = "activity title";
+    String userId = johnIdentity.getId();
+    ExoSocialActivity activity = new ExoSocialActivityImpl();
+    activity.setTitle(activityTitle);
+    activity.setUserId(userId);
+
+    //Disabled activity Type
+    activity.setType("cs-calendar:spaces");
+
+    activityManager.saveActivityNoReturn(johnIdentity, activity);
+    assertNull(activity.getId());
+
+    //Disabled Custom activity Type
+    activity.setType("MY_ACTIVITY");
+
+    activityManager.saveActivityNoReturn(johnIdentity, activity);
+    assertNull(activity.getId());
+
+    //enabled activity Types
+    activity.setType("DEFAULT_ACTIVITY");
+    activityManager.saveActivityNoReturn(johnIdentity, activity);
+    assertNotNull(activity.getId());
+    activity= activityManager.getActivity(activity.getId());
+    assertNotNull(activity);
+    tearDownActivityList.add(activity);
+  }
   
   public void testMentionActivityOnOthersStream() throws Exception {
     relationshipManager.inviteToConnect(rootIdentity, demoIdentity);

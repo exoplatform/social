@@ -20,6 +20,7 @@ import junit.framework.AssertionFailedError;
 import org.apache.commons.lang.ArrayUtils;
 import org.exoplatform.commons.testing.BaseExoTestCase;
 import org.exoplatform.commons.utils.PageList;
+import org.exoplatform.commons.utils.PropertyManager;
 import org.exoplatform.component.test.ConfigurationUnit;
 import org.exoplatform.component.test.ConfiguredBy;
 import org.exoplatform.component.test.ContainerScope;
@@ -73,6 +74,9 @@ public abstract class AbstractCoreTest extends BaseExoTestCase {
   
   @Override
   protected void setUp() throws Exception {
+    PropertyManager.setProperty("exo.activity-type.cs-calendar:spaces.enabled","false");
+    PropertyManager.setProperty("exo.activity-type.MY_ACTIVITY.enabled","false");
+
     begin();
     session = getSession();
 
