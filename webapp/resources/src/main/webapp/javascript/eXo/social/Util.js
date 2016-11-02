@@ -163,6 +163,7 @@
 	           .attr('autocomplete', 'off');
 
 	        function buildResults(searchedResults) {
+                      $(results).html('').hide();
 
               if(!searchedResults) {
                 return;
