@@ -182,3 +182,8 @@ a > img {
 	font-size: 8px;
 	content: "\e75e";
 }
+
+ul li {
+	list-style-type: disc;
+	list-style-position: inside;
+}
