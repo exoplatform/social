@@ -64,6 +64,7 @@
   String helpSearch = _ctx.appRes("Mentions.msg.helpSearch");
   helpSearch = helpSearch.replaceAll("'","&#39;").replaceAll('"',"&#34;");
   String searching = _ctx.appRes("Mentions.msg.searching");
+  String lengthExceed = _ctx.appRes("UIComposer.msg.error.lengthExceed");
   searching = searching.replaceAll("'","&#39;").replaceAll('"',"&#34;");
   jsManager.require("SHARED/uiForm")
            .require("SHARED/jquery", "jq")
@@ -118,7 +119,10 @@
             uicomponent.renderChild(UIActivityComposerContainer.class);
           %>
         </div>
-  	</div>   
+  	</div>
+	    <div class="composerLimited hide">
+		    <span class="error">$lengthExceed</span>
+	    </div>
 		<div class="share-buttons-down button-group clearfix">
 		 	<button class="share-button btn btn-primary" id="ShareButton" type="submit" onclick="<%= uicomponent.event("PostMessage");%>; UIComposer.post()">$shareLabel</button>
 			<button class="btn btn-cancel hidden"><%=_ctx.appRes("word.cancel")%></button>

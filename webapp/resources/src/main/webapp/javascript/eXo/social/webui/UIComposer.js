@@ -156,8 +156,10 @@
                 
                 if (pureText.length <= UIComposer.MAX_LENGTH) {
                     evt.editor.getCommand('simpleImage').enable();
+                    $('.composerLimited').addClass('hide');
                 } else {
                     evt.editor.getCommand('simpleImage').disable();
+                    $('.composerLimited').removeClass('hide');
                 }
             },
             key: function( evt) {

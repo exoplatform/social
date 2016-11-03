@@ -316,6 +316,7 @@ var UIActivity = {
     } else {
       $(editor.container.$).find(".cke_source").html('');
     }
+    $('.composerLimited').addClass('hide');
 
     var container = $('#ComposerContainer');
     var link = container.find('#LinkExtensionContainer');
