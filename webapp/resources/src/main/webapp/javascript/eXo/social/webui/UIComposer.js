@@ -126,20 +126,25 @@
               if (windowWidth > 767 || windowWidth < windowHeight) {
                 //$('#' + evt.editor.id + '_bottom').css('display', 'block');
                 evt.editor.execCommand('autogrow');
-                $('#' + evt.editor.id + '_contents').animate({
-                  height: "-=38"
-                }, 315);
-                $('#' + evt.editor.id + '_bottom').animate({
+                var $content = $('#' + evt.editor.id + '_contents');
+                var contentHeight = $content.height();
+                var $ckeBottom = $('#' + evt.editor.id + '_bottom');
+                $ckeBottom.animate({
                   height: "39"
-                }, 300, function() {
-                  $('#' + evt.editor.id + '_bottom').removeClass('cke_bottom_hidden');
+                }, {
+                  step: function(number, tween) {
+                    $content.height(contentHeight - number);
+                    if (number >= 9) {
+                      $ckeBottom.removeClass('cke_bottom_hidden');
+                    }
+                  }
                 });
               }
             },
             blur : function ( evt ) {
               // Hide the editor toolbar
               if (windowWidth > 767 || windowWidth < windowHeight) {
-                $('#' + evt.editor.id + '_contents').css('height', $('#' + evt.editor.id + '_contents').height() + 38);
+                $('#' + evt.editor.id + '_contents').css('height', $('#' + evt.editor.id + '_contents').height() + 39);
                 $('#' + evt.editor.id + '_bottom').css('height', '0px');
                 $('#' + evt.editor.id + '_bottom').addClass('cke_bottom_hidden');
               }
