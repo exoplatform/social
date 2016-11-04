@@ -183,46 +183,53 @@
                      }
                      tiptip_holder.fadeOut(opts.fadeOut)
                  }
-                 
+
+                 function ajaxCall(userId, restUrl) {
+                   $.ajax({
+                     type: "GET",
+                     cache: false,
+                     url: restUrl
+                   }).complete(function (jqXHR) {
+                     if (jqXHR.readyState === 4) {
+                         var userData = $.parseJSON(jqXHR.responseText);
+
+                         if (userData) {
+                           putToCache(userId, userData);
+                           buildPopup(userData, userId);
+                         } else {
+                           ajaxCall(userId, restUrl);
+                         }
+                     }
+                   });
+                 }
+
                  function loadData(el) {
                    var userUrl = $(el).attr('href');
                    var userId = userUrl.substring(userUrl.lastIndexOf('/') + 1);
                    var restUrl = opts.restURL.replace('{0}', window.encodeURI(userId));
                    
                    //
-                   initPopup();
                    
-                   //
                    var cachingData = getCache(userId);
                    
                    if ( cachingData ) {
-                     buildPopup(cachingData, userId);
+                     if(cachingData.fullName) {
+                       buildPopup(cachingData, userId);
+                     } else {
+                       initPopup(userId);
+                     }
                    } else {
+                     //
+                     initPopup(userId);
+                     
                      if (window.profileXHR && window.profileXHR.abort) {
                        window.profileXHR.abort();
                      }
-		                 window.profileXHR = $.ajax({
-		                     type: "GET",
-		                     cache: false,
-		                     url: restUrl
-		                 }).complete(function (jqXHR) {
-		                     if (jqXHR.readyState === 4) {
-		                       var userData = $.parseJSON(jqXHR.responseText);
-		                       
-		                       if (!userData) {
-		                         return;
-		                       }
-		                       
-		                       //
-		                       putToCache(userId, userData);
-		                       
-		                       buildPopup(userData, userId);
-		                     }
-		                 });
-		               }
+                     window.profileXHR = ajaxCall(userId, restUrl);
+                   }
                  }
                  
-                 function initPopup() {
+                 function initPopup(userId) {
                    var profile_popup = $('<div/>', {
                      "id": "profile-popup",
                      "class": "profile-popup",
@@ -245,6 +252,10 @@
                    profile_popup.append(loadingIndicator);
                    profile_popup.append(loadingText);
                    
+                   if(!getCache(userId)) {
+                     putToCache(userId, profile_popup);                     
+                   }
+
                    tiptip_content.html(profile_popup);
                  }
                  
