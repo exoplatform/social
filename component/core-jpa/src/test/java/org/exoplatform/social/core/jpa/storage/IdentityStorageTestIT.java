@@ -181,7 +181,7 @@ public class IdentityStorageTestIT extends BaseESTest {
 
   /**
    * Tests
-   * {@link IdenityStorage#getIdentitiesForMentions(String, ProfileFilter, Relationship.Type, int, int, boolean)}
+   * {@link IdentityStorage#getIdentitiesForMentions(String, ProfileFilter, Relationship.Type, int, int, boolean)}
    */
   public void testFindIdentityForMentions() throws Exception {
     String providerId = OrganizationIdentityProvider.NAME;
@@ -260,7 +260,7 @@ public class IdentityStorageTestIT extends BaseESTest {
 
   /**
    * Tests
-   * {@link IdenityStorage#getIdentitiesForMentions(String, ProfileFilter, Relationship.Type, int, int, boolean)}
+   * {@link IdentityStorage#getIdentitiesForMentions(String, ProfileFilter, Relationship.Type, int, int, boolean)}
    */
   public void testFindManyIdentitiesForMentions() throws Exception {
 
@@ -308,7 +308,7 @@ public class IdentityStorageTestIT extends BaseESTest {
 
   /**
    * Tests
-   * {@link IdenityStorage#getIdentitiesForMentionsCount(String, ProfileFilter, Relationship.Type)}
+   * {@link IdentityStorage#getIdentitiesForMentionsCount(String, ProfileFilter, Relationship.Type)}
    */
   public void testCountIdentitiesForMentions() throws Exception {
 

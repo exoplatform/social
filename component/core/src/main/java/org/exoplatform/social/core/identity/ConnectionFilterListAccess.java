@@ -21,6 +21,7 @@ import java.util.List;
 import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.social.common.ListAccessValidator;
 import org.exoplatform.social.core.identity.model.Identity;
+import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.profile.ProfileFilter;
 import org.exoplatform.social.core.storage.api.IdentityStorage;
 import org.exoplatform.social.core.storage.api.RelationshipStorage;
@@ -40,11 +41,6 @@ public class ConnectionFilterListAccess implements ListAccess<Identity> {
    * The type of connection list access.
    */
   Type type;
-  
-  /**
-   * providerId for profile filter.
-   */
-  String providerId;
   
   /**
    * profile filter for searching connections.
@@ -74,6 +70,9 @@ public class ConnectionFilterListAccess implements ListAccess<Identity> {
     this.identityStorage = identityStorage;
     this.identity = identity;
     this.profileFilter = filter;
+    if (profileFilter.getViewerIdentity() == null) {
+      profileFilter.setViewerIdentity(identity);
+    }
   }
   
   /**
@@ -123,7 +122,7 @@ public class ConnectionFilterListAccess implements ListAccess<Identity> {
         relationShipType = org.exoplatform.social.core.relationship.model.Relationship.Type.OUTGOING;
         break;
       }
-      identities = identityStorage.getIdentitiesForMentions(providerId, profileFilter, relationShipType, offset, limit, true);
+      identities = identityStorage.getIdentitiesForMentions(OrganizationIdentityProvider.NAME, profileFilter, relationShipType, offset, limit, true);
     }
 
     if (identities == null) {
@@ -137,13 +136,31 @@ public class ConnectionFilterListAccess implements ListAccess<Identity> {
    * {@inheritDoc}
    */
   public int getSize() throws Exception {
-    switch (type) {
-      case PROFILE_FILTER_CONNECTION: return relationshipStorage.getConnectionsCountByFilter(identity, profileFilter);
-      case PROFILE_FILTER_INCOMMING: return relationshipStorage.getIncomingCountByFilter(identity, profileFilter);
-      case PROFILE_FILTER_OUTGOING: return relationshipStorage.getOutgoingCountByFilter(identity, profileFilter);
+    if (profileFilter.isEmpty()) {
+      switch (type) {
+      case PROFILE_FILTER_CONNECTION:
+        return relationshipStorage.getConnectionsCountByFilter(identity, profileFilter);
+      case PROFILE_FILTER_INCOMMING:
+        return relationshipStorage.getIncomingCountByFilter(identity, profileFilter);
+      case PROFILE_FILTER_OUTGOING:
+        return relationshipStorage.getOutgoingCountByFilter(identity, profileFilter);
       default:
-        // This never happens. Type can't be null
         return 0;
+      }
+    } else {
+      org.exoplatform.social.core.relationship.model.Relationship.Type relationShipType = null;
+      switch (type) {
+      case PROFILE_FILTER_CONNECTION:
+        relationShipType = org.exoplatform.social.core.relationship.model.Relationship.Type.CONFIRMED;
+        break;
+      case PROFILE_FILTER_INCOMMING:
+        relationShipType = org.exoplatform.social.core.relationship.model.Relationship.Type.INCOMING;
+        break;
+      case PROFILE_FILTER_OUTGOING:
+        relationShipType = org.exoplatform.social.core.relationship.model.Relationship.Type.OUTGOING;
+        break;
+      }
+      return identityStorage.getIdentitiesForMentionsCount(OrganizationIdentityProvider.NAME, profileFilter, relationShipType);
     }
   }
 
