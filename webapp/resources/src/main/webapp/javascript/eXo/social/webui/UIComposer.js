@@ -58,47 +58,7 @@
     },
     init : function() {
 
-      UIComposer.composer = $('#' + UIComposer.composerId);
-
-      var peopleSearchCached = {};
-      var lastNoResultQuery = false;
-      $('body').suggester('addProvider', 'exo:people', function(query, callback) {
-        if (lastNoResultQuery && query.length > lastNoResultQuery.length) {
-          if (query.substr(0, lastNoResultQuery.length) === lastNoResultQuery) {
-            callback.call(this, []);
-            return;
-          }
-        }
-        if (peopleSearchCached[query]) {
-          callback.call(this, peopleSearchCached[query]);
-        } else {
-          var url = window.location.protocol + '//' + window.location.host + '/' + eXo.social.portal.rest + '/social/people/getprofile/data.json?search=' + query;
-          $.getJSON(url, function(responseData) {
-            responseData = _.filter(responseData, function(item) {
-              return item.name.toLowerCase().indexOf(query.toLowerCase()) > -1;
-            });
-
-            var result = [];
-            for (var i = 0; i < responseData.length; i++) {
-              var d = responseData[i];
-              var item = {
-                uid: d.id.substr(1),
-                name: d.name,
-                avatar: d.avatar
-              };
-              result.push(item);
-            }
-
-            peopleSearchCached[query] = result;
-            if (peopleSearchCached[query].length == 0) {
-              lastNoResultQuery = query;
-            } else {
-              lastNoResultQuery = false;
-            }
-            callback.call(this, peopleSearchCached[query]);
-          });
-        }
-      });
+        UIComposer.composer = $('#' + UIComposer.composerId);
 
         var windowWidth = $(window).width();
         var windowHeight = $(window).height();
@@ -113,8 +73,9 @@
         // TODO this line is mandatory when a custom skin is defined, it should not be mandatory
         CKEDITOR.basePath = '/commons-extension/ckeditor/';
         composerInput.ckeditor({
-          customConfig: '/social-resources/javascript/eXo/social/ckeditorCustom/config.js',
+          customConfig: '/commons-extension/ckeditorCustom/config.js',
           extraPlugins: extraPlugins,
+          placeholder: window.eXo.social.I18n.mentions.defaultMessage,
           on : {
             instanceReady : function ( evt ) {
               // Hide the editor toolbar
