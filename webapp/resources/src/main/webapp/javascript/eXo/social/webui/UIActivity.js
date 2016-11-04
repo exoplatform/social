@@ -199,33 +199,14 @@ var UIActivity = {
   },
 
   resizeComment: function (){
-    try {
-      var arr = $('.commentRight .contentComment img');
-      if (arr.length > 0) {
-        for (var i = 0, len = arr.length; i < len; i++) {
-          var children = arr[i].closest('.contentComment').childNodes;
-          var firstChildTop;
-          var lastChildTop;
-          var lastchildHeight;
-          for (var j = 0, len = children.length; j < len; j++) {
-            firstChildTop = children[j].offsetTop;
-            if (typeof firstChildTop !== 'undefined') break;
-          }
-          for (var k = children.length-1; k > 0; k--) {
-            lastchildHeight = children[k].clientHeight;
-            lastChildTop = children[k].offsetTop;
-            if ((typeof lastchildHeight !== 'undefined') && (typeof lastChildTop !== 'undefined')) break;
-          }
-          if (lastChildTop != firstChildTop) {
-            arr[i].closest('.contentComment').style.height = lastChildTop - firstChildTop + lastchildHeight + "px";
-          } else {
-            arr[i].closest('.contentComment').style.height = arr[i].height + 3 + "px";
-          }
+    var arr = $('.commentRight .contentComment img');
+    if (arr.length > 0) {
+      for (var i = 0, len = arr.length; i < len; i++) {
+        if (arr[i].clientHeight > arr[i].offsetParent.clientHeight) {
+          arr[i].closest('.contentComment').style.height = arr[i].height + 3 + "px";
         }
       }
-    } catch(e) {
-      console.error(e);
-    };
+    }
   }, 
   
   loadLikes : function (activity) {
