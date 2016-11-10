@@ -22,6 +22,26 @@
 
 (function($, _) {
   var UIComposer = {
+    regexpURL : /(http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/,
+    validateWWWURL : function(url) {
+      if (url.indexOf('www.') > 0) {
+        return /(https?:\/\/)?(www\.[\w+]+\.[\w+]+\.?(:\d+)?)/.test(url);
+      }
+      return true;
+    },
+    searchFirstURL : function(x) {
+      var result = String(x).match(UIComposer.regexpURL);
+      if (result && result.length > 0) {
+        for ( var i = 0; i < result.length; ++i) {
+          if (result[i].length > 0 && x.indexOf('@'+result[i]) < 0 && UIComposer.validateWWWURL(result[i])) {
+            return result[i];
+          }
+        }
+      }
+      return "";
+    },
+    showedLink: false,    
+    MAX_LENGTH : 2000,
     clickOn : null,
     onLoadI18n : function(i18n) {
       window.eXo.social.I18n.mentions = $.extend(true, {}, window.eXo.social.I18n.mentions, i18n);
@@ -37,27 +57,104 @@
       UIComposer.userTyped = false;
     },
     init : function() {
-    
-      // add @ button using js
-			var mentionButton = $('<a />', {
-				'href' : 'javascript:void(0);',
-				'rel':'tooltip',
-				'data-placement':'bottom',
-				'title': UIComposer.mentionBtnLabel,
-				'class':'actionIcon',
-				'id': 'mentionButton'
-			}
-			).append($('<i />',{
-			'class':'uiIconSocMention uiIconSocLightGray'
-			}));
-			$('div#ActivityComposerExt>a:last-child').before(mentionButton);
 
-      UIComposer.composer = $('#' + UIComposer.composerId);
+        UIComposer.composer = $('#' + UIComposer.composerId);
 
-      $(document).ready(function() {
+        var windowWidth = $(window).width();
+        var windowHeight = $(window).height();
+
+        var composerInput = $('#composerInput');
+        var extraPlugins = 'simpleLink,simpleImage,suggester';
+        if (windowWidth > windowHeight && windowWidth < 768) {
+          // Disable suggester on smart-phone landscape
+          extraPlugins = 'simpleLink,simpleImage';
+        }
+
+        // TODO this line is mandatory when a custom skin is defined, it should not be mandatory
+        CKEDITOR.basePath = '/commons-extension/ckeditor/';
+        composerInput.ckeditor({
+          customConfig: '/commons-extension/ckeditorCustom/config.js',
+          extraPlugins: extraPlugins,
+          placeholder: window.eXo.social.I18n.mentions.defaultMessage,
+          on : {
+            instanceReady : function ( evt ) {
+              // Hide the editor toolbar
+              $("#ShareButton").prop("disabled", true);
+              $('#' + evt.editor.id + '_bottom').removeClass('cke_bottom_visible');
+            },
+            focus : function ( evt ) {
+              // Show the editor toolbar, except for smartphones in landscape mode
+              if (windowWidth > 767 || windowWidth < windowHeight) {
+                //$('#' + evt.editor.id + '_bottom').css('display', 'block');
+                evt.editor.execCommand('autogrow');
+                var $content = $('#' + evt.editor.id + '_contents');
+                var contentHeight = $content.height();
+                var $ckeBottom = $('#' + evt.editor.id + '_bottom');
+                $ckeBottom.animate({
+                  height: "39"
+                }, {
+                  step: function(number, tween) {
+                    $content.height(contentHeight - number);
+                    if (number >= 9) {
+                      $ckeBottom.addClass('cke_bottom_visible');
+                    }
+                  }
+                });
+              }
+            },
+            blur : function ( evt ) {
+              // Hide the editor toolbar
+              if (windowWidth > 767 || windowWidth < windowHeight) {
+                $('#' + evt.editor.id + '_contents').css('height', $('#' + evt.editor.id + '_contents').height() + 39);
+                $('#' + evt.editor.id + '_bottom').css('height', '0px');
+                $('#' + evt.editor.id + '_bottom').removeClass('cke_bottom_visible');
+              }
+            },
+            change: function( evt) {
+                var newData = evt.editor.getData();
+                var pureText = newData? newData.replace(/<[^>]*>/g, "").replace(/&nbsp;/g,"").trim() : "";
+
+                if (pureText.length > 0 && pureText.length <= UIComposer.MAX_LENGTH) {
+                    $(".share-button").removeAttr("disabled");
+                } else {
+                    $(".share-button").prop("disabled", true);
+                }
+                
+                if (pureText.length <= UIComposer.MAX_LENGTH) {
+                    evt.editor.getCommand('simpleImage').enable();
+                    $('.composerLimited').addClass('hide');
+                } else {
+                    evt.editor.getCommand('simpleImage').disable();
+                    $('.composerLimited').removeClass('hide');
+                }
+            },
+            key: function( evt) {
+                var newData = evt.editor.getData();
+                var pureText = newData? newData.replace(/<[^>]*>/g, "").replace(/&nbsp;/g,"").trim() : "";
+                if (pureText.length > UIComposer.MAX_LENGTH) {
+                    if ([8, 46, 33, 34, 35, 36, 37,38,39,40].indexOf(evt.data.keyCode) < 0) {
+                        evt.cancel();
+                    }
+                }
+                if (!$(".uiLinkShareDisplay").length && (evt.data.keyCode == 32 || evt.data.keyCode == 13)) {
+                    var firstUrl = UIComposer.searchFirstURL(pureText);
+                    if (firstUrl !== "") {
+                        console.log(firstUrl);
+                        $('#InputLink').val(firstUrl);
+                        $('#AttachButton').trigger('click');
+                        UIComposer.showedLink = true;
+                    }
+                }
+            }
+            
+          }
+        });
+
+
+
         var actionLink = $('#actionLink');
         if(actionLink.length > 0 && $(UIComposer.clickOn).hasClass('uidocactivitycomposer') === false) {
-          if ($('#InputLink').length == 0) {            
+          if ($('#InputLink').length == 0) {
             if (UIComposer.clickOn == null || UIComposer.clickOn == "") {
               var UIComposerComp = $('#UIPageCreationWizard');
               if (UIComposerComp.find('#UIPagePreview').length == 0) {
@@ -73,27 +170,30 @@
             }
           }
         }
-      });
 
-      //
-      $('textarea#' + UIComposer.textareaId).exoMentions({
-        onDataRequest : function(mode, query, callback) {
-          var url = window.location.protocol + '//' + window.location.host + '/' + eXo.social.portal.rest + '/social/people/getprofile/data.json?search=' + query;
-          $.getJSON(url, function(responseData) {
-            callback.call(this, responseData);
-          });
-        },
-        idAction : 'ShareButton',
-        actionLink : 'AttachButton',
-        actionMention : 'mentionButton',
-        elasticStyle : {
-          maxHeight : '64px',
-          minHeight : '35px',
-          marginButton: '4px',
-          enableMargin: false
-        },
-        messages : window.eXo.social.I18n.mentions
-      });
+      /*
+       //
+       $('textarea#' + UIComposer.textareaId).exoMentions({
+       onDataRequest : function(mode, query, callback) {
+       var url = window.location.protocol + '//' + window.location.host + '/' + eXo.social.portal.rest + '/social/people/getprofile/data.json?search=' + query;
+       $.getJSON(url, function(responseData) {
+       responseData = _.filter(responseData, function(item) {
+       return item.name.toLowerCase().indexOf(query.toLowerCase()) > -1;
+       });
+       callback.call(this, responseData);
+       });
+       },
+       idAction : 'ShareButton',
+       actionLink : 'AttachButton',
+       elasticStyle : {
+       maxHeight : '64px',
+       minHeight : '35px',
+       marginButton: '4px',
+       enableMargin: false
+       },
+       messages : window.eXo.social.I18n.mentions
+       });
+       */
     },
     post : function() {
       UIComposer.isReady = false;
@@ -102,12 +202,18 @@
     getValue : function() {
       return (UIComposer.currentValue) ? UIComposer.currentValue : '';
     },
-    setCurrentValue : function(elm) {
+    setCurrentValue : function() {
       var uiInputText = $('textarea#' + UIComposer.textareaId);
-      UIComposer.clickOn = elm;
       UIComposer.currentValue = uiInputText.val();
     },
+    setSelectedComposer : function(elm) {
+      // remove ActivityComposerExtItemSelected class from previous selected composer
+      $(UIComposer.composer).find('.ActivityComposerExtItem').removeClass('ActivityComposerExtItemSelected');
+      // add ActivityComposerExtItemSelected class to newly selected composer
+      UIComposer.clickOn = elm;
+      $(UIComposer.clickOn).closest('.ActivityComposerExtItem').addClass('ActivityComposerExtItemSelected');
 
+    },
     showLink : function() {
       var container = $('#ComposerContainer')
       var link = container.find('#LinkExtensionContainer');
@@ -128,9 +234,9 @@
       }
     },
     activeShareButton : function() {
-	    try {
-	      $('textarea#composerInput').exoMentions('showButton', function() {});
-	    } catch (e) {}
+      try {
+        $('textarea#composerInput').exoMentions('showButton', function() {});
+      } catch (e) {}
     }
   };
 

@@ -20,9 +20,7 @@ import org.exoplatform.social.common.jcr.filter.FilterLiteralTest;
 import org.exoplatform.social.common.xmlprocessor.DOMParserTest;
 import org.exoplatform.social.common.xmlprocessor.TokenizerTest;
 import org.exoplatform.social.common.xmlprocessor.filters.SanitizeFilterPluginTest;
-import org.exoplatform.social.common.xmlprocessor.filters.DOMLineBreakerFilterPluginTest;
 import org.exoplatform.social.common.xmlprocessor.filters.DOMXMLTagFilterPluginTest;
-import org.exoplatform.social.common.xmlprocessor.filters.LineBreakerFilterPluginTest;
 import org.exoplatform.social.common.xmlprocessor.filters.URLConverterFilterPluginTest;
 import org.exoplatform.social.common.xmlprocessor.filters.XMLBalancerFilterPluginTest;
 import org.exoplatform.social.common.xmlprocessor.filters.XMLTagFilterPluginTest;
@@ -39,9 +37,7 @@ import org.junit.runners.Suite.SuiteClasses;
   TokenizerTest.class,
   AttributesTest.class,
   SanitizeFilterPluginTest.class,
-  DOMLineBreakerFilterPluginTest.class,
   DOMXMLTagFilterPluginTest.class,
-  LineBreakerFilterPluginTest.class,
   URLConverterFilterPluginTest.class,
   XMLBalancerFilterPluginTest.class,
   XMLTagFilterPluginTest.class,

@@ -112,20 +112,13 @@ public class UIComposer extends UIForm {
     if (extensionList != null) {
       for (int i = 0, j = extensionList.size(); i < j; i++) {
         final UIExtension composerExtension = extensionList.get(i);
+        UIActivityComposer uiActivityComposer = (UIActivityComposer) uiExtensionManager.
+                                               addUIExtension(composerExtension, null, composerContainer);
         if(composerExtension.getName().equals(UIActivityComposerManager.DEFAULT_ACTIVITY_COMPOSER)){
-          UIActivityComposer uiDefaultComposer = (UIActivityComposer) uiExtensionManager.
-                                                 addUIExtension(composerExtension, null, composerContainer);
-          composerContainer.removeChildById(uiDefaultComposer.getId());
-          uiDefaultComposer.setActivityComposerManager(activityComposerManager);
-          activityComposerManager.setDefaultActivityComposer(uiDefaultComposer);
-          //activityComposerManager.registerActivityComposer(uiDefaultComposer);
-        } else{
-          UIActivityComposer uiActivityComposer = (UIActivityComposer) uiExtensionManager.
-                                                  addUIExtension(composerExtension, null, composerContainer);
-          
-          uiActivityComposer.setActivityComposerManager(activityComposerManager);
-          activityComposerManager.registerActivityComposer(uiActivityComposer);
+          activityComposerManager.setDefaultActivityComposer(uiActivityComposer);
         }
+        uiActivityComposer.setActivityComposerManager(activityComposerManager);
+        activityComposerManager.registerActivityComposer(uiActivityComposer);
       }
     }
     activityComposerManager.setUiComposer(this);
@@ -204,9 +197,7 @@ public class UIComposer extends UIForm {
       String message = textAreaInput.getValue().replaceAll(HTML_AT_SYMBOL_ESCAPED_PATTERN,HTML_AT_SYMBOL_PATTERN);
       textAreaInput.setValue("");
       //
-      message = (message == null || 
-                 uiComposer.getLabel("Write_Something").equals(message) || 
-                 uiComposer.getLabel("What_Are_You_Working_On").equals(message)) ? "" : message;
+      message = message == null ? "" : message;
 
       //post activity via the current activity composer
       ExoSocialActivity activity = activityComposer.postActivity(postContext, message);
@@ -235,6 +226,7 @@ public class UIComposer extends UIForm {
                  .addScripts("activitiesLoader.addTop('" + uiActivityLoader.getId() + "', '" + uiActivitiesContainer.getAncestorOfType(UIPortletApplication.class).getId() + "');");
           context.addUIComponentToUpdateByAjax(uiComposer);
         }
+        activityComposerManager.clearComposerData();
       }
     }
   }

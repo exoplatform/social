@@ -122,7 +122,7 @@
 	    }
 	  },
 	  init: function() {
-	
+	      
 	    function showThumbnail() {
 	      for (var i = 0, l = this.images.length; i < l; i++) {
 	        $(this.images[i]).css({'display': 'none', 'height': '100px','width': '100px', 'padding': '10px'});
@@ -202,12 +202,12 @@
 	
 	    } else {
 	      this.inputLink = $('#' + this.inputLinkId);
+	      this.inputLink.attr("placeholder", "https://");
 	      this.attachButton = $('#' + this.attachButtonId);
 	      var UIComposerLinkExtension = this;
 	      var inputLink = this.inputLink;
 	      var attachBtn = this.attachButton;
 
-	      
 	      this.inputLink.on('keypress', function(evt) {
 	        //if enter submit link
 	        if (UIComposerLinkExtension.ENTER_KEY_CODE == (evt.which ? evt.which : evt.keyCode)) {

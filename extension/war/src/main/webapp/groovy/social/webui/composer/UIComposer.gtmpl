@@ -31,12 +31,14 @@
 
   def requestContext = _ctx.getRequestContext();
 
+  def currentActivityComposer = uicomponent.getActivityComposerManager().getCurrentActivityComposer();
+  
   //trick here, uiform does not keep submitAction for second render, portal bug?
   uicomponent.setSubmitAction("return false;");
   uicomponent.changeTitleTextAreInput();
 
   def jsManager = requestContext.getJavascriptManager();
-  def defaultInput = _ctx.appRes("${uicomponent.id}.label.Write_Something");
+  def defaultMessage = _ctx.appRes("${uicomponent.id}.label.DefaultMessage");
   def addLabel = _ctx.appRes("${uicomponent.id}.label.Add");
   def shareLabel = _ctx.appRes("${uicomponent.id}.label.Share");
   def mentionBtnLabel = _ctx.appRes("${uicomponent.id}.label.Mention");
@@ -44,7 +46,6 @@
   def shareStatusLabel = _ctx.appRes("${uicomponent.id}.label.ShareStatus");
 
   if (uicomponent.getPostContext().toString().equals("USER") && uicomponent.isActivityStreamOwner()) {
-    defaultInput = _ctx.appRes("${uicomponent.id}.label.What_Are_You_Working_On");
     blastInput = "blastInputPeople";
   }
 
@@ -63,29 +64,53 @@
   String helpSearch = _ctx.appRes("Mentions.msg.helpSearch");
   helpSearch = helpSearch.replaceAll("'","&#39;").replaceAll('"',"&#34;");
   String searching = _ctx.appRes("Mentions.msg.searching");
+  String lengthExceed = _ctx.appRes("UIComposer.msg.error.lengthExceed");
   searching = searching.replaceAll("'","&#39;").replaceAll('"',"&#34;");
   jsManager.require("SHARED/uiForm")
            .require("SHARED/jquery", "jq")
            .require("SHARED/bts_tooltip").addScripts("jq('*[rel=\"tooltip\"]').tooltip();")
            .require("SHARED/social-ui-activity", "activity")
            .require("SHARED/social-ui-activity-composer", "composer")
-           .addScripts("UIComposer.onLoadI18n({ helpSearch: \"$helpSearch\", searching: \"searching\", foundNoMatch: \"$foundNoMatch\"});") 
+           .addScripts("UIComposer.onLoadI18n({ defaultMessage: \"$defaultMessage\", helpSearch: \"$helpSearch\", searching: \"searching\", foundNoMatch: \"$foundNoMatch\"});")
            .addScripts("UIComposer.onLoad($params);");
 %>
-<div class="uiComposer uiGrayLightBox hidden-phone">
+<div class="uiComposer hidden-phone">
   <% uiform.begin() %>
-  <div class="button-group clearfix visible-phone">
+  <div class="share-buttons-top button-group clearfix hidden">
   	<button class="btn btn-cancel"><%=_ctx.appRes("word.cancel")%></button>
-  	<button class="btn btn-primary btn-submit">$shareLabel</button>
+  	<button class="share-button btn btn-primary btn-submit">$shareLabel</button>
   </div>
   <div class="blastContainer">
+		<div id="ActivityComposerExt" class="attachMents">
+			<%
+				def simpleName, labelSimpleName, actionEvent, clazz;
+				
+				for(acComposer in uicomponent.getActivityComposers()) {
+					simpleName = acComposer.getClass().getSimpleName();
+					labelSimpleName = _ctx.appRes("UIActivityComposer.label.${simpleName}");
+					clazz = simpleName.toLowerCase();
+
+					String action = acComposer.event("Activate") + ";  UIComposer.setSelectedComposer(this); UIComposer.setCurrentValue()";
+
+					// the first composer is always the one activated by default
+					def selectedComposerClass = "";
+					if(acComposer == currentActivityComposer) {
+						selectedComposerClass = "ActivityComposerExtItemSelected";
+					}
+				%>
+					<div class="pull-left ActivityComposerExtItem $simpleName $selectedComposerClass">
+						<a href="javascript:void(0)" class="$clazz" onclick="$action"><i class="uiIconSoc$simpleName uiIconSocLightGray"></i>$labelSimpleName</a>
+					</div>
+				<%
+				}
+				%>
+		</div>
   	<div class="desktop-input">
 	    <div class="$blastInput">
 	      <% uiform.renderField(uicomponent.COMPOSER_TEXT_AREA_INPUT); %>
 	    </div>
 	    
 	    <%
-      def currentActivityComposer = uicomponent.getActivityComposerManager().getCurrentActivityComposer();
     %>
     
 
@@ -94,34 +119,13 @@
             uicomponent.renderChild(UIActivityComposerContainer.class);
           %>
         </div>
-  	</div>   
-		<div  class="blastShare clearfix">
-		 	<button class="pull-right btn btn-primary hidden-phone" id="ShareButton" type="submit" onclick="<%= uicomponent.event("PostMessage");%>; UIComposer.post()">$shareLabel</button>
-		  <div id="ActivityComposerExt" class="attachMents pull-left">
-		  <%
-			  def simpleName, labelSimpleName, actionEvent, clazz;
-        def counter = 0;
-        for(acComposer in uicomponent.getActivityComposers()) {
-          counter++;
-          simpleName = acComposer.getClass().getSimpleName();
-          labelSimpleName = _ctx.appRes("UIActivityComposer.label.${simpleName}");
-          clazz = simpleName.toLowerCase();
-
-          String action = acComposer.event("Activate") + "; UIComposer.setCurrentValue(this)";
-          if(simpleName.equals("UILinkActivityComposer")) {
-            print("<a id=\"actionLink\" onclick=\"$action\"><span></span></a>");
-            action = "UIComposer.showLink()";
-          }
-          if("uidocactivitycomposer".equals(clazz)) {
-            clazz += " hidden-phone";
-          }
-		      %>
-          <a href="javascript:void(0)" rel="tooltip" data-placement="bottom" title="$labelSimpleName" class="actionIcon $clazz" onclick="$action"><i class="uiIconSoc$simpleName uiIconSocLightGray"></i></a>
-      <%
-        }
-      %>
-      </div>
-      
+  	</div>
+	    <div class="composerLimited hide">
+		    <span class="error">$lengthExceed</span>
+	    </div>
+		<div class="share-buttons-down button-group clearfix">
+		 	<button class="share-button btn btn-primary" id="ShareButton" type="submit" onclick="<%= uicomponent.event("PostMessage");%>; UIComposer.post()">$shareLabel</button>
+			<button class="btn btn-cancel hidden"><%=_ctx.appRes("word.cancel")%></button>
 		</div>
 	</div>
   <% uiform.end()%>

@@ -307,8 +307,18 @@ var UIActivity = {
     },1200);
   },
   hideLink : function() {
-    $('textarea#composerInput').exoMentions('reset');
-    var container = $('#ComposerContainer')
+    //$('textarea#composerInput').exoMentions('reset');
+    // This is work around, if we call method setData('') of ckeditor,
+    // it will cancel the suggester plugin due to it replace all content in iframe
+    var editor = CKEDITOR.instances["composerInput"];
+    if (editor.mode != 'source') {
+      if (editor.document) $(editor.document.getBody().$).html('');
+    } else {
+      $(editor.container.$).find(".cke_source").html('');
+    }
+    $('.composerLimited').addClass('hide');
+
+    var container = $('#ComposerContainer');
     var link = container.find('#LinkExtensionContainer');
     if (link.length > 0) {
       if (link.css('display') !== 'none') {
@@ -337,7 +347,7 @@ var UIActivity = {
     }
     var root = $('#'+id);
     if(root.length > 0 && deviceInfo.isMobile === true) {
-      var hidenComposer = function(elm) {
+      var hideComposer = function(elm) {
         UIActivity.hideLink();
         root.find('.uiActivitiesDisplay:first').removeClass('hidden-phone');
         return elm.parents('.uiComposer:first').addClass('hidden-phone');
@@ -355,31 +365,36 @@ var UIActivity = {
         var composer = parent.find('.uiComposer:first');
         composer.find('.replaceTextArea').focus();
         composer.find('.button-group').find('.btn-cancel').off('click').click(function() {
-          hidenComposer($(this));
+          hideComposer($(this));
         });
-        composer.find('.button-group').find('.btn-submit').prop('disabled', true).off('click').click(function() {
-          parent.find('#ShareButton').trigger('mousedown');
-          hidenComposer($(this));
+        composer.find('.button-group').find('.btn-submit').prop('disabled', true);
+        composer.find('.share-buttons-top').find('.btn-submit').off('click').click(function() {
+          parent.find('#ShareButton').trigger('click');
+        });
+        composer.find('#ShareButton').off('click').click(function() {
+          hideComposer($(this));
         });
         //
-        composer.find('textarea#composerInput').exoMentions('registerControlButton', function(status) {
+        CKEDITOR.instances["composerInput"].focus();
+
+        /*composer.find('textarea#composerInput').exoMentions('registerControlButton', function(status) {
           var btnSubmit = $('#' + UIActivity.responsiveId).find('.uiComposer:first').find('.btn-submit');
           if(status === true) {
             btnSubmit.removeAttr('disabled');
           } else {
             btnSubmit.prop('disabled', true);
           }
-        });
+        });*/
       });
       //
       var btnGroup = root.find('.button-group');
       if (btnGroup) {
         btnGroup.find('.btn-cancel').off('click').click(function() {
-          hidenComposer($(this));
+          hideComposer($(this));
         });
         btnGroup.find('.btn-submit').off('click').click(function() {
           root.find('#ShareButton').trigger('mousedown');
-          hidenComposer($(this));
+          hideComposer($(this));
         });
       }
       //

@@ -178,6 +178,8 @@
               <field name="tagAttributes">
                 <collection type="java.util.HashSet" item-type="java.lang.String">
                   <value><string>src</string></value>
+                  <value><string>class</string></value>
+                  <value><string>title</string></value>
                 </collection>
               </field>
             </object>
@@ -209,11 +211,6 @@
       <name>XMLTagFilterPlugin</name>
       <set-method>addFilterPlugin</set-method>
       <type>org.exoplatform.social.common.xmlprocessor.filters.XMLTagFilterPlugin</type>
-    </component-plugin>
-    <component-plugin>
-      <name>LineBreakerFilterPlugin</name>
-      <set-method>addFilterPlugin</set-method>
-      <type>org.exoplatform.social.common.xmlprocessor.filters.LineBreakerFilterPlugin</type>
     </component-plugin>
     <component-plugin>
       <name>URLConverterFilterPlugin</name>

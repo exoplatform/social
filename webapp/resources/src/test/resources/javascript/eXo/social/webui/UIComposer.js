@@ -37,20 +37,6 @@
       UIComposer.userTyped = false;
     },
     init : function() {
-    
-      // add @ button using js
-			var mentionButton = $('<a />', {
-				'href' : 'javascript:void(0);',
-				'rel':'tooltip',
-				'data-placement':'bottom',
-				'title': UIComposer.mentionBtnLabel,
-				'class':'actionIcon',
-				'id': 'mentionButton'
-			}
-			).append($('<i />',{
-			'class':'uiIconSocMention uiIconSocLightGray'
-			}));
-			$('div#ActivityComposerExt>a:last-child').before(mentionButton);
 
       UIComposer.composer = $('#' + UIComposer.composerId);
 
@@ -80,7 +66,6 @@
         },
         idAction : 'ShareButton',
         actionLink : 'AttachButton',
-        actionMention : 'mentionButton',
         elasticStyle : {
           maxHeight : '64px',
           minHeight : '35px',
@@ -101,31 +86,6 @@
       var uiInputText = $('textarea#' + UIComposer.textareaId);
       UIComposer.clickOn = elm;
       UIComposer.currentValue = uiInputText.val();
-    },
-
-    showLink : function() {
-      var container = $('#ComposerContainer')
-      var link = container.find('#LinkExtensionContainer');
-      if (link.length > 0) {
-        if (link.data('isShow').isShow) {
-          link.hide().data('isShow', {
-            isShow : false
-          });
-        } else {
-          link.show().data('isShow', {
-            isShow : true
-          });
-        }
-      } else {
-      
-        var cmp = container.find('.uiLinkShareDisplay');
-        if (cmp.length > 0) {
-          $('textarea#composerInput').exoMentions('clearLink', function() {
-          });
-        } else {
-          $('#actionLink').trigger('click');
-        }
-      }
     },
     activeShareButton : function() {
 	    try {

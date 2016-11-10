@@ -25,9 +25,7 @@ import java.util.Set;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.social.common.AbstractCommonTest;
 import org.exoplatform.social.common.xmlprocessor.filters.SanitizeFilterPlugin;
-import org.exoplatform.social.common.xmlprocessor.filters.DOMLineBreakerFilterPlugin;
 import org.exoplatform.social.common.xmlprocessor.filters.DOMXMLTagFilterPlugin;
-import org.exoplatform.social.common.xmlprocessor.filters.LineBreakerFilterPlugin;
 import org.exoplatform.social.common.xmlprocessor.filters.XMLBalancerFilterPlugin;
 import org.exoplatform.social.common.xmlprocessor.filters.XMLTagFilterPlugin;
 import org.exoplatform.social.common.xmlprocessor.model.XMLTagFilterPolicy;
@@ -66,7 +64,7 @@ public class XMLProcessorTest extends AbstractCommonTest {
    * Tests {@link XMLProcessor#addFilter(Filter)}.
    */
   public void testAddFilter() {
-    LineBreakerFilterPlugin filter = new LineBreakerFilterPlugin();
+    SanitizeFilterPlugin filter = new SanitizeFilterPlugin();
     tearDownFilter.add(filter);
     xmlProcessor.addFilter(filter);
   }
@@ -75,7 +73,7 @@ public class XMLProcessorTest extends AbstractCommonTest {
    * Tests {@link XMLProcessor#removeFilter(Filter)}.
    */
   public void testRemoveFilter() {
-    xmlProcessor.removeFilter(new LineBreakerFilterPlugin());
+    xmlProcessor.removeFilter(new SanitizeFilterPlugin());
   }
 
   /**
@@ -99,22 +97,18 @@ public class XMLProcessorTest extends AbstractCommonTest {
 
   /**
    * Tests {@link XMLProcessor#process(Object)} with:
-   * {@link org.exoplatform.social.common.xmlprocessor.filters.LineBreakerFilterPlugin}, {@link org.exoplatform.social.common.xmlprocessor.filters.XMLBalancerFilterPlugin}.
+   * {@link org.exoplatform.social.common.xmlprocessor.filters.XMLBalancerFilterPlugin}.
    */
   public void testXMLBalancer() {
     XMLProcessor xmlProcessor = new XMLProcessorImpl();
-    LineBreakerFilterPlugin breakLineFilter = new LineBreakerFilterPlugin();
     XMLBalancerFilterPlugin xmlBalancer = new XMLBalancerFilterPlugin();
 
-    xmlProcessor.addFilter(breakLineFilter);
     xmlProcessor.addFilter(xmlBalancer);
 
     assertEquals(null,
             xmlProcessor.process(null));
     assertEquals("", xmlProcessor.process(""));
     assertEquals("hello 1", xmlProcessor.process("hello 1"));
-    assertEquals("hello 1<br /> hello2",
-            xmlProcessor.process("hello 1\n hello2"));
     assertEquals("hello 1&lt;&gt; hello2",
             xmlProcessor.process("hello 1<> hello2"));
     assertEquals("<a>hello 1</a>", xmlProcessor.process("<a>hello 1"));
@@ -171,7 +165,7 @@ public class XMLProcessorTest extends AbstractCommonTest {
   /**
    * Tests {@link XMLProcessor#process(Object)} with:
    * {@link org.exoplatform.social.common.xmlprocessor.filters.XMLTagFilterPlugin} for allowed tags and its allowed attributes,
-   * {@link SanitizeFilterPlugin}, {@link org.exoplatform.social.common.xmlprocessor.filters.DOMLineBreakerFilterPlugin}.
+   * {@link SanitizeFilterPlugin}.
    */
   public void testXMLDOMFilterAndEscapeWithTagAndAttributes() {
     XMLTagFilterPolicy tagFilterPolicy = new XMLTagFilterPolicy();
@@ -183,13 +177,10 @@ public class XMLProcessorTest extends AbstractCommonTest {
 
 
     Filter domXmlTagFilter = new DOMXMLTagFilterPlugin(tagFilterPolicy);
-    Filter domLineBreakerFilter = new DOMLineBreakerFilterPlugin();
 
-    xmlProcessor.addFilter(domLineBreakerFilter);
     xmlProcessor.addFilter(domXmlTagFilter);
 
     assertEquals("hello 1", xmlProcessor.process(DOMParser.createDOMTree(Tokenizer.tokenize("hello 1"))).toString());
-    assertEquals("hello 1<br /> hello2", xmlProcessor.process(DOMParser.createDOMTree(Tokenizer.tokenize("hello 1\n hello2"))).toString());
     assertEquals("<a>hello 1", xmlProcessor.process(DOMParser.createDOMTree(Tokenizer.tokenize("<a>hello 1"))).toString());
     assertEquals("hello 1</a>", xmlProcessor.process(DOMParser.createDOMTree(Tokenizer.tokenize("hello 1</a>"))).toString());
     assertEquals("<a<b>Hello 2<a><b>", xmlProcessor.process(DOMParser.createDOMTree(Tokenizer.tokenize("<a<b>Hello 2<a><b>"))).toString());
