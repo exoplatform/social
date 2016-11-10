@@ -16,23 +16,32 @@
  */
 package org.exoplatform.social.core.jpa.storage.dao;
 
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
+import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
+import org.exoplatform.social.core.jpa.storage.entity.ActivityEntity;
 import org.exoplatform.social.core.jpa.storage.entity.AppEntity;
+import org.exoplatform.social.core.jpa.storage.entity.IdentityEntity;
 import org.exoplatform.social.core.jpa.storage.entity.SpaceEntity;
 import org.exoplatform.social.core.jpa.storage.entity.SpaceMemberEntity;
 import org.exoplatform.social.core.jpa.test.BaseCoreTest;
 
+import java.util.Date;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 public class SpaceDAOTest extends BaseCoreTest {
   private SpaceDAO spaceDAO;
+  private ActivityDAO activityDao;
+  private IdentityDAO identityDAO;
 
   @Override
   public void setUp() throws Exception {
     super.setUp();
     spaceDAO = getService(SpaceDAO.class);
+    activityDao = getService(ActivityDAO.class);
+    identityDAO = getService(IdentityDAO.class);
   }
 
   @Override
@@ -42,7 +51,7 @@ public class SpaceDAOTest extends BaseCoreTest {
   }
 
   public void testSaveSpace() throws Exception {
-    SpaceEntity spaceEntity = createSpace();
+    SpaceEntity spaceEntity = createSpace("testPrettyName");
 
     spaceDAO.create(spaceEntity);
 
@@ -54,7 +63,7 @@ public class SpaceDAOTest extends BaseCoreTest {
   }
 
   public void testGetSpace() throws Exception {
-    SpaceEntity spaceEntity = createSpace();
+    SpaceEntity spaceEntity = createSpace("testPrettyName");
 
     spaceDAO.create(spaceEntity);
 
@@ -75,9 +84,7 @@ public class SpaceDAOTest extends BaseCoreTest {
   }
   
   public void testGetLastSpace() throws Exception {
-    SpaceEntity space1 = createSpace();
-    spaceDAO.create(space1);
-    SpaceEntity space2 = createSpace();
+    SpaceEntity space2 = createSpace("testPrettyName2");
     spaceDAO.create(space2);
 
     end();
@@ -88,26 +95,30 @@ public class SpaceDAOTest extends BaseCoreTest {
     assertSpace(space2, result.iterator().next());
   }
 
-  private SpaceEntity createSpace() {
+  private SpaceEntity createSpace(String spacePrettyName) {
     SpaceEntity spaceEntity = new SpaceEntity();    
     spaceEntity.setApp(createApp());
     spaceEntity.setAvatarLastUpdated(new Date());
     spaceEntity.setDescription("testDesc");
     spaceEntity.setDisplayName("testDisplayName");
     spaceEntity.setGroupId("testGroupId");
-    spaceEntity.setPrettyName("testPrettyName");
+    spaceEntity.setPrettyName(spacePrettyName);
     spaceEntity.setPriority(SpaceEntity.PRIORITY.HIGH);
     spaceEntity.setRegistration(SpaceEntity.REGISTRATION.OPEN);
     spaceEntity.setUrl("testUrl");
     spaceEntity.setVisibility(SpaceEntity.VISIBILITY.PRIVATE);
     spaceEntity.setAvatarLastUpdated(new Date());
 
+    addMember(spaceEntity, "root", SpaceMemberEntity.Status.PENDING);
+    return spaceEntity;
+  }
+
+  private void addMember(SpaceEntity spaceEntity, String username, SpaceMemberEntity.Status status) {
     SpaceMemberEntity mem = new SpaceMemberEntity();
     mem.setSpace(spaceEntity);
-    mem.setStatus(SpaceMemberEntity.Status.PENDING);
-    mem.setUserId("root");
+    mem.setStatus(status);
+    mem.setUserId(username);
     spaceEntity.getMembers().add(mem);
-    return spaceEntity;
   }
 
   private Set<AppEntity> createApp() {
@@ -141,5 +152,103 @@ public class SpaceDAOTest extends BaseCoreTest {
     assertEquals(spaceEntity.getAvatarLastUpdated(), result.getAvatarLastUpdated());
     assertEquals(spaceEntity.getCreatedDate(), result.getCreatedDate());
     assertEquals(1, result.getMembers().size());
+  }
+
+  public void testSaveActivity() throws Exception {
+    String activityTitle = "activity title";
+    String commentTitle = "Comment title";
+
+    SpaceEntity spaceEntity = createSpace("testPrettyName3");
+    spaceEntity = spaceDAO.create(spaceEntity);
+    addMember(spaceEntity, maryIdentity.getRemoteId(), SpaceMemberEntity.Status.MEMBER);
+    addMember(spaceEntity, johnIdentity.getRemoteId(), SpaceMemberEntity.Status.MEMBER);
+    addMember(spaceEntity, demoIdentity.getRemoteId(), SpaceMemberEntity.Status.MEMBER);
+
+    IdentityEntity spaceIdentity = identityDAO.create(createIdentity(SpaceIdentityProvider.NAME, spaceEntity.getPrettyName()));
+
+
+    end();
+    begin();
+
+    Set<Long> activityIds = new HashSet<Long>();
+    for (int i = 0; i < 15; i++) {
+      ActivityEntity activity = createActivityInstance(activityTitle, maryIdentity.getId());
+      activity = createActivity(spaceIdentity, activity);
+      Long activityId = activity.getId();
+      activityIds.add(activityId);
+      ActivityEntity got = activityDao.find(activityId);
+      assertNotNull(got);
+      addCommentsLikersMentionners(activity, commentTitle);
+      activity = activityDao.update(activity);
+    }
+
+    end();
+    begin();
+
+    spaceEntity = spaceDAO.find(spaceEntity.getId());
+    spaceDAO.delete(spaceEntity);
+    spaceIdentity = identityDAO.find(spaceIdentity.getId());
+    identityDAO.delete(spaceIdentity);
+    activityDao.deleteActivitiesByOwnerId(String.valueOf(spaceIdentity.getId()));
+  }
+
+  private void addCommentsLikersMentionners(ActivityEntity activity, String commentTitle) {
+    commentOnActivity(activity, commentTitle, demoIdentity.getId());
+    commentOnActivity(activity, commentTitle, johnIdentity.getId());
+
+    activity.addLiker(demoIdentity.getId());
+    activity.addLiker(johnIdentity.getId());
+    activity.addLiker(maryIdentity.getId());
+
+    Set<String> mentionners = new HashSet<String>();
+    mentionners.add(demoIdentity.getId());
+    mentionners.add(johnIdentity.getId());
+    mentionners.add(maryIdentity.getId());
+    activity.setMentionerIds(mentionners);
+  }
+
+  private void commentOnActivity(ActivityEntity activity, String commentTitle, String identityId) {
+    ActivityEntity comment = new ActivityEntity();
+    comment.setTitle(commentTitle);
+    comment.setOwnerId(identityId);
+    comment.setPosterId(identityId);
+    activity.addComment(comment);
+    activityDao.create(comment);
+  }
+
+  private ActivityEntity createActivityInstance(String activityTitle, String posterId) {
+    ActivityEntity activity = new ActivityEntity();
+    // test for reserving order of map values for i18n activity
+    Map<String, String> templateParams = new LinkedHashMap<String, String>();
+    templateParams.put("key1", "value 1");
+    templateParams.put("key2", "value 2");
+    templateParams.put("key3", "value 3");
+    activity.setTemplateParams(templateParams);
+    activity.setTitle(activityTitle);
+    activity.setBody("The body of " + activityTitle);
+    activity.setPosterId(posterId);
+    activity.setType("DEFAULT_ACTIVITY");
+
+    //
+    activity.setHidden(false);
+    activity.setLocked(false);
+    //
+    return activity;
+  }
+
+  private ActivityEntity createActivity(IdentityEntity ownerIdentity, ActivityEntity activity) {
+    activity.setOwnerId(String.valueOf(ownerIdentity.getId()));
+    activity.setPosterId(activity.getOwnerId());
+    activity = activityDao.create(activity);
+    return activity;
+  }
+
+  private IdentityEntity createIdentity(String providerId, String remoteId) {
+    IdentityEntity entity = new IdentityEntity();
+    entity.setProviderId(providerId);
+    entity.setRemoteId(remoteId);
+    entity.setEnabled(true);
+    entity.setDeleted(false);
+    return entity;
   }
 }

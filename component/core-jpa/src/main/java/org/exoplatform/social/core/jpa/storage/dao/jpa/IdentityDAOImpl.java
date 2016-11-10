@@ -19,29 +19,29 @@
 
 package org.exoplatform.social.core.jpa.storage.dao.jpa;
 
-import java.lang.reflect.Array;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.persistence.EntityExistsException;
-import javax.persistence.NoResultException;
-import javax.persistence.Query;
-import javax.persistence.TypedQuery;
-
+import org.exoplatform.commons.api.persistence.ExoTransactional;
 import org.exoplatform.commons.persistence.impl.GenericDAOJPAImpl;
 import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
+import org.exoplatform.social.core.identity.model.Identity;
+import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.jpa.search.ExtendProfileFilter;
 import org.exoplatform.social.core.jpa.storage.dao.IdentityDAO;
 import org.exoplatform.social.core.jpa.storage.dao.jpa.query.ProfileQueryBuilder;
 import org.exoplatform.social.core.jpa.storage.entity.ConnectionEntity;
 import org.exoplatform.social.core.jpa.storage.entity.IdentityEntity;
-import org.exoplatform.social.core.identity.model.Identity;
-import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.relationship.model.Relationship.Type;
+
+import javax.persistence.EntityExistsException;
+import javax.persistence.NoResultException;
+import javax.persistence.Query;
+import javax.persistence.TypedQuery;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author <a href="mailto:tuyennt@exoplatform.com">Tuyen Nguyen The</a>.
@@ -136,6 +136,25 @@ public class IdentityDAOImpl extends GenericDAOJPAImpl<IdentityEntity, Long> imp
     TypedQuery[] queries = qb.build(getEntityManager());
 
     return new JPAListAccess<>(IdentityEntity.class, queries[0], queries[1]);
+  }
+
+  @Override
+  @ExoTransactional
+  public void setAsDeleted(long identityId) {
+    IdentityEntity entity = find(identityId);
+    if (entity != null) {
+      entity.setDeleted(true);
+      update(entity);
+    }
+  }
+
+  @Override
+  @ExoTransactional
+  public void hardDeleteIdentity(long identityId) {
+    IdentityEntity entity = find(identityId);
+    if (entity != null) {
+      delete(entity);
+    }
   }
 
   @SuppressWarnings("unchecked")

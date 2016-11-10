@@ -52,11 +52,10 @@ public class SpaceActivityMySqlPublisherTest extends AbstractCoreTest {
   private SpaceStorage spaceStorage;
   private SpaceActivityPublisher spaceActivityPublisher;
   private RelationshipManager relationshipManager;
-  private List<ExoSocialActivity> tearDownActivityList;
+
   @Override
   public void setUp() throws Exception {
     super.setUp();
-    tearDownActivityList = new ArrayList<ExoSocialActivity>();
     spaceStorage = getService(SpaceStorage.class);
     spaceActivityPublisher = getService(SpaceActivityPublisher.class);
     identityStorage = getService(IdentityStorage.class);
@@ -68,21 +67,6 @@ public class SpaceActivityMySqlPublisherTest extends AbstractCoreTest {
 
   @Override
   public void tearDown() throws Exception {
-    for (ExoSocialActivity activity : tearDownActivityList) {
-      try {
-        activityManager.deleteActivity(activity.getId());
-      } catch (Exception e) {
-        LOG.warn("can not delete activity with id: " + activity.getId());
-      }
-    }
-    
-    for (Space space : spaceService.getAllSpaces()) {
-      Identity spaceIdentity = identityStorage.findIdentity(SpaceIdentityProvider.NAME, space.getPrettyName());
-      if (spaceIdentity != null) {
-        identityStorage.deleteIdentity(spaceIdentity);
-      }
-      spaceService.deleteSpace(space);
-    }
     super.tearDown();
   }
 
@@ -111,7 +95,6 @@ public class SpaceActivityMySqlPublisherTest extends AbstractCoreTest {
     RealtimeListAccess<ExoSocialActivity> listAccess = activityManager.getActivitiesOfSpaceWithListAccess(identity);
     assertEquals(1, listAccess.getSize());
     List<ExoSocialActivity> activities = listAccess.loadAsList(0, 10);
-    tearDownActivityList.add(activities.get(0));
     
     listAccess = activityManager.getActivityFeedWithListAccess(rootIdentity);
     
@@ -138,6 +121,7 @@ public class SpaceActivityMySqlPublisherTest extends AbstractCoreTest {
     //clean up
     spaceService.deleteSpace(space);
     relationshipManager.delete(relationship);
+    spaceStorage.deleteSpace(space.getId());
   }
   
   /**
@@ -207,7 +191,6 @@ public class SpaceActivityMySqlPublisherTest extends AbstractCoreTest {
    spaceService.renameSpace(space, "SocialTeam");
    activityId = identityStorage.getProfileActivityId(spaceIdentity.getProfile(), Profile.AttachedActivityType.SPACE);
    ExoSocialActivity newActivity = activityManager.getActivity(activityId);
-   tearDownActivityList.add(newActivity);
    //Number of comments must be 1
    assertEquals(1, activityManager.getCommentsWithListAccess(newActivity).getSize());
    
@@ -260,9 +243,7 @@ public class SpaceActivityMySqlPublisherTest extends AbstractCoreTest {
    }
    
    //clean up
-   spaceService.deleteSpace(space);
-   
-   
+   spaceStorage.deleteSpace(space.getId());
  }
  public void testSpaceHidden() throws Exception {
    //Create a hidden space
@@ -319,7 +300,7 @@ public class SpaceActivityMySqlPublisherTest extends AbstractCoreTest {
    assertEquals(0, userFeedActivities.load(0, 10).length);
 
    //clean up
-   spaceService.deleteSpace(space);
+   spaceStorage.deleteSpace(space.getId());
  }
 
 }

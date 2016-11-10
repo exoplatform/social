@@ -365,7 +365,7 @@ public interface ActivityDAO extends GenericDAO<ActivityEntity, Long> {
    * @param offset the start index
    * @param limit max number items to load
    * @param activityTypes the activity Type
-   * @return
+   * @return list of activities
    */
   List<ActivityEntity> getActivitiesByPoster(Identity posterIdentity, int offset, int limit, String... activityTypes);
 
@@ -422,4 +422,11 @@ public interface ActivityDAO extends GenericDAO<ActivityEntity, Long> {
    * @return all activities
    */
   List<ActivityEntity> getAllActivities();
+
+  /**
+   * delete an activity by ownerId
+   * @param ownerId the owner Id
+   */
+  void deleteActivitiesByOwnerId(String ownerId);
+
 }

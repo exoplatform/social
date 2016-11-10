@@ -19,14 +19,14 @@
 
 package org.exoplatform.social.core.jpa.storage.dao;
 
-import java.util.List;
-import java.util.Map;
-
 import org.exoplatform.commons.api.persistence.GenericDAO;
 import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.social.core.jpa.search.ExtendProfileFilter;
 import org.exoplatform.social.core.jpa.storage.entity.ConnectionEntity;
 import org.exoplatform.social.core.jpa.storage.entity.IdentityEntity;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author <a href="mailto:tuyennt@exoplatform.com">Tuyen Nguyen The</a>.
@@ -41,4 +41,16 @@ public interface IdentityDAO extends GenericDAO<IdentityEntity, Long> {
 
   List<Long> getAllIdsByProvider(String providerId, int offset, int limit);
   ListAccess<Map.Entry<IdentityEntity, ConnectionEntity>> findAllIdentitiesWithConnections(long identityId);
+
+  /**
+   * set the DELETED flag to true
+   * @param identityId the identity Id
+   */
+  void setAsDeleted(long identityId);
+
+  /**
+   * delete definitely an identity
+   * @param identityId the identity Id
+   */
+  void hardDeleteIdentity(long identityId);
 }

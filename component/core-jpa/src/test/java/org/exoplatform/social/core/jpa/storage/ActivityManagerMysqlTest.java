@@ -79,14 +79,16 @@ public class ActivityManagerMysqlTest extends AbstractCoreTest {
 
   @Override
   public void tearDown() throws Exception {
+    List<Identity> userIdentities= identityManager.getIdentities(OrganizationIdentityProvider.NAME);
     for (ExoSocialActivity activity : tearDownActivityList) {
       try {
-        activityManager.deleteActivity(activity.getId());
+        if (userIdentities.contains(activity.getUserId())) {
+          activityManager.deleteActivity(activity.getId());
+        }
       } catch (Exception e) {
         LOG.warn("can not delete activity with id: " + activity.getId());
       }
     }
-    
     //RealtimeListAccess<ExoSocialActivity> demoActivities = activityManager.getActivitiesOfUserSpacesWithListAccess(demoIdentity);
     //assertEquals(0, demoActivities.getSize());
 

@@ -609,6 +609,7 @@ public class RDBMSIdentityStorageImpl extends IdentityStorageImpl {
   @Override
   public int getIdentitiesByProfileFilterCount(String providerId, ProfileFilter profileFilter) throws IdentityStorageException {
     ExtendProfileFilter xFilter = new ExtendProfileFilter(profileFilter);
+    xFilter.setProviderId(providerId);
     ListAccess<IdentityEntity> list = getIdentityDAO().findIdentities(xFilter);
 
     try {

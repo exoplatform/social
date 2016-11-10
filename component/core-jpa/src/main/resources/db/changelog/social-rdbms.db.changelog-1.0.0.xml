@@ -429,4 +429,44 @@
     <modifyDataType tableName="SOC_ACTIVITY_TEMPLATE_PARAMS" columnName="TEMPLATE_PARAM_VALUE" newDataType="LONGTEXT"/>
   </changeSet>
 
+  <changeSet author="social" id="1.0.0-43" failOnError="false">
+    <dropForeignKeyConstraint baseTableName="SOC_ACTIVITY_LIKERS" constraintName="FK_SOC_ACT_LIKERS_ACT_01" />
+  </changeSet>
+
+  <changeSet author="social" id="1.0.0-44" failOnError="false">
+    <addForeignKeyConstraint baseColumnNames="ACTIVITY_ID" baseTableName="SOC_ACTIVITY_LIKERS" constraintName="FK_SOC_ACT_LIKERS_ACT_01" deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="NO ACTION" referencedColumnNames="ACTIVITY_ID" referencedTableName="SOC_ACTIVITIES" />
+  </changeSet>
+
+  <changeSet author="social" id="1.0.0-45" failOnError="false">
+    <dropForeignKeyConstraint baseTableName="SOC_MENTIONS" constraintName="FK_SOC_MENTIONS_ACT_01" />
+  </changeSet>
+
+  <changeSet author="social" id="1.0.0-46" failOnError="false">
+    <addForeignKeyConstraint baseColumnNames="ACTIVITY_ID" baseTableName="SOC_MENTIONS" constraintName="FK_SOC_MENTIONS_ACT_01" deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="NO ACTION" referencedColumnNames="ACTIVITY_ID" referencedTableName="SOC_ACTIVITIES" />
+  </changeSet>
+
+  <changeSet author="social" id="1.0.0-47" failOnError="false">
+    <dropForeignKeyConstraint baseTableName="SOC_ACTIVITY_TEMPLATE_PARAMS" constraintName="FK_SOC_ACT_TEMP_PAR_ACT_01" />
+  </changeSet>
+
+  <changeSet author="social" id="1.0.0-48" failOnError="false">
+    <addForeignKeyConstraint baseColumnNames="ACTIVITY_ID" baseTableName="SOC_ACTIVITY_TEMPLATE_PARAMS" constraintName="FK_SOC_ACT_TEMP_PAR_ACT_01" deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="NO ACTION" referencedColumnNames="ACTIVITY_ID" referencedTableName="SOC_ACTIVITIES" />
+  </changeSet>
+
+  <changeSet author="social" id="1.0.0-49" failOnError="false">
+    <dropForeignKeyConstraint baseTableName="SOC_STREAM_ITEMS" constraintName="FK_SOC_STREAM_ITEMS_ACT_01" />
+  </changeSet>
+
+  <changeSet author="social" id="1.0.0-50" failOnError="false">
+    <addForeignKeyConstraint baseColumnNames="ACTIVITY_ID" baseTableName="SOC_STREAM_ITEMS" constraintName="FK_SOC_STREAM_ITEMS_ACT_01" deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="NO ACTION" referencedColumnNames="ACTIVITY_ID" referencedTableName="SOC_ACTIVITIES" />
+  </changeSet>
+
+  <changeSet author="social" id="1.0.0-51" failOnError="false">
+    <dropForeignKeyConstraint baseTableName="SOC_ACTIVITIES" constraintName="FK_ACTIVITY_PARENT_ID" />
+  </changeSet>
+
+  <changeSet author="social" id="1.0.0-52" failOnError="false">
+    <addForeignKeyConstraint baseColumnNames="PARENT_ID" baseTableName="SOC_ACTIVITIES" constraintName="FK_ACTIVITY_PARENT_ID" deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="NO ACTION" referencedColumnNames="ACTIVITY_ID" referencedTableName="SOC_ACTIVITIES" />
+  </changeSet>
+
 </databaseChangeLog>

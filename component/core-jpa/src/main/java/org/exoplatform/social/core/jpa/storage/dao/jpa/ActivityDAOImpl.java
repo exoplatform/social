@@ -26,9 +26,11 @@ import java.util.List;
 import java.util.Set;
 
 import javax.persistence.NoResultException;
+import javax.persistence.Query;
 import javax.persistence.Tuple;
 import javax.persistence.TypedQuery;
 
+import org.exoplatform.commons.api.persistence.ExoTransactional;
 import org.exoplatform.commons.persistence.impl.GenericDAOJPAImpl;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
@@ -760,6 +762,14 @@ public class ActivityDAOImpl extends GenericDAOJPAImpl<ActivityEntity, Long> imp
   public List<ActivityEntity> getAllActivities() {
     TypedQuery<ActivityEntity> query = getEntityManager().createNamedQuery("SocActivity.getAllActivities", ActivityEntity.class);
     return query.getResultList();
+  }
+
+  @Override
+  @ExoTransactional
+  public void deleteActivitiesByOwnerId(String ownerId) {
+    Query query = getEntityManager().createNamedQuery("SocActivity.deleteActivityByOwner");
+    query.setParameter("ownerId", ownerId);
+    query.executeUpdate();
   }
 
   public List<ActivityEntity> getOwnerActivities(List<String> owners, long newerTime, long olderTime,

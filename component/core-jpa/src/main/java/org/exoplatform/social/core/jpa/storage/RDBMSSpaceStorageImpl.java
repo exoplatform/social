@@ -29,17 +29,16 @@ import org.apache.commons.lang.StringUtils;
 import org.exoplatform.commons.api.persistence.ExoTransactional;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
+import org.exoplatform.social.core.identity.model.Identity;
+import org.exoplatform.social.core.identity.model.Profile;
+import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
 import org.exoplatform.social.core.jpa.rest.IdentityAvatarRestService;
 import org.exoplatform.social.core.jpa.search.XSpaceFilter;
-import org.exoplatform.social.core.jpa.storage.dao.SpaceDAO;
-import org.exoplatform.social.core.jpa.storage.dao.SpaceMemberDAO;
+import org.exoplatform.social.core.jpa.storage.dao.*;
 import org.exoplatform.social.core.jpa.storage.dao.jpa.query.SpaceQueryBuilder;
 import org.exoplatform.social.core.jpa.storage.entity.SpaceEntity;
 import org.exoplatform.social.core.jpa.storage.entity.SpaceMemberEntity;
 import org.exoplatform.social.core.jpa.storage.entity.SpaceMemberEntity.Status;
-import org.exoplatform.social.core.identity.model.Identity;
-import org.exoplatform.social.core.identity.model.Profile;
-import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
 import org.exoplatform.social.core.space.SpaceFilter;
 import org.exoplatform.social.core.space.SpaceUtils;
 import org.exoplatform.social.core.space.impl.DefaultSpaceApplicationHandler;
@@ -59,15 +58,23 @@ public class RDBMSSpaceStorageImpl extends SpaceStorageImpl implements SpaceStor
 
   private SpaceMemberDAO       spaceMemberDAO;
 
-  private IdentityStorage      identityStorage;
+  private IdentityDAO          identityDAO;
+
+  private IdentityStorage     identityStorage;
+
+  private ActivityDAO         activityDAO;
 
   public RDBMSSpaceStorageImpl(SpaceDAO spaceDAO,
                                SpaceMemberDAO spaceMemberDAO,
-                               RDBMSIdentityStorageImpl identityStorage) {
+                               RDBMSIdentityStorageImpl identityStorage,
+                               IdentityDAO identityDAO,
+                               ActivityDAO activityDAO) {
     super(identityStorage, null);
     this.spaceDAO = spaceDAO;
     this.identityStorage = identityStorage;
     this.spaceMemberDAO = spaceMemberDAO;
+    this.identityDAO = identityDAO;
+    this.activityDAO = activityDAO;
   }
 
   @Override
@@ -75,9 +82,14 @@ public class RDBMSSpaceStorageImpl extends SpaceStorageImpl implements SpaceStor
   public void deleteSpace(String id) throws SpaceStorageException {
     SpaceEntity entity = spaceDAO.find(Long.parseLong(id));
     if (entity != null) {
-      // spaceMemberDAO.deleteBySpace(entity);
+      Identity spaceIdentity = identityStorage.findIdentity(SpaceIdentityProvider.NAME, entity.getPrettyName());
+      if (spaceIdentity == null) {
+        LOG.warn("Space with pretty name '{}' hasn't a related identity", entity.getPrettyName());
+      } else {
+        identityDAO.hardDeleteIdentity(Long.parseLong(spaceIdentity.getId()));
+        activityDAO.deleteActivitiesByOwnerId(spaceIdentity.getId());
+      }
       spaceDAO.delete(entity);
-
       LOG.debug("Space {} removed", entity.getPrettyName());
     }
   }
@@ -496,7 +508,6 @@ public class RDBMSSpaceStorageImpl extends SpaceStorageImpl implements SpaceStor
    * Fills {@link Space}'s properties to {@link SpaceEntity}'s.
    *
    * @param entity the space entity
-   * @param space the space pojo for services
    */
   private Space fillSpaceFromEntity(SpaceEntity entity) {
     if (entity == null) {
