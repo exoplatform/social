@@ -64,7 +64,7 @@
         var windowHeight = $(window).height();
 
         var composerInput = $('#composerInput');
-        var extraPlugins = 'simpleLink,simpleImage,suggester';
+        var extraPlugins = 'simpleLink,simpleImage,suggester,hideBottomToolbar';
         if (windowWidth > windowHeight && windowWidth < 768) {
           // Disable suggester on smart-phone landscape
           extraPlugins = 'simpleLink,simpleImage';
@@ -80,35 +80,6 @@
             instanceReady : function ( evt ) {
               // Hide the editor toolbar
               $("#ShareButton").prop("disabled", true);
-              $('#' + evt.editor.id + '_bottom').removeClass('cke_bottom_visible');
-            },
-            focus : function ( evt ) {
-              // Show the editor toolbar, except for smartphones in landscape mode
-              if (windowWidth > 767 || windowWidth < windowHeight) {
-                //$('#' + evt.editor.id + '_bottom').css('display', 'block');
-                evt.editor.execCommand('autogrow');
-                var $content = $('#' + evt.editor.id + '_contents');
-                var contentHeight = $content.height();
-                var $ckeBottom = $('#' + evt.editor.id + '_bottom');
-                $ckeBottom.animate({
-                  height: "39"
-                }, {
-                  step: function(number, tween) {
-                    $content.height(contentHeight - number);
-                    if (number >= 9) {
-                      $ckeBottom.addClass('cke_bottom_visible');
-                    }
-                  }
-                });
-              }
-            },
-            blur : function ( evt ) {
-              // Hide the editor toolbar
-              if (windowWidth > 767 || windowWidth < windowHeight) {
-                $('#' + evt.editor.id + '_contents').css('height', $('#' + evt.editor.id + '_contents').height() + 39);
-                $('#' + evt.editor.id + '_bottom').css('height', '0px');
-                $('#' + evt.editor.id + '_bottom').removeClass('cke_bottom_visible');
-              }
             },
             change: function( evt) {
                 var newData = evt.editor.getData();
