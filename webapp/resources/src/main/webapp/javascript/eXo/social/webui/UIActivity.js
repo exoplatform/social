@@ -64,7 +64,89 @@ var UIActivity = {
       }
     }
   },
+
+  initCKEditor: function () {
+    var extraPlugins = 'simpleLink,simpleImage,suggester';
+
+    var MAX_LENGTH = 2000;
+    // TODO this line is mandatory when a custom skin is defined, it should not be mandatory
+    CKEDITOR.basePath = '/commons-extension/ckeditor/';
+
+    $('textarea#CommentTextarea' + UIActivity.activityId).ckeditor({
+      customConfig: '/commons-extension/ckeditorCustom/config.js',
+      extraPlugins: extraPlugins,
+      placeholder: UIActivity.commentPlaceholder != null ? UIActivity.commentPlaceholder : window.eXo.social.I18n.mentions.defaultMessage,
+      on : {
+        instanceReady : function ( evt ) {
+          // Hide the editor toolbar
+          var elId = this.element.$.id.replace('CommentTextarea','');
+          $('#CommentButton' + elId).prop("disabled", true);
+          $('#' + evt.editor.id + '_bottom').removeClass('cke_bottom_visible');
+        },
+        focus : function ( evt ) {
+          // Show the editor toolbar, except for smartphones in landscape mode
+          if ($(window).width() > 767 || $(window).width() < $(window).height()) {
+            //$('#' + evt.editor.id + '_bottom').css('display', 'block');
+            evt.editor.execCommand('autogrow');
+            var $content = $('#' + evt.editor.id + '_contents');
+            var contentHeight = $content.height();
+            var $ckeBottom = $('#' + evt.editor.id + '_bottom');
+            $ckeBottom[0].style.display = "block";
+            $ckeBottom.animate({
+              height: "39"
+            }, {
+              step: function (number, tween) {
+                $content.height(contentHeight - number);
+                if (number >= 9) {
+                  $ckeBottom.addClass('cke_bottom_visible');
+                }
+              }
+            });
+          } else {
+            $('#' + evt.editor.id + '_bottom').removeClass('cke_bottom_visible');
+            $('#' + evt.editor.id + '_bottom')[0].style.display = "none";
+          }
+        },
+        blur : function ( evt ) {
+          // Hide the editor toolbar
+          if ($(window).width() > 767 || $(window).width() < $(window).height()) {
+            $('#' + evt.editor.id + '_contents').css('height', $('#' + evt.editor.id + '_contents').height() + 39);
+            $('#' + evt.editor.id + '_bottom').css('height', '0px');
+            $('#' + evt.editor.id + '_bottom').removeClass('cke_bottom_visible');
+          }
+        },
+        change: function( evt) {
+          var newData = evt.editor.getData();
+          var pureText = newData? newData.replace(/<[^>]*>/g, "").replace(/&nbsp;/g,"").trim() : "";
+          var elId = this.element.$.id.replace('CommentTextarea','');
+
+          if (pureText.length > 0 && pureText.length <= MAX_LENGTH) {
+            $('#CommentButton' + elId).removeAttr("disabled");
+          } else {
+            $('#CommentButton' + elId).prop("disabled", true);
+          }
+
+          if (pureText.length <= MAX_LENGTH) {
+            evt.editor.getCommand('simpleImage').enable();
+          } else {
+            evt.editor.getCommand('simpleImage').disable();
+          }
+        },
+        key: function( evt) {
+          var newData = evt.editor.getData();
+          var pureText = newData? newData.replace(/<[^>]*>/g, "").replace(/&nbsp;/g,"").trim() : "";
+          if (pureText.length > MAX_LENGTH) {
+            if ([8, 46, 33, 34, 35, 36, 37,38,39,40].indexOf(evt.data.keyCode) < 0) {
+              evt.cancel();
+            }
+          }
+        }
+      }
+    });
+  },
+
   init: function() {
+    var self = this;
     UIActivity.commentLinkEl = $("#"+UIActivity.commentLinkId);
     UIActivity.commentFormBlockEl = $("#" + UIActivity.commentFormBlockId);
     UIActivity.commentTextareaEl = $("#" + UIActivity.commentTextareId);
@@ -93,44 +175,15 @@ var UIActivity = {
       evt.stopPropagation();
     });
 
-    var commentLinkEl = $("#" + UIActivity.commentLinkId);
-    // TODO this line is mandatory when a custom skin is defined, it should not be mandatory
-    CKEDITOR.basePath = '/commons-extension/ckeditor/';
-    $('textarea#CommentTextarea' + UIActivity.activityId).ckeditor({
-      customConfig: '/social-resources/javascript/eXo/social/ckeditorCustom/config.js',
-      placeholder: UIActivity.commentPlaceholder != null ? UIActivity.commentPlaceholder : window.eXo.social.I18n.mentions.defaultMessage,
-      on : {
-        instanceReady : function ( evt ) {
-          // Hide the editor top bar.
-          document.getElementById( evt.editor.id + '_bottom' ).style.display = 'none';
-          document.getElementById( evt.editor.id + '_contents' ).style.height = '47px';
-        },
-        focus : function ( evt ) {
-          // Show the editor top bar.
-          document.getElementById( evt.editor.id + '_bottom' ).style.display = 'block';
-          document.getElementById( evt.editor.id + '_contents' ).style.height = '150px';
-        },
-        blur : function ( evt ) {
-          // Show the editor top bar.
-          document.getElementById( evt.editor.id + '_bottom' ).style.display = 'none';
-          document.getElementById( evt.editor.id + '_contents' ).style.height = '47px';
-        },
-        change: function( evt) {
-          var newData = evt.editor.getData();
-          if (newData && newData.length > 0) {
-            var elId = this.element.$.id.replace('CommentTextarea','');
-            $('#CommentButton' + elId).removeAttr("disabled");
-          } else {
-            $('#CommentButton' + elId).prop("disabled", true);
-          }
-        }
-      }
-    });
+    this.initCKEditor();
+
     this.resizeComment();
 
+    var commentLinkEl = $("#" + UIActivity.commentLinkId);
     if (commentLinkEl.length > 0) {
       commentLinkEl.off('click').on('click', function (evt) {
         var currentActivityId = $(this).attr('id').replace('CommentLink', '');
+        $('#cke_CommentTextarea' + currentActivityId + ' .cke_contents')[0].style.height = "110px";
         var inputContainer = $('#InputContainer' + currentActivityId).fadeToggle('fast', function () {
           var thiz = $(this);
           if(thiz.css('display') === 'block') {
