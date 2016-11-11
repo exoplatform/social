@@ -25,10 +25,10 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
+import org.exoplatform.commons.search.domain.Document;
+import org.exoplatform.commons.search.index.impl.ElasticIndexingServiceConnector;
 import org.json.simple.JSONObject;
 
-import org.exoplatform.addons.es.domain.Document;
-import org.exoplatform.addons.es.index.impl.ElasticIndexingServiceConnector;
 import org.exoplatform.container.xml.InitParams;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;

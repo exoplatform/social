@@ -119,7 +119,7 @@
   </external-component-plugins>
   
    <external-component-plugins>
-    <target-component>org.exoplatform.addons.es.index.IndexingOperationProcessor</target-component>
+    <target-component>org.exoplatform.commons.search.index.IndexingOperationProcessor</target-component>
     <component-plugin>
       <name>ProfileIndexingServiceConnector</name>
       <set-method>addConnector</set-method>
@@ -136,7 +136,7 @@
   </external-component-plugins>
   
   <external-component-plugins>
-    <target-component>org.exoplatform.addons.es.index.IndexingOperationProcessor</target-component>
+    <target-component>org.exoplatform.commons.search.index.IndexingOperationProcessor</target-component>
     <component-plugin>
       <name>SpaceIndexingServiceConnector</name>
       <set-method>addConnector</set-method>

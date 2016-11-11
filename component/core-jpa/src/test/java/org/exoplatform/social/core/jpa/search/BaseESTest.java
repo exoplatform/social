@@ -30,8 +30,8 @@ import org.apache.http.conn.routing.HttpRoute;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 
-import org.exoplatform.addons.es.index.IndexingOperationProcessor;
-import org.exoplatform.addons.es.index.IndexingService;
+import org.exoplatform.commons.search.index.IndexingOperationProcessor;
+import org.exoplatform.commons.search.index.IndexingService;
 import org.exoplatform.commons.utils.PropertyManager;
 import org.exoplatform.component.test.ConfigurationUnit;
 import org.exoplatform.component.test.ConfiguredBy;

@@ -27,7 +27,7 @@
         <provider>org.hibernate.ejb.HibernatePersistence</provider>
         <jta-data-source>exo-jpa_portal</jta-data-source>
 
-        <class>org.exoplatform.addons.es.domain.IndexingOperation</class>
+        <class>org.exoplatform.commons.search.domain.IndexingOperation</class>
 
         <properties>
             <property name="hibernate.show_sql" value="false"/>

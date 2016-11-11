@@ -27,9 +27,9 @@ import javax.jcr.Value;
 
 import org.chromattic.ext.ntdef.NTFile;
 
-import org.exoplatform.addons.es.index.IndexingService;
 import org.exoplatform.commons.api.event.EventManager;
 import org.exoplatform.commons.persistence.impl.EntityManagerService;
+import org.exoplatform.commons.search.index.IndexingService;
 import org.exoplatform.commons.utils.CommonsUtils;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.container.component.RequestLifeCycle;

@@ -24,14 +24,14 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
+import org.exoplatform.commons.search.es.ElasticSearchException;
+import org.exoplatform.commons.search.es.ElasticSearchServiceConnector;
+import org.exoplatform.commons.search.es.client.ElasticSearchingClient;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
-import org.exoplatform.addons.es.client.ElasticSearchingClient;
-import org.exoplatform.addons.es.search.ElasticSearchException;
-import org.exoplatform.addons.es.search.ElasticSearchServiceConnector;
 import org.exoplatform.commons.api.search.data.SearchContext;
 import org.exoplatform.commons.api.search.data.SearchResult;
 import org.exoplatform.container.ExoContainerContext;
