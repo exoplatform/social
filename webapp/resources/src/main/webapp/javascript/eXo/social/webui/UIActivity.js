@@ -369,7 +369,8 @@ var UIActivity = {
         });
         composer.find('.button-group').find('.btn-submit').prop('disabled', true);
         composer.find('.share-buttons-top').find('.btn-submit').off('click').click(function() {
-          parent.find('#ShareButton').trigger('click');
+          parent.find('#ShareButton').trigger('onclick');
+          hideComposer($(this));
         });
         composer.find('#ShareButton').off('click').click(function() {
           hideComposer($(this));
