@@ -39,6 +39,7 @@ import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.profile.ProfileFilter;
 import org.exoplatform.social.core.relationship.model.Relationship.Type;
+import org.exoplatform.social.core.service.LinkProvider;
 import org.exoplatform.social.core.storage.impl.StorageUtils;
 
 /**
@@ -143,6 +144,7 @@ public class ProfileSearchConnector {
       identity.setId(identityId);
       p = new Profile(identity);
       p.setAvatarUrl(avatarUrl);
+      p.setUrl(LinkProvider.getProfileUri(userName));
       p.setProperty(Profile.FULL_NAME, name);
       p.setProperty(Profile.FIRST_NAME, firstName);
       p.setProperty(Profile.LAST_NAME, lastName);
