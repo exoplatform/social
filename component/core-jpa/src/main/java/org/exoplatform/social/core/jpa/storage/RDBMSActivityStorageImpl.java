@@ -15,27 +15,13 @@
 * along with this program; if not, see<http://www.gnu.org/licenses/>.
  */
 package org.exoplatform.social.core.jpa.storage;
-import java.util.*;
-import java.util.Map.Entry;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import javax.persistence.LockModeType;
-
 import org.apache.commons.lang.ArrayUtils;
-
 import org.exoplatform.commons.api.persistence.ExoTransactional;
 import org.exoplatform.commons.persistence.impl.EntityManagerHolder;
 import org.exoplatform.commons.utils.PropertyManager;
 import org.exoplatform.container.component.BaseComponentPlugin;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
-import org.exoplatform.social.core.jpa.storage.dao.ActivityDAO;
-import org.exoplatform.social.core.jpa.storage.dao.ConnectionDAO;
-import org.exoplatform.social.core.jpa.storage.dao.StreamItemDAO;
-import org.exoplatform.social.core.jpa.storage.entity.ActivityEntity;
-import org.exoplatform.social.core.jpa.storage.entity.StreamItemEntity;
-import org.exoplatform.social.core.jpa.storage.entity.StreamType;
 import org.exoplatform.social.core.ActivityProcessor;
 import org.exoplatform.social.core.activity.filter.ActivityFilter;
 import org.exoplatform.social.core.activity.filter.ActivityUpdateFilter;
@@ -46,6 +32,12 @@ import org.exoplatform.social.core.activity.model.ExoSocialActivityImpl;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
+import org.exoplatform.social.core.jpa.storage.dao.ActivityDAO;
+import org.exoplatform.social.core.jpa.storage.dao.ConnectionDAO;
+import org.exoplatform.social.core.jpa.storage.dao.StreamItemDAO;
+import org.exoplatform.social.core.jpa.storage.entity.ActivityEntity;
+import org.exoplatform.social.core.jpa.storage.entity.StreamItemEntity;
+import org.exoplatform.social.core.jpa.storage.entity.StreamType;
 import org.exoplatform.social.core.storage.ActivityStorageException;
 import org.exoplatform.social.core.storage.ActivityStorageException.Type;
 import org.exoplatform.social.core.storage.api.IdentityStorage;
@@ -53,6 +45,12 @@ import org.exoplatform.social.core.storage.api.RelationshipStorage;
 import org.exoplatform.social.core.storage.api.SpaceStorage;
 import org.exoplatform.social.core.storage.impl.ActivityBuilderWhere;
 import org.exoplatform.social.core.storage.impl.ActivityStorageImpl;
+
+import javax.persistence.LockModeType;
+import java.util.*;
+import java.util.Map.Entry;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class RDBMSActivityStorageImpl extends ActivityStorageImpl {
 
@@ -869,8 +867,13 @@ public class RDBMSActivityStorageImpl extends ActivityStorageImpl {
     if(existingActivity == null) {
       throw new IllegalArgumentException("Activity to update cannot be null");
     }
-
-    ActivityEntity updatedActivity = activityDAO.find(Long.valueOf(existingActivity.getId()));
+    ActivityEntity updatedActivity = null;
+    if (existingActivity.getId().startsWith("comment")) {
+      String id = existingActivity.getId().replace("comment","");
+      updatedActivity = activityDAO.find(Long.valueOf(id));
+    } else {
+      updatedActivity = activityDAO.find(Long.valueOf(existingActivity.getId()));
+    }
 
     if(updatedActivity != null) {
       if (existingActivity.getId().startsWith(COMMENT_PREFIX)) {
