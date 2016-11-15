@@ -4,6 +4,7 @@ String inviteAction = uicomponent.event("Invite") + "; return false;";
 String restUrl = uicomponent.getRestURL();
 String value = uicomponent.getValue();
 String placeholder = _ctx.appRes("UIUserInvitation.input.placeholder");
+placeholder = placeholder?.replace("'", "\\'").replace("&#39;", "\\&#39;");
 %>
 <div class="uiUserInvitation">
   <%
