@@ -469,4 +469,11 @@
     <addForeignKeyConstraint baseColumnNames="PARENT_ID" baseTableName="SOC_ACTIVITIES" constraintName="FK_ACTIVITY_PARENT_ID" deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="NO ACTION" referencedColumnNames="ACTIVITY_ID" referencedTableName="SOC_ACTIVITIES" />
   </changeSet>
 
+  <changeSet author="social" id="1.0.0-53">
+    <addColumn tableName="SOC_SPACES">
+      <column name="TYPE" type="NVARCHAR(200)">
+      </column>
+    </addColumn>
+  </changeSet>
+
 </databaseChangeLog>

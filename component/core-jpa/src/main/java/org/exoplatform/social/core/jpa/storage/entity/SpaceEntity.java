@@ -107,6 +107,9 @@ public class SpaceEntity implements Serializable {
   @Column(name = "URL")
   public String             url;
 
+  @Column(name = "TYPE")
+  private String            type;
+
   @Temporal(TemporalType.TIMESTAMP)
   @Column(name = "CREATED_DATE", nullable = false)
   private Date              createdDate      = new Date();
@@ -207,6 +210,14 @@ public class SpaceEntity implements Serializable {
     this.createdDate = createdDate;
   }
 
+  public String getType() {
+    return type;
+  }
+
+  public void setType(String type) {
+    this.type = type;
+  }
+
   public Set<SpaceMemberEntity> getMembers() {
     return members;
   }
@@ -218,6 +229,7 @@ public class SpaceEntity implements Serializable {
     }
     this.setCreatedDate(space.getCreatedTime() > 0 ? new Date(space.getCreatedTime()) : new Date());
     this.setDescription(space.getDescription());
+    this.setType(space.getType());
     this.setDisplayName(space.getDisplayName());
     this.setGroupId(space.getGroupId());
     this.setPrettyName(space.getPrettyName());

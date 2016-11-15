@@ -1506,6 +1506,7 @@ public abstract class SpaceStorageTest extends AbstractCoreTest {
     int number = 1;
     // new space
     Space space = this.getSpaceInstance(number);
+    space.setType("CustomSpaceType");
     // save to space activityStorage
     spaceStorage.saveSpace(space, true);
     StorageUtils.persist();

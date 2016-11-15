@@ -615,7 +615,7 @@ public class RDBMSSpaceStorageImpl extends SpaceStorageImpl implements SpaceStor
       space.setRegistration(entity.getRegistration().name().toLowerCase());
     }
     space.setDescription(entity.getDescription());
-    space.setType(DefaultSpaceApplicationHandler.NAME);
+    space.setType(entity.getType());
     if (entity.getVisibility() != null) {
       space.setVisibility(entity.getVisibility().name().toLowerCase());
     }
