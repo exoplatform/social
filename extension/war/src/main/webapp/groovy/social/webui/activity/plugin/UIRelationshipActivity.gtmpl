@@ -367,6 +367,7 @@
                         $commentMessage
                     </div>
                 </div><!--end commentRight-->
+                <div class="clearfix"></div>
               <%
                 if (uicomponent.isCommentDeletable(it.userId)) {
                   String idDeleteComment = "DeleteCommentButton${it.id}";
@@ -401,7 +402,8 @@
                             <button class="btn pull-left btn-primary" onclick="<%= uicomponent.event("PostComment") %>" id="CommentButton${activity.id}" disabled>$labelComment</button>
                             <button class="btn visible-phone" id="CancelButton${activity.id}">$labelCancel</button>
                         </div>
-                    </div><!--end commentRight-->        
+                    </div><!--end commentRight-->
+                    <div class="clearfix"></div>
                 </div> <!--end commentItem-->               
               </div><!--end commentlist-->
             </div><!--end commentBox--> 

@@ -177,7 +177,7 @@
 
       this.initCKEditor();
 
-      this.resizeComment();
+      //this.resizeComment();
 
       var commentLinkEl = $("#" + UIActivity.commentLinkId);
       if (commentLinkEl.length > 0) {
@@ -256,7 +256,7 @@
       if (arr.length > 0) {
         for (var i = 0, len = arr.length; i < len; i++) {
           if (arr[i].clientHeight > arr[i].offsetParent.clientHeight) {
-            arr[i].closest('.contentComment').style.height = arr[i].height + 3 + "px";
+            arr[i].closest('.contentComment').style.height = arr[i].height + 26 + "px";
           }
         }
       }

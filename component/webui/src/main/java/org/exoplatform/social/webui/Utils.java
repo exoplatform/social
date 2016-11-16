@@ -16,20 +16,8 @@
  */
 package org.exoplatform.social.webui;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.MissingResourceException;
-import java.util.ResourceBundle;
-
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpUtils;
-
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
-
 import org.exoplatform.commons.utils.ExpressionUtil;
 import org.exoplatform.commons.utils.PropertyManager;
 import org.exoplatform.container.ExoContainer;
@@ -67,6 +55,10 @@ import org.exoplatform.web.url.navigation.NodeURL;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.application.portlet.PortletRequestContext;
 import org.json.JSONObject;
+
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpUtils;
+import java.util.*;
 
 /**
  * Contains some common methods for using as utility.<br>
@@ -764,6 +756,7 @@ public class Utils {
       .append("jq('#UIUserActivityStreamPortlet').css('height', 'auto');")
       .append("jq('#UIProfile').css('height', 'auto');")
       .append("platformLeftNavigation.resize();")
+      .append("location.reload();")
       .append("}, 200);");
     
     jm.require("SHARED/jquery", "jq")
