@@ -1,6 +1,9 @@
 <div class="$uicomponent.id uiActivitiesContainer" id="$uicomponent.id">
 <div class="uiActivitiesLoaderURL" data-url="<%=uicomponent.getLoadActivityUrl()%>"></div>
-<% 
+<%
+def jsManager = _ctx.getRequestContext().getJavascriptManager();
+jsManager.require("SHARED/social-ui-activity", "activity").addScripts("activity.resizeComment();");
+
    if (uicomponent.uiActivityIdFirstList.size() > 0 || uicomponent.uiActivityIdNextList.size() > 0) {
      if(uicomponent.isRenderFull) {
        uicomponent.renderChildren();

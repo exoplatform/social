@@ -104,9 +104,6 @@ public abstract class UIActivityComposer extends UIContainer {
       activityComposer.onClose(event);
       activityComposer.setDisplayed(false);
       //
-      WebuiRequestContext requestContext = event.getRequestContext();
-      requestContext.getJavascriptManager().require("SHARED/social-ui-activity", "activity")
-      .addScripts("activity.responsiveMobile('" + activityComposerManager.getUIComposer().getAncestorOfType(UIPortletApplication.class).getId() + "');");
       
       final UIComposer composer = activityComposerManager.getUIComposer();
       event.getRequestContext().addUIComponentToUpdateByAjax(composer);

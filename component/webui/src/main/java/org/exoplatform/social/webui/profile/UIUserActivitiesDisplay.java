@@ -16,10 +16,6 @@
  */
 package org.exoplatform.social.webui.profile;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.List;
-
 import org.apache.commons.lang.Validate;
 import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.commons.utils.PrivilegedSystemHelper;
@@ -28,9 +24,6 @@ import org.exoplatform.portal.mop.SiteType;
 import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
-import org.exoplatform.social.core.activity.ActivitiesRealtimeListAccess;
-import org.exoplatform.social.core.activity.filter.ActivityUpdateFilter;
-import org.exoplatform.social.core.activity.filter.ActivityUpdateFilter.ActivityFilterType;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
@@ -47,10 +40,13 @@ import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.ComponentConfigs;
 import org.exoplatform.webui.config.annotation.EventConfig;
 import org.exoplatform.webui.core.UIDropDownControl;
-import org.exoplatform.webui.core.UIPortletApplication;
 import org.exoplatform.webui.core.model.SelectItemOption;
 import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.event.EventListener;
+
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
 
 /**
  * Displays user's activities
@@ -348,7 +344,6 @@ public class UIUserActivitiesDisplay extends AbstractActivitiesDisplay {
        event.getRequestContext().getJavascriptManager()
             .require("SHARED/social-ui-activity-updates", "activityUpdates")
             .require("SHARED/social-ui-activity", "activity")
-            .addScripts("activity.responsiveMobile('" + uiUserActivities.getAncestorOfType(UIPortletApplication.class).getId() + "');")
             .addScripts("activityUpdates.resetCookie('" + String.format(Utils.ACTIVITY_STREAM_TAB_SELECTED_COOKIED, Utils.getViewerRemoteId()) + "','" + selectedDisplayMode + "');");
 //       
 //       event.getRequestContext().getJavascriptManager()
@@ -366,9 +361,6 @@ public class UIUserActivitiesDisplay extends AbstractActivitiesDisplay {
     public void execute(Event<UIUserActivitiesDisplay> event) throws Exception {
      UIUserActivitiesDisplay uiUserActivities = event.getSource();
      uiUserActivities.init();
-     event.getRequestContext().getJavascriptManager()
-     .require("SHARED/social-ui-activity", "activity")
-     .addScripts("activity.responsiveMobile('" + uiUserActivities.getAncestorOfType(UIPortletApplication.class).getId() + "');");
      event.getRequestContext().addUIComponentToUpdateByAjax(uiUserActivities);
      Utils.resizeHomePage();
    }

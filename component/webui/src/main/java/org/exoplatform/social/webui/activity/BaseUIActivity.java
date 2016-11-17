@@ -16,10 +16,7 @@
  */
 package org.exoplatform.social.webui.activity;
 
-import java.util.*;
-
 import org.apache.commons.lang.ArrayUtils;
-
 import org.exoplatform.commons.utils.CommonsUtils;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
@@ -53,6 +50,8 @@ import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.event.EventListener;
 import org.exoplatform.webui.form.UIForm;
 import org.exoplatform.webui.form.UIFormTextAreaInput;
+
+import java.util.*;
 
 /**
  * Base UI Activity for other custom activity ui to extend for displaying.
@@ -922,10 +921,6 @@ public class BaseUIActivity extends UIForm {
       activitiesContainer.removeActivity(uiActivity.getActivity());
 
       WebuiRequestContext context = event.getRequestContext();
-      context.getJavascriptManager()
-             .require("SHARED/social-ui-activity", "activity")
-             .addScripts("activity.responsiveMobile('"
-                 + activitiesContainer.getAncestorOfType(UIPortletApplication.class).getId() + "');");
       //
       boolean isEmptyListActivity = (activitiesContainer.getActivityIdList().size() == 0)
           && (activitiesContainer.getActivityList().size() == 0);

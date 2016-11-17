@@ -79,10 +79,12 @@
   def commentListStatus = uicomponent.getCommentListStatus();
   def commentFormDisplayed = uicomponent.isCommentFormDisplayed();
   def likesDisplayed = uicomponent.isAllLoaded();
+  def placeholder = _ctx.appRes("UIActivity.comment.placeholder");
   //params for init UIActivity javascript object
 
   def params = """ {
     activityId: '${activity.id}',
+    placeholderComment: '${placeholder}',
     inputWriteAComment: '$inputWriteAComment',
     commentMinCharactersAllowed: '${uicomponent.getCommentMinCharactersAllowed()}',
     commentMaxCharactersAllowed: '${uicomponent.getCommentMaxCharactersAllowed()}',
@@ -297,8 +299,8 @@
         </div>
       <%
         <div class="actLink">
-          <a id="Permalink${it.id}" rel="tooltip" data-placement="bottom" title="$viewActivityTip" class="uiIconLink uiIconLightGray" href="<%=uicomponent.getCommentPermalink(activity.id, it.id)%>"></a>
-        if (uicomponent.isCommentDeletable(it.userId)) {
+        <a id="Permalink${it.id}" rel="tooltip" data-placement="bottom" title="$viewActivityTip" class="uiIconLink uiIconLightGray" href="<%=uicomponent.getCommentPermalink(activity.id, it.id)%>"></a>
+      <%  if (uicomponent.isCommentDeletable(it.userId)) {
           String viewActivityTip = _ctx.appRes("UIActivity.msg.ViewActivity");
       %>
           <span id="DeleteCommentButton${activity.id}${commentCounter}" onclick="<%= uicomponent.event("DeleteComment", uicomponent.id, it.id); %>" class="CloseContentBoxNormal"></span>
