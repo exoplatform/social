@@ -127,4 +127,15 @@ public class URLConverterFilterPluginTest extends TestCase {
         urlConverterFilter.doFilter("http://abc.com:80/abc.jsp?a=1&b=2"));
   }
 
+  public void testURLConverterFilterPluginWithMultiLine() {
+    Filter urlConverterFilter = new URLConverterFilterPlugin(0);
+    assertEquals("demo <a href=\"http://google.com\" target=\"_blank\"" +
+            ">http://google.com</a> test <br />\t\n<a href=\"http://google.com\" target=\"_blank\">http://google.com</a>", urlConverterFilter.doFilter("demo http://google.com test <br />\t\nhttp://google.com"));
+
+    assertEquals("demo <a href=\"http://google.com\" target=\"_blank\"" +
+            ">http://google.com</a> test <br />\t\n <a href=\"http://google.com\" target=\"_blank\">http://google.com</a>", urlConverterFilter.doFilter("demo http://google.com test <br />\t\n http://google.com"));
+
+    assertEquals("demo <a href=\"http://google.com\" target=\"_blank\"" +
+            ">http://google.com</a> test\t\n<br />\t\n<a href=\"http://google.com\" target=\"_blank\">http://google.com</a>\n\t", urlConverterFilter.doFilter("demo http://google.com test\t\n<br />\t\nhttp://google.com\n\t"));
+  }
 }

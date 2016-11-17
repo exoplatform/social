@@ -130,7 +130,8 @@ public class URLConverterFilterPlugin extends BaseXMLFilterPlugin {
       if(!currentChildNode.get(i).getTitle().equals("a")){
         int insertedCount = nodeFilter(currentChildNode.get(i));
         if( insertedCount > 0){
-          i = i + insertedCount;
+          // We have to reduce 1 because the original node was removed in #convertNode after insert the replacement
+          i = i + insertedCount - 1;
         }
       }
     }
@@ -155,8 +156,8 @@ public class URLConverterFilterPlugin extends BaseXMLFilterPlugin {
         int start = m.start();
         int end = m.end();
         
-        if((start == 0 || content.charAt(start-1) == ' ') &&
-            (end == content.length() || content.charAt(end) == ' ')){
+        if((start == 0 || Character.isWhitespace(content.charAt(start-1))) &&
+            (end == content.length() || Character.isWhitespace(content.charAt(end)))){
           if(!HAVE_PROTOCOL_PREFIX.matcher(url).matches()){
             url = DEFAULT_PROTOCOL + url;
           }
