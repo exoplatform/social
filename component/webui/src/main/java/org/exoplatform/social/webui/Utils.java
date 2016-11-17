@@ -756,7 +756,6 @@ public class Utils {
       .append("jq('#UIUserActivityStreamPortlet').css('height', 'auto');")
       .append("jq('#UIProfile').css('height', 'auto');")
       .append("platformLeftNavigation.resize();")
-      .append("location.reload();")
       .append("}, 200);");
     
     jm.require("SHARED/jquery", "jq")
