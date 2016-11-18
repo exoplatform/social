@@ -229,6 +229,11 @@
       <set-method>addFilterPlugin</set-method>
       <type>org.exoplatform.social.common.xmlprocessor.filters.SanitizeFilterPlugin</type>
     </component-plugin>
+    <component-plugin>
+      <name>OpenLinkInNewTabFilterPlugin</name>
+      <set-method>addFilterPlugin</set-method>
+      <type>org.exoplatform.social.common.xmlprocessor.filters.OpenLinkNewTabFilterPlugin</type>
+    </component-plugin>
   </external-component-plugins>
 
   <external-component-plugins>
