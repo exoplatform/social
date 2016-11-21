@@ -921,6 +921,10 @@ public class BaseUIActivity extends UIForm {
       activitiesContainer.removeActivity(uiActivity.getActivity());
 
       WebuiRequestContext context = event.getRequestContext();
+      context.getJavascriptManager()
+             .require("SHARED/social-ui-activity", "activity")
+             .addScripts("activity.responsiveMobile('"
+                 + activitiesContainer.getAncestorOfType(UIPortletApplication.class).getId() + "');");
       //
       boolean isEmptyListActivity = (activitiesContainer.getActivityIdList().size() == 0)
           && (activitiesContainer.getActivityList().size() == 0);

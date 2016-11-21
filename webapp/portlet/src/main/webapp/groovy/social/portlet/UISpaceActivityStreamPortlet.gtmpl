@@ -37,6 +37,9 @@
  	  <div class="uiSpaceActivitiesContainer">
       <%
         if (Utils.isSpaceContext()) {
+          def requireJs = _ctx.getRequestContext().getJavascriptManager().getRequireJS();
+          requireJs.require("SHARED/social-ui-activity", "activity")
+                   .addScripts("activity.responsiveMobile('" + uicomponent.id + "');");
           uicomponent.renderChildren();
         } else {
       %>
