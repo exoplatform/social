@@ -540,6 +540,7 @@
     }
   };
 //
+  eXo.social.SocialUtil.addOnResizeWidth(function(evt){UIActivity.responsiveMobile()});
   eXo.social.SocialUtil.addOnResizeWidth(function(evt){UIActivity.adaptFileBreadCrumb()});
   return UIActivity;
 })($, mentions._, documentPreview);

@@ -17,9 +17,7 @@
 package org.exoplatform.social.webui.composer;
 
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
-import org.exoplatform.web.application.ApplicationMessage;
 import org.exoplatform.webui.application.WebuiRequestContext;
-import org.exoplatform.webui.core.UIApplication;
 import org.exoplatform.webui.core.UIComponent;
 import org.exoplatform.webui.core.UIContainer;
 import org.exoplatform.webui.core.UIPortletApplication;
@@ -104,6 +102,9 @@ public abstract class UIActivityComposer extends UIContainer {
       activityComposer.onClose(event);
       activityComposer.setDisplayed(false);
       //
+      WebuiRequestContext requestContext = event.getRequestContext();
+      requestContext.getJavascriptManager().require("SHARED/social-ui-activity", "activity")
+      .addScripts("activity.responsiveMobile('" + activityComposerManager.getUIComposer().getAncestorOfType(UIPortletApplication.class).getId() + "');");
       
       final UIComposer composer = activityComposerManager.getUIComposer();
       event.getRequestContext().addUIComponentToUpdateByAjax(composer);

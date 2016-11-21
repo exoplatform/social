@@ -40,6 +40,7 @@ import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.ComponentConfigs;
 import org.exoplatform.webui.config.annotation.EventConfig;
 import org.exoplatform.webui.core.UIDropDownControl;
+import org.exoplatform.webui.core.UIPortletApplication;
 import org.exoplatform.webui.core.model.SelectItemOption;
 import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.event.EventListener;
@@ -344,6 +345,7 @@ public class UIUserActivitiesDisplay extends AbstractActivitiesDisplay {
        event.getRequestContext().getJavascriptManager()
             .require("SHARED/social-ui-activity-updates", "activityUpdates")
             .require("SHARED/social-ui-activity", "activity")
+            .addScripts("activity.responsiveMobile('" + uiUserActivities.getAncestorOfType(UIPortletApplication.class).getId() + "');")
             .addScripts("activityUpdates.resetCookie('" + String.format(Utils.ACTIVITY_STREAM_TAB_SELECTED_COOKIED, Utils.getViewerRemoteId()) + "','" + selectedDisplayMode + "');");
 //       
 //       event.getRequestContext().getJavascriptManager()
@@ -361,6 +363,9 @@ public class UIUserActivitiesDisplay extends AbstractActivitiesDisplay {
     public void execute(Event<UIUserActivitiesDisplay> event) throws Exception {
      UIUserActivitiesDisplay uiUserActivities = event.getSource();
      uiUserActivities.init();
+      event.getRequestContext().getJavascriptManager()
+     .require("SHARED/social-ui-activity", "activity")
+     .addScripts("activity.responsiveMobile('" + uiUserActivities.getAncestorOfType(UIPortletApplication.class).getId() + "');");
      event.getRequestContext().addUIComponentToUpdateByAjax(uiUserActivities);
      Utils.resizeHomePage();
    }
