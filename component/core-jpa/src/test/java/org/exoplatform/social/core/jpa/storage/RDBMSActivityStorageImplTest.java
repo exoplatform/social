@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2003-2013 eXo Platform SAS.
+ * Copyright (C) 2003-2016 eXo Platform SAS.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Affero General Public License
@@ -572,7 +572,6 @@ public class RDBMSActivityStorageImplTest extends AbstractCoreTest {
     activityStorage.saveActivity(rootIdentity, activity);
     tearDownActivityList.add(activity);
     
-    
     ExoSocialActivity got = activityStorage.getActivity(activity.getId());
     assertNotNull(got);
     assertEquals(2, got.getMentionedIds().length);
@@ -606,6 +605,49 @@ public class RDBMSActivityStorageImplTest extends AbstractCoreTest {
     assertEquals(2, got.getReplyToId().length);
     assertEquals(2, got.getCommentedIds().length);
     assertEquals(2, got.getMentionedIds().length);
+  }
+
+  @MaxQueryNumber(282)
+  public void testViewerOwnerPosterActivities() throws Exception {
+    ExoSocialActivity activity1 = new ExoSocialActivityImpl();
+    // Demo mentionned here
+    activity1.setTitle("title @demo hi");
+    activityStorage.saveActivity(rootIdentity, activity1);
+    tearDownActivityList.add(activity1);
+
+    // owner poster comment
+    ExoSocialActivity activity2 = new ExoSocialActivityImpl();
+    activity2.setTitle("root title");
+    activityStorage.saveActivity(rootIdentity, activity2);
+    tearDownActivityList.add(activity2);
+
+    Space space = this.getSpaceInstance(spaceService, 1);
+    Identity spaceIdentity2 = identityManager.getOrCreateIdentity(SpaceIdentityProvider.NAME, space.getPrettyName(), false);
+    //demo posts activities to space2
+    for (int i = 0; i < 5; i ++) {
+      ExoSocialActivity activity = new ExoSocialActivityImpl();
+      activity.setTitle("activity title " + i);
+      activity.setUserId(demoIdentity.getId());
+      activityStorage.saveActivity(spaceIdentity2, activity);
+      tearDownActivityList.add(activity);
+    }
+
+    createComment(activity2, demoIdentity, 5);
+
+    List<ExoSocialActivity> list = activityStorage.getActivities(demoIdentity, johnIdentity, 0, 10);
+
+    // Return the activity that demo has commented on it and where he's mentionned
+    assertEquals(2, list.size());
+
+    list = activityStorage.getActivities(johnIdentity, demoIdentity, 0, 10);
+
+    // John hasn't added, commeted or was menionned in an activity
+    assertEquals(0, list.size());
+
+    list = activityStorage.getActivities(demoIdentity, demoIdentity, 0, 10);
+
+    // Demo can see his activities 'Space' & 'User activities'
+    assertEquals(7, list.size());
   }
   
   private Space getSpaceInstance(SpaceService spaceService, int number) throws Exception {
@@ -657,6 +699,20 @@ public class RDBMSActivityStorageImplTest extends AbstractCoreTest {
     
     return activity;
   }
-  
 
+  /**
+   * Creates a comment to an existing activity.
+   *
+   * @param existingActivity the existing activity
+   * @param posterIdentity the identity who comments
+   * @param number the number of comments
+   */
+  private void createComment(ExoSocialActivity existingActivity, Identity posterIdentity, int number) {
+    for (int i = 0; i < number; i++) {
+      ExoSocialActivity comment = new ExoSocialActivityImpl();
+      comment.setTitle("comment " + i);
+      comment.setUserId(posterIdentity.getId());
+      activityStorage.saveComment(existingActivity, comment);
+    }
+  }
 }

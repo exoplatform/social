@@ -49,14 +49,23 @@ import org.exoplatform.social.core.storage.ActivityStorageException;
 public class ActivityDAOImpl extends GenericDAOJPAImpl<ActivityEntity, Long> implements ActivityDAO {
   
   public List<ActivityEntity> getActivities(Identity owner, Identity viewer, long offset, long limit) throws ActivityStorageException {
-    TypedQuery<ActivityEntity> query;
+    long ownerId = Long.parseLong(owner.getId());
+
+    TypedQuery<ActivityEntity> query = null;
     if (viewer != null && !viewer.getId().equals(owner.getId())) {
+      // if viewer is different from owner
+      // get activities of type 'organization' where:
+      // owner is the creator of activity
+      // owner has reacted on any other activity
+      // outside space activities
       query = getEntityManager().createNamedQuery("SocActivity.getActivityByOwnerAndProviderId", ActivityEntity.class);
       query.setParameter("providerId", OrganizationIdentityProvider.NAME);
     } else {
-      query = getEntityManager().createNamedQuery("SocActivity.getActivityIdsByOwner", ActivityEntity.class);
+      // if viewer the owner
+      // get all his activities including spaces activities
+      query = getEntityManager().createNamedQuery("SocActivity.getActivityByOwner", ActivityEntity.class);
     }
-    query.setParameter("owners", Collections.singleton(owner.getId()));
+    query.setParameter("owners", Collections.singleton(ownerId));
     if (limit > 0) {
       query.setFirstResult(offset > 0 ? (int)offset : 0);
       query.setMaxResults((int)limit);
