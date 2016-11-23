@@ -57,7 +57,7 @@
 	    requireJs.addScripts("activity.setPageTitle('"+ activityTitle +"');");
 	    return;
     }
-    requireJs.addScripts("activity.setPageTitle(window.encodeURIComponent(\""+ activityTitle.replace("\"", "\\42") +"\").replace(/'/, '%27'));");
+    requireJs.addScripts("activity.setPageTitle(window.encodeURIComponent(\""+ activityTitle.replace("\"", "\\42").replace("\n", "").replace("\r", "") +"\").replace(/'/, '%27'));");
   }
   
 %>
