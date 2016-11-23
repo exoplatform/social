@@ -77,8 +77,8 @@
 <div class="uiComposer hidden-phone">
   <% uiform.begin() %>
   <div class="share-buttons-top button-group clearfix hidden">
+	<button class="share-button btn btn-primary btn-submit">$shareLabel</button>
   	<button class="btn btn-cancel"><%=_ctx.appRes("word.cancel")%></button>
-  	<button class="share-button btn btn-primary btn-submit">$shareLabel</button>
   </div>
   <div class="blastContainer">
 		<div id="ActivityComposerExt" class="attachMents">
