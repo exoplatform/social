@@ -425,7 +425,7 @@
     </createIndex>
   </changeSet>
 
-  <changeSet author="social" id="1.0.0-42">
+  <changeSet author="social" id="1.0.0-42" dbms="mysql,mssql,h2,sybase,db2,hsqldb,postgresql">
     <modifyDataType tableName="SOC_ACTIVITY_TEMPLATE_PARAMS" columnName="TEMPLATE_PARAM_VALUE" newDataType="LONGTEXT"/>
   </changeSet>
 
@@ -474,6 +474,25 @@
       <column name="TYPE" type="NVARCHAR(200)">
       </column>
     </addColumn>
+  </changeSet>
+
+  <!--PLF-6956 : Oracle: Changing NVARCHAR column to CLOB-->
+  <changeSet author="social" id="1.0.0-54" dbms="oracle">
+    <addColumn tableName="SOC_ACTIVITY_TEMPLATE_PARAMS">
+      <column name="TEMPLATE_PARAM_VALUE_TEMP" type="LONGTEXT"/>
+    </addColumn>
+  </changeSet>
+
+  <changeSet author="social" id="1.0.0-55" dbms="oracle">
+    <sql>UPDATE SOC_ACTIVITY_TEMPLATE_PARAMS SET TEMPLATE_PARAM_VALUE_TEMP=TEMPLATE_PARAM_VALUE</sql>
+  </changeSet>
+
+  <changeSet author="social" id="1.0.0-56" dbms="oracle">
+    <dropColumn tableName="SOC_ACTIVITY_TEMPLATE_PARAMS" columnName="TEMPLATE_PARAM_VALUE"/>
+  </changeSet>
+
+  <changeSet author="social" id="1.0.0-57" dbms="oracle">
+    <renameColumn tableName="SOC_ACTIVITY_TEMPLATE_PARAMS" oldColumnName="TEMPLATE_PARAM_VALUE_TEMP" newColumnName="TEMPLATE_PARAM_VALUE"/>
   </changeSet>
 
 </databaseChangeLog>
