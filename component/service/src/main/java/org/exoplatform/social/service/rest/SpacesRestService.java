@@ -35,15 +35,15 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.*;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import org.exoplatform.social.core.service.LinkProvider;
-
 import org.apache.commons.collections.map.HashedMap;
-import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.lang.StringEscapeUtils;
-import org.apache.commons.lang.StringUtils;
+
+import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.commons.utils.Safe;
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.PortalContainer;
@@ -51,7 +51,6 @@ import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.services.rest.resource.ResourceContainer;
 import org.exoplatform.services.security.ConversationState;
-import org.exoplatform.services.security.IdentityConstants;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.manager.IdentityManager;
@@ -63,6 +62,8 @@ import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
 import org.exoplatform.social.rest.impl.space.SpaceRestResourcesV1;
 import org.exoplatform.social.rest.impl.user.UserRestResourcesV1;
+import org.exoplatform.social.service.rest.api.models.IdentityNameList;
+import org.exoplatform.social.service.rest.api.models.IdentityNameList.Option;
 import org.exoplatform.web.WebAppController;
 import org.exoplatform.web.controller.QualifiedName;
 import org.exoplatform.web.controller.metadata.ControllerDescriptor;
@@ -357,31 +358,47 @@ public class SpacesRestService implements ResourceContainer {
                                     @PathParam("format") String format) throws Exception {
 
     MediaType mediaType = Util.getMediaType(format);
-    SpaceNameList nameList = new SpaceNameList();
     portalContainerName = portalName;
     SpaceService spaceSrv = getSpaceService();
 
-    SpaceListAccess listAccess = spaceSrv.getVisibleSpacesWithListAccess(userId, new SpaceFilter(conditionToSearch));
-    List<Space> spaces = Arrays.asList(listAccess.load(0, 10));
+    IdentityNameList nameList = new IdentityNameList();
+
     
-    for (Space space : spaces) {
       if (ALL_SPACES_STATUS.equals(typeOfRelation)) {
-        nameList.addName(space.getDisplayName());
+        ListAccess<Space> listAccess = spaceSrv.getAccessibleSpacesByFilter(userId, new SpaceFilter(conditionToSearch));
+        List<Space> spaces = Arrays.asList(listAccess.load(0, 10));
+        addSpaceNames(nameList, spaces);
       } else {
-        if (PENDING_STATUS.equals(typeOfRelation) && (spaceSrv.isPending(space, userId))) {
-          nameList.addName(space.getDisplayName());
-          continue;
-        } else if (INCOMING_STATUS.equals(typeOfRelation) && (spaceSrv.isInvited(space, userId))) {
-          nameList.addName(space.getDisplayName());
-          continue;
-        } else if (CONFIRMED_STATUS.equals(typeOfRelation) && (spaceSrv.isMember(space, userId))) {
-          nameList.addName(space.getDisplayName());
-          continue;
+        if (PENDING_STATUS.equals(typeOfRelation)) {
+          ListAccess<Space> listAccess = spaceSrv.getPendingSpacesByFilter(userId, new SpaceFilter(conditionToSearch));
+          List<Space> spaces = Arrays.asList(listAccess.load(0, 10));
+          addSpaceNames(nameList, spaces);
+        } else if (INCOMING_STATUS.equals(typeOfRelation)) {
+          ListAccess<Space> listAccess = spaceSrv.getInvitedSpacesByFilter(userId, new SpaceFilter(conditionToSearch));
+          List<Space> spaces = Arrays.asList(listAccess.load(0, 10));
+          addSpaceNames(nameList, spaces);
+        } else if (CONFIRMED_STATUS.equals(typeOfRelation)) {
+          ListAccess<Space> listAccess = spaceSrv.getMemberSpacesByFilter(userId, new SpaceFilter(conditionToSearch));
+          List<Space> spaces = Arrays.asList(listAccess.load(0, 10));
+          addSpaceNames(nameList, spaces);
         }
-      }
     }
 
     return Util.getResponse(nameList, uriInfo, mediaType, Response.Status.OK);
+  }
+
+  private void addSpaceNames(IdentityNameList nameList, List<Space> spaces) {
+    int i = 1;
+    for (Space space : spaces) {
+      Option opt = new Option();
+      opt.setType("space");
+      opt.setInvalid(false);
+      opt.setOrder(i++);
+      opt.setText(space.getDisplayName());
+      opt.setValue(space.getPrettyName());
+      opt.setAvatarUrl(space.getAvatarUrl());
+      nameList.addOption(opt);
+    }
   }
 
   /**
@@ -443,41 +460,6 @@ public class SpacesRestService implements ResourceContainer {
      */
     public void setMoreSpacesUrl(String allSpacesUrl) {
       moreSpacesUrl = allSpacesUrl;
-    }
-  }
-
-  @XmlRootElement
-  static public class SpaceNameList {
-    private List<String> _names;
-
-    /**
-     * Sets space name list
-     *
-     * @param names name list
-     */
-    public void setNames(List<String> names) {
-      this._names = names;
-    }
-
-    /**
-     * Gets space name list
-     *
-     * @return space name list
-     */
-    public List<String> getNames() {
-      return _names;
-    }
-
-    /**
-     * Add name to space name list
-     *
-     * @param name name
-     */
-    public void addName(String name) {
-      if (_names == null) {
-        _names = new ArrayList<String>();
-      }
-      _names.add(name);
     }
   }
 

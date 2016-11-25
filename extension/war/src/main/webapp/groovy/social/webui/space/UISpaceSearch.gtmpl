@@ -25,7 +25,7 @@ uicomponent.initPlaceholder();
 			<i class="uiIconSocSimplePlus uiIconSocWhite"></i><%=_ctx.appRes("UISpaceSearch.label.AddNewSpace")%>
 		</button>
 		<div class="uiSearchInput pull-right searchWithIcon">
-		    <a data-original-title="Search" class="advancedSearch" rel="tooltip" data-placement="bottom" onclick="<%=uicomponent.event("Search")%>" href="javascript:void(0)">
+		    <a data-original-title="Search" class="advancedSearch" rel="tooltip" data-placement="bottom" href="javascript:void(0)">
 		    	<i class="uiIconSearch uiIconLightGray"></i>
 		    </a>
 			<%uiform.renderField(uicomponent.SPACE_SEARCH); %>
