@@ -46,7 +46,7 @@
   def labelLike = _ctx.appRes("UIActivity.label.Like");
   def labelUnlike = _ctx.appRes("UIActivity.label.Unlike");
   def labelSource = _ctx.appRes("UIActivity.label.Source");
-  def inputWriteAComment = _ctx.appRes("UIActivity.input.Add_your_comment");
+  def inputWriteAComment = _ctx.appRes("UIActivity.input.Add_your_comment").replace("'", "\\'");
   def labelShowAllComments = _ctx.appRes("UIActivity.label.Show_All_Comments");
   def labelHideAllComments = _ctx.appRes("UIActivity.label.Hide_All_Comments");
   def labelShowPreviousComments = _ctx.appRes("UIActivity.label.Show_Previous_Comments");
@@ -89,7 +89,7 @@
   def commentFormDisplayed = uicomponent.isCommentFormDisplayed();
   def likesDisplayed = uicomponent.isAllLoaded();
 
-  def placeholder = _ctx.appRes("UIActivity.comment.placeholder");
+  def placeholder = _ctx.appRes("UIActivity.comment.placeholder").replace("'", "\\'");
   //params for init UIActivity javascript object
 
 	def params = """ {
