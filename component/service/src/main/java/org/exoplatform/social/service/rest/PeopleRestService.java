@@ -35,7 +35,6 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.SecurityContext;
 import javax.ws.rs.core.UriInfo;
-import javax.xml.bind.annotation.XmlRootElement;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringEscapeUtils;
@@ -68,6 +67,9 @@ import org.exoplatform.social.core.space.SpaceFilter;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
 import org.exoplatform.social.rest.impl.user.UserRestResourcesV1;
+import org.exoplatform.social.service.rest.api.models.IdentityNameList;
+import org.exoplatform.social.service.rest.api.models.IdentityNameList.Option;
+import org.exoplatform.social.service.rest.api.models.PeopleInfo;
 import org.exoplatform.webui.utils.TimeConvertUtils;
 
 /**
@@ -167,7 +169,7 @@ public class PeopleRestService implements ResourceContainer{
     if (excludedIdentityList == null) {
       excludedIdentityList = new ArrayList<Identity>();
     }
-    UserNameList nameList = new UserNameList();
+    IdentityNameList nameList = new IdentityNameList();
     Identity currentIdentity = Util.getViewerIdentity(currentUser);
     identityFilter.setViewerIdentity(currentIdentity);
 
@@ -175,15 +177,15 @@ public class PeopleRestService implements ResourceContainer{
     if (PENDING_STATUS.equals(typeOfRelation)) {
       ListAccess<Identity> listAccess = getRelationshipManager().getOutgoingByFilter(currentIdentity, identityFilter);
       result = listAccess.load(0, (int)SUGGEST_LIMIT);
-      addToNameList(nameList, result);
+      nameList.addToNameList(result);
     } else if (INCOMING_STATUS.equals(typeOfRelation)) {
       ListAccess<Identity> listAccess = getRelationshipManager().getIncomingByFilter(currentIdentity, identityFilter);
       result = listAccess.load(0, (int)SUGGEST_LIMIT);
-      addToNameList(nameList, result);
+      nameList.addToNameList(result);
     } else if (CONFIRMED_STATUS.equals(typeOfRelation)){
       ListAccess<Identity> listAccess = getRelationshipManager().getConnectionsByFilter(currentIdentity, identityFilter);
       result = listAccess.load(0, (int)SUGGEST_LIMIT);
-      addToNameList(nameList, result);
+      nameList.addToNameList(result);
     } else if (SPACE_MEMBER.equals(typeOfRelation)) {  // Use in search space member
       List<Identity> identities = Arrays.asList(getIdentityManager().getIdentitiesByProfileFilter(OrganizationIdentityProvider.NAME, identityFilter, false).load(0, (int)SUGGEST_LIMIT));
       Space space = getSpaceService().getSpaceByUrl(spaceURL);
@@ -292,7 +294,7 @@ public class PeopleRestService implements ResourceContainer{
           opt.setType("user");
           opt.setValue(userName);
           opt.setText(fullName + " (" + userName + ")");
-          opt.setAvatarUrl(getAvatarURL(id));
+          opt.setAvatarUrl(id.getProfile() == null ? null : id.getProfile().getAvatarUrl());
           excludedIdentityList.add(id);
           opt.setOrder(1);
           nameList.addOption(opt);
@@ -330,7 +332,7 @@ public class PeopleRestService implements ResourceContainer{
           opt.setType("user");
           opt.setValue(userName);
           opt.setText(fullName);
-          opt.setAvatarUrl(getAvatarURL(id));
+          opt.setAvatarUrl(id.getProfile() == null ? null : id.getProfile().getAvatarUrl());
           excludedIdentityList.add(id);
           opt.setOrder(4);
           nameList.addOption(opt);
@@ -339,13 +341,13 @@ public class PeopleRestService implements ResourceContainer{
 
     } else { // Identities that match the keywords.
       result = getIdentityManager().getIdentityStorage().getIdentitiesForMentions(OrganizationIdentityProvider.NAME, identityFilter, null, 0L, SUGGEST_LIMIT, false).toArray(new Identity[0]);
-      addToNameList(nameList, result);
+      nameList.addToNameList(result);
     }
 
     return Util.getResponse(nameList, uriInfo, mediaType, Response.Status.OK);
   }
 
-  private void addSpaceOrUserToList(List<Identity> identities, UserNameList options,
+  private void addSpaceOrUserToList(List<Identity> identities, IdentityNameList options,
                                    Space space, String typeOfRelation, int order) throws SpaceException {
     SpaceService spaceSrv = getSpaceService(); 
     for (Identity identity : identities) {
@@ -356,13 +358,13 @@ public class PeopleRestService implements ResourceContainer{
         opt.setType("user");
         opt.setValue(fullName);
         opt.setText(fullName);
-        opt.setAvatarUrl(getAvatarURL(identity));
+        opt.setAvatarUrl(identity.getProfile() == null ? null : identity.getProfile().getAvatarUrl());
       } else if (USER_TO_INVITE.equals(typeOfRelation) && !spaceSrv.isInvitedUser(space, userName)
                  && !spaceSrv.isPendingUser(space, userName) && !spaceSrv.isMember(space, userName)) {
         opt.setType("user");
         opt.setValue(userName);
         opt.setText(fullName + " (" + userName + ")");
-        opt.setAvatarUrl(getAvatarURL(identity));
+        opt.setAvatarUrl(identity.getProfile() == null ? null : identity.getProfile().getAvatarUrl());
       } else {
         continue;
       }
@@ -407,7 +409,7 @@ public class PeopleRestService implements ResourceContainer{
         userInfo.setId(identity.getRemoteId());
       }
       userInfo.setName(identity.getProfile().getFullName());
-      userInfo.setAvatar(identity.getProfile().getAvatarUrl());
+      userInfo.setAvatar(identity.getProfile() == null ? null : identity.getProfile().getAvatarUrl());
       userInfo.setType("contact"); //hardcode for test
       userInfos.add(userInfo);
     }
@@ -792,23 +794,6 @@ public class PeopleRestService implements ResourceContainer{
     return userId;
   }
 
-  private String getAvatarURL(Identity identity) {
-    Profile p = getIdentityManager().getProfile(identity);
-    return p == null ? null : p.getAvatarUrl();
-  }
-  
-  private void addToNameList(UserNameList nameList, Identity ...identities) {
-    for (Identity identity : identities) {
-      String fullName = identity.getProfile().getFullName();
-      Option opt = new Option();
-      opt.setType("user");
-      opt.setText(fullName);
-      opt.setValue(identity.getRemoteId());
-      opt.setAvatarUrl(getAvatarURL(identity));
-      nameList.addOption(opt);
-    }
-  }
-  
   private HashMap<String, Object> getIdentityInfo(Identity existingIdentity, String lang){
     RealtimeListAccess<ExoSocialActivity>  activityRealtimeListAccess = 
                                             activityManager.getActivitiesWithListAccess(existingIdentity);
@@ -938,183 +923,6 @@ public class PeopleRestService implements ResourceContainer{
     }
   }
 
-  static public class Option {
-    private String type;
-    private String value;
-    private String text;
-    private String avatarUrl;
-    private int order;
-    private boolean isInvalid;
-
-    public boolean isInvalid() {
-      return isInvalid;
-    }
-
-    public void setInvalid(boolean isInvalid) {
-      this.isInvalid = isInvalid;
-    }
-
-    public int getOrder() {
-      return order;
-    }
-
-    public void setOrder(int order) {
-      this.order = order;
-    }
-
-    public String getType() {
-      return type;
-    }
-
-    public void setType(String type) {
-      this.type = type;
-    }
-
-    public String getValue() {
-      return value;
-    }
-
-    public void setValue(String value) {
-      this.value = value;
-    }
-
-    public String getText() {
-      return text;
-    }
-
-    public void setText(String text) {
-      this.text = text;
-    }
-
-    public String getAvatarUrl() {
-      return avatarUrl;
-    }
-
-    public void setAvatarUrl(String avatarUrl) {
-      this.avatarUrl = avatarUrl;
-    }
-  }
-
-  /**
-   * UserNameList class
-   * 
-   * Contains list of user's name that match the input string.
-   *
-   */
-  @XmlRootElement
-  static public class UserNameList {
-    private List<Option> options;
-
-    public List<Option> getOptions() {
-      return options;
-    }
-
-    public void setOptions(List<Option> options) {
-      this.options = options;
-    }
-
-    public void addOption(Option opt) {
-      if (opt == null) {
-        throw new IllegalArgumentException("Option can not be NULL");
-      }
-
-      if (options == null) {
-        options = new ArrayList<Option>();
-      }
-      options.add(opt);
-    }
-  }
-
-  /**
-   * PeopleInfo class
-   * 
-   * Contains people's information that relate to specific user.
-   *
-   */
-  @XmlRootElement
-  static public class PeopleInfo {
-    private String id;
-    private String profileUrl;
-    private String avatarURL;
-    private String activityTitle;
-    private String relationshipType;
-    private String fullName;
-    private String position;
-    private Boolean isDeleted;
-
-    
-    public PeopleInfo() {
-    }
-    
-    public PeopleInfo(String relationshipType) {
-      this.relationshipType = relationshipType;
-    }
-
-    public String getFullName() {
-      return fullName;
-    }
-
-    public void setFullName(String fullName) {
-      this.fullName = fullName;
-    }
-
-    public String getActivityTitle() {
-      return activityTitle;
-    }
-    
-    public void setActivityTitle(String activityTitle) {
-      this.activityTitle = activityTitle;
-    }
-    
-    public String getAvatarURL() {
-      return avatarURL;
-    }
-    
-    public void setAvatarURL(String avatarURL) {
-      this.avatarURL = avatarURL;
-    }
-
-    public String getRelationshipType() {
-      return relationshipType;
-    }
-
-    public void setRelationshipType(String relationshipType) {
-      this.relationshipType = relationshipType;
-    }
-
-    public String getId() {
-      return id;
-    }
-
-    public void setId(String id) {
-      this.id = id;
-    }
-
-    public String getProfileUrl() {
-      return profileUrl;
-    }
-
-    public void setProfileUrl(String profileUrl) {
-      this.profileUrl = profileUrl;
-    }
-
-    public String getPosition() {
-      return position;
-    }
-
-    public void setPosition(String position) {
-      this.position = position;
-    }
-
-    public Boolean getDeleted() {
-          return isDeleted;
-    }
-
-    public void setDeleted(Boolean deleted) {
-          isDeleted = deleted;
-    }
-  }
-  
   private String getLatestActivityTitle(Identity identity, Identity currentIdentity) {
     RealtimeListAccess<ExoSocialActivity> activitiesListAccess = getActivityManager()
         .getActivitiesByPoster(identity, DEFAULT_ACTIVITY, LINK_ACTIVITY, DOC_ACTIVITY);

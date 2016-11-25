@@ -163,6 +163,9 @@
     <depends>
        <module>webui</module>
     </depends>
+    <depends>
+       <module>suggester</module>
+    </depends>
   </module>
   
   <module>
@@ -184,6 +187,9 @@
     <depends>
        <module>webui</module>
     </depends>
+    <depends>
+       <module>suggester</module>
+    </depends>
   </module>
   
   <module>
@@ -204,6 +210,9 @@
     </depends>
     <depends>
        <module>webui</module>
+    </depends>
+    <depends>
+       <module>suggester</module>
     </depends>
   </module>
   
