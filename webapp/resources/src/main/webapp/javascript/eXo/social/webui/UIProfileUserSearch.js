@@ -23,11 +23,112 @@
         nameEl.attr('autocomplete','off');
         posEl.attr('autocomplete','off').keydown(keyDownAction);
         skillEl.attr('autocomplete','off').keydown(keyDownAction);
+        $(nameEl).suggester({
+          type : 'tag',
+          plugins: ['restore_on_backspace'],
+          preload: false,
+          create: false,
+          addPrecedence: true,
+          persist: false,
+          createOnBlur: true,
+          highlight: false,
+          hideSelected: true,
+          openOnFocus: true,
+          maxItems: 1,
+          sourceProviders: ['exo:social'],
+          valueField: 'text',
+          labelField: 'text',
+          searchField: ['text'],
+          loadThrottle: null,
+          onFocus: function() {
+            $(nameEl)[0].selectize.positionDropdown();
+            var value = $(nameEl)[0].selectize.getValue();
+            if(value) {
+              $(nameEl)[0].selectize.removeItem(value, false);
+              $(nameEl)[0].selectize.setTextboxValue(value);
+            }
+          },
+          onDropdownOpen: function($dropdown) {
+            $(nameEl)[0].selectize.positionDropdown();
+            var value = $(nameEl)[0].selectize.getValue();
+              if(value) {
+                $(nameEl)[0].selectize.removeItem(value, false);
+                $(nameEl)[0].selectize.setTextboxValue(value);
+              }
+          },
+          onItemAdd: function(value, $item) {
+            if(this.selectedValue == value) {
+              return;
+            }
+            $(nameEl)[0].selectize.setTextboxValue(value);
+            $(nameEl).val(value);
+            $(nameEl).attr('value', value);
+            if($item.invalid === false) {
+              UIProfileUserSearch.searchBtn.trigger("click");
+              $(nameEl)[0].selectize.setTextboxValue(value);
+            }
+          },
+          onItemRemove: function(value, $item) {
+            this.selectedValue = value;
+            $(nameEl)[0].selectize.setTextboxValue(value);
+          },
+          onInitialize: function() {
+            var searchElInput = UIProfileUserSearch.profileSearch.find('.selectize-input input[type="text"]');
+            searchElInput.keydown(function(event) {
+              var e = event || window.event;
+              var keynum = e.keyCode || e.which;
+              if(keynum == 13) {
+                UIProfileUserSearch.searchBtn.click();     
+                event.stopPropagation();
+              }
+            });
+            $(nameEl)[0].selectize.positionDropdown();
+            var value = $(nameEl)[0].selectize.getValue();
+            if(value) {
+              $(nameEl)[0].selectize.removeItem(value, false);
+              $(nameEl)[0].selectize.setTextboxValue(value);
+            }
+          },
+          create: function(input) {
+              return {'value': input, 'text': input, 'invalid': true};
+          },
+          renderItem: function(item, escape) {
+            return '<span class="exo-mention">' + escape(item.text) + '</span>';
+          },
+          renderMenuItem: function(item, escape) {
+            var avatar = item.avatarUrl;
+            if (avatar == null) {
+                avatar = '/eXoSkin/skin/images/system/UserAvtDefault.png';
+            }
+            if(!item.text) {
+                item.text = item.value;
+            }
+            return '<div class="optionItem" data-value="' + item.text + '"><div class="avatarSmall optionAvatar"><img src="' + avatar + '"></div><div class="optionName">' + escape(item.text) + '</div></div>';
+          },
+          sortField: [{field: 'order'}, {field: '$score'}],
+          providers: {
+            'exo:social': function(query, callback) {
+            if (query && query.length > 0) {
+                $.ajax({
+                    type: "GET",
+                    url: buildURL(query),
+                    complete: function(jqXHR) {
+                        if(jqXHR.readyState === 4) {
+                            var json = $.parseJSON(jqXHR.responseText)
+                            if (json.options != null) {
+                                callback(json.options);
+                            }
+                        }
+                    }
+                });
+              }
+            } 
+          }
+        });
+
         //
-        $(nameEl).autosuggest(buildURL(), {onSelect:function(){UIProfileUserSearch.searchBtn.trigger("click");}, defaultVal:''});
-        //
-        function buildURL() {
-          var restURL = "/" + eXo.social.portal.rest + '/social/people/suggest.json?nameToSearch=input_value';
+        function buildURL(query) {
+          var restURL = "/" + eXo.social.portal.rest + '/social/people/suggest.json?nameToSearch='+query;
           //
           var userName = eXo.social.portal.userName;
           if (userName && userName.length > 0) {
