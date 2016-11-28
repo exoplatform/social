@@ -872,26 +872,23 @@ public class SpaceUtils {
    * @param remoteId
    * @param groupId
    * @param membership
+   * @throws Exception
    * @since 1.2.0-GA
    */
-  private static void addUserToGroupWithMembership(String remoteId, String groupId, String membership) {
+  private static void addUserToGroupWithMembership(String remoteId, String groupId, String membership) throws Exception {
     OrganizationService organizationService = getOrganizationService();
-    try {
-      // TODO: checks whether user is already manager?
-      MembershipHandler membershipHandler = organizationService.getMembershipHandler();
-      Membership found = membershipHandler.findMembershipByUserGroupAndType(remoteId, groupId, membership);
-      if (found != null) {
-        LOG.info("user: " + remoteId + " was already added to group: " + groupId + " with membership: " + membership);
-        return;
-      }
-      User user = organizationService.getUserHandler().findUserByName(remoteId);
-      MembershipType membershipType = organizationService.getMembershipTypeHandler().findMembershipType(membership);
-      GroupHandler groupHandler = organizationService.getGroupHandler();
-      Group existingGroup = groupHandler.findGroupById(groupId);
-      membershipHandler.linkMembership(user, existingGroup, membershipType, true);
-    } catch (Exception e) {
-      LOG.warn("Unable to add user: " + remoteId + " to group: " + groupId + " with membership: " + membership);
+    // TODO: checks whether user is already manager?
+    MembershipHandler membershipHandler = organizationService.getMembershipHandler();
+    Membership found = membershipHandler.findMembershipByUserGroupAndType(remoteId, groupId, membership);
+    if (found != null) {
+      LOG.info("user: " + remoteId + " was already added to group: " + groupId + " with membership: " + membership);
+      return;
     }
+    User user = organizationService.getUserHandler().findUserByName(remoteId);
+    MembershipType membershipType = organizationService.getMembershipTypeHandler().findMembershipType(membership);
+    GroupHandler groupHandler = organizationService.getGroupHandler();
+    Group existingGroup = groupHandler.findGroupById(groupId);
+    membershipHandler.linkMembership(user, existingGroup, membershipType, true);
   }
 
   /**
