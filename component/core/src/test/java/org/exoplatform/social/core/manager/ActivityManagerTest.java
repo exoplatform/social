@@ -1576,6 +1576,34 @@ public class ActivityManagerTest extends AbstractCoreTest {
     assertNotNull(activity);
     tearDownActivityList.add(activity);
   }
+
+  public void testCommentOnDisabledActivity(){
+    String activityTitle = "disabled activity";
+    String commentTitle = "Comment title";
+    String userId = johnIdentity.getId();
+    ExoSocialActivity activity = new ExoSocialActivityImpl();
+    activity.setTitle(activityTitle);
+    activity.setUserId(userId);
+
+    //Disabled activity Type
+    activity.setType("cs-calendar:spaces");
+    activityManager.saveActivityNoReturn(johnIdentity, activity);
+    assertNull(activity.getId());
+
+    //demo comments on john's activity
+    ExoSocialActivity comment = new ExoSocialActivityImpl();
+    comment.setTitle(commentTitle);
+    comment.setUserId(demoIdentity.getId());
+    try {
+      //add comment on disabled activity
+      activityManager.saveComment(activity, comment);
+      //OK
+      assertNull(comment.getId());
+    }
+    catch(Exception e){
+      fail();
+    }
+  }
   
   public void testMentionActivityOnOthersStream() throws Exception {
     relationshipManager.inviteToConnect(rootIdentity, demoIdentity);
