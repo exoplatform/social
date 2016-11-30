@@ -184,6 +184,20 @@ public class ActivityManagerImpl implements ActivityManager {
    */
   public void saveComment(ExoSocialActivity existingActivity, ExoSocialActivity newComment) throws
           ActivityStorageException {
+    if (existingActivity == null) {
+      throw new ActivityStorageException(ActivityStorageException.Type.FAILED_TO_SAVE_COMMENT, "Activity cannot be NULL");
+    }
+    String activityType = existingActivity.getType();
+    //Activity Type is disable , comment's can't be added
+    //existingActivity.getId() == null for the new activity if it's disabled
+    //comment should be added for the old created activity if it's disabled
+    if (existingActivity!= null && existingActivity.getId() == null && activityType != null && activityTypesRegistry.get(activityType) != null && !activityTypesRegistry.get(activityType)) {
+      if (LOG.isDebugEnabled()) {
+        LOG.debug("Comment could not be saved. Activity Type {} has been disabled.", activityType);
+      }
+      return;
+    }
+
     activityStorage.saveComment(existingActivity, newComment);
     //if there is any the listener to get the activity's title to do something for example: show message, send mail ...
     //Just call the Social API to get the activity by Id and then to do by yourself.
