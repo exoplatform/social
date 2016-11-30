@@ -52,6 +52,10 @@ public class UtilTest extends TestCase {
     assertFalse(Util.isValidURL("abc.c om"));
     assertFalse(Util.isValidURL("abc : fsdfs"));
     assertFalse(Util.isValidURL("abc #$ vn"));
+
+    assertFalse(Util.isValidURL("http://www.opensourcesummit.a/"));
+    assertTrue(Util.isValidURL("http://www.opensourcesummit.abce/"));
+    assertTrue(Util.isValidURL("http://www.opensourcesummit.abcdef/"));
   }
   
   /**
