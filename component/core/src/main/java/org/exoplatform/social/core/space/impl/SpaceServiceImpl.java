@@ -1254,7 +1254,7 @@ public class SpaceServiceImpl implements SpaceService {
     
     String registration = space.getRegistration();
     String visibility = space.getVisibility();
-    if (visibility.equals(Space.HIDDEN)) {
+    if (visibility.equals(Space.HIDDEN) && registration.equals(Space.CLOSE)) {
       LOG.warn("Unable request to join hidden");
       return;
     }
