@@ -16,9 +16,6 @@
  */
 package org.exoplatform.social.core.space;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.social.common.lifecycle.LifeCycleCompletionService;
@@ -29,6 +26,9 @@ import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
 import org.exoplatform.social.core.storage.api.IdentityStorage;
 import org.exoplatform.social.core.test.AbstractCoreTest;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class SpaceAccessTest extends AbstractCoreTest {
   private SpaceService spaceService;
@@ -184,6 +184,19 @@ public class SpaceAccessTest extends AbstractCoreTest {
     assertTrue(gotStatus);
     tearDownSpaceList.add(space);
   }
+
+  public void testHiddenValidationSpace() throws Exception {
+    Space space = createSpaceData("request space", "validation", "hidden", new String[] {root.getRemoteId(), john.getRemoteId()}, new String[] {root.getRemoteId(), john.getRemoteId(), mary.getRemoteId()});
+    spaceService.saveSpace(space, true);
+    space = spaceService.getSpaceByPrettyName(space.getPrettyName());
+    assertNotNull(space);
+    boolean gotStatus = (!SpaceAccessType.SPACE_NOT_FOUND.doCheck(demo.getRemoteId(), space) && SpaceAccessType.REQUEST_JOIN_SPACE.doCheck(demo.getRemoteId(), space));
+    assertTrue(gotStatus);
+
+    gotStatus = (!SpaceAccessType.SPACE_NOT_FOUND.doCheck(jame.getRemoteId(), space) && SpaceAccessType.REQUEST_JOIN_SPACE.doCheck(jame.getRemoteId(), space));
+    assertTrue(gotStatus);
+    tearDownSpaceList.add(space);
+  }
   
   private Space createSpaceData(String spaceName, String registration, String[] managers, String[] members) throws Exception {
     Space space2 = new Space();
@@ -200,6 +213,12 @@ public class SpaceAccessTest extends AbstractCoreTest {
     space2.setType("classic");
     space2.setVisibility("public");
     space2.setPriority("2");
+    return space2;
+  }
+
+  private Space createSpaceData(String spaceName, String registration, String visibility, String[] managers, String[] members) throws Exception {
+    Space space2 = createSpaceData(spaceName, registration, managers, members);
+    space2.setVisibility(visibility);
     return space2;
   }
 }
