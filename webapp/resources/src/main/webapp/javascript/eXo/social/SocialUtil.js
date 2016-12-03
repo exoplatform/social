@@ -248,8 +248,7 @@
     },
     addOnResizeWidth : function(callback) {
       if (callback && String(typeof callback) === "function") {
-        var name = String(callback.name + new Date().getTime());
-        SocialUtils.onResizeWidth[name] = callback;
+        SocialUtils.onResizeWidth.push(callback);
       }
     },
     addDynamicItemLayout : function(comId) {
@@ -682,8 +681,8 @@
     if (SocialUtils.currentBrowseWidth != document.documentElement.clientWidth) {
       try {
         var callback = SocialUtils.onResizeWidth;
-        for ( var name in callback) {
-          var method = callback[name];
+        for (i = 0; i < callback.length; i++) {
+          var method = callback[i];
           if (typeof (method) == "function") {
             method(evt);
           }
