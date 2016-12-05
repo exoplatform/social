@@ -24,14 +24,31 @@ import junit.framework.AssertionFailedError;
 import org.exoplatform.services.rest.impl.ContainerResponse;
 import org.exoplatform.services.rest.impl.MultivaluedMapImpl;
 import org.exoplatform.services.rest.tools.ByteArrayContainerResponseWriter;
+import org.exoplatform.social.core.activity.model.ExoSocialActivity;
+import org.exoplatform.social.core.activity.model.ExoSocialActivityImpl;
+import org.exoplatform.social.core.identity.model.Identity;
+import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
+import org.exoplatform.social.core.manager.IdentityManager;
+import org.exoplatform.social.core.manager.RelationshipManager;
+import org.exoplatform.social.core.relationship.model.Relationship;
+import org.exoplatform.social.core.storage.impl.ActivityStorageImpl;
 import org.exoplatform.social.service.test.AbstractResourceTest;
+
+import java.util.ArrayList;
 
 public class PeopleRestServiceTest  extends AbstractResourceTest {
   static private PeopleRestService peopleRestService;
+  private IdentityManager identityManager;
+  private RelationshipManager relationshipManager;
+  private ActivityStorageImpl activityStorage;
+
 
   public void setUp() throws Exception {
     super.setUp();
     peopleRestService = new PeopleRestService();
+    identityManager =  (IdentityManager) getContainer().getComponentInstanceOfType(IdentityManager.class);
+    activityStorage = (ActivityStorageImpl) getContainer().getComponentInstanceOfType(ActivityStorageImpl.class);
+    relationshipManager =  (RelationshipManager) getContainer().getComponentInstanceOfType(RelationshipManager.class);
     registry(peopleRestService);
   }
 
@@ -51,5 +68,37 @@ public class PeopleRestServiceTest  extends AbstractResourceTest {
     assertEquals("application/json;charset=utf-8", response.getContentType().toString());
     if (response.getStatus() == Response.Status.NOT_FOUND.getStatusCode())
       throw new AssertionFailedError("Service not found");
+  }
+
+    public void testUserMentionInComment() throws Exception {
+    //Given
+    Identity rootIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "root", false);
+    Identity demoIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "demo", false);
+    Identity maryIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "mary", false);
+    Identity johnIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "john", true);
+    final String TITLE = "activity on root stream";
+    ExoSocialActivity demoActivity = new ExoSocialActivityImpl();
+    demoActivity.setTitle(TITLE);
+    activityStorage.saveActivity(demoIdentity, demoActivity);
+    Relationship relationship = new Relationship(rootIdentity, maryIdentity);
+    relationship.setStatus(Relationship.Type.CONFIRMED);
+    relationshipManager.update(relationship);
+    MultivaluedMap<String, String> h2 = new MultivaluedMapImpl();
+    String username = "root";
+    h2.putSingle("username", username);
+    ByteArrayContainerResponseWriter writer = new ByteArrayContainerResponseWriter();
+
+    //When
+    ContainerResponse response = service("GET", "/social/people/suggest.json?nameToSearch=m&currentUser=root&typeOfRelation=mention_comment&activityId=" + demoActivity.getId(), "", h2, null, writer);
+
+    //Then
+    assertEquals(200, response.getStatus());
+    assertTrue(((ArrayList) response.getEntity()).size() == 2);
+
+
+    identityManager.deleteIdentity(rootIdentity);
+    identityManager.deleteIdentity(demoIdentity);
+    identityManager.deleteIdentity(maryIdentity);
+    identityManager.deleteIdentity(johnIdentity);
   }
 }
