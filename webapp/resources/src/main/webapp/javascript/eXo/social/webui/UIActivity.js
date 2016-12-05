@@ -76,6 +76,8 @@
         customConfig: '/commons-extension/ckeditorCustom/config.js',
         extraPlugins: extraPlugins,
         placeholder: UIActivity.commentPlaceholder != null ? UIActivity.commentPlaceholder : window.eXo.social.I18n.mentions.defaultMessage,
+        activityId : UIActivity.activityId,
+        typeOfRelation: 'mention_comment',
         on : {
           instanceReady : function ( evt ) {
             // Hide the editor toolbar

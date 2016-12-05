@@ -95,19 +95,21 @@ public class PeopleRestService implements ResourceContainer{
   private static final String USER_TO_INVITE = "user_to_invite";
   /** User or space to share document with */
   private static final String SHARE_DOCUMENT = "share_document";
+  /** User to mention in a comment */
+  private static final String MENTION_COMMENT = "mention_comment";
   /** No action */
   private static final String NO_ACTION = "NoAction";
   /** No information */
   private static final String NO_INFO = "NoInfo";
   /** Number of user names is added to suggest list. */
   private static final long SUGGEST_LIMIT = 20;
-  
+
   /** Number of default limit activities. */
   private static final String DEFAULT_ACTIVITY = "DEFAULT_ACTIVITY";
   private static final String LINK_ACTIVITY = "LINK_ACTIVITY";
   private static final String DOC_ACTIVITY = "DOC_ACTIVITY";
   private static final Log LOG = ExoLogger.getLogger(PeopleRestService.class);
-                                                     
+
   private IdentityManager identityManager;
   private ActivityManager activityManager;
   private RelationshipManager relationshipManager;
@@ -118,10 +120,11 @@ public class PeopleRestService implements ResourceContainer{
 
   /**
    * Gets users' names that match the input string for suggestion.
-   * 
+   *
    * @param uriInfo The requested URI information.
    * @param name The provided characters to be searched.
    * @param currentUser The user who sends request.
+   * @param activityId the Id of the activity where we want to mention a user in its comment
    * @param typeOfRelation The relationship status such as "confirmed", "pending", "incoming", "member_of_space" or "user_to_invite"
    * @param spaceURL The URL of the related space.
    * @param format The format of the returned result, for example, JSON, or XML.
@@ -138,11 +141,12 @@ public class PeopleRestService implements ResourceContainer{
                     @QueryParam("nameToSearch") String name,
                     @QueryParam("currentUser") String currentUser,
                     @QueryParam("typeOfRelation") String typeOfRelation,
+                    @QueryParam("activityId") String activityId,
                     @QueryParam("spaceURL") String spaceURL,
                     @PathParam("format") String format) throws Exception {
     String[] mediaTypes = new String[] { "json", "xml" };
     MediaType mediaType = Util.getMediaType(format, mediaTypes);
-    
+
     ProfileFilter identityFilter = new ProfileFilter();
 
     identityFilter.setName(name);
@@ -371,6 +375,64 @@ public class PeopleRestService implements ResourceContainer{
           nameList.addOption(opt);
         }
       }
+    } else if (MENTION_COMMENT.equals(typeOfRelation)) {
+      //Improvement in user suggestions when @mentioning in the comment
+      List<UserInfo> userInfos = new ArrayList<PeopleRestService.UserInfo>();
+      ExoSocialActivity activity = getActivityManager().getActivity(activityId);
+
+      //first add the author in the suggestion
+      String authorId = activity.getPosterId();
+      userInfos = addUserToInfosList(authorId, excludedIdentityList, userInfos);
+
+      //then add the commented users in the suggestion
+      String[] commentedUsers = activity.getCommentedIds();
+      for (String commentedUser : commentedUsers) {
+        identityFilter.setExcludedIdentityList(excludedIdentityList);
+        userInfos = addUserToInfosList(commentedUser, excludedIdentityList, userInfos);
+      }
+
+      //add the mentioned users in the suggestion
+      long remain = SUGGEST_LIMIT - (userInfos != null ? userInfos.size() : 0);
+      if (remain > 0) {
+        String[] mentionedUsers = activity.getMentionedIds();
+        for (String mentionedUser : mentionedUsers) {
+          identityFilter.setExcludedIdentityList(excludedIdentityList);
+          userInfos = addUserToInfosList(mentionedUser, excludedIdentityList, userInfos);
+        }
+      }
+
+      //add the liked users in the suggestion
+      remain = SUGGEST_LIMIT - (userInfos != null ? userInfos.size() : 0);
+      if (remain > 0) {
+        String[] likedUsers = activity.getLikeIdentityIds();
+        for (String likedUser : likedUsers) {
+          identityFilter.setExcludedIdentityList(excludedIdentityList);
+          userInfos = addUserToInfosList(likedUser, excludedIdentityList, userInfos);
+        }
+      }
+
+      //add the connections in the suggestion
+      remain = SUGGEST_LIMIT - (userInfos != null ? userInfos.size() : 0);
+      if (remain > 0) {
+        ListAccess<Identity> connections = getRelationshipManager().getConnections(currentIdentity);
+        identityFilter.setExcludedIdentityList(excludedIdentityList);
+        if (connections != null && connections.getSize() > 0) {
+          Identity[] identities = connections.load(0, (int) remain);
+          userInfos = addUsersToUserInfosList(identities, excludedIdentityList, userInfos, currentUser);
+        }
+      }
+
+      //finally add others in the suggestion
+      remain = SUGGEST_LIMIT - (userInfos != null ? userInfos.size() : 0);
+      if (remain > 0) {
+        ListAccess<Identity> listAccess = getIdentityManager().getIdentitiesByProfileFilter(OrganizationIdentityProvider.NAME, identityFilter, false);
+        identityFilter.setExcludedIdentityList(excludedIdentityList);
+        if (listAccess != null && listAccess.getSize() > 0) {
+          Identity[] identitiesList = listAccess.load(0, (int) remain);
+          userInfos = addUsersToUserInfosList(identitiesList, excludedIdentityList, userInfos, currentUser);
+        }
+      }
+      return Util.getResponse(userInfos, uriInfo, mediaType, Response.Status.OK);
 
     } else { // Identities that match the keywords.
       result = getIdentityManager().getIdentityStorage().getIdentitiesForMentions(OrganizationIdentityProvider.NAME, identityFilter, null, 0L, SUGGEST_LIMIT, false).toArray(new Identity[0]);
@@ -378,6 +440,50 @@ public class PeopleRestService implements ResourceContainer{
     }
 
     return Util.getResponse(nameList, uriInfo, mediaType, Response.Status.OK);
+  }
+
+  private List<UserInfo> addUserToInfosList(String userId, List<Identity> excludedIdentityList, List<UserInfo> userInfos) {
+    int size = userInfos.size();
+    if (size < SUGGEST_LIMIT ) {
+      Identity userIdentity = getIdentityManager().getIdentity(userId, false);
+      if (userIdentity == null) {
+        userIdentity = getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, userId, false);
+      }
+      if (userIdentity.getProviderId().equals(OrganizationIdentityProvider.NAME)) {
+        UserInfo user = new UserInfo();
+        user.setId(userIdentity.getRemoteId());
+        user.setName(userIdentity.getProfile() == null ? null : userIdentity.getProfile().getFullName());
+        user.setAvatar(userIdentity.getProfile() == null ? null : userIdentity.getProfile().getAvatarUrl());
+        user.setType("contact");
+        if (!(excludedIdentityList.contains(userIdentity))) {
+          userInfos.add(user);
+        }
+        excludedIdentityList.add(userIdentity);
+      }
+    }
+    return userInfos;
+  }
+
+  private List<UserInfo> addUsersToUserInfosList(Identity[] identities, List<Identity> excludedIdentityList, List<UserInfo> userInfos, String currentUserId) {
+    UserInfo userInfo;
+    boolean isAnonymous = IdentityConstants.ANONIM.equals(currentUserId);
+    for (Identity identity : identities) {
+      userInfo = new UserInfo();
+      if (!isAnonymous) {
+        userInfo.setId(identity.getRemoteId());
+      }
+      userInfo.setName(identity.getProfile().getFullName());
+      userInfo.setAvatar(identity.getProfile().getAvatarUrl());
+      userInfo.setType("contact");
+      if (!(excludedIdentityList.contains(identity))) {
+        userInfos.add(userInfo);
+      }
+      excludedIdentityList.add(identity);
+      if (userInfos.size() == SUGGEST_LIMIT) {
+        break;
+      }
+    }
+    return userInfos;
   }
 
   private void addSpaceOrUserToList(List<Identity> identities, IdentityNameList options,
