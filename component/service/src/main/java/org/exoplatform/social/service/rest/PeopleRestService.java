@@ -16,31 +16,10 @@
  */
 package org.exoplatform.social.service.rest;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-
-import javax.annotation.security.RolesAllowed;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.QueryParam;
-import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
-import javax.ws.rs.core.SecurityContext;
-import javax.ws.rs.core.UriInfo;
-
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.shindig.social.opensocial.model.Activity;
-
 import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.container.ExoContainer;
 import org.exoplatform.container.ExoContainerContext;
@@ -71,6 +50,12 @@ import org.exoplatform.social.service.rest.api.models.IdentityNameList;
 import org.exoplatform.social.service.rest.api.models.IdentityNameList.Option;
 import org.exoplatform.social.service.rest.api.models.PeopleInfo;
 import org.exoplatform.webui.utils.TimeConvertUtils;
+
+import javax.annotation.security.RolesAllowed;
+import javax.ws.rs.*;
+import javax.ws.rs.core.*;
+import javax.ws.rs.core.Response.Status;
+import java.util.*;
 
 /**
  * 
@@ -238,8 +223,56 @@ public class PeopleRestService implements ResourceContainer{
         }
       }
 
+      List<Space> exclusions = new ArrayList<Space>();
       // Includes spaces the current user is member.
       long remain = SUGGEST_LIMIT - (nameList.getOptions() != null ? nameList.getOptions().size() : 0);
+      if (remain > 0) {
+        SpaceFilter spaceFilter = new SpaceFilter();
+        spaceFilter.setSpaceNameSearchCondition(name);
+        ListAccess<Space> list = getSpaceService().getMemberSpacesByFilter(currentUser, spaceFilter);
+        Space[] spaces = list.load(0, (int) remain);
+        for (Space s : spaces) {
+          //do not add current space
+          if (s.equals(space)) {
+            exclusions.add(s);
+            continue;
+          }
+          Option opt = new Option();
+          opt.setType("space");
+          opt.setValue(SPACE_PREFIX + s.getPrettyName());
+          opt.setText(s.getDisplayName());
+          opt.setAvatarUrl(s.getAvatarUrl());
+          opt.setOrder(2);
+          nameList.addOption(opt);
+          exclusions.add(s);
+        }
+      }
+
+      // Adding all non hidden spaces.
+      remain = SUGGEST_LIMIT - (nameList.getOptions() != null ? nameList.getOptions().size() : 0);
+      if (remain > 0) {
+        SpaceFilter spaceFilter = new SpaceFilter();
+        spaceFilter.setSpaceNameSearchCondition(name);
+        spaceFilter.addExclusions(exclusions);
+        ListAccess<Space> list = getSpaceService().getVisibleSpacesWithListAccess(currentUser, spaceFilter);
+        Space[] spaces = list.load(0, (int) remain);
+        for (Space s : spaces) {
+          if (s.equals(space)) {
+            //do not add current space
+            exclusions.add(s);
+            continue;
+          }
+          Option opt = new Option();
+          opt.setType("space");
+          opt.setValue(SPACE_PREFIX + s.getPrettyName());
+          opt.setText(s.getDisplayName());
+          opt.setAvatarUrl(s.getAvatarUrl());
+          opt.setOrder(3);
+          nameList.addOption(opt);
+        }
+      }
+
+      remain = SUGGEST_LIMIT - (nameList.getOptions() != null ? nameList.getOptions().size() : 0);
       if (remain > 0) {
         identityFilter.setExcludedIdentityList(excludedIdentityList);
         ListAccess<Identity> listAccess = getIdentityManager().getIdentitiesByProfileFilter(OrganizationIdentityProvider.NAME, identityFilter, false);
