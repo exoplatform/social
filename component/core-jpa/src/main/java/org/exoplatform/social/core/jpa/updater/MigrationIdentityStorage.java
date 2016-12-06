@@ -19,6 +19,8 @@
 
 package org.exoplatform.social.core.jpa.updater;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 import java.util.Set;
 
@@ -197,6 +199,11 @@ public class MigrationIdentityStorage implements IdentityStorage {
   @Override
   public int countIdentitiesWithRelationships(String identityId) throws Exception {
     return jpaStorage.countIdentitiesWithRelationships(identityId);
+  }
+  
+  @Override
+  public InputStream getAvatarInputStreamById(Identity identity) throws IOException {
+    return jpaStorage.getAvatarInputStreamById(identity);
   }
   
   @Override

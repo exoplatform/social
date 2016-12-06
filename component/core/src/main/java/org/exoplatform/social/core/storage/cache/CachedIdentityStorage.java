@@ -17,6 +17,8 @@
 
 package org.exoplatform.social.core.storage.cache;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -610,5 +612,17 @@ public class CachedIdentityStorage implements IdentityStorage {
   @Override
   public int countIdentitiesWithRelationships(String identityId) throws Exception {
     return storage.countIdentitiesWithRelationships(identityId);
+  }
+  
+  /**
+   * Gets a the avatar stream for a given identity
+   *
+   *
+   * @param identity
+   * @return
+   */
+  @Override
+  public InputStream getAvatarInputStreamById(Identity identity) throws IOException {
+    return storage.getAvatarInputStreamById(identity);
   }
 }

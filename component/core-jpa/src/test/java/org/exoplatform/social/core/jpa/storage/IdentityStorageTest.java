@@ -25,6 +25,7 @@ import org.exoplatform.services.organization.MembershipType;
 import org.exoplatform.services.organization.MembershipTypeHandler;
 import org.exoplatform.services.organization.OrganizationService;
 import org.exoplatform.services.organization.User;
+import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
 import org.exoplatform.social.core.jpa.rest.IdentityAvatarRestService;
 import org.exoplatform.social.core.jpa.test.AbstractCoreTest;
 import org.exoplatform.social.core.jpa.test.MaxQueryNumber;
@@ -40,6 +41,7 @@ import org.exoplatform.social.core.space.impl.DefaultSpaceApplicationHandler;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.storage.api.IdentityStorage;
 import org.exoplatform.social.core.storage.api.SpaceStorage;
+import org.exoplatform.social.core.storage.impl.StorageUtils;
 
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -675,6 +677,85 @@ public class IdentityStorageTest extends AbstractCoreTest {
     assertEquals(1, identities.size());
   }
   
+  public void testGetAvatarInputStreamById() throws Exception {
+    InputStream inputStream = getClass().getResourceAsStream("/eXo-Social.png");
+    AvatarAttachment avatarAttachment = new AvatarAttachment(null, "avatar", "png", inputStream, null, System.currentTimeMillis());
+    
+    /*
+      test on identity with @OrganizationIdentityProvider.NAME as providerId.
+     */
+    String userName = "root";
+    Identity identity = populateIdentity(userName);
+    identityStorage.saveIdentity(identity);
+    // within this instruction the profile is created implicitly and it does not have an avatar
+    String identityId = identity.getId();
+    assertNotNull(identityId);
+    InputStream stream = identityStorage.getAvatarInputStreamById(identity);
+    assertNull(stream);
+    
+    Profile profile = new Profile(identity);
+    profile.setProperty(Profile.AVATAR, avatarAttachment);
+    identityStorage.updateIdentity(identity);
+    identityStorage.saveProfile(profile);
+    profile = identityStorage.loadProfile(profile);
+    // we load the profile to check if the avatar is well attached to it, as well as @Profile.avatarLastUpdated value
+    Long avatarLastUpdated = profile.getAvatarLastUpdated();
+    assertNotNull(avatarLastUpdated);
+    // we re-attach the the avatar to the profile to be sure that @Profile.avatarLastUpdated value is updated
+    profile.setProperty(Profile.AVATAR, avatarAttachment);
+    identityStorage.updateProfile(profile);
+    Profile profile1 = identityStorage.loadProfile(profile);
+    Long avatarLastUpdated1 = profile1.getAvatarLastUpdated();
+    assertNotNull(avatarLastUpdated1);
+    assertNotSame(avatarLastUpdated1, avatarLastUpdated);
+    assertTrue(avatarLastUpdated1 > avatarLastUpdated);
+    
+    stream = identityStorage.getAvatarInputStreamById(identity);
+    assertNotNull(stream);
+    
+    /*
+      test on identity with @SpaceIdentityProvider.NAME as providerId.
+     */
+    Space space = this.getSpaceInstance(1);
+    spaceStorage.saveSpace(space, true);
+    String remoteId = space.getPrettyName();
+    assertNotNull(remoteId);
+    identity = new Identity(SpaceIdentityProvider.NAME, remoteId);
+    identityStorage.saveIdentity(identity);
+    assertNotNull(identity.getId());
+    assertNotNull(identity.getRemoteId());
+    stream = identityStorage.getAvatarInputStreamById(identity);
+    // the space does not have an avatar
+    assertNull(stream);
+    // we set the avatar to the space
+    space.setAvatarAttachment(avatarAttachment);
+    spaceStorage.saveSpace(space, false);
+    space = spaceStorage.getSpaceByPrettyName(remoteId);
+    
+    identity = new Identity(SpaceIdentityProvider.NAME, space.getPrettyName());
+    profile = new Profile(identity);
+    // we set the avatar to the corresponding space profile
+    profile.setProperty(Profile.AVATAR, avatarAttachment);
+    identityStorage.saveIdentity(identity);
+    identityStorage.saveProfile(profile);
+    profile = identityStorage.loadProfile(profile);
+    avatarLastUpdated = profile.getAvatarLastUpdated();
+    assertNotNull(avatarLastUpdated);
+  
+    profile.setProperty(Profile.AVATAR, avatarAttachment);
+    identityStorage.updateProfile(profile);
+    profile = identityStorage.loadProfile(profile);
+    avatarLastUpdated1 = profile.getAvatarLastUpdated();
+    assertNotNull(avatarLastUpdated1);
+    assertNotSame(avatarLastUpdated1, avatarLastUpdated);
+    // we check that the  @Profile.avatarLastUpdated is updated with greater value
+    assertTrue(avatarLastUpdated1 > avatarLastUpdated);
+    
+    tearDownIdentityList.add(identity);
+    stream = identityStorage.getAvatarInputStreamById(identity);
+    assertNotNull(stream);
+  }
+  
   /**
    * Populate one identity with remoteId.
    * 
@@ -745,6 +826,35 @@ public class IdentityStorageTest extends AbstractCoreTest {
       return null;
     }
     return user;
+  }
+  
+  /**
+   * Gets an instance of Space.
+   *
+   * @param number
+   * @return an instance of space
+   */
+  private Space getSpaceInstance(int number) {
+    Space space = new Space();
+    space.setApp("app1,app2");
+    space.setDisplayName("my space " + number);
+    space.setPrettyName(space.getDisplayName());
+    space.setRegistration(Space.OPEN);
+    space.setDescription("add new space " + number);
+    space.setType(DefaultSpaceApplicationHandler.NAME);
+    space.setVisibility(Space.PUBLIC);
+    space.setPriority(Space.INTERMEDIATE_PRIORITY);
+    space.setGroupId("/spaces/space" + number);
+    String[] managers = new String[] {"demo", "tom"};
+    String[] members = new String[] {"raul", "ghost", "dragon"};
+    String[] invitedUsers = new String[] {"register1", "mary"};
+    String[] pendingUsers = new String[] {"jame", "paul", "hacker"};
+    space.setInvitedUsers(invitedUsers);
+    space.setPendingUsers(pendingUsers);
+    space.setManagers(managers);
+    space.setMembers(members);
+    space.setUrl(space.getPrettyName());
+    return space;
   }
   
   private static void addUserToGroupWithMembership(String remoteId, String groupId, String membership) {

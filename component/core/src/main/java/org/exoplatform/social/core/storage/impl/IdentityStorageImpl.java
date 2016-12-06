@@ -17,6 +17,8 @@
 
 package org.exoplatform.social.core.storage.impl;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -816,6 +818,7 @@ public class IdentityStorageImpl extends AbstractStorage implements IdentityStor
         try {
           String avatarPath = getSession().getPath(avatar);
           long lastModified = avatar.getLastModified().getTime();
+          profile.setAvatarLastUpdated(lastModified);
           // workaround: as dot character (.) breaks generated url (Ref: SOC-2283)
           String avatarUrl = StorageUtils.encodeUrl(avatarPath) + "/?upd=" + lastModified;
           profile.setAvatarUrl(LinkProvider.escapeJCRSpecialCharacters(avatarUrl));
@@ -1601,4 +1604,16 @@ public class IdentityStorageImpl extends AbstractStorage implements IdentityStor
     profileFilter.setViewerIdentity(currentUserIdentity);
     return getIdentitiesByProfileFilterCount(OrganizationIdentityProvider.NAME, profileFilter);
   }
+  
+  /**
+   * Gets a the avatar stream for a given identity
+   *
+   * @param identity
+   * @return
+   */
+  @Override
+  public InputStream getAvatarInputStreamById(Identity identity) throws IOException {
+    throw new UnsupportedOperationException("JCR implementation is no more used");
+  }
+  
 }

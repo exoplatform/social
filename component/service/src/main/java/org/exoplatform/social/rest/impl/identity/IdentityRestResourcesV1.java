@@ -22,6 +22,11 @@ import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,12 +39,11 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriInfo;
+import javax.ws.rs.core.*;
 
 import org.exoplatform.commons.utils.CommonsUtils;
 import org.exoplatform.commons.utils.ListAccess;
+import org.exoplatform.services.security.ConversationState;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
@@ -48,6 +52,8 @@ import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.manager.RelationshipManager;
 import org.exoplatform.social.core.profile.ProfileFilter;
 import org.exoplatform.social.core.relationship.model.Relationship;
+import org.exoplatform.social.core.space.model.Space;
+import org.exoplatform.social.core.space.spi.SpaceService;
 import org.exoplatform.social.rest.api.EntityBuilder;
 import org.exoplatform.social.rest.api.IdentityRestResources;
 import org.exoplatform.social.rest.api.RestProperties;
@@ -63,6 +69,11 @@ import org.exoplatform.social.service.rest.api.VersionResources;
 @Api(tags = VersionResources.VERSION_ONE + "/social/identities", value = VersionResources.VERSION_ONE + "/social/identities", description = "Managing identities")
 public class IdentityRestResourcesV1 implements IdentityRestResources {
 
+  private IdentityManager identityManager;
+  
+  public IdentityRestResourcesV1(IdentityManager identityManager) {
+    this.identityManager = identityManager;
+  }
   /**
    * {@inheritDoc}
    */
@@ -170,6 +181,62 @@ public class IdentityRestResourcesV1 implements IdentityRestResources {
     
     IdentityEntity profileInfo = EntityBuilder.buildEntityIdentity(identity, uriInfo.getPath(), expand);
     return EntityBuilder.getResponse(profileInfo, uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
+  }
+  
+  /**
+   *
+   * @param uriInfo
+   * @param id
+   * @return
+   * @throws IOException
+   */
+  @GET
+  @Path("{id}/avatar")
+  @RolesAllowed("users")
+  @ApiOperation(value = "Gets an identity avatar by id",
+          httpMethod = "GET",
+          response = Response.class,
+          notes = "This can only be done by the logged in user.")
+  @ApiResponses(value = {
+          @ApiResponse (code = 200, message = "Request fulfilled"),
+          @ApiResponse (code = 500, message = "Internal server error"),
+          @ApiResponse (code = 400, message = "Invalid query input"),
+          @ApiResponse (code = 404, message = "Resource not found")})
+  public Response getIdentityAvatarById(@Context UriInfo uriInfo,
+                                        @Context Request request,
+                                        @ApiParam(value = "Identity id which is a UUID", required = true)@PathParam("id") String id) throws IOException {
+  
+    Identity identity = identityManager.getIdentity(id, true);
+    if (identity == null) {
+      throw new WebApplicationException(Response.Status.NOT_FOUND);
+    }
+    //
+    Profile profile = identity.getProfile();
+    Long lastUpdated = null;
+    if (profile != null) {
+      lastUpdated = profile.getAvatarLastUpdated();
+    }
+    EntityTag eTag = null;
+    if (lastUpdated != null) {
+      eTag = new EntityTag(Integer.toString(lastUpdated.hashCode()));
+    }
+    //
+    Response.ResponseBuilder builder = (eTag == null ? null : request.evaluatePreconditions(eTag));
+    if (builder == null) {
+      InputStream stream = identityManager.getAvatarInputStream(identity);
+      if (stream == null) {
+        throw new WebApplicationException(Response.Status.NOT_FOUND);
+      }
+      /* As recommended in the the RFC1341 (https://www.w3.org/Protocols/rfc1341/4_Content-Type.html),
+      we set the avatar content-type to "image/png". So, its data  would be recognized as "image" by the user-agent.
+     */
+      builder = Response.ok(stream, "image/png");
+      builder.tag(eTag);
+    }
+    CacheControl cc = new CacheControl();
+    cc.setMaxAge(86400);
+    builder.cacheControl(cc);
+    return builder.cacheControl(cc).build();
   }
   
 

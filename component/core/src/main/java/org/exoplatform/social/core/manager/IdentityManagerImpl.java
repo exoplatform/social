@@ -16,6 +16,8 @@
  */
 package org.exoplatform.social.core.manager;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -132,7 +134,17 @@ public class IdentityManagerImpl implements IdentityManager {
     }
     return profile;
   }
-
+  
+  /**
+   * {@inheritDoc}
+   */
+  public InputStream getAvatarInputStream(Identity identity) throws IOException {
+    if (identity == null) {
+      return null;
+    }
+    return identityStorage.getAvatarInputStreamById(identity);
+  }
+  
   /**
    * {@inheritDoc}
    */

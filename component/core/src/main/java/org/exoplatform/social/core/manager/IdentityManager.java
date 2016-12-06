@@ -30,6 +30,8 @@ import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.storage.api.IdentityStorage;
 import org.exoplatform.webui.exception.MessageException;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 
 /**
@@ -119,6 +121,13 @@ public interface IdentityManager {
    * @since  1.2.0-GA
    */
   Profile getProfile(Identity identity);
+  
+  /**
+   *  Gets a profile avatar associated with a provided identity
+   * @param identity
+   * @return
+   */
+  InputStream getAvatarInputStream(Identity identity) throws IOException;
 
   /**
    * Updates a specific profile.

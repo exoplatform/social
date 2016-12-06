@@ -40,7 +40,7 @@ public class IdentityRestResourcesTest extends AbstractResourceTest {
     maryIdentity = identityManager.getOrCreateIdentity("organization", "mary", true);
     demoIdentity = identityManager.getOrCreateIdentity("organization", "demo", true);
     
-    identityRestResourcesV1 = new IdentityRestResourcesV1();
+    identityRestResourcesV1 = new IdentityRestResourcesV1(identityManager);
     registry(identityRestResourcesV1);
   }
 

@@ -251,7 +251,10 @@ public class Profile {
   private long                      createdTime;
   
   private List<UpdateType> listUpdateTypes;
-
+  
+  /**  The last updated time of avatar ( in millisecond) */
+  private Long                      avatarLastUpdated;
+  
   /**
    * Instantiates a new profile.
    *
@@ -605,4 +608,21 @@ public class Profile {
   public void setListUpdateTypes(List<UpdateType> listUpdateTypes) {
     this.listUpdateTypes = listUpdateTypes;
   }
+  
+  /**
+   * Gets the last updated time in milliseconds of avatar in a profile
+   * @return {@link Void}
+   */
+  public Long getAvatarLastUpdated() {
+    return avatarLastUpdated;
+  }
+  
+  /**
+   * Sets the last updated time in milliseconds of avatar in a profile
+   * @param avatarLastUpdated
+   */
+  public void setAvatarLastUpdated(Long avatarLastUpdated) {
+    this.avatarLastUpdated = avatarLastUpdated;
+  }
+  
 }
