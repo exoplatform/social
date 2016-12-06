@@ -17,6 +17,8 @@
 
 package org.exoplatform.social.core.storage.api;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 import java.util.Set;
 
@@ -327,4 +329,12 @@ public interface IdentityStorage {
    * @since 4.4.0
    */
   int countIdentitiesWithRelationships(String identityId) throws Exception;
+  
+  /**
+   *  Gets a the avatar stream for a given identity
+   *
+   * @param identity
+   * @return
+   */
+  InputStream getAvatarInputStreamById(Identity identity) throws IOException;
 }

@@ -3,6 +3,11 @@ package org.exoplatform.social.core.jpa.storage;
 import java.util.*;
 import java.util.Map.Entry;
 
+import org.exoplatform.commons.file.model.FileInfo;
+import org.exoplatform.commons.file.services.FileService;
+import org.exoplatform.container.ExoContainerContext;
+import org.exoplatform.services.log.ExoLogger;
+import org.exoplatform.services.log.Log;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -21,7 +26,9 @@ import org.exoplatform.social.core.relationship.model.Relationship;
 import org.exoplatform.social.core.service.LinkProvider;
 
 public class EntityConverterUtils {
-
+  
+  private static final Log LOG = ExoLogger.getLogger(EntityConverterUtils.class);
+  
   public static Identity convertToIdentity(IdentityEntity entity) {
     return convertToIdentity(entity, true);
   }
@@ -74,9 +81,12 @@ public class EntityConverterUtils {
       if (entity.getAvatarFileId() != null && entity.getAvatarFileId() > 0) {
         Identity identity = p.getIdentity();
         p.setAvatarUrl(IdentityAvatarRestService.buildAvatarURL(identity.getProviderId(), identity.getRemoteId()));
+        Long lastUpdated = getAvatarLastUpdated(entity.getAvatarFileId());
+        if (lastUpdated != null) {
+          p.setAvatarLastUpdated(lastUpdated);
+        }
       }
     }
-
     StringBuilder skills = new StringBuilder();
     StringBuilder positions = new StringBuilder();
     Set<ProfileExperienceEntity> experiences = entity.getExperiences();
@@ -220,4 +230,19 @@ public class EntityConverterUtils {
     relationship.setStatus(item.getStatus());
     return relationship;
   }
+  
+  private static Long getAvatarLastUpdated(Long avatarFileId) {
+    FileService fileService = ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(FileService.class);
+    if (fileService != null) {
+      FileInfo fileInfo = fileService.getFileInfo(avatarFileId);
+      if (fileInfo != null && fileInfo.getUpdatedDate() != null) {
+        return fileInfo.getUpdatedDate().getTime();
+      }
+      return null;
+    } else {
+      LOG.warn("File service is null");
+      return null;
+    }
+  }
+  
 }

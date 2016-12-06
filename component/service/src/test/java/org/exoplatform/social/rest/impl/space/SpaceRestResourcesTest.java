@@ -58,7 +58,7 @@ public class SpaceRestResourcesTest extends AbstractResourceTest {
     maryIdentity = identityManager.getOrCreateIdentity("organization", "mary", true);
     demoIdentity = identityManager.getOrCreateIdentity("organization", "demo", true);
     
-    spaceRestResources = new SpaceRestResourcesV1(userACL);
+    spaceRestResources = new SpaceRestResourcesV1(userACL, identityManager);
     registry(spaceRestResources);
   }
 

@@ -17,12 +17,15 @@
 package org.exoplatform.social.core.jpa.storage;
 
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.*;
 import java.util.Map.Entry;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
+import org.exoplatform.commons.file.services.FileStorageException;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -39,7 +42,6 @@ import org.exoplatform.services.organization.OrganizationService;
 import org.exoplatform.services.organization.User;
 import org.exoplatform.services.user.UserStateModel;
 import org.exoplatform.services.user.UserStateService;
-import org.exoplatform.social.core.jpa.rest.IdentityAvatarRestService;
 import org.exoplatform.social.core.jpa.search.ExtendProfileFilter;
 import org.exoplatform.social.core.jpa.search.ProfileSearchConnector;
 import org.exoplatform.social.core.jpa.storage.dao.ActivityDAO;
@@ -767,5 +769,27 @@ public class RDBMSIdentityStorageImpl extends IdentityStorageImpl {
       getIdentityDAO().delete(entity);
     }
   }
-
+  
+  @Override
+  public InputStream getAvatarInputStreamById(Identity identity) throws IOException {
+    FileItem file = null;
+    IdentityEntity entity = identityDAO.findByProviderAndRemoteId(identity.getProviderId(), identity.getRemoteId());
+    if (entity == null) {
+      return null;
+    }
+    Long avatarId = entity.getAvatarFileId();
+    if (avatarId == null) {
+      return null;
+    }
+    try {
+      file = fileService.getFile(avatarId);
+    } catch (FileStorageException e) {
+      return null;
+    }
+  
+    if (file == null) {
+      return null;
+    }
+    return file.getAsStream();
+  }
 }

@@ -56,7 +56,7 @@ public class UserRestResourcesTest extends AbstractResourceTest {
     maryIdentity = identityManager.getOrCreateIdentity("organization", "mary", true);
     demoIdentity = identityManager.getOrCreateIdentity("organization", "demo", true);
     
-    userRestResourcesV1 = new UserRestResourcesV1(userACL);
+    userRestResourcesV1 = new UserRestResourcesV1(userACL, identityManager);
     registry(userRestResourcesV1);
   }
 
