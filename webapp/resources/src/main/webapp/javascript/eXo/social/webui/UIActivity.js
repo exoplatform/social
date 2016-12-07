@@ -39,6 +39,7 @@
       UIActivity.allCommentsDisplayed = params.allCommentsDisplayed = "true" ? true : false || false;
       UIActivity.commentFormFocused = params.commentFormFocused = "true" ? true : false  || false;
       UIActivity.commentPlaceholder = params.placeholderComment || null;
+      UIActivity.spaceURL = params.spaceURL;
 
       if (UIActivity.activityId == null) {
         alert('err: activityId is null!');
@@ -77,6 +78,7 @@
         extraPlugins: extraPlugins,
         placeholder: UIActivity.commentPlaceholder != null ? UIActivity.commentPlaceholder : window.eXo.social.I18n.mentions.defaultMessage,
         activityId : UIActivity.activityId,
+        spaceURL: UIActivity.spaceURL,
         typeOfRelation: 'mention_comment',
         on : {
           instanceReady : function ( evt ) {

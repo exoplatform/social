@@ -32,6 +32,7 @@ import org.exoplatform.social.core.relationship.model.Relationship;
 import org.exoplatform.social.core.relationship.model.Relationship.Type;
 import org.exoplatform.social.core.service.LinkProvider;
 import org.exoplatform.social.core.space.SpaceException;
+import org.exoplatform.social.core.space.SpaceUtils;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
 import org.exoplatform.social.core.storage.ActivityStorageException;
@@ -109,7 +110,12 @@ public class BaseUIActivity extends UIForm {
     this.activityCommentsListAccess = activityCommentsListAccess;
     commentSize = activityCommentsListAccess.getSize();
   }
-
+  
+  public String getSpaceURL() {
+    String spaceURL = SpaceUtils.getSpaceUrlByContext();
+    return spaceURL;
+  }
+  
   public int getCurrentLoadIndex() {
     return currentLoadIndex;
   }

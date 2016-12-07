@@ -418,6 +418,18 @@ public class PeopleRestService implements ResourceContainer{
         }
       }
 
+      if (spaceId != null) {
+        //Improvement in user suggestions when @mentioning in a comment in a space
+        // add space members in the suggestions
+        remain = SUGGEST_LIMIT - (userInfos != null ? userInfos.size() : 0);
+        if (remain > 0) {
+          String[] spaceMembers = getSpaceService().getSpaceByUrl(spaceURL).getMembers();
+          for (String spaceMember : spaceMembers) {
+            userInfos = addUserToInfosList(spaceMember, excludedIdentityList, userInfos);
+          }
+        }
+      }
+
       //add the connections in the suggestion
       remain = SUGGEST_LIMIT - (userInfos != null ? userInfos.size() : 0);
       if (remain > 0) {

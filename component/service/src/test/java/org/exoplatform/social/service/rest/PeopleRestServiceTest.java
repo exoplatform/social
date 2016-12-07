@@ -128,6 +128,39 @@ public class PeopleRestServiceTest  extends AbstractResourceTest {
 
     relationshipManager.delete(relationship);
   }
+  public void testUserMentionInSpaceComment() throws Exception {
+    //Given
+    Relationship relationship = new Relationship(rootIdentity, maryIdentity);
+    relationship.setStatus(Relationship.Type.CONFIRMED);
+    relationshipManager.update(relationship);
+    Space space = new Space();
+    space.setPrettyName("space1");
+    space.setDisplayName("space1");
+    space.setGroupId("/platform/users");
+    space.setVisibility(Space.PUBLIC);
+    space.setManagers(new String[]{rootIdentity.getRemoteId()});
+    String[] spaceMembers = new String[] {rootIdentity.getRemoteId(), demoIdentity.getRemoteId()};
+    space.setMembers(spaceMembers);
+    spaceService.createSpace(space, rootIdentity.getRemoteId());
+    final String TITLE = "activity of root in the space activity stream";
+    ExoSocialActivity demoActivity = new ExoSocialActivityImpl();
+    demoActivity.setTitle(TITLE);
+    activityStorage.saveActivity(demoIdentity, demoActivity);
+    MultivaluedMap<String, String> h4 = new MultivaluedMapImpl();
+    String username = "root";
+    h4.putSingle("username", username);
+    ByteArrayContainerResponseWriter writer = new ByteArrayContainerResponseWriter();
+
+    //When
+    ContainerResponse response = service("GET", "/social/people/suggest.json?nameToSearch=m&currentUser=root&typeOfRelation=mention_comment&activityId=" + demoActivity.getId() + "&spaceURL=" + space.getUrl(), "", h4, null, writer);
+
+    //Then
+    assertEquals(200, response.getStatus());
+    assertTrue(((ArrayList) response.getEntity()).size() == 2);
+
+    spaceService.deleteSpace(space);
+    relationshipManager.delete(relationship);
+  }
   public void testUserMentionInSpaceActivityStream() throws Exception {
     //Given
     Relationship relationship = new Relationship(rootIdentity, maryIdentity);
