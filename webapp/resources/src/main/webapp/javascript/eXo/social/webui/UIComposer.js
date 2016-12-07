@@ -54,6 +54,7 @@
       UIComposer.composerId = params.composerId;
       UIComposer.textareaId = params.textareaId;
       UIComposer.mentionBtnLabel = params.mentionBtnLabel;
+      UIComposer.spaceURL = params.spaceURL;
       UIComposer.userTyped = false;
     },
     init : function() {
@@ -77,6 +78,7 @@
           extraPlugins: extraPlugins,
           placeholder: window.eXo.social.I18n.mentions.defaultMessage,
           typeOfRelation: 'mention_activity_stream',
+          spaceURL: UIComposer.spaceURL,
           on : {
             instanceReady : function ( evt ) {
               // Hide the editor toolbar

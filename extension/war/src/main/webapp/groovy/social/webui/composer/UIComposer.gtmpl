@@ -43,6 +43,7 @@
   def shareLabel = _ctx.appRes("${uicomponent.id}.label.Share");
   def mentionBtnLabel = _ctx.appRes("${uicomponent.id}.label.Mention");
   def blastInput = "blastInputSpace";
+  def spaceURL = uicomponent.getSpaceURL();
   def shareStatusLabel = _ctx.appRes("${uicomponent.id}.label.ShareStatus");
 
   if (uicomponent.getPostContext().toString().equals("USER") && uicomponent.isActivityStreamOwner()) {
@@ -54,7 +55,8 @@
   def params = """
     {
       composerId:'$uicomponent.id', 
-      textareaId:'${uicomponent.COMPOSER_TEXT_AREA_INPUT}', 
+      textareaId:'${uicomponent.COMPOSER_TEXT_AREA_INPUT}',
+      spaceURL:'$spaceURL',
       mentionBtnLabel:'$mentionBtnLabel'
     }
   """

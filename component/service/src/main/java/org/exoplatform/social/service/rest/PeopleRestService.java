@@ -127,7 +127,7 @@ public class PeopleRestService implements ResourceContainer{
    * @param name The provided characters to be searched.
    * @param currentUser The user who sends request.
    * @param activityId the Id of the activity where we want to mention a user in its comment
-   * @param typeOfRelation The relationship status such as "confirmed", "pending", "incoming", "member_of_space" or "user_to_invite"
+   * @param typeOfRelation The relationship status such as "confirmed", "pending", "incoming", "member_of_space", "mention_activity_stream", "mention_comment" or "user_to_invite"
    * @param spaceURL The URL of the related space.
    * @param format The format of the returned result, for example, JSON, or XML.
    * @return A list of users' names that match the input string.
@@ -155,6 +155,11 @@ public class PeopleRestService implements ResourceContainer{
     identityFilter.setCompany("");
     identityFilter.setPosition("");
     identityFilter.setSkills("");
+    String spaceId = null;
+    if (spaceURL != null) {
+      Space space = getSpaceService().getSpaceByUrl(spaceURL);
+      spaceId = space.getId();
+    }
 
     List<Identity> excludedIdentityList = identityFilter.getExcludedIdentityList();
     if (excludedIdentityList == null) {
@@ -437,24 +442,37 @@ public class PeopleRestService implements ResourceContainer{
       return Util.getResponse(userInfos, uriInfo, mediaType, Response.Status.OK);
 
       //Improvement in user suggestions when @mentioning in the Activity Stream
-    } else if (MENTION_ACTIVITY_STREAM.equals(typeOfRelation)) {
-      //first add connections in the suggestions
-      ListAccess<Identity> connections = getRelationshipManager().getConnections(currentIdentity);
-      int size = connections.getSize();
+    } else if (spaceId != null && MENTION_ACTIVITY_STREAM.equals(typeOfRelation)) {
       List<UserInfo> userInfos = new ArrayList<PeopleRestService.UserInfo>();
-      if (connections != null && connections.getSize() > 0) {
-        Identity[] identities = connections.load(0, size < SUGGEST_LIMIT ? size : (int) SUGGEST_LIMIT);
-        userInfos = addUsersToUserInfosList(identities, excludedIdentityList, userInfos, currentUser);
+
+      //first add space members in the suggestions
+      String[] spaceMembers = getSpaceService().getSpaceByUrl(spaceURL).getMembers();
+      for (String spaceMember : spaceMembers) {
+        userInfos = addUserToInfosList(spaceMember, excludedIdentityList, userInfos);
       }
 
-      //then add others users in the suggestions
-      long remain = SUGGEST_LIMIT - (userInfos != null ? userInfos.size() : 0);
+      //then add connections in the suggestions
+     long remain = SUGGEST_LIMIT - (userInfos != null ? userInfos.size() : 0);
       if (remain > 0) {
-        ListAccess<Identity> listAccess = getIdentityManager().getIdentitiesByProfileFilter(OrganizationIdentityProvider.NAME, identityFilter, false);
         identityFilter.setExcludedIdentityList(excludedIdentityList);
-        Identity[] identitiesList = listAccess.load(0, (int) remain);
-        userInfos = addUsersToUserInfosList(identitiesList, excludedIdentityList, userInfos, currentUser);
+        ListAccess<Identity> connections = getRelationshipManager().getConnections(currentIdentity);
+        if (connections != null && connections.getSize() > 0) {
+          Identity[] connectionsIdentities = connections.load(0, (int) remain);
+          userInfos = addUsersToUserInfosList(connectionsIdentities, excludedIdentityList, userInfos, currentUser);
+        }
       }
+
+      //finally add others users in the suggestions
+      remain = SUGGEST_LIMIT - (userInfos != null ? userInfos.size() : 0);
+      if (remain > 0) {
+        identityFilter.setExcludedIdentityList(excludedIdentityList);
+        ListAccess<Identity> listAccess = getIdentityManager().getIdentitiesByProfileFilter(OrganizationIdentityProvider.NAME, identityFilter, false);
+        if (listAccess != null && listAccess.getSize() > 0) {
+          Identity[] identitiesList = listAccess.load(0, (int) remain);
+          userInfos = addUsersToUserInfosList(identitiesList, excludedIdentityList, userInfos, currentUser);
+        }
+      }
+
       return Util.getResponse(userInfos, uriInfo, mediaType, Response.Status.OK);
 
     } else { // Identities that match the keywords.
@@ -466,8 +484,6 @@ public class PeopleRestService implements ResourceContainer{
   }
 
   private List<UserInfo> addUserToInfosList(String userId, List<Identity> excludedIdentityList, List<UserInfo> userInfos) {
-    int size = userInfos.size();
-    if (size < SUGGEST_LIMIT ) {
       Identity userIdentity = getIdentityManager().getIdentity(userId, false);
       if (userIdentity == null) {
         userIdentity = getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, userId, false);
@@ -483,7 +499,6 @@ public class PeopleRestService implements ResourceContainer{
         }
         excludedIdentityList.add(userIdentity);
       }
-    }
     return userInfos;
   }
 
