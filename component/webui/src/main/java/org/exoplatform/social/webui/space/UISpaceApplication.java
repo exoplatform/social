@@ -305,6 +305,7 @@ public class UISpaceApplication extends UIForm {
       }
 
       spaceService.removeApplication(uiSpaceApp.space.getId(), appId, appName);
+      uiSpaceApp.space = spaceService.getSpaceById(uiSpaceApp.space.getId());
       UIPopupContainer uiPopup = uiSpaceApp.getChild(UIPopupContainer.class);
 
       // hanhvq. add removed application into uipopup container if it is displayed
@@ -314,6 +315,7 @@ public class UISpaceApplication extends UIForm {
         context.addUIComponentToUpdateByAjax(uiPopup);
       }
       
+      uiSpaceApp.setValue(uiSpaceApp.space);
       uiSpaceApp.reloadSpaceNavigationTree();
       SpaceUtils.updateWorkingWorkSpace();
     }
