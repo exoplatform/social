@@ -97,6 +97,8 @@ public class PeopleRestService implements ResourceContainer{
   private static final String SHARE_DOCUMENT = "share_document";
   /** User to mention in a comment */
   private static final String MENTION_COMMENT = "mention_comment";
+  /** User mentioned in an activity stream */
+  private static final String MENTION_ACTIVITY_STREAM = "mention_activity_stream";
   /** No action */
   private static final String NO_ACTION = "NoAction";
   /** No information */
@@ -431,6 +433,27 @@ public class PeopleRestService implements ResourceContainer{
           Identity[] identitiesList = listAccess.load(0, (int) remain);
           userInfos = addUsersToUserInfosList(identitiesList, excludedIdentityList, userInfos, currentUser);
         }
+      }
+      return Util.getResponse(userInfos, uriInfo, mediaType, Response.Status.OK);
+
+      //Improvement in user suggestions when @mentioning in the Activity Stream
+    } else if (MENTION_ACTIVITY_STREAM.equals(typeOfRelation)) {
+      //first add connections in the suggestions
+      ListAccess<Identity> connections = getRelationshipManager().getConnections(currentIdentity);
+      int size = connections.getSize();
+      List<UserInfo> userInfos = new ArrayList<PeopleRestService.UserInfo>();
+      if (connections != null && connections.getSize() > 0) {
+        Identity[] identities = connections.load(0, size < SUGGEST_LIMIT ? size : (int) SUGGEST_LIMIT);
+        userInfos = addUsersToUserInfosList(identities, excludedIdentityList, userInfos, currentUser);
+      }
+
+      //then add others users in the suggestions
+      long remain = SUGGEST_LIMIT - (userInfos != null ? userInfos.size() : 0);
+      if (remain > 0) {
+        ListAccess<Identity> listAccess = getIdentityManager().getIdentitiesByProfileFilter(OrganizationIdentityProvider.NAME, identityFilter, false);
+        identityFilter.setExcludedIdentityList(excludedIdentityList);
+        Identity[] identitiesList = listAccess.load(0, (int) remain);
+        userInfos = addUsersToUserInfosList(identitiesList, excludedIdentityList, userInfos, currentUser);
       }
       return Util.getResponse(userInfos, uriInfo, mediaType, Response.Status.OK);
 

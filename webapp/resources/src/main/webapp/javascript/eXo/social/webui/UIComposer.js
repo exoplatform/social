@@ -76,6 +76,7 @@
           customConfig: '/commons-extension/ckeditorCustom/config.js',
           extraPlugins: extraPlugins,
           placeholder: window.eXo.social.I18n.mentions.defaultMessage,
+          typeOfRelation: 'mention_activity_stream',
           on : {
             instanceReady : function ( evt ) {
               // Hide the editor toolbar
