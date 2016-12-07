@@ -27,6 +27,8 @@ import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvide
 import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.manager.RelationshipManager;
 import org.exoplatform.social.core.relationship.model.Relationship;
+import org.exoplatform.social.core.space.model.Space;
+import org.exoplatform.social.core.space.spi.SpaceService;
 import org.exoplatform.social.core.storage.impl.ActivityStorageImpl;
 import org.exoplatform.social.service.test.AbstractResourceTest;
 
@@ -37,6 +39,7 @@ import java.util.ArrayList;
 public class PeopleRestServiceTest  extends AbstractResourceTest {
   static private PeopleRestService peopleRestService;
   private IdentityManager identityManager;
+  private SpaceService spaceService;
   private RelationshipManager relationshipManager;
   private ActivityStorageImpl activityStorage;
   private Identity rootIdentity;
@@ -48,6 +51,7 @@ public class PeopleRestServiceTest  extends AbstractResourceTest {
     super.setUp();
     peopleRestService = new PeopleRestService();
     identityManager =  (IdentityManager) getContainer().getComponentInstanceOfType(IdentityManager.class);
+    spaceService =  (SpaceService) getContainer().getComponentInstanceOfType(SpaceService.class);
     activityStorage = (ActivityStorageImpl) getContainer().getComponentInstanceOfType(ActivityStorageImpl.class);
     relationshipManager =  (RelationshipManager) getContainer().getComponentInstanceOfType(RelationshipManager.class);
 
@@ -123,5 +127,38 @@ public class PeopleRestServiceTest  extends AbstractResourceTest {
     assertTrue(((ArrayList) response.getEntity()).size() == 2);
 
     relationshipManager.delete(relationship);
+  }
+  public void testUserMentionInSpaceActivityStream() throws Exception {
+    //Given
+    Relationship relationship = new Relationship(rootIdentity, maryIdentity);
+    relationship.setStatus(Relationship.Type.CONFIRMED);
+    relationshipManager.update(relationship);
+    Space space = new Space();
+    space.setPrettyName("space1");
+    space.setDisplayName("space1");
+    space.setGroupId("/platform/users");
+    space.setVisibility(Space.PUBLIC);
+    space.setManagers(new String[]{rootIdentity.getRemoteId()});
+    String[] spaceMembers = new String[] {rootIdentity.getRemoteId(), demoIdentity.getRemoteId()};
+    space.setMembers(spaceMembers);
+    spaceService.createSpace(space, rootIdentity.getRemoteId());
+    MultivaluedMap<String, String> h4 = new MultivaluedMapImpl();
+    String username = "root";
+    h4.putSingle("username", username);
+    ByteArrayContainerResponseWriter writer = new ByteArrayContainerResponseWriter();
+
+    //When
+    ContainerResponse response = service("GET", "/social/people/suggest.json?nameToSearch=m&currentUser=root&typeOfRelation=mention_activity_stream&spaceURL=" + space.getUrl(), "", h4, null, writer);
+
+    identityManager.deleteIdentity(rootIdentity);
+    //Then
+    identityManager.deleteIdentity(demoIdentity);
+    assertEquals(200, response.getStatus());
+    identityManager.deleteIdentity(maryIdentity);
+    assertTrue(((ArrayList) response.getEntity()).size() == 2);
+    identityManager.deleteIdentity(johnIdentity);
+
+    relationshipManager.delete(relationship);
+    spaceService.deleteSpace(space);
   }
 }
