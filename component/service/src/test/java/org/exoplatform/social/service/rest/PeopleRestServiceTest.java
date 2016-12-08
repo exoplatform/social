@@ -183,13 +183,9 @@ public class PeopleRestServiceTest  extends AbstractResourceTest {
     //When
     ContainerResponse response = service("GET", "/social/people/suggest.json?nameToSearch=m&currentUser=root&typeOfRelation=mention_activity_stream&spaceURL=" + space.getUrl(), "", h4, null, writer);
 
-    identityManager.deleteIdentity(rootIdentity);
     //Then
-    identityManager.deleteIdentity(demoIdentity);
     assertEquals(200, response.getStatus());
-    identityManager.deleteIdentity(maryIdentity);
     assertTrue(((ArrayList) response.getEntity()).size() == 2);
-    identityManager.deleteIdentity(johnIdentity);
 
     relationshipManager.delete(relationship);
     spaceService.deleteSpace(space);
