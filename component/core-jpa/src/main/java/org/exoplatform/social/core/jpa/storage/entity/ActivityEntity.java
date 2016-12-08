@@ -22,6 +22,7 @@ import java.util.*;
 
 import javax.persistence.*;
 
+import org.hibernate.annotations.DynamicUpdate;
 import org.json.JSONObject;
 
 import org.exoplatform.commons.api.persistence.ExoEntity;
@@ -31,6 +32,7 @@ import org.exoplatform.commons.api.persistence.ExoEntity;
  */
 @Entity(name = "SocActivity")
 @ExoEntity
+@DynamicUpdate
 @Table(name = "SOC_ACTIVITIES")
 @NamedQueries({
         @NamedQuery(
