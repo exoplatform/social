@@ -39,7 +39,7 @@ import org.exoplatform.webui.core.UIComponent;
 import org.exoplatform.webui.event.Event;
 
 @ComponentConfig(
-  template = "war:groovy/social/webui/composer/UIDefaultActivityComposer.gtmpl",
+  template = "war:/groovy/social/webui/composer/UIDefaultActivityComposer.gtmpl",
   events = {
     @EventConfig(listeners = UIActivityComposer.CloseActionListener.class),
     @EventConfig(listeners = UIActivityComposer.SubmitContentActionListener.class),
