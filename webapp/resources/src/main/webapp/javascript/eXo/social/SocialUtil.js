@@ -495,34 +495,77 @@
           input.attr('id', 'CurrentCommentInput');
           input.find('.exo-mentions').remove();
           input.find('button.btn:first').attr('id', 'CurrentCommentButton');
+          input.find('button.btn:nth-of-type(2)').attr('id', 'CurrentCancelButton');
           footComment.html('').append(input);
-          footComment.find('textarea.textarea:first').attr('id', 'CurrentCommentTextare').exoMentions({
-            onDataRequest:function (mode, query, callback) {
-              var url = window.location.protocol + '//' + window.location.host + '/' + eXo.social.portal.rest + '/social/people/getprofile/data.json?search='+query;
-              $.getJSON(url, function(responseData) {
-                callback.call(this, responseData);
-              });
-            },
-            idAction : ('CurrentCommentButton'),
-            elasticStyle : {
-              maxHeight : '42px',
-              minHeight : '32px',
-              marginButton: '4px',
-              enableMargin: false
-            },
-            messages : window.eXo.social.I18n.mentions
+          var extraPlugins = 'simpleLink,simpleImage,suggester,hideBottomToolbar';
+          if ($(window).width() > $(window).height() && $(window).width() < 768) {
+              // Disable suggester on smart-phone landscape
+              extraPlugins = 'simpleLink,simpleImage';
+          }
+
+          var MAX_LENGTH = 2000;
+          // TODO this line is mandatory when a custom skin is defined, it should not be mandatory
+          CKEDITOR.basePath = '/commons-extension/ckeditor/';
+          footComment.find('textarea.textarea:first').attr('id', 'CurrentCommentTextare').ckeditor({
+              customConfig: '/commons-extension/ckeditorCustom/config.js',
+              extraPlugins: extraPlugins,
+              placeholder: window.eXo.social.I18n.mentions.defaultMessage,
+              on : {
+                  instanceReady : function ( evt ) {
+                      // Hide the editor toolbar
+                      $('#CurrentCommentButton').prop("disabled", true);
+                  },
+                  change: function( evt) {
+                      var newData = evt.editor.getData();
+                      var pureText = newData? newData.replace(/<[^>]*>/g, "").replace(/&nbsp;/g,"").trim() : "";
+
+                      if (pureText.length > 0 && pureText.length <= MAX_LENGTH) {
+                          $("#CurrentCommentButton").removeAttr("disabled");
+                      } else {
+                          $("#CurrentCommentButton").prop("disabled", true);
+                      }
+
+                      if (pureText.length <= MAX_LENGTH) {
+                          evt.editor.getCommand('simpleImage').enable();
+                      } else {
+                          evt.editor.getCommand('simpleImage').disable();
+                      }
+                  },
+                  key: function( evt) {
+                      var newData = evt.editor.getData();
+                      var pureText = newData ? newData.replace(/<[^>]*>/g, "").replace(/&nbsp;/g, "").trim() : "";
+                      if (pureText.length > MAX_LENGTH) {
+                          if ([8, 46, 33, 34, 35, 36, 37, 38, 39, 40].indexOf(evt.data.keyCode) < 0) {
+                              evt.cancel();
+                          }
+                      }
+                  }
+              }
           });
+          $('#CurrentCancelButton').on('click', function (event) {
+            var editor = CKEDITOR.instances["CurrentCommentTextare"];
+            if (editor.mode != 'source') {
+                if (editor.document) $(editor.document.getBody().$).html('');
+            } else {
+                $(editor.container.$).find(".cke_source").html('');
+            }
+          })
           //
-          var widthBtn = footComment.find('#CurrentCommentButton').on('click keyup', function(evt) {
-            if(evt.type === 'keyup' && evt.keyCode !== 13) {
+          var widthBtn = footComment.find('#CurrentCommentButton').on('mousedown keydown', function(evt) {
+            if(evt.type === 'keydown' && evt.keyCode !== 13) {
               return false;
             }
-            var value = $(this).parents('.footComment').find('textarea.textarea:first').val();
-            $('#' + window.inputId).find('textarea.textarea:first').val(value);
+            var editor = CKEDITOR.instances["CurrentCommentTextare"];
+            $('#' + window.inputId).find('textarea.textarea:first').val(editor.document.getBody().$.innerHTML);
             var t = setTimeout(function() {
               clearTimeout(t);
               $.globalEval($('#' + window.inputId).find('button.btn:first').data('action-link'));
-            }, 100);
+            }, 200);
+            if (editor.mode != 'source') {
+                if (editor.document) $(editor.document.getBody().$).html('');
+            } else {
+                $(editor.container.$).find(".cke_source").html('');
+            }
           }).outerWidth();
           footComment.find('.commentInput:first').css('margin-right', widthBtn + 18 + 'px');
           //
@@ -533,9 +576,9 @@
               $.globalEval(action.replace('objectId=none', 'objectId=all'));
             }
           }
-      }); 
+      });
       }
-       
+
     }
   };
 
@@ -551,7 +594,7 @@
       popup.find('.uiIconClose:first').on('click', PopupConfirmation.hiden);
       return popup;
     },
-  
+
     confirm : function(id, actions, title, message, closeLabel) {
       SocialUtils.setCookies('currentConfirm', id, 300);
       var popup = PopupConfirmation.makeTemplate();
@@ -562,11 +605,11 @@
         uiAction.append(PopupConfirmation.addAction(actions[i].action, actions[i].label));
       }
       uiAction.append(PopupConfirmation.addAction(null, closeLabel));
-  
+
       //
       PopupConfirmation.show(popup);
     },
-  
+
     addAction : function(action, label) {
       var btn = $('<a href="javascript:void(0);" class="btn">' + label + '</a>');
       btn.on('click', PopupConfirmation.hiden);
@@ -578,7 +621,7 @@
       }
       return btn;
     },
-  
+
     show : function(popup) {
       $('#UIPortalApplication').append(popup);
       $(document.body).addClass('modal-open');
