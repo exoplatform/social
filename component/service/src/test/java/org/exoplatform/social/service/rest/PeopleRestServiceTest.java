@@ -100,7 +100,7 @@ public class PeopleRestServiceTest  extends AbstractResourceTest {
     ByteArrayContainerResponseWriter writer = new ByteArrayContainerResponseWriter();
 
     //When
-    ContainerResponse response = service("GET", "/social/people/suggest.json?nameToSearch=m&currentUser=root&typeOfRelation=mention_comment&activityId=" + demoActivity.getId(), "", h2, null, writer);
+    ContainerResponse response = service("GET", "/social/people/suggest.json?nameToSearch=m&currentUser=root&typeOfRelation=mention_comment&activityId=" + demoActivity.getId() + "&spaceURL=null", "", h2, null, writer);
 
     //Then
     assertEquals(200, response.getStatus());
@@ -120,7 +120,7 @@ public class PeopleRestServiceTest  extends AbstractResourceTest {
     ByteArrayContainerResponseWriter writer = new ByteArrayContainerResponseWriter();
 
     //When
-    ContainerResponse response = service("GET", "/social/people/suggest.json?nameToSearch=m&currentUser=root&typeOfRelation=mention_activity_stream", "", h3, null, writer);
+    ContainerResponse response = service("GET", "/social/people/suggest.json?nameToSearch=m&currentUser=root&typeOfRelation=mention_activity_stream&activityId=null&spaceURL=null", "", h3, null, writer);
 
     //Then
     assertEquals(200, response.getStatus());
@@ -181,7 +181,7 @@ public class PeopleRestServiceTest  extends AbstractResourceTest {
     ByteArrayContainerResponseWriter writer = new ByteArrayContainerResponseWriter();
 
     //When
-    ContainerResponse response = service("GET", "/social/people/suggest.json?nameToSearch=m&currentUser=root&typeOfRelation=mention_activity_stream&spaceURL=" + space.getUrl(), "", h4, null, writer);
+    ContainerResponse response = service("GET", "/social/people/suggest.json?nameToSearch=m&currentUser=root&typeOfRelation=mention_activity_stream&activityId=null&spaceURL=" + space.getUrl(), "", h4, null, writer);
 
     //Then
     assertEquals(200, response.getStatus());

@@ -155,11 +155,8 @@ public class PeopleRestService implements ResourceContainer{
     identityFilter.setCompany("");
     identityFilter.setPosition("");
     identityFilter.setSkills("");
-    String spaceId = null;
-    if (spaceURL != null) {
-      Space space = getSpaceService().getSpaceByUrl(spaceURL);
-      spaceId = space.getId();
-    }
+    Space currentSpace = getSpaceService().getSpaceByUrl(spaceURL);
+    Activity currentActivity = getActivityManager().getActivity(activityId);
 
     List<Identity> excludedIdentityList = identityFilter.getExcludedIdentityList();
     if (excludedIdentityList == null) {
@@ -382,7 +379,7 @@ public class PeopleRestService implements ResourceContainer{
           nameList.addOption(opt);
         }
       }
-    } else if (MENTION_COMMENT.equals(typeOfRelation)) {
+    } else if (currentSpace == null && currentActivity != null && MENTION_COMMENT.equals(typeOfRelation)) {
       //Improvement in user suggestions when @mentioning in the comment
       List<UserInfo> userInfos = new ArrayList<PeopleRestService.UserInfo>();
       ExoSocialActivity activity = getActivityManager().getActivity(activityId);
@@ -418,18 +415,6 @@ public class PeopleRestService implements ResourceContainer{
         }
       }
 
-      if (spaceId != null) {
-        //Improvement in user suggestions when @mentioning in a comment in a space
-        // add space members in the suggestions
-        remain = SUGGEST_LIMIT - (userInfos != null ? userInfos.size() : 0);
-        if (remain > 0) {
-          String[] spaceMembers = getSpaceService().getSpaceByUrl(spaceURL).getMembers();
-          for (String spaceMember : spaceMembers) {
-            userInfos = addUserToInfosList(spaceMember, excludedIdentityList, userInfos);
-          }
-        }
-      }
-
       //add the connections in the suggestion
       remain = SUGGEST_LIMIT - (userInfos != null ? userInfos.size() : 0);
       if (remain > 0) {
@@ -453,8 +438,76 @@ public class PeopleRestService implements ResourceContainer{
       }
       return Util.getResponse(userInfos, uriInfo, mediaType, Response.Status.OK);
 
+    } else if (currentSpace != null && currentActivity !=null && MENTION_COMMENT.equals(typeOfRelation)) {
+        //Improvement in user suggestions when @mentioning in the comment in a space
+        List<UserInfo> userInfos = new ArrayList<PeopleRestService.UserInfo>();
+        ExoSocialActivity activity = getActivityManager().getActivity(activityId);
+
+        //first add the author in the suggestion
+        String authorId = activity.getPosterId();
+        userInfos = addUserToInfosList(authorId, excludedIdentityList, userInfos);
+
+        //then add the commented users in the suggestion
+        String[] commentedUsers = activity.getCommentedIds();
+        for (String commentedUser : commentedUsers) {
+          identityFilter.setExcludedIdentityList(excludedIdentityList);
+          userInfos = addUserToInfosList(commentedUser, excludedIdentityList, userInfos);
+        }
+
+        //add the mentioned users in the suggestion
+        long remain = SUGGEST_LIMIT - (userInfos != null ? userInfos.size() : 0);
+        if (remain > 0) {
+          String[] mentionedUsers = activity.getMentionedIds();
+          for (String mentionedUser : mentionedUsers) {
+            identityFilter.setExcludedIdentityList(excludedIdentityList);
+            userInfos = addUserToInfosList(mentionedUser, excludedIdentityList, userInfos);
+          }
+        }
+
+        //add the liked users in the suggestion
+        remain = SUGGEST_LIMIT - (userInfos != null ? userInfos.size() : 0);
+        if (remain > 0) {
+          String[] likedUsers = activity.getLikeIdentityIds();
+          for (String likedUser : likedUsers) {
+            identityFilter.setExcludedIdentityList(excludedIdentityList);
+            userInfos = addUserToInfosList(likedUser, excludedIdentityList, userInfos);
+          }
+        }
+
+      //add space members
+          remain = SUGGEST_LIMIT - (userInfos != null ? userInfos.size() : 0);
+          if (remain > 0) {
+            String[] spaceMembers = getSpaceService().getSpaceByUrl(spaceURL).getMembers();
+            for (String spaceMember : spaceMembers) {
+              userInfos = addUserToInfosList(spaceMember, excludedIdentityList, userInfos);
+            }
+          }
+
+        //add the connections in the suggestion
+        remain = SUGGEST_LIMIT - (userInfos != null ? userInfos.size() : 0);
+        if (remain > 0) {
+          ListAccess<Identity> connections = getRelationshipManager().getConnections(currentIdentity);
+          identityFilter.setExcludedIdentityList(excludedIdentityList);
+          if (connections != null && connections.getSize() > 0) {
+            Identity[] identities = connections.load(0, (int) remain);
+            userInfos = addUsersToUserInfosList(identities, excludedIdentityList, userInfos, currentUser);
+          }
+        }
+
+        //finally add others in the suggestion
+        remain = SUGGEST_LIMIT - (userInfos != null ? userInfos.size() : 0);
+        if (remain > 0) {
+          ListAccess<Identity> listAccess = getIdentityManager().getIdentitiesByProfileFilter(OrganizationIdentityProvider.NAME, identityFilter, false);
+          identityFilter.setExcludedIdentityList(excludedIdentityList);
+          if (listAccess != null && listAccess.getSize() > 0) {
+            Identity[] identitiesList = listAccess.load(0, (int) remain);
+            userInfos = addUsersToUserInfosList(identitiesList, excludedIdentityList, userInfos, currentUser);
+          }
+        }
+        return Util.getResponse(userInfos, uriInfo, mediaType, Response.Status.OK);
+
       //Improvement in user suggestions when @mentioning in the Activity Stream
-    } else if (MENTION_ACTIVITY_STREAM.equals(typeOfRelation)) {
+    } else if (currentSpace == null && currentActivity == null && MENTION_ACTIVITY_STREAM.equals(typeOfRelation)) {
       //first add connections in the suggestions
       ListAccess<Identity> connections = getRelationshipManager().getConnections(currentIdentity);
       int size = connections.getSize();
@@ -475,7 +528,7 @@ public class PeopleRestService implements ResourceContainer{
       return Util.getResponse(userInfos, uriInfo, mediaType, Response.Status.OK);
 
       //Improvement in user suggestions when @mentioning in a space Activity Stream
-    } else if (spaceId != null && MENTION_ACTIVITY_STREAM.equals(typeOfRelation)) {
+    } else if (currentSpace != null && currentActivity == null && MENTION_ACTIVITY_STREAM.equals(typeOfRelation)) {
       List<UserInfo> userInfos = new ArrayList<PeopleRestService.UserInfo>();
 
       //first add space members in the suggestions
