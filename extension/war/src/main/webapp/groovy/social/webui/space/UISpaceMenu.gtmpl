@@ -29,7 +29,6 @@
   def uicomponentId = uicomponent.id;
 	
   //SpaceUtils.reloadNavigation();
-  def apps = uicomponent.getApps();
   def space = uicomponent.getSpace();
   
   String spaceHomeUrl = Utils.getSpaceHomeURL(space);
@@ -95,10 +94,8 @@
   
   
   <%
+  def apps = uicomponent.getApps();
   for(node in apps) {
-    if ( uicomponent.HIDDEN.equals(node.getVisibility().toString()) ) {
-      continue;
-    }
     String nodeTitle = Utils.getResolvedAppLabel(node);
     String nodeIcon = node.getIcon();
     String nodeUri = node.getURI();
