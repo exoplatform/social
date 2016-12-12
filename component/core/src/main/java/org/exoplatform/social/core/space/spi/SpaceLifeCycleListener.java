@@ -143,4 +143,11 @@ public interface SpaceLifeCycleListener extends LifeCycleListener<SpaceLifeCycle
    */
   void addPendingUser(SpaceLifeCycleEvent event);
 
+  /**
+   * Invokes this method when a user update the space registration
+   * @param event
+   */
+  default void spaceRegistrationEdited(SpaceLifeCycleEvent event) {
+
+  }
 }

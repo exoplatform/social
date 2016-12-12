@@ -81,6 +81,9 @@ public class SpaceLifecycle extends AbstractLifeCycle<SpaceLifeCycleListener, Sp
     case SPACE_HIDDEN:
       listener.spaceAccessEdited(event);
       break;
+    case SPACE_REGISTRATION:
+      listener.spaceRegistrationEdited(event);
+      break;
     case ADD_INVITED_USER:
       listener.addInvitedUser(event);
       break;
@@ -151,6 +154,10 @@ public class SpaceLifecycle extends AbstractLifeCycle<SpaceLifeCycleListener, Sp
   
   public void spaceAccessEdited(Space space, String userId) {
     broadcast(new SpaceLifeCycleEvent(space, userId, Type.SPACE_HIDDEN));
+  }
+
+  public void spaceRegistrationEdited(Space space, String userId) {
+    broadcast(new SpaceLifeCycleEvent(space, userId, Type.SPACE_REGISTRATION));
   }
 
   public void addInvitedUser(Space space, String userId) {

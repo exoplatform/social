@@ -70,7 +70,24 @@ public class SpaceElasticUnifiedSearchServiceConnector extends ElasticSearchServ
 
     return StringUtils.join(sourceFields, ",");
   }
-  
+
+  @Override
+  protected String getPermissionFilter() {
+    // Build permission base on member of space as in parent class
+    String permissions = super.getPermissionFilter();
+
+    // return also all non-hidden spaces, even if the user is not a member
+    permissions +=
+            ",{\n" +
+            "   \"not\" : {\n" +
+                    "\"term\" : {\n" +
+                    "    \"visibility\" : \"" + Space.HIDDEN + "\"\n" +
+                    "  }\n" +
+                 "}\n" +
+            " }";
+    return permissions;
+  }
+
   protected Collection<SearchResult> buildResult(String jsonResponse, SearchContext context) {
 
     LOG.debug("Search Query response from ES : {} ", jsonResponse);
@@ -92,9 +109,6 @@ public class SpaceElasticUnifiedSearchServiceConnector extends ElasticSearchServ
     for(Object jsonHit : jsonHits) {      
       JSONObject hitSource = (JSONObject) ((JSONObject) jsonHit).get("_source");
       Space space = spaceService.getSpaceById(((JSONObject) jsonHit).get("_id").toString());
-      if (Space.HIDDEN.equals(space.getVisibility())) {
-        continue;
-      }
       
       String title = getTitleFromJsonResult(hitSource);
       String url = getUrlFromJsonResult(space, context);
