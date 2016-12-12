@@ -25,10 +25,12 @@ import org.exoplatform.portal.application.RequestNavigationData;
 import org.exoplatform.portal.config.DataStorage;
 import org.exoplatform.portal.config.model.Page;
 import org.exoplatform.portal.config.UserACL;
+import org.exoplatform.portal.mop.Visibility;
 import org.exoplatform.portal.mop.page.PageContext;
 import org.exoplatform.portal.mop.page.PageKey;
 import org.exoplatform.portal.mop.page.PageService;
 import org.exoplatform.portal.mop.user.UserNode;
+import org.exoplatform.portal.mop.user.UserNodeFilterConfig;
 import org.exoplatform.portal.mop.user.UserPortal;
 import org.exoplatform.portal.webui.portal.UIPortal;
 import org.exoplatform.portal.webui.util.Util;
@@ -119,7 +121,11 @@ public class UISpaceMenu extends UIContainer {
     List<UserNode> userNodeArraySorted = new ArrayList<UserNode>();
     
     try {
-      UserNode spaceUserNode = SpaceUtils.getSpaceUserNode(space);
+      UserNodeFilterConfig.Builder filterConfigBuilder = UserNodeFilterConfig.builder();
+      filterConfigBuilder.withVisibility(Visibility.DISPLAYED, Visibility.TEMPORAL);
+      filterConfigBuilder.withTemporalCheck();
+      UserNodeFilterConfig filter = filterConfigBuilder.build();
+      UserNode spaceUserNode = SpaceUtils.getSpaceUserNode(space, filter);
       
       UserNode hiddenNode = spaceUserNode.getChild(SPACE_SETTINGS);
       
@@ -331,7 +337,7 @@ public class UISpaceMenu extends UIContainer {
   /**
    * Checks the input name is existed or not.<br>
    *
-   * @param pageNav
+   * @param homeNode
    * @param nodeName
    * @return true if input name is existed. false if it not.
    * @throws Exception

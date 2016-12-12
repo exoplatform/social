@@ -65,10 +65,7 @@ import org.exoplatform.portal.mop.navigation.NodeContext;
 import org.exoplatform.portal.mop.navigation.Scope;
 import org.exoplatform.portal.mop.page.PageContext;
 import org.exoplatform.portal.mop.page.PageService;
-import org.exoplatform.portal.mop.user.UserNavigation;
-import org.exoplatform.portal.mop.user.UserNode;
-import org.exoplatform.portal.mop.user.UserPortal;
-import org.exoplatform.portal.mop.user.UserPortalContext;
+import org.exoplatform.portal.mop.user.*;
 import org.exoplatform.portal.pom.spi.gadget.Gadget;
 import org.exoplatform.portal.webui.portal.UIPortal;
 import org.exoplatform.portal.webui.util.Util;
@@ -1205,22 +1202,26 @@ public class SpaceUtils {
    * @return
    */
   public static UserNode getSpaceUserNode(Space space) throws Exception {
+    return getSpaceUserNode(space, null);
+  }
+
+  public static UserNode getSpaceUserNode(Space space, UserNodeFilterConfig filter) throws Exception {
     NavigationContext spaceNavCtx = getGroupNavigationContext(space.getGroupId());
 
     UserNavigation userNav = SpaceUtils.getUserPortal().getNavigation(spaceNavCtx.getKey());
-    
-    UserNode parentUserNode = SpaceUtils.getUserPortal().getNode(userNav, Scope.CHILDREN, null, null);
+
+    UserNode parentUserNode = SpaceUtils.getUserPortal().getNode(userNav, Scope.CHILDREN, filter, null);
     UserNode spaceUserNode = parentUserNode.getChildrenSize() > 0 ? parentUserNode.getChild(0) : null;
-    
+
     if (spaceUserNode != null) {
       SpaceUtils.getUserPortal().updateNode(spaceUserNode, Scope.CHILDREN, null);
     } else {
       LOG.warn("Failed to get because of spaceUserNode is NULL");
     }
-    
+
     return spaceUserNode;
   }
-  
+
   public static List<UserNode> getSpaceUserNodeChildren(Space space) throws Exception {
     return new ArrayList<UserNode>(getSpaceUserNode(space).getChildren());
   }
