@@ -465,8 +465,17 @@ public class SpaceServiceImpl implements SpaceService {
   public void saveSpace(Space space, boolean isNew) {
     Space oldSpace = getSpaceById(space.getId());
     spaceStorage.saveSpace(space, isNew);
-    if (! isNew && ! oldSpace.getVisibility().equals(space.getVisibility())) {
-      spaceLifeCycle.spaceAccessEdited(space, space.getEditor());
+    if (!isNew) {
+      if (!oldSpace.getVisibility().equals(space.getVisibility())) {
+        spaceLifeCycle.spaceAccessEdited(space, space.getEditor());
+      }
+
+      String oldRegistration = oldSpace.getRegistration();
+      String registration = space.getRegistration();
+      if ((oldRegistration == null && registration != null)
+              || (oldRegistration != null && !oldRegistration.equals(registration))) {
+        spaceLifeCycle.spaceRegistrationEdited(space, space.getEditor());
+      }
     }
   }
 

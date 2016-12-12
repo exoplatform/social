@@ -69,6 +69,8 @@ public class SpaceIndexingServiceConnector extends ElasticIndexingServiceConnect
     fields.put("prettyName", space.getPrettyName());
     fields.put("displayName", space.getDisplayName());
     fields.put("description", space.getDescription());
+    fields.put("visibility", space.getVisibility());
+    fields.put("registration", space.getRegistration());
     
     Date createdDate = new Date(space.getCreatedTime());
 
@@ -117,6 +119,8 @@ public class SpaceIndexingServiceConnector extends ElasticIndexingServiceConnect
     properties.put("prettyName", postingHighlighterField);
     properties.put("displayName", postingHighlighterField);
     properties.put("description", postingHighlighterField);
+    properties.put("visibility", notAnalyzedField);
+    properties.put("registration", notAnalyzedField);
 
     JSONObject mappingProperties = new JSONObject();
     mappingProperties.put("properties", properties);
