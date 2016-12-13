@@ -67,7 +67,13 @@
     },
 
     initCKEditor: function () {
-      var extraPlugins = 'simpleLink,simpleImage,suggester';
+      var extraPlugins = 'simpleLink,simpleImage,suggester,hideBottomToolbar';
+      var windowWidth = $(window).width();
+      var windowHeight = $(window).height();
+      if (windowWidth > windowHeight && windowWidth < 768) {
+        // Disable suggester on smart-phone landscape
+        extraPlugins = 'simpleLink,simpleImage';
+      }
 
       var MAX_LENGTH = 2000;
       // TODO this line is mandatory when a custom skin is defined, it should not be mandatory
@@ -85,39 +91,6 @@
             // Hide the editor toolbar
             var elId = this.element.$.id.replace('CommentTextarea','');
             $('#CommentButton' + elId).prop("disabled", true);
-            $('#' + evt.editor.id + '_bottom').removeClass('cke_bottom_visible');
-          },
-          focus : function ( evt ) {
-            // Show the editor toolbar, except for smartphones in landscape mode
-            if ($(window).width() > 767 || $(window).width() < $(window).height()) {
-              //$('#' + evt.editor.id + '_bottom').css('display', 'block');
-              evt.editor.execCommand('autogrow');
-              var $content = $('#' + evt.editor.id + '_contents');
-              var contentHeight = $content.height();
-              var $ckeBottom = $('#' + evt.editor.id + '_bottom');
-              $ckeBottom[0].style.display = "block";
-              $ckeBottom.animate({
-                height: "39"
-              }, {
-                step: function (number, tween) {
-                  $content.height(contentHeight - number);
-                  if (number >= 9) {
-                    $ckeBottom.addClass('cke_bottom_visible');
-                  }
-                }
-              });
-            } else {
-              $('#' + evt.editor.id + '_bottom').removeClass('cke_bottom_visible');
-              $('#' + evt.editor.id + '_bottom')[0].style.display = "none";
-            }
-          },
-          blur : function ( evt ) {
-            // Hide the editor toolbar
-            if ($(window).width() > 767 || $(window).width() < $(window).height()) {
-              $('#' + evt.editor.id + '_contents').css('height', $('#' + evt.editor.id + '_contents').height() + 39);
-              $('#' + evt.editor.id + '_bottom').css('height', '0px');
-              $('#' + evt.editor.id + '_bottom').removeClass('cke_bottom_visible');
-            }
           },
           change: function( evt) {
             var newData = evt.editor.getData();
@@ -150,6 +123,7 @@
     },
 
     init: function() {
+      var self = this;
       UIActivity.commentLinkEl = $("#"+UIActivity.commentLinkId);
       UIActivity.commentFormBlockEl = $("#" + UIActivity.commentFormBlockId);
       UIActivity.commentTextareaEl = $("#" + UIActivity.commentTextareId);
@@ -160,6 +134,7 @@
       UIActivity.permaLinkActivityButtonEl = $("#" + UIActivity.permaLinkActivityButtonId);
       UIActivity.commentBlockBoundEl = $("#" + UIActivity.commentBlockBoundId);
       UIActivity.inputContainer = $("#InputContainer" + UIActivity.activityId);
+      UIActivity.editInputContainer = $("#EditInputContainer" + UIActivity.activityId);
       UIActivity.commentBlockEls = [];
       UIActivity.activityContextBoxEl = $("#" + UIActivity.activityContextBoxId);
       if(UIActivity.allCommentSize > 0) {
@@ -177,24 +152,20 @@
         evt.stopPropagation();
       });
 
-      if (eXo.social.SocialUtil.checkDevice().isMobile !== true) {
-        this.initCKEditor();
-      }
+      this.initCKEditor();
 
       //this.resizeComment();
 
       var commentLinkEl = $("#" + UIActivity.commentLinkId);
       if (commentLinkEl.length > 0) {
         commentLinkEl.off('click').on('click', function (evt) {
-          if (eXo.social.SocialUtil.checkDevice().isMobile === true) {
-            $('.footComment').find('div.replaceTextArea:first').focus();
-            return true;
-          }
           var currentActivityId = $(this).attr('id').replace('CommentLink', '');
           $('#cke_CommentTextarea' + currentActivityId + ' .cke_contents')[0].style.height = "110px";
-          var inputContainer = $('#InputContainer' + currentActivityId).fadeToggle('fast', function () {
-            var thiz = $(this);
-            if(thiz.css('display') === 'block') {
+
+          var inputContainer = $('#InputContainer' + currentActivityId);
+          if (!inputContainer.is(":visible")) {
+            inputContainer.show('fast', function () {
+              var thiz = $(this);
               var blockInput = thiz.parents('.uiActivityStream:first').find('.inputContainerShow');
               if(blockInput.length > 0) {
                 blockInput.removeClass('inputContainerShow').hide();
@@ -206,12 +177,17 @@
               nTop = (nTop > 0) ? nTop : 0;
 
               $('html, body').animate({scrollTop:nTop}, 'slow');
-            } else {
-              thiz.removeClass('inputContainerShow')
+            });
+          } else {
+            if (eXo.social.SocialUtil.checkDevice().isMobile !== true) {
+              inputContainer.hide('fast', function() {
+                var thiz = $(this);
+                thiz.removeClass('inputContainerShow');
+              });
             }
-          });
+          }
         });
-        $("button[id^='CancelButton']" ).on('click', function (evt) {
+        $("#CancelButton" + UIActivity.activityId).on('click', function (evt) {
           var currentActivityId = evt.target.id.replace('CancelButton', '');
           var inputContainer = $('#InputContainer' + currentActivityId);
           var thiz = $(this);
@@ -449,9 +425,6 @@
         UIActivity.responsiveId = id;
       }
       var deviceInfo = eXo.social.SocialUtil.checkDevice();
-      if(deviceInfo.isMobile === true || deviceInfo.isTablet === true ||  deviceInfo.isTabletL === true  ) {
-        UIActivity.resetRightHeight();
-      }
       var root = $('#'+id);
       if(root.length > 0 && deviceInfo.isMobile === true) {
         var hideComposer = function(elm) {
