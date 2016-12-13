@@ -225,14 +225,4 @@ public abstract class AbstractAsynMigrationTest extends BaseCoreTest {
       LOG.error("can not save activity.", e);
     }
   }
-
-  protected void verifyWorkspaceRemoved() throws Exception {
-    // Besure JCR data does not exist
-    String[] workspaces = repoService.getCurrentRepository().getWorkspaceNames();
-    for(String w : workspaces) {
-      if (socialWorkspaceName.equals(w)) {
-        fail("Social workspace should be removed");
-      }
-    }
-  }
 }
