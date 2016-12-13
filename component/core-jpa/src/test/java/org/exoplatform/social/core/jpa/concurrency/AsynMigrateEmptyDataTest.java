@@ -42,6 +42,5 @@ public class AsynMigrateEmptyDataTest extends AbstractAsynMigrationTest {
     assertTrue(getOrCreateSettingValue(MigrationContext.SOC_RDBMS_IDENTITY_MIGRATION_KEY));
     assertTrue(getOrCreateSettingValue(MigrationContext.SOC_RDBMS_IDENTITY_CLEANUP_KEY));
 
-    verifyWorkspaceRemoved();
   }
 }
