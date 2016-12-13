@@ -24,6 +24,11 @@ import org.exoplatform.commons.file.services.NameSpaceService;
 import org.exoplatform.container.xml.InitParams;
 import org.exoplatform.container.xml.ValueParam;
 import org.exoplatform.services.jcr.RepositoryService;
+import org.exoplatform.social.core.chromattic.entity.ProviderEntity;
+import org.exoplatform.social.core.chromattic.entity.ProviderRootEntity;
+import org.exoplatform.social.core.chromattic.entity.SpaceRootEntity;
+import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
+import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
 import org.exoplatform.social.core.jpa.storage.RDBMSIdentityStorageImpl;
 import org.exoplatform.social.core.manager.IdentityManagerImpl;
 import org.exoplatform.social.core.storage.api.IdentityStorage;
@@ -140,26 +145,16 @@ public class RDBMSMigrationManager implements Startable {
 
         try {
           // Check JCR data is existing or not
-          getRelationshipMigration().getProviderRoot();
+          ProviderRootEntity providerRoot = getRelationshipMigration().getProviderRoot();
+          if (providerRoot == null || (providerRoot != null && providerRoot.getProviders().get(SpaceIdentityProvider.NAME) == null &&
+                  providerRoot.getProviders().get(OrganizationIdentityProvider.NAME) == null)) {
+            LOG.info("No Social data to migrate from JCR to RDBMS ");
+            updateMigrationSettings(start);
+            return;
+          }
         } catch (Exception ex) {
-          LOG.debug("no JCR data, stopping JCR to RDBMS migration");
-
-          // Update and mark that migrate was done
-          updateSettingValue(MigrationContext.SOC_RDBMS_CONNECTION_MIGRATION_KEY, Boolean.TRUE);
-          updateSettingValue(MigrationContext.SOC_RDBMS_ACTIVITY_MIGRATION_KEY, Boolean.TRUE);
-          updateSettingValue(MigrationContext.SOC_RDBMS_SPACE_MIGRATION_KEY, Boolean.TRUE);
-          updateSettingValue(MigrationContext.SOC_RDBMS_IDENTITY_MIGRATION_KEY, Boolean.TRUE);
-
-          updateSettingValue(MigrationContext.SOC_RDBMS_CONNECTION_CLEANUP_KEY, Boolean.TRUE);
-          updateSettingValue(MigrationContext.SOC_RDBMS_ACTIVITY_CLEANUP_KEY, Boolean.TRUE);
-          updateSettingValue(MigrationContext.SOC_RDBMS_SPACE_CLEANUP_KEY, Boolean.TRUE);
-          updateSettingValue(MigrationContext.SOC_RDBMS_IDENTITY_CLEANUP_KEY, Boolean.TRUE);
-
-          updateSettingValue(MigrationContext.SOC_RDBMS_MIGRATION_STATUS_KEY, Boolean.TRUE);
-          MigrationContext.setDone(true);
-
-          removeRunningNodeIfPresent(start);
-
+          LOG.info("no JCR data, stopping JCR to RDBMS migration");
+          updateMigrationSettings(start);
           return;
         }
 
@@ -454,6 +449,24 @@ public class RDBMSMigrationManager implements Startable {
     } finally {
       Scope.GLOBAL.id(null);
     }
+  }
+
+  private void updateMigrationSettings(boolean remove){
+    // Update and mark that migrate was done
+    updateSettingValue(MigrationContext.SOC_RDBMS_CONNECTION_MIGRATION_KEY, Boolean.TRUE);
+    updateSettingValue(MigrationContext.SOC_RDBMS_ACTIVITY_MIGRATION_KEY, Boolean.TRUE);
+    updateSettingValue(MigrationContext.SOC_RDBMS_SPACE_MIGRATION_KEY, Boolean.TRUE);
+    updateSettingValue(MigrationContext.SOC_RDBMS_IDENTITY_MIGRATION_KEY, Boolean.TRUE);
+
+    updateSettingValue(MigrationContext.SOC_RDBMS_CONNECTION_CLEANUP_KEY, Boolean.TRUE);
+    updateSettingValue(MigrationContext.SOC_RDBMS_ACTIVITY_CLEANUP_KEY, Boolean.TRUE);
+    updateSettingValue(MigrationContext.SOC_RDBMS_SPACE_CLEANUP_KEY, Boolean.TRUE);
+    updateSettingValue(MigrationContext.SOC_RDBMS_IDENTITY_CLEANUP_KEY, Boolean.TRUE);
+
+    updateSettingValue(MigrationContext.SOC_RDBMS_MIGRATION_STATUS_KEY, Boolean.TRUE);
+    MigrationContext.setDone(true);
+
+    removeRunningNodeIfPresent(remove);
   }
 
   private void removeRunningNodeIfPresent(boolean remove) {
