@@ -338,6 +338,7 @@ public class RDBMSSpaceStorageImpl extends SpaceStorageImpl implements SpaceStor
   }
 
   @Override
+  @ExoTransactional
   public Space getSpaceByUrl(String url) throws SpaceStorageException {
     SpaceEntity entity = spaceDAO.getSpaceByURL(url);
     return fillSpaceFromEntity(entity);
