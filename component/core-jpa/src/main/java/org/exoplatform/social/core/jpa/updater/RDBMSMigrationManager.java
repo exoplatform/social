@@ -465,6 +465,7 @@ public class RDBMSMigrationManager implements Startable {
     MigrationContext.setDone(true);
 
     removeRunningNodeIfPresent(remove);
+    migrater.countDown();
   }
 
   private void removeRunningNodeIfPresent(boolean remove) {
