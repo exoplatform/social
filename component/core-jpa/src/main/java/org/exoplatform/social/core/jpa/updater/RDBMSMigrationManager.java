@@ -148,11 +148,13 @@ public class RDBMSMigrationManager implements Startable {
                   providerRoot.getProviders().get(OrganizationIdentityProvider.NAME) == null)) {
             LOG.info("No Social data to migrate from JCR to RDBMS ");
             updateMigrationSettings(start);
+            migrater.countDown();
             return;
           }
         } catch (Exception ex) {
           LOG.info("no JCR data, stopping JCR to RDBMS migration");
           updateMigrationSettings(start);
+          migrater.countDown();
           return;
         }
 
@@ -465,7 +467,6 @@ public class RDBMSMigrationManager implements Startable {
     MigrationContext.setDone(true);
 
     removeRunningNodeIfPresent(remove);
-    migrater.countDown();
   }
 
   private void removeRunningNodeIfPresent(boolean remove) {
