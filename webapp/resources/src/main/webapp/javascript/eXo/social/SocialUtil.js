@@ -351,7 +351,7 @@
       var d = (listBoxs.length > 3) ? 10/maxItemInline : 1.5;
       listBoxs.each(function(index) {
         if((index + 1) % maxItemInline === 0) {
-          $(this).width(parseInt(width + d - 10)).find('.spaceBox:first').css({'margin-right': '0px'});
+          $(this).width(parseInt(width + d - delta)).find('.spaceBox:first').css({'margin-right': '0px'});
         } else {
           $(this).width(parseInt(width + d)).find('.spaceBox:first').css({'margin-right': '10px'});
         }
