@@ -172,6 +172,7 @@
     post : function() {
       UIComposer.isReady = false;
       UIComposer.currentValue = "";
+      CKEDITOR.instances.composerInput.setData('');
     },
     getValue : function() {
       return (UIComposer.currentValue) ? UIComposer.currentValue : '';
