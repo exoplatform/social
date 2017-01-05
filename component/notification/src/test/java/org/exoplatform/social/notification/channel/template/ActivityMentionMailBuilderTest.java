@@ -130,7 +130,7 @@ public class ActivityMentionMailBuilderTest extends AbstractPluginTest {
     ctx.setNotificationInfos(toJohn);
     Writer writer = new StringWriter();
     buildDigest(ctx, writer);
-    assertDigest(writer, "Mary Kelly, Demo gtn, Root Root have mentioned you in an activity: mary mention John Anthony and Demo gtn.");
+    assertDigest(writer, "Mary Kelly, Demo gtn, Root Root have mentioned you in an activity: mary mention John Anthony and Demo gtn");
   }
   
   public void testDigestWithDuplicateUser() throws Exception {
@@ -159,7 +159,7 @@ public class ActivityMentionMailBuilderTest extends AbstractPluginTest {
     ctx.setNotificationInfos(toJohn);
     Writer writer = new StringWriter();
     buildDigest(ctx, writer);
-    assertDigest(writer, "Mary Kelly, Demo gtn have mentioned you in an activity: mary mention John Anthony and Demo gtn.");
+    assertDigest(writer, "Mary Kelly, Demo gtn have mentioned you in an activity: mary mention John Anthony and Demo gtn");
   }
   
   public void testDigestWithDeletedActivity() throws Exception {
@@ -191,6 +191,6 @@ public class ActivityMentionMailBuilderTest extends AbstractPluginTest {
     ctx.setNotificationInfos(toJohn);
     Writer writer = new StringWriter();
     buildDigest(ctx, writer);
-    assertDigest(writer, "Mary Kelly, Root Root have mentioned you in an activity: mary mention John Anthony and Demo gtn.");
+    assertDigest(writer, "Mary Kelly, Root Root have mentioned you in an activity: mary mention John Anthony and Demo gtn");
   }
 }
