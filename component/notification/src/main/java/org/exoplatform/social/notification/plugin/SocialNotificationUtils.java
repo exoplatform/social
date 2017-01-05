@@ -185,10 +185,7 @@ public class SocialNotificationUtils {
       if (activity != null) {
         String title = activity.getTitle();
         // removes a href link from title. Just for digest building case.
-        title = title.replaceAll(A_HREF_TAG_REGEX, ""); 
-        if (!title.endsWith(DOT_STRING)) {
-          title = title + DOT_STRING; 
-        }
+        title = title.replaceAll(A_HREF_TAG_REGEX, "");
         templateContext.put("ACTIVITY", SocialNotificationUtils.buildRedirecActivityUrl(typeActivityDisplay, activity.getId(), title));
       } else {
         templateContext.put("SPACE", SocialNotificationUtils.buildRedirecUrl(typeSpaceDisplay, space.getId(), space.getDisplayName()));
@@ -223,28 +220,22 @@ public class SocialNotificationUtils {
       sb.append(digester);
       List<Pair<String, String>> userComments = activityUserComments.get(id);
       if (userComments != null && userComments.size() > 0) {
-          sb.append("<br/>");
-          sb.append("<div style=\"background-color:#f9f9f9;padding: 10px;max-height:11px;\">");  
-          sb.append("<div style=\"border-left:5px solid #AACDED; padding-left: 15px; color:black;");
-          sb.append("overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:500px\">");
+          sb.append("<div style=\"background-color:#f9f9f9;padding: 10px;border-left:5px solid #AACDED; padding-left: 15px; color:black;overflow:hidden;text-overflow:ellipsis;max-width:500px;\">");
           for (Pair<String, String> pair: userComments) {
-              sb.append("<i>");
               if (userComments.size() > 1) {
                   sb.append("<b>").append(pair.getKey()).append(" : </b>");
               }
-              sb.append("<span style=\"color:#333333\"><font face=\"verdana,arial,sans-serif\">")
+              sb.append("<div style=\"color:#333333; font-family: 'verdana,arial,sans-serif';white-space: normal; font-style: italic;max-height: 11px;\">")
                 .append(pair.getValue());
+              sb.append("</div>");
               if (userComments.size() > 1) {
                   sb.append("...");
               }
-              sb.append("</font></span>")
-                .append("</i>")
-                .append("<br/>");
+              sb.append("<br/>");
               break;
           }
-          sb.append("  </div>");
           sb.append("</div>");
-          sb.append("<br/");
+          sb.append("<br/>");
       }
       sb.append("</li>");
     }
