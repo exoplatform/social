@@ -312,6 +312,7 @@ public class UIManageMySpaces extends UIContainer {
     public void execute(Event<UIManageMySpaces> event) throws Exception {
       UIManageMySpaces uiManageMySpaces = event.getSource();
       uiManageMySpaces.loadNext();
+      uiManageMySpaces.setHasUpdatedSpace(false);
       event.getRequestContext().addUIComponentToUpdateByAjax(uiManageMySpaces);
     }
   }

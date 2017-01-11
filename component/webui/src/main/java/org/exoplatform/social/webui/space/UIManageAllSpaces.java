@@ -356,6 +356,7 @@ public class UIManageAllSpaces extends UIContainer {
         return;
       }
       uiManageAllSpaces.loadNext();
+      uiManageAllSpaces.setHasUpdatedSpace(false);
       event.getRequestContext().addUIComponentToUpdateByAjax(uiManageAllSpaces);
     }
   }
