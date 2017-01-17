@@ -20,15 +20,14 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
-import javax.persistence.NonUniqueResultException;
 import javax.persistence.TypedQuery;
 
 import org.exoplatform.commons.api.persistence.ExoTransactional;
 import org.exoplatform.commons.persistence.impl.GenericDAOJPAImpl;
+import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.jpa.storage.dao.ConnectionDAO;
 import org.exoplatform.social.core.jpa.storage.dao.jpa.query.RelationshipQueryBuilder;
 import org.exoplatform.social.core.jpa.storage.entity.ConnectionEntity;
-import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.profile.ProfileFilter;
 import org.exoplatform.social.core.relationship.model.Relationship;
 import org.exoplatform.social.core.relationship.model.Relationship.Type;
@@ -53,17 +52,9 @@ public class ConnectionDAOImpl extends GenericDAOJPAImpl<ConnectionEntity, Long>
 
   @Override
   public ConnectionEntity getConnection(Identity identity1, Identity identity2) {
-    TypedQuery<ConnectionEntity> query = RelationshipQueryBuilder.builder()
-                                                                 .sender(identity1)
-                                                                 .receiver(identity2)
-                                                                 .buildSingleRelationship();
-    try {
-      return query.getSingleResult();
-    } catch (NoResultException e) {
-      return null;
-    } catch (NonUniqueResultException e) {
-      return query.getResultList().get(0);
-    }
+    long senderId = Long.parseLong(identity1.getId());
+    long receiverId = Long.parseLong(identity2.getId());
+    return getConnection(senderId, receiverId);
   }
 
   @Override
@@ -113,12 +104,48 @@ public class ConnectionDAOImpl extends GenericDAOJPAImpl<ConnectionEntity, Long>
 
   @Override
   public List<ConnectionEntity> getConnections(Identity sender, Identity receiver, Type status) {
-    return RelationshipQueryBuilder.builder()
-                                   .sender(sender)
-                                   .receiver(receiver)
-                                   .status(status)
-                                   .build()
-                                   .getResultList();
+    if (receiver == null && sender == null) {
+      throw new IllegalArgumentException("Sender and receiver are null. Can't query the whole database.");
+    }
+    TypedQuery<ConnectionEntity> query = null;
+    if (sender == null) {
+      if (status == null) {
+        query = getEntityManager().createNamedQuery("SocConnection.getSenderByReceiverWithoutStatus", ConnectionEntity.class);
+        long id = Long.parseLong(receiver.getId());
+        query.setParameter("identityId", id);
+      } else {
+        query = getEntityManager().createNamedQuery("SocConnection.getSenderByReceiverWithStatus", ConnectionEntity.class);
+        long id = Long.parseLong(receiver.getId());
+        query.setParameter("identityId", id);
+        query.setParameter("status", status);
+      }
+    } else {
+      if (receiver == null && status == null) {
+        query = getEntityManager().createNamedQuery("SocConnection.getReceiverBySenderWithoutStatus", ConnectionEntity.class);
+        long id = Long.parseLong(sender.getId());
+        query.setParameter("identityId", id);
+      } else if (receiver == null) {
+        query = getEntityManager().createNamedQuery("SocConnection.getReceiverBySenderWithStatus", ConnectionEntity.class);
+        long id = Long.parseLong(sender.getId());
+        query.setParameter("identityId", id);
+        query.setParameter("status", status);
+      } else if (status == null) {
+        query = getEntityManager().createNamedQuery("SocConnection.findConnectionBySenderAndReceiver", ConnectionEntity.class);
+        long id = Long.parseLong(sender.getId());
+        query.setParameter("senderId", id);
+        id = Long.parseLong(receiver.getId());
+        query.setParameter("receiverId", id);
+      } else {
+        query = getEntityManager().createNamedQuery("SocConnection.findConnectionBySenderAndReceiverWithStatus",
+                                                    ConnectionEntity.class);
+        long id = Long.parseLong(sender.getId());
+        query.setParameter("senderId", id);
+        id = Long.parseLong(receiver.getId());
+        query.setParameter("receiverId", id);
+        query.setParameter("status", status);
+      }
+    }
+    return query.getResultList();
   }
 
   @Override
@@ -146,13 +173,19 @@ public class ConnectionDAOImpl extends GenericDAOJPAImpl<ConnectionEntity, Long>
 
   @Override
   public List<ConnectionEntity> getLastConnections(Identity identity, int limit) {
-    return RelationshipQueryBuilder.builder()
-                                   .owner(identity)
-                                   .status(Relationship.Type.CONFIRMED)
-                                   .offset(0)
-                                   .limit(limit)
-                                   .buildLastConnections()
-                                   .getResultList();
+    if (identity == null) {
+      throw new IllegalArgumentException("identity is null. Can't query the whole database.");
+    }
+    TypedQuery<ConnectionEntity> query = getEntityManager().createNamedQuery("SocConnection.getConnectionsWithStatus", ConnectionEntity.class);
+    long id = Long.parseLong(identity.getId());
+    query.setParameter("identityId", id);
+    query.setParameter("status", Relationship.Type.CONFIRMED);
+
+    if (limit > 0) {
+      query.setMaxResults(limit);
+    }
+
+    return query.getResultList();
   }
   
   public List<ConnectionEntity> getConnectionsByFilter(Identity existingIdentity, ProfileFilter profileFilter, Type type, long offset, long limit) {
