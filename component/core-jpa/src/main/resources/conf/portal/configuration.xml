@@ -40,7 +40,7 @@
 
   <external-component-plugins>
     <target-component>org.exoplatform.commons.api.search.SearchService</target-component>
-    <component-plugin>
+    <component-plugin profiles="all">
       <name>PeopleElasticUnifiedSearchServiceConnector</name>
       <set-method>addConnector</set-method>
       <type>org.exoplatform.social.core.jpa.search.PeopleElasticUnifiedSearchServiceConnector</type>
@@ -62,7 +62,7 @@
   
   <external-component-plugins>
     <target-component>org.exoplatform.commons.api.search.SearchService</target-component>
-    <component-plugin>
+    <component-plugin profiles="all">
       <name>SpaceElasticUnifiedSearchServiceConnector</name>
       <set-method>addConnector</set-method>
       <type>org.exoplatform.social.core.jpa.search.SpaceElasticUnifiedSearchServiceConnector</type>
@@ -120,7 +120,7 @@
   
    <external-component-plugins>
     <target-component>org.exoplatform.commons.search.index.IndexingOperationProcessor</target-component>
-    <component-plugin>
+    <component-plugin profiles="all">
       <name>ProfileIndexingServiceConnector</name>
       <set-method>addConnector</set-method>
       <type>org.exoplatform.social.core.jpa.search.ProfileIndexingServiceConnector</type>
@@ -137,7 +137,7 @@
   
   <external-component-plugins>
     <target-component>org.exoplatform.commons.search.index.IndexingOperationProcessor</target-component>
-    <component-plugin>
+    <component-plugin profiles="all">
       <name>SpaceIndexingServiceConnector</name>
       <set-method>addConnector</set-method>
       <type>org.exoplatform.social.core.jpa.search.SpaceIndexingServiceConnector</type>
