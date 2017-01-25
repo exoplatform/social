@@ -23,21 +23,11 @@ if(activity == null) {
   String displayName = profile.getFullName();
   String link = RecentActivitiesHelper.getLink(activity);
   String linkTitle = RecentActivitiesHelper.getLinkTitle(activity);
-
-  def spaceID;
-  Space spaceSource = Utils.getSpaceService().getSpaceByDisplayName(displayName);
-   if(spaceSource != null){
-       spaceID = spaceSource.getId();
-   }
 %>
    <div class="activityStream uiDefaultActivity clearfix" id="Activity<%=activity.id%>">
      <div class="activityTimeLine pull-left">
         <div class="activityAvatar avatarCircle">
-     <%if(spaceID != null){%>
-            <a class="space-avatar" href="<%=profileURL%>" space-data="$spaceID">
-       <%} else {%>
-            <a  href="<%=profileURL%>">
-       <%}%>
+           <a  href="<%=profileURL%>">
            <img alt="<%=displayName%>" src="<%=((avatarURL == null || avatarURL.length() == 0) ? LinkProvider.PROFILE_DEFAULT_AVATAR_URL : avatarURL)%>">
          </a>
        </div>

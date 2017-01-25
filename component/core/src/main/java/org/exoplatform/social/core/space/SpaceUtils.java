@@ -56,6 +56,7 @@ import org.exoplatform.portal.config.model.Container;
 import org.exoplatform.portal.config.model.ModelObject;
 import org.exoplatform.portal.config.model.Page;
 import org.exoplatform.portal.mop.SiteKey;
+import org.exoplatform.portal.mop.SiteType;
 import org.exoplatform.portal.mop.management.operations.navigation.NavigationUtils;
 import org.exoplatform.portal.mop.navigation.NavigationContext;
 import org.exoplatform.portal.mop.navigation.NavigationService;
@@ -91,6 +92,7 @@ import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
 import org.exoplatform.webui.application.WebuiRequestContext;
+
 import org.gatein.common.i18n.LocalizedString;
 import org.gatein.common.util.Tools;
 import org.gatein.pc.api.Portlet;
@@ -466,6 +468,10 @@ public class SpaceUtils {
   private static Space getSpaceByContext() {
     //
     PortalRequestContext pcontext = Util.getPortalRequestContext();
+    if (!pcontext.getSiteType().equals(SiteType.GROUP) ||
+        !pcontext.getSiteName().startsWith(SpaceUtils.SPACE_GROUP)) {
+      return null;
+    }
     String requestPath = pcontext.getControllerContext().getParameter(RequestNavigationData.REQUEST_PATH);
     Route route = ExoRouter.route(requestPath);
     if (route == null) return null;

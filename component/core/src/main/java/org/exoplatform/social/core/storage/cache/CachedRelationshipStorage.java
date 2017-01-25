@@ -26,6 +26,8 @@ import java.util.Map.Entry;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
+import org.apache.commons.lang.StringUtils;
+
 import org.exoplatform.services.cache.ExoCache;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
@@ -334,7 +336,9 @@ public class CachedRelationshipStorage extends AbstractStorage implements Relati
     // We make sure to check the Relationship in the same order to improve
     // efficiency of the cache
     final Identity idFirst, idLast;
-    if (identity1.getId().compareTo(identity2.getId()) > 0) {
+    if (StringUtils.isBlank(identity1.getId()) || StringUtils.isBlank(identity2.getId()) || identity1.getId().trim().equals(identity2.getId().trim())) {
+      return null;
+    } else if (identity1.getId().compareTo(identity2.getId()) > 0) {
       idFirst = identity1;
       idLast = identity2;
     } else {
