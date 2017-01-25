@@ -792,18 +792,18 @@ public class Utils {
     //
     SpaceService spaceService = (SpaceService) ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(SpaceService.class);
     PortalRequestContext pcontext = Util.getPortalRequestContext();
-    String requestPath = pcontext.getControllerContext().getParameter(RequestNavigationData.REQUEST_PATH);
-    Route route = ExoRouter.route(requestPath);
-    
-    if (route == null) {
-      String siteType = pcontext.getControllerContext().getParameter(RequestNavigationData.REQUEST_SITE_TYPE);
-      if(SiteType.GROUP.getName().equalsIgnoreCase(siteType)) {
-        String groupId = pcontext.getControllerContext().getParameter(RequestNavigationData.REQUEST_SITE_NAME);
-        if(StringUtils.isNotBlank(groupId) && groupId.startsWith(SpaceUtils.SPACE_GROUP)) {
-          return spaceService.getSpaceByGroupId(groupId);
-        }
-      }
+    if (!pcontext.getSiteType().equals(SiteType.GROUP) ||
+        !pcontext.getSiteName().startsWith(SpaceUtils.SPACE_GROUP)) {
       return null;
+    }
+    String requestPath = pcontext.getControllerContext().getParameter(RequestNavigationData.REQUEST_PATH);
+
+    Route route = ExoRouter.route(requestPath);
+    if (route == null) {
+      String groupId = pcontext.getControllerContext().getParameter(RequestNavigationData.REQUEST_SITE_NAME);
+      if(StringUtils.isNotBlank(groupId) && groupId.startsWith(SpaceUtils.SPACE_GROUP)) {
+        return spaceService.getSpaceByGroupId(groupId);
+      }
     }
 
     //

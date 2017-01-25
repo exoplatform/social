@@ -25,6 +25,8 @@ package org.exoplatform.social.core.storage.cache.model.key;
  */
 public class SpaceKey extends ScopeCacheKey {
 
+  public static final SpaceKey NULL_OBJECT = new SpaceKey(null);
+
   private final String id;
 
   public SpaceKey(final String id) {
