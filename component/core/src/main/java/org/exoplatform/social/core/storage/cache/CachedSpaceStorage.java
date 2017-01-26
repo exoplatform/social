@@ -211,7 +211,7 @@ public class CachedSpaceStorage implements SpaceStorage {
 
   }
 
-  private void cleanRef(SpaceData removed) {
+  private void cleanRef(Space removed) {
     exoRefSpaceCache.remove(new SpaceRefKey(removed.getDisplayName()));
     exoRefSpaceCache.remove(new SpaceRefKey(null, removed.getPrettyName()));
     exoRefSpaceCache.remove(new SpaceRefKey(null, null, removed.getGroupId()));
@@ -285,14 +285,11 @@ public class CachedSpaceStorage implements SpaceStorage {
     
     //
     exoSpaceSimpleCache.remove(new SpaceKey(space.getId()));
-    SpaceData removed = exoSpaceCache.remove(new SpaceKey(space.getId()));
+    exoSpaceCache.remove(new SpaceKey(space.getId()));
     
     clearSpaceCache();
     clearIdentityCache();
-    if (removed != null) {
-      cleanRef(removed);
-    }
-
+    cleanRef(space);
   }
 
   /**
@@ -330,15 +327,13 @@ public class CachedSpaceStorage implements SpaceStorage {
     cachedActivityStorage.clearOwnerStreamCache(oldPrettyName);
 
     // remove space cached
-    SpaceData removed = exoSpaceCache.remove(new SpaceKey(space.getId()));
+    exoSpaceCache.remove(new SpaceKey(space.getId()));
     clearSpaceCache();
     clearIdentityCache();
-    if (removed != null) {
-      exoRefSpaceCache.remove(new SpaceRefKey(oldDisplayName));
-      exoRefSpaceCache.remove(new SpaceRefKey(null, oldPrettyName));
-      exoRefSpaceCache.remove(new SpaceRefKey(null, null, removed.getGroupId()));
-      exoRefSpaceCache.remove(new SpaceRefKey(null, null, null, oldUrl));
-    }
+    exoRefSpaceCache.remove(new SpaceRefKey(oldDisplayName));
+    exoRefSpaceCache.remove(new SpaceRefKey(null, oldPrettyName));
+    exoRefSpaceCache.remove(new SpaceRefKey(null, null, space.getGroupId()));
+    exoRefSpaceCache.remove(new SpaceRefKey(null, null, null, oldUrl));
   }
   
   /**
@@ -351,11 +346,9 @@ public class CachedSpaceStorage implements SpaceStorage {
     storage.deleteSpace(id);
 
     //
-    SpaceData removed = exoSpaceCache.remove(new SpaceKey(id));
+    exoSpaceCache.remove(new SpaceKey(id));
     clearSpaceCache();
-    if (removed != null) {
-      cleanRef(removed);
-    }
+    cleanRef(space);
 
     //
     getCachedActivityStorage().clearCache();
