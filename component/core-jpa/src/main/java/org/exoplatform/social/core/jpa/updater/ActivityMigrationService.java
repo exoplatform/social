@@ -63,7 +63,6 @@ public class ActivityMigrationService extends AbstractMigrationService<ExoSocial
   private static final int LIMIT_ACTIVITY_REF_SAVE_THRESHOLD = 50;
   public static final String EVENT_LISTENER_KEY = "SOC_ACTIVITY_MIGRATION";
   private static final Pattern MENTION_PATTERN = Pattern.compile("@([^\\s]+)|@([^\\s]+)$");
-  public static final Pattern USER_NAME_VALIDATOR_REGEX = Pattern.compile("^[\\p{L}][\\p{L}._\\-\\d]+$");
   public final static String COMMENT_PREFIX = "comment";
   
   private final ActivityStorage activityStorage;
