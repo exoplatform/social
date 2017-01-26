@@ -537,9 +537,6 @@ public class RDBMSActivityStorageImpl extends ActivityStorageImpl {
     Matcher matcher = MENTION_PATTERN.matcher(title);
     while (matcher.find()) {
       String remoteId = matcher.group().substring(1);
-      if (!USER_NAME_VALIDATOR_REGEX.matcher(remoteId).matches()) {
-        continue;
-      }
       Identity identity = identityStorage.findIdentity(OrganizationIdentityProvider.NAME, remoteId);
       // if not the right mention then ignore
       if (identity != null && !mentions.contains(identity.getId())) {
