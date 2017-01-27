@@ -27,9 +27,18 @@ import org.exoplatform.social.core.storage.cache.model.key.ScopeCacheKey;
  * @version $Revision$
  */
 public class ScopeCacheSelector<T extends ScopeCacheKey, U> implements CachedObjectSelector<T, U> {
-  
+
+  private T key;
+
+  public ScopeCacheSelector() {
+  }
+
+  public ScopeCacheSelector(T key) {
+    this.key = key;
+  }
+
   public boolean select(final T key, final ObjectCacheInfo<? extends U> ocinfo) {
-    return ScopeCacheKey.getCurrentRepositoryName().equals(key.getScope());
+    return ScopeCacheKey.getCurrentRepositoryName().equals(key.getScope()) && (this.key == null || this.key.equals(key));
   }
 
   public void onSelect(final ExoCache<? extends T, ? extends U> exoCache, final T key, final ObjectCacheInfo<? extends U> ocinfo) throws Exception {
