@@ -355,6 +355,7 @@ public class CachedSpaceStorage implements SpaceStorage {
   public void deleteSpace(final String id) throws SpaceStorageException {
 
     //
+    Space space = getSpaceById(id);
     storage.deleteSpace(id);
 
     //
