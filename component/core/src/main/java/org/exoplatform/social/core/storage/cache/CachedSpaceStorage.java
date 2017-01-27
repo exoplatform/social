@@ -17,6 +17,10 @@
 
 package org.exoplatform.social.core.storage.cache;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.cache.ExoCache;
 import org.exoplatform.services.log.ExoLogger;
@@ -44,10 +48,6 @@ import org.exoplatform.social.core.storage.cache.model.key.SpaceType;
 import org.exoplatform.social.core.storage.cache.selector.IdentityCacheSelector;
 import org.exoplatform.social.core.storage.cache.selector.ScopeCacheSelector;
 import org.exoplatform.social.core.storage.impl.SpaceStorageImpl;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 /**
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
@@ -224,9 +224,22 @@ public class CachedSpaceStorage implements SpaceStorage {
       exoIdentitiesCache.select(new IdentityCacheSelector(SpaceIdentityProvider.NAME));
     }
     catch (Exception e) {
-      LOG.error(e);
+      LOG.error("Error deleting cache entries of provider type 'Space Identities'", e);
     }
 
+  }
+
+  void removeCacheEntry(String remoteId, SpaceType type, int offset, int limit) {
+    try {
+      SpaceFilterKey key = new SpaceFilterKey(remoteId, null, type);
+      ListSpacesKey listKey = new ListSpacesKey(key, offset, limit);
+      exoSpacesCache.select(new ScopeCacheSelector<ListSpacesKey, ListSpacesData>(listKey));
+      exoSpacesCountCache.select(new ScopeCacheSelector<SpaceFilterKey, IntegerData>(key));
+    }
+    catch (Exception e) {
+      LOG.error("Error deleting space cache entries with remoteId = '" + remoteId + "', type = '" + type + "', offset ='"
+          + offset + "', limit ='" + limit + "'", e);
+    }
   }
 
   void clearSpaceCache() {
@@ -236,7 +249,7 @@ public class CachedSpaceStorage implements SpaceStorage {
       exoSpacesCountCache.select(new ScopeCacheSelector<SpaceFilterKey, IntegerData>());
     }
     catch (Exception e) {
-      LOG.error(e);
+      LOG.error("Error deleting space caches", e);
     }
 
   }
@@ -342,7 +355,6 @@ public class CachedSpaceStorage implements SpaceStorage {
   public void deleteSpace(final String id) throws SpaceStorageException {
 
     //
-    Space space = storage.getSpaceById(id);
     storage.deleteSpace(id);
 
     //
@@ -1351,13 +1363,24 @@ public class CachedSpaceStorage implements SpaceStorage {
   @Override
   public void updateSpaceAccessed(String remoteId, Space space) throws SpaceStorageException {
     storage.updateSpaceAccessed(remoteId, space);
-    clearSpaceCache();
+
+    SpaceFilterKey key = new SpaceFilterKey(remoteId, new SpaceFilter(remoteId, null), SpaceType.LATEST_ACCESSED);
+    // this call is requesting 10 because it's already cached by previous calls (FROM UI layer)
+    // thus, this call will not request database.
+    ListSpacesKey listKey = new ListSpacesKey(key, 0, 10);
+    ListSpacesData listSpacesData = exoSpacesCache.get(listKey);
+    if(listSpacesData != null) {
+      if (listSpacesData.getIds() != null && !listSpacesData.getIds().isEmpty()
+          && !listSpacesData.getIds().get(0).getId().equals(space.getId())) {
+        removeCacheEntry(remoteId, SpaceType.LATEST_ACCESSED, 0, 10);
+      }
+    }
   }
 
   @Override
   public List<Space> getLastAccessedSpace(final SpaceFilter filter, final int offset, final int limit) throws SpaceStorageException {
     //
-    SpaceFilterKey key = new SpaceFilterKey(filter.getRemoteId(), filter, SpaceType.MEMBER);
+    SpaceFilterKey key = new SpaceFilterKey(filter.getRemoteId(), filter, SpaceType.LATEST_ACCESSED);
     ListSpacesKey listKey = new ListSpacesKey(key, offset, limit);
 
     //
