@@ -23,11 +23,13 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringEscapeUtils;
+
 import org.exoplatform.commons.chromattic.ChromatticManager;
 import org.exoplatform.commons.utils.CommonsUtils;
 import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.component.RequestLifeCycle;
+import org.exoplatform.portal.config.StorageException;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
@@ -44,6 +46,7 @@ import org.exoplatform.social.core.space.SpaceListAccess;
 import org.exoplatform.social.core.space.SpaceUtils;
 import org.exoplatform.social.core.space.impl.DefaultSpaceApplicationHandler;
 import org.exoplatform.social.core.space.model.Space;
+import org.exoplatform.social.core.storage.IdentityStorageException;
 import org.exoplatform.social.core.storage.api.IdentityStorage;
 import org.exoplatform.social.core.storage.impl.StorageUtils;
 import org.exoplatform.social.core.test.AbstractCoreTest;
@@ -170,14 +173,26 @@ public class SpaceServiceTest extends AbstractCoreTest {
     begin();
 
     for (Identity identity : tearDownUserList) {
-      identityStorage.deleteIdentity(identity);
+      try {
+        identityStorage.deleteIdentity(identity);
+      } catch (IdentityStorageException e) {
+        // It's expected on some identities that could be deleted in tests
+      }
     }
     for (Space space : tearDownSpaceList) {
       Identity spaceIdentity = identityStorage.findIdentity(SpaceIdentityProvider.NAME, space.getPrettyName());
       if (spaceIdentity != null) {
+        try {
         identityStorage.deleteIdentity(spaceIdentity);
+        } catch (IdentityStorageException e) {
+          // It's expected on some identities that could be deleted in tests
+        }
       }
-      spaceService.deleteSpace(space);
+      try {
+        spaceService.deleteSpace(space);
+      } catch (Exception e) {
+        // It's expected on some entities that could be deleted in tests
+      }
     }
     super.tearDown();
   }
@@ -188,8 +203,8 @@ public class SpaceServiceTest extends AbstractCoreTest {
    * @throws Exception
    */
   public void testGetAllSpaces() throws Exception {
-    tearDownSpaceList.add(populateData());
-    tearDownSpaceList.add(createMoreSpace("Space2"));
+    populateData();
+    createMoreSpace("Space2");
     assertEquals(2, spaceService.getAllSpaces().size());
   }
 
@@ -202,7 +217,7 @@ public class SpaceServiceTest extends AbstractCoreTest {
   public void testGetAllSpacesWithListAccess() throws Exception {
     int count = 20;
     for (int i = 0; i < count; i ++) {
-      tearDownSpaceList.add(this.getSpaceInstance(i));
+      this.getSpaceInstance(i);
     }
     ListAccess<Space> allSpaces = spaceService.getAllSpacesWithListAccess();
     assertNotNull("allSpaces must not be null", allSpaces);
@@ -220,7 +235,7 @@ public class SpaceServiceTest extends AbstractCoreTest {
   public void testGetSpacesByUserId() throws Exception {
     int count = 20;
     for (int i = 0; i < count; i ++) {
-      tearDownSpaceList.add(this.getSpaceInstance(i));
+      this.getSpaceInstance(i);
     }
     List<Space> memberSpaces = spaceService.getSpaces("raul");
     assertNotNull("memberSpaces must not be null", memberSpaces);
@@ -246,7 +261,6 @@ public class SpaceServiceTest extends AbstractCoreTest {
    */
   public void testGetSpaceByDisplayName() throws Exception {
     Space space = populateData();
-    tearDownSpaceList.add(space);
     Space gotSpace1 = spaceService.getSpaceByDisplayName("Space1");
 
     assertNotNull("gotSpace1 must not be null", gotSpace1);
@@ -257,7 +271,7 @@ public class SpaceServiceTest extends AbstractCoreTest {
   public void testGetSpaceByName() throws Exception {
     int count = 20;
     for (int i = 0; i < count; i ++) {
-      tearDownSpaceList.add(this.getSpaceInstance(i));
+      this.getSpaceInstance(i);
     }
     Space foundSpace = spaceService.getSpaceByName("my_space_10");
     assertNotNull("foundSpace must not be null", foundSpace);
@@ -282,7 +296,7 @@ public class SpaceServiceTest extends AbstractCoreTest {
   public void testGetSpaceByPrettyName() throws Exception {
     int count = 20;
     for (int i = 0; i < count; i ++) {
-      tearDownSpaceList.add(this.getSpaceInstance(i));
+      this.getSpaceInstance(i);
     }
     Space foundSpace = spaceService.getSpaceByPrettyName("my_space_10");
     assertNotNull("foundSpace must not be null", foundSpace);
@@ -304,8 +318,8 @@ public class SpaceServiceTest extends AbstractCoreTest {
    * @throws Exception
    */
   public void testGetSpacesByFirstCharacterOfName() throws Exception {
-    tearDownSpaceList.add(populateData());
-    tearDownSpaceList.add(createMoreSpace("Space2"));
+    populateData();
+    createMoreSpace("Space2");
     assertEquals(2, spaceService.getSpacesByFirstCharacterOfName("S").size());
   }
 
@@ -318,7 +332,7 @@ public class SpaceServiceTest extends AbstractCoreTest {
   public void testGetAllSpacesByFilterWithFirstCharacterOfSpaceName() throws Exception {
     int count = 20;
     for (int i = 0; i < count; i ++) {
-      tearDownSpaceList.add(this.getSpaceInstance(i));
+      this.getSpaceInstance(i);
     }
     ListAccess<Space> foundSpaceListAccess = spaceService.getAllSpacesByFilter(new SpaceFilter('m'));
     assertNotNull("foundSpaceListAccess must not be null", foundSpaceListAccess);
@@ -349,8 +363,8 @@ public class SpaceServiceTest extends AbstractCoreTest {
    * @throws Exception
    */
   public void testGetSpacesBySearchCondition() throws Exception {
-    tearDownSpaceList.add(populateData());
-    tearDownSpaceList.add(createMoreSpace("Space2"));
+    populateData();
+    createMoreSpace("Space2");
     assertEquals(2, spaceService.getSpacesBySearchCondition("Space").size());
     assertEquals(1, spaceService.getSpacesBySearchCondition("1").size());
   }
@@ -364,7 +378,7 @@ public class SpaceServiceTest extends AbstractCoreTest {
   public void testGetAllSpacesByFilterWithSpaceNameSearchCondition() throws Exception {
     int count = 20;
     for (int i = 0; i < count; i ++) {
-      tearDownSpaceList.add(this.getSpaceInstance(i));
+      this.getSpaceInstance(i);
     }
 
     ListAccess<Space> foundSpaceListAccess = spaceService.getAllSpacesByFilter(new SpaceFilter("my space"));
@@ -454,7 +468,7 @@ public class SpaceServiceTest extends AbstractCoreTest {
   public void testGetSpaceByGroupId() throws Exception {
     int count = 20;
     for (int i = 0; i < count; i ++) {
-      tearDownSpaceList.add(this.getSpaceInstance(i));
+      this.getSpaceInstance(i);
     }
     Space foundSpace = spaceService.getSpaceByGroupId("/space/space0");
     assertNotNull("foundSpace must not be null", foundSpace);
@@ -470,8 +484,7 @@ public class SpaceServiceTest extends AbstractCoreTest {
    */
   public void testGetSpaceById() throws Exception {
     Space space = populateData();
-    tearDownSpaceList.add(space);
-    tearDownSpaceList.add(createMoreSpace("Space2"));
+    createMoreSpace("Space2");
     assertEquals(space.getDisplayName(), spaceService.getSpaceById(space.getId()).getDisplayName());
   }
 
@@ -482,7 +495,6 @@ public class SpaceServiceTest extends AbstractCoreTest {
    */
   public void testGetSpaceByUrl() throws Exception {
     Space space = populateData();
-    tearDownSpaceList.add(space);
     assertEquals(space.getDisplayName(), spaceService.getSpaceByUrl("space1").getDisplayName());
   }
 
@@ -492,7 +504,7 @@ public class SpaceServiceTest extends AbstractCoreTest {
    * @throws Exception
    */
   public void testGetEditableSpaces() throws Exception {
-    tearDownSpaceList.add(populateData());
+    populateData();
     assertEquals(1, spaceService.getEditableSpaces("root").size());
   }
 
@@ -505,7 +517,7 @@ public class SpaceServiceTest extends AbstractCoreTest {
   public void testGetSettingableSpaces() throws Exception {
     int count = 20;
     for (int i = 0; i < count; i ++) {
-      tearDownSpaceList.add(this.getSpaceInstance(i));
+      this.getSpaceInstance(i);
     }
     ListAccess<Space> editableSpaceListAccess = spaceService.getSettingableSpaces("demo");
     assertNotNull("editableSpaceListAccess must not be null", editableSpaceListAccess);
@@ -541,7 +553,7 @@ public class SpaceServiceTest extends AbstractCoreTest {
   public void testGetSettingableSpacesByFilter() throws Exception {
     int count = 20;
     for (int i = 0; i < count; i ++) {
-      tearDownSpaceList.add(this.getSpaceInstance(i));
+      this.getSpaceInstance(i);
     }
     ListAccess<Space> editableSpaceListAccess = spaceService.getSettingabledSpacesByFilter("demo", new SpaceFilter("add"));
     assertNotNull("editableSpaceListAccess must not be null", editableSpaceListAccess);
@@ -598,7 +610,7 @@ public class SpaceServiceTest extends AbstractCoreTest {
    * @throws Exception
    */
   public void testGetInvitedSpaces() throws Exception {
-    tearDownSpaceList.add(populateData());
+    populateData();
     assertEquals(0, spaceService.getInvitedSpaces("paul").size());
     Space space = spaceService.getSpaceByDisplayName("Space1");
     spaceService.inviteMember(space, "paul");
@@ -615,7 +627,7 @@ public class SpaceServiceTest extends AbstractCoreTest {
   public void testGetInvitedSpacesWithListAccess() throws Exception {
     int count = 20;
     for (int i = 0; i < count; i ++) {
-      tearDownSpaceList.add(this.getSpaceInstance(i));
+      this.getSpaceInstance(i);
     }
     ListAccess<Space> invitedSpaces = spaceService.getInvitedSpacesWithListAccess("register1");
     assertNotNull("invitedSpaces must not be null", invitedSpaces);
@@ -642,7 +654,7 @@ public class SpaceServiceTest extends AbstractCoreTest {
   public void testGetInvitedSpacesByFilterWithSpaceNameSearchCondition() throws Exception {
     int count = 20;
     for (int i = 0; i < count; i ++) {
-      tearDownSpaceList.add(this.getSpaceInstance(i));
+      this.getSpaceInstance(i);
     }
     ListAccess<Space> invitedSpaces = spaceService.getInvitedSpacesByFilter("register1", new SpaceFilter("my space"));
     assertNotNull("invitedSpaces must not be null", invitedSpaces);
@@ -718,7 +730,7 @@ public class SpaceServiceTest extends AbstractCoreTest {
   public void testGetInvitedSpacesByFilterWithFirstCharacterOfSpaceName() throws Exception {
     int count = 20;
     for (int i = 0; i < count; i ++) {
-      tearDownSpaceList.add(this.getSpaceInstance(i));
+      this.getSpaceInstance(i);
     }
     ListAccess<Space> invitedSpaces = spaceService.getInvitedSpacesByFilter("register1", new SpaceFilter('m'));
     assertNotNull("invitedSpaces must not be null", invitedSpaces);
@@ -749,7 +761,7 @@ public class SpaceServiceTest extends AbstractCoreTest {
    * @throws Exception
    */
   public void testGetPublicSpaces() throws Exception {
-    tearDownSpaceList.add(populateData());
+    populateData();
     assertEquals(0, spaceService.getPublicSpaces("root").size());
   }
 
@@ -762,7 +774,7 @@ public class SpaceServiceTest extends AbstractCoreTest {
   public void testGetPublicSpacesWithListAccess() throws Exception {
     int count = 20;
     for (int i = 0; i < count; i ++) {
-      tearDownSpaceList.add(this.getSpaceInstance(i));
+      this.getSpaceInstance(i);
     }
     ListAccess<Space> foundSpaces = spaceService.getPublicSpacesWithListAccess("tom");
     assertNotNull("foundSpaces must not be null", foundSpaces);
@@ -801,7 +813,7 @@ public class SpaceServiceTest extends AbstractCoreTest {
   public void testGetPublicSpacesByFilterWithSpaceNameSearchCondition() throws Exception {
     int count = 20;
     for (int i = 0; i < count; i ++) {
-      tearDownSpaceList.add(this.getSpaceInstance(i));
+      this.getSpaceInstance(i);
     }
     String nameSpace = "my space";
     ListAccess<Space> foundSpaces = spaceService.getPublicSpacesByFilter("tom", new SpaceFilter(nameSpace));
@@ -874,7 +886,7 @@ public class SpaceServiceTest extends AbstractCoreTest {
   public void testGetPublicSpacesByFilterWithFirstCharacterOfSpaceName() throws Exception {
     int count = 10;
     for (int i = 0; i < count; i ++) {
-      tearDownSpaceList.add(this.getSpaceInstance(i));
+      this.getSpaceInstance(i);
     }
     ListAccess<Space> foundSpaces = spaceService.getPublicSpacesByFilter("stranger", new SpaceFilter('m'));
     assertNotNull("foundSpaces must not be null", foundSpaces);
@@ -923,7 +935,7 @@ public class SpaceServiceTest extends AbstractCoreTest {
   public void testGetAccessibleSpaces() throws Exception {
     int count = 20;
     for (int i = 0; i < count; i ++) {
-      tearDownSpaceList.add(this.getSpaceInstance(i));
+      this.getSpaceInstance(i);
     }
     List<Space> accessibleSpaces = spaceService.getAccessibleSpaces("demo");
     assertNotNull("accessibleSpaces must not be null", accessibleSpaces);
@@ -955,7 +967,7 @@ public class SpaceServiceTest extends AbstractCoreTest {
   public void testGetAccessibleSpacesWithListAccess() throws Exception {
     int count = 20;
     for (int i = 0; i < count; i ++) {
-      tearDownSpaceList.add(this.getSpaceInstance(i));
+      this.getSpaceInstance(i);
     }
     ListAccess<Space> accessibleSpaces = spaceService.getAccessibleSpacesWithListAccess("demo");
     assertNotNull("accessibleSpaces must not be null", accessibleSpaces);
@@ -1002,7 +1014,7 @@ public class SpaceServiceTest extends AbstractCoreTest {
   public void testGetAccessibleSpacesByFilterWithSpaceNameSearchCondition() throws Exception {
     int count = 20;
     for (int i = 0; i < count; i ++) {
-      tearDownSpaceList.add(this.getSpaceInstance(i));
+      this.getSpaceInstance(i);
     }
     ListAccess<Space> accessibleSpaces = spaceService.getAccessibleSpacesByFilter("demo", new SpaceFilter("my"));
     assertNotNull("accessibleSpaces must not be null", accessibleSpaces);
@@ -1085,7 +1097,7 @@ public class SpaceServiceTest extends AbstractCoreTest {
   public void testGetAccessibleSpacesByFilterWithFirstCharacterOfSpaceName() throws Exception {
     int count = 20;
     for (int i = 0; i < count; i ++) {
-      tearDownSpaceList.add(this.getSpaceInstance(i));
+      this.getSpaceInstance(i);
     }
     ListAccess<Space> accessibleSpaces = spaceService.getAccessibleSpacesByFilter("demo", new SpaceFilter('m'));
     assertNotNull("accessibleSpaces must not be null", accessibleSpaces);
@@ -1131,7 +1143,7 @@ public class SpaceServiceTest extends AbstractCoreTest {
   public void testGetSpaces() throws Exception {
     int count = 20;
     for (int i = 0; i < count; i ++) {
-      tearDownSpaceList.add(this.getSpaceInstance(i));
+      this.getSpaceInstance(i);
     }
 
     List<Space> memberSpaceListAccess = spaceService.getSpaces("raul");
@@ -1160,7 +1172,7 @@ public class SpaceServiceTest extends AbstractCoreTest {
   public void testGetMemberSpaces() throws Exception {
     int count = 20;
     for (int i = 0; i < count; i ++) {
-      tearDownSpaceList.add(this.getSpaceInstance(i));
+      this.getSpaceInstance(i);
     }
 
     ListAccess<Space> memberSpaceListAccess = spaceService.getMemberSpaces("raul");
@@ -1192,7 +1204,7 @@ public class SpaceServiceTest extends AbstractCoreTest {
   public void testGetMemberSpacesByFilter() throws Exception {
     int count = 20;
     for (int i = 0; i < count; i ++) {
-      tearDownSpaceList.add(this.getSpaceInstance(i));
+      this.getSpaceInstance(i);
     }
 
     ListAccess<Space> memberSpaceListAccess = spaceService.getMemberSpacesByFilter("raul", new SpaceFilter("add"));
@@ -1246,7 +1258,7 @@ public class SpaceServiceTest extends AbstractCoreTest {
    * @throws Exception
    */
   public void testGetPendingSpaces() throws Exception {
-    tearDownSpaceList.add(populateData());
+    populateData();
     Space space = spaceService.getSpaceByDisplayName("Space1");
     spaceService.requestJoin(space, "paul");
     assertEquals(true, spaceService.isPending(space, "paul"));
@@ -1261,7 +1273,7 @@ public class SpaceServiceTest extends AbstractCoreTest {
   public void testGetPendingSpacesWithListAccess() throws Exception {
     int count = 20;
     for (int i = 0; i < count; i ++) {
-      tearDownSpaceList.add(this.getSpaceInstance(i));
+      this.getSpaceInstance(i);
     }
     ListAccess<Space> foundSpaces = spaceService.getPendingSpacesWithListAccess("jame");
     assertNotNull("foundSpaces must not be null", foundSpaces);
@@ -1297,7 +1309,7 @@ public class SpaceServiceTest extends AbstractCoreTest {
   public void testGetPendingSpacesByFilterWithSpaceNameSearchCondition() throws Exception {
     int count = 20;
     for (int i = 0; i < count; i ++) {
-      tearDownSpaceList.add(this.getSpaceInstance(i));
+      this.getSpaceInstance(i);
     }
     String nameSpace = "my space";
     ListAccess<Space> foundSpaces = spaceService.getPendingSpacesByFilter("jame", new SpaceFilter(nameSpace));
@@ -1366,7 +1378,7 @@ public class SpaceServiceTest extends AbstractCoreTest {
   public void testGetPendingSpacesByFilterWithFirstCharacterOfSpaceName() throws Exception {
     int count = 20;
     for (int i = 0; i < count; i ++) {
-      tearDownSpaceList.add(this.getSpaceInstance(i));
+      this.getSpaceInstance(i);
     }
     ListAccess<Space> foundSpaces = spaceService.getPendingSpacesByFilter("jame", new SpaceFilter('m'));
     assertNotNull("foundSpaces must not be null", foundSpaces);
@@ -1399,8 +1411,8 @@ public class SpaceServiceTest extends AbstractCoreTest {
    * @throws Exception
    */
   public void testCreateSpace() throws Exception {
-    tearDownSpaceList.add(populateData());
-    tearDownSpaceList.add(createMoreSpace("Space2"));
+    populateData();
+    createMoreSpace("Space2");
     ListAccess<Space> spaceListAccess = spaceService.getAllSpacesWithListAccess();
     assertNotNull("spaceListAccess must not be null", spaceListAccess);
     assertEquals("spaceListAccess.getSize() must return: 2", 2, spaceListAccess.getSize());
@@ -1445,7 +1457,6 @@ public class SpaceServiceTest extends AbstractCoreTest {
    */
   public void testSaveSpace() throws Exception {
     Space space = this.getSpaceInstance(0);
-    tearDownSpaceList.add(space);
     String spaceDisplayName = space.getDisplayName();
     String spaceDescription = space.getDescription();
     String groupId = space.getGroupId();
@@ -1465,7 +1476,6 @@ public class SpaceServiceTest extends AbstractCoreTest {
    */
   public void testRenameSpace() throws Exception {
     Space space = this.getSpaceInstance(0);
-    tearDownSpaceList.add(space);
     
     Identity identity = new Identity(SpaceIdentityProvider.NAME, space.getPrettyName());
     identityStorage.saveIdentity(identity);
@@ -1524,7 +1534,6 @@ public class SpaceServiceTest extends AbstractCoreTest {
     Identity spaceIdentity = new Identity(SpaceIdentityProvider.NAME, space.getPrettyName());
     identityStorage.saveIdentity(spaceIdentity);
 
-    tearDownSpaceList.add(space);
     tearDownUserList.add(spaceIdentity);
 
     InputStream inputStream = getClass().getResourceAsStream("/eXo-Social.png");
@@ -1583,7 +1592,6 @@ public class SpaceServiceTest extends AbstractCoreTest {
    */
   public void testUpdateSpace() throws Exception {
     Space space = this.getSpaceInstance(0);
-    tearDownSpaceList.add(space);
     String spaceDisplayName = space.getDisplayName();
     String spaceDescription = space.getDescription();
     String groupId = space.getGroupId();
@@ -1613,7 +1621,6 @@ public class SpaceServiceTest extends AbstractCoreTest {
    */
   public void testAddPendingUser() throws Exception {
     Space space = this.getSpaceInstance(0);
-    tearDownSpaceList.add(space);
     int pendingUsersCount = space.getPendingUsers().length;
     assertFalse("ArrayUtils.contains(space.getPendingUsers(), newPendingUser.getRemoteId()) must be false",
                 ArrayUtils.contains(space.getPendingUsers(), newPendingUser.getRemoteId()));
@@ -1632,7 +1639,6 @@ public class SpaceServiceTest extends AbstractCoreTest {
    */
   public void testRemovePendingUser() throws Exception {
     Space space = this.getSpaceInstance(0);
-    tearDownSpaceList.add(space);
     int pendingUsersCount = space.getPendingUsers().length;
     assertFalse("ArrayUtils.contains(space.getPendingUsers(), newPendingUser.getRemoteId()) must be false",
                 ArrayUtils.contains(space.getPendingUsers(), newPendingUser.getRemoteId()));
@@ -1659,7 +1665,6 @@ public class SpaceServiceTest extends AbstractCoreTest {
    */
   public void testIsPendingUser() throws Exception {
     Space space = this.getSpaceInstance(0);
-    tearDownSpaceList.add(space);
     Space savedSpace = spaceService.getSpaceByDisplayName(space.getDisplayName());
     assertNotNull("savedSpace must not be null", savedSpace);
     assertTrue("spaceService.isPendingUser(savedSpace, \"jame\") must return true", spaceService.isPendingUser(savedSpace, "jame"));
@@ -1676,7 +1681,6 @@ public class SpaceServiceTest extends AbstractCoreTest {
    */
   public void testAddInvitedUser() throws Exception {
     Space space = this.getSpaceInstance(0);
-    tearDownSpaceList.add(space);
     Space savedSpace = spaceService.getSpaceByDisplayName(space.getDisplayName());
     assertNotNull("savedSpace must not be null", savedSpace);
     int invitedUsersCount = savedSpace.getInvitedUsers().length;
@@ -1698,7 +1702,6 @@ public class SpaceServiceTest extends AbstractCoreTest {
    */
   public void testRemoveInvitedUser() throws Exception {
     Space space = this.getSpaceInstance(0);
-    tearDownSpaceList.add(space);
     Space savedSpace = spaceService.getSpaceByDisplayName(space.getDisplayName());
     assertNotNull("savedSpace must not be null", savedSpace);
     int invitedUsersCount = savedSpace.getInvitedUsers().length;
@@ -1726,7 +1729,6 @@ public class SpaceServiceTest extends AbstractCoreTest {
    */
   public void testIsInvitedUser() throws Exception {
     Space space = this.getSpaceInstance(0);
-    tearDownSpaceList.add(space);
     Space savedSpace = spaceService.getSpaceByDisplayName(space.getDisplayName());
     assertNotNull("savedSpace must not be null", savedSpace);
     assertTrue("spaceService.isInvitedUser(savedSpace, \"register1\") must return true", spaceService.isInvitedUser(savedSpace, "register1"));
@@ -1764,7 +1766,6 @@ public class SpaceServiceTest extends AbstractCoreTest {
     space.setMembers(members);
 
     space = this.createSpaceNonInitApps(space, "demo", null);
-    tearDownSpaceList.add(space);
 
     //Space space = this.getSpaceInstance(0);
     Space savedSpace = spaceService.getSpaceByDisplayName(space.getDisplayName());
@@ -1805,7 +1806,6 @@ public class SpaceServiceTest extends AbstractCoreTest {
    */
   public void testIsManager() throws Exception {
     Space space = this.getSpaceInstance(0);
-    tearDownSpaceList.add(space);
     Space savedSpace = spaceService.getSpaceByDisplayName(space.getDisplayName());
     assertNotNull("savedSpace must not be null", savedSpace);
     assertTrue("spaceService.isManager(savedSpace, \"demo\") must return true", spaceService.isManager(savedSpace, "demo"));
@@ -1822,7 +1822,6 @@ public class SpaceServiceTest extends AbstractCoreTest {
    */
   public void testIsOnlyManager() throws Exception {
     Space space = this.getSpaceInstance(0);
-    tearDownSpaceList.add(space);
     Space savedSpace = spaceService.getSpaceByDisplayName(space.getDisplayName());
     assertNotNull("savedSpace must not be null", savedSpace);
     assertFalse("spaceService.isOnlyManager(savedSpace, \"tom\") must return false", spaceService.isOnlyManager(savedSpace, "tom"));
@@ -1847,7 +1846,6 @@ public class SpaceServiceTest extends AbstractCoreTest {
    */
   public void testHasSettingPermission() throws Exception {
     Space space = this.getSpaceInstance(0);
-    tearDownSpaceList.add(space);
     Space savedSpace = spaceService.getSpaceByDisplayName(space.getDisplayName());
     assertNotNull("savedSpace must not be null", savedSpace);
 
@@ -1937,7 +1935,6 @@ public class SpaceServiceTest extends AbstractCoreTest {
     space.setMembers(members);
 
     space = this.createSpaceNonInitApps(space, "demo", null);
-    tearDownSpaceList.add(space);
 
     Space savedSpace = spaceService.getSpaceByDisplayName(space.getDisplayName());
     assertNotNull("savedSpace must not be null", savedSpace);
@@ -1996,7 +1993,6 @@ public class SpaceServiceTest extends AbstractCoreTest {
     space.setMembers(members);
 
     space = this.createSpaceNonInitApps(space, "demo", null);
-    tearDownSpaceList.add(space);
 
     Space savedSpace = spaceService.getSpaceByDisplayName(space.getDisplayName());
     assertNotNull("savedSpace must not be null", savedSpace);
@@ -2038,7 +2034,6 @@ public class SpaceServiceTest extends AbstractCoreTest {
     space.setMembers(members);
 
     space = this.createSpaceNonInitApps(space, "demo", null);
-    tearDownSpaceList.add(space);
     Space savedSpace = spaceService.getSpaceByDisplayName(space.getDisplayName());
     assertNotNull("savedSpace must not be null", savedSpace);
 
@@ -2074,7 +2069,6 @@ public class SpaceServiceTest extends AbstractCoreTest {
    */
   public void testGetMembers() throws Exception {
     Space space = this.getSpaceInstance(0);
-    tearDownSpaceList.add(space);
     Space savedSpace = spaceService.getSpaceByDisplayName(space.getDisplayName());
     assertNotNull("savedSpace must not be null", savedSpace);
     assertEquals("spaceService.getMembers(savedSpace).size() must return: " + savedSpace.getMembers().length, savedSpace.getMembers().length, spaceService.getMembers(savedSpace).size());
@@ -2109,7 +2103,6 @@ public class SpaceServiceTest extends AbstractCoreTest {
     space.setMembers(members);
 
     space = this.createSpaceNonInitApps(space, "demo", null);
-    tearDownSpaceList.add(space);
 
     //Space space = this.getSpaceInstance(0);
     Space savedSpace = spaceService.getSpaceByDisplayName(space.getDisplayName());
@@ -2149,7 +2142,6 @@ public class SpaceServiceTest extends AbstractCoreTest {
    */
   public void testIsLeader() throws Exception {
     Space space = this.getSpaceInstance(0);
-    tearDownSpaceList.add(space);
     Space savedSpace = spaceService.getSpaceByDisplayName(space.getDisplayName());
     assertNotNull("savedSpace must not be null", savedSpace);
     assertTrue("spaceService.isLeader(savedSpace, \"demo\") must return true", spaceService.isLeader(savedSpace, "demo"));
@@ -2166,7 +2158,6 @@ public class SpaceServiceTest extends AbstractCoreTest {
    */
   public void testIsOnlyLeader() throws Exception {
     Space space = this.getSpaceInstance(0);
-    tearDownSpaceList.add(space);
     Space savedSpace = spaceService.getSpaceByDisplayName(space.getDisplayName());
     assertNotNull("savedSpace must not be null", savedSpace);
     assertFalse("spaceService.isOnlyLeader(savedSpace, \"tom\") must return false", spaceService.isOnlyLeader(savedSpace, "tom"));
@@ -2191,7 +2182,6 @@ public class SpaceServiceTest extends AbstractCoreTest {
    */
   public void testIsMember() throws Exception {
     Space space = this.getSpaceInstance(0);
-    tearDownSpaceList.add(space);
     Space savedSpace = spaceService.getSpaceByDisplayName(space.getDisplayName());
     assertNotNull("savedSpace must not be null", savedSpace);
 
@@ -2209,7 +2199,6 @@ public class SpaceServiceTest extends AbstractCoreTest {
    */
   public void testHasAccessPermission() throws Exception {
     Space space = this.getSpaceInstance(0);
-    tearDownSpaceList.add(space);
     Space savedSpace = spaceService.getSpaceByDisplayName(space.getDisplayName());
     assertNotNull("savedSpace must not be null", savedSpace);
 
@@ -2231,7 +2220,6 @@ public class SpaceServiceTest extends AbstractCoreTest {
    */
   public void testHasEditPermission() throws Exception {
     Space space = this.getSpaceInstance(0);
-    tearDownSpaceList.add(space);
     Space savedSpace = spaceService.getSpaceByDisplayName(space.getDisplayName());
     assertNotNull("savedSpace must not be null", savedSpace);
 
@@ -2253,7 +2241,6 @@ public class SpaceServiceTest extends AbstractCoreTest {
    */
   public void testIsInvited() throws Exception {
     Space space = this.getSpaceInstance(0);
-    tearDownSpaceList.add(space);
     Space savedSpace = spaceService.getSpaceByDisplayName(space.getDisplayName());
     assertNotNull("savedSpace must not be null", savedSpace);
 
@@ -2271,7 +2258,6 @@ public class SpaceServiceTest extends AbstractCoreTest {
    */
   public void testIsPending() throws Exception {
     Space space = this.getSpaceInstance(0);
-    tearDownSpaceList.add(space);
     Space savedSpace = spaceService.getSpaceByDisplayName(space.getDisplayName());
     assertNotNull("savedSpace must not be null", savedSpace);
 
@@ -2330,7 +2316,6 @@ public class SpaceServiceTest extends AbstractCoreTest {
    */
   public void testRequestJoin() throws Exception {
     Space space = this.getSpaceInstance(0);
-    tearDownSpaceList.add(space);
     int pendingUsersCount = space.getPendingUsers().length;
     assertFalse("ArrayUtils.contains(space.getPendingUsers(), newPendingUser.getRemoteId()) must be false",
                 ArrayUtils.contains(space.getPendingUsers(), newPendingUser.getRemoteId()));
@@ -2350,7 +2335,6 @@ public class SpaceServiceTest extends AbstractCoreTest {
    */
   public void testRevokeRequestJoin() throws Exception {
     Space space = this.getSpaceInstance(0);
-    tearDownSpaceList.add(space);
     int pendingUsersCount = space.getPendingUsers().length;
     assertFalse("ArrayUtils.contains(space.getPendingUsers(), newPendingUser) must be false",
                 ArrayUtils.contains(space.getPendingUsers(), newPendingUser.getRemoteId()));
@@ -2376,7 +2360,6 @@ public class SpaceServiceTest extends AbstractCoreTest {
    */
   public void testInviteMember() throws Exception {
     Space space = this.getSpaceInstance(0);
-    tearDownSpaceList.add(space);
     Space savedSpace = spaceService.getSpaceByDisplayName(space.getDisplayName());
     assertNotNull("savedSpace must not be null", savedSpace);
     int invitedUsersCount = savedSpace.getInvitedUsers().length;
@@ -2398,7 +2381,6 @@ public class SpaceServiceTest extends AbstractCoreTest {
    */
   public void testRevokeInvitation() throws Exception {
     Space space = this.getSpaceInstance(0);
-    tearDownSpaceList.add(space);
     Space savedSpace = spaceService.getSpaceByDisplayName(space.getDisplayName());
     assertNotNull("savedSpace must not be null", savedSpace);
     int invitedUsersCount = savedSpace.getInvitedUsers().length;
@@ -2421,8 +2403,6 @@ public class SpaceServiceTest extends AbstractCoreTest {
   public void testGetVisibleSpacesWithCondition() throws Exception {
     Space sp1 = this.createSpace("space test", "demo");
     Space sp2 = this.createSpace("space 11", "demo");
-    tearDownSpaceList.add(sp1);
-    tearDownSpaceList.add(sp2);
     
     SpaceListAccess list = spaceService.getVisibleSpacesWithListAccess("demo", new SpaceFilter("space test"));
     assertEquals(1, list.getSize());
@@ -2448,7 +2428,6 @@ public class SpaceServiceTest extends AbstractCoreTest {
     space1.setType(DefaultSpaceApplicationHandler.NAME);
     space1.setRegistration(Space.OPEN);
     createSpaceNonInitApps(space1, "mary", null);
-    tearDownSpaceList.add(space1);
     
     Space space2 = new Space();
     space2.setDisplayName("ça c'est la vie");
@@ -2458,7 +2437,6 @@ public class SpaceServiceTest extends AbstractCoreTest {
     space2.setType(DefaultSpaceApplicationHandler.NAME);
     space2.setRegistration(Space.OPEN);
     createSpaceNonInitApps(space2, "mary", null);
-    tearDownSpaceList.add(space2);
     
     Space space3 = new Space();
     space3.setDisplayName("Đây là không gian tiếng Việt");
@@ -2468,7 +2446,6 @@ public class SpaceServiceTest extends AbstractCoreTest {
     space3.setType(DefaultSpaceApplicationHandler.NAME);
     space3.setRegistration(Space.OPEN);
     createSpaceNonInitApps(space3, "mary", null);
-    tearDownSpaceList.add(space3);
     
     SpaceListAccess list = spaceService.getVisibleSpacesWithListAccess("root", new SpaceFilter("広いニーズ"));
     assertEquals(1, list.getSize());
@@ -2524,7 +2501,6 @@ public class SpaceServiceTest extends AbstractCoreTest {
     space.setMembers(members);
 
     space = this.createSpaceNonInitApps(space, "demo", null);
-    tearDownSpaceList.add(space);
 
     Space savedSpace = spaceService.getSpaceByDisplayName(space.getDisplayName());
     assertNotNull("savedSpace must not be null", savedSpace);
@@ -2556,7 +2532,6 @@ public class SpaceServiceTest extends AbstractCoreTest {
    */
   public void testDenyInvitation() throws Exception {
     Space space = this.getSpaceInstance(0);
-    tearDownSpaceList.add(space);
     Space savedSpace = spaceService.getSpaceByDisplayName(space.getDisplayName());
     assertNotNull("savedSpace must not be null", savedSpace);
 
@@ -2604,7 +2579,6 @@ public class SpaceServiceTest extends AbstractCoreTest {
     space.setMembers(members);
 
     space = this.createSpaceNonInitApps(space, "demo", null);
-    tearDownSpaceList.add(space);
 
     Space savedSpace = spaceService.getSpaceByDisplayName(space.getDisplayName());
     assertNotNull("savedSpace must not be null", savedSpace);
@@ -2636,7 +2610,6 @@ public class SpaceServiceTest extends AbstractCoreTest {
    */
   public void testDeclineRequest() throws Exception {
     Space space = this.getSpaceInstance(0);
-    tearDownSpaceList.add(space);
     int pendingUsersCount = space.getPendingUsers().length;
     assertFalse("ArrayUtils.contains(space.getPendingUsers(), newPendingUser) must be false",
                 ArrayUtils.contains(space.getPendingUsers(), newPendingUser.getRemoteId()));
@@ -2737,7 +2710,6 @@ public class SpaceServiceTest extends AbstractCoreTest {
       
       spaceService.saveSpace(listSpace[i], true);
       StorageUtils.persist();
-      tearDownSpaceList.add(listSpace[i]);
     }
     
     //visible with remoteId = 'demo'  return 10 spaces
@@ -2774,7 +2746,6 @@ public class SpaceServiceTest extends AbstractCoreTest {
       
       spaceService.saveSpace(listSpace[i], true);
       StorageUtils.persist();
-      tearDownSpaceList.add(listSpace[i]);
     }
     
     //visible with remoteId = 'demo'  return 10 spaces
@@ -2817,7 +2788,6 @@ public class SpaceServiceTest extends AbstractCoreTest {
       
       spaceService.saveSpace(listSpace[i], true);
       StorageUtils.persist();
-      tearDownSpaceList.add(listSpace[i]);
     }
     
     //visible with remoteId = 'demo'  return 10 spaces
@@ -2853,8 +2823,8 @@ public class SpaceServiceTest extends AbstractCoreTest {
   }
 
   public void testGetLastSpaces() throws Exception {
-    tearDownSpaceList.add(populateData());
-    tearDownSpaceList.add(createMoreSpace("Space2"));
+    populateData();
+    createMoreSpace("Space2");
     List<Space> lastSpaces = spaceService.getLastSpaces(1);
     assertEquals(1, lastSpaces.size());
     Space sp1 = lastSpaces.get(0);
@@ -2911,6 +2881,7 @@ public class SpaceServiceTest extends AbstractCoreTest {
       space1.setMembers(members);
 
       spaceService.saveSpace(space1, true);
+      tearDownSpaceList.add(space1);
       return space1;
       
     } finally {
@@ -2936,6 +2907,7 @@ public class SpaceServiceTest extends AbstractCoreTest {
     space.setManagers(managers);
     space.setMembers(members);
     spaceService.saveSpace(space, true);
+    tearDownSpaceList.add(space);
     return space;
     } finally {
       StorageUtils.persist();
@@ -2972,6 +2944,7 @@ public class SpaceServiceTest extends AbstractCoreTest {
       space.setMembers(members);
       space.setUrl(space.getPrettyName());
       this.spaceService.saveSpace(space, true);
+      tearDownSpaceList.add(space);
       return space;
     } finally {
       StorageUtils.persist();
@@ -3004,6 +2977,7 @@ public class SpaceServiceTest extends AbstractCoreTest {
       space.setManagers(managers);
       space.setMembers(members);
       space.setUrl(space.getPrettyName());
+      tearDownSpaceList.add(space);
       return space;
     } finally {
       StorageUtils.persist();
@@ -3037,11 +3011,11 @@ public class SpaceServiceTest extends AbstractCoreTest {
       space.setPendingUsers(pendingUsers);
       space.setManagers(managers);
       space.setMembers(members);
+      tearDownSpaceList.add(space);
       return space;
     } finally {
       StorageUtils.persist();
     }
-    
   }
 
   private Space createMoreSpace(String spaceName) throws Exception {
@@ -3060,7 +3034,7 @@ public class SpaceServiceTest extends AbstractCoreTest {
       space2.setPriority("2");
 
       spaceService.saveSpace(space2, true);
-
+      tearDownSpaceList.add(space2);
       return space2;
     } finally {
       StorageUtils.persist();
