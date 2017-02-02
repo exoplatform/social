@@ -91,7 +91,6 @@ public class SocialMembershipListenerImpl extends MembershipEventListener {
       Space space = spaceService.getSpaceByGroupId(m.getGroupId());
       //TODO A case to confirm: will we create a new space here when a new group is created via organization portlet
       if (space != null) {
-        space.setEditor(ConversationState.getCurrent().getIdentity().getUserId());
         String userName = m.getUserName();
         if (acl.getAdminMSType().equalsIgnoreCase(m.getMembershipType())) {
           if (spaceService.isManager(space, userName)) {
