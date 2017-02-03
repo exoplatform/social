@@ -63,7 +63,7 @@ public class SpaceMembershipRestResourcesV1 implements SpaceMembershipRestResour
   private static final String SPACE_PREFIX = "/spaces/";
   
   private enum MembershipType {
-    ALL, PENDING, APPROVED
+    ALL, PENDING, APPROVED, IGNORED
   }
   
   public SpaceMembershipRestResourcesV1(){
@@ -163,32 +163,39 @@ public class SpaceMembershipRestResourcesV1 implements SpaceMembershipRestResour
     if (model == null || model.getUser() == null || model.getSpace() == null) {
       throw new WebApplicationException(Response.Status.UNAUTHORIZED);
     }
+    Response response;
     String user = model.getUser();
     String space = model.getSpace();
     String authenticatedUser = ConversationState.getCurrent().getIdentity().getUserId();
     //
     SpaceService spaceService = CommonsUtils.getService(SpaceService.class);
+    IdentityManager identityManager = CommonsUtils.getService(IdentityManager.class);
     if (space == null || spaceService.getSpaceByDisplayName(space) == null) {
       throw new WebApplicationException(Response.Status.UNAUTHORIZED);
     }
     Space givenSpace = spaceService.getSpaceByDisplayName(space);
-    
-    IdentityManager identityManager = CommonsUtils.getService(IdentityManager.class);
-    if (user == null || identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, user, true) == null) {
-      throw new WebApplicationException(Response.Status.UNAUTHORIZED);
-    }
-    
-    if (RestUtils.isMemberOfAdminGroup() || spaceService.isManager(givenSpace, authenticatedUser)
-        || (authenticatedUser.equals(user) && givenSpace.getRegistration().equals(Space.OPEN))) {
-      spaceService.addMember(givenSpace, user);
-      if ("manager".equals(model.getRole())) {
-        spaceService.setManager(givenSpace, user, true);
+    if (!(MembershipType.IGNORED.name().equals(model.getStatus()))) {
+      if (user == null || identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, user, true) == null) {
+        throw new WebApplicationException(Response.Status.UNAUTHORIZED);
       }
+
+      if (RestUtils.isMemberOfAdminGroup() || spaceService.isManager(givenSpace, authenticatedUser)
+          || (authenticatedUser.equals(user) && givenSpace.getRegistration().equals(Space.OPEN))) {
+        spaceService.addMember(givenSpace, user);
+        if ("manager".equals(model.getRole())) {
+          spaceService.setManager(givenSpace, user, true);
+        }
+      } else {
+        throw new WebApplicationException(Response.Status.UNAUTHORIZED);
+      }
+      SpaceMembershipEntity membershipEntity = EntityBuilder.buildEntityFromSpaceMembership(givenSpace, user, "", uriInfo.getPath(), expand);
+      response = EntityBuilder.getResponse(membershipEntity, uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
     } else {
-      throw new WebApplicationException(Response.Status.UNAUTHORIZED);
+      SpaceMembershipEntity membershipEntity = EntityBuilder.createSpaceMembershipForIgnoredStatus(givenSpace, user, "", uriInfo.getPath(), expand);
+      spaceService.setIgnored(givenSpace.getId(), user);
+      response = EntityBuilder.getResponse(membershipEntity, uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
     }
-    SpaceMembershipEntity membershipEntity = EntityBuilder.buildEntityFromSpaceMembership(givenSpace, user, "", uriInfo.getPath(), expand);
-    return EntityBuilder.getResponse(membershipEntity, uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
+    return response;
   }
   
   @GET

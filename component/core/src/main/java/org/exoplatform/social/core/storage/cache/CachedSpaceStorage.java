@@ -161,7 +161,7 @@ public class CachedSpaceStorage implements SpaceStorage {
   /**
    * Build the ids from the space identity id list.
    *
-   * @param spaces spaces
+   * @param identities identities
    * @return identities
    */
   private ListSpacesData buildListIdentityIds(List<String> identities) {
@@ -366,6 +366,26 @@ public class CachedSpaceStorage implements SpaceStorage {
     //
     getCachedActivityStorage().clearCache();
 
+  }
+
+  @Override
+  public void ignoreSpace(String spaceId, String userId) {
+    storage.ignoreSpace(spaceId, userId);
+    exoSpaceSimpleCache.remove(new SpaceKey(spaceId));
+    SpaceData spaceData = exoSpaceCache.remove(new SpaceKey(spaceId));
+    if (spaceData != null) {
+      Space space = spaceData.build();
+      clearSpaceCache();
+      clearIdentityCache();
+      if (space != null) {
+        cleanRef(space);
+      }
+    }
+  }
+
+  @Override
+  public boolean isSpaceIgnored(String spaceId, String userId) {
+    return storage.isSpaceIgnored(spaceId, userId);
   }
 
   /**

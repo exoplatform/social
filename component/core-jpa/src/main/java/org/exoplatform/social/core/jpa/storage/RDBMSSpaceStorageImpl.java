@@ -425,6 +425,28 @@ public class RDBMSSpaceStorageImpl extends SpaceStorageImpl implements SpaceStor
   }
 
   @Override
+  public void ignoreSpace(String spaceId, String userId) {
+    SpaceMemberEntity entity = spaceMemberDAO.getSpaceMemberShip(userId, Long.parseLong(spaceId), null);
+    SpaceEntity spaceEntity = spaceDAO.find(Long.parseLong(spaceId));
+    if (entity == null) {
+      entity = new SpaceMemberEntity();
+      entity.setSpace(spaceEntity);
+      entity.setUserId(userId);
+      entity.setStatus(Status.IGNORED);
+      spaceMemberDAO.create(entity);
+    } else {
+      entity.setStatus(Status.IGNORED);
+      spaceMemberDAO.update(entity);
+    }
+  }
+
+  @Override
+  public boolean isSpaceIgnored(String spaceId, String userId) {
+    SpaceMemberEntity entity = spaceMemberDAO.getSpaceMemberShip(userId, Long.parseLong(spaceId), Status.IGNORED);
+    return entity != null;
+  }
+  
+  @Override
   @ExoTransactional
   public void renameSpace(String remoteId, Space space, String newDisplayName) throws SpaceStorageException {
     SpaceEntity entity;
@@ -493,7 +515,7 @@ public class RDBMSSpaceStorageImpl extends SpaceStorageImpl implements SpaceStor
   @Override
   @ExoTransactional
   public void updateSpaceAccessed(String remoteId, Space space) throws SpaceStorageException {
-    SpaceMemberEntity member = spaceMemberDAO.getMember(remoteId, Long.parseLong(space.getId()));
+    SpaceMemberEntity member = spaceMemberDAO.getSpaceMemberShip(remoteId, Long.parseLong(space.getId()), Status.MEMBER);
     if (member != null) {
       member.setLastAccess(new Date());
       // consider visited if access after create time more than 2s
