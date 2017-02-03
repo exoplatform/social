@@ -388,6 +388,39 @@ public class EntityBuilder {
     return infos;
   }
 
+  /**
+   * update the SpaceMemberShip between the user and the space as ignored and then update also the MemberShipType used in SpaceMembershipRestResourcesV1.java
+   *
+   * @param space
+   * @param userId
+   * @param type
+   * @param restPath
+   * @param expand
+   * @return
+   */
+
+  public static SpaceMembershipEntity createSpaceMembershipForIgnoredStatus(Space space, String userId, String type, String restPath, String expand) {
+    String id = space.getPrettyName() + ":" + userId + ":" + type;
+    SpaceMembershipEntity spaceMembership = new SpaceMembershipEntity(id);
+    spaceMembership.setHref(RestUtils.getRestUrl(SPACES_MEMBERSHIP_TYPE, id, restPath));
+    LinkEntity userEntity, spaceEntity;
+    if (USERS_TYPE.equals(expand)) {
+      userEntity = new LinkEntity(buildEntityProfile(userId, restPath, ""));
+    } else {
+      userEntity = new LinkEntity(RestUtils.getRestUrl(USERS_TYPE, userId, restPath));
+    }
+    spaceMembership.setDataUser(userEntity);
+    if (SPACES_TYPE.equals(expand)) {
+      spaceEntity = new LinkEntity(buildEntityProfile(userId, restPath, ""));
+    } else {
+      spaceEntity = new LinkEntity(RestUtils.getRestUrl(SPACES_TYPE, space.getId(), restPath));
+    }
+    spaceMembership.setDataSpace(spaceEntity);
+    spaceMembership.setRole(type);
+    spaceMembership.setStatus("ignored");
+    return spaceMembership;
+  }
+
   private static DataEntity getActivityOwner(Identity owner, String restPath) {
     BaseEntity mentionEntity = new BaseEntity(owner.getId());
     mentionEntity.setHref(RestUtils.getRestUrl(USERS_TYPE, owner.getRemoteId(), restPath));

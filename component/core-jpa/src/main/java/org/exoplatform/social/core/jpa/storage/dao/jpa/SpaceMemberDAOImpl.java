@@ -24,11 +24,15 @@ import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 
 import org.exoplatform.commons.persistence.impl.GenericDAOJPAImpl;
+import org.exoplatform.services.log.ExoLogger;
+import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.jpa.storage.dao.SpaceMemberDAO;
 import org.exoplatform.social.core.jpa.storage.entity.SpaceEntity;
 import org.exoplatform.social.core.jpa.storage.entity.SpaceMemberEntity;
 
 public class SpaceMemberDAOImpl extends GenericDAOJPAImpl<SpaceMemberEntity, Long> implements SpaceMemberDAO {
+
+  private static final Log LOG = ExoLogger.getLogger(SpaceMemberDAOImpl.class);
 
   @Override
   public void deleteBySpace(SpaceEntity entity) {
@@ -38,15 +42,38 @@ public class SpaceMemberDAOImpl extends GenericDAOJPAImpl<SpaceMemberEntity, Lon
   }
 
   @Override
-  public SpaceMemberEntity getMember(String remoteId, Long spaceId) {
-    TypedQuery<SpaceMemberEntity> query = getEntityManager().createNamedQuery("SpaceMember.getMember", SpaceMemberEntity.class);
-    query.setParameter("userId", remoteId);
-    query.setParameter("spaceId", spaceId);
-    query.setParameter("status", SpaceMemberEntity.Status.MEMBER);
-    try {
-      return query.getSingleResult();
-    } catch (NoResultException ex) {
-      return null;
+  public SpaceMemberEntity getSpaceMemberShip(String remoteId, Long spaceId, SpaceMemberEntity.Status status) throws IllegalArgumentException {
+    if (status == null) {
+      TypedQuery<SpaceMemberEntity> query = getEntityManager().createNamedQuery("SpaceMember.getSpaceMemberShip", SpaceMemberEntity.class);
+      query.setParameter("userId", remoteId);
+      query.setParameter("spaceId", spaceId);
+      try {
+        List<SpaceMemberEntity> memberEntities = query.getResultList();
+        if (memberEntities.size() > 1) {
+          LOG.warn("we have found more than one result");
+          return memberEntities.get(0);
+        } else {
+          return query.getSingleResult();
+        }
+      } catch (NoResultException ex) {
+        return null;
+      }
+    } else {
+      TypedQuery<SpaceMemberEntity> query = getEntityManager().createNamedQuery("SpaceMember.getMember", SpaceMemberEntity.class);
+      query.setParameter("userId", remoteId);
+      query.setParameter("spaceId", spaceId);
+      query.setParameter("status", status);
+      try {
+        List<SpaceMemberEntity> memberEntities = query.getResultList();
+        if (memberEntities.size() > 1) {
+          LOG.warn("we have found more than one result");
+          return memberEntities.get(0);
+        } else {
+          return query.getSingleResult();
+        }
+      } catch (NoResultException ex) {
+        return null;
+      }
     }
   }
 

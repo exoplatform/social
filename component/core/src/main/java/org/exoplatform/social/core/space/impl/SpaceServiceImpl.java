@@ -818,6 +818,21 @@ public class SpaceServiceImpl implements SpaceService {
   /**
    * {@inheritDoc}
    */
+  public boolean isIgnored(Space space, String userId) {
+    boolean ignoredMember = spaceStorage.isSpaceIgnored(space.getId(), userId);
+    return ignoredMember;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  public void setIgnored(String spaceId, String userId) {
+    spaceStorage.ignoreSpace(spaceId, userId);
+  }
+
+  /**
+   * {@inheritDoc}
+   */
   public void installApplication(String spaceId, String appId) throws SpaceException {
     installApplication(getSpaceById(spaceId), appId);
   }

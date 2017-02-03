@@ -106,6 +106,17 @@ public class SynchronizedSpaceStorage extends SpaceStorageImpl {
 
   }
 
+  @Override
+  public boolean isSpaceIgnored(String spaceId, String userId) {
+    boolean created = startSynchronization();
+    try {
+      return super.isSpaceIgnored(spaceId, userId);
+    }
+    finally {
+      stopSynchronization(created);
+    }
+  }
+
   /**
    * {@inheritDoc}
    */
