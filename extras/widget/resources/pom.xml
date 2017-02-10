@@ -22,7 +22,7 @@
   <parent>
     <artifactId>social-extras-widget</artifactId>
     <groupId>org.exoplatform.social</groupId>
-    <version>4.5.x-SNAPSHOT</version>
+    <version>5.0.x-SNAPSHOT</version>
   </parent>
   <groupId>org.exoplatform.social</groupId>
   <artifactId>social-extras-widget-resources</artifactId>
@@ -31,7 +31,7 @@
   <description>eXo Social Widget (Resources)</description>
   <dependencies>
     <dependency>
-      <groupId>org.gatein.wci</groupId>
+      <groupId>org.exoplatform.gatein.wci</groupId>
       <artifactId>wci-wci</artifactId>
       <scope>runtime</scope>
     </dependency>
