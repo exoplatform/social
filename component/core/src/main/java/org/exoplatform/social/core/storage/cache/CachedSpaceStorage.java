@@ -343,6 +343,7 @@ public class CachedSpaceStorage implements SpaceStorage {
     exoSpaceCache.remove(new SpaceKey(space.getId()));
     clearSpaceCache();
     clearIdentityCache();
+    cleanRef(space);
     exoRefSpaceCache.remove(new SpaceRefKey(oldDisplayName));
     exoRefSpaceCache.remove(new SpaceRefKey(null, oldPrettyName));
     exoRefSpaceCache.remove(new SpaceRefKey(null, null, space.getGroupId()));
