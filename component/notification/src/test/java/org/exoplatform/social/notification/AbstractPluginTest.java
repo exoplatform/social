@@ -19,6 +19,7 @@ package org.exoplatform.social.notification;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import org.exoplatform.commons.api.notification.NotificationContext;
 import org.exoplatform.commons.api.notification.channel.AbstractChannel;
@@ -54,7 +55,9 @@ import org.exoplatform.social.notification.plugin.SpaceInvitationPlugin;
  * Aug 20, 2013  
  */
 public abstract class AbstractPluginTest extends AbstractCoreTest {
-  
+
+  protected Locale initialDefaultLocale;
+
   protected UserSettingService userSettingService;
   
   protected List<ExoSocialActivity> tearDownActivityList;
@@ -68,7 +71,10 @@ public abstract class AbstractPluginTest extends AbstractCoreTest {
   protected void setUp() throws Exception {
     super.setUp();
     userSettingService = Utils.getService(UserSettingService.class);
-    
+
+    // set default locale to en (used for notification wording) to have deterministic tests
+    initialDefaultLocale = Locale.getDefault();
+    Locale.setDefault(new Locale("en", "US"));
     
     rootIdentity = identityManager.getOrCreateIdentity("organization", "root", true);
     johnIdentity = identityManager.getOrCreateIdentity("organization", "john", true);
@@ -118,7 +124,11 @@ public abstract class AbstractPluginTest extends AbstractCoreTest {
     //
     turnON(getPlugin());
     turnFeatureOn();
-    
+
+    if(initialDefaultLocale != null) {
+      Locale.setDefault(initialDefaultLocale);
+    }
+
     super.tearDown();
   }
   
