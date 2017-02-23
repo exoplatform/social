@@ -164,7 +164,9 @@ public class CachedActivityStorage implements ActivityStorage {
         continue;
       }
       ActivityKey k = new ActivityKey(a.getId());
-      exoActivityCache.put(k, new ActivityData(a));
+      if(exoActivityCache.get(k) == null) {
+        exoActivityCache.put(k, new ActivityData(a));
+      }
       data.add(k);
     }
     return new ListActivitiesData(data);

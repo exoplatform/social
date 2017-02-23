@@ -25,6 +25,7 @@ package org.exoplatform.social.core.storage.cache.model.key;
  * @version $Revision$
  */
 public class RelationshipCountKey <T> extends ScopeCacheKey {
+  private static final long serialVersionUID = -1032134830535876736L;
 
   private final T key;
 
@@ -51,7 +52,7 @@ public class RelationshipCountKey <T> extends ScopeCacheKey {
       return false;
     }
 
-    RelationshipCountKey that = (RelationshipCountKey) o;
+    RelationshipCountKey<?> that = (RelationshipCountKey<?>) o;
 
     if (key != null ? !key.equals(that.key) : that.key != null) {
       return false;

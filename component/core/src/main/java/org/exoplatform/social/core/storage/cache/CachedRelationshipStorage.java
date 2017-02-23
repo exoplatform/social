@@ -161,7 +161,9 @@ public class CachedRelationshipStorage extends AbstractStorage implements Relati
     List<IdentityKey> data = new ArrayList<IdentityKey>();
     for (Identity i : identities) {
       IdentityKey k = new IdentityKey(i);
-      exoIdentityCache.put(k, new IdentityData(i));
+      if(exoIdentityCache.get(k) == null) {
+        exoIdentityCache.put(k, new IdentityData(i));
+      }
       data.add(new IdentityKey(i));
     }
     return new ListIdentitiesData(data);
@@ -355,11 +357,9 @@ public class CachedRelationshipStorage extends AbstractStorage implements Relati
             Relationship got = storage.getRelationship(idFirst, idLast);
             if (got != null) {
               RelationshipKey k = new RelationshipKey(got.getId());
-              exoRelationshipByIdentityCache.put(key, k);
               return k;
             }
             else {
-              exoRelationshipByIdentityCache.put(key, CachedRelationshipStorage.relationshipNotFoundKey());
               return CachedRelationshipStorage.relationshipNotFoundKey();
             }
           }

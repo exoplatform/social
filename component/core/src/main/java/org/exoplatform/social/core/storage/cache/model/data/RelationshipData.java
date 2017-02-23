@@ -26,6 +26,7 @@ import org.exoplatform.social.core.relationship.model.Relationship;
  * @version $Revision$
  */
 public class RelationshipData implements CacheData<Relationship> {
+  private static final long serialVersionUID = -4556401100496633230L;
 
   private final String id;
 

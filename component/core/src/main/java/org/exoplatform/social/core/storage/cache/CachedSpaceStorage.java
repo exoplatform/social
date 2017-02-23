@@ -151,7 +151,7 @@ public class CachedSpaceStorage implements SpaceStorage {
 
     List<SpaceKey> data = new ArrayList<SpaceKey>();
     for (Space s : spaces) {
-      SpaceKey k = putSpaceInCache(s);
+      SpaceKey k = putSpaceInCacheIfNotExists(s);
       data.add(k);
     }
     return new ListSpacesData(data);
@@ -185,7 +185,7 @@ public class CachedSpaceStorage implements SpaceStorage {
 
     List<SpaceKey> data = new ArrayList<SpaceKey>();
     for (Space s : spaces) {
-      SpaceKey k = putSpaceInCache(s);
+      SpaceKey k = putSpaceInCacheIfNotExists(s);
       data.add(k);
     }
     return new ListSpacesData(data);
@@ -268,7 +268,7 @@ public class CachedSpaceStorage implements SpaceStorage {
           public SpaceKey execute() {
             Space space = storage.getSpaceByDisplayName(spaceDisplayName);
             if (space != null) {
-              return putSpaceInCache(space);
+              return putSpaceInCacheIfNotExists(space);
             }
             else {
               return SpaceKey.NULL_OBJECT;
@@ -278,7 +278,7 @@ public class CachedSpaceStorage implements SpaceStorage {
         refKey);
 
     //
-    if (key != null && key != SpaceKey.NULL_OBJECT) {
+    if (key != null && key != SpaceKey.NULL_OBJECT && key.getId() != null) {
       return getSpaceById(key.getId());
     }
     else {
@@ -1221,7 +1221,7 @@ public class CachedSpaceStorage implements SpaceStorage {
           public SpaceData execute() {
             Space space = storage.getSpaceById(id);
             if (space != null) {
-              putSpaceInCache(space);
+              putSpaceInCacheIfNotExists(space);
               return new SpaceData(space);
             }
             else {
@@ -1252,7 +1252,7 @@ public class CachedSpaceStorage implements SpaceStorage {
     if (data != null) {
       Space s = data.build();
       if (exoSpaceSimpleCache.get(key) == null) {
-        putSpaceInCache(s);
+        putSpaceInCacheIfNotExists(s);
       }
       
       return s;
@@ -1264,7 +1264,7 @@ public class CachedSpaceStorage implements SpaceStorage {
           public SpaceSimpleData execute() {
             Space space = storage.getSpaceSimpleById(id);
             if (space != null) {
-              putSpaceInCache(space);
+              putSpaceInCacheIfNotExists(space);
               return new SpaceSimpleData(space);
             }
             else {
@@ -1297,7 +1297,7 @@ public class CachedSpaceStorage implements SpaceStorage {
           public SpaceKey execute() {
             Space space = storage.getSpaceByPrettyName(spacePrettyName);
             if (space != null) {
-              return putSpaceInCache(space);
+              return putSpaceInCacheIfNotExists(space);
             }
             else {
               return SpaceKey.NULL_OBJECT;
@@ -1307,7 +1307,7 @@ public class CachedSpaceStorage implements SpaceStorage {
         refKey);
 
     //
-    if (key != null && key != SpaceKey.NULL_OBJECT) {
+    if (key != null && key != SpaceKey.NULL_OBJECT && key.getId() != null) {
       return getSpaceById(key.getId());
     }
     else {
@@ -1330,7 +1330,7 @@ public class CachedSpaceStorage implements SpaceStorage {
           public SpaceKey execute() {
             Space space = storage.getSpaceByGroupId(groupId);
             if (space != null) {
-              return putSpaceInCache(space);
+              return putSpaceInCacheIfNotExists(space);
             }
             else {
               return SpaceKey.NULL_OBJECT;
@@ -1340,7 +1340,7 @@ public class CachedSpaceStorage implements SpaceStorage {
         refKey);
 
     //
-    if (key != null && key != SpaceKey.NULL_OBJECT) {
+    if (key != null && key != SpaceKey.NULL_OBJECT && key.getId() != null) {
       return getSpaceById(key.getId());
     }
     else {
@@ -1363,7 +1363,7 @@ public class CachedSpaceStorage implements SpaceStorage {
           public SpaceKey execute() {
             Space space = storage.getSpaceByUrl(url);
             if (space != null) {
-              return putSpaceInCache(space);
+              return putSpaceInCacheIfNotExists(space);
             }
             else {
               return SpaceKey.NULL_OBJECT;
@@ -1373,7 +1373,7 @@ public class CachedSpaceStorage implements SpaceStorage {
         refKey);
 
     //
-    if (key != null && key != SpaceKey.NULL_OBJECT) {
+    if (key != null && key != SpaceKey.NULL_OBJECT && key.getId() != null) {
       return getSpaceById(key.getId());
     }
     else {
@@ -1507,18 +1507,28 @@ public class CachedSpaceStorage implements SpaceStorage {
     return buildSpaceIdentityIds(keys);
   }
 
-  private SpaceKey putSpaceInCache(Space space) {
+  private SpaceKey putSpaceInCacheIfNotExists(Space space) {
     SpaceKey key = new SpaceKey(space.getId());
-    exoSpaceCache.put(key, new SpaceData(space));
-    exoSpaceSimpleCache.put(key, new SpaceSimpleData(space));
-    SpaceRefKey refKey = new SpaceRefKey(space.getDisplayName());
-    exoRefSpaceCache.put(refKey, key);
-    refKey = new SpaceRefKey(space.getGroupId());
-    exoRefSpaceCache.put(refKey, key);
-    refKey = new SpaceRefKey(space.getPrettyName());
-    exoRefSpaceCache.put(refKey, key);
-    refKey = new SpaceRefKey(space.getUrl());
-    exoRefSpaceCache.put(refKey, key);
+    if(exoSpaceCache.get(key) == null) {
+      exoSpaceCache.put(key, new SpaceData(space));
+      exoSpaceSimpleCache.put(key, new SpaceSimpleData(space));
+    }
+    SpaceRefKey refKey = new SpaceRefKey(space.getDisplayName(), null, null, null);
+    if(exoRefSpaceCache.get(refKey) == null) {
+      exoRefSpaceCache.put(refKey, key);
+    }
+    refKey = new SpaceRefKey(null, null, space.getGroupId(), null);
+    if(exoRefSpaceCache.get(refKey) == null) {
+      exoRefSpaceCache.put(refKey, key);
+    }
+    refKey = new SpaceRefKey(null, space.getPrettyName(), null, null);
+    if(exoRefSpaceCache.get(refKey) == null) {
+      exoRefSpaceCache.put(refKey, key);
+    }
+    refKey = new SpaceRefKey(null, null, null, space.getUrl());
+    if(exoRefSpaceCache.get(refKey) == null) {
+      exoRefSpaceCache.put(refKey, key);
+    }
     return key;
   }
 }

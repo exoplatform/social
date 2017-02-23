@@ -19,22 +19,18 @@ package org.exoplatform.social.core.identity.provider;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.exoplatform.commons.utils.CommonsUtils;
 import org.exoplatform.commons.utils.ListAccess;
-import org.exoplatform.container.ExoContainer;
-import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.component.ComponentRequestLifecycle;
 import org.exoplatform.container.component.RequestLifeCycle;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.services.organization.OrganizationService;
 import org.exoplatform.services.organization.User;
-import org.exoplatform.services.organization.UserHandler;
 import org.exoplatform.services.organization.UserProfile;
-import org.exoplatform.services.organization.UserStatus;
 import org.exoplatform.social.core.identity.IdentityProvider;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
-import org.exoplatform.social.core.service.LinkProvider;
 import org.exoplatform.webui.exception.MessageException;
 
 
@@ -100,9 +96,9 @@ public class OrganizationIdentityProvider extends IdentityProvider<User> {
     User user;
     try {
       RequestLifeCycle.begin((ComponentRequestLifecycle)organizationService);
-      UserHandler userHandler = organizationService.getUserHandler();
-      user = userHandler.findUserByName(remoteId, UserStatus.ANY);
+      user = CommonsUtils.getUser(remoteId);
     } catch (Exception e) {
+      LOG.warn("An error occured while getting identity from store", e);
       return null;
     } finally {
       RequestLifeCycle.end();
@@ -130,8 +126,6 @@ public class OrganizationIdentityProvider extends IdentityProvider<User> {
     profile.setProperty(Profile.FULL_NAME, user.getDisplayName());
     profile.setProperty(Profile.USERNAME, user.getUserName());
     profile.setProperty(Profile.EMAIL, user.getEmail());
-    ExoContainer container = ExoContainerContext.getCurrentContainer();
-    LinkProvider lp = (LinkProvider) container.getComponentInstanceOfType(LinkProvider.class);
   }
 
   /**
@@ -143,7 +137,7 @@ public class OrganizationIdentityProvider extends IdentityProvider<User> {
   public void onUpdateProfile(Profile profile) throws MessageException {
     new UpdateProfileProcess(profile).doUpdate();
   }
-  
+
   /**
    * synchronous changed profile what is happened in Social to Portal side.
    * @author thanh_vucong

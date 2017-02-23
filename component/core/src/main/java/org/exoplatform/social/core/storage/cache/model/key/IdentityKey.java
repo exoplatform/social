@@ -26,6 +26,7 @@ import org.exoplatform.social.core.identity.model.Identity;
  * @version $Revision$
  */
 public class IdentityKey extends ScopeCacheKey {
+  private static final long serialVersionUID = -5426365392037221010L;
 
   private final String id;
 

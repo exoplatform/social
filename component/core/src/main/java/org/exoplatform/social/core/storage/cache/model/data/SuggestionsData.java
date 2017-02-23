@@ -20,7 +20,8 @@ import java.io.Serializable;
 import java.util.Map;
 
 public class SuggestionsData implements Serializable {
-  
+  private static final long serialVersionUID = 5251447311633368247L;
+
   private final Map<String, Integer> map;
 
   public SuggestionsData(Map<String, Integer> map) {

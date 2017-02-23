@@ -26,6 +26,7 @@ import org.exoplatform.social.core.identity.model.Identity;
  * @version $Revision$
  */
 public class IdentityData implements CacheData<Identity> {
+  private static final long serialVersionUID = -4418555926612067560L;
 
   private final String id;
 

@@ -28,6 +28,7 @@ import java.util.List;
  * @version $Revision$
  */
 public class ListSpacesData extends AbstractListData<SpaceKey> {
+  private static final long serialVersionUID = -2068067917208163953L;
 
   public ListSpacesData(final List<SpaceKey> ids) {
     super(ids);
