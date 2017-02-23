@@ -28,6 +28,7 @@ import org.exoplatform.social.core.space.SpaceFilter;
  * @version $Revision$
  */
 public class SpaceFilterKey extends ScopeCacheKey {
+  private static final long serialVersionUID = 2363449672896832814L;
 
   private String userId;
   private char firstCharacterOfSpaceName;

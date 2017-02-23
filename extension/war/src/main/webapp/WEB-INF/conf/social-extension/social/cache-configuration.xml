@@ -38,8 +38,8 @@
                     <description></description>
                     <object type="org.exoplatform.services.cache.ExoCacheConfig">
                         <field name="name"><string>IdentityCache</string></field>
-                        <field name="maxSize"><int>${cache.exo.social.IdentityCache.Capacity:300}</int></field>
-                        <field name="liveTime"><long>${cache.exo.social.IdentityCache.TimeToLive:-1}</long></field>
+                        <field name="maxSize"><int>${exo.cache.social.IdentityCache.Capacity:5000}</int></field>
+                        <field name="liveTime"><long>${exo.cache.social.IdentityCache.TimeToLive:86400}</long></field>
                         <field name="implementation"><string>org.exoplatform.services.cache.concurrent.ConcurrentFIFOExoCache</string></field>
                     </object>
                 </object-param>
@@ -49,8 +49,8 @@
                     <object type="org.exoplatform.services.cache.impl.infinispan.generic.GenericExoCacheConfig">
                         <field name="name"><string>IdentityCache</string></field>
                         <field name="strategy"><string>LIRS</string></field>
-                        <field name="maxEntries"><int>${cache.exo.social.IdentityCache.Capacity:300}</int></field>
-                        <field name="lifespan"><long>${cache.exo.social.IdentityCache.TimeToLive:-1}</long></field>
+                        <field name="maxEntries"><int>${exo.cache.social.IdentityCache.Capacity:5000}</int></field>
+                        <field name="lifespan"><long>${exo.cache.social.IdentityCache.TimeToLive:86400000}</long></field>
                         <field name="replicated"><boolean>true</boolean></field>
                     </object>
                 </object-param>
@@ -59,8 +59,8 @@
                     <description></description>
                     <object type="org.exoplatform.services.cache.ExoCacheConfig">
                         <field name="name"><string>IdentityIndexCache</string></field>
-                        <field name="maxSize"><int>${cache.exo.social.IdentityIndexCache.Capacity:300}</int></field>
-                        <field name="liveTime"><long>${cache.exo.social.IdentityIndexCache.TimeToLive:-1}</long></field>
+                        <field name="maxSize"><int>${exo.cache.social.IdentityIndexCache.Capacity:5000}</int></field>
+                        <field name="liveTime"><long>${exo.cache.social.IdentityIndexCache.TimeToLive:86400}</long></field>
                         <field name="implementation"><string>org.exoplatform.services.cache.concurrent.ConcurrentFIFOExoCache</string></field>
                     </object>
                 </object-param>
@@ -70,8 +70,8 @@
                     <object type="org.exoplatform.services.cache.impl.infinispan.generic.GenericExoCacheConfig">
                         <field name="name"><string>IdentityIndexCache</string></field>
                         <field name="strategy"><string>LIRS</string></field>
-                        <field name="maxEntries"><int>${cache.exo.social.IdentityIndexCache.Capacity:300}</int></field>
-                        <field name="lifespan"><long>${cache.exo.social.IdentityIndexCache.TimeToLive:-1}</long></field>
+                        <field name="maxEntries"><int>${exo.cache.social.IdentityIndexCache.Capacity:5000}</int></field>
+                        <field name="lifespan"><long>${exo.cache.social.IdentityIndexCache.TimeToLive:86400000}</long></field>
                         <field name="replicated"><boolean>true</boolean></field>
                     </object>
                 </object-param>
@@ -80,8 +80,8 @@
                     <description></description>
                     <object type="org.exoplatform.services.cache.ExoCacheConfig">
                         <field name="name"><string>ProfileCache</string></field>
-                        <field name="maxSize"><int>${cache.exo.social.ProfileCache.Capacity:300}</int></field>
-                        <field name="liveTime"><long>${cache.exo.social.ProfileCache.TimeToLive:-1}</long></field>
+                        <field name="maxSize"><int>${exo.cache.social.ProfileCache.Capacity:5000}</int></field>
+                        <field name="liveTime"><long>${exo.cache.social.ProfileCache.TimeToLive:86400}</long></field>
                         <field name="implementation"><string>org.exoplatform.services.cache.concurrent.ConcurrentFIFOExoCache</string></field>
                     </object>
                 </object-param>
@@ -91,8 +91,8 @@
                     <object type="org.exoplatform.services.cache.impl.infinispan.generic.GenericExoCacheConfig">
                         <field name="name"><string>ProfileCache</string></field>
                         <field name="strategy"><string>LIRS</string></field>
-                        <field name="maxEntries"><int>${cache.exo.social.ProfileCache.Capacity:300}</int></field>
-                        <field name="lifespan"><long>${cache.exo.social.ProfileCache.TimeToLive:-1}</long></field>
+                        <field name="maxEntries"><int>${exo.cache.social.ProfileCache.Capacity:5000}</int></field>
+                        <field name="lifespan"><long>${exo.cache.social.ProfileCache.TimeToLive:86400000}</long></field>
                         <field name="replicated"><boolean>true</boolean></field>
                     </object>
                 </object-param>
@@ -101,8 +101,8 @@
                     <description></description>
                     <object type="org.exoplatform.services.cache.ExoCacheConfig">
                         <field name="name"><string>IdentitiesCountCache</string></field>
-                        <field name="maxSize"><int>${cache.exo.social.IdentitiesCountCache.Capacity:2000}</int></field>
-                        <field name="liveTime"><long>${cache.exo.social.IdentitiesCountCache.TimeToLive:86400}</long></field>
+                        <field name="maxSize"><int>${exo.cache.social.IdentitiesCountCache.Capacity:5000}</int></field>
+                        <field name="liveTime"><long>${exo.cache.social.IdentitiesCountCache.TimeToLive:86400}</long></field>
                         <field name="implementation"><string>org.exoplatform.services.cache.concurrent.ConcurrentFIFOExoCache</string></field>
                     </object>
                 </object-param>
@@ -112,8 +112,8 @@
                     <object type="org.exoplatform.services.cache.impl.infinispan.generic.GenericExoCacheConfig">
                         <field name="name"><string>IdentitiesCountCache</string></field>
                         <field name="strategy"><string>LIRS</string></field>
-                        <field name="maxEntries"><int>${cache.exo.social.IdentitiesCountCache.Capacity:2000}</int></field>
-                        <field name="lifespan"><long>${cache.exo.social.IdentitiesCountCache.TimeToLive:86400}</long></field>
+                        <field name="maxEntries"><int>${exo.cache.social.IdentitiesCountCache.Capacity:5000}</int></field>
+                        <field name="lifespan"><long>${exo.cache.social.IdentitiesCountCache.TimeToLive:86400000}</long></field>
                         <field name="replicated"><boolean>true</boolean></field>
                     </object>
                 </object-param>
@@ -122,8 +122,8 @@
                     <description></description>
                     <object type="org.exoplatform.services.cache.ExoCacheConfig">
                         <field name="name"><string>IdentitiesCache</string></field>
-                        <field name="maxSize"><int>${cache.exo.social.IdentitiesCache.Capacity:2000}</int></field>
-                        <field name="liveTime"><long>${cache.exo.social.IdentitiesCache.TimeToLive:86400}</long></field>
+                        <field name="maxSize"><int>${exo.cache.social.IdentitiesCache.Capacity:5000}</int></field>
+                        <field name="liveTime"><long>${exo.cache.social.IdentitiesCache.TimeToLive:86400}</long></field>
                         <field name="implementation"><string>org.exoplatform.services.cache.concurrent.ConcurrentFIFOExoCache</string></field>
                     </object>
                 </object-param>
@@ -133,8 +133,8 @@
                     <object type="org.exoplatform.services.cache.impl.infinispan.generic.GenericExoCacheConfig">
                         <field name="name"><string>IdentitiesCache</string></field>
                         <field name="strategy"><string>LIRS</string></field>
-                        <field name="maxEntries"><int>${cache.exo.social.IdentitiesCache.Capacity:2000}</int></field>
-                        <field name="lifespan"><long>${cache.exo.social.IdentitiesCache.TimeToLive:86400}</long></field>
+                        <field name="maxEntries"><int>${exo.cache.social.IdentitiesCache.Capacity:5000}</int></field>
+                        <field name="lifespan"><long>${exo.cache.social.IdentitiesCache.TimeToLive:86400}</long></field>
                         <field name="replicated"><boolean>true</boolean></field>
                     </object>
                 </object-param>
@@ -144,8 +144,8 @@
                     <description></description>
                     <object type="org.exoplatform.services.cache.ExoCacheConfig">
                         <field name="name"><string>ActiveIdentitiesCache</string></field>
-                        <field name="maxSize"><int>${cache.exo.social.IdentitiesCache.Capacity:5}</int></field>
-                        <field name="liveTime"><long>${cache.exo.social.IdentitiesCache.TimeToLive:3600}</long></field>
+                        <field name="maxSize"><int>${exo.cache.social.IdentitiesCache.Capacity:5}</int></field>
+                        <field name="liveTime"><long>${exo.cache.social.IdentitiesCache.TimeToLive:3600}</long></field>
                         <field name="implementation"><string>org.exoplatform.services.cache.concurrent.ConcurrentFIFOExoCache</string></field>
                     </object>
                 </object-param>
@@ -155,8 +155,8 @@
                     <object type="org.exoplatform.services.cache.impl.infinispan.generic.GenericExoCacheConfig">
                         <field name="name"><string>ActiveIdentitiesCache</string></field>
                         <field name="strategy"><string>LIRS</string></field>
-                        <field name="maxEntries"><int>${cache.exo.social.IdentitiesCache.Capacity:5}</int></field>
-                        <field name="lifespan"><long>${cache.exo.social.IdentitiesCache.TimeToLive:3600}</long></field>
+                        <field name="maxEntries"><int>${exo.cache.social.IdentitiesCache.Capacity:5}</int></field>
+                        <field name="lifespan"><long>${exo.cache.social.IdentitiesCache.TimeToLive:3600000}</long></field>
                         <field name="replicated"><boolean>true</boolean></field>
                     </object>
                 </object-param>
@@ -167,8 +167,8 @@
                     <description></description>
                     <object type="org.exoplatform.services.cache.ExoCacheConfig">
                         <field name="name"><string>RelationshipCache</string></field>
-                        <field name="maxSize"><int>${cache.exo.social.RelationshipCache.Capacity:10000}</int></field>
-                        <field name="liveTime"><long>${cache.exo.social.RelationshipCache.TimeToLive:-1}</long></field>
+                        <field name="maxSize"><int>${exo.cache.social.RelationshipCache.Capacity:10000}</int></field>
+                        <field name="liveTime"><long>${exo.cache.social.RelationshipCache.TimeToLive:86400}</long></field>
                         <field name="implementation"><string>org.exoplatform.services.cache.concurrent.ConcurrentFIFOExoCache</string></field>
                     </object>
                 </object-param>
@@ -178,8 +178,8 @@
                     <object type="org.exoplatform.services.cache.impl.infinispan.generic.GenericExoCacheConfig">
                         <field name="name"><string>RelationshipCache</string></field>
                         <field name="strategy"><string>LIRS</string></field>
-                        <field name="maxEntries"><int>${cache.exo.social.RelationshipCache.Capacity:10000}</int></field>
-                        <field name="lifespan"><long>${cache.exo.social.RelationshipCache.TimeToLive:-1}</long></field>
+                        <field name="maxEntries"><int>${exo.cache.social.RelationshipCache.Capacity:10000}</int></field>
+                        <field name="lifespan"><long>${exo.cache.social.RelationshipCache.TimeToLive:86400000}</long></field>
                         <field name="replicated"><boolean>true</boolean></field>
                     </object>
                 </object-param>
@@ -188,8 +188,8 @@
                     <description></description>
                     <object type="org.exoplatform.services.cache.ExoCacheConfig">
                         <field name="name"><string>RelationshipFromIdentityCache</string></field>
-                        <field name="maxSize"><int>${cache.exo.social.RelationshipFromIdentityCache.Capacity:10000}</int></field>
-                        <field name="liveTime"><long>${cache.exo.social.RelationshipFromIdentityCache.TimeToLive:-1}</long></field>
+                        <field name="maxSize"><int>${exo.cache.social.RelationshipFromIdentityCache.Capacity:10000}</int></field>
+                        <field name="liveTime"><long>${exo.cache.social.RelationshipFromIdentityCache.TimeToLive:86400}</long></field>
                         <field name="implementation"><string>org.exoplatform.services.cache.concurrent.ConcurrentFIFOExoCache</string></field>
                     </object>
                 </object-param>
@@ -199,8 +199,8 @@
                     <object type="org.exoplatform.services.cache.impl.infinispan.generic.GenericExoCacheConfig">
                         <field name="name"><string>RelationshipFromIdentityCache</string></field>
                         <field name="strategy"><string>LIRS</string></field>
-                        <field name="maxEntries"><int>${cache.exo.social.RelationshipFromIdentityCache.Capacity:10000}</int></field>
-                        <field name="lifespan"><long>${cache.exo.social.RelationshipFromIdentityCache.TimeToLive:-1}</long></field>
+                        <field name="maxEntries"><int>${exo.cache.social.RelationshipFromIdentityCache.Capacity:10000}</int></field>
+                        <field name="lifespan"><long>${exo.cache.social.RelationshipFromIdentityCache.TimeToLive:86400000}</long></field>
                         <field name="replicated"><boolean>true</boolean></field>
                     </object>
                 </object-param>
@@ -209,8 +209,8 @@
                     <description></description>
                     <object type="org.exoplatform.services.cache.ExoCacheConfig">
                         <field name="name"><string>RelationshipsCountCache</string></field>
-                        <field name="maxSize"><int>${cache.exo.social.RelationshipsCountCache.Capacity:800}</int></field>
-                        <field name="liveTime"><long>${cache.exo.social.RelationshipsCountCache.TimeToLive:-1}</long></field>
+                        <field name="maxSize"><int>${exo.cache.social.RelationshipsCountCache.Capacity:5000}</int></field>
+                        <field name="liveTime"><long>${exo.cache.social.RelationshipsCountCache.TimeToLive:86400}</long></field>
                         <field name="implementation"><string>org.exoplatform.services.cache.concurrent.ConcurrentFIFOExoCache</string></field>
                     </object>
                 </object-param>
@@ -220,8 +220,8 @@
                     <object type="org.exoplatform.services.cache.impl.infinispan.generic.GenericExoCacheConfig">
                         <field name="name"><string>RelationshipsCountCache</string></field>
                         <field name="strategy"><string>LIRS</string></field>
-                        <field name="maxEntries"><int>${cache.exo.social.RelationshipsCountCache.Capacity:10000}</int></field>
-                        <field name="lifespan"><long>${cache.exo.social.RelationshipsCountCache.TimeToLive:-1}</long></field>
+                        <field name="maxEntries"><int>${exo.cache.social.RelationshipsCountCache.Capacity:10000}</int></field>
+                        <field name="lifespan"><long>${exo.cache.social.RelationshipsCountCache.TimeToLive:86400000}</long></field>
                         <field name="replicated"><boolean>true</boolean></field>
                     </object>
                 </object-param>
@@ -230,8 +230,8 @@
                     <description></description>
                     <object type="org.exoplatform.services.cache.ExoCacheConfig">
                         <field name="name"><string>RelationshipsCache</string></field>
-                        <field name="maxSize"><int>${cache.exo.social.RelationshipsCache.Capacity:800}</int></field>
-                        <field name="liveTime"><long>${cache.exo.social.RelationshipsCache.TimeToLive:-1}</long></field>
+                        <field name="maxSize"><int>${exo.cache.social.RelationshipsCache.Capacity:5000}</int></field>
+                        <field name="liveTime"><long>${exo.cache.social.RelationshipsCache.TimeToLive:86400}</long></field>
                         <field name="implementation"><string>org.exoplatform.services.cache.concurrent.ConcurrentFIFOExoCache</string></field>
                     </object>
                 </object-param>
@@ -241,8 +241,8 @@
                     <object type="org.exoplatform.services.cache.impl.infinispan.generic.GenericExoCacheConfig">
                         <field name="name"><string>RelationshipsCache</string></field>
                         <field name="strategy"><string>LIRS</string></field>
-                        <field name="maxEntries"><int>${cache.exo.social.RelationshipsCache.Capacity:10000}</int></field>
-                        <field name="lifespan"><long>${cache.exo.social.RelationshipsCache.TimeToLive:-1}</long></field>
+                        <field name="maxEntries"><int>${exo.cache.social.RelationshipsCache.Capacity:10000}</int></field>
+                        <field name="lifespan"><long>${exo.cache.social.RelationshipsCache.TimeToLive:86400000}</long></field>
                         <field name="replicated"><boolean>true</boolean></field>
                     </object>
                 </object-param>
@@ -251,8 +251,8 @@
                     <description>The Cache configuration for the SuggestionsCache</description>
                     <object type="org.exoplatform.services.cache.ExoCacheConfig">
                         <field name="name"><string>SuggestionsCache</string></field>
-                        <field name="maxSize"><int>${cache.exo.social.SuggestionsCache.Capacity:800}</int></field>
-                        <field name="liveTime"><long>${cache.exo.social.SuggestionsCache.TimeToLive:-1}</long></field>
+                        <field name="maxSize"><int>${exo.cache.social.SuggestionsCache.Capacity:5000}</int></field>
+                        <field name="liveTime"><long>${exo.cache.social.SuggestionsCache.TimeToLive:86400}</long></field>
                         <field name="implementation"><string>org.exoplatform.services.cache.concurrent.ConcurrentFIFOExoCache</string></field>
                     </object>
                 </object-param>
@@ -262,8 +262,8 @@
                     <object type="org.exoplatform.services.cache.impl.infinispan.generic.GenericExoCacheConfig">
                         <field name="name"><string>SuggestionsCache</string></field>
                         <field name="strategy"><string>LIRS</string></field>
-                        <field name="maxEntries"><int>${cache.exo.social.SuggestionsCache.Capacity:800}</int></field>
-                        <field name="lifespan"><long>${cache.exo.social.SuggestionsCache.TimeToLive:-1}</long></field>
+                        <field name="maxEntries"><int>${exo.cache.social.SuggestionsCache.Capacity:5000}</int></field>
+                        <field name="lifespan"><long>${exo.cache.social.SuggestionsCache.TimeToLive:86400000}</long></field>
                         <field name="replicated"><boolean>true</boolean></field>
                     </object>
                 </object-param>
@@ -274,8 +274,8 @@
                     <description></description>
                     <object type="org.exoplatform.services.cache.ExoCacheConfig">
                         <field name="name"><string>ActivityCache</string></field>
-                        <field name="maxSize"><int>${cache.exo.social.ActivityCache.Capacity:6000}</int></field>
-                        <field name="liveTime"><long>${cache.exo.social.ActivityCache.TimeToLive:-1}</long></field>
+                        <field name="maxSize"><int>${exo.cache.social.ActivityCache.Capacity:6000}</int></field>
+                        <field name="liveTime"><long>${exo.cache.social.ActivityCache.TimeToLive:3600}</long></field>
                         <field name="implementation"><string>org.exoplatform.services.cache.concurrent.ConcurrentFIFOExoCache</string></field>
                     </object>
                 </object-param>
@@ -285,8 +285,8 @@
                     <object type="org.exoplatform.services.cache.impl.infinispan.generic.GenericExoCacheConfig">
                         <field name="name"><string>ActivityCache</string></field>
                         <field name="strategy"><string>LIRS</string></field>
-                        <field name="maxEntries"><int>${cache.exo.social.ActivityCache.Capacity:6000}</int></field>
-                        <field name="lifespan"><long>${cache.exo.social.ActivityCache.TimeToLive:-1}</long></field>
+                        <field name="maxEntries"><int>${exo.cache.social.ActivityCache.Capacity:6000}</int></field>
+                        <field name="lifespan"><long>${exo.cache.social.ActivityCache.TimeToLive:3600000}</long></field>
                         <field name="replicated"><boolean>true</boolean></field>
                     </object>
                 </object-param>
@@ -295,8 +295,8 @@
                     <description></description>
                     <object type="org.exoplatform.services.cache.ExoCacheConfig">
                         <field name="name"><string>ActivitiesCountCache</string></field>
-                        <field name="maxSize"><int>${cache.exo.social.ActivitiesCountCache.Capacity:4000}</int></field>
-                        <field name="liveTime"><long>${cache.exo.social.ActivitiesCountCache.TimeToLive:-1}</long></field>
+                        <field name="maxSize"><int>${exo.cache.social.ActivitiesCountCache.Capacity:5000}</int></field>
+                        <field name="liveTime"><long>${exo.cache.social.ActivitiesCountCache.TimeToLive:86400}</long></field>
                         <field name="implementation"><string>org.exoplatform.services.cache.concurrent.ConcurrentFIFOExoCache</string></field>
                     </object>
                 </object-param>
@@ -306,8 +306,8 @@
                     <object type="org.exoplatform.services.cache.impl.infinispan.generic.GenericExoCacheConfig">
                         <field name="name"><string>ActivitiesCountCache</string></field>
                         <field name="strategy"><string>LIRS</string></field>
-                        <field name="maxEntries"><int>${cache.exo.social.ActivitiesCountCache.Capacity:4000}</int></field>
-                        <field name="lifespan"><long>${cache.exo.social.ActivitiesCountCache.TimeToLive:-1}</long></field>
+                        <field name="maxEntries"><int>${exo.cache.social.ActivitiesCountCache.Capacity:5000}</int></field>
+                        <field name="lifespan"><long>${exo.cache.social.ActivitiesCountCache.TimeToLive:86400000}</long></field>
                         <field name="replicated"><boolean>true</boolean></field>
                     </object>
                 </object-param>
@@ -316,8 +316,8 @@
                     <description></description>
                     <object type="org.exoplatform.services.cache.ExoCacheConfig">
                         <field name="name"><string>ActivitiesCache</string></field>
-                        <field name="maxSize"><int>${cache.exo.social.ActivitiesCache.Capacity:4000}</int></field>
-                        <field name="liveTime"><long>${cache.exo.social.ActivitiesCache.TimeToLive:-1}</long></field>
+                        <field name="maxSize"><int>${exo.cache.social.ActivitiesCache.Capacity:5000}</int></field>
+                        <field name="liveTime"><long>${exo.cache.social.ActivitiesCache.TimeToLive:86400}</long></field>
                         <field name="implementation"><string>org.exoplatform.services.cache.concurrent.ConcurrentFIFOExoCache</string></field>
                     </object>
                 </object-param>
@@ -327,8 +327,8 @@
                     <object type="org.exoplatform.services.cache.impl.infinispan.generic.GenericExoCacheConfig">
                         <field name="name"><string>ActivitiesCache</string></field>
                         <field name="strategy"><string>LIRS</string></field>
-                        <field name="maxEntries"><int>${cache.exo.social.ActivitiesCache.Capacity:4000}</int></field>
-                        <field name="lifespan"><long>${cache.exo.social.ActivitiesCache.TimeToLive:-1}</long></field>
+                        <field name="maxEntries"><int>${exo.cache.social.ActivitiesCache.Capacity:5000}</int></field>
+                        <field name="lifespan"><long>${exo.cache.social.ActivitiesCache.TimeToLive:86400000}</long></field>
                         <field name="replicated"><boolean>true</boolean></field>
                     </object>
                 </object-param>
@@ -339,8 +339,8 @@
                     <description></description>
                     <object type="org.exoplatform.services.cache.ExoCacheConfig">
                         <field name="name"><string>SpaceCache</string></field>
-                        <field name="maxSize"><int>${cache.exo.social.SpaceCache.Capacity:100}</int></field>
-                        <field name="liveTime"><long>${cache.exo.social.SpaceCache.TimeToLive:-1}</long></field>
+                        <field name="maxSize"><int>${exo.cache.social.SpaceCache.Capacity:500}</int></field>
+                        <field name="liveTime"><long>${exo.cache.social.SpaceCache.TimeToLive:86400}</long></field>
                         <field name="implementation"><string>org.exoplatform.services.cache.concurrent.ConcurrentFIFOExoCache</string></field>
                     </object>
                 </object-param>
@@ -350,8 +350,8 @@
                     <object type="org.exoplatform.services.cache.impl.infinispan.generic.GenericExoCacheConfig">
                         <field name="name"><string>SpaceCache</string></field>
                         <field name="strategy"><string>LIRS</string></field>
-                        <field name="maxEntries"><int>${cache.exo.social.SpaceCache.Capacity:4000}</int></field>
-                        <field name="lifespan"><long>${cache.exo.social.SpaceCache.TimeToLive:-1}</long></field>
+                        <field name="maxEntries"><int>${exo.cache.social.SpaceCache.Capacity:500}</int></field>
+                        <field name="lifespan"><long>${exo.cache.social.SpaceCache.TimeToLive:86400000}</long></field>
                         <field name="replicated"><boolean>true</boolean></field>
                     </object>
                 </object-param>
@@ -360,8 +360,8 @@
                     <description></description>
                     <object type="org.exoplatform.services.cache.ExoCacheConfig">
                         <field name="name"><string>SpaceSimpleCache</string></field>
-                        <field name="maxSize"><int>${cache.exo.social.SpaceCache.Capacity:100}</int></field>
-                        <field name="liveTime"><long>${cache.exo.social.SpaceCache.TimeToLive:-1}</long></field>
+                        <field name="maxSize"><int>${exo.cache.social.SpaceCache.Capacity:500}</int></field>
+                        <field name="liveTime"><long>${exo.cache.social.SpaceCache.TimeToLive:86400}</long></field>
                         <field name="implementation"><string>org.exoplatform.services.cache.concurrent.ConcurrentFIFOExoCache</string></field>
                     </object>
                 </object-param>
@@ -371,8 +371,8 @@
                     <object type="org.exoplatform.services.cache.impl.infinispan.generic.GenericExoCacheConfig">
                         <field name="name"><string>SpaceRefCache</string></field>
                         <field name="strategy"><string>LIRS</string></field>
-                        <field name="maxEntries"><int>${cache.exo.social.SpaceRefCache.Capacity:400}</int></field>
-                        <field name="lifespan"><long>${cache.exo.social.SpaceRefCache.TimeToLive:-1}</long></field>
+                        <field name="maxEntries"><int>${exo.cache.social.SpaceRefCache.Capacity:2000}</int></field>
+                        <field name="lifespan"><long>${exo.cache.social.SpaceRefCache.TimeToLive:86400000}</long></field>
                         <field name="replicated"><boolean>true</boolean></field>
                     </object>
                 </object-param>
@@ -381,8 +381,8 @@
                     <description></description>
                     <object type="org.exoplatform.services.cache.ExoCacheConfig">
                         <field name="name"><string>SpaceRefCache</string></field>
-                        <field name="maxSize"><int>${cache.exo.social.SpaceRefCache.Capacity:400}</int></field>
-                        <field name="liveTime"><long>${cache.exo.social.SpaceRefCache.TimeToLive:-1}</long></field>
+                        <field name="maxSize"><int>${exo.cache.social.SpaceRefCache.Capacity:2000}</int></field>
+                        <field name="liveTime"><long>${exo.cache.social.SpaceRefCache.TimeToLive:86400}</long></field>
                         <field name="implementation"><string>org.exoplatform.services.cache.concurrent.ConcurrentFIFOExoCache</string></field>
                     </object>
                 </object-param>
@@ -392,8 +392,8 @@
                     <object type="org.exoplatform.services.cache.impl.infinispan.generic.GenericExoCacheConfig">
                         <field name="name"><string>SpacesCountCache</string></field>
                         <field name="strategy"><string>LIRS</string></field>
-                        <field name="maxEntries"><int>${cache.exo.social.SpacesCountCache.Capacity:2000}</int></field>
-                        <field name="lifespan"><long>${cache.exo.social.SpacesCountCache.TimeToLive:-1}</long></field>
+                        <field name="maxEntries"><int>${exo.cache.social.SpacesCountCache.Capacity:5000}</int></field>
+                        <field name="lifespan"><long>${exo.cache.social.SpacesCountCache.TimeToLive:86400000}</long></field>
                         <field name="replicated"><boolean>true</boolean></field>
                     </object>
                 </object-param>
@@ -402,8 +402,8 @@
                     <description></description>
                     <object type="org.exoplatform.services.cache.ExoCacheConfig">
                         <field name="name"><string>SpacesCountCache</string></field>
-                        <field name="maxSize"><int>${cache.exo.social.SpacesCountCache.Capacity:2000}</int></field>
-                        <field name="liveTime"><long>${cache.exo.social.SpacesCountCache.TimeToLive:86400}</long></field>
+                        <field name="maxSize"><int>${exo.cache.social.SpacesCountCache.Capacity:5000}</int></field>
+                        <field name="liveTime"><long>${exo.cache.social.SpacesCountCache.TimeToLive:86400}</long></field>
                         <field name="implementation"><string>org.exoplatform.services.cache.concurrent.ConcurrentFIFOExoCache</string></field>
                     </object>
                 </object-param>
@@ -412,8 +412,8 @@
                     <description></description>
                     <object type="org.exoplatform.services.cache.ExoCacheConfig">
                         <field name="name"><string>SpacesCache</string></field>
-                        <field name="maxSize"><int>${cache.exo.social.SpacesCache.Capacity:2000}</int></field>
-                        <field name="liveTime"><long>${cache.exo.social.SpacesCache.TimeToLive:86400}</long></field>
+                        <field name="maxSize"><int>${exo.cache.social.SpacesCache.Capacity:5000}</int></field>
+                        <field name="liveTime"><long>${exo.cache.social.SpacesCache.TimeToLive:86400}</long></field>
                         <field name="implementation"><string>org.exoplatform.services.cache.concurrent.ConcurrentFIFOExoCache</string></field>
                     </object>
                 </object-param>
@@ -423,8 +423,8 @@
                     <object type="org.exoplatform.services.cache.impl.infinispan.generic.GenericExoCacheConfig">
                         <field name="name"><string>SpacesCache</string></field>
                         <field name="strategy"><string>LIRS</string></field>
-                        <field name="maxEntries"><int>${cache.exo.social.SpacesCache.Capacity:2000}</int></field>
-                        <field name="lifespan"><long>${cache.exo.social.SpacesCache.TimeToLive:86400}</long></field>
+                        <field name="maxEntries"><int>${exo.cache.social.SpacesCache.Capacity:5000}</int></field>
+                        <field name="lifespan"><long>${exo.cache.social.SpacesCache.TimeToLive:86400000}</long></field>
                         <field name="replicated"><boolean>true</boolean></field>
                     </object>
                 </object-param>

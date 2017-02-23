@@ -27,6 +27,7 @@ import java.util.List;
  * @version $Revision$
  */
 public class AbstractListData<T> implements Serializable {
+  private static final long serialVersionUID = -8053695403884988516L;
 
   private final List<T> ids;
 

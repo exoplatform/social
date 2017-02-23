@@ -17,6 +17,8 @@
 
 package org.exoplatform.social.core.storage.cache.model.key;
 
+import org.apache.commons.lang.StringUtils;
+
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.jcr.RepositoryService;
 
@@ -27,11 +29,19 @@ import javax.jcr.RepositoryException;
  * @version $Revision$
  */
 public class ScopeCacheKey implements CacheKey {
+  private static final long serialVersionUID = -5122085234844885327L;
 
-  private final String scope;
+  private String scope;
 
   public ScopeCacheKey() {
-    scope = getCurrentRepositoryName();
+    try {
+      scope = getCurrentRepositoryName();
+    } catch (Exception e) {
+      // Nothing to do
+    }
+    if(StringUtils.isBlank(scope)) {
+      scope = "repository";
+    }
   }
 
   public String getScope() {

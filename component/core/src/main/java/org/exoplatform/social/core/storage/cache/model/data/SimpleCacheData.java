@@ -24,6 +24,7 @@ package org.exoplatform.social.core.storage.cache.model.data;
  * @version $Revision$
  */
 public class SimpleCacheData<T> implements CacheData<T> {
+  private static final long serialVersionUID = 7655513073939723569L;
 
   private final T t;
 

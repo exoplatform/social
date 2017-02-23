@@ -26,6 +26,8 @@ import java.util.Set;
  * Oct 8, 2014  
  */
 public class ActiveIdentitiesData implements CacheData<Set<String>> {
+  private static final long serialVersionUID = 3762098456323779153L;
+
   private final Set<String> activeUsers;
   
 
