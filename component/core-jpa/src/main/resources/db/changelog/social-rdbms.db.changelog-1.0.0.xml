@@ -26,7 +26,12 @@
 
   <!-- Managing both DB that use sequences and db that use auto increment -->
   <property name="autoIncrement" value="true" dbms="mysql,mssql,h2,sybase,db2,hsqldb"/>
-  <property name="autoIncrement" value="false" dbms="oracle,postgresql"/>    
+  <property name="autoIncrement" value="false" dbms="oracle,postgresql"/>
+
+  <!-- Managing auto generation of timestamp by Database -->
+  <property name="now" value="now()" dbms="mysql,hsqldb,postgresql,h2"/>
+  <property name="now" value="sysdate" dbms="oracle"/>
+  <property name="now" value="CURRENT_TIMESTAMP" dbms="mssql"/>
     
     <changeSet author="social" id="1.0.0-1">
         <createTable tableName="SOC_ACTIVITIES">
@@ -192,6 +197,7 @@
   </changeSet>
   
   <changeSet author="social" id="1.0.0-23">
+    <validCheckSum>7:c3de92c3178ae646550a47e0872bf0d3</validCheckSum>
     <createTable tableName="SOC_SPACES">
         <column name="SPACE_ID" type="BIGINT" autoIncrement="${autoIncrement}" startWith="1">
           <constraints nullable="false" primaryKey="true" primaryKeyName="PK_SOC_SPACES"/>
@@ -215,7 +221,7 @@
           <constraints nullable="false"/>
         </column>
         <column name="URL" type="NVARCHAR(500)"/>
-        <column name="CREATED_DATE" type="TIMESTAMP">
+        <column name="CREATED_DATE" type="TIMESTAMP" defaultValueDate="${now}">
           <constraints nullable="false"/>
         </column>
     </createTable>
@@ -268,6 +274,7 @@
   </changeSet>
 
   <changeSet author="social" id="1.0.0-26">
+    <validCheckSum>7:65894adddf8b6d27c6e923c3dcf11154</validCheckSum>
     <createTable tableName="SOC_IDENTITIES">
       <column name="IDENTITY_ID" type="BIGINT" autoIncrement="${autoIncrement}" startWith="1">
         <constraints nullable="false" primaryKey="true" primaryKeyName="PK_SOC_IDENTITIES"/>
@@ -289,7 +296,7 @@
       <column name="AVATAR_FILE_ID" type="BIGINT">
         <constraints nullable="true"/>
       </column>
-      <column name="CREATED_DATE" type="TIMESTAMP">
+      <column name="CREATED_DATE" type="TIMESTAMP" defaultValueDate="${now}">
         <constraints nullable="false"/>
       </column>
     </createTable>
@@ -357,6 +364,7 @@
   </changeSet>
 
   <changeSet author="social" id="1.0.0-34">
+    <validCheckSum>7:92ce2eb9aac690150b64394b2533dea5</validCheckSum>
     <createTable tableName="SOC_CONNECTIONS">
       <column name="CONNECTION_ID" type="BIGINT" autoIncrement="${autoIncrement}" startWith="1">
         <constraints nullable="false" primaryKey="true" primaryKeyName="PK_SOC_CONNECTIONS"/>
@@ -370,7 +378,7 @@
       <column name="STATUS" type="INT">
         <constraints nullable="false"/>
       </column>
-      <column name="UPDATED_DATE" type="TIMESTAMP">
+      <column name="UPDATED_DATE" type="TIMESTAMP" defaultValueDate="${now}">
         <constraints nullable="false"/>
       </column>
     </createTable>
