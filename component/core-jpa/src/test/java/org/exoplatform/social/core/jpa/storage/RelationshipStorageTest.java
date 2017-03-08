@@ -632,6 +632,39 @@ public class RelationshipStorageTest extends AbstractCoreTest {
   }
 
   /**
+   * Test {@link org.exoplatform.social.core.storage.api.RelationshipStorage#getConnectionsByFilter(providerId, Identity, ProfileFilter)}
+   *
+   * @throws Exception
+   * @since 1.2.3
+   */
+  @MaxQueryNumber(250)
+  public void testGetConnectionsWithDisabledUser() throws Exception {
+    populateData();
+    populateRelationshipData(Type.CONFIRMED);
+    ProfileFilter pf = new ProfileFilter();
+    //pf = buildProfileFilterWithExcludeIdentities(pf);
+    List<Identity> identities = relationshipStorage.getConnectionsByFilter(tearDownIdentityList.get(0), pf, 0, 20);
+    assertEquals("Number of identities must be 8", 8, identities.size());
+
+    Identity id1 = identities.get(2);
+    Identity id2 = identities.get(3);
+
+    String disabledUserName = id1.getRemoteId();
+    String deletedUserName = id2.getRemoteId();
+
+    id1.setEnable(false);
+    identityStorage.saveIdentity(id1);
+
+    id2.setDeleted(true);
+    identityStorage.saveIdentity(id2);
+
+    identities = relationshipStorage.getConnectionsByFilter(tearDownIdentityList.get(0), pf, 0, 20);
+    assertEquals("Number of identities must be 6", 6, identities.size());
+    assertNull("User " + disabledUserName + " must not be found in connections", getInList(identities, disabledUserName));
+    assertNull("User " + deletedUserName + " must not be found in connections", getInList(identities, deletedUserName));
+  }
+
+  /**
    * Test {@link org.exoplatform.social.core.storage.api.RelationshipStorage#getIncomingByFilter(providerId, Identity, ProfileFilter)}
    *
    * @throws Exception

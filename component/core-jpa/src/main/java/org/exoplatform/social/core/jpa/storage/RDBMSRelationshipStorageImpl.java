@@ -385,10 +385,10 @@ public class RDBMSRelationshipStorageImpl extends RelationshipStorageImpl {
     for (ConnectionEntity connectionEntity : connections) {
       IdentityEntity receiver = connectionEntity.getReceiver();
       IdentityEntity sender = connectionEntity.getSender();
-      if (ownerId == sender.getId()) {
+      if (ownerId == sender.getId() && !receiver.isDeleted() && receiver.isEnabled()) {
         Identity identity = EntityConverterUtils.convertToIdentity(receiver);
         identities.add(identity);
-      } else if (ownerId == receiver.getId()) {
+      } else if (ownerId == receiver.getId() && !sender.isDeleted() && sender.isEnabled()) {
         Identity identity = EntityConverterUtils.convertToIdentity(sender);
         identities.add(identity);
       } else {
