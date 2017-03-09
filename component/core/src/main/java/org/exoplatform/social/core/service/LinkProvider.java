@@ -446,11 +446,7 @@ public class LinkProvider {
    */
   private static String getPortalOwner(String portalOwner) {
     if (portalOwner == null || portalOwner.trim().length() == 0) {
-      try {
-        return Util.getPortalRequestContext().getPortalOwner();
-      } catch (Exception e) {
-        return DEFAULT_PORTAL_OWNER;
-      }
+      portalOwner = CommonsUtils.getCurrentSite().getName();
     }
     return portalOwner;
   }
