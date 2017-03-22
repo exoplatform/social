@@ -23,6 +23,8 @@ import org.exoplatform.container.PortalContainer;
 import org.exoplatform.container.xml.InitParams;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
+import org.exoplatform.social.common.xmlprocessor.XMLProcessor;
+import org.exoplatform.social.core.BaseActivityProcessorPlugin;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.activity.model.ExoSocialActivityImpl;
 import org.exoplatform.social.core.identity.model.Identity;
@@ -82,6 +84,8 @@ public class RelationshipPublisher extends RelationshipListenerPlugin {
     String message = String.format("I'm now connected with %s", fullName);
     comment.setTitle(message);
     comment.setUserId(userIdenity.getId());
+
+    I18NActivityUtils.addResourceKeyToProcess(comment, "user_relation_confirmed");
     I18NActivityUtils.addResourceKey(comment, "user_relation_confirmed", fullName);
     return comment;
   }

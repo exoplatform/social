@@ -2,6 +2,7 @@ package org.exoplatform.social.user.form;
 
 import java.io.Writer;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.service.LinkProvider;
 import org.exoplatform.social.user.portlet.UserProfileHelper;
@@ -30,7 +31,7 @@ public class UIChangeAvatarContainer extends UIFormInputSet {
   @Override
   public void processRender(WebuiRequestContext context) throws Exception {
     Profile ownerProfile = Utils.getViewerIdentity(true).getProfile();
-    String fullName = ownerProfile.getFullName();
+    String fullName = StringEscapeUtils.escapeHtml(ownerProfile.getFullName());
     String avatarURL = ownerProfile.getAvatarUrl();
     if(UserProfileHelper.isEmpty(avatarURL)) {
       avatarURL = LinkProvider.PROFILE_DEFAULT_AVATAR_URL;

@@ -1,11 +1,11 @@
 <li class="$READ clearfix" data-id="$NOTIFICATION_ID">
   <div class="media">
     <div class="avatarXSmall pull-left">
-      <img src="$AVATAR" alt="$USER" />
+      <img src="$AVATAR" alt="<%=_ctx.escapeHTML(USER)%>" />
     </div>
     <div class="media-body">
       <%
-       String profileUrl = "<a class=\"user-name text-bold\" href=\"javascript:void(0)\">" + USER + "</a>";
+       String profileUrl = "<a class=\"user-name text-bold\" href=\"javascript:void(0)\">" + _ctx.escapeHTML(USER) + "</a>";
        String spaceUrl = "<span class=\"text-bold\">" + SPACE + "</span>";
       %>
       <div class="contentSmall" data-link="$VIEW_FULL_DISCUSSION_ACTION_URL">

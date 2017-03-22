@@ -8,6 +8,7 @@ import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.webui.profile.UIProfileUserSearch;
 import org.exoplatform.social.core.service.LinkProvider;
 import org.exoplatform.social.core.identity.model.Profile;
+import org.apache.commons.lang.StringEscapeUtils;
 
 def memberList = uicomponent.getMemberList();
 def managerList = uicomponent.getManagerList();
@@ -43,7 +44,7 @@ jsManager.require("SHARED/jquery", "jq")
    <% if (managerList.size() > 0) { %>
     <div class="itemList memberList clearfix">
    <%  for(user in managerList) {
-      String userName = user.getProfile().getFullName();
+      String userName = StringEscapeUtils.escapeHtml(user.getProfile().getFullName());
       position = user.getProfile().getPosition();
       String email = user.getProfile().getEmail();
       String profileURL = LinkProvider.getUserProfileUri(user.getRemoteId());
@@ -138,7 +139,7 @@ jsManager.require("SHARED/jquery", "jq")
   <% if(memberList.size() > 0) { %>
     <div class="itemList clearfix">
     <% for(user in memberList) {
-      String userName = user.getProfile().getFullName();
+      String userName = StringEscapeUtils.escapeHtml(user.getProfile().getFullName());
       String email = user.getProfile().getEmail();
       position = user.getProfile().position;
       if (!position) position = "";

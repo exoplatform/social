@@ -21,6 +21,7 @@ import java.util.List;
 import javax.portlet.MimeResponse;
 import javax.portlet.ResourceRequest;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.profile.ProfileFilter;
@@ -88,7 +89,7 @@ public class UIMiniConnectionsPortlet extends UIAbstractUserPortlet {
     for (Identity identity : identities) {
       ProfileBean profile = new ProfileBean(identity);
       html.append("<a href=\"").append(profile.getProfileURL()).append("\" class=\"avatarXSmall\" data-link=\"")
-          .append(event("RemoveConnection")).append("\">\n  <img alt=\"").append(profile.getDisplayName())
+          .append(event("RemoveConnection")).append("\">\n  <img alt=\"").append(StringEscapeUtils.escapeHtml(profile.getDisplayName()))
           .append("\" src=\"").append(profile.getAvatarURL()).append("\"/>\n</a>\n");
     }
     return html.toString();

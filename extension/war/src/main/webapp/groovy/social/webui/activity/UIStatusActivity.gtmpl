@@ -28,6 +28,7 @@
   import org.exoplatform.social.core.space.model.Space;
   import org.exoplatform.social.webui.Utils;
   import org.exoplatform.social.core.service.LinkProvider;
+  import org.apache.commons.lang.StringEscapeUtils;
 
   def pcontext = Util.getPortalRequestContext();
   def labelActivityHasBeenDeleted = _ctx.appRes("UIActivity.label.Activity_Has_Been_Deleted");
@@ -106,21 +107,21 @@
     } else if (totalLikesNum == 2) {
       def likeId = (displayedIdentityLikes[0] == Utils.getViewerIdentity().getId()) ? displayedIdentityLikes[1] : displayedIdentityLikes[0];
       def id = Utils.getIdentityManager().getIdentity(likeId);
-      labelLikes = labelYouAndOnePersonLikeThis.replace("{0}", id.profile.fullName);
+      labelLikes = labelYouAndOnePersonLikeThis.replace("{0}", StringEscapeUtils.escapeHtml(id.profile.fullName));
     } else {
       labelLikes = labelYouLikeThis;
     }
   } else {
     if (totalLikesNum > 2) {
       def id = Utils.getIdentityManager().getIdentity(displayedIdentityLikes[0]);
-      labelLikes = labelOneAndOthersLikeThis.replace("{0}", id.profile.fullName).replace("{1}", totalLikesNum - 1 + "");
+      labelLikes = labelOneAndOthersLikeThis.replace("{0}", StringEscapeUtils.escapeHtml(id.profile.fullName)).replace("{1}", totalLikesNum - 1 + "");
     } else if (totalLikesNum == 1) {
       def id = Utils.getIdentityManager().getIdentity(displayedIdentityLikes[0]);
-      labelLikes = labelOnePersonLikeThis.replace("{0}", id.profile.fullName);
+      labelLikes = labelOnePersonLikeThis.replace("{0}", StringEscapeUtils.escapeHtml(id.profile.fullName));
     } else if (totalLikesNum == 2) {
       def id1 = Utils.getIdentityManager().getIdentity(displayedIdentityLikes[0]);
       def id2 = Utils.getIdentityManager().getIdentity(displayedIdentityLikes[1]);
-      labelLikes = labelTwoPersonLikeThis.replace("{0}", id1.profile.fullName).replace("{1}", id2.profile.fullName);
+      labelLikes = labelTwoPersonLikeThis.replace("{0}", StringEscapeUtils.escapeHtml(id1.profile.fullName)).replace("{1}", StringEscapeUtils.escapeHtml(id2.profile.fullName));
     }
   }
 
@@ -132,7 +133,7 @@
   if (uicomponent.isUserActivity()) {
     ownerUri = LinkProvider.getUserProfileUri(ownerIdentity.getRemoteId());
     ownerAvatar = profile.avatarUrl;
-    ownerName = profile.fullName;
+    ownerName = StringEscapeUtils.escapeHtml(profile.fullName);
     if (!ownerAvatar) ownerAvatar= LinkProvider.PROFILE_DEFAULT_AVATAR_URL;
   } else if(uicomponent.isSpaceActivity()){
     Space space = Utils.getSpaceService().getSpaceByPrettyName(ownerIdentity.remoteId);
@@ -145,7 +146,7 @@
   } else {
     ownerUri = profile.url;
     ownerAvatar = profile.avatarUrl;
-    ownerName = profile.fullName;
+    ownerName = StringEscapeUtils.escapeHtml(profile.fullName);
   }
   def currentTime = System.currentTimeMillis();
   
@@ -213,7 +214,7 @@
             <%
             displayedIdentityLikes.each({
               def id = Utils.getIdentityManager().getIdentity(it);
-              personLikeFullName = id.profile.fullName;
+              personLikeFullName = StringEscapeUtils.escapeHtml(id.profile.fullName);
               personLikeProfileUri = LinkProvider.getUserProfileUri(id.getRemoteId());
               personLikeAvatarImageSource = id.profile.avatarUrl;
               if (!personLikeAvatarImageSource) personLikeAvatarImageSource = LinkProvider.PROFILE_DEFAULT_AVATAR_URL;
@@ -274,7 +275,7 @@
       }
 
       def id = Utils.getIdentityManager().getIdentity(it.userId);
-      commenterFullName = id.profile.fullName;
+      commenterFullName = StringEscapeUtils.escapeHtml(id.profile.fullName);
       commenterProfileUri = LinkProvider.getUserProfileUri(id.getRemoteId());
       commentMessage = it.title;
       commentPostedTime = uicomponent.getPostedTimeString(_ctx, it.postedTime);
@@ -313,7 +314,7 @@
       def currentCommenterIdentity = Utils.getOwnerIdentity();
       def currentCommenterUri = LinkProvider.getUserProfileUri(currentCommenterIdentity.getRemoteId());
       def currentCommenterAvatar = currentCommenterIdentity.profile.avatarUrl;
-      def currentCommenterName = currentCommenterIdentity.profile.fullName;
+      def currentCommenterName = StringEscapeUtils.escapeHtml(currentCommenterIdentity.profile.fullName);
       if (!currentCommenterAvatar) currentCommenterAvatar= LinkProvider.PROFILE_DEFAULT_AVATAR_URL;
     %>
     <% if (commentList.size() == 0) { %>

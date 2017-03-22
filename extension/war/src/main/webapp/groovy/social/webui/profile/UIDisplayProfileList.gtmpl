@@ -32,6 +32,7 @@ import org.exoplatform.portal.application.PortalRequestContext;
 import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.service.LinkProvider;
 import org.exoplatform.social.webui.connections.UIUpdateRelationship;
+import org.apache.commons.lang.StringEscapeUtils;
 
 def peopleIdx = 0;
 if (uicomponent.isNewOwner()) {
@@ -114,7 +115,7 @@ _ctx.getRequestContext().getJavascriptManager()
 				<% list.each {
 						def identity = it;
 						def profileURL = LinkProvider.getUserProfileUri(identity.getRemoteId());
-						def fullName = identity.profile.fullName;
+						def fullName = StringEscapeUtils.escapeHtml(identity.profile.fullName);
 						def email = identity.profile.email;
 						if (!email) { email = ""; }
 						def connectAction = uicomponent.event("Connect", identity.getId());

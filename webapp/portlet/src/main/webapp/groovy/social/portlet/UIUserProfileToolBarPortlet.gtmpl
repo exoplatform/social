@@ -23,6 +23,7 @@
 <%
 import org.exoplatform.social.webui.Utils;
 import org.exoplatform.social.core.service.LinkProvider;
+import org.apache.commons.lang.StringEscapeUtils;
 
 def requestContext = _ctx.getRequestContext();
 def jsManager = requestContext.getJavascriptManager();
@@ -39,7 +40,7 @@ def profileLink = LinkProvider.getProfileUri(user.userName);
 
 <ul class="UIUserToolBarPortlet UIHorizontalTabs" id="$uicomponent.id" style="position: relative;">
 	<li class="UITab NormalToolbarTab" >
-		<a class="SocialUserToolBarIcon TBIcon" href="$accountSettingsLink">${user.fullName}</a>
+		<a class="SocialUserToolBarIcon TBIcon" href="$accountSettingsLink"><%=StringEscapeUtils.escapeHtml(user.fullName)%></a>
         <ul style="position: absolute; display:none" class="MenuItemContainer">
             <li class="MenuItem">
                 <a href="$activitiesLink" class="ToolBarActivityIcon">$labelActivities</a>

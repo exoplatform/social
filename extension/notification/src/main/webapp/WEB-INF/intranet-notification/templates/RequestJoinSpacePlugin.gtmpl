@@ -1,12 +1,12 @@
 <li class="$READ clearfix" data-id="$NOTIFICATION_ID">
   <div class="media">
     <div class="avatarXSmall pull-left">
-      <img src="$AVATAR" alt="$USER" />
+      <img src="$AVATAR" alt="<%=_ctx.escapeHTML(USER)%>" />
     </div>
     <div class="media-body">
       <%
-        String profileUrl = "<a class=\"user-name text-bold\" href=\"javascript:void(0)\">" + USER + "</a>";
-        String spaceUrl = "<span class=\"text-bold\">" + SPACE + "</span>";
+        String profileUrl = "<a class=\"user-name text-bold\" href=\"javascript:void(0)\">" + _ctx.escapeHTML(USER) + "</a>";
+        String spaceUrl = "<span class=\"text-bold\">" + _ctx.escapeHTML(SPACE) + "</span>";
         String actions = (STATUS == "ACCEPTED")   ? _ctx.appRes("Notification.intranet.message.accept.RequestJoinSpacePlugin", profileUrl, spaceUrl)
                                                   : _ctx.appRes("Notification.intranet.message.RequestJoinSpacePlugin", profileUrl, spaceUrl);
         String iconType = (STATUS == "ACCEPTED")  ? "uiIconTick" : "uiIconAddMembership";

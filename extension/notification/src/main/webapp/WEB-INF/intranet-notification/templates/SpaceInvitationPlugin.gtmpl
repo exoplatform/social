@@ -1,11 +1,11 @@
 <li class="$READ clearfix" data-id="$NOTIFICATION_ID">
   <div class="media">
     <div class="avatarXSmall pull-left">
-      <img src="$SPACE_AVATAR" alt="$SPACE" />
+      <img src="$SPACE_AVATAR" alt="<%=_ctx.escapeHTML(SPACE)%>" />
     </div>
     <div class="media-body">
       <%
-        String spaceUrl = "<span class=\"text-bold\">" + SPACE + "</span>";
+        String spaceUrl = "<span class=\"text-bold\">" + _ctx.escapeHTML(SPACE) + "</span>";
         String actions = (STATUS == "ACCEPTED") ? _ctx.appRes("Notification.intranet.message.accept.SpaceInvitationPlugin", spaceUrl)
                                                 : _ctx.appRes("Notification.intranet.message.SpaceInvitationPlugin", spaceUrl);
         String iconType = (STATUS == "ACCEPTED")  ? "uiIconTick uiIconLightGray" : "uiIconSocGroup uiIconSocLightGray";
