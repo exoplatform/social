@@ -4,7 +4,7 @@
             <table  cellpadding="0" cellspacing="0" width="100%" bgcolor="#ffffff" align="center" style="border:1px solid #d8d8d8;">
                 <tr>
                     <td  height="45" valign="middle" style="margin:0;height:45px;font-weight:bold;vertical-align:middle;;background-color: #efefef;font-family: 'HelveticaNeue Bold', Helvetica, Arial, sans-serif;color:#2f5e92;font-size:18px;text-align:center">
-                        <%=_ctx.appRes("Notification.title.PostActivitySpaceStreamPlugin", SPACE)%>
+                        <%=_ctx.appRes("Notification.title.PostActivitySpaceStreamPlugin", _ctx.escapeHTML(SPACE))%>
                     </td>
                 </tr>
             </table>
@@ -18,11 +18,11 @@
                         <table border="0" cellpadding="0" cellspacing="0" width="92%" bgcolor="#ffffff" align="center" style="background-color: #ffffff; font-size: 13px;color:#333333;line-height: 18px;">
                             <tr>
                                 <td align="left" bgcolor="#ffffff" style="background-color: #ffffff;padding: 10px 0;">
-                                    <p style="margin: 10px 0; color: #333333; font-family: HelveticaNeue,Helvetica,Arial,sans-serif; font-size: 13px; line-height: 18px;"><%=_ctx.appRes("Notification.label.SayHello")%> $FIRSTNAME,</p>
+                                    <p style="margin: 10px 0; color: #333333; font-family: HelveticaNeue,Helvetica,Arial,sans-serif; font-size: 13px; line-height: 18px;"><%=_ctx.appRes("Notification.label.SayHello")%> <%=_ctx.escapeHTML(FIRSTNAME)%>,</p>
                                     <p style="margin: 10px 0; color: #333333; font-family: HelveticaNeue,Helvetica,Arial,sans-serif; font-size: 13px; line-height: 18px;">
                                         <%
-                                          String profileUrl = "<strong><a target=\"_blank\" style=\"color: #2f5e92; font-family: 'HelveticaNeue Bold', Helvetica, Arial, sans-serif; text-decoration: none; font-size: 13px; line-height: 18px;\" href=\""+ PROFILE_URL + "\">" + USER + "</a></strong>";
-                                          String spaceUrl = "<strong><a target=\"_blank\" style=\"color: #2f5e92; font-family: 'HelveticaNeue Bold', Helvetica, Arial, sans-serif; text-decoration: none; font-size: 13px; line-height: 18px;\" href=\""+ SPACE_URL + "\">" + SPACE + "</a></strong>";
+                                          String profileUrl = "<strong><a target=\"_blank\" style=\"color: #2f5e92; font-family: 'HelveticaNeue Bold', Helvetica, Arial, sans-serif; text-decoration: none; font-size: 13px; line-height: 18px;\" href=\""+ PROFILE_URL + "\">" + _ctx.escapeHTML(USER) + "</a></strong>";
+                                          String spaceUrl = "<strong><a target=\"_blank\" style=\"color: #2f5e92; font-family: 'HelveticaNeue Bold', Helvetica, Arial, sans-serif; text-decoration: none; font-size: 13px; line-height: 18px;\" href=\""+ SPACE_URL + "\">" + _ctx.escapeHTML(SPACE) + "</a></strong>";
                                         %>
                                     <%=_ctx.appRes("Notification.message.PostActivitySpaceStreamPlugin", profileUrl, spaceUrl)%>:
                                     </p>

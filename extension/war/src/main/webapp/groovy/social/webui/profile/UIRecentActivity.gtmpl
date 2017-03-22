@@ -3,6 +3,7 @@ import org.exoplatform.social.core.service.LinkProvider;
 import org.exoplatform.social.user.portlet.RecentActivitiesHelper;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.webui.Utils;
+import org.apache.commons.lang.StringEscapeUtils;
 
 def jsManager = _ctx.getRequestContext().getJavascriptManager();
 jsManager.require("SHARED/social-ui-activity", "activity").addScripts("activity.resizeComment();");
@@ -20,7 +21,7 @@ if(activity == null) {
   def profile = RecentActivitiesHelper.getOwnerActivityProfile(activity);
   String avatarURL = profile.getAvatarUrl();
   String profileURL = profile.getUrl();
-  String displayName = profile.getFullName();
+  String displayName = StringEscapeUtils.escapeHtml(profile.getFullName());
   String link = RecentActivitiesHelper.getLink(activity);
   String linkTitle = RecentActivitiesHelper.getLinkTitle(activity);
 %>

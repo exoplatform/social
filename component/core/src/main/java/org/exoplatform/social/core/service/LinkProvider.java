@@ -16,6 +16,7 @@
  */
 package org.exoplatform.social.core.service;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.Validate;
 import org.exoplatform.commons.utils.CommonsUtils;
 import org.exoplatform.container.PortalContainer;
@@ -156,7 +157,7 @@ public class LinkProvider {
 
     return new StringBuilder("<a href=\"").append((configured_domain_url != null) ? configured_domain_url : "")
                 .append(buildProfileUri(identity.getRemoteId(), null, portalOwner)).append("\" target=\"_parent\">")
-                .append(identity.getProfile().getFullName()).append("</a>").toString();
+                .append(StringEscapeUtils.escapeHtml(identity.getProfile().getFullName())).append("</a>").toString();
   }
 
   /**

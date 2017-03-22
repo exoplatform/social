@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 
 import org.exoplatform.commons.utils.LazyPageList;
@@ -622,7 +623,7 @@ public class UISpaceMember extends UIContainer {
     
     if (identity == null) return StringUtils.EMPTY;
     
-    return identity.getProfile().getFullName();
+    return StringEscapeUtils.escapeHtml(identity.getProfile().getFullName());
   }
 
   public boolean isNewSearch() {

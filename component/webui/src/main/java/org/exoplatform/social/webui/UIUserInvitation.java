@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.ResourceBundle;
 import java.util.Set;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.exoplatform.webui.core.UIPortletApplication;
 
 import org.apache.commons.lang.ArrayUtils;
@@ -270,7 +271,7 @@ public class UIUserInvitation extends UIForm {
 
           if (usersForInviting.size() == 1) {
             Identity identity = idm.getOrCreateIdentity(OrganizationIdentityProvider.NAME, usersForInviting.get(0), true);
-            uicomponent.addMessage(new ApplicationMessage("UIUserInvitation.msg.user-invited", new String[]{identity.getProfile().getFullName()}));
+            uicomponent.addMessage(new ApplicationMessage("UIUserInvitation.msg.user-invited", new String[]{StringEscapeUtils.escapeHtml(identity.getProfile().getFullName())}));
           } else {
             uicomponent.addMessage(new ApplicationMessage("UIUserInvitation.msg.users-invited", new String[]{String.valueOf(usersForInviting.size())}));
           }

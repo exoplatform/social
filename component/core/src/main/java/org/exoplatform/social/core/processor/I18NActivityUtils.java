@@ -16,7 +16,11 @@
  */
 package org.exoplatform.social.core.processor;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
@@ -25,6 +29,8 @@ public class I18NActivityUtils {
 
   /** */
   private final static String RESOURCE_BUNDLE_VALUES_PARAM = "RESOURCE_BUNDLE_VALUES_PARAM";
+
+  private final static String RESOURCE_BUNDLE_KEY_TO_PROCESS = "RESOURCE_BUNDLE_KEY_TO_PROCESS";
   
   /** */
   private final static String RESOURCE_BUNDLE_VALUES_CHARACTER = "#";
@@ -138,7 +144,54 @@ public class I18NActivityUtils {
     
     activity.setTemplateParams(params);
   }
-  
+
+  /**
+   * Keep which resource key should be process to remove invalid html tag
+   * @param activity the activity
+   * @param key the key
+   */
+  public static void addResourceKeyToProcess(ExoSocialActivity activity, String key) {
+    if (activity == null) {
+      return;
+    }
+
+    //
+    Map<String, String> params = activity.getTemplateParams();
+    if (params == null) {
+      params = new LinkedHashMap<String, String>();
+    }
+
+    String value = key;
+    String oldValue = params.get(RESOURCE_BUNDLE_KEY_TO_PROCESS);
+    if (oldValue != null) {
+      String s = String.format("%s,%s", oldValue, key);
+      params.put(RESOURCE_BUNDLE_KEY_TO_PROCESS, s);
+    } else {
+      params.put(RESOURCE_BUNDLE_KEY_TO_PROCESS, key);
+    }
+
+    activity.setTemplateParams(params);
+  }
+
+  /**
+   * Get list of resource key which need to process
+   * @param activity
+   * @return list of key
+   */
+  public static List<String> getResourceKeysToProcess(ExoSocialActivity activity) {
+    if (activity == null) {
+      return Collections.emptyList();
+    }
+
+    //
+    Map<String, String> params = activity.getTemplateParams();
+    if (params == null || !params.containsKey(RESOURCE_BUNDLE_KEY_TO_PROCESS)) {
+      return Collections.emptyList();
+    }
+
+    return Arrays.asList(params.get(RESOURCE_BUNDLE_KEY_TO_PROCESS).split(","));
+  }
+
   /**
    * Escapse # character into values
    * @param value
