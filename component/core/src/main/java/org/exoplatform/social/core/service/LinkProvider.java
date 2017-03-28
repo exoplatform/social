@@ -377,7 +377,6 @@ public class LinkProvider {
    * @return The profile URI.
    */
   private static String buildProfileUri(final String userName, final String portalName, String portalOwner) {
-    if(portalOwner == null || portalOwner.trim().length() == 0) portalOwner = DEFAULT_PORTAL_OWNER;
     return getBaseUri(portalName, portalOwner) + "/profile" + ROUTE_DELIMITER + userName;
   }
 
@@ -446,7 +445,7 @@ public class LinkProvider {
    */
   private static String getPortalOwner(String portalOwner) {
     if (portalOwner == null || portalOwner.trim().length() == 0) {
-      portalOwner = CommonsUtils.getCurrentSite().getName();
+      portalOwner = CommonsUtils.getCurrentPortalOwner();
     }
     return portalOwner;
   }
