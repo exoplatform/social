@@ -298,6 +298,7 @@ public class DefaultSpaceApplicationHandler implements SpaceApplicationHandler {
       
       if (removedNode == null) {
         // In case of cannot find the removed node, try one more time
+        spaceApplications = getSpaceService().getSpaceApplicationConfigPlugin().getSpaceApplicationList();
         for (SpaceApplication spaceApplication : spaceApplications) {
           if (appId.equals(spaceApplication.getPortletName())) {
             removedNode = spaceUserNode.getChild(spaceApplication.getUri());
