@@ -205,7 +205,7 @@ public class SpaceActivityPublisherTest extends  AbstractCoreTest {
        comments = activityManager.getCommentsWithListAccess(newActivity).loadAsList(0, 20);
        
        assertEquals(2, activityManager.getCommentsWithListAccess(newActivity).getSize());
-       assertEquals("<a href=\"/portal/classic/profile/demo\" rel=\"nofollow\">Demo gtn</a> has been promoted as space&#39;s manager.", comments.get(1).getTitle());
+       assertEquals("<a href=\"/portal/intranet/profile/demo\" rel=\"nofollow\">Demo gtn</a> has been promoted as space&#39;s manager.", comments.get(1).getTitle());
        assertEquals(identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "root", false).getId(), comments.get(1).getUserId());
        
        //
@@ -214,7 +214,7 @@ public class SpaceActivityPublisherTest extends  AbstractCoreTest {
        comments = activityManager.getCommentsWithListAccess(newActivity).loadAsList(0, 20);
        
        assertEquals(3, activityManager.getCommentsWithListAccess(newActivity).getSize());
-       assertEquals("<a href=\"/portal/classic/profile/demo\" rel=\"nofollow\">Demo gtn</a> has been revoked as space&#39;s manager.", comments.get(2).getTitle());
+       assertEquals("<a href=\"/portal/intranet/profile/demo\" rel=\"nofollow\">Demo gtn</a> has been revoked as space&#39;s manager.", comments.get(2).getTitle());
        assertEquals(identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "root", false).getId(), comments.get(2).getUserId());
      }
      

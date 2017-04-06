@@ -68,7 +68,7 @@ public class LinkProvider {
   /**
    * Hacks for unit test to work.
    */
-  public static String DEFAULT_PORTAL_OWNER = "classic";
+  public static String DEFAULT_PORTAL_OWNER = "intranet";
 
   /**
    * Constructor with parameter to inject the default portal owner name.
