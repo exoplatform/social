@@ -355,6 +355,8 @@ public class RDBMSActivityStorageImpl extends ActivityStorageImpl {
       activityEntity.addComment(commentEntity);
 
       eXoComment.setId(getExoCommentID(commentEntity.getId()));
+      eXoComment.setPosterId(commentEntity.getPosterId());
+      eXoComment.setParentId(String.valueOf(commentEntity.getParent().getId()));
       Set<String> mentioned = commentEntity.getMentionerIds();
       if (mentioned != null && !mentioned.isEmpty()) {
         eXoComment.setMentionedIds(mentioned.toArray(new String[mentioned.size()]));
