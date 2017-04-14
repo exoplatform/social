@@ -43,7 +43,7 @@ public class NewUserPlugin extends BaseNotificationPlugin {
     try {
       UserSettingService userSettingService = CommonsUtils.getService(UserSettingService.class);
       //
-      userSettingService.addMixin(remoteId);
+      userSettingService.initDefaultSettings(remoteId);
       //
 
       return NotificationInfo.instance()

@@ -1,14 +1,14 @@
 package org.exoplatform.social.notification.mock;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.exoplatform.commons.api.notification.NotificationContext;
 import org.exoplatform.commons.api.notification.model.UserSetting;
 import org.exoplatform.commons.api.notification.service.setting.UserSettingService;
 import org.exoplatform.services.organization.User;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class MockUserSettingServiceImpl implements UserSettingService {
 
@@ -44,11 +44,11 @@ public class MockUserSettingServiceImpl implements UserSettingService {
   }
 
   @Override
-  public void addMixin(String userId) {
+  public void initDefaultSettings(String userId) {
   }
 
   @Override
-  public void addMixin(User[] users) {
+  public void initDefaultSettings(User[] users) {
   }
 
   @Override

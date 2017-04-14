@@ -86,7 +86,7 @@ public class MailTemplateProvider extends TemplateProvider {
       ExoSocialActivity activity = Utils.getActivityManager().getActivity(activityId);
       ExoSocialActivity parentActivity = Utils.getActivityManager().getParentActivity(activity);
       Identity identity = Utils.getIdentityManager().getIdentity(activity.getPosterId(), true);
-      
+
       TemplateContext templateContext = new TemplateContext(notification.getKey().getId(), language);
       templateContext.put("USER", identity.getProfile().getFullName());
       String subject = TemplateUtils.processSubject(templateContext);
@@ -112,12 +112,12 @@ public class MailTemplateProvider extends TemplateProvider {
       String language = getLanguage(first);
       TemplateContext templateContext = new TemplateContext(first.getKey().getId(), language);
       SocialNotificationUtils.addFooterAndFirstName(first.getTo(), templateContext);
-      
+
       //Store the activity id as key, and the list all identities who posted to the activity.
       Map<String, List<String>> receiverMap = new LinkedHashMap<String, List<String>>();
       Map<String, List<Pair<String, String>>> activityUserComments = new LinkedHashMap<String, List<Pair<String, String>>>();
-      
-      
+
+
       try {
         for (NotificationInfo message : notifications) {
           String activityId = message.getValueOwnerParameter(SocialNotificationUtils.ACTIVITY_ID.getKey());
@@ -129,6 +129,21 @@ public class MailTemplateProvider extends TemplateProvider {
           String poster = message.getValueOwnerParameter("poster");
           Pair<String, String> userComment = new ImmutablePair<String, String>(poster, activity.getTitle());
           ExoSocialActivity parentActivity = Utils.getActivityManager().getParentActivity(activity);
+          if (parentActivity.getStreamOwner() != null) {
+            Identity spaceIdentity = Utils.getIdentityManager().getOrCreateIdentity(SpaceIdentityProvider.NAME, parentActivity.getStreamOwner(), true);
+            if (spaceIdentity == null) {
+              if (message.getTo()!=null && !message.getTo().equals(parentActivity.getStreamOwner())) {
+                continue;
+              }
+            } else if (parentActivity.getPosterId() != null) {
+              Identity identity = Utils.getIdentityManager().getIdentity(parentActivity.getPosterId(), true);
+              if (identity != null) {
+                if (message.getTo() != null && !message.getTo().equals(identity.getRemoteId())) {
+                  continue;
+                }
+              }
+            }
+          }
           //
           SocialNotificationUtils.processInforSendTo(receiverMap, parentActivity.getId(), poster);
           SocialNotificationUtils.processInforUserComments(activityUserComments, parentActivity.getId(), userComment);
@@ -138,31 +153,31 @@ public class MailTemplateProvider extends TemplateProvider {
         ctx.setException(e);
         return false;
       }
-      
+
       return true;
     }
-    
+
   };
-  
+
   /** Defines the template builder for ActivityMentionPlugin*/
   private AbstractTemplateBuilder mention = new AbstractTemplateBuilder() {
     @Override
     protected MessageInfo makeMessage(NotificationContext ctx) {
       MessageInfo messageInfo = new MessageInfo();
-      
+
       NotificationInfo notification = ctx.getNotificationInfo();
       String language = getLanguage(notification);
 
       TemplateContext templateContext = new TemplateContext(notification.getKey().getId(), language);
       SocialNotificationUtils.addFooterAndFirstName(notification.getTo(), templateContext);
-      
+
       String activityId = notification.getValueOwnerParameter(SocialNotificationUtils.ACTIVITY_ID.getKey());
       ExoSocialActivity activity = Utils.getActivityManager().getActivity(activityId);
       Identity identity = Utils.getIdentityManager().getIdentity(activity.getPosterId(), true);
 
       templateContext.put("USER", identity.getProfile().getFullName());
       String subject = TemplateUtils.processSubject(templateContext);
-      
+
       templateContext.put("AVATAR", LinkProviderUtils.getUserAvatarUrl(identity.getProfile()));
       templateContext.put("PROFILE_URL", LinkProviderUtils.getRedirectUrl("user", identity.getRemoteId()));
       templateContext.put("OPEN_URL", LinkProviderUtils.getOpenLink(activity));
@@ -193,7 +208,7 @@ public class MailTemplateProvider extends TemplateProvider {
 
       String language = getLanguage(first);
       TemplateContext templateContext = new TemplateContext(first.getKey().getId(), language);
-      
+
       Map<String, List<String>> receiverMap = new LinkedHashMap<String, List<String>>();
       try {
         for (NotificationInfo notification : notifications) {
@@ -202,8 +217,21 @@ public class MailTemplateProvider extends TemplateProvider {
           if (activity == null) {
             continue;
           }
+          List<String> mentionedUsers = new LinkedList<String>();
+          for (String id : activity.getMentionedIds()) {
+            if (id.contains("@")) {
+              id = id.substring(0, id.length() - 2);
+            }
+            Identity identity = Utils.getIdentityManager().getIdentity(id, true);
+            if (identity != null) {
+              mentionedUsers.add(identity.getRemoteId());
+            }
+          }
+          if (notification.getTo() != null && !mentionedUsers.contains(notification.getTo())) {
+            continue;
+          }
           Identity identity = Utils.getIdentityManager().getIdentity(activity.getPosterId(), true);
-          
+
           if (activity.isComment()) {
             activity = Utils.getActivityManager().getParentActivity(activity);
           }
@@ -216,28 +244,28 @@ public class MailTemplateProvider extends TemplateProvider {
         ctx.setException(e);
         return false;
       }
-      
+
       return true;
     }
-    
+
   };
-  
+
   /** Defines the template builder for LikePlugin*/
   private AbstractTemplateBuilder like = new AbstractTemplateBuilder() {
     @Override
     protected MessageInfo makeMessage(NotificationContext ctx) {
       MessageInfo messageInfo = new MessageInfo();
-      
+
       NotificationInfo notification = ctx.getNotificationInfo();
-      
+
       String language = getLanguage(notification);
       TemplateContext templateContext = new TemplateContext(notification.getKey().getId(), language);
       SocialNotificationUtils.addFooterAndFirstName(notification.getTo(), templateContext);
-      
+
       String activityId = notification.getValueOwnerParameter(SocialNotificationUtils.ACTIVITY_ID.getKey());
       ExoSocialActivity activity = Utils.getActivityManager().getActivity(activityId);
       Identity identity = Utils.getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, notification.getValueOwnerParameter("likersId"), true);
-      
+
       templateContext.put("USER", identity.getProfile().getFullName());
       templateContext.put("SUBJECT", activity.getTitle());
       String subject = TemplateUtils.processSubject(templateContext);
@@ -270,18 +298,27 @@ public class MailTemplateProvider extends TemplateProvider {
 
       String language = getLanguage(first);
       TemplateContext templateContext = new TemplateContext(first.getKey().getId(), language);
-      
+
       Map<String, List<String>> map = new LinkedHashMap<String, List<String>>();
 
       try {
         for (NotificationInfo message : notifications) {
           String activityId = message.getValueOwnerParameter(SocialNotificationUtils.ACTIVITY_ID.getKey());
-          
+
           ExoSocialActivity activity = Utils.getActivityManager().getActivity(activityId);
 
           //
           if (activity == null) {
             continue;
+          }
+
+          if (activity.getPosterId() != null) {
+            Identity identity = Utils.getIdentityManager().getIdentity(activity.getPosterId(), true);
+            if (identity != null) {
+              if (message.getTo() != null && !message.getTo().equals(identity.getRemoteId())) {
+                continue;
+              }
+            }
           }
 
           //
@@ -299,21 +336,21 @@ public class MailTemplateProvider extends TemplateProvider {
         ctx.setException(e);
         return false;
       }
-      
-      
+
+
       return true;
     }
-    
+
   };
-  
+
   /** Defines the template builder for NewUserPlugin*/
   private AbstractTemplateBuilder newUser = new AbstractTemplateBuilder() {
     @Override
     protected MessageInfo makeMessage(NotificationContext ctx) {
       MessageInfo messageInfo = new MessageInfo();
-      
+
       NotificationInfo notification = ctx.getNotificationInfo();
-      
+
       String language = getLanguage(notification);
       TemplateContext templateContext = new TemplateContext(notification.getKey().getId(), language);
       SocialNotificationUtils.addFooterAndFirstName(notification.getTo(), templateContext);
@@ -321,19 +358,19 @@ public class MailTemplateProvider extends TemplateProvider {
       String remoteId = notification.getValueOwnerParameter(SocialNotificationUtils.REMOTE_ID.getKey());
       Identity identity = Utils.getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, remoteId, true);
       Profile userProfile = identity.getProfile();
-      
+
       templateContext.put("USER", userProfile.getFullName());
       templateContext.put("PORTAL_NAME", NotificationPluginUtils.getBrandingPortalName());
       templateContext.put("PORTAL_HOME", NotificationUtils.getPortalHome(NotificationPluginUtils.getBrandingPortalName()));
       String subject = TemplateUtils.processSubject(templateContext);
-      
+
       templateContext.put("PROFILE_URL", LinkProviderUtils.getRedirectUrl("user", identity.getRemoteId()));
       templateContext.put("AVATAR", LinkProviderUtils.getUserAvatarUrl(userProfile));
       templateContext.put("CONNECT_ACTION_URL", LinkProviderUtils.getInviteToConnectUrl(identity.getRemoteId(), notification.getTo()));
       String body = TemplateUtils.processGroovy(templateContext);
       //binding the exception throws by processing template
       ctx.setException(templateContext.getException());
-      
+
       return messageInfo.subject(subject).body(body).end();
     }
 
@@ -344,7 +381,7 @@ public class MailTemplateProvider extends TemplateProvider {
 
       String language = getLanguage(first);
       TemplateContext templateContext = new TemplateContext(first.getKey().getId(), language);
-      
+
       Map<String, List<String>> map = new LinkedHashMap<String, List<String>>();
       try {
         for (NotificationInfo message : notifications) {
@@ -355,12 +392,12 @@ public class MailTemplateProvider extends TemplateProvider {
           if (identity.isDeleted() == true) {
             continue;
           }
-          
+
           SocialNotificationUtils.processInforSendTo(map, first.getKey().getId(), remoteId);
         }
-        
+
         String portalName = System.getProperty("exo.notifications.portalname", "eXo");
-        
+
         templateContext.put("PORTAL_NAME", portalName);
         templateContext.put("PORTAL_HOME", SocialNotificationUtils.buildRedirecUrl("portal_home", portalName, portalName));
 
@@ -369,20 +406,20 @@ public class MailTemplateProvider extends TemplateProvider {
         ctx.setException(e);
         return false;
       }
-      
+
       return true;
     }
-    
+
   };
-  
+
   /** Defines the template builder for PostActivityPlugin*/
   private AbstractTemplateBuilder postActivity = new AbstractTemplateBuilder() {
     @Override
     protected MessageInfo makeMessage(NotificationContext ctx) {
       MessageInfo messageInfo = new MessageInfo();
-      
+
       NotificationInfo notification = ctx.getNotificationInfo();
-      
+
       String language = getLanguage(notification);
       TemplateContext templateContext = new TemplateContext(notification.getKey().getId(), language);
       SocialNotificationUtils.addFooterAndFirstName(notification.getTo(), templateContext);
@@ -390,21 +427,21 @@ public class MailTemplateProvider extends TemplateProvider {
       String activityId = notification.getValueOwnerParameter(SocialNotificationUtils.ACTIVITY_ID.getKey());
       ExoSocialActivity activity = Utils.getActivityManager().getActivity(activityId);
       Identity identity = Utils.getIdentityManager().getIdentity(activity.getPosterId(), true);
-      
-      
+
+
       templateContext.put("USER", identity.getProfile().getFullName());
       templateContext.put("SUBJECT", activity.getTitle());
       String subject = TemplateUtils.processSubject(templateContext);
-      
+
       templateContext.put("PROFILE_URL", LinkProviderUtils.getRedirectUrl("user", identity.getRemoteId()));
       templateContext.put("OPEN_URL", LinkProviderUtils.getOpenLink(activity));
       templateContext.put("REPLY_ACTION_URL", LinkProviderUtils.getRedirectUrl("reply_activity", activity.getId()));
       templateContext.put("VIEW_FULL_DISCUSSION_ACTION_URL", LinkProviderUtils.getRedirectUrl("view_full_activity", activity.getId()));
-      
+
       String body = SocialNotificationUtils.getBody(ctx, templateContext, activity);
       //binding the exception throws by processing template
       ctx.setException(templateContext.getException());
-      
+
       return messageInfo.subject(subject).body(body).end();
     }
 
@@ -414,16 +451,16 @@ public class MailTemplateProvider extends TemplateProvider {
       NotificationInfo first = notifications.get(0);
       String sendToUser = first.getTo();
       String language = getLanguage(first);
-      
+
       TemplateContext templateContext = new TemplateContext(first.getKey().getId(), language);
       Map<String, List<String>> receiverMap = new LinkedHashMap<String, List<String>>();
-      
+
       try {
         for (NotificationInfo message : notifications) {
           ExoSocialActivity activity = Utils.getActivityManager().getActivity(message.getValueOwnerParameter(SocialNotificationUtils.ACTIVITY_ID.getKey()));
-          
+
           //Case of activity was deleted, ignore this notification
-          if (activity == null) {
+          if (activity == null || !activity.getStreamOwner().equals(message.getTo())) {
             continue;
           }
           SocialNotificationUtils.processInforSendTo(receiverMap, sendToUser, message.getValueOwnerParameter(SocialNotificationUtils.POSTER.getKey()));
@@ -435,17 +472,17 @@ public class MailTemplateProvider extends TemplateProvider {
       }
       return true;
     }
-    
+
   };
-  
+
   /** Defines the template builder for PostActivitySpaceStreamPlugin*/
   private AbstractTemplateBuilder postActivitySpace = new AbstractTemplateBuilder() {
     @Override
     protected MessageInfo makeMessage(NotificationContext ctx) {
       MessageInfo messageInfo = new MessageInfo();
-      
+
       NotificationInfo notification = ctx.getNotificationInfo();
-      
+
       String language = getLanguage(notification);
       TemplateContext templateContext = new TemplateContext(notification.getKey().getId(), language);
       SocialNotificationUtils.addFooterAndFirstName(notification.getTo(), templateContext);
@@ -453,14 +490,14 @@ public class MailTemplateProvider extends TemplateProvider {
       String activityId = notification.getValueOwnerParameter(SocialNotificationUtils.ACTIVITY_ID.getKey());
       ExoSocialActivity activity = Utils.getActivityManager().getActivity(activityId);
       Identity identity = Utils.getIdentityManager().getIdentity(activity.getPosterId(), true);
-      
+
       Identity spaceIdentity = Utils.getIdentityManager().getOrCreateIdentity(SpaceIdentityProvider.NAME, activity.getStreamOwner(), true);
-      
+
       templateContext.put("USER", identity.getProfile().getFullName());
       templateContext.put("SPACE", spaceIdentity.getProfile().getFullName());
       templateContext.put("SUBJECT", activity.getTitle());
       String subject = TemplateUtils.processSubject(templateContext);
-      
+
       Space space = Utils.getSpaceService().getSpaceByPrettyName(spaceIdentity.getRemoteId());
       templateContext.put("SPACE_URL", LinkProviderUtils.getRedirectUrl("space", space.getId()));
       templateContext.put("OPEN_URL", LinkProviderUtils.getOpenLink(activity));
@@ -471,7 +508,7 @@ public class MailTemplateProvider extends TemplateProvider {
       String body = SocialNotificationUtils.getBody(ctx, templateContext, activity);
       //binding the exception throws by processing template
       ctx.setException(templateContext.getException());
-      
+
       return messageInfo.subject(subject).body(body).end();
     }
 
@@ -482,9 +519,9 @@ public class MailTemplateProvider extends TemplateProvider {
 
       String language = getLanguage(first);
       TemplateContext templateContext = new TemplateContext(first.getKey().getId(), language);
-      
+
       Map<String, List<String>> map = new LinkedHashMap<String, List<String>>();
-      
+
       try {
         for (NotificationInfo message : notifications) {
           String activityId = message.getValueOwnerParameter(SocialNotificationUtils.ACTIVITY_ID.getKey());
@@ -493,6 +530,9 @@ public class MailTemplateProvider extends TemplateProvider {
             continue;
           }
           Space space = Utils.getSpaceService().getSpaceByPrettyName(activity.getStreamOwner());
+          if (!Arrays.asList(space.getMembers()).contains(message.getTo())) {
+            continue;
+          }
           //
           SocialNotificationUtils.processInforSendTo(map, space.getId(), message.getValueOwnerParameter(SocialNotificationUtils.POSTER.getKey()));
         }
@@ -503,7 +543,7 @@ public class MailTemplateProvider extends TemplateProvider {
       }
       return true;
     }
-    
+
   };
 
 
@@ -513,9 +553,9 @@ public class MailTemplateProvider extends TemplateProvider {
     @Override
     protected MessageInfo makeMessage(NotificationContext ctx) {
       MessageInfo messageInfo = new MessageInfo();
-      
+
       NotificationInfo notification = ctx.getNotificationInfo();
-      
+
       String language = getLanguage(notification);
       TemplateContext templateContext = new TemplateContext(notification.getKey().getId(), language);
 
@@ -524,11 +564,11 @@ public class MailTemplateProvider extends TemplateProvider {
       SocialNotificationUtils.addFooterAndFirstName(toUser, templateContext);
       Identity identity = Utils.getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, sender, true);
       Profile userProfile = identity.getProfile();
-      
+
       templateContext.put("PORTAL_NAME", System.getProperty("exo.notifications.portalname", "eXo"));
       templateContext.put("USER", userProfile.getFullName());
       String subject = TemplateUtils.processSubject(templateContext);
-      
+
       templateContext.put("PROFILE_URL", LinkProviderUtils.getRedirectUrl("user", identity.getRemoteId()));
       templateContext.put("AVATAR", LinkProviderUtils.getUserAvatarUrl(userProfile));
       templateContext.put("ACCEPT_CONNECTION_REQUEST_ACTION_URL", LinkProviderUtils.getConfirmInvitationToConnectUrl(sender, toUser));
@@ -544,14 +584,14 @@ public class MailTemplateProvider extends TemplateProvider {
       List<NotificationInfo> notifications = ctx.getNotificationInfos();
       NotificationInfo first = notifications.get(0);
       String language = getLanguage(first);
-      
+
       TemplateContext templateContext = new TemplateContext(first.getKey().getId(), language);
       Map<String, List<String>> receiverMap = new LinkedHashMap<String, List<String>>();
 
       try {
         for (NotificationInfo message : notifications) {
           Relationship relationship = Utils.getRelationshipManager().get(message.getValueOwnerParameter(SocialNotificationUtils.RELATIONSHIP_ID.getKey()));
-          if (relationship == null || relationship.getStatus().name().equals("PENDING") == false) {
+          if (relationship == null || relationship.getStatus().name().equals("PENDING") == false || !relationship.getReceiver().getRemoteId().equals(message.getTo())) {
             continue;
           }
           SocialNotificationUtils.processInforSendTo(receiverMap, first.getTo(), message.getValueOwnerParameter(SocialNotificationUtils.SENDER.getKey()));
@@ -563,17 +603,17 @@ public class MailTemplateProvider extends TemplateProvider {
       }
       return true;
     }
-    
+
   };
-  
+
   /** Defines the template builder for RequestJoinSpacePlugin*/
   private AbstractTemplateBuilder requestJoinSpace = new AbstractTemplateBuilder() {
     @Override
     protected MessageInfo makeMessage(NotificationContext ctx) {
       MessageInfo messageInfo = new MessageInfo();
-      
+
       NotificationInfo notification = ctx.getNotificationInfo();
-      
+
       String language = getLanguage(notification);
       TemplateContext templateContext = new TemplateContext(notification.getKey().getId(), language);
       SocialNotificationUtils.addFooterAndFirstName(notification.getTo(), templateContext);
@@ -582,11 +622,11 @@ public class MailTemplateProvider extends TemplateProvider {
       Space space = Utils.getSpaceService().getSpaceById(spaceId);
       Identity identity = Utils.getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, notification.getValueOwnerParameter("request_from"), true);
       Profile userProfile = identity.getProfile();
-      
+
       templateContext.put("SPACE", space.getDisplayName());
       templateContext.put("USER", userProfile.getFullName());
       String subject = TemplateUtils.processSubject(templateContext);
-      
+
       templateContext.put("SPACE_URL", LinkProviderUtils.getRedirectUrl("space_members", space.getId()));
       templateContext.put("PROFILE_URL", LinkProviderUtils.getRedirectUrl("user", identity.getRemoteId()));
       templateContext.put("AVATAR", LinkProviderUtils.getUserAvatarUrl(userProfile));
@@ -595,7 +635,7 @@ public class MailTemplateProvider extends TemplateProvider {
       String body = TemplateUtils.processGroovy(templateContext);
       //binding the exception throws by processing template
       ctx.setException(templateContext.getException());
-      
+
       return messageInfo.subject(subject).body(body).end();
     }
 
@@ -606,7 +646,7 @@ public class MailTemplateProvider extends TemplateProvider {
 
       String language = getLanguage(first);
       TemplateContext templateContext = new TemplateContext(first.getKey().getId(), language);
-      
+
       Map<String, List<String>> map = new LinkedHashMap<String, List<String>>();
 
       try {
@@ -614,7 +654,7 @@ public class MailTemplateProvider extends TemplateProvider {
           String spaceId = message.getValueOwnerParameter(SocialNotificationUtils.SPACE_ID.getKey());
           String fromUser = message.getValueOwnerParameter("request_from");
           Space space = Utils.getSpaceService().getSpaceById(spaceId);
-          if (ArrayUtils.contains(space.getPendingUsers(), fromUser) == false) {
+          if (ArrayUtils.contains(space.getPendingUsers(), fromUser) == false || !ArrayUtils.contains(space.getManagers(), message.getTo())) {
             continue;
           }
           //
@@ -627,35 +667,35 @@ public class MailTemplateProvider extends TemplateProvider {
       }
       return true;
     }
-    
+
   };
-  
+
   /** Defines the template builder for SpaceInvitationPlugin*/
   private AbstractTemplateBuilder spaceInvitation = new AbstractTemplateBuilder() {
     @Override
     protected MessageInfo makeMessage(NotificationContext ctx) {
       MessageInfo messageInfo = new MessageInfo();
-      
+
       NotificationInfo notification = ctx.getNotificationInfo();
-      
+
       String language = getLanguage(notification);
       TemplateContext templateContext = new TemplateContext(notification.getKey().getId(), language);
       SocialNotificationUtils.addFooterAndFirstName(notification.getTo(), templateContext);
 
       String spaceId = notification.getValueOwnerParameter(SocialNotificationUtils.SPACE_ID.getKey());
       Space space = Utils.getSpaceService().getSpaceById(spaceId);
-      
+
       templateContext.put("SPACE", space.getDisplayName());
       templateContext.put("SPACE_URL", LinkProviderUtils.getRedirectUrl("space", space.getId()));
       String subject = TemplateUtils.processSubject(templateContext);
-      
+
       templateContext.put("SPACE_AVATAR", LinkProviderUtils.getSpaceAvatarUrl(space));
       templateContext.put("ACCEPT_SPACE_INVITATION_ACTION_URL", LinkProviderUtils.getAcceptInvitationToJoinSpaceUrl(space.getId(), notification.getTo()));
       templateContext.put("REFUSE_SPACE_INVITATION_ACTION_URL", LinkProviderUtils.getIgnoreInvitationToJoinSpaceUrl(space.getId(), notification.getTo()));
       String body = TemplateUtils.processGroovy(templateContext);
       //binding the exception throws by processing template
       ctx.setException(templateContext.getException());
-      
+
       return messageInfo.subject(subject).body(body).end();
     }
 
@@ -664,10 +704,10 @@ public class MailTemplateProvider extends TemplateProvider {
       List<NotificationInfo> notifications = ctx.getNotificationInfos();
       NotificationInfo first = notifications.get(0);
       String language = getLanguage(first);
-      
+
       TemplateContext templateContext = new TemplateContext(first.getKey().getId(), language);
       Map<String, List<String>> receiverMap = new LinkedHashMap<String, List<String>>();
-      
+
       try {
         for (NotificationInfo message : notifications) {
           String spaceId = message.getValueOwnerParameter(SocialNotificationUtils.SPACE_ID.getKey());
@@ -683,10 +723,10 @@ public class MailTemplateProvider extends TemplateProvider {
         ctx.setException(e);
         return false;
       }
-      
+
       return true;
     }
-    
+
   };
 
   protected ExoSocialActivity getI18N(ExoSocialActivity activity,Locale locale) {
@@ -697,7 +737,7 @@ public class MailTemplateProvider extends TemplateProvider {
     }
     return activity;
   }
-  
+
   public MailTemplateProvider(InitParams initParams) {
     super(initParams);
     this.templateBuilders.put(PluginKey.key(ActivityCommentPlugin.ID), comment);
