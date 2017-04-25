@@ -37,8 +37,8 @@
       var horizontal = parent.find('div.form-horizontal');
       //
       horizontal.find('input.iphoneStyle').iphoneStyle({ 
-        checkedLabel:'YES', 
-        uncheckedLabel:'NO',
+        checkedLabel: locale.resolve("YES"), 
+        uncheckedLabel: locale.resolve("NO"),
         onChange : function() {
           var input = $(this.elem);
           Notification.switchStatus(input.attr('name'), input.hasClass("staus-false"));
