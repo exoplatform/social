@@ -216,11 +216,6 @@
           <img alt="$spaceCreatorName" src="$spaceCreatorAvatar"/>
         </a>
 		</div>
-     	<div class="activityType">
-         	<a  class="space-avatar" href="$ownerUri" space-data="$spaceID">
-         		<img alt="$ownerName" src="$spaceImageSource"/>
-         	</a>
-         </div>
 	</div><!--end activityTimeLine-->
 	<div id="boxContainer" class="boxContainer">
 		<div id="ContextBox${activity.id}" class="uiBox contentBox">
@@ -241,7 +236,7 @@
                  </div>
                  <div class="owner">
 					<a class="space-avatar" href="$ownerUri" space-data="$spaceID">
-						$ownerName
+						<img class="avatarMini" alt="$ownerName" src="$spaceImageSource"/>&nbsp;$ownerName
 					</a>
 				</div>
 				</div>	

@@ -221,7 +221,9 @@
 				<div class="author">
 					<a  href="$ownerUri">$ownerName</a>
 					<%  if (uicomponent.isUserActivity() && uicomponent.isSpaceStreamOwner() && !uicomponent.isUISpaceActivitiesDisplay()) {%>
-						<a class="space-avatar spaceName" href="$spaceSourceURI" space-data="$spaceID"><span class="uiIconArrowRightMini uiIconLightGray"></span>&nbsp;$spaceName</a>
+						<a class="space-avatar spaceName" href="$spaceSourceURI" space-data="$spaceID"><span class="uiIconArrowRightMini uiIconLightGray"></span>
+                            <img  class="avatarMini" alt="$spaceName" src="$spaceImageSource"/>&nbsp;$spaceName
+                        </a>
 					<%}%>
 				</div>
 				<div class="dataInfor">
