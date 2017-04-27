@@ -11,6 +11,7 @@ import java.util.Map;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.social.user.portlet.UserProfileHelper;
+import org.exoplatform.social.webui.profile.settings.UIValueControl;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.EventConfig;
@@ -35,15 +36,20 @@ import org.exoplatform.webui.form.validator.Validator;
     }
 )
 public class UIMultiValueSelection extends UIFormInputSet {
+  
+  public static final String FIELD_SELECT_KEY = "selectKey_";
+  public static final String FIELD_INPUT_KEY = "inputKey_";
+  
   private static final Log LOG = ExoLogger.getExoLogger(UIMultiValueSelection.class);
   
   protected List<Validator> validators;
-  public static final String FIELD_SELECT_KEY = "selectKey_";
-  public static final String FIELD_INPUT_KEY = "inputKey_";
   private List<Map<String, String>> values;
   private List<Integer> indexs = new LinkedList<Integer>();
   private List<String> optionValues = new ArrayList<String>();
-
+  
+  /** The option renderer. */
+  private UIValueControl              valueControl;
+  
   public UIMultiValueSelection() {
   }
 
@@ -56,6 +62,17 @@ public class UIMultiValueSelection extends UIFormInputSet {
     setComponentConfig(getClass(), null);
     //
     this.optionValues = options;
+  }
+  
+  /**
+   * Adds value's custom UI control.
+   *
+   * @param valueControl the UI value control invoker
+   * @return this {@link UIMultiValueSelection} instance
+   */
+  public UIMultiValueSelection withValueControl(UIValueControl valueControl) {
+    this.valueControl = valueControl;
+    return this;
   }
 
   public <E extends Validator> UIMultiValueSelection addValidator(Class<E> clazz, Object... params) throws Exception {
@@ -215,13 +232,19 @@ public class UIMultiValueSelection extends UIFormInputSet {
     int i = 0;
     for (Integer indexId : indexs) {
       w.append("<div class=\"controls-row\">") ;
-      renderUIComponent(getUIFormSelectBox(getSelectId(indexId)));
-      renderUIComponent(getUIStringInput(getInputId(indexId)));
+      UIFormSelectBox select = getUIFormSelectBox(getSelectId(indexId));
+      renderUIComponent(select);
+      UIFormStringInput input = getUIStringInput(getInputId(indexId));
+      renderUIComponent(input);
       if(indexs.size() > 1) {
         // remove
         w.append("<a class=\"actionIcon\" data-placement=\"bottom\" rel=\"tooltip\" title=\"\" data-original-title=\"").append(removeItem)
          .append("\" href=\"javascript:void(0)\" onclick=\"").append(uiForm.event("RemoveValue", getId() + String.valueOf(indexId)))
          .append("\"><i class=\"uiIconClose uiIconLightGray\"></i></a>");
+      }
+      if (valueControl != null) {
+        // Optional: IM account management control, it will appear after "remove" icon if such one added above
+        valueControl.render(select.getValue(), input.getValue(), context);
       }
       if(i == indexs.size() - 1) {
         // add
