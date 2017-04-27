@@ -35,14 +35,37 @@ import org.exoplatform.webui.form.validator.Validator;
     }
 )
 public class UIMultiValueSelection extends UIFormInputSet {
+  
+  /**
+   * This interface defines a way to invoke custom UI addition for a some option value. 
+   * Used for adding a value's custom UI control by making a decision outside the {@link UIMultiValueSelection} component, 
+   * in {@link #render(String, String, WebuiRequestContext)} method.
+   */
+  @FunctionalInterface
+  public interface ValueControl {
+
+    /**
+     * Render the custom UI control for given option value and WebUI context.
+     *
+     * @param option the selected option
+     * @param value the value for selected option
+     * @param context the context of WebUI app
+     */
+    void render(String option, String value, WebuiRequestContext context);
+  }
+  
+  public static final String FIELD_SELECT_KEY = "selectKey_";
+  public static final String FIELD_INPUT_KEY = "inputKey_";
+  
   private static final Log LOG = ExoLogger.getExoLogger(UIMultiValueSelection.class);
   
   protected List<Validator> validators;
-  public static final String FIELD_SELECT_KEY = "selectKey_";
-  public static final String FIELD_INPUT_KEY = "inputKey_";
   private List<Map<String, String>> values;
   private List<Integer> indexs = new LinkedList<Integer>();
   private List<String> optionValues = new ArrayList<String>();
+  
+  /** The option renderer. */
+  private ValueControl              valueControl;
 
   public UIMultiValueSelection() {
   }
@@ -56,6 +79,17 @@ public class UIMultiValueSelection extends UIFormInputSet {
     setComponentConfig(getClass(), null);
     //
     this.optionValues = options;
+  }
+  
+  /**
+   * Adds the value's custom UI control.
+   *
+   * @param valueControl the UI value control invoker
+   * @return this {@link UIMultiValueSelection} instance
+   */
+  public UIMultiValueSelection withValueControl(ValueControl valueControl) {
+    this.valueControl = valueControl;
+    return this;
   }
 
   public <E extends Validator> UIMultiValueSelection addValidator(Class<E> clazz, Object... params) throws Exception {
@@ -215,8 +249,14 @@ public class UIMultiValueSelection extends UIFormInputSet {
     int i = 0;
     for (Integer indexId : indexs) {
       w.append("<div class=\"controls-row\">") ;
-      renderUIComponent(getUIFormSelectBox(getSelectId(indexId)));
-      renderUIComponent(getUIStringInput(getInputId(indexId)));
+      UIFormSelectBox select = getUIFormSelectBox(getSelectId(indexId));
+      renderUIComponent(select);
+      UIFormStringInput input = getUIStringInput(getInputId(indexId));
+      renderUIComponent(input);
+      if (valueControl != null) {
+        // Optional: IM account management control
+        valueControl.render(select.getValue(), input.getValue(), context);
+      }
       if(indexs.size() > 1) {
         // remove
         w.append("<a class=\"actionIcon\" data-placement=\"bottom\" rel=\"tooltip\" title=\"\" data-original-title=\"").append(removeItem)

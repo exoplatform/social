@@ -17,6 +17,9 @@ import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.webui.application.WebuiRequestContext;
 
 public class UserProfileHelper {
+  
+  public static final String CSS_ICON_PREFIX = "uiIconSoc";
+  
   final public static String KEY = "key";
   final public static String VALUE = "value";
   final public static String URL_KEY = "url";
@@ -24,37 +27,6 @@ public class UserProfileHelper {
   final public static String DEFAULT_PROTOCOL = "http://";
   final private static Pattern ESCAPE_HTML_PATTERN = Pattern.compile("<(.*?)>", Pattern.CASE_INSENSITIVE);
   final private static Pattern UNESCAPE_HTML_PATTERN = Pattern.compile("&lt;(.*?)&gt;", Pattern.CASE_INSENSITIVE);
-
-  enum IconClass {
-    DEFAULT("", ""),
-    GTALK("gtalk", "uiIconSocGtalk"),
-    MSN("msn", "uiIconSocMSN"),
-    SKYPE("skype", "uiIconSocSkype"),
-    YAHOO("yahoo", "uiIconSocYahoo"),
-    OTHER("other", "uiIconSocOther");
-
-    private final String key;
-    private final String iconClass;
-    
-    IconClass(String key, String iconClass) {
-      this.key = key;
-      this.iconClass = iconClass;
-    }
-    String getKey() {
-      return this.key;
-    }
-    public String getIconClass() {
-      return iconClass;
-    }
-    public static String getIconClass(String key) {
-      for (IconClass iconClass : IconClass.values()) {
-        if (iconClass.getKey().equals(key)) {
-          return iconClass.getIconClass();
-        }
-      }
-      return DEFAULT.getIconClass();
-    }
-  }
 
   enum StatusIconCss {
     DEFAULT("", ""),
@@ -196,7 +168,15 @@ public class UserProfileHelper {
   }
   
   public static String getIconCss(String key) {
-    return IconClass.getIconClass(key);
+    // FYI was: return IconClass.getIconClass(key);
+    StringBuilder classBuilder = new StringBuilder();
+    if (key.length() > 0) {
+      classBuilder.append(CSS_ICON_PREFIX).append(Character.toUpperCase(key.charAt(0)));
+      if (key.length() > 1) {
+        classBuilder.append(key.substring(1));
+      }
+    }
+    return classBuilder.toString();
   }
     
   private static Map<String, String> theExperienceData(Map<String, String> srcExperience, boolean isCurrent) {

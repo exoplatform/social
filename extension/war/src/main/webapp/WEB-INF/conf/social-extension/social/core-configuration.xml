@@ -608,6 +608,40 @@
     <key>org.exoplatform.social.core.application.SpaceActivityPublisher</key>
     <type>org.exoplatform.social.core.application.SpaceActivityPublisher</type>
   </component>
+  
+  <component>
+    <key>org.exoplatform.social.core.profile.settings.UserProfileSettingsService</key>
+    <type>org.exoplatform.social.core.profile.settings.UserProfileSettingsService</type>
+    <component-plugins>
+      <component-plugin>
+        <name>profile-im-type-defaults</name>
+        <set-method>addSimpleIMTypePlugin</set-method>
+        <type>org.exoplatform.social.core.profile.settings.SimpleIMTypePlugin</type>
+        <init-params>
+          <value-param>
+            <name>gtalk</name>
+            <value>Gtalk</value>
+          </value-param>
+          <value-param>
+            <name>msn</name>
+            <value>MSN</value>
+          </value-param>
+          <value-param>
+            <name>yahoo</name>
+            <value>Yahoo</value>
+          </value-param>
+          <value-param>
+            <name>skype</name>
+            <value>Skype</value>
+          </value-param>
+          <value-param>
+            <name>other</name>
+            <value>Other</value>
+          </value-param>
+        </init-params>
+      </component-plugin>
+    </component-plugins>  
+  </component>
 
   <external-component-plugins>
     <target-component>org.exoplatform.services.resources.ResourceBundleService</target-component>
