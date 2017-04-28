@@ -311,14 +311,6 @@ public class ActivityMigrationService extends AbstractMigrationService<ExoSocial
         if (params != null && !params.isEmpty()) {
 
           for(Map.Entry<String, String> entry: params.entrySet()) {
-
-            String value = entry.getValue();
-
-            if (value.length() >= 1024) {
-              LOG.info("===================== activity id " + activity.getId() + " new value length = " +  value.length());
-              params.put(entry.getKey(), "");
-            }
-
             if(entry.getKey().equals(BaseActivityProcessorPlugin.TEMPLATE_PARAM_TO_PROCESS)) {
               params.put(entry.getValue(), formatHTML(params.get(entry.getValue())));
             }else {
@@ -361,16 +353,7 @@ public class ActivityMigrationService extends AbstractMigrationService<ExoSocial
               if (commentParams != null && !commentParams.isEmpty()) {
 
                 for (Map.Entry<String, String> entry : commentParams.entrySet()) {
-
-                  String value = entry.getValue();
-
-                  if (value.length() >= 1024) {
-                    LOG.info("===================== comment id " + oldCommentId + " new value length = " + value.length());
-                    commentParams.put(entry.getKey(), "");
-                  }
-
                   commentParams.put(entry.getKey(), StringUtil.removeLongUTF(entry.getValue()));
-
                 }
 
                 comment.setTemplateParams(commentParams);
