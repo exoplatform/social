@@ -174,11 +174,12 @@ public class MigrationTest extends BaseCoreTest {
     assertEquals(IdentityAvatarRestService.buildAvatarURL(OrganizationIdentityProvider.NAME, "root"), rootProfile.getAvatarUrl());
   }
 
+
   public void testMigrateActivityWithMention() throws Exception {
     rootIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "root", false);
     johnIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "john", false);
-    johnIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "demo", false);
-    johnIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "mary", false);
+    demoIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "demo", false);
+    maryIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "mary", false);
 
     Map<String, String> params = new HashMap<String, String>();
     params.put("MESSAGE", "activity message for here");
@@ -190,8 +191,17 @@ public class MigrationTest extends BaseCoreTest {
             .isComment(false)
             .take();
 
+    final ExoSocialActivity activity1 = ActivityBuilder.getInstance()
+            .posterId(rootIdentity.getId())
+            .title("activity title\nsecond line")
+            .body("activity body\nsecond line")
+            .titleId("titleId1")
+            .isComment(false)
+            .take();
+
     activityJCRStorage.setInjectStreams(false);
     activityJCRStorage.saveActivity(johnIdentity, activity);
+    activityJCRStorage.saveActivity(maryIdentity, activity1);
     activityJCRStorage.setInjectStreams(true);
 
     end();
@@ -204,6 +214,9 @@ public class MigrationTest extends BaseCoreTest {
         String newId = event.getData();
         if (event.getSource().getId().equals(activity.getId())) {
           activity.setId(newId);
+        }
+        if (event.getSource().getId().equals(activity1.getId())) {
+          activity1.setId(newId);
         }
       }
     });
@@ -219,6 +232,12 @@ public class MigrationTest extends BaseCoreTest {
     activitiesToDelete.add(migrated);
     assertNotNull(migrated);
     assertEquals(2, migrated.getMentionedIds().length);
+
+    ExoSocialActivity migrated1 = activityStorage.getActivity(activity1.getId());
+    activitiesToDelete.add(migrated1);
+    assertNotNull(migrated1);
+    assertEquals("activity title<br />second line", migrated1.getTitle());
+    assertEquals("activity body\nsecond line", migrated1.getBody());
   }
 
   public void testMigrateSpace() throws Exception {
