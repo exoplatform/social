@@ -4,15 +4,19 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import org.exoplatform.commons.utils.CommonsUtils;
 import org.exoplatform.portal.application.PortalRequestContext;
 import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.social.core.identity.model.Profile;
+import org.exoplatform.social.core.profile.settings.IMType;
+import org.exoplatform.social.core.profile.settings.UserProfileSettingsService;
 import org.exoplatform.social.user.form.UIInputSection.ActionData;
 import org.exoplatform.social.user.portlet.UserProfileHelper;
 import org.exoplatform.social.user.profile.AboutMeComparator;
@@ -70,8 +74,6 @@ public class UIEditUserProfileForm extends UIForm {
   public static final String DATE_FORMAT_MMDDYYYY = "MM/dd/yyyy";
   /** PHONE_TYPES. */
   public static final String[] PHONE_TYPES = new String[] {"work","home","other"};
-  /** IM_TYPES. */
-  public static final String[] IM_TYPES = new String[] {"gtalk","msn","skype","yahoo","other"};
   /** PHONE REGEX EXPRESSION. */
   public static final String PHONE_REGEX_EXPRESSION = "^[\\d\\s ().+-]{0,25}+$";
   /** URL REGEX EXPRESSION. */
@@ -126,7 +128,20 @@ public class UIEditUserProfileForm extends UIForm {
     UIMultiValueSelection phoneSelection = new UIMultiValueSelection(Profile.CONTACT_PHONES, getId(), Arrays.asList(PHONE_TYPES));
     baseSection.addUIFormInput(phoneSelection.addValidator(ExpressionValidator.class, PHONE_REGEX_EXPRESSION, "UIEditUserProfileForm.msg.Invalid-phone"));
     //
-    UIMultiValueSelection imsSelection = new UIMultiValueSelection(Profile.CONTACT_IMS, getId(), Arrays.asList(IM_TYPES));
+    final UserProfileSettingsService profileSettings = CommonsUtils.getService(UserProfileSettingsService.class);
+    Collection<IMType> imTypes = profileSettings.getIMTypes();
+    List<String> imTypesValues = new ArrayList<>(imTypes.size());
+    for (IMType imt : imTypes) {
+      imTypesValues.add(imt.getId());
+    }
+    UIMultiValueSelection imsSelection = new UIMultiValueSelection(Profile.CONTACT_IMS, getId(), imTypesValues);
+    imsSelection.withValueControl((imtId, imId, context) -> {
+      IMType imt = profileSettings.getIMType(imtId);
+      if (imt != null) {
+        imt.initUI(context, imId);
+      }
+    });
+    // TODO add type specific validator?
     baseSection.addUIFormInput(imsSelection.addValidator(StringLengthValidator.class, 100));
     //
     UIFormMultiValueInputSet urlMultiValueInput = new UIFormMultiValueInputSet(Profile.CONTACT_URLS, Profile.CONTACT_URLS);

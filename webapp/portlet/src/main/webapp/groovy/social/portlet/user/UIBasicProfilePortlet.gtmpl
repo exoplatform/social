@@ -1,16 +1,16 @@
 <%
-import org.exoplatform.social.user.portlet.UserProfileHelper;
+import org.exoplatform.social.user.portlet.UserProfileHelper
 
-def profile = uicomponent.getProfileInfo();
-def keys = profile.keySet();
+def profile = uicomponent.getProfileInfo()
+def keys = profile.keySet()
 %>
 <div class="uiSocApplication uiBasicProfilePortlet" id="$uicomponent.id">
   <h4 class="head-container"><%=_ctx.appRes("UIBasicProfile.label.ContactInformation")%></h4>
   <div class="uiBasicInfoSection">
     <%
-      for(key in keys) {
-        def values = profile.get(key);
-        String clzz = key.substring(0, 1).toUpperCase() + key.substring(1);
+      for (key in keys) {
+        def values = profile.get(key)
+        String clzz = key.substring(0, 1).toUpperCase() + key.substring(1)
     %>
     <div class="group-user-info">
       <div class="label-user-info"><strong><%=_ctx.appRes("UIBasicProfile.label." + key)%>:</strong></div>
@@ -25,14 +25,16 @@ def keys = profile.keySet();
       <%  } %>
       <%} else  {
           for(subKey in values.keySet()) {
-            def isIms = UserProfileHelper.isIMs(key);
-            def typeIconClzz = "";
+            def isIms = UserProfileHelper.isIMs(key)
+            def typeIconClzz
             if (isIms) {
-              typeIconClzz = UserProfileHelper.getIconCss(subKey); 
+              typeIconClzz = UserProfileHelper.getIconCss(subKey) 
+            } else {
+              typeIconClzz = ''
             }
             
-            def listVal = values.get(subKey); 
-            int valueNum = 0;
+            def listVal = values.get(subKey)
+            int valueNum = 0
             if (UserProfileHelper.isURL(key)) {
               for (url in listVal) { %>
               <div class="ui<%=clzz%>"><a class="ellipsis" href="<%=UserProfileHelper.toAbsoluteURL(url)%>" target="_blank"
@@ -40,7 +42,7 @@ def keys = profile.keySet();
             <%}
             } else {
               if (typeIconClzz.length() > 0) {
-                typeIconClzz = typeIconClzz + " uiIconSocLightGray";
+                typeIconClzz = typeIconClzz + ' uiIconSocLightGray'
               }
               for (val in listVal) { 
               %>
@@ -56,7 +58,7 @@ def keys = profile.keySet();
               <%} else { %>
                 <div></div>
               <%}
-                valueNum++;
+                valueNum++
               %>
                 <div class="ellipsis" rel="tooltip" data-placement="top" title="" data-original-title="<%=val%>"><%=val%></div>
               </div>
