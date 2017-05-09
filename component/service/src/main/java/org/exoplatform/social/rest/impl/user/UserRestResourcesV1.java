@@ -196,7 +196,6 @@ public class UserRestResourcesV1 implements UserRestResources {
    */
   @GET
   @Path("{id}/avatar")
-  @RolesAllowed("users")
   @ApiOperation(value = "Gets a specific user avatar by username",
           httpMethod = "GET",
           response = Response.class,
