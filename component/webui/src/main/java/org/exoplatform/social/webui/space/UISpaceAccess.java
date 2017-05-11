@@ -76,8 +76,8 @@ public class UISpaceAccess extends UIContainer {
   public void init() {
     try {
       PortalRequestContext pcontext = Util.getPortalRequestContext();
-      Object statusObject = pcontext.getRequest().getSession().getAttribute(SpaceAccessType.ACCESSED_TYPE_KEY);
-      Object spacePrettyNameObj = pcontext.getRequest().getSession().getAttribute(SpaceAccessType.ACCESSED_SPACE_PRETTY_NAME_KEY);
+      Object statusObject = pcontext.getRequest().getAttribute(SpaceAccessType.ACCESSED_TYPE_KEY);
+      Object spacePrettyNameObj = pcontext.getRequest().getAttribute(SpaceAccessType.ACCESSED_SPACE_PRETTY_NAME_KEY);
       
       
       if (spacePrettyNameObj == null) {

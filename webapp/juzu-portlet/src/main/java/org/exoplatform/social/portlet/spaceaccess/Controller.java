@@ -51,8 +51,8 @@ public class Controller {
   @View
   public Response index() throws Exception {
     PortalRequestContext pcontext = (PortalRequestContext)(WebuiRequestContext.getCurrentInstance());
-    Object statusObject = pcontext.getRequest().getSession().getAttribute(SpaceAccessType.ACCESSED_TYPE_KEY);
-    Object spacePrettyNameObj = pcontext.getRequest().getSession().getAttribute(SpaceAccessType.ACCESSED_SPACE_PRETTY_NAME_KEY);
+    Object statusObject = pcontext.getRequest().getAttribute(SpaceAccessType.ACCESSED_TYPE_KEY);
+    Object spacePrettyNameObj = pcontext.getRequest().getAttribute(SpaceAccessType.ACCESSED_SPACE_PRETTY_NAME_KEY);
     Map<String, Object> parameters = new HashMap<String, Object>();
     
     

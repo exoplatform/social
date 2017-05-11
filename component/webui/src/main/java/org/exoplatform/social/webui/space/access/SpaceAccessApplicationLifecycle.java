@@ -62,7 +62,14 @@ public class SpaceAccessApplicationLifecycle implements ApplicationLifecycle<Web
     String siteType = pcontext.getControllerContext().getParameter(RequestNavigationData.REQUEST_SITE_TYPE);
     String requestPath = pcontext.getControllerContext().getParameter(RequestNavigationData.REQUEST_PATH);
     Utils.setCurrentNavigationData(siteType, siteName, requestPath);
-    
+
+    // Check if attribute is present on session and set it on request
+    // to make it available on other webapps
+    // On Tomcat, webapps shares the same session instance, but not on Wildfly
+    moveSessionAttributeToRequest(pcontext, SpaceAccessType.ACCESSED_TYPE_KEY);
+    moveSessionAttributeToRequest(pcontext, SpaceAccessType.ACCESSED_SPACE_PRETTY_NAME_KEY);
+    moveSessionAttributeToRequest(pcontext, SpaceAccessType.ACCESSED_SPACE_REQUEST_PATH_KEY);
+
     //
     String spacePrettyName = "";
     synchronized (this) {
@@ -186,7 +193,8 @@ public class SpaceAccessApplicationLifecycle implements ApplicationLifecycle<Web
     LOG.info(type.toString());
     
     String requestPath = pcontext.getRequestURI();
-    
+
+    // set original parameter in session to share it with SpaceAccess App after redirection
     pcontext.getRequest().getSession().setAttribute(SpaceAccessType.ACCESSED_TYPE_KEY, type);
     pcontext.getRequest().getSession().setAttribute(SpaceAccessType.ACCESSED_SPACE_PRETTY_NAME_KEY, spacePrettyName);
     pcontext.getRequest().getSession().setAttribute(SpaceAccessType.ACCESSED_SPACE_REQUEST_PATH_KEY, requestPath);
@@ -203,6 +211,25 @@ public class SpaceAccessApplicationLifecycle implements ApplicationLifecycle<Web
 
   @Override
   public void onEndRequest(Application app, WebuiRequestContext context) throws Exception {
+    PortalRequestContext pcontext = (PortalRequestContext)context;
+
+    // cleanup session attributes once the attributes are used from Request
+    removeAttributeFromSession(pcontext, SpaceAccessType.ACCESSED_TYPE_KEY);
+    removeAttributeFromSession(pcontext, SpaceAccessType.ACCESSED_SPACE_PRETTY_NAME_KEY);
+    removeAttributeFromSession(pcontext, SpaceAccessType.ACCESSED_SPACE_REQUEST_PATH_KEY);
+  }
+
+  private void removeAttributeFromSession(PortalRequestContext pcontext, String key) {
+    if(pcontext.getRequest().getAttribute(key) != null) {
+      pcontext.getRequest().getSession().removeAttribute(key);
+    }
+  }
+
+  private void moveSessionAttributeToRequest(PortalRequestContext pcontext, String key) {
+    Object value = pcontext.getRequest().getSession().getAttribute(key);
+    if(value != null) {
+      pcontext.getRequest().setAttribute(key, value);
+    }
   }
 
   @Override
