@@ -18,6 +18,8 @@ package org.exoplatform.social.core.processor;
 
 import junit.framework.TestCase;
 
+import java.util.HashMap;
+
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.activity.model.ExoSocialActivityImpl;
 
@@ -53,6 +55,11 @@ public class I18NActivityUtilsTest extends TestCase {
     String input = null;
     String[] got = I18NActivityUtils.getParamValues(input);
     assertNull(got);
+  }
+
+  public void testGetResourceValuesWhenEmpty() throws Exception {
+    ExoSocialActivity a = createActivity();
+    assertNull(I18NActivityUtils.getResourceValues(a));
   }
   
   public void testAddResourceKey() throws Exception {
@@ -164,6 +171,7 @@ public class I18NActivityUtilsTest extends TestCase {
     activity.setBody("body value");
     activity.isComment(false);
     activity.setType("ks-forum:spaces");
+    activity.setTemplateParams(new HashMap<String, String>());
     
     return activity;
   }

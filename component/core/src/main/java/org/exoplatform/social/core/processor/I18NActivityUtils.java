@@ -96,6 +96,9 @@ public class I18NActivityUtils {
     
     //
     String v = params.get(RESOURCE_BUNDLE_VALUES_PARAM);
+    if(v == null) {
+      return null;
+    }
     String[] got = v.split(RESOURCE_BUNDLE_KEYS_CHARACTER);
     
     for(int i = 0; i<got.length; i++) {
