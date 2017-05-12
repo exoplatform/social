@@ -217,7 +217,9 @@ public class ProfileFilter {
     if(this.excludedIdentityList == null) {
       this.excludedIdentityList = new ArrayList<Identity>();
     }
-    this.excludedIdentityList.add(this.viewerIdentity);
+    if(!this.excludedIdentityList.contains(currentIdentity)) {
+      this.excludedIdentityList.add(this.viewerIdentity);
+    }
   }
 
   public boolean isEmpty() {
@@ -227,6 +229,6 @@ public class ProfileFilter {
         && StringUtils.isBlank(this.position)
         && StringUtils.isBlank(this.skills)
         && this.firstCharacterOfName == '\u0000'
-        && (this.excludedIdentityList == null || this.excludedIdentityList.isEmpty() || (this.excludedIdentityList.size() == 1 && this.viewerIdentity != null));
+        && (this.excludedIdentityList == null || this.excludedIdentityList.isEmpty() || (this.excludedIdentityList.size() == 1 && this.viewerIdentity != null && this.excludedIdentityList.contains(this.viewerIdentity)));
   }
 }
