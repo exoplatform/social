@@ -24,9 +24,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
-import org.exoplatform.commons.search.es.ElasticSearchException;
-import org.exoplatform.commons.search.es.ElasticSearchServiceConnector;
-import org.exoplatform.commons.search.es.client.ElasticSearchingClient;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -34,6 +31,9 @@ import org.json.simple.parser.ParseException;
 
 import org.exoplatform.commons.api.search.data.SearchContext;
 import org.exoplatform.commons.api.search.data.SearchResult;
+import org.exoplatform.commons.search.es.ElasticSearchException;
+import org.exoplatform.commons.search.es.ElasticSearchServiceConnector;
+import org.exoplatform.commons.search.es.client.ElasticSearchingClient;
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.xml.InitParams;
 import org.exoplatform.portal.mop.SiteType;
@@ -73,19 +73,28 @@ public class SpaceElasticUnifiedSearchServiceConnector extends ElasticSearchServ
 
   @Override
   protected String getPermissionFilter() {
+    StringBuilder permissions =   new StringBuilder();
+
     // Build permission base on member of space as in parent class
-    String permissions = super.getPermissionFilter();
+    permissions.append(super.getPermissionFilter()).append("\n");
 
     // return also all non-hidden spaces, even if the user is not a member
-    permissions +=
-            ",{\n" +
-            "   \"not\" : {\n" +
-                    "\"term\" : {\n" +
-                    "    \"visibility\" : \"" + Space.HIDDEN + "\"\n" +
-                    "  }\n" +
-                 "}\n" +
-            " }";
-    return permissions;
+    permissions
+               .append("  ,{ \"bool\" : { \n")
+               .append("    \"must_not\" : {\n")
+               .append("      \"term\" : {\n")
+               .append("        \"visibility\" : \"").append(Space.HIDDEN).append("\"\n")
+               .append("      }\n")
+               .append("    } \n")
+               .append("  } \n")
+               .append("  } \n");
+
+    return permissions.toString();
+  }
+
+  @Override
+  protected String getSitesFilter(Collection<String> sitesCollection) {
+    return null;
   }
 
   protected Collection<SearchResult> buildResult(String jsonResponse, SearchContext context) {

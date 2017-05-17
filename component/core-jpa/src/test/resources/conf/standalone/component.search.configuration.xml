@@ -27,10 +27,6 @@
         <type>org.exoplatform.commons.search.index.impl.QueueIndexingService</type>
     </component>
     <component>
-        <key>org.exoplatform.commons.search.index.IndexingOperationProcessor</key>
-        <type>org.exoplatform.commons.search.index.impl.ElasticIndexingOperationProcessor</type>
-    </component>
-    <component>
         <key>org.exoplatform.commons.search.dao.IndexingOperationDAO</key>
         <type>org.exoplatform.commons.search.dao.impl.IndexingOperationDAOImpl</type>
     </component>

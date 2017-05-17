@@ -105,22 +105,23 @@ public class SpaceIndexingServiceConnector extends ElasticIndexingServiceConnect
   @Override
   public String getMapping() {
     JSONObject postingHighlighterField = new JSONObject();
-    postingHighlighterField.put("type", "string");
+    postingHighlighterField.put("type", "text");
     postingHighlighterField.put("index_options", "offsets");
 
     JSONObject notAnalyzedField = new JSONObject();
-    notAnalyzedField.put("type", "string");
-    notAnalyzedField.put("index", "not_analyzed");
+    notAnalyzedField.put("type", "text");
+    notAnalyzedField.put("index", false);
+
+    JSONObject keywordMapping = new JSONObject();
+    keywordMapping.put("type", "keyword");
 
     JSONObject properties = new JSONObject();
-    properties.put("permissions", notAnalyzedField);
-    properties.put("sites", notAnalyzedField);
-    
+    properties.put("permissions", keywordMapping);
     properties.put("prettyName", postingHighlighterField);
     properties.put("displayName", postingHighlighterField);
     properties.put("description", postingHighlighterField);
-    properties.put("visibility", notAnalyzedField);
-    properties.put("registration", notAnalyzedField);
+    properties.put("visibility", keywordMapping);
+    properties.put("registration", keywordMapping);
 
     JSONObject mappingProperties = new JSONObject();
     mappingProperties.put("properties", properties);

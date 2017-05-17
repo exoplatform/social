@@ -167,58 +167,50 @@ public class ProfileSearchConnector {
     esQuery.append("             {\"lastName\": {\"order\": \"asc\"}},\n");
     esQuery.append("             {\"firstName\": {\"order\": \"asc\"}}\n");
     esQuery.append("             ]\n");
+
+    StringBuilder esSubQuery = new StringBuilder();
+    esSubQuery.append("       ,\n");
+    esSubQuery.append("\"query\" : {\n");
+    esSubQuery.append("    \"bool\" :{\n");
+    boolean subQueryEmpty = true;
     if (identity != null && type != null) {
-      esQuery.append("       ,\n");
-      esQuery.append("\"query\" : {\n");
-      esQuery.append("    \"bool\" :{\n");
-      esQuery.append("      \"must\" : {\n");
-      esQuery.append("        \"query_string\" : {\n");
-      esQuery.append("          \"query\" : \"*"+ identity.getId() +"*\",\n");
-      esQuery.append("          \"fields\" : [\"" + buildTypeEx(type) + "\"]\n");
-      esQuery.append("        }\n");
-      esQuery.append("      }\n");
+      subQueryEmpty = false;
+      esSubQuery.append("      \"must\" : {\n");
+      esSubQuery.append("        \"query_string\" : {\n");
+      esSubQuery.append("          \"query\" : \"*"+ identity.getId() +"*\",\n");
+      esSubQuery.append("          \"fields\" : [\"" + buildTypeEx(type) + "\"]\n");
+      esSubQuery.append("        }\n");
+      esSubQuery.append("      }\n");
     } else if (filter.getExcludedIdentityList() != null && filter.getExcludedIdentityList().size() > 0) {
-      esQuery.append("       ,\n");
-      esQuery.append("\"query\" : {\n");
-      esQuery.append("\"filtered\" :{\n");
-      esQuery.append("  \"query\" : {\n");
-      esQuery.append("    \"bool\" : {\n");
-      esQuery.append("\"must_not\": [\n");
-      esQuery.append("        {\n");
-      esQuery.append("          \"ids\" : {\n");
-      esQuery.append("             \"values\" : [" + buildExcludedIdentities(filter) + "]\n");
-      esQuery.append("          }\n");
-      esQuery.append("        }\n");
-      esQuery.append("      ]\n");
-      esQuery.append("    }\n");
-      esQuery.append("  }\n");
-      esQuery.append("  }\n");
-      esQuery.append("}\n");
+      subQueryEmpty = false;
+      esSubQuery.append("      \"must_not\": [\n");
+      esSubQuery.append("        {\n");
+      esSubQuery.append("          \"ids\" : {\n");
+      esSubQuery.append("             \"values\" : [" + buildExcludedIdentities(filter) + "]\n");
+      esSubQuery.append("          }\n");
+      esSubQuery.append("        }\n");
+      esSubQuery.append("      ]\n");
     }
     //if the search fields are existing.
     if (expEs != null && expEs.length() > 0) {
-      esQuery.append("      ,\n");
-      esQuery.append("\"filter\" : {\n");
-      esQuery.append("  \"bool\" : {\n");
-      esQuery.append("    \"must\": [\n");
-      esQuery.append("      {");
-      esQuery.append("        \"query\": {\n");
-      esQuery.append("          \"query_string\": {\n");
-      esQuery.append("            \"query\": \"" + expEs + "\"\n");
-      esQuery.append("          }\n");
-      esQuery.append("         }\n");
-      esQuery.append("      }\n");
-      esQuery.append("    ]\n");
-      esQuery.append("  }\n");
-      esQuery.append("}\n");
+      if(!subQueryEmpty) {
+        esSubQuery.append("      ,\n");
+      }
+      subQueryEmpty = false;
+      esSubQuery.append("    \"filter\": [\n");
+      esSubQuery.append("      {");
+      esSubQuery.append("          \"query_string\": {\n");
+      esSubQuery.append("            \"query\": \"" + expEs + "\"\n");
+      esSubQuery.append("          }\n");
+      esSubQuery.append("      }\n");
+      esSubQuery.append("    ]\n");
     } //end if
-    
-    //don't need add in the case search ALL
-    if (identity != null && type != null) {
-      esQuery.append("     }\n");      
-      esQuery.append("   }\n");
+    esSubQuery.append("  }\n");
+    esSubQuery.append(" }\n");
+    if(!subQueryEmpty) {
+      esQuery.append(esSubQuery);
     }
-    
+
     esQuery.append("}\n");
     LOG.debug("Search Query request to ES : {} ", esQuery);
 
@@ -282,7 +274,14 @@ public class ProfileSearchConnector {
     char firstChar = filter.getFirstCharacterOfName();
     //
     if (firstChar != '\u0000') {
-      esExp.append("lastName:").append(firstChar).append(StorageUtils.ASTERISK_STR);
+      char lowerCase = firstChar;
+      char upperCase = firstChar;
+      if (Character.isLowerCase(firstChar)) {
+        upperCase = Character.toUpperCase(firstChar);
+      } else {
+        lowerCase = Character.toLowerCase(firstChar);
+      }
+      esExp.append("lastName:").append("(").append(upperCase).append(StorageUtils.ASTERISK_STR).append(" OR ").append(lowerCase).append(StorageUtils.ASTERISK_STR).append(")");
       return esExp.toString();
     }
 

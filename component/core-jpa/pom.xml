@@ -23,7 +23,7 @@
   <name>eXo PLF:: Social Core JPA Component</name>
   <description>eXo Social Core JPA Component</description>
   <properties>
-    <org.elasticsearch.version>2.3.2</org.elasticsearch.version>
+    <org.elasticsearch.version>5.3.2</org.elasticsearch.version>
   </properties>
   <dependencies>
     <dependency>
@@ -176,20 +176,67 @@
       <groupId>org.aspectj</groupId>
       <artifactId>aspectjrt</artifactId>
     </dependency>
+       <!-- Required by Elasticsearch -->
     <dependency>
       <groupId>org.elasticsearch.plugin</groupId>
-      <artifactId>mapper-attachments</artifactId>
+      <artifactId>ingest-attachment</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.elasticsearch.plugin</groupId>
-      <artifactId>delete-by-query</artifactId>
+      <artifactId>reindex-client</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.elasticsearch.plugin</groupId>
+      <artifactId>transport-netty4-client</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-core</artifactId>
+      <version>${org.apache.log4j.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-api</artifactId>
+      <version>${org.apache.log4j.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>commons-logging</groupId>
+      <artifactId>commons-logging</artifactId>
+      <version>${commons-logging.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.tika</groupId>
+      <artifactId>tika-core</artifactId>
+      <version>${org.apache.tika.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.tika</groupId>
+      <artifactId>tika-parsers</artifactId>
+      <version>${org.apache.tika.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>joda-time</groupId>
+      <artifactId>joda-time</artifactId>
+      <version>${org.joda.time.version}</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.elasticsearch.distribution.zip</groupId>
       <artifactId>elasticsearch</artifactId>
       <type>zip</type>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.pdfbox</groupId>
+      <artifactId>pdfbox</artifactId>
       <scope>test</scope>
     </dependency>
   </dependencies>
@@ -314,7 +361,7 @@
               </excludes>
               <systemProperties>
                 <property>
-                  <name>exo.data.dir</name>
+                  <name>exo.files.storage.dir</name>
                   <value>target/exo-files</value>
                 </property>
               </systemProperties>
@@ -412,22 +459,6 @@
             <version>0.4</version>
             <executions>
               <execution>
-                <id>ES_Delete_by_query</id>
-                <phase>pre-integration-test</phase>
-                <goals>
-                  <goal>start</goal>
-                </goals>
-                <configuration>
-                  <name>ES</name>
-                  <workingDir>elasticsearch-${org.elasticsearch.version}/</workingDir>
-                  <arguments>
-                    <argument>./bin/plugin</argument>
-                    <argument>install</argument>
-                    <argument>delete-by-query</argument>
-                  </arguments>
-                </configuration>
-              </execution>
-              <execution>
                 <id>Start_ES</id>
                 <phase>pre-integration-test</phase>
                 <goals>
@@ -438,9 +469,11 @@
                   <workingDir>elasticsearch-${org.elasticsearch.version}/</workingDir>
                   <arguments>
                     <argument>./bin/elasticsearch</argument>
-                    <argument>-Des.http.port=${es.http.port}</argument>
-                    <argument>-Des.discovery.zen.ping.multicast.enabled=false</argument>
-                    <argument>-Des.discovery.zen.ping.unicast.hosts=127.0.0.1</argument>
+                    <argument>-Ehttp.port=${es.http.port}</argument>
+                    <argument>-Epath.data=target/es</argument>
+                    <argument>-Ehttp.enabled=true</argument>
+                    <argument>-Enetwork.host=_local_</argument>
+                    <argument>-Ehttp.type=netty4</argument>
                   </arguments>
                 </configuration>
               </execution>

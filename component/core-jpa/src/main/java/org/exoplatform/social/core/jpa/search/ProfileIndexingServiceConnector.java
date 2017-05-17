@@ -151,22 +151,27 @@ import org.exoplatform.social.core.relationship.model.Relationship;
   @Override
   public String getMapping() {
     JSONObject postingHighlighterField = new JSONObject();
-    postingHighlighterField.put("type", "string");
+    postingHighlighterField.put("type", "text");
     postingHighlighterField.put("index_options", "offsets");
 
     JSONObject notAnalyzedField = new JSONObject();
-    notAnalyzedField.put("type", "string");
-    notAnalyzedField.put("index", "not_analyzed");
+    notAnalyzedField.put("type", "text");
+    notAnalyzedField.put("index", false);
+
+    JSONObject keywordMapping = new JSONObject();
+    keywordMapping.put("type", "keyword");
 
     JSONObject properties = new JSONObject();
-    properties.put("permissions", notAnalyzedField);
-    properties.put("sites", notAnalyzedField);
-    properties.put("userName", notAnalyzedField);    
-    properties.put("email", notAnalyzedField);
-    
+    properties.put("permissions", keywordMapping);
+
+    properties.put("email", keywordMapping);
+
+    // Needed to be of type 'keyword' to make use it as a "sort" field
+    properties.put("firstName", keywordMapping);
+    properties.put("lastName", keywordMapping);
+
+    properties.put("userName", postingHighlighterField);
     properties.put("name", postingHighlighterField);
-    properties.put("firstName", postingHighlighterField);
-    properties.put("lastName", postingHighlighterField);
     properties.put("position", postingHighlighterField);
     properties.put("skills", postingHighlighterField);
 

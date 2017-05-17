@@ -107,7 +107,6 @@ public class RelationshipManagerTestIT extends BaseESTest {
 
       Profile profile = identity.getProfile();
       profile.setProperty(Profile.FIRST_NAME, "Prénom" + i);
-
       profile.setProperty(Profile.LAST_NAME, "LastName");
       profile.setProperty(Profile.FULL_NAME, "Prénom" + i + " " + "LastName" + i);
       profile.setProperty(Profile.POSITION, "developer");
@@ -122,7 +121,7 @@ public class RelationshipManagerTestIT extends BaseESTest {
     filter.setName("prenom");
     ListAccess<Identity> listAccess = relationshipManager.getConnectionsByFilter(identity1, filter);
     int size = listAccess.getSize();
-    assertEquals(size, connections);
+    assertEquals(connections, size);
     assertEquals(listAccess.load(0, size).length, connections);
 
     listAccess = relationshipManager.getIncomingByFilter(identity1, filter);
