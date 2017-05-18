@@ -893,7 +893,7 @@ public class SpaceUtils {
       Group existingGroup = groupHandler.findGroupById(groupId);
       membershipHandler.linkMembership(user, existingGroup, membershipType, true);
     } catch (Exception e) {
-      LOG.warn("Unable to add user: " + remoteId + " to group: " + groupId + " with membership: " + membership);
+      throw new RuntimeException("Unable to add user: " + remoteId + " to group: " + groupId + " with membership: " + membership, e);
     }
   }
 

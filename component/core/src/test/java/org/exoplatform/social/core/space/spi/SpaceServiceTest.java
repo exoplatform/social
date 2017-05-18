@@ -32,6 +32,8 @@ import org.exoplatform.container.component.RequestLifeCycle;
 import org.exoplatform.portal.config.StorageException;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
+import org.exoplatform.services.organization.OrganizationService;
+import org.exoplatform.services.organization.User;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
@@ -53,6 +55,7 @@ import org.exoplatform.social.core.test.AbstractCoreTest;
 
 public class SpaceServiceTest extends AbstractCoreTest {
   private IdentityStorage identityStorage;
+  private OrganizationService organizationService;
   private List<Space> tearDownSpaceList;
   private List<Identity> tearDownUserList;
 
@@ -87,6 +90,7 @@ public class SpaceServiceTest extends AbstractCoreTest {
   public void setUp() throws Exception {
     super.setUp();
     identityStorage = (IdentityStorage) getContainer().getComponentInstanceOfType(IdentityStorage.class);
+    organizationService = (OrganizationService) getContainer().getComponentInstanceOfType(OrganizationService.class);
     tearDownSpaceList = new ArrayList<Space>();
     tearDownUserList = new ArrayList<Identity>();
     
@@ -1425,7 +1429,7 @@ public class SpaceServiceTest extends AbstractCoreTest {
    public void testCreateSpaceWithManagersAndMembers() throws SpaceException {
      String[] managers = {"manager"};
      String[] members = {"member1","member2","member3"};
-     String creator = "creator";
+     String creator = "root";
      String invitedGroup = "invited";
      Space space = new Space();
      space.setDisplayName("testSpace");
@@ -1996,6 +2000,13 @@ public class SpaceServiceTest extends AbstractCoreTest {
 
     Space savedSpace = spaceService.getSpaceByDisplayName(space.getDisplayName());
     assertNotNull("savedSpace must not be null", savedSpace);
+
+    User user = organizationService.getUserHandler().createUserInstance("user-new.1");
+    organizationService.getUserHandler().createUser(user, false);
+    user = organizationService.getUserHandler().createUserInstance("user.new");
+    organizationService.getUserHandler().createUser(user, false);
+    user = organizationService.getUserHandler().createUserInstance("user-new");
+    organizationService.getUserHandler().createUser(user, false);
 
     spaceService.addMember(savedSpace, "user-new.1");
     spaceService.addMember(savedSpace, "user.new");

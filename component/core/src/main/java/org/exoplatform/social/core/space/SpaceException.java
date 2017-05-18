@@ -177,5 +177,10 @@ public class SpaceException extends Exception{
   public Code getCode() {
     return code;
   }
+
+  @Override
+  public String toString() {
+    return super.toString() + " Code = " + code;
+  }
 }
 

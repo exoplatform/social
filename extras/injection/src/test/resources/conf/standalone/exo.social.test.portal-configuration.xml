@@ -287,6 +287,11 @@
           <description>In the run method, use try catch or not (value is true/false)</description>
           <value>true</value>
         </value-param>
+        <value-param>
+          <name>page.templates.location</name>
+          <description>the path to the location that contains Page templates</description>
+          <value>classpath:/conf/standalone/portal/template/pages</value>
+        </value-param>
         <object-param>
           <name>portal.configuration</name>
           <description>description</description>

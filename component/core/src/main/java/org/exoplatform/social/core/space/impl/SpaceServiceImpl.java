@@ -386,7 +386,7 @@ public class SpaceServiceImpl implements SpaceService {
     try {
       groupId = SpaceUtils.createGroup(space.getDisplayName(), space.getPrettyName(), creator);
     } catch (SpaceException e) {
-      LOG.error("Error while creating group", e);
+      throw new RuntimeException("Error while creating group for space " + space.getPrettyName(), e);
     }
 
     List<String> inviteds = new ArrayList<String>();
@@ -420,7 +420,7 @@ public class SpaceServiceImpl implements SpaceService {
           }
         }
       } catch (Exception e) {
-        LOG.error("Failed to invite users from group " + invitedGroupId, e);
+        throw new RuntimeException("Failed to invite users from group " + invitedGroupId, e);
       }
     }
     
@@ -445,7 +445,7 @@ public class SpaceServiceImpl implements SpaceService {
       
       
     } catch (Exception e) {
-      LOG.warn("Failed to init apps", e);
+      throw new RuntimeException("Failed to init apps for space " + space.getPrettyName(), e);
     }
     
     saveSpace(space, true);

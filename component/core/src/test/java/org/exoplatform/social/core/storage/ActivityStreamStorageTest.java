@@ -518,11 +518,14 @@ public void testConnectionsExistActivities() throws ActivityStorageException {
   }
   
  public void testSpaceActivities() throws Exception {
-    
+
    SpaceService spaceService = this.getSpaceService();
-   Space space = this.getSpaceInstance(spaceService, 0);
+   Space space = this.getSpaceInstance(spaceService, 2000);
    Identity spaceIdentity = this.getIdentityManager().getOrCreateIdentity(SpaceIdentityProvider.NAME, space.getPrettyName(), false);
    
+   // Space Activity + Newly created Activity
+   int numberOfMySpacesActivities = streamStorage.getNumberOfMySpaces(demoIdentity);
+
    int totalNumber = 1;
    //demo posts activities to space
    for (int i = 0; i < totalNumber; i ++) {
@@ -533,7 +536,7 @@ public void testConnectionsExistActivities() throws ActivityStorageException {
      tearDownActivityList.add(activity);
    }
    
-   assertEquals(1, streamStorage.getNumberOfMySpaces(demoIdentity));
+   assertEquals(numberOfMySpacesActivities +1, streamStorage.getNumberOfMySpaces(demoIdentity));
    
     //
     {
@@ -621,7 +624,7 @@ public void testConnectionsExistActivities() throws ActivityStorageException {
     space.setPendingUsers(pendingUsers);
     space.setManagers(managers);
     space.setMembers(members);
-    spaceService.saveSpace(space, true);
+    spaceService.createSpace(space, "demo");
     tearDownSpaceList.add(space);
     return space;
   }
