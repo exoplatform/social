@@ -396,11 +396,8 @@ public class SpaceServiceImpl implements SpaceService {
       OrganizationService org = getOrgService();
       try {
 
-        // Cannot use due to http://jira.exoplatform.org/browse/EXOGTN-173
-        //ListAccess<User> groupMembersAccess = org.getUserHandler().findUsersByGroup(invitedGroupId);
-        //User [] users = groupMembersAccess.load(0, groupMembersAccess.getSize());
-        PageList<User> groupMembersAccess = org.getUserHandler().findUsersByGroup(invitedGroupId);
-        List<User> users = groupMembersAccess.getAll();
+        ListAccess<User> groupMembersAccess = org.getUserHandler().findUsersByGroupId(invitedGroupId);
+        User [] users = groupMembersAccess.load(0, groupMembersAccess.getSize());
 
         for (User user : users) {
           String userId = user.getUserName();
