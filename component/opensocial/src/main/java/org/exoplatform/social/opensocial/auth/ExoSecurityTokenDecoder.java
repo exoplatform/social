@@ -32,7 +32,7 @@ public class ExoSecurityTokenDecoder implements SecurityTokenCodec {
 
   private static final String        SECURITY_TOKEN_TYPE = "gadgets.securityTokenType";
 
-  private final SecurityTokenCodec decoder;
+  private static SecurityTokenCodec decoder = null;
 
   @Inject
   public ExoSecurityTokenDecoder(ContainerConfig config) {
@@ -49,17 +49,26 @@ public class ExoSecurityTokenDecoder implements SecurityTokenCodec {
     }
   }
 
+  public static SecurityTokenCodec getSecurityTokenDecoder() {
+    return decoder;
+  }
 
   public SecurityToken createToken(Map<String, String> tokenParameters) throws SecurityTokenException {
     return decoder.createToken(tokenParameters);
   }
   
   public String encodeToken(final SecurityToken token) throws SecurityTokenException {
+    return decoder.encodeToken(token);
+  }
+
+  @Override
+  public int getTokenTimeToLive() {
     // TODO Need to check gadget (Activity Stream ... ) for this change.
     throw new RuntimeException();
   }
 
-  public Long getTokenExpiration(final SecurityToken token) throws SecurityTokenException {
+  @Override
+  public int getTokenTimeToLive(String s) {
     // TODO Need to check gadget (Activity Stream ... ) for this change.
     throw new RuntimeException();
   }

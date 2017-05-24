@@ -30,10 +30,17 @@
     <param-name>guice-modules</param-name>
     <param-value>
       org.exoplatform.portal.gadget.core.ExoPropertiesModule:
-      org.exoplatform.social.opensocial.ExoSocialApiGuiceModule:
       org.apache.shindig.gadgets.DefaultGuiceModule:
+      org.exoplatform.social.opensocial.ExoSocialApiGuiceModule:
       org.exoplatform.portal.gadget.core.ExoOAuthModule:
-      org.apache.shindig.common.cache.ehcache.EhCacheModule
+      org.apache.shindig.gadgets.oauth2.OAuth2Module:
+      org.apache.shindig.gadgets.oauth2.OAuth2MessageModule:
+      org.apache.shindig.gadgets.oauth2.handler.OAuth2HandlerModule:
+      org.apache.shindig.gadgets.oauth2.persistence.sample.OAuth2PersistenceModule:
+      org.apache.shindig.common.cache.ehcache.EhCacheModule:
+      org.exoplatform.portal.gadget.core.ExoModule:
+      org.exoplatform.portal.gadget.core.ExtraFeatureModule:
+      org.apache.shindig.gadgets.admin.GadgetAdminModule
     </param-value>
   </context-param>
 

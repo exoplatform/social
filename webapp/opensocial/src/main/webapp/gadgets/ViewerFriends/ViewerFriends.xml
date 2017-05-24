@@ -18,7 +18,7 @@
     description="Gadget for displaying viewer's connections" directory_title="Viewer Friends"
     title="Viewer Friends" title_url="http://www.google.com.vn">
     <Require feature="setprefs" />
-    <Require feature="opensocial-0.7" />
+    <Require feature="opensocial-2.5" />
     <Require feature="dynamic-height" />
   </ModulePrefs>
   <UserPref datatype="enum" default_value="5"

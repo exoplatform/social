@@ -26,7 +26,7 @@ public class ExoUrlAuthenticationHandler extends UrlParameterAuthenticationHandl
 
   @Inject
   public ExoUrlAuthenticationHandler(@Named("exo.auth.decoder") SecurityTokenCodec securityTokenCodec) {
-    super(securityTokenCodec);
+    super(securityTokenCodec, false);
   }
 
 }

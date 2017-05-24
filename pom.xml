@@ -62,7 +62,7 @@
     <org.exoplatform.ws.version>5.0.x-SNAPSHOT</org.exoplatform.ws.version>
     <org.exoplatform.jcr.version>5.0.x-SNAPSHOT</org.exoplatform.jcr.version>
     <!-- GateIn Project Dependencies -->
-    <org.gatein.shindig.version>2.0.2.Final-gatein-4</org.gatein.shindig.version>
+    <org.apache.shindig.version>2.5.2</org.apache.shindig.version>
     <org.gatein.common.version>2.2.2.Final</org.gatein.common.version>
     <!-- Platform Project Dependencies -->
     <org.exoplatform.gatein.wci.version>5.0.x-SNAPSHOT</org.exoplatform.gatein.wci.version>
@@ -363,19 +363,19 @@
       </dependency>
       <!-- To be replaced by an import of GateIn Shinding parent POM -->
       <dependency>
-        <groupId>org.gatein.shindig</groupId>
+        <groupId>org.apache.shindig</groupId>
         <artifactId>shindig-common</artifactId>
-        <version>${org.gatein.shindig.version}</version>
+        <version>${org.apache.shindig.version}</version>
       </dependency>
       <dependency>
-        <groupId>org.gatein.shindig</groupId>
+        <groupId>org.apache.shindig</groupId>
         <artifactId>shindig-gadgets</artifactId>
-        <version>${org.gatein.shindig.version}</version>
+        <version>${org.apache.shindig.version}</version>
       </dependency>
       <dependency>
-        <groupId>org.gatein.shindig</groupId>
+        <groupId>org.apache.shindig</groupId>
         <artifactId>shindig-social-api</artifactId>
-        <version>${org.gatein.shindig.version}</version>
+        <version>${org.apache.shindig.version}</version>
       </dependency>
       <!-- To be replaced by an import of GateIn WCI parent POM -->
       <dependency>

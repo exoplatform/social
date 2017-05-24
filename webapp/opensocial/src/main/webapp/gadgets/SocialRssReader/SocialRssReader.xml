@@ -19,7 +19,7 @@
     <Require feature="dynamic-height" />
     <Require feature="setprefs"/>
     <Require feature="minimessage"/>
-    <Require feature="opensocial-0.7"></Require>
+    <Require feature="opensocial-2.5"></Require>
     <Require feature="settitle"></Require>
     <Require feature="views"></Require>
   </ModulePrefs>

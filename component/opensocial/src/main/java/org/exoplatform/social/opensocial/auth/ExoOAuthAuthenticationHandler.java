@@ -1,9 +1,12 @@
 package org.exoplatform.social.opensocial.auth;
 
 import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.shindig.auth.BlobCrypterSecurityToken;
 import org.apache.shindig.auth.SecurityToken;
 import org.apache.shindig.common.crypto.BasicBlobCrypter;
 import org.apache.shindig.common.util.TimeSource;
@@ -37,7 +40,7 @@ public class ExoOAuthAuthenticationHandler extends OAuthAuthenticationHandler {
   public ExoOAuthAuthenticationHandler(OAuthDataStore store,
                                        @Named("shindig.oauth.legacy-body-signing") boolean allowLegacyBodySigning) {
     // TODO Check the side effects as if we remove allowLegacyBodySigning from constructor.
-    super(store);
+    super(store, null);
   }
 
   public String getName() {
@@ -73,11 +76,13 @@ public class ExoOAuthAuthenticationHandler extends OAuthAuthenticationHandler {
       return null;
     }
 
-    final ExoBlobCrypterSecurityToken crypterSecurityToken = new ExoBlobCrypterSecurityToken(crypter, portalContainer, domain);
-    crypterSecurityToken.setOwnerId(securityToken.getOwnerId());
-    crypterSecurityToken.setAppUrl(securityToken.getAppUrl());
-    crypterSecurityToken.setViewerId(securityToken.getViewerId());
-    crypterSecurityToken.setPortalContainer(portalContainer);
+    Map<String, String> values = new HashMap<>();
+    values.put(BlobCrypterSecurityToken.Keys.APP_URL.getKey(), securityToken.getAppUrl());
+    values.put(BlobCrypterSecurityToken.Keys.OWNER.getKey(), securityToken.getOwnerId());
+    values.put(BlobCrypterSecurityToken.Keys.VIEWER.getKey(), securityToken.getViewerId());
+    values.put(BlobCrypterSecurityToken.Keys.TRUSTED_JSON.getKey(), "trusted");
+
+    final ExoBlobCrypterSecurityToken crypterSecurityToken = new ExoBlobCrypterSecurityToken(portalContainer, domain, null, values);
 
     return crypterSecurityToken;
   }

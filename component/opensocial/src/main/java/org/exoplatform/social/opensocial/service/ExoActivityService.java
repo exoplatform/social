@@ -18,6 +18,7 @@ package org.exoplatform.social.opensocial.service;
 
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
 
 import javax.servlet.http.HttpServletResponse;
@@ -25,7 +26,6 @@ import javax.servlet.http.HttpServletResponse;
 import com.google.common.collect.Lists;
 import org.apache.shindig.auth.AnonymousSecurityToken;
 import org.apache.shindig.auth.SecurityToken;
-import org.apache.shindig.common.util.ImmediateFuture;
 import org.apache.shindig.protocol.ProtocolException;
 import org.apache.shindig.protocol.RestfulCollection;
 import org.apache.shindig.social.core.model.ActivityImpl;
@@ -83,7 +83,7 @@ public class ExoActivityService extends ExoService implements ActivityService {
         result.addAll(convertToOSActivities(activityListAccess.loadAsList(options.getFirst(), options.getMax()), fields));
       }
 
-      return ImmediateFuture.newInstance(new RestfulCollection<Activity>(result, 0, result.size()));
+      return CompletableFuture.completedFuture(new RestfulCollection<Activity>(result, 0, result.size()));
     } catch (Exception je) {
       throw new ProtocolException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, je.getMessage(), je);
     }
@@ -129,7 +129,7 @@ public class ExoActivityService extends ExoService implements ActivityService {
         }
       }
 
-      return ImmediateFuture.newInstance(new RestfulCollection<Activity>(result, 0, result.size()));
+      return CompletableFuture.completedFuture(new RestfulCollection<Activity>(result, 0, result.size()));
     } catch (Exception je) {
       throw new ProtocolException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, je.getMessage(), je);
     }
@@ -208,8 +208,8 @@ public class ExoActivityService extends ExoService implements ActivityService {
       Identity targetStream = userIdentity;
 
       /// someone posting for a space ?
-      if (groupId.getType() == GroupId.Type.groupId) {
-        String group = groupId.getGroupId(); // can be space:name or space:UUID
+      if (groupId.getType() == GroupId.Type.objectId) {
+        String group = groupId.toString(); // can be space:name or space:UUID
         if (group.contains(":")) {
           group = group.split(":")[1];
         }
@@ -237,7 +237,7 @@ public class ExoActivityService extends ExoService implements ActivityService {
 
       am.saveActivityNoReturn(targetStream, exoActivity);
 
-      return ImmediateFuture.newInstance(null);
+      return CompletableFuture.completedFuture(null);
     } catch (Exception e) {
       if (e instanceof ProtocolException) {
         throw (ProtocolException)e;

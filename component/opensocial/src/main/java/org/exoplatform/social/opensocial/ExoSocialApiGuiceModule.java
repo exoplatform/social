@@ -19,6 +19,7 @@ package org.exoplatform.social.opensocial;
 import java.util.List;
 import java.util.Set;
 
+import com.google.inject.multibindings.Multibinder;
 import org.apache.shindig.auth.AuthenticationHandler;
 import org.apache.shindig.auth.SecurityTokenCodec;
 import org.apache.shindig.common.servlet.ParameterFetcher;
@@ -34,10 +35,7 @@ import org.apache.shindig.social.core.util.BeanXStreamAtomConverter;
 import org.apache.shindig.social.core.util.xstream.XStream081Configuration;
 import org.apache.shindig.social.opensocial.model.Person;
 import org.apache.shindig.social.opensocial.oauth.OAuthDataStore;
-import org.apache.shindig.social.opensocial.service.ActivityHandler;
-import org.apache.shindig.social.opensocial.service.AppDataHandler;
-import org.apache.shindig.social.opensocial.service.MessageHandler;
-import org.apache.shindig.social.opensocial.service.PersonHandler;
+import org.apache.shindig.social.opensocial.service.*;
 import org.apache.shindig.social.opensocial.spi.ActivityService;
 import org.apache.shindig.social.opensocial.spi.AppDataService;
 import org.apache.shindig.social.opensocial.spi.PersonService;
@@ -85,11 +83,11 @@ public class ExoSocialApiGuiceModule  extends AbstractModule {
 
     bind(new TypeLiteral<List<AuthenticationHandler>>(){}).toProvider(ExoAuthenticationHandlerProvider.class);
 
-    bind(new TypeLiteral<Set<Object>>(){}).annotatedWith(Names.named("org.apache.shindig.social.handlers"))
-    .toInstance(getHandlers());
-
-    bind(String.class).annotatedWith(Names.named("shindig.canonical.json.db"))
-    .toInstance("sampledata/canonicaldb.json");
+    Multibinder<Object> handlerBinder = Multibinder.newSetBinder(binder(), Object.class,
+            Names.named("org.apache.shindig.social.handlers"));
+    for (Class<?> handler : getHandlers()) {
+      handlerBinder.addBinding().toInstance(handler);
+    }
 
     bind(PersonService.class).to(ExoPeopleService.class);
     bind(AppDataService.class).to(ExoPeopleService.class);
@@ -106,9 +104,9 @@ public class ExoSocialApiGuiceModule  extends AbstractModule {
    * Hook to provide a Set of request handlers.  Subclasses may override
    * to add or replace additional handlers.
    */
-  protected Set<Object> getHandlers() {
-    return ImmutableSet.<Object>of(ActivityHandler.class, AppDataHandler.class,
-        PersonHandler.class, MessageHandler.class);
+  protected Set<Class<?>> getHandlers() {
+    return ImmutableSet.of(ActivityHandler.class, AppDataHandler.class,
+            PersonHandler.class, MessageHandler.class);
   }
 
 }

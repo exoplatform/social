@@ -47,7 +47,7 @@
       </exclusions>
     </dependency>
     <dependency>
-      <groupId>org.gatein.shindig</groupId>
+      <groupId>org.apache.shindig</groupId>
       <artifactId>shindig-common</artifactId>
       <scope>runtime</scope>
       <exclusions>
@@ -78,7 +78,7 @@
       </exclusions>
     </dependency>
     <dependency>
-      <groupId>org.gatein.shindig</groupId>
+      <groupId>org.apache.shindig</groupId>
       <artifactId>shindig-gadgets</artifactId>
       <scope>runtime</scope>
       <exclusions>

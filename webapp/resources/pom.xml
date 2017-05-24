@@ -50,7 +50,6 @@
     <dependency>
       <groupId>com.google.javascript</groupId>
       <artifactId>closure-compiler</artifactId>
-      <version>r1592</version>
       <scope>test</scope>
     </dependency>
     

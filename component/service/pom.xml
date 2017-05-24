@@ -207,7 +207,7 @@
       </exclusions>
     </dependency>
     <dependency>
-      <groupId>org.gatein.shindig</groupId>
+      <groupId>org.apache.shindig</groupId>
       <artifactId>shindig-social-api</artifactId>
       <exclusions>
         <exclusion>

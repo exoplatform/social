@@ -28,8 +28,8 @@ public class ExoBlobCrypterSecurityToken extends BlobCrypterSecurityToken {
   protected static final String HOST_NAME = "h";
   protected static final String PORTAL_OWNER_KEY = "w";
 
-  public ExoBlobCrypterSecurityToken(BlobCrypter crypter, String container, String domain) {
-    super(crypter, container, domain);
+  public ExoBlobCrypterSecurityToken(String container, String domain, String activeUrl, Map<String, String> values) {
+    super(container, domain, activeUrl, values);
   }
 
   protected String portalContainer;
@@ -61,8 +61,8 @@ public class ExoBlobCrypterSecurityToken extends BlobCrypterSecurityToken {
   }
 
   @Override
-  protected Map<String, String> buildValuesMap() {
-    Map<String, String> map = super.buildValuesMap();
+  public Map<String, String> toMap() {
+    Map<String, String> map = super.toMap();
     if (portalContainer != null) {
       map.put(PORTAL_CONTAINER_KEY, portalContainer);
     }
@@ -83,21 +83,23 @@ public class ExoBlobCrypterSecurityToken extends BlobCrypterSecurityToken {
                                           String domain,
                                           String token,
                                           String activeUrl) throws BlobCrypterException {
-    Map<String, String> values = crypter.unwrap(token, MAX_TOKEN_LIFETIME_SECS);
-    ExoBlobCrypterSecurityToken t = new ExoBlobCrypterSecurityToken(crypter, container, domain);
-    t.setOwnerId(values.get(OWNER_KEY));
-    t.setViewerId(values.get(VIEWER_KEY));
-    t.setAppUrl(values.get(GADGET_KEY));
-    String moduleId = values.get(GADGET_INSTANCE_KEY);
+    Map<String, String> values = crypter.unwrap(token);
+    ExoBlobCrypterSecurityToken t = new ExoBlobCrypterSecurityToken(container, domain, activeUrl, values);
+    t.setOwnerId(values.get(Keys.OWNER.getKey()));
+    t.setViewerId(values.get(Keys.VIEWER.getKey()));
+    t.setAppUrl(values.get(Keys.APP_URL.getKey()));
+    String moduleId = values.get(Keys.MODULE_ID.getKey());
     if (moduleId != null) {
       t.setModuleId(Long.parseLong(moduleId));
     }
-    t.setTrustedJson(values.get(TRUSTED_JSON_KEY));
+    t.setTrustedJson(values.get(Keys.TRUSTED_JSON.getKey()));
     t.setPortalContainer(values.get(PORTAL_CONTAINER_KEY));
     t.setActiveUrl(activeUrl);
     t.setHostName(values.get(HOST_NAME));
     t.setPortalOwner(values.get(PORTAL_OWNER_KEY));
     return t;
   }
+
+
 
 }

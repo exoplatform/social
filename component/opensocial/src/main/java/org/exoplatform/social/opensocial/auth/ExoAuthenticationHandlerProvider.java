@@ -30,7 +30,7 @@ public class ExoAuthenticationHandlerProvider extends AuthenticationHandlerProvi
                                           @Named("exo.auth.handler")OAuthAuthenticationHandler threeLeggedOAuth,
                                           AnonymousAuthenticationHandler anonymous) {
 
-    super(urlParam, threeLeggedOAuth, anonymous);
+    super(null, urlParam, threeLeggedOAuth, anonymous);
 
   }
 }

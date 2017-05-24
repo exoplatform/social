@@ -17,6 +17,7 @@
 package org.exoplatform.social.opensocial.auth;
 
 
+import org.apache.shindig.auth.BlobCrypterSecurityToken;
 import org.apache.shindig.common.crypto.BlobCrypter;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.portal.application.PortalRequestContext;
@@ -25,6 +26,9 @@ import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.web.application.RequestContext;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * The Social Security Token Generator.
@@ -54,12 +58,16 @@ public class ExoSocialSecurityTokenGenerator extends ExoDefaultSecurityTokenGene
   protected String createToken(String gadgetURL, String owner, String viewer, Long moduleId, String container) {
     try {
       BlobCrypter crypter = getBlobCrypter();
-      ExoBlobCrypterSecurityToken t = new ExoBlobCrypterSecurityToken(crypter, container, null);
-      t.setAppUrl(gadgetURL);
-      t.setModuleId(moduleId);
-      t.setOwnerId(owner);
-      t.setViewerId(viewer);
-      t.setTrustedJson("trusted");
+
+      Map<String, String> values = new HashMap<>();
+      values.put(BlobCrypterSecurityToken.Keys.APP_URL.getKey(), gadgetURL);
+      values.put(BlobCrypterSecurityToken.Keys.MODULE_ID.getKey(), String.valueOf(moduleId));
+      values.put(BlobCrypterSecurityToken.Keys.OWNER.getKey(), owner);
+      values.put(BlobCrypterSecurityToken.Keys.VIEWER.getKey(), viewer);
+      values.put(BlobCrypterSecurityToken.Keys.TRUSTED_JSON.getKey(), "");
+
+      ExoBlobCrypterSecurityToken t = new ExoBlobCrypterSecurityToken(container, null, null, values);
+
       String portalContainer = PortalContainer.getCurrentPortalContainerName();
       PortalRequestContext portalRequestContext = Util.getPortalRequestContext();
       String url = portalRequestContext.getRequest().getRequestURL().toString();
@@ -67,7 +75,8 @@ public class ExoSocialSecurityTokenGenerator extends ExoDefaultSecurityTokenGene
       t.setPortalContainer(portalContainer);
       t.setHostName(hostName);
       t.setPortalOwner(portalRequestContext.getPortalOwner());
-      return t.encrypt();
+
+      return t.getContainer() + ":" + crypter.wrap(t.toMap());
     } catch (Exception e) {
       LOG.error("Failed to generate token for gadget " + gadgetURL + " for owner " + owner, e);
     }

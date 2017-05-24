@@ -27,13 +27,13 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
 
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.shindig.auth.AnonymousSecurityToken;
 import org.apache.shindig.auth.SecurityToken;
-import org.apache.shindig.common.util.ImmediateFuture;
 import org.apache.shindig.protocol.DataCollection;
 import org.apache.shindig.protocol.ProtocolException;
 import org.apache.shindig.protocol.RestfulCollection;
@@ -152,7 +152,7 @@ public class ExoPeopleService extends ExoService implements PersonService, AppDa
       toIndex = toIndex < fromIndex ? fromIndex : toIndex;
       result = result.subList(fromIndex, toIndex);
 
-      return ImmediateFuture.newInstance(new RestfulCollection<Person>(
+      return CompletableFuture.completedFuture(new RestfulCollection<Person>(
               result, collectionOptions.getFirst(), totalSize));
     } catch (Exception je) {
       throw new ProtocolException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, je.getMessage(), je);
@@ -171,10 +171,15 @@ public class ExoPeopleService extends ExoService implements PersonService, AppDa
 
       Identity identity = getIdentity(id.getUserId(token), true, token);
 
-      return ImmediateFuture.newInstance(convertToPerson(identity, fields, token));
+      return CompletableFuture.completedFuture(convertToPerson(identity, fields, token));
     } catch (Exception e) {
       throw new ProtocolException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage(), e);
     }
+  }
+
+  @Override
+  public Future<Person> updatePerson(UserId userId, Person person, SecurityToken securityToken) throws ProtocolException {
+    throw new UnsupportedOperationException();
   }
 
   /**
@@ -298,7 +303,7 @@ public class ExoPeopleService extends ExoService implements PersonService, AppDa
                                               Set<String> fields, SecurityToken token) throws ProtocolException {
     try {
       Set<Identity> idSet = getIdSet(userIds, groupId, token);
-      Map<String, Map<String, String>> idToData = new HashMap<String, Map<String, String>>();
+      Map<String, Map<String, Object>> idToData = new HashMap<>();
       Iterator<Identity> it = idSet.iterator();
 
       String gadgetId = clean(appId);
@@ -307,7 +312,7 @@ public class ExoPeopleService extends ExoService implements PersonService, AppDa
         Identity id = it.next();
         idToData.put(id.getId(), getPreferences(id.getRemoteId(), gadgetId, instanceId, fields));
       }
-      return ImmediateFuture.newInstance(new DataCollection(idToData));
+      return CompletableFuture.completedFuture(new DataCollection(idToData));
     } catch (Exception e) {
       throw new ProtocolException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage(), e);
     }
@@ -335,13 +340,13 @@ public class ExoPeopleService extends ExoService implements PersonService, AppDa
    * @return the preferences
    * @throws Exception the exception
    */
-  private Map<String, String> getPreferences(String userID, String gadgetId, String instanceID,
+  private Map<String, Object> getPreferences(String userID, String gadgetId, String instanceID,
                                              Set<String> fields) throws Exception {
 //      PortalContainer pc = RootContainer.getInstance().getPortalContainer("portal");
 //      UserGadgetStorage userGadgetStorage = (UserGadgetStorage) pc.getComponentInstanceOfType(UserGadgetStorage.class);
 //
 //      Map<String, String> values = userGadgetStorage.get(userID, gadgetId, instanceID, fields);
-    Map<String, String> values = null;
+    Map<String, Object> values = null;
     return values;
   }
 
@@ -355,7 +360,7 @@ public class ExoPeopleService extends ExoService implements PersonService, AppDa
    * @throws Exception the exception
    */
   private void savePreferences(String userID, String gadgetId, String instanceID,
-                               Map<String, String> values) throws Exception {
+                               Map<String, Object> values) throws Exception {
 //    PortalContainer pc = RootContainer.getInstance().getPortalContainer("portal");
 //    UserGadgetStorage userGadgetStorage = (UserGadgetStorage) pc.getComponentInstanceOfType(UserGadgetStorage.class);
 //
@@ -402,14 +407,14 @@ public class ExoPeopleService extends ExoService implements PersonService, AppDa
     } catch (Exception e) {
       throw new ProtocolException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage(), e);
     }
-    return ImmediateFuture.newInstance(null);
+    return CompletableFuture.completedFuture(null);
   }
 
   /**
    * {@inheritDoc}
    */
   public Future<Void> updatePersonData(UserId user, GroupId groupId, String appId, Set<String> fields,
-                                       Map<String, String> values, SecurityToken token) throws ProtocolException {
+                                       Map<String, Object> values, SecurityToken token) throws ProtocolException {
     //TODO: remove the fields that are in the fields list and not in the values map
     try {
       if (token instanceof AnonymousSecurityToken) {
@@ -425,7 +430,7 @@ public class ExoPeopleService extends ExoService implements PersonService, AppDa
     } catch (Exception e) {
       throw new ProtocolException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage(), e);
     }
-    return ImmediateFuture.newInstance(null);
+    return CompletableFuture.completedFuture(null);
   }
 
   /**

@@ -73,14 +73,14 @@
 "gadgets.iframeBaseUri" : "/eXoGadgetServer/gadgets/ifr",
 "gadgets.uri.iframe.basePath" : "/eXoGadgetServer/gadgets/ifr",
 
-// jsUriTemplate will have %host% and %js% substituted.
+// jsUriTemplate will have %authority% and %js% substituted.
 // No locked domain special cases, but jsUriTemplate must
 // never conflict with a lockedDomainSuffix.
-"gadgets.jsUriTemplate" : "http://%host%/eXoGadgetServer/gadgets/js/%js%",
+"gadgets.jsUriTemplate" : "//%authority%/eXoGadgetServer/gadgets/js/%js%",
 
 //New configuration for iframeUri generation:
 "gadgets.uri.iframe.lockedDomainSuffix" :  "-a.example.com:8080",
-"gadgets.uri.iframe.unlockedDomain" : "http://%host%",
+"gadgets.uri.iframe.unlockedDomain" : "//%authority%",
 "gadgets.uri.iframe.basePath" : "/eXoGadgetServer/gadgets/ifr",
 
 
@@ -89,12 +89,13 @@
 
 // Use an insecure security token by default
 "gadgets.securityTokenType" : "secure",
-"gadgets.securityTokenKeyFile" : "key.txt",
+"gadgets.securityTokenKey" : "key.txt",
+"gadgets.securityTokenTTL" : 3600,
 
 // Config param to load Opensocial data for social
-// preloads in data pipelining.  %host% will be
+// preloads in data pipelining.  %authority% will be
 // substituted with the current host.
-"gadgets.osDataUri" : "http://%host%/social/rpc",
+"gadgets.osDataUri" : "//%authority%/social/rpc",
 
 "gadgets.signingKeyFile" : "oauthkey.pem",
 "gadgets.signingKeyName" : "mytestkey",
@@ -111,16 +112,16 @@
 },
 
 // Default Js Uri config: also must be overridden.
-"gadgets.uri.js.host" : "http://%host%/",
+"gadgets.uri.js.host" : "//%authority%/",
 "gadgets.uri.js.path" : "/eXoGadgetServer/gadgets/js",
 
 // Default concat Uri config; used for testing.
-"gadgets.uri.concat.host" : "%host%",
+"gadgets.uri.concat.host" : "%authority%",
 "gadgets.uri.concat.path" : "/eXoGadgetServer/gadgets/concat",
 "gadgets.uri.concat.js.splitToken" : "false",
 
 // Default proxy Uri config; used for testing.
-"gadgets.uri.proxy.host" : "%host%",
+"gadgets.uri.proxy.host" : "%authority%",
 "gadgets.uri.proxy.path" : "/eXoGadgetServer/gadgets/proxy",
 
 // This config data will be passed down to javascript. Please
@@ -138,12 +139,12 @@
   "views" : {
     "home" : {
       "isOnlyVisible" : false,
-      "urlTemplate" : "http://%host%/eXoGadgetServer/gadgets/home?{var}",
+      "urlTemplate" : "http://%authority%/eXoGadgetServer/gadgets/home?{var}",
       "aliases": ["DASHBOARD", "default"]
     },
     "canvas" : {
       "isOnlyVisible" : true,
-      "urlTemplate" : "http://%host%/eXoGadgetServer/gadgets/canvas?{var}",
+      "urlTemplate" : "http://%authority%/eXoGadgetServer/gadgets/canvas?{var}",
       "aliases" : ["FULL_PAGE"]
     }
   },
@@ -240,9 +241,9 @@
   "opensocial" : {
     // Path to fetch opensocial data from
     // Must be on the same domain as the gadget rendering server
-    "path" : "http://%host%/social/rpc",
+    "path" : "//%host%/social/rpc",
     // Path to issue invalidate calls
-    "invalidatePath" : "http://%host%/social/rpc",
+    "invalidatePath" : "//%host%/social/rpc",
     "domain" : "shindig",
     "enableCaja" : false,
     "supportedFields" : {
@@ -270,7 +271,7 @@
   },
   "osapi" : {
     // The endpoints to query for available JSONRPC/REST services
-    "endPoints" : [ "http://%host%/social/rpc" ]
+    "endPoints" : [ "//%authority%/social/rpc" ]
   },
   "osml": {
     // OSML library resource.  Can be set to null or the empty string to disable OSML

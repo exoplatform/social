@@ -71,7 +71,7 @@ public class ExoService {
       switch (group.getType()) {
         case all:
         case friends:
-        case groupId:
+        case objectId:
           returnVal.addAll(getFriendsList(id, token));
           break;
         case self:

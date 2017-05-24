@@ -80,7 +80,7 @@
     </dependency>
     <!-- These dependency is required to compile but reported as useless by mvn dependency:analyze -->
     <dependency>
-      <groupId>org.gatein.shindig</groupId>
+      <groupId>org.apache.shindig</groupId>
       <artifactId>shindig-social-api</artifactId>
       <exclusions>
         <exclusion>
