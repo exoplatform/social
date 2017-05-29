@@ -19,7 +19,10 @@ package org.exoplatform.social.rest.impl.user;
 import io.swagger.annotations.*;
 import org.exoplatform.commons.utils.CommonsUtils;
 import org.exoplatform.commons.utils.ListAccess;
+import org.exoplatform.container.PortalContainer;
 import org.exoplatform.portal.config.UserACL;
+import org.exoplatform.services.log.ExoLogger;
+import org.exoplatform.services.log.Log;
 import org.exoplatform.services.organization.OrganizationService;
 import org.exoplatform.services.organization.Query;
 import org.exoplatform.services.organization.User;
@@ -41,14 +44,17 @@ import org.exoplatform.social.rest.api.EntityBuilder;
 import org.exoplatform.social.rest.api.RestUtils;
 import org.exoplatform.social.rest.api.UserRestResources;
 import org.exoplatform.social.rest.entity.*;
+import org.exoplatform.social.service.rest.PeopleRestService;
 import org.exoplatform.social.service.rest.api.VersionResources;
 
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -62,12 +68,14 @@ import java.util.List;
 public class UserRestResourcesV1 implements UserRestResources {
 
   private UserACL userACL;
-  
+
   private IdentityManager identityManager;
 
   public static enum ACTIVITY_STREAM_TYPE {
     all, owner, connections, spaces
   }
+
+  private static final Log LOG = ExoLogger.getLogger(UserRestResourcesV1.class);
   
   public UserRestResourcesV1(UserACL userACL, IdentityManager identityManager) {
     this.userACL = userACL;
@@ -207,42 +215,74 @@ public class UserRestResourcesV1 implements UserRestResources {
           @ApiResponse (code = 400, message = "Invalid query input") })
   public Response getUserAvatarById(@Context UriInfo uriInfo,
                                     @Context Request request,
-                                    @ApiParam(value = "User name", required = true) @PathParam("id") String id) throws IOException {
+                                    @ApiParam(value = "User name", required = true) @PathParam("id") String id,
+                                    @ApiParam(value = "URL to default avatar Or '404' to return a 404 http code", required = false) @QueryParam("default") String defaultAvatar) throws IOException {
   
     Identity identity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, id, true);
+
     //
+    Response.ResponseBuilder builder = null;
     if (identity == null) {
       throw new WebApplicationException(Response.Status.NOT_FOUND);
-    }
-    //
-    Profile profile = identity.getProfile();
-    Long lastUpdated = null;
-    if (profile != null) {
-      lastUpdated = profile.getAvatarLastUpdated();
-    }
-    EntityTag eTag = null;
-    if (lastUpdated != null) {
-      eTag = new EntityTag(Integer.toString(lastUpdated.hashCode()));
-    }
-    //
-    Response.ResponseBuilder builder = (eTag == null ? null : request.evaluatePreconditions(eTag));
-    if (builder == null) {
-      InputStream stream = identityManager.getAvatarInputStream(identity);
-      if (stream == null) {
-        throw new WebApplicationException(Response.Status.NOT_FOUND);
+    } else {
+      //
+      Profile profile = identity.getProfile();
+      Long lastUpdated = null;
+      if (profile != null) {
+        lastUpdated = profile.getAvatarLastUpdated();
       }
-      /* As recommended in the the RFC1341 (https://www.w3.org/Protocols/rfc1341/4_Content-Type.html),
-      we set the avatar content-type to "image/png". So, its data  would be recognized as "image" by the user-agent.
-     */
-      builder = Response.ok(stream, "image/png");
-      builder.tag(eTag);
+      EntityTag eTag = null;
+      if (lastUpdated != null) {
+        eTag = new EntityTag(Integer.toString(lastUpdated.hashCode()));
+      }
+      //
+      builder = (eTag == null ? null : request.evaluatePreconditions(eTag));
+      if (builder == null) {
+        InputStream stream = identityManager.getAvatarInputStream(identity);
+        if (stream != null) {
+          /* As recommended in the the RFC1341 (https://www.w3.org/Protocols/rfc1341/4_Content-Type.html),
+          we set the avatar content-type to "image/png". So, its data  would be recognized as "image" by the user-agent */
+          builder = Response.ok(stream, "image/png");
+          builder.tag(eTag);
+        }
+      }
+
+      if (builder == null) {
+        builder = getDefaultAvatarBuilder(defaultAvatar);
+      }
+
+      CacheControl cc = new CacheControl();
+      cc.setMaxAge(86400);
+      builder.cacheControl(cc);
+      return builder.cacheControl(cc).build();
     }
-    CacheControl cc = new CacheControl();
-    cc.setMaxAge(86400);
-    builder.cacheControl(cc);
-    return builder.cacheControl(cc).build();
   }
-  
+
+  private Response.ResponseBuilder getDefaultAvatarBuilder(String avatarUrl) {
+      if (avatarUrl != null) {
+        if (avatarUrl.equals("404")) {
+          throw new WebApplicationException(Response.Status.NOT_FOUND);
+        }
+
+        try {
+          URL url = new URL(avatarUrl);
+          String type = url.openConnection().getHeaderField("Content-Type");
+          if (type != null && type.startsWith("image/")) {
+            InputStream input = url.openStream();
+            return Response.ok(input, type);
+          }
+        } catch (IOException e) {
+          LOG.debug("Could NOT open the default url " + avatarUrl);
+        }
+      }
+
+    InputStream is = PortalContainer.getInstance().getPortalContext().getResourceAsStream("/skin/images/system/UserAvtDefault.png");
+    if (is == null) {
+      throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
+    }
+    return Response.ok(is, "image/png");
+  }
+
   @DELETE
   @Path("{id}")
   @RolesAllowed("users")
