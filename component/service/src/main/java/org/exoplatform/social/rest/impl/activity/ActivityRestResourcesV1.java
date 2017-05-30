@@ -450,7 +450,8 @@ public class ActivityRestResourcesV1 implements ActivityRestResources {
 
     ActivityManager activityManager = CommonsUtils.getService(ActivityManager.class);
     ExoSocialActivity activity = activityManager.getActivity(id);
-    if (activity == null) {
+    if (activity == null
+            || (EntityBuilder.getActivityStream(activity, currentUser) == null && !hasMention(currentUser, activity))) {
       throw new WebApplicationException(Response.Status.UNAUTHORIZED);
     }
     

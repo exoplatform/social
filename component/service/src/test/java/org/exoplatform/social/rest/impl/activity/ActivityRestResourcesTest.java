@@ -17,6 +17,7 @@ import org.exoplatform.social.core.storage.api.IdentityStorage;
 import org.exoplatform.social.rest.entity.ActivityEntity;
 import org.exoplatform.social.rest.entity.CollectionEntity;
 import org.exoplatform.social.rest.entity.CommentEntity;
+import org.exoplatform.social.rest.entity.DataEntity;
 import org.exoplatform.social.service.rest.api.VersionResources;
 import org.exoplatform.social.service.test.AbstractResourceTest;
 
@@ -78,7 +79,7 @@ public class ActivityRestResourcesTest extends AbstractResourceTest {
     super.tearDown();
     removeResource(activityRestResourcesV1.getClass());
   }
-  
+
   public void testGetActivitiesOfCurrentUser() throws Exception {
     startSessionAs("root");
     
@@ -272,6 +273,50 @@ public class ActivityRestResourcesTest extends AbstractResourceTest {
     collections = (CollectionEntity) response.getEntity();
     assertEquals(2, collections.getEntities().size());
     
+    //clean data
+    activityManager.deleteActivity(rootActivity);
+  }
+
+  public void testDeleteLike() throws Exception {
+    startSessionAs("demo");
+
+    //root posts one activity
+    ExoSocialActivity demoActivity = new ExoSocialActivityImpl();
+    demoActivity.setTitle("demo activity");
+    activityManager.saveActivityNoReturn(demoIdentity, demoActivity);
+
+    List<String> likerIds = new ArrayList<String>();
+    likerIds.add(demoIdentity.getId());
+    demoActivity.setLikeIdentityIds(likerIds.toArray(new String[likerIds.size()]));
+    activityManager.updateActivity(demoActivity);
+
+    ContainerResponse response = service("DELETE", "/" + VersionResources.VERSION_ONE + "/social/activities/" + demoActivity.getId() + "/likes/demo", "", null, null);
+    assertNotNull(response);
+    assertEquals(200, response.getStatus());
+    DataEntity activityEntity = (DataEntity) response.getEntity();
+    assertNotNull(activityEntity);
+
+    //clean data
+    activityManager.deleteActivity(demoActivity);
+  }
+
+  public void testDeleteLikeWhenNoPermissionOnActivity() throws Exception {
+    startSessionAs("root");
+
+    //root posts one activity
+    ExoSocialActivity rootActivity = new ExoSocialActivityImpl();
+    rootActivity.setTitle("root activity");
+    activityManager.saveActivityNoReturn(rootIdentity, rootActivity);
+
+    startSessionAs("demo");
+
+    ContainerResponse response = service("DELETE", "/" + VersionResources.VERSION_ONE + "/social/activities/" + rootActivity.getId() + "/likes/demo", "", null, null);
+    assertNotNull(response);
+    assertEquals(401, response.getStatus());
+    DataEntity activityEntity = (DataEntity) response.getEntity();
+    // the activity data must not be returned since the user has not the permissions to view it
+    assertNull(activityEntity);
+
     //clean data
     activityManager.deleteActivity(rootActivity);
   }
