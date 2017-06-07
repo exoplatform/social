@@ -74,6 +74,7 @@ public class ActivityMigrationService extends AbstractMigrationService<ExoSocial
   public static final String EVENT_LISTENER_KEY = "SOC_ACTIVITY_MIGRATION";
   private static final Pattern MENTION_PATTERN = Pattern.compile("@([^\\s]+)|@([^\\s]+)$");
   public final static String COMMENT_PREFIX = "comment";
+  public final static String DEFAULT_TITLE = "\t";
   
   private final ActivityStorage activityStorage;
   private final ActivityStorageImpl activityJCRStorage;
@@ -337,7 +338,11 @@ public class ActivityMigrationService extends AbstractMigrationService<ExoSocial
         //owner.setProviderId(providerId);
         //
         activity.setId(null);
-        activity.setTitle(formatHTML(activity.getTitle()));
+        String title = formatHTML(activity.getTitle());
+        if ( title == null || title.equals("") )  {
+          title = DEFAULT_TITLE;
+        }
+        activity.setTitle(title);
         activity.setBody(StringUtil.removeLongUTF(activity.getBody()));
 
         //
@@ -378,10 +383,11 @@ public class ActivityMigrationService extends AbstractMigrationService<ExoSocial
               comment.setUserId(getNewIdentityId(comment.getUserId()));
               comment.setPosterId(getPosterId(comment));
 
-              if (comment.getTitle() == null) {
-                comment.setTitle("");
-              }else {
-                comment.setTitle(formatHTML(comment.getTitle()));
+              String commentTitle = formatHTML(comment.getTitle());
+              if ( commentTitle == null || commentTitle.equals("") ) {
+                comment.setTitle(DEFAULT_TITLE);
+              } else {
+                comment.setTitle(commentTitle);
               }
               activityStorage.saveComment(activity, comment);
               //
