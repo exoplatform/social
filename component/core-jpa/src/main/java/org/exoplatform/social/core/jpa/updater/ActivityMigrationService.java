@@ -17,14 +17,6 @@
 
 package org.exoplatform.social.core.jpa.updater;
 
-import java.util.*;
-import java.util.regex.Pattern;
-
-import javax.jcr.Node;
-import javax.jcr.NodeIterator;
-import javax.jcr.PropertyIterator;
-import javax.jcr.RepositoryException;
-
 import org.exoplatform.commons.api.event.EventManager;
 import org.exoplatform.commons.persistence.impl.EntityManagerService;
 import org.exoplatform.commons.utils.XPathUtils;
@@ -35,26 +27,35 @@ import org.exoplatform.management.annotations.Managed;
 import org.exoplatform.management.annotations.ManagedDescription;
 import org.exoplatform.management.jmx.annotations.NameTemplate;
 import org.exoplatform.management.jmx.annotations.Property;
+import org.exoplatform.portal.config.UserACL;
 import org.exoplatform.services.jcr.impl.core.NodeImpl;
-import org.exoplatform.social.core.jpa.storage.RDBMSActivityStorageImpl;
-import org.exoplatform.social.core.jpa.storage.RDBMSIdentityStorageImpl;
-import org.exoplatform.social.core.jpa.storage.dao.ActivityDAO;
-import org.exoplatform.social.core.jpa.updater.utils.MigrationCounter;
-import org.exoplatform.social.core.jpa.updater.utils.StringUtil;
+import org.exoplatform.social.core.BaseActivityProcessorPlugin;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.activity.model.ExoSocialActivityImpl;
 import org.exoplatform.social.core.chromattic.entity.*;
 import org.exoplatform.social.core.chromattic.utils.ActivityIterator;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
+import org.exoplatform.social.core.jpa.storage.RDBMSActivityStorageImpl;
+import org.exoplatform.social.core.jpa.storage.RDBMSIdentityStorageImpl;
+import org.exoplatform.social.core.jpa.storage.dao.ActivityDAO;
+import org.exoplatform.social.core.jpa.updater.utils.MigrationCounter;
+import org.exoplatform.social.core.jpa.updater.utils.StringUtil;
 import org.exoplatform.social.core.storage.api.ActivityStorage;
 import org.exoplatform.social.core.storage.exception.NodeNotFoundException;
 import org.exoplatform.social.core.storage.impl.ActivityStorageImpl;
 import org.exoplatform.social.core.storage.impl.IdentityStorageImpl;
 import org.exoplatform.social.core.storage.impl.StorageUtils;
 import org.exoplatform.social.core.storage.query.JCRProperties;
+import org.apache.commons.lang.StringUtils;
 
-import org.exoplatform.social.core.BaseActivityProcessorPlugin;
+
+import javax.jcr.Node;
+import javax.jcr.NodeIterator;
+import javax.jcr.PropertyIterator;
+import javax.jcr.RepositoryException;
+import java.util.*;
+import java.util.regex.Pattern;
 
 @Managed
 @ManagedDescription("Social migration activities from JCR to RDBMS.")
@@ -69,8 +70,10 @@ public class ActivityMigrationService extends AbstractMigrationService<ExoSocial
   
   private final ActivityStorage activityStorage;
   private final ActivityStorageImpl activityJCRStorage;
+  protected String superUserIdentityId;
 
   protected final RDBMSIdentityStorageImpl identityJPAStorage;
+  private final UserACL userACL;
 
   private final ActivityDAO activityDAO;
 
@@ -84,13 +87,15 @@ public class ActivityMigrationService extends AbstractMigrationService<ExoSocial
                                   IdentityStorageImpl identityStorage,
                                   RDBMSIdentityStorageImpl rdbmsIdentityStorage,
                                   EventManager<ExoSocialActivity, String> eventManager,
-                                  EntityManagerService entityManagerService) {
+                                  EntityManagerService entityManagerService,
+                                  UserACL userACL) {
 
     super(initParams, identityStorage, eventManager, entityManagerService);
     this.identityJPAStorage = rdbmsIdentityStorage;
     this.activityDAO = activityDAO;
     this.activityStorage = activityStorage;
     this.activityJCRStorage = activityJCRStorage;
+    this.userACL = userACL;
     this.LIMIT_THRESHOLD = getInteger(initParams, LIMIT_THRESHOLD_KEY, 100);
   }
 
@@ -98,7 +103,7 @@ public class ActivityMigrationService extends AbstractMigrationService<ExoSocial
   @ManagedDescription("Manual to start run miguration data of activities from JCR to RDBMS.")
   public void doMigration() throws Exception {
     RequestLifeCycle.end();
-
+    superUserIdentityId = getSuperUserIdentityId();
     numberFailed += migrateUserActivities();
     // migrate activities from space
     numberFailed += migrateSpaceActivities();
@@ -333,7 +338,7 @@ public class ActivityMigrationService extends AbstractMigrationService<ExoSocial
         activity.setCommentedIds(convertToNewIds(activity.getCommentedIds()));
         activity.setMentionedIds(convertToNewIds(activity.getMentionedIds()));
         activity.setUserId(getNewIdentityId(activity.getUserId()));
-        activity.setPosterId(getNewIdentityId(activity.getPosterId()));
+        activity.setPosterId(getPosterId(activity));
 
         activity = activityStorage.saveActivity(jpaIdentity, activity);
         //
@@ -364,7 +369,7 @@ public class ActivityMigrationService extends AbstractMigrationService<ExoSocial
               comment.setCommentedIds(convertToNewIds(comment.getCommentedIds()));
               comment.setMentionedIds(convertToNewIds(comment.getMentionedIds()));
               comment.setUserId(getNewIdentityId(comment.getUserId()));
-              comment.setPosterId(getNewIdentityId(comment.getPosterId()));
+              comment.setPosterId(getPosterId(comment));
 
               if (comment.getTitle() == null) {
                 comment.setTitle("");
@@ -772,4 +777,36 @@ public class ActivityMigrationService extends AbstractMigrationService<ExoSocial
 
     return list.toArray(new String[list.size()]);
   }
+
+  /**
+   * Returns the IdentityId of the Super user
+   *
+   * @return the superUserIdentityId
+   */
+  private String getSuperUserIdentityId() {
+    String superUser = userACL.getSuperUser();
+    Identity superUserIdentity = identityJPAStorage.findIdentity(OrganizationIdentityProvider.NAME, superUser);
+    return superUserIdentity.getId();
+  }
+
+  /**
+   * Returns the posterId which will be used for the activity's migration
+   *
+   * @param activity
+   * @return the posterId
+   */
+  private String getPosterId(ExoSocialActivity activity) {
+    String usedPosterId = null;
+    String posterId = activity.getPosterId();
+    String userId = activity.getUserId();
+    if (StringUtils.isNotBlank(posterId)) {
+      usedPosterId = getNewIdentityId(posterId);
+    } else if (StringUtils.isNotBlank(userId)) {
+      usedPosterId = userId;
+    } else {
+      usedPosterId = superUserIdentityId;
+    }
+    return usedPosterId;
+  }
+
 }
