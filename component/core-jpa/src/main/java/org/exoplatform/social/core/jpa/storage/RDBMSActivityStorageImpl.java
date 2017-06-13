@@ -229,6 +229,11 @@ public class RDBMSActivityStorageImpl extends ActivityStorageImpl {
       exoComment.setMentionedIds(comment.getMentionerIds().toArray(new String[mentioned.size()]));
     }
 
+    //
+    Set<String> likers = comment.getLikerIds();
+    if (likers != null && !likers.isEmpty() ) {
+      exoComment.setLikeIdentityIds(comment.getLikerIds().toArray(new String[likers.size()]));
+    }
     processActivity(exoComment);
     
     return exoComment;

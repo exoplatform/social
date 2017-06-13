@@ -21,6 +21,7 @@
 */
 %>
 <%
+  import org.apache.commons.lang.ArrayUtils;
   import org.exoplatform.portal.webui.util.Util;
   import org.exoplatform.webui.form.UIFormTextAreaInput;
   import org.exoplatform.social.core.service.LinkProvider;
@@ -369,6 +370,30 @@
 				  <% } %>
 				</div>
 			  </div>
+			  <!--begin Like Comment-->
+			  <div class="actionBar clearfix ">
+              					<ul class="pull-right statusAction">
+              					  <%
+              					    def likeCommentAction = uicomponent.event("LikeComment", "true_"+it.id);
+              					    def unlikeCommentAction = uicomponent.event("LikeComment", "false_"+it.id);
+              					    def isCommentLiked = ArrayUtils.contains(it.likeIdentityIds, Utils.getViewerIdentity().getId());
+              					    def totalCommentLiked = it.likeIdentityIds.length;
+              					    if (isCommentLiked) { %>
+              						<li>
+              							<a onclick="$unlikeCommentAction" rel="tooltip" data-placement="bottom" title="<%=_ctx.appRes("UIActivity.msg.UnlikeActivity"); %>" id="UnLikeLink${activity.id}" href="javascript:void(0);">
+              							   <%=_ctx.appRes("UIActivity.msg.UnlikeActivity"); %>&nbsp;<i class="uiIconThumbUp uiIconBlue"></i>&nbsp;$totalCommentLiked
+              							</a>
+              						</li>
+              					  <% } else { %>
+              						<li>
+              							<a onclick="$likeCommentAction" rel="tooltip" data-placement="bottom" title="<%=_ctx.appRes("UIActivity.msg.LikeActivity"); %>" id="LikeLink${activity.id}" href="javascript:void(0);">
+              							  <%=_ctx.appRes("UIActivity.msg.LikeActivity"); %>&nbsp;<i class="uiIconThumbUp uiIconLightGray"></i>&nbsp;$totalCommentLiked
+              							</a>
+              						</li>
+              					  <% }%>
+              					</ul>
+              			</div><!--end actionBar-->
+			  <!--end like Comment-->
 			</div>
 			<% }) %>
 			</div> <!--end commentlist-->

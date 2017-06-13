@@ -438,6 +438,20 @@ public class BaseUIActivity extends UIForm {
     activity = getI18N(activity);
   }
 
+  public void setLikeComment(boolean isLiked, String commentId){
+    Identity viewerIdentity = Utils.getViewerIdentity();
+    ExoSocialActivity commentActivity = Utils.getActivityManager().getActivity(commentId);
+    if (isLiked) {
+      Utils.getActivityManager().saveLike(commentActivity, viewerIdentity);
+    } else {
+      Utils.getActivityManager().deleteLike(commentActivity, viewerIdentity);
+    }
+
+    activityCommentsListAccess = Utils.getActivityManager().getCommentsWithListAccess(getActivity());
+
+
+  }
+
   protected String getActivityPermalink(String activityId) {
     return LinkProvider.getSingleActivityUrl(activityId);
   }
@@ -963,6 +977,22 @@ public class BaseUIActivity extends UIForm {
 
       Utils.initUserProfilePopup(uiActivity.getId());
       Utils.resizeHomePage();
+    }
+  }
+
+  public static class LikeCommentActionListener extends EventListener<BaseUIActivity> {
+
+    @Override
+    public void execute(Event<BaseUIActivity> event) throws Exception {
+      WebuiRequestContext requestContext = event.getRequestContext();
+      //ObjectID contains the action to do and the comment id
+      String[] likeStatus = requestContext.getRequestParameter(OBJECTID).split("_");
+      BaseUIActivity uiActivity = event.getSource();
+      uiActivity.setLikeComment(Boolean.parseBoolean(likeStatus[0]), likeStatus[1]);
+      requestContext.addUIComponentToUpdateByAjax(uiActivity);
+      Utils.initUserProfilePopup(uiActivity.getId());
+      Utils.resizeHomePage();
+
     }
   }
 
