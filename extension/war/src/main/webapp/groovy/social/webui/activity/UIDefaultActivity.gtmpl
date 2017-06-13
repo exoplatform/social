@@ -358,6 +358,44 @@
 					<div class="contentComment" id="${activity.id}-${commentCounter}">
 						$commentMessage
 					</div>
+					<!--begin Like Comment-->
+                    <div class="clearfix actionCommentBar">
+                         <ul class="pull-left statusAction">
+                         <%
+                           def likeCommentAction = uicomponent.event("LikeComment", "true_"+it.id);
+                           def unlikeCommentAction = uicomponent.event("LikeComment", "false_"+it.id);
+                           def isCommentLiked = ArrayUtils.contains(it.likeIdentityIds, Utils.getViewerIdentity().getId());
+                           def totalCommentLiked = it.likeIdentityIds.length;
+                           if (isCommentLiked) { %>
+                           <li>
+                              <a onclick="$unlikeCommentAction" class="likeLink" rel="tooltip" data-placement="bottom" id="UnLikeLink${activity.id}" href="javascript:void(0);">
+                                <%=_ctx.appRes("UIActivity.msg.UnlikeActivity"); %>
+                              </a>
+                           </li>
+                           <li>
+                              <a rel="tooltip" data-placement="bottom" title="<%=_ctx.appRes("UIActivity.msg.UnlikeActivity"); %>" id="UnLikeLink${activity.id}" href="javascript:void(0);">
+                                <i class="uiIconThumbUp uiIconBlue"></i>&nbsp;$totalCommentLiked
+                              </a>
+                           </li>
+
+                           <% } else { %>
+                           <li>
+                               <a onclick="$likeCommentAction" class="likeLink" rel="tooltip" data-placement="bottom" title="<%=_ctx.appRes("UIActivity.msg.LikeActivity"); %>" id="LikeLink${activity.id}" href="javascript:void(0);">
+                                  <%=_ctx.appRes("UIActivity.msg.LikeActivity"); %>
+                               </a>
+                           </li>
+                                 <%if ( totalCommentLiked > 0 ){%>
+                           <li>
+                               <a rel="tooltip" data-placement="bottom" title="<%=_ctx.appRes("UIActivity.msg.LikeActivity"); %>" id="LikeLink${activity.id}" href="javascript:void(0);">
+                                 <i class="uiIconThumbUp uiIconLightGray"></i>&nbsp;$totalCommentLiked
+                               </a>
+                           </li>
+
+                           <%    }
+                           }%>
+                         </ul>
+                    </div><!--end actionBar-->
+                    <!--end like Comment-->
 				</div><!--end commentRight-->
                 <div class="clearfix"></div>
 				<div class="actLink">
@@ -370,30 +408,7 @@
 				  <% } %>
 				</div>
 			  </div>
-			  <!--begin Like Comment-->
-			  <div class="actionBar clearfix ">
-              					<ul class="pull-right statusAction">
-              					  <%
-              					    def likeCommentAction = uicomponent.event("LikeComment", "true_"+it.id);
-              					    def unlikeCommentAction = uicomponent.event("LikeComment", "false_"+it.id);
-              					    def isCommentLiked = ArrayUtils.contains(it.likeIdentityIds, Utils.getViewerIdentity().getId());
-              					    def totalCommentLiked = it.likeIdentityIds.length;
-              					    if (isCommentLiked) { %>
-              						<li>
-              							<a onclick="$unlikeCommentAction" rel="tooltip" data-placement="bottom" title="<%=_ctx.appRes("UIActivity.msg.UnlikeActivity"); %>" id="UnLikeLink${activity.id}" href="javascript:void(0);">
-              							   <%=_ctx.appRes("UIActivity.msg.UnlikeActivity"); %>&nbsp;<i class="uiIconThumbUp uiIconBlue"></i>&nbsp;$totalCommentLiked
-              							</a>
-              						</li>
-              					  <% } else { %>
-              						<li>
-              							<a onclick="$likeCommentAction" rel="tooltip" data-placement="bottom" title="<%=_ctx.appRes("UIActivity.msg.LikeActivity"); %>" id="LikeLink${activity.id}" href="javascript:void(0);">
-              							  <%=_ctx.appRes("UIActivity.msg.LikeActivity"); %>&nbsp;<i class="uiIconThumbUp uiIconLightGray"></i>&nbsp;$totalCommentLiked
-              							</a>
-              						</li>
-              					  <% }%>
-              					</ul>
-              			</div><!--end actionBar-->
-			  <!--end like Comment-->
+
 			</div>
 			<% }) %>
 			</div> <!--end commentlist-->
