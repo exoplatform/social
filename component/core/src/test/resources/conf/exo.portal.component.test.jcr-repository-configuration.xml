@@ -76,7 +76,6 @@
               <property name="infinispan-cl-cache.jdbc.data.column" value="data" />
               <property name="infinispan-cl-cache.jdbc.timestamp.column" value="timestamp" />
               <property name="infinispan-cl-cache.jdbc.datasource" value="jdbcexo" />
-              <property name="infinispan-cl-cache.jdbc.connectionFactory" value="org.exoplatform.services.jcr.infinispan.ManagedConnectionFactory" />
               <property name="jbosscache-cl-cache.jdbc.dialect" value="auto"/>
             </properties>
           </lock-manager>
@@ -134,7 +133,6 @@
               <property name="infinispan-cl-cache.jdbc.data.column" value="data" />
               <property name="infinispan-cl-cache.jdbc.timestamp.column" value="timestamp" />
               <property name="infinispan-cl-cache.jdbc.datasource" value="jdbcexo" />
-              <property name="infinispan-cl-cache.jdbc.connectionFactory" value="org.exoplatform.services.jcr.infinispan.ManagedConnectionFactory" />
               <property name="jbosscache-cl-cache.jdbc.dialect" value="auto"/>
             </properties>
           </lock-manager>
