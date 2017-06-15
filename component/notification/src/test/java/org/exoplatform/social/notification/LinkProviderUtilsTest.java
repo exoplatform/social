@@ -47,25 +47,25 @@ public class LinkProviderUtilsTest extends AbstractCoreTest {
 
   public void testGetAcceptInvitationToJoinSpaceUrl() {
     String spaceId = "5fc9eef07f000101", userId = "root";
-    String expected = "http://exoplatform.com/rest/private/social/notifications/acceptInvitationToJoinSpace/5fc9eef07f000101/root";
+    String expected = "http://exoplatform.com/portal/login?initialURI=/portal/rest/social/notifications/acceptInvitationToJoinSpace/5fc9eef07f000101/root";
     assertEquals(expected, LinkProviderUtils.getAcceptInvitationToJoinSpaceUrl(spaceId, userId));
   }
 
   public void testGetIgnoreInvitationToJoinSpaceUrl() {
     String spaceId = "5fc9eef07f000101", userId = "root";
-    String expected = "http://exoplatform.com/rest/private/social/notifications/ignoreInvitationToJoinSpace/5fc9eef07f000101/root";
+    String expected = "http://exoplatform.com/portal/login?initialURI=/portal/rest/social/notifications/ignoreInvitationToJoinSpace/5fc9eef07f000101/root";
     assertEquals(expected, LinkProviderUtils.getIgnoreInvitationToJoinSpaceUrl(spaceId, userId));
   }
 
   public void testGetValidateRequestToJoinSpaceUrl() {
     String spaceId = "5fc9eef07f000101", userId = "root";
-    String expected = "http://exoplatform.com/rest/social/notifications/validateRequestToJoinSpace/5fc9eef07f000101/root";
+    String expected = "http://exoplatform.com/portal/login?initialURI=/portal/rest/social/notifications/validateRequestToJoinSpace/5fc9eef07f000101/root";
     assertEquals(expected, LinkProviderUtils.getValidateRequestToJoinSpaceUrl(spaceId, userId));
   }
 
   public void testGetRefuseRequestToJoinSpaceUrl() {
     String spaceId = "5fc9eef07f000101", userId = "root";
-    String expected = "http://exoplatform.com/rest/social/notifications/refuseRequestToJoinSpace/5fc9eef07f000101/root";
+    String expected = "http://exoplatform.com/portal/login?initialURI=/portal/rest/social/notifications/refuseRequestToJoinSpace/5fc9eef07f000101/root";
     assertEquals(expected, LinkProviderUtils.getRefuseRequestToJoinSpaceUrl(spaceId, userId));
   }
 

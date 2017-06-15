@@ -1,13 +1,14 @@
 package org.exoplatform.social.notification;
 
 import org.exoplatform.commons.utils.CommonsUtils;
+import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
+import org.exoplatform.social.core.activity.model.ActivityPluginType;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.service.LinkProvider;
 import org.exoplatform.social.core.space.model.Space;
-import org.exoplatform.social.core.activity.model.ActivityPluginType;
 
 import java.util.Map;
 
@@ -36,6 +37,8 @@ public static final String RESOURCE_URL = "social/notifications";
   public static final String REDIRECT_URL = RESOURCE_URL + "/redirectUrl";
   
   public static final String PRIVATE_PATH = "/private";
+
+  public static final String LOGIN_INITIALURI = "/login?initialURI=/";
 
   private static final Log LOG = ExoLogger.getLogger(LinkProviderUtils.class);
 
@@ -79,7 +82,7 @@ public static final String RESOURCE_URL = "social/notifications";
    * @return
    */
   public static String getAcceptInvitationToJoinSpaceUrl(String spaceId, String userId) {
-    return getPrivateRestUrl(ACCEPT_INVITATION_JOIN_SPACE, spaceId, userId);
+    return getPortalRestUrl(ACCEPT_INVITATION_JOIN_SPACE, spaceId, userId);
   }
   
   /**
@@ -90,7 +93,7 @@ public static final String RESOURCE_URL = "social/notifications";
    * @return
    */
   public static String getIgnoreInvitationToJoinSpaceUrl(String spaceId, String userId) {
-    return getPrivateRestUrl(IGNORE_INVITATION_JOIN_SPACE, spaceId, userId);
+    return getPortalRestUrl(IGNORE_INVITATION_JOIN_SPACE, spaceId, userId);
   }
   
   /**
@@ -100,7 +103,7 @@ public static final String RESOURCE_URL = "social/notifications";
    * @return
    */
   public static String getValidateRequestToJoinSpaceUrl(String spaceId, String userId) {
-    return getRestUrl(VALIDATE_REQUEST_JOIN_SPACE, spaceId, userId);
+    return getPortalRestUrl(VALIDATE_REQUEST_JOIN_SPACE, spaceId, userId);
   }
   
   /**
@@ -110,7 +113,7 @@ public static final String RESOURCE_URL = "social/notifications";
    * @return
    */
   public static String getRefuseRequestToJoinSpaceUrl(String spaceId, String userId) {
-    return getRestUrl(REFUSE_SPACE_REQUEST_ACTION, spaceId, userId);
+    return getPortalRestUrl(REFUSE_SPACE_REQUEST_ACTION, spaceId, userId);
   }
   
   /**
@@ -175,7 +178,31 @@ public static final String RESOURCE_URL = "social/notifications";
   public static String getBaseRestUrl() {
     return new StringBuffer(CommonsUtils.getCurrentDomain()).append("/").append(CommonsUtils.getRestContextName()).toString();
   }
-  
+
+  /**
+   * Get the url with the login redirection
+   *
+   * @param type
+   * @param objectId1
+   * @param objectId2
+   * @return
+   */
+  public static String getPortalRestUrl(String type, String objectId1, String objectId2) {
+    String baseUrl = getPortalLoginRedirectURL();
+    return new StringBuffer(baseUrl).append("/").append(type).append("/").append(objectId1)
+            .append("/").append(objectId2).toString();
+  }
+
+  /**
+   * Get the Redirect login url
+   *
+   * @return url http://localhost:8080/portal/login?initialURI=/portal/rest
+   */
+   public static String getPortalLoginRedirectURL() {
+     String portal = PortalContainer.getCurrentPortalContainerName();
+     return new StringBuffer(CommonsUtils.getCurrentDomain()).append("/").append(portal).append(LOGIN_INITIALURI).append(portal).append("/").append(CommonsUtils.getRestContextName()).toString();
+   }
+
   /**
    * Gets private absolute rest url
    * 
