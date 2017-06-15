@@ -290,6 +290,10 @@ public class ActivityMigrationService extends AbstractMigrationService<ExoSocial
     }
 
     Identity jpaIdentity = identityJPAStorage.findIdentity(identityEntity.getProviderId(), identityEntity.getRemoteId());
+    if(jpaIdentity == null) {
+      LOG.warn("The identity of the user " + identityEntity.getRemoteId() + " was not found in migrated identities. Do not migrate activities for this user.");
+      return;
+    }
 
     String type = (OrganizationIdentityProvider.NAME.equals(providerId)) ? "user" : "space";
     LOG.info(String.format("    Migration activities for %s: %s", type, identityEntity.getRemoteId()));
@@ -312,6 +316,10 @@ public class ActivityMigrationService extends AbstractMigrationService<ExoSocial
         }
 
         ExoSocialActivity activity = activityJCRStorage.getActivity(activityId);
+        if(activity == null) {
+          LOG.info("Activity with ID=" + activityId + " could not be found, ignoring it!");
+          continue;
+        }
         Map<String, String> params = activity.getTemplateParams();
 
         if (params != null && !params.isEmpty()) {
