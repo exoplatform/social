@@ -447,7 +447,7 @@ public class BaseUIActivity extends UIForm {
       Utils.getActivityManager().deleteLike(commentActivity, viewerIdentity);
     }
 
-    activityCommentsListAccess = Utils.getActivityManager().getCommentsWithListAccess(getActivity());
+    //activityCommentsListAccess = Utils.getActivityManager().getCommentsWithListAccess(getActivity());
 
 
   }
