@@ -701,6 +701,10 @@ public class IdentityStorageTest extends AbstractCoreTest {
     // we load the profile to check if the avatar is well attached to it, as well as @Profile.avatarLastUpdated value
     Long avatarLastUpdated = profile.getAvatarLastUpdated();
     assertNotNull(avatarLastUpdated);
+
+    // Make sure that the upcoming update will not occur at the exact same time than the first update
+    Thread.sleep(10);
+
     // we re-attach the the avatar to the profile to be sure that @Profile.avatarLastUpdated value is updated
     profile.setProperty(Profile.AVATAR, avatarAttachment);
     identityStorage.updateProfile(profile);
@@ -741,7 +745,10 @@ public class IdentityStorageTest extends AbstractCoreTest {
     profile = identityStorage.loadProfile(profile);
     avatarLastUpdated = profile.getAvatarLastUpdated();
     assertNotNull(avatarLastUpdated);
-  
+
+    // Make sure that the upcoming update will not occur at the exact same time than the first update
+    Thread.sleep(10);
+
     profile.setProperty(Profile.AVATAR, avatarAttachment);
     identityStorage.updateProfile(profile);
     profile = identityStorage.loadProfile(profile);
