@@ -86,6 +86,10 @@ public class ProfileQueryBuilder {
         predicates.add(identity.get(IdentityEntity_.id).in(filter.getIdentityIds()));
       }
 
+      if (filter.getRemoteIds() != null && filter.getRemoteIds().size() > 0) {
+        predicates.add(identity.get(IdentityEntity_.remoteId).in(filter.getRemoteIds()));
+      }
+
       if (filter.getProviderId() != null && !filter.getProviderId().isEmpty()) {
         predicates.add(cb.equal(identity.get(IdentityEntity_.providerId), filter.getProviderId()));
       }

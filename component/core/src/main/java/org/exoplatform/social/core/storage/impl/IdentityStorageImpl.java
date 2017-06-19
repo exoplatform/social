@@ -257,12 +257,6 @@ public class IdentityStorageImpl extends AbstractStorage implements IdentityStor
           break;
         case MANAGER:
           members = gotSpace.getManagers();
-          List<String> wildcardUsers = SpaceUtils.findMembershipUsersByGroupAndTypes(space
-              .getGroupId(), MembershipTypeHandler.ANY_MEMBERSHIP_TYPE);
-          
-          for (String remoteId : wildcardUsers) {
-            relations.add(findIdentity(OrganizationIdentityProvider.NAME, remoteId));
-          }
           break;
       }
 

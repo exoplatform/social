@@ -336,6 +336,7 @@ public class UISpaceMember extends UIContainer {
   public List<String> getExistingUsers() {
     SpaceService spaceService = getSpaceService();
     Space space = spaceService.getSpaceById(spaceId);
+
     try {
       if (space == null) {
         throw new Exception("Could not get the space with ID "+ spaceId);
@@ -348,7 +349,6 @@ public class UISpaceMember extends UIContainer {
 
       int currentPage = iteratorExistingUsers.getCurrentPage();
       Set<String> users = new HashSet<String>(Arrays.asList(memberUsers));
-      users.addAll(SpaceUtils.findMembershipUsersByGroupAndTypes(space.getGroupId(), MembershipTypeHandler.ANY_MEMBERSHIP_TYPE));
 
       LazyPageList<String> pageList = new LazyPageList<String>(new StringListAccess(new ArrayList<String>(users)), MEMBERS_PER_PAGE);
       iteratorExistingUsers.setPageList(pageList);
@@ -366,7 +366,6 @@ public class UISpaceMember extends UIContainer {
       uiApplication.addMessage(new ApplicationMessage(MSG_ERROR_MEMBERS_LOADING,
                                                       null,
                                                       ApplicationMessage.ERROR));
-
     }
     return new ArrayList<>();
   }

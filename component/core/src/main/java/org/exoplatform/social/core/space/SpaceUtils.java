@@ -62,15 +62,7 @@ import org.exoplatform.portal.webui.workspace.UIPortalApplication;
 import org.exoplatform.portal.webui.workspace.UIWorkingWorkspace;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
-import org.exoplatform.services.organization.Group;
-import org.exoplatform.services.organization.GroupHandler;
-import org.exoplatform.services.organization.Membership;
-import org.exoplatform.services.organization.MembershipHandler;
-import org.exoplatform.services.organization.MembershipType;
-import org.exoplatform.services.organization.OrganizationService;
-import org.exoplatform.services.organization.User;
-import org.exoplatform.services.organization.UserHandler;
-import org.exoplatform.services.organization.UserStatus;
+import org.exoplatform.services.organization.*;
 import org.exoplatform.services.security.ConversationState;
 import org.exoplatform.social.common.router.ExoRouter;
 import org.exoplatform.social.common.router.ExoRouter.Route;
@@ -871,8 +863,11 @@ public class SpaceUtils {
       // TODO: checks whether user is already manager?
       MembershipHandler membershipHandler = organizationService.getMembershipHandler();
       Membership found = membershipHandler.findMembershipByUserGroupAndType(remoteId, groupId, membership);
+      if (found == null && !MembershipTypeHandler.ANY_MEMBERSHIP_TYPE.equalsIgnoreCase(membership)) {
+        found = membershipHandler.findMembershipByUserGroupAndType(remoteId, groupId, MembershipTypeHandler.ANY_MEMBERSHIP_TYPE);
+      }
       if (found != null) {
-        LOG.info("user: " + remoteId + " was already added to group: " + groupId + " with membership: " + membership);
+        LOG.info("user: " + remoteId + " was already added to group: " + groupId + " with membership * or : " + membership);
         return;
       }
       User user = organizationService.getUserHandler().findUserByName(remoteId);
@@ -932,6 +927,10 @@ public class SpaceUtils {
           }
       } else if (getUserACL().getAdminMSType().equals(membership)) {
           Membership memberShip = memberShipHandler.findMembershipByUserGroupAndType(remoteId, groupId, getUserACL().getAdminMSType());
+          Membership any = memberShipHandler.findMembershipByUserGroupAndType(remoteId, groupId, MembershipTypeHandler.ANY_MEMBERSHIP_TYPE);
+          if (any != null) {
+            memberShipHandler.removeMembership(any.getId(), true);
+          }
           if (memberShip == null) {
             LOG.info("User: " + remoteId + " is not a manager of group: " + groupId);
             return;
@@ -939,6 +938,8 @@ public class SpaceUtils {
           UserHandler userHandler = organizationService.getUserHandler();
           User user = userHandler.findUserByName(remoteId);
           memberShipHandler.removeMembership(memberShip.getId(), true);
+
+
           MembershipType mbShipTypeMember = organizationService.getMembershipTypeHandler().findMembershipType(MEMBER);
           GroupHandler groupHandler = organizationService.getGroupHandler();
           memberShipHandler.linkMembership(user, groupHandler.findGroupById(groupId), mbShipTypeMember, true);

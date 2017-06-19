@@ -164,24 +164,6 @@ public class SpaceUtilsWildCardMembershipTest extends AbstractCoreTest {
     return user;
   }
   
-  private void addUserToGroupWithMembership(String remoteId, String groupId, String membership) {
-    OrganizationService organizationService = SpaceUtils.getOrganizationService();
-    try {
-      MembershipHandler membershipHandler = organizationService.getMembershipHandler();
-      Membership found = membershipHandler.findMembershipByUserGroupAndType(remoteId, groupId, membership);
-      if (found != null) {
-        return;
-      }
-      User user = organizationService.getUserHandler().findUserByName(remoteId);
-      MembershipType membershipType = organizationService.getMembershipTypeHandler().findMembershipType(membership);
-      GroupHandler groupHandler = organizationService.getGroupHandler();
-      Group existingGroup = groupHandler.findGroupById(groupId);
-      membershipHandler.linkMembership(user, existingGroup, membershipType, true);
-    } catch (Exception e) {
-      return;
-    }
-  }
-  
   private Space populateSpace(String name, String creator) throws Exception{
     Space space = new Space();
     space.setApp("app");

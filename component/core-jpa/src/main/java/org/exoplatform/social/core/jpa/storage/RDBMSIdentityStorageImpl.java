@@ -694,45 +694,28 @@ public class RDBMSIdentityStorageImpl implements IdentityStorage {
                                                                 SpaceMemberFilterListAccess.Type type,
                                                                 long offset, long limit) throws IdentityStorageException {
 
-    List<Long> relations = new ArrayList<>();
+    List<String> remoteIds = new ArrayList<>();
     if (space != null) {
-      try {
-        SpaceEntity gotSpace = spaceDAO.find(Long.parseLong(space.getId()));
-        String[] members = null;
-        switch (type) {
-          case MEMBER:
-            members = gotSpace.getMembersId();
-            break;
-          case MANAGER:
-            members = gotSpace.getManagerMembersId();
-            List<String> wildcardUsers = SpaceUtils.findMembershipUsersByGroupAndTypes(space
-                    .getGroupId(), MembershipTypeHandler.ANY_MEMBERSHIP_TYPE);
-
-            for (String remoteId : wildcardUsers) {
-              Identity id = findIdentity(OrganizationIdentityProvider.NAME, remoteId);
-              if (id != null) {
-                relations.add(EntityConverterUtils.parseId(id.getId()));
-              }
-            }
-            break;
-        }
-
-        for (int i = 0; i < members.length; i++) {
-          Identity identity = findIdentity(OrganizationIdentityProvider.NAME, members[i]);
-          if (identity != null) {
-            relations.add(EntityConverterUtils.parseId(identity.getId()));
-          }
-        }
-      } catch (IdentityStorageException e) {
-        throw new IdentityStorageException(IdentityStorageException.Type.FAIL_TO_FIND_IDENTITY);
+      SpaceEntity gotSpace = spaceDAO.find(Long.parseLong(space.getId()));
+      String[] members = null;
+      switch (type) {
+        case MEMBER:
+          members = gotSpace.getMembersId();
+          break;
+        case MANAGER:
+          members = gotSpace.getManagerMembersId();
+          break;
       }
-      if (relations.isEmpty()) {
-        relations.add(-1L);
+
+      remoteIds.addAll(Arrays.asList(members));
+      if (remoteIds.isEmpty()) {
+        remoteIds.add("");
       }
     }
 
     ExtendProfileFilter xFilter = new ExtendProfileFilter(profileFilter);
-    xFilter.setIdentityIds(relations);
+    xFilter.setRemoteIds(remoteIds);
+    xFilter.setProviderId(OrganizationIdentityProvider.NAME);
     ListAccess<IdentityEntity> list = getIdentityDAO().findIdentities(xFilter);
     return EntityConverterUtils.convertToIdentities(list, offset, limit);
   }

@@ -132,13 +132,28 @@ public class SpaceSearchConnectorTestCase extends AbstractCoreTest {
     assertEquals(LinkProvider.SPACE_DEFAULT_AVATAR_URL, rFoo.getImageUrl());
     assertEquals("foo - 1 Member(s) - Free to Join", rFoo.getDetail());
 
-    Collection<SearchResult> cBar = spaceSearchConnector.search(context, "bar", Collections.EMPTY_LIST, 0, 10, "relevancy", "ASC");
-    SearchResult rBar = cBar.iterator().next();
-    Profile pBar = identityManager.getProfile(identityManager.getOrCreateIdentity(SpaceIdentityProvider.NAME, "bar"));
-    Space sBar = spaceService.getSpaceByDisplayName("bar");
-    assertEquals(pBar.getAvatarUrl(), rBar.getImageUrl());
-    assertTrue(rBar.getDate() != 0);
-    assertEquals(sBar.getCreatedTime(), rBar.getDate());
+    //Can't reuse bar space in setup method
+    //because social doesn't allow to reuse space identity after delete space
+    Space sZoo = new Space();
+    sZoo.setDisplayName("zoo");
+    sZoo.setPrettyName("zoo");
+    sZoo.setDescription("zoo description");
+    sZoo.setManagers(new String[]{"demo"});
+    sZoo.setMembers(new String[]{"demo"});
+    sZoo.setType(DefaultSpaceApplicationHandler.NAME);
+    InputStream inputStream = getClass().getResourceAsStream("/eXo-Social.png");
+    AvatarAttachment avatarAttachment = new AvatarAttachment(null, "avatar", "png", inputStream, null, System.currentTimeMillis());
+    sZoo.setAvatarAttachment(avatarAttachment);
+    createSpaceNonInitApps(sZoo, demoIdentity.getRemoteId(), null);
+    tearDown.add(sZoo);
+
+    Collection<SearchResult> cZoo = spaceSearchConnector.search(context, "zoo", Collections.EMPTY_LIST, 0, 10, "relevancy", "ASC");
+    SearchResult rZoo = cZoo.iterator().next();
+    Profile pZoo = identityManager.getProfile(identityManager.getOrCreateIdentity(SpaceIdentityProvider.NAME, "zoo"));
+    Space sBar = spaceService.getSpaceByDisplayName("zoo");
+    assertEquals(pZoo.getAvatarUrl(), rZoo.getImageUrl());
+    assertTrue(rZoo.getDate() != 0);
+    assertEquals(sBar.getCreatedTime(), rZoo.getDate());
   }
 
   public void testOrder() throws Exception {

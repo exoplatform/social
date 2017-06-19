@@ -49,32 +49,26 @@ public class SocialMembershipListenerImpl extends MembershipEventListener {
   public void postDelete(Membership m) throws Exception {
     if (m.getGroupId().startsWith(SpaceUtils.SPACE_GROUP)) {
       OrganizationService orgService = CommonsUtils.getService(OrganizationService.class);
-      
-      //check if user has the membership type "*", if yes, no need to remove this membership
-      Membership membership = orgService.getMembershipHandler().
-          findMembershipByUserGroupAndType(m.getUserName(), m.getGroupId(), MembershipTypeHandler.ANY_MEMBERSHIP_TYPE);
-      if (membership != null) {
-        return;
-      }
+
       UserACL acl =  CommonsUtils.getService(UserACL.class);
       
       //only handles these memberships have types likes 'manager' 
-      //and 'member', except 'validator', '*'...so on.
+      //and 'member', except 'validator', ...so on.
       SpaceService spaceService = CommonsUtils.getService(SpaceService.class);
       Space space = spaceService.getSpaceByGroupId(m.getGroupId());
+
       ConversationState state = ConversationState.getCurrent();
       if(state != null) {
         space.setEditor(state.getIdentity().getUserId());
       }
-      if (acl.getAdminMSType().equalsIgnoreCase(m.getMembershipType())) {
+      if (acl.getAdminMSType().equalsIgnoreCase(m.getMembershipType()) ||
+          MembershipTypeHandler.ANY_MEMBERSHIP_TYPE.equalsIgnoreCase(m.getMembershipType())) {
         spaceService.setManager(space, m.getUserName(), false);
         SpaceUtils.refreshNavigation();
       } else if (SpaceUtils.MEMBER.equalsIgnoreCase(m.getMembershipType())) {
         spaceService.removeMember(space, m.getUserName());
         spaceService.setManager(space, m.getUserName(), false);
         SpaceUtils.refreshNavigation();
-      } else if (MembershipTypeHandler.ANY_MEMBERSHIP_TYPE.equalsIgnoreCase(m.getMembershipType())) {
-        clearIdentityCaching();
       }
     } else if (m.getGroupId().startsWith(SpaceUtils.PLATFORM_USERS_GROUP)) {
       clearIdentityCaching();
@@ -89,13 +83,14 @@ public class SocialMembershipListenerImpl extends MembershipEventListener {
       ExoContainer container = ExoContainerContext.getCurrentContainer();
       UserACL acl = (UserACL) container.getComponentInstanceOfType(UserACL.class);
       //only handles these memberships have types likes 'manager' and 'member'
-      //, except 'validator', '*'...so on.
+      //, except 'validator', ...so on.
       SpaceService spaceService = (SpaceService) container.getComponentInstanceOfType(SpaceService.class);
       Space space = spaceService.getSpaceByGroupId(m.getGroupId());
       //TODO A case to confirm: will we create a new space here when a new group is created via organization portlet
       if (space != null) {
         String userName = m.getUserName();
-        if (acl.getAdminMSType().equalsIgnoreCase(m.getMembershipType())) {
+        if (acl.getAdminMSType().equalsIgnoreCase(m.getMembershipType()) ||
+            MembershipTypeHandler.ANY_MEMBERSHIP_TYPE.equalsIgnoreCase(m.getMembershipType())) {
           if (spaceService.isManager(space, userName)) {
             return;
           }
@@ -110,8 +105,6 @@ public class SocialMembershipListenerImpl extends MembershipEventListener {
             return;
           }
           spaceService.addMember(space, userName);
-        } else if (MembershipTypeHandler.ANY_MEMBERSHIP_TYPE.equalsIgnoreCase(m.getMembershipType())) {
-          clearIdentityCaching();
         }
         
         //Refresh GroupNavigation

@@ -32,8 +32,7 @@ import org.exoplatform.services.jcr.RepositoryService;
 import org.exoplatform.services.jcr.core.ManageableRepository;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
-import org.exoplatform.services.organization.OrganizationService;
-import org.exoplatform.services.organization.User;
+import org.exoplatform.services.organization.*;
 import org.exoplatform.social.core.space.SpaceException;
 import org.exoplatform.social.core.space.SpaceUtils;
 import org.exoplatform.social.core.space.model.Space;
@@ -232,4 +231,21 @@ public abstract class AbstractCoreTest extends BaseExoTestCase {
     return space;
   }
 
+  protected void addUserToGroupWithMembership(String remoteId, String groupId, String membership) {
+    OrganizationService organizationService = SpaceUtils.getOrganizationService();
+    try {
+      MembershipHandler membershipHandler = organizationService.getMembershipHandler();
+      Membership found = membershipHandler.findMembershipByUserGroupAndType(remoteId, groupId, membership);
+      if (found != null) {
+        return;
+      }
+      User user = organizationService.getUserHandler().findUserByName(remoteId);
+      MembershipType membershipType = organizationService.getMembershipTypeHandler().findMembershipType(membership);
+      GroupHandler groupHandler = organizationService.getGroupHandler();
+      Group existingGroup = groupHandler.findGroupById(groupId);
+      membershipHandler.linkMembership(user, existingGroup, membershipType, true);
+    } catch (Exception e) {
+      return;
+    }
+  }
 }
