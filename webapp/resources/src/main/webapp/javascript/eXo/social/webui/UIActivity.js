@@ -64,6 +64,19 @@
           UIActivity.commentBlockIds[i - 1] = "CommentBlock" + UIActivity.activityId + i;
         }
       }
+      if(!$("#activityContainer" + UIActivity.activityId).find(".isPreviewable").hasClass("animatedBlock")) {
+        $("#activityContainer" + UIActivity.activityId).find(".isPreviewable").addClass("animatedBlock");
+        $("#activityContainer" + UIActivity.activityId).find(".isPreviewable").mouseenter(function() {
+          $(this).find(".mediaContent + .MediaName").animate({
+            bottom: 48
+          });
+        });
+        $("#activityContainer" + UIActivity.activityId).find(".isPreviewable").mouseleave(function() {
+          $(this).find(".mediaContent + .MediaName").animate({
+            bottom: -5
+          });
+        });
+      }
     },
 
     initCKEditor: function () {

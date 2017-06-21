@@ -283,7 +283,12 @@ public static final String RESOURCE_URL = "social/notifications";
         } else if (activityType.equals(ActivityPluginType.FILE.getName())
                 || activityType.equals(ActivityPluginType.SHARE_FILE.getName())
                 || activityType.equals(ActivityPluginType.CONTENT.getName())) {
-          return CommonsUtils.getCurrentDomain() + templateParams.get("contenLink");
+          String contenLink = templateParams.get("contenLink");
+          String[] contentLinks = contenLink.split("\\|@\\|");
+          if(contentLinks.length > 1) {
+            contenLink = contentLinks[0];
+          }
+          return CommonsUtils.getCurrentDomain() + contenLink;
         } else if (activity.isComment() && (activityType.contains("answer:"))) {
           return CommonsUtils.getCurrentDomain() + Utils.getActivityManager().getParentActivity(activity).getTemplateParams().get("Link");
         } else if (activity.isComment()) {
