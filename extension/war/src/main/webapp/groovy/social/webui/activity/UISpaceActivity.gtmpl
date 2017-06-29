@@ -409,12 +409,12 @@
                            }
                            if (isCommentLiked) { %>
                           <li>
-                              <a onclick="$unlikeCommentAction" class="likeLink" data-placement="bottom" id="LikeCommentLinkReset${it.id}" href="javascript:void(0);">
+                              <a onclick="$unlikeCommentAction" class="likeLink" data-placement="bottom" id="LikeCommentLink${it.id}" href="javascript:void(0);">
                                 <%=_ctx.appRes("UIActivity.msg.UnlikeCommentActivity"); %>
                               </a>
                           </li>
                           <li>
-                               <a data-placement="bottom" data-html="true" rel="tooltip" title="$likersList" id="LikeCommentLinkReset_${it.id}" href="javascript:void(0);">
+                               <a data-placement="bottom" data-html="true" rel="tooltip" title="$likersList" id="LikeCommentLink_${it.id}" href="javascript:void(0);">
                                   <i class="uiIconThumbUp uiIconBlue"></i>&nbsp;$totalCommentLiked
                                </a>
                           </li>
@@ -427,7 +427,7 @@
                           </li>
                                     <%if ( totalCommentLiked > 0 ){%>
                           <li>
-                                 <a data-placement="bottom" rel="tooltip" data-html="true" title="$likersList" id="LikeCommentLink_${activity.id}" href="javascript:void(0);">
+                                 <a data-placement="bottom" rel="tooltip" data-html="true" title="$likersList" id="LikeCommentLink_${it.id}" href="javascript:void(0);">
                                     <i class="uiIconThumbUp uiIconLightGray"></i>&nbsp;$totalCommentLiked
                                  </a>
                           </li>

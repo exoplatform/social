@@ -216,6 +216,25 @@
   	<div class="activityBottom"><span></span></div>
   <% } %>
 <% } %>
+    <div>
+
+    </div>
+
+    <div id="likersPopup" class="UIPopupWindow uiPopup UIDragObject NormalStyle">
+            <div class="popupHeader ClearFix">
+                <a class="uiIconClose pull-right" aria-hidden="true" data-dismiss="modal" ></a>
+                <span class="PopupTitle popupTitle"><%=_ctx.appRes("UIActivity.title.PopupCommentLikers")%></span>
+            </div>
+            <div class="PopupContent popupContent">
+                <table id="likersDetail">
+    					<tbody>
+    				    </tbody>
+    			</table>
+            </div>
+        <!--span class="uiIconResize pull-right uiIconLightGray"></span-->
+    </div>
+    <div id="likersPopupMask">
+    </div>
 </div>
 
 

@@ -29,6 +29,7 @@
     onLoad: function (params) {
       UIActivity.configure(params);
       UIActivity.init();
+      UIActivity.prepareCommentPopupLikers(params.activityId);
     },
     configure: function(params) {
       UIActivity.activityId = params.activityId || null;
@@ -534,7 +535,107 @@
         event.stopPropagation();
       }
       documentPreview.init(settings);
+    },
+    /**
+     * prepare Popup of commennt Likers
+    */
+
+    prepareCommentPopupLikers: function(activityId) {
+      var portal = eXo.social.portal;
+      $("#likersPopup .PopupContent #likersDetail").empty();
+
+      $("#likersPopup .uiIconClose").click(function(){
+      $("#likersPopupMask").hide();
+      $("#likersPopup").hide();
+      $("#likersPopup .PopupContent #likersDetail").empty();
+      });
+
+      $('#ContextBox'+activityId+' a:[id*="LikeCommentLink_"]').each(function (idx, el) {
+        var id = $(el).attr('id');
+        var commentId = id.substring(id.indexOf('_') + 1);
+        var portal = eXo.social.portal;
+        $(el).click(function(){
+          var restUrl = window.location.origin + portal.context + '/' + portal.rest + '/social/people' + '/getLikersInfo/{0}.json';
+          restUrl = restUrl.replace('{0}', window.encodeURI(commentId));
+          UIActivity.likersPopup(restUrl);
+          $("#likersPopupMask").show();
+          $("#likersPopup").show();
+        });
+      });
+    },
+
+    likersPopup: function (restUrl) {
+        $.ajax({
+                 type: "GET",
+                 cache: false,
+                 url: restUrl
+               }).complete(function (jqXHR) {
+                    if (jqXHR.readyState === 4) {
+                         var usersData = $.parseJSON(jqXHR.responseText);
+
+                         if (usersData) {
+                           UIActivity.buildLikersPopup(usersData);
+                        } else {
+                           UIActivity.likersPopup(restUrl);
+                        }
+                    }
+        });
+    },
+
+    buildLikersPopup: function(result){
+        var tbody = $("#likersPopup .PopupContent #likersDetail");
+        tbody.empty();
+        for (i = 0; i < result.length; i++) {
+        var tr = $('<tr/>', {});
+        var tdAvatar = $('<td/>',{"width":"50px"});
+        var img = $("<img/>", {
+                                "src":result[i].avatarURL
+         });
+
+        var aAvatar = $("<a/>", {
+                      "target":"_self",
+                      "href":result[i].profileUrl
+        });
+
+        aAvatar.append(img);
+        tdAvatar.append(aAvatar);
+        tr.append(tdAvatar);
+
+        var tdProfile = $("<td/>",{
+           "class": "likerName"
+        });
+        var aProfile = $("<a/>", {
+            "target":"_self",
+            "href":result[i].profileUrl,
+            "text":result[i].fullName
+        });
+
+        tr.append(tdProfile.append(aProfile));
+
+        var tdAction = $("<td/>",{
+             "class": "likeClick"
+        });
+        var divActionContainer = $("<div/>",{
+        "class": "uiActionLike"
+        });
+        var divAction = $("<div/>",{
+        "class": "connect btn btn-primary",
+        "data-action": "Invite:testuser",
+        "onclick":"takeAction(this)",
+        "text":"Se connecter"
+        });
+
+        tr.append(tdAction.append(divActionContainer.append(divAction)));
+        tbody.append(tr);
+
+        }
+
     }
+
+
+
+
+
   };
 //
   eXo.social.SocialUtil.addOnResizeWidth(function(evt){UIActivity.responsiveMobile()});
