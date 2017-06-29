@@ -117,7 +117,6 @@ public class RDBMSIdentityStorageImpl extends IdentityStorageImpl {
     String providerId = profile.getIdentity().getProviderId();
     if (!OrganizationIdentityProvider.NAME.equals(providerId) && !SpaceIdentityProvider.NAME.equals(providerId)) {
       entityProperties.put(Profile.URL, profile.getUrl());
-      entityProperties.put(Profile.AVATAR_URL, profile.getAvatarUrl());
     }
 
     Map<String, Object> properties = profile.getProperties();

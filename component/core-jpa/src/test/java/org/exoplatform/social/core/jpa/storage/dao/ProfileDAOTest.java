@@ -101,7 +101,6 @@ public class ProfileDAOTest extends BaseCoreTest {
     
     Map<String, String> props = new HashMap<String, String>();
     props.put(Profile.URL, "/profile/root");
-    props.put(Profile.AVATAR_URL, "/profile/root/avatar.png");
     profile.setProperties(props);
 
     return profile;

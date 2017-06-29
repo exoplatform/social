@@ -13,7 +13,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import org.exoplatform.commons.utils.ListAccess;
-import org.exoplatform.social.core.jpa.rest.IdentityAvatarRestService;
 import org.exoplatform.social.core.jpa.storage.entity.ConnectionEntity;
 import org.exoplatform.social.core.jpa.storage.entity.IdentityEntity;
 import org.exoplatform.social.core.jpa.storage.entity.ProfileExperienceEntity;
@@ -66,9 +65,10 @@ public class EntityConverterUtils {
     
     Map<String, Object> props = p.getProperties();
     String providerId = entity.getProviderId();
+    Identity identity = p.getIdentity();
     if (!OrganizationIdentityProvider.NAME.equals(providerId) && !SpaceIdentityProvider.NAME.equals(providerId)) {
       p.setUrl(properties.get(Profile.URL));
-      p.setAvatarUrl(properties.get(Profile.AVATAR_URL));
+      p.setAvatarUrl(LinkProvider.buildAvatarURL(identity.getProviderId(), identity.getRemoteId()));
     } else {
       String remoteId = entity.getRemoteId();
       if (OrganizationIdentityProvider.NAME.equals(providerId)) {
@@ -77,10 +77,8 @@ public class EntityConverterUtils {
       } else if (SpaceIdentityProvider.NAME.equals(providerId)) {
           p.setUrl(LinkProvider.getSpaceUri(remoteId));
       }
-
       if (entity.getAvatarFileId() != null && entity.getAvatarFileId() > 0) {
-        Identity identity = p.getIdentity();
-        p.setAvatarUrl(IdentityAvatarRestService.buildAvatarURL(identity.getProviderId(), identity.getRemoteId()));
+        p.setAvatarUrl(LinkProvider.buildAvatarURL(identity.getProviderId(), identity.getRemoteId()));
         Long lastUpdated = getAvatarLastUpdated(entity.getAvatarFileId());
         if (lastUpdated != null) {
           p.setAvatarLastUpdated(lastUpdated);

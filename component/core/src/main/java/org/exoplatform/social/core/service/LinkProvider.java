@@ -37,6 +37,9 @@ import org.exoplatform.web.application.RequestContext;
 import org.exoplatform.web.url.navigation.NavigationResource;
 import org.exoplatform.web.url.navigation.NodeURL;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+
 /**
  * Builds and provides default links and links of users, spaces and activities.
  * Links are built basing on provided information as name or Id of the target user or space.
@@ -69,6 +72,8 @@ public class LinkProvider {
    * Hacks for unit test to work.
    */
   public static String DEFAULT_PORTAL_OWNER = "intranet";
+
+  private static final  String BASE_URL_SOCIAL_REST_API = "/v1/social";
 
   /**
    * Constructor with parameter to inject the default portal owner name.
@@ -436,6 +441,39 @@ public class LinkProvider {
       identityManager = CommonsUtils.getService(IdentityManager.class);
     }
     return LinkProvider.identityManager;
+  }
+  
+  /**
+   * Builds the avatar URL for a given profile
+   * @param providerId
+   * @param remoteId
+   * @return
+   */
+  public static String buildAvatarURL(String providerId, String remoteId) {
+    if (providerId == null || remoteId == null) {
+      return null;
+    }
+    
+    String username = remoteId;
+    
+    try {
+      username = URLEncoder.encode(username, "UTF-8");
+    } catch (UnsupportedEncodingException ex) {
+      LOG.warn("Failure to encode username for build URL", ex);
+    }
+    
+    if(providerId.equals(OrganizationIdentityProvider.NAME)) {
+      return new StringBuilder("/").append(CommonsUtils.getRestContextName()).append(BASE_URL_SOCIAL_REST_API).append("/users")
+              .append("/").append(username)
+              .append("/avatar")
+              .toString();
+    } else if(providerId.equals(SpaceIdentityProvider.NAME)) {
+      return new StringBuilder("/").append(CommonsUtils.getRestContextName()).append(BASE_URL_SOCIAL_REST_API).append("/spaces")
+              .append("/").append(username)
+              .append("/avatar")
+              .toString();
+    }
+    return null;
   }
 
   /**

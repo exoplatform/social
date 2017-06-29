@@ -27,7 +27,6 @@ import org.exoplatform.services.listener.Event;
 import org.exoplatform.services.listener.Listener;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
-import org.exoplatform.social.core.jpa.rest.IdentityAvatarRestService;
 import org.exoplatform.social.core.jpa.storage.RDBMSActivityStorageImpl;
 import org.exoplatform.social.core.jpa.storage.RDBMSIdentityStorageImpl;
 import org.exoplatform.social.core.jpa.storage.RDBMSSpaceStorageImpl;
@@ -48,6 +47,7 @@ import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.manager.IdentityManagerImpl;
 import org.exoplatform.social.core.manager.RelationshipManager;
 import org.exoplatform.social.core.model.AvatarAttachment;
+import org.exoplatform.social.core.service.LinkProvider;
 import org.exoplatform.social.core.space.impl.DefaultSpaceApplicationHandler;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
@@ -171,7 +171,7 @@ public class MigrationTest extends BaseCoreTest {
     rootProfile = rootIdentity.getProfile();
 
     assertNotNull(rootProfile.getAvatarUrl());
-    assertEquals(IdentityAvatarRestService.buildAvatarURL(OrganizationIdentityProvider.NAME, "root"), rootProfile.getAvatarUrl());
+    assertEquals(LinkProvider.buildAvatarURL(OrganizationIdentityProvider.NAME, "root"), rootProfile.getAvatarUrl());
   }
 
 

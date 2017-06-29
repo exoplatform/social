@@ -32,16 +32,15 @@ import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
-import org.exoplatform.social.core.jpa.rest.IdentityAvatarRestService;
 import org.exoplatform.social.core.jpa.search.XSpaceFilter;
 import org.exoplatform.social.core.jpa.storage.dao.*;
 import org.exoplatform.social.core.jpa.storage.dao.jpa.query.SpaceQueryBuilder;
 import org.exoplatform.social.core.jpa.storage.entity.SpaceEntity;
 import org.exoplatform.social.core.jpa.storage.entity.SpaceMemberEntity;
 import org.exoplatform.social.core.jpa.storage.entity.SpaceMemberEntity.Status;
+import org.exoplatform.social.core.service.LinkProvider;
 import org.exoplatform.social.core.space.SpaceFilter;
 import org.exoplatform.social.core.space.SpaceUtils;
-import org.exoplatform.social.core.space.impl.DefaultSpaceApplicationHandler;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.storage.SpaceStorageException;
 import org.exoplatform.social.core.storage.api.IdentityStorage;
@@ -662,7 +661,7 @@ public class RDBMSSpaceStorageImpl extends SpaceStorageImpl implements SpaceStor
 
     if (entity.getAvatarLastUpdated() != null) {
       try {
-        space.setAvatarUrl(IdentityAvatarRestService.buildAvatarURL(SpaceIdentityProvider.NAME, space.getPrettyName()));
+        space.setAvatarUrl(LinkProvider.buildAvatarURL(SpaceIdentityProvider.NAME, space.getPrettyName()));
       } catch (Exception e) {
         LOG.warn("Failed to build avatar url: " + e.getMessage());
       }

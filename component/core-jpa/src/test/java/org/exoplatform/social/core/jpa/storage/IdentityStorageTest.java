@@ -26,7 +26,6 @@ import org.exoplatform.services.organization.MembershipTypeHandler;
 import org.exoplatform.services.organization.OrganizationService;
 import org.exoplatform.services.organization.User;
 import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
-import org.exoplatform.social.core.jpa.rest.IdentityAvatarRestService;
 import org.exoplatform.social.core.jpa.test.AbstractCoreTest;
 import org.exoplatform.social.core.jpa.test.MaxQueryNumber;
 import org.exoplatform.social.core.jpa.test.QueryNumberTest;
@@ -36,6 +35,7 @@ import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.model.AvatarAttachment;
 import org.exoplatform.social.core.profile.ProfileFilter;
+import org.exoplatform.social.core.service.LinkProvider;
 import org.exoplatform.social.core.space.SpaceUtils;
 import org.exoplatform.social.core.space.impl.DefaultSpaceApplicationHandler;
 import org.exoplatform.social.core.space.model.Space;
@@ -291,7 +291,7 @@ public class IdentityStorageTest extends AbstractCoreTest {
     String gotAvatarURL = profile.getAvatarUrl();
 
     assertNotNull(gotAvatarURL);
-    assertEquals(IdentityAvatarRestService.buildAvatarURL(OrganizationIdentityProvider.NAME, userDotName), gotAvatarURL);
+    assertEquals(LinkProvider.buildAvatarURL(OrganizationIdentityProvider.NAME, userDotName), gotAvatarURL);
 
     tearDownIdentityList.add(identityStorage.findIdentity(OrganizationIdentityProvider.NAME, userDotName));
 

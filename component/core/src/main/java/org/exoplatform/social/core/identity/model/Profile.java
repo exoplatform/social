@@ -62,13 +62,7 @@ public class Profile {
    * property of type {@link AvatarAttachment} that contains the avatar
    */
   public static final String        AVATAR         = "avatar";
-
-  /**
-   * url of the avatar (can be used instead of {@link #AVATAR})
-   */
-  @Deprecated
-  public static final String        AVATAR_URL     = "avatarUrl";
-
+  
   /** EXPERIENCE. */
   public static final String        EXPERIENCES    = "experiences";
 
@@ -381,12 +375,7 @@ public class Profile {
     if (URL.equals(name)) {
       return this.url;
     }
-
-    // TODO : remove with Profile.AVATAR_URL
-    if (AVATAR_URL.equals(name)) {
-      return this.avatarUrl;
-    }
-
+    
     return properties.get(name);
   }
 
@@ -403,13 +392,7 @@ public class Profile {
       this.url = value.toString();
       return;
     }
-
-    // TODO : remove with Profile.AVATAR_URL
-    if (AVATAR_URL.equals(name)) {
-      this.avatarUrl = value.toString();
-      return;
-    }
-
+    
     properties.put(name, value);
     setHasChanged(true);
     setUpdateType(name);
