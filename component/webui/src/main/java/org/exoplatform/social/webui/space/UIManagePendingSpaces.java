@@ -27,7 +27,6 @@ import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.space.SpaceFilter;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
-import org.exoplatform.social.webui.Utils;
 import org.exoplatform.web.application.ApplicationMessage;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
@@ -70,6 +69,8 @@ public class UIManagePendingSpaces extends UIContainer {
   private ListAccess<Space> pendingSpacesListAccess;
   private int pendingSpacesNum;
   private String selectedChar = null;
+
+  private boolean loadMore = false;
   
   /**
    * Constructor to initialize iterator.
@@ -81,8 +82,6 @@ public class UIManagePendingSpaces extends UIContainer {
     uiSpaceSearch.setTypeOfRelation(PENDING_STATUS);
     addChild(uiSpaceSearch);
     init();
-    //keeps the navigation, in the case switch from other, the space list must be refreshed
-    Utils.setCurrentNavigationData(Util.getPortalRequestContext());
   }
 
   /**
@@ -91,7 +90,6 @@ public class UIManagePendingSpaces extends UIContainer {
    */
   public void init() {
     try {
-      setHasUpdatedSpace(true);
       enableLoadNext = true;
       currentLoadIndex = 0;
       loadingCapacity = SPACES_PER_PAGE;
@@ -134,22 +132,6 @@ public class UIManagePendingSpaces extends UIContainer {
   }
 
   /**
-   * Gets information that clarify one space is updated or not.
-   * 
-   * @return the hasUpdatedSpace
-   */
-  public boolean isHasUpdatedSpace() {
-    return hasUpdatedSpace;
-  }
-
-  /**
-   * Sets information that clarify one space is updated or not.
-   */
-  public void setHasUpdatedSpace(boolean hasUpdatedSpace) {
-    this.hasUpdatedSpace = hasUpdatedSpace;
-  }
-
-  /**
    * Gets list of sent invitation space.
    * 
    * @return the pendingSpacesList
@@ -157,13 +139,11 @@ public class UIManagePendingSpaces extends UIContainer {
    * @since 1.2.2
    */
   public List<Space> getPendingSpacesList() throws Exception {
-    if (isHasUpdatedSpace()) {
+    // reset spaces list, except when loading more spaces (button Show More)
+    if (!loadMore) {
       setPendingSpacesList(loadPendingSpaces(0, SPACES_PER_PAGE));
-    } else if (!Utils.isRefreshPage()) {
-      //Must be refreshed the space list because switched from others page.
-      this.uiSpaceSearch.setSpaceNameSearch(null);
-      this.uiSpaceSearch.getUIStringInput(SPACE_SEARCH).setValue("");
-      setPendingSpacesList(loadPendingSpaces(0, SPACES_PER_PAGE));
+    } else {
+      loadMore = false;
     }
     
     return this.pendingSpacesList;
@@ -305,6 +285,7 @@ public class UIManagePendingSpaces extends UIContainer {
     public void execute(Event<UIManagePendingSpaces> event) throws Exception {
       UIManagePendingSpaces uiManagePendingSpaces = event.getSource();
       uiManagePendingSpaces.loadNext();
+      uiManagePendingSpaces.loadMore = true;
       event.getRequestContext().addUIComponentToUpdateByAjax(uiManagePendingSpaces);
     }
   }
@@ -331,7 +312,6 @@ public class UIManagePendingSpaces extends UIContainer {
       }
       
       uiManagePendingSpaces.loadSearch();
-      uiManagePendingSpaces.setHasUpdatedSpace(false);
       event.getRequestContext().addUIComponentToUpdateByAjax(uiManagePendingSpaces);
     }
   }
@@ -355,7 +335,6 @@ public class UIManagePendingSpaces extends UIContainer {
         uiApp.addMessage(new ApplicationMessage(SPACE_DELETED_INFO, null, ApplicationMessage.INFO));
         return;
       }
-      uiPendingSpaces.setHasUpdatedSpace(true);
       spaceService.removePendingUser(space, userId);
     }
   }

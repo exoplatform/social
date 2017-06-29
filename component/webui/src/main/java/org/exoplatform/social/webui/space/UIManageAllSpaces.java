@@ -83,6 +83,8 @@ public class UIManageAllSpaces extends UIContainer {
   private ListAccess<Space> spacesListAccess;
   private int spacesNum;
   private String selectedChar = null;
+
+  private boolean loadMore = false;
   
   public enum TypeOfSpace {
     INVITED,
@@ -102,8 +104,6 @@ public class UIManageAllSpaces extends UIContainer {
     uiSpaceSearch.setTypeOfRelation(ALL_SPACES_STATUS);
     addChild(uiSpaceSearch);
     init();
-    //keeps the navigation, in the case switch from other, the space list must be refreshed
-    Utils.setCurrentNavigationData(Util.getPortalRequestContext());
   }
   
   /**
@@ -152,24 +152,6 @@ public class UIManageAllSpaces extends UIContainer {
   public void setEnableLoadNext(boolean enableLoadNext) {
     this.enableLoadNext = enableLoadNext;
   }
-  
-  /**
-   * Gets information that clarify one space is updated or not.
-   * 
-   * @return the hasUpdatedSpace
-   */
-  public boolean isHasUpdatedSpace() {
-    return hasUpdatedSpace;
-  }
-
-  /**
-   * Sets information that clarify one space is updated or not.
-   * 
-   * @param hasUpdatedSpace the hasUpdatedSpace to set
-   */
-  public void setHasUpdatedSpace(boolean hasUpdatedSpace) {
-    this.hasUpdatedSpace = hasUpdatedSpace;
-  }
 
   /**
    * Gets list of all type of space.
@@ -178,13 +160,11 @@ public class UIManageAllSpaces extends UIContainer {
    * @throws Exception 
    */
   public List<Space> getSpacesList() throws Exception {
-    if (isHasUpdatedSpace()) {
+    // reset spaces list, except when loading more spaces (button Show More)
+    if (!loadMore) {
       setSpacesList(loadSpaces(0, SPACES_PER_PAGE));
-    } else if (!Utils.isRefreshPage()) {
-      //Must be refreshed the space list because switched from others page.
-      this.uiSpaceSearch.setSpaceNameSearch(null);
-      this.uiSpaceSearch.getUIStringInput(SPACE_SEARCH).setValue("");
-      setSpacesList(loadSpaces(0, SPACES_PER_PAGE));
+    } else {
+      loadMore = false;
     }
     
     return this.spacesList;
@@ -356,7 +336,7 @@ public class UIManageAllSpaces extends UIContainer {
         return;
       }
       uiManageAllSpaces.loadNext();
-      uiManageAllSpaces.setHasUpdatedSpace(false);
+      uiManageAllSpaces.loadMore = true;
       event.getRequestContext().addUIComponentToUpdateByAjax(uiManageAllSpaces);
     }
   }
@@ -383,7 +363,6 @@ public class UIManageAllSpaces extends UIContainer {
       }
       
       uiManageAllSpaces.loadSearch();
-      uiManageAllSpaces.setHasUpdatedSpace(false);
       event.getRequestContext().addUIComponentToUpdateByAjax(uiManageAllSpaces);
     }
   }
@@ -439,7 +418,6 @@ public class UIManageAllSpaces extends UIContainer {
       }
 
       spaceService.addPendingUser(space, userId);
-      uiManageAllSpaces.setHasUpdatedSpace(true);
       ctx.addUIComponentToUpdateByAjax(uiManageAllSpaces);
     }
   }
@@ -468,7 +446,6 @@ public class UIManageAllSpaces extends UIContainer {
         uiApp.addMessage(new ApplicationMessage(MEMBERSHIP_REMOVED_INFO, null, ApplicationMessage.INFO));
         return;
       }
-      uiManageAllSpaces.setHasUpdatedSpace(true);
       spaceService.deleteSpace(space);
       SpaceUtils.updateWorkingWorkSpace();
     }
@@ -506,7 +483,6 @@ public class UIManageAllSpaces extends UIContainer {
       }
 
       spaceService.removeMember(space, userId);
-      uiManageAllSpaces.setHasUpdatedSpace(true);
       spaceService.setManager(space, userId, false);
       SpaceUtils.updateWorkingWorkSpace();
     }
@@ -533,7 +509,6 @@ public class UIManageAllSpaces extends UIContainer {
       }
 
       spaceService.removePendingUser(space, userId);
-      uiManageAllSpaces.setHasUpdatedSpace(true);
       ctx.addUIComponentToUpdateByAjax(uiManageAllSpaces);
     }
   }
@@ -566,7 +541,6 @@ public class UIManageAllSpaces extends UIContainer {
       }
 
       spaceService.addMember(space, userId);
-      uiManageAllSpaces.setHasUpdatedSpace(true);
       SpaceUtils.updateWorkingWorkSpace();
       
       JavascriptManager jsManager = ctx.getJavascriptManager();
@@ -602,7 +576,6 @@ public class UIManageAllSpaces extends UIContainer {
       }
 
       spaceService.removeInvitedUser(space, userId);
-      uiManageAllSpaces.setHasUpdatedSpace(true);
    }
   }
 

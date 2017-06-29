@@ -78,12 +78,6 @@ public class Utils {
   public static final String NOT_SEEN_ACTIVITIES_COOKIES = "exo_social_not_seen_activities_%s";
   public static final String SEEN_ACTIVITIES_COOKIES = "exo_social_seen_activities_%s";
   
-  /** */
-  private static RequestNavInfo lastRequestNavData = null;
-  
-  /** */
-  private static RequestNavInfo currentRequestNavData = null;
-  
   private static Log             LOG = ExoLogger.getLogger(Utils.class);
   
   /**
@@ -600,44 +594,6 @@ public class Utils {
         }
     }
     return sb.toString();
-  }
-
-  /**
-   * Sets current navigation
-   * @param pcontext
-   */
-  public static void setCurrentNavigationData(PortalRequestContext pcontext) {
-    String siteName = pcontext.getControllerContext().getParameter(RequestNavigationData.REQUEST_SITE_NAME);
-    String siteType = pcontext.getControllerContext().getParameter(RequestNavigationData.REQUEST_SITE_TYPE);
-    String requestPath = pcontext.getControllerContext().getParameter(RequestNavigationData.REQUEST_PATH);
-    setCurrentNavigationData(siteType, siteName, requestPath);
-  }
-  
-  /**
-   * 
-   * @param siteType
-   * @param siteName
-   * @param path
-   */
-  public static void setCurrentNavigationData(String siteType, String siteName, String path) {
-    lastRequestNavData = currentRequestNavData;
-    currentRequestNavData = new RequestNavInfo(siteType, siteName, path);
-    
-  }
-
-  /**
-   * Checks the page in refresh context or switch from other one to it.
-   * 
-   * @return IF refresh TRUE; Otherwise FALSE
-   * 
-   */
-  public static boolean isRefreshPage() {
-    
-    if (lastRequestNavData == null || currentRequestNavData == null) {
-      return false;
-    }
-    
-    return lastRequestNavData.equals(currentRequestNavData);
   }
   
   /**

@@ -66,7 +66,6 @@ public class UIManageInvitationSpaces extends UIContainer {
   private UISpaceSearch uiSpaceSearch = null;
   private SpaceService spaceService = null;
   private String userId = null;
-  private boolean hasUpdatedSpace = false;
   private int currentLoadIndex;
   private boolean enableLoadNext;
   private int loadingCapacity;
@@ -75,6 +74,8 @@ public class UIManageInvitationSpaces extends UIContainer {
   private ListAccess<Space> invitedSpacesListAccess;
   private int invitedSpacesNum;
   private String selectedChar = null;
+
+  private boolean loadMore = false;
   
   /**
    * Constructor for initialize UIPopupWindow for adding new space popup.
@@ -86,8 +87,6 @@ public class UIManageInvitationSpaces extends UIContainer {
     uiSpaceSearch.setTypeOfRelation(INCOMING_STATUS);
     addChild(uiSpaceSearch);
     init();
-    //keeps the navigation, in the case switch from other, the space list must be refreshed
-    Utils.setCurrentNavigationData(Util.getPortalRequestContext());
   }
 
   /**
@@ -96,7 +95,6 @@ public class UIManageInvitationSpaces extends UIContainer {
    */
   public void init() {
     try {
-      setHasUpdatedSpace(true);
       enableLoadNext = false;
       currentLoadIndex = 0;
       loadingCapacity = SPACES_PER_PAGE;
@@ -141,24 +139,6 @@ public class UIManageInvitationSpaces extends UIContainer {
   }
 
   /**
-   * Gets information that clarify one space is updated or not.
-   * 
-   * @return the hasUpdatedSpace
-   */
-  public boolean isHasUpdatedSpace() {
-    return hasUpdatedSpace;
-  }
-
-  /**
-   * Sets information that clarify one space is updated or not.
-   * 
-   * @param hasUpdatedSpace
-   */
-  public void setHasUpdatedSpace(boolean hasUpdatedSpace) {
-    this.hasUpdatedSpace = hasUpdatedSpace;
-  }
-
-  /**
    * Gets list of invited space.
    * 
    * @return the invitedSpacesList
@@ -166,13 +146,11 @@ public class UIManageInvitationSpaces extends UIContainer {
    * @since 1.2.2
    */
   public List<Space> getInvitedSpacesList() throws Exception {
-    if (isHasUpdatedSpace()) {
+    // reset spaces list, except when loading more spaces (button Show More)
+    if (!loadMore) {
       setInvitedSpacesList(loadInvitedSpaces(0, SPACES_PER_PAGE));
-    } else if (!Utils.isRefreshPage()) {
-      //Must be refreshed the space list because switched from others page.
-      this.uiSpaceSearch.setSpaceNameSearch(null);
-      this.uiSpaceSearch.getUIStringInput(SPACE_SEARCH).setValue("");
-      setInvitedSpacesList(loadInvitedSpaces(0, SPACES_PER_PAGE));
+    } else {
+      loadMore = false;
     }
     
     return this.invitedSpacesList;
@@ -314,6 +292,7 @@ public class UIManageInvitationSpaces extends UIContainer {
     public void execute(Event<UIManageInvitationSpaces> event) throws Exception {
       UIManageInvitationSpaces uiManageInvitedSpaces = event.getSource();
       uiManageInvitedSpaces.loadNext();
+      uiManageInvitedSpaces.loadMore = true;
       event.getRequestContext().addUIComponentToUpdateByAjax(uiManageInvitedSpaces);
     }
   }
@@ -340,7 +319,6 @@ public class UIManageInvitationSpaces extends UIContainer {
       }
       
       uiManageInvitedSpaces.loadSearch();
-      uiManageInvitedSpaces.setHasUpdatedSpace(false);
       ctx.addUIComponentToUpdateByAjax(uiManageInvitedSpaces);
     }
   }
@@ -373,7 +351,6 @@ public class UIManageInvitationSpaces extends UIContainer {
       }
 
       spaceService.addMember(space, userId);
-      uiManageInvitationSpaces.setHasUpdatedSpace(true);
       SpaceUtils.updateWorkingWorkSpace();
       
       JavascriptManager jsManager = ctx.getJavascriptManager();
@@ -407,7 +384,6 @@ public class UIManageInvitationSpaces extends UIContainer {
         uiApp.addMessage(new ApplicationMessage(INVITATION_REVOKED_INFO, null, ApplicationMessage.INFO));
         return;
       }
-      uiManageInvitationSpaces.setHasUpdatedSpace(true);
       spaceService.removeInvitedUser(space, userId);
    }
   }

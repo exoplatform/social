@@ -61,7 +61,6 @@ public class SpaceAccessApplicationLifecycle implements ApplicationLifecycle<Web
     String siteName = pcontext.getControllerContext().getParameter(RequestNavigationData.REQUEST_SITE_NAME);
     String siteType = pcontext.getControllerContext().getParameter(RequestNavigationData.REQUEST_SITE_TYPE);
     String requestPath = pcontext.getControllerContext().getParameter(RequestNavigationData.REQUEST_PATH);
-    Utils.setCurrentNavigationData(siteType, siteName, requestPath);
 
     // Check if attribute is present on session and set it on request
     // to make it available on other webapps

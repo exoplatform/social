@@ -69,7 +69,6 @@ public class UIManageMySpaces extends UIContainer {
   private String userId = null;
   private UISpaceSearch uiSpaceSearch = null;
 
-  private boolean hasUpdatedSpace = false;
   private boolean enableLoadNext;
   private int loadingCapacity;
   private String spaceNameSearch;
@@ -77,6 +76,8 @@ public class UIManageMySpaces extends UIContainer {
   private ListAccess<Space> mySpacesListAccess;
   private int mySpacesNum;
   private String selectedChar = null;
+
+  private boolean loadMore = false;
   
   
   /**
@@ -89,8 +90,6 @@ public class UIManageMySpaces extends UIContainer {
     uiSpaceSearch.setTypeOfRelation(CONFIRMED_STATUS);
     addChild(uiSpaceSearch);
     init();
-    //keeps the navigation, in the case switch from other, the space list must be refreshed
-    Utils.setCurrentNavigationData(Util.getPortalRequestContext());
   }
 
   /**
@@ -142,24 +141,6 @@ public class UIManageMySpaces extends UIContainer {
   }
 
   /**
-   * Gets information that clarify one space is updated or not.
-   * 
-   * @return the hasUpdatedSpace
-   */
-  public boolean isHasUpdatedSpace() {
-    return hasUpdatedSpace;
-  }
-
-  /**
-   * Sets information that clarify one space is updated or not.
-   * 
-   * @param hasUpdatedSpace
-   */
-  public void setHasUpdatedSpace(boolean hasUpdatedSpace) {
-    this.hasUpdatedSpace = hasUpdatedSpace;
-  }
-
-  /**
    * Gets list of my space.
    * 
    * @return the mySpacesList
@@ -167,14 +148,13 @@ public class UIManageMySpaces extends UIContainer {
    * @since 1.2.2 
    */
   public List<Space> getMySpacesList() throws Exception {
-    if (isHasUpdatedSpace()) {
+    // reset spaces list, except when loading more spaces (button Show More)
+    if (!loadMore) {
       setMySpacesList(loadMySpaces(0, SPACES_PER_PAGE));
-    } else if (!Utils.isRefreshPage()) {
-      //Must be refreshed the space list because switched from others page.
-      this.uiSpaceSearch.setSpaceNameSearch(null);
-      this.uiSpaceSearch.getUIStringInput(SPACE_SEARCH).setValue("");
-      setMySpacesList(loadMySpaces(0, SPACES_PER_PAGE));
+    } else {
+      loadMore = false;
     }
+
     return this.mySpacesList;
   }
 
@@ -312,7 +292,7 @@ public class UIManageMySpaces extends UIContainer {
     public void execute(Event<UIManageMySpaces> event) throws Exception {
       UIManageMySpaces uiManageMySpaces = event.getSource();
       uiManageMySpaces.loadNext();
-      uiManageMySpaces.setHasUpdatedSpace(false);
+      uiManageMySpaces.loadMore = true;
       event.getRequestContext().addUIComponentToUpdateByAjax(uiManageMySpaces);
     }
   }
@@ -339,7 +319,6 @@ public class UIManageMySpaces extends UIContainer {
       }
       
       uiManageMySpaces.loadSearch();
-      uiManageMySpaces.setHasUpdatedSpace(false);
       event.getRequestContext().addUIComponentToUpdateByAjax(uiManageMySpaces);
     }
   }
@@ -398,7 +377,7 @@ public class UIManageMySpaces extends UIContainer {
       }
 
       spaceService.deleteSpace(space);
-      uiMySpaces.setHasUpdatedSpace(true);
+      uiMySpaces.setMySpacesList(null);
       SpaceUtils.updateWorkingWorkSpace();
     }
 
@@ -436,7 +415,7 @@ public class UIManageMySpaces extends UIContainer {
 
       spaceService.removeMember(space, userId);
       spaceService.setManager(space, userId, false);
-      uiMySpaces.setHasUpdatedSpace(true);
+      uiMySpaces.setMySpacesList(null);
       SpaceUtils.updateWorkingWorkSpace();
     }
   }

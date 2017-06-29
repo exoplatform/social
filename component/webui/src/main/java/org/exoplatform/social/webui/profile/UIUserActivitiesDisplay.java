@@ -401,16 +401,4 @@ public class UIUserActivitiesDisplay extends AbstractActivitiesDisplay {
     
     return Utils.isHomePage() ? !hasActivities && isAllActivitiesModeOnHomePage : !hasActivities;
   }
-  
-  private long getLastUpdatedNum(String mode) {
-    String cookieKey = String.format(Utils.LAST_UPDATED_ACTIVITIES_NUM, mode, Utils.getViewerRemoteId());
-    String strValue = Utils.getCookies(cookieKey);
-    boolean refreshPage = Utils.isRefreshPage();
-    
-    if(strValue == null || (refreshPage == false && mode.equals(selectedDisplayMode.toString()))) {
-      return 0;
-    }
-    
-    return Long.parseLong(strValue);
-  }
 }
