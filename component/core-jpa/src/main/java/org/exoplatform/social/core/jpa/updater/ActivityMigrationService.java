@@ -56,7 +56,6 @@ import org.exoplatform.social.core.storage.impl.StorageUtils;
 import org.exoplatform.social.core.storage.query.JCRProperties;
 import org.apache.commons.lang.StringUtils;
 
-
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
 import javax.jcr.PropertyIterator;
@@ -225,7 +224,11 @@ public class ActivityMigrationService extends AbstractMigrationService<ExoSocial
             IdentityEntity spaceEntity = _findById(IdentityEntity.class, node.getUUID());
             LOG.info(String.format("|  \\ START::space number: %s/%s (%s space)", offset, totalSpaces, owner.getRemoteId()));
             try {
-              migrationByIdentity(null, spaceEntity);
+              if (!(spaceEntity.isDeleted())) {
+                migrationByIdentity(null, spaceEntity);
+              } else {
+                LOG.info(String.format("No need to migrate the activities of the deleted space %s", owner.getRemoteId()));
+              }
             } catch (Exception ex) {
               numberSpaceFailed++;
               identitiesMigrateFailed.add(node.getName());
