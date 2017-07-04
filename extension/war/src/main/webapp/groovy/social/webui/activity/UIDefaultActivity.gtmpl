@@ -68,6 +68,7 @@
   def likeActivityAction = uicomponent.event("LikeActivity", "true");
   def unlikeActivityAction = uicomponent.event("LikeActivity", "false");
 
+
   def commentList = uicomponent.getComments();
   int allCommentSize = uicomponent.getAllCommentSize();
   if (allCommentSize > 0) {
@@ -93,6 +94,20 @@
 
   def placeholder = _ctx.appRes("UIActivity.comment.placeholder").replace("'", "\\'");
   //params for init UIActivity javascript object
+  def IgnoreLabel = _ctx.appRes("UserProfilePopup.label.Ignore");
+  def ConnectLabel = _ctx.appRes("UserProfilePopup.label.Connect");
+  def ConfirmLabel = _ctx.appRes("UserProfilePopup.label.Confirm");
+  def CancelRequestLabel = _ctx.appRes("UserProfilePopup.label.CancelRequest");
+  def RemoveConnectionLabel = _ctx.appRes("UserProfilePopup.label.RemoveConnection");
+
+
+    def labels = """ {
+        Connect: '$ConnectLabel',
+        Confirm: '$ConfirmLabel',
+    	CancelRequest: '$CancelRequestLabel',
+    	RemoveConnection: '$RemoveConnectionLabel',
+    	Ignore: '$IgnoreLabel'
+    }"""
 
 	def params = """ {
 	  activityId: '${activity.id}',
@@ -108,7 +123,7 @@
   
   jsManager.require("SHARED/jquery", "jq")
            .require("SHARED/bts_tooltip").addScripts("jq('*[rel=\"tooltip\"]').tooltip();")
-           .require("SHARED/social-ui-activity", "activity").addScripts("activity.onLoad($params);");
+           .require("SHARED/social-ui-activity", "activity").addScripts("activity.onLoad($params,$labels);");
   
   //make sures commentFormFocused is set to false to prevent any refresh to focus, only focus after post a comment
   uicomponent.setCommentFormFocused(false);

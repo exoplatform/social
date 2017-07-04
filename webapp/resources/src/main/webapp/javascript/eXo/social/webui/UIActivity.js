@@ -26,12 +26,12 @@
     FOCUS_COMMENT_TEXT_AREA_COLOR : "#999999",
     DEFAULT_COMMENT_TEXT_AREA_COLOR : "#808080",
     isLoadLike : false,
-    onLoad: function (params) {
-      UIActivity.configure(params);
+    onLoad: function (params,labels) {
+      UIActivity.configure(params,labels);
       UIActivity.init();
       UIActivity.prepareCommentPopupLikers(params.activityId);
     },
-    configure: function(params) {
+    configure: function(params,labels) {
       UIActivity.activityId = params.activityId || null;
       UIActivity.inputWriteAComment = params.inputWriteAComment || "";
       UIActivity.commentMinCharactersAllowed = params.commentMinCharactersAllowed || 0;
@@ -41,6 +41,7 @@
       UIActivity.commentFormFocused = params.commentFormFocused = "true" ? true : false  || false;
       UIActivity.commentPlaceholder = params.placeholderComment || null;
       UIActivity.spaceURL = params.spaceURL;
+      UIActivity.labelsConnect = labels;
 
       if (UIActivity.activityId == null) {
         alert('err: activityId is null!');
@@ -618,14 +619,59 @@
         var divActionContainer = $("<div/>",{
         "class": "uiActionLike"
         });
-        var divAction = $("<div/>",{
-        "class": "connect btn btn-primary",
-        "data-action": "Invite:testuser",
-        "onclick":"takeAction(this)",
-        "text":"Se connecter"
-        });
 
-        tr.append(tdAction.append(divActionContainer.append(divAction)));
+        //Add Connection Action
+        var action = null;
+        var currentViewerId = eXo.social.portal.userName;
+        var ownerUserId = result[i].profileUrl.substring(result[i].profileUrl.lastIndexOf('/') + 1);
+        var relationStatus = result[i].relationshipType;
+        if (currentViewerId != ownerUserId) {
+
+                        action = $('<div/>', {
+                            "class":"connect btn btn-primary",
+                            "text":""+UIActivity.labelsConnect.Connect,
+                            "data-action":"Invite:" + ownerUserId,
+                            "onclick":"takeActionFromLikeComment(this)"
+                        });
+
+//
+                        if (relationStatus == "pending") { // Viewing is not owner
+                            action = $('<div/>', {
+                                "class":"connect btn btn-primary",
+                                "text":""+UIActivity.labelsConnect.Confirm,
+                                "data-action":"Accept:" + ownerUserId,
+                                "onclick":"takeActionFromLikeComment(this)"
+                            });
+                        } else if (relationStatus == "waiting") { // Viewing is owner
+                            action = $('<div/>', {
+                                "class":"connect btn",
+                                "text":""+UIActivity.labelsConnect.CancelRequest,
+                                "data-action":"Revoke:" + ownerUserId,
+                                "onclick":"takeActionFromLikeComment(this)"
+                            });
+                        } else if (relationStatus == "confirmed") { // Had Connection
+                            action = $('<div/>', {
+                                "class":"connect btn",
+                                "text":""+UIActivity.labelsConnect.RemoveConnection,
+                                "data-action":"Disconnect:" + ownerUserId,
+                                "onclick":"takeActionFromLikeComment(this)"
+                            });
+                        } else if (relationStatus == "ignored") { // Connection is removed
+                            action = $('<div/>', {
+                                "class":"connect btn",
+                                "text":""+UIActivity.labelsConnect.Ignore,
+                                "data-action":"Deny:" + ownerUserId,
+                                "onclick":"takeActionFromLikeComment(this)"
+                            });
+                        }
+
+
+                    }
+        if (action){
+            divActionContainer.append(action);
+        }
+
+        tr.append(tdAction.append(divActionContainer));
         tbody.append(tr);
 
         }
