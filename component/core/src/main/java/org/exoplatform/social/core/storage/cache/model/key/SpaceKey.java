@@ -17,13 +17,18 @@
 
 package org.exoplatform.social.core.storage.cache.model.key;
 
+import java.io.Serializable;
+
 /**
  * Immutable space key.
  *
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
  * @version $Revision$
  */
-public class SpaceKey extends ScopeCacheKey {
+public class SpaceKey extends ScopeCacheKey implements Serializable {
+  private static final long serialVersionUID = -5427340881099936940L;
+
+  public static final SpaceKey NULL_OBJECT = new SpaceKey(null);
 
   private final String id;
 

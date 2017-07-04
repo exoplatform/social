@@ -87,7 +87,7 @@
       </values-param>
     </init-params>
   </component>
-  
+
   <component>
     <key>org.exoplatform.social.core.storage.streams.StreamConfig</key>
     <type>org.exoplatform.social.core.storage.streams.StreamConfig</type>

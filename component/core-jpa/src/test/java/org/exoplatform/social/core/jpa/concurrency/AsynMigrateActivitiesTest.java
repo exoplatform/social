@@ -141,8 +141,6 @@ public class AsynMigrateActivitiesTest extends AbstractAsynMigrationTest {
     assertTrue(getOrCreateSettingValue(MigrationContext.SOC_RDBMS_IDENTITY_MIGRATION_KEY));
     assertTrue(getOrCreateSettingValue(MigrationContext.SOC_RDBMS_IDENTITY_CLEANUP_KEY));
 
-    verifyWorkspaceRemoved();
-
     assertEquals(21, activityStorage.getActivityFeed(rootIdentity, 0, 100).size());
     assertEquals(21, activityStorage.getActivityFeed(maryIdentity, 0, 100).size());
     assertEquals(21, activityStorage.getActivityFeed(johnIdentity, 0, 100).size());

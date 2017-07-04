@@ -248,8 +248,7 @@
     },
     addOnResizeWidth : function(callback) {
       if (callback && String(typeof callback) === "function") {
-        var name = String(callback.name + new Date().getTime());
-        SocialUtils.onResizeWidth[name] = callback;
+        SocialUtils.onResizeWidth.push(callback);
       }
     },
     addDynamicItemLayout : function(comId) {
@@ -352,7 +351,7 @@
       var d = (listBoxs.length > 3) ? 10/maxItemInline : 1.5;
       listBoxs.each(function(index) {
         if((index + 1) % maxItemInline === 0) {
-          $(this).width(parseInt(width + d - 10)).find('.spaceBox:first').css({'margin-right': '0px'});
+          $(this).width(parseInt(width + d - delta)).find('.spaceBox:first').css({'margin-right': '0px'});
         } else {
           $(this).width(parseInt(width + d)).find('.spaceBox:first').css({'margin-right': '10px'});
         }
@@ -445,8 +444,8 @@
     onViewActivity: function(responsiveId) {
       var root = $('#'+responsiveId);
       if(root.length > 0 && eXo.social.SocialUtil.checkDevice().isMobile === true) {
-      root.find('.activityStream').off('click').on('click', function(evt) {     
-          var activity = $(this);                  
+        root.find('.activityStream').off('click').on('click', function(evt) {
+          var activity = $(this);
           if(activity.hasClass('block-activity')) {
             return true;
           }
@@ -457,13 +456,13 @@
           if (activityLoadMore != null) {
              this.isLoadMore = (activityLoadMore.css('display') !== 'none');
              activityLoadMore.hide();
-       
+
           }
           //
           var activityDisplay = parent.find('div.uiActivitiesDisplay:first').addClass('activityDisplay');
           activityDisplay.find('.activityTop').addClass('hidden-phone');
 
-      
+          // If it is in activity list screen.
           if(activityDisplay.find('.iconReturn').length === 0) {
             activityDisplay.prepend($('<div class="visible-phone" style="cursor:pointer"><i class="uiIconEcmsDarkGray uiIconEcmsReturn iconReturn"></i></div>').click(function() {
               var parent = root;
@@ -471,103 +470,22 @@
               parent.find('.activityStream').removeClass('hidden-phone');
               parent.find('.activityTop').removeClass('hidden-phone');
               var activity = parent.find('.block-activity').removeClass('block-activity');
-              $('.footComment').html('');
               $(this).remove();
               if (this.isLoadMore) {
                 var activityLoadMore = $('#ActivitiesLoader');
                 if (activityLoadMore != null) {
                   activityLoadMore.show();
                 }
-                
+
               }
             }));
           }
           //
           activity.removeClass('hidden-phone').addClass('block-activity');
-          //
-          var footComment = $('.footComment');
-          if(footComment.length === 0) {
-            footComment = $('<div class="footComment visible-phone" style="z-index:1000"></div>');
-            $('body').append(footComment);
-          }
-          var input = activity.find('.inputContainer:first').clone().removeClass('hidden-phone');
-          window.inputId = input.attr('id');
-          input.attr('id', 'CurrentCommentInput');
-          input.find('.exo-mentions').remove();
-          input.find('button.btn:first').attr('id', 'CurrentCommentButton');
-          input.find('button.btn:nth-of-type(2)').attr('id', 'CurrentCancelButton');
-          footComment.html('').append(input);
-          var extraPlugins = 'simpleLink,simpleImage,suggester,hideBottomToolbar';
-          if ($(window).width() > $(window).height() && $(window).width() < 768) {
-              // Disable suggester on smart-phone landscape
-              extraPlugins = 'simpleLink,simpleImage';
-          }
 
-          var MAX_LENGTH = 2000;
-          // TODO this line is mandatory when a custom skin is defined, it should not be mandatory
-          CKEDITOR.basePath = '/commons-extension/ckeditor/';
-          footComment.find('textarea.textarea:first').attr('id', 'CurrentCommentTextare').ckeditor({
-              customConfig: '/commons-extension/ckeditorCustom/config.js',
-              extraPlugins: extraPlugins,
-              placeholder: window.eXo.social.I18n.mentions.defaultMessage,
-              on : {
-                  instanceReady : function ( evt ) {
-                      // Hide the editor toolbar
-                      $('#CurrentCommentButton').prop("disabled", true);
-                  },
-                  change: function( evt) {
-                      var newData = evt.editor.getData();
-                      var pureText = newData? newData.replace(/<[^>]*>/g, "").replace(/&nbsp;/g,"").trim() : "";
+          var input = activity.find('.inputContainer:first');
+          input.removeClass('hidden-phone');
 
-                      if (pureText.length > 0 && pureText.length <= MAX_LENGTH) {
-                          $("#CurrentCommentButton").removeAttr("disabled");
-                      } else {
-                          $("#CurrentCommentButton").prop("disabled", true);
-                      }
-
-                      if (pureText.length <= MAX_LENGTH) {
-                          evt.editor.getCommand('simpleImage').enable();
-                      } else {
-                          evt.editor.getCommand('simpleImage').disable();
-                      }
-                  },
-                  key: function( evt) {
-                      var newData = evt.editor.getData();
-                      var pureText = newData ? newData.replace(/<[^>]*>/g, "").replace(/&nbsp;/g, "").trim() : "";
-                      if (pureText.length > MAX_LENGTH) {
-                          if ([8, 46, 33, 34, 35, 36, 37, 38, 39, 40].indexOf(evt.data.keyCode) < 0) {
-                              evt.cancel();
-                          }
-                      }
-                  }
-              }
-          });
-          $('#CurrentCancelButton').on('click', function (event) {
-            var editor = CKEDITOR.instances["CurrentCommentTextare"];
-            if (editor.mode != 'source') {
-                if (editor.document) $(editor.document.getBody().$).html('');
-            } else {
-                $(editor.container.$).find(".cke_source").html('');
-            }
-          })
-          //
-          var widthBtn = footComment.find('#CurrentCommentButton').on('mousedown keydown', function(evt) {
-            if(evt.type === 'keydown' && evt.keyCode !== 13) {
-              return false;
-            }
-            var editor = CKEDITOR.instances["CurrentCommentTextare"];
-            $('#' + window.inputId).find('textarea.textarea:first').val(editor.document.getBody().$.innerHTML);
-            var t = setTimeout(function() {
-              clearTimeout(t);
-              $.globalEval($('#' + window.inputId).find('button.btn:first').data('action-link'));
-            }, 200);
-            if (editor.mode != 'source') {
-                if (editor.document) $(editor.document.getBody().$).html('');
-            } else {
-                $(editor.container.$).find(".cke_source").html('');
-            }
-          }).outerWidth();
-          footComment.find('.commentInput:first').css('margin-right', widthBtn + 18 + 'px');
           //
           var commentList = activity.find('.commentListInfo:first');
           if(commentList.length > 0 && commentList.find('a:first').length > 0) {
@@ -576,9 +494,11 @@
               $.globalEval(action.replace('objectId=none', 'objectId=all'));
             }
           }
-      });
-      }
 
+          // Show the comment form by trigger click event on the comment link.
+          activity.find("a[id^='CommentLink'").trigger('click');
+        });
+      }
     }
   };
 
@@ -594,7 +514,7 @@
       popup.find('.uiIconClose:first').on('click', PopupConfirmation.hiden);
       return popup;
     },
-
+  
     confirm : function(id, actions, title, message, closeLabel) {
       SocialUtils.setCookies('currentConfirm', id, 300);
       var popup = PopupConfirmation.makeTemplate();
@@ -605,11 +525,11 @@
         uiAction.append(PopupConfirmation.addAction(actions[i].action, actions[i].label));
       }
       uiAction.append(PopupConfirmation.addAction(null, closeLabel));
-
+  
       //
       PopupConfirmation.show(popup);
     },
-
+  
     addAction : function(action, label) {
       var btn = $('<a href="javascript:void(0);" class="btn">' + label + '</a>');
       btn.on('click', PopupConfirmation.hiden);
@@ -621,7 +541,7 @@
       }
       return btn;
     },
-
+  
     show : function(popup) {
       $('#UIPortalApplication').append(popup);
       $(document.body).addClass('modal-open');
@@ -682,8 +602,8 @@
     if (SocialUtils.currentBrowseWidth != document.documentElement.clientWidth) {
       try {
         var callback = SocialUtils.onResizeWidth;
-        for ( var name in callback) {
-          var method = callback[name];
+        for (i = 0; i < callback.length; i++) {
+          var method = callback[i];
           if (typeof (method) == "function") {
             method(evt);
           }

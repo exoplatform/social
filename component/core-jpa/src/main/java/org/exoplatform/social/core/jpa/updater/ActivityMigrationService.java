@@ -54,6 +54,8 @@ import org.exoplatform.social.core.storage.impl.IdentityStorageImpl;
 import org.exoplatform.social.core.storage.impl.StorageUtils;
 import org.exoplatform.social.core.storage.query.JCRProperties;
 
+import org.exoplatform.social.core.BaseActivityProcessorPlugin;
+
 @Managed
 @ManagedDescription("Social migration activities from JCR to RDBMS.")
 @NameTemplate({@Property(key = "service", value = "social"), @Property(key = "view", value = "migration-activities") })
@@ -63,7 +65,6 @@ public class ActivityMigrationService extends AbstractMigrationService<ExoSocial
   private static final int LIMIT_ACTIVITY_REF_SAVE_THRESHOLD = 50;
   public static final String EVENT_LISTENER_KEY = "SOC_ACTIVITY_MIGRATION";
   private static final Pattern MENTION_PATTERN = Pattern.compile("@([^\\s]+)|@([^\\s]+)$");
-  public static final Pattern USER_NAME_VALIDATOR_REGEX = Pattern.compile("^[\\p{L}][\\p{L}._\\-\\d]+$");
   public final static String COMMENT_PREFIX = "comment";
   
   private final ActivityStorage activityStorage;
@@ -310,16 +311,11 @@ public class ActivityMigrationService extends AbstractMigrationService<ExoSocial
         if (params != null && !params.isEmpty()) {
 
           for(Map.Entry<String, String> entry: params.entrySet()) {
-
-            String value = entry.getValue();
-
-            if (value.length() >= 1024) {
-              LOG.info("===================== activity id " + activity.getId() + " new value length = " +  value.length());
-              params.put(entry.getKey(), "");
+            if(entry.getKey().equals(BaseActivityProcessorPlugin.TEMPLATE_PARAM_TO_PROCESS)) {
+              params.put(entry.getValue(), formatHTML(params.get(entry.getValue())));
+            }else {
+              params.put(entry.getKey(), StringUtil.removeLongUTF(entry.getValue()));
             }
-
-            //Remove long UTF-8 char
-            params.put(entry.getKey(), StringUtil.removeLongUTF(entry.getValue()));
           }
 
           activity.setTemplateParams(params);
@@ -329,7 +325,7 @@ public class ActivityMigrationService extends AbstractMigrationService<ExoSocial
         //owner.setProviderId(providerId);
         //
         activity.setId(null);
-        activity.setTitle(StringUtil.removeLongUTF(activity.getTitle()));
+        activity.setTitle(formatHTML(activity.getTitle()));
         activity.setBody(StringUtil.removeLongUTF(activity.getBody()));
 
         //
@@ -357,17 +353,7 @@ public class ActivityMigrationService extends AbstractMigrationService<ExoSocial
               if (commentParams != null && !commentParams.isEmpty()) {
 
                 for (Map.Entry<String, String> entry : commentParams.entrySet()) {
-
-                  String value = entry.getValue();
-
-                  if (value.length() >= 1024) {
-                    LOG.info("===================== comment id " + oldCommentId + " new value length = " + value.length());
-                    commentParams.put(entry.getKey(), "");
-                  }
-
-                  //remove long UTF-8 char
                   commentParams.put(entry.getKey(), StringUtil.removeLongUTF(entry.getValue()));
-
                 }
 
                 comment.setTemplateParams(commentParams);
@@ -382,6 +368,8 @@ public class ActivityMigrationService extends AbstractMigrationService<ExoSocial
 
               if (comment.getTitle() == null) {
                 comment.setTitle("");
+              }else {
+                comment.setTitle(formatHTML(comment.getTitle()));
               }
               activityStorage.saveComment(activity, comment);
               //
@@ -421,6 +409,16 @@ public class ActivityMigrationService extends AbstractMigrationService<ExoSocial
         LOG.warn("Exception while update migrated for identity " + providerId + "/" + remoteId);
       }
     }
+  }
+
+  // Since PLF 4.4, it changed to use CKEditor for posting activity content in HTML format instead of plain text input.
+  // So we need to convert the line-break characters into break tags in HTML format.
+  private String formatHTML(String input) {
+    input = StringUtil.removeLongUTF(input);
+    if (input != null) {
+      input = input.replaceAll("\\r?\\n", "<br />");
+    }
+    return input;
   }
 
   private void doBroadcastListener(ExoSocialActivity activity, String oldId) {

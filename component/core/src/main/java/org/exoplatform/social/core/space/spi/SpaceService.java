@@ -969,6 +969,28 @@ public interface SpaceService {
   boolean isPending(String spaceId, String userId) throws SpaceException;
 
   /**
+   * Checks if a user is in the list of users who have ignored the space.
+   *
+   * @param space  The existing space.
+   * @param userId The remote user Id.
+   * @return TRUE if the space is an ignored space. Otherwise, it
+   * is FALSE.
+   */
+  default boolean isIgnored(Space space, String userId) {
+    return false;
+  }
+
+  /**
+   * Assigns the user who has ignored the space.
+   *
+   * @param spaceId The Id of the space ignored by the user.
+   * @param userId  The remote user Id.
+   */
+  default void setIgnored(String spaceId, String userId) {
+
+  }
+
+  /**
    * Installs an application in a space.
    *
    * @param spaceId Id of the space that the application is installed.

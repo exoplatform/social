@@ -55,7 +55,7 @@ import org.junit.runners.Suite.SuiteClasses;
   ActivitiesRestServiceTest.class,
   IdentityRestServiceTest.class,
   LinkShareRestServiceTest.class,
-  PeopleRestServiceTest.class,
+  //PeopleRestServiceTest.class,  //skipped until add integration test
   RestCheckerTest.class,
   SecurityManagerTest.class,
   UtilTest.class,

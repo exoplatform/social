@@ -55,6 +55,7 @@ import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
 import javax.ws.rs.core.Response.Status;
+import java.lang.reflect.Array;
 import java.util.*;
 
 /**
@@ -379,184 +380,74 @@ public class PeopleRestService implements ResourceContainer{
           nameList.addOption(opt);
         }
       }
-    } else if (currentSpace == null && currentActivity != null && MENTION_COMMENT.equals(typeOfRelation)) {
-      //Improvement in user suggestions when @mentioning in the comment
-      List<UserInfo> userInfos = new ArrayList<PeopleRestService.UserInfo>();
-      ExoSocialActivity activity = getActivityManager().getActivity(activityId);
+    } else if (MENTION_ACTIVITY_STREAM.equals(typeOfRelation)) {
+      LinkedHashSet<UserInfo> userInfos = new LinkedHashSet<UserInfo>();
 
-      //first add the author in the suggestion
-      String authorId = activity.getPosterId();
-      userInfos = addUserToInfosList(authorId, excludedIdentityList, userInfos);
-
-      //then add the commented users in the suggestion
-      String[] commentedUsers = activity.getCommentedIds();
-      for (String commentedUser : commentedUsers) {
-        identityFilter.setExcludedIdentityList(excludedIdentityList);
-        userInfos = addUserToInfosList(commentedUser, excludedIdentityList, userInfos);
+      // first add space members in the suggestion list when mentioning in a space Activity Stream
+      if (currentSpace != null) {
+        userInfos = addSpaceMembers(spaceURL, identityFilter, userInfos, currentUser);
       }
-
-      //add the mentioned users in the suggestion
+      // then add connections in the suggestions
       long remain = SUGGEST_LIMIT - (userInfos != null ? userInfos.size() : 0);
       if (remain > 0) {
-        String[] mentionedUsers = activity.getMentionedIds();
-        for (String mentionedUser : mentionedUsers) {
-          identityFilter.setExcludedIdentityList(excludedIdentityList);
-          userInfos = addUserToInfosList(mentionedUser, excludedIdentityList, userInfos);
-        }
+        userInfos = addUserConnections(currentIdentity, identityFilter, userInfos, currentUser, remain);
       }
 
-      //add the liked users in the suggestion
+      // finally add others users in the suggestions
       remain = SUGGEST_LIMIT - (userInfos != null ? userInfos.size() : 0);
       if (remain > 0) {
-        String[] likedUsers = activity.getLikeIdentityIds();
-        for (String likedUser : likedUsers) {
-          identityFilter.setExcludedIdentityList(excludedIdentityList);
-          userInfos = addUserToInfosList(likedUser, excludedIdentityList, userInfos);
-        }
-      }
-
-      //add the connections in the suggestion
-      remain = SUGGEST_LIMIT - (userInfos != null ? userInfos.size() : 0);
-      if (remain > 0) {
-        ListAccess<Identity> connections = getRelationshipManager().getConnections(currentIdentity);
-        identityFilter.setExcludedIdentityList(excludedIdentityList);
-        if (connections != null && connections.getSize() > 0) {
-          Identity[] identities = connections.load(0, (int) remain);
-          userInfos = addUsersToUserInfosList(identities, excludedIdentityList, userInfos, currentUser);
-        }
-      }
-
-      //finally add others in the suggestion
-      remain = SUGGEST_LIMIT - (userInfos != null ? userInfos.size() : 0);
-      if (remain > 0) {
-        ListAccess<Identity> listAccess = getIdentityManager().getIdentitiesByProfileFilter(OrganizationIdentityProvider.NAME, identityFilter, false);
-        identityFilter.setExcludedIdentityList(excludedIdentityList);
-        if (listAccess != null && listAccess.getSize() > 0) {
-          Identity[] identitiesList = listAccess.load(0, (int) remain);
-          userInfos = addUsersToUserInfosList(identitiesList, excludedIdentityList, userInfos, currentUser);
-        }
+        userInfos = addOtherUsers(identityFilter, excludedIdentityList, userInfos, currentUser, remain);
       }
       return Util.getResponse(userInfos, uriInfo, mediaType, Response.Status.OK);
 
-    } else if (currentSpace != null && currentActivity !=null && MENTION_COMMENT.equals(typeOfRelation)) {
-        //Improvement in user suggestions when @mentioning in the comment in a space
-        List<UserInfo> userInfos = new ArrayList<PeopleRestService.UserInfo>();
+    } else if (MENTION_COMMENT.equals(typeOfRelation)) {
+      LinkedHashSet<UserInfo> userInfos = new LinkedHashSet<UserInfo>();
+      long remain = SUGGEST_LIMIT;
+
+      if(activityId == null) {
+        LOG.warn("Mentioning in activity comment : activity id parameter is null. the activity users will not be added in the result of mentioning.");
+      } else {
         ExoSocialActivity activity = getActivityManager().getActivity(activityId);
 
-        //first add the author in the suggestion
+        // first add the author in the suggestion
         String authorId = activity.getPosterId();
-        userInfos = addUserToInfosList(authorId, excludedIdentityList, userInfos);
+        userInfos = addUsernameToInfosList(authorId, identityFilter, userInfos, currentUser, true);
 
-        //then add the commented users in the suggestion
-        String[] commentedUsers = activity.getCommentedIds();
-        for (String commentedUser : commentedUsers) {
-          identityFilter.setExcludedIdentityList(excludedIdentityList);
-          userInfos = addUserToInfosList(commentedUser, excludedIdentityList, userInfos);
-        }
+        // then add the commented users in the suggestion list
+        userInfos = addCommentedUsers(activity, identityFilter, excludedIdentityList, userInfos, currentUser);
 
-        //add the mentioned users in the suggestion
-        long remain = SUGGEST_LIMIT - (userInfos != null ? userInfos.size() : 0);
-        if (remain > 0) {
-          String[] mentionedUsers = activity.getMentionedIds();
-          for (String mentionedUser : mentionedUsers) {
-            identityFilter.setExcludedIdentityList(excludedIdentityList);
-            userInfos = addUserToInfosList(mentionedUser, excludedIdentityList, userInfos);
-          }
-        }
-
-        //add the liked users in the suggestion
+        // add the mentioned users in the suggestion
         remain = SUGGEST_LIMIT - (userInfos != null ? userInfos.size() : 0);
         if (remain > 0) {
-          String[] likedUsers = activity.getLikeIdentityIds();
-          for (String likedUser : likedUsers) {
-            identityFilter.setExcludedIdentityList(excludedIdentityList);
-            userInfos = addUserToInfosList(likedUser, excludedIdentityList, userInfos);
-          }
+          userInfos = addMentionedUsers(activity, identityFilter, excludedIdentityList, userInfos, currentUser);
         }
 
-      //add space members
-          remain = SUGGEST_LIMIT - (userInfos != null ? userInfos.size() : 0);
-          if (remain > 0) {
-            String[] spaceMembers = getSpaceService().getSpaceByUrl(spaceURL).getMembers();
-            for (String spaceMember : spaceMembers) {
-              userInfos = addUserToInfosList(spaceMember, excludedIdentityList, userInfos);
-            }
-          }
-
-        //add the connections in the suggestion
+        // add the liked users in the suggestion
         remain = SUGGEST_LIMIT - (userInfos != null ? userInfos.size() : 0);
         if (remain > 0) {
-          ListAccess<Identity> connections = getRelationshipManager().getConnections(currentIdentity);
-          identityFilter.setExcludedIdentityList(excludedIdentityList);
-          if (connections != null && connections.getSize() > 0) {
-            Identity[] identities = connections.load(0, (int) remain);
-            userInfos = addUsersToUserInfosList(identities, excludedIdentityList, userInfos, currentUser);
-          }
+          userInfos = addLikedUsers(activity, identityFilter, excludedIdentityList, userInfos, currentUser);
         }
 
-        //finally add others in the suggestion
+      }
+
+      // add space members in the suggestion list when mentioning in a comment in a space Activity Stream
+      if (currentSpace != null && currentActivity != null) {
         remain = SUGGEST_LIMIT - (userInfos != null ? userInfos.size() : 0);
         if (remain > 0) {
-          ListAccess<Identity> listAccess = getIdentityManager().getIdentitiesByProfileFilter(OrganizationIdentityProvider.NAME, identityFilter, false);
-          identityFilter.setExcludedIdentityList(excludedIdentityList);
-          if (listAccess != null && listAccess.getSize() > 0) {
-            Identity[] identitiesList = listAccess.load(0, (int) remain);
-            userInfos = addUsersToUserInfosList(identitiesList, excludedIdentityList, userInfos, currentUser);
-          }
-        }
-        return Util.getResponse(userInfos, uriInfo, mediaType, Response.Status.OK);
-
-      //Improvement in user suggestions when @mentioning in the Activity Stream
-    } else if (currentSpace == null && currentActivity == null && MENTION_ACTIVITY_STREAM.equals(typeOfRelation)) {
-      //first add connections in the suggestions
-      ListAccess<Identity> connections = getRelationshipManager().getConnections(currentIdentity);
-      int size = connections.getSize();
-      List<UserInfo> userInfos = new ArrayList<PeopleRestService.UserInfo>();
-      if (connections != null && connections.getSize() > 0) {
-        Identity[] identities = connections.load(0, size < SUGGEST_LIMIT ? size : (int) SUGGEST_LIMIT);
-        userInfos = addUsersToUserInfosList(identities, excludedIdentityList, userInfos, currentUser);
-      }
-
-      //then add others users in the suggestions
-      long remain = SUGGEST_LIMIT - (userInfos != null ? userInfos.size() : 0);
-      if (remain > 0) {
-        ListAccess<Identity> listAccess = getIdentityManager().getIdentitiesByProfileFilter(OrganizationIdentityProvider.NAME, identityFilter, false);
-        identityFilter.setExcludedIdentityList(excludedIdentityList);
-        Identity[] identitiesList = listAccess.load(0, (int) remain);
-        userInfos = addUsersToUserInfosList(identitiesList, excludedIdentityList, userInfos, currentUser);
-      }
-      return Util.getResponse(userInfos, uriInfo, mediaType, Response.Status.OK);
-
-      //Improvement in user suggestions when @mentioning in a space Activity Stream
-    } else if (currentSpace != null && currentActivity == null && MENTION_ACTIVITY_STREAM.equals(typeOfRelation)) {
-      List<UserInfo> userInfos = new ArrayList<PeopleRestService.UserInfo>();
-
-      //first add space members in the suggestions
-      String[] spaceMembers = getSpaceService().getSpaceByUrl(spaceURL).getMembers();
-      for (String spaceMember : spaceMembers) {
-        userInfos = addUserToInfosList(spaceMember, excludedIdentityList, userInfos);
-      }
-
-      //then add connections in the suggestions
-     long remain = SUGGEST_LIMIT - (userInfos != null ? userInfos.size() : 0);
-      if (remain > 0) {
-        identityFilter.setExcludedIdentityList(excludedIdentityList);
-        ListAccess<Identity> connections = getRelationshipManager().getConnections(currentIdentity);
-        if (connections != null && connections.getSize() > 0) {
-          Identity[] connectionsIdentities = connections.load(0, (int) remain);
-          userInfos = addUsersToUserInfosList(connectionsIdentities, excludedIdentityList, userInfos, currentUser);
+          userInfos = addSpaceMembers(spaceURL, identityFilter, userInfos, currentUser);
         }
       }
 
-      //finally add others users in the suggestions
+      // add the connections in the suggestion
       remain = SUGGEST_LIMIT - (userInfos != null ? userInfos.size() : 0);
       if (remain > 0) {
-        identityFilter.setExcludedIdentityList(excludedIdentityList);
-        ListAccess<Identity> listAccess = getIdentityManager().getIdentitiesByProfileFilter(OrganizationIdentityProvider.NAME, identityFilter, false);
-        if (listAccess != null && listAccess.getSize() > 0) {
-          Identity[] identitiesList = listAccess.load(0, (int) remain);
-          userInfos = addUsersToUserInfosList(identitiesList, excludedIdentityList, userInfos, currentUser);
-        }
+        userInfos = addUserConnections(currentIdentity, identityFilter, userInfos, currentUser, remain);
+      }
+
+      // finally add others in the suggestion
+      remain = SUGGEST_LIMIT - (userInfos != null ? userInfos.size() : 0);
+      if (remain > 0) {
+        userInfos = addOtherUsers(identityFilter, excludedIdentityList, userInfos, currentUser, remain);
       }
 
       return Util.getResponse(userInfos, uriInfo, mediaType, Response.Status.OK);
@@ -569,43 +460,99 @@ public class PeopleRestService implements ResourceContainer{
     return Util.getResponse(nameList, uriInfo, mediaType, Response.Status.OK);
   }
 
-  private List<UserInfo> addUserToInfosList(String userId, List<Identity> excludedIdentityList, List<UserInfo> userInfos) {
-      Identity userIdentity = getIdentityManager().getIdentity(userId, false);
-      if (userIdentity == null) {
-        userIdentity = getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, userId, false);
-      }
-      if (userIdentity.getProviderId().equals(OrganizationIdentityProvider.NAME)) {
-        UserInfo user = new UserInfo();
-        user.setId(userIdentity.getRemoteId());
-        user.setName(userIdentity.getProfile() == null ? null : userIdentity.getProfile().getFullName());
-        user.setAvatar(userIdentity.getProfile() == null ? null : userIdentity.getProfile().getAvatarUrl());
-        user.setType("contact");
-        if (!(excludedIdentityList.contains(userIdentity))) {
-          userInfos.add(user);
-        }
-        excludedIdentityList.add(userIdentity);
-      }
+  private LinkedHashSet<UserInfo> addUsersToUserInfosList(Identity[] identities, ProfileFilter identityFilter, LinkedHashSet<UserInfo> userInfos, String currentUserId,  boolean filterByName) {
+    for (Identity identity : identities) {
+      userInfos = addUserToInfosList(identity, identityFilter, userInfos, currentUserId, filterByName);
+    }
     return userInfos;
   }
 
-  private List<UserInfo> addUsersToUserInfosList(Identity[] identities, List<Identity> excludedIdentityList, List<UserInfo> userInfos, String currentUserId) {
-    UserInfo userInfo;
+  private LinkedHashSet<UserInfo> addUserToInfosList(Identity userIdentity, ProfileFilter identityFilter, LinkedHashSet<UserInfo> userInfos, String currentUserId, boolean filterByName) {
+    if (!userIdentity.getProviderId().equals(OrganizationIdentityProvider.NAME)) {
+      LOG.warn("Cannot add Identity to suggestion list. Identity with id '"+ userIdentity.getRemoteId() + "' is not of type 'user'");
+      return userInfos;
+    }
+    if (userInfos.size() == SUGGEST_LIMIT) {
+      return userInfos;
+    }
+    if (identityFilter.getExcludedIdentityList().contains(userIdentity)) {
+      return userInfos;
+    }
+    if(filterByName && !userIdentity.getRemoteId().toLowerCase().contains(identityFilter.getName().toLowerCase()) && !userIdentity.getProfile().getFullName().toLowerCase().contains(identityFilter.getName().toLowerCase())) {
+      return userInfos;
+    }
+    UserInfo user = new UserInfo();
     boolean isAnonymous = IdentityConstants.ANONIM.equals(currentUserId);
-    for (Identity identity : identities) {
-      userInfo = new UserInfo();
-      if (!isAnonymous) {
-        userInfo.setId(identity.getRemoteId());
-      }
-      userInfo.setName(identity.getProfile().getFullName());
-      userInfo.setAvatar(identity.getProfile().getAvatarUrl());
-      userInfo.setType("contact");
-      if (!(excludedIdentityList.contains(identity))) {
-        userInfos.add(userInfo);
-      }
-      excludedIdentityList.add(identity);
-      if (userInfos.size() == SUGGEST_LIMIT) {
-        break;
-      }
+    if (!isAnonymous) {
+      user.setId(userIdentity.getRemoteId());
+    }
+    user.setName(userIdentity.getProfile() == null ? null : userIdentity.getProfile().getFullName());
+    user.setAvatar(userIdentity.getProfile() == null ? null : userIdentity.getProfile().getAvatarUrl());
+    user.setType("contact");
+    userInfos.add(user);
+    return userInfos;
+  }
+
+  private LinkedHashSet<UserInfo> addUsernameToInfosList(String userId, ProfileFilter identityFilter, LinkedHashSet<UserInfo> userInfos, String currentUserId, boolean filterByName) {
+    Identity userIdentity = getIdentityManager().getIdentity(userId, false);
+    if (userIdentity == null) {
+      userIdentity = getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, userId, false);
+    }
+    if (userIdentity == null) {
+      LOG.warn("Cannot find user identity with username = " + userId);
+      return userInfos;
+    }
+    return addUserToInfosList(userIdentity, identityFilter, userInfos, currentUserId, filterByName);
+  }
+
+  private LinkedHashSet<UserInfo> addUserConnections (Identity currentIdentity, ProfileFilter identityFilter, LinkedHashSet<UserInfo> userInfos, String currentUser, long remain) throws Exception {
+    ListAccess<Identity> connections = getRelationshipManager().getConnectionsByFilter(currentIdentity, identityFilter);
+    if (connections != null && connections.getSize() > 0) {
+      Identity[] identities = connections.load(0, (int) remain);
+      userInfos = addUsersToUserInfosList(identities, identityFilter, userInfos, currentUser, false);
+    }
+    return userInfos;
+  }
+
+  private LinkedHashSet<UserInfo> addOtherUsers (ProfileFilter identityFilter, List<Identity> excludedIdentityList, LinkedHashSet<UserInfo> userInfos, String currentUser, long remain) throws Exception {
+    List<Identity> listAccess = getIdentityManager().getIdentityStorage().getIdentitiesForMentions(OrganizationIdentityProvider.NAME, identityFilter, null, 0L, remain, false);
+    identityFilter.setExcludedIdentityList(excludedIdentityList);
+    Identity[] identitiesList = listAccess.toArray(new Identity[0]);
+    userInfos = addUsersToUserInfosList(identitiesList, identityFilter, userInfos, currentUser, false);
+    return userInfos;
+  }
+
+  private LinkedHashSet<UserInfo> addSpaceMembers (String spaceURL, ProfileFilter identityFilter, LinkedHashSet<UserInfo> userInfos, String currentUser) {
+    String[] spaceMembers = getSpaceService().getSpaceByUrl(spaceURL).getMembers();
+    for (String spaceMember : spaceMembers) {
+      userInfos = addUsernameToInfosList(spaceMember, identityFilter,userInfos, currentUser, true);
+    }
+    return userInfos;
+  }
+
+  private LinkedHashSet<UserInfo> addCommentedUsers (ExoSocialActivity activity, ProfileFilter identityFilter, List<Identity> excludedIdentityList, LinkedHashSet<UserInfo> userInfos, String currentUser) {
+    String[] commentedUsers = activity.getCommentedIds();
+    for (String commentedUser : commentedUsers) {
+      identityFilter.setExcludedIdentityList(excludedIdentityList);
+      userInfos = addUsernameToInfosList(commentedUser, identityFilter, userInfos, currentUser, true);
+    }
+    return userInfos;
+  }
+
+  private LinkedHashSet<UserInfo> addMentionedUsers(ExoSocialActivity activity, ProfileFilter identityFilter, List<Identity> excludedIdentityList, LinkedHashSet<UserInfo> userInfos, String currentUser) {
+    String[] mentionedUsers = activity.getMentionedIds();
+    for (String mentionedUser : mentionedUsers) {
+      identityFilter.setExcludedIdentityList(excludedIdentityList);
+      userInfos = addUsernameToInfosList(mentionedUser, identityFilter, userInfos, currentUser, true);
+    }
+    return userInfos;
+  }
+
+  private LinkedHashSet<UserInfo> addLikedUsers(ExoSocialActivity activity, ProfileFilter identityFilter, List<Identity> excludedIdentityList, LinkedHashSet<UserInfo> userInfos, String currentUser) {
+    String[] likedUsers = activity.getLikeIdentityIds();
+    for (String likedUser : likedUsers) {
+      identityFilter.setExcludedIdentityList(excludedIdentityList);
+      userInfos = addUsernameToInfosList(likedUser, identityFilter, userInfos, currentUser, true);
     }
     return userInfos;
   }
@@ -1183,6 +1130,19 @@ public class PeopleRestService implements ResourceContainer{
 
     public void setType(String type) {
       this.type = type;
+    }
+
+    @Override
+    public int hashCode() {
+      return id.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+      if(obj == null || !(obj instanceof UserInfo)) {
+        return false;
+      }
+      return id.equals(((UserInfo)obj).getId());
     }
   }
 

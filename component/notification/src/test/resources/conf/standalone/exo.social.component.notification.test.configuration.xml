@@ -145,6 +145,22 @@
     <key>org.exoplatform.services.resources.ResourceBundleService</key>
     <type>org.exoplatform.social.notification.mock.MockResourceBundleService</type>
   </component>
+
+  <component>
+    <key>org.exoplatform.services.resources.LocaleConfigService</key>
+    <type>org.exoplatform.services.resources.impl.LocaleConfigServiceImpl</type>
+    <init-params>
+      <value-param>
+        <name>locale.config.file</name>
+        <value>jar:/conf/standalone/locales-config.xml</value>
+      </value-param>
+    </init-params>
+  </component>
+
+  <component>
+    <key>org.exoplatform.services.resources.LocalePolicy</key>
+    <type>org.exoplatform.portal.application.localization.DefaultLocalePolicyService</type>
+  </component>
   
   <!-- channel register -->
   <external-component-plugins>

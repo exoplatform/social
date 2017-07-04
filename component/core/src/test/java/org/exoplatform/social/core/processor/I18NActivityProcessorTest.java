@@ -39,6 +39,7 @@ import org.exoplatform.services.resources.ResourceBundleData;
 import org.exoplatform.services.resources.impl.BaseResourceBundlePlugin;
 import org.exoplatform.services.resources.impl.BaseResourceBundleService;
 import org.exoplatform.services.resources.impl.LocaleConfigServiceImpl;
+import org.exoplatform.social.common.xmlprocessor.XMLProcessorImpl;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.activity.model.ExoSocialActivityImpl;
 
@@ -58,7 +59,7 @@ public class I18NActivityProcessorTest extends TestCase {
   public void setUp() throws Exception {
     super.setUp();
     PropertyManager.setProperty(PropertyManager.DEVELOPING, "true");
-    i18NActivityProcessor = new I18NActivityProcessor();
+    i18NActivityProcessor = new I18NActivityProcessor(new XMLProcessorImpl());
     FakeResourceBundleService fakeResourceBundleService = getResourceBundleService();
     i18NActivityProcessor.setResourceBundleService(fakeResourceBundleService);
   }

@@ -9,6 +9,8 @@ import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
 import org.exoplatform.social.core.space.model.Space;
+import org.exoplatform.social.core.storage.ActivityStorageException;
+import org.exoplatform.social.core.storage.SpaceStorageException;
 import org.exoplatform.social.core.storage.impl.IdentityStorageImpl;
 import org.exoplatform.social.core.test.AbstractCoreTest;
 import org.exoplatform.social.core.test.MaxQueryNumber;
@@ -64,11 +66,19 @@ public class CachedSpaceStorageTestCase extends AbstractCoreTest {
   public void tearDown() throws Exception {
     
     for (Space sp : tearDownSpaceList) {
-      cachedSpaceStorage.deleteSpace(sp.getId());
+      try {
+        cachedSpaceStorage.deleteSpace(sp.getId());
+      } catch (SpaceStorageException e) {
+        // Could be expected if already deleted in test
+      }
     }
     
     for (ExoSocialActivity act : tearDownActivityList) {
-      cachedActivityStorage.deleteActivity(act.getId());
+      try {
+        cachedActivityStorage.deleteActivity(act.getId());
+      } catch (ActivityStorageException e) {
+        // Could be expected if already deleted in test
+      }
     }
     
     identityStorage.deleteIdentity(demo);
@@ -89,6 +99,7 @@ public class CachedSpaceStorageTestCase extends AbstractCoreTest {
     space.setDisplayName("Hello");
     space.setPrettyName(space.getDisplayName());
     cachedSpaceStorage.saveSpace(space, true);
+    tearDownSpaceList.add(space);
 
     //
     Identity i = new Identity("foo", "bar");
@@ -131,6 +142,7 @@ public class CachedSpaceStorageTestCase extends AbstractCoreTest {
     space.setManagers(managers);
     space.setMembers(members);
     cachedSpaceStorage.saveSpace(space, true);
+    tearDownSpaceList.add(space);
 
     //
     Identity identitySpace = new Identity(SpaceIdentityProvider.NAME, space.getPrettyName());
@@ -183,6 +195,7 @@ public class CachedSpaceStorageTestCase extends AbstractCoreTest {
     space.setManagers(managers);
     space.setMembers(members);
     cachedSpaceStorage.saveSpace(space, true);
+    tearDownSpaceList.add(space);
 
     //
     Identity identitySpace = new Identity(SpaceIdentityProvider.NAME, space.getPrettyName());

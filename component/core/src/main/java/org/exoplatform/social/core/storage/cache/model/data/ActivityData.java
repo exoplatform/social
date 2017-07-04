@@ -33,6 +33,7 @@ import org.exoplatform.social.core.activity.model.ExoSocialActivityImpl;
  * @version $Revision$
  */
 public class ActivityData implements CacheData<ExoSocialActivity> {
+  private static final long serialVersionUID = -7626120214861121711L;
 
   public final static ActivityData NULL = new ActivityData(new ExoSocialActivityImpl());
   

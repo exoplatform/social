@@ -396,11 +396,8 @@ public class SpaceServiceImpl implements SpaceService {
       OrganizationService org = getOrgService();
       try {
 
-        // Cannot use due to http://jira.exoplatform.org/browse/EXOGTN-173
-        //ListAccess<User> groupMembersAccess = org.getUserHandler().findUsersByGroup(invitedGroupId);
-        //User [] users = groupMembersAccess.load(0, groupMembersAccess.getSize());
-        PageList<User> groupMembersAccess = org.getUserHandler().findUsersByGroup(invitedGroupId);
-        List<User> users = groupMembersAccess.getAll();
+        ListAccess<User> groupMembersAccess = org.getUserHandler().findUsersByGroupId(invitedGroupId);
+        User [] users = groupMembersAccess.load(0, groupMembersAccess.getSize());
 
         for (User user : users) {
           String userId = user.getUserName();
@@ -465,8 +462,17 @@ public class SpaceServiceImpl implements SpaceService {
   public void saveSpace(Space space, boolean isNew) {
     Space oldSpace = getSpaceById(space.getId());
     spaceStorage.saveSpace(space, isNew);
-    if (! isNew && ! oldSpace.getVisibility().equals(space.getVisibility())) {
-      spaceLifeCycle.spaceAccessEdited(space, space.getEditor());
+    if (!isNew) {
+      if (!oldSpace.getVisibility().equals(space.getVisibility())) {
+        spaceLifeCycle.spaceAccessEdited(space, space.getEditor());
+      }
+
+      String oldRegistration = oldSpace.getRegistration();
+      String registration = space.getRegistration();
+      if ((oldRegistration == null && registration != null)
+              || (oldRegistration != null && !oldRegistration.equals(registration))) {
+        spaceLifeCycle.spaceRegistrationEdited(space, space.getEditor());
+      }
     }
   }
 
@@ -804,6 +810,21 @@ public class SpaceServiceImpl implements SpaceService {
    */
   public boolean isPending(String spaceId, String userId) {
     return this.isPendingUser(this.getSpaceById(spaceId), userId);
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  public boolean isIgnored(Space space, String userId) {
+    boolean ignoredMember = spaceStorage.isSpaceIgnored(space.getId(), userId);
+    return ignoredMember;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  public void setIgnored(String spaceId, String userId) {
+    spaceStorage.ignoreSpace(spaceId, userId);
   }
 
   /**

@@ -869,7 +869,6 @@ public class ActivityManagerTest extends AbstractCoreTest {
     assertEquals("johnSpaceActivitiesFeed.getSize() must return 10", 10, johnSpaceActivitiesFeed.getSize());
 
     relationshipManager.remove(demoMaryConnection);
-    spaceService.deleteSpace(space);
   }
   
   /**
@@ -1187,9 +1186,6 @@ public class ActivityManagerTest extends AbstractCoreTest {
    demoActivities = activityManager.getActivitiesOfUserSpaces(maryIdentity);
    assertNotNull("demoActivities must not be null", demoActivities);
    assertEquals("demoActivities.size() must return: 0", 0, demoActivities.size());
-   
-   spaceService.deleteSpace(space);
-   spaceService.deleteSpace(space2);
  }
 
   /**
@@ -1238,7 +1234,6 @@ public class ActivityManagerTest extends AbstractCoreTest {
     assertEquals("maryActivityFeed.size() must return 6", 6, maryActivityFeed.size());
 
     relationshipManager.remove(demoMaryConnection);
-    spaceService.deleteSpace(space);
   }
   
   /**
@@ -1885,6 +1880,7 @@ public class ActivityManagerTest extends AbstractCoreTest {
     space.setManagers(managers);
     space.setMembers(members);
     spaceService.saveSpace(space, true);
+    tearDownSpaceList.add(space);
     return space;
   }
 }

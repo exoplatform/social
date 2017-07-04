@@ -25,7 +25,7 @@ import org.exoplatform.social.core.jpa.storage.entity.SpaceMemberEntity;
 public interface SpaceMemberDAO extends GenericDAO<SpaceMemberEntity, Long> {
     void deleteBySpace(SpaceEntity entity);
 
-    SpaceMemberEntity getMember(String remoteId, Long spaceId);
+    SpaceMemberEntity getSpaceMemberShip(String remoteId, Long spaceId, SpaceMemberEntity.Status status);
 
     List<Long> getSpacesIdsByUserName(String userId, int offset, int limit);
 }

@@ -136,12 +136,15 @@ public class CachedIdentityStorage implements IdentityStorage {
     List<IdentityKey> data = new ArrayList<IdentityKey>();
     for (Identity i : identities) {
       IdentityKey k = new IdentityKey(i);
-      exoIdentityCache.put(k, new IdentityData(i));
-      exoProfileCache.put(k, new ProfileData(i.getProfile()));
+      if(exoIdentityCache.get(k) == null) {
+        exoIdentityCache.put(k, new IdentityData(i));
+      }
+      if(exoProfileCache.get(k) == null) {
+        exoProfileCache.put(k, new ProfileData(i.getProfile()));
+      }
       data.add(new IdentityKey(i));
     }
     return new ListIdentitiesData(data);
-
   }
 
   public CachedIdentityStorage(final IdentityStorageImpl storage, final SocialStorageCacheService cacheService) {
@@ -281,16 +284,26 @@ public class CachedIdentityStorage implements IdentityStorage {
   public Profile loadProfile(final Profile profile) throws IdentityStorageException {
     
     IdentityKey key = new IdentityKey(new Identity(profile.getIdentity().getId()));
-    return profileCache.get(
+    ProfileData profileData = profileCache.get(
         new ServiceContext<ProfileData>() {
 
           public ProfileData execute() {
-            return new ProfileData(storage.loadProfile(profile));
+            Profile loadedProfile = storage.loadProfile(profile);
+            if(loadedProfile == null) {
+              LOG.warn("Null profile for identity: " + profile.getIdentity().getRemoteId());
+              return ProfileData.NULL_OBJECT;
+            } else {
+              return new ProfileData(loadedProfile);
+            }
           }
         },
-        key)
-        .build();
-    
+        key);
+    if(profileData == null || profileData.getProfileId() == null) {
+      return profile;
+    } else {
+      return profileData
+          .build();
+    }
   }
 
   /**
@@ -326,7 +339,9 @@ public class CachedIdentityStorage implements IdentityStorage {
             Identity i = storage.findIdentity(providerId, remoteId);
             if (i == null) return null;
             IdentityKey key = new IdentityKey(i);
-            exoIdentityCache.put(key, new IdentityData(i));
+            if(exoIdentityCache.get(key) == null) {
+              exoIdentityCache.put(key, new IdentityData(i));
+            }
             return key;
           }
         },

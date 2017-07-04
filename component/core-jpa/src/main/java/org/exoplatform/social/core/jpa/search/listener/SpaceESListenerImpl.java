@@ -53,6 +53,12 @@ public class SpaceESListenerImpl extends SpaceListenerPlugin {
 
   @Override
   public void spaceAccessEdited(SpaceLifeCycleEvent event) {
+    reindex(event, "space access edited");
+  }
+
+  @Override
+  public void spaceRegistrationEdited(SpaceLifeCycleEvent event) {
+    reindex(event, "space registration edited");
   }
 
   @Override

@@ -51,7 +51,8 @@ import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
                         + "     spaceMember.status = :status "
                         + "   ) "),
         @NamedQuery(name = "SpaceMember.getMember", query = "SELECT mem FROM SocSpaceMember mem WHERE mem.userId = :userId AND mem.space.id = :spaceId AND mem.status = :status"),
-        @NamedQuery(name = "SpaceMember.deleteByUsername", query = "DELETE FROM SocSpaceMember sm WHERE sm.userId = :username")})
+        @NamedQuery(name = "SpaceMember.deleteByUsername", query = "DELETE FROM SocSpaceMember sm WHERE sm.userId = :username"),
+        @NamedQuery(name = "SpaceMember.getSpaceMemberShip", query = "SELECT mem FROM SocSpaceMember mem WHERE mem.userId = :userId AND mem.space.id = :spaceId")})
 public class SpaceMemberEntity implements Serializable {
 
   private static final long serialVersionUID = 1015703779692801839L;
@@ -167,6 +168,6 @@ public class SpaceMemberEntity implements Serializable {
   }
 
   public static enum Status {
-    MEMBER, MANAGER, PENDING, INVITED;
+    MEMBER, MANAGER, PENDING, INVITED, IGNORED
   }
 }

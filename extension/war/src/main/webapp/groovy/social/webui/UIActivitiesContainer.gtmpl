@@ -31,7 +31,7 @@ jsManager.require("SHARED/social-ui-activity", "activity").addScripts("activity.
             <div class="heading" style="height:60px;">
               <span class="arrowLeft"></span>
               <div class="actLink">
-                <a id="Permalink${activityId}" class="uiIconLink uiIconLightGray" href="/portal/intranet/activity?id=${activityId}"></a> 
+                <a id="Permalink${activityId}" class="uiIconLink uiIconLightGray" href="<%=org.exoplatform.social.core.service.LinkProvider.getSingleActivityUrl(activityId)%>"></a>
               </div>
             </div><!--end heading-->
           </div><!--end #ActivityContextBox${uiActivityId}-->

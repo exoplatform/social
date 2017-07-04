@@ -26,6 +26,7 @@ import org.exoplatform.social.core.space.model.Space;
  * @version $Revision$
  */
 public class SpaceData implements CacheData<Space> {
+  private static final long serialVersionUID = 6109309246791818373L;
 
   private final String id;
   private final String app;

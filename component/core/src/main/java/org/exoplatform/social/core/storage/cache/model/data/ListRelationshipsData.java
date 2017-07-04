@@ -28,6 +28,7 @@ import java.util.List;
  * @version $Revision$
  */
 public class ListRelationshipsData extends AbstractListData<RelationshipKey> {
+  private static final long serialVersionUID = -2391727362137447555L;
 
   public ListRelationshipsData(final List<RelationshipKey> ids) {
     super(ids);

@@ -24,6 +24,7 @@ package org.exoplatform.social.core.storage.cache.model.data;
  * @version $Revision$
  */
 public class IntegerData extends SimpleCacheData<Integer> {
+  private static final long serialVersionUID = -3769026609347062393L;
 
   public IntegerData(final Integer integer) {
     super(integer);

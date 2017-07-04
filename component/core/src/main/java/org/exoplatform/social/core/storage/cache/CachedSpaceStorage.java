@@ -17,6 +17,10 @@
 
 package org.exoplatform.social.core.storage.cache;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.cache.ExoCache;
 import org.exoplatform.services.log.ExoLogger;
@@ -44,10 +48,6 @@ import org.exoplatform.social.core.storage.cache.model.key.SpaceType;
 import org.exoplatform.social.core.storage.cache.selector.IdentityCacheSelector;
 import org.exoplatform.social.core.storage.cache.selector.ScopeCacheSelector;
 import org.exoplatform.social.core.storage.impl.SpaceStorageImpl;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 /**
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
@@ -151,8 +151,7 @@ public class CachedSpaceStorage implements SpaceStorage {
 
     List<SpaceKey> data = new ArrayList<SpaceKey>();
     for (Space s : spaces) {
-      SpaceKey k = new SpaceKey(s.getId());
-      exoSpaceCache.put(k, new SpaceData(s));
+      SpaceKey k = putSpaceInCacheIfNotExists(s);
       data.add(k);
     }
     return new ListSpacesData(data);
@@ -162,7 +161,7 @@ public class CachedSpaceStorage implements SpaceStorage {
   /**
    * Build the ids from the space identity id list.
    *
-   * @param spaces spaces
+   * @param identities identities
    * @return identities
    */
   private ListSpacesData buildListIdentityIds(List<String> identities) {
@@ -186,8 +185,7 @@ public class CachedSpaceStorage implements SpaceStorage {
 
     List<SpaceKey> data = new ArrayList<SpaceKey>();
     for (Space s : spaces) {
-      SpaceKey k = new SpaceKey(s.getId());
-      exoSpaceSimpleCache.put(k, new SpaceSimpleData(s));
+      SpaceKey k = putSpaceInCacheIfNotExists(s);
       data.add(k);
     }
     return new ListSpacesData(data);
@@ -213,7 +211,7 @@ public class CachedSpaceStorage implements SpaceStorage {
 
   }
 
-  private void cleanRef(SpaceData removed) {
+  private void cleanRef(Space removed) {
     exoRefSpaceCache.remove(new SpaceRefKey(removed.getDisplayName()));
     exoRefSpaceCache.remove(new SpaceRefKey(null, removed.getPrettyName()));
     exoRefSpaceCache.remove(new SpaceRefKey(null, null, removed.getGroupId()));
@@ -226,9 +224,22 @@ public class CachedSpaceStorage implements SpaceStorage {
       exoIdentitiesCache.select(new IdentityCacheSelector(SpaceIdentityProvider.NAME));
     }
     catch (Exception e) {
-      LOG.error(e);
+      LOG.error("Error deleting cache entries of provider type 'Space Identities'", e);
     }
 
+  }
+
+  void removeCacheEntry(String remoteId, SpaceType type, int offset, int limit) {
+    try {
+      SpaceFilterKey key = new SpaceFilterKey(remoteId, null, type);
+      ListSpacesKey listKey = new ListSpacesKey(key, offset, limit);
+      exoSpacesCache.select(new ScopeCacheSelector<ListSpacesKey, ListSpacesData>(listKey));
+      exoSpacesCountCache.select(new ScopeCacheSelector<SpaceFilterKey, IntegerData>(key));
+    }
+    catch (Exception e) {
+      LOG.error("Error deleting space cache entries with remoteId = '" + remoteId + "', type = '" + type + "', offset ='"
+          + offset + "', limit ='" + limit + "'", e);
+    }
   }
 
   void clearSpaceCache() {
@@ -238,7 +249,7 @@ public class CachedSpaceStorage implements SpaceStorage {
       exoSpacesCountCache.select(new ScopeCacheSelector<SpaceFilterKey, IntegerData>());
     }
     catch (Exception e) {
-      LOG.error(e);
+      LOG.error("Error deleting space caches", e);
     }
 
   }
@@ -257,19 +268,17 @@ public class CachedSpaceStorage implements SpaceStorage {
           public SpaceKey execute() {
             Space space = storage.getSpaceByDisplayName(spaceDisplayName);
             if (space != null) {
-              SpaceKey key = new SpaceKey(space.getId());
-              exoSpaceCache.put(key, new SpaceData(space));
-              return key;
+              return putSpaceInCacheIfNotExists(space);
             }
             else {
-              return null;
+              return SpaceKey.NULL_OBJECT;
             }
           }
         },
         refKey);
 
     //
-    if (key != null) {
+    if (key != null && key != SpaceKey.NULL_OBJECT && key.getId() != null) {
       return getSpaceById(key.getId());
     }
     else {
@@ -289,14 +298,11 @@ public class CachedSpaceStorage implements SpaceStorage {
     
     //
     exoSpaceSimpleCache.remove(new SpaceKey(space.getId()));
-    SpaceData removed = exoSpaceCache.remove(new SpaceKey(space.getId()));
+    exoSpaceCache.remove(new SpaceKey(space.getId()));
     
     clearSpaceCache();
     clearIdentityCache();
-    if (removed != null) {
-      cleanRef(removed);
-    }
-
+    cleanRef(space);
   }
 
   /**
@@ -334,15 +340,14 @@ public class CachedSpaceStorage implements SpaceStorage {
     cachedActivityStorage.clearOwnerStreamCache(oldPrettyName);
 
     // remove space cached
-    SpaceData removed = exoSpaceCache.remove(new SpaceKey(space.getId()));
+    exoSpaceCache.remove(new SpaceKey(space.getId()));
     clearSpaceCache();
     clearIdentityCache();
-    if (removed != null) {
-      exoRefSpaceCache.remove(new SpaceRefKey(oldDisplayName));
-      exoRefSpaceCache.remove(new SpaceRefKey(null, oldPrettyName));
-      exoRefSpaceCache.remove(new SpaceRefKey(null, null, removed.getGroupId()));
-      exoRefSpaceCache.remove(new SpaceRefKey(null, null, null, oldUrl));
-    }
+    cleanRef(space);
+    exoRefSpaceCache.remove(new SpaceRefKey(oldDisplayName));
+    exoRefSpaceCache.remove(new SpaceRefKey(null, oldPrettyName));
+    exoRefSpaceCache.remove(new SpaceRefKey(null, null, space.getGroupId()));
+    exoRefSpaceCache.remove(new SpaceRefKey(null, null, null, oldUrl));
   }
   
   /**
@@ -351,19 +356,37 @@ public class CachedSpaceStorage implements SpaceStorage {
   public void deleteSpace(final String id) throws SpaceStorageException {
 
     //
-    Space space = storage.getSpaceById(id);
+    Space space = getSpaceById(id);
     storage.deleteSpace(id);
 
     //
-    SpaceData removed = exoSpaceCache.remove(new SpaceKey(id));
+    exoSpaceCache.remove(new SpaceKey(id));
     clearSpaceCache();
-    if (removed != null) {
-      cleanRef(removed);
-    }
+    cleanRef(space);
 
     //
     getCachedActivityStorage().clearCache();
 
+  }
+
+  @Override
+  public void ignoreSpace(String spaceId, String userId) {
+    storage.ignoreSpace(spaceId, userId);
+    exoSpaceSimpleCache.remove(new SpaceKey(spaceId));
+    SpaceData spaceData = exoSpaceCache.remove(new SpaceKey(spaceId));
+    if (spaceData != null) {
+      Space space = spaceData.build();
+      clearSpaceCache();
+      clearIdentityCache();
+      if (space != null) {
+        cleanRef(space);
+      }
+    }
+  }
+
+  @Override
+  public boolean isSpaceIgnored(String spaceId, String userId) {
+    return storage.isSpaceIgnored(spaceId, userId);
   }
 
   /**
@@ -1198,6 +1221,7 @@ public class CachedSpaceStorage implements SpaceStorage {
           public SpaceData execute() {
             Space space = storage.getSpaceById(id);
             if (space != null) {
+              putSpaceInCacheIfNotExists(space);
               return new SpaceData(space);
             }
             else {
@@ -1228,7 +1252,7 @@ public class CachedSpaceStorage implements SpaceStorage {
     if (data != null) {
       Space s = data.build();
       if (exoSpaceSimpleCache.get(key) == null) {
-        exoSpaceSimpleCache.put(key, new SpaceSimpleData(s));
+        putSpaceInCacheIfNotExists(s);
       }
       
       return s;
@@ -1240,6 +1264,7 @@ public class CachedSpaceStorage implements SpaceStorage {
           public SpaceSimpleData execute() {
             Space space = storage.getSpaceSimpleById(id);
             if (space != null) {
+              putSpaceInCacheIfNotExists(space);
               return new SpaceSimpleData(space);
             }
             else {
@@ -1272,19 +1297,17 @@ public class CachedSpaceStorage implements SpaceStorage {
           public SpaceKey execute() {
             Space space = storage.getSpaceByPrettyName(spacePrettyName);
             if (space != null) {
-              SpaceKey key = new SpaceKey(space.getId());
-              exoSpaceCache.put(key, new SpaceData(space));
-              return key;
+              return putSpaceInCacheIfNotExists(space);
             }
             else {
-              return null;
+              return SpaceKey.NULL_OBJECT;
             }
           }
         },
         refKey);
 
     //
-    if (key != null) {
+    if (key != null && key != SpaceKey.NULL_OBJECT && key.getId() != null) {
       return getSpaceById(key.getId());
     }
     else {
@@ -1307,19 +1330,17 @@ public class CachedSpaceStorage implements SpaceStorage {
           public SpaceKey execute() {
             Space space = storage.getSpaceByGroupId(groupId);
             if (space != null) {
-              SpaceKey key = new SpaceKey(space.getId());
-              exoSpaceCache.put(key, new SpaceData(space));
-              return key;
+              return putSpaceInCacheIfNotExists(space);
             }
             else {
-              return null;
+              return SpaceKey.NULL_OBJECT;
             }
           }
         },
         refKey);
 
     //
-    if (key != null) {
+    if (key != null && key != SpaceKey.NULL_OBJECT && key.getId() != null) {
       return getSpaceById(key.getId());
     }
     else {
@@ -1342,19 +1363,17 @@ public class CachedSpaceStorage implements SpaceStorage {
           public SpaceKey execute() {
             Space space = storage.getSpaceByUrl(url);
             if (space != null) {
-              SpaceKey key = new SpaceKey(space.getId());
-              exoSpaceCache.put(key, new SpaceData(space));
-              return key;
+              return putSpaceInCacheIfNotExists(space);
             }
             else {
-              return null;
+              return SpaceKey.NULL_OBJECT;
             }
           }
         },
         refKey);
 
     //
-    if (key != null) {
+    if (key != null && key != SpaceKey.NULL_OBJECT && key.getId() != null) {
       return getSpaceById(key.getId());
     }
     else {
@@ -1366,13 +1385,24 @@ public class CachedSpaceStorage implements SpaceStorage {
   @Override
   public void updateSpaceAccessed(String remoteId, Space space) throws SpaceStorageException {
     storage.updateSpaceAccessed(remoteId, space);
-    clearSpaceCache();
+
+    SpaceFilterKey key = new SpaceFilterKey(remoteId, new SpaceFilter(remoteId, null), SpaceType.LATEST_ACCESSED);
+    // this call is requesting 10 because it's already cached by previous calls (FROM UI layer)
+    // thus, this call will not request database.
+    ListSpacesKey listKey = new ListSpacesKey(key, 0, 10);
+    ListSpacesData listSpacesData = exoSpacesCache.get(listKey);
+    if(listSpacesData != null) {
+      if (listSpacesData.getIds() != null && !listSpacesData.getIds().isEmpty()
+          && !listSpacesData.getIds().get(0).getId().equals(space.getId())) {
+        removeCacheEntry(remoteId, SpaceType.LATEST_ACCESSED, 0, 10);
+      }
+    }
   }
 
   @Override
   public List<Space> getLastAccessedSpace(final SpaceFilter filter, final int offset, final int limit) throws SpaceStorageException {
     //
-    SpaceFilterKey key = new SpaceFilterKey(filter.getRemoteId(), filter, SpaceType.MEMBER);
+    SpaceFilterKey key = new SpaceFilterKey(filter.getRemoteId(), filter, SpaceType.LATEST_ACCESSED);
     ListSpacesKey listKey = new ListSpacesKey(key, offset, limit);
 
     //
@@ -1475,6 +1505,31 @@ public class CachedSpaceStorage implements SpaceStorage {
 
     //
     return buildSpaceIdentityIds(keys);
+  }
+
+  private SpaceKey putSpaceInCacheIfNotExists(Space space) {
+    SpaceKey key = new SpaceKey(space.getId());
+    if(exoSpaceCache.get(key) == null) {
+      exoSpaceCache.put(key, new SpaceData(space));
+      exoSpaceSimpleCache.put(key, new SpaceSimpleData(space));
+    }
+    SpaceRefKey refKey = new SpaceRefKey(space.getDisplayName(), null, null, null);
+    if(exoRefSpaceCache.get(refKey) == null) {
+      exoRefSpaceCache.put(refKey, key);
+    }
+    refKey = new SpaceRefKey(null, null, space.getGroupId(), null);
+    if(exoRefSpaceCache.get(refKey) == null) {
+      exoRefSpaceCache.put(refKey, key);
+    }
+    refKey = new SpaceRefKey(null, space.getPrettyName(), null, null);
+    if(exoRefSpaceCache.get(refKey) == null) {
+      exoRefSpaceCache.put(refKey, key);
+    }
+    refKey = new SpaceRefKey(null, null, null, space.getUrl());
+    if(exoRefSpaceCache.get(refKey) == null) {
+      exoRefSpaceCache.put(refKey, key);
+    }
+    return key;
   }
 }
 

@@ -79,6 +79,24 @@ public interface SpaceStorage {
   public void deleteSpace(String id) throws SpaceStorageException;
 
   /**
+   * update the SpaceMembership between space and user
+   *
+   * @param spaceId the space Id
+   * @param userId user Id
+   */
+   void ignoreSpace(String spaceId, String userId);
+
+  /**
+   * Verify if a space is ignored by the user or not.
+   *
+   * @param spaceId the id of the space
+   * @param userId the id of the user
+   * @return true if user has ignored the space from suggested list
+   */
+
+  boolean isSpaceIgnored(String spaceId, String userId);
+
+  /**
    * Gets the count of the spaces that a user has the "member" role.
    *
    * @param userId

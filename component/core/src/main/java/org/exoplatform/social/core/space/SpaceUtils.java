@@ -56,6 +56,7 @@ import org.exoplatform.portal.config.model.Container;
 import org.exoplatform.portal.config.model.ModelObject;
 import org.exoplatform.portal.config.model.Page;
 import org.exoplatform.portal.mop.SiteKey;
+import org.exoplatform.portal.mop.SiteType;
 import org.exoplatform.portal.mop.management.operations.navigation.NavigationUtils;
 import org.exoplatform.portal.mop.navigation.NavigationContext;
 import org.exoplatform.portal.mop.navigation.NavigationService;
@@ -65,10 +66,7 @@ import org.exoplatform.portal.mop.navigation.NodeContext;
 import org.exoplatform.portal.mop.navigation.Scope;
 import org.exoplatform.portal.mop.page.PageContext;
 import org.exoplatform.portal.mop.page.PageService;
-import org.exoplatform.portal.mop.user.UserNavigation;
-import org.exoplatform.portal.mop.user.UserNode;
-import org.exoplatform.portal.mop.user.UserPortal;
-import org.exoplatform.portal.mop.user.UserPortalContext;
+import org.exoplatform.portal.mop.user.*;
 import org.exoplatform.portal.pom.spi.gadget.Gadget;
 import org.exoplatform.portal.webui.portal.UIPortal;
 import org.exoplatform.portal.webui.util.Util;
@@ -94,6 +92,7 @@ import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
 import org.exoplatform.webui.application.WebuiRequestContext;
+
 import org.gatein.common.i18n.LocalizedString;
 import org.gatein.common.util.Tools;
 import org.gatein.pc.api.Portlet;
@@ -469,6 +468,10 @@ public class SpaceUtils {
   private static Space getSpaceByContext() {
     //
     PortalRequestContext pcontext = Util.getPortalRequestContext();
+    if (!pcontext.getSiteType().equals(SiteType.GROUP) ||
+        !pcontext.getSiteName().startsWith(SpaceUtils.SPACE_GROUP)) {
+      return null;
+    }
     String requestPath = pcontext.getControllerContext().getParameter(RequestNavigationData.REQUEST_PATH);
     Route route = ExoRouter.route(requestPath);
     if (route == null) return null;
@@ -1205,22 +1208,26 @@ public class SpaceUtils {
    * @return
    */
   public static UserNode getSpaceUserNode(Space space) throws Exception {
+    return getSpaceUserNode(space, null);
+  }
+
+  public static UserNode getSpaceUserNode(Space space, UserNodeFilterConfig filter) throws Exception {
     NavigationContext spaceNavCtx = getGroupNavigationContext(space.getGroupId());
 
     UserNavigation userNav = SpaceUtils.getUserPortal().getNavigation(spaceNavCtx.getKey());
-    
-    UserNode parentUserNode = SpaceUtils.getUserPortal().getNode(userNav, Scope.CHILDREN, null, null);
+
+    UserNode parentUserNode = SpaceUtils.getUserPortal().getNode(userNav, Scope.CHILDREN, filter, null);
     UserNode spaceUserNode = parentUserNode.getChildrenSize() > 0 ? parentUserNode.getChild(0) : null;
-    
+
     if (spaceUserNode != null) {
       SpaceUtils.getUserPortal().updateNode(spaceUserNode, Scope.CHILDREN, null);
     } else {
       LOG.warn("Failed to get because of spaceUserNode is NULL");
     }
-    
+
     return spaceUserNode;
   }
-  
+
   public static List<UserNode> getSpaceUserNodeChildren(Space space) throws Exception {
     return new ArrayList<UserNode>(getSpaceUserNode(space).getChildren());
   }

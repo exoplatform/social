@@ -20,10 +20,45 @@
         <module>socialUtil</module>
       </depends>
       <depends>
+        <module>notificationLocale</module>
+        <as>locale</as>
+      </depends>
+      <depends>
         <module>jquery</module>
         <as>jQuery</as>
       </depends>
     </module>
   </portlet>
+
+  <module>
+    <name>notificationLocale</name>
+    <supported-locale>ar</supported-locale>
+    <supported-locale>ca</supported-locale>
+    <supported-locale>de</supported-locale>
+    <supported-locale>el</supported-locale>
+    <supported-locale>en</supported-locale>
+    <supported-locale>es-ES</supported-locale>
+    <supported-locale>fa</supported-locale>
+    <supported-locale>fr</supported-locale>
+    <supported-locale>it</supported-locale>
+    <supported-locale>ja</supported-locale>
+    <supported-locale>nl</supported-locale>
+    <supported-locale>pl</supported-locale>
+    <supported-locale>pt-BR</supported-locale>
+    <supported-locale>ru</supported-locale>
+    <supported-locale>tr</supported-locale>
+    <supported-locale>uk</supported-locale>
+    <supported-locale>vi</supported-locale>
+    <supported-locale>sl</supported-locale>
+    <supported-locale>zh-CN</supported-locale>
+    <script>
+      <path>/WEB-INF/classes/locale/portlet/notification/assets/javascripts/locale.js</path>
+      <resource-bundle>locale.portlet.notification.UserNotificationPortlet</resource-bundle>
+    </script>
+    <depends>
+      <module>jquery</module>
+      <as>$</as>
+    </depends>
+  </module>
     
 </gatein-resources>

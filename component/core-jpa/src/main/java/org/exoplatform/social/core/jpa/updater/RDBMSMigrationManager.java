@@ -20,16 +20,14 @@ package org.exoplatform.social.core.jpa.updater;
 import java.lang.reflect.Field;
 import java.util.concurrent.CountDownLatch;
 
-import org.exoplatform.commons.chromattic.ChromatticLifeCycle;
 import org.exoplatform.commons.file.services.NameSpaceService;
 import org.exoplatform.container.xml.InitParams;
 import org.exoplatform.container.xml.ValueParam;
 import org.exoplatform.services.jcr.RepositoryService;
-import org.exoplatform.services.jcr.core.ManageableRepository;
-import org.exoplatform.services.jcr.core.WorkspaceContainerFacade;
-import org.exoplatform.services.jcr.impl.core.SessionRegistry;
+import org.exoplatform.social.core.chromattic.entity.ProviderRootEntity;
+import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
+import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
 import org.exoplatform.social.core.jpa.storage.RDBMSIdentityStorageImpl;
-import org.exoplatform.social.common.lifecycle.SocialChromatticLifeCycle;
 import org.exoplatform.social.core.manager.IdentityManagerImpl;
 import org.exoplatform.social.core.storage.api.IdentityStorage;
 import org.exoplatform.social.core.storage.impl.IdentityStorageImpl;
@@ -145,26 +143,18 @@ public class RDBMSMigrationManager implements Startable {
 
         try {
           // Check JCR data is existing or not
-          getRelationshipMigration().getProviderRoot();
+          ProviderRootEntity providerRoot = getRelationshipMigration().getProviderRoot();
+          if (providerRoot == null || (providerRoot != null && providerRoot.getProviders().get(SpaceIdentityProvider.NAME) == null &&
+                  providerRoot.getProviders().get(OrganizationIdentityProvider.NAME) == null)) {
+            LOG.info("No Social data to migrate from JCR to RDBMS ");
+            updateMigrationSettings(start);
+            migrater.countDown();
+            return;
+          }
         } catch (Exception ex) {
-          LOG.debug("no JCR data, stopping JCR to RDBMS migration");
-
-          // Update and mark that migrate was done
-          updateSettingValue(MigrationContext.SOC_RDBMS_CONNECTION_MIGRATION_KEY, Boolean.TRUE);
-          updateSettingValue(MigrationContext.SOC_RDBMS_ACTIVITY_MIGRATION_KEY, Boolean.TRUE);
-          updateSettingValue(MigrationContext.SOC_RDBMS_SPACE_MIGRATION_KEY, Boolean.TRUE);
-          updateSettingValue(MigrationContext.SOC_RDBMS_IDENTITY_MIGRATION_KEY, Boolean.TRUE);
-
-          updateSettingValue(MigrationContext.SOC_RDBMS_CONNECTION_CLEANUP_KEY, Boolean.TRUE);
-          updateSettingValue(MigrationContext.SOC_RDBMS_ACTIVITY_CLEANUP_KEY, Boolean.TRUE);
-          updateSettingValue(MigrationContext.SOC_RDBMS_SPACE_CLEANUP_KEY, Boolean.TRUE);
-          updateSettingValue(MigrationContext.SOC_RDBMS_IDENTITY_CLEANUP_KEY, Boolean.TRUE);
-
-          updateSettingValue(MigrationContext.SOC_RDBMS_MIGRATION_STATUS_KEY, Boolean.TRUE);
-          MigrationContext.setDone(true);
-
-          removeRunningNodeIfPresent(start);
-
+          LOG.info("no JCR data, stopping JCR to RDBMS migration");
+          updateMigrationSettings(start);
+          migrater.countDown();
           return;
         }
 
@@ -297,32 +287,9 @@ public class RDBMSMigrationManager implements Startable {
                 timeToCleanupSpaces = System.currentTimeMillis() - t;
               }
 
-              if (MigrationContext.isIdentityCleanupDone()&& MigrationContext.isSpaceCleanupDone() || forceRemoveJCR) {
-                try {
-                  ManageableRepository repo = repositoryService.getCurrentRepository();
-                  ChromatticLifeCycle lifeCycle = chromatticManager.getLifeCycle(SocialChromatticLifeCycle.SOCIAL_LIFECYCLE_NAME);
-                  String workspace = lifeCycle.getWorkspaceName();
-                  if (lifeCycle.getContext() != null) {
-                    lifeCycle.closeContext(true);
-                  }
-
-                  // Close other session
-                  WorkspaceContainerFacade wc = repo.getWorkspaceContainer(workspace);
-                  SessionRegistry sessionRegistry = (SessionRegistry)wc.getComponent(SessionRegistry.class);
-                  sessionRegistry.closeSessions(workspace);
-
-                  //repo.getWorkspaceContainer(workspace).setState(ManageableRepository.OFFLINE);
-                  if (repo.canRemoveWorkspace(workspace)) {
-                    repo.removeWorkspace(workspace);
-                    updateSettingValue(MigrationContext.SOC_RDBMS_MIGRATION_STATUS_KEY, Boolean.TRUE);
-                    MigrationContext.setDone(true);
-                  } else {
-                    LOG.warn("Social workspace is not removeable, so it is not removed.");
-                  }
-
-                } catch (RepositoryException ex) {
-                  LOG.error("Can not remove social workspace", ex);
-                }
+              if (MigrationContext.isIdentityCleanupDone()&& MigrationContext.isSpaceCleanupDone() || forceRemoveJCR){
+                updateSettingValue(MigrationContext.SOC_RDBMS_MIGRATION_STATUS_KEY, Boolean.TRUE);
+                MigrationContext.setDone(true);
               }
             }
             
@@ -482,6 +449,24 @@ public class RDBMSMigrationManager implements Startable {
     } finally {
       Scope.GLOBAL.id(null);
     }
+  }
+
+  private void updateMigrationSettings(boolean remove){
+    // Update and mark that migrate was done
+    updateSettingValue(MigrationContext.SOC_RDBMS_CONNECTION_MIGRATION_KEY, Boolean.TRUE);
+    updateSettingValue(MigrationContext.SOC_RDBMS_ACTIVITY_MIGRATION_KEY, Boolean.TRUE);
+    updateSettingValue(MigrationContext.SOC_RDBMS_SPACE_MIGRATION_KEY, Boolean.TRUE);
+    updateSettingValue(MigrationContext.SOC_RDBMS_IDENTITY_MIGRATION_KEY, Boolean.TRUE);
+
+    updateSettingValue(MigrationContext.SOC_RDBMS_CONNECTION_CLEANUP_KEY, Boolean.TRUE);
+    updateSettingValue(MigrationContext.SOC_RDBMS_ACTIVITY_CLEANUP_KEY, Boolean.TRUE);
+    updateSettingValue(MigrationContext.SOC_RDBMS_SPACE_CLEANUP_KEY, Boolean.TRUE);
+    updateSettingValue(MigrationContext.SOC_RDBMS_IDENTITY_CLEANUP_KEY, Boolean.TRUE);
+
+    updateSettingValue(MigrationContext.SOC_RDBMS_MIGRATION_STATUS_KEY, Boolean.TRUE);
+    MigrationContext.setDone(true);
+
+    removeRunningNodeIfPresent(remove);
   }
 
   private void removeRunningNodeIfPresent(boolean remove) {

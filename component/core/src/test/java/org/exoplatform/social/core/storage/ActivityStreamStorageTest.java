@@ -548,7 +548,6 @@ public void testConnectionsExistActivities() throws ActivityStorageException {
    
     String activityId = identityStorage.getProfileActivityId(spaceIdentity.getProfile(), Profile.AttachedActivityType.SPACE);
     activityStorage.deleteActivity(activityId);
-    tearDownSpaceList.add(space);
   }
  
  public void testGetActivityByPoster() throws ActivityStorageException {
@@ -623,6 +622,7 @@ public void testConnectionsExistActivities() throws ActivityStorageException {
     space.setManagers(managers);
     space.setMembers(members);
     spaceService.saveSpace(space, true);
+    tearDownSpaceList.add(space);
     return space;
   }
  

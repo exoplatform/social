@@ -24,6 +24,7 @@
   import org.exoplatform.social.core.relationship.model.Relationship;
   import org.exoplatform.social.core.relationship.model.Relationship.Type;
   import org.exoplatform.web.application.JavascriptManager;
+  import org.apache.commons.lang.StringEscapeUtils;
   
   def rcontext = _ctx.getRequestContext() ;
   JavascriptManager jsmanager = rcontext.getJavascriptManager();
@@ -39,7 +40,7 @@
   def ownerIdentity = Utils.getOwnerIdentity(true);
   def viewerIdentity = Utils.getViewerIdentity();
 
-  def currentUser = ownerIdentity.profile.fullName;
+  def currentUser = StringEscapeUtils.escapeHtml(ownerIdentity.profile.fullName);
   def actititesURL = LinkProvider.getUserActivityUri(ownerIdentity.getRemoteId());
   def profileURL = LinkProvider.getUserProfileUri(ownerIdentity.getRemoteId());
   def relationURL = LinkProvider.getUserConnectionsUri(ownerIdentity.getRemoteId());

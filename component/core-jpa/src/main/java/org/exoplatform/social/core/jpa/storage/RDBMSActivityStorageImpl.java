@@ -351,31 +351,34 @@ public class RDBMSActivityStorageImpl extends ActivityStorageImpl {
       
       ActivityEntity commentEntity = convertCommentToCommentEntity(eXoComment);
       commentEntity.setParent(activityEntity);
-      //
-      Identity commenter = identityStorage.findIdentityById(commentEntity.getPosterId());
-      saveStreamItemForCommenter(commenter, activityEntity);
-      mention(commenter, activityEntity, processMentions(eXoComment.getTitle()));
-      //
-      activityEntity.addComment(commentEntity);
       commentEntity = activityDAO.create(commentEntity);
+      activityEntity.addComment(commentEntity);
+
       eXoComment.setId(getExoCommentID(commentEntity.getId()));
       Set<String> mentioned = commentEntity.getMentionerIds();
       if (mentioned != null && !mentioned.isEmpty()) {
         eXoComment.setMentionedIds(mentioned.toArray(new String[mentioned.size()]));
       }
+
       //
-      activityEntity.setMentionerIds(processMentionOfComment(activityEntity, commentEntity, activity.getMentionedIds(), processMentions(eXoComment.getTitle()), true));
+      Identity commenter = identityStorage.findIdentityById(commentEntity.getPosterId());
+      saveStreamItemForCommenter(commenter, activityEntity);
+
+      //
+      String[] mentioners = processMentions(eXoComment.getTitle());
+      if (mentioners != null && mentioners.length > 0) {
+        mention(commenter, activityEntity, mentioners);
+        activityEntity.setMentionerIds(processMentionOfComment(activityEntity, commentEntity, activity.getMentionedIds(), mentioners, true));
+      }
+
+      //
       if (eXoComment.getUpdated() != null) {
         activityEntity.setUpdatedDate(eXoComment.getUpdated());
       } else {
         activityEntity.setUpdatedDate(new Date());
       }
       activityDAO.update(activityEntity);
-      //
-      updateLastUpdatedForStreamItem(activityEntity);
 
-      //
-      //activity = convertActivityEntityToActivity(activityEntity);
     } finally {
       EntityManagerHolder.get().lock(activityEntity, LockModeType.NONE);
     }
@@ -391,14 +394,6 @@ public class RDBMSActivityStorageImpl extends ActivityStorageImpl {
     Identity ownerActivity = identityStorage.findIdentityById(activityEntity.getOwnerId());
     if (! SpaceIdentityProvider.NAME.equals(ownerActivity.getProviderId())) {
       createStreamItem(StreamType.COMMENTER, activityEntity, Long.parseLong(commenter.getId()));
-    }
-  }
-
-  private void updateLastUpdatedForStreamItem(ActivityEntity activity) {
-    List<StreamItemEntity> items = streamItemDAO.findStreamItemByActivityId(activity.getId());
-    for (StreamItemEntity item : items) {
-      item.setUpdatedDate(activity.getUpdatedDate());
-      streamItemDAO.update(item);
     }
   }
 
@@ -542,9 +537,6 @@ public class RDBMSActivityStorageImpl extends ActivityStorageImpl {
     Matcher matcher = MENTION_PATTERN.matcher(title);
     while (matcher.find()) {
       String remoteId = matcher.group().substring(1);
-      if (!USER_NAME_VALIDATOR_REGEX.matcher(remoteId).matches()) {
-        continue;
-      }
       Identity identity = identityStorage.findIdentity(OrganizationIdentityProvider.NAME, remoteId);
       // if not the right mention then ignore
       if (identity != null && !mentions.contains(identity.getId())) {

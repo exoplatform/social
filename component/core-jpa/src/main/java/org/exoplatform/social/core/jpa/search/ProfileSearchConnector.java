@@ -289,8 +289,22 @@ public class ProfileSearchConnector {
     //
     String inputName = StringUtils.isBlank(filter.getName()) ? null : filter.getName().replace(StorageUtils.ASTERISK_STR, StorageUtils.EMPTY_STR);
     if (StringUtils.isNotBlank(inputName)) {
-      esExp.append("( name:").append(StorageUtils.ASTERISK_STR).append(removeAccents(inputName)).append(StorageUtils.ASTERISK_STR);
-      esExp.append(" OR userName:").append(StorageUtils.ASTERISK_STR).append(removeAccents(inputName)).append(StorageUtils.ASTERISK_STR).append(")");
+     //
+      String[] keys = inputName.split(" ");
+      if (keys.length > 1) {
+        // We will not search on username because it doesn't contain a space character
+        esExp.append("(");
+        for (int i = 0; i < keys.length; i++) {
+          if (i != 0 ) {
+            esExp.append(" AND ") ;
+          }
+          esExp.append(" name:").append(StorageUtils.ASTERISK_STR).append(removeAccents(keys[i])).append(StorageUtils.ASTERISK_STR);
+        }
+        esExp.append(")");
+      } else {
+        esExp.append("( name:").append(StorageUtils.ASTERISK_STR).append(removeAccents(inputName)).append(StorageUtils.ASTERISK_STR);
+        esExp.append(" OR userName:").append(StorageUtils.ASTERISK_STR).append(removeAccents(inputName)).append(StorageUtils.ASTERISK_STR).append(")");
+      }
     }
 
     //skills

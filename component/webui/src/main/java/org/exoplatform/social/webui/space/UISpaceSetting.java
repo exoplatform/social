@@ -119,7 +119,7 @@ public class UISpaceSetting extends UIContainer {
     uiSpaceNavigation.reloadTreeData();
     UISpaceSetting uiSpaceSetting = (UISpaceSetting)getChild(UITabPane.class).getParent();
     uiSpaceNavigation.setSpace(uiSpaceSetting.getSpace());
-    pContext.addUIComponentToUpdateByAjax(uiSpaceNavigation);
+    pContext.addUIComponentToUpdateByAjax(uiSpaceNavigation.getParent());
   }
 
   /**

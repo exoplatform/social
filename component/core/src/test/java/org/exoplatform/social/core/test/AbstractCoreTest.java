@@ -17,7 +17,9 @@
 package org.exoplatform.social.core.test;
 
 import junit.framework.AssertionFailedError;
+
 import org.apache.commons.lang.ArrayUtils;
+
 import org.exoplatform.commons.testing.BaseExoTestCase;
 import org.exoplatform.commons.utils.PageList;
 import org.exoplatform.commons.utils.PropertyManager;
@@ -37,10 +39,12 @@ import org.exoplatform.social.core.space.SpaceUtils;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
 import org.exoplatform.social.core.storage.impl.StorageUtils;
+
 import org.jboss.byteman.contrib.bmunit.BMUnit;
 
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
+
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -89,11 +93,20 @@ public abstract class AbstractCoreTest extends BaseExoTestCase {
 
     //
     spaceService = (SpaceService) getContainer().getComponentInstanceOfType(SpaceService.class);
-    
+    List<Space> allSpaces = spaceService.getAllSpaces();
+    assertTrue("There was remaining spaces before starting test", allSpaces == null || allSpaces.isEmpty());
   }
 
   @Override
   protected void tearDown() throws Exception {
+    List<Space> allSpaces = spaceService.getAllSpaces();
+    if(allSpaces != null && !allSpaces.isEmpty()) {
+      for (Space space : allSpaces) {
+        LOG.warn("The space " + space.getDisplayName() + " wasn't cleaned up properly");
+        spaceService.deleteSpace(space);
+      }
+    }
+
     wantCount = false;
     session = null;
     end();

@@ -28,6 +28,7 @@ import java.util.List;
  * @version $Revision$
  */
 public class ListIdentitiesData extends AbstractListData<IdentityKey> {
+  private static final long serialVersionUID = -430435770714497815L;
 
   public ListIdentitiesData(final List<IdentityKey> ids) {
     super(ids);

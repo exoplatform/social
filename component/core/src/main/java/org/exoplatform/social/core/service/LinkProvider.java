@@ -16,6 +16,7 @@
  */
 package org.exoplatform.social.core.service;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.Validate;
 import org.exoplatform.commons.utils.CommonsUtils;
 import org.exoplatform.container.PortalContainer;
@@ -67,7 +68,7 @@ public class LinkProvider {
   /**
    * Hacks for unit test to work.
    */
-  public static String DEFAULT_PORTAL_OWNER = "classic";
+  public static String DEFAULT_PORTAL_OWNER = "intranet";
 
   /**
    * Constructor with parameter to inject the default portal owner name.
@@ -156,7 +157,7 @@ public class LinkProvider {
 
     return new StringBuilder("<a href=\"").append((configured_domain_url != null) ? configured_domain_url : "")
                 .append(buildProfileUri(identity.getRemoteId(), null, portalOwner)).append("\" target=\"_parent\">")
-                .append(identity.getProfile().getFullName()).append("</a>").toString();
+                .append(StringEscapeUtils.escapeHtml(identity.getProfile().getFullName())).append("</a>").toString();
   }
 
   /**
@@ -377,7 +378,6 @@ public class LinkProvider {
    * @return The profile URI.
    */
   private static String buildProfileUri(final String userName, final String portalName, String portalOwner) {
-    if(portalOwner == null || portalOwner.trim().length() == 0) portalOwner = DEFAULT_PORTAL_OWNER;
     return getBaseUri(portalName, portalOwner) + "/profile" + ROUTE_DELIMITER + userName;
   }
 
@@ -446,11 +446,7 @@ public class LinkProvider {
    */
   private static String getPortalOwner(String portalOwner) {
     if (portalOwner == null || portalOwner.trim().length() == 0) {
-      try {
-        return Util.getPortalRequestContext().getPortalOwner();
-      } catch (Exception e) {
-        return DEFAULT_PORTAL_OWNER;
-      }
+      portalOwner = CommonsUtils.getCurrentPortalOwner();
     }
     return portalOwner;
   }

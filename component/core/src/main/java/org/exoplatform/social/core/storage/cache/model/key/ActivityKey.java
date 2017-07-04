@@ -24,6 +24,7 @@ package org.exoplatform.social.core.storage.cache.model.key;
  * @version $Revision$
  */
 public class ActivityKey extends ScopeCacheKey {
+  private static final long serialVersionUID = -2689610297663275063L;
 
   private final String id;
 

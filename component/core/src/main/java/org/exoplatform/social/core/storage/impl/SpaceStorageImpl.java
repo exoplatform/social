@@ -29,7 +29,6 @@ import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.chromattic.entity.IdentityEntity;
-import org.exoplatform.social.core.chromattic.entity.ProfileEntity;
 import org.exoplatform.social.core.chromattic.entity.ProviderEntity;
 import org.exoplatform.social.core.chromattic.entity.SpaceEntity;
 import org.exoplatform.social.core.chromattic.entity.SpaceListEntity;
@@ -962,6 +961,22 @@ public class SpaceStorageImpl extends AbstractStorage implements SpaceStorage {
         "Space %s removed",
         name)
     );
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void ignoreSpace(String spaceId, String userId) {
+    return;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public boolean isSpaceIgnored(String spaceId, String userId) {
+    return false;
   }
 
   /*

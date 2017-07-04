@@ -104,7 +104,7 @@ public class LikeMailBuilderTest extends AbstractPluginTest {
     ctx.setNotificationInfos(list);
     Writer writer = new StringWriter();
     buildDigest(ctx, writer);
-    assertDigest(writer, "Mary Kelly, Demo gtn, John Anthony like your activity: root post an activity.");
+    assertDigest(writer, "Mary Kelly, Demo gtn, John Anthony like your activity: root post an activity");
   }
   
   public void testLikeLinkActivity() throws Exception {
@@ -158,6 +158,6 @@ public class LikeMailBuilderTest extends AbstractPluginTest {
     ctx.setNotificationInfos(list);
     Writer writer = new StringWriter();
     buildDigest(ctx, writer);
-    assertDigest(writer, "Demo gtn likes your activity: root post an activity.");
+    assertDigest(writer, "Demo gtn likes your activity: root post an activity");
   }
 }

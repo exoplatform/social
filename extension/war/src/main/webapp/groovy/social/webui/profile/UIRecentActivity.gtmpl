@@ -3,6 +3,7 @@ import org.exoplatform.social.core.service.LinkProvider;
 import org.exoplatform.social.user.portlet.RecentActivitiesHelper;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.webui.Utils;
+import org.apache.commons.lang.StringEscapeUtils;
 
 def jsManager = _ctx.getRequestContext().getJavascriptManager();
 jsManager.require("SHARED/social-ui-activity", "activity").addScripts("activity.resizeComment();");
@@ -20,24 +21,14 @@ if(activity == null) {
   def profile = RecentActivitiesHelper.getOwnerActivityProfile(activity);
   String avatarURL = profile.getAvatarUrl();
   String profileURL = profile.getUrl();
-  String displayName = profile.getFullName();
+  String displayName = StringEscapeUtils.escapeHtml(profile.getFullName());
   String link = RecentActivitiesHelper.getLink(activity);
   String linkTitle = RecentActivitiesHelper.getLinkTitle(activity);
-
-  def spaceID;
-  Space spaceSource = Utils.getSpaceService().getSpaceByDisplayName(displayName);
-   if(spaceSource != null){
-       spaceID = spaceSource.getId();
-   }
 %>
    <div class="activityStream uiDefaultActivity clearfix" id="Activity<%=activity.id%>">
      <div class="activityTimeLine pull-left">
         <div class="activityAvatar avatarCircle">
-     <%if(spaceID != null){%>
-            <a class="space-avatar" href="<%=profileURL%>" space-data="$spaceID">
-       <%} else {%>
-            <a  href="<%=profileURL%>">
-       <%}%>
+           <a  href="<%=profileURL%>">
            <img alt="<%=displayName%>" src="<%=((avatarURL == null || avatarURL.length() == 0) ? LinkProvider.PROFILE_DEFAULT_AVATAR_URL : avatarURL)%>">
          </a>
        </div>

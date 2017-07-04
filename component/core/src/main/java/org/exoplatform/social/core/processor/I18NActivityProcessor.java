@@ -30,6 +30,7 @@ import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.services.resources.ResourceBundleService;
 import org.exoplatform.social.common.ResourceBundleUtil;
+import org.exoplatform.social.common.xmlprocessor.XMLProcessor;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 
 /**
@@ -81,10 +82,15 @@ public final class I18NActivityProcessor {
   private ResourceBundleService resourceBundleService;
 
   /**
+   *
+   */
+  private final XMLProcessor xmlProcessor;
+
+  /**
    * Constructor.
    */
-  public I18NActivityProcessor() {
-
+  public I18NActivityProcessor(XMLProcessor xmlProcessor) {
+    this.xmlProcessor = xmlProcessor;
   }
 
   /**
@@ -199,6 +205,7 @@ public final class I18NActivityProcessor {
 
     String[] resourceKeys = I18NActivityUtils.getResourceKeys(i18nActivity);
     String[] resourceParamValues = I18NActivityUtils.getResourceValues(i18nActivity);
+    List<String> resourceKeysToProcess = I18NActivityUtils.getResourceKeysToProcess(i18nActivity);
     String type = i18nActivity.getType();
 
     int count = 0;
@@ -213,6 +220,12 @@ public final class I18NActivityProcessor {
 
       //
       valuesOfParam = I18NActivityUtils.getParamValues(resourceParamValues[i]);
+
+      if (resourceKeysToProcess.contains(key)) {
+        for(int k = 0; k < valuesOfParam.length; k++) {
+          valuesOfParam[k] = (String)xmlProcessor.process(valuesOfParam[k]);
+        }
+      }
 
       String title = appRes(resourceBundle, getMessageBundleKey(type, key), valuesOfParam);
       sb.append(title);
