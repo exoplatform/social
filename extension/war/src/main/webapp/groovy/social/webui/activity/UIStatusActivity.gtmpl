@@ -333,7 +333,7 @@
                 </li>
                 <li>
                     <a data-placement="bottom" data-html="true" rel="tooltip" title="$likersList" id="LikeCommentLink_${it.id}" href="javascript:void(0);">
-                       <i class="uiIconThumbUp uiIconBlue"></i>&nbsp;$totalCommentLiked
+                       <i class="uiIconThumbUp uiIconWhite likeCommentBackground"></i>&nbsp;$totalCommentLiked
                     </a>
                 </li>
 
@@ -346,7 +346,7 @@
                      <%if ( totalCommentLiked > 0 ){%>
                  <li>
                     <a data-placement="bottom" rel="tooltip" data-html="true" title="$likersList" id="LikeCommentLink_$${it.id}" href="javascript:void(0);">
-                       <i class="uiIconThumbUp uiIconLightGray"></i>&nbsp;$totalCommentLiked
+                       <i class="uiIconThumbUp uiIconWhite likeCommentBackground"></i>&nbsp;$totalCommentLiked
                     </a>
                  </li>
 
