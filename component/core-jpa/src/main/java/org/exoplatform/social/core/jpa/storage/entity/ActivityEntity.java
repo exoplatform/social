@@ -43,7 +43,7 @@ import org.exoplatform.commons.api.persistence.ExoEntity;
         @NamedQuery(name = "SocActivity.migrateOwnerId", query = "UPDATE SocActivity a SET a.ownerId = :newId WHERE a.ownerId = :oldId"),
 
         @NamedQuery(name = "SocActivity.getAllActivities", query = "SELECT a FROM SocActivity a WHERE a.isComment = false AND a.parent IS NULL"),
-        @NamedQuery(name = "SocActivity.findCommentsOfActivity", query = "SELECT a FROM SocActivity a WHERE a.parent.id = :activityId ORDER BY a.updatedDate ASC"),
+        @NamedQuery(name = "SocActivity.findCommentsOfActivity", query = "SELECT a FROM SocActivity a WHERE a.parent.id = :activityId ORDER BY a.posted DESC"),
         @NamedQuery(name = "SocActivity.numberCommentsOfActivity", query = "SELECT count(distinct a) FROM SocActivity a WHERE a.parent.id = :activityId"),
         @NamedQuery(name = "SocActivity.findNewerCommentsOfActivity",
                 query = "SELECT a FROM SocActivity a WHERE a.parent.id = :activityId AND a.updatedDate > :sinceTime ORDER BY a.updatedDate ASC"),
