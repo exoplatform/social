@@ -245,7 +245,7 @@ public class SpaceRestResourcesV1 implements SpaceRestResources {
     String authenticatedUser = ConversationState.getCurrent().getIdentity().getUserId();
     SpaceService spaceService = CommonsUtils.getService(SpaceService.class);
     
-    Space space = spaceService.getSpaceByDisplayName(id);
+    Space space = spaceService.getSpaceByPrettyName(id);
     if (space == null || (Space.HIDDEN.equals(space.getVisibility()) && ! spaceService.isMember(space, authenticatedUser) && ! userACL.getSuperUser().equals(authenticatedUser))) {
       throw new WebApplicationException(Response.Status.NOT_FOUND);
     }
