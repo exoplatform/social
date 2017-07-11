@@ -143,18 +143,19 @@ public class SocialUserEventListenerImpl extends UserEventListener {
   public void preDelete(final User user) throws Exception {
 
     RequestLifeCycle.begin(PortalContainer.getInstance());
-    try{
-      ExoContainer container = ExoContainerContext.getCurrentContainer();
-      IdentityManager idm = (IdentityManager) container.getComponentInstanceOfType(IdentityManager.class);
-      Identity identity = idm.getOrCreateIdentity(OrganizationIdentityProvider.NAME, user.getUserName(), true);
-      
+    try {
+      IdentityStorage storage = CommonsUtils.getService(IdentityStorage.class);
+      Identity identity = storage.findIdentity(OrganizationIdentityProvider.NAME, user.getUserName());
+
       try {
-        idm.hardDeleteIdentity(identity);
+        if(identity != null) {
+          storage.hardDeleteIdentity(identity);
+        }
       } catch (Exception e) {
         LOG.warn("Problem occurred when deleting user named " + identity.getRemoteId(), e);
       }
-      
-    }finally{
+
+    } finally {
       RequestLifeCycle.end();
     }
 
