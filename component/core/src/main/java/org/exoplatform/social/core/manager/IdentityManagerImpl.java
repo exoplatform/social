@@ -369,14 +369,11 @@ public class IdentityManagerImpl implements IdentityManager {
         return result;
       }
     } else {
-      if (identityFoundByRemoteProvider == null) {
-        // in the case: identity is stored but identity is not found from
-        // remote provider, sets that identity as deleted
-        if (!result.isDeleted()) {
-          result.setDeleted(true);
-          identityStorage.updateIdentity(result);
-        }
-        return result;
+      if (identityFoundByRemoteProvider == null && !result.isDeleted()) {
+        LOG.warn("User " + remoteId + " not found in remote provider " + providerId
+            + " but his social identity is not marked as deleted",
+                 new IllegalStateException("User '" + remoteId
+                     + "' should be marked as deleted since it wasn't found in IDM store"));
       }
       if (forceLoadOrReloadProfile) {
         Profile profile = this.getIdentityStorage().loadProfile(result.getProfile());
