@@ -462,7 +462,6 @@
                                         //popup.fadeOut('fast', function () {
                                         //});
                                         $("#likersPopupMask").hide();
-                                        $("#likersPopup").hide();
                                         $("#likersPopup .PopupContent #likersDetail").empty();
 
 

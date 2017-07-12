@@ -408,9 +408,9 @@
                               </a>
                            </li>
                            <li>
-                              <a data-placement="bottom" data-html="true" rel="tooltip" title="$likersList" id="LikeCommentLink_${it.id}" href="javascript:void(0);">
-                                <i class="uiIconThumbUp uiIconWhite likeCommentBackground"></i>&nbsp;$totalCommentLiked
-                              </a>
+                              <a data-placement="bottom" class="likeCommentBackground" data-html="true" rel="tooltip" title="$likersList" id="LikeCommentLink_${it.id}" href="javascript:void(0);">
+                                <i class="uiIconThumbUp uiIconWhite"></i>
+                              </a>$totalCommentLiked
                            </li>
 
                            <% } else { %>
@@ -421,9 +421,9 @@
                            </li>
                                  <%if ( totalCommentLiked > 0 ){%>
                            <li>
-                               <a data-placement="bottom" rel="tooltip" data-html="true" title="$likersList" id="LikeCommentLink_${it.id}" href="javascript:void(0);">
-                                 <i class="uiIconThumbUp uiIconWhite likeCommentBackground"></i>&nbsp;$totalCommentLiked
-                               </a>
+                               <a data-placement="bottom" class="likeCommentBackground" rel="tooltip" data-html="true" title="$likersList" id="LikeCommentLink_${it.id}" href="javascript:void(0);">
+                                 <i class="uiIconThumbUp uiIconWhite"></i>
+                               </a>$totalCommentLiked
                            </li>
 
                            <%    }

@@ -547,7 +547,6 @@
 
       $("#likersPopup .uiIconClose").click(function(){
       $("#likersPopupMask").hide();
-      $("#likersPopup").hide();
       $("#likersPopup .PopupContent #likersDetail").empty();
       });
 
@@ -560,7 +559,6 @@
           restUrl = restUrl.replace('{0}', window.encodeURI(commentId));
           UIActivity.likersPopup(restUrl);
           $("#likersPopupMask").show();
-          $("#likersPopup").show();
         });
       });
     },
