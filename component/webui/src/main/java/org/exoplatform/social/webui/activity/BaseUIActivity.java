@@ -991,7 +991,6 @@ public class BaseUIActivity extends UIForm {
       uiActivity.setLikeComment(Boolean.parseBoolean(likeStatus[0]), likeStatus[1]);
       requestContext.addUIComponentToUpdateByAjax(uiActivity);
       Utils.initUserProfilePopup(uiActivity.getId());
-      Utils.resizeHomePage();
 
     }
   }
