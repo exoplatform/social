@@ -116,7 +116,7 @@
       },
       resizeForm : function() {
         var parent = UIProfileUserSearch.profileSearch;
-        var label = parent.find('label:[for=name]');
+        var label = parent.find('label[for=name]');
         var searchBtn = $(UIProfileUserSearch.INPUT_ID.SEARCH, parent);
         var staticSize = label.outerWidth() + searchBtn.outerWidth() + 64;
         var inputSize = (parent.width() - staticSize) / 3;
