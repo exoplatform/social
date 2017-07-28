@@ -347,7 +347,7 @@
                            }
                            if (isCommentLiked) { %>
                            <li>
-                              <a onclick="$unlikeCommentAction" class="likeLink" data-placement="bottom" id="LikeCommentLink${it.id}" href="javascript:void(0);">
+                              <a onclick="$unlikeCommentAction;(function(evt){ evt.stopPropagation();})(event)" class="likeLink" data-placement="bottom" id="LikeCommentLink${it.id}" href="javascript:void(0);">
                                 <%=_ctx.appRes("UIActivity.msg.UnlikeCommentActivity"); %>
                               </a>
                            </li>
@@ -359,7 +359,7 @@
 
                            <% } else { %>
                            <li>
-                               <a onclick="$likeCommentAction" class="likeLink" data-placement="bottom" id="LikeCommentLink${it.id" href="javascript:void(0);">
+                               <a onclick="$likeCommentAction;(function(evt){ evt.stopPropagation();})(event)" class="likeLink" data-placement="bottom" id="LikeCommentLink${it.id" href="javascript:void(0);">
                                   <%=_ctx.appRes("UIActivity.msg.LikeActivity"); %>
                                </a>
                            </li>

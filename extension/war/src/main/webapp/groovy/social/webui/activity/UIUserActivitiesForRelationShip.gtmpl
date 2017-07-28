@@ -363,25 +363,25 @@
                            }
                            if (isCommentLiked) { %>
                              <li>
-                                 <a onclick="$unlikeCommentAction" class="likeLink" data-placement="bottom" id="LikeCommentLink${it.id}" href="javascript:void(0);">
+                                 <a onclick="$unlikeCommentAction;(function(evt){ evt.stopPropagation();})(event)" class="likeLink" data-placement="bottom" id="LikeCommentLink${it.id}" href="javascript:void(0);">
                                    <%=_ctx.appRes("UIActivity.msg.UnlikeCommentActivity"); %>
                                  </a>
                              </li>
                              <li>
-                                  <a data-placement="bottom" class="likeCommentBackground" data-html="true" rel="tooltip" title="$likersList" id="LikeCommentLink_${it.id}" href="javascript:void(0);">
+                                  <a onclick="(function(evt){ evt.stopPropagation();})(event)" data-placement="bottom" class="likeCommentBackground" data-html="true" rel="tooltip" title="$likersList" id="LikeCommentLink_${it.id}" href="javascript:void(0);">
                                      <i class="uiIconThumbUp uiIconWhite"></i>
                                   </a>&nbsp;$totalCommentLiked
                              </li>
 
                            <% } else { %>
                               <li>
-                                   <a onclick="$likeCommentAction" class="likeLink" data-placement="bottom" id="LikeCommentLink${it.id}" href="javascript:void(0);">
+                                   <a onclick="$likeCommentAction;(function(evt){ evt.stopPropagation();})(event)" class="likeLink" data-placement="bottom" id="LikeCommentLink${it.id}" href="javascript:void(0);">
                                       <%=_ctx.appRes("UIActivity.msg.LikeActivity"); %>
                                    </a>
                               </li>
                                   <%if ( totalCommentLiked > 0 ){%>
                               <li>
-                                   <a data-placement="bottom" class="likeCommentBackground" rel="tooltip" data-html="true" title="$likersList" id="LikeCommentLink_${it.id}" href="javascript:void(0);">
+                                   <a onclick="(function(evt){ evt.stopPropagation();})(event)" data-placement="bottom" class="likeCommentBackground" rel="tooltip" data-html="true" title="$likersList" id="LikeCommentLink_${it.id}" href="javascript:void(0);">
                                       <i class="uiIconThumbUp uiIconWhite"></i>
                                    </a>&nbsp;$totalCommentLiked
                               </li>
