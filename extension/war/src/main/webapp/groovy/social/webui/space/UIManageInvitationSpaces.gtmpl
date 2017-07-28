@@ -37,7 +37,6 @@
 	def requireJS = _ctx.getRequestContext().getJavascriptManager().getRequireJS();
 	requireJS.require("SHARED/jquery", "jq").require("SHARED/bts_tooltip")
            .require("SHARED/socialUtil", "socialUtil")
-           .addScripts("socialUtil.addDynamicItemLayout('" + uicomponent.id + "');")
            .addScripts("jq('*[rel=\"tooltip\"]').tooltip();");
 %>
 <div class="uiManageSpace" id="$uicomponent.id">

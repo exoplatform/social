@@ -20,7 +20,6 @@
   
 def requireJs = _ctx.getRequestContext().getJavascriptManager().getRequireJS();
 requireJs.require("SHARED/socialUtil", "socialUtil")
-         .addScripts("socialUtil.addDynamicItemLayout('" + uicomponent.id + "');")
          .addScripts("socialUtil.addfillUpFreeSpace('" + uicomponent.id + "');");
 %>
 

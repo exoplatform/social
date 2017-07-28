@@ -251,20 +251,6 @@
         SocialUtils.onResizeWidth.push(callback);
       }
     },
-    addDynamicItemLayout : function(comId) {
-      if (comId && String(typeof comId) === "string") {
-        if(SocialUtils.dynamicItems.indexOf(comId) < 0) {
-          SocialUtils.dynamicItems.push(comId);
-        }
-        SocialUtils.dynamicItemLayout(comId);
-      }
-    },
-    onResizeDynamicItemLayout : function() {
-      var dynamicItems = SocialUtils.dynamicItems;
-      $.each(dynamicItems, function( index, comId ) {
-        SocialUtils.dynamicItemLayout(comId);
-      });
-    },
     limitTextLine : function(item) {
       if(item.length > 0) {
         var lineNumbers = parseInt(item.attr('data-line'));
@@ -323,64 +309,6 @@
       }
       jtext.text(text);
       return jtext.width();
-    },
-    dynamicItemLayout : function(comId) {
-      var container = $('#'+comId);
-      if(container.length === 0) {
-        return;
-      }
-      var listContainer = container.find('div.itemList:first');
-      var widthContainer = listContainer.css('margin-right', '').width();
-      listContainer.css({'margin-right': '-10px'});
-      //
-      var listBoxs = listContainer.find('div.itemContainer');
-      var maxItemInline = parseInt(widthContainer / SocialUtils.ITEM_BOX_MIN_WIDTH);
-      var minItemInline = parseInt(widthContainer / SocialUtils.ITEM_BOX_MAX_WIDTH);
-      var width = 0;
-      //
-      maxItemInline = Math.min(maxItemInline, listBoxs.length);
-      if(maxItemInline === minItemInline || minItemInline >= listBoxs.length) {
-        width = SocialUtils.ITEM_BOX_MAX_WIDTH;
-      } else {
-        width = SocialUtils.ITEM_BOX_MIN_WIDTH;
-      }
-      //
-      var delta = (widthContainer - (width * maxItemInline))/maxItemInline;
-      width += delta;
-      //
-      var d = (listBoxs.length > 3) ? 10/maxItemInline : 1.5;
-      listBoxs.each(function(index) {
-        if((index + 1) % maxItemInline === 0) {
-          $(this).width(parseInt(width + d - delta)).find('.spaceBox:first').css({'margin-right': '0px'});
-        } else {
-          $(this).width(parseInt(width + d)).find('.spaceBox:first').css({'margin-right': '10px'});
-        }
-      });
-      
-      var execute = $('#execute');
-      if(execute.length === 0) {
-        execute = $('<div id="execute" style="display:none"></div>');
-        $('body').append(execute);
-        execute.on('execute', function(evt) {
-          eXo.social.DATA_LIMIT_TEXT = [];
-          $('body').find('.limitText').each(function(index) {SocialUtils.limitTextLine($(this));});
-        });
-      }
-      if(window.T) {
-        window.clearTimeout(window.T);
-      }
-      window.T = window.setTimeout(function() {
-        //
-        $('#execute').trigger('execute');
-        window.clearTimeout(window.T);
-        window.T = null;
-      },50);
-      
-      //
-      var moreButton = container.find('.load-more-items:first');
-      if(moreButton.length > 0) {
-        moreButton.css({'width' : (width*2 + d) + 'px', 'margin' : 'auto', 'display':'block'})
-      }
     },
     addfillUpFreeSpace : function(comId) {
       if (comId && String(typeof comId) === "string") {
@@ -615,7 +543,6 @@
     SocialUtils.onResizeFillUpFreeSpace();
   });
   //
-  SocialUtils.addOnResizeWidth(SocialUtils.onResizeDynamicItemLayout);
   
   setTimeout(PopupConfirmation.executeCurrentConfirm, 220);
   eXo.social.PopupConfirmation = eXo.social.PopupConfirmation || PopupConfirmation;
