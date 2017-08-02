@@ -241,25 +241,7 @@ public class MigrationTest extends BaseCoreTest {
   }
 
   public void testMigrateSpace() throws Exception {
-    Space space = new Space();
-    space.setApp("app1:appName1:true:active,app2:appName2:false:deactive");
-    space.setDisplayName("my space");
-    space.setPrettyName("my_space");
-    space.setRegistration(Space.OPEN);
-    space.setDescription("add new space");
-    space.setType(DefaultSpaceApplicationHandler.NAME);
-    space.setVisibility(Space.PUBLIC);
-    space.setPriority(Space.INTERMEDIATE_PRIORITY);
-    space.setGroupId("/spaces/space1");
-    String[] managers = new String[] { "demo"};
-    String[] members = new String[] {};
-    String[] invitedUsers = new String[] {};
-    String[] pendingUsers = new String[] {};
-    space.setInvitedUsers(invitedUsers);
-    space.setPendingUsers(pendingUsers);
-    space.setManagers(managers);
-    space.setMembers(members);
-    space.setUrl(space.getPrettyName());
+    Space space = createSpace();
 
     identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "demo", true).getProfile();
 
@@ -282,6 +264,34 @@ public class MigrationTest extends BaseCoreTest {
     spaceStorage.deleteSpace(s1.getId());
   }
 
+  public void testMigrateDeletedSpace() throws Exception {
+
+    Space space = createSpace();
+
+    spaceJCRStorage.saveSpace(space, true);
+
+    Identity spaceIdentity = new Identity(SpaceIdentityProvider.NAME, space.getPrettyName());
+    String providerId = spaceIdentity.getProviderId();
+    String remoteId = spaceIdentity.getRemoteId();
+    //
+    spaceIdentity.setDeleted(true);
+    //
+    identityJCRStorage.saveIdentity(spaceIdentity);
+    Profile spaceProfile = new Profile(spaceIdentity);
+    identityJCRStorage.saveProfile(spaceProfile);
+
+    end();
+    begin();
+    identityMigrationService.start();
+    switchToUseJPAStorage();
+
+    Space s1 = spaceStorage.getSpaceByPrettyName(space.getPrettyName());
+    assertNull(s1);
+
+    spaceIdentity = identityJPAStorage.findIdentity(providerId,remoteId);
+    assertNull(spaceIdentity);
+  }
+
   protected void switchToUseJPAStorage() {
     // Swith to use RDBMSIdentityStorage
     ((IdentityManagerImpl)identityManager).setIdentityStorage(identityJPAStorage);
@@ -291,5 +301,28 @@ public class MigrationTest extends BaseCoreTest {
     if (activityStorage instanceof RDBMSActivityStorageImpl) {
       ((RDBMSActivityStorageImpl)activityStorage).setIdentityStorage(identityJPAStorage);
     }
+  }
+
+  private Space createSpace() {
+    Space space = new Space();
+    space.setApp("app1:appName1:true:active,app2:appName2:false:deactive");
+    space.setDisplayName("my space");
+    space.setPrettyName("my_space");
+    space.setRegistration(Space.OPEN);
+    space.setDescription("add new space");
+    space.setType(DefaultSpaceApplicationHandler.NAME);
+    space.setVisibility(Space.PUBLIC);
+    space.setPriority(Space.INTERMEDIATE_PRIORITY);
+    space.setGroupId("/spaces/space1");
+    String[] managers = new String[] { "demo"};
+    String[] members = new String[] {};
+    String[] invitedUsers = new String[] {};
+    String[] pendingUsers = new String[] {};
+    space.setInvitedUsers(invitedUsers);
+    space.setPendingUsers(pendingUsers);
+    space.setManagers(managers);
+    space.setMembers(members);
+    space.setUrl(space.getPrettyName());
+    return space;
   }
 }

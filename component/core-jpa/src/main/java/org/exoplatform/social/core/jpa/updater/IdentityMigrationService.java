@@ -156,18 +156,22 @@ public class IdentityMigrationService extends AbstractMigrationService<Identity>
               long t1 = System.currentTimeMillis();
 
               String jcrid = identityNode.getUUID();
-              try {
-                Identity identity = migrateIdentity(identityNode, jcrid);
+              if(!identityNode.hasProperty("soc:isDeleted") || !identityNode.getProperty("soc:isDeleted").getBoolean()) {
+                try {
+                  Identity identity = migrateIdentity(identityNode, jcrid);
 
-                if (identity != null) {
-                  String newId = identity.getId();
-                  identity.setId(jcrid);
-                  broadcastListener(identity, newId);
+                  if (identity != null) {
+                    String newId = identity.getId();
+                    identity.setId(jcrid);
+                    broadcastListener(identity, newId);
+                  }
+                  numberSuccessful++;
+                } catch (Exception ex) {
+                  identitiesMigrateFailed.add(identityName);
+                  LOG.error("Error while migrate identity " + identityName, ex);
                 }
-                numberSuccessful++;
-              } catch (Exception ex) {
-                identitiesMigrateFailed.add(identityName);
-                LOG.error("Error while migrate identity " + identityName, ex);
+              } else {
+                LOG.info("Ignore migration of identity with id {} since it's marked as deleted", identityName);
               }
               LOG.info(String.format("|  / END::identity number %s (%s identity) consumed %s(ms)", offset, identityNode.getName(), System.currentTimeMillis() - t1));
             }
