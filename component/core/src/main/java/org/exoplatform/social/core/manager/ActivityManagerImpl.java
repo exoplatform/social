@@ -244,7 +244,11 @@ public class ActivityManagerImpl implements ActivityManager {
     identityIds = (String[]) ArrayUtils.add(identityIds, identity.getId());
     existingActivity.setLikeIdentityIds(identityIds);
     updateActivity(existingActivity);
-    activityLifeCycle.likeActivity(existingActivity);
+    if(existingActivity.isComment()){
+      activityLifeCycle.likeComment(existingActivity);
+    } else {
+      activityLifeCycle.likeActivity(existingActivity);
+    }
   }
 
   /**

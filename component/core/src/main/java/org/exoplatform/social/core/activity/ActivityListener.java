@@ -27,4 +27,6 @@ public interface ActivityListener extends LifeCycleListener<ActivityLifeCycleEve
   void saveComment(ActivityLifeCycleEvent event);
   
   void likeActivity(ActivityLifeCycleEvent event);
+
+  void likeComment(ActivityLifeCycleEvent event);
 }

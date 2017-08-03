@@ -31,4 +31,7 @@ public abstract class ActivityListenerPlugin extends AbstractListenerPlugin impl
   
   @Override
   public abstract void likeActivity(ActivityLifeCycleEvent event);
+
+  @Override
+  public abstract void likeComment(ActivityLifeCycleEvent event);
 }
