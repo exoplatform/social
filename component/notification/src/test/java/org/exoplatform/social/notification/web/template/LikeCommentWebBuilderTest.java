@@ -48,22 +48,6 @@ public class LikeCommentWebBuilderTest extends AbstractPluginTest {
         return channel.getTemplateBuilder(PluginKey.key(LikeCommentPlugin.ID));
     }
 
-    @Override
-    /**
-     * Makes the comment for Test Case
-     * @param activity
-     * @param commenter
-     * @param commentTitle
-     * @return
-     */
-    protected ExoSocialActivity makeComment(ExoSocialActivity activity, Identity commenter, String commentTitle) {
-        ExoSocialActivity comment = new ExoSocialActivityImpl();
-        comment.setTitle(commentTitle);
-        comment.setUserId(commenter.getId());
-        activityManager.saveComment(activity, comment);
-        comment = activityManager.getComments(activity).get(0);
-        return comment;
-    }
 
     @Override
     public BaseNotificationPlugin getPlugin() {
