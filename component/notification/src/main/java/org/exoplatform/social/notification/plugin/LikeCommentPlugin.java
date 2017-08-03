@@ -12,8 +12,7 @@ import java.util.List;
 
 /**
  * @author <a href="mailto:obouras@exoplatform.com">Omar Bouras</a>
- * @version ${Revision}
- * @date 01/08/17
+ * @version ${Revision} *
  */
 public class LikeCommentPlugin extends BaseNotificationPlugin {
 
