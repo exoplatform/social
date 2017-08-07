@@ -28,8 +28,6 @@ public class MockUserSettingServiceImpl implements UserSettingService {
     return settings.get(userId);
   }
 
-
-  @Override
   public List<String> getUserSettingByPlugin(String pluginId) {
     List<String> userIds = new ArrayList<String>();
     for (UserSetting userSetting : settings.values()) {
@@ -63,18 +61,21 @@ public class MockUserSettingServiceImpl implements UserSettingService {
     return null;
   }
 
-  @Override
-  public List<UserSetting> getUserSettingWithDeactivate() {
-    return null;
-  }
-
-  @Override
   public List<String> getUserHasSettingPlugin(String channelId, String pluginId) {
     return getUserSettingByPlugin(pluginId);
   }
 
   @Override
   public void saveLastReadDate(String userId, Long time) {
+  }
+
+  @Override
+  public List<String> filterActiveUsers(List<String> users) {
+    return users;
+  }
+
+  @Override
+  public void setUserEnabled(String username, boolean enabled) {
   }
 
 }

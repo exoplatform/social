@@ -79,7 +79,7 @@ public class MockNotificationService implements NotificationService {
       return;
     
     List<String> userIds = notification.getSendToUserIds();
-    UserSettingService userSettingService = CommonsUtils.getService(UserSettingService.class);
+    MockUserSettingServiceImpl userSettingService = (MockUserSettingServiceImpl) CommonsUtils.getService(UserSettingService.class);
     //
     if (notification.isSendAll()) {
       userIds = userSettingService.getUserHasSettingPlugin(UserSetting.EMAIL_CHANNEL, pluginId);
