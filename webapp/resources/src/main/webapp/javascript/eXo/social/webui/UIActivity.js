@@ -586,7 +586,7 @@
         tbody.empty();
         for (i = 0; i < result.length; i++) {
         var tr = $('<tr/>', {});
-        var tdAvatar = $('<td/>',{"width":"50px"});
+        var tdAvatar = $('<td/>',{"class":"likerAvatar"});
         var img = $("<img/>", {
                                 "src":result[i].avatarURL
          });
