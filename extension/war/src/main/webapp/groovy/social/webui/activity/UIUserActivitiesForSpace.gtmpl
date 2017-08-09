@@ -354,7 +354,8 @@
                            <li>
                               <a data-placement="bottom" class="likeCommentBackground" data-html="true" rel="tooltip" title="$likersList" id="LikeCommentLink_${it.id}" href="javascript:void(0);">
                                 <i class="uiIconThumbUp icon-thumb-drawn"><span class="path1"></span><span class="path2"></span></i>
-                              </a>$totalCommentLiked
+                                $totalCommentLiked
+                              </a>
                            </li>
 
                            <% } else { %>
@@ -367,7 +368,8 @@
                            <li>
                                <a data-placement="bottom" class="likeCommentBackground" rel="tooltip" data-html="true" title="$likersList" id="LikeCommentLink_${it.id" href="javascript:void(0);">
                                  <i class="uiIconThumbUp icon-thumb-drawn"><span class="path1"></span><span class="path2"></span></i>
-                               </a>$totalCommentLiked
+                                 $totalCommentLiked
+                               </a>
                            </li>
 
                            <%    }
