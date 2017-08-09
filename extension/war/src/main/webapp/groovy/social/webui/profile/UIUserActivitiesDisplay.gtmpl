@@ -227,10 +227,8 @@
                 <span class="PopupTitle popupTitle"><%=_ctx.appRes("UIActivity.title.PopupCommentLikers")%></span>
             </div>
             <div class="PopupContent popupContent">
-                <table id="likersDetail">
-    					<tbody>
-    				    </tbody>
-    			</table>
+                <ul id="likersDetail">
+                </ul>
             </div>
         </div>
     </div>

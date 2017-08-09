@@ -542,12 +542,11 @@
     */
 
     prepareCommentPopupLikers: function(activityId) {
-      var portal = eXo.social.portal;
       $("#likersPopup .PopupContent #likersDetail").empty();
 
       $("#likersPopup .uiIconClose").click(function(){
-      $("#likersPopupMask").hide();
-      $("#likersPopup .PopupContent #likersDetail").empty();
+        $("#likersPopupMask").hide();
+        $("#likersPopup .PopupContent #likersDetail").empty();
       });
 
       $('#ContextBox'+activityId+' a:[id*="LikeCommentLink_"]').each(function (idx, el) {
@@ -582,25 +581,25 @@
     },
 
     buildLikersPopup: function(result){
-        var tbody = $("#likersPopup .PopupContent #likersDetail");
-        tbody.empty();
-        for (i = 0; i < result.length; i++) {
-        var tr = $('<tr/>', {});
-        var tdAvatar = $('<td/>',{"class":"likerAvatar"});
-        var img = $("<img/>", {
+      var likersList = $("#likersPopup .PopupContent #likersDetail");
+      likersList.empty();
+      for (i = 0; i < result.length; i++) {
+        var likerItem = $('<li/>', {"class":"liker"});
+        var likerAvatar = $('<div/>', {"class":"likerAvatar"});
+        var imgAvatar = $("<img/>", {
                                 "src":result[i].avatarURL
-         });
+        });
 
         var aAvatar = $("<a/>", {
                       "target":"_self",
                       "href":result[i].profileUrl
         });
 
-        aAvatar.append(img);
-        tdAvatar.append(aAvatar);
-        tr.append(tdAvatar);
+        aAvatar.append(imgAvatar);
+        likerAvatar.append(aAvatar);
+        likerItem.append(likerAvatar);
 
-        var tdProfile = $("<td/>",{
+        var likerProfile = $("<div/>",{
            "class": "likerName"
         });
         var aProfile = $("<a/>", {
@@ -609,13 +608,13 @@
             "text":result[i].fullName
         });
 
-        tr.append(tdProfile.append(aProfile));
+        likerItem.append(likerProfile.append(aProfile));
 
-        var tdAction = $("<td/>",{
-             "class": "likeClick"
+        var likerAction = $("<div/>",{
+          "class": "likeClick"
         });
         var divActionContainer = $("<div/>",{
-        "class": "uiActionLike"
+          "class": "uiActionLike"
         });
 
         //Add Connection Action
@@ -624,62 +623,52 @@
         var ownerUserId = result[i].profileUrl.substring(result[i].profileUrl.lastIndexOf('/') + 1);
         var relationStatus = result[i].relationshipType;
         if (currentViewerId != ownerUserId) {
+          action = $('<div/>', {
+              "class":"connect btn btn-primary",
+              "text":""+UIActivity.labelsConnect.Connect,
+              "data-action":"Invite:" + ownerUserId,
+              "onclick":"takeActionFromLikeComment(this)"
+          });
 
-                        action = $('<div/>', {
-                            "class":"connect btn btn-primary",
-                            "text":""+UIActivity.labelsConnect.Connect,
-                            "data-action":"Invite:" + ownerUserId,
-                            "onclick":"takeActionFromLikeComment(this)"
-                        });
+          if (relationStatus == "pending") { // Viewing is not owner
+            action = $('<div/>', {
+                "class":"connect btn btn-primary",
+                "text":""+UIActivity.labelsConnect.Confirm,
+                "data-action":"Accept:" + ownerUserId,
+                "onclick":"takeActionFromLikeComment(this)"
+            });
+          } else if (relationStatus == "waiting") { // Viewing is owner
+            action = $('<div/>', {
+                "class":"connect btn",
+                "text":""+UIActivity.labelsConnect.CancelRequest,
+                "data-action":"Revoke:" + ownerUserId,
+                "onclick":"takeActionFromLikeComment(this)"
+            });
+          } else if (relationStatus == "confirmed") { // Has Connection
+            action = $('<div/>', {
+                "class":"connect btn",
+                "text":""+UIActivity.labelsConnect.RemoveConnection,
+                "data-action":"Disconnect:" + ownerUserId,
+                "onclick":"takeActionFromLikeComment(this)"
+            });
+          } else if (relationStatus == "ignored") { // Connection is removed
+            action = $('<div/>', {
+                "class":"connect btn",
+                "text":""+UIActivity.labelsConnect.Ignore,
+                "data-action":"Deny:" + ownerUserId,
+                "onclick":"takeActionFromLikeComment(this)"
+            });
+          }
+        }
 
-//
-                        if (relationStatus == "pending") { // Viewing is not owner
-                            action = $('<div/>', {
-                                "class":"connect btn btn-primary",
-                                "text":""+UIActivity.labelsConnect.Confirm,
-                                "data-action":"Accept:" + ownerUserId,
-                                "onclick":"takeActionFromLikeComment(this)"
-                            });
-                        } else if (relationStatus == "waiting") { // Viewing is owner
-                            action = $('<div/>', {
-                                "class":"connect btn",
-                                "text":""+UIActivity.labelsConnect.CancelRequest,
-                                "data-action":"Revoke:" + ownerUserId,
-                                "onclick":"takeActionFromLikeComment(this)"
-                            });
-                        } else if (relationStatus == "confirmed") { // Had Connection
-                            action = $('<div/>', {
-                                "class":"connect btn",
-                                "text":""+UIActivity.labelsConnect.RemoveConnection,
-                                "data-action":"Disconnect:" + ownerUserId,
-                                "onclick":"takeActionFromLikeComment(this)"
-                            });
-                        } else if (relationStatus == "ignored") { // Connection is removed
-                            action = $('<div/>', {
-                                "class":"connect btn",
-                                "text":""+UIActivity.labelsConnect.Ignore,
-                                "data-action":"Deny:" + ownerUserId,
-                                "onclick":"takeActionFromLikeComment(this)"
-                            });
-                        }
-
-
-                    }
         if (action){
-            divActionContainer.append(action);
+          divActionContainer.append(action);
         }
 
-        tr.append(tdAction.append(divActionContainer));
-        tbody.append(tr);
-
-        }
-
+        likerItem.append(likerAction.append(divActionContainer));
+        likersList.append(likerItem);
+      }
     }
-
-
-
-
-
   };
 //
   eXo.social.SocialUtil.addOnResizeWidth(function(evt){UIActivity.responsiveMobile()});
