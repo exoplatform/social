@@ -316,7 +316,8 @@ public class UISpaceMember extends UIContainer {
     SpaceService spaceService = getSpaceService();
     Space space = spaceService.getSpaceById(spaceId);
     if (space == null) {
-      throw new Exception("Could not get the space with ID "+ spaceId);
+      LOG.error("Could not get the space with ID {}, it will return 0 members",spaceId,new Exception());
+      return new ArrayList<String>(0);
     }
     
     String[] memberUsers = space.getMembers();
