@@ -334,46 +334,42 @@
                     <!--begin Like Comment-->
                     <div class="clearfix actionCommentBar">
                          <ul class="pull-left statusAction">
-                         <%
-                           def likeCommentAction = uicomponent.event("LikeComment", "true_"+it.id);
-                           def unlikeCommentAction = uicomponent.event("LikeComment", "false_"+it.id);
-                           def isCommentLiked = ArrayUtils.contains(it.likeIdentityIds, Utils.getViewerIdentity().getId());
-                           def totalCommentLiked = it.likeIdentityIds.length;
-                           def likersList = "";
-                           for (liker in it.likeIdentityIds ){
-                           def likerIdentity = Utils.getIdentityManager().getIdentity(liker);
-                           			  likerCommentFullName = StringEscapeUtils.escapeHtml(likerIdentity.profile.fullName);
-                           			  likersList += likerCommentFullName + "<br />";
-                           }
-                           if (isCommentLiked) { %>
-                           <li>
-                              <a onclick="$unlikeCommentAction;(function(evt){ evt.stopPropagation();})(event)" class="likeLink" data-placement="bottom" id="LikeCommentLink${it.id}" href="javascript:void(0);">
-                                <%=_ctx.appRes("UIActivity.msg.UnlikeCommentActivity"); %>
-                              </a>
-                           </li>
-                           <li>
-                              <a data-placement="bottom" class="likeCommentBackground" data-html="true" rel="tooltip" title="$likersList" id="LikeCommentLink_${it.id}" href="javascript:void(0);">
-                                <i class="uiIconThumbUp icon-thumb-drawn"><span class="path1"></span><span class="path2"></span></i>
-                                $totalCommentLiked
-                              </a>
-                           </li>
+                            <%
+                            def likeCommentAction = uicomponent.event("LikeComment", "true_"+it.id);
+                            def unlikeCommentAction = uicomponent.event("LikeComment", "false_"+it.id);
+                            def isCommentLiked = ArrayUtils.contains(it.likeIdentityIds, Utils.getViewerIdentity().getId());
+                            def totalCommentLiked = it.likeIdentityIds.length;
 
-                           <% } else { %>
-                           <li>
-                               <a onclick="$likeCommentAction;(function(evt){ evt.stopPropagation();})(event)" class="likeLink" data-placement="bottom" id="LikeCommentLink${it.id" href="javascript:void(0);">
-                                  <%=_ctx.appRes("UIActivity.msg.LikeActivity"); %>
-                               </a>
-                           </li>
-                                 <%if ( totalCommentLiked > 0 ){%>
-                           <li>
-                               <a data-placement="bottom" class="likeCommentBackground" rel="tooltip" data-html="true" title="$likersList" id="LikeCommentLink_${it.id" href="javascript:void(0);">
-                                 <i class="uiIconThumbUp icon-thumb-drawn"><span class="path1"></span><span class="path2"></span></i>
-                                 $totalCommentLiked
-                               </a>
-                           </li>
+                            def likeUnlikeCommentMsg = "";
+                            def likeUnlikeCommentAction = "";
+                            if (isCommentLiked) {
+                                likeUnlikeCommentAction = unlikeCommentAction;
+                                likeUnlikeCommentMsg = _ctx.appRes("UIActivity.msg.UnlikeCommentActivity");
+                            } else {
+                                likeUnlikeCommentAction = likeCommentAction;
+                                likeUnlikeCommentMsg = _ctx.appRes("UIActivity.msg.LikeActivity");
+                            }
 
-                           <%    }
-                           }%>
+                            def likersList = "";
+                            for (liker in it.likeIdentityIds ){
+                                def likerIdentity = Utils.getIdentityManager().getIdentity(liker);
+                                likerCommentFullName = StringEscapeUtils.escapeHtml(likerIdentity.profile.fullName);
+                                likersList += likerCommentFullName + "<br />";
+                            }
+                            %>
+                            <li>
+                                <a onclick="$likeUnlikeCommentAction;(function(evt){ evt.stopPropagation();})(event)" class="likeLink" data-placement="bottom" id="LikeCommentLink${it.id}" href="javascript:void(0);">
+                                    $likeUnlikeCommentMsg
+                                </a>
+                            </li>
+                            <%if ( totalCommentLiked > 0 ) {%>
+                            <li>
+                                <a onclick="(function(evt){ evt.stopPropagation();})(event)" data-placement="bottom" class="likeCommentBackground" data-html="true" rel="tooltip" title="$likersList" id="LikeCommentLink_${it.id}" href="javascript:void(0);">
+                                    <i class="uiIconThumbUp icon-thumb-drawn"><span class="path1"></span><span class="path2"></span></i>
+                                    $totalCommentLiked
+                                </a>
+                            </li>
+                            <%}%>
                          </ul>
                     </div><!--end actionBar-->
                     <!--end like Comment-->
