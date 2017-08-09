@@ -33,6 +33,8 @@ import org.exoplatform.container.PortalContainer;
 import org.exoplatform.portal.application.PortalRequestContext;
 import org.exoplatform.portal.config.UserACL;
 import org.exoplatform.portal.webui.util.Util;
+import org.exoplatform.services.log.ExoLogger;
+import org.exoplatform.services.log.Log;
 import org.exoplatform.services.organization.MembershipTypeHandler;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
@@ -72,6 +74,9 @@ import org.exoplatform.webui.organization.account.UIUserSelector;
 })
 
 public class UISpaceMember extends UIContainer {
+
+  private static final Log LOG = ExoLogger.getLogger(UISpaceMember.class);
+
 
   private static final String MSG_ERROR_SELF_REMOVE_LEADER = "UISpaceMember.msg.error_self_remove_leader";
   private static final String MSG_ERROR_SELF_REMOVE_LEADER_YOU = "UISpaceMember.msg.error_self_remove_leader_you";
@@ -311,7 +316,7 @@ public class UISpaceMember extends UIContainer {
     SpaceService spaceService = getSpaceService();
     Space space = spaceService.getSpaceById(spaceId);
     if (space == null) {
-      return new ArrayList<String>(0);
+      throw new Exception("Could not get the space with ID "+ spaceId);
     }
     
     String[] memberUsers = space.getMembers();
