@@ -127,6 +127,9 @@ public class MailTemplateProvider extends TemplateProvider {
           }
 
           String poster = message.getValueOwnerParameter("poster");
+          if(message.getTo() != null && poster != null && poster.equals(message.getTo())) {
+            continue;
+          }
           Pair<String, String> userComment = new ImmutablePair<String, String>(poster, activity.getTitle());
           ExoSocialActivity parentActivity = Utils.getActivityManager().getParentActivity(activity);
           if (parentActivity.getStreamOwner() != null) {
@@ -524,6 +527,7 @@ public class MailTemplateProvider extends TemplateProvider {
 
       try {
         for (NotificationInfo message : notifications) {
+          String poster = message.getValueOwnerParameter(SocialNotificationUtils.POSTER.getKey());
           String activityId = message.getValueOwnerParameter(SocialNotificationUtils.ACTIVITY_ID.getKey());
           ExoSocialActivity activity = Utils.getActivityManager().getActivity(activityId);
           if (activity == null) {
@@ -533,8 +537,11 @@ public class MailTemplateProvider extends TemplateProvider {
           if (!Arrays.asList(space.getMembers()).contains(message.getTo())) {
             continue;
           }
+          if(message.getTo() != null && poster != null && poster.equals(message.getTo())) {
+            continue;
+          }
           //
-          SocialNotificationUtils.processInforSendTo(map, space.getId(), message.getValueOwnerParameter(SocialNotificationUtils.POSTER.getKey()));
+          SocialNotificationUtils.processInforSendTo(map, space.getId(), poster);
         }
         writer.append(SocialNotificationUtils.getMessageInSpace(map, templateContext));
       } catch (IOException e) {
