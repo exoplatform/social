@@ -358,13 +358,13 @@
                             }
                             %>
                             <li>
-                                <a onclick="$likeUnlikeCommentAction;(function(evt){ evt.stopPropagation();})(event)" class="likeLink" data-placement="bottom" id="LikeCommentLink${it.id}" href="javascript:void(0);">
+                                <a onclick="$likeUnlikeCommentAction;(function(evt){ evt.stopPropagation();})(event)" class="likeCommentLink" data-placement="bottom" id="LikeCommentLink${it.id}" href="javascript:void(0);">
                                     $likeUnlikeCommentMsg
                                 </a>
                             </li>
                             <%if ( totalCommentLiked > 0 ) {%>
                             <li>
-                                <a onclick="(function(evt){ evt.stopPropagation();})(event)" data-placement="bottom" class="likeCommentBackground" data-html="true" rel="tooltip" title="$likersList" id="LikeCommentLink_${it.id}" href="javascript:void(0);">
+                                <a onclick="(function(evt){ evt.stopPropagation();})(event)" data-placement="bottom" class="likeCommentCount" data-html="true" rel="tooltip" title="$likersList" id="LikeCommentLink_${it.id}" href="javascript:void(0);">
                                     <i class="uiIconThumbUp icon-thumb-drawn"><span class="path1"></span><span class="path2"></span></i>
                                     $totalCommentLiked
                                 </a>
