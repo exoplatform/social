@@ -446,30 +446,6 @@
                     });
                 }
 
-                function takeActionFromLikeComment(el) {
-                        var dataAction = $(el).attr('data-action');
-                        var updatedType = dataAction.split(":")[0];
-                        var ownerUserId = dataAction.split(":")[1];
-                        var portal = eXo.social.portal;
-                        var restUrl = window.location.origin + portal.context + '/' + portal.rest + '/social/people' + '/getPeopleInfo/{0}.json';
-
-                        $.ajax({
-                            type:"GET",
-                            url:opts.restURL.replace('{0}', ownerUserId) + '?updatedType=' + updatedType
-                        }).complete(function (jqXHR) {
-                                    if (jqXHR.readyState === 4) {
-                                        //var popup = $(el).closest('#tiptip_holder');
-                                        //popup.fadeOut('fast', function () {
-                                        //});
-                                        $("#likersPopupMask").hide();
-                                        $("#likersPopup .PopupContent #likersDetail").empty();
-
-
-                                    }
-                                });
-                    }
-
-
                 function putToCache(key, data) {
                     var ojCache = $('div#socialUsersData');
                     if (ojCache.length == 0) {
@@ -493,7 +469,6 @@
                   $('div#socialUsersData').data("CacheSearch", {});
                 }
                 window.takeAction = takeAction;
-                window.takeActionFromLikeComment = takeActionFromLikeComment;
             }
         })
     }
