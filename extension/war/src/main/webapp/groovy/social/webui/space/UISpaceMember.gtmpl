@@ -20,207 +20,213 @@
 -->
 */
 %>
-<% 
-  import org.exoplatform.social.webui.Utils;
-  import org.exoplatform.social.webui.UIUserInvitation;
-  import org.exoplatform.webui.core.UIPopupWindow;
-  import org.exoplatform.webui.core.UIPageIterator;
-  import org.exoplatform.web.application.JavascriptManager;
-  
-  def uicomponentId = uicomponent.id;
-  def labelSearchUserAction = _ctx.appRes("${uicomponentId}.label.SearchUserAction");
-  def labelSearchGroupAction = _ctx.appRes("${uicomponentId}.label.SearchGroupAction");
-  def labelInviteUsers = _ctx.appRes("${uicomponentId}.label.InviteUsers");
-  def labelInviteAction = _ctx.appRes("${uicomponentId}.label.InviteAction");
-  def labelValidateInvitation = _ctx.appRes("${uicomponentId}.label.ValidateInvitation");
-  def labelDeclineInvitation = _ctx.appRes("${uicomponentId}.label.DeclineInvitation");
-  def labelCancelRequest = _ctx.appRes("${uicomponentId}.label.CancelRequest");
-  def labelRemoveMember = _ctx.appRes("${uicomponentId}.label.RemoveMember");
-  def pendingUsers = uicomponent.getPendingUsers();
-  def invitedUsers = uicomponent.getInvitedUsers();
-  def existingUsers = uicomponent.getExistingUsers();
+<%
+import org.exoplatform.social.webui.Utils;
+import org.exoplatform.social.webui.UIUserInvitation;
+import org.exoplatform.webui.core.UIPopupWindow;
+import org.exoplatform.webui.core.UIPageIterator;
+import org.exoplatform.web.application.JavascriptManager;
+import org.exoplatform.web.application.ApplicationMessage;
 
-  def restContextName = uicomponent.getRestContextName();
-	def currentUserName = uicomponent.getCurrentUserName();
-	def typeOfRelation = uicomponent.getTypeOfRelation();
-	def spaceURL = uicomponent.getSpaceURL();
-	    
-	def params = """ {
-	  restContextName: '$restContextName',
-    currentUserName: '$currentUserName',
-    typeOfRelation: '$typeOfRelation',
-    spaceURL: '$spaceURL'
-	} """
-  
-  def rcontext = _ctx.getRequestContext();
-  def jsmanager = rcontext.getJavascriptManager();
+def uicomponentId = uicomponent.id;
+def labelSearchUserAction = _ctx.appRes("${uicomponentId}.label.SearchUserAction");
+def labelSearchGroupAction = _ctx.appRes("${uicomponentId}.label.SearchGroupAction");
+def labelInviteUsers = _ctx.appRes("${uicomponentId}.label.InviteUsers");
+def labelInviteAction = _ctx.appRes("${uicomponentId}.label.InviteAction");
+def labelValidateInvitation = _ctx.appRes("${uicomponentId}.label.ValidateInvitation");
+def labelDeclineInvitation = _ctx.appRes("${uicomponentId}.label.DeclineInvitation");
+def labelCancelRequest = _ctx.appRes("${uicomponentId}.label.CancelRequest");
+def labelRemoveMember = _ctx.appRes("${uicomponentId}.label.RemoveMember");
+def pendingUsers = uicomponent.getPendingUsers();
+def invitedUsers = uicomponent.getInvitedUsers();
+def existingUsers = new ArrayList<String>();
+try {
+  existingUsers = uicomponent.getExistingUsers();
+} catch (Exception exp) {
+_ctx.getRequestContext().getUIApplication().addMessage(new ApplicationMessage("${uicomponentId}.label.SpaceNotFoundError", null, ApplicationMessage.ERROR));
+}
 
-  jsmanager.require("SHARED/uiForm");
-  jsmanager.require("SHARED/social-ui-space-member-suggestion", "memberSuggestion").addScripts("memberSuggestion.onLoad($params);");
-  
-  Utils.displayFeedbackMessageInline("$uicomponent.id");
+def restContextName = uicomponent.getRestContextName();
+def currentUserName = uicomponent.getCurrentUserName();
+def typeOfRelation = uicomponent.getTypeOfRelation();
+def spaceURL = uicomponent.getSpaceURL();
+
+def params = """ {
+restContextName: '$restContextName',
+currentUserName: '$currentUserName',
+typeOfRelation: '$typeOfRelation',
+spaceURL: '$spaceURL'
+} """
+
+def rcontext = _ctx.getRequestContext();
+def jsmanager = rcontext.getJavascriptManager();
+
+jsmanager.require("SHARED/uiForm");
+jsmanager.require("SHARED/social-ui-space-member-suggestion", "memberSuggestion").addScripts("memberSuggestion.onLoad($params);");
+
+Utils.displayFeedbackMessageInline("$uicomponent.id");
 %>
 <div id="$uicomponent.id" class="uiSpaceMember">
-	<%
-	String searchUserAction = uicomponent.event("SearchUser") + "; return false;";
-	String searchGroupAction = uicomponent.event("SearchGroup") + "; return false;";
-	String inviteAction = uicomponent.event("Invite") + "; return false;";
-	def jsManager = _ctx.getRequestContext().getJavascriptManager();
-	jsManager.require("SHARED/jquery", "jq")
-	         .require("SHARED/bts_tooltip").addScripts("jq('*[rel=\"tooltip\"]').tooltip();");
-	%>
-	<div class="addInvite">
-		<% uicomponent.renderChild(UIUserInvitation.class) %>
-	</div>	
+    <%
+    String searchUserAction = uicomponent.event("SearchUser") + "; return false;";
+    String searchGroupAction = uicomponent.event("SearchGroup") + "; return false;";
+    String inviteAction = uicomponent.event("Invite") + "; return false;";
+    def jsManager = _ctx.getRequestContext().getJavascriptManager();
+    jsManager.require("SHARED/jquery", "jq")
+    .require("SHARED/bts_tooltip").addScripts("jq('*[rel=\"tooltip\"]').tooltip();");
+    %>
+    <div class="addInvite">
+        <% uicomponent.renderChild(UIUserInvitation.class) %>
+    </div>
 
-	<!-- Pending users table -->
-	<% if (pendingUsers.size() > 0) { %>
-	<table class="uiGrid table  table-hover table-striped">
-		<thead>
-		<tr>
-			<th><%= _ctx.appRes(uicomponent.getId() + ".title.pending")%></th>
-			<th class="center"><%= _ctx.appRes(uicomponent.getId() + ".button.actions")%></th>
-		</tr>
-		</thead>
-		<tbody>
-		<%
-		boolean even = true;
-		for(pendingUser in pendingUsers)
-		{
-		String declineAction = uicomponent.event("DeclineUser", pendingUser) + "; return false;";
-		String validateAction = uicomponent.event("ValidateUser", pendingUser) + "; return false;";
-		String rowClass = even ? "EvenRow" : "OddRow portlet-table-alternate";
-		even = !even;
-		%>
-		<tr>
-			<td><%= uicomponent.getFullName(pendingUser) %></td>
-			<td class="center" width="30%">
-					<a  onclick="$validateAction" href="javascript:void(0);" title="$labelValidateInvitation" class="actionIcon"  data-placement="bottom" rel="tooltip" ><i class="uiIconValidate uiIconLightGray"></i></a>
-					<a  onclick="$declineAction" href="javascript:void(0);" title="$labelDeclineInvitation" class="actionIcon"  data-placement="bottom" rel="tooltip" ><i class="uiIconRemove uiIconLightGray"></i></a>
-			</td>
-		</tr>
-		<% }%>
-		</tbody>
-	</table>
-	<%
-	def iteratorPendingUsers = uicomponent.getUIPageIteratorPendingUsers();
-	if(iteratorPendingUsers.getAvailablePage() > 1) {
-	uicomponent.renderUIComponent(iteratorPendingUsers);
-	}
-	%>
-	<% } /*end if*/%>
-
-
-	<!-- Invited users table -->
-	<% if(invitedUsers.size() > 0) { %>
-
-	<table class="uiGrid table  table-hover table-striped" >
-		<thead>
-		<tr>
-			<th><%= _ctx.appRes(uicomponent.getId() + ".title.invited")%></th>
-			<th class="center"><%= _ctx.appRes(uicomponent.getId() + ".button.actions")%></th>
-		</tr>
-		</thead>
-		<tbody >
-		<%
-		boolean even = true;
-		for(invitedUser in invitedUsers) {
-		String revokeAction = uicomponent.event("RevokeInvitedUser", invitedUser) + "; return false;";
-		String rowClass = even ? "EvenRow" : "OddRow portlet-table-alternate";
-		even = !even;
-		%>
-		<tr>
-			<td><%= uicomponent.getFullName(invitedUser) %></td>
-			<td class="center" width="15%">
-				<a  onclick="$revokeAction" href="javascript:void(0);" title="$labelCancelRequest" class="actionIcon" data-placement="bottom" rel="tooltip"><i class="uiIconDelete uiIconLightGray"></i></a>
-			</td>
-		</tr>
-		<% } /*end for*/%>
-		</tbody>
-	</table>
-	<%
-	def iteratorInvitedUsers = uicomponent.getUIPageIteratorInvitedUsers();
-	if(iteratorInvitedUsers.getAvailablePage() > 1) {
-	uicomponent.renderUIComponent(iteratorInvitedUsers);
-	}
-	%>
-	<% } /*end if*/%>
+    <!-- Pending users table -->
+    <% if (pendingUsers.size() > 0) { %>
+    <table class="uiGrid table  table-hover table-striped">
+        <thead>
+        <tr>
+            <th><%= _ctx.appRes(uicomponent.getId() + ".title.pending")%></th>
+            <th class="center"><%= _ctx.appRes(uicomponent.getId() + ".button.actions")%></th>
+        </tr>
+        </thead>
+        <tbody>
+        <%
+        boolean even = true;
+        for(pendingUser in pendingUsers)
+        {
+        String declineAction = uicomponent.event("DeclineUser", pendingUser) + "; return false;";
+        String validateAction = uicomponent.event("ValidateUser", pendingUser) + "; return false;";
+        String rowClass = even ? "EvenRow" : "OddRow portlet-table-alternate";
+        even = !even;
+        %>
+        <tr>
+            <td><%= uicomponent.getFullName(pendingUser) %></td>
+            <td class="center" width="30%">
+                <a onclick="$validateAction" href="javascript:void(0);" title="$labelValidateInvitation" class="actionIcon" data-placement="bottom" rel="tooltip"><i class="uiIconValidate uiIconLightGray"></i></a>
+                <a onclick="$declineAction" href="javascript:void(0);" title="$labelDeclineInvitation" class="actionIcon" data-placement="bottom" rel="tooltip"><i class="uiIconRemove uiIconLightGray"></i></a>
+            </td>
+        </tr>
+        <% }%>
+        </tbody>
+    </table>
+    <%
+    def iteratorPendingUsers = uicomponent.getUIPageIteratorPendingUsers();
+    if(iteratorPendingUsers.getAvailablePage() > 1) {
+    uicomponent.renderUIComponent(iteratorPendingUsers);
+    }
+    %>
+    <% } /*end if*/%>
 
 
-	<!-- Existing users table -->
-	<% if(existingUsers.size() > 0) { %>
-	<table class="uiGrid table  table-hover table-striped">
-		<thead>
-		<tr>
-			<th><%= _ctx.appRes(uicomponent.getId() + ".title.members")%></th>
-			<th class="center">Manager</th>
-			<th class="center"><%= _ctx.appRes(uicomponent.getId() + ".button.actions")%></th>
-		</tr>
-		</thead>
-		<tbody >
-		<%
-		boolean even = true;
-		for(user in existingUsers) {
-		boolean isLeader = uicomponent.isLeader(user);
-		String manageSpacesUrl = "#";
-		String homeSpaceUrl = "#";
-		if (!uicomponent.isSuperUser()) {
-		manageSpacesUrl = uicomponent.manageSpacesUrl;
-		homeSpaceUrl = uicomponent.homeSpaceUrl;
-		}
-		String removeAction = uicomponent.event("RemoveUser", user) + "; return false;";
-		String removeOwnerAction = uicomponent.url('RemoveUser');
-		String toggleLeadership = uicomponent.event("ToggleLeadership", user);
+    <!-- Invited users table -->
+    <% if(invitedUsers.size() > 0) { %>
 
-		String rowClass = even? "EvenRow" : "OddRow portlet-table-alternate";
-		even = !even;
+    <table class="uiGrid table  table-hover table-striped">
+        <thead>
+        <tr>
+            <th><%= _ctx.appRes(uicomponent.getId() + ".title.invited")%></th>
+            <th class="center"><%= _ctx.appRes(uicomponent.getId() + ".button.actions")%></th>
+        </tr>
+        </thead>
+        <tbody>
+        <%
+        boolean even = true;
+        for(invitedUser in invitedUsers) {
+        String revokeAction = uicomponent.event("RevokeInvitedUser", invitedUser) + "; return false;";
+        String rowClass = even ? "EvenRow" : "OddRow portlet-table-alternate";
+        even = !even;
+        %>
+        <tr>
+            <td><%= uicomponent.getFullName(invitedUser) %></td>
+            <td class="center" width="15%">
+                <a onclick="$revokeAction" href="javascript:void(0);" title="$labelCancelRequest" class="actionIcon" data-placement="bottom" rel="tooltip"><i class="uiIconDelete uiIconLightGray"></i></a>
+            </td>
+        </tr>
+        <% } /*end for*/%>
+        </tbody>
+    </table>
+    <%
+    def iteratorInvitedUsers = uicomponent.getUIPageIteratorInvitedUsers();
+    if(iteratorInvitedUsers.getAvailablePage() > 1) {
+    uicomponent.renderUIComponent(iteratorInvitedUsers);
+    }
+    %>
+    <% } /*end if*/%>
 
-		%>
-		<tr id="existingUsersTable">
-			<td><%= uicomponent.getFullName(user) %></td>
-		<% if(uicomponent.isMember(user) && Utils.isEnableUser(user)) { %>
-			<td class="center" width="15%">
-				<div class="spaceRole" onclick="$toggleLeadership">
-				<% if(isLeader) { %>
-					<input type="checkbox" class="yesno" checked="checked" style="visibility: hidden;">
-				<% }else { %>
-					<input type="checkbox" class="yesno" style="visibility: hidden;">
-				<% } %>
-				</div>
-			</td>
-			<td class="center" width="15%">
-				<% if(uicomponent.isCurrentUser(user)) { %>
-				<a  onclick="$removeOwnerAction" title="$labelRemoveMember"  href="javascript:void(0);" class="actionIcon"  data-placement="bottom" rel="tooltip" ><i class="uiIconDelete uiIconLightGray"></i></a>
-				<% } else { %>
-				<a  onclick="$removeAction" title="$labelRemoveMember" href="javascript:void(0);" class="actionIcon"  data-placement="bottom" rel="tooltip" ><i class="uiIconDelete uiIconLightGray"></i></a>
-				<% } %>
-			</td>
-		<% } else if (uicomponent.hasWildCardMembership(user) || !Utils.isEnableUser(user)){ %>
-		  <td class="center" width="15%">
-        <div class="spaceRole">
-        <% if(isLeader) { %>
-          <input type="checkbox" class="yesno" checked="checked" style="visibility: hidden;" disabled>
-        <% }else { %>
-          <input type="checkbox" class="yesno" style="visibility: hidden;" disabled>
-        <% } %>  
-        </div>
-      </td>
-      <td class="center" width="15%"></td>
-		<% } else { %>
-			<td class="center" width="15%"></td>
-			<td class="center" width="15%"></td>
-		<% } %>
-		</tr>
-<% } %>
-		</tbody>
-	</table>
-	<%
-	def iteratorExistingUsers = uicomponent.getUIPageIteratorExistingUsers();
-	if(iteratorExistingUsers.getAvailablePage() > 1) {
-	uicomponent.renderUIComponent(iteratorExistingUsers);
-	}
-	%>
-  <script type="text/javascript">
+
+    <!-- Existing users table -->
+    <% if(existingUsers.size() > 0) { %>
+    <table class="uiGrid table  table-hover table-striped">
+        <thead>
+        <tr>
+            <th><%= _ctx.appRes(uicomponent.getId() + ".title.members")%></th>
+            <th class="center">Manager</th>
+            <th class="center"><%= _ctx.appRes(uicomponent.getId() + ".button.actions")%></th>
+        </tr>
+        </thead>
+        <tbody>
+        <%
+        boolean even = true;
+        for(user in existingUsers) {
+        boolean isLeader = uicomponent.isLeader(user);
+        String manageSpacesUrl = "#";
+        String homeSpaceUrl = "#";
+        if (!uicomponent.isSuperUser()) {
+        manageSpacesUrl = uicomponent.manageSpacesUrl;
+        homeSpaceUrl = uicomponent.homeSpaceUrl;
+        }
+        String removeAction = uicomponent.event("RemoveUser", user) + "; return false;";
+        String removeOwnerAction = uicomponent.url('RemoveUser');
+        String toggleLeadership = uicomponent.event("ToggleLeadership", user);
+
+        String rowClass = even? "EvenRow" : "OddRow portlet-table-alternate";
+        even = !even;
+
+        %>
+        <tr id="existingUsersTable">
+            <td><%= uicomponent.getFullName(user) %></td>
+            <% if(uicomponent.isMember(user) && Utils.isEnableUser(user)) { %>
+            <td class="center" width="15%">
+                <div class="spaceRole" onclick="$toggleLeadership">
+                    <% if(isLeader) { %>
+                    <input type="checkbox" class="yesno" checked="checked" style="visibility: hidden;">
+                    <% }else { %>
+                    <input type="checkbox" class="yesno" style="visibility: hidden;">
+                    <% } %>
+                </div>
+            </td>
+            <td class="center" width="15%">
+                <% if(uicomponent.isCurrentUser(user)) { %>
+                <a onclick="$removeOwnerAction" title="$labelRemoveMember" href="javascript:void(0);" class="actionIcon" data-placement="bottom" rel="tooltip"><i class="uiIconDelete uiIconLightGray"></i></a>
+                <% } else { %>
+                <a onclick="$removeAction" title="$labelRemoveMember" href="javascript:void(0);" class="actionIcon" data-placement="bottom" rel="tooltip"><i class="uiIconDelete uiIconLightGray"></i></a>
+                <% } %>
+            </td>
+            <% } else if (uicomponent.hasWildCardMembership(user) || !Utils.isEnableUser(user)){ %>
+            <td class="center" width="15%">
+                <div class="spaceRole">
+                    <% if(isLeader) { %>
+                    <input type="checkbox" class="yesno" checked="checked" style="visibility: hidden;" disabled>
+                    <% }else { %>
+                    <input type="checkbox" class="yesno" style="visibility: hidden;" disabled>
+                    <% } %>
+                </div>
+            </td>
+            <td class="center" width="15%"></td>
+            <% } else { %>
+            <td class="center" width="15%"></td>
+            <td class="center" width="15%"></td>
+            <% } %>
+        </tr>
+        <% } %>
+        </tbody>
+    </table>
+    <%
+    def iteratorExistingUsers = uicomponent.getUIPageIteratorExistingUsers();
+    if(iteratorExistingUsers.getAvailablePage() > 1) {
+    uicomponent.renderUIComponent(iteratorExistingUsers);
+    }
+    %>
+    <script type="text/javascript">
 		require(["SHARED/jquery", "SHARED/iphonePlugin"], function (gj)
 		{
 			gj('tr#existingUsersTable').find("div.spaceRole").children('input:checkbox').each(function()
@@ -235,6 +241,7 @@
 				});
 			});
 		});
-  </script>
-<% } %>
+
+    </script>
+    <% } %>
 </div>
