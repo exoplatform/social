@@ -79,6 +79,7 @@ public class UISpaceMember extends UIContainer {
 
 
   private static final String MSG_ERROR_SELF_REMOVE_LEADER = "UISpaceMember.msg.error_self_remove_leader";
+  private static final String MSG_ERROR_SPACE_NOT_FOUND = "UISpaceMember.space_not_found";
   private static final String MSG_ERROR_SELF_REMOVE_LEADER_YOU = "UISpaceMember.msg.error_self_remove_leader_you";
   private static final String MSG_ERROR_SELF_REMOVE_LEADER_ARE = "UISpaceMember.msg.error_self_remove_leader_are";
   private static final String MSG_ERROR_SELF_REMOVE_LEADER_IS = "UISpaceMember.msg.error_self_remove_leader_is";
@@ -316,8 +317,11 @@ public class UISpaceMember extends UIContainer {
     SpaceService spaceService = getSpaceService();
     Space space = spaceService.getSpaceById(spaceId);
     if (space == null) {
-      LOG.warn("Could not get the space with ID "+ spaceId +", it will return 0 members",new Exception());
-      return new ArrayList<String>(0);
+      LOG.debug("Could not get the space with ID "+ spaceId +", it will return 0 members",new Exception());
+      uiApp.addMessage(new ApplicationMessage(MSG_ERROR_SPACE_NOT_FOUND,
+                                              spaceId,
+                                              ApplicationMessage.ERROR));
+      return;
     }
     
     String[] memberUsers = space.getMembers();
