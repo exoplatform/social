@@ -358,12 +358,15 @@
 
                             def likeUnlikeCommentMsg = "";
                             def likeUnlikeCommentAction = "";
+                            def likeUnlikeCommentClass = "";
                             if (isCommentLiked) {
                                 likeUnlikeCommentAction = unlikeCommentAction;
                                 likeUnlikeCommentMsg = _ctx.appRes("UIActivity.msg.UnlikeCommentActivity");
+                                likeUnlikeCommentClass = "commentLiked";
                             } else {
                                 likeUnlikeCommentAction = likeCommentAction;
                                 likeUnlikeCommentMsg = _ctx.appRes("UIActivity.msg.LikeActivity");
+                                likeUnlikeCommentClass = "";
                             }
 
                             def likersList = "";
@@ -374,18 +377,15 @@
                             }
                             %>
                             <li>
-                                <a onclick="$likeUnlikeCommentAction;(function(evt){ evt.stopPropagation();})(event)" class="likeCommentLink" data-placement="bottom" id="LikeCommentLink${it.id}" href="javascript:void(0);">
-                                    $likeUnlikeCommentMsg
+                                <a onclick="$likeUnlikeCommentAction;(function(evt){ evt.stopPropagation();})(event)" class="likeCommentLink" data-placement="bottom" rel="tooltip" title="$likeUnlikeCommentMsg" id="LikeCommentLink${it.id}" href="javascript:void(0);">
+                                    <i class="uiIconThumbUp $likeUnlikeCommentClass"></i>
                                 </a>
-                            </li>
-                            <%if ( totalCommentLiked > 0 ) {%>
-                            <li>
-                                <a onclick="(function(evt){ evt.stopPropagation();})(event)" data-placement="bottom" class="likeCommentCount" data-html="true" rel="tooltip" title="$likersList" id="LikeCommentLink_${it.id}" href="javascript:void(0);">
-                                    <i class="uiIconThumbUp icon-thumb-drawn"><span class="path1"></span><span class="path2"></span></i>
-                                    $totalCommentLiked
+                                <%if ( totalCommentLiked > 0 ) {%>
+                                <a onclick="(function(evt){ evt.stopPropagation();})(event)" data-placement="bottom" class="likeCommentCount $likeUnlikeCommentClass" data-html="true" rel="tooltip" title="$likersList" id="LikeCommentLink_${it.id}" href="javascript:void(0);">
+                                    ($totalCommentLiked)
                                 </a>
+                                <%}%>
                             </li>
-                            <%}%>
                        </ul>
                     </div><!--end actionBar-->
                     <!--end like Comment-->
