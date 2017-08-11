@@ -19,6 +19,7 @@ package org.exoplatform.social.notification.channel.template;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.StringUtils;
 
 import org.exoplatform.commons.api.notification.NotificationContext;
 import org.exoplatform.commons.api.notification.annotation.TemplateConfig;
@@ -83,9 +84,24 @@ public class MailTemplateProvider extends TemplateProvider {
       String language = getLanguage(notification);
 
       String activityId = notification.getValueOwnerParameter(SocialNotificationUtils.ACTIVITY_ID.getKey());
+      String commentId = notification.getValueOwnerParameter(SocialNotificationUtils.COMMENT_ID.getKey());
       ExoSocialActivity activity = Utils.getActivityManager().getActivity(activityId);
-      ExoSocialActivity parentActivity = Utils.getActivityManager().getParentActivity(activity);
-      Identity identity = Utils.getIdentityManager().getIdentity(activity.getPosterId(), true);
+      ExoSocialActivity comment = null;
+      if (StringUtils.isNotBlank(commentId)) {
+        comment = Utils.getActivityManager().getActivity(commentId);
+      }
+      if (activity == null) {
+        LOG.debug("Activity with id '{}' was removed but the notification with id'{}' is remaining", activityId, notification.getId());
+        return null;
+      }
+      if(activity.isComment()) {
+        comment = Utils.getActivityManager().getParentActivity(activity);
+      }
+      if (comment == null) {
+        LOG.debug("Comment of activity with id '{}' was removed but the notification with id'{}' is remaining", commentId, notification.getId());
+        return null;
+      }
+      Identity identity = Utils.getIdentityManager().getIdentity(comment.getPosterId(), true);
 
       TemplateContext templateContext = new TemplateContext(notification.getKey().getId(), language);
       templateContext.put("USER", identity.getProfile().getFullName());
@@ -93,12 +109,12 @@ public class MailTemplateProvider extends TemplateProvider {
 
       SocialNotificationUtils.addFooterAndFirstName(notification.getTo(), templateContext);
       templateContext.put("PROFILE_URL", LinkProviderUtils.getRedirectUrl("user", identity.getRemoteId()));
-      templateContext.put("COMMENT", NotificationUtils.processLinkTitle(activity.getTitle()));
-      templateContext.put("OPEN_URL", LinkProviderUtils.getOpenLink(activity));
-      templateContext.put("REPLY_ACTION_URL", LinkProviderUtils.getRedirectUrl("reply_activity_highlight_comment", parentActivity.getId() + "-" + activity.getId()));
-      templateContext.put("VIEW_FULL_DISCUSSION_ACTION_URL", LinkProviderUtils.getRedirectUrl("view_full_activity_highlight_comment", parentActivity.getId() + "-" + activity.getId()));
+      templateContext.put("COMMENT", NotificationUtils.processLinkTitle(comment.getTitle()));
+      templateContext.put("OPEN_URL", LinkProviderUtils.getOpenLink(comment));
+      templateContext.put("REPLY_ACTION_URL", LinkProviderUtils.getRedirectUrl("reply_activity_highlight_comment", activity.getId() + "-" + comment.getId()));
+      templateContext.put("VIEW_FULL_DISCUSSION_ACTION_URL", LinkProviderUtils.getRedirectUrl("view_full_activity_highlight_comment", activity.getId() + "-" + comment.getId()));
 
-      String body = SocialNotificationUtils.getBody(ctx, templateContext, parentActivity);
+      String body = SocialNotificationUtils.getBody(ctx, templateContext, activity);
       //binding the exception throws by processing template
       ctx.setException(templateContext.getException());
       return messageInfo.subject(subject).body(body).end();
@@ -125,13 +141,26 @@ public class MailTemplateProvider extends TemplateProvider {
           if (activity == null) {
             continue;
           }
+          String commentId = message.getValueOwnerParameter(SocialNotificationUtils.COMMENT_ID.getKey());
+          ExoSocialActivity parentActivity = null;
+          if(StringUtils.isBlank(commentId)) {
+            LOG.warn("Attempt to send a mail message with id '{}' and receiver '{}' with empty parameter 'commentId' and activityId = '{}' ",
+                     message.getId(),
+                     message.getTo(),
+                     activityId);
+          } else {
+            parentActivity = activity;
+            activity = Utils.getActivityManager().getActivity(commentId);
+            if (activity == null) {
+              continue;
+            }
+          }
 
           String poster = message.getValueOwnerParameter("poster");
           if(message.getTo() != null && poster != null && poster.equals(message.getTo())) {
             continue;
           }
           Pair<String, String> userComment = new ImmutablePair<String, String>(poster, activity.getTitle());
-          ExoSocialActivity parentActivity = Utils.getActivityManager().getParentActivity(activity);
           if (parentActivity.getStreamOwner() != null) {
             Identity spaceIdentity = Utils.getIdentityManager().getOrCreateIdentity(SpaceIdentityProvider.NAME, parentActivity.getStreamOwner(), true);
             if (spaceIdentity == null) {

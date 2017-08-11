@@ -221,7 +221,6 @@ public class CachedActivityStorage implements ActivityStorage {
                 return ActivityData.NULL;
               }
             } catch (Exception e) {
-              LOG.error("failed to get activity with id: " + activityId, e);
               throw new ActivityStorageException(FAILED_TO_GET_ACTIVITY, "failed to get activity with id: " + activityId, e);
             }
           }

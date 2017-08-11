@@ -23,7 +23,7 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.exoplatform.commons.api.notification.service.storage.NotificationDataStorage;
+import org.exoplatform.commons.api.notification.service.storage.MailNotificationStorage;
 import org.exoplatform.commons.utils.CommonsUtils;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
@@ -69,8 +69,8 @@ public class Utils {
     return (T) PortalContainer.getInstance().getComponentInstanceOfType(clazz);
   }
   
-  public static NotificationDataStorage getSocialEmailStorage() {
-    return getService(NotificationDataStorage.class);
+  public static MailNotificationStorage getSocialEmailStorage() {
+    return getService(MailNotificationStorage.class);
   }
 
   /**

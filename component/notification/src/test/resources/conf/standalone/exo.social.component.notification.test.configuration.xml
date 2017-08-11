@@ -48,7 +48,7 @@
   </component>
 
   <component>
-    <key>org.exoplatform.commons.api.notification.service.storage.NotificationDataStorage</key>
+    <key>org.exoplatform.commons.api.notification.service.storage.MailNotificationStorage</key>
     <type>org.exoplatform.social.notification.mock.MockNotificationDataStorage</type>
   </component>
 

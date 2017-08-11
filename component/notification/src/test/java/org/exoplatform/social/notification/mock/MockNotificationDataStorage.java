@@ -20,13 +20,13 @@ import org.exoplatform.commons.api.notification.NotificationContext;
 import org.exoplatform.commons.api.notification.model.NotificationInfo;
 import org.exoplatform.commons.api.notification.model.PluginKey;
 import org.exoplatform.commons.api.notification.model.UserSetting;
-import org.exoplatform.commons.api.notification.service.storage.NotificationDataStorage;
+import org.exoplatform.commons.api.notification.service.storage.MailNotificationStorage;
 import org.exoplatform.commons.api.notification.service.storage.NotificationService;
 
 import java.util.List;
 import java.util.Map;
 
-public class MockNotificationDataStorage implements NotificationDataStorage {
+public class MockNotificationDataStorage implements MailNotificationStorage {
   NotificationService notificationService;
   public MockNotificationDataStorage(NotificationService notificationService) {
     this.notificationService = notificationService;

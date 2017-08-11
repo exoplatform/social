@@ -70,11 +70,6 @@ public class MockUserSettingServiceImpl implements UserSettingService {
   }
 
   @Override
-  public List<String> filterActiveUsers(List<String> users) {
-    return users;
-  }
-
-  @Override
   public void setUserEnabled(String username, boolean enabled) {
   }
 
