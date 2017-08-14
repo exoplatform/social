@@ -47,8 +47,12 @@ import org.exoplatform.social.rest.api.CommentRestResources;
 import org.exoplatform.social.rest.api.EntityBuilder;
 import org.exoplatform.social.rest.api.RestUtils;
 import org.exoplatform.social.rest.entity.ActivityEntity;
+import org.exoplatform.social.rest.entity.CollectionEntity;
 import org.exoplatform.social.rest.entity.CommentEntity;
+import org.exoplatform.social.rest.entity.DataEntity;
 import org.exoplatform.social.service.rest.api.VersionResources;
+
+import java.util.List;
 
 @Path(VersionResources.VERSION_ONE + "/social/comments")
 @Api(tags = VersionResources.VERSION_ONE + "/social/comments", value = VersionResources.VERSION_ONE + "/social/comments", description = "Operations on a comment")
@@ -149,5 +153,67 @@ public class CommentRestResourcesV1 implements CommentRestResources {
     activityManager.deleteActivity(act);
     
     return EntityBuilder.getResponse(activityEntity.getDataEntity(), uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
+  }
+
+  @GET
+  @Path("{id}/likes")
+  @RolesAllowed("users")
+  @ApiOperation(value = "Gets likes of a specific comment",
+          httpMethod = "GET",
+          response = Response.class,
+          notes = "This returns a list of likes if the authenticated user has permissions to see the comment.")
+  @ApiResponses(value = {
+          @ApiResponse (code = 200, message = "Request fulfilled"),
+          @ApiResponse (code = 500, message = "Internal server error"),
+          @ApiResponse (code = 400, message = "Invalid query input") })
+  public Response getLikesOfComment(@Context UriInfo uriInfo,
+                                     @ApiParam(value = "Comment id", required = true) @PathParam("id") String id,
+                                     @ApiParam(value = "Offset", required = false, defaultValue = "0") @QueryParam("offset") int offset,
+                                     @ApiParam(value = "Limit", required = false, defaultValue = "20") @QueryParam("limit") int limit,
+                                     @ApiParam(value = "Asking for a full representation of a specific subresource if any", required = false) @QueryParam("expand") String expand) throws Exception {
+
+    offset = offset > 0 ? offset : RestUtils.getOffset(uriInfo);
+    limit = limit > 0 ? limit : RestUtils.getLimit(uriInfo);
+
+    String authenticatedUser = ConversationState.getCurrent().getIdentity().getUserId();
+    Identity currentUser = CommonsUtils.getService(IdentityManager.class).getOrCreateIdentity(OrganizationIdentityProvider.NAME, authenticatedUser, true);
+
+    ActivityManager activityManager = CommonsUtils.getService(ActivityManager.class);
+    ExoSocialActivity comment = activityManager.getActivity(id);
+    if (comment == null) {
+      throw new WebApplicationException(Response.Status.UNAUTHORIZED);
+    }
+
+    if (comment == null || !comment.isComment()) {
+      throw new WebApplicationException(Response.Status.NOT_FOUND);
+    }
+
+    ExoSocialActivity activity = getActivityOfComment(comment);
+
+    // TODO
+    //if (EntityBuilder.getActivityStream(activity, currentUser) == null && !hasMention(currentUser, activity)) { //current user doesn't have permission to view activity
+    if (EntityBuilder.getActivityStream(activity, currentUser) == null) { //current user doesn't have permission to view activity
+      throw new WebApplicationException(Response.Status.UNAUTHORIZED);
+    }
+    List<DataEntity> likesEntity = EntityBuilder.buildEntityFromLike(comment, uriInfo.getPath(), expand, offset, limit);
+    CollectionEntity collectionLike = new CollectionEntity(likesEntity, EntityBuilder.LIKES_TYPE, offset, limit);
+    //
+    return EntityBuilder.getResponse(collectionLike, uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
+  }
+
+  /**
+   * Get the activity related to the given comment
+   * @param comment The comment entity
+   * @return The activity related to the given comment
+   */
+  private ExoSocialActivity getActivityOfComment(ExoSocialActivity comment) {
+    ExoSocialActivity activity = comment;
+    while (activity != null && activity.isComment()) {
+      String parentId = activity.getParentId();
+      ActivityManager activityManager = CommonsUtils.getService(ActivityManager.class);
+      activity = activityManager.getActivity(parentId);
+    }
+    return activity;
+
   }
 }

@@ -554,68 +554,83 @@
       $('#ContextBox'+activityId+' a:[id*="LikeCommentLink_"]').each(function (idx, el) {
         var id = $(el).attr('id');
         var commentId = id.substring(id.indexOf('_') + 1);
-        var portal = eXo.social.portal;
         $(el).click(function(){
-          var restUrl = window.location.origin + portal.context + '/' + portal.rest + '/social/people' + '/getLikersInfo/{0}.json';
-          restUrl = restUrl.replace('{0}', window.encodeURI(commentId));
-          UIActivity.likersPopup(restUrl);
+          UIActivity.likersPopup(commentId);
           $("#likersPopupMask").show();
         });
       });
     },
 
-    likersPopup: function (restUrl) {
-        $.ajax({
-                 type: "GET",
-                 cache: false,
-                 url: restUrl
-               }).complete(function (jqXHR) {
-                    if (jqXHR.readyState === 4) {
-                         var usersData = $.parseJSON(jqXHR.responseText);
+    likersPopup: function (commentId) {
+      var env = eXo.social.portal;
+      var restUrl = env.context + '/' + env.rest + '/v1/social/comments/' + commentId + '/likes';
+      $.ajax({
+        type: "GET",
+        cache: false,
+        url: restUrl
+      }).complete(function (jqXHR) {
+        if (jqXHR.readyState === 4) {
+          var dataLikers = $.parseJSON(jqXHR.responseText);
 
-                         if (usersData) {
-                           UIActivity.buildLikersPopup(usersData);
-                        } else {
-                           UIActivity.likersPopup(restUrl);
-                        }
-                    }
-        });
+          if (dataLikers) {
+            var likers = dataLikers.likes.map(function(like) {
+              return like.username;
+            });
+
+            // fetch relationships with likers
+            var relationshipsRestUrl = env.context + '/' + env.rest + '/v1/social/usersRelationships?others=' + likers.join(',') + '&expand=sender,receiver&fields=sender,receiver,status';
+            $.ajax({
+              type: "GET",
+              cache: false,
+              url: relationshipsRestUrl
+            }).complete(function (jqXHR) {
+              if (jqXHR.readyState === 4) {
+                var dataRelationships = $.parseJSON(jqXHR.responseText);
+                UIActivity.buildLikersPopup(dataLikers.likes, dataRelationships.usersRelationships);
+              }
+            });
+          }
+        }
+      });
     },
 
-    buildRelationshipButton: function (ownerUserId, relationStatus) {
+    buildRelationshipButton: function (likerUsername, relationshipSender, relationshipStatus) {
       var actionButton = $('<div/>', {
         "class": "connect btn btn-primary",
         "text": "" + UIActivity.labelsConnect.Connect,
-        "data-action": "Invite:" + ownerUserId,
+        "data-action": "Invite:" + likerUsername,
         "onclick": "takeActionFromLikeComment(this)"
       });
 
-      if (relationStatus == "pending") { // Viewing is not owner
-        actionButton = $('<div/>', {
-          "class": "connect btn btn-primary",
-          "text": "" + UIActivity.labelsConnect.Confirm,
-          "data-action": "Accept:" + ownerUserId,
-          "onclick": "takeActionFromLikeComment(this)"
-        });
-      } else if (relationStatus == "waiting") { // Viewing is owner
-        actionButton = $('<div/>', {
-          "class": "connect btn",
-          "text": "" + UIActivity.labelsConnect.CancelRequest,
-          "data-action": "Revoke:" + ownerUserId,
-          "onclick": "takeActionFromLikeComment(this)"
-        });
+      var relationStatus = relationshipStatus ? relationshipStatus.toLowerCase() : relationshipStatus;
+      if (relationStatus == "pending") {
+        if(relationshipSender == likerUsername) { // Viewer is not owner
+          actionButton = $('<div/>', {
+            "class": "connect btn btn-primary",
+            "text": "" + UIActivity.labelsConnect.Confirm,
+            "data-action": "Accept:" + likerUsername,
+            "onclick": "takeActionFromLikeComment(this)"
+          });
+        } else { // Viewer is owner
+          actionButton = $('<div/>', {
+            "class": "connect btn",
+            "text": "" + UIActivity.labelsConnect.CancelRequest,
+            "data-action": "Revoke:" + likerUsername,
+            "onclick": "takeActionFromLikeComment(this)"
+          });
+        }
       } else if (relationStatus == "confirmed") { // Has Connection
         actionButton = $('<div/>', {
           "class": "connect btn",
           "text": "" + UIActivity.labelsConnect.RemoveConnection,
-          "data-action": "Disconnect:" + ownerUserId,
+          "data-action": "Disconnect:" + likerUsername,
           "onclick": "takeActionFromLikeComment(this)"
         });
       } else if (relationStatus == "ignored") { // Connection is removed
         actionButton = $('<div/>', {
           "class": "connect btn",
           "text": "" + UIActivity.labelsConnect.Ignore,
-          "data-action": "Deny:" + ownerUserId,
+          "data-action": "Deny:" + likerUsername,
           "onclick": "takeActionFromLikeComment(this)"
         });
       }
@@ -623,19 +638,25 @@
       return actionButton;
     },
 
-    buildLikersPopup: function(result){
+    buildLikersPopup: function(likers, usersRelationships){
+      var env = eXo.social.portal;
       var likersList = $("#likersPopup .PopupContent #likersDetail");
       likersList.empty();
-      for (i = 0; i < result.length; i++) {
+      for (i = 0; i < likers.length; i++) {
+        var likerUsername = likers[i].username;
+        var likerFullname = likers[i].fullname;
+        var likerAvatarUrl = env.context + "/" + env.rest + "/v1/social/users/" + likerUsername + "/avatar";
+        var likerProfileUrl = env.context + "/" + env.portalName + "/profile/" + likerUsername;
+
         var likerItem = $('<li/>', {"class":"liker"});
         var likerAvatar = $('<div/>', {"class":"likerAvatar"});
         var imgAvatar = $("<img/>", {
-                                "src":result[i].avatarURL
+          "src": likerAvatarUrl
         });
 
         var aAvatar = $("<a/>", {
-                      "target":"_self",
-                      "href":result[i].profileUrl
+          "target": "_self",
+          "href": likerProfileUrl
         });
 
         aAvatar.append(imgAvatar);
@@ -643,12 +664,12 @@
         likerItem.append(likerAvatar);
 
         var likerProfile = $("<div/>",{
-           "class": "likerName"
+          "class": "likerName"
         });
         var aProfile = $("<a/>", {
-            "target":"_self",
-            "href":result[i].profileUrl,
-            "text":result[i].fullName
+          "target": "_self",
+          "href": likerProfileUrl,
+          "text": likerFullname
         });
 
         likerItem.append(likerProfile.append(aProfile));
@@ -662,11 +683,17 @@
 
         //Add Connection Action
         var action = null;
-        var currentViewerId = eXo.social.portal.userName;
-        var ownerUserId = result[i].profileUrl.substring(result[i].profileUrl.lastIndexOf('/') + 1);
-        var relationStatus = result[i].relationshipType;
-        if (currentViewerId != ownerUserId) {
-          action = UIActivity.buildRelationshipButton(ownerUserId, relationStatus);
+        var currentViewerId = env.userName;
+        if (currentViewerId != likerUsername) {
+          var likerRelationship = usersRelationships.find(function(relationship) {
+            return relationship.receiver.username == likerUsername || relationship.sender.username == likerUsername;
+          });
+          var sender = null, status = null;
+          if(likerRelationship) {
+            sender = likerRelationship.sender.username;
+            status = likerRelationship.status;
+          }
+          action = UIActivity.buildRelationshipButton(likerUsername, sender, status);
         }
 
         if (action){
@@ -679,6 +706,8 @@
     },
 
     takeActionFromLikeComment: function(el) {
+      var env = eXo.social.portal;
+
       var button = $(el);
       var dataAction = button.attr('data-action');
       var updatedType = dataAction.split(":")[0];
@@ -691,20 +720,32 @@
       button.after(loading);
       $.ajax({
         type: "GET",
-        url: "/portal/rest/social/people/getPeopleInfo/" + ownerUserId + ".json?updatedType=" + updatedType
-      }).done(function (data) {
-        if(data && data.relationshipType) {
-          loading.hide();
+        url: env.context + "/" + env.rest + "/social/people/getPeopleInfo/" + ownerUserId + ".json?updatedType=" + updatedType
+      }).done(function () {
+        $.ajax({
+          type: 'GET',
+          url: env.context + '/' + env.rest + '/v1/social/usersRelationships?others=' + ownerUserId + '&expand=sender,receiver&fields=sender,receiver,status'
+        }).done(function (data) {
+          if (data && data.usersRelationships && data.usersRelationships.length <= 1) {
+            loading.hide();
 
-          var buttonParent = button.parent();
-          buttonParent.empty();
-
-          var action = UIActivity.buildRelationshipButton(ownerUserId, data.relationshipType);
-          buttonParent.append(action);
-        } else {
+            var buttonParent = button.parent();
+            buttonParent.empty();
+            var sender = null, status = null;
+            if(data.usersRelationships.length == 1) {
+              sender = data.usersRelationships[0].sender.username;
+              status = data.usersRelationships[0].status;
+            }
+            var action = UIActivity.buildRelationshipButton(ownerUserId, sender, status);
+            buttonParent.append(action);
+          } else {
+            loading.hide();
+            button.show();
+          }
+        }).fail(function() {
           loading.hide();
           button.show();
-        }
+        });;
       }).fail(function() {
         loading.hide();
         button.show();
