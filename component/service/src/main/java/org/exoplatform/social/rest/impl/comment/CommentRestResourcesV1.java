@@ -50,6 +50,7 @@ import org.exoplatform.social.rest.entity.ActivityEntity;
 import org.exoplatform.social.rest.entity.CollectionEntity;
 import org.exoplatform.social.rest.entity.CommentEntity;
 import org.exoplatform.social.rest.entity.DataEntity;
+import org.exoplatform.social.service.rest.Util;
 import org.exoplatform.social.service.rest.api.VersionResources;
 
 import java.util.List;
@@ -190,9 +191,7 @@ public class CommentRestResourcesV1 implements CommentRestResources {
 
     ExoSocialActivity activity = getActivityOfComment(comment);
 
-    // TODO
-    //if (EntityBuilder.getActivityStream(activity, currentUser) == null && !hasMention(currentUser, activity)) { //current user doesn't have permission to view activity
-    if (EntityBuilder.getActivityStream(activity, currentUser) == null) { //current user doesn't have permission to view activity
+    if (EntityBuilder.getActivityStream(activity, currentUser) == null && !Util.hasMentioned(activity, currentUser.getRemoteId())) { //current user doesn't have permission to view activity
       throw new WebApplicationException(Response.Status.UNAUTHORIZED);
     }
     List<DataEntity> likesEntity = EntityBuilder.buildEntityFromLike(comment, uriInfo.getPath(), expand, offset, limit);
