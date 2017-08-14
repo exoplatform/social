@@ -215,14 +215,14 @@ public class RDBMSActivityStorageImpl extends ActivityStorageImpl {
     exoComment.setPosterId(comment.getPosterId());
     exoComment.isComment(true);
     //
-    exoComment.isLocked(comment.getLocked().booleanValue());
-    exoComment.isHidden(comment.getHidden().booleanValue());
-    exoComment.setUpdated(comment.getUpdatedDate().getTime());
+    exoComment.isLocked(comment.getLocked() != null ? comment.getLocked().booleanValue() : false);
+    exoComment.isHidden(comment.getHidden() != null ? comment.getHidden().booleanValue() : false);
+    exoComment.setUpdated(comment.getUpdatedDate() != null ? comment.getUpdatedDate().getTime() : null);
     //
-    exoComment.setParentId(String.valueOf(comment.getParent().getId()));
+    exoComment.setParentId(comment.getParent() != null ? String.valueOf(comment.getParent().getId()) : null);
     //
     exoComment.setPostedTime(comment.getPosted() != null ? comment.getPosted().getTime() : 0);
-    exoComment.setUpdated(comment.getUpdatedDate().getTime());
+    exoComment.setUpdated(comment.getUpdatedDate() != null ? comment.getUpdatedDate().getTime() : null);
     //
     Set<String> mentioned = comment.getMentionerIds();
     if (mentioned != null && !mentioned.isEmpty()) {

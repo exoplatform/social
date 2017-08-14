@@ -23,14 +23,7 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
 import javax.annotation.security.RolesAllowed;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.GET;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
-import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -53,6 +46,8 @@ import org.exoplatform.social.rest.entity.DataEntity;
 import org.exoplatform.social.service.rest.Util;
 import org.exoplatform.social.service.rest.api.VersionResources;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Path(VersionResources.VERSION_ONE + "/social/comments")
@@ -200,11 +195,90 @@ public class CommentRestResourcesV1 implements CommentRestResources {
     return EntityBuilder.getResponse(collectionLike, uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
   }
 
-  /**
-   * Get the activity related to the given comment
-   * @param comment The comment entity
-   * @return The activity related to the given comment
-   */
+  @POST
+  @Path("{id}/likes")
+  @Produces(MediaType.APPLICATION_JSON)
+  @RolesAllowed("users")
+  @ApiOperation(value = "Adds a like to a specific comment",
+          httpMethod = "POST",
+          response = Response.class,
+          notes = "This adds the like if the authenticated user has permissions to see the comment.")
+  @ApiResponses(value = {
+          @ApiResponse (code = 200, message = "Request fulfilled"),
+          @ApiResponse (code = 500, message = "Internal server error"),
+          @ApiResponse (code = 400, message = "Invalid query input") })
+  public Response addLikeOnComment(@Context UriInfo uriInfo,
+                          @ApiParam(value = "Comment id", required = true) @PathParam("id") String id,
+                          @ApiParam(value = "Asking for a full representation of a subresource if any", required = false) @QueryParam("expand") String expand) throws Exception {
+    String authenticatedUser = ConversationState.getCurrent().getIdentity().getUserId();
+    Identity currentUser = CommonsUtils.getService(IdentityManager.class).getOrCreateIdentity(OrganizationIdentityProvider.NAME, authenticatedUser, true);
+
+    ActivityManager activityManager = CommonsUtils.getService(ActivityManager.class);
+    ExoSocialActivity comment = activityManager.getActivity(id);
+    if (comment == null) {
+      throw new WebApplicationException(Response.Status.UNAUTHORIZED);
+    }
+
+    ExoSocialActivity activity = getActivityOfComment(comment);
+
+    if (EntityBuilder.getActivityStream(activity, currentUser) == null && !Util.hasMentioned(activity, currentUser.getRemoteId())) { //current user doesn't have permission to view activity
+      throw new WebApplicationException(Response.Status.UNAUTHORIZED);
+    }
+    List<String> likerIds = new ArrayList<String>(Arrays.asList(comment.getLikeIdentityIds()));
+    if (!likerIds.contains(currentUser.getId())) {
+      likerIds.add(currentUser.getId());
+      String[] identityIds = new String[likerIds.size()];
+      comment.setLikeIdentityIds(likerIds.toArray(identityIds));
+      activityManager.updateActivity(comment);
+    }
+    return EntityBuilder.getResponse(EntityBuilder.buildEntityFromComment(comment, uriInfo.getPath(), expand, true), uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
+
+  }
+
+  @DELETE
+  @Path("{id}/likes/{username}")
+  @RolesAllowed("users")
+  @ApiOperation(value = "Deletes a like of a specific user for a given comment",
+          httpMethod = "DELETE",
+          response = Response.class,
+          notes = "This deletes the like if the authenticated user is the given user or the super user.")
+  @ApiResponses(value = {
+          @ApiResponse (code = 200, message = "Request fulfilled"),
+          @ApiResponse (code = 500, message = "Internal server error"),
+          @ApiResponse (code = 400, message = "Invalid query input") })
+  public Response deleteLikeOnComment(@Context UriInfo uriInfo,
+                             @ApiParam(value = "Comment id", required = true) @PathParam("id") String id,
+                             @ApiParam(value = "User name", required = true) @PathParam("username") String username,
+                             @ApiParam(value = "Asking for a full representation of a specific subresource if any", required = false) @QueryParam("expand") String expand) throws Exception {
+
+    String authenticatedUser = ConversationState.getCurrent().getIdentity().getUserId();
+    if (!authenticatedUser.equals(username)) {
+      throw new WebApplicationException(Response.Status.UNAUTHORIZED);
+    }
+    Identity currentUser = CommonsUtils.getService(IdentityManager.class).getOrCreateIdentity(OrganizationIdentityProvider.NAME, authenticatedUser, true);
+
+    ActivityManager activityManager = CommonsUtils.getService(ActivityManager.class);
+    ExoSocialActivity comment = activityManager.getActivity(id);
+    if (comment == null) {
+      throw new WebApplicationException(Response.Status.UNAUTHORIZED);
+    }
+
+    List<String> likerIds = new ArrayList<String>(Arrays.asList(comment.getLikeIdentityIds()));
+    if (likerIds.contains(currentUser.getId())) {
+      likerIds.remove(currentUser.getId());
+      String[] identityIds = new String[likerIds.size()];
+      comment.setLikeIdentityIds(likerIds.toArray(identityIds));
+      activityManager.updateActivity(comment);
+    }
+
+    return Response.ok().build();
+  }
+
+    /**
+     * Get the activity related to the given comment
+     * @param comment The comment entity
+     * @return The activity related to the given comment
+     */
   private ExoSocialActivity getActivityOfComment(ExoSocialActivity comment) {
     ExoSocialActivity activity = comment;
     while (activity != null && activity.isComment()) {
