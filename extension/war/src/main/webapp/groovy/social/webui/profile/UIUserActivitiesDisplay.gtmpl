@@ -216,11 +216,8 @@
   	<div class="activityBottom"><span></span></div>
   <% } %>
 <% } %>
-    <div>
 
-    </div>
     <div id="likersPopupMask">
-
         <div id="likersPopup" class="UIPopupWindow uiPopup UIDragObject NormalStyle">
             <div class="popupHeader ClearFix">
                 <a class="uiIconClose pull-right" aria-hidden="true" data-dismiss="modal" ></a>

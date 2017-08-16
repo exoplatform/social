@@ -349,7 +349,7 @@
 					</div>
                     <%
                         _ctx.put("comment", it);
-					    _ctx.include("war:/groovy/social/webui/activity/UIActivityCommentActions.gtmpl");
+                        _ctx.include("war:/groovy/social/webui/activity/UIActivityCommentActions.gtmpl");
                     %>
 				</div><!--end commentRight-->
                 <div class="clearfix"></div>

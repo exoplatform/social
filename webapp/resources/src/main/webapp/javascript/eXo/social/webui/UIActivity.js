@@ -539,10 +539,10 @@
       }
       documentPreview.init(settings);
     },
+
     /**
      * prepare Popup of commennt Likers
     */
-
     prepareCommentPopupLikers: function(activityId) {
       $("#likersPopup .PopupContent #likersDetail").empty();
 

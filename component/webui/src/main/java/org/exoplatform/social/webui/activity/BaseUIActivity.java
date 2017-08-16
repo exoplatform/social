@@ -446,10 +446,6 @@ public class BaseUIActivity extends UIForm {
     } else {
       Utils.getActivityManager().deleteLike(commentActivity, viewerIdentity);
     }
-
-    //activityCommentsListAccess = Utils.getActivityManager().getCommentsWithListAccess(getActivity());
-
-
   }
 
   protected String getActivityPermalink(String activityId) {
