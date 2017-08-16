@@ -380,6 +380,10 @@
                     <div class="contentComment" id="${activity.id}-${commentCounter}">
                         $commentMessage
                     </div>
+                    <%
+                        _ctx.put("comment", it);
+                        _ctx.include("war:/groovy/social/webui/activity/UIActivityCommentActions.gtmpl");
+                    %>
                 </div><!--end commentRight-->
                 <div class="clearfix"></div>
               <%
