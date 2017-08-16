@@ -62,7 +62,10 @@ public class SocialMembershipListenerImpl extends MembershipEventListener {
       //and 'member', except 'validator', '*'...so on.
       SpaceService spaceService = CommonsUtils.getService(SpaceService.class);
       Space space = spaceService.getSpaceByGroupId(m.getGroupId());
-      space.setEditor(ConversationState.getCurrent().getIdentity().getUserId());
+      ConversationState state = ConversationState.getCurrent();
+      if(state != null) {
+        space.setEditor(state.getIdentity().getUserId());
+      }
       if (acl.getAdminMSType().equalsIgnoreCase(m.getMembershipType())) {
         spaceService.setManager(space, m.getUserName(), false);
         SpaceUtils.refreshNavigation();
