@@ -347,48 +347,10 @@
 					<div class="contentComment" id="${activity.id}-${commentCounter}">
 						$commentMessage
 					</div>
-					<!--begin Like Comment-->
-                    <div class="clearfix actionCommentBar">
-                       <ul class="pull-left statusAction">
-                            <%
-                            def likeCommentAction = uicomponent.event("LikeComment", "true_"+it.id);
-                            def unlikeCommentAction = uicomponent.event("LikeComment", "false_"+it.id);
-                            def isCommentLiked = ArrayUtils.contains(it.likeIdentityIds, Utils.getViewerIdentity().getId());
-                            def totalCommentLiked = it.likeIdentityIds.length;
-
-                            def likeUnlikeCommentMsg = "";
-                            def likeUnlikeCommentAction = "";
-                            def likeUnlikeCommentClass = "";
-                            if (isCommentLiked) {
-                                likeUnlikeCommentAction = unlikeCommentAction;
-                                likeUnlikeCommentMsg = _ctx.appRes("UIActivity.msg.UnlikeCommentActivity");
-                                likeUnlikeCommentClass = "commentLiked";
-                            } else {
-                                likeUnlikeCommentAction = likeCommentAction;
-                                likeUnlikeCommentMsg = _ctx.appRes("UIActivity.msg.LikeActivity");
-                                likeUnlikeCommentClass = "";
-                            }
-
-                            def likersList = "";
-                            for (liker in it.likeIdentityIds ){
-                                def likerIdentity = Utils.getIdentityManager().getIdentity(liker);
-                                likerCommentFullName = StringEscapeUtils.escapeHtml(likerIdentity.profile.fullName);
-                                likersList += likerCommentFullName + "<br />";
-                            }
-                            %>
-                            <li>
-                                <a onclick="$likeUnlikeCommentAction;(function(evt){ evt.stopPropagation();})(event)" class="likeCommentLink" data-placement="bottom" rel="tooltip" title="$likeUnlikeCommentMsg" id="LikeCommentLink${it.id}" href="javascript:void(0);">
-                                    <i class="uiIconThumbUp $likeUnlikeCommentClass"></i>
-                                </a>
-                                <%if ( totalCommentLiked > 0 ) {%>
-                                <a onclick="(function(evt){ evt.stopPropagation();})(event)" data-placement="bottom" class="likeCommentCount $likeUnlikeCommentClass" data-html="true" rel="tooltip" title="$likersList" id="LikeCommentLink_${it.id}" href="javascript:void(0);">
-                                    ($totalCommentLiked)
-                                </a>
-                                <%}%>
-                            </li>
-                       </ul>
-                    </div><!--end actionBar-->
-                    <!--end like Comment-->
+                    <%
+                        _ctx.put("comment", it);
+					    _ctx.include("war:/groovy/social/webui/activity/UIActivityCommentActions.gtmpl");
+                    %>
 				</div><!--end commentRight-->
                 <div class="clearfix"></div>
 				<div class="actLink">
