@@ -3,7 +3,9 @@
   import org.apache.commons.lang.StringEscapeUtils;
   import org.exoplatform.social.webui.Utils;
 
-  def comment = _ctx.get("comment");
+  import static org.exoplatform.social.webui.activity.BaseUIActivity.TEMPLATE_PARAM_COMMENT;
+
+  def comment = _ctx.get(TEMPLATE_PARAM_COMMENT);
 %>
 <div class="clearfix actionCommentBar">
      <ul class="pull-left statusAction">

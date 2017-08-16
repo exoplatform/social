@@ -31,6 +31,8 @@
   import org.exoplatform.social.core.service.LinkProvider;
   import org.apache.commons.lang.StringEscapeUtils;
 
+  import static org.exoplatform.social.webui.activity.BaseUIActivity.TEMPLATE_PARAM_COMMENT;
+
   def pcontext = Util.getPortalRequestContext();
   def labelActivityHasBeenDeleted = _ctx.appRes("UIActivity.label.Activity_Has_Been_Deleted");
   def activity = uicomponent.getActivity();
@@ -312,7 +314,7 @@
             </p>
         </div>
         <%
-            _ctx.put("comment", it);
+            _ctx.put(TEMPLATE_PARAM_COMMENT, it);
             _ctx.include("war:/groovy/social/webui/activity/UIActivityCommentActions.gtmpl");
         %>
       <%

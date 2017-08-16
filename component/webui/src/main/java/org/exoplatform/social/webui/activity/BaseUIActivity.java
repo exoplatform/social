@@ -68,6 +68,7 @@ public class BaseUIActivity extends UIForm {
   private static final String                   HTML_AT_SYMBOL_PATTERN = "@";
   private static final String                   HTML_AT_SYMBOL_ESCAPED_PATTERN = "&#64;";
   private static final String                   HTML_ATTRIBUTE_TITLE = "title";
+  public static final String TEMPLATE_PARAM_COMMENT = "comment";
   private static int         LATEST_COMMENTS_SIZE        = 2;
   private int                commentMinCharactersAllowed = 0;
   private int                commentMaxCharactersAllowed = 100;
