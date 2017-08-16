@@ -39,12 +39,6 @@
   def labelRemoveMember = _ctx.appRes("${uicomponentId}.label.RemoveMember");
   def pendingUsers = uicomponent.getPendingUsers();
   def invitedUsers = uicomponent.getInvitedUsers();
-  def existingUsers = new ArrayList<String>();
-  try {
-    existingUsers = uicomponent.getExistingUsers();
-  } catch (Exception exp) {
-    _ctx.getRequestContext().getUIApplication().addMessage(new ApplicationMessage("${uicomponentId}.label.SpaceNotFoundError", null, ApplicationMessage.ERROR));
-  }
 
   def restContextName = uicomponent.getRestContextName();
 	def currentUserName = uicomponent.getCurrentUserName();
