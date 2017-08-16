@@ -84,10 +84,12 @@ public class UISpaceMember extends UIContainer {
   private static final String MSG_ERROR_SELF_REMOVE_LEADER_IS = "UISpaceMember.msg.error_self_remove_leader_is";
   private static final String MSG_ERROR_SELF_REMOVE_LEADER_LEAVING_IT = "UISpaceMember.msg.error_self_remove_leader_leaving_it";
   private static final String MSG_ERROR_SELF_REMOVE_LEADER_REMOVING_THE_RIGHTS = "UISpaceMember.msg.error_self_remove_leader_removing_the_rights";
+  private static final String MSG_ERROR_SPACE_NOT_FOUND = "UISpaceMember.label.SpaceNotFoundError";
   /**
    * The first page.
    */
   private static final int FIRST_PAGE = 1;
+  private List<String> existingUsers;
 
   private String spaceId;
   private SpaceService spaceService = null;
@@ -305,6 +307,20 @@ public class UISpaceMember extends UIContainer {
     return iteratorInvitedUsers.getCurrentPageData();
   }
 
+  @Override
+  public void processRender(WebuiRequestContext context) throws Exception {
+    UIApplication uiApplication = context.getUIApplication();
+    try {
+      this.existingUsers = getExistingUsers();
+      super.processRender(context);
+    } catch (Exception e) {
+      LOG.error("An error occurred while retrieving space members",e);
+      uiApplication.addMessage(new ApplicationMessage(MSG_ERROR_SPACE_NOT_FOUND,
+                                              null,
+                                              ApplicationMessage.ERROR));
+    }
+  }
+
   /**
    * Gets list of existing users in a space
    *
@@ -316,8 +332,7 @@ public class UISpaceMember extends UIContainer {
     SpaceService spaceService = getSpaceService();
     Space space = spaceService.getSpaceById(spaceId);
     if (space == null) {
-      LOG.warn("Could not get the space with ID "+ spaceId);
-      throw new Exception("Could not get the space members");
+      throw new Exception("Could not get the space with ID "+ spaceId);
     }
     
     String[] memberUsers = space.getMembers();

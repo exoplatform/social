@@ -154,7 +154,7 @@
 
 
 	<!-- Existing users table -->
-	<% if(existingUsers.size() > 0) { %>
+	<% if(uicomponent.existingUsers.size() > 0) { %>
 	<table class="uiGrid table  table-hover table-striped">
 		<thead>
 		<tr>
@@ -166,7 +166,7 @@
 		<tbody >
 		<%
 		boolean even = true;
-		for(user in existingUsers) {
+		for(user in uicomponent.existingUsers) {
 		boolean isLeader = uicomponent.isLeader(user);
 		String manageSpacesUrl = "#";
 		String homeSpaceUrl = "#";
