@@ -32,7 +32,7 @@
         for (liker in comment.likeIdentityIds ){
             def likerIdentity = Utils.getIdentityManager().getIdentity(liker);
             likerCommentFullName = StringEscapeUtils.escapeHtml(likerIdentity.profile.fullName);
-            likersList += likerCommentFullName + " ????<br />";
+            likersList += likerCommentFullName + "<br />";
         }
         %>
         <li>
