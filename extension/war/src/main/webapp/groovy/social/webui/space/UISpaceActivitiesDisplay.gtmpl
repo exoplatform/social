@@ -51,16 +51,4 @@
     <% Utils.resizeHomePage();%>
   	<div class="activityBottom"><span></span></div>
   <% } %>
-  <div id="likersPopupMask">
-    <div id="likersPopup" class="UIPopupWindow uiPopup UIDragObject NormalStyle">
-        <div class="popupHeader ClearFix">
-            <a class="uiIconClose pull-right" aria-hidden="true" data-dismiss="modal" ></a>
-            <span class="PopupTitle popupTitle"><%=_ctx.appRes("UIActivity.title.PopupCommentLikers")%></span>
-        </div>
-        <div class="PopupContent popupContent">
-            <ul id="likersDetail">
-            </ul>
-        </div>
-    </div>
-  </div>
 </div>

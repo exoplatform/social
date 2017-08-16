@@ -95,37 +95,38 @@
   def spaceURL = uicomponent.getSpaceURL();
 
   def placeholder = _ctx.appRes("UIActivity.comment.placeholder").replace("'", "\\'");
-  //params for init UIActivity javascript object
+
+  // labels
   def IgnoreLabel = _ctx.appRes("UserProfilePopup.label.Ignore");
   def ConnectLabel = _ctx.appRes("UserProfilePopup.label.Connect");
   def ConfirmLabel = _ctx.appRes("UserProfilePopup.label.Confirm");
   def CancelRequestLabel = _ctx.appRes("UserProfilePopup.label.CancelRequest");
   def RemoveConnectionLabel = _ctx.appRes("UserProfilePopup.label.RemoveConnection");
+  def labels = """ {
+    Connect: '$ConnectLabel',
+    Confirm: '$ConfirmLabel',
+    CancelRequest: '$CancelRequestLabel',
+    RemoveConnection: '$RemoveConnectionLabel',
+    Ignore: '$IgnoreLabel'
+  }"""
 
-
-    def labels = """ {
-        Connect: '$ConnectLabel',
-        Confirm: '$ConfirmLabel',
-    	CancelRequest: '$CancelRequestLabel',
-    	RemoveConnection: '$RemoveConnectionLabel',
-    	Ignore: '$IgnoreLabel'
-    }"""
-
-	def params = """ {
-	  activityId: '${activity.id}',
-	  placeholderComment: '${placeholder}',
+  //params for init UIActivity javascript object
+  def params = """ {
+    activityId: '${activity.id}',
+    placeholderComment: '${placeholder}',
     inputWriteAComment: '$inputWriteAComment',
     commentMinCharactersAllowed: '${uicomponent.getCommentMinCharactersAllowed()}',
     commentMaxCharactersAllowed: '${uicomponent.getCommentMaxCharactersAllowed()}',
     commentFormDisplayed: '$commentFormDisplayed',
     spaceURL:'$spaceURL',
     allCommentSize: '${allCommentSize}',
-    commentFormFocused: '${uicomponent.isCommentFormFocused()}'
-	} """
+    commentFormFocused: '${uicomponent.isCommentFormFocused()}',
+    labels: $labels
+  } """
   
   jsManager.require("SHARED/jquery", "jq")
            .require("SHARED/bts_tooltip").addScripts("jq('*[rel=\"tooltip\"]').tooltip();")
-           .require("SHARED/social-ui-activity", "activity").addScripts("activity.onLoad($params,$labels);");
+           .require("SHARED/social-ui-activity", "activity").addScripts("activity.onLoad($params);");
   
   //make sures commentFormFocused is set to false to prevent any refresh to focus, only focus after post a comment
   uicomponent.setCommentFormFocused(false);
