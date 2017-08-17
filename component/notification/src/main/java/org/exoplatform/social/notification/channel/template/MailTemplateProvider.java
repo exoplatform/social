@@ -748,6 +748,10 @@ public class MailTemplateProvider extends TemplateProvider {
         for (NotificationInfo message : notifications) {
           String spaceId = message.getValueOwnerParameter(SocialNotificationUtils.SPACE_ID.getKey());
           Space space = Utils.getSpaceService().getSpaceById(spaceId);
+          if(space == null) {
+            LOG.info("Can't find space with id '{}'. Mail notification with id '{}' will not be sent", spaceId, message.getId());
+            continue;
+          }
           if (ArrayUtils.contains(space.getInvitedUsers(), first.getTo()) == false) {
             continue;
           }

@@ -17,6 +17,7 @@
 package org.exoplatform.social.notification.mock;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.exoplatform.commons.api.settings.SettingService;
@@ -58,6 +59,16 @@ public class MockSettingServiceImpl implements SettingService {
   @Override
   public SettingValue<?> get(Context context, Scope scope, String key) {
     return settingMap.get(key);
+  }
+
+  @Override
+  public long countContextsByType(String contextType) {
+    return 0;
+  }
+
+  @Override
+  public List<String> getContextNamesByType(String contextType, int offset, int limit) {
+    return null;
   }
 
 }
