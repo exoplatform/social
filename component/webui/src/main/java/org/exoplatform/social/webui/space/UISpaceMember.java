@@ -246,7 +246,6 @@ public class UISpaceMember extends UIContainer {
    * Gets list of pending users in a space
    *
    * @return list of pending users
-   * @throws Exception
    */
   @SuppressWarnings("unchecked")
   public List<String> getPendingUsers() throws Exception {
@@ -289,7 +288,6 @@ public class UISpaceMember extends UIContainer {
    * Gets list of invited users in a space
    *
    * @return lists of invited users
-   * @throws Exception
    */
   @SuppressWarnings("unchecked")
   public List<String> getInvitedUsers() {
@@ -333,7 +331,6 @@ public class UISpaceMember extends UIContainer {
    * Gets list of existing users in a space
    *
    * @return list of existing users
-   * @throws Exception
    */
   @SuppressWarnings("unchecked")
   public List<String> getExistingUsers() {
