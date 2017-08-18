@@ -16,19 +16,7 @@
  */
 package org.exoplatform.social.core.space;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.ResourceBundle;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -1754,6 +1742,7 @@ public class SpaceUtils {
         }
       }
     } catch (Exception e) {
+      LOG.warn("Failed to get space members, groupId = " + groupId + " and roles = " + String.join(",",membershipTypes), e);
       return new ArrayList<String>();
     }
     
