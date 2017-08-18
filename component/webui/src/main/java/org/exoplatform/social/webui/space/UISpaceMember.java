@@ -84,12 +84,13 @@ public class UISpaceMember extends UIContainer {
   private static final String MSG_ERROR_SELF_REMOVE_LEADER_IS = "UISpaceMember.msg.error_self_remove_leader_is";
   private static final String MSG_ERROR_SELF_REMOVE_LEADER_LEAVING_IT = "UISpaceMember.msg.error_self_remove_leader_leaving_it";
   private static final String MSG_ERROR_SELF_REMOVE_LEADER_REMOVING_THE_RIGHTS = "UISpaceMember.msg.error_self_remove_leader_removing_the_rights";
-  private static final String MSG_ERROR_SPACE_NOT_FOUND = "UISpaceMember.label.SpaceNotFoundError";
+  private static final String MSG_ERROR_MEMBERS_LOADING = "UISpaceMember.label.MembersLoadingError";
+  private static final String MSG_ERROR_PENDING_USERS_LOADING = "UISpaceMember.label.PendingUsersLoadingError";
+  private static final String MSG_ERROR_INVITED_USERS_LOADING = "UISpaceMember.label.InvitedUsersLoadingError";
   /**
    * The first page.
    */
   private static final int FIRST_PAGE = 1;
-  private List<String> existingUsers;
 
   private String spaceId;
   private SpaceService spaceService = null;
@@ -111,6 +112,7 @@ public class UISpaceMember extends UIContainer {
    * The flag notifies a new search when clicks search icon or presses enter.
    */
   private boolean isNewSearch;
+
 
   /**
    * Constructor.
@@ -250,27 +252,37 @@ public class UISpaceMember extends UIContainer {
   public List<String> getPendingUsers() throws Exception {
     SpaceService spaceService = getSpaceService();
     Space space = spaceService.getSpaceById(spaceId);
-    if (space == null) {
-      return new ArrayList<String>(0);
+    try {
+      if (space == null) {
+        throw new Exception("Could not get the space with ID "+ spaceId);
+      }
+
+      String[] pendingUsers = space.getPendingUsers();
+      if (pendingUsers == null || pendingUsers.length == 0) {
+        return new ArrayList<String>();
+      }
+
+      int currentPage = iteratorPendingUsers.getCurrentPage();
+      LazyPageList<String> pageList = new LazyPageList<String>(
+          new StringListAccess(Arrays.asList(pendingUsers)),
+          PENDING_PER_PAGE);
+      iteratorPendingUsers.setPageList(pageList);
+      int pageCount = iteratorPendingUsers.getAvailablePage();
+      if (pageCount >= currentPage) {
+        iteratorPendingUsers.setCurrentPage(currentPage);
+      } else if (pageCount < currentPage) {
+        iteratorPendingUsers.setCurrentPage(currentPage - 1);
+      }
+      return iteratorPendingUsers.getCurrentPageData();
+    } catch(Exception e) {
+      LOG.error("An error occurred while retrieving space pending users",e);
+      WebuiRequestContext context = WebuiRequestContext.getCurrentInstance();
+      UIApplication uiApplication = context.getUIApplication();
+      uiApplication.addMessage(new ApplicationMessage(MSG_ERROR_PENDING_USERS_LOADING,
+                                                      null,
+                                                      ApplicationMessage.ERROR));
     }
-    
-    String[] pendingUsers = space.getPendingUsers();
-    if (pendingUsers == null || pendingUsers.length == 0) {
-      return new ArrayList<String>();
-    }
-    
-    int currentPage = iteratorPendingUsers.getCurrentPage();
-    LazyPageList<String> pageList = new LazyPageList<String>(
-                                      new StringListAccess(Arrays.asList(pendingUsers)),
-                                      PENDING_PER_PAGE);
-    iteratorPendingUsers.setPageList(pageList);
-    int pageCount = iteratorPendingUsers.getAvailablePage();
-    if (pageCount >= currentPage) {
-      iteratorPendingUsers.setCurrentPage(currentPage);
-    } else if (pageCount < currentPage) {
-      iteratorPendingUsers.setCurrentPage(currentPage - 1);
-    }
-    return iteratorPendingUsers.getCurrentPageData();
+    return new ArrayList<>();
   }
 
   /**
@@ -280,45 +292,41 @@ public class UISpaceMember extends UIContainer {
    * @throws Exception
    */
   @SuppressWarnings("unchecked")
-  public List<String> getInvitedUsers() throws Exception {
+  public List<String> getInvitedUsers() {
     SpaceService spaceService = getSpaceService();
     Space space = spaceService.getSpaceById(spaceId);
-    if (space == null) {
-      return new ArrayList<String>(0);
-    }
-    
-    String[] invitedUsers = space.getInvitedUsers();
-    if (invitedUsers == null || invitedUsers.length == 0) {
-      return new ArrayList<String>();
-    }
-    
-    int currentPage = iteratorInvitedUsers.getCurrentPage();
-    LazyPageList<String> pageList = new LazyPageList<String>(
-                                      new StringListAccess(Arrays.asList(invitedUsers)),
-                                      INVITATION_PER_PAGE);
-    iteratorInvitedUsers.setPageList(pageList);
-    int pageCount = iteratorInvitedUsers.getAvailablePage();
-    if (pageCount >= currentPage) {
-      iteratorInvitedUsers.setCurrentPage(currentPage);
-    } else if (pageCount < currentPage) {
-      iteratorInvitedUsers.setCurrentPage(currentPage - 1);
-    }
-
-    return iteratorInvitedUsers.getCurrentPageData();
-  }
-
-  @Override
-  public void processRender(WebuiRequestContext context) throws Exception {
-    UIApplication uiApplication = context.getUIApplication();
     try {
-      this.existingUsers = getExistingUsers();
-      super.processRender(context);
-    } catch (Exception e) {
-      LOG.error("An error occurred while retrieving space members",e);
-      uiApplication.addMessage(new ApplicationMessage(MSG_ERROR_SPACE_NOT_FOUND,
-                                              null,
-                                              ApplicationMessage.ERROR));
+      if (space == null) {
+        throw new Exception("Could not get the space with ID "+ spaceId);
+      }
+
+      String[] invitedUsers = space.getInvitedUsers();
+      if (invitedUsers == null || invitedUsers.length == 0) {
+        return new ArrayList<String>();
+      }
+
+      int currentPage = iteratorInvitedUsers.getCurrentPage();
+      LazyPageList<String> pageList = new LazyPageList<String>(
+          new StringListAccess(Arrays.asList(invitedUsers)),
+          INVITATION_PER_PAGE);
+      iteratorInvitedUsers.setPageList(pageList);
+      int pageCount = iteratorInvitedUsers.getAvailablePage();
+      if (pageCount >= currentPage) {
+        iteratorInvitedUsers.setCurrentPage(currentPage);
+      } else if (pageCount < currentPage) {
+        iteratorInvitedUsers.setCurrentPage(currentPage - 1);
+      }
+
+      return iteratorInvitedUsers.getCurrentPageData();
+    } catch(Exception e) {
+      LOG.error("An error occurred while retrieving space invited users",e);
+      WebuiRequestContext context = WebuiRequestContext.getCurrentInstance();
+      UIApplication uiApplication = context.getUIApplication();
+      uiApplication.addMessage(new ApplicationMessage(MSG_ERROR_INVITED_USERS_LOADING,
+                                                      null,
+                                                      ApplicationMessage.ERROR));
     }
+    return new ArrayList<>();
   }
 
   /**
@@ -328,31 +336,42 @@ public class UISpaceMember extends UIContainer {
    * @throws Exception
    */
   @SuppressWarnings("unchecked")
-  public List<String> getExistingUsers() throws Exception {
+  public List<String> getExistingUsers() {
     SpaceService spaceService = getSpaceService();
     Space space = spaceService.getSpaceById(spaceId);
-    if (space == null) {
-      throw new Exception("Could not get the space with ID "+ spaceId);
+    try {
+      if (space == null) {
+        throw new Exception("Could not get the space with ID "+ spaceId);
+      }
+
+      String[] memberUsers = space.getMembers();
+      if (memberUsers == null || memberUsers.length == 0) {
+        return new ArrayList<String>();
+      }
+
+      int currentPage = iteratorExistingUsers.getCurrentPage();
+      Set<String> users = new HashSet<String>(Arrays.asList(memberUsers));
+      users.addAll(SpaceUtils.findMembershipUsersByGroupAndTypes(space.getGroupId(), MembershipTypeHandler.ANY_MEMBERSHIP_TYPE));
+
+      LazyPageList<String> pageList = new LazyPageList<String>(new StringListAccess(new ArrayList<String>(users)), MEMBERS_PER_PAGE);
+      iteratorExistingUsers.setPageList(pageList);
+      if (this.isNewSearch()) {
+        iteratorExistingUsers.setCurrentPage(FIRST_PAGE);
+      } else {
+        iteratorExistingUsers.setCurrentPage(currentPage);
+      }
+      this.setNewSearch(false);
+      return iteratorExistingUsers.getCurrentPageData();
+    }catch (Exception e) {
+      LOG.error("An error occurred while retrieving space members",e);
+      WebuiRequestContext context = WebuiRequestContext.getCurrentInstance();
+      UIApplication uiApplication = context.getUIApplication();
+      uiApplication.addMessage(new ApplicationMessage(MSG_ERROR_MEMBERS_LOADING,
+                                                      null,
+                                                      ApplicationMessage.ERROR));
+
     }
-    
-    String[] memberUsers = space.getMembers();
-    if (memberUsers == null || memberUsers.length == 0) {
-      return new ArrayList<String>();
-    }
-    
-    int currentPage = iteratorExistingUsers.getCurrentPage();
-    Set<String> users = new HashSet<String>(Arrays.asList(memberUsers));
-    users.addAll(SpaceUtils.findMembershipUsersByGroupAndTypes(space.getGroupId(), MembershipTypeHandler.ANY_MEMBERSHIP_TYPE));
-    
-    LazyPageList<String> pageList = new LazyPageList<String>(new StringListAccess(new ArrayList<String>(users)), MEMBERS_PER_PAGE);
-    iteratorExistingUsers.setPageList(pageList);
-    if (this.isNewSearch()) {
-      iteratorExistingUsers.setCurrentPage(FIRST_PAGE);
-    } else {
-      iteratorExistingUsers.setCurrentPage(currentPage);
-    }
-    this.setNewSearch(false);
-    return iteratorExistingUsers.getCurrentPageData();
+    return new ArrayList<>();
   }
   
   /**
