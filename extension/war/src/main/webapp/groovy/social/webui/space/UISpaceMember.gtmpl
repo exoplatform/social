@@ -26,7 +26,6 @@
   import org.exoplatform.webui.core.UIPopupWindow;
   import org.exoplatform.webui.core.UIPageIterator;
   import org.exoplatform.web.application.JavascriptManager;
-  import org.exoplatform.web.application.ApplicationMessage;
   
   def uicomponentId = uicomponent.id;
   def labelSearchUserAction = _ctx.appRes("${uicomponentId}.label.SearchUserAction");
@@ -39,6 +38,7 @@
   def labelRemoveMember = _ctx.appRes("${uicomponentId}.label.RemoveMember");
   def pendingUsers = uicomponent.getPendingUsers();
   def invitedUsers = uicomponent.getInvitedUsers();
+  def existingUsers = uicomponent.getExistingUsers();
 
   def restContextName = uicomponent.getRestContextName();
 	def currentUserName = uicomponent.getCurrentUserName();
@@ -148,7 +148,7 @@
 
 
 	<!-- Existing users table -->
-	<% if(uicomponent.existingUsers.size() > 0) { %>
+	<% if(existingUsers.size() > 0) { %>
 	<table class="uiGrid table  table-hover table-striped">
 		<thead>
 		<tr>
@@ -160,7 +160,7 @@
 		<tbody >
 		<%
 		boolean even = true;
-		for(user in uicomponent.existingUsers) {
+		for(user in existingUsers) {
 		boolean isLeader = uicomponent.isLeader(user);
 		String manageSpacesUrl = "#";
 		String homeSpaceUrl = "#";
