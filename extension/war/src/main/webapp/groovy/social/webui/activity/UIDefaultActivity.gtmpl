@@ -97,12 +97,14 @@
   def placeholder = _ctx.appRes("UIActivity.comment.placeholder").replace("'", "\\'");
 
   // labels
+  def LikePopupTitleLabel = _ctx.appRes("UIActivity.title.PopupCommentLikers");
   def IgnoreLabel = _ctx.appRes("UserProfilePopup.label.Ignore");
   def ConnectLabel = _ctx.appRes("UserProfilePopup.label.Connect");
   def ConfirmLabel = _ctx.appRes("UserProfilePopup.label.Confirm");
   def CancelRequestLabel = _ctx.appRes("UserProfilePopup.label.CancelRequest");
   def RemoveConnectionLabel = _ctx.appRes("UserProfilePopup.label.RemoveConnection");
   def labels = """ {
+    LikePopupTitle: '$LikePopupTitleLabel',
     Connect: '$ConnectLabel',
     Confirm: '$ConfirmLabel',
     CancelRequest: '$CancelRequestLabel',

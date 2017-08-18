@@ -556,7 +556,7 @@
         "  <div id=\"likersPopup\" class=\"UIPopupWindow uiPopup UIDragObject NormalStyle\">" +
         "    <div class=\"popupHeader ClearFix\">" +
         "      <a class=\"uiIconClose pull-right\" aria-hidden=\"true\" data-dismiss=\"modal\" ></a>" +
-        "      <span class=\"PopupTitle popupTitle\">" + "TITLE" + "</span>" +
+        "      <span class=\"PopupTitle popupTitle\">" + UIActivity.labels.LikePopupTitle + "</span>" +
         "    </div>" +
         "    <div class=\"PopupContent popupContent\">" +
         "      <ul id=\"likersDetail\">" +
