@@ -614,7 +614,7 @@
 
     buildRelationshipButton: function (likerUsername, relationshipSender, relationshipStatus) {
       var actionButton = $('<div/>', {
-        "class": "connect btn btn-primary",
+        "class": "connectConnection btn btn-primary",
         "data-action": "Invite:" + likerUsername,
         "onclick": "takeActionFromLikeComment(this)"
       });
@@ -629,7 +629,7 @@
       if (relationStatus == "pending") {
         if(relationshipSender == likerUsername) { // Viewer is not owner
           actionButton = $('<div/>', {
-            "class": "connect btn btn-primary",
+            "class": "confirmConnection btn btn-primary",
             "data-action": "Accept:" + likerUsername,
             "onclick": "takeActionFromLikeComment(this)"
           });
@@ -641,7 +641,7 @@
           }));
         } else { // Viewer is owner
           actionButton = $('<div/>', {
-            "class": "connect btn",
+            "class": "cancelConnection btn",
             "data-action": "Revoke:" + likerUsername,
             "onclick": "takeActionFromLikeComment(this)"
           });
@@ -654,7 +654,7 @@
         }
       } else if (relationStatus == "confirmed") { // Has Connection
         actionButton = $('<div/>', {
-          "class": "connect btn",
+          "class": "removeConnection btn",
           "data-action": "Disconnect:" + likerUsername,
           "onclick": "takeActionFromLikeComment(this)"
         });
@@ -666,7 +666,7 @@
         }));
       } else if (relationStatus == "ignored") { // Connection is removed
         actionButton = $('<div/>', {
-          "class": "connect btn",
+          "class": "ignoreConnection btn",
           "data-action": "Deny:" + likerUsername,
           "onclick": "takeActionFromLikeComment(this)"
         });
