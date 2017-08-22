@@ -615,42 +615,67 @@
     buildRelationshipButton: function (likerUsername, relationshipSender, relationshipStatus) {
       var actionButton = $('<div/>', {
         "class": "connect btn btn-primary",
-        "text": "" + UIActivity.labels.Connect,
         "data-action": "Invite:" + likerUsername,
         "onclick": "takeActionFromLikeComment(this)"
       });
+      actionButton.append($('<span/>', {
+        "text": "" + UIActivity.labels.Connect
+      }));
+      actionButton.append($('<i/>', {
+        "class": "uiIconSocConnectUser"
+      }));
 
       var relationStatus = relationshipStatus ? relationshipStatus.toLowerCase() : relationshipStatus;
       if (relationStatus == "pending") {
         if(relationshipSender == likerUsername) { // Viewer is not owner
           actionButton = $('<div/>', {
             "class": "connect btn btn-primary",
-            "text": "" + UIActivity.labels.Confirm,
             "data-action": "Accept:" + likerUsername,
             "onclick": "takeActionFromLikeComment(this)"
           });
+          actionButton.append($('<span/>', {
+            "text": "" + UIActivity.labels.Confirm
+          }));
+          actionButton.append($('<i/>', {
+            "class": "uiIconSocAcceptConnectUser"
+          }));
         } else { // Viewer is owner
           actionButton = $('<div/>', {
             "class": "connect btn",
-            "text": "" + UIActivity.labels.CancelRequest,
             "data-action": "Revoke:" + likerUsername,
             "onclick": "takeActionFromLikeComment(this)"
           });
+          actionButton.append($('<span/>', {
+            "text": "" + UIActivity.labels.CancelRequest
+          }));
+          actionButton.append($('<i/>', {
+            "class": "uiIconSocCancelConnectUser"
+          }));
         }
       } else if (relationStatus == "confirmed") { // Has Connection
         actionButton = $('<div/>', {
           "class": "connect btn",
-          "text": "" + UIActivity.labels.RemoveConnection,
           "data-action": "Disconnect:" + likerUsername,
           "onclick": "takeActionFromLikeComment(this)"
         });
+        actionButton.append($('<span/>', {
+          "text": "" + UIActivity.labels.RemoveConnection
+        }));
+        actionButton.append($('<i/>', {
+          "class": "uiIconSocCancelConnectUser"
+        }));
       } else if (relationStatus == "ignored") { // Connection is removed
         actionButton = $('<div/>', {
           "class": "connect btn",
-          "text": "" + UIActivity.labels.Ignore,
           "data-action": "Deny:" + likerUsername,
           "onclick": "takeActionFromLikeComment(this)"
         });
+        actionButton.append($('<span/>', {
+          "text": "" + UIActivity.labels.Ignore
+        }));
+        actionButton.append($('<i/>', {
+          "class": "uiIconSocCancelConnectUser"
+        }));
       }
 
       return actionButton;
