@@ -183,7 +183,7 @@ public class CommentRestResourcesV1 implements CommentRestResources {
       throw new WebApplicationException(Response.serverError().entity("Activity " + id + " is not a comment").build());
     }
 
-    ExoSocialActivity activity = getActivityOfComment(comment);
+    ExoSocialActivity activity = activityManager.getParentActivity(comment);
 
     if (EntityBuilder.getActivityStream(activity, currentUser) == null && !Util.hasMentioned(activity, currentUser.getRemoteId())) { //current user doesn't have permission to view activity
       throw new WebApplicationException(Response.Status.UNAUTHORIZED);
@@ -221,7 +221,7 @@ public class CommentRestResourcesV1 implements CommentRestResources {
       throw new WebApplicationException(Response.serverError().entity("Activity " + id + " is not a comment").build());
     }
 
-    ExoSocialActivity activity = getActivityOfComment(comment);
+    ExoSocialActivity activity = activityManager.getParentActivity(comment);
 
     if (EntityBuilder.getActivityStream(activity, currentUser) == null && !Util.hasMentioned(activity, currentUser.getRemoteId())) { //current user doesn't have permission to view activity
       throw new WebApplicationException(Response.Status.UNAUTHORIZED);
@@ -275,20 +275,5 @@ public class CommentRestResourcesV1 implements CommentRestResources {
     }
 
     return Response.ok().build();
-  }
-
-    /**
-     * Get the activity related to the given comment
-     * @param comment The comment entity
-     * @return The activity related to the given comment
-     */
-  private ExoSocialActivity getActivityOfComment(ExoSocialActivity comment) {
-    ExoSocialActivity activity = comment;
-    while (activity != null && activity.isComment()) {
-      String parentId = activity.getParentId();
-      activity = activityManager.getActivity(parentId);
-    }
-    return activity;
-
   }
 }

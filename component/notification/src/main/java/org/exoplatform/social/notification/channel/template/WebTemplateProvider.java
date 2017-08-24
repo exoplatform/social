@@ -276,6 +276,7 @@ public class WebTemplateProvider extends TemplateProvider {
 
       String activityId = notification.getValueOwnerParameter(SocialNotificationUtils.ACTIVITY_ID.getKey());
       ExoSocialActivity activity = Utils.getActivityManager().getActivity(activityId);
+
       templateContext.put("isIntranet", "true");
       Calendar cal = Calendar.getInstance();
       cal.setTimeInMillis(notification.getLastModifiedDate());
@@ -283,7 +284,13 @@ public class WebTemplateProvider extends TemplateProvider {
       templateContext.put("NOTIFICATION_ID", notification.getId());
       templateContext.put("LAST_UPDATED_TIME", TimeConvertUtils.convertXTimeAgoByTimeServer(cal.getTime(), "EE, dd yyyy", new Locale(language), TimeConvertUtils.YEAR));
       templateContext.put("ACTIVITY", NotificationUtils.getNotificationActivityTitle(activity.getTitle(), activity.getType()));
-      templateContext.put("VIEW_FULL_DISCUSSION_ACTION_URL", LinkProvider.getSingleActivityUrl(activity.getId()));
+      if(activity.isComment()) {
+        ExoSocialActivity comment = activity;
+        activity = Utils.getActivityManager().getParentActivity(comment);
+        templateContext.put("VIEW_FULL_DISCUSSION_ACTION_URL", LinkProvider.getSingleActivityUrl(activity.getId() + "#comment-" + comment.getId()));
+      } else {
+        templateContext.put("VIEW_FULL_DISCUSSION_ACTION_URL", LinkProvider.getSingleActivityUrl(activity.getId()));
+      }
       List<String> users = SocialNotificationUtils.mergeUsers(ctx, templateContext, SocialNotificationUtils.LIKER.getKey(), activity.getId(), notification.getValueOwnerParameter(SocialNotificationUtils.LIKER.getKey()));
       //
       int nbUsers = users.size();
