@@ -30,6 +30,8 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
 import org.exoplatform.commons.utils.CommonsUtils;
+import org.exoplatform.services.log.ExoLogger;
+import org.exoplatform.services.log.Log;
 import org.exoplatform.services.security.ConversationState;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.identity.model.Identity;
@@ -53,7 +55,9 @@ import java.util.List;
 @Path(VersionResources.VERSION_ONE + "/social/comments")
 @Api(tags = VersionResources.VERSION_ONE + "/social/comments", value = VersionResources.VERSION_ONE + "/social/comments", description = "Operations on a comment")
 public class CommentRestResourcesV1 implements CommentRestResources {
-  
+
+  private static final Log LOG = ExoLogger.getLogger(CommentRestResourcesV1.class);
+
   @GET
   @Path("{id}")
   @RolesAllowed("users")
@@ -180,8 +184,9 @@ public class CommentRestResourcesV1 implements CommentRestResources {
       throw new WebApplicationException(Response.Status.NOT_FOUND);
     }
 
-    if (comment == null || !comment.isComment()) {
-      throw new WebApplicationException(Response.Status.NOT_FOUND);
+    if (!comment.isComment()) {
+      LOG.error("Error while fetching likes of a comment - Activity " + comment.getId() + " is not a comment.");
+      throw new WebApplicationException(Response.serverError().entity("Activity " + id + " is not a comment").build());
     }
 
     ExoSocialActivity activity = getActivityOfComment(comment);
