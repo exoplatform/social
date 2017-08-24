@@ -33,8 +33,17 @@ import org.exoplatform.social.rest.entity.RelationshipEntity;
 public interface UsersRelationshipsRestResources extends SocialRest {
 
   /**
+   * Get relationships of an user
+   *
    * @param uriInfo
-   * @return
+   * @param status Specific status of relationships: pending, confirmed or all
+   * @param user User name to get relationships
+   * @param others Usernames of the others users to get relationships with the given user
+   * @param offset Offset
+   * @param limit Limit
+   * @param returnSize Returning the number of relationships or not
+   * @param expand Asking for a full representation of a specific subresource, ex: sender or receiver
+   * @return The relationships of the given user
    * @throws Exception
    */
   @GET
@@ -48,7 +57,11 @@ public interface UsersRelationshipsRestResources extends SocialRest {
                                                  @QueryParam("expand") String expand) throws Exception;
 
   /**
+   * Create a relationship between 2 users
+   *
    * @param uriInfo
+   * @param expand Asking for a full representation of a specific subresource, ex: sender or receiver
+   * @param model Relationship entity to create
    * @return
    * @throws Exception
    */
@@ -61,6 +74,8 @@ public interface UsersRelationshipsRestResources extends SocialRest {
    * Get a relationship by id
    * 
    * @param uriInfo
+   * @param id Id of the relationship
+   * @param expand Asking for a full representation of a specific subresource, ex: sender or receiver
    * @return
    * @throws Exception
    */
@@ -71,9 +86,12 @@ public interface UsersRelationshipsRestResources extends SocialRest {
                                                      @QueryParam("expand") String expand) throws Exception;
 
   /**
-   * Process to update a relationship by id
+   * Update a relationship by id
    * 
    * @param uriInfo
+   * @param id Id of the relationship to update
+   * @param expand Asking for a full representation of a specific subresource, ex: sender or receiver
+   * @param model Relationship entity to create
    * @return
    * @throws Exception
    */
@@ -85,9 +103,11 @@ public interface UsersRelationshipsRestResources extends SocialRest {
                                                         RelationshipEntity model) throws Exception;
 
   /**
-   * Process to delete a relationship by id
+   * Delete a relationship by id
    * 
    * @param uriInfo
+   * @param id Id of the relationship to delete
+   * @param expand Asking for a full representation of a specific subresource, ex: sender or receiver
    * @return
    * @throws Exception
    */
