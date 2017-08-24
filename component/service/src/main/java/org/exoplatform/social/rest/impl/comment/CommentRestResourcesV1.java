@@ -29,7 +29,9 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
+import org.apache.commons.lang3.StringUtils;
 import org.exoplatform.commons.utils.CommonsUtils;
+import org.exoplatform.portal.config.UserACL;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.services.security.ConversationState;
@@ -57,6 +59,12 @@ import java.util.List;
 public class CommentRestResourcesV1 implements CommentRestResources {
 
   private static final Log LOG = ExoLogger.getLogger(CommentRestResourcesV1.class);
+
+  private UserACL userACL;
+
+  public CommentRestResourcesV1(UserACL userACL) {
+    this.userACL = userACL;
+  }
 
   @GET
   @Path("{id}")
@@ -262,10 +270,11 @@ public class CommentRestResourcesV1 implements CommentRestResources {
                              @ApiParam(value = "Asking for a full representation of a specific subresource if any", required = false) @QueryParam("expand") String expand) throws Exception {
 
     String authenticatedUser = ConversationState.getCurrent().getIdentity().getUserId();
-    if (!authenticatedUser.equals(username)) {
+    if(StringUtils.isEmpty(username)) {
+      username = authenticatedUser;
+    } else if (!authenticatedUser.equals(username) && !userACL.getSuperUser().equals(authenticatedUser)) {
       throw new WebApplicationException(Response.Status.UNAUTHORIZED);
     }
-    Identity currentUser = CommonsUtils.getService(IdentityManager.class).getOrCreateIdentity(OrganizationIdentityProvider.NAME, authenticatedUser, true);
 
     ActivityManager activityManager = CommonsUtils.getService(ActivityManager.class);
     ExoSocialActivity comment = activityManager.getActivity(id);
@@ -274,8 +283,8 @@ public class CommentRestResourcesV1 implements CommentRestResources {
     }
 
     List<String> likerIds = new ArrayList<String>(Arrays.asList(comment.getLikeIdentityIds()));
-    if (likerIds.contains(currentUser.getId())) {
-      likerIds.remove(currentUser.getId());
+    if (likerIds.contains(username)) {
+      likerIds.remove(username);
       String[] identityIds = new String[likerIds.size()];
       comment.setLikeIdentityIds(likerIds.toArray(identityIds));
       activityManager.updateActivity(comment);
