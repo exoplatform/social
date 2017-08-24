@@ -16,30 +16,14 @@
  */
 package org.exoplatform.social.rest.impl.comment;
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
-
-import javax.annotation.security.RolesAllowed;
-import javax.ws.rs.*;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriInfo;
-
+import io.swagger.annotations.*;
 import org.apache.commons.lang3.StringUtils;
-import org.exoplatform.commons.utils.CommonsUtils;
 import org.exoplatform.portal.config.UserACL;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
-import org.exoplatform.services.security.ConversationState;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.identity.model.Identity;
-import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.manager.ActivityManager;
-import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.rest.api.CommentRestResources;
 import org.exoplatform.social.rest.api.EntityBuilder;
 import org.exoplatform.social.rest.api.RestUtils;
@@ -50,6 +34,12 @@ import org.exoplatform.social.rest.entity.DataEntity;
 import org.exoplatform.social.service.rest.Util;
 import org.exoplatform.social.service.rest.api.VersionResources;
 
+import javax.annotation.security.RolesAllowed;
+import javax.ws.rs.*;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -116,8 +106,7 @@ public class CommentRestResourcesV1 implements CommentRestResources {
       throw new WebApplicationException(Response.Status.UNAUTHORIZED);
     }
     //
-    String authenticatedUser = ConversationState.getCurrent().getIdentity().getUserId();
-    Identity currentUser = CommonsUtils.getService(IdentityManager.class).getOrCreateIdentity(OrganizationIdentityProvider.NAME, authenticatedUser, true);
+    Identity currentUser = org.exoplatform.social.service.rest.RestUtils.getCurrentIdentity();
     
     ExoSocialActivity act = activityManager.getActivity(id);
     if (act == null || ! act.getPosterId().equals(currentUser.getId())) {
@@ -149,9 +138,8 @@ public class CommentRestResourcesV1 implements CommentRestResources {
   public Response deleteCommentById(@Context UriInfo uriInfo,
                                     @ApiParam(value = "Comment id", required = true) @PathParam("id") String id,
                                     @ApiParam(value = "Asking for a full representation of a specific subresource if any", required = false) @QueryParam("expand") String expand) throws Exception {
-    
-    String authenticatedUser = ConversationState.getCurrent().getIdentity().getUserId();
-    Identity currentUser = CommonsUtils.getService(IdentityManager.class).getOrCreateIdentity(OrganizationIdentityProvider.NAME, authenticatedUser, true);
+
+    Identity currentUser = org.exoplatform.social.service.rest.RestUtils.getCurrentIdentity();
     ExoSocialActivity act = activityManager.getActivity(id);
     if (act == null || !act.isComment() || ! act.getPosterId().equals(currentUser.getId())) {
       throw new WebApplicationException(Response.Status.NOT_FOUND);
@@ -183,8 +171,7 @@ public class CommentRestResourcesV1 implements CommentRestResources {
     offset = offset > 0 ? offset : RestUtils.getOffset(uriInfo);
     limit = limit > 0 ? limit : RestUtils.getLimit(uriInfo);
 
-    String authenticatedUser = ConversationState.getCurrent().getIdentity().getUserId();
-    Identity currentUser = CommonsUtils.getService(IdentityManager.class).getOrCreateIdentity(OrganizationIdentityProvider.NAME, authenticatedUser, true);
+    Identity currentUser = org.exoplatform.social.service.rest.RestUtils.getCurrentIdentity();
 
     ExoSocialActivity comment = activityManager.getActivity(id);
     if (comment == null) {
@@ -222,8 +209,7 @@ public class CommentRestResourcesV1 implements CommentRestResources {
   public Response addLikeOnComment(@Context UriInfo uriInfo,
                           @ApiParam(value = "Comment id", required = true) @PathParam("id") String id,
                           @ApiParam(value = "Asking for a full representation of a subresource if any", required = false) @QueryParam("expand") String expand) throws Exception {
-    String authenticatedUser = ConversationState.getCurrent().getIdentity().getUserId();
-    Identity currentUser = CommonsUtils.getService(IdentityManager.class).getOrCreateIdentity(OrganizationIdentityProvider.NAME, authenticatedUser, true);
+    Identity currentUser = org.exoplatform.social.service.rest.RestUtils.getCurrentIdentity();
 
     ExoSocialActivity comment = activityManager.getActivity(id);
     if (comment == null) {
@@ -267,7 +253,8 @@ public class CommentRestResourcesV1 implements CommentRestResources {
                              @ApiParam(value = "User name", required = true) @PathParam("username") String username,
                              @ApiParam(value = "Asking for a full representation of a specific subresource if any", required = false) @QueryParam("expand") String expand) throws Exception {
 
-    String authenticatedUser = ConversationState.getCurrent().getIdentity().getUserId();
+    Identity currentUser = org.exoplatform.social.service.rest.RestUtils.getCurrentIdentity();
+    String authenticatedUser = currentUser.getRemoteId();
     if(StringUtils.isEmpty(username)) {
       username = authenticatedUser;
     } else if (!authenticatedUser.equals(username) && !userACL.getSuperUser().equals(authenticatedUser)) {
