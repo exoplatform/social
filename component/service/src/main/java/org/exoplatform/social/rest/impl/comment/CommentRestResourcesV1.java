@@ -177,7 +177,7 @@ public class CommentRestResourcesV1 implements CommentRestResources {
     ActivityManager activityManager = CommonsUtils.getService(ActivityManager.class);
     ExoSocialActivity comment = activityManager.getActivity(id);
     if (comment == null) {
-      throw new WebApplicationException(Response.Status.UNAUTHORIZED);
+      throw new WebApplicationException(Response.Status.NOT_FOUND);
     }
 
     if (comment == null || !comment.isComment()) {
