@@ -60,9 +60,12 @@ public class CommentRestResourcesV1 implements CommentRestResources {
 
   private static final Log LOG = ExoLogger.getLogger(CommentRestResourcesV1.class);
 
+  private ActivityManager activityManager;
+
   private UserACL userACL;
 
-  public CommentRestResourcesV1(UserACL userACL) {
+  public CommentRestResourcesV1(ActivityManager activityManager, UserACL userACL) {
+    this.activityManager = activityManager;
     this.userACL = userACL;
   }
 
@@ -81,7 +84,6 @@ public class CommentRestResourcesV1 implements CommentRestResources {
                                  @ApiParam(value = "Comment id", required = true) @PathParam("id") String id,
                                  @ApiParam(value = "Asking for a full representation of a specific subresource if any", required = false) @QueryParam("expand") String expand) throws Exception {
 
-    ActivityManager activityManager = CommonsUtils.getService(ActivityManager.class);
     ExoSocialActivity act = activityManager.getActivity(id);
     
     if (act == null || !act.isComment()) {
@@ -117,7 +119,6 @@ public class CommentRestResourcesV1 implements CommentRestResources {
     String authenticatedUser = ConversationState.getCurrent().getIdentity().getUserId();
     Identity currentUser = CommonsUtils.getService(IdentityManager.class).getOrCreateIdentity(OrganizationIdentityProvider.NAME, authenticatedUser, true);
     
-    ActivityManager activityManager = CommonsUtils.getService(ActivityManager.class);
     ExoSocialActivity act = activityManager.getActivity(id);
     if (act == null || ! act.getPosterId().equals(currentUser.getId())) {
       throw new WebApplicationException(Response.Status.UNAUTHORIZED);
@@ -151,7 +152,6 @@ public class CommentRestResourcesV1 implements CommentRestResources {
     
     String authenticatedUser = ConversationState.getCurrent().getIdentity().getUserId();
     Identity currentUser = CommonsUtils.getService(IdentityManager.class).getOrCreateIdentity(OrganizationIdentityProvider.NAME, authenticatedUser, true);
-    ActivityManager activityManager = CommonsUtils.getService(ActivityManager.class);
     ExoSocialActivity act = activityManager.getActivity(id);
     if (act == null || !act.isComment() || ! act.getPosterId().equals(currentUser.getId())) {
       throw new WebApplicationException(Response.Status.NOT_FOUND);
@@ -186,7 +186,6 @@ public class CommentRestResourcesV1 implements CommentRestResources {
     String authenticatedUser = ConversationState.getCurrent().getIdentity().getUserId();
     Identity currentUser = CommonsUtils.getService(IdentityManager.class).getOrCreateIdentity(OrganizationIdentityProvider.NAME, authenticatedUser, true);
 
-    ActivityManager activityManager = CommonsUtils.getService(ActivityManager.class);
     ExoSocialActivity comment = activityManager.getActivity(id);
     if (comment == null) {
       throw new WebApplicationException(Response.Status.NOT_FOUND);
@@ -226,7 +225,6 @@ public class CommentRestResourcesV1 implements CommentRestResources {
     String authenticatedUser = ConversationState.getCurrent().getIdentity().getUserId();
     Identity currentUser = CommonsUtils.getService(IdentityManager.class).getOrCreateIdentity(OrganizationIdentityProvider.NAME, authenticatedUser, true);
 
-    ActivityManager activityManager = CommonsUtils.getService(ActivityManager.class);
     ExoSocialActivity comment = activityManager.getActivity(id);
     if (comment == null) {
       throw new WebApplicationException(Response.Status.UNAUTHORIZED);
@@ -276,7 +274,6 @@ public class CommentRestResourcesV1 implements CommentRestResources {
       throw new WebApplicationException(Response.Status.UNAUTHORIZED);
     }
 
-    ActivityManager activityManager = CommonsUtils.getService(ActivityManager.class);
     ExoSocialActivity comment = activityManager.getActivity(id);
     if (comment == null) {
       throw new WebApplicationException(Response.Status.UNAUTHORIZED);
@@ -302,7 +299,6 @@ public class CommentRestResourcesV1 implements CommentRestResources {
     ExoSocialActivity activity = comment;
     while (activity != null && activity.isComment()) {
       String parentId = activity.getParentId();
-      ActivityManager activityManager = CommonsUtils.getService(ActivityManager.class);
       activity = activityManager.getActivity(parentId);
     }
     return activity;
