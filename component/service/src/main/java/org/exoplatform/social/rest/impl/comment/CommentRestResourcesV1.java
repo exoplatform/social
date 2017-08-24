@@ -224,6 +224,11 @@ public class CommentRestResourcesV1 implements CommentRestResources {
       throw new WebApplicationException(Response.Status.UNAUTHORIZED);
     }
 
+    if (!comment.isComment()) {
+      LOG.error("Error while adding like on a comment - Activity " + comment.getId() + " is not a comment.");
+      throw new WebApplicationException(Response.serverError().entity("Activity " + id + " is not a comment").build());
+    }
+
     ExoSocialActivity activity = getActivityOfComment(comment);
 
     if (EntityBuilder.getActivityStream(activity, currentUser) == null && !Util.hasMentioned(activity, currentUser.getRemoteId())) { //current user doesn't have permission to view activity
