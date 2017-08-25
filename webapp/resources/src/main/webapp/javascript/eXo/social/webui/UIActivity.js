@@ -729,9 +729,13 @@
         var action = null;
         var currentViewerId = env.userName;
         if (currentViewerId != likerUsername) {
-          var likerRelationship = usersRelationships.find(function(relationship) {
-            return relationship.receiver.username == likerUsername || relationship.sender.username == likerUsername;
-          });
+          var likerRelationship;
+          for(j = 0; j < usersRelationships.length; j++) {
+            if(usersRelationships[j].receiver.username == likerUsername || usersRelationships[j].sender.username == likerUsername) {
+              likerRelationship = usersRelationships[j];
+              break;
+            }
+          }
           var sender = null, status = null;
           if(likerRelationship) {
             sender = likerRelationship.sender.username;
