@@ -28,11 +28,17 @@
             likeUnlikeCommentClass = "";
         }
 
+        def maxNbLikersInTooltip = 10;
+        def moreThan10Likers = comment.numberOfLikes > maxNbLikersInTooltip;
         def likersList = "";
-        for (liker in comment.likeIdentityIds ){
-            def likerIdentity = Utils.getIdentityManager().getIdentity(liker);
+        for (def i = 0; i < comment.numberOfLikes; i++){
+            def likerIdentity = Utils.getIdentityManager().getIdentity(comment.likeIdentityIds[i]);
             likerCommentFullName = StringEscapeUtils.escapeHtml(likerIdentity.profile.fullName);
             likersList += likerCommentFullName + "<br />";
+            if(moreThan10Likers && i == (maxNbLikersInTooltip - 2)) {
+                likersList += _ctx.appRes("UIActivity.msg.MoreLikers").replaceFirst("\\{0\\}", String.valueOf(comment.numberOfLikes - (maxNbLikersInTooltip - 1)));
+                break;
+            }
         }
         %>
         <li>
