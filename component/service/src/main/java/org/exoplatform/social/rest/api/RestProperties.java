@@ -44,4 +44,5 @@ public class RestProperties {
   public static final String TYPE          = "type";
   public static final String UPDATE_DATE   = "updateDate";
   public static final String URL           = "url";
+  public static final String LIKES         = "likes";
 }

@@ -307,8 +307,14 @@ public class EntityBuilder {
     Identity poster = CommonsUtils.getService(IdentityManager.class).getIdentity(comment.getPosterId(), true);
     CommentEntity commentEntity = new CommentEntity(comment.getId());
     commentEntity.setHref(RestUtils.getRestUrl(ACTIVITIES_TYPE, comment.getId(), restPath));
+
+    List expandFields = new ArrayList();
+    if(StringUtils.isNotEmpty(expand)) {
+      expandFields = Arrays.asList(expand.split(","));
+    }
+
     LinkEntity identityLink;
-    if (expand != null && RestProperties.IDENTITY.equals(expand)) {
+    if (expandFields.contains(RestProperties.IDENTITY)) {
       identityLink = new LinkEntity(buildEntityIdentity(poster, restPath, null));
     } else {
       identityLink = new LinkEntity(RestUtils.getRestUrl(IDENTITIES_TYPE, comment.getPosterId(), restPath));
@@ -317,6 +323,11 @@ public class EntityBuilder {
     commentEntity.setPoster(poster.getRemoteId());
     commentEntity.setBody(comment.getTitle());
     commentEntity.setMentions(getActivityMentions(comment, restPath));
+    if(expandFields.contains(RestProperties.LIKES)) {
+      commentEntity.setLikes(new LinkEntity(buildEntityFromLike(comment, restPath, null, 0, 0)));
+    } else {
+      commentEntity.setLikes(new LinkEntity(RestUtils.getBaseRestUrl() + "/" + VersionResources.VERSION_ONE + "/social/comments/" + comment.getId() + "/likes"));
+    }
     commentEntity.setCreateDate(RestUtils.formatISO8601(new Date(comment.getPostedTime())));
     commentEntity.setUpdateDate(RestUtils.formatISO8601(comment.getUpdated()));
     commentEntity.setActivity(RestUtils.getRestUrl(ACTIVITIES_TYPE, comment.getParentId(), restPath));

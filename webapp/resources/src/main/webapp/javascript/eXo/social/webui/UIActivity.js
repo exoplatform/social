@@ -17,7 +17,7 @@
 /**
  * UIActivity.js
  */
-(function ($, _, documentPreview) {
+(function ($, _) {
   var UIActivity = {
     COMMENT_BLOCK_BOUND_CLASS_NAME : "commentBox commentBlockBound ",
     COMMENT_BLOCK_BOUND_NONE_CLASS_NAME : " commentBox commentBlockBoundNone",
@@ -541,13 +541,6 @@
       })
     },
 
-    previewDoc: function(event, settings) {
-      if (event && eXo.social.SocialUtil.checkDevice().isMobile === true) {
-        event.stopPropagation();
-      }
-      documentPreview.init(settings);
-    },
-
     /**
      * prepare Popup of commennt Likers
     */
@@ -729,7 +722,7 @@
         var action = null;
         var currentViewerId = env.userName;
         if (currentViewerId != likerUsername) {
-          var likerRelationship;
+          var likerRelationship = null;
           for(j = 0; j < usersRelationships.length; j++) {
             if(usersRelationships[j].receiver.username == likerUsername || usersRelationships[j].sender.username == likerUsername) {
               likerRelationship = usersRelationships[j];
@@ -805,4 +798,4 @@
   eXo.social.SocialUtil.addOnResizeWidth(function(evt){UIActivity.responsiveMobile()});
   eXo.social.SocialUtil.addOnResizeWidth(function(evt){UIActivity.adaptFileBreadCrumb()});
   return UIActivity;
-})($, mentions._, documentPreview);
+})($, mentions._);

@@ -267,8 +267,8 @@ public class CommentRestResourcesV1 implements CommentRestResources {
     }
 
     List<String> likerIds = new ArrayList<String>(Arrays.asList(comment.getLikeIdentityIds()));
-    if (likerIds.contains(username)) {
-      likerIds.remove(username);
+    if (likerIds.contains(currentUser.getId())) {
+      likerIds.remove(currentUser.getId());
       String[] identityIds = new String[likerIds.size()];
       comment.setLikeIdentityIds(likerIds.toArray(identityIds));
       activityManager.updateActivity(comment);
