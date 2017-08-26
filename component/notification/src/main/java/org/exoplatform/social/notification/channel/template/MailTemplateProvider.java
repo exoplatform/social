@@ -244,11 +244,20 @@ public class MailTemplateProvider extends TemplateProvider {
 
       templateContext.put("PROFILE_URL", LinkProviderUtils.getRedirectUrl("user", identity.getRemoteId()));
       templateContext.put("OPEN_URL", LinkProviderUtils.getOpenLink(activity));
-      templateContext.put("REPLY_ACTION_URL", LinkProviderUtils.getRedirectUrl("reply_activity", activity.getId()));
-      templateContext.put("VIEW_FULL_DISCUSSION_ACTION_URL", LinkProviderUtils.getRedirectUrl("view_full_activity", activity.getId()));
+      String body;
+      if(activity.isComment()) {
+        ExoSocialActivity activityOfComment = Utils.getActivityManager().getParentActivity(activity);
+        templateContext.put("REPLY_ACTION_URL", LinkProviderUtils.getRedirectUrl("reply_activity", activityOfComment.getId()));
+        templateContext.put("VIEW_FULL_DISCUSSION_ACTION_URL", LinkProviderUtils.getRedirectUrl("view_full_activity", activityOfComment.getId()));
+        templateContext.put("ACTIVITY", NotificationUtils.processLinkTitle(getI18N(activity, new Locale(language)).getTitle()));
+        body = TemplateUtils.processGroovy(templateContext);
+      } else {
+        templateContext.put("REPLY_ACTION_URL", LinkProviderUtils.getRedirectUrl("reply_activity", activity.getId()));
+        templateContext.put("VIEW_FULL_DISCUSSION_ACTION_URL", LinkProviderUtils.getRedirectUrl("view_full_activity", activity.getId()));
+        body = SocialNotificationUtils.getBody(ctx, templateContext, activity);
+      }
 
-      String body = SocialNotificationUtils.getBody(ctx, templateContext, activity);
-      
+
       //binding the exception throws by processing template
       ctx.setException(templateContext.getException());
       return messageInfo.subject(subject).body(body).end();
