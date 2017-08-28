@@ -209,7 +209,7 @@ public class WebTemplateProvider extends TemplateProvider {
     
   };
   
-  /** Defines the template builder for LikePlugin*/
+  /** Defines the template builder for LikePlugin and LikeCommentPlugin */
   private AbstractTemplateBuilder like = new AbstractTemplateBuilder() {
 
     @Override
@@ -228,7 +228,12 @@ public class WebTemplateProvider extends TemplateProvider {
       templateContext.put("NOTIFICATION_ID", notification.getId());
       templateContext.put("LAST_UPDATED_TIME", TimeConvertUtils.convertXTimeAgoByTimeServer(cal.getTime(), "EE, dd yyyy", new Locale(language), TimeConvertUtils.YEAR));
       templateContext.put("ACTIVITY", NotificationUtils.getNotificationActivityTitle(activity.getTitle(), activity.getType()));
-      templateContext.put("VIEW_FULL_DISCUSSION_ACTION_URL", LinkProvider.getSingleActivityUrl(activity.getId()));
+      if(activity.isComment()) {
+        ExoSocialActivity activityOfComment = Utils.getActivityManager().getParentActivity(activity);
+        templateContext.put("VIEW_FULL_DISCUSSION_ACTION_URL", LinkProvider.getSingleActivityUrl(activityOfComment.getId() + "#comment-" + activity.getId()));
+      } else {
+        templateContext.put("VIEW_FULL_DISCUSSION_ACTION_URL", LinkProvider.getSingleActivityUrl(activity.getId()));
+      }
       List<String> users = SocialNotificationUtils.mergeUsers(ctx, templateContext, SocialNotificationUtils.LIKER.getKey(), activity.getId(), notification.getValueOwnerParameter(SocialNotificationUtils.LIKER.getKey()));
       //
       int nbUsers = users.size();
@@ -262,68 +267,6 @@ public class WebTemplateProvider extends TemplateProvider {
       return false;
     }
    
-  };
-
-  /** Defines the template builder for LikeCommentPlugin*/
-  private AbstractTemplateBuilder likeComment = new AbstractTemplateBuilder() {
-
-    @Override
-    protected MessageInfo makeMessage(NotificationContext ctx) {
-      NotificationInfo notification = ctx.getNotificationInfo();
-      String language = getLanguage(notification);
-      String pluginId = notification.getKey().getId();
-      TemplateContext templateContext = TemplateContext.newChannelInstance(getChannelKey(), pluginId, language);
-
-      String activityId = notification.getValueOwnerParameter(SocialNotificationUtils.ACTIVITY_ID.getKey());
-      ExoSocialActivity activity = Utils.getActivityManager().getActivity(activityId);
-
-      templateContext.put("isIntranet", "true");
-      Calendar cal = Calendar.getInstance();
-      cal.setTimeInMillis(notification.getLastModifiedDate());
-      templateContext.put("READ", Boolean.valueOf(notification.getValueOwnerParameter(NotificationMessageUtils.READ_PORPERTY.getKey())) ? "read" : "unread");
-      templateContext.put("NOTIFICATION_ID", notification.getId());
-      templateContext.put("LAST_UPDATED_TIME", TimeConvertUtils.convertXTimeAgoByTimeServer(cal.getTime(), "EE, dd yyyy", new Locale(language), TimeConvertUtils.YEAR));
-      templateContext.put("ACTIVITY", NotificationUtils.getNotificationActivityTitle(activity.getTitle(), activity.getType()));
-      if(activity.isComment()) {
-        ExoSocialActivity comment = activity;
-        activity = Utils.getActivityManager().getParentActivity(comment);
-        templateContext.put("VIEW_FULL_DISCUSSION_ACTION_URL", LinkProvider.getSingleActivityUrl(activity.getId() + "#comment-" + comment.getId()));
-      } else {
-        templateContext.put("VIEW_FULL_DISCUSSION_ACTION_URL", LinkProvider.getSingleActivityUrl(activity.getId()));
-      }
-      List<String> users = SocialNotificationUtils.mergeUsers(ctx, templateContext, SocialNotificationUtils.LIKER.getKey(), activity.getId(), notification.getValueOwnerParameter(SocialNotificationUtils.LIKER.getKey()));
-      //
-      int nbUsers = users.size();
-      if (nbUsers > 0) {
-        Identity lastIdentity = Utils.getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, users.get(nbUsers - 1), true);
-        Profile profile = lastIdentity.getProfile();
-        templateContext.put("USER", profile.getFullName());
-        templateContext.put("AVATAR", profile.getAvatarUrl() != null ? profile.getAvatarUrl() : LinkProvider.PROFILE_DEFAULT_AVATAR_URL);
-        templateContext.put("PROFILE_URL", LinkProvider.getUserProfileUri(lastIdentity.getRemoteId()));
-        templateContext.put("NB_USERS", nbUsers);
-        //
-        if (nbUsers >= 2) {
-          Identity beforeLastIdentity = Utils.getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, users.get(nbUsers - 2), true);
-          templateContext.put("LAST_USER", beforeLastIdentity.getProfile().getFullName());
-          if (nbUsers > 2) {
-            templateContext.put("COUNT", nbUsers - 2);
-          }
-        }
-      }
-
-      //
-      String body = TemplateUtils.processGroovy(templateContext);
-      //binding the exception throws by processing template
-      ctx.setException(templateContext.getException());
-      MessageInfo messageInfo = new MessageInfo();
-      return messageInfo.body(body).end();
-    }
-
-    @Override
-    protected boolean makeDigest(NotificationContext ctx, Writer writer) {
-      return false;
-    }
-
   };
   
   /** Defines the template builder for NewUserPlugin*/
@@ -584,7 +527,7 @@ public class WebTemplateProvider extends TemplateProvider {
     this.templateBuilders.put(PluginKey.key(ActivityCommentPlugin.ID), comment);
     this.templateBuilders.put(PluginKey.key(ActivityMentionPlugin.ID), mention);
     this.templateBuilders.put(PluginKey.key(LikePlugin.ID), like);
-    this.templateBuilders.put(PluginKey.key(LikeCommentPlugin.ID), likeComment);
+    this.templateBuilders.put(PluginKey.key(LikeCommentPlugin.ID), like);
     this.templateBuilders.put(PluginKey.key(NewUserPlugin.ID), newUser);
     this.templateBuilders.put(PluginKey.key(PostActivityPlugin.ID), postActivity);
     this.templateBuilders.put(PluginKey.key(PostActivitySpaceStreamPlugin.ID), postActivitySpace);
