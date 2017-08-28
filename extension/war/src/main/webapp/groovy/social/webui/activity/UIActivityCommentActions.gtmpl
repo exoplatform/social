@@ -28,11 +28,13 @@
             likeUnlikeCommentClass = "";
         }
 
+        def likes = Arrays.copyOf(comment.likeIdentityIds, comment.likeIdentityIds.length);
+        ArrayUtils.reverse(likes);
         def maxNbLikersInTooltip = 10;
         def moreThan10Likers = comment.numberOfLikes > maxNbLikersInTooltip;
         def likersList = "";
         for (def i = 0; i < comment.numberOfLikes; i++){
-            def likerIdentity = Utils.getIdentityManager().getIdentity(comment.likeIdentityIds[i]);
+            def likerIdentity = Utils.getIdentityManager().getIdentity(likes[i]);
             likerCommentFullName = StringEscapeUtils.escapeHtml(likerIdentity.profile.fullName);
             likersList += likerCommentFullName + "<br />";
             if(moreThan10Likers && i == (maxNbLikersInTooltip - 2)) {

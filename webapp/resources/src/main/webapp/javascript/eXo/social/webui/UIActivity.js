@@ -597,6 +597,7 @@
             }).complete(function (jqXHR) {
               if (jqXHR.readyState === 4) {
                 var dataRelationships = $.parseJSON(jqXHR.responseText);
+                dataLikers.likes.reverse();
                 UIActivity.buildLikersPopup(dataLikers.likes, dataRelationships.usersRelationships);
               }
             });

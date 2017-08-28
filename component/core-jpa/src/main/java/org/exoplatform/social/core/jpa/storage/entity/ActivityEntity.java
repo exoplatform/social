@@ -301,7 +301,8 @@ public class ActivityEntity implements Serializable {
     name = "SOC_ACTIVITY_LIKERS",
     joinColumns=@JoinColumn(name = "ACTIVITY_ID")
   )
-  private Set<LikerEntity> likers = new HashSet<LikerEntity>();
+  @OrderBy("createdDate asc")
+  private Set<LikerEntity> likers = new LinkedHashSet<>();
 
   @ElementCollection
   @JoinTable(
@@ -438,7 +439,7 @@ public class ActivityEntity implements Serializable {
   }
 
   public Set<String> getLikerIds() {
-    Set<String> ids = new HashSet<String>();
+    Set<String> ids = new LinkedHashSet<>();
     for (LikerEntity liker : likers) {
       ids.add(liker.getLikerId());      
     }

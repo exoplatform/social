@@ -275,7 +275,7 @@ public class BaseUIActivity extends UIForm {
   }
 
   /**
-   * Removes currently viewing userId if he liked this activity.
+   * Gets likes to display
    *
    * @return
    * @throws Exception
