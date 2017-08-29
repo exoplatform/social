@@ -97,7 +97,7 @@ public class SpaceRestResourcesV1 implements SpaceRestResources {
   @ApiOperation(value = "Gets spaces of user",
                 httpMethod = "GET",
                 response = Response.class,
-                notes = "This returns a list of spaces in the following cases: <br/><ul><li>the authenticated user is a member of the spaces</li><li>the spaces are \"public\"</li><li>the authenticated user is the super user</li></ul>")
+                notes = "This returns a list of spaces in the following cases: <br/><ul><li>the authenticated user is a member of the spaces</li><li>the spaces are \"public\"</li><li>the authenticated user is a spaces super manager</li></ul>")
   @ApiResponses(value = {
     @ApiResponse (code = 200, message = "Request fulfilled"),
     @ApiResponse (code = 500, message = "Internal server error"),
@@ -121,7 +121,7 @@ public class SpaceRestResourcesV1 implements SpaceRestResources {
       spaceFilter.setSpaceNameSearchCondition(q);
     }
     String authenticatedUser = ConversationState.getCurrent().getIdentity().getUserId();
-    if (userACL.getSuperUser().equals(authenticatedUser)) {
+    if (spaceService.isSuperManager(authenticatedUser)) {
       listAccess = spaceFilter != null ? spaceService.getAllSpacesByFilter(spaceFilter):
          spaceService.getAllSpacesWithListAccess();
     } else {
@@ -201,7 +201,7 @@ public class SpaceRestResourcesV1 implements SpaceRestResources {
   @ApiOperation(value = "Gets a specific space by id",
                 httpMethod = "GET",
                 response = Response.class,
-                notes = "This returns the space in the following cases: <br/><ul><li>the authenticated user is a member of the space</li><li>the space is \"public\"</li><li>the authenticated user is the super user</li></ul>")
+                notes = "This returns the space in the following cases: <br/><ul><li>the authenticated user is a member of the space</li><li>the space is \"public\"</li><li>the authenticated user is a spaces super manager</li></ul>")
   @ApiResponses(value = { 
     @ApiResponse (code = 200, message = "Request fulfilled"),
     @ApiResponse (code = 500, message = "Internal server error"),
@@ -213,7 +213,7 @@ public class SpaceRestResourcesV1 implements SpaceRestResources {
     String authenticatedUser = ConversationState.getCurrent().getIdentity().getUserId();
     SpaceService spaceService = CommonsUtils.getService(SpaceService.class);
     Space space = spaceService.getSpaceById(id);
-    if (space == null || (Space.HIDDEN.equals(space.getVisibility()) && ! spaceService.isMember(space, authenticatedUser) && ! userACL.getSuperUser().equals(authenticatedUser))) {
+    if (space == null || (Space.HIDDEN.equals(space.getVisibility()) && ! spaceService.isMember(space, authenticatedUser) && ! spaceService.isSuperManager(authenticatedUser))) {
       throw new WebApplicationException(Response.Status.UNAUTHORIZED);
     }
     return EntityBuilder.getResponse(EntityBuilder.buildEntityFromSpace(space, authenticatedUser, uriInfo.getPath(), expand), uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
@@ -246,7 +246,7 @@ public class SpaceRestResourcesV1 implements SpaceRestResources {
     SpaceService spaceService = CommonsUtils.getService(SpaceService.class);
     
     Space space = spaceService.getSpaceByDisplayName(id);
-    if (space == null || (Space.HIDDEN.equals(space.getVisibility()) && ! spaceService.isMember(space, authenticatedUser) && ! userACL.getSuperUser().equals(authenticatedUser))) {
+    if (space == null || (Space.HIDDEN.equals(space.getVisibility()) && ! spaceService.isMember(space, authenticatedUser) && ! spaceService.isSuperManager(authenticatedUser))) {
       throw new WebApplicationException(Response.Status.NOT_FOUND);
     }
     Identity identity = identityManager.getOrCreateIdentity(SpaceIdentityProvider.NAME, space.getId(), true);
@@ -289,7 +289,7 @@ public class SpaceRestResourcesV1 implements SpaceRestResources {
   @ApiOperation(value = "Updates a specific space by id",
                 httpMethod = "PUT",
                 response = Response.class,
-                notes = "This updates the space in the following cases: <br/><ul><li>the authenticated user is a manager of the space</li><li>the authenticated user is the owner of the space</li><li>the authenticated user is the super user</li></ul>")
+                notes = "This updates the space in the following cases: <br/><ul><li>the authenticated user is a manager of the space</li><li>the authenticated user is the owner of the space</li><li>the authenticated user is a spaces super manager</li></ul>")
   @ApiResponses(value = { 
     @ApiResponse (code = 200, message = "Request fulfilled"),
     @ApiResponse (code = 500, message = "Internal server error"),
@@ -307,7 +307,7 @@ public class SpaceRestResourcesV1 implements SpaceRestResources {
     //
     SpaceService spaceService = CommonsUtils.getService(SpaceService.class);
     Space space = spaceService.getSpaceById(id);
-    if (space == null || (! spaceService.isManager(space, authenticatedUser) && ! userACL.getSuperUser().equals(authenticatedUser))) {
+    if (space == null || (! spaceService.isManager(space, authenticatedUser) && ! spaceService.isSuperManager(authenticatedUser))) {
       throw new WebApplicationException(Response.Status.UNAUTHORIZED);
     }
     if(model.getGroupId() != null && model.getGroupId().length() > 0) {
@@ -329,7 +329,7 @@ public class SpaceRestResourcesV1 implements SpaceRestResources {
   @ApiOperation(value = "Deletes a specific space by id",
                 httpMethod = "DELETE",
                 response = Response.class,
-                notes = "This deletes the space in the following cases: <br/><ul><li>the authenticated user is a manager of the space</li><li>the authenticated user is the owner of the space</li><li>the authenticated user is the super user</li></ul>")
+                notes = "This deletes the space in the following cases: <br/><ul><li>the authenticated user is a manager of the space</li><li>the authenticated user is the owner of the space</li><li>the authenticated user is a spaces super manager</li></ul>")
   @ApiResponses(value = { 
     @ApiResponse (code = 200, message = "Request fulfilled"),
     @ApiResponse (code = 500, message = "Internal server error"),
@@ -342,7 +342,7 @@ public class SpaceRestResourcesV1 implements SpaceRestResources {
     //
     SpaceService spaceService = CommonsUtils.getService(SpaceService.class);
     Space space = spaceService.getSpaceById(id);
-    if (space == null || (! spaceService.isManager(space, authenticatedUser) && ! userACL.getSuperUser().equals(authenticatedUser))) {
+    if (space == null || (! spaceService.isManager(space, authenticatedUser) && ! spaceService.isSuperManager(authenticatedUser))) {
       throw new WebApplicationException(Response.Status.UNAUTHORIZED);
     }
     spaceService.deleteSpace(space);
@@ -359,7 +359,7 @@ public class SpaceRestResourcesV1 implements SpaceRestResources {
   @ApiOperation(value = "Gets users of a specific space",
                 httpMethod = "GET",
                 response = Response.class,
-                notes = "This returns a list of users if the authenticated user is a member or manager of the space.")
+                notes = "This returns a list of users if the authenticated user is a member or manager of the space or a spaces super manager.")
   @ApiResponses(value = { 
     @ApiResponse (code = 200, message = "Request fulfilled"),
     @ApiResponse (code = 500, message = "Internal server error"),
@@ -379,7 +379,7 @@ public class SpaceRestResourcesV1 implements SpaceRestResources {
     //
     SpaceService spaceService = CommonsUtils.getService(SpaceService.class);
     Space space = spaceService.getSpaceById(id);
-    if (space == null || (! spaceService.isMember(space, authenticatedUser) && ! userACL.getSuperUser().equals(authenticatedUser))) {
+    if (space == null || (! spaceService.isMember(space, authenticatedUser) && ! spaceService.isSuperManager(authenticatedUser))) {
       throw new WebApplicationException(Response.Status.UNAUTHORIZED);
     }
     
@@ -406,7 +406,7 @@ public class SpaceRestResourcesV1 implements SpaceRestResources {
   @ApiOperation(value = "Gets space activities by space id",
                 httpMethod = "GET",
                 response = Response.class,
-                notes = "This returns the space's activities if the authenticated user is a member of the space.")
+                notes = "This returns the space's activities if the authenticated user is a member of the space or a spaces super manager.")
   @ApiResponses(value = { 
     @ApiResponse (code = 200, message = "Request fulfilled"),
     @ApiResponse (code = 500, message = "Internal server error"),
@@ -427,7 +427,7 @@ public class SpaceRestResourcesV1 implements SpaceRestResources {
     //
     SpaceService spaceService = CommonsUtils.getService(SpaceService.class);
     Space space = spaceService.getSpaceById(id);
-    if (space == null || (! spaceService.isMember(space, authenticatedUser) && ! userACL.getSuperUser().equals(authenticatedUser))) {
+    if (space == null || (! spaceService.isMember(space, authenticatedUser) && ! spaceService.isSuperManager(authenticatedUser))) {
       throw new WebApplicationException(Response.Status.UNAUTHORIZED);
     }
     
@@ -473,7 +473,7 @@ public class SpaceRestResourcesV1 implements SpaceRestResources {
   @ApiOperation(value = "Posts an activity to a specific space",
                 httpMethod = "POST",
                 response = Response.class,
-                notes = "This posts the activity if the authenticated user is a member of the space.")
+                notes = "This posts the activity if the authenticated user is a member of the space or a spaces super manager.")
   @ApiResponses(value = { 
     @ApiResponse (code = 200, message = "Request fulfilled"),
     @ApiResponse (code = 500, message = "Internal server error"),
@@ -490,7 +490,7 @@ public class SpaceRestResourcesV1 implements SpaceRestResources {
     //
     SpaceService spaceService = CommonsUtils.getService(SpaceService.class);
     Space space = spaceService.getSpaceById(id);
-    if (space == null || (! spaceService.isMember(space, authenticatedUser) && ! userACL.getSuperUser().equals(authenticatedUser))) {
+    if (space == null || (! spaceService.isMember(space, authenticatedUser) && ! spaceService.isSuperManager(authenticatedUser))) {
       throw new WebApplicationException(Response.Status.UNAUTHORIZED);
     }
     

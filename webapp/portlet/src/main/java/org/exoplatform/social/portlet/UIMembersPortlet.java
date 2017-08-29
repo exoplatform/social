@@ -118,11 +118,16 @@ public class UIMembersPortlet extends UIPortletApplication {
     initManager();
 
     boolean isAdmin = false;
-    for (Identity user: managerList) {
-      String currentUser = Utils.getViewerRemoteId();
-      if (currentUser.equals(user.getRemoteId())) {
-        isAdmin = true;
-        break;
+    String currentUser = Utils.getViewerRemoteId();
+    SpaceService spaceService = getApplicationComponent(SpaceService.class);
+    if (spaceService.isSuperManager(currentUser)) {
+      isAdmin = true;
+    } else {
+      for (Identity user : managerList) {
+        if (currentUser.equals(user.getRemoteId())) {
+          isAdmin = true;
+          break;
+        }
       }
     }
 

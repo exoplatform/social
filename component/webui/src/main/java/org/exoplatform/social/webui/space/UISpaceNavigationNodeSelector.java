@@ -520,7 +520,8 @@ public class UISpaceNavigationNodeSelector extends UIContainer {
         UserACL userACL = uiApp.getApplicationComponent(UserACL.class);
         SpaceService spaceService = uiNodeSelector.getApplicationComponent(SpaceService.class);
         UISpaceNavigationManagement uiSpaceNavigationManagement = uiNodeSelector.getParent();
-        if (!(spaceService.isManager(uiSpaceNavigationManagement.getSpace(), Utils.getViewerRemoteId()) 
+        if (!(spaceService.isSuperManager(Utils.getViewerRemoteId())
+            || spaceService.isManager(uiSpaceNavigationManagement.getSpace(), Utils.getViewerRemoteId()) 
             || userACL.hasPermission(page))) {
           uiApp.addMessage(new ApplicationMessage("UIPageBrowser.msg.UserNotPermission",
                                                   new String[] { pageId },

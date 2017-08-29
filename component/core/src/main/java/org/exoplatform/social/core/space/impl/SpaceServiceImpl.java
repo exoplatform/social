@@ -19,26 +19,34 @@ package org.exoplatform.social.core.space.impl;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.StringUtils;
+
 import org.exoplatform.commons.utils.ListAccess;
-import org.exoplatform.commons.utils.PageList;
 import org.exoplatform.container.ExoContainer;
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.xml.InitParams;
+import org.exoplatform.container.xml.ValueParam;
 import org.exoplatform.container.xml.ValuesParam;
+import org.exoplatform.management.annotations.ManagedBy;
 import org.exoplatform.portal.config.UserACL;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.services.organization.Group;
 import org.exoplatform.services.organization.GroupHandler;
+import org.exoplatform.services.organization.Membership;
 import org.exoplatform.services.organization.MembershipTypeHandler;
 import org.exoplatform.services.organization.OrganizationService;
 import org.exoplatform.services.organization.User;
+import org.exoplatform.services.security.IdentityConstants;
+import org.exoplatform.services.security.IdentityRegistry;
+import org.exoplatform.services.security.MembershipEntry;
 import org.exoplatform.social.core.application.PortletPreferenceRequiredPlugin;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
@@ -65,19 +73,22 @@ import org.exoplatform.social.core.storage.api.SpaceStorage;
  * @author <a href="mailto:tungcnw@gmail.com">dang.tung</a>
  * @since  August 29, 2008
  */
+@ManagedBy(SpaceServiceManagerBean.class)
 public class SpaceServiceImpl implements SpaceService {
+  private static final String SPACES_SUPER_ADMINISTRATORS_PARAM = "spaces.super.administrators";
+
   private static final Log                     LOG                   = ExoLogger.getLogger(SpaceServiceImpl.class.getName());
 
   public static final String                   MEMBER                   = "member";
 
   public static final String                   MANAGER                  = "manager";
 
+  private IdentityRegistry                     identityRegistry;
+
   private SpaceStorage                         spaceStorage;
 
   private IdentityStorage                      identityStorage;
   
-  private ActivityStreamStorage                streamStorage;
-
   private OrganizationService                  orgService               = null;
 
   private UserACL                              userACL                  = null;
@@ -97,8 +108,9 @@ public class SpaceServiceImpl implements SpaceService {
   
   /** The limit for list access loading. */
   private static final int                   LIMIT = 200;
-  
-  
+
+  private List<MembershipEntry> superManagersMemberships = new ArrayList<>();
+
   /**
    * SpaceServiceImpl constructor Initialize
    * <tt>org.exoplatform.social.space.impl.JCRStorage</tt>
@@ -106,22 +118,40 @@ public class SpaceServiceImpl implements SpaceService {
    * @param params
    * @throws Exception
    */
-  @SuppressWarnings("unchecked")
-  public SpaceServiceImpl(InitParams params, SpaceStorage spaceStorage, IdentityStorage identityStorage, ActivityStreamStorage streamStorage) throws Exception {
+  public SpaceServiceImpl(InitParams params, SpaceStorage spaceStorage, IdentityStorage identityStorage, ActivityStreamStorage streamStorage, UserACL userACL, IdentityRegistry identityRegistry) throws Exception {
 
     this.spaceStorage = spaceStorage;
     this.identityStorage = identityStorage;
-    this.streamStorage = streamStorage;
+    this.identityRegistry = identityRegistry;
+    this.userACL = userACL;
 
-    //backward compatible
     if (params != null) {
-      LOG.warn("The SpaceService configuration you attempt to use is deprecated, please update it by" + 
-              "using external-component-plugins configuration");
-      spaceApplicationConfigPlugin = new SpaceApplicationConfigPlugin();
-      Iterator<?> it = params.getValuesParamIterator();
+      if (params.containsKey(SPACES_SUPER_ADMINISTRATORS_PARAM)) {
+        ValueParam superAdministratorParam = params.getValueParam(SPACES_SUPER_ADMINISTRATORS_PARAM);
+        String superManagersMemberships = superAdministratorParam.getValue();
+        if (StringUtils.isNotBlank(superManagersMemberships)) {
+          String[] superManagersMembershipsArray = superManagersMemberships.split(",");
+          for (String superManagerMembership : superManagersMembershipsArray) {
+            if (StringUtils.isBlank(superManagerMembership)) {
+              continue;
+            }
+            if (!superManagerMembership.contains(":/")) {
+              LOG.warn("Invalid entry '" + superManagerMembership + "'. A permission expression is expected (mstype:groupId).");
+            } else {
+              String[] membershipParts = superManagerMembership.split(":");
+              this.superManagersMemberships.add(new MembershipEntry(membershipParts[1], membershipParts[0]));
+            }
+          }
+        }
+      }
 
+      //backward compatible
+      spaceApplicationConfigPlugin = new SpaceApplicationConfigPlugin();
+      Iterator<ValuesParam> it = params.getValuesParamIterator();
+
+      boolean deprecatedConfiguration = false;
       while (it.hasNext()) {
-        ValuesParam param = (ValuesParam) it.next();
+        ValuesParam param = it.next();
         String name = param.getName();
         if (name.endsWith("homeNodeApp")) {
           String homeNodeApp = param.getValue();
@@ -130,8 +160,8 @@ public class SpaceServiceImpl implements SpaceService {
           spaceHomeApplication.setAppTitle(homeNodeApp);
           spaceHomeApplication.setIcon("SpaceHomeIcon");
           spaceApplicationConfigPlugin.setHomeApplication(spaceHomeApplication);
-        }
-        if (name.endsWith("apps")) {
+          deprecatedConfiguration = true;
+        } else if (name.endsWith("apps")) {
           List<String> apps = param.getValues();
           for (String app : apps) {
             String[] splitedString = app.trim().split(":");
@@ -140,7 +170,7 @@ public class SpaceServiceImpl implements SpaceService {
             if (splitedString.length >= 2) {
               appName = splitedString[0];
               isRemovable = Boolean.getBoolean(splitedString[1]);
-            } else { //suppose app is just the name
+            } else { // suppose app is just the name
               appName = app;
               isRemovable = false;
             }
@@ -150,7 +180,12 @@ public class SpaceServiceImpl implements SpaceService {
 
             spaceApplicationConfigPlugin.addToSpaceApplicationList(spaceApplication);
           }
+          deprecatedConfiguration = true;
         }
+      }
+      if (deprecatedConfiguration) {
+        LOG.warn("The SpaceService configuration you attempt to use is deprecated, please update it by"
+            + " using external-component-plugins configuration");
       }
     }
 
@@ -282,7 +317,7 @@ public class SpaceServiceImpl implements SpaceService {
    * {@inheritDoc}
    */
   public SpaceListAccess getVisibleSpacesWithListAccess(String userId, SpaceFilter spaceFilter) {
-    if (userId.equals(getUserACL().getSuperUser())) {
+    if (isSuperManager(userId)) {
       if (spaceFilter == null)
        return new SpaceListAccess(this.spaceStorage, userId, spaceFilter, SpaceListAccess.Type.ALL);
       else
@@ -291,7 +326,7 @@ public class SpaceServiceImpl implements SpaceService {
       return new SpaceListAccess(this.spaceStorage, userId, spaceFilter,SpaceListAccess.Type.VISIBLE);
     }
   }
-  
+
   /**
    * {@inheritDoc}
    */
@@ -336,7 +371,7 @@ public class SpaceServiceImpl implements SpaceService {
    * {@inheritDoc}
    */
   public SpaceListAccess getPublicSpacesWithListAccess(String userId) {
-    if (userId.equals(getUserACL().getSuperUser())) {
+    if (isSuperManager(userId)) {
       return new SpaceListAccess(this.spaceStorage, SpaceListAccess.Type.PUBLIC_SUPER_USER);
     } else {
       return new SpaceListAccess(this.spaceStorage, userId, SpaceListAccess.Type.PUBLIC);
@@ -371,7 +406,6 @@ public class SpaceServiceImpl implements SpaceService {
   /**
    * {@inheritDoc}
    */
-  @SuppressWarnings("deprecation")
   public Space createSpace(Space space, String creator, String invitedGroupId) {
     // Add creator as a manager and a member to this space
     String[] managers = space.getManagers();
@@ -403,7 +437,7 @@ public class SpaceServiceImpl implements SpaceService {
           String userId = user.getUserName();
           if (!userId.equals(creator)) {
             String[] invitedUsers = space.getInvitedUsers();
-            if (userId.equals(getUserACL().getSuperUser())) {
+            if (isSuperManager(userId)) {
               members = space.getMembers();
               if (!ArrayUtils.contains(members, userId)) {
                 members = (String[]) ArrayUtils.add(members, userId);
@@ -490,7 +524,7 @@ public class SpaceServiceImpl implements SpaceService {
   public void renameSpace(String remoteId, Space space, String newDisplayName) {
     
     if (remoteId != null && 
-        remoteId.equals(getUserACL().getSuperUser()) &&
+        isSuperManager(remoteId) &&
         isMember(space, remoteId) == false) {
 
       spaceStorage.renameSpace(remoteId, space, newDisplayName);
@@ -755,7 +789,7 @@ public class SpaceServiceImpl implements SpaceService {
    * {@inheritDoc}
    */
   public boolean hasAccessPermission(Space space, String userId) {
-    if (userId.equals(getUserACL().getSuperUser()) 
+    if (isSuperManager(userId) 
         || (ArrayUtils.contains(space.getMembers(), userId)) 
         || (ArrayUtils.contains(space.getManagers(), userId))) {
       return true;
@@ -1109,10 +1143,6 @@ public class SpaceServiceImpl implements SpaceService {
    * @return userACL
    */
   private UserACL getUserACL() {
-    if (userACL == null) {
-      ExoContainer container = ExoContainerContext.getCurrentContainer();
-      return (UserACL) container.getComponentInstanceOfType(UserACL.class);
-    }
     return userACL;
   }
 
@@ -1121,10 +1151,9 @@ public class SpaceServiceImpl implements SpaceService {
    * 
    * @return
    */
-  @SuppressWarnings("unchecked")
   private Map<String, SpaceApplicationHandler> getSpaceApplicationHandlers() {
     if (this.spaceApplicationHandlers == null) {
-      this.spaceApplicationHandlers = new HashMap();
+      this.spaceApplicationHandlers = new HashMap<>();
 
       ExoContainer container = ExoContainerContext.getCurrentContainer();
       SpaceApplicationHandler appHandler =
@@ -1208,7 +1237,6 @@ public class SpaceServiceImpl implements SpaceService {
     saveSpace(space, false);
   }
 
-  @SuppressWarnings("unchecked")
   private boolean isMandatory(GroupHandler groupHandler, Group group, List<String> mandatories) throws Exception {
     if (mandatories.contains(group.getId()))
       return true;
@@ -1294,9 +1322,13 @@ public class SpaceServiceImpl implements SpaceService {
    * {@inheritDoc}
    */
   public ListAccess<Space> getAccessibleSpacesByFilter(String userId, SpaceFilter spaceFilter) {
-    if (userId.equals(getUserACL().getSuperUser()) 
+    if (isSuperManager(userId) 
         && (spaceFilter == null || spaceFilter.getAppId() == null)) {
-      return new SpaceListAccess(this.spaceStorage, spaceFilter, SpaceListAccess.Type.ALL_FILTER);
+      if(spaceFilter == null) {
+        return new SpaceListAccess(this.spaceStorage, spaceFilter, SpaceListAccess.Type.ALL);
+      } else {
+        return new SpaceListAccess(this.spaceStorage, spaceFilter, SpaceListAccess.Type.ALL_FILTER);
+      }
     } else {
       return new SpaceListAccess(this.spaceStorage, userId, spaceFilter, SpaceListAccess.Type.ACCESSIBLE_FILTER);
     }
@@ -1341,7 +1373,7 @@ public class SpaceServiceImpl implements SpaceService {
    * {@inheritDoc}
    */
   public ListAccess<Space> getPublicSpacesByFilter(String userId, SpaceFilter spaceFilter) {
-    if (userId.equals(getUserACL().getSuperUser())) {
+    if (isSuperManager(userId)) {
       return new SpaceListAccess(this.spaceStorage, SpaceListAccess.Type.PUBLIC_SUPER_USER);
     } else {
       return new SpaceListAccess(this.spaceStorage, userId, spaceFilter, SpaceListAccess.Type.PUBLIC_FILTER);
@@ -1352,7 +1384,7 @@ public class SpaceServiceImpl implements SpaceService {
    * {@inheritDoc}
    */
   public ListAccess<Space> getSettingableSpaces(String userId) {
-    if (userId.equals(getUserACL().getSuperUser())) {
+    if (isSuperManager(userId)) {
       return new SpaceListAccess(this.spaceStorage, SpaceListAccess.Type.ALL);
     } else {
       return new SpaceListAccess(this.spaceStorage, userId, SpaceListAccess.Type.SETTING);
@@ -1363,7 +1395,7 @@ public class SpaceServiceImpl implements SpaceService {
    * {@inheritDoc}
    */
   public ListAccess<Space> getSettingabledSpacesByFilter(String userId, SpaceFilter spaceFilter) {
-    if (userId.equals(getUserACL().getSuperUser())) {
+    if (isSuperManager(userId)) {
       return new SpaceListAccess(this.spaceStorage, spaceFilter, SpaceListAccess.Type.ALL_FILTER);
     } else {
       return new SpaceListAccess(this.spaceStorage, userId, spaceFilter, SpaceListAccess.Type.SETTING_FILTER);
@@ -1374,7 +1406,7 @@ public class SpaceServiceImpl implements SpaceService {
    * {@inheritDoc}
    */
   public boolean hasSettingPermission(Space space, String userId) {
-    if (userId.equals(getUserACL().getSuperUser()) || ArrayUtils.contains(space.getManagers(), userId)) {
+    if (isSuperManager(userId) || ArrayUtils.contains(space.getManagers(), userId)) {
       return true;
     }
     return SpaceUtils.isUserHasMembershipTypesInGroup(userId, space.getGroupId(), MembershipTypeHandler.ANY_MEMBERSHIP_TYPE);
@@ -1540,5 +1572,84 @@ public class SpaceServiceImpl implements SpaceService {
   
   public ListAccess<Space> getVisitedSpaces(String remoteId, String appId) {
     return new SpaceListAccess(this.spaceStorage, remoteId, appId, SpaceListAccess.Type.VISITED);
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public boolean isSuperManager(String userId) {
+    if (StringUtils.isBlank(userId) || IdentityConstants.ANONIM.equals(userId) || IdentityConstants.SYSTEM.equals(userId)) {
+      return false;
+    }
+    if (userId.equals(getUserACL().getSuperUser())) {
+      return true;
+    }
+    org.exoplatform.services.security.Identity identity = identityRegistry.getIdentity(userId);
+    if (identity == null) {
+      Collection<Membership> memberships;
+      try {
+        memberships = getOrgService().getMembershipHandler().findMembershipsByUser(userId);
+      } catch (Exception e) {
+        throw new RuntimeException("Can't get user '" + userId + "' memberships", e);
+      }
+      List<MembershipEntry> entries = new ArrayList<>();
+      for (Membership membership : memberships) {
+        entries.add(new MembershipEntry(membership.getGroupId(), membership.getMembershipType()));
+      }
+      identity = new org.exoplatform.services.security.Identity(userId, entries);
+    }
+    if (superManagersMemberships != null && !superManagersMemberships.isEmpty()) {
+      for (MembershipEntry superManagerMembership : superManagersMemberships) {
+        if (identity.isMemberOf(superManagerMembership)) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void addSuperManagersMembership(String permissionExpression) {
+    if(StringUtils.isBlank(permissionExpression)) {
+      throw new IllegalArgumentException("Permission expression couldn't be empty");
+    }
+    if (!permissionExpression.contains(":/")) {
+      throw new IllegalArgumentException("Invalid entry '" + permissionExpression + "'. A permission expression is expected (mstype:groupId).");
+    }
+    String[] membershipParts = permissionExpression.split(":");
+    superManagersMemberships.add(new MembershipEntry(membershipParts[1], membershipParts[0]));
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void removeSuperManagersMembership(String permissionExpression) {
+    if (StringUtils.isBlank(permissionExpression)) {
+      throw new IllegalArgumentException("Permission expression couldn't be empty");
+    }
+    if (!permissionExpression.contains(":/")) {
+      throw new IllegalArgumentException("Invalid entry '" + permissionExpression
+          + "'. A permission expression is expected (mstype:groupId).");
+    }
+    Iterator<MembershipEntry> superManagersMembershipsIterator = superManagersMemberships.iterator();
+    while (superManagersMembershipsIterator.hasNext()) {
+      MembershipEntry membershipEntry = superManagersMembershipsIterator.next();
+      if (permissionExpression.trim().equals(membershipEntry.toString())) {
+        superManagersMembershipsIterator.remove();
+      }
+    }
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public List<MembershipEntry> getSuperManagersMemberships() {
+    return Collections.unmodifiableList(superManagersMemberships);
   }
 }

@@ -386,6 +386,12 @@
         </init-params>
       </component-plugin>
     </component-plugins>
+    <init-params>
+      <value-param>
+        <name>spaces.super.administrators</name>
+        <value>${social.spaces.administrators:}</value>
+      </value-param>
+    </init-params>
   </component>
 
   <component>

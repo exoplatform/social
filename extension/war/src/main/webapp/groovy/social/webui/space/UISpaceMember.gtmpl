@@ -164,7 +164,7 @@
 		boolean isLeader = uicomponent.isLeader(user);
 		String manageSpacesUrl = "#";
 		String homeSpaceUrl = "#";
-		if (!uicomponent.isSuperUser()) {
+		if (!uicomponent.isSuperManager()) {
 		manageSpacesUrl = uicomponent.manageSpacesUrl;
 		homeSpaceUrl = uicomponent.homeSpaceUrl;
 		}
