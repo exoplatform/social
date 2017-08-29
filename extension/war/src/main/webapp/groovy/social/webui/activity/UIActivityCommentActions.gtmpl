@@ -20,11 +20,11 @@
         def likeUnlikeCommentClass = "";
         if (isCommentLiked) {
             likeUnlikeCommentAction = unlikeCommentAction;
-            likeUnlikeCommentMsg = _ctx.appRes("UIActivity.msg.UnlikeCommentActivity");
+            likeUnlikeCommentMsg = _ctx.appRes("UIActivity.msg.UnlikeComment");
             likeUnlikeCommentClass = "commentLiked";
         } else {
             likeUnlikeCommentAction = likeCommentAction;
-            likeUnlikeCommentMsg = _ctx.appRes("UIActivity.msg.LikeActivity");
+            likeUnlikeCommentMsg = _ctx.appRes("UIActivity.msg.LikeComment");
             likeUnlikeCommentClass = "";
         }
 
