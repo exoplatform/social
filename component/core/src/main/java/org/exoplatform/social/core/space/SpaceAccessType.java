@@ -16,9 +16,7 @@
  */
 package org.exoplatform.social.core.space;
 
-import org.exoplatform.container.ExoContainer;
 import org.exoplatform.container.ExoContainerContext;
-import org.exoplatform.portal.config.UserACL;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
 
@@ -29,10 +27,7 @@ public enum SpaceAccessType {
 
     @Override
     public boolean doCheck(String remoteId, Space space) {
-      //
-      ExoContainer container = ExoContainerContext.getCurrentContainer();
-      UserACL acl = (UserACL) container.getComponentInstanceOfType(UserACL.class);
-      return acl.getSuperUser().equals(remoteId) && (space != null);
+      return space != null && getSpaceService().isSuperManager(remoteId);
     }
   },
   INVITED_SPACE("social.space.access.invited-space") {
@@ -99,13 +94,8 @@ public enum SpaceAccessType {
 
       @Override
       public boolean doCheck(String remoteId, Space space) {
-        //
-        ExoContainer container = ExoContainerContext.getCurrentContainer();
-        UserACL acl = (UserACL) container.getComponentInstanceOfType(UserACL.class);
-        //boolean isAdminGroup = acl.isUserInGroup(acl.getAdminGroups());
-        boolean isSuperAdmin = acl.getSuperUser().equals(remoteId);
-        
-        return !getSpaceService().isMember(space, remoteId) && !isSuperAdmin;
+        SpaceService spaceService = getSpaceService();
+        return !spaceService.isSuperManager(remoteId) && !spaceService.isMember(space, remoteId);
       }
     
   };

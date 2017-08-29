@@ -295,7 +295,7 @@ public class UIManageAllSpaces extends UIContainer {
     return TypeOfSpace.NONE.toString(); // No relationship with this space.
   }
   
-  protected boolean isSuperUser(Space space) {
+  protected boolean isSuperManager(Space space) {
     String currentUserId = Utils.getOwnerIdentity().getRemoteId();
     SpaceService spaceService = Utils.getSpaceService();
     

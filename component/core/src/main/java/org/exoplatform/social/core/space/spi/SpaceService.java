@@ -17,6 +17,7 @@
 package org.exoplatform.social.core.space.spi;
 
 import org.exoplatform.commons.utils.ListAccess;
+import org.exoplatform.services.security.MembershipEntry;
 import org.exoplatform.social.core.application.PortletPreferenceRequiredPlugin;
 import org.exoplatform.social.core.space.SpaceApplicationConfigPlugin;
 import org.exoplatform.social.core.space.SpaceException;
@@ -1367,5 +1368,34 @@ public interface SpaceService {
    * @return
    */
   ListAccess<Space> getVisitedSpaces(String remoteId, String appId);
+
+  /**
+   * Checks if the user is a super manager of all spaces
+   * 
+   * @param userId username
+   * @return true if the user is member of super administrators groups, else false
+   */
+  boolean isSuperManager(String userId);
+
+  /**
+   * Returns the list of super managers memberships (permission expressions)
+   * 
+   * @return a {@link List} of memberships of type {@link String}
+   */
+  List<MembershipEntry> getSuperManagersMemberships();
+
+  /**
+   * Add spaces super manager membership
+   * 
+   * @param permissionExpression permission expression of type {@link String} with format 'mstype:groupId'
+   */
+  void addSuperManagersMembership(String permissionExpression);
+
+  /**
+   * Remove spaces super manager membership
+   * 
+   * @param permissionExpression permission expression of type {@link String} with format 'mstype:groupId'
+   */
+  void removeSuperManagersMembership(String permissionExpression);
   
 }

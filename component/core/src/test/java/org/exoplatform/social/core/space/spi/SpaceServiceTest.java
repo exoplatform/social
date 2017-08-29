@@ -32,6 +32,8 @@ import org.exoplatform.container.component.RequestLifeCycle;
 import org.exoplatform.portal.config.StorageException;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
+import org.exoplatform.services.organization.Group;
+import org.exoplatform.services.organization.MembershipType;
 import org.exoplatform.services.organization.OrganizationService;
 import org.exoplatform.services.organization.User;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
@@ -2869,6 +2871,73 @@ public class SpaceServiceTest extends AbstractCoreTest {
     lastSpaces = spaceService.getLastSpaces(5);
     assertEquals(2, lastSpaces.size());
     assertEquals(sp1, lastSpaces.get(0));
+  }
+
+  public void testSpacesSuperManager() throws Exception {
+    Space space = createSpace("spacename1", "root");
+    space.setVisibility(Space.PUBLIC);
+    space.setRegistration(Space.OPEN);
+    spaceService.updateSpace(space);
+
+    space = createSpace("spacename2", "root");
+    space.setVisibility(Space.PUBLIC);
+    space.setRegistration(Space.CLOSE);
+    spaceService.updateSpace(space);
+
+    space = createSpace("spacename3", "root");
+    space.setVisibility(Space.PRIVATE);
+    space.setRegistration(Space.OPEN);
+    spaceService.updateSpace(space);
+
+    space = createSpace("spacename4", "root");
+    space.setVisibility(Space.PRIVATE);
+    space.setRegistration(Space.CLOSE);
+    spaceService.updateSpace(space);
+
+    space = createSpace("spacename5", "root");
+    space.setVisibility(Space.HIDDEN);
+    space.setRegistration(Space.OPEN);
+    spaceService.updateSpace(space);
+
+    space = createSpace("spacename6", "root");
+    space.setVisibility(Space.HIDDEN);
+    space.setRegistration(Space.CLOSE);
+    spaceService.updateSpace(space);
+
+    User user = organizationService.getUserHandler().createUserInstance("user-super-1");
+    organizationService.getUserHandler().createUser(user, false);
+    Group group = organizationService.getGroupHandler().createGroupInstance();
+    group.setGroupName("testgroup");
+    organizationService.getGroupHandler().addChild(null, group, true);
+    MembershipType mstype = organizationService.getMembershipTypeHandler().createMembershipTypeInstance();
+    mstype.setName("mstypetest");
+    organizationService.getMembershipTypeHandler().createMembershipType(mstype, true);
+
+    organizationService.getMembershipHandler().linkMembership(user, group, mstype, true);
+
+    String userName = user.getUserName();
+
+    assertEquals(6, spaceService.getAllSpacesWithListAccess().getSize());
+
+    assertFalse(spaceService.isSuperManager(userName));
+    assertFalse(spaceService.hasAccessPermission(space, userName));
+    assertFalse(spaceService.hasSettingPermission(space, userName));
+    assertEquals(2, spaceService.getVisibleSpacesWithListAccess(userName, null).getSize());
+    assertEquals(0, spaceService.getPublicSpacesByFilter(userName, null).getSize());
+    assertEquals(0, spaceService.getAccessibleSpacesByFilter(userName, null).getSize());
+    assertEquals(0, spaceService.getSettingableSpaces(userName).getSize());
+
+    spaceService.addSuperManagersMembership("mstypetest:/testgroup");
+    assertTrue(spaceService.isSuperManager(userName));
+    assertTrue(spaceService.hasAccessPermission(space, userName));
+    assertTrue(spaceService.hasSettingPermission(space, userName));
+    assertEquals(6, spaceService.getVisibleSpacesWithListAccess(userName, null).getSize());
+
+    // number fixed to 0 for super users in SpaceListAccess.getSize()
+    assertEquals(0, spaceService.getPublicSpacesByFilter(userName, null).getSize());
+
+    assertEquals(6, spaceService.getAccessibleSpacesByFilter(userName, null).getSize());
+    assertEquals(6, spaceService.getSettingableSpaces(userName).getSize());
   }
 
   private Space populateData() throws Exception {

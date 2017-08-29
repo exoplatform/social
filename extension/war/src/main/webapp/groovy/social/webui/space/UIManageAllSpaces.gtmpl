@@ -174,7 +174,7 @@ import org.exoplatform.social.core.service.LinkProvider;
                   <button type="button" class="confirmPopup btn pull-right" data-onclick="<%= deleteSpaceAction %>" data-message="$deleteMessagePopup">$deleteSpaceLabel</button>
                   <button type="button" class="btn pull-right" onclick="<%= leaveSpaceAction %>">$leaveSpaceLabel</button>
                   <button type="button" class="btn btn-primary pull-right" onclick="location.href='<%= editSpaceLink %>'">$editSpaceLabel</button>                  
-		          <% } else if (uicomponent.isSuperUser(space)) { %>
+		          <% } else if (uicomponent.isSuperManager(space)) { %>
 		              <button type="button" class="confirmPopup btn pull-right" data-onclick="<%= deleteSpaceAction %>" data-message="$deleteMessagePopup">$deleteSpaceLabel</button>
 		             <% if ("MEMBER".equals(typeOfSpace.toString())) { %>
                   <button type="button" class="btn pull-right" onclick="<%= leaveSpaceAction %>">$leaveSpaceLabel</button>

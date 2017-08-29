@@ -392,13 +392,13 @@ public class UISpaceMember extends UIContainer {
   }
 
   /**
-   * Checks whether the remote user is super user
+   * Checks whether the remote user is a spaces super manager
    *
    * @return true or false
    * @throws Exception
    */
-  public boolean isSuperUser() throws Exception {
-    return getRemoteUser().equals(getUserACL().getSuperUser());
+  public boolean isSuperManager() throws Exception {
+    return spaceService.isSuperManager(getRemoteUser());
   }
 
   /**
@@ -521,7 +521,7 @@ public class UISpaceMember extends UIContainer {
         prContext = Util.getPortalRequestContext();
         prContext.setResponseComplete(true);
         StringBuffer url = new StringBuffer();
-        if (uiSpaceMember.isSuperUser()) {
+        if (uiSpaceMember.isSuperManager()) {
           url.append(Utils.getSpaceHomeURL(space)).append("/SpaceSettingPortlet");
         } else {
           url.append(Utils.getURI("spaces"));
