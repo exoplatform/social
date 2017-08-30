@@ -33,6 +33,7 @@ import javax.ws.rs.core.UriInfo;
 
 import org.apache.commons.lang.ArrayUtils;
 
+import org.apache.commons.lang3.StringUtils;
 import org.exoplatform.commons.utils.CommonsUtils;
 import org.exoplatform.services.rest.ApplicationContext;
 import org.exoplatform.services.rest.impl.ApplicationContextImpl;
@@ -306,8 +307,14 @@ public class EntityBuilder {
     Identity poster = CommonsUtils.getService(IdentityManager.class).getIdentity(comment.getPosterId(), true);
     CommentEntity commentEntity = new CommentEntity(comment.getId());
     commentEntity.setHref(RestUtils.getRestUrl(ACTIVITIES_TYPE, comment.getId(), restPath));
+
+    List expandFields = new ArrayList();
+    if(StringUtils.isNotEmpty(expand)) {
+      expandFields = Arrays.asList(expand.split(","));
+    }
+
     LinkEntity identityLink;
-    if (expand != null && RestProperties.IDENTITY.equals(expand)) {
+    if (expandFields.contains(RestProperties.IDENTITY)) {
       identityLink = new LinkEntity(buildEntityIdentity(poster, restPath, null));
     } else {
       identityLink = new LinkEntity(RestUtils.getRestUrl(IDENTITIES_TYPE, comment.getPosterId(), restPath));
@@ -316,6 +323,11 @@ public class EntityBuilder {
     commentEntity.setPoster(poster.getRemoteId());
     commentEntity.setBody(comment.getTitle());
     commentEntity.setMentions(getActivityMentions(comment, restPath));
+    if(expandFields.contains(RestProperties.LIKES)) {
+      commentEntity.setLikes(new LinkEntity(buildEntityFromLike(comment, restPath, null, 0, 0)));
+    } else {
+      commentEntity.setLikes(new LinkEntity(RestUtils.getBaseRestUrl() + "/" + VersionResources.VERSION_ONE + "/social/comments/" + comment.getId() + "/likes"));
+    }
     commentEntity.setCreateDate(RestUtils.formatISO8601(new Date(comment.getPostedTime())));
     commentEntity.setUpdateDate(RestUtils.formatISO8601(comment.getUpdated()));
     commentEntity.setActivity(RestUtils.getRestUrl(ACTIVITIES_TYPE, comment.getParentId(), restPath));
@@ -359,19 +371,27 @@ public class EntityBuilder {
   public static RelationshipEntity buildEntityRelationship(Relationship relationship, String restPath, String expand, boolean isSymetric) {
     RelationshipEntity relationshipEntity = new RelationshipEntity(relationship.getId());
     relationshipEntity.setHref(RestUtils.getRestUrl(USERS_RELATIONSHIP_TYPE, relationship.getId(), restPath));
+
+    List expandFields = new ArrayList();
+    if(StringUtils.isNotEmpty(expand)) {
+      expandFields = Arrays.asList(expand.split(","));
+    }
+
     LinkEntity sender, receiver;
-    if(RestProperties.SENDER.equals(expand)) {
+    if(expandFields.contains(RestProperties.SENDER)) {
       sender = new LinkEntity(buildEntityProfile(relationship.getSender().getProfile(), restPath, null));
     } else {
       sender = new LinkEntity(RestUtils.getRestUrl(USERS_TYPE, relationship.getSender().getRemoteId(), restPath));
     }
     relationshipEntity.setDataSender(sender);
-    if(RestProperties.RECEIVER.equals(expand)) {
+
+    if(expandFields.contains(RestProperties.RECEIVER)) {
       receiver = new LinkEntity(buildEntityProfile(relationship.getReceiver().getProfile(), restPath, null));
     } else {
       receiver = new LinkEntity(RestUtils.getRestUrl(USERS_TYPE, relationship.getReceiver().getRemoteId(), restPath));
     }
     relationshipEntity.setDataReceiver(receiver);
+
     relationshipEntity.setStatus(relationship.getStatus().name());
     if (isSymetric) {
       relationshipEntity.setSymetric(relationship.isSymetric());

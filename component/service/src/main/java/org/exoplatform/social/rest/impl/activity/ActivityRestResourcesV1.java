@@ -59,6 +59,7 @@ import org.exoplatform.social.rest.entity.ActivityEntity;
 import org.exoplatform.social.rest.entity.CollectionEntity;
 import org.exoplatform.social.rest.entity.CommentEntity;
 import org.exoplatform.social.rest.entity.DataEntity;
+import org.exoplatform.social.service.rest.Util;
 import org.exoplatform.social.service.rest.api.VersionResources;
 
 @Path(VersionResources.VERSION_ONE + "/social/activities")
@@ -99,7 +100,7 @@ public class ActivityRestResourcesV1 implements ActivityRestResources {
     List<DataEntity> activityEntities = new ArrayList<DataEntity>();
     for (ExoSocialActivity activity : activities) {
       DataEntity as = EntityBuilder.getActivityStream(activity, currentUser);
-      if (as == null && !hasMention(currentUser, activity)) continue;
+      if (as == null && !Util.hasMentioned(activity, currentUser.getRemoteId())) continue;
       ActivityEntity activityEntity = EntityBuilder.buildEntityFromActivity(activity, uriInfo.getPath(), expand);
       activityEntity.setActivityStream(as);
       //
@@ -138,7 +139,7 @@ public class ActivityRestResourcesV1 implements ActivityRestResources {
     }
     
     DataEntity as = EntityBuilder.getActivityStream(activity.isComment() ? activityManager.getParentActivity(activity) : activity, currentUser);
-    if (as == null && !hasMention(currentUser, activity)) { //current user doesn't have permission to view activity
+    if (as == null && !Util.hasMentioned(activity, currentUser.getRemoteId())) { //current user doesn't have permission to view activity
       throw new WebApplicationException(Response.Status.UNAUTHORIZED);
     }
     ActivityEntity activityEntity = EntityBuilder.buildEntityFromActivity(activity, uriInfo.getPath(), expand);
@@ -253,7 +254,7 @@ public class ActivityRestResourcesV1 implements ActivityRestResources {
       throw new WebApplicationException(Response.Status.UNAUTHORIZED);
     }
     
-    if (EntityBuilder.getActivityStream(activity, currentUser) == null && !hasMention(currentUser, activity)) { //current user doesn't have permission to view activity
+    if (EntityBuilder.getActivityStream(activity, currentUser) == null && !Util.hasMentioned(activity, currentUser.getRemoteId())) { //current user doesn't have permission to view activity
       throw new WebApplicationException(Response.Status.UNAUTHORIZED);
     }
     
@@ -303,7 +304,7 @@ public class ActivityRestResourcesV1 implements ActivityRestResources {
       throw new WebApplicationException(Response.Status.UNAUTHORIZED);
     }
     
-    if (EntityBuilder.getActivityStream(activity, currentUser) == null && !hasMention(currentUser, activity)) { //current user doesn't have permission to view activity
+    if (EntityBuilder.getActivityStream(activity, currentUser) == null && !Util.hasMentioned(activity, currentUser.getRemoteId())) { //current user doesn't have permission to view activity
       throw new WebApplicationException(Response.Status.UNAUTHORIZED);
     }
     
@@ -344,7 +345,7 @@ public class ActivityRestResourcesV1 implements ActivityRestResources {
       throw new WebApplicationException(Response.Status.UNAUTHORIZED);
     }
     
-    if (EntityBuilder.getActivityStream(activity, currentUser) == null && !hasMention(currentUser, activity)) { //current user doesn't have permission to view activity
+    if (EntityBuilder.getActivityStream(activity, currentUser) == null && !Util.hasMentioned(activity, currentUser.getRemoteId())) { //current user doesn't have permission to view activity
       throw new WebApplicationException(Response.Status.UNAUTHORIZED);
     }
     List<DataEntity> likesEntity = EntityBuilder.buildEntityFromLike(activity, uriInfo.getPath(), expand, offset, limit);
@@ -378,7 +379,7 @@ public class ActivityRestResourcesV1 implements ActivityRestResources {
       throw new WebApplicationException(Response.Status.UNAUTHORIZED);
     }
     
-    if (EntityBuilder.getActivityStream(activity, currentUser) == null && !hasMention(currentUser, activity)) { //current user doesn't have permission to view activity
+    if (EntityBuilder.getActivityStream(activity, currentUser) == null && !Util.hasMentioned(activity, currentUser.getRemoteId())) { //current user doesn't have permission to view activity
       throw new WebApplicationException(Response.Status.UNAUTHORIZED);
     }
     List<String> likerIds = new ArrayList<String>(Arrays.asList(activity.getLikeIdentityIds()));
@@ -451,7 +452,7 @@ public class ActivityRestResourcesV1 implements ActivityRestResources {
     ActivityManager activityManager = CommonsUtils.getService(ActivityManager.class);
     ExoSocialActivity activity = activityManager.getActivity(id);
     if (activity == null
-            || (EntityBuilder.getActivityStream(activity, currentUser) == null && !hasMention(currentUser, activity))) {
+            || (EntityBuilder.getActivityStream(activity, currentUser) == null && !Util.hasMentioned(activity, currentUser.getRemoteId()))) {
       throw new WebApplicationException(Response.Status.UNAUTHORIZED);
     }
     
@@ -480,13 +481,5 @@ public class ActivityRestResourcesV1 implements ActivityRestResources {
         throw new WebApplicationException(Response.Status.UNAUTHORIZED);
       }
     }
-  }
-  
-  private boolean hasMention(Identity currentUser, ExoSocialActivity activity) {
-    String[] mentionerIds = activity.getMentionedIds();
-    for (String id : mentionerIds) {
-      if (id.startsWith(currentUser.getId())) return true;
-    }
-    return false;
   }
 }

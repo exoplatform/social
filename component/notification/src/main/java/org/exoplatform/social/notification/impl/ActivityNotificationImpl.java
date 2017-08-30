@@ -63,4 +63,14 @@ public class ActivityNotificationImpl extends ActivityListenerPlugin {
     ctx.getNotificationExecutor().with(ctx.makeCommand(PluginKey.key(LikePlugin.ID)))
                                  .execute(ctx);
   }
+
+  @Override
+  public void likeComment(ActivityLifeCycleEvent event) {
+    ExoSocialActivity activity = event.getSource();
+    NotificationContext ctx = NotificationContextImpl.cloneInstance().append(SocialNotificationUtils.ACTIVITY, activity);
+
+    ctx.getNotificationExecutor().with(ctx.makeCommand(PluginKey.key(LikeCommentPlugin.ID)))
+            .execute(ctx);
+  }
+
 }

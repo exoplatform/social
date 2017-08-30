@@ -692,6 +692,7 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
       commentEntity.setPostedTime(commentMillis);
       commentEntity.setLastUpdated(commentMillis);
       comment.setParentId(activity.getId());
+      comment.isComment(Boolean.TRUE);
       
       String[] mentionerList = processMentions(ArrayUtils.EMPTY_STRING_ARRAY, comment.getTitle(), new ArrayList<String>(), true);
       comment.setMentionedIds(mentionerList);

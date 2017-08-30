@@ -21,6 +21,7 @@
 */
 %>
 <%
+  import org.apache.commons.lang.ArrayUtils;
   import org.exoplatform.portal.webui.util.Util;
   import org.exoplatform.webui.form.UIFormTextAreaInput;
   import org.exoplatform.social.core.service.LinkProvider;
@@ -28,6 +29,8 @@
   import org.exoplatform.social.webui.Utils;
 
   import org.apache.commons.lang.StringEscapeUtils;
+
+  import static org.exoplatform.social.webui.activity.BaseUIActivity.TEMPLATE_PARAM_COMMENT;
 
   def pcontext = Util.getPortalRequestContext();
   def labelActivityHasBeenDeleted = _ctx.appRes("UIActivity.label.Activity_Has_Been_Deleted");
@@ -67,6 +70,7 @@
   def likeActivityAction = uicomponent.event("LikeActivity", "true");
   def unlikeActivityAction = uicomponent.event("LikeActivity", "false");
 
+
   def commentList = uicomponent.getComments();
   int allCommentSize = uicomponent.getAllCommentSize();
   if (allCommentSize > 0) {
@@ -91,19 +95,36 @@
   def spaceURL = uicomponent.getSpaceURL();
 
   def placeholder = _ctx.appRes("UIActivity.comment.placeholder").replace("'", "\\'");
-  //params for init UIActivity javascript object
 
-	def params = """ {
-	  activityId: '${activity.id}',
-	  placeholderComment: '${placeholder}',
+  // labels
+  def LikePopupTitleLabel = _ctx.appRes("UIActivity.title.PopupCommentLikers");
+  def IgnoreLabel = _ctx.appRes("UserProfilePopup.label.Ignore");
+  def ConnectLabel = _ctx.appRes("UserProfilePopup.label.Connect");
+  def ConfirmLabel = _ctx.appRes("UserProfilePopup.label.Confirm");
+  def CancelRequestLabel = _ctx.appRes("UserProfilePopup.label.CancelRequest");
+  def RemoveConnectionLabel = _ctx.appRes("UserProfilePopup.label.RemoveConnection");
+  def labels = """ {
+    LikePopupTitle: '$LikePopupTitleLabel',
+    Connect: '$ConnectLabel',
+    Confirm: '$ConfirmLabel',
+    CancelRequest: '$CancelRequestLabel',
+    RemoveConnection: '$RemoveConnectionLabel',
+    Ignore: '$IgnoreLabel'
+  }"""
+
+  //params for init UIActivity javascript object
+  def params = """ {
+    activityId: '${activity.id}',
+    placeholderComment: '${placeholder}',
     inputWriteAComment: '$inputWriteAComment',
     commentMinCharactersAllowed: '${uicomponent.getCommentMinCharactersAllowed()}',
     commentMaxCharactersAllowed: '${uicomponent.getCommentMaxCharactersAllowed()}',
     commentFormDisplayed: '$commentFormDisplayed',
     spaceURL:'$spaceURL',
     allCommentSize: '${allCommentSize}',
-    commentFormFocused: '${uicomponent.isCommentFormFocused()}'
-	} """
+    commentFormFocused: '${uicomponent.isCommentFormFocused()}',
+    labels: $labels
+  } """
   
   jsManager.require("SHARED/jquery", "jq")
            .require("SHARED/bts_tooltip").addScripts("jq('*[rel=\"tooltip\"]').tooltip();")
@@ -357,7 +378,11 @@
 					<div class="contentComment" id="${activity.id}-${commentCounter}">
 						$commentMessage
 					</div>
-				</div><!--end commentRight-->
+					<%
+					    _ctx.put(TEMPLATE_PARAM_COMMENT, it);
+					    _ctx.include("war:/groovy/social/webui/activity/UIActivityCommentActions.gtmpl");
+					%>
+    			</div><!--end commentRight-->
                 <div class="clearfix"></div>
 				<div class="actLink">
 				<a id="Permalink${it.id}" rel="tooltip" data-placement="bottom" title="$viewActivityTip" class="uiIconLink uiIconLightGray" href="<%=uicomponent.getCommentPermalink(activity.id, it.id)%>"></a>
@@ -369,6 +394,7 @@
 				  <% } %>
 				</div>
 			  </div>
+
 			</div>
 			<% }) %>
 			</div> <!--end commentlist-->

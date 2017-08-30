@@ -786,6 +786,8 @@ public class PeopleRestService implements ResourceContainer{
                 } else if (REMOVE_ACTION.equals(updatedType)) {
                   getRelationshipManager().delete(getRelationshipManager().get(currentIdentity, identity));
                 }
+
+                relationship = getRelationshipManager().get(currentIdentity, identity);
               }
             }
   

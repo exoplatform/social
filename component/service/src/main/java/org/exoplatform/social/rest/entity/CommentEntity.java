@@ -101,6 +101,13 @@ public class CommentEntity extends BaseEntity {
     return getString("activity");
   }
 
+  public CommentEntity setLikes(LinkEntity likes) {
+    setProperty("likes", likes.getData());
+    return this;
+  }
 
+  public String getLikes() {
+    return getString("likes");
+  }
 
 }

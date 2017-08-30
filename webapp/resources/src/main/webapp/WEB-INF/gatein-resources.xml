@@ -293,7 +293,11 @@
       <as>mentions</as>
     </depends>
     <depends>
-      <module>documentPreview</module>
+      <module>commons-editor</module>
+      <as>editor</as>
+    </depends>
+    <depends>
+      <module>suggester</module>
     </depends>
   </module>
   

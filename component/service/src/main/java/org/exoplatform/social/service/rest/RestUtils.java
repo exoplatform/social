@@ -30,6 +30,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import javax.ws.rs.core.MediaType;
 
 import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.exoplatform.commons.utils.CommonsUtils;
 import org.exoplatform.services.rest.ApplicationContext;
 import org.exoplatform.services.rest.impl.ApplicationContextImpl;
@@ -413,5 +414,33 @@ public class RestUtils {
    */
   public static boolean isMemberOfAdminGroup() {
     return ConversationState.getCurrent().getIdentity().isMemberOf(ADMIN_GROUP);
+  }
+
+  /**
+   * Returns the username of the authenticated user
+   * @return the username of the authenticated user
+   */
+  public static String getCurrentUsername() {
+    org.exoplatform.services.security.Identity currentIdentity = ConversationState.getCurrent() == null ?
+            null : ConversationState.getCurrent().getIdentity();
+    if(currentIdentity == null) {
+      return null;
+    }
+
+    return currentIdentity.getUserId();
+  }
+
+  /**
+   * Returns the social identity of the authenticated user
+   * @return The social identity of the authenticated user
+   */
+  public static Identity getCurrentIdentity() {
+    String currentUsername = getCurrentUsername();
+    if(StringUtils.isEmpty(currentUsername)) {
+      return null;
+    }
+
+    return CommonsUtils.getService(IdentityManager.class)
+            .getOrCreateIdentity(OrganizationIdentityProvider.NAME, currentUsername, true);
   }
 }

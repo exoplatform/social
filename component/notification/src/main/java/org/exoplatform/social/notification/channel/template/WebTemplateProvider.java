@@ -62,6 +62,7 @@ import java.util.Locale;
        @TemplateConfig( pluginId=ActivityCommentPlugin.ID, template="war:/intranet-notification/templates/ActivityCommentPlugin.gtmpl"),
        @TemplateConfig( pluginId=ActivityMentionPlugin.ID, template="war:/intranet-notification/templates/ActivityMentionPlugin.gtmpl"),
        @TemplateConfig( pluginId=LikePlugin.ID, template="war:/intranet-notification/templates/LikePlugin.gtmpl"),
+       @TemplateConfig( pluginId=LikeCommentPlugin.ID, template="war:/intranet-notification/templates/LikeCommentPlugin.gtmpl"),
        @TemplateConfig( pluginId=NewUserPlugin.ID, template="war:/intranet-notification/templates/NewUserPlugin.gtmpl"),
        @TemplateConfig( pluginId=PostActivityPlugin.ID, template="war:/intranet-notification/templates/PostActivityPlugin.gtmpl"),
        @TemplateConfig( pluginId=PostActivitySpaceStreamPlugin.ID, template="war:/intranet-notification/templates/PostActivitySpaceStreamPlugin.gtmpl"),
@@ -208,7 +209,7 @@ public class WebTemplateProvider extends TemplateProvider {
     
   };
   
-  /** Defines the template builder for LikePlugin*/
+  /** Defines the template builder for LikePlugin and LikeCommentPlugin */
   private AbstractTemplateBuilder like = new AbstractTemplateBuilder() {
 
     @Override
@@ -227,7 +228,12 @@ public class WebTemplateProvider extends TemplateProvider {
       templateContext.put("NOTIFICATION_ID", notification.getId());
       templateContext.put("LAST_UPDATED_TIME", TimeConvertUtils.convertXTimeAgoByTimeServer(cal.getTime(), "EE, dd yyyy", new Locale(language), TimeConvertUtils.YEAR));
       templateContext.put("ACTIVITY", NotificationUtils.getNotificationActivityTitle(activity.getTitle(), activity.getType()));
-      templateContext.put("VIEW_FULL_DISCUSSION_ACTION_URL", LinkProvider.getSingleActivityUrl(activity.getId()));
+      if(activity.isComment()) {
+        ExoSocialActivity activityOfComment = Utils.getActivityManager().getParentActivity(activity);
+        templateContext.put("VIEW_FULL_DISCUSSION_ACTION_URL", LinkProvider.getSingleActivityUrl(activityOfComment.getId() + "#comment-" + activity.getId()));
+      } else {
+        templateContext.put("VIEW_FULL_DISCUSSION_ACTION_URL", LinkProvider.getSingleActivityUrl(activity.getId()));
+      }
       List<String> users = SocialNotificationUtils.mergeUsers(ctx, templateContext, SocialNotificationUtils.LIKER.getKey(), activity.getId(), notification.getValueOwnerParameter(SocialNotificationUtils.LIKER.getKey()));
       //
       int nbUsers = users.size();
@@ -521,6 +527,7 @@ public class WebTemplateProvider extends TemplateProvider {
     this.templateBuilders.put(PluginKey.key(ActivityCommentPlugin.ID), comment);
     this.templateBuilders.put(PluginKey.key(ActivityMentionPlugin.ID), mention);
     this.templateBuilders.put(PluginKey.key(LikePlugin.ID), like);
+    this.templateBuilders.put(PluginKey.key(LikeCommentPlugin.ID), like);
     this.templateBuilders.put(PluginKey.key(NewUserPlugin.ID), newUser);
     this.templateBuilders.put(PluginKey.key(PostActivityPlugin.ID), postActivity);
     this.templateBuilders.put(PluginKey.key(PostActivitySpaceStreamPlugin.ID), postActivitySpace);

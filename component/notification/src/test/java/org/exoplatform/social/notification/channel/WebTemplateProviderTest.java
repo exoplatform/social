@@ -77,6 +77,10 @@ public class WebTemplateProviderTest extends AbstractCoreTest {
     actual = channel.getTemplateFilePath(PluginKey.key(LikePlugin.ID));
     expected = "war:/intranet-notification/templates/LikePlugin.gtmpl";
     assertEquals(expected, actual);
+
+    actual = channel.getTemplateFilePath(PluginKey.key(LikeCommentPlugin.ID));
+    expected = "war:/intranet-notification/templates/LikeCommentPlugin.gtmpl";
+    assertEquals(expected, actual);
     
     actual = channel.getTemplateFilePath(PluginKey.key(NewUserPlugin.ID));
     expected = "war:/intranet-notification/templates/NewUserPlugin.gtmpl";

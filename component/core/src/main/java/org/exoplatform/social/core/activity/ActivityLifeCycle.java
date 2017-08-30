@@ -38,6 +38,9 @@ public class ActivityLifeCycle extends AbstractLifeCycle<ActivityListener, Activ
       case LIKE_ACTIVITY: 
         listener.likeActivity(event);
         break;
+      case LIKE_COMMENT:
+        listener.likeComment(event);
+      break;
     }
   }
   
@@ -55,5 +58,9 @@ public class ActivityLifeCycle extends AbstractLifeCycle<ActivityListener, Activ
   
   public void likeActivity(ExoSocialActivity activity) {
     broadcast(new ActivityLifeCycleEvent(Type.LIKE_ACTIVITY, activity));
+  }
+
+  public void likeComment(ExoSocialActivity activity) {
+    broadcast(new ActivityLifeCycleEvent(Type.LIKE_COMMENT, activity));
   }
 }

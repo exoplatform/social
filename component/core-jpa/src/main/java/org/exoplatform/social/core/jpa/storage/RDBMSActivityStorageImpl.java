@@ -215,20 +215,25 @@ public class RDBMSActivityStorageImpl extends ActivityStorageImpl {
     exoComment.setPosterId(comment.getPosterId());
     exoComment.isComment(true);
     //
-    exoComment.isLocked(comment.getLocked().booleanValue());
-    exoComment.isHidden(comment.getHidden().booleanValue());
-    exoComment.setUpdated(comment.getUpdatedDate().getTime());
+    exoComment.isLocked(comment.getLocked() != null ? comment.getLocked().booleanValue() : false);
+    exoComment.isHidden(comment.getHidden() != null ? comment.getHidden().booleanValue() : false);
+    exoComment.setUpdated(comment.getUpdatedDate() != null ? comment.getUpdatedDate().getTime() : null);
     //
-    exoComment.setParentId(String.valueOf(comment.getParent().getId()));
+    exoComment.setParentId(comment.getParent() != null ? String.valueOf(comment.getParent().getId()) : null);
     //
     exoComment.setPostedTime(comment.getPosted() != null ? comment.getPosted().getTime() : 0);
-    exoComment.setUpdated(comment.getUpdatedDate().getTime());
+    exoComment.setUpdated(comment.getUpdatedDate() != null ? comment.getUpdatedDate().getTime() : null);
     //
     Set<String> mentioned = comment.getMentionerIds();
     if (mentioned != null && !mentioned.isEmpty()) {
       exoComment.setMentionedIds(comment.getMentionerIds().toArray(new String[mentioned.size()]));
     }
 
+    //
+    Set<String> likers = comment.getLikerIds();
+    if (likers != null && !likers.isEmpty() ) {
+      exoComment.setLikeIdentityIds(comment.getLikerIds().toArray(new String[likers.size()]));
+    }
     processActivity(exoComment);
     
     return exoComment;
@@ -357,6 +362,7 @@ public class RDBMSActivityStorageImpl extends ActivityStorageImpl {
       eXoComment.setId(getExoCommentID(commentEntity.getId()));
       eXoComment.setPosterId(commentEntity.getPosterId());
       eXoComment.setParentId(String.valueOf(commentEntity.getParent().getId()));
+      eXoComment.isComment(true);
       Set<String> mentioned = commentEntity.getMentionerIds();
       if (mentioned != null && !mentioned.isEmpty()) {
         eXoComment.setMentionedIds(mentioned.toArray(new String[mentioned.size()]));

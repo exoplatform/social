@@ -17,7 +17,7 @@
 /**
  * UIActivity.js
  */
-(function ($, _, documentPreview) {
+(function ($, _) {
   var UIActivity = {
     COMMENT_BLOCK_BOUND_CLASS_NAME : "commentBox commentBlockBound ",
     COMMENT_BLOCK_BOUND_NONE_CLASS_NAME : " commentBox commentBlockBoundNone",
@@ -40,6 +40,7 @@
       UIActivity.commentFormFocused = params.commentFormFocused = "true" ? true : false  || false;
       UIActivity.commentPlaceholder = params.placeholderComment || null;
       UIActivity.spaceURL = params.spaceURL;
+      UIActivity.labels = params.labels;
 
       if (UIActivity.activityId == null) {
         alert('err: activityId is null!');
@@ -157,6 +158,8 @@
         }
       }
 
+      window.takeActionFromLikeComment = UIActivity.takeActionFromLikeComment;
+
       if (!(UIActivity.commentFormBlockEl && UIActivity.commentTextareaEl && UIActivity.commentButtonEl)) {
         alert('err: init UIActivity!');
       }
@@ -246,6 +249,15 @@
       }
 
       this.adaptFileBreadCrumb();
+
+      // click on "like comments" buttons
+      $('#ContextBox'+UIActivity.activityId+' a:[id*="LikeCommentLink_"]').each(function (idx, el) {
+        var id = $(el).attr('id');
+        var commentId = id.substring(id.indexOf('_') + 1);
+        $(el).click(function(){
+          UIActivity.showLikersPopup(commentId);
+        });
+      });
     },
 
     resizeComment: function (){
@@ -529,15 +541,262 @@
       })
     },
 
-    previewDoc: function(event, settings) {
-      if (event && eXo.social.SocialUtil.checkDevice().isMobile === true) {
-        event.stopPropagation();
+    /**
+     * prepare Popup of commennt Likers
+    */
+    buildLikersPopupSkeleton: function() {
+      var likersPopupSkeleton = "<div id=\"likersPopupMask\">" +
+        "  <div id=\"likersPopup\" class=\"UIPopupWindow uiPopup UIDragObject NormalStyle\">" +
+        "    <div class=\"popupHeader ClearFix\">" +
+        "      <a class=\"uiIconClose pull-right\" aria-hidden=\"true\" data-dismiss=\"modal\" ></a>" +
+        "      <span class=\"PopupTitle popupTitle\">" + UIActivity.labels.LikePopupTitle + "</span>" +
+        "    </div>" +
+        "    <div class=\"PopupContent popupContent\">" +
+        "      <ul id=\"likersDetail\">" +
+        "      </ul>" +
+        "    </div>" +
+        "  </div>" +
+        "</div>";
+      $("body").append(likersPopupSkeleton);
+
+      $("#likersPopup .uiIconClose").click(function(){
+        $("#likersPopupMask").hide();
+        $("#likersPopup .PopupContent #likersDetail").empty();
+      });
+    },
+
+    showLikersPopup: function (commentId) {
+      var likersPopup = $("#likersPopup");
+      if(likersPopup.length == 0) {
+        UIActivity.buildLikersPopupSkeleton();
       }
-      documentPreview.init(settings);
+
+      $("#likersPopupMask").show();
+
+      var env = eXo.social.portal;
+      var restUrl = env.context + '/' + env.rest + '/v1/social/comments/' + commentId + '/likes';
+      $.ajax({
+        type: "GET",
+        cache: false,
+        url: restUrl
+      }).complete(function (jqXHR) {
+        if (jqXHR.readyState === 4) {
+          var dataLikers = $.parseJSON(jqXHR.responseText);
+
+          if (dataLikers) {
+            var likers = dataLikers.likes.map(function(like) {
+              return like.username;
+            });
+
+            // fetch relationships with likers
+            var relationshipsRestUrl = env.context + '/' + env.rest + '/v1/social/usersRelationships?others=' + likers.join(',') + '&expand=sender,receiver&fields=sender,receiver,status';
+            $.ajax({
+              type: "GET",
+              cache: false,
+              url: relationshipsRestUrl
+            }).complete(function (jqXHR) {
+              if (jqXHR.readyState === 4) {
+                var dataRelationships = $.parseJSON(jqXHR.responseText);
+                dataLikers.likes.reverse();
+                UIActivity.buildLikersPopup(dataLikers.likes, dataRelationships.usersRelationships);
+              }
+            });
+          }
+        }
+      });
+    },
+
+    buildRelationshipButton: function (likerUsername, relationshipSender, relationshipStatus) {
+      var actionButton = $('<div/>', {
+        "class": "connectConnection btn btn-primary",
+        "data-action": "Invite:" + likerUsername,
+        "onclick": "takeActionFromLikeComment(this)"
+      });
+      actionButton.append($('<span/>', {
+        "text": "" + UIActivity.labels.Connect
+      }));
+      actionButton.append($('<i/>', {
+        "class": "uiIconSocConnectUser"
+      }));
+
+      var relationStatus = relationshipStatus ? relationshipStatus.toLowerCase() : relationshipStatus;
+      if (relationStatus == "pending") {
+        if(relationshipSender == likerUsername) { // Viewer is not owner
+          actionButton = $('<div/>', {
+            "class": "confirmConnection btn btn-primary",
+            "data-action": "Accept:" + likerUsername,
+            "onclick": "takeActionFromLikeComment(this)"
+          });
+          actionButton.append($('<span/>', {
+            "text": "" + UIActivity.labels.Confirm
+          }));
+          actionButton.append($('<i/>', {
+            "class": "uiIconSocAcceptConnectUser"
+          }));
+        } else { // Viewer is owner
+          actionButton = $('<div/>', {
+            "class": "cancelConnection btn",
+            "data-action": "Revoke:" + likerUsername,
+            "onclick": "takeActionFromLikeComment(this)"
+          });
+          actionButton.append($('<span/>', {
+            "text": "" + UIActivity.labels.CancelRequest
+          }));
+          actionButton.append($('<i/>', {
+            "class": "uiIconSocCancelConnectUser"
+          }));
+        }
+      } else if (relationStatus == "confirmed") { // Has Connection
+        actionButton = $('<div/>', {
+          "class": "removeConnection btn",
+          "data-action": "Disconnect:" + likerUsername,
+          "onclick": "takeActionFromLikeComment(this)"
+        });
+        actionButton.append($('<span/>', {
+          "text": "" + UIActivity.labels.RemoveConnection
+        }));
+        actionButton.append($('<i/>', {
+          "class": "uiIconSocCancelConnectUser"
+        }));
+      } else if (relationStatus == "ignored") { // Connection is removed
+        actionButton = $('<div/>', {
+          "class": "ignoreConnection btn",
+          "data-action": "Deny:" + likerUsername,
+          "onclick": "takeActionFromLikeComment(this)"
+        });
+        actionButton.append($('<span/>', {
+          "text": "" + UIActivity.labels.Ignore
+        }));
+        actionButton.append($('<i/>', {
+          "class": "uiIconSocCancelConnectUser"
+        }));
+      }
+
+      return actionButton;
+    },
+
+    buildLikersPopup: function(likers, usersRelationships){
+      var env = eXo.social.portal;
+
+      var likersList = $("#likersPopup .PopupContent #likersDetail");
+      likersList.empty();
+      for (i = 0; i < likers.length; i++) {
+        var likerUsername = likers[i].username;
+        var likerFullname = likers[i].fullname;
+        var likerAvatarUrl = env.context + "/" + env.rest + "/v1/social/users/" + likerUsername + "/avatar";
+        var likerProfileUrl = env.context + "/" + env.portalName + "/profile/" + likerUsername;
+
+        var likerItem = $('<li/>', {"class":"liker"});
+        var likerAvatar = $('<div/>', {"class":"likerAvatar"});
+        var imgAvatar = $("<img/>", {
+          "src": likerAvatarUrl
+        });
+
+        var aAvatar = $("<a/>", {
+          "target": "_self",
+          "href": likerProfileUrl
+        });
+
+        aAvatar.append(imgAvatar);
+        likerAvatar.append(aAvatar);
+        likerItem.append(likerAvatar);
+
+        var likerProfile = $("<div/>",{
+          "class": "likerName"
+        });
+        var aProfile = $("<a/>", {
+          "target": "_self",
+          "href": likerProfileUrl,
+          "text": likerFullname
+        });
+
+        likerItem.append(likerProfile.append(aProfile));
+
+        var likerAction = $("<div/>",{
+          "class": "likeClick"
+        });
+        var divActionContainer = $("<div/>",{
+          "class": "uiActionLike"
+        });
+
+        //Add Connection Action
+        var action = null;
+        var currentViewerId = env.userName;
+        if (currentViewerId != likerUsername) {
+          var likerRelationship = null;
+          for(j = 0; j < usersRelationships.length; j++) {
+            if(usersRelationships[j].receiver.username == likerUsername || usersRelationships[j].sender.username == likerUsername) {
+              likerRelationship = usersRelationships[j];
+              break;
+            }
+          }
+          var sender = null, status = null;
+          if(likerRelationship) {
+            sender = likerRelationship.sender.username;
+            status = likerRelationship.status;
+          }
+          action = UIActivity.buildRelationshipButton(likerUsername, sender, status);
+        }
+
+        if (action){
+          divActionContainer.append(action);
+        }
+
+        likerItem.append(likerAction.append(divActionContainer));
+        likersList.append(likerItem);
+      }
+    },
+
+    takeActionFromLikeComment: function(el) {
+      var env = eXo.social.portal;
+
+      var button = $(el);
+      var dataAction = button.attr('data-action');
+      var updatedType = dataAction.split(":")[0];
+      var ownerUserId = dataAction.split(":")[1];
+
+      button.hide();
+      var loading = $('<div/>', {
+        "class": "uiLoadingIconMini"
+      });
+      button.after(loading);
+      $.ajax({
+        type: "GET",
+        url: env.context + "/" + env.rest + "/social/people/getPeopleInfo/" + ownerUserId + ".json?updatedType=" + updatedType
+      }).done(function () {
+        $.ajax({
+          type: 'GET',
+          url: env.context + '/' + env.rest + '/v1/social/usersRelationships?others=' + ownerUserId + '&expand=sender,receiver&fields=sender,receiver,status'
+        }).done(function (data) {
+          if (data && data.usersRelationships && data.usersRelationships.length <= 1) {
+            loading.hide();
+
+            var buttonParent = button.parent();
+            buttonParent.empty();
+            var sender = null, status = null;
+            if(data.usersRelationships.length == 1) {
+              sender = data.usersRelationships[0].sender.username;
+              status = data.usersRelationships[0].status;
+            }
+            var action = UIActivity.buildRelationshipButton(ownerUserId, sender, status);
+            buttonParent.append(action);
+          } else {
+            loading.hide();
+            button.show();
+          }
+        }).fail(function() {
+          loading.hide();
+          button.show();
+        });;
+      }).fail(function() {
+        loading.hide();
+        button.show();
+      });
     }
-  };
+
+};
 //
   eXo.social.SocialUtil.addOnResizeWidth(function(evt){UIActivity.responsiveMobile()});
   eXo.social.SocialUtil.addOnResizeWidth(function(evt){UIActivity.adaptFileBreadCrumb()});
   return UIActivity;
-})($, mentions._, documentPreview);
+})($, mentions._);

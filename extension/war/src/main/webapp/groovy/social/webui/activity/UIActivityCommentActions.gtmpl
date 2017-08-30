@@ -1,0 +1,57 @@
+<%
+  import org.apache.commons.lang.ArrayUtils;
+  import org.apache.commons.lang.StringEscapeUtils;
+  import org.exoplatform.social.webui.Utils;
+
+  import static org.exoplatform.social.webui.activity.BaseUIActivity.TEMPLATE_PARAM_COMMENT;
+
+  def comment = _ctx.get(TEMPLATE_PARAM_COMMENT);
+%>
+<div class="clearfix actionCommentBar">
+     <ul class="pull-left statusAction">
+        <%
+        def likeCommentAction = uicomponent.event("LikeComment", "true_"+comment.id);
+        def unlikeCommentAction = uicomponent.event("LikeComment", "false_"+comment.id);
+        def isCommentLiked = ArrayUtils.contains(comment.likeIdentityIds, Utils.getViewerIdentity().getId());
+        def totalCommentLiked = comment.likeIdentityIds.length;
+
+        def likeUnlikeCommentMsg = "";
+        def likeUnlikeCommentAction = "";
+        def likeUnlikeCommentClass = "";
+        if (isCommentLiked) {
+            likeUnlikeCommentAction = unlikeCommentAction;
+            likeUnlikeCommentMsg = _ctx.appRes("UIActivity.msg.UnlikeComment");
+            likeUnlikeCommentClass = "commentLiked";
+        } else {
+            likeUnlikeCommentAction = likeCommentAction;
+            likeUnlikeCommentMsg = _ctx.appRes("UIActivity.msg.LikeComment");
+            likeUnlikeCommentClass = "";
+        }
+
+        def likes = Arrays.copyOf(comment.likeIdentityIds, comment.likeIdentityIds.length);
+        ArrayUtils.reverse(likes);
+        def maxNbLikersInTooltip = 10;
+        def moreThan10Likers = comment.numberOfLikes > maxNbLikersInTooltip;
+        def likersList = "";
+        for (def i = 0; i < comment.numberOfLikes; i++){
+            def likerIdentity = Utils.getIdentityManager().getIdentity(likes[i]);
+            likerCommentFullName = StringEscapeUtils.escapeHtml(likerIdentity.profile.fullName);
+            likersList += likerCommentFullName + "<br />";
+            if(moreThan10Likers && i == (maxNbLikersInTooltip - 2)) {
+                likersList += _ctx.appRes("UIActivity.msg.MoreLikers").replaceFirst("\\{0\\}", String.valueOf(comment.numberOfLikes - (maxNbLikersInTooltip - 1)));
+                break;
+            }
+        }
+        %>
+        <li>
+            <a onclick="$likeUnlikeCommentAction;(function(evt){ evt.stopPropagation();})(event)" class="likeCommentLink" data-placement="bottom" rel="tooltip" title="$likeUnlikeCommentMsg" id="LikeCommentLink${comment.id}" href="javascript:void(0);">
+                <i class="uiIconThumbUp $likeUnlikeCommentClass"></i>
+            </a>
+            <%if ( totalCommentLiked > 0 ) {%>
+            <a onclick="(function(evt){ evt.stopPropagation();})(event)" data-placement="bottom" class="likeCommentCount $likeUnlikeCommentClass" data-html="true" rel="tooltip" title="$likersList" id="LikeCommentLink_${comment.id}" href="javascript:void(0);">
+                ($totalCommentLiked)
+            </a>
+            <%}%>
+        </li>
+    </ul>
+</div>

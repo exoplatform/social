@@ -68,6 +68,7 @@ public class BaseUIActivity extends UIForm {
   private static final String                   HTML_AT_SYMBOL_PATTERN = "@";
   private static final String                   HTML_AT_SYMBOL_ESCAPED_PATTERN = "&#64;";
   private static final String                   HTML_ATTRIBUTE_TITLE = "title";
+  public static final String TEMPLATE_PARAM_COMMENT = "comment";
   private static int         LATEST_COMMENTS_SIZE        = 2;
   private int                commentMinCharactersAllowed = 0;
   private int                commentMaxCharactersAllowed = 100;
@@ -274,7 +275,7 @@ public class BaseUIActivity extends UIForm {
   }
 
   /**
-   * Removes currently viewing userId if he liked this activity.
+   * Gets likes to display
    *
    * @return
    * @throws Exception
@@ -436,6 +437,16 @@ public class BaseUIActivity extends UIForm {
     activity = Utils.getActivityManager().getActivity(activity.getId());
     setIdenityLikes(activity.getLikeIdentityIds());
     activity = getI18N(activity);
+  }
+
+  public void setLikeComment(boolean isLiked, String commentId){
+    Identity viewerIdentity = Utils.getViewerIdentity();
+    ExoSocialActivity commentActivity = Utils.getActivityManager().getActivity(commentId);
+    if (isLiked) {
+      Utils.getActivityManager().saveLike(commentActivity, viewerIdentity);
+    } else {
+      Utils.getActivityManager().deleteLike(commentActivity, viewerIdentity);
+    }
   }
 
   protected String getActivityPermalink(String activityId) {
@@ -963,6 +974,21 @@ public class BaseUIActivity extends UIForm {
 
       Utils.initUserProfilePopup(uiActivity.getId());
       Utils.resizeHomePage();
+    }
+  }
+
+  public static class LikeCommentActionListener extends EventListener<BaseUIActivity> {
+
+    @Override
+    public void execute(Event<BaseUIActivity> event) throws Exception {
+      WebuiRequestContext requestContext = event.getRequestContext();
+      //ObjectID contains the action to do and the comment id
+      String[] likeStatus = requestContext.getRequestParameter(OBJECTID).split("_");
+      BaseUIActivity uiActivity = event.getSource();
+      uiActivity.setLikeComment(Boolean.parseBoolean(likeStatus[0]), likeStatus[1]);
+      requestContext.addUIComponentToUpdateByAjax(uiActivity);
+      Utils.initUserProfilePopup(uiActivity.getId());
+
     }
   }
 

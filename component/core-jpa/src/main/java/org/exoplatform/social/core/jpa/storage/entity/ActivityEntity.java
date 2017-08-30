@@ -43,7 +43,7 @@ import org.exoplatform.commons.api.persistence.ExoEntity;
         @NamedQuery(name = "SocActivity.migrateOwnerId", query = "UPDATE SocActivity a SET a.ownerId = :newId WHERE a.ownerId = :oldId"),
 
         @NamedQuery(name = "SocActivity.getAllActivities", query = "SELECT a FROM SocActivity a WHERE a.isComment = false AND a.parent IS NULL"),
-        @NamedQuery(name = "SocActivity.findCommentsOfActivity", query = "SELECT a FROM SocActivity a WHERE a.parent.id = :activityId ORDER BY a.updatedDate ASC"),
+        @NamedQuery(name = "SocActivity.findCommentsOfActivity", query = "SELECT a FROM SocActivity a WHERE a.parent.id = :activityId ORDER BY a.posted ASC"),
         @NamedQuery(name = "SocActivity.numberCommentsOfActivity", query = "SELECT count(distinct a) FROM SocActivity a WHERE a.parent.id = :activityId"),
         @NamedQuery(name = "SocActivity.findNewerCommentsOfActivity",
                 query = "SELECT a FROM SocActivity a WHERE a.parent.id = :activityId AND a.updatedDate > :sinceTime ORDER BY a.updatedDate ASC"),
@@ -301,7 +301,8 @@ public class ActivityEntity implements Serializable {
     name = "SOC_ACTIVITY_LIKERS",
     joinColumns=@JoinColumn(name = "ACTIVITY_ID")
   )
-  private Set<LikerEntity> likers = new HashSet<LikerEntity>();
+  @OrderBy("createdDate asc")
+  private Set<LikerEntity> likers = new LinkedHashSet<>();
 
   @ElementCollection
   @JoinTable(
@@ -438,7 +439,7 @@ public class ActivityEntity implements Serializable {
   }
 
   public Set<String> getLikerIds() {
-    Set<String> ids = new HashSet<String>();
+    Set<String> ids = new LinkedHashSet<>();
     for (LikerEntity liker : likers) {
       ids.add(liker.getLikerId());      
     }

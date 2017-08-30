@@ -24,8 +24,8 @@ import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.DELETE;
@@ -40,6 +40,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
+import org.apache.commons.lang3.StringUtils;
 import org.exoplatform.commons.utils.CommonsUtils;
 import org.exoplatform.services.security.ConversationState;
 import org.exoplatform.social.core.identity.model.Identity;
@@ -67,14 +68,19 @@ public class UsersRelationshipsRestResourcesV1 implements UsersRelationshipsRest
   @ApiOperation(value = "Gets all user relationships",
                 httpMethod = "GET",
                 response = Response.class,
-                notes = "This returns a list of relationships in the following cases: <br/><ul><li>if the query param \"user\" is not defined: returns the relationships of the authenticated user</li><li>if the \"user\" is defined and the authenticated user is not an administrator: returns the relationships of the authenticated user</li><li>if the \"user\" is defined and the authenticated user is an administrator: returns the relationships of the defined user</li></ul>")
-  @ApiResponses(value = { 
+                notes = "This returns a list of relationships in the following cases: <br/><ul>" +
+                        "<li>if the query param \"user\" is not defined: returns the relationships of the authenticated user</li>" +
+                        "<li>if the \"user\" is defined and the authenticated user is not an administrator: returns the relationships of the authenticated user</li>" +
+                        "<li>if the \"user\" is defined and the authenticated user is an administrator: returns the relationships of the defined user</li>" +
+                        "<li>if the \"others\" is defined: returns the relationships between the user and the users defined in \"others\" only</li></ul>")
+  @ApiResponses(value = {
     @ApiResponse (code = 200, message = "Request fulfilled"),
     @ApiResponse (code = 500, message = "Internal server error"),
     @ApiResponse (code = 400, message = "Invalid query input") })
   public Response getUsersRelationships(@Context UriInfo uriInfo,
                                         @ApiParam(value = "Specific status of relationships: pending, confirmed or all", defaultValue = "all") @QueryParam("status") String status,
                                         @ApiParam(value = "User name to get relationships") @QueryParam("user") String user,
+                                        @ApiParam(value = "Usernames of the others users to get relationships with the given user") @QueryParam("others") String others,
                                         @ApiParam(value = "Offset", required = false, defaultValue = "0") @QueryParam("offset") int offset,
                                         @ApiParam(value = "Limit", required = false, defaultValue = "20") @QueryParam("limit") int limit,
                                         @ApiParam(value = "Returning the number of relationships or not", defaultValue = "false") @QueryParam("returnSize") boolean returnSize,
@@ -85,27 +91,29 @@ public class UsersRelationshipsRestResourcesV1 implements UsersRelationshipsRest
     
     IdentityManager identityManager = CommonsUtils.getService(IdentityManager.class);
     RelationshipManager relationshipManager = CommonsUtils.getService(RelationshipManager.class);
-    Relationship.Type type;
-    
-    try {
-      type = Relationship.Type.valueOf(status.toUpperCase());
-    } catch (Exception e) {
-      type = Relationship.Type.ALL;
+    final Relationship.Type type = StringUtils.isNotEmpty(status) && Arrays.asList(Relationship.Type.values()).contains(status.toUpperCase()) ? Relationship.Type.valueOf(status.toUpperCase()) : Relationship.Type.ALL;
+
+    List<Relationship> relationships;
+
+    String username = user;
+    if (username == null || !RestUtils.isMemberOfAdminGroup()) {
+      username = ConversationState.getCurrent().getIdentity().getUserId();
     }
-    
-    List<Relationship> relationships = new ArrayList<Relationship>();
-    int size = 0;
-    
-    if (user != null & RestUtils.isMemberOfAdminGroup()) {
-      Identity givenUser = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, user, true);
-      relationships = relationshipManager.getRelationshipsByStatus(givenUser, type, offset, limit);
-      size = returnSize ? relationshipManager.getRelationshipsCountByStatus(givenUser, type) : -1;
+    Identity givenUser = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, username, true);
+
+    if(StringUtils.isNotEmpty(others)) {
+      String[] othersUsernames = others.split(",");
+      relationships = Arrays.stream(othersUsernames)
+              .map(other -> identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, other, true))
+              .map(otherIdentity -> relationshipManager.get(givenUser, otherIdentity))
+              .filter(Objects::nonNull)
+              .filter(relationship -> type.equals(Relationship.Type.ALL) || type.equals(relationship.getStatus()))
+              .collect(Collectors.toList());
     } else {
-      Identity authenticatedUser = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, ConversationState.getCurrent().getIdentity().getUserId(), true);
-      relationships = relationshipManager.getRelationshipsByStatus(authenticatedUser, type, offset, limit);
-      size = returnSize ? relationshipManager.getRelationshipsCountByStatus(authenticatedUser, type) : -1;
+      relationships = relationshipManager.getRelationshipsByStatus(givenUser, type, offset, limit);
     }
-    
+    int size = returnSize ? relationshipManager.getRelationshipsCountByStatus(givenUser, type) : -1;
+
     List<DataEntity> relationshipEntities = EntityBuilder.buildRelationshipEntities(relationships, uriInfo);
     CollectionEntity collectionRelationship = new CollectionEntity(relationshipEntities, EntityBuilder.USERS_RELATIONSHIP_TYPE, offset, limit);
     if (returnSize) {

@@ -38,15 +38,7 @@ import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.relationship.model.Relationship;
 import org.exoplatform.social.core.space.impl.DefaultSpaceApplicationHandler;
 import org.exoplatform.social.core.space.model.Space;
-import org.exoplatform.social.notification.plugin.ActivityCommentPlugin;
-import org.exoplatform.social.notification.plugin.ActivityMentionPlugin;
-import org.exoplatform.social.notification.plugin.LikePlugin;
-import org.exoplatform.social.notification.plugin.NewUserPlugin;
-import org.exoplatform.social.notification.plugin.PostActivityPlugin;
-import org.exoplatform.social.notification.plugin.PostActivitySpaceStreamPlugin;
-import org.exoplatform.social.notification.plugin.RelationshipReceivedRequestPlugin;
-import org.exoplatform.social.notification.plugin.RequestJoinSpacePlugin;
-import org.exoplatform.social.notification.plugin.SpaceInvitationPlugin;
+import org.exoplatform.social.notification.plugin.*;
 
 /**
  * Created by The eXo Platform SAS
@@ -283,7 +275,7 @@ public abstract class AbstractPluginTest extends AbstractCoreTest {
     comment.setTitle(commentTitle);
     comment.setUserId(commenter.getId());
     activityManager.saveComment(activity, comment);
-    
+
     return comment;
   }
   
@@ -384,6 +376,7 @@ public abstract class AbstractPluginTest extends AbstractCoreTest {
     instantly.add(ActivityCommentPlugin.ID);
     instantly.add(ActivityMentionPlugin.ID);
     instantly.add(LikePlugin.ID);
+    instantly.add(LikeCommentPlugin.ID);
     instantly.add(RequestJoinSpacePlugin.ID);
     instantly.add(SpaceInvitationPlugin.ID);
     instantly.add(RelationshipReceivedRequestPlugin.ID);
@@ -416,6 +409,7 @@ public abstract class AbstractPluginTest extends AbstractCoreTest {
     webNotifs.add(ActivityCommentPlugin.ID);
     webNotifs.add(ActivityMentionPlugin.ID);
     webNotifs.add(LikePlugin.ID);
+    webNotifs.add(LikeCommentPlugin.ID);
     webNotifs.add(RequestJoinSpacePlugin.ID);
     webNotifs.add(SpaceInvitationPlugin.ID);
     webNotifs.add(RelationshipReceivedRequestPlugin.ID);
