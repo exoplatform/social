@@ -41,11 +41,9 @@ public class MockUserSettingServiceImpl implements UserSettingService {
     return userIds;
   }
 
-  @Override
   public void initDefaultSettings(String userId) {
   }
 
-  @Override
   public void initDefaultSettings(User[] users) {
   }
 
@@ -69,7 +67,6 @@ public class MockUserSettingServiceImpl implements UserSettingService {
   public void saveLastReadDate(String userId, Long time) {
   }
 
-  @Override
   public void setUserEnabled(String username, boolean enabled) {
   }
 

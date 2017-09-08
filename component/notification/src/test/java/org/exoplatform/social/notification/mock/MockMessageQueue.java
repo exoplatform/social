@@ -30,4 +30,19 @@ public class MockMessageQueue implements QueueMessage {
   public void send() {
     // do nothing
   }
+
+  @Override
+  public boolean sendMessage(MessageInfo message) throws Exception {
+    return true;
+  }
+
+  @Override
+  public void removeAll() throws Exception {
+    // do nothing
+  }
+
+  @Override
+  public void enable(boolean enabled) {
+    // do nothing
+  }
 }

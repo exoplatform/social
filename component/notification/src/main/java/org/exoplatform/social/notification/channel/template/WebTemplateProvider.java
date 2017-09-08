@@ -34,6 +34,7 @@ import org.exoplatform.commons.api.notification.model.MessageInfo;
 import org.exoplatform.commons.api.notification.model.NotificationInfo;
 import org.exoplatform.commons.api.notification.model.PluginKey;
 import org.exoplatform.commons.api.notification.plugin.NotificationPluginUtils;
+import org.exoplatform.commons.api.notification.service.WebNotificationService;
 import org.exoplatform.commons.api.notification.service.template.TemplateContext;
 import org.exoplatform.commons.notification.NotificationUtils;
 import org.exoplatform.commons.notification.template.TemplateUtils;
@@ -49,16 +50,7 @@ import org.exoplatform.social.core.service.LinkProvider;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.notification.LinkProviderUtils;
 import org.exoplatform.social.notification.Utils;
-import org.exoplatform.social.notification.plugin.ActivityCommentPlugin;
-import org.exoplatform.social.notification.plugin.ActivityMentionPlugin;
-import org.exoplatform.social.notification.plugin.LikePlugin;
-import org.exoplatform.social.notification.plugin.NewUserPlugin;
-import org.exoplatform.social.notification.plugin.PostActivityPlugin;
-import org.exoplatform.social.notification.plugin.PostActivitySpaceStreamPlugin;
-import org.exoplatform.social.notification.plugin.RelationshipReceivedRequestPlugin;
-import org.exoplatform.social.notification.plugin.RequestJoinSpacePlugin;
-import org.exoplatform.social.notification.plugin.SocialNotificationUtils;
-import org.exoplatform.social.notification.plugin.SpaceInvitationPlugin;
+import org.exoplatform.social.notification.plugin.*;
 import org.exoplatform.webui.utils.TimeConvertUtils;
 
 /**
@@ -113,6 +105,8 @@ public class WebTemplateProvider extends TemplateProvider {
     @Override
     protected MessageInfo makeMessage(NotificationContext ctx) {
       NotificationInfo notification = ctx.getNotificationInfo();
+      boolean isPopupOverOnly = ctx.value(WebNotificationService.POPUP_OVER);
+
       String language = getLanguage(notification);
 
       String activityId = notification.getValueOwnerParameter(SocialNotificationUtils.ACTIVITY_ID.getKey());
@@ -143,8 +137,7 @@ public class WebTemplateProvider extends TemplateProvider {
       templateContext.put("NOTIFICATION_ID", notification.getId());
       templateContext.put("LAST_UPDATED_TIME", TimeConvertUtils.convertXTimeAgoByTimeServer(cal.getTime(), "EE, dd yyyy", new Locale(language), TimeConvertUtils.YEAR));
       templateContext.put("ACTIVITY", NotificationUtils.getNotificationActivityTitle(activity.getTitle(), activity.getType()));
-      templateContext.put("COMMENT", notification.isOnPopOver() ? cutStringByMaxLength(comment.getTitle(), 30) : 
-                                                                               comment.getTitle());
+      templateContext.put("COMMENT", isPopupOverOnly ? cutStringByMaxLength(comment.getTitle(), 30) : comment.getTitle());
       List<String> users = SocialNotificationUtils.mergeUsers(notification, SocialNotificationUtils.POSTER.getKey(), activity.getId(), notification.getValueOwnerParameter(SocialNotificationUtils.POSTER.getKey()));
       
       //
