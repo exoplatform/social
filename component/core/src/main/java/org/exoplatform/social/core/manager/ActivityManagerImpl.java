@@ -231,11 +231,6 @@ public class ActivityManagerImpl implements ActivityManager {
    * {@inheritDoc}
    */
   public void saveLike(ExoSocialActivity existingActivity, Identity identity) {
-
-    existingActivity.setTitle(null);
-    existingActivity.setBody(null);
-    existingActivity.setTemplateParams(null);
-
     String[] identityIds = existingActivity.getLikeIdentityIds();
     if (ArrayUtils.contains(identityIds, identity.getId())) {
       LOG.warn("activity is already liked by identity: " + identity);

@@ -23,6 +23,9 @@ import org.exoplatform.social.core.activity.model.ExoSocialActivityImpl;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.relationship.model.Relationship;
+import org.exoplatform.social.core.storage.api.ActivityStorage;
+import org.exoplatform.social.core.storage.api.IdentityStorage;
+import org.exoplatform.social.core.storage.api.RelationshipStorage;
 import org.exoplatform.social.core.storage.impl.IdentityStorageImpl;
 import org.exoplatform.social.core.test.AbstractCoreTest;
 import org.exoplatform.social.core.test.MaxQueryNumber;
@@ -36,11 +39,11 @@ import java.util.List;
  * @version $Revision$
  */
 @QueryNumberTest
-public class CachedActivityStorageTestCase extends AbstractCoreTest {
+public class JCRCachedActivityStorageTestCase extends AbstractCoreTest {
 
-  private CachedActivityStorage activityStorage;
-  private CachedRelationshipStorage relationshipStorage;
-  private IdentityStorageImpl identityStorage;
+  private JCRCachedActivityStorage cachedActivityStorage;
+  private RelationshipStorage relationshipStorage;
+  private IdentityStorage identityStorage;
   private SocialStorageCacheService cacheService;
 
   private Identity identity;
@@ -54,10 +57,10 @@ public class CachedActivityStorageTestCase extends AbstractCoreTest {
     super.setUp();
 
     //
-    activityStorage = (CachedActivityStorage) getContainer().getComponentInstanceOfType(CachedActivityStorage.class);
-    relationshipStorage = (CachedRelationshipStorage) getContainer().getComponentInstanceOfType(CachedRelationshipStorage.class);
-    identityStorage = (IdentityStorageImpl) getContainer().getComponentInstanceOfType(IdentityStorageImpl.class);
-    cacheService = (SocialStorageCacheService) getContainer().getComponentInstanceOfType(SocialStorageCacheService.class);
+    cachedActivityStorage = getContainer().getComponentInstanceOfType(JCRCachedActivityStorage.class);
+    relationshipStorage = getContainer().getComponentInstanceOfType(CachedRelationshipStorage.class);
+    identityStorage = getContainer().getComponentInstanceOfType(IdentityStorageImpl.class);
+    cacheService = getContainer().getComponentInstanceOfType(SocialStorageCacheService.class);
 
     //
     cacheService.getActivitiesCache().clearCache();
@@ -95,14 +98,14 @@ public class CachedActivityStorageTestCase extends AbstractCoreTest {
     ExoSocialActivity activity = new ExoSocialActivityImpl();
     activity.setTitle("hello");
     activity.setUserId(identity.getId());
-    activityStorage.saveActivity(identity, activity);
+    cachedActivityStorage.saveActivity(identity, activity);
 
     //
     assertEquals(1, cacheService.getActivityCache().getCacheSize());
     assertEquals(0, cacheService.getActivitiesCache().getCacheSize());
 
     //
-    activityStorage.getActivityFeed(identity, 0, 20);
+    cachedActivityStorage.getActivityFeed(identity, 0, 20);
 
     //
     assertEquals(1, cacheService.getActivityCache().getCacheSize());
@@ -112,7 +115,7 @@ public class CachedActivityStorageTestCase extends AbstractCoreTest {
     ExoSocialActivity activity2 = new ExoSocialActivityImpl();
     activity2.setTitle("hello 2");
     activity2.setUserId(identity.getId());
-    activityStorage.saveActivity(identity, activity2);
+    cachedActivityStorage.saveActivity(identity, activity2);
 
     //
     assertEquals(2, cacheService.getActivityCache().getCacheSize());
@@ -127,21 +130,21 @@ public class CachedActivityStorageTestCase extends AbstractCoreTest {
     ExoSocialActivity activity = new ExoSocialActivityImpl();
     activity.setTitle("hello");
     activity.setUserId(identity.getId());
-    activityStorage.saveActivity(identity, activity);
+    cachedActivityStorage.saveActivity(identity, activity);
 
     //
     assertEquals(1, cacheService.getActivityCache().getCacheSize());
     assertEquals(0, cacheService.getActivitiesCache().getCacheSize());
 
     //
-    activityStorage.getActivityFeed(identity, 0, 20);
+    cachedActivityStorage.getActivityFeed(identity, 0, 20);
 
     //
     assertEquals(1, cacheService.getActivityCache().getCacheSize());
     assertEquals(1, cacheService.getActivitiesCache().getCacheSize());
 
     //
-    activityStorage.deleteActivity(activity.getId());
+    cachedActivityStorage.deleteActivity(activity.getId());
 
     //
     assertEquals(0, cacheService.getActivityCache().getCacheSize());
@@ -157,15 +160,15 @@ public class CachedActivityStorageTestCase extends AbstractCoreTest {
     ExoSocialActivity activity = new ExoSocialActivityImpl();
     activity.setTitle("hello on 1");
     activity.setUserId(identity.getId());
-    activityStorage.saveActivity(identity, activity);
+    cachedActivityStorage.saveActivity(identity, activity);
 
     ExoSocialActivity activity2 = new ExoSocialActivityImpl();
     activity2.setTitle("hello on 2");
     activity2.setUserId(identity2.getId());
-    activityStorage.saveActivity(identity2, activity2);
+    cachedActivityStorage.saveActivity(identity2, activity2);
 
     //
-    activityStorage.getActivityFeed(identity, 0, 20);
+    cachedActivityStorage.getActivityFeed(identity, 0, 20);
     assertEquals(1, cacheService.getActivitiesCache().getCacheSize());
 
     Relationship relationship = new Relationship(identity, identity2, Relationship.Type.CONFIRMED);
@@ -173,7 +176,7 @@ public class CachedActivityStorageTestCase extends AbstractCoreTest {
     assertEquals(0, cacheService.getActivitiesCache().getCacheSize());
 
     //
-    activityStorage.getActivityFeed(identity, 0, 20);
+    cachedActivityStorage.getActivityFeed(identity, 0, 20);
     assertEquals(1, cacheService.getActivitiesCache().getCacheSize());
 
     //
@@ -189,14 +192,14 @@ public class CachedActivityStorageTestCase extends AbstractCoreTest {
     ExoSocialActivity activity = new ExoSocialActivityImpl();
     activity.setTitle("hello");
     activity.setUserId(identity.getId());
-    activityStorage.saveActivity(identity, activity);
+    cachedActivityStorage.saveActivity(identity, activity);
 
     //
     assertEquals(1, cacheService.getActivityCache().getCacheSize());
     assertEquals(0, cacheService.getActivitiesCache().getCacheSize());
 
     //
-    activityStorage.getActivityFeed(identity, 0, 20);
+    cachedActivityStorage.getActivityFeed(identity, 0, 20);
 
     //
     assertEquals(1, cacheService.getActivityCache().getCacheSize());
@@ -205,13 +208,13 @@ public class CachedActivityStorageTestCase extends AbstractCoreTest {
     ExoSocialActivity comment = new ExoSocialActivityImpl();
     comment.setTitle("comment");
     comment.setUserId(identity.getId());
-    activityStorage.saveComment(activity, comment);
+    cachedActivityStorage.saveComment(activity, comment);
 
     //
     assertEquals(2, cacheService.getActivityCache().getCacheSize());
     assertEquals(0, cacheService.getActivitiesCache().getCacheSize());
-    assertEquals(activity.getId(), activityStorage.getActivityFeed(identity, 0, 20).get(0).getId());
-    assertEquals(comment.getId(), activityStorage.getActivityFeed(identity, 0, 20).get(0).getReplyToId()[0]);
+    assertEquals(activity.getId(), cachedActivityStorage.getActivityFeed(identity, 0, 20).get(0).getId());
+    assertEquals(comment.getId(), cachedActivityStorage.getActivityFeed(identity, 0, 20).get(0).getReplyToId()[0]);
 
   }
 
@@ -221,14 +224,14 @@ public class CachedActivityStorageTestCase extends AbstractCoreTest {
     ExoSocialActivity activity = new ExoSocialActivityImpl();
     activity.setTitle("hello");
     activity.setUserId(identity.getId());
-    activityStorage.saveActivity(identity, activity);
+    cachedActivityStorage.saveActivity(identity, activity);
 
     //
     assertEquals(1, cacheService.getActivityCache().getCacheSize());
     assertEquals(0, cacheService.getActivitiesCache().getCacheSize());
 
     //
-    activityStorage.getActivityFeed(identity, 0, 20);
+    cachedActivityStorage.getActivityFeed(identity, 0, 20);
 
     //
     assertEquals(1, cacheService.getActivityCache().getCacheSize());
@@ -237,22 +240,22 @@ public class CachedActivityStorageTestCase extends AbstractCoreTest {
     ExoSocialActivity comment = new ExoSocialActivityImpl();
     comment.setTitle("comment");
     comment.setUserId(identity.getId());
-    activityStorage.saveComment(activity, comment);
+    cachedActivityStorage.saveComment(activity, comment);
 
     //
     assertEquals(2, cacheService.getActivityCache().getCacheSize());
     assertEquals(0, cacheService.getActivitiesCache().getCacheSize());
-    assertEquals(activity.getId(), activityStorage.getActivityFeed(identity, 0, 20).get(0).getId());
-    assertEquals(comment.getId(), activityStorage.getActivityFeed(identity, 0, 20).get(0).getReplyToId()[0]);
+    assertEquals(activity.getId(), cachedActivityStorage.getActivityFeed(identity, 0, 20).get(0).getId());
+    assertEquals(comment.getId(), cachedActivityStorage.getActivityFeed(identity, 0, 20).get(0).getReplyToId()[0]);
 
     //
-    activityStorage.deleteComment(activity.getId(), comment.getId());
+    cachedActivityStorage.deleteComment(activity.getId(), comment.getId());
 
     //
     assertEquals(0, cacheService.getActivityCache().getCacheSize());
     assertEquals(0, cacheService.getActivitiesCache().getCacheSize());
-    assertEquals(activity.getId(), activityStorage.getActivityFeed(identity, 0, 20).get(0).getId());
-    assertEquals(0, activityStorage.getActivityFeed(identity, 0, 20).get(0).getReplyToId().length);
+    assertEquals(activity.getId(), cachedActivityStorage.getActivityFeed(identity, 0, 20).get(0).getId());
+    assertEquals(0, cachedActivityStorage.getActivityFeed(identity, 0, 20).get(0).getReplyToId().length);
 
   }
   
@@ -261,44 +264,44 @@ public class CachedActivityStorageTestCase extends AbstractCoreTest {
     ExoSocialActivity activity = new ExoSocialActivityImpl();
     activity.setTitle("hello");
     activity.setUserId(identity.getId());
-    activityStorage.saveActivity(identity, activity);
+    cachedActivityStorage.saveActivity(identity, activity);
     
     //
     assertEquals(1, cacheService.getActivityCache().getCacheSize());
     assertEquals(0, cacheService.getActivitiesCache().getCacheSize());
 
     //
-    activityStorage.getActivityFeed(identity, 0, 20);
+    cachedActivityStorage.getActivityFeed(identity, 0, 20);
 
     //
     assertEquals(1, cacheService.getActivityCache().getCacheSize());
     assertEquals(1, cacheService.getActivitiesCache().getCacheSize());
     
     //
-    List<ExoSocialActivity> idActivities = activityStorage.getUserActivities(identity, 0, 5);
+    List<ExoSocialActivity> idActivities = cachedActivityStorage.getUserActivities(identity, 0, 5);
     assertEquals(1, idActivities.size());
     
-    List<ExoSocialActivity> id2Activities = activityStorage.getUserActivities(identity2, 0, 5);
+    List<ExoSocialActivity> id2Activities = cachedActivityStorage.getUserActivities(identity2, 0, 5);
     assertEquals(0, id2Activities.size());
     
     // identity2 like activity of identity1
-    ExoSocialActivity gotActivity = activityStorage.getUserActivities(identity, 0, 5).get(0);
+    ExoSocialActivity gotActivity = cachedActivityStorage.getUserActivities(identity, 0, 5).get(0);
     String[] likeIdentityIds = gotActivity.getLikeIdentityIds();
     likeIdentityIds = (String[]) ArrayUtils.add(likeIdentityIds, identity2.getId());
     gotActivity.setLikeIdentityIds(likeIdentityIds);
-    activityStorage.updateActivity(gotActivity);
+    cachedActivityStorage.updateActivity(gotActivity);
     
     assertEquals(0, cacheService.getActivityCache().getCacheSize());
     assertEquals(0, cacheService.getActivitiesCache().getCacheSize());
     
-    id2Activities = activityStorage.getUserActivities(identity2, 0, 5);
+    id2Activities = cachedActivityStorage.getUserActivities(identity2, 0, 5);
     assertEquals(1, id2Activities.size());
     
     assertEquals(1, cacheService.getActivityCache().getCacheSize());
     assertEquals(1, cacheService.getActivitiesCache().getCacheSize());
     
     //
-    activityStorage.deleteActivity(activity.getId());
+    cachedActivityStorage.deleteActivity(activity.getId());
   }
 
 }

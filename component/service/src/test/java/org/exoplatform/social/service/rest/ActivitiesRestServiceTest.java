@@ -28,9 +28,7 @@ import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.service.test.AbstractResourceTest;
 
 import javax.ws.rs.core.Response;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 /**
  * ActivitiesRestServiceTest.java.
@@ -43,11 +41,6 @@ public class ActivitiesRestServiceTest extends AbstractResourceTest {
   static private ActivityManager activityManager;
   private IdentityManager identityManager;
 
-  static private String activityId;
-
-  private List<Identity> tearDownIdentityList;
-  private List<ExoSocialActivity> tearDownActivityList;
-
   private Identity demoIdentity;
   private Identity johnIdentity;
 
@@ -58,8 +51,8 @@ public class ActivitiesRestServiceTest extends AbstractResourceTest {
     super.setUp();
 
     container = getContainer();
-    activityManager = (ActivityManager) container.getComponentInstanceOfType(ActivityManager.class);
-    identityManager = (IdentityManager) container.getComponentInstanceOfType(IdentityManager.class);
+    activityManager = container.getComponentInstanceOfType(ActivityManager.class);
+    identityManager = container.getComponentInstanceOfType(IdentityManager.class);
 
     assertNotNull(activityManager);
     assertNotNull(identityManager);
@@ -67,31 +60,14 @@ public class ActivitiesRestServiceTest extends AbstractResourceTest {
     demoIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "demo", false);
     johnIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "john", false);
 
-    tearDownIdentityList = new ArrayList<Identity>();
-    tearDownIdentityList.add(johnIdentity);
-
-    tearDownActivityList = new ArrayList<ExoSocialActivity>();
-
     ACTIVITIES_RESOURCE_URL = "/" + container.getName() + "/social/activities/";
 
     addResource(ActivitiesRestService.class, null);
 
     populateData();
-//    startSessionAs("root");
   }
 
   public void tearDown() throws Exception {
-
-    //Removing test activities
-    for (ExoSocialActivity activity: tearDownActivityList) {
-      activityManager.deleteActivity(activity);
-    }
-
-    //Removing test identities
-    for (Identity identity: tearDownIdentityList) {
-      identityManager.deleteIdentity(identity);
-    }
-
     //Removing Rest Activities resource
     removeResource(ActivitiesRestService.class);
 
@@ -177,8 +153,6 @@ public class ActivitiesRestServiceTest extends AbstractResourceTest {
       activity.setUserId(ownerIdentity.getId());
 
       activityManager.saveActivityNoReturn(ownerIdentity, activity);
-
-      tearDownActivityList.add(activityManager.getActivity(activity.getId()));
     }
   }
 }

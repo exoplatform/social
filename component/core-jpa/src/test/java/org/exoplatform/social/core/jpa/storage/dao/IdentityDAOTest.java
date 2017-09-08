@@ -19,20 +19,19 @@
 
 package org.exoplatform.social.core.jpa.storage.dao;
 
+import org.exoplatform.commons.utils.ListAccess;
+import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
+import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
+import org.exoplatform.social.core.jpa.storage.entity.ConnectionEntity;
+import org.exoplatform.social.core.jpa.storage.entity.IdentityEntity;
+import org.exoplatform.social.core.jpa.test.BaseCoreTest;
+import org.exoplatform.social.core.relationship.model.Relationship.Type;
+
+import javax.persistence.EntityExistsException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map.Entry;
-
-import javax.persistence.EntityExistsException;
-
-import org.exoplatform.commons.utils.ListAccess;
-import org.exoplatform.social.core.jpa.storage.entity.ConnectionEntity;
-import org.exoplatform.social.core.jpa.storage.entity.IdentityEntity;
-import org.exoplatform.social.core.jpa.test.BaseCoreTest;
-import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
-import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
-import org.exoplatform.social.core.relationship.model.Relationship.Type;
 
 /**
  * @author <a href="mailto:tuyennt@exoplatform.com">Tuyen Nguyen The</a>.

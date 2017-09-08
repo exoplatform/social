@@ -17,22 +17,15 @@
 
 package org.exoplatform.social.core.jpa.storage;
 
-import org.exoplatform.services.organization.Group;
-import org.exoplatform.services.organization.GroupHandler;
-import org.exoplatform.services.organization.Membership;
-import org.exoplatform.services.organization.MembershipHandler;
-import org.exoplatform.services.organization.MembershipType;
-import org.exoplatform.services.organization.MembershipTypeHandler;
-import org.exoplatform.services.organization.OrganizationService;
-import org.exoplatform.services.organization.User;
-import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
-import org.exoplatform.social.core.jpa.test.AbstractCoreTest;
-import org.exoplatform.social.core.jpa.test.MaxQueryNumber;
-import org.exoplatform.social.core.jpa.test.QueryNumberTest;
+import org.exoplatform.services.organization.*;
 import org.exoplatform.social.core.identity.SpaceMemberFilterListAccess.Type;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
+import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
+import org.exoplatform.social.core.jpa.test.AbstractCoreTest;
+import org.exoplatform.social.core.jpa.test.MaxQueryNumber;
+import org.exoplatform.social.core.jpa.test.QueryNumberTest;
 import org.exoplatform.social.core.model.AvatarAttachment;
 import org.exoplatform.social.core.profile.ProfileFilter;
 import org.exoplatform.social.core.service.LinkProvider;
@@ -41,7 +34,6 @@ import org.exoplatform.social.core.space.impl.DefaultSpaceApplicationHandler;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.storage.api.IdentityStorage;
 import org.exoplatform.social.core.storage.api.SpaceStorage;
-import org.exoplatform.social.core.storage.impl.StorageUtils;
 
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -61,24 +53,13 @@ public class IdentityStorageTest extends AbstractCoreTest {
   private List<Space> tearDownSpaceList;
 
   public void setUp() throws Exception {
-    //super.setUp();
+    super.setUp();
     identityStorage = getService(IdentityStorage.class);
     spaceStorage = getService(SpaceStorage.class);
     assertNotNull("identityStorage must not be null", identityStorage);
     tearDownIdentityList = new ArrayList<Identity>();
     tearDownSpaceList = new ArrayList<Space>();
     begin();
-  }
-
-  public void tearDown() throws Exception {
-    for (Space space : tearDownSpaceList) {
-      spaceStorage.deleteSpace(space.getId());
-    }
-    for (Identity identity : tearDownIdentityList) {
-      identityStorage.deleteIdentity(identity);
-    }
-    //super.tearDown();
-    end();
   }
 
   /**
@@ -175,7 +156,7 @@ public class IdentityStorageTest extends AbstractCoreTest {
    * Tests {@link IdenityStorage#findIdentityById(String)}
    *
    */
-  @MaxQueryNumber(75)
+  @MaxQueryNumber(90)
   public void testFindIdentityById() {
     final String remoteUser = "identity1";
     Identity toSaveIdentity = new Identity(OrganizationIdentityProvider.NAME, remoteUser);
@@ -208,7 +189,7 @@ public class IdentityStorageTest extends AbstractCoreTest {
    * Tests {@link IdenityStorage#findIdentity(String, String)}
    *
    */
-  @MaxQueryNumber(72)
+  @MaxQueryNumber(87)
   public void testFindIdentity() {
     final String userName = "username";
 
@@ -676,7 +657,8 @@ public class IdentityStorageTest extends AbstractCoreTest {
     identities = identityStorage.getSpaceMemberIdentitiesByProfileFilter(space, new ProfileFilter(), Type.MANAGER, 0, 10);
     assertEquals(1, identities.size());
   }
-  
+
+  @MaxQueryNumber(126)
   public void testGetAvatarInputStreamById() throws Exception {
     InputStream inputStream = getClass().getResourceAsStream("/eXo-Social.png");
     AvatarAttachment avatarAttachment = new AvatarAttachment(null, "avatar", "png", inputStream, null, System.currentTimeMillis());

@@ -16,47 +16,44 @@
  */
 package org.exoplatform.social.core.jpa.storage;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
-
-import org.exoplatform.social.core.jpa.search.ProfileSearchConnector;
-import org.exoplatform.social.core.profile.ProfileFilter;
-import org.exoplatform.social.core.storage.api.IdentityStorage;
-import org.mockito.Mockito;
 import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.services.organization.OrganizationService;
 import org.exoplatform.services.organization.User;
-import org.exoplatform.social.core.jpa.test.AbstractCoreTest;
 import org.exoplatform.social.common.RealtimeListAccess;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.activity.model.ExoSocialActivityImpl;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
+import org.exoplatform.social.core.jpa.cache.RDBMSCachedIdentityStorage;
+import org.exoplatform.social.core.jpa.test.AbstractCoreTest;
 import org.exoplatform.social.core.manager.ActivityManager;
+import org.exoplatform.social.core.profile.ProfileFilter;
 import org.exoplatform.social.core.relationship.model.Relationship;
 import org.exoplatform.social.core.space.SpaceUtils;
 import org.exoplatform.social.core.space.impl.DefaultSpaceApplicationHandler;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
 import org.exoplatform.social.core.storage.ActivityStorageException;
+import org.exoplatform.social.core.storage.api.IdentityStorage;
 import org.exoplatform.social.core.storage.impl.StorageUtils;
+import org.mockito.Mockito;
+
+import java.util.*;
 
 /**
  * Unit Test for {@link ActivityManager}, including cache tests.
  * @author hoat_le
  */
-public class ActivityManagerMysqlTest extends AbstractCoreTest {
-  private final Log LOG = ExoLogger.getLogger(ActivityManagerMysqlTest.class);
-  private List<ExoSocialActivity> tearDownActivityList;
-  private List<Space> tearDownSpaceList;
+public class ActivityManagerRDBMSTest extends AbstractCoreTest {
+  private final Log LOG = ExoLogger.getLogger(ActivityManagerRDBMSTest.class);
+
+  private Identity rootIdentity;
+  private Identity johnIdentity;
+  private Identity maryIdentity;
+  private Identity demoIdentity;
   private Identity ghostIdentity;
   private Identity raulIdentity;
   private Identity jameIdentity;
@@ -65,45 +62,18 @@ public class ActivityManagerMysqlTest extends AbstractCoreTest {
   @Override
   public void setUp() throws Exception {
     super.setUp();
-    tearDownActivityList = new ArrayList<ExoSocialActivity>();
-    tearDownSpaceList = new ArrayList<Space>();
 
-    RDBMSIdentityStorageImpl identityStorage = (RDBMSIdentityStorageImpl) getService(IdentityStorage.class);
+    RDBMSCachedIdentityStorage identityStorage = (RDBMSCachedIdentityStorage) getService(IdentityStorage.class);
     identityStorage.setProfileSearchConnector(mockProfileSearch);
 
-    ghostIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "ghost", true);
-    raulIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "raul", true);
-    jameIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "jame", true);
-    paulIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "paul", true);
-  }
-
-  @Override
-  public void tearDown() throws Exception {
-    List<Identity> userIdentities= identityManager.getIdentities(OrganizationIdentityProvider.NAME);
-    for (ExoSocialActivity activity : tearDownActivityList) {
-      try {
-        if (userIdentities.contains(activity.getUserId())) {
-          activityManager.deleteActivity(activity.getId());
-        }
-      } catch (Exception e) {
-        LOG.warn("can not delete activity with id: " + activity.getId());
-      }
-    }
-    //RealtimeListAccess<ExoSocialActivity> demoActivities = activityManager.getActivitiesOfUserSpacesWithListAccess(demoIdentity);
-    //assertEquals(0, demoActivities.getSize());
-
-    for (Space space : spaceService.getAllSpaces()) {
-      spaceService.deleteSpace(space);
-    }
-    
-    identityManager.deleteIdentity(ghostIdentity);
-    identityManager.deleteIdentity(jameIdentity);
-    identityManager.deleteIdentity(raulIdentity);
-    identityManager.deleteIdentity(paulIdentity);
-
-    RDBMSIdentityStorageImpl identityStorage = (RDBMSIdentityStorageImpl) getService(IdentityStorage.class);
-    identityStorage.setProfileSearchConnector(getService(ProfileSearchConnector.class));
-    super.tearDown();
+    rootIdentity = createIdentity("root");
+    johnIdentity = createIdentity("john");
+    maryIdentity = createIdentity("mary");
+    demoIdentity = createIdentity("demo");
+    ghostIdentity = createIdentity("ghost");
+    raulIdentity = createIdentity("raul");
+    jameIdentity = createIdentity("jame");
+    paulIdentity = createIdentity("paul");
   }
 
   /**
@@ -129,8 +99,7 @@ public class ActivityManagerMysqlTest extends AbstractCoreTest {
     activity.isHidden(false);
     activity.isLocked(true);
     activityManager.saveActivityNoReturn(johnIdentity, activity);
-    tearDownActivityList.add(activity);
-    
+
     activity = activityManager.getActivity(activity.getId());
     assertNotNull("activity must not be null", activity);
     assertEquals("activity.getTitle() must return: " + activityTitle, activityTitle, activity.getTitle());
@@ -158,8 +127,7 @@ public class ActivityManagerMysqlTest extends AbstractCoreTest {
     activity.setTitle(activityTitle);
     activity.setUserId(userId);
     activityManager.saveActivityNoReturn(activity);
-    tearDownActivityList.add(activity);
-    
+
     activity = activityManager.getActivity(activity.getId());
     assertNotNull("activity must not be null", activity);
     assertEquals("activity.getTitle() must return: " + activityTitle, activityTitle, activity.getTitle());
@@ -197,8 +165,6 @@ public class ActivityManagerMysqlTest extends AbstractCoreTest {
       //updates
       rootActivity.setTitle("Hello World");
       activityManager.updateActivity(rootActivity);
-
-      tearDownActivityList.add(rootActivity);
     }
 
     {
@@ -206,8 +172,6 @@ public class ActivityManagerMysqlTest extends AbstractCoreTest {
       ExoSocialActivity johnActivity = new ExoSocialActivityImpl();
       johnActivity.setTitle(title);
       activityManager.saveActivity(johnIdentity, johnActivity);
-
-      tearDownActivityList.add(johnActivity);
 
       assertNotNull("johnActivity.getId() must not be null", johnActivity.getId());
     }
@@ -218,7 +182,6 @@ public class ActivityManagerMysqlTest extends AbstractCoreTest {
       ExoSocialActivity activity = new ExoSocialActivityImpl();
       activity.setTitle(title);
       activityManager.saveActivity(demoIdentity, activity);
-      tearDownActivityList.add(activity);
       assertNotNull("activity.getId() must not be null", activity.getId());
       assertNotNull("activity.getUpdated() must not be null", activity.getUpdated());
       assertNotNull("activity.getPostedTime() must not be null", activity.getPostedTime());
@@ -244,8 +207,6 @@ public class ActivityManagerMysqlTest extends AbstractCoreTest {
     assertNotNull("activity must not be null", activity);
     assertEquals("activity.getTitle() must return: " + activityTitle, activityTitle, activity.getTitle());
     assertEquals("activity.getUserId() must return: " + userId, userId, activity.getUserId());
-    
-    tearDownActivityList.add(activity);
   }
   
   /**
@@ -294,8 +255,6 @@ public class ActivityManagerMysqlTest extends AbstractCoreTest {
       
       rootActivities = activityManager.getActivities(rootIdentity);
       assertEquals("user's activities should have 1 element", 1, rootActivities.size());
-
-      tearDownActivityList.addAll(rootActivities);
   }
 
   /**
@@ -362,8 +321,6 @@ public class ActivityManagerMysqlTest extends AbstractCoreTest {
     List<ExoSocialActivity> exoActivities = Arrays.asList(activities.load(0, activities.getSize()));
     LOG.info("Loadding 101 activities...");
     assertEquals(101, exoActivities.size());
-    //
-    tearDownActivityList.addAll(exoActivities);
   }
 
   /**
@@ -379,8 +336,7 @@ public class ActivityManagerMysqlTest extends AbstractCoreTest {
     activity.setTitle(activityTitle);
     activity.setUserId(userId);
     activityManager.saveActivityNoReturn(johnIdentity, activity);
-    tearDownActivityList.add(activity);
-    
+
     activity = activityManager.getActivity(activity.getId());
     assertNotNull("activity must not be null", activity);
     assertEquals("activity.getTitle() must return: " + activityTitle, activityTitle, activity.getTitle());
@@ -456,8 +412,7 @@ public class ActivityManagerMysqlTest extends AbstractCoreTest {
     activity.setTitle(activityTitle);
     activity.setUserId(userId);
     activityManager.saveActivityNoReturn(johnIdentity, activity);
-    tearDownActivityList.add(activity);
-    
+
     String commentTitle = "Comment title";
     
     //demo comments on john's activity
@@ -493,8 +448,7 @@ public class ActivityManagerMysqlTest extends AbstractCoreTest {
     demoActivity.setTitle("demo activity");
     demoActivity.setUserId(demoActivity.getId());
     activityManager.saveActivityNoReturn(demoIdentity, demoActivity);
-    tearDownActivityList.add(demoActivity);
-    
+
     int total = 10;
     
     for (int i = 0; i < total; i ++) {
@@ -521,8 +475,7 @@ public class ActivityManagerMysqlTest extends AbstractCoreTest {
     demoActivity.setTitle("demo activity");
     demoActivity.setUserId(demoActivity.getId());
     activityManager.saveActivityNoReturn(demoIdentity, demoActivity);
-    tearDownActivityList.add(demoActivity);
-    
+
     ExoSocialActivity maryComment = new ExoSocialActivityImpl();
     maryComment.setTitle("mary comment");
     maryComment.setUserId(maryIdentity.getId());
@@ -544,8 +497,7 @@ public class ActivityManagerMysqlTest extends AbstractCoreTest {
     demoActivity.setTitle("&\"demo activity");
     demoActivity.setUserId(demoActivity.getId());
     activityManager.saveActivityNoReturn(demoIdentity, demoActivity);
-    tearDownActivityList.add(demoActivity);
-    
+
     demoActivity = activityManager.getActivity(demoActivity.getId());
     assertEquals("demoActivity.getLikeIdentityIds() must return: 0",
                  0, demoActivity.getLikeIdentityIds().length);
@@ -574,8 +526,7 @@ public class ActivityManagerMysqlTest extends AbstractCoreTest {
     
     
     activityManager.saveActivityNoReturn(demoIdentity, demoActivity);
-    tearDownActivityList.add(demoActivity);
-    
+
     demoActivity = activityManager.getActivity(demoActivity.getId());
     assertEquals("demoActivity.getLikeIdentityIds() must return: 0",
                  0, demoActivity.getLikeIdentityIds().length);
@@ -599,8 +550,7 @@ public class ActivityManagerMysqlTest extends AbstractCoreTest {
     demoActivity.setTitle("demo activity");
     demoActivity.setUserId(demoActivity.getId());
     activityManager.saveActivityNoReturn(demoIdentity, demoActivity);
-    tearDownActivityList.add(demoActivity);
-    
+
     demoActivity = activityManager.getActivity(demoActivity.getId());
     assertEquals("demoActivity.getLikeIdentityIds() must return: 0",
                  0, demoActivity.getLikeIdentityIds().length);
@@ -644,8 +594,7 @@ public class ActivityManagerMysqlTest extends AbstractCoreTest {
     
     
     activityManager.saveActivityNoReturn(demoIdentity, demoActivity);
-    tearDownActivityList.add(demoActivity);
-    
+
     demoActivity = activityManager.getActivity(demoActivity.getId());
     activityManager.saveLike(demoActivity, johnIdentity);
     ExoSocialActivity likedActivity = activityManager.getActivity(demoActivity.getId());
@@ -672,7 +621,6 @@ public class ActivityManagerMysqlTest extends AbstractCoreTest {
       demoActivity.setTitle("demo activity");
       demoActivity.setUserId(demoActivity.getId());
       activityManager.saveActivityNoReturn(demoIdentity, demoActivity);
-      tearDownActivityList.add(demoActivity);
     }
 
     RealtimeListAccess<ExoSocialActivity> demoListAccess = activityManager.getActivitiesWithListAccess(demoIdentity);
@@ -696,7 +644,6 @@ public class ActivityManagerMysqlTest extends AbstractCoreTest {
       activity.setTitle("activity title " + i);
       activity.setUserId(johnIdentity.getId());
       activityManager.saveActivityNoReturn(johnIdentity, activity);
-      tearDownActivityList.add(activity);
       if (i == 5) {
         baseActivity = activity;
       }
@@ -722,7 +669,6 @@ public class ActivityManagerMysqlTest extends AbstractCoreTest {
       activity.setTitle("activity title " + i);
       activity.setUserId(maryIdentity.getId());
       activityManager.saveActivityNoReturn(maryIdentity, activity);
-      tearDownActivityList.add(activity);
       if (i == 5) {
         baseActivity = activity;
       }
@@ -765,7 +711,6 @@ public class ActivityManagerMysqlTest extends AbstractCoreTest {
       activity.setTitle("activity title " + i);
       activity.setUserId(demoIdentity.getId());
       activityManager.saveActivityNoReturn(spaceIdentity, activity);
-      tearDownActivityList.add(activity);
     }
     
     space = spaceService.getSpaceByDisplayName(space.getDisplayName());
@@ -786,7 +731,6 @@ public class ActivityManagerMysqlTest extends AbstractCoreTest {
       activity.setTitle("activity title " + i);
       activity.setUserId(demoIdentity.getId());
       activityManager.saveActivityNoReturn(spaceIdentity2, activity);
-      tearDownActivityList.add(activity);
     }
     
     space2 = spaceService.getSpaceByDisplayName(space2.getDisplayName());
@@ -821,30 +765,34 @@ public class ActivityManagerMysqlTest extends AbstractCoreTest {
     assertEquals(8, activityManager.getActivityFeedWithListAccess(demoIdentity).getSize());
 
     relationshipManager.confirm(demoIdentity, maryIdentity);
+
+    // add 1 activity to make sure cache is updated
+    this.populateActivityMass(demoIdentity, 1);
+
     demoActivityFeed = activityManager.getActivityFeedWithListAccess(demoIdentity);
-    assertEquals("demoActivityFeed.getSize() must return 11", 11, demoActivityFeed.getSize());
-    assertEquals(11, demoActivityFeed.load(0, 15).length);
-    assertEquals(6, demoActivityFeed.load(5, 15).length);
+    assertEquals("demoActivityFeed.getSize() must return 12", 12, demoActivityFeed.getSize());
+    assertEquals(12, demoActivityFeed.load(0, 15).length);
+    assertEquals(7, demoActivityFeed.load(5, 15).length);
     
     RealtimeListAccess<ExoSocialActivity> maryActivityFeed = activityManager.getActivityFeedWithListAccess(maryIdentity);
-    assertEquals("maryActivityFeed.getSize() must return 6", 6, maryActivityFeed.getSize());
-    assertEquals(6, maryActivityFeed.load(0, 10).length);
+    assertEquals("maryActivityFeed.getSize() must return 7", 7, maryActivityFeed.getSize());
+    assertEquals(7, maryActivityFeed.load(0, 10).length);
     
     // Create demo's activity on space
     createActivityToOtherIdentity(demoIdentity, spaceIdentity, 5);
 
     // after that the feed of demo with have 16
     demoActivityFeed = activityManager.getActivityFeedWithListAccess(demoIdentity);
-    assertEquals(16, demoActivityFeed.getSize());
+    assertEquals(17, demoActivityFeed.getSize());
 
-    // demo's Space feed must be be 5
+    // demo's Space feed must be be 10
     RealtimeListAccess<ExoSocialActivity> demoActivitiesSpaceFeed = activityManager.getActivitiesOfUserSpacesWithListAccess(demoIdentity);
     assertEquals(10, demoActivitiesSpaceFeed.getSize());
     assertEquals(10, demoActivitiesSpaceFeed.load(0, 10).length);
 
     // the feed of mary must be the same because mary not the member of space
     maryActivityFeed = activityManager.getActivityFeedWithListAccess(maryIdentity);
-    assertEquals(6, maryActivityFeed.getSize());
+    assertEquals(7, maryActivityFeed.getSize());
 
     // john not friend of demo but member of space
     RealtimeListAccess<ExoSocialActivity> johnSpaceActivitiesFeed = activityManager.getActivitiesOfUserSpacesWithListAccess(johnIdentity);
@@ -888,7 +836,6 @@ public class ActivityManagerMysqlTest extends AbstractCoreTest {
     assertEquals(1, comments.size());
     assertEquals(htmlString, comments.get(0).getBody());
     assertEquals(htmlString, comments.get(0).getTitle());
-    tearDownActivityList.add(activity);    
   }
   
   /**
@@ -912,7 +859,6 @@ public class ActivityManagerMysqlTest extends AbstractCoreTest {
     activity = activityManager.getActivity(activity.getId());
     String[] commentsId = activity.getReplyToId();
     assertEquals(comment.getId(), commentsId[0]);
-    tearDownActivityList.add(activity);
   }
 
   /**
@@ -951,7 +897,6 @@ public class ActivityManagerMysqlTest extends AbstractCoreTest {
     for (int i = 1; i < commentIds.length; i++) {
       assertEquals(comments.get(i - 1).getId(), commentIds[i - 1]);
     }
-    tearDownActivityList.add(activity);
   }
   /**
    * Unit Test for:
@@ -1001,9 +946,6 @@ public class ActivityManagerMysqlTest extends AbstractCoreTest {
 
       assertEquals("afterDeletedCommentList.size() must return: " + (numberOfComments - 2), numberOfComments - 2, afterDeletedCommentList.size());
 
-
-      tearDownActivityList.add(activity1);
-
     }
   }
 
@@ -1045,22 +987,25 @@ public class ActivityManagerMysqlTest extends AbstractCoreTest {
    
    Relationship demoJohnRelationship = relationshipManager.inviteToConnect(demoIdentity, johnIdentity);
    relationshipManager.confirm(johnIdentity, demoIdentity);
-   
+
+   // add 1 activity to make sure cache is updated
+   this.populateActivityMass(johnIdentity, 1);
+
    demoConnectionActivities = activityManager.getActivitiesOfConnectionsWithListAccess(demoIdentity);
-   assertEquals(10, demoConnectionActivities.load(0, 20).length);
-   assertEquals(10, demoConnectionActivities.getSize());
+   assertEquals(11, demoConnectionActivities.load(0, 20).length);
+   assertEquals(11, demoConnectionActivities.getSize());
    
-   this.populateActivityMass(maryIdentity, 10);
+   populateActivityMass(maryIdentity, 10);
    
    Relationship demoMaryRelationship = relationshipManager.inviteToConnect(demoIdentity, maryIdentity);
    relationshipManager.confirm(maryIdentity, demoIdentity);
-   
+
+   // add 1 activity to make sure cache is updated
+   this.populateActivityMass(maryIdentity, 1);
+
    demoConnectionActivities = activityManager.getActivitiesOfConnectionsWithListAccess(demoIdentity);
-   assertEquals(20, demoConnectionActivities.load(0, 20).length);
-   assertEquals(20, demoConnectionActivities.getSize());
-   
-   relationshipManager.delete(demoJohnRelationship);
-   relationshipManager.delete(demoMaryRelationship);
+   assertEquals(22, demoConnectionActivities.load(0, 30).length);
+   assertEquals(22, demoConnectionActivities.getSize());
  }
  
  public void testGetActivitiesOfConnectionswithOffsetLimit() throws Exception {
@@ -1072,21 +1017,27 @@ public class ActivityManagerMysqlTest extends AbstractCoreTest {
    
    Relationship demoJohnRelationship = relationshipManager.inviteToConnect(demoIdentity, johnIdentity);
    relationshipManager.confirm(demoIdentity, johnIdentity);
+
+   // add 1 activity to make sure cache is updated
+   this.populateActivityMass(johnIdentity, 1);
+
+   demoConnectionActivities = activityManager.getActivitiesOfConnectionsWithListAccess(demoIdentity);
+   assertEquals(11, demoConnectionActivities.load(0, 20).length);
    
    demoConnectionActivities = activityManager.getActivitiesOfConnectionsWithListAccess(demoIdentity);
-   assertEquals(10, demoConnectionActivities.load(0, 10).length);
-   
-   demoConnectionActivities = activityManager.getActivitiesOfConnectionsWithListAccess(demoIdentity);
-   assertEquals("demoConnectionActivities.size() must return: 10", 10, demoConnectionActivities.getSize());
+   assertEquals("demoConnectionActivities.size() must return: 11", 11, demoConnectionActivities.getSize());
    
    this.populateActivityMass(maryIdentity, 10);
    
    Relationship demoMaryRelationship = relationshipManager.inviteToConnect(demoIdentity, maryIdentity);
    relationshipManager.confirm(demoIdentity, maryIdentity);
-   
+
+   // add 1 activity to make sure cache is updated
+   this.populateActivityMass(maryIdentity, 1);
+
    demoConnectionActivities = activityManager.getActivitiesOfConnectionsWithListAccess(demoIdentity);
-   assertEquals(20, demoConnectionActivities.load(0, 20).length);
-   assertEquals("demoConnectionActivities.size() must return: 20", 20, demoConnectionActivities.getSize());
+   assertEquals(22, demoConnectionActivities.load(0, 30).length);
+   assertEquals("demoConnectionActivities.size() must return: 22", 22, demoConnectionActivities.getSize());
    
    relationshipManager.delete(demoJohnRelationship);
    relationshipManager.delete(demoMaryRelationship);
@@ -1148,8 +1099,7 @@ public class ActivityManagerMysqlTest extends AbstractCoreTest {
     demoActivity.setTitle("demo activity");
     demoActivity.setUserId(demoActivity.getId());
     activityManager.saveActivityNoReturn(demoIdentity, demoActivity);
-    tearDownActivityList.add(demoActivity);
-    
+
     demoActivity = activityManager.getActivity(demoActivity.getId());
 
     assertEquals("demoActivity.getLikeIdentityIds() must return: 0",
@@ -1183,11 +1133,11 @@ public class ActivityManagerMysqlTest extends AbstractCoreTest {
    * @since 1.2.0-Beta3
    */
   public void testGetActivitiesCount() throws Exception {
-    int count = activityManager.getActivitiesCount(rootIdentity);
+    int count = activityManager.getActivitiesWithListAccess(rootIdentity).getSize();
     assertEquals("count must be: 0", 0, count);
 
     populateActivityMass(rootIdentity, 30);
-    count = activityManager.getActivitiesCount(rootIdentity);
+    count = activityManager.getActivitiesWithListAccess(rootIdentity).getSize();
     assertEquals("count must be: 30", 30, count);
   }
   
@@ -1196,8 +1146,7 @@ public class ActivityManagerMysqlTest extends AbstractCoreTest {
     demoActivity.setTitle("demo activity");
     demoActivity.setUserId(demoActivity.getId());
     activityManager.saveActivityNoReturn(demoIdentity, demoActivity);
-    tearDownActivityList.add(demoActivity);
-    
+
     //john comments on demo's activity
     ExoSocialActivity comment1 = new ExoSocialActivityImpl();
     comment1.setTitle("john comment 1");
@@ -1311,8 +1260,7 @@ public class ActivityManagerMysqlTest extends AbstractCoreTest {
     activity.setTitle("hello");
     activity.setUserId(rootIdentity.getId());
     activityManager.saveActivityNoReturn(rootIdentity, activity);
-    tearDownActivityList.add(activity);
-    
+
     ExoSocialActivity got = activityManager.getActivity(activity.getId());
     assertEquals(0, got.getMentionedIds().length);
 
@@ -1347,8 +1295,7 @@ public class ActivityManagerMysqlTest extends AbstractCoreTest {
     activity.setTitle("hello");
     activity.setUserId(rootIdentity.getId());
     activityManager.saveActivityNoReturn(rootIdentity, activity);
-    tearDownActivityList.add(activity);
-    
+
     //demo comment on root's activity
     ExoSocialActivity comment = new ExoSocialActivityImpl();
     comment.setTitle("demo comment");
@@ -1391,7 +1338,6 @@ public class ActivityManagerMysqlTest extends AbstractCoreTest {
       activity.setUserId(user.getId());
       try {
         activityManager.saveActivityNoReturn(user, activity);
-        tearDownActivityList.add(activity);
       } catch (Exception e) {
         LOG.error("can not save activity.", e);
       }
@@ -1413,7 +1359,6 @@ public class ActivityManagerMysqlTest extends AbstractCoreTest {
       activity.setUserId(posterIdentity.getId());
       try {
         activityManager.saveActivityNoReturn(targetIdentity, activity);
-        tearDownActivityList.add(activity);
       } catch (Exception e) {
         LOG.error("can not save activity.", e);
       }

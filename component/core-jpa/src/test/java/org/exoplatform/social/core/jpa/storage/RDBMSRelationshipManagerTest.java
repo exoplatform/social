@@ -16,31 +16,28 @@
  */
 package org.exoplatform.social.core.jpa.storage;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-
+import com.google.caja.util.Lists;
+import com.google.caja.util.Maps;
 import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.services.organization.OrganizationService;
 import org.exoplatform.services.organization.User;
 import org.exoplatform.services.organization.UserHandler;
 import org.exoplatform.services.security.ConversationState;
 import org.exoplatform.services.security.IdentityRegistry;
-import org.exoplatform.social.core.jpa.storage.dao.ConnectionDAO;
-import org.exoplatform.social.core.jpa.storage.entity.ConnectionEntity;
-import org.exoplatform.social.core.jpa.test.AbstractCoreTest;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
+import org.exoplatform.social.core.jpa.test.AbstractCoreTest;
 import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.manager.RelationshipManager;
 import org.exoplatform.social.core.profile.ProfileFilter;
 import org.exoplatform.social.core.relationship.model.Relationship;
 import org.exoplatform.social.core.relationship.model.Relationship.Type;
 
-import com.google.caja.util.Lists;
-import com.google.caja.util.Maps;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 /**
  * Unit Tests for {@link RelationshipManager}
@@ -50,7 +47,12 @@ public class RDBMSRelationshipManagerTest extends AbstractCoreTest {
   private RelationshipManager relationshipManager;
   private IdentityManager identityManager;
 
-  private Identity ghostIdentity, paulIdentity;
+  private Identity rootIdentity;
+  private Identity johnIdentity;
+  private Identity maryIdentity;
+  private Identity demoIdentity;
+  private Identity ghostIdentity;
+  private Identity paulIdentity;
 
 
   @Override
@@ -60,9 +62,14 @@ public class RDBMSRelationshipManagerTest extends AbstractCoreTest {
     identityManager = getService(IdentityManager.class);
     assertNotNull("relationshipManager must not be null", relationshipManager);
     assertNotNull("identityManager must not be null", identityManager);
-    
-    ghostIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "ghost", true);
-    paulIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "paul", true);
+
+    rootIdentity = createIdentity("root");
+    johnIdentity = createIdentity("john");
+    maryIdentity = createIdentity("mary");
+    demoIdentity = createIdentity("demo");
+    ghostIdentity = createIdentity("ghost");
+    paulIdentity = createIdentity("paul");
+
     //
     org.exoplatform.services.security.Identity identity = getService(IdentityRegistry.class).getIdentity("root");
     ConversationState.setCurrent(new ConversationState(identity));
@@ -70,14 +77,6 @@ public class RDBMSRelationshipManagerTest extends AbstractCoreTest {
 
   @Override
   protected void tearDown() throws Exception {
-    ConnectionDAO connectionDAO = getService(ConnectionDAO.class);
-    List<ConnectionEntity> items = connectionDAO.findAll();
-    for (ConnectionEntity item : items) {
-      connectionDAO.delete(item);
-    }
-    
-    identityStorage.removeIdentity(ghostIdentity);
-    identityStorage.removeIdentity(paulIdentity);
     ConversationState.setCurrent(null);
     super.tearDown();
   }
@@ -1268,57 +1267,6 @@ public class RDBMSRelationshipManagerTest extends AbstractCoreTest {
 
      ListAccess<Identity> contactsList = relationshipManager.getConnections(johnIdentity);
      assertEquals(3, contactsList.getSize());
-     
-     }
-
-  public void testOldGetSuggestions() throws Exception {
-    Relationship maryToGhostRelationship = relationshipManager.inviteToConnect(ghostIdentity, maryIdentity);
-    Relationship ghostToJohnRelationship = relationshipManager.inviteToConnect(ghostIdentity, johnIdentity);
-    Relationship maryToDemoRelationship = relationshipManager.inviteToConnect(demoIdentity, maryIdentity);
-
-    Map<Identity, Integer> suggestions = relationshipManager.getSuggestions(ghostIdentity, 0, 10);
-    // The relationships must be confirmed first
-    assertTrue(suggestions.isEmpty());
-    relationshipManager.confirm(ghostIdentity, maryIdentity);
-    relationshipManager.confirm(ghostIdentity, johnIdentity);
-    relationshipManager.confirm(demoIdentity, maryIdentity);
-    suggestions = relationshipManager.getSuggestions(ghostIdentity, 0, 10);
-    Object[] objs = suggestions.entrySet().toArray();
-
-    Entry<Identity, Integer> first = (Entry<Identity, Integer>) objs[0];
-
-    assertEquals(1, first.getValue().intValue());
-    assertEquals(demoIdentity.getRemoteId(), first.getKey().getRemoteId());
-
-    //increase common users
-    Relationship johnToDemoRelationship = relationshipManager.inviteToConnect(demoIdentity, johnIdentity);
-    Relationship paulToDemoRelationship = relationshipManager.inviteToConnect(paulIdentity, maryIdentity);
-    suggestions = relationshipManager.getSuggestions(ghostIdentity, 0, 10);
-    assertEquals(1, suggestions.size());
-    relationshipManager.confirm(demoIdentity, johnIdentity);
-    relationshipManager.confirm(paulIdentity, maryIdentity);
-
-    suggestions = relationshipManager.getSuggestions(ghostIdentity, 0, 10);
-    objs = suggestions.entrySet().toArray();
-    first = (Entry<Identity, Integer>) objs[0];
-    Entry<Identity, Integer> second = (Entry<Identity, Integer>) objs[1];
-
-    assertEquals(demoIdentity.getRemoteId(), first.getKey().getRemoteId());
-    assertEquals(paulIdentity.getRemoteId(), second.getKey().getRemoteId());
-    assertEquals(2, first.getValue().intValue());
-    assertEquals(demoIdentity.getRemoteId(), first.getKey().getRemoteId());
-    assertEquals(1, second.getValue().intValue());
-    assertEquals(paulIdentity.getRemoteId(), second.getKey().getRemoteId());
-
-    //test with offset > 0
-    suggestions = relationshipManager.getSuggestions(ghostIdentity, 1, 10);
-
-    objs = suggestions.entrySet().toArray();
-    first = (Entry<Identity, Integer>) objs[0];
-
-    assertEquals(1, first.getValue().intValue());
-    assertEquals(paulIdentity.getRemoteId(), first.getKey().getRemoteId());
-
   }
 
   public void testGetSuggestions() throws Exception {

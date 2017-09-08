@@ -16,12 +16,14 @@
  */
 package org.exoplatform.social.service.test;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 
 import javax.ws.rs.core.MultivaluedMap;
 
 import org.exoplatform.commons.testing.BaseExoTestCase;
+import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.component.test.ConfigurationUnit;
 import org.exoplatform.component.test.ConfiguredBy;
 import org.exoplatform.component.test.ContainerScope;
@@ -39,6 +41,16 @@ import org.exoplatform.services.rest.impl.ResourceBinder;
 import org.exoplatform.services.security.ConversationState;
 import org.exoplatform.services.security.Identity;
 import org.exoplatform.services.security.MembershipEntry;
+import org.exoplatform.social.common.RealtimeListAccess;
+import org.exoplatform.social.core.activity.model.ExoSocialActivity;
+import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
+import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
+import org.exoplatform.social.core.manager.ActivityManager;
+import org.exoplatform.social.core.manager.IdentityManager;
+import org.exoplatform.social.core.manager.RelationshipManager;
+import org.exoplatform.social.core.profile.ProfileFilter;
+import org.exoplatform.social.core.space.model.Space;
+import org.exoplatform.social.core.space.spi.SpaceService;
 
 /**
  * AbstractServiceTest.java
@@ -70,10 +82,9 @@ public abstract class AbstractServiceTest extends BaseExoTestCase {
 
 
   protected void setUp() throws Exception {
-    sessionProviderService = (SessionProviderService) getContainer().
-                                                      getComponentInstanceOfType(SessionProviderService.class);
-    resourceBinder = (ResourceBinder) getContainer().getComponentInstanceOfType(ResourceBinder.class);
-    requestHandler = (RequestHandlerImpl) getContainer().getComponentInstanceOfType(RequestHandlerImpl.class);
+    sessionProviderService = getContainer().getComponentInstanceOfType(SessionProviderService.class);
+    resourceBinder = getContainer().getComponentInstanceOfType(ResourceBinder.class);
+    requestHandler = getContainer().getComponentInstanceOfType(RequestHandlerImpl.class);
     // Reset providers to be sure it is clean
     ProviderBinder.setInstance(new ProviderBinder());
     providerBinder = ProviderBinder.getInstance();
@@ -81,6 +92,10 @@ public abstract class AbstractServiceTest extends BaseExoTestCase {
     resourceBinder.clear();
     configures();
     begin();
+
+    deleteAllRelationships();
+    deleteAllSpaces();
+    deleteAllIdentitiesWithActivities();
   }
   
   /**
@@ -93,6 +108,10 @@ public abstract class AbstractServiceTest extends BaseExoTestCase {
   }
 
   protected void tearDown() throws Exception {
+    deleteAllRelationships();
+    deleteAllSpaces();
+    deleteAllIdentitiesWithActivities();
+
     endSession();
     end();
   }
@@ -213,4 +232,43 @@ public abstract class AbstractServiceTest extends BaseExoTestCase {
     startSystemSession();
   }
 
+  protected void deleteAllIdentitiesWithActivities() throws Exception {
+    IdentityManager identityManager = getContainer().getComponentInstanceOfType(IdentityManager.class);
+    ActivityManager activityManager = getContainer().getComponentInstanceOfType(ActivityManager.class);
+
+    ListAccess<org.exoplatform.social.core.identity.model.Identity> organizationIdentities = identityManager.getIdentitiesByProfileFilter(OrganizationIdentityProvider.NAME, new ProfileFilter(), true);
+    Arrays.stream(organizationIdentities.load(0, organizationIdentities.getSize()))
+            .forEach(identity -> {
+              RealtimeListAccess<ExoSocialActivity> identityActivities = activityManager.getActivitiesWithListAccess(identity);
+              Arrays.stream(identityActivities.load(0, identityActivities.getSize()))
+                      .forEach(activity -> activityManager.deleteActivity(activity));
+              identityManager.deleteIdentity(identity);
+            });
+
+    ListAccess<org.exoplatform.social.core.identity.model.Identity> spaceIdentities = identityManager.getIdentitiesByProfileFilter(SpaceIdentityProvider.NAME, new ProfileFilter(), true);
+    Arrays.stream(spaceIdentities.load(0, spaceIdentities.getSize()))
+            .forEach(identity -> {
+              RealtimeListAccess<ExoSocialActivity> identityActivities = activityManager.getActivitiesOfSpaceWithListAccess(identity);
+              Arrays.stream(identityActivities.load(0, identityActivities.getSize()))
+                      .forEach(activity -> activityManager.deleteActivity(activity));
+              identityManager.deleteIdentity(identity);
+            });
+  }
+
+  protected void deleteAllSpaces() throws Exception {
+    SpaceService spaceService = getContainer().getComponentInstanceOfType(SpaceService.class);
+    ListAccess<Space> spaces = spaceService.getAllSpacesWithListAccess();
+    Arrays.stream(spaces.load(0, spaces.getSize())).forEach(space -> spaceService.deleteSpace(space));
+  }
+
+  protected void deleteAllRelationships() throws Exception {
+    RelationshipManager relationshipManager = getContainer().getComponentInstanceOfType(RelationshipManager.class);
+    IdentityManager identityManager = getContainer().getComponentInstanceOfType(IdentityManager.class);
+    ListAccess<org.exoplatform.social.core.identity.model.Identity> identities = identityManager.getIdentitiesByProfileFilter(OrganizationIdentityProvider.NAME, new ProfileFilter(), true);
+    for(org.exoplatform.social.core.identity.model.Identity identity : identities.load(0, identities.getSize())) {
+      ListAccess<org.exoplatform.social.core.identity.model.Identity> relationships = relationshipManager.getAllWithListAccess(identity);
+      Arrays.stream(relationships.load(0, relationships.getSize()))
+              .forEach(relationship -> relationshipManager.deny(identity, relationship));
+    }
+  }
 }

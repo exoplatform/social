@@ -57,11 +57,6 @@
     <key>org.exoplatform.commons.api.event.EventManager</key>
     <type>org.exoplatform.commons.event.impl.EventManagerImpl</type>
   </component>
-  
-  <component>
-    <key>org.exoplatform.commons.api.settings.SettingService</key>
-    <type>org.exoplatform.settings.cache.CacheSettingServiceImpl</type>
-  </component>
 
   <component>
     <key>org.exoplatform.social.common.lifecycle.LifeCycleCompletionService</key>
@@ -209,16 +204,17 @@
     Activity storage components.
   -->
   <component>
-    <type>org.exoplatform.social.core.storage.impl.ActivityStorageImpl</type>
+    <key>org.exoplatform.social.core.storage.impl.ActivityStorageImpl</key>
+    <type>org.exoplatform.social.core.storage.synchronization.SynchronizedActivityStorage</type>
+  </component>
+
+  <component>
+    <type>org.exoplatform.social.core.jpa.storage.RDBMSActivityStorageImpl</type>
   </component>
 
   <component>
     <key>org.exoplatform.social.core.storage.api.ActivityStorage</key>
-    <type>org.exoplatform.social.core.jpa.storage.RDBMSActivityStorageImpl</type>
-  </component>
-  
-  <component>
-    <type>org.exoplatform.social.core.storage.cache.CachedActivityStorage</type>
+    <type>org.exoplatform.social.core.jpa.cache.RDBMSCachedActivityStorage</type>
   </component>
   
   <!--
@@ -233,16 +229,20 @@
     Identity storage components.
   -->
   <component>
-    <key>org.exoplatform.social.core.storage.api.IdentityStorage</key>
-    <type>org.exoplatform.social.core.jpa.storage.RDBMSIdentityStorageImpl</type>
-  </component>
-
-  <component>
     <key>org.exoplatform.social.core.storage.impl.IdentityStorageImpl</key>
     <type>org.exoplatform.social.core.storage.synchronization.SynchronizedIdentityStorage</type>
   </component>
 
-	<component>
+  <component>
+    <type>org.exoplatform.social.core.jpa.storage.RDBMSIdentityStorageImpl</type>
+  </component>
+
+  <component>
+    <key>org.exoplatform.social.core.storage.api.IdentityStorage</key>
+    <type>org.exoplatform.social.core.jpa.cache.RDBMSCachedIdentityStorage</type>
+  </component>
+
+  <component>
     <key>org.exoplatform.social.core.storage.streams.StreamConfig</key>
     <type>org.exoplatform.social.core.storage.streams.StreamConfig</type>
     <init-params>
@@ -269,27 +269,36 @@
     Relationship storage components.
   -->
   <component>
-    <key>org.exoplatform.social.core.storage.api.RelationshipStorage</key>
+    <key>org.exoplatform.social.core.storage.impl.RelationshipStorageImpl</key>
+    <type>org.exoplatform.social.core.storage.synchronization.SynchronizedRelationshipStorage</type>
+  </component>
+
+  <component>
     <type>org.exoplatform.social.core.jpa.storage.RDBMSRelationshipStorageImpl</type>
   </component>
-  
+
   <component>
-    <type>org.exoplatform.social.core.storage.impl.RelationshipStorageImpl</type>
+    <key>org.exoplatform.social.core.storage.api.RelationshipStorage</key>
+    <type>org.exoplatform.social.core.jpa.cache.RDBMSCachedRelationshipStorage</type>
   </component>
 
   <!--
     Space storage components.
   -->
   <component>
-    <key>org.exoplatform.social.core.storage.api.SpaceStorage</key>
+    <key>org.exoplatform.social.core.storage.impl.SpaceStorageImpl</key>
+    <type>org.exoplatform.social.core.storage.synchronization.SynchronizedSpaceStorage</type>
+  </component>
+
+  <component>
     <type>org.exoplatform.social.core.jpa.storage.RDBMSSpaceStorageImpl</type>
   </component>
 
   <component>
-    <key>org.exoplatform.social.core.storage.impl.SpaceStorageImpl</key>
-    <type>org.exoplatform.social.core.storage.synchronization.SynchronizedSpaceStorage</type>
+    <key>org.exoplatform.social.core.storage.api.SpaceStorage</key>
+    <type>org.exoplatform.social.core.jpa.cache.RDBMSCachedSpaceStorage</type>
   </component>
-  
+
   <component>
     <type>org.exoplatform.social.core.updater.UserActivityStreamMigration</type>
   </component>

@@ -16,22 +16,17 @@
  */
 package org.exoplatform.social.core.jpa.storage.dao;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.services.security.ConversationState;
-import org.exoplatform.social.core.jpa.storage.entity.ActivityEntity;
-import org.exoplatform.social.core.jpa.test.BaseCoreTest;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
+import org.exoplatform.social.core.jpa.storage.entity.ActivityEntity;
+import org.exoplatform.social.core.jpa.test.BaseCoreTest;
 import org.exoplatform.social.core.space.model.Space;
+
+import java.util.*;
 
 /**
  * Created by The eXo Platform SAS

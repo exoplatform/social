@@ -35,6 +35,7 @@ import org.exoplatform.social.core.relationship.model.Relationship;
 import org.exoplatform.social.core.relationship.model.Relationship.Type;
 import org.exoplatform.social.core.search.Sorting;
 import org.exoplatform.social.core.storage.RelationshipStorageException;
+import org.exoplatform.social.core.storage.api.RelationshipStorage;
 import org.exoplatform.social.core.storage.impl.RelationshipStorageImpl;
 
 /**
@@ -43,7 +44,7 @@ import org.exoplatform.social.core.storage.impl.RelationshipStorageImpl;
  *          exo@exoplatform.com
  * Jun 3, 2015  
  */
-public class RDBMSRelationshipStorageImpl extends RelationshipStorageImpl {
+public class RDBMSRelationshipStorageImpl implements RelationshipStorage {
 
   private static final Log LOG = ExoLogger.getLogger(RDBMSRelationshipStorageImpl.class);
   
@@ -52,7 +53,6 @@ public class RDBMSRelationshipStorageImpl extends RelationshipStorageImpl {
   private final RDBMSIdentityStorageImpl identityStorage;
 
   public RDBMSRelationshipStorageImpl(RDBMSIdentityStorageImpl identityStorage, ConnectionDAO connectionDAO, IdentityDAO identityDAO) {
-    super(identityStorage);
     this.connectionDAO = connectionDAO;
     this.identityDAO = identityDAO;
     this.identityStorage = identityStorage;
@@ -263,6 +263,16 @@ public class RDBMSRelationshipStorageImpl extends RelationshipStorageImpl {
   @Override
   public int getOutgoingCountByFilter(Identity existingIdentity, ProfileFilter profileFilter) throws RelationshipStorageException {
     return countConnectionByFilter(existingIdentity, Type.OUTGOING, profileFilter);
+  }
+
+  @Override
+  public List<Relationship> getRelationshipsByStatus(Identity identity, Type type, long offset, long limit) {
+    return getRelationships(identity, type);
+  }
+
+  @Override
+  public int getRelationshipsCountByStatus(Identity identity, Type type) {
+    return countConnectionByFilter(identity, type, null);
   }
 
   @Override

@@ -102,10 +102,10 @@ public class UserRestResourcesV1 implements UserRestResources {
 
     offset = offset > 0 ? offset : RestUtils.getOffset(uriInfo);
     limit = limit > 0 ? limit : RestUtils.getLimit(uriInfo);
-    
+
     ProfileFilter filter = new ProfileFilter();
     filter.setName(q == null || q.isEmpty() ? "" : q);
-    
+
     ListAccess<Identity> list = CommonsUtils.getService(IdentityManager.class).getIdentitiesByProfileFilter(OrganizationIdentityProvider.NAME, filter, false);
 
     Identity[] identities = list.load(offset, limit);

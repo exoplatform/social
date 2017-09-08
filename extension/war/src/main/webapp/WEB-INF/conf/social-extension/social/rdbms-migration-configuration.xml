@@ -52,6 +52,11 @@
   </component>
 
   <component>
+    <key>org.exoplatform.social.core.storage.impl.ActivityStreamStorageImpl</key>
+    <type>org.exoplatform.social.core.storage.synchronization.SynchronizedActivityStreamStorage</type>
+  </component>
+
+  <component>
     <type>org.exoplatform.social.core.jpa.updater.ActivityMigrationService</type>
     <init-params>
       <value-param>

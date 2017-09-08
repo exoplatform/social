@@ -75,7 +75,7 @@ public interface IdentityStorage {
   public Identity findIdentityById(final String nodeId) throws IdentityStorageException;
 
   /**
-   * Deletes an identity from JCR
+   * Deletes an identity
    *
    * @param identity
    * @throws IdentityStorageException
@@ -83,7 +83,7 @@ public interface IdentityStorage {
   public void deleteIdentity(final Identity identity) throws IdentityStorageException;
 
   /**
-   * Hard delete an identity from JCR
+   * Hard delete an identity
    *
    * @param identity
    * @throws IdentityStorageException

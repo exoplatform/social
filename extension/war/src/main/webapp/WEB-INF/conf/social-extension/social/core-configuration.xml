@@ -158,12 +158,12 @@
     Activity storage components.
   -->
   <component>
-    <key>org.exoplatform.social.core.storage.api.ActivityStorage</key>
-    <type>org.exoplatform.social.core.jpa.cache.RDBMSCachedActivityStorage</type>
+    <type>org.exoplatform.social.core.jpa.storage.RDBMSActivityStorageImpl</type>
   </component>
 
   <component>
-    <type>org.exoplatform.social.core.jpa.storage.RDBMSActivityStorageImpl</type>
+    <key>org.exoplatform.social.core.storage.api.ActivityStorage</key>
+    <type>org.exoplatform.social.core.jpa.cache.RDBMSCachedActivityStorage</type>
   </component>
 
   <!--
@@ -176,18 +176,6 @@
   <component>
     <key>org.exoplatform.social.core.storage.api.SpaceStorage</key>
     <type>org.exoplatform.social.core.jpa.cache.RDBMSCachedSpaceStorage</type>
-  </component>
-
-  <!--
-    Activity Stream storage components.
-  -->
-  <component>
-    <key>org.exoplatform.social.core.storage.api.ActivityStreamStorage</key>
-    <type>org.exoplatform.social.core.storage.cache.CachedActivityStreamStorage</type>
-  </component>
-  <component>
-    <key>org.exoplatform.social.core.storage.impl.ActivityStreamStorageImpl</key>
-    <type>org.exoplatform.social.core.storage.synchronization.SynchronizedActivityStreamStorage</type>
   </component>
 
   <component>

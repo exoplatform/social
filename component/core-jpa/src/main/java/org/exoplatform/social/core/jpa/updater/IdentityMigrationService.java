@@ -93,7 +93,7 @@ public class IdentityMigrationService extends AbstractMigrationService<Identity>
                                   IdentityStorageImpl jcrIdentityStorage,
                                   RDBMSSpaceStorageImpl spaceStorage,
                                   EventManager<Identity, String> eventManager, EntityManagerService entityManagerService) {
-    super(initParams, identityStorage, eventManager, entityManagerService);
+    super(initParams, jcrIdentityStorage, eventManager, entityManagerService);
     this.LIMIT_THRESHOLD = getInteger(initParams, LIMIT_THRESHOLD_KEY, 200);
     this.REMOVE_LIMIT_THRESHOLD = getInteger(initParams, REMOVE_LIMIT_THRESHOLD_KEY, 20);
     this.identityStorage = identityStorage;

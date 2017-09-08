@@ -48,6 +48,30 @@ public class SpaceFilterKey extends ScopeCacheKey {
     this.type = type;
   }
 
+  public String getUserId() {
+    return userId;
+  }
+
+  public char getFirstCharacterOfSpaceName() {
+    return firstCharacterOfSpaceName;
+  }
+
+  public String getSpaceNameSearchCondition() {
+    return spaceNameSearchCondition;
+  }
+
+  public String getAppId() {
+    return appId;
+  }
+
+  public SpaceType getType() {
+    return type;
+  }
+
+  public Sorting getSorting() {
+    return sorting;
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;

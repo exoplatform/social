@@ -16,7 +16,6 @@
  */
 package org.exoplatform.social.core.storage;
 
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -178,27 +177,13 @@ public class RelationshipStorageTest extends AbstractCoreTest {
     rootToDemoRelationship = relationshipStorage.saveRelationship(rootToDemoRelationship);
     assertNotNull("rootToDemoRelationship.getId() must not be null", rootToDemoRelationship.getId());
 
-    //Test change avatar
-    InputStream inputStream = getClass().getResourceAsStream("/eXo-Social.png");
-    AvatarAttachment avatarAttachment = new AvatarAttachment(null, "avatar", "png", inputStream, null, System.currentTimeMillis());
-    assertNotNull(avatarAttachment);
-
-    Profile profile = johnIdentity.getProfile();
-    profile.setProperty(Profile.AVATAR, avatarAttachment);
-    identityStorage.updateProfile(profile);
-
     List<Identity> listIdentities = relationshipStorage.getConnections(rootIdentity, 0, 10);
     assertNotNull("listIdentities must not be null", listIdentities);
     assertEquals("listIdentities.size() must return: 2", 2, listIdentities.size());
 
-    // Check john has avatar
     assertNotNull(listIdentities.get(0).getProfile());
-    assertNotNull(listIdentities.get(0).getProfile().getAvatarUrl());
-
-    // Check mary hasn't avatar but empty profile
     assertNotNull(listIdentities.get(1).getProfile());
-    assertNull(listIdentities.get(1).getProfile().getAvatarUrl());
-    
+
     for (Identity identity : listIdentities) {
       assertNotNull("identity.getProfile() must not be null", identity.getProfile());
       Identity identityLoadProfile = identityStorage.findIdentity(OrganizationIdentityProvider.NAME, identity.getRemoteId());
@@ -437,26 +422,12 @@ public class RelationshipStorageTest extends AbstractCoreTest {
     demoToJohnRelationship = relationshipStorage.saveRelationship(demoToJohnRelationship);
     assertNotNull("rootToDemoRelationship.getId() must not be null", demoToJohnRelationship.getId());
 
-    //Test change avatar
-    InputStream inputStream = getClass().getResourceAsStream("/eXo-Social.png");
-    AvatarAttachment avatarAttachment = new AvatarAttachment(null, "avatar", "png", inputStream, null, System.currentTimeMillis());
-    assertNotNull(avatarAttachment);
-    
-    Profile profile = maryIdentity.getProfile();
-    profile.setProperty(Profile.AVATAR, avatarAttachment);
-    identityStorage.updateProfile(profile);
-
     List<Identity> listIdentities = relationshipStorage.getIncomingRelationships(johnIdentity, 0, 10);
     assertNotNull("listIdentities must not be null", listIdentities);
     assertEquals("listIdentities.size() must return: 2", 2, listIdentities.size());
 
-    // Check root hasn't avatar but empty profile
     assertNotNull(listIdentities.get(0).getProfile());
-    assertNull(listIdentities.get(0).getProfile().getAvatarUrl());
-
-    // Check mary has avatar
     assertNotNull(listIdentities.get(1).getProfile());
-    assertNotNull(listIdentities.get(1).getProfile().getAvatarUrl());
 
     for (Identity identity : listIdentities) {
       assertNotNull("identity.getProfile() must not be null", identity.getProfile());
@@ -521,15 +492,6 @@ public class RelationshipStorageTest extends AbstractCoreTest {
     Relationship rootToDemoRelationship = new Relationship(rootIdentity, demoIdentity, Type.IGNORED);
     rootToDemoRelationship = relationshipStorage.saveRelationship(rootToDemoRelationship);
     assertNotNull("rootToDemoRelationship.getId() must not be null", rootToDemoRelationship.getId());
-    
-    //Test change avatar
-    InputStream inputStream = getClass().getResourceAsStream("/eXo-Social.png");
-    AvatarAttachment avatarAttachment = new AvatarAttachment(null, "avatar", "png", inputStream, null, System.currentTimeMillis());
-    assertNotNull(avatarAttachment);
-    
-    Profile profile = johnIdentity.getProfile();
-    profile.setProperty(Profile.AVATAR, avatarAttachment);
-    identityStorage.updateProfile(profile);
 
     List<Identity> listIdentities = relationshipStorage.getOutgoingRelationships(rootIdentity, 0, 10);
     assertNotNull("listIdentities must not be null", listIdentities);
@@ -538,14 +500,9 @@ public class RelationshipStorageTest extends AbstractCoreTest {
     listIdentities = relationshipStorage.getOutgoingRelationships(rootIdentity, 0, 10);
     demoIdentity = identityStorage.findIdentity(OrganizationIdentityProvider.NAME, demoIdentity.getRemoteId());
 
-    // Check john has avatar
     assertNotNull(listIdentities.get(0).getProfile());
-    assertNotNull(listIdentities.get(0).getProfile().getAvatarUrl());
-
-    // Check mary hasn't avatar but empty profile
     assertNotNull(listIdentities.get(1).getProfile());
-    assertNull(listIdentities.get(1).getProfile().getAvatarUrl());
-    
+
     for (Identity identity : listIdentities) {
       Identity identityLoadProfile = identityStorage.findIdentity(OrganizationIdentityProvider.NAME, identity.getRemoteId());
       assertNotNull("identity.getProfile() must not be nul", identity.getProfile());

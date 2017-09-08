@@ -16,10 +16,6 @@
  */
 package org.exoplatform.social.service.rest;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-
 import org.exoplatform.commons.api.notification.model.NotificationInfo;
 import org.exoplatform.commons.api.notification.service.storage.WebNotificationStorage;
 import org.exoplatform.services.rest.impl.ContainerResponse;
@@ -30,10 +26,12 @@ import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.storage.api.IdentityStorage;
 import org.exoplatform.social.service.test.AbstractResourceTest;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+
 public class IntranetNotificationsRestServiceTest extends AbstractResourceTest {
 
-  static private IntranetNotificationRestService notificationsRestService;
-  
   private IdentityStorage identityStorage;
   private SpaceServiceImpl spaceService;
   private WebNotificationStorage notificationStorage;
@@ -46,9 +44,9 @@ public class IntranetNotificationsRestServiceTest extends AbstractResourceTest {
   public void setUp() throws Exception {
     super.setUp();
     
-    identityStorage = (IdentityStorage) getContainer().getComponentInstanceOfType(IdentityStorage.class);
-    spaceService = (SpaceServiceImpl) getContainer().getComponentInstanceOfType(SpaceServiceImpl.class);
-    notificationStorage = (WebNotificationStorage) getContainer().getComponentInstanceOfType(WebNotificationStorage.class);
+    identityStorage = getContainer().getComponentInstanceOfType(IdentityStorage.class);
+    spaceService = getContainer().getComponentInstanceOfType(SpaceServiceImpl.class);
+    notificationStorage = getContainer().getComponentInstanceOfType(WebNotificationStorage.class);
     
     rootIdentity = new Identity("organization", "root");
     johnIdentity = new Identity("organization", "john");
@@ -60,21 +58,15 @@ public class IntranetNotificationsRestServiceTest extends AbstractResourceTest {
     identityStorage.saveIdentity(maryIdentity);
     identityStorage.saveIdentity(demoIdentity);
 
-    notificationsRestService = new IntranetNotificationRestService();
-    registry(notificationsRestService);
+    addResource(IntranetNotificationRestService.class, null);
   }
 
   public void tearDown() throws Exception {
-    
-    identityStorage.deleteIdentity(rootIdentity);
-    identityStorage.deleteIdentity(johnIdentity);
-    identityStorage.deleteIdentity(maryIdentity);
-    identityStorage.deleteIdentity(demoIdentity);
     notificationStorage.remove(null);
     
     super.tearDown();
 
-    unregistry(notificationsRestService);
+    removeResource(IntranetNotificationRestService.class);
   }
 
   public void testIgnoreInvitationToConnect() throws Exception {

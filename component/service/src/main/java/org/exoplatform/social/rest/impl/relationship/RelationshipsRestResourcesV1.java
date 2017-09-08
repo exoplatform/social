@@ -84,7 +84,7 @@ public class RelationshipsRestResourcesV1 implements RelationshipsRestResources 
     //
     offset = offset > 0 ? offset : RestUtils.getOffset(uriInfo);
     limit = limit > 0 ? limit : RestUtils.getLimit(uriInfo);
-    
+
     RelationshipManager relationshipManager = CommonsUtils.getService(RelationshipManager.class);
     Relationship.Type type;
     try {
@@ -92,7 +92,7 @@ public class RelationshipsRestResourcesV1 implements RelationshipsRestResources 
     } catch (Exception e) {
       type = Relationship.Type.ALL;
     }
-    
+
     List<Relationship> relationships = new ArrayList<Relationship>();
     int size = 0;
     if (identityId != null & RestUtils.isMemberOfAdminGroup()) {

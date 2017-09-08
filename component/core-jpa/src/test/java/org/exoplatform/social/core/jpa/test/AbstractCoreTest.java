@@ -17,21 +17,8 @@
 
 package org.exoplatform.social.core.jpa.test;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-
+import junit.framework.AssertionFailedError;
 import org.apache.commons.lang.ArrayUtils;
-import org.exoplatform.social.core.jpa.storage.RDBMSIdentityStorageImpl;
-import org.exoplatform.social.core.jpa.search.ProfileSearchConnector;
-import org.exoplatform.social.core.jpa.storage.dao.ConnectionDAO;
-import org.exoplatform.social.core.jpa.storage.entity.ConnectionEntity;
-import org.jboss.byteman.contrib.bmunit.BMUnit;
-
 import org.exoplatform.commons.testing.BaseExoTestCase;
 import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.component.test.ConfigurationUnit;
@@ -44,19 +31,31 @@ import org.exoplatform.services.organization.OrganizationService;
 import org.exoplatform.services.organization.User;
 import org.exoplatform.services.security.ConversationState;
 import org.exoplatform.services.security.MembershipEntry;
+import org.exoplatform.social.common.RealtimeListAccess;
+import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
+import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
+import org.exoplatform.social.core.jpa.search.ProfileSearchConnector;
 import org.exoplatform.social.core.manager.ActivityManager;
 import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.manager.RelationshipManager;
+import org.exoplatform.social.core.profile.ProfileFilter;
 import org.exoplatform.social.core.space.SpaceException;
 import org.exoplatform.social.core.space.SpaceUtils;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
 import org.exoplatform.social.core.storage.api.ActivityStorage;
-
-import junit.framework.AssertionFailedError;
+import org.jboss.byteman.contrib.bmunit.BMUnit;
 import org.mockito.Mockito;
+
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
 
 /**
  * @author <a href="mailto:thanhvc@exoplatform.com">Thanh Vu</a>
@@ -79,14 +78,7 @@ public abstract class AbstractCoreTest extends BaseExoTestCase {
   protected ActivityManager activityManager;
   protected ActivityStorage activityStorage;
 
-  protected RDBMSIdentityStorageImpl identityStorage;
-  
   protected ProfileSearchConnector mockProfileSearch = Mockito.mock(ProfileSearchConnector.class);
-
-  protected Identity rootIdentity;
-  protected Identity johnIdentity;
-  protected Identity maryIdentity;
-  protected Identity demoIdentity;
   
   public static boolean wantCount = false;
   private static int count;
@@ -109,26 +101,18 @@ public abstract class AbstractCoreTest extends BaseExoTestCase {
     activityStorage = getService(ActivityStorage.class);
     relationshipManager = getService(RelationshipManager.class);
     spaceService = getService(SpaceService.class);
-    identityStorage = getService(RDBMSIdentityStorageImpl.class);
-    //
-    rootIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "root", false);
-    johnIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "john", false);
-    maryIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "mary", false);
-    demoIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "demo", false);
+
+    deleteAllRelationships();
+    deleteAllSpaces();
+    deleteAllIdentitiesWithActivities();
   }
 
   @Override
   protected void tearDown() throws Exception {
-    ConnectionDAO reDao = getService(ConnectionDAO.class);
-    List<ConnectionEntity> reItems = reDao.findAll();
-    for (ConnectionEntity item :  reItems) {
-      reDao.delete(item);
-    }
+    deleteAllRelationships();
+    deleteAllSpaces();
+    deleteAllIdentitiesWithActivities();
 
-    identityStorage.removeIdentity(rootIdentity);
-    identityStorage.removeIdentity(johnIdentity);
-    identityStorage.removeIdentity(maryIdentity);
-    identityStorage.removeIdentity(demoIdentity);
     //
     end();
   }  
@@ -260,6 +244,53 @@ public abstract class AbstractCoreTest extends BaseExoTestCase {
       throw new IllegalStateException(e);
     }
   }
-  
+
+  protected Identity createIdentity(String username) {
+    Identity identity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, username, true);
+    if(identity.isDeleted() || !identity.isEnable()) {
+      identity.setDeleted(false);
+      identity.setEnable(true);
+      identity = identityManager.updateIdentity(identity);
+    }
+
+    return identity;
+  }
+
+  protected void deleteAllIdentitiesWithActivities() throws Exception {
+    ListAccess<org.exoplatform.social.core.identity.model.Identity> organizationIdentities = identityManager.getIdentitiesByProfileFilter(OrganizationIdentityProvider.NAME, new ProfileFilter(), false);
+    Arrays.stream(organizationIdentities.load(0, organizationIdentities.getSize()))
+            .forEach(identity -> {
+              RealtimeListAccess<ExoSocialActivity> identityActivities = activityManager.getActivitiesWithListAccess(identity);
+              Arrays.stream(identityActivities.load(0, identityActivities.getSize()))
+                      .forEach(activity -> activityManager.deleteActivity(activity));
+              identityManager.deleteIdentity(identity);
+            });
+
+    ListAccess<Identity> spaceIdentities = identityManager.getIdentitiesByProfileFilter(SpaceIdentityProvider.NAME, new ProfileFilter(), false);
+    Arrays.stream(spaceIdentities.load(0, spaceIdentities.getSize()))
+            .forEach(identity -> {
+              RealtimeListAccess<ExoSocialActivity> identityActivities = activityManager.getActivitiesOfSpaceWithListAccess(identity);
+              Arrays.stream(identityActivities.load(0, identityActivities.getSize()))
+                      .forEach(activity -> activityManager.deleteActivity(activity));
+              identityManager.deleteIdentity(identity);
+            });
+  }
+
+  protected void deleteAllSpaces() throws Exception {
+    SpaceService spaceService = getContainer().getComponentInstanceOfType(SpaceService.class);
+    ListAccess<Space> spaces = spaceService.getAllSpacesWithListAccess();
+    Arrays.stream(spaces.load(0, spaces.getSize())).forEach(space -> spaceService.deleteSpace(space));
+  }
+
+  protected void deleteAllRelationships() throws Exception {
+    RelationshipManager relationshipManager = getContainer().getComponentInstanceOfType(RelationshipManager.class);
+    IdentityManager identityManager = getContainer().getComponentInstanceOfType(IdentityManager.class);
+    ListAccess<org.exoplatform.social.core.identity.model.Identity> identities = identityManager.getIdentitiesByProfileFilter(OrganizationIdentityProvider.NAME, new ProfileFilter(), true);
+    for(org.exoplatform.social.core.identity.model.Identity identity : identities.load(0, identities.getSize())) {
+      ListAccess<Identity> relationships = relationshipManager.getAllWithListAccess(identity);
+      Arrays.stream(relationships.load(0, relationships.getSize()))
+              .forEach(relationship -> relationshipManager.deny(identity, relationship));
+    }
+  }
   
 }

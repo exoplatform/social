@@ -16,12 +16,6 @@
  */
 package org.exoplatform.social.core.jpa.search;
 
-import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
-
-import java.io.IOException;
-import java.util.concurrent.TimeUnit;
-
 import org.apache.http.HttpHost;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -29,7 +23,6 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.conn.routing.HttpRoute;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
-
 import org.exoplatform.commons.search.index.IndexingOperationProcessor;
 import org.exoplatform.commons.search.index.IndexingService;
 import org.exoplatform.commons.utils.PropertyManager;
@@ -41,6 +34,12 @@ import org.exoplatform.services.log.Log;
 import org.exoplatform.services.security.ConversationState;
 import org.exoplatform.social.core.jpa.test.AbstractCoreTest;
 import org.exoplatform.social.core.manager.IdentityManager;
+
+import java.io.IOException;
+import java.util.concurrent.TimeUnit;
+
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
 
 @ConfiguredBy({
     @ConfigurationUnit(scope = ContainerScope.PORTAL, path = "conf/standalone/exo.social.component.core.test.configuration.xml"),

@@ -16,20 +16,16 @@
  */
 package org.exoplatform.social.service.rest.api;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-
-import javax.ws.rs.core.Response;
-
 import org.exoplatform.services.rest.impl.ContainerResponse;
-import org.exoplatform.social.core.service.LinkProvider;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.manager.IdentityManager;
-import org.exoplatform.social.service.rest.api.IdentityResources;
+import org.exoplatform.social.core.service.LinkProvider;
 import org.exoplatform.social.service.rest.Util;
 import org.exoplatform.social.service.test.AbstractResourceTest;
+
+import javax.ws.rs.core.Response;
+import java.util.HashMap;
 
 /**
  * Unit Test for {@link IdentityResources}.
@@ -46,8 +42,6 @@ public class IdentityResourcesTest extends AbstractResourceTest {
 
   private Identity rootIdentity, johnIdentity, maryIdentity, demoIdentity;
 
-  private List<Identity> tearDownIdentityList;
-
   /**
    * Adds {@link IdentityResources}.
    *
@@ -57,18 +51,12 @@ public class IdentityResourcesTest extends AbstractResourceTest {
   public void setUp() throws Exception {
     super.setUp();
 
-    identityManager = (IdentityManager) getContainer().getComponentInstanceOfType(IdentityManager.class);
+    identityManager = getContainer().getComponentInstanceOfType(IdentityManager.class);
 
     rootIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "root", false);
     johnIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "john", false);
     maryIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "mary", false);
     demoIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "demo", false);
-
-    tearDownIdentityList = new ArrayList<Identity>();
-    tearDownIdentityList.add(rootIdentity);
-    tearDownIdentityList.add(johnIdentity);
-    tearDownIdentityList.add(maryIdentity);
-    tearDownIdentityList.add(demoIdentity);
 
     addResource(IdentityResources.class, null);
   }
@@ -80,11 +68,7 @@ public class IdentityResourcesTest extends AbstractResourceTest {
    */
   @Override
   public void tearDown() throws Exception {
-    for (Identity identity: tearDownIdentityList) {
-      identityManager.deleteIdentity(identity);
-    }
     removeResource(IdentityResources.class);
-
     super.tearDown();
   }
 

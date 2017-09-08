@@ -16,28 +16,21 @@
  */
 package org.exoplatform.social.core.jpa.test;
 
-import org.exoplatform.social.core.jpa.storage.RelationshipStorageTest;
-import org.exoplatform.social.core.jpa.storage.SpaceActivityMySqlPublisherTest;
+import org.exoplatform.commons.testing.BaseExoContainerTestSuite;
+import org.exoplatform.commons.testing.ConfigTestCase;
+import org.exoplatform.social.core.jpa.storage.*;
 import org.exoplatform.social.core.jpa.storage.dao.*;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.runners.Suite.SuiteClasses;
-
-import org.exoplatform.commons.testing.BaseExoContainerTestSuite;
-import org.exoplatform.commons.testing.ConfigTestCase;
-import org.exoplatform.social.core.jpa.storage.ActivityManagerMysqlTest;
-import org.exoplatform.social.core.jpa.storage.IdentityStorageTest;
-import org.exoplatform.social.core.jpa.storage.RDBMSActivityStorageImplTest;
-import org.exoplatform.social.core.jpa.storage.RDBMSRelationshipManagerTest;
-import org.exoplatform.social.core.jpa.storage.RDBMSSpaceStorageTest;
 
 @SuiteClasses({
   ActivityDAOTest.class,
   IdentityDAOTest.class,
   StreamItemDAOTest.class,
   RDBMSActivityStorageImplTest.class,
-  ActivityManagerMysqlTest.class,
-  SpaceActivityMySqlPublisherTest.class,
+  ActivityManagerRDBMSTest.class,
+  SpaceActivityRDBMSPublisherTest.class,
   RelationshipStorageTest.class,
   RDBMSRelationshipManagerTest.class,
   IdentityStorageTest.class,

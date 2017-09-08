@@ -17,11 +17,6 @@
 
 package org.exoplatform.social.core.jpa.storage;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
 import org.exoplatform.services.organization.OrganizationService;
 import org.exoplatform.services.organization.User;
 import org.exoplatform.social.core.identity.model.Identity;
@@ -34,13 +29,16 @@ import org.exoplatform.social.core.profile.ProfileFilter;
 import org.exoplatform.social.core.relationship.model.Relationship;
 import org.exoplatform.social.core.storage.api.IdentityStorage;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
 @SuppressWarnings("deprecation")
 public class IdentityStorageTestIT extends BaseESTest {
   private IdentityStorage            identityStorage;
 
   private OrganizationService        organizationService;
-
-  private List<Identity>             tearDownIdentityList;
 
   private List<User>                 tearDownUserList;
 
@@ -50,7 +48,6 @@ public class IdentityStorageTestIT extends BaseESTest {
     identityStorage = getService(IdentityStorage.class);
     organizationService = getService(OrganizationService.class);
     relationshipManager = getService(RelationshipManager.class);
-    tearDownIdentityList = new ArrayList<Identity>();
     tearDownUserList = new ArrayList<User>();
   }
 
@@ -58,11 +55,7 @@ public class IdentityStorageTestIT extends BaseESTest {
     for (User user : tearDownUserList) {
       organizationService.getUserHandler().removeUser(user.getUserName(), true);
     }
-    for (Identity identity : tearDownIdentityList) {
-      if (identityStorage.findIdentity(identity.getProviderId(), identity.getRemoteId()) != null) {
-        identityManager.deleteIdentity(identity);
-      }
-    }
+
     super.tearDown();
   }
 
@@ -88,7 +81,6 @@ public class IdentityStorageTestIT extends BaseESTest {
     profile.setProperty(Profile.FULL_NAME, "FirstName" + " " + "LastName");
     identityStorage.updateProfile(profile);
     identity.setProfile(profile);
-    tearDownIdentityList.add(identity);
 
     reindexProfileById(identity.getId());
 
@@ -129,8 +121,6 @@ public class IdentityStorageTestIT extends BaseESTest {
       identityManager.updateProfile(profile);
 
       reindexProfileById(identity.getId());
-
-      tearDownIdentityList.add(identity);
     }
 
     final ProfileFilter filter = new ProfileFilter();
@@ -168,8 +158,6 @@ public class IdentityStorageTestIT extends BaseESTest {
     identityManager.updateProfile(profile);
 
     reindexProfileById(identity.getId());
-
-    tearDownIdentityList.add(identity);
 
     final ProfileFilter filter = new ProfileFilter();
     filter.setName("notfound");
@@ -217,7 +205,6 @@ public class IdentityStorageTestIT extends BaseESTest {
     profile.setProperty("gender", "male");
 
     identityManager.updateProfile(profile);
-    tearDownIdentityList.add(identity);
 
     String id = identity.getId();
 
@@ -297,7 +284,6 @@ public class IdentityStorageTestIT extends BaseESTest {
       profile.setProperty(Profile.FULL_NAME, "Prénom" + i + " " + "LastName" + i);
       profile.setProperty(Profile.POSITION, "developer");
       profile.setProperty(Profile.GENDER, "male");
-      tearDownIdentityList.add(identity);
       identityManager.updateProfile(profile);
 
       reindexProfileById(identity.getId());
@@ -355,7 +341,6 @@ public class IdentityStorageTestIT extends BaseESTest {
       profile.setProperty(Profile.FULL_NAME, "Prénom" + i + " " + "LastName" + i);
       profile.setProperty(Profile.POSITION, "developer");
       profile.setProperty(Profile.GENDER, "male");
-      tearDownIdentityList.add(identity);
       identityManager.updateProfile(profile);
 
       reindexProfileById(identity.getId());
@@ -404,9 +389,6 @@ public class IdentityStorageTestIT extends BaseESTest {
     identityStorage.saveProfile(profile);
 
     identity.setProfile(profile);
-    if (addedToTearDown) {
-      tearDownIdentityList.add(identity);
-    }
 
     reindexProfileById(identity.getId());
     return identity;

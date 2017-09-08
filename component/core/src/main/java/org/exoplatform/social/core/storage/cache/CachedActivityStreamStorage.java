@@ -27,7 +27,7 @@ import org.exoplatform.social.core.storage.impl.ActivityStreamStorageImpl.Activi
 
 public class CachedActivityStreamStorage implements ActivityStreamStorage {
   
-  private final ActivityStreamStorageImpl storage;
+  private final ActivityStreamStorage storage;
   private final SocialStorageCacheService cacheService;
   
   public CachedActivityStreamStorage(final ActivityStreamStorageImpl storage, final SocialStorageCacheService cacheService) {

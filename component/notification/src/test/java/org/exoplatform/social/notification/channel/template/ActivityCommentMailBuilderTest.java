@@ -88,7 +88,7 @@ public class ActivityCommentMailBuilderTest extends AbstractPluginTest {
     List<NotificationInfo> list = assertMadeNotifications(2);
     NotificationInfo commentNotification = list.get(0);
     //STEP 3 assert Message info
-    
+
     NotificationContext ctx = NotificationContextImpl.cloneInstance();
     ctx.setNotificationInfo(commentNotification.setTo(demoIdentity.getRemoteId()));
     MessageInfo info = buildMessageInfo(ctx);
@@ -112,8 +112,8 @@ public class ActivityCommentMailBuilderTest extends AbstractPluginTest {
     //then when add commnent need to notify to root and mary
     List<NotificationInfo> list = assertMadeNotifications(1);
     NotificationInfo commentNotification = list.get(0);
+
     //STEP 3 assert Message info
-    
     NotificationContext ctx = NotificationContextImpl.cloneInstance();
     ctx.setNotificationInfo(commentNotification.setTo(maryIdentity.getRemoteId()));
     MessageInfo info = buildMessageInfo(ctx);
@@ -141,7 +141,7 @@ public class ActivityCommentMailBuilderTest extends AbstractPluginTest {
     List<NotificationInfo> list2 = assertMadeNotifications(3);
     toRoot.add(list2.get(2));
     notificationService.clearAll();
-    
+
     NotificationContext ctx = NotificationContextImpl.cloneInstance();
     toRoot.set(0, toRoot.get(0).setTo(rootIdentity.getRemoteId()));
     ctx.setNotificationInfos(toRoot);
@@ -171,8 +171,8 @@ public class ActivityCommentMailBuilderTest extends AbstractPluginTest {
     notificationService.clearAll();
     
     //john delete his comment
-    activityManager.deleteActivity(johnComment);
-    
+    activityManager.deleteComment(maryActivity, johnComment);
+
     NotificationContext ctx = NotificationContextImpl.cloneInstance();
     toRoot.set(0, toRoot.get(0).setTo(rootIdentity.getRemoteId()));
     ctx.setNotificationInfos(toRoot);

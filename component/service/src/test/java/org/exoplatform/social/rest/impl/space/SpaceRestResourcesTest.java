@@ -33,9 +33,6 @@ public class SpaceRestResourcesTest extends AbstractResourceTest {
   
   private SpaceRestResourcesV1 spaceRestResources;
   
-  private List<Space> tearDownSpaceList;
-  private List<ExoSocialActivity> tearDownActivitiesList;
-  
   private Identity rootIdentity;
   private Identity johnIdentity;
   private Identity maryIdentity;
@@ -45,13 +42,11 @@ public class SpaceRestResourcesTest extends AbstractResourceTest {
     super.setUp();
     
     System.setProperty("gatein.email.domain.url", "localhost:8080");
-    tearDownSpaceList = new ArrayList<Space>();
-    tearDownActivitiesList = new ArrayList<ExoSocialActivity>();
-    
-    identityManager = (IdentityManager) getContainer().getComponentInstanceOfType(IdentityManager.class);
-    userACL = (UserACL) getContainer().getComponentInstanceOfType(UserACL.class);
-    activityManager = (ActivityManager) getContainer().getComponentInstanceOfType(ActivityManager.class);
-    spaceService = (SpaceService) getContainer().getComponentInstanceOfType(SpaceService.class);
+
+    identityManager = getContainer().getComponentInstanceOfType(IdentityManager.class);
+    userACL = getContainer().getComponentInstanceOfType(UserACL.class);
+    activityManager = getContainer().getComponentInstanceOfType(ActivityManager.class);
+    spaceService = getContainer().getComponentInstanceOfType(SpaceService.class);
     
     rootIdentity = identityManager.getOrCreateIdentity("organization", "root", true);
     johnIdentity = identityManager.getOrCreateIdentity("organization", "john", true);
@@ -63,20 +58,12 @@ public class SpaceRestResourcesTest extends AbstractResourceTest {
   }
 
   public void tearDown() throws Exception {
+    // TODO
+    /*
     for (ExoSocialActivity activity : tearDownActivitiesList) {
       activityManager.deleteActivity(activity);
     }
-    for (Space space : tearDownSpaceList) {
-      Identity spaceIdentity = identityManager.getOrCreateIdentity(SpaceIdentityProvider.NAME, space.getPrettyName(), false);
-      if (spaceIdentity != null) {
-        identityManager.deleteIdentity(spaceIdentity);
-      }
-      spaceService.deleteSpace(space);
-    }
-    identityManager.deleteIdentity(rootIdentity);
-    identityManager.deleteIdentity(johnIdentity);
-    identityManager.deleteIdentity(maryIdentity);
-    identityManager.deleteIdentity(demoIdentity);
+    */
     
     super.tearDown();
     removeResource(spaceRestResources.getClass());
@@ -161,9 +148,6 @@ public class SpaceRestResourcesTest extends AbstractResourceTest {
     Space space = spaceService.getSpaceById(spaceEntity.getId());
     assertNotNull(space);
     assertEquals("social", space.getDisplayName());
-    
-    //
-    tearDownSpaceList.add(space);
   }
   
   public void testGetUpdateDeleteSpaceById() throws Exception {
@@ -194,9 +178,6 @@ public class SpaceRestResourcesTest extends AbstractResourceTest {
     assertEquals(200, response.getStatus());
     space = spaceService.getSpaceById(spaceId);
     assertNull(space);
-    
-    //
-    tearDownSpaceList.remove(0);
   }
   
   public void testGetUsersSpaceById() throws Exception {
@@ -229,7 +210,6 @@ public class SpaceRestResourcesTest extends AbstractResourceTest {
       activity.setTitle("title " + i);
       activity.setUserId(rootIdentity.getId());
       activityManager.saveActivityNoReturn(spaceIdentity, activity);
-      tearDownActivitiesList.add(activity);
     }
     
     startSessionAs("root");
@@ -249,9 +229,6 @@ public class SpaceRestResourcesTest extends AbstractResourceTest {
     assertEquals(7, listAccess.getSize());
     ExoSocialActivity activity = listAccess.load(0, 10)[0];
     assertEquals("title6", activity.getTitle());
-    
-    //
-    tearDownActivitiesList.add(activity);
   }
   
   private Space getSpaceInstance(int number, String creator) throws Exception {
@@ -265,8 +242,6 @@ public class SpaceRestResourcesTest extends AbstractResourceTest {
     space.setRegistration(Space.VALIDATION);
     space.setPriority(Space.INTERMEDIATE_PRIORITY);
     this.spaceService.createSpace(space, creator);
-    tearDownSpaceList.add(space);
-    tearDownActivitiesList.addAll(getCreatedSpaceActivities(space));
     return space;
   }
   

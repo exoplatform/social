@@ -1,18 +1,11 @@
 package org.exoplatform.social.rest.impl.activity;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 import org.exoplatform.services.rest.impl.ContainerResponse;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.activity.model.ExoSocialActivityImpl;
 import org.exoplatform.social.core.identity.model.Identity;
-import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
 import org.exoplatform.social.core.manager.ActivityManager;
 import org.exoplatform.social.core.manager.RelationshipManager;
-import org.exoplatform.social.core.space.model.Space;
-import org.exoplatform.social.core.space.spi.SpaceService;
 import org.exoplatform.social.core.storage.api.IdentityStorage;
 import org.exoplatform.social.rest.entity.ActivityEntity;
 import org.exoplatform.social.rest.entity.CollectionEntity;
@@ -21,6 +14,9 @@ import org.exoplatform.social.rest.entity.DataEntity;
 import org.exoplatform.social.service.rest.api.VersionResources;
 import org.exoplatform.social.service.test.AbstractResourceTest;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class ActivityRestResourcesTest extends AbstractResourceTest {
   
   private ActivityRestResourcesV1 activityRestResourcesV1;
@@ -28,10 +24,7 @@ public class ActivityRestResourcesTest extends AbstractResourceTest {
   private IdentityStorage identityStorage;
   private ActivityManager activityManager;
   private RelationshipManager relationshipManager;
-  private SpaceService spaceService;
-  
-  private List<Space> tearDownSpaceList;
-  
+
   private Identity rootIdentity;
   private Identity johnIdentity;
   private Identity maryIdentity;
@@ -41,13 +34,11 @@ public class ActivityRestResourcesTest extends AbstractResourceTest {
     super.setUp();
     
     System.setProperty("gatein.email.domain.url", "localhost:8080");
-    tearDownSpaceList = new ArrayList<Space>();
-    
-    identityStorage = (IdentityStorage) getContainer().getComponentInstanceOfType(IdentityStorage.class);
-    activityManager = (ActivityManager) getContainer().getComponentInstanceOfType(ActivityManager.class);
-    relationshipManager = (RelationshipManager) getContainer().getComponentInstanceOfType(RelationshipManager.class);
-    spaceService = (SpaceService) getContainer().getComponentInstanceOfType(SpaceService.class);
-    
+
+    identityStorage = getContainer().getComponentInstanceOfType(IdentityStorage.class);
+    activityManager = getContainer().getComponentInstanceOfType(ActivityManager.class);
+    relationshipManager = getContainer().getComponentInstanceOfType(RelationshipManager.class);
+
     rootIdentity = new Identity("organization", "root");
     johnIdentity = new Identity("organization", "john");
     maryIdentity = new Identity("organization", "mary");
@@ -63,19 +54,6 @@ public class ActivityRestResourcesTest extends AbstractResourceTest {
   }
 
   public void tearDown() throws Exception {
-    for (Space space : tearDownSpaceList) {
-      Identity spaceIdentity = identityStorage.findIdentity(SpaceIdentityProvider.NAME, space.getPrettyName());
-      if (spaceIdentity != null) {
-        identityStorage.deleteIdentity(spaceIdentity);
-      }
-      spaceService.deleteSpace(space);
-    }
-    
-    identityStorage.deleteIdentity(rootIdentity);
-    identityStorage.deleteIdentity(johnIdentity);
-    identityStorage.deleteIdentity(maryIdentity);
-    identityStorage.deleteIdentity(demoIdentity);
-    
     super.tearDown();
     removeResource(activityRestResourcesV1.getClass());
   }
@@ -105,14 +83,13 @@ public class ActivityRestResourcesTest extends AbstractResourceTest {
     CollectionEntity collections = (CollectionEntity) response.getEntity();
     //must return one activity of root and one of demo
     assertEquals(2, collections.getEntities().size());
+    List<String> activitiesTitle = new ArrayList<>(2);
     ActivityEntity entity = getBaseEntity(collections.getEntities().get(0), ActivityEntity.class);
-    assertEquals("demo activity", entity.getTitle());
+    activitiesTitle.add(entity.getTitle());
     entity = getBaseEntity(collections.getEntities().get(1), ActivityEntity.class);
-    assertEquals("root activity", entity.getTitle());
-    
-    activityManager.deleteActivity(maryActivity);
-    activityManager.deleteActivity(demoActivity);
-    activityManager.deleteActivity(rootActivity);
+    activitiesTitle.add(entity.getTitle());
+    assertTrue(activitiesTitle.contains("root activity"));
+    assertTrue(activitiesTitle.contains("demo activity"));
   }
   
   public void testGetUpdatedDeletedActivityById() throws Exception {

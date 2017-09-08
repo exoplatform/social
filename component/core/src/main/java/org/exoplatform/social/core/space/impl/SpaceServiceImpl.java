@@ -64,7 +64,6 @@ import org.exoplatform.social.core.space.model.Space.UpdatedField;
 import org.exoplatform.social.core.space.spi.SpaceApplicationHandler;
 import org.exoplatform.social.core.space.spi.SpaceLifeCycleListener;
 import org.exoplatform.social.core.space.spi.SpaceService;
-import org.exoplatform.social.core.storage.api.ActivityStreamStorage;
 import org.exoplatform.social.core.storage.api.IdentityStorage;
 import org.exoplatform.social.core.storage.api.SpaceStorage;
 
@@ -118,7 +117,7 @@ public class SpaceServiceImpl implements SpaceService {
    * @param params
    * @throws Exception
    */
-  public SpaceServiceImpl(InitParams params, SpaceStorage spaceStorage, IdentityStorage identityStorage, ActivityStreamStorage streamStorage, UserACL userACL, IdentityRegistry identityRegistry) throws Exception {
+  public SpaceServiceImpl(InitParams params, SpaceStorage spaceStorage, IdentityStorage identityStorage, UserACL userACL, IdentityRegistry identityRegistry) throws Exception {
 
     this.spaceStorage = spaceStorage;
     this.identityStorage = identityStorage;

@@ -66,8 +66,6 @@ public class LazyActivityStorageTest extends AbstractCoreTest {
     activityManager = (ActivityManager) getContainer().getComponentInstanceOfType(ActivityManager.class);
     streamStorage = (ActivityStreamStorage) getContainer().getComponentInstanceOfType(ActivityStreamStorage.class);
     
-    activityStorage.setInjectStreams(false);
-    
     //
     assertNotNull("identityManager must not be null", identityStorage);
     assertNotNull("activityStorage must not be null", activityStorage);
@@ -106,7 +104,6 @@ public class LazyActivityStorageTest extends AbstractCoreTest {
     identityStorage.deleteIdentity(raulIdentity);
     identityStorage.deleteIdentity(jameIdentity);
     
-    activityStorage.setInjectStreams(true);
     super.tearDown();
   }
 

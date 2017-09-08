@@ -30,7 +30,7 @@ import org.exoplatform.social.core.storage.api.ActivityStreamStorage;
 import org.exoplatform.social.core.storage.api.IdentityStorage;
 import org.exoplatform.social.core.storage.api.RelationshipStorage;
 import org.exoplatform.social.core.storage.api.SpaceStorage;
-import org.exoplatform.social.core.storage.impl.ActivityStorageImpl;
+import org.exoplatform.social.core.storage.impl.*;
 
 /**
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
@@ -38,10 +38,10 @@ import org.exoplatform.social.core.storage.impl.ActivityStorageImpl;
  */
 public class SynchronizedActivityStorage extends ActivityStorageImpl {
 
-  public SynchronizedActivityStorage( final RelationshipStorage relationshipStorage,
-      final IdentityStorage identityStorage,
-      final SpaceStorage spaceStorage,
-      final ActivityStreamStorage streamStorage) {
+  public SynchronizedActivityStorage( final RelationshipStorageImpl relationshipStorage,
+      final IdentityStorageImpl identityStorage,
+      final SpaceStorageImpl spaceStorage,
+      final ActivityStreamStorageImpl streamStorage) {
 
     super(relationshipStorage, identityStorage, spaceStorage, streamStorage);
 

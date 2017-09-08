@@ -16,26 +16,18 @@
  */
 package org.exoplatform.social.notification.mock;
 
-import java.util.ArrayList;
-import java.util.List;
+import org.exoplatform.commons.api.notification.model.MessageInfo;
+import org.exoplatform.commons.api.notification.service.QueueMessage;
 
-import org.exoplatform.commons.api.notification.model.NotificationInfo;
+public class MockMessageQueue implements QueueMessage {
 
-public class MockMessageQueue {
-  
-  private final static List<NotificationInfo> messageQueue = new ArrayList<NotificationInfo>();
-  
-  public static void add(NotificationInfo message) {
-    messageQueue.add(message);
+  @Override
+  public boolean put(MessageInfo messageInfo) {
+    return true;
   }
 
-  public static NotificationInfo get() {
-    
-    if (messageQueue.size() == 0) return null;
-    
-    List<NotificationInfo> result = new ArrayList<NotificationInfo>(messageQueue);
-    messageQueue.clear();
-    return result.get(0);
+  @Override
+  public void send() {
+    // do nothing
   }
-
 }

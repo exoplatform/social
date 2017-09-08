@@ -57,7 +57,6 @@ import org.exoplatform.social.core.storage.cache.model.key.ListIdentitiesKey;
 import org.exoplatform.social.core.storage.cache.model.key.ListSpaceMembersKey;
 import org.exoplatform.social.core.storage.cache.model.key.SpaceKey;
 import org.exoplatform.social.core.storage.cache.selector.IdentityCacheSelector;
-import org.exoplatform.social.core.storage.impl.IdentityStorageImpl;
 
 /**
  * Cache support for IdentityStorage.
@@ -84,7 +83,7 @@ public class CachedIdentityStorage implements IdentityStorage {
   private final FutureExoCache<ListIdentitiesKey, ListIdentitiesData, ServiceContext<ListIdentitiesData>> identitiesCache;
   private final FutureExoCache<ActiveIdentityKey, ActiveIdentitiesData, ServiceContext<ActiveIdentitiesData>> activeIdentitiesCache;
 
-  private final IdentityStorageImpl storage;
+  private final IdentityStorage storage;
   private CachedRelationshipStorage cachedRelationshipStorage;
 
   void clearCache() {
@@ -147,11 +146,10 @@ public class CachedIdentityStorage implements IdentityStorage {
     return new ListIdentitiesData(data);
   }
 
-  public CachedIdentityStorage(final IdentityStorageImpl storage, final SocialStorageCacheService cacheService) {
+  public CachedIdentityStorage(final IdentityStorage storage, final SocialStorageCacheService cacheService) {
 
     //
     this.storage = storage;
-    this.storage.setStorage(this);
 
     //
     this.exoIdentityCache = cacheService.getIdentityCache();

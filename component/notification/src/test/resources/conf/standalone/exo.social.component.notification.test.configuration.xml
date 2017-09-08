@@ -38,6 +38,11 @@
   </component>
 
   <component>
+    <key>org.exoplatform.commons.file.services.FileService</key>
+    <type>org.exoplatform.social.notification.mock.MockFileService</type>
+  </component>
+
+  <component>
     <key>org.exoplatform.commons.api.notification.channel.ChannelManager</key>
     <type>org.exoplatform.commons.notification.channel.ChannelManagerImpl</type>
   </component>
@@ -84,17 +89,7 @@
   
   <component>
     <key>org.exoplatform.commons.api.notification.service.QueueMessage</key>
-    <type>org.exoplatform.commons.notification.impl.service.QueueMessageImpl</type>
-    <init-params>
-      <value-param>
-        <name>numberOfMailPerBatch</name> <!-- Max number of mails to send in period time -->
-        <value>50</value>
-      </value-param>
-      <value-param>
-        <name>period</name><!-- The time to repeat interval call send email notification -->
-        <value>60</value>
-      </value-param>
-    </init-params>
+    <type>org.exoplatform.social.notification.mock.MockMessageQueue</type>
   </component>
   
   <component>

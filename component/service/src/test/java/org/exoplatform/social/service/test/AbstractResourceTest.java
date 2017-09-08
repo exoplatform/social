@@ -21,6 +21,7 @@ package org.exoplatform.social.service.test;
 import java.io.ByteArrayInputStream;
 import java.io.InputStreamReader;
 import java.net.URI;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,6 +29,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.MultivaluedMap;
 
+import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.services.rest.ContainerResponseWriter;
 import org.exoplatform.services.rest.impl.ContainerRequest;
 import org.exoplatform.services.rest.impl.ContainerResponse;
@@ -35,11 +37,19 @@ import org.exoplatform.services.rest.impl.EnvironmentContext;
 import org.exoplatform.services.rest.impl.InputHeadersMap;
 import org.exoplatform.services.rest.impl.MultivaluedMapImpl;
 import org.exoplatform.services.rest.tools.DummyContainerResponseWriter;
+import org.exoplatform.social.common.RealtimeListAccess;
 import org.exoplatform.social.core.activity.model.ActivityStream;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
+import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
+import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
 import org.exoplatform.social.core.manager.ActivityManager;
+import org.exoplatform.social.core.manager.IdentityManager;
+import org.exoplatform.social.core.manager.RelationshipManager;
+import org.exoplatform.social.core.profile.ProfileFilter;
+import org.exoplatform.social.core.space.model.Space;
+import org.exoplatform.social.core.space.spi.SpaceService;
 import org.exoplatform.social.rest.entity.BaseEntity;
 import org.exoplatform.social.rest.entity.DataEntity;
 import org.exoplatform.social.service.rest.Util;
@@ -447,9 +457,8 @@ public abstract class AbstractResourceTest extends AbstractServiceTest {
       List<IdentityRestOut> likedByIdentities = entity.getLikedByIdentities();
 
       for (int j = 0; j < likedByIdentities.size(); j++) {
-        assertEquals("likedByIdentities.get(j).getId() must return: " +
-                activity.getLikeIdentityIds()[activityLikedIdentityIdLength - j - 1],
-                activity.getLikeIdentityIds()[activityLikedIdentityIdLength - j - 1], likedByIdentities.get(j).getId());
+        assertTrue("Likers must contain id " + likedByIdentities.get(j).getId(),
+                Arrays.asList(activity.getLikeIdentityIds()).contains(likedByIdentities.get(j).getId()));
       }
 
     }

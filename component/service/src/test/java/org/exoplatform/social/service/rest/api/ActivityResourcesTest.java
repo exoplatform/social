@@ -16,24 +16,7 @@
  */
 package org.exoplatform.social.service.rest.api;
 
-import java.io.StringWriter;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.exoplatform.commons.utils.ListAccess;
-import org.exoplatform.social.core.manager.RelationshipManager;
-import org.exoplatform.social.core.relationship.model.Relationship;
-import org.exoplatform.social.core.space.SpaceException;
-import org.exoplatform.social.core.space.impl.DefaultSpaceApplicationHandler;
-import org.exoplatform.social.core.space.model.Space;
-import org.exoplatform.social.core.space.spi.SpaceService;
-
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.MultivaluedMap;
-import javax.ws.rs.core.Response;
-
 import org.exoplatform.services.rest.impl.ContainerResponse;
 import org.exoplatform.services.rest.impl.MultivaluedMapImpl;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
@@ -43,11 +26,22 @@ import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvide
 import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
 import org.exoplatform.social.core.manager.ActivityManager;
 import org.exoplatform.social.core.manager.IdentityManager;
-import org.exoplatform.social.service.rest.api.ActivityResources;
+import org.exoplatform.social.core.manager.RelationshipManager;
+import org.exoplatform.social.core.space.SpaceException;
+import org.exoplatform.social.core.space.impl.DefaultSpaceApplicationHandler;
+import org.exoplatform.social.core.space.model.Space;
+import org.exoplatform.social.core.space.spi.SpaceService;
 import org.exoplatform.social.service.rest.api.models.ActivityRestOut;
 import org.exoplatform.social.service.rest.api.models.IdentityRestOut;
 import org.exoplatform.social.service.test.AbstractResourceTest;
 import org.json.JSONWriter;
+
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.MultivaluedMap;
+import javax.ws.rs.core.Response;
+import java.io.StringWriter;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Unit Test for {@link ActivityResources}.
@@ -66,11 +60,6 @@ public class ActivityResourcesTest extends AbstractResourceTest {
 
   private Identity rootIdentity, johnIdentity, maryIdentity, demoIdentity;
 
-  private List<Identity> tearDownIdentityList;
-  private List<ExoSocialActivity> tearDownActivityList;
-  private List<Relationship> tearDownRelationshipList;
-  private List<Space> tearDownSpaceList;
-
   /**
    * Adds {@link ActivityResources}.
    *
@@ -80,25 +69,20 @@ public class ActivityResourcesTest extends AbstractResourceTest {
   public void setUp() throws Exception {
     super.setUp();
 
-    identityManager = (IdentityManager) getContainer().getComponentInstanceOfType(IdentityManager.class);
-    activityManager = (ActivityManager) getContainer().getComponentInstanceOfType(ActivityManager.class);
-    relationshipManager = (RelationshipManager) getContainer().getComponentInstanceOfType(RelationshipManager.class);
-    spaceService = (SpaceService) getContainer().getComponentInstanceOfType(SpaceService.class);
+    identityManager = getContainer().getComponentInstanceOfType(IdentityManager.class);
+    activityManager = getContainer().getComponentInstanceOfType(ActivityManager.class);
+    relationshipManager = getContainer().getComponentInstanceOfType(RelationshipManager.class);
+    spaceService = getContainer().getComponentInstanceOfType(SpaceService.class);
 
-    rootIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "root", false);
-    johnIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "john", false);
-    maryIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "mary", false);
-    demoIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "demo", false);
+    rootIdentity = new Identity(OrganizationIdentityProvider.NAME, "root");
+    johnIdentity = new Identity(OrganizationIdentityProvider.NAME, "john");
+    maryIdentity = new Identity(OrganizationIdentityProvider.NAME, "mary");
+    demoIdentity = new Identity(OrganizationIdentityProvider.NAME, "demo");
 
-    tearDownIdentityList = new ArrayList<Identity>();
-    tearDownIdentityList.add(rootIdentity);
-    tearDownIdentityList.add(johnIdentity);
-    tearDownIdentityList.add(maryIdentity);
-    tearDownIdentityList.add(demoIdentity);
-
-    tearDownActivityList = new ArrayList<ExoSocialActivity>();
-    tearDownRelationshipList = new ArrayList<Relationship>();
-    tearDownSpaceList = new ArrayList<Space>();
+    identityManager.saveIdentity(rootIdentity);
+    identityManager.saveIdentity(johnIdentity);
+    identityManager.saveIdentity(maryIdentity);
+    identityManager.saveIdentity(demoIdentity);
 
     addResource(ActivityResources.class, null);
   }
@@ -110,26 +94,7 @@ public class ActivityResourcesTest extends AbstractResourceTest {
    */
   @Override
   public void tearDown() throws Exception {
-
-    //Removing the relationships
-    for (Relationship relationship: tearDownRelationshipList) {
-      relationshipManager.delete(relationship);
-    }
-    
-    //Removing the activities
-    for (ExoSocialActivity activity: tearDownActivityList) {
-      activityManager.deleteActivity(activity);
-    }
-
-    //Removing the spaces
-    for (Space space: tearDownSpaceList) {
-      spaceService.deleteSpace(space);
-    }
-    for (Identity identity: tearDownIdentityList) {
-      identityManager.deleteIdentity(identity);
-    }
     removeResource(ActivityResources.class);
-
     super.tearDown();
   }
 
@@ -560,8 +525,7 @@ public class ActivityResourcesTest extends AbstractResourceTest {
       params.put("key2", "value2");
       activity.setTemplateParams(params);
       activityManager.saveActivityNoReturn(spaceIdentity, activity);
-      tearDownActivityList.add(activity);
-      
+
       testStatusCodeOfResource("john", "GET", RESOURCE_URL+"/" + activity.getId() + ".json", null, null,
           Response.Status.FORBIDDEN.getStatusCode());
     }
@@ -745,7 +709,7 @@ public class ActivityResourcesTest extends AbstractResourceTest {
       service("POST", RESOURCE_URL+"/" + expectedActivity.getId() + "/like.json", "", null, null);
     assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
     expectedActivity = activityManager.getActivitiesWithListAccess(demoIdentity).load(0, 1)[0];
-    assertEquals("The activity liked array must contain Demo's IdentityID",expectedActivity.getLikeIdentityIds()[0], demoIdentity.getId());
+    assertEquals("The activity liked array must contain Demo's IdentityID", expectedActivity.getLikeIdentityIds()[0], demoIdentity.getId());
     
     connectIdentities(demoIdentity, rootIdentity, true);
     startSessionAs("root");
@@ -757,13 +721,16 @@ public class ActivityResourcesTest extends AbstractResourceTest {
     assertEquals(true, got.get("liked"));
     
     expectedActivity = activityManager.getActivitiesWithListAccess(demoIdentity).load(0, 1)[0];
-    assertEquals("The activity liked array must contain Demo's IdentityID",expectedActivity.getLikeIdentityIds()[1], rootIdentity.getId());
-    
+    String[] likeIdentityIds = expectedActivity.getLikeIdentityIds();
+    assertEquals(2, likeIdentityIds.length);
+    assertTrue("The activity liked array must contain Demo's IdentityID", Arrays.asList(likeIdentityIds).contains(demoIdentity.getId()));
+    assertTrue("The activity liked array must contain Root's IdentityID", Arrays.asList(likeIdentityIds).contains(rootIdentity.getId()));
+
     //Forbidden
     testStatusCodeOfResource("mary", "POST", RESOURCE_URL+"/" + expectedActivity.getId() + "/like.json", null, null,
         Response.Status.FORBIDDEN.getStatusCode());
   }
-  
+
   public void testGetLikedIdentities() throws Exception {
     createActivities(demoIdentity, demoIdentity, 1);
     
@@ -783,12 +750,13 @@ public class ActivityResourcesTest extends AbstractResourceTest {
     assertEquals("Number of liked Identities must equal 4",4, got.get("totalNumberOfLikes"));
     
     ArrayList<HashMap<String, Object>> identityArrayList = (ArrayList<HashMap<String, Object>>) got.get("likesByIdentities");
-    assertEquals(maryIdentity.getId(), identityArrayList.get(0).get("id"));
-    assertEquals(johnIdentity.getId(), identityArrayList.get(1).get("id"));
-    assertEquals(demoIdentity.getId(), identityArrayList.get(2).get("id"));
-    assertEquals(rootIdentity.getId(), identityArrayList.get(3).get("id"));
+    List<Object> likersIds = identityArrayList.stream().map(liker -> liker.get("id")).collect(Collectors.toList());
+    assertTrue(likersIds.contains(maryIdentity.getId()));
+    assertTrue(likersIds.contains(johnIdentity.getId()));
+    assertTrue(likersIds.contains(demoIdentity.getId()));
+    assertTrue(likersIds.contains(rootIdentity.getId()));
   }
-  
+
   /**
    * Tests {@link ActivityResources#deleteLikeActivityById(javax.ws.rs.core.UriInfo, String, String, String)
    * Tests {@link ActivityResources#postDeleteLikeActivityById(javax.ws.rs.core.UriInfo, String, String, String)
@@ -835,7 +803,7 @@ public class ActivityResourcesTest extends AbstractResourceTest {
     testStatusCodeOfResource("mary", "POST", RESOURCE_URL+"/" + expectedActivity.getId() + "/like/destroy.json", null, null,
         Response.Status.FORBIDDEN.getStatusCode());
   }
-  
+
   /**
    * Test {@link ActivityResources#createCommentActivityById(javax.ws.rs.core.UriInfo, String, String, String, Comment)}
    */
@@ -970,7 +938,6 @@ public class ActivityResourcesTest extends AbstractResourceTest {
       activity.setUserId(posterIdentity.getId());
       activityManager.saveActivityNoReturn(identityStream, activity);
       activity = activityManager.getActivity(activity.getId());
-      tearDownActivityList.add(activity);
     }
   }
 
@@ -1020,7 +987,6 @@ public class ActivityResourcesTest extends AbstractResourceTest {
       space.setUrl("/space/" + space.getPrettyName());
       try {
         spaceService.saveSpace(space, true);
-        tearDownSpaceList.add(space);
       } catch (SpaceException e) {
         fail("Could not create a new space");
       }
@@ -1039,7 +1005,6 @@ public class ActivityResourcesTest extends AbstractResourceTest {
     if (beConfirmed) {
       relationshipManager.confirm(receiverIdentity, senderIdentity);
     }
-    tearDownRelationshipList.add(relationshipManager.get(senderIdentity, receiverIdentity));
   }
 
 }

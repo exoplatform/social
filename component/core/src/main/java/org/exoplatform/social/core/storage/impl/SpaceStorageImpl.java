@@ -44,7 +44,6 @@ import org.exoplatform.social.core.space.SpaceFilter;
 import org.exoplatform.social.core.space.SpaceUtils;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.storage.SpaceStorageException;
-import org.exoplatform.social.core.storage.api.ActivityStreamStorage;
 import org.exoplatform.social.core.storage.api.SpaceStorage;
 import org.exoplatform.social.core.storage.exception.NodeNotFoundException;
 import org.exoplatform.social.core.storage.query.JCRProperties;
@@ -83,9 +82,7 @@ public class SpaceStorageImpl extends AbstractStorage implements SpaceStorage {
   /**
    * The identity storage
    */
-  private final IdentityStorageImpl identityStorage;
-
-  private final ActivityStreamStorage streamStorage;
+  private IdentityStorageImpl identityStorage;
 
   private static final int TWO_SECONDS = 2000;
   
@@ -94,10 +91,13 @@ public class SpaceStorageImpl extends AbstractStorage implements SpaceStorage {
    *
    * @param identityStorage the identity storage
    */
-  public SpaceStorageImpl(IdentityStorageImpl identityStorage, ActivityStreamStorage streamStorage) {
+  public SpaceStorageImpl(IdentityStorageImpl identityStorage) {
    this.identityStorage = identityStorage;
-   this.streamStorage = streamStorage;
  }
+
+  public void setIdentityStorage(IdentityStorageImpl identityStorage) {
+    this.identityStorage = identityStorage;
+  }
 
   /**
    * Fills {@link Space}'s properties to {@link SpaceEntity}'s.

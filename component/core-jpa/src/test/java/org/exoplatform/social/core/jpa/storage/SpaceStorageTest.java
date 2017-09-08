@@ -17,15 +17,11 @@
 
 package org.exoplatform.social.core.jpa.storage;
 
-import java.io.InputStream;
-import java.util.LinkedList;
-import java.util.List;
-
-import org.exoplatform.social.core.jpa.test.AbstractCoreTest;
-import org.exoplatform.social.core.jpa.test.MaxQueryNumber;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
+import org.exoplatform.social.core.jpa.test.AbstractCoreTest;
+import org.exoplatform.social.core.jpa.test.MaxQueryNumber;
 import org.exoplatform.social.core.model.AvatarAttachment;
 import org.exoplatform.social.core.service.LinkProvider;
 import org.exoplatform.social.core.space.SpaceFilter;
@@ -35,15 +31,19 @@ import org.exoplatform.social.core.storage.api.IdentityStorage;
 import org.exoplatform.social.core.storage.api.SpaceStorage;
 import org.exoplatform.social.core.storage.impl.StorageUtils;
 
+import java.io.InputStream;
+import java.util.List;
+
 public abstract class SpaceStorageTest extends AbstractCoreTest {
-
-  private List<Space>     tearDownSpaceList;
-
-  private List<Identity>  tearDownIdentityList;
 
   private SpaceStorage    spaceStorage;
 
   private IdentityStorage identityStorage;
+
+  private Identity rootIdentity;
+  private Identity johnIdentity;
+  private Identity maryIdentity;
+  private Identity demoIdentity;
 
   @Override
   protected void setUp() throws Exception {
@@ -51,23 +51,10 @@ public abstract class SpaceStorageTest extends AbstractCoreTest {
     spaceStorage = (SpaceStorage) this.getContainer().getComponentInstanceOfType(SpaceStorage.class);
     identityStorage = (IdentityStorage) this.getContainer().getComponentInstanceOfType(IdentityStorage.class);
 
-    tearDownSpaceList = new LinkedList<>();
-    tearDownIdentityList = new LinkedList<>();
-  }
-
-  /**
-   * Cleans up.
-   */
-  @Override
-  protected void tearDown() throws Exception {
-    for (Space sp : tearDownSpaceList) {
-      spaceStorage.deleteSpace(sp.getId());
-    }
-
-    for (Identity id : tearDownIdentityList) {
-//      identityStorage.deleteIdentity(id);
-    }
-    super.tearDown();
+    rootIdentity = createIdentity("root");
+    johnIdentity = createIdentity("john");
+    maryIdentity = createIdentity("mary");
+    demoIdentity = createIdentity("demo");
   }
 
   /**
@@ -96,7 +83,6 @@ public abstract class SpaceStorageTest extends AbstractCoreTest {
     space.setManagers(managers);
     space.setMembers(members);
     space.setUrl(space.getPrettyName());
-    tearDownSpaceList.add(space);
     return space;
   }
 
@@ -125,7 +111,6 @@ public abstract class SpaceStorageTest extends AbstractCoreTest {
     space.setManagers(managers);
     space.setMembers(members);
     space.setUrl(space.getPrettyName());
-    tearDownSpaceList.add(space);
     return space;
   }
 
@@ -159,7 +144,6 @@ public abstract class SpaceStorageTest extends AbstractCoreTest {
     space.setPendingUsers(pendingUsers);
     space.setManagers(managers);
     space.setMembers(members);
-    tearDownSpaceList.add(space);
     return space;
   }
 
@@ -1598,7 +1582,6 @@ public abstract class SpaceStorageTest extends AbstractCoreTest {
 
     Identity spaceIdentity = new Identity(SpaceIdentityProvider.NAME, got.getPrettyName());
     identityStorage.saveIdentity(spaceIdentity);
-    tearDownIdentityList.add(spaceIdentity);
 
     String newDisplayName = "new display name";
     spaceStorage.renameSpace(space, newDisplayName);
@@ -1634,7 +1617,6 @@ public abstract class SpaceStorageTest extends AbstractCoreTest {
     identityStorage.saveIdentity(identity);
     identityStorage.saveProfile(profile);
 
-    tearDownIdentityList.add(identity);
     spaceStorage.saveSpace(space, true);
     StorageUtils.persist();
 
@@ -1684,7 +1666,6 @@ public abstract class SpaceStorageTest extends AbstractCoreTest {
     profile.setProperty(Profile.AVATAR, avatarAttachment);
     identityStorage.saveIdentity(identity);
 //    identityStorage.saveProfile(profile);
-    tearDownIdentityList.add(identity);
 
     //
     Space spaceForUpdate = spaceStorage.getSpaceById(space.getId());

@@ -16,48 +16,48 @@
  */
 package org.exoplatform.social.core.jpa.concurrency;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.exoplatform.commons.file.services.NameSpaceService;
-import org.exoplatform.commons.chromattic.ChromatticManager;
-import org.exoplatform.services.jcr.RepositoryService;
-import org.exoplatform.social.common.lifecycle.SocialChromatticLifeCycle;
-import org.exoplatform.social.core.jpa.storage.RDBMSIdentityStorageImpl;
-import org.exoplatform.social.core.jpa.storage.dao.ActivityDAO;
-import org.exoplatform.social.core.jpa.storage.entity.ActivityEntity;
-import org.exoplatform.social.core.jpa.test.BaseCoreTest;
-import org.exoplatform.social.core.jpa.updater.MigrationContext;
-import org.exoplatform.social.core.jpa.updater.RelationshipMigrationService;
-import org.exoplatform.social.core.storage.impl.IdentityStorageImpl;
-import org.jboss.byteman.contrib.bmunit.BMUnit;
-import org.junit.FixMethodOrder;
 import org.exoplatform.commons.api.settings.SettingService;
 import org.exoplatform.commons.api.settings.SettingValue;
 import org.exoplatform.commons.api.settings.data.Context;
 import org.exoplatform.commons.api.settings.data.Scope;
+import org.exoplatform.commons.chromattic.ChromatticManager;
+import org.exoplatform.commons.file.services.NameSpaceService;
 import org.exoplatform.commons.persistence.impl.EntityManagerService;
 import org.exoplatform.component.test.ConfigurationUnit;
 import org.exoplatform.component.test.ConfiguredBy;
 import org.exoplatform.component.test.ContainerScope;
+import org.exoplatform.services.jcr.RepositoryService;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
-import org.exoplatform.social.core.jpa.test.QueryNumberTest;
-import org.exoplatform.social.core.jpa.updater.ActivityMigrationService;
-import org.exoplatform.social.core.jpa.updater.RDBMSMigrationManager;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
+import org.exoplatform.social.core.jpa.storage.RDBMSIdentityStorageImpl;
+import org.exoplatform.social.core.jpa.storage.dao.ActivityDAO;
+import org.exoplatform.social.core.jpa.storage.entity.ActivityEntity;
+import org.exoplatform.social.core.jpa.test.BaseCoreTest;
+import org.exoplatform.social.core.jpa.test.QueryNumberTest;
+import org.exoplatform.social.core.jpa.updater.ActivityMigrationService;
+import org.exoplatform.social.core.jpa.updater.MigrationContext;
+import org.exoplatform.social.core.jpa.updater.RDBMSMigrationManager;
+import org.exoplatform.social.core.jpa.updater.RelationshipMigrationService;
 import org.exoplatform.social.core.manager.ActivityManager;
 import org.exoplatform.social.core.manager.IdentityManager;
+import org.exoplatform.social.core.manager.IdentityManagerImpl;
 import org.exoplatform.social.core.manager.RelationshipManager;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
 import org.exoplatform.social.core.storage.api.ActivityStorage;
 import org.exoplatform.social.core.storage.api.SpaceStorage;
 import org.exoplatform.social.core.storage.impl.ActivityStorageImpl;
+import org.exoplatform.social.core.storage.impl.IdentityStorageImpl;
 import org.exoplatform.social.core.storage.impl.RelationshipStorageImpl;
+import org.jboss.byteman.contrib.bmunit.BMUnit;
+import org.junit.FixMethodOrder;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by The eXo Platform SAS
@@ -79,9 +79,9 @@ import org.exoplatform.social.core.storage.impl.RelationshipStorageImpl;
 })
 public abstract class AbstractAsynMigrationTest extends BaseCoreTest {
   protected final Log LOG = ExoLogger.getLogger(AbstractAsynMigrationTest.class);
-  protected ActivityStorageImpl jcrStorage;
+  protected ActivityStorageImpl activityJCRStorage;
   protected IdentityStorageImpl identityJCRStorage;
-  protected RelationshipStorageImpl relationshipStorageImpl;
+  protected RelationshipStorageImpl relationshipJCRStorage;
   protected ActivityMigrationService activityMigration;
   protected RelationshipMigrationService relationshipMigration;
   protected SettingService settingService;
@@ -92,8 +92,6 @@ public abstract class AbstractAsynMigrationTest extends BaseCoreTest {
 
   protected RepositoryService repoService;
 
-  protected String socialWorkspaceName;
-  
   @Override
   public void setUp() throws Exception {
     begin();
@@ -108,8 +106,6 @@ public abstract class AbstractAsynMigrationTest extends BaseCoreTest {
     repoService = getService(RepositoryService.class);
     nameSpaceService = getService(NameSpaceService.class);
 
-    socialWorkspaceName = getService(ChromatticManager.class).getLifeCycle(SocialChromatticLifeCycle.SOCIAL_LIFECYCLE_NAME).getWorkspaceName();
-
     spaceStorage = getService(SpaceStorage.class);
     identityJCRStorage = getService(IdentityStorageImpl.class);
     identityJPAStorage = getService(RDBMSIdentityStorageImpl.class);
@@ -120,12 +116,15 @@ public abstract class AbstractAsynMigrationTest extends BaseCoreTest {
     spaceService = getService(SpaceService.class);
     entityManagerService = getService(EntityManagerService.class);
     //
-    jcrStorage = getService(ActivityStorageImpl.class);
-    relationshipStorageImpl = getService(RelationshipStorageImpl.class);
+    activityJCRStorage = getService(ActivityStorageImpl.class);
+    relationshipJCRStorage = getService(RelationshipStorageImpl.class);
     activityMigration = getService(ActivityMigrationService.class);
     relationshipMigration = getService(RelationshipMigrationService.class);
     settingService = getService(SettingService.class);
     rdbmsMigrationManager = new RDBMSMigrationManager(null, nameSpaceService, getService(RepositoryService.class), getService(ChromatticManager.class));
+
+    // Switch to use JCRIdentityStorage
+    ((IdentityManagerImpl)identityManager).setIdentityStorage(identityJCRStorage);
   }
 
   @Override
@@ -185,7 +184,7 @@ public abstract class AbstractAsynMigrationTest extends BaseCoreTest {
     List<ExoSocialActivity> activities = listOf(number, targetIdentity, posterIdentity, false, false);
     for (ExoSocialActivity activity : activities) {
       try {
-        activity = jcrStorage.saveActivity(targetIdentity, activity);
+        activity = activityJCRStorage.saveActivity(targetIdentity, activity);
         //
         Map<String, String> params = new HashMap<String, String>();
         params.put("MESSAGE",
@@ -195,7 +194,7 @@ public abstract class AbstractAsynMigrationTest extends BaseCoreTest {
           comment.setTitle("comment of " + posterIdentity.getId());
           comment.setTemplateParams(params);
           //
-          jcrStorage.saveComment(activity, comment);
+          activityJCRStorage.saveComment(activity, comment);
         }
       } catch (Exception e) {
         LOG.error("can not save activity.", e);
@@ -209,7 +208,7 @@ public abstract class AbstractAsynMigrationTest extends BaseCoreTest {
                                                false,
                                                false);
     try {
-      activity = jcrStorage.saveActivity(targetIdentity, activity);
+      activity = activityJCRStorage.saveActivity(targetIdentity, activity);
       //
       Map<String, String> params = new HashMap<String, String>();
       params.put("MESSAGE",
@@ -219,7 +218,7 @@ public abstract class AbstractAsynMigrationTest extends BaseCoreTest {
         comment.setTitle("comment of " + posterIdentity.getId());
         comment.setTemplateParams(params);
         //
-        jcrStorage.saveComment(activity, comment);
+        activityJCRStorage.saveComment(activity, comment);
       }
     } catch (Exception e) {
       LOG.error("can not save activity.", e);

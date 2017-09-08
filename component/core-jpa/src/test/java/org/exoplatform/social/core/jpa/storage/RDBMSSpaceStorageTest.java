@@ -16,11 +16,11 @@
  */
 package org.exoplatform.social.core.jpa.storage;
 
-import java.util.List;
-
 import org.exoplatform.social.core.space.SpaceFilter;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.storage.api.SpaceStorage;
+
+import java.util.List;
 
 public class RDBMSSpaceStorageTest extends SpaceStorageTest {
   private SpaceStorage spaceStorage;
@@ -29,14 +29,6 @@ public class RDBMSSpaceStorageTest extends SpaceStorageTest {
   protected void setUp() throws Exception {
     super.setUp();
     spaceStorage = getService(SpaceStorage.class);
-  }
-
-  @Override
-  protected void tearDown() throws Exception {
-    for (Space space : spaceStorage.getAllSpaces()) {
-      spaceStorage.deleteSpace(space.getId());
-    }
-    super.tearDown();
   }
   
   public void testVisited() throws Exception {
@@ -53,8 +45,8 @@ public class RDBMSSpaceStorageTest extends SpaceStorageTest {
     assertEquals(2, result.size());
     assertEquals(space0.getId(), result.get(0).getId());
         
-    //user access to space1 2s after space1 has been created
-    Thread.sleep(2000);
+    //user access to space1 2.5s after space1 has been created
+    Thread.sleep(2500);
     spaceStorage.updateSpaceAccessed("ghost", space1);
     
     //getVisitedSpaces return a list of spaces that
@@ -62,9 +54,6 @@ public class RDBMSSpaceStorageTest extends SpaceStorageTest {
     result = spaceStorage.getVisitedSpaces(filter, 0, -1);
     assertEquals(2, result.size());
     assertEquals(space1.getId(), result.get(0).getId());
-
-    spaceStorage.deleteSpace(space0.getId());
-    spaceStorage.deleteSpace(space1.getId());
   }
   
   public void testLastAccess() throws Exception {
@@ -81,14 +70,11 @@ public class RDBMSSpaceStorageTest extends SpaceStorageTest {
     assertEquals(2, result.size());
     assertEquals(space2.getId(), result.get(0).getId());
 
-    Thread.sleep(1000);
+    Thread.sleep(2500);
     spaceStorage.updateSpaceAccessed("ghost", space3);
 
     result = spaceStorage.getLastAccessedSpace(filter, 0, -1);
     assertEquals(2, result.size());
     assertEquals(space3.getId(), result.get(0).getId());
-
-    spaceStorage.deleteSpace(space2.getId());
-    spaceStorage.deleteSpace(space3.getId());
   }
 }

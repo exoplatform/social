@@ -48,7 +48,6 @@ import org.exoplatform.social.core.storage.cache.selector.ActivityOwnerCacheSele
 import org.exoplatform.social.core.storage.cache.selector.ActivityStreamOwnerCacheSelector;
 import org.exoplatform.social.core.storage.cache.selector.ScopeCacheSelector;
 import org.exoplatform.social.core.storage.impl.ActivityBuilderWhere;
-import org.exoplatform.social.core.storage.impl.ActivityStorageImpl;
 
 /**
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
@@ -67,17 +66,7 @@ public class CachedActivityStorage implements ActivityStorage {
   private final FutureExoCache<ActivityCountKey, IntegerData, ServiceContext<IntegerData>> activitiesCountCache;
   private final FutureExoCache<ListActivitiesKey, ListActivitiesData, ServiceContext<ListActivitiesData>> activitiesCache;
 
-  private ActivityStorageImpl storage;
-  
-  /**
-   * Register the other Activity Manager 
-   * @param baseComponent
-   */
-  public void addPlugin(BaseComponentPlugin baseComponent) {
-    if (baseComponent instanceof ActivityStorageImpl) {
-      this.storage = (ActivityStorageImpl) baseComponent;
-    }
-  }
+  private ActivityStorage storage;
 
   public void clearCache() {
 
@@ -189,11 +178,10 @@ public class CachedActivityStorage implements ActivityStorage {
 
   }
 
-  public CachedActivityStorage(final ActivityStorageImpl storage, final SocialStorageCacheService cacheService) {
+  public CachedActivityStorage(final ActivityStorage storage, final SocialStorageCacheService cacheService) {
 
     //
     this.storage = storage;
-    this.storage.setStorage(this);
 
     //
     this.exoActivityCache = cacheService.getActivityCache();
@@ -1438,7 +1426,7 @@ public class CachedActivityStorage implements ActivityStorage {
     return activitiesCountCache.get(
         new ServiceContext<IntegerData>() {
           public IntegerData execute() {
-            return new IntegerData(storage.getNumberOfOlderOnUserSpacesActivities(ownerIdentity, baseActivity));
+            return new IntegerData(storage.getNumberOfOlderOnSpaceActivities(ownerIdentity, baseActivity));
           }
         },
         key)
@@ -1955,11 +1943,6 @@ public class CachedActivityStorage implements ActivityStorage {
     exoActivitiesCountCache.put(keySpaces, countData);
     
     return countData.build();
-  }
-
-  @Override
-  public void setInjectStreams(boolean mustInject) {
-    storage.setInjectStreams(mustInject);
   }
 
   @Override

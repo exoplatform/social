@@ -19,13 +19,13 @@
 
 package org.exoplatform.social.core.jpa.concurrency;
 
+import org.exoplatform.social.core.chromattic.entity.ProviderEntity;
+import org.exoplatform.social.core.chromattic.entity.ProviderRootEntity;
+import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.jpa.storage.RDBMSActivityStorageImpl;
 import org.exoplatform.social.core.jpa.storage.RDBMSSpaceStorageImpl;
 import org.exoplatform.social.core.jpa.test.MaxQueryNumber;
 import org.exoplatform.social.core.jpa.updater.MigrationContext;
-import org.exoplatform.social.core.chromattic.entity.ProviderEntity;
-import org.exoplatform.social.core.chromattic.entity.ProviderRootEntity;
-import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.manager.IdentityManagerImpl;
 import org.exoplatform.social.core.relationship.model.Relationship;
 
@@ -46,62 +46,62 @@ public class AsynMigrateActivitiesTest extends AbstractAsynMigrationTest {
 
     //John invites Demo
     Relationship johnToDemo = new Relationship(johnIdentity, demoIdentity, Relationship.Type.PENDING);
-    relationshipStorageImpl.saveRelationship(johnToDemo);
+    relationshipJCRStorage.saveRelationship(johnToDemo);
 
     //John invites Mary
     Relationship johnToMary = new Relationship(johnIdentity, maryIdentity, Relationship.Type.PENDING);
-    relationshipStorageImpl.saveRelationship(johnToMary);
+    relationshipJCRStorage.saveRelationship(johnToMary);
 
     //John invites Root
     Relationship johnToRoot = new Relationship(johnIdentity, rootIdentity, Relationship.Type.PENDING);
-    relationshipStorageImpl.saveRelationship(johnToRoot);
+    relationshipJCRStorage.saveRelationship(johnToRoot);
 
     //Root invites Mary
     Relationship rootToMary = new Relationship(rootIdentity, maryIdentity, Relationship.Type.PENDING);
-    relationshipStorageImpl.saveRelationship(rootToMary);
+    relationshipJCRStorage.saveRelationship(rootToMary);
 
     //Demo invites Mary
     Relationship demoToMary = new Relationship(demoIdentity, maryIdentity, Relationship.Type.PENDING);
-    relationshipStorageImpl.saveRelationship(demoToMary);
+    relationshipJCRStorage.saveRelationship(demoToMary);
 
     //Demo invites Root
     Relationship demoToRoot = new Relationship(demoIdentity, rootIdentity, Relationship.Type.PENDING);
-    relationshipStorageImpl.saveRelationship(demoToRoot);
+    relationshipJCRStorage.saveRelationship(demoToRoot);
 
 
     //confirmed john and demo
     johnToDemo.setStatus(Relationship.Type.CONFIRMED);
-    relationshipStorageImpl.saveRelationship(johnToDemo);
+    relationshipJCRStorage.saveRelationship(johnToDemo);
 
     //confirmed john and demo
     johnToMary.setStatus(Relationship.Type.CONFIRMED);
-    relationshipStorageImpl.saveRelationship(johnToMary);
+    relationshipJCRStorage.saveRelationship(johnToMary);
 
     //confirmed john and root
     johnToRoot.setStatus(Relationship.Type.CONFIRMED);
-    relationshipStorageImpl.saveRelationship(johnToRoot);
+    relationshipJCRStorage.saveRelationship(johnToRoot);
 
     //confirmed root and mary
     rootToMary.setStatus(Relationship.Type.CONFIRMED);
-    relationshipStorageImpl.saveRelationship(rootToMary);
+    relationshipJCRStorage.saveRelationship(rootToMary);
 
     //confirmed demo and mary
     demoToMary.setStatus(Relationship.Type.CONFIRMED);
-    relationshipStorageImpl.saveRelationship(demoToMary);
+    relationshipJCRStorage.saveRelationship(demoToMary);
 
     //confirmed demo and root
     demoToRoot.setStatus(Relationship.Type.CONFIRMED);
-    relationshipStorageImpl.saveRelationship(demoToRoot);
+    relationshipJCRStorage.saveRelationship(demoToRoot);
 
     //
     LOG.info("Create the activities storage on JCR ....");
-    jcrStorage.setInjectStreams(false);
+    activityJCRStorage.setInjectStreams(false);
     createActivityToOtherIdentity(rootIdentity, johnIdentity, 5);
     createActivityToOtherIdentity(demoIdentity, maryIdentity, 5);
     createActivityToOtherIdentity(johnIdentity, demoIdentity, 5);
     createActivityToOtherIdentity(maryIdentity, rootIdentity, 5);
     createActivityEmoji(rootIdentity, rootIdentity);
-    jcrStorage.setInjectStreams(true);
+    activityJCRStorage.setInjectStreams(true);
     LOG.info("Done created the activities storage on JCR.");
     end();
 

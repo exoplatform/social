@@ -16,22 +16,22 @@
  */
 package org.exoplatform.social.core.jpa.storage.dao;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.exoplatform.services.security.ConversationState;
-import org.exoplatform.social.core.jpa.storage.entity.StreamItemEntity;
-import org.exoplatform.social.core.jpa.test.BaseCoreTest;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.activity.model.ExoSocialActivityImpl;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
+import org.exoplatform.social.core.jpa.storage.entity.StreamItemEntity;
+import org.exoplatform.social.core.jpa.test.BaseCoreTest;
 import org.exoplatform.social.core.relationship.model.Relationship;
 import org.exoplatform.social.core.space.impl.DefaultSpaceApplicationHandler;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
 import org.exoplatform.social.core.storage.api.IdentityStorage;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by The eXo Platform SAS

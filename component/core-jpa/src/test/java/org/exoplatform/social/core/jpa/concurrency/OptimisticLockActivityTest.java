@@ -16,12 +16,12 @@
  */
 package org.exoplatform.social.core.jpa.concurrency;
 
-import java.util.List;
-import java.util.concurrent.CountDownLatch;
-
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
+
+import java.util.List;
+import java.util.concurrent.CountDownLatch;
 
 /**
  * Created by The eXo Platform SAS

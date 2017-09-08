@@ -447,30 +447,6 @@ public class RelationshipManagerTest extends AbstractCoreTest {
     assertNotNull("demoIncoming must not be null", demoIncoming);
     assertEquals("demoIncoming.getSize() must return: 3", 3, demoIncoming.getSize());
     
-    //Test change avatar
-    InputStream inputStream = getClass().getResourceAsStream("/eXo-Social.png");
-    AvatarAttachment avatarAttachment = new AvatarAttachment(null, "avatar", "png", inputStream, null, System.currentTimeMillis());
-    assertNotNull(avatarAttachment);
-    
-    Profile profile = maryIdentity.getProfile();
-    profile.setProperty(Profile.AVATAR, avatarAttachment);
-    profile.setListUpdateTypes(Arrays.asList(Profile.UpdateType.AVATAR));
-    identityManager.updateProfile(profile);
-    
-    Identity[] identities = demoIncoming.load(0, 10);
-    demoIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, demoIdentity.getRemoteId(), true);
-
-    assertEquals(6, identities[0].getProfile().getProperties().size());
-    assertEquals(6, identities[1].getProfile().getProperties().size());
-    assertEquals(6, identities[2].getProfile().getProperties().size());
-    
-    for (Identity identity : demoIncoming.load(0, 10)) {
-      assertNotNull("identity.getProfile() must not be null", identity.getProfile());
-      Identity identityLoadProfile = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, identity.getRemoteId(), true);
-      assertEquals("identity.getProfile().getFullName() must return: " + identityLoadProfile.getProfile().getFullName(),
-                   identityLoadProfile.getProfile().getFullName(), identity.getProfile().getFullName());
-    }
-    
     ListAccess<Identity> rootIncoming = relationshipManager.getIncomingWithListAccess(rootIdentity);
     assertNotNull("rootIncoming must not be null", rootIncoming);
     assertEquals("rootIncoming.getSize() must return: 0", 0, rootIncoming.getSize());
@@ -499,32 +475,6 @@ public class RelationshipManagerTest extends AbstractCoreTest {
     ListAccess<Identity> rootOutgoing = relationshipManager.getOutgoing(rootIdentity);
     assertNotNull("rootOutgoing must not be null", rootOutgoing);
     assertEquals("rootOutgoing.getSize() must return: 2", 2, rootOutgoing.getSize());
-    
-    //Test change avatar
-    InputStream inputStream = getClass().getResourceAsStream("/eXo-Social.png");
-    AvatarAttachment avatarAttachment = new AvatarAttachment(null, "avatar", "png", inputStream, null, System.currentTimeMillis());
-    assertNotNull(avatarAttachment);
-    
-    Profile profile = demoIdentity.getProfile();
-    profile.setProperty(Profile.AVATAR, avatarAttachment);
-    profile.setListUpdateTypes(Arrays.asList(Profile.UpdateType.AVATAR));
-    identityManager.updateProfile(profile);
-    
-    rootOutgoing = relationshipManager.getOutgoing(rootIdentity);
-    Identity[] identities = rootOutgoing.load(0, 10);
-    demoIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, demoIdentity.getRemoteId(), true);
-
-    assertEquals(6, identities[0].getProfile().getProperties().size());
-    assertEquals(6, identities[1].getProfile().getProperties().size());
-    
-    for (Identity identity : rootOutgoing.load(0, 10)) {
-      Identity identityLoadProfile = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, identity.getRemoteId(), true);
-      assertNotNull("identity.getProfile() must not be nul", identity.getProfile());
-      assertNotNull("temp must not be null", identityLoadProfile);
-      assertEquals("identity.getProfile().getFullName() must return: " + identityLoadProfile.getProfile().getFullName(), 
-                   identityLoadProfile.getProfile().getFullName(), 
-                   identity.getProfile().getFullName());
-    }
     
     ListAccess<Identity> maryOutgoing = relationshipManager.getOutgoing(maryIdentity);
     assertNotNull("maryOutgoing must not be null", maryOutgoing);
@@ -1361,39 +1311,16 @@ public class RelationshipManagerTest extends AbstractCoreTest {
    * @throws Exception
    */
   public void testGetConnections() throws Exception {
-     Relationship johnDemoRelationship = relationshipManager.invite(johnIdentity, demoIdentity);
-     Relationship johnMaryRelationship = relationshipManager.invite(johnIdentity, maryIdentity);
-     Relationship johnRootRelationship = relationshipManager.invite(johnIdentity, rootIdentity);
+     Relationship johnDemoRelationship = relationshipManager.inviteToConnect(johnIdentity, demoIdentity);
+     Relationship johnMaryRelationship = relationshipManager.inviteToConnect(johnIdentity, maryIdentity);
+     Relationship johnRootRelationship = relationshipManager.inviteToConnect(johnIdentity, rootIdentity);
 
-     relationshipManager.confirm(johnDemoRelationship);
-     relationshipManager.confirm(johnMaryRelationship);
-     relationshipManager.confirm(johnRootRelationship);
+     relationshipManager.confirm(demoIdentity, johnIdentity);
+     relationshipManager.confirm(maryIdentity, johnIdentity);
+     relationshipManager.confirm(rootIdentity, johnIdentity);
 
      ListAccess<Identity> contactsList = relationshipManager.getConnections(johnIdentity);
      assertEquals(3, contactsList.getSize());
-     
-     //Test change avatar
-     InputStream inputStream = getClass().getResourceAsStream("/eXo-Social.png");
-     AvatarAttachment avatarAttachment = new AvatarAttachment(null, "avatar", "png", inputStream, null, System.currentTimeMillis());
-     assertNotNull(avatarAttachment);
-     
-     Profile profile = demoIdentity.getProfile();
-     profile.setProperty(Profile.AVATAR, avatarAttachment);
-     profile.setListUpdateTypes(Arrays.asList(Profile.UpdateType.AVATAR));
-     identityManager.updateProfile(profile);
-     
-     Identity[] identities = contactsList.load(0, 10);
-     demoIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, demoIdentity.getRemoteId(), true);
-
-     assertEquals(6, identities[0].getProfile().getProperties().size());
-     assertEquals(6, identities[1].getProfile().getProperties().size());
-     assertEquals(6, identities[2].getProfile().getProperties().size());
-     
-     for (Identity identity : contactsList.load(0, 10)) {
-       assertNotNull("identity.getProfile() must not be null", identity.getProfile());
-       Identity identityLoadProfile = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, identity.getRemoteId(), true);
-       assertEquals("identity.getProfile().getFullName() must return: " + identityLoadProfile.getProfile().getFullName(), identityLoadProfile.getProfile().getFullName(), identity.getProfile().getFullName());
-     }
 
      tearDownRelationshipList.add(johnDemoRelationship);
      tearDownRelationshipList.add(johnMaryRelationship);

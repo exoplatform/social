@@ -35,9 +35,9 @@ import org.exoplatform.social.core.test.QueryNumberTest;
  * @version $Revision$
  */
 @QueryNumberTest
-public class CachedRelationshipStorageTestCase extends AbstractCoreTest {
+public class JCRCachedRelationshipStorageTestCase extends AbstractCoreTest {
 
-  private CachedRelationshipStorage relationshipStorage;
+  private JCRCachedRelationshipStorage relationshipStorage;
   private IdentityStorageImpl identityStorage;
   private SocialStorageCacheService cacheService;
   private IdentityManager identityManager;
@@ -48,11 +48,11 @@ public class CachedRelationshipStorageTestCase extends AbstractCoreTest {
   public void setUp() throws Exception {
     super.setUp();
 
-    relationshipStorage = (CachedRelationshipStorage) getContainer().getComponentInstanceOfType(CachedRelationshipStorage.class);
-    identityStorage = (IdentityStorageImpl) getContainer().getComponentInstanceOfType(IdentityStorageImpl.class);
-    identityManager = (IdentityManager) getContainer().getComponentInstanceOfType(IdentityManager.class);
+    relationshipStorage = getContainer().getComponentInstanceOfType(JCRCachedRelationshipStorage.class);
+    identityStorage = getContainer().getComponentInstanceOfType(IdentityStorageImpl.class);
+    identityManager = getContainer().getComponentInstanceOfType(IdentityManager.class);
 
-    cacheService = (SocialStorageCacheService) getContainer().getComponentInstanceOfType(SocialStorageCacheService.class);
+    cacheService = getContainer().getComponentInstanceOfType(SocialStorageCacheService.class);
     cacheService.getRelationshipCache().clearCache();
     cacheService.getRelationshipCacheByIdentity().clearCache();
     cacheService.getRelationshipsCache().clearCache();
@@ -296,7 +296,7 @@ public class CachedRelationshipStorageTestCase extends AbstractCoreTest {
     relationshipStorage.getOutgoingByFilter(christmasIdentity, profileFilter, 0, 10);
     relationshipStorage.getOutgoingByFilter(kellyIdentity, profileFilter, 0, 10);
     
-    assertEquals(6, cacheService.getRelationshipsCache().getCacheSize());
+    assertEquals(3, cacheService.getRelationshipsCache().getCacheSize());
     
     relationshipStorage.getOutgoingCountByFilter(tweedyIdentity, profileFilter);
     assertEquals(1, cacheService.getRelationshipsCount().getCacheSize());
@@ -341,7 +341,7 @@ public class CachedRelationshipStorageTestCase extends AbstractCoreTest {
     relationshipStorage.getOutgoingByFilter(spearsIdentity, profileFilter, 0, 10);
     relationshipStorage.getOutgoingByFilter(christmasIdentity, profileFilter, 0, 10);
     relationshipStorage.getOutgoingByFilter(kellyIdentity, profileFilter, 0, 10);
-    assertEquals(6, cacheService.getRelationshipsCache().getCacheSize());
+    assertEquals(3, cacheService.getRelationshipsCache().getCacheSize());
     
     relationshipStorage.getIncomingCountByFilter(kellyIdentity, profileFilter);
     assertEquals(1, cacheService.getRelationshipsCount().getCacheSize());

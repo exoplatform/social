@@ -16,14 +16,9 @@
  */
 package org.exoplatform.social.core.jpa.storage;
 
-import java.io.ByteArrayInputStream;
-import java.util.ArrayList;
-import java.util.List;
-
 import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
-import org.exoplatform.social.core.jpa.test.AbstractCoreTest;
 import org.exoplatform.social.common.RealtimeListAccess;
 import org.exoplatform.social.core.activity.model.ActivityStream;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
@@ -32,6 +27,7 @@ import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
+import org.exoplatform.social.core.jpa.test.AbstractCoreTest;
 import org.exoplatform.social.core.manager.RelationshipManager;
 import org.exoplatform.social.core.model.AvatarAttachment;
 import org.exoplatform.social.core.relationship.model.Relationship;
@@ -42,16 +38,24 @@ import org.exoplatform.social.core.space.spi.SpaceLifeCycleEvent;
 import org.exoplatform.social.core.storage.api.IdentityStorage;
 import org.exoplatform.social.core.storage.api.SpaceStorage;
 
+import java.io.ByteArrayInputStream;
+import java.util.List;
+
 /**
  * Unit Tests for {@link SpaceActivityPublisher}
  * @author hoat_le
  */
-public class SpaceActivityMySqlPublisherTest extends AbstractCoreTest {
-  private final Log LOG = ExoLogger.getLogger(SpaceActivityMySqlPublisherTest.class);
+public class SpaceActivityRDBMSPublisherTest extends AbstractCoreTest {
+  private final Log LOG = ExoLogger.getLogger(SpaceActivityRDBMSPublisherTest.class);
   private IdentityStorage identityStorage;
   private SpaceStorage spaceStorage;
   private SpaceActivityPublisher spaceActivityPublisher;
   private RelationshipManager relationshipManager;
+
+  private Identity rootIdentity;
+  private Identity johnIdentity;
+  private Identity maryIdentity;
+  private Identity demoIdentity;
 
   @Override
   public void setUp() throws Exception {
@@ -63,11 +67,11 @@ public class SpaceActivityMySqlPublisherTest extends AbstractCoreTest {
     assertNotNull(spaceStorage);
     assertNotNull(spaceActivityPublisher);
     assertNotNull(identityStorage);
-  }
 
-  @Override
-  public void tearDown() throws Exception {
-    super.tearDown();
+    rootIdentity = createIdentity("root");
+    johnIdentity = createIdentity("john");
+    maryIdentity = createIdentity("mary");
+    demoIdentity = createIdentity("demo");
   }
 
   /**
@@ -117,11 +121,6 @@ public class SpaceActivityMySqlPublisherTest extends AbstractCoreTest {
     assertEquals(ActivityStream.Type.SPACE, activityStream.getType());
 
     assertEquals(SpaceIdentityProvider.NAME, activityStream.getType().toString());
-
-    //clean up
-    spaceService.deleteSpace(space);
-    relationshipManager.delete(relationship);
-    spaceStorage.deleteSpace(space.getId());
   }
   
   /**
@@ -241,9 +240,6 @@ public class SpaceActivityMySqlPublisherTest extends AbstractCoreTest {
      comments = activityManager.getCommentsWithListAccess(newActivity).loadAsList(0, 20);
      assertEquals(6, comments.size());
    }
-   
-   //clean up
-   spaceStorage.deleteSpace(space.getId());
  }
  public void testSpaceHidden() throws Exception {
    //Create a hidden space
@@ -298,9 +294,6 @@ public class SpaceActivityMySqlPublisherTest extends AbstractCoreTest {
    //Check user feed activity stream
    assertEquals(0, userFeedActivities.getSize());
    assertEquals(0, userFeedActivities.load(0, 10).length);
-
-   //clean up
-   spaceStorage.deleteSpace(space.getId());
  }
 
 }

@@ -16,18 +16,14 @@
  */
 package org.exoplatform.social.core.jpa.storage;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 import org.exoplatform.commons.utils.ListAccess;
-import org.exoplatform.social.core.jpa.test.AbstractCoreTest;
-import org.exoplatform.social.core.jpa.test.MaxQueryNumber;
-import org.exoplatform.social.core.jpa.test.QueryNumberTest;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.activity.model.ExoSocialActivityImpl;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
+import org.exoplatform.social.core.jpa.test.AbstractCoreTest;
+import org.exoplatform.social.core.jpa.test.MaxQueryNumber;
+import org.exoplatform.social.core.jpa.test.QueryNumberTest;
 import org.exoplatform.social.core.manager.ActivityManager;
 import org.exoplatform.social.core.relationship.model.Relationship;
 import org.exoplatform.social.core.space.impl.DefaultSpaceApplicationHandler;
@@ -35,12 +31,21 @@ import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
 import org.exoplatform.social.core.storage.api.IdentityStorage;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 @QueryNumberTest
 public class RDBMSActivityStorageImplTest extends AbstractCoreTest {
   
   private IdentityStorage identityStorage;
   
   private List<ExoSocialActivity> tearDownActivityList;
+
+  private Identity rootIdentity;
+  private Identity johnIdentity;
+  private Identity maryIdentity;
+  private Identity demoIdentity;
 
   @Override
   protected void setUp() throws Exception {
@@ -50,31 +55,14 @@ public class RDBMSActivityStorageImplTest extends AbstractCoreTest {
     assertNotNull(identityStorage);
     assertNotNull(activityStorage);
 
-    assertNotNull(rootIdentity.getId());
-    assertNotNull(johnIdentity.getId());
-    assertNotNull(maryIdentity.getId());
-    assertNotNull(demoIdentity.getId());
+    rootIdentity = createIdentity("root");
+    johnIdentity = createIdentity("john");
+    maryIdentity = createIdentity("mary");
+    demoIdentity = createIdentity("demo");
 
     tearDownActivityList = new ArrayList<ExoSocialActivity>();
   }
 
-  @Override
-  protected void tearDown() throws Exception {
-    for (ExoSocialActivity activity : tearDownActivityList) {
-      activityStorage.deleteActivity(activity.getId());
-    }
-    
-    //
-    for (Space space : spaceService.getAllSpaces()) {
-      Identity spaceIdentity = identityStorage.findIdentity(SpaceIdentityProvider.NAME, space.getPrettyName());
-      if (spaceIdentity != null) {
-        identityStorage.deleteIdentity(spaceIdentity);
-      }
-      spaceService.deleteSpace(space);
-    }
-    super.tearDown();
-  }
-  
   @MaxQueryNumber(522)
   public void testGetActivitiesByPoster() {
     ExoSocialActivity activity1 = createActivity(1);
@@ -204,12 +192,12 @@ public class RDBMSActivityStorageImplTest extends AbstractCoreTest {
     
     Relationship demoJohnRelationship = relationshipManager.inviteToConnect(demoIdentity, johnIdentity);
     relationshipManager.confirm(johnIdentity, demoIdentity);
-    
-    List<String> got = activityStorage.getActivityIdsOfConnections(demoIdentity, 0, 10);
-    assertEquals(5, got.size());
-    
-    relationshipManager.delete(demoJohnRelationship);
-    tearDownActivityList.addAll(activityStorage.getActivitiesOfConnections(demoIdentity, 0, 10));
+
+    createActivities(1, johnIdentity);
+
+    ListAccess<ExoSocialActivity> got = activityManager.getActivitiesOfConnectionsWithListAccess(demoIdentity);
+    assertEquals(6, got.load(0, 10).length);
+    assertEquals(6, got.getSize());
   }
   
   @MaxQueryNumber(530)
@@ -260,9 +248,6 @@ public class RDBMSActivityStorageImplTest extends AbstractCoreTest {
     createActivities(2, maryIdentity);
     assertEquals(5, activityStorage.getNewerOnActivityFeed(demoIdentity, demoBaseActivity, 10).size());
     assertEquals(5, activityStorage.getNumberOfNewerOnActivityFeed(demoIdentity, demoBaseActivity));
-    
-    //clear data
-    relationshipManager.delete(demoMaryConnection);
   }
   @MaxQueryNumber(695)
   public void testGetOlderOnActivityFeed() throws Exception {
@@ -283,9 +268,6 @@ public class RDBMSActivityStorageImplTest extends AbstractCoreTest {
     baseActivity = demoActivityFeed.get(2);
     assertEquals(2, activityStorage.getNumberOfOlderOnActivityFeed(demoIdentity, baseActivity));
     assertEquals(2, activityStorage.getOlderOnActivityFeed(demoIdentity, baseActivity, 10).size());
-    
-    //clear data
-    relationshipManager.delete(maryDemoConnection);
   }
   @MaxQueryNumber(1129)
   public void testGetNewerOnActivitiesOfConnections() throws Exception {
@@ -298,9 +280,9 @@ public class RDBMSActivityStorageImplTest extends AbstractCoreTest {
     List<ExoSocialActivity> maryActivities = activityStorage.getActivitiesOfIdentity(maryIdentity, 0, 10);
     assertEquals(3, maryActivities.size());
     
-    //base activity is the first activity created by mary
-    ExoSocialActivity baseActivity = maryActivities.get(2);
-    
+    //base activity is the second activity created by mary
+    ExoSocialActivity baseActivity = maryActivities.get(1);
+
     //As mary has no connections, there are any activity on her connection stream
     assertEquals(0, activityStorage.getNewerOnActivitiesOfConnections(maryIdentity, baseActivity, 10).size());
     assertEquals(0, activityStorage.getNumberOfNewerOnActivitiesOfConnections(maryIdentity, baseActivity));
@@ -309,36 +291,46 @@ public class RDBMSActivityStorageImplTest extends AbstractCoreTest {
     Relationship maryDemoRelationship = relationshipManager.inviteToConnect(maryIdentity, demoIdentity);
     relationshipManager.confirm(maryIdentity, demoIdentity);
     relationships.add(maryDemoRelationship);
+
+    // add 1 activity to make sure cache is updated
+    createActivities(1, demoIdentity);
+
+    //mary has 2 activities created by demo (1 at the beginning + 1 after the connection confirmation) newer than the base activity
+    assertEquals(2, activityStorage.getNewerOnActivitiesOfConnections(maryIdentity, baseActivity, 10).size());
+    assertEquals(2, activityStorage.getNumberOfNewerOnActivitiesOfConnections(maryIdentity, baseActivity));
     
-    assertEquals(1, activityStorage.getNewerOnActivitiesOfConnections(maryIdentity, baseActivity, 10).size());
-    assertEquals(1, activityStorage.getNumberOfNewerOnActivitiesOfConnections(maryIdentity, baseActivity));
-    
-    //demo has 2 activities created by mary newer than the base activity
-    assertEquals(2, activityStorage.getNewerOnActivitiesOfConnections(demoIdentity, baseActivity, 10).size());
-    assertEquals(2, activityStorage.getNumberOfNewerOnActivitiesOfConnections(demoIdentity, baseActivity));
+    //demo has  activity created by mary newer than the base activity
+    assertEquals(1, activityStorage.getNewerOnActivitiesOfConnections(demoIdentity, baseActivity, 10).size());
+    assertEquals(1, activityStorage.getNumberOfNewerOnActivitiesOfConnections(demoIdentity, baseActivity));
     
     //john connects with mary
     Relationship maryJohnRelationship = relationshipManager.inviteToConnect(maryIdentity, johnIdentity);
     relationshipManager.confirm(maryIdentity, johnIdentity);
     relationships.add(maryJohnRelationship);
-    
-    assertEquals(3, activityStorage.getNewerOnActivitiesOfConnections(maryIdentity, baseActivity, 10).size());
-    assertEquals(3, activityStorage.getNumberOfNewerOnActivitiesOfConnections(maryIdentity, baseActivity));
-    
-    assertEquals(2, activityStorage.getNewerOnActivitiesOfConnections(johnIdentity, baseActivity, 10).size());
-    assertEquals(2, activityStorage.getNumberOfNewerOnActivitiesOfConnections(johnIdentity, baseActivity));
+
+    // add 1 activity to make sure cache is updated
+    createActivities(1, johnIdentity);
+
+    //mary has 2 activities created by demo and 3 activities created by john (2 at the beginning + 1 after the connection confirmation) newer than the base activity
+    assertEquals(5, activityStorage.getNewerOnActivitiesOfConnections(maryIdentity, baseActivity, 10).size());
+    assertEquals(5, activityStorage.getNumberOfNewerOnActivitiesOfConnections(maryIdentity, baseActivity));
+
+    //john has 1 activity created by mary newer than the base activity
+    assertEquals(1, activityStorage.getNewerOnActivitiesOfConnections(johnIdentity, baseActivity, 10).size());
+    assertEquals(1, activityStorage.getNumberOfNewerOnActivitiesOfConnections(johnIdentity, baseActivity));
     
     //mary connects with root
     Relationship maryRootRelationship = relationshipManager.inviteToConnect(maryIdentity, rootIdentity);
     relationshipManager.confirm(maryIdentity, rootIdentity);
     relationships.add(maryRootRelationship);
-    
-    assertEquals(5, activityStorage.getNewerOnActivitiesOfConnections(maryIdentity, baseActivity, 10).size());
-    assertEquals(5, activityStorage.getNumberOfNewerOnActivitiesOfConnections(maryIdentity, baseActivity));
-    
-    for (Relationship rel : relationships) {
-      relationshipManager.delete(rel);
-    }
+
+    // add 1 activity to make sure cache is updated
+    createActivities(1, rootIdentity);
+
+    //mary has 2 activities created by demo, 3 activities created by john (2 at the beginning + 1 after the connection confirmation)
+    //and 3 activities created by root (2 at the beginning + 1 after the connection confirmation) newer than the base activity
+    assertEquals(8, activityStorage.getNewerOnActivitiesOfConnections(maryIdentity, baseActivity, 10).size());
+    assertEquals(8, activityStorage.getNumberOfNewerOnActivitiesOfConnections(maryIdentity, baseActivity));
   }
   @MaxQueryNumber(1135)
   public void testGetOlderOnActivitiesOfConnections() throws Exception {
@@ -394,10 +386,6 @@ public class RDBMSActivityStorageImplTest extends AbstractCoreTest {
     LOG.info("root::sinceTime = " + baseActivity.getPostedTime());    
     assertEquals(4, activityStorage.getOlderOnActivitiesOfConnections(maryIdentity, baseActivity, 10).size());
     assertEquals(4, activityStorage.getNumberOfOlderOnActivitiesOfConnections(maryIdentity, baseActivity));
-    
-    for (Relationship rel : relationships) {
-      relationshipManager.delete(rel);
-    }
   }
   @MaxQueryNumber(835)
   public void testGetNewerOnUserSpacesActivities() throws Exception {
@@ -607,7 +595,7 @@ public class RDBMSActivityStorageImplTest extends AbstractCoreTest {
     assertEquals(2, got.getMentionedIds().length);
   }
 
-  @MaxQueryNumber(282)
+  @MaxQueryNumber(363)
   public void testViewerOwnerPosterActivities() throws Exception {
     ExoSocialActivity activity1 = new ExoSocialActivityImpl();
     // Demo mentionned here
@@ -677,7 +665,6 @@ public class RDBMSActivityStorageImplTest extends AbstractCoreTest {
       activity.setUserId(owner.getId());
       activityStorage.saveActivity(owner, activity);
       LOG.info("owner = " + owner.getRemoteId() + " PostedTime = " + activity.getPostedTime());
-      tearDownActivityList.add(activity);
       sleep(10);
     }
   }

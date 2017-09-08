@@ -746,10 +746,8 @@ public class RelationshipStorageImpl extends AbstractStorage implements Relation
       _removeById(RelationshipEntity.class, symmetricalRelationship.getId());
       _removeById(RelationshipEntity.class, relationship.getId());
       
-      //getSession().save();
       StorageUtils.persist();
       
-      //getCachedActivityStreamStorage().deleteConnect(relationship.getSender(), relationship.getReceiver());
       StreamInvocationHelper.deleteConnect(relationship.getSender(), relationship.getReceiver());
       
       clearActivityStorageCache();

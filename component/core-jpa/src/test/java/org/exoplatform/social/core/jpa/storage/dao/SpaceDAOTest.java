@@ -17,19 +17,10 @@
 package org.exoplatform.social.core.jpa.storage.dao;
 
 import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
-import org.exoplatform.social.core.jpa.storage.entity.ActivityEntity;
-import org.exoplatform.social.core.jpa.storage.entity.AppEntity;
-import org.exoplatform.social.core.jpa.storage.entity.IdentityEntity;
-import org.exoplatform.social.core.jpa.storage.entity.SpaceEntity;
-import org.exoplatform.social.core.jpa.storage.entity.SpaceMemberEntity;
+import org.exoplatform.social.core.jpa.storage.entity.*;
 import org.exoplatform.social.core.jpa.test.BaseCoreTest;
 
-import java.util.Date;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class SpaceDAOTest extends BaseCoreTest {
   private SpaceDAO spaceDAO;

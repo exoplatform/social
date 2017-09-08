@@ -37,11 +37,11 @@ import javax.ws.rs.core.Response;
 import java.util.ArrayList;
 
 public class PeopleRestServiceTest  extends AbstractResourceTest {
-  static private PeopleRestService peopleRestService;
   private IdentityManager identityManager;
   private SpaceService spaceService;
   private RelationshipManager relationshipManager;
   private ActivityStorageImpl activityStorage;
+
   private Identity rootIdentity;
   private Identity demoIdentity;
   private Identity maryIdentity;
@@ -49,27 +49,23 @@ public class PeopleRestServiceTest  extends AbstractResourceTest {
 
   public void setUp() throws Exception {
     super.setUp();
-    peopleRestService = new PeopleRestService();
-    identityManager =  (IdentityManager) getContainer().getComponentInstanceOfType(IdentityManager.class);
-    spaceService =  (SpaceService) getContainer().getComponentInstanceOfType(SpaceService.class);
-    activityStorage = (ActivityStorageImpl) getContainer().getComponentInstanceOfType(ActivityStorageImpl.class);
-    relationshipManager =  (RelationshipManager) getContainer().getComponentInstanceOfType(RelationshipManager.class);
+
+    identityManager =  getContainer().getComponentInstanceOfType(IdentityManager.class);
+    spaceService =  getContainer().getComponentInstanceOfType(SpaceService.class);
+    activityStorage = getContainer().getComponentInstanceOfType(ActivityStorageImpl.class);
+    relationshipManager =  getContainer().getComponentInstanceOfType(RelationshipManager.class);
 
     rootIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "root", false);
     demoIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "demo", false);
     maryIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "mary", false);
     johnIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "john", true);
 
-    registry(peopleRestService);
+    addResource(PeopleRestService.class, null);
   }
 
   public void tearDown() throws Exception {
     super.tearDown();
-    unregistry(peopleRestService);
-    identityManager.deleteIdentity(rootIdentity);
-    identityManager.deleteIdentity(demoIdentity);
-    identityManager.deleteIdentity(maryIdentity);
-    identityManager.deleteIdentity(johnIdentity);
+    removeResource(PeopleRestService.class);
   }
 
   public void testSuggestUsernames() throws Exception {

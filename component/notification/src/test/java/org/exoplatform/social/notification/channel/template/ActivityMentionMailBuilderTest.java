@@ -77,7 +77,6 @@ public class ActivityMentionMailBuilderTest extends AbstractPluginTest {
     NotificationInfo mentionNotification = list.get(2);
     
     //assert Message info
-    
     NotificationContext ctx = NotificationContextImpl.cloneInstance();
     ctx.setNotificationInfo(mentionNotification.setTo(demoIdentity.getRemoteId()));
     MessageInfo info = buildMessageInfo(ctx);
@@ -124,7 +123,7 @@ public class ActivityMentionMailBuilderTest extends AbstractPluginTest {
     List<NotificationInfo> list2 = assertMadeNotifications(3);
     toJohn.add(list2.get(2));
     notificationService.clearAll();
-    
+
     NotificationContext ctx = NotificationContextImpl.cloneInstance();
     toJohn.set(0, toJohn.get(0).setTo(johnIdentity.getRemoteId()));
     ctx.setNotificationInfos(toJohn);
@@ -153,7 +152,7 @@ public class ActivityMentionMailBuilderTest extends AbstractPluginTest {
     List<NotificationInfo> list2 = assertMadeNotifications(3);
     toJohn.add(list2.get(2));
     notificationService.clearAll();
-    
+
     NotificationContext ctx = NotificationContextImpl.cloneInstance();
     toJohn.set(0, toJohn.get(0).setTo(johnIdentity.getRemoteId()));
     ctx.setNotificationInfos(toJohn);
@@ -184,7 +183,7 @@ public class ActivityMentionMailBuilderTest extends AbstractPluginTest {
     notificationService.clearAll();
     
     //demo delete his comment
-    activityManager.deleteActivity(demoComment);
+    activityManager.deleteComment(maryActivity, demoComment);
     
     NotificationContext ctx = NotificationContextImpl.cloneInstance();
     toJohn.set(0, toJohn.get(0).setTo(johnIdentity.getRemoteId()));

@@ -11,6 +11,9 @@ import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.storage.ActivityStorageException;
 import org.exoplatform.social.core.storage.SpaceStorageException;
+import org.exoplatform.social.core.storage.api.ActivityStorage;
+import org.exoplatform.social.core.storage.api.IdentityStorage;
+import org.exoplatform.social.core.storage.api.SpaceStorage;
 import org.exoplatform.social.core.storage.impl.IdentityStorageImpl;
 import org.exoplatform.social.core.test.AbstractCoreTest;
 import org.exoplatform.social.core.test.MaxQueryNumber;
@@ -21,12 +24,12 @@ import org.exoplatform.social.core.test.QueryNumberTest;
  * @version $Revision$
  */
 @QueryNumberTest
-public class CachedSpaceStorageTestCase extends AbstractCoreTest {
+public class JCRCachedSpaceStorageTestCase extends AbstractCoreTest {
 
-  private CachedSpaceStorage cachedSpaceStorage;
+  private JCRCachedSpaceStorage cachedSpaceStorage;
   private SocialStorageCacheService cacheService;
-  private CachedActivityStorage cachedActivityStorage;
-  private IdentityStorageImpl identityStorage;
+  private JCRCachedActivityStorage cachedActivityStorage;
+  private IdentityStorage identityStorage;
   
   private Identity demo;
   private Identity john;
@@ -41,10 +44,10 @@ public class CachedSpaceStorageTestCase extends AbstractCoreTest {
     super.setUp();
     begin();
 
-    cachedSpaceStorage = (CachedSpaceStorage) getContainer().getComponentInstanceOfType(CachedSpaceStorage.class);
-    cachedActivityStorage = (CachedActivityStorage) getContainer().getComponentInstanceOfType(CachedActivityStorage.class);
-    identityStorage = (IdentityStorageImpl) getContainer().getComponentInstanceOfType(IdentityStorageImpl.class);
-    cacheService = (SocialStorageCacheService) getContainer().getComponentInstanceOfType(SocialStorageCacheService.class);
+    cachedSpaceStorage = getContainer().getComponentInstanceOfType(JCRCachedSpaceStorage.class);
+    cachedActivityStorage = getContainer().getComponentInstanceOfType(JCRCachedActivityStorage.class);
+    identityStorage = getContainer().getComponentInstanceOfType(IdentityStorageImpl.class);
+    cacheService = getContainer().getComponentInstanceOfType(SocialStorageCacheService.class);
     
     
     demo = new Identity(OrganizationIdentityProvider.NAME, "demo");
@@ -91,7 +94,7 @@ public class CachedSpaceStorageTestCase extends AbstractCoreTest {
   }
 
 
-  @MaxQueryNumber(222)
+  @MaxQueryNumber(225)
   public void testRemoveSpace() throws Exception {
 
     //
@@ -183,7 +186,7 @@ public class CachedSpaceStorageTestCase extends AbstractCoreTest {
    * @throws Exception
    * @since 4.1-RC1
    */
-  @MaxQueryNumber(1332)
+  @MaxQueryNumber(1335)
   public void testRenameSpaceOnCache() throws Exception {
     Space space = new Space();
     space.setDisplayName("Social");

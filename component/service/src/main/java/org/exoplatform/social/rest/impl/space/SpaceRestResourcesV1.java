@@ -347,7 +347,7 @@ public class SpaceRestResourcesV1 implements SpaceRestResources {
     }
     spaceService.deleteSpace(space);
     
-    return EntityBuilder.getResponse(EntityBuilder.buildEntityFromSpace(space, authenticatedUser, uriInfo.getPath(), expand), uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
+    return Response.ok().build();
   }
   
   /**

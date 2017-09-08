@@ -54,8 +54,6 @@ public class ActivityStreamUpdaterTest extends AbstractCoreTest {
     activityStorage = (ActivityStorage) getContainer().getComponentInstanceOfType(ActivityStorage.class);
     streamStorage = (ActivityStreamStorage) getContainer().getComponentInstanceOfType(ActivityStreamStorage.class);
     
-    activityStorage.setInjectStreams(false);
-    
     //
     assertNotNull("identityManager must not be null", identityStorage);
     assertNotNull("activityStorage must not be null", activityStorage);
@@ -94,7 +92,6 @@ public class ActivityStreamUpdaterTest extends AbstractCoreTest {
     identityStorage.deleteIdentity(raulIdentity);
     identityStorage.deleteIdentity(jameIdentity);
     
-    activityStorage.setInjectStreams(true);
     super.tearDown();
   }
 

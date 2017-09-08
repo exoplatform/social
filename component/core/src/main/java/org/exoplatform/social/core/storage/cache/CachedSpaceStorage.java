@@ -22,7 +22,9 @@ import java.util.Collections;
 import java.util.List;
 
 import org.exoplatform.container.PortalContainer;
+import org.exoplatform.services.cache.CachedObjectSelector;
 import org.exoplatform.services.cache.ExoCache;
+import org.exoplatform.services.cache.ObjectCacheInfo;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.identity.model.Identity;
@@ -46,8 +48,8 @@ import org.exoplatform.social.core.storage.cache.model.key.SpaceKey;
 import org.exoplatform.social.core.storage.cache.model.key.SpaceRefKey;
 import org.exoplatform.social.core.storage.cache.model.key.SpaceType;
 import org.exoplatform.social.core.storage.cache.selector.IdentityCacheSelector;
+import org.exoplatform.social.core.storage.cache.selector.LastAccessedSpacesCacheSelector;
 import org.exoplatform.social.core.storage.cache.selector.ScopeCacheSelector;
-import org.exoplatform.social.core.storage.impl.SpaceStorageImpl;
 
 /**
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
@@ -71,7 +73,8 @@ public class CachedSpaceStorage implements SpaceStorage {
   private final FutureExoCache<SpaceFilterKey, IntegerData, ServiceContext<IntegerData>> spacesCountCache;
   private final FutureExoCache<ListSpacesKey, ListSpacesData, ServiceContext<ListSpacesData>> spacesCache;
 
-  private final SpaceStorageImpl storage;
+  private final SpaceStorage storage;
+  private SocialStorageCacheService cacheService;
   private CachedActivityStorage cachedActivityStorage;
   private CachedIdentityStorage cachedIdentityStorage;
 
@@ -192,9 +195,10 @@ public class CachedSpaceStorage implements SpaceStorage {
 
   }
 
-  public CachedSpaceStorage(final SpaceStorageImpl storage, final SocialStorageCacheService cacheService) {
+  public CachedSpaceStorage(final SpaceStorage storage, final SocialStorageCacheService cacheService) {
 
     this.storage = storage;
+    this.cacheService = cacheService;
 
     this.exoSpaceCache = cacheService.getSpaceCache();
     this.exoSpaceSimpleCache = cacheService.getSpaceSimpleCache();
@@ -227,19 +231,6 @@ public class CachedSpaceStorage implements SpaceStorage {
       LOG.error("Error deleting cache entries of provider type 'Space Identities'", e);
     }
 
-  }
-
-  void removeCacheEntry(String remoteId, SpaceType type, int offset, int limit) {
-    try {
-      SpaceFilterKey key = new SpaceFilterKey(remoteId, null, type);
-      ListSpacesKey listKey = new ListSpacesKey(key, offset, limit);
-      exoSpacesCache.select(new ScopeCacheSelector<ListSpacesKey, ListSpacesData>(listKey));
-      exoSpacesCountCache.select(new ScopeCacheSelector<SpaceFilterKey, IntegerData>(key));
-    }
-    catch (Exception e) {
-      LOG.error("Error deleting space cache entries with remoteId = '" + remoteId + "', type = '" + type + "', offset ='"
-          + offset + "', limit ='" + limit + "'", e);
-    }
   }
 
   void clearSpaceCache() {
@@ -1386,16 +1377,12 @@ public class CachedSpaceStorage implements SpaceStorage {
   public void updateSpaceAccessed(String remoteId, Space space) throws SpaceStorageException {
     storage.updateSpaceAccessed(remoteId, space);
 
-    SpaceFilterKey key = new SpaceFilterKey(remoteId, new SpaceFilter(remoteId, null), SpaceType.LATEST_ACCESSED);
-    // this call is requesting 10 because it's already cached by previous calls (FROM UI layer)
-    // thus, this call will not request database.
-    ListSpacesKey listKey = new ListSpacesKey(key, 0, 10);
-    ListSpacesData listSpacesData = exoSpacesCache.get(listKey);
-    if(listSpacesData != null) {
-      if (listSpacesData.getIds() != null && !listSpacesData.getIds().isEmpty()
-          && !listSpacesData.getIds().get(0).getId().equals(space.getId())) {
-        removeCacheEntry(remoteId, SpaceType.LATEST_ACCESSED, 0, 10);
-      }
+    // we remove all cache entries for the given userId and for space type LATEST_ACCESSED
+    try {
+      exoSpacesCache.select(new LastAccessedSpacesCacheSelector(remoteId, space, cacheService));
+    } catch (Exception e) {
+      LOG.error("Error while removing cache entries for remoteId=" + remoteId + ", space=" + space.getDisplayName() +
+              " and type=" + SpaceType.LATEST_ACCESSED.name() + " or type=" + SpaceType.VISITED, e);
     }
   }
 

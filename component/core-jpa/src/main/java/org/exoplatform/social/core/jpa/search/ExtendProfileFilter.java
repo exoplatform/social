@@ -49,9 +49,9 @@ public class ExtendProfileFilter extends ProfileFilter {
   public ExtendProfileFilter(ProfileFilter delegate) {
     if (delegate == null) {
       delegate = new ProfileFilter();
-    } else {
-      this.delegate = delegate;
     }
+
+    this.delegate = delegate;
   }
 
   public Identity getConnection() {

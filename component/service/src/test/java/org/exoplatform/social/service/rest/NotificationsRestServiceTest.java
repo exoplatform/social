@@ -16,9 +16,6 @@
  */
 package org.exoplatform.social.service.rest;
 
-import java.util.Arrays;
-import java.util.List;
-
 import org.exoplatform.services.rest.impl.ContainerResponse;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.activity.model.ExoSocialActivityImpl;
@@ -30,10 +27,11 @@ import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.storage.api.IdentityStorage;
 import org.exoplatform.social.service.test.AbstractResourceTest;
 
+import java.util.Arrays;
+import java.util.List;
+
 public class NotificationsRestServiceTest extends AbstractResourceTest {
 
-  static private NotificationsRestService notificationsRestService;
-  
   private IdentityStorage identityStorage;
   private ActivityManagerImpl activityManager;
   private SpaceServiceImpl spaceService;
@@ -46,9 +44,9 @@ public class NotificationsRestServiceTest extends AbstractResourceTest {
   public void setUp() throws Exception {
     super.setUp();
     
-    identityStorage = (IdentityStorage) getContainer().getComponentInstanceOfType(IdentityStorage.class);
-    activityManager = (ActivityManagerImpl) getContainer().getComponentInstanceOfType(ActivityManagerImpl.class);
-    spaceService = (SpaceServiceImpl) getContainer().getComponentInstanceOfType(SpaceServiceImpl.class);
+    identityStorage = getContainer().getComponentInstanceOfType(IdentityStorage.class);
+    activityManager = getContainer().getComponentInstanceOfType(ActivityManagerImpl.class);
+    spaceService = getContainer().getComponentInstanceOfType(SpaceServiceImpl.class);
     
     rootIdentity = new Identity("organization", "root");
     johnIdentity = new Identity("organization", "john");
@@ -60,24 +58,13 @@ public class NotificationsRestServiceTest extends AbstractResourceTest {
     identityStorage.saveIdentity(maryIdentity);
     identityStorage.saveIdentity(demoIdentity);
 
-    notificationsRestService = new NotificationsRestService();
-    registry(notificationsRestService);
+    addResource(NotificationsRestService.class, null);
   }
 
   public void tearDown() throws Exception {
-    
-    identityStorage.deleteIdentity(rootIdentity);
-    identityStorage.deleteIdentity(johnIdentity);
-    identityStorage.deleteIdentity(maryIdentity);
-    identityStorage.deleteIdentity(demoIdentity);
-    
     super.tearDown();
 
-    unregistry(notificationsRestService);
-  }
-
-  public void testJsonRightLink() throws Exception {
-    assertNotNull(notificationsRestService);
+    removeResource(NotificationsRestService.class);
   }
   
   public void testReplyActivity() throws Exception {

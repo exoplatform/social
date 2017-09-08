@@ -40,11 +40,11 @@ import org.exoplatform.social.core.jpa.storage.entity.StreamItemEntity;
 import org.exoplatform.social.core.jpa.storage.entity.StreamType;
 import org.exoplatform.social.core.storage.ActivityStorageException;
 import org.exoplatform.social.core.storage.ActivityStorageException.Type;
+import org.exoplatform.social.core.storage.api.ActivityStorage;
 import org.exoplatform.social.core.storage.api.IdentityStorage;
 import org.exoplatform.social.core.storage.api.RelationshipStorage;
 import org.exoplatform.social.core.storage.api.SpaceStorage;
 import org.exoplatform.social.core.storage.impl.ActivityBuilderWhere;
-import org.exoplatform.social.core.storage.impl.ActivityStorageImpl;
 
 import javax.persistence.LockModeType;
 import java.util.*;
@@ -52,7 +52,7 @@ import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class RDBMSActivityStorageImpl extends ActivityStorageImpl {
+public class RDBMSActivityStorageImpl implements ActivityStorage {
 
   private static final Log LOG = ExoLogger.getLogger(RDBMSActivityStorageImpl.class);
   private final ActivityDAO activityDAO;
@@ -69,10 +69,6 @@ public class RDBMSActivityStorageImpl extends ActivityStorageImpl {
                                       ActivityDAO activityDAO,
                                       ConnectionDAO connectionDAO,
                                       StreamItemDAO streamItemDAO) {
-    
-    super(relationshipStorage, identityStorage, spaceStorage);
-    //
-    
     this.identityStorage = identityStorage;
     this.activityProcessors = new TreeSet<ActivityProcessor>(processorComparator());
     this.activityDAO = activityDAO;
@@ -90,16 +86,6 @@ public class RDBMSActivityStorageImpl extends ActivityStorageImpl {
         return p1.getPriority() - p2.getPriority();
       }
     };
-  }
-
-  @Override
-  public void addPlugin(BaseComponentPlugin baseComponent) {
-    super.addPlugin(baseComponent);
-  }
-
-  @Override
-  public void setInjectStreams(boolean mustInject) {
-    super.setInjectStreams(mustInject);
   }
 
   private ExoSocialActivity fillActivityFromEntity(ActivityEntity activityEntity, ExoSocialActivity activity) {
@@ -122,12 +108,16 @@ public class RDBMSActivityStorageImpl extends ActivityStorageImpl {
     String ownerIdentityId = activityEntity.getOwnerId();
     ActivityStream stream = new ActivityStreamImpl();
     Identity owner = identityStorage.findIdentityById(ownerIdentityId);
-    stream.setType(owner.getProviderId());
-    stream.setPrettyId(owner.getRemoteId());
-    stream.setId(owner.getId());
+    if(owner != null) {
+      stream.setType(owner.getProviderId());
+      stream.setPrettyId(owner.getRemoteId());
+      stream.setId(owner.getId());
+      activity.setStreamOwner(owner.getRemoteId());
+    } else {
+      LOG.warn("Cannot find stream of activity " + activityEntity.getId() + " since identity " + ownerIdentityId + " does not exist");
+    }
     //
     activity.setActivityStream(stream);
-    activity.setStreamOwner(owner.getRemoteId());
     activity.setPosterId(activityEntity.getPosterId());
     //
     activity.isLocked(activityEntity.getLocked());
@@ -345,6 +335,11 @@ public class RDBMSActivityStorageImpl extends ActivityStorageImpl {
   @ExoTransactional
   public List<ExoSocialActivity> getActivities(Identity owner, Identity viewer, long offset, long limit) throws ActivityStorageException {
     return convertActivityEntitiesToActivities(activityDAO.getActivities(owner, viewer, offset, limit));
+  }
+
+  @Override
+  public List<ExoSocialActivity> getAllActivities(int index, int limit) {
+    return convertActivityEntitiesToActivities(activityDAO.getAllActivities());
   }
 
   @Override

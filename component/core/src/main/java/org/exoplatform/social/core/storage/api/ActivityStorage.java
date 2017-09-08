@@ -54,17 +54,6 @@ public interface ActivityStorage {
   static final String MENTION_CHAR = "@";
   
   /**
-   * Implements the mechanism to plugin the component.
-   * @param baseComponent
-   */
-  void addPlugin(BaseComponentPlugin baseComponent);
-  /**
-   * //sets value to tell this storage to inject Streams or not
-   * @param mustInject
-   */
-  void setInjectStreams(boolean mustInject);
-  
-  /**
    * Load an activity by its id.
    *
    * @param activityId the id of the activity. An UUID.

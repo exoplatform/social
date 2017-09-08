@@ -17,9 +17,7 @@
 package org.exoplatform.social.service.rest;
 
 
-import java.util.ArrayList;
-import java.util.List;
-
+import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.social.common.RealtimeListAccess;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
@@ -30,13 +28,18 @@ import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
 import org.exoplatform.social.core.manager.ActivityManager;
 import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.manager.RelationshipManager;
-import org.exoplatform.social.core.relationship.model.Relationship;
+import org.exoplatform.social.core.profile.ProfileFilter;
 import org.exoplatform.social.core.space.SpaceException;
 import org.exoplatform.social.core.space.impl.DefaultSpaceApplicationHandler;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
 import org.exoplatform.social.core.storage.impl.StorageUtils;
 import org.exoplatform.social.service.test.AbstractServiceTest;
+import org.jmock.core.constraint.Or;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.Random;
 
 /**
  * Unit Test for {@link SecurityManager}.
@@ -68,62 +71,25 @@ public class SecurityManagerTest extends AbstractServiceTest {
    */
   private SpaceService spaceService;
 
-  /**
-   * The tear down list for identities.
-   */
-  private List<Identity> tearDownIdentityList;
-  /**
-   * The tear down list for activities.
-   */
-  private List<ExoSocialActivity> tearDownActivityList;
-  /**
-   * The tear down list for relationships.
-   */
-  private List<Relationship> tearDownRelationshipList;
-  /**
-   * The tear down list for spaces.
-   */
-  private List<Space> tearDownSpaceList;
-
   @Override
   public void setUp() throws Exception {
     super.setUp();
-    identityManager = (IdentityManager) getContainer().getComponentInstanceOfType(IdentityManager.class);
-    relationshipManager = (RelationshipManager) getContainer().getComponentInstanceOfType(RelationshipManager.class);
-    activityManager = (ActivityManager) getContainer().getComponentInstanceOfType(ActivityManager.class);
-    spaceService = (SpaceService) getContainer().getComponentInstanceOfType(SpaceService.class);
+    identityManager = getContainer().getComponentInstanceOfType(IdentityManager.class);
+    relationshipManager = getContainer().getComponentInstanceOfType(RelationshipManager.class);
+    activityManager = getContainer().getComponentInstanceOfType(ActivityManager.class);
+    spaceService = getContainer().getComponentInstanceOfType(SpaceService.class);
 
-    rootIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "root", false);
-    johnIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "john", false);
-    maryIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "mary", false);
-    demoIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "demo", false);
+    rootIdentity = new Identity(OrganizationIdentityProvider.NAME, "root");
+    johnIdentity = new Identity(OrganizationIdentityProvider.NAME, "john");
+    maryIdentity = new Identity(OrganizationIdentityProvider.NAME, "mary");
+    demoIdentity = new Identity(OrganizationIdentityProvider.NAME, "demo");
 
-    tearDownIdentityList = new ArrayList<Identity>();
-    tearDownIdentityList.add(rootIdentity);
-    tearDownIdentityList.add(johnIdentity);
-    tearDownIdentityList.add(maryIdentity);
-    tearDownIdentityList.add(demoIdentity);
-    tearDownActivityList = new ArrayList<ExoSocialActivity>();
-    tearDownRelationshipList = new ArrayList<Relationship>();
-    tearDownSpaceList = new ArrayList<Space>();
-  }
+    identityManager.saveIdentity(rootIdentity);
+    identityManager.saveIdentity(johnIdentity);
+    identityManager.saveIdentity(maryIdentity);
+    identityManager.saveIdentity(demoIdentity);
 
-  @Override
-  public void tearDown() throws Exception {
-
-    for (ExoSocialActivity activity : tearDownActivityList) {
-      activityManager.deleteActivity(activity);
-    }
-
-    for (Space space: tearDownSpaceList) {
-      spaceService.deleteSpace(space);
-    }
-
-    for (Identity identity: tearDownIdentityList) {
-      identityManager.deleteIdentity(identity);
-    }
-
-    super.tearDown();
+    deleteAllRelationships();
   }
 
   /**
@@ -171,10 +137,10 @@ public class SecurityManagerTest extends AbstractServiceTest {
    */
   public void testCanAccessActivitySpace() throws SpaceException {
 
-    createSpaces(1);
+    createSpace("space1");
 
     //
-    Space space1 = spaceService.getAllSpaces().get(0);
+    Space space1 = spaceService.getSpaceByDisplayName("space1");
     Identity spaceIdentity = identityManager.getOrCreateIdentity(SpaceIdentityProvider.NAME, space1.getPrettyName(), false);
     createActivities(spaceIdentity, spaceIdentity, 2);
     
@@ -205,16 +171,14 @@ public class SecurityManagerTest extends AbstractServiceTest {
     assertFalse("demoPostToMary must be false", demoPostToMary);
     assertFalse("maryPostToDemo must be false", maryPostToDemo);
     relationshipManager.confirm(maryIdentity, demoIdentity);
-    tearDownRelationshipList.add(relationshipManager.get(demoIdentity, maryIdentity));
     demoPostToMary = SecurityManager.canPostActivity(getContainer(), demoIdentity, maryIdentity);
     maryPostToDemo = SecurityManager.canPostActivity(getContainer(), maryIdentity, demoIdentity);
     assertTrue("demoPostToMary must be true", demoPostToMary);
     assertTrue("maryPostToDemo must be true", maryPostToDemo);
     //checks user posts to space
-    createSpaces(1);
-    Space createdSpace = tearDownSpaceList.get(0);
+    createSpace("space2");
     Identity spaceIdentity = identityManager.getOrCreateIdentity(SpaceIdentityProvider.NAME,
-                                                                 createdSpace.getPrettyName(),
+                                                                 "space2",
                                                                  false);
     assertNotNull("spaceIdentity must not be null", spaceIdentity);
 
@@ -229,7 +193,6 @@ public class SecurityManagerTest extends AbstractServiceTest {
     boolean johnPostToSpace = SecurityManager.canPostActivity(getContainer(), johnIdentity, spaceIdentity);
     assertFalse("johnPostToSpace must be false", johnPostToSpace);
   }
-
 
   /**
    * Tests {@link SecurityManager#canDeleteActivity(PortalContainer, Identity, ExoSocialActivity)}.
@@ -264,11 +227,9 @@ public class SecurityManagerTest extends AbstractServiceTest {
     assertTrue("johnDeleteDemoActivity must be true", johnDeleteDemoActivity);
 
     //demo, mary, john on a space
-    createSpaces(1);
-    Space createdSpace = tearDownSpaceList.get(0);
+    createSpace("space3");
     Identity spaceIdentity = identityManager.getOrCreateIdentity(SpaceIdentityProvider.NAME,
-                                                                 createdSpace.getPrettyName(), false);
-    tearDownIdentityList.add(spaceIdentity);
+            "space3", false);
     createActivities(spaceIdentity, spaceIdentity, 1);
     RealtimeListAccess<ExoSocialActivity> spaceActivitiesListAccess = activityManager.getActivitiesWithListAccess(spaceIdentity);
     ExoSocialActivity spaceActivity = spaceActivitiesListAccess.loadAsList(0, 1).get(0);
@@ -317,11 +278,9 @@ public class SecurityManagerTest extends AbstractServiceTest {
     ExoSocialActivity johnActivity = johnActivitiesListAccess.loadAsList(0, johnActivitiesListAccess.getSize()).get(0);
     assertTrue(SecurityManager.canCommentToActivity(getContainer(), maryIdentity, johnActivity));
     
-    createSpaces(1);
-    Space createdSpace = tearDownSpaceList.get(0);
+    createSpace("space4");
     Identity spaceIdentity = identityManager.getOrCreateIdentity(SpaceIdentityProvider.NAME,
-                                                                 createdSpace.getPrettyName(), false);
-    tearDownIdentityList.add(spaceIdentity);
+            "space4", false);
     createActivities(spaceIdentity, spaceIdentity, 1);
     RealtimeListAccess<ExoSocialActivity> spaceActivitiesListAccess = activityManager.getActivitiesWithListAccess(spaceIdentity);
     ExoSocialActivity spaceActivity = spaceActivitiesListAccess.loadAsList(0, spaceActivitiesListAccess.getSize()).get(0);
@@ -386,10 +345,9 @@ public class SecurityManagerTest extends AbstractServiceTest {
                                                                                  demoCommentMaryActivity);
     assertFalse("johnDeleteDemoCommentMaryActivity must be false", johnDeleteDemoCommentMaryActivity);
 
-    createSpaces(1);
-    Space createdSpace = tearDownSpaceList.get(0);
+    createSpace("space5");
     Identity spaceIdentity = identityManager.getOrCreateIdentity(SpaceIdentityProvider.NAME,
-                                                                 createdSpace.getPrettyName(), false);
+            "space5", false);
     createActivities(spaceIdentity, spaceIdentity, 1);
     RealtimeListAccess<ExoSocialActivity> spaceActivitiesListAccess = activityManager.getActivitiesWithListAccess(spaceIdentity); 
     ExoSocialActivity spaceActivity = spaceActivitiesListAccess.loadAsList(0, spaceActivitiesListAccess.getSize()).get(0);
@@ -421,8 +379,8 @@ public class SecurityManagerTest extends AbstractServiceTest {
     assertTrue("SecurityManager.canAccessActivityStream(getContainer(), demoIdentity, johnIdentity) must return true",
                SecurityManager.canAccessActivityStream(getContainer(), demoIdentity, johnIdentity));
 
-    createSpaces(1);
-    Identity spaceIdentity = identityManager.getOrCreateIdentity(SpaceIdentityProvider.NAME, "my_space_1", false);
+    createSpace("space6");
+    Identity spaceIdentity = identityManager.getOrCreateIdentity(SpaceIdentityProvider.NAME, "space6", false);
 
 
     assertFalse("SecurityManager.canAccessActivityStream(getContainer(), johnIdentity, spaceIdentity) must return false",
@@ -451,7 +409,6 @@ public class SecurityManagerTest extends AbstractServiceTest {
       activity.setPosterId(posterIdentity.getId());
       activityManager.saveActivityNoReturn(identityStream, activity);
       activity = activityManager.getActivity(activity.getId());
-      tearDownActivityList.add(activity);
     }
   }
 
@@ -462,7 +419,6 @@ public class SecurityManagerTest extends AbstractServiceTest {
     activity.setPosterId(posterIdentity.getId());
     activityManager.saveActivityNoReturn(posterIdentity, activity);
     activity = activityManager.getActivity(activity.getId());
-    tearDownActivityList.add(activity);
   }
   
   /**
@@ -487,36 +443,28 @@ public class SecurityManagerTest extends AbstractServiceTest {
   /**
    * Gets an instance of the space.
    *
-   * @param number the number to be created
+   * @param name name of the space to be created
    */
-  private void createSpaces(int number) {
-    for (int i = 0; i < number; i++) {
-      Space space = new Space();
-      space.setDisplayName("my space " + number);
-      space.setPrettyName(space.getDisplayName());
-      space.setRegistration(Space.OPEN);
-      space.setDescription("add new space " + number);
-      space.setType(DefaultSpaceApplicationHandler.NAME);
-      space.setVisibility(Space.PUBLIC);
-      space.setRegistration(Space.VALIDATION);
-      space.setPriority(Space.INTERMEDIATE_PRIORITY);
-      space.setGroupId("/space/space" + number);
-      String[] managers = new String[]{"demo"};
-      String[] members = new String[]{"demo", "mary"};
-      String[] invitedUsers = new String[]{"john"};
-      String[] pendingUsers = new String[]{"root"};
-      space.setInvitedUsers(invitedUsers);
-      space.setPendingUsers(pendingUsers);
-      space.setManagers(managers);
-      space.setMembers(members);
-      try {
-        spaceService.saveSpace(space, true);
-        StorageUtils.persist();
-        tearDownSpaceList.add(space);
-      } catch (SpaceException e) {
-        fail("Could not create a new space");
-      }
-    }
+  private void createSpace(String name) {
+    Space space = new Space();
+    space.setDisplayName(name);
+    space.setPrettyName(space.getDisplayName());
+    space.setRegistration(Space.OPEN);
+    space.setDescription("add new space " + name);
+    space.setType(DefaultSpaceApplicationHandler.NAME);
+    space.setVisibility(Space.PUBLIC);
+    space.setRegistration(Space.VALIDATION);
+    space.setPriority(Space.INTERMEDIATE_PRIORITY);
+    space.setGroupId("/spaces/space" + new Random().nextInt());
+    String[] managers = new String[]{"demo"};
+    String[] members = new String[]{"demo", "mary"};
+    String[] invitedUsers = new String[]{"john"};
+    String[] pendingUsers = new String[]{"root"};
+    space.setInvitedUsers(invitedUsers);
+    space.setPendingUsers(pendingUsers);
+    space.setManagers(managers);
+    space.setMembers(members);
+    spaceService.createSpace(space, "demo");
   }
 
   /**
@@ -531,6 +479,5 @@ public class SecurityManagerTest extends AbstractServiceTest {
     if (beConfirmed) {
       relationshipManager.confirm(receiverIdentity, senderIdentity);
     }
-    tearDownRelationshipList.add(relationshipManager.get(senderIdentity, receiverIdentity));
   }
 }

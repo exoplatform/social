@@ -23,9 +23,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import javax.jcr.Node;
-import javax.jcr.RepositoryException;
-
 import org.apache.commons.lang.StringUtils;
 
 import org.exoplatform.services.cache.ExoCache;
@@ -54,7 +51,6 @@ import org.exoplatform.social.core.storage.cache.model.key.SuggestionKey;
 import org.exoplatform.social.core.storage.cache.selector.RelationshipCacheSelector;
 import org.exoplatform.social.core.storage.cache.selector.SuggestionCacheSelector;
 import org.exoplatform.social.core.storage.impl.AbstractStorage;
-import org.exoplatform.social.core.storage.impl.RelationshipStorageImpl;
 
 /**
  * Cache support for RelationshipStorage.
@@ -85,7 +81,7 @@ public class CachedRelationshipStorage extends AbstractStorage implements Relati
   private final ExoCache<IdentityKey, IdentityData> exoIdentityCache;
 
   //
-  private final RelationshipStorageImpl storage;
+  private final RelationshipStorage storage;
   private final IdentityStorage identityStorage;
 
   //
@@ -201,12 +197,11 @@ public class CachedRelationshipStorage extends AbstractStorage implements Relati
 
   }
   
-  public CachedRelationshipStorage(final RelationshipStorageImpl storage, final IdentityStorage identityStorage,
+  public CachedRelationshipStorage(final RelationshipStorage storage, final IdentityStorage identityStorage,
                                    final SocialStorageCacheService cacheService) {
 
     //
     this.storage = storage;
-    this.storage.setStorage(this);
     this.identityStorage = identityStorage;
 
     //
@@ -390,22 +385,8 @@ public class CachedRelationshipStorage extends AbstractStorage implements Relati
     if (gotKey != null && ! gotKey.equals(CachedRelationshipStorage.relationshipNotFoundKey()) && getRelationship(identity1, identity2).getStatus().equals(Relationship.Type.CONFIRMED)) {
       return true;
     }
-    
-    try {
-      Node relationshipNode = node(relationshipPath.toString());
-      if (relationshipNode != null) {
-        RelationshipKey k;
 
-        k = new RelationshipKey(relationshipNode.getUUID());
-
-        exoRelationshipByIdentityCache.put(key, k);
-        return true;
-      }
-    } catch (RepositoryException e) {
-      throw new RelationshipStorageException(RelationshipStorageException.Type.FAILED_TO_GET_RELATIONSHIP_OF_THEM, e.getMessage());
-    }
-    
-    return false;
+    return storage.hasRelationship(identity1, identity2, relationshipPath);
   }
 
   /**

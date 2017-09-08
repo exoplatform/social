@@ -18,12 +18,12 @@ package org.exoplatform.social.core.jpa.storage;
 
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
-import org.exoplatform.social.core.jpa.test.AbstractCoreTest;
-import org.exoplatform.social.core.jpa.test.MaxQueryNumber;
-import org.exoplatform.social.core.jpa.test.QueryNumberTest;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
+import org.exoplatform.social.core.jpa.test.AbstractCoreTest;
+import org.exoplatform.social.core.jpa.test.MaxQueryNumber;
+import org.exoplatform.social.core.jpa.test.QueryNumberTest;
 import org.exoplatform.social.core.model.AvatarAttachment;
 import org.exoplatform.social.core.profile.ProfileFilter;
 import org.exoplatform.social.core.relationship.model.Relationship;
@@ -59,44 +59,20 @@ public class RelationshipStorageTest extends AbstractCoreTest {
                    maryIdentity,
                    demoIdentity;
 
-  private List<Relationship> tearDownRelationshipList;
-
-
   @Override
   public void setUp() throws Exception {
     super.setUp();
-    tearDownRelationshipList = new ArrayList<Relationship>();
     relationshipStorage = (RelationshipStorage) getContainer().getComponentInstanceOfType(RelationshipStorage.class);
     assertNotNull("relationshipStorage must not be null", relationshipStorage);
     identityStorage = (IdentityStorage) getContainer().getComponentInstanceOfType(IdentityStorage.class);
     assertNotNull("identityManger must not be null", identityStorage);
-    rootIdentity = new Identity(OrganizationIdentityProvider.NAME, "root");
-    johnIdentity = new Identity(OrganizationIdentityProvider.NAME, "john");
-    maryIdentity = new Identity(OrganizationIdentityProvider.NAME, "mary");
-    demoIdentity = new Identity(OrganizationIdentityProvider.NAME, "demo");
-    identityStorage.saveIdentity(rootIdentity);
-    identityStorage.saveIdentity(johnIdentity);
-    identityStorage.saveIdentity(maryIdentity);
-    identityStorage.saveIdentity(demoIdentity);
+
+    rootIdentity = createIdentity("root");
+    johnIdentity = createIdentity("john");
+    maryIdentity = createIdentity("mary");
+    demoIdentity = createIdentity("demo");
     
     tearDownIdentityList = new ArrayList<Identity>();
-  }
-
-  @Override
-  public void tearDown() throws Exception {
-    for (Relationship relationship : tearDownRelationshipList) {
-      relationshipStorage.removeRelationship(relationship);
-    }
-
-    identityStorage.deleteIdentity(rootIdentity);
-    identityStorage.deleteIdentity(johnIdentity);
-    identityStorage.deleteIdentity(maryIdentity);
-    identityStorage.deleteIdentity(demoIdentity);
-    
-    for (Identity identity : tearDownIdentityList) {
-      identityStorage.deleteIdentity(identity);
-    }
-    super.tearDown();
   }
 
   /**
@@ -109,7 +85,6 @@ public class RelationshipStorageTest extends AbstractCoreTest {
     Relationship rootToJohnRelationship = new Relationship(rootIdentity, johnIdentity, Type.PENDING);
     rootToJohnRelationship = relationshipStorage.saveRelationship(rootToJohnRelationship);
     assertNotNull(rootToJohnRelationship.getId());
-    tearDownRelationshipList.add(rootToJohnRelationship);
   }
 
   /**
@@ -155,8 +130,6 @@ public class RelationshipStorageTest extends AbstractCoreTest {
     assertEquals(johnIdentity.getRemoteId(), rootToJohnRelationship.getReceiver().getRemoteId());
     assertEquals(johnIdentity.getProviderId(), rootToJohnRelationship.getReceiver().getProviderId());
     assertEquals(Relationship.Type.CONFIRMED, rootToJohnRelationship.getStatus());
-
-    tearDownRelationshipList.add(rootToJohnRelationship);
   }
 
   /**
@@ -205,10 +178,6 @@ public class RelationshipStorageTest extends AbstractCoreTest {
       Identity identityLoadProfile = identityStorage.findIdentity(OrganizationIdentityProvider.NAME, identity.getRemoteId());
       assertEquals("identity.getProfile().getFullName() must return: " + identityLoadProfile.getProfile().getFullName(), identityLoadProfile.getProfile().getFullName(), identity.getProfile().getFullName());
     }
-
-    tearDownRelationshipList.add(rootToJohnRelationship);
-    tearDownRelationshipList.add(maryToRootRelationship);
-    tearDownRelationshipList.add(rootToDemoRelationship);
   }
 
   /**
@@ -237,10 +206,6 @@ public class RelationshipStorageTest extends AbstractCoreTest {
 
     int count = relationshipStorage.getConnectionsCount(rootIdentity);
     assertEquals("count must be: 2", 2, count);
-
-    tearDownRelationshipList.add(rootToJohnRelationship);
-    tearDownRelationshipList.add(maryToRootRelationship);
-    tearDownRelationshipList.add(rootToDemoRelationship);
   }
 
   /**
@@ -288,10 +253,6 @@ public class RelationshipStorageTest extends AbstractCoreTest {
     List<Relationship> demoIgnoredRelationships = relationshipStorage.getRelationships(demoIdentity, Relationship.Type.IGNORED, listCheckIdentity);
     assertNotNull("demoIgnoredRelationships must not be null", demoIgnoredRelationships);
     assertEquals("demoIgnoredRelationships.size() must return: 1", 1, demoIgnoredRelationships.size());
-
-    tearDownRelationshipList.add(rootToJohnRelationship);
-    tearDownRelationshipList.add(maryToRootRelationship);
-    tearDownRelationshipList.add(rootToDemoRelationship);
   }
 
   /**
@@ -320,10 +281,6 @@ public class RelationshipStorageTest extends AbstractCoreTest {
     relationships = relationshipStorage.getSenderRelationships(rootIdentity, null, null);
     assertNotNull(relationships);
     assertEquals(3, relationships.size());
-
-    tearDownRelationshipList.add(rootToJohnRelationship);
-    tearDownRelationshipList.add(rootToMaryRelationship);
-    tearDownRelationshipList.add(rootToDemoRelationship);
   }
 
   /**
@@ -355,10 +312,6 @@ public class RelationshipStorageTest extends AbstractCoreTest {
     relationships = relationshipStorage.getSenderRelationships(rootId, null, null);
     assertNotNull(relationships);
     assertEquals(3, relationships.size());
-
-    tearDownRelationshipList.add(rootToJohnRelationship);
-    tearDownRelationshipList.add(rootToMaryRelationship);
-    tearDownRelationshipList.add(rootToDemoRelationship);
   }
 
   /**
@@ -384,10 +337,6 @@ public class RelationshipStorageTest extends AbstractCoreTest {
     List<Identity> listIdentities = relationshipStorage.getRelationships(rootIdentity, 0, 10);
     assertNotNull("listIdentities must not be null", listIdentities);
     assertEquals("listIdentities.size() must return: 3", 3, listIdentities.size());
-
-    tearDownRelationshipList.add(rootToJohnRelationship);
-    tearDownRelationshipList.add(rootToMaryRelationship);
-    tearDownRelationshipList.add(rootToDemoRelationship);
   }
 
   /**
@@ -412,10 +361,6 @@ public class RelationshipStorageTest extends AbstractCoreTest {
 
     int count = relationshipStorage.getRelationshipsCount(rootIdentity);
     assertEquals("count must be: 3", 3, count);
-
-    tearDownRelationshipList.add(rootToJohnRelationship);
-    tearDownRelationshipList.add(rootToMaryRelationship);
-    tearDownRelationshipList.add(rootToDemoRelationship);
   }
 
   /**
@@ -465,10 +410,6 @@ public class RelationshipStorageTest extends AbstractCoreTest {
       assertEquals("identity.getProfile().getFullName() must return: " + identityLoadProfile.getProfile().getFullName(),
                    identityLoadProfile.getProfile().getFullName(), identity.getProfile().getFullName());
     }
-
-    tearDownRelationshipList.add(rootToJohnRelationship);
-    tearDownRelationshipList.add(maryToJohnRelationship);
-    tearDownRelationshipList.add(demoToJohnRelationship);
   }
 
   /**
@@ -497,10 +438,6 @@ public class RelationshipStorageTest extends AbstractCoreTest {
 
     int count = relationshipStorage.getIncomingRelationshipsCount(johnIdentity);
     assertEquals("count must be: 2", 2, count);
-
-    tearDownRelationshipList.add(rootToJohnRelationship);
-    tearDownRelationshipList.add(maryToJohnRelationship);
-    tearDownRelationshipList.add(demoToJohnRelationship);
   }
 
   /**
@@ -555,10 +492,6 @@ public class RelationshipStorageTest extends AbstractCoreTest {
                    identityLoadProfile.getProfile().getFullName(),
                    identity.getProfile().getFullName());
     }
-
-    tearDownRelationshipList.add(rootToJohnRelationship);
-    tearDownRelationshipList.add(rootToMaryRelationship);
-    tearDownRelationshipList.add(rootToDemoRelationship);
   }
 
   /**
@@ -587,10 +520,6 @@ public class RelationshipStorageTest extends AbstractCoreTest {
 
     int count = relationshipStorage.getOutgoingRelationshipsCount(rootIdentity);
     assertEquals("count must be: 2", 2, count);
-
-    tearDownRelationshipList.add(rootToJohnRelationship);
-    tearDownRelationshipList.add(rootToMaryRelationship);
-    tearDownRelationshipList.add(rootToDemoRelationship);
   }
 
   /**
@@ -658,7 +587,7 @@ public class RelationshipStorageTest extends AbstractCoreTest {
     id2.setDeleted(true);
     identityStorage.saveIdentity(id2);
 
-    identities = relationshipStorage.getConnectionsByFilter(tearDownIdentityList.get(0), pf, 0, 20);
+    identities = relationshipStorage.getConnectionsByFilter(tearDownIdentityList.get(0), pf, 0, 10);
     assertEquals("Number of identities must be 6", 6, identities.size());
     assertNull("User " + disabledUserName + " must not be found in connections", getInList(identities, disabledUserName));
     assertNull("User " + deletedUserName + " must not be found in connections", getInList(identities, deletedUserName));
@@ -803,7 +732,6 @@ public class RelationshipStorageTest extends AbstractCoreTest {
       Relationship firstToSecondRelationship = null;
       for (int i = 2; i< tearDownIdentityList.size(); i++) {
         firstToSecondRelationship = new Relationship(identity0, tearDownIdentityList.get(i), type);
-        tearDownRelationshipList.add(firstToSecondRelationship);
         relationshipStorage.saveRelationship(firstToSecondRelationship);
       }
     }
@@ -819,7 +747,6 @@ public class RelationshipStorageTest extends AbstractCoreTest {
       Relationship firstToSecondRelationship = null;
       for (int i = 2; i< tearDownIdentityList.size(); i++) {
         firstToSecondRelationship = new Relationship(tearDownIdentityList.get(i), identity0, Relationship.Type.PENDING);
-        tearDownRelationshipList.add(firstToSecondRelationship);
         relationshipStorage.saveRelationship(firstToSecondRelationship);
       }
     }

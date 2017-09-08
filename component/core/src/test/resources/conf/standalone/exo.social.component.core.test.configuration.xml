@@ -178,7 +178,7 @@
   -->
   <component>
     <key>org.exoplatform.social.core.storage.api.ActivityStreamStorage</key>
-    <type>org.exoplatform.social.core.storage.cache.CachedActivityStreamStorage</type>
+    <type>org.exoplatform.social.core.storage.cache.JCRCachedActivityStreamStorage</type>
   </component>
   <component>
     <key>org.exoplatform.social.core.storage.impl.ActivityStreamStorageImpl</key>
@@ -190,7 +190,7 @@
   -->
   <component>
     <key>org.exoplatform.social.core.storage.api.ActivityStorage</key>
-    <type>org.exoplatform.social.core.storage.cache.CachedActivityStorage</type>
+    <type>org.exoplatform.social.core.storage.cache.JCRCachedActivityStorage</type>
   </component>
 
   <component>
@@ -203,7 +203,7 @@
   -->
   <component>
     <key>org.exoplatform.social.core.storage.api.IdentityStorage</key>
-    <type>org.exoplatform.social.core.storage.cache.CachedIdentityStorage</type>
+    <type>org.exoplatform.social.core.storage.cache.JCRCachedIdentityStorage</type>
   </component>
 
   <component>
@@ -216,7 +216,7 @@
   -->
   <component>
     <key>org.exoplatform.social.core.storage.api.RelationshipStorage</key>
-    <type>org.exoplatform.social.core.storage.cache.CachedRelationshipStorage</type>
+    <type>org.exoplatform.social.core.storage.cache.JCRCachedRelationshipStorage</type>
   </component>
 
   <component>
@@ -229,7 +229,7 @@
   -->
   <component>
     <key>org.exoplatform.social.core.storage.api.SpaceStorage</key>
-    <type>org.exoplatform.social.core.storage.cache.CachedSpaceStorage</type>
+    <type>org.exoplatform.social.core.storage.cache.JCRCachedSpaceStorage</type>
   </component>
 
   <component>

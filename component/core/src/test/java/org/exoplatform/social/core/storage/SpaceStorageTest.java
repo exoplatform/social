@@ -51,6 +51,8 @@ public class SpaceStorageTest extends AbstractCoreTest {
   private SpaceStorage spaceStorage;
   private IdentityStorage identityStorage;
 
+  private Identity root;
+  private Identity john;
   private Identity demo;
   private Identity tom;
   private Identity raul;
@@ -66,10 +68,13 @@ public class SpaceStorageTest extends AbstractCoreTest {
   @Override
   protected void setUp() throws Exception {
     super.setUp();
-    spaceStorage = (SpaceStorage) this.getContainer().getComponentInstanceOfType(SpaceStorage.class);
-    identityStorage = (IdentityStorage) this.getContainer().getComponentInstanceOfType(IdentityStorage.class);
+    spaceStorage = this.getContainer().getComponentInstanceOfType(SpaceStorage.class);
+    identityStorage = this.getContainer().getComponentInstanceOfType(IdentityStorage.class);
 
+    tearDownSpaceList = new ArrayList<>();
 
+    root = new Identity("organization", "root");
+    john = new Identity("organization", "john");
     demo = new Identity("organization", "demo");
     tom = new Identity("organization", "tom");
     raul = new Identity("organization", "raul");
@@ -82,19 +87,7 @@ public class SpaceStorageTest extends AbstractCoreTest {
     hacker = new Identity("organization", "hacker");
     newStranger = new Identity("organization", "newStranger");
 
-    identityStorage.saveIdentity(demo);
-    identityStorage.saveIdentity(tom);
-    identityStorage.saveIdentity(raul);
-    identityStorage.saveIdentity(ghost);
-    identityStorage.saveIdentity(dragon);
-    identityStorage.saveIdentity(register1);
-    identityStorage.saveIdentity(mary);
-    identityStorage.saveIdentity(jame);
-    identityStorage.saveIdentity(paul);
-    identityStorage.saveIdentity(hacker);
-    identityStorage.saveIdentity(newStranger);
-
-    tearDownIdentityList = new ArrayList<Identity>();
+    tearDownIdentityList = new ArrayList<>();
     tearDownIdentityList.add(demo);
     tearDownIdentityList.add(tom);
     tearDownIdentityList.add(raul);
@@ -107,7 +100,19 @@ public class SpaceStorageTest extends AbstractCoreTest {
     tearDownIdentityList.add(hacker);
     tearDownIdentityList.add(newStranger);
 
-    tearDownSpaceList = new ArrayList<Space>();
+    deleteAllIdentities();
+
+    identityStorage.saveIdentity(demo);
+    identityStorage.saveIdentity(tom);
+    identityStorage.saveIdentity(raul);
+    identityStorage.saveIdentity(ghost);
+    identityStorage.saveIdentity(dragon);
+    identityStorage.saveIdentity(register1);
+    identityStorage.saveIdentity(mary);
+    identityStorage.saveIdentity(jame);
+    identityStorage.saveIdentity(paul);
+    identityStorage.saveIdentity(hacker);
+    identityStorage.saveIdentity(newStranger);
   }
 
   /**
@@ -115,22 +120,20 @@ public class SpaceStorageTest extends AbstractCoreTest {
    */
   @Override
   protected void tearDown() throws Exception {
-    for (Space sp : tearDownSpaceList) {
-      try {
-        spaceStorage.deleteSpace(sp.getId());
-      } catch (SpaceStorageException e) {
-        // It is expected on some entries
-      }
-    }
+    deleteAllIdentities();
+    super.tearDown();
+  }
 
+  protected void deleteAllIdentities() {
     for (Identity id : tearDownIdentityList) {
       try {
-        identityStorage.deleteIdentity(id);
+        if(identityStorage.findIdentity(OrganizationIdentityProvider.NAME, id.getRemoteId()) != null) {
+          identityStorage.deleteIdentity(id);
+        }
       } catch (SpaceStorageException e) {
         // It is expected on some entries
       }
     }
-    super.tearDown();
   }
 
   /**
@@ -1638,7 +1641,7 @@ public class SpaceStorageTest extends AbstractCoreTest {
    */
   @MaxQueryNumber(210)
   public void testSaveSpaceAvatar() throws Exception {
-    int number = 1;
+    int number = 100;
     Space space = this.getSpaceInstance(number);
     InputStream inputStream = getClass().getResourceAsStream("/eXo-Social.png");
     AvatarAttachment avatarAttachment = new AvatarAttachment(null, "avatar", "png", inputStream, null, System.currentTimeMillis());

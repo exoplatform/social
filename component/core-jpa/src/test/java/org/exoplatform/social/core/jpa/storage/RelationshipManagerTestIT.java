@@ -17,10 +17,6 @@
 
 package org.exoplatform.social.core.jpa.storage;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
 import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.services.organization.OrganizationService;
 import org.exoplatform.services.organization.User;
@@ -33,10 +29,12 @@ import org.exoplatform.social.core.manager.RelationshipManager;
 import org.exoplatform.social.core.profile.ProfileFilter;
 import org.exoplatform.social.core.relationship.model.Relationship;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
 public class RelationshipManagerTestIT extends BaseESTest {
   private OrganizationService        organizationService;
-
-  private List<Identity>             tearDownIdentityList;
 
   private List<User>                 tearDownUserList;
 
@@ -46,7 +44,6 @@ public class RelationshipManagerTestIT extends BaseESTest {
     relationshipManager = getService(RelationshipManager.class);
     organizationService = getService(OrganizationService.class);
     relationshipManager = getService(RelationshipManager.class);
-    tearDownIdentityList = new ArrayList<Identity>();
     tearDownUserList = new ArrayList<User>();
   }
 
@@ -54,11 +51,7 @@ public class RelationshipManagerTestIT extends BaseESTest {
     for (User user : tearDownUserList) {
       organizationService.getUserHandler().removeUser(user.getUserName(), true);
     }
-    for (Identity identity : tearDownIdentityList) {
-      if (identityStorage.findIdentity(identity.getProviderId(), identity.getRemoteId()) != null) {
-        identityManager.deleteIdentity(identity);
-      }
-    }
+
     super.tearDown();
   }
 
@@ -111,7 +104,6 @@ public class RelationshipManagerTestIT extends BaseESTest {
       profile.setProperty(Profile.FULL_NAME, "Prénom" + i + " " + "LastName" + i);
       profile.setProperty(Profile.POSITION, "developer");
       profile.setProperty(Profile.GENDER, "male");
-      tearDownIdentityList.add(identity);
       identityManager.updateProfile(profile);
 
       reindexProfileById(identity.getId());

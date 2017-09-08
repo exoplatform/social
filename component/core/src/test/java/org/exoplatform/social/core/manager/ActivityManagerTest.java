@@ -85,9 +85,6 @@ public class ActivityManagerTest extends AbstractCoreTest {
     raulIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "raul", true);
     jameIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "jame", true);
     paulIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "paul", true);
-
-    
-    
   }
 
   @Override

@@ -26,6 +26,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
 import org.exoplatform.commons.file.services.FileStorageException;
+import org.exoplatform.social.core.storage.api.IdentityStorage;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -61,7 +62,6 @@ import org.exoplatform.social.core.relationship.model.Relationship.Type;
 import org.exoplatform.social.core.space.SpaceUtils;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.storage.IdentityStorageException;
-import org.exoplatform.social.core.storage.impl.IdentityStorageImpl;
 import org.exoplatform.social.core.storage.impl.StorageUtils;
 
 /**
@@ -70,7 +70,7 @@ import org.exoplatform.social.core.storage.impl.StorageUtils;
  *          exo@exoplatform.com
  * Oct 5, 2015  
  */
-public class RDBMSIdentityStorageImpl extends IdentityStorageImpl {
+public class RDBMSIdentityStorageImpl implements IdentityStorage {
 
   private static final Log LOG = ExoLogger.getLogger(RDBMSIdentityStorageImpl.class);
 
@@ -301,7 +301,7 @@ public class RDBMSIdentityStorageImpl extends IdentityStorageImpl {
   }
 
   /**
-   * Deletes an identity from JCR
+   * Deletes an identity
    *
    * @param identity the Identity to be deleted
    * @throws IdentityStorageException if has any error
@@ -311,7 +311,7 @@ public class RDBMSIdentityStorageImpl extends IdentityStorageImpl {
   }
 
   /**
-   * Hard delete an identity from JCR
+   * Hard delete an identity
    *
    * @param identity the identity to be deleted
    * @throws IdentityStorageException if has any error
@@ -326,10 +326,10 @@ public class RDBMSIdentityStorageImpl extends IdentityStorageImpl {
     if (entity != null) {
       entity.setDeleted(true);
       getIdentityDAO().update(entity);
-    }
 
-    if (entity.getAvatarFileId() != null && entity.getAvatarFileId() > 0) {
-      fileService.deleteFile(entity.getAvatarFileId());
+      if (entity.getAvatarFileId() != null && entity.getAvatarFileId() > 0) {
+        fileService.deleteFile(entity.getAvatarFileId());
+      }
     }
 
     EntityManager em = CommonsUtils.getService(EntityManagerService.class).getEntityManager();
@@ -453,7 +453,7 @@ public class RDBMSIdentityStorageImpl extends IdentityStorageImpl {
   }
 
   /**
-   * Add or modify properties of profile and persist to JCR. Profile parameter is a lightweight that
+   * Add or modify properties of profile and persist to database. Profile parameter is a lightweight that
    * contains only the property that you want to add or modify. NOTE: The method will
    * not delete the properties on old profile when the param profile have not those keys.
    *

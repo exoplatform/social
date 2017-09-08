@@ -35,6 +35,7 @@ import org.exoplatform.commons.notification.channel.WebChannel;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.activity.model.ExoSocialActivityImpl;
 import org.exoplatform.social.core.identity.model.Identity;
+import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.relationship.model.Relationship;
 import org.exoplatform.social.core.space.impl.DefaultSpaceApplicationHandler;
 import org.exoplatform.social.core.space.model.Space;
@@ -67,18 +68,18 @@ public abstract class AbstractPluginTest extends AbstractCoreTest {
     // set default locale to en (used for notification wording) to have deterministic tests
     initialDefaultLocale = Locale.getDefault();
     Locale.setDefault(new Locale("en", "US"));
-    
-    rootIdentity = identityManager.getOrCreateIdentity("organization", "root", true);
-    johnIdentity = identityManager.getOrCreateIdentity("organization", "john", true);
-    maryIdentity = identityManager.getOrCreateIdentity("organization", "mary", true);
-    demoIdentity = identityManager.getOrCreateIdentity("organization", "demo", true);
-    ghostIdentity = identityManager.getOrCreateIdentity("organization", "ghost", true);
 
-    // each new identity created, a notification will be raised
-    assertNotNull(rootIdentity.getId());
-    assertNotNull(johnIdentity.getId());
-    assertNotNull(maryIdentity.getId());
-    assertNotNull(demoIdentity.getId());
+    rootIdentity = new Identity(OrganizationIdentityProvider.NAME, "root");
+    johnIdentity = new Identity(OrganizationIdentityProvider.NAME, "john");
+    maryIdentity = new Identity(OrganizationIdentityProvider.NAME, "mary");
+    demoIdentity = new Identity(OrganizationIdentityProvider.NAME, "demo");
+    ghostIdentity = new Identity(OrganizationIdentityProvider.NAME, "ghost");
+
+    identityManager.saveIdentity(rootIdentity);
+    identityManager.saveIdentity(johnIdentity);
+    identityManager.saveIdentity(maryIdentity);
+    identityManager.saveIdentity(demoIdentity);
+    identityManager.saveIdentity(ghostIdentity);
 
     tearDownActivityList = new ArrayList<ExoSocialActivity>();
     tearDownSpaceList = new ArrayList<Space>();
@@ -114,8 +115,7 @@ public abstract class AbstractPluginTest extends AbstractCoreTest {
     
     notificationService.clearAll();
     //
-    turnON(getPlugin());
-    turnFeatureOn();
+    turnOFF(getPlugin());
 
     if(initialDefaultLocale != null) {
       Locale.setDefault(initialDefaultLocale);

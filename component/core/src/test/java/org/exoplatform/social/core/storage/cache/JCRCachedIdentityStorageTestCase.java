@@ -17,30 +17,27 @@
 
 package org.exoplatform.social.core.storage.cache;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-
-import org.exoplatform.commons.utils.CommonsUtils;
 import org.exoplatform.social.core.identity.model.ActiveIdentityFilter;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.profile.ProfileFilter;
-import org.exoplatform.social.core.storage.api.IdentityStorage;
-import org.exoplatform.social.core.storage.streams.StreamConfig;
 import org.exoplatform.social.core.test.AbstractCoreTest;
 import org.exoplatform.social.core.test.MaxQueryNumber;
 import org.exoplatform.social.core.test.QueryNumberTest;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 /**
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
  * @version $Revision$
  */
 @QueryNumberTest
-public class CachedIdentityStorageTestCase extends AbstractCoreTest {
+public class JCRCachedIdentityStorageTestCase extends AbstractCoreTest {
 
-  private CachedIdentityStorage identityStorage;
+  private CachedIdentityStorage cachedIdentityStorage;
   private SocialStorageCacheService cacheService;
 
   private List<String> tearDownIdentityList;
@@ -49,9 +46,9 @@ public class CachedIdentityStorageTestCase extends AbstractCoreTest {
   public void setUp() throws Exception {
     super.setUp();
 
-    identityStorage = (CachedIdentityStorage) getContainer().getComponentInstanceOfType(IdentityStorage.class);
+    cachedIdentityStorage = getContainer().getComponentInstanceOfType(JCRCachedIdentityStorage.class);
 
-    cacheService = (SocialStorageCacheService) getContainer().getComponentInstanceOfType(SocialStorageCacheService.class);
+    cacheService = getContainer().getComponentInstanceOfType(SocialStorageCacheService.class);
     cacheService.getIdentityCache().clearCache();
     cacheService.getIdentitiesCache().clearCache();
     cacheService.getCountIdentitiesCache().clearCache();
@@ -64,7 +61,7 @@ public class CachedIdentityStorageTestCase extends AbstractCoreTest {
   @Override
   public void tearDown() throws Exception {
     for (String id : tearDownIdentityList) {
-      identityStorage.deleteIdentity(new Identity(id));
+      cachedIdentityStorage.deleteIdentity(new Identity(id));
     }
     super.tearDown();
   }
@@ -74,7 +71,7 @@ public class CachedIdentityStorageTestCase extends AbstractCoreTest {
 
     assertEquals(0, cacheService.getIdentityCache().getCacheSize());
     Identity i = new Identity(OrganizationIdentityProvider.NAME, "id");
-    identityStorage.saveIdentity(i);
+    cachedIdentityStorage.saveIdentity(i);
     tearDownIdentityList.add(i.getId());
     assertEquals(1, cacheService.getIdentityCache().getCacheSize());
     assertEquals(0, cacheService.getIdentitiesCache().getCacheSize());
@@ -87,14 +84,14 @@ public class CachedIdentityStorageTestCase extends AbstractCoreTest {
 
     assertEquals(0, cacheService.getIdentityCache().getCacheSize());
     Identity i = new Identity(OrganizationIdentityProvider.NAME, "id");
-    identityStorage.saveIdentity(i);
+    cachedIdentityStorage.saveIdentity(i);
     tearDownIdentityList.add(i.getId());
     String id = i.getId();
     assertEquals(1, cacheService.getIdentityCache().getCacheSize());
 
     cacheService.getIdentityCache().clearCache();
     assertEquals(0, cacheService.getIdentityCache().getCacheSize());
-    identityStorage.findIdentityById(id);
+    cachedIdentityStorage.findIdentityById(id);
     assertEquals(1, cacheService.getIdentityCache().getCacheSize());
 
   }
@@ -105,7 +102,7 @@ public class CachedIdentityStorageTestCase extends AbstractCoreTest {
     assertEquals(0, cacheService.getIdentityCache().getCacheSize());
     assertEquals(0, cacheService.getIdentityIndexCache().getCacheSize());
     Identity i = new Identity(OrganizationIdentityProvider.NAME, "id");
-    identityStorage.saveIdentity(i);
+    cachedIdentityStorage.saveIdentity(i);
     tearDownIdentityList.add(i.getId());
     assertEquals(1, cacheService.getIdentityCache().getCacheSize());
     assertEquals(0, cacheService.getIdentityIndexCache().getCacheSize());
@@ -113,7 +110,7 @@ public class CachedIdentityStorageTestCase extends AbstractCoreTest {
     cacheService.getIdentityCache().clearCache();
     assertEquals(0, cacheService.getIdentityCache().getCacheSize());
     assertEquals(0, cacheService.getIdentityIndexCache().getCacheSize());
-    identityStorage.findIdentity(OrganizationIdentityProvider.NAME, "id");
+    cachedIdentityStorage.findIdentity(OrganizationIdentityProvider.NAME, "id");
     assertEquals(1, cacheService.getIdentityCache().getCacheSize());
     assertEquals(1, cacheService.getIdentityIndexCache().getCacheSize());
 
@@ -124,15 +121,15 @@ public class CachedIdentityStorageTestCase extends AbstractCoreTest {
 
     assertEquals(0, cacheService.getIdentityCache().getCacheSize());
     Identity i = new Identity(OrganizationIdentityProvider.NAME, "id");
-    identityStorage.saveIdentity(i);
+    cachedIdentityStorage.saveIdentity(i);
     assertEquals(1, cacheService.getIdentityCache().getCacheSize());
     assertEquals(0, cacheService.getIdentitiesCache().getCacheSize());
 
     ProfileFilter filter = new ProfileFilter();
-    identityStorage.getIdentitiesByProfileFilter(OrganizationIdentityProvider.NAME, filter, 0, 10, false);
+    cachedIdentityStorage.getIdentitiesByProfileFilter(OrganizationIdentityProvider.NAME, filter, 0, 10, false);
     assertEquals(1, cacheService.getIdentitiesCache().getCacheSize());
 
-    identityStorage.deleteIdentity(i);
+    cachedIdentityStorage.deleteIdentity(i);
     assertEquals(0, cacheService.getIdentityCache().getCacheSize());
     assertEquals(0, cacheService.getIdentitiesCache().getCacheSize());
 
@@ -143,11 +140,11 @@ public class CachedIdentityStorageTestCase extends AbstractCoreTest {
 
     assertEquals(0, cacheService.getIdentityCache().getCacheSize());
     Identity i = new Identity(OrganizationIdentityProvider.NAME, "id");
-    identityStorage.saveIdentity(i);
+    cachedIdentityStorage.saveIdentity(i);
     tearDownIdentityList.add(i.getId());
     assertEquals(1, cacheService.getIdentityCache().getCacheSize());
 
-    identityStorage.updateIdentity(i);
+    cachedIdentityStorage.updateIdentity(i);
     assertEquals(0, cacheService.getIdentityCache().getCacheSize());
 
   }
@@ -158,12 +155,12 @@ public class CachedIdentityStorageTestCase extends AbstractCoreTest {
     assertEquals(0, cacheService.getIdentityCache().getCacheSize());
     assertEquals(0, cacheService.getProfileCache().getCacheSize());
     Identity i = new Identity(OrganizationIdentityProvider.NAME, "id");
-    identityStorage.saveIdentity(i);
+    cachedIdentityStorage.saveIdentity(i);
     tearDownIdentityList.add(i.getId());
     assertEquals(1, cacheService.getIdentityCache().getCacheSize());
     assertEquals(0, cacheService.getProfileCache().getCacheSize());
 
-    identityStorage.loadProfile(new Profile(i));
+    cachedIdentityStorage.loadProfile(new Profile(i));
     assertEquals(1, cacheService.getIdentityCache().getCacheSize());
     assertEquals(1, cacheService.getProfileCache().getCacheSize());
 
@@ -175,12 +172,12 @@ public class CachedIdentityStorageTestCase extends AbstractCoreTest {
     assertEquals(0, cacheService.getIdentityCache().getCacheSize());
     assertEquals(0, cacheService.getProfileCache().getCacheSize());
     Identity i = new Identity(OrganizationIdentityProvider.NAME, "id");
-    identityStorage.saveIdentity(i);
+    cachedIdentityStorage.saveIdentity(i);
     tearDownIdentityList.add(i.getId());
     assertEquals(1, cacheService.getIdentityCache().getCacheSize());
     assertEquals(0, cacheService.getProfileCache().getCacheSize());
 
-    identityStorage.saveProfile(new Profile(i));
+    cachedIdentityStorage.saveProfile(new Profile(i));
     assertEquals(1, cacheService.getIdentityCache().getCacheSize());
     assertEquals(0, cacheService.getProfileCache().getCacheSize());
 
@@ -192,12 +189,12 @@ public class CachedIdentityStorageTestCase extends AbstractCoreTest {
     assertEquals(0, cacheService.getIdentityCache().getCacheSize());
     assertEquals(0, cacheService.getProfileCache().getCacheSize());
     Identity i = new Identity(OrganizationIdentityProvider.NAME, "id");
-    identityStorage.saveIdentity(i);
+    cachedIdentityStorage.saveIdentity(i);
     tearDownIdentityList.add(i.getId());
     assertEquals(1, cacheService.getIdentityCache().getCacheSize());
     assertEquals(0, cacheService.getProfileCache().getCacheSize());
 
-    identityStorage.updateProfile(new Profile(i));
+    cachedIdentityStorage.updateProfile(new Profile(i));
     assertEquals(1, cacheService.getIdentityCache().getCacheSize());
     assertEquals(0, cacheService.getProfileCache().getCacheSize());
 
@@ -208,24 +205,24 @@ public class CachedIdentityStorageTestCase extends AbstractCoreTest {
 
     assertEquals(0, cacheService.getIdentityCache().getCacheSize());
     Identity i = new Identity(OrganizationIdentityProvider.NAME, "id");
-    identityStorage.saveIdentity(i);
+    cachedIdentityStorage.saveIdentity(i);
     tearDownIdentityList.add(i.getId());
     assertEquals(1, cacheService.getIdentityCache().getCacheSize());
 
     assertEquals(0, cacheService.getCountIdentitiesCache().getCacheSize());
-    identityStorage.getIdentitiesByProfileFilterCount(OrganizationIdentityProvider.NAME, new ProfileFilter());
+    cachedIdentityStorage.getIdentitiesByProfileFilterCount(OrganizationIdentityProvider.NAME, new ProfileFilter());
     assertEquals(1, cacheService.getCountIdentitiesCache().getCacheSize());
 
     Identity i2 = new Identity(OrganizationIdentityProvider.NAME, "id2");
-    identityStorage.saveIdentity(i2);
+    cachedIdentityStorage.saveIdentity(i2);
     tearDownIdentityList.add(i2.getId());
 
     assertEquals(0, cacheService.getCountIdentitiesCache().getCacheSize());
-    identityStorage.getIdentitiesByProfileFilterCount(OrganizationIdentityProvider.NAME, new ProfileFilter());
+    cachedIdentityStorage.getIdentitiesByProfileFilterCount(OrganizationIdentityProvider.NAME, new ProfileFilter());
     assertEquals(1, cacheService.getCountIdentitiesCache().getCacheSize());
 
     i2.setRemoteId("id3");
-    identityStorage.updateIdentity(i2);
+    cachedIdentityStorage.updateIdentity(i2);
 
     assertEquals(0, cacheService.getCountIdentitiesCache().getCacheSize());
 
@@ -236,16 +233,16 @@ public class CachedIdentityStorageTestCase extends AbstractCoreTest {
 
     assertEquals(0, cacheService.getIdentityCache().getCacheSize());
     Identity i = new Identity(OrganizationIdentityProvider.NAME, "id");
-    identityStorage.saveIdentity(i);
+    cachedIdentityStorage.saveIdentity(i);
     tearDownIdentityList.add(i.getId());
     assertEquals(1, cacheService.getIdentityCache().getCacheSize());
 
     assertEquals(0, cacheService.getIdentitiesCache().getCacheSize());
-    identityStorage.getIdentitiesByProfileFilter(OrganizationIdentityProvider.NAME, new ProfileFilter(), 0, 10, false);
+    cachedIdentityStorage.getIdentitiesByProfileFilter(OrganizationIdentityProvider.NAME, new ProfileFilter(), 0, 10, false);
     assertEquals(1, cacheService.getIdentitiesCache().getCacheSize());
 
     Identity i2 = new Identity(OrganizationIdentityProvider.NAME, "id2");
-    identityStorage.saveIdentity(i2);
+    cachedIdentityStorage.saveIdentity(i2);
     tearDownIdentityList.add(i2.getId());
 
     assertEquals(0, cacheService.getIdentitiesCache().getCacheSize());
@@ -257,12 +254,12 @@ public class CachedIdentityStorageTestCase extends AbstractCoreTest {
 
     assertEquals(0, cacheService.getIdentityCache().getCacheSize());
     Identity i = new Identity(OrganizationIdentityProvider.NAME, "id");
-    identityStorage.saveIdentity(i);
+    cachedIdentityStorage.saveIdentity(i);
     tearDownIdentityList.add(i.getId());
     assertEquals(1, cacheService.getIdentityCache().getCacheSize());
 
     assertEquals(0, cacheService.getCountIdentitiesCache().getCacheSize());
-    identityStorage.getIdentitiesByFirstCharacterOfNameCount(OrganizationIdentityProvider.NAME, new ProfileFilter());
+    cachedIdentityStorage.getIdentitiesByFirstCharacterOfNameCount(OrganizationIdentityProvider.NAME, new ProfileFilter());
     assertEquals(1, cacheService.getCountIdentitiesCache().getCacheSize());
 
   }
@@ -272,19 +269,19 @@ public class CachedIdentityStorageTestCase extends AbstractCoreTest {
 
     assertEquals(0, cacheService.getIdentityCache().getCacheSize());
     Identity i = new Identity(OrganizationIdentityProvider.NAME, "id");
-    identityStorage.saveIdentity(i);
+    cachedIdentityStorage.saveIdentity(i);
     tearDownIdentityList.add(i.getId());
     assertEquals(1, cacheService.getIdentityCache().getCacheSize());
 
     assertEquals(0, cacheService.getIdentitiesCache().getCacheSize());
-    identityStorage.getIdentitiesByFirstCharacterOfName(OrganizationIdentityProvider.NAME, new ProfileFilter(), 0, 10, false);
+    cachedIdentityStorage.getIdentitiesByFirstCharacterOfName(OrganizationIdentityProvider.NAME, new ProfileFilter(), 0, 10, false);
     assertEquals(1, cacheService.getIdentitiesCache().getCacheSize());
 
   }
   
   public void testGetActiveUsers() throws Exception {
     ActiveIdentityFilter filter = new ActiveIdentityFilter("/platform/administrators");
-    Set<String> activeUsers = identityStorage.getActiveUsers(filter);
+    Set<String> activeUsers = cachedIdentityStorage.getActiveUsers(filter);
     //expected root and john are active user.
     assertEquals(2, activeUsers.size());
   }

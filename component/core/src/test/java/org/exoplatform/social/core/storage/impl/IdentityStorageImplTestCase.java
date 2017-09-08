@@ -688,7 +688,7 @@ public class IdentityStorageImplTestCase extends AbstractCoreTest {
    tearDownIdentityList.add(newIdentity.getId());
   }
 
-  @MaxQueryNumber(408)
+  @MaxQueryNumber(423)
   public void testFindIdentityWithFilter() throws Exception {
 
     addIdentity("o", "toto", "male", "cadre");

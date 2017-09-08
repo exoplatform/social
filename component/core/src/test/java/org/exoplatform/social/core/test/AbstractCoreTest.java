@@ -92,13 +92,21 @@ public abstract class AbstractCoreTest extends BaseExoTestCase {
     }
 
     //
-    spaceService = (SpaceService) getContainer().getComponentInstanceOfType(SpaceService.class);
-    List<Space> allSpaces = spaceService.getAllSpaces();
-    assertTrue("There was remaining spaces before starting test", allSpaces == null || allSpaces.isEmpty());
+    spaceService = getContainer().getComponentInstanceOfType(SpaceService.class);
+
+    deleteAllSpaces();
   }
 
   @Override
   protected void tearDown() throws Exception {
+    deleteAllSpaces();
+
+    wantCount = false;
+    session = null;
+    end();
+  }
+
+  protected void deleteAllSpaces() throws SpaceException {
     List<Space> allSpaces = spaceService.getAllSpaces();
     if(allSpaces != null && !allSpaces.isEmpty()) {
       for (Space space : allSpaces) {
@@ -106,12 +114,8 @@ public abstract class AbstractCoreTest extends BaseExoTestCase {
         spaceService.deleteSpace(space);
       }
     }
-
-    wantCount = false;
-    session = null;
-    end();
   }
-  
+
   protected <T> T getService(Class<T> clazz) {
     return (T) getContainer().getComponentInstanceOfType(clazz);
   }

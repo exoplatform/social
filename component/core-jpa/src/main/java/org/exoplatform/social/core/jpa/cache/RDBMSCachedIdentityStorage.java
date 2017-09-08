@@ -19,6 +19,7 @@
 
 package org.exoplatform.social.core.jpa.cache;
 
+import org.exoplatform.social.core.jpa.search.ProfileSearchConnector;
 import org.exoplatform.social.core.jpa.storage.RDBMSIdentityStorageImpl;
 import org.exoplatform.social.core.storage.cache.CachedIdentityStorage;
 import org.exoplatform.social.core.storage.cache.SocialStorageCacheService;
@@ -27,7 +28,15 @@ import org.exoplatform.social.core.storage.cache.SocialStorageCacheService;
  * @author <a href="mailto:tuyennt@exoplatform.com">Tuyen Nguyen The</a>.
  */
 public class RDBMSCachedIdentityStorage extends CachedIdentityStorage {
+
+  RDBMSIdentityStorageImpl storage;
+
   public RDBMSCachedIdentityStorage(RDBMSIdentityStorageImpl storage, SocialStorageCacheService cacheService) {
     super(storage, cacheService);
+    this.storage = storage;
+  }
+
+  public void setProfileSearchConnector(ProfileSearchConnector profileSearchConnector) {
+    storage.setProfileSearchConnector(profileSearchConnector);
   }
 }

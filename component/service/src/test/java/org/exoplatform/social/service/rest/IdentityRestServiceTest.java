@@ -31,7 +31,6 @@ import org.exoplatform.social.service.test.AbstractResourceTest;
  */
 public class IdentityRestServiceTest extends AbstractResourceTest {
   static private PortalContainer container;
-  static private IdentityRestService identityRestService;
   static private IdentityManager identityManager;
   static private String rootId, johnId;
   static private final String PROVIDER_ID = "organization";
@@ -39,9 +38,9 @@ public class IdentityRestServiceTest extends AbstractResourceTest {
   public void setUp() throws Exception {
     super.setUp();
     container = PortalContainer.getInstance();
-    identityManager = (IdentityManager) container.getComponentInstanceOfType(IdentityManager.class);
-    identityRestService = new IdentityRestService();
-    registry(identityRestService);
+    identityManager = container.getComponentInstanceOfType(IdentityManager.class);
+
+    addResource(IdentityRestService.class, null);
 
     rootId = identityManager.getOrCreateIdentity(PROVIDER_ID, "root").getId();
     johnId = identityManager.getOrCreateIdentity(PROVIDER_ID, "john").getId();
@@ -50,7 +49,7 @@ public class IdentityRestServiceTest extends AbstractResourceTest {
   public void tearDown() throws Exception {
     super.tearDown();
 
-    unregistry(identityRestService);
+    removeResource(IdentityRestService.class);
   }
 
   public void testGetRootId() throws Exception {

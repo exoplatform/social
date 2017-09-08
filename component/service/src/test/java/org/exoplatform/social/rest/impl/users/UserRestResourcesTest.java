@@ -1,14 +1,11 @@
 package org.exoplatform.social.rest.impl.users;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.exoplatform.portal.config.UserACL;
 import org.exoplatform.services.rest.impl.ContainerResponse;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.activity.model.ExoSocialActivityImpl;
 import org.exoplatform.social.core.identity.model.Identity;
-import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
+import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.manager.ActivityManager;
 import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.manager.RelationshipManager;
@@ -18,21 +15,16 @@ import org.exoplatform.social.core.space.spi.SpaceService;
 import org.exoplatform.social.rest.entity.ActivityEntity;
 import org.exoplatform.social.rest.entity.CollectionEntity;
 import org.exoplatform.social.rest.entity.ProfileEntity;
-import org.exoplatform.social.rest.entity.SpaceEntity;
 import org.exoplatform.social.rest.impl.user.UserRestResourcesV1;
 import org.exoplatform.social.service.test.AbstractResourceTest;
 
 public class UserRestResourcesTest extends AbstractResourceTest {
-  
-  static private UserRestResourcesV1 userRestResourcesV1;
   
   private ActivityManager activityManager;
   private IdentityManager identityManager;
   private UserACL userACL;
   private RelationshipManager relationshipManager;
   private SpaceService spaceService;
-  
-  private List<Space> tearDownSpaceList;
   
   private Identity rootIdentity;
   private Identity johnIdentity;
@@ -43,39 +35,29 @@ public class UserRestResourcesTest extends AbstractResourceTest {
     super.setUp();
     
     System.setProperty("gatein.email.domain.url", "localhost:8080");
-    tearDownSpaceList = new ArrayList<Space>();
-    
-    activityManager = (ActivityManager) getContainer().getComponentInstanceOfType(ActivityManager.class);
-    identityManager = (IdentityManager) getContainer().getComponentInstanceOfType(IdentityManager.class);
-    userACL = (UserACL) getContainer().getComponentInstanceOfType(UserACL.class);
-    relationshipManager = (RelationshipManager) getContainer().getComponentInstanceOfType(RelationshipManager.class);
-    spaceService = (SpaceService) getContainer().getComponentInstanceOfType(SpaceService.class);
-    
-    rootIdentity = identityManager.getOrCreateIdentity("organization", "root", true);
-    johnIdentity = identityManager.getOrCreateIdentity("organization", "john", true);
-    maryIdentity = identityManager.getOrCreateIdentity("organization", "mary", true);
-    demoIdentity = identityManager.getOrCreateIdentity("organization", "demo", true);
-    
-    userRestResourcesV1 = new UserRestResourcesV1(userACL, identityManager);
-    registry(userRestResourcesV1);
+
+    activityManager = getContainer().getComponentInstanceOfType(ActivityManager.class);
+    identityManager = getContainer().getComponentInstanceOfType(IdentityManager.class);
+    userACL = getContainer().getComponentInstanceOfType(UserACL.class);
+    relationshipManager = getContainer().getComponentInstanceOfType(RelationshipManager.class);
+    spaceService = getContainer().getComponentInstanceOfType(SpaceService.class);
+
+    rootIdentity = new Identity(OrganizationIdentityProvider.NAME, "root");
+    johnIdentity = new Identity(OrganizationIdentityProvider.NAME, "john");
+    maryIdentity = new Identity(OrganizationIdentityProvider.NAME, "mary");
+    demoIdentity = new Identity(OrganizationIdentityProvider.NAME, "demo");
+
+    identityManager.saveIdentity(rootIdentity);
+    identityManager.saveIdentity(johnIdentity);
+    identityManager.saveIdentity(maryIdentity);
+    identityManager.saveIdentity(demoIdentity);
+
+    addResource(UserRestResourcesV1.class, null);
   }
 
   public void tearDown() throws Exception {
-    for (Space space : tearDownSpaceList) {
-      Identity spaceIdentity = identityManager.getOrCreateIdentity(SpaceIdentityProvider.NAME, space.getPrettyName(), false);
-      if (spaceIdentity != null) {
-        identityManager.deleteIdentity(spaceIdentity);
-      }
-      spaceService.deleteSpace(space);
-    }
-    
-    identityManager.deleteIdentity(rootIdentity);
-    identityManager.deleteIdentity(johnIdentity);
-    identityManager.deleteIdentity(maryIdentity);
-    identityManager.deleteIdentity(demoIdentity);
-    
     super.tearDown();
-    removeResource(userRestResourcesV1.getClass());
+    removeResource(UserRestResourcesV1.class);
   }
 
   public void testGetAllUsers() throws Exception {
@@ -86,7 +68,7 @@ public class UserRestResourcesTest extends AbstractResourceTest {
     CollectionEntity collections = (CollectionEntity) response.getEntity();
     assertEquals(4, collections.getEntities().size());
   }
-  
+
   public void testGetUserById() throws Exception {
     startSessionAs("root");
     ContainerResponse response = service("GET", getURLResource("users/john"), "", null, null);
@@ -95,27 +77,27 @@ public class UserRestResourcesTest extends AbstractResourceTest {
     ProfileEntity userEntity = getBaseEntity(response.getEntity(), ProfileEntity.class);
     assertEquals("john", userEntity.getUsername());
   }
-  
+
   public void testGetConnectionsOfUser() throws Exception {
     startSessionAs("root");
     relationshipManager.inviteToConnect(rootIdentity, demoIdentity);
     relationshipManager.confirm(demoIdentity, rootIdentity);
-    
+
     ContainerResponse response = service("GET", getURLResource("users/root/connections?limit=5&offset=0"), "", null, null);
     assertNotNull(response);
     assertEquals(200, response.getStatus());
-    
+
     CollectionEntity collections = (CollectionEntity) response.getEntity();
     assertEquals(1, collections.getEntities().size());
     ProfileEntity userEntity = getBaseEntity(collections.getEntities().get(0), ProfileEntity.class);
     assertEquals("demo", userEntity.getUsername());
   }
-  
+
   public void testGetActivitiesOfUser() throws Exception {
     startSessionAs("root");
     relationshipManager.inviteToConnect(rootIdentity, demoIdentity);
     relationshipManager.confirm(demoIdentity, rootIdentity);
-    
+
     ExoSocialActivity rootActivity = new ExoSocialActivityImpl();
     rootActivity.setTitle("root activity");
     activityManager.saveActivityNoReturn(rootIdentity, rootActivity);
@@ -144,7 +126,7 @@ public class UserRestResourcesTest extends AbstractResourceTest {
     activityManager.deleteActivity(demoActivity);
     activityManager.deleteActivity(rootActivity);
   }
-  
+
   public void testGetSpacesOfUser() throws Exception {
     getSpaceInstance(0, "root");
     getSpaceInstance(1, "john");
@@ -184,7 +166,7 @@ public class UserRestResourcesTest extends AbstractResourceTest {
     collections = (CollectionEntity) response.getEntity();
     assertEquals(2, collections.getEntities().size());
   }
-  
+
   private Space getSpaceInstance(int number, String creator) throws Exception {
     Space space = new Space();
     space.setDisplayName("my space " + number);
@@ -202,7 +184,6 @@ public class UserRestResourcesTest extends AbstractResourceTest {
     space.setMembers(members);
     space.setUrl(space.getPrettyName());
     this.spaceService.createSpace(space, creator);
-    tearDownSpaceList.add(space);
     return space;
   }
 }

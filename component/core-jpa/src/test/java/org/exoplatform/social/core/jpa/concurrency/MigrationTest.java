@@ -27,21 +27,21 @@ import org.exoplatform.services.listener.Event;
 import org.exoplatform.services.listener.Listener;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
-import org.exoplatform.social.core.jpa.storage.RDBMSActivityStorageImpl;
-import org.exoplatform.social.core.jpa.storage.RDBMSIdentityStorageImpl;
-import org.exoplatform.social.core.jpa.storage.RDBMSSpaceStorageImpl;
-import org.exoplatform.social.core.jpa.test.BaseCoreTest;
-import org.exoplatform.social.core.jpa.test.QueryNumberTest;
-import org.exoplatform.social.core.jpa.updater.ActivityMigrationService;
-import org.exoplatform.social.core.jpa.updater.IdentityMigrationService;
-import org.exoplatform.social.core.jpa.updater.RDBMSMigrationManager;
-import org.exoplatform.social.core.jpa.updater.*;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
-import org.exoplatform.social.core.jpa.updater.RelationshipMigrationService;
+import org.exoplatform.social.core.jpa.storage.RDBMSActivityStorageImpl;
+import org.exoplatform.social.core.jpa.storage.RDBMSIdentityStorageImpl;
+import org.exoplatform.social.core.jpa.storage.RDBMSSpaceStorageImpl;
+import org.exoplatform.social.core.jpa.storage.dao.IdentityDAO;
+import org.exoplatform.social.core.jpa.storage.entity.IdentityEntity;
+import org.exoplatform.social.core.jpa.test.BaseCoreTest;
+import org.exoplatform.social.core.jpa.test.QueryNumberTest;
+import org.exoplatform.social.core.jpa.updater.ActivityMigrationService;
+import org.exoplatform.social.core.jpa.updater.IdentityMigrationService;
+import org.exoplatform.social.core.jpa.updater.SpaceMigrationService;
 import org.exoplatform.social.core.manager.ActivityManager;
 import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.manager.IdentityManagerImpl;
@@ -51,19 +51,13 @@ import org.exoplatform.social.core.service.LinkProvider;
 import org.exoplatform.social.core.space.impl.DefaultSpaceApplicationHandler;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
-import org.exoplatform.social.core.storage.api.ActivityStorage;
-import org.exoplatform.social.core.storage.api.SpaceStorage;
 import org.exoplatform.social.core.storage.impl.ActivityStorageImpl;
 import org.exoplatform.social.core.storage.impl.IdentityStorageImpl;
-import org.exoplatform.social.core.storage.impl.RelationshipStorageImpl;
 import org.exoplatform.social.core.storage.impl.SpaceStorageImpl;
 import org.jboss.byteman.contrib.bmunit.BMUnit;
 
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author <a href="mailto:tuyennt@exoplatform.com">Tuyen Nguyen The</a>.
@@ -82,18 +76,15 @@ public class MigrationTest extends BaseCoreTest {
   protected final Log LOG = ExoLogger.getLogger(AbstractAsynMigrationTest.class);
   private ActivityStorageImpl activityJCRStorage;
   private IdentityStorageImpl identityJCRStorage;
-  private RelationshipStorageImpl relationshipJCRStorage;
   private SpaceStorageImpl spaceJCRStorage;
 
   private RDBMSIdentityStorageImpl identityJPAStorage;
 
-  protected ActivityStorage activityStorage;
-  private SpaceStorage spaceStorage;
+  protected RDBMSActivityStorageImpl activityStorage;
+  private RDBMSSpaceStorageImpl spaceStorage;
 
   private IdentityMigrationService identityMigrationService;
   private ActivityMigrationService activityMigration;
-  private RelationshipMigrationService relationshipMigration;
-  private RDBMSMigrationManager rdbmsMigrationManager;
   private SpaceMigrationService spaceMigrationService;
 
   private List<ExoSocialActivity> activitiesToDelete = new ArrayList<>();
@@ -111,12 +102,11 @@ public class MigrationTest extends BaseCoreTest {
 
     identityJPAStorage = getService(RDBMSIdentityStorageImpl.class);
 
-    activityStorage = getService(ActivityStorage.class);
-    spaceStorage = getService(SpaceStorage.class);
+    activityStorage = getService(RDBMSActivityStorageImpl.class);
+    spaceStorage = getService(RDBMSSpaceStorageImpl.class);
 
     identityJCRStorage = getService(IdentityStorageImpl.class);
     activityJCRStorage = getService(ActivityStorageImpl.class);
-    relationshipJCRStorage = getService(RelationshipStorageImpl.class);
     spaceJCRStorage = getService(SpaceStorageImpl.class);
 
 
@@ -128,20 +118,25 @@ public class MigrationTest extends BaseCoreTest {
 
     entityManagerService = getService(EntityManagerService.class);
 
-    //
-
-
     identityMigrationService = getService(IdentityMigrationService.class);
     activityMigration = getService(ActivityMigrationService.class);
-    relationshipMigration = getService(RelationshipMigrationService.class);
     spaceMigrationService = getService(SpaceMigrationService.class);
+
+    deleteIdentities();
+
+    switchToUseJCRStorage();
+
+    rootIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "root", false);
+    johnIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "john", false);
+    demoIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "demo", false);
+    maryIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "mary", false);
 
     activitiesToDelete = new ArrayList<>();
   }
 
   @Override
   public void tearDown() throws Exception {
-    //super.tearDown();
+    deleteIdentities();
 
     for (ExoSocialActivity activity : activitiesToDelete) {
       activityStorage.deleteActivity(activity.getId());
@@ -152,7 +147,6 @@ public class MigrationTest extends BaseCoreTest {
 
   public void testMigrateIdentityWithAvatar() throws Exception {
     // create jcr data
-    rootIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "root", false);
     Profile rootProfile = rootIdentity.getProfile();
 
     InputStream inputStream = getClass().getResourceAsStream("/eXo-Social.png");
@@ -167,7 +161,7 @@ public class MigrationTest extends BaseCoreTest {
 
     identityMigrationService.start();
 
-    rootIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "root", false);
+    rootIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "root", true);
     rootProfile = rootIdentity.getProfile();
 
     assertNotNull(rootProfile.getAvatarUrl());
@@ -176,11 +170,6 @@ public class MigrationTest extends BaseCoreTest {
 
 
   public void testMigrateActivityWithMention() throws Exception {
-    rootIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "root", false);
-    johnIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "john", false);
-    demoIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "demo", false);
-    maryIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "mary", false);
-
     Map<String, String> params = new HashMap<String, String>();
     params.put("MESSAGE", "activity message for here");
     final ExoSocialActivity activity = ActivityBuilder.getInstance()
@@ -292,15 +281,24 @@ public class MigrationTest extends BaseCoreTest {
     assertNull(spaceIdentity);
   }
 
+  protected void deleteIdentities() {
+    IdentityDAO identityDAO = getService(IdentityDAO.class);
+    Arrays.asList("root", "john", "mary", "demo").stream().forEach(userId -> {
+      IdentityEntity identityEntity = identityDAO.findByProviderAndRemoteId(OrganizationIdentityProvider.NAME, userId);
+      if (identityEntity != null) {
+        identityDAO.delete(identityEntity);
+      }
+    });
+  }
+
   protected void switchToUseJPAStorage() {
-    // Swith to use RDBMSIdentityStorage
+    // Switch to use JPA IdentityStorage
     ((IdentityManagerImpl)identityManager).setIdentityStorage(identityJPAStorage);
-    if (spaceStorage instanceof RDBMSSpaceStorageImpl) {
-      ((RDBMSSpaceStorageImpl)spaceStorage).setIdentityStorage(identityJPAStorage);
-    }
-    if (activityStorage instanceof RDBMSActivityStorageImpl) {
-      ((RDBMSActivityStorageImpl)activityStorage).setIdentityStorage(identityJPAStorage);
-    }
+  }
+
+  protected void switchToUseJCRStorage() {
+    // Switch to use JCR IdentityStorage
+    ((IdentityManagerImpl)identityManager).setIdentityStorage(identityJCRStorage);
   }
 
   private Space createSpace() {

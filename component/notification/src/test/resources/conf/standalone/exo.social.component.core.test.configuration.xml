@@ -173,70 +173,84 @@
     </init-params>
   </component>
 
-  <!--
-    Activity Stream storage components.
-  -->
   <component>
-    <key>org.exoplatform.social.core.storage.api.ActivityStreamStorage</key>
-    <type>org.exoplatform.social.core.storage.cache.CachedActivityStreamStorage</type>
-  </component>
-  <component>
-    <key>org.exoplatform.social.core.storage.impl.ActivityStreamStorageImpl</key>
-    <type>org.exoplatform.social.core.storage.synchronization.SynchronizedActivityStreamStorage</type>
-  </component>
-  
-  <!--
-    Activity storage components.
-  -->
-  <component>
-    <key>org.exoplatform.social.core.storage.api.ActivityStorage</key>
-    <type>org.exoplatform.social.core.storage.cache.CachedActivityStorage</type>
+    <key>org.exoplatform.social.core.jpa.storage.dao.StreamItemDAO</key>
+    <type>org.exoplatform.social.core.jpa.storage.dao.jpa.StreamItemDAOImpl</type>
   </component>
 
   <component>
-    <key>org.exoplatform.social.core.storage.impl.ActivityStorageImpl</key>
-    <type>org.exoplatform.social.core.storage.synchronization.SynchronizedActivityStorage</type>
+    <key>org.exoplatform.social.core.jpa.storage.dao.ConnectionDAO</key>
+    <type>org.exoplatform.social.core.jpa.storage.dao.jpa.ConnectionDAOImpl</type>
+  </component>
+
+  <component>
+    <key>org.exoplatform.social.core.jpa.storage.dao.ActivityDAO</key>
+    <type>org.exoplatform.social.core.jpa.storage.dao.jpa.ActivityDAOImpl</type>
+  </component>
+
+  <component>
+    <key>org.exoplatform.social.core.jpa.storage.dao.IdentityDAO</key>
+    <type>org.exoplatform.social.core.jpa.storage.dao.jpa.IdentityDAOImpl</type>
+  </component>
+
+  <component>
+    <key>org.exoplatform.social.core.jpa.storage.dao.SpaceDAO</key>
+    <type>org.exoplatform.social.core.jpa.storage.dao.jpa.SpaceDAOImpl</type>
+  </component>
+
+  <component>
+    <key>org.exoplatform.social.core.jpa.storage.dao.SpaceMemberDAO</key>
+    <type>org.exoplatform.social.core.jpa.storage.dao.jpa.SpaceMemberDAOImpl</type>
   </component>
 
   <!--
     Identity storage components.
   -->
   <component>
-    <key>org.exoplatform.social.core.storage.api.IdentityStorage</key>
-    <type>org.exoplatform.social.core.storage.cache.CachedIdentityStorage</type>
+    <type>org.exoplatform.social.core.jpa.storage.RDBMSIdentityStorageImpl</type>
   </component>
 
   <component>
-    <key>org.exoplatform.social.core.storage.impl.IdentityStorageImpl</key>
-    <type>org.exoplatform.social.core.storage.synchronization.SynchronizedIdentityStorage</type>
+    <key>org.exoplatform.social.core.storage.api.IdentityStorage</key>
+    <type>org.exoplatform.social.core.jpa.cache.RDBMSCachedIdentityStorage</type>
   </component>
 
   <!--
     Relationship storage components.
   -->
   <component>
-    <key>org.exoplatform.social.core.storage.api.RelationshipStorage</key>
-    <type>org.exoplatform.social.core.storage.cache.CachedRelationshipStorage</type>
+    <type>org.exoplatform.social.core.jpa.storage.RDBMSRelationshipStorageImpl</type>
   </component>
 
   <component>
-    <key>org.exoplatform.social.core.storage.impl.RelationshipStorageImpl</key>
-    <type>org.exoplatform.social.core.storage.synchronization.SynchronizedRelationshipStorage</type>
+    <key>org.exoplatform.social.core.storage.api.RelationshipStorage</key>
+    <type>org.exoplatform.social.core.jpa.cache.RDBMSCachedRelationshipStorage</type>
+  </component>
+
+  <!--
+    Activity storage components.
+  -->
+  <component>
+    <key>org.exoplatform.social.core.storage.api.ActivityStorage</key>
+    <type>org.exoplatform.social.core.jpa.cache.RDBMSCachedActivityStorage</type>
+  </component>
+
+  <component>
+    <type>org.exoplatform.social.core.jpa.storage.RDBMSActivityStorageImpl</type>
   </component>
 
   <!--
     Space storage components.
   -->
   <component>
-    <key>org.exoplatform.social.core.storage.api.SpaceStorage</key>
-    <type>org.exoplatform.social.core.storage.cache.CachedSpaceStorage</type>
+    <type>org.exoplatform.social.core.jpa.storage.RDBMSSpaceStorageImpl</type>
   </component>
 
   <component>
-    <key>org.exoplatform.social.core.storage.impl.SpaceStorageImpl</key>
-    <type>org.exoplatform.social.core.storage.synchronization.SynchronizedSpaceStorage</type>
+    <key>org.exoplatform.social.core.storage.api.SpaceStorage</key>
+    <type>org.exoplatform.social.core.jpa.cache.RDBMSCachedSpaceStorage</type>
   </component>
-  
+
   <component>
     <type>org.exoplatform.social.core.updater.UserActivityStreamMigration</type>
   </component>
@@ -490,6 +504,38 @@
     <key>org.exoplatform.social.core.application.SpaceActivityPublisher</key>
     <type>org.exoplatform.social.core.application.SpaceActivityPublisher</type>
   </component>
+
+  <!-- Bind datasource -->
+  <external-component-plugins>
+    <target-component>org.exoplatform.services.naming.InitialContextInitializer</target-component>
+    <component-plugin>
+      <name>bind.datasource</name>
+      <set-method>addPlugin</set-method>
+      <type>org.exoplatform.services.naming.BindReferencePlugin</type>
+      <init-params>
+        <value-param>
+          <name>bind-name</name>
+          <value>java:/comp/env/exo-jpa_portal</value>
+        </value-param>
+        <value-param>
+          <name>class-name</name>
+          <value>javax.sql.DataSource</value>
+        </value-param>
+        <value-param>
+          <name>factory</name>
+          <value>org.apache.commons.dbcp.BasicDataSourceFactory</value>
+        </value-param>
+        <properties-param>
+          <name>ref-addresses</name>
+          <description>ref-addresses</description>
+          <property name="driverClassName" value="org.hsqldb.jdbcDriver" />
+          <property name="url" value="jdbc:hsqldb:mem:db1" />
+          <property name="username" value="sa" />
+          <property name="password" value="" />
+        </properties-param>
+      </init-params>
+    </component-plugin>
+  </external-component-plugins>
 
   <external-component-plugins>
     <target-component>org.exoplatform.social.core.manager.ActivityManager</target-component>
@@ -769,6 +815,23 @@
       <name>social.update.profile.event.listener</name>
       <set-method>addListenerPlugin</set-method>
       <type>org.exoplatform.social.core.listeners.SocialUserProfileEventListenerImpl</type>
+    </component-plugin>
+  </external-component-plugins>
+
+  <external-component-plugins>
+    <target-component>org.exoplatform.commons.api.persistence.DataInitializer</target-component>
+    <component-plugin>
+      <name>ChangeLogsPlugin</name>
+      <set-method>addChangeLogsPlugin</set-method>
+      <type>org.exoplatform.commons.persistence.impl.ChangeLogsPlugin</type>
+      <init-params>
+        <values-param>
+          <name>changelogs</name>
+          <description>Change logs of Social Service tests</description>
+          <value>db/changelog/exo-search.db.changelog-1.0.0.xml</value>
+          <value>db/changelog/social-rdbms.db.changelog-1.0.0.xml</value>
+        </values-param>
+      </init-params>
     </component-plugin>
   </external-component-plugins>
 

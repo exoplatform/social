@@ -33,6 +33,10 @@ public class ListSpacesKey extends ListCacheKey {
     this.key = key;
   }
 
+  public SpaceFilterKey getKey() {
+    return key;
+  }
+
   @Override
   public boolean equals(final Object o) {
     if (this == o) {

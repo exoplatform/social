@@ -38,27 +38,20 @@ import org.exoplatform.social.core.space.SpaceUtilsRestTest;
 import org.exoplatform.social.core.space.SpaceUtilsTest;
 import org.exoplatform.social.core.space.SpaceUtilsWildCardMembershipTest;
 import org.exoplatform.social.core.space.spi.SpaceServiceTest;
-import org.exoplatform.social.core.storage.ActivityStorageTest;
-import org.exoplatform.social.core.storage.ActivityStreamStorageTest;
-import org.exoplatform.social.core.storage.IdentityStorageTest;
-import org.exoplatform.social.core.storage.LazyActivityStorageTest;
-import org.exoplatform.social.core.storage.RelationshipStorageTest;
-import org.exoplatform.social.core.storage.SpaceStorageTest;
-import org.exoplatform.social.core.storage.cache.CachedActivityStorageTestCase;
-import org.exoplatform.social.core.storage.cache.CachedIdentityStorageTestCase;
-import org.exoplatform.social.core.storage.cache.CachedRelationshipStorageTestCase;
-import org.exoplatform.social.core.storage.cache.CachedSpaceStorageTestCase;
+import org.exoplatform.social.core.storage.*;
+import org.exoplatform.social.core.storage.cache.JCRCachedActivityStorageTestCase;
+import org.exoplatform.social.core.storage.cache.JCRCachedIdentityStorageTestCase;
+import org.exoplatform.social.core.storage.cache.JCRCachedRelationshipStorageTestCase;
+import org.exoplatform.social.core.storage.cache.JCRCachedSpaceStorageTestCase;
 import org.exoplatform.social.core.storage.impl.ActivityStorageImplTestCase;
 import org.exoplatform.social.core.storage.impl.IdentityStorageImplTestCase;
 import org.exoplatform.social.core.storage.impl.RelationshipStorageImplTestCase;
-import org.exoplatform.social.core.updater.ActivityStreamUpdaterTest;
 import org.exoplatform.social.core.updater.SpaceActivityStreamUpdaterTest;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.runners.Suite.SuiteClasses;
 
 @SuiteClasses({
-  ActivityStreamUpdaterTest.class,
   LazyActivityStorageTest.class,
   SpaceActivityStreamUpdaterTest.class,
   SpaceLastVisitedTest.class,
@@ -67,16 +60,16 @@ import org.junit.runners.Suite.SuiteClasses;
   ActivityStreamStorageTest.class,
   ActivityStorageTest.class,
   ActivityStorageImplTestCase.class,
-  CachedActivityStorageTestCase.class,
+  JCRCachedActivityStorageTestCase.class,
   IdentityManagerTest.class,
   IdentityStorageImplTestCase.class,
   IdentityStorageTest.class,
-  CachedIdentityStorageTestCase.class,
+  JCRCachedIdentityStorageTestCase.class,
   SpaceServiceTest.class,
-  CachedSpaceStorageTestCase.class,
+  JCRCachedSpaceStorageTestCase.class,
   SpaceStorageTest.class,
   RelationshipManagerTest.class,
-  CachedRelationshipStorageTestCase.class,
+  JCRCachedRelationshipStorageTestCase.class,
   RelationshipStorageTest.class,
   RelationshipPublisherTest.class,
   RelationshipStorageImplTestCase.class,

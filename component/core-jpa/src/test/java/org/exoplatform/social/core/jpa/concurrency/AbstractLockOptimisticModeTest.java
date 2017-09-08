@@ -16,8 +16,8 @@
  */
 package org.exoplatform.social.core.jpa.concurrency;
 
-import org.exoplatform.social.core.jpa.test.BaseCoreTest;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
+import org.exoplatform.social.core.jpa.test.BaseCoreTest;
 
 /**
  * Created by The eXo Platform SAS

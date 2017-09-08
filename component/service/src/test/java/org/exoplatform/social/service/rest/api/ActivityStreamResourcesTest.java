@@ -58,7 +58,6 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
 
   private Identity rootIdentity, johnIdentity, maryIdentity, demoIdentity;
 
-  private List<Identity> tearDownIdentityList;
   private List<ExoSocialActivity> tearDownActivityList;
   private List<Space> tearDownSpaceList;
   private List<Relationship> tearDownRelationshipList;
@@ -71,24 +70,24 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
   public void setUp() throws Exception {
     super.setUp();
 
-    identityManager = (IdentityManager) getContainer().getComponentInstanceOfType(IdentityManager.class);
-    activityManager = (ActivityManager) getContainer().getComponentInstanceOfType(ActivityManager.class);
-    spaceService = (SpaceService) getContainer().getComponentInstanceOfType(SpaceService.class);
-    relationshipManager = (RelationshipManager) getContainer().getComponentInstanceOfType(RelationshipManager.class);
-    rootIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "root", false);
-    johnIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "john", false);
-    maryIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "mary", false);
-    demoIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "demo", false);
+    identityManager = getContainer().getComponentInstanceOfType(IdentityManager.class);
+    activityManager = getContainer().getComponentInstanceOfType(ActivityManager.class);
+    spaceService = getContainer().getComponentInstanceOfType(SpaceService.class);
+    relationshipManager = getContainer().getComponentInstanceOfType(RelationshipManager.class);
 
-    tearDownIdentityList = new ArrayList<Identity>();
-    tearDownIdentityList.add(rootIdentity);
-    tearDownIdentityList.add(johnIdentity);
-    tearDownIdentityList.add(maryIdentity);
-    tearDownIdentityList.add(demoIdentity);
+    rootIdentity = new Identity(OrganizationIdentityProvider.NAME, "root");
+    johnIdentity = new Identity(OrganizationIdentityProvider.NAME, "john");
+    maryIdentity = new Identity(OrganizationIdentityProvider.NAME, "mary");
+    demoIdentity = new Identity(OrganizationIdentityProvider.NAME, "demo");
 
-    tearDownActivityList = new ArrayList<ExoSocialActivity>();
-    tearDownSpaceList = new ArrayList<Space>();
-    tearDownRelationshipList = new ArrayList<Relationship>();
+    identityManager.saveIdentity(rootIdentity);
+    identityManager.saveIdentity(johnIdentity);
+    identityManager.saveIdentity(maryIdentity);
+    identityManager.saveIdentity(demoIdentity);
+
+    tearDownActivityList = new ArrayList<>();
+    tearDownSpaceList = new ArrayList<>();
+    tearDownRelationshipList = new ArrayList<>();
 
     addResource(ActivityStreamResources.class, null);
   }
@@ -112,9 +111,6 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
       spaceService.deleteSpace(space);
     }
 
-    for (Identity identity : tearDownIdentityList) {
-      identityManager.deleteIdentity(identity);
-    }
     removeResource(ActivityStreamResources.class);
 
     super.tearDown();
@@ -430,7 +426,6 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
     }
   }
 
-
   public void testNumberOfCommentsGetActivityStreamByIdentityWithJsonFormat() throws Exception {
     List<ExoSocialActivity> emptyList = new ArrayList<ExoSocialActivity>();
     // user identity
@@ -713,7 +708,7 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
       compareActivities(demoActivitiesFeed, (ActivityRestListOut) containerResponse4.getEntity());
     }
   }
-  
+
   /**
    * Test {@link ActivityStreamResources#getActivityFeedOfAuthenticated(javax.ws.rs.core.UriInfo, String, String, int, String, String, int, int)}
    * 
@@ -774,7 +769,7 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
       compareActivities(demoActivitiesFeed, (ActivityRestListOut) containerResponse4.getEntity());
     }
   }
-  
+
   /**
    * Test {@link ActivityStreamResources#getActivityFeedOfAuthenticated(javax.ws.rs.core.UriInfo, String, String, int, String, String, int, int)}
    * 
@@ -897,7 +892,7 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
       compareActivities(demoActivitiesFeed, (ActivityRestListOut) containerResponse2.getEntity());
     }
   }
-  
+
   /**
    * Test {@link ActivityStreamResources#getActivityFeedOfAuthenticated(javax.ws.rs.core.UriInfo, String, String, int, String, String, int, int)}
    * 
@@ -973,7 +968,7 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
               numberOfComments);
     }
   }
-  
+
   /**
    * Test {@link ActivityStreamResources#getActivityFeedOfAuthenticated(javax.ws.rs.core.UriInfo, String, String, int, String, String, int, int)}
    * 
@@ -1060,7 +1055,7 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
                            numberOfLikes);
     }
   }
-  
+
   /**
    * Test {@link ActivityStreamResources#getActivityFeedOfAuthenticated(javax.ws.rs.core.UriInfo, String, String, int, String, String, int, int)}
    * 
@@ -1193,7 +1188,6 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
     compareActivities(new ArrayList<ExoSocialActivity>(), (ActivityRestListOut)rsp.getEntity());
     endSession();
   }
-
   /**
    * Tests default get activity stream of connection without any optional query parameters.
    *
@@ -1783,7 +1777,7 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
       compareNumberOfLikes(demoActivities, (ActivityRestListOut) containerResponse2.getEntity(), numberOfLikes);
     }
   }
-  
+
   /**
    * Test
    * {@link ActivityStreamResources#getActivityFeedByTimestampOfAuthenticated(javax.ws.rs.core.UriInfo, String, String, int, Long, Long, int, int)}

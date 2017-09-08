@@ -16,15 +16,6 @@
  */
 package org.exoplatform.social.core.jpa.search;
 
-import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
-
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
-
-import org.mockito.Mockito;
-
 import org.exoplatform.commons.api.search.data.SearchContext;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
@@ -39,6 +30,14 @@ import org.exoplatform.social.core.relationship.model.Relationship;
 import org.exoplatform.social.core.space.impl.DefaultSpaceApplicationHandler;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.storage.api.SpaceStorage;
+import org.mockito.Mockito;
+
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
+
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
 
 /**
  * Created by The eXo Platform SAS Author : eXoPlatform exo@exoplatform.com Sep
@@ -51,6 +50,11 @@ public class SearchTestIT extends BaseESTest {
   private SpaceStorage                              spaceStorage;
   
   private SearchContext searchContext = Mockito.mock(SearchContext.class);
+
+  private Identity rootIdentity;
+  private Identity johnIdentity;
+  private Identity maryIdentity;
+  private Identity demoIdentity;
 
   @Override
   protected void setUp() throws Exception {
@@ -68,6 +72,11 @@ public class SearchTestIT extends BaseESTest {
 
     identityManager = getService(IdentityManager.class);
     spaceStorage = getService(SpaceStorage.class);
+
+    rootIdentity = createIdentity("root");
+    johnIdentity = createIdentity("john");
+    maryIdentity = createIdentity("mary");
+    demoIdentity = createIdentity("demo");
   }
 
   @Override

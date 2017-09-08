@@ -16,12 +16,12 @@
  */
 package org.exoplatform.social.service.rest;
 
-import javax.ws.rs.core.MultivaluedMap;
-
 import org.exoplatform.services.rest.impl.ContainerResponse;
 import org.exoplatform.services.rest.impl.MultivaluedMapImpl;
 import org.exoplatform.services.rest.tools.ByteArrayContainerResponseWriter;
 import org.exoplatform.social.service.test.AbstractResourceTest;
+
+import javax.ws.rs.core.MultivaluedMap;
 
 /**
  * LinkShareRestServiceTest.java
@@ -31,20 +31,18 @@ import org.exoplatform.social.service.test.AbstractResourceTest;
  */
 public class LinkShareRestServiceTest extends AbstractResourceTest {
 
-  static private LinkShareRestService linkShareRestService;
   private final String RIGHT_LINK = "hTTp://google.com";
   private final String WRONG_LINK = "http://google.com/ahgo/ahgoeh";
   public void setUp() throws Exception {
     super.setUp();
 
-    linkShareRestService = new LinkShareRestService();
-    registry(linkShareRestService);
+    addResource(LinkShareRestService.class, null);
   }
 
   public void tearDown() throws Exception {
     super.tearDown();
 
-    unregistry(linkShareRestService);
+    removeResource(LinkShareRestService.class);
   }
 
   public void testJsonRightLink() throws Exception {

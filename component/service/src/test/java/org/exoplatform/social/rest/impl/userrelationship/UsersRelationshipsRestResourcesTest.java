@@ -1,9 +1,8 @@
 package org.exoplatform.social.rest.impl.userrelationship;
 
-import java.util.List;
-
 import org.exoplatform.services.rest.impl.ContainerResponse;
 import org.exoplatform.social.core.identity.model.Identity;
+import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.manager.RelationshipManager;
 import org.exoplatform.social.core.relationship.model.Relationship;
@@ -12,6 +11,9 @@ import org.exoplatform.social.rest.entity.CollectionEntity;
 import org.exoplatform.social.rest.entity.DataEntity;
 import org.exoplatform.social.service.rest.api.VersionResources;
 import org.exoplatform.social.service.test.AbstractResourceTest;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class UsersRelationshipsRestResourcesTest extends AbstractResourceTest {
   private IdentityManager identityManager;
@@ -29,29 +31,28 @@ public class UsersRelationshipsRestResourcesTest extends AbstractResourceTest {
     
     System.setProperty("gatein.email.domain.url", "localhost:8080");
     
-    identityManager = (IdentityManager) getContainer().getComponentInstanceOfType(IdentityManager.class);
-    relationshipManager = (RelationshipManager) getContainer().getComponentInstanceOfType(RelationshipManager.class);
-    
-    rootIdentity = identityManager.getOrCreateIdentity("organization", "root", true);
-    johnIdentity = identityManager.getOrCreateIdentity("organization", "john", true);
-    maryIdentity = identityManager.getOrCreateIdentity("organization", "mary", true);
-    demoIdentity = identityManager.getOrCreateIdentity("organization", "demo", true);
+    identityManager = getContainer().getComponentInstanceOfType(IdentityManager.class);
+    relationshipManager = getContainer().getComponentInstanceOfType(RelationshipManager.class);
+
+    rootIdentity = new Identity(OrganizationIdentityProvider.NAME, "root");
+    johnIdentity = new Identity(OrganizationIdentityProvider.NAME, "john");
+    maryIdentity = new Identity(OrganizationIdentityProvider.NAME, "mary");
+    demoIdentity = new Identity(OrganizationIdentityProvider.NAME, "demo");
+
+    identityManager.saveIdentity(rootIdentity);
+    identityManager.saveIdentity(johnIdentity);
+    identityManager.saveIdentity(maryIdentity);
+    identityManager.saveIdentity(demoIdentity);
     
     usersRelationshipsRestService = new UsersRelationshipsRestResourcesV1();
     registry(usersRelationshipsRestService);
   }
 
   public void tearDown() throws Exception {
-    
-    identityManager.deleteIdentity(rootIdentity);
-    identityManager.deleteIdentity(johnIdentity);
-    identityManager.deleteIdentity(maryIdentity);
-    identityManager.deleteIdentity(demoIdentity);
-    
     super.tearDown();
     removeResource(usersRelationshipsRestService.getClass());
   }
-  
+
   public void testGetUserRelationships() throws Exception {
     Relationship relationship1 = new Relationship(rootIdentity, demoIdentity, Relationship.Type.CONFIRMED);
     relationshipManager.update(relationship1);
@@ -67,15 +68,13 @@ public class UsersRelationshipsRestResourcesTest extends AbstractResourceTest {
     CollectionEntity collections = (CollectionEntity) response.getEntity();
     List<? extends DataEntity> relationships = collections.getEntities();
     assertEquals(3, relationships.size());
-    assertEquals("/rest/" + VersionResources.VERSION_ONE + "/social/users/root", relationships.get(0).get(RestProperties.SENDER));
-    assertEquals("/rest/" + VersionResources.VERSION_ONE + "/social/users/mary", relationships.get(0).get(RestProperties.RECEIVER));
-    
-    //clean
-    relationshipManager.delete(relationship1);
-    relationshipManager.delete(relationship2);
-    relationshipManager.delete(relationship3);
+
+    List<Object> relationshipsIds = relationships.stream().map(relationship -> relationship.get(RestProperties.ID)).collect(Collectors.toList());
+    assertTrue(relationshipsIds.contains(relationship1.getId()));
+    assertTrue(relationshipsIds.contains(relationship2.getId()));
+    assertTrue(relationshipsIds.contains(relationship3.getId()));
   }
-  
+
   public void testCreateUserRelationship() throws Exception {
     startSessionAs("root");
 
@@ -111,13 +110,8 @@ public class UsersRelationshipsRestResourcesTest extends AbstractResourceTest {
     assertEquals("root", rootJohn.getSender().getRemoteId());
     assertEquals("john", rootJohn.getReceiver().getRemoteId());
     assertEquals("IGNORED", rootJohn.getStatus().name());
-
-    //clean
-    relationshipManager.delete(rootDemo);
-    relationshipManager.delete(maryRoot);
-    relationshipManager.delete(rootJohn);
   }
-  
+
   public void testGetUpdateDeleteUserRelationship() throws Exception {
     Relationship relationship = new Relationship(demoIdentity, rootIdentity, Relationship.Type.PENDING);
     relationshipManager.update(relationship);
