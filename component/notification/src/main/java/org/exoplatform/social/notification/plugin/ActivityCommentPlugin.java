@@ -20,6 +20,8 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.apache.commons.lang.StringUtils;
+
 import org.exoplatform.commons.api.notification.NotificationContext;
 import org.exoplatform.commons.api.notification.model.NotificationInfo;
 import org.exoplatform.commons.api.notification.plugin.BaseNotificationPlugin;
@@ -30,23 +32,41 @@ import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
 import org.exoplatform.social.notification.Utils;
 
 public class ActivityCommentPlugin extends BaseNotificationPlugin {
-  
+
+  public static final String ID = "ActivityCommentPlugin";
+
+  protected boolean isSubComment = false;
+
   public ActivityCommentPlugin(InitParams initParams) {
     super(initParams);
   }
-
-  public static final String ID = "ActivityCommentPlugin";
 
   @Override
   public NotificationInfo makeNotification(NotificationContext ctx) {
     ExoSocialActivity comment = ctx.value(SocialNotificationUtils.ACTIVITY);
     ExoSocialActivity activity = Utils.getActivityManager().getParentActivity(comment);
-    //Send notification to all others users who have comment on this activity
-    Set<String> receivers = new HashSet<String>();
-    Utils.sendToCommeters(receivers, activity.getCommentedIds(), comment.getPosterId());
-    Utils.sendToStreamOwner(receivers, activity.getStreamOwner(), comment.getPosterId());
-    Utils.sendToActivityPoster(receivers, activity.getPosterId(), comment.getPosterId());
 
+    Set<String> receivers = new HashSet<String>();
+    if (StringUtils.isNotBlank(comment.getParentCommentId())) {
+      ExoSocialActivity parentComment = Utils.getActivityManager().getActivity(comment.getParentCommentId());
+      String parentCommentUserPosterId = Utils.getUserId(parentComment.getPosterId());
+      if (isSubComment) {
+        // Send notification to parent comment poster
+        Utils.sendToActivityPoster(receivers, parentComment.getPosterId(), comment.getPosterId());
+      } else {
+        // Send notification to all others users who have commented on this activity
+        // except parent comment poster
+        Utils.sendToCommeters(receivers, activity.getCommentedIds(), comment.getPosterId());
+        Utils.sendToStreamOwner(receivers, activity.getStreamOwner(), comment.getPosterId());
+        Utils.sendToActivityPoster(receivers, activity.getPosterId(), comment.getPosterId());
+        receivers.remove(parentCommentUserPosterId);
+      }
+    } else {
+      // Send notification to all others users who have comment on this activity
+      Utils.sendToCommeters(receivers, activity.getCommentedIds(), comment.getPosterId());
+      Utils.sendToStreamOwner(receivers, activity.getStreamOwner(), comment.getPosterId());
+      Utils.sendToActivityPoster(receivers, activity.getPosterId(), comment.getPosterId());
+    }
     //
     return NotificationInfo.instance()
            .to(new ArrayList<String>(receivers))
@@ -66,7 +86,11 @@ public class ActivityCommentPlugin extends BaseNotificationPlugin {
   public boolean isValid(NotificationContext ctx) {
     ExoSocialActivity comment = ctx.value(SocialNotificationUtils.ACTIVITY);
     ExoSocialActivity activity = Utils.getActivityManager().getParentActivity(comment);
-    
+
+    if(isSubComment && comment.getParentCommentId() == null) {
+      return false;
+    }
+
     Identity spaceIdentity = Utils.getIdentityManager().getOrCreateIdentity(SpaceIdentityProvider.NAME, activity.getStreamOwner(), false);
     //if the space is not null and it's not the default activity of space, then it's valid to make notification 
     if (spaceIdentity != null && activity.getPosterId().equals(spaceIdentity.getId())) {

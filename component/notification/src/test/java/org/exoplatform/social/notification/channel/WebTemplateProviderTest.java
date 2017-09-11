@@ -70,6 +70,11 @@ public class WebTemplateProviderTest extends AbstractCoreTest {
     String expected = "war:/intranet-notification/templates/ActivityCommentPlugin.gtmpl";
     assertEquals(expected, actual);
     
+    
+    actual = channel.getTemplateFilePath(PluginKey.key(ActivityReplyToCommentPlugin.ID));
+    expected = "war:/intranet-notification/templates/ActivityReplyToCommentPlugin.gtmpl";
+    assertEquals(expected, actual);
+    
     actual = channel.getTemplateFilePath(PluginKey.key(ActivityMentionPlugin.ID));
     expected = "war:/intranet-notification/templates/ActivityMentionPlugin.gtmpl";
     assertEquals(expected, actual);
@@ -111,6 +116,7 @@ public class WebTemplateProviderTest extends AbstractCoreTest {
     AbstractChannel channel = manager.getChannel(ChannelKey.key(WebChannel.ID));
     assertTrue(channel != null);
     assertTrue(channel.hasTemplateBuilder(PluginKey.key(ActivityCommentPlugin.ID)));
+    assertTrue(channel.hasTemplateBuilder(PluginKey.key(ActivityReplyToCommentPlugin.ID)));
     assertTrue(channel.hasTemplateBuilder(PluginKey.key(ActivityMentionPlugin.ID)));
     assertTrue(channel.hasTemplateBuilder(PluginKey.key(LikePlugin.ID)));
     assertTrue(channel.hasTemplateBuilder(PluginKey.key(NewUserPlugin.ID)));

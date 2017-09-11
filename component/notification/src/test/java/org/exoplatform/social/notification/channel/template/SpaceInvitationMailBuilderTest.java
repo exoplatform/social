@@ -76,7 +76,8 @@ public class SpaceInvitationMailBuilderTest extends AbstractPluginTest {
     
     //Invite user to join space
     spaceService.addInvitedUser(space, maryIdentity.getRemoteId());
-    List<NotificationInfo> list = assertMadeNotifications(1);
+    assertMadeMailDigestNotifications(1);
+    List<NotificationInfo> list = assertMadeMailDigestNotifications(maryIdentity.getRemoteId(), 1);
     
     //assert Message Info
     NotificationContext ctx = NotificationContextImpl.cloneInstance();
@@ -95,7 +96,7 @@ public class SpaceInvitationMailBuilderTest extends AbstractPluginTest {
     Space space = getSpaceInstance(1);
     //Invite user to join space
     spaceService.addInvitedUser(space, maryIdentity.getRemoteId());
-    assertMadeNotifications(0);
+    assertMadeMailDigestNotifications(0);
     
     //ON
     turnON(getPlugin());
@@ -107,7 +108,8 @@ public class SpaceInvitationMailBuilderTest extends AbstractPluginTest {
     spaceService.addInvitedUser(space3, maryIdentity.getRemoteId());
     
     //assert Digest message
-    List<NotificationInfo> ntfs = assertMadeNotifications(2);
+    assertMadeMailDigestNotifications(2);
+    List<NotificationInfo> ntfs = assertMadeMailDigestNotifications(maryIdentity.getRemoteId(), 2);
     List<NotificationInfo> messages = new ArrayList<NotificationInfo>();
     for (NotificationInfo m : ntfs) {
       m.setTo(maryIdentity.getRemoteId());
@@ -130,7 +132,7 @@ public class SpaceInvitationMailBuilderTest extends AbstractPluginTest {
     //Make invitation
     Space space1 = getSpaceInstance(1);
     spaceService.addInvitedUser(space1, maryIdentity.getRemoteId());
-    assertMadeNotifications(0);
+    assertMadeMailDigestNotifications(0);
     
     //ON
     turnFeatureOn();
@@ -140,7 +142,8 @@ public class SpaceInvitationMailBuilderTest extends AbstractPluginTest {
     spaceService.addInvitedUser(space2, maryIdentity.getRemoteId());
     spaceService.addInvitedUser(space3, maryIdentity.getRemoteId());
     //assert Digest message
-    List<NotificationInfo> ntfs = assertMadeNotifications(2);
+    assertMadeMailDigestNotifications(2);
+    List<NotificationInfo> ntfs = assertMadeMailDigestNotifications(maryIdentity.getRemoteId(), 2);
     List<NotificationInfo> messages = new ArrayList<NotificationInfo>();
     for (NotificationInfo m : ntfs) {
       m.setTo(maryIdentity.getRemoteId());
@@ -169,7 +172,8 @@ public class SpaceInvitationMailBuilderTest extends AbstractPluginTest {
     spaceService.addInvitedUser(space5, demoIdentity.getRemoteId());
     
     //assert Digest message
-    List<NotificationInfo> ntfs = assertMadeNotifications(5);
+    assertMadeMailDigestNotifications(5);
+    List<NotificationInfo> ntfs = assertMadeMailDigestNotifications(demoIdentity.getRemoteId(), 5);
     List<NotificationInfo> messages = new ArrayList<NotificationInfo>();
     for (NotificationInfo m : ntfs) {
       m.setTo(demoIdentity.getRemoteId());

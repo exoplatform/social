@@ -90,6 +90,9 @@ public class ExoSocialActivityImpl extends ActivityImpl implements ExoSocialActi
   private String[] commentedIds;
   
   private String posterId;
+
+  //
+  private String parentCommentId;
   
   //
   private String parentId;
@@ -504,6 +507,14 @@ public class ExoSocialActivityImpl extends ActivityImpl implements ExoSocialActi
   @Override
   public void setParentId(String parentId) {
     this.parentId = parentId;
+  }
+
+  public String getParentCommentId() {
+    return parentCommentId;
+  }
+
+  public void setParentCommentId(String parentCommentId) {
+    this.parentCommentId = parentCommentId;
   }
 
   @Override

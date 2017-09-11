@@ -768,11 +768,11 @@ public class SynchronizedActivityStorage extends ActivityStorageImpl {
    * {@inheritDoc}
    */
   @Override
-  public List<ExoSocialActivity> getComments(final ExoSocialActivity existingActivity, final int offset, final int limit) {
+  public List<ExoSocialActivity> getComments(final ExoSocialActivity existingActivity, final boolean loadSubComments, final int offset, final int limit) {
 
     boolean created = startSynchronization();
     try {
-      return super.getComments(existingActivity, offset, limit);
+      return super.getComments(existingActivity, loadSubComments,offset, limit);
     }
     finally {
       stopSynchronization(created);

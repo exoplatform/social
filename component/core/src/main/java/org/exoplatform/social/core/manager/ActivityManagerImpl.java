@@ -160,6 +160,14 @@ public class ActivityManagerImpl implements ActivityManager {
   /**
    * {@inheritDoc}
    */
+  @Override
+  public List<ExoSocialActivity> getSubComments(ExoSocialActivity comment) {
+    return activityStorage.getSubComments(comment);
+  }
+
+  /**
+   * {@inheritDoc}
+   */
   public void updateActivity(ExoSocialActivity existingActivity) {
     activityStorage.updateActivity(existingActivity);
   }
@@ -203,6 +211,14 @@ public class ActivityManagerImpl implements ActivityManager {
     //Just call the Social API to get the activity by Id and then to do by yourself.
     //SOC-5209
     activityLifeCycle.saveComment(newComment);
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public RealtimeListAccess<ExoSocialActivity> getCommentsWithListAccess(ExoSocialActivity existingActivity, boolean loadSubComments) {
+    return new CommentsRealtimeListAccess(activityStorage, existingActivity, loadSubComments);
   }
 
   /**

@@ -549,14 +549,15 @@ public interface ActivityStorage {
 
   /**
    * Gets the comments of an activity with offset, limit.
-   *
+   * If loadSubComments is true, sub comments will be added to the list.
+   * 
    * @param existingActivity
+   * @param loadSubComments
    * @param offset
    * @param limit
    * @return
-   * @since 1.2.0-Beta3
    */
-  public List<ExoSocialActivity> getComments(ExoSocialActivity existingActivity, int offset, int limit);
+  public List<ExoSocialActivity> getComments(ExoSocialActivity existingActivity, boolean loadSubComments, int offset, int limit);
 
   /**
    * Gets the number of comments of an activity.
@@ -1115,4 +1116,12 @@ public interface ActivityStorage {
    * @return
    */
   public List<ExoSocialActivity> getAllActivities(int index, int limit);
+
+  /**
+   * Get all sub comments of a chosen comment
+   * 
+   * @param comment
+   * @return
+   */
+  public List<ExoSocialActivity> getSubComments(ExoSocialActivity comment);
 }

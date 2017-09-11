@@ -64,7 +64,8 @@ public class ActivityMentionWebBuilderTest extends AbstractPluginTest {
   public void testActivityMention() throws Exception {
     //mary post activity on root stream and mention john and demo ==> 3 notifications
     makeActivity(maryIdentity, "hello @john and @demo");
-    List<NotificationInfo> list = assertMadeWebNotifications(3);
+    assertMadeWebNotifications(3);
+    List<NotificationInfo> list = assertMadeWebNotifications(rootIdentity.getRemoteId(), 1);
     NotificationInfo mentionNotification = list.get(2);
     
     //assert Message info
@@ -83,7 +84,8 @@ public class ActivityMentionWebBuilderTest extends AbstractPluginTest {
     //demo post comment on mary's activity and mention to john and root
     makeComment(activity, demoIdentity, "hello @john and @root");
     //2 messages to root and mary for comment and 2 messages to root and john for mention
-    List<NotificationInfo> list = assertMadeWebNotifications(4);
+    assertMadeWebNotifications(3);
+    List<NotificationInfo> list = assertMadeWebNotifications(rootIdentity.getRemoteId(), 2);
     NotificationInfo mentionNotification = list.get(3);
     
     NotificationContext ctx = NotificationContextImpl.cloneInstance();

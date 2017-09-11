@@ -8,6 +8,7 @@ import org.exoplatform.social.notification.plugin.*;
 
 @TemplateConfigs(templates = {
     @TemplateConfig(pluginId = ActivityCommentPlugin.ID, template = "classpath:/notification/templates/ActivityCommentPlugin.gtmpl"),
+    @TemplateConfig(pluginId = ActivityReplyToCommentPlugin.ID, template = "classpath:/notification/templates/ActivityReplyToCommentPlugin.gtmpl"),
     @TemplateConfig(pluginId = ActivityMentionPlugin.ID, template = "classpath:/notification/templates/ActivityMentionPlugin.gtmpl"),
     @TemplateConfig(pluginId = LikePlugin.ID, template = "classpath:/notification/templates/LikePlugin.gtmpl"),
     @TemplateConfig(pluginId = LikeCommentPlugin.ID, template = "classpath:/notification/templates/LikeCommentPlugin.gtmpl"),

@@ -50,9 +50,9 @@ import org.chromattic.api.query.Query;
 import org.chromattic.api.query.QueryBuilder;
 import org.chromattic.api.query.QueryResult;
 import org.chromattic.core.api.ChromatticSessionImpl;
+
 import org.exoplatform.commons.utils.CommonsUtils;
 import org.exoplatform.container.PortalContainer;
-import org.exoplatform.container.component.BaseComponentPlugin;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.ActivityProcessor;
@@ -1687,7 +1687,8 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
   /**
    * {@inheritDoc}
    */
-  public List<ExoSocialActivity> getComments(ExoSocialActivity existingActivity, int offset, int limit) {
+  @Override
+  public List<ExoSocialActivity> getComments(ExoSocialActivity existingActivity, boolean loadSubComments, int offset, int limit) {
 
     List<ExoSocialActivity> activities = new ArrayList<ExoSocialActivity>();
     String[] commentIds = getStorage().getActivity(existingActivity.getId()).getReplyToId();
@@ -3152,5 +3153,10 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     ActivityFilter filter = new ActivityFilter(){};
     //
     return getActivitiesOfIdentities(ActivityBuilderWhere.simple(), filter, index, limit);
+  }
+
+  @Override
+  public List<ExoSocialActivity> getSubComments(ExoSocialActivity comment) {
+    throw new UnsupportedOperationException();
   }
 }

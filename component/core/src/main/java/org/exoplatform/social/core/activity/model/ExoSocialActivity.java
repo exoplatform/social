@@ -260,6 +260,20 @@ public interface ExoSocialActivity extends org.apache.shindig.social.opensocial.
    * @param posterId
    */
   void setPosterId(String posterId);
+
+  /**
+   * Get id of parent activity comment.
+   * 
+   * @return Id of parent activity
+   */
+  String getParentCommentId();
+  
+  /**
+   * Set parent activity comment id
+   * 
+   * @param parentCommentId
+   */
+  void setParentCommentId(String parentCommentId);
   
   /**
    * Get id of parent activity.

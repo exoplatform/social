@@ -302,7 +302,16 @@ public class EntityBuilder {
     updateCachedLastModifiedValue(activity.getUpdated());
     return activityEntity;
   }
-  
+
+  public static boolean expandSubComments(String expand) {
+    if(StringUtils.isNotEmpty(expand)) {
+      List<String> expandFields = Arrays.asList(expand.split(","));
+      return expandFields.contains(RestProperties.SUB_COMMENTS);
+    } else {
+      return false;
+    }
+  }
+
   public static CommentEntity buildEntityFromComment(ExoSocialActivity comment, String restPath, String expand, boolean isBuildList) {
     Identity poster = CommonsUtils.getService(IdentityManager.class).getIdentity(comment.getPosterId(), true);
     CommentEntity commentEntity = new CommentEntity(comment.getId());
@@ -321,7 +330,9 @@ public class EntityBuilder {
     }
     commentEntity.setDataIdentity(identityLink);
     commentEntity.setPoster(poster.getRemoteId());
-    commentEntity.setBody(comment.getTitle());
+    commentEntity.setTitle(comment.getTitle());
+    commentEntity.setBody(comment.getBody() == null ? comment.getTitle() : comment.getBody());
+    commentEntity.setParentCommentId(comment.getParentCommentId());
     commentEntity.setMentions(getActivityMentions(comment, restPath));
     if(expandFields.contains(RestProperties.LIKES)) {
       commentEntity.setLikes(new LinkEntity(buildEntityFromLike(comment, restPath, null, 0, 0)));
@@ -342,7 +353,7 @@ public class EntityBuilder {
   public static List<DataEntity> buildEntityFromComment(ExoSocialActivity activity, String restPath, String expand, int offset, int limit) {
     List<DataEntity> commentsEntity = new ArrayList<DataEntity>();
     ActivityManager activityManager = CommonsUtils.getService(ActivityManager.class);
-    RealtimeListAccess<ExoSocialActivity> listAccess = activityManager.getCommentsWithListAccess(activity);
+    RealtimeListAccess<ExoSocialActivity> listAccess = activityManager.getCommentsWithListAccess(activity, expandSubComments(expand));
     List<ExoSocialActivity> comments = listAccess.loadAsList(offset, limit);
     for (ExoSocialActivity comment : comments) {
       CommentEntity commentInfo = buildEntityFromComment(comment, restPath, expand, true);

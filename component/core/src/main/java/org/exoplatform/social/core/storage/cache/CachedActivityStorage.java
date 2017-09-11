@@ -23,7 +23,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.SortedSet;
 
-import org.exoplatform.container.component.BaseComponentPlugin;
 import org.exoplatform.services.cache.ExoCache;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
@@ -997,15 +996,15 @@ public class CachedActivityStorage implements ActivityStorage {
   /**
    * {@inheritDoc}
    */
-  public List<ExoSocialActivity> getComments(final ExoSocialActivity existingActivity, final int offset, final int limit) {
-    ActivityCountKey key = new ActivityCountKey(existingActivity.getId(), ActivityType.COMMENTS);
+  public List<ExoSocialActivity> getComments(final ExoSocialActivity existingActivity, final boolean loadSubComments, final int offset, final int limit) {
+    ActivityCountKey key = new ActivityCountKey(existingActivity.getId(), loadSubComments ? ActivityType.COMMENTS_AND_SUB_COMMENTS : ActivityType.COMMENTS);
     ListActivitiesKey listKey = new ListActivitiesKey(key, offset, limit);
 
     //
     ListActivitiesData keys = activitiesCache.get(
         new ServiceContext<ListActivitiesData>() {
           public ListActivitiesData execute() {
-            List<ExoSocialActivity> got = storage.getComments(existingActivity, offset, limit);
+            List<ExoSocialActivity> got = storage.getComments(existingActivity, loadSubComments, offset, limit);
             return buildIds(got);
           }
         },
@@ -1950,5 +1949,26 @@ public class CachedActivityStorage implements ActivityStorage {
   @Override
   public List<ExoSocialActivity> getAllActivities(int index, int limit) {
     return storage.getAllActivities(index, limit);
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  public List<ExoSocialActivity> getSubComments(ExoSocialActivity comment) {
+    ActivityCountKey key = new ActivityCountKey(comment.getId(), ActivityType.SUB_COMMENTS);
+    ListActivitiesKey listKey = new ListActivitiesKey(key, 0 , Integer.MAX_VALUE);
+
+    //
+    ListActivitiesData keys = activitiesCache.get(
+        new ServiceContext<ListActivitiesData>() {
+          public ListActivitiesData execute() {
+            List<ExoSocialActivity> got = storage.getSubComments(comment);
+            return buildIds(got);
+          }
+        },
+        listKey);
+
+    //
+    return buildActivities(keys);
   }
 }

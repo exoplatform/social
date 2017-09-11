@@ -75,7 +75,8 @@ public class RequestJoinSpaceMailBuilderTest extends AbstractPluginTest {
     Space space = getSpaceInstance(1);
     //Make request to join space
     spaceService.addPendingUser(space, maryIdentity.getRemoteId());
-    List<NotificationInfo> list = assertMadeNotifications(1);
+    assertMadeMailDigestNotifications(1);
+    List<NotificationInfo> list = assertMadeMailDigestNotifications(rootIdentity.getRemoteId(), 1);
     
     //assert Message Info
     NotificationInfo ntf = list.get(0);
@@ -97,7 +98,7 @@ public class RequestJoinSpaceMailBuilderTest extends AbstractPluginTest {
     Space space = getSpaceInstance(1);
     //Make requests to join space
     spaceService.addPendingUser(space, demoIdentity.getRemoteId());
-    assertMadeNotifications(0);
+    assertMadeMailDigestNotifications(0);
     
     //ON
     turnON(getPlugin());
@@ -106,7 +107,8 @@ public class RequestJoinSpaceMailBuilderTest extends AbstractPluginTest {
     spaceService.addPendingUser(space, johnIdentity.getRemoteId());
     spaceService.addPendingUser(space, maryIdentity.getRemoteId());
     
-    List<NotificationInfo> list = assertMadeNotifications(2);
+    assertMadeMailDigestNotifications(2);
+    List<NotificationInfo> list = assertMadeMailDigestNotifications(rootIdentity.getRemoteId(), 2);
     List<NotificationInfo> messages = new ArrayList<NotificationInfo>();
     for (NotificationInfo m : list) {
       m.setTo(rootIdentity.getRemoteId());
@@ -129,14 +131,15 @@ public class RequestJoinSpaceMailBuilderTest extends AbstractPluginTest {
     Space space = getSpaceInstance(1);
     //Make requests to join space
     spaceService.addPendingUser(space, demoIdentity.getRemoteId());
-    assertMadeNotifications(0);
+    assertMadeMailDigestNotifications(0);
     
     //ON
     turnFeatureOn();
     spaceService.addPendingUser(space, johnIdentity.getRemoteId());
     spaceService.addPendingUser(space, maryIdentity.getRemoteId());
     
-    List<NotificationInfo> list = assertMadeNotifications(2);
+    assertMadeMailDigestNotifications(2);
+    List<NotificationInfo> list = assertMadeMailDigestNotifications(rootIdentity.getRemoteId(), 2);
     List<NotificationInfo> messages = new ArrayList<NotificationInfo>();
     for (NotificationInfo m : list) {
       m.setTo(rootIdentity.getRemoteId());
@@ -158,7 +161,8 @@ public class RequestJoinSpaceMailBuilderTest extends AbstractPluginTest {
     spaceService.addPendingUser(space, johnIdentity.getRemoteId());
     spaceService.addPendingUser(space, maryIdentity.getRemoteId());
     
-    List<NotificationInfo> list = assertMadeNotifications(3);
+    assertMadeMailDigestNotifications(3);
+    List<NotificationInfo> list = assertMadeMailDigestNotifications(rootIdentity.getRemoteId(), 3);
     List<NotificationInfo> messages = new ArrayList<NotificationInfo>();
     for (NotificationInfo m : list) {
       m.setTo(rootIdentity.getRemoteId());

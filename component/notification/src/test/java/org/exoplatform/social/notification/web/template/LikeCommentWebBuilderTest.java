@@ -63,7 +63,8 @@ public class LikeCommentWebBuilderTest extends AbstractPluginTest {
     //STEP 3 like comment
     activityManager.saveLike(comment, demoIdentity);
 
-    List<NotificationInfo> list = assertMadeWebNotifications(1);
+    assertMadeWebNotifications(1);
+    List<NotificationInfo> list = assertMadeWebNotifications(rootIdentity.getRemoteId(), 1);
     NotificationInfo likeNotification = list.get(0);
 
     //STEP 3 assert Message info

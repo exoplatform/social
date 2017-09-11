@@ -63,7 +63,8 @@ public class ReceiveRequestWebBuilderTest extends AbstractPluginTest {
   public void testSimpleCase() throws Exception {
     //
     makeRelationship(demoIdentity, rootIdentity);
-    List<NotificationInfo> list = assertMadeWebNotifications(1);
+    assertMadeWebNotifications(1);
+    List<NotificationInfo> list = assertMadeWebNotifications(rootIdentity.getRemoteId(), 1);
     
     NotificationInfo ntf = list.get(0);
     NotificationContext ctx = NotificationContextImpl.cloneInstance();

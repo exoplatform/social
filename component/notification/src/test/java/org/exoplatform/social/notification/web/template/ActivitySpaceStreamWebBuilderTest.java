@@ -79,8 +79,9 @@ public class ActivitySpaceStreamWebBuilderTest extends AbstractPluginTest {
     activity.setUserId(rootIdentity.getId());
     activityManager.saveActivityNoReturn(spaceIdentity, activity);
     tearDownActivityList.add(activity);
-    
-    List<NotificationInfo> list = assertMadeWebNotifications(3);
+
+    assertMadeWebNotifications(3);
+    List<NotificationInfo> list = assertMadeWebNotifications(rootIdentity.getRemoteId(), 1);
     
     NotificationContext ctx = NotificationContextImpl.cloneInstance();
     NotificationInfo postSpaceNotification = list.get(0);

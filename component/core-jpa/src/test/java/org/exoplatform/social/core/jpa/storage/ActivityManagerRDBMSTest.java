@@ -39,6 +39,8 @@ import org.exoplatform.social.core.space.spi.SpaceService;
 import org.exoplatform.social.core.storage.ActivityStorageException;
 import org.exoplatform.social.core.storage.api.IdentityStorage;
 import org.exoplatform.social.core.storage.impl.StorageUtils;
+
+import org.apache.commons.lang3.StringUtils;
 import org.mockito.Mockito;
 
 import java.util.*;
@@ -436,6 +438,54 @@ public class ActivityManagerRDBMSTest extends AbstractCoreTest {
     assertEquals(comment.getId(), gotParentActivity.getReplyToId()[0]);
 
   }
+
+  /**
+   * Test {@link ActivityManager#saveComment(ExoSocialActivity, ExoSocialActivity)}
+   * 
+   * @throws Exception
+   * @since 1.2.0-Beta3
+   */
+  public void testSaveSubComment() throws Exception {
+    String activityTitle = "activity title";
+    String userId = johnIdentity.getId();
+    ExoSocialActivity activity = new ExoSocialActivityImpl();
+    activity.setTitle(activityTitle);
+    activity.setUserId(userId);
+    activityManager.saveActivityNoReturn(johnIdentity, activity);
+
+    String commentTitle = "Comment title";
+    
+    //demo comments on john's activity
+    ExoSocialActivity comment = new ExoSocialActivityImpl();
+    comment.setTitle(commentTitle);
+    comment.setUserId(demoIdentity.getId());
+    activityManager.saveComment(activity, comment);
+    assertEquals(activity.getId(), comment.getParentId());
+
+    assertTrue(StringUtils.isNotBlank(comment.getId()));
+
+    ExoSocialActivity subComment = new ExoSocialActivityImpl();
+    subComment.setTitle(commentTitle);
+    subComment.setUserId(maryIdentity.getId());
+    subComment.setParentCommentId(comment.getId());
+    activityManager.saveComment(activity, subComment);
+    assertEquals(activity.getId(), subComment.getParentId());
+    assertEquals(comment.getId(), subComment.getParentCommentId());
+    assertNotNull(subComment.getId());
+
+    List<ExoSocialActivity> subComments = activityManager.getSubComments(comment);
+    assertEquals(1, subComments.size());
+    assertEquals(subComment.getId(), subComments.get(0).getId());
+
+    ExoSocialActivity gotParentActivity = activityManager.getParentActivity(subComment);
+    assertNotNull(gotParentActivity);
+    assertEquals(activity.getId(), gotParentActivity.getId());
+    String[] replyToIds = gotParentActivity.getReplyToId();
+    assertEquals(2, replyToIds.length);
+    for (String replyToId : replyToIds) {
+      assertTrue(replyToId.equals(comment.getId()) || replyToId.equals(subComment.getId()));
+    }
+  }
   
   /**
    * Test {@link ActivityManager#getCommentsWithListAccess(ExoSocialActivity)}
@@ -463,6 +513,56 @@ public class ActivityManagerRDBMSTest extends AbstractCoreTest {
     assertEquals("maryComments.getSize() must return: 10", total, maryComments.getSize());
     
   }
+
+  /**
+   * Test {@link ActivityManager#getCommentsWithListAccess(ExoSocialActivity)}
+   * 
+   * @throws Exception
+   * @since 1.2.0-Beta3
+   */
+  public void testGetCommentsAndSubCommentsWithListAccess() throws Exception {
+    ExoSocialActivity demoActivity = new ExoSocialActivityImpl();
+    demoActivity.setTitle("demo activity");
+    demoActivity.setUserId(demoActivity.getId());
+    activityManager.saveActivityNoReturn(demoIdentity, demoActivity);
+
+    int total = 10;
+    int totalWithSubComments = total + total * total;
+    
+    for (int i = 0; i < total; i ++) {
+      ExoSocialActivity maryComment = new ExoSocialActivityImpl();
+      maryComment.setUserId(maryIdentity.getId());
+      maryComment.setTitle("mary comment");
+      activityManager.saveComment(demoActivity, maryComment);
+      for (int j = 0; j < total; j ++) {
+        ExoSocialActivity johnComment = new ExoSocialActivityImpl();
+        johnComment.setUserId(johnIdentity.getId());
+        johnComment.setTitle("john comment" + i + j);
+        johnComment.setParentCommentId(maryComment.getId());
+        activityManager.saveComment(demoActivity, johnComment);
+      }
+    }
+    
+    RealtimeListAccess<ExoSocialActivity> maryComments = activityManager.getCommentsWithListAccess(demoActivity);
+    assertNotNull("maryComments must not be null", maryComments);
+    assertEquals("maryComments.getSize() must return: 10", total, maryComments.getSize());
+
+    RealtimeListAccess<ExoSocialActivity> comments = activityManager.getCommentsWithListAccess(demoActivity, true);
+    assertNotNull("comments must not be null", comments);
+    assertEquals("comments.getSize() must return: 10", total, comments.getSize());
+    
+    ExoSocialActivity[] commentsArray = comments.load(0, total);
+    assertEquals("commentsArray.length must return: 110", totalWithSubComments, commentsArray.length);
+    int index = 0;
+    for (int i = 0; i < total; i ++) {
+      ExoSocialActivity maryComment = commentsArray[index++];
+      assertEquals("Title of comment should be 'mary comment', iteration = " + i,  "mary comment", maryComment.getTitle());
+      for (int j = 0; j < total; j ++) {
+        ExoSocialActivity johnComment = commentsArray[index++];
+        assertEquals("Title of comment should be 'john comment " + i + j +"'",  "john comment" + i +j, johnComment.getTitle());
+      }
+    }
+  }
   
   /**
    * Test {@link ActivityManager#deleteComment(ExoSocialActivity, ExoSocialActivity)}
@@ -484,6 +584,35 @@ public class ActivityManagerRDBMSTest extends AbstractCoreTest {
     activityManager.deleteComment(demoActivity, maryComment);
     
     assertEquals("activityManager.getComments(demoActivity).size() must return: 0", 0, activityManager.getComments(demoActivity).size());
+  }
+
+  /**
+   * Test {@link ActivityManager#deleteComment(ExoSocialActivity, ExoSocialActivity)}
+   * 
+   * @throws Exception
+   * @since 1.2.0-Beta3
+   */
+  public void testDeleteCommentWithSubComments() throws Exception {
+    ExoSocialActivity demoActivity = new ExoSocialActivityImpl();
+    demoActivity.setTitle("demo activity");
+    demoActivity.setUserId(demoActivity.getId());
+    activityManager.saveActivityNoReturn(demoIdentity, demoActivity);
+
+    ExoSocialActivity maryComment = new ExoSocialActivityImpl();
+    maryComment.setTitle("mary comment");
+    maryComment.setUserId(maryIdentity.getId());
+    activityManager.saveComment(demoActivity, maryComment);
+
+    ExoSocialActivity subComment = new ExoSocialActivityImpl();
+    subComment.setTitle("demo comment");
+    subComment.setUserId(demoIdentity.getId());
+    subComment.setParentCommentId(maryComment.getId());
+    activityManager.saveComment(demoActivity, subComment);
+
+    activityManager.deleteComment(demoActivity, maryComment);
+    
+    assertEquals("activityManager.getComments(demoActivity).size() must return: 0", 0, activityManager.getComments(demoActivity).size());
+    assertEquals("activityManager.getComments(demoActivity).size() must return: 0", 0, activityManager.getCommentsWithListAccess(demoActivity, true).getSize());
   }
   
   /**
@@ -1125,6 +1254,64 @@ public class ActivityManagerRDBMSTest extends AbstractCoreTest {
     demoActivity = activityManager.getActivity(demoActivity.getId());
     assertEquals("demoActivity.getLikeIdentityIds().length must return: 0", 0, demoActivity.getLikeIdentityIds().length);
   }
+
+  public void testRemoveLikeSubComment() throws Exception {
+    ExoSocialActivity activity = new ExoSocialActivityImpl();
+    activity.setTitle("hello");
+    activity.setUserId(rootIdentity.getId());
+    activityManager.saveActivityNoReturn(rootIdentity, activity);
+
+    //demo comment on root's activity
+    ExoSocialActivity comment = new ExoSocialActivityImpl();
+    comment.setTitle("demo comment");
+    comment.setUserId(demoIdentity.getId());
+    activityManager.saveComment(activity, comment);
+
+    //mary reply on demo's comment
+    ExoSocialActivity commentReply = new ExoSocialActivityImpl();
+    commentReply.setTitle("mary comment reply");
+    commentReply.setUserId(maryIdentity.getId());
+    commentReply.setParentCommentId(comment.getId());
+    activityManager.saveComment(activity, commentReply);
+
+    //check feed of demo
+    RealtimeListAccess<ExoSocialActivity> demoActivities = activityManager.getActivityFeedWithListAccess(demoIdentity);
+    assertEquals(1, demoActivities.getSize());
+    assertEquals(1, demoActivities.load(0, 10).length);
+
+    //check feed of mary
+    RealtimeListAccess<ExoSocialActivity> maryActivities = activityManager.getActivityFeedWithListAccess(maryIdentity);
+    assertEquals(1, maryActivities.getSize());
+    assertEquals(1, maryActivities.load(0, 10).length);
+
+    //check my activities of demo
+    demoActivities = activityManager.getActivitiesWithListAccess(demoIdentity);
+    assertEquals(1, demoActivities.getSize());
+    assertEquals(1, demoActivities.load(0, 10).length);
+
+    //check my activities of mary
+    maryActivities = activityManager.getActivitiesWithListAccess(maryIdentity);
+    assertEquals(1, maryActivities.getSize());
+    assertEquals(1, maryActivities.load(0, 10).length);
+
+    RealtimeListAccess<ExoSocialActivity> johnActivities = activityManager.getActivityFeedWithListAccess(johnIdentity);
+    assertEquals(0, johnActivities.getSize());
+    assertEquals(0, johnActivities.load(0, 10).length);
+
+    //john like mary comment
+    activityManager.saveLike(commentReply, johnIdentity);
+
+    johnActivities = activityManager.getActivityFeedWithListAccess(johnIdentity);
+    assertEquals(1, johnActivities.getSize());
+    assertEquals(1, johnActivities.load(0, 10).length);
+
+    activityManager.deleteLike(commentReply, johnIdentity);
+
+    //check my activities of demo
+    johnActivities = activityManager.getActivitiesWithListAccess(johnIdentity);
+    assertEquals(0, johnActivities.getSize());
+    assertEquals(0, johnActivities.load(0, 10).length);
+  }
   
   /**
    * Test {@link ActivityManager#getActivitiesCount(Identity)}
@@ -1313,7 +1500,7 @@ public class ActivityManagerRDBMSTest extends AbstractCoreTest {
     assertEquals(1, demoActivities.load(0, 10).length);
 
     //john like root activity
-    activityManager.saveLike(activity, johnIdentity);
+    activityManager.saveLike(comment, johnIdentity);
     
     RealtimeListAccess<ExoSocialActivity> johnActivities = activityManager.getActivityFeedWithListAccess(johnIdentity);
     assertEquals(1, johnActivities.getSize());
@@ -1321,6 +1508,57 @@ public class ActivityManagerRDBMSTest extends AbstractCoreTest {
     
     //check my activities of demo
     johnActivities = activityManager.getActivitiesWithListAccess(johnIdentity);
+    assertEquals(1, johnActivities.getSize());
+    assertEquals(1, johnActivities.load(0, 10).length);
+  }
+
+  public void testLikeSubCommentActivity() throws Exception {
+    ExoSocialActivity activity = new ExoSocialActivityImpl();
+    activity.setTitle("hello");
+    activity.setUserId(rootIdentity.getId());
+    activityManager.saveActivityNoReturn(rootIdentity, activity);
+
+    //demo comment on root's activity
+    ExoSocialActivity comment = new ExoSocialActivityImpl();
+    comment.setTitle("demo comment");
+    comment.setUserId(demoIdentity.getId());
+    activityManager.saveComment(activity, comment);
+
+    //mary reply on demo's comment
+    ExoSocialActivity commentReply = new ExoSocialActivityImpl();
+    commentReply.setTitle("mary comment reply");
+    commentReply.setUserId(maryIdentity.getId());
+    commentReply.setParentCommentId(comment.getId());
+    activityManager.saveComment(activity, commentReply);
+
+    //check feed of demo
+    RealtimeListAccess<ExoSocialActivity> demoActivities = activityManager.getActivityFeedWithListAccess(demoIdentity);
+    assertEquals(1, demoActivities.getSize());
+    assertEquals(1, demoActivities.load(0, 10).length);
+
+    //check feed of mary
+    RealtimeListAccess<ExoSocialActivity> maryActivities = activityManager.getActivityFeedWithListAccess(maryIdentity);
+    assertEquals(1, maryActivities.getSize());
+    assertEquals(1, maryActivities.load(0, 10).length);
+
+    //check my activities of demo
+    demoActivities = activityManager.getActivitiesWithListAccess(demoIdentity);
+    assertEquals(1, demoActivities.getSize());
+    assertEquals(1, demoActivities.load(0, 10).length);
+
+    //check my activities of mary
+    maryActivities = activityManager.getActivitiesWithListAccess(maryIdentity);
+    assertEquals(1, maryActivities.getSize());
+    assertEquals(1, maryActivities.load(0, 10).length);
+
+    RealtimeListAccess<ExoSocialActivity> johnActivities = activityManager.getActivityFeedWithListAccess(johnIdentity);
+    assertEquals(0, johnActivities.getSize());
+    assertEquals(0, johnActivities.load(0, 10).length);
+
+    //john like mary comment
+    activityManager.saveLike(commentReply, johnIdentity);
+
+    johnActivities = activityManager.getActivityFeedWithListAccess(johnIdentity);
     assertEquals(1, johnActivities.getSize());
     assertEquals(1, johnActivities.load(0, 10).length);
   }

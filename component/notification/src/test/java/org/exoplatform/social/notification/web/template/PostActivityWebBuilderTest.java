@@ -64,7 +64,8 @@ public class PostActivityWebBuilderTest extends AbstractPluginTest {
     //STEP 1 post activity
     makeActivity(demoIdentity, "demo post activity on activity stream of root");
     
-    List<NotificationInfo> list = assertMadeWebNotifications(1);
+    assertMadeWebNotifications(1);
+    List<NotificationInfo> list = assertMadeWebNotifications(rootIdentity.getRemoteId(), 1);
     NotificationInfo postActivityNotification = list.get(0);
     
     //STEP 2 assert Message info

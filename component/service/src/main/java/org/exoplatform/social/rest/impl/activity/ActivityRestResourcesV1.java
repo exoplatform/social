@@ -241,7 +241,7 @@ public class ActivityRestResourcesV1 implements ActivityRestResources {
                                         @ApiParam(value = "Limit", required = false, defaultValue = "20") @QueryParam("limit") int limit,
                                         @ApiParam(value = "Returning the number of activities or not", defaultValue = "false") @QueryParam("returnSize") boolean returnSize,
                                         @ApiParam(value = "Asking for a full representation of a specific subresource if any", required = false) @QueryParam("expand") String expand) throws Exception {
-    
+
     offset = offset > 0 ? offset : RestUtils.getOffset(uriInfo);
     limit = limit > 0 ? limit : RestUtils.getLimit(uriInfo);
     
@@ -259,7 +259,7 @@ public class ActivityRestResourcesV1 implements ActivityRestResources {
     }
     
     List<DataEntity> commentsEntity = new ArrayList<DataEntity>();
-    RealtimeListAccess<ExoSocialActivity> listAccess = activityManager.getCommentsWithListAccess(activity);
+    RealtimeListAccess<ExoSocialActivity> listAccess = activityManager.getCommentsWithListAccess(activity, EntityBuilder.expandSubComments(expand));
     List<ExoSocialActivity> comments = listAccess.loadAsList(offset, limit);
     for (ExoSocialActivity comment : comments) {
       CommentEntity commentInfo = EntityBuilder.buildEntityFromComment(comment, uriInfo.getPath(), expand, true);
@@ -309,11 +309,13 @@ public class ActivityRestResourcesV1 implements ActivityRestResources {
     }
     
     ExoSocialActivity comment = new ExoSocialActivityImpl();
+    comment.setBody(model.getBody());
     comment.setTitle(model.getTitle());
+    comment.setParentCommentId(model.getParentCommentId());
     comment.setUserId(currentUser.getId());
     activityManager.saveComment(activity, comment);
     
-    return EntityBuilder.getResponse(EntityBuilder.buildEntityFromActivity(activityManager.getActivity(comment.getId()), uriInfo.getPath(), expand), uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
+    return EntityBuilder.getResponse(EntityBuilder.buildEntityFromComment(activityManager.getActivity(comment.getId()), uriInfo.getPath(), expand, false), uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
   }
   
   @GET

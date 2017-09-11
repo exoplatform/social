@@ -72,7 +72,7 @@ public class ReceiveRequestMailBuilderTest extends AbstractPluginTest {
   public void testSimpleCase() throws Exception {
     //
     makeRelationship(demoIdentity, rootIdentity);
-    List<NotificationInfo> list = assertMadeNotifications(1);
+    List<NotificationInfo> list = assertMadeMailDigestNotifications(rootIdentity.getRemoteId(), 1);
     
     NotificationInfo ntf = list.get(0);
     NotificationContext ctx = NotificationContextImpl.cloneInstance();
@@ -89,7 +89,7 @@ public class ReceiveRequestMailBuilderTest extends AbstractPluginTest {
     turnOFF(getPlugin());
     //
     makeRelationship(johnIdentity, rootIdentity);
-    assertMadeNotifications(0);
+    assertMadeMailDigestNotifications(0);
     
     //ON
     turnON(getPlugin());
@@ -99,7 +99,8 @@ public class ReceiveRequestMailBuilderTest extends AbstractPluginTest {
     makeRelationship(maryIdentity, rootIdentity);
     //
     List<NotificationInfo> messages = new ArrayList<NotificationInfo>();
-    List<NotificationInfo> list = assertMadeNotifications(2);
+    assertMadeMailDigestNotifications(2);
+    List<NotificationInfo> list = assertMadeMailDigestNotifications(rootIdentity.getRemoteId(), 2);
     for (NotificationInfo m : list) {
       m.setTo(rootIdentity.getRemoteId());
       messages.add(m);
@@ -120,7 +121,7 @@ public class ReceiveRequestMailBuilderTest extends AbstractPluginTest {
     turnFeatureOff();
     //
     makeRelationship(demoIdentity, rootIdentity);
-    assertMadeNotifications(0);
+    assertMadeMailDigestNotifications(0);
     
     //ON
     turnFeatureOn();
@@ -130,7 +131,8 @@ public class ReceiveRequestMailBuilderTest extends AbstractPluginTest {
     makeRelationship(maryIdentity, rootIdentity);
     //
     List<NotificationInfo> messages = new ArrayList<NotificationInfo>();
-    List<NotificationInfo> list = assertMadeNotifications(2);
+    assertMadeMailDigestNotifications(2);
+    List<NotificationInfo> list = assertMadeMailDigestNotifications(rootIdentity.getRemoteId(), 2);
     for (NotificationInfo m : list) {
       m.setTo(rootIdentity.getRemoteId());
       messages.add(m);
@@ -154,7 +156,8 @@ public class ReceiveRequestMailBuilderTest extends AbstractPluginTest {
     
     //
     List<NotificationInfo> messages = new ArrayList<NotificationInfo>();
-    List<NotificationInfo> list = assertMadeNotifications(3);
+    assertMadeMailDigestNotifications(3);
+    List<NotificationInfo> list = assertMadeMailDigestNotifications(rootIdentity.getRemoteId(), 3);
     for (NotificationInfo m : list) {
       m.setTo(rootIdentity.getRemoteId());
       messages.add(m);

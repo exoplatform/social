@@ -43,6 +43,22 @@ public class CommentsRealtimeListAccess implements RealtimeListAccess<ExoSocialA
    */
   private ExoSocialActivity existingActivity;
 
+  /**
+   * whether load subComments or not
+   */
+  private boolean loadSubComments = false;
+
+  /**
+   * The constructor.
+   *
+   * @param theActivityStorage
+   * @param theExistingActivity
+   */
+  public CommentsRealtimeListAccess(ActivityStorage theActivityStorage, ExoSocialActivity theExistingActivity, boolean loadSubComments) {
+    this.activityStorage = theActivityStorage;
+    this.existingActivity = theExistingActivity;
+    this.loadSubComments = loadSubComments;
+  }
 
   /**
    * The constructor.
@@ -64,7 +80,7 @@ public class CommentsRealtimeListAccess implements RealtimeListAccess<ExoSocialA
    * {@inheritDoc}
    */
   public List<ExoSocialActivity> loadAsList(int index, int limit) {
-    return activityStorage.getComments(existingActivity, index, limit);
+    return activityStorage.getComments(existingActivity, loadSubComments, index, limit);
   }
 
   /**

@@ -76,7 +76,8 @@ public class ActivityCommentWebBuilderTest extends AbstractPluginTest {
     makeComment(activity, demoIdentity, COMMENT_TITLE);
     //assert equals = 2 because root is stream owner, and mary is activity's poster
     //then when add commnent need to notify to root and mary
-    List<NotificationInfo> list = assertMadeWebNotifications(2);
+    assertMadeWebNotifications(2);
+    List<NotificationInfo> list = assertMadeWebNotifications(rootIdentity.getRemoteId(), 2);
     NotificationInfo commentNotification = list.get(0);
     //STEP 3 assert Message info
     

@@ -134,14 +134,14 @@ public abstract class AbstractPluginTest extends AbstractCoreTest {
    * Makes the notification message and retrieve from MockNotificationService
    * @return
    */
-  protected NotificationInfo getNotificationInfo() {
-    List<NotificationInfo> list = notificationService.storeDigestJCR();
+  protected NotificationInfo getNotificationInfo(String username) {
+    List<NotificationInfo> list = notificationService.storeDigestJCR(username);
     assertTrue(list.size() > 0);
     return list.get(0);
   }
   
-  protected List<NotificationInfo> getNotificationInfos() {
-    return notificationService.storeDigestJCR();
+  protected List<NotificationInfo> getNotificationInfos(String username) {
+    return notificationService.storeDigestJCR(username);
   }
   
   /**
@@ -159,7 +159,8 @@ public abstract class AbstractPluginTest extends AbstractCoreTest {
    * @param includedString
    */
   protected void assertBody(MessageInfo message, String includedString) {
-    assertTrue(message.getBody().indexOf(includedString) > 0);
+    assertTrue("body = '" + message.getBody() + "' \r\n doesn't contain\r\n " + includedString,
+               message.getBody().indexOf(includedString) > 0);
   }
   
   /**
@@ -171,41 +172,53 @@ public abstract class AbstractPluginTest extends AbstractCoreTest {
     assertEquals(includedString, writer.toString().replaceAll("\\<.*?>", ""));
   }
   
+  /**
+   * Asserts the number of notification what made by the plugins.
+   * @param number
+   */
+  protected void assertMadeMailDigestNotifications(int number) {
+    UserSetting setting = userSettingService.get(rootIdentity.getRemoteId());
+    if (setting.isInDaily(getPlugin().getKey().getId())) {
+      assertEquals(number, notificationService.sizeOfDigestJCR());
+    }
+  }
 
   /**
    * Asserts the number of notification what made by the plugins.
    * @param number
    */
-  protected List<NotificationInfo> assertMadeNotifications(int number) {
-    //get notification then clear the notification list
-    UserSetting setting = userSettingService.get(rootIdentity.getRemoteId());
-    List<NotificationInfo> got = notificationService.storeDigestJCR();
+  protected List<NotificationInfo> assertMadeMailDigestNotifications(String username, int number) {
+    UserSetting setting = userSettingService.get(username);
+    List<NotificationInfo> got = notificationService.storeDigestJCR(username);
     if (setting.isActive(UserSetting.EMAIL_CHANNEL, getPlugin().getKey().getId())) {
-      got = notificationService.storeInstantly();
+      got = notificationService.storeInstantly(username);
       assertEquals(number, got.size());
     }
-    //
-    if (setting.isInDaily(getPlugin().getKey().getId())) {
-      got = notificationService.storeDigestJCR();
-      assertEquals(number, got.size());
-    }
-    
     return got;
   }
-  
+
   /**
    * Asserts the number of web's notifications what made by the plugins.
    * @param number
    */
-  protected List<NotificationInfo> assertMadeWebNotifications(int number) {
-    //get web's notification then clear the notification list
+  protected void assertMadeWebNotifications(int number) {
     UserSetting setting = userSettingService.get(rootIdentity.getRemoteId());
-    List<NotificationInfo> got = notificationService.storeWebNotifs();
     if (setting.isActive(WebChannel.ID, getPlugin().getKey().getId())) {
-      got = notificationService.storeWebNotifs();
+      assertEquals(number, notificationService.sizeOfWebNotifs());
+    }
+  }
+
+  /**
+   * Asserts the number of web's notifications what made by the plugins.
+   * @param number
+   */
+  protected List<NotificationInfo> assertMadeWebNotifications(String username, int number) {
+    UserSetting setting = userSettingService.get(username);
+    List<NotificationInfo> got = notificationService.storeWebNotifs(username);
+    if (setting.isActive(WebChannel.ID, getPlugin().getKey().getId())) {
+      got = notificationService.storeWebNotifs(username);
       assertEquals(number, got.size());
     }
-    
     return got;
   }
   
@@ -261,6 +274,25 @@ public abstract class AbstractPluginTest extends AbstractCoreTest {
       relationshipManager.delete(relationship);
       tearDownRelationshipList.remove(relationship);
     }
+  }
+
+  /**
+   * Makes a comment reply used for Test Case
+   * 
+   * @param activity
+   * @param commenter
+   * @param commentTitle
+   * @param parentCommentId
+   * @return
+   */
+  protected ExoSocialActivity makeCommentReply(ExoSocialActivity activity, Identity commenter, String commentTitle, String parentCommentId) {
+    ExoSocialActivity comment = new ExoSocialActivityImpl();
+    comment.setTitle(commentTitle);
+    comment.setUserId(commenter.getId());
+    comment.setParentCommentId(parentCommentId);
+    activityManager.saveComment(activity, comment);
+
+    return comment;
   }
 
   /**
@@ -374,6 +406,7 @@ public abstract class AbstractPluginTest extends AbstractCoreTest {
     List<String> instantly = new ArrayList<String>();
     instantly.add(PostActivityPlugin.ID);
     instantly.add(ActivityCommentPlugin.ID);
+    instantly.add(ActivityReplyToCommentPlugin.ID);
     instantly.add(ActivityMentionPlugin.ID);
     instantly.add(LikePlugin.ID);
     instantly.add(LikeCommentPlugin.ID);
@@ -385,6 +418,7 @@ public abstract class AbstractPluginTest extends AbstractCoreTest {
     List<String> daily = new ArrayList<String>();
     daily.add(PostActivityPlugin.ID);
     daily.add(ActivityCommentPlugin.ID);
+    daily.add(ActivityReplyToCommentPlugin.ID);
     daily.add(ActivityMentionPlugin.ID);
     daily.add(LikePlugin.ID);
     daily.add(RequestJoinSpacePlugin.ID);
@@ -396,6 +430,7 @@ public abstract class AbstractPluginTest extends AbstractCoreTest {
     List<String> weekly = new ArrayList<String>();
     weekly.add(PostActivityPlugin.ID);
     weekly.add(ActivityCommentPlugin.ID);
+    daily.add(ActivityReplyToCommentPlugin.ID);
     weekly.add(ActivityMentionPlugin.ID);
     weekly.add(LikePlugin.ID);
     weekly.add(RequestJoinSpacePlugin.ID);
@@ -407,6 +442,7 @@ public abstract class AbstractPluginTest extends AbstractCoreTest {
     webNotifs.add(NewUserPlugin.ID);
     webNotifs.add(PostActivityPlugin.ID);
     webNotifs.add(ActivityCommentPlugin.ID);
+    webNotifs.add(ActivityReplyToCommentPlugin.ID);
     webNotifs.add(ActivityMentionPlugin.ID);
     webNotifs.add(LikePlugin.ID);
     webNotifs.add(LikeCommentPlugin.ID);

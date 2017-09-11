@@ -110,4 +110,13 @@ public class CommentEntity extends BaseEntity {
     return getString("likes");
   }
 
+  public CommentEntity setParentCommentId(String parentCommentId) {
+    setProperty("parentCommentId", parentCommentId);
+    return this;
+  }
+
+  public String getParentCommentId() {
+    return getString("parentCommentId");
+  }
+
 }
