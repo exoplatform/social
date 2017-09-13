@@ -329,6 +329,9 @@
     <depends>
       <module>webui</module>
     </depends>
+    <depends>
+      <module>social-ui-activity-composer</module>
+    </depends>
   </module>
 
   <module>

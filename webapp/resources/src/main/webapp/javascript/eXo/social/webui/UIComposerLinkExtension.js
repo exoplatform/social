@@ -19,7 +19,7 @@
  * UIComposerLinkExtension.js
  */
 
-(function($) { 
+(function($, UIComposer) {
 	var UIComposerLinkExtension = {
 	  HTTP: "http://",
 	  GRAY_COLOR: "gray",
@@ -32,13 +32,13 @@
 	    title = this.linkData.title;
 	    image = this.linkData.image;
 	    description = this.linkData.description;
-      var queryString = 'link=' + link + '&title=' + title 
+      var queryString = 'link=' + link + '&title=' + title
           + '&description=' + description;
-	    
+
 	    if(image != null){
 	        queryString += '&image='+encodeURIComponent(image)
 	    }
-	
+
 	    var url = this.changeLinkContentUrl.replace(/&amp;/g, "&") + "&ajaxRequest=true";
 	    ajaxRequest('POST', url, true, queryString);
 	  },
@@ -57,7 +57,7 @@
 	      editableEl.attr('class', 'InputDescription');
 	      editableEl.attr('className', 'InputDescription');
 	    }
-	
+
 	    editableEl.insertAfter(dataElement);
 	    dataElement.hide();
 	    editableEl.focus();
@@ -69,12 +69,12 @@
 	    editableEl.blur(function(e){
 	      updateElement(this);
 	    });
-	
+
 	    var updateElement = function(editableEl) {
 	        //hide this, set new value and display
 	        var oldEl = $(editableEl).prev();
 	        oldEl.text($(editableEl).val()).html();
-	        
+
 	        //updates data
 	        //detects element by class, if class contains ContentTitle -> update title,
 	        // if class contains ContentDescription -> update description
@@ -114,15 +114,23 @@
 	    }
 	  },
 	  resetIsReady: function() {
-	    
+
 	    if (this.linkInfoDisplayed) {
-	      
+
 	    } else {
-	
+
 	    }
 	  },
+	  hasContent : function() {
+	    return this.linkInfoDisplayed && $('.UILinkActivityComposer').hasClass('ActivityComposerExtItemSelected');
+	  },
 	  init: function() {
-	      
+	    if (!this.initialized) {
+	        UIComposer.addPlugin(this);
+	        this.initialized = true;
+	    }
+	    UIComposer.refreshShareButton();
+
 	    function showThumbnail() {
 	      for (var i = 0, l = this.images.length; i < l; i++) {
 	        $(this.images[i]).css({'display': 'none', 'height': '100px','width': '100px', 'padding': '10px'});
@@ -130,11 +138,11 @@
 	      $(this.images[this.shownThumbnailIndex]).css({'display': 'block', 'height': '100px','width': '100px', 'padding': '10px'});
 	      doStats.apply(this);
 	    }
-	    
+
 	    function doStats() {
 	      this.stats.html((this.shownThumbnailIndex + 1) + ' / ' + this.images.length);
 	    }
-	
+
 	    UIComposerLinkExtension = this;
 	    if (this.linkInfoDisplayed) {
 	      this.uiThumbnailDisplay = $('#' + this.uiThumbnailDisplayId);
@@ -144,26 +152,26 @@
 	      this.stats = $('#' + this.statsId);
 	      this.linkTitle = $('#' + 'LinkTitle');
 	      this.linkDescription = $('#' + 'LinkDescription');
-	      
+
 	      var titleParam = this.titleEditable;
 	      if (this.linkTitle) {
 	        this.linkTitle.on('dblclick', function(evt) {
 	          UIComposerLinkExtension.addEditableText(this, 'input', titleParam);
 	        });
 	      }
-	      
+
 	      if (this.linkDescription) {
 	        this.linkDescription.on('dblclick', function(evt) {
 	          UIComposerLinkExtension.addEditableText(this, 'textarea', titleParam);
 	        });
 	      }
-	      
+
 	      if (this.thumbnails) {
 	        this.thumbnailCheckbox = $('#' + this.thumbnailCheckboxId);
 	        this.images = $('img',this.thumbnails);
 	        doStats.apply(this);
 	        showThumbnail.apply(UIComposerLinkExtension);
-	
+
 	        this.backThumbnail.on('click', function(evt) {
 	          if (UIComposerLinkExtension.shownThumbnailIndex > 0) {
 	            UIComposerLinkExtension.shownThumbnailIndex--;
@@ -172,7 +180,7 @@
 	            UIComposerLinkExtension.changeLinkContent.apply(UIComposerLinkExtension);
 	          }
 	        });
-	        
+
 	        this.nextThumbnail.on('click', function(evt) {
 	          if (UIComposerLinkExtension.shownThumbnailIndex < UIComposerLinkExtension.images.length - 1) {
 	            UIComposerLinkExtension.shownThumbnailIndex++;
@@ -181,7 +189,7 @@
 	            UIComposerLinkExtension.changeLinkContent.apply(UIComposerLinkExtension);
 	          }
 	        });
-	        
+
 	        this.thumbnailCheckbox.on('click', function(evt) {
 	          if (UIComposerLinkExtension.thumbnailCheckbox.attr('checked') == 'checked') {
 	            UIComposerLinkExtension.linkData.image = '';
@@ -199,7 +207,7 @@
 	      } else {
 	        this.images = [];
 	      }
-	
+
 	    } else {
 	      this.inputLink = $('#' + this.inputLinkId);
 	      this.inputLink.attr("placeholder", "https://");
@@ -214,7 +222,7 @@
 	          $(attachBtn).click();
 	        }
 	      });
-	      
+
 	      this.attachButton.removeAttr('disabled');
 	      var called = false;
 	      this.attachButton.on( 'click', function(evt) {
@@ -230,15 +238,15 @@
 	              $('textarea#composerInput').exoMentions('showButton', function() {});
 	            } catch (e) {}
 	          });
-	          setTimeout(function(){ 
+	          setTimeout(function(){
 	            called = false;
 	          },3000);
             }
 	      });
-	      
+
 	    }
-	    
-	           
+
+
 	    var closeButton = $('#UIActivityComposerContainer').find('a.uiIconClose:first');
 	    if(closeButton.length > 0) {
 	       closeButton.on('click', function() {
@@ -247,6 +255,6 @@
 	    }
 	  }
 	};
- 
+
   return UIComposerLinkExtension;
-})($);
+})($, socialUiActivityComposer);

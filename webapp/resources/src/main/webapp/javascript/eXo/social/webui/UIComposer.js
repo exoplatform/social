@@ -57,8 +57,32 @@
       UIComposer.spaceURL = params.spaceURL;
       UIComposer.userTyped = false;
     },
-    init : function() {
+    plugins : [],
+    addPlugin : function(plugin) {
+        UIComposer.plugins.push(plugin);
+    },
+    hasContent : function() {
+        if (UIComposer.plugins.length) {
+            var has = false;
+            $(UIComposer.plugins).each(function(idx, plugin) {
+                has = has || plugin.hasContent();
+            });
+            return has;
+        } else {
+            return true;
+        }
+    },
+    refreshShareButton : function() {
+        var composerInput = $('#composerInput');
+        var newData = composerInput.ckeditor().editor.getData();
+        var pureText = newData? newData.replace(/<[^img>]*>/g, "").replace(/&nbsp;/g,"").trim() : "";
 
+        var disable = !(pureText.length > 0 && pureText.length <= UIComposer.MAX_LENGTH);
+
+        disabled = disable && !UIComposer.hasContent();
+        $("#ShareButton").prop("disabled", disabled);
+    },
+    init : function() {
         UIComposer.composer = $('#' + UIComposer.composerId);
 
         var windowWidth = $(window).width();
@@ -82,18 +106,14 @@
           on : {
             instanceReady : function ( evt ) {
               // Hide the editor toolbar
-              $("#ShareButton").prop("disabled", true);
+              UIComposer.refreshShareButton();
             },
             change: function( evt) {
+                UIComposer.refreshShareButton();
                 var newData = evt.editor.getData();
-                var pureText = newData? newData.replace(/<[^>]*>/g, "").replace(/&nbsp;/g,"").trim() : "";
+                var pureText = newData? newData.replace(/<[^img>]*>/g, "").replace(/&nbsp;/g,"").trim() : "";
 
-                if (pureText.length > 0 && pureText.length <= UIComposer.MAX_LENGTH) {
-                    $(".share-button").removeAttr("disabled");
-                } else {
-                    $(".share-button").prop("disabled", true);
-                }
-                
+
                 if (pureText.length <= UIComposer.MAX_LENGTH) {
                     evt.editor.getCommand('simpleImage').enable();
                     $('.composerLimited').addClass('hide');
