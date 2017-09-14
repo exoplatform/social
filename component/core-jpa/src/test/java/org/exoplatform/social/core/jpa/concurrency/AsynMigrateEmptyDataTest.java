@@ -26,8 +26,6 @@ import org.exoplatform.social.core.jpa.updater.MigrationContext;
  */
 public class AsynMigrateEmptyDataTest extends AbstractAsynMigrationTest {
   public void testMigrationEmptyData() throws Exception {
-    end();
-    begin();
     //
     rdbmsMigrationManager.start();
     //

@@ -35,8 +35,6 @@ import org.exoplatform.social.core.relationship.model.Relationship;
 public class AsynMigrateActivitiesTest extends AbstractAsynMigrationTest {
   @MaxQueryNumber(36990)
   public void testMigrationActivities() throws Exception {
-    end();
-    begin();
     // create jcr data
     LOG.info("Create connection for root,john,mary and demo");
     rootIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "root", false);
