@@ -59,7 +59,6 @@ public class IdentityStorageTest extends AbstractCoreTest {
     assertNotNull("identityStorage must not be null", identityStorage);
     tearDownIdentityList = new ArrayList<Identity>();
     tearDownSpaceList = new ArrayList<Space>();
-    begin();
   }
 
   /**
