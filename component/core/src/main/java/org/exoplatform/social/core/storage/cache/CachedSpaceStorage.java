@@ -1264,7 +1264,6 @@ public class CachedSpaceStorage implements SpaceStorage {
           public SpaceSimpleData execute() {
             Space space = storage.getSpaceSimpleById(id);
             if (space != null) {
-              putSpaceInCacheIfNotExists(space);
               return new SpaceSimpleData(space);
             }
             else {

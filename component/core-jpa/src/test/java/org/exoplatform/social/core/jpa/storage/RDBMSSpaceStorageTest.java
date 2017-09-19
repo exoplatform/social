@@ -21,14 +21,17 @@ import java.util.List;
 import org.exoplatform.social.core.space.SpaceFilter;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.storage.api.SpaceStorage;
+import org.exoplatform.social.core.storage.cache.SocialStorageCacheService;
 
 public class RDBMSSpaceStorageTest extends SpaceStorageTest {
   private SpaceStorage spaceStorage;
+  private SocialStorageCacheService cacheService;
 
   @Override
   protected void setUp() throws Exception {
     super.setUp();
     spaceStorage = getService(SpaceStorage.class);
+    cacheService = getService(SocialStorageCacheService.class);
   }
 
   @Override
@@ -90,5 +93,34 @@ public class RDBMSSpaceStorageTest extends SpaceStorageTest {
 
     spaceStorage.deleteSpace(space2.getId());
     spaceStorage.deleteSpace(space3.getId());
+  }
+
+  public void testGetLastAccessedSpace() {
+    //create a new space
+    Space space = getSpaceInstance(1);
+    spaceStorage.saveSpace(space,true);
+    // Update space accessed
+    spaceStorage.updateSpaceAccessed("raul",space);
+    cacheService.getSpacesCache().clearCache();
+
+    SpaceFilter filter = new SpaceFilter();
+    filter.setRemoteId("raul");
+    // Get last accessed space list , this will fill all the caches with a complete SpaceData
+    spaceStorage.getLastAccessedSpace(filter,0,10);
+    // clear SpaceCache and SpaceSimpleCache
+    cacheService.getSpaceCache().clearCache();
+    cacheService.getSpaceSimpleCache().clearCache();
+    //Get last accessed space list again, this will fill both SimpleSpaceCache and SpaceCache with a SpaceSimpleData
+    //that has members and managers set to null by the function putSpaceInCacheIfNotExists
+    spaceStorage.getLastAccessedSpace(filter,0,10);
+
+    //Get the space from SpaceCache, this will retrieve a SpaceSimpleData object with managers and members set to null
+    Space spaceFromCache = spaceStorage.getSpaceById(space.getId());
+
+    // Check that the space should have 3 members and 2 managers
+    assertNotNull(spaceFromCache.getMembers());
+    assertEquals(5,spaceFromCache.getMembers().length);
+    assertNotNull(spaceFromCache.getManagers());
+    assertEquals(2,spaceFromCache.getManagers().length);
   }
 }
