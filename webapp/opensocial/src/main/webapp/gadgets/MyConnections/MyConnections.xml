@@ -41,7 +41,7 @@
   	<script type="text/javascript" src="/social-resources/javascript/debug.js"></script>
   	<script type="text/javascript" src="/social-resources/javascript/eXo/social/SocialUtil.js"></script>
   	
-  	<script type="text/javascript" src="script/eXo/social/jquery-1.6.1.js"></script>
+  	<script type="text/javascript" src="/eXoResources/javascript/jquery-3.2.1.js"></script>
   	<script type="text/javascript" src="script/eXo/social/jquery-ui-1.18.12.js"></script>
   	
   	<script type="text/javascript" src="script/eXo/social/Locale.js"></script>
@@ -95,7 +95,7 @@
   	<script type="text/javascript" src="/social-resources/javascript/debug.js"></script>
   	<script type="text/javascript" src="/social-resources/javascript/eXo/social/SocialUtil.js"></script>
   	
-  	<script type="text/javascript" src="script/eXo/social/jquery-1.6.1.js"></script>
+  	<script type="text/javascript" src="/eXoResources/javascript/jquery-3.2.1.js"></script>
   	<script type="text/javascript" src="script/eXo/social/jquery-ui-1.18.12.js"></script>
 		<script type="text/javascript" src="script/eXo/social/Locale.js"></script>
   	<script type="text/javascript" src="script/eXo/social/Configuration.js"></script>
