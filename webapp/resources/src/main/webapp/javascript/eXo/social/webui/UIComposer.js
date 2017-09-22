@@ -73,14 +73,17 @@
         }
     },
     refreshShareButton : function() {
-        var composerInput = $('#composerInput');
-        var newData = composerInput.ckeditor().editor.getData();
-        var pureText = newData? newData.replace(/<[^img>]*>/g, "").replace(/&nbsp;/g,"").trim() : "";
+        var pureText = UIComposer.getEditorData();
 
         var disable = !(pureText.length > 0 && pureText.length <= UIComposer.MAX_LENGTH);
-
         disabled = disable && !UIComposer.hasContent();
         $("#ShareButton").prop("disabled", disabled);
+    },
+    getEditorData : function() {
+      var composerInput = $('#composerInput');
+      var newData = composerInput.ckeditor().editor.getData();
+      var pureText = newData? newData.replace(/<[^img>]*>/g, "").replace(/&nbsp;/g,"").trim() : "";
+      return pureText;
     },
     init : function() {
         UIComposer.composer = $('#' + UIComposer.composerId);
@@ -104,15 +107,12 @@
           typeOfRelation: 'mention_activity_stream',
           spaceURL: UIComposer.spaceURL,
           on : {
-            instanceReady : function ( evt ) {
-              // Hide the editor toolbar
+            instanceReady : function ( evt ) {             
               UIComposer.refreshShareButton();
             },
             change: function( evt) {
                 UIComposer.refreshShareButton();
-                var newData = evt.editor.getData();
-                var pureText = newData? newData.replace(/<[^img>]*>/g, "").replace(/&nbsp;/g,"").trim() : "";
-
+                var pureText = UIComposer.getEditorData();
 
                 if (pureText.length <= UIComposer.MAX_LENGTH) {
                     evt.editor.getCommand('simpleImage').enable();
@@ -123,8 +123,7 @@
                 }
             },
             key: function( evt) {
-                var newData = evt.editor.getData();
-                var pureText = newData? newData.replace(/<[^>]*>/g, "").replace(/&nbsp;/g,"").trim() : "";
+                var pureText = UIComposer.getEditorData();
                 if (pureText.length > UIComposer.MAX_LENGTH) {
                     if ([8, 46, 33, 34, 35, 36, 37,38,39,40].indexOf(evt.data.keyCode) < 0) {
                         evt.cancel();
