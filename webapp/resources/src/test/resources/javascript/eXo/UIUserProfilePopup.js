@@ -224,21 +224,22 @@
                     } else {
                         $.ajax({
                             type:"GET",
-                            url:restUrl
-                        }).complete(function (jqXHR) {
-                                    if (jqXHR.readyState === 4) {
-                                        var userData = $.parseJSON(jqXHR.responseText);
+                            url:restUrl,
+                            complete: function (jqXHR) {
+                              if (jqXHR.readyState === 4) {
+                                var userData = $.parseJSON(jqXHR.responseText);
 
-                                        if (!userData) {
-                                            return;
-                                        }
+                                if (!userData) {
+                                  return;
+                                }
 
 //
-                                        putToCache(userId, userData);
+                                putToCache(userId, userData);
 
-                                        buildPopup(userData, userId);
-                                    }
-                                });
+                                buildPopup(userData, userId);
+                              }
+                            }
+                        });
                     }
                 }
 
@@ -397,17 +398,18 @@
 
                     $.ajax({
                         type:"GET",
-                        url:opts.restURL.replace('{0}', ownerUserId) + '?updatedType=' + updatedType
-                    }).complete(function (jqXHR) {
-                                if (jqXHR.readyState === 4) {
-                                    var popup = $(el).closest('#tiptip_holder');
-                                    popup.fadeOut('fast', function () {
-                                    });
+                        url:opts.restURL.replace('{0}', ownerUserId) + '?updatedType=' + updatedType,
+                        complete: function (jqXHR) {
+                          if (jqXHR.readyState === 4) {
+                            var popup = $(el).closest('#tiptip_holder');
+                            popup.fadeOut('fast', function () {
+                            });
 
 // clear cache
-                                    clearCache();
-                                }
-                            });
+                            clearCache();
+                          }
+                        }
+                    });
                 }
 
                 function putToCache(key, data) {
