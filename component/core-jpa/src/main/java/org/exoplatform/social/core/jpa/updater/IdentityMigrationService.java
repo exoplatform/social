@@ -156,7 +156,10 @@ public class IdentityMigrationService extends AbstractMigrationService<Identity>
               long t1 = System.currentTimeMillis();
 
               String jcrid = identityNode.getUUID();
-              if(!identityNode.hasProperty("soc:isDeleted") || !identityNode.getProperty("soc:isDeleted").getBoolean()) {
+              if((identityNode.hasProperty("soc:providerId") && identityNode.getProperty("soc:providerId").getString().equals(OrganizationIdentityProvider.NAME)) ||
+                !identityNode.hasProperty("soc:isDeleted") || !identityNode.getProperty("soc:isDeleted").getBoolean()) {
+                //SOC-5828 : if identity is user, we migrated it even if the user is deleted
+                //if identity is space and deleted, we don't migrated it
                 try {
                   Identity identity = migrateIdentity(identityNode, jcrid);
 

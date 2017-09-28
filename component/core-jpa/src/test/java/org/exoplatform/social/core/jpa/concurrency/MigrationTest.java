@@ -271,14 +271,31 @@ public class MigrationTest extends BaseCoreTest {
 
     end();
     begin();
-    identityMigrationService.start();
     switchToUseJPAStorage();
+    identityMigrationService.start();
 
     Space s1 = spaceStorage.getSpaceByPrettyName(space.getPrettyName());
     assertNull(s1);
 
     spaceIdentity = identityJPAStorage.findIdentity(providerId,remoteId);
     assertNull(spaceIdentity);
+  }
+
+  public void testMigrateDeletedUser() throws Exception {
+
+    String remoteId = "john";
+    Identity userIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME,remoteId, true);
+    userIdentity.setDeleted(true);
+    identityJCRStorage.saveIdentity(userIdentity);
+
+    end();
+    begin();
+
+    switchToUseJPAStorage();
+    identityMigrationService.start();
+
+    userIdentity = identityJPAStorage.findIdentity(OrganizationIdentityProvider.NAME,remoteId);
+    assertNotNull(userIdentity);
   }
 
   protected void deleteIdentities() {
