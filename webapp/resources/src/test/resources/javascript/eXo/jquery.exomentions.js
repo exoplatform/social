@@ -179,10 +179,7 @@
         }
       }
       return info;
-    },
-    isIE : ($.browser.msie === true),
-    isFirefox : ($.browser.mozilla === true),
-    brVersion : $.browser.version
+    }
   };
 
   var eXoMentions = function(settings) {
@@ -1036,8 +1033,7 @@
     }
 
     function getTemplate() {
-      var editableType = ($.browser.webkit) ? 'plaintext-only' : 'true';
-      return $('<div contenteditable="' + editableType + '" g_editable="true" class="replaceTextArea editable"></div>');
+      return $('<div contenteditable="true" g_editable="true" class="replaceTextArea editable"></div>');
     }
 
     function initDisplay(id, target) {
@@ -1137,34 +1133,6 @@
     }
 
     function saveCaretPositionIE() {
-      try {
-        if($.browser.msie) {
-          var selection= document.selection;
-          var range = selection.createRange();
-          var node = range.parentElement();
-          var range = range.duplicate();
-          var val = elmInputBox.value();
-          range.moveEnd("character", val.length);
-          var s = (range.text == "" ? val.length : val.lastIndexOf(range.text));
-          range = selection.createRange().duplicate();
-          range.moveStart("character", -val.length);
-          
-          var text = range.htmlText;
-          if(text != null) {
-            text = String(text).replace(/ id\=/, ' id_=').replace(/jQuery/g, 'jq');
-            if(text.indexOf('</') > 0) {
-              var jEml = $(text);
-              text = (jEml.length > 0) ? jEml.find('.ReplaceTextArea').html() : text;
-            }
-            currentSelection.elm = node;
-            if(text != null) {
-              currentSelection.offset = text.length;
-            } else {
-              currentSelection.offset = -1;
-            }
-          }
-        }
-      } catch (err) {log(err); }
     }
     
     // Public methods

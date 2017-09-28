@@ -1039,8 +1039,7 @@
     }
 
     function getTemplate() {
-      var editableType = ($.browser.webkit) ? 'plaintext-only' : 'true';
-      return $('<div contenteditable="' + editableType + '" g_editable="true" class="replaceTextArea editable"></div>');
+      return $('<div contenteditable="true" g_editable="true" class="replaceTextArea editable"></div>');
     }
 
     function initDisplay(id, target) {
@@ -1081,9 +1080,11 @@
       
       var hasFileAttachment = parent.closest('#UIComposer').find('div.uiActivityFileAttachment').length > 0;
       var isLinked = ($('#LinkTitle').length > 0);
-      var action = $('#' + settings.idAction);
-      if(hasFileAttachment === false && isLinked === false && action.length > 0 && action.attr('disabled') === undefined) {
-        $('#' + settings.idAction).attr('disabled', 'disabled').addClass('DisableButton');
+      if (settings.idAction && settings.idAction.length > 0) {
+        var action = $('#' + settings.idAction);
+        if(hasFileAttachment === false && isLinked === false && action.length > 0 && action.attr('disabled') === undefined) {
+          $('#' + settings.idAction).attr('disabled', 'disabled').addClass('DisableButton');
+        }
       }
       if(showHideButtonEvent.length > 0) {
         for(var i in showHideButtonEvent) {
