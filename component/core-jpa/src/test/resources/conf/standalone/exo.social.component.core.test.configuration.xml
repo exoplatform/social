@@ -926,5 +926,6 @@
     </component-plugin>
   </external-component-plugins>
 
+  <import>jar:conf/portal/test-commons-jpa-configuration.xml</import>
   <import>jar:conf/portal/files-configuration.xml</import>
 </configuration>

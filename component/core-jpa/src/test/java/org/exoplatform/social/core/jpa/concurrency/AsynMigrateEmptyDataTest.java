@@ -26,10 +26,12 @@ import org.exoplatform.social.core.jpa.updater.MigrationContext;
  */
 public class AsynMigrateEmptyDataTest extends AbstractAsynMigrationTest {
   public void testMigrationEmptyData() throws Exception {
+    end();
     //
     rdbmsMigrationManager.start();
     //
     rdbmsMigrationManager.getMigrater().await();
+    begin();
     assertTrue(getOrCreateSettingValue(MigrationContext.SOC_RDBMS_CONNECTION_MIGRATION_KEY));
     assertTrue(getOrCreateSettingValue(MigrationContext.SOC_RDBMS_ACTIVITY_MIGRATION_KEY));
 

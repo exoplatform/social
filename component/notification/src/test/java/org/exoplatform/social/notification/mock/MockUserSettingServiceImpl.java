@@ -1,14 +1,14 @@
 package org.exoplatform.social.notification.mock;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.exoplatform.commons.api.notification.NotificationContext;
 import org.exoplatform.commons.api.notification.model.UserSetting;
 import org.exoplatform.commons.api.notification.service.setting.UserSettingService;
 import org.exoplatform.services.organization.User;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class MockUserSettingServiceImpl implements UserSettingService {
 
@@ -28,8 +28,6 @@ public class MockUserSettingServiceImpl implements UserSettingService {
     return settings.get(userId);
   }
 
-
-  @Override
   public List<String> getUserSettingByPlugin(String pluginId) {
     List<String> userIds = new ArrayList<String>();
     for (UserSetting userSetting : settings.values()) {
@@ -43,12 +41,10 @@ public class MockUserSettingServiceImpl implements UserSettingService {
     return userIds;
   }
 
-  @Override
-  public void addMixin(String userId) {
+  public void initDefaultSettings(String userId) {
   }
 
-  @Override
-  public void addMixin(User[] users) {
+  public void initDefaultSettings(User[] users) {
   }
 
   @Override
@@ -63,18 +59,15 @@ public class MockUserSettingServiceImpl implements UserSettingService {
     return null;
   }
 
-  @Override
-  public List<UserSetting> getUserSettingWithDeactivate() {
-    return null;
-  }
-
-  @Override
   public List<String> getUserHasSettingPlugin(String channelId, String pluginId) {
     return getUserSettingByPlugin(pluginId);
   }
 
   @Override
   public void saveLastReadDate(String userId, Long time) {
+  }
+
+  public void setUserEnabled(String username, boolean enabled) {
   }
 
 }

@@ -49,6 +49,8 @@ import org.exoplatform.social.core.storage.cache.selector.ActivityStreamOwnerCac
 import org.exoplatform.social.core.storage.cache.selector.ScopeCacheSelector;
 import org.exoplatform.social.core.storage.impl.ActivityBuilderWhere;
 
+import static org.exoplatform.social.core.storage.ActivityStorageException.Type.FAILED_TO_GET_ACTIVITY;
+
 /**
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
  * @version $Revision$
@@ -219,7 +221,7 @@ public class CachedActivityStorage implements ActivityStorage {
                 return ActivityData.NULL;
               }
             } catch (Exception e) {
-              throw new RuntimeException(e);
+              throw new ActivityStorageException(FAILED_TO_GET_ACTIVITY, "failed to get activity with id: " + activityId, e);
             }
           }
         },

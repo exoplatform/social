@@ -50,7 +50,8 @@ public class ActivityCommentPlugin extends BaseNotificationPlugin {
     //
     return NotificationInfo.instance()
            .to(new ArrayList<String>(receivers))
-           .with(SocialNotificationUtils.ACTIVITY_ID.getKey(), comment.getId())
+           .with(SocialNotificationUtils.ACTIVITY_ID.getKey(), activity.getId())
+           .with(SocialNotificationUtils.COMMENT_ID.getKey(), comment.getId())
            .with(SocialNotificationUtils.POSTER.getKey(), Utils.getUserId(comment.getUserId()))
            .key(getId());
   }

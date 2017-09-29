@@ -16,7 +16,13 @@
  */
 package org.exoplatform.social.notification.channel.template;
 
+import java.io.Writer;
+import java.util.Calendar;
+import java.util.List;
+import java.util.Locale;
+
 import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import org.exoplatform.commons.api.notification.NotificationContext;
 import org.exoplatform.commons.api.notification.NotificationMessageUtils;
@@ -28,10 +34,13 @@ import org.exoplatform.commons.api.notification.model.MessageInfo;
 import org.exoplatform.commons.api.notification.model.NotificationInfo;
 import org.exoplatform.commons.api.notification.model.PluginKey;
 import org.exoplatform.commons.api.notification.plugin.NotificationPluginUtils;
+import org.exoplatform.commons.api.notification.service.WebNotificationService;
 import org.exoplatform.commons.api.notification.service.template.TemplateContext;
 import org.exoplatform.commons.notification.NotificationUtils;
 import org.exoplatform.commons.notification.template.TemplateUtils;
 import org.exoplatform.container.xml.InitParams;
+import org.exoplatform.services.log.ExoLogger;
+import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
@@ -43,11 +52,6 @@ import org.exoplatform.social.notification.LinkProviderUtils;
 import org.exoplatform.social.notification.Utils;
 import org.exoplatform.social.notification.plugin.*;
 import org.exoplatform.webui.utils.TimeConvertUtils;
-
-import java.io.Writer;
-import java.util.Calendar;
-import java.util.List;
-import java.util.Locale;
 
 /**
  * Created by The eXo Platform SAS
@@ -72,6 +76,8 @@ import java.util.Locale;
    }
 )
 public class WebTemplateProvider extends TemplateProvider {
+  private static final Log        LOG                          = ExoLogger.getLogger(WebTemplateProvider.class);
+
   private static final String ACCEPT_INVITATION_TO_CONNECT = "social/intranet-notification/confirmInvitationToConnect";
   private static final String REFUSE_INVITATION_TO_CONNECT = "social/intranet-notification/ignoreInvitationToConnect";
   private static final String VALIDATE_SPACE_REQUEST = "social/intranet-notification/validateRequestToJoinSpace";
@@ -83,21 +89,43 @@ public class WebTemplateProvider extends TemplateProvider {
   /** Defines the template builder for ActivityCommentPlugin*/
   private AbstractTemplateBuilder comment = new AbstractTemplateBuilder() {
 
+    /**
+     * This method get the unread comment notification for a user and adds the names
+     * of the new commenter in notification. In addition, it places the comment id and
+     * activity id parameters.
+     */
+    @Override
+    public NotificationInfo getNotificationToStore(NotificationInfo notification) {
+      String activityId = notification.getValueOwnerParameter(SocialNotificationUtils.ACTIVITY_ID.getKey());
+      String parameterName = SocialNotificationUtils.POSTER.getKey();
+      String parameterValue = notification.getValueOwnerParameter(parameterName);
+      return SocialNotificationUtils.addUserToPreviousNotification(notification, parameterName, activityId, parameterValue);
+    }
+
     @Override
     protected MessageInfo makeMessage(NotificationContext ctx) {
       NotificationInfo notification = ctx.getNotificationInfo();
+      boolean isPopupOverOnly = ctx.value(WebNotificationService.POPUP_OVER);
+
       String language = getLanguage(notification);
 
       String activityId = notification.getValueOwnerParameter(SocialNotificationUtils.ACTIVITY_ID.getKey());
+      String commentId = notification.getValueOwnerParameter(SocialNotificationUtils.COMMENT_ID.getKey());
       ExoSocialActivity activity = Utils.getActivityManager().getActivity(activityId);
       ExoSocialActivity comment = null;
-      if (activity.isComment()) {
-        comment = activity;
-        activity = Utils.getActivityManager().getParentActivity(comment);
-        notification.with(SocialNotificationUtils.ACTIVITY_ID.getKey(), activity.getId());
-        notification.with(SocialNotificationUtils.COMMENT_ID.getKey(), comment.getId());
-      } else {
-        comment = Utils.getActivityManager().getActivity(notification.getValueOwnerParameter(SocialNotificationUtils.COMMENT_ID.getKey()));
+      if (StringUtils.isNotBlank(commentId)) {
+        comment = Utils.getActivityManager().getActivity(commentId);
+      }
+      if (activity == null) {
+        LOG.debug("Activity with id '{}' was removed but the notification with id'{}' is remaining", activityId, notification.getId());
+        return null;
+      }
+      if(activity.isComment()) {
+        comment = Utils.getActivityManager().getParentActivity(activity);
+      }
+      if (comment == null) {
+        LOG.debug("Comment of activity with id '{}' was removed but the notification with id'{}' is remaining", commentId, notification.getId());
+        return null;
       }
       String pluginId = notification.getKey().getId();
       
@@ -109,9 +137,8 @@ public class WebTemplateProvider extends TemplateProvider {
       templateContext.put("NOTIFICATION_ID", notification.getId());
       templateContext.put("LAST_UPDATED_TIME", TimeConvertUtils.convertXTimeAgoByTimeServer(cal.getTime(), "EE, dd yyyy", new Locale(language), TimeConvertUtils.YEAR));
       templateContext.put("ACTIVITY", NotificationUtils.getNotificationActivityTitle(activity.getTitle(), activity.getType()));
-      templateContext.put("COMMENT", ctx.getNotificationInfo().isOnPopOver() ? cutStringByMaxLength(comment.getTitle(), 30) : 
-                                                                               comment.getTitle());
-      List<String> users = SocialNotificationUtils.mergeUsers(ctx, templateContext, SocialNotificationUtils.POSTER.getKey(), activity.getId(), notification.getValueOwnerParameter(SocialNotificationUtils.POSTER.getKey()));
+      templateContext.put("COMMENT", isPopupOverOnly ? cutStringByMaxLength(comment.getTitle(), 30) : comment.getTitle());
+      List<String> users = SocialNotificationUtils.mergeUsers(notification, SocialNotificationUtils.POSTER.getKey(), activity.getId(), notification.getValueOwnerParameter(SocialNotificationUtils.POSTER.getKey()));
       
       //
       int nbUsers = users.size();
@@ -171,6 +198,10 @@ public class WebTemplateProvider extends TemplateProvider {
       
       String activityId = notification.getValueOwnerParameter(SocialNotificationUtils.ACTIVITY_ID.getKey());
       ExoSocialActivity activity = Utils.getActivityManager().getActivity(activityId);
+      if (activity == null) {
+        LOG.debug("Notification related to activity with id '{}' couldn't be found. The related notification will be ignored", activityId);
+        return null;
+      }
       Identity identity = Utils.getIdentityManager().getIdentity(activity.getPosterId(), true);
       Profile profile = identity.getProfile();
       templateContext.put("isIntranet", "true");
@@ -212,6 +243,19 @@ public class WebTemplateProvider extends TemplateProvider {
   /** Defines the template builder for LikePlugin and LikeCommentPlugin */
   private AbstractTemplateBuilder like = new AbstractTemplateBuilder() {
 
+    /**
+     * This method get the unread comment notification for a user and adds the names
+     * of the new commenter in notification. In addition, it places the comment id and
+     * activity id parameters.
+     */
+    @Override
+    public NotificationInfo getNotificationToStore(NotificationInfo notification) {
+      String activityId = notification.getValueOwnerParameter(SocialNotificationUtils.ACTIVITY_ID.getKey());
+      String parameterName = SocialNotificationUtils.POSTER.getKey();
+      String parameterValue = notification.getValueOwnerParameter(parameterName);
+      return SocialNotificationUtils.addUserToPreviousNotification(notification, parameterName, activityId, parameterValue);
+    }
+
     @Override
     protected MessageInfo makeMessage(NotificationContext ctx) {
       NotificationInfo notification = ctx.getNotificationInfo();
@@ -221,6 +265,10 @@ public class WebTemplateProvider extends TemplateProvider {
       
       String activityId = notification.getValueOwnerParameter(SocialNotificationUtils.ACTIVITY_ID.getKey());
       ExoSocialActivity activity = Utils.getActivityManager().getActivity(activityId);
+      if (activity == null) {
+        LOG.debug("Notification related to activity with id '{}' couldn't be found. The related notification will be ignored", activityId);
+        return null;
+      }
       templateContext.put("isIntranet", "true");
       Calendar cal = Calendar.getInstance();
       cal.setTimeInMillis(notification.getLastModifiedDate());
@@ -228,13 +276,8 @@ public class WebTemplateProvider extends TemplateProvider {
       templateContext.put("NOTIFICATION_ID", notification.getId());
       templateContext.put("LAST_UPDATED_TIME", TimeConvertUtils.convertXTimeAgoByTimeServer(cal.getTime(), "EE, dd yyyy", new Locale(language), TimeConvertUtils.YEAR));
       templateContext.put("ACTIVITY", NotificationUtils.getNotificationActivityTitle(activity.getTitle(), activity.getType()));
-      if(activity.isComment()) {
-        ExoSocialActivity activityOfComment = Utils.getActivityManager().getParentActivity(activity);
-        templateContext.put("VIEW_FULL_DISCUSSION_ACTION_URL", LinkProvider.getSingleActivityUrl(activityOfComment.getId() + "#comment-" + activity.getId()));
-      } else {
-        templateContext.put("VIEW_FULL_DISCUSSION_ACTION_URL", LinkProvider.getSingleActivityUrl(activity.getId()));
-      }
-      List<String> users = SocialNotificationUtils.mergeUsers(ctx, templateContext, SocialNotificationUtils.LIKER.getKey(), activity.getId(), notification.getValueOwnerParameter(SocialNotificationUtils.LIKER.getKey()));
+      templateContext.put("VIEW_FULL_DISCUSSION_ACTION_URL", LinkProvider.getSingleActivityUrl(activity.getId()));
+      List<String> users = SocialNotificationUtils.mergeUsers(notification, SocialNotificationUtils.LIKER.getKey(), activity.getId(), notification.getValueOwnerParameter(SocialNotificationUtils.LIKER.getKey()));
       //
       int nbUsers = users.size();
       if (nbUsers > 0) {
@@ -320,6 +363,10 @@ public class WebTemplateProvider extends TemplateProvider {
 
       String activityId = notification.getValueOwnerParameter(SocialNotificationUtils.ACTIVITY_ID.getKey());
       ExoSocialActivity activity = Utils.getActivityManager().getActivity(activityId);
+      if (activity == null) {
+        LOG.debug("Activity with id '{}' doesn't exist. The related notification will be ignored", activityId);
+        return null;
+      }
       Identity identity = Utils.getIdentityManager().getIdentity(activity.getPosterId(), true);
       Profile profile = identity.getProfile();
       templateContext.put("isIntranet", "true");
@@ -361,6 +408,10 @@ public class WebTemplateProvider extends TemplateProvider {
 
       String activityId = notification.getValueOwnerParameter(SocialNotificationUtils.ACTIVITY_ID.getKey());
       ExoSocialActivity activity = Utils.getActivityManager().getActivity(activityId);
+      if (activity == null) {
+        LOG.debug("Notification related to activity with id '{}' couldn't be found. The related notification will be ignored", activityId);
+        return null;
+      }
       Identity identity = Utils.getIdentityManager().getIdentity(activity.getPosterId(), true);
       Profile profile = identity.getProfile();
       Identity spaceIdentity = Utils.getIdentityManager().getOrCreateIdentity(SpaceIdentityProvider.NAME, activity.getStreamOwner(), true);

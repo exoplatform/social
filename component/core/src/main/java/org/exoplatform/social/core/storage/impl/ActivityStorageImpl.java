@@ -336,6 +336,7 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     for (ActivityEntity commentEntity : comments) {
       computeCommentid.add(commentEntity.getId());
     }
+    Collections.sort(computeCommentid);
 
     //
     activity.setReplyToId(computeCommentid.toArray(new String[]{}));

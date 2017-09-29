@@ -363,39 +363,39 @@ public class SocialNotificationUtils {
 
     return TemplateUtils.processGroovy(context);
   }
-  
-  public static List<String> mergeUsers(NotificationContext ctx, TemplateContext context, String propertyName, String activityId, String userId) {
-    NotificationInfo notification = ctx.getNotificationInfo();
+
+  public static NotificationInfo addUserToPreviousNotification(NotificationInfo notification,
+                                                               String propertyName,
+                                                               String activityId,
+                                                               String userId) {
+    // Get comment id before changing previous notification
     String commentId = notification.getValueOwnerParameter(SocialNotificationUtils.COMMENT_ID.getKey());
     List<String> users = null;
-    if (ctx.isWritingProcess()) {
-      WebNotificationStorage storage = CommonsUtils.getService(WebNotificationStorage.class); 
-      NotificationInfo previousNotification = storage.getUnreadNotification(notification.getKey().getId(), activityId, notification.getTo());
-      if (previousNotification != null) {
-        users = NotificationUtils.stringToList(previousNotification.getValueOwnerParameter(propertyName));
-        Identity userIdentity = Utils.getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, userId, true);
-        if (users.contains(userIdentity.getRemoteId())) {
-          users.remove(userIdentity.getRemoteId());
-        }
-        users.add(userIdentity.getRemoteId());
-        previousNotification.with(propertyName, NotificationUtils.listToString(users));
-        previousNotification.with(NotificationMessageUtils.NOT_HIGHLIGHT_COMMENT_PORPERTY.getKey(), "true");
-        previousNotification.setUpdate(true);
-        previousNotification.setLastModifiedDate(Calendar.getInstance());
-        //update the created date of old notification then remove it from database
-        previousNotification.setDateCreated(Calendar.getInstance());
-        previousNotification.with(SocialNotificationUtils.COMMENT_ID.getKey(), commentId);
-        //
-        context.put("NOTIFICATION_ID", previousNotification.getId());
-        ctx.setNotificationInfo(previousNotification);
-      } else {
-        users = NotificationUtils.stringToList(notification.getValueOwnerParameter(propertyName));
+    WebNotificationStorage storage = CommonsUtils.getService(WebNotificationStorage.class);
+    NotificationInfo previousNotification = storage.getUnreadNotification(notification.getKey().getId(),
+                                                                          activityId,
+                                                                          notification.getTo());
+    if (previousNotification != null) {
+      users = NotificationUtils.stringToList(previousNotification.getValueOwnerParameter(propertyName));
+      Identity userIdentity = Utils.getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, userId, true);
+      if (users.contains(userIdentity.getRemoteId())) {
+        users.remove(userIdentity.getRemoteId());
       }
-      ctx.setWritingProcess(false);
-    } else {
-      users = NotificationUtils.stringToList(notification.getValueOwnerParameter(propertyName));
+      users.add(userIdentity.getRemoteId());
+      previousNotification.with(propertyName, NotificationUtils.listToString(users));
+      previousNotification.with(NotificationMessageUtils.NOT_HIGHLIGHT_COMMENT_PORPERTY.getKey(), "true");
+      previousNotification.setUpdate(true);
+      previousNotification.setLastModifiedDate(Calendar.getInstance());
+      // update the created date of old notification then remove it from
+      // database
+      previousNotification.setDateCreated(Calendar.getInstance());
+      previousNotification.with(SocialNotificationUtils.COMMENT_ID.getKey(), commentId);
+      return previousNotification;
     }
-    
-    return users;
+    return notification;
+  }
+
+  public static List<String> mergeUsers(NotificationInfo notification, String propertyName, String activityId, String userId) {
+    return NotificationUtils.stringToList(notification.getValueOwnerParameter(propertyName));
   }
 }
