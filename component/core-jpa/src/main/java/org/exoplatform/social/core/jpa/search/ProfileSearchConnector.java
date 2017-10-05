@@ -289,6 +289,7 @@ public class ProfileSearchConnector {
     String inputName = StringUtils.isBlank(filter.getName()) ? null : filter.getName().replace(StorageUtils.ASTERISK_STR, StorageUtils.EMPTY_STR);
     if (StringUtils.isNotBlank(inputName)) {
      //
+      inputName = replaceAllSpecialCharct(inputName);
       String[] keys = inputName.split(" ");
       if (keys.length > 1) {
         // We will not search on username because it doesn't contain a space character
@@ -331,5 +332,12 @@ public class ProfileSearchConnector {
     string = Normalizer.normalize(string, Normalizer.Form.NFD);
     string = string.replaceAll("[\\p{InCombiningDiacriticalMarks}]", "");
     return string;
+  }
+  private static String replaceAllSpecialCharct(String str){
+    char[] esSpecialCharacter = {'+', '-', '&', '|', '!', '(', ')', '{', '}', '[', ']', '^', '"', '~', '*', '?', ':', '\\','`'};
+    for (int i=0; i<esSpecialCharacter.length; i++){
+      str = str.replace(esSpecialCharacter[i],' ');
+    }
+    return str;
   }
 }
