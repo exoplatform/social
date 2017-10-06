@@ -28,9 +28,7 @@ import org.exoplatform.social.core.jpa.test.BaseCoreTest;
 import org.exoplatform.social.core.relationship.model.Relationship.Type;
 
 import javax.persistence.EntityExistsException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.Map.Entry;
 
 /**
@@ -255,6 +253,25 @@ public class IdentityDAOTest extends BaseCoreTest {
     entity.setRemoteId(remoteId);
     entity.setEnabled(true);
     entity.setDeleted(false);
+    Map properties = new HashMap<>();
+    properties.put("lastName", getRandomFullname());
+    properties.put("firstName", getRandomFullname());
+    entity.setProperties(properties);
+
     return entity;
   }
+
+  private String getRandomFullname() {
+    char[] chars = "abcdefghijklmnopqrstuvwxyz".toCharArray();
+    StringBuilder sb = new StringBuilder();
+    Random random = new Random();
+    for (int i = 0; i < 20; i++) {
+      char c = chars[random.nextInt(chars.length)];
+      sb.append(c);
+    }
+    return sb.toString();
+  }
+
+
+
 }

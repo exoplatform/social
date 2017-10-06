@@ -38,10 +38,7 @@ import javax.persistence.NoResultException;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import java.lang.reflect.Array;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author <a href="mailto:tuyennt@exoplatform.com">Tuyen Nguyen The</a>.
@@ -102,7 +99,8 @@ public class IdentityDAOImpl extends GenericDAOJPAImpl<IdentityEntity, Long> imp
 
   @Override
   public ListAccess<Map.Entry<IdentityEntity, ConnectionEntity>> findAllIdentitiesWithConnections(long identityId) {
-    TypedQuery<IdentityEntity> query = getEntityManager().createNamedQuery("SocIdentity.findIdentitiesByProviderWithExcludedIdentity", IdentityEntity.class);
+    TypedQuery<IdentityEntity> query = getEntityManager().createNamedQuery("SocIdentity.nativeFindIdentitiesByProviderWithExcludedIdentity", IdentityEntity.class);
+    //TypedQuery<IdentityEntity> query = getEntityManager().createNamedQuery("SocIdentity.findIdentitiesByProviderWithExcludedIdentity", IdentityEntity.class);
     query.setParameter("identityId", identityId);
     query.setParameter("providerId", OrganizationIdentityProvider.NAME);
 
@@ -281,13 +279,14 @@ public class IdentityDAOImpl extends GenericDAOJPAImpl<IdentityEntity, Long> imp
       connectionsQuery.setParameter("ids", ids);
       connectionsQuery.setMaxResults(Integer.MAX_VALUE);
       List<ConnectionEntity> connectionsList = connectionsQuery.getResultList();
-      Map<IdentityEntity, ConnectionEntity> map = new HashMap<IdentityEntity, ConnectionEntity>();
+
+      //use linked hashmap to keep order from orderby
+      Map<IdentityEntity, ConnectionEntity> map = new LinkedHashMap<IdentityEntity, ConnectionEntity>();
       for (IdentityEntity identityEntity : identitiesList) {
         map.put(identityEntity, null);
-        CONN: for (ConnectionEntity connectionEntity : connectionsList) {
+        for (ConnectionEntity connectionEntity : connectionsList) {
           if(connectionEntity.getReceiver().getId() == identityEntity.getId() || connectionEntity.getSender().getId() == identityEntity.getId()) {
             map.put(identityEntity, connectionEntity);
-            break CONN;
           }
         }
       }

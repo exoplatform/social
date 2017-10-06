@@ -67,6 +67,22 @@ import org.exoplatform.commons.api.persistence.ExoEntity;
                 query = "SELECT i.id FROM SocIdentityEntity i WHERE i.deleted = FALSE AND i.enabled = TRUE AND i.providerId = :providerId"
         )
 })
+@NamedNativeQueries({
+        @NamedNativeQuery(
+                name = "SocIdentity.nativeFindIdentitiesByProviderWithExcludedIdentity",
+                query = "SELECT identity.IDENTITY_ID, identity.AVATAR_FILE_ID, identity.CREATED_DATE,identity.DELETED,identity.ENABLED,identity.PROVIDER_ID,identity.REMOTE_ID " +
+                        " FROM SOC_IDENTITIES identity "  +
+                        " JOIN SOC_IDENTITY_PROPERTIES properties on identity.IDENTITY_ID=properties.IDENTITY_ID" +
+                        " WHERE properties.NAME='lastName' AND "+
+                        "     identity.DELETED = FALSE " +
+                        "     AND identity.ENABLED = TRUE " +
+                        "     AND identity.IDENTITY_ID != :identityId " +
+                        "     AND identity.PROVIDER_ID= :providerId " +
+                        "     ORDER BY properties.VALUE ASC ",
+                resultClass = IdentityEntity.class
+        )
+
+})
 public class IdentityEntity {
 
   @Id
