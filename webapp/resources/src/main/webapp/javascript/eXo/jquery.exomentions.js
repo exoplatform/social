@@ -75,6 +75,7 @@
     }
   }
 
+  //
   function cacheMention() {
     var mentionCache = {
       id : '',
@@ -86,6 +87,7 @@
     return mentionCache;
   }
 
+  //
   var utils = {
     htmlEncode : function(str) {
       return _.escape(str);
@@ -179,10 +181,7 @@
         }
       }
       return info;
-    },
-    isIE : ($.browser.msie === true),
-    isFirefox : ($.browser.mozilla === true),
-    brVersion : $.browser.version
+    }
   };
 
   var eXoMentions = function(settings) {
@@ -1040,8 +1039,7 @@
     }
 
     function getTemplate() {
-      var editableType = ($.browser.webkit) ? 'plaintext-only' : 'true';
-      return $('<div contenteditable="' + editableType + '" g_editable="true" class="replaceTextArea editable"></div>');
+      return $('<div contenteditable="true" g_editable="true" class="replaceTextArea editable"></div>');
     }
 
     function initDisplay(id, target) {
@@ -1082,9 +1080,11 @@
       
       var hasFileAttachment = parent.closest('#UIComposer').find('div.uiActivityFileAttachment').length > 0;
       var isLinked = ($('#LinkTitle').length > 0);
-      var action = $('#' + settings.idAction);
-      if(hasFileAttachment === false && isLinked === false && action.length > 0 && action.attr('disabled') === undefined) {
-        $('#' + settings.idAction).attr('disabled', 'disabled').addClass('DisableButton');
+      if (settings.idAction && settings.idAction.length > 0) {
+        var action = $('#' + settings.idAction);
+        if(hasFileAttachment === false && isLinked === false && action.length > 0 && action.attr('disabled') === undefined) {
+          $('#' + settings.idAction).attr('disabled', 'disabled').addClass('DisableButton');
+        }
       }
       if(showHideButtonEvent.length > 0) {
         for(var i in showHideButtonEvent) {
@@ -1152,40 +1152,8 @@
           }
         }
       }
-      saveCaretPositionIE();
     }
 
-    function saveCaretPositionIE() {
-      try {
-        if($.browser.msie) {
-          var selection= document.selection;
-          var range = selection.createRange();
-          var node = range.parentElement();
-          var range = range.duplicate();
-          var val = elmInputBox.value();
-          range.moveEnd("character", val.length);
-          var s = (range.text == "" ? val.length : val.lastIndexOf(range.text));
-          range = selection.createRange().duplicate();
-          range.moveStart("character", -val.length);
-          
-          var text = range.htmlText;
-          if(text != null) {
-            text = String(text).replace(/ id\=/, ' id_=').replace(/jQuery/g, 'jq');
-            if(text.indexOf('</') > 0) {
-              var jEml = $(text);
-              text = (jEml.length > 0) ? jEml.find('.ReplaceTextArea').html() : text;
-            }
-            currentSelection.elm = node;
-            if(text != null) {
-              currentSelection.offset = text.length;
-            } else {
-              currentSelection.offset = -1;
-            }
-          }
-        }
-      } catch (err) {log(err); }
-    }
-    
     // Public methods
     return {
       init : function(domTarget) {

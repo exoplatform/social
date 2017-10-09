@@ -251,7 +251,7 @@
       this.adaptFileBreadCrumb();
 
       // click on "like comments" buttons
-      $('#ContextBox'+UIActivity.activityId+' a:[id*="LikeCommentLink_"]').each(function (idx, el) {
+      $('#ContextBox'+UIActivity.activityId+' a[id*="LikeCommentLink_"]').each(function (idx, el) {
         var id = $(el).attr('id');
         var commentId = id.substring(id.indexOf('_') + 1);
         $(el).click(function(){
@@ -578,29 +578,31 @@
       $.ajax({
         type: "GET",
         cache: false,
-        url: restUrl
-      }).complete(function (jqXHR) {
-        if (jqXHR.readyState === 4) {
-          var dataLikers = $.parseJSON(jqXHR.responseText);
+        url: restUrl,
+        complete: function (jqXHR) {
+          if (jqXHR.readyState === 4) {
+            var dataLikers = $.parseJSON(jqXHR.responseText);
 
-          if (dataLikers) {
-            var likers = dataLikers.likes.map(function(like) {
-              return like.username;
-            });
+            if (dataLikers) {
+              var likers = dataLikers.likes.map(function(like) {
+                return like.username;
+              });
 
-            // fetch relationships with likers
-            var relationshipsRestUrl = env.context + '/' + env.rest + '/v1/social/usersRelationships?others=' + likers.join(',') + '&expand=sender,receiver&fields=sender,receiver,status';
-            $.ajax({
-              type: "GET",
-              cache: false,
-              url: relationshipsRestUrl
-            }).complete(function (jqXHR) {
-              if (jqXHR.readyState === 4) {
-                var dataRelationships = $.parseJSON(jqXHR.responseText);
-                dataLikers.likes.reverse();
-                UIActivity.buildLikersPopup(dataLikers.likes, dataRelationships.usersRelationships);
-              }
-            });
+              // fetch relationships with likers
+              var relationshipsRestUrl = env.context + '/' + env.rest + '/v1/social/usersRelationships?others=' + likers.join(',') + '&expand=sender,receiver&fields=sender,receiver,status';
+              $.ajax({
+                type: "GET",
+                cache: false,
+                url: relationshipsRestUrl,
+                complete: function (jqXHR) {
+                  if (jqXHR.readyState === 4) {
+                    var dataRelationships = $.parseJSON(jqXHR.responseText);
+                    dataLikers.likes.reverse();
+                    UIActivity.buildLikersPopup(dataLikers.likes, dataRelationships.usersRelationships);
+                  }
+                }
+              });
+            }
           }
         }
       });

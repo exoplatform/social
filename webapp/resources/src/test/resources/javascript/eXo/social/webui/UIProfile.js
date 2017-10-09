@@ -31,7 +31,7 @@ var UIProfile = {
 	  var restUrl = window.location.origin + portal.context + '/' + portal.rest + '/social/people' + '/getPeopleInfo/{0}.json';
     
     var container = $('#' + uicomponentId).closest('.PORTLET-FRAGMENT');
-    var userLinks = $(container).find('a:[href*="/profile/"]');
+    var userLinks = $(container).find('a[href*="/profile/"]');
     $.each(userLinks, function (idx, el) {
         var userUrl = $(el).attr('href');
         var userId = userUrl.substring(userUrl.lastIndexOf('/') + 1);

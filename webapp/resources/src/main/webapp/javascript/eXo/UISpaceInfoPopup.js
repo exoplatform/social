@@ -206,70 +206,76 @@
                         window.profileXHR = $.ajax({
                             type: "GET",
                             cache: false,
-                            url: spaceRestUrl
-                        }).complete(function (jqXHR) {
-                            if (jqXHR.readyState === 4) {
+                            url: spaceRestUrl,
+                            complete: function(jqXHR) {
+
+                              if (jqXHR.readyState === 4) {
                                 var spaceData = $.parseJSON(jqXHR.responseText);
                                 var membersData = null;
                                 var managerData = null;
                                 var membership = null;
                                 if (!spaceData) {
-                                    return;
+                                  return;
                                 }
                                 window.profileXHR = $.ajax({
-                                    type: "GET",
-                                    cache: false,
-                                    url: membersRestUrl
-                                }).complete(function (jqXHR) {
+                                  type: "GET",
+                                  cache: false,
+                                  url: membersRestUrl,
+                                  complete: function(jqXHR) {
+
                                     if (jqXHR.readyState === 4) {
-                                        membersData = $.parseJSON(jqXHR.responseText);
+                                      membersData = $.parseJSON(jqXHR.responseText);
                                     }
                                     window.profileXHR = $.ajax({
-                                        type: "GET",
-                                        cache: false,
-                                        url: managerRestUrl
-                                    }).complete(function (jqXHR) {
+                                      type: "GET",
+                                      cache: false,
+                                      url: managerRestUrl,
+                                      complete: function(jqXHR) {
                                         if (jqXHR.readyState === 4) {
-                                            managerData = $.parseJSON(jqXHR.responseText);
+                                          managerData = $.parseJSON(jqXHR.responseText);
                                         }
                                         var membershipRestUrl = opts.membershipRestUrl.replace('{0}', window.encodeURI(spaceData.displayName));
                                         window.profileXHR = $.ajax({
-                                            type: "GET",
-                                            cache: false,
-                                            url: membershipRestUrl
-                                        }).complete(function (jqXHR) {
+                                          type: "GET",
+                                          cache: false,
+                                          url: membershipRestUrl,
+                                          complete: function(jqXHR) {
                                             if (jqXHR.readyState === 4) {
-                                                membership = $.parseJSON(jqXHR.responseText);
+                                              membership = $.parseJSON(jqXHR.responseText);
                                             }
                                             var rolesArray = {
-                                                roles: []
+                                              roles: []
                                             };
                                             for (var i = 0; i < membership.spacesMemberships.length; i++) {
-                                                rolesArray.roles.push(membership.spacesMemberships[i].role);
+                                              rolesArray.roles.push(membership.spacesMemberships[i].role);
                                             }
 
                                             if(!spaceData.avatarUrl){
 
-                                                spaceData.avatarUrl= opts.defaultAvatarUrl;
+                                              spaceData.avatarUrl= opts.defaultAvatarUrl;
                                             }
                                             if(membersData){
-                                                spaceData.member = membersData.size;
+                                              spaceData.member = membersData.size;
                                             } else {
-                                                spaceData.member =0;
+                                              spaceData.member =0;
                                             }
                                             if(managerData){
-                                                spaceData.manager = managerData.size;
+                                              spaceData.manager = managerData.size;
                                             }else {
-                                                spaceData.manager =0;
+                                              spaceData.manager =0;
                                             }
 
                                             spaceData.membership = rolesArray;
 
                                             buildPopup(spaceData, spaceUrl);
                                             putToCache(spaceId, spaceData);
+                                          }
                                         });
+                                      }
                                     });
+                                  }
                                 });
+                              }
                             }
                         });
                     }

@@ -373,28 +373,6 @@
   </module>
   
   <module>
-    <name>social-category-selector</name>
-      <as>socialCategorySelector</as>
-    <script>
-      <path>/javascript/eXo/social/webui/UIApplicationCategorySelector.js</path>
-    </script>
-    <depends>
-      <module>socialUtil</module>
-    </depends>
-    <depends>
-      <module>jquery</module>
-      <as>$</as>
-    </depends>
-    <depends>
-       <module>base</module>
-    </depends>
-    <depends>
-      <module>selectors</module>
-      <as>selector</as>
-    </depends>
-  </module>
-  
-  <module>
     <name>socialPlugin</name>
     <script>
       <path>/javascript/eXo/social/Util.js</path>

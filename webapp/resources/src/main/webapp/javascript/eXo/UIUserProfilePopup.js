@@ -188,9 +188,9 @@
                    $.ajax({
                      type: "GET",
                      cache: false,
-                     url: restUrl
-                   }).complete(function (jqXHR) {
-                     if (jqXHR.readyState === 4) {
+                     url: restUrl,
+                     complete: function (jqXHR) {
+                       if (jqXHR.readyState === 4) {
                          var userData = $.parseJSON(jqXHR.responseText);
 
                          if (userData) {
@@ -199,6 +199,7 @@
                          } else {
                            ajaxCall(userId, restUrl);
                          }
+                       }
                      }
                    });
                  }
@@ -430,18 +431,19 @@
                     window.profileActionXHR = $.ajax({
                         type: "GET",
                         cache: false,
-                        url: opts.restURL.replace('{0}', ownerUserId) + '?updatedType=' + updatedType
-                    }).complete(function (jqXHR) {
-                        if (jqXHR.readyState === 4) {
+                        url: opts.restURL.replace('{0}', ownerUserId) + '?updatedType=' + updatedType,
+                        complete: function(jqXHR) {
+                          if (jqXHR.readyState === 4) {
                             var popup = $(el).closest('#tiptip_holder');
                             popup.fadeOut('fast', function () {
                             });
                             if(updatedType === "Disconnect" && $(org_elem).data('link')) {
-                                var actionLink = $(org_elem).data('link').replace('javascript:', '');
-                                $.globalEval(actionLink);
+                              var actionLink = $(org_elem).data('link').replace('javascript:', '');
+                              $.globalEval(actionLink);
                             }
                             // clear cache
                             clearCache();
+                          }
                         }
                     });
                 }

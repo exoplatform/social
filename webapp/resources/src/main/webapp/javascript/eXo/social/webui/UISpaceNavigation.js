@@ -58,19 +58,10 @@ var UISpaceNavigation = {
     });
 
     $(window).resize(function(){
-      if (!$.browser.msie) {
-        reset();
-        autoMoveApps();
-      }
+      reset();
+      autoMoveApps();
     });
 
-    $('#spaceMenuTab').resize(function(){
-      if ($.browser.msie) {
-        reset();
-        autoMoveApps();
-      }
-    });    
-    
     editedTab.on("dblclick", ".active span", function() {
       var span = $(this);
       showEditLabelInput(this, span.attr("id"), span.text()); 
