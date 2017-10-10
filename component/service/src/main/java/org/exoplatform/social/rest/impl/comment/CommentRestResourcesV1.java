@@ -226,13 +226,9 @@ public class CommentRestResourcesV1 implements CommentRestResources {
     if (EntityBuilder.getActivityStream(activity, currentUser) == null && !Util.hasMentioned(activity, currentUser.getRemoteId())) { //current user doesn't have permission to view activity
       throw new WebApplicationException(Response.Status.UNAUTHORIZED);
     }
-    List<String> likerIds = new ArrayList<String>(Arrays.asList(comment.getLikeIdentityIds()));
-    if (!likerIds.contains(currentUser.getId())) {
-      likerIds.add(currentUser.getId());
-      String[] identityIds = new String[likerIds.size()];
-      comment.setLikeIdentityIds(likerIds.toArray(identityIds));
-      activityManager.updateActivity(comment);
-    }
+
+    activityManager.saveLike(comment, currentUser);
+
     return EntityBuilder.getResponse(EntityBuilder.buildEntityFromComment(comment, uriInfo.getPath(), expand, true), uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
 
   }
@@ -266,13 +262,7 @@ public class CommentRestResourcesV1 implements CommentRestResources {
       throw new WebApplicationException(Response.Status.UNAUTHORIZED);
     }
 
-    List<String> likerIds = new ArrayList<String>(Arrays.asList(comment.getLikeIdentityIds()));
-    if (likerIds.contains(currentUser.getId())) {
-      likerIds.remove(currentUser.getId());
-      String[] identityIds = new String[likerIds.size()];
-      comment.setLikeIdentityIds(likerIds.toArray(identityIds));
-      activityManager.updateActivity(comment);
-    }
+    activityManager.deleteLike(comment, currentUser);
 
     return Response.ok().build();
   }
