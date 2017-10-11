@@ -53,7 +53,7 @@ public class LikeCommentWebBuilderTest extends AbstractPluginTest {
     return pluginService.getPlugin(PluginKey.key(LikeCommentPlugin.ID));
   }
 
-  public void testSimpleCase() throws Exception {
+  public void testLikeComment() throws Exception {
     //STEP 1 post activity
     ExoSocialActivity activity = makeActivity(rootIdentity, "root post an activity");
 

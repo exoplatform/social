@@ -12,6 +12,8 @@ import org.exoplatform.social.notification.channel.template.PostActivityMailBuil
 import org.exoplatform.social.notification.channel.template.ReceiveRequestMailBuilderTest;
 import org.exoplatform.social.notification.channel.template.RequestJoinSpaceMailBuilderTest;
 import org.exoplatform.social.notification.channel.template.SpaceInvitationMailBuilderTest;
+import org.exoplatform.social.notification.web.template.LikeCommentWebBuilderTest;
+import org.exoplatform.social.notification.web.template.LikeWebBuilderTest;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
@@ -30,7 +32,9 @@ import org.junit.runners.Suite.SuiteClasses;
   LikeMailBuilderTest.class,
   LinkProviderUtilsTest.class,
   MailTemplateProviderTest.class,
-  WebTemplateProviderTest.class
+  WebTemplateProviderTest.class,
+  LikeWebBuilderTest.class,
+  LikeCommentWebBuilderTest.class
 })
 @ConfigTestCase(AbstractCoreTest.class)
 public class InitContainerTestSuite extends BaseExoContainerTestSuite {

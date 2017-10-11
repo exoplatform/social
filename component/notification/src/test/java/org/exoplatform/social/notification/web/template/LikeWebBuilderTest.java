@@ -61,7 +61,7 @@ public class LikeWebBuilderTest extends AbstractPluginTest {
     return pluginService.getPlugin(PluginKey.key(LikePlugin.ID));
   }
   
-  public void testSimpleCase() throws Exception {
+  public void testLikeActivity() throws Exception {
     //STEP 1 post activity
     ExoSocialActivity activity = makeActivity(rootIdentity, "root post an activity");
     
