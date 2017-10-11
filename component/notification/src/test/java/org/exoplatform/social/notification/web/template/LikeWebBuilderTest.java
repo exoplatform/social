@@ -75,8 +75,9 @@ public class LikeWebBuilderTest extends AbstractPluginTest {
     NotificationContext ctx = NotificationContextImpl.cloneInstance();
     ctx.setNotificationInfo(likeNotification.setTo("root"));
     MessageInfo info = buildMessageInfo(ctx);
-    
+
     assertBody(info, "likes your activity");
+    assertBody(info, "data-link=\"/portal/classic/activity?id=" + activity.getId() + "\"");
   }
   
 }

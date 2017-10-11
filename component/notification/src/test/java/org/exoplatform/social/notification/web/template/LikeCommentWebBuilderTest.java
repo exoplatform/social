@@ -72,5 +72,6 @@ public class LikeCommentWebBuilderTest extends AbstractPluginTest {
     MessageInfo info = buildMessageInfo(ctx);
 
     assertBody(info, "likes your comment");
+    assertBody(info, "data-link=\"/portal/classic/activity?id=" + activity.getId() + "#comment-" + comment.getId() + "\"");
   }
 }

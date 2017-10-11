@@ -559,6 +559,13 @@ public class WebTemplateProvider extends TemplateProvider {
       templateContext.put("LAST_UPDATED_TIME", TimeConvertUtils.convertXTimeAgoByTimeServer(cal.getTime(), "EE, dd yyyy", new Locale(language), TimeConvertUtils.YEAR));
       templateContext.put("ACTIVITY", NotificationUtils.getNotificationActivityTitle(activity.getTitle(), activity.getType()));
       templateContext.put("VIEW_FULL_DISCUSSION_ACTION_URL", LinkProvider.getSingleActivityUrl(activity.getId()));
+
+      if(activity.isComment()) {
+        ExoSocialActivity activityOfComment = Utils.getActivityManager().getParentActivity(activity);
+        templateContext.put("VIEW_FULL_DISCUSSION_ACTION_URL", LinkProvider.getSingleActivityUrl(activityOfComment.getId() + "#comment-" + activity.getId()));
+      } else {
+        templateContext.put("VIEW_FULL_DISCUSSION_ACTION_URL", LinkProvider.getSingleActivityUrl(activity.getId()));
+      }
       List<String> users = SocialNotificationUtils.mergeUsers(notification, SocialNotificationUtils.LIKER.getKey(), activity.getId(), notification.getValueOwnerParameter(SocialNotificationUtils.LIKER.getKey()));
       //
       int nbUsers = users.size();
