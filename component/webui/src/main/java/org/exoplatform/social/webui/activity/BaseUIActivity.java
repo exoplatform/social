@@ -757,14 +757,19 @@ public class BaseUIActivity extends UIForm {
   public void processRender(WebuiRequestContext context) throws Exception {
     try {
       Utils.initUserProfilePopup(getId());
-      super.processRender(context);
       String focusActivityId = Utils.getActivityID();
+      String focusCommentID = Utils.getCommentID();
+      if(StringUtils.isNotBlank(focusCommentID)) {
+        getAndSetUpdatedCommentId(focusCommentID);
+      }
+      super.processRender(context);
       if (getActivity().getId().equals(focusActivityId)) {
         context.getJavascriptManager()
                .require("SHARED/social-ui-activity", "activity")
                .addScripts("setTimeout(function() { " + "activity.hightlightComment('" + focusActivityId + "');"
                    + "activity.focusToComment();"
                    + ((Utils.isFocusCommentBox()) ? "activity.replyByURL('" + focusActivityId + "');" : "")
+                   + ((Utils.isFocusCommentReplyBox()) ? "activity.replyByURL('" + focusCommentID + "');" : "")
                    + ((Utils.isExpandLikers()) ? "activity.loadLikersByURL();" : "") + "}, 100);");
       }
     } catch (Exception e) {

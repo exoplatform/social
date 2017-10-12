@@ -100,7 +100,9 @@ public class MailTemplateProvider extends TemplateProvider {
       NotificationInfo notification = ctx.getNotificationInfo();
       String language = getLanguage(notification);
 
+      String activityId = notification.getValueOwnerParameter(SocialNotificationUtils.ACTIVITY_ID.getKey());
       String commentId = notification.getValueOwnerParameter(SocialNotificationUtils.COMMENT_ID.getKey());
+      ExoSocialActivity activity = Utils.getActivityManager().getActivity(activityId);
       ExoSocialActivity commentActivity = Utils.getActivityManager().getActivity(commentId);
       ExoSocialActivity parentCommentActivity = Utils.getActivityManager().getActivity(commentActivity.getParentCommentId());
       Identity identity = Utils.getIdentityManager().getIdentity(commentActivity.getPosterId(), true);
@@ -113,9 +115,9 @@ public class MailTemplateProvider extends TemplateProvider {
       templateContext.put("PROFILE_URL", LinkProviderUtils.getRedirectUrl("user", identity.getRemoteId()));
       templateContext.put("COMMENT_REPLY", NotificationUtils.processLinkTitle(commentActivity.getTitle()));
       templateContext.put("COMMENT", NotificationUtils.processLinkTitle(parentCommentActivity.getTitle()));
-      templateContext.put("OPEN_URL", LinkProviderUtils.getOpenLink(commentActivity));
-      templateContext.put("REPLY_ACTION_URL", LinkProviderUtils.getRedirectUrl("reply_activity_highlight_comment", parentCommentActivity.getId() + "-" + commentActivity.getId()));
-      templateContext.put("VIEW_FULL_DISCUSSION_ACTION_URL", LinkProviderUtils.getRedirectUrl("view_full_activity_highlight_comment", parentCommentActivity.getId() + "-" + commentActivity.getId()));
+      templateContext.put("OPEN_URL", LinkProviderUtils.getOpenLink(activity));
+      templateContext.put("REPLY_ACTION_URL", LinkProviderUtils.getRedirectUrl("reply_activity_highlight_comment_reply", activity.getId() + "-" + parentCommentActivity.getId() + "-" + commentActivity.getId()));
+      templateContext.put("VIEW_FULL_DISCUSSION_ACTION_URL", LinkProviderUtils.getRedirectUrl("view_full_activity_highlight_comment_reply", activity.getId() + "-" + parentCommentActivity.getId() + "-" + commentActivity.getId()));
 
       String body = SocialNotificationUtils.getBody(ctx, templateContext, parentCommentActivity);
       //binding the exception throws by processing template
