@@ -310,49 +310,6 @@
       jtext.text(text);
       return jtext.width();
     },
-    addfillUpFreeSpace : function(comId) {
-      if (comId && String(typeof comId) === "string") {
-        if(SocialUtils.upFreeSpace.indexOf(comId) < 0) {
-          SocialUtils.upFreeSpace.push(comId);
-        }
-        SocialUtils.fillUpFreeSpace(comId);
-      }
-    },
-    onResizeFillUpFreeSpace : function() {
-      var upFreeSpaces = SocialUtils.upFreeSpace;
-      $.each(upFreeSpaces, function( index, comId ) {
-        SocialUtils.fillUpFreeSpace(comId);
-      });
-    },
-    fillUpFreeSpace : function(comId) {
-      var container = $('#'+comId);
-      if(container.length > 0) {
-        var windowH = $(window).height();
-        //
-        container.height('');
-        var topH = 0;
-        var top = $('#NavigationPortlet');
-        if(top.length > 0) {
-          topH = top.height();
-        }
-        var wH = windowH - topH;
-        var tdLeftNavi = $('.LeftNavigationTDContainer:first').css('height', wH);
-        if(tdLeftNavi.find('div:first').height()  > wH) {
-          tdLeftNavi.height('');
-        }
-        //
-        var parent = container.parents('td.RightBodyTDContainer:first').css('position', 'relative');
-        parent.append($('<div class="max-width-fake" style="bottom:0px; width:1px; position:absolute"></div>'));
-        
-        var fake = parent.find('.max-width-fake:first').css('top', parent.find('div:first').outerHeight());
-        var fakeH = fake.height();
-        if(fakeH > 2) {
-          container.height(container.height() + fakeH - 5);
-        }
-        fake.remove();
-        parent.css('position', '');
-      }
-    },
     checkDevice : function() {
       var body = $('body:first').removeClass('phoneDisplay').removeClass('tabletDisplay').removeClass('tabletLDisplay');
       var isMobile = body.find('.visible-phone:first').css('display') !== 'none';
@@ -540,7 +497,6 @@
     }
     SocialUtils.currentBrowseWidth = document.documentElement.clientWidth;
     //
-    SocialUtils.onResizeFillUpFreeSpace();
   });
   //
   

@@ -30,8 +30,7 @@ String selectedStartChar = uicomponent.getSelectedChar();
 def jsManager = _ctx.getRequestContext().getJavascriptManager();
 jsManager.require("SHARED/jquery", "jq")
      .require("SHARED/bts_tooltip")
-     .require("SHARED/socialUtil", "socialUtil")
-     .addScripts("jq('*[rel=\"tooltip\"]').tooltip(); socialUtil.addfillUpFreeSpace('" + uicomponent.id + "');");
+     .addScripts("jq('*[rel=\"tooltip\"]').tooltip();");
 %>
 <div class="uiSocApplication uiMembersPortlet" id="$uicomponent.id">
   <div id="NotifyAnchor"></div>
