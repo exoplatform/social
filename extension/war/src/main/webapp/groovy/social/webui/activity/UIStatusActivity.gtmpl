@@ -102,11 +102,13 @@
     RemoveConnection: '$RemoveConnectionLabel',
     Ignore: '$IgnoreLabel'
   }"""
+  def spaceGroupId = uicomponent.getSpaceGroupId();
 
   //params for init UIActivity javascript object
   def params = """ {
     activityId: '${activity.id}',
     placeholderComment: '${placeholder}',
+    spaceGroupId: '$spaceGroupId',
     inputWriteAComment: '$inputWriteAComment',
     commentMinCharactersAllowed: '${uicomponent.getCommentMinCharactersAllowed()}',
     commentMaxCharactersAllowed: '${uicomponent.getCommentMaxCharactersAllowed()}',

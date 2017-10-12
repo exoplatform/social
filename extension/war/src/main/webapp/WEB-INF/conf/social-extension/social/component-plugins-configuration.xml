@@ -145,6 +145,12 @@
             <name>p tag</name>
             <object type="org.exoplatform.social.common.xmlprocessor.model.XMLTagFilterPolicy$AllowedTag">
               <field name="tagName"><string>p</string></field>
+              <field name="tagAttributes">
+                <collection type="java.util.HashSet" item-type="java.lang.String">
+                  <value><string>class</string></value>
+                  <value><string>style</string></value>
+                </collection>
+              </field>
             </object>
           </object-param>
           <object-param>
@@ -180,6 +186,11 @@
                   <value><string>src</string></value>
                   <value><string>class</string></value>
                   <value><string>title</string></value>
+                  <value><string>width</string></value>
+                  <value><string>height</string></value>
+                  <value><string>alt</string></value>
+                  <value><string>style</string></value>
+                  <value><string>referrerpolicy</string></value>
                 </collection>
               </field>
             </object>

@@ -40,6 +40,7 @@
       UIActivity.commentFormFocused = params.commentFormFocused = "true" ? true : false  || false;
       UIActivity.commentPlaceholder = params.placeholderComment || null;
       UIActivity.spaceURL = params.spaceURL;
+      UIActivity.spaceGroupId = params.spaceGroupId;
       UIActivity.labels = params.labels;
 
       if (UIActivity.activityId == null) {
@@ -86,13 +87,13 @@
       });
     },
 
-    initCKEditor: function (activityId, spaceURL, commentPlaceholder) {
-      var extraPlugins = 'simpleLink,simpleImage,suggester,hideBottomToolbar';
+    initCKEditor: function (activityId, spaceURL, commentPlaceholder, spaceGroupId) {
+      var extraPlugins = 'simpleLink,selectImage,suggester,hideBottomToolbar';
       var windowWidth = $(window).width();
       var windowHeight = $(window).height();
       if (windowWidth > windowHeight && windowWidth < 768) {
         // Disable suggester on smart-phone landscape
-        extraPlugins = 'simpleLink,simpleImage';
+        extraPlugins = 'simpleLink,selectImage';
       }
 
       var MAX_LENGTH = 2000;
@@ -102,9 +103,12 @@
       $('textarea#CommentTextarea' + activityId).ckeditor({
         customConfig: '/commons-extension/ckeditorCustom/config.js',
         extraPlugins: extraPlugins,
+        removePlugins: 'image',
         placeholder: commentPlaceholder != null ? commentPlaceholder : window.eXo.social.I18n.mentions.defaultMessage,
         activityId : activityId,
+        extraAllowedContent: 'img[style,class,src,referrerpolicy,alt,width,height]',
         spaceURL: spaceURL,
+        spaceGroupId: spaceGroupId,
         typeOfRelation: 'mention_comment',
         on : {
           instanceReady : function ( evt ) {
@@ -120,17 +124,19 @@
             var newData = evt.editor.getData();
             var pureText = newData? newData.replace(/<[^>]*>/g, "").replace(/&nbsp;/g,"").trim() : "";
             var elId = this.element.$.id.replace('CommentTextarea','');
+            var disabled = pureText.length == 0 || pureText.length > MAX_LENGTH;
+            disabled = disabled ? (newData.indexOf("<img ") < 0) : false;
 
-            if (pureText.length > 0 && pureText.length <= MAX_LENGTH) {
-              $('#CommentButton' + elId).removeAttr("disabled");
-            } else {
+            if (disabled) {
               $('#CommentButton' + elId).prop("disabled", true);
+            } else {
+              $('#CommentButton' + elId).removeAttr("disabled");
             }
 
             if (pureText.length <= MAX_LENGTH) {
-              evt.editor.getCommand('simpleImage').enable();
+              evt.editor.getCommand('selectImage').enable();
             } else {
-              evt.editor.getCommand('simpleImage').disable();
+              evt.editor.getCommand('selectImage').disable();
             }
           },
           key: function( evt) {
@@ -195,6 +201,7 @@
 
       var activityId = UIActivity.activityId;
       var spaceURL = UIActivity.spaceURL;
+      var spaceGroupId = UIActivity.spaceGroupId;
       var commentPlaceholder = UIActivity.commentPlaceholder;
 
       var commentLinkEl = $("[data-activity='" + activityId + "']");
@@ -238,7 +245,7 @@
             inputContainer.data("comment-id", currentCommentId ? currentCommentId : "");
             inputContainer.data("comment-sub-id", currentSubCommentId ? currentSubCommentId : "");
 
-            self.initCKEditor(activityId, spaceURL, commentPlaceholder);
+            self.initCKEditor(activityId, spaceURL, commentPlaceholder, spaceGroupId);
 
             inputContainer.show('fast', function () {
               var thiz = $(this);

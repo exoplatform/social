@@ -195,6 +195,13 @@
         </init-params>
       </component-plugin>
     </component-plugins>
+    <init-params>
+      <value-param>
+        <name>upload.limit.size</name>
+        <description>Define upload limit for uploaded files on Activity Stream</description>
+        <value>${exo.social.activity.uploadLimit:}</value>
+      </value-param>
+    </init-params>
   </component>
   
   <component>

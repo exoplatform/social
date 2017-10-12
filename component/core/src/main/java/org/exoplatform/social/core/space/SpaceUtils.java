@@ -453,7 +453,7 @@ public class SpaceUtils {
     return (space != null ? space.getUrl() : null);
   }
 
-  private static Space getSpaceByContext() {
+  public static Space getSpaceByContext() {
     //
     PortalRequestContext pcontext = Util.getPortalRequestContext();
     if (!pcontext.getSiteType().equals(SiteType.GROUP) ||

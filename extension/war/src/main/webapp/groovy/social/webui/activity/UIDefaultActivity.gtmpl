@@ -95,6 +95,7 @@
   def commentFormDisplayed = uicomponent.isCommentFormDisplayed();
   def likesDisplayed = uicomponent.isAllLoaded();
   def spaceURL = uicomponent.getSpaceURL();
+  def spaceGroupId = uicomponent.getSpaceGroupId();
 
   def placeholder = _ctx.appRes("UIActivity.comment.placeholder").replace("'", "\\'");
 
@@ -123,6 +124,7 @@
     commentMaxCharactersAllowed: '${uicomponent.getCommentMaxCharactersAllowed()}',
     commentFormDisplayed: '$commentFormDisplayed',
     spaceURL:'$spaceURL',
+    spaceGroupId: '$spaceGroupId',
     allCommentSize: '${allCommentSize}',
     commentFormFocused: '${uicomponent.isCommentFormFocused()}',
     labels: $labels

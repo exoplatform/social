@@ -115,7 +115,12 @@ public class BaseUIActivity extends UIForm {
     this.activityCommentsListAccess = activityCommentsListAccess;
     commentSize = activityCommentsListAccess.getSize();
   }
-  
+
+  public String getSpaceGroupId() {
+    Space space = SpaceUtils.getSpaceByContext();
+    return space == null ? "" : space.getGroupId();
+  }
+
   public String getSpaceURL() {
     String spaceURL = SpaceUtils.getSpaceUrlByContext();
     return spaceURL;
