@@ -168,8 +168,8 @@
         }
       }
 
-			var contentBoxEl = this.contentBoxEl;
-			var activityId = UIActivity.activityId;
+      var contentBoxEl = this.contentBoxEl;
+      var activityId = UIActivity.activityId;
       UIActivity.contentBoxEl.find(".subCommentShowAllLink").on("click", function() {
         var parentCommentId = $(this).attr('data-parent-comment');
 
@@ -196,10 +196,6 @@
       var activityId = UIActivity.activityId;
       var spaceURL = UIActivity.spaceURL;
       var commentPlaceholder = UIActivity.commentPlaceholder;
-      
-      UIActivity.initCKEditor(activityId, spaceURL, commentPlaceholder);
-
-      //this.resizeComment();
 
       var commentLinkEl = $("[data-activity='" + activityId + "']");
       if (commentLinkEl.length > 0) {
