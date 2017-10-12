@@ -101,6 +101,19 @@ public class WebTemplateProvider extends TemplateProvider {
   /** Defines the template builder for ActivityReplyToCommentPlugin*/
   private AbstractTemplateBuilder replyToComment = new AbstractTemplateBuilder() {
 
+    /**
+     * This method get the unread comment notification for a user and adds the names
+     * of the new commenter in notification. In addition, it places the comment id and
+     * activity id parameters.
+     */
+    @Override
+    public NotificationInfo getNotificationToStore(NotificationInfo notification) {
+      String activityId = notification.getValueOwnerParameter(SocialNotificationUtils.ACTIVITY_ID.getKey());
+      String parameterName = SocialNotificationUtils.POSTER.getKey();
+      String parameterValue = notification.getValueOwnerParameter(parameterName);
+      return SocialNotificationUtils.addUserToPreviousNotification(notification, parameterName, activityId, parameterValue);
+    }
+
     @Override
     protected MessageInfo makeMessage(NotificationContext ctx) {
       NotificationInfo notification = ctx.getNotificationInfo();
