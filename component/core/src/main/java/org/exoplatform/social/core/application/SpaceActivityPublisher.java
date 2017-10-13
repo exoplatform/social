@@ -443,4 +443,9 @@ public class SpaceActivityPublisher extends SpaceListenerPlugin {
     
   }
 
+  @Override
+  public void spaceBannerEdited(SpaceLifeCycleEvent event) {
+    LOG.debug("Banner of space {} has been updated", event.getSpace().getId());
+  }
+
 }

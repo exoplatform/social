@@ -42,7 +42,10 @@ import org.exoplatform.social.core.space.SpaceException;
 import org.exoplatform.social.core.space.SpaceUtils;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
+import org.exoplatform.social.webui.UIAvatarUploader;
+import org.exoplatform.social.webui.UIBannerUploader;
 import org.exoplatform.social.webui.Utils;
+import org.exoplatform.social.webui.composer.PopupContainer;
 import org.exoplatform.web.application.ApplicationMessage;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
@@ -56,6 +59,9 @@ import org.exoplatform.webui.event.EventListener;
 @ComponentConfig(
   template = "war:/groovy/social/webui/space/UISpaceMenu.gtmpl",
   events = {
+    @EventConfig(listeners = UISpaceMenu.ChangeAvatarActionListener.class),
+    @EventConfig(listeners = UISpaceMenu.ChangeBannerActionListener.class),
+    @EventConfig(listeners = UISpaceMenu.DeleteBannerActionListener.class),
     @EventConfig(name = "RenameSpaceAppName", listeners = UISpaceMenu.RenameSpaceAppNameActionListener.class)
   }
 )
@@ -83,6 +89,10 @@ public class UISpaceMenu extends UIContainer {
   
   private static final String APP_NAME = "appName";
 
+  private final static String POPUP_AVATAR_UPLOADER = "UIPopupAvatarUploader";
+
+  private final static String POPUP_BANNER_UPLOADER = "UIPopupBannerUploader";
+
   private static final Log LOG = ExoLogger.getLogger(UISpaceMenu.class);
   
   /**
@@ -101,7 +111,10 @@ public class UISpaceMenu extends UIContainer {
    * @throws Exception
    */
   public UISpaceMenu() throws Exception {
-    spaceService = getSpaceService(); 
+    spaceService = getSpaceService();
+
+    PopupContainer popupContainer = createUIComponent(PopupContainer.class, null, null);
+    addChild(popupContainer);
   }
 
   /**
@@ -162,6 +175,48 @@ public class UISpaceMenu extends UIContainer {
     }
     
     return DEFAULT_APP_ID;
+  }
+
+  public static class ChangeAvatarActionListener extends EventListener<UISpaceMenu> {
+
+    @Override
+    public void execute(Event<UISpaceMenu> event) throws Exception {
+      UISpaceMenu uiSpaceMenu = event.getSource();
+      PopupContainer popupContainer = uiSpaceMenu.getChild(PopupContainer.class);
+      popupContainer.activate(UIAvatarUploader.class, 500, POPUP_AVATAR_UPLOADER);
+      event.getRequestContext().addUIComponentToUpdateByAjax(popupContainer);
+    }
+  }
+
+  public static class DeleteBannerActionListener extends EventListener<UISpaceMenu> {
+
+    @Override
+    public void execute(Event<UISpaceMenu> event) throws Exception {
+      UISpaceMenu uiSpaceMenu = event.getSource();
+      uiSpaceMenu.removeSpaceBanner();
+
+      event.getRequestContext().addUIComponentToUpdateByAjax(uiSpaceMenu);
+    }
+  }
+
+  private void removeSpaceBanner() {
+    Space space = getSpace();
+    space.setBannerAttachment(null);
+    spaceService.updateSpace(space);
+
+    space.setEditor(Utils.getViewerRemoteId());
+    spaceService.updateSpaceBanner(space);
+  }
+
+  public static class ChangeBannerActionListener extends EventListener<UISpaceMenu> {
+
+    @Override
+    public void execute(Event<UISpaceMenu> event) throws Exception {
+      UISpaceMenu uiSpaceMenu = event.getSource();
+      PopupContainer popupContainer = uiSpaceMenu.getChild(PopupContainer.class);
+      popupContainer.activate(UIBannerUploader.class, 500, POPUP_BANNER_UPLOADER);
+      event.getRequestContext().addUIComponentToUpdateByAjax(popupContainer);
+    }
   }
   
   /**
@@ -296,6 +351,15 @@ public class UISpaceMenu extends UIContainer {
     }
   }
 
+  protected String getBanner() {
+    Space space = getSpace();
+    if (space != null) {
+      return space.getBannerUrl();
+    } else {
+      return "";
+    }
+  }
+
   /**
    * Checks if current user is leader or not.<br>
    *
@@ -328,9 +392,7 @@ public class UISpaceMenu extends UIContainer {
    * @return space object.
    */
   private Space getSpace() {
-    if (space == null) {
-      space = Utils.getSpaceByContext();
-    }
+    space = Utils.getSpaceByContext();
     return space;
   }
 

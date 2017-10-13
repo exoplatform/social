@@ -36,6 +36,10 @@ public class ProfileNotificationImpl extends ProfileListenerPlugin {
   }
 
   @Override
+  public void bannerUpdated(ProfileLifeCycleEvent event) {
+  }
+
+  @Override
   public void basicInfoUpdated(ProfileLifeCycleEvent event) {
 
   }

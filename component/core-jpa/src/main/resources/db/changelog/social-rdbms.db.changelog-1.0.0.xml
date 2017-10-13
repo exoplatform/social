@@ -503,4 +503,16 @@
     <renameColumn tableName="SOC_ACTIVITY_TEMPLATE_PARAMS" oldColumnName="TEMPLATE_PARAM_VALUE_TEMP" newColumnName="TEMPLATE_PARAM_VALUE"/>
   </changeSet>
 
+  <changeSet author="social" id="1.0.0-58">
+    <addColumn tableName="SOC_SPACES">
+      <column name="BANNER_LAST_UPDATED" type="TIMESTAMP">
+        <constraints nullable="true"/>
+      </column>
+    </addColumn>
+    <addColumn tableName="SOC_IDENTITIES">
+      <column name="BANNER_FILE_ID" type="BIGINT">
+        <constraints nullable="true"/>
+      </column>
+    </addColumn>
+  </changeSet>
 </databaseChangeLog>

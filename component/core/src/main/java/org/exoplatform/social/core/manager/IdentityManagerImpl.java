@@ -144,6 +144,16 @@ public class IdentityManagerImpl implements IdentityManager {
     }
     return identityStorage.getAvatarInputStreamById(identity);
   }
+
+  /**
+   * {@inheritDoc}
+   */
+  public InputStream getBannerInputStream(Identity identity) throws IOException {
+    if (identity == null) {
+      return null;
+    }
+    return identityStorage.getBannerInputStreamById(identity);
+  }
   
   /**
    * {@inheritDoc}

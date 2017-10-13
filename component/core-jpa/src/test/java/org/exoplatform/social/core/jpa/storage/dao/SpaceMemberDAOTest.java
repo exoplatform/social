@@ -120,7 +120,7 @@ public class SpaceMemberDAOTest extends BaseCoreTest {
     spaceEntity.setRegistration(SpaceEntity.REGISTRATION.OPEN);
     spaceEntity.setUrl("testUrl");
     spaceEntity.setVisibility(SpaceEntity.VISIBILITY.PRIVATE);
-    spaceEntity.setAvatarLastUpdated(new Date());
+    spaceEntity.setBannerLastUpdated(new Date());
     return spaceEntity;
   }
 

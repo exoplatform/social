@@ -258,6 +258,69 @@ public class UserRestResourcesV1 implements UserRestResources {
     }
   }
 
+  /**
+   *
+   * @param uriInfo
+   * @param id
+   * @return
+   * @throws IOException
+   */
+  @GET
+  @Path("{id}/banner")
+  @ApiOperation(value = "Gets a specific user banner by username",
+          httpMethod = "GET",
+          response = Response.class,
+          notes = "This can only be done by the logged in user.")
+  @ApiResponses(value = {
+          @ApiResponse (code = 200, message = "Request fulfilled"),
+          @ApiResponse (code = 404, message = "Resource not found"),
+          @ApiResponse (code = 500, message = "Internal server error due to data encoding"),
+          @ApiResponse (code = 400, message = "Invalid query input") })
+  public Response getUserBannerById(@Context UriInfo uriInfo,
+                                    @Context Request request,
+                                    @ApiParam(value = "User name", required = true) @PathParam("id") String id,
+                                    @ApiParam(value = "URL to default banner Or '404' to return a 404 http code", required = false) @QueryParam("default") String defaultBanner) throws IOException {
+
+    Identity identity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, id, true);
+
+    //
+    Response.ResponseBuilder builder = null;
+    if (identity == null) {
+      throw new WebApplicationException(Response.Status.NOT_FOUND);
+    } else {
+      //
+      Profile profile = identity.getProfile();
+      Long lastUpdated = null;
+      if (profile != null) {
+        lastUpdated = profile.getBannerLastUpdated();
+      }
+      EntityTag eTag = null;
+      if (lastUpdated != null) {
+        eTag = new EntityTag(Integer.toString(lastUpdated.hashCode()));
+      }
+      //
+      builder = (eTag == null ? null : request.evaluatePreconditions(eTag));
+      if (builder == null) {
+        InputStream stream = identityManager.getBannerInputStream(identity);
+        if (stream != null) {
+          /* As recommended in the the RFC1341 (https://www.w3.org/Protocols/rfc1341/4_Content-Type.html),
+          we set the banner content-type to "image/png". So, its data  would be recognized as "image" by the user-agent */
+          builder = Response.ok(stream, "image/png");
+          builder.tag(eTag);
+        }
+      }
+
+      if (builder == null) {
+        return Response.status(Response.Status.NOT_FOUND).build();
+      }
+
+      CacheControl cc = new CacheControl();
+      cc.setMaxAge(86400);
+      builder.cacheControl(cc);
+      return builder.cacheControl(cc).build();
+    }
+  }
+
   private Response.ResponseBuilder getDefaultAvatarBuilder(String avatarUrl) {
       if (avatarUrl != null) {
         if (avatarUrl.equals("404")) {

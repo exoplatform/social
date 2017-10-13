@@ -159,6 +159,11 @@ public class SpaceLifeCycleTest extends AbstractCoreTest {
       recordEvent(event);
     }
 
+    @Override
+    public void spaceBannerEdited(SpaceLifeCycleEvent event) {
+      recordEvent(event);
+    }
+
 
   }
 

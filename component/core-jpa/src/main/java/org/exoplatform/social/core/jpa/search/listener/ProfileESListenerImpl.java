@@ -45,6 +45,11 @@ public class ProfileESListenerImpl extends ProfileListenerPlugin {
   }
 
   @Override
+  public void bannerUpdated(ProfileLifeCycleEvent event) {
+    LOG.debug("Profile banner of user {} has been updated", event.getProfile().getIdentity().getId());
+  }
+
+  @Override
   public void contactSectionUpdated(ProfileLifeCycleEvent event) {
     IndexingService indexingService = CommonsUtils.getService(IndexingService.class);
     String id = event.getProfile().getIdentity().getId();

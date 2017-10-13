@@ -98,7 +98,7 @@ public class SpaceDAOTest extends BaseCoreTest {
     spaceEntity.setRegistration(SpaceEntity.REGISTRATION.OPEN);
     spaceEntity.setUrl("testUrl");
     spaceEntity.setVisibility(SpaceEntity.VISIBILITY.PRIVATE);
-    spaceEntity.setAvatarLastUpdated(new Date());
+    spaceEntity.setBannerLastUpdated(new Date());
 
     addMember(spaceEntity, "root", SpaceMemberEntity.Status.PENDING);
     return spaceEntity;
@@ -141,6 +141,7 @@ public class SpaceDAOTest extends BaseCoreTest {
     assertEquals(spaceEntity.getUrl(), result.getUrl());
     assertEquals(spaceEntity.getVisibility(), result.getVisibility());
     assertEquals(spaceEntity.getAvatarLastUpdated(), result.getAvatarLastUpdated());
+    assertEquals(spaceEntity.getBannerLastUpdated(), result.getBannerLastUpdated());
     assertEquals(spaceEntity.getCreatedDate(), result.getCreatedDate());
     assertEquals(1, result.getMembers().size());
   }

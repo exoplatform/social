@@ -39,6 +39,11 @@ public abstract class ProfileListenerPlugin extends AbstractListenerPlugin imple
   /**
    * {@inheritDoc}
    */
+  public abstract void bannerUpdated(ProfileLifeCycleEvent event);
+
+  /**
+   * {@inheritDoc}
+   */
   public void basicInfoUpdated(ProfileLifeCycleEvent event) {}
 
   /**

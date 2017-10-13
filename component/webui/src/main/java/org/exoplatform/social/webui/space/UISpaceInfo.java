@@ -154,25 +154,17 @@ public class UISpaceInfo extends UIForm {
     getUIStringInput(SPACE_TAG).setValue(space.getTag());
   }
 
-  public void saveAvatar(UIAvatarUploadContent uiAvatarUploadContent, Space space) throws Exception {
-    SpaceService spaceService = getSpaceService();
-    space.setAvatarAttachment(uiAvatarUploadContent.getAvatarAttachment());
-    spaceService.updateSpace(space);
-    space.setEditor(Utils.getViewerRemoteId());
-    spaceService.updateSpaceAvatar(space);
-  }
-
   /**
    * Gets image source url.
    *
    * @return image source url
    * @throws Exception
    */
-  protected String getImageSource() throws Exception {
+  protected Space getSpace() throws Exception {
     SpaceService spaceService = getSpaceService();
     String id = getUIStringInput(SPACE_ID).getValue();
     Space space = spaceService.getSpaceById(id);
-    return space.getAvatarUrl();
+    return space;
   }
 
   /**

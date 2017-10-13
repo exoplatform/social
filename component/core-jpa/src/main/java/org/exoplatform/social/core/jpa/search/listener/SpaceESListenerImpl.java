@@ -62,6 +62,10 @@ public class SpaceESListenerImpl extends SpaceListenerPlugin {
   }
 
   @Override
+  public void spaceBannerEdited(SpaceLifeCycleEvent event) {
+  }
+
+  @Override
   public void applicationActivated(SpaceLifeCycleEvent event) {
     // TODO Auto-generated method stub
 

@@ -62,6 +62,8 @@ public class Profile {
    * property of type {@link AvatarAttachment} that contains the avatar
    */
   public static final String        AVATAR         = "avatar";
+
+  public static final String        BANNER         = "banner";
   
   /** EXPERIENCE. */
   public static final String        EXPERIENCES    = "experiences";
@@ -122,7 +124,8 @@ public class Profile {
                                         CONTACT,
                                         EXPERIENCES,
                                         AVATAR,
-                                        ABOUT_ME;
+                                        ABOUT_ME,
+                                        BANNER;
                                         
                                         public void updateActivity(ProfileLifeCycle profileLifeCycle, Profile profile) {
                                           switch (this) {
@@ -140,6 +143,10 @@ public class Profile {
                                             }
                                             case AVATAR: {
                                               profileLifeCycle.avatarUpdated(profile.getIdentity().getRemoteId(), profile);
+                                              break;
+                                            }
+                                            case BANNER: {
+                                              profileLifeCycle.bannerUpdated(profile.getIdentity().getRemoteId(), profile);
                                               break;
                                             }
                                             default :
@@ -216,6 +223,7 @@ public class Profile {
     updateTypes.put(UpdateType.CONTACT, new String[] {GENDER, CONTACT_PHONES, CONTACT_IMS, CONTACT_URLS});
     updateTypes.put(UpdateType.EXPERIENCES, new String[] {EXPERIENCES});
     updateTypes.put(UpdateType.AVATAR, new String[] {AVATAR});
+    updateTypes.put(UpdateType.BANNER, new String[] {BANNER});
   }
 
   /** The identity. */
@@ -239,6 +247,9 @@ public class Profile {
   /** Profile url, this will never be stored */
   private String                    avatarUrl;
 
+  /** Profile url, this will never be stored */
+  private String                    bannerUrl;
+
   private AttachedActivityType      attachedActivityType;
   
   /** Profile created time **/
@@ -248,6 +259,9 @@ public class Profile {
   
   /**  The last updated time of avatar ( in millisecond) */
   private Long                      avatarLastUpdated;
+
+  /**  The last updated time of avatar ( in millisecond) */
+  private Long                      bannerLastUpdated;
   
   /**
    * Instantiates a new profile.
@@ -534,6 +548,25 @@ public class Profile {
   }
 
   /**
+   * Gets avatar url
+   *
+   * @return avatar image source
+   * @since 1.2.0-GA
+   */
+  public final String getBannerUrl() {
+    return bannerUrl;
+  }
+
+  /**
+   * Sets avatar url
+   *
+   * @since 1.2.0-GA
+   */
+  public void setBannerUrl(final String bannerUrl) {
+    this.bannerUrl = bannerUrl;
+  }
+
+  /**
    * Gets position
    * 
    * @return position
@@ -607,5 +640,12 @@ public class Profile {
   public void setAvatarLastUpdated(Long avatarLastUpdated) {
     this.avatarLastUpdated = avatarLastUpdated;
   }
-  
+
+  public Long getBannerLastUpdated() {
+    return bannerLastUpdated;
+  }
+
+  public void setBannerLastUpdated(Long bannerLastUpdated) {
+    this.bannerLastUpdated = bannerLastUpdated;
+  }
 }

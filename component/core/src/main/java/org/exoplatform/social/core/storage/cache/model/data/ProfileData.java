@@ -51,8 +51,12 @@ public class ProfileData implements CacheData<Profile> {
   private String url;
 
   private String avatarUrl;
+
+  private String bannerUrl;
   
   private Long avatarLastUpdated;
+
+  private Long bannerLastUpdated;
   
   private Long createdTime;
 
@@ -68,7 +72,9 @@ public class ProfileData implements CacheData<Profile> {
       this.data = Collections.unmodifiableMap(profile.getProperties());
       this.url = profile.getUrl();
       this.avatarUrl = profile.getAvatarUrl();
+      this.bannerUrl = profile.getBannerUrl();
       this.avatarLastUpdated = profile.getAvatarLastUpdated();
+      this.bannerLastUpdated = profile.getBannerLastUpdated();
       this.createdTime = profile.getCreatedTime();
     }
   }
@@ -102,7 +108,9 @@ public class ProfileData implements CacheData<Profile> {
     profile.setId(profileId);
     profile.setUrl(url);
     profile.setAvatarUrl(avatarUrl);
+    profile.setBannerUrl(bannerUrl);
     profile.setAvatarLastUpdated(avatarLastUpdated);
+    profile.setBannerLastUpdated(bannerLastUpdated);
     profile.setCreatedTime(createdTime);
     for(String key : data.keySet()) {
       profile.setProperty(key, data.get(key));

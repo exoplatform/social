@@ -638,4 +638,16 @@ public class CachedIdentityStorage implements IdentityStorage {
   public InputStream getAvatarInputStreamById(Identity identity) throws IOException {
     return storage.getAvatarInputStreamById(identity);
   }
+
+  /**
+   * Gets a the avatar stream for a given identity
+   *
+   *
+   * @param identity
+   * @return
+   */
+  @Override
+  public InputStream getBannerInputStreamById(Identity identity) throws IOException {
+    return storage.getBannerInputStreamById(identity);
+  }
 }

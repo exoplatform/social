@@ -92,4 +92,7 @@ public class SpaceNotificationImpl extends SpaceListenerPlugin {
     ctx.getNotificationExecutor().with(ctx.makeCommand(PluginKey.key(RequestJoinSpacePlugin.ID))).execute(ctx);
     
   }
+
+  @Override
+  public void spaceBannerEdited(SpaceLifeCycleEvent event) {}
 }

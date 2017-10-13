@@ -278,6 +278,16 @@ public interface SpaceService {
   Space updateSpaceAvatar(Space existingSpace);
 
   /**
+   * Updates a space's avatar.
+   *
+   * @param existingSpace The existing space to be updated.
+   * @return The updated space.
+   * @LevelAPI Platform
+   * @since  1.2.0-GA
+   */
+  Space updateSpaceBanner(Space existingSpace);
+
+  /**
    * Deletes a space. When a space is deleted, all of its page navigations and its group will be deleted.
    *
    * @param space The space to be deleted.

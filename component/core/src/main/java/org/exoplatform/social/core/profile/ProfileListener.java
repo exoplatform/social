@@ -38,6 +38,12 @@ public interface ProfileListener extends LifeCycleListener<ProfileLifeCycleEvent
   public void avatarUpdated(ProfileLifeCycleEvent event) ;
 
   /**
+   * banner picture of the profile is updated
+   * @param event
+   */
+  public void bannerUpdated(ProfileLifeCycleEvent event) ;
+
+  /**
    * basic account info of the profile are updated
    * @param event
    * @deprecated not used anymore. Will be removed in next major version release.

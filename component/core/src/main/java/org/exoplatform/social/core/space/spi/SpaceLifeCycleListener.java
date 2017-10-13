@@ -150,4 +150,11 @@ public interface SpaceLifeCycleListener extends LifeCycleListener<SpaceLifeCycle
   default void spaceRegistrationEdited(SpaceLifeCycleEvent event) {
 
   }
+
+  /**
+   * Invokes this method when a user change the banner of a space.
+   *
+   * @param event the space lifecycle event
+   */
+  void spaceBannerEdited(SpaceLifeCycleEvent event);
 }

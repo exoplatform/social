@@ -31,6 +31,7 @@ import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvide
 import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
 import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.model.AvatarAttachment;
+import org.exoplatform.social.core.model.BannerAttachment;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
 import org.exoplatform.web.application.RequestContext;
@@ -450,27 +451,41 @@ public class LinkProvider {
    * @return
    */
   public static String buildAvatarURL(String providerId, String remoteId) {
+    return buildAttachmentUrl(providerId, remoteId, AvatarAttachment.TYPE);
+  }
+
+  /**
+   * Builds the banner URL for a given profile
+   * @param providerId
+   * @param remoteId
+   * @return
+   */
+  public static String buildBannerURL(String providerId, String remoteId) {
+    return buildAttachmentUrl(providerId, remoteId, BannerAttachment.TYPE);
+  }
+
+  private static String buildAttachmentUrl(String providerId, String remoteId, String type) {
     if (providerId == null || remoteId == null) {
       return null;
     }
-    
+
     String username = remoteId;
-    
+
     try {
       username = URLEncoder.encode(username, "UTF-8");
     } catch (UnsupportedEncodingException ex) {
       LOG.warn("Failure to encode username for build URL", ex);
     }
-    
+
     if(providerId.equals(OrganizationIdentityProvider.NAME)) {
       return new StringBuilder("/").append(CommonsUtils.getRestContextName()).append(BASE_URL_SOCIAL_REST_API).append("/users")
               .append("/").append(username)
-              .append("/avatar")
+              .append("/").append(type)
               .toString();
     } else if(providerId.equals(SpaceIdentityProvider.NAME)) {
       return new StringBuilder("/").append(CommonsUtils.getRestContextName()).append(BASE_URL_SOCIAL_REST_API).append("/spaces")
               .append("/").append(username)
-              .append("/avatar")
+              .append("/").append(type)
               .toString();
     }
     return null;

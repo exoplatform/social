@@ -130,6 +130,13 @@ public interface IdentityManager {
   InputStream getAvatarInputStream(Identity identity) throws IOException;
 
   /**
+   *  Gets a profile banner associated with a provided identity
+   * @param identity
+   * @return
+   */
+  InputStream getBannerInputStream(Identity identity) throws IOException;
+
+  /**
    * Updates a specific profile.
    *
    * @param specificProfile The specific profile.
