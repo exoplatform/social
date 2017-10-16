@@ -117,6 +117,8 @@ public class WebTemplateProvider extends TemplateProvider {
     @Override
     protected MessageInfo makeMessage(NotificationContext ctx) {
       NotificationInfo notification = ctx.getNotificationInfo();
+      boolean isPopupOverOnly = ctx.value(WebNotificationService.POPUP_OVER);
+
       String language = getLanguage(notification);
 
       String activityId = notification.getValueOwnerParameter(SocialNotificationUtils.ACTIVITY_ID.getKey());
@@ -212,7 +214,7 @@ public class WebTemplateProvider extends TemplateProvider {
       templateContext.put("LAST_UPDATED_TIME", TimeConvertUtils.convertXTimeAgoByTimeServer(cal.getTime(), "EE, dd yyyy", new Locale(language), TimeConvertUtils.YEAR));
       templateContext.put("ACTIVITY", NotificationUtils.getNotificationActivityTitle(activity.getTitle(), activity.getType()));
       templateContext.put("COMMENT", NotificationUtils.getNotificationActivityTitle(comment.getTitle(), activity.getType()));
-      templateContext.put("COMMENT_REPLY", ctx.getNotificationInfo().isOnPopOver() ? cutStringByMaxLength(replyToComment.getTitle(), 30) : 
+      templateContext.put("COMMENT_REPLY", isPopupOverOnly ? cutStringByMaxLength(replyToComment.getTitle(), 30) : 
                                                                                replyToComment.getTitle());
       List<String> users = SocialNotificationUtils.mergeUsers(notification, SocialNotificationUtils.POSTER.getKey(), activity.getId(), notification.getValueOwnerParameter(SocialNotificationUtils.POSTER.getKey()));
       
