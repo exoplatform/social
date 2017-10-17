@@ -51,6 +51,7 @@ public class ActivityNotificationImpl extends ActivityListenerPlugin {
     NotificationContext ctx = NotificationContextImpl.cloneInstance().append(SocialNotificationUtils.ACTIVITY, activity);
 
     ctx.getNotificationExecutor().with(ctx.makeCommand(PluginKey.key(ActivityCommentPlugin.ID)))
+                                 .with(ctx.makeCommand(PluginKey.key(ActivityReplyToCommentPlugin.ID)))
                                  .with(ctx.makeCommand(PluginKey.key(ActivityMentionPlugin.ID)))
                                  .execute(ctx);
   }

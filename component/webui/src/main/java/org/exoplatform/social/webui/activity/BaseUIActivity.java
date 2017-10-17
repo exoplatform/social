@@ -17,6 +17,8 @@
 package org.exoplatform.social.webui.activity;
 
 import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang3.StringUtils;
+
 import org.exoplatform.commons.utils.CommonsUtils;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
@@ -95,6 +97,8 @@ public class BaseUIActivity extends UIForm {
 
   private boolean                               commentFormFocused   = false;
 
+  private String                                updatedCommentId;
+
   /**
    * Constructor
    */
@@ -143,6 +147,7 @@ public class BaseUIActivity extends UIForm {
     UIFormTextAreaInput commentTextArea = new UIFormTextAreaInput("CommentTextarea" + activity.getId(), "CommentTextarea", null);
     commentTextArea.setHTMLAttribute(HTML_ATTRIBUTE_TITLE, resourceBundle.getString("BaseUIActivity.label.Add_your_comment"));
     addChild(commentTextArea);
+
     try {
       refresh();
     } catch (ActivityStorageException e) {
@@ -199,7 +204,7 @@ public class BaseUIActivity extends UIForm {
   }
 
   public CommentStatus getCommentListStatus() {
-    return commentListStatus;
+    return commentListStatus == null ? CommentStatus.NONE : commentListStatus;
   }
 
   public void setCommentListStatus(CommentStatus status) {
@@ -248,6 +253,55 @@ public class BaseUIActivity extends UIForm {
       }
     }
     return getI18N(comments);
+  }
+
+  /**
+   * Count the list of parent comments of activity
+   * 
+   * @param comments
+   * @return
+   */
+  public int getParentCommentsSize(List<ExoSocialActivity> comments) {
+    int count = 0;
+    for (ExoSocialActivity exoSocialActivity : comments) {
+      if (exoSocialActivity.getParentCommentId() == null) {
+        count++;
+      }
+    }
+    return count;
+  }
+
+  /**
+   * Count the list of sub comment of comment designed by id
+   * 
+   * @param comments
+   * @param commentActivityId
+   * @return
+   */
+  public int getSubCommentsSize(List<ExoSocialActivity> comments, String commentActivityId) {
+    if (StringUtils.isBlank(commentActivityId)) {
+      return 0;
+    }
+    int count = 0;
+    for (ExoSocialActivity exoSocialActivity : comments) {
+      if (StringUtils.equals(exoSocialActivity.getParentCommentId(), commentActivityId)) {
+        count++;
+      }
+    }
+    return count;
+  }
+
+  public boolean isSubCommentOfComment(List<ExoSocialActivity> comments, String commentId, String subCommentId) {
+    if (StringUtils.isBlank(commentId) || StringUtils.isBlank(subCommentId)) {
+      return false;
+    }
+    for (ExoSocialActivity exoSocialActivity : comments) {
+      if (StringUtils.equals(exoSocialActivity.getId(), subCommentId)
+          && StringUtils.equals(exoSocialActivity.getParentCommentId(), commentId)) {
+        return true;
+      }
+    }
+    return false;
   }
 
   /**
@@ -412,16 +466,21 @@ public class BaseUIActivity extends UIForm {
     return getId();
   }
 
-  protected void saveComment(String remoteUser, String message) throws Exception {
+  protected ExoSocialActivity saveComment(String remoteUser, String message, String commentId) throws Exception {
     ExoSocialActivity comment = new ExoSocialActivityImpl(Utils.getViewerIdentity().getId(),
                                                           SpaceActivityPublisher.SPACE_APP_ID,
                                                           message,
                                                           null);
+    if (StringUtils.isNotBlank(commentId) && commentId.startsWith("comment")) {
+      comment.setParentCommentId(commentId);
+    }
     Utils.getActivityManager().saveComment(getActivity(), comment);
-    activityCommentsListAccess = Utils.getActivityManager().getCommentsWithListAccess(getActivity());
+    activityCommentsListAccess = Utils.getActivityManager().getCommentsWithListAccess(getActivity(), true);
     commentSize = activityCommentsListAccess.getSize();
     currentLoadIndex = 0;
+    this.updatedCommentId = commentId;
     setCommentListStatus(CommentStatus.ALL);
+    return comment;
   }
 
   public void setLike(boolean isLiked) throws Exception {
@@ -447,6 +506,13 @@ public class BaseUIActivity extends UIForm {
     } else {
       Utils.getActivityManager().deleteLike(commentActivity, viewerIdentity);
     }
+    this.updatedCommentId = commentActivity.getParentCommentId();
+  }
+
+  public String getAndSetUpdatedCommentId(String newValue) {
+    String updatedCommentId = this.updatedCommentId;
+    this.updatedCommentId = newValue;
+    return updatedCommentId;
   }
 
   protected String getActivityPermalink(String activityId) {
@@ -477,7 +543,7 @@ public class BaseUIActivity extends UIForm {
       LOG.info("activity is null, not found. It can be deleted!");
       return;
     }
-    activityCommentsListAccess = Utils.getActivityManager().getCommentsWithListAccess(activity);
+    activityCommentsListAccess = Utils.getActivityManager().getCommentsWithListAccess(activity, true);
     commentSize = activityCommentsListAccess.getSize();
     identityLikes = activity.getLikeIdentityIds();
 
@@ -691,14 +757,19 @@ public class BaseUIActivity extends UIForm {
   public void processRender(WebuiRequestContext context) throws Exception {
     try {
       Utils.initUserProfilePopup(getId());
-      super.processRender(context);
       String focusActivityId = Utils.getActivityID();
+      String focusCommentID = Utils.getCommentID();
+      if(StringUtils.isNotBlank(focusCommentID)) {
+        getAndSetUpdatedCommentId(focusCommentID);
+      }
+      super.processRender(context);
       if (getActivity().getId().equals(focusActivityId)) {
         context.getJavascriptManager()
                .require("SHARED/social-ui-activity", "activity")
                .addScripts("setTimeout(function() { " + "activity.hightlightComment('" + focusActivityId + "');"
                    + "activity.focusToComment();"
                    + ((Utils.isFocusCommentBox()) ? "activity.replyByURL('" + focusActivityId + "');" : "")
+                   + ((Utils.isFocusCommentReplyBox()) ? "activity.replyByURL('" + focusCommentID + "');" : "")
                    + ((Utils.isExpandLikers()) ? "activity.loadLikersByURL();" : "") + "}, 100);");
       }
     } catch (Exception e) {
@@ -764,18 +835,10 @@ public class BaseUIActivity extends UIForm {
     return cmts;
   }
 
-  protected void focusToLatestComment(String activityId) {
+  protected void focusToComment(String commentId) {
     PortletRequestContext pContext = (PortletRequestContext) WebuiRequestContext.getCurrentInstance();
     JavascriptManager jm = pContext.getJavascriptManager();
-    StringBuilder script = new StringBuilder("setTimeout(function() {").append("var activityBox = jq('#ActivityContextBox"
-            + activityId + "' );")
-                                                                       .append("var commentList = jq(activityBox).find('.commentList').not('.inputContainer');")
-                                                                       .append("var lastComment = commentList.children().last();")
-                                                                       .append("if(lastComment.length > 0) {")
-                                                                       .append("  lastComment[0].scrollIntoView(true);")
-                                                                       .append("}")
-                                                                       .append("}, 200);");
-    jm.require("SHARED/jquery", "jq").addScripts(script.toString());
+    jm.require("SHARED/social-ui-activity", "UIActivity").addScripts("UIActivity.focusToComment('" + commentId + "', null, 2000);");
   }
 
   public static enum CommentStatus {
@@ -822,11 +885,15 @@ public class BaseUIActivity extends UIForm {
       // uiActivity.refresh();
       WebuiRequestContext requestContext = event.getRequestContext();
       String isLikedStr = requestContext.getRequestParameter(OBJECTID);
+      String commentId = requestContext.getRequestParameter("commentId");
       uiActivity.setLike(Boolean.parseBoolean(isLikedStr));
       //
       JavascriptManager jm = requestContext.getJavascriptManager();
       jm.require("SHARED/social-ui-activity", "activity").addScripts("activity.displayLike('#ContextBox" + activityId + "');");
 
+      if(StringUtils.isNotBlank(commentId)) {
+        uiActivity.getAndSetUpdatedCommentId(commentId);
+      }
       requestContext.addUIComponentToUpdateByAjax(uiActivity);
 
       Utils.initUserProfilePopup(uiActivity.getId());
@@ -897,6 +964,7 @@ public class BaseUIActivity extends UIForm {
       if (uiActivity.isNoLongerExisting(activityId)) {
         return;
       }
+      String commentId = event.getRequestContext().getRequestParameter(OBJECTID);
       // uiActivity.refresh();
       WebuiRequestContext requestContext = event.getRequestContext();
       UIFormTextAreaInput uiFormComment = uiActivity.getChild(UIFormTextAreaInput.class);
@@ -911,13 +979,13 @@ public class BaseUIActivity extends UIForm {
       uiFormComment.reset();
       //--- Processing outcome here aims to avoid escaping '@' symbol while preventing any undesirable side effects due to CSS sanitization.
       //--- The goal is to avoid escape '@' occurrences in microblog application, this enables to keep mention feature working as expected in the specification
-      uiActivity.saveComment(requestContext.getRemoteUser(), message.replaceAll(HTML_AT_SYMBOL_ESCAPED_PATTERN, HTML_AT_SYMBOL_PATTERN));
+      ExoSocialActivity newComment = uiActivity.saveComment(requestContext.getRemoteUser(), message.replaceAll(HTML_AT_SYMBOL_ESCAPED_PATTERN, HTML_AT_SYMBOL_PATTERN), commentId);
       uiActivity.setCommentFormFocused(true);
       requestContext.addUIComponentToUpdateByAjax(uiActivity);
 
       Utils.initUserProfilePopup(uiActivity.getId());
       Utils.resizeHomePage();
-      uiActivity.focusToLatestComment(activityId);
+      uiActivity.focusToComment(newComment.getId());
       uiActivity.getParent().broadcast(event, event.getExecutionPhase());
     }
   }
@@ -986,6 +1054,10 @@ public class BaseUIActivity extends UIForm {
       String[] likeStatus = requestContext.getRequestParameter(OBJECTID).split("_");
       BaseUIActivity uiActivity = event.getSource();
       uiActivity.setLikeComment(Boolean.parseBoolean(likeStatus[0]), likeStatus[1]);
+      String commentId = requestContext.getRequestParameter("commentId");
+      if(StringUtils.isNotBlank(commentId)) {
+        uiActivity.getAndSetUpdatedCommentId(commentId);
+      }
       requestContext.addUIComponentToUpdateByAjax(uiActivity);
       Utils.initUserProfilePopup(uiActivity.getId());
 

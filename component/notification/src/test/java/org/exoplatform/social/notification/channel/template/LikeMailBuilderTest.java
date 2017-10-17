@@ -78,8 +78,9 @@ public class LikeMailBuilderTest extends AbstractPluginTest {
     
     //STEP 2 like activity
     activityManager.saveLike(activity, demoIdentity);
-    
-    List<NotificationInfo> list = assertMadeNotifications(1);
+
+    assertMadeMailDigestNotifications(1);
+    List<NotificationInfo> list = assertMadeMailDigestNotifications(rootIdentity.getRemoteId(), 1);
     NotificationInfo likeNotification = list.get(0);
     
     //STEP 3 assert Message info
@@ -97,7 +98,8 @@ public class LikeMailBuilderTest extends AbstractPluginTest {
     activityManager.saveLike(activity, demoIdentity);
     activityManager.saveLike(activity, johnIdentity);
     //
-    List<NotificationInfo> list = assertMadeNotifications(3);
+    assertMadeMailDigestNotifications(3);
+    List<NotificationInfo> list = assertMadeMailDigestNotifications(rootIdentity.getRemoteId(), 3);
     
     NotificationContext ctx = NotificationContextImpl.cloneInstance();
     list.set(0, list.get(0).setTo(rootIdentity.getRemoteId()));
@@ -124,7 +126,8 @@ public class LikeMailBuilderTest extends AbstractPluginTest {
     
     activityManager.saveLike(activity, maryIdentity);
     
-    List<NotificationInfo> list = assertMadeNotifications(1);
+    assertMadeMailDigestNotifications(1);
+    List<NotificationInfo> list = assertMadeMailDigestNotifications(rootIdentity.getRemoteId(), 1);
     NotificationInfo likeNotification = list.get(0);
     
     //STEP 3 assert Message info
@@ -144,11 +147,13 @@ public class LikeMailBuilderTest extends AbstractPluginTest {
     ExoSocialActivity activity = makeActivity(rootIdentity, "root post an activity");
     notificationService.clearAll();
 
-    List<NotificationInfo> list = assertMadeNotifications(0);
+    assertMadeMailDigestNotifications(0);
+    List<NotificationInfo> list = assertMadeMailDigestNotifications(rootIdentity.getRemoteId(), 0);
     activityManager.saveLike(activity, demoIdentity);
     activityManager.saveLike(activity, johnIdentity);
 
-    list = assertMadeNotifications(2);
+    assertMadeMailDigestNotifications(2);
+    list = assertMadeMailDigestNotifications(rootIdentity.getRemoteId(), 2);
 
     // john unlike
     activityManager.deleteLike(activity, johnIdentity);

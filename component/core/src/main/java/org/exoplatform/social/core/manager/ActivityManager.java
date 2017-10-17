@@ -121,7 +121,7 @@ public interface ActivityManager {
   void deleteActivity(String activityId);
 
   /**
-   * Saves a new comment to a specific activity.
+   * Saves a new comment or comment reply to a specific activity.
    *
    * @param activity The activity.
    * @param newComment The comment to be saved.
@@ -140,6 +140,17 @@ public interface ActivityManager {
    * @since 1.2.0-GA
    */
   RealtimeListAccess<ExoSocialActivity> getCommentsWithListAccess(ExoSocialActivity activity);
+
+  /**
+   * Gets comments of a specific activity. 
+   * The type of returned result is <code>ListAccess</code> which can be lazy loaded.
+   * If loadSubComments is true, subComments will be added to the result list
+   * 
+   * @param activity The specific activity.
+   * @param loadSubComments
+   * @return The comments.
+   */
+  RealtimeListAccess<ExoSocialActivity> getCommentsWithListAccess(ExoSocialActivity activity, boolean loadSubComments);
 
   /**
    * Deletes an existing comment of a specific activity by its Id.
@@ -483,4 +494,13 @@ public interface ActivityManager {
    * @return
    */
   RealtimeListAccess<ExoSocialActivity> getAllActivitiesWithListAccess();
+
+
+  /**
+   * Get all sub comments of a comment
+   * 
+   * @param comment
+   * @return
+   */
+  List<ExoSocialActivity> getSubComments(ExoSocialActivity comment);
 }

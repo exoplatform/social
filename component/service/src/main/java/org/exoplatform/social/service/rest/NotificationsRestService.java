@@ -64,8 +64,8 @@ public class NotificationsRestService implements ResourceContainer {
   private static String       ACTIVITY_ID_PREFIX = "activity";
 
   public enum URL_TYPE {
-    user, space, space_members, reply_activity, reply_activity_highlight_comment, view_full_activity,
-    view_full_activity_highlight_comment, view_likers_activity, portal_home, all_space,
+    user, space, space_members, reply_activity, reply_activity_highlight_comment, reply_activity_highlight_comment_reply, view_full_activity,
+    view_full_activity_highlight_comment, view_full_activity_highlight_comment_reply, view_likers_activity, portal_home, all_space,
     connections, notification_settings, connections_request, space_invitation, user_activity_stream;
   }
   
@@ -363,6 +363,13 @@ public class NotificationsRestService implements ResourceContainer {
           targetURL = hasLoggedIn ? Util.getBaseUrl() + LinkProvider.getRedirectUri(ACTIVITY_ID_PREFIX + "?id=" + activityId + "#comment-" + commentId) : redirectLink;
           break;
         }
+        case view_full_activity_highlight_comment_reply: {
+          String activityId = objectId.split("-")[0];
+          String commentId = objectId.split("-")[1];
+          String commentReplyId = objectId.split("-")[2];
+          targetURL = hasLoggedIn ? Util.getBaseUrl() + LinkProvider.getRedirectUri(ACTIVITY_ID_PREFIX + "?id=" + activityId + "&commentId=" + commentId + "#comment-" + commentReplyId) : redirectLink;
+          break;
+        }
         case view_likers_activity: {
           targetURL = hasLoggedIn ? Util.getBaseUrl() + LinkProvider.getRedirectUri(ACTIVITY_ID_PREFIX + "?id=" + objectId + "&likes=1") : redirectLink;
           break;
@@ -375,6 +382,13 @@ public class NotificationsRestService implements ResourceContainer {
           String activityId = objectId.split("-")[0];
           String commentId = objectId.split("-")[1];
           targetURL = hasLoggedIn ? Util.getBaseUrl() + LinkProvider.getRedirectUri(ACTIVITY_ID_PREFIX + "?id=" + activityId + "#comment-" + commentId + "&comment=1") : redirectLink;
+          break;
+        }
+        case reply_activity_highlight_comment_reply: {
+          String activityId = objectId.split("-")[0];
+          String commentId = objectId.split("-")[1];
+          String commentReplyId = objectId.split("-")[2];
+          targetURL = hasLoggedIn ? Util.getBaseUrl() + LinkProvider.getRedirectUri(ACTIVITY_ID_PREFIX + "?id=" + activityId + "&commentId=" + commentId + "&comment=2" + "#comment-" + commentReplyId) : redirectLink;
           break;
         }
         case user: {

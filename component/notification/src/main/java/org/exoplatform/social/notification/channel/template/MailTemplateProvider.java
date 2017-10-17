@@ -16,10 +16,19 @@
  */
 package org.exoplatform.social.notification.channel.template;
 
-import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.commons.lang3.tuple.Pair;
+import java.io.IOException;
+import java.io.Writer;
+import java.util.Arrays;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 
 import org.exoplatform.commons.api.notification.NotificationContext;
 import org.exoplatform.commons.api.notification.annotation.TemplateConfig;
@@ -48,11 +57,18 @@ import org.exoplatform.social.core.relationship.model.Relationship;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.notification.LinkProviderUtils;
 import org.exoplatform.social.notification.Utils;
-import org.exoplatform.social.notification.plugin.*;
-
-import java.io.IOException;
-import java.io.Writer;
-import java.util.*;
+import org.exoplatform.social.notification.plugin.ActivityCommentPlugin;
+import org.exoplatform.social.notification.plugin.ActivityMentionPlugin;
+import org.exoplatform.social.notification.plugin.ActivityReplyToCommentPlugin;
+import org.exoplatform.social.notification.plugin.LikeCommentPlugin;
+import org.exoplatform.social.notification.plugin.LikePlugin;
+import org.exoplatform.social.notification.plugin.NewUserPlugin;
+import org.exoplatform.social.notification.plugin.PostActivityPlugin;
+import org.exoplatform.social.notification.plugin.PostActivitySpaceStreamPlugin;
+import org.exoplatform.social.notification.plugin.RelationshipReceivedRequestPlugin;
+import org.exoplatform.social.notification.plugin.RequestJoinSpacePlugin;
+import org.exoplatform.social.notification.plugin.SocialNotificationUtils;
+import org.exoplatform.social.notification.plugin.SpaceInvitationPlugin;
 
 /**
  * Created by The eXo Platform SAS
@@ -61,6 +77,7 @@ import java.util.*;
  * Dec 13, 2014  
  */
 @TemplateConfigs(templates = {
+    @TemplateConfig(pluginId = ActivityReplyToCommentPlugin.ID, template = "war:/notification/templates/ActivityReplyToCommentPlugin.gtmpl"),
     @TemplateConfig(pluginId = ActivityCommentPlugin.ID, template = "war:/notification/templates/ActivityCommentPlugin.gtmpl"),
     @TemplateConfig(pluginId = ActivityMentionPlugin.ID, template = "war:/notification/templates/ActivityMentionPlugin.gtmpl"),
     @TemplateConfig(pluginId = LikePlugin.ID, template = "war:/notification/templates/LikePlugin.gtmpl"),
@@ -75,6 +92,78 @@ public class MailTemplateProvider extends TemplateProvider {
 
   private static final Log LOG = ExoLogger.getLogger(MailTemplateProvider.class);
 
+  /** Defines the template builder for ActivityReplyToCommentPlugin*/
+  private AbstractTemplateBuilder replyToComment = new AbstractTemplateBuilder() {
+    @Override
+    protected MessageInfo makeMessage(NotificationContext ctx) {
+      MessageInfo messageInfo = new MessageInfo();
+      NotificationInfo notification = ctx.getNotificationInfo();
+      String language = getLanguage(notification);
+
+      String activityId = notification.getValueOwnerParameter(SocialNotificationUtils.ACTIVITY_ID.getKey());
+      String commentId = notification.getValueOwnerParameter(SocialNotificationUtils.COMMENT_ID.getKey());
+      ExoSocialActivity activity = Utils.getActivityManager().getActivity(activityId);
+      ExoSocialActivity commentActivity = Utils.getActivityManager().getActivity(commentId);
+      ExoSocialActivity parentCommentActivity = Utils.getActivityManager().getActivity(commentActivity.getParentCommentId());
+      Identity identity = Utils.getIdentityManager().getIdentity(commentActivity.getPosterId(), true);
+      
+      TemplateContext templateContext = new TemplateContext(notification.getKey().getId(), language);
+      templateContext.put("USER", identity.getProfile().getFullName());
+      String subject = TemplateUtils.processSubject(templateContext);
+
+      SocialNotificationUtils.addFooterAndFirstName(notification.getTo(), templateContext);
+      templateContext.put("PROFILE_URL", LinkProviderUtils.getRedirectUrl("user", identity.getRemoteId()));
+      templateContext.put("COMMENT_REPLY", NotificationUtils.processLinkTitle(commentActivity.getTitle()));
+      templateContext.put("COMMENT", NotificationUtils.processLinkTitle(parentCommentActivity.getTitle()));
+      templateContext.put("OPEN_URL", LinkProviderUtils.getOpenLink(activity));
+      templateContext.put("REPLY_ACTION_URL", LinkProviderUtils.getRedirectUrl("reply_activity_highlight_comment_reply", activity.getId() + "-" + parentCommentActivity.getId() + "-" + commentActivity.getId()));
+      templateContext.put("VIEW_FULL_DISCUSSION_ACTION_URL", LinkProviderUtils.getRedirectUrl("view_full_activity_highlight_comment_reply", activity.getId() + "-" + parentCommentActivity.getId() + "-" + commentActivity.getId()));
+
+      String body = SocialNotificationUtils.getBody(ctx, templateContext, parentCommentActivity);
+      //binding the exception throws by processing template
+      ctx.setException(templateContext.getException());
+      return messageInfo.subject(subject).body(body).end();
+    }
+
+    @Override
+    protected boolean makeDigest(NotificationContext ctx, Writer writer) {
+      List<NotificationInfo> notifications = ctx.getNotificationInfos();
+      NotificationInfo first = notifications.get(0);
+
+      String language = getLanguage(first);
+      TemplateContext templateContext = new TemplateContext(first.getKey().getId(), language);
+      SocialNotificationUtils.addFooterAndFirstName(first.getTo(), templateContext);
+      
+      //Store the activity id as key, and the list all identities who posted to the activity.
+      Map<String, List<String>> receiverMap = new LinkedHashMap<String, List<String>>();
+      Map<String, List<Pair<String, String>>> activityUserComments = new LinkedHashMap<String, List<Pair<String, String>>>();
+      
+      try {
+        for (NotificationInfo message : notifications) {
+          String commentId = message.getValueOwnerParameter(SocialNotificationUtils.COMMENT_ID.getKey());
+          ExoSocialActivity commentActivity = Utils.getActivityManager().getActivity(commentId);
+          if (commentActivity == null) {
+            continue;
+          }
+
+          String poster = message.getValueOwnerParameter("poster");
+          Pair<String, String> userComment = new ImmutablePair<String, String>(poster, commentActivity.getTitle());
+          ExoSocialActivity parentActivity = Utils.getActivityManager().getParentActivity(commentActivity);
+          //
+          SocialNotificationUtils.processInforSendTo(receiverMap, parentActivity.getId(), poster);
+          SocialNotificationUtils.processInforUserComments(activityUserComments, parentActivity.getId(), userComment);
+        }
+        writer.append(SocialNotificationUtils.getMessageByIds(receiverMap, activityUserComments, templateContext));
+      } catch (IOException e) {
+        ctx.setException(e);
+        return false;
+      }
+      
+      return true;
+    }
+    
+  };
+  
   /** Defines the template builder for ActivityCommentPlugin*/
   private AbstractTemplateBuilder comment = new AbstractTemplateBuilder() {
     @Override
@@ -781,6 +870,7 @@ public class MailTemplateProvider extends TemplateProvider {
   public MailTemplateProvider(InitParams initParams) {
     super(initParams);
     this.templateBuilders.put(PluginKey.key(ActivityCommentPlugin.ID), comment);
+    this.templateBuilders.put(PluginKey.key(ActivityReplyToCommentPlugin.ID), replyToComment);
     this.templateBuilders.put(PluginKey.key(ActivityMentionPlugin.ID), mention);
     this.templateBuilders.put(PluginKey.key(LikePlugin.ID), like);
     this.templateBuilders.put(PluginKey.key(LikeCommentPlugin.ID), like);

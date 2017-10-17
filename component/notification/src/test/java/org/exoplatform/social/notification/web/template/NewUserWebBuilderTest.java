@@ -66,7 +66,8 @@ public class NewUserWebBuilderTest extends AbstractPluginTest {
     Identity ghostIdentity = identityManager.getOrCreateIdentity("organization", "ghost", true);
     tearDownIdentityList.add(ghostIdentity);
     // will sent 4 mails to 4 users existing.
-    List<NotificationInfo> list = assertMadeWebNotifications(4);
+    assertMadeWebNotifications(4);
+    List<NotificationInfo> list = assertMadeWebNotifications(rootIdentity.getRemoteId(), 1);
     NotificationInfo newUserNotification = list.get(0);
     
     //STEP 2 assert Message info

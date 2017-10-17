@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2003-2016 eXo Platform SAS.
+ * Copyright (C) 2003-2013 eXo Platform SAS.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -14,22 +14,21 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+package org.exoplatform.social.notification.plugin;
 
-package org.exoplatform.social.core.jpa.storage.entity;
+import org.exoplatform.container.xml.InitParams;
 
-/**
- * Created by bdechateauvieux on 4/1/15.
- */
-public enum StreamType {
-  SPACE("SPACE"), POSTER("POSTER"), LIKER("LIKER"), COMMENTER("COMMENTER"), MENTIONER("MENTIONER"), COMMENT_LIKER("COMMENT_LIKER");
+public class ActivityReplyToCommentPlugin extends ActivityCommentPlugin {
 
-  private final String type;
+  public static final String ID = "ActivityReplyToCommentPlugin";
 
-  public String getType() {
-    return type;
+  public ActivityReplyToCommentPlugin(InitParams initParams) {
+    super(initParams);
+    isSubComment = true;
   }
 
-  StreamType(String type) {
-    this.type = type;
+  @Override
+  public String getId() {
+    return ID;
   }
 }

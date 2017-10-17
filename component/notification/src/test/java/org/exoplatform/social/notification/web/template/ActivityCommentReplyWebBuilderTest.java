@@ -19,63 +19,57 @@ package org.exoplatform.social.notification.web.template;
 import java.util.List;
 
 import org.exoplatform.commons.api.notification.NotificationContext;
-import org.exoplatform.commons.api.notification.channel.AbstractChannel;
-import org.exoplatform.commons.api.notification.channel.ChannelManager;
 import org.exoplatform.commons.api.notification.channel.template.AbstractTemplateBuilder;
-import org.exoplatform.commons.api.notification.model.ChannelKey;
 import org.exoplatform.commons.api.notification.model.MessageInfo;
 import org.exoplatform.commons.api.notification.model.NotificationInfo;
 import org.exoplatform.commons.api.notification.model.PluginKey;
 import org.exoplatform.commons.api.notification.plugin.BaseNotificationPlugin;
-import org.exoplatform.commons.notification.channel.WebChannel;
 import org.exoplatform.commons.notification.impl.NotificationContextImpl;
-import org.exoplatform.social.core.space.model.Space;
+import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.notification.AbstractPluginTest;
-import org.exoplatform.social.notification.plugin.RequestJoinSpacePlugin;
+import org.exoplatform.social.notification.plugin.ActivityReplyToCommentPlugin;
 
-public class RequestJoinSpaceWebBuilderTest extends AbstractPluginTest {
-  private ChannelManager manager;
-  
-  @Override
-  protected void setUp() throws Exception {
-    super.setUp();
-    manager = getService(ChannelManager.class);
-  }
-  
-  @Override
-  public void tearDown() throws Exception {
-    super.tearDown();
-  }
-  
+public class ActivityCommentReplyWebBuilderTest extends AbstractPluginTest {
+  private final static String ACTIVITY_TITLE = "my activity title post today.";
+  private final static String COMMENT_TITLE = "my comment title add today.";
+  private final static String SUB_COMMENT_TITLE = "my comment reply title add today.";
 
   @Override
   public AbstractTemplateBuilder getTemplateBuilder() {
-    AbstractChannel channel = manager.getChannel(ChannelKey.key(WebChannel.ID));
-    assertTrue(channel != null);
-    assertTrue(channel.hasTemplateBuilder(PluginKey.key(RequestJoinSpacePlugin.ID)));
-    return channel.getTemplateBuilder(PluginKey.key(RequestJoinSpacePlugin.ID));
+    return null;
   }
-  
+
   @Override
   public BaseNotificationPlugin getPlugin() {
-    return pluginService.getPlugin(PluginKey.key(RequestJoinSpacePlugin.ID));
+    return pluginService.getPlugin(PluginKey.key(ActivityReplyToCommentPlugin.ID));
   }
-  
+
+  /**
+   * Just test for simple case when post an activity + comment + comment reply
+   * 
+   * @throws Exception
+   */
   public void testSimpleCase() throws Exception {
-    //
-    Space space = getSpaceInstance(1);
-    //Make request to join space
-    spaceService.addPendingUser(space, maryIdentity.getRemoteId());
+    //STEP 1 post activity
+    ExoSocialActivity activity = makeActivity(maryIdentity, ACTIVITY_TITLE);
     assertMadeWebNotifications(1);
+    notificationService.clearAll();
+    //STEP 2 add comment
+    ExoSocialActivity comment = makeComment(activity, rootIdentity, COMMENT_TITLE);
+    //STEP 3 add comment reply
+    makeCommentReply(activity, demoIdentity, SUB_COMMENT_TITLE, comment.getId());
+
     List<NotificationInfo> list = assertMadeWebNotifications(rootIdentity.getRemoteId(), 1);
-    
-    //assert Message Info
-    NotificationInfo ntf = list.get(0);
+    NotificationInfo commentReplyNotification = list.get(0);
+    //STEP 4 assert Message info
+
+    assertEquals(ActivityReplyToCommentPlugin.ID, commentReplyNotification.getKey().getId());
     NotificationContext ctx = NotificationContextImpl.cloneInstance();
-    ctx.setNotificationInfo(ntf.setTo(rootIdentity.getRemoteId()));
-    MessageInfo message = buildMessageInfo(ctx);
-    
-    assertBody(message, "has requested access to");
+    ctx.setNotificationInfo(commentReplyNotification.setTo(rootIdentity.getRemoteId()));
+    MessageInfo info = buildMessageInfo(ctx);
+
+    assertBody(info, ACTIVITY_TITLE);
+    assertBody(info, "New reply on your comment");
   }
-  
+
 }

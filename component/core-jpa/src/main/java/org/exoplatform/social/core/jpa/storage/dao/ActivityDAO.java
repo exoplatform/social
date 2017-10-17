@@ -429,4 +429,13 @@ public interface ActivityDAO extends GenericDAO<ActivityEntity, Long> {
    */
   void deleteActivitiesByOwnerId(String ownerId);
 
+
+  /**
+   * find Sub Comments of some comments
+   * 
+   * @param ids
+   * @return
+   */
+  List<ActivityEntity> findCommentsOfActivities(List<Long> ids);
+
 }

@@ -67,7 +67,8 @@ public class SpaceInvitationWebBuilderTest extends AbstractPluginTest {
     
     //Invite user to join space
     spaceService.addInvitedUser(space, maryIdentity.getRemoteId());
-    List<NotificationInfo> list = assertMadeWebNotifications(1);
+    assertMadeWebNotifications(1);
+    List<NotificationInfo> list = assertMadeWebNotifications(rootIdentity.getRemoteId(), 1);
     
     //assert Message Info
     NotificationContext ctx = NotificationContextImpl.cloneInstance();

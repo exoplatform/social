@@ -1791,7 +1791,7 @@ public class ActivityStorageTest extends AbstractCoreTest {
       activityStorage.saveComment(activity, comment);
     }
     
-    List<ExoSocialActivity> comments = activityStorage.getComments(activity, 0, 40);
+    List<ExoSocialActivity> comments = activityStorage.getComments(activity, false, 0, 40);
     assertNotNull("comments must not be null", comments);
     assertEquals("comments.size() must return: 40", 40, comments.size());
   }
@@ -1820,7 +1820,7 @@ public class ActivityStorageTest extends AbstractCoreTest {
       activityStorage.saveComment(activity, comment);
     }
     
-    List<ExoSocialActivity> comments = activityStorage.getComments(activity, 0, 40);
+    List<ExoSocialActivity> comments = activityStorage.getComments(activity, false, 0, 40);
     assertNotNull("comments must not be null", comments);
     assertEquals("comments.size() must return: 40", 40, comments.size());
     
@@ -1860,7 +1860,7 @@ public class ActivityStorageTest extends AbstractCoreTest {
       activityStorage.saveComment(activity, comment);
     }
     
-    List<ExoSocialActivity> comments = activityStorage.getComments(activity, 0, 10);
+    List<ExoSocialActivity> comments = activityStorage.getComments(activity, false, 0, 10);
     assertNotNull("comments must not be null", comments);
     assertEquals("comments.size() must return: 10", 10, comments.size());
     
@@ -1869,11 +1869,11 @@ public class ActivityStorageTest extends AbstractCoreTest {
     int number = activityStorage.getNumberOfNewerComments(activity, latestComment);
     assertEquals("number must be: 0", 0, number);
     
-    ExoSocialActivity baseComment = activityStorage.getComments(activity, 0, 20).get(10);
+    ExoSocialActivity baseComment = activityStorage.getComments(activity, false, 0, 20).get(10);
     number = activityStorage.getNumberOfNewerComments(activity, baseComment);
     assertEquals("number must be: 10", 10, number);
     
-    baseComment = activityStorage.getComments(activity, 0, 20).get(19);
+    baseComment = activityStorage.getComments(activity, false, 0, 20).get(19);
     number = activityStorage.getNumberOfNewerComments(activity, baseComment);
     assertEquals("number must be: 19", 19, number);
   }
@@ -1910,7 +1910,7 @@ public class ActivityStorageTest extends AbstractCoreTest {
       activityStorage.saveComment(activity, comment);
     }
     
-    List<ExoSocialActivity> comments = activityStorage.getComments(activity, 0, 10);
+    List<ExoSocialActivity> comments = activityStorage.getComments(activity, false, 0, 10);
     assertNotNull("comments must not be null", comments);
     assertEquals("comments.size() must return: 10", 10, comments.size());
     
@@ -1920,12 +1920,12 @@ public class ActivityStorageTest extends AbstractCoreTest {
     assertNotNull("newerComments must not be null", newerComments);
     assertEquals("newerComments.size() must return: 0", 0, newerComments.size());
     
-    ExoSocialActivity baseComment = activityStorage.getComments(activity, 0, 20).get(10);
+    ExoSocialActivity baseComment = activityStorage.getComments(activity, false, 0, 20).get(10);
     newerComments = activityStorage.getNewerComments(activity, baseComment, 20);
     assertNotNull("newerComments must not be null", newerComments);
     assertEquals("newerComments.size() must return: 10", 10, newerComments.size());
     
-    baseComment = activityStorage.getComments(activity, 0, 20).get(19);
+    baseComment = activityStorage.getComments(activity, false, 0, 20).get(19);
     newerComments = activityStorage.getNewerComments(activity, baseComment, 20);
     assertNotNull("newerComments must not be null", newerComments);
     assertEquals("newerComments.size() must return: 19", 19, newerComments.size());
@@ -1955,7 +1955,7 @@ public class ActivityStorageTest extends AbstractCoreTest {
       activityStorage.saveComment(activity, comment);
     }
     
-    List<ExoSocialActivity> comments = activityStorage.getComments(activity, 0, 10);
+    List<ExoSocialActivity> comments = activityStorage.getComments(activity, false, 0, 10);
     assertNotNull("comments must not be null", comments);
     assertEquals("comments.size() must return: 10", 10, comments.size());
     
@@ -1999,7 +1999,7 @@ public class ActivityStorageTest extends AbstractCoreTest {
       activityStorage.saveComment(activity, comment);
     }
     
-    List<ExoSocialActivity> comments = activityStorage.getComments(activity, 0, 10);
+    List<ExoSocialActivity> comments = activityStorage.getComments(activity, false, 0, 10);
     assertNotNull("comments must not be null", comments);
     assertEquals("comments.size() must return: 10", 10, comments.size());
     
@@ -2172,17 +2172,17 @@ public class ActivityStorageTest extends AbstractCoreTest {
       activityStorage.saveComment(activity, comment);
     }
     
-    List<ExoSocialActivity> comments = activityStorage.getComments(activity, 0, 5);
+    List<ExoSocialActivity> comments = activityStorage.getComments(activity, false, 0, 5);
     assertEquals("comments.size() must return: 5", 5, comments.size());
     
     ExoSocialActivity hiddenComment = comments.get(3);
     hiddenComment.isHidden(true);
     activityStorage.updateActivity(hiddenComment);
-    List<ExoSocialActivity> newCommentsList = activityStorage.getComments(activity, 0, 5);
+    List<ExoSocialActivity> newCommentsList = activityStorage.getComments(activity, false, 0, 5);
     assertEquals("newCommentsList.size() must return: 4", 4, newCommentsList.size());
     
     //get 2 lastest comments
-    newCommentsList = activityStorage.getComments(activity, 2, 2);
+    newCommentsList = activityStorage.getComments(activity, false, 2, 2);
     assertEquals("newCommentsList.size() must return: 2", 2, newCommentsList.size());
     assertEquals("Comment 2",newCommentsList.get(0).getTitle());
     assertEquals("Comment 4",newCommentsList.get(1).getTitle());
@@ -2643,7 +2643,7 @@ public class ActivityStorageTest extends AbstractCoreTest {
       activityStorage.saveComment(activity, comment);
     }
     
-    List<ExoSocialActivity> comments = activityStorage.getComments(activity, 0, 10);
+    List<ExoSocialActivity> comments = activityStorage.getComments(activity, false, 0, 10);
     assertNotNull("comments must not be null", comments);
     assertEquals("comments.size() must return: 10", 10, comments.size());
 
@@ -2652,12 +2652,12 @@ public class ActivityStorageTest extends AbstractCoreTest {
     assertNotNull("newerComments must not be null", newerComments);
     assertEquals("newerComments.size() must return: 10", 10, newerComments.size());
 
-    sinceTime = activityStorage.getComments(activity, 0, 20).get(10).getUpdated().getTime();
+    sinceTime = activityStorage.getComments(activity, false, 0, 20).get(10).getUpdated().getTime();
     newerComments = activityStorage.getNewerComments(activity, sinceTime, 20);
     assertNotNull("newerComments must not be null", newerComments);
     assertEquals("newerComments.size() must return: 9", 9, newerComments.size());
 
-    sinceTime = activityStorage.getComments(activity, 0, 20).get(19).getUpdated().getTime();
+    sinceTime = activityStorage.getComments(activity, false, 0, 20).get(19).getUpdated().getTime();
     newerComments = activityStorage.getNewerComments(activity, sinceTime, 20);
     assertNotNull("newerComments must not be null", newerComments);
     assertEquals("newerComments.size() must return: 0", 0, newerComments.size());
@@ -2686,7 +2686,7 @@ public class ActivityStorageTest extends AbstractCoreTest {
       activityStorage.saveComment(activity, comment);
     }
     
-    List<ExoSocialActivity> comments = activityStorage.getComments(activity, 0, 10);
+    List<ExoSocialActivity> comments = activityStorage.getComments(activity, false, 0, 10);
     assertNotNull("comments must not be null", comments);
     assertEquals("comments.size() must return: 10", 10, comments.size());
 

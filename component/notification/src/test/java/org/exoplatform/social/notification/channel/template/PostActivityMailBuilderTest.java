@@ -76,7 +76,7 @@ public class PostActivityMailBuilderTest extends AbstractPluginTest {
     //STEP 1 post activity
     makeActivity(demoIdentity, "demo post activity on activity stream of root");
     
-    List<NotificationInfo> list = assertMadeNotifications(1);
+    List<NotificationInfo> list = assertMadeMailDigestNotifications(rootIdentity.getRemoteId(), 1);
     NotificationInfo postActivityNotification = list.get(0);
     
     //STEP 2 assert Message info
@@ -106,7 +106,8 @@ public class PostActivityMailBuilderTest extends AbstractPluginTest {
     makeActivity(ghostIdentity, "ghost post activity on activity stream of root");
     
     //Digest
-    List<NotificationInfo> list = assertMadeNotifications(4);
+    assertMadeMailDigestNotifications(4);
+    List<NotificationInfo> list = assertMadeMailDigestNotifications(rootIdentity.getRemoteId(), 1);
     
     NotificationContext ctx = NotificationContextImpl.cloneInstance();
     list.set(0, list.get(0).setTo(rootIdentity.getRemoteId()));
@@ -124,7 +125,8 @@ public class PostActivityMailBuilderTest extends AbstractPluginTest {
     makeActivity(johnIdentity, "john post activity on activity stream of root");
     
     //Digest
-    List<NotificationInfo> list = assertMadeNotifications(3);
+    assertMadeMailDigestNotifications(3);
+    List<NotificationInfo> list = assertMadeMailDigestNotifications(rootIdentity.getRemoteId(), 3);
     NotificationContext ctx = NotificationContextImpl.cloneInstance();
     list.set(0, list.get(0).setTo(rootIdentity.getRemoteId()));
     ctx.setNotificationInfos(list);
@@ -138,7 +140,8 @@ public class PostActivityMailBuilderTest extends AbstractPluginTest {
     makeActivity(johnIdentity, "john post activity on activity stream of root");
     
     //Digest
-    List<NotificationInfo> list = assertMadeNotifications(2);
+    assertMadeMailDigestNotifications(2);
+    List<NotificationInfo> list = assertMadeMailDigestNotifications(rootIdentity.getRemoteId(), 2);
     
     NotificationContext ctx = NotificationContextImpl.cloneInstance();
     list.set(0, list.get(0).setTo(rootIdentity.getRemoteId()));

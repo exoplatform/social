@@ -318,6 +318,14 @@ public class Utils {
   public static final ExoRouter getExoRouter() {
     return (ExoRouter) ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(ExoRouter.class);
   }
+
+  /**
+   * Get focused comment's id
+   * @return
+   */
+  public static String getCommentID() {
+    return getValueFromRequestParam("commentId");
+  }
   
   /**
    * Get activity's id
@@ -343,6 +351,14 @@ public class Utils {
    */
   public static boolean isFocusCommentBox() {
     return ("1").equals(getValueFromRequestParam("comment"));
+  }
+
+  /**
+   * Check the request param of url to verify if need focus to comment reply box
+   * @return true if need focus to comment reply box
+   */
+  public static boolean isFocusCommentReplyBox() {
+    return ("2").equals(getValueFromRequestParam("comment"));
   }
   
   /**

@@ -78,9 +78,15 @@
           });
         });
       }
+      var commentButton = $("#" + UIActivity.commentButtonId);
+      commentButton.click(function(event) {
+        var commentId = commentButton.data("comment-id");
+        var clickAction = commentButton.data("click").replace("COMMENTID", (commentId ? commentId : ""));
+        eval(clickAction);
+      });
     },
 
-    initCKEditor: function () {
+    initCKEditor: function (activityId, spaceURL, commentPlaceholder) {
       var extraPlugins = 'simpleLink,simpleImage,suggester,hideBottomToolbar';
       var windowWidth = $(window).width();
       var windowHeight = $(window).height();
@@ -93,15 +99,19 @@
       // TODO this line is mandatory when a custom skin is defined, it should not be mandatory
       CKEDITOR.basePath = '/commons-extension/ckeditor/';
 
-      $('textarea#CommentTextarea' + UIActivity.activityId).ckeditor({
+      $('textarea#CommentTextarea' + activityId).ckeditor({
         customConfig: '/commons-extension/ckeditorCustom/config.js',
         extraPlugins: extraPlugins,
-        placeholder: UIActivity.commentPlaceholder != null ? UIActivity.commentPlaceholder : window.eXo.social.I18n.mentions.defaultMessage,
-        activityId : UIActivity.activityId,
-        spaceURL: UIActivity.spaceURL,
+        placeholder: commentPlaceholder != null ? commentPlaceholder : window.eXo.social.I18n.mentions.defaultMessage,
+        activityId : activityId,
+        spaceURL: spaceURL,
         typeOfRelation: 'mention_comment',
         on : {
           instanceReady : function ( evt ) {
+            var data = this.getData();
+            if(data && data.trim()) {
+              this.setData("");
+            }
             // Hide the editor toolbar
             var elId = this.element.$.id.replace('CommentTextarea','');
             $('#CommentButton' + elId).prop("disabled", true);
@@ -143,7 +153,7 @@
       UIActivity.commentTextareaEl = $("#" + UIActivity.commentTextareId);
       UIActivity.commentButtonEl = $("#" + UIActivity.commentButtonId).show();
       UIActivity.deleteCommentButtonEls = [];
-      UIActivity.contentBoxEl = $(UIActivity.contentBoxId);
+      UIActivity.contentBoxEl = $("#" + UIActivity.contentBoxId);
       UIActivity.deleteActivityButtonEl = $("#" + UIActivity.deleteActivityButtonId);
       UIActivity.permaLinkActivityButtonEl = $("#" + UIActivity.permaLinkActivityButtonId);
       UIActivity.commentBlockBoundEl = $("#" + UIActivity.commentBlockBoundId);
@@ -158,6 +168,21 @@
         }
       }
 
+      var contentBoxEl = this.contentBoxEl;
+      var activityId = UIActivity.activityId;
+      UIActivity.contentBoxEl.find(".subCommentShowAllLink").on("click", function() {
+        var parentCommentId = $(this).attr('data-parent-comment');
+
+        $('#SubCommentShowAll_' + parentCommentId).hide();
+        contentBoxEl.find('[data-parent-comment=' + parentCommentId + ']').removeClass('hidden');
+
+        UIActivity.addLastCommentParamToLikeLink(activityId, parentCommentId);
+      });
+      if(window.lastExpandedComment && window.lastExpandedComment[UIActivity.activityId]) {
+        var parentCommentId = window.lastExpandedComment[UIActivity.activityId];
+        this.addLastCommentParamToLikeLink(UIActivity.activityId, parentCommentId);
+      }
+
       window.takeActionFromLikeComment = UIActivity.takeActionFromLikeComment;
 
       if (!(UIActivity.commentFormBlockEl && UIActivity.commentTextareaEl && UIActivity.commentButtonEl)) {
@@ -168,31 +193,64 @@
         evt.stopPropagation();
       });
 
-      this.initCKEditor();
+      var activityId = UIActivity.activityId;
+      var spaceURL = UIActivity.spaceURL;
+      var commentPlaceholder = UIActivity.commentPlaceholder;
 
-      //this.resizeComment();
-
-      var commentLinkEl = $("#" + UIActivity.commentLinkId);
+      var commentLinkEl = $("[data-activity='" + activityId + "']");
       if (commentLinkEl.length > 0) {
         commentLinkEl.off('click').on('click', function (evt) {
-          var currentActivityId = $(this).attr('id').replace('CommentLink', '');
-          $('#cke_CommentTextarea' + currentActivityId + ' .cke_contents')[0].style.height = "110px";
-
+          var currentActivityId = $(this).attr('data-activity');
+          var currentCommentId = $(this).attr('data-comment');
+          var currentSubCommentId = $(this).attr('data-sub-comment');
+          var commentButton = $("[data-comment-button='" + activityId + "']");
           var inputContainer = $('#InputContainer' + currentActivityId);
-          if (!inputContainer.is(":visible")) {
+
+          if(currentCommentId) {
+            commentButton.data("comment-id", currentCommentId);
+
+            // Move CKEditor instance to comment block
+            inputContainer.addClass("subCommentBlock");
+            inputContainer.insertAfter($("[data-comment-id=" + currentCommentId + "]").last());
+          } else {
+            commentButton.data("comment-id", null);
+
+            // Move CKEditor instance to activity comment block
+            inputContainer.removeClass("subCommentBlock");
+            inputContainer.appendTo("#CommentBlockBound" + activityId);
+          }
+
+          inputContainer = $('#InputContainer' + currentActivityId);
+          var inputContainerCommentId = inputContainer.data("comment-id");
+          var inputContainerSubCommentId = inputContainer.data("comment-sub-id");
+          inputContainerCommentId = inputContainerCommentId ? inputContainerCommentId : undefined;
+          inputContainerSubCommentId = inputContainerSubCommentId ? inputContainerSubCommentId : undefined;
+          var instanciateCKEditor = !inputContainer.is(":visible") || inputContainerCommentId !== currentCommentId || inputContainerSubCommentId !== currentSubCommentId;
+          if (instanciateCKEditor) {
+            try {
+              if(CKEDITOR.instances['CommentTextarea' + activityId]) {
+                  CKEDITOR.instances['CommentTextarea' + activityId].destroy();
+              }
+            } catch(e){
+              console.log(e);
+            }
+
+            inputContainer.data("comment-id", currentCommentId ? currentCommentId : "");
+            inputContainer.data("comment-sub-id", currentSubCommentId ? currentSubCommentId : "");
+
+            self.initCKEditor(activityId, spaceURL, commentPlaceholder);
+
             inputContainer.show('fast', function () {
               var thiz = $(this);
-              var blockInput = thiz.parents('.uiActivityStream:first').find('.inputContainerShow');
-              if(blockInput.length > 0) {
-                blockInput.removeClass('inputContainerShow').hide();
-              }
               thiz.addClass('inputContainerShow');
               thiz.find('div.replaceTextArea:first').focus();
-              var ctTop = ($(window).height()- thiz.height())/2;
-              var nTop = thiz.offset().top - ctTop - 20;
-              nTop = (nTop > 0) ? nTop : 0;
 
-              $('html, body').animate({scrollTop:nTop}, 'slow');
+              if($('#cke_CommentTextarea' + currentActivityId + ' .cke_contents').length) {
+                $('#cke_CommentTextarea' + currentActivityId + ' .cke_contents')[0].style.height = "110px";
+              }
+
+              var selectedComment = currentSubCommentId ? currentSubCommentId : currentCommentId;
+              self.focusToComment(selectedComment, thiz);
             });
           } else {
             if (eXo.social.SocialUtil.checkDevice().isMobile !== true) {
@@ -200,6 +258,12 @@
                 var thiz = $(this);
                 thiz.removeClass('inputContainerShow');
               });
+            } else {
+              var thiz = $(this);
+              var blockInput = thiz.parents('.uiActivityStream:first').find('.inputContainerShow');
+              if(blockInput.length > 0) {
+                blockInput.removeClass('inputContainerShow').hide();
+              }
             }
           }
         });
@@ -258,6 +322,26 @@
           UIActivity.showLikersPopup(commentId);
         });
       });
+    },
+
+    addLastCommentParamToLikeLink: function (activityId, parentCommentId){
+      var linkElement = $("#LikeLink"+activityId);
+      if(linkElement.length == 0) {
+        linkElement = $("#UnLikeLink"+activityId);
+      }
+      var clickAction = linkElement.attr("onclick");
+      if(clickAction && linkElement.length > 0) {
+        clickAction = clickAction.replace("&objectId=", "&commentId=" + parentCommentId + "&objectId=");
+        linkElement.attr("onclick", clickAction);
+        window.lastExpandedComment = {};
+        window.lastExpandedComment[activityId] = parentCommentId;
+      }
+      linkElement = $("#LikeCommentLink"+parentCommentId);
+      clickAction = linkElement.attr("onclick");
+      if(clickAction && linkElement.length > 0) {
+        clickAction = clickAction.replace("&objectId=", "&commentId=" + parentCommentId + "&objectId=");
+        linkElement.attr("onclick", clickAction);
+      }
     },
 
     resizeComment: function (){
@@ -360,19 +444,40 @@
       var anchor_pattern = "#comment-([\\w|/]+|)";
       var result = anchor.match(anchor_pattern);
       if (result != null) {
-        var jcomment = $('#commentContainer' + result[1]).addClass('focus');
         if (isReply) {
           this.replyByURL(activityId);
-        } else if (jcomment.length > 0) {
-          jcomment[0].scrollIntoView(true);
+        } else {
+          this.focusToComment(result[1]);
         }
       }
     },
 
-    focusToComment : function() {
-      var comment = $('#commentContainer' + $.getQuery('commentId'));
+    focusToComment : function(commentId, elementToScrollTo, delayToDisableFocus) {
+      var comment = $('#commentContainer' + commentId);
       if(comment.length > 0) {
-        comment.addClass('focus')[0].scrollIntoView(true);
+        $("div[id^='commentContainer'").removeClass("focus");
+
+        var ele = elementToScrollTo;
+        var nTop = 0;
+        if (!elementToScrollTo || eXo.social.SocialUtil.checkDevice().isMobile === true) {
+          if(commentId) {
+            ele = $("#commentContainer" + commentId);
+          }
+        }
+        var nTop = ele.offset().top - $(window).height() / 2;
+        $('html, body').animate({scrollTop:nTop}, 'slow');
+
+        if(commentId) {
+          var ele = $("#commentContainer" + commentId);
+          if(ele.length > 0 && ele.offset()) {
+            ele.addClass('focus');
+            if(delayToDisableFocus && delayToDisableFocus > 0) {
+              setTimeout(function() {
+                ele.removeClass('focus', delayToDisableFocus);
+              }, 2000);
+            }
+          }
+        }
       }
     },
 

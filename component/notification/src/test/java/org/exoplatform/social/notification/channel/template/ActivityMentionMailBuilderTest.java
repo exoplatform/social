@@ -71,10 +71,10 @@ public class ActivityMentionMailBuilderTest extends AbstractPluginTest {
   }
   
   public void testActivityMention() throws Exception {
-    //mary post activity on root stream and mention john and demo ==> 3 notifications
     makeActivity(maryIdentity, "hello @john and @demo");
-    List<NotificationInfo> list = assertMadeNotifications(3);
-    NotificationInfo mentionNotification = list.get(2);
+    assertMadeMailDigestNotifications(3);
+    List<NotificationInfo> list = assertMadeMailDigestNotifications(johnIdentity.getRemoteId(), 1);
+    NotificationInfo mentionNotification = list.get(0);
     
     //assert Message info
     NotificationContext ctx = NotificationContextImpl.cloneInstance();
@@ -87,12 +87,14 @@ public class ActivityMentionMailBuilderTest extends AbstractPluginTest {
   
   public void TestCommentMention() throws Exception {
     ExoSocialActivity activity = makeActivity(maryIdentity, "mary post activity on root stream");
-    assertMadeNotifications(1);
+    assertMadeMailDigestNotifications(1);
+    assertMadeMailDigestNotifications(rootIdentity.getRemoteId(), 1);
     notificationService.clearAll();
     //demo post comment on mary's activity and mention to john and root
     makeComment(activity, demoIdentity, "hello @john and @root");
     //2 messages to root and mary for comment and 2 messages to root and john for mention
-    List<NotificationInfo> list = assertMadeNotifications(4);
+    assertMadeMailDigestNotifications(4);
+    List<NotificationInfo> list = assertMadeMailDigestNotifications(rootIdentity.getRemoteId(), 2);
     NotificationInfo commentNotification = list.get(3);
     
     NotificationContext ctx = NotificationContextImpl.cloneInstance();
@@ -108,20 +110,23 @@ public class ActivityMentionMailBuilderTest extends AbstractPluginTest {
     
     //mary post activity on root stream and mention john, demo
     ExoSocialActivity maryActivity = makeActivity(maryIdentity, "mary mention @john and @demo");
-    List<NotificationInfo> list = assertMadeNotifications(3);
-    toJohn.add(list.get(1));
+    assertMadeMailDigestNotifications(3);
+    List<NotificationInfo> list = assertMadeMailDigestNotifications(johnIdentity.getRemoteId(), 1);
+    toJohn.add(list.get(0));
     notificationService.clearAll();
     
     //demo add comment to maryActivity and mention john
     makeComment(maryActivity, demoIdentity, "demo mention @john");
-    List<NotificationInfo> list1 = assertMadeNotifications(3);
-    toJohn.add(list1.get(2));
+    assertMadeMailDigestNotifications(3);
+    List<NotificationInfo> list1 = assertMadeMailDigestNotifications(johnIdentity.getRemoteId(), 1);
+    toJohn.add(list1.get(0));
     notificationService.clearAll();
     
     //root add comment to maryActivity and mention john
     makeComment(activityManager.getActivity(maryActivity.getId()), rootIdentity, "root mention @john");
-    List<NotificationInfo> list2 = assertMadeNotifications(3);
-    toJohn.add(list2.get(2));
+    assertMadeMailDigestNotifications(3);
+    List<NotificationInfo> list2 = assertMadeMailDigestNotifications(johnIdentity.getRemoteId(), 1);
+    toJohn.add(list2.get(0));
     notificationService.clearAll();
 
     NotificationContext ctx = NotificationContextImpl.cloneInstance();
@@ -137,20 +142,23 @@ public class ActivityMentionMailBuilderTest extends AbstractPluginTest {
     
     //mary post activity on root stream and mention john, demo
     ExoSocialActivity maryActivity = makeActivity(maryIdentity, "mary mention @john and @demo");
-    List<NotificationInfo> list = assertMadeNotifications(3);
-    toJohn.add(list.get(1));
+    assertMadeMailDigestNotifications(3);
+    List<NotificationInfo> list = assertMadeMailDigestNotifications(johnIdentity.getRemoteId(), 1);
+    toJohn.add(list.get(0));
     notificationService.clearAll();
     
     //demo add comment to maryActivity and mention john
     makeComment(maryActivity, demoIdentity, "demo mention @john");
-    List<NotificationInfo> list1 = assertMadeNotifications(3);
-    toJohn.add(list1.get(2));
+    assertMadeMailDigestNotifications(3);
+    List<NotificationInfo> list1 = assertMadeMailDigestNotifications(johnIdentity.getRemoteId(), 1);
+    toJohn.add(list1.get(0));
     notificationService.clearAll();
     
     //root add comment to maryActivity and mention john
     makeComment(activityManager.getActivity(maryActivity.getId()), demoIdentity, "root mention @john");
-    List<NotificationInfo> list2 = assertMadeNotifications(3);
-    toJohn.add(list2.get(2));
+    assertMadeMailDigestNotifications(3);
+    List<NotificationInfo> list2 = assertMadeMailDigestNotifications(johnIdentity.getRemoteId(), 1);
+    toJohn.add(list2.get(0));
     notificationService.clearAll();
 
     NotificationContext ctx = NotificationContextImpl.cloneInstance();
@@ -166,20 +174,27 @@ public class ActivityMentionMailBuilderTest extends AbstractPluginTest {
     
     //mary post activity on root stream and mention john, demo
     ExoSocialActivity maryActivity = makeActivity(maryIdentity, "mary mention @john and @demo");
-    List<NotificationInfo> list = assertMadeNotifications(3);
-    toJohn.add(list.get(1));
+    assertMadeMailDigestNotifications(3);
+    List<NotificationInfo> list = assertMadeMailDigestNotifications(johnIdentity.getRemoteId(), 1);
+    toJohn.add(list.get(0));
     notificationService.clearAll();
     
     //demo add comment to maryActivity and mention john
     ExoSocialActivity demoComment = makeComment(maryActivity, demoIdentity, "demo mention @john");
-    List<NotificationInfo> list1 = assertMadeNotifications(3);
-    toJohn.add(list1.get(2));
+    assertMadeMailDigestNotifications(3);
+    List<NotificationInfo> list1 = assertMadeMailDigestNotifications(johnIdentity.getRemoteId(), 1);
+    toJohn.add(list1.get(0));
     notificationService.clearAll();
     
     //root add comment to maryActivity and mention john
     makeComment(activityManager.getActivity(maryActivity.getId()), rootIdentity, "root mention @john");
-    List<NotificationInfo> list2 = assertMadeNotifications(3);
-    toJohn.add(list2.get(2));
+    
+    end();
+    begin();
+
+    assertMadeMailDigestNotifications(3);
+    List<NotificationInfo> list2 = assertMadeMailDigestNotifications(johnIdentity.getRemoteId(), 1);
+    toJohn.add(list2.get(0));
     notificationService.clearAll();
     
     //demo delete his comment

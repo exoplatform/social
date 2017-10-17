@@ -6,6 +6,9 @@
   import static org.exoplatform.social.webui.activity.BaseUIActivity.TEMPLATE_PARAM_COMMENT;
 
   def comment = _ctx.get(TEMPLATE_PARAM_COMMENT);
+  def authorName = _ctx.get("authorName");
+  def authorFullName = _ctx.get("authorFullName");
+  def labelReply = _ctx.appRes("UIActivity.label.Reply");
 %>
 <div class="clearfix actionCommentBar">
      <ul class="pull-left statusAction">
@@ -18,6 +21,8 @@
         def likeUnlikeCommentMsg = "";
         def likeUnlikeCommentAction = "";
         def likeUnlikeCommentClass = "";
+        def parentCommentId = comment.parentCommentId == null ? comment.id : comment.parentCommentId;
+        def subCommentId = comment.parentCommentId == null ? "" : comment.id;
         if (isCommentLiked) {
             likeUnlikeCommentAction = unlikeCommentAction;
             likeUnlikeCommentMsg = _ctx.appRes("UIActivity.msg.UnlikeComment");
@@ -52,6 +57,12 @@
                 ($totalCommentLiked)
             </a>
             <%}%>
+        </li>
+        <li class="separator">-</li>
+        <li>
+            <a class="subComment" id="CommentLink${comment.id}" data-activity="$comment.parentId" data-comment="$parentCommentId" data-sub-comment="$subCommentId" data-author-name="$authorName" data-author-fullname="$authorFullName" href="javascript:void(0);">
+                $labelReply
+            </a> 
         </li>
     </ul>
 </div>

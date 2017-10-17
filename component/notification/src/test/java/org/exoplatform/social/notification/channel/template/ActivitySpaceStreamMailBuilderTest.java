@@ -93,7 +93,8 @@ public class ActivitySpaceStreamMailBuilderTest extends AbstractPluginTest {
     tearDownActivityList.add(activity2);
     
     //Digest
-    List<NotificationInfo> list = assertMadeNotifications(6);
+    assertMadeMailDigestNotifications(6);
+    List<NotificationInfo> list = assertMadeMailDigestNotifications(rootIdentity.getRemoteId(), 2);
     
     NotificationContext ctx = NotificationContextImpl.cloneInstance();
     list.set(0, list.get(0).setTo(rootIdentity.getRemoteId()));

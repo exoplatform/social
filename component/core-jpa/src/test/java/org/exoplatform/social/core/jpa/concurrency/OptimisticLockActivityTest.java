@@ -73,7 +73,7 @@ public class OptimisticLockActivityTest extends AbstractLockOptimisticModeTest {
       }
     });
     
-    List<ExoSocialActivity> got = activityStorage.getComments(createdActivity, 0, 10);
+    List<ExoSocialActivity> got = activityStorage.getComments(createdActivity, false, 0, 10);
     assertEquals(3, got.size());
   }
   

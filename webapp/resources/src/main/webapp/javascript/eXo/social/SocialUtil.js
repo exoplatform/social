@@ -371,17 +371,19 @@
           var input = activity.find('.inputContainer:first');
           input.removeClass('hidden-phone');
 
-          //
-          var commentList = activity.find('.commentListInfo:first');
-          if(commentList.length > 0 && commentList.find('a:first').length > 0) {
-            var action = commentList.find('a:first').attr('onclick');
-            if(action && action.length > 0) {
-              $.globalEval(action.replace('objectId=none', 'objectId=all'));
+          if(!input.is(":visible")) {
+            //
+            var commentList = activity.find('.commentListInfo:first');
+            if(commentList.length > 0 && commentList.find('a:first').length > 0) {
+              var action = commentList.find('a:first').attr('onclick');
+              if(action && action.length > 0) {
+                $.globalEval(action.replace('objectId=none', 'objectId=all'));
+              }
             }
-          }
 
-          // Show the comment form by trigger click event on the comment link.
-          activity.find("a[id^='CommentLink'").trigger('click');
+            // Show the comment form by trigger click event on the comment link.
+            activity.find("a:not([data-comment])[id^='CommentLink'").trigger('click');
+          }
         });
       }
     }

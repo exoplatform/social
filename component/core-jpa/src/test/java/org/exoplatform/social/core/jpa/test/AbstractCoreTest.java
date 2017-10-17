@@ -19,6 +19,8 @@ package org.exoplatform.social.core.jpa.test;
 
 import junit.framework.AssertionFailedError;
 import org.apache.commons.lang.ArrayUtils;
+
+import org.exoplatform.commons.persistence.impl.EntityManagerHolder;
 import org.exoplatform.commons.testing.BaseExoTestCase;
 import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.component.test.ConfigurationUnit;
@@ -109,6 +111,7 @@ public abstract class AbstractCoreTest extends BaseExoTestCase {
 
   @Override
   protected void tearDown() throws Exception {
+    EntityManagerHolder.get().clear();
     deleteAllRelationships();
     deleteAllSpaces();
     deleteAllIdentitiesWithActivities();

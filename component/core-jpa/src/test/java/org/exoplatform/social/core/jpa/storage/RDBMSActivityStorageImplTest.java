@@ -495,7 +495,7 @@ public class RDBMSActivityStorageImplTest extends AbstractCoreTest {
       activityStorage.saveComment(activity, comment);
     }
     
-    List<ExoSocialActivity> comments = activityStorage.getComments(activity, 0, 20);
+    List<ExoSocialActivity> comments = activityStorage.getComments(activity, false,0, 20);
     assertEquals(20, comments.size());
     
     ExoSocialActivity baseComment = comments.get(0);
@@ -537,7 +537,7 @@ public class RDBMSActivityStorageImplTest extends AbstractCoreTest {
       activityStorage.saveComment(activity, comment);
     }
     
-    List<ExoSocialActivity> comments = activityStorage.getComments(activity, 0, 20);
+    List<ExoSocialActivity> comments = activityStorage.getComments(activity, false, 0, 20);
     assertEquals(20, comments.size());
     
     ExoSocialActivity baseComment = comments.get(19);
@@ -595,7 +595,7 @@ public class RDBMSActivityStorageImplTest extends AbstractCoreTest {
     assertEquals(2, got.getMentionedIds().length);
   }
 
-  @MaxQueryNumber(363)
+  @MaxQueryNumber(1293)
   public void testViewerOwnerPosterActivities() throws Exception {
     ExoSocialActivity activity1 = new ExoSocialActivityImpl();
     // Demo mentionned here
@@ -620,7 +620,7 @@ public class RDBMSActivityStorageImplTest extends AbstractCoreTest {
       tearDownActivityList.add(activity);
     }
 
-    createComment(activity2, demoIdentity, 5);
+    createComment(activity2, demoIdentity, null, 5, 0);
 
     List<ExoSocialActivity> list = activityStorage.getActivities(demoIdentity, johnIdentity, 0, 10);
 
@@ -635,6 +635,107 @@ public class RDBMSActivityStorageImplTest extends AbstractCoreTest {
     list = activityStorage.getActivities(demoIdentity, demoIdentity, 0, 10);
 
     // Demo can see his activities 'Space' & 'User activities'
+    assertEquals(7, list.size());
+  }
+  
+  @MaxQueryNumber(1293)
+  public void testViewerOwnerPosterInSpaceSubComments() throws Exception {
+    ExoSocialActivity activity1 = new ExoSocialActivityImpl();
+    // Demo mentionned here
+    activity1.setTitle("title @mary hi");
+    activityStorage.saveActivity(rootIdentity, activity1);
+    tearDownActivityList.add(activity1);
+
+    // owner poster comment
+    ExoSocialActivity activity2 = new ExoSocialActivityImpl();
+    activity2.setTitle("root title");
+    activityStorage.saveActivity(rootIdentity, activity2);
+    tearDownActivityList.add(activity2);
+
+    Space space = this.getSpaceInstance(spaceService, 1);
+    Identity spaceIdentity2 = identityManager.getOrCreateIdentity(SpaceIdentityProvider.NAME, space.getPrettyName(), false);
+    //demo posts activities to space2
+    for (int i = 0; i < 5; i ++) {
+      ExoSocialActivity activity = new ExoSocialActivityImpl();
+      activity.setTitle("activity title " + i);
+      activity.setUserId(demoIdentity.getId());
+      activityStorage.saveActivity(spaceIdentity2, activity);
+      tearDownActivityList.add(activity);
+    }
+
+    createComment(activity2, demoIdentity, maryIdentity, 5, 5);
+
+    List<ExoSocialActivity> list = activityStorage.getActivities(maryIdentity, johnIdentity, 0, 10);
+
+    // Return the activity that mary has commented on it and where he's mentionned
+    assertEquals(2, list.size());
+
+    list = activityStorage.getActivities(johnIdentity, maryIdentity, 0, 10);
+
+    // John hasn't added, commeted or was menionned in an activity
+    assertEquals(0, list.size());
+
+    list = activityStorage.getActivities(maryIdentity, maryIdentity, 0, 10);
+
+    // Demo can see his activities 'Space' & 'User activities'
+    assertEquals(2, list.size());
+  }
+
+  @MaxQueryNumber(1329)
+  public void testViewerOwnerPosterSubComments() throws Exception {
+    ExoSocialActivity activity1 = new ExoSocialActivityImpl();
+    // Demo mentionned here
+    activity1.setTitle("title @mary hi");
+    activityStorage.saveActivity(rootIdentity, activity1);
+    tearDownActivityList.add(activity1);
+
+    // owner poster comment
+    ExoSocialActivity activity2 = new ExoSocialActivityImpl();
+    activity2.setTitle("root title");
+    activityStorage.saveActivity(rootIdentity, activity2);
+    activity2.setLikeIdentityIds(new String[]{maryIdentity.getId()});
+    activityStorage.updateActivity(activity2);
+    tearDownActivityList.add(activity2);
+
+    //demo posts activities to his stream
+    for (int i = 0; i < 5; i ++) {
+      ExoSocialActivity activity = new ExoSocialActivityImpl();
+      activity.setTitle("activity title " + i);
+      activity.setUserId(rootIdentity.getId());
+      activityStorage.saveActivity(rootIdentity, activity);
+
+      createComment(activity, demoIdentity, maryIdentity, 5, 5);
+      tearDownActivityList.add(activity);
+    }
+
+    // Demo post a comment
+    ExoSocialActivity comment = new ExoSocialActivityImpl();
+    comment.setTitle("comment demo");
+    comment.setUserId(demoIdentity.getId());
+    comment.setPosterId(demoIdentity.getId());
+    activityStorage.saveComment(activity1, comment);
+
+    // Demo post a comment reply by mentioning mary
+    ExoSocialActivity commentReply = new ExoSocialActivityImpl();
+    commentReply.setTitle("comment reply @mary");
+    commentReply.setUserId(demoIdentity.getId());
+    commentReply.setPosterId(demoIdentity.getId());
+    commentReply.setParentCommentId(comment.getId());
+    activityStorage.saveComment(activity1, commentReply);
+
+    List<ExoSocialActivity> list = activityStorage.getActivities(maryIdentity, maryIdentity, 0, 10);
+
+    // Demo can see his activities 'User activities'
+    assertEquals(7, list.size());
+
+    list = activityStorage.getActivities(johnIdentity, maryIdentity, 0, 10);
+
+    // John hasn't added, commeted or was menionned in an activity
+    assertEquals(0, list.size());
+
+    list = activityStorage.getActivities(maryIdentity, johnIdentity, 0, 10);
+
+    // Return the activity that demo has commented on it and where he's mentionned
     assertEquals(7, list.size());
   }
   
@@ -692,14 +793,25 @@ public class RDBMSActivityStorageImplTest extends AbstractCoreTest {
    *
    * @param existingActivity the existing activity
    * @param posterIdentity the identity who comments
+   * @param commentReplyIdentity 
    * @param number the number of comments
    */
-  private void createComment(ExoSocialActivity existingActivity, Identity posterIdentity, int number) {
+  private void createComment(ExoSocialActivity existingActivity, Identity posterIdentity, Identity commentReplyIdentity, int number, int numberOfSubComments) {
     for (int i = 0; i < number; i++) {
       ExoSocialActivity comment = new ExoSocialActivityImpl();
       comment.setTitle("comment " + i);
       comment.setUserId(posterIdentity.getId());
+      comment.setPosterId(posterIdentity.getId());
       activityStorage.saveComment(existingActivity, comment);
+
+      for (int j = 0; j < numberOfSubComments; j++) {
+        ExoSocialActivity commentReply = new ExoSocialActivityImpl();
+        commentReply.setTitle("comment reply " + i + " " +j);
+        commentReply.setUserId(commentReplyIdentity.getId());
+        commentReply.setPosterId(commentReplyIdentity.getId());
+        commentReply.setParentCommentId(comment.getId());
+        activityStorage.saveComment(existingActivity, commentReply);
+      }
     }
   }
 }

@@ -111,7 +111,10 @@ public class UserRestResourcesTest extends AbstractResourceTest {
     ExoSocialActivity maryActivity = new ExoSocialActivityImpl();
     maryActivity.setTitle("mary activity");
     activityManager.saveActivityNoReturn(maryIdentity, maryActivity);
-    
+
+    end();
+    begin();
+
     ContainerResponse response = service("GET", getURLResource("users/root/activities?limit=5&offset=0"), "", null, null);
     assertNotNull(response);
     assertEquals(200, response.getStatus());

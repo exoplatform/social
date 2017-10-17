@@ -16,9 +16,12 @@
  */
 package org.exoplatform.social.notification.mock;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.Map;
 
 import org.exoplatform.commons.api.notification.NotificationContext;
 import org.exoplatform.commons.api.notification.model.NotificationInfo;
@@ -31,12 +34,24 @@ import org.exoplatform.commons.utils.CommonsUtils;
 
 public class MockNotificationService implements NotificationService {
 
-  private List<NotificationInfo> storeDigestJCR = new CopyOnWriteArrayList<NotificationInfo>();
-  private List<NotificationInfo> storeInstantly = new CopyOnWriteArrayList<NotificationInfo>();
-  private List<NotificationInfo> storeWebNotifs = new CopyOnWriteArrayList<NotificationInfo>();
+  private Map<String, List<NotificationInfo>> storeDigestJCR = new HashMap<>();
+  private Map<String, List<NotificationInfo>> storeInstantly = new HashMap<>();
+  private Map<String, List<NotificationInfo>> storeWebNotifs = new HashMap<>();
+
+  public int sizeOfInstantly() {
+    return this.storeInstantly.values().stream().mapToInt(List::size).sum();
+  }
+
+  public int sizeOfWebNotifs() {
+    return this.storeWebNotifs.values().stream().mapToInt(List::size).sum();
+  }
   
   public int sizeOfDigestJCR() {
-    return this.storeDigestJCR.size();
+    return this.storeDigestJCR.values().stream().mapToInt(List::size).sum();
+  }
+
+  public int sizeOfDigestJCR(String username) {
+    return this.storeDigestJCR.containsKey(username) ? this.storeDigestJCR.get(username).size() : 0;
   }
   
   public void clearAll() {
@@ -57,16 +72,16 @@ public class MockNotificationService implements NotificationService {
     this.storeWebNotifs.clear();
   }
 
-  public List<NotificationInfo> storeDigestJCR() {
-    return this.storeDigestJCR;
+  public List<NotificationInfo> storeDigestJCR(String username) {
+    return this.storeDigestJCR.containsKey(username) ? this.storeDigestJCR.get(username) : Collections.emptyList();
   }
   
-  public List<NotificationInfo> storeInstantly() {
-    return this.storeInstantly;
+  public List<NotificationInfo> storeInstantly(String username) {
+    return this.storeInstantly.containsKey(username) ? this.storeInstantly.get(username) : Collections.emptyList();
   }
   
-  public List<NotificationInfo> storeWebNotifs() {
-    return this.storeWebNotifs;
+  public List<NotificationInfo> storeWebNotifs(String username) {
+    return this.storeWebNotifs.containsKey(username) ? this.storeWebNotifs.get(username) : Collections.emptyList();
   }
 
   @Override
@@ -94,15 +109,24 @@ public class MockNotificationService implements NotificationService {
       }
       
       if (userSetting.isActive(UserSetting.EMAIL_CHANNEL, pluginId)) {
-        this.storeInstantly.add(notification);
+        if(!this.storeInstantly.containsKey(userId)) {
+          this.storeInstantly.put(userId, new ArrayList<>());
+        }
+        this.storeInstantly.get(userId).add(notification);
       }
       
       if (userSetting.isActive(WebChannel.ID, pluginId)) {
-        this.storeWebNotifs.add(notification);
+        if(!this.storeWebNotifs.containsKey(userId)) {
+          this.storeWebNotifs.put(userId, new ArrayList<>());
+        }
+        this.storeWebNotifs.get(userId).add(notification);
       }
       
       if (userSetting.isInDaily(pluginId) || userSetting.isInWeekly(pluginId)) {
-        storeDigestJCR.add(notification);
+        if(!this.storeDigestJCR.containsKey(userId)) {
+          this.storeDigestJCR.put(userId, new ArrayList<>());
+        }
+        this.storeDigestJCR.get(userId).add(notification);
       }
       
     }
