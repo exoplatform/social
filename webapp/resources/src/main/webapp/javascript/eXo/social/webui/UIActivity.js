@@ -454,30 +454,32 @@
 
     focusToComment : function(commentId, elementToScrollTo, delayToDisableFocus) {
       var comment = $('#commentContainer' + commentId);
+      var ele = elementToScrollTo;
       if(comment.length > 0) {
         $("div[id^='commentContainer'").removeClass("focus");
 
-        var ele = elementToScrollTo;
         var nTop = 0;
         if (!elementToScrollTo || eXo.social.SocialUtil.checkDevice().isMobile === true) {
           if(commentId) {
             ele = $("#commentContainer" + commentId);
           }
         }
-        var nTop = ele.offset().top - $(window).height() / 2;
-        $('html, body').animate({scrollTop:nTop}, 'slow');
 
         if(commentId) {
-          var ele = $("#commentContainer" + commentId);
-          if(ele.length > 0 && ele.offset()) {
-            ele.addClass('focus');
+          var eleToFocus = $("#commentContainer" + commentId);
+          if(eleToFocus.length > 0 && eleToFocus.offset()) {
+            eleToFocus.addClass('focus');
             if(delayToDisableFocus && delayToDisableFocus > 0) {
               setTimeout(function() {
-                ele.removeClass('focus', delayToDisableFocus);
+                eleToFocus.removeClass('focus', delayToDisableFocus);
               }, 2000);
             }
           }
         }
+      }
+      if(ele) {
+        var nTop = ele.offset().top - $(window).height() / 2 + ele.height() / 2;
+        $('html, body').animate({scrollTop:nTop}, 'slow');
       }
     },
 
