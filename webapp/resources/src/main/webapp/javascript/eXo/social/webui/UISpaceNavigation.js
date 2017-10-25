@@ -117,7 +117,7 @@ var UISpaceNavigation = {
     });
 
     var dropDownToggle = $('<a/>', {
-      'href' : '#',
+      'href' : '',
       'class' : 'dropdown-toggle',
       'data-toggle' : 'dropdown'
     }).append($('<i/>', {
