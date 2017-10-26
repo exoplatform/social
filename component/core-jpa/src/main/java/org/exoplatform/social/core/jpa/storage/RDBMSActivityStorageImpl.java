@@ -259,7 +259,7 @@ public class RDBMSActivityStorageImpl implements ActivityStorage {
 
   private ActivityEntity getTopParentActivity(ActivityEntity activity) {
     ActivityEntity parent = activity.getParent();
-    if(parent == null) {
+    if (parent == null || (parent.getId() == activity.getId())) {
       return activity;
     } else {
       return getTopParentActivity(parent);
