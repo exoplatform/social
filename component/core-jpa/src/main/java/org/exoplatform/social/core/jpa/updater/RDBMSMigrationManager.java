@@ -21,6 +21,8 @@ import java.lang.reflect.Field;
 import java.util.concurrent.CountDownLatch;
 
 import org.exoplatform.commons.file.services.NameSpaceService;
+import org.exoplatform.container.ExoContainerContext;
+import org.exoplatform.container.component.RequestLifeCycle;
 import org.exoplatform.container.xml.InitParams;
 import org.exoplatform.container.xml.ValueParam;
 import org.exoplatform.services.jcr.RepositoryService;
@@ -43,9 +45,6 @@ import org.exoplatform.commons.utils.CommonsUtils;
 import org.exoplatform.services.jcr.impl.core.SessionImpl;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
-import org.exoplatform.settings.impl.SettingServiceImpl;
-
-import javax.jcr.RepositoryException;
 
 public class RDBMSMigrationManager implements Startable {
   private static final Log LOG = ExoLogger.getLogger(RDBMSMigrationManager.class);
@@ -413,18 +412,12 @@ public class RDBMSMigrationManager implements Startable {
   }
 
   private void updateSettingValue(String key, Boolean status) {
-    SettingServiceImpl settingServiceImpl = CommonsUtils.getService(SettingServiceImpl.class);
-    boolean created = settingServiceImpl.startSynchronization();
     try {
+      RequestLifeCycle.begin(ExoContainerContext.getCurrentContainer());
       settingService.set(Context.GLOBAL, Scope.GLOBAL.id(MIGRATION_SETTING_GLOBAL_KEY), key, SettingValue.create(status));
-      try {
-        CommonsUtils.getService(ChromatticManager.class).getLifeCycle("setting").getContext().getSession().save();
-      } catch (Exception e) {
-        LOG.warn(e);
-      }
     } finally {
       Scope.GLOBAL.id(null);
-      settingServiceImpl.stopSynchronization(created);
+      RequestLifeCycle.end();
     }
   }
 
