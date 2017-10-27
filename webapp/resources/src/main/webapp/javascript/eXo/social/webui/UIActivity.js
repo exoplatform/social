@@ -348,7 +348,7 @@
       var arr = $('.commentRight .contentComment img');
       if (arr.length > 0) {
         for (var i = 0, len = arr.length; i < len; i++) {
-          if (arr[i].clientHeight > arr[i].offsetParent.clientHeight) {
+          if (arr[i] && arr[i].clientHeight && arr[i].offsetParent && arr[i].offsetParent.clientHeight && arr[i].clientHeight > arr[i].offsetParent.clientHeight) {
             arr[i].closest('.contentComment').style.height = arr[i].height + 26 + "px";
           }
         }
