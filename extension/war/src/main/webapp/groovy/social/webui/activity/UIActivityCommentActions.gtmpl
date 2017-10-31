@@ -10,7 +10,8 @@
   def authorFullName = _ctx.get("authorFullName");
   def labelReply = _ctx.appRes("UIActivity.label.Reply");
 %>
-<div class="clearfix actionCommentBar">
+<div class="clearfix"></div>
+<div class="actionCommentBar">
      <ul class="pull-left statusAction">
         <%
         def likeCommentAction = uicomponent.event("LikeComment", "true_"+comment.id);
