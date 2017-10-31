@@ -23,7 +23,7 @@
   <name>eXo PLF:: Social Core JPA Component</name>
   <description>eXo Social Core JPA Component</description>
   <properties>
-    <org.elasticsearch.version>5.3.2</org.elasticsearch.version>
+    <org.elasticsearch.version>5.6.3</org.elasticsearch.version>
   </properties>
   <dependencies>
     <dependency>
