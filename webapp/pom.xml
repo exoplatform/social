@@ -22,7 +22,7 @@
   <parent>
     <artifactId>social</artifactId>
     <groupId>org.exoplatform.social</groupId>
-    <version>5.0.x-SNAPSHOT</version>
+    <version>5.0.0-M29</version>
   </parent>
   <artifactId>social-webapp</artifactId>
   <packaging>pom</packaging>
