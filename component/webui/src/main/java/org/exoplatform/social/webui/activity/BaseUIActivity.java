@@ -942,7 +942,9 @@ public class BaseUIActivity extends UIForm {
       Utils.initUserProfilePopup(uiActivity.getId());
       Utils.resizeHomePage();
 
-      jm.require("SHARED/jquery", "jq").addScripts(script.toString());
+      jm.require("SHARED/social-ui-activity", "activity").require("SHARED/jquery", "jq").
+      addScripts("activity.initCKEditor('" + activityId + "', activity.spaceURL, activity.commentPlaceholder, activity.spaceGroupId);").
+      addScripts(script.toString());
     }
   }
 
