@@ -43,7 +43,6 @@
                   "});"
                   
   jsManager.require("SHARED/jquery", "jq").addScripts(script);
-  jsManager.require("SHARED/social-ui-activity", "activity").addScripts("activity.resizeComment();");
 
   //
   def refreshTooltipButton = _ctx.appRes("UIActivity.label.Refresh");

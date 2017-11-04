@@ -66,19 +66,6 @@
           UIActivity.commentBlockIds[i - 1] = "CommentBlock" + UIActivity.activityId + i;
         }
       }
-      if(!$("#activityContainer" + UIActivity.activityId).find(".isPreviewable").hasClass("animatedBlock")) {
-        $("#activityContainer" + UIActivity.activityId).find(".isPreviewable").addClass("animatedBlock");
-        $("#activityContainer" + UIActivity.activityId).find(".isPreviewable").mouseenter(function() {
-          $(this).find(".mediaContent + .MediaName").animate({
-            bottom: 48
-          });
-        });
-        $("#activityContainer" + UIActivity.activityId).find(".isPreviewable").mouseleave(function() {
-          $(this).find(".mediaContent + .MediaName").animate({
-            bottom: -5
-          });
-        });
-      }
       var commentButton = $("#" + UIActivity.commentButtonId);
       commentButton.click(function(event) {
         var commentId = commentButton.data("comment-id");
@@ -319,7 +306,7 @@
         );
       }
 
-      this.adaptFileBreadCrumb();
+      this.adaptFileBreadCrumb(UIActivity.activityId);
 
       // click on "like comments" buttons
       $('#ContextBox'+UIActivity.activityId+' a[id*="LikeCommentLink_"]').each(function (idx, el) {
@@ -348,17 +335,6 @@
       if(clickAction && linkElement.length > 0) {
         clickAction = clickAction.replace("&objectId=", "&commentId=" + parentCommentId + "&objectId=");
         linkElement.attr("onclick", clickAction);
-      }
-    },
-
-    resizeComment: function (){
-      var arr = $('.commentRight .contentComment img');
-      if (arr.length > 0) {
-        for (var i = 0, len = arr.length; i < len; i++) {
-          if (arr[i] && arr[i].clientHeight && arr[i].offsetParent && arr[i].offsetParent.clientHeight && arr[i].clientHeight > arr[i].offsetParent.clientHeight) {
-            arr[i].closest('.contentComment').style.height = arr[i].height + 26 + "px";
-          }
-        }
       }
     },
 
@@ -634,9 +610,19 @@
     /**
      * show/hide the ellipsis on the left of file breadcrumb is it is overflowed on window resizing
      */
-    adaptFileBreadCrumb : function() {
-      var breadcrumbs = $('.fileBreadCrumb');
-      // for each breadcrumb of the page...
+    adaptFileBreadCrumb : function(activityId) {
+      var ellipsisReverseContent = null;
+      var breadcrumbs =  null;
+      if(activityId) {
+        ellipsisReverseContent = $('#ContextBox' + activityId + " .ellipsis-reverse");
+        breadcrumbs = $('#ContextBox'+activityId + " .fileBreadCrumb");
+      }
+      if (!ellipsisReverseContent || !ellipsisReverseContent.length) {
+        ellipsisReverseContent = $('.ellipsis-reverse');
+        breadcrumbs = $('.fileBreadCrumb');
+      }
+
+      // for each selected old breadcrumb preview
       breadcrumbs.each(function() {
         var breadcrumbContent = $(this).find('.fileBreadCrumbContent');
         // do not process empty breadcrumbs
@@ -651,6 +637,31 @@
             var ellipsis = $(this).find('.fixedBreadCrumb');
             ellipsis.removeClass('active');
           }
+        }
+      })
+
+      // for each selected multiupload preview breadcrumb
+      ellipsisReverseContent.each(function() {
+        var $ellipsisContent = $(this).find(".ellipsis-reverse-content");
+        if(!$ellipsisContent.is(":visible")) {
+          return;
+        }
+        var $ellipsisApplyContent = $(this).find(".ellipsis-reverse-apply-content");
+        var $ellipsisFirstChild = $ellipsisApplyContent.find(' :first-child');
+        if(!$ellipsisApplyContent.length
+            || !$ellipsisContent.length
+            || !$(this).offset()
+            || !$ellipsisFirstChild
+            || !$ellipsisFirstChild.offset()
+            || !$ellipsisFirstChild.length) {
+          return;
+        }
+        $ellipsisContent.addClass("hidden");
+        $ellipsisApplyContent.css("position", "static");
+        var applyEllipsisReverse = $ellipsisFirstChild.offset().left - $(this).offset().left - 15;
+        if(applyEllipsisReverse < 0) {
+          $ellipsisContent.removeClass("hidden");
+          $ellipsisApplyContent.css("position", "absolute");
         }
       })
     },
