@@ -503,4 +503,12 @@ public interface ActivityManager {
    * @return
    */
   List<ExoSocialActivity> getSubComments(ExoSocialActivity comment);
+
+
+  /**
+   * Get the max uploaded size file in activity stream
+   * 
+   * @return
+   */
+  int getMaxUploadSize();
 }

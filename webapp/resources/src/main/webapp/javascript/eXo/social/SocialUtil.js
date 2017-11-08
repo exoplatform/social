@@ -382,7 +382,7 @@
             }
 
             // Show the comment form by trigger click event on the comment link.
-            activity.find("a:not([data-comment])[id^='CommentLink'").trigger('click');
+            $("#" + activity.attr("id") + " a[id^='CommentLink'").not("a[data-comment]").trigger('click');
           }
         });
       }

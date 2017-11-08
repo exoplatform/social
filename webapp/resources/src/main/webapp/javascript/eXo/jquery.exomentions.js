@@ -993,6 +993,9 @@
     }
 
     function saveCacheData() {
+      if(!jElmTarget) {
+        return;
+      }
       var key = jElmTarget.attr('id');
       if (key) {
         var parentForm = jElmTarget.parents('form:first').parent();

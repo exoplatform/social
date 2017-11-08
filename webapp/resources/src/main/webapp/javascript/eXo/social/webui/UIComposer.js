@@ -22,7 +22,7 @@
 
 (function($, _) {
   var UIComposer = {
-    regexpURL : /(http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/,
+    regexpURL : /([^"'])(http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/,
     validateWWWURL : function(url) {
       if (url.indexOf('www.') > 0) {
         return /(https?:\/\/)?(www\.[\w+]+\.[\w+]+\.?(:\d+)?)/.test(url);
@@ -33,8 +33,12 @@
       var result = String(x).match(UIComposer.regexpURL);
       if (result && result.length > 0) {
         for ( var i = 0; i < result.length; ++i) {
-          if (result[i].length > 0 && x.indexOf('@'+result[i]) < 0 && UIComposer.validateWWWURL(result[i])) {
-            return result[i];
+          var matchedString = result[i];
+          if (matchedString.length > 0 && x.indexOf('@'+matchedString) < 0) {
+            matchedString = matchedString.substring(1, matchedString.length);
+            if(UIComposer.validateWWWURL(matchedString)) {
+              return matchedString;
+            }
           }
         }
       }
@@ -55,6 +59,7 @@
       UIComposer.textareaId = params.textareaId;
       UIComposer.mentionBtnLabel = params.mentionBtnLabel;
       UIComposer.spaceURL = params.spaceURL;
+      UIComposer.spaceGroupId = params.spaceGroupId;
       UIComposer.userTyped = false;
     },
     plugins : [],
@@ -82,7 +87,7 @@
     getEditorData : function() {
       var composerInput = $('#composerInput');
       var newData = composerInput.ckeditor().editor.getData();
-      var pureText = newData? newData.replace(/<[^img>]*>/g, "").replace(/&nbsp;/g,"").trim() : "";
+      var pureText = newData? newData.replace(/&nbsp;/g,"").trim() : "";
       return pureText;
     },
     init : function() {
@@ -92,10 +97,10 @@
         var windowHeight = $(window).height();
 
         var composerInput = $('#composerInput');
-        var extraPlugins = 'simpleLink,simpleImage,suggester,hideBottomToolbar';
+        var extraPlugins = 'simpleLink,selectImage,suggester,hideBottomToolbar';
         if (windowWidth > windowHeight && windowWidth < 768) {
           // Disable suggester on smart-phone landscape
-          extraPlugins = 'simpleLink,simpleImage';
+          extraPlugins = 'simpleLink,selectImage';
         }
 
         // TODO this line is mandatory when a custom skin is defined, it should not be mandatory
@@ -103,9 +108,12 @@
         composerInput.ckeditor({
           customConfig: '/commons-extension/ckeditorCustom/config.js',
           extraPlugins: extraPlugins,
+          removePlugins: 'image',
           placeholder: window.eXo.social.I18n.mentions.defaultMessage,
           typeOfRelation: 'mention_activity_stream',
+          extraAllowedContent: 'img[style,class,src,referrerpolicy,alt,width,height]',
           spaceURL: UIComposer.spaceURL,
+          spaceGroupId: UIComposer.spaceGroupId,
           on : {
             instanceReady : function ( evt ) {             
               UIComposer.refreshShareButton();
@@ -115,10 +123,10 @@
                 var pureText = UIComposer.getEditorData();
 
                 if (pureText.length <= UIComposer.MAX_LENGTH) {
-                    evt.editor.getCommand('simpleImage').enable();
+                    evt.editor.getCommand('selectImage').enable();
                     $('.composerLimited').addClass('hide');
                 } else {
-                    evt.editor.getCommand('simpleImage').disable();
+                    evt.editor.getCommand('selectImage').disable();
                     $('.composerLimited').removeClass('hide');
                 }
             },
@@ -132,7 +140,6 @@
                 if (!$(".uiLinkShareDisplay").length && (evt.data.keyCode == 32 || evt.data.keyCode == 13)) {
                     var firstUrl = UIComposer.searchFirstURL(pureText);
                     if (firstUrl !== "") {
-                        console.log(firstUrl);
                         $('#InputLink').val(firstUrl);
                         $('#AttachButton').trigger('click');
                         UIComposer.showedLink = true;
@@ -191,7 +198,6 @@
     post : function() {
       UIComposer.isReady = false;
       UIComposer.currentValue = "";
-      CKEDITOR.instances.composerInput.setData('');
     },
     getValue : function() {
       return (UIComposer.currentValue) ? UIComposer.currentValue : '';

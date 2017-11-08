@@ -21,8 +21,11 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang3.tuple.Pair;
@@ -51,6 +54,7 @@ import org.exoplatform.social.notification.Utils;
 import org.exoplatform.social.notification.plugin.child.DefaultActivityChildPlugin;
 
 public class SocialNotificationUtils {
+  public final static Pattern IMG_SRC_REGEX = Pattern.compile("<img[^>]+src\\s*=\\s*['\"]([^'\"]+)['\"][^>]*>");
 
   public final static ArgumentLiteral<String> ACTIVITY_ID = new ArgumentLiteral<String>(String.class, "activityId");
   public final static ArgumentLiteral<String> COMMENT_ID = new ArgumentLiteral<String>(String.class, "commentId");
@@ -352,7 +356,25 @@ public class SocialNotificationUtils {
       return;
     }
   }
-  
+
+  public static String processImageTitle(String body, String placeholder) {
+    Matcher matcher = IMG_SRC_REGEX.matcher(body);
+    int startIdex = 0;
+    while (matcher.find(startIdex)) {
+      String imageBody = matcher.group(0);
+
+      body = body.replace(imageBody, "<i> [" + placeholder + "] </i>");
+      startIdex = matcher.end(1);
+    }
+    return body;
+  }
+
+  public static String getImagePlaceHolder(String language) {
+    return TemplateUtils.getResourceBundle("Notification.label.InlineImage",
+                                           new Locale(language),
+                                           "locale.social.Webui");
+  }
+
   public static String getBody(NotificationContext ctx, TemplateContext context, ExoSocialActivity activity) {
     PluginKey childKey = new PluginKey(activity.getType());
     PluginContainer pluginContainer = CommonsUtils.getService(PluginContainer.class);
@@ -362,7 +384,9 @@ public class SocialNotificationUtils {
     }
     context.put("ACTIVITY", ((AbstractNotificationChildPlugin) child).makeContent(ctx));
 
-    return TemplateUtils.processGroovy(context);
+    String body = TemplateUtils.processGroovy(context);
+    body = processImageTitle(body, getImagePlaceHolder(context.getLanguage()));
+    return body;
   }
 
   public static NotificationInfo addUserToPreviousNotification(NotificationInfo notification,

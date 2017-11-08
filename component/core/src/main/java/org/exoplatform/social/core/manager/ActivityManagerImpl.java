@@ -16,19 +16,31 @@
  */
 package org.exoplatform.social.core.manager;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.Validate;
+import org.apache.commons.lang3.StringUtils;
+
 import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.commons.utils.PropertyManager;
+import org.exoplatform.container.xml.InitParams;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.social.common.RealtimeListAccess;
 import org.exoplatform.social.core.ActivityProcessor;
 import org.exoplatform.social.core.BaseActivityProcessorPlugin;
-import org.exoplatform.social.core.activity.*;
+import org.exoplatform.social.core.activity.ActivitiesRealtimeListAccess;
 import org.exoplatform.social.core.activity.ActivitiesRealtimeListAccess.ActivityType;
+import org.exoplatform.social.core.activity.ActivityLifeCycle;
+import org.exoplatform.social.core.activity.ActivityListener;
+import org.exoplatform.social.core.activity.ActivityListenerPlugin;
+import org.exoplatform.social.core.activity.CommentsRealtimeListAccess;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.activity.model.ExoSocialActivityImpl;
 import org.exoplatform.social.core.identity.model.Identity;
@@ -85,6 +97,7 @@ public class ActivityManagerImpl implements ActivityManager {
    */
   private static final String SUFFIX = ".enabled";
 
+  private int maxUploadSize = 10;
 
   /**
    * Instantiates a new activity manager.
@@ -92,10 +105,20 @@ public class ActivityManagerImpl implements ActivityManager {
    * @param activityStorage
    * @param identityManager
    */
-  public ActivityManagerImpl(ActivityStorage activityStorage, IdentityManager identityManager) {
+  public ActivityManagerImpl(ActivityStorage activityStorage, IdentityManager identityManager, InitParams params) {
     this.activityStorage = activityStorage;
     this.identityManager = identityManager;
     initActivityTypes();
+
+    if (params != null && params.containsKey("upload.limit.size")
+        && StringUtils.isNotBlank(params.getValueParam("upload.limit.size").getValue())) {
+      maxUploadSize = Integer.parseInt(params.getValueParam("upload.limit.size").getValue());
+    } else {
+      String maxUploadString = System.getProperty("wcm.connector.drives.uploadLimit");
+      if (StringUtils.isNotBlank(maxUploadString)) {
+        maxUploadSize = Integer.parseInt(maxUploadString);
+      }
+    }
   }
 
   /**
@@ -579,5 +602,10 @@ public class ActivityManagerImpl implements ActivityManager {
   @Override
   public RealtimeListAccess<ExoSocialActivity> getAllActivitiesWithListAccess() {
     return new ActivitiesRealtimeListAccess(activityStorage, ActivityType.ALL);
+  }
+
+  @Override
+  public int getMaxUploadSize() {
+    return maxUploadSize;
   }
 }

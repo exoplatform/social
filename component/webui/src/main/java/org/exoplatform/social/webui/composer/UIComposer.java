@@ -23,6 +23,7 @@ import org.exoplatform.commons.utils.HTMLSanitizer;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.space.SpaceUtils;
+import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.webui.Utils;
 import org.exoplatform.social.webui.activity.BaseUIActivity;
 import org.exoplatform.social.webui.activity.UIActivitiesContainer;
@@ -97,6 +98,10 @@ public class UIComposer extends UIForm {
     this.isActivityStreamOwner = isActivityStreamOwner;
   }
 
+  public String getSpaceGroupId() {
+    Space space = SpaceUtils.getSpaceByContext();
+    return space == null ? null : space.getGroupId();
+  }
 
   public String getSpaceURL() {
     String spaceURL = SpaceUtils.getSpaceUrlByContext();

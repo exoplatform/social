@@ -113,8 +113,11 @@ public class MailTemplateProvider extends TemplateProvider {
 
       SocialNotificationUtils.addFooterAndFirstName(notification.getTo(), templateContext);
       templateContext.put("PROFILE_URL", LinkProviderUtils.getRedirectUrl("user", identity.getRemoteId()));
-      templateContext.put("COMMENT_REPLY", NotificationUtils.processLinkTitle(commentActivity.getTitle()));
-      templateContext.put("COMMENT", NotificationUtils.processLinkTitle(parentCommentActivity.getTitle()));
+      String imagePlaceHolder = SocialNotificationUtils.getImagePlaceHolder(language);
+      String subCommentTitle = SocialNotificationUtils.processImageTitle(commentActivity.getTitle(), imagePlaceHolder);
+      String commentTitle = SocialNotificationUtils.processImageTitle(parentCommentActivity.getTitle(), imagePlaceHolder);
+      templateContext.put("COMMENT_REPLY", NotificationUtils.processLinkTitle(subCommentTitle));
+      templateContext.put("COMMENT", NotificationUtils.processLinkTitle(commentTitle));
       templateContext.put("OPEN_URL", LinkProviderUtils.getOpenLink(activity));
       templateContext.put("REPLY_ACTION_URL", LinkProviderUtils.getRedirectUrl("reply_activity_highlight_comment_reply", activity.getId() + "-" + parentCommentActivity.getId() + "-" + commentActivity.getId()));
       templateContext.put("VIEW_FULL_DISCUSSION_ACTION_URL", LinkProviderUtils.getRedirectUrl("view_full_activity_highlight_comment_reply", activity.getId() + "-" + parentCommentActivity.getId() + "-" + commentActivity.getId()));
@@ -139,6 +142,7 @@ public class MailTemplateProvider extends TemplateProvider {
       Map<String, List<Pair<String, String>>> activityUserComments = new LinkedHashMap<String, List<Pair<String, String>>>();
       
       try {
+        String imagePlaceHolder = SocialNotificationUtils.getImagePlaceHolder(language);
         for (NotificationInfo message : notifications) {
           String commentId = message.getValueOwnerParameter(SocialNotificationUtils.COMMENT_ID.getKey());
           ExoSocialActivity commentActivity = Utils.getActivityManager().getActivity(commentId);
@@ -147,7 +151,8 @@ public class MailTemplateProvider extends TemplateProvider {
           }
 
           String poster = message.getValueOwnerParameter("poster");
-          Pair<String, String> userComment = new ImmutablePair<String, String>(poster, commentActivity.getTitle());
+          String title = SocialNotificationUtils.processImageTitle(commentActivity.getTitle(), imagePlaceHolder);
+          Pair<String, String> userComment = new ImmutablePair<String, String>(poster, title);
           ExoSocialActivity parentActivity = Utils.getActivityManager().getParentActivity(commentActivity);
           //
           SocialNotificationUtils.processInforSendTo(receiverMap, parentActivity.getId(), poster);
@@ -198,7 +203,10 @@ public class MailTemplateProvider extends TemplateProvider {
 
       SocialNotificationUtils.addFooterAndFirstName(notification.getTo(), templateContext);
       templateContext.put("PROFILE_URL", LinkProviderUtils.getRedirectUrl("user", identity.getRemoteId()));
-      templateContext.put("COMMENT", NotificationUtils.processLinkTitle(comment.getTitle()));
+
+      String imagePlaceHolder = SocialNotificationUtils.getImagePlaceHolder(language);
+      String title = SocialNotificationUtils.processImageTitle(comment.getTitle(), imagePlaceHolder);
+      templateContext.put("COMMENT", NotificationUtils.processLinkTitle(title));
       templateContext.put("OPEN_URL", LinkProviderUtils.getOpenLink(comment));
       templateContext.put("REPLY_ACTION_URL", LinkProviderUtils.getRedirectUrl("reply_activity_highlight_comment", activity.getId() + "-" + comment.getId()));
       templateContext.put("VIEW_FULL_DISCUSSION_ACTION_URL", LinkProviderUtils.getRedirectUrl("view_full_activity_highlight_comment", activity.getId() + "-" + comment.getId()));
@@ -224,6 +232,7 @@ public class MailTemplateProvider extends TemplateProvider {
 
 
       try {
+        String imagePlaceHolder = SocialNotificationUtils.getImagePlaceHolder(language);
         for (NotificationInfo message : notifications) {
           String activityId = message.getValueOwnerParameter(SocialNotificationUtils.ACTIVITY_ID.getKey());
           ExoSocialActivity activity = Utils.getActivityManager().getActivity(activityId);
@@ -249,7 +258,8 @@ public class MailTemplateProvider extends TemplateProvider {
           if(message.getTo() != null && poster != null && poster.equals(message.getTo())) {
             continue;
           }
-          Pair<String, String> userComment = new ImmutablePair<String, String>(poster, activity.getTitle());
+          String title = SocialNotificationUtils.processImageTitle(activity.getTitle(), imagePlaceHolder);
+          Pair<String, String> userComment = new ImmutablePair<String, String>(poster, title);
           if (parentActivity.getStreamOwner() != null) {
             Identity spaceIdentity = Utils.getIdentityManager().getOrCreateIdentity(SpaceIdentityProvider.NAME, parentActivity.getStreamOwner(), true);
             if (spaceIdentity == null) {
@@ -303,13 +313,17 @@ public class MailTemplateProvider extends TemplateProvider {
       templateContext.put("PROFILE_URL", LinkProviderUtils.getRedirectUrl("user", identity.getRemoteId()));
       templateContext.put("OPEN_URL", LinkProviderUtils.getOpenLink(activity));
       String body = "";
+
       // In case of mention on a comment, we need provide the id of the activity, not of the comment
       if (activity.isComment()) {
         ExoSocialActivity parentActivity = Utils.getActivityManager().getParentActivity(activity);
         activityId = parentActivity.getId();
         templateContext.put("REPLY_ACTION_URL", LinkProviderUtils.getRedirectUrl("reply_activity_highlight_comment", activityId + "-" + activity.getId()));
         templateContext.put("VIEW_FULL_DISCUSSION_ACTION_URL", LinkProviderUtils.getRedirectUrl("view_full_activity_highlight_comment", activityId + "-" + activity.getId()));
-        templateContext.put("ACTIVITY", NotificationUtils.processLinkTitle(getI18N(activity,new Locale(language)).getTitle()));
+        String title = getI18N(activity,new Locale(language)).getTitle();
+        String imagePlaceHolder = SocialNotificationUtils.getImagePlaceHolder(language);
+        title = SocialNotificationUtils.processImageTitle(title, imagePlaceHolder);
+        templateContext.put("ACTIVITY", NotificationUtils.processLinkTitle(title));
         body = TemplateUtils.processGroovy(templateContext);
       } else {
         templateContext.put("REPLY_ACTION_URL", LinkProviderUtils.getRedirectUrl("reply_activity", activityId));
@@ -388,7 +402,9 @@ public class MailTemplateProvider extends TemplateProvider {
       Identity identity = Utils.getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, notification.getValueOwnerParameter("likersId"), true);
 
       templateContext.put("USER", identity.getProfile().getFullName());
-      templateContext.put("SUBJECT", activity.getTitle());
+      String imagePlaceHolder = SocialNotificationUtils.getImagePlaceHolder(language);
+      String title = SocialNotificationUtils.processImageTitle(activity.getTitle(), imagePlaceHolder);
+      templateContext.put("SUBJECT", title);
       String subject = TemplateUtils.processSubject(templateContext);
 
       templateContext.put("PROFILE_URL", LinkProviderUtils.getRedirectUrl("user", identity.getRemoteId()));
@@ -398,7 +414,9 @@ public class MailTemplateProvider extends TemplateProvider {
         ExoSocialActivity activityOfComment = Utils.getActivityManager().getParentActivity(activity);
         templateContext.put("REPLY_ACTION_URL", LinkProviderUtils.getRedirectUrl("reply_activity", activityOfComment.getId()));
         templateContext.put("VIEW_FULL_DISCUSSION_ACTION_URL", LinkProviderUtils.getRedirectUrl("view_full_activity", activityOfComment.getId()));
-        templateContext.put("ACTIVITY", NotificationUtils.processLinkTitle(getI18N(activity, new Locale(language)).getTitle()));
+        String commentTitle = getI18N(activity, new Locale(language)).getTitle();
+        commentTitle = SocialNotificationUtils.processImageTitle(commentTitle, imagePlaceHolder);
+        templateContext.put("ACTIVITY", NotificationUtils.processLinkTitle(commentTitle));
         body = TemplateUtils.processGroovy(templateContext);
       } else {
         templateContext.put("REPLY_ACTION_URL", LinkProviderUtils.getRedirectUrl("reply_activity", activity.getId()));
@@ -551,7 +569,9 @@ public class MailTemplateProvider extends TemplateProvider {
 
 
       templateContext.put("USER", identity.getProfile().getFullName());
-      templateContext.put("SUBJECT", activity.getTitle());
+      String imagePlaceHolder = SocialNotificationUtils.getImagePlaceHolder(language);
+      String title = SocialNotificationUtils.processImageTitle(activity.getTitle(), imagePlaceHolder);
+      templateContext.put("SUBJECT", title);
       String subject = TemplateUtils.processSubject(templateContext);
 
       templateContext.put("PROFILE_URL", LinkProviderUtils.getRedirectUrl("user", identity.getRemoteId()));
@@ -616,7 +636,10 @@ public class MailTemplateProvider extends TemplateProvider {
 
       templateContext.put("USER", identity.getProfile().getFullName());
       templateContext.put("SPACE", spaceIdentity.getProfile().getFullName());
-      templateContext.put("SUBJECT", activity.getTitle());
+
+      String imagePlaceHolder = SocialNotificationUtils.getImagePlaceHolder(language);
+      String title = SocialNotificationUtils.processImageTitle(activity.getTitle(), imagePlaceHolder);
+      templateContext.put("SUBJECT", title);
       String subject = TemplateUtils.processSubject(templateContext);
 
       Space space = Utils.getSpaceService().getSpaceByPrettyName(spaceIdentity.getRemoteId());
