@@ -164,8 +164,8 @@ public class ProfileSearchConnector {
     esQuery.append("{\n");
     esQuery.append("   \"from\" : " + offset + ", \"size\" : " + limit + ",\n");
     esQuery.append("   \"sort\": [\n");
-    esQuery.append("             {\"lastName\": {\"order\": \"asc\"}},\n");
-    esQuery.append("             {\"firstName\": {\"order\": \"asc\"}}\n");
+    esQuery.append("             {\"lastName.raw\": {\"order\": \"asc\"}},\n");
+    esQuery.append("             {\"firstName.raw\": {\"order\": \"asc\"}}\n");
     esQuery.append("             ]\n");
 
     StringBuilder esSubQuery = new StringBuilder();

@@ -150,38 +150,46 @@ import org.exoplatform.social.core.relationship.model.Relationship;
   
   @Override
   public String getMapping() {
-    JSONObject postingHighlighterField = new JSONObject();
-    postingHighlighterField.put("type", "text");
-    postingHighlighterField.put("index_options", "offsets");
+    StringBuilder mapping = new StringBuilder()
+            .append("{")
+            .append("  \"properties\" : {\n")
+            .append("    \"userName\" : {\"type\" : \"keyword\"},\n")
+            .append("    \"name\" : {")
+            .append("      \"type\" : \"text\",")
+            .append("      \"index_options\": \"offsets\",")
+            .append("      \"fields\": {")
+            .append("        \"raw\": {")
+            .append("          \"type\": \"keyword\"")
+            .append("        }")
+            .append("      }")
+            .append("    },\n")
+            .append("    \"firstName\" : {")
+            .append("      \"type\" : \"text\",")
+            .append("      \"index_options\": \"offsets\",")
+            .append("      \"fields\": {")
+            .append("        \"raw\": {")
+            .append("          \"type\": \"keyword\"")
+            .append("        }")
+            .append("      }")
+            .append("    },\n")
+            .append("    \"lastName\" : {")
+            .append("      \"type\" : \"text\",")
+            .append("      \"index_options\": \"offsets\",")
+            .append("      \"fields\": {")
+            .append("        \"raw\": {")
+            .append("          \"type\": \"keyword\"")
+            .append("        }")
+            .append("      }")
+            .append("    },\n")
+            .append("    \"email\" : {\"type\" : \"keyword\"},\n")
+            .append("    \"avatarUrl\" : {\"type\" : \"text\", \"index\": false},\n")
+            .append("    \"position\" : {\"type\" : \"text\", \"index_options\": \"offsets\"},\n")
+            .append("    \"skills\" : {\"type\" : \"text\", \"index_options\": \"offsets\"},\n")
+            .append("    \"lastUpdatedDate\" : {\"type\" : \"date\", \"format\": \"epoch_millis\"}\n")
+            .append("  }\n")
+            .append("}");
 
-    JSONObject notAnalyzedField = new JSONObject();
-    notAnalyzedField.put("type", "text");
-    notAnalyzedField.put("index", false);
-
-    JSONObject keywordMapping = new JSONObject();
-    keywordMapping.put("type", "keyword");
-
-    JSONObject properties = new JSONObject();
-    properties.put("permissions", keywordMapping);
-
-    properties.put("email", keywordMapping);
-
-    // Needed to be of type 'keyword' to make use it as a "sort" field
-    properties.put("firstName", keywordMapping);
-    properties.put("lastName", keywordMapping);
-
-    properties.put("userName", postingHighlighterField);
-    properties.put("name", postingHighlighterField);
-    properties.put("position", postingHighlighterField);
-    properties.put("skills", postingHighlighterField);
-
-    JSONObject mappingProperties = new JSONObject();
-    mappingProperties.put("properties", properties);
-
-    JSONObject mappingJSON = new JSONObject();
-    mappingJSON.put(getType(), mappingProperties);
-
-    return mappingJSON.toJSONString();
+    return mapping.toString();
   }
 
   private Document getDocument(String id) {

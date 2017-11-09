@@ -59,7 +59,7 @@ public class PeopleElasticUnifiedSearchServiceConnector extends ElasticSearchSer
     
     sortMapping = new HashMap<>();
     sortMapping.put("date", "lastUpdatedDate");
-    sortMapping.put("title", "name");
+    sortMapping.put("title", "name.raw");
   }
 
   @Override

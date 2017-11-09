@@ -104,32 +104,28 @@ public class SpaceIndexingServiceConnector extends ElasticIndexingServiceConnect
   
   @Override
   public String getMapping() {
-    JSONObject postingHighlighterField = new JSONObject();
-    postingHighlighterField.put("type", "text");
-    postingHighlighterField.put("index_options", "offsets");
+    StringBuilder mapping = new StringBuilder()
+            .append("{")
+            .append("  \"properties\" : {\n")
+            .append("    \"prettyName\" : {\"type\" : \"keyword\"},\n")
+            .append("    \"displayName\" : {")
+            .append("      \"type\" : \"text\",")
+            .append("      \"index_options\": \"offsets\",")
+            .append("      \"fields\": {")
+            .append("        \"raw\": {")
+            .append("          \"type\": \"keyword\"")
+            .append("        }")
+            .append("      }")
+            .append("    },\n")
+            .append("    \"description\" : {\"type\" : \"text\", \"index_options\": \"offsets\"},\n")
+            .append("    \"visibility\" : {\"type\" : \"keyword\"},\n")
+            .append("    \"registration\" : {\"type\" : \"keyword\"},\n")
+            .append("    \"permissions\" : {\"type\" : \"keyword\"},\n")
+            .append("    \"lastUpdatedDate\" : {\"type\" : \"date\", \"format\": \"epoch_millis\"}\n")
+            .append("  }\n")
+            .append("}");
 
-    JSONObject notAnalyzedField = new JSONObject();
-    notAnalyzedField.put("type", "text");
-    notAnalyzedField.put("index", false);
-
-    JSONObject keywordMapping = new JSONObject();
-    keywordMapping.put("type", "keyword");
-
-    JSONObject properties = new JSONObject();
-    properties.put("permissions", keywordMapping);
-    properties.put("prettyName", postingHighlighterField);
-    properties.put("displayName", postingHighlighterField);
-    properties.put("description", postingHighlighterField);
-    properties.put("visibility", keywordMapping);
-    properties.put("registration", keywordMapping);
-
-    JSONObject mappingProperties = new JSONObject();
-    mappingProperties.put("properties", properties);
-
-    JSONObject mappingJSON = new JSONObject();
-    mappingJSON.put(getType(), mappingProperties);
-
-    return mappingJSON.toJSONString();
+    return mapping.toString();
   }
 
 }
