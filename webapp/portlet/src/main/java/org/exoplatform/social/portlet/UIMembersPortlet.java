@@ -61,7 +61,8 @@ import org.exoplatform.webui.event.EventListener;
       @EventConfig(listeners = UIMembersPortlet.ConnectActionListener.class),
       @EventConfig(listeners = UIMembersPortlet.ConfirmActionListener.class),
       @EventConfig(listeners = UIMembersPortlet.IgnoreActionListener.class),
-      @EventConfig(listeners = UIMembersPortlet.SearchActionListener.class), 
+      @EventConfig(listeners = UIMembersPortlet.SearchActionListener.class),
+      @EventConfig(listeners = UIMembersPortlet.LoadMoreManagerActionListener.class),
       @EventConfig(listeners = UIMembersPortlet.LoadMoreMemberActionListener.class)
     }
   )
@@ -82,6 +83,7 @@ public class UIMembersPortlet extends UIPortletApplication {
 
   
   private final int MEMBER_PER_PAGE = 45;
+  private final int MANAGER_PER_PAGE = 8;
   private static final String SPACE_MEMBER = "member_of_space";
   private static final String ALL_FILTER = "All";
   public static final String SEARCH = "Search";
@@ -90,11 +92,12 @@ public class UIMembersPortlet extends UIPortletApplication {
   private static final String INVITATION_ESTABLISHED_INFO = "UIMembersPortlet.label.InvitationEstablishedInfo";
   
   private int currentLoadIndex = 0;
+  private int currentLoadManagerIndex = 0;
   private IdentityManager identityManager_ = null;
   private UIProfileUserSearch uiSearchMemberOfSpace = null;
   
-  
   boolean enableLoadNext;
+  boolean enableLoadManagerNext;
   private boolean loadAtEnd;
   private String selectedChar = null;
 
@@ -120,17 +123,10 @@ public class UIMembersPortlet extends UIPortletApplication {
     boolean isAdmin = false;
     String currentUser = Utils.getViewerRemoteId();
     SpaceService spaceService = getApplicationComponent(SpaceService.class);
-    if (spaceService.isSuperManager(currentUser)) {
-      isAdmin = true;
-    } else {
-      for (Identity user : managerList) {
-        if (currentUser.equals(user.getRemoteId())) {
-          isAdmin = true;
-          break;
-        }
-      }
-    }
+    Space space = getSpace();
 
+    isAdmin = spaceService.isSuperManager(currentUser) ||
+            spaceService.isManager(space, currentUser);
     if (isAdmin) {
       addChild(UIUserInvitation.class, null, null);
     }
@@ -197,8 +193,9 @@ public class UIMembersPortlet extends UIPortletApplication {
       uiSearchMemberOfSpace.setPeopleNum(getMemberNum());
       result  = getMemberListAccess().load(index, length);
     } else if(Type.MANAGER.equals(type)){
-      ProfileFilter filter = uiSearchMemberOfSpace.getProfileFilter();
+      ProfileFilter filter = managerProfileFilter;
       setManagerListAccess(Utils.getIdentityManager().getSpaceIdentityByProfileFilter(space, filter, type, true));
+      setManagerNum(getManagerListAccess().getSize());
       result  = getManagerListAccess().load(index, length);
     }
     return Arrays.asList(result);
@@ -253,7 +250,10 @@ public class UIMembersPortlet extends UIPortletApplication {
    * @throws Exception
    */
   public List<Identity> getManagerList() throws Exception {
-    initManager();
+    setManagerList(loadPeople(0, currentLoadManagerIndex + MANAGER_PER_PAGE, Type.MANAGER));
+    int realManagerListSize = managerList.size();
+    setEnableLoadManagerNext((realManagerListSize >= MANAGER_PER_PAGE)
+            && (realManagerListSize < getManagerNum()));
     return managerList;
   }
   
@@ -283,13 +283,9 @@ public class UIMembersPortlet extends UIPortletApplication {
    * @throws Exception
    */
   public void initManager() throws Exception {
-    Space space = getSpace();    
     managerProfileFilter = new ProfileFilter();
-    
-    ListAccess<Identity> managerListAccess = getIdentityManager().
-                                              getSpaceIdentityByProfileFilter(space, managerProfileFilter, Type.MANAGER, true);
-    
-    managerList = (Arrays.asList(managerListAccess.load(0, managerListAccess.getSize())));
+    currentLoadManagerIndex = 0;
+    enableLoadManagerNext = false;
   }
 
 
@@ -479,6 +475,17 @@ public class UIMembersPortlet extends UIPortletApplication {
       }
     }
   }
+
+  static public class LoadMoreManagerActionListener extends EventListener<UIMembersPortlet> {
+    public void execute(Event<UIMembersPortlet> event) throws Exception {
+      UIMembersPortlet uiMembersPortlet = event.getSource();
+      if (uiMembersPortlet.currentLoadManagerIndex < uiMembersPortlet.managerNum) {
+        uiMembersPortlet.increaseOffsetManager();
+      } else {
+        uiMembersPortlet.setEnableLoadManagerNext(false);
+      }
+    }
+  }
   
   /**
    * Loads people when searching.
@@ -519,6 +526,10 @@ public class UIMembersPortlet extends UIPortletApplication {
   public void increaseOffset() throws Exception {
     currentLoadIndex += MEMBER_PER_PAGE;
   }
+
+  public void increaseOffsetManager() throws Exception {
+    currentLoadManagerIndex += MANAGER_PER_PAGE;
+  }
  
   /**
    * Load next member on UIUserSearch
@@ -552,5 +563,9 @@ public class UIMembersPortlet extends UIPortletApplication {
    */
   public void setEnableLoadNext(boolean enableLoadNext) {
     this.enableLoadNext = enableLoadNext;
+  }
+
+  public void setEnableLoadManagerNext(boolean enableLoadNext) {
+    this.enableLoadManagerNext = enableLoadNext;
   }
 }
