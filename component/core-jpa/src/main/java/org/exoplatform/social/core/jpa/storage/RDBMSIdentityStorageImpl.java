@@ -49,7 +49,9 @@ import org.exoplatform.social.core.jpa.search.ProfileSearchConnector;
 import org.exoplatform.social.core.jpa.storage.dao.ActivityDAO;
 import org.exoplatform.social.core.jpa.storage.dao.IdentityDAO;
 import org.exoplatform.social.core.jpa.storage.dao.SpaceDAO;
+import org.exoplatform.social.core.jpa.storage.dao.SpaceMemberDAO;
 import org.exoplatform.social.core.jpa.storage.entity.*;
+import org.exoplatform.social.core.jpa.storage.entity.SpaceMemberEntity.Status;
 import org.exoplatform.social.core.identity.SpaceMemberFilterListAccess;
 import org.exoplatform.social.core.identity.model.ActiveIdentityFilter;
 import org.exoplatform.social.core.identity.model.Identity;
@@ -80,6 +82,7 @@ public class RDBMSIdentityStorageImpl implements IdentityStorage {
   private final ActivityDAO activityDAO;
   private final IdentityDAO identityDAO;
   private final SpaceDAO spaceDAO;
+  private final SpaceMemberDAO spaceMemberDAO;
 
   private final FileService fileService;
 
@@ -88,11 +91,14 @@ public class RDBMSIdentityStorageImpl implements IdentityStorage {
   private ProfileSearchConnector profileSearchConnector;
 
   public RDBMSIdentityStorageImpl(IdentityDAO identityDAO,
-                                  SpaceDAO spaceDAO, ActivityDAO activityDAO,
+                                  SpaceDAO spaceDAO,
+                                  SpaceMemberDAO spaceMemberDAO,
+                                  ActivityDAO activityDAO,
                                   FileService fileService,
                                   ProfileSearchConnector profileSearchConnector, OrganizationService orgService) {
     this.identityDAO = identityDAO;
     this.spaceDAO = spaceDAO;
+    this.spaceMemberDAO = spaceMemberDAO;
     this.activityDAO = activityDAO;
     this.profileSearchConnector = profileSearchConnector;
     this.orgService = orgService;
@@ -693,31 +699,38 @@ public class RDBMSIdentityStorageImpl implements IdentityStorage {
                                                                 final ProfileFilter profileFilter,
                                                                 SpaceMemberFilterListAccess.Type type,
                                                                 long offset, long limit) throws IdentityStorageException {
-
-    List<String> remoteIds = new ArrayList<>();
-    if (space != null) {
-      SpaceEntity gotSpace = spaceDAO.find(Long.parseLong(space.getId()));
-      String[] members = null;
-      switch (type) {
-        case MEMBER:
-          members = gotSpace.getMembersId();
-          break;
-        case MANAGER:
-          members = gotSpace.getManagerMembersId();
-          break;
-      }
-
-      remoteIds.addAll(Arrays.asList(members));
-      if (remoteIds.isEmpty()) {
-        remoteIds.add("");
-      }
+    Status status = null;
+    switch (type) {
+      case MEMBER:
+        status = Status.MEMBER;
+        break;
+      case MANAGER:
+        status = Status.MANAGER;
+        break;
     }
+    List<SpaceMemberEntity> spaceMembers = spaceMemberDAO.getSpaceMembers(Long.parseLong(space.getId()), status, (int) offset, (int) limit);
+    List<IdentityEntity> identities = new ArrayList<>();
+    for (SpaceMemberEntity spaceMemberEntity : spaceMembers) {
+      IdentityEntity memberIdentityId = getIdentityDAO().findByProviderAndRemoteId(OrganizationIdentityProvider.NAME, spaceMemberEntity.getUserId());
+      identities.add(memberIdentityId);
+    }
+    return EntityConverterUtils.convertToIdentities(identities.toArray(new IdentityEntity[0]));
+  }
 
-    ExtendProfileFilter xFilter = new ExtendProfileFilter(profileFilter);
-    xFilter.setRemoteIds(remoteIds);
-    xFilter.setProviderId(OrganizationIdentityProvider.NAME);
-    ListAccess<IdentityEntity> list = getIdentityDAO().findIdentities(xFilter);
-    return EntityConverterUtils.convertToIdentities(list, offset, limit);
+  @Override
+  public int countSpaceMemberIdentitiesByProfileFilter(Space space,
+                                                       ProfileFilter profileFilter,
+                                                       org.exoplatform.social.core.identity.SpaceMemberFilterListAccess.Type type) {
+    Status status = null;
+    switch (type) {
+      case MEMBER:
+        status = Status.MEMBER;
+        break;
+      case MANAGER:
+        status = Status.MANAGER;
+        break;
+    }
+    return spaceMemberDAO.countSpaceMembers(Long.parseLong(space.getId()), status);
   }
 
   public List<Identity> getIdentitiesByProfileFilter(final String providerId,

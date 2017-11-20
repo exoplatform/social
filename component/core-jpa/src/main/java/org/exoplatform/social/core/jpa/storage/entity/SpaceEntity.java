@@ -18,13 +18,8 @@
 package org.exoplatform.social.core.jpa.storage.entity;
 
 import java.io.Serializable;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -46,7 +41,6 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 import org.exoplatform.commons.api.persistence.ExoEntity;
-import org.exoplatform.social.core.jpa.storage.entity.SpaceMemberEntity.Status;
 import org.exoplatform.social.core.space.model.Space;
 
 @Entity(name = "SocSpaceEntity")
@@ -230,10 +224,6 @@ public class SpaceEntity implements Serializable {
     this.type = type;
   }
 
-  public Set<SpaceMemberEntity> getMembers() {
-    return members;
-  }
-
   public SpaceEntity buildFrom(Space space) {
     this.setApp(AppEntity.parse(space.getApp()));
     if (space.getAvatarLastUpdated() != null) {
@@ -268,24 +258,7 @@ public class SpaceEntity implements Serializable {
       visibility = VISIBILITY.valueOf(space.getVisibility().toUpperCase());
     }
     this.setVisibility(visibility);
-    buildMembers(space);
     return this;
-  }
-
-  public String[] getPendingMembersId() {
-    return getUserIds(Status.PENDING);
-  }
-
-  public String[] getInvitedMembersId() {
-    return getUserIds(Status.INVITED);
-  }
-
-  public String[] getMembersId() {
-    return getUserIds(Status.MEMBER);
-  }
-
-  public String[] getManagerMembersId() {
-    return getUserIds(Status.MANAGER);
   }
 
   public static enum VISIBILITY {
@@ -298,57 +271,5 @@ public class SpaceEntity implements Serializable {
 
   public static enum REGISTRATION {
     OPEN, VALIDATION, CLOSE
-  }
-
-  private void buildMembers(Space space) {
-    Set<SpaceMemberEntity> invited = this.getMembers(Status.INVITED);
-    merge(invited, space.getInvitedUsers(), Status.INVITED);
-
-    Set<SpaceMemberEntity> manager = this.getMembers(Status.MANAGER);
-    merge(manager, space.getManagers(), Status.MANAGER);
-
-    Set<SpaceMemberEntity> member = this.getMembers(Status.MEMBER);
-    merge(member, space.getMembers(), Status.MEMBER);
-
-    Set<SpaceMemberEntity> pending = this.getMembers(Status.PENDING);
-    merge(pending, space.getPendingUsers(), Status.PENDING);
-  }
-
-  private void merge(Set<SpaceMemberEntity> spaceMembers, String[] userIds, Status status) {
-    Set<String> ids = new HashSet<>(userIds != null ? Arrays.asList(userIds) : Collections.<String> emptyList());
-
-    Iterator<SpaceMemberEntity> mems = spaceMembers.iterator();
-    while (mems.hasNext()) {
-      SpaceMemberEntity mem = mems.next();
-      String id = mem.getUserId();
-
-      if (ids.contains(mem.getUserId())) {
-        ids.remove(id);
-      } else {
-        this.getMembers().remove(mem);
-      }
-    }
-
-    for (String id : ids) {
-      this.getMembers().add(new SpaceMemberEntity(this, id, status));
-    }
-  }
-
-  private Set<SpaceMemberEntity> getMembers(Status status) {
-    Set<SpaceMemberEntity> mems = new HashSet<>();
-    for (SpaceMemberEntity mem : getMembers()) {
-      if (mem.getStatus().equals(status)) {
-        mems.add(mem);
-      }
-    }
-    return mems;
-  }
-
-  private String[] getUserIds(Status status) {
-    List<String> ids = new LinkedList<>();
-    for (SpaceMemberEntity mem : getMembers(status)) {
-      ids.add(mem.getUserId());
-    }
-    return ids.toArray(new String[ids.size()]);
   }
 }

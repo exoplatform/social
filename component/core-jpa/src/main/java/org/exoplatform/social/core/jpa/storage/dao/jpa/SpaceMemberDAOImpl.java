@@ -27,6 +27,7 @@ import org.exoplatform.commons.persistence.impl.GenericDAOJPAImpl;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.jpa.storage.dao.SpaceMemberDAO;
+import org.exoplatform.social.core.jpa.storage.entity.IdentityEntity;
 import org.exoplatform.social.core.jpa.storage.entity.SpaceEntity;
 import org.exoplatform.social.core.jpa.storage.entity.SpaceMemberEntity;
 
@@ -39,6 +40,43 @@ public class SpaceMemberDAOImpl extends GenericDAOJPAImpl<SpaceMemberEntity, Lon
     Query query = getEntityManager().createNamedQuery("SpaceMember.deleteBySpace");
     query.setParameter("spaceId", entity.getId());
     query.executeUpdate();
+  }
+
+  @Override
+  public List<SpaceMemberEntity> getSpaceMembers(Long spaceId, SpaceMemberEntity.Status status, int offset, int limit) {
+    if (status == null) {
+      throw new IllegalArgumentException("Status is null");
+    }
+    if (spaceId == null || spaceId == 0) {
+      throw new IllegalArgumentException("spaceId is null or equals to 0");
+    }
+    if (offset < 0) {
+      throw new IllegalArgumentException("offset must be positive");
+    }
+    if (limit <= 0) {
+      throw new IllegalArgumentException("offset must be > 0");
+    }
+    TypedQuery<SpaceMemberEntity> query = getEntityManager().createNamedQuery("SpaceMember.getSpaceMembersByStatus",
+                                                                              SpaceMemberEntity.class);
+    query.setParameter("status", status);
+    query.setParameter("spaceId", spaceId);
+    query.setFirstResult(offset);
+    query.setMaxResults(limit);
+    return query.getResultList();
+  }
+
+  @Override
+  public int countSpaceMembers(Long spaceId, SpaceMemberEntity.Status status) {
+    if (status == null) {
+      throw new IllegalArgumentException("Status is null");
+    }
+    if (spaceId == null || spaceId == 0) {
+      throw new IllegalArgumentException("spaceId is null or equals to 0");
+    }
+    TypedQuery<Long> query = getEntityManager().createNamedQuery("SpaceMember.countSpaceMembersByStatus", Long.class);
+    query.setParameter("status", status);
+    query.setParameter("spaceId", spaceId);
+    return query.getSingleResult().intValue();
   }
 
   @Override

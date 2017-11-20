@@ -50,6 +50,14 @@ import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
                         + "     spaceMember.userId = :userId AND "
                         + "     spaceMember.status = :status "
                         + "   ) "),
+        @NamedQuery(name = "SpaceMember.getSpaceMembersByStatus",
+                query = "SELECT spaceMember.userId FROM SocSpaceMember AS spaceMember "
+                        + " WHERE spaceMember.status = :status "
+                        + " AND   spaceMember.space.id = :spaceId "),
+        @NamedQuery(name = "SpaceMember.countSpaceMembersByStatus",
+                query = "SELECT count(*) FROM SocSpaceMember AS spaceMember "
+                        + " WHERE spaceMember.status = :status "
+                        + " AND   spaceMember.space.id = :spaceId "),
         @NamedQuery(name = "SpaceMember.getMember", query = "SELECT mem FROM SocSpaceMember mem WHERE mem.userId = :userId AND mem.space.id = :spaceId AND mem.status = :status"),
         @NamedQuery(name = "SpaceMember.deleteByUsername", query = "DELETE FROM SocSpaceMember sm WHERE sm.userId = :username"),
         @NamedQuery(name = "SpaceMember.getSpaceMemberShip", query = "SELECT mem FROM SocSpaceMember mem WHERE mem.userId = :userId AND mem.space.id = :spaceId")})

@@ -53,6 +53,8 @@ public class RDBMSSpaceStorageImpl implements SpaceStorage {
   /** Logger */
   private static final Log     LOG = ExoLogger.getLogger(RDBMSSpaceStorageImpl.class);
 
+  private static final int     BATCH_SIZE = 100;
+
   private SpaceDAO             spaceDAO;
 
   private SpaceMemberDAO       spaceMemberDAO;
@@ -524,6 +526,23 @@ public class RDBMSSpaceStorageImpl implements SpaceStorage {
     spaceMemberDAO.update(member);
   }
 
+  private String[] getSpaceMembers(long spaceId, SpaceMemberEntity.Status status) {
+    int countSpaceMembers = spaceMemberDAO.countSpaceMembers(spaceId, status);
+    if(countSpaceMembers == 0) {
+      return new String[0];
+    }
+    String[] members = new String[countSpaceMembers];
+    int offset =  0;
+    int index = 0;
+    while (offset < countSpaceMembers) {
+      List<SpaceMemberEntity> spaceMembers = spaceMemberDAO.getSpaceMembers(spaceId, status, offset, BATCH_SIZE);
+      for (SpaceMemberEntity spaceMemberEntity : spaceMembers) {
+        members[index] = spaceMemberEntity.getUserId();
+      }
+    }
+    return members;
+  }
+
   /**
    * Fills {@link Space}'s properties to {@link SpaceEntity}'s.
    *
@@ -536,12 +555,12 @@ public class RDBMSSpaceStorageImpl implements SpaceStorage {
     Space space = new Space();
     fillSpaceSimpleFromEntity(entity, space);
 
-    space.setPendingUsers(entity.getPendingMembersId());
-    space.setInvitedUsers(entity.getInvitedMembersId());
+    space.setPendingUsers(getSpaceMembers(entity.getId(), Status.PENDING));
+    space.setInvitedUsers(getSpaceMembers(entity.getId(), Status.INVITED));
 
     //
-    String[] members = entity.getMembersId();
-    String[] managers = entity.getManagerMembersId();
+    String[] members = getSpaceMembers(entity.getId(), Status.MEMBER);
+    String[] managers = getSpaceMembers(entity.getId(), Status.MANAGER);
 
     //
     Set<String> membersList = new HashSet<String>();
@@ -552,7 +571,7 @@ public class RDBMSSpaceStorageImpl implements SpaceStorage {
 
     //
     space.setMembers(membersList.toArray(new String[] {}));
-    space.setManagers(entity.getManagerMembersId());
+    space.setManagers(managers);
     return space;
   }
 

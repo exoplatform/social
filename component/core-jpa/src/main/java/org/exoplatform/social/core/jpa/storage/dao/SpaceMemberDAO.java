@@ -21,6 +21,7 @@ import java.util.List;
 import org.exoplatform.commons.api.persistence.GenericDAO;
 import org.exoplatform.social.core.jpa.storage.entity.SpaceEntity;
 import org.exoplatform.social.core.jpa.storage.entity.SpaceMemberEntity;
+import org.exoplatform.social.core.jpa.storage.entity.SpaceMemberEntity.Status;
 
 public interface SpaceMemberDAO extends GenericDAO<SpaceMemberEntity, Long> {
     void deleteBySpace(SpaceEntity entity);
@@ -28,4 +29,7 @@ public interface SpaceMemberDAO extends GenericDAO<SpaceMemberEntity, Long> {
     SpaceMemberEntity getSpaceMemberShip(String remoteId, Long spaceId, SpaceMemberEntity.Status status);
 
     List<Long> getSpacesIdsByUserName(String userId, int offset, int limit);
+
+    List<SpaceMemberEntity> getSpaceMembers(Long spaceId, Status status, int offset, int limit);
+    int countSpaceMembers(Long spaceId, Status status);
 }

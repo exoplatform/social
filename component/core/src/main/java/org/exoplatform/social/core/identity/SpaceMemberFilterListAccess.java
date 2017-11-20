@@ -90,6 +90,7 @@ public class SpaceMemberFilterListAccess implements ListAccess<Identity> {
    * {@inheritDoc}
    */
   public Identity[] load(int offset, int limit) throws Exception, IllegalArgumentException {
+    // TODO use ES connectors when filter not empty
     ListAccessValidator.validateIndex(offset, limit, getSize());
     List<Identity> identities = null;
     identities = identityStorage.getSpaceMemberIdentitiesByProfileFilter(space, profileFilter, type, offset, limit);    
@@ -100,7 +101,8 @@ public class SpaceMemberFilterListAccess implements ListAccess<Identity> {
    * {@inheritDoc}
    */
   public int getSize() throws Exception {
-      return identityStorage.getSpaceMemberIdentitiesByProfileFilter(space, profileFilter, type, 0, 0).size();
+      // TODO use ES connectors when filter not empty
+      return identityStorage.countSpaceMemberIdentitiesByProfileFilter(space, profileFilter, type);
   }
 
   /**

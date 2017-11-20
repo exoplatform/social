@@ -345,4 +345,14 @@ public interface IdentityStorage {
    * @return
    */
   InputStream getBannerInputStreamById(Identity identity) throws IOException;
+
+  /**
+   * count Space's members by status and filter it by Profile Filter
+   * 
+   * @param space
+   * @param profileFilter
+   * @param type
+   * @return
+   */
+  public int countSpaceMemberIdentitiesByProfileFilter(Space space, ProfileFilter profileFilter, Type type);
 }
