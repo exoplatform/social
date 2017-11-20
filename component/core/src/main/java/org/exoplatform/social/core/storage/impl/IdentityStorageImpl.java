@@ -1615,4 +1615,8 @@ public class IdentityStorageImpl extends AbstractStorage implements IdentityStor
     throw new UnsupportedOperationException("JCR implementation is no more used");
   }
 
+  public int countSpaceMemberIdentitiesByProfileFilter(Space space, ProfileFilter profileFilter, Type type) {
+    return getSpaceMemberIdentitiesByProfileFilter(space, profileFilter, type, 0, Integer.MAX_VALUE).size();
+  }
+
 }

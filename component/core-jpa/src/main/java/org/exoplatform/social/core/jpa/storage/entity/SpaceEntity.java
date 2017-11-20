@@ -41,7 +41,6 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 import org.exoplatform.commons.api.persistence.ExoEntity;
-import org.exoplatform.social.core.space.model.Space;
 
 @Entity(name = "SocSpaceEntity")
 @ExoEntity
@@ -224,41 +223,12 @@ public class SpaceEntity implements Serializable {
     this.type = type;
   }
 
-  public SpaceEntity buildFrom(Space space) {
-    this.setApp(AppEntity.parse(space.getApp()));
-    if (space.getAvatarLastUpdated() != null) {
-      this.setAvatarLastUpdated(space.getAvatarLastUpdated() > 0 ? new Date(space.getAvatarLastUpdated()) : null);
-    }
-    if (space.getBannerLastUpdated() != null) {
-      this.setBannerLastUpdated(space.getBannerLastUpdated() > 0 ? new Date(space.getBannerLastUpdated()) : null);
-    } else {
-      this.setBannerLastUpdated(null);
-    }
-    this.setCreatedDate(space.getCreatedTime() > 0 ? new Date(space.getCreatedTime()) : new Date());
-    this.setDescription(space.getDescription());
-    this.setType(space.getType());
-    this.setDisplayName(space.getDisplayName());
-    this.setGroupId(space.getGroupId());
-    this.setPrettyName(space.getPrettyName());
-    PRIORITY priority = null;
-    if (Space.HIGH_PRIORITY.equals(space.getPriority())) {
-      priority = PRIORITY.HIGH;
-    } else if (Space.INTERMEDIATE_PRIORITY.equals(space.getPriority())) {
-      priority = PRIORITY.INTERMEDIATE;
-    } else if (Space.LOW_PRIORITY.equals(space.getPriority())) {
-      priority = PRIORITY.LOW;
-    }
-    this.setPriority(priority);
-    if (space.getRegistration() != null) {
-      this.setRegistration(REGISTRATION.valueOf(space.getRegistration().toUpperCase()));
-    }
-    this.setUrl(space.getUrl());
-    VISIBILITY visibility = null;
-    if (space.getVisibility() != null) {
-      visibility = VISIBILITY.valueOf(space.getVisibility().toUpperCase());
-    }
-    this.setVisibility(visibility);
-    return this;
+  public Set<SpaceMemberEntity> getMembers() {
+    return members;
+  }
+
+  public void setMembers(Set<SpaceMemberEntity> members) {
+    this.members = members;
   }
 
   public static enum VISIBILITY {

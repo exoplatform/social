@@ -19,14 +19,19 @@ package org.exoplatform.social.core.jpa.storage;
 
 import org.exoplatform.services.organization.OrganizationService;
 import org.exoplatform.services.organization.User;
+import org.exoplatform.social.core.identity.SpaceMemberFilterListAccess.Type;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.jpa.search.BaseESTest;
+import org.exoplatform.social.core.jpa.test.MaxQueryNumber;
 import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.manager.RelationshipManager;
 import org.exoplatform.social.core.profile.ProfileFilter;
 import org.exoplatform.social.core.relationship.model.Relationship;
+import org.exoplatform.social.core.space.SpaceUtils;
+import org.exoplatform.social.core.space.impl.DefaultSpaceApplicationHandler;
+import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.storage.api.IdentityStorage;
 
 import java.io.IOException;
@@ -290,6 +295,48 @@ public class IdentityStorageTestIT extends BaseESTest {
     }
 
     assertEquals(total, identityStorage.getIdentitiesForMentions(providerId, filter, null, 0, total, false).size());
+  }
+
+  @MaxQueryNumber(2635)
+  public void testGetSpaceMemberByProfileFilter() throws Exception {
+    Space space = new Space();
+    space.setApp("app");
+    space.setDisplayName("my space");
+    space.setPrettyName(space.getDisplayName());
+    space.setRegistration(Space.OPEN);
+    space.setDescription("add new space ");
+    space.setType(DefaultSpaceApplicationHandler.NAME);
+    space.setVisibility(Space.PUBLIC);
+    space.setPriority(Space.INTERMEDIATE_PRIORITY);
+    space.setGroupId(SpaceUtils.createGroup(space.getPrettyName(), "username4"));
+    space.setUrl(space.getPrettyName());
+    String[] managers = new String[] {};
+    String[] members = new String[] {"username1", "username2", "username3"};
+    String[] invitedUsers = new String[] {};
+    String[] pendingUsers = new String[] {};
+    space.setInvitedUsers(invitedUsers);
+    space.setPendingUsers(pendingUsers);
+    space.setManagers(managers);
+    space.setMembers(members);
+
+    spaceService.createSpace(space, "root");
+    
+    ProfileFilter profileFilter = new ProfileFilter();
+    
+    List<Identity> identities = identityStorage.getSpaceMemberIdentitiesByProfileFilter(space, profileFilter, Type.MEMBER, 0, 2);
+    assertEquals(2, identities.size());
+
+    Identity username1Identity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "username1", true);
+    profileFilter.setViewerIdentity(username1Identity);
+    assertEquals(2, identityStorage.countSpaceMemberIdentitiesByProfileFilter(space, profileFilter, Type.MEMBER));
+
+    profileFilter.setName("0");
+    identities = identityStorage.getSpaceMemberIdentitiesByProfileFilter(space, profileFilter, Type.MEMBER, 0, 2);
+    assertEquals(0, identities.size());
+    
+    profileFilter.setName("3");
+    identities = identityStorage.getSpaceMemberIdentitiesByProfileFilter(space, profileFilter, Type.MEMBER, 0, 2);
+    assertEquals(1, identities.size());
   }
 
   /**

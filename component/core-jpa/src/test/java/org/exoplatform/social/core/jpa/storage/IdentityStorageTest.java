@@ -621,7 +621,8 @@ public class IdentityStorageTest extends AbstractCoreTest {
   public void testGetSpaceMemberByProfileFilter() throws Exception {
     populateData();
     populateUser("username4");
-    
+    populateUser("username1");
+
     Space space = new Space();
     space.setApp("app");
     space.setDisplayName("my space");
@@ -649,15 +650,11 @@ public class IdentityStorageTest extends AbstractCoreTest {
     
     List<Identity> identities = identityStorage.getSpaceMemberIdentitiesByProfileFilter(space, profileFilter, Type.MEMBER, 0, 2);
     assertEquals(2, identities.size());
-    
-    profileFilter.setName("0");
-    identities = identityStorage.getSpaceMemberIdentitiesByProfileFilter(space, profileFilter, Type.MEMBER, 0, 2);
-    assertEquals(0, identities.size());
-    
-    profileFilter.setName("3");
-    identities = identityStorage.getSpaceMemberIdentitiesByProfileFilter(space, profileFilter, Type.MEMBER, 0, 2);
-    assertEquals(1, identities.size());
-    
+
+    Identity username1Identity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "username1", true);
+    profileFilter.setViewerIdentity(username1Identity);
+    assertEquals(2, identityStorage.countSpaceMemberIdentitiesByProfileFilter(space, profileFilter, Type.MEMBER));
+
     addUserToGroupWithMembership("username4", space.getGroupId(), MembershipTypeHandler.ANY_MEMBERSHIP_TYPE);
     identities = identityStorage.getSpaceMemberIdentitiesByProfileFilter(space, new ProfileFilter(), Type.MANAGER, 0, 10);
     assertEquals(1, identities.size());
@@ -952,6 +949,7 @@ public class IdentityStorageTest extends AbstractCoreTest {
       GroupHandler groupHandler = organizationService.getGroupHandler();
       Group existingGroup = groupHandler.findGroupById(groupId);
       membershipHandler.linkMembership(user, existingGroup, membershipType, true);
+      persist();
     } catch (Exception e) {
       return;
     }

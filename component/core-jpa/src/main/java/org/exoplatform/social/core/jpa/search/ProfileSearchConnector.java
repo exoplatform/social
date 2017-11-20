@@ -143,6 +143,7 @@ public class ProfileSearchConnector {
       identity = new Identity(OrganizationIdentityProvider.NAME, userName);
       identity.setId(identityId);
       p = new Profile(identity);
+      p.setId(identityId);
       p.setAvatarUrl(avatarUrl);
       p.setUrl(LinkProvider.getProfileUri(userName));
       p.setProperty(Profile.FULL_NAME, name);
@@ -157,7 +158,6 @@ public class ProfileSearchConnector {
     return results;
   }
   
-  
   private String buildQueryStatement(Identity identity, ProfileFilter filter, Type type, long offset, long limit) {
     String expEs = buildExpression(filter);
     StringBuilder esQuery = new StringBuilder();
@@ -171,8 +171,25 @@ public class ProfileSearchConnector {
     StringBuilder esSubQuery = new StringBuilder();
     esSubQuery.append("       ,\n");
     esSubQuery.append("\"query\" : {\n");
-    esSubQuery.append("    \"bool\" :{\n");
+    esSubQuery.append("      \"constant_score\" : {\n");
+    esSubQuery.append("        \"filter\" : {\n");
+    esSubQuery.append("          \"bool\" :{\n");
     boolean subQueryEmpty = true;
+    if (filter.getRemoteIds() != null && !filter.getRemoteIds().isEmpty()) {
+      subQueryEmpty = false;
+      StringBuilder remoteIds = new StringBuilder();
+      for (String remoteId : filter.getRemoteIds()) {
+        if (remoteIds.length() > 0) {
+          remoteIds.append(",");
+        }
+        remoteIds.append("\"").append(remoteId).append("\"");
+      }
+      esSubQuery.append("      \"must\" : {\n");
+      esSubQuery.append("        \"terms\" :{\n");
+      esSubQuery.append("          \"userName\" : [" + remoteIds.toString() + "]\n");
+      esSubQuery.append("        } \n");
+      esSubQuery.append("      },\n");
+    }
     if (identity != null && type != null) {
       subQueryEmpty = false;
       esSubQuery.append("      \"must\" : {\n");
@@ -205,6 +222,8 @@ public class ProfileSearchConnector {
       esSubQuery.append("      }\n");
       esSubQuery.append("    ]\n");
     } //end if
+    esSubQuery.append("     } \n");
+    esSubQuery.append("   } \n");
     esSubQuery.append("  }\n");
     esSubQuery.append(" }\n");
     if(!subQueryEmpty) {

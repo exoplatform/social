@@ -1,28 +1,46 @@
 package org.exoplatform.social.core.jpa.storage;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
-import org.exoplatform.commons.file.model.FileInfo;
-import org.exoplatform.commons.file.services.FileService;
-import org.exoplatform.container.ExoContainerContext;
-import org.exoplatform.services.log.ExoLogger;
-import org.exoplatform.services.log.Log;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import org.exoplatform.commons.file.model.FileInfo;
+import org.exoplatform.commons.file.services.FileService;
 import org.exoplatform.commons.utils.ListAccess;
-import org.exoplatform.social.core.jpa.storage.entity.ConnectionEntity;
-import org.exoplatform.social.core.jpa.storage.entity.IdentityEntity;
-import org.exoplatform.social.core.jpa.storage.entity.ProfileExperienceEntity;
+import org.exoplatform.container.ExoContainerContext;
+import org.exoplatform.services.log.ExoLogger;
+import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.IdentityWithRelationship;
 import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
+import org.exoplatform.social.core.jpa.storage.entity.AppEntity;
+import org.exoplatform.social.core.jpa.storage.entity.ConnectionEntity;
+import org.exoplatform.social.core.jpa.storage.entity.IdentityEntity;
+import org.exoplatform.social.core.jpa.storage.entity.ProfileExperienceEntity;
+import org.exoplatform.social.core.jpa.storage.entity.SpaceEntity;
+import org.exoplatform.social.core.jpa.storage.entity.SpaceEntity.PRIORITY;
+import org.exoplatform.social.core.jpa.storage.entity.SpaceEntity.REGISTRATION;
+import org.exoplatform.social.core.jpa.storage.entity.SpaceEntity.VISIBILITY;
+import org.exoplatform.social.core.jpa.storage.entity.SpaceMemberEntity;
+import org.exoplatform.social.core.jpa.storage.entity.SpaceMemberEntity.Status;
 import org.exoplatform.social.core.relationship.model.Relationship;
 import org.exoplatform.social.core.service.LinkProvider;
+import org.exoplatform.social.core.space.model.Space;
 
 public class EntityConverterUtils {
   
@@ -226,6 +244,39 @@ public class EntityConverterUtils {
     return result;
   }
 
+  public static SpaceEntity buildFrom(Space space, SpaceEntity spaceEntity) {
+    spaceEntity.setApp(AppEntity.parse(space.getApp()));
+    if (space.getAvatarLastUpdated() != null) {
+      spaceEntity.setAvatarLastUpdated(space.getAvatarLastUpdated() > 0 ? new Date(space.getAvatarLastUpdated()) : null);
+    }
+    spaceEntity.setCreatedDate(space.getCreatedTime() > 0 ? new Date(space.getCreatedTime()) : new Date());
+    spaceEntity.setDescription(space.getDescription());
+    spaceEntity.setType(space.getType());
+    spaceEntity.setDisplayName(space.getDisplayName());
+    spaceEntity.setGroupId(space.getGroupId());
+    spaceEntity.setPrettyName(space.getPrettyName());
+    PRIORITY priority = null;
+    if (Space.HIGH_PRIORITY.equals(space.getPriority())) {
+      priority = PRIORITY.HIGH;
+    } else if (Space.INTERMEDIATE_PRIORITY.equals(space.getPriority())) {
+      priority = PRIORITY.INTERMEDIATE;
+    } else if (Space.LOW_PRIORITY.equals(space.getPriority())) {
+      priority = PRIORITY.LOW;
+    }
+    spaceEntity.setPriority(priority);
+    if (space.getRegistration() != null) {
+      spaceEntity.setRegistration(REGISTRATION.valueOf(space.getRegistration().toUpperCase()));
+    }
+    spaceEntity.setUrl(space.getUrl());
+    VISIBILITY visibility = null;
+    if (space.getVisibility() != null) {
+      visibility = VISIBILITY.valueOf(space.getVisibility().toUpperCase());
+    }
+    spaceEntity.setVisibility(visibility);
+    buildMembers(space, spaceEntity);
+    return spaceEntity;
+  }
+
   public static Relationship convertRelationshipItemToRelationship(ConnectionEntity item) {
     if (item == null) return null;
     //
@@ -250,5 +301,73 @@ public class EntityConverterUtils {
       return null;
     }
   }
-  
+
+  private static String[] getPendingMembersId(SpaceEntity spaceEntity) {
+    return getUserIds(spaceEntity, Status.PENDING);
+  }
+
+  private static String[] getInvitedMembersId(SpaceEntity spaceEntity) {
+    return getUserIds(spaceEntity, Status.INVITED);
+  }
+
+  private static String[] getMembersId(SpaceEntity spaceEntity) {
+    return getUserIds(spaceEntity, Status.MEMBER);
+  }
+
+  private static String[] getManagerMembersId(SpaceEntity spaceEntity) {
+    return getUserIds(spaceEntity, Status.MANAGER);
+  }
+
+  private static void buildMembers(Space space, SpaceEntity spaceEntity) {
+    Set<SpaceMemberEntity> invited = getMembers(spaceEntity, Status.INVITED);
+    merge(spaceEntity, invited, space.getInvitedUsers(), Status.INVITED);
+
+    Set<SpaceMemberEntity> manager = getMembers(spaceEntity, Status.MANAGER);
+    merge(spaceEntity, manager, space.getManagers(), Status.MANAGER);
+
+    Set<SpaceMemberEntity> member = getMembers(spaceEntity, Status.MEMBER);
+    merge(spaceEntity, member, space.getMembers(), Status.MEMBER);
+
+    Set<SpaceMemberEntity> pending = getMembers(spaceEntity, Status.PENDING);
+    merge(spaceEntity, pending, space.getPendingUsers(), Status.PENDING);
+  }
+
+  private static void merge(SpaceEntity spaceEntity, Set<SpaceMemberEntity> spaceMembers, String[] userIds, Status status) {
+    Set<String> ids = new HashSet<>(userIds != null ? Arrays.asList(userIds) : Collections.<String> emptyList());
+
+    Iterator<SpaceMemberEntity> mems = spaceMembers.iterator();
+    while (mems.hasNext()) {
+      SpaceMemberEntity mem = mems.next();
+      String id = mem.getUserId();
+
+      if (ids.contains(mem.getUserId())) {
+        ids.remove(id);
+      } else {
+        spaceEntity.getMembers().remove(mem);
+      }
+    }
+
+    for (String id : ids) {
+      spaceEntity.getMembers().add(new SpaceMemberEntity(spaceEntity, id, status));
+    }
+  }
+
+  private static Set<SpaceMemberEntity> getMembers(SpaceEntity spaceEntity, Status status) {
+    Set<SpaceMemberEntity> mems = new HashSet<>();
+    for (SpaceMemberEntity mem : spaceEntity.getMembers()) {
+      if (mem.getStatus().equals(status)) {
+        mems.add(mem);
+      }
+    }
+    return mems;
+  }
+
+  private static String[] getUserIds(SpaceEntity spaceEntity, Status status) {
+    List<String> ids = new LinkedList<>();
+    for (SpaceMemberEntity mem : getMembers(spaceEntity, status)) {
+      ids.add(mem.getUserId());
+    }
+    return ids.toArray(new String[ids.size()]);
+  }
+
 }

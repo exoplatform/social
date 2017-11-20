@@ -27,7 +27,6 @@ import org.exoplatform.commons.persistence.impl.GenericDAOJPAImpl;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.jpa.storage.dao.SpaceMemberDAO;
-import org.exoplatform.social.core.jpa.storage.entity.IdentityEntity;
 import org.exoplatform.social.core.jpa.storage.entity.SpaceEntity;
 import org.exoplatform.social.core.jpa.storage.entity.SpaceMemberEntity;
 
@@ -43,7 +42,7 @@ public class SpaceMemberDAOImpl extends GenericDAOJPAImpl<SpaceMemberEntity, Lon
   }
 
   @Override
-  public List<SpaceMemberEntity> getSpaceMembers(Long spaceId, SpaceMemberEntity.Status status, int offset, int limit) {
+  public List<String> getSpaceMembers(Long spaceId, SpaceMemberEntity.Status status, int offset, int limit) {
     if (status == null) {
       throw new IllegalArgumentException("Status is null");
     }
@@ -54,10 +53,10 @@ public class SpaceMemberDAOImpl extends GenericDAOJPAImpl<SpaceMemberEntity, Lon
       throw new IllegalArgumentException("offset must be positive");
     }
     if (limit <= 0) {
-      throw new IllegalArgumentException("offset must be > 0");
+      throw new IllegalArgumentException("limit must be > 0");
     }
-    TypedQuery<SpaceMemberEntity> query = getEntityManager().createNamedQuery("SpaceMember.getSpaceMembersByStatus",
-                                                                              SpaceMemberEntity.class);
+    TypedQuery<String> query = getEntityManager().createNamedQuery("SpaceMember.getSpaceMembersByStatus",
+                                                                   String.class);
     query.setParameter("status", status);
     query.setParameter("spaceId", spaceId);
     query.setFirstResult(offset);

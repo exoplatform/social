@@ -459,7 +459,7 @@ public class RDBMSSpaceStorageImpl implements SpaceStorage {
       space.setUrl(SpaceUtils.cleanString(newDisplayName));
 
       entity = spaceDAO.find(Long.parseLong(space.getId()));
-      entity.buildFrom(space);
+      EntityConverterUtils.buildFrom(space, entity);
 
       // change profile of space
       Identity identitySpace = identityStorage.findIdentity(SpaceIdentityProvider.NAME, oldPrettyName);
@@ -491,7 +491,7 @@ public class RDBMSSpaceStorageImpl implements SpaceStorage {
   public void saveSpace(Space space, boolean isNew) throws SpaceStorageException {
     if (isNew) {
       SpaceEntity entity = new SpaceEntity();
-      entity = entity.buildFrom(space);
+      EntityConverterUtils.buildFrom(space, entity);
 
       //
       spaceDAO.create(entity);
@@ -501,7 +501,7 @@ public class RDBMSSpaceStorageImpl implements SpaceStorage {
       SpaceEntity entity = spaceDAO.find(id);
 
       if (entity != null) {
-        entity = entity.buildFrom(space);
+        EntityConverterUtils.buildFrom(space, entity);
         //
         spaceDAO.update(entity);
       } else {
@@ -535,10 +535,11 @@ public class RDBMSSpaceStorageImpl implements SpaceStorage {
     int offset =  0;
     int index = 0;
     while (offset < countSpaceMembers) {
-      List<SpaceMemberEntity> spaceMembers = spaceMemberDAO.getSpaceMembers(spaceId, status, offset, BATCH_SIZE);
-      for (SpaceMemberEntity spaceMemberEntity : spaceMembers) {
-        members[index] = spaceMemberEntity.getUserId();
+      List<String> spaceMembers = spaceMemberDAO.getSpaceMembers(spaceId, status, offset, BATCH_SIZE);
+      for (String username : spaceMembers) {
+        members[index++] = username;
       }
+      offset += BATCH_SIZE;
     }
     return members;
   }

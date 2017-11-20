@@ -24,10 +24,13 @@ import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Expression;
+import javax.persistence.criteria.Join;
+import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Order;
 import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import javax.persistence.criteria.SetJoin;
 import javax.persistence.criteria.Subquery;
 
 import org.exoplatform.commons.persistence.impl.EntityManagerHolder;
@@ -75,8 +78,11 @@ public final class SpaceQueryBuilder {
     if (!spaceFilter.isLastAccess() && !spaceFilter.isVisited()) {
       select.distinct(true);
     }
-    spaceEntity.join(SpaceEntity_.members).alias("mem");
-    select.where(buildPredicateFilter(spaceEntity, criteria, cb, spaceEntity));    
+
+    Predicate predicateFilter = buildPredicateFilter(spaceEntity, criteria, cb, spaceEntity);
+    if (predicateFilter.getExpressions().size() > 0) {
+      select.where(predicateFilter);
+    }
     select.orderBy(buildOrder(spaceEntity, cb));
     
     //
@@ -94,10 +100,12 @@ public final class SpaceQueryBuilder {
     CriteriaBuilder cb = em.getCriteriaBuilder();
     CriteriaQuery<Long> criteria = cb.createQuery(Long.class);
     Root<SpaceEntity> spaceEntity = criteria.from(SpaceEntity.class);
-    spaceEntity.join(SpaceEntity_.members).alias("mem");
     CriteriaQuery<Long> select = criteria.select(cb.countDistinct(spaceEntity));
     //
-    select.where(buildPredicateFilter(spaceEntity, criteria, cb, spaceEntity));
+    Predicate predicateFilter = buildPredicateFilter(spaceEntity, criteria, cb, spaceEntity);
+    if (predicateFilter.getExpressions().size() > 0) {
+      select.where(predicateFilter);
+    }
     //
     return em.createQuery(select);
   }
@@ -107,8 +115,8 @@ public final class SpaceQueryBuilder {
     
     //status
     if (!spaceFilter.getStatus().isEmpty()) {
-      Path<SpaceMemberEntity> join = (Path<SpaceMemberEntity>)root.getJoins().iterator().next();
-            
+      Path<SpaceMemberEntity> join = (Path<SpaceMemberEntity>) getMembersJoin(root, JoinType.INNER);
+
       List<Predicate> pStatusList = new LinkedList<>();      
       for(Status status : spaceFilter.getStatus()) {
         pStatusList.add(cb.equal(join.get(SpaceMemberEntity_.status), status));
@@ -178,6 +186,17 @@ public final class SpaceQueryBuilder {
     return cb.and(predicates.toArray(new Predicate[predicates.size()]));
   }
 
+  @SuppressWarnings("unchecked")
+  private Join<SpaceEntity, SpaceMemberEntity> getMembersJoin(Root<SpaceEntity> root, JoinType joinType) {
+    if(root.getJoins() == null || root.getJoins().isEmpty()) {
+      SetJoin<SpaceEntity, SpaceMemberEntity> join = root.join(SpaceEntity_.members, joinType);
+      join.alias("mem");
+      return join;
+    } else {
+      return (Join<SpaceEntity, SpaceMemberEntity>) root.getJoins().iterator().next();
+    }
+  }
+
   private String buildSearchCondition(String app, boolean searchBack) {
     StringBuilder builder = new StringBuilder(app);
     removeAll(builder, "*");
@@ -201,12 +220,13 @@ public final class SpaceQueryBuilder {
 
   private Order[] buildOrder(Root<SpaceEntity> spaceEntity, CriteriaBuilder cb) {
     List<Order> orders = new LinkedList<>();
-    Path<SpaceMemberEntity> join = (Path<SpaceMemberEntity>)spaceEntity.getJoins().iterator().next();
     
     if (spaceFilter.isLastAccess()) {
+      Path<SpaceMemberEntity> join = (Path<SpaceMemberEntity>) getMembersJoin(spaceEntity, JoinType.LEFT);
       orders.add(cb.desc(join.get(SpaceMemberEntity_.lastAccess)));
       orders.add(cb.asc(spaceEntity.get(SpaceEntity_.id)));
     } else if (spaceFilter.isVisited()) {
+      Path<SpaceMemberEntity> join = (Path<SpaceMemberEntity>) getMembersJoin(spaceEntity, JoinType.LEFT);
       orders.add(cb.desc(join.get(SpaceMemberEntity_.visited)));
       orders.add(cb.asc(spaceEntity.get(SpaceEntity_.prettyName)));
     } else {

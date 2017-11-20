@@ -215,4 +215,11 @@ public class MigrationIdentityStorage implements IdentityStorage {
   public int getIdentitiesForMentionsCount(String providerId, ProfileFilter profileFilter, Type type) throws IdentityStorageException {
     return jpaStorage.getIdentitiesForMentionsCount(providerId, profileFilter, type);
   }
+
+  @Override
+  public int countSpaceMemberIdentitiesByProfileFilter(Space space,
+                                                       ProfileFilter profileFilter,
+                                                       org.exoplatform.social.core.identity.SpaceMemberFilterListAccess.Type type) {
+    return jpaStorage.countSpaceMemberIdentitiesByProfileFilter(space, profileFilter, type);
+  }
 }

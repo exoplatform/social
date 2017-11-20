@@ -27,6 +27,8 @@ import org.exoplatform.component.test.ConfigurationUnit;
 import org.exoplatform.component.test.ConfiguredBy;
 import org.exoplatform.component.test.ContainerScope;
 import org.exoplatform.container.ExoContainerContext;
+import org.exoplatform.container.PortalContainer;
+import org.exoplatform.container.component.RequestLifeCycle;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.services.organization.OrganizationService;
@@ -295,5 +297,10 @@ public abstract class AbstractCoreTest extends BaseExoTestCase {
               .forEach(relationship -> relationshipManager.deny(identity, relationship));
     }
   }
-  
+
+  public static void persist() {
+    RequestLifeCycle.end();
+    RequestLifeCycle.begin(PortalContainer.getInstance());
+  }
+
 }

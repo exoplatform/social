@@ -30,6 +30,23 @@ public interface SpaceMemberDAO extends GenericDAO<SpaceMemberEntity, Long> {
 
     List<Long> getSpacesIdsByUserName(String userId, int offset, int limit);
 
-    List<SpaceMemberEntity> getSpaceMembers(Long spaceId, Status status, int offset, int limit);
+    /**
+     * Count space members switch status
+     * 
+     * @param spaceId
+     * @param status equals to MEMBER, MANAGER, PENDING, INVITED or IGNORED
+     * @param offset
+     * @param limit
+     * @return
+     */
+    List<String> getSpaceMembers(Long spaceId, Status status, int offset, int limit);
+
+    /**
+     * Count space members switch status
+     * 
+     * @param spaceId
+     * @param status equals to MEMBER, MANAGER, PENDING, INVITED or IGNORED
+     * @return
+     */
     int countSpaceMembers(Long spaceId, Status status);
 }

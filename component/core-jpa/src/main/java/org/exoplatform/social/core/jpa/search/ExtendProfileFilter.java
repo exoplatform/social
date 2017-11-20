@@ -41,7 +41,6 @@ public class ExtendProfileFilter extends ProfileFilter {
   private List<Long> identityIds = null;
   private String providerId = null;
   private boolean forceLoadProfile = false;
-  private List<String> remoteIds = null;
 
   public ExtendProfileFilter() {
     this.delegate = new ProfileFilter();
@@ -212,13 +211,5 @@ public class ExtendProfileFilter extends ProfileFilter {
   @Override
   public boolean isEmpty() {
     return delegate.isEmpty();
-  }
-
-  public void setRemoteIds(List<String> remoteIds) {
-    this.remoteIds = remoteIds;
-  }
-
-  public List<String> getRemoteIds() {
-    return remoteIds;
   }
 }

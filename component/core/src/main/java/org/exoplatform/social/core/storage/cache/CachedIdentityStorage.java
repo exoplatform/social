@@ -650,4 +650,9 @@ public class CachedIdentityStorage implements IdentityStorage {
   public InputStream getBannerInputStreamById(Identity identity) throws IOException {
     return storage.getBannerInputStreamById(identity);
   }
+
+  @Override
+  public int countSpaceMemberIdentitiesByProfileFilter(Space space, ProfileFilter profileFilter, Type type) {
+    return storage.countSpaceMemberIdentitiesByProfileFilter(space, profileFilter, type);
+  }
 }
