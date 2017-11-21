@@ -89,7 +89,7 @@ public class ProfileSearchConnector {
     String jsonResponse = this.client.sendRequest(esQuery, this.index, this.searchType);
     return getCount(jsonResponse);
   }
-  
+
   private int getCount(String jsonResponse) {
     
     LOG.debug("Search Query response from ES : {} ", jsonResponse);

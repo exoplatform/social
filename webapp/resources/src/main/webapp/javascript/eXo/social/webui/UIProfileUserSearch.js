@@ -35,7 +35,7 @@
           hideSelected: true,
           openOnFocus: true,
           maxItems: 1,
-          sourceProviders: ['exo:social'],
+          sourceProviders: ['exo:socialMembers'],
           valueField: 'text',
           labelField: 'text',
           searchField: ['text'],
@@ -63,7 +63,7 @@
           },
           sortField: [{field: 'order'}, {field: '$score'}],
           providers: {
-            'exo:social': function(query, callback) {
+            'exo:socialMembers': function(query, callback) {
             if (query && query.length > 0) {
                 $.ajax({
                     type: "GET",
