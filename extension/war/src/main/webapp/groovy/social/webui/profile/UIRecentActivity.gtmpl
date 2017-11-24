@@ -5,9 +5,6 @@ import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.webui.Utils;
 import org.apache.commons.lang.StringEscapeUtils;
 
-def jsManager = _ctx.getRequestContext().getJavascriptManager();
-jsManager.require("SHARED/social-ui-activity", "activity").addScripts("activity.resizeComment();");
-
 def activity = uicomponent.getActivity();
 if(activity == null) {
   print("<div id=\"" + uicomponent.id + "\"></div>");
