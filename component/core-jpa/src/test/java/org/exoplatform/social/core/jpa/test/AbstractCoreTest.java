@@ -38,6 +38,7 @@ import org.exoplatform.services.security.MembershipEntry;
 import org.exoplatform.social.common.RealtimeListAccess;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.identity.model.Identity;
+import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
 import org.exoplatform.social.core.jpa.search.ProfileSearchConnector;
@@ -256,6 +257,18 @@ public abstract class AbstractCoreTest extends BaseExoTestCase {
     if(identity.isDeleted() || !identity.isEnable()) {
       identity.setDeleted(false);
       identity.setEnable(true);
+      identity = identityManager.updateIdentity(identity);
+    }
+
+    return identity;
+  }
+
+  protected Identity createIdentity(String username, String email) {
+    Identity identity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, username, true);
+    if(identity.isDeleted() || !identity.isEnable()) {
+      identity.setDeleted(false);
+      identity.setEnable(true);
+      identity.getProfile().setProperty(Profile.EMAIL, email);
       identity = identityManager.updateIdentity(identity);
     }
 
