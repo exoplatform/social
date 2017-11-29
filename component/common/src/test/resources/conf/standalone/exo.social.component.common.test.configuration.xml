@@ -137,6 +137,7 @@
               <field name="tagAttributes">
                 <collection type="java.util.HashSet" item-type="java.lang.String">
                   <value><string>src</string></value>
+                  <value><string>data-placeholder</string></value>
                 </collection>
               </field>
             </object>

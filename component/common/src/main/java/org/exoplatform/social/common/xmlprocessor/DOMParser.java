@@ -35,7 +35,7 @@ public class DOMParser {
           .compile("</(?i)(\\w+\\b)\\s*>$"); // </tag .........>
   public static final Pattern SELFTCLOSETAGPATTERN = Pattern.compile("<.+/\\s*?>");
   public static final Pattern ATTRIBUTESPATTERN = Pattern
-          .compile("(\\w*)\\s*=\\s*(\"([^\"]*)\"|'([^']*)')"); // prop="...."
+          .compile("(\\S*)\\s*=\\s*(\"([^\"]*)\"|'([^']*)')"); // prop="...."
 
   /**
    * Creates the XML DOM tree from XML token List tree.

@@ -187,6 +187,7 @@ public class XMLProcessorTest extends AbstractCommonTest {
     assertEquals("<a>Hello 2</a>", xmlProcessor.process(DOMParser.createDOMTree(Tokenizer.tokenize("<a>Hello 2</a>"))).toString());
     assertEquals("<a>Hello 2</a>", xmlProcessor.process(DOMParser.createDOMTree(Tokenizer.tokenize("<a>Hello 2</a>"))).toString());
     assertEquals("<a href=\"abc\">Hello 2</a>", xmlProcessor.process(DOMParser.createDOMTree(Tokenizer.tokenize("<a href='abc' id='def'>Hello 2</a>"))).toString());
+    assertEquals("<img src=\"abc\" data-placeholder=\"placeholder\">Hello 2</img>", xmlProcessor.process(DOMParser.createDOMTree(Tokenizer.tokenize("<img src=\"abc\" data-placeholder=\"placeholder\">Hello 2</img>"))).toString());
   }
 
 

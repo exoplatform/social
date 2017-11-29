@@ -190,6 +190,11 @@
                   <value><string>height</string></value>
                   <value><string>alt</string></value>
                   <value><string>style</string></value>
+                  <!-- This attribute is used by CKEditor plugins 
+                        to specify that it was inserted in the DOM by it.
+                       This will be used to add extra processing on this element
+                        when notification is sent for example. -->
+                  <value><string>data-plugin-name</string></value>
                   <value><string>referrerpolicy</string></value>
                 </collection>
               </field>

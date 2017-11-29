@@ -54,7 +54,7 @@ import org.exoplatform.social.notification.Utils;
 import org.exoplatform.social.notification.plugin.child.DefaultActivityChildPlugin;
 
 public class SocialNotificationUtils {
-  public final static Pattern IMG_SRC_REGEX = Pattern.compile("<img[^>]+src\\s*=\\s*['\"]([^'\"]+)['\"][^>]*>");
+  public final static Pattern IMG_SRC_REGEX = Pattern.compile("<img[^>]+((data-plugin-name\\s*=\\s*['\"]([^'\"]+)['\"][^>]+)|(src\\s*=\\s*['\"]([^'\"]+)['\"])){2}[^>]*>");
 
   public final static ArgumentLiteral<String> ACTIVITY_ID = new ArgumentLiteral<String>(String.class, "activityId");
   public final static ArgumentLiteral<String> COMMENT_ID = new ArgumentLiteral<String>(String.class, "commentId");
