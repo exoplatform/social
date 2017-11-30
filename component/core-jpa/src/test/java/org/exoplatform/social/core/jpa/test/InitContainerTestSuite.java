@@ -20,6 +20,8 @@ import org.exoplatform.commons.testing.BaseExoContainerTestSuite;
 import org.exoplatform.commons.testing.ConfigTestCase;
 import org.exoplatform.social.core.jpa.storage.*;
 import org.exoplatform.social.core.jpa.storage.dao.*;
+import org.exoplatform.social.core.jpa.updater.SpaceMemberAnyMembershipUpgradeTest;
+
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.runners.Suite.SuiteClasses;
@@ -36,6 +38,7 @@ import org.junit.runners.Suite.SuiteClasses;
   IdentityStorageTest.class,
   RDBMSSpaceStorageTest.class,
   SpaceMemberDAOTest.class,
+  SpaceMemberAnyMembershipUpgradeTest.class,
   SpaceDAOTest.class
   })
 @ConfigTestCase(AbstractCoreTest.class)

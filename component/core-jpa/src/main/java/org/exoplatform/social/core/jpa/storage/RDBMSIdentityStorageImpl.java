@@ -710,6 +710,9 @@ public class RDBMSIdentityStorageImpl implements IdentityStorage {
                                                                 final ProfileFilter profileFilter,
                                                                 SpaceMemberFilterListAccess.Type type,
                                                                 long offset, long limit) throws IdentityStorageException {
+    if (space == null) {
+      throw new IllegalArgumentException("Space shouldn't be null");
+    }
     List<String> excludedMembers = new ArrayList<>();
     if (profileFilter != null && profileFilter.getExcludedIdentityList() != null) {
       for (Identity identity : profileFilter.getExcludedIdentityList()) {
@@ -767,6 +770,9 @@ public class RDBMSIdentityStorageImpl implements IdentityStorage {
   public int countSpaceMemberIdentitiesByProfileFilter(Space space,
                                                        ProfileFilter profileFilter,
                                                        org.exoplatform.social.core.identity.SpaceMemberFilterListAccess.Type type) {
+    if (space == null) {
+      throw new IllegalArgumentException("Space shouldn't be null");
+    }
     List<String> excludedMembers = new ArrayList<>();
     if (profileFilter != null && profileFilter.getExcludedIdentityList() != null) {
       for (Identity identity : profileFilter.getExcludedIdentityList()) {

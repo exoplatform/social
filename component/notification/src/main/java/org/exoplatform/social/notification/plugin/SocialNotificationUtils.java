@@ -403,7 +403,9 @@ public class SocialNotificationUtils {
     if (previousNotification != null) {
       users = NotificationUtils.stringToList(previousNotification.getValueOwnerParameter(propertyName));
       Identity userIdentity = Utils.getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, userId, true);
-      if (users.contains(userIdentity.getRemoteId())) {
+      if (users == null) {
+        users = new ArrayList<>();
+      } else if (users.contains(userIdentity.getRemoteId())) {
         users.remove(userIdentity.getRemoteId());
       }
       users.add(userIdentity.getRemoteId());

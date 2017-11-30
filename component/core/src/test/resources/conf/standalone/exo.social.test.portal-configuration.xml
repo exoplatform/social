@@ -61,20 +61,32 @@
         <description>guests group</description>
         <value>/platform/guests</value>      
       </value-param>     
-    <values-param>
-      <name>mandatory.groups</name>
-      <description>Groups that can not be deleted.</description>
-      <value>/platform/administrators</value>
-      <value>/platform/users</value>
-      <value>/platform/guests</value>
-    </values-param> 
-    <values-param>
-      <name>mandatory.mstypes</name>
-      <description>Membership type that can not be deleted.</description>
-      <value>member</value>      
-    </values-param>                  
-    </init-params>   
+      <values-param>
+        <name>mandatory.groups</name>
+        <description>Groups that can not be deleted.</description>
+        <value>/platform/administrators</value>
+        <value>/platform/users</value>
+        <value>/platform/guests</value>
+      </values-param> 
+      <values-param>
+        <name>mandatory.mstypes</name>
+        <description>Membership type that can not be deleted.</description>
+        <value>member</value>      
+      </values-param>
+    </init-params>
   </component>
+
+  <component>
+    <key>org.exoplatform.portal.config.UserPortalConfigService</key>
+    <type>org.exoplatform.portal.config.UserPortalConfigService</type>
+    <init-params>
+      <value-param>
+        <name>default.import.mode</name>
+        <value>merge</value>
+      </value-param>
+    </init-params>
+  </component>
+
   <external-component-plugins>
     <target-component>org.exoplatform.services.organization.OrganizationService</target-component>
     <component-plugin>
