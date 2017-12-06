@@ -712,7 +712,7 @@ public class WebTemplateProvider extends TemplateProvider {
     @Override
     public NotificationInfo getNotificationToStore(NotificationInfo notification) {
       String activityId = notification.getValueOwnerParameter(SocialNotificationUtils.ACTIVITY_ID.getKey());
-      String parameterName = SocialNotificationUtils.POSTER.getKey();
+      String parameterName = SocialNotificationUtils.LIKER.getKey();
       String parameterValue = notification.getValueOwnerParameter(parameterName);
       return SocialNotificationUtils.addUserToPreviousNotification(notification, parameterName, activityId, parameterValue);
     }
