@@ -22,7 +22,7 @@
 
 (function($, _) {
   var UIComposer = {
-    regexpURL : /([^"'])(http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/,
+    regexpURL : /([^"']|^)(http|https):\/\/[\w.\+\-]+(:\w*@\w*)?(:[0-9]+)?(\/[\w*#!:.\?\+=&%@!\-\/]*)*/,
     validateWWWURL : function(url) {
       if (url.indexOf('www.') > 0) {
         return /(https?:\/\/)?(www\.[\w+]+\.[\w+]+\.?(:\d+)?)/.test(url);
@@ -35,7 +35,9 @@
         for ( var i = 0; i < result.length; ++i) {
           var matchedString = result[i];
           if (matchedString.length > 0 && x.indexOf('@'+matchedString) < 0) {
-            matchedString = matchedString.substring(1, matchedString.length);
+            if(matchedString.indexOf("http") == 1) {
+              matchedString = matchedString.substring(1, matchedString.length);
+            }
             if(UIComposer.validateWWWURL(matchedString)) {
               return matchedString;
             }
