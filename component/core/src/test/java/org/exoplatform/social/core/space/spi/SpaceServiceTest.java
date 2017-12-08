@@ -57,6 +57,7 @@ import org.exoplatform.social.core.test.AbstractCoreTest;
 
 public class SpaceServiceTest extends AbstractCoreTest {
   private IdentityStorage identityStorage;
+  private OrganizationService organizationService;
   private List<Space> tearDownSpaceList;
   private List<Identity> tearDownUserList;
 
@@ -91,6 +92,7 @@ public class SpaceServiceTest extends AbstractCoreTest {
   public void setUp() throws Exception {
     super.setUp();
     identityStorage = (IdentityStorage) getContainer().getComponentInstanceOfType(IdentityStorage.class);
+    organizationService = (OrganizationService) getContainer().getComponentInstanceOfType(OrganizationService.class);
     tearDownSpaceList = new ArrayList<Space>();
     tearDownUserList = new ArrayList<Identity>();
     
