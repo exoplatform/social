@@ -17,6 +17,7 @@
 
 package org.exoplatform.social.core.storage.cache.model.data;
 
+import org.apache.commons.lang.StringUtils;
 import org.exoplatform.social.core.identity.model.Identity;
 
 /**
@@ -81,4 +82,22 @@ public class IdentityData implements CacheData<Identity> {
     return identity;
   }
 
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (!(o instanceof IdentityData)) return false;
+
+    IdentityData that = (IdentityData) o;
+
+    return StringUtils.equals(id, that.id) && StringUtils.equals(providerId, that.providerId)
+            && StringUtils.equals(remoteId, that.remoteId);
+  }
+
+  @Override
+  public int hashCode() {
+    int result = id != null ? id.hashCode() : 0;
+    result = 31 * result + (providerId != null ? providerId.hashCode() : 0);
+    result = 31 * result + (remoteId != null ? remoteId.hashCode() : 0);
+    return result;
+  }
 }

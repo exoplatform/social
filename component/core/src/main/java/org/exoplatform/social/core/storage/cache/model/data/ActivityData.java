@@ -17,11 +17,9 @@
 
 package org.exoplatform.social.core.storage.cache.model.data;
 
-import java.util.Collections;
-import java.util.Date;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.*;
 
+import org.apache.commons.lang.StringUtils;
 import org.exoplatform.social.core.activity.model.ActivityStream;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.activity.model.ExoSocialActivityImpl;
@@ -162,5 +160,25 @@ public class ActivityData implements CacheData<ExoSocialActivity> {
 
   public String getStreamOwner() {
     return streamOwner;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (!(o instanceof ActivityData)) return false;
+
+    ActivityData that = (ActivityData) o;
+
+    return StringUtils.equals(id, that.id) && StringUtils.equals(userId, that.userId)
+            && StringUtils.equals(posterId, that.posterId) && StringUtils.equals(parentId, that.parentId);
+  }
+
+  @Override
+  public int hashCode() {
+    int result = id != null ? id.hashCode() : 0;
+    result = 31 * result + (userId != null ? userId.hashCode() : 0);
+    result = 31 * result + (posterId != null ? posterId.hashCode() : 0);
+    result = 31 * result + (parentId != null ? parentId.hashCode() : 0);
+    return result;
   }
 }

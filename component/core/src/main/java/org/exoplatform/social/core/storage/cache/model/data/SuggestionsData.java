@@ -32,4 +32,19 @@ public class SuggestionsData implements Serializable {
     return this.map;
   }
 
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (!(o instanceof SuggestionsData)) return false;
+
+    SuggestionsData that = (SuggestionsData) o;
+
+    return map != null ? map.equals(that.map) : that.map == null;
+
+  }
+
+  @Override
+  public int hashCode() {
+    return map != null ? map.hashCode() : 0;
+  }
 }

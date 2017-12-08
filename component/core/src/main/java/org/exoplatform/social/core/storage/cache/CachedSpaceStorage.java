@@ -1496,24 +1496,24 @@ public class CachedSpaceStorage implements SpaceStorage {
   private SpaceKey putSpaceInCacheIfNotExists(Space space) {
     SpaceKey key = new SpaceKey(space.getId());
     if(exoSpaceCache.get(key) == null) {
-      exoSpaceCache.put(key, new SpaceData(space));
-      exoSpaceSimpleCache.put(key, new SpaceSimpleData(space));
+      exoSpaceCache.putLocal(key, new SpaceData(space));
+      exoSpaceSimpleCache.putLocal(key, new SpaceSimpleData(space));
     }
     SpaceRefKey refKey = new SpaceRefKey(space.getDisplayName(), null, null, null);
     if(exoRefSpaceCache.get(refKey) == null) {
-      exoRefSpaceCache.put(refKey, key);
+      exoRefSpaceCache.putLocal(refKey, key);
     }
     refKey = new SpaceRefKey(null, null, space.getGroupId(), null);
     if(exoRefSpaceCache.get(refKey) == null) {
-      exoRefSpaceCache.put(refKey, key);
+      exoRefSpaceCache.putLocal(refKey, key);
     }
     refKey = new SpaceRefKey(null, space.getPrettyName(), null, null);
     if(exoRefSpaceCache.get(refKey) == null) {
-      exoRefSpaceCache.put(refKey, key);
+      exoRefSpaceCache.putLocal(refKey, key);
     }
     refKey = new SpaceRefKey(null, null, null, space.getUrl());
     if(exoRefSpaceCache.get(refKey) == null) {
-      exoRefSpaceCache.put(refKey, key);
+      exoRefSpaceCache.putLocal(refKey, key);
     }
     return key;
   }

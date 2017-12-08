@@ -136,10 +136,10 @@ public class CachedIdentityStorage implements IdentityStorage {
     for (Identity i : identities) {
       IdentityKey k = new IdentityKey(i);
       if(exoIdentityCache.get(k) == null) {
-        exoIdentityCache.put(k, new IdentityData(i));
+        exoIdentityCache.putLocal(k, new IdentityData(i));
       }
       if(exoProfileCache.get(k) == null) {
-        exoProfileCache.put(k, new ProfileData(i.getProfile()));
+        exoProfileCache.putLocal(k, new ProfileData(i.getProfile()));
       }
       data.add(new IdentityKey(i));
     }
@@ -338,7 +338,7 @@ public class CachedIdentityStorage implements IdentityStorage {
             if (i == null) return null;
             IdentityKey key = new IdentityKey(i);
             if(exoIdentityCache.get(key) == null) {
-              exoIdentityCache.put(key, new IdentityData(i));
+              exoIdentityCache.putLocal(key, new IdentityData(i));
             }
             return key;
           }

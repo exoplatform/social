@@ -90,6 +90,15 @@ public abstract class FutureCache<K, V, C>
    protected abstract void put(K key, V value);
 
    /**
+    * Updates the cache only local mode with a new key/value pair.
+    * This method is intended for internal use by the future cache only.
+    *
+    * @param key the key
+    * @param value the cache value
+    */
+   protected abstract void putOnly(K key, V value);
+
+   /**
     * Perform a cache lookup for the specified key within the specified context.
     * When the value cannot be loaded (because it does not exist or it failed or anything else that
     * does not come to my mind), the value null is returned.
@@ -119,7 +128,7 @@ public abstract class FutureCache<K, V, C>
                if (value != null)
                {
                   // Cache it, it is made available to other threads (unless someone removes it)
-                  put(key, value);
+                  putOnly(key, value);
 
                   // Return value
                   return value;

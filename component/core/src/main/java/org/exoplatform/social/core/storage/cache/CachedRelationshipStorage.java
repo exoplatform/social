@@ -158,7 +158,8 @@ public class CachedRelationshipStorage extends AbstractStorage implements Relati
     for (Identity i : identities) {
       IdentityKey k = new IdentityKey(i);
       if(exoIdentityCache.get(k) == null) {
-        exoIdentityCache.put(k, new IdentityData(i));
+        //data from db no need to replicate on other cluster nodes
+        exoIdentityCache.putLocal(k, new IdentityData(i));
       }
       data.add(new IdentityKey(i));
     }

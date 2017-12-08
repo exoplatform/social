@@ -35,4 +35,20 @@ public class SimpleCacheData<T> implements CacheData<T> {
   public T build() {
     return t;
   }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (!(o instanceof SimpleCacheData)) return false;
+
+    SimpleCacheData<?> that = (SimpleCacheData<?>) o;
+
+    return t != null ? t.equals(that.t) : that.t == null;
+
+  }
+
+  @Override
+  public int hashCode() {
+    return t != null ? t.hashCode() : 0;
+  }
 }

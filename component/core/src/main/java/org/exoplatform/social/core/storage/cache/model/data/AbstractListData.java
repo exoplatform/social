@@ -38,4 +38,21 @@ public class AbstractListData<T> implements Serializable {
   public List<T> getIds() {
     return ids;
   }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (!(o instanceof AbstractListData)) return false;
+
+    AbstractListData<?> that = (AbstractListData<?>) o;
+
+    return ids != null ? ids.equals(that.ids) : that.ids == null;
+
+  }
+
+  @Override
+  public int hashCode() {
+    return ids != null ? ids.hashCode() : 0;
+  }
+
 }

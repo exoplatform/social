@@ -39,4 +39,19 @@ public class ActiveIdentitiesData implements CacheData<Set<String>> {
     return this.activeUsers;
   }
 
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (!(o instanceof ActiveIdentitiesData)) return false;
+
+    ActiveIdentitiesData that = (ActiveIdentitiesData) o;
+
+    return activeUsers != null ? activeUsers.equals(that.activeUsers) : that.activeUsers == null;
+
+  }
+
+  @Override
+  public int hashCode() {
+    return activeUsers != null ? activeUsers.hashCode() : 0;
+  }
 }

@@ -17,6 +17,7 @@
 
 package org.exoplatform.social.core.storage.cache.model.data;
 
+import org.apache.commons.lang.StringUtils;
 import org.exoplatform.social.core.relationship.model.Relationship;
 
 /**
@@ -52,4 +53,25 @@ public class RelationshipData implements CacheData<Relationship> {
     return relationship;
   }
 
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (!(o instanceof RelationshipData)) return false;
+
+    RelationshipData that = (RelationshipData) o;
+
+    if (sender != null ? !sender.equals(that.sender) : that.sender != null) return false;
+    if (receiver != null ? !receiver.equals(that.receiver) : that.receiver != null) return false;
+    return StringUtils.equals(id, that.id) && type == that.type;
+
+  }
+
+  @Override
+  public int hashCode() {
+    int result = id != null ? id.hashCode() : 0;
+    result = 31 * result + (sender != null ? sender.hashCode() : 0);
+    result = 31 * result + (receiver != null ? receiver.hashCode() : 0);
+    result = 31 * result + (type != null ? type.hashCode() : 0);
+    return result;
+  }
 }
