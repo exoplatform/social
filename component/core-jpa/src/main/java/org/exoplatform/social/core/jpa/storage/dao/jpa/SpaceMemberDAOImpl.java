@@ -17,6 +17,8 @@
 
 package org.exoplatform.social.core.jpa.storage.dao.jpa;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.persistence.NoResultException;
@@ -26,6 +28,7 @@ import javax.persistence.TypedQuery;
 import org.exoplatform.commons.persistence.impl.GenericDAOJPAImpl;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
+import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.jpa.storage.dao.SpaceMemberDAO;
 import org.exoplatform.social.core.jpa.storage.entity.SpaceEntity;
 import org.exoplatform.social.core.jpa.storage.entity.SpaceMemberEntity;
@@ -39,6 +42,47 @@ public class SpaceMemberDAOImpl extends GenericDAOJPAImpl<SpaceMemberEntity, Lon
     Query query = getEntityManager().createNamedQuery("SpaceMember.deleteBySpace");
     query.setParameter("spaceId", entity.getId());
     query.executeUpdate();
+  }
+
+  @Override
+  public List<String> sortSpaceMembers(List<String> usernames, String sortField) {
+    if (usernames == null || usernames.isEmpty()) {
+      return Collections.emptyList();
+    }
+
+    StringBuilder queryStringBuilder = new StringBuilder("SELECT identity.remote_id , identity_prop.value \n");
+    queryStringBuilder.append(" FROM SOC_IDENTITIES identity \n");
+    queryStringBuilder.append(" LEFT JOIN SOC_IDENTITY_PROPERTIES identity_prop \n");
+    queryStringBuilder.append("   ON identity.identity_id = identity_prop.identity_id \n");
+    queryStringBuilder.append("       AND identity_prop.name = '").append(sortField).append("' \n");
+    queryStringBuilder.append(" WHERE identity.remote_id IN (");
+    for (int i = 0; i < usernames.size(); i++) {
+      if (i > 0) {
+        queryStringBuilder.append(",");
+      }
+      queryStringBuilder.append("'").append(usernames.get(i)).append("'");
+    }
+    queryStringBuilder.append(")\n");
+    queryStringBuilder.append("       AND identity.provider_id = '").append(OrganizationIdentityProvider.NAME).append("' \n");
+    queryStringBuilder.append(" ORDER BY identity_prop.value ASC, identity.remote_id ASC");
+
+    Query query = getEntityManager().createNativeQuery(queryStringBuilder.toString());
+    List<?> resultList = query.getResultList();
+    List<String> result = new ArrayList<>();
+    for (Object object : resultList) {
+      Object[] resultEntry = (Object[]) object;
+      if (resultEntry[0] == null) {
+        continue;
+      }
+      String username = resultEntry[0].toString();
+      result.add(username);
+      usernames.remove(username);
+    }
+    // Add usernames that don't have identities in SOC_IDENTITIES
+    for (String username : usernames) {
+      result.add(username);
+    }
+    return result;
   }
 
   @Override

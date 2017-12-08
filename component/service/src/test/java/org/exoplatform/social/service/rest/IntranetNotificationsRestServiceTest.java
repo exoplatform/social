@@ -110,7 +110,10 @@ public class IntranetNotificationsRestServiceTest extends AbstractResourceTest {
     assertFalse(listMembers.contains("root"));
     List<String> listInviteds = Arrays.asList(space.getInvitedUsers());
     assertTrue(listInviteds.contains("root"));
-    
+
+    end();
+    begin();
+
     startSessionAs("root");
     ContainerResponse response = service("GET", "/social/intranet-notification/ignoreInvitationToJoinSpace/" + space.getId() +"/" + rootIdentity.getRemoteId() + "/" + createNotif() + "/message.json", "", null, null);
     
@@ -119,7 +122,10 @@ public class IntranetNotificationsRestServiceTest extends AbstractResourceTest {
     
     Map<String, Boolean> map = (Map<String, Boolean>) response.getEntity();
     assertFalse(map.get("showViewAll"));
-    
+
+    end();
+    begin();
+
     listMembers = Arrays.asList(spaceService.getSpaceById(space.getId()).getMembers());
     assertFalse(listMembers.contains("root"));
     listInviteds = Arrays.asList(spaceService.getSpaceById(space.getId()).getInvitedUsers());

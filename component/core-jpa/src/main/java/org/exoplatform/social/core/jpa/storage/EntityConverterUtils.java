@@ -13,6 +13,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import org.apache.commons.lang.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -249,6 +250,11 @@ public class EntityConverterUtils {
     if (space.getAvatarLastUpdated() != null) {
       spaceEntity.setAvatarLastUpdated(space.getAvatarLastUpdated() > 0 ? new Date(space.getAvatarLastUpdated()) : null);
     }
+    if (space.getBannerLastUpdated() != null) {
+      spaceEntity.setBannerLastUpdated(space.getBannerLastUpdated() > 0 ? new Date(space.getBannerLastUpdated()) : null);
+    } else {
+      spaceEntity.setBannerLastUpdated(null);
+    }
     spaceEntity.setCreatedDate(space.getCreatedTime() > 0 ? new Date(space.getCreatedTime()) : new Date());
     spaceEntity.setDescription(space.getDescription());
     spaceEntity.setType(space.getType());
@@ -348,7 +354,9 @@ public class EntityConverterUtils {
     }
 
     for (String id : ids) {
-      spaceEntity.getMembers().add(new SpaceMemberEntity(spaceEntity, id, status));
+      if (StringUtils.isNotBlank(id)) {
+        spaceEntity.getMembers().add(new SpaceMemberEntity(spaceEntity, id, status));
+      }
     }
   }
 

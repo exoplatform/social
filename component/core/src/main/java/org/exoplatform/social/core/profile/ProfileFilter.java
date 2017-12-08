@@ -28,7 +28,7 @@ import org.exoplatform.social.core.space.SpaceUtils;
 /**
  * This class using for filter profile of identity
  */
-public class ProfileFilter {
+public class ProfileFilter implements Cloneable {
   /* filer by user profile name*/
   /** The name. */
   private String name;
@@ -241,5 +241,10 @@ public class ProfileFilter {
         && (this.remoteIds == null || this.remoteIds.isEmpty())
         && this.firstCharacterOfName == '\u0000'
         && (this.excludedIdentityList == null || this.excludedIdentityList.isEmpty() || (this.excludedIdentityList.size() == 1 && this.viewerIdentity != null && this.excludedIdentityList.contains(this.viewerIdentity)));
+  }
+
+  @Override
+  public ProfileFilter clone() throws CloneNotSupportedException {
+    return (ProfileFilter) super.clone();
   }
 }

@@ -17,6 +17,7 @@
 package org.exoplatform.social.core.jpa.storage.dao;
 
 import java.util.List;
+import java.util.Set;
 
 import org.exoplatform.commons.api.persistence.GenericDAO;
 import org.exoplatform.social.core.jpa.storage.entity.SpaceEntity;
@@ -31,7 +32,7 @@ public interface SpaceMemberDAO extends GenericDAO<SpaceMemberEntity, Long> {
     List<Long> getSpacesIdsByUserName(String userId, int offset, int limit);
 
     /**
-     * Count space members switch status
+     * Get space members switch status
      * 
      * @param spaceId
      * @param status equals to MEMBER, MANAGER, PENDING, INVITED or IGNORED
@@ -42,6 +43,16 @@ public interface SpaceMemberDAO extends GenericDAO<SpaceMemberEntity, Long> {
     List<String> getSpaceMembers(Long spaceId, Status status, int offset, int limit);
 
     /**
+     * Sort user identity remote ids
+     * 
+     * @param usernames
+     * @param sortField
+     *
+     * @return {@link List} of usernames sorted by sortField
+     */
+    List<String> sortSpaceMembers(List<String> usernames, String sortField);
+
+    /**
      * Count space members switch status
      * 
      * @param spaceId
@@ -49,4 +60,5 @@ public interface SpaceMemberDAO extends GenericDAO<SpaceMemberEntity, Long> {
      * @return
      */
     int countSpaceMembers(Long spaceId, Status status);
+
 }

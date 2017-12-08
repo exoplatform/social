@@ -157,17 +157,13 @@ public class ProfileSearchConnector {
     }
     return results;
   }
-  
+
   private String buildQueryStatement(Identity identity, ProfileFilter filter, Type type, long offset, long limit) {
     String expEs = buildExpression(filter);
     StringBuilder esQuery = new StringBuilder();
     esQuery.append("{\n");
     esQuery.append("   \"from\" : " + offset + ", \"size\" : " + limit + ",\n");
-    esQuery.append("   \"sort\": [\n");
-    esQuery.append("             {\"lastName.raw\": {\"order\": \"asc\"}},\n");
-    esQuery.append("             {\"firstName.raw\": {\"order\": \"asc\"}}\n");
-    esQuery.append("             ]\n");
-
+    esQuery.append("   \"sort\": {\"name.raw\": {\"order\": \"asc\"}}\n");
     StringBuilder esSubQuery = new StringBuilder();
     esSubQuery.append("       ,\n");
     esSubQuery.append("\"query\" : {\n");
@@ -293,14 +289,9 @@ public class ProfileSearchConnector {
     char firstChar = filter.getFirstCharacterOfName();
     //
     if (firstChar != '\u0000') {
-      char lowerCase = firstChar;
-      char upperCase = firstChar;
-      if (Character.isLowerCase(firstChar)) {
-        upperCase = Character.toUpperCase(firstChar);
-      } else {
-        lowerCase = Character.toLowerCase(firstChar);
-      }
-      esExp.append("lastName:").append("(").append(upperCase).append(StorageUtils.ASTERISK_STR).append(" OR ").append(lowerCase).append(StorageUtils.ASTERISK_STR).append(")");
+      char lowerCase = Character.toLowerCase(firstChar);
+      char upperCase = Character.toUpperCase(firstChar);;
+      esExp.append("name:").append("(").append(upperCase).append(StorageUtils.ASTERISK_STR).append(" OR ").append(lowerCase).append(StorageUtils.ASTERISK_STR).append(")");
       return esExp.toString();
     }
 

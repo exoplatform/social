@@ -58,24 +58,33 @@ public class SpaceMemberAnyMembershipUpgradePlugin extends UpgradeProductPlugin 
     long startTime = System.currentTimeMillis();
 
     MigrationResult migrationResult = new MigrationResult();
+    RequestLifeCycle.begin(portalContainer);
     try {
       boolean migrationSuccessfullyProceeded = migrate(migrationResult);
       if (!migrationSuccessfullyProceeded || migrationResult.getErrorCount() > 0) {
-        throw new IllegalStateException("=== Error IDM Membership '*'  to Space Entity migration. "
-            + migrationResult.getSuccessCount() + "/" + migrationResult.getTotalEntities() + " memberships has been migrated in "
-            + (System.currentTimeMillis() - startTime) + "ms. Error of Memberships migration = "
-            + migrationResult.getErrorCount());
+        throw new IllegalStateException("=== Error while checking the consistency of spaces members. "
+            + migrationResult.getSuccessCount() + "/" + migrationResult.getTotalEntities() + " memberships has been fixed in "
+            + (System.currentTimeMillis() - startTime) + "ms. Errors count of Memberships migration = "
+            + migrationResult.getErrorCount() + ". Total scanned spaces count = " + migrationResult.getSpacesCount());
       }
-      LOG.info("=== End IDM Membership '*'  to Space Entity migration. {}/{} memberships has been migrated in {}ms",
-               migrationResult.getSuccessCount(),
-               migrationResult.getTotalEntities(),
-               System.currentTimeMillis() - startTime);
+      if (migrationResult.getTotalEntities() == 0) {
+        LOG.info("=== End of consistency check of space members in {}ms. No inconsistency detected. Total scanned spaces count = {}",
+                 System.currentTimeMillis() - startTime,
+                 migrationResult.getSpacesCount());
+      } else {
+        LOG.info("=== End of consistency check of space members in {}ms. {}/{} memberships has been fixed. Total scanned spaces count = {}",
+                 System.currentTimeMillis() - startTime,
+                 migrationResult.getSuccessCount(),
+                 migrationResult.getTotalEntities(),
+                 migrationResult.getSpacesCount());
+      }
     } catch (Exception ex) {
-      LOG.error("=== Error IDM Membership '*'  to Space Entity migration. " + migrationResult.getSuccessCount() + "/"
-          + migrationResult.getTotalEntities() + " memberships has been migrated in " + (System.currentTimeMillis() - startTime)
-          + "ms. Error of Memberships migration = " + migrationResult.getErrorCount(), ex);
-      throw new RuntimeException("Error during migrate social memberships with role '*' to Social Spaces Entity", ex);
+      LOG.error("=== Error while checking the consistency of spaces members. " + migrationResult.getSuccessCount() + "/"
+          + migrationResult.getTotalEntities() + " memberships has been fixed in " + (System.currentTimeMillis() - startTime)
+          + "ms. Error count of Memberships migration = " + migrationResult.getErrorCount(), ex);
+      throw new RuntimeException("Error while checking the consistency of spaces members", ex);
     } finally {
+      RequestLifeCycle.end();
       executorService.shutdown();
     }
   }
@@ -97,6 +106,8 @@ public class SpaceMemberAnyMembershipUpgradePlugin extends UpgradeProductPlugin 
 
     int numberOfThreads = spacesCount >= THREAD ? THREAD : spacesCount;
     int numberOfSpacesPerThreads = (int) Math.ceil((double) spacesCount / (double) numberOfThreads);
+
+    migrationResult.setSpacesCount(spacesCount);
 
     List<Future<Boolean>> futures = new ArrayList<>();
     for (int i = 0; i < numberOfThreads; i++) {
@@ -136,13 +147,15 @@ public class SpaceMemberAnyMembershipUpgradePlugin extends UpgradeProductPlugin 
   }
 
   private void migrateSpace(Space space, MigrationResult migrationResult) throws Exception {
-    LOG.info("Migrating members of space '{}'", space.getDisplayName());
+    LOG.info("Checking members of space '{}'", space.getDisplayName());
 
     ListAccess<Membership> memberships = getMembershipByGroup(space.getGroupId());
-    int size = memberships.getSize();
+    int membershipsSize = memberships.getSize();
     //
     int fromId = 0;
-    int pageSize = size > BUFFER ? BUFFER : size;
+    int pageSize = membershipsSize > BUFFER ? BUFFER : membershipsSize;
+    int totalMigratedMemberships = 0;
+    int errorMembershipsMigration = 0;
 
     while (pageSize > 0) {
       RequestLifeCycle.begin(portalContainer);
@@ -156,41 +169,81 @@ public class SpaceMemberAnyMembershipUpgradePlugin extends UpgradeProductPlugin 
             LOG.info("Start migrating {}", m.toString());
 
             String username = m.getUserName();
+            boolean isManager = spaceService.isManager(space, username);
+            boolean isMember = spaceService.isMember(space, username);
+            if (isManager && isMember) {
+              LOG.debug("User '{}' belongs to space's group using '*' membershipType but he's already a space member and manager of the space '{}'. No migration is needed",
+                        username,
+                        space.getDisplayName());
+              continue;
+            }
+
             try {
-              if (!spaceService.isMember(space, username)) {
+              if (!isMember) {
                 addMember(space, username);
               }
             } catch (Exception e) {
               LOG.error("Error while setting user " + username + " as member of space " + space.getDisplayName(), e);
               migrationResult.incrementErrorCount();
+              errorMembershipsMigration++;
               continue;
             }
 
             try {
-              if (!spaceService.isManager(space, username)) {
+              if (!isManager) {
                 setManager(space, username);
               }
             } catch (Exception e) {
               LOG.error("Error while setting user " + username + " as manager of space " + space.getDisplayName(), e);
               migrationResult.incrementErrorCount();
+              errorMembershipsMigration++;
               continue;
             }
 
-            LOG.info("finish migrating in thread {}", Thread.currentThread().getId());
             migrationResult.incrementSuccessCount();
+            totalMigratedMemberships++;
           }
         }
       } catch (Exception e) {
         migrationResult.incrementErrorCount();
+        errorMembershipsMigration++;
         LOG.error("error during migrate membership at index {}, page {}", fromId, pageSize);
         throw e;
       } finally {
         RequestLifeCycle.end();
       }
 
+      LOG.info("Check space members is in progress, percentage = {}%",
+               ((int) ((totalMigratedMemberships * 100) / membershipsSize)));
+
       fromId += pageSize;
-      pageSize = size - fromId;
+      pageSize = membershipsSize - fromId;
       pageSize = pageSize > BUFFER ? BUFFER : pageSize;
+    }
+    if (totalMigratedMemberships == 0) {
+      if (errorMembershipsMigration > 0) {
+        LOG.warn("No inconsistencies detected for space '{}'. Total checked memberships of space = {}. Memberships checks error = {} ",
+                 space.getDisplayName(),
+                 membershipsSize,
+                 errorMembershipsMigration);
+      } else {
+        LOG.info("No inconsistencies detected for space '{}'. Total checked memberships of space = {}.",
+                 space.getDisplayName(),
+                 membershipsSize);
+      }
+    } else {
+      if (errorMembershipsMigration > 0) {
+        LOG.warn("{} inconsistencies has been fixed for space '{}'. Total checked memberships of space = {}. Memberships checks error = {}",
+                 totalMigratedMemberships,
+                 space.getDisplayName(),
+                 membershipsSize,
+                 errorMembershipsMigration);
+      } else {
+        LOG.info("{} inconsistencies has been fixed for space '{}'. Total checked memberships of space = {}",
+                 totalMigratedMemberships,
+                 space.getDisplayName(),
+                 membershipsSize);
+      }
     }
   }
 
@@ -279,6 +332,8 @@ public class SpaceMemberAnyMembershipUpgradePlugin extends UpgradeProductPlugin 
 
     int totalEntities = 0;
 
+    int spacesCount = 0;
+
     public void incrementErrorCount() {
       this.errorCount++;
     }
@@ -306,5 +361,14 @@ public class SpaceMemberAnyMembershipUpgradePlugin extends UpgradeProductPlugin 
     public int getTotalEntities() {
       return totalEntities;
     }
+
+    public int getSpacesCount() {
+      return spacesCount;
+    }
+
+    public void setSpacesCount(int spacesCount) {
+      this.spacesCount = spacesCount;
+    }
+
   }
 }

@@ -81,21 +81,25 @@ public class UIMembersPortlet extends UIPortletApplication {
   private ProfileFilter memberProfileFilter;
   private ProfileFilter managerProfileFilter;
 
-  
-  private final int MEMBER_PER_PAGE = 45;
-  private final int MANAGER_PER_PAGE = 8;
+  /**
+   * Members to display per page = 3*4 to display items on lines correctly
+   * Else we can see lines with empty places added into the end and just after
+   * we have th show more button 
+   */
+  private final int MEMBER_PER_PAGE = 48;
+  private final int MANAGER_PER_PAGE = 12;
   private static final String SPACE_MEMBER = "member_of_space";
   private static final String ALL_FILTER = "All";
   public static final String SEARCH = "Search";
   private static final char EMPTY_CHARACTER = '\u0000';
   private static final String INVITATION_REVOKED_INFO = "UIMembersPortlet.label.RevokedInfo";
   private static final String INVITATION_ESTABLISHED_INFO = "UIMembersPortlet.label.InvitationEstablishedInfo";
-  
+
   private int currentLoadIndex = 0;
   private int currentLoadManagerIndex = 0;
   private IdentityManager identityManager_ = null;
   private UIProfileUserSearch uiSearchMemberOfSpace = null;
-  
+
   boolean enableLoadNext;
   boolean enableLoadManagerNext;
   private boolean loadAtEnd;
@@ -227,10 +231,9 @@ public class UIMembersPortlet extends UIPortletApplication {
    * @throws Exception
    */
   public List<Identity> getMemberList() throws Exception {
-    setMemberList(loadPeople(0, currentLoadIndex + MEMBER_PER_PAGE, Type.MEMBER));
-    int realMemberListSize = memberList.size();
-    setEnableLoadNext((realMemberListSize >= MEMBER_PER_PAGE) 
-        && (realMemberListSize < getMemberNum()));
+    int elementsToDisplay = currentLoadIndex + MEMBER_PER_PAGE;
+    setMemberList(loadPeople(0, elementsToDisplay, Type.MEMBER));
+    setEnableLoadNext(elementsToDisplay < memberNum);
     return memberList;
   }
   
@@ -250,10 +253,9 @@ public class UIMembersPortlet extends UIPortletApplication {
    * @throws Exception
    */
   public List<Identity> getManagerList() throws Exception {
-    setManagerList(loadPeople(0, currentLoadManagerIndex + MANAGER_PER_PAGE, Type.MANAGER));
-    int realManagerListSize = managerList.size();
-    setEnableLoadManagerNext((realManagerListSize >= MANAGER_PER_PAGE)
-            && (realManagerListSize < getManagerNum()));
+    int elementsToDisplay = currentLoadManagerIndex + MANAGER_PER_PAGE;
+    setManagerList(loadPeople(0, elementsToDisplay, Type.MANAGER));
+    setEnableLoadManagerNext(elementsToDisplay < managerNum);
     return managerList;
   }
   

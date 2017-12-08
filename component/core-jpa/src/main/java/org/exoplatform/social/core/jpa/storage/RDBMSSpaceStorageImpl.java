@@ -17,7 +17,9 @@
 
 package org.exoplatform.social.core.jpa.storage;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -528,20 +530,27 @@ public class RDBMSSpaceStorageImpl implements SpaceStorage {
 
   private String[] getSpaceMembers(long spaceId, SpaceMemberEntity.Status status) {
     int countSpaceMembers = spaceMemberDAO.countSpaceMembers(spaceId, status);
-    if(countSpaceMembers == 0) {
+    if (countSpaceMembers == 0) {
       return new String[0];
     }
-    String[] members = new String[countSpaceMembers];
-    int offset =  0;
-    int index = 0;
+    List<String> membersList = new ArrayList<>();
+    int offset = 0;
     while (offset < countSpaceMembers) {
-      List<String> spaceMembers = spaceMemberDAO.getSpaceMembers(spaceId, status, offset, BATCH_SIZE);
+      Collection<String> spaceMembers = spaceMemberDAO.getSpaceMembers(spaceId, status, offset, BATCH_SIZE);
       for (String username : spaceMembers) {
-        members[index++] = username;
+        if (StringUtils.isBlank(username)) {
+          continue;
+        }
+        membersList.add(username);
       }
       offset += BATCH_SIZE;
     }
-    return members;
+    if (membersList.size() < countSpaceMembers) {
+      LOG.warn("Space members count '{}' is different from retrieved space members from database {}",
+               countSpaceMembers,
+               membersList.size());
+    }
+    return membersList.toArray(new String[0]);
   }
 
   /**

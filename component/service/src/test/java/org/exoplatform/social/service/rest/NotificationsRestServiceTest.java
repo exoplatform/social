@@ -118,12 +118,18 @@ public class NotificationsRestServiceTest extends AbstractResourceTest {
     assertFalse(listMembers.contains("root"));
     List<String> listInviteds = Arrays.asList(space.getInvitedUsers());
     assertTrue(listInviteds.contains("root"));
-    
+
+    end();
+    begin();
+
     startSessionAs("root");
     ContainerResponse response = service("GET", "/social/notifications/acceptInvitationToJoinSpace/" + space.getId() +"/" + rootIdentity.getRemoteId(), "", null, null);
     
     assertNotNull(response);
     assertEquals(303, response.getStatus());
+
+    end();
+    begin();
     
     listMembers = Arrays.asList(spaceService.getSpaceById(space.getId()).getMembers());
     assertTrue(listMembers.contains("root"));
@@ -139,13 +145,19 @@ public class NotificationsRestServiceTest extends AbstractResourceTest {
     assertFalse(listMembers.contains("root"));
     List<String> listInviteds = Arrays.asList(space.getInvitedUsers());
     assertTrue(listInviteds.contains("root"));
-    
+
+    end();
+    begin();
+
     startSessionAs("root");
     ContainerResponse response = service("GET", "/social/notifications/ignoreInvitationToJoinSpace/" + space.getId() +"/" + rootIdentity.getRemoteId(), "", null, null);
     
     assertNotNull(response);
     assertEquals(303, response.getStatus());
-    
+
+    end();
+    begin();
+
     listMembers = Arrays.asList(spaceService.getSpaceById(space.getId()).getMembers());
     assertFalse(listMembers.contains("root"));
     listInviteds = Arrays.asList(spaceService.getSpaceById(space.getId()).getInvitedUsers());
@@ -160,13 +172,19 @@ public class NotificationsRestServiceTest extends AbstractResourceTest {
     assertFalse(listMembers.contains("root"));
     List<String> listPendings = Arrays.asList(space.getPendingUsers());
     assertTrue(listPendings.contains("root"));
-    
+
+    end();
+    begin();
+
     startSessionAs("john");
     ContainerResponse response = service("GET", "/social/notifications/validateRequestToJoinSpace/" + space.getId() +"/" + rootIdentity.getRemoteId(), "", null, null);
     
     assertNotNull(response);
     assertEquals(303, response.getStatus());
-    
+
+    end();
+    begin();
+
     listMembers = Arrays.asList(spaceService.getSpaceById(space.getId()).getMembers());
     assertTrue(listMembers.contains("root"));
     listPendings = Arrays.asList(spaceService.getSpaceById(space.getId()).getPendingUsers());

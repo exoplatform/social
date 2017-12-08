@@ -231,6 +231,11 @@ public class SpaceEntity implements Serializable {
     this.members = members;
   }
 
+  @Override
+  public int hashCode() {
+    return id == null ? 0 : id.intValue();
+  }
+
   public static enum VISIBILITY {
     PUBLIC, PRIVATE, HIDDEN
   }

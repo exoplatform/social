@@ -175,11 +175,6 @@
           <value>1</value>
         </value-param>
         <value-param>
-          <name>plugin.upgrade.async.execution</name>
-          <description>Execute the upgrade plugin asynchronously</description>
-          <value>true</value>
-        </value-param>
-        <value-param>
           <name>plugin.upgrade.target.version</name>
           <description>Target version of the plugin</description>
           <value>5.0.0</value>

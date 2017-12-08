@@ -65,11 +65,6 @@ public class SpaceMemberAnyMembershipUpgradeTest extends BaseCoreTest {
     params.addParameter(param);
 
     param = new ValueParam();
-    param.setName(UpgradeProductPlugin.UPGRADE_PLUGIN_ASYNC);
-    param.setValue("true");
-    params.addParameter(param);
-
-    param = new ValueParam();
     param.setName(UpgradeProductPlugin.UPGRADE_PLUGIN_EXECUTE_ONCE_PARAMETER);
     param.setValue("true");
     params.addParameter(param);

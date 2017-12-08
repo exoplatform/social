@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -74,6 +75,7 @@ import org.exoplatform.social.core.jpa.storage.entity.SpaceMemberEntity.Status;
 import org.exoplatform.social.core.model.AvatarAttachment;
 import org.exoplatform.social.core.profile.ProfileFilter;
 import org.exoplatform.social.core.relationship.model.Relationship.Type;
+import org.exoplatform.social.core.search.Sorting;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.storage.IdentityStorageException;
 import org.exoplatform.social.core.storage.api.IdentityStorage;
@@ -102,6 +104,10 @@ public class RDBMSIdentityStorageImpl implements IdentityStorage {
   private final OrganizationService orgService;
 
   private ProfileSearchConnector profileSearchConnector;
+
+  private OrganizationIdentityProvider organizationIdentityProvider;
+
+  private IdentityStorage cachedIdentityStorage;
 
   public RDBMSIdentityStorageImpl(IdentityDAO identityDAO,
                                   ActivityDAO activityDAO,
@@ -707,7 +713,7 @@ public class RDBMSIdentityStorageImpl implements IdentityStorage {
   }
 
   public List<Identity> getSpaceMemberIdentitiesByProfileFilter(final Space space,
-                                                                final ProfileFilter profileFilter,
+                                                                ProfileFilter profileFilter,
                                                                 SpaceMemberFilterListAccess.Type type,
                                                                 long offset, long limit) throws IdentityStorageException {
     if (space == null) {
@@ -746,21 +752,48 @@ public class RDBMSIdentityStorageImpl implements IdentityStorage {
       }
     }
     if (profileFilter == null || profileFilter.isEmpty()) {
+      // Retrive space members from DB
+
       List<Identity> identities = new ArrayList<>();
+      if (profileFilter != null && profileFilter.getSorting() != null
+          && Sorting.SortBy.TITLE.equals(profileFilter.getSorting().sortBy)) {
+        spaceMembers = spaceMemberDAO.sortSpaceMembers(spaceMembers, Profile.FULL_NAME);
+      }
       int i = (int) offset;
       long indexLimit = offset + limit;
       while (i < spaceMembers.size() && i < indexLimit) {
-        String spaceMemberUserName = spaceMembers.get(i);
-        Identity identity = findIdentity(OrganizationIdentityProvider.NAME, spaceMemberUserName);
+        String spaceMemberUserName = spaceMembers.get(i++);
+        // Get the identity from cache implementation of IdentityStorage instead of DB
+        // The solution is not ideal since we refer to the cached version directly in the
+        // wrapped class, but we have no choice because of this wrap.
+        Identity identity = getRDBMSCachedIdentityStorage().findIdentity(OrganizationIdentityProvider.NAME, spaceMemberUserName);
         if (identity == null) {
-          LOG.warn("Can't find identity with id '{}'", spaceMemberUserName);
-          continue;
+          identity = getOrganizationIdentityProvider().getIdentityByRemoteId(spaceMemberUserName);
+          if (identity == null) {
+            LOG.warn("Can't find identity for space member '{}'. The identity will not be retrieved.", spaceMemberUserName);
+            continue;
+          }
+          LOG.info("User identity for space member '{}' wasn't found. Creating the identity.", spaceMemberUserName);
+          try {
+            saveIdentity(identity);
+            saveProfile(identity.getProfile());
+          } catch (Exception e) {
+            LOG.warn("Can't create user identity for space member '" + spaceMemberUserName
+                + "'. The identity will not be retrieved.", e);
+            continue;
+          }
         }
         identities.add(identity);
-        i++;
       }
       return identities;
     } else {
+      // Retrive space members from ES
+
+      try {
+        profileFilter = profileFilter.clone();
+      } catch (CloneNotSupportedException e) {
+        LOG.warn("Error while cloning profile filter", e);
+      }
       profileFilter.setRemoteIds(spaceMembers);
       return profileSearchConnector.search(null, profileFilter, null, offset, limit);
     }
@@ -801,6 +834,11 @@ public class RDBMSIdentityStorageImpl implements IdentityStorage {
     if (profileFilter == null || profileFilter.isEmpty()) {
       return spaceMembers.size();
     } else {
+      try {
+        profileFilter = profileFilter.clone();
+      } catch (CloneNotSupportedException e) {
+        LOG.warn("Error while cloning profile filter", e);
+      }
       profileFilter.setRemoteIds(spaceMembers);
       return profileSearchConnector.count(null, profileFilter, null);
     }
@@ -943,7 +981,7 @@ public class RDBMSIdentityStorageImpl implements IdentityStorage {
     List<String> members = new ArrayList<>();
     int offset = 0;
     while (offset < countSpaceMembers) {
-      List<String> spaceMembers = spaceMemberDAO.getSpaceMembers(spaceId, status, offset, BATCH_SIZE);
+      Collection<String> spaceMembers = spaceMemberDAO.getSpaceMembers(spaceId, status, offset, BATCH_SIZE);
       for (String username : spaceMembers) {
         members.add(username);
       }
@@ -952,4 +990,18 @@ public class RDBMSIdentityStorageImpl implements IdentityStorage {
     return members;
   }
 
+  public OrganizationIdentityProvider getOrganizationIdentityProvider() {
+    if (organizationIdentityProvider == null) {
+      organizationIdentityProvider = CommonsUtils.getService(OrganizationIdentityProvider.class);
+    }
+    return organizationIdentityProvider;
+  }
+
+
+  public IdentityStorage getRDBMSCachedIdentityStorage() {
+    if (cachedIdentityStorage == null) {
+      cachedIdentityStorage = CommonsUtils.getService(IdentityStorage.class);
+    }
+    return cachedIdentityStorage;
+  }
 }

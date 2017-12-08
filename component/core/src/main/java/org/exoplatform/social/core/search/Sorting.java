@@ -5,7 +5,9 @@ import java.io.Serializable;
 /**
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
  */
-public class Sorting implements Serializable {
+public class Sorting implements Serializable, Cloneable {
+
+  private static final long serialVersionUID = 5457261377640398889L;
 
   public static enum OrderBy {
     ASC, DESC
@@ -23,7 +25,7 @@ public class Sorting implements Serializable {
     if (sortBy == null) {
       throw new SocialSearchConnectorException("sortBy cannot be null");
     }
-    if (sortBy == null) {
+    if (orderBy == null) {
       throw new SocialSearchConnectorException("orderBy cannot be null");
     }
 
@@ -51,4 +53,8 @@ public class Sorting implements Serializable {
     return result;
   }
 
+  @Override
+  public Sorting clone() throws CloneNotSupportedException {
+    return (Sorting) super.clone();
+  }
 }

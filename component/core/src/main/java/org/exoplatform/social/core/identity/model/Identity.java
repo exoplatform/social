@@ -21,7 +21,7 @@ import org.exoplatform.social.core.profile.ProfileLoader;
 /**
  * Represents persons or objects relevant to the social system.
  */
-public class Identity {
+public class Identity implements Cloneable {
 
   /** The id. */
   String  id;
@@ -239,5 +239,10 @@ public class Identity {
     } else if (!id.equals(other.id))
       return false;
     return true;
+  }
+
+  @Override
+  protected Identity clone() throws CloneNotSupportedException {
+    return (Identity) super.clone();
   }
 }
