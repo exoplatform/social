@@ -78,7 +78,7 @@ public class UISpaceAccess extends UIContainer {
       PortalRequestContext pcontext = Util.getPortalRequestContext();
       Object statusObject = pcontext.getRequest().getAttribute(SpaceAccessType.ACCESSED_TYPE_KEY);
       Object spacePrettyNameObj = pcontext.getRequest().getAttribute(SpaceAccessType.ACCESSED_SPACE_PRETTY_NAME_KEY);
-      
+      Object requestPath = pcontext.getRequest().getAttribute(SpaceAccessType.ACCESSED_SPACE_REQUEST_PATH_KEY);
       
       if (spacePrettyNameObj == null) {
         this.status = statusObject != null ? statusObject.toString() : "";
@@ -90,6 +90,7 @@ public class UISpaceAccess extends UIContainer {
       } 
       
       this.status = statusObject.toString();
+      this.redirectURI = requestPath.toString();
       
       //
       this.spacePrettyName = spacePrettyNameObj.toString();
@@ -106,9 +107,7 @@ public class UISpaceAccess extends UIContainer {
 
         pcontext.sendRedirect(getPermanWikiLink(spacePrettyName, wikiPageObj.toString()));
         return;
-      } 
-      
-      this.redirectURI = "";
+      }
     } catch (Exception e) {
       LOG.error(e.getMessage(), e);
     }
@@ -154,14 +153,6 @@ public class UISpaceAccess extends UIContainer {
     NavigationResource resource = new NavigationResource(SiteType.PORTAL, Util.getPortalRequestContext().getPortalOwner(), sb.toString());
     return nodeURL.setResource(resource).toString(); 
   }
-  
-  @PreDestroy
-  public void cleanSession() {
-    PortalRequestContext pcontext = Util.getPortalRequestContext();
-    pcontext.getRequest().getSession().removeAttribute(SpaceAccessType.ACCESSED_SPACE_PRETTY_NAME_KEY);
-    pcontext.getRequest().getSession().removeAttribute(SpaceAccessType.ACCESSED_TYPE_KEY);
-  }
-  
  
   /**
    * Listens event when user accept an invited to join the space
@@ -233,10 +224,8 @@ public class UISpaceAccess extends UIContainer {
       s.addMember(space, remoteId);
       //
       PortalRequestContext pcontext = Util.getPortalRequestContext();
-      String originalRequest = pcontext.getRequest().getSession().getAttribute(SpaceAccessType.ACCESSED_SPACE_REQUEST_PATH_KEY).toString();
-      pcontext.getRequest().getSession().removeAttribute(SpaceAccessType.ACCESSED_SPACE_REQUEST_PATH_KEY);
 
-      event.getRequestContext().getJavascriptManager().getRequireJS().addScripts("(function(){ window.location.href = '" + originalRequest + "';})();");
+      event.getRequestContext().getJavascriptManager().getRequireJS().addScripts("(function(){ window.location.href = '" + uiSpaceAccess.redirectURI + "';})();");
       event.getRequestContext().addUIComponentToUpdateByAjax(uiSpaceAccess.getParent());
     }
 
