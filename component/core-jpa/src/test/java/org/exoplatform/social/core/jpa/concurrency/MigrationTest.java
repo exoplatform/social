@@ -31,6 +31,8 @@ import org.exoplatform.social.core.jpa.rest.IdentityAvatarRestService;
 import org.exoplatform.social.core.jpa.storage.RDBMSActivityStorageImpl;
 import org.exoplatform.social.core.jpa.storage.RDBMSIdentityStorageImpl;
 import org.exoplatform.social.core.jpa.storage.RDBMSSpaceStorageImpl;
+import org.exoplatform.social.core.jpa.storage.dao.IdentityDAO;
+import org.exoplatform.social.core.jpa.storage.entity.IdentityEntity;
 import org.exoplatform.social.core.jpa.test.BaseCoreTest;
 import org.exoplatform.social.core.jpa.test.QueryNumberTest;
 import org.exoplatform.social.core.jpa.updater.ActivityMigrationService;
@@ -60,10 +62,7 @@ import org.exoplatform.social.core.storage.impl.SpaceStorageImpl;
 import org.jboss.byteman.contrib.bmunit.BMUnit;
 
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author <a href="mailto:tuyennt@exoplatform.com">Tuyen Nguyen The</a>.
@@ -136,12 +135,16 @@ public class MigrationTest extends BaseCoreTest {
     relationshipMigration = getService(RelationshipMigrationService.class);
     spaceMigrationService = getService(SpaceMigrationService.class);
 
+    deleteIdentities();
+
+    switchToUseJCRStorage();
+
     activitiesToDelete = new ArrayList<>();
   }
 
   @Override
   public void tearDown() throws Exception {
-    //super.tearDown();
+    deleteIdentities();
 
     for (ExoSocialActivity activity : activitiesToDelete) {
       activityStorage.deleteActivity(activity.getId());
@@ -307,6 +310,21 @@ public class MigrationTest extends BaseCoreTest {
 
     userIdentity = identityJPAStorage.findIdentity(OrganizationIdentityProvider.NAME,remoteId);
     assertNotNull(userIdentity);
+  }
+
+  protected void deleteIdentities() {
+    IdentityDAO identityDAO = getService(IdentityDAO.class);
+    Arrays.asList("root", "john", "mary", "demo").stream().forEach(userId -> {
+      IdentityEntity identityEntity = identityDAO.findByProviderAndRemoteId(OrganizationIdentityProvider.NAME, userId);
+      if (identityEntity != null) {
+        identityDAO.delete(identityEntity);
+      }
+    });
+  }
+
+  protected void switchToUseJCRStorage() {
+    // Switch to use JCR IdentityStorage
+    ((IdentityManagerImpl)identityManager).setIdentityStorage(identityJCRStorage);
   }
 
   protected void switchToUseJPAStorage() {
