@@ -337,4 +337,12 @@ public interface IdentityStorage {
    * @return
    */
   InputStream getAvatarInputStreamById(Identity identity) throws IOException;
+
+  /**
+   *  Gets a the avatar stream for a given identity
+   *
+   * @param identity
+   * @return
+   */
+  InputStream getBannerInputStreamById(Identity identity) throws IOException;
 }

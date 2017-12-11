@@ -17,6 +17,7 @@
 package org.exoplatform.social.core.space.model;
 
 import org.exoplatform.social.core.model.AvatarAttachment;
+import org.exoplatform.social.core.model.BannerAttachment;
 import org.exoplatform.social.core.space.SpaceUtils;
 
 /**
@@ -68,8 +69,11 @@ public class Space {
   /** The priority. */
   private String priority;
 
-  /** The space attachment. */
+  /** The space avatar attachment. */
   private AvatarAttachment avatarAttachment;
+
+  /** The space banner attachment. */
+  private BannerAttachment bannerAttachment;
 
   /** Created time. */
   private long createdTime;
@@ -87,6 +91,8 @@ public class Space {
    * @since 1.2.0-GA
    */
   private String avatarUrl;
+
+  private String bannerUrl;
   
   /**
    * The creator of space.
@@ -118,6 +124,13 @@ public class Space {
    * @since 1.2.1
    */
    private Long avatarLastUpdated;
+
+  /**
+   * The last updated time of banner ( in millisecond)
+   *
+   * @since 1.2.1
+   */
+  private Long bannerLastUpdated;
   
   /**
    * The members of a space.
@@ -489,6 +502,20 @@ public class Space {
     return avatarAttachment;
   }
 
+  public BannerAttachment getBannerAttachment() {
+    return bannerAttachment;
+  }
+
+  public void setBannerAttachment(BannerAttachment bannerAttachment) {
+    this.bannerAttachment = bannerAttachment;
+    if (bannerAttachment != null) {
+      this.setBannerLastUpdated(bannerAttachment.getLastModified());
+    } else {
+      this.setBannerLastUpdated(null);
+      this.setBannerUrl(null);
+    }
+  }
+
   /**
    * Gets the pretty name of space.
    *
@@ -526,7 +553,15 @@ public class Space {
   public void setAvatarUrl(String avatarUrl) {
     this.avatarUrl = avatarUrl;
   }
-  
+
+  public String getBannerUrl() {
+    return bannerUrl;
+  }
+
+  public void setBannerUrl(String bannerUrl) {
+    this.bannerUrl = bannerUrl;
+  }
+
   /**
    * Gets the creator of a space.
    *  
@@ -626,6 +661,14 @@ public class Space {
    */
   public void setAvatarLastUpdated(Long avatarLastUpdatedTime) {
     this.avatarLastUpdated = avatarLastUpdatedTime;
+  }
+
+  public Long getBannerLastUpdated() {
+    return bannerLastUpdated;
+  }
+
+  public void setBannerLastUpdated(Long bannerLastUpdated) {
+    this.bannerLastUpdated = bannerLastUpdated;
   }
 
   public long getCreatedTime() {

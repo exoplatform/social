@@ -90,6 +90,9 @@ public class SpaceLifecycle extends AbstractLifeCycle<SpaceLifeCycleListener, Sp
     case ADD_PENDING_USER:
       listener.addPendingUser(event);
       break;
+    case SPACE_BANNER_EDITED:
+      listener.spaceBannerEdited(event);
+      break;
     default:
       break;
     }
@@ -150,6 +153,10 @@ public class SpaceLifecycle extends AbstractLifeCycle<SpaceLifeCycleListener, Sp
   
   public void spaceAvatarEdited(Space space, String userId) {
     broadcast(new SpaceLifeCycleEvent(space, userId, Type.SPACE_AVATAR_EDITED));
+  }
+
+  public void spaceBannerEdited(Space space, String userId) {
+    broadcast(new SpaceLifeCycleEvent(space, userId, Type.SPACE_BANNER_EDITED));
   }
   
   public void spaceAccessEdited(Space space, String userId) {

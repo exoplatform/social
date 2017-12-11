@@ -664,9 +664,15 @@ public class RDBMSSpaceStorageImpl implements SpaceStorage {
       } catch (Exception e) {
         LOG.warn("Failed to build avatar url: " + e.getMessage());
       }
-    }
-    if (entity.getAvatarLastUpdated() != null) {
       space.setAvatarLastUpdated(entity.getAvatarLastUpdated().getTime());
+    }
+    if (entity.getBannerLastUpdated() != null) {
+      try {
+        space.setBannerUrl(LinkProvider.buildBannerURL(SpaceIdentityProvider.NAME, space.getPrettyName()));
+      } catch (Exception e) {
+        LOG.warn("Failed to build Banner url: " + e.getMessage());
+      }
+      space.setBannerLastUpdated(entity.getBannerLastUpdated().getTime());
     }
     return space;
   }

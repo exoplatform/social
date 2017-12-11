@@ -23,38 +23,61 @@ var UISpaceNavigation = {
     var editedTab = $("#" + id);
   
     function autoMoveApps(){
-	    var ul = $('#spaceMenuTab');
-	    
-	    var maxWith = ul.outerWidth() + 10;
-	    var liElements = ul.find('li.item');
-	    var w = 0, index = 0;
-	    for (var i = 0; i < liElements.length; ++i) {
-	        var wElm = liElements.eq(i).outerWidth();
-	        if((w + wElm) < maxWith) {
-	            w += wElm;
-	            index++;
-	        } else {
-	            break;
-	        }
-	    }
+      var _w = $(window).outerWidth();
+      if ( _w  < 1025) {
+        var uiSpaceMenu = $('#UISpaceMenu');
+        var tabContainer = uiSpaceMenu.find('ul#spaceMenuTab');
+        tabContainer.css('visibility', 'visible')
+        return;
+      }
 
+	    var ul = $('#spaceMenuTab');
+
+      var $spacePage = $('#SpacePage');
+      var delta = 130;
+      if ($spacePage.hasClass('sticky')) {
+        var $avt = $('.uiSpaceMenu .userAvt');
+        var $navHeader = $('.uiSpaceMenu .spaceMenuNavHeader');
+        delta = $avt.outerWidth() + $navHeader.outerWidth() + 20;
+      }
+
+	    var index = calculateIndex(ul, delta);
+      if (index < ul.find('li.item').length) {
+        index = calculateIndex(ul, delta + 109);
+      }
 	    UISpaceNavigation.initNavigation(index, moreLabel);
     };
-  
+
+    function calculateIndex(ul, delta) {
+      var maxWith = ul.innerWidth() - delta;
+      var liElements = ul.find('li.item');
+      var w = 0, index = 0;
+      for (var i = 0; i < liElements.length; ++i) {
+        var wElm = liElements.eq(i).outerWidth();
+        if((w + wElm) < maxWith) {
+          w += wElm;
+          index++;
+        } else {
+          break;
+        }
+      }
+      return index;
+    }
+
     function reset() {
 	    var ul = $('#spaceMenuTab');
 	    var liElements = ul.find('li.item');
-	
+
 	    var temp = $('<ul></ul>');
 	    temp.append(liElements);
 	    ul.empty().append(temp.find('li.item'));
     };
-    
+
     $(document).ready(function(){
 	    var ul = $('#spaceMenuTab');
 	    var liElements = ul.find('> li');
 	    liElements.addClass('item');
-	    autoMoveApps(); 
+	    autoMoveApps();
     });
 
     $(window).resize(function(){
@@ -64,20 +87,20 @@ var UISpaceNavigation = {
 
     editedTab.on("dblclick", ".active span", function() {
       var span = $(this);
-      showEditLabelInput(this, span.attr("id"), span.text()); 
+      showEditLabelInput(this, span.attr("id"), span.text());
     });
-    
+
 	  function showEditLabelInput(target, nodeName, currentLabel) {
 	    var jqObj = $(target);
-	
+
 	    var input = $("<input>").attr({type : "text", id : nodeName, name : currentLabel, value : currentLabel, maxLength : 50});
 	    input.css("border", "1px solid #b7b7b7").css("width", (target.offsetWidth - 2) + "px").css("display", "block").css("height", "20px");
-	
+
 	    jqObj = jqObj.replaceWith(input);
 	    input.blur(function() {
 	      $(this).replaceWith(jqObj);
 	    });
-	
+
 	    input.keypress(function(e) {
 	      var keyNum = e.keyCode ? e.keyCode : e.which;
 	      if (keyNum == 13) {
@@ -86,16 +109,16 @@ var UISpaceNavigation = {
 	        $(this).replaceWith(jqObj);
 	      }
 	    });
-	
+
 	    input.closest(".UITab").addClass("EditTab");
 	    input.focus();
 	  };
-	  
+
 	  function renameAppLabel(input) {
 	    var newLabel = input.val();
 	    if (newLabel && newLabel.length > 0) {
 	      var portletID = input.closest(".PORTLET-FRAGMENT").parent().attr("id");
-	
+
 	      var href = eXo.env.server.portalBaseURL + "?portal:componentId=" + portletID;
 	      href += "&portal:type=action";
 	      href += "&portal:isSecure=false";
@@ -111,7 +134,7 @@ var UISpaceNavigation = {
     var uiSpaceMenu = $('#UISpaceMenu');
     var tabContainer = uiSpaceMenu.find('ul#spaceMenuTab');
     var tabs = tabContainer.find('li.item');
-    
+
     var dropDownMenu = $('<ul/>', {
       'class' : 'dropdown-menu'
     });
@@ -133,25 +156,21 @@ var UISpaceNavigation = {
 
     // rebuild
     $.each(tabs, function(idx, el) {
-      if (idx < index - 1) {
+      if (idx < index) {
         tabContainer.append(el);
       } else {
         dropDownMenu.append(el);
       }
     });
-    
-    if (dropDownMenu.children().length == 1) {
-      var el = dropDownMenu.children(':first');
-      dropDownMenu.remove();
-      tabContainer.append(el);
-    } else if (dropDownMenu.children().length > 1) {
+
+    if (dropDownMenu.children().length > 0) {
 	    var dropDown = $('<li/>', {
 	      'class' : 'dropdown pull-right'
 	    }).append(dropDownToggle).append(dropDownMenu);
-      
+
       tabContainer.append(dropDown);
     };
-    
+
     // swap position if needed
     var swappedEl = $(dropDown).find('li.active');
     if ( swappedEl.length > 0 ) {
@@ -161,9 +180,36 @@ var UISpaceNavigation = {
       $(swappedEl).replaceWith(copy_from);
       $(targetEl).replaceWith(copy_to);
     }
-    
+
     $(tabContainer).css({"visibility":"visible"});
-	}
+	},
+
+  initBanner : function() {
+    $(window).off('scroll.uiSpaceMenu').on('scroll.uiSpaceMenu', function() {
+      var $spacePage = $('#SpacePage');
+      if ($(window).scrollTop() > 130) {
+        if (!$spacePage.hasClass('sticky')) {
+          $spacePage.addClass('sticky');
+          $(window).trigger('resize');
+        }
+      } else {
+        if ($spacePage.hasClass('sticky')) {
+          $spacePage.removeClass('sticky');
+          $(window).trigger('resize');
+        }
+      }
+    });
+    var $tab = $('.uiSpaceMenu .spaceMenuTab');
+    var $selectedTab = $tab.find('.active');
+    var left = $selectedTab.position().left;
+    var screenWidth = $(window).width();
+
+    if (left > (screenWidth / 2) && left < ($tab[0].scrollWidth - screenWidth / 2)) {
+      $tab.scrollLeft(left - screenWidth / 2);
+    } else if (left > $tab.width() - screenWidth / 2) {
+      $tab.scrollLeft(left);
+    }
+  }
 };
 
 return UISpaceNavigation;

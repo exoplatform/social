@@ -1,0 +1,30 @@
+<%
+  def jsManager = _ctx.getRequestContext().getJavascriptManager();
+  jsManager.require("SHARED/jquery", "jQuery").require("SHARED/uiForm")
+           .require("SHARED/bts_tooltip").addScripts("jQuery('*[rel=\"tooltip\"]').tooltip();");
+%>
+<div class="uiForm">
+  <%uiform.begin();%>
+   <div class="form-horizontal">
+   <% 
+      for(field in uiform.getChildren()) { 
+        if(field.isRendered()) {
+   %>
+       <div class="control-group">
+         <div class="controls-full"><%uiform.renderField(field);%></div>
+       </div>
+   <%
+       }
+     }
+   %>
+   </div>
+   <div class="uiAction uiActionBorder">
+   <% for(action in uicomponent.getActions()) { 
+        String actionLabel = _ctx.appRes(uicomponent.getName() + ".action." + action);
+        String link = uicomponent.event(action);
+   %>
+        <button class="btn" type="button" onclick="$link">$actionLabel</button>
+   <% } %>
+     </div>
+  <%uiform.end();%>
+</div>

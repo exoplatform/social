@@ -69,6 +69,7 @@ public class EntityConverterUtils {
     if (!OrganizationIdentityProvider.NAME.equals(providerId) && !SpaceIdentityProvider.NAME.equals(providerId)) {
       p.setUrl(properties.get(Profile.URL));
       p.setAvatarUrl(LinkProvider.buildAvatarURL(identity.getProviderId(), identity.getRemoteId()));
+      p.setBannerUrl(LinkProvider.buildBannerURL(identity.getProviderId(), identity.getRemoteId()));
     } else {
       String remoteId = entity.getRemoteId();
       if (OrganizationIdentityProvider.NAME.equals(providerId)) {
@@ -79,9 +80,16 @@ public class EntityConverterUtils {
       }
       if (entity.getAvatarFileId() != null && entity.getAvatarFileId() > 0) {
         p.setAvatarUrl(LinkProvider.buildAvatarURL(identity.getProviderId(), identity.getRemoteId()));
-        Long lastUpdated = getAvatarLastUpdated(entity.getAvatarFileId());
+        Long lastUpdated = getFileLastUpdated(entity.getAvatarFileId());
         if (lastUpdated != null) {
           p.setAvatarLastUpdated(lastUpdated);
+        }
+      }
+      if (entity.getBannerFileId() != null && entity.getBannerFileId() > 0) {
+        p.setBannerUrl(LinkProvider.buildBannerURL(identity.getProviderId(), identity.getRemoteId()));
+        Long lastUpdated = getFileLastUpdated(entity.getBannerFileId());
+        if (lastUpdated != null) {
+          p.setBannerLastUpdated(lastUpdated);
         }
       }
     }
@@ -229,10 +237,10 @@ public class EntityConverterUtils {
     return relationship;
   }
   
-  private static Long getAvatarLastUpdated(Long avatarFileId) {
+  private static Long getFileLastUpdated(Long fileId) {
     FileService fileService = ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(FileService.class);
     if (fileService != null) {
-      FileInfo fileInfo = fileService.getFileInfo(avatarFileId);
+      FileInfo fileInfo = fileService.getFileInfo(fileId);
       if (fileInfo != null && fileInfo.getUpdatedDate() != null) {
         return fileInfo.getUpdatedDate().getTime();
       }

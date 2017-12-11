@@ -18,28 +18,11 @@ package org.exoplatform.social.core.model;
 
 import java.io.InputStream;
 
-import javax.jcr.ItemNotFoundException;
-import javax.jcr.Session;
+public class BannerAttachment extends Attachment {
 
-import org.exoplatform.commons.utils.CommonsUtils;
-import org.exoplatform.container.PortalContainer;
-import org.exoplatform.services.log.ExoLogger;
-import org.exoplatform.services.log.Log;
+  public static final String TYPE = "banner";
 
-/*
- * This class using for attachment profile of identity or of space, such as
- * image.
- *
- * @author  <a href="mailto:tungcnw@gmail.com">dang.tung</a>
- * @since   Sep 11, 2009
- */
-public class AvatarAttachment extends  Attachment {
-
-  private static final Log LOG = ExoLogger.getLogger(AvatarAttachment.class);
-
-  public static final String TYPE = "avatar";
-
-  public AvatarAttachment() {
+  public BannerAttachment() {
     super();
   }
 
@@ -54,7 +37,7 @@ public class AvatarAttachment extends  Attachment {
    * @param lastModified
    * @throws Exception
    */
-  public AvatarAttachment(String id,
+  public BannerAttachment(String id,
                           String fileName,
                           String mimeType,
                           InputStream inputStream,

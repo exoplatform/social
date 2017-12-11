@@ -100,6 +100,11 @@ public class ProfileUpdatesPublisher extends ProfileListenerPlugin {
     publishActivity(event, "avatar_updated");
   }
 
+  @Override
+  public void bannerUpdated(ProfileLifeCycleEvent event) {
+    LOG.debug("Profile banner of user {} has been updated", event.getProfile().getIdentity().getId());
+  }
+
 
   @Override
   public void basicInfoUpdated(ProfileLifeCycleEvent event) {

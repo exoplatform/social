@@ -90,6 +90,9 @@ public class IdentityEntity {
   @Column(name = "AVATAR_FILE_ID")
   private Long avatarFileId;
 
+  @Column(name = "BANNER_FILE_ID")
+  private Long bannerFileId;
+
   @ElementCollection(fetch = FetchType.EAGER)
   @MapKeyColumn(name = "NAME")
   @Column(name = "VALUE")
@@ -161,6 +164,14 @@ public class IdentityEntity {
 
   public void setAvatarFileId(Long avatarFileId) {
     this.avatarFileId = avatarFileId;
+  }
+
+  public Long getBannerFileId() {
+    return bannerFileId;
+  }
+
+  public void setBannerFileId(Long bannerFileId) {
+    this.bannerFileId = bannerFileId;
   }
 
   public Map<String, String> getProperties() {

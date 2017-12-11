@@ -30,6 +30,7 @@ import org.exoplatform.social.core.model.AvatarAttachment;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
 import org.exoplatform.social.webui.space.UISpaceInfo;
+import org.exoplatform.social.webui.space.UISpaceMenu;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.EventConfig;
 import org.exoplatform.webui.core.UIContainer;
@@ -118,13 +119,9 @@ public class UIAvatarUploadContent extends UIContainer {
       uiPopup.setShow(false);
       uiPopup.setUIComponent(null);
       uiPopup.setRendered(false);
-      UISpaceInfo spaceInfo = uiPopup.getAncestorOfType(UISpaceInfo.class);
-      if(spaceInfo == null) {
-        UIContainer container = uiPopup.getAncestorOfType(UIPortletApplication.class).findComponentById("Avatar");
-        if (container != null) {
-          event.getRequestContext().addUIComponentToUpdateByAjax(container);
-        }
-        event.getRequestContext().addUIComponentToUpdateByAjax(uiPopup.getParent());
+      UIContainer container = uiPopup.getAncestorOfType(UIPortletApplication.class).findComponentById("Avatar");
+      if (container != null) {
+        event.getRequestContext().addUIComponentToUpdateByAjax(container);
       } else {
         Utils.updateWorkingWorkSpace();
       }
@@ -132,18 +129,27 @@ public class UIAvatarUploadContent extends UIContainer {
 
     private void saveAvatar(UIAvatarUploadContent uiAvatarUploadContent) throws Exception {
       UISpaceInfo spaceInfo = uiAvatarUploadContent.getAncestorOfType(UISpaceInfo.class);
-      if(spaceInfo != null) {
-        SpaceService spaceService = spaceInfo.getSpaceService();
-        String id = spaceInfo.getUIStringInput(UISpaceInfo.SPACE_ID).getValue();
-        Space space = spaceService.getSpaceById(id);
+      UISpaceMenu spaceMenu = uiAvatarUploadContent.getAncestorOfType(UISpaceMenu.class);
+      if(spaceInfo != null || spaceMenu != null) {
+        SpaceService spaceService = uiAvatarUploadContent.getApplicationComponent(SpaceService.class);
+        String spaceUrl = Utils.getSpaceUrlByContext();
+        Space space = spaceService.getSpaceByUrl(spaceUrl);
         if (space != null) {
-          spaceInfo.saveAvatar(uiAvatarUploadContent, space);
+          uiAvatarUploadContent.saveSpaceAvatar(uiAvatarUploadContent, space);
         }
       } else {
         // Save user avatar
         uiAvatarUploadContent.saveUserAvatar(uiAvatarUploadContent);
       }
     }
+  }
+
+  public void saveSpaceAvatar(UIAvatarUploadContent uiAvatarUploadContent, Space space) throws Exception {
+    SpaceService spaceService = uiAvatarUploadContent.getApplicationComponent(SpaceService.class);
+    space.setAvatarAttachment(uiAvatarUploadContent.getAvatarAttachment());
+    spaceService.updateSpace(space);
+    space.setEditor(Utils.getViewerRemoteId());
+    spaceService.updateSpaceAvatar(space);
   }
 
   /**

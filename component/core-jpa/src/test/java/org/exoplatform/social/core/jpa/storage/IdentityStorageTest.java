@@ -27,6 +27,7 @@ import org.exoplatform.social.core.jpa.test.AbstractCoreTest;
 import org.exoplatform.social.core.jpa.test.MaxQueryNumber;
 import org.exoplatform.social.core.jpa.test.QueryNumberTest;
 import org.exoplatform.social.core.model.AvatarAttachment;
+import org.exoplatform.social.core.model.BannerAttachment;
 import org.exoplatform.social.core.profile.ProfileFilter;
 import org.exoplatform.social.core.service.LinkProvider;
 import org.exoplatform.social.core.space.SpaceUtils;
@@ -257,11 +258,13 @@ public class IdentityStorageTest extends AbstractCoreTest {
     // Test in case loading an user has dot characters in name.
     InputStream inputStream = getClass().getResourceAsStream("/eXo-Social.png");
     AvatarAttachment avatarAttachment = new AvatarAttachment(null, "avatar", "png", inputStream, null, System.currentTimeMillis());
+    BannerAttachment bannerAttachment = new BannerAttachment(null, "banner", "png", inputStream, null, System.currentTimeMillis());
     String userDotName = "user.name";
     Identity identity = new Identity(OrganizationIdentityProvider.NAME, userDotName);
     Profile profile = new Profile(identity);
     identity.setProfile(profile);
     profile.setProperty(Profile.AVATAR, avatarAttachment);
+    profile.setProperty(Profile.BANNER, bannerAttachment);
 
     identityStorage.saveIdentity(identity);
     identityStorage.saveProfile(profile);
@@ -269,9 +272,12 @@ public class IdentityStorageTest extends AbstractCoreTest {
     identityStorage.loadProfile(profile);
 
     String gotAvatarURL = profile.getAvatarUrl();
-
     assertNotNull(gotAvatarURL);
     assertEquals(LinkProvider.buildAvatarURL(OrganizationIdentityProvider.NAME, userDotName), gotAvatarURL);
+
+    String gotBannerURL = profile.getBannerUrl();
+    assertNotNull(gotBannerURL);
+    assertEquals(LinkProvider.buildBannerURL(OrganizationIdentityProvider.NAME, userDotName), gotBannerURL);
 
     tearDownIdentityList.add(identityStorage.findIdentity(OrganizationIdentityProvider.NAME, userDotName));
 
@@ -741,6 +747,93 @@ public class IdentityStorageTest extends AbstractCoreTest {
     
     tearDownIdentityList.add(identity);
     stream = identityStorage.getAvatarInputStreamById(identity);
+    assertNotNull(stream);
+  }
+
+  @MaxQueryNumber(126)
+  public void testGetBannerInputStreamById() throws Exception {
+    InputStream inputStream = getClass().getResourceAsStream("/eXo-Social.png");
+    BannerAttachment bannerAttachment = new BannerAttachment(null, "banner", "png", inputStream, null, System.currentTimeMillis());
+
+    /*
+      test on identity with @OrganizationIdentityProvider.NAME as providerId.
+     */
+    String userName = "root";
+    Identity identity = populateIdentity(userName);
+    identityStorage.saveIdentity(identity);
+    // within this instruction the profile is created implicitly and it does not have an banner
+    String identityId = identity.getId();
+    assertNotNull(identityId);
+    InputStream stream = identityStorage.getBannerInputStreamById(identity);
+    assertNull(stream);
+
+    Profile profile = new Profile(identity);
+    profile.setProperty(Profile.BANNER, bannerAttachment);
+    identityStorage.updateIdentity(identity);
+    identityStorage.saveProfile(profile);
+    profile = identityStorage.loadProfile(profile);
+    // we load the profile to check if the banner is well attached to it, as well as @Profile.bannerLastUpdated value
+    Long bannerLastUpdated = profile.getBannerLastUpdated();
+    assertNotNull(bannerLastUpdated);
+
+    // Make sure that the upcoming update will not occur at the exact same time than the first update
+    Thread.sleep(10);
+
+    // we re-attach the the banner to the profile to be sure that @Profile.bannerLastUpdated value is updated
+    profile.setProperty(Profile.BANNER, bannerAttachment);
+    identityStorage.updateProfile(profile);
+    Profile profile1 = identityStorage.loadProfile(profile);
+    Long bannerLastUpdated1 = profile1.getBannerLastUpdated();
+    assertNotNull(bannerLastUpdated1);
+    assertNotSame(bannerLastUpdated1, bannerLastUpdated);
+    assertTrue(bannerLastUpdated1 > bannerLastUpdated);
+
+    stream = identityStorage.getBannerInputStreamById(identity);
+    assertNotNull(stream);
+
+    /*
+      test on identity with @SpaceIdentityProvider.NAME as providerId.
+     */
+    Space space = this.getSpaceInstance(1);
+    spaceStorage.saveSpace(space, true);
+    String remoteId = space.getPrettyName();
+    assertNotNull(remoteId);
+    identity = new Identity(SpaceIdentityProvider.NAME, remoteId);
+    identityStorage.saveIdentity(identity);
+    assertNotNull(identity.getId());
+    assertNotNull(identity.getRemoteId());
+    stream = identityStorage.getBannerInputStreamById(identity);
+    // the space does not have an banner
+    assertNull(stream);
+    // we set the banner to the space
+    space.setBannerAttachment(bannerAttachment);
+    spaceStorage.saveSpace(space, false);
+    space = spaceStorage.getSpaceByPrettyName(remoteId);
+
+    identity = new Identity(SpaceIdentityProvider.NAME, space.getPrettyName());
+    profile = new Profile(identity);
+    // we set the banner to the corresponding space profile
+    profile.setProperty(Profile.BANNER, bannerAttachment);
+    identityStorage.saveIdentity(identity);
+    identityStorage.saveProfile(profile);
+    profile = identityStorage.loadProfile(profile);
+    bannerLastUpdated = profile.getBannerLastUpdated();
+    assertNotNull(bannerLastUpdated);
+
+    // Make sure that the upcoming update will not occur at the exact same time than the first update
+    Thread.sleep(10);
+
+    profile.setProperty(Profile.BANNER, bannerAttachment);
+    identityStorage.updateProfile(profile);
+    profile = identityStorage.loadProfile(profile);
+    bannerLastUpdated1 = profile.getBannerLastUpdated();
+    assertNotNull(bannerLastUpdated1);
+    assertNotSame(bannerLastUpdated1, bannerLastUpdated);
+    // we check that the  @Profile.bannerLastUpdated is updated with greater value
+    assertTrue(bannerLastUpdated1 > bannerLastUpdated);
+
+    tearDownIdentityList.add(identity);
+    stream = identityStorage.getBannerInputStreamById(identity);
     assertNotNull(stream);
   }
   

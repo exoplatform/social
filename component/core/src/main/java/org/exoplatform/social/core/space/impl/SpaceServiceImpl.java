@@ -1524,6 +1524,23 @@ public class SpaceServiceImpl implements SpaceService {
     return existingSpace;
   }
 
+  public Space updateSpaceBanner(Space existingSpace) {
+    Identity spaceIdentity = identityStorage.findIdentity(SpaceIdentityProvider.NAME, existingSpace.getPrettyName());
+    if (spaceIdentity != null) {
+      Profile profile = spaceIdentity.getProfile();
+      if (existingSpace.getBannerAttachment() != null) {
+        profile.setProperty(Profile.BANNER, existingSpace.getBannerAttachment());
+      } else {
+        profile.removeProperty(Profile.BANNER);
+      }
+      identityStorage.updateProfile(profile);
+      spaceLifeCycle.spaceBannerEdited(existingSpace, existingSpace.getEditor());
+    } else {
+      throw new IllegalStateException("Can not update space banner. Space identity " + existingSpace.getPrettyName() + " not found");
+    }
+    return existingSpace;
+  }
+
   /**
    * {@inheritDoc} 
    */

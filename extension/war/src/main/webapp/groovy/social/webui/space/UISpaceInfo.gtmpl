@@ -24,9 +24,12 @@
   import org.exoplatform.social.core.service.LinkProvider;
 
 	def uicomponentId = uicomponent.id;
-  def imageSource = uicomponent.getImageSource();
+  def space = uicomponent.getSpace();
+  def imageSource = space.getAvatarUrl();
   if (imageSource == null) {
     imageSource = LinkProvider.SPACE_DEFAULT_AVATAR_URL;
+  } else {
+	imageSource += "?t=" + space.getAvatarLastUpdated();
   }
   def spaceAvatarTitle = _ctx.appRes("UISpaceInfo.title.SpaceAvatar");
 

@@ -205,6 +205,11 @@ public class MigrationIdentityStorage implements IdentityStorage {
   public InputStream getAvatarInputStreamById(Identity identity) throws IOException {
     return jpaStorage.getAvatarInputStreamById(identity);
   }
+
+  @Override
+  public InputStream getBannerInputStreamById(Identity identity) throws IOException {
+    return jpaStorage.getBannerInputStreamById(identity);
+  }
   
   @Override
   public int getIdentitiesForMentionsCount(String providerId, ProfileFilter profileFilter, Type type) throws IdentityStorageException {

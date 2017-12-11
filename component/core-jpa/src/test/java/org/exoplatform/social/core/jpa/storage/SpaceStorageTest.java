@@ -23,6 +23,7 @@ import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
 import org.exoplatform.social.core.jpa.test.AbstractCoreTest;
 import org.exoplatform.social.core.jpa.test.MaxQueryNumber;
 import org.exoplatform.social.core.model.AvatarAttachment;
+import org.exoplatform.social.core.model.BannerAttachment;
 import org.exoplatform.social.core.service.LinkProvider;
 import org.exoplatform.social.core.space.SpaceFilter;
 import org.exoplatform.social.core.space.impl.DefaultSpaceApplicationHandler;
@@ -1634,7 +1635,52 @@ public abstract class SpaceStorageTest extends AbstractCoreTest {
     assertEquals(LinkProvider.escapeJCRSpecialCharacters(String.format("/rest/jcr/repository/portal-test/production/soc:providers/soc:space/soc:%s/soc:profile/soc:avatar",
             space.getPrettyName())),
         avatarURL);
+  }
 
+  /**
+   * Test
+   * {@link org.exoplatform.social.core.storage.SpaceStorage#saveSpace(org.exoplatform.social.core.space.model.Space, boolean)}
+   *
+   * @throws Exception
+   */
+  @MaxQueryNumber(210)
+  public void testSaveSpaceBanner() throws Exception {
+    int number = 1;
+    Space space = this.getSpaceInstance(number);
+    InputStream inputStream = getClass().getResourceAsStream("/eXo-Social.png");
+    BannerAttachment bannerAttachment = new BannerAttachment(null,
+            "banner",
+            "png",
+            inputStream,
+            null,
+            System.currentTimeMillis());
+    assertNotNull(bannerAttachment);
+    space.setBannerAttachment(bannerAttachment);
+
+    Identity identity = new Identity(SpaceIdentityProvider.NAME, space.getPrettyName());
+    Profile profile = new Profile(identity);
+    identity.setProfile(profile);
+    profile.setProperty(Profile.BANNER, bannerAttachment);
+    identityStorage.saveIdentity(identity);
+    identityStorage.saveProfile(profile);
+
+    spaceStorage.saveSpace(space, true);
+    StorageUtils.persist();
+
+    Space got = spaceStorage.getSpaceByPrettyName(space.getPrettyName());
+
+    assertNotNull(got.getBannerUrl());
+    String bannerRandomURL = got.getBannerUrl();
+    int indexOfLastupdatedParam = bannerRandomURL.indexOf("/?upd=");
+    String bannerURL = null;
+    if (indexOfLastupdatedParam != -1) {
+      bannerURL = bannerRandomURL.substring(0, indexOfLastupdatedParam);
+    } else {
+      bannerURL = bannerRandomURL;
+    }
+    assertEquals(LinkProvider.escapeJCRSpecialCharacters(String.format("/rest/v1/social/spaces/my_space_test_1/banner",
+            space.getPrettyName())),
+            bannerURL);
   }
 
   /**

@@ -238,7 +238,62 @@ public class IdentityRestResourcesV1 implements IdentityRestResources {
     builder.cacheControl(cc);
     return builder.cacheControl(cc).build();
   }
-  
+
+  /**
+   *
+   * @param uriInfo
+   * @param id
+   * @return
+   * @throws IOException
+   */
+  @GET
+  @Path("{id}/banner")
+  @RolesAllowed("users")
+  @ApiOperation(value = "Gets an identity banner by id",
+          httpMethod = "GET",
+          response = Response.class,
+          notes = "This can only be done by the logged in user.")
+  @ApiResponses(value = {
+          @ApiResponse (code = 200, message = "Request fulfilled"),
+          @ApiResponse (code = 500, message = "Internal server error"),
+          @ApiResponse (code = 400, message = "Invalid query input"),
+          @ApiResponse (code = 404, message = "Resource not found")})
+  public Response getIdentityBannerById(@Context UriInfo uriInfo,
+                                        @Context Request request,
+                                        @ApiParam(value = "Identity id which is a UUID", required = true)@PathParam("id") String id) throws IOException {
+
+    Identity identity = identityManager.getIdentity(id, true);
+    if (identity == null) {
+      throw new WebApplicationException(Response.Status.NOT_FOUND);
+    }
+    //
+    Profile profile = identity.getProfile();
+    Long lastUpdated = null;
+    if (profile != null) {
+      lastUpdated = profile.getBannerLastUpdated();
+    }
+    EntityTag eTag = null;
+    if (lastUpdated != null) {
+      eTag = new EntityTag(Integer.toString(lastUpdated.hashCode()));
+    }
+    //
+    Response.ResponseBuilder builder = (eTag == null ? null : request.evaluatePreconditions(eTag));
+    if (builder == null) {
+      InputStream stream = identityManager.getBannerInputStream(identity);
+      if (stream == null) {
+        throw new WebApplicationException(Response.Status.NOT_FOUND);
+      }
+      /* As recommended in the the RFC1341 (https://www.w3.org/Protocols/rfc1341/4_Content-Type.html),
+      we set the banner content-type to "image/png". So, its data  would be recognized as "image" by the user-agent.
+     */
+      builder = Response.ok(stream, "image/png");
+      builder.tag(eTag);
+    }
+    CacheControl cc = new CacheControl();
+    cc.setMaxAge(86400);
+    builder.cacheControl(cc);
+    return builder.cacheControl(cc).build();
+  }
 
   /**
    * {@inheritDoc}

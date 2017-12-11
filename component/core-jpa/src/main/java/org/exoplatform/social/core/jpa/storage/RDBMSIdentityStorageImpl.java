@@ -26,6 +26,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
 import org.exoplatform.commons.file.services.FileStorageException;
+import org.exoplatform.social.core.model.BannerAttachment;
 import org.exoplatform.social.core.storage.api.IdentityStorage;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -119,6 +120,7 @@ public class RDBMSIdentityStorageImpl implements IdentityStorage {
       entityProperties.put(Profile.URL, profile.getUrl());
     }
 
+    boolean hasBanner = false;
     Map<String, Object> properties = profile.getProperties();
     for (Entry<String, Object> e : properties.entrySet()) {
       if (Profile.AVATAR.equalsIgnoreCase(e.getKey())) {
@@ -158,10 +160,50 @@ public class RDBMSIdentityStorageImpl implements IdentityStorage {
             entity.setAvatarFileId(fileItem.getFileInfo().getId());
           }
         } catch (Exception ex) {
-          LOG.warn("Can not store avatar for " + entity.getProviderId() + " " + entity.getRemoteId(), ex);
+          LOG.error("Can not store avatar for " + entity.getProviderId() + " " + entity.getRemoteId(), ex);
         }
 
-      } else if (Profile.EXPERIENCES.equalsIgnoreCase(e.getKey())){
+      } else if (Profile.BANNER.equalsIgnoreCase(e.getKey())) {
+        hasBanner = true;
+        BannerAttachment attachment = (BannerAttachment) e.getValue();
+        byte[] bytes = attachment.getImageBytes();
+        String fileName = attachment.getFileName();
+        if (fileName == null) {
+          fileName = entity.getRemoteId() + "_banner";
+        }
+
+        try {
+          Long bannerId = entity.getBannerFileId();
+          FileItem fileItem;
+          if(bannerId != null){//update banner file
+            fileItem = new FileItem(bannerId,
+                    fileName,
+                    attachment.getMimeType(),
+                    socialNameSpace,
+                    bytes.length,
+                    new Date(),
+                    entity.getRemoteId(),
+                    false,
+                    new ByteArrayInputStream(bytes));
+            fileService.updateFile(fileItem);
+          }
+          else{//create new  banner file
+            fileItem = new FileItem(null,
+                    fileName,
+                    attachment.getMimeType(),
+                    socialNameSpace,
+                    bytes.length,
+                    new Date(),
+                    entity.getRemoteId(),
+                    false,
+                    new ByteArrayInputStream(bytes));
+            fileItem = fileService.writeFile(fileItem);
+            entity.setBannerFileId(fileItem.getFileInfo().getId());
+          }
+        } catch (Exception ex) {
+          LOG.error("Can not store banner for " + entity.getProviderId() + " " + entity.getRemoteId(), ex);
+        }
+      } else if (Profile.EXPERIENCES.equalsIgnoreCase(e.getKey())) {
 
         List<Map<String, String>> exps = (List<Map<String, String>>)e.getValue();
         Set<ProfileExperienceEntity> experiences = new HashSet<>();
@@ -199,6 +241,11 @@ public class RDBMSIdentityStorageImpl implements IdentityStorage {
           entityProperties.put(e.getKey(), String.valueOf(val));
         }
       }
+    }
+
+    if (entity.getBannerFileId() != null && !hasBanner
+            && profile.getBannerUrl() == null) {
+      entity.setBannerFileId(null);
     }
 
     entity.setProperties(entityProperties);
@@ -329,6 +376,9 @@ public class RDBMSIdentityStorageImpl implements IdentityStorage {
 
       if (entity.getAvatarFileId() != null && entity.getAvatarFileId() > 0) {
         fileService.deleteFile(entity.getAvatarFileId());
+      }
+      if (entity.getBannerFileId() != null && entity.getBannerFileId() > 0) {
+        fileService.deleteFile(entity.getBannerFileId());
       }
     }
 
@@ -786,6 +836,29 @@ public class RDBMSIdentityStorageImpl implements IdentityStorage {
       return null;
     }
   
+    if (file == null) {
+      return null;
+    }
+    return file.getAsStream();
+  }
+
+  @Override
+  public InputStream getBannerInputStreamById(Identity identity) throws IOException {
+    FileItem file = null;
+    IdentityEntity entity = identityDAO.findByProviderAndRemoteId(identity.getProviderId(), identity.getRemoteId());
+    if (entity == null) {
+      return null;
+    }
+    Long bannerId = entity.getBannerFileId();
+    if (bannerId == null) {
+      return null;
+    }
+    try {
+      file = fileService.getFile(bannerId);
+    } catch (FileStorageException e) {
+      return null;
+    }
+
     if (file == null) {
       return null;
     }
