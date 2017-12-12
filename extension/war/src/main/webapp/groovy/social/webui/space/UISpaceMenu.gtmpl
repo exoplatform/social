@@ -66,7 +66,7 @@ public String getFitString(String nodeLabel, int maxLen) {
 def spaceName = StringEscapeUtils.escapeHtml(uicomponent.getSpaceName());
 def spaceAvatar = StringEscapeUtils.escapeHtml(uicomponent.getImageSource());
 if (spaceAvatar == null) {
-  spaceAvatar = "/eXoSkin/skin/images/system/SpaceAvtDefault.png"
+  spaceAvatar = "/eXoSkin/skin/images/system/SpaceAvtDefault.png";
 } else {
   spaceAvatar += "?t=" + space.getAvatarLastUpdated();
 }
@@ -105,10 +105,12 @@ if(appSelected == null || appSelected.length() == 0) {
         <h3>$spaceName</h3>
 <ul class="spaceMenuApps menuApps pull-left">
 </ul>
-        <% if (banner != null) {%>
-        <a href="<%=uicomponent.event("DeleteBanner");%>"><i class="uiIconTrash"></i></a>
-        <%}%>
-        <a href="<%=uicomponent.event("ChangeBanner");%>"><i class="uiIconCamera"></i></a>
+        <div class="bannerControls">
+          <a href="<%=uicomponent.event("ChangeBanner");%>"><i class="uiIconCamera"></i></a>
+          <% if (banner != null) {%>
+          <a href="<%=uicomponent.event("DeleteBanner");%>"><i class="uiIconTrash"></i></a>
+          <%}%>
+        </div>
       </div>
 <nav>
 <%
