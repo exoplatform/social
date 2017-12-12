@@ -106,7 +106,7 @@ if(appSelected == null || appSelected.length() == 0) {
 <ul class="spaceMenuApps menuApps pull-left">
 </ul>
         <div class="bannerControls">
-          <a href="<%=uicomponent.event("ChangeBanner");%>"><i class="uiIconCamera"></i></a>
+          <a href="#"><i class="uiIconCamera"></i></a>
           <% if (banner != null) {%>
           <a href="<%=uicomponent.event("DeleteBanner");%>"><i class="uiIconTrash"></i></a>
           <%}%>
@@ -174,5 +174,6 @@ for(node in apps) {
   </nav>  
     </div>
 
+  <div class="uiBannerUploader"><% uicomponent.renderChild(org.exoplatform.social.webui.UIBannerUploader.class); %></div>
   <div class="uiAvatarUploader"><% uicomponent.renderChild(org.exoplatform.social.webui.composer.PopupContainer.class); %></div>
 </div>
