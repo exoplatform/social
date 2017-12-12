@@ -235,6 +235,25 @@
     <depends>
       <module>bts_dropdown</module>
     </depends>
+    <depends>
+      <module>bannerUploader</module>
+    </depends>
+  </module>
+
+  <module>
+    <name>bannerUploader</name>
+    <script>
+      <path>/javascript/eXo/social/webui/UIBannerUploader.js</path>
+    </script>
+    <depends>
+      <module>jquery</module>
+    </depends>
+    <depends>
+      <module>uiForm</module>
+    </depends>
+    <depends>
+      <module>bts_tooltip</module>
+    </depends>
   </module>
 
   <module>

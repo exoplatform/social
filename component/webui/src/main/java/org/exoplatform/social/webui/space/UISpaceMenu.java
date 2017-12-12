@@ -47,6 +47,7 @@ import org.exoplatform.social.webui.UIBannerUploader;
 import org.exoplatform.social.webui.Utils;
 import org.exoplatform.social.webui.composer.PopupContainer;
 import org.exoplatform.web.application.ApplicationMessage;
+import org.exoplatform.web.application.JavascriptManager;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.EventConfig;
@@ -60,7 +61,6 @@ import org.exoplatform.webui.event.EventListener;
   template = "war:/groovy/social/webui/space/UISpaceMenu.gtmpl",
   events = {
     @EventConfig(listeners = UISpaceMenu.ChangeAvatarActionListener.class),
-    @EventConfig(listeners = UISpaceMenu.ChangeBannerActionListener.class),
     @EventConfig(listeners = UISpaceMenu.DeleteBannerActionListener.class),
     @EventConfig(name = "RenameSpaceAppName", listeners = UISpaceMenu.RenameSpaceAppNameActionListener.class)
   }
@@ -112,6 +112,9 @@ public class UISpaceMenu extends UIContainer {
    */
   public UISpaceMenu() throws Exception {
     spaceService = getSpaceService();
+
+    UIBannerUploader uploader = createUIComponent(UIBannerUploader.class, null, null);
+    addChild(uploader);
 
     PopupContainer popupContainer = createUIComponent(PopupContainer.class, null, null);
     addChild(popupContainer);
@@ -206,17 +209,6 @@ public class UISpaceMenu extends UIContainer {
 
     space.setEditor(Utils.getViewerRemoteId());
     spaceService.updateSpaceBanner(space);
-  }
-
-  public static class ChangeBannerActionListener extends EventListener<UISpaceMenu> {
-
-    @Override
-    public void execute(Event<UISpaceMenu> event) throws Exception {
-      UISpaceMenu uiSpaceMenu = event.getSource();
-      PopupContainer popupContainer = uiSpaceMenu.getChild(PopupContainer.class);
-      popupContainer.activate(UIBannerUploader.class, 500, POPUP_BANNER_UPLOADER);
-      event.getRequestContext().addUIComponentToUpdateByAjax(popupContainer);
-    }
   }
   
   /**
