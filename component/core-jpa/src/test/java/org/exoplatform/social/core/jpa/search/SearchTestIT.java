@@ -73,10 +73,10 @@ public class SearchTestIT extends BaseESTest {
     identityManager = getService(IdentityManager.class);
     spaceStorage = getService(SpaceStorage.class);
 
-    rootIdentity = createIdentity("root");
-    johnIdentity = createIdentity("john");
-    maryIdentity = createIdentity("mary");
-    demoIdentity = createIdentity("demo");
+    rootIdentity = createIdentity("root", "testmail1@localhost.com");
+    johnIdentity = createIdentity("john", "testmail2@localhost.com");
+    maryIdentity = createIdentity("mary", "testmail3@localhost.com");
+    demoIdentity = createIdentity("demo", "testmail4@localhost.com");
   }
 
   @Override
@@ -139,6 +139,29 @@ public class SearchTestIT extends BaseESTest {
     reindexProfileById(rootIdentity.getId());
 
     assertEquals(1, peopleSearchConnector.search(searchContext, "Root Root", null, 0, 10, null, null).size());
+  }
+
+  public void testPeopleNameOrEmail() throws Exception {    
+    rootIdentity = createIdentity("root", "testmail1@localhost.com");
+    johnIdentity = createIdentity("john", "testmail2@localhost.com");
+    maryIdentity = createIdentity("mary", "testmail3@localhost.com");
+    demoIdentity = createIdentity("demo", "testmail4@localhost.com");
+
+    reindexProfileById(rootIdentity.getId());
+    reindexProfileById(johnIdentity.getId());
+    reindexProfileById(maryIdentity.getId());
+    reindexProfileById(demoIdentity.getId());
+
+
+    ProfileFilter filter = new ProfileFilter();
+    filter.setName("localhost");
+
+    List<Identity> results = searchConnector.search(rootIdentity, filter, null, 0, 10);
+    assertEquals(0, results.size());
+
+    filter.setSearchEmail(true);
+    results = searchConnector.search(rootIdentity, filter, null, 0, 10);
+    assertEquals(4, results.size());
   }
 
   public void testSpaceName() throws Exception {

@@ -144,7 +144,7 @@ public class SpaceUtilsWildCardMembershipTest extends AbstractCoreTest {
   private void disableUser(String userName) {
     try {
       User user = userHandler.findUserByName(userName);
-      userHandler.setEnabled(user.getUserName(), false, false);
+      user = userHandler.setEnabled(user.getUserName(), false, false);
       userHandler.saveUser(user, false);
     } catch (Exception e) {
     }
