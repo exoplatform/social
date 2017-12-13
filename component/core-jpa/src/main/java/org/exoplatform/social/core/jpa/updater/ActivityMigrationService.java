@@ -787,7 +787,7 @@ public class ActivityMigrationService extends AbstractMigrationService<ExoSocial
     if (oldIds == null || oldIds.length == 0) {
       return new String[0];
     }
-    List<String> list = new ArrayList<>(oldIds.length);
+    Set<String> set = new HashSet<String>(oldIds.length);
     for(String old : oldIds) {
       int index = old.indexOf('@');
       if (index != -1) {
@@ -795,11 +795,11 @@ public class ActivityMigrationService extends AbstractMigrationService<ExoSocial
       }
       String id = getNewIdentityId(old);
       if (id != null) {
-        list.add(id);
+        set.add(id);
       }
     }
 
-    return list.toArray(new String[list.size()]);
+    return set.toArray(new String[set.size()]);
   }
  
   /**
