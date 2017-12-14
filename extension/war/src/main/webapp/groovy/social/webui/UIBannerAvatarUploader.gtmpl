@@ -1,0 +1,62 @@
+<%
+import org.apache.commons.lang.StringEscapeUtils;
+
+def jsManager = _ctx.getRequestContext().getJavascriptManager();
+jsManager.require("SHARED/bannerUploader", "bannerUploader").addScripts("bannerUploader.init();");
+
+def title = "";
+def avatarURL = ""; 
+if (uicomponent.getParent() instanceof org.exoplatform.social.webui.space.UISpaceMenu) {
+	def space = uicomponent.getParent().getSpace();
+	title = StringEscapeUtils.escapeHtml(uicomponent.getParent().getSpaceName());
+	avatarURL = StringEscapeUtils.escapeHtml(uicomponent.getParent().getImageSource());
+	if (avatarURL == null) {
+	  avatarURL = "/eXoSkin/skin/images/system/SpaceAvtDefault.png";
+	} else {
+	  avatarURL += "?t=" + space.getAvatarLastUpdated();
+	}
+} else {
+	def profile = uicomponent.getParent().getOwnerProfile();
+	if(profile != null){
+	    title = StringEscapeUtils.escapeHtml(profile.getFullName());
+	    avatarURL = uicomponent.getParent().getAvatarURL(profile);
+	}
+	if (avatarURL == null) {
+	    avatarURL = "/eXoSkin/skin/images/system/UserAvtDefault.png"
+	} else {
+	    avatarURL += "?t=" + profile.getAvatarLastUpdated();
+	}
+}
+
+uiform.begin();
+%>
+<div class="userAvt pull-left">
+    <img title="$title" alt="$title" src="$avatarURL">
+    <a href="#"><i class="uiIconCamera"></i></a>
+    <div class="uiForm hidden">
+	    <%
+		for(field in uiform.getChildren()) {
+		    if(field.isRendered()) {
+	        %>
+		        <div class="control-group hidden">
+	    	        <div class="controls-full"><%uiform.renderField(field);%></div>
+		        </div>
+	        <%
+		    }
+		}
+		%>
+		<div class="uiAction hidden">
+		<%
+			for(action in uicomponent.getActions()) {
+		        String actionLabel = _ctx.appRes(uicomponent.getName() + ".action." + action);
+		        String link = uicomponent.event(action);
+		    %>
+		        <button class="btn" type="button" onclick="$link">$actionLabel</button>
+		    <%
+		    }
+	    %>
+        </div>
+    </div>
+</div>
+
+<%uiform.end();%>

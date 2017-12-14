@@ -17,7 +17,7 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-(function($) {
+(function($, bannerUploader) {
 var UISpaceNavigation = {
     addEditability: function(id, moreLabel) {
     var editedTab = $("#" + id);
@@ -184,7 +184,17 @@ var UISpaceNavigation = {
     $(tabContainer).css({"visibility":"visible"});
 	},
 
-  initBanner : function() {
+  initAvatar : function(uploaderId) {
+    $(uploaderId + ' .uiIconCamera').on('click', function() {
+        bannerUploader.selectFile(uploaderId);
+    });
+  },
+
+  initBanner : function(uploaderId) {
+    $('.bannerControls .uiIconCamera').on('click', function() {
+        bannerUploader.selectFile(uploaderId);
+    });
+
     $(window).off('scroll.uiSpaceMenu').on('scroll.uiSpaceMenu', function() {
       var $spacePage = $('#SpacePage');
       if ($(window).scrollTop() > 130) {
@@ -213,4 +223,4 @@ var UISpaceNavigation = {
 };
 
 return UISpaceNavigation;
-})(jq);
+})(jq, bannerUploader);

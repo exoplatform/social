@@ -52,6 +52,10 @@ import org.exoplatform.webui.form.input.UIUploadInput;
   )
 })
 public class UIAvatarUploader extends UIForm {
+  // The width and height of resized avatar fix 200px like facebook avatar
+  public static final int WIDTH = 200;
+  public static final int HEIGHT = 200;
+
   /** Message alert that mimetype is not accepted. */
   private static final String MSG_MIMETYPE_NOT_ACCEPTED = "UIAvatarUploader.msg.mimetype_not_accepted";
   /** Message alert that image is not loaded. */
@@ -117,9 +121,6 @@ public class UIAvatarUploader extends UIForm {
    * inform user to upload image.
    */
   public static class ConfirmActionListener extends EventListener<UIAvatarUploader> {
-    // The width and height of resized avatar fix 200px like facebook avatar
-    private static final int WIDTH = 200;
-    private static final int HEIGHT = 200;
 
     @Override
     public void execute(Event<UIAvatarUploader> event) throws Exception {

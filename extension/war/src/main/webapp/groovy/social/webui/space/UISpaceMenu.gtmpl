@@ -81,7 +81,8 @@ String moreLabel = _ctx.appRes("${uicomponentId}.label.More").replace("'", "\\47
 _ctx.getRequestContext().getJavascriptManager()
         .require("SHARED/social-ui-space-nav", "spacenav")
         .addScripts("spacenav.addEditability('" + uicomponent.id + "','" + moreLabel + "');")
-        .addScripts("spacenav.initBanner();");
+        .addScripts("spacenav.initBanner('#UIBannerUploader');")
+        .addScripts("spacenav.initAvatar('#UIBannerAvatarUploader');");
 
 String srcAppIcon;
 String appName;
@@ -96,17 +97,14 @@ if(appSelected == null || appSelected.length() == 0) {
 %>
 
 <div class="uiSpaceMenu" id="UISpaceMenu">
-<div class="userAvt pull-left">
-<img title="$spaceName" alt="$spaceName" src="$spaceAvatar">
-<a href="<%=uicomponent.event("ChangeAvatar");%>"><i class="uiIconCamera"></i></a>
-</div>
+    <% uicomponent.renderChild(org.exoplatform.social.webui.UIBannerAvatarUploader.class); %>
     <div class="spaceMenuNav">
       <div class="spaceMenuNavHeader" style="<%=bannerCSS%>">
         <h3>$spaceName</h3>
 <ul class="spaceMenuApps menuApps pull-left">
 </ul>
         <div class="bannerControls">
-          <a href="<%=uicomponent.event("ChangeBanner");%>"><i class="uiIconCamera"></i></a>
+          <a href="#"><i class="uiIconCamera"></i></a>
           <% if (banner != null) {%>
           <a href="<%=uicomponent.event("DeleteBanner");%>"><i class="uiIconTrash"></i></a>
           <%}%>
@@ -174,5 +172,5 @@ for(node in apps) {
   </nav>  
     </div>
 
-  <div class="uiAvatarUploader"><% uicomponent.renderChild(org.exoplatform.social.webui.composer.PopupContainer.class); %></div>
+  <div class="uiBannerUploader"><% uicomponent.renderChild(org.exoplatform.social.webui.UIBannerUploader.class); %></div>
 </div>

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2003-2009 eXo Platform SAS.
+ * Copyright (C) 2003-2017 eXo Platform SAS.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Affero General Public License
@@ -16,8 +16,13 @@
  */
 package org.exoplatform.social.webui;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.util.Arrays;
+import java.util.Map;
+
 import org.exoplatform.commons.utils.CommonsUtils;
-import org.exoplatform.commons.utils.MimeTypeResolver;
 import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.image.ImageUtils;
 import org.exoplatform.social.core.model.BannerAttachment;
@@ -31,56 +36,51 @@ import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.ComponentConfigs;
 import org.exoplatform.webui.config.annotation.EventConfig;
-import org.exoplatform.webui.core.UIPopupWindow;
 import org.exoplatform.webui.core.lifecycle.UIFormLifecycle;
 import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.event.EventListener;
 import org.exoplatform.webui.form.UIForm;
 import org.exoplatform.webui.form.input.UIUploadInput;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-
-
 @ComponentConfigs ({
   @ComponentConfig(
     lifecycle = UIFormLifecycle.class,
     template = "war:/groovy/social/webui/UIBannerUploader.gtmpl",
     events = {
-      @EventConfig(listeners = UIBannerUploader.ConfirmActionListener.class),
-      @EventConfig(listeners = UIBannerUploader.CancelActionListener.class)
+      @EventConfig(listeners = UIBannerUploader.ConfirmActionListener.class)
     }
   )
 })
 public class UIBannerUploader extends UIForm {
   /** Message alert that mimetype is not accepted. */
-  private static final String MSG_MIMETYPE_NOT_ACCEPTED = "UIBannerUploader.msg.mimetype_not_accepted";
+  protected static final String MSG_MIMETYPE_NOT_ACCEPTED = "UIBannerUploader.msg.mimetype_not_accepted";
   /** Message alert that image is not loaded. */
-  private static final String MSG_IMAGE_NOT_LOADED = "UIBannerUploader.msg.img_not_loaded";
-/*  *//** Message alert that the file name is too long *//*
-  *//** The number of characters allowed to rename *//*
-
+  protected static final String MSG_IMAGE_NOT_LOADED = "UIBannerUploader.msg.img_not_loaded";
   /** FIELD Uploader. */
-  private static final String FIELD_UPLOADER = "BannerUploader";
-
+  protected static final String FIELD_UPLOADER = "BannerUploader";
   /** The limit size for upload image. */
-  private static final int uploadLimit = 2; //MB
-
+  protected static final int uploadLimit = 2; //MB
   /** List of accepted mimetype. */
-  private static final String[] ACCEPTED_MIME_TYPES = new String[] {"image/gif", "image/jpeg", "image/jpg", "image/png", "image/x-png", "image/pjpeg"};
+  protected static final String[] ACCEPTED_MIME_TYPES = new String[] {"image/gif", "image/jpeg", "image/jpg", "image/png", "image/x-png", "image/pjpeg"};
+
+  private UIUploadInput uiBannerUploadInput;
 
   /**
    * Initializes upload form.<br>\
    *
    */
-  public UIBannerUploader() throws Exception {
-    UIUploadInput uiBannerUploadInput = new UIUploadInput(FIELD_UPLOADER, FIELD_UPLOADER, 1, uploadLimit);
+  public UIBannerUploader() {
+    this(FIELD_UPLOADER);
+  }
+
+  /**
+   * Initializes upload form.<br>\
+   *
+   */
+  public UIBannerUploader(String uploadFieldId) {
+    uiBannerUploadInput = new UIUploadInput(uploadFieldId, uploadFieldId, 1, uploadLimit);
     addUIFormInput(uiBannerUploadInput);
-    setActions(new String[]{"Confirm", "Cancel"});
+    setActions(new String[]{"Confirm"});
   }
 
   /**
@@ -90,7 +90,7 @@ public class UIBannerUploader extends UIForm {
    *
    * @return boolean
    */
-  private boolean isAcceptedMimeType(String mimeType) {
+  protected boolean isAcceptedMimeType(String mimeType) {
     for (String acceptedMimeType : ACCEPTED_MIME_TYPES) {
       if (mimeType.equals(acceptedMimeType)) return true;
     }
@@ -123,6 +123,10 @@ public class UIBannerUploader extends UIForm {
     Utils.getIdentityManager().updateProfile(p);
   }
 
+  public UIUploadInput getUiBannerUploadInput() {
+    return uiBannerUploadInput;
+  }
+
   public static class ConfirmActionListener extends EventListener<UIBannerUploader> {
 
     @Override
@@ -133,6 +137,7 @@ public class UIBannerUploader extends UIForm {
       if (uiBannerUploadInput.getUploadResources().length < 1) {
         ctx.getUIApplication().addMessage(new ApplicationMessage(MSG_IMAGE_NOT_LOADED, null, ApplicationMessage.ERROR));
         ctx.addUIComponentToUpdateByAjax(uiBannerUploader);
+        return;
       }
       
       for (UploadResource uploadResource : uiBannerUploadInput.getUploadResources()) {
@@ -151,9 +156,6 @@ public class UIBannerUploader extends UIForm {
             ctx.addUIComponentToUpdateByAjax(uiBannerUploader);
           } else {
             InputStream uploadedStream = new FileInputStream(new File(uploadResource.getStoreLocation()));
-            MimeTypeResolver mimeTypeResolver = new MimeTypeResolver();
-
-            String extension = mimeTypeResolver.getExtension(mimeType);
             BannerAttachment avatarAttachment = new BannerAttachment(null, fileName, mimeType,
                     uploadedStream, null, System.currentTimeMillis());
 
@@ -163,35 +165,15 @@ public class UIBannerUploader extends UIForm {
               uiBannerUploader.saveUserBanner(avatarAttachment);
             }
 
-            UIPopupWindow uiPopup = uiBannerUploader.getParent();
-            uiPopup.setShow(false);
-            uiPopup.setRendered(false);
-            uiPopup.setUIComponent(null);
-            ctx.addUIComponentToUpdateByAjax(uiPopup.getParent().getParent());
+            ctx.addUIComponentToUpdateByAjax(uiBannerUploader.getParent());
           }
           return;
         } finally {
           UploadService uploadService = CommonsUtils.getService(UploadService.class);
           uploadService.removeUploadResource(uploadResource.getUploadId());
+          uiBannerUploadInput.addNewUploadId();
         }
       }  
-    }
-  }
-
-  /**
-   * Cancels the upload image.<br>
-   *
-   */
-  public static class CancelActionListener extends EventListener<UIBannerUploader> {
-    @Override
-    public void execute(Event<UIBannerUploader> event) throws Exception {
-      UIBannerUploader uiBannerUploader = event.getSource();
-      UIPopupWindow uiPopup = uiBannerUploader.getParent();
-      uiPopup.setShow(false);
-      uiPopup.setRendered(false);
-      uiPopup.setUIComponent(null);
-
-      event.getRequestContext().addUIComponentToUpdateByAjax(uiPopup);
     }
   }
 }
