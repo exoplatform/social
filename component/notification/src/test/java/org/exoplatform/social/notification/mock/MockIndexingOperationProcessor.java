@@ -28,4 +28,9 @@ public class MockIndexingOperationProcessor extends IndexingOperationProcessor {
   public void process() {
     // do nothing
   }
+
+  @Override
+  public void interrupt() {
+    // do nothing
+  }
 }
