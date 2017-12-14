@@ -84,7 +84,7 @@
 
         var disable = !(pureText.length > 0 && pureText.length <= UIComposer.MAX_LENGTH);
         disabled = disable && !UIComposer.hasContent();
-        $(".share-button").prop("disabled", disabled);
+        $(".uiComposer .share-button").prop("disabled", disabled);
     },
     getEditorData : function() {
       var composerInput = $('#composerInput');
