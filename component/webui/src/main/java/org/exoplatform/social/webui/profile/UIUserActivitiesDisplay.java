@@ -355,7 +355,6 @@ public class UIUserActivitiesDisplay extends AbstractActivitiesDisplay {
      
      requestContext.addUIComponentToUpdateByAjax(uiUserActivities);
      
-     Utils.resizeHomePage();
    }
  }
   
@@ -367,7 +366,6 @@ public class UIUserActivitiesDisplay extends AbstractActivitiesDisplay {
      .require("SHARED/social-ui-activity", "activity")
      .addScripts("activity.responsiveMobile('" + uiUserActivities.getAncestorOfType(UIPortletApplication.class).getId() + "');");
      event.getRequestContext().addUIComponentToUpdateByAjax(uiUserActivities);
-     Utils.resizeHomePage();
    }
  }
   

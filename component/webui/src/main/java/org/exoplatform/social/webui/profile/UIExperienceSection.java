@@ -302,7 +302,6 @@ public class UIExperienceSection extends UIProfileSection {
       uiForm.removeChildById(isCurrentId);
       
       event.getRequestContext().addUIComponentToUpdateByAjax(uiForm);
-      Utils.resizeHomePage();
     }
   }
 
@@ -443,7 +442,6 @@ public class UIExperienceSection extends UIProfileSection {
       uiDateTime.setRendered(!isCheck);
 
       event.getRequestContext().addUIComponentToUpdateByAjax(uiForm);
-      Utils.resizeHomePage();
     }
   }
 

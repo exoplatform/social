@@ -23,7 +23,6 @@
 
 <%
   import org.exoplatform.social.webui.activity.UIActivitiesLoader;
-  import org.exoplatform.social.webui.Utils;
   
   def space = uicomponent.getSpace();
   def uicomponentId = uicomponent.id;
@@ -48,7 +47,6 @@
   </div>
   <% uicomponent.renderChild(UIActivitiesLoader.class);%>
     <% if ( hasActivities ) { %>
-    <% Utils.resizeHomePage();%>
   	<div class="activityBottom"><span></span></div>
   <% } %>
 </div>

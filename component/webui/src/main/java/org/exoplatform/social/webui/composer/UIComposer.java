@@ -218,7 +218,6 @@ public class UIComposer extends UIForm {
       Utils.clearUserProfilePopup();
       
       Utils.initUserProfilePopup(uiComposer.getId());
-      Utils.resizeHomePage();
       //
       if(activity != null) {
         //

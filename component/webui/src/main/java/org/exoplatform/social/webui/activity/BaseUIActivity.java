@@ -880,7 +880,6 @@ public class BaseUIActivity extends UIForm {
       jm.require("SHARED/social-ui-activity", "activity").addScripts("activity.loadLikes('#ContextBox" + activityId + "');");
 
       Utils.initUserProfilePopup(uiActivity.getId());
-      Utils.resizeHomePage();
     }
   }
 
@@ -907,7 +906,6 @@ public class BaseUIActivity extends UIForm {
       requestContext.addUIComponentToUpdateByAjax(uiActivity);
 
       Utils.initUserProfilePopup(uiActivity.getId());
-      Utils.resizeHomePage();
     }
   }
 
@@ -945,7 +943,6 @@ public class BaseUIActivity extends UIForm {
       JavascriptManager jm = event.getRequestContext().getJavascriptManager();
 
       Utils.initUserProfilePopup(uiActivity.getId());
-      Utils.resizeHomePage();
 
       jm.require("SHARED/social-ui-activity", "activity").require("SHARED/jquery", "jq").
       addScripts("activity.initCKEditor('" + activityId + "', activity.spaceURL, activity.commentPlaceholder, activity.spaceGroupId);").
@@ -964,7 +961,6 @@ public class BaseUIActivity extends UIForm {
       }
 
       Utils.initUserProfilePopup(uiActivity.getId());
-      Utils.resizeHomePage();
     }
   }
 
@@ -996,7 +992,6 @@ public class BaseUIActivity extends UIForm {
       requestContext.addUIComponentToUpdateByAjax(uiActivity);
 
       Utils.initUserProfilePopup(uiActivity.getId());
-      Utils.resizeHomePage();
       uiActivity.focusToComment(newComment.getId());
       uiActivity.getParent().broadcast(event, event.getExecutionPhase());
     }
@@ -1033,7 +1028,6 @@ public class BaseUIActivity extends UIForm {
         event.getRequestContext().addUIComponentToUpdateByAjax(uiActivitiesDisplay);
       }
       Utils.clearUserProfilePopup();
-      Utils.resizeHomePage();
     }
   }
 
@@ -1053,7 +1047,6 @@ public class BaseUIActivity extends UIForm {
       requestContext.addUIComponentToUpdateByAjax(uiActivity);
 
       Utils.initUserProfilePopup(uiActivity.getId());
-      Utils.resizeHomePage();
     }
   }
 

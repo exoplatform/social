@@ -713,27 +713,6 @@ public class Utils {
     Space space = getSpaceByContext();
     return (space != null ? space.getUrl() : null);
   }
-
-  /**
-   * Resizes the height of Home page.
-   * 
-   * @since 4.0.1-GA
-   */
-  public static void resizeHomePage() {
-    PortletRequestContext pContext = (PortletRequestContext) WebuiRequestContext.getCurrentInstance();
-    JavascriptManager jm = pContext.getJavascriptManager();
-
-    StringBuilder script = new StringBuilder("setTimeout(function() {")
-      .append("jq('.LeftNavigationTDContainer:first').css('height', 'auto');")
-      .append("jq('#UIUserActivityStreamPortlet').css('height', 'auto');")
-      .append("jq('#UIProfile').css('height', 'auto');")
-      .append("platformLeftNavigation.resize();")
-      .append("}, 200);");
-    
-    jm.require("SHARED/jquery", "jq")
-      .require("SHARED/platform-left-navigation", "platformLeftNavigation")
-      .addScripts(script.toString());
-  }
   
   /**
    * Initializes user profile popup.

@@ -130,8 +130,6 @@ public class UISpaceActivitiesDisplay extends AbstractActivitiesDisplay {
      UISpaceActivitiesDisplay uiSpaceActivities = event.getSource();
      uiSpaceActivities.init();
      event.getRequestContext().addUIComponentToUpdateByAjax(uiSpaceActivities);
-
-     Utils.resizeHomePage();
    }
   }
 }

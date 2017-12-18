@@ -142,7 +142,6 @@ public abstract class UIProfileSection extends UIForm {
       UIProfileSection sect = event.getSource();
       sect.setEditMode("true".equals(event.getRequestContext().getRequestParameter(OBJECTID)));
       event.getRequestContext().addUIComponentToUpdateByAjax(sect);
-      Utils.resizeHomePage();
     }
   }
 
@@ -157,7 +156,6 @@ public abstract class UIProfileSection extends UIForm {
       UIProfileSection sect = event.getSource();
       sect.setEditMode(false);
       event.getRequestContext().addUIComponentToUpdateByAjax(sect);
-      Utils.resizeHomePage();
     }
   }
 
@@ -173,7 +171,6 @@ public abstract class UIProfileSection extends UIForm {
       sect.setEditMode(false);
       sect.setFirstLoad(false);
       event.getRequestContext().addUIComponentToUpdateByAjax(sect);
-      Utils.resizeHomePage();
     }
   }
 }
