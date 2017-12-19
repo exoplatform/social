@@ -325,7 +325,7 @@
 
                     if ((isManager && json.manager >1)|| (!isManager && isMember)) {
                         action = $('<div/>', {
-                            "class": "btn btn-primary",
+                            "class": "btn-link",
                             "text": "" + labels.leave,
                             "data-action": spaceName+":" + opts.userName+":member",
                             "onclick": "executeAction(this)"
@@ -334,7 +334,7 @@
 
                     if (!isMember) {
                         action = $('<div/>', {
-                            "class": "btn btn-primary",
+                            "class": "btn-link",
                             "text": "" + labels.join,
                             "data-action": spaceName+":" + opts.userName+":member",
                             "onclick": "executeAction(this)"
