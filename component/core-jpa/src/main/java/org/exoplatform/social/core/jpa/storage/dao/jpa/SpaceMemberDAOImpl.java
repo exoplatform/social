@@ -50,12 +50,16 @@ public class SpaceMemberDAOImpl extends GenericDAOJPAImpl<SpaceMemberEntity, Lon
       return Collections.emptyList();
     }
 
-    StringBuilder queryStringBuilder = new StringBuilder("SELECT identity.remote_id , identity_prop.value \n");
-    queryStringBuilder.append(" FROM SOC_IDENTITIES identity \n");
+    // Oracle Dialect in Hibernate 4 is not registering NVARCHAR correctly, see HHH-10495
+    StringBuilder queryStringBuilder =
+                                     isOrcaleDialect() ? new StringBuilder("SELECT to_char(identity_1.remote_id) , to_char(identity_prop.value) \n")
+                                     :isMSSQLDialect() ? new StringBuilder("SELECT try_convert(varchar(200), identity_1.remote_id) as remote_id , try_convert(varchar(200), identity_prop.value) as identity_prop_value \n")
+                                                       : new StringBuilder("SELECT (identity_1.remote_id) , (identity_prop.value) \n");
+    queryStringBuilder.append(" FROM SOC_IDENTITIES identity_1 \n");
     queryStringBuilder.append(" LEFT JOIN SOC_IDENTITY_PROPERTIES identity_prop \n");
-    queryStringBuilder.append("   ON identity.identity_id = identity_prop.identity_id \n");
+    queryStringBuilder.append("   ON identity_1.identity_id = identity_prop.identity_id \n");
     queryStringBuilder.append("       AND identity_prop.name = '").append(sortField).append("' \n");
-    queryStringBuilder.append(" WHERE identity.remote_id IN (");
+    queryStringBuilder.append(" WHERE identity_1.remote_id IN (");
     for (int i = 0; i < usernames.size(); i++) {
       if (i > 0) {
         queryStringBuilder.append(",");
@@ -63,8 +67,8 @@ public class SpaceMemberDAOImpl extends GenericDAOJPAImpl<SpaceMemberEntity, Lon
       queryStringBuilder.append("'").append(usernames.get(i)).append("'");
     }
     queryStringBuilder.append(")\n");
-    queryStringBuilder.append("       AND identity.provider_id = '").append(OrganizationIdentityProvider.NAME).append("' \n");
-    queryStringBuilder.append(" ORDER BY identity_prop.value ASC, identity.remote_id ASC");
+    queryStringBuilder.append("       AND identity_1.provider_id = '").append(OrganizationIdentityProvider.NAME).append("' \n");
+    queryStringBuilder.append(" ORDER BY identity_prop.value ASC, identity_1.remote_id ASC");
 
     Query query = getEntityManager().createNativeQuery(queryStringBuilder.toString());
     List<?> resultList = query.getResultList();
@@ -173,5 +177,4 @@ public class SpaceMemberDAOImpl extends GenericDAOJPAImpl<SpaceMemberEntity, Lon
       return null;
     }
   }
-
 }
