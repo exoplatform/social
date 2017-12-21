@@ -1590,6 +1590,23 @@ public class SpaceServiceTest extends AbstractCoreTest {
     assertNull("savedSpace must be null", savedSpace);
   }
 
+  public void testUpdateSpacePermissions() throws Exception {
+    Space space = this.getSpaceInstance(0);
+    space.setEditor("raul");
+    try {
+      spaceService.updateSpaceBanner(space);
+      fail("Space member shouldn't be able to update space banner");
+    } catch (Exception e) {
+      // Expected
+    }
+    try {
+      spaceService.updateSpaceAvatar(space);
+      fail("Space member shouldn't be able to update space avatar");
+    } catch (Exception e) {
+      // Expected
+    }
+  }
+
   /**
    * Test {@link SpaceService#updateSpace(Space)}
    *

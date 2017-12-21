@@ -1511,6 +1511,8 @@ public class SpaceServiceImpl implements SpaceService {
   }
 
   public Space updateSpaceAvatar(Space existingSpace) {
+    checkSpaceEditorPermissions(existingSpace);
+
     Identity spaceIdentity = identityStorage.findIdentity(SpaceIdentityProvider.NAME, existingSpace.getPrettyName());
     Profile profile = spaceIdentity.getProfile();
     profile.setProperty(Profile.AVATAR, existingSpace.getAvatarAttachment());
@@ -1520,6 +1522,8 @@ public class SpaceServiceImpl implements SpaceService {
   }
 
   public Space updateSpaceBanner(Space existingSpace) {
+    checkSpaceEditorPermissions(existingSpace);
+
     Identity spaceIdentity = identityStorage.findIdentity(SpaceIdentityProvider.NAME, existingSpace.getPrettyName());
     if (spaceIdentity != null) {
       Profile profile = spaceIdentity.getProfile();
@@ -1662,5 +1666,14 @@ public class SpaceServiceImpl implements SpaceService {
   @Override
   public List<MembershipEntry> getSuperManagersMemberships() {
     return Collections.unmodifiableList(superManagersMemberships);
+  }
+
+  private String checkSpaceEditorPermissions(Space space) {
+    String editor = space.getEditor();
+    // TODO if the space editor is null, an exception should be thrown too
+    if (StringUtils.isNotBlank(editor) && !hasEditPermission(space, editor)) {
+      throw new IllegalStateException("User " + editor + " is not authorized to change space.");
+    }
+    return editor;
   }
 }

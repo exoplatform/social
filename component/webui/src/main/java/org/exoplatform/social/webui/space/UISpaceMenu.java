@@ -98,6 +98,10 @@ public class UISpaceMenu extends UIContainer {
    */
   private Space space = null;
 
+  private UIBannerUploader uiBanner;
+
+  private UIBannerAvatarUploader uiAvatarBanner;
+
   /**
    * Constructor.
    *
@@ -105,9 +109,20 @@ public class UISpaceMenu extends UIContainer {
    */
   public UISpaceMenu() throws Exception {
     spaceService = getSpaceService();
+    space = Utils.getSpaceByContext();
 
-    addChild(createUIComponent(UIBannerUploader.class, null, null));
-    addChild(createUIComponent(UIBannerAvatarUploader.class, null, null));
+    uiBanner = createUIComponent(UIBannerUploader.class, null, null);
+    addChild(uiBanner);
+    uiAvatarBanner = createUIComponent(UIBannerAvatarUploader.class, null, null);
+    addChild(uiAvatarBanner);
+  }
+
+  @Override
+  public void processRender(WebuiRequestContext context) throws Exception {
+    boolean canEditBanner = hasSettingPermission();
+    uiBanner.setRendered(canEditBanner);
+    uiAvatarBanner.setRenderUpload(canEditBanner);
+    super.processRender(context);
   }
 
   /**
@@ -117,9 +132,6 @@ public class UISpaceMenu extends UIContainer {
    * @throws Exception
    */
   public List<UserNode> getApps() throws Exception {
-    String spaceUrl = Utils.getSpaceUrlByContext();
-    space = spaceService.getSpaceByUrl(spaceUrl);
-    
     if (space == null) {
       return new ArrayList<UserNode>(0);
     }
@@ -184,9 +196,10 @@ public class UISpaceMenu extends UIContainer {
   private void removeSpaceBanner() {
     Space space = getSpace();
     space.setBannerAttachment(null);
-    spaceService.updateSpace(space);
 
     space.setEditor(Utils.getViewerRemoteId());
+
+    spaceService.updateSpace(space);
     spaceService.updateSpaceBanner(space);
   }
   

@@ -146,9 +146,9 @@ public class UIAvatarUploadContent extends UIContainer {
 
   public void saveSpaceAvatar(UIAvatarUploadContent uiAvatarUploadContent, Space space) throws Exception {
     SpaceService spaceService = uiAvatarUploadContent.getApplicationComponent(SpaceService.class);
+    space.setEditor(Utils.getViewerRemoteId());
     space.setAvatarAttachment(uiAvatarUploadContent.getAvatarAttachment());
     spaceService.updateSpace(space);
-    space.setEditor(Utils.getViewerRemoteId());
     spaceService.updateSpaceAvatar(space);
   }
 
