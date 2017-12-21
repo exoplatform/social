@@ -1,8 +1,11 @@
 <%
 import org.apache.commons.lang.StringEscapeUtils;
 
-def jsManager = _ctx.getRequestContext().getJavascriptManager();
-jsManager.require("SHARED/bannerUploader", "bannerUploader").addScripts("bannerUploader.init();");
+def renderUploader = uicomponent.isRenderUpload();
+if (renderUploader) {
+	def jsManager = _ctx.getRequestContext().getJavascriptManager();
+    jsManager.require("SHARED/bannerUploader", "bannerUploader").addScripts("bannerUploader.init();");
+}
 
 def title = "";
 def avatarURL = ""; 
@@ -32,31 +35,33 @@ uiform.begin();
 %>
 <div class="userAvt pull-left">
     <img title="$title" alt="$title" src="$avatarURL">
-    <a href="#"><i class="uiIconCamera"></i></a>
-    <div class="uiForm hidden">
-	    <%
-		for(field in uiform.getChildren()) {
-		    if(field.isRendered()) {
-	        %>
-		        <div class="control-group hidden">
-	    	        <div class="controls-full"><%uiform.renderField(field);%></div>
-		        </div>
-	        <%
-		    }
-		}
-		%>
-		<div class="uiAction hidden">
-		<%
-			for(action in uicomponent.getActions()) {
-		        String actionLabel = _ctx.appRes(uicomponent.getName() + ".action." + action);
-		        String link = uicomponent.event(action);
-		    %>
-		        <button class="btn" type="button" onclick="$link">$actionLabel</button>
+    <%if (renderUploader) {%>
+	    <a href="#"><i class="uiIconCamera"></i></a>
+	    <div class="uiForm hidden">
 		    <%
-		    }
-	    %>
-        </div>
-    </div>
+			for(field in uiform.getChildren()) {
+			    if(field.isRendered()) {
+		        %>
+			        <div class="control-group hidden">
+		    	        <div class="controls-full"><%uiform.renderField(field);%></div>
+			        </div>
+		        <%
+			    }
+			}
+			%>
+			<div class="uiAction hidden">
+			<%
+				for(action in uicomponent.getActions()) {
+			        String actionLabel = _ctx.appRes(uicomponent.getName() + ".action." + action);
+			        String link = uicomponent.event(action);
+			    %>
+			        <button class="btn" type="button" onclick="$link">$actionLabel</button>
+			    <%
+			    }
+		    %>
+	        </div>
+	    </div>
+	<%}%>
 </div>
 
 <%uiform.end();%>

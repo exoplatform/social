@@ -54,15 +54,26 @@ public class UIBannerAvatarUploader extends UIBannerUploader {
   /** FIELD Uploader. */
   protected static final String FIELD_UPLOADER = "BannerAvatarUploader";
 
+  private boolean renderUpload = false;
+
   public UIBannerAvatarUploader() {
     super(FIELD_UPLOADER);
+  }
+
+  public void setRenderUpload(boolean renderUpload) {
+    this.renderUpload = renderUpload;
+  }
+
+  public boolean isRenderUpload() {
+    return renderUpload;
   }
 
   public void saveSpaceAvatar(Space space, AvatarAttachment avatarAttachment) throws Exception {
     SpaceService spaceService = CommonsUtils.getService(SpaceService.class);
     space.setAvatarAttachment(avatarAttachment);
-    spaceService.updateSpace(space);
     space.setEditor(Utils.getViewerRemoteId());
+
+    spaceService.updateSpace(space);
     spaceService.updateSpaceAvatar(space);
   }
 

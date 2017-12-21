@@ -101,10 +101,10 @@ public class UIBannerUploader extends UIForm {
     SpaceService spaceService = getApplicationComponent(SpaceService.class);
     String spaceUrl = Utils.getSpaceUrlByContext();
     Space space = spaceService.getSpaceByUrl(spaceUrl);
+    space.setEditor(Utils.getViewerRemoteId());
 
     space.setBannerAttachment(banner);
     spaceService.updateSpace(space);
-    space.setEditor(Utils.getViewerRemoteId());
     spaceService.updateSpaceBanner(space);
   }
 

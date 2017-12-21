@@ -78,11 +78,17 @@ if (banner != null) {
 
 
 String moreLabel = _ctx.appRes("${uicomponentId}.label.More").replace("'", "\\47");
-_ctx.getRequestContext().getJavascriptManager()
-        .require("SHARED/social-ui-space-nav", "spacenav")
-        .addScripts("spacenav.addEditability('" + uicomponent.id + "','" + moreLabel + "');")
-        .addScripts("spacenav.initBanner('#UIBannerUploader');")
-        .addScripts("spacenav.initAvatar('#UIBannerAvatarUploader');");
+if(uicomponent.hasSettingPermission()) {
+	_ctx.getRequestContext().getJavascriptManager()
+	        .require("SHARED/social-ui-space-nav", "spacenav")
+	        .addScripts("spacenav.addEditability('" + uicomponent.id + "','" + moreLabel + "');")
+	        .addScripts("spacenav.initBanner('#UIBannerUploader');")
+	        .addScripts("spacenav.initAvatar('#UIBannerAvatarUploader');");
+} else {
+    _ctx.getRequestContext().getJavascriptManager()
+            .require("SHARED/social-ui-space-nav", "spacenav")
+            .addScripts("spacenav.addEditability('" + uicomponent.id + "','" + moreLabel + "');");
+}
 
 String srcAppIcon;
 String appName;
@@ -103,12 +109,14 @@ if(appSelected == null || appSelected.length() == 0) {
         <h3>$spaceName</h3>
 <ul class="spaceMenuApps menuApps pull-left">
 </ul>
+       <%if(uicomponent.hasSettingPermission()) {%>
         <div class="bannerControls">
-          <a href="#"><i class="uiIconCamera"></i></a>
-          <% if (banner != null) {%>
-          <a href="<%=uicomponent.event("DeleteBanner");%>"><i class="uiIconTrash"></i></a>
-          <%}%>
+            <a href="#"><i class="uiIconCamera"></i></a>
+            <% if (banner != null) {%>
+              <a href="<%=uicomponent.event("DeleteBanner");%>"><i class="uiIconTrash"></i></a>
+            <%}%>
         </div>
+       <%}%>
       </div>
 <nav>
 <%
