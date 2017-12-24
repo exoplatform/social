@@ -53,12 +53,24 @@
                     <value><string>/activity/{activityID}/{displayType}</string></value>
                   </entry>
                   <entry>
+                    <key><string>activity.stream.owner.extended.show</string></key>
+                    <value><string><![CDATA[/activities/{streamOwnerId}/{<.*>path}]]></string></value>
+                  </entry>
+                  <entry>
                     <key><string>activity.stream.owner.show</string></key>
                     <value><string>/activities/{streamOwnerId}</string></value>
                   </entry>
                   <entry>
+                    <key><string>profile.owner.extended.show</string></key>
+                    <value><string><![CDATA[/profile/{streamOwnerId}/{<.*>path}]]></string></value>
+                  </entry>
+                  <entry>
                     <key><string>profile.owner.show</string></key>
                     <value><string>/profile/{streamOwnerId}</string></value>
+                  </entry>
+                  <entry>
+                    <key><string>connections.network.extended.show</string></key>
+                    <value><string><![CDATA[/connections/{relationshipStatus}/{streamOwnerId}/{<.*>path}]]></string></value>
                   </entry>
                   <entry>
                     <key><string>connections.network.show</string></key>
