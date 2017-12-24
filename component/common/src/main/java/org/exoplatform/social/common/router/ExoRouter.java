@@ -45,17 +45,14 @@ public class ExoRouter implements Startable {
    */
   public static List<Route> routes = new CopyOnWriteArrayList<Route>();
 
-  private ExoRouterConfig routerConfig;
-  
   public static void reset() {
     routes.clear();
   }
   
   public ExoRouter() {}
 
-  public void addRoutes(ExoRouterConfig routeConfig) {
-    this.routerConfig = routeConfig;
-    Map<String, String> routeMapping = this.routerConfig.getRouteMapping();
+  public void addRoutes(ExoRouterConfig routerConfig) {
+    Map<String, String> routeMapping = routerConfig.getRouteMapping();
     
     for(Map.Entry<String, String> entry : routeMapping.entrySet()) {
       addRoute(entry.getValue(), entry.getKey());
