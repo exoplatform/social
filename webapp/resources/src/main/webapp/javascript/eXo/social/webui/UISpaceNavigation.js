@@ -33,9 +33,9 @@ var UISpaceNavigation = {
 
 	    var ul = $('#spaceMenuTab');
 
-      var $spacePage = $('#SpacePage');
+      var $rightBody = $('#RightBody');
       var delta = 130;
-      if ($spacePage.hasClass('sticky')) {
+      if ($rightBody.hasClass('sticky')) {
         var $avt = $('.uiSpaceMenu .userAvt');
         var $navHeader = $('.uiSpaceMenu .spaceMenuNavHeader');
         delta = $avt.outerWidth() + $navHeader.outerWidth() + 20;
@@ -196,15 +196,15 @@ var UISpaceNavigation = {
     });
 
     $(window).off('scroll.uiSpaceMenu').on('scroll.uiSpaceMenu', function() {
-      var $spacePage = $('#SpacePage');
+      var $rightBody = $('#RightBody');
       if ($(window).scrollTop() > 130) {
-        if (!$spacePage.hasClass('sticky')) {
-          $spacePage.addClass('sticky');
+        if (!$rightBody.hasClass('sticky')) {
+          $rightBody.addClass('sticky');
           $(window).trigger('resize');
         }
       } else {
-        if ($spacePage.hasClass('sticky')) {
-          $spacePage.removeClass('sticky');
+        if ($rightBody.hasClass('sticky')) {
+          $rightBody.removeClass('sticky');
           $(window).trigger('resize');
         }
       }
