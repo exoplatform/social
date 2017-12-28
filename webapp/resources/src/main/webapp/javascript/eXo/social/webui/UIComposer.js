@@ -80,7 +80,7 @@
         }
     },
     refreshShareButton : function() {
-        var pureText = UIComposer.getEditorData();
+        var pureText = UIComposer.getEditorData().replace(/\<p\>\s*\<\/p\>/g,"");
 
         var disable = !(pureText.length > 0 && pureText.length <= UIComposer.MAX_LENGTH);
         disabled = disable && !UIComposer.hasContent();
