@@ -24,6 +24,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
+import org.picocontainer.Startable;
+
 import org.exoplatform.container.xml.InitParams;
 import org.exoplatform.container.xml.ValueParam;
 
@@ -33,7 +35,7 @@ import org.exoplatform.container.xml.ValueParam;
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
  * @version $Revision$
  */
-public class LifeCycleCompletionService {
+public class LifeCycleCompletionService implements Startable {
 
   private final String THREAD_NUMBER_KEY = "thread-number";
 
@@ -105,6 +107,14 @@ public class LifeCycleCompletionService {
   public boolean isAsync() {
     return this.configAsyncExecution;
   }
+
+  public void start() {}
+  
+  public void stop() {
+    if (executor instanceof ExecutorService) {
+      ((ExecutorService) executor).shutdown();
+    }
+  };
 
   private class DirectExecutor implements Executor {
 
