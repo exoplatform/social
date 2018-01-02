@@ -16,11 +16,15 @@
  */
 package org.exoplatform.social.common.service.impl;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
+
+import org.picocontainer.Startable;
 
 import org.exoplatform.social.common.service.ExecutorServiceManager;
 import org.exoplatform.social.common.service.thread.DefaultThreadPoolFactory;
@@ -28,7 +32,7 @@ import org.exoplatform.social.common.service.thread.SocialThreadFactory;
 import org.exoplatform.social.common.service.thread.ThreadPoolConfig;
 import org.exoplatform.social.common.service.thread.ThreadPoolFactory;
 
-public class ExecutorServiceManagerImpl implements ExecutorServiceManager {
+public class ExecutorServiceManagerImpl implements ExecutorServiceManager, Startable {
   
   private ThreadPoolFactory threadPoolFactory = new DefaultThreadPoolFactory();
   private String threadNamePattern;
@@ -36,6 +40,8 @@ public class ExecutorServiceManagerImpl implements ExecutorServiceManager {
   
   private ThreadPoolConfig defaultConfig;
   
+  private List<ExecutorService> createdExecutorServices = new ArrayList<>();
+
   public ExecutorServiceManagerImpl() {
     defaultConfig = new ThreadPoolConfig();
     
@@ -77,13 +83,26 @@ public class ExecutorServiceManagerImpl implements ExecutorServiceManager {
   public ExecutorService newThreadPool(String name, ThreadPoolConfig config) {
     ThreadFactory threadFactory = createThreadFactory(name, true, config.getPriority());
     ExecutorService executorService = threadPoolFactory.newThreadPool(config, threadFactory);
-
+    createdExecutorServices.add(executorService);
     //
     return executorService;
   }
 
   private ThreadFactory createThreadFactory(String name, boolean isDaemon, int priority) {
     return new SocialThreadFactory(threadNamePattern, name, isDaemon, priority);
+  }
+
+  @Override
+  public void start() {
+  }
+
+  @Override
+  public void stop() {
+    for (ExecutorService executorService : createdExecutorServices) {
+      if (executorService != null) {
+        executorService.shutdown();
+      }
+    }
   }
 
 }
