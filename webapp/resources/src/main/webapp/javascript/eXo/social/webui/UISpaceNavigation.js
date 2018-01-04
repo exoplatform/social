@@ -182,19 +182,6 @@ var UISpaceNavigation = {
     }
 
     $(tabContainer).css({"visibility":"visible"});
-	},
-
-  initAvatar : function(uploaderId) {
-    $(uploaderId + ' .uiIconCamera').on('click', function() {
-        bannerUploader.selectFile(uploaderId);
-    });
-  },
-
-  initBanner : function(uploaderId) {
-    $('.bannerControls .uiIconCamera').on('click', function() {
-        bannerUploader.selectFile(uploaderId);
-    });
-
     $(window).off('scroll.uiSpaceMenu').on('scroll.uiSpaceMenu', function() {
       var $rightBody = $('#RightBody');
       if ($(window).scrollTop() > 130) {
@@ -219,6 +206,18 @@ var UISpaceNavigation = {
     } else if (left > $tab.width() - screenWidth / 2) {
       $tab.scrollLeft(left);
     }
+  },
+
+  initAvatar : function(uploaderId) {
+    $(uploaderId + ' .uiIconCamera').on('click', function() {
+        bannerUploader.selectFile(uploaderId);
+    });
+  },
+
+  initBanner : function(uploaderId) {
+    $('.bannerControls .uiIconCamera').on('click', function() {
+        bannerUploader.selectFile(uploaderId);
+    });
   }
 };
 
