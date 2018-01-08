@@ -78,11 +78,12 @@ public class MockSettingServiceImpl implements SettingService {
   }
 
   @Override
-  public Set<String> getEmptyContextsByScopeAndContextType(String contextType,
-                                                           String scopeType,
-                                                           String scopeName,
-                                                           int offset,
-                                                           int limit) {
+  public Set<String> getEmptyContextsByTypeAndScopeAndSettingName(String contextType,
+                                                                  String scopeType,
+                                                                  String scopeName,
+                                                                  String settingName,
+                                                                  int offset,
+                                                                  int limit) {
     return null;
   }
 
