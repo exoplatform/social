@@ -154,7 +154,7 @@
 						<field name="defaultConfig">
 							<collection type="java.util.ArrayList">
 								<value>
-									<string>Instantly</string>
+									<string>Weekly</string>
 								</value>
 							</collection>
 						</field>
@@ -195,7 +195,7 @@
 						<field name="defaultConfig">
 							<collection type="java.util.ArrayList">
 								<value>
-									<string>Instantly</string>
+									<string>Weekly</string>
 								</value>
 							</collection>
 						</field>
