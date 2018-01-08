@@ -146,10 +146,18 @@ public class MailTemplateProvider extends TemplateProvider {
         for (NotificationInfo message : notifications) {
           String commentId = message.getValueOwnerParameter(SocialNotificationUtils.COMMENT_ID.getKey());
           ExoSocialActivity commentActivity = Utils.getActivityManager().getActivity(commentId);
-          if (commentActivity == null) {
+          if (commentActivity == null || commentActivity.getParentCommentId() == null) {
             continue;
           }
 
+          ExoSocialActivity parentCommentActivity = Utils.getActivityManager().getActivity(commentActivity.getParentCommentId());
+          if (!parentCommentActivity.isComment()) {
+            continue;
+          }
+          Identity identity = Utils.getIdentityManager().getIdentity(parentCommentActivity.getPosterId(), true);
+          if (identity == null || StringUtils.isBlank(message.getTo()) || !message.getTo().equals(identity.getRemoteId())) {
+            continue;
+          }
           String poster = message.getValueOwnerParameter("poster");
           String title = SocialNotificationUtils.processImageTitle(commentActivity.getTitle(), imagePlaceHolder);
           Pair<String, String> userComment = new ImmutablePair<String, String>(poster, title);
