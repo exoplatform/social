@@ -1379,14 +1379,18 @@ public class CachedSpaceStorage implements SpaceStorage {
 
   @Override
   public void updateSpaceAccessed(String remoteId, Space space) throws SpaceStorageException {
-    storage.updateSpaceAccessed(remoteId, space);
-
     // we remove all cache entries for the given userId and for space type LATEST_ACCESSED
+    LastAccessedSpacesCacheSelector selector = new LastAccessedSpacesCacheSelector(remoteId, space, cacheService);
     try {
-      exoSpacesCache.select(new LastAccessedSpacesCacheSelector(remoteId, space, cacheService));
+      exoSpacesCache.select(selector);
     } catch (Exception e) {
       LOG.error("Error while removing cache entries for remoteId=" + remoteId + ", space=" + space.getDisplayName() +
               " and type=" + SpaceType.LATEST_ACCESSED.name() + " or type=" + SpaceType.VISITED, e);
+    }
+
+    // Update the storage only if the user has accessed a different space
+    if (selector.isHasClearedCacheEntries()) {
+      storage.updateSpaceAccessed(remoteId, space);
     }
   }
 
