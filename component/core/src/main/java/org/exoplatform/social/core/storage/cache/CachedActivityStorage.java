@@ -1966,6 +1966,11 @@ public class CachedActivityStorage implements ActivityStorage {
     }
 
     @Override
+    public void onPutLocal(CacheListenerContext context, ActivityKey key, ActivityData obj) throws Exception {
+      //nothing
+    }
+
+    @Override
     public void onGet(CacheListenerContext context, ActivityKey key, ActivityData obj) throws Exception {
 
     }
