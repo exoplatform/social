@@ -15,11 +15,13 @@ import org.exoplatform.social.core.storage.cache.model.key.SpaceType;
  */
 public class LastAccessedSpacesCacheSelector extends ScopeCacheSelector<ListSpacesKey, ListSpacesData> {
 
-  private String remoteId;
+  private String                    remoteId;
 
-  private Space space;
+  private Space                     space;
 
   private SocialStorageCacheService cacheService;
+
+  private boolean                   hasClearedCacheEntries = false;
 
   public LastAccessedSpacesCacheSelector(String remoteId, Space space, SocialStorageCacheService cacheService) {
     this.remoteId = remoteId;
@@ -53,8 +55,13 @@ public class LastAccessedSpacesCacheSelector extends ScopeCacheSelector<ListSpac
               && (SpaceType.LATEST_ACCESSED.equals(listSpacesKey.getKey().getType()) && !listSpacesData.getIds().get(0).getId().equals(space.getId())
               || SpaceType.VISITED.equals(listSpacesKey.getKey().getType()))) {
         exoCache.remove(listSpacesKey);
+        hasClearedCacheEntries = true;
         cacheService.getSpacesCountCache().remove(listSpacesKey);
       }
     }
+  }
+
+  public boolean isHasClearedCacheEntries() {
+    return hasClearedCacheEntries;
   }
 }
