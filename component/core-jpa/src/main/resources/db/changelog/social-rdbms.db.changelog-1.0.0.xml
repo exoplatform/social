@@ -199,6 +199,9 @@
   <changeSet author="social" id="1.0.0-23">
     <validCheckSum>7:c3ca7d3497b2e0b0523e956ac51b7cd8</validCheckSum>
     <validCheckSum>7:c3de92c3178ae646550a47e0872bf0d3</validCheckSum>
+    <validCheckSum>7:bcd010320c809f5338a4ec3b40dfac00</validCheckSum>
+    <validCheckSum>7:5b06578d177b37a9f7cf8322b47b0818</validCheckSum>
+    <validCheckSum>7:e4bb89b68498a673346e206116538cb4</validCheckSum>
     <createTable tableName="SOC_SPACES">
         <column name="SPACE_ID" type="BIGINT" autoIncrement="${autoIncrement}" startWith="1">
           <constraints nullable="false" primaryKey="true" primaryKeyName="PK_SOC_SPACES"/>
@@ -277,6 +280,9 @@
   <changeSet author="social" id="1.0.0-26">
     <validCheckSum>7:76944faa5d2550e09d955f5ae6bce03d</validCheckSum>
     <validCheckSum>7:65894adddf8b6d27c6e923c3dcf11154</validCheckSum>
+    <validCheckSum>7:c79ef7602443ce4d6bcb45bae3ce6d06</validCheckSum>
+    <validCheckSum>7:b85b7e794c54da597970bc4680e678c1</validCheckSum>
+    <validCheckSum>7:b31d4780c26411f652acab2194175fac</validCheckSum>
     <createTable tableName="SOC_IDENTITIES">
       <column name="IDENTITY_ID" type="BIGINT" autoIncrement="${autoIncrement}" startWith="1">
         <constraints nullable="false" primaryKey="true" primaryKeyName="PK_SOC_IDENTITIES"/>
@@ -367,6 +373,9 @@
 
   <changeSet author="social" id="1.0.0-34">
     <validCheckSum>7:92ce2eb9aac690150b64394b2533dea5</validCheckSum>
+    <validCheckSum>7:0a2a27d21316bce743962c238232a341</validCheckSum>
+    <validCheckSum>7:4aed79eee6526627639077bc1ebe96d4</validCheckSum>
+    <validCheckSum>7:ec724d5807c06f364335c847b6e7e635</validCheckSum>
     <createTable tableName="SOC_CONNECTIONS">
       <column name="CONNECTION_ID" type="BIGINT" autoIncrement="${autoIncrement}" startWith="1">
         <constraints nullable="false" primaryKey="true" primaryKeyName="PK_SOC_CONNECTIONS"/>
