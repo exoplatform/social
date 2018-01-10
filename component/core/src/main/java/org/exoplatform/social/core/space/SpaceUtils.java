@@ -36,6 +36,7 @@ import org.exoplatform.portal.application.PortalRequestContext;
 import org.exoplatform.portal.application.RequestNavigationData;
 import org.exoplatform.portal.config.DataStorage;
 import org.exoplatform.portal.config.UserACL;
+import org.exoplatform.portal.config.UserACL.Permission;
 import org.exoplatform.portal.config.UserPortalConfig;
 import org.exoplatform.portal.config.UserPortalConfigService;
 import org.exoplatform.portal.config.model.ApplicationState;
@@ -1696,7 +1697,16 @@ public class SpaceUtils {
    */
   public static boolean isUserHasMembershipTypesInGroup(String remoteId, String groupId, String membershipType) {
 	  if (remoteId == null || groupId == null || membershipType == null) return false;
-	
+
+    ConversationState conversationState = ConversationState.getCurrent();
+    if (conversationState != null && conversationState.getIdentity() != null
+        && remoteId.equals(conversationState.getIdentity().getUserId())) {
+      Permission permission = new Permission();
+      permission.setGroupId(groupId);
+      permission.setMembership(membershipType);
+      return getUserACL().hasPermission(conversationState.getIdentity(), permission.getValue());
+    }
+
     try {
       Collection<Membership> membershipsList = getOrganizationService()
         .getMembershipHandler().findMembershipsByUserAndGroup(remoteId, groupId);
