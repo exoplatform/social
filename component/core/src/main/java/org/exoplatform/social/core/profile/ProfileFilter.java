@@ -42,6 +42,11 @@ public class ProfileFilter {
   /** The skills. */
   private String skills;
 
+  /**
+   * Whether search on email field or not
+   */
+  private boolean searchEmail;
+
   /** Used for unified search */
   private String all;
 
@@ -69,6 +74,24 @@ public class ProfileFilter {
     this.onlineRemoteIds = new ArrayList<String>();
     this.all = "";
   }
+
+  /**
+   * Enable email searching
+   * 
+   * @param searchEmail
+   */
+  public void setSearchEmail(boolean searchEmail) {
+    this.searchEmail = searchEmail;
+  }
+
+  /**
+   * Whether enable email in search or not
+   * @return
+   */
+  public boolean isSearchEmail() {
+    return searchEmail;
+  }
+
   /**
    * Gets the position.
    *

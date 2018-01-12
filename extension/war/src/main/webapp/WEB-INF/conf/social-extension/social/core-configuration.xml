@@ -23,6 +23,11 @@
    xmlns="http://www.exoplatform.org/xml/ns/kernel_1_2.xsd">
 
   <component>
+    <key>org.exoplatform.services.organization.search.UserSearchService</key>
+    <type>org.exoplatform.social.core.identity.UserSearchServiceImpl</type>
+  </component>
+
+  <component>
     <key>org.exoplatform.social.common.lifecycle.LifeCycleCompletionService</key>
     <type>org.exoplatform.social.common.lifecycle.LifeCycleCompletionService</type>
     <init-params>
