@@ -51,19 +51,19 @@ public class ActivityDAOImpl extends GenericDAOJPAImpl<ActivityEntity, Long> imp
   public List<ActivityEntity> getActivities(Identity owner, Identity viewer, long offset, long limit) throws ActivityStorageException {
     long ownerId = Long.parseLong(owner.getId());
 
-    TypedQuery<ActivityEntity> query = null;
+    TypedQuery<Tuple> query = null;
     if (viewer != null && !viewer.getId().equals(owner.getId())) {
       // if viewer is different from owner
       // get activities of type 'organization' where:
       // owner is the creator of activity
       // owner has reacted on any other activity
       // outside space activities
-      query = getEntityManager().createNamedQuery("SocActivity.getActivityByOwnerAndProviderId", ActivityEntity.class);
+      query = getEntityManager().createNamedQuery("SocActivity.getActivityByOwnerAndProviderId", Tuple.class);
       query.setParameter("providerId", OrganizationIdentityProvider.NAME);
     } else {
       // if viewer the owner
       // get all his activities including spaces activities
-      query = getEntityManager().createNamedQuery("SocActivity.getActivityByOwner", ActivityEntity.class);
+      query = getEntityManager().createNamedQuery("SocActivity.getActivityByOwner", Tuple.class);
     }
     query.setParameter("owners", Collections.singleton(ownerId));
     if (limit > 0) {
@@ -71,7 +71,8 @@ public class ActivityDAOImpl extends GenericDAOJPAImpl<ActivityEntity, Long> imp
       query.setMaxResults((int)limit);
     }
 
-    return query.getResultList();
+    List<Tuple> resultList = query.getResultList();
+    return convertTupleToActivityEntities(resultList);
   }
   
   @Override
@@ -105,7 +106,7 @@ public class ActivityDAOImpl extends GenericDAOJPAImpl<ActivityEntity, Long> imp
       }
     }
 
-    TypedQuery<ActivityEntity> query = getEntityManager().createNamedQuery(queryName, ActivityEntity.class);
+    TypedQuery<Tuple> query = getEntityManager().createNamedQuery(queryName, Tuple.class);
     if (!connections.isEmpty()) {
       query.setParameter("connections", connections);
       query.setParameter("connStreamType", StreamType.POSTER);
@@ -117,7 +118,8 @@ public class ActivityDAOImpl extends GenericDAOJPAImpl<ActivityEntity, Long> imp
       query.setMaxResults(limit);
     }
 
-    return query.getResultList();
+    List<Tuple> resultList = query.getResultList();
+    return convertTupleToActivityEntities(resultList);
   }
   
   @Override
@@ -200,7 +202,7 @@ public class ActivityDAOImpl extends GenericDAOJPAImpl<ActivityEntity, Long> imp
       queryName += "NoConnections";
     }
 
-    TypedQuery<ActivityEntity> query = getEntityManager().createNamedQuery(queryName, ActivityEntity.class);
+    TypedQuery<Tuple> query = getEntityManager().createNamedQuery(queryName, Tuple.class);
     if (!connections.isEmpty()) {
       query.setParameter("connections", connections);
       query.setParameter("connStreamType", StreamType.POSTER);
@@ -213,7 +215,8 @@ public class ActivityDAOImpl extends GenericDAOJPAImpl<ActivityEntity, Long> imp
       query.setMaxResults(limit);
     }
 
-    return query.getResultList();
+    List<Tuple> resultList = query.getResultList();
+    return convertTupleToActivityEntities(resultList);
   }
 
   
@@ -263,7 +266,7 @@ public class ActivityDAOImpl extends GenericDAOJPAImpl<ActivityEntity, Long> imp
       queryName += "NoConnections";
     }
 
-    TypedQuery<ActivityEntity> query = getEntityManager().createNamedQuery(queryName, ActivityEntity.class);
+    TypedQuery<Tuple> query = getEntityManager().createNamedQuery(queryName, Tuple.class);
     if (!connections.isEmpty()) {
       query.setParameter("connections", connections);
       query.setParameter("connStreamType", StreamType.POSTER);
@@ -276,7 +279,8 @@ public class ActivityDAOImpl extends GenericDAOJPAImpl<ActivityEntity, Long> imp
       query.setMaxResults(limit);
     }
 
-    return query.getResultList();
+    List<Tuple> resultList = query.getResultList();
+    return convertTupleToActivityEntities(resultList);
   }
 
   @Override
@@ -528,7 +532,7 @@ public class ActivityDAOImpl extends GenericDAOJPAImpl<ActivityEntity, Long> imp
       return Collections.emptyList();
     }
 
-    TypedQuery<ActivityEntity> query = getEntityManager().createNamedQuery("SocActivity.getActivityOfConnection", ActivityEntity.class);
+    TypedQuery<Tuple> query = getEntityManager().createNamedQuery("SocActivity.getActivityOfConnection", Tuple.class);
     query.setParameter("connections", connections);
     query.setParameter("connStreamType", StreamType.POSTER);
 
@@ -537,7 +541,8 @@ public class ActivityDAOImpl extends GenericDAOJPAImpl<ActivityEntity, Long> imp
       query.setMaxResults(limit);
     }
 
-    return query.getResultList();
+    List<Tuple> resultList = query.getResultList();
+    return convertTupleToActivityEntities(resultList);
   }
   
   @Override
@@ -586,7 +591,7 @@ public class ActivityDAOImpl extends GenericDAOJPAImpl<ActivityEntity, Long> imp
       return Collections.emptyList();
     }
 
-    TypedQuery<ActivityEntity> query = getEntityManager().createNamedQuery("SocActivity.getNewerActivityOfConnection", ActivityEntity.class);
+    TypedQuery<Tuple> query = getEntityManager().createNamedQuery("SocActivity.getNewerActivityOfConnection", Tuple.class);
     query.setParameter("connections", connections);
     query.setParameter("connStreamType", StreamType.POSTER);
     query.setParameter("sinceTime", sinceTime);
@@ -596,7 +601,8 @@ public class ActivityDAOImpl extends GenericDAOJPAImpl<ActivityEntity, Long> imp
       query.setMaxResults((int)limit);
     }
 
-    return query.getResultList();
+    List<Tuple> resultList = query.getResultList();
+    return convertTupleToActivityEntities(resultList);
   }
 
   @Override
@@ -626,7 +632,7 @@ public class ActivityDAOImpl extends GenericDAOJPAImpl<ActivityEntity, Long> imp
       return Collections.emptyList();
     }
 
-    TypedQuery<ActivityEntity> query = getEntityManager().createNamedQuery("SocActivity.getOlderActivityOfConnection", ActivityEntity.class);
+    TypedQuery<Tuple> query = getEntityManager().createNamedQuery("SocActivity.getOlderActivityOfConnection", Tuple.class);
     query.setParameter("connections", connections);
     query.setParameter("connStreamType", StreamType.POSTER);
     query.setParameter("sinceTime", sinceTime);
@@ -636,7 +642,8 @@ public class ActivityDAOImpl extends GenericDAOJPAImpl<ActivityEntity, Long> imp
       query.setMaxResults(limit);
     }
 
-    return query.getResultList();
+    List<Tuple> resultList = query.getResultList();
+    return convertTupleToActivityEntities(resultList);
   }
 
   @Override
@@ -666,7 +673,7 @@ public class ActivityDAOImpl extends GenericDAOJPAImpl<ActivityEntity, Long> imp
       queryName += "NoTypes";
     }
 
-    TypedQuery<ActivityEntity> query = getEntityManager().createNamedQuery(queryName, ActivityEntity.class);
+    TypedQuery<Tuple> query = getEntityManager().createNamedQuery(queryName, Tuple.class);
     if (!types.isEmpty()) {
       query.setParameter("types", types);
     }
@@ -677,7 +684,8 @@ public class ActivityDAOImpl extends GenericDAOJPAImpl<ActivityEntity, Long> imp
       query.setMaxResults(limit);
     }
 
-    return query.getResultList();
+    List<Tuple> resultList = query.getResultList();
+    return convertTupleToActivityEntities(resultList);
   }
 
   @Override
@@ -791,16 +799,16 @@ public class ActivityDAOImpl extends GenericDAOJPAImpl<ActivityEntity, Long> imp
   public List<ActivityEntity> getOwnerActivities(List<String> owners, long newerTime, long olderTime,
                                                 long offset, long limit) throws ActivityStorageException {
 
-    TypedQuery<ActivityEntity> query;
+    TypedQuery<Tuple> query;
 
     if (newerTime > 0) {
-      query = getEntityManager().createNamedQuery("SocActivity.getNewerActivityByOwner", ActivityEntity.class);
+      query = getEntityManager().createNamedQuery("SocActivity.getNewerActivityByOwner", Tuple.class);
       query.setParameter("sinceTime", newerTime);
     } else if (olderTime > 0) {
-      query = getEntityManager().createNamedQuery("SocActivity.getOlderActivityByOwner", ActivityEntity.class);
+      query = getEntityManager().createNamedQuery("SocActivity.getOlderActivityByOwner", Tuple.class);
       query.setParameter("sinceTime", olderTime);
     } else {
-      query = getEntityManager().createNamedQuery("SocActivity.getActivityByOwner", ActivityEntity.class);
+      query = getEntityManager().createNamedQuery("SocActivity.getActivityByOwner", Tuple.class);
     }
 
     List<Long> ids = new ArrayList<>();
@@ -814,7 +822,8 @@ public class ActivityDAOImpl extends GenericDAOJPAImpl<ActivityEntity, Long> imp
       query.setMaxResults((int)limit);
     }
 
-    return query.getResultList();
+    List<Tuple> resultList = query.getResultList();
+    return convertTupleToActivityEntities(resultList);
   }
 
   private Set<String> getConnectionIdsInString(long ownerId) {
@@ -858,5 +867,19 @@ public class ActivityDAOImpl extends GenericDAOJPAImpl<ActivityEntity, Long> imp
       }
     }
     return connections;
+  }
+
+  /**
+   * 
+   * @param list
+   * @return
+   */
+  private List<ActivityEntity> convertTupleToActivityEntities(List<Tuple> list) {
+    if (list == null || list.isEmpty()) return Collections.emptyList();
+    List<ActivityEntity> activities = new LinkedList<>();
+    for (Tuple t : list) {
+      activities.add((ActivityEntity) t.get(1));
+    }
+    return activities;
   }
 }
