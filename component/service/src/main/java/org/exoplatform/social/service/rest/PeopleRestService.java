@@ -310,7 +310,7 @@ public class PeopleRestService implements ResourceContainer{
             if (identity != null) {
               Profile p = identity.getProfile();
               opt.setValue((String) p.getProperty(Profile.USERNAME));
-              opt.setText(p.getFullName() + " (" + (String) p.getProperty(Profile.USERNAME) + ")");
+              opt.setText(p.getFullName());
               opt.setAvatarUrl(p.getAvatarUrl());
             } else {
               opt.setValue(item);
