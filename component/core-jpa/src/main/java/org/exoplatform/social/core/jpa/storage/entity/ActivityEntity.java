@@ -47,7 +47,7 @@ import org.exoplatform.commons.api.persistence.ExoEntity;
         @NamedQuery(name = "SocActivity.findCommentsOfActivities", query = "SELECT a FROM SocActivity a "
             + " WHERE a.parent.id IN (:ids) "
             + " ORDER BY a.posted ASC"),
-        @NamedQuery(name = "SocActivity.numberCommentsOfActivity", query = "SELECT count(distinct a) FROM SocActivity a WHERE a.parent.id = :activityId"),
+        @NamedQuery(name = "SocActivity.numberCommentsOfActivity", query = "SELECT count(distinct a.id) FROM SocActivity a WHERE a.parent.id = :activityId"),
         @NamedQuery(name = "SocActivity.findNewerCommentsOfActivity",
                 query = "SELECT a FROM SocActivity a WHERE a.parent.id = :activityId AND a.updatedDate > :sinceTime ORDER BY a.updatedDate ASC"),
         @NamedQuery(name = "SocActivity.findOlderCommentsOfActivity",
@@ -70,19 +70,19 @@ import org.exoplatform.commons.api.persistence.ExoEntity;
                     + " item.ownerId in (:owners) "
                     + " ORDER BY item.activity.updatedDate DESC"),
         @NamedQuery(name = "SocActivity.getNumberOfActivitiesByPoster",
-                query = "SELECT count(distinct a) FROM SocActivity a WHERE "
+                query = "SELECT count(distinct a.id) FROM SocActivity a WHERE "
                     + " a.posterId = :owner AND "
                     + " a.type in (:types) "),
         @NamedQuery(name = "SocActivity.getNumberOfActivitiesByPosterNoTypes",
-                query = "SELECT count(distinct a) FROM SocActivity a WHERE "
+                query = "SELECT count(distinct a.id) FROM SocActivity a WHERE "
                     + " a.posterId = :owner "),
         @NamedQuery(name = "SocActivity.getActivitiesByPoster",
-                query = "SELECT distinct a FROM SocActivity a WHERE "
+                query = "SELECT distinct a.id, a FROM SocActivity a WHERE "
                     + " a.posterId = :owner "
                     + " AND a.type in (:types) "
                     + " ORDER BY a.updatedDate DESC"),
         @NamedQuery(name = "SocActivity.getActivitiesByPosterNoTypes",
-                query = "SELECT distinct a FROM SocActivity a WHERE "
+                query = "SELECT distinct a.id, a FROM SocActivity a WHERE "
                     + " a.posterId = :owner "
                     + " ORDER BY a.updatedDate DESC"),
         @NamedQuery(name = "SocActivity.getActivityIdsOfConnections",
@@ -97,38 +97,38 @@ import org.exoplatform.commons.api.persistence.ExoEntity;
                   + " item.activity.ownerId in (:connections) AND "
                   + " item.streamType = :connStreamType"),
         @NamedQuery(name = "SocActivity.getNumberOfActivitiesByOwner",
-                query = "SELECT count(distinct item.activity) FROM SocStreamItem item WHERE "
+                query = "SELECT count(distinct item.activity.id) FROM SocStreamItem item WHERE "
                     + " item.activity.hidden = false AND "
                     + " item.ownerId = :owner "),
         @NamedQuery(name = "SocActivity.getActivityByOwner",
-                query = "SELECT distinct item.activity FROM SocStreamItem item WHERE "
+                query = "SELECT distinct item.activity.id, item.activity FROM SocStreamItem item WHERE "
                     + " item.activity.hidden = false AND "
                     + " item.ownerId IN (:owners) "
                     + " ORDER BY item.activity.updatedDate DESC"),
         @NamedQuery(name = "SocActivity.getOlderActivityByOwner",
-                query = "SELECT distinct item.activity FROM SocStreamItem item WHERE "
+                query = "SELECT distinct item.activity.id, item.activity FROM SocStreamItem item WHERE "
                     + " item.activity.hidden = false AND "
                     + " item.activity.updatedDate < :sinceTime AND "
                     + " item.ownerId in (:owners) "
                     + " ORDER BY item.activity.updatedDate DESC"),
         @NamedQuery(name = "SocActivity.getNumberOfOlderActivityByOwner",
-                query = "SELECT count(distinct item.activity) FROM SocStreamItem item WHERE "
+                query = "SELECT count(distinct item.activity.id) FROM SocStreamItem item WHERE "
                     + " item.activity.hidden = false AND "
                     + " item.activity.updatedDate < :sinceTime AND "
                     + " item.ownerId = :owner "),
         @NamedQuery(name = "SocActivity.getNewerActivityByOwner",
-                query = "SELECT distinct item.activity FROM SocStreamItem item WHERE "
+                query = "SELECT distinct item.activity.id, item.activity FROM SocStreamItem item WHERE "
                     + " item.activity.hidden = false AND "
                     + " item.activity.updatedDate > :sinceTime AND "
                     + " item.ownerId in (:owners) "
                     + " ORDER BY item.activity.updatedDate ASC"),
         @NamedQuery(name = "SocActivity.getNumberOfNewerActivityByOwner",
-                query = "SELECT count(distinct item.activity) FROM SocStreamItem item WHERE "
+                query = "SELECT count(distinct item.activity.id) FROM SocStreamItem item WHERE "
                     + " item.activity.hidden = false AND "
                     + " item.activity.updatedDate > :sinceTime AND "
                     + " item.ownerId = :owner "),
         @NamedQuery(name = "SocActivity.getActivityByOwnerAndProviderId",
-                query = "SELECT distinct item.activity FROM SocStreamItem item WHERE "
+                query = "SELECT distinct item.activity.id, item.activity FROM SocStreamItem item WHERE "
                     + " item.activity.hidden = false AND "
                     + " item.activity.providerId = :providerId AND "
                     + " item.ownerId in (:owners) "
@@ -145,91 +145,91 @@ import org.exoplatform.commons.api.persistence.ExoEntity;
                     + "   ( item.ownerId in (:connections) AND item.streamType = :connStreamType ) "
                     + " ) ORDER BY item.activity.updatedDate DESC"),
         @NamedQuery(name = "SocActivity.getActivityFeedNoConnections",
-                query = "SELECT distinct item.activity FROM SocStreamItem item WHERE "
+                query = "SELECT distinct item.activity.id, item.activity FROM SocStreamItem item WHERE "
                     + " item.activity.hidden = false AND "
                     + " item.ownerId in (:owners) "
                     + " ORDER BY item.activity.updatedDate DESC"),
         @NamedQuery(name = "SocActivity.getActivityFeed",
-                query = "SELECT distinct item.activity FROM SocStreamItem item WHERE "
+                query = "SELECT distinct item.activity.id, item.activity FROM SocStreamItem item WHERE "
                     + " item.activity.hidden = false AND "
                     + " ( item.ownerId in (:owners) OR "
                     + "   ( item.ownerId in (:connections) AND item.streamType = :connStreamType ) "
                     + " ) ORDER BY item.activity.updatedDate DESC"),
         @NamedQuery(name = "SocActivity.getNumberOfNewerOnActivityFeedNoConnections",
-                query = "SELECT count(distinct item.activity) FROM SocStreamItem item WHERE "
+                query = "SELECT count(distinct item.activity.id) FROM SocStreamItem item WHERE "
                     + " item.activity.hidden = false AND "
                     + " item.activity.updatedDate > :sinceTime AND "
                     + " item.ownerId in (:owners)"),
         @NamedQuery(name = "SocActivity.getNumberOfNewerOnActivityFeed",
-                query = "SELECT count(distinct item.activity) FROM SocStreamItem item WHERE "
+                query = "SELECT count(distinct item.activity.id) FROM SocStreamItem item WHERE "
                     + " item.activity.hidden = false AND "
                     + " item.activity.updatedDate > :sinceTime AND "
                     + " ( item.ownerId in (:owners) OR "
                     + "   ( item.ownerId in (:connections) AND item.streamType = :connStreamType ) "
                     + " ) "),
         @NamedQuery(name = "SocActivity.getNewerActivityFeedNoConnections",
-                query = "SELECT distinct item.activity FROM SocStreamItem item WHERE "
+                query = "SELECT distinct item.activity.id, item.activity FROM SocStreamItem item WHERE "
                     + " item.activity.hidden = false AND "
                     + " item.activity.updatedDate > :sinceTime AND "
                     + " item.ownerId in (:owners) ORDER BY item.activity.updatedDate ASC"),
         @NamedQuery(name = "SocActivity.getNewerActivityFeed",
-                query = "SELECT distinct item.activity FROM SocStreamItem item WHERE "
+                query = "SELECT distinct item.activity.id, item.activity FROM SocStreamItem item WHERE "
                     + " item.activity.hidden = false AND "
                     + " item.activity.updatedDate > :sinceTime AND "
                     + " ( item.ownerId in (:owners) OR "
                     + "   ( item.ownerId in (:connections) AND item.streamType = :connStreamType ) "
                     + " ) ORDER BY item.activity.updatedDate ASC"),
         @NamedQuery(name = "SocActivity.getNumberOfOlderOnActivityFeedNoConnections",
-                query = "SELECT count(distinct item.activity) FROM SocStreamItem item WHERE "
+                query = "SELECT count(distinct item.activity.id) FROM SocStreamItem item WHERE "
                     + " item.activity.hidden = false AND "
                     + " item.activity.updatedDate < :sinceTime AND "
                     + " item.ownerId in (:owners)"),
         @NamedQuery(name = "SocActivity.getNumberOfOlderOnActivityFeed",
-                query = "SELECT count(distinct item.activity) FROM SocStreamItem item WHERE "
+                query = "SELECT count(distinct item.activity.id) FROM SocStreamItem item WHERE "
                     + " item.activity.hidden = false AND "
                     + " item.activity.updatedDate < :sinceTime AND "
                     + " ( item.ownerId in (:owners) OR "
                     + "   ( item.ownerId in (:connections) AND item.streamType = :connStreamType ) "
                     + " ) "),
         @NamedQuery(name = "SocActivity.getOlderActivityFeedNoConnections",
-                query = "SELECT distinct item.activity FROM SocStreamItem item WHERE "
+                query = "SELECT distinct item.activity.id, item.activity FROM SocStreamItem item WHERE "
                     + " item.activity.hidden = false AND "
                     + " item.activity.updatedDate < :sinceTime AND "
                     + " item.ownerId in (:owners) ORDER BY item.activity.updatedDate DESC"),
         @NamedQuery(name = "SocActivity.getOlderActivityFeed",
-                query = "SELECT distinct item.activity FROM SocStreamItem item WHERE "
+                query = "SELECT distinct item.activity.id, item.activity FROM SocStreamItem item WHERE "
                     + " item.activity.hidden = false AND "
                     + " item.activity.updatedDate < :sinceTime AND "
                     + " ( item.ownerId in (:owners) OR "
                     + "   ( item.ownerId in (:connections) AND item.streamType = :connStreamType ) "
                     + " ) ORDER BY item.activity.updatedDate DESC"),
         @NamedQuery(name = "SocActivity.getActivityOfConnection",
-                query = "SELECT distinct item.activity FROM SocStreamItem item WHERE "
+                query = "SELECT distinct item.activity.id, item.activity FROM SocStreamItem item WHERE "
                     + " item.activity.hidden = false AND "
                     + " item.ownerId in (:connections) AND "
                     + " item.streamType = :connStreamType "
                     + " ORDER BY item.activity.updatedDate DESC"),
         @NamedQuery(name = "SocActivity.getNumberOfNewerOnActivitiesOfConnections",
-                query = "SELECT count(distinct item.activity) FROM SocStreamItem item WHERE "
+                query = "SELECT count(distinct item.activity.id) FROM SocStreamItem item WHERE "
                     + " item.activity.hidden = false AND "
                     + " item.activity.updatedDate > :sinceTime AND "
                     + " item.ownerId in (:connections) AND "
                     + " item.streamType = :connStreamType "),
         @NamedQuery(name = "SocActivity.getNewerActivityOfConnection",
-                query = "SELECT distinct item.activity FROM SocStreamItem item WHERE "
+                query = "SELECT distinct item.activity.id, item.activity FROM SocStreamItem item WHERE "
                     + " item.activity.hidden = false AND "
                     + " item.activity.updatedDate > :sinceTime AND "
                     + " item.ownerId in (:connections) AND "
                     + " item.streamType = :connStreamType "
                     + " ORDER BY item.activity.updatedDate ASC"),
         @NamedQuery(name = "SocActivity.getNumberOfOlderOnActivitiesOfConnections",
-                query = "SELECT count(distinct item.activity) FROM SocStreamItem item WHERE "
+                query = "SELECT count(distinct item.activity.id) FROM SocStreamItem item WHERE "
                     + " item.activity.hidden = false AND "
                     + " item.activity.updatedDate < :sinceTime AND "
                     + " item.ownerId in (:connections) AND "
                     + " item.streamType = :connStreamType "),
         @NamedQuery(name = "SocActivity.getOlderActivityOfConnection",
-                query = "SELECT distinct item.activity FROM SocStreamItem item WHERE "
+                query = "SELECT distinct item.activity.id, item.activity FROM SocStreamItem item WHERE "
                     + " item.activity.hidden = false AND "
                     + " item.activity.updatedDate < :sinceTime AND "
                     + " item.ownerId in (:connections) AND "
