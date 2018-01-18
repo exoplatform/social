@@ -39,6 +39,8 @@ import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.profile.ProfileFilter;
 import org.exoplatform.social.core.relationship.model.Relationship.Type;
+import org.exoplatform.social.core.search.Sorting;
+import org.exoplatform.social.core.search.Sorting.SortBy;
 import org.exoplatform.social.core.service.LinkProvider;
 import org.exoplatform.social.core.storage.impl.StorageUtils;
 
@@ -163,7 +165,13 @@ public class ProfileSearchConnector {
     StringBuilder esQuery = new StringBuilder();
     esQuery.append("{\n");
     esQuery.append("   \"from\" : " + offset + ", \"size\" : " + limit + ",\n");
-    esQuery.append("   \"sort\": {\"name.raw\": {\"order\": \"asc\"}}\n");
+    Sorting sorting = filter.getSorting();
+    if (sorting != null && SortBy.DATE.equals(sorting.sortBy)) {
+      esQuery.append("   \"sort\": {\"lastUpdatedDate\": {\"order\": \""
+          + (sorting.orderBy == null ? "desc" : sorting.orderBy.name()) + "\"}}\n");
+    } else {
+      esQuery.append("   \"sort\": {\"name.raw\": {\"order\": \"asc\"}}\n");
+    }
     StringBuilder esSubQuery = new StringBuilder();
     esSubQuery.append("       ,\n");
     esSubQuery.append("\"query\" : {\n");
