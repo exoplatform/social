@@ -48,7 +48,7 @@ import org.exoplatform.social.core.storage.ActivityStorageException;
  */
 public class ActivityDAOImpl extends GenericDAOJPAImpl<ActivityEntity, Long> implements ActivityDAO {
   
-  public List<ActivityEntity> getActivities(Identity owner, Identity viewer, long offset, long limit) throws ActivityStorageException {
+  public List<Long> getActivities(Identity owner, Identity viewer, long offset, long limit) throws ActivityStorageException {
     long ownerId = Long.parseLong(owner.getId());
 
     TypedQuery<Tuple> query = null;
@@ -72,7 +72,7 @@ public class ActivityDAOImpl extends GenericDAOJPAImpl<ActivityEntity, Long> imp
     }
 
     List<Tuple> resultList = query.getResultList();
-    return convertTupleToActivityEntities(resultList);
+    return convertActivityEntitiesToIds(resultList);
   }
   
   @Override
@@ -85,10 +85,10 @@ public class ActivityDAOImpl extends GenericDAOJPAImpl<ActivityEntity, Long> imp
       query.setFirstResult(offset > 0 ? (int)offset : 0);
       query.setMaxResults((int)limit);
     }
-    return convertActivityEntitiesToIds(query.getResultList());
+    return convertActivityEntitiesToIdsString(query.getResultList());
   }
 
-  public List<ActivityEntity> getActivityFeed(Identity ownerIdentity, int offset, int limit, List<String> spaceIds) {
+  public List<Long> getActivityFeed(Identity ownerIdentity, int offset, int limit, List<String> spaceIds) {
     long ownerId = Long.parseLong(ownerIdentity.getId());
 
     Set<Long> connections = getConnectionIds(ownerId);
@@ -119,7 +119,7 @@ public class ActivityDAOImpl extends GenericDAOJPAImpl<ActivityEntity, Long> imp
     }
 
     List<Tuple> resultList = query.getResultList();
-    return convertTupleToActivityEntities(resultList);
+    return convertActivityEntitiesToIds(resultList);
   }
   
   @Override
@@ -155,7 +155,7 @@ public class ActivityDAOImpl extends GenericDAOJPAImpl<ActivityEntity, Long> imp
       query.setMaxResults(limit);
     }
 
-    return convertActivityEntitiesToIds(query.getResultList());
+    return convertActivityEntitiesToIdsString(query.getResultList());
   }
 
   public int getNumberOfActivitesOnActivityFeed(Identity ownerIdentity, List<String> spaceIds) {
@@ -185,7 +185,7 @@ public class ActivityDAOImpl extends GenericDAOJPAImpl<ActivityEntity, Long> imp
   }
   
   @Override
-  public List<ActivityEntity> getNewerOnActivityFeed(Identity ownerIdentity, long sinceTime, int limit, List<String> spaceIds) {
+  public List<Long> getNewerOnActivityFeed(Identity ownerIdentity, long sinceTime, int limit, List<String> spaceIds) {
     long ownerId = Long.parseLong(ownerIdentity.getId());
     List<Long> owners = new ArrayList<>();
     owners.add(ownerId);
@@ -216,7 +216,7 @@ public class ActivityDAOImpl extends GenericDAOJPAImpl<ActivityEntity, Long> imp
     }
 
     List<Tuple> resultList = query.getResultList();
-    return convertTupleToActivityEntities(resultList);
+    return convertActivityEntitiesToIds(resultList);
   }
 
   
@@ -249,7 +249,7 @@ public class ActivityDAOImpl extends GenericDAOJPAImpl<ActivityEntity, Long> imp
   }
 
   @Override
-  public List<ActivityEntity> getOlderOnActivityFeed(Identity ownerIdentity, long sinceTime,int limit, List<String> spaceIds) {
+  public List<Long> getOlderOnActivityFeed(Identity ownerIdentity, long sinceTime,int limit, List<String> spaceIds) {
     long ownerId = Long.parseLong(ownerIdentity.getId());
     List<Long> owners = new ArrayList<>();
     owners.add(ownerId);
@@ -280,7 +280,7 @@ public class ActivityDAOImpl extends GenericDAOJPAImpl<ActivityEntity, Long> imp
     }
 
     List<Tuple> resultList = query.getResultList();
-    return convertTupleToActivityEntities(resultList);
+    return convertActivityEntitiesToIds(resultList);
   }
 
   @Override
@@ -314,7 +314,7 @@ public class ActivityDAOImpl extends GenericDAOJPAImpl<ActivityEntity, Long> imp
   }
 
   @Override
-  public List<ActivityEntity> getUserActivities(Identity owner,
+  public List<Long> getUserActivities(Identity owner,
                                           long offset,
                                           long limit) throws ActivityStorageException {
 
@@ -331,7 +331,7 @@ public class ActivityDAOImpl extends GenericDAOJPAImpl<ActivityEntity, Long> imp
   }
   
   @Override
-  public List<ActivityEntity> getNewerOnUserActivities(Identity ownerIdentity, long sinceTime, int limit) {
+  public List<Long> getNewerOnUserActivities(Identity ownerIdentity, long sinceTime, int limit) {
     return getOwnerActivities(Arrays.asList(ownerIdentity.getId()), sinceTime, -1, 0, limit);
 
   }
@@ -347,7 +347,7 @@ public class ActivityDAOImpl extends GenericDAOJPAImpl<ActivityEntity, Long> imp
   }
 
   @Override
-  public List<ActivityEntity> getOlderOnUserActivities(Identity ownerIdentity, long sinceTime, int limit) {
+  public List<Long> getOlderOnUserActivities(Identity ownerIdentity, long sinceTime, int limit) {
     return getOwnerActivities(Arrays.asList(ownerIdentity.getId()), -1, sinceTime, 0, limit);
   }
 
@@ -361,7 +361,7 @@ public class ActivityDAOImpl extends GenericDAOJPAImpl<ActivityEntity, Long> imp
     return query.getSingleResult().intValue();
   }
 
-  public List<ActivityEntity> getSpaceActivities(Identity spaceOwner, long offset, long limit) throws ActivityStorageException {
+  public List<Long> getSpaceActivities(Identity spaceOwner, long offset, long limit) throws ActivityStorageException {
     return getOwnerActivities(Arrays.asList(spaceOwner.getId()), -1, -1, offset, limit);
   }
 
@@ -373,7 +373,7 @@ public class ActivityDAOImpl extends GenericDAOJPAImpl<ActivityEntity, Long> imp
       query.setFirstResult(offset > 0 ? (int)offset : 0);
       query.setMaxResults((int)limit);
     }
-    return convertActivityEntitiesToIds(query.getResultList());
+    return convertActivityEntitiesToIdsString(query.getResultList());
   }
   
   @Override
@@ -386,7 +386,7 @@ public class ActivityDAOImpl extends GenericDAOJPAImpl<ActivityEntity, Long> imp
   }
   
   @Override
-  public List<ActivityEntity> getNewerOnSpaceActivities(Identity spaceIdentity, long sinceTime, int limit) {
+  public List<Long> getNewerOnSpaceActivities(Identity spaceIdentity, long sinceTime, int limit) {
     return getOwnerActivities(Arrays.asList(spaceIdentity.getId()), sinceTime, -1, 0, limit);
   }
 
@@ -402,7 +402,7 @@ public class ActivityDAOImpl extends GenericDAOJPAImpl<ActivityEntity, Long> imp
   }
 
   @Override
-  public List<ActivityEntity> getOlderOnSpaceActivities(Identity spaceIdentity, long sinceTime, int limit) {
+  public List<Long> getOlderOnSpaceActivities(Identity spaceIdentity, long sinceTime, int limit) {
     return getOwnerActivities(Arrays.asList(spaceIdentity.getId()), -1, sinceTime, 0, limit);
   }
 
@@ -418,7 +418,7 @@ public class ActivityDAOImpl extends GenericDAOJPAImpl<ActivityEntity, Long> imp
   }
 
   @Override
-  public List<ActivityEntity> getUserSpacesActivities(Identity ownerIdentity, int offset, int limit, List<String> spaceIds) {
+  public List<Long> getUserSpacesActivities(Identity ownerIdentity, int offset, int limit, List<String> spaceIds) {
     if (spaceIds.size() > 0) {
       return getOwnerActivities(spaceIds, -1, -1, offset, limit);
     } else {
@@ -446,7 +446,7 @@ public class ActivityDAOImpl extends GenericDAOJPAImpl<ActivityEntity, Long> imp
         query.setMaxResults((int)limit);
       }
 
-      return convertActivityEntitiesToIds(query.getResultList());
+      return convertActivityEntitiesToIdsString(query.getResultList());
     }
   }
   
@@ -467,7 +467,7 @@ public class ActivityDAOImpl extends GenericDAOJPAImpl<ActivityEntity, Long> imp
   }
   
   @Override
-  public List<ActivityEntity> getNewerOnUserSpacesActivities(Identity ownerIdentity,
+  public List<Long> getNewerOnUserSpacesActivities(Identity ownerIdentity,
                                                        long sinceTime,
                                                        int limit, List<String> spaceIds) {
     if (spaceIds.size() > 0) {
@@ -496,7 +496,7 @@ public class ActivityDAOImpl extends GenericDAOJPAImpl<ActivityEntity, Long> imp
   }
 
   @Override
-  public List<ActivityEntity> getOlderOnUserSpacesActivities(Identity ownerIdentity, long sinceTime, int limit, List<String> spaceIds) {
+  public List<Long> getOlderOnUserSpacesActivities(Identity ownerIdentity, long sinceTime, int limit, List<String> spaceIds) {
     if (spaceIds.size() > 0) {
       return getOwnerActivities(spaceIds, -1, sinceTime, 0, limit);
     } else {
@@ -523,7 +523,7 @@ public class ActivityDAOImpl extends GenericDAOJPAImpl<ActivityEntity, Long> imp
   }
 
   @Override
-  public List<ActivityEntity> getActivitiesOfConnections(Identity ownerIdentity, int offset, int limit) {
+  public List<Long> getActivitiesOfConnections(Identity ownerIdentity, int offset, int limit) {
     long ownerId = Long.parseLong(ownerIdentity.getId());
 
     Set<Long> connections = getConnectionIds(ownerId);
@@ -542,7 +542,7 @@ public class ActivityDAOImpl extends GenericDAOJPAImpl<ActivityEntity, Long> imp
     }
 
     List<Tuple> resultList = query.getResultList();
-    return convertTupleToActivityEntities(resultList);
+    return convertActivityEntitiesToIds(resultList);
   }
   
   @Override
@@ -562,7 +562,7 @@ public class ActivityDAOImpl extends GenericDAOJPAImpl<ActivityEntity, Long> imp
       query.setFirstResult(offset > 0 ? offset : 0);
       query.setMaxResults(limit);
     }
-    return convertActivityEntitiesToIds(query.getResultList());
+    return convertActivityEntitiesToIdsString(query.getResultList());
   }
 
   @Override
@@ -582,7 +582,7 @@ public class ActivityDAOImpl extends GenericDAOJPAImpl<ActivityEntity, Long> imp
   }
 
   @Override
-  public List<ActivityEntity> getNewerOnActivitiesOfConnections(Identity ownerIdentity, long sinceTime, long limit) {
+  public List<Long> getNewerOnActivitiesOfConnections(Identity ownerIdentity, long sinceTime, long limit) {
     long ownerId = Long.parseLong(ownerIdentity.getId());
 
     Set<Long> connections = getConnectionIds(ownerId);
@@ -602,7 +602,7 @@ public class ActivityDAOImpl extends GenericDAOJPAImpl<ActivityEntity, Long> imp
     }
 
     List<Tuple> resultList = query.getResultList();
-    return convertTupleToActivityEntities(resultList);
+    return convertActivityEntitiesToIds(resultList);
   }
 
   @Override
@@ -623,7 +623,7 @@ public class ActivityDAOImpl extends GenericDAOJPAImpl<ActivityEntity, Long> imp
   }
 
   @Override
-  public List<ActivityEntity> getOlderOnActivitiesOfConnections(Identity ownerIdentity, long sinceTime, int limit) {
+  public List<Long> getOlderOnActivitiesOfConnections(Identity ownerIdentity, long sinceTime, int limit) {
     long ownerId = Long.parseLong(ownerIdentity.getId());
 
     Set<Long> connections = getConnectionIds(ownerId);
@@ -643,7 +643,7 @@ public class ActivityDAOImpl extends GenericDAOJPAImpl<ActivityEntity, Long> imp
     }
 
     List<Tuple> resultList = query.getResultList();
-    return convertTupleToActivityEntities(resultList);
+    return convertActivityEntitiesToIds(resultList);
   }
 
   @Override
@@ -664,7 +664,7 @@ public class ActivityDAOImpl extends GenericDAOJPAImpl<ActivityEntity, Long> imp
   }
 
   @Override
-  public List<ActivityEntity> getActivitiesByPoster(Identity posterIdentity, int offset, int limit, String... activityTypes) {
+  public List<Long> getActivitiesByPoster(Identity posterIdentity, int offset, int limit, String... activityTypes) {
     String queryName = "SocActivity.getActivitiesByPoster";
     List<String> types = new ArrayList<String>();
     if (activityTypes != null && activityTypes.length > 0) {
@@ -685,7 +685,7 @@ public class ActivityDAOImpl extends GenericDAOJPAImpl<ActivityEntity, Long> imp
     }
 
     List<Tuple> resultList = query.getResultList();
-    return convertTupleToActivityEntities(resultList);
+    return convertActivityEntitiesToIds(resultList);
   }
 
   @Override
@@ -712,7 +712,22 @@ public class ActivityDAOImpl extends GenericDAOJPAImpl<ActivityEntity, Long> imp
    * @param list Activity's Ids
    * @return
    */
-  private List<String> convertActivityEntitiesToIds(List<Tuple> list) {
+  private List<Long> convertActivityEntitiesToIds(List<Tuple> list) {
+    List<Long> ids = new LinkedList<>();
+    if (list == null) return ids;
+    for (Tuple t : list) {
+      ids.add((long) t.get(0));
+    }
+    return ids;
+  }
+
+  /**
+   * Gets the activity's ID only and return the list of this one
+   * 
+   * @param list Activity's Ids
+   * @return
+   */
+  private List<String> convertActivityEntitiesToIdsString(List<Tuple> list) {
     List<String> ids = new LinkedList<String>();
     if (list == null) return ids;
     for (Tuple t : list) {
@@ -796,7 +811,7 @@ public class ActivityDAOImpl extends GenericDAOJPAImpl<ActivityEntity, Long> imp
     query.executeUpdate();
   }
 
-  public List<ActivityEntity> getOwnerActivities(List<String> owners, long newerTime, long olderTime,
+  public List<Long> getOwnerActivities(List<String> owners, long newerTime, long olderTime,
                                                 long offset, long limit) throws ActivityStorageException {
 
     TypedQuery<Tuple> query;
@@ -823,7 +838,7 @@ public class ActivityDAOImpl extends GenericDAOJPAImpl<ActivityEntity, Long> imp
     }
 
     List<Tuple> resultList = query.getResultList();
-    return convertTupleToActivityEntities(resultList);
+    return convertActivityEntitiesToIds(resultList);
   }
 
   private Set<String> getConnectionIdsInString(long ownerId) {
@@ -867,19 +882,5 @@ public class ActivityDAOImpl extends GenericDAOJPAImpl<ActivityEntity, Long> imp
       }
     }
     return connections;
-  }
-
-  /**
-   * 
-   * @param list
-   * @return
-   */
-  private List<ActivityEntity> convertTupleToActivityEntities(List<Tuple> list) {
-    if (list == null || list.isEmpty()) return Collections.emptyList();
-    List<ActivityEntity> activities = new LinkedList<>();
-    for (Tuple t : list) {
-      activities.add((ActivityEntity) t.get(1));
-    }
-    return activities;
   }
 }
