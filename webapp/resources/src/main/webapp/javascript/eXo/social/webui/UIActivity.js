@@ -643,9 +643,6 @@
       // for each selected multiupload preview breadcrumb
       ellipsisReverseContent.each(function() {
         var $ellipsisContent = $(this).find(".ellipsis-reverse-content");
-        if(!$ellipsisContent.is(":visible")) {
-          return;
-        }
         var $ellipsisApplyContent = $(this).find(".ellipsis-reverse-apply-content");
         var $ellipsisFirstChild = $ellipsisApplyContent.find(' :first-child');
         if(!$ellipsisApplyContent.length
