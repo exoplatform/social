@@ -9,6 +9,6 @@ def si = uicomponent.getStatusInfo();
 <div class="uiSocApplication uiStatusProfilePortlet" id="$uicomponent.id">
 	 <h3 class="user-status" style="display:inline-block;" data-userid="<%=uicomponent.getCurrentRemoteId()%>">
 	 	<span><%=StringEscapeUtils.escapeHtml(uicomponent.currentProfile.getFullName())%></span>
-	  <i class="<%=si.cssName%> uiIconLightGray" rel="tooltip" data-placement="right" title="<%=si.title%>"></i>
+	  <i class="<%=si.cssName%> uiIconLightGray" rel="tooltip" data-container=".user-status" data-placement="right" title="<%=si.title%>"></i>
 	 </h3>
 </div>
