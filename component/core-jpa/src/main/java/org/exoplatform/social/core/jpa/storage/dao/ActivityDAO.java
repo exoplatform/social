@@ -40,7 +40,7 @@ public interface ActivityDAO extends GenericDAO<ActivityEntity, Long> {
    * @return the activity entities
    * @throws ActivityStorageException if has any error
    */
-  List<ActivityEntity> getUserActivities(Identity owner, long offset, long limit) throws ActivityStorageException;
+  List<Long> getUserActivities(Identity owner, long offset, long limit) throws ActivityStorageException;
   
   
   /**
@@ -69,7 +69,7 @@ public interface ActivityDAO extends GenericDAO<ActivityEntity, Long> {
    * @param limit the number of entities to load
    * @return list of activity entities
    */
-  List<ActivityEntity> getNewerOnUserActivities(Identity ownerIdentity, long sinceTime, int limit);
+  List<Long> getNewerOnUserActivities(Identity ownerIdentity, long sinceTime, int limit);
   
   /**
    * 
@@ -86,7 +86,7 @@ public interface ActivityDAO extends GenericDAO<ActivityEntity, Long> {
    * @param limit the number of entities to load
    * @return list of activity entities
    */
-  List<ActivityEntity> getOlderOnUserActivities(Identity ownerIdentity, long sinceTime, int limit);
+  List<Long> getOlderOnUserActivities(Identity ownerIdentity, long sinceTime, int limit);
   
   /**
    * 
@@ -104,7 +104,7 @@ public interface ActivityDAO extends GenericDAO<ActivityEntity, Long> {
    * @return list of activity entities
    * @throws ActivityStorageException if has any error
    */
-  List<ActivityEntity> getSpaceActivities(Identity owner, long offset, long limit) throws ActivityStorageException;
+  List<Long> getSpaceActivities(Identity owner, long offset, long limit) throws ActivityStorageException;
   
   /**
    * 
@@ -130,7 +130,7 @@ public interface ActivityDAO extends GenericDAO<ActivityEntity, Long> {
    * @param limit max number of entities to load
    * @return list of activity entities
    */
-  List<ActivityEntity> getNewerOnSpaceActivities(Identity spaceIdentity, long sinceTime, int limit);
+  List<Long> getNewerOnSpaceActivities(Identity spaceIdentity, long sinceTime, int limit);
   
   /**
    * 
@@ -147,7 +147,7 @@ public interface ActivityDAO extends GenericDAO<ActivityEntity, Long> {
    * @param limit max number of entities to load
    * @return list of activity entities
    */
-  List<ActivityEntity> getOlderOnSpaceActivities(Identity spaceIdentity, long sinceTime, int limit);
+  List<Long> getOlderOnSpaceActivities(Identity spaceIdentity, long sinceTime, int limit);
   
   /**
    * 
@@ -166,7 +166,7 @@ public interface ActivityDAO extends GenericDAO<ActivityEntity, Long> {
    * @return list of activity entities
    * @throws ActivityStorageException if has any error
    */
-  List<ActivityEntity> getActivities(Identity owner, Identity viewer, long offset, long limit) throws ActivityStorageException;
+  List<Long> getActivities(Identity owner, Identity viewer, long offset, long limit) throws ActivityStorageException;
 
   /**
    * 
@@ -176,7 +176,7 @@ public interface ActivityDAO extends GenericDAO<ActivityEntity, Long> {
    * @param spaceIds list of space ids
    * @return list of activity entities
    */
-  List<ActivityEntity> getActivityFeed(Identity ownerIdentity, int offset, int limit, List<String> spaceIds);
+  List<Long> getActivityFeed(Identity ownerIdentity, int offset, int limit, List<String> spaceIds);
   
   /**
    * 
@@ -204,7 +204,7 @@ public interface ActivityDAO extends GenericDAO<ActivityEntity, Long> {
    * @param spaceIds list of space ids
    * @return list of activity entities
    */
-  List<ActivityEntity> getNewerOnActivityFeed(Identity ownerIdentity, long sinceTime, int limit, List<String> spaceIds);
+  List<Long> getNewerOnActivityFeed(Identity ownerIdentity, long sinceTime, int limit, List<String> spaceIds);
   
   /**
    * 
@@ -223,7 +223,7 @@ public interface ActivityDAO extends GenericDAO<ActivityEntity, Long> {
    * @param spaceIds list of space ids
    * @return list of activity entities
    */
-  List<ActivityEntity> getOlderOnActivityFeed(Identity ownerIdentity, long sinceTime, int limit, List<String> spaceIds);
+  List<Long> getOlderOnActivityFeed(Identity ownerIdentity, long sinceTime, int limit, List<String> spaceIds);
   
   /**
    * 
@@ -242,7 +242,7 @@ public interface ActivityDAO extends GenericDAO<ActivityEntity, Long> {
    * @param spaceIds list of space ids
    * @return lsit of activity entities
    */
-  List<ActivityEntity> getUserSpacesActivities(Identity ownerIdentity, int offset, int limit, List<String> spaceIds);
+  List<Long> getUserSpacesActivities(Identity ownerIdentity, int offset, int limit, List<String> spaceIds);
   
   /**
    * 
@@ -271,7 +271,7 @@ public interface ActivityDAO extends GenericDAO<ActivityEntity, Long> {
    * @param spaceIds list of space ids
    * @return list of activity entities
    */
-  List<ActivityEntity> getNewerOnUserSpacesActivities(Identity ownerIdentity, long sinceTime, int limit, List<String> spaceIds);
+  List<Long> getNewerOnUserSpacesActivities(Identity ownerIdentity, long sinceTime, int limit, List<String> spaceIds);
   
   /**
    * 
@@ -290,7 +290,7 @@ public interface ActivityDAO extends GenericDAO<ActivityEntity, Long> {
    * @param spaceIds list of space ids
    * @return list of activity entities
    */
-  List<ActivityEntity> getOlderOnUserSpacesActivities(Identity ownerIdentity, long sinceTime, int limit, List<String> spaceIds);
+  List<Long> getOlderOnUserSpacesActivities(Identity ownerIdentity, long sinceTime, int limit, List<String> spaceIds);
   
   /**
    * 
@@ -308,7 +308,7 @@ public interface ActivityDAO extends GenericDAO<ActivityEntity, Long> {
    * @param limit max number of items to load
    * @return list of activity entities
    */
-  List<ActivityEntity> getActivitiesOfConnections(Identity ownerIdentity, int offset, int limit);
+  List<Long> getActivitiesOfConnections(Identity ownerIdentity, int offset, int limit);
   
   /**
    * 
@@ -333,7 +333,7 @@ public interface ActivityDAO extends GenericDAO<ActivityEntity, Long> {
    * @param limit max number items to load
    * @return list of activity entities
    */
-  List<ActivityEntity> getNewerOnActivitiesOfConnections(Identity ownerIdentity, long sinceTime, long limit);
+  List<Long> getNewerOnActivitiesOfConnections(Identity ownerIdentity, long sinceTime, long limit);
   
   /**
    * 
@@ -350,7 +350,7 @@ public interface ActivityDAO extends GenericDAO<ActivityEntity, Long> {
    * @param limit max items to load
    * @return list of activity entities
    */
-  List<ActivityEntity> getOlderOnActivitiesOfConnections(Identity ownerIdentity, long sinceTime, int limit);
+  List<Long> getOlderOnActivitiesOfConnections(Identity ownerIdentity, long sinceTime, int limit);
   
   /**
    * 
@@ -367,7 +367,7 @@ public interface ActivityDAO extends GenericDAO<ActivityEntity, Long> {
    * @param activityTypes the activity Type
    * @return list of activities
    */
-  List<ActivityEntity> getActivitiesByPoster(Identity posterIdentity, int offset, int limit, String... activityTypes);
+  List<Long> getActivitiesByPoster(Identity posterIdentity, int offset, int limit, String... activityTypes);
 
   /**
    * @param posterIdentity the Identity

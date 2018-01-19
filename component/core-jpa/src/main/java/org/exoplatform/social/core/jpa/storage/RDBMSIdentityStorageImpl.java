@@ -38,6 +38,7 @@ import javax.persistence.Query;
 
 import org.exoplatform.commons.file.services.FileStorageException;
 import org.exoplatform.social.core.model.BannerAttachment;
+import org.exoplatform.social.core.storage.api.ActivityStorage;
 import org.exoplatform.social.core.storage.api.IdentityStorage;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -55,6 +56,7 @@ import org.exoplatform.services.organization.OrganizationService;
 import org.exoplatform.services.organization.User;
 import org.exoplatform.services.user.UserStateModel;
 import org.exoplatform.services.user.UserStateService;
+import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.identity.SpaceMemberFilterListAccess;
 import org.exoplatform.social.core.identity.model.ActiveIdentityFilter;
 import org.exoplatform.social.core.identity.model.Identity;
@@ -108,6 +110,8 @@ public class RDBMSIdentityStorageImpl implements IdentityStorage {
   private OrganizationIdentityProvider organizationIdentityProvider;
 
   private IdentityStorage cachedIdentityStorage;
+
+  private ActivityStorage activityStorage;
 
   public RDBMSIdentityStorageImpl(IdentityDAO identityDAO,
                                   ActivityDAO activityDAO,
@@ -566,9 +570,9 @@ public class RDBMSIdentityStorageImpl implements IdentityStorage {
     } else if (type == Profile.AttachedActivityType.RELATIONSHIP) {
       t = "USER_ACTIVITIES_FOR_RELATIONSHIP";
     }
-    List<ActivityEntity> activities = activityDAO.getActivitiesByPoster(profile.getIdentity(), 0, 1, t);
-    if (activities != null && activities.size() > 0) {
-      return String.valueOf(activities.get(0).getId());
+    List<ExoSocialActivity> activitiesByPoster = getActivityStorage().getActivitiesByPoster(profile.getIdentity(), 0, 1, t);
+    if (activitiesByPoster != null && activitiesByPoster.size() > 0) {
+      return String.valueOf(activitiesByPoster.get(0).getId());
     } else {
       return null;
     }
@@ -1003,5 +1007,12 @@ public class RDBMSIdentityStorageImpl implements IdentityStorage {
       cachedIdentityStorage = CommonsUtils.getService(IdentityStorage.class);
     }
     return cachedIdentityStorage;
+  }
+
+  public ActivityStorage getActivityStorage() {
+    if (activityStorage == null) {
+      activityStorage = CommonsUtils.getService(ActivityStorage.class);
+    }
+    return activityStorage;
   }
 }
