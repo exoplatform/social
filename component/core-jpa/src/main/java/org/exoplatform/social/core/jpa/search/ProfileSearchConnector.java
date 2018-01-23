@@ -198,7 +198,7 @@ public class ProfileSearchConnector {
       subQueryEmpty = false;
       esSubQuery.append("      \"must\" : {\n");
       esSubQuery.append("        \"query_string\" : {\n");
-      esSubQuery.append("          \"query\" : \"*"+ identity.getId() +"*\",\n");
+      esSubQuery.append("          \"query\" : \""+ identity.getId() +"\",\n");
       esSubQuery.append("          \"fields\" : [\"" + buildTypeEx(type) + "\"]\n");
       esSubQuery.append("        }\n");
       esSubQuery.append("      }\n");
