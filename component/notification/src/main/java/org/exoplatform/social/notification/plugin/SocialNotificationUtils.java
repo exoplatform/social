@@ -412,6 +412,7 @@ public class SocialNotificationUtils {
       previousNotification.with(propertyName, NotificationUtils.listToString(users));
       previousNotification.with(NotificationMessageUtils.NOT_HIGHLIGHT_COMMENT_PORPERTY.getKey(), "true");
       previousNotification.setUpdate(true);
+      previousNotification.setResetOnBadge(false);
       previousNotification.setLastModifiedDate(Calendar.getInstance());
       // update the created date of old notification then remove it from
       // database
