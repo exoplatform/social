@@ -236,6 +236,14 @@ public class PeopleRestService implements ResourceContainer{
       // Includes spaces the current user is member.
       long remain = SUGGEST_LIMIT - (nameList.getOptions() != null ? nameList.getOptions().size() : 0);
       if (remain > 0) {
+        identityFilter.setExcludedIdentityList(excludedIdentityList);
+        ListAccess<Identity> listAccess = getIdentityManager().getIdentitiesByProfileFilter(OrganizationIdentityProvider.NAME, identityFilter, false);
+        List<Identity> identities = Arrays.asList(listAccess.load(0, (int) remain));
+        addSpaceOrUserToList(identities, nameList, space, typeOfRelation, 4);
+      }
+
+      remain = SUGGEST_LIMIT - (nameList.getOptions() != null ? nameList.getOptions().size() : 0);
+      if (remain > 0) {
         SpaceFilter spaceFilter = new SpaceFilter();
         spaceFilter.setSpaceNameSearchCondition(name);
         ListAccess<Space> list = getSpaceService().getMemberSpacesByFilter(currentUser, spaceFilter);
@@ -279,14 +287,6 @@ public class PeopleRestService implements ResourceContainer{
           opt.setOrder(3);
           nameList.addOption(opt);
         }
-      }
-
-      remain = SUGGEST_LIMIT - (nameList.getOptions() != null ? nameList.getOptions().size() : 0);
-      if (remain > 0) {
-        identityFilter.setExcludedIdentityList(excludedIdentityList);
-        ListAccess<Identity> listAccess = getIdentityManager().getIdentitiesByProfileFilter(OrganizationIdentityProvider.NAME, identityFilter, false);
-        List<Identity> identities = Arrays.asList(listAccess.load(0, (int) remain));
-        addSpaceOrUserToList(identities, nameList, space, typeOfRelation, 4);
       }
     } else if (SHARE_DOCUMENT.equals(typeOfRelation)) {
 
