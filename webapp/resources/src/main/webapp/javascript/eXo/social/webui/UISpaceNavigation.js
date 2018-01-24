@@ -218,6 +218,7 @@ var UISpaceNavigation = {
     $('.bannerControls .uiIconCamera').on('click', function() {
         bannerUploader.selectFile(uploaderId);
     });
+    $('.bannerControls [data-toggle="popover"]').popover();
   }
 };
 
