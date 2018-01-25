@@ -329,7 +329,7 @@ public class ProfileSearchConnector {
             }
             esExp.append(" email:").append(StorageUtils.ASTERISK_STR).append(removeAccents(keys[i])).append(StorageUtils.ASTERISK_STR);
           }
-          esExp.append(")\n )");
+          esExp.append(") )");
         }
       } else {
         esExp.append("( name:").append(StorageUtils.ASTERISK_STR).append(removeAccents(inputName)).append(StorageUtils.ASTERISK_STR);
