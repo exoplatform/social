@@ -73,7 +73,7 @@ if (spaceAvatar == null) {
 def banner = StringEscapeUtils.escapeHtml(uicomponent.getBanner());
 def bannerCSS = "";
 if (banner != null) {
-  bannerCSS = "background: url(" + banner + "?t=" + space.getBannerLastUpdated() + ") no-repeat right/cover;";
+  bannerCSS = "background: linear-gradient(rgba(29, 33, 39, 0.15), rgba(29, 33, 39, 0.15)), url(" + banner + "?t=" + space.getBannerLastUpdated() + ") no-repeat right/cover;";
 }
 
 
