@@ -20,6 +20,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.exoplatform.commons.utils.ListAccess;
+import org.exoplatform.services.log.ExoLogger;
+import org.exoplatform.services.log.Log;
 import org.exoplatform.services.organization.OrganizationService;
 import org.exoplatform.services.organization.User;
 import org.exoplatform.social.core.identity.model.Identity;
@@ -32,12 +34,13 @@ import org.exoplatform.social.core.storage.api.IdentityStorage;
  * list we can manage the size of returned list by offset and limit.
  */
 public class UserFilterListAccess implements ListAccess<User> {
+  private static Log          LOG = ExoLogger.getExoLogger(UserFilterListAccess.class);
 
-  private IdentityStorage identityStorage;
+  private IdentityStorage     identityStorage;
 
   private OrganizationService organizationService;
 
-  private ProfileFilter   profileFilter;
+  private ProfileFilter       profileFilter;
 
   public UserFilterListAccess(OrganizationService organizationService, IdentityStorage identityStorage, ProfileFilter profileFilter) {
     this.identityStorage = identityStorage;
@@ -74,7 +77,9 @@ public class UserFilterListAccess implements ListAccess<User> {
       for (Identity identity : identities) {
         String userId = identity.getRemoteId();
         User user = organizationService.getUserHandler().findUserByName(userId);
-        if (user != null) {
+        if (user == null) {
+          LOG.warn("Can't find user with name '{}'", userId);
+        } else {
           users.add(user);
         }
       }
