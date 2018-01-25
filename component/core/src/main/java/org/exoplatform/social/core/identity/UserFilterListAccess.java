@@ -16,6 +16,7 @@
  */
 package org.exoplatform.social.core.identity;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.exoplatform.commons.utils.ListAccess;
@@ -68,13 +69,16 @@ public class UserFilterListAccess implements ListAccess<User> {
     if (identities == null || identities.isEmpty()) {
       return new User[0];
     } else {
-      User[] users = new User[identities.size()];
+      List<User> users = new ArrayList<User>();
       int i = 0;
       for (Identity identity : identities) {
         String userId = identity.getRemoteId();
-        users[i++] = organizationService.getUserHandler().findUserByName(userId);
+        User user = organizationService.getUserHandler().findUserByName(userId);
+        if (user != null) {
+          users.add(user);
+        }
       }
-      return users;
+      return users.toArray(new User[0]);
     }
   }
 
