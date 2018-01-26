@@ -16,9 +16,12 @@
  */
 package org.exoplatform.social.core.identity;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.exoplatform.commons.utils.ListAccess;
+import org.exoplatform.services.log.ExoLogger;
+import org.exoplatform.services.log.Log;
 import org.exoplatform.services.organization.OrganizationService;
 import org.exoplatform.services.organization.User;
 import org.exoplatform.social.core.identity.model.Identity;
@@ -31,12 +34,13 @@ import org.exoplatform.social.core.storage.api.IdentityStorage;
  * list we can manage the size of returned list by offset and limit.
  */
 public class UserFilterListAccess implements ListAccess<User> {
+  private static Log          LOG = ExoLogger.getExoLogger(UserFilterListAccess.class);
 
-  private IdentityStorage identityStorage;
+  private IdentityStorage     identityStorage;
 
   private OrganizationService organizationService;
 
-  private ProfileFilter   profileFilter;
+  private ProfileFilter       profileFilter;
 
   public UserFilterListAccess(OrganizationService organizationService, IdentityStorage identityStorage, ProfileFilter profileFilter) {
     this.identityStorage = identityStorage;
@@ -68,13 +72,18 @@ public class UserFilterListAccess implements ListAccess<User> {
     if (identities == null || identities.isEmpty()) {
       return new User[0];
     } else {
-      User[] users = new User[identities.size()];
+      List<User> users = new ArrayList<User>();
       int i = 0;
       for (Identity identity : identities) {
         String userId = identity.getRemoteId();
-        users[i++] = organizationService.getUserHandler().findUserByName(userId);
+        User user = organizationService.getUserHandler().findUserByName(userId);
+        if (user == null) {
+          LOG.warn("Can't find user with name '{}'", userId);
+        } else {
+          users.add(user);
+        }
       }
-      return users;
+      return users.toArray(new User[0]);
     }
   }
 
