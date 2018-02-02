@@ -80,7 +80,7 @@
 %>
 <div class="uiComposer hidden-phone">
   <% uiform.begin() %>
-  <div class="share-buttons-top button-group clearfix hidden">
+  <div class="share-buttons-top button-group clearfix hide">
 	<button class="share-button btn btn-primary btn-submit">$shareLabel</button>
   	<button class="btn btn-cancel"><%=_ctx.appRes("word.cancel")%></button>
   </div>
@@ -129,7 +129,7 @@
 	    </div>
 		<div class="share-buttons-down button-group clearfix">
 		 	<button class="share-button btn btn-primary" id="ShareButton" type="submit" onclick="<%= uicomponent.event("PostMessage");%>; UIComposer.post()">$shareLabel</button>
-			<button class="btn btn-cancel hidden"><%=_ctx.appRes("word.cancel")%></button>
+			<button class="btn btn-cancel hide"><%=_ctx.appRes("word.cancel")%></button>
 		</div>
 	</div>
   <% uiform.end()%>
