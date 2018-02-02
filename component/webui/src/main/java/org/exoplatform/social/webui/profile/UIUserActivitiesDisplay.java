@@ -28,6 +28,7 @@ import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.manager.ActivityManager;
+import org.exoplatform.social.core.relationship.model.Relationship;
 import org.exoplatform.social.webui.URLUtils;
 import org.exoplatform.social.webui.Utils;
 import org.exoplatform.social.webui.activity.AbstractActivitiesDisplay;
@@ -398,5 +399,16 @@ public class UIUserActivitiesDisplay extends AbstractActivitiesDisplay {
     boolean isAllActivitiesModeOnHomePage = DisplayMode.ALL_ACTIVITIES.equals(getSelectedDisplayMode());
     
     return Utils.isHomePage() ? !hasActivities && isAllActivitiesModeOnHomePage : !hasActivities;
+  }
+    
+  public boolean isRelationConfirmed() {
+    if (Utils.getViewerIdentity() != null && Utils.getOwnerIdentity() != null && !Utils.getViewerIdentity().getId().equals(Utils.getOwnerIdentity().getId())) {
+      Relationship relationship = Utils.getRelationshipManager().get(Utils.getViewerIdentity(), Utils.getOwnerIdentity());
+      if (relationship != null && (relationship.getStatus() == Relationship.Type.CONFIRMED)) {
+        return true;
+      }
+    }
+    
+    return false;
   }
 }
