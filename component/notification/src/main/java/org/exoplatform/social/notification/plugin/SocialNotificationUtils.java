@@ -190,6 +190,8 @@ public class SocialNotificationUtils {
       int count = values.size();
       if (activity != null) {
         String title = activity.getTitle();
+        String imagePlaceHolder = getImagePlaceHolder(templateContext.getLanguage());
+        title = processImageTitle(title, imagePlaceHolder);
         // removes a href link from title. Just for digest building case.
         title = title.replaceAll(A_HREF_TAG_REGEX, "");
         templateContext.put("ACTIVITY", SocialNotificationUtils.buildRedirecActivityUrl(typeActivityDisplay, activity.getId(), title));
