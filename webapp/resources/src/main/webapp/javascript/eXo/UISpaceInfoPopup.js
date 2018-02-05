@@ -410,7 +410,7 @@
                     popupContentContainer.append(popupContent);
                     if (action) {
                         var divUIAction = $("<div/>", {
-                            "class": "uiAction connectAction"
+                            "class": "uiAction connectAction is-space"
                         }).append(action);
                         popupContentContainer.append(divUIAction);
                     }
