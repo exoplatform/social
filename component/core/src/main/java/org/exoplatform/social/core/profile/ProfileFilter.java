@@ -239,6 +239,9 @@ public class ProfileFilter implements Cloneable {
 
   public void setViewerIdentity(Identity currentIdentity) {
     this.viewerIdentity = currentIdentity;
+    if (currentIdentity == null) {
+      return;
+    }
     if(this.excludedIdentityList == null) {
       this.excludedIdentityList = new ArrayList<Identity>();
     }

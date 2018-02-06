@@ -17,10 +17,10 @@
 package org.exoplatform.social.core.identity;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.exoplatform.commons.utils.ListAccess;
-import org.exoplatform.social.common.jcr.Util;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.profile.ProfileFilter;
 import org.exoplatform.social.core.storage.api.IdentityStorage;
@@ -118,31 +118,51 @@ public class ProfileFilterListAccess implements ListAccess<Identity> {
    * {@inheritDoc}
    */
   public Identity[] load(int offset, int limit) throws Exception, IllegalArgumentException {
+    int usedLimit = limit;
+    if (profileFilter != null && profileFilter.getViewerIdentity() != null) {
+      // If viewer is added in filter, he shouldn't be retured in results
+      // Thus, we get the results + 1 in order to delete the identity
+      // of viewer if retrieved
+      usedLimit++;
+    }
     List<? extends Identity> identities = new ArrayList<>();
     //
-    if(type != null) {
+    if (type != null) {
       switch(type) {
       case UNIFIED_SEARCH:
-        identities = identityStorage.getIdentitiesForUnifiedSearch(providerId, profileFilter, offset, limit);
+        identities = identityStorage.getIdentitiesForUnifiedSearch(providerId, profileFilter, offset, usedLimit);
       default: 
           break;
       }
-    }else {
+    } else {
       if (profileFilter.getFirstCharacterOfName() != EMPTY_CHARACTER) {
         identities = identityStorage.getIdentitiesByFirstCharacterOfName(providerId, profileFilter, offset,
-                                                                         limit, forceLoadProfile);
+                                                                         usedLimit, forceLoadProfile);
       } else if (profileFilter.isEmpty()) {
         if(profileFilter.getViewerIdentity() == null) {
-          identities = identityStorage.getIdentitiesByProfileFilter(providerId, profileFilter, offset, limit, forceLoadProfile);
+          identities = identityStorage.getIdentities(providerId, offset, usedLimit);
         } else {
-          identities = identityStorage.getIdentitiesWithRelationships(profileFilter.getViewerIdentity().getId(), offset, limit);
+          identities = identityStorage.getIdentitiesWithRelationships(profileFilter.getViewerIdentity().getId(), offset, usedLimit);
         }
       } else {
         identities = identityStorage.getIdentitiesForMentions(providerId, profileFilter, null, offset,
-                                                              limit, forceLoadProfile);
+                                                              usedLimit, forceLoadProfile);
       }
     }
-    
+    if (profileFilter != null && profileFilter.getViewerIdentity() != null) {
+      Iterator<? extends Identity> iterator = identities.iterator();
+      while (iterator.hasNext()) {
+        Identity identity = (Identity) iterator.next();
+        if (identity.equals(profileFilter.getViewerIdentity())) {
+          iterator.remove();
+        }
+      }
+      // Remove last element if the used limit to request data from DB
+      // is incremented by 1
+      if (identities.size() > limit) {
+        identities.remove(identities.size() -1);
+      }
+    }
     return identities.toArray(new Identity[0]);
   }
 
@@ -158,6 +178,8 @@ public class ProfileFilterListAccess implements ListAccess<Identity> {
         size = identityStorage.getIdentitiesByProfileFilterCount(providerId, profileFilter);
       } else {
         size = identityStorage.countIdentitiesWithRelationships(profileFilter.getViewerIdentity().getId());
+        // Remove Count of viewer identity
+        size--;
       }
     } else {
       size = identityStorage.getIdentitiesForMentionsCount(providerId, profileFilter, null);
