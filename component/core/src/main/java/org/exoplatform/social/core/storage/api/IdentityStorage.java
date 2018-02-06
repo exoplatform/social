@@ -355,4 +355,16 @@ public interface IdentityStorage {
    * @return
    */
   public int countSpaceMemberIdentitiesByProfileFilter(Space space, ProfileFilter profileFilter, Type type);
+
+  /**
+   * Get list of identities by providerId
+   * 
+   * @param providerId
+   * @param offset
+   * @param limit
+   * @return
+   */
+  default public List<Identity> getIdentities(String providerId, long offset, long limit) {
+    throw new UnsupportedOperationException("This operation is not supported using current implementation of service IdentityStorage");
+  }
 }

@@ -38,7 +38,10 @@ import org.exoplatform.social.core.storage.api.SpaceStorage;
 
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created by IntelliJ IDEA.
@@ -195,6 +198,7 @@ public class IdentityStorageTest extends AbstractCoreTest {
 
     Identity tobeSavedIdentity = new Identity(OrganizationIdentityProvider.NAME, userName);
     identityStorage.saveIdentity(tobeSavedIdentity);
+    tearDownIdentityList.add(tobeSavedIdentity);
 
     Identity foundIdentity = identityStorage.findIdentity(OrganizationIdentityProvider.NAME, userName);
 
@@ -216,6 +220,7 @@ public class IdentityStorageTest extends AbstractCoreTest {
     final String lastName = "LastName";
     Identity tobeSavedIdentity = new Identity(OrganizationIdentityProvider.NAME, userName);
     identityStorage.saveIdentity(tobeSavedIdentity);
+    tearDownIdentityList.add(tobeSavedIdentity);
 
     Profile tobeSavedProfile = tobeSavedIdentity.getProfile();
 
@@ -245,6 +250,7 @@ public class IdentityStorageTest extends AbstractCoreTest {
     final String username = "username";
     Identity tobeSavedIdentity = new Identity(OrganizationIdentityProvider.NAME, username);
     identityStorage.saveIdentity(tobeSavedIdentity);
+    tearDownIdentityList.add(tobeSavedIdentity);
     Profile tobeSavedProfile = tobeSavedIdentity.getProfile();
     tobeSavedProfile.setProperty(Profile.USERNAME, username);
 
@@ -291,6 +297,7 @@ public class IdentityStorageTest extends AbstractCoreTest {
     Identity identity = new Identity(providerId, remoteId);
 
     identityStorage.saveIdentity(identity);
+    tearDownIdentityList.add(identity);
     String profileId;
     //this code snippet will create profile node for test case
     {
@@ -310,8 +317,6 @@ public class IdentityStorageTest extends AbstractCoreTest {
       assertFalse(profile.hasChanged());
       assertEquals(profileId, profile.getId());
     }
-    
-    tearDownIdentityList.add(identityStorage.findIdentity(OrganizationIdentityProvider.NAME, remoteId));
   }
 
   @MaxQueryNumber(108)
@@ -321,6 +326,7 @@ public class IdentityStorageTest extends AbstractCoreTest {
 
     Identity identity = new Identity(providerId, remoteId);
     identityStorage.saveIdentity(identity);
+    tearDownIdentityList.add(identity);
 
     Profile profile = new Profile(identity);
     profile.setProperty(Profile.FIRST_NAME, "FirstName");
@@ -344,6 +350,7 @@ public class IdentityStorageTest extends AbstractCoreTest {
       String remoteId = "username" + i;
       Identity identity = new Identity(providerId, remoteId+i);
       identityStorage.saveIdentity(identity);
+      tearDownIdentityList.add(identity);
 
       Profile profile = new Profile(identity);
       profile.setProperty(Profile.FIRST_NAME, "FirstName"+ i);
@@ -351,13 +358,47 @@ public class IdentityStorageTest extends AbstractCoreTest {
       profile.setProperty(Profile.FULL_NAME, "FirstName" + i + " " + "LastName" + i);
       identityStorage.saveProfile(profile);
       identity.setProfile(profile);
-      tearDownIdentityList.add(identity);
     }
 
     final ProfileFilter filter = new ProfileFilter();
     filter.setName("FirstName");
     final List<Identity> result = identityStorage.getIdentitiesByProfileFilter(providerId, filter, 0, total, false);
     assertEquals(total, result.size());
+  }
+
+  @MaxQueryNumber(1080)
+  public void testGetIdentitiesSorted() throws Exception {
+    final int total = 10;
+    String remoteIdPrefix = "username";
+    for (int i = 0; i < total; i++) {
+      String remoteId = remoteIdPrefix + i;
+      Identity identity = new Identity(OrganizationIdentityProvider.NAME, remoteId + i);
+      identityStorage.saveIdentity(identity);
+      tearDownIdentityList.add(identity);
+
+      Profile profile = new Profile(identity);
+      profile.setProperty(Profile.FIRST_NAME, "FirstName" + i);
+      profile.setProperty(Profile.LAST_NAME, "LastName" + i);
+      profile.setProperty(Profile.FULL_NAME, "FirstName" + i + " " + "LastName" + i);
+      identityStorage.saveProfile(profile);
+      identity.setProfile(profile);
+    }
+
+    List<Identity> result = identityStorage.getIdentities(OrganizationIdentityProvider.NAME, 0, Integer.MAX_VALUE);
+    List<String> identitiesList =
+                                result.stream().map(identity -> identity.getProfile().getFullName()).collect(Collectors.toList());
+
+    assertTrue(identitiesList.size() >= total);
+    Iterator<String> iterator = identitiesList.iterator();
+    while (iterator.hasNext()) {
+      String username = (String) iterator.next();
+      if (!username.startsWith(remoteIdPrefix)) {
+        iterator.remove();
+      }
+    }
+    List<String> identitiesListBackup = new ArrayList<>(identitiesList);
+    Collections.sort(identitiesList);
+    assertEquals("List '" + identitiesList + "' is not sorted", identitiesList, identitiesListBackup);
   }
 
   @MaxQueryNumber(99)
@@ -367,6 +408,7 @@ public class IdentityStorageTest extends AbstractCoreTest {
 
     Identity identity = new Identity(providerId, remoteId);
     identityStorage.saveIdentity(identity);
+    tearDownIdentityList.add(identity);
 
     Profile profile = new Profile(identity);
     profile.setProperty(Profile.FIRST_NAME, "FirstName");
@@ -374,7 +416,6 @@ public class IdentityStorageTest extends AbstractCoreTest {
     profile.setProperty(Profile.FULL_NAME, "FirstName" + " " + "LastName");
     identityStorage.saveProfile(profile);
     identity.setProfile(profile);
-    tearDownIdentityList.add(identity);
     final ProfileFilter filter = new ProfileFilter();
     filter.setName("notfound");
     final List<Identity> result = identityStorage.getIdentitiesByProfileFilter(providerId, filter, 0, 1, false);
@@ -387,11 +428,15 @@ public class IdentityStorageTest extends AbstractCoreTest {
    */
   @MaxQueryNumber(582)
   public void testFindIdentityByProfileFilter() throws Exception {
-    String providerId = "organization";
+    String providerId = OrganizationIdentityProvider.NAME;
     String remoteId = "username";
+
+    Identity rootIdentity = identityStorage.findIdentity(providerId, "root");
+    int countRootIdentity = (rootIdentity == null || rootIdentity.isDeleted() || !rootIdentity.isEnable()) ? 0 : 1;
 
     Identity identity = new Identity(providerId, remoteId);
     identityStorage.saveIdentity(identity);
+    tearDownIdentityList.add(identity);
 
     Profile profile = new Profile(identity);
     profile.setProperty(Profile.FIRST_NAME, "FirstName");
@@ -402,13 +447,11 @@ public class IdentityStorageTest extends AbstractCoreTest {
 
     identityStorage.saveProfile(profile);
     identity.setProfile(profile);
-    tearDownIdentityList.add(identity);
     final ProfileFilter filter = new ProfileFilter();
     filter.setPosition("developer");
     filter.setName("First");
     final List<Identity> result = identityStorage.getIdentitiesByProfileFilter(providerId, filter, 0, 1, false);
     assertEquals(1, result.size());
-
 
     //create a new identity
     Identity test2Identity = populateIdentity("test2", false);
@@ -416,17 +459,17 @@ public class IdentityStorageTest extends AbstractCoreTest {
     //check when new identity is not deleted
     final ProfileFilter profileFilter2 = new ProfileFilter();
     List<Identity> foundIdentities = identityStorage.getIdentitiesByProfileFilter(providerId, profileFilter2, 0, 10, false);
-    assertEquals("foundIdentities.size() must be 1", 2, foundIdentities.size());
+    assertEquals(2 + countRootIdentity, foundIdentities.size());
 
     //finds the second one
     profileFilter2.setName("g");
     foundIdentities =  identityStorage.getIdentitiesByProfileFilter(providerId, profileFilter2, 0, 10, false);
-    assertEquals("foundIdentities.size() must be 1", 1, foundIdentities.size());
+    assertEquals(1, foundIdentities.size());
 
     //check when new identity is deleted
     identityStorage.deleteIdentity(test2Identity);
     foundIdentities = identityStorage.getIdentitiesByProfileFilter(providerId, profileFilter2, 0, 10, false);
-    assertEquals("foundIdentities.size() must be 0", 0, foundIdentities.size());
+    assertEquals(0, foundIdentities.size());
   }
 
   /**
@@ -442,6 +485,7 @@ public class IdentityStorageTest extends AbstractCoreTest {
       String remoteId = "username" + i;
       Identity identity = new Identity(providerId, remoteId);
       identityStorage.saveIdentity(identity);
+      tearDownIdentityList.add(identity);
 
       Profile profile = new Profile(identity);
       profile.setProperty(Profile.FIRST_NAME, "FirstName" + i);
@@ -451,7 +495,6 @@ public class IdentityStorageTest extends AbstractCoreTest {
       profile.setProperty(Profile.POSITION, "developer");
       profile.setProperty(Profile.GENDER, "male");
       identity.setProfile(profile);
-      tearDownIdentityList.add(identity);
       identityStorage.saveProfile(profile);
     }
 
@@ -577,8 +620,8 @@ public class IdentityStorageTest extends AbstractCoreTest {
   public void testUpdateIdentity() throws Exception {
     String providerId = OrganizationIdentityProvider.NAME;
     String newProviderId = "space";
-    String userName = "root";
-    Identity identity = populateIdentity(userName);
+    String userName = "userIdentity1";
+    Identity identity = populateIdentity(userName, true);
     assertNotNull("Identity must not be null", identity);
     assertEquals("Identity status must be " + identity.isDeleted(), false, identity.isDeleted());
     identity.setDeleted(true);
@@ -589,6 +632,7 @@ public class IdentityStorageTest extends AbstractCoreTest {
     identity.setDeleted(false);
     identityStorage.updateIdentity(identity);
     updatedIdentity = identityStorage.findIdentity(newProviderId, userName);
+    tearDownIdentityList.add(updatedIdentity);
     assertEquals("Identity status must be " + updatedIdentity.isDeleted(), false, updatedIdentity.isDeleted());
     assertEquals("Identity provider id must be " + updatedIdentity.getProviderId(), newProviderId, updatedIdentity.getProviderId());
   }
@@ -652,6 +696,8 @@ public class IdentityStorageTest extends AbstractCoreTest {
     assertEquals(2, identities.size());
 
     Identity username1Identity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "username1", true);
+    tearDownIdentityList.add(username1Identity);
+    tearDownIdentityList.add(identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "username4", true));
     profileFilter.setViewerIdentity(username1Identity);
     assertEquals(2, identityStorage.countSpaceMemberIdentitiesByProfileFilter(space, profileFilter, Type.MEMBER));
 
@@ -668,9 +714,11 @@ public class IdentityStorageTest extends AbstractCoreTest {
     /*
       test on identity with @OrganizationIdentityProvider.NAME as providerId.
      */
-    String userName = "root";
+    String userName = "userIdentity2";
     Identity identity = populateIdentity(userName);
     identityStorage.saveIdentity(identity);
+    tearDownIdentityList.add(identity);
+
     // within this instruction the profile is created implicitly and it does not have an avatar
     String identityId = identity.getId();
     assertNotNull(identityId);
@@ -710,6 +758,8 @@ public class IdentityStorageTest extends AbstractCoreTest {
     assertNotNull(remoteId);
     identity = new Identity(SpaceIdentityProvider.NAME, remoteId);
     identityStorage.saveIdentity(identity);
+    tearDownIdentityList.add(identity);
+
     assertNotNull(identity.getId());
     assertNotNull(identity.getRemoteId());
     stream = identityStorage.getAvatarInputStreamById(identity);
@@ -747,7 +797,7 @@ public class IdentityStorageTest extends AbstractCoreTest {
     assertNotNull(stream);
   }
 
-  @MaxQueryNumber(126)
+  @MaxQueryNumber(141)
   public void testGetBannerInputStreamById() throws Exception {
     InputStream inputStream = getClass().getResourceAsStream("/eXo-Social.png");
     BannerAttachment bannerAttachment = new BannerAttachment(null, "banner", "png", inputStream, null, System.currentTimeMillis());
@@ -755,9 +805,11 @@ public class IdentityStorageTest extends AbstractCoreTest {
     /*
       test on identity with @OrganizationIdentityProvider.NAME as providerId.
      */
-    String userName = "root";
+    String userName = "userIdentity3";
     Identity identity = populateIdentity(userName);
     identityStorage.saveIdentity(identity);
+    tearDownIdentityList.add(identity);
+
     // within this instruction the profile is created implicitly and it does not have an banner
     String identityId = identity.getId();
     assertNotNull(identityId);
@@ -881,6 +933,7 @@ public class IdentityStorageTest extends AbstractCoreTest {
       String remoteId = "username" + i;
       Identity identity = new Identity(providerId, remoteId);
       identityStorage.saveIdentity(identity);
+      tearDownIdentityList.add(identity);
 
       Profile profile = new Profile(identity);
       profile.setProperty(Profile.FIRST_NAME, "FirstName" + i);
@@ -889,7 +942,6 @@ public class IdentityStorageTest extends AbstractCoreTest {
       profile.setProperty("position", "developer");
       profile.setProperty("gender", "male");
       identity.setProfile(profile);
-      tearDownIdentityList.add(identity);
       identityStorage.saveProfile(profile);
     }
   }

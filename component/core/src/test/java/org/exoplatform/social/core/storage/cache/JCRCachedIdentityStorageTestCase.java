@@ -197,7 +197,6 @@ public class JCRCachedIdentityStorageTestCase extends AbstractCoreTest {
     cachedIdentityStorage.updateProfile(new Profile(i));
     assertEquals(1, cacheService.getIdentityCache().getCacheSize());
     assertEquals(0, cacheService.getProfileCache().getCacheSize());
-
   }
 
   @MaxQueryNumber(258)
