@@ -16,17 +16,6 @@
  */
 package org.exoplatform.social.notification.plugin;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.exoplatform.commons.api.notification.NotificationContext;
@@ -42,6 +31,8 @@ import org.exoplatform.commons.api.notification.service.template.TemplateContext
 import org.exoplatform.commons.notification.NotificationUtils;
 import org.exoplatform.commons.notification.template.TemplateUtils;
 import org.exoplatform.commons.utils.CommonsUtils;
+import org.exoplatform.services.log.ExoLogger;
+import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
@@ -53,7 +44,14 @@ import org.exoplatform.social.notification.LinkProviderUtils;
 import org.exoplatform.social.notification.Utils;
 import org.exoplatform.social.notification.plugin.child.DefaultActivityChildPlugin;
 
+import java.util.*;
+import java.util.Map.Entry;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 public class SocialNotificationUtils {
+  private static final Log LOG = ExoLogger.getLogger(SocialNotificationUtils.class);
+
   public final static Pattern IMG_SRC_REGEX = Pattern.compile("<img[^>]+((data-plugin-name\\s*=\\s*['\"]([^'\"]+)['\"][^>]+)|(src\\s*=\\s*['\"]([^'\"]+)['\"])){2}[^>]*>");
 
   public final static ArgumentLiteral<String> ACTIVITY_ID = new ArgumentLiteral<String>(String.class, "activityId");
@@ -350,13 +348,17 @@ public class SocialNotificationUtils {
   }
   
   public static void addFooterAndFirstName(String remoteId, TemplateContext templateContext) {
-    try {
-      Identity receiver = Utils.getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, remoteId, true);
-      templateContext.put("FIRSTNAME", (String) receiver.getProfile().getProperty(Profile.FIRST_NAME));
-      templateContext.put("FOOTER_LINK", LinkProviderUtils.getRedirectUrl("notification_settings", receiver.getRemoteId()));
-    } catch (Exception e) {
-      return;
+    String firstName = "";
+    String redirectUrl = "";
+
+    Identity receiver = Utils.getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, remoteId, true);
+    if(receiver != null) {
+      firstName = (String) receiver.getProfile().getProperty(Profile.FIRST_NAME);
+      redirectUrl = LinkProviderUtils.getRedirectUrl("notification_settings", receiver.getRemoteId());
     }
+
+    templateContext.put("FIRSTNAME", firstName);
+    templateContext.put("FOOTER_LINK", redirectUrl);
   }
 
   public static String processImageTitle(String body, String placeholder) {
