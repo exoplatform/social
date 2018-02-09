@@ -224,7 +224,7 @@
         <module>webui</module>
       </depends>
       <depends>
-        <module>social-ui-space-nav</module>
+        <module>social-ui-space-navigation</module>
       </depends>
     </module>
   </portlet>

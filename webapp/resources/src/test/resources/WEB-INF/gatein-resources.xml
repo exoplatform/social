@@ -164,7 +164,7 @@
   </module>
   
   <module>
-    <name>social-ui-space-nav</name>
+    <name>social-ui-space-navigation</name>
     <script>
        <path>/javascript/eXo/social/webui/UISpaceNavigation.js</path>
     </script>

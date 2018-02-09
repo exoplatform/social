@@ -80,13 +80,13 @@ if (banner != null) {
 String moreLabel = _ctx.appRes("${uicomponentId}.label.More").replace("'", "\\47");
 if(uicomponent.hasSettingPermission()) {
 	_ctx.getRequestContext().getJavascriptManager()
-	        .require("SHARED/social-ui-space-nav", "spacenav")
+	        .require("SHARED/social-ui-space-navigation", "spacenav")
 	        .addScripts("spacenav.addEditability('" + uicomponent.id + "','" + moreLabel + "');")
 	        .addScripts("spacenav.initBanner('#UIBannerUploader');")
 	        .addScripts("spacenav.initAvatar('#UIBannerAvatarUploader');");
 } else {
     _ctx.getRequestContext().getJavascriptManager()
-            .require("SHARED/social-ui-space-nav", "spacenav")
+            .require("SHARED/social-ui-space-navigation", "spacenav")
             .addScripts("spacenav.addEditability('" + uicomponent.id + "','" + moreLabel + "');");
 }
 
