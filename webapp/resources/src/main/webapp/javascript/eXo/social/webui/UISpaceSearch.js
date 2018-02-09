@@ -36,12 +36,12 @@
       plugins: ['restore_on_backspace'],
       preload: false,
       persist: true,
-    addPrecedence: true,
+      addPrecedence: true,
       createOnBlur: true,
       highlight: false,
       hideSelected: true,
       create: true,
-    openOnFocus: true,
+      openOnFocus: true,
       maxItems: 1,
       sourceProviders: ['exo:social'],
       valueField: 'text',
@@ -69,12 +69,12 @@
           return;
         }
         $(searchEl)[0].selectize.setTextboxValue(value);
-    $(searchEl).val(value);
-    $(searchEl).attr('value', value);
-    if($item.invalid === false) {
-      UISpaceSearch.searchBtn.trigger("click");
-      $(searchEl)[0].selectize.setTextboxValue(value);
-    }
+        $(searchEl).val(value);
+        $(searchEl).attr('value', value);
+        if($item.invalid === false) {
+          UISpaceSearch.searchBtn.trigger("click");
+          $(searchEl)[0].selectize.setTextboxValue(value);
+        }
       },
       onItemRemove: function(value, $item) {
         this.selectedValue = value;
