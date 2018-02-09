@@ -17,6 +17,8 @@
 package org.exoplatform.social.core.processor;
 
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.exoplatform.container.xml.InitParams;
 import org.exoplatform.services.log.ExoLogger;
@@ -27,6 +29,8 @@ import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 
 public class TemplateParamsProcessor extends BaseActivityProcessorPlugin {
   private static final Log LOG = ExoLogger.getLogger(TemplateParamsProcessor.class);
+  private static final Pattern PARAMETER_PATTERN = Pattern.compile("\\$\\{([^}]*)}");
+
   public TemplateParamsProcessor(InitParams params) {
     super(params);
   }
@@ -46,18 +50,16 @@ public class TemplateParamsProcessor extends BaseActivityProcessorPlugin {
       return template;
     }
     
-    int start = 0;
-    int open;
-    int close;
-    while ((open = template.indexOf("${", start)) != -1){
-      start = close = template.indexOf("}");
-      if (close == -1) {
-        throw new Exception("Template is invalid. [Do not contain '}']");
-      }
-
-      String key = template.substring(open + 2, close);
+    Matcher matcher = PARAMETER_PATTERN.matcher(template);
+    int index = 0;
+    while (matcher.find(index)) {
+      index = matcher.end();
+      String templateKey = matcher.group();
+      String key = matcher.group(1);
       String value = params.get(key);
-      String templateKey = "${"+key+"}";
+      if (value == null) {
+        continue;
+      }
       template = template.replace(templateKey, value);
     }
 
