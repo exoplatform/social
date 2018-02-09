@@ -26,8 +26,8 @@
         $(nameEl).suggester({
           type : 'tag',
           plugins: ['restore_on_backspace'],
+          create: true,
           preload: false,
-          create: false,
           addPrecedence: true,
           persist: false,
           createOnBlur: true,
@@ -104,6 +104,18 @@
                 item.text = item.value;
             }
             return '<div class="optionItem" data-value="' + item.text + '"><div class="avatarSmall optionAvatar"><img src="' + avatar + '"></div><div class="optionName">' + escape(item.text) + '</div></div>';
+          },
+          create: function(input) {
+            return {'value': input, 'text': input, 'invalid': true};
+          },
+          onItemAdd : function(value, $item) {
+            $(nameEl)[0].selectize.setTextboxValue(value);
+            $(nameEl).val(value);
+            $(nameEl).attr('value', value);
+            if(!$item.invalid) {
+              UIProfileUserSearch.searchBtn.trigger("click");
+              $(nameEl)[0].selectize.setTextboxValue(value);
+            }
           },
           sortField: [{field: 'order'}, {field: '$score'}],
           providers: {
