@@ -316,6 +316,9 @@ public class IdentityDAOImpl extends GenericDAOJPAImpl<IdentityEntity, Long> imp
   }
 
   private Query getIdentitiesQuerySortedByField(String providerId, String sortField) {
+    // Oracle and MSSQL support only 1/0 for boolean, Postgresql supports only TRUE/FALSE, MySQL supports both
+    String dbBoolFalse = isOrcaleDialect() || isMSSQLDialect() ? "0" : "FALSE";
+    String dbBoolTrue = isOrcaleDialect() || isMSSQLDialect() ? "1" : "TRUE";
     // Oracle Dialect in Hibernate 4 is not registering NVARCHAR correctly, see HHH-10495
     StringBuilder queryStringBuilder =
                                       isOrcaleDialect() ? new StringBuilder("SELECT to_char(identity_1.remote_id), identity_1.identity_id, to_char(identity_prop.value) \n")
@@ -326,8 +329,8 @@ public class IdentityDAOImpl extends GenericDAOJPAImpl<IdentityEntity, Long> imp
     queryStringBuilder.append("   ON identity_1.identity_id = identity_prop.identity_id \n");
     queryStringBuilder.append("       AND identity_prop.name = '").append(sortField).append("' \n");
     queryStringBuilder.append(" WHERE identity_1.provider_id = '").append(providerId).append("' \n");
-    queryStringBuilder.append(" AND identity_1.deleted = FALSE  \n");
-    queryStringBuilder.append(" AND identity_1.enabled = TRUE \n");
+    queryStringBuilder.append(" AND identity_1.deleted = ").append(dbBoolFalse).append(" \n");
+    queryStringBuilder.append(" AND identity_1.enabled = ").append(dbBoolTrue).append(" \n");
     queryStringBuilder.append(" ORDER BY identity_prop.value ASC");
 
     Query query = getEntityManager().createNativeQuery(queryStringBuilder.toString());
