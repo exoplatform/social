@@ -274,7 +274,7 @@ public static final String RESOURCE_URL = "social/notifications";
           return CommonsUtils.getCurrentDomain() + templateParams.get("EventLink");
         } else if (activityType.contains(ActivityPluginType.ANSWER.getName())) {
           if (activity.isComment()) {
-            return CommonsUtils.getCurrentDomain() + Utils.getActivityManager().getParentActivity(activity).getTemplateParams().get("Link");
+            return Utils.getActivityManager().getParentActivity(activity).getTemplateParams().get("Link");
           } else {
             return templateParams.get("Link");
           }
@@ -290,7 +290,7 @@ public static final String RESOURCE_URL = "social/notifications";
           }
           return CommonsUtils.getCurrentDomain() + contenLink;
         } else if (activity.isComment() && (activityType.contains("answer:"))) {
-          return CommonsUtils.getCurrentDomain() + Utils.getActivityManager().getParentActivity(activity).getTemplateParams().get("Link");
+          return Utils.getActivityManager().getParentActivity(activity).getTemplateParams().get("Link");
         } else if (activity.isComment()) {
           return getOpenLink(Utils.getActivityManager().getParentActivity(activity));
         }
@@ -301,7 +301,7 @@ public static final String RESOURCE_URL = "social/notifications";
     } else if (activity.isComment()) {
       String type = Utils.getActivityManager().getParentActivity(activity).getType();
       if ((type != null) && (type.equals(ActivityPluginType.ANSWER.getName())))
-      return CommonsUtils.getCurrentDomain() + Utils.getActivityManager().getParentActivity(activity).getTemplateParams().get("Link");
+      return Utils.getActivityManager().getParentActivity(activity).getTemplateParams().get("Link");
     }
     return null;
   }

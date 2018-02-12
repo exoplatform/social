@@ -52,12 +52,7 @@ public abstract class AbstractPluginTest extends AbstractCoreTest {
   protected Locale initialDefaultLocale;
 
   protected UserSettingService userSettingService;
-  
-  protected List<ExoSocialActivity> tearDownActivityList;
-  protected List<Space>  tearDownSpaceList;
-  protected List<Identity>  tearDownIdentityList;
-  protected List<Relationship>  tearDownRelationshipList;
-  
+
   public abstract BaseNotificationPlugin getPlugin();
   
   @Override
@@ -69,51 +64,12 @@ public abstract class AbstractPluginTest extends AbstractCoreTest {
     initialDefaultLocale = Locale.getDefault();
     Locale.setDefault(new Locale("en", "US"));
 
-    rootIdentity = new Identity(OrganizationIdentityProvider.NAME, "root");
-    johnIdentity = new Identity(OrganizationIdentityProvider.NAME, "john");
-    maryIdentity = new Identity(OrganizationIdentityProvider.NAME, "mary");
-    demoIdentity = new Identity(OrganizationIdentityProvider.NAME, "demo");
-    ghostIdentity = new Identity(OrganizationIdentityProvider.NAME, "ghost");
-
-    identityManager.saveIdentity(rootIdentity);
-    identityManager.saveIdentity(johnIdentity);
-    identityManager.saveIdentity(maryIdentity);
-    identityManager.saveIdentity(demoIdentity);
-    identityManager.saveIdentity(ghostIdentity);
-
-    tearDownActivityList = new ArrayList<ExoSocialActivity>();
-    tearDownSpaceList = new ArrayList<Space>();
-    tearDownIdentityList = new ArrayList<Identity>();
-    tearDownRelationshipList = new ArrayList<Relationship>();
-    
-    tearDownIdentityList.add(rootIdentity);
-    tearDownIdentityList.add(johnIdentity);
-    tearDownIdentityList.add(maryIdentity);
-    tearDownIdentityList.add(demoIdentity);
-    notificationService.clearAll();
     initUserSetting();
     turnON(getPlugin());
   }
   
   @Override
   protected void tearDown() throws Exception {
-    for (ExoSocialActivity activity : tearDownActivityList) {
-      activityManager.deleteActivity(activity.getId());
-    }
-
-    for (Space sp : tearDownSpaceList) {
-      spaceService.deleteSpace(sp);
-    }
-    
-    for (Relationship relationship : tearDownRelationshipList) {
-      relationshipManager.remove(relationship);
-    }
-    
-    for (Identity identity : tearDownIdentityList) {
-      identityManager.deleteIdentity(identity);
-    }
-    
-    notificationService.clearAll();
     //
     turnOFF(getPlugin());
 
@@ -245,23 +201,7 @@ public abstract class AbstractPluginTest extends AbstractCoreTest {
   protected void turnOFF(BaseNotificationPlugin plugin) {
     pluginSettingService.saveActivePlugin(UserSetting.EMAIL_CHANNEL, plugin.getId(), false);
   }
-  
-  /**
-   * Makes the activity for Test Case
-   * @param owner
-   * @param activityTitle
-   * @return
-   */
-  protected ExoSocialActivity makeActivity(Identity owner, String activityTitle) {
-    ExoSocialActivity activity = new ExoSocialActivityImpl();
-    activity.setTitle(activityTitle);
-    activity.setUserId(owner.getId());
-    activityManager.saveActivityNoReturn(rootIdentity, activity);
-    tearDownActivityList.add(activity);
-    
-    return activity;
-  }
-  
+
   protected Relationship makeRelationship(Identity identity1, Identity identity2) {
     Relationship relationship = relationshipManager.inviteToConnect(identity1, identity2);
     tearDownRelationshipList.add(relationship);
