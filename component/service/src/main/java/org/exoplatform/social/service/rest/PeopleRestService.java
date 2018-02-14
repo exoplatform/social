@@ -198,7 +198,7 @@ public class PeopleRestService implements ResourceContainer{
             opt.setValue(SPACE_PREFIX + s.getPrettyName());
             opt.setText(s.getDisplayName());
             opt.setAvatarUrl(s.getAvatarUrl());
-            opt.setOrder(2);
+            opt.setOrder(3);
           } else {
             Identity identity = getIdentityManager().getOrCreateIdentity(
                                                      OrganizationIdentityProvider.NAME, item, false);
@@ -239,7 +239,7 @@ public class PeopleRestService implements ResourceContainer{
         identityFilter.setExcludedIdentityList(excludedIdentityList);
         ListAccess<Identity> listAccess = getIdentityManager().getIdentitiesByProfileFilter(OrganizationIdentityProvider.NAME, identityFilter, false);
         List<Identity> identities = Arrays.asList(listAccess.load(0, (int) remain));
-        addSpaceOrUserToList(identities, nameList, space, typeOfRelation, 4);
+        addSpaceOrUserToList(identities, nameList, space, typeOfRelation, 2);
       }
 
       remain = SUGGEST_LIMIT - (nameList.getOptions() != null ? nameList.getOptions().size() : 0);
@@ -259,7 +259,7 @@ public class PeopleRestService implements ResourceContainer{
           opt.setValue(SPACE_PREFIX + s.getPrettyName());
           opt.setText(s.getDisplayName());
           opt.setAvatarUrl(s.getAvatarUrl());
-          opt.setOrder(2);
+          opt.setOrder(3);
           nameList.addOption(opt);
           exclusions.add(s);
         }
@@ -284,7 +284,7 @@ public class PeopleRestService implements ResourceContainer{
           opt.setValue(SPACE_PREFIX + s.getPrettyName());
           opt.setText(s.getDisplayName());
           opt.setAvatarUrl(s.getAvatarUrl());
-          opt.setOrder(3);
+          opt.setOrder(4);
           nameList.addOption(opt);
         }
       }
