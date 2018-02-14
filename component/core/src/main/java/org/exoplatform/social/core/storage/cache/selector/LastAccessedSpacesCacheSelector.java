@@ -1,5 +1,6 @@
 package org.exoplatform.social.core.storage.cache.selector;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
@@ -64,9 +65,11 @@ public class LastAccessedSpacesCacheSelector extends ScopeCacheSelector<ListSpac
         } else if (StringUtils.isBlank(listSpacesKey.getKey().getAppId()) && listSpacesKey.getOffset() == 0
             && SpaceType.LATEST_ACCESSED.equals(listSpacesKey.getKey().getType())) {
           SpaceKey spaceKey = new SpaceKey(space.getId());
+          ids = new ArrayList<>(ids);
           if (ids.contains(spaceKey)) {
             ids.remove(spaceKey);
             ids.add(0, spaceKey);
+            listSpacesData.setIds(ids);
             // Update cache after value change because ISPN returns a clone of object
             // And not the real cached object
             ((ExoCache<ListSpacesKey, ListSpacesData>) exoCache).put(listSpacesKey, listSpacesData);
@@ -74,11 +77,13 @@ public class LastAccessedSpacesCacheSelector extends ScopeCacheSelector<ListSpac
           } else if (ids.size() == listSpacesKey.getLimit()) {
             ids.remove(ids.size() - 1);
             ids.add(0, spaceKey);
+            listSpacesData.setIds(ids);
             cacheService.getSpacesCountCache().remove(listSpacesKey);
             ((ExoCache<ListSpacesKey, ListSpacesData>) exoCache).put(listSpacesKey, listSpacesData);
             return;
           } else {
             ids.add(0, spaceKey);
+            listSpacesData.setIds(ids);
             cacheService.getSpacesCountCache().remove(listSpacesKey);
             ((ExoCache<ListSpacesKey, ListSpacesData>) exoCache).put(listSpacesKey, listSpacesData);
             return;
