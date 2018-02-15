@@ -299,7 +299,7 @@ public class ProfileSearchConnector {
     if (firstChar != '\u0000') {
       char lowerCase = Character.toLowerCase(firstChar);
       char upperCase = Character.toUpperCase(firstChar);;
-      esExp.append("name:").append("(").append(upperCase).append(StorageUtils.ASTERISK_STR).append(" OR ").append(lowerCase).append(StorageUtils.ASTERISK_STR).append(")");
+      esExp.append("name.whitespace:").append("(").append(upperCase).append(StorageUtils.ASTERISK_STR).append(" OR ").append(lowerCase).append(StorageUtils.ASTERISK_STR).append(")");
       return esExp.toString();
     }
 
@@ -318,7 +318,7 @@ public class ProfileSearchConnector {
           if (i != 0 ) {
             esExp.append(" AND ") ;
           }
-          esExp.append(" name:").append(StorageUtils.ASTERISK_STR).append(removeAccents(keys[i])).append(StorageUtils.ASTERISK_STR);
+          esExp.append(" name.whitespace:").append(StorageUtils.ASTERISK_STR).append(removeAccents(keys[i])).append(StorageUtils.ASTERISK_STR);
         }
         esExp.append(")");
         if (filter.isSearchEmail()) {
@@ -332,7 +332,7 @@ public class ProfileSearchConnector {
           esExp.append(") )");
         }
       } else {
-        esExp.append("( name:").append(StorageUtils.ASTERISK_STR).append(removeAccents(inputName)).append(StorageUtils.ASTERISK_STR);
+        esExp.append("( name.whitespace:").append(StorageUtils.ASTERISK_STR).append(removeAccents(inputName)).append(StorageUtils.ASTERISK_STR);
         if (filter.isSearchEmail()) {
           esExp.append(" OR email:").append(StorageUtils.ASTERISK_STR).append(removeAccents(inputName)).append(StorageUtils.ASTERISK_STR);
         }
