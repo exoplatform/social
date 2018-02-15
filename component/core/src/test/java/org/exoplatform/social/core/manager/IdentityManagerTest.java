@@ -522,6 +522,13 @@ public class IdentityManagerTest extends AbstractCoreTest {
       assertNotNull(idsListAccess);
       assertEquals(5, idsListAccess.getSize());
       
+      // Test with Viewer
+      pf.setViewerIdentity(identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "username1"));
+      idsListAccess = identityManager.getIdentitiesByProfileFilter(providerId, pf, false);
+      assertNotNull(idsListAccess);
+      assertEquals(4, idsListAccess.getSize());
+      pf.setViewerIdentity(null);
+      
       //
       pf.setName("*");
       idsListAccess = identityManager.getIdentitiesByProfileFilter(providerId, pf, false);

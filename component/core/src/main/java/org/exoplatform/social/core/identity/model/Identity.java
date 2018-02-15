@@ -230,7 +230,7 @@ public class Identity implements Cloneable {
       return true;
     if (obj == null)
       return false;
-    if (getClass() != obj.getClass())
+    if (!(obj instanceof Identity))
       return false;
     Identity other = (Identity)obj;
     if (id == null) {
