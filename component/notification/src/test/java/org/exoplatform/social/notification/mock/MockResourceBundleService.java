@@ -31,12 +31,15 @@ import java.util.Scanner;
 import org.exoplatform.commons.utils.CommonsUtils;
 import org.exoplatform.commons.utils.PageList;
 import org.exoplatform.container.configuration.ConfigurationManager;
+import org.exoplatform.services.log.ExoLogger;
+import org.exoplatform.services.log.Log;
 import org.exoplatform.services.resources.Query;
 import org.exoplatform.services.resources.ResourceBundleData;
 import org.exoplatform.services.resources.ResourceBundleService;
 
 
 public class MockResourceBundleService implements ResourceBundleService {
+  private static Log LOG = ExoLogger.getLogger(MockResourceBundleService.class);
   private static final String RESOURCE_LOCATION = "jar:/";
   ConfigurationManager configurationService;
   ResourceBundle resourceBundle;
@@ -71,6 +74,7 @@ public class MockResourceBundleService implements ResourceBundleService {
   @Override
   public ResourceBundle getResourceBundle(String name, Locale locale) {
     String id = name.replace(".", "/") + "_" + locale.getLanguage() + ".properties";
+    String defaultId = name.replace(".", "/") + "_" + Locale.ENGLISH + ".properties";
     ResourceBundle resourceBundle = getResourceBundle();
     if(locals.contains(id) == false) {
       InputStream inputStream = null;
@@ -79,7 +83,14 @@ public class MockResourceBundleService implements ResourceBundleService {
         inputStream = configurationService.getInputStream(RESOURCE_LOCATION + id);
         list = readTextECToListByInput(inputStream);
       } catch (Exception e) {
-        e.printStackTrace();
+        LOG.warn("Could not find the resource bundle for the language {}, falling back to the default language {}",locale.getLanguage(), Locale.ENGLISH);
+        try {
+          inputStream = configurationService.getInputStream(RESOURCE_LOCATION + defaultId);
+          list = new Properties();
+          list.load(inputStream);
+        } catch (Exception e1) {
+          e1.printStackTrace();
+        }
       } finally {
         if(inputStream != null) {
           try {
