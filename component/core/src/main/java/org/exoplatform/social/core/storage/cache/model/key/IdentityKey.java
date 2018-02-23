@@ -31,7 +31,11 @@ public class IdentityKey extends ScopeCacheKey {
   private final String id;
 
   public IdentityKey(final Identity identity) {
-    this.id = identity.getId();
+    if (identity == null) {
+      this.id = null;
+    } else {
+      this.id = identity.getId();
+    }
   }
 
   public String getId() {

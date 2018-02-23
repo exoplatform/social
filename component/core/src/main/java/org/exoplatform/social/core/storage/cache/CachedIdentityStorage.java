@@ -180,6 +180,8 @@ public class CachedIdentityStorage implements IdentityStorage {
     //
     IdentityKey key = new IdentityKey(new Identity(identity.getId()));
     exoIdentityCache.put(key, new IdentityData(identity));
+    exoIdentityIndexCache.put(new IdentityCompositeKey(identity.getProviderId(), identity.getRemoteId()), key);
+
     clearCache();
   }
 
@@ -249,8 +251,9 @@ public class CachedIdentityStorage implements IdentityStorage {
     //
     IdentityKey key = new IdentityKey(new Identity(identity.getId()));
     IdentityData data = exoIdentityCache.remove(key);
-    if (data != null) {
-      exoIdentityIndexCache.remove(new IdentityCompositeKey(data.getProviderId(), data.getRemoteId()));
+    IdentityCompositeKey compositeKey = new IdentityCompositeKey(identity.getProviderId(), identity.getRemoteId());
+    if (exoIdentityIndexCache.get(compositeKey) != null) {
+      exoIdentityIndexCache.remove(compositeKey);
     }
     exoProfileCache.remove(key);
     clearCache();
@@ -268,8 +271,9 @@ public class CachedIdentityStorage implements IdentityStorage {
     //
     IdentityKey key = new IdentityKey(new Identity(identity.getId()));
     IdentityData data = exoIdentityCache.remove(key);
-    if (data != null) {
-      exoIdentityIndexCache.remove(new IdentityCompositeKey(data.getProviderId(), data.getRemoteId()));
+    IdentityCompositeKey compositeKey = new IdentityCompositeKey(identity.getProviderId(), identity.getRemoteId());
+    if (exoIdentityIndexCache.get(compositeKey) != null) {
+      exoIdentityIndexCache.remove(compositeKey);
     }
     exoProfileCache.remove(key);
     clearCache();
@@ -315,8 +319,9 @@ public class CachedIdentityStorage implements IdentityStorage {
   public void clearIdentityCached(Identity identity, String oldRemoteId) {
     IdentityKey key = new IdentityKey(new Identity(identity.getId()));
     IdentityData data = exoIdentityCache.remove(key);
-    if (data != null) {
-      exoIdentityIndexCache.remove(new IdentityCompositeKey(data.getProviderId(), oldRemoteId));
+    IdentityCompositeKey compositeKey = new IdentityCompositeKey(identity.getProviderId(), oldRemoteId);
+    if (exoIdentityIndexCache.get(compositeKey) != null) {
+      exoIdentityIndexCache.remove(compositeKey);
     }
     exoProfileCache.remove(key);
     clearCache();
@@ -336,18 +341,22 @@ public class CachedIdentityStorage implements IdentityStorage {
 
           public IdentityKey execute() {
             Identity i = storage.findIdentity(providerId, remoteId);
-            if (i == null) return null;
-            IdentityKey key = new IdentityKey(i);
-            if(exoIdentityCache.get(key) == null) {
-              exoIdentityCache.putLocal(key, new IdentityData(i));
+            IdentityKey key = null;
+            if (i == null) {
+              key = new IdentityKey(null);
+            } else {
+              key = new IdentityKey(i);
+              if(exoIdentityCache.get(key) == null) {
+                exoIdentityCache.putLocal(key, new IdentityData(i));
+              }
             }
             return key;
           }
         },
         key);
-    
+
     //
-    if (k != null) {
+    if (k != null && k.getId() != null) {
       return findIdentityById(k.getId());
     }
     else {
