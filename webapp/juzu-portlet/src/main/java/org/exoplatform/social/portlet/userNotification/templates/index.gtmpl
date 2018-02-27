@@ -8,18 +8,20 @@
 #{param name=channelCheckBoxList/}
 
 <div id="userNotification" class="uiUserNotificationPortlet uiNotificationSettings">
-	<div class="UIPopupWindow UIDragObject uiPopup UISocialConfirmation" style="width: 550px; display: none;">
-		<div class="popupHeader ClearFix">
-			<a class="uiIconClose pull-right" title="${_ctx.appRes("UINotification.action.Close")}"></a>
-			<span class="PopupTitle popupTitle"></span>
-		</div>
-		<div class="PopupContent popupContent">
-			<ul class="singleMessage popupMessage resizable">
-				<li>
-					<span class="confirmationIcon contentMessage"></span>
-				</li>
-			</ul>
-			<div class="uiAction uiActionBorder"></div>
+	<div class="uiPopupWrapper UISocialConfirmation" style="display: none;">
+		<div class="UIPopupWindow UIDragObject uiPopup" style="width: 550px; display: none;">
+			<div class="popupHeader ClearFix">
+				<a class="uiIconClose pull-right" title="${_ctx.appRes("UINotification.action.Close")}"></a>
+				<span class="PopupTitle popupTitle"></span>
+			</div>
+			<div class="PopupContent popupContent">
+				<ul class="singleMessage popupMessage resizable">
+					<li>
+						<span class="confirmationIcon contentMessage"></span>
+					</li>
+				</ul>
+				<div class="uiAction uiActionBorder"></div>
+			</div>
 		</div>
 	</div>
 	<form id="uiNotificationSetting" name="uiNotificationSetting" action="" method="post">
