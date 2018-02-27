@@ -885,6 +885,34 @@ public class IdentityStorageTest extends AbstractCoreTest {
     stream = identityStorage.getBannerInputStreamById(identity);
     assertNotNull(stream);
   }
+
+  @MaxQueryNumber(24)
+  public void testUpdateProfile() throws Exception {
+    String userName = "userIdentity4";
+    Identity identity = populateIdentity(userName);
+    identityStorage.saveIdentity(identity);
+    tearDownIdentityList.add(identity);
+
+    Profile profile = identity.getProfile();
+    profile.setProperty(Profile.GENDER, "male");
+    profile.setProperty(Profile.POSITION, "developer");
+    identityStorage.updateProfile(profile);
+
+    identity = identityStorage.findIdentity(OrganizationIdentityProvider.NAME, userName);
+    assertNotNull(identity);
+    assertNotNull(identity.getProfile());
+    assertEquals("male", identity.getProfile().getGender());
+    assertEquals("developer", identity.getProfile().getPosition());
+
+    profile.setProperty(Profile.POSITION, null);
+    identityStorage.updateProfile(profile);
+
+    identity = identityStorage.findIdentity(OrganizationIdentityProvider.NAME, userName);
+    assertNotNull(identity);
+    assertNotNull(identity.getProfile());
+    assertEquals("male", identity.getProfile().getGender());
+    assertEquals(null, identity.getProfile().getPosition());
+  }
   
   /**
    * Populate one identity with remoteId.
