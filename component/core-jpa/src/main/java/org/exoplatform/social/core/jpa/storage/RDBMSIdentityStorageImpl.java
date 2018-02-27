@@ -266,9 +266,7 @@ public class RDBMSIdentityStorageImpl implements IdentityStorage {
 
       } else if (!Profile.EXPERIENCES_SKILLS.equals(e.getKey())) {
         Object val = e.getValue();
-        if (val != null) {
-          entityProperties.put(e.getKey(), String.valueOf(val));
-        }
+        entityProperties.put(e.getKey(), val != null ? String.valueOf(val) : null);
       }
     }
 
