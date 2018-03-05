@@ -1021,7 +1021,13 @@ public class IdentityStorageImpl extends AbstractStorage implements IdentityStor
     }
     return number;
   }
-  
+
+  @Override
+  public List<Identity> getIdentities(String providerId, long offset, long limit) {
+    // this is a placeholder impl to run tests
+    return getIdentitiesByProfileFilter(providerId, new ProfileFilter(), offset, limit, true);
+  }
+
   /**
    * {@inheritDoc}
    */

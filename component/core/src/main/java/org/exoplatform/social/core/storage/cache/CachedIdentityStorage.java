@@ -180,6 +180,8 @@ public class CachedIdentityStorage implements IdentityStorage {
     //
     IdentityKey key = new IdentityKey(new Identity(identity.getId()));
     exoIdentityCache.put(key, new IdentityData(identity));
+    exoIdentityIndexCache.put(new IdentityCompositeKey(identity.getProviderId(), identity.getRemoteId()), key);
+
     clearCache();
   }
 
@@ -191,6 +193,7 @@ public class CachedIdentityStorage implements IdentityStorage {
     //
     IdentityKey key = new IdentityKey(new Identity(identity.getId()));
     exoIdentityCache.remove(key);
+    exoProfileCache.remove(key);
     exoIdentityIndexCache.remove(key);
     clearCache();
 
@@ -248,8 +251,9 @@ public class CachedIdentityStorage implements IdentityStorage {
     //
     IdentityKey key = new IdentityKey(new Identity(identity.getId()));
     IdentityData data = exoIdentityCache.remove(key);
-    if (data != null) {
-      exoIdentityIndexCache.remove(new IdentityCompositeKey(data.getProviderId(), data.getRemoteId()));
+    IdentityCompositeKey compositeKey = new IdentityCompositeKey(identity.getProviderId(), identity.getRemoteId());
+    if (exoIdentityIndexCache.get(compositeKey) != null) {
+      exoIdentityIndexCache.remove(compositeKey);
     }
     exoProfileCache.remove(key);
     clearCache();
@@ -267,8 +271,9 @@ public class CachedIdentityStorage implements IdentityStorage {
     //
     IdentityKey key = new IdentityKey(new Identity(identity.getId()));
     IdentityData data = exoIdentityCache.remove(key);
-    if (data != null) {
-      exoIdentityIndexCache.remove(new IdentityCompositeKey(data.getProviderId(), data.getRemoteId()));
+    IdentityCompositeKey compositeKey = new IdentityCompositeKey(identity.getProviderId(), identity.getRemoteId());
+    if (exoIdentityIndexCache.get(compositeKey) != null) {
+      exoIdentityIndexCache.remove(compositeKey);
     }
     exoProfileCache.remove(key);
     clearCache();
@@ -314,8 +319,9 @@ public class CachedIdentityStorage implements IdentityStorage {
   public void clearIdentityCached(Identity identity, String oldRemoteId) {
     IdentityKey key = new IdentityKey(new Identity(identity.getId()));
     IdentityData data = exoIdentityCache.remove(key);
-    if (data != null) {
-      exoIdentityIndexCache.remove(new IdentityCompositeKey(data.getProviderId(), oldRemoteId));
+    IdentityCompositeKey compositeKey = new IdentityCompositeKey(identity.getProviderId(), oldRemoteId);
+    if (exoIdentityIndexCache.get(compositeKey) != null) {
+      exoIdentityIndexCache.remove(compositeKey);
     }
     exoProfileCache.remove(key);
     clearCache();
@@ -335,18 +341,22 @@ public class CachedIdentityStorage implements IdentityStorage {
 
           public IdentityKey execute() {
             Identity i = storage.findIdentity(providerId, remoteId);
-            if (i == null) return null;
-            IdentityKey key = new IdentityKey(i);
-            if(exoIdentityCache.get(key) == null) {
-              exoIdentityCache.putLocal(key, new IdentityData(i));
+            IdentityKey key = null;
+            if (i == null) {
+              key = new IdentityKey(null);
+            } else {
+              key = new IdentityKey(i);
+              if(exoIdentityCache.get(key) == null) {
+                exoIdentityCache.putLocal(key, new IdentityData(i));
+              }
             }
             return key;
           }
         },
         key);
-    
+
     //
-    if (k != null) {
+    if (k != null && k.getId() != null) {
       return findIdentityById(k.getId());
     }
     else {
@@ -604,9 +614,8 @@ public class CachedIdentityStorage implements IdentityStorage {
     storage.processEnabledIdentity(identity, isEnable);
     //
     IdentityKey key = new IdentityKey(new Identity(identity.getId()));
-    identityCache.remove(key);
     exoIdentityCache.remove(key);
-    identitiesCache.clear();
+    exoProfileCache.remove(key);
     clearCache();
     getCachedRelationshipStorage().clearAllRelationshipCache();
   }
@@ -654,5 +663,26 @@ public class CachedIdentityStorage implements IdentityStorage {
   @Override
   public int countSpaceMemberIdentitiesByProfileFilter(Space space, ProfileFilter profileFilter, Type type) {
     return storage.countSpaceMemberIdentitiesByProfileFilter(space, profileFilter, type);
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public List<Identity> getIdentities(String providerId, long offset, long limit) {
+    //
+    IdentityFilterKey key = new IdentityFilterKey(providerId, null);
+    ListIdentitiesKey listKey = new ListIdentitiesKey(key, offset, limit);
+
+    //
+    ListIdentitiesData keys = identitiesCache.get(new ServiceContext<ListIdentitiesData>() {
+      public ListIdentitiesData execute() {
+        List<Identity> got = storage.getIdentities(providerId, offset, limit);
+        return buildIds(got);
+      }
+    }, listKey);
+
+    //
+    return buildIdentities(keys);
   }
 }

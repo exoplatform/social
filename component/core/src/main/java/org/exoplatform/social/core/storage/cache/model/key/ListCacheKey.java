@@ -34,6 +34,14 @@ public class ListCacheKey extends ScopeCacheKey {
     this.limit = limit;
   }
 
+  public long getOffset() {
+    return offset;
+  }
+
+  public long getLimit() {
+    return limit;
+  }
+
   @Override
   public boolean equals(final Object o) {
     if (this == o) {

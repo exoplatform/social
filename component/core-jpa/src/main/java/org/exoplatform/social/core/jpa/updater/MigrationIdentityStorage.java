@@ -222,4 +222,9 @@ public class MigrationIdentityStorage implements IdentityStorage {
                                                        org.exoplatform.social.core.identity.SpaceMemberFilterListAccess.Type type) {
     return jpaStorage.countSpaceMemberIdentitiesByProfileFilter(space, profileFilter, type);
   }
+
+  @Override
+  public List<Identity> getIdentities(String providerId, long offset, long limit) {
+    return jpaStorage.getIdentities(providerId, offset, limit);
+  }
 }

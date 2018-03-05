@@ -33,6 +33,7 @@ import org.exoplatform.social.core.relationship.RelationshipEvent;
 import org.exoplatform.social.core.relationship.RelationshipEvent.Type;
 import org.exoplatform.social.core.relationship.model.Relationship;
 import org.exoplatform.social.core.storage.api.IdentityStorage;
+import org.exoplatform.social.core.storage.cache.SocialStorageCacheService;
 import org.exoplatform.social.core.test.AbstractCoreTest;
 
 /**
@@ -44,6 +45,7 @@ public class RelationshipPublisherTest extends  AbstractCoreTest {
   private ActivityManager activityManager;
   private IdentityManager identityManager;
   private IdentityStorage identityStorage;
+  private SocialStorageCacheService cacheService;
   private RelationshipManager relationshipManager;
   private RelationshipPublisher relationshipPublisher;
   private List<ExoSocialActivity> tearDownActivityList;
@@ -53,7 +55,11 @@ public class RelationshipPublisherTest extends  AbstractCoreTest {
   private Identity maryIdentity;
   private Identity raulIdentity;
   private Identity paulIdentity;
-  
+
+  public RelationshipPublisherTest() {
+    setForceContainerReload(true);
+  }
+
   public void setUp() throws Exception {
     super.setUp();
     tearDownActivityList = new ArrayList<ExoSocialActivity>();
@@ -67,7 +73,11 @@ public class RelationshipPublisherTest extends  AbstractCoreTest {
     assertNotNull("relationshipPublisher must not be null", relationshipPublisher);
     identityStorage =  (IdentityStorage) getContainer().getComponentInstanceOfType(IdentityStorage.class);
     assertNotNull("identityStorage must not be null", identityStorage);
-    
+
+    cacheService = getContainer().getComponentInstanceOfType(SocialStorageCacheService.class);
+    cacheService.getIdentityCache().clearCache();
+    cacheService.getIdentityIndexCache().clearCache();
+
     rootIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "root", true);
     demoIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "demo", true);
     johnIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "john", true);

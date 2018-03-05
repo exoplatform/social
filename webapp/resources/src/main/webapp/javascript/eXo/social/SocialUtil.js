@@ -386,6 +386,16 @@
           }
         });
       }
+    },
+    multipleLineEllipsis : function(selector) {
+      $(selector).each(function(i,elem) {
+        var elemChild = elem.querySelector('p');
+        if(!elemChild) return;
+        var elemHeight = elem.clientHeight;
+        while (elemChild.offsetHeight > elemHeight) {
+          elemChild.textContent = elemChild.textContent.replace(/\W*\s(\S)*$/, '...');
+        }  
+      });
     }
   };
 

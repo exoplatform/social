@@ -36,10 +36,6 @@ import java.util.stream.Collectors;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
-import org.exoplatform.commons.file.services.FileStorageException;
-import org.exoplatform.social.core.model.BannerAttachment;
-import org.exoplatform.social.core.storage.api.ActivityStorage;
-import org.exoplatform.social.core.storage.api.IdentityStorage;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -50,6 +46,10 @@ import org.exoplatform.commons.file.services.FileStorageException;
 import org.exoplatform.commons.persistence.impl.EntityManagerService;
 import org.exoplatform.commons.utils.CommonsUtils;
 import org.exoplatform.commons.utils.ListAccess;
+import org.exoplatform.container.ExoContainer;
+import org.exoplatform.container.ExoContainerContext;
+import org.exoplatform.container.PortalContainer;
+import org.exoplatform.container.spi.ComponentAdapter;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.services.organization.OrganizationService;
@@ -57,6 +57,7 @@ import org.exoplatform.services.organization.User;
 import org.exoplatform.services.user.UserStateModel;
 import org.exoplatform.services.user.UserStateService;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
+import org.exoplatform.social.core.identity.IdentityProvider;
 import org.exoplatform.social.core.identity.SpaceMemberFilterListAccess;
 import org.exoplatform.social.core.identity.model.ActiveIdentityFilter;
 import org.exoplatform.social.core.identity.model.Identity;
@@ -69,17 +70,18 @@ import org.exoplatform.social.core.jpa.search.ProfileSearchConnector;
 import org.exoplatform.social.core.jpa.storage.dao.ActivityDAO;
 import org.exoplatform.social.core.jpa.storage.dao.IdentityDAO;
 import org.exoplatform.social.core.jpa.storage.dao.SpaceMemberDAO;
-import org.exoplatform.social.core.jpa.storage.entity.ActivityEntity;
 import org.exoplatform.social.core.jpa.storage.entity.ConnectionEntity;
 import org.exoplatform.social.core.jpa.storage.entity.IdentityEntity;
 import org.exoplatform.social.core.jpa.storage.entity.ProfileExperienceEntity;
 import org.exoplatform.social.core.jpa.storage.entity.SpaceMemberEntity.Status;
 import org.exoplatform.social.core.model.AvatarAttachment;
+import org.exoplatform.social.core.model.BannerAttachment;
 import org.exoplatform.social.core.profile.ProfileFilter;
 import org.exoplatform.social.core.relationship.model.Relationship.Type;
 import org.exoplatform.social.core.search.Sorting;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.storage.IdentityStorageException;
+import org.exoplatform.social.core.storage.api.ActivityStorage;
 import org.exoplatform.social.core.storage.api.IdentityStorage;
 import org.exoplatform.social.core.storage.impl.StorageUtils;
 
@@ -107,11 +109,11 @@ public class RDBMSIdentityStorageImpl implements IdentityStorage {
 
   private ProfileSearchConnector profileSearchConnector;
 
-  private OrganizationIdentityProvider organizationIdentityProvider;
-
   private IdentityStorage cachedIdentityStorage;
 
   private ActivityStorage activityStorage;
+
+  private Map<String, IdentityProvider<?>> identityProviders = null;
 
   public RDBMSIdentityStorageImpl(IdentityDAO identityDAO,
                                   ActivityDAO activityDAO,
@@ -264,9 +266,7 @@ public class RDBMSIdentityStorageImpl implements IdentityStorage {
 
       } else if (!Profile.EXPERIENCES_SKILLS.equals(e.getKey())) {
         Object val = e.getValue();
-        if (val != null) {
-          entityProperties.put(e.getKey(), String.valueOf(val));
-        }
+        entityProperties.put(e.getKey(), val != null ? String.valueOf(val) : null);
       }
     }
 
@@ -767,27 +767,10 @@ public class RDBMSIdentityStorageImpl implements IdentityStorage {
       long indexLimit = offset + limit;
       while (i < spaceMembers.size() && i < indexLimit) {
         String spaceMemberUserName = spaceMembers.get(i++);
-        // Get the identity from cache implementation of IdentityStorage instead of DB
-        // The solution is not ideal since we refer to the cached version directly in the
-        // wrapped class, but we have no choice because of this wrap.
-        Identity identity = getRDBMSCachedIdentityStorage().findIdentity(OrganizationIdentityProvider.NAME, spaceMemberUserName);
-        if (identity == null) {
-          identity = getOrganizationIdentityProvider().getIdentityByRemoteId(spaceMemberUserName);
-          if (identity == null) {
-            LOG.warn("Can't find identity for space member '{}'. The identity will not be retrieved.", spaceMemberUserName);
-            continue;
-          }
-          LOG.info("User identity for space member '{}' wasn't found. Creating the identity.", spaceMemberUserName);
-          try {
-            saveIdentity(identity);
-            saveProfile(identity.getProfile());
-          } catch (Exception e) {
-            LOG.warn("Can't create user identity for space member '" + spaceMemberUserName
-                + "'. The identity will not be retrieved.", e);
-            continue;
-          }
+        Identity identity = getOrCreateUserIdentityUsingCache(OrganizationIdentityProvider.NAME, spaceMemberUserName);
+        if (identity != null) {
+          identities.add(identity);
         }
-        identities.add(identity);
       }
       return identities;
     } else {
@@ -860,15 +843,29 @@ public class RDBMSIdentityStorageImpl implements IdentityStorage {
     return EntityConverterUtils.convertToIdentities(list, offset, limit);
   }
 
+  public List<Identity> getIdentities(final String providerId, long offset, long limit) throws IdentityStorageException {
+    List<String> usernames = getIdentityDAO().getAllIdsByProviderSorted(providerId, Profile.FULL_NAME, offset, limit);
+    List<Identity> identities = new ArrayList<>();
+    if (usernames != null && !usernames.isEmpty()) {
+      for (String username : usernames) {
+        Identity identity = getOrCreateUserIdentityUsingCache(providerId, username);
+        if (identity != null) {
+          identities.add(identity);
+        }
+      }
+    }
+    return identities;
+  }
+
   @Override
   public List<IdentityWithRelationship> getIdentitiesWithRelationships(final String identityId, int offset, int limit)  throws IdentityStorageException {
-    ListAccess<Entry<IdentityEntity, ConnectionEntity>> list = getIdentityDAO().findAllIdentitiesWithConnections(Long.valueOf(identityId));
+    ListAccess<Entry<IdentityEntity, ConnectionEntity>> list = getIdentityDAO().findAllIdentitiesWithConnections(Long.valueOf(identityId), Profile.FULL_NAME);
     return EntityConverterUtils.convertToIdentitiesWithRelationship(list, offset, limit);
   }
 
   @Override
   public int countIdentitiesWithRelationships(String identityId) throws Exception {
-    ListAccess<Entry<IdentityEntity, ConnectionEntity>> list = getIdentityDAO().findAllIdentitiesWithConnections(Long.valueOf(identityId));
+    ListAccess<Entry<IdentityEntity, ConnectionEntity>> list = getIdentityDAO().findAllIdentitiesWithConnections(Long.valueOf(identityId), Profile.FULL_NAME);
     return list.getSize();
   }
 
@@ -994,13 +991,23 @@ public class RDBMSIdentityStorageImpl implements IdentityStorage {
     return members;
   }
 
-  public OrganizationIdentityProvider getOrganizationIdentityProvider() {
-    if (organizationIdentityProvider == null) {
-      organizationIdentityProvider = CommonsUtils.getService(OrganizationIdentityProvider.class);
+  public IdentityProvider<?> getIdentityProvider(String providerId) {
+    if (identityProviders == null || identityProviders.isEmpty()) {
+      identityProviders = new HashMap<>();
+      ExoContainer container = ExoContainerContext.getCurrentContainer();
+      if (container == null) {
+        container = PortalContainer.getInstance();
+      }
+      for (ComponentAdapter componentAdapter : container.getComponentAdaptersOfType(IdentityProvider.class)) {
+          if (componentAdapter != null) {
+              Object key = componentAdapter.getComponentKey();
+              IdentityProvider service = (IdentityProvider) container.getComponentInstance(key);
+              identityProviders.put(service.getName(), service);
+          }
+      }
     }
-    return organizationIdentityProvider;
+    return identityProviders.get(providerId);
   }
-
 
   public IdentityStorage getRDBMSCachedIdentityStorage() {
     if (cachedIdentityStorage == null) {
@@ -1014,5 +1021,35 @@ public class RDBMSIdentityStorageImpl implements IdentityStorage {
       activityStorage = CommonsUtils.getService(ActivityStorage.class);
     }
     return activityStorage;
+  }
+
+  /**
+   * Get the identity from cache implementation of IdentityStorage instead of DB
+   * The solution is not ideal since we refer to the cached version directly in the
+   * wrapped class, but we have no choice because of this wrap.
+   * 
+   * @param providerId
+   * @param userId
+   * @return
+   */
+  private Identity getOrCreateUserIdentityUsingCache(String providerId, String userId) {
+    Identity identity = getRDBMSCachedIdentityStorage().findIdentity(providerId, userId);
+    if (identity == null) {
+      identity = getIdentityProvider(providerId).getIdentityByRemoteId(userId);
+      if (identity == null) {
+        LOG.warn("Can't find identity for space member '{}'. The identity will not be retrieved.", userId);
+      } else {
+        LOG.info("User identity for space member '{}' wasn't found. Creating the identity.", userId);
+        try {
+          saveIdentity(identity);
+          saveProfile(identity.getProfile());
+        } catch (Exception e) {
+          LOG.warn("Can't create user identity for space member '" + userId
+              + "'. The identity will not be retrieved.", e);
+          identity = null;
+        }
+      }
+    }
+    return identity;
   }
 }

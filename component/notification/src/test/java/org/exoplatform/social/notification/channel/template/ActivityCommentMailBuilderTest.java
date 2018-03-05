@@ -35,6 +35,7 @@ import org.exoplatform.commons.notification.impl.NotificationContextImpl;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.notification.AbstractPluginTest;
 import org.exoplatform.social.notification.plugin.ActivityCommentPlugin;
+import org.exoplatform.social.notification.plugin.SocialNotificationUtils;
 
 /**
  * Created by The eXo Platform SAS
@@ -43,6 +44,8 @@ import org.exoplatform.social.notification.plugin.ActivityCommentPlugin;
  * Dec 14, 2014  
  */
 public class ActivityCommentMailBuilderTest extends AbstractPluginTest {
+  private final static String IMAGE_HTML = "<img data-plugin-name='insertImage' src='test' />";
+  private final static String ACTIVITY_TITLE_WITH_IMAGE = "my activity's title" + IMAGE_HTML + ", for today";
   private final static String ACTIVITY_TITLE = "my activity's title post today.";
   private final static String COMMENT_TITLE = "my comment's title add today.";
   private ChannelManager manager;
@@ -97,6 +100,34 @@ public class ActivityCommentMailBuilderTest extends AbstractPluginTest {
     
     assertSubject(info, demoIdentity.getProfile().getFullName() + " commented one of your activities");
     assertBody(info, "New comment on your activity");
+  }
+  
+  /**
+   * Just test for simple case when you post the simple activity
+   * @throws Exception
+   */
+  public void testSimpleCaseInlineImage() throws Exception {
+    //STEP 1 post activity
+    ExoSocialActivity activity = makeActivity(maryIdentity, ACTIVITY_TITLE_WITH_IMAGE);
+    assertMadeMailDigestNotifications(1);
+    notificationService.clearAll();
+    //STEP 2 add comment
+    makeComment(activity, demoIdentity, COMMENT_TITLE);
+    //assert equals = 2 because root is stream owner, and mary is activity's poster
+    //then when add commnent need to notify to root and mary
+    assertMadeMailDigestNotifications(2);
+
+    List<NotificationInfo> list = assertMadeMailDigestNotifications(rootIdentity.getRemoteId(), 1);
+    NotificationInfo commentNotification = list.get(0);
+    //STEP 3 assert Message info
+
+    NotificationContext ctx = NotificationContextImpl.cloneInstance();
+    ctx.setNotificationInfo(commentNotification.setTo(demoIdentity.getRemoteId()));
+    MessageInfo info = buildMessageInfo(ctx);
+
+    assertSubject(info, demoIdentity.getProfile().getFullName() + " commented one of your activities");
+    assertBody(info, "New comment on your activity");
+    assertBody(info, SocialNotificationUtils.getImagePlaceHolder("en"));
   }
   
   /**
