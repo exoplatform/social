@@ -17,9 +17,9 @@
                 createOnBlur: true,
                 renderItem: function(item, escape) {
                     if (item.invalid) {
-                        return '<div class="item invalid">' + item.text + '</div>';
+                        return '<div class="item invalid">' + escape(item.text) + '</div>';
                     } else {
-                        return '<div class="item">' + item.text + '</div>';                         
+                        return '<div class="item">' + escape(item.text) + '</div>';
                     }
                 },
                 optionIconField: 'avatarUrl',

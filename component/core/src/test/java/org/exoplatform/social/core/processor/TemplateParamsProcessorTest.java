@@ -57,6 +57,25 @@ public class TemplateParamsProcessorTest extends AbstractCoreTest {
     assertEquals(resultString, activity.getTitle());
   }
 
+  public void testProcessSimpleTemplateWithNullParamValue(){
+    ExoSocialActivity activity = new ExoSocialActivityImpl();
+    String nameKey = "ZUN-NAME";
+    String cityKey = "CITY";
+
+    String templateString = "This is ${" + nameKey + "}. City : ${" + cityKey + "}";
+    activity.setTitle(templateString);
+    HashMap<String, String> params = new HashMap<String, String>();
+    params.put(nameKey, null);
+    params.put(cityKey, null);
+
+    activity.setTemplateParams(params);
+
+    TemplateParamsProcessor processor = (TemplateParamsProcessor) PortalContainer.getComponent(TemplateParamsProcessor.class);
+    processor.processActivity(activity);
+
+    assertEquals(templateString, activity.getTitle());
+  }
+
   public void testProcessComplicatedTemplate() throws Exception {
     ExoSocialActivity activity = new ExoSocialActivityImpl();
     String nameKey = "ZUN-NAME";

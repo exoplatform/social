@@ -19,6 +19,8 @@ package org.exoplatform.social.notification;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
@@ -38,10 +40,15 @@ import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.organization.OrganizationService;
 import org.exoplatform.services.organization.User;
 import org.exoplatform.services.organization.UserHandler;
+import org.exoplatform.social.core.activity.model.ExoSocialActivity;
+import org.exoplatform.social.core.activity.model.ExoSocialActivityImpl;
 import org.exoplatform.social.core.identity.model.Identity;
+import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.manager.ActivityManagerImpl;
 import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.manager.RelationshipManagerImpl;
+import org.exoplatform.social.core.relationship.model.Relationship;
+import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
 import org.exoplatform.social.notification.mock.MockNotificationService;
 
@@ -75,10 +82,21 @@ public abstract class AbstractCoreTest extends BaseExoTestCase {
   protected Identity maryIdentity;
   protected Identity demoIdentity;
   protected Identity ghostIdentity;
+
+  protected List<ExoSocialActivity> tearDownActivityList;
+  protected List<Space>  tearDownSpaceList;
+  protected List<Identity>  tearDownIdentityList;
+  protected List<Relationship>  tearDownRelationshipList;
   
   @Override
   protected void setUp() throws Exception {
     begin();
+
+    tearDownActivityList = new ArrayList<ExoSocialActivity>();
+    tearDownSpaceList = new ArrayList<Space>();
+    tearDownIdentityList = new ArrayList<Identity>();
+    tearDownRelationshipList = new ArrayList<Relationship>();
+
     session = getSession();
     identityManager = getService(IdentityManager.class);
     activityManager = getService(ActivityManagerImpl.class);
@@ -91,10 +109,46 @@ public abstract class AbstractCoreTest extends BaseExoTestCase {
     System.setProperty(CommonsUtils.CONFIGURED_DOMAIN_URL_KEY, "http://exoplatform.com");
     //
     checkAndCreateDefaultUsers();
+
+    rootIdentity = new Identity(OrganizationIdentityProvider.NAME, "root");
+    johnIdentity = new Identity(OrganizationIdentityProvider.NAME, "john");
+    maryIdentity = new Identity(OrganizationIdentityProvider.NAME, "mary");
+    demoIdentity = new Identity(OrganizationIdentityProvider.NAME, "demo");
+    ghostIdentity = new Identity(OrganizationIdentityProvider.NAME, "ghost");
+
+    identityManager.saveIdentity(rootIdentity);
+    identityManager.saveIdentity(johnIdentity);
+    identityManager.saveIdentity(maryIdentity);
+    identityManager.saveIdentity(demoIdentity);
+    identityManager.saveIdentity(ghostIdentity);
+
+    tearDownIdentityList.add(rootIdentity);
+    tearDownIdentityList.add(johnIdentity);
+    tearDownIdentityList.add(maryIdentity);
+    tearDownIdentityList.add(demoIdentity);
+    notificationService.clearAll();
   }
 
   @Override
   protected void tearDown() throws Exception {
+    for (ExoSocialActivity activity : tearDownActivityList) {
+      activityManager.deleteActivity(activity.getId());
+    }
+
+    for (Space sp : tearDownSpaceList) {
+      spaceService.deleteSpace(sp);
+    }
+
+    for (Relationship relationship : tearDownRelationshipList) {
+      relationshipManager.remove(relationship);
+    }
+
+    for (Identity identity : tearDownIdentityList) {
+      identityManager.deleteIdentity(identity);
+    }
+
+    notificationService.clearAll();
+
     session = null;
     end();
   }
@@ -169,4 +223,19 @@ public abstract class AbstractCoreTest extends BaseExoTestCase {
     return repository.getSystemSession("portal-test");
   }
 
+  /**
+   * Makes the activity for Test Case
+   * @param owner
+   * @param activityTitle
+   * @return
+   */
+  protected ExoSocialActivity makeActivity(Identity owner, String activityTitle) {
+    ExoSocialActivity activity = new ExoSocialActivityImpl();
+    activity.setTitle(activityTitle);
+    activity.setUserId(owner.getId());
+    activityManager.saveActivityNoReturn(rootIdentity, activity);
+    tearDownActivityList.add(activity);
+
+    return activity;
+  }
 }

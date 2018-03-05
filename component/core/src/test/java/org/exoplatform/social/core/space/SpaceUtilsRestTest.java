@@ -32,6 +32,7 @@ import org.exoplatform.services.security.ConversationState;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.storage.api.IdentityStorage;
+import org.exoplatform.social.core.storage.cache.SocialStorageCacheService;
 import org.exoplatform.social.core.test.AbstractCoreTest;
 
 public class SpaceUtilsRestTest extends AbstractCoreTest {
@@ -46,13 +47,22 @@ public class SpaceUtilsRestTest extends AbstractCoreTest {
   
   private List<Identity> tearDownUserList = null;
   private Identity root = null;
-  
+  private SocialStorageCacheService cacheService;
+
+  public SpaceUtilsRestTest() {
+    setForceContainerReload(true);
+  }
+
   @Override
   public void setUp() throws Exception {
     identityStorage = (IdentityStorage) getContainer().getComponentInstanceOfType(IdentityStorage.class);
     mgr = (POMSessionManager)getContainer().getComponentInstanceOfType(POMSessionManager.class);
     authenticator = (Authenticator)getContainer().getComponentInstanceOfType(Authenticator.class);
-    
+
+    cacheService = getContainer().getComponentInstanceOfType(SocialStorageCacheService.class);
+    cacheService.getIdentityCache().clearCache();
+    cacheService.getIdentityIndexCache().clearCache();
+
     root = new Identity(OrganizationIdentityProvider.NAME, "root");
     
     identityStorage.saveIdentity(root);

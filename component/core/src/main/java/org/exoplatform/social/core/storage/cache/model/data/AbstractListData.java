@@ -29,7 +29,7 @@ import java.util.List;
 public class AbstractListData<T> implements Serializable {
   private static final long serialVersionUID = -8053695403884988516L;
 
-  private final List<T> ids;
+  private List<T> ids;
 
   public AbstractListData(final List<T> ids) {
     this.ids = ids;
@@ -37,6 +37,10 @@ public class AbstractListData<T> implements Serializable {
 
   public List<T> getIds() {
     return ids;
+  }
+
+  public void setIds(List<T> ids) {
+    this.ids = ids;
   }
 
   @Override

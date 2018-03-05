@@ -105,11 +105,11 @@ public class JCRCachedIdentityStorageTestCase extends AbstractCoreTest {
     cachedIdentityStorage.saveIdentity(i);
     tearDownIdentityList.add(i.getId());
     assertEquals(1, cacheService.getIdentityCache().getCacheSize());
-    assertEquals(0, cacheService.getIdentityIndexCache().getCacheSize());
+    assertEquals(1, cacheService.getIdentityIndexCache().getCacheSize());
 
     cacheService.getIdentityCache().clearCache();
     assertEquals(0, cacheService.getIdentityCache().getCacheSize());
-    assertEquals(0, cacheService.getIdentityIndexCache().getCacheSize());
+    assertEquals(1, cacheService.getIdentityIndexCache().getCacheSize());
     cachedIdentityStorage.findIdentity(OrganizationIdentityProvider.NAME, "id");
     assertEquals(1, cacheService.getIdentityCache().getCacheSize());
     assertEquals(1, cacheService.getIdentityIndexCache().getCacheSize());
@@ -197,7 +197,6 @@ public class JCRCachedIdentityStorageTestCase extends AbstractCoreTest {
     cachedIdentityStorage.updateProfile(new Profile(i));
     assertEquals(1, cacheService.getIdentityCache().getCacheSize());
     assertEquals(0, cacheService.getProfileCache().getCacheSize());
-
   }
 
   @MaxQueryNumber(258)

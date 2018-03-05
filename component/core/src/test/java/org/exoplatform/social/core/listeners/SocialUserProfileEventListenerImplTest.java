@@ -33,6 +33,7 @@ import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.manager.IdentityManager;
+import org.exoplatform.social.core.storage.cache.SocialStorageCacheService;
 import org.exoplatform.social.core.test.AbstractCoreTest;
 
 public class SocialUserProfileEventListenerImplTest extends AbstractCoreTest {
@@ -44,16 +45,24 @@ public class SocialUserProfileEventListenerImplTest extends AbstractCoreTest {
   private List<Identity>  tearDownIdentityList;
 
   private OrganizationService organizationService;
-  
+  private SocialStorageCacheService cacheService;
+
   private Identity paul;
   private Identity raul;
   private boolean alreadyAddedPlugins = false;
+
+  public SocialUserProfileEventListenerImplTest() {
+    setForceContainerReload(true);
+  }
 
   public void setUp() throws Exception {
     super.setUp();
     identityManager = (IdentityManager) getContainer().getComponentInstanceOfType(IdentityManager.class);
     organizationService = (OrganizationService) getContainer().getComponentInstanceOfType(OrganizationService.class);
     fakePlugins();
+    cacheService = getContainer().getComponentInstanceOfType(SocialStorageCacheService.class);
+    cacheService.getIdentityCache().clearCache();
+    cacheService.getIdentityIndexCache().clearCache();
 
     paul = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "paul", true);
     raul = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "raul", true);

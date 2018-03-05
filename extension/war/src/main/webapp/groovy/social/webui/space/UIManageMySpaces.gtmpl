@@ -44,6 +44,7 @@
 	jsManager.require("SHARED/jquery", "jq")
 					 .require("SHARED/bts_tooltip")
 					 .require("SHARED/socialUtil", "socialUtil")
+                     .addScripts("socialUtil.multipleLineEllipsis('.contentBox .content');")
 					 .addScripts("jq('*[rel=\"tooltip\"]').tooltip();");
 	Utils.initConfirmationPopup(uicomponent.id);
 %>
@@ -133,12 +134,14 @@
 			          </h4>
 			          <div class="membersCount" >$fieldLabelMembers <%=SpaceUtils.countMembers(space) %></div>
 			          <div class="content limitText" data-key="content" data-line="2">
-			            <% if (space.description != null && !space.description.isEmpty()) { 
-		                 print(space.description);
-		               } else { 
-		                 print(_ctx.appRes("${uicomponent.id}.msg.default_space_description"));
-		               }
-                 %>
+                        <p>
+                          <% if (space.description != null && !space.description.isEmpty()) { 
+                              print(space.description);
+                            } else { 
+                              print(_ctx.appRes("${uicomponent.id}.msg.default_space_description"));
+                            }
+                          %>
+                        </p>
 			          </div>
 		          </div>
 		          <div class="connectionBtn clearfix">
@@ -162,12 +165,14 @@
 			          </h4>
 			          <div class="membersCount" >$fieldLabelMembers <%=SpaceUtils.countMembers(space)%></div>
 			          <div class="content limitText" data-key="content" data-line="2">
-                <% if (space.description != null && !space.description.isEmpty()) { 
-		                 print(space.description);
-		               } else { 
-		                 print(_ctx.appRes("${uicomponent.id}.msg.default_space_description"));
-		               }
-                 %>
+                        <p>
+                          <% if (space.description != null && !space.description.isEmpty()) { 
+                               print(space.description);
+                             } else { 
+                               print(_ctx.appRes("${uicomponent.id}.msg.default_space_description"));
+                             }
+                           %>
+                         </p>
 			          </div>
 			        </div>
     					<div class="connectionBtn clearfix">

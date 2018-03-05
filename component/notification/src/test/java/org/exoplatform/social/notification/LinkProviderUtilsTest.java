@@ -16,9 +16,14 @@
  */
 package org.exoplatform.social.notification;
 
+import org.exoplatform.social.core.activity.model.ExoSocialActivity;
+import org.exoplatform.social.core.activity.model.ExoSocialActivityImpl;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.space.model.Space;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class LinkProviderUtilsTest extends AbstractCoreTest {
 
@@ -105,5 +110,39 @@ public class LinkProviderUtilsTest extends AbstractCoreTest {
     space.setAvatarUrl("/rest/jcr/repository/social/spaces/avatar/space_test");
     expected = "http://exoplatform.com/rest/jcr/repository/social/spaces/avatar/space_test";
     assertEquals(expected, LinkProviderUtils.getSpaceAvatarUrl(space));
+  }
+
+  public void testGetOpenLinkAnswer() {
+    String expected = "http://exoplatform.com/intranet/answers?questionId=test";
+
+    //Create question activity and comment
+    ExoSocialActivity activity = new ExoSocialActivityImpl();
+    activity.setTitle("question");
+    activity.setUserId(rootIdentity.getId());
+    activity.setType("ks-answer:spaces");
+    Map<String, String> params = new HashMap<>();
+    params.put("Link", expected);
+    activity.setTemplateParams(params);
+    activityManager.saveActivityNoReturn(rootIdentity, activity);
+    tearDownActivityList.add(activity);
+
+    //case 1: comment created by AnswerUIActivity
+    ExoSocialActivity comment1 = new ExoSocialActivityImpl();
+    comment1.setTitle("comment1");
+    comment1.setUserId(rootIdentity.getId());
+    activityManager.saveComment(activity, comment1);
+    //
+    String openUrl1 = LinkProviderUtils.getOpenLink(comment1);
+    assertEquals(expected, openUrl1);
+
+    //case 2: comment created by AnswersSpaceActivityPublisher
+    ExoSocialActivity comment2 = new ExoSocialActivityImpl();
+    comment2.setTitle("comment2");
+    comment2.setType("ks-answer:spaces");
+    comment2.setUserId(rootIdentity.getId());
+    activityManager.saveComment(activity, comment2);
+    //
+    String openUrl2 = LinkProviderUtils.getOpenLink(comment2);
+    assertEquals(expected, openUrl2);
   }
 }

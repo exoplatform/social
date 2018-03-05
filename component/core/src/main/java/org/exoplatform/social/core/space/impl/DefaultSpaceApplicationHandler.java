@@ -44,6 +44,7 @@ import org.exoplatform.portal.mop.navigation.NavigationService;
 import org.exoplatform.portal.mop.navigation.NodeContext;
 import org.exoplatform.portal.mop.navigation.NodeModel;
 import org.exoplatform.portal.mop.navigation.NodeState;
+import org.exoplatform.portal.mop.navigation.NodeState.Builder;
 import org.exoplatform.portal.mop.navigation.Scope;
 import org.exoplatform.portal.mop.page.PageContext;
 import org.exoplatform.portal.mop.page.PageKey;
@@ -445,7 +446,12 @@ public class DefaultSpaceApplicationHandler implements SpaceApplicationHandler {
       
     }
     NodeContext<NodeContext<?>> childNodeCtx = nodeCtx.add(null, pageName);
-    childNodeCtx.setState(new NodeState.Builder().icon(spaceApplication.getIcon()).pageRef(PageKey.parse(page.getPageId())).label(app.getDisplayName()).build());
+    Builder nodeStateBuilder = new NodeState.Builder().icon(spaceApplication.getIcon()).pageRef(PageKey.parse(page.getPageId()));
+    WebuiRequestContext context = WebuiRequestContext.getCurrentInstance();
+    if (context != null && !context.getApplicationResourceBundle().containsKey(appId + ".label.name")) {
+      nodeStateBuilder.label(app.getDisplayName());
+    }
+    childNodeCtx.setState(nodeStateBuilder.build());
     return childNodeCtx;
   }
 

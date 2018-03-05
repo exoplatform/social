@@ -22,9 +22,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.exoplatform.container.PortalContainer;
-import org.exoplatform.services.cache.CachedObjectSelector;
 import org.exoplatform.services.cache.ExoCache;
-import org.exoplatform.services.cache.ObjectCacheInfo;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.identity.model.Identity;
@@ -946,6 +944,7 @@ public class CachedSpaceStorage implements SpaceStorage {
   /**
    * {@inheritDoc}
    */
+  @SuppressWarnings("deprecation")
   public List<Space> getAccessibleSpaces(final String userId) throws SpaceStorageException {
     return storage.getAccessibleSpaces(userId);
   }
