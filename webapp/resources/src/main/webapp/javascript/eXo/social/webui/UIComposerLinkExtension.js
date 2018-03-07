@@ -234,6 +234,8 @@
 	          var urlInput =  encodeURIComponent(encodeURI(inputLink.val()));
 	          var url = UIComposerLinkExtension.attachUrl.replace(/&amp;/g, "&") + '&objectId=' + urlInput + '&ajaxRequest=true';
 	          ajaxGet(url, function(){
+                UIComposerLinkExtension.linkInfoDisplayed = true;
+                UIComposer.refreshShareButton();
 	            try {
 	              $('textarea#composerInput').exoMentions('showButton', function() {});
 	            } catch (e) {}
