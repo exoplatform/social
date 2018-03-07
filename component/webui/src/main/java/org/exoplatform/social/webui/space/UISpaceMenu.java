@@ -123,17 +123,18 @@ public class UISpaceMenu extends UIContainer {
     uiBanner.setRendered(canEditBanner);
     uiAvatarBanner.setRenderUpload(canEditBanner);
     String nodeTitle;
-    if(getAppSelected() == null){
+    String selectedApp = getAppSelected();
+    if(selectedApp == null){
       nodeTitle = context.getApplicationResourceBundle().getString("UISpaceMenu.label.ActivityStream");
     } else {
       UserNode selectedNode =  getApps().stream().filter(app -> {
         try {
-          return app.getName().equals(getAppSelected());
+          return app.getName().equals(selectedApp);
         } catch (Exception e) {
           return false;
         }
       }).findFirst().orElse(null);
-      nodeTitle = selectedNode != null ? Utils.appRes(selectedNode.getPageRef().getName()+".label.name") : getAppSelected();
+      nodeTitle = selectedNode != null ? Utils.appRes(selectedNode.getPageRef().getName()+".label.name") : selectedApp;
     }
     Util.getPortalRequestContext().setPageTitle(getSpace().getDisplayName()+" - "+nodeTitle);
     super.processRender(context);
