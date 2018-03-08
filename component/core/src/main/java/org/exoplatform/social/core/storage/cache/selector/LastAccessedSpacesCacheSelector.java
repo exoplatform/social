@@ -27,7 +27,7 @@ public class LastAccessedSpacesCacheSelector extends ScopeCacheSelector<ListSpac
 
   private SocialStorageCacheService cacheService;
 
-  private boolean                   hasClearedCacheEntries = false;
+  private boolean                   updateStore = true;
 
   public LastAccessedSpacesCacheSelector(String remoteId, Space space, SocialStorageCacheService cacheService) {
     this.remoteId = remoteId;
@@ -58,9 +58,9 @@ public class LastAccessedSpacesCacheSelector extends ScopeCacheSelector<ListSpac
     if (objectCacheInfo != null && objectCacheInfo.get() != null) {
       ListSpacesData listSpacesData = objectCacheInfo.get();
       List<SpaceKey> ids = listSpacesData.getIds();
-      if (ids != null && !ids.isEmpty() && (SpaceType.LATEST_ACCESSED.equals(listSpacesKey.getKey().getType()))
-          || SpaceType.VISITED.equals(listSpacesKey.getKey().getType())) {
+      if (ids != null && !ids.isEmpty()) {
         if (ids.get(0).getId().equals(space.getId())) {
+          updateStore = false;
           return;
         } else if (StringUtils.isBlank(listSpacesKey.getKey().getAppId()) && listSpacesKey.getOffset() == 0
             && SpaceType.LATEST_ACCESSED.equals(listSpacesKey.getKey().getType())) {
@@ -70,9 +70,10 @@ public class LastAccessedSpacesCacheSelector extends ScopeCacheSelector<ListSpac
             ids.remove(spaceKey);
             ids.add(0, spaceKey);
             listSpacesData.setIds(ids);
-            // Update cache after value change because ISPN returns a clone of object
-            // And not the real cached object
+            // Update cache after value change because ISPN returns a clone of
+            // object And not the real cached object
             ((ExoCache<ListSpacesKey, ListSpacesData>) exoCache).put(listSpacesKey, listSpacesData);
+            // Cache enry updated, so no need to clear it
             return;
           } else if (ids.size() == listSpacesKey.getLimit()) {
             ids.remove(ids.size() - 1);
@@ -80,23 +81,24 @@ public class LastAccessedSpacesCacheSelector extends ScopeCacheSelector<ListSpac
             listSpacesData.setIds(ids);
             cacheService.getSpacesCountCache().remove(listSpacesKey);
             ((ExoCache<ListSpacesKey, ListSpacesData>) exoCache).put(listSpacesKey, listSpacesData);
+            // Cache enry updated, so no need to clear it
             return;
           } else {
             ids.add(0, spaceKey);
             listSpacesData.setIds(ids);
             cacheService.getSpacesCountCache().remove(listSpacesKey);
             ((ExoCache<ListSpacesKey, ListSpacesData>) exoCache).put(listSpacesKey, listSpacesData);
+            // Cache enry updated, so no need to clear it
             return;
           }
         }
       }
       exoCache.remove(listSpacesKey);
-      hasClearedCacheEntries = true;
       cacheService.getSpacesCountCache().remove(listSpacesKey);
     }
   }
 
-  public boolean isHasClearedCacheEntries() {
-    return hasClearedCacheEntries;
+  public boolean isUpdateStore() {
+    return updateStore;
   }
 }
