@@ -3159,4 +3159,9 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
   public List<ExoSocialActivity> getSubComments(ExoSocialActivity comment) {
     throw new UnsupportedOperationException();
   }
+
+  @Override
+  public List<ExoSocialActivity> getActivities(List<String> activityIdList) {
+    throw new UnsupportedOperationException();
+  }
 }

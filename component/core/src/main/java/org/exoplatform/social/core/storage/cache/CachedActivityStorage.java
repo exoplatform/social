@@ -18,6 +18,8 @@
 package org.exoplatform.social.core.storage.cache;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -2000,5 +2002,46 @@ public class CachedActivityStorage implements ActivityStorage {
 
     //
     return buildActivities(keys);
+  }
+
+  @Override
+  public List<ExoSocialActivity> getActivities(List<String> activityIdList) {
+    if (activityIdList == null || activityIdList.isEmpty()) {
+      return Collections.emptyList();
+    }
+    List<String> activityIdsToGetFromStore = new ArrayList<>();
+    Map<String, ExoSocialActivity> resultMap = new HashMap<>();
+    for (String activityId : activityIdList) {
+      ActivityData activityData = exoActivityCache.get(new ActivityKey(activityId));
+      if (activityData == null) {
+        // Retrieve activity from store
+        activityIdsToGetFromStore.add(activityId);
+      } else if (activityData != ActivityData.NULL && activityData.getId() != null) {
+        // Add found activity in cache into results
+        resultMap.put(activityId, activityData.build());
+      } else {
+        // activity is equals to ActivityData.NULL,
+        // thus no need to add it in results, not get it from store
+      }
+    }
+    List<ExoSocialActivity> activitiesGotFromStore = storage.getActivities(activityIdsToGetFromStore);
+    if (activitiesGotFromStore != null && !activitiesGotFromStore.isEmpty()) {
+      for (ExoSocialActivity exoSocialActivity : activitiesGotFromStore) {
+        // Update local cache by found value
+        activityCache.putOnly(new ActivityKey(exoSocialActivity.getId()), new ActivityData(exoSocialActivity));
+        // Add found activity to list of results
+        resultMap.put(exoSocialActivity.getId(), exoSocialActivity);
+      }
+    }
+    List<ExoSocialActivity> result = new ArrayList<>();
+    // Compute result list switch requested order from original IDs List
+    for (String activityId : activityIdList) {
+      ExoSocialActivity exoSocialActivity = resultMap.get(activityId);
+      if (exoSocialActivity == null) {
+        continue;
+      }
+      result.add(exoSocialActivity);
+    }
+    return result;
   }
 }

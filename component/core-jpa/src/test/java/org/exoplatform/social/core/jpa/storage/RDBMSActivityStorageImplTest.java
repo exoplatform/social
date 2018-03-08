@@ -138,6 +138,25 @@ public class RDBMSActivityStorageImplTest extends AbstractCoreTest {
     assertEquals(1, got.size());
     tearDownActivityList.add(activityStorage.getActivity(got.get(0)));
   }
+
+  @MaxQueryNumber(520)
+  public void testGetActivitiesByIDs() {
+    ExoSocialActivity activity1 = createActivity(10);
+    activityStorage.saveActivity(demoIdentity, activity1);
+    tearDownActivityList.add(activity1);
+    ExoSocialActivity activity2 = createActivity(20);
+    activityStorage.saveActivity(demoIdentity, activity2);
+    tearDownActivityList.add(activity2);
+    ExoSocialActivity activity3 = createActivity(30);
+    activityStorage.saveActivity(demoIdentity, activity3);
+    tearDownActivityList.add(activity3);
+    //
+    List<ExoSocialActivity> got = activityStorage.getActivities(Arrays.asList(new String[] {activity1.getId(), activity2.getId(), activity3.getId()}));
+    assertEquals(3, got.size());
+    assertEquals(activity1.getId(), got.get(0).getId());
+    assertEquals(activity2.getId(), got.get(1).getId());
+    assertEquals(activity3.getId(), got.get(2).getId());
+  }
   
   @MaxQueryNumber(530)
   public void testGetActivityIdsFeed() {

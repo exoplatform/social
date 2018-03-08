@@ -511,4 +511,12 @@ public interface ActivityManager {
    * @return
    */
   int getMaxUploadSize();
+
+  /**
+   * Load activities switch list of IDs
+   * 
+   * @param activityIdList
+   * @return
+   */
+  List<ExoSocialActivity> getActivities(List<String> activityIdList);
 }

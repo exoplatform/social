@@ -1124,4 +1124,12 @@ public interface ActivityStorage {
    * @return
    */
   public List<ExoSocialActivity> getSubComments(ExoSocialActivity comment);
+
+  /**
+   * Load activities switch list of IDs
+   * 
+   * @param activityIdList
+   * @return
+   */
+  public List<ExoSocialActivity> getActivities(List<String> activityIdList);
 }

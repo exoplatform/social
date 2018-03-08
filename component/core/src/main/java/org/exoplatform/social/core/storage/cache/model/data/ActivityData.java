@@ -154,6 +154,10 @@ public class ActivityData implements CacheData<ExoSocialActivity> {
 
   }
 
+  public String getId() {
+    return id;
+  }
+
   public String getUserId() {
     return userId;
   }
