@@ -118,11 +118,6 @@ public class UISpaceActivitiesDisplay extends AbstractActivitiesDisplay {
     activitiesLoader.setActivityListAccess(Utils.getActivityManager().getActivitiesOfSpaceWithListAccess(spaceIdentity));
     activitiesLoader.init();
     activitiesLoader.getChild(UIActivitiesContainer.class).setRenderFull(isRenderFull(), true);
-    
-    //
-    String remoteId = Utils.getOwnerRemoteId();
-    Utils.getSpaceService().updateSpaceAccessed(remoteId, space);
-    
   }
 
   public static class RefreshStreamActionListener extends EventListener<UISpaceActivitiesDisplay> {
