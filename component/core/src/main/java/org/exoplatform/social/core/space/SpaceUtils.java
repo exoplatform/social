@@ -74,6 +74,7 @@ import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
 import org.exoplatform.webui.application.WebuiRequestContext;
 
+import org.apache.commons.lang.StringUtils;
 import org.gatein.common.i18n.LocalizedString;
 import org.gatein.common.util.Tools;
 import org.gatein.pc.api.Portlet;
@@ -136,6 +137,7 @@ public class SpaceUtils {
   private static String NUMBER_REG_PATTERN = "[0-9]";
   private static String UNDER_SCORE_STR = "_";
   private static String SPACE_STR = " ";
+  private static String CURRENT_SPACE = "CurrentSpace";
   
   /**
    * Creates a new group from an existing group. This new group will get all data from existing group except for group
@@ -449,18 +451,32 @@ public class SpaceUtils {
   public static Space getSpaceByContext() {
     //
     PortalRequestContext pcontext = Util.getPortalRequestContext();
+    Object currentSpaceObject = pcontext.getAttribute(CURRENT_SPACE);
+    if (currentSpaceObject != null) {
+      if(Objects.equals(currentSpaceObject, StringUtils.EMPTY)) {
+        return null;
+      } else {
+        return (Space) currentSpaceObject;
+      }
+    }
     if (!pcontext.getSiteType().equals(SiteType.GROUP) ||
         !pcontext.getSiteName().startsWith(SpaceUtils.SPACE_GROUP)) {
       return null;
     }
     String requestPath = pcontext.getControllerContext().getParameter(RequestNavigationData.REQUEST_PATH);
     Route route = ExoRouter.route(requestPath);
-    if (route == null) return null;
+    if (route == null) {
+      pcontext.setAttribute(CURRENT_SPACE, StringUtils.EMPTY);
+      return null;
+    }
 
     //
     String spacePrettyName = route.localArgs.get("spacePrettyName");
     SpaceService spaceService = (SpaceService) ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(SpaceService.class);
-    return spaceService.getSpaceByPrettyName(spacePrettyName);
+
+    Space currentSpace = spaceService.getSpaceByPrettyName(spacePrettyName);
+    pcontext.setAttribute(CURRENT_SPACE, currentSpace);
+    return currentSpace;
   }
   /**
    * Remove pages and group navigation of space when delete space.
