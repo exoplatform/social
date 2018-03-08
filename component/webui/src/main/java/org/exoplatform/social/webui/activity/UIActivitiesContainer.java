@@ -205,15 +205,19 @@ public class UIActivitiesContainer extends UIContainer {
     uiActivityIdNextList = new LinkedList<String>();
     
     ActivityManager activityManager = getApplicationComponent(ActivityManager.class);
-    for (String activityId : activityIdList) {
-      UIActivityLoader uiActivityLoader = addChild(UIActivityLoader.class, null, UIActivityLoader.buildComponentId(activityId));
+    List<ExoSocialActivity> activities = activityManager.getActivities(activityIdList);
+    for (ExoSocialActivity activity : activities) {
+      if (activity == null) {
+        continue;
+      }
+      UIActivityLoader uiActivityLoader = addChild(UIActivityLoader.class, null, UIActivityLoader.buildComponentId(activity.getId()));
       if (isRenderFull()) {
         UIActivityFactory factory = CommonsUtils.getService(UIActivityFactory.class);
-        factory.addChild(activityManager.getActivity(activityId), uiActivityLoader);
+        factory.addChild(activity, uiActivityLoader);
       } else if (activityFullRender > 0 && isFirstLoader) {
         if (index < activityFullRender) {
           UIActivityFactory factory = CommonsUtils.getService(UIActivityFactory.class);
-          factory.addChild(activityManager.getActivity(activityId), uiActivityLoader);
+          factory.addChild(activity, uiActivityLoader);
           uiActivityIdFirstList.add(uiActivityLoader.getId());
         } else {
           uiActivityIdNextList.add(uiActivityLoader.getId());

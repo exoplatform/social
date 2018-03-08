@@ -438,4 +438,13 @@ public interface ActivityDAO extends GenericDAO<ActivityEntity, Long> {
    */
   List<ActivityEntity> findCommentsOfActivities(List<Long> ids);
 
+
+  /**
+   * Get list of activities switch list of IDs
+   * 
+   * @param activityIds
+   * @return
+   */
+  List<ActivityEntity> findActivities(List<Long> activityIds);
+
 }
