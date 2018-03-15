@@ -16,6 +16,9 @@
  */
 package org.exoplatform.social.webui;
 
+import org.apache.commons.lang.StringUtils;
+
+import org.exoplatform.commons.utils.CommonsUtils;
 import org.exoplatform.container.ExoContainer;
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.portal.application.PortalRequestContext;
@@ -36,6 +39,7 @@ import org.exoplatform.social.core.manager.IdentityManager;
  */
 public class URLUtils {
 
+  private static final String STREAM_OWNER_ID = "streamOwnerId";
   private static Log LOG = ExoLogger.getLogger(UISocialGroupSelector.class);
   private static String ROOT_NODE_NAME = "default";
   
@@ -46,20 +50,40 @@ public class URLUtils {
    */
   public static String getCurrentUser() {
     PortalRequestContext pcontext = Util.getPortalRequestContext() ;
+    String currentUserName = (String) pcontext.getAttribute(STREAM_OWNER_ID);
+    if (currentUserName != null) {
+      if (StringUtils.EMPTY.equals(currentUserName)) {
+        return null;
+      } else {
+        return currentUserName;
+      }
+    }
     String requestPath = "/" + pcontext.getControllerContext().getParameter(RequestNavigationData.REQUEST_PATH);
     Route route = ExoRouter.route(requestPath);
     if (route == null) { 
       return null;
     }
     
-    String currentUserName = route.localArgs.get("streamOwnerId");
-    ExoContainer container = ExoContainerContext.getCurrentContainer();
-    IdentityManager idm = (IdentityManager) container.getComponentInstanceOfType(IdentityManager.class);
+    currentUserName = route.localArgs.get(STREAM_OWNER_ID);
 
     try {
       if (currentUserName != null) {
+        IdentityManager idm = CommonsUtils.getService(IdentityManager.class);
+        // Workaround in case ;jsessionid is added to URL
+        if (currentUserName.contains(";")) {
+          currentUserName = currentUserName.split(";")[0];
+        }
         Identity id = idm.getOrCreateIdentity(OrganizationIdentityProvider.NAME, currentUserName, false);
-        if (id != null) return currentUserName;
+        if (id != null) {
+          pcontext.setAttribute(STREAM_OWNER_ID, currentUserName);
+          return currentUserName;
+        } else {
+          pcontext.setAttribute(STREAM_OWNER_ID, StringUtils.EMPTY);
+          return null;
+        }
+      } else {
+        pcontext.setAttribute(STREAM_OWNER_ID, StringUtils.EMPTY);
+        return null;
       }
     } catch (Exception e) {
       if(LOG.isDebugEnabled()) {
@@ -67,7 +91,6 @@ public class URLUtils {
       }
       return null;
     }
-    return null;
   }
   
   /**
