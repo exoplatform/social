@@ -122,10 +122,10 @@ public class UISpaceMenu extends UIContainer {
     boolean canEditBanner = hasSettingPermission();
     uiBanner.setRendered(canEditBanner);
     uiAvatarBanner.setRenderUpload(canEditBanner);
-
+    String selectedApp = getAppSelected();
     UserNode selectedNode =  getApps().stream().filter(app -> {
       try {
-        return app.getName().equals(getAppSelected());
+        return app.getName().equals(selectedApp);
       } catch (Exception e) {
         return false;
       }
