@@ -17,13 +17,13 @@
 
 package org.exoplatform.social.core.storage.cache.model.data;
 
-import org.apache.commons.lang.StringUtils;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
 
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * Immutable profile data.
@@ -126,20 +126,25 @@ public class ProfileData implements CacheData<Profile> {
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
-    if (!(o instanceof ProfileData)) return false;
-
+    if (o == null || getClass() != o.getClass()) return false;
     ProfileData that = (ProfileData) o;
-
-    return StringUtils.equals(profileId, that.profileId) && StringUtils.equals(identityId, that.identityId)
-            && StringUtils.equals(providerId, that.profileId) && StringUtils.equals(remoteId, that.remoteId);
+    return hasChanged == that.hasChanged &&
+            Objects.equals(profileId, that.profileId) &&
+            Objects.equals(identityId, that.identityId) &&
+            Objects.equals(providerId, that.providerId) &&
+            Objects.equals(remoteId, that.remoteId) &&
+            Objects.equals(data, that.data) &&
+            Objects.equals(url, that.url) &&
+            Objects.equals(avatarUrl, that.avatarUrl) &&
+            Objects.equals(bannerUrl, that.bannerUrl) &&
+            Objects.equals(avatarLastUpdated, that.avatarLastUpdated) &&
+            Objects.equals(bannerLastUpdated, that.bannerLastUpdated) &&
+            Objects.equals(createdTime, that.createdTime);
   }
 
   @Override
   public int hashCode() {
-    int result = profileId != null ? profileId.hashCode() : 0;
-    result = 31 * result + (identityId != null ? identityId.hashCode() : 0);
-    result = 31 * result + (providerId != null ? providerId.hashCode() : 0);
-    result = 31 * result + (remoteId != null ? remoteId.hashCode() : 0);
-    return result;
+    return Objects.hash(profileId, identityId, providerId, remoteId, hasChanged, data, url,
+            avatarUrl, bannerUrl, avatarLastUpdated, bannerLastUpdated, createdTime);
   }
 }

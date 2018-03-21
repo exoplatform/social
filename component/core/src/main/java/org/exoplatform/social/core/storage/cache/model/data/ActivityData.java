@@ -17,12 +17,11 @@
 
 package org.exoplatform.social.core.storage.cache.model.data;
 
-import java.util.*;
-
-import org.apache.commons.lang.StringUtils;
 import org.exoplatform.social.core.activity.model.ActivityStream;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.activity.model.ExoSocialActivityImpl;
+
+import java.util.*;
 
 /**
  * Immutable activity data.
@@ -169,20 +168,44 @@ public class ActivityData implements CacheData<ExoSocialActivity> {
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
-    if (!(o instanceof ActivityData)) return false;
-
+    if (o == null || getClass() != o.getClass()) return false;
     ActivityData that = (ActivityData) o;
-
-    return StringUtils.equals(id, that.id) && StringUtils.equals(userId, that.userId)
-            && StringUtils.equals(posterId, that.posterId) && StringUtils.equals(parentId, that.parentId);
+    return isComment == that.isComment &&
+            isHidden == that.isHidden &&
+            isLocked == that.isLocked &&
+            Objects.equals(id, that.id) &&
+            Objects.equals(title, that.title) &&
+            Objects.equals(body, that.body) &&
+            Arrays.equals(likes, that.likes) &&
+            Objects.equals(postedTime, that.postedTime) &&
+            Objects.equals(lastUpdated, that.lastUpdated) &&
+            Arrays.equals(replyIds, that.replyIds) &&
+            Objects.equals(userId, that.userId) &&
+            Objects.equals(appId, that.appId) &&
+            Objects.equals(titleId, that.titleId) &&
+            Objects.equals(bodyId, that.bodyId) &&
+            Objects.equals(type, that.type) &&
+            Objects.equals(templateParams, that.templateParams) &&
+            Objects.equals(externalId, that.externalId) &&
+            Objects.equals(url, that.url) &&
+            Objects.equals(streamId, that.streamId) &&
+            Objects.equals(streamOwner, that.streamOwner) &&
+            Objects.equals(streamFaviconUrl, that.streamFaviconUrl) &&
+            Objects.equals(streamSourceUrl, that.streamSourceUrl) &&
+            Objects.equals(streamTitle, that.streamTitle) &&
+            Objects.equals(streamUrl, that.streamUrl) &&
+            Arrays.equals(mentioners, that.mentioners) &&
+            Arrays.equals(commenters, that.commenters) &&
+            streamType == that.streamType &&
+            Objects.equals(posterId, that.posterId) &&
+            Objects.equals(parentId, that.parentId) &&
+            Objects.equals(parentCommentId, that.parentCommentId);
   }
 
   @Override
   public int hashCode() {
-    int result = id != null ? id.hashCode() : 0;
-    result = 31 * result + (userId != null ? userId.hashCode() : 0);
-    result = 31 * result + (posterId != null ? posterId.hashCode() : 0);
-    result = 31 * result + (parentId != null ? parentId.hashCode() : 0);
-    return result;
+    return Objects.hash(id, title, body, likes, isComment, isHidden, isLocked, postedTime, lastUpdated, replyIds,
+            userId, appId, titleId, bodyId, type, templateParams, externalId, url, streamId, streamOwner, streamFaviconUrl,
+            streamSourceUrl, streamTitle, streamUrl, mentioners, commenters, streamType, posterId, parentId, parentCommentId);
   }
 }

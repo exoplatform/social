@@ -17,8 +17,10 @@
 
 package org.exoplatform.social.core.storage.cache.model.data;
 
-import org.apache.commons.lang.StringUtils;
 import org.exoplatform.social.core.space.model.Space;
+
+import java.util.Arrays;
+import java.util.Objects;
 
 /**
  * Immutable space data.
@@ -177,19 +179,34 @@ public class SpaceData implements CacheData<Space> {
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
-    if (!(o instanceof SpaceData)) return false;
-
+    if (o == null || getClass() != o.getClass()) return false;
     SpaceData spaceData = (SpaceData) o;
-
-    return StringUtils.equals(id, spaceData.id) && StringUtils.equals(prettyName, spaceData.prettyName)
-            && StringUtils.equals(displayName, spaceData.displayName);
+    return Objects.equals(id, spaceData.id) &&
+            Objects.equals(app, spaceData.app) &&
+            Objects.equals(prettyName, spaceData.prettyName) &&
+            Objects.equals(displayName, spaceData.displayName) &&
+            Objects.equals(registration, spaceData.registration) &&
+            Objects.equals(description, spaceData.description) &&
+            Objects.equals(type, spaceData.type) &&
+            Objects.equals(visibility, spaceData.visibility) &&
+            Objects.equals(priority, spaceData.priority) &&
+            Objects.equals(avatarUrl, spaceData.avatarUrl) &&
+            Objects.equals(bannerUrl, spaceData.bannerUrl) &&
+            Objects.equals(groupId, spaceData.groupId) &&
+            Objects.equals(url, spaceData.url) &&
+            Objects.equals(avatarLastUpdated, spaceData.avatarLastUpdated) &&
+            Objects.equals(bannerLastUpdated, spaceData.bannerLastUpdated) &&
+            Objects.equals(createdTime, spaceData.createdTime) &&
+            Arrays.equals(members, spaceData.members) &&
+            Arrays.equals(managers, spaceData.managers) &&
+            Arrays.equals(pendingUser, spaceData.pendingUser) &&
+            Arrays.equals(invitedUser, spaceData.invitedUser);
   }
 
   @Override
   public int hashCode() {
-    int result = id != null ? id.hashCode() : 0;
-    result = 31 * result + (prettyName != null ? prettyName.hashCode() : 0);
-    result = 31 * result + (displayName != null ? displayName.hashCode() : 0);
-    return result;
+    return Objects.hash(id, app, prettyName, displayName, registration, description, type, visibility,
+            priority, avatarUrl, bannerUrl, groupId, url, avatarLastUpdated, bannerLastUpdated, createdTime,
+            members, managers, pendingUser, invitedUser);
   }
 }
