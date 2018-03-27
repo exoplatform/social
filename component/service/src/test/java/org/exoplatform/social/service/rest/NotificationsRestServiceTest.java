@@ -97,12 +97,40 @@ public class NotificationsRestServiceTest extends AbstractResourceTest {
     assertNotNull(response);
     assertEquals(303, response.getStatus());
   }
+
+  public void testInviteToConnectNotAuthorized() throws Exception {
+    startSessionAs("john");
+    ContainerResponse response = service("GET", "/social/notifications/inviteToConnect/" + demoIdentity.getRemoteId() + "/" + rootIdentity.getRemoteId(), "", null, null);
+    assertNotNull(response);
+    assertEquals(401, response.getStatus());
+  }
+
+  public void testInviteToConnectNotAuthorizedWhenUserIsReceiver() throws Exception {
+    startSessionAs("john");
+    ContainerResponse response = service("GET", "/social/notifications/inviteToConnect/" + johnIdentity.getRemoteId() + "/" + rootIdentity.getRemoteId(), "", null, null);
+    assertNotNull(response);
+    assertEquals(401, response.getStatus());
+  }
   
   public void testConfirmInvitationToConnect() throws Exception {
     startSessionAs("root");
     ContainerResponse response = service("GET", "/social/notifications/confirmInvitationToConnect/" + johnIdentity.getRemoteId() +"/" + rootIdentity.getRemoteId(), "", null, null);
     assertNotNull(response);
     assertEquals(303, response.getStatus());
+  }
+
+  public void testConfirmInvitationToConnectNotAuthorized() throws Exception {
+    startSessionAs("john");
+    ContainerResponse response = service("GET", "/social/notifications/confirmInvitationToConnect/" + demoIdentity.getRemoteId() +"/" + rootIdentity.getRemoteId(), "", null, null);
+    assertNotNull(response);
+    assertEquals(401, response.getStatus());
+  }
+
+  public void testConfirmInvitationToConnectNotAuthorizedWhenUserIsSender() throws Exception {
+    startSessionAs("john");
+    ContainerResponse response = service("GET", "/social/notifications/confirmInvitationToConnect/" + johnIdentity.getRemoteId() +"/" + rootIdentity.getRemoteId(), "", null, null);
+    assertNotNull(response);
+    assertEquals(401, response.getStatus());
   }
   
   public void testIgnoreInvitationToConnect() throws Exception {
@@ -111,7 +139,21 @@ public class NotificationsRestServiceTest extends AbstractResourceTest {
     assertNotNull(response);
     assertEquals(303, response.getStatus());
   }
-  
+
+  public void testIgnoreInvitationToConnectNotAuthorized() throws Exception {
+    startSessionAs("john");
+    ContainerResponse response = service("GET", "/social/notifications/ignoreInvitationToConnect/" + demoIdentity.getRemoteId() +"/" + rootIdentity.getRemoteId(), "", null, null);
+    assertNotNull(response);
+    assertEquals(401, response.getStatus());
+  }
+
+  public void testIgnoreInvitationToConnectNotAuthorizedWhenUserIsSender() throws Exception {
+    startSessionAs("john");
+    ContainerResponse response = service("GET", "/social/notifications/ignoreInvitationToConnect/" + johnIdentity.getRemoteId() +"/" + rootIdentity.getRemoteId(), "", null, null);
+    assertNotNull(response);
+    assertEquals(401, response.getStatus());
+  }
+
   public void testAcceptInvitationToJoinSpace() throws Exception {
     Space space = getSpaceInstance(1);
     List<String> listMembers = Arrays.asList(space.getMembers());
@@ -136,6 +178,33 @@ public class NotificationsRestServiceTest extends AbstractResourceTest {
     listInviteds = Arrays.asList(spaceService.getSpaceById(space.getId()).getInvitedUsers());
     assertFalse(listInviteds.contains("root"));
     
+    spaceService.deleteSpace(space.getId());
+  }
+
+  public void testAcceptInvitationToJoinSpaceNotAuthorized() throws Exception {
+    Space space = getSpaceInstance(1);
+    List<String> listMembers = Arrays.asList(space.getMembers());
+    assertFalse(listMembers.contains("root"));
+    List<String> listInviteds = Arrays.asList(space.getInvitedUsers());
+    assertTrue(listInviteds.contains("root"));
+
+    end();
+    begin();
+
+    startSessionAs("john");
+    ContainerResponse response = service("GET", "/social/notifications/acceptInvitationToJoinSpace/" + space.getId() +"/" + rootIdentity.getRemoteId(), "", null, null);
+
+    assertNotNull(response);
+    assertEquals(401, response.getStatus());
+
+    end();
+    begin();
+
+    listMembers = Arrays.asList(spaceService.getSpaceById(space.getId()).getMembers());
+    assertFalse(listMembers.contains("root"));
+    listInviteds = Arrays.asList(spaceService.getSpaceById(space.getId()).getInvitedUsers());
+    assertTrue(listInviteds.contains("root"));
+
     spaceService.deleteSpace(space.getId());
   }
   
@@ -165,6 +234,33 @@ public class NotificationsRestServiceTest extends AbstractResourceTest {
     
     spaceService.deleteSpace(space.getId());
   }
+
+  public void testIgnoreInvitationToJoinSpaceNotAuthorized() throws Exception {
+    Space space = getSpaceInstance(1);
+    List<String> listMembers = Arrays.asList(space.getMembers());
+    assertFalse(listMembers.contains("root"));
+    List<String> listInviteds = Arrays.asList(space.getInvitedUsers());
+    assertTrue(listInviteds.contains("root"));
+
+    end();
+    begin();
+
+    startSessionAs("john");
+    ContainerResponse response = service("GET", "/social/notifications/ignoreInvitationToJoinSpace/" + space.getId() +"/" + rootIdentity.getRemoteId(), "", null, null);
+
+    assertNotNull(response);
+    assertEquals(401, response.getStatus());
+
+    end();
+    begin();
+
+    listMembers = Arrays.asList(spaceService.getSpaceById(space.getId()).getMembers());
+    assertFalse(listMembers.contains("root"));
+    listInviteds = Arrays.asList(spaceService.getSpaceById(space.getId()).getInvitedUsers());
+    assertTrue(listInviteds.contains("root"));
+
+    spaceService.deleteSpace(space.getId());
+  }
   
   public void testValidateRequestToJoinSpace() throws Exception {
     Space space = getSpaceInstance(1);
@@ -190,6 +286,33 @@ public class NotificationsRestServiceTest extends AbstractResourceTest {
     listPendings = Arrays.asList(spaceService.getSpaceById(space.getId()).getPendingUsers());
     assertFalse(listPendings.contains("root"));
     
+    spaceService.deleteSpace(space.getId());
+  }
+
+  public void testValidateRequestToJoinSpaceNotAuthorized() throws Exception {
+    Space space = getSpaceInstance(1);
+    List<String> listMembers = Arrays.asList(space.getMembers());
+    assertFalse(listMembers.contains("root"));
+    List<String> listPendings = Arrays.asList(space.getPendingUsers());
+    assertTrue(listPendings.contains("root"));
+
+    end();
+    begin();
+
+    startSessionAs("demo");
+    ContainerResponse response = service("GET", "/social/notifications/validateRequestToJoinSpace/" + space.getId() +"/" + rootIdentity.getRemoteId(), "", null, null);
+
+    assertNotNull(response);
+    assertEquals(401, response.getStatus());
+
+    end();
+    begin();
+
+    listMembers = Arrays.asList(spaceService.getSpaceById(space.getId()).getMembers());
+    assertFalse(listMembers.contains("root"));
+    listPendings = Arrays.asList(spaceService.getSpaceById(space.getId()).getPendingUsers());
+    assertTrue(listPendings.contains("root"));
+
     spaceService.deleteSpace(space.getId());
   }
   

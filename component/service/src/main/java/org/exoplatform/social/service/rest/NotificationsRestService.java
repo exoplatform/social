@@ -42,9 +42,9 @@ import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 import java.net.URI;
 import java.util.Arrays;
-import java.util.List;
 
 import static org.exoplatform.social.service.rest.RestChecker.checkAuthenticatedRequest;
+import static org.exoplatform.social.service.rest.RestChecker.checkAuthenticatedUserPermission;
 
 /**
  * 
@@ -88,7 +88,7 @@ public class NotificationsRestService implements ResourceContainer {
   public Response inviteToConnect(@Context UriInfo uriInfo,
                                   @PathParam("receiverId") String receiverId,
                                   @PathParam("senderId") String senderId) throws Exception {
-    checkAuthenticatedRequest();
+    checkAuthenticatedUserPermission(senderId);
     
     Identity sender = getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, (senderId != null ? senderId : ConversationState.getCurrent().getIdentity().getUserId()), true);
     Identity receiver = getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, receiverId, true);
@@ -118,12 +118,14 @@ public class NotificationsRestService implements ResourceContainer {
   @Path("confirmInvitationToConnect/{senderId}/{receiverId}")
   public Response confirmInvitationToConnect(@PathParam("senderId") String senderId,
                                              @PathParam("receiverId") String receiverId) throws Exception {
-    Identity sender = getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, senderId, true); 
+    checkAuthenticatedUserPermission(receiverId);
+
+    Identity sender = getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, senderId, true);
     Identity receiver = getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, receiverId, true);
     if (sender == null || receiver == null) {
       throw new WebApplicationException(Response.Status.BAD_REQUEST);
     }
-    if (isAcceptedUser(sender, receiver)) {
+    if (Relationship.Type.PENDING.equals(getRelationshipManager().getStatus(sender, receiver))) {
       getRelationshipManager().confirm(sender, receiver);
     }
     String targetURL = Util.getBaseUrl() + LinkProvider.getUserActivityUri(sender.getRemoteId());
@@ -148,12 +150,14 @@ public class NotificationsRestService implements ResourceContainer {
   @Path("ignoreInvitationToConnect/{senderId}/{receiverId}")
   public Response ignoreInvitationToConnect(@PathParam("senderId") String senderId,
                                             @PathParam("receiverId") String receiverId) throws Exception {
+    checkAuthenticatedUserPermission(receiverId);
+
     Identity sender = getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, senderId, true);
     Identity receiver = getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, receiverId, true);
     if (sender == null || receiver == null) {
       throw new WebApplicationException(Response.Status.BAD_REQUEST);
     }
-    if (isAcceptedUser(sender, receiver)) {
+    if (Relationship.Type.PENDING.equals(getRelationshipManager().getStatus(sender, receiver))) {
       getRelationshipManager().deny(sender, receiver);
     }
 
@@ -179,11 +183,13 @@ public class NotificationsRestService implements ResourceContainer {
   @Path("acceptInvitationToJoinSpace/{spaceId}/{userId}")
   public Response acceptInvitationToJoinSpace(@PathParam("spaceId") String spaceId,
                                               @PathParam("userId") String userId) throws Exception {
+    checkAuthenticatedUserPermission(userId);
+
     Space space = getSpaceService().getSpaceById(spaceId);
     if (space == null) {
       throw new WebApplicationException(Response.Status.BAD_REQUEST);
     }
-    if (isAcceptedUser(userId, space.getInvitedUsers())) {
+    if (Arrays.asList(space.getInvitedUsers()).contains(userId)) {
       getSpaceService().addMember(space, userId);
     }
     String targetURL = Util.getBaseUrl() + LinkProvider.getActivityUriForSpace(space.getPrettyName(), space.getGroupId().replace("/spaces/", ""));
@@ -208,12 +214,14 @@ public class NotificationsRestService implements ResourceContainer {
   @Path("ignoreInvitationToJoinSpace/{spaceId}/{userId}")
   public Response ignoreInvitationToJoinSpace(@PathParam("spaceId") String spaceId,
                                               @PathParam("userId") String userId) throws Exception {
+    checkAuthenticatedUserPermission(userId);
+
     Space space = getSpaceService().getSpaceById(spaceId);
     if (space == null) {
       throw new WebApplicationException(Response.Status.BAD_REQUEST);
     }
     String targetURL = Util.getBaseUrl();
-    if (isAcceptedUser(userId, space.getInvitedUsers())) {
+    if (Arrays.asList(space.getInvitedUsers()).contains(userId)) {
       if (getSpaceService().isMember(space, userId)) {
         targetURL = targetURL + LinkProvider.getRedirectUri("all-spaces?feedbackMessage=SpaceInvitationAlreadyMember&spaceId=" + spaceId);
       } else {
@@ -509,18 +517,5 @@ public class NotificationsRestService implements ResourceContainer {
       throw new WebApplicationException(Status.INTERNAL_SERVER_ERROR);
     }
     return exoContainer;
-  }
-  
-  private boolean isAcceptedUser(String userId, String...invitedUsers) {
-    if (userId == null) return false;
-    String authenticatedUser = ConversationState.getCurrent().getIdentity().getUserId();
-    List<String> invitedUserList = Arrays.asList(invitedUsers);
-    return userId.equals(authenticatedUser) && invitedUserList.contains(authenticatedUser);
-  }
-  
-  private boolean isAcceptedUser(Identity sender, Identity receiver) {
-    String authenticatedUser = ConversationState.getCurrent().getIdentity().getUserId();
-    return receiver.getRemoteId().equals(authenticatedUser) 
-        && Relationship.Type.PENDING.equals(getRelationshipManager().getStatus(sender, receiver));
   }
 }
