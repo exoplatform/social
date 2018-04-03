@@ -173,7 +173,7 @@ public class ProfileSearchConnector {
       esQuery.append("    \"bool\" :{\n");
       esQuery.append("      \"must\" : {\n");
       esQuery.append("        \"query_string\" : {\n");
-      esQuery.append("          \"query\" : \"*"+ identity.getId() +"*\",\n");
+      esSubQuery.append("          \"query\" : \""+ identity.getId() +"\",\n");
       esQuery.append("          \"fields\" : [\"" + buildTypeEx(type) + "\"]\n");
       esQuery.append("        }\n");
       esQuery.append("      }\n");
