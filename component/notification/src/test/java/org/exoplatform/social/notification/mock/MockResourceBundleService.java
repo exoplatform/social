@@ -25,8 +25,10 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Properties;
 import java.util.ResourceBundle;
 import java.util.Scanner;
+import java.util.Set;
 
 import org.exoplatform.commons.utils.CommonsUtils;
 import org.exoplatform.commons.utils.PageList;
@@ -78,10 +80,11 @@ public class MockResourceBundleService implements ResourceBundleService {
     ResourceBundle resourceBundle = getResourceBundle();
     if(locals.contains(id) == false) {
       InputStream inputStream = null;
-      List<String> list = new ArrayList<String>();
+      Properties list = null;
       try {
         inputStream = configurationService.getInputStream(RESOURCE_LOCATION + id);
-        list = readTextECToListByInput(inputStream);
+        list = new Properties();
+        list.load(inputStream);
       } catch (Exception e) {
         LOG.warn("Could not find the resource bundle for the language {}, falling back to the default language {}",locale.getLanguage(), Locale.ENGLISH);
         try {
@@ -100,29 +103,10 @@ public class MockResourceBundleService implements ResourceBundleService {
           }
         }
       }
-      boolean isContinue = false;
-      String key = "", value = "";
-      int t;
-      for (String string : list) {
-        
-        if(isContinue) {
-          value += string;
-        }
-        
-        if((t = string.indexOf("=")) > 0 && isContinue == false) {
-          key = string.substring(0, t);
-          value = string.substring(t + 1);
-        } 
-        
-        if((t=string.lastIndexOf("\\")) == (string.length() - 1) && t > 0) {
-          isContinue = true;
-        } else {
-          if(key.length() > 0) {
-            ((TestResourceBundle)resourceBundle).addData(key, value.replace("\\", ""));
-          }
-          isContinue = false;
-          key="";
-          value ="";
+      if (list != null) {
+        Set<Object> keys = list.keySet();
+        for (Object key : keys) {
+          ((TestResourceBundle)resourceBundle).addData(key.toString(), list.get(key).toString());
         }
       }
       locals.add(id);
