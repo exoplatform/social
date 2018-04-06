@@ -293,6 +293,9 @@ public class ProfileSearchConnector {
       String[] keys = inputName.split(" ");
       if (keys.length > 1) {
         // We will not search on username because it doesn't contain a space character
+        if (filter.isSearchEmail()) {
+          esExp.append("(");
+        }
         esExp.append("(");
         for (int i = 0; i < keys.length; i++) {
           if (i != 0 ) {
@@ -301,8 +304,21 @@ public class ProfileSearchConnector {
           esExp.append(" name.whitespace:").append(StorageUtils.ASTERISK_STR).append(removeAccents(keys[i])).append(StorageUtils.ASTERISK_STR);
         }
         esExp.append(")");
+        if (filter.isSearchEmail()) {
+          esExp.append(" OR ( ");
+          for (int i = 0; i < keys.length; i++) {
+            if (i != 0 ) {
+              esExp.append(" AND ") ;
+            }
+            esExp.append(" email:").append(StorageUtils.ASTERISK_STR).append(removeAccents(keys[i])).append(StorageUtils.ASTERISK_STR);
+          }
+          esExp.append(") )");
+        }
       } else {
         esExp.append("( name.whitespace:").append(StorageUtils.ASTERISK_STR).append(removeAccents(inputName)).append(StorageUtils.ASTERISK_STR);
+        if (filter.isSearchEmail()) {
+          esExp.append(" OR email:").append(StorageUtils.ASTERISK_STR).append(removeAccents(inputName)).append(StorageUtils.ASTERISK_STR);
+        }
         esExp.append(" OR userName:").append(StorageUtils.ASTERISK_STR).append(removeAccents(inputName)).append(StorageUtils.ASTERISK_STR).append(")");
       }
     }
