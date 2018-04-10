@@ -435,7 +435,7 @@ public class RDBMSActivityStorageImpl implements ActivityStorage {
       String[] mentioners = processMentions(eXoComment.getTitle());
       if (mentioners != null && mentioners.length > 0) {
         mention(commenter, activityEntity, mentioners);
-        activityEntity.setMentionerIds(processMentionOfComment(activityEntity, commentEntity, activity.getMentionedIds(), mentioners, true));
+        activityEntity.setMentionerIds(processMentionOfComment(activityEntity, commentEntity, activityEntity.getMentionerIds().toArray(new String[activityEntity.getMentionerIds().size()]), mentioners, true));
       }
 
       //
