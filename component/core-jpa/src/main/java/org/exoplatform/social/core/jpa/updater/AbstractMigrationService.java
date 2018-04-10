@@ -22,6 +22,7 @@ import java.util.*;
 import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
 import javax.persistence.EntityManager;
+import javax.persistence.EntityTransaction;
 
 import org.exoplatform.commons.api.event.EventManager;
 import org.exoplatform.commons.persistence.impl.EntityManagerService;
@@ -313,14 +314,32 @@ public abstract class AbstractMigrationService<T>  extends AbstractStorage {
    */
   public void endTx(boolean requestClose) {
     EntityManager em = entityManagerService.getEntityManager();
+    EntityTransaction transaction = null;
     try {
       if (requestClose && em.getTransaction().isActive()) {
-        em.getTransaction().commit();
+        transaction = em.getTransaction();
+        transaction.commit();
         LOG.debug("commited transaction");
       }
     } catch (RuntimeException e) {
       LOG.error("Failed to commit to DB::" + e.getMessage(), e);
+      if (transaction != null && transaction.isActive()) {
+        transaction.rollback();
+      }
+      throw e;
+    }
+  }
+
+  /**
+   * Rollback the transaction
+   *
+   * @param requestClose true if need to rollback the transaction
+   */
+  protected void rollbackTx(boolean requestClose) {
+    EntityManager em = entityManagerService.getEntityManager();
+    if (requestClose && em.getTransaction() != null && em.getTransaction().isActive()) {
       em.getTransaction().rollback();
+      LOG.debug("rollbacked transaction");
     }
   }
 
