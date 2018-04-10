@@ -60,6 +60,7 @@ import javax.jcr.Node;
 import javax.jcr.NodeIterator;
 import javax.jcr.PropertyIterator;
 import javax.jcr.RepositoryException;
+import javax.persistence.EntityManager;
 import java.util.*;
 import java.util.regex.Pattern;
 
@@ -315,8 +316,8 @@ public class ActivityMigrationService extends AbstractMigrationService<ExoSocial
     while (activityIterator.hasNext() && !forceStop) {
       String activityId = activityIterator.next().getId();
       //
+      begunTx = startTx();
       try {
-        begunTx = startTx();
 
         ActivityEntity activityEntity = getSession().findById(ActivityEntity.class, activityId);
         ActivityUpdaterEntity updater = _getMixin(activityEntity, ActivityUpdaterEntity.class, false);
@@ -412,17 +413,12 @@ public class ActivityMigrationService extends AbstractMigrationService<ExoSocial
         ++count;
         _getMixin(activityEntity, ActivityUpdaterEntity.class, true);
         getSession().save();
+        endTx(begunTx);
 
       } catch (Exception e) {
+        rollbackTx(begunTx);
         LOG.error("Failed to migrate activity id : " + activityId, e);
         numberActivitiesFailed++;
-      } finally {
-        try {
-          endTx(begunTx);
-        } catch (Exception ex) {
-          LOG.error("Failed to migrate activity id : " + activityId);
-          numberActivitiesFailed++;
-        }
       }
     }
 
@@ -827,7 +823,9 @@ public class ActivityMigrationService extends AbstractMigrationService<ExoSocial
       usedPosterId = getNewIdentityId(posterId);
     } else if (StringUtils.isNotBlank(userId)) {
       usedPosterId = userId;
-    } else {
+    }
+    //Force default posterId when it is not already set
+    if (usedPosterId == null) {
       usedPosterId = superUserIdentityId;
     }
     return usedPosterId;
