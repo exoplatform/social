@@ -650,6 +650,51 @@ public class RDBMSActivityStorageImplTest extends AbstractCoreTest {
     assertEquals(7, list.size());
   }
   
+  @MaxQueryNumber(81)
+   public void testSaveCommentWithAlreadyMentionedUsers() throws Exception {
+     ExoSocialActivity activity1 = new ExoSocialActivityImpl();
+     activity1.setTitle("Initial Activity");
+     activityStorage.saveActivity(rootIdentity, activity1);
+     tearDownActivityList.add(activity1);
+ 
+     // mention root
+     ExoSocialActivity comment1 = new ExoSocialActivityImpl();
+     comment1.setTitle("comment @root");
+     comment1.setUserId(johnIdentity.getId());
+     comment1.setPosterId(johnIdentity.getId());
+     activityStorage.saveComment(activity1, comment1);
+ 
+     // mention john
+     ExoSocialActivity comment2 = new ExoSocialActivityImpl();
+     comment2.setTitle("comment @john");
+     comment2.setUserId(rootIdentity.getId());
+     comment2.setPosterId(rootIdentity.getId());
+     activityStorage.saveComment(activity1, comment2);
+ 
+     // mention root
+     ExoSocialActivity comment3 = new ExoSocialActivityImpl();
+     comment3.setTitle("comment @root");
+     comment3.setUserId(johnIdentity.getId());
+     comment3.setPosterId(johnIdentity.getId());
+     activityStorage.saveComment(activity1, comment3);
+ 
+     // mention john
+     ExoSocialActivity comment4 = new ExoSocialActivityImpl();
+     comment4.setTitle("comment @john");
+     comment4.setUserId(rootIdentity.getId());
+     comment4.setPosterId(rootIdentity.getId());
+     activityStorage.saveComment(activity1, comment4);
+ 
+     List<ExoSocialActivity> list = activityStorage.getActivities(rootIdentity,rootIdentity, 0, 10);
+     assertEquals(1, list.size());
+     assertEquals(2, list.get(0).getMentionedIds().length);
+ 
+     List<ExoSocialActivity> comments = activityStorage.getComments(list.get(0),true,0,10);
+     assertEquals(4,comments.size());
+ 
+ 
+   }
+   
   private Space getSpaceInstance(SpaceService spaceService, int number) throws Exception {
     Space space = new Space();
     space.setDisplayName("my space " + number);
