@@ -193,6 +193,7 @@ public class CachedIdentityStorage implements IdentityStorage {
     //
     IdentityKey key = new IdentityKey(new Identity(identity.getId()));
     exoIdentityCache.remove(key);
+    exoProfileCache.remove(key);
     exoIdentityIndexCache.remove(key);
     clearCache();
 
@@ -606,9 +607,8 @@ public class CachedIdentityStorage implements IdentityStorage {
     storage.processEnabledIdentity(identity, isEnable);
     //
     IdentityKey key = new IdentityKey(new Identity(identity.getId()));
-    identityCache.remove(key);
     exoIdentityCache.remove(key);
-    identitiesCache.clear();
+    exoProfileCache.remove(key);
     clearCache();
     getCachedRelationshipStorage().clearAllRelationshipCache();
   }
@@ -639,5 +639,26 @@ public class CachedIdentityStorage implements IdentityStorage {
   @Override
   public InputStream getAvatarInputStreamById(Identity identity) throws IOException {
     return storage.getAvatarInputStreamById(identity);
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public List<Identity> getIdentities(String providerId, long offset, long limit) {
+    //
+    IdentityFilterKey key = new IdentityFilterKey(providerId, null);
+    ListIdentitiesKey listKey = new ListIdentitiesKey(key, offset, limit);
+
+    //
+    ListIdentitiesData keys = identitiesCache.get(new ServiceContext<ListIdentitiesData>() {
+      public ListIdentitiesData execute() {
+        List<Identity> got = storage.getIdentities(providerId, offset, limit);
+        return buildIds(got);
+      }
+    }, listKey);
+
+    //
+    return buildIdentities(keys);
   }
 }

@@ -210,4 +210,9 @@ public class MigrationIdentityStorage implements IdentityStorage {
   public int getIdentitiesForMentionsCount(String providerId, ProfileFilter profileFilter, Type type) throws IdentityStorageException {
     return jpaStorage.getIdentitiesForMentionsCount(providerId, profileFilter, type);
   }
+
+  @Override
+  public List<Identity> getIdentities(String providerId, long offset, long limit) {
+    return jpaStorage.getIdentities(providerId, offset, limit);
+  }
 }

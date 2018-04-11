@@ -8,7 +8,9 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PA  public IdentityFilterKey(final String providerId, final ProfileFilter filter) {
+    this(providerId, null, filter);
+  }RTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
@@ -36,17 +38,17 @@ public class IdentityFilterKey extends ScopeCacheKey {
 
   private static final long serialVersionUID = 6711481249085725845L;
 
-  private final String providerId;
-  private final String remoteId;
-  private final String name;
-  private final String position;
-  private final String company;
-  private final String skills;
-  private final char firstChar;
-  private final List<IdentityKey> excluded;
-  private final List<String> onlineRemoteIds;
-  private final String all;
-  private final Sorting sorting;
+  private String providerId;
+  private String remoteId;
+  private String name;
+  private String position;
+  private String company;
+  private String skills;
+  private char firstChar;
+  private List<IdentityKey> excluded;
+  private List<String> onlineRemoteIds;
+  private String all;
+  private Sorting sorting;
   
   /**
    * Constructor for case using remoteId as key.
@@ -56,46 +58,26 @@ public class IdentityFilterKey extends ScopeCacheKey {
    */
   public IdentityFilterKey(final String providerId, final String remoteId, final ProfileFilter filter) {
     this.remoteId = remoteId;
-    this.providerId = providerId; 
-    this.name = filter.getName();
-    this.position = filter.getPosition();
-    this.company = filter.getCompany();
-    this.skills = filter.getSkills();
-    this.firstChar = filter.getFirstCharacterOfName();
-
-    List<IdentityKey> keys = new ArrayList<IdentityKey>();
-    for (Identity i : filter.getExcludedIdentityList()) {
-      keys.add(new IdentityKey(i));
-    }
-
-    this.excluded = Collections.unmodifiableList(keys);
-    
-    this.onlineRemoteIds = Collections.unmodifiableList(filter.getOnlineRemoteIds());
-    this.all = filter.getAll();
-    this.sorting = filter.getSorting();
-    
-  }
-  
-  public IdentityFilterKey(final String providerId, final ProfileFilter filter) {
-
     this.providerId = providerId;
-    this.remoteId = ( filter.getViewerIdentity() == null ) ? null : filter.getViewerIdentity().getRemoteId();
-    this.name = filter.getName();
-    this.position = filter.getPosition();
-    this.company = filter.getCompany();
-    this.skills = filter.getSkills();
-    this.firstChar = filter.getFirstCharacterOfName();
+    if (filter != null) {
+      this.name = filter.getName();
+      this.position = filter.getPosition();
+      this.company = filter.getCompany();
+      this.skills = filter.getSkills();
+      this.firstChar = filter.getFirstCharacterOfName();
 
-    List<IdentityKey> keys = new ArrayList<IdentityKey>();
-    for (Identity i : filter.getExcludedIdentityList()) {
-      keys.add(new IdentityKey(i));
+      List<IdentityKey> keys = new ArrayList<IdentityKey>();
+      for (Identity i : filter.getExcludedIdentityList()) {
+        keys.add(new IdentityKey(i));
+      }
+      this.excluded = Collections.unmodifiableList(keys);
+      this.onlineRemoteIds = Collections.unmodifiableList(filter.getOnlineRemoteIds());
+      this.all = filter.getAll();
+      this.sorting = filter.getSorting();
     }
-    this.excluded = Collections.unmodifiableList(keys);
-    
-    this.onlineRemoteIds = Collections.unmodifiableList(filter.getOnlineRemoteIds());
-    this.all = filter.getAll();
-    this.sorting = filter.getSorting();
-
+  }
+  public IdentityFilterKey(final String providerId, final ProfileFilter filter) {
+    this(providerId, null, filter);
   }
 
   public String getProviderId() {

@@ -20,13 +20,16 @@
 package org.exoplatform.social.core.jpa.storage.dao;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map.Entry;
 
 import javax.persistence.EntityExistsException;
 
 import org.exoplatform.commons.utils.ListAccess;
+import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.jpa.storage.entity.ConnectionEntity;
 import org.exoplatform.social.core.jpa.storage.entity.IdentityEntity;
 import org.exoplatform.social.core.jpa.test.BaseCoreTest;
@@ -114,7 +117,7 @@ public class IdentityDAOTest extends BaseCoreTest {
     IdentityEntity space1 = identityDAO.create(createIdentity(SpaceIdentityProvider.NAME, "spaceABC"));
     deleteIdentities.add(space1);
 
-    ListAccess<Entry<IdentityEntity, ConnectionEntity>> identities = identityDAO.findAllIdentitiesWithConnections(identityUser0.getId());
+    ListAccess<Entry<IdentityEntity, ConnectionEntity>> identities = identityDAO.findAllIdentitiesWithConnections(identityUser0.getId(), Profile.FULL_NAME);
     try {
       assertTrue("The identities count is incoherent", identities.getSize() >= 20L);
     } catch (Exception e) {
@@ -140,7 +143,7 @@ public class IdentityDAOTest extends BaseCoreTest {
       String userId = identityEntity.getRemoteId();
       assertEquals("", identityEntity.getProviderId(), OrganizationIdentityProvider.NAME);
 
-      if (!userId.startsWith("userWithConn")) {
+      if (!userId.startsWith("userWithConn") || userId.equals("userWithConn0")) {
         continue;
       }
       count++;
@@ -149,15 +152,15 @@ public class IdentityDAOTest extends BaseCoreTest {
       if (index % 2 == 0) {
         assertNotNull("The connection with user " + userId + " should exist", connectionEntity);
         if (index % 3 == 0) {
-          assertEquals("The connection status is incoherent with user " + userId, connectionEntity.getStatus(), Type.CONFIRMED);
+          assertEquals("The connection status is incoherent with user " + userId, Type.CONFIRMED, connectionEntity.getStatus());
         } else {
-          assertEquals("The connection status is incoherent with user " + userId, connectionEntity.getStatus(), Type.PENDING);
+          assertEquals("The connection status is incoherent with user " + userId, Type.PENDING, connectionEntity.getStatus());
         }
       } else {
         assertNull("The connection with user " + userId + " shouldn't exist", connectionEntity);
       }
     }
-    assertEquals("The returned number of users with prefix 'userWithConn' is incoherent", count, 20);
+    assertEquals("The returned number of users with prefix 'userWithConn' is incoherent", 20, count);
   }
 
   public void testGetAllIdsByProvider() {
@@ -257,5 +260,29 @@ public class IdentityDAOTest extends BaseCoreTest {
     entity.setEnabled(true);
     entity.setDeleted(false);
     return entity;
+  }
+
+  public void testFindAllIdentitiesSorted() {
+    String userPrefix = "userSorted";
+    for (int i = 20; i > 0; i--) {
+      String remoteId = userPrefix + i;
+      IdentityEntity identityUser = identityDAO.create(createIdentity(OrganizationIdentityProvider.NAME, remoteId));
+      deleteIdentities.add(identityUser);
+      identityUser.getProperties().put(Profile.FULL_NAME, remoteId);
+      identityDAO.update(identityUser);
+    }
+
+    List<String> identitiesList = identityDAO.getAllIdsByProviderSorted(OrganizationIdentityProvider.NAME, Profile.FULL_NAME, 0, Integer.MAX_VALUE);
+    assertTrue(identitiesList.size() >= 20);
+    Iterator<String> iterator = identitiesList.iterator();
+    while (iterator.hasNext()) {
+      String username = (String) iterator.next();
+      if (!username.startsWith(userPrefix)) {
+        iterator.remove();
+      }
+    }
+    List<String> identitiesListBackup = new ArrayList<>(identitiesList);
+    Collections.sort(identitiesList);
+    assertEquals("List '" + identitiesList + "' is not sorted", identitiesList, identitiesListBackup);
   }
 }

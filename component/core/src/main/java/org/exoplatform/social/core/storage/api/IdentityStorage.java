@@ -337,4 +337,15 @@ public interface IdentityStorage {
    * @return
    */
   InputStream getAvatarInputStreamById(Identity identity) throws IOException;
+  /**
+   * Get list of identities by providerId
+   *
+   * @param providerId
+   * @param offset
+   * @param limit
+   * @return
+   */
+  default public List<Identity> getIdentities(String providerId, long offset, long limit) {
+    throw new UnsupportedOperationException("This operation is not supported using current implementation of service IdentityStorage");
+  }
 }

@@ -28,4 +28,33 @@ public interface SpaceMemberDAO extends GenericDAO<SpaceMemberEntity, Long> {
     SpaceMemberEntity getSpaceMemberShip(String remoteId, Long spaceId, SpaceMemberEntity.Status status);
 
     List<Long> getSpacesIdsByUserName(String userId, int offset, int limit);
+    /**
+     * Get space members switch status
+     *
+     * @param spaceId
+     * @param status equals to MEMBER, MANAGER, PENDING, INVITED or IGNORED
+     * @param offset
+     * @param limit
+     * @return
+     */
+    List<String> getSpaceMembers(Long spaceId, SpaceMemberEntity.Status status, int offset, int limit);
+
+    /**
+     * Count space members switch status
+     *
+     * @param spaceId
+     * @param status equals to MEMBER, MANAGER, PENDING, INVITED or IGNORED
+     * @return
+     */
+    int countSpaceMembers(Long spaceId, SpaceMemberEntity.Status status);
+
+    /**
+     * Sort user identity remote ids
+     *
+     * @param usernames
+     * @param sortField
+     *
+     * @return {@link List} of usernames sorted by sortField
+     */
+    List<String> sortSpaceMembers(List<String> usernames, String sortField);
 }

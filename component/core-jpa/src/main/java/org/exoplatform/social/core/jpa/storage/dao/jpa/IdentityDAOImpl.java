@@ -19,6 +19,19 @@
 
 package org.exoplatform.social.core.jpa.storage.dao.jpa;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
+import javax.persistence.EntityExistsException;
+import javax.persistence.NoResultException;
+import javax.persistence.Query;
+import javax.persistence.TypedQuery;
+
 import org.exoplatform.commons.api.persistence.ExoTransactional;
 import org.exoplatform.commons.persistence.impl.GenericDAOJPAImpl;
 import org.exoplatform.commons.utils.ListAccess;
@@ -33,15 +46,6 @@ import org.exoplatform.social.core.jpa.storage.entity.ConnectionEntity;
 import org.exoplatform.social.core.jpa.storage.entity.IdentityEntity;
 import org.exoplatform.social.core.relationship.model.Relationship.Type;
 
-import javax.persistence.EntityExistsException;
-import javax.persistence.NoResultException;
-import javax.persistence.Query;
-import javax.persistence.TypedQuery;
-import java.lang.reflect.Array;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * @author <a href="mailto:tuyennt@exoplatform.com">Tuyen Nguyen The</a>.
@@ -101,18 +105,15 @@ public class IdentityDAOImpl extends GenericDAOJPAImpl<IdentityEntity, Long> imp
   }
 
   @Override
-  public ListAccess<Map.Entry<IdentityEntity, ConnectionEntity>> findAllIdentitiesWithConnections(long identityId) {
-    TypedQuery<IdentityEntity> query = getEntityManager().createNamedQuery("SocIdentity.findIdentitiesByProviderWithExcludedIdentity", IdentityEntity.class);
-    query.setParameter("identityId", identityId);
-    query.setParameter("providerId", OrganizationIdentityProvider.NAME);
+  public ListAccess<Map.Entry<IdentityEntity, ConnectionEntity>> findAllIdentitiesWithConnections(long identityId, String sortField) {
+    Query listQuery = getIdentitiesQuerySortedByField(OrganizationIdentityProvider.NAME, sortField);
 
     TypedQuery<ConnectionEntity> connectionsQuery = getEntityManager().createNamedQuery("SocConnection.findConnectionsByIdentityIds", ConnectionEntity.class);
 
     TypedQuery<Long> countQuery = getEntityManager().createNamedQuery("SocIdentity.countIdentitiesByProviderWithExcludedIdentity", Long.class);
-    countQuery.setParameter("identityId", identityId);
     countQuery.setParameter("providerId", OrganizationIdentityProvider.NAME);
 
-    return new IdentityWithRelationshipListAccess(query, connectionsQuery, countQuery);
+    return new IdentityWithRelationshipListAccess(identityId, listQuery, connectionsQuery, countQuery);
   }
 
   @Override
@@ -137,6 +138,11 @@ public class IdentityDAOImpl extends GenericDAOJPAImpl<IdentityEntity, Long> imp
 
     return new JPAListAccess<>(IdentityEntity.class, queries[0], queries[1]);
   }
+  @Override
+  public List<String> getAllIdsByProviderSorted(String providerId, String sortField, long offset, long limit) {
+    Query query = getIdentitiesQuerySortedByField(providerId, sortField);
+    return getResultsFromQuery(query, 0, offset, limit, String.class);
+  }
 
   @Override
   @ExoTransactional
@@ -155,6 +161,12 @@ public class IdentityDAOImpl extends GenericDAOJPAImpl<IdentityEntity, Long> imp
     if (entity != null) {
       delete(entity);
     }
+  }
+
+  public List<IdentityEntity> findIdentitiesByIDs(List<?> ids) {
+    TypedQuery<IdentityEntity> query = getEntityManager().createNamedQuery("SocIdentity.findIdentitiesByIDs", IdentityEntity.class);
+    query.setParameter("ids", ids);
+    return query.getResultList();
   }
 
   @SuppressWarnings("unchecked")
@@ -247,48 +259,49 @@ public class IdentityDAOImpl extends GenericDAOJPAImpl<IdentityEntity, Long> imp
     }
   }
 
-  public static class IdentityWithRelationshipListAccess implements ListAccess<Map.Entry<IdentityEntity, ConnectionEntity>> {
-    private final TypedQuery<IdentityEntity> identityQuery;
+  public class IdentityWithRelationshipListAccess implements ListAccess<Map.Entry<IdentityEntity, ConnectionEntity>> {
+    private final Query identityQuery;
     private final TypedQuery<ConnectionEntity> connectionsQuery;
     private final TypedQuery<Long> countQuery;
+    private final long identityId;
 
-    public IdentityWithRelationshipListAccess(TypedQuery<IdentityEntity> identityQuery, TypedQuery<ConnectionEntity> connctionsQuery, TypedQuery<Long> countQuery) {
+    public IdentityWithRelationshipListAccess(long identityId, Query identityQuery, TypedQuery<ConnectionEntity> connctionsQuery, TypedQuery<Long> countQuery) {
       this.identityQuery = identityQuery;
       this.connectionsQuery = connctionsQuery;
       this.countQuery = countQuery;
+      this.identityId = identityId;
     }
 
     @SuppressWarnings("unchecked")
     @Override
     public Map.Entry<IdentityEntity, ConnectionEntity>[] load(int offset, int limit) throws Exception, IllegalArgumentException {
-      if (limit > 0 && offset >= 0) {
-        identityQuery.setFirstResult(offset);
-        identityQuery.setMaxResults(limit);
-      } else {
-        identityQuery.setMaxResults(Integer.MAX_VALUE);
-      }
-
-      List<Long> ids = new ArrayList<>();
-      List<IdentityEntity> identitiesList = identityQuery.getResultList();
-      for (IdentityEntity identityEntity : identitiesList) {
-        ids.add(identityEntity.getId());
-      }
+      List<Object> ids = getResultsFromQuery(identityQuery, 1, offset, limit, Object.class);
 
       if(ids.isEmpty()) {
         return new Map.Entry[0];
       }
-      connectionsQuery.setParameter("identityId", identityQuery.getParameterValue("identityId"));
-      connectionsQuery.setParameter("ids", ids);
+      List<Long> idsLong = ids.stream().map(i -> Long.parseLong(i.toString())).collect(Collectors.toList());
+      List<IdentityEntity> identitiesList = findIdentitiesByIDs(idsLong);
+      Map<Long, IdentityEntity> identitiesMap = identitiesList.stream().collect(Collectors.toMap(identity -> identity.getId(), Function.identity()));
+      connectionsQuery.setParameter("identityId", identityId);
+      connectionsQuery.setParameter("ids", idsLong);
       connectionsQuery.setMaxResults(Integer.MAX_VALUE);
       List<ConnectionEntity> connectionsList = connectionsQuery.getResultList();
-      Map<IdentityEntity, ConnectionEntity> map = new HashMap<IdentityEntity, ConnectionEntity>();
-      for (IdentityEntity identityEntity : identitiesList) {
-        map.put(identityEntity, null);
+      Map<IdentityEntity, ConnectionEntity> map = new LinkedHashMap<IdentityEntity, ConnectionEntity>();
+      for (Long identityId : idsLong) {
+        IdentityEntity identityEntity = identitiesMap.get(identityId);
+        if (identityEntity == null) {
+          LOG.error("Can't find identity with id '{}'", identityId);
+          continue;
+        }
         CONN: for (ConnectionEntity connectionEntity : connectionsList) {
           if(connectionEntity.getReceiver().getId() == identityEntity.getId() || connectionEntity.getSender().getId() == identityEntity.getId()) {
             map.put(identityEntity, connectionEntity);
             break CONN;
           }
+        }
+        if (!map.containsKey(identityEntity)) {
+           map.put(identityEntity, null);
         }
       }
       return map.entrySet().toArray(new Map.Entry[0]);
@@ -299,5 +312,40 @@ public class IdentityDAOImpl extends GenericDAOJPAImpl<IdentityEntity, Long> imp
       return countQuery.getSingleResult().intValue();
     }
   }
-
+  private Query getIdentitiesQuerySortedByField(String providerId, String sortField) {
+    // Oracle Dialect in Hibernate 4 is not registering NVARCHAR correctly, see HHH-10495
+    StringBuilder queryStringBuilder =
+            isOrcaleDialect() ? new StringBuilder("SELECT to_char(identity_1.remote_id), identity_1.identity_id, to_char(identity_prop.value) \n")
+                    :isMSSQLDialect() ? new StringBuilder("SELECT try_convert(varchar(200), identity_1.remote_id) as remote_id , identity_1.identity_id, try_convert(varchar(200), identity_prop.value) as identity_prop_value \n")
+                    : new StringBuilder("SELECT (identity_1.remote_id), identity_1.identity_id, (identity_prop.value) \n");
+    queryStringBuilder.append(" FROM SOC_IDENTITIES identity_1 \n");
+    queryStringBuilder.append(" LEFT JOIN SOC_IDENTITY_PROPERTIES identity_prop \n");
+    queryStringBuilder.append("   ON identity_1.identity_id = identity_prop.identity_id \n");
+    queryStringBuilder.append("       AND identity_prop.name = '").append(sortField).append("' \n");
+    queryStringBuilder.append(" WHERE identity_1.provider_id = '").append(providerId).append("' \n");
+    queryStringBuilder.append(" AND identity_1.deleted = FALSE  \n");
+    queryStringBuilder.append(" AND identity_1.enabled = TRUE \n");
+    queryStringBuilder.append(" ORDER BY identity_prop.value ASC");
+    Query query = getEntityManager().createNativeQuery(queryStringBuilder.toString());
+    return query;
+  }
+  private <T> List<T> getResultsFromQuery(Query query, int fieldIndex, long offset, long limit, Class<T> clazz) {
+    if (limit > 0) {
+      query.setMaxResults((int) limit);
+    }
+    if (offset >= 0) {
+      query.setFirstResult((int) offset);
+    }
+    List<?> resultList = query.getResultList();
+    List<T> result = new ArrayList<T>();
+    for (Object object : resultList) {
+      Object[] resultEntry = (Object[]) object;
+      Object resultObject = resultEntry[fieldIndex];
+      if (resultObject == null) {
+        continue;
+      }
+      result.add((T) resultObject);
+    }
+    return result;
+  }
 }

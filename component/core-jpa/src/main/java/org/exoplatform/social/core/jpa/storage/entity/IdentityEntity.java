@@ -33,22 +33,18 @@ import org.exoplatform.commons.api.persistence.ExoEntity;
 @Table(name = "SOC_IDENTITIES")
 @NamedQueries({
         @NamedQuery(
-                name = "SocIdentity.findIdentitiesByProviderWithExcludedIdentity",
-                query = "SELECT distinct identity " +
-                " FROM SocIdentityEntity identity "  +
-                " WHERE   identity.deleted = FALSE " +
-                "     AND identity.enabled = TRUE " +
-                "     AND identity.id != :identityId " +
-                "     AND identity.providerId= :providerId "
+                name = "SocIdentity.findIdentitiesByIDs",
+                query = "SELECT identity " +
+                        " FROM SocIdentityEntity identity "  +
+                        " WHERE identity.id in (:ids) "
         ),
         @NamedQuery(
                 name = "SocIdentity.countIdentitiesByProviderWithExcludedIdentity",
-                query = "SELECT count(distinct identity) " +
+                query = "SELECT count(identity) " +
                 " FROM SocIdentityEntity identity "  +
                 " WHERE   identity.deleted = FALSE " +
                 "     AND identity.enabled = TRUE " +
-                "     AND identity.id != :identityId " +
-                "     AND identity.providerId= :providerId "
+                "     AND identity.providerId = :providerId "
           ),
         @NamedQuery(
                 name = "SocIdentity.findByProviderAndRemoteId",

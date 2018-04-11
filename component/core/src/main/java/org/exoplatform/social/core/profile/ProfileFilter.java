@@ -62,6 +62,9 @@ public class ProfileFilter {
   /** Filter by first character of name. */
   private char firstCharacterOfName;
 
+  private List<String> remoteIds = null;
+
+
   private Sorting sorting;
 
   public ProfileFilter() {
@@ -237,12 +240,22 @@ public class ProfileFilter {
 
   public void setViewerIdentity(Identity currentIdentity) {
     this.viewerIdentity = currentIdentity;
+    if (currentIdentity == null) {
+      return;
+    }
     if(this.excludedIdentityList == null) {
       this.excludedIdentityList = new ArrayList<Identity>();
     }
     if(!this.excludedIdentityList.contains(currentIdentity)) {
       this.excludedIdentityList.add(this.viewerIdentity);
     }
+  }
+
+  public void setRemoteIds(List<String> remoteIds) {
+    this.remoteIds = remoteIds;
+  }
+  public List<String> getRemoteIds() {
+    return remoteIds;
   }
 
   public boolean isEmpty() {
@@ -254,4 +267,10 @@ public class ProfileFilter {
         && this.firstCharacterOfName == '\u0000'
         && (this.excludedIdentityList == null || this.excludedIdentityList.isEmpty() || (this.excludedIdentityList.size() == 1 && this.viewerIdentity != null && this.excludedIdentityList.contains(this.viewerIdentity)));
   }
+
+  @Override
+  public ProfileFilter clone() throws CloneNotSupportedException {
+    return (ProfileFilter) super.clone();
+  }
+
 }
