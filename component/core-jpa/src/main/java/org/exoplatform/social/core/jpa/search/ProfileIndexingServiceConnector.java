@@ -150,9 +150,22 @@ import org.exoplatform.social.core.relationship.model.Relationship;
   
   @Override
   public String getMapping() {
+
+    JSONObject wSFiled = new JSONObject();
+    wSFiled.put("type", "string");
+    wSFiled.put("analyzer", "whitespace_lowercase_asciifolding");
+
+    JSONObject fields = new JSONObject();
+    fields.put("whitespace", wSFiled);
+
     JSONObject postingHighlighterField = new JSONObject();
     postingHighlighterField.put("type", "string");
     postingHighlighterField.put("index_options", "offsets");
+
+    JSONObject analyzedField = new JSONObject();
+    analyzedField.put("type", "string");
+    analyzedField.put("fields",fields);
+    analyzedField.put("index_options","offsets");
 
     JSONObject notAnalyzedField = new JSONObject();
     notAnalyzedField.put("type", "string");
@@ -164,9 +177,10 @@ import org.exoplatform.social.core.relationship.model.Relationship;
     properties.put("userName", notAnalyzedField);    
     properties.put("email", notAnalyzedField);
     
-    properties.put("name", postingHighlighterField);
-    properties.put("firstName", postingHighlighterField);
-    properties.put("lastName", postingHighlighterField);
+    properties.put("name", analyzedField);
+    properties.put("firstName", analyzedField);
+    properties.put("lastName", analyzedField);
+    
     properties.put("position", postingHighlighterField);
     properties.put("skills", postingHighlighterField);
 

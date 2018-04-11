@@ -301,7 +301,7 @@ public class ProfileSearchConnector {
           if (i != 0 ) {
             esExp.append(" AND ") ;
           }
-          esExp.append(" name:").append(StorageUtils.ASTERISK_STR).append(removeAccents(keys[i])).append(StorageUtils.ASTERISK_STR);
+          esExp.append(" name.whitespace:").append(StorageUtils.ASTERISK_STR).append(removeAccents(keys[i])).append(StorageUtils.ASTERISK_STR);
         }
         esExp.append(")");
         if (filter.isSearchEmail()) {
@@ -315,7 +315,7 @@ public class ProfileSearchConnector {
           esExp.append(") )");
         }
       } else {
-        esExp.append("( name:").append(StorageUtils.ASTERISK_STR).append(removeAccents(inputName)).append(StorageUtils.ASTERISK_STR);
+        esExp.append("( name.whitespace:").append(StorageUtils.ASTERISK_STR).append(removeAccents(inputName)).append(StorageUtils.ASTERISK_STR);
         if (filter.isSearchEmail()) {
           esExp.append(" OR email:").append(StorageUtils.ASTERISK_STR).append(removeAccents(inputName)).append(StorageUtils.ASTERISK_STR);
         }
@@ -332,7 +332,7 @@ public class ProfileSearchConnector {
       //
       esExp.append("skills:").append(StorageUtils.ASTERISK_STR).append(removeAccents(skills)).append(StorageUtils.ASTERISK_STR);
     }
-
+    
     //position
     String position = StringUtils.isBlank(filter.getPosition()) ? null : filter.getPosition().replace(StorageUtils.ASTERISK_STR, StorageUtils.EMPTY_STR);
     if (StringUtils.isNotBlank(position)) {
