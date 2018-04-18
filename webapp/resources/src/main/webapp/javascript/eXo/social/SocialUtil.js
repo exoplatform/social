@@ -388,14 +388,16 @@
       }
     },
     multipleLineEllipsis : function(selector) {
-      $(selector).each(function(i,elem) {
-        var elemChild = elem.querySelector('p');
-        if(!elemChild) return;
-        var elemHeight = elem.clientHeight;
-        while (elemChild.offsetHeight > elemHeight) {
-          elemChild.textContent = elemChild.textContent.replace(/\W*\s(\S)*$/, '...');
-        }  
-      });
+        $(elem).each(function(i){
+            $(this).wrapInner("<span class='mlto'></span>");
+            var p=$(this).find(".mlto");
+            var divh = $(this).height();
+            while($(p).outerHeight()>divh) {
+                $(p).text(function (index, text) {
+                    return text.replace(/\W*\s(\S)*$/, '...');
+                });
+            }
+        })
     }
   };
 
