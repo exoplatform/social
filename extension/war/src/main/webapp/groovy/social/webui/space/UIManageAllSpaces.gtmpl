@@ -162,7 +162,7 @@ import org.exoplatform.social.core.service.LinkProvider;
 		          </h4>
 		          <div class="membersCount">$fieldLabelMembers <%= SpaceUtils.countMembers(space) %></div>
 		          <div class="content limitText" data-key="content" data-line="$maxLineDes">
-                    <p>
+                    <p style="font-size : 12px">
                       <% if (space.description != null && !space.description.isEmpty()) { 
                            print(space.description);
                          } else { 
