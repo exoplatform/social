@@ -40,37 +40,15 @@
           labelField: 'text',
           searchField: ['text'],
           loadThrottle: null,
+          optionIconField: 'avatarUrl',
+          defaultOptionIcon: '/eXoSkin/skin/images/system/UserAvtDefault.png',
           onFocus: function() {
-            $(nameEl)[0].selectize.positionDropdown();
-            var value = $(nameEl)[0].selectize.getValue();
+            this.positionDropdown();
+            var value = this.getValue();
             if(value) {
-              $(nameEl)[0].selectize.removeItem(value, false);
-              $(nameEl)[0].selectize.setTextboxValue(value);
+              this.removeOption(value, false);
+              this.setTextboxValue(value);
             }
-          },
-          onDropdownOpen: function($dropdown) {
-            $(nameEl)[0].selectize.positionDropdown();
-            var value = $(nameEl)[0].selectize.getValue();
-              if(value) {
-                $(nameEl)[0].selectize.removeItem(value, false);
-                $(nameEl)[0].selectize.setTextboxValue(value);
-              }
-          },
-          onItemAdd: function(value, $item) {
-            if(this.selectedValue == value) {
-              return;
-            }
-            $(nameEl)[0].selectize.setTextboxValue(value);
-            $(nameEl).val(value);
-            $(nameEl).attr('value', value);
-            if($item.invalid === false) {
-              UIProfileUserSearch.searchBtn.trigger("click");
-              $(nameEl)[0].selectize.setTextboxValue(value);
-            }
-          },
-          onItemRemove: function(value, $item) {
-            this.selectedValue = value;
-            $(nameEl)[0].selectize.setTextboxValue(value);
           },
           onInitialize: function() {
             var searchElInput = UIProfileUserSearch.profileSearch.find('.selectize-input input[type="text"]');
@@ -78,44 +56,13 @@
               var e = event || window.event;
               var keynum = e.keyCode || e.which;
               if(keynum == 13) {
-                UIProfileUserSearch.searchBtn.click();     
+                UIProfileUserSearch.searchBtn.click();
                 event.stopPropagation();
               }
             });
-            $(nameEl)[0].selectize.positionDropdown();
-            var value = $(nameEl)[0].selectize.getValue();
-            if(value) {
-              $(nameEl)[0].selectize.removeItem(value, false);
-              $(nameEl)[0].selectize.setTextboxValue(value);
-            }
-          },
-          create: function(input) {
-              return {'value': input, 'text': input, 'invalid': true};
-          },
-          renderItem: function(item, escape) {
-            return '<span class="exo-mention">' + escape(item.text) + '</span>';
-          },
-          renderMenuItem: function(item, escape) {
-            var avatar = item.avatarUrl;
-            if (avatar == null) {
-                avatar = '/eXoSkin/skin/images/system/UserAvtDefault.png';
-            }
-            if(!item.text) {
-                item.text = item.value;
-            }
-            return '<div class="optionItem" data-value="' + item.text + '"><div class="avatarSmall optionAvatar"><img src="' + avatar + '"></div><div class="optionName">' + escape(item.text) + '</div></div>';
           },
           create: function(input) {
             return {'value': input, 'text': input, 'invalid': true};
-          },
-          onItemAdd : function(value, $item) {
-            $(nameEl)[0].selectize.setTextboxValue(value);
-            $(nameEl).val(value);
-            $(nameEl).attr('value', value);
-            if(!$item.invalid) {
-              UIProfileUserSearch.searchBtn.trigger("click");
-              $(nameEl)[0].selectize.setTextboxValue(value);
-            }
           },
           sortField: [{field: 'order'}, {field: '$score'}],
           providers: {

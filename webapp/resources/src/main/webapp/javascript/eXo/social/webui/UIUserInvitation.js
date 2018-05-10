@@ -22,20 +22,14 @@
                         return '<div class="item">' + item.text + '</div>';                         
                     }
                 },
-                renderMenuItem: function(item, escape) {
-                  var avatar = item.avatarUrl;
-                  if (avatar == null) {
-                      if (item.type == "space") {
-                          avatar = '/eXoSkin/skin/images/system/SpaceAvtDefault.png';
-                      } else {
-                          avatar = '/eXoSkin/skin/images/system/UserAvtDefault.png';
-                      }
-                  }
-
-                  return '<div class="option">' +
-                  '<img width="20px" height="20px" src="' + avatar + '"> ' +
-                  escape(item.text) + '</div>';
-              },
+                optionIconField: 'avatarUrl',
+                defaultOptionIcon: function(item) {
+                    if (item.type == "space") {
+                        return '/eXoSkin/skin/images/system/SpaceAvtDefault.png';
+                    } else {
+                        return '/eXoSkin/skin/images/system/UserAvtDefault.png';
+                    }
+                },
               sortField: [{field: 'order'}, {field: '$score'}],
               providers: {
                 'exo:social': function(query, callback) {
