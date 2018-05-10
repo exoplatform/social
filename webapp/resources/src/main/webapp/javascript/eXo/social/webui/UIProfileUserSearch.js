@@ -64,15 +64,6 @@
           create: function(input) {
             return {'value': input, 'text': input, 'invalid': true};
           },
-          onItemAdd : function(value, $item) {
-            $(nameEl)[0].selectize.setTextboxValue(value);
-            $(nameEl).val(value);
-            $(nameEl).attr('value', value);
-            if(!$item.invalid) {
-              UIProfileUserSearch.searchBtn.trigger("click");
-              $(nameEl)[0].selectize.setTextboxValue(value);
-            }
-          },
           sortField: [{field: 'order'}, {field: '$score'}],
           providers: {
             'exo:social': function(query, callback) {
