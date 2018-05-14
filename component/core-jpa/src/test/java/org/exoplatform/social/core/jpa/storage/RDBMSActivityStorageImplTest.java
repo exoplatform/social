@@ -758,7 +758,7 @@ public class RDBMSActivityStorageImplTest extends AbstractCoreTest {
     assertEquals(7, list.size());
   }
 
-  @MaxQueryNumber(81)
+  @MaxQueryNumber(129)
   public void testSaveCommentWithAlreadyMentionedUsers() throws Exception {
     ExoSocialActivity activity1 = new ExoSocialActivityImpl();
     activity1.setTitle("Initial Activity");
