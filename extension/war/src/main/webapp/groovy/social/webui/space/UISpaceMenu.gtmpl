@@ -142,18 +142,12 @@ for(node in apps) {
   String nodeName = uriParts[uriParts.length - 1];
   String pName = "";
   if ((nodeIcon == null) && (node.getPageRef() != null )) {
-    appName = node.getPageRef().getName();
-    if (appName != null && nodeTitle == null) {
-      def appLabelFromResourceBundle = org.exoplatform.social.webui.Utils.appRes(appName + ".label.name");
-      if (appLabelFromResourceBundle != null) {
-        nodeTitle = appLabelFromResourceBundle;
+      if(nodeTitle == null){
+        nodeTitle = uicomponent.getResolvedNodeTitle(node, null);
       }
-    }
-    pName = uicomponent.getAppIdByAppName(appName);
+      pName = uicomponent.getAppIdByAppName(appName);
   }
-  if (nodeTitle == null) {
-    nodeTitle = node.getName();
-  }
+
   String nodeLabel = getFitString(nodeTitle, 15);
 
 
