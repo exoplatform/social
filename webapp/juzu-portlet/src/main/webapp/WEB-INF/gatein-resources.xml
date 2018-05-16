@@ -34,6 +34,7 @@
     <name>notificationLocale</name>
     <supported-locale>ar</supported-locale>
     <supported-locale>ca</supported-locale>
+    <supported-locale>cs</supported-locale>
     <supported-locale>de</supported-locale>
     <supported-locale>el</supported-locale>
     <supported-locale>en</supported-locale>

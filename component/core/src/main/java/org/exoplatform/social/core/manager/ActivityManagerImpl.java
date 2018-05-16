@@ -608,4 +608,9 @@ public class ActivityManagerImpl implements ActivityManager {
   public int getMaxUploadSize() {
     return maxUploadSize;
   }
+
+  @Override
+  public List<ExoSocialActivity> getActivities(List<String> activityIdList) {
+    return activityStorage.getActivities(activityIdList);
+  }
 }

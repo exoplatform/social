@@ -29,6 +29,8 @@ public class SpaceMemberAnyMembershipUpgradeTest extends BaseCoreTest {
 
   private List<User>          tearDownUserList;
 
+  private List<Space>         tearDownSpaceList;
+
   @Override
   protected void setUp() throws Exception {
     super.setUp();
@@ -36,7 +38,8 @@ public class SpaceMemberAnyMembershipUpgradeTest extends BaseCoreTest {
     assertNotNull("spaceService is null");
     organizationService = getContainer().getComponentInstanceOfType(OrganizationService.class);
     assertNotNull("organizationService is null");
-    tearDownUserList = new ArrayList<User>();
+    tearDownUserList = new ArrayList<>();
+    tearDownSpaceList = new ArrayList<>();
     ExoContainerContext.setCurrentContainer(getContainer());
     RequestLifeCycle.begin(getContainer());
   }
@@ -46,6 +49,9 @@ public class SpaceMemberAnyMembershipUpgradeTest extends BaseCoreTest {
     LOG.info("Test cleanup - Delete users");
     for (User user : tearDownUserList) {
       organizationService.getUserHandler().removeUser(user.getUserName(), true);
+    }
+    for (Space space : tearDownSpaceList) {
+      spaceService.deleteSpace(space);
     }
     super.tearDown();
     RequestLifeCycle.end();
@@ -79,6 +85,7 @@ public class SpaceMemberAnyMembershipUpgradeTest extends BaseCoreTest {
     String spaceName = "spaceName" + randomNumber;
     LOG.info("Test preparation - Create space {}", spaceName);
     Space space = createSpace(spaceName);
+    tearDownSpaceList.add(space);
     String[] members = space.getMembers();
     int totalCount = 40;
     MembershipType membershipType = organizationService.getMembershipTypeHandler().createMembershipTypeInstance();

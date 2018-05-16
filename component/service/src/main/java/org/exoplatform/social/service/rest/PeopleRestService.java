@@ -597,6 +597,7 @@ public class PeopleRestService implements ResourceContainer{
    */
   @GET
   @Path("getprofile/data.json")
+  @RolesAllowed("users")
   public Response suggestUsernames(@Context UriInfo uriInfo,
                                    @Context SecurityContext securityContext,
                     @QueryParam("search") String query) throws Exception {
@@ -646,6 +647,7 @@ public class PeopleRestService implements ResourceContainer{
    */
   @GET
   @Path("{portalName}/getConnections.{format}")
+  @RolesAllowed("users")
   public Response searchConnection(@Context UriInfo uriInfo,
                                    @Context SecurityContext securityContext,
                     @PathParam("portalName") String portalName,
@@ -715,6 +717,7 @@ public class PeopleRestService implements ResourceContainer{
    */
   @GET
   @Path("/getPeopleInfo/{userId}.{format}")
+  @RolesAllowed("users")
   public Response getPeopleInfo(@Context UriInfo uriInfo,
                                 @Context SecurityContext securityContext,
                                 @PathParam("userId") String userId,

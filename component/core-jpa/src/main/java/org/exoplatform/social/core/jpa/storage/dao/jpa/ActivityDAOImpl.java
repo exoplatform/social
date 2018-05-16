@@ -883,4 +883,11 @@ public class ActivityDAOImpl extends GenericDAOJPAImpl<ActivityEntity, Long> imp
     }
     return connections;
   }
+
+  @Override
+  public List<ActivityEntity> findActivities(List<Long> activityIds) {
+    TypedQuery<ActivityEntity> query = getEntityManager().createNamedQuery("SocActivity.findActivities", ActivityEntity.class);
+    query.setParameter("ids", activityIds);
+    return query.getResultList();
+  }
 }

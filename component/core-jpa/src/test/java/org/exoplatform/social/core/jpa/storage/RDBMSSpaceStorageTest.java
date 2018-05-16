@@ -16,16 +16,19 @@
  */
 package org.exoplatform.social.core.jpa.storage;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.exoplatform.social.core.space.SpaceFilter;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.storage.api.SpaceStorage;
 import org.exoplatform.social.core.storage.cache.SocialStorageCacheService;
 
-import java.util.List;
-
 public class RDBMSSpaceStorageTest extends SpaceStorageTest {
   private SpaceStorage spaceStorage;
   private SocialStorageCacheService cacheService;
+
+  private List<Space> tearDownSpaceList = new ArrayList<>();
 
   @Override
   protected void setUp() throws Exception {
@@ -33,13 +36,23 @@ public class RDBMSSpaceStorageTest extends SpaceStorageTest {
     spaceStorage = getService(SpaceStorage.class);
     cacheService = getService(SocialStorageCacheService.class);
   }
-  
+
+  @Override
+  protected void tearDown() throws Exception {
+    for (Space space : tearDownSpaceList) {
+      spaceService.deleteSpace(space);
+    }
+    super.tearDown();
+  }
+
   public void testVisited() throws Exception {
     Space space0 = getSpaceInstance(5);
     spaceStorage.saveSpace(space0, true);
+    tearDownSpaceList.add(space0);
     Space space1 = getSpaceInstance(6);
     spaceStorage.saveSpace(space1, true);
-    
+    tearDownSpaceList.add(space1);
+
     SpaceFilter filter = new SpaceFilter();
     filter.setRemoteId("ghost");
     filter.setAppId("app1, app2, app3");
@@ -62,8 +75,10 @@ public class RDBMSSpaceStorageTest extends SpaceStorageTest {
   public void testLastAccess() throws Exception {
     Space space2 = getSpaceInstance(7);
     spaceStorage.saveSpace(space2, true);
+    tearDownSpaceList.add(space2);
     Space space3 = getSpaceInstance(8);
     spaceStorage.saveSpace(space3, true);
+    tearDownSpaceList.add(space3);
 
     SpaceFilter filter = new SpaceFilter();
     filter.setRemoteId("ghost");
@@ -85,6 +100,7 @@ public class RDBMSSpaceStorageTest extends SpaceStorageTest {
     //create a new space
     Space space = getSpaceInstance(1);
     spaceStorage.saveSpace(space,true);
+    tearDownSpaceList.add(space);
     // Update space accessed
     spaceStorage.updateSpaceAccessed("raul",space);
     cacheService.getSpacesCache().clearCache();
@@ -109,4 +125,57 @@ public class RDBMSSpaceStorageTest extends SpaceStorageTest {
     assertNotNull(spaceFromCache.getManagers());
     assertEquals(2,spaceFromCache.getManagers().length);
   }
+
+  public void testGetLastAccessedPagination() throws Exception {
+    List<Space> spaces = spaceService.getLastAccessedSpace("raul", null, 0, 10);
+    assertEquals(0, spaces.size());
+
+    int numberOfSpaces = 5;
+    for(int i = 0; i < numberOfSpaces; i++) {
+      Space s = getSpaceInstance(i);
+      spaceStorage.saveSpace(s, true);
+      tearDownSpaceList.add(s);
+      spaceService.updateSpaceAccessed("raul", s);
+      spaces = spaceService.getLastAccessedSpace("raul", null, 0, 10);
+      assertEquals(s.getPrettyName(), spaces.get(0).getPrettyName());
+
+      spaces = spaceService.getLastAccessedSpace("raul", null, 0, i + 1);
+      assertEquals(s.getPrettyName(), spaces.get(0).getPrettyName());
+    }
+
+    spaces = spaceService.getLastAccessedSpace("raul", null, 0, 2);
+    assertEquals(2, spaces.size());
+    assertEquals("my_space_test_4", spaces.get(0).getPrettyName());
+    assertEquals("my_space_test_3", spaces.get(1).getPrettyName());
+
+    Space space6 = getSpaceInstance(6);
+    spaceStorage.saveSpace(space6, true);
+    tearDownSpaceList.add(space6);
+    spaces = spaceService.getLastAccessedSpace("raul", null, 0, 2);
+    assertEquals(2, spaces.size());
+    assertEquals("my_space_test_4", spaces.get(0).getPrettyName());
+    assertEquals("my_space_test_3", spaces.get(1).getPrettyName());
+
+    spaces = spaceService.getLastAccessedSpace("raul", null, 2, 10);
+    assertEquals(4, spaces.size());
+    assertEquals("my_space_test_2", spaces.get(0).getPrettyName());
+    assertEquals("my_space_test_1", spaces.get(1).getPrettyName());
+    assertEquals("my_space_test_0", spaces.get(2).getPrettyName());
+    assertEquals("my_space_test_6", spaces.get(3).getPrettyName());
+
+    spaceService.updateSpaceAccessed("raul", space6);
+
+    spaces = spaceService.getLastAccessedSpace("raul", null, 0, 2);
+    assertEquals(2, spaces.size());
+    assertEquals("my_space_test_6", spaces.get(0).getPrettyName());
+    assertEquals("my_space_test_4", spaces.get(1).getPrettyName());
+
+    spaces = spaceService.getLastAccessedSpace("raul", null, 2, 10);
+    assertEquals(4, spaces.size());
+    assertEquals("my_space_test_3", spaces.get(0).getPrettyName());
+    assertEquals("my_space_test_2", spaces.get(1).getPrettyName());
+    assertEquals("my_space_test_1", spaces.get(2).getPrettyName());
+    assertEquals("my_space_test_0", spaces.get(3).getPrettyName());
+  }
+
 }

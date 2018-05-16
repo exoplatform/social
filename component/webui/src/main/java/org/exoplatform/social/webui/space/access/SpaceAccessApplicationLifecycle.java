@@ -97,6 +97,7 @@ public class SpaceAccessApplicationLifecycle implements ApplicationLifecycle<Web
       
         if (Utils.getSpaceService().isSuperManager(remoteId) 
             || SpaceUtils.isUserHasMembershipTypesInGroup(remoteId, space.getGroupId(), MembershipTypeHandler.ANY_MEMBERSHIP_TYPE)) {
+          Utils.getSpaceService().updateSpaceAccessed(remoteId, space);
           return;
         }
       }

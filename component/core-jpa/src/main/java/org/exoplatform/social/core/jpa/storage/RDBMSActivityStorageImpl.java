@@ -44,6 +44,7 @@ import org.exoplatform.commons.utils.PropertyManager;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.ActivityProcessor;
+import org.exoplatform.social.core.BaseActivityProcessorPlugin;
 import org.exoplatform.social.core.activity.filter.ActivityFilter;
 import org.exoplatform.social.core.activity.filter.ActivityUpdateFilter;
 import org.exoplatform.social.core.activity.model.ActivityStream;
@@ -212,7 +213,7 @@ public class RDBMSActivityStorageImpl implements ActivityStorage {
     activityEntity.setLocked(activity.isLocked());
     activityEntity.setHidden(activity.isHidden());
     activityEntity.setUpdatedDate(activity.getUpdated());
-    activityEntity.setMentionerIds(new HashSet<String>(Arrays.asList(processMentions(activity.getTitle()))));
+    activityEntity.setMentionerIds(new HashSet<String>(Arrays.asList(processMentions(activity.getTitle(), activity.getTemplateParams()))));
     //
     return activityEntity;
   }
@@ -321,7 +322,7 @@ public class RDBMSActivityStorageImpl implements ActivityStorage {
     Date commentTime = (comment.getPostedTime() != null ? new Date(comment.getPostedTime()) : new Date());
     commentEntity.setPosted(commentTime);
     commentEntity.setUpdatedDate(commentTime);
-    commentEntity.setMentionerIds(new HashSet<>(Arrays.asList(processMentions(comment.getTitle()))));
+    commentEntity.setMentionerIds(new HashSet<>(Arrays.asList(processMentions(comment.getTitle(), comment.getTemplateParams()))));
     //
     return commentEntity;
   }
@@ -432,10 +433,10 @@ public class RDBMSActivityStorageImpl implements ActivityStorage {
       saveStreamItemForCommenter(commenter, activityEntity);
 
       //
-      String[] mentioners = processMentions(eXoComment.getTitle());
+      String[] mentioners = processMentions(eXoComment.getTitle(), eXoComment.getTemplateParams());
       if (mentioners != null && mentioners.length > 0) {
         mention(commenter, activityEntity, mentioners);
-        activityEntity.setMentionerIds(processMentionOfComment(activityEntity, commentEntity, activity.getMentionedIds(), mentioners, true));
+        activityEntity.setMentionerIds(processMentionOfComment(activityEntity, commentEntity, activityEntity.getMentionerIds().toArray(new String[activityEntity.getMentionerIds().size()]), mentioners, true));
       }
 
       //
@@ -489,13 +490,13 @@ public class RDBMSActivityStorageImpl implements ActivityStorage {
   }
   
   private boolean isAllowedToRemove(ActivityEntity activity, ActivityEntity comment, String mentioner) {
-    if (ArrayUtils.contains(processMentions(activity.getTitle()), mentioner)) {
+    if (ArrayUtils.contains(processMentions(activity.getTitle(), activity.getTemplateParams()), mentioner)) {
       return false;
     }
     List<ActivityEntity> comments = activity.getComments();
     comments.remove(comment);
     for (ActivityEntity cmt : comments) {
-      if (ArrayUtils.contains(processMentions(cmt.getTitle()), mentioner)) {
+      if (ArrayUtils.contains(processMentions(cmt.getTitle(), cmt.getTemplateParams()), mentioner)) {
         return false;
       }
     }
@@ -542,7 +543,7 @@ public class RDBMSActivityStorageImpl implements ActivityStorage {
       spaceMembers(owner, activity);
     }
     //mention
-    mention(owner, activity, processMentions(activity.getTitle()));
+    mention(owner, activity, processMentions(activity.getTitle(), activity.getTemplateParams()));
   }
   
   /**
@@ -598,13 +599,23 @@ public class RDBMSActivityStorageImpl implements ActivityStorage {
    * 
    * @param title
    */
-  private String[] processMentions(String title) {
-    if (title == null || title.length() == 0) {
-      return ArrayUtils.EMPTY_STRING_ARRAY;
+  private String[] processMentions(String title, Map<String, String> templateParams) {
+    Set<String> mentions = new HashSet<>();
+    mentions.addAll(parseMention(title));
+
+    getTemplateParamToProcess(templateParams).forEach(
+            param -> mentions.addAll(parseMention(param)));
+
+    return mentions.toArray(new String[mentions.size()]);
+  }
+
+  private Set<String> parseMention(String str) {
+    if (str == null || str.length() == 0) {
+      return Collections.emptySet();
     }
 
     Set<String> mentions = new HashSet<>();
-    Matcher matcher = MENTION_PATTERN.matcher(title);
+    Matcher matcher = MENTION_PATTERN.matcher(str);
     while (matcher.find()) {
       String remoteId = matcher.group().substring(1);
       Identity identity = identityStorage.findIdentity(OrganizationIdentityProvider.NAME, remoteId);
@@ -613,7 +624,24 @@ public class RDBMSActivityStorageImpl implements ActivityStorage {
         mentions.add(identity.getId());
       }
     }
-    return mentions.toArray(new String[mentions.size()]);
+    return mentions;
+  }
+
+
+  private List<String> getTemplateParamToProcess(Map<String, String> templateParams){
+    List<String> params = new ArrayList<String>();
+
+    if(templateParams != null && templateParams.containsKey(BaseActivityProcessorPlugin.TEMPLATE_PARAM_TO_PROCESS)){
+      String[] templateParamKeys = templateParams
+              .get(BaseActivityProcessorPlugin.TEMPLATE_PARAM_TO_PROCESS)
+              .split(BaseActivityProcessorPlugin.TEMPLATE_PARAM_LIST_DELIM);
+      for(String key : templateParamKeys){
+        if(templateParams.containsKey(key)){
+          params.add(templateParams.get(key));
+        }
+      }
+    }
+    return params;
   }
   
   @Override
@@ -647,7 +675,7 @@ public class RDBMSActivityStorageImpl implements ActivityStorage {
     ActivityEntity activity = activityDAO.find(Long.valueOf(activityId));
     activity.getComments().remove(comment);
     //
-    activity.setMentionerIds(processMentionOfComment(activity, comment, activity.getMentionerIds().toArray(new String[activity.getMentionerIds().size()]), processMentions(comment.getTitle()), false));
+    activity.setMentionerIds(processMentionOfComment(activity, comment, activity.getMentionerIds().toArray(new String[activity.getMentionerIds().size()]), processMentions(comment.getTitle(), comment.getTemplateParams()), false));
     //
     if (!hasOtherComment(activity, comment.getPosterId())) {
       StreamItemEntity item = new StreamItemEntity(StreamType.COMMENTER);
@@ -1264,5 +1292,33 @@ public class RDBMSActivityStorageImpl implements ActivityStorage {
       }
     }
     return activityStorage;
+  }
+
+  @Override
+  public List<ExoSocialActivity> getActivities(List<String> activityIdList) {
+    if (activityIdList == null || activityIdList.isEmpty()) {
+      return Collections.emptyList();
+    }
+    List<Long> activityIds = new ArrayList<>();
+    for (String activityId : activityIdList) {
+      if (activityId == null || activityId.isEmpty()) {
+        continue;
+      }
+
+      if (activityId != null && activityId.startsWith(COMMENT_PREFIX)) {
+        activityIds.add(getCommentID(activityId));
+      } else {
+        activityIds.add(Long.valueOf(activityId));
+      }
+    }
+    List<ActivityEntity> activityEntities = activityDAO.findActivities(activityIds);
+    if (activityEntities == null || activityEntities.isEmpty()) {
+      return Collections.emptyList();
+    }
+    List<ExoSocialActivity> activityDTOs = new ArrayList<>();
+    for (ActivityEntity activityEntity : activityEntities) {
+      activityDTOs.add(convertActivityEntityToActivity(activityEntity));
+    }
+    return activityDTOs;
   }
 }

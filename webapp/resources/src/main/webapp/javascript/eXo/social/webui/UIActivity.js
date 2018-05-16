@@ -439,7 +439,7 @@
       var comment = $('#commentContainer' + commentId);
       var ele = elementToScrollTo;
       if(comment.length > 0) {
-        $("div[id^='commentContainer'").removeClass("focus");
+        $("div[id^='commentContainer']").removeClass("focus");
 
         var nTop = 0;
         if (!elementToScrollTo || eXo.social.SocialUtil.checkDevice().isMobile === true) {

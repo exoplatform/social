@@ -19,6 +19,8 @@ package org.exoplatform.social.core.storage.cache.model.data;
 
 import org.exoplatform.social.core.space.model.Space;
 
+import java.util.Objects;
+
 /**
  * Immutable space simple data.
  * It only contains the briefing data for Space.
@@ -99,4 +101,24 @@ public class SpaceSimpleData implements CacheData<Space> {
     return url;
   }
 
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    SpaceSimpleData that = (SpaceSimpleData) o;
+    return Objects.equals(id, that.id) &&
+            Objects.equals(app, that.app) &&
+            Objects.equals(prettyName, that.prettyName) &&
+            Objects.equals(displayName, that.displayName) &&
+            Objects.equals(description, that.description) &&
+            Objects.equals(avatarUrl, that.avatarUrl) &&
+            Objects.equals(groupId, that.groupId) &&
+            Objects.equals(url, that.url) &&
+            Objects.equals(avatarLastUpdated, that.avatarLastUpdated);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(id, app, prettyName, displayName, description, avatarUrl, groupId, url, avatarLastUpdated);
+  }
 }

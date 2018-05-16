@@ -1388,7 +1388,7 @@ public class CachedSpaceStorage implements SpaceStorage {
     }
 
     // Update the storage only if the user has accessed a different space
-    if (selector.isHasClearedCacheEntries()) {
+    if (selector.isUpdateStore()) {
       storage.updateSpaceAccessed(remoteId, space);
     }
   }

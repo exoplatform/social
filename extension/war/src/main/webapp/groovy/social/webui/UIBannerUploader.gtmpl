@@ -19,10 +19,9 @@ for(field in uiform.getChildren()) {
 </div>
    <div class="uiAction uiActionBorder uploadButton">
 	 <% for(action in uicomponent.getActions()) { 
-	      String actionLabel = _ctx.appRes(uicomponent.getName() + ".action." + action);
 	      String link = uicomponent.event(action);
 	 %>
-	      <button class="btn" type="button" onclick="$link">$actionLabel</button>
+	      <button class="btn" type="button" onclick="$link">$action</button>
 	 <% } %>
    </div>
   <%uiform.end();%>
