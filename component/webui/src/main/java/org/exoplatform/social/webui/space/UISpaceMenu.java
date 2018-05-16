@@ -122,6 +122,21 @@ public class UISpaceMenu extends UIContainer {
     boolean canEditBanner = hasSettingPermission();
     uiBanner.setRendered(canEditBanner);
     uiAvatarBanner.setRenderUpload(canEditBanner);
+    String selectedApp = getAppSelected();
+    UserNode selectedNode =  getApps().stream().filter(app -> {
+      try {
+        return app.getName().equals(selectedApp);
+      } catch (Exception e) {
+        return false;
+      }
+    }).findFirst().orElse(null);
+
+    String selectedNodeLabel = getResolvedNodeTitle(selectedNode, context);
+
+    if(selectedNodeLabel != null) {
+      Util.getPortalRequestContext().setPageTitle(getSpace().getDisplayName() + " - " + selectedNodeLabel);
+    }
+
     super.processRender(context);
   }
 
@@ -322,6 +337,24 @@ public class UISpaceMenu extends UIContainer {
   }
 
   /**
+   * Gets the translation of a label according to the current locale
+   *
+   * @return translated label
+   * @throws Exception
+   */
+  public String getResolvedNodeTitle(UserNode selectedNode, WebuiRequestContext context) throws Exception{
+
+    if(selectedNode != null){
+      return Utils.appRes(selectedNode.getPageRef().getName()+".label.name");
+    }
+
+    if(context != null){
+      return context.getApplicationResourceBundle().getString("UISpaceMenu.label.ActivityStream");
+    }
+    return null ;
+  }
+
+  /**
    * Gets image source url.
    *
    * @return image source url
@@ -464,5 +497,5 @@ private void removeNonePageNodes(List<UserNode> nodes) {
   }
   
   nodes.removeAll(nonePageNodes);
-} 
+}
 }
