@@ -36,14 +36,14 @@ if(activity == null) {
            if (linkTitle != null) {
        %> 
              <div class="status"><%=linkTitle%></div>
-             <div class="link"><a href="javascript:void(0);" onclick="(function(evt){ evt.stopPropagation(); window.open('<%=link%>', '_blank');})(event)"><%=_ctx.appRes("ProfileUpdatesPublisher.contact_section_updated")%></a></div>
+             <div class="link"><a href="javascript:void(0);" onclick="(function(evt){ evt.stopPropagation(); window.open('<%=link%>', '_blank');})(event)"><%=activity.getTitle()%></a></div>
        <%
            } else {
        %>
-             <div><a href="javascript:void(0);" onclick="(function(evt){ evt.stopPropagation(); window.open('<%=link%>', '_self');})(event)"><%=_ctx.appRes("ProfileUpdatesPublisher.contact_section_updated")%></a></div>
+             <div><a href="javascript:void(0);" onclick="(function(evt){ evt.stopPropagation(); window.open('<%=link%>', '_self');})(event)"><%=activity.getTitle()%></a></div>
        <%  }
          } else {%>
-             <div class="status"><%=_ctx.appRes("ProfileUpdatesPublisher.contact_section_updated")%></div>
+             <div class="status"><%=activity.getTitle()%></div>
        <%} %>
        </div>
      </div> <!-- #boxContainer-->

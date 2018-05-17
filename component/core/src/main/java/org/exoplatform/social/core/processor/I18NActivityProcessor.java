@@ -25,6 +25,8 @@ import java.util.Map;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
+import org.apache.commons.lang3.StringUtils;
+
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
@@ -151,13 +153,10 @@ public final class I18NActivityProcessor {
           LOG.warn("no resource bundle key found registered for: " + getResourceBundleKeyFile(i18nActivity));
           return i18nActivity;
         }
-        if (getMessageBundleKey(i18nActivity) == null) {
+        if (!getMessageBundleKeys(i18nActivity)) {
           return i18nActivity;
         }
-        String newTitle = appRes(resourceBundle, getMessageBundleKey(i18nActivity), i18nActivity.getTemplateParams());
-        if (newTitle != null) {
-          i18nActivity.setTitle(newTitle);
-        }
+        transformKeys(i18nActivity, resourceBundle);
       }
     }
     return i18nActivity;
@@ -217,17 +216,30 @@ public final class I18NActivityProcessor {
     for (int i = 0; i < resourceKeys.length; i++) {
       //
       key = resourceKeys[i];
+      if(StringUtils.isBlank(key)) {
+        continue;
+      }
 
-      //
-      valuesOfParam = I18NActivityUtils.getParamValues(resourceParamValues[i]);
+      if (resourceParamValues != null && resourceParamValues.length > i) {
+        //
+        valuesOfParam = I18NActivityUtils.getParamValues(resourceParamValues[i]);
 
-      if (resourceKeysToProcess.contains(key)) {
-        for(int k = 0; k < valuesOfParam.length; k++) {
-          valuesOfParam[k] = (String)xmlProcessor.process(valuesOfParam[k]);
+        if (resourceKeysToProcess.contains(key)) {
+          for(int k = 0; k < valuesOfParam.length; k++) {
+            valuesOfParam[k] = (String)xmlProcessor.process(valuesOfParam[k]);
+          }
         }
       }
 
-      String title = appRes(resourceBundle, getMessageBundleKey(type, key), valuesOfParam);
+      String title = null;
+      if (valuesOfParam == null) {
+        title = appRes(resourceBundle, getMessageBundleKey(type, key), i18nActivity.getTemplateParams());
+      } else {
+        title = appRes(resourceBundle, getMessageBundleKey(type, key), valuesOfParam);
+      }
+      if (title == null) {
+        continue;
+      }
       sb.append(title);
 
       if (++count < resourceKeys.length) {
@@ -257,17 +269,6 @@ public final class I18NActivityProcessor {
     return resourceBundlePluginMap.containsKey(i18nActivity.getType());
   }
 
-  /**
-   * Gets an associated registered message bundle key for the i18n activity's titleId.
-   *
-   * @param i18nActivity The i18n activity.
-   * @return The registered message bundle key.
-   */
-  private String getMessageBundleKey(ExoSocialActivity i18nActivity) {
-    ActivityResourceBundlePlugin resourceBundlePlugin = resourceBundlePluginMap.get(i18nActivity.getType());
-    return resourceBundlePlugin.getMessageBundleKey(i18nActivity.getTitleId());
-  }
-  
   /**
    * Gets associated registered message bundle keys for the i18n activity's titleId.
    *
@@ -322,7 +323,7 @@ public final class I18NActivityProcessor {
     String value = appRes(resourceBundle, msgKey);
     List<String> arguments = null;
     if (templateParams != null) {
-      arguments = new ArrayList(templateParams.values());
+      arguments = new ArrayList<>(templateParams.values());
     }
     if (arguments != null && arguments.size() > 0) {
       value = ResourceBundleUtil.replaceArguments(value, arguments);

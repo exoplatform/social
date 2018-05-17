@@ -569,6 +569,47 @@
         </init-params>
       </component-plugin>
       <component-plugin>
+        <name>USER_PROFILE_ACTIVITY</name>
+        <set-method>addActivityResourceBundlePlugin</set-method>
+        <type>org.exoplatform.social.core.processor.ActivityResourceBundlePlugin</type>
+        <init-params>
+          <object-param>
+            <name>locale.social.Core</name>
+            <description>activity key type resource bundle mapping for USER_PROFILE_ACTIVITY</description>
+            <object type="org.exoplatform.social.core.processor.ActivityResourceBundlePlugin">
+              <field name="activityKeyTypeMapping">
+                <map type="java.util.HashMap">
+                  <entry>
+                    <key><string>position_updated</string></key>
+                    <value><string>ProfileUpdatesPublisher.position_updated</string></value>
+                  </entry>
+                  <entry>
+                    <key><string>avatar_updated</string></key>
+                    <value><string>ProfileUpdatesPublisher.avatar_updated</string></value>
+                  </entry>
+                  <entry>
+                    <key><string>basic_info_updated</string></key>
+                    <value><string>ProfileUpdatesPublisher.basic_info_updated</string></value>
+                  </entry>
+                  <entry>
+                    <key><string>contact_section_updated</string></key>
+                    <value><string>ProfileUpdatesPublisher.contact_section_updated</string></value>
+                  </entry>
+                  <entry>
+                    <key><string>experience_section_updated</string></key>
+                    <value><string>ProfileUpdatesPublisher.experience_section_updated</string></value>
+                  </entry>
+                  <entry>
+                    <key><string>aboutMe_section_updated</string></key>
+                    <value><string>ProfileUpdatesPublisher.aboutMe_section_updated</string></value>
+                  </entry>
+                </map>
+              </field>
+            </object>
+          </object-param>
+        </init-params>
+      </component-plugin>
+      <component-plugin>
         <name>SPACE_ACTIVITY</name> <!-- activity type -->
         <set-method>addActivityResourceBundlePlugin</set-method>
         <type>org.exoplatform.social.core.processor.ActivityResourceBundlePlugin</type>

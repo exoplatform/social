@@ -16,7 +16,6 @@
  */
 package org.exoplatform.social.core.processor;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedHashMap;
@@ -164,7 +163,6 @@ public class I18NActivityUtils {
       params = new LinkedHashMap<String, String>();
     }
 
-    String value = key;
     String oldValue = params.get(RESOURCE_BUNDLE_KEY_TO_PROCESS);
     if (oldValue != null) {
       String s = String.format("%s,%s", oldValue, key);

@@ -160,8 +160,14 @@ public class ProfileUpdatesPublisher extends ProfileListenerPlugin {
     }
     String newActivityTitle = sb.toString();
     activity.setTitle(newActivityTitle);
-    boolean hasUpdated = newActivityTitle.replaceAll(BREAKLINE_STR, "").length() > 0
-      && !newActivityTitle.equals(existingActivityTitle);
+
+    boolean hasUpdated = false;
+    if (StringUtils.isNotBlank(titleId)) {
+      String newTitleId = activity.getTitleId() == null ? titleId : activity.getTitleId().replace(titleId, "") + "," + titleId;
+      activity.setTitleId(newTitleId);
+      hasUpdated = true;
+    }
+    hasUpdated |= newActivityTitle.replaceAll(BREAKLINE_STR, "").length() > 0 && !newActivityTitle.equals(existingActivityTitle);
     if (activityId != null && hasUpdated) {
       activityManager.updateActivity(activity);
     }
