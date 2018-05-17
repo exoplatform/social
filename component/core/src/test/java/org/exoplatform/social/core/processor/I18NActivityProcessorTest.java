@@ -49,6 +49,7 @@ import org.exoplatform.social.core.activity.model.ExoSocialActivityImpl;
  * @author <a href="http://hoatle.net">hoatle (hoatlevan at gmail dot com)</a>
  * @since Feb 6, 2012
  */
+@SuppressWarnings("deprecation")
 public class I18NActivityProcessorTest extends TestCase {
 
   private I18NActivityProcessor i18NActivityProcessor;
@@ -196,7 +197,7 @@ public class I18NActivityProcessorTest extends TestCase {
 
     final String title = "Title has been updated: ";
     ExoSocialActivity activity = createActivity(title);
-    I18NActivityUtils.addResourceKey(activity, "update_topic_title", null);
+    I18NActivityUtils.addResourceKey(activity, "update_topic_title");
     
     Locale enLocale = new Locale("en");
 
@@ -316,7 +317,7 @@ public class I18NActivityProcessorTest extends TestCase {
     valuesParam.setDescription("register FakeResourceBundle message bundle");
     List<String> messageBundleKeys = new ArrayList<String>();
     messageBundleKeys.add("FakeResourceBundle");
-    valuesParam.setValues((ArrayList) messageBundleKeys);
+    valuesParam.setValues(messageBundleKeys);
     InitParams initParams = new InitParams();
     initParams.addParam(valuesParam);
     BaseResourceBundlePlugin resourceBundlePlugin = new BaseResourceBundlePlugin(initParams);

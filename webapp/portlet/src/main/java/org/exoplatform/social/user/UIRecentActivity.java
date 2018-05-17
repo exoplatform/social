@@ -35,7 +35,7 @@ public class UIRecentActivity extends UIContainer {
       WebuiRequestContext requestContext = WebuiRequestContext.getCurrentInstance();
       I18NActivityProcessor i18NActivityProcessor = getApplicationComponent(I18NActivityProcessor.class);
       Locale userLocale = requestContext.getLocale();
-      activity = i18NActivityProcessor.processKeys(activity, userLocale);
+      activity = i18NActivityProcessor.process(activity, userLocale);
     }
     return this.activity;
   }
