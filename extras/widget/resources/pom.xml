@@ -22,7 +22,7 @@
   <parent>
     <artifactId>social-extras-widget</artifactId>
     <groupId>org.exoplatform.social</groupId>
-    <version>5.1.x-SNAPSHOT</version>
+    <version>5.1.0-M05</version>
   </parent>
   <groupId>org.exoplatform.social</groupId>
   <artifactId>social-extras-widget-resources</artifactId>
