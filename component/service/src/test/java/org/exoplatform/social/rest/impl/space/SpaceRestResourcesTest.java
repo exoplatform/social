@@ -44,7 +44,6 @@ public class SpaceRestResourcesTest extends AbstractResourceTest {
     System.setProperty("gatein.email.domain.url", "localhost:8080");
 
     identityManager = getContainer().getComponentInstanceOfType(IdentityManager.class);
-    userACL = getContainer().getComponentInstanceOfType(UserACL.class);
     activityManager = getContainer().getComponentInstanceOfType(ActivityManager.class);
     spaceService = getContainer().getComponentInstanceOfType(SpaceService.class);
     
@@ -53,7 +52,7 @@ public class SpaceRestResourcesTest extends AbstractResourceTest {
     maryIdentity = identityManager.getOrCreateIdentity("organization", "mary", true);
     demoIdentity = identityManager.getOrCreateIdentity("organization", "demo", true);
     
-    spaceRestResources = new SpaceRestResourcesV1(userACL, identityManager);
+    spaceRestResources = new SpaceRestResourcesV1(identityManager);
     registry(spaceRestResources);
   }
 

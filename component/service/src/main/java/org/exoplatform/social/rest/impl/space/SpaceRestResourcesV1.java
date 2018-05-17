@@ -22,11 +22,8 @@ import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URL;
-import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -47,8 +44,7 @@ import javax.ws.rs.core.*;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.exoplatform.commons.utils.CommonsUtils;
 import org.exoplatform.commons.utils.ListAccess;
-import org.exoplatform.container.ExoContainerContext;
-import org.exoplatform.portal.config.UserACL;
+import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.security.ConversationState;
 import org.exoplatform.social.common.RealtimeListAccess;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
@@ -80,13 +76,10 @@ import org.exoplatform.social.service.rest.api.models.ActivityRestIn;
 @Api(tags = VersionResources.VERSION_ONE + "/social/spaces", value = VersionResources.VERSION_ONE + "/social/spaces", description = "Operations on spaces with their activities and users")
 public class SpaceRestResourcesV1 implements SpaceRestResources {
 
-  private UserACL userACL;
-  
   private IdentityManager identityManager;
   
   
-  public SpaceRestResourcesV1(UserACL userACL, IdentityManager identityManager) {
-    this.userACL = userACL;
+  public SpaceRestResourcesV1(IdentityManager identityManager) {
     this.identityManager = identityManager;
   }
 
@@ -229,7 +222,7 @@ public class SpaceRestResourcesV1 implements SpaceRestResources {
   @GET
   @Path("{id}/avatar")
   @RolesAllowed("users")
-  @ApiOperation(value = "Gets a space avatar by id",
+  @ApiOperation(value = "Gets a space avatar by pretty name",
           httpMethod = "GET",
           response = Response.class,
           notes = "This can only be done by the logged in user.")
@@ -240,7 +233,7 @@ public class SpaceRestResourcesV1 implements SpaceRestResources {
           @ApiResponse (code = 404, message = "Resource not found")})
   public Response getSpaceAvatarById(@Context UriInfo uriInfo,
                                      @Context Request request,
-                                     @ApiParam(value = "Space id", required = true) @PathParam("id") String id) throws IOException {
+                                     @ApiParam(value = "Space pretty name", required = true) @PathParam("id") String id) throws IOException {
   
     String authenticatedUser = ConversationState.getCurrent().getIdentity().getUserId();
     SpaceService spaceService = CommonsUtils.getService(SpaceService.class);
@@ -265,13 +258,12 @@ public class SpaceRestResourcesV1 implements SpaceRestResources {
     if (builder == null) {
       InputStream stream = identityManager.getAvatarInputStream(identity);
       if (stream == null) {
-        throw new WebApplicationException(Response.Status.NOT_FOUND);
+        stream = getDefaultAvatarBuilder();
+        builder = Response.ok(stream, "image/png");
+      } else {
+        builder = Response.ok(stream, "image/png");
+        builder.tag(eTag);
       }
-      /* As recommended in the the RFC1341 (https://www.w3.org/Protocols/rfc1341/4_Content-Type.html),
-      we set the avatar content-type to "image/png". So, its data  would be recognized as "image" by the user-agent.
-     */
-      builder = Response.ok(stream, "image/png");
-      builder.tag(eTag);
     }
     CacheControl cc = new CacheControl();
     cc.setMaxAge(86400);
@@ -598,4 +590,9 @@ public class SpaceRestResourcesV1 implements SpaceRestResources {
       space.setRegistration(Space.VALIDATION);
     }
   }
+
+  private InputStream getDefaultAvatarBuilder() {
+    return PortalContainer.getInstance().getPortalContext().getResourceAsStream("/skin/images/system/SpaceAvtDefault.png");
+  }
+
 }
