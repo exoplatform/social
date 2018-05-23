@@ -34,376 +34,212 @@
 
                 <!-- Identities -->
                 <object-param>
-                    <name>IdentityCache</name>
-                    <description></description>
-                    <object type="org.exoplatform.services.cache.ExoCacheConfig">
-                        <field name="name"><string>IdentityCache</string></field>
-                        <field name="maxSize"><int>${exo.cache.social.IdentityCache.Capacity:5000}</int></field>
+                    <name>social.IdentityCache</name>
+                    <description>The Cache configuration for the IdentityCache</description>
+                    <object type="org.exoplatform.services.cache.impl.infinispan.generic.GenericExoCacheConfig">
+                        <field name="name"><string>social.IdentityCache</string></field>
+                        <field name="strategy"  profiles="cluster"><string>${exo.cache.social.IdentityCache.strategy:LIRS}</string></field>
+                        <field name="maxSize"><int>${exo.cache.social.IdentityCache.MaxNodes:1100}</int></field>
                         <field name="liveTime"><long>${exo.cache.social.IdentityCache.TimeToLive:86400}</long></field>
-                        <field name="implementation"><string>org.exoplatform.services.cache.concurrent.ConcurrentFIFOExoCache</string></field>
-                    </object>
-                </object-param>
-                <object-param profiles="cluster">
-                    <name>IdentityCache</name>
-                    <description>The JBoss Cache configuration for the IdentityCache</description>
-                    <object type="org.exoplatform.services.cache.impl.infinispan.generic.GenericExoCacheConfig">
-                        <field name="name"><string>IdentityCache</string></field>
-                        <field name="strategy"><string>LIRS</string></field>
-                        <field name="maxEntries"><int>${exo.cache.social.IdentityCache.Capacity:5000}</int></field>
-                        <field name="lifespan"><long>${exo.cache.social.IdentityCache.TimeToLive:86400000}</long></field>
-                        <field name="cacheMode"><string>${exo.cache.social.IdentityCache.cacheMode:replication}</string></field>
+                        <field name="cacheMode"  profiles="cluster"><string>${exo.cache.social.IdentityCache.cacheMode:replication}</string></field>
                     </object>
                 </object-param>
                 <object-param>
-                    <name>IdentityIndexCache</name>
-                    <description></description>
-                    <object type="org.exoplatform.services.cache.ExoCacheConfig">
-                        <field name="name"><string>IdentityIndexCache</string></field>
-                        <field name="maxSize"><int>${exo.cache.social.IdentityIndexCache.Capacity:5000}</int></field>
+                    <name>social.IdentityIndexCache</name>
+                    <description>The Cache configuration for the IdentityIndexCache</description>
+                    <object type="org.exoplatform.services.cache.impl.infinispan.generic.GenericExoCacheConfig">
+                        <field name="name"><string>social.IdentityIndexCache</string></field>
+                        <field name="strategy" profiles="cluster"><string>${exo.cache.social.IdentityIndexCache.strategy:LIRS}</string></field>
+                        <field name="maxSize"><int>${exo.cache.social.IdentityIndexCache.MaxNodes:1100}</int></field>
                         <field name="liveTime"><long>${exo.cache.social.IdentityIndexCache.TimeToLive:86400}</long></field>
-                        <field name="implementation"><string>org.exoplatform.services.cache.concurrent.ConcurrentFIFOExoCache</string></field>
-                    </object>
-                </object-param>
-                <object-param profiles="cluster">
-                    <name>IdentityIndexCache</name>
-                    <description>The JBoss Cache configuration for the IdentityIndexCache</description>
-                    <object type="org.exoplatform.services.cache.impl.infinispan.generic.GenericExoCacheConfig">
-                        <field name="name"><string>IdentityIndexCache</string></field>
-                        <field name="strategy"><string>LIRS</string></field>
-                        <field name="maxEntries"><int>${exo.cache.social.IdentityIndexCache.Capacity:5000}</int></field>
-                        <field name="lifespan"><long>${exo.cache.social.IdentityIndexCache.TimeToLive:86400000}</long></field>
-                        <field name="cacheMode"><string>${exo.cache.social.IdentityIndexCache.cacheMode:replication}</string></field>
+                        <field name="cacheMode"  profiles="cluster"><string>${exo.cache.social.IdentityIndexCache.cacheMode:replication}</string></field>
                     </object>
                 </object-param>
                 <object-param>
-                    <name>ProfileCache</name>
-                    <description></description>
-                    <object type="org.exoplatform.services.cache.ExoCacheConfig">
-                        <field name="name"><string>ProfileCache</string></field>
-                        <field name="maxSize"><int>${exo.cache.social.ProfileCache.Capacity:5000}</int></field>
+                    <name>social.ProfileCache</name>
+                    <description>The Cache configuration for the ProfileCache</description>
+                    <object type="org.exoplatform.services.cache.impl.infinispan.generic.GenericExoCacheConfig">
+                        <field name="name"><string>social.ProfileCache</string></field>
+                        <field name="strategy" profiles="cluster"><string>${exo.cache.social.ProfileCache.strategy:LIRS}</string></field>
+                        <field name="maxSize"><int>${exo.cache.social.ProfileCache.MaxNodes:1100}</int></field>
                         <field name="liveTime"><long>${exo.cache.social.ProfileCache.TimeToLive:86400}</long></field>
-                        <field name="implementation"><string>org.exoplatform.services.cache.concurrent.ConcurrentFIFOExoCache</string></field>
-                    </object>
-                </object-param>
-                <object-param profiles="cluster">
-                    <name>ProfileCache</name>
-                    <description>The JBoss Cache configuration for the ProfileCache</description>
-                    <object type="org.exoplatform.services.cache.impl.infinispan.generic.GenericExoCacheConfig">
-                        <field name="name"><string>ProfileCache</string></field>
-                        <field name="strategy"><string>LIRS</string></field>
-                        <field name="maxEntries"><int>${exo.cache.social.ProfileCache.Capacity:5000}</int></field>
-                        <field name="lifespan"><long>${exo.cache.social.ProfileCache.TimeToLive:86400000}</long></field>
-                        <field name="cacheMode"><string>${exo.cache.social.ProfileCache.cacheMode:replication}</string></field>
+                        <field name="cacheMode"  profiles="cluster"><string>${exo.cache.social.ProfileCache.cacheMode:replication}</string></field>
                     </object>
                 </object-param>
                 <object-param>
-                    <name>IdentitiesCountCache</name>
-                    <description></description>
-                    <object type="org.exoplatform.services.cache.ExoCacheConfig">
-                        <field name="name"><string>IdentitiesCountCache</string></field>
-                        <field name="maxSize"><int>${exo.cache.social.IdentitiesCountCache.Capacity:5000}</int></field>
+                    <name>social.IdentitiesCountCache</name>
+                    <description>The Cache configuration for the IdentitiesCountCache</description>
+                    <object type="org.exoplatform.services.cache.impl.infinispan.generic.GenericExoCacheConfig">
+                        <field name="name"><string>social.IdentitiesCountCache</string></field>
+                        <field name="strategy" profiles="cluster"><string>${exo.cache.social.IdentitiesCountCache.strategy:LIRS}</string></field>
+                        <field name="maxSize"><int>${exo.cache.social.IdentitiesCountCache.MaxNodes:1100}</int></field>
                         <field name="liveTime"><long>${exo.cache.social.IdentitiesCountCache.TimeToLive:86400}</long></field>
-                        <field name="implementation"><string>org.exoplatform.services.cache.concurrent.ConcurrentFIFOExoCache</string></field>
-                    </object>
-                </object-param>
-                <object-param profiles="cluster">
-                    <name>IdentitiesCountCache</name>
-                    <description>The JBoss Cache configuration for the IdentitiesCountCache</description>
-                    <object type="org.exoplatform.services.cache.impl.infinispan.generic.GenericExoCacheConfig">
-                        <field name="name"><string>IdentitiesCountCache</string></field>
-                        <field name="strategy"><string>LIRS</string></field>
-                        <field name="maxEntries"><int>${exo.cache.social.IdentitiesCountCache.Capacity:5000}</int></field>
-                        <field name="lifespan"><long>${exo.cache.social.IdentitiesCountCache.TimeToLive:86400000}</long></field>
-                        <field name="cacheMode"><string>${exo.cache.social.IdentitiesCountCache.cacheMode:replication}</string></field>
+                        <field name="cacheMode"  profiles="cluster"><string>${exo.cache.social.IdentitiesCountCache.cacheMode:replication}</string></field>
                     </object>
                 </object-param>
                 <object-param>
-                    <name>IdentitiesCache</name>
-                    <description></description>
-                    <object type="org.exoplatform.services.cache.ExoCacheConfig">
-                        <field name="name"><string>IdentitiesCache</string></field>
-                        <field name="maxSize"><int>${exo.cache.social.IdentitiesCache.Capacity:5000}</int></field>
-                        <field name="liveTime"><long>${exo.cache.social.IdentitiesCache.TimeToLive:86400}</long></field>
-                        <field name="implementation"><string>org.exoplatform.services.cache.concurrent.ConcurrentFIFOExoCache</string></field>
-                    </object>
-                </object-param>
-                <object-param profiles="cluster">
-                    <name>IdentitiesCache</name>
-                    <description>The JBoss Cache configuration for the IdentitiesCache</description>
+                    <name>social.IdentitiesCache</name>
+                    <description>The Cache configuration for the IdentitiesCache</description>
                     <object type="org.exoplatform.services.cache.impl.infinispan.generic.GenericExoCacheConfig">
-                        <field name="name"><string>IdentitiesCache</string></field>
-                        <field name="strategy"><string>LIRS</string></field>
-                        <field name="maxEntries"><int>${exo.cache.social.IdentitiesCache.Capacity:5000}</int></field>
-                        <field name="lifespan"><long>${exo.cache.social.IdentitiesCache.TimeToLive:86400000}</long></field>
-                        <field name="cacheMode"><string>${exo.cache.social.IdentitiesCache.cacheMode:replication}</string></field>
+                        <field name="name"><string>social.IdentitiesCache</string></field>
+                        <field name="strategy" profiles="cluster"><string>${exo.cache.social.IdentitiesCache.strategy:LIRS}</string></field>
+                        <field name="maxSize"><int>${exo.cache.social.IdentitiesCache.MaxNodes:1100}</int></field>
+                        <field name="liveTime"><long>${exo.cache.social.IdentitiesCache.TimeToLive:86400}</long></field>
+                        <field name="cacheMode"  profiles="cluster"><string>${exo.cache.social.IdentitiesCache.cacheMode:replication}</string></field>
                     </object>
                 </object-param>
-
                 <object-param>
-                    <name>ActiveIdentitiesCache</name>
-                    <description></description>
-                    <object type="org.exoplatform.services.cache.ExoCacheConfig">
-                        <field name="name"><string>ActiveIdentitiesCache</string></field>
-                        <field name="maxSize"><int>${exo.cache.social.IdentitiesCache.Capacity:5000}</int></field>
-                        <field name="liveTime"><long>${exo.cache.social.IdentitiesCache.TimeToLive:86400}</long></field>
-                        <field name="implementation"><string>org.exoplatform.services.cache.concurrent.ConcurrentFIFOExoCache</string></field>
-                    </object>
-                </object-param>
-                <object-param profiles="cluster">
-                    <name>ActiveIdentitiesCache</name>
+                    <name>social.ActiveIdentitiesCache</name>
                     <description></description>
                     <object type="org.exoplatform.services.cache.impl.infinispan.generic.GenericExoCacheConfig">
-                        <field name="name"><string>ActiveIdentitiesCache</string></field>
-                        <field name="strategy"><string>LIRS</string></field>
-                        <field name="maxEntries"><int>${exo.cache.social.IdentitiesCache.Capacity:5000}</int></field>
-                        <field name="lifespan"><long>${exo.cache.social.IdentitiesCache.TimeToLive:86400000}</long></field>
-                        <field name="cacheMode"><string>${exo.cache.social.ActiveIdentitiesCache.cacheMode:replication}</string></field>
+                        <field name="name"><string>social.ActiveIdentitiesCache</string></field>
+                        <field name="strategy" profiles="cluster"><string>${exo.cache.social.ActiveIdentitiesCache.strategy:LIRS}</string></field>
+                        <field name="maxSize"><int>${exo.cache.social.ActiveIdentitiesCache.MaxNodes:4000}</int></field>
+                        <field name="liveTime"><long>${exo.cache.social.ActiveIdentitiesCache.TimeToLive:86400}</long></field>
+                        <field name="cacheMode"  profiles="cluster"><string>${exo.cache.social.ActiveIdentitiesCache.cacheMode:replication}</string></field>
                     </object>
                 </object-param>
 
                 <!-- Relationships -->
                 <object-param>
-                    <name>RelationshipCache</name>
-                    <description></description>
-                    <object type="org.exoplatform.services.cache.ExoCacheConfig">
-                        <field name="name"><string>RelationshipCache</string></field>
-                        <field name="maxSize"><int>${exo.cache.social.RelationshipCache.Capacity:10000}</int></field>
+                    <name>social.RelationshipCache</name>
+                    <description>The Cache configuration for the RelationshipCache</description>
+                    <object type="org.exoplatform.services.cache.impl.infinispan.generic.GenericExoCacheConfig">
+                        <field name="name"><string>social.RelationshipCache</string></field>
+                        <field name="strategy" profiles="cluster"><string>${exo.cache.social.RelationshipCache.strategy:LIRS}</string></field>
+                        <field name="maxSize"><int>${exo.cache.social.RelationshipCache.MaxNodes:100000}</int></field>
                         <field name="liveTime"><long>${exo.cache.social.RelationshipCache.TimeToLive:86400}</long></field>
-                        <field name="implementation"><string>org.exoplatform.services.cache.concurrent.ConcurrentFIFOExoCache</string></field>
-                    </object>
-                </object-param>
-                <object-param profiles="cluster">
-                    <name>RelationshipCache</name>
-                    <description>The JBoss Cache configuration for the RelationshipCache</description>
-                    <object type="org.exoplatform.services.cache.impl.infinispan.generic.GenericExoCacheConfig">
-                        <field name="name"><string>RelationshipCache</string></field>
-                        <field name="strategy"><string>LIRS</string></field>
-                        <field name="maxEntries"><int>${exo.cache.social.RelationshipCache.Capacity:10000}</int></field>
-                        <field name="lifespan"><long>${exo.cache.social.RelationshipCache.TimeToLive:86400000}</long></field>
-                        <field name="cacheMode"><string>${exo.cache.social.RelationshipCache.cacheMode:replication}</string></field>
+                        <field name="cacheMode"  profiles="cluster"><string>${exo.cache.social.RelationshipCache.cacheMode:replication}</string></field>
                     </object>
                 </object-param>
                 <object-param>
-                    <name>RelationshipFromIdentityCache</name>
-                    <description></description>
-                    <object type="org.exoplatform.services.cache.ExoCacheConfig">
-                        <field name="name"><string>RelationshipFromIdentityCache</string></field>
-                        <field name="maxSize"><int>${exo.cache.social.RelationshipFromIdentityCache.Capacity:10000}</int></field>
+                    <name>social.RelationshipFromIdentityCache</name>
+                    <description>The Cache configuration for the RelationshipFromIdentityCache</description>
+                    <object type="org.exoplatform.services.cache.impl.infinispan.generic.GenericExoCacheConfig">
+                        <field name="name"><string>social.RelationshipFromIdentityCache</string></field>
+                        <field name="strategy" profiles="cluster"><string>${exo.cache.social.RelationshipFromIdentityCache.strategy:LIRS}</string></field>
+                        <field name="maxSize"><int>${exo.cache.social.RelationshipFromIdentityCache.MaxNodes:100000}</int></field>
                         <field name="liveTime"><long>${exo.cache.social.RelationshipFromIdentityCache.TimeToLive:86400}</long></field>
-                        <field name="implementation"><string>org.exoplatform.services.cache.concurrent.ConcurrentFIFOExoCache</string></field>
-                    </object>
-                </object-param>
-                <object-param profiles="cluster">
-                    <name>RelationshipFromIdentityCache</name>
-                    <description>The JBoss Cache configuration for the RelationshipFromIdentityCache</description>
-                    <object type="org.exoplatform.services.cache.impl.infinispan.generic.GenericExoCacheConfig">
-                        <field name="name"><string>RelationshipFromIdentityCache</string></field>
-                        <field name="strategy"><string>LIRS</string></field>
-                        <field name="maxEntries"><int>${exo.cache.social.RelationshipFromIdentityCache.Capacity:10000}</int></field>
-                        <field name="lifespan"><long>${exo.cache.social.RelationshipFromIdentityCache.TimeToLive:86400000}</long></field>
-                        <field name="cacheMode"><string>${exo.cache.social.RelationshipFromIdentityCache.cacheMode:replication}</string></field>
+                        <field name="cacheMode"  profiles="cluster"><string>${exo.cache.social.RelationshipFromIdentityCache.cacheMode:replication}</string></field>
                     </object>
                 </object-param>
                 <object-param>
-                    <name>RelationshipsCountCache</name>
-                    <description></description>
-                    <object type="org.exoplatform.services.cache.ExoCacheConfig">
-                        <field name="name"><string>RelationshipsCountCache</string></field>
-                        <field name="maxSize"><int>${exo.cache.social.RelationshipsCountCache.Capacity:5000}</int></field>
+                    <name>social.RelationshipsCountCache</name>
+                    <description>The Cache configuration for the RelationshipsCountCache</description>
+                    <object type="org.exoplatform.services.cache.impl.infinispan.generic.GenericExoCacheConfig">
+                        <field name="name"><string>social.RelationshipsCountCache</string></field>
+                        <field name="strategy" profiles="cluster"><string>${exo.cache.social.RelationshipsCountCache.strategy:LIRS}</string></field>
+                        <field name="maxSize"><int>${exo.cache.social.RelationshipsCountCache.MaxNodes:10000}</int></field>
                         <field name="liveTime"><long>${exo.cache.social.RelationshipsCountCache.TimeToLive:86400}</long></field>
-                        <field name="implementation"><string>org.exoplatform.services.cache.concurrent.ConcurrentFIFOExoCache</string></field>
-                    </object>
-                </object-param>
-                <object-param profiles="cluster">
-                    <name>RelationshipsCountCache</name>
-                    <description>The JBoss Cache configuration for the RelationshipsCountCache</description>
-                    <object type="org.exoplatform.services.cache.impl.infinispan.generic.GenericExoCacheConfig">
-                        <field name="name"><string>RelationshipsCountCache</string></field>
-                        <field name="strategy"><string>LIRS</string></field>
-                        <field name="maxEntries"><int>${exo.cache.social.RelationshipsCountCache.Capacity:10000}</int></field>
-                        <field name="lifespan"><long>${exo.cache.social.RelationshipsCountCache.TimeToLive:86400000}</long></field>
-                        <field name="cacheMode"><string>${exo.cache.social.RelationshipsCountCache.cacheMode:replication}</string></field>
+                        <field name="cacheMode"  profiles="cluster"><string>${exo.cache.social.RelationshipsCountCache.cacheMode:replication}</string></field>
                     </object>
                 </object-param>
                 <object-param>
-                    <name>RelationshipsCache</name>
-                    <description></description>
-                    <object type="org.exoplatform.services.cache.ExoCacheConfig">
-                        <field name="name"><string>RelationshipsCache</string></field>
-                        <field name="maxSize"><int>${exo.cache.social.RelationshipsCache.Capacity:5000}</int></field>
+                    <name>social.RelationshipsCache</name>
+                    <description>The Cache configuration for the RelationshipsCache</description>
+                    <object type="org.exoplatform.services.cache.impl.infinispan.generic.GenericExoCacheConfig">
+                        <field name="name"><string>social.RelationshipsCache</string></field>
+                        <field name="strategy" profiles="cluster"><string>${exo.cache.social.RelationshipsCache.strategy:LIRS}</string></field>
+                        <field name="maxSize"><int>${exo.cache.social.RelationshipsCache.MaxNodes:10000}</int></field>
                         <field name="liveTime"><long>${exo.cache.social.RelationshipsCache.TimeToLive:86400}</long></field>
-                        <field name="implementation"><string>org.exoplatform.services.cache.concurrent.ConcurrentFIFOExoCache</string></field>
-                    </object>
-                </object-param>
-                <object-param profiles="cluster">
-                    <name>RelationshipsCache</name>
-                    <description>The JBoss Cache configuration for the RelationshipsCache</description>
-                    <object type="org.exoplatform.services.cache.impl.infinispan.generic.GenericExoCacheConfig">
-                        <field name="name"><string>RelationshipsCache</string></field>
-                        <field name="strategy"><string>LIRS</string></field>
-                        <field name="maxEntries"><int>${exo.cache.social.RelationshipsCache.Capacity:10000}</int></field>
-                        <field name="lifespan"><long>${exo.cache.social.RelationshipsCache.TimeToLive:86400000}</long></field>
-                        <field name="cacheMode"><string>${exo.cache.social.RelationshipsCache.cacheMode:replication}</string></field>
+                        <field name="cacheMode"  profiles="cluster"><string>${exo.cache.social.RelationshipsCache.cacheMode:replication}</string></field>
                     </object>
                 </object-param>
                 <object-param>
-                    <name>SuggestionsCache</name>
-                    <description>The Cache configuration for the SuggestionsCache</description>
-                    <object type="org.exoplatform.services.cache.ExoCacheConfig">
-                        <field name="name"><string>SuggestionsCache</string></field>
-                        <field name="maxSize"><int>${exo.cache.social.SuggestionsCache.Capacity:5000}</int></field>
-                        <field name="liveTime"><long>${exo.cache.social.SuggestionsCache.TimeToLive:86400}</long></field>
-                        <field name="implementation"><string>org.exoplatform.services.cache.concurrent.ConcurrentFIFOExoCache</string></field>
-                    </object>
-                </object-param>
-                <object-param profiles="cluster">
-                    <name>SuggestionsCache</name>
+                    <name>social.SuggestionsCache</name>
                     <description>The Cache configuration for the SuggestionsCache</description>
                     <object type="org.exoplatform.services.cache.impl.infinispan.generic.GenericExoCacheConfig">
-                        <field name="name"><string>SuggestionsCache</string></field>
-                        <field name="strategy"><string>LIRS</string></field>
-                        <field name="maxEntries"><int>${exo.cache.social.SuggestionsCache.Capacity:5000}</int></field>
-                        <field name="lifespan"><long>${exo.cache.social.SuggestionsCache.TimeToLive:86400000}</long></field>
-                        <field name="cacheMode"><string>${exo.cache.social.SuggestionsCache.cacheMode:replication}</string></field>
+                        <field name="name"><string>social.SuggestionsCache</string></field>
+                        <field name="strategy" profiles="cluster"><string>${exo.cache.social.SuggestionsCache.strategy:LIRS}</string></field>
+                        <field name="maxSize"><int>${exo.cache.social.SuggestionsCache.MaxNodes:1000}</int></field>
+                        <field name="liveTime"><long>${exo.cache.social.SuggestionsCache.TimeToLive:86400}</long></field>
+                        <field name="cacheMode"  profiles="cluster"><string>${exo.cache.social.SuggestionsCache.cacheMode:replication}</string></field>
                     </object>
                 </object-param>
 
                 <!-- Activities -->
                 <object-param>
-                    <name>ActivityCache</name>
-                    <description></description>
-                    <object type="org.exoplatform.services.cache.ExoCacheConfig">
-                        <field name="name"><string>ActivityCache</string></field>
-                        <field name="maxSize"><int>${exo.cache.social.ActivityCache.Capacity:6000}</int></field>
-                        <field name="liveTime"><long>${exo.cache.social.ActivityCache.TimeToLive:3600}</long></field>
-                        <field name="implementation"><string>org.exoplatform.services.cache.concurrent.ConcurrentFIFOExoCache</string></field>
-                    </object>
-                </object-param>
-                <object-param profiles="cluster">
-                    <name>ActivityCache</name>
-                    <description>The JBoss Cache configuration for the ActivityCache</description>
+                    <name>social.ActivityCache</name>
+                    <description>The Cache configuration for the ActivityCache</description>
                     <object type="org.exoplatform.services.cache.impl.infinispan.generic.GenericExoCacheConfig">
-                        <field name="name"><string>ActivityCache</string></field>
-                        <field name="strategy"><string>LIRS</string></field>
-                        <field name="maxEntries"><int>${exo.cache.social.ActivityCache.Capacity:6000}</int></field>
-                        <field name="lifespan"><long>${exo.cache.social.ActivityCache.TimeToLive:3600000}</long></field>
-                        <field name="cacheMode"><string>${exo.cache.social.ActivityCache.cacheMode:replication}</string></field>
+                        <field name="name"><string>social.ActivityCache</string></field>
+                        <field name="strategy" profiles="cluster"><string>${exo.cache.social.ActivityCache.strategy:LIRS}</string></field>
+                        <field name="maxSize"><int>${exo.cache.social.ActivityCache.MaxNodes:20000}</int></field>
+                        <field name="liveTime"><long>${exo.cache.social.ActivityCache.TimeToLive:86400}</long></field>
+                        <field name="cacheMode"  profiles="cluster"><string>${exo.cache.social.ActivityCache.cacheMode:replication}</string></field>
                     </object>
                 </object-param>
                 <object-param>
-                    <name>ActivitiesCountCache</name>
+                    <name>social.ActivitiesCountCache</name>
                     <description></description>
-                    <object type="org.exoplatform.services.cache.ExoCacheConfig">
-                        <field name="name"><string>ActivitiesCountCache</string></field>
-                        <field name="maxSize"><int>${exo.cache.social.ActivitiesCountCache.Capacity:5000}</int></field>
+                    <object type="org.exoplatform.services.cache.impl.infinispan.generic.GenericExoCacheConfig">
+                        <field name="name"><string>social.ActivitiesCountCache</string></field>
+                        <field name="maxSize"><int>${exo.cache.social.ActivitiesCountCache.MaxNodes:20000}</int></field>
                         <field name="liveTime"><long>${exo.cache.social.ActivitiesCountCache.TimeToLive:86400}</long></field>
-                        <field name="implementation"><string>org.exoplatform.services.cache.concurrent.ConcurrentFIFOExoCache</string></field>
                     </object>
                 </object-param>
                 <object-param>
-                    <name>ActivitiesCache</name>
+                    <name>social.ActivitiesCache</name>
                     <description></description>
-                    <object type="org.exoplatform.services.cache.ExoCacheConfig">
-                        <field name="name"><string>ActivitiesCache</string></field>
-                        <field name="maxSize"><int>${exo.cache.social.ActivitiesCache.Capacity:5000}</int></field>
+                    <object type="org.exoplatform.services.cache.impl.infinispan.generic.GenericExoCacheConfig">
+                        <field name="name"><string>social.ActivitiesCache</string></field>
+                        <field name="maxSize"><int>${exo.cache.social.ActivitiesCache.MaxNodes:20000}</int></field>
                         <field name="liveTime"><long>${exo.cache.social.ActivitiesCache.TimeToLive:86400}</long></field>
-                        <field name="implementation"><string>org.exoplatform.services.cache.concurrent.ConcurrentFIFOExoCache</string></field>
                     </object>
                 </object-param>
 
                 <!-- Spaces -->
                 <object-param>
-                    <name>SpaceCache</name>
-                    <description></description>
-                    <object type="org.exoplatform.services.cache.ExoCacheConfig">
-                        <field name="name"><string>SpaceCache</string></field>
-                        <field name="maxSize"><int>${exo.cache.social.SpaceCache.Capacity:500}</int></field>
-                        <field name="liveTime"><long>${exo.cache.social.SpaceCache.TimeToLive:86400}</long></field>
-                        <field name="implementation"><string>org.exoplatform.services.cache.concurrent.ConcurrentFIFOExoCache</string></field>
-                    </object>
-                </object-param>
-                <object-param profiles="cluster">
-                    <name>SpaceCache</name>
-                    <description>The JBoss Cache configuration for the SpaceCache</description>
+                    <name>social.SpaceCache</name>
+                    <description>The Cache configuration for the SpaceCache</description>
                     <object type="org.exoplatform.services.cache.impl.infinispan.generic.GenericExoCacheConfig">
-                        <field name="name"><string>SpaceCache</string></field>
-                        <field name="strategy"><string>LIRS</string></field>
-                        <field name="maxEntries"><int>${exo.cache.social.SpaceCache.Capacity:500}</int></field>
-                        <field name="lifespan"><long>${exo.cache.social.SpaceCache.TimeToLive:86400000}</long></field>
-                        <field name="cacheMode"><string>${exo.cache.social.SpaceCache.cacheMode:replication}</string></field>
-                    </object>
-                </object-param>
-                <object-param>
-                    <name>SpaceSimpleCache</name>
-                    <description></description>
-                    <object type="org.exoplatform.services.cache.ExoCacheConfig">
-                        <field name="name"><string>SpaceSimpleCache</string></field>
-                        <field name="maxSize"><int>${exo.cache.social.SpaceCache.Capacity:500}</int></field>
+                        <field name="name"><string>social.SpaceCache</string></field>
+                        <field name="strategy" profiles="cluster"><string>${exo.cache.social.SpaceCache.strategy:LIRS}</string></field>
+                        <field name="maxSize"><int>${exo.cache.social.SpaceCache.MaxNodes:100}</int></field>
                         <field name="liveTime"><long>${exo.cache.social.SpaceCache.TimeToLive:86400}</long></field>
-                        <field name="implementation"><string>org.exoplatform.services.cache.concurrent.ConcurrentFIFOExoCache</string></field>
+                        <field name="cacheMode"  profiles="cluster"><string>${exo.cache.social.SpaceCache.cacheMode:replication}</string></field>
                     </object>
                 </object-param>
                 <object-param>
-                    <name>SpaceRefCache</name>
+                    <name>social.SpaceSimpleCache</name>
                     <description></description>
-                    <object type="org.exoplatform.services.cache.ExoCacheConfig">
-                        <field name="name"><string>SpaceRefCache</string></field>
-                        <field name="maxSize"><int>${exo.cache.social.SpaceRefCache.Capacity:2000}</int></field>
+                    <object type="org.exoplatform.services.cache.impl.infinispan.generic.GenericExoCacheConfig">
+                        <field name="name"><string>social.SpaceSimpleCache</string></field>
+                        <field name="maxSize"><int>${exo.cache.social.SpaceSimpleCache.MaxNodes:500}</int></field>
+                        <field name="liveTime"><long>${exo.cache.social.SpaceSimpleCache.TimeToLive:86400}</long></field>
+                    </object>
+                </object-param>
+                <object-param>
+                    <name>social.SpaceRefCache</name>
+                    <description>The Cache configuration for the SpaceRefCache</description>
+                    <object type="org.exoplatform.services.cache.impl.infinispan.generic.GenericExoCacheConfig">
+                        <field name="name"><string>social.SpaceRefCache</string></field>
+                        <field name="strategy" profiles="cluster"><string>${exo.cache.social.SpaceRefCache.strategy:LIRS}</string></field>
+                        <field name="maxSize"><int>${exo.cache.social.SpaceRefCache.MaxNodes:100}</int></field>
                         <field name="liveTime"><long>${exo.cache.social.SpaceRefCache.TimeToLive:86400}</long></field>
-                        <field name="implementation"><string>org.exoplatform.services.cache.concurrent.ConcurrentFIFOExoCache</string></field>
-                    </object>
-                </object-param>
-                <object-param profiles="cluster">
-                    <name>SpaceRefCache</name>
-                    <description>The JBoss Cache configuration for the SpaceRefCache</description>
-                    <object type="org.exoplatform.services.cache.impl.infinispan.generic.GenericExoCacheConfig">
-                        <field name="name"><string>SpaceRefCache</string></field>
-                        <field name="strategy"><string>LIRS</string></field>
-                        <field name="maxEntries"><int>${exo.cache.social.SpaceRefCache.Capacity:2000}</int></field>
-                        <field name="lifespan"><long>${exo.cache.social.SpaceRefCache.TimeToLive:86400000}</long></field>
-                        <field name="cacheMode"><string>${exo.cache.social.SpaceRefCache.cacheMode:replication}</string></field>
+                        <field name="cacheMode"  profiles="cluster"><string>${exo.cache.social.SpaceRefCache.cacheMode:replication}</string></field>
                     </object>
                 </object-param>
                 <object-param>
-                    <name>SpacesCountCache</name>
-                    <description></description>
-                    <object type="org.exoplatform.services.cache.ExoCacheConfig">
-                        <field name="name"><string>SpacesCountCache</string></field>
-                        <field name="maxSize"><int>${exo.cache.social.SpacesCountCache.Capacity:5000}</int></field>
+                    <name>social.SpacesCountCache</name>
+                    <description>The Cache configuration for the SpacesCountCache</description>
+                    <object type="org.exoplatform.services.cache.impl.infinispan.generic.GenericExoCacheConfig">
+                        <field name="name"><string>social.SpacesCountCache</string></field>
+                        <field name="strategy" profiles="cluster"><string>${exo.cache.social.SpacesCountCache.strategy:LIRS}</string></field>
+                        <field name="maxSize"><int>${exo.cache.social.SpacesCountCache.MaxNodes:4000}</int></field>
                         <field name="liveTime"><long>${exo.cache.social.SpacesCountCache.TimeToLive:86400}</long></field>
-                        <field name="implementation"><string>org.exoplatform.services.cache.concurrent.ConcurrentFIFOExoCache</string></field>
-                    </object>
-                </object-param>
-                <object-param profiles="cluster">
-                    <name>SpacesCountCache</name>
-                    <description>The JBoss Cache configuration for the SpacesCountCache</description>
-                    <object type="org.exoplatform.services.cache.impl.infinispan.generic.GenericExoCacheConfig">
-                        <field name="name"><string>SpacesCountCache</string></field>
-                        <field name="strategy"><string>LIRS</string></field>
-                        <field name="maxEntries"><int>${exo.cache.social.SpacesCountCache.Capacity:5000}</int></field>
-                        <field name="lifespan"><long>${exo.cache.social.SpacesCountCache.TimeToLive:86400000}</long></field>
-                        <field name="cacheMode"><string>${exo.cache.social.SpacesCountCache.cacheMode:replication}</string></field>
+                        <field name="cacheMode"  profiles="cluster"><string>${exo.cache.social.SpacesCountCache.cacheMode:replication}</string></field>
                     </object>
                 </object-param>
                 <object-param>
-                    <name>SpacesCache</name>
-                    <description></description>
-                    <object type="org.exoplatform.services.cache.ExoCacheConfig">
-                        <field name="name"><string>SpacesCache</string></field>
-                        <field name="maxSize"><int>${exo.cache.social.SpacesCache.Capacity:5000}</int></field>
-                        <field name="liveTime"><long>${exo.cache.social.SpacesCache.TimeToLive:86400}</long></field>
-                        <field name="implementation"><string>org.exoplatform.services.cache.concurrent.ConcurrentFIFOExoCache</string></field>
-                    </object>
-                </object-param>
-                <object-param profiles="cluster">
-                    <name>SpacesCache</name>
-                    <description>The JBoss Cache configuration for the SpacesCache</description>
+                    <name>social.SpacesCache</name>
+                    <description>The Cache configuration for the SpacesCache</description>
                     <object type="org.exoplatform.services.cache.impl.infinispan.generic.GenericExoCacheConfig">
-                        <field name="name"><string>SpacesCache</string></field>
-                        <field name="strategy"><string>LIRS</string></field>
-                        <field name="maxEntries"><int>${exo.cache.social.SpacesCache.Capacity:5000}</int></field>
-                        <field name="lifespan"><long>${exo.cache.social.SpacesCache.TimeToLive:86400000}</long></field>
-                        <field name="cacheMode"><string>${exo.cache.social.SpacesCache.cacheMode:replication}</string></field>
+                        <field name="name"><string>social.SpacesCache</string></field>
+                        <field name="strategy" profiles="cluster"><string>${exo.cache.social.SpacesCache.strategy:LIRS}</string></field>
+                        <field name="maxSize"><int>${exo.cache.social.SpacesCache.MaxNodes:4000}</int></field>
+                        <field name="liveTime"><long>${exo.cache.social.SpacesCache.TimeToLive:86400}</long></field>
+                        <field name="cacheMode"  profiles="cluster"><string>${exo.cache.social.SpacesCache.cacheMode:replication}</string></field>
                     </object>
                 </object-param>
 

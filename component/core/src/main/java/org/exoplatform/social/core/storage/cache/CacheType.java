@@ -32,38 +32,38 @@ import java.io.Serializable;
 public enum CacheType {
 
   //
-  IDENTITY("IdentityCache"),
-  IDENTITY_INDEX("IdentityIndexCache"),
-  PROFILE("ProfileCache"),
-  IDENTITIES_COUNT("IdentitiesCountCache"),
-  IDENTITIES("IdentitiesCache"),
-  ACTIVE_IDENTITIES("ActiveIdentitiesCache"),
+  IDENTITY("social.IdentityCache"),
+  IDENTITY_INDEX("social.IdentityIndexCache"),
+  PROFILE("social.ProfileCache"),
+  IDENTITIES_COUNT("social.IdentitiesCountCache"),
+  IDENTITIES("social.IdentitiesCache"),
+  ACTIVE_IDENTITIES("social.ActiveIdentitiesCache"),
 
   //
-  RELATIONSHIP("RelationshipCache"),
-  RELATIONSHIP_FROM_IDENTITY("RelationshipFromIdentityCache"),
-  RELATIONSHIPS_COUNT("RelationshipsCountCache"),
-  RELATIONSHIPS("RelationshipsCache"),
-  SUGGESTIONS("SuggestionsCache"),
+  RELATIONSHIP("social.RelationshipCache"),
+  RELATIONSHIP_FROM_IDENTITY("social.RelationshipFromIdentityCache"),
+  RELATIONSHIPS_COUNT("social.RelationshipsCountCache"),
+  RELATIONSHIPS("social.RelationshipsCache"),
+  SUGGESTIONS("social.SuggestionsCache"),
 
   //
-  ACTIVITY("ActivityCache"),
-  ACTIVITIES_COUNT("ActivitiesCountCache"),
-  ACTIVITIES("ActivitiesCache"),
+  ACTIVITY("social.ActivityCache"),
+  ACTIVITIES_COUNT("social.ActivitiesCountCache"),
+  ACTIVITIES("social.ActivitiesCache"),
   
   //
-  ACTIVITY_REF("ActivityRefCache"),
-  ACTIVITIES_REF_COUNT("ActivitiesRefCountCache"),
-  ACTIVITIES_REF("ActivitiesRefCache"),
+  ACTIVITY_REF("social.ActivityRefCache"),
+  ACTIVITIES_REF_COUNT("social.ActivitiesRefCountCache"),
+  ACTIVITIES_REF("social.ActivitiesRefCache"),
 
   //
-  SPACE("SpaceCache"),
-  SPACE_REF("SpaceRefCache"),
-  SPACES_COUNT("SpacesCountCache"),
-  SPACES("SpacesCache"),
+  SPACE("social.SpaceCache"),
+  SPACE_REF("social.SpaceRefCache"),
+  SPACES_COUNT("social.SpacesCountCache"),
+  SPACES("social.SpacesCache"),
   
   //
-  SPACE_SIMPLE("SpaceSimpleCache")
+  SPACE_SIMPLE("social.SpaceSimpleCache")
 
   ;
 
