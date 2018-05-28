@@ -142,6 +142,7 @@ for(node in apps) {
   String nodeName = uriParts[uriParts.length - 1];
   String pName = "";
   if ((nodeIcon == null) && (node.getPageRef() != null )) {
+      appName = node.getPageRef().getName();
       if(nodeTitle == null){
         nodeTitle = uicomponent.getResolvedNodeTitle(node, null);
       }
@@ -163,7 +164,7 @@ for(node in apps) {
           <% if (nodeIcon != null) { %>
     <i class="<%=nodeIcon%> nodeIconBg" >&nbsp;</i>
                           <% } else { %>
-                            <i class="uiIconApp<%=pName%> uiIconDefaultApp"></i>
+                            <i class="uiIconApp<%=nodeName%> uiIconApp<%=appName%> uiIconDefaultApp"></i>
     <% } %>
   <span id="$nodeName" class="tabName">$nodeLabel</span>
                           </a>
