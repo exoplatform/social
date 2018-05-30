@@ -112,6 +112,9 @@ public class SpaceMemberAnyMembershipUpgradePlugin extends UpgradeProductPlugin 
     List<Future<Boolean>> futures = new ArrayList<>();
     for (int i = 0; i < numberOfThreads; i++) {
       int fromIndex = numberOfSpacesPerThreads * i;
+      if(fromIndex > spacesCount){
+        break;
+      }
       int toIndex = fromIndex + numberOfSpacesPerThreads;
       toIndex = toIndex > spacesCount ? spacesCount : toIndex;
       List<Space> spaces = allSpaces.subList(fromIndex, toIndex);
