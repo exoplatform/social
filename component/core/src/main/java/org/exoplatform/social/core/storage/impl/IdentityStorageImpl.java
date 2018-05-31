@@ -1625,4 +1625,9 @@ public class IdentityStorageImpl extends AbstractStorage implements IdentityStor
     return getSpaceMemberIdentitiesByProfileFilter(space, profileFilter, type, 0, Integer.MAX_VALUE).size();
   }
 
+  @Override
+  public List<String> sortIdentities(List<String> identityRemoteIds, String sortField) {
+    throw new UnsupportedOperationException("JCR implementation is no more used");
+  }
+
 }

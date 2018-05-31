@@ -367,4 +367,12 @@ public interface IdentityStorage {
   default public List<Identity> getIdentities(String providerId, long offset, long limit) {
     throw new UnsupportedOperationException("This operation is not supported using current implementation of service IdentityStorage");
   }
-}
+
+  /**
+   * Sorts a list of user identities using a field
+   * 
+   * @param identityRemoteIds
+   * @param sortField
+   * @return
+   */
+  public List<String> sortIdentities(List<String> identityRemoteIds, String sortField);}
