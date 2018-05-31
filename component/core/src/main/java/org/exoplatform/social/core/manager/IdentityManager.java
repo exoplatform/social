@@ -563,4 +563,13 @@ public interface IdentityManager {
    *             instead. Will be removed by 4.0.x.
    */
   void addProfileListener(ProfileListenerPlugin plugin);
+
+  /**
+   * Sorts a list of user identities using a field
+   * 
+   * @param identityRemoteIds
+   * @param sortField
+   * @return
+   */
+  public List<String> sortIdentities(List<String> identityRemoteIds, String sortField);
 }

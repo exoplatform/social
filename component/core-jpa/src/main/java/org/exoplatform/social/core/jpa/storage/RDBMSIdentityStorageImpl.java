@@ -67,7 +67,6 @@ import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvide
 import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
 import org.exoplatform.social.core.jpa.search.ExtendProfileFilter;
 import org.exoplatform.social.core.jpa.search.ProfileSearchConnector;
-import org.exoplatform.social.core.jpa.storage.dao.ActivityDAO;
 import org.exoplatform.social.core.jpa.storage.dao.IdentityDAO;
 import org.exoplatform.social.core.jpa.storage.dao.SpaceMemberDAO;
 import org.exoplatform.social.core.jpa.storage.entity.ConnectionEntity;
@@ -99,7 +98,6 @@ public class RDBMSIdentityStorageImpl implements IdentityStorage {
 
   private static final String socialNameSpace = "social";
 
-  private final ActivityDAO activityDAO;
   private final IdentityDAO identityDAO;
   private final SpaceMemberDAO spaceMemberDAO;
 
@@ -116,12 +114,10 @@ public class RDBMSIdentityStorageImpl implements IdentityStorage {
   private Map<String, IdentityProvider<?>> identityProviders = null;
 
   public RDBMSIdentityStorageImpl(IdentityDAO identityDAO,
-                                  ActivityDAO activityDAO,
                                   SpaceMemberDAO spaceMemberDAO,
                                   FileService fileService,
                                   ProfileSearchConnector profileSearchConnector, OrganizationService orgService) {
     this.identityDAO = identityDAO;
-    this.activityDAO = activityDAO;
     this.spaceMemberDAO = spaceMemberDAO;
     this.profileSearchConnector = profileSearchConnector;
     this.orgService = orgService;
@@ -761,7 +757,7 @@ public class RDBMSIdentityStorageImpl implements IdentityStorage {
       List<Identity> identities = new ArrayList<>();
       if (profileFilter != null && profileFilter.getSorting() != null
           && Sorting.SortBy.TITLE.equals(profileFilter.getSorting().sortBy)) {
-        spaceMembers = spaceMemberDAO.sortSpaceMembers(spaceMembers, Profile.FULL_NAME);
+        spaceMembers = sortIdentities(spaceMembers, Profile.FULL_NAME);
       }
       int i = (int) offset;
       long indexLimit = offset + limit;
@@ -998,10 +994,10 @@ public class RDBMSIdentityStorageImpl implements IdentityStorage {
       if (container == null) {
         container = PortalContainer.getInstance();
       }
-      for (ComponentAdapter componentAdapter : container.getComponentAdaptersOfType(IdentityProvider.class)) {
+      for (ComponentAdapter<?> componentAdapter : container.getComponentAdaptersOfType(IdentityProvider.class)) {
           if (componentAdapter != null) {
               Object key = componentAdapter.getComponentKey();
-              IdentityProvider service = (IdentityProvider) container.getComponentInstance(key);
+              IdentityProvider<?> service = (IdentityProvider<?>) container.getComponentInstance(key);
               identityProviders.put(service.getName(), service);
           }
       }
@@ -1051,5 +1047,10 @@ public class RDBMSIdentityStorageImpl implements IdentityStorage {
       }
     }
     return identity;
+  }
+
+  @Override
+  public List<String> sortIdentities(List<String> identityRemoteIds, String sortField) {
+    return spaceMemberDAO.sortSpaceMembers(identityRemoteIds, sortField);
   }
 }

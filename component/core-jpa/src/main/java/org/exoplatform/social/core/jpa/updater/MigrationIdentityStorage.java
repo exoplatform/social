@@ -227,4 +227,9 @@ public class MigrationIdentityStorage implements IdentityStorage {
   public List<Identity> getIdentities(String providerId, long offset, long limit) {
     return jpaStorage.getIdentities(providerId, offset, limit);
   }
+
+  @Override
+  public List<String> sortIdentities(List<String> identityRemoteIds, String sortField) {
+    return jpaStorage.sortIdentities(identityRemoteIds, sortField);
+  }
 }

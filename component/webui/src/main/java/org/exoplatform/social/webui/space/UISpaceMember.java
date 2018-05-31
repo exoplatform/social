@@ -16,27 +16,22 @@
  */
 package org.exoplatform.social.webui.space;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 
 import org.exoplatform.commons.utils.LazyPageList;
-import org.exoplatform.container.ExoContainer;
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.portal.application.PortalRequestContext;
-import org.exoplatform.portal.config.UserACL;
 import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.services.organization.MembershipTypeHandler;
 import org.exoplatform.social.core.identity.model.Identity;
+import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.space.SpaceUtils;
@@ -107,7 +102,8 @@ public class UISpaceMember extends UIContainer {
   String typeOfRelation = null;
   String spaceURL = null;
   private boolean hasErr = false;
-  
+  private IdentityManager identityManager;
+
   /**
    * The flag notifies a new search when clicks search icon or presses enter.
    */
@@ -121,6 +117,7 @@ public class UISpaceMember extends UIContainer {
    */
   public UISpaceMember() throws Exception {
     addChild(UIUserInvitation.class, null, null);
+    identityManager = ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(IdentityManager.class);
     iteratorPendingUsers = createUIComponent(UIPageIterator.class, null, iteratorPendingID);
     iteratorInvitedUsers = createUIComponent(UIPageIterator.class, null, iteratorInvitedID);
     iteratorExistingUsers = createUIComponent(UIPageIterator.class, null, iteratorExistingID);
@@ -260,6 +257,7 @@ public class UISpaceMember extends UIContainer {
       if (pendingUsers == null || pendingUsers.length == 0) {
         return new ArrayList<String>();
       }
+      pendingUsers = sortUsers(pendingUsers);
 
       int currentPage = iteratorPendingUsers.getCurrentPage();
       LazyPageList<String> pageList = new LazyPageList<String>(
@@ -302,6 +300,7 @@ public class UISpaceMember extends UIContainer {
       if (invitedUsers == null || invitedUsers.length == 0) {
         return new ArrayList<String>();
       }
+      invitedUsers = sortUsers(invitedUsers);
 
       int currentPage = iteratorInvitedUsers.getCurrentPage();
       LazyPageList<String> pageList = new LazyPageList<String>(
@@ -327,6 +326,12 @@ public class UISpaceMember extends UIContainer {
     return new ArrayList<>();
   }
 
+  private String[] sortUsers(String[] users) {
+    List<String> sortedIdentities = identityManager.sortIdentities(Arrays.asList(users), Profile.FULL_NAME);
+    users = sortedIdentities.toArray(new String[0]);
+    return users;
+  }
+
   /**
    * Gets list of existing users in a space
    *
@@ -346,9 +351,10 @@ public class UISpaceMember extends UIContainer {
       if (memberUsers == null || memberUsers.length == 0) {
         return new ArrayList<String>();
       }
+      memberUsers = sortUsers(memberUsers);
 
       int currentPage = iteratorExistingUsers.getCurrentPage();
-      Set<String> users = new HashSet<String>(Arrays.asList(memberUsers));
+      Set<String> users = new LinkedHashSet<String>(Arrays.asList(memberUsers));
 
       LazyPageList<String> pageList = new LazyPageList<String>(new StringListAccess(new ArrayList<String>(users)), MEMBERS_PER_PAGE);
       iteratorExistingUsers.setPageList(pageList);
@@ -626,16 +632,6 @@ public class UISpaceMember extends UIContainer {
   }
 
   /**
-   * Gets userACL
-   *
-   * @return userACL
-   * @throws Exception
-   */
-  private UserACL getUserACL() throws Exception {
-    return getApplicationComponent(UserACL.class);
-  }
-
-  /**
    * Gets remoteUser ~ currently logged-in user
    *
    * @return remoteUser
@@ -652,10 +648,7 @@ public class UISpaceMember extends UIContainer {
    * @return Full name
    */
   public String getFullName(String userId) {
-    
-    ExoContainer container = ExoContainerContext.getCurrentContainer();
-    IdentityManager idm = (IdentityManager) container.getComponentInstanceOfType(IdentityManager.class);
-    Identity identity = idm.getOrCreateIdentity(OrganizationIdentityProvider.NAME, userId, true);
+    Identity identity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, userId, true);
     
     if (identity == null) return StringUtils.EMPTY;
     

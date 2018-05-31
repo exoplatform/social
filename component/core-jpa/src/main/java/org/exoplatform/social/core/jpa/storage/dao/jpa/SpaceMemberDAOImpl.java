@@ -73,6 +73,10 @@ public class SpaceMemberDAOImpl extends GenericDAOJPAImpl<SpaceMemberEntity, Lon
     Query query = getEntityManager().createNativeQuery(queryStringBuilder.toString());
     List<?> resultList = query.getResultList();
     List<String> result = new ArrayList<>();
+
+    // Make sure that the list is modifiable
+    List<String> addedUsernames = new ArrayList<>(usernames);
+
     for (Object object : resultList) {
       Object[] resultEntry = (Object[]) object;
       if (resultEntry[0] == null) {
@@ -80,10 +84,10 @@ public class SpaceMemberDAOImpl extends GenericDAOJPAImpl<SpaceMemberEntity, Lon
       }
       String username = resultEntry[0].toString();
       result.add(username);
-      usernames.remove(username);
+      addedUsernames.remove(username);
     }
     // Add usernames that don't have identities in SOC_IDENTITIES
-    for (String username : usernames) {
+    for (String username : addedUsernames) {
       result.add(username);
     }
     return result;
