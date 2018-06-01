@@ -26,6 +26,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
 import org.exoplatform.commons.file.services.FileStorageException;
+import org.exoplatform.social.core.jpa.storage.dao.SpaceMemberDAO;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -76,6 +77,7 @@ public class RDBMSIdentityStorageImpl extends IdentityStorageImpl {
 
   private static final String socialNameSpace = "social";
 
+  private  SpaceMemberDAO spaceMemberDAO;
   private final ActivityDAO activityDAO;
   private final IdentityDAO identityDAO;
   private final SpaceDAO spaceDAO;
@@ -87,10 +89,12 @@ public class RDBMSIdentityStorageImpl extends IdentityStorageImpl {
   private ProfileSearchConnector profileSearchConnector;
 
   public RDBMSIdentityStorageImpl(IdentityDAO identityDAO,
+                                  SpaceMemberDAO spaceMemberDAO,
                                   SpaceDAO spaceDAO, ActivityDAO activityDAO,
                                   FileService fileService,
                                   ProfileSearchConnector profileSearchConnector, OrganizationService orgService) {
     this.identityDAO = identityDAO;
+    this.spaceMemberDAO = spaceMemberDAO;
     this.spaceDAO = spaceDAO;
     this.activityDAO = activityDAO;
     this.profileSearchConnector = profileSearchConnector;
@@ -108,7 +112,7 @@ public class RDBMSIdentityStorageImpl extends IdentityStorageImpl {
 
 
 
-  private void mapToProfileEntity(Profile profile, IdentityEntity entity) {
+  private void mapToProfileEntity(Profile profile, IdentityEntity entity)   {
     Map<String, String> entityProperties = entity.getProperties();
     if (entityProperties == null) {
       entityProperties = new HashMap<>();
@@ -646,6 +650,7 @@ public class RDBMSIdentityStorageImpl extends IdentityStorageImpl {
                                                                 long offset, long limit) throws IdentityStorageException {
 
     List<Long> relations = new ArrayList<>();
+    List<String> spaceMembers = null;
     if (space != null) {
       try {
         SpaceEntity gotSpace = spaceDAO.find(Long.parseLong(space.getId()));
@@ -667,6 +672,7 @@ public class RDBMSIdentityStorageImpl extends IdentityStorageImpl {
             }
             break;
         }
+        spaceMembers = sortIdentities(Arrays.asList(members), Profile.LAST_NAME);
 
         for (int i = 0; i < members.length; i++) {
           Identity identity = findIdentity(OrganizationIdentityProvider.NAME, members[i]);
@@ -792,4 +798,9 @@ public class RDBMSIdentityStorageImpl extends IdentityStorageImpl {
     }
     return file.getAsStream();
   }
+
+  @Override
+    public List<String> sortIdentities(List<String> identityRemoteIds, String sortField) {
+      return spaceMemberDAO.sortSpaceMembers(identityRemoteIds, sortField);
+ }
 }

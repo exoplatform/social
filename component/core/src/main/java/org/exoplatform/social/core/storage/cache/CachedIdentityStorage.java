@@ -640,4 +640,9 @@ public class CachedIdentityStorage implements IdentityStorage {
   public InputStream getAvatarInputStreamById(Identity identity) throws IOException {
     return storage.getAvatarInputStreamById(identity);
   }
+
+  @Override
+  public List<String> sortIdentities(List<String> identityRemoteIds, String sortField) {
+    return storage.sortIdentities(identityRemoteIds, sortField);
+  }
 }

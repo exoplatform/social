@@ -1615,5 +1615,9 @@ public class IdentityStorageImpl extends AbstractStorage implements IdentityStor
   public InputStream getAvatarInputStreamById(Identity identity) throws IOException {
     throw new UnsupportedOperationException("JCR implementation is no more used");
   }
-  
+
+  @Override
+  public List<String> sortIdentities(List<String> identityRemoteIds, String sortField) {
+    throw new UnsupportedOperationException("JCR implementation is no more used");
+  }
 }

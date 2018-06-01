@@ -337,4 +337,13 @@ public interface IdentityStorage {
    * @return
    */
   InputStream getAvatarInputStreamById(Identity identity) throws IOException;
+
+  /**
+   * Sorts a list of user identities using a field
+   *
+   * @param identityRemoteIds
+   * @param sortField
+   * @return
+   */
+  public List<String> sortIdentities(List<String> identityRemoteIds, String sortField);
 }

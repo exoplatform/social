@@ -553,4 +553,9 @@ public class IdentityManagerImpl implements IdentityManager {
     Identity identity = getOrCreateIdentity(OrganizationIdentityProvider.NAME, remoteId, false);
     this.getIdentityStorage().processEnabledIdentity(identity, isEnable);
   }
+
+  @Override
+  public List<String> sortIdentities(List<String> identityRemoteIds, String sortField) {
+    return identityStorage.sortIdentities(identityRemoteIds, sortField);
+  }
 }

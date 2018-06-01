@@ -16,11 +16,7 @@
  */
 package org.exoplatform.social.webui.space;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringEscapeUtils;
@@ -37,6 +33,7 @@ import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.services.organization.MembershipTypeHandler;
 import org.exoplatform.social.core.identity.model.Identity;
+import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.space.SpaceUtils;
@@ -113,7 +110,7 @@ public class UISpaceMember extends UIContainer {
    */
   private boolean isNewSearch;
 
-
+  private IdentityManager identityManager;
   /**
    * Constructor.
    *
@@ -128,6 +125,7 @@ public class UISpaceMember extends UIContainer {
     addChild(iteratorInvitedUsers);
     addChild(iteratorExistingUsers);
     setTypeOfRelation(USER_TO_INVITE);
+    identityManager = ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(IdentityManager.class);
   }
 
   /**
@@ -260,6 +258,7 @@ public class UISpaceMember extends UIContainer {
       if (pendingUsers == null || pendingUsers.length == 0) {
         return new ArrayList<String>();
       }
+      pendingUsers = sortUsers(pendingUsers);
 
       int currentPage = iteratorPendingUsers.getCurrentPage();
       LazyPageList<String> pageList = new LazyPageList<String>(
@@ -303,6 +302,8 @@ public class UISpaceMember extends UIContainer {
         return new ArrayList<String>();
       }
 
+      invitedUsers = sortUsers(invitedUsers);
+
       int currentPage = iteratorInvitedUsers.getCurrentPage();
       LazyPageList<String> pageList = new LazyPageList<String>(
           new StringListAccess(Arrays.asList(invitedUsers)),
@@ -327,6 +328,12 @@ public class UISpaceMember extends UIContainer {
     return new ArrayList<>();
   }
 
+  private String[] sortUsers(String[] users) {
+    List<String> sortedIdentities = identityManager.sortIdentities(Arrays.asList(users), Profile.LAST_NAME);
+    users = sortedIdentities.toArray(new String[0]);
+    return users;
+  }
+
   /**
    * Gets list of existing users in a space
    *
@@ -346,8 +353,10 @@ public class UISpaceMember extends UIContainer {
         return new ArrayList<String>();
       }
 
+      memberUsers = sortUsers(memberUsers);
+
       int currentPage = iteratorExistingUsers.getCurrentPage();
-      Set<String> users = new HashSet<String>(Arrays.asList(memberUsers));
+      Set<String> users = new LinkedHashSet<String>(Arrays.asList(memberUsers));
       users.addAll(SpaceUtils.findMembershipUsersByGroupAndTypes(space.getGroupId(), MembershipTypeHandler.ANY_MEMBERSHIP_TYPE));
 
       LazyPageList<String> pageList = new LazyPageList<String>(new StringListAccess(new ArrayList<String>(users)), MEMBERS_PER_PAGE);
@@ -627,16 +636,6 @@ public class UISpaceMember extends UIContainer {
   }
 
   /**
-   * Gets userACL
-   *
-   * @return userACL
-   * @throws Exception
-   */
-  private UserACL getUserACL() throws Exception {
-    return getApplicationComponent(UserACL.class);
-  }
-
-  /**
    * Gets remoteUser ~ currently logged-in user
    *
    * @return remoteUser
@@ -653,10 +652,7 @@ public class UISpaceMember extends UIContainer {
    * @return Full name
    */
   public String getFullName(String userId) {
-    
-    ExoContainer container = ExoContainerContext.getCurrentContainer();
-    IdentityManager idm = (IdentityManager) container.getComponentInstanceOfType(IdentityManager.class);
-    Identity identity = idm.getOrCreateIdentity(OrganizationIdentityProvider.NAME, userId, true);
+    Identity identity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, userId, true);
     
     if (identity == null) return StringUtils.EMPTY;
     
