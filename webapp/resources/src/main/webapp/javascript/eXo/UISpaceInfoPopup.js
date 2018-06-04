@@ -412,6 +412,15 @@
                         var divUIAction = $("<div/>", {
                             "class": "uiAction connectAction isSpace"
                         }).append(action);
+
+                        if(eXo.social && eXo.social.tiptip && eXo.social.tiptip.extraActions) {
+                            for (var index = 0; index < eXo.social.tiptip.extraActions.length; index++) {
+                                var extraAction = eXo.social.tiptip.extraActions[index];
+                                if(extraAction.appendContentTo && (!extraAction.test || extraAction.test(popupContentContainer))) {
+                                    extraAction.appendContentTo(divUIAction, spaceName, 'space-name');
+                                }
+                            }
+                        }
                         popupContentContainer.append(divUIAction);
                     }
 

@@ -4,6 +4,7 @@
 (function ($) {
      $.fn.userPopup = function (options) {
          var defaults = {
+             userId: "",
              restURL: "",
              labels: "",
              getContentFunc: function() {},
@@ -205,8 +206,16 @@
                  }
 
                  function loadData(el) {
-                   var userUrl = $(el).attr('href');
-                   var userId = userUrl.substring(userUrl.lastIndexOf('/') + 1);
+                   var userId = opts.userId;
+                   if (!userId) {
+                     var userUrl = $(el).attr('href');
+                     if (!userUrl) {
+                       // no way to get the user id, abort
+                       return;
+                     }
+                     userId = userUrl.substring(userUrl.lastIndexOf('/') + 1);
+                   }
+                   
                    var restUrl = opts.restURL.replace('{0}', window.encodeURI(userId));
                    
                    //
@@ -261,7 +270,7 @@
                  }
                  
 							   function buildPopup(json, ownerUserId) {
-							        var portal = eXo.social.portal;
+							        var portal = eXo.env.portal;
 							        var relationStatus = json.relationshipType;
 							        var currentViewerId = portal.userName;
 							        var action = null;
@@ -271,14 +280,14 @@
 							        tiptip_content.empty();
 							        
 							        if (currentViewerId != ownerUserId && !isDeleted) {
-							    
+
 							            action = $('<div/>', {
 							                "class": "connect btn-link",
 							                "text": "" + labels.Connect,
 							                "data-action": "Invite:" + ownerUserId,
 							                "onclick": "takeAction(this)"
 							            });
-							    
+
 							            //
 							            if (relationStatus == "pending") { // Viewing is not owner
 							                action = $('<div/>', {
@@ -379,10 +388,20 @@
                     popupContent.append(tbody);
                     popupContentContainer.append(popupContent);
 
+                    var divUIAction;
                     if (currentViewerId != ownerUserId && !isDeleted) {
-                        var divUIAction = $("<div/>", {
+                        divUIAction = $("<div/>", {
                             "class":"uiAction connectAction"
                         }).append(action);
+
+                        if(eXo.social && eXo.social.tiptip && eXo.social.tiptip.extraActions) {
+                            for (var index = 0; index < eXo.social.tiptip.extraActions.length; index++) {
+                                var extraAction = eXo.social.tiptip.extraActions[index];
+                                if(extraAction.appendContentTo && (!extraAction.test || extraAction.test(popupContentContainer))) {
+                                    extraAction.appendContentTo(divUIAction, ownerUserId);
+                                }
+                            }
+                        }
                     }
 
                     if (divUIAction) {
