@@ -515,6 +515,13 @@
   </changeSet>
 
   <changeSet author="social" id="1.0.0-58">
+    <validCheckSum>7:6d73301b5f63132385b561dd059a75c5</validCheckSum>
+    <!-- Make sure the CREATED_DATE column has a non zero default value before altering the table, since it is not
+     allowed by default in MySQL since version 5.7.8 (default strict mode value has changed).
+     Tried to use <addDefaultValue> liquibase tag but faced the bug https://liquibase.jira.com/browse/CORE-3010-->
+    <sql dbms="mysql">
+      ALTER TABLE SOC_SPACES CHANGE COLUMN `CREATED_DATE` `CREATED_DATE` TIMESTAMP NOT NULL DEFAULT NOW();
+    </sql>
     <addColumn tableName="SOC_SPACES">
       <column name="BANNER_LAST_UPDATED" type="TIMESTAMP">
         <constraints nullable="true"/>
