@@ -157,7 +157,6 @@ public class SpaceMemberAnyMembershipUpgradeTest extends BaseCoreTest {
       try {
         RequestLifeCycle.begin(getContainer());
         Space space = createSpace(spaceName);
-        tearDownSpaceList.add(space);
         String[] members = space.getMembers();
 
         MembershipType membershipType = organizationService.getMembershipTypeHandler().createMembershipTypeInstance();
