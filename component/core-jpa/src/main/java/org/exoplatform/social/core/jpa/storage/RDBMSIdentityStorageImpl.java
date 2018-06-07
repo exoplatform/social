@@ -28,7 +28,6 @@ import javax.persistence.Query;
 import org.exoplatform.commons.file.services.FileStorageException;
 import org.json.JSONArray;
 import org.json.JSONObject;
-
 import org.exoplatform.commons.api.persistence.ExoTransactional;
 import org.exoplatform.commons.file.model.FileItem;
 import org.exoplatform.commons.file.services.FileService;
@@ -58,6 +57,7 @@ import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
 import org.exoplatform.social.core.model.AvatarAttachment;
 import org.exoplatform.social.core.profile.ProfileFilter;
 import org.exoplatform.social.core.relationship.model.Relationship.Type;
+import org.exoplatform.social.core.search.Sorting;
 import org.exoplatform.social.core.space.SpaceUtils;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.storage.IdentityStorageException;
@@ -685,7 +685,17 @@ public class RDBMSIdentityStorageImpl extends IdentityStorageImpl {
     ExtendProfileFilter xFilter = new ExtendProfileFilter(profileFilter);
     xFilter.setIdentityIds(relations);
     ListAccess<IdentityEntity> list = getIdentityDAO().findIdentities(xFilter);
-    return EntityConverterUtils.convertToIdentities(list, offset, limit);
+    List<Identity> identitiesList = EntityConverterUtils.convertToIdentities(list, offset, limit);
+    if (profileFilter != null && profileFilter.getSorting() != null
+        && Sorting.SortBy.TITLE.equals(profileFilter.getSorting().sortBy)) {
+      return sortIdentities(identitiesList, Profile.FULL_NAME);
+    }
+    return identitiesList;
+  }
+
+  private List<Identity> sortIdentities(List<Identity> identitiesList, String sortField) {
+    Collections.sort(identitiesList, (i1, i2) -> i1.getProfile().getFullName().compareTo(i2.getProfile().getFullName()));
+    return identitiesList;
   }
 
   public List<Identity> getIdentitiesByProfileFilter(final String providerId,
