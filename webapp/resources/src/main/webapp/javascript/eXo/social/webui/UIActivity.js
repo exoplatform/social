@@ -261,6 +261,67 @@
             }
           }
         });
+        }
+
+       var editCommentEl = $("[data-edit-activity='" + activityId + "']");
+       if (editCommentEl.length > 0) {
+              $('textarea#composerEditInput' + activityId).hide();
+              $('#EditCommentButton'+ activityId).hide();
+              editCommentEl.off('click').on('click', function (evt) {
+              var currentComposerEditInput = 'composerEditInput' + activityId;
+              if (($('#ActivityContextBox'+activityId+' .description').is(":visible"))){
+              $('#ActivityContextBox'+activityId+' .description').hide();
+              $('textarea#composerEditInput' + activityId).show();
+              $('#EditCommentButton'+ activityId).show();
+
+              var extraPlugins = 'simpleLink,selectImage,suggester,hideBottomToolbar';
+                    var windowWidth = $(window).width();
+                    var windowHeight = $(window).height();
+                    if (windowWidth > windowHeight && windowWidth < 768) {
+                      // Disable suggester on smart-phone landscape
+                      extraPlugins = 'simpleLink,selectImage';
+                    }
+             $('textarea#composerEditInput' + activityId).ckeditor({
+                        customConfig: '/commons-extension/ckeditorCustom/config.js',
+                                extraPlugins: extraPlugins,
+                                removePlugins: 'image',
+                                placeholder: commentPlaceholder != null ? commentPlaceholder : window.eXo.social.I18n.mentions.defaultMessage,
+                                activityId : activityId,
+                                extraAllowedContent: 'img[style,class,src,referrerpolicy,alt,width,height]',
+                                spaceURL: spaceURL,
+                                spaceGroupId: spaceGroupId,
+                                typeOfRelation: 'mention_comment',
+                                on : {
+                                  instanceReady : function ( evt ) {
+                                  $('#EditCommentButton'+ activityId).prop("disabled", false);
+                                  },
+                                  change: function( evt) {
+
+                                  },
+                                  key: function( evt) {
+
+                                      }
+                                    }
+
+                      });
+             CKEDITOR.instances[currentComposerEditInput].setData($('#ActivityContextBox'+activityId+' .description').html());
+             }
+             else {
+             try {
+                           if(CKEDITOR.instances[currentComposerEditInput]) {
+                               CKEDITOR.instances[currentComposerEditInput].destroy();
+                           }
+                         } catch(e){
+                           console.log(e);
+                         }
+             $('textarea#composerEditInput' + activityId).hide();
+             $('#EditCommentButton'+ activityId).hide();
+             $('#ActivityContextBox'+activityId+' .description').show();
+             }
+        });
+        }
+
+
         $("#CancelButton" + UIActivity.activityId).on('click', function (evt) {
           var currentActivityId = evt.target.id.replace('CancelButton', '');
           var inputContainer = $('#InputContainer' + currentActivityId);
@@ -282,7 +343,7 @@
           }
 
         });
-      }
+
 
       var actionDeletes = $('a.controllDelete');
       if (actionDeletes.length > 0) {

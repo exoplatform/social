@@ -228,19 +228,26 @@
 		<div id="ActivityContextBox${activity.id}">
 		  <div class="heading">
 				<span class="arrowLeft"></span>
-				<div class="actLink hidden-phone hidden-tablet">
-					 <a id="Permalink${activity.id}" class="uiIconLink uiIconLightGray" rel="tooltip" data-placement="bottom" title="$viewActivityTip" href="<%=uicomponent.getActivityPermalink(activity.id)%>"></a>
-					 <% if (activityDeletable) {
-					 %>
-						<a href="javascript:void(0)" data-confirm="$labelToDeleteThisActivity"
-						    data-caption="$captionConfirmation" data-close="$labelClosebutton"
-						    data-ok="$labelConfirmbutton"
-						    data-delete="<%=uicomponent.event("DeleteActivity", uicomponent.getId(), "");%>"
-						    class="uiIconClose uiIconLightGray controllDelete"
-						    rel="tooltip" data-placement="bottom" title="$deleteActivityTip"
-						    id="DeleteActivityButton${activity.id}"></a>
-					  <%}%>
-				</div>
+                <div class="pull-right">
+                    <div class="btn-group uiDropdownWithIcon">
+                        <div class="btn dropdown-toggle" data-toggle="dropdown">
+                            <i class="uiIconActivityAction uiIconLightGray">
+                            </i>
+                        </div>
+                        <ul class="dropdown-menu" role="menu">
+                            <li>
+                                <a id="EditActivitylink${activity.id}" class="uiIconLink uiIconLightGray" rel="tooltip" data-edit-activity="${activity.id}" data-placement="bottom" title="$viewActivityTip" href="javascript:void(0)">Edit</a>
+                            </li>
+                            <% if (activityDeletable) {
+                            %>
+                            <li>
+                                <a href="javascript:void(0)" data-confirm="$labelToDeleteThisActivity" data-caption="$captionConfirmation" data-close="$labelClosebutton" data-ok="$labelConfirmbutton"  data-delete="<%=uicomponent.event("DeleteActivity", uicomponent.getId(), "");%>" class="uiIconClose uiIconLightGray controllDelete" id="DeleteActivityButton${activity.id}">Suppress</a>
+
+                            </li>
+                            <%}%>
+                        </ul>
+                    </div>
+                </div>
 				
 				<div class="author">
 				<div class="hidden-desktop circleSpaceAvatar">
@@ -282,6 +289,17 @@
 				</div>
 			</div><!--end heading-->
 			<div class="description">$activity.title</div><!--end description-->
+            <div class="desktop-input">
+                <div class="blastInputPeople">
+                    <div>
+                    <% uicomponent.renderChild(uicomponent.COMPOSER_TEXT_AREA_EDIT_INPUT+activity.id); %>
+                    </div>
+                    <div>
+                    <button class="btn pull-left btn-primary" onclick="<%=uicomponent.event("EditActivity")%>" id="EditCommentButton${activity.id}">Edit</button>
+                    <button class="btn visible-phone" id="CancelEditButton${activity.id}">Cancel</button>
+                        </div>
+                </div>
+            </div>
 			<div class="actionBar clearfix ">
 				 <% def toggleDisplayCommentAction = uicomponent.event('ToggleDisplayCommentForm', null, false);
 								 def commentLink = "";
@@ -290,7 +308,7 @@
 						<li>
 							<a class="$commentLink" id="CommentLink${activity.id}" data-activity="${activity.id}" href="javascript:void(0);">
 								<i class="uiIconComment uiIconLightGray"></i>&nbsp;$allCommentSize
-							</a> 
+							</a>
 						</li>
 					  <% if (uicomponent.isLiked()) { %>
 						<li>
@@ -471,7 +489,7 @@
 					<div class="commentRight">
 						<div class="commentInputBox ">
 							<div class="commentInput"><% uicomponent.renderChild(UIFormTextAreaInput.class); %></div>
-                            <button class="btn pull-left btn-primary" data-comment-button="${activity.id}" data-click="<%= uicomponent.event("PostComment", "COMMENTID") %>" id="CommentButton${activity.id}" disabled>$labelComment</button>
+                            <button class="btn pull-left btn-primary" data-comment-button="${activity.id}" data-click="<%= uicomponent.event("PostComment", "COMMENTID") %>" id="CommentButton${activity.id}">$labelComment</button>
                             <button class="btn visible-phone" id="CancelButton${activity.id}">$labelCancel</button>
 						</div>
 					</div><!--end commentRight-->

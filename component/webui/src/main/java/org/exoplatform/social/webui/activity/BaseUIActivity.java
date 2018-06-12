@@ -71,6 +71,7 @@ public class BaseUIActivity extends UIForm {
   private static final String                   HTML_AT_SYMBOL_ESCAPED_PATTERN = "&#64;";
   private static final String                   HTML_ATTRIBUTE_TITLE = "title";
   public static final String TEMPLATE_PARAM_COMMENT = "comment";
+  public static final String COMPOSER_TEXT_AREA_EDIT_INPUT = "composerEditInput";
   private static int         LATEST_COMMENTS_SIZE        = 2;
   private int                commentMinCharactersAllowed = 0;
   private int                commentMaxCharactersAllowed = 100;
@@ -152,6 +153,9 @@ public class BaseUIActivity extends UIForm {
     UIFormTextAreaInput commentTextArea = new UIFormTextAreaInput("CommentTextarea" + activity.getId(), "CommentTextarea", null);
     commentTextArea.setHTMLAttribute(HTML_ATTRIBUTE_TITLE, resourceBundle.getString("BaseUIActivity.label.Add_your_comment"));
     addChild(commentTextArea);
+    //add textbox for inputting message
+    UIFormTextAreaInput messageInput = new UIFormTextAreaInput(COMPOSER_TEXT_AREA_EDIT_INPUT + activity.getId(), COMPOSER_TEXT_AREA_EDIT_INPUT, null);
+    addChild(messageInput);
 
     try {
       refresh();
@@ -486,6 +490,18 @@ public class BaseUIActivity extends UIForm {
     this.updatedCommentId = commentId;
     setCommentListStatus(CommentStatus.ALL);
     return comment;
+  }
+
+  /**
+   *
+   * @param message edited message
+   */
+  protected void editActivity(String message){
+    //getActivity().setBody(message);
+    getActivity().setTitle(message);
+    Utils.getActivityManager().updateActivity(getActivity());
+
+
   }
 
   public void setLike(boolean isLiked) throws Exception {
@@ -1065,6 +1081,30 @@ public class BaseUIActivity extends UIForm {
       }
       requestContext.addUIComponentToUpdateByAjax(uiActivity);
       Utils.initUserProfilePopup(uiActivity.getId());
+
+    }
+  }
+
+  public static class EditActivityActionListener extends EventListener<BaseUIActivity> {
+
+    @Override
+    public void execute(Event<BaseUIActivity> event) throws Exception {
+      WebuiRequestContext requestContext = event.getRequestContext();
+      BaseUIActivity uiActivity = event.getSource();
+      String message = ((UIFormTextAreaInput)uiActivity.getChildById(COMPOSER_TEXT_AREA_EDIT_INPUT + uiActivity.getActivity().getId())).
+              getValue().replaceAll(HTML_AT_SYMBOL_ESCAPED_PATTERN, HTML_AT_SYMBOL_PATTERN);
+      String originalMessage = uiActivity.getActivity().getBody();
+
+      if ( message == null || StringUtils.equals(message,originalMessage) ){
+        UIApplication uiApplication = requestContext.getUIApplication();
+        uiApplication.addMessage(new ApplicationMessage("Same_content_message", null, ApplicationMessage.WARNING));
+        return;
+      }
+
+      uiActivity.editActivity(message);
+      requestContext.addUIComponentToUpdateByAjax(uiActivity);
+      Utils.initUserProfilePopup(uiActivity.getId());
+      uiActivity.getParent().broadcast(event, event.getExecutionPhase());
 
     }
   }
