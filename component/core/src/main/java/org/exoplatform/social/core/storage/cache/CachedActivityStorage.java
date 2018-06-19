@@ -300,6 +300,7 @@ public class CachedActivityStorage implements ActivityStorage {
     storage.saveComment(activity, comment);
 
     //
+    exoActivityCache.remove(new ActivityKey(comment.getId()));
     exoActivityCache.put(new ActivityKey(comment.getId()), new ActivityData(getActivity(comment.getId())));
     ActivityKey activityKey = new ActivityKey(activity.getId());
     exoActivityCache.remove(activityKey);

@@ -17,6 +17,7 @@
 package org.exoplatform.social.webui.activity;
 
 import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import org.exoplatform.commons.utils.CommonsUtils;
@@ -54,6 +55,7 @@ import org.exoplatform.webui.event.EventListener;
 import org.exoplatform.webui.form.UIForm;
 import org.exoplatform.webui.form.UIFormTextAreaInput;
 
+import java.net.URLDecoder;
 import java.util.*;
 
 /**
@@ -501,6 +503,25 @@ public class BaseUIActivity extends UIForm {
     getActivity().setTitle(message);
     Utils.getActivityManager().updateActivity(getActivity());
 
+
+  }
+
+  /**
+   *
+   * @param commentActivity edited comment's activity
+   * @param message chnaged message
+   * @return
+   */
+  protected ExoSocialActivity editCommentMessage(ExoSocialActivity commentActivity, String message){
+    commentActivity.setTitle(message);
+    commentActivity.setBody(message);
+    Utils.getActivityManager().saveComment(getActivity(), commentActivity);
+    activityCommentsListAccess = Utils.getActivityManager().getCommentsWithListAccess(getActivity(), true);
+    commentSize = activityCommentsListAccess.getSize();
+    currentLoadIndex = 0;
+    this.updatedCommentId = commentActivity.getId();
+    setCommentListStatus(CommentStatus.ALL);
+    return commentActivity;
 
   }
 
@@ -1093,9 +1114,9 @@ public class BaseUIActivity extends UIForm {
       BaseUIActivity uiActivity = event.getSource();
       String message = ((UIFormTextAreaInput)uiActivity.getChildById(COMPOSER_TEXT_AREA_EDIT_INPUT + uiActivity.getActivity().getId())).
               getValue().replaceAll(HTML_AT_SYMBOL_ESCAPED_PATTERN, HTML_AT_SYMBOL_PATTERN);
-      String originalMessage = uiActivity.getActivity().getBody();
+      String originalMessage = uiActivity.getActivity().getTitle();
 
-      if ( message == null || StringUtils.equals(message,originalMessage) ){
+      if ( StringUtils.equals(message,originalMessage) ){
         UIApplication uiApplication = requestContext.getUIApplication();
         uiApplication.addMessage(new ApplicationMessage("Same_content_message", null, ApplicationMessage.WARNING));
         return;
@@ -1105,6 +1126,36 @@ public class BaseUIActivity extends UIForm {
       requestContext.addUIComponentToUpdateByAjax(uiActivity);
       Utils.initUserProfilePopup(uiActivity.getId());
       uiActivity.getParent().broadcast(event, event.getExecutionPhase());
+
+    }
+  }
+
+  public static class EditCommentActionListener extends EventListener<BaseUIActivity> {
+
+    @Override
+    public void execute(Event<BaseUIActivity> event) throws Exception {
+      WebuiRequestContext requestContext = event.getRequestContext();
+      String commentId = requestContext.getRequestParameter(OBJECTID);
+      String message = URLDecoder.decode(requestContext.getRequestParameter("messageContent"),"UTF-8");
+
+      UIApplication uiApplication = requestContext.getUIApplication();
+      BaseUIActivity uiActivity = event.getSource();
+
+      ExoSocialActivity originalActivity = Utils.getActivityManager().getActivity(commentId);
+      String originalMessage = originalActivity.getTitle();
+      if ( StringUtils.equals(message,originalMessage) ) {
+        uiApplication.addMessage(new ApplicationMessage("Same_content_message", null, ApplicationMessage.WARNING));
+        return;
+      }
+      ExoSocialActivity newComment = uiActivity.editCommentMessage(originalActivity,message);
+      uiActivity.setCommentFormFocused(true);
+      requestContext.addUIComponentToUpdateByAjax(uiActivity);
+      Utils.initUserProfilePopup(uiActivity.getId());
+      uiActivity.focusToComment(newComment.getId());
+      uiActivity.getParent().broadcast(event, event.getExecutionPhase());
+
+
+
 
     }
   }
