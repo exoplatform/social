@@ -501,6 +501,7 @@ public class BaseUIActivity extends UIForm {
   protected void editActivity(String message){
     //getActivity().setBody(message);
     getActivity().setTitle(message);
+    getActivity().setUpdated(new Date());
     Utils.getActivityManager().updateActivity(getActivity());
 
 
@@ -514,13 +515,14 @@ public class BaseUIActivity extends UIForm {
    */
   protected ExoSocialActivity editCommentMessage(ExoSocialActivity commentActivity, String message){
     commentActivity.setTitle(message);
-    commentActivity.setBody(message);
+    //commentActivity.setBody(message);
+    commentActivity.setUpdated(new Date());
+    getActivity().setUpdated(commentActivity.getUpdated());
     Utils.getActivityManager().saveComment(getActivity(), commentActivity);
     activityCommentsListAccess = Utils.getActivityManager().getCommentsWithListAccess(getActivity(), true);
     commentSize = activityCommentsListAccess.getSize();
     currentLoadIndex = 0;
     this.updatedCommentId = commentActivity.getId();
-    setCommentListStatus(CommentStatus.ALL);
     return commentActivity;
 
   }
@@ -1148,15 +1150,9 @@ public class BaseUIActivity extends UIForm {
         return;
       }
       ExoSocialActivity newComment = uiActivity.editCommentMessage(originalActivity,message);
-      uiActivity.setCommentFormFocused(true);
       requestContext.addUIComponentToUpdateByAjax(uiActivity);
       Utils.initUserProfilePopup(uiActivity.getId());
-      uiActivity.focusToComment(newComment.getId());
       uiActivity.getParent().broadcast(event, event.getExecutionPhase());
-
-
-
-
     }
   }
 

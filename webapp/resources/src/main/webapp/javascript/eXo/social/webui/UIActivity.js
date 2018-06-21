@@ -194,6 +194,7 @@
       var commentLinkEl = $("[data-activity='" + activityId + "']");
       if (commentLinkEl.length > 0) {
         commentLinkEl.off('click').on('click', function (evt) {
+          evt.stopPropagation();
           var currentActivityId = $(this).attr('data-activity');
           var currentCommentId = $(this).attr('data-comment');
           var currentSubCommentId = $(this).attr('data-sub-comment');
@@ -269,6 +270,7 @@
               $('#EditActivityButton'+ activityId).hide();
               $('#DeleteEditCommentButton'+ activityId).hide();
               editActivityEl.off('click').on('click', function (evt) {
+              evt.stopPropagation();
               var currentComposerEditInput = 'composerEditInput' + activityId;
               if (($('#ActivityContextBox'+activityId+' .description').is(":visible"))){
               $('#ActivityContextBox'+activityId+' .description').hide();
@@ -332,6 +334,7 @@
               $('#EditCommentButton'+ commentId).hide();
               $('#DeleteEditCommentButton'+ commentId).hide();
               editCommentEl.off('click').on('click', function (evt) {
+              evt.stopPropagation();
               var currentComposerEditComment = 'composerEditComment' + commentId;
               if (($('#commentContainer'+commentId+' .contentComment').is(":visible"))){
               $('#commentContainer'+commentId+' .contentComment').hide();
@@ -387,24 +390,27 @@
         });
         }
 
-        $("[data-edit-comment-id]").each(function(){
-        var editCommentButton = $(this);
-              editCommentButton.click(function(event) {
-                var commentId = editCommentButton.data("edit-comment-id");
-                var editCommentMessage = $('textarea#composerEditComment' + commentId).val();
-                var clickAction = editCommentButton.data("click").replace("&objectId=","&messageContent="+encodeURI(editCommentMessage? editCommentMessage : "")+"&objectId=")
-                .replace("COMMENTID", (commentId ? commentId : ""));
-                eval(clickAction);
-              });
 
 
        });
 
-       });
+       $("[data-edit-comment-id]").each(function(){
+               var editCommentButton = $(this);
+                     editCommentButton.click(function(event) {
+                       event.stopPropagation();
+                       var commentId = editCommentButton.data("edit-comment-id");
+                       var editCommentMessage = $('textarea#composerEditComment' + commentId).val();
+                       var clickAction = editCommentButton.data("click").replace("&objectId=","&messageContent="+encodeURI(editCommentMessage? editCommentMessage : "")+"&objectId=")
+                       .replace("COMMENTID", (commentId ? commentId : ""));
+                       eval(clickAction);
+                     });
 
+
+       });
        $('[data-cancel-edit-comment-id]').each(function(){
                       var cancelEditCommentButton = $(this);
                       cancelEditCommentButton.click(function(event) {
+                        event.stopPropagation();
                         var commentId = cancelEditCommentButton.data("cancel-edit-comment-id");
                         if (commentId.toString().indexOf('comment') >= 0){
                         var currentComposerEditComment = 'composerEditComment' + commentId;

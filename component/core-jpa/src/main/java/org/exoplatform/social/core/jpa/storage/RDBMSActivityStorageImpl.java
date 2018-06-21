@@ -321,7 +321,9 @@ public class RDBMSActivityStorageImpl implements ActivityStorage {
     //
     Date commentTime = (comment.getPostedTime() != null ? new Date(comment.getPostedTime()) : new Date());
     commentEntity.setPosted(commentTime);
-    commentEntity.setUpdatedDate(commentTime);
+    //update time my be different from post time
+    Date updateCommentTime = (comment.getUpdated() != null ? comment.getUpdated() : new Date());
+    commentEntity.setUpdatedDate(updateCommentTime);
     commentEntity.setMentionerIds(new HashSet<>(Arrays.asList(processMentions(comment.getTitle(), comment.getTemplateParams()))));
     //
     return commentEntity;
