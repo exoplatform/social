@@ -267,12 +267,14 @@
        if (editActivityEl.length > 0) {
               $('textarea#composerEditInput' + activityId).hide();
               $('#EditActivityButton'+ activityId).hide();
+              $('#DeleteEditCommentButton'+ activityId).hide();
               editActivityEl.off('click').on('click', function (evt) {
               var currentComposerEditInput = 'composerEditInput' + activityId;
               if (($('#ActivityContextBox'+activityId+' .description').is(":visible"))){
               $('#ActivityContextBox'+activityId+' .description').hide();
               $('textarea#composerEditInput' + activityId).show();
               $('#EditActivityButton'+ activityId).show();
+              $('#DeleteEditCommentButton'+ activityId).show();
 
               var extraPlugins = 'simpleLink,selectImage,suggester,hideBottomToolbar';
                     var windowWidth = $(window).width();
@@ -316,6 +318,7 @@
                          }
              $('textarea#composerEditInput' + activityId).hide();
              $('#EditActivityButton'+ activityId).hide();
+             $('#DeleteEditCommentButton'+ activityId).hide();
              $('#ActivityContextBox'+activityId+' .description').show();
              }
         });
@@ -327,12 +330,14 @@
               var commentId = $(this).data('edit-comment');
               $('textarea#composerEditComment' + commentId).hide();
               $('#EditCommentButton'+ commentId).hide();
+              $('#DeleteEditCommentButton'+ commentId).hide();
               editCommentEl.off('click').on('click', function (evt) {
               var currentComposerEditComment = 'composerEditComment' + commentId;
               if (($('#commentContainer'+commentId+' .contentComment').is(":visible"))){
               $('#commentContainer'+commentId+' .contentComment').hide();
               $('textarea#composerEditComment' + commentId).show();
               $('#EditCommentButton'+ commentId).show();
+              $('#DeleteEditCommentButton'+ commentId).show();
 
               var extraPlugins = 'simpleLink,selectImage,suggester,hideBottomToolbar';
                     var windowWidth = $(window).width();
@@ -376,6 +381,7 @@
                          }
              $('textarea#composerEditComment' + commentId).hide();
              $('#EditCommentButton'+ commentId).hide();
+             $('#DeleteEditCommentButton'+ commentId).hide();
              $('#commentContainer'+commentId+' .contentComment').show();
              }
         });
@@ -395,6 +401,42 @@
        });
 
        });
+
+       $('[data-cancel-edit-comment-id]').each(function(){
+                      var cancelEditCommentButton = $(this);
+                      cancelEditCommentButton.click(function(event) {
+                        var commentId = cancelEditCommentButton.data("cancel-edit-comment-id");
+                        if (commentId.toString().indexOf('comment') >= 0){
+                        var currentComposerEditComment = 'composerEditComment' + commentId;
+                        try {
+                              if(CKEDITOR.instances[currentComposerEditComment]) {
+                              CKEDITOR.instances[currentComposerEditComment].destroy();
+                              }
+                            } catch(e){
+                              console.log(e);
+                        }
+                        $('textarea#composerEditComment' + commentId).hide();
+                        $('#EditCommentButton'+ commentId).hide();
+                        $('#commentContainer'+commentId+' .contentComment').show();
+
+                        }
+                        else{
+                           var currentComposerEditInput = 'composerEditInput' + commentId;
+                            try {
+                                if(CKEDITOR.instances[currentComposerEditInput]) {
+                                    CKEDITOR.instances[currentComposerEditInput].destroy();
+                                }
+                                } catch(e){
+                                   console.log(e);
+                                }
+                            $('textarea#composerEditInput' + commentId).hide();
+                            $('#EditActivityButton'+ commentId).hide();
+                            $('#ActivityContextBox'+commentId+' .description').show();
+
+                        }
+                        cancelEditCommentButton.hide();
+                        });
+                       });
 
         $("#CancelButton" + UIActivity.activityId).on('click', function (evt) {
           var currentActivityId = evt.target.id.replace('CancelButton', '');
