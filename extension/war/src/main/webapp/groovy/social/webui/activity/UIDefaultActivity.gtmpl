@@ -229,15 +229,15 @@
 		<div id="ActivityContextBox${activity.id}">
 		  <div class="heading">
 				<span class="arrowLeft"></span>
-                <div class="pull-right">
-                    <div class="btn-group uiDropdownWithIcon">
+                <!--div class="pull-right"-->
+                    <div id="dropDownEditActivity${activity.id}" class="btn-group uiDropdownWithIcon actLink hidden-phone hidden-tablet">
                         <div class="btn dropdown-toggle" data-toggle="dropdown">
                             <i class="uiIconActivityAction uiIconLightGray">
                             </i>
                         </div>
                         <ul class="dropdown-menu" role="menu">
                             <li>
-                                <a id="EditActivitylink${activity.id}" class="uiIconLink uiIconLightGray" rel="tooltip" data-edit-activity="${activity.id}" data-placement="bottom" title="$viewActivityTip" href="javascript:void(0)">Edit</a>
+                                <a id="EditActivitylink${activity.id}" class="uiIconLink uiIconLightGray" data-edit-activity="${activity.id}" data-placement="bottom" href="javascript:void(0)">Edit</a>
                             </li>
                             <% if (activityDeletable) {
                             %>
@@ -248,7 +248,7 @@
                             <%}%>
                         </ul>
                     </div>
-                </div>
+                <!--/div-->
 				
 				<div class="author">
 				<div class="hidden-desktop circleSpaceAvatar">
@@ -290,16 +290,16 @@
 				</div>
 			</div><!--end heading-->
 			<div class="description">$activity.title</div><!--end description-->
-            <div class="desktop-input">
+            <div class="desktop-input clearfix">
                 <div class="blastInputPeople">
                     <div>
                     <% uicomponent.renderChild(uicomponent.COMPOSER_TEXT_AREA_EDIT_INPUT+activity.id); %>
-                    </div>
-                    <div>
-                    <button class="btn pull-left btn-primary" onclick="<%=uicomponent.event("EditActivity")%>" id="EditActivityButton${activity.id}">Update</button>&nbsp;
-                    <button href="javascript:void(0)" data-cancel-edit-comment-id="${activity.id}" class="btn pull-left" id="DeleteEditCommentButton${activity.id}">Cancel</button>
-                    <button class="btn visible-phone" id="CancelEditButton${activity.id}">Cancel</button>
+                        <div class="uiAction" style="padding-bottom:30px;">
+                            <button class="btn pull-left btn-primary" onclick="<%=uicomponent.event("EditActivity")%>" id="EditActivityButton${activity.id}">Update</button>&nbsp;
+                            <button href="javascript:void(0)" data-cancel-edit-comment-id="${activity.id}" class="btn pull-left" id="DeleteEditCommentButton${activity.id}">Cancel</button>
+                            <button class="btn visible-phone" id="CancelEditButton${activity.id}">Cancel</button>
                         </div>
+                    </div>
                 </div>
             </div>
 			<div class="actionBar clearfix ">
@@ -444,12 +444,12 @@
 					<div class="contentComment" id="${activity.id}-${commentCounter}">
 						$commentMessage
 					</div>
-                    <div class="desktop-input">
+                    <div class="desktop-input clearfix">
                         <div class="blastInputPeople">
                             <div>
-                                <textarea class="textarea" name="composerEditComment${it.id}" id="composerEditComment${it.id}" rows="10" cols="30" style="visibility: hidden; display: none;"></textarea>
+                                <textarea class="textarea" name="composerEditComment${it.id}" id="composerEditComment${it.id}" rows="10" cols="30" style="visibility: hidden; display: none;padding-top:30px;"></textarea>
                             </div>
-                            <div>
+                            <div class="uiAction">
                                 <button class="btn pull-left btn-primary" data-edit-comment-id="${it.id}" data-click="<%= uicomponent.event("EditComment","COMMENTID"); %>" id="EditCommentButton${it.id}">Update</button>&nbsp;
                                 <button href="javascript:void(0)" data-cancel-edit-comment-id="${it.id}" class="btn pull-left" id="DeleteEditCommentButton${it.id}">Cancel</button>
                                 <button class="btn visible-phone" id="CancelEditButton${it.id}">Cancel</button>
@@ -463,8 +463,8 @@
 					    _ctx.include("war:/groovy/social/webui/activity/UIActivityCommentActions.gtmpl");
 					%>
     			</div><!--end commentRight-->
-                    <div class="pull-right actLink">
-                        <div class="btn-group uiDropdownWithIcon">
+                    <div class="clearfix"></div>
+                        <div id="dropDownEditComment${it.id}" class="btn-group uiDropdownWithIcon actLink">
                             <div class="btn dropdown-toggle" data-toggle="dropdown">
                                 <i class="uiIconActivityAction uiIconLightGray">
                                 </i>
@@ -483,8 +483,6 @@
                                 <% } %>
                             </ul>
                         </div>
-                    </div>
-                    <div class="clearfix"></div>
 			  </div>
 
 			</div>

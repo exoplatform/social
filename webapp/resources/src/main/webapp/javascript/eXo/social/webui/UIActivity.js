@@ -341,6 +341,7 @@
               $('textarea#composerEditComment' + commentId).show();
               $('#EditCommentButton'+ commentId).show();
               $('#DeleteEditCommentButton'+ commentId).show();
+              $('#dropDownEditComment'+ commentId).hide();
 
               var extraPlugins = 'simpleLink,selectImage,suggester,hideBottomToolbar';
                     var windowWidth = $(window).width();
@@ -424,6 +425,7 @@
                         $('textarea#composerEditComment' + commentId).hide();
                         $('#EditCommentButton'+ commentId).hide();
                         $('#commentContainer'+commentId+' .contentComment').show();
+                        $('#dropDownEditComment'+ commentId).show();
 
                         }
                         else{
