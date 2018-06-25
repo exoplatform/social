@@ -141,6 +141,7 @@
 
     init: function() {
       var self = this;
+      var MAX_LENGTH = 2000;
       UIActivity.commentLinkEl = $("#"+UIActivity.commentLinkId);
       UIActivity.commentFormBlockEl = $("#" + UIActivity.commentFormBlockId);
       UIActivity.commentTextareaEl = $("#" + UIActivity.commentTextareId);
@@ -297,9 +298,21 @@
                                 typeOfRelation: 'mention_comment',
                                 on : {
                                   instanceReady : function ( evt ) {
-                                  $('#EditActivityButton'+ activityId).prop("disabled", false);
+                                  $('#EditActivityButton' + activityId).prop("disabled", true);
                                   },
                                   change: function( evt) {
+                                  var newData = evt.editor.getData();
+                                  var originalComment = $('#ActivityContextBox'+activityId+' .description').html();
+                                  var pureText = newData? newData.replace(/<[^>]*>/g, "").replace(/&nbsp;/g,"").trim() : "";
+                                  var disabled = (originalComment == newData) || pureText.length > MAX_LENGTH;
+                                  disabled = disabled ? (newData.indexOf("<img ") < 0) : false;
+
+                                  if (disabled) {
+                                     $('#EditActivityButton' + activityId).prop("disabled", true);
+                                  } else {
+                                     $('#EditActivityButton' + activityId).removeAttr("disabled");
+                                  }
+
 
                                   },
                                   key: function( evt) {
@@ -362,9 +375,21 @@
                                 typeOfRelation: 'mention_comment',
                                 on : {
                                   instanceReady : function ( evt ) {
-                                  $('#EditCommentButton'+ commentId).prop("disabled", false);
+                                  $('#EditCommentButton'+ commentId).prop("disabled", true);
                                   },
                                   change: function( evt) {
+                                  var newData = evt.editor.getData().trim();
+                                  var originalComment = $('#commentContainer'+commentId+' .contentComment').html().trim();
+                                  var pureText = newData? newData.replace(/<[^>]*>/g, "").replace(/&nbsp;/g,"").trim() : "";
+                                  var disabled = (originalComment == newData) || pureText.length > MAX_LENGTH;
+                                  disabled = disabled ? (newData.indexOf("<img ") < 0) : false;
+
+                                  if (disabled) {
+                                     $('#EditCommentButton' + commentId).prop("disabled", true);
+                                  } else {
+                                     $('#EditCommentButton' + commentId).removeAttr("disabled");
+                                  }
+
 
                                   },
                                   key: function( evt) {
