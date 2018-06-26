@@ -19,6 +19,8 @@ package org.exoplatform.social.core.identity.provider;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.codec.binary.StringUtils;
+
 import org.exoplatform.commons.utils.CommonsUtils;
 import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.container.component.ComponentRequestLifecycle;
@@ -201,7 +203,7 @@ public class OrganizationIdentityProvider extends IdentityProvider<User> {
         foundUser.setLastName(lastName);
         hasUpdate = true;
       }
-      if (foundUser.getEmail() == null || !foundUser.getEmail().equals(email)) {
+      if (!StringUtils.equals(foundUser.getEmail(), email)) {
         foundUser.setEmail(email);
         hasUpdate = true;
       }
