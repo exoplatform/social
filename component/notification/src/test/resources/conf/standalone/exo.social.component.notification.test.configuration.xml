@@ -53,6 +53,11 @@
   </component>
 
   <component>
+    <key>org.exoplatform.commons.api.notification.service.storage.WebNotificationStorage</key>
+    <type>org.exoplatform.social.notification.mock.MockWebNotificationStorage</type>
+  </component>
+
+  <component>
 		<key>org.exoplatform.commons.api.notification.service.WebNotificationService</key>
 		<type>org.exoplatform.commons.notification.impl.service.WebNotificationServiceImpl</type>
 	</component>

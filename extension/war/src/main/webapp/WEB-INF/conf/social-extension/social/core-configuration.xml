@@ -291,6 +291,80 @@
     <type>org.exoplatform.social.core.profile.ProfileMapper</type>
   </component>
 
+  <component>
+    <key>org.exoplatform.commons.api.notification.channel.ChannelManager</key>
+    <type>org.exoplatform.commons.notification.channel.ChannelManagerImpl</type>
+  </component>
+
+  <component>
+    <type>org.exoplatform.commons.notification.NotificationConfiguration</type>
+    <init-params>
+      <value-param>
+        <name>workspace</name>
+        <value>portal-system</value>
+      </value-param>
+    </init-params>
+  </component>
+
+  <component>
+    <key>org.exoplatform.commons.api.persistence.DataInitializer</key>
+    <type>org.exoplatform.commons.persistence.impl.LiquibaseDataInitializer</type>
+    <init-params>
+      <value-param>
+        <name>liquibase.datasource</name>
+        <value>${exo.jpa.datasource.name:exo-jpa_portal}</value>
+      </value-param>
+      <value-param>
+        <name>liquibase.contexts</name>
+        <value>production</value>
+      </value-param>
+    </init-params>
+  </component>
+
+  <component>
+    <key>org.exoplatform.commons.api.event.EventManager</key>
+    <type>org.exoplatform.commons.event.impl.EventManagerImpl</type>
+  </component>
+
+  <component>
+    <type>org.exoplatform.settings.jpa.dao.SettingContextDAO</type>
+  </component>
+  <component>
+    <type>org.exoplatform.settings.jpa.dao.SettingScopeDAO</type>
+  </component>
+  <component>
+    <type>org.exoplatform.settings.jpa.dao.SettingsDAO</type>
+  </component>
+
+  <component>
+    <key>org.exoplatform.commons.api.settings.SettingService</key>
+    <type>org.exoplatform.settings.jpa.JPASettingServiceImpl</type>
+  </component>
+
+  <component>
+    <key>org.exoplatform.commons.api.notification.service.setting.UserSettingService</key>
+    <type>org.exoplatform.settings.jpa.JPAUserSettingServiceImpl</type>
+  </component>
+
+  <component>
+    <type>org.exoplatform.commons.notification.impl.jpa.web.dao.WebNotifDAO</type>
+  </component>
+  <component>
+    <type>org.exoplatform.commons.notification.impl.jpa.web.dao.WebParamsDAO</type>
+  </component>
+  <component>
+    <type>org.exoplatform.commons.notification.impl.jpa.web.dao.WebUsersDAO</type>
+  </component>
+
+  <component>
+    <key>org.exoplatform.commons.api.notification.service.storage.WebNotificationStorage</key>
+    <type>org.exoplatform.commons.notification.impl.jpa.web.JPAWebNotificationStorage</type>
+  </component>
+
+  <component>
+    <key>org.exoplatform.commons.api.notification.service.WebNotificationService</key>
+    <type>org.exoplatform.commons.notification.impl.service.WebNotificationServiceImpl</type>
+  </component>
   <!-- Space Configuration -->
 
   <component>

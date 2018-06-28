@@ -28,6 +28,11 @@ import java.util.Map;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 
+import org.exoplatform.commons.api.notification.model.NotificationInfo;
+import org.exoplatform.commons.api.notification.model.PluginKey;
+import org.exoplatform.commons.api.notification.model.WebNotificationFilter;
+import org.exoplatform.commons.api.notification.service.WebNotificationService;
+import org.exoplatform.commons.utils.CommonsUtils;
 import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.container.ExoContainer;
 import org.exoplatform.container.ExoContainerContext;
@@ -41,7 +46,6 @@ import org.exoplatform.services.log.Log;
 import org.exoplatform.services.organization.Group;
 import org.exoplatform.services.organization.GroupHandler;
 import org.exoplatform.services.organization.Membership;
-import org.exoplatform.services.organization.MembershipTypeHandler;
 import org.exoplatform.services.organization.OrganizationService;
 import org.exoplatform.services.organization.User;
 import org.exoplatform.services.security.IdentityConstants;
@@ -108,6 +112,8 @@ public class SpaceServiceImpl implements SpaceService {
   /** The limit for list access loading. */
   private static final int                   LIMIT = 200;
 
+  private WebNotificationService webNotificationService;
+
   private List<MembershipEntry> superManagersMemberships = new ArrayList<>();
 
   /**
@@ -117,12 +123,14 @@ public class SpaceServiceImpl implements SpaceService {
    * @param params
    * @throws Exception
    */
-  public SpaceServiceImpl(InitParams params, SpaceStorage spaceStorage, IdentityStorage identityStorage, UserACL userACL, IdentityRegistry identityRegistry) throws Exception {
+  public SpaceServiceImpl(InitParams params, SpaceStorage spaceStorage, IdentityStorage identityStorage, UserACL userACL,
+                          IdentityRegistry identityRegistry, WebNotificationService webNotificationService) throws Exception {
 
     this.spaceStorage = spaceStorage;
     this.identityStorage = identityStorage;
     this.identityRegistry = identityRegistry;
     this.userACL = userACL;
+    this.webNotificationService = webNotificationService;
 
     if (params != null) {
       if (params.containsKey(SPACES_SUPER_ADMINISTRATORS_PARAM)) {
@@ -1452,6 +1460,7 @@ public class SpaceServiceImpl implements SpaceService {
     if (ArrayUtils.contains(space.getInvitedUsers(), userId)) {
       space = this.removeInvited(space, userId);
       this.updateSpace(space);
+      removeWebNotifications(space.getId(), userId);
     }
   }
 
@@ -1462,6 +1471,25 @@ public class SpaceServiceImpl implements SpaceService {
     if (ArrayUtils.contains(space.getPendingUsers(), userId)) {
       space = this.removePending(space, userId);
       this.updateSpace(space);
+      removeWebNotifications(space.getId(), userId);
+    }
+  }
+
+  private void removeWebNotifications(String spaceId, String userId) {
+    if (webNotificationService != null) {
+      WebNotificationFilter filter = new WebNotificationFilter(userId);
+      filter.setParameter("spaceId", spaceId);
+      PluginKey pluginKey = new PluginKey("SpaceInvitationPlugin");
+      filter.setPluginKey(pluginKey);
+      try {
+        for (NotificationInfo notificationInfo : webNotificationService.getNotificationInfos(filter, 0, -1)) {
+          webNotificationService.remove(notificationInfo.getId());
+        }
+      } catch (Exception e) {
+        LOG.error("Cannot remove web notifications for user: " + userId + " and space id: " + spaceId, e);
+      }
+    } else {
+      LOG.error("Cannot update web notfication. WebNotificationService is null");
     }
   }
 
