@@ -17,8 +17,18 @@
 package org.exoplatform.social.notification.impl;
 
 import org.exoplatform.commons.api.notification.NotificationContext;
-import org.exoplatform.commons.api.notification.model.PluginKey;
+import org.exoplatform.commons.api.notification.NotificationMessageUtils;
+import org.exoplatform.commons.api.notification.channel.AbstractChannel;
+import org.exoplatform.commons.api.notification.channel.template.AbstractTemplateBuilder;
+import org.exoplatform.commons.api.notification.model.*;
+import org.exoplatform.commons.api.notification.plugin.BaseNotificationPlugin;
+import org.exoplatform.commons.api.notification.service.WebNotificationService;
+import org.exoplatform.commons.notification.channel.WebChannel;
 import org.exoplatform.commons.notification.impl.NotificationContextImpl;
+import org.exoplatform.commons.notification.net.WebNotificationSender;
+import org.exoplatform.commons.utils.CommonsUtils;
+import org.exoplatform.services.log.ExoLogger;
+import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.space.SpaceListenerPlugin;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceLifeCycleEvent;
@@ -26,7 +36,15 @@ import org.exoplatform.social.notification.plugin.RequestJoinSpacePlugin;
 import org.exoplatform.social.notification.plugin.SocialNotificationUtils;
 import org.exoplatform.social.notification.plugin.SpaceInvitationPlugin;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 public class SpaceNotificationImpl extends SpaceListenerPlugin {
+
+  private WebNotificationService webNotificationService;
+
+  private static final Log LOG = ExoLogger.getExoLogger(SpaceNotificationImpl.class);
 
   @Override
   public void spaceCreated(SpaceLifeCycleEvent event) {}
@@ -47,7 +65,29 @@ public class SpaceNotificationImpl extends SpaceListenerPlugin {
   public void applicationDeactivated(SpaceLifeCycleEvent event) {}
 
   @Override
-  public void joined(SpaceLifeCycleEvent event) {}
+  public void joined(SpaceLifeCycleEvent event) {
+    WebNotificationService webNotificationService = getWebNotificationService();
+    if (webNotificationService != null) {
+      Space space = event.getSpace();
+      String userId = event.getTarget();
+      WebNotificationFilter webNotificationFilter = new WebNotificationFilter(userId);
+      webNotificationFilter.setParameter("spaceId", space.getId());
+      PluginKey pluginKey = new PluginKey(SpaceInvitationPlugin.ID);
+      webNotificationFilter.setPluginKey(pluginKey);
+      List<NotificationInfo> webNotifs = webNotificationService.getNotificationInfos(webNotificationFilter, 0, -1);
+      Map<String, String> ownerParameter = new HashMap<String, String>();
+      ownerParameter.put("spaceId", space.getId());
+      ownerParameter.put("status", "accepted");
+      for (NotificationInfo info : webNotifs) {
+        info.setTo(userId);
+        info.key(new PluginKey("SpaceInvitationPlugin"));
+        info.setOwnerParameter(ownerParameter);
+        updateNotification(info);
+      }
+    } else {
+      LOG.error("Cannot update web notfication. WebNotificationService is null");
+    }
+  }
 
   @Override
   public void left(SpaceLifeCycleEvent event) {}
@@ -95,4 +135,34 @@ public class SpaceNotificationImpl extends SpaceListenerPlugin {
 
   @Override
   public void spaceBannerEdited(SpaceLifeCycleEvent event) {}
+
+  private WebNotificationService getWebNotificationService() {
+    if (webNotificationService == null) {
+      webNotificationService = CommonsUtils.getService(WebNotificationService.class);
+    }
+    return webNotificationService;
+  }
+
+  private MessageInfo updateNotification(NotificationInfo notification) {
+    NotificationContext nCtx = NotificationContextImpl.cloneInstance().setNotificationInfo(notification);
+    BaseNotificationPlugin plugin = nCtx.getPluginContainer().getPlugin(notification.getKey());
+    if (plugin == null) {
+      return null;
+    }
+    try {
+      AbstractChannel channel = nCtx.getChannelManager().getChannel(ChannelKey.key(WebChannel.ID));
+      AbstractTemplateBuilder builder = channel.getTemplateBuilder(notification.getKey());
+      MessageInfo msg = builder.buildMessage(nCtx);
+      msg.setMoveTop(false);
+      WebNotificationSender.sendJsonMessage(notification.getTo(), msg);
+      notification.setTitle(msg.getBody());
+      notification.with(NotificationMessageUtils.SHOW_POPOVER_PROPERTY.getKey(), "true")
+          .with(NotificationMessageUtils.READ_PORPERTY.getKey(), "false");
+      getWebNotificationService().save(notification);
+      return msg;
+    } catch (Exception e) {
+      LOG.error("Can not update space invitation notification.", e.getMessage());
+      return null;
+    }
+  }
 }
