@@ -128,6 +128,7 @@ var UISpaceNavigation = {
 	      window.location = href;
 	    }
 	  };
+	  UISpaceNavigation.initStickyBanner();
 	},
 	initNavigation : function(index, moreLabel) {
 	  //
@@ -182,6 +183,20 @@ var UISpaceNavigation = {
     }
 
     $(tabContainer).css({"visibility":"visible"});
+    UISpaceNavigation.initStickyBanner();
+    var $tab = $('.uiSpaceMenu .spaceMenuTab');
+    var $selectedTab = $tab.find('.active');
+    var left = $selectedTab.position().left;
+    var screenWidth = $(window).width();
+
+    if (left > (screenWidth / 2) && left < ($tab[0].scrollWidth - screenWidth / 2)) {
+      $tab.scrollLeft(left - screenWidth / 2);
+    } else if (left > $tab.width() - screenWidth / 2) {
+      $tab.scrollLeft(left);
+    }
+  },
+
+  initStickyBanner: function() {
     $(window).off('scroll.uiSpaceMenu').on('scroll.uiSpaceMenu', function() {
       var $rightBody = $('#RightBody');
       if ($(window).scrollTop() > 130) {
@@ -196,16 +211,6 @@ var UISpaceNavigation = {
         }
       }
     });
-    var $tab = $('.uiSpaceMenu .spaceMenuTab');
-    var $selectedTab = $tab.find('.active');
-    var left = $selectedTab.position().left;
-    var screenWidth = $(window).width();
-
-    if (left > (screenWidth / 2) && left < ($tab[0].scrollWidth - screenWidth / 2)) {
-      $tab.scrollLeft(left - screenWidth / 2);
-    } else if (left > $tab.width() - screenWidth / 2) {
-      $tab.scrollLeft(left);
-    }
   },
 
   initAvatar : function(uploaderId) {
