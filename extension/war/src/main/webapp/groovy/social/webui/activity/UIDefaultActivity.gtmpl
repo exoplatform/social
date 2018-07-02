@@ -213,6 +213,7 @@
       		    spaceImageSource = LinkProvider.SPACE_DEFAULT_AVATAR_URL;
             }
    }
+  def viewerId = Utils.getViewerIdentity().getId();
 %>
 
 <div class="activityStream uiDefaultActivity" id="activityContainer${activity.id}">
@@ -230,24 +231,33 @@
 		  <div class="heading">
 				<span class="arrowLeft"></span>
                 <!--div class="pull-right"-->
+			    <%
+			  		if(viewerId == activity.posterId || activityDeletable ){
+			    %>
                     <div id="dropDownEditActivity${activity.id}" class="btn-group uiDropdownWithIcon actLink hidden-phone hidden-tablet">
                         <div class="btn dropdown-toggle" data-toggle="dropdown">
                             <i class="uiIconActivityAction uiIconLightGray">
                             </i>
                         </div>
                         <ul class="dropdown-menu" role="menu">
+							<% if( viewerId == activity.posterId ){%>
                             <li>
-                                <a id="EditActivitylink${activity.id}" class="uiIconLink uiIconLightGray" data-edit-activity="${activity.id}" data-placement="bottom" href="javascript:void(0)">Edit</a>
+                                <a id="EditActivitylink${activity.id}" class="" data-edit-activity="${activity.id}" data-placement="bottom" href="javascript:void(0)">Edit</a>
                             </li>
-                            <% if (activityDeletable) {
+                            <%
+							}
+							if (activityDeletable) {
                             %>
                             <li>
-                                <a href="javascript:void(0)" data-confirm="$labelToDeleteThisActivity" data-caption="$captionConfirmation" data-close="$labelClosebutton" data-ok="$labelConfirmbutton"  data-delete="<%=uicomponent.event("DeleteActivity", uicomponent.getId(), "");%>" class="uiIconClose uiIconLightGray controllDelete" id="DeleteActivityButton${activity.id}">Suppress</a>
+                                <a href="javascript:void(0)" data-confirm="$labelToDeleteThisActivity" data-caption="$captionConfirmation" data-close="$labelClosebutton" data-ok="$labelConfirmbutton"  data-delete="<%=uicomponent.event("DeleteActivity", uicomponent.getId(), "");%>" class="controllDelete" id="DeleteActivityButton${activity.id}">Suppress</a>
 
                             </li>
                             <%}%>
                         </ul>
                     </div>
+			    <%
+			     }
+			    %>
                 <!--/div-->
 				
 				<div class="author">
@@ -464,25 +474,31 @@
 					%>
     			</div><!--end commentRight-->
                     <div class="clearfix"></div>
+				  <%
+				  if(viewerId == it.posterId || uicomponent.isCommentDeletable(it.userId) ){
+				  %>
                         <div id="dropDownEditComment${it.id}" class="btn-group uiDropdownWithIcon actLink">
                             <div class="btn dropdown-toggle" data-toggle="dropdown">
                                 <i class="uiIconActivityAction uiIconLightGray">
                                 </i>
                             </div>
                             <ul class="dropdown-menu" role="menu">
+								<% if(viewerId == it.posterId){%>
                                 <li>
-				                   <a id="CommentActivitylink${it.id}" rel="tooltip" data-placement="bottom" data-edit-comment="${it.id}" title="$viewActivityTip" class="uiIconLink uiIconLightGray" href="javascript:void(0)">Edit</a>
+				                   <a id="CommentActivitylink${it.id}" rel="tooltip" data-placement="bottom" data-edit-comment="${it.id}" title="$viewActivityTip" class="" href="javascript:void(0)">Edit</a>
 				                </li>
 				                <%
+								}
 					                if (uicomponent.isCommentDeletable(it.userId)) {
 					                String idDeleteComment = "DeleteCommentButton${it.id}";
 				                %>
                                 <li>
-                                    <a href="javascript:void(0)" id="$idDeleteComment" data-confirm="$labelToDeleteThisComment" data-caption="$captionConfirmation" data-close="$labelClosebutton" data-ok="$labelConfirmbutton"  data-delete="<%= uicomponent.event("DeleteComment", uicomponent.id, it.id); %>"  class="uiIconTrash uiIconLightGray controllDelete"></a>
+                                    <a href="javascript:void(0)" id="$idDeleteComment" data-confirm="$labelToDeleteThisComment" data-caption="$captionConfirmation" data-close="$labelClosebutton" data-ok="$labelConfirmbutton"  data-delete="<%= uicomponent.event("DeleteComment", uicomponent.id, it.id); %>"  class="controllDelete"></a>
 				                </li>
                                 <% } %>
                             </ul>
                         </div>
+				<%}%>
 			  </div>
 
 			</div>

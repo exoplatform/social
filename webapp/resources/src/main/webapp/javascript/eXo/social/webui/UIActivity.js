@@ -266,10 +266,10 @@
         }
 
        var editActivityEl = $("[data-edit-activity='" + activityId + "']");
+       $('textarea#composerEditInput' + activityId).hide();
+       $('#EditActivityButton'+ activityId).hide();
+       $('#DeleteEditCommentButton'+ activityId).hide();
        if (editActivityEl.length > 0) {
-              $('textarea#composerEditInput' + activityId).hide();
-              $('#EditActivityButton'+ activityId).hide();
-              $('#DeleteEditCommentButton'+ activityId).hide();
               editActivityEl.off('click').on('click', function (evt) {
               evt.stopPropagation();
               var currentComposerEditInput = 'composerEditInput' + activityId;
