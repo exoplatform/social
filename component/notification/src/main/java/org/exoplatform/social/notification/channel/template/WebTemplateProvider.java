@@ -50,18 +50,7 @@ import org.exoplatform.social.core.service.LinkProvider;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.notification.LinkProviderUtils;
 import org.exoplatform.social.notification.Utils;
-import org.exoplatform.social.notification.plugin.ActivityCommentPlugin;
-import org.exoplatform.social.notification.plugin.ActivityMentionPlugin;
-import org.exoplatform.social.notification.plugin.ActivityReplyToCommentPlugin;
-import org.exoplatform.social.notification.plugin.LikeCommentPlugin;
-import org.exoplatform.social.notification.plugin.LikePlugin;
-import org.exoplatform.social.notification.plugin.NewUserPlugin;
-import org.exoplatform.social.notification.plugin.PostActivityPlugin;
-import org.exoplatform.social.notification.plugin.PostActivitySpaceStreamPlugin;
-import org.exoplatform.social.notification.plugin.RelationshipReceivedRequestPlugin;
-import org.exoplatform.social.notification.plugin.RequestJoinSpacePlugin;
-import org.exoplatform.social.notification.plugin.SocialNotificationUtils;
-import org.exoplatform.social.notification.plugin.SpaceInvitationPlugin;
+import org.exoplatform.social.notification.plugin.*;
 import org.exoplatform.webui.utils.TimeConvertUtils;
 
 /**
@@ -78,6 +67,8 @@ import org.exoplatform.webui.utils.TimeConvertUtils;
        @TemplateConfig( pluginId=ActivityCommentPlugin.ID, template="war:/intranet-notification/templates/ActivityCommentPlugin.gtmpl"),
        @TemplateConfig( pluginId=ActivityMentionPlugin.ID, template="war:/intranet-notification/templates/ActivityMentionPlugin.gtmpl"),
        @TemplateConfig( pluginId=LikePlugin.ID, template="war:/intranet-notification/templates/LikePlugin.gtmpl"),
+       @TemplateConfig( pluginId = EditActivityPlugin.ID, template = "war:/intranet-notification/templates/EditActivityPlugin.gtmpl"),
+       @TemplateConfig( pluginId = EditCommentPlugin.ID, template = "war:/intranet-notification/templates/EditCommentPlugin.gtmpl"),
        @TemplateConfig( pluginId=LikeCommentPlugin.ID, template="war:/intranet-notification/templates/LikeCommentPlugin.gtmpl"),
        @TemplateConfig( pluginId=NewUserPlugin.ID, template="war:/intranet-notification/templates/NewUserPlugin.gtmpl"),
        @TemplateConfig( pluginId=PostActivityPlugin.ID, template="war:/intranet-notification/templates/PostActivityPlugin.gtmpl"),
@@ -362,6 +353,193 @@ public class WebTemplateProvider extends TemplateProvider {
       return false;
     }
     
+  };
+
+  /** Defines the template builder for EditCommentPlugin*/
+  private AbstractTemplateBuilder editComment = new AbstractTemplateBuilder() {
+
+    /**
+     * This method get the unread comment notification for a user and adds the names
+     * of the new commenter in notification. In addition, it places the comment id and
+     * activity id parameters.
+     */
+    @Override
+    public NotificationInfo getNotificationToStore(NotificationInfo notification) {
+      String activityId = notification.getValueOwnerParameter(SocialNotificationUtils.ACTIVITY_ID.getKey());
+      String parameterName = SocialNotificationUtils.POSTER.getKey();
+      String parameterValue = notification.getValueOwnerParameter(parameterName);
+      return SocialNotificationUtils.addUserToPreviousNotification(notification, parameterName, activityId, parameterValue);
+    }
+
+    @Override
+    protected MessageInfo makeMessage(NotificationContext ctx) {
+      NotificationInfo notification = ctx.getNotificationInfo();
+      boolean isPopupOverOnly = ctx.value(WebNotificationService.POPUP_OVER);
+
+      String language = getLanguage(notification);
+
+      String activityId = notification.getValueOwnerParameter(SocialNotificationUtils.ACTIVITY_ID.getKey());
+      String commentId = notification.getValueOwnerParameter(SocialNotificationUtils.COMMENT_ID.getKey());
+      ExoSocialActivity activity = Utils.getActivityManager().getActivity(activityId);
+      ExoSocialActivity comment = null;
+      if (StringUtils.isNotBlank(commentId)) {
+        comment = Utils.getActivityManager().getActivity(commentId);
+      }
+      if (activity == null) {
+        LOG.debug("Activity with id '{}' was removed but the notification with id'{}' is remaining", activityId, notification.getId());
+        return null;
+      }
+      if(activity.isComment()) {
+        comment = Utils.getActivityManager().getParentActivity(activity);
+      }
+      if (comment == null) {
+        LOG.debug("Comment of activity with id '{}' was removed but the notification with id'{}' is remaining", commentId, notification.getId());
+        return null;
+      }
+      String pluginId = notification.getKey().getId();
+
+      TemplateContext templateContext = TemplateContext.newChannelInstance(getChannelKey(), pluginId, language);
+      templateContext.put("isIntranet", "true");
+      Calendar cal = Calendar.getInstance();
+      cal.setTimeInMillis(notification.getLastModifiedDate());
+      templateContext.put("READ", Boolean.valueOf(notification.getValueOwnerParameter(NotificationMessageUtils.READ_PORPERTY.getKey())) ? "read" : "unread");
+      templateContext.put("NOTIFICATION_ID", notification.getId());
+      templateContext.put("LAST_UPDATED_TIME", TimeConvertUtils.convertXTimeAgoByTimeServer(cal.getTime(), "EE, dd yyyy", new Locale(language), TimeConvertUtils.YEAR));
+      templateContext.put("ACTIVITY", NotificationUtils.getNotificationActivityTitle(activity.getTitle(), activity.getType()));
+      templateContext.put("COMMENT", isPopupOverOnly ? cutStringByMaxLength(comment.getTitle(), 30) : comment.getTitle());
+      List<String> users = SocialNotificationUtils.mergeUsers(notification, SocialNotificationUtils.POSTER.getKey(), activity.getId(), notification.getValueOwnerParameter(SocialNotificationUtils.POSTER.getKey()));
+
+      //
+      int nbUsers = users.size();
+      if (nbUsers > 0) {
+        Identity lastIdentity = Utils.getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, users.get(nbUsers - 1), true);
+        Profile profile = lastIdentity.getProfile();
+        templateContext.put("USER", profile.getFullName());
+        templateContext.put("AVATAR", profile.getAvatarUrl() != null ? profile.getAvatarUrl() : LinkProvider.PROFILE_DEFAULT_AVATAR_URL);
+        templateContext.put("PROFILE_URL", LinkProvider.getUserProfileUri(lastIdentity.getRemoteId()));
+        templateContext.put("NB_USERS", nbUsers);
+        //
+        if (nbUsers >= 2) {
+          Identity beforeLastIdentity = Utils.getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, users.get(nbUsers - 2), true);
+          templateContext.put("LAST_USER", beforeLastIdentity.getProfile().getFullName());
+          if (nbUsers > 2) {
+            templateContext.put("COUNT", nbUsers - 2);
+          }
+        }
+      }
+      //
+      boolean notHighLightComment = Boolean.valueOf(notification.getValueOwnerParameter(NotificationMessageUtils.NOT_HIGHLIGHT_COMMENT_PORPERTY.getKey()));
+      templateContext.put("VIEW_FULL_DISCUSSION_ACTION_URL", LinkProvider.getSingleActivityUrl(notHighLightComment ?  activity.getId() : activity.getId() + "#comment-" + comment.getId()));
+
+      //
+      String body = TemplateUtils.processGroovy(templateContext);
+      //binding the exception throws by processing template
+      ctx.setException(templateContext.getException());
+      MessageInfo messageInfo = new MessageInfo();
+      return messageInfo.body(body).end();
+    }
+
+    private String cutStringByMaxLength(String st, int maxLength) {
+      if (st == null) return st;
+      st = StringEscapeUtils.unescapeHtml(st);
+      if (st.length() <= maxLength) return st;
+      String noHtmlSt = st.replaceAll("\\<.*?\\>", "");
+      if (noHtmlSt.length() <= maxLength) return noHtmlSt;
+      return noHtmlSt.substring(0, maxLength) + "...";
+    }
+
+    @Override
+    protected boolean makeDigest(NotificationContext ctx, Writer writer) {
+      return false;
+    }
+
+  };
+
+  /** Defines the template builder for EditCommentPlugin*/
+  private AbstractTemplateBuilder editActivity = new AbstractTemplateBuilder() {
+
+    /**
+     * This method get the unread comment notification for a user and adds the names
+     * of the new commenter in notification. In addition, it places the comment id and
+     * activity id parameters.
+     */
+    @Override
+    public NotificationInfo getNotificationToStore(NotificationInfo notification) {
+      String activityId = notification.getValueOwnerParameter(SocialNotificationUtils.ACTIVITY_ID.getKey());
+      String parameterName = SocialNotificationUtils.POSTER.getKey();
+      String parameterValue = notification.getValueOwnerParameter(parameterName);
+      return SocialNotificationUtils.addUserToPreviousNotification(notification, parameterName, activityId, parameterValue);
+    }
+
+    @Override
+    protected MessageInfo makeMessage(NotificationContext ctx) {
+      NotificationInfo notification = ctx.getNotificationInfo();
+      boolean isPopupOverOnly = ctx.value(WebNotificationService.POPUP_OVER);
+
+      String language = getLanguage(notification);
+
+      String activityId = notification.getValueOwnerParameter(SocialNotificationUtils.ACTIVITY_ID.getKey());
+      ExoSocialActivity activity = Utils.getActivityManager().getActivity(activityId);
+      if (activity == null) {
+        LOG.debug("Activity with id '{}' was removed but the notification with id'{}' is remaining", activityId, notification.getId());
+        return null;
+      }
+      String pluginId = notification.getKey().getId();
+
+      TemplateContext templateContext = TemplateContext.newChannelInstance(getChannelKey(), pluginId, language);
+      templateContext.put("isIntranet", "true");
+      Calendar cal = Calendar.getInstance();
+      cal.setTimeInMillis(notification.getLastModifiedDate());
+      templateContext.put("READ", Boolean.valueOf(notification.getValueOwnerParameter(NotificationMessageUtils.READ_PORPERTY.getKey())) ? "read" : "unread");
+      templateContext.put("NOTIFICATION_ID", notification.getId());
+      templateContext.put("LAST_UPDATED_TIME", TimeConvertUtils.convertXTimeAgoByTimeServer(cal.getTime(), "EE, dd yyyy", new Locale(language), TimeConvertUtils.YEAR));
+      templateContext.put("ACTIVITY", NotificationUtils.getNotificationActivityTitle(activity.getTitle(), activity.getType()));
+      List<String> users = SocialNotificationUtils.mergeUsers(notification, SocialNotificationUtils.POSTER.getKey(), activity.getId(), notification.getValueOwnerParameter(SocialNotificationUtils.POSTER.getKey()));
+
+      //
+      int nbUsers = users.size();
+      if (nbUsers > 0) {
+        Identity lastIdentity = Utils.getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, users.get(nbUsers - 1), true);
+        Profile profile = lastIdentity.getProfile();
+        templateContext.put("USER", profile.getFullName());
+        templateContext.put("AVATAR", profile.getAvatarUrl() != null ? profile.getAvatarUrl() : LinkProvider.PROFILE_DEFAULT_AVATAR_URL);
+        templateContext.put("PROFILE_URL", LinkProvider.getUserProfileUri(lastIdentity.getRemoteId()));
+        templateContext.put("NB_USERS", nbUsers);
+        //
+        if (nbUsers >= 2) {
+          Identity beforeLastIdentity = Utils.getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, users.get(nbUsers - 2), true);
+          templateContext.put("LAST_USER", beforeLastIdentity.getProfile().getFullName());
+          if (nbUsers > 2) {
+            templateContext.put("COUNT", nbUsers - 2);
+          }
+        }
+      }
+      //
+      boolean notHighLightComment = Boolean.valueOf(notification.getValueOwnerParameter(NotificationMessageUtils.NOT_HIGHLIGHT_COMMENT_PORPERTY.getKey()));
+      templateContext.put("VIEW_FULL_DISCUSSION_ACTION_URL", LinkProvider.getSingleActivityUrl(activity.getId()));
+
+      //
+      String body = TemplateUtils.processGroovy(templateContext);
+      //binding the exception throws by processing template
+      ctx.setException(templateContext.getException());
+      MessageInfo messageInfo = new MessageInfo();
+      return messageInfo.body(body).end();
+    }
+
+    private String cutStringByMaxLength(String st, int maxLength) {
+      if (st == null) return st;
+      st = StringEscapeUtils.unescapeHtml(st);
+      if (st.length() <= maxLength) return st;
+      String noHtmlSt = st.replaceAll("\\<.*?\\>", "");
+      if (noHtmlSt.length() <= maxLength) return noHtmlSt;
+      return noHtmlSt.substring(0, maxLength) + "...";
+    }
+
+    @Override
+    protected boolean makeDigest(NotificationContext ctx, Writer writer) {
+      return false;
+    }
+
   };
   
   /** Defines the template builder for ActivityMentionPlugin*/
@@ -690,6 +868,8 @@ public class WebTemplateProvider extends TemplateProvider {
     this.templateBuilders.put(PluginKey.key(ActivityCommentPlugin.ID), comment);
     this.templateBuilders.put(PluginKey.key(ActivityReplyToCommentPlugin.ID), replyToComment);
     this.templateBuilders.put(PluginKey.key(ActivityMentionPlugin.ID), mention);
+    this.templateBuilders.put(PluginKey.key(EditActivityPlugin.ID), editActivity);
+    this.templateBuilders.put(PluginKey.key(EditCommentPlugin.ID), editComment);
     this.templateBuilders.put(PluginKey.key(LikePlugin.ID), likeActivity);
     this.templateBuilders.put(PluginKey.key(LikeCommentPlugin.ID), likeComment);
     this.templateBuilders.put(PluginKey.key(NewUserPlugin.ID), newUser);

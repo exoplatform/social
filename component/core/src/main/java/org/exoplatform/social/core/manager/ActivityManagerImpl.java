@@ -193,6 +193,7 @@ public class ActivityManagerImpl implements ActivityManager {
    */
   public void updateActivity(ExoSocialActivity existingActivity) {
     activityStorage.updateActivity(existingActivity);
+    activityLifeCycle.editActivity(existingActivity);
   }
 
   /**
@@ -219,6 +220,7 @@ public class ActivityManagerImpl implements ActivityManager {
       throw new ActivityStorageException(ActivityStorageException.Type.FAILED_TO_SAVE_COMMENT, "Activity cannot be NULL");
     }
     String activityType = existingActivity.getType();
+    String commentId = newComment.getId();
     //Activity Type is disable , comment's can't be added
     //existingActivity.getId() == null for the new activity if it's disabled
     //comment should be added for the old created activity if it's disabled
@@ -233,7 +235,12 @@ public class ActivityManagerImpl implements ActivityManager {
     //if there is any the listener to get the activity's title to do something for example: show message, send mail ...
     //Just call the Social API to get the activity by Id and then to do by yourself.
     //SOC-5209
-    activityLifeCycle.saveComment(newComment);
+    if ( StringUtils.isEmpty(commentId)) {
+      activityLifeCycle.saveComment(newComment);
+    }
+    else {
+      activityLifeCycle.editComment(newComment);
+    }
   }
 
   /**

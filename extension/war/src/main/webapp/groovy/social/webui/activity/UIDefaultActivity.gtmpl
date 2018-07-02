@@ -450,7 +450,7 @@
                                 <textarea class="textarea" name="composerEditComment${it.id}" id="composerEditComment${it.id}" rows="10" cols="30" style="visibility: hidden; display: none;padding-top:30px;"></textarea>
                             </div>
                             <div class="uiAction">
-                                <button class="btn pull-left btn-primary" data-edit-comment-id="${it.id}" data-click="<%= uicomponent.event("EditComment","COMMENTID"); %>" id="EditCommentButton${it.id}">Update</button>&nbsp;
+                                <button class="btn pull-left btn-primary" data-edit-comment-id="${it.id}" data-edit-comment-activityid="${activity.id}" data-click="<%= uicomponent.event("EditComment","COMMENTID"); %>" id="EditCommentButton${it.id}">Update</button>&nbsp;
                                 <button href="javascript:void(0)" data-cancel-edit-comment-id="${it.id}" class="btn pull-left" id="DeleteEditCommentButton${it.id}">Cancel</button>
                                 <button class="btn visible-phone" id="CancelEditButton${it.id}">Cancel</button>
                             </div>

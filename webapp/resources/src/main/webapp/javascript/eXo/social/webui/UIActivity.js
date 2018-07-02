@@ -414,15 +414,16 @@
              $('#commentContainer'+commentId+' .contentComment').show();
              }
         });
-        }
 
+
+        }
 
 
        });
 
        $("[data-edit-comment-id]").each(function(){
                var editCommentButton = $(this);
-                     editCommentButton.click(function(event) {
+                     editCommentButton.off('click').on('click',function(event) {
                        event.stopPropagation();
                        var commentId = editCommentButton.data("edit-comment-id");
                        var editCommentMessage = $('textarea#composerEditComment' + commentId).val();
@@ -433,7 +434,7 @@
 
 
        });
-       $('[data-cancel-edit-comment-id]').each(function(){
+       $("[data-cancel-edit-comment-id]").each(function(){
                       var cancelEditCommentButton = $(this);
                       cancelEditCommentButton.click(function(event) {
                         event.stopPropagation();

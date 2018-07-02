@@ -57,6 +57,26 @@ public class ActivityNotificationImpl extends ActivityListenerPlugin {
   }
 
   @Override
+  public void editComment(ActivityLifeCycleEvent event) {
+    ExoSocialActivity activity = event.getSource();
+    activity = CommonsUtils.getService(ActivityManager.class).getActivity(activity.getId());
+    NotificationContext ctx = NotificationContextImpl.cloneInstance().append(SocialNotificationUtils.ACTIVITY, activity);
+
+    ctx.getNotificationExecutor().with(ctx.makeCommand(PluginKey.key(EditCommentPlugin.ID)))
+            .execute(ctx);
+  }
+
+  @Override
+  public void editActivity(ActivityLifeCycleEvent event) {
+    ExoSocialActivity activity = event.getSource();
+    activity = CommonsUtils.getService(ActivityManager.class).getActivity(activity.getId());
+    NotificationContext ctx = NotificationContextImpl.cloneInstance().append(SocialNotificationUtils.ACTIVITY, activity);
+
+    ctx.getNotificationExecutor().with(ctx.makeCommand(PluginKey.key(EditActivityPlugin.ID)))
+            .execute(ctx);
+  }
+
+  @Override
   public void likeActivity(ActivityLifeCycleEvent event) {
     ExoSocialActivity activity = event.getSource();    
     NotificationContext ctx = NotificationContextImpl.cloneInstance().append(SocialNotificationUtils.ACTIVITY, activity);
