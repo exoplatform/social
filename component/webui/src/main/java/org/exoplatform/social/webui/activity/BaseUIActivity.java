@@ -1116,13 +1116,20 @@ public class BaseUIActivity extends UIForm {
       BaseUIActivity uiActivity = event.getSource();
       String message = ((UIFormTextAreaInput)uiActivity.getChildById(COMPOSER_TEXT_AREA_EDIT_INPUT + uiActivity.getActivity().getId())).
               getValue().replaceAll(HTML_AT_SYMBOL_ESCAPED_PATTERN, HTML_AT_SYMBOL_PATTERN);
-      String originalMessage = uiActivity.getActivity().getTitle();
+      //Already checked in UI side
+      /*String originalMessage = uiActivity.getActivity().getTitle();
 
       if ( StringUtils.equals(message,originalMessage) ){
         UIApplication uiApplication = requestContext.getUIApplication();
         uiApplication.addMessage(new ApplicationMessage("Same_content_message", null, ApplicationMessage.WARNING));
         return;
+      }*/
+      if (message == null || message.equals("")) {
+        UIApplication uiApplication = requestContext.getUIApplication();
+        uiApplication.addMessage(new ApplicationMessage("UIComposer.msg.error.Empty_Message", null, ApplicationMessage.WARNING));
+        return;
       }
+
 
       uiActivity.editActivity(message);
       requestContext.addUIComponentToUpdateByAjax(uiActivity);
@@ -1142,11 +1149,18 @@ public class BaseUIActivity extends UIForm {
 
       UIApplication uiApplication = requestContext.getUIApplication();
       BaseUIActivity uiActivity = event.getSource();
-
+      ExoSocialActivity originalActivity = Utils.getActivityManager().getActivity(commentId);
+      //Already checked in UI side
+      /*
       ExoSocialActivity originalActivity = Utils.getActivityManager().getActivity(commentId);
       String originalMessage = originalActivity.getTitle();
       if ( StringUtils.equals(message,originalMessage) ) {
         uiApplication.addMessage(new ApplicationMessage("Same_content_message", null, ApplicationMessage.WARNING));
+        return;
+      }
+      */
+      if (message == null || message.equals("")) {
+        uiApplication.addMessage(new ApplicationMessage("UIComposer.msg.error.Empty_Message", null, ApplicationMessage.WARNING));
         return;
       }
       ExoSocialActivity newComment = uiActivity.editCommentMessage(originalActivity,message);
