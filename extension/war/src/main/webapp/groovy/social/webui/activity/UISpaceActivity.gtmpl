@@ -510,7 +510,7 @@
 	        </div><!--end commentRight-->
 				<div class="clearfix"></div>
 	      <%
-				if(viewerId == it.posterId || uicomponent.isCommentDeletable(it.userId) ){
+				if(viewerId == it.posterId || uicomponent.isCommentDeletable(it.userId)){
 	      %>
 				<div id="dropDownEditComment${it.id}" class="btn-group uiDropdownWithIcon actLink">
                             <div class="btn dropdown-toggle" data-toggle="dropdown">
@@ -518,7 +518,7 @@
                                 </i>
                             </div>
                             <ul class="dropdown-menu" role="menu">
-								<% if(viewerId == it.posterId){%>
+								<% if(viewerId == it.posterId && !uicomponent.isAutomaticComment(it)){%>
                                 <li>
 				                   <a id="CommentActivitylink${it.id}" rel="tooltip" data-placement="bottom" data-edit-comment="${it.id}" title="$viewActivityTip" class="" href="javascript:void(0)">${labelEdit}</a>
 				                </li>

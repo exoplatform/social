@@ -745,6 +745,46 @@ public class BaseUIActivity extends UIForm {
     return false;
   }
 
+  /**
+   *
+   * @param activity
+   * @return boolean whether comment is automatic or not. Useful, for edit cases
+   */
+  public boolean isAutomaticComment(ExoSocialActivity activity){
+   if (StringUtils.isEmpty(activity.getTitleId())){
+     return false;
+   }
+   switch (activity.getTitleId()) {
+     case SpaceActivityPublisher.SPACE_CREATED_TITLE_ID:
+       return true;
+     case SpaceActivityPublisher.MANAGER_GRANTED_TITLE_ID:
+       return true;
+     case SpaceActivityPublisher.MANAGER_REVOKED_TITLE_ID:
+       return true;
+     case SpaceActivityPublisher.MEMBER_LEFT_TITLE_ID:
+       return true;
+     case SpaceActivityPublisher.SPACE_AVATAR_EDITED_TITLE_ID:
+       return true;
+     case SpaceActivityPublisher.SPACE_DESCRIPTION_EDITED_TITLE_ID:
+       return true;
+     case SpaceActivityPublisher.SPACE_RENAMED_TITLE_ID:
+       return true;
+     case SpaceActivityPublisher.USER_JOINED_PUBLIC_SPACE_TITLE_ID:
+       return true;
+     case SpaceActivityPublisher.USER_JOINED_PUBLIC_SPACES_TITLE_ID:
+       return true;
+     case SpaceActivityPublisher.USER_JOINED_TITLE_ID:
+       return true;
+     case SpaceActivityPublisher.USER_SPACE_JOINED_TITLE_ID:
+       return true;
+       default: return false;
+
+
+   }
+
+
+  }
+
   public Identity getOwnerIdentity() {
     return ownerIdentity;
   }
