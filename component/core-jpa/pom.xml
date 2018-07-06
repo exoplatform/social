@@ -23,6 +23,7 @@
   <name>eXo PLF:: Social Core JPA Component</name>
   <description>eXo Social Core JPA Component</description>
   <properties>
+    <exo.test.coverage.ratio>0.64</exo.test.coverage.ratio>
     <org.elasticsearch.version>5.6.3</org.elasticsearch.version>
   </properties>
   <dependencies>
