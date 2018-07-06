@@ -28,6 +28,9 @@
   <artifactId>social-component-notification</artifactId>
   <name>eXo PLF:: Social Notification Component</name>
   <description>eXo Social Notification Component</description>
+  <properties>
+    <exo.test.coverage.ratio>0.57</exo.test.coverage.ratio>
+  </properties>
   <dependencies>
   
     <!-- These dependency is required to compile but reported as useless by mvn dependency:analyze -->
