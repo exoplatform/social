@@ -981,6 +981,7 @@ public class RDBMSActivityStorageImpl implements ActivityStorage {
       if (existingActivity.getTitleId() != null) updatedActivity.setTitleId(existingActivity.getTitleId());
       if (existingActivity.getTitle() != null) updatedActivity.setTitle(existingActivity.getTitle());
       if (existingActivity.getBody() != null) updatedActivity.setBody(existingActivity.getBody());
+      if (existingActivity.getUpdated() != null) updatedActivity.setUpdatedDate(existingActivity.getUpdated());
       if (existingActivity.getLikeIdentityIds() != null) updatedActivity.setLikerIds(new HashSet<>(Arrays.asList(existingActivity.getLikeIdentityIds())));
       if (existingActivity.getMentionedIds() != null) updatedActivity.setMentionerIds(new HashSet<>(Arrays.asList(existingActivity.getMentionedIds())));
       if (existingActivity.getPermaLink() != null) updatedActivity.setPermaLink(existingActivity.getPermaLink());
