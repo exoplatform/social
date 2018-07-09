@@ -177,6 +177,7 @@
 
   activityPostedTime = uicomponent.getPostedTimeString(_ctx, activity.postedTime);
   activityUpdatedTime =uicomponent.getPostedTimeString(_ctx,activity.updated.getTime());
+  activityUpdatedTime =	_ctx.appRes("UIActivity.label.EditedFrom").replace("{0}",activityUpdatedTime);
   def spaceID;
   def ownerIdentity = uicomponent.ownerIdentity;
   if (uicomponent.isUserActivity()) {
@@ -238,11 +239,11 @@
 			  		if(viewerId == activity.posterId || activityDeletable ){
 			    %>
                     <div id="dropDownEditActivity${activity.id}" class="btn-group uiDropdownWithIcon actLink hidden-phone hidden-tablet">
-                        <div class="btn dropdown-toggle" data-toggle="dropdown">
+                        <div class="dropdown-toggle" data-toggle="dropdown">
                             <i class="uiIconActivityAction uiIconLightGray">
                             </i>
                         </div>
-                        <ul class="dropdown-menu" role="menu">
+                        <ul class="dropdown-menu pull-right" role="menu">
 							<% if( viewerId == activity.posterId ){%>
                             <li>
                                 <a id="EditActivitylink${activity.id}" class="" data-edit-activity="${activity.id}" data-placement="bottom" href="javascript:void(0)">${labelEdit}</a>
@@ -286,7 +287,7 @@
 					<%}%>
 				</div>
 				<div class="dataInfor">
-					<span class="dateTime"><i class="uiIconClock  uiIconLightGray"></i>&nbsp;<a id="EditActivityTime${activity.id}" rel="tooltip" data-placement="bottom" title="$activityPostedTime" href="<%=uicomponent.getActivityPermalink(activity.id)%>"><%=_ctx.appRes("UIActivity.label.EditedFrom").replace("{0}",activityUpdatedTime)%></a></span>
+					<span class="dateTime"><i class="uiIconClock  uiIconLightGray"></i>&nbsp;<a id="EditActivityTime${activity.id}" rel="tooltip" data-placement="bottom" href="<%=uicomponent.getActivityPermalink(activity.id)%>" <% if(activity.postedTime != activity.updated.getTime() ){%> title="$activityPostedTime"> $activityUpdatedTime <%} else {%> >$activityPostedTime <%}%></a></span>
 				<div class=" actionLink hidden-desktop visible-tablet visible-phone">
 					 <a id="Permalink${activity.id}" class="uiIconLink uiIconLightGray" rel="tooltip" data-placement="bottom" title="$viewActivityTip" href="<%=uicomponent.getActivityPermalink(activity.id)%>"></a>
 					 <% if (activityDeletable) {
@@ -432,6 +433,7 @@
 			  commentMessage = it.title;
 			  commentPostedTime = uicomponent.getPostedTimeString(_ctx, it.postedTime);
               commentEditedTime = uicomponent.getPostedTimeString(_ctx, it.updated.getTime());
+			  commentEditedTime = _ctx.appRes("UIActivity.label.EditedFrom").replace("{0}",commentEditedTime);
 			  commenterAvatarImgSrc = id.profile.avatarUrl;
 			  if (!commenterAvatarImgSrc) commenterAvatarImgSrc = LinkProvider.PROFILE_DEFAULT_AVATAR_URL;
 			  def commentId = it.parentCommentId == null ? it.id : it.parentCommentId;
@@ -451,7 +453,7 @@
 					<div class="author">
 						<a href="$commenterProfileUri">$commenterFullName</a>
 						<span class="dateTime">
-                            <a id="EditActivityTime${activity.id}" rel="tooltip" data-placement="bottom" title="$commentPostedTime" href="<%=uicomponent.getActivityPermalink(activity.id)%>"><%=_ctx.appRes("UIActivity.label.EditedFrom").replace("{0}",commentEditedTime)%></a>
+                            <a id="EditCommentTime${it.id}" rel="tooltip" data-placement="bottom" href="<%=uicomponent.getActivityPermalink(activity.id)%>" <% if(it.postedTime != it.updated.getTime() ){%> title="$commentPostedTime">$commentEditedTime <%} else {%> > ${commentPostedTime} <%}%></a>
 						 </span>
 					</div>
 					<div class="contentComment" id="${activity.id}-${commentCounter}">
@@ -481,11 +483,11 @@
 				  if(viewerId == it.posterId || uicomponent.isCommentDeletable(it.userId) ){
 				  %>
                         <div id="dropDownEditComment${it.id}" class="btn-group uiDropdownWithIcon actLink">
-                            <div class="btn dropdown-toggle" data-toggle="dropdown">
+                            <div class="dropdown-toggle" data-toggle="dropdown">
                                 <i class="uiIconActivityAction uiIconLightGray">
                                 </i>
                             </div>
-                            <ul class="dropdown-menu" role="menu">
+                            <ul class="dropdown-menu pull-right" role="menu">
 								<% if(viewerId == it.posterId){%>
                                 <li>
 				                   <a id="CommentActivitylink${it.id}" rel="tooltip" data-placement="bottom" data-edit-comment="${it.id}" title="$viewActivityTip" class="" href="javascript:void(0)">${labelEdit}</a>
