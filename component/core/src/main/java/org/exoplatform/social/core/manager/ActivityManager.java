@@ -519,4 +519,6 @@ public interface ActivityManager {
    * @return
    */
   List<ExoSocialActivity> getActivities(List<String> activityIdList);
+
+  boolean isActivityEditable(ExoSocialActivity activity, org.exoplatform.services.security.Identity viewer);
 }

@@ -30,10 +30,7 @@ public abstract class ActivityListenerPlugin extends AbstractListenerPlugin impl
   public abstract void saveComment(ActivityLifeCycleEvent event);
 
   @Override
-  public abstract void editComment(ActivityLifeCycleEvent event);
-
-  @Override
-  public abstract void editActivity(ActivityLifeCycleEvent event);
+  public abstract void updateComment(ActivityLifeCycleEvent event);
 
   @Override
   public abstract void likeActivity(ActivityLifeCycleEvent event);

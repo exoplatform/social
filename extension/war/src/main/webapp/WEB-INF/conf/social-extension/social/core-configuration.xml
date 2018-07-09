@@ -206,6 +206,26 @@
         <description>Define upload limit for uploaded files on Activity Stream</description>
         <value>${exo.social.activity.uploadLimit:}</value>
       </value-param>
+      <value-param>
+        <name>enable.edit.activity</name>
+        <description>enable/disable edit activity</description>
+        <value>${exo.edit.activity.enabled:true}</value>
+      </value-param>
+      <value-param>
+        <name>enable.edit.comment</name>
+        <description>enable/disable edit comment</description>
+        <value>${exo.edit.comment.enabled:true}</value>
+      </value-param>
+      <value-param>
+        <name>enable.manger.edit.activity</name>
+        <description>enable/disable manger edit activity</description>
+        <value>${exo.manager.edit.activity.enabled:true}</value>
+      </value-param>
+      <value-param>
+        <name>enable.manager.edit.comment</name>
+        <description>enable/disable manager edit comment</description>
+        <value>${exo.manager.edit.comment.enabled:true}</value>
+      </value-param>
     </init-params>
   </component>
   

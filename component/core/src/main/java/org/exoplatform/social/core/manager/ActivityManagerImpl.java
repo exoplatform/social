@@ -30,6 +30,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.commons.utils.PropertyManager;
 import org.exoplatform.container.xml.InitParams;
+import org.exoplatform.portal.config.UserACL;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.social.common.RealtimeListAccess;
@@ -43,6 +44,9 @@ import org.exoplatform.social.core.activity.ActivityListenerPlugin;
 import org.exoplatform.social.core.activity.CommentsRealtimeListAccess;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.activity.model.ExoSocialActivityImpl;
+import org.exoplatform.social.core.application.ProfileUpdatesPublisher;
+import org.exoplatform.social.core.application.RelationshipPublisher;
+import org.exoplatform.social.core.application.SpaceActivityPublisher;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.space.spi.SpaceService;
 import org.exoplatform.social.core.storage.ActivityStorageException;
@@ -65,6 +69,8 @@ public class ActivityManagerImpl implements ActivityManager {
 
   /** identityManager to get identity for saving and getting activities */
   protected IdentityManager              identityManager;
+
+  private UserACL userACL;
 
   /** spaceService */
   protected SpaceService                 spaceService;
@@ -97,7 +103,22 @@ public class ActivityManagerImpl implements ActivityManager {
    */
   private static final String SUFFIX = ".enabled";
 
+  public static final String DEFAULT_ACTIVITY_TYPE = "DEFAULT_ACTIVITY";
+
+  /**
+   * exo property for editing activity permission
+   */
+  public static final String                   ENABLE_EDIT_ACTIVITY = "exo.edit.activity.enabled";
+  public static final String                   ENABLE_EDIT_COMMENT = "exo.edit.comment.enabled";
+  public static final String                   ENABLE_MANAGER_EDIT_ACTIVITY = "exo.manager.edit.activity.enabled";
+  public static final String                   ENABLE_MANAGER_EDIT_COMMENT = "exo.manager.edit.comment.enabled";
+
   private int maxUploadSize = 10;
+
+  private boolean enableEditActivity = true;
+  private boolean enableEditComment = true;
+  private boolean enableManagerEditActivity = true;
+  private boolean enableManagerEditComment = true;
 
   /**
    * Instantiates a new activity manager.
@@ -105,14 +126,29 @@ public class ActivityManagerImpl implements ActivityManager {
    * @param activityStorage
    * @param identityManager
    */
-  public ActivityManagerImpl(ActivityStorage activityStorage, IdentityManager identityManager, InitParams params) {
+  public ActivityManagerImpl(ActivityStorage activityStorage, IdentityManager identityManager, UserACL userACL, InitParams params) {
     this.activityStorage = activityStorage;
     this.identityManager = identityManager;
+    this.userACL = userACL;
     initActivityTypes();
 
-    if (params != null && params.containsKey("upload.limit.size")
-        && StringUtils.isNotBlank(params.getValueParam("upload.limit.size").getValue())) {
-      maxUploadSize = Integer.parseInt(params.getValueParam("upload.limit.size").getValue());
+    if (params != null) {
+      if (params.containsKey("upload.limit.size")
+              && StringUtils.isNotBlank(params.getValueParam("upload.limit.size").getValue())) {
+        maxUploadSize = Integer.parseInt(params.getValueParam("upload.limit.size").getValue());
+      }
+      if (params.containsKey(ENABLE_EDIT_ACTIVITY)) {
+        enableEditActivity = Boolean.parseBoolean(params.getValueParam(ENABLE_EDIT_ACTIVITY).getValue());
+      }
+      if (params.containsKey(ENABLE_EDIT_COMMENT)) {
+        enableEditComment = Boolean.parseBoolean(params.getValueParam(ENABLE_EDIT_COMMENT).getValue());
+      }
+      if (params.containsKey(ENABLE_MANAGER_EDIT_ACTIVITY)) {
+        enableManagerEditActivity = Boolean.parseBoolean(params.getValueParam(ENABLE_MANAGER_EDIT_ACTIVITY).getValue());
+      }
+      if (params.containsKey(ENABLE_MANAGER_EDIT_COMMENT)) {
+        enableManagerEditComment = Boolean.parseBoolean(params.getValueParam(ENABLE_MANAGER_EDIT_COMMENT).getValue());
+      }
     } else {
       String maxUploadString = System.getProperty("wcm.connector.drives.uploadLimit");
       if (StringUtils.isNotBlank(maxUploadString)) {
@@ -193,7 +229,7 @@ public class ActivityManagerImpl implements ActivityManager {
    */
   public void updateActivity(ExoSocialActivity existingActivity) {
     activityStorage.updateActivity(existingActivity);
-    activityLifeCycle.editActivity(existingActivity);
+    activityLifeCycle.updateActivity(existingActivity);
   }
 
   /**
@@ -239,7 +275,7 @@ public class ActivityManagerImpl implements ActivityManager {
       activityLifeCycle.saveComment(newComment);
     }
     else {
-      activityLifeCycle.editComment(newComment);
+      activityLifeCycle.updateComment(newComment);
     }
   }
 
@@ -619,5 +655,34 @@ public class ActivityManagerImpl implements ActivityManager {
   @Override
   public List<ExoSocialActivity> getActivities(List<String> activityIdList) {
     return activityStorage.getActivities(activityIdList);
+  }
+
+  @Override
+  public boolean isActivityEditable(ExoSocialActivity activity, org.exoplatform.services.security.Identity viewer) {
+    if (activity != null) {
+      boolean enableEdit, enableManagerEdit;
+      if (activity.isComment()) {
+        enableEdit = enableEditComment;
+        enableManagerEdit = enableManagerEditComment;
+      } else {
+        enableEdit = enableEditActivity;
+        enableManagerEdit = enableManagerEditActivity;
+      }
+
+      if (enableEdit) {
+        if (viewer.getUserId().equals(activity.getPosterId()) ||
+                (enableManagerEdit && viewer.getGroups().contains(userACL.getAdminGroups()))) {
+          return !activity.isComment() || !isAutomaticComment(activity);
+        }
+      }
+    }
+
+    return false;
+  }
+
+  private boolean isAutomaticComment(ExoSocialActivity activity) {
+    //We should have editable activity type configurable
+    //For now only default activity is editable
+    return activity != null && !DEFAULT_ACTIVITY_TYPE.equals(activity.getType());
   }
 }

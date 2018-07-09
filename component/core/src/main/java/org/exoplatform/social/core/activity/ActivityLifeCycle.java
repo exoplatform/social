@@ -35,11 +35,8 @@ public class ActivityLifeCycle extends AbstractLifeCycle<ActivityListener, Activ
       case SAVE_COMMENT: 
         listener.saveComment(event);
         break;
-      case EDIT_COMMENT:
-        listener.editComment(event);
-        break;
-        case EDIT_ACTIVITY:
-        listener.editActivity(event);
+      case UPDATE_COMMENT:
+        listener.updateComment(event);
         break;
       case LIKE_ACTIVITY: 
         listener.likeActivity(event);
@@ -62,12 +59,8 @@ public class ActivityLifeCycle extends AbstractLifeCycle<ActivityListener, Activ
     broadcast(new ActivityLifeCycleEvent(Type.SAVE_COMMENT, activity));
   }
 
-  public void editComment(ExoSocialActivity activity) {
-    broadcast(new ActivityLifeCycleEvent(Type.EDIT_COMMENT, activity));
-  }
-
-  public void editActivity(ExoSocialActivity activity) {
-    broadcast(new ActivityLifeCycleEvent(Type.EDIT_ACTIVITY, activity));
+  public void updateComment(ExoSocialActivity activity) {
+    broadcast(new ActivityLifeCycleEvent(Type.UPDATE_COMMENT, activity));
   }
   
   public void likeActivity(ExoSocialActivity activity) {

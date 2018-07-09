@@ -36,6 +36,7 @@
   def labelActivityHasBeenDeleted = _ctx.appRes("UIActivity.label.Activity_Has_Been_Deleted");
   def activity = uicomponent.getActivity();
   def activityDeletable = uicomponent.isActivityDeletable();
+  def activityEditable = uicomponent.isActivityEditable(activity);
   def activityCommentAndLikable = uicomponent.isActivityCommentAndLikable();
   def streamOwner = activity.getStreamOwner();
 %>
@@ -176,6 +177,7 @@
   }
 
   activityPostedTime = uicomponent.getPostedTimeString(_ctx, activity.postedTime);
+  def postedTimeTooltip =	_ctx.appRes("UIActivity.label.PostedFrom").replace("{0}",activityPostedTime);
   activityUpdatedTime =uicomponent.getPostedTimeString(_ctx,activity.updated.getTime());
   activityUpdatedTime =	_ctx.appRes("UIActivity.label.EditedFrom").replace("{0}",activityUpdatedTime);
   def spaceID;
@@ -236,7 +238,7 @@
 				<span class="arrowLeft"></span>
                 <!--div class="pull-right"-->
 			    <%
-			  		if(viewerId == activity.posterId || activityDeletable ){
+			  		if(activityEditable || activityDeletable ){
 			    %>
                     <div id="dropDownEditActivity${activity.id}" class="btn-group uiDropdownWithIcon actLink hidden-phone hidden-tablet">
                         <div class="dropdown-toggle" data-toggle="dropdown">
@@ -244,7 +246,7 @@
                             </i>
                         </div>
                         <ul class="dropdown-menu pull-right" role="menu">
-							<% if( viewerId == activity.posterId ){%>
+							<% if(activityEditable) {%>
                             <li>
                                 <a id="EditActivitylink${activity.id}" class="" data-edit-activity="${activity.id}" data-placement="bottom" href="javascript:void(0)">${labelEdit}</a>
                             </li>
@@ -287,20 +289,36 @@
 					<%}%>
 				</div>
 				<div class="dataInfor">
-					<span class="dateTime"><i class="uiIconClock  uiIconLightGray"></i>&nbsp;<a id="EditActivityTime${activity.id}" rel="tooltip" data-placement="bottom" href="<%=uicomponent.getActivityPermalink(activity.id)%>" <% if(activity.postedTime != activity.updated.getTime() ){%> title="$activityPostedTime"> $activityUpdatedTime <%} else {%> >$activityPostedTime <%}%></a></span>
-				<div class=" actionLink hidden-desktop visible-tablet visible-phone">
-					 <a id="Permalink${activity.id}" class="uiIconLink uiIconLightGray" rel="tooltip" data-placement="bottom" title="$viewActivityTip" href="<%=uicomponent.getActivityPermalink(activity.id)%>"></a>
-					 <% if (activityDeletable) {
-					 %>
-						<a href="javascript:void(0)" data-confirm="$labelToDeleteThisActivity" 
-						    data-caption="$captionConfirmation" data-close="$labelClosebutton" 
-						    data-ok="$labelConfirmbutton"  
-						    data-delete="<%=uicomponent.event("DeleteActivity", uicomponent.getId(), "");%>" 
-						    class="uiIconClose uiIconLightGray controllDelete" 
-						    rel="tooltip" data-placement="bottom" title="$deleteActivityTip"
-						    id="DeleteActivityButton${activity.id}"></a>
-					  <%}%>
+					<span class="dateTime"><i class="uiIconClock  uiIconLightGray"></i>&nbsp;<a id="EditActivityTime${activity.id}" rel="tooltip" data-placement="bottom" href="<%=uicomponent.getActivityPermalink(activity.id)%>" <% if(activity.postedTime != activity.updated.getTime() ){%> title="$postedTimeTooltip"> $activityUpdatedTime <%} else {%> >$activityPostedTime <%}%></a></span>
+
+					<%
+					if(activityEditable || activityDeletable ) {
+					%>
+					<div id="dropDownEditActivity${activity.id}" class="btn-group uiDropdownWithIcon actionLink hidden-desktop visible-tablet visible-phone">
+						<div class="dropdown-toggle" data-toggle="dropdown">
+							<i class="uiIconActivityAction uiIconLightGray">
+							</i>
+						</div>
+						<ul class="dropdown-menu pull-right" role="menu">
+							<% if(activityEditable){%>
+							<li>
+								<a id="EditActivitylink${activity.id}" class="" data-edit-activity="${activity.id}" data-placement="bottom" href="javascript:void(0)">${labelEdit}</a>
+							</li>
+							<%
+							}
+							if (activityDeletable) {
+							%>
+							<li>
+								<a href="javascript:void(0)" data-confirm="$labelToDeleteThisActivity" data-caption="$captionConfirmation" data-close="$labelClosebutton" data-ok="$labelConfirmbutton"  data-delete="<%=uicomponent.event("DeleteActivity", uicomponent.getId(), "");%>" class="controllDelete" id="DeleteActivityButton${activity.id}">${labelDelete}</a>
+
+						</li>
+						<%}%>
+					</ul>
 				</div>
+			    <%
+			    }
+			    %>
+
 				</div>
 			</div><!--end heading-->
 			<div class="description">$activity.title</div><!--end description-->
@@ -311,7 +329,6 @@
                         <div class="uiAction paddingAction">
                             <button class="btn pull-left btn-primary hideEffect" onclick="<%=uicomponent.event("EditActivity")%>" id="EditActivityButton${activity.id}">${labelUpdate}</button>&nbsp;
                             <button href="javascript:void(0)" data-cancel-edit-comment-id="${activity.id}" class="btn pull-left hideEffect" id="DeleteEditCommentButton${activity.id}">${labelCancel}</button>
-                            <button class="btn visible-phone hideEffect" id="CancelEditButton${activity.id}">${labelCancel}</button>
                         </div>
                     </div>
                 </div>
@@ -432,7 +449,7 @@
               }
 			  commentMessage = it.title;
 			  commentPostedTime = uicomponent.getPostedTimeString(_ctx, it.postedTime);
-              commentEditedTime = uicomponent.getPostedTimeString(_ctx, it.updated.getTime());
+        commentEditedTime = uicomponent.getPostedTimeString(_ctx, it.updated.getTime());
 			  commentEditedTime = _ctx.appRes("UIActivity.label.EditedFrom").replace("{0}",commentEditedTime);
 			  commenterAvatarImgSrc = id.profile.avatarUrl;
 			  if (!commenterAvatarImgSrc) commenterAvatarImgSrc = LinkProvider.PROFILE_DEFAULT_AVATAR_URL;
@@ -452,9 +469,6 @@
 				<div class="commentRight">
 					<div class="author">
 						<a href="$commenterProfileUri">$commenterFullName</a>
-						<span class="dateTime">
-                            <a id="EditCommentTime${it.id}" rel="tooltip" data-placement="bottom" href="<%=uicomponent.getActivityPermalink(activity.id)%>" <% if(it.postedTime != it.updated.getTime() ){%> title="$commentPostedTime">$commentEditedTime <%} else {%> > ${commentPostedTime} <%}%></a>
-						 </span>
 					</div>
 					<div class="contentComment" id="${activity.id}-${commentCounter}">
 						$commentMessage
@@ -467,7 +481,6 @@
                             <div class="uiAction">
                                 <button class="btn pull-left btn-primary hideEffect" data-edit-comment-id="${it.id}" data-edit-comment-activityid="${activity.id}" data-click="<%= uicomponent.event("EditComment","COMMENTID"); %>" id="EditCommentButton${it.id}">${labelUpdate}</button>&nbsp;
                                 <button href="javascript:void(0)" data-cancel-edit-comment-id="${it.id}" class="btn pull-left hideEffect" id="DeleteEditCommentButton${it.id}">${labelCancel}</button>
-                                <button class="btn visible-phone hideEffect" id="CancelEditButton${it.id}">${labelCancel}</button>
                             </div>
                         </div>
                     </div>
@@ -475,12 +488,17 @@
 					    _ctx.put(TEMPLATE_PARAM_COMMENT, it);
                         _ctx.put("authorName", id.remoteId);
                         _ctx.put("authorFullName", commenterFullName);
+					    _ctx.put("activityID", activity.id);
+					    _ctx.put("commentPostedTime", commentPostedTime);
+					    _ctx.put("commentEditedTime", commentEditedTime);
 					    _ctx.include("war:/groovy/social/webui/activity/UIActivityCommentActions.gtmpl");
 					%>
     			</div><!--end commentRight-->
                     <div class="clearfix"></div>
 				  <%
-				  if(viewerId == it.posterId || uicomponent.isCommentDeletable(it.userId) ){
+				  def commentEditable = uicomponent.isActivityEditable(it);
+				  def commentDeletable = uicomponent.isCommentDeletable(it.userId);
+				  if(commentEditable || commentDeletable) {
 				  %>
                         <div id="dropDownEditComment${it.id}" class="btn-group uiDropdownWithIcon actLink">
                             <div class="dropdown-toggle" data-toggle="dropdown">
@@ -488,13 +506,13 @@
                                 </i>
                             </div>
                             <ul class="dropdown-menu pull-right" role="menu">
-								<% if(viewerId == it.posterId){%>
+								<% if(commentEditable) {%>
                                 <li>
-				                   <a id="CommentActivitylink${it.id}" rel="tooltip" data-placement="bottom" data-edit-comment="${it.id}" title="$viewActivityTip" class="" href="javascript:void(0)">${labelEdit}</a>
+				                   <a id="CommentActivitylink${it.id}" data-edit-comment="${it.id}" class="" href="javascript:void(0)">${labelEdit}</a>
 				                </li>
 				                <%
 								}
-					                if (uicomponent.isCommentDeletable(it.userId)) {
+					                if (commentDeletable) {
 					                String idDeleteComment = "DeleteCommentButton${it.id}";
 				                %>
                                 <li>

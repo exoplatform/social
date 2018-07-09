@@ -17,6 +17,9 @@
 package org.exoplatform.social.core.jpa.storage;
 
 import org.exoplatform.commons.utils.ListAccess;
+import org.exoplatform.container.xml.InitParams;
+import org.exoplatform.container.xml.ValueParam;
+import org.exoplatform.portal.config.UserACL;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.services.organization.OrganizationService;
@@ -30,6 +33,8 @@ import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
 import org.exoplatform.social.core.jpa.cache.RDBMSCachedIdentityStorage;
 import org.exoplatform.social.core.jpa.test.AbstractCoreTest;
 import org.exoplatform.social.core.manager.ActivityManager;
+import org.exoplatform.social.core.manager.ActivityManagerImpl;
+import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.profile.ProfileFilter;
 import org.exoplatform.social.core.relationship.model.Relationship;
 import org.exoplatform.social.core.space.SpaceUtils;
@@ -37,10 +42,12 @@ import org.exoplatform.social.core.space.impl.DefaultSpaceApplicationHandler;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
 import org.exoplatform.social.core.storage.ActivityStorageException;
+import org.exoplatform.social.core.storage.api.ActivityStorage;
 import org.exoplatform.social.core.storage.api.IdentityStorage;
 import org.exoplatform.social.core.storage.impl.StorageUtils;
 
 import org.apache.commons.lang3.StringUtils;
+import org.mockito.Mock;
 import org.mockito.Mockito;
 
 import java.util.*;
@@ -76,6 +83,73 @@ public class ActivityManagerRDBMSTest extends AbstractCoreTest {
     raulIdentity = createIdentity("raul");
     jameIdentity = createIdentity("jame");
     paulIdentity = createIdentity("paul");
+  }
+
+  public void testActivityEditable() {
+    ActivityStorage storage = Mockito.mock(ActivityStorage.class);
+    IdentityManager identityManager = Mockito.mock(IdentityManager.class);
+    UserACL acl = Mockito.mock(UserACL.class);
+    Mockito.when(acl.getAdminGroups()).thenReturn("/platform/administrators");
+
+    //prepare activity
+    ExoSocialActivity activity = Mockito.mock(ExoSocialActivity.class);
+    Mockito.when(activity.isComment()).thenReturn(false);
+    Mockito.when(activity.getPosterId()).thenReturn("demo");
+    //prepare comment
+    ExoSocialActivity comment = Mockito.mock(ExoSocialActivity.class);
+    Mockito.when(comment.isComment()).thenReturn(true);
+    Mockito.when(comment.getType()).thenReturn(ActivityManagerImpl.DEFAULT_ACTIVITY_TYPE);
+    Mockito.when(comment.getPosterId()).thenReturn("demo");
+    //prepare viewer
+    org.exoplatform.services.security.Identity owner = Mockito.mock(org.exoplatform.services.security.Identity.class);
+    Mockito.when(owner.getUserId()).thenReturn("demo");
+    org.exoplatform.services.security.Identity admin = Mockito.mock(org.exoplatform.services.security.Identity.class);
+    Mockito.when(admin.getUserId()).thenReturn("john");
+    Mockito.when(admin.getGroups()).thenReturn(new HashSet<>(Arrays.asList("/platform/administrators")));
+    org.exoplatform.services.security.Identity mary = Mockito.mock(org.exoplatform.services.security.Identity.class);
+    Mockito.when(mary.getUserId()).thenReturn("mary");
+
+    //no configuration
+    //by default: edit activity/comment are all enabled
+    ActivityManager manager = new ActivityManagerImpl(storage, identityManager, acl, null);
+    //owner
+    assertTrue(manager.isActivityEditable(activity, owner));
+    assertTrue(manager.isActivityEditable(comment, owner));
+    //do not allow edit automatic comment
+    Mockito.when(comment.getType()).thenReturn("TestActivityType");
+    assertFalse(manager.isActivityEditable(comment, owner));
+
+    //manager is able to edit other activity
+    assertTrue(manager.isActivityEditable(activity, admin));
+    //not manager
+    assertFalse(manager.isActivityEditable(activity, mary));
+
+    //InitParams configuration
+    InitParams params = Mockito.mock(InitParams.class);
+    Mockito.when(params.containsKey(ActivityManagerImpl.ENABLE_MANAGER_EDIT_COMMENT)).thenReturn(true);
+    Mockito.when(params.containsKey(ActivityManagerImpl.ENABLE_EDIT_COMMENT)).thenReturn(true);
+    ValueParam falseVal = new ValueParam();
+    falseVal.setValue("false");
+    //not enable edit comment
+    Mockito.when(params.getValueParam(ActivityManagerImpl.ENABLE_MANAGER_EDIT_COMMENT)).thenReturn(falseVal);
+    Mockito.when(params.getValueParam(ActivityManagerImpl.ENABLE_EDIT_COMMENT)).thenReturn(falseVal);
+    manager = new ActivityManagerImpl(storage, identityManager, acl, params);
+    //
+    Mockito.when(comment.getType()).thenReturn(ActivityManagerImpl.DEFAULT_ACTIVITY_TYPE);
+    assertFalse(manager.isActivityEditable(comment, admin));
+    assertFalse(manager.isActivityEditable(comment, owner));
+    assertTrue(manager.isActivityEditable(activity, owner));
+    assertTrue(manager.isActivityEditable(activity, admin));
+
+    //not enable edit activity
+    Mockito.when(params.containsKey(ActivityManagerImpl.ENABLE_MANAGER_EDIT_ACTIVITY)).thenReturn(true);
+    Mockito.when(params.containsKey(ActivityManagerImpl.ENABLE_EDIT_ACTIVITY)).thenReturn(true);
+    Mockito.when(params.getValueParam(ActivityManagerImpl.ENABLE_MANAGER_EDIT_ACTIVITY)).thenReturn(falseVal);
+    Mockito.when(params.getValueParam(ActivityManagerImpl.ENABLE_EDIT_ACTIVITY)).thenReturn(falseVal);
+    manager = new ActivityManagerImpl(storage, identityManager, acl, params);
+    //
+    assertFalse(manager.isActivityEditable(activity, owner));
+    assertFalse(manager.isActivityEditable(activity, admin));
   }
 
   /**

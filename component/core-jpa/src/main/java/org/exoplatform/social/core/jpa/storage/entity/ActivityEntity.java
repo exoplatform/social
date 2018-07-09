@@ -144,7 +144,7 @@ import org.exoplatform.commons.api.persistence.ExoEntity;
                     + " item.activity.hidden = false AND "
                     + " ( item.ownerId in (:owners) OR "
                     + "   ( item.ownerId in (:connections) AND item.streamType = :connStreamType ) "
-                    + " ) ORDER BY item.activity.updatedDate ASC"),
+                    + " ) ORDER BY item.activity.updatedDate DESC"),
         @NamedQuery(name = "SocActivity.getActivityFeedNoConnections",
                 query = "SELECT distinct item.activity.id, item.activity.updatedDate FROM SocStreamItem item WHERE "
                     + " item.activity.hidden = false AND "

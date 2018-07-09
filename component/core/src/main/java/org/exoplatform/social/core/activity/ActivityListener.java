@@ -26,9 +26,7 @@ public interface ActivityListener extends LifeCycleListener<ActivityLifeCycleEve
 
   void saveComment(ActivityLifeCycleEvent event);
 
-  void editComment(ActivityLifeCycleEvent event);
-
-  void editActivity(ActivityLifeCycleEvent event);
+  void updateComment(ActivityLifeCycleEvent event);
   
   void likeActivity(ActivityLifeCycleEvent event);
 

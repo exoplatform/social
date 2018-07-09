@@ -17,12 +17,12 @@
 package org.exoplatform.social.webui.activity;
 
 import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import org.exoplatform.commons.utils.CommonsUtils;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
+import org.exoplatform.services.security.ConversationState;
 import org.exoplatform.social.common.RealtimeListAccess;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.activity.model.ExoSocialActivityImpl;
@@ -30,6 +30,7 @@ import org.exoplatform.social.core.application.SpaceActivityPublisher;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
+import org.exoplatform.social.core.manager.ActivityManager;
 import org.exoplatform.social.core.processor.I18NActivityProcessor;
 import org.exoplatform.social.core.relationship.model.Relationship;
 import org.exoplatform.social.core.relationship.model.Relationship.Type;
@@ -72,6 +73,7 @@ public class BaseUIActivity extends UIForm {
   private static final String                   HTML_AT_SYMBOL_PATTERN = "@";
   private static final String                   HTML_AT_SYMBOL_ESCAPED_PATTERN = "&#64;";
   private static final String                   HTML_ATTRIBUTE_TITLE = "title";
+
   public static final String TEMPLATE_PARAM_COMMENT = "comment";
   public static final String COMPOSER_TEXT_AREA_EDIT_INPUT = "composerEditInput";
   private static int         LATEST_COMMENTS_SIZE        = 2;
@@ -101,6 +103,8 @@ public class BaseUIActivity extends UIForm {
   private boolean                               commentFormFocused   = false;
 
   private String                                updatedCommentId;
+
+  private ActivityManager activityManager;
 
   /**
    * Constructor
@@ -499,12 +503,9 @@ public class BaseUIActivity extends UIForm {
    * @param message edited message
    */
   protected void editActivity(String message){
-    //getActivity().setBody(message);
     getActivity().setTitle(message);
     getActivity().setUpdated(new Date());
     Utils.getActivityManager().updateActivity(getActivity());
-
-
   }
 
   /**
@@ -515,7 +516,6 @@ public class BaseUIActivity extends UIForm {
    */
   protected ExoSocialActivity editCommentMessage(ExoSocialActivity commentActivity, String message){
     commentActivity.setTitle(message);
-    //commentActivity.setBody(message);
     commentActivity.setUpdated(new Date());
     getActivity().setUpdated(commentActivity.getUpdated());
     Utils.getActivityManager().saveComment(getActivity(), commentActivity);
@@ -657,6 +657,17 @@ public class BaseUIActivity extends UIForm {
     return false;
   }
 
+  public boolean isActivityEditable(ExoSocialActivity activity) {
+    return getActivityManager().isActivityEditable(activity, ConversationState.getCurrent().getIdentity());
+  }
+
+  private ActivityManager getActivityManager() {
+    if (activityManager == null) {
+      activityManager = this.getApplicationComponent(ActivityManager.class);
+    }
+    return activityManager;
+  }
+
   public boolean isActivityCommentAndLikable() throws Exception {
     UIActivitiesContainer uiActivitiesContainer = getAncestorOfType(UIActivitiesContainer.class);
     PostContext postContext = uiActivitiesContainer.getPostContext();
@@ -743,46 +754,6 @@ public class BaseUIActivity extends UIForm {
       LOG.warn("can't not get remoteUserIdentity: remoteUser = " + Utils.getViewerRemoteId());
     }
     return false;
-  }
-
-  /**
-   *
-   * @param activity
-   * @return boolean whether comment is automatic or not. Useful, for edit cases
-   */
-  public boolean isAutomaticComment(ExoSocialActivity activity){
-   if (StringUtils.isEmpty(activity.getTitleId())){
-     return false;
-   }
-   switch (activity.getTitleId()) {
-     case SpaceActivityPublisher.SPACE_CREATED_TITLE_ID:
-       return true;
-     case SpaceActivityPublisher.MANAGER_GRANTED_TITLE_ID:
-       return true;
-     case SpaceActivityPublisher.MANAGER_REVOKED_TITLE_ID:
-       return true;
-     case SpaceActivityPublisher.MEMBER_LEFT_TITLE_ID:
-       return true;
-     case SpaceActivityPublisher.SPACE_AVATAR_EDITED_TITLE_ID:
-       return true;
-     case SpaceActivityPublisher.SPACE_DESCRIPTION_EDITED_TITLE_ID:
-       return true;
-     case SpaceActivityPublisher.SPACE_RENAMED_TITLE_ID:
-       return true;
-     case SpaceActivityPublisher.USER_JOINED_PUBLIC_SPACE_TITLE_ID:
-       return true;
-     case SpaceActivityPublisher.USER_JOINED_PUBLIC_SPACES_TITLE_ID:
-       return true;
-     case SpaceActivityPublisher.USER_JOINED_TITLE_ID:
-       return true;
-     case SpaceActivityPublisher.USER_SPACE_JOINED_TITLE_ID:
-       return true;
-       default: return false;
-
-
-   }
-
-
   }
 
   public Identity getOwnerIdentity() {
@@ -1156,20 +1127,6 @@ public class BaseUIActivity extends UIForm {
       BaseUIActivity uiActivity = event.getSource();
       String message = ((UIFormTextAreaInput)uiActivity.getChildById(COMPOSER_TEXT_AREA_EDIT_INPUT + uiActivity.getActivity().getId())).
               getValue().replaceAll(HTML_AT_SYMBOL_ESCAPED_PATTERN, HTML_AT_SYMBOL_PATTERN);
-      //Already checked in UI side
-      /*String originalMessage = uiActivity.getActivity().getTitle();
-
-      if ( StringUtils.equals(message,originalMessage) ){
-        UIApplication uiApplication = requestContext.getUIApplication();
-        uiApplication.addMessage(new ApplicationMessage("Same_content_message", null, ApplicationMessage.WARNING));
-        return;
-      }*/
-      if (message == null || message.equals("")) {
-        UIApplication uiApplication = requestContext.getUIApplication();
-        uiApplication.addMessage(new ApplicationMessage("UIComposer.msg.error.Empty_Message", null, ApplicationMessage.WARNING));
-        return;
-      }
-
 
       uiActivity.editActivity(message);
       requestContext.addUIComponentToUpdateByAjax(uiActivity);
@@ -1187,23 +1144,10 @@ public class BaseUIActivity extends UIForm {
       String commentId = requestContext.getRequestParameter(OBJECTID);
       String message = URLDecoder.decode(requestContext.getRequestParameter("messageContent"),"UTF-8");
 
-      UIApplication uiApplication = requestContext.getUIApplication();
       BaseUIActivity uiActivity = event.getSource();
       ExoSocialActivity originalActivity = Utils.getActivityManager().getActivity(commentId);
-      //Already checked in UI side
-      /*
-      ExoSocialActivity originalActivity = Utils.getActivityManager().getActivity(commentId);
-      String originalMessage = originalActivity.getTitle();
-      if ( StringUtils.equals(message,originalMessage) ) {
-        uiApplication.addMessage(new ApplicationMessage("Same_content_message", null, ApplicationMessage.WARNING));
-        return;
-      }
-      */
-      if (message == null || message.equals("")) {
-        uiApplication.addMessage(new ApplicationMessage("UIComposer.msg.error.Empty_Message", null, ApplicationMessage.WARNING));
-        return;
-      }
-      ExoSocialActivity newComment = uiActivity.editCommentMessage(originalActivity,message);
+
+      uiActivity.editCommentMessage(originalActivity,message);
       requestContext.addUIComponentToUpdateByAjax(uiActivity);
       Utils.initUserProfilePopup(uiActivity.getId());
       uiActivity.getParent().broadcast(event, event.getExecutionPhase());
