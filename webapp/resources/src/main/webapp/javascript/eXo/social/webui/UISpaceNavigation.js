@@ -19,7 +19,7 @@
 
 (function($, bannerUploader) {
 var UISpaceNavigation = {
-    addEditability: function(id, moreLabel) {
+    init: function(id, moreLabel, addEditability) {
     var editedTab = $("#" + id);
   
     function autoMoveApps(){
@@ -85,10 +85,12 @@ var UISpaceNavigation = {
       autoMoveApps();
     });
 
-    editedTab.on("dblclick", ".active span", function() {
-      var span = $(this);
-      showEditLabelInput(this, span.attr("id"), span.text());
-    });
+    if (addEditability) {
+      editedTab.on("dblclick", ".active span", function() {
+        var span = $(this);
+        showEditLabelInput(this, span.attr("id"), span.text());
+      });
+    }
 
 	  function showEditLabelInput(target, nodeName, currentLabel) {
 	    var jqObj = $(target);

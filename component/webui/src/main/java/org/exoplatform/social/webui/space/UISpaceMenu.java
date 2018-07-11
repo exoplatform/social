@@ -235,6 +235,11 @@ public class UISpaceMenu extends UIContainer {
       String spaceUrl = Utils.getSpaceUrlByContext();
       Space space = spaceService.getSpaceByUrl(spaceUrl);
 
+      if (!spaceService.isManager(space, prContext.getRemoteUser())
+          && !spaceService.isSuperManager(prContext.getRemoteUser())) {
+        return;
+      }
+
       UserNode selectedNode = uiPortal.getSelectedUserNode();
       String pageRef = selectedNode.getPageRef().format();
       String appName = pageRef.substring(pageRef.lastIndexOf("::") + 2);
@@ -265,6 +270,19 @@ public class UISpaceMenu extends UIContainer {
         return;
       }
 
+      // Change node and page of selected node.
+      UserNode renamedNode = homeNode.getChild(oldName);
+      renamedNode.setName(newNodeName);
+      renamedNode.setLabel(newSpaceAppName);
+      DataStorage dataService = spaceMenu.getApplicationComponent(DataStorage.class);
+      Page page = dataService.getPage(renamedNode.getPageRef().format());
+      if (page != null) {
+        page.setTitle(newNodeName);
+        dataService.save(page);
+      }
+      UserPortal userPortal = Util.getUIPortalApplication().getUserPortalConfig().getUserPortal();
+      userPortal.saveNode(homeNode, null);
+
       String installedApps = space.getApp();
       String[] apps = installedApps.split(",");
       String[] appParts = null;
@@ -285,19 +303,6 @@ public class UISpaceMenu extends UIContainer {
         }
       }
 
-      // Change node and page of selected node.
-      UserNode renamedNode = homeNode.getChild(oldName);
-      renamedNode.setName(newNodeName);
-      renamedNode.setLabel(newSpaceAppName);
-      DataStorage dataService = spaceMenu.getApplicationComponent(DataStorage.class);
-      Page page = dataService.getPage(renamedNode.getPageRef().format());
-      if (page != null) {
-        page.setTitle(newNodeName);
-        dataService.save(page);
-      }
-      UserPortal userPortal = Util.getUIPortalApplication().getUserPortalConfig().getUserPortal();
-      userPortal.saveNode(homeNode, null);
-      
       String newUri = renamedNode.getURI();
       if (newUri != null) {
         prContext.getResponse().sendRedirect(Utils.getSpaceURL(renamedNode));
