@@ -172,7 +172,7 @@ public class RDBMSRelationshipStorageImpl implements RelationshipStorage {
 
   @Override
   public List<Identity> getIncomingRelationships(Identity receiver, long offset, long limit) throws RelationshipStorageException {
-    return convertRelationshipEntitiesToIdentities(connectionDAO.getConnections(receiver, Relationship.Type.INCOMING, offset, limit), receiver.getId());
+    return searchConnections(receiver, Relationship.Type.INCOMING, offset, limit, null);
   }
 
   @Override
