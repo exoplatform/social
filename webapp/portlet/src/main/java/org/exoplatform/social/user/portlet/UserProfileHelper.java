@@ -220,9 +220,8 @@ public class UserProfileHelper {
   private static void putInfoData(Profile currentProfile, Map<String, Object> infos, String mainKey) {
     List<Map<String, String>> multiValues = getMultiValues(currentProfile, mainKey);
     if (multiValues != null && multiValues.size() > 0) {
-      Map<String, List<String>> mainValue = new HashMap<String, List<String>>();
+      Map<String, List<String>> mainValue = new LinkedHashMap<String, List<String>>();
       
-      List<String> valuesOfOther = new ArrayList<String>();
       for (Map<String, String> map : multiValues) {
         List<String> values = new ArrayList<String>();
         String key = map.get(KEY);
@@ -233,23 +232,11 @@ public class UserProfileHelper {
         } else {
           values.add(value);
         }
-        
-        if (OTHER_KEY.equals(key)) {
-          valuesOfOther.addAll(values);
-        } else {
+
           mainValue.put(key, values);
-        }
       }
-      
-      //
-      if (valuesOfOther.size() > 0) {
-        LinkedHashMap<String, List<String>> newValues = new LinkedHashMap<String, List<String>>();
-        newValues.putAll(mainValue);
-        newValues.put(OTHER_KEY, valuesOfOther);
-        infos.put(mainKey, newValues);
-      } else {
+
         infos.put(mainKey, mainValue);
-      }
     }
   }
 
