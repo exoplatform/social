@@ -17,14 +17,13 @@
 package org.exoplatform.social.webui.space.access;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 
 import org.exoplatform.commons.utils.CommonsUtils;
 import org.exoplatform.portal.application.PortalRequestContext;
 import org.exoplatform.portal.application.RequestNavigationData;
 import org.exoplatform.portal.mop.SiteType;
+import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.services.security.Identity;
@@ -46,7 +45,8 @@ import org.exoplatform.webui.application.WebuiRequestContext;
 public class SpaceAccessApplicationLifecycle implements ApplicationLifecycle<WebuiRequestContext> {
 
   private static final Log LOG = ExoLogger.getLogger(SpaceAccessApplicationLifecycle.class);
-  
+
+  private static final String KEEP_SPACE_ACCESS_SESSION_DATA_KEY = "social.accessed.space.data.keep";
   
   @Override
   public void onInit(Application app) throws Exception {
@@ -206,6 +206,7 @@ public class SpaceAccessApplicationLifecycle implements ApplicationLifecycle<Web
     pcontext.getRequest().getSession().setAttribute(SpaceAccessType.ACCESSED_TYPE_KEY, type);
     pcontext.getRequest().getSession().setAttribute(SpaceAccessType.ACCESSED_SPACE_PRETTY_NAME_KEY, spacePrettyName);
     pcontext.getRequest().getSession().setAttribute(SpaceAccessType.ACCESSED_SPACE_REQUEST_PATH_KEY, requestPath);
+    SpaceAccessApplicationLifecycle.markToKeepSessionData();
     
     pcontext.setResponseComplete(true);
     
@@ -221,10 +222,12 @@ public class SpaceAccessApplicationLifecycle implements ApplicationLifecycle<Web
   public void onEndRequest(Application app, WebuiRequestContext context) throws Exception {
     PortalRequestContext pcontext = (PortalRequestContext)context;
 
-    // cleanup session attributes once the attributes are used from Request
-    removeAttributeFromSession(pcontext, SpaceAccessType.ACCESSED_TYPE_KEY);
-    removeAttributeFromSession(pcontext, SpaceAccessType.ACCESSED_SPACE_PRETTY_NAME_KEY);
-    removeAttributeFromSession(pcontext, SpaceAccessType.ACCESSED_SPACE_REQUEST_PATH_KEY);
+    if (pcontext.getRequest().getAttribute(KEEP_SPACE_ACCESS_SESSION_DATA_KEY) == null) {
+      // cleanup session attributes once the attributes are used from Request
+      removeAttributeFromSession(pcontext, SpaceAccessType.ACCESSED_TYPE_KEY);
+      removeAttributeFromSession(pcontext, SpaceAccessType.ACCESSED_SPACE_PRETTY_NAME_KEY);
+      removeAttributeFromSession(pcontext, SpaceAccessType.ACCESSED_SPACE_REQUEST_PATH_KEY);
+    }
   }
 
   private void removeAttributeFromSession(PortalRequestContext pcontext, String key) {
@@ -245,4 +248,7 @@ public class SpaceAccessApplicationLifecycle implements ApplicationLifecycle<Web
     
   }
 
+  public static void markToKeepSessionData() {
+    Util.getPortalRequestContext().getRequest().setAttribute(KEEP_SPACE_ACCESS_SESSION_DATA_KEY, true);
+  }
 }

@@ -27,6 +27,7 @@ import org.exoplatform.social.core.space.SpaceAccessType;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
 import org.exoplatform.social.webui.Utils;
+import org.exoplatform.social.webui.space.access.SpaceAccessApplicationLifecycle;
 import org.exoplatform.web.application.JavascriptManager;
 import org.exoplatform.web.application.RequestContext;
 import org.exoplatform.web.url.navigation.NavigationResource;
@@ -75,6 +76,7 @@ public class UISpaceAccess extends UIContainer {
    */
   public void init() {
     try {
+      SpaceAccessApplicationLifecycle.markToKeepSessionData();
       PortalRequestContext pcontext = Util.getPortalRequestContext();
       Object statusObject = pcontext.getRequest().getAttribute(SpaceAccessType.ACCESSED_TYPE_KEY);
       Object spacePrettyNameObj = pcontext.getRequest().getAttribute(SpaceAccessType.ACCESSED_SPACE_PRETTY_NAME_KEY);
