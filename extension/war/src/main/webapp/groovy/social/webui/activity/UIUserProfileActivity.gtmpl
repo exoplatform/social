@@ -178,7 +178,7 @@
     ownerUri = LinkProvider.getUserProfileUri(ownerIdentity.getRemoteId());
     ownerAvatar = profile.avatarUrl;
     ownerName = StringEscapeUtils.escapeHtml(profile.fullName);
-    ownerPosition = profile.position;
+    ownerPosition = StringEscapeUtils.escapeHtml(profile.position);
     ownerEmail = profile.email;
     ownerPhones = profile.phones;
     ownerGender = profile.gender;
@@ -193,7 +193,7 @@
     ownerUri = profile.url;
     ownerAvatar = profile.avatarUrl;
     ownerName = StringEscapeUtils.escapeHtml(profile.fullName);
-    ownerPosition = profile.position;
+    ownerPosition = StringEscapeUtils.escapeHtml(profile.position);
     ownerEmail = profile.email;
     ownerPhones = profile.phones;
     ownerGender = profile.gender;

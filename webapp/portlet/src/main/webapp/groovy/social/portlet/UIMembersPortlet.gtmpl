@@ -66,7 +66,7 @@ jsManager.require("SHARED/jquery", "jq")
           <div class="contentBox">
             <h4 class="spaceTitle"><a data-line="2" data-key="title" href="${profileURL}" class="limitText">$userName</a></h4>
           <% if(position != null && position.length() > 0) { %>
-            <div class="position ellipsis">${position}</div>
+            <div class="position ellipsis">${StringEscapeUtils.escapeHtml(position);}</div>
           <% } %>
           <% if(email != null && email.length() > 0) { %>
             <div class="email"><a class="ellipsis" href="mailto:${email}">${email}</a></div>
@@ -97,7 +97,7 @@ jsManager.require("SHARED/jquery", "jq")
         </div>
       </div>
     <% }%>
-    
+
     <% if(uicomponent.enableLoadManagerNext) { %>
        <div id="LoadMoreManagerButton" class="load-more-items MoreSpace btn" onclick="<%=uicomponent.event("LoadMoreManager")%>">
          <%=_ctx.appRes("UIMembersPortlet.label.ShowMore")%>
@@ -112,7 +112,7 @@ jsManager.require("SHARED/jquery", "jq")
     }
     </script>
     <% } %>
-        
+
     </div>
    <% } else { %>
     <!-- NEED TO BE ADD CODE HERE INSTEAD OF STATIC TEXT <div class="noneContentSpace"><%=_ctx.appRes("UIMembersPortlet.label.NotLeaderYet")%></div>-->
@@ -130,7 +130,7 @@ jsManager.require("SHARED/jquery", "jq")
     <!--div class="DirectoryNormalBox"-->
     <div class="uiFilterList">
       <div class="result clearfix"><span class="number"><%=uicomponent.memberNum%></span><%=_ctx.appRes("UIMembersPortlet.label.DisplayInOrderOfAlphabet")%></div>
-      <ul class="letterList"> 
+      <ul class="letterList">
         <li>
        <% if (selectedStartChar == null || selectedStartChar == "All") { %>
           <a href="#$searchAll" id="searchAll" class="selected" onclick="<%=uicomponent.event("Search", ""+"All")%>">$searchAll</a>
@@ -177,7 +177,7 @@ jsManager.require("SHARED/jquery", "jq")
           <div class="contentBox">
             <h4 class="spaceTitle"><a data-key="title" data-line="2" href="${profileURL}" class="limitText">$userName</a></h4>
           <% if(position != null && position.length() > 0) { %>
-            <div class="position ellipsis">${position}</div>
+            <div class="position ellipsis">${StringEscapeUtils.escapeHtml(position)}</div>
           <% } %>
           <% if(email != null && email.length() > 0) { %>
             <div class="email"><a class="ellipsis" href="mailto:${email}">${email}</a></div>

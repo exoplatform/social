@@ -153,7 +153,7 @@
 		      <div class="contentBox">
             <h4 class="spaceTitle"><a class="limitText" data-key="title" data-line="2" href="${profileURL}">${fullName}</a></h4>			
 	            <% if(position.length() > 0) { %>
-	            <div class="position ellipsis">${position}</div>
+	            <div class="position ellipsis">${StringEscapeUtils.escapeHtml(position)}</div>
 	            <%  } %>
 	            <% if(email.length() > 0) { %>
 	            <div class="email">
