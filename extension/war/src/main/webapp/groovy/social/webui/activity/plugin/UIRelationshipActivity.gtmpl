@@ -213,6 +213,9 @@
         spaceImageSource = LinkProvider.SPACE_DEFAULT_AVATAR_URL;
       }
     }
+
+  String viewActivityTip = _ctx.appRes("UIActivity.msg.ViewActivity");
+  def deleteActivityTip = _ctx.appRes("UIActivity.msg.DeleteActivity");
 %>
 
 <div class="activityStream uiDefaultActivity" id="activityContainer${activity.id}">
@@ -248,7 +251,13 @@
     					 <a id="Permalink${activity.id}" class="uiIconLink uiIconLightGray" rel="tooltip" data-placement="bottom" title="$viewActivityTip" href="<%=uicomponent.getActivityPermalink(activity.id)%>"></a>
     					 <% if (activityDeletable) {
     					 %>
-    						<a href="javascript:void(0)" data-confirm="$labelToDeleteThisActivity" data-caption="$captionConfirmation" data-close="$labelClosebutton" data-ok="$labelConfirmbutton"  data-delete="<%=uicomponent.event("DeleteActivity", uicomponent.getId(), "");%>" class="uiIconClose uiIconLightGray controllDelete" id="DeleteActivityButton${activity.id}"></a>
+    						<a href="javascript:void(0)" data-confirm="$labelToDeleteThisActivity"
+    						    data-caption="$captionConfirmation" data-close="$labelClosebutton"
+    						    data-ok="$labelConfirmbutton"
+    						    data-delete="<%=uicomponent.event("DeleteActivity", uicomponent.getId(), "");%>"
+    						    class="uiIconClose uiIconLightGray controllDelete"
+    						    rel="tooltip" data-placement="bottom" title="$deleteActivityTip"
+    						    id="DeleteActivityButton${activity.id}"></a>
     					  <%}%>
     				</div>
 				</div>
