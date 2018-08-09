@@ -77,7 +77,7 @@ public class UIEditUserProfileForm extends UIForm {
   /** PHONE_TYPES. */
   public static final String[] PHONE_TYPES = new String[] {"work","home","other"};
   /** PHONE REGEX EXPRESSION. */
-  public static final String PHONE_REGEX_EXPRESSION = "^[\\d\\s ().+-]{0,25}+$";
+  public static final String PHONE_REGEX_EXPRESSION = "^[\\d\\s ().+-]{3,25}+$";
   /** URL REGEX EXPRESSION. */
   public static final String URL_REGEX_EXPRESSION ="^(?i)(" +
       "((?:(?:ht)tp(?:s?)\\:\\/\\/)?" +                                                         // protolcol
@@ -106,13 +106,13 @@ public class UIEditUserProfileForm extends UIForm {
     //
     UIInputSection baseSection = new UIInputSection(FIELD_BASE_SECTION, "ContactInfomation");
     baseSection.addUIFormInput(createUIFormStringInput(Profile.FIRST_NAME, true)
-                               .addValidator(PersonalNameValidator.class).addValidator(StringLengthValidator.class, 45));
+                               .addValidator(PersonalNameValidator.class).addValidator(StringLengthValidator.class, 3, 45));
     //
     baseSection.addUIFormInput(createUIFormStringInput(Profile.LAST_NAME, true)
-                               .addValidator(PersonalNameValidator.class).addValidator(StringLengthValidator.class, 45));
+                               .addValidator(PersonalNameValidator.class).addValidator(StringLengthValidator.class, 3, 45));
     //
     baseSection.addUIFormInput(createUIFormStringInput(Profile.EMAIL, true).addValidator(EmailAddressValidator.class)
-                                                                           .addValidator(StringLengthValidator.class, 100));
+                                                                           .addValidator(StringLengthValidator.class, 5, 100));
     //
     UIChangeAvatarContainer avatarContainer = createUIComponent(UIChangeAvatarContainer.class, null, "Avatar");
     baseSection.addUIFormInput(avatarContainer);
@@ -143,7 +143,7 @@ public class UIEditUserProfileForm extends UIForm {
     //
     UIFormMultiValueInputSet urlMultiValueInput = new UIFormMultiValueInputSet(Profile.CONTACT_URLS, Profile.CONTACT_URLS);
     urlMultiValueInput.addValidator(ExpressionValidator.class, URL_REGEX_EXPRESSION, "UIEditUserProfileForm.msg.Invalid-url");
-    urlMultiValueInput.addValidator(StringLengthValidator.class, 100);
+    urlMultiValueInput.addValidator(StringLengthValidator.class, 5, 100);
     urlMultiValueInput.setType(UIFormStringInput.class);
     urlMultiValueInput.setValue(Arrays.asList(""));
     urlMultiValueInput.setLabel(Profile.CONTACT_URLS);
