@@ -158,7 +158,7 @@
 
   <external-component-plugins>
     <target-component>org.exoplatform.commons.upgrade.UpgradeProductService</target-component>
-    <component-plugin>
+    <component-plugin profiles="all">
       <name>SpaceMemberAnyMembershipUpgradePlugin</name>
       <set-method>addUpgradePlugin</set-method>
       <type>org.exoplatform.social.core.jpa.updater.SpaceMemberAnyMembershipUpgradePlugin</type>
