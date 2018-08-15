@@ -438,6 +438,14 @@
     focusToComment : function(commentId, elementToScrollTo, delayToDisableFocus) {
       var comment = $('#commentContainer' + commentId);
       var ele = elementToScrollTo;
+      var subCommentParentId = comment.data('parent-comment');
+      var subCommentShowAll = $('#SubCommentShowAll_' + subCommentParentId);
+
+      // show subComments if exist before calculate scroll value
+      if(subCommentShowAll.length > 0) {
+        subCommentShowAll.find('.subCommentShowAllLink').trigger('click');
+      }
+
       if(comment.length > 0) {
         $("div[id^='commentContainer']").removeClass("focus");
 
