@@ -212,7 +212,7 @@
         <as>$</as>
       </depends>
       <depends>
-        <module>iphonePlugin</module>
+        <module>iphoneStyleCheckbox</module>
       </depends>
     </module>
   </portlet>

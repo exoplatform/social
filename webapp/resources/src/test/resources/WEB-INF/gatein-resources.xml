@@ -312,17 +312,6 @@
       <as>jQuery</as>
     </depends>
   </module>
-
-  <module>
-    <name>iphonePlugin</name>
-    <script>
-      <path>/javascript/iphone/checkbox/iphone-style-checkboxes.js</path>
-    </script>
-    <depends>
-      <module>jquery</module>
-      <as>$</as>
-    </depends>
-  </module>
   
   <module>
     <name>mentionsPlugin</name>

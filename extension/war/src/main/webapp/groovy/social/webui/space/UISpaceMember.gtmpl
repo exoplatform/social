@@ -221,11 +221,18 @@
 	}
 	%>
   <script type="text/javascript">
-		require(["SHARED/jquery", "SHARED/iphonePlugin"], function (gj)
+		require(["SHARED/jquery", "SHARED/iphoneStyleCheckbox"], function (gj)
 		{
 			gj('tr#existingUsersTable').find("div.spaceRole").children('input:checkbox').each(function()
 			{
 				gj(this).iphoneStyle({
+				    disabledClass: 'switchBtnDisabled',
+                    containerClass: 'uiSwitchBtn',
+                    labelOnClass: 'switchBtnLabelOn',
+                    labelOffClass: 'switchBtnLabelOff',
+                    handleClass: 'switchBtnHandle',
+                    handleCenterClass: 'switchBtnHandleCenter',
+                    handleRightClass: 'switchBtnHandleRight',
 					checkedLabel:'YES',
 					uncheckedLabel:'NO'});
 

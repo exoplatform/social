@@ -14,7 +14,7 @@
         <module>juzu-ajax</module>
       </depends>
       <depends>
-        <module>iphonePlugin</module>
+        <module>iphoneStyleCheckbox</module>
       </depends>
       <depends>
         <module>socialUtil</module>
