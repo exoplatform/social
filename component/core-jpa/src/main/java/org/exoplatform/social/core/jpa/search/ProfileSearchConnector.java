@@ -299,7 +299,7 @@ public class ProfileSearchConnector {
     if (firstChar != '\u0000') {
       char lowerCase = Character.toLowerCase(firstChar);
       char upperCase = Character.toUpperCase(firstChar);;
-      esExp.append("name.whitespace:").append("(").append(upperCase).append(StorageUtils.ASTERISK_STR).append(" OR ").append(lowerCase).append(StorageUtils.ASTERISK_STR).append(")");
+      esExp.append("lastName.whitespace:").append("(").append(upperCase).append(StorageUtils.ASTERISK_STR).append(" OR ").append(lowerCase).append(StorageUtils.ASTERISK_STR).append(")");
       return esExp.toString();
     }
 

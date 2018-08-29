@@ -126,7 +126,7 @@ public class StorageUtils {
           PERCENT_STR + skills.toLowerCase() + PERCENT_STR
       );
     }
-	
+  
     if (company.length() != 0) {
       whereExpression.and().like(
           whereExpression.callFunction(QueryFunction.LOWER, ProfileEntity.organizations),
