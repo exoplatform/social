@@ -468,9 +468,6 @@ public class RDBMSSpaceStorageImpl implements SpaceStorage {
 
       if (identitySpace != null) {
         Profile profileSpace = identitySpace.getProfile();
-        profileSpace.setProperty(Profile.FIRST_NAME, space.getDisplayName());
-        profileSpace.setProperty(Profile.USERNAME, space.getPrettyName());
-        // profileSpace.setProperty(Profile.AVATAR_URL, space.getAvatarUrl());
         profileSpace.setProperty(Profile.URL, space.getUrl());
 
         identityStorage.saveProfile(profileSpace);
