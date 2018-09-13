@@ -6,7 +6,7 @@
     <div class="media-body">
       <%
        String profileUrl = "<a class=\"user-name text-bold\" href=\"javascript:void(0)\">" + _ctx.escapeHTML(USER) + "</a>";
-       String spaceUrl = "<span class=\"text-bold\">" + SPACE + "</span>";
+       String spaceUrl = "<span class=\"text-bold\">" + _ctx.escapeHTML(SPACE) + "</span>";
       %>
       <div class="contentSmall" data-link="$VIEW_FULL_DISCUSSION_ACTION_URL">
         <div class="status"><%=_ctx.appRes("Notification.intranet.message.PostActivitySpaceStreamPlugin", profileUrl, spaceUrl)%></div>

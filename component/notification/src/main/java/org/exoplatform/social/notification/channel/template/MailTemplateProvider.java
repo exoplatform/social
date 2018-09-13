@@ -641,16 +641,16 @@ public class MailTemplateProvider extends TemplateProvider {
       Identity identity = Utils.getIdentityManager().getIdentity(activity.getPosterId(), true);
 
       Identity spaceIdentity = Utils.getIdentityManager().getOrCreateIdentity(SpaceIdentityProvider.NAME, activity.getStreamOwner(), true);
+      Space space = Utils.getSpaceService().getSpaceByPrettyName(spaceIdentity.getRemoteId());
 
       templateContext.put("USER", identity.getProfile().getFullName());
-      templateContext.put("SPACE", spaceIdentity.getProfile().getFullName());
+      templateContext.put("SPACE", space.getDisplayName());
 
       String imagePlaceHolder = SocialNotificationUtils.getImagePlaceHolder(language);
       String title = SocialNotificationUtils.processImageTitle(activity.getTitle(), imagePlaceHolder);
       templateContext.put("SUBJECT", title);
       String subject = TemplateUtils.processSubject(templateContext);
 
-      Space space = Utils.getSpaceService().getSpaceByPrettyName(spaceIdentity.getRemoteId());
       templateContext.put("SPACE_URL", LinkProviderUtils.getRedirectUrl("space", space.getId()));
       templateContext.put("OPEN_URL", LinkProviderUtils.getOpenLink(activity));
       templateContext.put("PROFILE_URL", LinkProviderUtils.getRedirectUrl("user", identity.getRemoteId()));
