@@ -111,8 +111,11 @@ public class SpaceElasticUnifiedSearchServiceConnector extends ElasticSearchServ
       throw new ElasticSearchException("Unable to parse JSON response", e);
     }
 
-    //TODO check if response is successful
     JSONObject jsonResult = (JSONObject) json.get("hits");
+    if (jsonResult == null) {
+      return results;
+    }
+
     JSONArray jsonHits = (JSONArray) jsonResult.get("hits");
 
     for(Object jsonHit : jsonHits) {      
