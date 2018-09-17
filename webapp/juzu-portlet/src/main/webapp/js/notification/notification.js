@@ -36,7 +36,14 @@
       //
       var horizontal = parent.find('div.form-horizontal');
       //
-      horizontal.find('input.iphoneStyle').iphoneStyle({ 
+      horizontal.find('input.iphoneStyle').iphoneStyle({
+        disabledClass: 'switchBtnDisabled',
+        containerClass: 'uiSwitchBtn',
+        labelOnClass: 'switchBtnLabelOn',
+        labelOffClass: 'switchBtnLabelOff',
+        handleClass: 'switchBtnHandle',
+        handleCenterClass: 'switchBtnHandleCenter',
+        handleRightClass: 'switchBtnHandleRight',
         checkedLabel: locale.resolve("YES"), 
         uncheckedLabel: locale.resolve("NO"),
         onChange : function() {
