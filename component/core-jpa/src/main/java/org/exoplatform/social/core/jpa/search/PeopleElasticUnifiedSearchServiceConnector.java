@@ -79,7 +79,7 @@ public class PeopleElasticUnifiedSearchServiceConnector extends ElasticSearchSer
   }
   
   protected String buildFilteredQuery(String query, Collection<String> sites, List<ElasticSearchFilter> filters, int offset, int limit, String sort, String order) {
-    query = query.trim();
+    String escapedQuery = escapeReservedCharacters(query.trim());
     StringBuilder esQuery = new StringBuilder();
     esQuery.append("{\n");
     esQuery.append("     \"from\" : " + offset + ", \"size\" : " + limit + ",\n");
@@ -97,7 +97,7 @@ public class PeopleElasticUnifiedSearchServiceConnector extends ElasticSearchSer
     esQuery.append("          \"must\" : {\n");
     esQuery.append("                \"query_string\" : {\n");
     esQuery.append("                    \"fields\" : [" + getFields() + "],\n");
-    esQuery.append("                    \"query\" : \"" + query + "\"\n");
+    esQuery.append("                    \"query\" : \"" + escapedQuery + "\"\n");
     esQuery.append("                }\n");
     esQuery.append("          }\n");
     esQuery.append("        }\n");
@@ -137,8 +137,11 @@ public class PeopleElasticUnifiedSearchServiceConnector extends ElasticSearchSer
       throw new ElasticSearchException("Unable to parse JSON response", e);
     }
 
-    // TODO check if response is successful
     JSONObject jsonResult = (JSONObject) json.get("hits");
+    if (jsonResult == null) {
+      return results;
+    }
+
     JSONArray jsonHits = (JSONArray) jsonResult.get("hits");
 
     for (Object jsonHit : jsonHits) {
