@@ -99,7 +99,7 @@ jsManager.require("SHARED/jquery", "jq")
     <% }%>
 
     <% if(uicomponent.enableLoadManagerNext) { %>
-       <div id="LoadMoreManagerButton" class="load-more-items MoreSpace btn" onclick="<%=uicomponent.event("LoadMoreManager")%>">
+       <div id="LoadMoreManagerButton" class="btn btn-block" onclick="<%=uicomponent.event("LoadMoreManager")%>">
          <%=_ctx.appRes("UIMembersPortlet.label.ShowMore")%>
        </div>
     <% } else { %>

@@ -209,7 +209,7 @@ import org.exoplatform.social.core.service.LinkProvider;
       <%
        if(uicomponent.isEnableLoadNext()) {
       %>
-		      <div id="LoadMoreMySpacesButton" class="load-more-items MoreSpace btn" onclick="<%=uicomponent.event("LoadMoreSpace")%>" >
+		      <div id="LoadMoreMySpacesButton" class="btn btn-block" onclick="<%=uicomponent.event("LoadMoreSpace")%>" >
 		        $labelShowMoreSpace
 		      </div>
       <%

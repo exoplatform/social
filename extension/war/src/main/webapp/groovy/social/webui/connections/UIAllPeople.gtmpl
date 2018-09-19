@@ -193,7 +193,7 @@ _ctx.getRequestContext().getJavascriptManager()
 				<% } %>
 				</div>
 				<% if(uicomponent.isEnableLoadNext()) { %>
-				<button id="LoadMoreButton" class="load-more-items btn" onclick="<%=uicomponent.event("LoadMorePeople")%>" >
+				<button id="LoadMoreButton" class="btn btn-block" onclick="<%=uicomponent.event("LoadMorePeople")%>" >
 					<%=_ctx.appRes("UIAllPeople.label.ShowMore")%>
 				</button>
 				<% } else { %>

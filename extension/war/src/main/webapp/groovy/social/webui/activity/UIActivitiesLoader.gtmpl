@@ -71,8 +71,8 @@
       String actionURL = action.replace("javascript:ajaxGet('", "").replace("')", "");
       %>
       <div class="boxLoadMore" style="margin-bottom:15px;display:none">
-         <div id="ActivitiesLoader" class="showMore" data-loading-capacity="${uicomponent.loadingCapacity}" data-action="$actionURL" onclick="$action">
-           <a href="javascript:void(0);"><%=_ctx.appRes("UIActivitiesLoader.label.Load_More")%></a>
+         <div id="ActivitiesLoader" class="btn btn-block" data-loading-capacity="${uicomponent.loadingCapacity}" data-action="$actionURL" onclick="$action">
+           <%=_ctx.appRes("UIActivitiesLoader.label.Load_More")%>
          </div>
        </div>
       <%
