@@ -17,6 +17,7 @@
 package org.exoplatform.social.common.jcr.filter;
 
 import java.util.Iterator;
+import java.util.Objects;
 
 
 public interface FilterLiteral<P> {
@@ -138,8 +139,12 @@ public interface FilterLiteral<P> {
       
       return this.p.equals(other.p);
     }
-    
-    
+
+    @Override
+    public int hashCode() {
+      return Objects.hash(p);
+    }
+
     public FilterOption<P> clone() throws CloneNotSupportedException {
       Object obj = super.clone();
       return (obj instanceof  FilterOption<?>) ? (FilterOption<P>) obj : null;

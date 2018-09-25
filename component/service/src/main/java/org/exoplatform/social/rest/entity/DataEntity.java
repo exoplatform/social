@@ -19,6 +19,7 @@ package org.exoplatform.social.rest.entity;
 
 import java.util.LinkedHashMap;
 
+import org.apache.commons.lang.StringUtils;
 import org.json.JSONObject;
 
 public class DataEntity extends LinkedHashMap<String, Object> {
@@ -28,7 +29,7 @@ public class DataEntity extends LinkedHashMap<String, Object> {
   }
 
   public DataEntity setProperty(String name, Object value) {
-    if (value != null || String.valueOf(value) != "") {
+    if (value != null && StringUtils.isNotEmpty(String.valueOf(value))) {
       put(name, value);
     }
     return this;
