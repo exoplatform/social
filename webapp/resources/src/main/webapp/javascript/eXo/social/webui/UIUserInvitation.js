@@ -16,10 +16,12 @@
                 },
                 createOnBlur: true,
                 renderItem: function(item, escape) {
-                    if (item.invalid) {
+                    if (item.invalid === true) {
                         return '<div class="item invalid">' + escape(item.text) + '</div>';
-                    } else {
+                    } else if (item.invalid === false) {
                         return '<div class="item">' + escape(item.text) + '</div>';
+                    } else {
+                        return '<div class="hidden"></div>';
                     }
                 },
                 optionIconField: 'avatarUrl',
