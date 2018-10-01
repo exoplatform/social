@@ -28,6 +28,9 @@
   <artifactId>social-component-service</artifactId>
   <name>eXo PLF:: Social Service Component</name>
   <description>eXo Social Service Component</description>
+  <properties>
+    <exo.test.coverage.ratio>0.47</exo.test.coverage.ratio>
+  </properties>
   <dependencies>
     <dependency>
       <groupId>commons-collections</groupId>

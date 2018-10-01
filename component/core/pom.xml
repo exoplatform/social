@@ -28,6 +28,9 @@
   <artifactId>social-component-core</artifactId>
   <name>eXo PLF:: Social Core Component</name>
   <description>eXo Social Core Component: People and Space</description>
+  <properties>
+    <exo.test.coverage.ratio>0.64</exo.test.coverage.ratio>
+  </properties>
   <dependencies>
     <dependency>
       <groupId>com.ibm.icu</groupId>
