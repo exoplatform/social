@@ -36,14 +36,7 @@ import org.exoplatform.webui.core.model.SelectItemOption;
 import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.event.Event.Phase;
 import org.exoplatform.webui.event.EventListener;
-import org.exoplatform.webui.form.UIForm;
-import org.exoplatform.webui.form.UIFormDateTimeInput;
-import org.exoplatform.webui.form.UIFormInputBase;
-import org.exoplatform.webui.form.UIFormInputInfo;
-import org.exoplatform.webui.form.UIFormMultiValueInputSet;
-import org.exoplatform.webui.form.UIFormSelectBox;
-import org.exoplatform.webui.form.UIFormStringInput;
-import org.exoplatform.webui.form.UIFormTextAreaInput;
+import org.exoplatform.webui.form.*;
 import org.exoplatform.webui.form.input.UICheckBoxInput;
 import org.exoplatform.webui.form.validator.EmailAddressValidator;
 import org.exoplatform.webui.form.validator.ExpressionValidator;
@@ -181,6 +174,7 @@ public class UIEditUserProfileForm extends UIForm {
     company.addValidator(StringLengthValidator.class, 100);
     company.setLabel(Profile.EXPERIENCES_COMPANY);
     experienceSection.addUIFormInput(company);
+    experienceSection.addUIFormInput(new UIFormHiddenInput(Profile.EXPERIENCES_ID + id, ""));
     //
     experienceSection.addUIFormInput(createUIFormStringInput(Profile.EXPERIENCES_POSITION + id, true)
                                        .addValidator(StringLengthValidator.class, 100), Profile.EXPERIENCES_POSITION);
@@ -209,6 +203,7 @@ public class UIEditUserProfileForm extends UIForm {
 
   protected UIInputSection setValueExperienceSection(String id, Map<String, String> experience) throws Exception {
     UIInputSection experienceSection = getOrCreateExperienceSection(id);
+    experienceSection.getUIInput(Profile.EXPERIENCES_ID + id).setValue(experience.get(Profile.EXPERIENCES_ID));
     experienceSection.getUIStringInput(Profile.EXPERIENCES_COMPANY + id).setValue(getValueExperience(experience, Profile.EXPERIENCES_COMPANY));
     experienceSection.getUIStringInput(Profile.EXPERIENCES_POSITION + id).setValue(getValueExperience(experience, Profile.EXPERIENCES_POSITION));
     experienceSection.getUIFormTextAreaInput(Profile.EXPERIENCES_DESCRIPTION + id).setValue(getValueExperience(experience, Profile.EXPERIENCES_DESCRIPTION));
@@ -432,6 +427,7 @@ public class UIEditUserProfileForm extends UIForm {
   private Map<String, String> getValueExperience(UIInputSection experienceSection) throws Exception {
     String id = experienceSection.getId();
     Map<String, String> map = new HashMap<String, String>();
+    putData(map, Profile.EXPERIENCES_ID, (String) experienceSection.getUIInput(Profile.EXPERIENCES_ID + id).getValue());
     putData(map, Profile.EXPERIENCES_COMPANY, experienceSection.getUIStringInput(Profile.EXPERIENCES_COMPANY + id).getValue());
     putData(map, Profile.EXPERIENCES_POSITION, experienceSection.getUIStringInput(Profile.EXPERIENCES_POSITION + id).getValue());
     putData(map, Profile.EXPERIENCES_DESCRIPTION, experienceSection.getUIFormTextAreaInput(Profile.EXPERIENCES_DESCRIPTION + id).getValue());

@@ -125,6 +125,7 @@ public class EntityConverterUtils {
         if (exp.getPosition() != null && !exp.getPosition().isEmpty()) {
           positions.append(exp.getPosition()).append(",");
         }
+        xpMap.put(Profile.EXPERIENCES_ID, String.valueOf(exp.getId()));
         xpMap.put(Profile.EXPERIENCES_SKILLS, exp.getSkills());
         xpMap.put(Profile.EXPERIENCES_POSITION, exp.getPosition());
         xpMap.put(Profile.EXPERIENCES_START_DATE, exp.getStartDate());

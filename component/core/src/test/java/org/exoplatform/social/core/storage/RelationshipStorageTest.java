@@ -576,15 +576,15 @@ public class RelationshipStorageTest extends AbstractCoreTest {
     ProfileFilter pf = new ProfileFilter();
     pf = buildProfileFilterWithExcludeIdentities(pf);
     List<Identity> identities = relationshipStorage.getConnectionsByFilter(tearDownIdentityList.get(0), pf, 0, 20);
-    assertEquals("Number of identities must be " + identities.size(), 8, identities.size());
+    assertEquals("Number of identities must be 8", 8, identities.size());
     pf.setCompany("exo");
     identities = relationshipStorage.getConnectionsByFilter(tearDownIdentityList.get(0), pf, 0, 20);
-    assertEquals("Number of identities must be " + identities.size(), 2, identities.size());
+    assertEquals("Number of identities must be 2", 2, identities.size());
     pf.setPosition("developer");
     pf.setName("FirstName9");
     pf.setCompany("");
     identities = relationshipStorage.getConnectionsByFilter(tearDownIdentityList.get(0), pf, 0, 20);
-    assertEquals("Number of identities must be " + identities.size(), 1, identities.size());
+    assertEquals("Number of identities must be 1", 1, identities.size());
   }
   
   /**
