@@ -533,4 +533,23 @@
       </column>
     </addColumn>
   </changeSet>
+
+  <changeSet author="social" id="1.0.0-59" failOnError="true" dbms="mysql,mssql,hsqldb">
+    <addColumn tableName="SOC_IDENTITY_EXPERIENCES">
+      <column name="EXPERIENCE_ID" type="BIGINT" autoIncrement="${autoIncrement}" startWith="1">
+        <constraints nullable="false" primaryKey="true" primaryKeyName="PK_SOC_IDENTITY_EXPERIENCES" />
+      </column>
+    </addColumn>
+  </changeSet>
+  <changeSet author="social" id="1.0.0-60" failOnError="true" dbms="oracle,postgresql">
+    <createSequence sequenceName="SEQ_SOC_EXPERIENCE_ID" startValue="1"/>
+    <addColumn tableName="SOC_IDENTITY_EXPERIENCES">
+      <column name="EXPERIENCE_ID" type="BIGINT" autoIncrement="${autoIncrement}" startWith="1">
+      </column>
+    </addColumn>
+    <sql dbms="postgresql">UPDATE SOC_IDENTITY_EXPERIENCES SET EXPERIENCE_ID=nextval('SEQ_SOC_EXPERIENCE_ID');</sql>
+    <sql dbms="oracle">UPDATE SOC_IDENTITY_EXPERIENCES SET EXPERIENCE_ID=SEQ_SOC_EXPERIENCE_ID.nextval;</sql>
+    <addPrimaryKey tableName="SOC_IDENTITY_EXPERIENCES" columnNames="EXPERIENCE_ID"></addPrimaryKey>
+  </changeSet>
+
 </databaseChangeLog>

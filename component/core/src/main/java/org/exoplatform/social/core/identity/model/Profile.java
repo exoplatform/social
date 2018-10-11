@@ -68,6 +68,9 @@ public class Profile {
   /** EXPERIENCE. */
   public static final String        EXPERIENCES    = "experiences";
 
+  /** ID. */
+  public static final String        EXPERIENCES_ID          = "id";
+
   /** COMPANY. */
   public static final String        EXPERIENCES_COMPANY     = "company";
 

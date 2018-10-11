@@ -1,5 +1,6 @@
 <%
   import org.exoplatform.social.core.service.LinkProvider;
+  import org.exoplatform.social.core.identity.model.Profile;
 
   String aboutMe = uicomponent.getAboutMe();
   boolean isOwner = uicomponent.isOwner();
@@ -20,9 +21,9 @@
       print("<div class=\"simpleBox\"> ");
       for(experience in experienceData) {
         print("<div class=\"experience-container\"> ");
-        String utilNow = experience.get(uicomponent.EXPERIENCES_IS_CURRENT);
+        String utilNow = experience.get(Profile.EXPERIENCES_IS_CURRENT);
         for(key in experience.keySet()) {
-          if(uicomponent.EXPERIENCES_IS_CURRENT.equals(key)) {
+          if(Profile.EXPERIENCES_ID.equals(key) || Profile.EXPERIENCES_IS_CURRENT.equals(key)) {
             continue;
           }
           String label = _ctx.appRes("UIBasicProfile.label." + key);

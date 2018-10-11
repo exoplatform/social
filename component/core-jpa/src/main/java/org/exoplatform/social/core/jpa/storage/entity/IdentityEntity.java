@@ -95,10 +95,8 @@ public class IdentityEntity {
   @CollectionTable(name = "SOC_IDENTITY_PROPERTIES", joinColumns = {@JoinColumn(name = "IDENTITY_ID")})
   private Map<String, String> properties = new HashMap<String, String>();
 
-  @ElementCollection(fetch = FetchType.LAZY)
-  @CollectionTable(name = "SOC_IDENTITY_EXPERIENCES", joinColumns = {@JoinColumn(name = "IDENTITY_ID")})
+  @OneToMany(mappedBy = "identity", fetch = FetchType.LAZY, cascade = {CascadeType.ALL}, orphanRemoval = true)
   private Set<ProfileExperienceEntity> experiences = new HashSet<>();
-  //END_OF_PROFILE
 
   @Temporal(TemporalType.TIMESTAMP)
   @Column(name = "CREATED_DATE")
@@ -193,4 +191,6 @@ public class IdentityEntity {
   public void setCreatedDate(Date createdTime) {
     this.createdDate = createdTime;
   }
+
+
 }

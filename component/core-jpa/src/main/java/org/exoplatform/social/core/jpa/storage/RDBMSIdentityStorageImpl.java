@@ -36,6 +36,7 @@ import java.util.stream.Collectors;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
+import org.apache.commons.lang.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -134,8 +135,8 @@ public class RDBMSIdentityStorageImpl implements IdentityStorage {
 
 
 
-  private void mapToProfileEntity(Profile profile, IdentityEntity entity) {
-    Map<String, String> entityProperties = entity.getProperties();
+  private void mapToProfileEntity(Profile profile, IdentityEntity identityEntity) {
+    Map<String, String> entityProperties = identityEntity.getProperties();
     if (entityProperties == null) {
       entityProperties = new HashMap<>();
     }
@@ -147,17 +148,17 @@ public class RDBMSIdentityStorageImpl implements IdentityStorage {
 
     boolean hasBanner = false;
     Map<String, Object> properties = profile.getProperties();
-    for (Entry<String, Object> e : properties.entrySet()) {
-      if (Profile.AVATAR.equalsIgnoreCase(e.getKey())) {
-        AvatarAttachment attachment = (AvatarAttachment) e.getValue();
+    for (Entry<String, Object> profileProperty : properties.entrySet()) {
+      if (Profile.AVATAR.equalsIgnoreCase(profileProperty.getKey())) {
+        AvatarAttachment attachment = (AvatarAttachment) profileProperty.getValue();
         byte[] bytes = attachment.getImageBytes();
         String fileName = attachment.getFileName();
         if (fileName == null) {
-          fileName = entity.getRemoteId() + "_avatar";
+          fileName = identityEntity.getRemoteId() + "_avatar";
         }
 
         try {
-          Long avatarId = entity.getAvatarFileId();
+          Long avatarId = identityEntity.getAvatarFileId();
           FileItem fileItem;
           if(avatarId != null){//update avatar file
             fileItem = new FileItem(avatarId,
@@ -166,7 +167,7 @@ public class RDBMSIdentityStorageImpl implements IdentityStorage {
                     socialNameSpace,
                     bytes.length,
                     new Date(),
-                    entity.getRemoteId(),
+                    identityEntity.getRemoteId(),
                     false,
                     new ByteArrayInputStream(bytes));
             fileService.updateFile(fileItem);
@@ -178,27 +179,27 @@ public class RDBMSIdentityStorageImpl implements IdentityStorage {
                     socialNameSpace,
                     bytes.length,
                     new Date(),
-                    entity.getRemoteId(),
+                    identityEntity.getRemoteId(),
                     false,
                     new ByteArrayInputStream(bytes));
             fileItem = fileService.writeFile(fileItem);
-            entity.setAvatarFileId(fileItem.getFileInfo().getId());
+            identityEntity.setAvatarFileId(fileItem.getFileInfo().getId());
           }
         } catch (Exception ex) {
-          LOG.error("Can not store avatar for " + entity.getProviderId() + " " + entity.getRemoteId(), ex);
+          LOG.error("Can not store avatar for " + identityEntity.getProviderId() + " " + identityEntity.getRemoteId(), ex);
         }
 
-      } else if (Profile.BANNER.equalsIgnoreCase(e.getKey())) {
+      } else if (Profile.BANNER.equalsIgnoreCase(profileProperty.getKey())) {
         hasBanner = true;
-        BannerAttachment attachment = (BannerAttachment) e.getValue();
+        BannerAttachment attachment = (BannerAttachment) profileProperty.getValue();
         byte[] bytes = attachment.getImageBytes();
         String fileName = attachment.getFileName();
         if (fileName == null) {
-          fileName = entity.getRemoteId() + "_banner";
+          fileName = identityEntity.getRemoteId() + "_banner";
         }
 
         try {
-          Long bannerId = entity.getBannerFileId();
+          Long bannerId = identityEntity.getBannerFileId();
           FileItem fileItem;
           if(bannerId != null){//update banner file
             fileItem = new FileItem(bannerId,
@@ -207,7 +208,7 @@ public class RDBMSIdentityStorageImpl implements IdentityStorage {
                     socialNameSpace,
                     bytes.length,
                     new Date(),
-                    entity.getRemoteId(),
+                    identityEntity.getRemoteId(),
                     false,
                     new ByteArrayInputStream(bytes));
             fileService.updateFile(fileItem);
@@ -219,62 +220,65 @@ public class RDBMSIdentityStorageImpl implements IdentityStorage {
                     socialNameSpace,
                     bytes.length,
                     new Date(),
-                    entity.getRemoteId(),
+                    identityEntity.getRemoteId(),
                     false,
                     new ByteArrayInputStream(bytes));
             fileItem = fileService.writeFile(fileItem);
-            entity.setBannerFileId(fileItem.getFileInfo().getId());
+            identityEntity.setBannerFileId(fileItem.getFileInfo().getId());
           }
         } catch (Exception ex) {
-          LOG.error("Can not store banner for " + entity.getProviderId() + " " + entity.getRemoteId(), ex);
+          LOG.error("Can not store banner for " + identityEntity.getProviderId() + " " + identityEntity.getRemoteId(), ex);
         }
-      } else if (Profile.EXPERIENCES.equalsIgnoreCase(e.getKey())) {
+      } else if (Profile.EXPERIENCES.equalsIgnoreCase(profileProperty.getKey())) {
 
-        List<Map<String, String>> exps = (List<Map<String, String>>)e.getValue();
-        Set<ProfileExperienceEntity> experiences = new HashSet<>();
+        List<Map<String, String>> newExperiences = (List<Map<String, String>>)profileProperty.getValue();
 
-        for (Map<String, String> exp : exps) {
-          ProfileExperienceEntity ex = new ProfileExperienceEntity();
-          ex.setCompany(exp.get(Profile.EXPERIENCES_COMPANY));
-          ex.setPosition(exp.get(Profile.EXPERIENCES_POSITION));
-          ex.setStartDate(exp.get(Profile.EXPERIENCES_START_DATE));
-          ex.setEndDate(exp.get(Profile.EXPERIENCES_END_DATE));
-          ex.setSkills(exp.get(Profile.EXPERIENCES_SKILLS));
-          ex.setDescription(exp.get(Profile.EXPERIENCES_DESCRIPTION));
+        identityEntity.getExperiences().clear();
 
-          experiences.add(ex);
+        for (Map<String, String> newExperience : newExperiences) {
+          ProfileExperienceEntity profileExperienceEntity = new ProfileExperienceEntity();
+          profileExperienceEntity.setIdentity(identityEntity);
+          String experienceId = newExperience.get(Profile.EXPERIENCES_ID);
+          if(StringUtils.isNotBlank(experienceId)) {
+            profileExperienceEntity.setId(Long.valueOf(experienceId));
+          }
+          profileExperienceEntity.setCompany(newExperience.get(Profile.EXPERIENCES_COMPANY));
+          profileExperienceEntity.setPosition(newExperience.get(Profile.EXPERIENCES_POSITION));
+          profileExperienceEntity.setStartDate(newExperience.get(Profile.EXPERIENCES_START_DATE));
+          profileExperienceEntity.setEndDate(newExperience.get(Profile.EXPERIENCES_END_DATE));
+          profileExperienceEntity.setSkills(newExperience.get(Profile.EXPERIENCES_SKILLS));
+          profileExperienceEntity.setDescription(newExperience.get(Profile.EXPERIENCES_DESCRIPTION));
+
+          identityEntity.getExperiences().add(profileExperienceEntity);
         }
+      } else if (Profile.CONTACT_IMS.equals(profileProperty.getKey())
+              || Profile.CONTACT_PHONES.equals(profileProperty.getKey())
+              || Profile.CONTACT_URLS.equals(profileProperty.getKey())) {
 
-        entity.setExperiences(experiences);
-
-      } else if (Profile.CONTACT_IMS.equals(e.getKey())
-              || Profile.CONTACT_PHONES.equals(e.getKey())
-              || Profile.CONTACT_URLS.equals(e.getKey())) {
-
-        List<Map<String, String>> list = (List<Map<String, String>>) e.getValue();
+        List<Map<String, String>> list = (List<Map<String, String>>) profileProperty.getValue();
         JSONArray arr = new JSONArray();
         for (Map<String, String> map : list) {
           JSONObject json = new JSONObject(map);
           arr.put(json);
         }
 
-        entityProperties.put(e.getKey(), arr.toString());
+        entityProperties.put(profileProperty.getKey(), arr.toString());
 
-      } else if (!Profile.EXPERIENCES_SKILLS.equals(e.getKey())) {
-        Object val = e.getValue();
-        entityProperties.put(e.getKey(), val != null ? String.valueOf(val) : null);
+      } else if (!Profile.EXPERIENCES_SKILLS.equals(profileProperty.getKey())) {
+        Object val = profileProperty.getValue();
+        entityProperties.put(profileProperty.getKey(), val != null ? String.valueOf(val) : null);
       }
     }
 
-    if (entity.getBannerFileId() != null && !hasBanner
+    if (identityEntity.getBannerFileId() != null && !hasBanner
             && profile.getBannerUrl() == null) {
-      entity.setBannerFileId(null);
+      identityEntity.setBannerFileId(null);
     }
 
-    entity.setProperties(entityProperties);
+    identityEntity.setProperties(entityProperties);
 
     Date created = profile.getCreatedTime() <= 0 ? new Date() : new Date(profile.getCreatedTime());
-    entity.setCreatedDate(created);
+    identityEntity.setCreatedDate(created);
   }
   /**
    * Saves identity.

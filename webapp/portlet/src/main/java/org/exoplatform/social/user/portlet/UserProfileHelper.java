@@ -180,6 +180,7 @@ public class UserProfileHelper {
     
   private static Map<String, String> theExperienceData(Map<String, String> srcExperience, boolean isCurrent) {
     Map<String, String> experience = new LinkedHashMap<String, String>();
+    putExperienceData(srcExperience, experience, Profile.EXPERIENCES_ID);
     putExperienceData(srcExperience, experience, Profile.EXPERIENCES_COMPANY);
     putExperienceData(srcExperience, experience, Profile.EXPERIENCES_POSITION);
     putExperienceData(srcExperience, experience, Profile.EXPERIENCES_DESCRIPTION);

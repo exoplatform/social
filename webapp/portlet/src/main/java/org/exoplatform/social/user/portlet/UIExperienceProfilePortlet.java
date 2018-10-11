@@ -32,7 +32,6 @@ import org.exoplatform.webui.utils.TimeConvertUtils;
   template = "app:/groovy/social/portlet/user/UIExperienceProfilePortlet.gtmpl"
 )
 public class UIExperienceProfilePortlet extends UIAbstractUserPortlet {
-  final protected static String EXPERIENCES_IS_CURRENT = Profile.EXPERIENCES_IS_CURRENT;
   private static final String DATE_FORMAT_MMDDYYYY = "MM/dd/yyyy";
   private static final String DATE_FORMAT_MMMMDDYYYY = "MMMM dd, yyyy";
 
