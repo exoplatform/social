@@ -1,0 +1,69 @@
+#
+# Default excludes
+#
+
+# Binaries
+*.7z
+*.dmg
+*.gz
+*.iso
+*.jar
+*.rar
+*.tar
+*.zip
+*.war
+*.ear
+*.sar
+*.class
+
+# Maven
+target/
+bin/
+pom.xml.versionsBackup
+
+# Npm
+node_modules/
+dist/
+
+# IntelliJ project files
+*.iml
+*.iws
+*.ipr
+.idea/
+
+#log file
+*.log
+
+# eclipse project file
+.settings/
+.classpath
+.project
+.factorypath
+
+# Log
+*.log
+
+# OS
+.DS_Store
+
+# Misc
+*.swp
+transaction.log
+
+chat-mongohq.properties
+rebel.xml
+.rebel.xml.bak
+target
+
+release.properties
+*.releaseBackup
+
+data/chat-single-local.properties
+data/gatling/results/local/*
+
+copie.sh
+
+cache/data
+
+*.classpath
+*.project
