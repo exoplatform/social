@@ -11,14 +11,14 @@
         Actions
       </th>
     </tr> 
-    <tr v-for="space in spaces" :key="space.id">
+    <tr v-for="(space, index) in spaces" :key="space.id">
       <td><img :src="space.avatarUrl" class="avatar"/>  {{ space.displayName }}</td>
       <td>{{ space.description }}</td>
       <td class="center actionContainer">
         <a data-placement="bottom" rel="tooltip" class="actionIcon" data-original-title="Edit">
           <i class="uiIconEdit uiIconLightGray"></i>
         </a>
-        <a data-placement="bottom" rel="tooltip" class="actionIcon" data-original-title="Delete">
+        <a data-placement="bottom" rel="tooltip" class="actionIcon" data-original-title="Delete" @click="deleteSpaceById(space.id, index)">
           <i class="uiIconDeleteUser uiIconLightGray"></i>
         </a>
       </td>
@@ -26,6 +26,8 @@
   </table>  
 </template>
 <script>
+import * as spaceAdministrationServices from '../spaceAdministrationServices';
+
 export default {
   data() {
     return {
@@ -37,9 +39,13 @@ export default {
   },
   methods: {
     fetchData() {
-      fetch('/rest/v1/social/spaces', {credentials: 'include'}).then(response => response.json()).then(data =>{
-        console.log("cccc",data.spaces)
+      spaceAdministrationServices.getSpaces().then(data =>{
         this.spaces = data.spaces;
+     });
+    },
+    deleteSpaceById(id, index){
+      spaceAdministrationServices.deleteSpaceById(id).then(()=> {
+        this.spaces.splice(index,1);
       });
     }
   }
