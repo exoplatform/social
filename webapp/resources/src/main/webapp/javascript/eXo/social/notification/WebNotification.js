@@ -42,11 +42,15 @@
       },
       //Utils
       openURL : function (url) {
+        var path = window.location.pathname;
         var me = WebNotification;
         if(url && url.length > 0) {
           me.T = setTimeout(function() {
             clearTimeout(me.T);
             window.open(url, "_self");
+            if (url.includes(path)){
+              window.location.reload();
+            }
           }, 500);
         }
         return me;
