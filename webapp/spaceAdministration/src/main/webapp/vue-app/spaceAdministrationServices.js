@@ -1,6 +1,6 @@
 
 export function getSpaces(){
-    return fetch('/rest/v1/social/spaces/', {credentials: 'include'}).then(resp => resp.json());
+  return fetch('/rest/v1/social/spaces/', {credentials: 'include'}).then(resp => resp.json());
 }
 
 export function deleteSpaceById(id){
