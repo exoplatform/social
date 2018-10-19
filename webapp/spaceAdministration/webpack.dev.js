@@ -6,7 +6,7 @@ const webpackCommonConfig = require('./webpack.common.js');
 const app = 'spaceAdministration';
 
 // add the server path to your server location path
-const exoServerPath = "/home/exo/dev/plfent-5.1.x-20180913.163632-748/platform-5.1.x-SNAPSHOT";
+const exoServerPath = "/home/exo/dev/spaceadminServ/plfent-5.2.x-spaces-administration-20181018.205559-9/platform-5.2.x-spaces-administration-SNAPSHOT";
 
 let config = merge(webpackCommonConfig, {
   output: {

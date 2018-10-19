@@ -26,7 +26,7 @@
       </tr>
     </table>  
     <exo-modal v-show="showConfirmMessageModal" :title="ConfirmationDeleteMessage" @modal-closed="closeModal">
-      <h3>Souhaitez vous supprimer cet espace</h3>
+      <h3>{{ $t('exoplatform.modal.confirmation.delete') }}</h3>
       <div class="uiAction uiActionBorder">
         <div class="btn btn-primary" @click="confirmDelete">Delete</div>
         <div class="btn" @click="closeModal">Annuler</div>

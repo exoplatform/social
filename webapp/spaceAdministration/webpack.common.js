@@ -6,7 +6,7 @@ let config = {
   // set the entry point of the application
   // can use multiple entry
   entry: {
-    spaceAdmin: './src/main/webapp/vue-app/main.js'
+    spacesAdministration: './src/main/webapp/vue-app/main.js'
   },
   module: {
     rules: [
