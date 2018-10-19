@@ -3,7 +3,7 @@
                   xmlns="http://www.exoplatform.org/xml/ns/gatein_resources_1_4">
 
     <portlet>
-        <name>space-administration</name>
+        <name>spacesAdministration</name>
         <module>
             <depends>
                 <module>vueSampleBundle</module>
@@ -15,7 +15,7 @@
         <name>vueSampleBundle</name>
         <script>
             <minify>false</minify>
-            <path>/js/spaceAdmin.bundle.js</path>
+            <path>/js/spacesAdministration.bundle.js</path>
         </script>
         <depends>
             <module>vue</module>
