@@ -24,7 +24,10 @@ import ExoSpaceAdministrationManageSpaces from './ExoSpaceAdministrationManageSp
 import ExoSpaceAdministrationSpacesPermissions from './ExoSpaceAdministrationSpacesPermissions.vue';
 
 export default {
-  components: {ExoSpaceAdministrationManageSpaces,ExoSpaceAdministrationSpacesPermissions},
+  components: {
+    'exo-space-administration-manage-spaces': ExoSpaceAdministrationManageSpaces,
+    'exo-space-administration-manage-permissions' : ExoSpaceAdministrationSpacesPermissions
+  },
   data() { 
     return {
       activetab: 1

@@ -6,6 +6,8 @@
 import ExoSpaceAdministrationSpaces from './ExoSpaceAdministrationSpaces.vue';
 
 export default {
-  components: {ExoSpaceAdministrationSpaces}
+  components: {
+    'exo-space-administration-spaces': ExoSpaceAdministrationSpaces
+  }
 };
 </script>
