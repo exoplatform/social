@@ -10,7 +10,7 @@
     </ul> 
     <div class="tab-content">
       <div v-if="activetab === 1" class="tab-pane fade in active">
-        <exo-space-administration-manage-spaces></exo-space-administration-manage-spaces>
+        <exo-spaces-administration-manage-spaces></exo-spaces-administration-manage-spaces>
       </div>
       <div v-if="activetab === 2" class="tab-pane fade in active">
         <h1>permissssssssssss</h1>
@@ -20,13 +20,13 @@
 </template>
 
 <script>
-import ExoSpaceAdministrationManageSpaces from './ExoSpaceAdministrationManageSpaces.vue';
-import ExoSpaceAdministrationSpacesPermissions from './ExoSpaceAdministrationSpacesPermissions.vue';
+import ExoSpacesAdministrationManageSpaces from './ExoSpacesAdministrationManageSpaces.vue';
+import ExoSpacesAdministrationSpacesPermissions from './ExoSpacesAdministrationSpacesPermissions.vue';
 
 export default {
   components: {
-    'exo-space-administration-manage-spaces': ExoSpaceAdministrationManageSpaces,
-    'exo-space-administration-manage-permissions' : ExoSpaceAdministrationSpacesPermissions
+    'exo-spaces-administration-manage-spaces': ExoSpacesAdministrationManageSpaces,
+    'exo-spaces-administration-manage-permissions' : ExoSpacesAdministrationSpacesPermissions
   },
   data() { 
     return {
