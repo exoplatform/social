@@ -3,7 +3,7 @@ const merge = require('webpack-merge');
 const webpackCommonConfig = require('./webpack.common.js');
 
 // the display name of the war
-const app = 'spaceAdministration';
+const app = 'social-vue-portlet';
 
 // add the server path to your server location path
 const exoServerPath = "/home/exo/dev/spaceadminServ/plfent-5.2.x-spaces-administration-20181018.205559-9/platform-5.2.x-spaces-administration-SNAPSHOT";
