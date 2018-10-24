@@ -518,10 +518,9 @@ public class UIEditUserProfileForm extends UIForm {
       // Basic information
       String firstName = UserProfileHelper.encodeHTML(baseSection.getUIStringInput(Profile.FIRST_NAME).getValue());
       String lastName = UserProfileHelper.encodeHTML(baseSection.getUIStringInput(Profile.LAST_NAME).getValue());
-      String position =  UserProfileHelper.encodeHTML(baseSection.getUIStringInput(Profile.POSITION).getValue());
       //
+      String position =  UserProfileHelper.encodeHTML(baseSection.getUIStringInput(Profile.POSITION).getValue());
       String gender = baseSection.getUIFormSelectBox(Profile.GENDER).getValue();
-      gender = gender != null && gender.length() > 0 ? gender : null;
       //
       List<Map<String, String>> phones = baseSection.getUIMultiValueSelection(Profile.CONTACT_PHONES).getValues();
       //

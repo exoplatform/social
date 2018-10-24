@@ -19,8 +19,7 @@ package org.exoplatform.social.core.identity.provider;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.codec.binary.StringUtils;
-
+import org.apache.commons.lang3.StringUtils;
 import org.exoplatform.commons.utils.CommonsUtils;
 import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.container.component.ComponentRequestLifecycle;
@@ -195,11 +194,11 @@ public class OrganizationIdentityProvider extends IdentityProvider<User> {
       }
      
       //
-      if (!foundUser.getFirstName().equals(firstName)) {
+      if (!StringUtils.equals(foundUser.getFirstName(), firstName)) {
         foundUser.setFirstName(firstName);
         hasUpdate = true;
       }
-      if (!foundUser.getLastName().equals(lastName)) {
+      if (!StringUtils.equals(foundUser.getLastName(), lastName)) {
         foundUser.setLastName(lastName);
         hasUpdate = true;
       }
@@ -208,7 +207,7 @@ public class OrganizationIdentityProvider extends IdentityProvider<User> {
         hasUpdate = true;
       }
       
-      if (!foundUser.getDisplayName().equals(fullName)) {
+      if (!StringUtils.equals(foundUser.getDisplayName(), fullName)) {
         foundUser.setDisplayName(fullName);
         hasUpdate = true;
       }
@@ -225,6 +224,7 @@ public class OrganizationIdentityProvider extends IdentityProvider<User> {
      */
     private void updateContact() throws Exception {
       //
+      String position = (String) updatedProfile.getProperty(Profile.POSITION);
       String gender = (String) updatedProfile.getProperty(Profile.GENDER);
 
 
@@ -235,40 +235,14 @@ public class OrganizationIdentityProvider extends IdentityProvider<User> {
         foundUserProfile = organizationService.getUserProfileHandler().createUserProfileInstance(userName);
       }
 
-      String uGender = foundUserProfile.getAttribute(UserProfile.PERSONAL_INFO_KEYS[4]);// "user.gender"
-      
-      if (gender !=null && !gender.equals(uGender)) {
-        foundUserProfile.setAttribute(UserProfile.PERSONAL_INFO_KEYS[4], gender);// "user.gender"
-        organizationService.getUserProfileHandler().saveUserProfile(foundUserProfile, false);
-      }
-      //
-      updatePositionAndGender();
-    }
-    
-    /**
-     * Updates profile in Position section
-     * 
-     * @throws Exception
-     */
-    private void updatePositionAndGender() throws Exception {
-      //
-      String position = (String) updatedProfile.getProperty(Profile.POSITION);
-      String gender = (String) updatedProfile.getProperty(Profile.GENDER);
-      UserProfile foundUserProfile = organizationService.getUserProfileHandler().findUserProfileByName(userName);
-      
-      //
-      if(foundUserProfile == null) {
-        foundUserProfile = organizationService.getUserProfileHandler().createUserProfileInstance(userName);
-      }
-      
       boolean hasUpdated = false;
       String uPosition = foundUserProfile.getAttribute(UserProfile.PERSONAL_INFO_KEYS[7]);//user.jobtitle
-      if (position != null && !position.equals(uPosition)) {
+      if (!StringUtils.equals(position, uPosition)) {
         foundUserProfile.setAttribute(UserProfile.PERSONAL_INFO_KEYS[7], position);//user.jobtitle
         hasUpdated = true;
       }
       String uGender = foundUserProfile.getAttribute(UserProfile.PERSONAL_INFO_KEYS[4]);// "user.gender"
-      if (gender !=null && !gender.equals(uGender)) {
+      if (!StringUtils.equals(gender, uGender)) {
         foundUserProfile.setAttribute(UserProfile.PERSONAL_INFO_KEYS[4], gender);// "user.gender"
         hasUpdated = true;
       }

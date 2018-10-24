@@ -19,6 +19,7 @@ package org.exoplatform.social.core.listeners;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.exoplatform.commons.utils.CommonsUtils;
 import org.exoplatform.container.ExoContainer;
 import org.exoplatform.container.ExoContainerContext;
@@ -62,7 +63,7 @@ public class SocialUserProfileEventListenerImpl extends UserProfileEventListener
       boolean hasUpdated = false;
   
       //
-      if (uGender != null && !uGender.equals(pGender)) {
+      if (!StringUtils.equals(uGender, pGender)) {
         profile.setProperty(Profile.GENDER, uGender);
         List<Profile.UpdateType> list = new ArrayList<Profile.UpdateType>();
         list.add(Profile.UpdateType.CONTACT);
@@ -70,7 +71,7 @@ public class SocialUserProfileEventListenerImpl extends UserProfileEventListener
         hasUpdated = true;
       }
       
-      if (uPosition != null && !uPosition.equals(pPosition)) {
+      if (!StringUtils.equals(uPosition, pPosition)) {
         profile.setProperty(Profile.POSITION, uPosition);
         List<Profile.UpdateType> list = new ArrayList<Profile.UpdateType>();
         list.add(Profile.UpdateType.CONTACT);
