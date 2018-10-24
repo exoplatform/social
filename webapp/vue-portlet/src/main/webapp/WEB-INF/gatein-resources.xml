@@ -5,24 +5,17 @@
     <portlet>
         <name>SpacesAdministration</name>
         <module>
+            <script>
+                <minify>false</minify>
+                <path>/js/spacesAdministration.bundle.js</path>
+            </script>
             <depends>
-                <module>spacesAdministrationBundle</module>
+                <module>vue</module>
+            </depends>
+            <depends>
+                <module>eXoVueI18n</module>
             </depends>
         </module>
     </portlet>
-
-    <module>
-        <name>spacesAdministrationBundle</name>
-        <script>
-            <minify>false</minify>
-            <path>/js/spacesAdministration.bundle.js</path>
-        </script>
-        <depends>
-            <module>vue</module>
-        </depends>
-        <depends>
-            <module>eXoVueI18n</module>
-        </depends>
-    </module>
 
 </gatein-resources>
