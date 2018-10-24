@@ -36,7 +36,7 @@
   </properties>
 
   <build>
-    <finalName>social-spaces-administration</finalName>
+    <finalName>spacesAdministration</finalName>
     <plugins>
       <plugin>
         <groupId>com.github.eirslett</groupId>

@@ -6,13 +6,13 @@
         <name>spacesAdministration</name>
         <module>
             <depends>
-                <module>vueSampleBundle</module>
+                <module>spacesAdministrationBundle</module>
             </depends>
         </module>
     </portlet>
 
     <module>
-        <name>vueSampleBundle</name>
+        <name>spacesAdministrationBundle</name>
         <script>
             <minify>false</minify>
             <path>/js/spacesAdministration.bundle.js</path>
