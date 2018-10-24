@@ -5,7 +5,7 @@ import ExoSpacesAdministrationApp from './components/ExoSpacesAdministrationApp.
 const lang = typeof eXo !== 'undefined' ? eXo.env.portal.language : 'en';
   
 // should expose the locale ressources as REST API 
-const url = '/social-vue-portlet/vue-app/locale_en.json';
+const url = '/social-vue-portlet/spaces-administration-app/locale_en.json';
 
 // getting locale ressources
 exoi18n.loadLanguageAsync(lang, url).then(i18n => {
