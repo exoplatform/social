@@ -3,7 +3,7 @@
                   xmlns="http://www.exoplatform.org/xml/ns/gatein_resources_1_4">
 
     <portlet>
-        <name>spacesAdministration</name>
+        <name>SpacesAdministration</name>
         <module>
             <depends>
                 <module>spacesAdministrationBundle</module>

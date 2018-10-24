@@ -20,7 +20,7 @@
             <field name="dependencies">
               <collection type="java.util.ArrayList">
                 <value>
-                  <string>spaceAdministration</string>
+                  <string>social-vue-portlet</string>
                 </value>
               </collection>
             </field>

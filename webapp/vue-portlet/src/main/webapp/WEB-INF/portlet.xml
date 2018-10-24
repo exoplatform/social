@@ -2,7 +2,7 @@
 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/portlet/portlet-app_2_0.xsd http://java.sun.com/xml/ns/portlet/portlet-app_2_0.xsd">
 
 	<portlet>
-		<portlet-name>spacesAdministration</portlet-name>
+		<portlet-name>SpacesAdministration</portlet-name>
 		<portlet-class>org.exoplatform.commons.api.portlet.GenericDispatchedViewPortlet</portlet-class>
 		<init-param>
       <name>portlet-view-dispatched-file-path</name>
@@ -12,7 +12,7 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http:/
 			<mime-type>text/html</mime-type>
 		</supports>
 		<portlet-info>
-			<title>Spaces administration</title>
+			<title>Spaces Administration</title>
 		</portlet-info>
 	</portlet>
 	
