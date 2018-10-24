@@ -20,7 +20,7 @@
             <field name="dependencies">
               <collection type="java.util.ArrayList">
                 <value>
-                  <string>spacesAdministration</string>
+                  <string>spaceAdministration</string>
                 </value>
               </collection>
             </field>
