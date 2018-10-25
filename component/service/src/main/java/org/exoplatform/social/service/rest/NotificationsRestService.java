@@ -346,57 +346,48 @@ public class NotificationsRestService implements ResourceContainer {
     Space space = null;
     Identity userIdentity = null;
     String targetURL = null;
-    
-    HttpServletRequest currentServletRequest = Util.getCurrentServletRequest();
-    boolean hasLoggedIn = (currentServletRequest.getRemoteUser() != null);
-    String redirectLink = null;
-    if (!hasLoggedIn) {
-      //If user is not authenticated, the query parameter will be removed after login
-      //so we will not redirect to an activity with query parameter but with path parameter
-      //this new link will be processed on activity stream portlet
-      redirectLink = Util.getBaseUrl() + LinkProvider.getRedirectUri(ACTIVITY_ID_PREFIX + "/redirect/" + type + "/" + objectId);
-    }
+
     
     try {
       checkAuthenticatedRequest();
       URL_TYPE urlType = URL_TYPE.valueOf(type);
       switch (urlType) {
         case view_full_activity: {
-          targetURL = hasLoggedIn ? Util.getBaseUrl() + LinkProvider.getRedirectUri(ACTIVITY_ID_PREFIX + "?id=" + objectId) : redirectLink;
+          targetURL = Util.getBaseUrl() + LinkProvider.getRedirectUri(ACTIVITY_ID_PREFIX + "?id=" + objectId) ;
           break;
         }
         case view_full_activity_highlight_comment: {
           String activityId = objectId.split("-")[0];
           String commentId = objectId.split("-")[1];
-          targetURL = hasLoggedIn ? Util.getBaseUrl() + LinkProvider.getRedirectUri(ACTIVITY_ID_PREFIX + "?id=" + activityId + "#comment-" + commentId) : redirectLink;
+          targetURL = Util.getBaseUrl() + LinkProvider.getRedirectUri(ACTIVITY_ID_PREFIX + "?id=" + activityId + "#comment-" + commentId);
           break;
         }
         case view_full_activity_highlight_comment_reply: {
           String activityId = objectId.split("-")[0];
           String commentId = objectId.split("-")[1];
           String commentReplyId = objectId.split("-")[2];
-          targetURL = hasLoggedIn ? Util.getBaseUrl() + LinkProvider.getRedirectUri(ACTIVITY_ID_PREFIX + "?id=" + activityId + "&commentId=" + commentId + "#comment-" + commentReplyId) : redirectLink;
+          targetURL = Util.getBaseUrl() + LinkProvider.getRedirectUri(ACTIVITY_ID_PREFIX + "?id=" + activityId + "&commentId=" + commentId + "#comment-" + commentReplyId) ;
           break;
         }
         case view_likers_activity: {
-          targetURL = hasLoggedIn ? Util.getBaseUrl() + LinkProvider.getRedirectUri(ACTIVITY_ID_PREFIX + "?id=" + objectId + "&likes=1") : redirectLink;
+          targetURL = Util.getBaseUrl() + LinkProvider.getRedirectUri(ACTIVITY_ID_PREFIX + "?id=" + objectId + "&likes=1") ;
           break;
         }
         case reply_activity: {
-          targetURL = hasLoggedIn ? Util.getBaseUrl() + LinkProvider.getRedirectUri(ACTIVITY_ID_PREFIX + "?id=" + objectId + "&comment=1") : redirectLink;
+          targetURL = Util.getBaseUrl() + LinkProvider.getRedirectUri(ACTIVITY_ID_PREFIX + "?id=" + objectId + "&comment=1") ;
           break;
         }
         case reply_activity_highlight_comment: {
           String activityId = objectId.split("-")[0];
           String commentId = objectId.split("-")[1];
-          targetURL = hasLoggedIn ? Util.getBaseUrl() + LinkProvider.getRedirectUri(ACTIVITY_ID_PREFIX + "?id=" + activityId + "#comment-" + commentId + "&comment=1") : redirectLink;
+          targetURL = Util.getBaseUrl() + LinkProvider.getRedirectUri(ACTIVITY_ID_PREFIX + "?id=" + activityId + "#comment-" + commentId + "&comment=1") ;
           break;
         }
         case reply_activity_highlight_comment_reply: {
           String activityId = objectId.split("-")[0];
           String commentId = objectId.split("-")[1];
           String commentReplyId = objectId.split("-")[2];
-          targetURL = hasLoggedIn ? Util.getBaseUrl() + LinkProvider.getRedirectUri(ACTIVITY_ID_PREFIX + "?id=" + activityId + "&commentId=" + commentId + "&comment=2" + "#comment-" + commentReplyId) : redirectLink;
+          targetURL = Util.getBaseUrl() + LinkProvider.getRedirectUri(ACTIVITY_ID_PREFIX + "?id=" + activityId + "&commentId=" + commentId + "&comment=2" + "#comment-" + commentReplyId) ;
           break;
         }
         case user: {
