@@ -42,15 +42,16 @@
       },
       //Utils
       openURL : function (url) {
-        var path = window.location.pathname;
         var me = WebNotification;
         if(url && url.length > 0) {
           me.T = setTimeout(function() {
             clearTimeout(me.T);
-            window.open(url, "_self");
-            if (url.includes(path)){
+            $(window).on('hashchange',function(){
+              // If only the hash has changed in the url, the page won't be reloaded by window.location.assign.
+              // This makes sure the page will be reloaded even if only the hash has changed in the url.
               window.location.reload();
-            }
+            });
+            window.location.assign(url);
           }, 500);
         }
         return me;
