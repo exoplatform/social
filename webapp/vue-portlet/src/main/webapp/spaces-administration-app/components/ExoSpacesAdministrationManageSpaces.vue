@@ -16,7 +16,7 @@
         <td><img :src="space.avatarUrl" class="avatar"/>  {{ space.displayName }}</td>
         <td>{{ space.description }}</td>
         <td class="center actionContainer">
-          <a data-placement="bottom" rel="tooltip" class="actionIcon" data-original-title="Edit">
+          <a :href="getSpaceSetting(space.displayName)" target="_blank" data-placement="bottom" rel="tooltip" class="actionIcon" data-original-title="Edit" >
             <i class="uiIconEdit uiIconLightGray"></i>
           </a>
           <a data-placement="bottom" rel="tooltip" class="actionIcon" data-original-title="Delete" @click="deleteSpaceById(space.id, index)">
@@ -71,6 +71,9 @@ export default {
         this.spaces.splice(this.index,1);
       });
       this.showConfirmMessageModal = false;
+    },
+    getSpaceSetting(spaceDisplayName){
+      return spaceAdministrationServices.getSpaceSetting(spaceDisplayName);
     },
     closeModal(){
       this.showConfirmMessageModal = false;
