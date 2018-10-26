@@ -9,7 +9,7 @@ const url = '/social-vue-portlet/spaces-administration-app/locale_en.json';
 
 // getting locale ressources
 exoi18n.loadLanguageAsync(lang, url).then(i18n => {
-  console.log(i18n)
+
 // init Vue app when locale ressources are ready
   new Vue({
     el: '#spacesAdministration',

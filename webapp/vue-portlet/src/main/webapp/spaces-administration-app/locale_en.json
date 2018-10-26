@@ -1,1 +1,4 @@
-{"exoplatform.modal.confirmation.delete":"Do you confirm the delete of this space ?"}
+{"exoplatform.modal.confirmation.delete":"Do you confirm the delete of this space ?",
+"exoplatform.modal.button.delete":"Delete",
+"exoplatform.modal.button.annuler":"Annuler"
+}

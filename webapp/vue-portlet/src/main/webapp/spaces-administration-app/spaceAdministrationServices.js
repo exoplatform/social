@@ -1,7 +1,15 @@
 import {spaceConstants} from './spaceAdministrationConstants.js';
 
 export function getSpaces(){
-  return fetch('/rest/v1/social/spaces/', {credentials: 'include'}).then(resp => resp.json());
+  return fetch(`/portal/rest/v1/social/spaces?limit=${spaceConstants.SPACES_PER_PAGE}&returnSize=true`, {credentials: 'include'}).then(resp => resp.json());
+}
+
+export function searchSpaces(search){
+  return fetch(`/portal/rest/v1/social/spaces?q=${search}&limit=${spaceConstants.SPACES_PER_PAGE}`, {credentials: 'include'}).then(resp => resp.json());
+}
+
+export function getSpacesPerPage(offset){
+  return fetch(`/portal/rest/v1/social/spaces?offset=${offset}&limit=${spaceConstants.SPACES_PER_PAGE}&returnSize=true`, {credentials: 'include'}).then(resp => resp.json());
 }
 
 export function deleteSpaceById(id){
@@ -10,7 +18,7 @@ export function deleteSpaceById(id){
     method: 'delete'});
 }
 
-export function getSpaceSetting(spaceDisplayName){
+export function getSpaceLinkSetting(spaceDisplayName){
   const nameSpace = spaceDisplayName.toLowerCase().split(' ').join('_');
   return `${spaceConstants.PORTAL}${spaceConstants.PROFILE_SPACE_LINK}${nameSpace}/${nameSpace}/settings`;
 }
