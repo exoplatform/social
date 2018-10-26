@@ -1,5 +1,6 @@
 export const spaceConstants = {
   PORTAL: eXo.env.portal.context || '',
   PORTAL_NAME: eXo.env.portal.portalName || '',
-  PROFILE_SPACE_LINK: '/g/:spaces:'
+  PROFILE_SPACE_LINK: '/g/:spaces:',
+  SPACES_PER_PAGE: 2
 }
