@@ -48,6 +48,7 @@ import org.exoplatform.social.core.application.ProfileUpdatesPublisher;
 import org.exoplatform.social.core.application.RelationshipPublisher;
 import org.exoplatform.social.core.application.SpaceActivityPublisher;
 import org.exoplatform.social.core.identity.model.Identity;
+import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.space.spi.SpaceService;
 import org.exoplatform.social.core.storage.ActivityStorageException;
 import org.exoplatform.social.core.storage.api.ActivityStorage;
@@ -102,8 +103,6 @@ public class ActivityManagerImpl implements ActivityManager {
    * Exo property pattern suffix
    */
   private static final String SUFFIX = ".enabled";
-
-  public static final String DEFAULT_ACTIVITY_TYPE = "DEFAULT_ACTIVITY";
 
   /**
    * exo property for editing activity permission
@@ -668,9 +667,9 @@ public class ActivityManagerImpl implements ActivityManager {
         enableEdit = enableEditActivity;
         enableManagerEdit = enableManagerEditActivity;
       }
-
+      Identity identity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, viewer.getUserId(), false);
       if (enableEdit) {
-        if (viewer.getUserId().equals(activity.getPosterId()) ||
+        if (identity.getId().equals(activity.getPosterId()) ||
                 (enableManagerEdit && viewer.getGroups().contains(userACL.getAdminGroups()))) {
           return !activity.isComment() || !isAutomaticComment(activity);
         }
@@ -683,6 +682,6 @@ public class ActivityManagerImpl implements ActivityManager {
   private boolean isAutomaticComment(ExoSocialActivity activity) {
     //We should have editable activity type configurable
     //For now only default activity is editable
-    return activity != null && !DEFAULT_ACTIVITY_TYPE.equals(activity.getType());
+    return activity != null && !SpaceActivityPublisher.SPACE_APP_ID.equals(activity.getType());
   }
 }

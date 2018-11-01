@@ -27,6 +27,7 @@ import org.exoplatform.services.organization.User;
 import org.exoplatform.social.common.RealtimeListAccess;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.activity.model.ExoSocialActivityImpl;
+import org.exoplatform.social.core.application.SpaceActivityPublisher;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
@@ -94,20 +95,23 @@ public class ActivityManagerRDBMSTest extends AbstractCoreTest {
     //prepare activity
     ExoSocialActivity activity = Mockito.mock(ExoSocialActivity.class);
     Mockito.when(activity.isComment()).thenReturn(false);
-    Mockito.when(activity.getPosterId()).thenReturn("demo");
+    Mockito.when(activity.getPosterId()).thenReturn("1");
     //prepare comment
     ExoSocialActivity comment = Mockito.mock(ExoSocialActivity.class);
     Mockito.when(comment.isComment()).thenReturn(true);
-    Mockito.when(comment.getType()).thenReturn(ActivityManagerImpl.DEFAULT_ACTIVITY_TYPE);
-    Mockito.when(comment.getPosterId()).thenReturn("demo");
+    Mockito.when(comment.getType()).thenReturn(SpaceActivityPublisher.SPACE_APP_ID);
+    Mockito.when(comment.getPosterId()).thenReturn("1");
     //prepare viewer
     org.exoplatform.services.security.Identity owner = Mockito.mock(org.exoplatform.services.security.Identity.class);
     Mockito.when(owner.getUserId()).thenReturn("demo");
+    Mockito.when(identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "demo", false)).thenReturn(new Identity("1"));
     org.exoplatform.services.security.Identity admin = Mockito.mock(org.exoplatform.services.security.Identity.class);
     Mockito.when(admin.getUserId()).thenReturn("john");
+    Mockito.when(identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "john", false)).thenReturn(new Identity("2"));
     Mockito.when(admin.getGroups()).thenReturn(new HashSet<>(Arrays.asList("/platform/administrators")));
     org.exoplatform.services.security.Identity mary = Mockito.mock(org.exoplatform.services.security.Identity.class);
     Mockito.when(mary.getUserId()).thenReturn("mary");
+    Mockito.when(identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "mary", false)).thenReturn(new Identity("3"));
 
     //no configuration
     //by default: edit activity/comment are all enabled
@@ -135,7 +139,7 @@ public class ActivityManagerRDBMSTest extends AbstractCoreTest {
     Mockito.when(params.getValueParam(ActivityManagerImpl.ENABLE_EDIT_COMMENT)).thenReturn(falseVal);
     manager = new ActivityManagerImpl(storage, identityManager, acl, params);
     //
-    Mockito.when(comment.getType()).thenReturn(ActivityManagerImpl.DEFAULT_ACTIVITY_TYPE);
+    Mockito.when(comment.getType()).thenReturn(SpaceActivityPublisher.SPACE_APP_ID);
     assertFalse(manager.isActivityEditable(comment, admin));
     assertFalse(manager.isActivityEditable(comment, owner));
     assertTrue(manager.isActivityEditable(activity, owner));
