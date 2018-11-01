@@ -122,7 +122,7 @@
   
   //make sures commentFormFocused is set to false to prevent any refresh to focus, only focus after post a comment
   uicomponent.setCommentFormFocused(false);
-  def ownerName, ownerUri = "#", ownerAvatar, activityPostedTime, activityPostedTimeInSpace;
+  def ownerName, ownerUri = "#", ownerAvatar, activityPostedTime, activityPostedTimeInSpace, activityUpdatedTime;
   def listPeopleLikeBlockClass = "", listPeopleBGClass = "";
 
   if (uicomponent.isLiked()) {
@@ -150,6 +150,7 @@
   }
 
   activityPostedTime = uicomponent.getPostedTimeString(_ctx, activity.postedTime);
+activityUpdatedTime = uicomponent.getUpdateTimeString(_ctx,activity.updated.getTime());
 
   def ownerIdentity = uicomponent.ownerIdentity;
   def profile = ownerIdentity.profile;
@@ -189,7 +190,7 @@
       <div id="ActivityContextBox${activity.id}">
       <h5 class="TitleContent clearfix">
         <a class="Text"  href="$ownerUri">$ownerName</a><br>
-        <span class="DateTime">$activityPostedTime</span>
+        <span class="DateTime">$activityPostedTime - $activityUpdatedTime</span>
         <div class="actLink">
         <a id="Permalink${activity.id}" class="uiIconLink uiIconLightGray" rel="tooltip" data-placement="bottom" title="$viewActivityTip" href="<%=uicomponent.getActivityPermalink(activity.id)%>"></a>
       <% if (activityDeletable) {%>

@@ -409,6 +409,56 @@ public class BaseUIActivity extends UIForm {
       }
     }
   }
+  /**
+   * Gets prettyTime by timestamp.
+   *
+   * @param resourceBundle
+   * @param updatedTime
+   * @return String
+   */
+
+  public String getUpdatedTimeString(WebuiBindingContext resourceBundle, long updatedTime) throws Exception {
+    long time = (new Date().getTime() - updatedTime) / 1000;
+    long value;
+    if (time < 60) {
+      return resourceBundle.appRes("UIActivityUpdated.label.Less_Than_A_Minute");
+    } else {
+      if (time < 120) {
+        return resourceBundle.appRes("UIActivityUpdated.label.About_A_Minute");
+      } else {
+        if (time < 3600) {
+          value = Math.round(time / 60);
+          return resourceBundle.appRes("UIActivityUpdated.label.About_?_Minutes").replaceFirst("\\{0\\}", String.valueOf(value));
+        } else {
+          if (time < 7200) {
+            return resourceBundle.appRes("UIActivityUpdated.label.About_An_Hour");
+          } else {
+            if (time < 86400) {
+              value = Math.round(time / 3600);
+              return resourceBundle.appRes("UIActivityUpdated.label.About_?_Hours").replaceFirst("\\{0\\}", String.valueOf(value));
+            } else {
+              if (time < 172800) {
+                return resourceBundle.appRes("UIActivityUpdated.label.About_A_Day");
+              } else {
+                if (time < 2592000) {
+                  value = Math.round(time / 86400);
+                  return resourceBundle.appRes("UIActivityUpdated.label.About_?_Days").replaceFirst("\\{0\\}", String.valueOf(value));
+                } else {
+                  if (time < 5184000) {
+                    return resourceBundle.appRes("UIActivityUpdated.label.About_A_Month");
+                  } else {
+                    value = Math.round(time / 2592000);
+                    return resourceBundle.appRes("UIActivityUpdated.label.About_?_Months")
+                            .replaceFirst("\\{0\\}", String.valueOf(value));
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
 
   /**
    * Gets prettyTime by timestamp of activities in space.
