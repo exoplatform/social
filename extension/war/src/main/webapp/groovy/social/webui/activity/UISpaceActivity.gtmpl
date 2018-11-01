@@ -172,7 +172,7 @@
   }
 
   activityPostedTime = uicomponent.getPostedTimeString(_ctx, activity.postedTime);
-activityUpdatedTime = uicomponent.getUpdateTimeString(_ctx,activity.updated.getTime());
+  activityUpdatedTime = uicomponent.getUpdateTimeString(_ctx, activity.updated.getTime());
 
   def spaceID, spaceImageSource;
   def ownerIdentity = uicomponent.ownerIdentity;
