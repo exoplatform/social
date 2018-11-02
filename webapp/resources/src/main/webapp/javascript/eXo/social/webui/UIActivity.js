@@ -319,38 +319,40 @@
         });
         }
 
-       var editActivityEl = $("[data-edit-activity='" + activityId + "']");
-       $('textarea#composerEditInput' + activityId).hide();
-       $('#EditActivityButton'+ activityId).hide();
-       $('#DeleteEditCommentButton'+ activityId).hide();
-       if (editActivityEl.length > 0) {
-              editActivityEl.off('click').on('click', function (evt) {
-              evt.stopPropagation();
-              var currentComposerEditInput = 'composerEditInput' + activityId;
-              $('#ActivityContextBox'+activityId+' .blastInputPeople').show();
-              if (($('#ActivityContextBox'+activityId+' .description').is(":visible"))){
+        var editActivityEl = $("[data-edit-activity='" + activityId + "']");
+        $('textarea#composerEditInput' + activityId).hide();
+        $('#EditActivityButton'+ activityId).hide();
+        $('#DeleteEditCommentButton'+ activityId).hide();
+        if (editActivityEl.length > 0) {
+          editActivityEl.off('click').on('click', function (evt) {
+            evt.stopPropagation();
+            var currentComposerEditInput = 'composerEditInput' + activityId;
+            $('#ActivityContextBox'+activityId+' .blastInputPeople').show();
+            $('#dropDownEditActivity'+ activityId).removeClass("open");
+
+            if (!$('#ActivityContextBox'+activityId+' .description').is(":visible") &&
+                $('#EditActivityButton'+ activityId).is(":visible")) {
+              try {
+               if(CKEDITOR.instances[currentComposerEditInput]) {
+                   CKEDITOR.instances[currentComposerEditInput].destroy();
+               }
+              } catch(e){
+               console.log(e);
+              }
+              $('textarea#composerEditInput' + activityId).hide();
+              $('#EditActivityButton'+ activityId).hide();
+              $('#DeleteEditCommentButton'+ activityId).hide();
+              $('#ActivityContextBox'+activityId+' .description').show();
+
+            } else {
               $('#ActivityContextBox'+activityId+' .description').hide();
               $('textarea#composerEditInput' + activityId).show();
               $('#EditActivityButton'+ activityId).show();
               $('#DeleteEditCommentButton'+ activityId).show();
-              $('#dropDownEditActivity'+ activityId).removeClass("open");
 
               self.initCKEditorForActivityEditing(currentComposerEditInput, $('#ActivityContextBox'+activityId+' .description'), $('#EditActivityButton' + activityId));
-             }
-             else {
-             try {
-                           if(CKEDITOR.instances[currentComposerEditInput]) {
-                               CKEDITOR.instances[currentComposerEditInput].destroy();
-                           }
-                         } catch(e){
-                           console.log(e);
-                         }
-             $('textarea#composerEditInput' + activityId).hide();
-             $('#EditActivityButton'+ activityId).hide();
-             $('#DeleteEditCommentButton'+ activityId).hide();
-             $('#ActivityContextBox'+activityId+' .description').show();
-             }
-        });
+            }
+          });
         }
 
        $("[data-edit-comment]").each(function(){
