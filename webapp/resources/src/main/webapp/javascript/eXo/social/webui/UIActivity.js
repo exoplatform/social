@@ -166,7 +166,7 @@
         removePlugins: 'image',
         placeholder: commentPlaceholder != null ? commentPlaceholder : window.eXo.social.I18n.mentions.defaultMessage,
         activityId : activityId,
-        extraAllowedContent: 'img[style,class,src,referrerpolicy,alt,width,height]; span(*)[*]{*}; span[data-atwho-at-query,data-atwho-at-value,contenteditable]; a(*);i(*)',
+        extraAllowedContent: 'img[style,class,src,referrerpolicy,alt,width,height]; span(*)[*]{*}; span[data-atwho-at-query,data-atwho-at-value,contenteditable]; a[*];i[*]',
         spaceURL: spaceURL,
         spaceGroupId: spaceGroupId,
         typeOfRelation: 'mention_comment',
