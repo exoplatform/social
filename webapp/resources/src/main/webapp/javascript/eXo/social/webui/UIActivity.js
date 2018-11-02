@@ -399,9 +399,7 @@
                      editCommentButton.off('click').on('click',function(event) {
                        event.stopPropagation();
                        var commentId = editCommentButton.data("edit-comment-id");
-                       var editCommentMessage = $('textarea#composerEditComment' + commentId).val();
-                       var clickAction = editCommentButton.data("click").replace("&objectId=","&messageContent="+encodeURI(editCommentMessage? editCommentMessage : "")+"&objectId=")
-                       .replace("COMMENTID", (commentId ? commentId : ""));
+                       var clickAction = editCommentButton.data("click").replace("COMMENTID", (commentId ? commentId : ""));
                        eval(clickAction);
                      });
 

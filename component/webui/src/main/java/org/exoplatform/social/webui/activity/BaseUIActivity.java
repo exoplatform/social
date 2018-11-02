@@ -1142,7 +1142,7 @@ public class BaseUIActivity extends UIForm {
     public void execute(Event<BaseUIActivity> event) throws Exception {
       WebuiRequestContext requestContext = event.getRequestContext();
       String commentId = requestContext.getRequestParameter(OBJECTID);
-      String message = URLDecoder.decode(requestContext.getRequestParameter("messageContent"),"UTF-8");
+      String message = requestContext.getRequestParameter("composerEditComment" + commentId);
 
       BaseUIActivity uiActivity = event.getSource();
       ExoSocialActivity originalActivity = Utils.getActivityManager().getActivity(commentId);
