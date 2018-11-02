@@ -148,7 +148,7 @@
         // Disable suggester on smart-phone landscape
         extraPlugins = 'simpleLink,selectImage';
       }
-      var tempdiv = $("<div class='temp'/>").append($contentBox.find('p').html());
+      var tempdiv = $("<div class='temp'/>").append($contentBox.html());
       tempdiv.find('a[href*="/profile"]').each(function( index ) {
         $(this).replaceWith(function() { return $('<span/>', {
          class:'atwho-inserted',
