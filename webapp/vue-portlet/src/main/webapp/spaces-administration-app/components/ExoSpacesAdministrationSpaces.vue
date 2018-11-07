@@ -1,18 +1,18 @@
 <template>
   <div class="uiTabNormal uiTabInPage">
     <ul class="nav nav-tabs">
-      <li :class="[ activetab === 1 ? 'active' : '' ]" @click="activetab=1">
+      <li :class="{active: activeTab === 1}" @click="activeTab=1">
         <a data-toggle="tab">Manage Spaces</a>
       </li>
-      <li :class="[ activetab === 2 ? 'active' : '' ]" @click="activetab=2" >
+      <li :class="{active: activeTab === 2}" @click="activeTab=2" >
         <a data-toggle="tab">Permissions</a>
       </li>
     </ul> 
     <div class="tab-content">
-      <div v-if="activetab === 1" class="tab-pane fade in active">
+      <div v-if="activeTab === 1" class="tab-pane fade in active">
         <exo-spaces-administration-manage-spaces></exo-spaces-administration-manage-spaces>
       </div>
-      <div v-if="activetab === 2" class="tab-pane fade in active">
+      <div v-if="activeTab === 2" class="tab-pane fade in active">
         <h1>permissssssssssss</h1>
       </div>
     </div> 
@@ -30,7 +30,7 @@ export default {
   },
   data() { 
     return {
-      activetab: 1
+      activeTab: 1
     }
   }
 };
