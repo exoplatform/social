@@ -33,6 +33,7 @@ import org.exoplatform.social.core.storage.api.IdentityStorage;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 @QueryNumberTest
@@ -136,6 +137,7 @@ public class RDBMSActivityStorageImplTest extends AbstractCoreTest {
     assertTrue(comment.getPostedTime() == comment.getUpdated().getTime());
 
     comment.setTitle("comment updated");
+    comment.setUpdated(new Date());
     activityStorage.saveComment(activity, comment);
     comment = activityStorage.getActivity(comment.getId());
     assertEquals("comment updated", comment.getTitle());

@@ -459,9 +459,6 @@ public class RDBMSActivityStorageImpl implements ActivityStorage {
     ActivityEntity activityEntity = activityDAO.find(Long.valueOf(activity.getId()));
     EntityManagerHolder.get().lock(activityEntity, LockModeType.PESSIMISTIC_WRITE);
     try {
-      if (eXoComment.getId() != null) {
-        eXoComment.setUpdated(System.currentTimeMillis());
-      }
       ActivityEntity commentEntity = convertCommentToCommentEntity(activityEntity, eXoComment);
       commentEntity = activityDAO.create(commentEntity);
 
@@ -487,11 +484,7 @@ public class RDBMSActivityStorageImpl implements ActivityStorage {
       }
 
       //
-      if (eXoComment.getUpdated() != null) {
-        activityEntity.setUpdatedDate(eXoComment.getUpdated());
-      } else {
-        activityEntity.setUpdatedDate(new Date());
-      }
+      processActivityStreamUpdatedTime(activityEntity);
       activityDAO.update(activityEntity);
 
     } finally {
@@ -624,7 +617,11 @@ public class RDBMSActivityStorageImpl implements ActivityStorage {
   private void createStreamItem(StreamType streamType, ActivityEntity activity, Long ownerId){
     StreamItemEntity streamItem = new StreamItemEntity(streamType);
     streamItem.setOwnerId(ownerId);
-    streamItem.setUpdatedDate(activity.getUpdatedDate());
+    if (streamType == StreamType.POSTER || streamType == StreamType.SPACE) {
+      streamItem.setUpdatedDate(activity.getUpdatedDate());
+    } else {
+      streamItem.setUpdatedDate(null);
+    }
     boolean isExist = false;
     if (activity.getId() != null) {
       //TODO need to improve it
@@ -1020,6 +1017,11 @@ public class RDBMSActivityStorageImpl implements ActivityStorage {
         // update comment
         updatedActivity.setUpdatedDate(new Date());
       }
+      //only raise the activity in stream when activity message updated
+      if (existingActivity.getTitle() != null &&
+              existingActivity.getTitle().equals(existingActivity.getTitle())) {
+        processActivityStreamUpdatedTime(updatedActivity);
+      }
       //create or remove liker if exist
       processLikerActivityInStreams(new HashSet<>(Arrays.asList(existingActivity.getLikeIdentityIds())), new HashSet<>(updatedActivity.getLikerIds()), parentActivity, isComment);
       //this method must be called before updating title and template params
@@ -1293,6 +1295,28 @@ public class RDBMSActivityStorageImpl implements ActivityStorage {
         LOG.debug("activity processing failed ");
       }
     }
+  }
+
+  /**
+   * This method will update StreamItem updatedDate field,
+   * which is used to sort activies in Activity Stream
+   * We only update this in 3 cases:
+   * 1. edit activity message
+   * 2. edit activity's comment message
+   * 3. add new comment
+   * @param activityEntity
+   * @return
+   */
+  private ActivityEntity processActivityStreamUpdatedTime(ActivityEntity activityEntity) {
+    if (activityEntity.getStreamItems() != null) {
+      List<StreamItemEntity> items = activityEntity.getStreamItems().stream()
+              .filter(item -> item.getStreamType() == StreamType.POSTER || item.getStreamType() == StreamType.SPACE)
+              .collect(Collectors.toList());
+      if (!items.isEmpty()) {
+        items.get(0).setUpdatedDate(new Date());
+      }
+    }
+    return activityEntity;
   }
   
   /**

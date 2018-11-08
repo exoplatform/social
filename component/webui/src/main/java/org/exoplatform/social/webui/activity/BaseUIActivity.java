@@ -517,7 +517,6 @@ public class BaseUIActivity extends UIForm {
   protected ExoSocialActivity editCommentMessage(ExoSocialActivity commentActivity, String message){
     commentActivity.setTitle(message);
     commentActivity.setUpdated(new Date());
-    getActivity().setUpdated(commentActivity.getUpdated());
     Utils.getActivityManager().saveComment(getActivity(), commentActivity);
     activityCommentsListAccess = Utils.getActivityManager().getCommentsWithListAccess(getActivity(), true);
     commentSize = activityCommentsListAccess.getSize();
