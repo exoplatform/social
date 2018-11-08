@@ -487,7 +487,7 @@
     },
 
     setPageTitle : function(activityTitle) {
-      $(document).attr('title', 'Activity: ' + $('<div></div>').html(window.decodeURIComponent(activityTitle)).text());
+      eXo.core.Browser.setTitle('Activity: ' + $('<div></div>').html(window.decodeURIComponent(activityTitle)).text());
     },
 
     loadLikersByURL : function() {
