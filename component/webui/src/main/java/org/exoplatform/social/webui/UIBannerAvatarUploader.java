@@ -23,6 +23,7 @@ import java.util.Arrays;
 import java.util.Map;
 
 import org.exoplatform.commons.utils.CommonsUtils;
+import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.image.ImageUtils;
 import org.exoplatform.social.core.model.AvatarAttachment;
@@ -46,7 +47,8 @@ import org.exoplatform.webui.form.input.UIUploadInput;
     lifecycle = UIFormLifecycle.class,
     template = "war:/groovy/social/webui/UIBannerAvatarUploader.gtmpl",
     events = {
-      @EventConfig(listeners = UIBannerAvatarUploader.ConfirmActionListener.class)
+      @EventConfig(listeners = UIBannerAvatarUploader.ConfirmActionListener.class),
+      @EventConfig(listeners = UIBannerAvatarUploader.RemoveActionListener.class)
     }
   )
 })
@@ -144,6 +146,31 @@ public class UIBannerAvatarUploader extends UIBannerUploader {
           uiBannerUploadInput.addNewUploadId();
         }
       }  
+    }
+  }
+  public static class RemoveActionListener extends EventListener<UIBannerAvatarUploader> {
+    @Override
+    public void execute(Event<UIBannerAvatarUploader> event) throws Exception {
+      WebuiRequestContext ctx = event.getRequestContext();
+      UIBannerAvatarUploader uiBannerAvatarUploader = event.getSource();
+      if (uiBannerAvatarUploader.getAncestorOfType(UISpaceMenu.class) != null) {
+        SpaceService spaceService = CommonsUtils.getService(SpaceService.class);
+        String spaceUrl = Utils.getSpaceUrlByContext();
+        Space space = spaceService.getSpaceByUrl(spaceUrl);
+        space.setAvatarUrl(null);
+        space.setAvatarLastUpdated(null);
+        space.setEditor(Utils.getViewerRemoteId());
+        spaceService.updateSpaceAvatar(space);
+        spaceService.updateSpace(space);
+      } else {
+        Identity identity = Utils.getOwnerIdentity();
+        Profile p = identity.getProfile();
+        p.removeProperty(Profile.AVATAR);
+        p.setAvatarUrl(null);
+        p.setAvatarLastUpdated(null);
+        Utils.getIdentityManager().updateProfile(p);
+      }
+      ctx.addUIComponentToUpdateByAjax(uiBannerAvatarUploader.getParent());
     }
   }
 }

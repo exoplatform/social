@@ -1543,7 +1543,13 @@ public class SpaceServiceImpl implements SpaceService {
 
     Identity spaceIdentity = identityStorage.findIdentity(SpaceIdentityProvider.NAME, existingSpace.getPrettyName());
     Profile profile = spaceIdentity.getProfile();
-    profile.setProperty(Profile.AVATAR, existingSpace.getAvatarAttachment());
+    if(existingSpace.getAvatarAttachment() != null) {
+      profile.setProperty(Profile.AVATAR, existingSpace.getAvatarAttachment());
+    } else {
+      profile.removeProperty(Profile.AVATAR);
+      profile.setAvatarUrl(null); 
+      profile.setAvatarLastUpdated(null);
+    }
     identityStorage.updateProfile(profile);
     spaceLifeCycle.spaceAvatarEdited(existingSpace, existingSpace.getEditor());
     return existingSpace;

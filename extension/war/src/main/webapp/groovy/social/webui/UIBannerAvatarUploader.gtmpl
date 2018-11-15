@@ -1,34 +1,38 @@
 <%
 import org.apache.commons.lang.StringEscapeUtils;
+import org.exoplatform.social.core.service.LinkProvider;
 
 def renderUploader = uicomponent.isRenderUpload();
 if (renderUploader) {
-	def jsManager = _ctx.getRequestContext().getJavascriptManager();
+  def jsManager = _ctx.getRequestContext().getJavascriptManager();
     jsManager.require("SHARED/bannerUploader", "bannerUploader").addScripts("bannerUploader.init();");
 }
 
 def title = "";
-def avatarURL = ""; 
+def avatarURL = "";
+def hasAvatar = false;
 if (uicomponent.getParent() instanceof org.exoplatform.social.webui.space.UISpaceMenu) {
-	def space = uicomponent.getParent().getSpace();
-	title = StringEscapeUtils.escapeHtml(uicomponent.getParent().getSpaceName());
-	avatarURL = StringEscapeUtils.escapeHtml(uicomponent.getParent().getImageSource());
-	if (avatarURL == null) {
-	  avatarURL = "/eXoSkin/skin/images/system/SpaceAvtDefault.png";
-	} else {
-	  avatarURL += "?t=" + space.getAvatarLastUpdated();
-	}
+  def space = uicomponent.getParent().getSpace();
+  title = StringEscapeUtils.escapeHtml(space.getName());
+  avatarURL = space.getAvatarUrl();
+  if (avatarURL == null) {
+    avatarURL = LinkProvider.SPACE_DEFAULT_AVATAR_URL;
+  } else {
+    hasAvatar = true;
+    avatarURL += "?t=" + space.getAvatarLastUpdated();
+  }
 } else {
-	def profile = uicomponent.getParent().getOwnerProfile();
-	if(profile != null){
-	    title = StringEscapeUtils.escapeHtml(profile.getFullName());
-	    avatarURL = uicomponent.getParent().getAvatarURL(profile);
-	}
-	if (avatarURL == null) {
-	    avatarURL = "/eXoSkin/skin/images/system/UserAvtDefault.png"
-	} else {
-	    avatarURL += "?t=" + profile.getAvatarLastUpdated();
-	}
+  def profile = uicomponent.getParent().getOwnerProfile();
+  if(profile != null){
+    title = StringEscapeUtils.escapeHtml(profile.getFullName());
+    avatarURL = profile.getAvatarUrl();
+  }
+  if (avatarURL == null) {
+    avatarURL = LinkProvider.PROFILE_DEFAULT_AVATAR_URL
+  } else {
+    hasAvatar = true;
+    avatarURL += "?t=" + profile.getAvatarLastUpdated();
+  }
 }
 
 uiform.begin();
@@ -36,32 +40,42 @@ uiform.begin();
 <div class="userAvt pull-left">
     <img title="$title" alt="$title" src="$avatarURL">
     <%if (renderUploader) {%>
-	    <a href="#"><i class="uiIconCamera"></i></a>
-	    <div class="uiForm hidden">
-		    <%
-			for(field in uiform.getChildren()) {
-			    if(field.isRendered()) {
-		        %>
-			        <div class="control-group hidden">
-		    	        <div class="controls-full"><%uiform.renderField(field);%></div>
-			        </div>
-		        <%
-			    }
-			}
-			%>
-			<div class="uiAction hidden">
-			<%
-				for(action in uicomponent.getActions()) {
-			        String actionLabel = _ctx.appRes(uicomponent.getName() + ".action." + action);
-			        String link = uicomponent.event(action);
-			    %>
-			        <button class="btn" type="button" onclick="$link">$actionLabel</button>
-			    <%
-			    }
-		    %>
-	        </div>
-	    </div>
-	<%}%>
+      <a  href="#" class="dropdown-toggle" data-toggle="dropdown" ><i class="uiIconCamera"></i></a>
+      <ul class="dropdown-menu">
+          <li>
+              <a href="#" class="uiUploadFile"><%=_ctx.appRes("UIAvatarUploader.label.Upload")%></a>
+          </li>
+          <%if (hasAvatar) {%>
+          <li onclick="<%=uicomponent.event("Remove")%>" >
+              <a href="#"><%=_ctx.appRes("UIAvatarUploader.label.Remove")%></a>
+          </li>  
+          <%}%>                  
+      </ul>
+      <div class="uiForm hidden">
+        <%
+      for(field in uiform.getChildren()) {
+          if(field.isRendered()) {
+            %>
+              <div class="control-group hidden">
+                  <div class="controls-full"><%uiform.renderField(field);%></div>
+              </div>
+            <%
+          }
+      }
+      %>
+      <div class="uiAction hidden">
+      <%
+        for(action in uicomponent.getActions()) {
+              String actionLabel = _ctx.appRes(uicomponent.getName() + ".action." + action);
+              String link = uicomponent.event(action);
+          %>
+              <button class="btn" type="button" onclick="$link">$actionLabel</button>
+          <%
+          }
+        %>
+          </div>
+      </div>
+  <%}%>
 </div>
 
 <%uiform.end();%>

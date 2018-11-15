@@ -147,9 +147,11 @@ public class RDBMSIdentityStorageImpl implements IdentityStorage {
     }
 
     boolean hasBanner = false;
+    boolean hasAvatar = false;
     Map<String, Object> properties = profile.getProperties();
     for (Entry<String, Object> profileProperty : properties.entrySet()) {
       if (Profile.AVATAR.equalsIgnoreCase(profileProperty.getKey())) {
+        hasAvatar = true;
         AvatarAttachment attachment = (AvatarAttachment) profileProperty.getValue();
         byte[] bytes = attachment.getImageBytes();
         String fileName = attachment.getFileName();
@@ -272,9 +274,16 @@ public class RDBMSIdentityStorageImpl implements IdentityStorage {
 
     if (identityEntity.getBannerFileId() != null && !hasBanner
             && profile.getBannerUrl() == null) {
+      fileService.deleteFile(identityEntity.getBannerFileId());
       identityEntity.setBannerFileId(null);
     }
-
+    
+    if (identityEntity.getAvatarFileId() != null && !hasAvatar
+        && profile.getAvatarUrl() == null) {
+      fileService.deleteFile(identityEntity.getAvatarFileId());
+      identityEntity.setAvatarFileId(null);
+    }
+    
     identityEntity.setProperties(entityProperties);
 
     Date created = profile.getCreatedTime() <= 0 ? new Date() : new Date(profile.getCreatedTime());

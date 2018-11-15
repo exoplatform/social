@@ -58,7 +58,7 @@ import org.exoplatform.webui.event.EventListener;
 @ComponentConfig(
   template = "war:/groovy/social/webui/space/UISpaceMenu.gtmpl",
   events = {
-    @EventConfig(listeners = UISpaceMenu.DeleteBannerActionListener.class),
+    @EventConfig(listeners = UISpaceMenu.RemoveBannerActionListener.class),
     @EventConfig(name = "RenameSpaceAppName", listeners = UISpaceMenu.RenameSpaceAppNameActionListener.class)
   }
 )
@@ -197,7 +197,7 @@ public class UISpaceMenu extends UIContainer {
     return DEFAULT_APP_ID;
   }
 
-  public static class DeleteBannerActionListener extends EventListener<UISpaceMenu> {
+  public static class RemoveBannerActionListener extends EventListener<UISpaceMenu> {
 
     @Override
     public void execute(Event<UISpaceMenu> event) throws Exception {

@@ -64,12 +64,7 @@ public String getFitString(String nodeLabel, int maxLen) {
 }
 
 def spaceName = StringEscapeUtils.escapeHtml(uicomponent.getSpaceName());
-def spaceAvatar = StringEscapeUtils.escapeHtml(uicomponent.getImageSource());
-if (spaceAvatar == null) {
-  spaceAvatar = "/eXoSkin/skin/images/system/SpaceAvtDefault.png";
-} else {
-  spaceAvatar += "?t=" + space.getAvatarLastUpdated();
-}
+
 def banner = StringEscapeUtils.escapeHtml(uicomponent.getBanner());
 def bannerCSS = "";
 if (banner != null) {
@@ -108,12 +103,17 @@ if(appSelected == null || appSelected.length() == 0) {
       <div class="spaceMenuNavHeader" style="<%=bannerCSS%>">
         <%if(uicomponent.hasSettingPermission()) {%>
           <div class="bannerControls">
-              <a href="#" data-toggle="popover" data-trigger="hover" data-content="<%=_ctx.appRes("UISpaceMenu.label.bannerSizeHint")%>" data-placement="left">
-                <i class="uiIconCamera"></i>
-              </a>
-              <% if (banner != null) {%>
-                <a href="<%=uicomponent.event("DeleteBanner");%>"><i class="uiIconTrash"></i></a>
-              <%}%>
+            <a  href="#" class="dropdown-toggle" data-toggle="dropdown" data-placement="left" ><i class="uiIconCamera"></i></a>
+            <ul class="dropdown-menu">
+                <li>
+                    <a href="#" class="uiUploadFile"><%=_ctx.appRes("UIBannerUploader.label.Upload")%></a>
+                </li>
+                <%if (banner != null) {%>
+                <li>
+                    <a href="<%=uicomponent.event("RemoveBanner");%>"><%=_ctx.appRes("UIBannerUploader.label.Remove")%></a>
+                </li> 
+                <%}%>                    
+            </ul> 
           </div>
         <%}%>
         <h3>$spaceName</h3>

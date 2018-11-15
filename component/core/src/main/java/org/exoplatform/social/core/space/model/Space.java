@@ -490,7 +490,12 @@ public class Space {
    */
   public void setAvatarAttachment(AvatarAttachment avatarAttachment) {
     this.avatarAttachment = avatarAttachment;
+    if(avatarAttachment != null) {
     this.setAvatarLastUpdated(avatarAttachment.getLastModified());
+    } else {
+      this.setAvatarLastUpdated(null);
+      this.setAvatarUrl(null);
+    }
   }
 
   /**

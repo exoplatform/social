@@ -250,6 +250,8 @@ public class EntityConverterUtils {
     spaceEntity.setApp(AppEntity.parse(space.getApp()));
     if (space.getAvatarLastUpdated() != null) {
       spaceEntity.setAvatarLastUpdated(space.getAvatarLastUpdated() > 0 ? new Date(space.getAvatarLastUpdated()) : null);
+    } else {
+      spaceEntity.setAvatarLastUpdated(null);
     }
     if (space.getBannerLastUpdated() != null) {
       spaceEntity.setBannerLastUpdated(space.getBannerLastUpdated() > 0 ? new Date(space.getBannerLastUpdated()) : null);

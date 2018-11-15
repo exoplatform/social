@@ -215,14 +215,14 @@ var UISpaceNavigation = {
     });
   },
 
-  initAvatar : function(uploaderId) {
-    $(uploaderId + ' .uiIconCamera').on('click', function() {
+  initAvatar : function(uploaderId) {   
+      $('.userAvt .uiUploadFile').on('click',function() {
         bannerUploader.selectFile(uploaderId);
-    });
+      });
   },
 
   initBanner : function(uploaderId) {
-    $('.bannerControls .uiIconCamera').on('click', function() {
+    $('.bannerControls .uiUploadFile').on('click', function() {
         bannerUploader.selectFile(uploaderId);
     });
     $('.bannerControls [data-toggle="popover"]').popover();
