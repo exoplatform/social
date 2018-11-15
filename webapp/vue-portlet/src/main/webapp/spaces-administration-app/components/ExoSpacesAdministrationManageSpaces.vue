@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="selectize-input">
+    <div class="uiSearchInput">
       <input v-model="search" class="showInputSearch" type="text" placeholder="search here"/>
       <a data-original-title="Search" class="advancedSearch" rel="tooltip" data-placement="bottom" href="#">
         <i class="uiIconPLF24x24Search" @click="searchSpaces()"></i>
@@ -17,11 +17,14 @@
         <th>
           Actions
         </th>
-      </tr> 
+      </tr>
+      <tr v-if="spaces.length === 0"> 
+        <td class="empty center" colspan="12"> Empty data </td>
+      </tr>
       <tr v-for="(space, index) in spaces" :key="space.id">
-        <td><img :src="space.avatarUrl" class="avatar"/>  {{ space.displayName }}</td>
+        <td><img v-if="space.avatarUrl != null" :src="space.avatarUrl" class="avatar" /> <img v-else :src="avatar" class="avatar" />  {{ space.displayName }}</td>
         <td>{{ space.description }}</td>
-        <td class="center actionContainer">
+        <td class="center actionContainer" >
           <a :href="getSpaceLinkSetting(space.displayName)" target="_blank" data-placement="bottom" rel="tooltip" class="actionIcon" data-original-title="Edit" >
             <i class="uiIconEdit uiIconLightGray"></i>
           </a>
@@ -31,7 +34,7 @@
         </td>
       </tr>
     </table> 
-    <div v-if="totalPages != 1" class="pagination uiPageIterator">
+    <div v-if="totalPages > 1" class="pagination uiPageIterator">
       <ul>
         <li :class="{'disabled': currentPage === 1}">
           <a data-placement="bottom" rel="tooltip" href="#" data-original-title="Previous Page" @click="getSpacesPerPage(currentPage-1)">
@@ -78,6 +81,7 @@ export default {
       offset: 0,
       currentPage: 1,
       search: '',
+      avatar : spaceAdministrationConstants.spaceConstants.DEFAULT_SPACE_AVATAR
     }
   },
   created() {
@@ -86,6 +90,7 @@ export default {
   methods: {
     initSpaces() {
       spaceAdministrationServices.getSpaces().then(data =>{
+        console.log("verif spaces ", data.spaces)
         this.spaces = data.spaces;
         this.totalPages = Math.ceil(data.size/spaceAdministrationConstants.spaceConstants.SPACES_PER_PAGE);
       });
@@ -123,21 +128,4 @@ export default {
   }
 }
 </script>
-<style>
-.avatar{
-  width: 20px;
-}
-.table tr td {
-  width: 50px;
-}
-.uiPageIterator ul>li>a.active {
-  color: #ffffff;
-  font-weight: bold;
-  background-color: #578dc9;
-}
-.selectize-input {
-  margin: 12px 4px;
-  width: 315px;
-  float: right;
-}
-</style>
+
