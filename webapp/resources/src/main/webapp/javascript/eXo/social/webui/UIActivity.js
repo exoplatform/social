@@ -328,7 +328,8 @@
             evt.stopPropagation();
             var currentComposerEditInput = 'composerEditInput' + activityId;
             $('#ActivityContextBox'+activityId+' .blastInputPeople').show();
-            $('#dropDownEditActivity'+ activityId).removeClass("open");
+            $('#dropDownEditActivity'+ activityId + '.actLink').removeClass("open");
+            $('#dropDownEditActivity'+ activityId + '.actionLink').removeClass("open");
 
             if (!$('#ActivityContextBox'+activityId+' .description').is(":visible") &&
                 $('#EditActivityButton'+ activityId).is(":visible")) {
@@ -799,10 +800,6 @@
         }
         //
         activities.off('click').click(function(evt) {
-          var target = evt.target;
-          if (target && target.hasClass('uiIconActivityAction')) {
-            return false;
-          }
           eXo.social.SocialUtil.onViewActivity(UIActivity.responsiveId);
         });
       }
