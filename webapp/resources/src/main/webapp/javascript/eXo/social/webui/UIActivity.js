@@ -320,19 +320,15 @@
         }
 
         var editActivityEl = $("[data-edit-activity='" + activityId + "']");
-        $('textarea#composerEditInput' + activityId).hide();
-        $('#EditActivityButton'+ activityId).hide();
-        $('#DeleteEditCommentButton'+ activityId).hide();
         if (editActivityEl.length > 0) {
           editActivityEl.off('click').on('click', function (evt) {
             evt.stopPropagation();
             var currentComposerEditInput = 'composerEditInput' + activityId;
-            $('#ActivityContextBox'+activityId+' .blastInputPeople').show();
             $('#dropDownEditActivity'+ activityId + '.actLink').removeClass("open");
             $('#dropDownEditActivity'+ activityId + '.actionLink').removeClass("open");
 
             if (!$('#ActivityContextBox'+activityId+' .description').is(":visible") &&
-                $('#EditActivityButton'+ activityId).is(":visible")) {
+                $('#ActivityContextBox'+activityId+' .blastInputPeople').first().is(":visible")) {
               try {
                if(CKEDITOR.instances[currentComposerEditInput]) {
                    CKEDITOR.instances[currentComposerEditInput].destroy();
@@ -341,19 +337,18 @@
                console.log(e);
               }
               $('textarea#composerEditInput' + activityId).hide();
-              $('#EditActivityButton'+ activityId).hide();
-              $('#DeleteEditCommentButton'+ activityId).hide();
+              $('#ActivityContextBox'+activityId+' .blastInputPeople').first().hide();
               $('#ActivityContextBox'+activityId+' .description').show();
 
             } else {
+              $('#ActivityContextBox'+activityId+' .blastInputPeople').first().show();
               $('#ActivityContextBox'+activityId+' .description').hide();
               $('textarea#composerEditInput' + activityId).show();
-              $('#EditActivityButton'+ activityId).show();
-              $('#DeleteEditCommentButton'+ activityId).show();
 
               self.initCKEditorForActivityEditing(currentComposerEditInput, $('#ActivityContextBox'+activityId+' .description'), $('#EditActivityButton' + activityId));
             }
           });
+
         }
 
        $("[data-edit-comment]").each(function(){
@@ -361,18 +356,14 @@
        if (editCommentEl.length > 0) {
               var commentId = $(this).data('edit-comment');
               $('textarea#composerEditComment' + commentId).hide();
-              $('#EditCommentButton'+ commentId).hide();
-              $('#DeleteEditCommentButton'+ commentId).hide();
               editCommentEl.off('click').on('click', function (evt) {
               evt.stopPropagation();
               var currentComposerEditComment = 'composerEditComment' + commentId;
               if (($('#commentContainer'+commentId+' .contentComment').is(":visible"))){
               $('#commentContainer'+commentId+' .contentComment').hide();
               $('textarea#composerEditComment' + commentId).show();
-              $('#EditCommentButton'+ commentId).show();
-              $('#DeleteEditCommentButton'+ commentId).show();
               $('#dropDownEditComment'+ commentId).hide();
-              $('#commentContainer'+commentId+' .blastInputPeople').show();
+              $('#commentContainer'+commentId+' .blastInputPeople').first().show();
 
               self.initCKEditorForActivityEditing(currentComposerEditComment, $('#commentContainer'+commentId+' .contentComment'), $('#EditCommentButton' + commentId));
              }
@@ -384,9 +375,8 @@
                          } catch(e){
                            console.log(e);
                          }
+             $('#commentContainer'+commentId+' .blastInputPeople').first().hide();
              $('textarea#composerEditComment' + commentId).hide();
-             $('#EditCommentButton'+ commentId).hide();
-             $('#DeleteEditCommentButton'+ commentId).hide();
              $('#commentContainer'+commentId+' .contentComment').show();
              }
         });
@@ -423,7 +413,6 @@
                               console.log(e);
                         }
                         $('textarea#composerEditComment' + commentId).hide();
-                        $('#EditCommentButton'+ commentId).hide();
                         $('#commentContainer'+commentId+' .contentComment').show();
                         $('#dropDownEditComment'+ commentId).show();
                         $('#dropDownEditComment'+ commentId).removeClass("open");
@@ -439,13 +428,11 @@
                                    console.log(e);
                                 }
                             $('textarea#composerEditInput' + commentId).hide();
-                            $('#EditActivityButton'+ commentId).hide();
                             $('#ActivityContextBox'+commentId+' .description').show();
                             $('#dropDownEditActivity'+ commentId).show();
                             $('#dropDownEditActivity'+ commentId).removeClass("open");
                             $('#ActivityContextBox'+commentId+' .blastInputPeople').hide();
                         }
-                        cancelEditCommentButton.hide();
                         });
                        });
 

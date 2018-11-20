@@ -266,12 +266,12 @@
             </div><!--end heading-->
             <div class="description">$activity.title</div><!--end description-->
             <div class="desktop-input clearfix">
-              <div class="blastInputPeople">
+              <div class="blastInputPeople hideEffect">
                 <div>
                    <% uicomponent.renderChild(uicomponent.COMPOSER_TEXT_AREA_EDIT_INPUT+activity.id); %>
                   <div class="uiAction paddingAction">
-                      <button class="btn pull-left btn-primary hideEffect" onclick="<%=uicomponent.event("EditActivity")%>" id="EditActivityButton${activity.id}">${labelUpdate}</button>&nbsp;
-                  <button href="javascript:void(0)" data-cancel-edit-comment-id="${activity.id}" class="btn pull-left hideEffect" id="DeleteEditCommentButton${activity.id}">${labelCancel}</button>
+                      <button class="btn pull-left btn-primary" onclick="<%=uicomponent.event("EditActivity")%>" id="EditActivityButton${activity.id}">${labelUpdate}</button>&nbsp;
+                  <button href="javascript:void(0)" data-cancel-edit-comment-id="${activity.id}" class="btn pull-left" id="DeleteEditCommentButton${activity.id}">${labelCancel}</button>
                   <button class="btn visible-phone hideEffect" id="CancelEditButton${activity.id}">${labelCancel}</button>
                   </div>
                 </div>
@@ -435,13 +435,13 @@
                         $commentMessage
                     </div>
                     <div class="desktop-input clearfix">
-                        <div class="blastInputPeople">
+                        <div class="blastInputPeople hideEffect">
                             <div>
                                 <textarea class="textarea hideEffect paddingAction" name="composerEditComment${it.id}" id="composerEditComment${it.id}" rows="10" cols="30"></textarea>
                             </div>
                             <div class="uiAction">
-                                <button class="btn pull-left btn-primary hideEffect" data-edit-comment-id="${it.id}" data-edit-comment-activityid="${activity.id}" data-click="<%= uicomponent.event("EditComment","COMMENTID"); %>" id="EditCommentButton${it.id}">${labelUpdate}</button>&nbsp;
-                            <button href="javascript:void(0)" data-cancel-edit-comment-id="${it.id}" class="btn pull-left hideEffect" id="DeleteEditCommentButton${it.id}">${labelCancel}</button>
+                                <button class="btn pull-left btn-primary" data-edit-comment-id="${it.id}" data-edit-comment-activityid="${activity.id}" data-click="<%= uicomponent.event("EditComment","COMMENTID"); %>" id="EditCommentButton${it.id}">${labelUpdate}</button>&nbsp;
+                            <button href="javascript:void(0)" data-cancel-edit-comment-id="${it.id}" class="btn pull-left" id="DeleteEditCommentButton${it.id}">${labelCancel}</button>
                             </div>
                         </div>
                     </div>
