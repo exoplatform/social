@@ -14,7 +14,7 @@
           <exo-spaces-administration-manage-spaces></exo-spaces-administration-manage-spaces>
         </div>
         <div v-if="activeTab === 2" class="tab-pane fade in active">
-          <h1>permissssssssssss</h1>
+          <exo-spaces-administration-manage-permissions></exo-spaces-administration-manage-permissions>
         </div>
       </div> 
     </div>
