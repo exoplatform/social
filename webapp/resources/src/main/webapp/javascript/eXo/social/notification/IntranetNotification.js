@@ -12,6 +12,7 @@
         var me = IntranetNotification;
         me.portlet = $('#' + me.portletId);
         //
+        me.markAllReadLink = me.portlet.find('div#MarkAllAsReadLink:first').text();
         me.popupItem = me.portlet.find('ul.displayItems:first');
         me.popupItem.find('li').each(function(i) {
           me.applyAction($(this));
@@ -32,6 +33,16 @@
         if(me.hasMore == false) {
           me.portlet.find('div.bottomContainer').hide();
         }
+        if(me.popupItem.find('li.unread').length > 0) {
+          me.portlet.find('.actionMark:first').addClass('enabled');
+        }
+        // markAllRead
+        me.portlet.find("#markAllReadLink").click(function(evt) {
+          evt.stopPropagation();
+          webNotif.ajaxReq(me.markAllReadLink, function() {
+            webNotif.markAllRead();
+          });
+        });
       },
       initIndicator : function() {
         var me = IntranetNotification;
@@ -87,18 +98,18 @@
           var id = $(this).parents('li:first').data('id');
           webNotif.doCancelAction(id, $(this).data('rest'));
         });
-        
+
         var comment = item.find('.comment')[0];
         var commentNoHtml = item.find('.commentNoHtml')[0];
         var readMore = item.find('.readMore')[0];
-        
-        if (comment) { 
+
+        if (comment) {
             if (comment.offsetWidth < comment.scrollWidth || comment.offsetHeight < comment.scrollHeight) {
                 $(comment).hide();
                 $(commentNoHtml).html(comment.textContent + "...");
                 $(commentNoHtml).show();
                 $(readMore).show();
-                
+
                 $(readMore).on('click', function(evt) {
                     $(comment).show();
                     $(readMore).hide();
@@ -110,7 +121,7 @@
                 $(readMore).hide();
             }
         }
-        
+
         return item;
       },
       appendMessage : function(message) {
@@ -132,6 +143,7 @@
         //
         webNotif.ajaxReq(IntranetNotification.addNotifURL);
         //
+        IntranetNotification.portlet.find('.actionMark:first').addClass('enabled');
         IntranetNotification.popupItem.find('li.no-items').hide();
       },
       doCancelAction : function(object) {
@@ -147,6 +159,7 @@
       },
       markAllRead : function() {
         IntranetNotification.portlet.find('ul.displayItems:first').find('li.unread').removeClass('unread');
+        IntranetNotification.portlet.find('.actionMark:first').removeClass('enabled');
       }
   };
   //

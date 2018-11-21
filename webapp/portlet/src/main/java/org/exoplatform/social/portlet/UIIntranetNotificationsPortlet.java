@@ -23,6 +23,7 @@ import javax.portlet.MimeResponse;
 import javax.portlet.ResourceRequest;
 import javax.portlet.ResourceURL;
 
+import org.exoplatform.commons.api.notification.model.NotificationInfo;
 import org.exoplatform.commons.api.notification.model.WebNotificationFilter;
 import org.exoplatform.commons.api.notification.service.WebNotificationService;
 import org.exoplatform.services.log.ExoLogger;
@@ -48,6 +49,7 @@ import org.json.JSONObject;
 public class UIIntranetNotificationsPortlet extends UIPortletApplication {
   private static final Log LOG = ExoLogger.getLogger(UIIntranetNotificationsPortlet.class);
   private final WebNotificationService webNotifService;
+  private static final String EXO_NOTIFICATION_MARK_ALL_READ = "MarkAllAsReadLink";
   private static final String LOAD_MORE_KEY = "loadMoreNotif";
   private static final String REMOVE_ITEM_KEY = "removeNotif";
   private static final String ADD_ITEM_KEY = "addNotif";
@@ -100,6 +102,10 @@ public class UIIntranetNotificationsPortlet extends UIPortletApplication {
     if (ADD_ITEM_KEY.equals(resourceId)) {
       ++offset;
     }
+    if (EXO_NOTIFICATION_MARK_ALL_READ.equals(resourceId)) {
+        webNotifService.markAllRead(currentUser);
+        webNotifService.resetNumberOnBadge(currentUser);
+    }
   }
 
   protected String getLoadMoreURL() {
@@ -115,6 +121,16 @@ public class UIIntranetNotificationsPortlet extends UIPortletApplication {
       return rsURL.toString();
     } catch (Exception e) {
       return "";
+    }
+  }
+
+  public boolean isAnyUnreadNotification() {
+    WebNotificationFilter filter = new WebNotificationFilter(currentUser);
+    List<NotificationInfo> notifsInfos = webNotifService.getNotificationInfos(filter,offset,filter.getLimitDay());
+    if (notifsInfos != null) {
+      return notifsInfos.stream().anyMatch(notificationInfo -> !notificationInfo.isRead());
+    } else {
+      return false;
     }
   }
 
@@ -135,6 +151,7 @@ public class UIIntranetNotificationsPortlet extends UIPortletApplication {
   }
 
   protected List<String> getActions() {
-    return Arrays.asList(ADD_ITEM_KEY, REMOVE_ITEM_KEY);
+    return Arrays.asList(ADD_ITEM_KEY, REMOVE_ITEM_KEY, EXO_NOTIFICATION_MARK_ALL_READ);
   }
+
 }

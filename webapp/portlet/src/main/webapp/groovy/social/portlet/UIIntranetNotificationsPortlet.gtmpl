@@ -1,6 +1,7 @@
 <%
-	String userSettingUrl = uicomponent.getUserNotificationSettingUrl(); 
+	String userSettingUrl = uicomponent.getUserNotificationSettingUrl();
 	List notifications = uicomponent.getNotifications();
+	String enabled = (uicomponent.isAnyUnreadNotification() == true) ? "enabled" : "";
 	String display = (notifications.size() == 0) ? "block" : "none";
 def jsManager = _ctx.getRequestContext().getJavascriptManager();
 jsManager.require("SHARED/jquery", "jq")
@@ -8,9 +9,7 @@ jsManager.require("SHARED/jquery", "jq")
 %>
 
 <div class="uiIntranetNotificationsPortlet" id="$uicomponent.id">
-  <h3><%=_ctx.appRes("UIIntranetNotificationsPortlet.title.AllNotifications")%></h3>
-  <a class="user-setting" href="<%=userSettingUrl%>"><%=_ctx.appRes("UIIntranetNotificationsPortlet.title.NotificationsSetting")%></a>
-  <div style="display:none" class="all-actions">
+  <div class="all-actions hidden">
     <%
       List actions = uicomponent.getActions();
       for(action in actions) {
@@ -18,8 +17,17 @@ jsManager.require("SHARED/jquery", "jq")
       }
     %>
   </div>
+  <h4><%=_ctx.appRes("UIIntranetNotificationsPortlet.title.AllNotifications")%></h4>
+  <div class="notificationsActions">
+    <div class="actionMark $enabled">
+        <a href="javascript:void(0)" id="markAllReadLink"><%=_ctx.appRes("UIIntranetNotificationsPortlet.label.MarkAllAsRead") %></a>
+    </div>
+    <a class="user-setting" href="<%=userSettingUrl%>">
+        <i class="uiIconSetting"></i>
+    </a>
+  </div>
   <ul class="displayItems">
-  	<li class="no-items" style="display:$display;"><%=_ctx.appRes("UIIntranetNotificationsPortlet.label.NoNotifications") %></li>
+  	<li class="no-items" style="display:$display"><%=_ctx.appRes("UIIntranetNotificationsPortlet.label.NoNotifications") %></li>
   <%
     for(notification in notifications) { 
       print(notification);
