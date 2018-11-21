@@ -502,13 +502,17 @@ public class UIEditUserProfileForm extends UIForm {
     @Override
     public void execute(Event<UIEditUserProfileForm> event) throws Exception {
       UIEditUserProfileForm uiForm = event.getSource();
-      if(uiForm.currentProfile == null) {
+
+      Profile profile = Utils.getViewerIdentity(true).getProfile();
+
+      if(profile == null) {
         return;
       }
+
       UIInputSection baseSection = uiForm.getUIInputSection(FIELD_BASE_SECTION);
       String email = baseSection.getUIStringInput(Profile.EMAIL).getValue();
       // Checks input email existing or not 
-      String oldEmail = uiForm.currentProfile.getEmail();
+      String oldEmail = profile.getEmail();
       if(oldEmail != null && !oldEmail.equals(email) && UserProfileHelper.isExistingEmail(email)) {
         uiForm.warning("UIEditUserProfileForm.msg.email-exist", uiForm.getLabel(Profile.EMAIL));
         return;
@@ -526,14 +530,14 @@ public class UIEditUserProfileForm extends UIForm {
       //
       List<Map<String, String>> ims = baseSection.getUIMultiValueSelection(Profile.CONTACT_IMS).getValues();
       //
-      List<Map<String, String>> mapUrls = new ArrayList<Map<String,String>>();
+      List<Map<String, String>> mapUrls = new ArrayList<>();
       List<?> urls = baseSection.getUIFormMultiValueInputSet(Profile.CONTACT_URLS).getValue();
       for (Object url : urls) {
         String urlStr = (String)url;
         if (urlStr == null || urlStr.isEmpty() || urlStr.trim().isEmpty()) {
           continue;
         }
-        Map<String, String> mUrl = new HashMap<String, String>();
+        Map<String, String> mUrl = new HashMap<>();
         mUrl.put(UserProfileHelper.KEY, UserProfileHelper.URL_KEY);
         mUrl.put(UserProfileHelper.VALUE, UserProfileHelper.encodeHTML(urlStr));
         mapUrls.add(mUrl);
@@ -550,8 +554,8 @@ public class UIEditUserProfileForm extends UIForm {
           experiences.add(map);
         }
       }
-      Profile profile =  uiForm.currentProfile;
-      List<Profile.UpdateType> list = new ArrayList<Profile.UpdateType>();
+
+      List<Profile.UpdateType> list = new ArrayList<>();
       //
       AboutMeComparator aboutMeSection = new AboutMeComparator(getValue(aboutMe), profile);
       if (aboutMeSection.hasChanged()) {
