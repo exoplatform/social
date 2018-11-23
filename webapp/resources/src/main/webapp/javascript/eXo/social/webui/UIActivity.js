@@ -344,6 +344,7 @@
               $('#ActivityContextBox'+activityId+' .blastInputPeople').first().show();
               $('#ActivityContextBox'+activityId+' .description').hide();
               $('textarea#composerEditInput' + activityId).show();
+              $('.dropdown-backdrop').remove();
 
               self.initCKEditorForActivityEditing(currentComposerEditInput, $('#ActivityContextBox'+activityId+' .description'), $('#EditActivityButton' + activityId));
             }
@@ -380,10 +381,11 @@
                          } catch(e){
                            console.log(e);
                          }
-             $('.commentBox .backdrop').remove();
              $('#commentContainer'+commentId+' .blastInputPeople').first().hide();
              $('textarea#composerEditComment' + commentId).hide();
              $('#commentContainer'+commentId+' .contentComment').show();
+             $('.commentBox .backdrop').remove();
+             $('.dropdown-backdrop').remove();
              }
         });
 
@@ -410,6 +412,7 @@
                         event.stopPropagation();
                         var commentId = cancelEditCommentButton.data("cancel-edit-comment-id");
                         $('.commentBox .backdrop').remove();
+                        $('.dropdown-backdrop').remove();
                         if (commentId.toString().indexOf('comment') >= 0){
                         var currentComposerEditComment = 'composerEditComment' + commentId;
                         try {
