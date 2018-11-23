@@ -359,13 +359,18 @@
               editCommentEl.off('click').on('click', function (evt) {
               evt.stopPropagation();
               var currentComposerEditComment = 'composerEditComment' + commentId;
+              var smallScreen = $(window).outerWidth(true) <= 768;
               if (($('#commentContainer'+commentId+' .contentComment').is(":visible"))){
-              $('#commentContainer'+commentId+' .contentComment').hide();
-              $('textarea#composerEditComment' + commentId).show();
-              $('#dropDownEditComment'+ commentId).hide();
-              $('#commentContainer'+commentId+' .blastInputPeople').first().show();
+                if (smallScreen) {
+                  $('#commentContainer' + commentId + " .desktop-input").append('<div class="backdrop"></div>');
+                } else {
+                  $('#commentContainer'+commentId+' .contentComment').hide();
+                }
+                $('textarea#composerEditComment' + commentId).show();
+                $('#dropDownEditComment'+ commentId).hide();
+                $('#commentContainer'+commentId+' .blastInputPeople').first().show();
 
-              self.initCKEditorForActivityEditing(currentComposerEditComment, $('#commentContainer'+commentId+' .contentComment'), $('#EditCommentButton' + commentId));
+                self.initCKEditorForActivityEditing(currentComposerEditComment, $('#commentContainer'+commentId+' .contentComment'), $('#EditCommentButton' + commentId));
              }
              else {
              try {
@@ -375,6 +380,7 @@
                          } catch(e){
                            console.log(e);
                          }
+             $('.commentBox .backdrop').remove();
              $('#commentContainer'+commentId+' .blastInputPeople').first().hide();
              $('textarea#composerEditComment' + commentId).hide();
              $('#commentContainer'+commentId+' .contentComment').show();
@@ -403,6 +409,7 @@
                       cancelEditCommentButton.click(function(event) {
                         event.stopPropagation();
                         var commentId = cancelEditCommentButton.data("cancel-edit-comment-id");
+                        $('.commentBox .backdrop').remove();
                         if (commentId.toString().indexOf('comment') >= 0){
                         var currentComposerEditComment = 'composerEditComment' + commentId;
                         try {
@@ -662,7 +669,7 @@
     },
 
     setPageTitle : function(activityTitle) {
-      eXo.core.Browser.setTitle('Activity: ' + $('<div></div>').html(window.decodeURIComponent(activityTitle)).text());
+      $(document).attr('title', 'Activity: ' + $('<div></div>').html(window.decodeURIComponent(activityTitle)).text());
     },
 
     loadLikersByURL : function() {
