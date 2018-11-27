@@ -90,7 +90,6 @@ export default {
   methods: {
     initSpaces() {
       spaceAdministrationServices.getSpaces().then(data =>{
-        console.log("verif spaces ", data.spaces)
         this.spaces = data.spaces;
         this.totalPages = Math.ceil(data.size/spaceAdministrationConstants.spaceConstants.SPACES_PER_PAGE);
       });

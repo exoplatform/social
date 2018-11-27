@@ -22,3 +22,7 @@ export function getSpaceLinkSetting(spaceDisplayName){
   const nameSpace = spaceDisplayName.toLowerCase().split(' ').join('_');
   return `${spaceConstants.PORTAL}${spaceConstants.PROFILE_SPACE_LINK}${nameSpace}/${nameSpace}/settings`;
 }
+
+export function getAvatar(user) {
+  return `${spaceConstants.SOCIAL_USER_API}${user}/avatar`;
+}
