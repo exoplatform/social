@@ -15,6 +15,13 @@
             <depends>
                 <module>eXoVueI18n</module>
             </depends>
+            <depends>
+              <module>jquery</module>
+              <as>$</as>
+            </depends>
+            <depends>
+              <module>suggester</module>
+            </depends>
         </module>
     </portlet>
 
