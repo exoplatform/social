@@ -148,7 +148,29 @@ public class SpaceRestResourcesTest extends AbstractResourceTest {
     assertNotNull(space);
     assertEquals("social", space.getDisplayName());
   }
-  
+
+  public void testGetSpace() throws Exception {
+    startSessionAs("root");
+    String input = "{\"displayName\":\"test space\"}";
+    //root creates a space
+    ContainerResponse response = getResponse("POST", getURLResource("spaces/"), input);
+    assertNotNull(response);
+    assertEquals(200, response.getStatus());
+
+    SpaceEntity spaceEntity = getBaseEntity(response.getEntity(), SpaceEntity.class);
+    Space space = spaceService.getSpaceById(spaceEntity.getId());
+    assertNotNull(space);
+
+    // Get space by its id
+    response = service("GET", getURLResource("spaces/" + space.getId()), "", null, null);
+    assertNotNull(response);
+    assertEquals(200, response.getStatus());
+
+    spaceEntity = getBaseEntity(response.getEntity(), SpaceEntity.class);
+    assertNotNull(spaceEntity);
+    assertEquals("test space", spaceEntity.getDisplayName());
+  }
+
   public void testGetUpdateDeleteSpaceById() throws Exception {
     //root creates 1 spaces
     Space space = getSpaceInstance(1, "root");

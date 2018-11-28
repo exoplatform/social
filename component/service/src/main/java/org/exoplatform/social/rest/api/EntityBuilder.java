@@ -455,8 +455,23 @@ public class EntityBuilder {
 
   private static DataEntity getActivityOwner(Identity owner, String restPath) {
     BaseEntity mentionEntity = new BaseEntity(owner.getId());
-    mentionEntity.setHref(RestUtils.getRestUrl(USERS_TYPE, owner.getRemoteId(), restPath));
+    mentionEntity.setHref(RestUtils.getRestUrl(getIdentityType(owner), getIdentityId(owner), restPath));
     return mentionEntity.getDataEntity();
+  }
+
+  private static String getIdentityType(Identity owner) {
+    return OrganizationIdentityProvider.NAME.equals(owner.getProviderId()) ? USERS_TYPE : SPACES_TYPE;
+  }
+
+  private static String getIdentityId(Identity identity) {
+    if (OrganizationIdentityProvider.NAME.equals(identity.getProviderId())) {
+      return identity.getRemoteId();
+    } else {
+      String spacePrettyName = identity.getRemoteId();
+      SpaceService spaceService = CommonsUtils.getService(SpaceService.class);
+      Space space = spaceService.getSpaceByPrettyName(spacePrettyName);
+      return space.getId();
+    }
   }
 
   private static List<DataEntity> getActivityMentions(ExoSocialActivity activity, String restPath) {

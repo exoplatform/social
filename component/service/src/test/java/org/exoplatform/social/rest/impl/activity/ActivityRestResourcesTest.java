@@ -4,8 +4,12 @@ import org.exoplatform.services.rest.impl.ContainerResponse;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.activity.model.ExoSocialActivityImpl;
 import org.exoplatform.social.core.identity.model.Identity;
+import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
 import org.exoplatform.social.core.manager.ActivityManager;
 import org.exoplatform.social.core.manager.RelationshipManager;
+import org.exoplatform.social.core.space.impl.DefaultSpaceApplicationHandler;
+import org.exoplatform.social.core.space.model.Space;
+import org.exoplatform.social.core.space.spi.SpaceService;
 import org.exoplatform.social.core.storage.api.IdentityStorage;
 import org.exoplatform.social.rest.entity.ActivityEntity;
 import org.exoplatform.social.rest.entity.CollectionEntity;
@@ -24,11 +28,13 @@ public class ActivityRestResourcesTest extends AbstractResourceTest {
   private IdentityStorage identityStorage;
   private ActivityManager activityManager;
   private RelationshipManager relationshipManager;
+  private SpaceService spaceService;
 
   private Identity rootIdentity;
   private Identity johnIdentity;
   private Identity maryIdentity;
   private Identity demoIdentity;
+  private Identity testSpaceIdentity;
 
   public void setUp() throws Exception {
     super.setUp();
@@ -38,17 +44,18 @@ public class ActivityRestResourcesTest extends AbstractResourceTest {
     identityStorage = getContainer().getComponentInstanceOfType(IdentityStorage.class);
     activityManager = getContainer().getComponentInstanceOfType(ActivityManager.class);
     relationshipManager = getContainer().getComponentInstanceOfType(RelationshipManager.class);
+    spaceService = getContainer().getComponentInstanceOfType(SpaceService.class);
 
     rootIdentity = new Identity("organization", "root");
     johnIdentity = new Identity("organization", "john");
     maryIdentity = new Identity("organization", "mary");
     demoIdentity = new Identity("organization", "demo");
-    
+
     identityStorage.saveIdentity(rootIdentity);
     identityStorage.saveIdentity(johnIdentity);
     identityStorage.saveIdentity(maryIdentity);
     identityStorage.saveIdentity(demoIdentity);
-    
+
     activityRestResourcesV1 = new ActivityRestResourcesV1();
     registry(activityRestResourcesV1);
   }
@@ -56,6 +63,35 @@ public class ActivityRestResourcesTest extends AbstractResourceTest {
   public void tearDown() throws Exception {
     super.tearDown();
     removeResource(activityRestResourcesV1.getClass());
+  }
+
+  public void testGetSpaceActivity() throws Exception {
+    startSessionAs("root");
+
+    Space space = getSpaceInstance("test", "root");
+    testSpaceIdentity = new Identity(SpaceIdentityProvider.NAME, "test");
+    identityStorage.saveIdentity(testSpaceIdentity);
+
+    try {
+      ExoSocialActivity testSpaceActivity = new ExoSocialActivityImpl();
+      testSpaceActivity.setTitle("Test space activity");
+      activityManager.saveActivityNoReturn(testSpaceIdentity, testSpaceActivity);
+
+      assertNotNull(testSpaceIdentity.getId());
+
+      ContainerResponse response = service("GET", "/" + VersionResources.VERSION_ONE + "/social/activities/" + testSpaceActivity.getId(), "", null, null);
+      assertNotNull(response);
+      assertEquals(200, response.getStatus());
+
+      ActivityEntity activityEntity = getBaseEntity((DataEntity) response.getEntity(), ActivityEntity.class);
+      assertNotNull(activityEntity);
+      assertNotNull(activityEntity.getOwner());
+      assertTrue(activityEntity.getOwner().contains("/social/spaces/" + space.getId()));
+    } finally {
+      if (space != null) {
+        spaceService.deleteSpace(space);
+      }
+    }
   }
 
   public void testGetActivitiesOfCurrentUser() throws Exception {
@@ -397,4 +433,19 @@ public class ActivityRestResourcesTest extends AbstractResourceTest {
     //clean data
     activityManager.deleteActivity(rootActivity);
   }
+
+  private Space getSpaceInstance(String prettyName, String creator) throws Exception {
+    Space space = new Space();
+    space.setDisplayName(prettyName);
+    space.setPrettyName(space.getDisplayName());
+    space.setRegistration(Space.OPEN);
+    space.setDescription("add new space " + prettyName);
+    space.setType(DefaultSpaceApplicationHandler.NAME);
+    space.setVisibility(Space.PRIVATE);
+    space.setRegistration(Space.VALIDATION);
+    space.setPriority(Space.INTERMEDIATE_PRIORITY);
+    this.spaceService.createSpace(space, creator);
+    return space;
+  }
+
 }
