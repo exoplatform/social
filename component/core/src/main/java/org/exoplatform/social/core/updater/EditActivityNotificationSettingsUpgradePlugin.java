@@ -2,15 +2,12 @@ package org.exoplatform.social.core.updater;
 
 import java.util.List;
 
-import static org.exoplatform.commons.notification.impl.AbstractService.EXO_IS_ACTIVE;
-
 import org.exoplatform.commons.api.notification.model.PluginInfo;
 import org.exoplatform.commons.api.notification.model.UserSetting;
 import org.exoplatform.commons.api.notification.service.setting.PluginSettingService;
 import org.exoplatform.commons.api.notification.service.setting.UserSettingService;
 import org.exoplatform.commons.api.settings.SettingService;
 import org.exoplatform.commons.api.settings.data.Context;
-import org.exoplatform.commons.api.settings.data.Scope;
 import org.exoplatform.commons.persistence.impl.EntityManagerService;
 import org.exoplatform.commons.upgrade.UpgradeProductPlugin;
 import org.exoplatform.container.ExoContainer;
@@ -22,6 +19,9 @@ import org.exoplatform.services.log.Log;
 public class EditActivityNotificationSettingsUpgradePlugin extends UpgradeProductPlugin {
 
     private static final Log LOG = ExoLogger.getLogger(EditActivityNotificationSettingsUpgradePlugin.class);
+
+    private static final String EDIT_ACTIVITY_PLUGIN_TYPE = "EditActivityPlugin";
+    private static final String EDIT_COMMENT_PLUGIN_TYPE = "EditCommentPlugin";
 
     private SettingService settingService;
 
@@ -52,9 +52,9 @@ public class EditActivityNotificationSettingsUpgradePlugin extends UpgradeProduc
             LOG.info("=== Start initialisation of Edit Activity Notifications settings");
             LOG.info("  Starting activating Edit Activity Notifications for users");
 
-            PluginInfo editActivityConfig = findPlugin("org.exoplatform.social.notification.plugin.EditActivityPlugin");
-            PluginInfo editCommentConfig = findPlugin("org.exoplatform.social.notification.plugin.EditCommentPlugin");
-            List<Context> usersContexts;
+            PluginInfo editActivityConfig = findPlugin(EDIT_ACTIVITY_PLUGIN_TYPE);
+            PluginInfo editCommentConfig = findPlugin(EDIT_COMMENT_PLUGIN_TYPE);
+            List<String> usersContexts;
 
             entityManagerService.startRequest(currentContainer);
             long startTime = System.currentTimeMillis();
@@ -62,22 +62,22 @@ public class EditActivityNotificationSettingsUpgradePlugin extends UpgradeProduc
                 LOG.info("  Progression of users Edit Activity Notifications settings initialisation : {} users", current);
 
                 // Get all users who already update their notification settings
-                usersContexts = settingService.getContextsByTypeAndScopeAndSettingName(Context.USER.getName(), Scope.APPLICATION.getName(),
-                        "NOTIFICATION", EXO_IS_ACTIVE, current, pageSize);
+                usersContexts = settingService.getContextNamesByType(Context.USER.getName(), current, pageSize);
 
                 if (usersContexts != null) {
-                    for (Context userContext : usersContexts) {
+                    for (String userName : usersContexts) {
                         try {
                             entityManagerService.endRequest(currentContainer);
                             entityManagerService.startRequest(currentContainer);
 
-                            String userName = userContext.getId();
                             UserSetting userSetting = this.userSettingService.get(userName);
-                            updateSetting(userSetting, editActivityConfig);
-                            updateSetting(userSetting, editCommentConfig);
-                            userSettingService.save(userSetting);
+                            if (userSetting != null) {
+                                updateSetting(userSetting, editActivityConfig);
+                                updateSetting(userSetting, editCommentConfig);
+                                userSettingService.save(userSetting);
+                            }
                         } catch (Exception e) {
-                            LOG.error("  Error while activating Edit Activity Notifications for user " + userContext.getId(), e);
+                            LOG.error("  Error while activating Edit Activity Notifications for user " + userName, e);
                         }
                     }
                     current += usersContexts.size();
