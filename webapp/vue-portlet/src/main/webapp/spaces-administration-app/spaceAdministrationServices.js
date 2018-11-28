@@ -26,3 +26,7 @@ export function getSpaceLinkSetting(spaceDisplayName){
 export function getAvatar(user) {
   return `${spaceConstants.SOCIAL_USER_API}${user}/avatar`;
 }
+
+export function getGuests(query) {
+  return fetch(`/portal/rest/social/people/suggest.json?nameToSearch=${query}`, {credentials: 'include'}).then(resp => resp.json());
+}

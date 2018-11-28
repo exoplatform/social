@@ -15,8 +15,8 @@
       <tr>
         <td><h2>Create spaces</h2> <h5>Ability to create spaces</h5></td>
         <td>
-          <h4 v-if="displayEditCreate === 1">test</h4>
-          <div v-if="displayEditCreate === 0" class="selectize-input items not-full has-options">
+          <h4 v-show="displayEditCreate === 1">test</h4>
+          <div v-show="displayEditCreate === 0" class="selectize-input items not-full has-options">
             <input id="add-user-suggestor" type="text" autocomplete="off" style="width: 121.047px; opacity: 1; position: relative; left: 0px;">
           </div>
         </td>
@@ -69,7 +69,7 @@ export default {
   },
   methods: {
     initSuggester() {
-      const $guestsFormsSuggestor = $('add-user-suggestor');
+      const $guestsFormsSuggestor = $('#add-user-suggestor');
       const component = this;
       const suggesterData = {
         type: 'tag',
@@ -78,9 +78,9 @@ export default {
         highlight: false,
         openOnFocus: false,
         sourceProviders: ['exo:social'],
-        valueField: 'name',
-        labelField: 'fullname',
-        searchField: ['fullname', 'name'],
+        valueField: 'text',
+        labelField: 'text',
+        searchField: ['text'],
         closeAfterSelect: true,
         dropdownParent: 'body',
         hideSelected: true,
@@ -88,22 +88,41 @@ export default {
           return component.renderMenuItem(item, escape);
         },
         renderItem(item) {
-          return `<span class="hidden" data-value="${item.value}"></span>`;
+          return component.renderMenuItem(item, escape);
         },
         onItemAdd(item) {
           component.addSuggestedItem(item);
+        },
+        providers: {
+          'exo:social': component.findGuests
         }
       };
       $guestsFormsSuggestor.suggester(suggesterData);
+    },
+    findGuests (query, callback) {
+      if (!query.length) {
+        return callback(); 
+      }
+      spaceAdministrationServices.getGuests(query).then(data => {
+        if(data) {
+          console.log(data.options);
+          callback(data.options);
+        }
+      });
     },   
     renderMenuItem (item, escape) {
-      const avatar = spaceAdministrationServices.getAvatar(item.name);
-      const defaultAvatar = '/eXoSkin/skin/images/system/SpaceAvtDefault.png';
+      const avatar = spaceAdministrationServices.getAvatar(item.value);
+      if (item.type == "user") {
+        item.avatarUrl = '/eXoSkin/skin/images/system/UserAvtDefault.png';
+      } else {
+        item.avatarUrl = '/eXoSkin/skin/images/system/SpaceAvtDefault.png';
+      }
       return `
-        <div class="avatar">
-          <img src="${avatar}" onerror="this.src='${defaultAvatar}'">
+        <div class="avatarMini">
+          <img src="${avatar}" onerror="this.src='${item.avatarUrl}'">
+          ${escape(item.text)}
         </div>
-        <div class="user-name">${escape(item.fullname)} (${item.name})</div>
+        <div class="item">${escape(item.text)}</div>
       `;
     },
     addSuggestedItem(item) {
@@ -111,13 +130,14 @@ export default {
         const selectize = $('#add-user-suggestor')[0].selectize;
         item = selectize.options[item];
       }
-      if(!this.guests.find(guest => guest.name === item.name)) {
+      if(!this.guests.find(guest => guest.text === item.text)) {
         this.guests.push(item);
       }
     },
     editCreateSpace(){
       if(this.displayEditCreate === 1) {
         this.displayEditCreate = 0;
+        this.initSuggester();
       } else {
         this.displayEditCreate = 1;
       }
