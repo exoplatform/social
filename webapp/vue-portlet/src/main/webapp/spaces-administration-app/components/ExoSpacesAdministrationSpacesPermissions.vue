@@ -16,8 +16,8 @@
         <td><h2>Create spaces</h2> <h5>Ability to create spaces</h5></td>
         <td>
           <h4 v-show="displayEditCreate === 1">test</h4>
-          <div v-show="displayEditCreate === 0" class="selectize-input items not-full has-options">
-            <input id="add-user-suggestor" type="text" autocomplete="off" style="width: 121.047px; opacity: 1; position: relative; left: 0px;">
+          <div v-show="displayEditCreate === 0" class="inputUser">
+            <input id="add-user-suggestor" type="text"/>
           </div>
         </td>
         <td v-if="displayEditCreate === 1" class="center actionContainer" >
@@ -73,6 +73,7 @@ export default {
       const component = this;
       const suggesterData = {
         type: 'tag',
+        plugins: ['remove_button', 'restore_on_backspace'],
         create: false,
         createOnBlur: false,
         highlight: false,
@@ -88,7 +89,7 @@ export default {
           return component.renderMenuItem(item, escape);
         },
         renderItem(item) {
-          return component.renderMenuItem(item, escape);
+          return `<div class="item">${item.text}</div>`;
         },
         onItemAdd(item) {
           component.addSuggestedItem(item);
@@ -105,7 +106,6 @@ export default {
       }
       spaceAdministrationServices.getGuests(query).then(data => {
         if(data) {
-          console.log(data.options);
           callback(data.options);
         }
       });
@@ -118,11 +118,7 @@ export default {
         item.avatarUrl = '/eXoSkin/skin/images/system/SpaceAvtDefault.png';
       }
       return `
-        <div class="avatarMini">
-          <img src="${avatar}" onerror="this.src='${item.avatarUrl}'">
-          ${escape(item.text)}
-        </div>
-        <div class="item">${escape(item.text)}</div>
+        <div class="item"> <img class="avatarMini" src="${avatar}" onerror="this.src='${item.avatarUrl}'"> ${escape(item.text)}</div>
       `;
     },
     addSuggestedItem(item) {
@@ -152,3 +148,6 @@ export default {
   }
 }
 </script>
+
+
+
