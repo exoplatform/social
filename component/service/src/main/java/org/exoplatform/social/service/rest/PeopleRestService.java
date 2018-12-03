@@ -26,6 +26,8 @@ import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
+import org.exoplatform.services.organization.Group;
+import org.exoplatform.services.organization.OrganizationService;
 import org.exoplatform.services.rest.resource.ResourceContainer;
 import org.exoplatform.services.security.ConversationState;
 import org.exoplatform.services.security.IdentityConstants;
@@ -117,8 +119,55 @@ public class PeopleRestService implements ResourceContainer{
   private ActivityManager activityManager;
   private RelationshipManager relationshipManager;
   private SpaceService spaceService;
+  private OrganizationService organizationService;
 
   public PeopleRestService() {
+  }
+
+  /**
+   * Gets groups' names that match the input string for suggestion.
+   * 
+   * @param uriInfo uriInfo The requested URI information.
+   * @param search The provided characters to be searched.
+   * @param format format The format of the returned result, for example, JSON,
+   *          or XML.
+   * @return A list of groups' names that match the input string.
+   * @throws Exception
+   */
+  @SuppressWarnings("deprecation")
+  @RolesAllowed("users")
+  @GET
+  @Path("/getGroups/suggest.{format}")
+  public Response suggestGroups(@Context UriInfo uriInfo,
+                                @QueryParam("search") String search,
+                                @PathParam("format") String format) throws Exception {
+    String[] mediaTypes = new String[] { "json", "xml" };
+    MediaType mediaType = Util.getMediaType(format, mediaTypes);
+
+    organizationService = Util.getOrganizationService();
+    Collection<Group> result = new LinkedList<Group>();
+    if (search == null) {
+      result.addAll(organizationService.getGroupHandler().getAllGroups());
+    } else {
+      for (Group group : organizationService.getGroupHandler().getAllGroups()) {
+        if (CheckSearchInGroupName(group.getGroupName(), search))
+          result.add(group);
+      }
+    }
+    return Util.getResponse(result, uriInfo, mediaType, Response.Status.OK);
+  }
+
+  private boolean CheckSearchInGroupName(String groupName, String search) {
+    int groupNameLength = groupName.length();
+    int searchLength = search.length();
+    boolean foundIt = false;
+    for (int i = 0; i <= (groupNameLength - searchLength); i++) {
+      if (groupName.regionMatches(i, search, 0, searchLength)) {
+        foundIt = true;
+        break;
+      }
+    }
+    return foundIt;
   }
 
   /**
@@ -1081,6 +1130,17 @@ public class PeopleRestService implements ResourceContainer{
       relationshipManager = (RelationshipManager) getPortalContainer().getComponentInstanceOfType(RelationshipManager.class);
     }
     return relationshipManager;
+  }
+  
+  /**
+   * Gets organizationService
+   * @return
+   */
+  private OrganizationService getOrganizationService() {
+    if (organizationService == null) {
+      organizationService = (OrganizationService) getPortalContainer().getComponentInstanceOfType(OrganizationService.class);
+    }
+    return organizationService;
   }
   
   /**
