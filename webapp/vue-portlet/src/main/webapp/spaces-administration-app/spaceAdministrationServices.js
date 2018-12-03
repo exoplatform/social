@@ -30,3 +30,7 @@ export function getAvatar(user) {
 export function getGuests(query) {
   return fetch(`/portal/rest/social/people/suggest.json?nameToSearch=${query}`, {credentials: 'include'}).then(resp => resp.json());
 }
+
+export function getGuestsGroups(query) {
+  return fetch(`/portal/rest/social/people/getGroups/suggest.json?search=${query}`, {credentials: 'include'}).then(resp => resp.json());
+}
