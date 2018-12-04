@@ -360,7 +360,7 @@ public class MailTemplateProvider extends TemplateProvider {
             continue;
           }
           String commentId = message.getValueOwnerParameter(SocialNotificationUtils.COMMENT_ID.getKey());
-          ExoSocialActivity parentActivity = null;
+          ExoSocialActivity parentActivity = activity;
           if(StringUtils.isBlank(commentId)) {
             LOG.warn("Attempt to send a mail message with id '{}' and receiver '{}' with empty parameter 'commentId' and activityId = '{}' ",
                     message.getId(),
@@ -490,7 +490,7 @@ public class MailTemplateProvider extends TemplateProvider {
                     }
                     String title = SocialNotificationUtils.processImageTitle(activity.getTitle(), imagePlaceHolder);
                     Pair<String, String> userComment = new ImmutablePair<String, String>(poster, title);
-                    if (parentActivity.getStreamOwner() != null) {
+                    if (parentActivity != null && parentActivity.getStreamOwner() != null) {
                         Identity spaceIdentity = Utils.getIdentityManager().getOrCreateIdentity(SpaceIdentityProvider.NAME, parentActivity.getStreamOwner(), true);
                         if (spaceIdentity == null) {
                             if (message.getTo()!=null && !message.getTo().equals(parentActivity.getStreamOwner())) {
@@ -506,6 +506,7 @@ public class MailTemplateProvider extends TemplateProvider {
                         }
                     }
                     //
+                    parentActivity = parentActivity == null ? activity : parentActivity;
                     SocialNotificationUtils.processInforSendTo(receiverMap, parentActivity.getId(), poster);
                     SocialNotificationUtils.processInforUserComments(activityUserComments, parentActivity.getId(), userComment);
                 }

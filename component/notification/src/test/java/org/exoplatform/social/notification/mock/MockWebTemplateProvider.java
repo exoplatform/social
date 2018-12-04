@@ -11,6 +11,8 @@ import org.exoplatform.social.notification.plugin.*;
     @TemplateConfig(pluginId = ActivityReplyToCommentPlugin.ID, template = "classpath:/notification/web/templates/ActivityReplyToCommentPlugin.gtmpl"),
     @TemplateConfig(pluginId = ActivityMentionPlugin.ID, template = "classpath:/notification/web/templates/ActivityMentionPlugin.gtmpl"),
     @TemplateConfig(pluginId = LikePlugin.ID, template = "classpath:/notification/web/templates/LikePlugin.gtmpl"),
+    @TemplateConfig(pluginId = EditCommentPlugin.ID, template = "classpath:/notification/web/templates/EditCommentPlugin.gtmpl"),
+    @TemplateConfig(pluginId = EditActivityPlugin.ID, template = "classpath:/notification/web/templates/EditActivityPlugin.gtmpl"),
     @TemplateConfig(pluginId = LikeCommentPlugin.ID, template = "classpath:/notification/web/templates/LikeCommentPlugin.gtmpl"),
     @TemplateConfig(pluginId = NewUserPlugin.ID, template = "classpath:/notification/web/templates/NewUserPlugin.gtmpl"),
     @TemplateConfig(pluginId = PostActivityPlugin.ID, template = "classpath:/notification/web/templates/PostActivityPlugin.gtmpl"),

@@ -591,7 +591,7 @@ public class RelationshipStorageTest extends AbstractCoreTest {
    * @throws Exception
    * @since 1.2.3
    */
-  @MaxQueryNumber(174)
+  @MaxQueryNumber(177)
   public void testGetConnectionsWithDisabledUser() throws Exception {
     populateData();
     populateRelationshipData(Type.CONFIRMED);
