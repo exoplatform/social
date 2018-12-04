@@ -60,6 +60,7 @@ export default {
   data() {
     return {
       guests: [],
+      listGuest: [],
       displayEditCreate: 1,
       displayEditManage: 1
     }
@@ -101,24 +102,27 @@ export default {
       $guestsFormsSuggestor.suggester(suggesterData);
     },
     findGuests (query, callback) {
-      if (!query.length) {
-        return callback(); 
-      }
-      spaceAdministrationServices.getGuests(query).then(data => {
-        if(data) {
-          callback(data.options);
+        if (!query.length) {
+          return callback(); 
         }
-      });
+        spaceAdministrationServices.getGuests(query).then(data => {
+          spaceAdministrationServices.getGuestsGroups(query).then(group => {
+            group = group.concat(data.options);
+            callback(group);
+          });
+        });
     },   
     renderMenuItem (item, escape) {
-      const avatar = spaceAdministrationServices.getAvatar(item.value);
-      if (item.type == "user") {
-        item.avatarUrl = '/eXoSkin/skin/images/system/UserAvtDefault.png';
-      } else {
-        item.avatarUrl = '/eXoSkin/skin/images/system/SpaceAvtDefault.png';
+      if(item.avatarUrl == null) {
+        item.avatarUrl = spaceAdministrationServices.getAvatar(item.value);
+        if (item.type === "user") {
+          item.avatarUrl = '/eXoSkin/skin/images/system/UserAvtDefault.png';
+        } else {
+          item.avatarUrl = '/eXoSkin/skin/images/system/SpaceAvtDefault.png';
+        }
       }
       return `
-        <div class="item"> <img class="avatarMini" src="${avatar}" onerror="this.src='${item.avatarUrl}'"> ${escape(item.text)}</div>
+        <div class="item"> <img class="avatarMini" src="${item.avatarUrl}"> ${escape(item.text)}</div>
       `;
     },
     addSuggestedItem(item) {

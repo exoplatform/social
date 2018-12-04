@@ -146,15 +146,23 @@ public class PeopleRestService implements ResourceContainer{
 
     organizationService = Util.getOrganizationService();
     Collection<Group> result = new LinkedList<Group>();
+    Collection<Option> options = new LinkedList<Option>();
     if (search == null) {
       result.addAll(organizationService.getGroupHandler().getAllGroups());
+      return Util.getResponse(result, uriInfo, mediaType, Response.Status.OK);
     } else {
       for (Group group : organizationService.getGroupHandler().getAllGroups()) {
-        if (CheckSearchInGroupName(group.getGroupName(), search))
-          result.add(group);
+        if (CheckSearchInGroupName(group.getGroupName(), search)) {
+          Option opt = new Option();
+          opt.setText(group.getGroupName());
+          opt.setValue(group.getLabel());
+          opt.setType("group");
+          opt.setAvatarUrl("/eXoSkin/skin/images/system/SpaceAvtDefault.png");
+          options.add(opt);
+        }
       }
     }
-    return Util.getResponse(result, uriInfo, mediaType, Response.Status.OK);
+    return Util.getResponse(options, uriInfo, mediaType, Response.Status.OK);
   }
 
   private boolean CheckSearchInGroupName(String groupName, String search) {
