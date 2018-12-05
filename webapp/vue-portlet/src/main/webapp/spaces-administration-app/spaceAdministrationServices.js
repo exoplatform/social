@@ -34,3 +34,21 @@ export function getGuests(query) {
 export function getGuestsGroups(query) {
   return fetch(`/portal/rest/social/people/getGroups/suggest.json?search=${query}`, {credentials: 'include'}).then(resp => resp.json());
 }
+
+export function createSetting(context,scope,settingKey,valueKey){
+  return fetch(`/rest/v1/settings/${context}/${scope}/${settingKey}}`, {
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    credentials: 'include',
+    method: 'PUT',
+    body: JSON.stringify({"value": valueKey})
+  });
+}
+
+export function GetsSettingValue(context,scope,settingKey) {
+  return fetch(`/rest/v1/settings/${context}/${scope}/${settingKey}}`, {
+    credentials: 'include',
+    method: 'GET'
+  }).then(resp =>  resp.json());
+}
