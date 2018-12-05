@@ -15,7 +15,7 @@
       <tr>
         <td><h2>Create spaces</h2> <h5>Ability to create spaces</h5></td>
         <td>
-          <h4 v-show="displayEditCreate === 1">test</h4>
+          <h4 v-show="displayEditCreate === 1">{{ permissionAdministrators }}</h4>
           <div v-show="displayEditCreate === 0" class="inputUser">
             <input id="add-user-suggestor" type="text"/>
           </div>
@@ -26,7 +26,7 @@
           </a>
         </td>
         <td v-if="displayEditCreate === 0" class="center actionContainer" >
-          <a data-placement="bottom" rel="tooltip" class="actionIcon" data-original-title="Save" @click="deleteSpaceById(space.id, index)">
+          <a data-placement="bottom" rel="tooltip" class="actionIcon" data-original-title="Save" @click="savePermissions()">
             <i class="uiIconSave uiIconLightGray"></i>
           </a>
           <a data-placement="bottom" rel="tooltip" class="actionIcon" data-original-title="Close" @click="editCreateSpace()">
@@ -43,7 +43,7 @@
           </a>
         </td>
         <td v-if="displayEditManage === 0" class="center actionContainer" >
-          <a data-placement="bottom" rel="tooltip" class="actionIcon" data-original-title="Save" @click="deleteSpaceById(space.id, index)">
+          <a data-placement="bottom" rel="tooltip" class="actionIcon" data-original-title="Save" @click="savePermissions()">
             <i class="uiIconSave uiIconLightGray"></i>
           </a>
           <a data-placement="bottom" rel="tooltip" class="actionIcon" data-original-title="Close" @click="editManageSpace()">
@@ -60,13 +60,15 @@ export default {
   data() {
     return {
       guests: [],
-      listGuest: [],
       displayEditCreate: 1,
-      displayEditManage: 1
+      displayEditManage: 1,
+      settingValue: '',
+      permissionAdministrators:''
     }
   },
   created() {
     this.initSuggester();	
+    this.GetsSettingValue();
   },
   methods: {
     initSuggester() {
@@ -102,20 +104,26 @@ export default {
       $guestsFormsSuggestor.suggester(suggesterData);
     },
     findGuests (query, callback) {
-        if (!query.length) {
-          return callback(); 
-        }
-        spaceAdministrationServices.getGuests(query).then(data => {
-          spaceAdministrationServices.getGuestsGroups(query).then(group => {
+      if (!query.length) {
+        return callback(); 
+      }
+      spaceAdministrationServices.getGuests(query).then(data => {
+        spaceAdministrationServices.getGuestsGroups(query).then(group => {
+          if(group){
             group = group.concat(data.options);
             callback(group);
-          });
+          } else {
+            if(data) {
+              callback(data.options);
+            }
+          }
         });
+      });
     },   
     renderMenuItem (item, escape) {
       if(item.avatarUrl == null) {
         item.avatarUrl = spaceAdministrationServices.getAvatar(item.value);
-        if (item.type === "user") {
+        if (item.type === 'user') {
           item.avatarUrl = '/eXoSkin/skin/images/system/UserAvtDefault.png';
         } else {
           item.avatarUrl = '/eXoSkin/skin/images/system/SpaceAvtDefault.png';
@@ -131,8 +139,19 @@ export default {
         item = selectize.options[item];
       }
       if(!this.guests.find(guest => guest.text === item.text)) {
-        this.guests.push(item);
+        this.guests.push(item.text);
       }
+    },
+    savePermissions() {
+      this.settingValue = this.guests.join();
+      spaceAdministrationServices.createSetting('GLOBAL','GLOBAL','exo:social_spaces_administrators',this.settingValue);
+      this.GetsSettingValue();
+      this.editCreateSpace();
+    },
+    GetsSettingValue(){
+      spaceAdministrationServices.GetsSettingValue('GLOBAL','GLOBAL','exo:social_spaces_administrators').then(data => {
+        this.permissionAdministrators = data.value;
+      });
     },
     editCreateSpace(){
       if(this.displayEditCreate === 1) {
