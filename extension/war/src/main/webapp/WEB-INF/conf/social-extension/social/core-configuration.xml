@@ -206,6 +206,26 @@
         <description>Define upload limit for uploaded files on Activity Stream</description>
         <value>${exo.social.activity.uploadLimit:}</value>
       </value-param>
+      <value-param>
+        <name>exo.edit.activity.enabled</name>
+        <description>enable/disable edit activity</description>
+        <value>${exo.edit.activity.enabled:true}</value>
+      </value-param>
+      <value-param>
+        <name>exo.edit.comment.enabled</name>
+        <description>enable/disable edit comment</description>
+        <value>${exo.edit.comment.enabled:true}</value>
+      </value-param>
+      <value-param>
+        <name>exo.manager.edit.activity.enabled</name>
+        <description>enable/disable manger edit activity</description>
+        <value>${exo.manager.edit.activity.enabled:true}</value>
+      </value-param>
+      <value-param>
+        <name>exo.manager.edit.comment.enabled</name>
+        <description>enable/disable manager edit comment</description>
+        <value>${exo.manager.edit.comment.enabled:true}</value>
+      </value-param>
     </init-params>
   </component>
   
@@ -878,6 +898,39 @@
           <name>plugin.upgrade.target.version</name>
           <description>Target version of the plugin</description>
           <value>4.0.2</value>
+        </value-param>
+      </init-params>
+    </component-plugin>
+    <component-plugin>
+      <name>EditActivityNotificationSettingsUpgradePlugin</name>
+      <set-method>addUpgradePlugin</set-method>
+      <type>org.exoplatform.social.core.updater.EditActivityNotificationSettingsUpgradePlugin</type>
+      <description>eXo Social Edit Activity Notification Upgrade Updater</description>
+      <init-params>
+        <value-param>
+          <name>product.group.id</name>
+          <description>The groupId of the product</description>
+          <value>org.exoplatform.social</value>
+        </value-param>
+        <value-param>
+          <name>plugin.execution.order</name>
+          <description>The plugin execution order</description>
+          <value>1</value>
+        </value-param>
+        <value-param>
+          <name>plugin.upgrade.execute.once</name>
+          <description>Execute this upgrade plugin only once</description>
+          <value>true</value>
+        </value-param>
+        <value-param>
+          <name>plugin.upgrade.target.version</name>
+          <description>Target version of the plugin</description>
+          <value>5.2.0</value>
+        </value-param>
+        <value-param>
+          <name>plugin.upgrade.async.execution</name>
+          <description>Execute this upgrade asynchronously</description>
+          <value>true</value>
         </value-param>
       </init-params>
     </component-plugin>

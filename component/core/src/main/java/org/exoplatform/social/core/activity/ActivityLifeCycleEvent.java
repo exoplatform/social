@@ -21,7 +21,7 @@ import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 
 public class ActivityLifeCycleEvent extends LifeCycleEvent<ExoSocialActivity, String> {
   
-  public enum Type {SAVE_ACTIVITY, UPDATE_ACTIVITY, SAVE_COMMENT, LIKE_ACTIVITY, LIKE_COMMENT}
+  public enum Type {SAVE_ACTIVITY, UPDATE_ACTIVITY, SAVE_COMMENT, UPDATE_COMMENT, LIKE_ACTIVITY, LIKE_COMMENT}
   
   private Type type;
   private ExoSocialActivity activity;

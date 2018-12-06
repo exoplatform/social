@@ -139,6 +139,61 @@
       });
     },
 
+    initCKEditorForActivityEditing: function(currentComposerEditInput, $contentBox, $editButton) {
+      var MAX_LENGTH = 2000;
+      var extraPlugins = 'simpleLink,selectImage,suggester,hideBottomToolbar';
+      var windowWidth = $(window).width();
+      var windowHeight = $(window).height();
+      if (windowWidth > windowHeight && windowWidth < 768) {
+        // Disable suggester on smart-phone landscape
+        extraPlugins = 'simpleLink,selectImage';
+      }
+      var tempdiv = $("<div class='temp'/>").append($contentBox.html());
+      tempdiv.find('a[href*="/profile"]').each(function( index ) {
+        $(this).replaceWith(function() { return $('<span/>', {
+         class:'atwho-inserted',
+         html: '<span class="exo-mention">'+$(this).text()+'</span>'}).attr("data-atwho-at-query","@"+$(this).attr("href").substring($(this).attr("href").lastIndexOf("/")+1)).attr("data-atwho-at-value",$(this).attr("href").substring($(this).attr("href").lastIndexOf("/")+1)).attr(
+                                   "contenteditable","true");
+        });
+      });
+      var spaceURL = UIActivity.spaceURL;
+      var spaceGroupId = UIActivity.spaceGroupId;
+      var commentPlaceholder = UIActivity.commentPlaceholder;
+      var activityId = UIActivity.activityId;
+      $('#' + currentComposerEditInput).ckeditor({
+        customConfig: '/commons-extension/ckeditorCustom/config.js',
+        extraPlugins: extraPlugins,
+        removePlugins: 'image',
+        placeholder: commentPlaceholder != null ? commentPlaceholder : window.eXo.social.I18n.mentions.defaultMessage,
+        activityId : activityId,
+        extraAllowedContent: 'img[style,class,src,referrerpolicy,alt,width,height]; span(*)[*]{*}; span[data-atwho-at-query,data-atwho-at-value,contenteditable]; a[*];i[*]',
+        spaceURL: spaceURL,
+        spaceGroupId: spaceGroupId,
+        typeOfRelation: 'mention_comment',
+        on : {
+          instanceReady : function ( evt ) {
+            $editButton.prop("disabled", true);
+          },
+          change: function( evt) {
+            var newData = evt.editor.getData();
+            var originalComment = $contentBox.html();
+            var pureText = newData? newData.replace(/<[^>]*>/g, "").replace(/&nbsp;/g,"").trim() : "";
+            var disabled = (originalComment == newData) || pureText.length > MAX_LENGTH || pureText.length == 0;
+            disabled = disabled ? (newData.indexOf("<img ") < 0) : false;
+
+            if (disabled) {
+               $editButton.prop("disabled", true);
+            } else {
+               $editButton.removeAttr("disabled");
+            }
+          },
+          key: function( evt) {}
+        }
+      });
+
+      CKEDITOR.instances[currentComposerEditInput].setData(tempdiv.html());
+    },
+
     init: function() {
       var self = this;
       UIActivity.commentLinkEl = $("#"+UIActivity.commentLinkId);
@@ -194,6 +249,7 @@
       var commentLinkEl = $("[data-activity='" + activityId + "']");
       if (commentLinkEl.length > 0) {
         commentLinkEl.off('click').on('click', function (evt) {
+          evt.stopPropagation();
           var currentActivityId = $(this).attr('data-activity');
           var currentCommentId = $(this).attr('data-comment');
           var currentSubCommentId = $(this).attr('data-sub-comment');
@@ -261,6 +317,135 @@
             }
           }
         });
+        }
+
+        var editActivityEl = $("[data-edit-activity='" + activityId + "']");
+        if (editActivityEl.length > 0) {
+          editActivityEl.off('click').on('click', function (evt) {
+            evt.stopPropagation();
+            var currentComposerEditInput = 'composerEditInput' + activityId;
+            $('#dropDownEditActivity'+ activityId + '.actLink').removeClass("open");
+            $('#dropDownEditActivity'+ activityId + '.actionLink').removeClass("open");
+
+            if (!$('#ActivityContextBox'+activityId+' .description').is(":visible") &&
+                $('#ActivityContextBox'+activityId+' .blastInputPeople').first().is(":visible")) {
+              try {
+               if(CKEDITOR.instances[currentComposerEditInput]) {
+                   CKEDITOR.instances[currentComposerEditInput].destroy();
+               }
+              } catch(e){
+               console.log(e);
+              }
+              $('textarea#composerEditInput' + activityId).hide();
+              $('#ActivityContextBox'+activityId+' .blastInputPeople').first().hide();
+              $('#ActivityContextBox'+activityId+' .description').show();
+
+            } else {
+              $('#ActivityContextBox'+activityId+' .blastInputPeople').first().show();
+              $('#ActivityContextBox'+activityId+' .description').hide();
+              $('textarea#composerEditInput' + activityId).show();
+              $('.dropdown-backdrop').remove();
+
+              self.initCKEditorForActivityEditing(currentComposerEditInput, $('#ActivityContextBox'+activityId+' .description'), $('#EditActivityButton' + activityId));
+            }
+          });
+
+        }
+
+       $("[data-edit-comment]").each(function(){
+        var editCommentEl = $(this);
+       if (editCommentEl.length > 0) {
+              var commentId = $(this).data('edit-comment');
+              $('textarea#composerEditComment' + commentId).hide();
+              editCommentEl.off('click').on('click', function (evt) {
+              evt.stopPropagation();
+              var currentComposerEditComment = 'composerEditComment' + commentId;
+              var smallScreen = $(window).outerWidth(true) <= 768;
+              if (($('#commentContainer'+commentId+' .contentComment').is(":visible"))){
+                if (smallScreen) {
+                  $('#commentContainer' + commentId + " .desktop-input").append('<div class="backdrop"></div>');
+                } else {
+                  $('#commentContainer'+commentId+' .contentComment').hide();
+                }
+                $('textarea#composerEditComment' + commentId).show();
+                $('#dropDownEditComment'+ commentId).hide();
+                $('#commentContainer'+commentId+' .blastInputPeople').first().show();
+
+                self.initCKEditorForActivityEditing(currentComposerEditComment, $('#commentContainer'+commentId+' .contentComment'), $('#EditCommentButton' + commentId));
+             }
+             else {
+             try {
+                           if(CKEDITOR.instances[currentComposerEditComment]) {
+                               CKEDITOR.instances[currentComposerEditComment].destroy();
+                           }
+                         } catch(e){
+                           console.log(e);
+                         }
+             $('#commentContainer'+commentId+' .blastInputPeople').first().hide();
+             $('textarea#composerEditComment' + commentId).hide();
+             $('#commentContainer'+commentId+' .contentComment').show();
+             $('.commentBox .backdrop').remove();
+             $('.dropdown-backdrop').remove();
+             }
+        });
+
+
+        }
+
+
+       });
+
+       $("[data-edit-comment-id]").each(function(){
+               var editCommentButton = $(this);
+                     editCommentButton.off('click').on('click',function(event) {
+                       event.stopPropagation();
+                       var commentId = editCommentButton.data("edit-comment-id");
+                       var clickAction = editCommentButton.data("click").replace("COMMENTID", (commentId ? commentId : ""));
+                       eval(clickAction);
+                     });
+
+
+       });
+       $("[data-cancel-edit-comment-id]").each(function(){
+                      var cancelEditCommentButton = $(this);
+                      cancelEditCommentButton.click(function(event) {
+                        event.stopPropagation();
+                        var commentId = cancelEditCommentButton.data("cancel-edit-comment-id");
+                        $('.commentBox .backdrop').remove();
+                        $('.dropdown-backdrop').remove();
+                        if (commentId.toString().indexOf('comment') >= 0){
+                        var currentComposerEditComment = 'composerEditComment' + commentId;
+                        try {
+                              if(CKEDITOR.instances[currentComposerEditComment]) {
+                              CKEDITOR.instances[currentComposerEditComment].destroy();
+                              }
+                            } catch(e){
+                              console.log(e);
+                        }
+                        $('textarea#composerEditComment' + commentId).hide();
+                        $('#commentContainer'+commentId+' .contentComment').show();
+                        $('#dropDownEditComment'+ commentId).show();
+                        $('#dropDownEditComment'+ commentId).removeClass("open");
+                        $('#commentContainer'+commentId+' .blastInputPeople').hide();
+                        }
+                        else{
+                           var currentComposerEditInput = 'composerEditInput' + commentId;
+                            try {
+                                if(CKEDITOR.instances[currentComposerEditInput]) {
+                                    CKEDITOR.instances[currentComposerEditInput].destroy();
+                                }
+                                } catch(e){
+                                   console.log(e);
+                                }
+                            $('textarea#composerEditInput' + commentId).hide();
+                            $('#ActivityContextBox'+commentId+' .description').show();
+                            $('#dropDownEditActivity'+ commentId).show();
+                            $('#dropDownEditActivity'+ commentId).removeClass("open");
+                            $('#ActivityContextBox'+commentId+' .blastInputPeople').hide();
+                        }
+                        });
+                       });
+
         $("#CancelButton" + UIActivity.activityId).on('click', function (evt) {
           var currentActivityId = evt.target.id.replace('CancelButton', '');
           var inputContainer = $('#InputContainer' + currentActivityId);
@@ -282,7 +467,7 @@
           }
 
         });
-      }
+
 
       var actionDeletes = $('a.controllDelete');
       if (actionDeletes.length > 0) {
@@ -487,7 +672,7 @@
     },
 
     setPageTitle : function(activityTitle) {
-      eXo.core.Browser.setTitle('Activity: ' + $('<div></div>').html(window.decodeURIComponent(activityTitle)).text());
+      $(document).attr('title', 'Activity: ' + $('<div></div>').html(window.decodeURIComponent(activityTitle)).text());
     },
 
     loadLikersByURL : function() {
@@ -611,7 +796,9 @@
           activities = root.find('.uiActivityLoader');
         }
         //
-        activities.off('click').click(eXo.social.SocialUtil.onViewActivity(UIActivity.responsiveId));
+        activities.off('click').click(function(evt) {
+          eXo.social.SocialUtil.onViewActivity(UIActivity.responsiveId);
+        });
       }
     },
 

@@ -349,6 +349,8 @@ public abstract class AbstractPluginTest extends AbstractCoreTest {
     instantly.add(ActivityReplyToCommentPlugin.ID);
     instantly.add(ActivityMentionPlugin.ID);
     instantly.add(LikePlugin.ID);
+    instantly.add(EditCommentPlugin.ID);
+    instantly.add(EditActivityPlugin.ID);
     instantly.add(LikeCommentPlugin.ID);
     instantly.add(RequestJoinSpacePlugin.ID);
     instantly.add(SpaceInvitationPlugin.ID);
@@ -361,6 +363,8 @@ public abstract class AbstractPluginTest extends AbstractCoreTest {
     daily.add(ActivityReplyToCommentPlugin.ID);
     daily.add(ActivityMentionPlugin.ID);
     daily.add(LikePlugin.ID);
+    daily.add(EditActivityPlugin.ID);
+    daily.add(EditCommentPlugin.ID);
     daily.add(RequestJoinSpacePlugin.ID);
     daily.add(SpaceInvitationPlugin.ID);
     daily.add(RelationshipReceivedRequestPlugin.ID);
@@ -373,6 +377,8 @@ public abstract class AbstractPluginTest extends AbstractCoreTest {
     daily.add(ActivityReplyToCommentPlugin.ID);
     weekly.add(ActivityMentionPlugin.ID);
     weekly.add(LikePlugin.ID);
+    weekly.add(EditCommentPlugin.ID);
+    weekly.add(EditActivityPlugin.ID);
     weekly.add(RequestJoinSpacePlugin.ID);
     weekly.add(SpaceInvitationPlugin.ID);
     weekly.add(RelationshipReceivedRequestPlugin.ID);
@@ -385,6 +391,8 @@ public abstract class AbstractPluginTest extends AbstractCoreTest {
     webNotifs.add(ActivityReplyToCommentPlugin.ID);
     webNotifs.add(ActivityMentionPlugin.ID);
     webNotifs.add(LikePlugin.ID);
+    webNotifs.add(EditActivityPlugin.ID);
+    webNotifs.add(EditCommentPlugin.ID);
     webNotifs.add(LikeCommentPlugin.ID);
     webNotifs.add(RequestJoinSpacePlugin.ID);
     webNotifs.add(SpaceInvitationPlugin.ID);

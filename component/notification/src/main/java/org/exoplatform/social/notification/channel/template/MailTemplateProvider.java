@@ -57,18 +57,7 @@ import org.exoplatform.social.core.relationship.model.Relationship;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.notification.LinkProviderUtils;
 import org.exoplatform.social.notification.Utils;
-import org.exoplatform.social.notification.plugin.ActivityCommentPlugin;
-import org.exoplatform.social.notification.plugin.ActivityMentionPlugin;
-import org.exoplatform.social.notification.plugin.ActivityReplyToCommentPlugin;
-import org.exoplatform.social.notification.plugin.LikeCommentPlugin;
-import org.exoplatform.social.notification.plugin.LikePlugin;
-import org.exoplatform.social.notification.plugin.NewUserPlugin;
-import org.exoplatform.social.notification.plugin.PostActivityPlugin;
-import org.exoplatform.social.notification.plugin.PostActivitySpaceStreamPlugin;
-import org.exoplatform.social.notification.plugin.RelationshipReceivedRequestPlugin;
-import org.exoplatform.social.notification.plugin.RequestJoinSpacePlugin;
-import org.exoplatform.social.notification.plugin.SocialNotificationUtils;
-import org.exoplatform.social.notification.plugin.SpaceInvitationPlugin;
+import org.exoplatform.social.notification.plugin.*;
 
 /**
  * Created by The eXo Platform SAS
@@ -79,6 +68,8 @@ import org.exoplatform.social.notification.plugin.SpaceInvitationPlugin;
 @TemplateConfigs(templates = {
     @TemplateConfig(pluginId = ActivityReplyToCommentPlugin.ID, template = "war:/notification/templates/ActivityReplyToCommentPlugin.gtmpl"),
     @TemplateConfig(pluginId = ActivityCommentPlugin.ID, template = "war:/notification/templates/ActivityCommentPlugin.gtmpl"),
+    @TemplateConfig(pluginId = EditActivityPlugin.ID, template = "war:/notification/templates/EditActivityPlugin.gtmpl"),
+    @TemplateConfig(pluginId = EditCommentPlugin.ID, template = "war:/notification/templates/EditCommentPlugin.gtmpl"),
     @TemplateConfig(pluginId = ActivityMentionPlugin.ID, template = "war:/notification/templates/ActivityMentionPlugin.gtmpl"),
     @TemplateConfig(pluginId = LikePlugin.ID, template = "war:/notification/templates/LikePlugin.gtmpl"),
     @TemplateConfig(pluginId = LikeCommentPlugin.ID, template = "war:/notification/templates/LikeCommentPlugin.gtmpl"),
@@ -297,6 +288,238 @@ public class MailTemplateProvider extends TemplateProvider {
     }
 
   };
+
+  /** Defines the template builder for EditCommentPlugin*/
+  private AbstractTemplateBuilder editComment = new AbstractTemplateBuilder() {
+    @Override
+    protected MessageInfo makeMessage(NotificationContext ctx) {
+        MessageInfo messageInfo = new MessageInfo();
+        NotificationInfo notification = ctx.getNotificationInfo();
+        String language = getLanguage(notification);
+
+        String activityId = notification.getValueOwnerParameter(SocialNotificationUtils.ACTIVITY_ID.getKey());
+        String commentId = notification.getValueOwnerParameter(SocialNotificationUtils.COMMENT_ID.getKey());
+        ExoSocialActivity activity = Utils.getActivityManager().getActivity(activityId);
+        ExoSocialActivity comment = null;
+        if (StringUtils.isNotBlank(commentId)) {
+            comment = Utils.getActivityManager().getActivity(commentId);
+        }
+        if (activity == null) {
+            LOG.debug("Activity with id '{}' was removed but the notification with id'{}' is remaining", activityId, notification.getId());
+            return null;
+        }
+        if(activity.isComment()) {
+            comment = Utils.getActivityManager().getParentActivity(activity);
+        }
+        if (comment == null) {
+            LOG.debug("Comment of activity with id '{}' was removed but the notification with id'{}' is remaining", commentId, notification.getId());
+            return null;
+        }
+        Identity identity = Utils.getIdentityManager().getIdentity(comment.getPosterId(), true);
+
+        TemplateContext templateContext = new TemplateContext(notification.getKey().getId(), language);
+        templateContext.put("USER", identity.getProfile().getFullName());
+        String subject = TemplateUtils.processSubject(templateContext);
+
+        SocialNotificationUtils.addFooterAndFirstName(notification.getTo(), templateContext);
+        templateContext.put("PROFILE_URL", LinkProviderUtils.getRedirectUrl("user", identity.getRemoteId()));
+
+        String imagePlaceHolder = SocialNotificationUtils.getImagePlaceHolder(language);
+        String title = SocialNotificationUtils.processImageTitle(comment.getTitle(), imagePlaceHolder);
+        templateContext.put("COMMENT", NotificationUtils.processLinkTitle(title));
+        templateContext.put("OPEN_URL", LinkProviderUtils.getOpenLink(comment));
+        templateContext.put("REPLY_ACTION_URL", LinkProviderUtils.getRedirectUrl("reply_activity_highlight_comment", activity.getId() + "-" + comment.getId()));
+        templateContext.put("VIEW_FULL_DISCUSSION_ACTION_URL", LinkProviderUtils.getRedirectUrl("view_full_activity_highlight_comment", activity.getId() + "-" + comment.getId()));
+
+        String body = SocialNotificationUtils.getBody(ctx, templateContext, activity);
+        //binding the exception throws by processing template
+        ctx.setException(templateContext.getException());
+        return messageInfo.subject(subject).body(body).end();
+    }
+
+    @Override
+    protected boolean makeDigest(NotificationContext ctx, Writer writer) {
+      List<NotificationInfo> notifications = ctx.getNotificationInfos();
+      NotificationInfo first = notifications.get(0);
+
+      String language = getLanguage(first);
+      TemplateContext templateContext = new TemplateContext(first.getKey().getId(), language);
+      SocialNotificationUtils.addFooterAndFirstName(first.getTo(), templateContext);
+
+      //Store the activity id as key, and the list all identities who posted to the activity.
+      Map<String, List<String>> receiverMap = new LinkedHashMap<String, List<String>>();
+      Map<String, List<Pair<String, String>>> activityUserComments = new LinkedHashMap<String, List<Pair<String, String>>>();
+
+
+      try {
+        String imagePlaceHolder = SocialNotificationUtils.getImagePlaceHolder(language);
+        for (NotificationInfo message : notifications) {
+          String activityId = message.getValueOwnerParameter(SocialNotificationUtils.ACTIVITY_ID.getKey());
+          ExoSocialActivity activity = Utils.getActivityManager().getActivity(activityId);
+          if (activity == null) {
+            continue;
+          }
+          String commentId = message.getValueOwnerParameter(SocialNotificationUtils.COMMENT_ID.getKey());
+          ExoSocialActivity parentActivity = activity;
+          if(StringUtils.isBlank(commentId)) {
+            LOG.warn("Attempt to send a mail message with id '{}' and receiver '{}' with empty parameter 'commentId' and activityId = '{}' ",
+                    message.getId(),
+                    message.getTo(),
+                    activityId);
+          } else {
+            parentActivity = activity;
+            activity = Utils.getActivityManager().getActivity(commentId);
+            if (activity == null) {
+              continue;
+            }
+          }
+
+          String poster = message.getValueOwnerParameter("poster");
+          if(message.getTo() != null && poster != null && poster.equals(message.getTo())) {
+            continue;
+          }
+          String title = SocialNotificationUtils.processImageTitle(activity.getTitle(), imagePlaceHolder);
+          Pair<String, String> userComment = new ImmutablePair<String, String>(poster, title);
+          if (parentActivity.getStreamOwner() != null) {
+            Identity spaceIdentity = Utils.getIdentityManager().getOrCreateIdentity(SpaceIdentityProvider.NAME, parentActivity.getStreamOwner(), true);
+            if (spaceIdentity == null) {
+              if (message.getTo()!=null && !message.getTo().equals(parentActivity.getStreamOwner())) {
+                continue;
+              }
+            } else if (parentActivity.getPosterId() != null) {
+              Identity identity = Utils.getIdentityManager().getIdentity(parentActivity.getPosterId(), true);
+              if (identity != null) {
+                if (message.getTo() != null && !message.getTo().equals(identity.getRemoteId())) {
+                  continue;
+                }
+              }
+            }
+          }
+          //
+          SocialNotificationUtils.processInforSendTo(receiverMap, parentActivity.getId(), poster);
+          SocialNotificationUtils.processInforUserComments(activityUserComments, parentActivity.getId(), userComment);
+        }
+        writer.append(SocialNotificationUtils.getMessageByIds(receiverMap, activityUserComments, templateContext));
+      } catch (IOException e) {
+        ctx.setException(e);
+        return false;
+      }
+
+      return true;
+    }
+
+  };
+
+    /** Defines the template builder for EditActivityPlugin*/
+    private AbstractTemplateBuilder editActivity = new AbstractTemplateBuilder() {
+        @Override
+        protected MessageInfo makeMessage(NotificationContext ctx) {
+            MessageInfo messageInfo = new MessageInfo();
+            NotificationInfo notification = ctx.getNotificationInfo();
+            String language = getLanguage(notification);
+
+            String activityId = notification.getValueOwnerParameter(SocialNotificationUtils.ACTIVITY_ID.getKey());
+            ExoSocialActivity activity = Utils.getActivityManager().getActivity(activityId);
+            if (activity == null) {
+                LOG.debug("Activity with id '{}' was removed but the notification with id'{}' is remaining", activityId, notification.getId());
+                return null;
+            }
+
+            Identity identity = Utils.getIdentityManager().getIdentity(activity.getPosterId(), true);
+
+            TemplateContext templateContext = new TemplateContext(notification.getKey().getId(), language);
+            templateContext.put("USER", identity.getProfile().getFullName());
+            String subject = TemplateUtils.processSubject(templateContext);
+
+            SocialNotificationUtils.addFooterAndFirstName(notification.getTo(), templateContext);
+            templateContext.put("PROFILE_URL", LinkProviderUtils.getRedirectUrl("user", identity.getRemoteId()));
+
+            String imagePlaceHolder = SocialNotificationUtils.getImagePlaceHolder(language);
+            String title = SocialNotificationUtils.processImageTitle(activity.getTitle(), imagePlaceHolder);
+            templateContext.put("COMMENT", NotificationUtils.processLinkTitle(title));
+            templateContext.put("OPEN_URL", LinkProviderUtils.getOpenLink(activity));
+            templateContext.put("REPLY_ACTION_URL", LinkProviderUtils.getRedirectUrl("reply_activity", activityId));
+            templateContext.put("VIEW_FULL_DISCUSSION_ACTION_URL", LinkProviderUtils.getRedirectUrl("view_full_activity", activityId));
+
+            String body = SocialNotificationUtils.getBody(ctx, templateContext, activity);
+            //binding the exception throws by processing template
+            ctx.setException(templateContext.getException());
+            return messageInfo.subject(subject).body(body).end();
+        }
+
+        @Override
+        protected boolean makeDigest(NotificationContext ctx, Writer writer) {
+            List<NotificationInfo> notifications = ctx.getNotificationInfos();
+            NotificationInfo first = notifications.get(0);
+
+            String language = getLanguage(first);
+            TemplateContext templateContext = new TemplateContext(first.getKey().getId(), language);
+            SocialNotificationUtils.addFooterAndFirstName(first.getTo(), templateContext);
+
+            //Store the activity id as key, and the list all identities who posted to the activity.
+            Map<String, List<String>> receiverMap = new LinkedHashMap<String, List<String>>();
+            Map<String, List<Pair<String, String>>> activityUserComments = new LinkedHashMap<String, List<Pair<String, String>>>();
+
+
+            try {
+                String imagePlaceHolder = SocialNotificationUtils.getImagePlaceHolder(language);
+                for (NotificationInfo message : notifications) {
+                    String activityId = message.getValueOwnerParameter(SocialNotificationUtils.ACTIVITY_ID.getKey());
+                    ExoSocialActivity activity = Utils.getActivityManager().getActivity(activityId);
+                    if (activity == null) {
+                        continue;
+                    }
+                    String commentId = message.getValueOwnerParameter(SocialNotificationUtils.COMMENT_ID.getKey());
+                    ExoSocialActivity parentActivity = null;
+                    if(StringUtils.isBlank(commentId)) {
+                        LOG.warn("Attempt to send a mail message with id '{}' and receiver '{}' with empty parameter 'commentId' and activityId = '{}' ",
+                                message.getId(),
+                                message.getTo(),
+                                activityId);
+                    } else {
+                        parentActivity = activity;
+                        activity = Utils.getActivityManager().getActivity(commentId);
+                        if (activity == null) {
+                            continue;
+                        }
+                    }
+
+                    String poster = message.getValueOwnerParameter("poster");
+                    if(message.getTo() != null && poster != null && poster.equals(message.getTo())) {
+                        continue;
+                    }
+                    String title = SocialNotificationUtils.processImageTitle(activity.getTitle(), imagePlaceHolder);
+                    Pair<String, String> userComment = new ImmutablePair<String, String>(poster, title);
+                    if (parentActivity != null && parentActivity.getStreamOwner() != null) {
+                        Identity spaceIdentity = Utils.getIdentityManager().getOrCreateIdentity(SpaceIdentityProvider.NAME, parentActivity.getStreamOwner(), true);
+                        if (spaceIdentity == null) {
+                            if (message.getTo()!=null && !message.getTo().equals(parentActivity.getStreamOwner())) {
+                                continue;
+                            }
+                        } else if (parentActivity.getPosterId() != null) {
+                            Identity identity = Utils.getIdentityManager().getIdentity(parentActivity.getPosterId(), true);
+                            if (identity != null) {
+                                if (message.getTo() != null && !message.getTo().equals(identity.getRemoteId())) {
+                                    continue;
+                                }
+                            }
+                        }
+                    }
+                    //
+                    parentActivity = parentActivity == null ? activity : parentActivity;
+                    SocialNotificationUtils.processInforSendTo(receiverMap, parentActivity.getId(), poster);
+                    SocialNotificationUtils.processInforUserComments(activityUserComments, parentActivity.getId(), userComment);
+                }
+                writer.append(SocialNotificationUtils.getMessageByIds(receiverMap, activityUserComments, templateContext));
+            } catch (IOException e) {
+                ctx.setException(e);
+                return false;
+            }
+
+            return true;
+        }
+
+    };
 
   /** Defines the template builder for ActivityMentionPlugin*/
   private AbstractTemplateBuilder mention = new AbstractTemplateBuilder() {
@@ -901,6 +1124,8 @@ public class MailTemplateProvider extends TemplateProvider {
   public MailTemplateProvider(InitParams initParams) {
     super(initParams);
     this.templateBuilders.put(PluginKey.key(ActivityCommentPlugin.ID), comment);
+    this.templateBuilders.put(PluginKey.key(EditCommentPlugin.ID), editComment);
+    this.templateBuilders.put(PluginKey.key(EditActivityPlugin.ID), editActivity);
     this.templateBuilders.put(PluginKey.key(ActivityReplyToCommentPlugin.ID), replyToComment);
     this.templateBuilders.put(PluginKey.key(ActivityMentionPlugin.ID), mention);
     this.templateBuilders.put(PluginKey.key(LikePlugin.ID), like);

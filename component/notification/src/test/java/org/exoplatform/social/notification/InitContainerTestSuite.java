@@ -4,19 +4,9 @@ import org.exoplatform.commons.testing.BaseExoContainerTestSuite;
 import org.exoplatform.commons.testing.ConfigTestCase;
 import org.exoplatform.social.notification.channel.MailTemplateProviderTest;
 import org.exoplatform.social.notification.channel.WebTemplateProviderTest;
-import org.exoplatform.social.notification.channel.template.ActivityCommentMailBuilderTest;
-import org.exoplatform.social.notification.channel.template.ActivityCommentReplyMailBuilderTest;
-import org.exoplatform.social.notification.channel.template.ActivityMentionMailBuilderTest;
-import org.exoplatform.social.notification.channel.template.LikeMailBuilderTest;
-import org.exoplatform.social.notification.channel.template.NewUserMailBuilderTest;
-import org.exoplatform.social.notification.channel.template.PostActivityMailBuilderTest;
-import org.exoplatform.social.notification.channel.template.ReceiveRequestMailBuilderTest;
-import org.exoplatform.social.notification.channel.template.RequestJoinSpaceMailBuilderTest;
-import org.exoplatform.social.notification.channel.template.SpaceInvitationMailBuilderTest;
+import org.exoplatform.social.notification.channel.template.*;
 
-import org.exoplatform.social.notification.web.template.LikeCommentWebBuilderTest;
-import org.exoplatform.social.notification.web.template.LikeWebBuilderTest;
-import org.exoplatform.social.notification.web.template.ActivityCommentReplyWebBuilderTest;
+import org.exoplatform.social.notification.web.template.*;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -40,7 +30,11 @@ import org.junit.runners.Suite.SuiteClasses;
   LinkProviderUtilsTest.class,
   MailTemplateProviderTest.class,
   WebTemplateProviderTest.class,
-  LikeWebBuilderTest.class
+  LikeWebBuilderTest.class,
+  EditActivityMailBuilderTest.class,
+  EditCommentMailBuilderTest.class,
+  EditActivityWebBuilderTest.class,
+  EditCommentWebBuilderTest.class
 })
 @ConfigTestCase(AbstractCoreTest.class)
 public class InitContainerTestSuite extends BaseExoContainerTestSuite {

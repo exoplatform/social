@@ -83,6 +83,14 @@ public class WebTemplateProviderTest extends AbstractCoreTest {
     expected = "war:/intranet-notification/templates/LikePlugin.gtmpl";
     assertEquals(expected, actual);
 
+    actual = channel.getTemplateFilePath(PluginKey.key(EditCommentPlugin.ID));
+    expected = "war:/intranet-notification/templates/EditCommentPlugin.gtmpl";
+    assertEquals(expected, actual);
+
+    actual = channel.getTemplateFilePath(PluginKey.key(EditActivityPlugin.ID));
+    expected = "war:/intranet-notification/templates/EditActivityPlugin.gtmpl";
+    assertEquals(expected, actual);
+
     actual = channel.getTemplateFilePath(PluginKey.key(LikeCommentPlugin.ID));
     expected = "war:/intranet-notification/templates/LikeCommentPlugin.gtmpl";
     assertEquals(expected, actual);
@@ -119,6 +127,8 @@ public class WebTemplateProviderTest extends AbstractCoreTest {
     assertTrue(channel.hasTemplateBuilder(PluginKey.key(ActivityReplyToCommentPlugin.ID)));
     assertTrue(channel.hasTemplateBuilder(PluginKey.key(ActivityMentionPlugin.ID)));
     assertTrue(channel.hasTemplateBuilder(PluginKey.key(LikePlugin.ID)));
+    assertTrue(channel.hasTemplateBuilder(PluginKey.key(EditCommentPlugin.ID)));
+    assertTrue(channel.hasTemplateBuilder(PluginKey.key(EditActivityPlugin.ID)));
     assertTrue(channel.hasTemplateBuilder(PluginKey.key(NewUserPlugin.ID)));
     assertTrue(channel.hasTemplateBuilder(PluginKey.key(PostActivityPlugin.ID)));
     assertTrue(channel.hasTemplateBuilder(PluginKey.key(PostActivitySpaceStreamPlugin.ID)));

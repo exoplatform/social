@@ -29,7 +29,7 @@
   <name>eXo PLF:: Social Notification Component</name>
   <description>eXo Social Notification Component</description>
   <properties>
-    <exo.test.coverage.ratio>0.57</exo.test.coverage.ratio>
+    <exo.test.coverage.ratio>0.59</exo.test.coverage.ratio>
   </properties>
   <dependencies>
   

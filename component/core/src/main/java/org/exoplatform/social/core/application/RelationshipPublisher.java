@@ -52,6 +52,8 @@ public class RelationshipPublisher extends RelationshipListenerPlugin {
     CONNECTION_CONFIRMED
   }
 
+  public static final String USER_RELATION_CONFIRMED = "user_relation_confirmed";
+
   public static final String SENDER_PARAM = "SENDER";
   public static final String RECEIVER_PARAM = "RECEIVER";
   public static final String RELATIONSHIP_UUID_PARAM = "RELATIONSHIP_UUID";
@@ -85,8 +87,8 @@ public class RelationshipPublisher extends RelationshipListenerPlugin {
     comment.setTitle(message);
     comment.setUserId(userIdenity.getId());
 
-    I18NActivityUtils.addResourceKeyToProcess(comment, "user_relation_confirmed");
-    I18NActivityUtils.addResourceKey(comment, "user_relation_confirmed", fullName);
+    I18NActivityUtils.addResourceKeyToProcess(comment, USER_RELATION_CONFIRMED);
+    I18NActivityUtils.addResourceKey(comment, USER_RELATION_CONFIRMED, fullName);
     return comment;
   }
   

@@ -33,6 +33,7 @@ import org.exoplatform.social.core.storage.api.IdentityStorage;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 @QueryNumberTest
@@ -115,6 +116,79 @@ public class RDBMSActivityStorageImplTest extends AbstractCoreTest {
     ExoSocialActivity res = activityStorage.getActivity(activity.getId());
     
     assertEquals("Title after updated", res.getTitle());
+    //
+    tearDownActivityList.add(activity);
+  }
+
+  @MaxQueryNumber(60)
+  public void testUpdateComment() {
+    ExoSocialActivity activity = new ExoSocialActivityImpl();
+    activity.setTitle("Initial Activity");
+    activityStorage.saveActivity(rootIdentity, activity);
+    tearDownActivityList.add(activity);
+
+    //
+    ExoSocialActivity comment = new ExoSocialActivityImpl();
+    comment.setTitle("comment");
+    comment.setUserId(johnIdentity.getId());
+    comment.setPosterId(johnIdentity.getId());
+    activityStorage.saveComment(activity, comment);
+
+    assertTrue(comment.getPostedTime() == comment.getUpdated().getTime());
+
+    comment.setTitle("comment updated");
+    comment.setUpdated(new Date());
+    activityStorage.saveComment(activity, comment);
+    comment = activityStorage.getActivity(comment.getId());
+    assertEquals("comment updated", comment.getTitle());
+    assertTrue(comment.getPostedTime() < comment.getUpdated().getTime());
+  }
+
+  @MaxQueryNumber(123)
+  public void testUpdateActivityMention() {
+    ExoSocialActivity activity = createActivity(1);
+    activityStorage.saveActivity(demoIdentity, activity);
+    //
+    activity = activityStorage.getActivity(activity.getId());
+    assertEquals(0, activity.getMentionedIds().length);
+
+    //update
+    String processedTitle = "test <a href=\"/portal/intranet/profile/root\" target=\"_parent\">Root Root</a> " +
+            "<a href=\"/portal/intranet/profile/john\" target=\"_parent\">John Anthony</a>";
+    activity.setTitle("test @root @john");
+    activityStorage.updateActivity(activity);
+    //
+    activity = activityStorage.getActivity(activity.getId());
+    assertEquals(processedTitle, activity.getTitle());
+    assertEquals(2, activity.getMentionedIds().length);
+    List<ExoSocialActivity> list = activityStorage.getActivities(rootIdentity,rootIdentity, 0, 10);
+    assertEquals(1, list.size());
+    list = activityStorage.getActivities(johnIdentity,johnIdentity, 0, 10);
+    assertEquals(1, list.size());
+
+    //update remove mention
+    activity.setTitle("test @root");
+    activityStorage.updateActivity(activity);
+    //
+    activity = activityStorage.getActivity(activity.getId());
+    assertEquals(1, activity.getMentionedIds().length);
+    list = activityStorage.getActivities(johnIdentity,johnIdentity, 0, 10);
+    assertEquals(0, list.size());
+
+    //add comment
+    ExoSocialActivity comment1 = new ExoSocialActivityImpl();
+    comment1.setTitle("comment @root @john");
+    comment1.setUserId(johnIdentity.getId());
+    comment1.setPosterId(johnIdentity.getId());
+    activityStorage.saveComment(activity, comment1);
+    //
+    activity = activityStorage.getActivity(activity.getId());
+    assertEquals(2, activity.getMentionedIds().length);
+    list = activityStorage.getActivities(rootIdentity,rootIdentity, 0, 10);
+    assertEquals(1, list.size());
+    list = activityStorage.getActivities(johnIdentity,johnIdentity, 0, 10);
+    assertEquals(1, list.size());
+
     //
     tearDownActivityList.add(activity);
   }
@@ -800,7 +874,7 @@ public class RDBMSActivityStorageImplTest extends AbstractCoreTest {
     List<ExoSocialActivity> comments = activityStorage.getComments(list.get(0),true,0,10);
     assertEquals(4,comments.size());
 
-
+    tearDownActivityList.add(activity1);
   }
 
   

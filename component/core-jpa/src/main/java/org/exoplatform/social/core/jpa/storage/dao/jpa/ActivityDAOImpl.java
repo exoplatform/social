@@ -21,6 +21,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
@@ -713,12 +714,12 @@ public class ActivityDAOImpl extends GenericDAOJPAImpl<ActivityEntity, Long> imp
    * @return
    */
   private List<Long> convertActivityEntitiesToIds(List<Tuple> list) {
-    List<Long> ids = new LinkedList<>();
-    if (list == null) return ids;
+    Set<Long> ids = new LinkedHashSet<>();
+    if (list == null) return Collections.emptyList();
     for (Tuple t : list) {
       ids.add((long) t.get(0));
     }
-    return ids;
+    return new LinkedList<>(ids);
   }
 
   /**
@@ -728,12 +729,12 @@ public class ActivityDAOImpl extends GenericDAOJPAImpl<ActivityEntity, Long> imp
    * @return
    */
   private List<String> convertActivityEntitiesToIdsString(List<Tuple> list) {
-    List<String> ids = new LinkedList<String>();
-    if (list == null) return ids;
+    Set<String> ids = new LinkedHashSet<>();
+    if (list == null) return Collections.emptyList();
     for (Tuple t : list) {
       ids.add(String.valueOf(t.get(0)));
     }
-    return ids;
+    return new LinkedList<>(ids);
   }
 
   @Override

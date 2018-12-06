@@ -65,5 +65,10 @@
                 $labelReply
             </a> 
         </li>
+        <li class="separator"></li>
+        <li class="dateTime">
+            <a id="EditCommentTime${comment.id}" rel="tooltip" data-placement="bottom" href="<%=uicomponent.getActivityPermalink(activityID)%>" <% if(comment.postedTime != comment.updated.getTime() ){%> title="<%=_ctx.appRes("UIActivity.label.PostedFrom").replace("{0}",commentPostedTime)%>">$commentEditedTime <%} else {%> > ${commentPostedTime} <%}%></a>
+        </li>
     </ul>
+
 </div>

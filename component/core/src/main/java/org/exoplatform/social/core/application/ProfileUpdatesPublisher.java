@@ -56,6 +56,11 @@ public class ProfileUpdatesPublisher extends ProfileListenerPlugin {
   
   private static final Log LOG = ExoLogger.getLogger(ProfileUpdatesPublisher.class);
   private static final String BREAKLINE_STR = "<br />";
+  public static final String ABOUT_ME_UPDATED = "aboutMe_section_updated";
+  public static final String AVATAR_UPDATED = "avatar_updated";
+  public static final String BASIC_INFO_UPDATED = "basic_info_updated";
+  public static final String CONTACT_UPDATED = "contact_section_updated";
+  public static final String EX_SECTION_UPDATED = "experience_section_updated";
   private ActivityManager activityManager;
   private IdentityManager identityManager;
 
@@ -97,7 +102,7 @@ public class ProfileUpdatesPublisher extends ProfileListenerPlugin {
 
   @Override
   public void avatarUpdated(ProfileLifeCycleEvent event) {
-    publishActivity(event, "avatar_updated");
+    publishActivity(event, AVATAR_UPDATED);
   }
 
   @Override
@@ -108,22 +113,22 @@ public class ProfileUpdatesPublisher extends ProfileListenerPlugin {
 
   @Override
   public void basicInfoUpdated(ProfileLifeCycleEvent event) {
-    publishActivity(event, "basic_info_updated");
+    publishActivity(event, BASIC_INFO_UPDATED);
   }
 
   @Override
   public void contactSectionUpdated(ProfileLifeCycleEvent event) {
-    publishActivity(event, "contact_section_updated");
+    publishActivity(event, CONTACT_UPDATED);
   }
 
   @Override
   public void experienceSectionUpdated(ProfileLifeCycleEvent event) {
-    publishActivity(event, "experience_section_updated");
+    publishActivity(event, EX_SECTION_UPDATED);
   }
 
   @Override
   public void headerSectionUpdated(ProfileLifeCycleEvent event) {
-    publishActivity(event, "position_updated");
+    publishActivity(event, POSITION_TITLE_ID);
   }
   
   private ExoSocialActivity createComment(String title, String titleId, Identity identity, String position) {
@@ -207,7 +212,7 @@ public class ProfileUpdatesPublisher extends ProfileListenerPlugin {
 
   @Override
   public void aboutMeUpdated(ProfileLifeCycleEvent event) {
-    publishActivity(event, "aboutMe_section_updated");
+    publishActivity(event, ABOUT_ME_UPDATED);
   }
   
 }

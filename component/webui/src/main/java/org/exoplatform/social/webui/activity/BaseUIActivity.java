@@ -22,6 +22,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.exoplatform.commons.utils.CommonsUtils;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
+import org.exoplatform.services.security.ConversationState;
 import org.exoplatform.social.common.RealtimeListAccess;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.activity.model.ExoSocialActivityImpl;
@@ -29,6 +30,7 @@ import org.exoplatform.social.core.application.SpaceActivityPublisher;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
+import org.exoplatform.social.core.manager.ActivityManager;
 import org.exoplatform.social.core.processor.I18NActivityProcessor;
 import org.exoplatform.social.core.relationship.model.Relationship;
 import org.exoplatform.social.core.relationship.model.Relationship.Type;
@@ -54,6 +56,7 @@ import org.exoplatform.webui.event.EventListener;
 import org.exoplatform.webui.form.UIForm;
 import org.exoplatform.webui.form.UIFormTextAreaInput;
 
+import java.net.URLDecoder;
 import java.util.*;
 
 /**
@@ -70,7 +73,9 @@ public class BaseUIActivity extends UIForm {
   private static final String                   HTML_AT_SYMBOL_PATTERN = "@";
   private static final String                   HTML_AT_SYMBOL_ESCAPED_PATTERN = "&#64;";
   private static final String                   HTML_ATTRIBUTE_TITLE = "title";
+
   public static final String TEMPLATE_PARAM_COMMENT = "comment";
+  public static final String COMPOSER_TEXT_AREA_EDIT_INPUT = "composerEditInput";
   private static int         LATEST_COMMENTS_SIZE        = 2;
   private int                commentMinCharactersAllowed = 0;
   private int                commentMaxCharactersAllowed = 100;
@@ -98,6 +103,8 @@ public class BaseUIActivity extends UIForm {
   private boolean                               commentFormFocused   = false;
 
   private String                                updatedCommentId;
+
+  private ActivityManager activityManager;
 
   /**
    * Constructor
@@ -152,6 +159,9 @@ public class BaseUIActivity extends UIForm {
     UIFormTextAreaInput commentTextArea = new UIFormTextAreaInput("CommentTextarea" + activity.getId(), "CommentTextarea", null);
     commentTextArea.setHTMLAttribute(HTML_ATTRIBUTE_TITLE, resourceBundle.getString("BaseUIActivity.label.Add_your_comment"));
     addChild(commentTextArea);
+    //add textbox for inputting message
+    UIFormTextAreaInput messageInput = new UIFormTextAreaInput(COMPOSER_TEXT_AREA_EDIT_INPUT + activity.getId(), COMPOSER_TEXT_AREA_EDIT_INPUT, null);
+    addChild(messageInput);
 
     try {
       refresh();
@@ -488,6 +498,34 @@ public class BaseUIActivity extends UIForm {
     return comment;
   }
 
+  /**
+   *
+   * @param message edited message
+   */
+  protected void editActivity(String message){
+    getActivity().setTitle(message);
+    getActivity().setUpdated(new Date());
+    Utils.getActivityManager().updateActivity(getActivity());
+  }
+
+  /**
+   *
+   * @param commentActivity edited comment's activity
+   * @param message chnaged message
+   * @return
+   */
+  protected ExoSocialActivity editCommentMessage(ExoSocialActivity commentActivity, String message){
+    commentActivity.setTitle(message);
+    commentActivity.setUpdated(new Date());
+    Utils.getActivityManager().saveComment(getActivity(), commentActivity);
+    activityCommentsListAccess = Utils.getActivityManager().getCommentsWithListAccess(getActivity(), true);
+    commentSize = activityCommentsListAccess.getSize();
+    currentLoadIndex = 0;
+    this.updatedCommentId = commentActivity.getId();
+    return commentActivity;
+
+  }
+
   public void setLike(boolean isLiked) throws Exception {
     Identity viewerIdentity = Utils.getViewerIdentity();
     activity = Utils.getActivityManager().getActivity(activity.getId());
@@ -616,6 +654,17 @@ public class BaseUIActivity extends UIForm {
     }
 
     return false;
+  }
+
+  public boolean isActivityEditable(ExoSocialActivity activity) {
+    return getActivityManager().isActivityEditable(activity, ConversationState.getCurrent().getIdentity());
+  }
+
+  private ActivityManager getActivityManager() {
+    if (activityManager == null) {
+      activityManager = this.getApplicationComponent(ActivityManager.class);
+    }
+    return activityManager;
   }
 
   public boolean isActivityCommentAndLikable() throws Exception {
@@ -1066,6 +1115,41 @@ public class BaseUIActivity extends UIForm {
       requestContext.addUIComponentToUpdateByAjax(uiActivity);
       Utils.initUserProfilePopup(uiActivity.getId());
 
+    }
+  }
+
+  public static class EditActivityActionListener extends EventListener<BaseUIActivity> {
+
+    @Override
+    public void execute(Event<BaseUIActivity> event) throws Exception {
+      WebuiRequestContext requestContext = event.getRequestContext();
+      BaseUIActivity uiActivity = event.getSource();
+      String message = ((UIFormTextAreaInput)uiActivity.getChildById(COMPOSER_TEXT_AREA_EDIT_INPUT + uiActivity.getActivity().getId())).
+              getValue().replaceAll(HTML_AT_SYMBOL_ESCAPED_PATTERN, HTML_AT_SYMBOL_PATTERN);
+
+      uiActivity.editActivity(message);
+      requestContext.addUIComponentToUpdateByAjax(uiActivity);
+      Utils.initUserProfilePopup(uiActivity.getId());
+      uiActivity.getParent().broadcast(event, event.getExecutionPhase());
+
+    }
+  }
+
+  public static class EditCommentActionListener extends EventListener<BaseUIActivity> {
+
+    @Override
+    public void execute(Event<BaseUIActivity> event) throws Exception {
+      WebuiRequestContext requestContext = event.getRequestContext();
+      String commentId = requestContext.getRequestParameter(OBJECTID);
+      String message = requestContext.getRequestParameter("composerEditComment" + commentId);
+
+      BaseUIActivity uiActivity = event.getSource();
+      ExoSocialActivity originalActivity = Utils.getActivityManager().getActivity(commentId);
+
+      uiActivity.editCommentMessage(originalActivity,message);
+      requestContext.addUIComponentToUpdateByAjax(uiActivity);
+      Utils.initUserProfilePopup(uiActivity.getId());
+      uiActivity.getParent().broadcast(event, event.getExecutionPhase());
     }
   }
 

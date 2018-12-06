@@ -37,6 +37,7 @@
   def labelActivityHasBeenDeleted = _ctx.appRes("UIActivity.label.Activity_Has_Been_Deleted");
   def activity = uicomponent.getActivity();
   def activityDeletable = uicomponent.isActivityDeletable();
+  def activityEditable = uicomponent.isActivityEditable(activity);
   def activityCommentAndLikable = uicomponent.isActivityCommentAndLikable();
   def streamOwner = activity.getStreamOwner();
 %>
@@ -48,6 +49,9 @@
   def labelComment = _ctx.appRes("UIActivity.label.Comment");
   def labelCancel = _ctx.appRes("UIActivity.label.Cancel");
   def labelLike = _ctx.appRes("UIActivity.label.Like");
+  def labelUpdate = _ctx.appRes("UIActivity.label.Update");
+  def labelEdit = _ctx.appRes("UIActivity.label.Edit");
+  def labelDelete = _ctx.appRes("UIActivity.label.Delete");
   def labelUnlike = _ctx.appRes("UIActivity.label.Unlike");
   def labelViewAllReplies = _ctx.appRes("UIActivity.label.ViewAllReplies");
   def labelSource = _ctx.appRes("UIActivity.label.Source");
@@ -134,7 +138,7 @@
   
   //make sures commentFormFocused is set to false to prevent any refresh to focus, only focus after post a comment
   uicomponent.setCommentFormFocused(false);
-  def ownerName, ownerUri = "#", ownerAvatar, activityPostedTime, activityPostedTimeInSpace;
+  def ownerName, ownerUri = "#", ownerAvatar, activityPostedTime, activityPostedTimeInSpace, activityUpdatedTime;
   def listPeopleLikeBlockClass = "", listPeopleBGClass = "";
 
   if (!likesDisplayed) {
@@ -171,7 +175,7 @@
   }
 
   activityPostedTime = uicomponent.getPostedTimeString(_ctx, activity.postedTime);
-
+  activityUpdatedTime =uicomponent.getPostedTimeString(_ctx,activity.updated.getTime());
   def ownerIdentity = uicomponent.ownerIdentity;
   def profile = ownerIdentity.profile;
   
@@ -198,6 +202,7 @@
   
   String viewActivityTip = _ctx.appRes("UIActivity.msg.ViewActivity");
   def deleteActivityTip = _ctx.appRes("UIActivity.msg.DeleteActivity");
+  def viewerId = Utils.getViewerIdentity().getId();
 %>
 
 <div class="activityStream uiUserActivityForSpace" id="activityContainer${activity.id}">
@@ -211,29 +216,57 @@
   </div><!--end activityTimeLine-->
     <div class="boxContainer" id="boxContainer">
 	<div id="ContextBox${activity.id}" class="uiBox contentBox">
-		<div id="ActivityContextBox${activity.id}">
+		<div id="ActivityContextBox${activity.id}" class="uiComposer">
 		  <div class="heading">
 				<span class="arrowLeft"></span>
-				<div class="actLink">
-				  <a id="Permalink${activity.id}" class="uiIconLink uiIconLightGray" rel="tooltip" data-placement="bottom" title="$viewActivityTip" href="<%=uicomponent.getActivityPermalink(activity.id)%>"></a>
-				 <% if (activityDeletable) {%>
-					<a href="javascript:void(0)" data-confirm="$labelToDeleteThisActivity"
-					    data-caption="$captionConfirmation"
-					    data-close="$labelClosebutton" data-ok="$labelConfirmbutton"
-					    data-delete="<%=uicomponent.event("DeleteActivity", uicomponent.getId(), "");%>"
-					    class="uiIconClose uiIconLightGray controllDelete"
-					    rel="tooltip" data-placement="bottom" title="$deleteActivityTip"
-					    id="DeleteActivityButton${activity.id}"></a>
-				  <%}%>
-				</div>
+			  <!--div class="pull-right"-->
+			    <%
+			  		if(activityEditable || activityDeletable ){
+			    %>
+                    <div id="dropDownEditActivity${activity.id}" class="btn-group uiDropdownWithIcon actLink hidden-phone hidden-tablet">
+                        <div class="dropdown-toggle" data-toggle="dropdown">
+                            <i class="uiIconActivityAction uiIconLightGray">
+                            </i>
+                        </div>
+                        <ul class="dropdown-menu pull-right" role="menu">
+							<% if(activityEditable){%>
+                            <!--li>
+                                <a id="EditActivitylink${activity.id}" class="" data-edit-activity="${activity.id}" data-placement="bottom" href="javascript:void(0)">${labelEdit}</a>
+                            </li-->
+                            <%
+							}
+							if (activityDeletable) {
+                            %>
+                            <li>
+                                <a href="javascript:void(0)" data-confirm="$labelToDeleteThisActivity" data-caption="$captionConfirmation" data-close="$labelClosebutton" data-ok="$labelConfirmbutton"  data-delete="<%=uicomponent.event("DeleteActivity", uicomponent.getId(), "");%>" class="controllDelete" id="DeleteActivityButton${activity.id}">${labelDelete}</a>
+
+                            </li>
+                            <%}%>
+                        </ul>
+                    </div>
+			    <%
+			     }
+			    %>
+                <!--/div-->
 				<div class="author">
 					<a  href="$ownerUri">$ownerName</a>                
 				</div>
 				<div class="dataInfor">
-					<span class="dateTime"><i class="uiIconClock  uiIconLightGray"></i>&nbsp;$activityPostedTime</span> 
+					<span class="dateTime"><i class="uiIconClock  uiIconLightGray"></i>&nbsp;<a id="EditActivityTime${activity.id}" href="<%=uicomponent.getActivityPermalink(activity.id)%>">$activityPostedTime</a></span>
 				</div>
 			</div><!--end heading-->
 			<div class="description">$activity.title</div><!--end description-->
+            <div class="desktop-input clearfix">
+                <div class="blastInputPeople hideEffect">
+                    <div>
+                    <% uicomponent.renderChild(uicomponent.COMPOSER_TEXT_AREA_EDIT_INPUT+activity.id); %>
+                        <div class="uiAction paddingAction">
+                            <button class="btn pull-left btn-primary" onclick="<%=uicomponent.event("EditActivity")%>" id="EditActivityButton${activity.id}">${labelUpdate}</button>&nbsp;
+                            <button href="javascript:void(0)" data-cancel-edit-comment-id="${activity.id}" class="btn pull-left" id="DeleteEditCommentButton${activity.id}">${labelCancel}</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
 						<div class="actionBar clearfix ">
 					 <% def toggleDisplayCommentAction = uicomponent.event('ToggleDisplayCommentForm', null, false);
 								 def commentLink = "";
@@ -352,6 +385,8 @@
               }
 			  commentMessage = it.title;
 			  commentPostedTime = uicomponent.getPostedTimeString(_ctx, it.postedTime);
+			  commentEditedTime = uicomponent.getPostedTimeString(_ctx, it.updated.getTime());
+			  commentEditedTime = _ctx.appRes("UIActivity.label.EditedFrom").replace("{0}",commentEditedTime);
 			  commenterAvatarImgSrc = id.profile.avatarUrl;
 			  if (!commenterAvatarImgSrc) commenterAvatarImgSrc = LinkProvider.PROFILE_DEFAULT_AVATAR_URL;
               def commentId = it.parentCommentId == null ? it.id : it.parentCommentId;
@@ -370,13 +405,21 @@
 				<div class="commentRight">
 					<div class="author">
 						<a href="$commenterProfileUri">$commenterFullName</a>
-						<span class="dateTime">
-							$commentPostedTime
-						 </span>
 					</div>
 					<div class="contentComment" id="${activity.id}-${commentCounter}">
 						$commentMessage
 					</div>
+					<div class="desktop-input clearfix">
+                        <div class="blastInputPeople hideEffect">
+                            <div>
+                                <textarea class="textarea hideEffect paddingAction" name="composerEditComment${it.id}" id="composerEditComment${it.id}" rows="10" cols="30"></textarea>
+                            </div>
+                            <div class="uiAction">
+                                <button class="btn pull-left btn-primary" data-edit-comment-id="${it.id}" data-edit-comment-activityid="${activity.id}" data-click="<%= uicomponent.event("EditComment","COMMENTID"); %>" id="EditCommentButton${it.id}">${labelUpdate}</button>&nbsp;
+                                <button href="javascript:void(0)" data-cancel-edit-comment-id="${it.id}" class="btn pull-left" id="DeleteEditCommentButton${it.id}">${labelCancel}</button>
+                            </div>
+                        </div>
+                    </div>
                     <%
                         _ctx.put(TEMPLATE_PARAM_COMMENT, it);
                         _ctx.put("authorName", id.remoteId);
@@ -385,20 +428,33 @@
                     %>
 				</div><!--end commentRight-->
                 <div class="clearfix"></div>
-				<div class="actLink">
-				<a id="Permalink${it.id}" rel="tooltip" data-placement="bottom" title="$viewActivityTip" class="uiIconLink uiIconLightGray" href="<%=uicomponent.getCommentPermalink(activity.id, it.id)%>"></a>
 			  <%
-				if (uicomponent.isCommentDeletable(it.userId)) {
-				  String idDeleteComment = "DeleteCommentButton${it.id}";
+			    def commentEditable = uicomponent.isActivityEditable(it);
+			    def commentDeletable = uicomponent.isCommentDeletable(it.userId);
+				  if(commentEditable || commentDeletable) {
 			  %>
-				  <a href="javascript:void(0)" id="$idDeleteComment" data-confirm="$labelToDeleteThisComment" 
-				        data-caption="$captionConfirmation" data-close="$labelClosebutton" 
-				        data-ok="$labelConfirmbutton"  
-				        data-delete="<%= uicomponent.event("DeleteComment", uicomponent.id, it.id); %>"  
-				        class="uiIconTrash uiIconLightGray controllDelete"
-				        rel="tooltip" data-placement="bottom" title="$deleteActivityTip"></a>
-			  <% } %>
-			    </div>
+				  <div id="dropDownEditComment${it.id}" class="btn-group uiDropdownWithIcon actLink">
+                            <div class="dropdown-toggle" data-toggle="dropdown">
+                                <i class="uiIconActivityAction uiIconLightGray">
+                                </i>
+                            </div>
+                            <ul class="dropdown-menu pull-right" role="menu">
+								<% if(commentEditable){ %>
+                                <li>
+				                   <a id="CommentActivitylink${it.id}" data-edit-comment="${it.id}" class="" href="javascript:void(0)">${labelEdit}</a>
+				                </li>
+				                <%
+								}
+					                if (commentDeletable) {
+					                String idDeleteComment = "DeleteCommentButton${it.id}";
+				                %>
+                                <li>
+                                    <a href="javascript:void(0)" id="$idDeleteComment" data-confirm="$labelToDeleteThisComment" data-caption="$captionConfirmation" data-close="$labelClosebutton" data-ok="$labelConfirmbutton"  data-delete="<%= uicomponent.event("DeleteComment", uicomponent.id, it.id); %>"  class="controllDelete">${labelDelete}</a>
+				                </li>
+                                <% } %>
+                            </ul>
+                        </div>
+				<%}%>
 			  </div>
 			 </div>
 			<% }) %>
@@ -424,7 +480,7 @@
 					<div class="commentRight">
 						<div class="commentInputBox ">
 							<div class="commentInput"><% uicomponent.renderChild(UIFormTextAreaInput.class); %></div>
-                            <button class="btn pull-left btn-primary" data-comment-button="${activity.id}" data-click="<%= uicomponent.event("PostComment", "COMMENTID") %>" id="CommentButton${activity.id}" disabled>$labelComment</button>
+                            <button class="btn pull-left btn-primary" data-comment-button="${activity.id}" data-click="<%= uicomponent.event("PostComment", "COMMENTID") %>" id="CommentButton${activity.id}">$labelComment</button>
                             <button class="btn visible-phone" id="CancelButton${activity.id}">$labelCancel</button>
 						</div>
 					</div><!--end commentRight-->

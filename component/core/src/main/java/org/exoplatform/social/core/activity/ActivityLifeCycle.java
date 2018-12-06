@@ -35,6 +35,9 @@ public class ActivityLifeCycle extends AbstractLifeCycle<ActivityListener, Activ
       case SAVE_COMMENT: 
         listener.saveComment(event);
         break;
+      case UPDATE_COMMENT:
+        listener.updateComment(event);
+        break;
       case LIKE_ACTIVITY: 
         listener.likeActivity(event);
         break;
@@ -54,6 +57,10 @@ public class ActivityLifeCycle extends AbstractLifeCycle<ActivityListener, Activ
 
   public void saveComment(ExoSocialActivity activity) {
     broadcast(new ActivityLifeCycleEvent(Type.SAVE_COMMENT, activity));
+  }
+
+  public void updateComment(ExoSocialActivity activity) {
+    broadcast(new ActivityLifeCycleEvent(Type.UPDATE_COMMENT, activity));
   }
   
   public void likeActivity(ExoSocialActivity activity) {

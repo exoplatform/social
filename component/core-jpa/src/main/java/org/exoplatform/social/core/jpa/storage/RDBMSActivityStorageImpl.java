@@ -319,12 +319,56 @@ public class RDBMSActivityStorageImpl implements ActivityStorage {
     commentEntity.setLocked(comment.isLocked());
     commentEntity.setHidden(comment.isHidden());
     //
-    Date commentTime = (comment.getPostedTime() != null ? new Date(comment.getPostedTime()) : new Date());
+    Date today = new Date();
+    Date commentTime = (comment.getPostedTime() != null ? new Date(comment.getPostedTime()) : today);
     commentEntity.setPosted(commentTime);
-    commentEntity.setUpdatedDate(commentTime);
+    //update time may be different from post time
+    Date updateCommentTime = (comment.getUpdated() != null ? comment.getUpdated() : today);
+    commentEntity.setUpdatedDate(updateCommentTime);
     commentEntity.setMentionerIds(new HashSet<>(Arrays.asList(processMentions(comment.getTitle(), comment.getTemplateParams()))));
     //
     return commentEntity;
+  }
+
+  /**
+   * Help to update mentionIds of activity
+   * Help to update corresponding StreamItem
+   * This method must be called before updating title and template param of activity entity
+   *
+   * activity's mentionIds include :
+   * - mentioned ids processed from its title and template param
+   * - mentioned ids from its comments
+   *
+   * @param activityEntity
+   * @param activity
+   */
+  private void updateActivityMentions(ActivityEntity activityEntity, ExoSocialActivity activity) {
+    Set<String> commentMentions = new HashSet<>();
+    if (activityEntity.getComments() != null) {
+      activityEntity.getComments().forEach(comment -> {
+        String[] mentions = processMentions(comment.getTitle(), comment.getTemplateParams());
+        commentMentions.addAll(Arrays.asList(mentions));
+      });
+    }
+    Set<String> mentionsToRemove = new HashSet<>(Arrays.asList(processMentions(activityEntity.getTitle(), activityEntity.getTemplateParams())));
+    Set<String> mentionToAdd = new HashSet<>(Arrays.asList(processMentions(activity.getTitle(), activity.getTemplateParams())));
+
+    mentionsToRemove.forEach(mentionedId -> {
+      if (!commentMentions.contains(mentionedId) && !mentionToAdd.contains(mentionedId)) {
+        StreamItemEntity item = new StreamItemEntity(StreamType.MENTIONER);
+        item.setOwnerId(Long.parseLong(mentionedId));
+        activityEntity.removeStreamItem(item);
+      }
+    });
+
+    mentionToAdd.forEach(mentionedId -> {
+      if (!commentMentions.contains(mentionedId) && !mentionsToRemove.contains(mentionedId)) {
+        mention(null, activityEntity, new String[] {mentionedId});
+      }
+    });
+
+    mentionToAdd.addAll(commentMentions);
+    activityEntity.setMentionerIds(mentionToAdd);
   }
 
   private List<ExoSocialActivity> convertActivityIdsToActivities(List<Long> activityIds) {
@@ -440,11 +484,7 @@ public class RDBMSActivityStorageImpl implements ActivityStorage {
       }
 
       //
-      if (eXoComment.getUpdated() != null) {
-        activityEntity.setUpdatedDate(eXoComment.getUpdated());
-      } else {
-        activityEntity.setUpdatedDate(new Date());
-      }
+      processActivityStreamUpdatedTime(activityEntity);
       activityDAO.update(activityEntity);
 
     } finally {
@@ -577,7 +617,11 @@ public class RDBMSActivityStorageImpl implements ActivityStorage {
   private void createStreamItem(StreamType streamType, ActivityEntity activity, Long ownerId){
     StreamItemEntity streamItem = new StreamItemEntity(streamType);
     streamItem.setOwnerId(ownerId);
-    streamItem.setUpdatedDate(activity.getUpdatedDate());
+    if (streamType == StreamType.POSTER || streamType == StreamType.SPACE) {
+      streamItem.setUpdatedDate(activity.getUpdatedDate());
+    } else {
+      streamItem.setUpdatedDate(null);
+    }
     boolean isExist = false;
     if (activity.getId() != null) {
       //TODO need to improve it
@@ -973,19 +1017,27 @@ public class RDBMSActivityStorageImpl implements ActivityStorage {
         // update comment
         updatedActivity.setUpdatedDate(new Date());
       }
+      //only raise the activity in stream when activity message updated
+      if (existingActivity.getTitle() != null &&
+              existingActivity.getTitle().equals(existingActivity.getTitle())) {
+        processActivityStreamUpdatedTime(updatedActivity);
+      }
       //create or remove liker if exist
       processLikerActivityInStreams(new HashSet<>(Arrays.asList(existingActivity.getLikeIdentityIds())), new HashSet<>(updatedActivity.getLikerIds()), parentActivity, isComment);
+      //this method must be called before updating title and template params
+      updateActivityMentions(updatedActivity, existingActivity);
 
       if (existingActivity.getTitleId() != null) updatedActivity.setTitleId(existingActivity.getTitleId());
       if (existingActivity.getTitle() != null) updatedActivity.setTitle(existingActivity.getTitle());
       if (existingActivity.getBody() != null) updatedActivity.setBody(existingActivity.getBody());
+      if (existingActivity.getUpdated() != null) updatedActivity.setUpdatedDate(existingActivity.getUpdated());
       if (existingActivity.getLikeIdentityIds() != null) updatedActivity.setLikerIds(new HashSet<>(Arrays.asList(existingActivity.getLikeIdentityIds())));
-      if (existingActivity.getMentionedIds() != null) updatedActivity.setMentionerIds(new HashSet<>(Arrays.asList(existingActivity.getMentionedIds())));
       if (existingActivity.getPermaLink() != null) updatedActivity.setPermaLink(existingActivity.getPermaLink());
       if (existingActivity.getTemplateParams() != null) updatedActivity.setTemplateParams(existingActivity.getTemplateParams());
       updatedActivity.setHidden(existingActivity.isHidden());
       updatedActivity.setComment(existingActivity.isComment());
       updatedActivity.setLocked(existingActivity.isLocked());
+      processActivity(existingActivity);
 
       activityDAO.update(updatedActivity);
     } else {
@@ -1243,6 +1295,28 @@ public class RDBMSActivityStorageImpl implements ActivityStorage {
         LOG.debug("activity processing failed ");
       }
     }
+  }
+
+  /**
+   * This method will update StreamItem updatedDate field,
+   * which is used to sort activies in Activity Stream
+   * We only update this in 3 cases:
+   * 1. edit activity message
+   * 2. edit activity's comment message
+   * 3. add new comment
+   * @param activityEntity
+   * @return
+   */
+  private ActivityEntity processActivityStreamUpdatedTime(ActivityEntity activityEntity) {
+    if (activityEntity.getStreamItems() != null) {
+      List<StreamItemEntity> items = activityEntity.getStreamItems().stream()
+              .filter(item -> item.getStreamType() == StreamType.POSTER || item.getStreamType() == StreamType.SPACE)
+              .collect(Collectors.toList());
+      if (!items.isEmpty()) {
+        items.get(0).setUpdatedDate(new Date());
+      }
+    }
+    return activityEntity;
   }
   
   /**

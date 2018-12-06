@@ -330,6 +330,10 @@
       var root = $('#'+responsiveId);
       if(root.length > 0 && eXo.social.SocialUtil.checkDevice().isMobile === true) {
         root.find('.activityStream').off('click').on('click', function(evt) {
+          if ($(evt.target).hasClass('uiIconActivityAction')) {
+            return;
+          }
+
           var activity = $(this);
           if(activity.hasClass('block-activity')) {
             return true;
@@ -380,9 +384,6 @@
                 $.globalEval(action.replace('objectId=none', 'objectId=all'));
               }
             }
-
-            // Show the comment form by trigger click event on the comment link.
-            $("#" + activity.attr("id") + " a[id^='CommentLink'").not("a[data-comment]").trigger('click');
           }
         });
       }
