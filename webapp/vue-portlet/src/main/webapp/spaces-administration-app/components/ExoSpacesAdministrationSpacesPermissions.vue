@@ -63,45 +63,54 @@ export default {
       displayEditCreate: 1,
       displayEditManage: 1,
       settingValue: '',
-      permissionAdministrators:''
+      permissionAdministrators:'No Assignment'
     }
   },
   created() {
-    this.initSuggester();	
     this.GetsSettingValue();
   },
   methods: {
     initSuggester() {
       const $guestsFormsSuggestor = $('#add-user-suggestor');
-      const component = this;
-      const suggesterData = {
-        type: 'tag',
-        plugins: ['remove_button', 'restore_on_backspace'],
-        create: false,
-        createOnBlur: false,
-        highlight: false,
-        openOnFocus: false,
-        sourceProviders: ['exo:social'],
-        valueField: 'text',
-        labelField: 'text',
-        searchField: ['text'],
-        closeAfterSelect: true,
-        dropdownParent: 'body',
-        hideSelected: true,
-        renderMenuItem (item, escape) {
-          return component.renderMenuItem(item, escape);
-        },
-        renderItem(item) {
-          return `<div class="item">${item.text}</div>`;
-        },
-        onItemAdd(item) {
-          component.addSuggestedItem(item);
-        },
-        providers: {
-          'exo:social': component.findGuests
-        }
-      };
-      $guestsFormsSuggestor.suggester(suggesterData);
+      if($guestsFormsSuggestor && $guestsFormsSuggestor.length && $guestsFormsSuggestor.suggester) {
+        const component = this;
+        const suggesterData = {
+          type: 'tag',
+          plugins: ['remove_button', 'restore_on_backspace'],
+          create: false,
+          createOnBlur: false,
+          highlight: false,
+          openOnFocus: false,
+          sourceProviders: ['exo:social'],
+          valueField: 'text',
+          labelField: 'text',
+          searchField: ['text'],
+          closeAfterSelect: true,
+          dropdownParent: 'body',
+          hideSelected: true,
+          renderMenuItem (item, escape) {
+            return component.renderMenuItem(item, escape);
+          },
+          renderItem(item) {
+            return `<div class="item">${item.text}</div>`;
+          },
+          onItemAdd(item) {
+            component.addSuggestedItem(item);
+          },
+          sortField: [{field: 'order'}, {field: '$score'}],
+          providers: {
+            'exo:social': component.findGuests
+          }
+        };
+        $guestsFormsSuggestor.suggester(suggesterData);
+        if(this.permissionAdministrators && this.permissionAdministrators != 'No Assignment') {
+          const permissions = this.permissionAdministrators.split(',');  
+          for(const permission of permissions) {
+            $guestsFormsSuggestor[0].selectize.addOption({text: permission});
+            $guestsFormsSuggestor[0].selectize.addItem(permission);
+          }
+        }      
+      }
     },
     findGuests (query, callback) {
       if (!query.length) {
@@ -110,10 +119,12 @@ export default {
       spaceAdministrationServices.getGuests(query).then(data => {
         spaceAdministrationServices.getGuestsGroups(query).then(group => {
           if(group){
-            group = group.concat(data.options);
+            if(data.options != null) {
+              group = group.concat(data.options);
+            }
             callback(group);
           } else {
-            if(data) {
+            if(data.options != null) {
               callback(data.options);
             }
           }
@@ -144,13 +155,18 @@ export default {
     },
     savePermissions() {
       this.settingValue = this.guests.join();
-      spaceAdministrationServices.createSetting('GLOBAL','GLOBAL','exo:social_spaces_administrators',this.settingValue);
+      if(this.guests){
+        spaceAdministrationServices.createSetting('GLOBAL','GLOBAL','exo:social_spaces_administrators',this.settingValue);
+      }
       this.GetsSettingValue();
       this.editCreateSpace();
     },
     GetsSettingValue(){
       spaceAdministrationServices.GetsSettingValue('GLOBAL','GLOBAL','exo:social_spaces_administrators').then(data => {
-        this.permissionAdministrators = data.value;
+        if(data && data.status != '404') {
+          console.log('data.value  ',data)
+          this.permissionAdministrators = data.value;
+        }
       });
     },
     editCreateSpace(){

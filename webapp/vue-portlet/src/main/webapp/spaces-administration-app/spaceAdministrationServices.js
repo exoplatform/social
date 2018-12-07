@@ -28,7 +28,8 @@ export function getAvatar(user) {
 }
 
 export function getGuests(query) {
-  return fetch(`/portal/rest/social/people/suggest.json?nameToSearch=${query}`, {credentials: 'include'}).then(resp => resp.json());
+  return fetch(`/portal/rest/social/people/suggest.json?nameToSearch=${query}`, {credentials: 'include'}).then(resp => resp.json(
+  ));
 }
 
 export function getGuestsGroups(query) {
@@ -36,7 +37,7 @@ export function getGuestsGroups(query) {
 }
 
 export function createSetting(context,scope,settingKey,valueKey){
-  return fetch(`/rest/v1/settings/${context}/${scope}/${settingKey}}`, {
+  return fetch(`/rest/v1/settings/${context}/${scope}/${settingKey}`, {
     headers: {
       'Content-Type': 'application/json'
     },
@@ -47,8 +48,8 @@ export function createSetting(context,scope,settingKey,valueKey){
 }
 
 export function GetsSettingValue(context,scope,settingKey) {
-  return fetch(`/rest/v1/settings/${context}/${scope}/${settingKey}}`, {
+  return fetch(`/rest/v1/settings/${context}/${scope}/${settingKey}`, {
     credentials: 'include',
     method: 'GET'
-  }).then(resp =>  resp.json());
-}
+  });
+}  
