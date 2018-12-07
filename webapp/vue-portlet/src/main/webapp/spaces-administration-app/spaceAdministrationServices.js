@@ -47,9 +47,12 @@ export function createSetting(context,scope,settingKey,valueKey){
   });
 }
 
-export function GetsSettingValue(context,scope,settingKey) {
+export function getsSettingValue(context,scope,settingKey) {
   return fetch(`/rest/v1/settings/${context}/${scope}/${settingKey}`, {
+    headers: {
+      'Content-Type': 'application/json'
+    },
     credentials: 'include',
     method: 'GET'
-  });
+  }).then(resp => resp.json());
 }  

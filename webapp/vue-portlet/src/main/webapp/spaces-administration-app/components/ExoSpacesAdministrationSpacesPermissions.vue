@@ -62,12 +62,13 @@ export default {
       guests: [],
       displayEditCreate: 1,
       displayEditManage: 1,
+      index: 0,
       settingValue: '',
       permissionAdministrators:'No Assignment'
     }
   },
   created() {
-    this.GetsSettingValue();
+    this.getsSettingValue();
   },
   methods: {
     initSuggester() {
@@ -97,13 +98,16 @@ export default {
           onItemAdd(item) {
             component.addSuggestedItem(item);
           },
+          onItemRemove(item) {
+            component.removeSuggestedItem(item);
+          },
           sortField: [{field: 'order'}, {field: '$score'}],
           providers: {
             'exo:social': component.findGuests
           }
         };
         $guestsFormsSuggestor.suggester(suggesterData);
-        if(this.permissionAdministrators && this.permissionAdministrators != 'No Assignment') {
+        if(this.permissionAdministrators && this.permissionAdministrators !== 'No Assignment') {
           const permissions = this.permissionAdministrators.split(',');  
           for(const permission of permissions) {
             $guestsFormsSuggestor[0].selectize.addOption({text: permission});
@@ -153,18 +157,22 @@ export default {
         this.guests.push(item.text);
       }
     },
+    removeSuggestedItem(item) {
+      if(this.guests.find(guest => guest === item)) {
+        this.guests.splice(this.guests.indexOf(item), 1);
+      }
+    },
     savePermissions() {
       this.settingValue = this.guests.join();
       if(this.guests){
         spaceAdministrationServices.createSetting('GLOBAL','GLOBAL','exo:social_spaces_administrators',this.settingValue);
       }
-      this.GetsSettingValue();
+      this.getsSettingValue();
       this.editCreateSpace();
     },
-    GetsSettingValue(){
-      spaceAdministrationServices.GetsSettingValue('GLOBAL','GLOBAL','exo:social_spaces_administrators').then(data => {
-        if(data && data.status != '404') {
-          console.log('data.value  ',data)
+    getsSettingValue(){
+      spaceAdministrationServices.getsSettingValue('GLOBAL','GLOBAL','exo:social_spaces_administrators').then(data => {
+        if(data) {
           this.permissionAdministrators = data.value;
         }
       });
