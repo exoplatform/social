@@ -147,6 +147,7 @@ public class PeopleRestService implements ResourceContainer{
     organizationService = Util.getOrganizationService();
     Collection<Group> result = new LinkedList<Group>();
     Collection<Option> options = new LinkedList<Option>();
+    String parentId = null;
     if (search == null) {
       result.addAll(organizationService.getGroupHandler().getAllGroups());
       return Util.getResponse(result, uriInfo, mediaType, Response.Status.OK);
@@ -154,8 +155,13 @@ public class PeopleRestService implements ResourceContainer{
       for (Group group : organizationService.getGroupHandler().getAllGroups()) {
         if (CheckSearchInGroupName(group.getGroupName(), search)) {
           Option opt = new Option();
-          opt.setText(group.getGroupName());
-          opt.setValue(group.getLabel());
+          if (group.getParentId() != null) {
+            parentId = "*" + group.getParentId() + "/";
+          } else {
+            parentId = "*/";
+          }
+          opt.setText(parentId + group.getGroupName());
+          opt.setValue(group.getGroupName());
           opt.setType("group");
           opt.setAvatarUrl("/eXoSkin/skin/images/system/SpaceAvtDefault.png");
           options.add(opt);

@@ -15,7 +15,14 @@
       <tr>
         <td><h2>Create spaces</h2> <h5>Ability to create spaces</h5></td>
         <td>
-          <h4 v-show="displayEditCreate === 1">{{ permissionAdministrators }}</h4>
+          <div v-show="displayEditCreate !== 0">
+            <div v-if="guests.length > 0">
+              <div v-for="guest in guests" :key="guest">
+                <h4 v-if="guest.startsWith('*/')"> Group: {{ guest }}</h4>
+                <h4 v-else> User: {{ guest }}</h4>
+              </div>
+            </div>
+          </div>
           <div v-show="displayEditCreate === 0" class="inputUser">
             <input id="add-user-suggestor" type="text"/>
           </div>
@@ -43,7 +50,7 @@
           </a>
         </td>
         <td v-if="displayEditManage === 0" class="center actionContainer" >
-          <a data-placement="bottom" rel="tooltip" class="actionIcon" data-original-title="Save" @click="savePermissions()">
+          <a data-placement="bottom" rel="tooltip" class="actionIcon" data-original-title="Save" @click="saveManagePermissions()">
             <i class="uiIconSave uiIconLightGray"></i>
           </a>
           <a data-placement="bottom" rel="tooltip" class="actionIcon" data-original-title="Close" @click="editManageSpace()">
@@ -145,7 +152,7 @@ export default {
         }
       }
       return `
-        <div class="item"> <img class="avatarMini" src="${item.avatarUrl}"> ${escape(item.text)}</div>
+        <div class="item"> <img class="avatarMini" src="${item.avatarUrl}"> ${escape(item.value)}</div>
       `;
     },
     addSuggestedItem(item) {
@@ -167,12 +174,11 @@ export default {
       if(this.guests){
         spaceAdministrationServices.createSetting('GLOBAL','GLOBAL','exo:social_spaces_administrators',this.settingValue);
       }
-      this.getsSettingValue();
       this.editCreateSpace();
     },
     getsSettingValue(){
       spaceAdministrationServices.getsSettingValue('GLOBAL','GLOBAL','exo:social_spaces_administrators').then(data => {
-        if(data) {
+        if(data && data.value !== '') {
           this.permissionAdministrators = data.value;
         }
       });
@@ -181,15 +187,19 @@ export default {
       if(this.displayEditCreate === 1) {
         this.displayEditCreate = 0;
         this.initSuggester();
+        this.displayEditManage = 2;
       } else {
         this.displayEditCreate = 1;
+        this.displayEditManage = 1;
       }
     },
     editManageSpace(){
       if(this.displayEditManage === 1) {
         this.displayEditManage = 0;
+        this.displayEditCreate = 2;
       } else {
         this.displayEditManage = 1;
+        this.displayEditCreate = 1;
       }
     }
   }
