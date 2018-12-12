@@ -19,7 +19,8 @@
             <div v-if="guests.length > 0">
               <div v-for="guest in guests" :key="guest">
                 <h4 v-if="guest.startsWith('*/')"> Group: {{ guest }}</h4>
-                <h4 v-else> User: {{ guest }}</h4>
+                <h4 v-else-if="!guest.startsWith('No assign')"> User: {{ guest }}</h4>
+                <h4 v-else>No assignement</h4>
               </div>
             </div>
           </div>
@@ -33,7 +34,7 @@
           </a>
         </td>
         <td v-if="displayEditCreate === 0" class="center actionContainer" >
-          <a data-placement="bottom" rel="tooltip" class="actionIcon" data-original-title="Save" @click="savePermissions()">
+          <a data-placement="bottom" rel="tooltip" class="actionIcon" data-original-title="Save" @click="savePermissionsCreateSpace()">
             <i class="uiIconSave uiIconLightGray"></i>
           </a>
           <a data-placement="bottom" rel="tooltip" class="actionIcon" data-original-title="Close" @click="editCreateSpace()">
@@ -43,14 +44,27 @@
       </tr>
       <tr>
         <td><h2>Manage spaces</h2> <h5>Ability to edit spaces</h5></td>
-        <td><h4>test</h4></td>
+        <td>
+          <div v-show="displayEditManage !== 0">
+            <div v-if="managers.length > 0">
+              <div v-for="manager in managers" :key="manager">
+                <h4 v-if="manager.startsWith('*/')"> Group: {{ manager }}</h4>
+                <h4 v-else-if="!manager.startsWith('No assign')"> User: {{ manager }}</h4>
+                <h4 v-else>No assignement</h4>
+              </div>
+            </div>
+          </div>
+          <div v-show="displayEditManage === 0" class="inputUser">
+            <input id="add-guest-suggestor" type="text"/>
+          </div>
+        </td>
         <td v-if="displayEditManage === 1" class="center actionContainer" >
           <a data-placement="bottom" rel="tooltip" class="actionIcon" data-original-title="Edit" @click="editManageSpace()">
             <i class="uiIconEdit uiIconLightGray"></i>
           </a>
         </td>
         <td v-if="displayEditManage === 0" class="center actionContainer" >
-          <a data-placement="bottom" rel="tooltip" class="actionIcon" data-original-title="Save" @click="saveManagePermissions()">
+          <a data-placement="bottom" rel="tooltip" class="actionIcon" data-original-title="Save" @click="savePermissionsManageSpace()">
             <i class="uiIconSave uiIconLightGray"></i>
           </a>
           <a data-placement="bottom" rel="tooltip" class="actionIcon" data-original-title="Close" @click="editManageSpace()">
@@ -67,17 +81,96 @@ export default {
   data() {
     return {
       guests: [],
+      managers: [],
       displayEditCreate: 1,
       displayEditManage: 1,
       index: 0,
       settingValue: '',
-      permissionAdministrators:'No Assignment'
+      permissionAdministrators:'No Assignment',
+      permissionManagers:'No Assignment'
     }
   },
   created() {
-    this.getsSettingValue();
+    this.initSuggester();
+    this.initSuggesterManageSpace();
+    this.getSettingValueCreateSpace();
+    this.getSettingValueManageSpace();
   },
   methods: {
+    initSuggesterManageSpace() {
+      const $guestsFormsSuggestor = $('#add-guest-suggestor');
+      if($guestsFormsSuggestor && $guestsFormsSuggestor.length && $guestsFormsSuggestor.suggester) {
+        const component = this;
+        const suggesterData = {
+          type: 'tag',
+          plugins: ['remove_button', 'restore_on_backspace'],
+          create: false,
+          createOnBlur: false,
+          highlight: false,
+          openOnFocus: false,
+          sourceProviders: ['exo:social'],
+          valueField: 'text',
+          labelField: 'text',
+          searchField: ['text'],
+          closeAfterSelect: true,
+          dropdownParent: 'body',
+          hideSelected: true,
+          renderMenuItem (item, escape) {
+            return component.renderMenuItem(item, escape);
+          },
+          renderItem(item) {
+            return `<div class="item">${item.text}</div>`;
+          },
+          onItemAdd(item) {
+            component.addSuggestedItemManage(item);
+          },
+          onItemRemove(item) {
+            component.removeSuggestedItemManage(item);
+          },
+          sortField: [{field: 'order'}, {field: '$score'}],
+          providers: {
+            'exo:social': component.findGuests
+          }
+        };
+        $guestsFormsSuggestor.suggester(suggesterData);
+        if(this.permissionManagers && this.permissionManagers !== 'No Assignment') {
+          const permissions = this.permissionManagers.split(',');  
+          for(const permission of permissions) {
+            $guestsFormsSuggestor[0].selectize.addOption({text: permission});
+            $guestsFormsSuggestor[0].selectize.addItem(permission);
+          }
+        }      
+      }
+    },
+    addSuggestedItemManage(item) {
+      if($('#add-guest-suggestor') && $('#add-guest-suggestor').length && $('#add-guest-suggestor')[0].selectize) {
+        const selectize = $('#add-guest-suggestor')[0].selectize;
+        item = selectize.options[item];
+      }
+      if(!this.managers.find(manager => manager.text === item.text)) {
+        this.managers.push(item.text);
+      }
+    },
+    removeSuggestedItemManage(item) {
+      if(this.managers.find(manager => manager === item)) {
+        this.managers.splice(this.managers.indexOf(item), 1);
+      }
+    },
+    savePermissionsManageSpace() {
+      this.settingValue = this.managers.join();
+      if(this.managers){
+        spaceAdministrationServices.createSetting('GLOBAL','GLOBAL','exo:social_spaces_managers',this.settingValue);
+      }
+      this.displayEditManage = 1;
+    },
+    getSettingValueManageSpace() {
+      spaceAdministrationServices.getsSettingValue('GLOBAL','GLOBAL','exo:social_spaces_managers').then(data => {
+        if(data && data.value !== '') {
+          this.permissionManagers = data.value;
+        }
+        this.initSuggesterManageSpace();
+      });
+    },
     initSuggester() {
       const $guestsFormsSuggestor = $('#add-user-suggestor');
       if($guestsFormsSuggestor && $guestsFormsSuggestor.length && $guestsFormsSuggestor.suggester) {
@@ -169,26 +262,26 @@ export default {
         this.guests.splice(this.guests.indexOf(item), 1);
       }
     },
-    savePermissions() {
+    savePermissionsCreateSpace() {
       this.settingValue = this.guests.join();
       if(this.guests){
         spaceAdministrationServices.createSetting('GLOBAL','GLOBAL','exo:social_spaces_administrators',this.settingValue);
       }
-      this.editCreateSpace();
+      this.displayEditCreate = 1;
     },
-    getsSettingValue(){
+    getSettingValueCreateSpace(){
       spaceAdministrationServices.getsSettingValue('GLOBAL','GLOBAL','exo:social_spaces_administrators').then(data => {
         if(data && data.value !== '') {
           this.permissionAdministrators = data.value;
         }
+        this.initSuggester();
       });
     },
     editCreateSpace(){
       if(this.displayEditCreate === 1) {
         this.displayEditCreate = 0;
-        this.initSuggester();
-        this.displayEditManage = 2;
       } else {
+        this.getSettingValueCreateSpace();
         this.displayEditCreate = 1;
         this.displayEditManage = 1;
       }
@@ -196,8 +289,8 @@ export default {
     editManageSpace(){
       if(this.displayEditManage === 1) {
         this.displayEditManage = 0;
-        this.displayEditCreate = 2;
       } else {
+        this.getSettingValueManageSpace();
         this.displayEditManage = 1;
         this.displayEditCreate = 1;
       }
