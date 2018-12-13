@@ -56,25 +56,26 @@ public class SocialMembershipListenerImpl extends MembershipEventListener {
       //and 'member', except 'validator', ...so on.
       SpaceService spaceService = CommonsUtils.getService(SpaceService.class);
       Space space = spaceService.getSpaceByGroupId(m.getGroupId());
-
-      ConversationState state = ConversationState.getCurrent();
-      if(state != null) {
-        space.setEditor(state.getIdentity().getUserId());
-      }
-      if (acl.getAdminMSType().equalsIgnoreCase(m.getMembershipType()) ||
-          MembershipTypeHandler.ANY_MEMBERSHIP_TYPE.equalsIgnoreCase(m.getMembershipType())) {
-        spaceService.setManager(space, m.getUserName(), false);
-        SpaceUtils.refreshNavigation();
-      } else if (SpaceUtils.MEMBER.equalsIgnoreCase(m.getMembershipType())) {
-        spaceService.removeMember(space, m.getUserName());
-        spaceService.setManager(space, m.getUserName(), false);
-        SpaceUtils.refreshNavigation();
+      if (space != null) {
+        ConversationState state = ConversationState.getCurrent();
+        if(state != null && state.getIdentity() != null && space.getEditor() == null) {
+          space.setEditor(state.getIdentity().getUserId());
+        }
+        if (acl.getAdminMSType().equalsIgnoreCase(m.getMembershipType()) ||
+            MembershipTypeHandler.ANY_MEMBERSHIP_TYPE.equalsIgnoreCase(m.getMembershipType())) {
+          spaceService.setManager(space, m.getUserName(), false);
+          SpaceUtils.refreshNavigation();
+        } else if (SpaceUtils.MEMBER.equalsIgnoreCase(m.getMembershipType())) {
+          spaceService.removeMember(space, m.getUserName());
+          spaceService.setManager(space, m.getUserName(), false);
+          SpaceUtils.refreshNavigation();
+        }
       }
     } else if (m.getGroupId().startsWith(SpaceUtils.PLATFORM_USERS_GROUP)) {
       clearIdentityCaching();
     }
   }
-
+	
   @Override
   public void postSave(Membership m, boolean isNew) throws Exception {
     //only trigger when the Organization service adds new membership to existing SpaceGroup
@@ -88,6 +89,10 @@ public class SocialMembershipListenerImpl extends MembershipEventListener {
       Space space = spaceService.getSpaceByGroupId(m.getGroupId());
       //TODO A case to confirm: will we create a new space here when a new group is created via organization portlet
       if (space != null) {
+        ConversationState state = ConversationState.getCurrent();
+        if(state != null && state.getIdentity() != null && space.getEditor() == null) {
+          space.setEditor(state.getIdentity().getUserId());
+        }
         String userName = m.getUserName();
         if (acl.getAdminMSType().equalsIgnoreCase(m.getMembershipType()) ||
             MembershipTypeHandler.ANY_MEMBERSHIP_TYPE.equalsIgnoreCase(m.getMembershipType())) {

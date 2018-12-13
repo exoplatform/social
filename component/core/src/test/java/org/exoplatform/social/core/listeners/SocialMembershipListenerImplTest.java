@@ -16,27 +16,21 @@
  */
 package org.exoplatform.social.core.listeners;
 
-import org.exoplatform.container.PortalContainer;
-import org.exoplatform.container.component.RequestLifeCycle;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
-import org.exoplatform.services.organization.*;
+import org.exoplatform.services.organization.MembershipHandler;
+import org.exoplatform.services.organization.MembershipTypeHandler;
+import org.exoplatform.services.organization.OrganizationService;
 import org.exoplatform.services.security.ConversationState;
-import org.exoplatform.services.security.IdentityRegistry;
 import org.exoplatform.social.core.identity.model.Identity;
-import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.space.impl.DefaultSpaceApplicationHandler;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.test.AbstractCoreTest;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 public class SocialMembershipListenerImplTest extends AbstractCoreTest {
-  private final Log  LOG = ExoLogger.getLogger(SocialMembershipListenerImplTest.class);
+  private final Log           LOG = ExoLogger.getLogger(SocialMembershipListenerImplTest.class);
 
   private OrganizationService organizationService;
 
@@ -50,6 +44,7 @@ public class SocialMembershipListenerImplTest extends AbstractCoreTest {
     identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "mary", false);
     identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "demo", false);
     identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "ghost", false);
+    ConversationState.setCurrent(new ConversationState(new org.exoplatform.services.security.Identity("root")));
   }
 
   public void tearDown() throws Exception {
@@ -61,13 +56,14 @@ public class SocialMembershipListenerImplTest extends AbstractCoreTest {
     sFoo.setDisplayName("postsave");
     sFoo.setPrettyName("postsave");
     sFoo.setDescription("postsave description");
-    sFoo.setManagers(new String[]{"root"});
+    sFoo.setManagers(new String[] { "root" });
     sFoo.setType(DefaultSpaceApplicationHandler.NAME);
     sFoo.setRegistration(Space.OPEN);
     sFoo = createSpaceNonInitApps(sFoo, "root", null);
-
+    sFoo.setEditor("mary");
     addUserToGroupWithMembership("demo", sFoo.getGroupId(), "manager");
     sFoo = spaceService.getSpaceById(sFoo.getId());
+    assertEquals(sFoo.getEditor(), "mary");
     assertEquals(2, sFoo.getManagers().length);
     assertEquals(2, sFoo.getMembers().length);
 
@@ -76,17 +72,23 @@ public class SocialMembershipListenerImplTest extends AbstractCoreTest {
     assertEquals(2, sFoo.getManagers().length);
     assertEquals(3, sFoo.getMembers().length);
 
-    //* membership-type is treat like space manager
+    // * membership-type is treat like space manager
     addUserToGroupWithMembership("mary", sFoo.getGroupId(), MembershipTypeHandler.ANY_MEMBERSHIP_TYPE);
     sFoo = spaceService.getSpaceById(sFoo.getId());
     assertEquals(3, sFoo.getManagers().length);
     assertEquals(4, sFoo.getMembers().length);
 
-    //validator membership will not be added as space member
+    // validator membership will not be added as space member
     addUserToGroupWithMembership("ghost", sFoo.getGroupId(), "validator");
     sFoo = spaceService.getSpaceById(sFoo.getId());
     assertEquals(3, sFoo.getManagers().length);
     assertEquals(4, sFoo.getMembers().length);
+
+    // update space Editor when it's null
+    sFoo.setEditor(null);
+    addUserToGroupWithMembership("john", sFoo.getGroupId(), "manager");
+    sFoo = spaceService.getSpaceById(sFoo.getId());
+    assertEquals(sFoo.getEditor(), "root");
   }
 
   public void testPostDelete() throws Exception {
@@ -94,12 +96,12 @@ public class SocialMembershipListenerImplTest extends AbstractCoreTest {
     sFoo.setDisplayName("postdelete");
     sFoo.setPrettyName("postdelete");
     sFoo.setDescription("postdelete description");
-    sFoo.setManagers(new String[]{"root"});
+    sFoo.setManagers(new String[] { "root" });
     sFoo.setType(DefaultSpaceApplicationHandler.NAME);
     sFoo.setRegistration(Space.OPEN);
     sFoo = createSpaceNonInitApps(sFoo, "root", null);
 
-    //* membership-type is treat like space manager
+    // * membership-type is treat like space manager
     addUserToGroupWithMembership("mary", sFoo.getGroupId(), MembershipTypeHandler.ANY_MEMBERSHIP_TYPE);
     sFoo = spaceService.getSpaceById(sFoo.getId());
     assertEquals(2, sFoo.getManagers().length);
@@ -112,26 +114,32 @@ public class SocialMembershipListenerImplTest extends AbstractCoreTest {
     assertEquals(1, sFoo.getManagers().length);
     assertEquals(2, sFoo.getMembers().length);
 
-
     addUserToGroupWithMembership("john", sFoo.getGroupId(), "member");
     sFoo = spaceService.getSpaceById(sFoo.getId());
     assertEquals(1, sFoo.getManagers().length);
     assertEquals(3, sFoo.getMembers().length);
     //
+    sFoo.setEditor("mary");
     membershipHandler.removeMembershipByUser("john", true);
     sFoo = spaceService.getSpaceById(sFoo.getId());
+    assertEquals(sFoo.getEditor(), "mary");
     assertEquals(1, sFoo.getManagers().length);
     assertEquals(2, sFoo.getMembers().length);
 
     addUserToGroupWithMembership("john", sFoo.getGroupId(), "manager");
-    sFoo = spaceService.getSpaceById(sFoo.getId());
     assertEquals(2, sFoo.getManagers().length);
     assertEquals(3, sFoo.getMembers().length);
     //
     membershipHandler.removeMembershipByUser("john", true);
-    sFoo = spaceService.getSpaceById(sFoo.getId());
     assertEquals(1, sFoo.getManagers().length);
     assertEquals(2, sFoo.getMembers().length);
+
+    // update space Editor when it's null
+    addUserToGroupWithMembership("john", sFoo.getGroupId(), "manager");
+    sFoo.setEditor(null);
+    membershipHandler.removeMembershipByUser("john", true);
+    sFoo = spaceService.getSpaceById(sFoo.getId());
+    assertEquals(sFoo.getEditor(), "root");
   }
 
 }
