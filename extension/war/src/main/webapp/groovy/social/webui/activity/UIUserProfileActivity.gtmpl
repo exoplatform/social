@@ -220,7 +220,7 @@
 	</div><!--end activityTimeLine-->
 	<div class="boxContainer" id="boxContainer">
 	<div id="ContextBox${activity.id}" class="uiBox contentBox">
-		<div id="ActivityContextBox${activity.id}" class="uiComposer">
+		<div id="ActivityContextBox${activity.id}">
 		  <div class="heading">
 				<span class="arrowLeft"></span>
 			  <!--div class="pull-right"-->

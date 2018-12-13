@@ -192,7 +192,7 @@
       <span class="BorderBottom"></span>
     </a>
     <div class="ContentBox" id="ContextBox${activity.id}">
-      <div id="ActivityContextBox${activity.id}" class="uiComposer">
+      <div id="ActivityContextBox${activity.id}">
       <h5 class="TitleContent clearfix">
         <a class="Text"  href="$ownerUri">$ownerName</a><br>
           <span class="dateTime"><i class="uiIconClock  uiIconLightGray"></i>&nbsp;<a id="EditActivityTime${activity.id}" rel="tooltip" data-placement="bottom" title="$activityPostedTime" href="<%=uicomponent.getActivityPermalink(activity.id)%>"><%=_ctx.appRes("UIActivity.label.EditedFrom").replace("{0}",activityUpdatedTime)%></a></span>
