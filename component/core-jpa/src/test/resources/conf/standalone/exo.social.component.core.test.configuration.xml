@@ -487,6 +487,11 @@
     <key>org.exoplatform.commons.api.notification.service.WebNotificationService</key>
     <type>org.exoplatform.commons.notification.impl.service.WebNotificationServiceImpl</type>
   </component>
+  
+   <component>
+    <key>org.exoplatform.commons.api.settings.SettingService</key>
+    <type>org.exoplatform.settings.impl.SettingServiceImpl</type>
+  </component>
   <!-- Space Configuration -->
 
   <component>
