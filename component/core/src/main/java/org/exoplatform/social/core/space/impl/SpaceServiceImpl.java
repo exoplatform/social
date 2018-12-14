@@ -32,6 +32,9 @@ import org.exoplatform.commons.api.notification.model.NotificationInfo;
 import org.exoplatform.commons.api.notification.model.PluginKey;
 import org.exoplatform.commons.api.notification.model.WebNotificationFilter;
 import org.exoplatform.commons.api.notification.service.WebNotificationService;
+import org.exoplatform.commons.api.settings.SettingService;
+import org.exoplatform.commons.api.settings.data.Context;
+import org.exoplatform.commons.api.settings.data.Scope;
 import org.exoplatform.commons.utils.CommonsUtils;
 import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.container.ExoContainer;
@@ -105,6 +108,8 @@ public class SpaceServiceImpl implements SpaceService {
   private SpaceApplicationConfigPlugin         spaceApplicationConfigPlugin;
   
   private SpaceApplication spaceHomeApplication;
+  
+  private SettingService settingService;
 
   /** The offset for list access loading. */
   private static final int                   OFFSET = 0;
@@ -124,15 +129,31 @@ public class SpaceServiceImpl implements SpaceService {
    * @throws Exception
    */
   public SpaceServiceImpl(InitParams params, SpaceStorage spaceStorage, IdentityStorage identityStorage, UserACL userACL,
-                          IdentityRegistry identityRegistry, WebNotificationService webNotificationService) throws Exception {
+                          IdentityRegistry identityRegistry, WebNotificationService webNotificationService, SettingService settingService) throws Exception {
 
     this.spaceStorage = spaceStorage;
     this.identityStorage = identityStorage;
     this.identityRegistry = identityRegistry;
     this.userACL = userACL;
     this.webNotificationService = webNotificationService;
-
-    if (params != null) {
+    this.settingService = settingService;
+    
+    String administrators = (String) settingService.get(Context.GLOBAL, Scope.GLOBAL, "exo:social_spaces_administrators").getValue();
+    if (!StringUtils.isBlank(administrators)) {
+      String[] administratorsArray = administrators.split(",");
+      for(String administratorArray : administratorsArray) {  
+        if (StringUtils.isBlank(administratorArray)) {   
+          continue;
+        }
+        if (!administratorArray.contains("*/")) {
+          this.superManagersMemberships.add(new MembershipEntry(administratorArray));
+        } else {
+          String[] membershipParts = administratorArray.split("/");
+          this.superManagersMemberships.add(new MembershipEntry(membershipParts[2], membershipParts[1]));
+        }
+      }
+    }
+    else if (params != null) {
       if (params.containsKey(SPACES_SUPER_ADMINISTRATORS_PARAM)) {
         ValueParam superAdministratorParam = params.getValueParam(SPACES_SUPER_ADMINISTRATORS_PARAM);
         String superManagersMemberships = superAdministratorParam.getValue();
