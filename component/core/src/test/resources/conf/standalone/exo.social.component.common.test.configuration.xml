@@ -32,4 +32,8 @@
     <type>org.exoplatform.social.common.xmlprocessor.model.XMLTagFilterPolicy</type>
   </component>
 
+  <component>
+    <type>org.exoplatform.commons.persistence.impl.EntityManagerService</type>
+  </component>
+
 </configuration>
