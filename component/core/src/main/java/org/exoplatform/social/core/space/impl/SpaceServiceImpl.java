@@ -33,6 +33,7 @@ import org.exoplatform.commons.api.notification.model.PluginKey;
 import org.exoplatform.commons.api.notification.model.WebNotificationFilter;
 import org.exoplatform.commons.api.notification.service.WebNotificationService;
 import org.exoplatform.commons.api.settings.SettingService;
+import org.exoplatform.commons.api.settings.SettingValue;
 import org.exoplatform.commons.api.settings.data.Context;
 import org.exoplatform.commons.api.settings.data.Scope;
 import org.exoplatform.commons.utils.CommonsUtils;
@@ -138,9 +139,9 @@ public class SpaceServiceImpl implements SpaceService {
     this.webNotificationService = webNotificationService;
     this.settingService = settingService;
     
-    String administrators = (String) settingService.get(Context.GLOBAL, Scope.GLOBAL, "exo:social_spaces_administrators").getValue();
-    if (!StringUtils.isBlank(administrators)) {
-      String[] administratorsArray = administrators.split(",");
+    SettingValue<String> administrators = (SettingValue<String>) settingService.get(Context.GLOBAL, Scope.GLOBAL, "exo:social_spaces_administrators");
+    if (administrators != null && !StringUtils.isBlank(administrators.getValue())) {
+      String[] administratorsArray = administrators.getValue().split(",");
       for(String administratorArray : administratorsArray) {  
         if (StringUtils.isBlank(administratorArray)) {   
           continue;
