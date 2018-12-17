@@ -424,6 +424,9 @@
                         _ctx.put(TEMPLATE_PARAM_COMMENT, it);
                         _ctx.put("authorName", id.remoteId);
                         _ctx.put("authorFullName", commenterFullName);
+                        _ctx.put("activityID", activity.id);
+                        _ctx.put("commentPostedTime", commentPostedTime);
+                        _ctx.put("commentEditedTime", commentEditedTime);
                         _ctx.include("war:/groovy/social/webui/activity/UIActivityCommentActions.gtmpl");
                     %>
 				</div><!--end commentRight-->
