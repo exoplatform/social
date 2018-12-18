@@ -73,6 +73,7 @@ public class UISpaceMember extends UIContainer {
   private static final Log LOG = ExoLogger.getLogger(UISpaceMember.class);
 
 
+  private static final String MSG_ERROR_NOT_LEADER = "UISpaceMember.msg.error_not_leader";
   private static final String MSG_ERROR_SELF_REMOVE_LEADER = "UISpaceMember.msg.error_self_remove_leader";
   private static final String MSG_ERROR_SELF_REMOVE_LEADER_YOU = "UISpaceMember.msg.error_self_remove_leader_you";
   private static final String MSG_ERROR_SELF_REMOVE_LEADER_ARE = "UISpaceMember.msg.error_self_remove_leader_are";
@@ -356,7 +357,7 @@ public class UISpaceMember extends UIContainer {
       int currentPage = iteratorExistingUsers.getCurrentPage();
       Set<String> users = new LinkedHashSet<String>(Arrays.asList(memberUsers));
 
-      LazyPageList<String> pageList = new LazyPageList<String>(new StringListAccess(new ArrayList<String>(users)), MEMBERS_PER_PAGE);
+      LazyPageList<String> pageList = new LazyPageList<>(new StringListAccess(new ArrayList<>(users)), MEMBERS_PER_PAGE);
       iteratorExistingUsers.setPageList(pageList);
       if (this.isNewSearch()) {
         iteratorExistingUsers.setCurrentPage(FIRST_PAGE);
@@ -560,20 +561,28 @@ public class UISpaceMember extends UIContainer {
     @Override
     public void execute(Event<UISpaceMember> event) throws Exception {
       UISpaceMember uiSpaceMember = event.getSource();
-      WebuiRequestContext rcontext = event.getRequestContext();
-      String targetUser = rcontext.getRequestParameter(OBJECTID);
       SpaceService spaceService = uiSpaceMember.getSpaceService();
+      WebuiRequestContext rcontext = event.getRequestContext();
+      String authenticatedUser = rcontext.getRemoteUser();
       Space space = spaceService.getSpaceById(uiSpaceMember.spaceId);
+
+      // only space administrators and managers can promote/revoke manager
+      if(!spaceService.isSuperManager(authenticatedUser) && !spaceService.isManager(space, authenticatedUser)) {
+        UIApplication uiApp = rcontext.getUIApplication();
+        uiApp.addMessage(new ApplicationMessage(MSG_ERROR_NOT_LEADER, new String[]{}, ApplicationMessage.WARNING));
+        return;
+      }
+
+      String targetUser = rcontext.getRequestParameter(OBJECTID);
       space.setEditor(Utils.getViewerRemoteId());
       
       boolean success = false;
       if (spaceService.isManager(space, targetUser)) {
         if (spaceService.isOnlyManager(space, targetUser)) {
           UIApplication uiApp = rcontext.getUIApplication();
-          String currentUser = rcontext.getRemoteUser();
-          
-          //
-          uiApp.addMessage(new ApplicationMessage(MSG_ERROR_SELF_REMOVE_LEADER, uiSpaceMember.makeParamSelfRemoveLeaderErrorMessage(targetUser, currentUser), ApplicationMessage.WARNING));
+          uiApp.addMessage(new ApplicationMessage(MSG_ERROR_SELF_REMOVE_LEADER,
+                  uiSpaceMember.makeParamSelfRemoveLeaderErrorMessage(targetUser, authenticatedUser),
+                  ApplicationMessage.WARNING));
           return;
         }
         spaceService.setManager(space, targetUser, false);
