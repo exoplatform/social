@@ -23,6 +23,7 @@ import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.space.impl.DefaultSpaceApplicationHandler;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
+import org.exoplatform.social.service.rest.api.models.IdentityNameList;
 import org.exoplatform.social.service.test.AbstractResourceTest;
 
 import java.util.List;
@@ -158,6 +159,49 @@ public class SpaceRestServiceTest extends AbstractResourceTest {
     assertEquals(5, spaces.size());
     Space got = spaces.get(0);
     assertEquals("space_4", got.getPrettyName());
+
+    //
+    endSession();
+  }
+
+  public void testSuggestSpacesOfCurrentUser() throws Exception {
+    //
+    startSessionAs("mary");
+
+    populateData();
+    //
+    ContainerResponse response = service("GET", "/portal/social/spaces/suggest.json?currentUser=mary&typeOfRelation=confirmed", "", null, null, "mary");
+    assertEquals(200, response.getStatus());
+    IdentityNameList list = (IdentityNameList) response.getEntity();
+    assertNotNull(list);
+    assertNotNull(list.getOptions());
+    assertEquals(6, list.getOptions().size());
+
+    //
+    endSession();
+  }
+
+  public void testSuggestSpacesOfNoUser() throws Exception {
+    //
+    startSessionAs("mary");
+
+    populateData();
+    //
+    ContainerResponse response = service("GET", "/portal/social/spaces/suggest.json?typeOfRelation=confirmed", "", null, null, "mary");
+    assertEquals(400, response.getStatus());
+
+    //
+    endSession();
+  }
+
+  public void testSuggestSpacesOfAnotherUser() throws Exception {
+    //
+    startSessionAs("john");
+
+    populateData();
+    //
+    ContainerResponse response = service("GET", "/portal/social/spaces/suggest.json?currentUser=mary&typeOfRelation=confirmed", "", null, null, "john");
+    assertEquals(401, response.getStatus());
 
     //
     endSession();

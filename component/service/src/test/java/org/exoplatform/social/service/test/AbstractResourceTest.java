@@ -106,6 +106,7 @@ public abstract class AbstractResourceTest extends AbstractServiceTest {
                                    String baseURI,
                                    Map<String, List<String>> headers,
                                    byte[] data,
+                                   String remoteUser,
                                    ContainerResponseWriter writer) throws Exception {
 
     if (headers == null) {
@@ -122,7 +123,8 @@ public abstract class AbstractResourceTest extends AbstractServiceTest {
                                                                       in,
                                                                       in != null ? in.available() : 0,
                                                                       method,
-                                                                      headers);
+                                                                      headers,
+                                                                      remoteUser);
     envctx.put(HttpServletRequest.class, httpRequest);
     EnvironmentContext.setCurrent(envctx);
     ContainerRequest request = new ContainerRequest(method,
@@ -150,7 +152,46 @@ public abstract class AbstractResourceTest extends AbstractServiceTest {
                                    String baseURI,
                                    MultivaluedMap<String, String> headers,
                                    byte[] data) throws Exception {
-    return service(method, requestURI, baseURI, headers, data, new DummyContainerResponseWriter());
+    return service(method, requestURI, baseURI, headers, data, null, new DummyContainerResponseWriter());
+  }
+
+  /**
+   * gets response without provided writer
+   * @param method
+   * @param requestURI
+   * @param baseURI
+   * @param headers
+   * @param data
+   * @return
+   * @throws Exception
+   */
+  public ContainerResponse service(String method,
+                                   String requestURI,
+                                   String baseURI,
+                                   MultivaluedMap<String, String> headers,
+                                   byte[] data,
+                                   String remoteUser) throws Exception {
+    return service(method, requestURI, baseURI, headers, data, remoteUser, new DummyContainerResponseWriter());
+  }
+
+  /**
+   * gets response with provided writer
+   * @param method
+   * @param requestURI
+   * @param baseURI
+   * @param headers
+   * @param data
+   * @param writer
+   * @return
+   * @throws Exception
+   */
+  public ContainerResponse service(String method,
+                                   String requestURI,
+                                   String baseURI,
+                                   Map<String, List<String>> headers,
+                                   byte[] data,
+                                   ContainerResponseWriter writer) throws Exception {
+    return service(method, requestURI, baseURI, headers, data, null, writer);
   }
 
   /**

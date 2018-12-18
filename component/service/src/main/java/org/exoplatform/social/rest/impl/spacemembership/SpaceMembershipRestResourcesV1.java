@@ -40,7 +40,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
 import org.apache.commons.lang.ArrayUtils;
-import org.exoplatform.commons.utils.CommonsUtils;
+import org.apache.commons.lang.StringUtils;
 import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.services.security.ConversationState;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
@@ -61,12 +61,18 @@ import org.exoplatform.social.service.rest.api.VersionResources;
 public class SpaceMembershipRestResourcesV1 implements SpaceMembershipRestResources {
   
   private static final String SPACE_PREFIX = "/spaces/";
-  
+
+  private SpaceService spaceService;
+
+  private IdentityManager identityManager;
+
   private enum MembershipType {
     ALL, PENDING, APPROVED, IGNORED
   }
   
-  public SpaceMembershipRestResourcesV1(){
+  public SpaceMembershipRestResourcesV1(SpaceService spaceService, IdentityManager identityManager) {
+    this.spaceService = spaceService;
+    this.identityManager = identityManager;
   }
 
   @GET
@@ -89,46 +95,56 @@ public class SpaceMembershipRestResourcesV1 implements SpaceMembershipRestResour
                                        @ApiParam(value = "Asking for a full representation of a specific subresource if any", required = false) @QueryParam("expand") String expand,
                                        @ApiParam(value = "Returning the number of memberships or not", defaultValue = "false") @QueryParam("returnSize") boolean returnSize) throws Exception {
 
+    String authenticatedUser = ConversationState.getCurrent().getIdentity().getUserId();
+    if (user == null) {
+      user = authenticatedUser;
+    }
+
+    if(!spaceService.isSuperManager(authenticatedUser)) {
+      if (StringUtils.isNotEmpty(spaceDisplayName)) {
+        Space space = spaceService.getSpaceByDisplayName(spaceDisplayName);
+        if(space == null || !spaceService.isManager(space, authenticatedUser)) {
+          throw new WebApplicationException(Response.Status.UNAUTHORIZED);
+        }
+      } else if (!user.equals(authenticatedUser)) {
+        throw new WebApplicationException(Response.Status.UNAUTHORIZED);
+      }
+    }
+
     offset = offset > 0 ? offset : RestUtils.getOffset(uriInfo);
     limit = limit > 0 ? limit : RestUtils.getLimit(uriInfo);
-    
+
     MembershipType membershipType;
-      try {
-        membershipType = MembershipType.valueOf(status.toUpperCase());
-      } catch (Exception e) {
+    try {
+      membershipType = MembershipType.valueOf(status.toUpperCase());
+    } catch (Exception e) {
       membershipType = MembershipType.ALL;
     }
-    
-    if (user == null) {
-      user = ConversationState.getCurrent().getIdentity().getUserId();
-    }
-    
-    SpaceService spaceService = CommonsUtils.getService(SpaceService.class);
+
     ListAccess<Space> listAccess = null;
     
     switch (membershipType) {
-    case PENDING: {
-      listAccess = spaceDisplayName != null ? spaceService.getPendingSpacesByFilter(
-        user, new SpaceFilter(spaceDisplayName)) : spaceService.getPendingSpacesWithListAccess(user);
-      break;
-    }
-    
-    case APPROVED: {
-      listAccess = spaceDisplayName != null ? spaceService.getAccessibleSpacesByFilter(
-        user, new SpaceFilter(spaceDisplayName)) : spaceService.getAccessibleSpacesWithListAccess(user);
-      break;
-    }
-    
-    default:
-      if (spaceDisplayName != null) {
-        SpaceFilter spaceFilter = new SpaceFilter(spaceDisplayName);
+      case PENDING: {
+        listAccess = spaceDisplayName != null ? spaceService.getPendingSpacesByFilter(
+          user, new SpaceFilter(spaceDisplayName)) : spaceService.getPendingSpacesWithListAccess(user);
+        break;
+      }
+
+      case APPROVED: {
+        listAccess = spaceDisplayName != null ? spaceService.getAccessibleSpacesByFilter(
+          user, new SpaceFilter(spaceDisplayName)) : spaceService.getAccessibleSpacesWithListAccess(user);
+        break;
+      }
+
+      default:
+        SpaceFilter spaceFilter = new SpaceFilter();
+        if (spaceDisplayName != null) {
+          spaceFilter.setSpaceNameSearchCondition(spaceDisplayName);
+        }
         spaceFilter.setRemoteId(user);
         listAccess = spaceService.getAllSpacesByFilter(spaceFilter);
-      } else {
-        listAccess = spaceService.getAllSpacesWithListAccess();
-      }
-       
-      break;
+
+        break;
     }
     
     List<DataEntity> spaceMemberships = getSpaceMemberships(Arrays.asList(listAccess.load(offset, limit)), user, uriInfo.getPath(), expand);
@@ -168,8 +184,6 @@ public class SpaceMembershipRestResourcesV1 implements SpaceMembershipRestResour
     String space = model.getSpace();
     String authenticatedUser = ConversationState.getCurrent().getIdentity().getUserId();
     //
-    SpaceService spaceService = CommonsUtils.getService(SpaceService.class);
-    IdentityManager identityManager = CommonsUtils.getService(IdentityManager.class);
     if (space == null || spaceService.getSpaceByDisplayName(space) == null) {
       throw new WebApplicationException(Response.Status.UNAUTHORIZED);
     }
@@ -217,11 +231,10 @@ public class SpaceMembershipRestResourcesV1 implements SpaceMembershipRestResour
       throw new WebApplicationException(Response.Status.UNAUTHORIZED);
     }
     //
-    if (CommonsUtils.getService(IdentityManager.class).getOrCreateIdentity(OrganizationIdentityProvider.NAME, idParams[1], true) == null) {
+    if (identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, idParams[1], true) == null) {
       throw new WebApplicationException(Response.Status.UNAUTHORIZED);
     }
     //
-    SpaceService spaceService = CommonsUtils.getService(SpaceService.class);
     String spaceGroupId = SPACE_PREFIX + idParams[0];
     Space space = spaceService.getSpaceByGroupId(spaceGroupId);
     if (space == null) {
@@ -258,12 +271,11 @@ public class SpaceMembershipRestResourcesV1 implements SpaceMembershipRestResour
     }
     //
     String targetUser = idParams[1];
-    if (CommonsUtils.getService(IdentityManager.class).getOrCreateIdentity(OrganizationIdentityProvider.NAME, targetUser, true) == null) {
+    if (identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, targetUser, true) == null) {
       throw new WebApplicationException(Response.Status.UNAUTHORIZED);
     }
     //
     String spacePrettyName = idParams[0];
-    SpaceService spaceService = CommonsUtils.getService(SpaceService.class);
     String spaceGroupId = SPACE_PREFIX + spacePrettyName;
     Space space = spaceService.getSpaceByGroupId(spaceGroupId);
     if (space == null) {
@@ -310,12 +322,11 @@ public class SpaceMembershipRestResourcesV1 implements SpaceMembershipRestResour
     }
     //
     String targetUser = idParams[1];
-    if (CommonsUtils.getService(IdentityManager.class).getOrCreateIdentity(OrganizationIdentityProvider.NAME, targetUser, true) == null) {
+    if (identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, targetUser, true) == null) {
       throw new WebApplicationException(Response.Status.UNAUTHORIZED);
     }
     //
     String spacePrettyName = idParams[0];
-    SpaceService spaceService = CommonsUtils.getService(SpaceService.class);
     String spaceGroupId = SPACE_PREFIX + spacePrettyName;
     Space space = spaceService.getSpaceByGroupId(spaceGroupId);
     if (space == null) {

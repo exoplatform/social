@@ -1598,7 +1598,7 @@ public class SpaceUtils {
    * @return the search condition after process
    */
   public static String processUnifiedSearchCondition(String input) {
-    if (input.isEmpty()) {
+    if (StringUtils.isEmpty(input)) {
       return input;
     } else if (input.indexOf("~") < 0 || input.indexOf("\\~") > 0) {
       return input.trim();
