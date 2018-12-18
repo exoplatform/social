@@ -30,19 +30,19 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.security.RolesAllowed;
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriInfo;
+import javax.ws.rs.core.*;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import org.apache.commons.collections.map.HashedMap;
 
+import org.apache.commons.lang3.StringUtils;
 import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.commons.utils.Safe;
 import org.exoplatform.container.ExoContainerContext;
@@ -57,7 +57,6 @@ import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.service.LinkProvider;
 import org.exoplatform.social.core.space.SpaceException;
 import org.exoplatform.social.core.space.SpaceFilter;
-import org.exoplatform.social.core.space.SpaceListAccess;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
 import org.exoplatform.social.rest.impl.space.SpaceRestResourcesV1;
@@ -349,13 +348,22 @@ public class SpacesRestService implements ResourceContainer {
    * @deprecated Deprecated from 4.3.x. Replaced by a new API {@link SpaceRestResourcesV1#getSpaces(UriInfo, String, int, int, boolean, String)}
    */
   @GET
+  @RolesAllowed("users")
   @Path("suggest.{format}")
   public Response suggestSpacenames(@Context UriInfo uriInfo,
+                                    @Context HttpServletRequest request,
                                     @PathParam("portalName") String portalName,
                                     @QueryParam("conditionToSearch") String conditionToSearch,
                                     @QueryParam("typeOfRelation") String typeOfRelation,
                                     @QueryParam("currentUser") String userId,
                                     @PathParam("format") String format) throws Exception {
+
+    if(StringUtils.isBlank(userId)) {
+      throw new WebApplicationException(Response.Status.BAD_REQUEST);
+    }
+    if(!userId.equals(request.getRemoteUser())) {
+      throw new WebApplicationException(Response.Status.UNAUTHORIZED);
+    }
 
     MediaType mediaType = Util.getMediaType(format);
     portalContainerName = portalName;

@@ -190,7 +190,7 @@ public class UtilTest extends AbstractServiceTest {
 
   private void setFakeCurrentEnvironmentContext(String urlRequest) {
     EnvironmentContext envctx = new EnvironmentContext();
-    HttpServletRequest httpRequest = new SocialMockHttpServletRequest(urlRequest, null, 0, "GET", null);
+    HttpServletRequest httpRequest = new SocialMockHttpServletRequest(urlRequest, null, 0, "GET", null, null);
     envctx.put(HttpServletRequest.class, httpRequest);
     EnvironmentContext.setCurrent(envctx);
   }
