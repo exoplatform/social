@@ -83,6 +83,8 @@ import org.exoplatform.social.core.storage.api.SpaceStorage;
 @ManagedBy(SpaceServiceManagerBean.class)
 public class SpaceServiceImpl implements SpaceService {
   private static final String SPACES_SUPER_ADMINISTRATORS_PARAM = "spaces.super.administrators";
+  
+  private static final String SPACES_SUPER_CREATORS_PARAM = "spaces.super.creators";
 
   private static final Log                     LOG                   = ExoLogger.getLogger(SpaceServiceImpl.class.getName());
 

@@ -407,6 +407,10 @@
         <name>spaces.super.administrators</name>
         <value>${social.spaces.administrators:}</value>
       </value-param>
+      <value-param>
+        <name>spaces.super.creators</name>
+        <value>${social.spaces.creators:}</value>
+      </value-param>
     </init-params>
   </component>
 

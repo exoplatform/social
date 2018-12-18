@@ -15,44 +15,15 @@
       <tr>
         <td><h2>Create spaces</h2> <h5>Ability to create spaces</h5></td>
         <td>
-          <div v-show="displayEditCreate !== 0">
-            <div v-if="guests.length > 0">
-              <div v-for="guest in guests" :key="guest">
-                <h4 v-if="guest.startsWith('*/')"> Group: {{ guest }}</h4>
-                <h4 v-else-if="!guest.startsWith('No assign')"> User: {{ guest }}</h4>
-                <h4 v-else>No assignement</h4>
-              </div>
-            </div>
-          </div>
-          <div v-show="displayEditCreate === 0" class="inputUser">
-            <input id="add-user-suggestor" type="text"/>
-          </div>
-        </td>
-        <td v-if="displayEditCreate === 1" class="center actionContainer" >
-          <a data-placement="bottom" rel="tooltip" class="actionIcon" data-original-title="Edit" @click="editCreateSpace()">
-            <i class="uiIconEdit uiIconLightGray"></i>
-          </a>
-        </td>
-        <td v-if="displayEditCreate === 0" class="center actionContainer" >
-          <a data-placement="bottom" rel="tooltip" class="actionIcon" data-original-title="Save" @click="savePermissionsCreateSpace()">
-            <i class="uiIconSave uiIconLightGray"></i>
-          </a>
-          <a data-placement="bottom" rel="tooltip" class="actionIcon" data-original-title="Close" @click="editCreateSpace()">
-            <i class="uiIconClose uiIconLightGray"></i>
-          </a>
-        </td>
-      </tr>
-      <tr>
-        <td><h2>Manage spaces</h2> <h5>Ability to edit spaces</h5></td>
-        <td>
           <div v-show="displayEditManage !== 0">
             <div v-if="managers.length > 0">
               <div v-for="manager in managers" :key="manager">
                 <h4 v-if="manager.startsWith('*/')"> Group: {{ manager }}</h4>
-                <h4 v-else-if="!manager.startsWith('No assign')"> User: {{ manager }}</h4>
+                <h4 v-else-if="!manager.startsWith('No assign') && manager !== ''"> User: {{ manager }}</h4>
                 <h4 v-else>No assignement</h4>
               </div>
             </div>
+            <h4 v-if="managers.length === 0">No assignement</h4>
           </div>
           <div v-show="displayEditManage === 0" class="inputUser">
             <input id="add-guest-suggestor" type="text"/>
@@ -68,6 +39,37 @@
             <i class="uiIconSave uiIconLightGray"></i>
           </a>
           <a data-placement="bottom" rel="tooltip" class="actionIcon" data-original-title="Close" @click="editManageSpace()">
+            <i class="uiIconClose uiIconLightGray"></i>
+          </a>
+        </td>       
+      </tr>
+      <tr>
+        <td><h2>Manage spaces</h2> <h5>Ability to edit spaces</h5></td>
+        <td>
+          <div v-show="displayEditCreate !== 0">
+            <div v-if="guests.length > 0">
+              <div v-for="guest in guests" :key="guest">
+                <h4 v-if="guest.startsWith('*/')"> Group: {{ guest }}</h4>
+                <h4 v-else-if="!guest.startsWith('No assign')"> User: {{ guest }}</h4>
+                <h4 v-else>No assignement</h4>
+              </div>
+            </div>
+            <h4 v-if="guests.length === 0">No assignement</h4>
+          </div>
+          <div v-show="displayEditCreate === 0" class="inputUser">
+            <input id="add-user-suggestor" type="text"/>
+          </div>
+        </td>
+        <td v-if="displayEditCreate === 1" class="center actionContainer" >
+          <a data-placement="bottom" rel="tooltip" class="actionIcon" data-original-title="Edit" @click="editCreateSpace()">
+            <i class="uiIconEdit uiIconLightGray"></i>
+          </a>
+        </td>
+        <td v-if="displayEditCreate === 0" class="center actionContainer" >
+          <a data-placement="bottom" rel="tooltip" class="actionIcon" data-original-title="Save" @click="savePermissionsCreateSpace()">
+            <i class="uiIconSave uiIconLightGray"></i>
+          </a>
+          <a data-placement="bottom" rel="tooltip" class="actionIcon" data-original-title="Close" @click="editCreateSpace()">
             <i class="uiIconClose uiIconLightGray"></i>
           </a>
         </td>
@@ -159,12 +161,12 @@ export default {
     savePermissionsManageSpace() {
       this.settingValue = this.managers.join();
       if(this.managers){
-        spaceAdministrationServices.createSetting('GLOBAL','GLOBAL','exo:social_spaces_managers',this.settingValue);
+        spaceAdministrationServices.createSetting('GLOBAL','GLOBAL','exo:social_spaces_creators',this.settingValue);
       }
       this.displayEditManage = 1;
     },
     getSettingValueManageSpace() {
-      spaceAdministrationServices.getsSettingValue('GLOBAL','GLOBAL','exo:social_spaces_managers').then(data => {
+      spaceAdministrationServices.getsSettingValue('GLOBAL','GLOBAL','exo:social_spaces_creators').then(data => {
         if(data && data.value !== '') {
           this.permissionManagers = data.value;
         }
