@@ -54,5 +54,12 @@ export function getsSettingValue(context,scope,settingKey) {
     },
     credentials: 'include',
     method: 'GET'
-  }).then(resp => resp.json());
+  }).then(resp => {
+    const HTTP_OK_CODE = 200;
+    if(resp.status === HTTP_OK_CODE) {
+      return resp.json();
+    } else {
+      return resp.text();
+    }
+  });
 }  
