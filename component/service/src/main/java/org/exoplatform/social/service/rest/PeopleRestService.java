@@ -156,9 +156,9 @@ public class PeopleRestService implements ResourceContainer{
         if (CheckSearchInGroupName(group.getGroupName(), search)) {
           Option opt = new Option();
           if (group.getParentId() != null) {
-            parentId = "*" + group.getParentId() + "/";
+            parentId = "*" + group.getParentId() + ":/";
           } else {
-            parentId = "*/";
+            parentId = "*:/";
           }
           opt.setText(parentId + group.getGroupName());
           opt.setValue(group.getGroupName());

@@ -65,4 +65,46 @@ public class SpaceServiceManagerBean {
   public void removeSpaceManager(@ManagedDescription("Spaces super manger memberships") @ManagedName("permissionExpression") String permissionExpression) {
     spaceService.removeSuperManagersMembership(permissionExpression);
   }
+  
+  /**
+   * Gets the list of permission expressions of space creators.
+   * See {@link SpaceService#getSuperCreatorsMemberships()}
+   * 
+   * @return {@link List} of type {@link String}
+   */
+  @Managed
+  @ManagedDescription("Get Spaces super creators")
+  @Impact(ImpactType.READ)
+  public List<String> getSpaceCreator() {
+    return spaceService.getSuperCreatorsMemberships()
+                       .stream()
+                       .map(membership -> membership.getMembershipType() + ":" + membership.getGroup())
+                       .collect(Collectors.toList());
+  }
+  
+  /**
+   * See {@link SpaceService#addSuperCreatorsMembership(String)}
+   * 
+   * @param permissionExpression permission expression of type {@link String}
+   * 
+   */
+  @Managed
+  @ManagedDescription("Add Spaces creators membership")
+  @Impact(ImpactType.WRITE)
+  public void addSpaceCreator(@ManagedDescription("Spaces creator role") @ManagedName("permissionExpression") String permissionExpression) {
+    spaceService.addSuperCreatorsMembership(permissionExpression);
+  }
+  
+  /**
+   * See {@link SpaceService#removeSuperManagersMembership(String)}
+   * 
+   * @param permissionExpression permission expression of type {@link String}
+   * 
+   */
+  @Managed
+  @ManagedDescription("Remove Spaces creators membership")
+  @Impact(ImpactType.WRITE)
+  public void removeSpaceCreator(@ManagedDescription("Spaces creator memberships") @ManagedName("permissionExpression") String permissionExpression) {
+    spaceService.removeSuperCreatorsMembership(permissionExpression);
+  }
 }
