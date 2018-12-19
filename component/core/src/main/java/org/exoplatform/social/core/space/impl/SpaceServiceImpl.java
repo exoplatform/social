@@ -123,6 +123,8 @@ public class SpaceServiceImpl implements SpaceService {
   private WebNotificationService webNotificationService;
 
   private List<MembershipEntry> superManagersMemberships = new ArrayList<>();
+  
+  private List<MembershipEntry> superCreatorsMemberships = new ArrayList<>();
 
   /**
    * SpaceServiceImpl constructor Initialize
@@ -148,11 +150,11 @@ public class SpaceServiceImpl implements SpaceService {
         if (StringUtils.isBlank(administratorArray)) {   
           continue;
         }
-        if (!administratorArray.contains("*/")) {
+        if (!administratorArray.contains(":/")) {
           this.superManagersMemberships.add(new MembershipEntry(administratorArray));
         } else {
-          String[] membershipParts = administratorArray.split("/");
-          this.superManagersMemberships.add(new MembershipEntry(membershipParts[2], membershipParts[1]));
+          String[] membershipParts = administratorArray.split(":");
+          this.superManagersMemberships.add(new MembershipEntry(membershipParts[1], membershipParts[0]));
         }
       }
     }
@@ -171,6 +173,42 @@ public class SpaceServiceImpl implements SpaceService {
             } else {
               String[] membershipParts = superManagerMembership.split(":");
               this.superManagersMemberships.add(new MembershipEntry(membershipParts[1], membershipParts[0]));
+            }
+          }
+        }
+      }
+      
+      SettingValue<String> creators = (SettingValue<String>) settingService.get(Context.GLOBAL, Scope.GLOBAL, "exo:social_spaces_creators");
+      if (creators != null && !StringUtils.isBlank(creators.getValue())) {
+        String[] creatorsArray = creators.getValue().split(",");
+        for(String creatorArray : creatorsArray) {  
+          if (StringUtils.isBlank(creatorArray)) {   
+            continue;
+          }
+          if (!creatorArray.contains(":/")) {
+            this.superCreatorsMemberships.add(new MembershipEntry(creatorArray));
+          } else {
+            String[] membershipParts = creatorArray.split(":");
+            this.superCreatorsMemberships.add(new MembershipEntry(membershipParts[1], membershipParts[0]));
+          }
+        }
+      }
+      else if (params != null) {
+        if (params.containsKey(SPACES_SUPER_CREATORS_PARAM)) {
+          ValueParam superCreatorParam = params.getValueParam(SPACES_SUPER_CREATORS_PARAM);
+          String superCreatorsMemberships = superCreatorParam.getValue();
+          if (StringUtils.isNotBlank(superCreatorsMemberships)) {
+            String[] superCreatorsMembershipsArray = superCreatorsMemberships.split(",");
+            for (String superCreatorMembership : superCreatorsMembershipsArray) {
+              if (StringUtils.isBlank(superCreatorMembership)) {
+                continue;
+              }
+              if (!superCreatorMembership.contains(":/")) {
+                LOG.warn("Invalid entry '" + superCreatorMembership + "'. A permission expression is expected (mstype:groupId).");
+              } else {
+                String[] membershipParts = superCreatorMembership.split(":");
+                this.superCreatorsMemberships.add(new MembershipEntry(membershipParts[1], membershipParts[0]));
+              }
             }
           }
         }
@@ -446,6 +484,11 @@ public class SpaceServiceImpl implements SpaceService {
     if (!SpaceUtils.isValidSpaceName(space.getDisplayName())) {
         throw new RuntimeException("Error while creating the space " + space.getDisplayName()+ ": space name can only contain letters, digits or space characters only");
     }
+
+    if(!canCreateSpace(creator)) {
+      throw new RuntimeException("User does not have permissions to create a space.");
+    }
+
     // Add creator as a manager and a member to this space
     String[] managers = space.getManagers();
     String[] members = space.getMembers();
@@ -527,6 +570,30 @@ public class SpaceServiceImpl implements SpaceService {
     }
     
     return space;
+  }
+  
+  private boolean canCreateSpace(String creator) {
+    boolean canCreateSpace = false;
+
+    try {
+      List<MembershipEntry> memberships = getSuperCreatorsMemberships();
+
+      if (memberships == null || memberships.isEmpty()) {
+        // no membership - anyone can create a space
+        canCreateSpace = true;
+      } else {
+        for (MembershipEntry membership : memberships) {
+          if (creator.equals(membership.toString())) {
+            canCreateSpace = true;
+            break;
+          }
+        }
+      }
+    } catch (Exception e) {
+      canCreateSpace = false;
+    }
+
+    return canCreateSpace;
   }
 
   /**
@@ -1742,4 +1809,45 @@ public class SpaceServiceImpl implements SpaceService {
     }
     return editor;
   }
+  
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public List<MembershipEntry> getSuperCreatorsMemberships() {
+    return Collections.unmodifiableList(superCreatorsMemberships);
+  }
+  
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void addSuperCreatorsMembership(String permissionExpression) {
+    if(StringUtils.isBlank(permissionExpression)) {
+      throw new IllegalArgumentException("Permission expression couldn't be empty");
+    }
+    if (!permissionExpression.contains(":/")) {
+       this.superCreatorsMemberships.add(new MembershipEntry(permissionExpression));
+    } else {
+       String[] membershipParts = permissionExpression.split(":");
+       this.superCreatorsMemberships.add(new MembershipEntry(membershipParts[1], membershipParts[0]));
+    } 
+  }
+  
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void removeSuperCreatorsMembership(String permissionExpression) {
+    if (StringUtils.isBlank(permissionExpression)) {
+      throw new IllegalArgumentException("Permission expression couldn't be empty");
+    }
+    Iterator<MembershipEntry> superCreatorsMembershipsIterator = superCreatorsMemberships.iterator();
+    while (superCreatorsMembershipsIterator.hasNext()) {
+      MembershipEntry membershipEntry = superCreatorsMembershipsIterator.next();
+      if (permissionExpression.trim().equals(membershipEntry.toString())) {
+        superCreatorsMembershipsIterator.remove();
+      }
+    } 
+  } 
 }

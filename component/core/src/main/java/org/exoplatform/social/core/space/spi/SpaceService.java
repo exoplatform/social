@@ -1408,4 +1408,25 @@ public interface SpaceService {
    */
   void removeSuperManagersMembership(String permissionExpression);
   
+  /**
+   * Returns the list of creators memberships (permission expressions)
+   * 
+   * @return a {@link List} of memberships of type {@link String}
+   */
+  List<MembershipEntry> getSuperCreatorsMemberships();
+  
+  /**
+   * Add spaces super creator membership
+   * 
+   * @param permissionExpression
+   */
+  void addSuperCreatorsMembership(String permissionExpression);
+  
+  /**
+   * remove spaces super creator membership
+   * 
+   * @param permissionExpression
+   */
+  void removeSuperCreatorsMembership(String permissionExpression);
+  
 }
