@@ -29,6 +29,9 @@
   <packaging>war</packaging>
   <name>eXo PLF:: Social Portlet Web App</name>
   <description>eXo Social Portlet Web App</description>
+  <properties>
+    <exo.test.coverage.ratio>0.009</exo.test.coverage.ratio>
+  </properties>
   <dependencies>
     <dependency>
       <groupId>javax.portlet</groupId>

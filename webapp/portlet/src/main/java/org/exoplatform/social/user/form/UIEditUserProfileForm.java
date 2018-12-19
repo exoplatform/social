@@ -1,15 +1,10 @@
 package org.exoplatform.social.user.form;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
+
+import org.apache.commons.lang3.StringUtils;
 
 import org.exoplatform.commons.utils.CommonsUtils;
 import org.exoplatform.portal.application.PortalRequestContext;
@@ -23,7 +18,6 @@ import org.exoplatform.social.user.profile.AboutMeComparator;
 import org.exoplatform.social.user.profile.ContactComparator;
 import org.exoplatform.social.user.profile.ExperiencesComparator;
 import org.exoplatform.social.webui.Utils;
-import org.exoplatform.social.webui.profile.settings.UIIMControlRenderer;
 import org.exoplatform.social.webui.profile.settings.UserProfileRenderingService;
 import org.exoplatform.web.application.ApplicationMessage;
 import org.exoplatform.web.application.RequireJS;
@@ -38,11 +32,7 @@ import org.exoplatform.webui.event.Event.Phase;
 import org.exoplatform.webui.event.EventListener;
 import org.exoplatform.webui.form.*;
 import org.exoplatform.webui.form.input.UICheckBoxInput;
-import org.exoplatform.webui.form.validator.EmailAddressValidator;
-import org.exoplatform.webui.form.validator.ExpressionValidator;
-import org.exoplatform.webui.form.validator.MandatoryValidator;
-import org.exoplatform.webui.form.validator.PersonalNameValidator;
-import org.exoplatform.webui.form.validator.StringLengthValidator;
+import org.exoplatform.webui.form.validator.*;
 import org.exoplatform.webui.utils.TimeConvertUtils;
 
 @ComponentConfig(
@@ -73,7 +63,7 @@ public class UIEditUserProfileForm extends UIForm {
   public static final String PHONE_REGEX_EXPRESSION = "^[\\d\\s ().+-]{3,25}+$";
   /** URL REGEX EXPRESSION. */
   public static final String URL_REGEX_EXPRESSION ="^(?i)(" +
-      "((?:(?:ht)tp(?:s?)\\:\\/\\/)?" +                                                         // protolcol
+      "((?:(?:ht)tp(?:s?)\\:\\/\\/)?" +                                                         // protocol
       "(?:\\w+:\\w+@)?" +                                                                       // username password
       "(((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\." +  // IPAddress
       "(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?))|" +     // IPAddress
@@ -210,17 +200,17 @@ public class UIEditUserProfileForm extends UIForm {
     experienceSection.getUIFormTextAreaInput(Profile.EXPERIENCES_SKILLS + id).setValue(getValueExperience(experience, Profile.EXPERIENCES_SKILLS));
     experienceSection.getUIFormDateTimeInput(Profile.EXPERIENCES_START_DATE + id).setCalendar(stringToCalendar(experience.get(Profile.EXPERIENCES_START_DATE)));
     experienceSection.getUIFormDateTimeInput(Profile.EXPERIENCES_END_DATE + id).setCalendar(stringToCalendar(experience.get(Profile.EXPERIENCES_END_DATE)));
-    experienceSection.getUICheckBoxInput(Profile.EXPERIENCES_IS_CURRENT + id).setChecked(Boolean.valueOf(experience.get(Profile.EXPERIENCES_IS_CURRENT)));
+    experienceSection.getUICheckBoxInput(Profile.EXPERIENCES_IS_CURRENT + id).setChecked(Boolean.valueOf(String.valueOf(experience.get(Profile.EXPERIENCES_IS_CURRENT))));
     //
     return experienceSection;
   }
 
   private String getValueExperience(Map<String, String> experience, String key) {
-    return UserProfileHelper.decodeHTML(experience.get(key));
+    return experience.get(key);
   }
 
   private String getStringValueProfile(String key) {
-    return UserProfileHelper.decodeHTML((String) currentProfile.getProperty(key));
+    return (String) currentProfile.getProperty(key);
   }
 
   protected void setValueBasicInfo() throws Exception {
@@ -248,8 +238,8 @@ public class UIEditUserProfileForm extends UIForm {
     
     baseSection.getUIFormMultiValueInputSet(Profile.CONTACT_URLS).setValue(UserProfileHelper.getURLValues(currentProfile));
     //Experience
-    List<Map<String, String>> experiences = UserProfileHelper.getDisplayExperience(currentProfile);
-    if(!experiences.isEmpty()) {
+    List<Map<String, String>> experiences = UserProfileHelper.getSortedExperiences(currentProfile);
+    if(experiences != null && !experiences.isEmpty()) {
       int i = 0;
       String experienId;
       removeChildById(FIELD_EMPTY_EXPERIENCE_SECTION);
@@ -265,23 +255,23 @@ public class UIEditUserProfileForm extends UIForm {
       }
       resetActionFileds();
     } else if (experiens.isEmpty()) {
-      addEmpryExperienceSection();
+      addEmptyExperienceSection();
     }
   }
   
-  private void addEmpryExperienceSection() throws Exception {
+  private void addEmptyExperienceSection() throws Exception {
     //
-    UIInputSection emprySelection = getChildById(FIELD_EMPTY_EXPERIENCE_SECTION);
-    if(emprySelection == null) {
-      emprySelection = new UIInputSection(FIELD_EMPTY_EXPERIENCE_SECTION, "Experience", "uiExperien").useGroupControl(false);
+    UIInputSection emptySelection = getChildById(FIELD_EMPTY_EXPERIENCE_SECTION);
+    if(emptySelection == null) {
+      emptySelection = new UIInputSection(FIELD_EMPTY_EXPERIENCE_SECTION, "Experience", "uiExperien").useGroupControl(false);
       ActionData addAction = new ActionData();
       addAction.setAction("AddExperience").setIcon("uiIconPlus")
                .setTooltip(UserProfileHelper.getLabel(null, "UIEditUserProfileForm.title.AddExperience"))
                .setObjectId(FIELD_EXPERIENCE_SECTION + "empty");
-      emprySelection.addUIFormInput(new UIFormInputInfo(FIELD_INFO_EMPTY_EXPERIENCE, FIELD_INFO_EMPTY_EXPERIENCE,
+      emptySelection.addUIFormInput(new UIFormInputInfo(FIELD_INFO_EMPTY_EXPERIENCE, FIELD_INFO_EMPTY_EXPERIENCE,
                                                         getLabel("AddExperience")), Arrays.asList(addAction));
       //
-      addUIFormInput(emprySelection);
+      addUIFormInput(emptySelection);
     }
   }
   
@@ -417,7 +407,7 @@ public class UIEditUserProfileForm extends UIForm {
    * @param value
    */
   private void putData(Map<String, String> map, String key, String value) {
-    map.put(key, UserProfileHelper.encodeHTML(value));
+    map.put(key, value);
   }
   /**
    * @param experienceSection
@@ -514,12 +504,12 @@ public class UIEditUserProfileForm extends UIForm {
         return;
       }
       // About me
-      String aboutMe = UserProfileHelper.encodeHTML(uiForm.getUIInputSection(FIELD_ABOUT_SECTION).getUIFormTextAreaInput(Profile.ABOUT_ME).getValue());
+      String aboutMe = uiForm.getUIInputSection(FIELD_ABOUT_SECTION).getUIFormTextAreaInput(Profile.ABOUT_ME).getValue();
       // Basic information
-      String firstName = UserProfileHelper.encodeHTML(baseSection.getUIStringInput(Profile.FIRST_NAME).getValue());
-      String lastName = UserProfileHelper.encodeHTML(baseSection.getUIStringInput(Profile.LAST_NAME).getValue());
-      String position =  UserProfileHelper.encodeHTML(baseSection.getUIStringInput(Profile.POSITION).getValue());
+      String firstName = baseSection.getUIStringInput(Profile.FIRST_NAME).getValue();
+      String lastName = baseSection.getUIStringInput(Profile.LAST_NAME).getValue();
       //
+      String position =  baseSection.getUIStringInput(Profile.POSITION).getValue();
       String gender = baseSection.getUIFormSelectBox(Profile.GENDER).getValue();
       gender = gender != null && gender.length() > 0 ? gender : null;
       //
@@ -536,7 +526,7 @@ public class UIEditUserProfileForm extends UIForm {
         }
         Map<String, String> mUrl = new HashMap<String, String>();
         mUrl.put(UserProfileHelper.KEY, UserProfileHelper.URL_KEY);
-        mUrl.put(UserProfileHelper.VALUE, UserProfileHelper.encodeHTML(urlStr));
+        mUrl.put(UserProfileHelper.VALUE, urlStr);
         mapUrls.add(mUrl);
       }
       //Experiences
@@ -584,7 +574,7 @@ public class UIEditUserProfileForm extends UIForm {
     }
     
     private String getValue(String value) {
-      if (!UserProfileHelper.isEmpty(value)) {
+      if (StringUtils.isNotBlank(value)) {
         return value;
       }
       return null;
@@ -636,7 +626,7 @@ public class UIEditUserProfileForm extends UIForm {
       if(experienceSections.size() > 0) {
         experienceSections.get(0).setTitle("Experience");
       } else {
-        editUserProfile.addEmpryExperienceSection();
+        editUserProfile.addEmptyExperienceSection();
       }
       //
       editUserProfile.resetActionFileds();

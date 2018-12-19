@@ -17,11 +17,13 @@
 package org.exoplatform.social.user.portlet;
 
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringEscapeUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.core.lifecycle.UIApplicationLifecycle;
@@ -40,23 +42,27 @@ public class UIExperienceProfilePortlet extends UIAbstractUserPortlet {
 
   protected String getAboutMe() {
     String about = (String) currentProfile.getProperty(Profile.ABOUT_ME);
-    return UserProfileHelper.isEmpty(about) ? "" : about;
+    return StringUtils.isBlank(about) ? "" : StringEscapeUtils.escapeHtml4(about);
   }
   
-  protected List<Map<String, String>> getExperience() throws Exception {
-    List<Map<String, String>> experiences = UserProfileHelper.getDisplayExperience(currentProfile);
-    for (Map<String, String> experience : experiences) {
-      String strartDate = experience.get(Profile.EXPERIENCES_START_DATE);
-      if (!UserProfileHelper.isEmpty(strartDate)) {
-        experience.put(Profile.EXPERIENCES_START_DATE, convertDate(strartDate));
-      }
-      //
-      String endDate = experience.get(Profile.EXPERIENCES_END_DATE);
-      if (!UserProfileHelper.isEmpty(endDate)) {
-        experience.put(Profile.EXPERIENCES_END_DATE, convertDate(endDate));
+  protected List<Map<String, String>> getExperiences() {
+    List<Map<String, String>> experiences = UserProfileHelper.getSortedExperiences(currentProfile);
+    List<Map<String, String>> escapedExperiences = new ArrayList<>();
+    if(experiences != null) {
+      for (Map<String, String> experience : experiences) {
+        Map<String, String> escapedExperience = UserProfileHelper.escapeExperience(experience);
+        String startDate = escapedExperience.get(Profile.EXPERIENCES_START_DATE);
+        if (StringUtils.isNotBlank(startDate)) {
+          escapedExperience.put(Profile.EXPERIENCES_START_DATE, convertDate(startDate));
+        }
+        String endDate = escapedExperience.get(Profile.EXPERIENCES_END_DATE);
+        if (StringUtils.isNotBlank(endDate)) {
+          escapedExperience.put(Profile.EXPERIENCES_END_DATE, convertDate(endDate));
+        }
+        escapedExperiences.add(escapedExperience);
       }
     }
-    return experiences;
+    return escapedExperiences;
   }
   
   /**

@@ -2,6 +2,7 @@ package org.exoplatform.social.user.portlet;
 
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
 import org.exoplatform.social.core.activity.model.ActivityPluginType;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.identity.model.Profile;
@@ -77,7 +78,7 @@ public class RecentActivitiesHelper {
   public static String getLinkTitle(ExoSocialActivity activity) {
     Map<String, String> templateParams = activity.getTemplateParams();
     String linkTitle = templateParams.get(LINK_TITLE);
-    if (!UserProfileHelper.isEmpty(linkTitle)) {
+    if (StringUtils.isNotBlank(linkTitle)) {
       return linkTitle;
     }
     return null;
