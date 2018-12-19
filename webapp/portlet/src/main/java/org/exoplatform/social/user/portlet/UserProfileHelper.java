@@ -2,14 +2,11 @@ package org.exoplatform.social.user.portlet;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.ResourceBundle;
-import java.util.regex.Pattern;
+import java.util.*;
+import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.StringEscapeUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.exoplatform.commons.utils.CommonsUtils;
 import org.exoplatform.services.organization.OrganizationService;
 import org.exoplatform.services.organization.Query;
@@ -25,8 +22,6 @@ public class UserProfileHelper {
   final public static String URL_KEY = "url";
   final public static String OTHER_KEY = "other";
   final public static String DEFAULT_PROTOCOL = "http://";
-  final private static Pattern ESCAPE_HTML_PATTERN = Pattern.compile("<(.*?)>", Pattern.CASE_INSENSITIVE);
-  final private static Pattern UNESCAPE_HTML_PATTERN = Pattern.compile("&lt;(.*?)&gt;", Pattern.CASE_INSENSITIVE);
 
   enum StatusIconCss {
     DEFAULT("", ""),
@@ -68,17 +63,17 @@ public class UserProfileHelper {
     Map<String, Object> infos = new LinkedHashMap<String, Object>();
     String email = currentProfile.getEmail();
     // LDAP user might not have email
-    if(!isEmpty(email)) {
+    if(StringUtils.isNotBlank(email)) {
       infos.put(Profile.EMAIL, email);
     }
     //
     String jobTitle = currentProfile.getPosition();
-    if(!isEmpty(jobTitle)) {
-      infos.put(Profile.POSITION, encodeHTML(jobTitle));
+    if(StringUtils.isNotBlank(jobTitle)) {
+      infos.put(Profile.POSITION, StringEscapeUtils.escapeHtml4(jobTitle));
     }
     String gender = currentProfile.getGender();
-    if(!isEmpty(gender)) {
-      infos.put(Profile.GENDER, encodeHTML(gender));
+    if(StringUtils.isNotBlank(gender)) {
+      infos.put(Profile.GENDER, StringEscapeUtils.escapeHtml4(gender));
     }
     //
     putInfoData(currentProfile, infos, Profile.CONTACT_PHONES);
@@ -89,34 +84,19 @@ public class UserProfileHelper {
     //
     return infos;
   }
-  /**
-   * @param s
-   * @return
-   */
-  public static boolean isEmpty(String s) {
-    return s == null || s.trim().length() == 0;
-  }
 
   /**
-   * @param currentProfile
-   * @return
-   * @throws Exception
+   * Convert profile experiences as a list of maps, with current experience set as the first item in the list
+   *
+   * @param currentProfile The user profile
+   * @return A list of experiences with the current experience as the first one in the list
    */
-  public static List<Map<String, String>> getDisplayExperience(Profile currentProfile) throws Exception {
-    List<Map<String, String>> pastExperiences = new ArrayList<Map<String, String>>();
-    List<Map<String, String>> lastExperiences = new ArrayList<Map<String, String>>();
+  public static List<Map<String, String>> getSortedExperiences(Profile currentProfile) {
     List<Map<String, String>> experiences = getMultiValues(currentProfile, Profile.EXPERIENCES);
     if (experiences != null) {
-      for (Map<String, String> srcExperience : experiences) {
-        if(isCurrent(srcExperience)) {
-          pastExperiences.add(theExperienceData(srcExperience, true));
-        } else {
-          lastExperiences.add(theExperienceData(srcExperience, false));
-        }
-      }
-      pastExperiences.addAll(lastExperiences);
+      experiences.sort((exp1, exp2) -> isCurrent(exp1) ? -1 : 1);
     }
-    return pastExperiences;
+    return experiences;
   }
   
   public static List<Map<String, String>> getMultiValues(Profile currentProfile, String key) {
@@ -128,7 +108,7 @@ public class UserProfileHelper {
     List<String> urls = new ArrayList<String>();
     if (mapUrls != null) {
       for (Map<String, String> map : mapUrls) {
-        urls.add(decodeHTML(map.get(VALUE)));
+        urls.add(StringEscapeUtils.unescapeHtml4(map.get(VALUE)));
       }
     }
     return urls;
@@ -177,32 +157,34 @@ public class UserProfileHelper {
     }
     return classBuilder.toString();
   }
-    
-  private static Map<String, String> theExperienceData(Map<String, String> srcExperience, boolean isCurrent) {
-    Map<String, String> experience = new LinkedHashMap<String, String>();
-    putExperienceData(srcExperience, experience, Profile.EXPERIENCES_ID);
-    putExperienceData(srcExperience, experience, Profile.EXPERIENCES_COMPANY);
-    putExperienceData(srcExperience, experience, Profile.EXPERIENCES_POSITION);
-    putExperienceData(srcExperience, experience, Profile.EXPERIENCES_DESCRIPTION);
-    putExperienceData(srcExperience, experience, Profile.EXPERIENCES_SKILLS);
+
+  /**
+   * Escape HTML entities in the properties of the given experience
+   * @param experience The experience to escape
+   * @return The experience escaped
+   */
+  public static Map<String, String> escapeExperience(Map<String, String> experience) {
+    Map<String, String> escapedExperience = new LinkedHashMap<>();
+    putExperienceData(experience, escapedExperience, Profile.EXPERIENCES_ID);
+    putExperienceData(experience, escapedExperience, Profile.EXPERIENCES_COMPANY);
+    putExperienceData(experience, escapedExperience, Profile.EXPERIENCES_POSITION);
+    putExperienceData(experience, escapedExperience, Profile.EXPERIENCES_DESCRIPTION);
+    putExperienceData(experience, escapedExperience, Profile.EXPERIENCES_SKILLS);
     //
-    putExperienceData(srcExperience, experience, Profile.EXPERIENCES_START_DATE);
-    if(isCurrent) {
-      experience.put(Profile.EXPERIENCES_IS_CURRENT, "true");
-    } else {
-      putExperienceData(srcExperience, experience, Profile.EXPERIENCES_END_DATE);
-    }
-    return experience;
+    putExperienceData(experience, escapedExperience, Profile.EXPERIENCES_START_DATE);
+    putExperienceData(experience, escapedExperience, Profile.EXPERIENCES_END_DATE);
+
+    return escapedExperience;
   }
-  
+
   private static boolean isCurrent(Map<String, String> srcExperience) {
     return Boolean.valueOf(String.valueOf(srcExperience.get(Profile.EXPERIENCES_IS_CURRENT)));
   }
 
   private static void putExperienceData(Map<String, String> srcExperience, Map<String, String> destExperience, String key) {
     String value = srcExperience.get(key);
-    if (!isEmpty(value)) {
-      destExperience.put(key, value);
+    if (StringUtils.isNotBlank(value)) {
+      destExperience.put(key, StringEscapeUtils.escapeHtml4(value));
     }
   }
 
@@ -226,7 +208,7 @@ public class UserProfileHelper {
       for (Map<String, String> map : multiValues) {
         List<String> values = new ArrayList<String>();
         String key = map.get(KEY);
-        String value = encodeHTML(map.get(VALUE));
+        String value = StringEscapeUtils.escapeHtml4(map.get(VALUE));
         if (mainValue.containsKey(key)) {
           values.addAll(mainValue.get(key));
           values.add(value);
@@ -239,20 +221,6 @@ public class UserProfileHelper {
 
         infos.put(mainKey, mainValue);
     }
-  }
-
-  public static String encodeHTML(String s) {
-    if (isEmpty(s)) {
-      return s;
-    }
-    return ESCAPE_HTML_PATTERN.matcher(s).replaceAll("&lt;$1&gt;");
-  }
-
-  public static String decodeHTML(String s) {
-    if (isEmpty(s)) {
-      return s;
-    }
-    return UNESCAPE_HTML_PATTERN.matcher(s).replaceAll("<$1>");
   }
   
   /**

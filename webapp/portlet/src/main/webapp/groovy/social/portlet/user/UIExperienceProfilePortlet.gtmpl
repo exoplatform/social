@@ -4,7 +4,7 @@
 
   String aboutMe = uicomponent.getAboutMe();
   boolean isOwner = uicomponent.isOwner();
-  List experienceData = uicomponent.getExperience();
+  List experienceData = uicomponent.getExperiences();
   def uiSocApplicationClzz = !isOwner && (aboutMe.length() == 0) && (experienceData.size() == 0) ? "" : "uiSocApplication";
 %>
 <div class="<%=uiSocApplicationClzz%> uiExperienceProfilePortlet" id="$uicomponent.id">

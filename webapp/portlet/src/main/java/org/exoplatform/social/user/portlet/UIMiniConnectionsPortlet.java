@@ -22,6 +22,7 @@ import javax.portlet.MimeResponse;
 import javax.portlet.ResourceRequest;
 
 import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.profile.ProfileFilter;
@@ -115,7 +116,7 @@ public class UIMiniConnectionsPortlet extends UIAbstractUserPortlet {
       this.displayName = profile.getFullName();
       this.profileURL = profile.getUrl();
       String avatarURL = profile.getAvatarUrl();
-      if (UserProfileHelper.isEmpty(avatarURL) || avatarURL.equalsIgnoreCase("null")) {
+      if (StringUtils.isBlank(avatarURL) || avatarURL.equalsIgnoreCase("null")) {
         avatarURL = "/eXoSkin/skin/images/system/UserAvtDefault.png";
       }
       this.avatarURL = avatarURL;

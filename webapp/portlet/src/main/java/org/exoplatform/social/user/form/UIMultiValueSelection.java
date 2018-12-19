@@ -8,6 +8,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.social.user.portlet.UserProfileHelper;
@@ -129,7 +130,7 @@ public class UIMultiValueSelection extends UIFormInputSet {
       if (values != null && !values.isEmpty()) {
         for (Map<String, String> map : values) {
           String key = map.get("key");
-          String value = UserProfileHelper.decodeHTML(map.get("value"));
+          String value = map.get("value");
           //
           addInput(index, getSelected(key), value);
           //
@@ -156,10 +157,10 @@ public class UIMultiValueSelection extends UIFormInputSet {
     this.values = new ArrayList<Map<String, String>>();
     for (Integer indexId : indexs) {
       String value = getInputValue(indexId);
-      if (!UserProfileHelper.isEmpty(value)) {
+      if (StringUtils.isNotBlank(value)) {
         Map<String, String> map = new HashMap<String, String>();
         map.put("key", getInputKey(indexId));
-        map.put("value", UserProfileHelper.encodeHTML(value));
+        map.put("value", value);
         values.add(map);
       }
     }
