@@ -449,7 +449,7 @@
               }
 			  commentMessage = it.title;
 			  commentPostedTime = uicomponent.getPostedTimeString(_ctx, it.postedTime);
-        commentEditedTime = uicomponent.getPostedTimeString(_ctx, it.updated.getTime());
+              commentEditedTime = uicomponent.getPostedTimeString(_ctx, it.updated.getTime());
 			  commentEditedTime = _ctx.appRes("UIActivity.label.EditedFrom").replace("{0}",commentEditedTime);
 			  commenterAvatarImgSrc = id.profile.avatarUrl;
 			  if (!commenterAvatarImgSrc) commenterAvatarImgSrc = LinkProvider.PROFILE_DEFAULT_AVATAR_URL;

@@ -484,9 +484,6 @@
 	        <div class="commentRight">
 	            <div class="author">
 	                <a href="$commenterProfileUri">$commenterFullName</a>
-	                <span class="dateTime">
-	                    <a id="EditCommentTime${it.id}" rel="tooltip" data-placement="bottom" href="<%=uicomponent.getActivityPermalink(activity.id)%>" <% if(it.postedTime != it.updated.getTime() ){%> title="$commentPostedTime">$commentEditedTime <%} else {%> > ${commentPostedTime} <%}%></a>
-	                 </span>
 	            </div>
 	            <div class="contentComment" id="${activity.id}-${commentCounter}">
 	                $commentMessage
