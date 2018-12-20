@@ -27,7 +27,7 @@ import org.exoplatform.social.rest.impl.userrelationship.UsersRelationshipsRestR
 import org.exoplatform.social.rest.impl.users.UserRestResourcesTest;
 import org.exoplatform.social.service.rest.ActivitiesRestServiceTest;
 import org.exoplatform.social.service.rest.IdentityRestServiceTest;
-import org.exoplatform.social.service.rest.IntranetNotificationsRestServiceTest;
+import org.exoplatform.social.service.rest.notification.IntranetNotificationsRestServiceTest;
 import org.exoplatform.social.service.rest.LinkShareRestServiceTest;
 import org.exoplatform.social.service.rest.NotificationsRestServiceTest;
 import org.exoplatform.social.service.rest.PeopleRestServiceTest;
