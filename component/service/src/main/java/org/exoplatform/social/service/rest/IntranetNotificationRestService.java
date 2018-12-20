@@ -16,6 +16,7 @@
  */
 package org.exoplatform.social.service.rest;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -176,9 +177,19 @@ public class IntranetNotificationRestService extends AbstractStorage implements 
     //Check authenticated user
     checkAuthenticatedUserPermission(userId);
     //
+    Space space = getSpaceService().getSpaceById(spaceId);
+    if (space == null) {
+      throw new WebApplicationException(Response.Status.BAD_REQUEST);
+    }
+
+    List<String> invitedUsers = Arrays.asList(space.getInvitedUsers());
+    if (!invitedUsers.contains(userId)) {
+      throw new WebApplicationException(Response.Status.FORBIDDEN);
+    }
+    //
     String[] mediaTypes = new String[] { "json", "xml" };
     MediaType mediaType = Util.getMediaType(format, mediaTypes);
-    
+
     //update notification
     NotificationInfo info = getWebNotificationStorage().get(notificationId);
     info.setTo(userId);
@@ -192,11 +203,6 @@ public class IntranetNotificationRestService extends AbstractStorage implements 
       throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
     }
 
-    //
-    Space space = getSpaceService().getSpaceById(spaceId);
-    if (space == null) {
-      throw new WebApplicationException(Response.Status.BAD_REQUEST);
-    }
     getSpaceService().addMember(space, userId);
     return Util.getResponse(messageInfo, uriInfo, mediaType, Response.Status.OK);
   }
@@ -262,6 +268,25 @@ public class IntranetNotificationRestService extends AbstractStorage implements 
                                          @PathParam("format") String format) throws Exception {
     //Check authenticated user
     checkAuthenticatedUserPermission(currentUserId);
+
+    //check space existence
+    Space space = getSpaceService().getSpaceById(spaceId);
+    if (space == null) {
+      throw new WebApplicationException(Response.Status.BAD_REQUEST);
+    }
+
+    //check that caller is manager
+    List<String> managers = Arrays.asList(space.getManagers());
+    if (!managers.contains(currentUserId)) {
+      throw new WebApplicationException(Response.Status.UNAUTHORIZED);
+    }
+
+    //check that requestUserId is in the pending user list
+    List<String> pendingUsers = Arrays.asList(space.getPendingUsers());
+    if (!pendingUsers.contains(requestUserId)) {
+      throw new WebApplicationException(Response.Status.FORBIDDEN);
+    }
+
     //
     String[] mediaTypes = new String[] { "json", "xml" };
     MediaType mediaType = Util.getMediaType(format, mediaTypes);
@@ -278,11 +303,8 @@ public class IntranetNotificationRestService extends AbstractStorage implements 
     if (messageInfo == null) {
       throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
     }
-    //
-    Space space = getSpaceService().getSpaceById(spaceId);
-    if (space == null) {
-      throw new WebApplicationException(Response.Status.BAD_REQUEST);
-    }
+
+
     getSpaceService().addMember(space, requestUserId);
     return Util.getResponse(messageInfo, uriInfo, mediaType, Response.Status.OK);
   }
