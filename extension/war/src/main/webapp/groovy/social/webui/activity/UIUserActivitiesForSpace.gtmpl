@@ -37,7 +37,6 @@
   def labelActivityHasBeenDeleted = _ctx.appRes("UIActivity.label.Activity_Has_Been_Deleted");
   def activity = uicomponent.getActivity();
   def activityDeletable = uicomponent.isActivityDeletable();
-  def activityEditable = uicomponent.isActivityEditable(activity);
   def activityCommentAndLikable = uicomponent.isActivityCommentAndLikable();
   def streamOwner = activity.getStreamOwner();
 %>
@@ -221,7 +220,7 @@
 				<span class="arrowLeft"></span>
 			  <!--div class="pull-right"-->
 			    <%
-			  		if(activityEditable || activityDeletable ){
+			  		if( activityDeletable ){
 			    %>
                     <div id="dropDownEditActivity${activity.id}" class="btn-group uiDropdownWithIcon actLink hidden-phone hidden-tablet">
                         <div class="dropdown-toggle" data-toggle="dropdown">
@@ -229,12 +228,7 @@
                             </i>
                         </div>
                         <ul class="dropdown-menu pull-right" role="menu">
-							<% if(activityEditable){%>
-                            <!--li>
-                                <a id="EditActivitylink${activity.id}" class="" data-edit-activity="${activity.id}" data-placement="bottom" href="javascript:void(0)">${labelEdit}</a>
-                            </li-->
                             <%
-							}
 							if (activityDeletable) {
                             %>
                             <li>

@@ -16,6 +16,8 @@
  */
 package org.exoplatform.social.core.manager;
 
+import org.junit.Test;
+
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.services.organization.OrganizationService;
@@ -180,7 +182,99 @@ public class ActivityManagerTest extends AbstractCoreTest {
     assertEquals("activity.getTitle() must return: " + activityTitle, activityTitle, activity.getTitle());
     assertEquals("activity.getUserId() must return: " + userId, userId, activity.getUserId());
   }
-  
+
+  public void testShouldNotEditActivityWhenHasJoinedComment() throws Exception {
+    // Given
+    org.exoplatform.services.security.Identity identity = new org.exoplatform.services.security.Identity("root");
+    String activityTitle = "activity title";
+    String userId = rootIdentity.getId();
+    ExoSocialActivity activity = createActivity();
+    activity.setTitle(activityTitle);
+    activity.setUserId(userId);
+    activityManager.saveActivityNoReturn(activity);
+    activity = activityManager.getActivity(activity.getId());
+    ExoSocialActivity comment = createComment(activity, "exosocial:spaces", "has_joined");
+
+    // When
+    boolean isEditable = activityManager.isActivityEditable(comment, identity);
+
+    // Then
+    assertFalse(isEditable);
+
+    // Finally
+    activityManager.deleteActivity(comment);
+    activityManager.deleteActivity(activity);
+  }
+
+  public void testShouldNotEditActivityWhenSpaceDescriptionEditedComment() throws Exception {
+    // Given
+    org.exoplatform.services.security.Identity identity = new org.exoplatform.services.security.Identity("root");
+    String activityTitle = "activity title";
+    String userId = rootIdentity.getId();
+    ExoSocialActivity activity = createActivity();
+    activity.setTitle(activityTitle);
+    activity.setUserId(userId);
+    activityManager.saveActivityNoReturn(activity);
+    activity = activityManager.getActivity(activity.getId());
+    ExoSocialActivity comment = createComment(activity, "exosocial:spaces", "space_description_edited");
+
+    // When
+    boolean isEditable = activityManager.isActivityEditable(comment, identity);
+
+    // Then
+    assertFalse(isEditable);
+
+    // Finally
+    activityManager.deleteActivity(comment);
+    activityManager.deleteActivity(activity);
+  }
+
+  public void testShouldEditActivityWhenPostComment() throws Exception {
+    // Given
+    org.exoplatform.services.security.Identity identity = new org.exoplatform.services.security.Identity("root");
+    String activityTitle = "activity title";
+    String userId = rootIdentity.getId();
+    ExoSocialActivity activity = createActivity();
+    activity.setTitle(activityTitle);
+    activity.setUserId(userId);
+    activityManager.saveActivityNoReturn(activity);
+    activity = activityManager.getActivity(activity.getId());
+    ExoSocialActivity comment = createComment(activity, "exosocial:spaces", "text comment");
+
+    // When
+    boolean isEditable = activityManager.isActivityEditable(comment, identity);
+
+    // Then
+    assertTrue(isEditable);
+
+    // Finally
+    activityManager.deleteActivity(comment);
+    activityManager.deleteActivity(activity);
+  }
+
+  public void testShouldNotEditActivityWhenWikiSpacePostedComment() throws Exception {
+    // Given
+    org.exoplatform.services.security.Identity identity = new org.exoplatform.services.security.Identity("root");
+    String activityTitle = "activity title";
+    String userId = rootIdentity.getId();
+    ExoSocialActivity activity = createActivity();
+    activity.setTitle(activityTitle);
+    activity.setUserId(userId);
+    activityManager.saveActivityNoReturn(activity);
+    activity = activityManager.getActivity(activity.getId());
+    ExoSocialActivity comment = createComment(activity, "ks-wiki:spaces", "text comment");
+
+    // When
+    boolean isEditable = activityManager.isActivityEditable(comment, identity);
+
+    // Then
+    assertFalse(isEditable);
+
+    // Finally
+    activityManager.deleteActivity(comment);
+    activityManager.deleteActivity(activity);
+  }
+
   /**
    * Test for {@link ActivityManager#saveActivity(org.exoplatform.social.core.activity.model.ExoSocialActivity)}
    * and {@link ActivityManager#saveActivity(Identity, org.exoplatform.social.core.activity.model.ExoSocialActivity)}
@@ -1823,7 +1917,7 @@ public class ActivityManagerTest extends AbstractCoreTest {
       LOG.error("can not save activity.", e);
     }
   }
-  
+
   private void createActivityToOtherIdentity(Identity posterIdentity,
       Identity targetIdentity, int number) {
 
@@ -1845,7 +1939,41 @@ public class ActivityManagerTest extends AbstractCoreTest {
       }
     }
   }
-  
+
+  /**
+   * Creates activity.
+   * 
+   * @return ExoSocialActivity
+   */
+  private ExoSocialActivity createActivity() {
+    String activityTitle = "activity title";
+    String userId = rootIdentity.getId();
+    ExoSocialActivity activity = new ExoSocialActivityImpl();
+    activity.setTitle(activityTitle);
+    activity.setUserId(userId);
+    activityManager.saveActivityNoReturn(activity);
+    return activityManager.getActivity(activity.getId());
+  }
+
+  /**
+   * Creates comment.
+   * 
+   * @param activity
+   * @param type
+   * @param titleId
+   * @return ExoSocialActivity
+   */
+  private ExoSocialActivity createComment(ExoSocialActivity activity, String type, String titleId) {
+    ExoSocialActivity comment = new ExoSocialActivityImpl();
+    comment.setUserId(rootIdentity.getId());
+    comment.setTemplateParams(new HashMap<String, String>());
+    comment.setTitle("comment title");
+    comment.setType(type);
+    comment.setTitleId(titleId);
+    activityManager.saveComment(activity, comment);
+    return activityManager.getActivity(comment.getId());
+  }
+
   /**
    * Gets an instance of the space.
    * 

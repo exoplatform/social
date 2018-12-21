@@ -44,8 +44,6 @@ import org.exoplatform.social.core.activity.ActivityListenerPlugin;
 import org.exoplatform.social.core.activity.CommentsRealtimeListAccess;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.activity.model.ExoSocialActivityImpl;
-import org.exoplatform.social.core.application.ProfileUpdatesPublisher;
-import org.exoplatform.social.core.application.RelationshipPublisher;
 import org.exoplatform.social.core.application.SpaceActivityPublisher;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
@@ -119,6 +117,12 @@ public class ActivityManagerImpl implements ActivityManager {
   private boolean enableManagerEditActivity = true;
   private boolean enableManagerEditComment = true;
 
+  public static final List<String>    AUTOMATIC_EDIT_TITLE_ACTIVITIES = Arrays.asList("has_joined",
+                                                                                      "space_avatar_edited",
+                                                                                      "space_description_edited",
+                                                                                      "space_renamed",
+                                                                                      "manager_role_revoked",
+                                                                                      "manager_role_granted");
   /**
    * Instantiates a new activity manager.
    *
@@ -679,9 +683,10 @@ public class ActivityManagerImpl implements ActivityManager {
     return false;
   }
 
-  private boolean isAutomaticComment(ExoSocialActivity activity) {
-    //We should have editable activity type configurable
-    //For now only default activity is editable
-    return activity != null && !SpaceActivityPublisher.SPACE_APP_ID.equals(activity.getType());
+  public boolean isAutomaticComment(ExoSocialActivity activity) {
+    // Only not automatic created comments are editable
+    return activity != null && (!SpaceActivityPublisher.SPACE_APP_ID.equals(activity.getType())
+        || (SpaceActivityPublisher.SPACE_APP_ID.equals(activity.getType())
+            && AUTOMATIC_EDIT_TITLE_ACTIVITIES.contains(activity.getTitleId())));
   }
 }
