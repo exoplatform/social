@@ -57,6 +57,7 @@ import org.exoplatform.social.core.manager.ActivityManager;
 import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.space.SpaceException;
 import org.exoplatform.social.core.space.SpaceFilter;
+import org.exoplatform.social.core.space.SpaceUtils;
 import org.exoplatform.social.core.space.impl.DefaultSpaceApplicationHandler;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
@@ -77,8 +78,8 @@ import org.exoplatform.social.service.rest.api.models.ActivityRestIn;
 public class SpaceRestResourcesV1 implements SpaceRestResources {
 
   private IdentityManager identityManager;
-  
-  
+
+
   public SpaceRestResourcesV1(IdentityManager identityManager) {
     this.identityManager = identityManager;
   }
@@ -158,8 +159,8 @@ public class SpaceRestResourcesV1 implements SpaceRestResources {
                                                 "<br />\"visibility\": \"private\"," +
                                                 "<br />\"subscription\": \"validation\"<br />}" 
                                                 , required = true) SpaceEntity model) throws Exception {
-    if (model == null || model.getDisplayName() == null || model.getDisplayName().length() == 0) {
-      throw new WebApplicationException(Response.Status.UNAUTHORIZED);
+    if (model == null || model.getDisplayName() == null || model.getDisplayName().length() == 0 || model.getDisplayName().length() > 200 || !SpaceUtils.isValidSpaceName(model.getDisplayName())) {
+      throw new WebApplicationException(Response.Status.BAD_REQUEST);
     }
 
     SpaceService spaceService = CommonsUtils.getService(SpaceService.class);
@@ -361,6 +362,9 @@ public class SpaceRestResourcesV1 implements SpaceRestResources {
     Space space = spaceService.getSpaceById(id);
     if (space == null || (! spaceService.isManager(space, authenticatedUser) && ! spaceService.isSuperManager(authenticatedUser))) {
       throw new WebApplicationException(Response.Status.UNAUTHORIZED);
+    }
+    if (space.getDisplayName().length() > 200 || !SpaceUtils.isValidSpaceName(space.getDisplayName())) {
+      throw new WebApplicationException(Response.Status.BAD_REQUEST);
     }
     if(model.getGroupId() != null && model.getGroupId().length() > 0) {
       throw new WebApplicationException(Response.Status.UNAUTHORIZED);

@@ -19,6 +19,7 @@ package org.exoplatform.social.core.space;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -129,6 +130,9 @@ public class SpaceUtils {
 
   private static final String REMOTE_CATEGORY_NAME = "remote";
 
+  private static final Pattern SPACE_NAME_PATTERN = Pattern.compile("^([\\p{L}\\s\\d\'_&]+[\\s]?)+$");
+
+
   // A {@link Transliterator} instance is stateless which has for consequences that it is Thread Safe
   // and thus can be shared among several threads as mentioned in the javadoc
   private static final Transliterator ACCENTS_CONVERTER = Transliterator.getInstance("Latin; NFD; [:Nonspacing " +
@@ -138,6 +142,16 @@ public class SpaceUtils {
   private static String UNDER_SCORE_STR = "_";
   private static String SPACE_STR = " ";
   private static String CURRENT_SPACE = "CurrentSpace";
+
+  /**
+   * Checks if Space Name is in a valid form or not.
+   *
+   * @param name
+   * @return
+   */
+  public static boolean isValidSpaceName(String name) {
+    return SPACE_NAME_PATTERN.matcher(name).matches();
+  }
   
   /**
    * Creates a new group from an existing group. This new group will get all data from existing group except for group

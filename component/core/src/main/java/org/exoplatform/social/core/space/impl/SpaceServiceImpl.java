@@ -414,6 +414,14 @@ public class SpaceServiceImpl implements SpaceService {
    * {@inheritDoc}
    */
   public Space createSpace(Space space, String creator, String invitedGroupId) {
+
+    if (space.getDisplayName().length() > LIMIT) {
+      throw new RuntimeException("Error while creating the space " + space.getDisplayName() + ": space name cannot exceed 200 characters");
+    }
+
+    if (!SpaceUtils.isValidSpaceName(space.getDisplayName())) {
+        throw new RuntimeException("Error while creating the space " + space.getDisplayName()+ ": space name can only contain letters, digits or space characters only");
+    }
     // Add creator as a manager and a member to this space
     String[] managers = space.getManagers();
     String[] members = space.getMembers();
@@ -421,7 +429,7 @@ public class SpaceServiceImpl implements SpaceService {
     members = (String[]) ArrayUtils.add(members,creator);
     space.setManagers(managers);
     space.setMembers(members);
-    
+
     // Creates new space by creating new group
     String groupId = null;
     try {
