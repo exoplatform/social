@@ -35,6 +35,8 @@
   <properties>
     <!-- Maven Plugin for JS and CSS bundling and Unit Test execution -->
     <com.github.eirslett.frontend.version>1.6</com.github.eirslett.frontend.version>
+    <node.version>v10.4.1</node.version>
+    <npm.version>6.1.0</npm.version>
   </properties>
 
   <build>
@@ -54,8 +56,8 @@
               <goal>install-node-and-npm</goal>
             </goals>
             <configuration>
-              <nodeVersion>v10.4.1</nodeVersion>
-              <npmVersion>6.1.0</npmVersion>
+              <nodeVersion>${node.version}</nodeVersion>
+              <npmVersion>${npm.version}</npmVersion>
             </configuration>
           </execution>
           <execution>
