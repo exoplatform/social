@@ -1,10 +1,10 @@
 {
-  "name": "sample",
-  "version": "1.0.0",
-  "description": "eXo portlet using VueJS with webpack",
+  "name": "spaceAdministration",
+  "version": "5.2.0",
+  "description": "eXo space administration",
   "repository": {
     "type": "git",
-    "url": "https://github.com/exo-samples/docs-samples"
+    "url": "https://github.com/exodev/social"
   },
   "scripts": {
     "start": "webpack --config webpack.dev.js --mode development",

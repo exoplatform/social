@@ -73,9 +73,9 @@ public class SpaceServiceManagerBean {
    * @return {@link List} of type {@link String}
    */
   @Managed
-  @ManagedDescription("Get Spaces super creators")
+  @ManagedDescription("Get Spaces creators memberships")
   @Impact(ImpactType.READ)
-  public List<String> getSpaceCreator() {
+  public List<String> getSpacesCreatorsMemberships() {
     return spaceService.getSuperCreatorsMemberships()
                        .stream()
                        .map(membership -> membership.getMembershipType() + ":" + membership.getGroup())
@@ -91,8 +91,8 @@ public class SpaceServiceManagerBean {
   @Managed
   @ManagedDescription("Add Spaces creators membership")
   @Impact(ImpactType.WRITE)
-  public void addSpaceCreator(@ManagedDescription("Spaces creator role") @ManagedName("permissionExpression") String permissionExpression) {
-    spaceService.addSuperCreatorsMembership(permissionExpression);
+  public void addSpacesCreatorsMembership(@ManagedDescription("Spaces creator membership") @ManagedName("permissionExpression") String permissionExpression) {
+    spaceService.addSpacesCreatorsMembership(permissionExpression);
   }
   
   /**
@@ -104,7 +104,7 @@ public class SpaceServiceManagerBean {
   @Managed
   @ManagedDescription("Remove Spaces creators membership")
   @Impact(ImpactType.WRITE)
-  public void removeSpaceCreator(@ManagedDescription("Spaces creator memberships") @ManagedName("permissionExpression") String permissionExpression) {
-    spaceService.removeSuperCreatorsMembership(permissionExpression);
+  public void removeSpacesCreatorsMembership(@ManagedDescription("Spaces creator membership") @ManagedName("permissionExpression") String permissionExpression) {
+    spaceService.removeSpacesCreatorsMembership(permissionExpression);
   }
 }

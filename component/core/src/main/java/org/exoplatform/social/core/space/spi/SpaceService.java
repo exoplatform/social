@@ -1420,13 +1420,20 @@ public interface SpaceService {
    * 
    * @param permissionExpression
    */
-  void addSuperCreatorsMembership(String permissionExpression);
+  void addSpacesCreatorsMembership(String permissionExpression);
   
   /**
    * remove spaces super creator membership
    * 
    * @param permissionExpression
    */
-  void removeSuperCreatorsMembership(String permissionExpression);
+  void removeSpacesCreatorsMembership(String permissionExpression);
+  
+  /**
+   * Check if the user can create spaces
+   * @param creator
+   * @return true if the user can create spaces
+   */
+  boolean canCreateSpace(String user);
   
 }

@@ -124,7 +124,7 @@ public class SpaceServiceImpl implements SpaceService {
 
   private List<MembershipEntry> superManagersMemberships = new ArrayList<>();
   
-  private List<MembershipEntry> superCreatorsMemberships = new ArrayList<>();
+  private List<MembershipEntry> spaceCreatorsMemberships = new ArrayList<>();
 
   /**
    * SpaceServiceImpl constructor Initialize
@@ -143,20 +143,10 @@ public class SpaceServiceImpl implements SpaceService {
     this.webNotificationService = webNotificationService;
     this.settingService = settingService;
     
-    SettingValue<String> administrators = (SettingValue<String>) settingService.get(Context.GLOBAL, Scope.GLOBAL, "exo:social_spaces_administrators");
+    SettingValue<String> administrators = (SettingValue<String>) settingService.get(Context.GLOBAL, Scope.GLOBAL, SPACES_SUPER_ADMINISTRATORS_PARAM);
     if (administrators != null && !StringUtils.isBlank(administrators.getValue())) {
       String[] administratorsArray = administrators.getValue().split(",");
-      for(String administratorArray : administratorsArray) {  
-        if (StringUtils.isBlank(administratorArray)) {   
-          continue;
-        }
-        if (!administratorArray.contains(":/")) {
-          this.superManagersMemberships.add(new MembershipEntry(administratorArray));
-        } else {
-          String[] membershipParts = administratorArray.split(":");
-          this.superManagersMemberships.add(new MembershipEntry(membershipParts[1], membershipParts[0]));
-        }
-      }
+      addManagerMemberships(administratorsArray);
     }
     else if (params != null) {
       if (params.containsKey(SPACES_SUPER_ADMINISTRATORS_PARAM)) {
@@ -164,34 +154,14 @@ public class SpaceServiceImpl implements SpaceService {
         String superManagersMemberships = superAdministratorParam.getValue();
         if (StringUtils.isNotBlank(superManagersMemberships)) {
           String[] superManagersMembershipsArray = superManagersMemberships.split(",");
-          for (String superManagerMembership : superManagersMembershipsArray) {
-            if (StringUtils.isBlank(superManagerMembership)) {
-              continue;
-            }
-            if (!superManagerMembership.contains(":/")) {
-              LOG.warn("Invalid entry '" + superManagerMembership + "'. A permission expression is expected (mstype:groupId).");
-            } else {
-              String[] membershipParts = superManagerMembership.split(":");
-              this.superManagersMemberships.add(new MembershipEntry(membershipParts[1], membershipParts[0]));
-            }
-          }
+          addManagerMemberships(superManagersMembershipsArray);
         }
       }
       
       SettingValue<String> creators = (SettingValue<String>) settingService.get(Context.GLOBAL, Scope.GLOBAL, "exo:social_spaces_creators");
       if (creators != null && !StringUtils.isBlank(creators.getValue())) {
         String[] creatorsArray = creators.getValue().split(",");
-        for(String creatorArray : creatorsArray) {  
-          if (StringUtils.isBlank(creatorArray)) {   
-            continue;
-          }
-          if (!creatorArray.contains(":/")) {
-            this.superCreatorsMemberships.add(new MembershipEntry(creatorArray));
-          } else {
-            String[] membershipParts = creatorArray.split(":");
-            this.superCreatorsMemberships.add(new MembershipEntry(membershipParts[1], membershipParts[0]));
-          }
-        }
+        addCreatorsMemberships(creatorsArray);
       }
       else if (params != null) {
         if (params.containsKey(SPACES_SUPER_CREATORS_PARAM)) {
@@ -199,17 +169,7 @@ public class SpaceServiceImpl implements SpaceService {
           String superCreatorsMemberships = superCreatorParam.getValue();
           if (StringUtils.isNotBlank(superCreatorsMemberships)) {
             String[] superCreatorsMembershipsArray = superCreatorsMemberships.split(",");
-            for (String superCreatorMembership : superCreatorsMembershipsArray) {
-              if (StringUtils.isBlank(superCreatorMembership)) {
-                continue;
-              }
-              if (!superCreatorMembership.contains(":/")) {
-                LOG.warn("Invalid entry '" + superCreatorMembership + "'. A permission expression is expected (mstype:groupId).");
-              } else {
-                String[] membershipParts = superCreatorMembership.split(":");
-                this.superCreatorsMemberships.add(new MembershipEntry(membershipParts[1], membershipParts[0]));
-              }
-            }
+            addCreatorsMemberships(superCreatorsMembershipsArray);
           }
         }
       }
@@ -258,6 +218,34 @@ public class SpaceServiceImpl implements SpaceService {
       }
     }
 
+  }
+
+  private void addCreatorsMemberships(String[] creatorsArray) {
+    for(String creatorArray : creatorsArray) {  
+      if (StringUtils.isBlank(creatorArray)) {   
+        continue;
+      }
+      if (!creatorArray.contains(":/")) {
+        this.spaceCreatorsMemberships.add(new MembershipEntry(creatorArray));
+      } else {
+        String[] membershipParts = creatorArray.split(":");
+        this.spaceCreatorsMemberships.add(new MembershipEntry(membershipParts[1], membershipParts[0]));
+      }
+    }
+  }
+
+  private void addManagerMemberships(String[] administratorsArray) {
+    for(String administrator : administratorsArray) {  
+      if (StringUtils.isBlank(administrator)) {   
+        continue;
+      }
+      if (!administrator.contains(":/")) {
+        this.superManagersMemberships.add(new MembershipEntry(administrator));
+      } else {
+        String[] membershipParts = administrator.split(":");
+        this.superManagersMemberships.add(new MembershipEntry(membershipParts[1], membershipParts[0]));
+      }
+    }
   }
 
   /**
@@ -572,7 +560,10 @@ public class SpaceServiceImpl implements SpaceService {
     return space;
   }
   
-  private boolean canCreateSpace(String creator) {
+  /**
+   * {@inheritDoc}
+   */
+  public boolean canCreateSpace(String creator) {
     boolean canCreateSpace = false;
 
     try {
@@ -590,6 +581,7 @@ public class SpaceServiceImpl implements SpaceService {
         }
       }
     } catch (Exception e) {
+      LOG.error("Error while checking if the user can create spaces - Cause : " + e.getMessage(), e);
       canCreateSpace = false;
     }
 
@@ -1815,22 +1807,22 @@ public class SpaceServiceImpl implements SpaceService {
    */
   @Override
   public List<MembershipEntry> getSuperCreatorsMemberships() {
-    return Collections.unmodifiableList(superCreatorsMemberships);
+    return Collections.unmodifiableList(spaceCreatorsMemberships);
   }
   
   /**
    * {@inheritDoc}
    */
   @Override
-  public void addSuperCreatorsMembership(String permissionExpression) {
+  public void addSpacesCreatorsMembership(String permissionExpression) {
     if(StringUtils.isBlank(permissionExpression)) {
       throw new IllegalArgumentException("Permission expression couldn't be empty");
     }
     if (!permissionExpression.contains(":/")) {
-       this.superCreatorsMemberships.add(new MembershipEntry(permissionExpression));
+       this.spaceCreatorsMemberships.add(new MembershipEntry(permissionExpression));
     } else {
        String[] membershipParts = permissionExpression.split(":");
-       this.superCreatorsMemberships.add(new MembershipEntry(membershipParts[1], membershipParts[0]));
+       this.spaceCreatorsMemberships.add(new MembershipEntry(membershipParts[1], membershipParts[0]));
     } 
   }
   
@@ -1838,11 +1830,11 @@ public class SpaceServiceImpl implements SpaceService {
    * {@inheritDoc}
    */
   @Override
-  public void removeSuperCreatorsMembership(String permissionExpression) {
+  public void removeSpacesCreatorsMembership(String permissionExpression) {
     if (StringUtils.isBlank(permissionExpression)) {
       throw new IllegalArgumentException("Permission expression couldn't be empty");
     }
-    Iterator<MembershipEntry> superCreatorsMembershipsIterator = superCreatorsMemberships.iterator();
+    Iterator<MembershipEntry> superCreatorsMembershipsIterator = spaceCreatorsMemberships.iterator();
     while (superCreatorsMembershipsIterator.hasNext()) {
       MembershipEntry membershipEntry = superCreatorsMembershipsIterator.next();
       if (permissionExpression.trim().equals(membershipEntry.toString())) {
