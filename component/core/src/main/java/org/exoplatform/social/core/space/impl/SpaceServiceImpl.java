@@ -85,6 +85,10 @@ public class SpaceServiceImpl implements SpaceService {
   private static final String SPACES_SUPER_ADMINISTRATORS_PARAM = "spaces.super.administrators";
   
   private static final String SPACES_SUPER_CREATORS_PARAM = "spaces.super.creators";
+  
+  private static final String SPACES__ADMINISTRATORS = "exo:social_spaces_administrators";
+  
+  private static final String SPACES__CREATORS = "exo:social_spaces_creators";
 
   private static final Log                     LOG                   = ExoLogger.getLogger(SpaceServiceImpl.class.getName());
 
@@ -143,7 +147,7 @@ public class SpaceServiceImpl implements SpaceService {
     this.webNotificationService = webNotificationService;
     this.settingService = settingService;
     
-    SettingValue<String> administrators = (SettingValue<String>) settingService.get(Context.GLOBAL, Scope.GLOBAL, "exo:social_spaces_administrators");
+    SettingValue<String> administrators = (SettingValue<String>) settingService.get(Context.GLOBAL, Scope.GLOBAL, SPACES__ADMINISTRATORS);
     if (administrators != null && !StringUtils.isBlank(administrators.getValue())) {
       String[] administratorsArray = administrators.getValue().split(",");
       addManagerMemberships(administratorsArray);
@@ -158,7 +162,7 @@ public class SpaceServiceImpl implements SpaceService {
         }
       }
       
-      SettingValue<String> creators = (SettingValue<String>) settingService.get(Context.GLOBAL, Scope.GLOBAL, "exo:social_spaces_creators");
+      SettingValue<String> creators = (SettingValue<String>) settingService.get(Context.GLOBAL, Scope.GLOBAL, SPACES__CREATORS);
       if (creators != null && !StringUtils.isBlank(creators.getValue())) {
         String[] creatorsArray = creators.getValue().split(",");
         addCreatorsMemberships(creatorsArray);
