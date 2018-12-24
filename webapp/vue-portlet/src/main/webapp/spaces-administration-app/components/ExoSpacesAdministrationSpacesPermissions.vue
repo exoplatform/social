@@ -110,7 +110,7 @@ export default {
           createOnBlur: false,
           highlight: false,
           openOnFocus: false,
-          sourceProviders: ['exo:social'],
+          sourceProviders: ['exo:spacesAdministration'],
           valueField: 'text',
           labelField: 'text',
           searchField: ['text'],
@@ -131,7 +131,7 @@ export default {
           },
           sortField: [{field: 'order'}, {field: '$score'}],
           providers: {
-            'exo:social': component.findGuests
+            'exo:spacesAdministration': component.findGuests
           }
         };
         $guestsFormsSuggestor.suggester(suggesterData);
@@ -184,7 +184,7 @@ export default {
           createOnBlur: false,
           highlight: false,
           openOnFocus: false,
-          sourceProviders: ['exo:social'],
+          sourceProviders: ['exo:spacesAdministration'],
           valueField: 'text',
           labelField: 'text',
           searchField: ['text'],
@@ -205,7 +205,7 @@ export default {
           },
           sortField: [{field: 'order'}, {field: '$score'}],
           providers: {
-            'exo:social': component.findGuests
+            'exo:spacesAdministration': component.findGuests
           }
         };
         $guestsFormsSuggestor.suggester(suggesterData);
@@ -222,19 +222,12 @@ export default {
       if (!query.length) {
         return callback(); 
       }
-      spaceAdministrationServices.getGuests(query).then(data => {
-        spaceAdministrationServices.getGuestsGroups(query).then(group => {
-          if(group){
-            if(data.options != null) {
-              group = group.concat(data.options);
-            }
-            callback(group);
-          } else {
-            if(data.options != null) {
-              callback(data.options);
-            }
-          }
-        });
+      Promise.all([
+        spaceAdministrationServices.getGuests(query), 
+        spaceAdministrationServices.getGuestsGroups(query) 
+      ])
+      .then(function (result) {
+        console.log(' resultPromise '+result)  
       });
     },   
     renderMenuItem (item, escape) {
