@@ -1,6 +1,5 @@
 import Vue from 'vue';
-import ExoSpacesAdministrationSpaces from './components/ExoSpacesAdministrationSpaces.vue';
-
+import './components/initComponents.js';
 // getting language of the PLF 
 const lang = typeof eXo !== 'undefined' ? eXo.env.portal.language : 'en';
   
@@ -13,7 +12,7 @@ exoi18n.loadLanguageAsync(lang, url).then(i18n => {
 // init Vue app when locale ressources are ready
   new Vue({
     el: '#spacesAdministration',
-    render: h => h(ExoSpacesAdministrationSpaces),
+    template: '<exo-spaces-administration-spaces></exo-spaces-administration-spaces>',
     i18n
   })
 });
