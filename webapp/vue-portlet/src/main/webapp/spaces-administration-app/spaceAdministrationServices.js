@@ -27,12 +27,12 @@ export function getAvatar(user) {
   return `${spaceConstants.SOCIAL_USER_API}${user}/avatar`;
 }
 
-export function getGuests(query) {
+export function getUsers(query) {
   return fetch(`/portal/rest/social/people/suggest.json?nameToSearch=${query}`, {credentials: 'include'}).then(resp => resp.json(
   ));
 }
 
-export function getGuestsGroups(query) {
+export function getGroups(query) {
   return fetch(`/portal/rest/social/people/getGroups/suggest.json?search=${query}`, {credentials: 'include'}).then(resp => resp.json());
 }
 

@@ -222,13 +222,17 @@ export default {
       if (!query.length) {
         return callback(); 
       }
-      Promise.all([
-        spaceAdministrationServices.getGuests(query), 
-        spaceAdministrationServices.getGuestsGroups(query) 
-      ])
-      .then(function (result) {
-        console.log(' resultPromise '+result)  
-      });
+      const promises = [];
+      promises.push(spaceAdministrationServices.getUsers(query).then(data => {
+        if(data) 
+          callback(data.options);
+      }));
+
+      promises.push(spaceAdministrationServices.getGroups(query).then(data => {
+        if(data) 
+          callback(data);
+      }));
+      Promise.all(promises);
     },   
     renderMenuItem (item, escape) {
       if(item.avatarUrl == null) {

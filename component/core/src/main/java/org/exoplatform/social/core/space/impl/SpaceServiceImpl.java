@@ -143,7 +143,7 @@ public class SpaceServiceImpl implements SpaceService {
     this.webNotificationService = webNotificationService;
     this.settingService = settingService;
     
-    SettingValue<String> administrators = (SettingValue<String>) settingService.get(Context.GLOBAL, Scope.GLOBAL, SPACES_SUPER_ADMINISTRATORS_PARAM);
+    SettingValue<String> administrators = (SettingValue<String>) settingService.get(Context.GLOBAL, Scope.GLOBAL, "exo:social_spaces_administrators");
     if (administrators != null && !StringUtils.isBlank(administrators.getValue())) {
       String[] administratorsArray = administrators.getValue().split(",");
       addManagerMemberships(administratorsArray);
