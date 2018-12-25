@@ -16,8 +16,25 @@
  */
 package org.exoplatform.social.rest.impl.comment;
 
-import io.swagger.annotations.*;
+import java.util.List;
+
+import javax.annotation.security.RolesAllowed;
+import javax.ws.rs.DELETE;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
+import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
+
 import org.apache.commons.lang3.StringUtils;
+
 import org.exoplatform.portal.config.UserACL;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
@@ -34,15 +51,11 @@ import org.exoplatform.social.rest.entity.DataEntity;
 import org.exoplatform.social.service.rest.Util;
 import org.exoplatform.social.service.rest.api.VersionResources;
 
-import javax.annotation.security.RolesAllowed;
-import javax.ws.rs.*;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriInfo;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 
 @Path(VersionResources.VERSION_ONE + "/social/comments")
 @Api(tags = VersionResources.VERSION_ONE + "/social/comments", value = VersionResources.VERSION_ONE + "/social/comments", description = "Operations on a comment")
@@ -53,6 +66,8 @@ public class CommentRestResourcesV1 implements CommentRestResources {
   private ActivityManager activityManager;
 
   private UserACL userACL;
+
+  public final static String COMMENT_PREFIX = "comment";
 
   public CommentRestResourcesV1(ActivityManager activityManager, UserACL userACL) {
     this.activityManager = activityManager;
@@ -74,10 +89,16 @@ public class CommentRestResourcesV1 implements CommentRestResources {
                                  @ApiParam(value = "Comment id", required = true) @PathParam("id") String id,
                                  @ApiParam(value = "Asking for a full representation of a specific subresource if any", required = false) @QueryParam("expand") String expand) throws Exception {
 
-    ExoSocialActivity act = activityManager.getActivity(id);
+    Identity currentUser = org.exoplatform.social.service.rest.RestUtils.getCurrentIdentity();
+    ExoSocialActivity act = activityManager.getActivity(COMMENT_PREFIX + id);
     
     if (act == null || !act.isComment()) {
       throw new WebApplicationException(Response.Status.NOT_FOUND);
+    }
+    
+    DataEntity as = EntityBuilder.getActivityStream(activityManager.getParentActivity(act), currentUser);
+    if (as == null && !Util.hasMentioned(act, currentUser.getRemoteId())) { //current user doesn't have permission to view activity
+      throw new WebApplicationException(Response.Status.UNAUTHORIZED);
     }
     
     CommentEntity commentEntity = EntityBuilder.buildEntityFromComment(act, uriInfo.getPath(), expand, false);
@@ -107,7 +128,7 @@ public class CommentRestResourcesV1 implements CommentRestResources {
     }
     //
     Identity currentUser = org.exoplatform.social.service.rest.RestUtils.getCurrentIdentity();
-    
+
     ExoSocialActivity act = activityManager.getActivity(id);
     if (act == null || ! act.getPosterId().equals(currentUser.getId())) {
       throw new WebApplicationException(Response.Status.UNAUTHORIZED);

@@ -407,7 +407,11 @@ public class RDBMSActivityStorageImpl implements ActivityStorage {
   public ExoSocialActivity getComment(String commentId) throws ActivityStorageException {
     try {
       ActivityEntity entity = activityDAO.find(getCommentID(commentId));
-      return convertCommentEntityToComment(entity);
+      if (entity != null && entity.isComment()) {
+        return convertCommentEntityToComment(entity);
+      } else {
+        return null;
+      }
     } catch (Exception e) {
       if (PropertyManager.isDevelopping()) {
         throw new ActivityStorageException(Type.FAILED_TO_GET_ACTIVITY, e.getMessage(), e);
