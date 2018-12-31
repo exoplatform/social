@@ -3,27 +3,27 @@
     <table class="uiGrid table table-hover table-striped">
       <tr>          
         <th>
-          Permissions
+          {{ $t('exoplatform.permission.spaces.permissions') }}
         </th>
         <th>
-          User or Group
+          {{ $t('exoplatform.permission.spaces.userOrGroup') }}
         </th>
         <th>
-          Actions
+          {{ $t('exoplatform.manage.spaces.actions') }}
         </th>
       </tr>
       <tr>
-        <td><h2>Create spaces</h2> <h5>Ability to create spaces</h5></td>
+        <td><h2>{{ $t('exoplatform.permission.spaces.createSpace') }}</h2> <h5>{{ $t('exoplatform.permission.spaces.descriptionCreateSpace') }}</h5></td>
         <td>
           <div v-show="displayEditManage !== 0">
             <div v-if="managers.length > 0">
               <div v-for="manager in managers" :key="manager">
-                <h4 v-if="manager.startsWith('*/')"> Group: {{ manager }}</h4>
-                <h4 v-else-if="!manager.startsWith('No assign') && manager !== ''"> User: {{ manager }}</h4>
-                <h4 v-else>No assignement</h4>
+                <h4 v-if="manager.startsWith('*/')"> {{ $t('exoplatform.permission.spaces.group') }}: {{ manager }}</h4>
+                <h4 v-else-if="!manager.startsWith('No assign') && manager !== ''"> {{ $t('exoplatform.permission.spaces.user') }}: {{ manager }}</h4>
+                <h4 v-else>{{ $t('exoplatform.permission.spaces.noAssignement') }}</h4>
               </div>
             </div>
-            <h4 v-if="managers.length === 0">No assignement</h4>
+            <h4 v-if="managers.length === 0">{{ $t('exoplatform.permission.spaces.noAssignement') }}</h4>
           </div>
           <div v-show="displayEditManage === 0" class="inputUser">
             <input id="add-guest-suggestor" type="text"/>
@@ -44,17 +44,17 @@
         </td>       
       </tr>
       <tr>
-        <td><h2>Manage spaces</h2> <h5>Ability to edit spaces</h5></td>
+        <td><h2>{{ $t('exoplatform.permission.spaces.manageSpace') }}</h2> <h5>{{ $t('exoplatform.permission.spaces.descriptionManageSpace') }}</h5></td>
         <td>
           <div v-show="displayEditCreate !== 0">
             <div v-if="guests.length > 0">
               <div v-for="guest in guests" :key="guest">
-                <h4 v-if="guest.startsWith('*/')"> Group: {{ guest }}</h4>
-                <h4 v-else-if="!guest.startsWith('No assign')"> User: {{ guest }}</h4>
-                <h4 v-else>No assignement</h4>
+                <h4 v-if="guest.startsWith('*/')"> {{ $t('exoplatform.permission.spaces.group') }}: {{ guest }}</h4>
+                <h4 v-else-if="!guest.startsWith('No assign')"> {{ $t('exoplatform.permission.spaces.user') }}: {{ guest }}</h4>
+                <h4 v-else>{{ $t('exoplatform.permission.spaces.noAssignement') }}</h4>
               </div>
             </div>
-            <h4 v-if="guests.length === 0">No assignement</h4>
+            <h4 v-if="guests.length === 0">{{ $t('exoplatform.permission.spaces.noAssignement') }}</h4>
           </div>
           <div v-show="displayEditCreate === 0" class="inputUser">
             <input id="add-user-suggestor" type="text"/>
@@ -90,7 +90,7 @@ export default {
       settingValue: '',
       permissionAdministrators:'No Assignment',
       permissionManagers:'No Assignment'
-    }
+    };
   },
   created() {
     this.initSuggester();
@@ -224,13 +224,15 @@ export default {
       }
       const promises = [];
       promises.push(spaceAdministrationServices.getUsers(query).then(data => {
-        if(data) 
+        if(data) {
           callback(data.options);
+        } 
       }));
 
       promises.push(spaceAdministrationServices.getGroups(query).then(data => {
-        if(data) 
+        if(data) {
           callback(data);
+        }
       }));
       Promise.all(promises);
     },   
@@ -295,7 +297,7 @@ export default {
       }
     }
   }
-}
+};
 </script>
 
 

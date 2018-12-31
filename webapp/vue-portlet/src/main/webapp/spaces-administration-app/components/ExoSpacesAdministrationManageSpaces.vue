@@ -9,17 +9,17 @@
     <table class="uiGrid table table-hover table-striped">
       <tr>          
         <th>
-          Space
+          {{ $t('exoplatform.manage.spaces.space') }}
         </th>
         <th>
-          Description
+          {{ $t('exoplatform.manage.spaces.description') }}
         </th>
         <th>
-          Actions
+          {{ $t('exoplatform.manage.spaces.actions') }}
         </th>
       </tr>
       <tr v-if="spaces.length === 0"> 
-        <td class="empty center" colspan="12"> Empty data </td>
+        <td class="empty center" colspan="12"> {{ $t('exoplatform.manage.spaces.emptyData') }} </td>
       </tr>
       <tr v-for="(space, index) in spaces" :key="space.id">
         <td><img v-if="space.avatarUrl != null" :src="space.avatarUrl" class="avatar" /> <img v-else :src="avatar" class="avatar" />  {{ space.displayName }}</td>
@@ -64,12 +64,7 @@
 import * as spaceAdministrationServices from '../spaceAdministrationServices';
 import * as spaceAdministrationConstants from '../spaceAdministrationConstants';
 
-import ExoModal from './modal/ExoModal.vue';
-
 export default {
-  components: {
-    'exo-modal': ExoModal
-  },
   data() {
     return {
       ConfirmationDeleteMessage: 'Confirmation',
@@ -82,7 +77,7 @@ export default {
       currentPage: 1,
       search: '',
       avatar : spaceAdministrationConstants.spaceConstants.DEFAULT_SPACE_AVATAR
-    }
+    };
   },
   created() {
     this.initSpaces();	
@@ -125,6 +120,6 @@ export default {
       this.showConfirmMessageModal = false;
     }
   }
-}
+};
 </script>
 

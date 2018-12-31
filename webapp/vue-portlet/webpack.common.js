@@ -54,11 +54,7 @@ let config = {
   plugins: [
     // we use ExtractTextWebpackPlugin to extract the css code on a css file
     new ExtractTextWebpackPlugin('css/[name].css')
-  ],
-  // we need to external vueJS since it's added to the PLF as AMD module to avoid having vueJs source code on every app
-  externals: {
-    vue: 'Vue'
-  }
+  ]
 };
 
 module.exports = config;
