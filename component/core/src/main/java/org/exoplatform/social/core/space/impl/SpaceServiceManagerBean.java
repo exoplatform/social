@@ -83,7 +83,7 @@ public class SpaceServiceManagerBean {
   }
   
   /**
-   * See {@link SpaceService#addSuperCreatorsMembership(String)}
+   * See {@link SpaceService#addSpacesCreatorsMembership(String)}
    * 
    * @param permissionExpression permission expression of type {@link String}
    * 

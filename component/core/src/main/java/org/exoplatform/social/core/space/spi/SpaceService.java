@@ -1431,7 +1431,7 @@ public interface SpaceService {
   
   /**
    * Check if the user can create spaces
-   * @param creator
+   * @param user
    * @return true if the user can create spaces
    */
   boolean canCreateSpace(String user);
