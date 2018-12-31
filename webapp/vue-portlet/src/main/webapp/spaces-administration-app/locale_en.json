@@ -1,4 +1,17 @@
 {"exoplatform.modal.confirmation.delete":"Do you confirm the delete of this space ?",
 "exoplatform.modal.button.delete":"Delete",
-"exoplatform.modal.button.annuler":"Annuler"
+"exoplatform.modal.button.annuler":"Annuler",
+"exoplatform.manage.spaces.space":"Space",
+"exoplatform.manage.spaces.description":"Description",
+"exoplatform.manage.spaces.actions":"Actions",
+"exoplatform.manage.spaces.emptyData":"Empty data",
+"exoplatform.permission.spaces.permissions":"Permissions",
+"exoplatform.permission.spaces.userOrGroup":"User or Group",
+"exoplatform.permission.spaces.createSpace":"Create spaces",
+"exoplatform.permission.spaces.descriptionCreateSpace":"Ability to create spaces",
+"exoplatform.permission.spaces.user":"User",
+"exoplatform.permission.spaces.group":"Group",
+"exoplatform.permission.spaces.noAssignement":"No assignement",
+"exoplatform.permission.spaces.manageSpace":"Manage spaces",
+"exoplatform.permission.spaces.descriptionManageSpace":"Ability to edit spaces"
 }

@@ -8,7 +8,8 @@ const app = 'social-vue-portlet';
 const config = merge(webpackCommonConfig, {
   output: {
     path: path.resolve(__dirname, `./target/${app}/`),
-    filename: 'js/[name].bundle.js'
+    filename: 'js/[name].bundle.js',
+    libraryTarget: 'amd'
   }
 });
 

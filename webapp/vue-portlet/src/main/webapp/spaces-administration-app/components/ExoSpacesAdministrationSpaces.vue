@@ -3,10 +3,10 @@
     <div class="uiTabNormal uiTabInPage">
       <ul class="nav nav-tabs">
         <li :class="{active: activeTab === 1}" @click="activeTab=1">
-          <a data-toggle="tab">Manage Spaces</a>
+          <a data-toggle="tab">{{ $t('exoplatform.permission.spaces.manageSpace') }}</a>
         </li>
         <li :class="{active: activeTab === 2}" @click="activeTab=2" >
-          <a data-toggle="tab">Permissions</a>
+          <a data-toggle="tab">{{ $t('exoplatform.permission.spaces.permissions') }}</a>
         </li>
       </ul> 
       <div class="tab-content">
@@ -22,18 +22,11 @@
 </template>
 
 <script>
-import ExoSpacesAdministrationManageSpaces from './ExoSpacesAdministrationManageSpaces.vue';
-import ExoSpacesAdministrationSpacesPermissions from './ExoSpacesAdministrationSpacesPermissions.vue';
-
 export default {
-  components: {
-    'exo-spaces-administration-manage-spaces': ExoSpacesAdministrationManageSpaces,
-    'exo-spaces-administration-manage-permissions' : ExoSpacesAdministrationSpacesPermissions
-  },
   data() { 
     return {
       activeTab: 1
-    }
+    };
   }
 };
 </script>

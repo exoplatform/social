@@ -14,7 +14,8 @@
         "eXo": true,
         "$": true,
         "global": true,
-        "exoi18n": true
+        "exoi18n": true,
+        "extensionRegistry": true
     },
     "parserOptions": {
         "sourceType": "module",
