@@ -24,6 +24,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
@@ -45,6 +46,10 @@ import org.exoplatform.container.xml.ValueParam;
 import org.exoplatform.container.xml.ValuesParam;
 import org.exoplatform.management.annotations.ManagedBy;
 import org.exoplatform.portal.config.UserACL;
+import org.exoplatform.portal.mop.page.PageContext;
+import org.exoplatform.portal.mop.page.PageKey;
+import org.exoplatform.portal.mop.page.PageService;
+import org.exoplatform.portal.mop.page.PageState;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.services.organization.Group;
@@ -161,6 +166,7 @@ public class SpaceServiceImpl implements SpaceService {
           addManagerMemberships(superManagersMembershipsArray);
         }
       }
+      updateSpacesAdministrationPagePermissions();
       
       SettingValue<String> creators = (SettingValue<String>) settingService.get(Context.GLOBAL, Scope.GLOBAL, SPACES__CREATORS);
       if (creators != null && !StringUtils.isBlank(creators.getValue())) {
@@ -250,6 +256,24 @@ public class SpaceServiceImpl implements SpaceService {
         this.superManagersMemberships.add(new MembershipEntry(membershipParts[1], membershipParts[0]));
       }
     }
+  }
+  
+  private void updateSpacesAdministrationPagePermissions() {
+    PageService pageService = CommonsUtils.getService(PageService.class);
+    PageKey pageKey = PageKey.parse("group::/platform/administrators::spacesAdministration");
+    PageState page = pageService.loadPage(pageKey).getState();
+    PageState pageState = new PageState(page.getDisplayName(),
+                                        page.getDescription(),
+                                        page.getShowMaxWindow(),
+                                        page.getFactoryId(),
+                                        superManagersMemberships.stream()
+                                                                .map(membership -> membership.getMembershipType() + ":"
+                                                                    + membership.getGroup())
+                                                                .collect(Collectors.toList()),
+                                        page.getEditPermission(),
+                                        page.getMoveAppsPermissions(),
+                                        page.getMoveContainersPermissions());
+    pageService.savePage(new PageContext(pageKey, pageState));
   }
 
   /**
