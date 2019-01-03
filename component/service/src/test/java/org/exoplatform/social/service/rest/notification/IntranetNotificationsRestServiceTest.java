@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2003-2010 eXo Platform SAS.
+ * Copyright (C) 2003-2019 eXo Platform SAS.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Affero General Public License
@@ -20,10 +20,13 @@ import org.exoplatform.commons.api.notification.model.NotificationInfo;
 import org.exoplatform.commons.api.notification.service.storage.WebNotificationStorage;
 import org.exoplatform.services.rest.impl.ContainerResponse;
 import org.exoplatform.social.core.identity.model.Identity;
+import org.exoplatform.social.core.manager.RelationshipManager;
+import org.exoplatform.social.core.relationship.model.Relationship;
 import org.exoplatform.social.core.space.impl.DefaultSpaceApplicationHandler;
 import org.exoplatform.social.core.space.impl.SpaceServiceImpl;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.storage.api.IdentityStorage;
+import org.exoplatform.social.rest.impl.relationship.RelationshipsRestResourcesV1;
 import org.exoplatform.social.service.rest.IntranetNotificationRestService;
 import org.exoplatform.social.service.test.AbstractResourceTest;
 
@@ -40,6 +43,7 @@ public class IntranetNotificationsRestServiceTest extends AbstractResourceTest {
 
   private IdentityStorage identityStorage;
   private SpaceServiceImpl spaceService;
+  private RelationshipManager relationshipManager;
   private WebNotificationStorage notificationStorage;
   
   private Identity rootIdentity;
@@ -52,6 +56,7 @@ public class IntranetNotificationsRestServiceTest extends AbstractResourceTest {
     
     identityStorage = getContainer().getComponentInstanceOfType(IdentityStorage.class);
     spaceService = getContainer().getComponentInstanceOfType(SpaceServiceImpl.class);
+    relationshipManager = getContainer().getComponentInstanceOfType(RelationshipManager.class);
     notificationStorage = getContainer().getComponentInstanceOfType(WebNotificationStorage.class);
     
     rootIdentity = new Identity("organization", "root");
@@ -108,6 +113,44 @@ public class IntranetNotificationsRestServiceTest extends AbstractResourceTest {
     startSessionAs("root");
     response = service("GET", "/social/intranet-notification/ignoreInvitationToConnect/" + johnIdentity.getRemoteId() +"/" + rootIdentity.getRemoteId() + "/" + createNotif() + "/message.json", "", null, null);
     assertEquals(200, response.getStatus());
+  }
+
+  public void testShouldConfirmInvitationToConnectWhenReceiverConfirmsTheInvitation() throws Exception {
+    end();
+    begin();
+
+    // Given
+    Relationship invitation = relationshipManager.inviteToConnect(johnIdentity, maryIdentity);
+
+    startSessionAs("mary");
+
+    // When
+    ContainerResponse response = service("GET", "/social/intranet-notification/confirmInvitationToConnect/" + johnIdentity.getRemoteId() +"/" + maryIdentity.getRemoteId() + "/" + createNotif() + "/message.json", "", null, null);
+
+    // Then
+    assertNotNull(response);
+    assertEquals(200, response.getStatus());
+
+    relationshipManager.delete(invitation);
+  }
+
+  public void testShouldNotConfirmInvitationToConnectWhenSenderConfirmsTheInvitation() throws Exception {
+    end();
+    begin();
+
+    // Given
+    Relationship invitation = relationshipManager.inviteToConnect(maryIdentity, johnIdentity);
+
+    startSessionAs("mary");
+
+    // When
+    ContainerResponse response = service("GET", "/social/intranet-notification/confirmInvitationToConnect/" + johnIdentity.getRemoteId() +"/" + maryIdentity.getRemoteId() + "/" + createNotif() + "/message.json", "", null, null);
+
+    // Then
+    assertNotNull(response);
+    assertEquals(403, response.getStatus());
+
+    relationshipManager.delete(invitation);
   }
   
   public void testIgnoreInvitationToJoinSpace() throws Exception {
