@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2003-2014 eXo Platform SAS.
+ * Copyright (C) 2003-2019 eXo Platform SAS.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -54,6 +54,7 @@ import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.manager.RelationshipManager;
+import org.exoplatform.social.core.relationship.model.Relationship;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
 import org.exoplatform.social.core.storage.impl.AbstractStorage;
@@ -72,12 +73,13 @@ public class IntranetNotificationRestService extends AbstractStorage implements 
   private static SpaceService spaceService;
   private static WebNotificationStorage webNotificationStorage;
   public final static String MESSAGE_JSON_FILE_NAME = "message.json";
+
   /**
    * Processes the "Accept the invitation to connect" action between 2 users and update notification.
    *
-   * @param senderId The sender's remote Id.
-   * @param receiverId The receiver's remote Id.
-   * @notificationId of the web notification message
+   * @param senderId The remote Id of the identity who sent the invitation.
+   * @param receiverId The remote Id of the identity who received the invitation.
+   * @notificationId Id of the web notification message
    * @authentication
    * @request
    * GET: {@code http://localhost:8080/rest/social/intranet-notifications/confirmInvitationToConnect/john/root/<notificationId>/message.json}
@@ -93,6 +95,18 @@ public class IntranetNotificationRestService extends AbstractStorage implements 
                                              @PathParam("format") String format) throws Exception {
     //Check authenticated user
     checkAuthenticatedUserPermission(receiverId);
+
+    Identity sender = getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, senderId, true);
+    Identity receiver = getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, receiverId, true);
+    if (sender == null || receiver == null) {
+      throw new WebApplicationException(Response.Status.BAD_REQUEST);
+    }
+
+    Relationship invitation = getRelationshipManager().get(sender, receiver);
+    if(invitation == null || !invitation.getStatus().equals(Relationship.Type.PENDING) || !invitation.isReceiver(receiver)) {
+      throw new WebApplicationException(Response.Status.FORBIDDEN);
+    }
+
     //
     String[] mediaTypes = new String[] { "json", "xml" };
     MediaType mediaType = Util.getMediaType(format, mediaTypes);
@@ -101,7 +115,7 @@ public class IntranetNotificationRestService extends AbstractStorage implements 
     info.key(new PluginKey("RelationshipReceivedRequestPlugin"));
     info.setFrom(senderId);
     info.setTo(receiverId);
-    Map<String, String> ownerParameter = new HashMap<String, String>();
+    Map<String, String> ownerParameter = new HashMap<>();
     ownerParameter.put("sender", senderId);
     ownerParameter.put("status", "accepted");
     info.setOwnerParameter(ownerParameter);
@@ -109,15 +123,9 @@ public class IntranetNotificationRestService extends AbstractStorage implements 
     if (messageInfo == null) {
       throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
     }
-    //
-    Identity sender = getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, senderId, true); 
-    Identity receiver = getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, receiverId, true);
-    if (sender == null || receiver == null) {
-      throw new WebApplicationException(Response.Status.BAD_REQUEST);
-    }
+
     getRelationshipManager().confirm(sender, receiver);
-    
-    
+
     return Util.getResponse(messageInfo, uriInfo, mediaType, Response.Status.OK);
   }
   /**
