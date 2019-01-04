@@ -33,7 +33,7 @@ export function getUsers(query) {
 }
 
 export function getGroups(query) {
-  return fetch(`${spaceConstants.SOCIAL_PEOPLE_API}/getGroups/suggest.json?search=${query}`, {credentials: 'include'}).then(resp => resp.json());
+  return fetch(`${spaceConstants.GROUP_API}?q=${query}`, {credentials: 'include'}).then(resp => resp.json());
 }
 
 export function createSetting(context,scope,settingKey,valueKey){

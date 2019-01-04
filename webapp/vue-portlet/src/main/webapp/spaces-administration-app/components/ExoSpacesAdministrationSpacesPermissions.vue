@@ -222,19 +222,17 @@ export default {
       if (!query.length) {
         return callback(); 
       }
-      const promises = [];
-      promises.push(spaceAdministrationServices.getUsers(query).then(data => {
-        if(data) {
-          callback(data.options);
-        } 
-      }));
+      const promises = [];     
+      promises.push(spaceAdministrationServices.getUsers(query));
+      promises.push(spaceAdministrationServices.getGroups(query));
 
-      promises.push(spaceAdministrationServices.getGroups(query).then(data => {
-        if(data) {
-          callback(data);
-        }
-      }));
-      Promise.all(promises);
+       Promise.all(promises).then( data => {
+         for(const group of data[1]) {                    
+          data[0].options.push({avatarUrl:null, text:group.parentId+group.groupName, value:group.parentId+group.groupName,type: 'group'});
+         }
+         callback(data[0].options);     
+       }
+      );
     },   
     renderMenuItem (item, escape) {
       if(item.avatarUrl == null) {
