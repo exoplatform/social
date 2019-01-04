@@ -22,7 +22,7 @@
   <parent>
     <artifactId>social</artifactId>
     <groupId>org.exoplatform.social</groupId>
-    <version>5.2.x-spaces-administration-SNAPSHOT</version>
+    <version>5.2.x-spaces-groups-binding-SNAPSHOT</version>
   </parent>
   <artifactId>social-component</artifactId>
   <packaging>pom</packaging>

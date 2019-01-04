@@ -4,7 +4,7 @@
   <parent>
     <artifactId>social-webapp</artifactId>
     <groupId>org.exoplatform.social</groupId>
-    <version>5.2.x-spaces-administration-SNAPSHOT</version>
+    <version>5.2.x-spaces-groups-binding-SNAPSHOT</version>
   </parent>
   <artifactId>social-webapp-juzu-portlet</artifactId>
   <packaging>jar</packaging>
