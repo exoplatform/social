@@ -44,10 +44,7 @@ import org.exoplatform.social.core.manager.ActivityManager;
 import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.model.AvatarAttachment;
 import org.exoplatform.social.core.service.LinkProvider;
-import org.exoplatform.social.core.space.SpaceException;
-import org.exoplatform.social.core.space.SpaceFilter;
-import org.exoplatform.social.core.space.SpaceListAccess;
-import org.exoplatform.social.core.space.SpaceUtils;
+import org.exoplatform.social.core.space.*;
 import org.exoplatform.social.core.space.impl.DefaultSpaceApplicationHandler;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.storage.IdentityStorageException;
@@ -58,6 +55,7 @@ import org.exoplatform.social.core.test.AbstractCoreTest;
 public class SpaceServiceTest extends AbstractCoreTest {
   private IdentityStorage identityStorage;
   private OrganizationService organizationService;
+  protected SpacesAdministrationService spacesAdministrationService;
   private List<Space> tearDownSpaceList;
   private List<Identity> tearDownUserList;
 
@@ -91,8 +89,9 @@ public class SpaceServiceTest extends AbstractCoreTest {
   @Override
   public void setUp() throws Exception {
     super.setUp();
-    identityStorage = (IdentityStorage) getContainer().getComponentInstanceOfType(IdentityStorage.class);
-    organizationService = (OrganizationService) getContainer().getComponentInstanceOfType(OrganizationService.class);
+    identityStorage = getContainer().getComponentInstanceOfType(IdentityStorage.class);
+    organizationService = getContainer().getComponentInstanceOfType(OrganizationService.class);
+    spacesAdministrationService = getContainer().getComponentInstanceOfType(SpacesAdministrationService.class);
     tearDownSpaceList = new ArrayList<Space>();
     tearDownUserList = new ArrayList<Identity>();
     
@@ -2990,7 +2989,7 @@ public class SpaceServiceTest extends AbstractCoreTest {
     assertEquals(0, spaceService.getAccessibleSpacesByFilter(userName, null).getSize());
     assertEquals(0, spaceService.getSettingableSpaces(userName).getSize());
 
-    spaceService.addSuperManagersMembership("mstypetest:/testgroup");
+    spacesAdministrationService.addSuperManagersMembership("mstypetest:/testgroup");
     assertTrue(spaceService.isSuperManager(userName));
     assertTrue(spaceService.hasAccessPermission(space, userName));
     assertTrue(spaceService.hasSettingPermission(space, userName));

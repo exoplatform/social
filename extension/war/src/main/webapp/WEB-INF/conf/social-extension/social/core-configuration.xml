@@ -420,6 +420,11 @@
   </component>
 
   <component>
+    <key>org.exoplatform.social.core.space.SpacesAdministrationService</key>
+    <type>org.exoplatform.social.core.space.impl.SpacesAdministrationServiceImpl</type>
+  </component>
+  
+  <component>
     <key>org.exoplatform.social.core.processor.I18NActivityProcessor</key>
     <type>org.exoplatform.social.core.processor.I18NActivityProcessor</type>
     <component-plugins>

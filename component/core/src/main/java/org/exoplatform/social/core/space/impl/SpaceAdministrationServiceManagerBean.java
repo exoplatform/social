@@ -11,22 +11,22 @@ import org.exoplatform.management.annotations.ManagedName;
 import org.exoplatform.management.jmx.annotations.NameTemplate;
 import org.exoplatform.management.jmx.annotations.Property;
 import org.exoplatform.management.rest.annotations.RESTEndpoint;
-import org.exoplatform.social.core.space.spi.SpaceService;
+import org.exoplatform.social.core.space.SpacesAdministrationService;
 
 @Managed
-@ManagedDescription("Social Service manager bean")
-@NameTemplate({ @Property(key = "service", value = "social"), @Property(key = "view", value = "SpaceService") })
-@RESTEndpoint(path = "spaceservice")
-public class SpaceServiceManagerBean {
-  SpaceService spaceService;
+@ManagedDescription("Social Space Administration Service manager bean")
+@NameTemplate({ @Property(key = "service", value = "social"), @Property(key = "view", value = "SpaceAdministrationService") })
+@RESTEndpoint(path = "spaceadministrationservice")
+public class SpaceAdministrationServiceManagerBean {
+  private SpacesAdministrationService spacesAdministrationService;
 
-  public SpaceServiceManagerBean(SpaceServiceImpl spaceServiceImpl) {
-    this.spaceService = spaceServiceImpl;
+  public SpaceAdministrationServiceManagerBean(SpacesAdministrationServiceImpl spacesAdministrationServiceImpl) {
+    this.spacesAdministrationService = spacesAdministrationServiceImpl;
   }
 
   /**
    * Gets the list of permission expressions of space super managers.
-   * See {@link SpaceService#getSuperManagersMemberships()}
+   * See {@link SpacesAdministrationService#getSuperManagersMemberships()}
    * 
    * @return {@link List} of type {@link String}
    */
@@ -34,14 +34,14 @@ public class SpaceServiceManagerBean {
   @ManagedDescription("Get Spaces super administrators")
   @Impact(ImpactType.READ)
   public List<String> getSpaceManager() {
-    return spaceService.getSuperManagersMemberships()
+    return spacesAdministrationService.getSuperManagersMemberships()
                        .stream()
                        .map(membership -> membership.getMembershipType() + ":" + membership.getGroup())
                        .collect(Collectors.toList());
   }
 
   /**
-   * See {@link SpaceService#addSuperManagersMembership(String)}
+   * See {@link SpacesAdministrationService#addSuperManagersMembership(String)}
    * 
    * @param permissionExpression permission expression of type {@link String}
    * 
@@ -50,11 +50,11 @@ public class SpaceServiceManagerBean {
   @ManagedDescription("Add Spaces super managers membership")
   @Impact(ImpactType.WRITE)
   public void addSpaceManager(@ManagedDescription("Spaces super manger role") @ManagedName("permissionExpression") String permissionExpression) {
-    spaceService.addSuperManagersMembership(permissionExpression);
+    spacesAdministrationService.addSuperManagersMembership(permissionExpression);
   }
 
   /**
-   * See {@link SpaceService#removeSuperManagersMembership(String)}
+   * See {@link SpacesAdministrationService#removeSuperManagersMembership(String)}
    * 
    * @param permissionExpression permission expression of type {@link String}
    * 
@@ -63,12 +63,12 @@ public class SpaceServiceManagerBean {
   @ManagedDescription("Remove Spaces super managers membership")
   @Impact(ImpactType.WRITE)
   public void removeSpaceManager(@ManagedDescription("Spaces super manger memberships") @ManagedName("permissionExpression") String permissionExpression) {
-    spaceService.removeSuperManagersMembership(permissionExpression);
+    spacesAdministrationService.removeSuperManagersMembership(permissionExpression);
   }
   
   /**
    * Gets the list of permission expressions of space creators.
-   * See {@link SpaceService#getSuperCreatorsMemberships()}
+   * See {@link SpacesAdministrationService#getSuperCreatorsMemberships()}
    * 
    * @return {@link List} of type {@link String}
    */
@@ -76,14 +76,14 @@ public class SpaceServiceManagerBean {
   @ManagedDescription("Get Spaces creators memberships")
   @Impact(ImpactType.READ)
   public List<String> getSpacesCreatorsMemberships() {
-    return spaceService.getSuperCreatorsMemberships()
+    return spacesAdministrationService.getSuperCreatorsMemberships()
                        .stream()
                        .map(membership -> membership.getMembershipType() + ":" + membership.getGroup())
                        .collect(Collectors.toList());
   }
   
   /**
-   * See {@link SpaceService#addSpacesCreatorsMembership(String)}
+   * See {@link SpacesAdministrationService#addSpacesCreatorsMembership(String)}
    * 
    * @param permissionExpression permission expression of type {@link String}
    * 
@@ -92,11 +92,11 @@ public class SpaceServiceManagerBean {
   @ManagedDescription("Add Spaces creators membership")
   @Impact(ImpactType.WRITE)
   public void addSpacesCreatorsMembership(@ManagedDescription("Spaces creator membership") @ManagedName("permissionExpression") String permissionExpression) {
-    spaceService.addSpacesCreatorsMembership(permissionExpression);
+    spacesAdministrationService.addSpacesCreatorsMembership(permissionExpression);
   }
   
   /**
-   * See {@link SpaceService#removeSuperManagersMembership(String)}
+   * See {@link SpacesAdministrationService#removeSuperManagersMembership(String)}
    * 
    * @param permissionExpression permission expression of type {@link String}
    * 
@@ -105,6 +105,6 @@ public class SpaceServiceManagerBean {
   @ManagedDescription("Remove Spaces creators membership")
   @Impact(ImpactType.WRITE)
   public void removeSpacesCreatorsMembership(@ManagedDescription("Spaces creator membership") @ManagedName("permissionExpression") String permissionExpression) {
-    spaceService.removeSpacesCreatorsMembership(permissionExpression);
+    spacesAdministrationService.removeSpacesCreatorsMembership(permissionExpression);
   }
 }
