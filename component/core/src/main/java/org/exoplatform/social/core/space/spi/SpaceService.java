@@ -1388,52 +1388,9 @@ public interface SpaceService {
   boolean isSuperManager(String userId);
 
   /**
-   * Returns the list of super managers memberships (permission expressions)
-   * 
-   * @return a {@link List} of memberships of type {@link String}
-   */
-  List<MembershipEntry> getSuperManagersMemberships();
-
-  /**
-   * Add spaces super manager membership
-   * 
-   * @param permissionExpression permission expression of type {@link String} with format 'mstype:groupId'
-   */
-  void addSuperManagersMembership(String permissionExpression);
-
-  /**
-   * Remove spaces super manager membership
-   * 
-   * @param permissionExpression permission expression of type {@link String} with format 'mstype:groupId'
-   */
-  void removeSuperManagersMembership(String permissionExpression);
-  
-  /**
-   * Returns the list of creators memberships (permission expressions)
-   * 
-   * @return a {@link List} of memberships of type {@link String}
-   */
-  List<MembershipEntry> getSuperCreatorsMemberships();
-  
-  /**
-   * Add spaces super creator membership
-   * 
-   * @param permissionExpression
-   */
-  void addSpacesCreatorsMembership(String permissionExpression);
-  
-  /**
-   * remove spaces super creator membership
-   * 
-   * @param permissionExpression
-   */
-  void removeSpacesCreatorsMembership(String permissionExpression);
-  
-  /**
    * Check if the user can create spaces
    * @param user
    * @return true if the user can create spaces
    */
   boolean canCreateSpace(String user);
-  
 }
