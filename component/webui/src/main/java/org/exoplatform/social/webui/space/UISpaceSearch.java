@@ -18,6 +18,12 @@ package org.exoplatform.social.webui.space;
 
 import java.util.List;
 
+import org.exoplatform.commons.utils.CommonsUtils;
+import org.exoplatform.portal.webui.util.Util;
+import org.exoplatform.services.organization.OrganizationService;
+import org.exoplatform.services.organization.User;
+import org.exoplatform.services.organization.UserHandler;
+import org.exoplatform.social.core.space.SpacesAdministrationService;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
 import org.exoplatform.social.webui.Utils;
@@ -262,5 +268,15 @@ public class UISpaceSearch extends UIForm {
 
   public void setNewSearch(boolean isNewSearch) {
     this.isNewSearch = isNewSearch;
+  }
+  
+  public boolean checkPermissionCreateSpace() throws Exception {
+    String userName = Util.getPortalRequestContext().getRemoteUser();
+    OrganizationService organizationService = CommonsUtils.getService(OrganizationService.class);
+    UserHandler userHandler = organizationService.getUserHandler();
+    User user = userHandler.findUserByName(userName);
+    SpacesAdministrationService spacesAdministrationService = CommonsUtils.getService(SpacesAdministrationService.class);
+
+    return spacesAdministrationService.checkUsernameInSpaceCreators(user.getFirstName() + " " + user.getLastName());
   }
 }

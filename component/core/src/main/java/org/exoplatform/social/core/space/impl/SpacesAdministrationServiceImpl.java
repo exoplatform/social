@@ -2,6 +2,7 @@ package org.exoplatform.social.core.space.impl;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -220,5 +221,25 @@ public class SpacesAdministrationServiceImpl implements Startable, SpacesAdminis
         RequestLifeCycle.end();
       }
     }
+  }
+  
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public boolean checkUsernameInSpaceCreators(String Username) {
+    boolean check = false;
+    if (StringUtils.isBlank(Username)) {
+      throw new IllegalArgumentException("Username couldn't be empty");
+    }
+    Iterator<MembershipEntry> superCreatorsMembershipsIterator = spaceCreatorsMemberships.iterator();
+    while (superCreatorsMembershipsIterator.hasNext()) {
+      MembershipEntry membershipEntry = superCreatorsMembershipsIterator.next();
+      if (Username.equals(membershipEntry.toString())) {
+        check = true;
+        break;
+      }
+    }
+    return check;
   }
 }
