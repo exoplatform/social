@@ -2,14 +2,12 @@ package org.exoplatform.social.core.space.impl;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.servlet.ServletContext;
 
-import org.apache.commons.lang.StringUtils;
-import org.exoplatform.management.annotations.ManagedBy;
+import org.apache.commons.lang3.StringUtils;
 import org.picocontainer.Startable;
 
 import org.exoplatform.commons.api.settings.SettingService;
@@ -22,10 +20,13 @@ import org.exoplatform.container.RootContainer;
 import org.exoplatform.container.component.RequestLifeCycle;
 import org.exoplatform.container.xml.InitParams;
 import org.exoplatform.container.xml.ValueParam;
+import org.exoplatform.management.annotations.ManagedBy;
 import org.exoplatform.portal.mop.page.PageContext;
 import org.exoplatform.portal.mop.page.PageKey;
 import org.exoplatform.portal.mop.page.PageService;
 import org.exoplatform.portal.mop.page.PageState;
+import org.exoplatform.services.log.ExoLogger;
+import org.exoplatform.services.log.Log;
 import org.exoplatform.services.security.MembershipEntry;
 import org.exoplatform.social.core.space.SpacesAdministrationService;
 
@@ -34,6 +35,8 @@ import org.exoplatform.social.core.space.SpacesAdministrationService;
  */
 @ManagedBy(SpaceAdministrationServiceManagerBean.class)
 public class SpacesAdministrationServiceImpl implements Startable, SpacesAdministrationService {
+
+  private static final Log LOG = ExoLogger.getLogger(SpacesAdministrationServiceImpl.class);
 
   private static final String SPACES_SUPER_ADMINISTRATORS_PARAM = "spaces.super.administrators";
 
@@ -77,40 +80,16 @@ public class SpacesAdministrationServiceImpl implements Startable, SpacesAdminis
    * {@inheritDoc}
    */
   @Override
-  public void addSuperManagersMembership(String permissionExpression) {
-    if(StringUtils.isBlank(permissionExpression)) {
-      throw new IllegalArgumentException("Permission expression couldn't be empty");
-    }
-    if (!permissionExpression.contains(":/")) {
-      throw new IllegalArgumentException("Invalid entry '" + permissionExpression + "'. A permission expression is expected (mstype:groupId).");
-    }
-    String[] membershipParts = permissionExpression.split(":");
-    superManagersMemberships.add(new MembershipEntry(membershipParts[1], membershipParts[0]));
-
-    updateSpacesAdministrationPagePermissions(superManagersMemberships);
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public void removeSuperManagersMembership(String permissionExpression) {
-    if (StringUtils.isBlank(permissionExpression)) {
-      throw new IllegalArgumentException("Permission expression couldn't be empty");
-    }
-    if (!permissionExpression.contains(":/")) {
-      throw new IllegalArgumentException("Invalid entry '" + permissionExpression
-              + "'. A permission expression is expected (mstype:groupId).");
-    }
-    Iterator<MembershipEntry> superManagersMembershipsIterator = superManagersMemberships.iterator();
-    while (superManagersMembershipsIterator.hasNext()) {
-      MembershipEntry membershipEntry = superManagersMembershipsIterator.next();
-      if (permissionExpression.trim().equals(membershipEntry.toString())) {
-        superManagersMembershipsIterator.remove();
-      }
+  public void updateSuperManagersMemberships(List<MembershipEntry> permissionsExpressions) {
+    if(permissionsExpressions == null) {
+      throw new IllegalArgumentException("Permission expressions list couldn't be null");
     }
 
-    updateSpacesAdministrationPagePermissions(superManagersMemberships);
+    this.superManagersMemberships = permissionsExpressions;
+
+    settingService.set(Context.GLOBAL, Scope.GLOBAL, SPACES_ADMINISTRATORS_SETTING_KEY, SettingValue.create(StringUtils.join(this.superManagersMemberships, ",")));
+
+    updateSpacesAdministrationPagePermissions(this.superManagersMemberships);
   }
 
   /**
@@ -133,33 +112,16 @@ public class SpacesAdministrationServiceImpl implements Startable, SpacesAdminis
    * {@inheritDoc}
    */
   @Override
-  public void addSpacesCreatorsMembership(String permissionExpression) {
-    if(StringUtils.isBlank(permissionExpression)) {
-      throw new IllegalArgumentException("Permission expression couldn't be empty");
+  public void updateSpacesCreatorsMemberships(List<MembershipEntry> permissionsExpressions) {
+    if(permissionsExpressions == null) {
+      throw new IllegalArgumentException("Permission expressions list couldn't be null");
     }
-    if (!permissionExpression.contains(":/")) {
-      this.spaceCreatorsMemberships.add(new MembershipEntry(permissionExpression));
-    } else {
-      String[] membershipParts = permissionExpression.split(":");
-      this.spaceCreatorsMemberships.add(new MembershipEntry(membershipParts[1], membershipParts[0]));
-    }
-  }
 
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public void removeSpacesCreatorsMembership(String permissionExpression) {
-    if (StringUtils.isBlank(permissionExpression)) {
-      throw new IllegalArgumentException("Permission expression couldn't be empty");
-    }
-    Iterator<MembershipEntry> superCreatorsMembershipsIterator = spaceCreatorsMemberships.iterator();
-    while (superCreatorsMembershipsIterator.hasNext()) {
-      MembershipEntry membershipEntry = superCreatorsMembershipsIterator.next();
-      if (permissionExpression.trim().equals(membershipEntry.toString())) {
-        superCreatorsMembershipsIterator.remove();
-      }
-    }
+    this.spaceCreatorsMemberships = permissionsExpressions;
+
+    settingService.set(Context.GLOBAL, Scope.GLOBAL, SPACES_CREATORS_SETTING_KEY, SettingValue.create(StringUtils.join(this.spaceCreatorsMemberships, ",")));
+
+    updateSpacesAdministrationPagePermissions(this.spaceCreatorsMemberships);
   }
 
   /**
