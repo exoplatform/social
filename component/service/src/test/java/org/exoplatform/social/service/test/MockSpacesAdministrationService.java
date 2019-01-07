@@ -12,13 +12,7 @@ public class MockSpacesAdministrationService implements SpacesAdministrationServ
   }
 
   @Override
-  public void addSuperManagersMembership(String permissionExpression) {
-
-  }
-
-  @Override
-  public void removeSuperManagersMembership(String permissionExpression) {
-
+  public void updateSuperManagersMemberships(List<MembershipEntry> permissionsExpressions) {
   }
 
   @Override
@@ -27,12 +21,6 @@ public class MockSpacesAdministrationService implements SpacesAdministrationServ
   }
 
   @Override
-  public void addSpacesCreatorsMembership(String permissionExpression) {
-
-  }
-
-  @Override
-  public void removeSpacesCreatorsMembership(String permissionExpression) {
-
+  public void updateSpacesCreatorsMemberships(List<MembershipEntry> permissionsExpressions) {
   }
 }

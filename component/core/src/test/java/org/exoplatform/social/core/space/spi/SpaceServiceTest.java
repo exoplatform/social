@@ -18,6 +18,7 @@ package org.exoplatform.social.core.space.spi;
 
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -36,6 +37,7 @@ import org.exoplatform.services.organization.Group;
 import org.exoplatform.services.organization.MembershipType;
 import org.exoplatform.services.organization.OrganizationService;
 import org.exoplatform.services.organization.User;
+import org.exoplatform.services.security.MembershipEntry;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
@@ -2989,7 +2991,7 @@ public class SpaceServiceTest extends AbstractCoreTest {
     assertEquals(0, spaceService.getAccessibleSpacesByFilter(userName, null).getSize());
     assertEquals(0, spaceService.getSettingableSpaces(userName).getSize());
 
-    spacesAdministrationService.addSuperManagersMembership("mstypetest:/testgroup");
+    spacesAdministrationService.updateSuperManagersMemberships(Arrays.asList(new MembershipEntry("/testgroup", "mstypetest")));
     assertTrue(spaceService.isSuperManager(userName));
     assertTrue(spaceService.hasAccessPermission(space, userName));
     assertTrue(spaceService.hasSettingPermission(space, userName));

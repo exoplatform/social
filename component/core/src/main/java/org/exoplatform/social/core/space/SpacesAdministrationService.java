@@ -16,18 +16,11 @@ public interface SpacesAdministrationService {
   List<MembershipEntry> getSuperManagersMemberships();
 
   /**
-   * Add spaces super manager membership
+   * Update spaces super manager memberships
    *
-   * @param permissionExpression permission expression of type {@link String} with format 'mstype:groupId'
+   * @param permissionsExpressions permission expression of type {@link String} with format 'mstype:groupId'
    */
-  void addSuperManagersMembership(String permissionExpression);
-
-  /**
-   * Remove spaces super manager membership
-   *
-   * @param permissionExpression permission expression of type {@link String} with format 'mstype:groupId'
-   */
-  void removeSuperManagersMembership(String permissionExpression);
+  void updateSuperManagersMemberships(List<MembershipEntry> permissionsExpressions);
 
   /**
    * Returns the list of creators memberships (permission expressions)
@@ -37,16 +30,9 @@ public interface SpacesAdministrationService {
   List<MembershipEntry> getSuperCreatorsMemberships();
 
   /**
-   * Add spaces super creator membership
+   * Update spaces super creator memberships
    *
-   * @param permissionExpression
+   * @param permissionsExpressions
    */
-  void addSpacesCreatorsMembership(String permissionExpression);
-
-  /**
-   * remove spaces super creator membership
-   *
-   * @param permissionExpression
-   */
-  void removeSpacesCreatorsMembership(String permissionExpression);
+  void updateSpacesCreatorsMemberships(List<MembershipEntry> permissionsExpressions);
 }

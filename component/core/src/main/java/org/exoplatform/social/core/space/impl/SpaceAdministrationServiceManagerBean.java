@@ -1,5 +1,6 @@
 package org.exoplatform.social.core.space.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -11,6 +12,7 @@ import org.exoplatform.management.annotations.ManagedName;
 import org.exoplatform.management.jmx.annotations.NameTemplate;
 import org.exoplatform.management.jmx.annotations.Property;
 import org.exoplatform.management.rest.annotations.RESTEndpoint;
+import org.exoplatform.services.security.MembershipEntry;
 import org.exoplatform.social.core.space.SpacesAdministrationService;
 
 @Managed
@@ -36,13 +38,13 @@ public class SpaceAdministrationServiceManagerBean {
   public List<String> getSpaceManager() {
     return spacesAdministrationService.getSuperManagersMemberships()
                        .stream()
-                       .map(membership -> membership.getMembershipType() + ":" + membership.getGroup())
+                       .map(membership -> membership.toString())
                        .collect(Collectors.toList());
   }
 
   /**
-   * See {@link SpacesAdministrationService#addSuperManagersMembership(String)}
-   * 
+   * Adds a membership in spaces administrators
+   *
    * @param permissionExpression permission expression of type {@link String}
    * 
    */
@@ -50,11 +52,13 @@ public class SpaceAdministrationServiceManagerBean {
   @ManagedDescription("Add Spaces super managers membership")
   @Impact(ImpactType.WRITE)
   public void addSpaceManager(@ManagedDescription("Spaces super manger role") @ManagedName("permissionExpression") String permissionExpression) {
-    spacesAdministrationService.addSuperManagersMembership(permissionExpression);
+    List<MembershipEntry> superManagersMemberships = new ArrayList<>(spacesAdministrationService.getSuperManagersMemberships());
+    superManagersMemberships.add(MembershipEntry.parse(permissionExpression));
+    spacesAdministrationService.updateSuperManagersMemberships(superManagersMemberships);
   }
 
   /**
-   * See {@link SpacesAdministrationService#removeSuperManagersMembership(String)}
+   * Removes a membership from spaces administrators
    * 
    * @param permissionExpression permission expression of type {@link String}
    * 
@@ -63,7 +67,11 @@ public class SpaceAdministrationServiceManagerBean {
   @ManagedDescription("Remove Spaces super managers membership")
   @Impact(ImpactType.WRITE)
   public void removeSpaceManager(@ManagedDescription("Spaces super manger memberships") @ManagedName("permissionExpression") String permissionExpression) {
-    spacesAdministrationService.removeSuperManagersMembership(permissionExpression);
+    List<MembershipEntry> superManagersMemberships = spacesAdministrationService.getSuperManagersMemberships();
+    List<MembershipEntry> updatedMemberships = superManagersMemberships.stream()
+            .filter(m -> !m.toString().equals(permissionExpression))
+            .collect(Collectors.toList());
+    spacesAdministrationService.updateSuperManagersMemberships(updatedMemberships);
   }
   
   /**
@@ -78,12 +86,12 @@ public class SpaceAdministrationServiceManagerBean {
   public List<String> getSpacesCreatorsMemberships() {
     return spacesAdministrationService.getSuperCreatorsMemberships()
                        .stream()
-                       .map(membership -> membership.getMembershipType() + ":" + membership.getGroup())
+                       .map(membership -> membership.toString())
                        .collect(Collectors.toList());
   }
   
   /**
-   * See {@link SpacesAdministrationService#addSpacesCreatorsMembership(String)}
+   * Adds a membership in spaces creators
    * 
    * @param permissionExpression permission expression of type {@link String}
    * 
@@ -92,11 +100,13 @@ public class SpaceAdministrationServiceManagerBean {
   @ManagedDescription("Add Spaces creators membership")
   @Impact(ImpactType.WRITE)
   public void addSpacesCreatorsMembership(@ManagedDescription("Spaces creator membership") @ManagedName("permissionExpression") String permissionExpression) {
-    spacesAdministrationService.addSpacesCreatorsMembership(permissionExpression);
+    List<MembershipEntry> superCreatorsMemberships = new ArrayList<>(spacesAdministrationService.getSuperCreatorsMemberships());
+    superCreatorsMemberships.add(MembershipEntry.parse(permissionExpression));
+    spacesAdministrationService.updateSpacesCreatorsMemberships(superCreatorsMemberships);
   }
   
   /**
-   * See {@link SpacesAdministrationService#removeSuperManagersMembership(String)}
+   * Removes a membership in spaces creators
    * 
    * @param permissionExpression permission expression of type {@link String}
    * 
@@ -105,6 +115,10 @@ public class SpaceAdministrationServiceManagerBean {
   @ManagedDescription("Remove Spaces creators membership")
   @Impact(ImpactType.WRITE)
   public void removeSpacesCreatorsMembership(@ManagedDescription("Spaces creator membership") @ManagedName("permissionExpression") String permissionExpression) {
-    spacesAdministrationService.removeSpacesCreatorsMembership(permissionExpression);
+    List<MembershipEntry> superCreatorsMemberships = spacesAdministrationService.getSuperCreatorsMemberships();
+    List<MembershipEntry> updatedMemberships = superCreatorsMemberships.stream()
+            .filter(m -> !m.toString().equals(permissionExpression))
+            .collect(Collectors.toList());
+    spacesAdministrationService.updateSpacesCreatorsMemberships(updatedMemberships);
   }
 }
