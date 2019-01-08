@@ -34,7 +34,6 @@ public interface SpacesAdministrationService {
    *
    * @param permissionsExpressions
    */
-
   void updateSpacesCreatorsMemberships(List<MembershipEntry> permissionsExpressions);
 
   
@@ -44,6 +43,6 @@ public interface SpacesAdministrationService {
    * @param Username
    * @return
    */
-  boolean checkUsernameInSpaceCreators(String Username) ;
+  boolean IsSpaceCreator(String Username) ;
 
 }
