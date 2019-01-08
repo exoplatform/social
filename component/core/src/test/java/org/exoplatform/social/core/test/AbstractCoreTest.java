@@ -30,9 +30,13 @@ import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.jcr.RepositoryService;
 import org.exoplatform.services.jcr.core.ManageableRepository;
+import org.exoplatform.services.jcr.ext.common.SessionProvider;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.services.organization.*;
+import org.exoplatform.services.security.ConversationState;
+import org.exoplatform.services.security.Identity;
+import org.exoplatform.services.security.MembershipEntry;
 import org.exoplatform.social.core.space.SpaceException;
 import org.exoplatform.social.core.space.SpaceUtils;
 import org.exoplatform.social.core.space.model.Space;
@@ -47,6 +51,8 @@ import javax.jcr.Session;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -163,6 +169,18 @@ public abstract class AbstractCoreTest extends BaseExoTestCase {
       throw new AssertionFailedError(""+ count + " JDBC queries was executed but the maximum is : " + maxQuery);
     }
     
+  }
+
+  protected void startSessionAs(String user) {
+    Identity identity = new Identity(user, Collections.EMPTY_LIST);
+    ConversationState state = new ConversationState(identity);
+    ConversationState.setCurrent(state);
+  }
+
+  protected void startSessionAs(String user, Collection<MembershipEntry> memberships) {
+    Identity identity = new Identity(user, memberships);
+    ConversationState state = new ConversationState(identity);
+    ConversationState.setCurrent(state);
   }
 
   // Called by byteman

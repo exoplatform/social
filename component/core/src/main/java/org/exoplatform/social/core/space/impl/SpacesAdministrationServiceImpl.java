@@ -3,7 +3,6 @@ package org.exoplatform.social.core.space.impl;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -23,6 +22,7 @@ import org.exoplatform.container.component.RequestLifeCycle;
 import org.exoplatform.container.xml.InitParams;
 import org.exoplatform.container.xml.ValueParam;
 import org.exoplatform.management.annotations.ManagedBy;
+import org.exoplatform.portal.config.UserACL;
 import org.exoplatform.portal.mop.page.PageContext;
 import org.exoplatform.portal.mop.page.PageKey;
 import org.exoplatform.portal.mop.page.PageService;
@@ -58,14 +58,21 @@ public class SpacesAdministrationServiceImpl implements Startable, SpacesAdminis
   
   private IdentityRegistry identityRegistry;
 
+  private OrganizationService organizationService;
+
+  private UserACL userACL;
+
   private List<MembershipEntry> superManagersMemberships = new ArrayList<>();
 
   private List<MembershipEntry> spaceCreatorsMemberships = new ArrayList<>();
 
-  public SpacesAdministrationServiceImpl(InitParams initParams, SettingService settingService, IdentityRegistry identityRegistry) {
+  public SpacesAdministrationServiceImpl(InitParams initParams, SettingService settingService,
+                                         IdentityRegistry identityRegistry, OrganizationService organizationService,
+                                         UserACL userACL) {
     this.settingService = settingService;
     this.identityRegistry = identityRegistry;
-    
+    this.organizationService = organizationService;
+    this.userACL = userACL;
     loadSettings(initParams);
   }
 
@@ -235,10 +242,12 @@ public class SpacesAdministrationServiceImpl implements Startable, SpacesAdminis
    * {@inheritDoc}
    */
   @Override
-  public boolean IsSpaceCreator(String userId) {
-    OrganizationService organizationService = CommonsUtils.getService(OrganizationService.class);
+  public boolean canCreateSpace(String userId) {
     if (StringUtils.isBlank(userId) || IdentityConstants.ANONIM.equals(userId) || IdentityConstants.SYSTEM.equals(userId)) {
       return false;
+    }
+    if (userId.equals(userACL.getSuperUser())) {
+      return true;
     }
     org.exoplatform.services.security.Identity identity = identityRegistry.getIdentity(userId);
     if (identity == null) {
@@ -254,11 +263,13 @@ public class SpacesAdministrationServiceImpl implements Startable, SpacesAdminis
       }
       identity = new org.exoplatform.services.security.Identity(userId, entries);
     }
-    List<MembershipEntry> superCreatorssMemberships = getSuperCreatorsMemberships();
-    if (superCreatorssMemberships != null && !superCreatorssMemberships.isEmpty()) {
-      for (MembershipEntry superCreatorMembership : superCreatorssMemberships) {
-        if (identity.isMemberOf(superCreatorMembership)) {
-          return true;
+    List<MembershipEntry> superCreatorsMemberships = getSuperCreatorsMemberships();
+    if (superCreatorsMemberships != null && !superCreatorsMemberships.isEmpty()) {
+      for (MembershipEntry superCreatorMembership : superCreatorsMemberships) {
+        if (superCreatorMembership.getMembershipType().equals("*")) {
+          return identity.isMemberOf(superCreatorMembership.getGroup());
+        } else {
+          return identity.isMemberOf(superCreatorMembership);
         }
       }
     }

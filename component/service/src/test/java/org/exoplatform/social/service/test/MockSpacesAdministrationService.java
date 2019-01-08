@@ -41,7 +41,7 @@ public class MockSpacesAdministrationService implements SpacesAdministrationServ
   }
 
   @Override
-  public boolean IsSpaceCreator(String Username) {
+  public boolean canCreateSpace(String Username) {
     return false;
   }
 }
