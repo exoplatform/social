@@ -36,19 +36,8 @@ export function getGroups(query) {
   return fetch(`${spaceConstants.GROUP_API}?q=${query}`, {credentials: 'include'}).then(resp => resp.json());
 }
 
-export function createSetting(context,scope,settingKey,valueKey){
-  return fetch(`${spaceConstants.SETTING_API}/${context}/${scope}/${settingKey}`, {
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    credentials: 'include',
-    method: 'PUT',
-    body: JSON.stringify({'value': valueKey})
-  });
-}
-
-export function getsSettingValue(context,scope,settingKey) {
-  return fetch(`${spaceConstants.SETTING_API}/${context}/${scope}/${settingKey}`, {
+export function getSpacesAdministrationSetting(key){
+  return fetch(`${spaceConstants.SPACES_ADMINISTRATION_API}/${key}`, {
     headers: {
       'Content-Type': 'application/json'
     },
@@ -62,4 +51,16 @@ export function getsSettingValue(context,scope,settingKey) {
       return resp.text();
     }
   });
-}  
+}
+
+export function updateSpacesAdministrationSetting(key, value){
+  return fetch(`${spaceConstants.SPACES_ADMINISTRATION_API}/${key}`, {
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    credentials: 'include',
+    method: 'PUT',
+    body: JSON.stringify(value)
+  });
+}
+

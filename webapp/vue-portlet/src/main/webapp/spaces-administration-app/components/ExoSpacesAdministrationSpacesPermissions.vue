@@ -15,49 +15,18 @@
       <tr>
         <td><h2>{{ $t('exoplatform.permission.spaces.createSpace') }}</h2> <h5>{{ $t('exoplatform.permission.spaces.descriptionCreateSpace') }}</h5></td>
         <td>
-          <div v-show="displayEditManage !== 0">
-            <div v-if="managers.length > 0">
-              <div v-for="manager in managers" :key="manager">
-                <h4 v-if="manager.startsWith('*/')"> {{ $t('exoplatform.permission.spaces.group') }}: {{ manager }}</h4>
-                <h4 v-else-if="!manager.startsWith('No assign') && manager !== ''"> {{ $t('exoplatform.permission.spaces.user') }}: {{ manager }}</h4>
-                <h4 v-else>{{ $t('exoplatform.permission.spaces.noAssignement') }}</h4>
-              </div>
-            </div>
-            <h4 v-if="managers.length === 0">{{ $t('exoplatform.permission.spaces.noAssignement') }}</h4>
-          </div>
-          <div v-show="displayEditManage === 0" class="inputUser">
-            <input id="add-guest-suggestor" type="text"/>
-          </div>
-        </td>
-        <td v-if="displayEditManage === 1" class="center actionContainer" >
-          <a data-placement="bottom" rel="tooltip" class="actionIcon" data-original-title="Edit" @click="editManageSpace()">
-            <i class="uiIconEdit uiIconLightGray"></i>
-          </a>
-        </td>
-        <td v-if="displayEditManage === 0" class="center actionContainer" >
-          <a data-placement="bottom" rel="tooltip" class="actionIcon" data-original-title="Save" @click="savePermissionsManageSpace()">
-            <i class="uiIconSave uiIconLightGray"></i>
-          </a>
-          <a data-placement="bottom" rel="tooltip" class="actionIcon" data-original-title="Close" @click="editManageSpace()">
-            <i class="uiIconClose uiIconLightGray"></i>
-          </a>
-        </td>       
-      </tr>
-      <tr>
-        <td><h2>{{ $t('exoplatform.permission.spaces.manageSpace') }}</h2> <h5>{{ $t('exoplatform.permission.spaces.descriptionManageSpace') }}</h5></td>
-        <td>
           <div v-show="displayEditCreate !== 0">
-            <div v-if="guests.length > 0">
-              <div v-for="guest in guests" :key="guest">
-                <h4 v-if="guest.startsWith('*/')"> {{ $t('exoplatform.permission.spaces.group') }}: {{ guest }}</h4>
-                <h4 v-else-if="!guest.startsWith('No assign')"> {{ $t('exoplatform.permission.spaces.user') }}: {{ guest }}</h4>
+            <div v-if="creators.length > 0">
+              <div v-for="creator in creators" :key="creator">
+                <h4 v-if="creator.startsWith('*:/')"> {{ $t('exoplatform.permission.spaces.group') }}: {{ creator }}</h4>
+                <h4 v-else-if="!creator.startsWith('No assign') && creator !== ''"> {{ $t('exoplatform.permission.spaces.user') }}: {{ creator }}</h4>
                 <h4 v-else>{{ $t('exoplatform.permission.spaces.noAssignement') }}</h4>
               </div>
             </div>
-            <h4 v-if="guests.length === 0">{{ $t('exoplatform.permission.spaces.noAssignement') }}</h4>
+            <h4 v-if="creators.length === 0">{{ $t('exoplatform.permission.spaces.noAssignement') }}</h4>
           </div>
           <div v-show="displayEditCreate === 0" class="inputUser">
-            <input id="add-user-suggestor" type="text"/>
+            <input id="add-creators-suggester" type="text"/>
           </div>
         </td>
         <td v-if="displayEditCreate === 1" class="center actionContainer" >
@@ -72,6 +41,37 @@
           <a data-placement="bottom" rel="tooltip" class="actionIcon" data-original-title="Close" @click="editCreateSpace()">
             <i class="uiIconClose uiIconLightGray"></i>
           </a>
+        </td>       
+      </tr>
+      <tr>
+        <td><h2>{{ $t('exoplatform.permission.spaces.manageSpace') }}</h2> <h5>{{ $t('exoplatform.permission.spaces.descriptionManageSpace') }}</h5></td>
+        <td>
+          <div v-show="displayEditManage !== 0">
+            <div v-if="administrators.length > 0">
+              <div v-for="administrator in administrators" :key="administrator">
+                <h4 v-if="administrator.startsWith('*:/')"> {{ $t('exoplatform.permission.spaces.group') }}: {{ administrator }}</h4>
+                <h4 v-else-if="!administrator.startsWith('No assign')"> {{ $t('exoplatform.permission.spaces.user') }}: {{ administrator }}</h4>
+                <h4 v-else>{{ $t('exoplatform.permission.spaces.noAssignement') }}</h4>
+              </div>
+            </div>
+            <h4 v-if="administrators.length === 0">{{ $t('exoplatform.permission.spaces.noAssignement') }}</h4>
+          </div>
+          <div v-show="displayEditManage === 0" class="inputUser">
+            <input id="add-administrators-suggester" type="text"/>
+          </div>
+        </td>
+        <td v-if="displayEditManage === 1" class="center actionContainer" >
+          <a data-placement="bottom" rel="tooltip" class="actionIcon" data-original-title="Edit" @click="editManageSpace()">
+            <i class="uiIconEdit uiIconLightGray"></i>
+          </a>
+        </td>
+        <td v-if="displayEditManage === 0" class="center actionContainer" >
+          <a data-placement="bottom" rel="tooltip" class="actionIcon" data-original-title="Save" @click="savePermissionsSpacesAdministrators()">
+            <i class="uiIconSave uiIconLightGray"></i>
+          </a>
+          <a data-placement="bottom" rel="tooltip" class="actionIcon" data-original-title="Close" @click="editManageSpace()">
+            <i class="uiIconClose uiIconLightGray"></i>
+          </a>
         </td>
       </tr>
     </table>
@@ -82,26 +82,26 @@ import * as spaceAdministrationServices from '../spaceAdministrationServices';
 export default {
   data() {
     return {
-      guests: [],
-      managers: [],
+      creators: [],
+      administrators: [],
       displayEditCreate: 1,
       displayEditManage: 1,
       index: 0,
       settingValue: '',
-      permissionAdministrators:'No Assignment',
-      permissionManagers:'No Assignment'
+      creatorsPermissions: null,
+      administratorsPermissions: null
     };
   },
   created() {
-    this.initSuggester();
-    this.initSuggesterManageSpace();
+    this.initSuggesterSpacesCreators();
+    this.initSuggesterSpacesAdministrators();
     this.getSettingValueCreateSpace();
-    this.getSettingValueManageSpace();
+    this.getSettingValueSpaceAdministrators();
   },
   methods: {
-    initSuggesterManageSpace() {
-      const $guestsFormsSuggestor = $('#add-guest-suggestor');
-      if($guestsFormsSuggestor && $guestsFormsSuggestor.length && $guestsFormsSuggestor.suggester) {
+    initSuggesterSpacesCreators() {
+      const suggesterContainer = $('#add-creators-suggester');
+      if(suggesterContainer && suggesterContainer.length && suggesterContainer.suggester) {
         const component = this;
         const suggesterData = {
           type: 'tag',
@@ -124,58 +124,61 @@ export default {
             return `<div class="item">${item.text}</div>`;
           },
           onItemAdd(item) {
-            component.addSuggestedItemManage(item);
+            component.addSuggestedItemCreate(item);
           },
           onItemRemove(item) {
             component.removeSuggestedItemManage(item);
           },
           sortField: [{field: 'order'}, {field: '$score'}],
           providers: {
-            'exo:spacesAdministration': component.findGuests
+            'exo:spacesAdministration': component.findUsersAndGroups
           }
         };
-        $guestsFormsSuggestor.suggester(suggesterData);
-        if(this.permissionManagers && this.permissionManagers !== 'No Assignment') {
-          const permissions = this.permissionManagers.split(',');  
-          for(const permission of permissions) {
-            $guestsFormsSuggestor[0].selectize.addOption({text: permission});
-            $guestsFormsSuggestor[0].selectize.addItem(permission);
+        suggesterContainer.suggester(suggesterData);
+        if(this.creatorsPermissions && this.creatorsPermissions !== null) {
+          for(const permission of this.creatorsPermissions) {
+            const permissionExpression = `${permission.membershipType}:${permission.group}`;
+            suggesterContainer[0].selectize.addOption({text: permissionExpression});
+            suggesterContainer[0].selectize.addItem(permissionExpression);
           }
-        }      
+        }
       }
     },
-    addSuggestedItemManage(item) {
-      if($('#add-guest-suggestor') && $('#add-guest-suggestor').length && $('#add-guest-suggestor')[0].selectize) {
-        const selectize = $('#add-guest-suggestor')[0].selectize;
+    addSuggestedItemCreate(item) {
+      if($('#add-creators-suggester') && $('#add-creators-suggester').length && $('#add-creators-suggester')[0].selectize) {
+        const selectize = $('#add-creators-suggester')[0].selectize;
         item = selectize.options[item];
       }
-      if(!this.managers.find(manager => manager.text === item.text)) {
-        this.managers.push(item.text);
+      if(!this.creators.find(creator => creator.text === item.text)) {
+        this.creators.push(item.text);
       }
     },
     removeSuggestedItemManage(item) {
-      if(this.managers.find(manager => manager === item)) {
-        this.managers.splice(this.managers.indexOf(item), 1);
+      if(this.creators.find(creator => creator === item)) {
+        this.creators.splice(this.creators.indexOf(item), 1);
       }
     },
-    savePermissionsManageSpace() {
-      this.settingValue = this.managers.join();
-      if(this.managers){
-        spaceAdministrationServices.createSetting('GLOBAL','GLOBAL','exo:social_spaces_creators',this.settingValue);
+    savePermissionsCreateSpace() {
+      if(this.creators){
+        spaceAdministrationServices.updateSpacesAdministrationSetting('spacesCreators',
+          this.creators.map(creator => {
+            const splitCreator = creator.split(':');
+            return { 'membershipType': splitCreator[0], 'group': splitCreator[1] };
+          }));
       }
-      this.displayEditManage = 1;
+      this.displayEditCreate = 1;
     },
-    getSettingValueManageSpace() {
-      spaceAdministrationServices.getsSettingValue('GLOBAL','GLOBAL','exo:social_spaces_creators').then(data => {
-        if(data && data.value !== '') {
-          this.permissionManagers = data.value;
+    getSettingValueCreateSpace() {
+      spaceAdministrationServices.getSpacesAdministrationSetting('spacesCreators').then(data => {
+        if(data) {
+          this.creatorsPermissions = data.memberships;
         }
-        this.initSuggesterManageSpace();
+        this.initSuggesterSpacesCreators();
       });
     },
-    initSuggester() {
-      const $guestsFormsSuggestor = $('#add-user-suggestor');
-      if($guestsFormsSuggestor && $guestsFormsSuggestor.length && $guestsFormsSuggestor.suggester) {
+    initSuggesterSpacesAdministrators() {
+      const suggesterContainer = $('#add-administrators-suggester');
+      if(suggesterContainer && suggesterContainer.length && suggesterContainer.suggester) {
         const component = this;
         const suggesterData = {
           type: 'tag',
@@ -205,20 +208,20 @@ export default {
           },
           sortField: [{field: 'order'}, {field: '$score'}],
           providers: {
-            'exo:spacesAdministration': component.findGuests
+            'exo:spacesAdministration': component.findUsersAndGroups
           }
         };
-        $guestsFormsSuggestor.suggester(suggesterData);
-        if(this.permissionAdministrators && this.permissionAdministrators !== 'No Assignment') {
-          const permissions = this.permissionAdministrators.split(',');  
-          for(const permission of permissions) {
-            $guestsFormsSuggestor[0].selectize.addOption({text: permission});
-            $guestsFormsSuggestor[0].selectize.addItem(permission);
+        suggesterContainer.suggester(suggesterData);
+        if(this.administratorsPermissions && this.administratorsPermissions !== null) {
+          for(const permission of this.administratorsPermissions) {
+            const permissionExpression = `${permission.membershipType}:${permission.group}`;
+            suggesterContainer[0].selectize.addOption({text: permissionExpression});
+            suggesterContainer[0].selectize.addItem(permissionExpression);
           }
         }      
       }
     },
-    findGuests (query, callback) {
+    findUsersAndGroups (query, callback) {
       if (!query.length) {
         return callback(); 
       }
@@ -227,13 +230,20 @@ export default {
       promises.push(spaceAdministrationServices.getGroups(query));
 
       Promise.all(promises).then( data => {
-        for(const group of data[1]) {                    
-          data[0].options.push({avatarUrl:null, text:group.parentId+group.groupName, value:group.parentId+group.groupName, type:'group'});
+        const users = data[0];
+        const groups = data[1];
+        const usersAndGroups = users && users.options || [];
+        for(const group of groups) {
+          usersAndGroups.push({
+            avatarUrl: null,
+            text: `*:${group.id}`,
+            value: `*:${group.id}`,
+            type: 'group'
+          });
         }
-        callback(data[0].options);     
-      }
-      );
-    },   
+        callback(usersAndGroups);
+      });
+    },
     renderMenuItem (item, escape) {
       if(item.avatarUrl == null) {
         item.avatarUrl = spaceAdministrationServices.getAvatar(item.value);
@@ -248,32 +258,35 @@ export default {
       `;
     },
     addSuggestedItem(item) {
-      if($('#add-user-suggestor') && $('#add-user-suggestor').length && $('#add-user-suggestor')[0].selectize) {
-        const selectize = $('#add-user-suggestor')[0].selectize;
+      if($('#add-administrators-suggester') && $('#add-administrators-suggester').length && $('#add-administrators-suggester')[0].selectize) {
+        const selectize = $('#add-administrators-suggester')[0].selectize;
         item = selectize.options[item];
       }
-      if(!this.guests.find(guest => guest.text === item.text)) {
-        this.guests.push(item.text);
+      if(!this.administrators.find(administrator => administrator.text === item.text)) {
+        this.administrators.push(item.text);
       }
     },
     removeSuggestedItem(item) {
-      if(this.guests.find(guest => guest === item)) {
-        this.guests.splice(this.guests.indexOf(item), 1);
+      if(this.administrators.find(administrator => administrator === item)) {
+        this.administrators.splice(this.administrators.indexOf(item), 1);
       }
     },
-    savePermissionsCreateSpace() {
-      this.settingValue = this.guests.join();
-      if(this.guests){
-        spaceAdministrationServices.createSetting('GLOBAL','GLOBAL','exo:social_spaces_administrators',this.settingValue);
+    savePermissionsSpacesAdministrators() {
+      if(this.administrators){
+        spaceAdministrationServices.updateSpacesAdministrationSetting('spacesAdministrators',
+          this.administrators.map(administrator => {
+            const splitAdministrators = administrator.split(':');
+            return { 'membershipType': splitAdministrators[0], 'group': splitAdministrators[1] };
+          }));
       }
-      this.displayEditCreate = 1;
+      this.displayEditManage = 1;
     },
-    getSettingValueCreateSpace(){
-      spaceAdministrationServices.getsSettingValue('GLOBAL','GLOBAL','exo:social_spaces_administrators').then(data => {
-        if(data && data.value !== '') {
-          this.permissionAdministrators = data.value;
+    getSettingValueSpaceAdministrators(){
+      spaceAdministrationServices.getSpacesAdministrationSetting('spacesAdministrators').then(data => {
+        if(data) {
+          this.administratorsPermissions = data.memberships;
         }
-        this.initSuggester();
+        this.initSuggesterSpacesAdministrators();
       });
     },
     editCreateSpace(){
@@ -289,7 +302,7 @@ export default {
       if(this.displayEditManage === 1) {
         this.displayEditManage = 0;
       } else {
-        this.getSettingValueManageSpace();
+        this.getSettingValueSpaceAdministrators();
         this.displayEditManage = 1;
         this.displayEditCreate = 1;
       }

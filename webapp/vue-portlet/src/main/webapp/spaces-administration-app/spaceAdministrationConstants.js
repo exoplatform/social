@@ -6,7 +6,7 @@ export const spaceConstants = {
   SOCIAL_USER_API: `${eXo.env.portal.context}/${eXo.env.portal.rest}/v1/social/users/`,
   SOCIAL_SPACE_API: '/portal/rest/v1/social/spaces',
   SOCIAL_PEOPLE_API: '/portal/rest/social/people',
-  SETTING_API: '/rest/v1/settings',
+  SPACES_ADMINISTRATION_API: '/rest/v1/social/spacesAdministration',
   GROUP_API: '/rest/v1/groups',
   SPACES_PER_PAGE: 30,
   DEFAULT_SPACE_AVATAR: '/eXoSkin/skin/images/system/SpaceAvtDefault.png'
