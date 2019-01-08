@@ -4,7 +4,6 @@ def rcontext = _ctx.getRequestContext() ;
 def typeOfRelation = uicomponent.getTypeOfRelation();
 def spaceURL = uicomponent.getSpaceURL();
 def checkPermission = uicomponent.checkPermissionCreateSpace();
-
 def params = """ {
   uicomponentId: '${uicomponent.id}',
 	typeOfRelation: '$typeOfRelation',

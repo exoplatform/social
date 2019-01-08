@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="uiSearchInput">
-      <input v-model="search" class="showInputSearch" type="text" placeholder="search here"/>
+      <input v-model="search" class="showInputSearch" type="text" placeholder="search here" @keyup.enter="searchSpaces()"/>
       <a data-original-title="Search" class="advancedSearch" rel="tooltip" data-placement="bottom" href="#">
         <i class="uiIconPLF24x24Search" @click="searchSpaces()"></i>
       </a>
