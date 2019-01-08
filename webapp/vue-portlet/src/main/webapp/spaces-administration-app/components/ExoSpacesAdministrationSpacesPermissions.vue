@@ -15,7 +15,7 @@
       <tr>
         <td><h2>{{ $t('exoplatform.permission.spaces.createSpace') }}</h2> <h5>{{ $t('exoplatform.permission.spaces.descriptionCreateSpace') }}</h5></td>
         <td>
-          <div v-show="displayEditCreate !== 0">
+          <div v-show="spacesCreatorsEditMode">
             <div v-if="creators.length > 0">
               <div v-for="creator in creators" :key="creator">
                 <h4 v-if="creator.startsWith('*:/')"> {{ $t('exoplatform.permission.spaces.group') }}: {{ creator }}</h4>
@@ -25,16 +25,16 @@
             </div>
             <h4 v-if="creators.length === 0">{{ $t('exoplatform.permission.spaces.noAssignement') }}</h4>
           </div>
-          <div v-show="displayEditCreate === 0" class="inputUser">
+          <div v-show="!spacesCreatorsEditMode" class="inputUser">
             <input id="add-creators-suggester" type="text"/>
           </div>
         </td>
-        <td v-if="displayEditCreate === 1" class="center actionContainer" >
+        <td v-if="spacesCreatorsEditMode" class="center actionContainer" >
           <a data-placement="bottom" rel="tooltip" class="actionIcon" data-original-title="Edit" @click="editCreateSpace()">
             <i class="uiIconEdit uiIconLightGray"></i>
           </a>
         </td>
-        <td v-if="displayEditCreate === 0" class="center actionContainer" >
+        <td v-if="!spacesCreatorsEditMode" class="center actionContainer" >
           <a data-placement="bottom" rel="tooltip" class="actionIcon" data-original-title="Save" @click="savePermissionsCreateSpace()">
             <i class="uiIconSave uiIconLightGray"></i>
           </a>
@@ -46,7 +46,7 @@
       <tr>
         <td><h2>{{ $t('exoplatform.permission.spaces.manageSpace') }}</h2> <h5>{{ $t('exoplatform.permission.spaces.descriptionManageSpace') }}</h5></td>
         <td>
-          <div v-show="displayEditManage !== 0">
+          <div v-show="spacesAdministratorsEditMode">
             <div v-if="administrators.length > 0">
               <div v-for="administrator in administrators" :key="administrator">
                 <h4 v-if="administrator.startsWith('*:/')"> {{ $t('exoplatform.permission.spaces.group') }}: {{ administrator }}</h4>
@@ -56,16 +56,16 @@
             </div>
             <h4 v-if="administrators.length === 0">{{ $t('exoplatform.permission.spaces.noAssignement') }}</h4>
           </div>
-          <div v-show="displayEditManage === 0" class="inputUser">
+          <div v-show="!spacesAdministratorsEditMode" class="inputUser">
             <input id="add-administrators-suggester" type="text"/>
           </div>
         </td>
-        <td v-if="displayEditManage === 1" class="center actionContainer" >
+        <td v-if="spacesAdministratorsEditMode" class="center actionContainer" >
           <a data-placement="bottom" rel="tooltip" class="actionIcon" data-original-title="Edit" @click="editManageSpace()">
             <i class="uiIconEdit uiIconLightGray"></i>
           </a>
         </td>
-        <td v-if="displayEditManage === 0" class="center actionContainer" >
+        <td v-if="!spacesAdministratorsEditMode" class="center actionContainer" >
           <a data-placement="bottom" rel="tooltip" class="actionIcon" data-original-title="Save" @click="savePermissionsSpacesAdministrators()">
             <i class="uiIconSave uiIconLightGray"></i>
           </a>
@@ -84,8 +84,8 @@ export default {
     return {
       creators: [],
       administrators: [],
-      displayEditCreate: 1,
-      displayEditManage: 1,
+      spacesCreatorsEditMode: true,
+      spacesAdministratorsEditMode: true,
       index: 0,
       settingValue: '',
       creatorsPermissions: null,
@@ -166,7 +166,7 @@ export default {
             return { 'membershipType': splitCreator[0], 'group': splitCreator[1] };
           }));
       }
-      this.displayEditCreate = 1;
+      this.spacesCreatorsEditMode = true;
     },
     getSettingValueCreateSpace() {
       spaceAdministrationServices.getSpacesAdministrationSetting('spacesCreators').then(data => {
@@ -279,7 +279,7 @@ export default {
             return { 'membershipType': splitAdministrators[0], 'group': splitAdministrators[1] };
           }));
       }
-      this.displayEditManage = 1;
+      this.spacesAdministratorsEditMode = 1;
     },
     getSettingValueSpaceAdministrators(){
       spaceAdministrationServices.getSpacesAdministrationSetting('spacesAdministrators').then(data => {
@@ -290,21 +290,21 @@ export default {
       });
     },
     editCreateSpace(){
-      if(this.displayEditCreate === 1) {
-        this.displayEditCreate = 0;
+      if(this.spacesCreatorsEditMode) {
+        this.spacesCreatorsEditMode = false;
       } else {
         this.getSettingValueCreateSpace();
-        this.displayEditCreate = 1;
-        this.displayEditManage = 1;
+        this.spacesCreatorsEditMode = true;
+        this.spacesAdministratorsEditMode = true;
       }
     },
     editManageSpace(){
-      if(this.displayEditManage === 1) {
-        this.displayEditManage = 0;
+      if(this.spacesAdministratorsEditMode) {
+        this.spacesAdministratorsEditMode = false;
       } else {
         this.getSettingValueSpaceAdministrators();
-        this.displayEditManage = 1;
-        this.displayEditCreate = 1;
+        this.spacesAdministratorsEditMode = true;
+        this.spacesCreatorsEditMode = true;
       }
     }
   }
