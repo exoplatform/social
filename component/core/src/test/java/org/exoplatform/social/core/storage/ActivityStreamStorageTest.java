@@ -624,7 +624,7 @@ public void testConnectionsExistActivities() throws ActivityStorageException {
     space.setPendingUsers(pendingUsers);
     space.setManagers(managers);
     space.setMembers(members);
-    spaceService.createSpace(space, "demo");
+    spaceService.createSpace(space, "root");
     tearDownSpaceList.add(space);
     return space;
   }

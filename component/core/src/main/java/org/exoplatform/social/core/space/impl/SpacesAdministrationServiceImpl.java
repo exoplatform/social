@@ -62,7 +62,7 @@ public class SpacesAdministrationServiceImpl implements Startable, SpacesAdminis
 
   private UserACL userACL;
 
-  private List<MembershipEntry> superManagersMemberships = new ArrayList<>();
+  private List<MembershipEntry> spacesAdministratorsMemberships = new ArrayList<>();
 
   private List<MembershipEntry> spaceCreatorsMemberships = new ArrayList<>();
 
@@ -82,7 +82,7 @@ public class SpacesAdministrationServiceImpl implements Startable, SpacesAdminis
     PortalContainer.addInitTask(PortalContainer.getInstance().getPortalContext(), new RootContainer.PortalContainerPostInitTask() {
       @Override
       public void execute(ServletContext context, PortalContainer portalContainer) {
-        List<MembershipEntry> superManagersMemberships = SpacesAdministrationServiceImpl.this.getSuperManagersMemberships();
+        List<MembershipEntry> superManagersMemberships = SpacesAdministrationServiceImpl.this.getSpacesAdministratorsMemberships();
         updateSpacesAdministrationPagePermissions(superManagersMemberships);
       }
     });
@@ -96,31 +96,31 @@ public class SpacesAdministrationServiceImpl implements Startable, SpacesAdminis
    * {@inheritDoc}
    */
   @Override
-  public void updateSuperManagersMemberships(List<MembershipEntry> permissionsExpressions) {
+  public void updateSpacesAdministratorsMemberships(List<MembershipEntry> permissionsExpressions) {
     if(permissionsExpressions == null) {
       throw new IllegalArgumentException("Permission expressions list couldn't be null");
     }
 
-    this.superManagersMemberships = permissionsExpressions;
+    this.spacesAdministratorsMemberships = permissionsExpressions;
 
-    settingService.set(Context.GLOBAL, Scope.GLOBAL, SPACES_ADMINISTRATORS_SETTING_KEY, SettingValue.create(StringUtils.join(this.superManagersMemberships, ",")));
+    settingService.set(Context.GLOBAL, Scope.GLOBAL, SPACES_ADMINISTRATORS_SETTING_KEY, SettingValue.create(StringUtils.join(this.spacesAdministratorsMemberships, ",")));
 
-    updateSpacesAdministrationPagePermissions(this.superManagersMemberships);
+    updateSpacesAdministrationPagePermissions(this.spacesAdministratorsMemberships);
   }
 
   /**
    * {@inheritDoc}
    */
   @Override
-  public List<MembershipEntry> getSuperManagersMemberships() {
-    return Collections.unmodifiableList(superManagersMemberships);
+  public List<MembershipEntry> getSpacesAdministratorsMemberships() {
+    return Collections.unmodifiableList(spacesAdministratorsMemberships);
   }
 
   /**
    * {@inheritDoc}
    */
   @Override
-  public List<MembershipEntry> getSuperCreatorsMemberships() {
+  public List<MembershipEntry> getSpaceCreatorsMemberships() {
     return Collections.unmodifiableList(spaceCreatorsMemberships);
   }
 
@@ -150,14 +150,14 @@ public class SpacesAdministrationServiceImpl implements Startable, SpacesAdminis
     SettingValue<String> administrators = (SettingValue<String>) settingService.get(Context.GLOBAL, Scope.GLOBAL, SPACES_ADMINISTRATORS_SETTING_KEY);
     if (administrators != null && !StringUtils.isBlank(administrators.getValue())) {
       String[] administratorsArray = administrators.getValue().split(",");
-      addManagerMemberships(administratorsArray);
+      addSpacesAdministratorsMemberships(administratorsArray);
     } else if (initParams != null) {
       if (initParams.containsKey(SPACES_SUPER_ADMINISTRATORS_PARAM)) {
         ValueParam superAdministratorParam = initParams.getValueParam(SPACES_SUPER_ADMINISTRATORS_PARAM);
         String superManagersMemberships = superAdministratorParam.getValue();
         if (StringUtils.isNotBlank(superManagersMemberships)) {
           String[] superManagersMembershipsArray = superManagersMemberships.split(",");
-          addManagerMemberships(superManagersMembershipsArray);
+          addSpacesAdministratorsMemberships(superManagersMembershipsArray);
         }
       }
     }
@@ -165,20 +165,20 @@ public class SpacesAdministrationServiceImpl implements Startable, SpacesAdminis
     SettingValue<String> creators = (SettingValue<String>) settingService.get(Context.GLOBAL, Scope.GLOBAL, SPACES_CREATORS_SETTING_KEY);
     if (creators != null && !StringUtils.isBlank(creators.getValue())) {
       String[] creatorsArray = creators.getValue().split(",");
-      addCreatorsMemberships(creatorsArray);
+      addSpaceCreatorsMemberships(creatorsArray);
     } else if (initParams != null) {
       if (initParams.containsKey(SPACES_SUPER_CREATORS_PARAM)) {
         ValueParam superCreatorParam = initParams.getValueParam(SPACES_SUPER_CREATORS_PARAM);
         String superCreatorsMemberships = superCreatorParam.getValue();
         if (StringUtils.isNotBlank(superCreatorsMemberships)) {
           String[] superCreatorsMembershipsArray = superCreatorsMemberships.split(",");
-          addCreatorsMemberships(superCreatorsMembershipsArray);
+          addSpaceCreatorsMemberships(superCreatorsMembershipsArray);
         }
       }
     }
   }
 
-  private void addCreatorsMemberships(String[] creatorsArray) {
+  private void addSpaceCreatorsMemberships(String[] creatorsArray) {
     for(String creatorArray : creatorsArray) {
       if (StringUtils.isBlank(creatorArray)) {
         continue;
@@ -192,16 +192,16 @@ public class SpacesAdministrationServiceImpl implements Startable, SpacesAdminis
     }
   }
 
-  private void addManagerMemberships(String[] administratorsArray) {
+  private void addSpacesAdministratorsMemberships(String[] administratorsArray) {
     for(String administrator : administratorsArray) {
       if (StringUtils.isBlank(administrator)) {
         continue;
       }
       if (!administrator.contains(":/")) {
-        this.superManagersMemberships.add(new MembershipEntry(administrator));
+        this.spacesAdministratorsMemberships.add(new MembershipEntry(administrator));
       } else {
         String[] membershipParts = administrator.split(":");
-        this.superManagersMemberships.add(new MembershipEntry(membershipParts[1], membershipParts[0]));
+        this.spacesAdministratorsMemberships.add(new MembershipEntry(membershipParts[1], membershipParts[0]));
       }
     }
   }
@@ -263,7 +263,7 @@ public class SpacesAdministrationServiceImpl implements Startable, SpacesAdminis
       }
       identity = new org.exoplatform.services.security.Identity(userId, entries);
     }
-    List<MembershipEntry> superCreatorsMemberships = getSuperCreatorsMemberships();
+    List<MembershipEntry> superCreatorsMemberships = getSpaceCreatorsMemberships();
     if (superCreatorsMemberships != null && !superCreatorsMemberships.isEmpty()) {
       for (MembershipEntry superCreatorMembership : superCreatorsMemberships) {
         if (superCreatorMembership.getMembershipType().equals("*")) {

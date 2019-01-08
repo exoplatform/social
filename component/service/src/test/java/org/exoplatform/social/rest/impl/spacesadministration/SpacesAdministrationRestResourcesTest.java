@@ -11,7 +11,6 @@ import org.exoplatform.services.security.MembershipEntry;
 import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.space.SpacesAdministrationService;
 import org.exoplatform.social.core.space.spi.SpaceService;
-import org.exoplatform.social.rest.entity.CollectionEntity;
 import org.exoplatform.social.rest.entity.SpacesAdministrationMembershipsEntity;
 import org.exoplatform.social.service.test.AbstractResourceTest;
 
@@ -49,7 +48,7 @@ public class SpacesAdministrationRestResourcesTest extends AbstractResourceTest 
 
   public void testShouldReturnAllSpacesAdministratorsSettings() throws Exception {
     // Given
-    spacesAdministrationService.updateSuperManagersMemberships(Arrays.asList(
+    spacesAdministrationService.updateSpacesAdministratorsMemberships(Arrays.asList(
             new MembershipEntry("/platform/users", "manager"),
             new MembershipEntry("/platform/administrators", "*")
     ));
@@ -89,7 +88,7 @@ public class SpacesAdministrationRestResourcesTest extends AbstractResourceTest 
 
   public void testShouldNotAuthorizedWhenGettingAllSettingsAsNotSpacesAdministrator() throws Exception {
     // Given
-    spacesAdministrationService.updateSuperManagersMemberships(Arrays.asList(
+    spacesAdministrationService.updateSpacesAdministratorsMemberships(Arrays.asList(
             new MembershipEntry("/platform/users", "manager"),
             new MembershipEntry("/platform/administrators", "*")
     ));
@@ -110,7 +109,7 @@ public class SpacesAdministrationRestResourcesTest extends AbstractResourceTest 
 
   public void testShouldReturnEmptySpacesAdministratorsWhenSettingIsEmpty() throws Exception {
     // Given
-    spacesAdministrationService.updateSuperManagersMemberships(Collections.EMPTY_LIST);
+    spacesAdministrationService.updateSpacesAdministratorsMemberships(Collections.EMPTY_LIST);
 
     startSessionAs("root");
 
@@ -128,7 +127,7 @@ public class SpacesAdministrationRestResourcesTest extends AbstractResourceTest 
 
   public void testShouldReturnSpacesAdministratorsWhenSettingIsNotNull() throws Exception {
     // Given
-    spacesAdministrationService.updateSuperManagersMemberships(Arrays.asList(
+    spacesAdministrationService.updateSpacesAdministratorsMemberships(Arrays.asList(
             new MembershipEntry("/platform/users", "manager"),
             new MembershipEntry("/platform/administrators", "*")
     ));
@@ -151,7 +150,7 @@ public class SpacesAdministrationRestResourcesTest extends AbstractResourceTest 
 
   public void testShouldReturnNotAuthorizedWhenGettingSpacesAdministratorsAsNotSpacesAdministrator() throws Exception {
     // Given
-    spacesAdministrationService.updateSuperManagersMemberships(Arrays.asList(
+    spacesAdministrationService.updateSpacesAdministratorsMemberships(Arrays.asList(
             new MembershipEntry("/platform/users", "manager"),
             new MembershipEntry("/platform/administrators", "*")
     ));
@@ -168,7 +167,7 @@ public class SpacesAdministrationRestResourcesTest extends AbstractResourceTest 
 
   public void testShouldUpdateSpacesAdministratorsWhenSpacesAdministrator() throws Exception {
     // Given
-    spacesAdministrationService.updateSuperManagersMemberships(Arrays.asList(
+    spacesAdministrationService.updateSpacesAdministratorsMemberships(Arrays.asList(
             new MembershipEntry("/platform/users", "manager"),
             new MembershipEntry("/platform/administrators", "*")
     ));
@@ -189,7 +188,7 @@ public class SpacesAdministrationRestResourcesTest extends AbstractResourceTest 
     // Then
     assertNotNull(response);
     assertEquals(200, response.getStatus());
-    List<MembershipEntry> spacesAdministratorsMemberships = spacesAdministrationService.getSuperManagersMemberships();
+    List<MembershipEntry> spacesAdministratorsMemberships = spacesAdministrationService.getSpacesAdministratorsMemberships();
     assertNotNull(spacesAdministratorsMemberships);
     assertEquals(1, spacesAdministratorsMemberships.size());
     assertTrue(spacesAdministratorsMemberships.contains(new MembershipEntry("/platform/users", "member")));
@@ -197,7 +196,7 @@ public class SpacesAdministrationRestResourcesTest extends AbstractResourceTest 
 
   public void testShouldNotAuthorizedWhenUpdatingSpacesAdministratorsAsNotSpacesAdministrator() throws Exception {
     // Given
-    spacesAdministrationService.updateSuperManagersMemberships(Arrays.asList(
+    spacesAdministrationService.updateSpacesAdministratorsMemberships(Arrays.asList(
             new MembershipEntry("/platform/users", "manager"),
             new MembershipEntry("/platform/administrators", "*")
     ));
@@ -264,7 +263,7 @@ public class SpacesAdministrationRestResourcesTest extends AbstractResourceTest 
 
   public void testShouldReturnNotAuthorizedWhenGettingSpacesCreatorsAsNotSpacesAdministrator() throws Exception {
     // Given
-    spacesAdministrationService.updateSuperManagersMemberships(Arrays.asList(
+    spacesAdministrationService.updateSpacesAdministratorsMemberships(Arrays.asList(
             new MembershipEntry("/platform/users", "manager"),
             new MembershipEntry("/platform/administrators", "*")
     ));
@@ -302,7 +301,7 @@ public class SpacesAdministrationRestResourcesTest extends AbstractResourceTest 
     // Then
     assertNotNull(response);
     assertEquals(200, response.getStatus());
-    List<MembershipEntry> spacesCreatorsMemberships = spacesAdministrationService.getSuperManagersMemberships();
+    List<MembershipEntry> spacesCreatorsMemberships = spacesAdministrationService.getSpacesAdministratorsMemberships();
     assertNotNull(spacesCreatorsMemberships);
     assertEquals(1, spacesCreatorsMemberships.size());
     assertTrue(spacesCreatorsMemberships.contains(new MembershipEntry("/platform/users", "member")));
