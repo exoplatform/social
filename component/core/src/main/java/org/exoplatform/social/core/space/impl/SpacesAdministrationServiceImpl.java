@@ -1,6 +1,7 @@
 package org.exoplatform.social.core.space.impl;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -28,6 +29,10 @@ import org.exoplatform.portal.mop.page.PageService;
 import org.exoplatform.portal.mop.page.PageState;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
+import org.exoplatform.services.organization.Membership;
+import org.exoplatform.services.organization.OrganizationService;
+import org.exoplatform.services.security.IdentityConstants;
+import org.exoplatform.services.security.IdentityRegistry;
 import org.exoplatform.services.security.MembershipEntry;
 import org.exoplatform.social.core.space.SpacesAdministrationService;
 
@@ -50,14 +55,17 @@ public class SpacesAdministrationServiceImpl implements Startable, SpacesAdminis
   public static final String SPACES_ADMINISTRATION_PAGE_KEY = "group::/platform/administrators::spacesAdministration";
 
   private SettingService settingService;
+  
+  private IdentityRegistry identityRegistry;
 
   private List<MembershipEntry> superManagersMemberships = new ArrayList<>();
 
   private List<MembershipEntry> spaceCreatorsMemberships = new ArrayList<>();
 
-  public SpacesAdministrationServiceImpl(InitParams initParams, SettingService settingService) {
+  public SpacesAdministrationServiceImpl(InitParams initParams, SettingService settingService, IdentityRegistry identityRegistry) {
     this.settingService = settingService;
-
+    this.identityRegistry = identityRegistry;
+    
     loadSettings(initParams);
   }
 
@@ -227,19 +235,33 @@ public class SpacesAdministrationServiceImpl implements Startable, SpacesAdminis
    * {@inheritDoc}
    */
   @Override
-  public boolean checkUsernameInSpaceCreators(String Username) {
-    boolean check = false;
-    if (StringUtils.isBlank(Username)) {
-      throw new IllegalArgumentException("Username couldn't be empty");
+  public boolean IsSpaceCreator(String userId) {
+    OrganizationService organizationService = CommonsUtils.getService(OrganizationService.class);
+    if (StringUtils.isBlank(userId) || IdentityConstants.ANONIM.equals(userId) || IdentityConstants.SYSTEM.equals(userId)) {
+      return false;
     }
-    Iterator<MembershipEntry> superCreatorsMembershipsIterator = spaceCreatorsMemberships.iterator();
-    while (superCreatorsMembershipsIterator.hasNext()) {
-      MembershipEntry membershipEntry = superCreatorsMembershipsIterator.next();
-      if (Username.equals(membershipEntry.toString())) {
-        check = true;
-        break;
+    org.exoplatform.services.security.Identity identity = identityRegistry.getIdentity(userId);
+    if (identity == null) {
+      Collection<Membership> memberships;
+      try {
+        memberships = organizationService.getMembershipHandler().findMembershipsByUser(userId);
+      } catch (Exception e) {
+        throw new RuntimeException("Can't get user '" + userId + "' memberships", e);
+      }
+      List<MembershipEntry> entries = new ArrayList<>();
+      for (Membership membership : memberships) {
+        entries.add(new MembershipEntry(membership.getGroupId(), membership.getMembershipType()));
+      }
+      identity = new org.exoplatform.services.security.Identity(userId, entries);
+    }
+    List<MembershipEntry> superCreatorssMemberships = getSuperCreatorsMemberships();
+    if (superCreatorssMemberships != null && !superCreatorssMemberships.isEmpty()) {
+      for (MembershipEntry superCreatorMembership : superCreatorssMemberships) {
+        if (identity.isMemberOf(superCreatorMembership)) {
+          return true;
+        }
       }
     }
-    return check;
+    return false;
   }
 }

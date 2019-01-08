@@ -23,9 +23,9 @@ uicomponent.initPlaceholder();
 <% uiform.begin();%>
 	<div class="uiGrayLightBox clearfix">
 	  <%if(checkPermission){%>
-  	  <button class="btn btn-primary pull-left" type="button" onclick="<%= uicomponent.event("AddSpace") %>">
-        <i class="uiIconSocSimplePlus uiIconSocWhite"></i><%=_ctx.appRes("UISpaceSearch.label.AddNewSpace")%>
-      </button>
+        <button class="btn btn-primary pull-left" type="button" onclick="<%= uicomponent.event("AddSpace") %>">
+          <i class="uiIconSocSimplePlus uiIconSocWhite"></i><%=_ctx.appRes("UISpaceSearch.label.AddNewSpace")%>
+        </button>
 	  <%}%>
 		<div class="uiSearchInput pull-right searchWithIcon">
 		    <a data-original-title="Search" class="advancedSearch" rel="tooltip" data-placement="bottom" href="javascript:void(0)">

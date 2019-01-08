@@ -271,12 +271,9 @@ public class UISpaceSearch extends UIForm {
   }
   
   public boolean checkPermissionCreateSpace() throws Exception {
-    String userName = Util.getPortalRequestContext().getRemoteUser();
-    OrganizationService organizationService = CommonsUtils.getService(OrganizationService.class);
-    UserHandler userHandler = organizationService.getUserHandler();
-    User user = userHandler.findUserByName(userName);
+    String userId = Util.getPortalRequestContext().getRemoteUser();
     SpacesAdministrationService spacesAdministrationService = CommonsUtils.getService(SpacesAdministrationService.class);
 
-    return spacesAdministrationService.checkUsernameInSpaceCreators(user.getFirstName() + " " + user.getLastName());
+    return spacesAdministrationService.IsSpaceCreator(userId);
   }
 }

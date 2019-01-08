@@ -23,4 +23,9 @@ public class MockSpacesAdministrationService implements SpacesAdministrationServ
   @Override
   public void updateSpacesCreatorsMemberships(List<MembershipEntry> permissionsExpressions) {
   }
+
+  @Override
+  public boolean IsSpaceCreator(String Username) {
+    return false;
+  }
 }
