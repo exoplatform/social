@@ -25,12 +25,7 @@ import java.util.regex.Pattern;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringEscapeUtils;
 
-import org.exoplatform.commons.chromattic.ChromatticManager;
-import org.exoplatform.commons.utils.CommonsUtils;
 import org.exoplatform.commons.utils.ListAccess;
-import org.exoplatform.container.ExoContainerContext;
-import org.exoplatform.container.component.RequestLifeCycle;
-import org.exoplatform.portal.config.StorageException;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.services.organization.Group;
@@ -2991,7 +2986,7 @@ public class SpaceServiceTest extends AbstractCoreTest {
     assertEquals(0, spaceService.getAccessibleSpacesByFilter(userName, null).getSize());
     assertEquals(0, spaceService.getSettingableSpaces(userName).getSize());
 
-    spacesAdministrationService.updateSuperManagersMemberships(Arrays.asList(new MembershipEntry("/testgroup", "mstypetest")));
+    spacesAdministrationService.updateSpacesAdministratorsMemberships(Arrays.asList(new MembershipEntry("/testgroup", "mstypetest")));
     assertTrue(spaceService.isSuperManager(userName));
     assertTrue(spaceService.hasAccessPermission(space, userName));
     assertTrue(spaceService.hasSettingPermission(space, userName));

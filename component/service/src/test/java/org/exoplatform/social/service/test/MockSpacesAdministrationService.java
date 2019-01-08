@@ -13,12 +13,12 @@ public class MockSpacesAdministrationService implements SpacesAdministrationServ
   private List<MembershipEntry> spacesCreators = new ArrayList<>();
 
   @Override
-  public List<MembershipEntry> getSuperManagersMemberships() {
+  public List<MembershipEntry> getSpacesAdministratorsMemberships() {
     return spacesAdministrators;
   }
 
   @Override
-  public void updateSuperManagersMemberships(List<MembershipEntry> permissionsExpressions) {
+  public void updateSpacesAdministratorsMemberships(List<MembershipEntry> permissionsExpressions) {
     if(permissionsExpressions != null) {
       spacesAdministrators = new ArrayList<>(permissionsExpressions);
     } else {
@@ -27,7 +27,7 @@ public class MockSpacesAdministrationService implements SpacesAdministrationServ
   }
 
   @Override
-  public List<MembershipEntry> getSuperCreatorsMemberships() {
+  public List<MembershipEntry> getSpaceCreatorsMemberships() {
     return spacesCreators;
   }
 

@@ -40,7 +40,6 @@ import org.exoplatform.social.rest.entity.SpacesAdministrationMembershipsEntity;
 import org.exoplatform.social.service.rest.api.VersionResources;
 
 import io.swagger.annotations.*;
-import org.json.JSONObject;
 
 @Path(VersionResources.VERSION_ONE + "/social/spacesAdministration")
 @Api(tags = VersionResources.VERSION_ONE + "/social/spacesAdministration", value = VersionResources.VERSION_ONE + "/social/spacesAdministration", description = "Managing Spaces Administration settings")
@@ -78,8 +77,8 @@ public class SpacesAdministrationRestResourcesV1 implements SocialRest {
     }
 
     List settings = Arrays.asList(
-            new SpacesAdministrationMembershipsEntity("spacesAdministrators", spacesAdministrationService.getSuperManagersMemberships()),
-            new SpacesAdministrationMembershipsEntity("spacesCreators", spacesAdministrationService.getSuperCreatorsMemberships())
+            new SpacesAdministrationMembershipsEntity("spacesAdministrators", spacesAdministrationService.getSpacesAdministratorsMemberships()),
+            new SpacesAdministrationMembershipsEntity("spacesCreators", spacesAdministrationService.getSpaceCreatorsMemberships())
     );
 
     return EntityBuilder.getResponse(settings, uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
@@ -104,7 +103,7 @@ public class SpacesAdministrationRestResourcesV1 implements SocialRest {
       throw new WebApplicationException(Response.Status.UNAUTHORIZED);
     }
     
-    List<MembershipEntry> memberships = spacesAdministrationService.getSuperManagersMemberships();
+    List<MembershipEntry> memberships = spacesAdministrationService.getSpacesAdministratorsMemberships();
     
     return EntityBuilder.getResponse(new SpacesAdministrationMembershipsEntity("spacesAdministrators", memberships), uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
   }
@@ -128,7 +127,7 @@ public class SpacesAdministrationRestResourcesV1 implements SocialRest {
       throw new WebApplicationException(Response.Status.UNAUTHORIZED);
     }
 
-    List<MembershipEntry> memberships = spacesAdministrationService.getSuperCreatorsMemberships();
+    List<MembershipEntry> memberships = spacesAdministrationService.getSpaceCreatorsMemberships();
 
     return EntityBuilder.getResponse(new SpacesAdministrationMembershipsEntity("spacesCreators", memberships), uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
   }
@@ -155,7 +154,7 @@ public class SpacesAdministrationRestResourcesV1 implements SocialRest {
       throw new WebApplicationException(Response.Status.UNAUTHORIZED);
     }
 
-    spacesAdministrationService.updateSuperManagersMemberships(memberships);
+    spacesAdministrationService.updateSpacesAdministratorsMemberships(memberships);
 
     return EntityBuilder.getResponse("", uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
   }

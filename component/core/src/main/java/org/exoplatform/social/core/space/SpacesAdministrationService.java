@@ -13,21 +13,21 @@ public interface SpacesAdministrationService {
    *
    * @return a {@link List} of memberships of type {@link String}
    */
-  List<MembershipEntry> getSuperManagersMemberships();
+  List<MembershipEntry> getSpacesAdministratorsMemberships();
 
   /**
    * Update spaces super manager memberships
    *
    * @param permissionsExpressions permission expression of type {@link String} with format 'mstype:groupId'
    */
-  void updateSuperManagersMemberships(List<MembershipEntry> permissionsExpressions);
+  void updateSpacesAdministratorsMemberships(List<MembershipEntry> permissionsExpressions);
 
   /**
    * Returns the list of creators memberships (permission expressions)
    *
    * @return a {@link List} of memberships of type {@link String}
    */
-  List<MembershipEntry> getSuperCreatorsMemberships();
+  List<MembershipEntry> getSpaceCreatorsMemberships();
 
   /**
    * Update spaces super creator memberships

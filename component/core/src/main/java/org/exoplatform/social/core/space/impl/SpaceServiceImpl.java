@@ -1633,7 +1633,7 @@ public class SpaceServiceImpl implements SpaceService {
       }
       identity = new org.exoplatform.services.security.Identity(userId, entries);
     }
-    List<MembershipEntry> superManagersMemberships = spacesAdministrationService.getSuperManagersMemberships();
+    List<MembershipEntry> superManagersMemberships = spacesAdministrationService.getSpacesAdministratorsMemberships();
     if (superManagersMemberships != null && !superManagersMemberships.isEmpty()) {
       for (MembershipEntry superManagerMembership : superManagersMemberships) {
         if (identity.isMemberOf(superManagerMembership)) {
