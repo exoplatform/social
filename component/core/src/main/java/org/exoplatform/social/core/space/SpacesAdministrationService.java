@@ -36,13 +36,12 @@ public interface SpacesAdministrationService {
    */
   void updateSpacesCreatorsMemberships(List<MembershipEntry> permissionsExpressions);
 
-  
+
   /**
-   * check if username exist in spacesCreatorsMembership
-   * 
-   * @param Username
-   * @return
+   * Check if the user can create spaces
+   * @param username
+   * @return true if the user can create spaces
    */
-  boolean IsSpaceCreator(String Username) ;
+  boolean canCreateSpace(String username) ;
 
 }

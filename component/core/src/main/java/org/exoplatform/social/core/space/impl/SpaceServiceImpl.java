@@ -395,7 +395,7 @@ public class SpaceServiceImpl implements SpaceService {
         throw new RuntimeException("Error while creating the space " + space.getDisplayName()+ ": space name can only contain letters, digits or space characters only");
     }
 
-    if(!canCreateSpace(creator)) {
+    if(!spacesAdministrationService.canCreateSpace(creator)) {
       throw new RuntimeException("User does not have permissions to create a space.");
     }
 
@@ -480,34 +480,6 @@ public class SpaceServiceImpl implements SpaceService {
     }
     
     return space;
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  public boolean canCreateSpace(String creator) {
-    boolean canCreateSpace = false;
-
-    try {
-      List<MembershipEntry> memberships = spacesAdministrationService.getSuperCreatorsMemberships();
-
-      if (memberships == null || memberships.isEmpty()) {
-        // no membership - anyone can create a space
-        canCreateSpace = true;
-      } else {
-        for (MembershipEntry membership : memberships) {
-          if (creator.equals(membership.toString())) {
-            canCreateSpace = true;
-            break;
-          }
-        }
-      }
-    } catch (Exception e) {
-      LOG.error("Error while checking if the user can create spaces - Cause : " + e.getMessage(), e);
-      canCreateSpace = false;
-    }
-
-    return canCreateSpace;
   }
 
   /**

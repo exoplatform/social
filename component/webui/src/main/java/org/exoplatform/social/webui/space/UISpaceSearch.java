@@ -271,6 +271,6 @@ public class UISpaceSearch extends UIForm {
     String userId = Util.getPortalRequestContext().getRemoteUser();
     SpacesAdministrationService spacesAdministrationService = CommonsUtils.getService(SpacesAdministrationService.class);
 
-    return spacesAdministrationService.IsSpaceCreator(userId);
+    return spacesAdministrationService.canCreateSpace(userId);
   }
 }

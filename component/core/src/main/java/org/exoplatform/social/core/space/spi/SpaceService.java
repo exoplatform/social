@@ -1386,11 +1386,4 @@ public interface SpaceService {
    * @return true if the user is member of super administrators groups, else false
    */
   boolean isSuperManager(String userId);
-
-  /**
-   * Check if the user can create spaces
-   * @param user
-   * @return true if the user can create spaces
-   */
-  boolean canCreateSpace(String user);
 }
