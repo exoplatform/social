@@ -226,12 +226,12 @@ export default {
       promises.push(spaceAdministrationServices.getUsers(query));
       promises.push(spaceAdministrationServices.getGroups(query));
 
-       Promise.all(promises).then( data => {
-         for(const group of data[1]) {                    
-          data[0].options.push({avatarUrl:null, text:group.parentId+group.groupName, value:group.parentId+group.groupName,type: 'group'});
-         }
-         callback(data[0].options);     
-       }
+      Promise.all(promises).then( data => {
+        for(const group of data[1]) {                    
+          data[0].options.push({avatarUrl:null, text:group.parentId+group.groupName, value:group.parentId+group.groupName, type:'group'});
+        }
+        callback(data[0].options);     
+      }
       );
     },   
     renderMenuItem (item, escape) {

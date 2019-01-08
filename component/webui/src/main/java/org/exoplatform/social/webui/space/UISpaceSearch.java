@@ -20,9 +20,6 @@ import java.util.List;
 
 import org.exoplatform.commons.utils.CommonsUtils;
 import org.exoplatform.portal.webui.util.Util;
-import org.exoplatform.services.organization.OrganizationService;
-import org.exoplatform.services.organization.User;
-import org.exoplatform.services.organization.UserHandler;
 import org.exoplatform.social.core.space.SpacesAdministrationService;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
