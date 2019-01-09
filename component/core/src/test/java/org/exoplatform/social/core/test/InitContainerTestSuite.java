@@ -23,6 +23,7 @@ import org.junit.runners.Suite.SuiteClasses;
 import org.exoplatform.commons.testing.BaseExoContainerTestSuite;
 import org.exoplatform.commons.testing.ConfigTestCase;
 import org.exoplatform.social.core.application.*;
+import org.exoplatform.social.core.binding.spi.GroupSpaceBindingServiceTest;
 import org.exoplatform.social.core.feature.SpaceLastVisitedTest;
 import org.exoplatform.social.core.feature.WhatsHotTest;
 import org.exoplatform.social.core.jpa.storage.RDBMSActivityStorageImplTest;
@@ -76,6 +77,8 @@ import org.exoplatform.social.core.storage.impl.ActivityStorageImplTestCase;
 //    SpaceUtilsWildCardMembershipTest.class,
     SpaceTemplateServiceTest.class,
     SortingTest.class,
+    GroupSpaceBindingServiceTest.class
+  
 })
 @ConfigTestCase(AbstractCoreTest.class)
 public class InitContainerTestSuite extends BaseExoContainerTestSuite {

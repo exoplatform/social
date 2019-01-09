@@ -527,6 +527,29 @@
       </properties-param>
     </init-params>
   </component>
+  
+  <!-- Spaces Groups Binding -->
+  <component>
+    <key>org.exoplatform.social.core.jpa.storage.dao.UserSpaceBindingDAO</key>
+    <type>org.exoplatform.social.core.jpa.storage.dao.jpa.UserSpaceBindingDAOImpl</type>
+  </component>
+  
+  <component>
+    <key>org.exoplatform.social.core.jpa.storage.dao.GroupSpaceBindingDAO</key>
+    <type>org.exoplatform.social.core.jpa.storage.dao.jpa.GroupSpaceBindingDAOImpl</type>
+  </component>
+  
+  <component>
+    <key>org.exoplatform.social.core.binding.spi.GroupSpaceBindingService</key>
+    <type>org.exoplatform.social.core.binding.impl.GroupSpaceBindingServiceImpl</type>
+  </component>
+  <!--
+    GroupSpaceBinding storage components.
+   -->
+  <component>
+    <key>org.exoplatform.social.core.storage.api.GroupSpaceBindingStorage</key>
+    <type>org.exoplatform.social.core.jpa.storage.RDBMSGroupSpaceBindingStorageImpl</type>
+  </component>
 
   <external-component-plugins>
     <target-component>org.exoplatform.commons.search.index.IndexingOperationProcessor</target-component>
