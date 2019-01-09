@@ -271,7 +271,7 @@ public class UISpaceSearch extends UIForm {
   public boolean checkPermissionCreateSpace() throws Exception {
     String userId = ConversationState.getCurrent().getIdentity().getUserId();
     SpacesAdministrationService spacesAdministrationService = CommonsUtils.getService(SpacesAdministrationService.class);
-
+  
     return spacesAdministrationService.canCreateSpace(userId);
   }
 }

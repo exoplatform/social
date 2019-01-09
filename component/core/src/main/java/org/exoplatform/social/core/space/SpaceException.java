@@ -73,6 +73,9 @@ public class SpaceException extends Exception{
 
     /** The SPAC e_ alread y_ exist. */
     SPACE_ALREADY_EXIST,
+    
+    /** User don't have permission */
+    SPACE_PERMISSION,
 
     /** The UNKNOW n_ spac e_ type. */
     UNKNOWN_SPACE_TYPE,
