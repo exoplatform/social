@@ -21,6 +21,7 @@ import org.exoplatform.commons.testing.ConfigTestCase;
 import org.exoplatform.social.core.application.ProfileUpdatesPublisherTest;
 import org.exoplatform.social.core.application.RelationshipPublisherTest;
 import org.exoplatform.social.core.application.SpaceActivityPublisherTest;
+import org.exoplatform.social.core.binding.spi.GroupSpaceBindingServiceTest;
 import org.exoplatform.social.core.feature.SpaceLastVisitedTest;
 import org.exoplatform.social.core.feature.WhatsHotTest;
 import org.exoplatform.social.core.listeners.SocialUserProfileEventListenerImplTest;
@@ -85,7 +86,8 @@ import org.junit.runners.Suite.SuiteClasses;
   LinkProviderTest.class,
   PeopleSearchConnectorTestCase.class,
   SpaceSearchConnectorTestCase.class,
-  SpaceUtilsWildCardMembershipTest.class
+  SpaceUtilsWildCardMembershipTest.class,
+  GroupSpaceBindingServiceTest.class
   })
 @ConfigTestCase(AbstractCoreTest.class)
 public class InitContainerTestSuite extends BaseExoContainerTestSuite {

@@ -29,7 +29,7 @@
   <name>eXo PLF:: Social Core Component</name>
   <description>eXo Social Core Component: People and Space</description>
   <properties>
-    <exo.test.coverage.ratio>0.64</exo.test.coverage.ratio>
+    <exo.test.coverage.ratio>0.63</exo.test.coverage.ratio>
   </properties>
   <dependencies>
     <dependency>
@@ -151,6 +151,10 @@
       <groupId>org.exoplatform.social</groupId>
       <artifactId>social-component-common</artifactId>
     </dependency>
+      <!--<dependency>
+          <groupId>org.exoplatform.social</groupId>
+          <artifactId>social-component-core-jpa</artifactId>
+      </dependency>-->
     <dependency>
       <groupId>org.gatein.common</groupId>
       <artifactId>common-common</artifactId>
