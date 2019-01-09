@@ -115,6 +115,16 @@
     <key>org.exoplatform.social.core.jpa.storage.dao.IdentityDAO</key>
     <type>org.exoplatform.social.core.jpa.storage.dao.jpa.IdentityDAOImpl</type>
   </component>
+
+    <component>
+        <key>org.exoplatform.social.core.jpa.storage.dao.UserSpaceBindingDAO</key>
+        <type>org.exoplatform.social.core.jpa.storage.dao.jpa.UserSpaceBindingDAOImpl</type>
+    </component>
+
+    <component>
+        <key>org.exoplatform.social.core.jpa.storage.dao.GroupSpaceBindingDAO</key>
+        <type>org.exoplatform.social.core.jpa.storage.dao.jpa.GroupSpaceBindingDAOImpl</type>
+    </component>
   
   <component>
     <key>org.exoplatform.commons.api.persistence.DataInitializer</key>
@@ -298,6 +308,14 @@
     <key>org.exoplatform.social.core.storage.api.SpaceStorage</key>
     <type>org.exoplatform.social.core.jpa.cache.RDBMSCachedSpaceStorage</type>
   </component>
+
+    <!--
+     GroupSpaceBinding storage components.
+    -->
+    <component>
+        <key>org.exoplatform.social.core.storage.api.GroupSpaceBindingStorage</key>
+        <type>org.exoplatform.social.core.jpa.storage.RDBMSGroupSpaceBindingStorageImpl</type>
+    </component>
 
   <component>
     <type>org.exoplatform.social.core.updater.UserActivityStreamMigration</type>

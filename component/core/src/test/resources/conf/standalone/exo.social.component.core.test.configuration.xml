@@ -443,6 +443,11 @@
     <type>org.exoplatform.commons.notification.impl.service.WebNotificationServiceImpl</type>
   </component>
 
+  <component>
+     <key>org.exoplatform.social.core.binding.spi.GroupSpaceBindingService</key>
+     <type>org.exoplatform.social.core.binding.impl.GroupSpaceBindingServiceImpl</type>
+  </component>
+
   <!-- Space Configuration -->
 
   <component>
