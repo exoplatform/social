@@ -13,17 +13,17 @@
         </th>
       </tr>
       <tr>
-        <td><h2>{{ $t('exoplatform.permission.spaces.createSpace') }}</h2> <h5>{{ $t('exoplatform.permission.spaces.descriptionCreateSpace') }}</h5></td>
+        <td><h5 class="title">{{ $t('exoplatform.permission.spaces.createSpace') }}</h5> <h5>{{ $t('exoplatform.permission.spaces.descriptionCreateSpace') }}</h5></td>
         <td>
           <div v-show="spacesCreatorsEditMode">
             <div v-if="creators.length > 0">
               <div v-for="creator in creators" :key="creator">
-                <h4 v-if="creator.startsWith('*:/')"> {{ $t('exoplatform.permission.spaces.group') }}: {{ creator }}</h4>
-                <h4 v-else-if="!creator.startsWith('No assign') && creator !== ''"> {{ $t('exoplatform.permission.spaces.user') }}: {{ creator }}</h4>
-                <h4 v-else>{{ $t('exoplatform.permission.spaces.noAssignement') }}</h4>
+                <h5 v-if="creator.startsWith('*:/')"> {{ $t('exoplatform.permission.spaces.group') }}: {{ creator }}</h5>
+                <h5 v-else-if="!creator.startsWith('No assign') && creator !== ''"> {{ $t('exoplatform.permission.spaces.user') }}: {{ creator }}</h5>
+                <h5 v-else>{{ $t('exoplatform.permission.spaces.noAssignement') }}</h5>
               </div>
             </div>
-            <h4 v-if="creators.length === 0">{{ $t('exoplatform.permission.spaces.noAssignement') }}</h4>
+            <h5 v-if="creators.length === 0">{{ $t('exoplatform.permission.spaces.noAssignement') }}</h5>
           </div>
           <div v-show="!spacesCreatorsEditMode" class="inputUser">
             <input id="add-creators-suggester" type="text"/>
@@ -44,17 +44,17 @@
         </td>       
       </tr>
       <tr>
-        <td><h2>{{ $t('exoplatform.permission.spaces.manageSpace') }}</h2> <h5>{{ $t('exoplatform.permission.spaces.descriptionManageSpace') }}</h5></td>
+        <td><h5 class="title">{{ $t('exoplatform.permission.spaces.manageSpace') }}</h5> <h5>{{ $t('exoplatform.permission.spaces.descriptionManageSpace') }}</h5></td>
         <td>
           <div v-show="spacesAdministratorsEditMode">
             <div v-if="administrators.length > 0">
               <div v-for="administrator in administrators" :key="administrator">
-                <h4 v-if="administrator.startsWith('*:/')"> {{ $t('exoplatform.permission.spaces.group') }}: {{ administrator }}</h4>
-                <h4 v-else-if="!administrator.startsWith('No assign')"> {{ $t('exoplatform.permission.spaces.user') }}: {{ administrator }}</h4>
-                <h4 v-else>{{ $t('exoplatform.permission.spaces.noAssignement') }}</h4>
+                <h5 v-if="administrator.startsWith('*:/')"> {{ $t('exoplatform.permission.spaces.group') }}: {{ administrator }}</h5>
+                <h5 v-else-if="!administrator.startsWith('No assign')"> {{ $t('exoplatform.permission.spaces.user') }}: {{ administrator }}</h5>
+                <h5 v-else>{{ $t('exoplatform.permission.spaces.noAssignement') }}</h5>
               </div>
             </div>
-            <h4 v-if="administrators.length === 0">{{ $t('exoplatform.permission.spaces.noAssignement') }}</h4>
+            <h5 v-if="administrators.length === 0">{{ $t('exoplatform.permission.spaces.noAssignement') }}</h5>
           </div>
           <div v-show="!spacesAdministratorsEditMode" class="inputUser">
             <input id="add-administrators-suggester" type="text"/>
@@ -153,7 +153,7 @@ export default {
         this.creators.push(item.text);
       }
     },
-    removeSuggestedItemManage(item) {
+    removeSuggestedItemCreate(item) {
       if(this.creators.find(creator => creator === item)) {
         this.creators.splice(this.creators.indexOf(item), 1);
       }
@@ -279,7 +279,7 @@ export default {
             return { 'membershipType': splitAdministrators[0], 'group': splitAdministrators[1] };
           }));
       }
-      this.spacesAdministratorsEditMode = 1;
+      this.spacesAdministratorsEditMode = true;
     },
     getSettingValueSpaceAdministrators(){
       spaceAdministrationServices.getSpacesAdministrationSetting('spacesAdministrators').then(data => {
