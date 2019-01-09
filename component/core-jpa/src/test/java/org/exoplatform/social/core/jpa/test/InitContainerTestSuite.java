@@ -39,8 +39,11 @@ import org.junit.runners.Suite.SuiteClasses;
   RDBMSSpaceStorageTest.class,
   SpaceMemberDAOTest.class,
   SpaceMemberAnyMembershipUpgradeTest.class,
-  SpaceDAOTest.class
-  })
+  SpaceDAOTest.class,
+  SpaceDAOTest.class,
+  RDBMSGroupSpaceBindingStorageTest.class
+})
+
 @ConfigTestCase(AbstractCoreTest.class)
 public class InitContainerTestSuite extends BaseExoContainerTestSuite {
   
