@@ -21,6 +21,8 @@ import java.util.ResourceBundle;
 
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
+
+import org.exoplatform.commons.utils.CommonsUtils;
 import org.exoplatform.container.ExoContainer;
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.services.log.ExoLogger;
@@ -30,6 +32,7 @@ import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
 import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.space.SpaceException;
 import org.exoplatform.social.core.space.SpaceUtils;
+import org.exoplatform.social.core.space.SpacesAdministrationService;
 import org.exoplatform.social.core.space.impl.DefaultSpaceApplicationHandler;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
@@ -82,6 +85,7 @@ public class UISpaceAddForm extends UIFormTabPane {
   static private final String MSG_ERROR_RETRIEVING_USER = "UISpaceAddForm.msg.error_unable_to_retrieve_user";
   static private final String MSG_SPACE_CREATION_SUCCESS = "UISpaceAddForm.msg.space_creation_success";
   static private final String MSG_ERROR_SPACE_ALREADY_EXIST = "UISpaceAddForm.msg.error_space_already_exist";
+  static private final String MSG_ERROR_SPACE_PERMISSION = "UISpaceAddForm.msg.error_space_permission";
   private final String SPACE_SETTINGS = "UISpaceSettings";
   private final String SPACE_VISIBILITY = "UISpaceVisibility";
   
@@ -126,6 +130,7 @@ public class UISpaceAddForm extends UIFormTabPane {
       WebuiRequestContext ctx = event.getRequestContext();
       UIApplication uiApplication = ctx.getUIApplication();
       SpaceService spaceService = uiAddForm.getApplicationComponent(SpaceService.class);
+      SpacesAdministrationService spacesAdministrationService =  CommonsUtils.getService(SpacesAdministrationService.class);
       UISpaceGroupBound uiGroupBound = uiAddForm.getChild(UISpaceGroupBound.class);
       String selectedGroup = uiGroupBound.getSelectedGroup();
       String creator = ctx.getRemoteUser();          
@@ -170,14 +175,22 @@ public class UISpaceAddForm extends UIFormTabPane {
         }
 
         space.setType(DefaultSpaceApplicationHandler.NAME);
-        if (selectedGroup != null) {// create space from an existing group
-          space = spaceService.createSpace(space, creator, selectedGroup);
-        } else { // Create new space
-          space = spaceService.createSpace(space, creator);
+        if(!spacesAdministrationService.canCreateSpace(ctx.getRemoteUser())) {
+          throw new SpaceException(SpaceException.Code.SPACE_PERMISSION);
+        } else {   
+          if (selectedGroup != null) {// create space from an existing group
+            space = spaceService.createSpace(space, creator, selectedGroup);
+          } else { // Create new space
+            space = spaceService.createSpace(space, creator);
+          }
         }
       } catch (SpaceException se) {
         if (se.getCode() == SpaceException.Code.SPACE_ALREADY_EXIST) {
           msg = MSG_ERROR_SPACE_ALREADY_EXIST;
+          uiApplication.addMessage(new ApplicationMessage(msg, null, ApplicationMessage.WARNING));
+          return;
+        } else if (se.getCode() == SpaceException.Code.SPACE_PERMISSION) {
+          msg = MSG_ERROR_SPACE_PERMISSION;
           uiApplication.addMessage(new ApplicationMessage(msg, null, ApplicationMessage.WARNING));
           return;
         } else if (se.getCode() == SpaceException.Code.UNABLE_TO_ADD_CREATOR) {
