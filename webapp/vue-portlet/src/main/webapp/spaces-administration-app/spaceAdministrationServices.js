@@ -23,15 +23,6 @@ export function getSpaceLinkSetting(spaceDisplayName){
   return `${spaceConstants.PORTAL}${spaceConstants.PROFILE_SPACE_LINK}${nameSpace}/${nameSpace}/settings`;
 }
 
-export function getAvatar(user) {
-  return `${spaceConstants.SOCIAL_USER_API}${user}/avatar`;
-}
-
-export function getUsers(query) {
-  return fetch(`${spaceConstants.SOCIAL_PEOPLE_API}/suggest.json?nameToSearch=${query}`, {credentials: 'include'}).then(resp => resp.json(
-  ));
-}
-
 export function getGroups(query) {
   return fetch(`${spaceConstants.GROUP_API}?q=${query}`, {credentials: 'include'}).then(resp => resp.json());
 }

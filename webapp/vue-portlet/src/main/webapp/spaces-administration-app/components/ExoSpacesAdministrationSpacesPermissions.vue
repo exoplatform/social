@@ -6,7 +6,7 @@
           {{ $t('exoplatform.permission.spaces.permissions') }}
         </th>
         <th>
-          {{ $t('exoplatform.permission.spaces.userOrGroup') }}
+          {{ $t('exoplatform.permission.spaces.groups') }}
         </th>
         <th>
           {{ $t('exoplatform.manage.spaces.actions') }}
@@ -18,9 +18,7 @@
           <div v-show="spacesCreatorsEditMode">
             <div v-if="creators.length > 0">
               <div v-for="creator in creators" :key="creator">
-                <h5 v-if="creator.startsWith('*:/')"> {{ $t('exoplatform.permission.spaces.group') }}: {{ creator }}</h5>
-                <h5 v-else-if="!creator.startsWith('No assign') && creator !== ''"> {{ $t('exoplatform.permission.spaces.user') }}: {{ creator }}</h5>
-                <h5 v-else>{{ $t('exoplatform.permission.spaces.noAssignement') }}</h5>
+                <h5>{{ creator }}</h5>
               </div>
             </div>
             <h5 v-if="creators.length === 0">{{ $t('exoplatform.permission.spaces.noAssignement') }}</h5>
@@ -49,9 +47,7 @@
           <div v-show="spacesAdministratorsEditMode">
             <div v-if="administrators.length > 0">
               <div v-for="administrator in administrators" :key="administrator">
-                <h5 v-if="administrator.startsWith('*:/')"> {{ $t('exoplatform.permission.spaces.group') }}: {{ administrator }}</h5>
-                <h5 v-else-if="!administrator.startsWith('No assign')"> {{ $t('exoplatform.permission.spaces.user') }}: {{ administrator }}</h5>
-                <h5 v-else>{{ $t('exoplatform.permission.spaces.noAssignement') }}</h5>
+                <h5>{{ administrator }}</h5>
               </div>
             </div>
             <h5 v-if="administrators.length === 0">{{ $t('exoplatform.permission.spaces.noAssignement') }}</h5>
@@ -127,11 +123,11 @@ export default {
             component.addSuggestedItemCreate(item);
           },
           onItemRemove(item) {
-            component.removeSuggestedItemManage(item);
+            component.removeSuggestedItemCreators(item);
           },
           sortField: [{field: 'order'}, {field: '$score'}],
           providers: {
-            'exo:spacesAdministration': component.findUsersAndGroups
+            'exo:spacesAdministration': component.findGroups
           }
         };
         suggesterContainer.suggester(suggesterData);
@@ -153,7 +149,7 @@ export default {
         this.creators.push(item.text);
       }
     },
-    removeSuggestedItemCreate(item) {
+    removeSuggestedItemCreators(item) {
       if(this.creators.find(creator => creator === item)) {
         this.creators.splice(this.creators.indexOf(item), 1);
       }
@@ -204,11 +200,11 @@ export default {
             component.addSuggestedItem(item);
           },
           onItemRemove(item) {
-            component.removeSuggestedItem(item);
+            component.removeSuggestedItemAdinistrators(item);
           },
           sortField: [{field: 'order'}, {field: '$score'}],
           providers: {
-            'exo:spacesAdministration': component.findUsersAndGroups
+            'exo:spacesAdministration': component.findGroups
           }
         };
         suggesterContainer.suggester(suggesterData);
@@ -221,40 +217,27 @@ export default {
         }      
       }
     },
-    findUsersAndGroups (query, callback) {
+    findGroups (query, callback) {
       if (!query.length) {
         return callback(); 
       }
-      const promises = [];     
-      promises.push(spaceAdministrationServices.getUsers(query));
-      promises.push(spaceAdministrationServices.getGroups(query));
 
-      Promise.all(promises).then( data => {
-        const users = data[0];
-        const groups = data[1];
-        const usersAndGroups = users && users.options || [];
-        for(const group of groups) {
-          usersAndGroups.push({
+      spaceAdministrationServices.getGroups(query).then(data => {
+        const groups = [];
+        for(const group of data) {
+          groups.push({
             avatarUrl: null,
             text: `*:${group.id}`,
             value: `*:${group.id}`,
             type: 'group'
           });
         }
-        callback(usersAndGroups);
+        callback(groups);
       });
     },
     renderMenuItem (item, escape) {
-      if(item.avatarUrl == null) {
-        item.avatarUrl = spaceAdministrationServices.getAvatar(item.value);
-        if (item.type === 'user') {
-          item.avatarUrl = '/eXoSkin/skin/images/system/UserAvtDefault.png';
-        } else {
-          item.avatarUrl = '/eXoSkin/skin/images/system/SpaceAvtDefault.png';
-        }
-      }
       return `
-        <div class="item"> <img class="avatarMini" src="${item.avatarUrl}"> ${escape(item.value)}</div>
+        <div class="item">${escape(item.value)}</div>
       `;
     },
     addSuggestedItem(item) {
@@ -266,7 +249,7 @@ export default {
         this.administrators.push(item.text);
       }
     },
-    removeSuggestedItem(item) {
+    removeSuggestedItemAdinistrators(item) {
       if(this.administrators.find(administrator => administrator === item)) {
         this.administrators.splice(this.administrators.indexOf(item), 1);
       }
