@@ -18,1002 +18,1026 @@
 
 -->
 <configuration
-   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-   xsi:schemaLocation="http://www.exoplatform.org/xml/ns/kernel_1_2.xsd http://www.exoplatform.org/xml/ns/kernel_1_2.xsd"
-   xmlns="http://www.exoplatform.org/xml/ns/kernel_1_2.xsd">
-
-  <component>
-    <key>org.exoplatform.services.organization.search.UserSearchService</key>
-    <type>org.exoplatform.social.core.identity.UserSearchServiceImpl</type>
-  </component>
-
-  <component>
-    <key>org.exoplatform.social.common.lifecycle.LifeCycleCompletionService</key>
-    <type>org.exoplatform.social.common.lifecycle.LifeCycleCompletionService</type>
-    <init-params>
-      <value-param>
-        <name>thread-number</name>
-        <value>10</value>
-      </value-param>
-      <value-param>
-        <name>async-execution</name>
-        <value>false</value>
-      </value-param>
-    </init-params>
-  </component>
-  
-  <component>
-    <key>org.exoplatform.social.common.service.thread.ThreadPoolConfig</key>
-    <type>org.exoplatform.social.common.service.thread.ThreadPoolConfig</type>
-    <init-params>
-      <value-param>
-        <name>pool-size</name>
-        <value>5</value>
-      </value-param>
-      <value-param>
-        <name>max-pool-size</name>
-        <value>5</value>
-      </value-param>
-      <value-param>
-        <name>async-mode</name>
-        <value>true</value>
-      </value-param>
-      <value-param>
-        <name>thread-priority</name>
-        <value>5</value><!--10: HIGH, 5: NORMAL; 1: LOW-->
-      </value-param>
-    </init-params>
-  </component>
-  
-  <component>
-    <key>org.exoplatform.social.core.storage.streams.StreamConfig</key>
-    <type>org.exoplatform.social.core.storage.streams.StreamConfig</type>
-    <init-params>
-      <value-param>
-        <name>connections-threshold-param</name>
-        <value>1000</value> <!-- connections threshold -->
-      </value-param>
-      <value-param>
-        <name>last-login-around-days</name>
-        <value>15</value> <!-- the last login around days of an user -->
-      </value-param>
-      <value-param>
-        <name>limit-per-loading-param</name>
-        <value>20</value><!-- batch limit to persist to storage when CRUD node -->
-      </value-param>
-      <value-param>
-        <name>active-user-groups-param</name>
-        <value>/platform/administrators</value><!-- /platform/administrators,/platform/users -->
-      </value-param>
-    </init-params>
-  </component>
-  
-  <component>
-    <type>org.exoplatform.social.core.updater.UserActivityStreamMigration</type>
-  </component>
-  
-  <component>
-    <type>org.exoplatform.social.core.updater.SpaceActivityStreamMigration</type>
-  </component>
-
-  <component>
-    <key>org.exoplatform.social.core.storage.cache.SocialStorageCacheService</key>
-    <type>org.exoplatform.social.core.storage.cache.SocialStorageCacheService</type>
-  </component>
-
-  <component>
-    <type>org.exoplatform.commons.persistence.impl.EntityManagerService</type>
-  </component>
-
-  <component>
-    <key>org.exoplatform.social.core.jpa.storage.dao.StreamItemDAO</key>
-    <type>org.exoplatform.social.core.jpa.storage.dao.jpa.StreamItemDAOImpl</type>
-  </component>
-
-  <component>
-    <key>org.exoplatform.social.core.jpa.storage.dao.ConnectionDAO</key>
-    <type>org.exoplatform.social.core.jpa.storage.dao.jpa.ConnectionDAOImpl</type>
-  </component>
-
-  <component>
-    <key>org.exoplatform.social.core.jpa.storage.dao.ActivityDAO</key>
-    <type>org.exoplatform.social.core.jpa.storage.dao.jpa.ActivityDAOImpl</type>
-  </component>
-
-  <component>
-    <key>org.exoplatform.social.core.jpa.storage.dao.IdentityDAO</key>
-    <type>org.exoplatform.social.core.jpa.storage.dao.jpa.IdentityDAOImpl</type>
-  </component>
-
-  <component>
-    <key>org.exoplatform.social.core.jpa.storage.dao.SpaceDAO</key>
-    <type>org.exoplatform.social.core.jpa.storage.dao.jpa.SpaceDAOImpl</type>
-  </component>
-
-  <component>
-    <key>org.exoplatform.social.core.jpa.storage.dao.SpaceMemberDAO</key>
-    <type>org.exoplatform.social.core.jpa.storage.dao.jpa.SpaceMemberDAOImpl</type>
-  </component>
-
-  <!--
-    Identity storage components.
-  -->
-  <component>
-    <type>org.exoplatform.social.core.jpa.storage.RDBMSIdentityStorageImpl</type>
-  </component>
-
-  <component>
-    <key>org.exoplatform.social.core.storage.api.IdentityStorage</key>
-    <type>org.exoplatform.social.core.jpa.cache.RDBMSCachedIdentityStorage</type>
-  </component>
-
-  <!--
-    Relationship storage components.
-  -->
-  <component>
-    <type>org.exoplatform.social.core.jpa.storage.RDBMSRelationshipStorageImpl</type>
-  </component>
-
-  <component>
-    <key>org.exoplatform.social.core.storage.api.RelationshipStorage</key>
-    <type>org.exoplatform.social.core.jpa.cache.RDBMSCachedRelationshipStorage</type>
-  </component>
-
-  <!--
-    Activity storage components.
-  -->
-  <component>
-    <type>org.exoplatform.social.core.jpa.storage.RDBMSActivityStorageImpl</type>
-  </component>
-
-  <component>
-    <key>org.exoplatform.social.core.storage.api.ActivityStorage</key>
-    <type>org.exoplatform.social.core.jpa.cache.RDBMSCachedActivityStorage</type>
-  </component>
-
-  <!--
-    Space storage components.
-  -->
-  <component>
-    <type>org.exoplatform.social.core.jpa.storage.RDBMSSpaceStorageImpl</type>
-  </component>
-
-  <component>
-    <key>org.exoplatform.social.core.storage.api.SpaceStorage</key>
-    <type>org.exoplatform.social.core.jpa.cache.RDBMSCachedSpaceStorage</type>
-  </component>
-
-  <component>
-    <key>org.exoplatform.social.core.manager.ActivityManager</key>
-    <type>org.exoplatform.social.core.manager.ActivityManagerImpl</type>
-    <component-plugins>
-      <component-plugin>
-        <name>OSHtmlSanitizer</name>
-        <set-method>addProcessorPlugin</set-method>
-        <type>org.exoplatform.social.core.processor.OSHtmlSanitizerProcessor</type>
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.exoplatform.org/xml/ns/kernel_1_2.xsd http://www.exoplatform.org/xml/ns/kernel_1_2.xsd"
+        xmlns="http://www.exoplatform.org/xml/ns/kernel_1_2.xsd">
+    
+    <component>
+        <key>org.exoplatform.services.organization.search.UserSearchService</key>
+        <type>org.exoplatform.social.core.identity.UserSearchServiceImpl</type>
+    </component>
+    
+    <component>
+        <key>org.exoplatform.social.common.lifecycle.LifeCycleCompletionService</key>
+        <type>org.exoplatform.social.common.lifecycle.LifeCycleCompletionService</type>
         <init-params>
-          <value-param>
-            <name>priority</name>
-            <description>priority of this processor (lower are executed first)</description>
-            <value>4</value>
-          </value-param>
+            <value-param>
+                <name>thread-number</name>
+                <value>10</value>
+            </value-param>
+            <value-param>
+                <name>async-execution</name>
+                <value>false</value>
+            </value-param>
         </init-params>
-      </component-plugin>
-    </component-plugins>
-    <init-params>
-      <value-param>
-        <name>upload.limit.size</name>
-        <description>Define upload limit for uploaded files on Activity Stream</description>
-        <value>${exo.social.activity.uploadLimit:}</value>
-      </value-param>
-      <value-param>
-        <name>exo.edit.activity.enabled</name>
-        <description>enable/disable edit activity</description>
-        <value>${exo.edit.activity.enabled:true}</value>
-      </value-param>
-      <value-param>
-        <name>exo.edit.comment.enabled</name>
-        <description>enable/disable edit comment</description>
-        <value>${exo.edit.comment.enabled:true}</value>
-      </value-param>
-      <value-param>
-        <name>exo.manager.edit.activity.enabled</name>
-        <description>enable/disable manger edit activity</description>
-        <value>${exo.manager.edit.activity.enabled:true}</value>
-      </value-param>
-      <value-param>
-        <name>exo.manager.edit.comment.enabled</name>
-        <description>enable/disable manager edit comment</description>
-        <value>${exo.manager.edit.comment.enabled:true}</value>
-      </value-param>
-    </init-params>
-  </component>
-  
-  <component>
-    <key>org.exoplatform.social.core.identity.model.PropertiesDefinition</key>
-    <type>org.exoplatform.social.core.identity.model.PropertiesDefinition</type>
-  </component>
-
-  <component>
-    <key>org.exoplatform.social.core.manager.RelationshipManager</key>
-    <type>org.exoplatform.social.core.manager.RelationshipManagerImpl</type>
-  </component>
-
-  <component>
-    <key>org.exoplatform.social.core.identity.IdentityProvider</key>
-    <type>org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider</type>
-  </component>
-
-  <component>
-    <type>org.exoplatform.social.core.identity.provider.SpaceIdentityProvider</type>
-  </component>
-
-  <component>
-    <key>org.exoplatform.social.core.manager.IdentityManager</key>
-    <type>org.exoplatform.social.core.manager.IdentityManagerImpl</type>
-    <component-plugins>
-      <component-plugin>
-        <name>SpaceIdentityProvider plugin</name>
-        <set-method>registerIdentityProviders</set-method>
-        <type>org.exoplatform.social.core.identity.IdentityProviderPlugin</type>
+    </component>
+    
+    <component>
+        <key>org.exoplatform.social.common.service.thread.ThreadPoolConfig</key>
+        <type>org.exoplatform.social.common.service.thread.ThreadPoolConfig</type>
         <init-params>
-          <values-param>
-            <name>providers</name>
-            <description>Identity Providers</description>
-            <value>org.exoplatform.social.core.identity.provider.SpaceIdentityProvider</value>
-          </values-param>
+            <value-param>
+                <name>pool-size</name>
+                <value>5</value>
+            </value-param>
+            <value-param>
+                <name>max-pool-size</name>
+                <value>5</value>
+            </value-param>
+            <value-param>
+                <name>async-mode</name>
+                <value>true</value>
+            </value-param>
+            <value-param>
+                <name>thread-priority</name>
+                <value>5</value><!--10: HIGH, 5: NORMAL; 1: LOW-->
+            </value-param>
         </init-params>
-      </component-plugin>
-    </component-plugins>
-    <init-params>
-      <value-param>
-        <name>sort.field.name</name>
-        <description>Identities sort field name</description>
-        <value>${exo.social.identity.sort.field:fullname}</value>
-      </value-param>
-      <value-param>
-        <name>sort.order.direction</name>
-        <description>Identities sort direction</description>
-        <value>${exo.social.identity.sort.direction:asc}</value>
-      </value-param>
-      <value-param>
-        <name>firstChar.field.name</name>
-        <description>Identities first char filtering field name</description>
-        <value>${exo.social.identity.firstChar.field:lastname}</value>
-      </value-param>
-    </init-params>
-  </component>
-
-  <component>
-    <key>org.exoplatform.social.core.service.ProfileConfig</key>
-    <type>org.exoplatform.social.core.service.ProfileConfig</type>
-    <init-params>
-      <values-param>
-        <name>nodetype.emails</name>
-        <value>exo:profileKeyValue</value>
-      </values-param>
-      <values-param>
-        <name>nodetype.phones</name>
-        <value>exo:profileKeyValue</value>
-      </values-param>
-      <values-param>
-        <name>nodetype.ims</name>
-        <value>exo:profileKeyValue</value>
-      </values-param>
-      <values-param>
-        <name>nodetype.urls</name>
-        <value>exo:profileKeyValue</value>
-      </values-param>
-      <values-param>
-        <name>nodetype.address</name>
-        <value>exo:profileAddress</value>
-      </values-param>
-      <values-param>
-        <name>nodetype.experiences</name>
-        <value>exo:profileExperience</value>
-      </values-param>
-      <values-param>
-        <name>nodetype.education</name>
-        <value>exo:profileEducation</value>
-      </values-param>
-      <values-param>
-        <name>forceMultiValue</name>
-        <value>xxxxxxxxxxxx</value>
-      </values-param>
-    </init-params>
-  </component>
-
-  <component>
-    <key>org.exoplatform.social.core.profile.ProfileMapper</key>
-    <type>org.exoplatform.social.core.profile.ProfileMapper</type>
-  </component>
-
-  <!-- Space Configuration -->
-
-  <component>
-    <key>org.exoplatform.social.core.space.spi.SpaceService</key>
-    <type>org.exoplatform.social.core.space.impl.SpaceServiceImpl</type>
-  </component>
-
-  <component>
-    <key>org.exoplatform.social.core.space.spi.SpaceTemplateService</key>
-    <type>org.exoplatform.social.core.space.impl.SpaceTemplateServiceImpl</type>
-    <init-params>
-      <value-param>
-        <name>defaultSpaceTemplate</name>
-        <value>${exo.social.template.default:community}</value>
-      </value-param>
-    </init-params>
-  </component>
-
-  <component>
-    <key>org.exoplatform.social.core.space.SpacesAdministrationService</key>
-    <type>org.exoplatform.social.core.space.impl.SpacesAdministrationServiceImpl</type>
-    <init-params>
-      <value-param>
-        <name>social.spaces.administrators</name>
-        <value>${social.spaces.administrators:}</value>
-      </value-param>
-      <value-param>
-        <name>social.spaces.creators</name>
-        <value>${social.spaces.creators:}</value>
-      </value-param>
-    </init-params>
-  </component>
-  
-  <component>
-    <key>org.exoplatform.social.core.processor.I18NActivityProcessor</key>
-    <type>org.exoplatform.social.core.processor.I18NActivityProcessor</type>
-    <component-plugins>
-      <component-plugin>
-        <name>exosocial:spaces</name> <!-- activity type -->
-        <set-method>addActivityResourceBundlePlugin</set-method>
-        <type>org.exoplatform.social.core.processor.ActivityResourceBundlePlugin</type>
+    </component>
+    
+    <component>
+        <key>org.exoplatform.social.core.storage.streams.StreamConfig</key>
+        <type>org.exoplatform.social.core.storage.streams.StreamConfig</type>
         <init-params>
-          <object-param>
-            <name>locale.social.Core</name> <!-- resource bundle key file -->
-            <description>activity key type resource bundle mapping for exosocial:spaces</description>
-            <object type="org.exoplatform.social.core.processor.ActivityResourceBundlePlugin">
-              <field name="activityKeyTypeMapping">
-                <map type="java.util.HashMap">
-                  <entry>
-                    <key><string>space_created</string></key>
-                    <value><string>SpaceActivityPublisher.space_created</string></value>
-                  </entry>
-                  <entry>
-                    <key><string>manager_role_granted</string></key>
-                    <value><string>SpaceActivityPublisher.manager_role_granted</string></value>
-                  </entry>
-                  <entry>
-                    <key><string>manager_role_revoked</string></key>
-                    <value><string>SpaceActivityPublisher.manager_role_revoked</string></value>
-                  </entry>
-                  <entry>
-                    <key><string>has_joined</string></key>
-                    <value><string>SpaceActivityPublisher.has_joined</string></value>
-                  </entry>
-                  <entry>
-                    <key><string>has_left</string></key>
-                    <value><string>SpaceActivityPublisher.has_left</string></value>
-                  </entry>
-                  <entry>
-                    <key><string>user_joined</string></key>
-                    <value><string>SpaceActivityPublisher.user_joined</string></value>
-                  </entry>
-                  <entry>
-                    <key><string>member_left</string></key>
-                    <value><string>SpaceActivityPublisher.member_left</string></value>
-                  </entry>
-                  <entry>
-                    <key><string>space_renamed</string></key>
-                    <value><string>SpaceActivityPublisher.space_renamed</string></value>
-                  </entry>
-                  <entry>
-                    <key><string>space_description_edited</string></key>
-                    <value><string>SpaceActivityPublisher.space_description_edited</string></value>
-                  </entry>
-                  <entry>
-                    <key><string>space_avatar_edited</string></key>
-                    <value><string>SpaceActivityPublisher.space_avatar_edited</string></value>
-                  </entry>
-                </map>
-              </field>
-            </object>
-          </object-param>
+            <value-param>
+                <name>connections-threshold-param</name>
+                <value>1000</value> <!-- connections threshold -->
+            </value-param>
+            <value-param>
+                <name>last-login-around-days</name>
+                <value>15</value> <!-- the last login around days of an user -->
+            </value-param>
+            <value-param>
+                <name>limit-per-loading-param</name>
+                <value>20</value><!-- batch limit to persist to storage when CRUD node -->
+            </value-param>
+            <value-param>
+                <name>active-user-groups-param</name>
+                <value>/platform/administrators</value><!-- /platform/administrators,/platform/users -->
+            </value-param>
         </init-params>
-      </component-plugin>
-      <component-plugin>
-        <name>USER_ACTIVITIES_FOR_SPACE</name> <!-- activity type -->
-        <set-method>addActivityResourceBundlePlugin</set-method>
-        <type>org.exoplatform.social.core.processor.ActivityResourceBundlePlugin</type>
+    </component>
+    
+    <component>
+        <type>org.exoplatform.social.core.updater.UserActivityStreamMigration</type>
+    </component>
+    
+    <component>
+        <type>org.exoplatform.social.core.updater.SpaceActivityStreamMigration</type>
+    </component>
+    
+    <component>
+        <key>org.exoplatform.social.core.storage.cache.SocialStorageCacheService</key>
+        <type>org.exoplatform.social.core.storage.cache.SocialStorageCacheService</type>
+    </component>
+    
+    <component>
+        <type>org.exoplatform.commons.persistence.impl.EntityManagerService</type>
+    </component>
+    
+    <component>
+        <key>org.exoplatform.social.core.jpa.storage.dao.StreamItemDAO</key>
+        <type>org.exoplatform.social.core.jpa.storage.dao.jpa.StreamItemDAOImpl</type>
+    </component>
+    
+    <component>
+        <key>org.exoplatform.social.core.jpa.storage.dao.ConnectionDAO</key>
+        <type>org.exoplatform.social.core.jpa.storage.dao.jpa.ConnectionDAOImpl</type>
+    </component>
+    
+    <component>
+        <key>org.exoplatform.social.core.jpa.storage.dao.ActivityDAO</key>
+        <type>org.exoplatform.social.core.jpa.storage.dao.jpa.ActivityDAOImpl</type>
+    </component>
+    
+    <component>
+        <key>org.exoplatform.social.core.jpa.storage.dao.IdentityDAO</key>
+        <type>org.exoplatform.social.core.jpa.storage.dao.jpa.IdentityDAOImpl</type>
+    </component>
+    
+    <component>
+        <key>org.exoplatform.social.core.jpa.storage.dao.SpaceDAO</key>
+        <type>org.exoplatform.social.core.jpa.storage.dao.jpa.SpaceDAOImpl</type>
+    </component>
+    
+    <component>
+        <key>org.exoplatform.social.core.jpa.storage.dao.SpaceMemberDAO</key>
+        <type>org.exoplatform.social.core.jpa.storage.dao.jpa.SpaceMemberDAOImpl</type>
+    </component>
+    
+    <component>
+        <key>org.exoplatform.social.core.jpa.storage.dao.UserSpaceBindingDAO</key>
+        <type>org.exoplatform.social.core.jpa.storage.dao.jpa.UserSpaceBindingDAOImpl</type>
+    </component>
+    
+    
+    <component>
+        <key>org.exoplatform.social.core.jpa.storage.dao.GroupSpaceBindingDAO</key>
+        <type>org.exoplatform.social.core.jpa.storage.dao.jpa.GroupSpaceBindingDAOImpl</type>
+    </component>
+    <!--
+      Identity storage components.
+    -->
+    <component>
+        <type>org.exoplatform.social.core.jpa.storage.RDBMSIdentityStorageImpl</type>
+    </component>
+    
+    <component>
+        <key>org.exoplatform.social.core.storage.api.IdentityStorage</key>
+        <type>org.exoplatform.social.core.jpa.cache.RDBMSCachedIdentityStorage</type>
+    </component>
+    
+    <!--
+      Relationship storage components.
+    -->
+    <component>
+        <type>org.exoplatform.social.core.jpa.storage.RDBMSRelationshipStorageImpl</type>
+    </component>
+    
+    <component>
+        <key>org.exoplatform.social.core.storage.api.RelationshipStorage</key>
+        <type>org.exoplatform.social.core.jpa.cache.RDBMSCachedRelationshipStorage</type>
+    </component>
+    
+    <!--
+      Activity storage components.
+    -->
+    <component>
+        <type>org.exoplatform.social.core.jpa.storage.RDBMSActivityStorageImpl</type>
+    </component>
+    
+    <component>
+        <key>org.exoplatform.social.core.storage.api.ActivityStorage</key>
+        <type>org.exoplatform.social.core.jpa.cache.RDBMSCachedActivityStorage</type>
+    </component>
+    
+    <!--
+      Space storage components.
+    -->
+    <component>
+        <type>org.exoplatform.social.core.jpa.storage.RDBMSSpaceStorageImpl</type>
+    </component>
+    
+    <component>
+        <key>org.exoplatform.social.core.storage.api.SpaceStorage</key>
+        <type>org.exoplatform.social.core.jpa.cache.RDBMSCachedSpaceStorage</type>
+    </component>
+    
+    <!--
+  GroupSpaceBinding storage components.
+ -->
+    <component>
+        <key>org.exoplatform.social.core.storage.api.GroupSpaceBindingStorage</key>
+        <type>org.exoplatform.social.core.jpa.storage.RDBMSGroupSpaceBindingStorageImpl</type>
+    </component>
+    
+    <component>
+        <key>org.exoplatform.social.core.manager.ActivityManager</key>
+        <type>org.exoplatform.social.core.manager.ActivityManagerImpl</type>
+        <component-plugins>
+            <component-plugin>
+                <name>OSHtmlSanitizer</name>
+                <set-method>addProcessorPlugin</set-method>
+                <type>org.exoplatform.social.core.processor.OSHtmlSanitizerProcessor</type>
+                <init-params>
+                    <value-param>
+                        <name>priority</name>
+                        <description>priority of this processor (lower are executed first)</description>
+                        <value>4</value>
+                    </value-param>
+                </init-params>
+            </component-plugin>
+        </component-plugins>
         <init-params>
-          <object-param>
-            <name>locale.social.Core</name> <!-- resource bundle key file -->
-            <description>activity key type resource bundle mapping for exosocial:spaces</description>
-            <object type="org.exoplatform.social.core.processor.ActivityResourceBundlePlugin">
-              <field name="activityKeyTypeMapping">
-                <map type="java.util.HashMap">
-                  <entry>
-                    <key><string>user_joined_public_space</string></key>
-                    <value><string>SpaceActivityPublisher.member_of_one_or_zero_public_space</string></value>
-                  </entry>
-                  <entry>
-                    <key><string>user_joined_public_spaces</string></key>
-                    <value><string>SpaceActivityPublisher.member_of_number_public_spaces</string></value>
-                  </entry>
-                  <entry>
-                    <key><string>user_space_joined</string></key>
-                    <value><string>SpaceActivityPublisher.user_space_joined</string></value>
-                  </entry>
-                </map>
-              </field>
-            </object>
-          </object-param>
+            <value-param>
+                <name>upload.limit.size</name>
+                <description>Define upload limit for uploaded files on Activity Stream</description>
+                <value>${exo.social.activity.uploadLimit:}</value>
+            </value-param>
+            <value-param>
+                <name>exo.edit.activity.enabled</name>
+                <description>enable/disable edit activity</description>
+                <value>${exo.edit.activity.enabled:true}</value>
+            </value-param>
+            <value-param>
+                <name>exo.edit.comment.enabled</name>
+                <description>enable/disable edit comment</description>
+                <value>${exo.edit.comment.enabled:true}</value>
+            </value-param>
+            <value-param>
+                <name>exo.manager.edit.activity.enabled</name>
+                <description>enable/disable manger edit activity</description>
+                <value>${exo.manager.edit.activity.enabled:true}</value>
+            </value-param>
+            <value-param>
+                <name>exo.manager.edit.comment.enabled</name>
+                <description>enable/disable manager edit comment</description>
+                <value>${exo.manager.edit.comment.enabled:true}</value>
+            </value-param>
         </init-params>
-      </component-plugin>
-      <component-plugin>
-        <name>USER_ACTIVITIES_FOR_RELATIONSHIP</name> <!-- activity type -->
-        <set-method>addActivityResourceBundlePlugin</set-method>
-        <type>org.exoplatform.social.core.processor.ActivityResourceBundlePlugin</type>
+    </component>
+    
+    <component>
+        <key>org.exoplatform.social.core.identity.model.PropertiesDefinition</key>
+        <type>org.exoplatform.social.core.identity.model.PropertiesDefinition</type>
+    </component>
+    
+    <component>
+        <key>org.exoplatform.social.core.manager.RelationshipManager</key>
+        <type>org.exoplatform.social.core.manager.RelationshipManagerImpl</type>
+    </component>
+    
+    <component>
+        <key>org.exoplatform.social.core.identity.IdentityProvider</key>
+        <type>org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider</type>
+    </component>
+    
+    <component>
+        <type>org.exoplatform.social.core.identity.provider.SpaceIdentityProvider</type>
+    </component>
+    
+    <component>
+        <key>org.exoplatform.social.core.manager.IdentityManager</key>
+        <type>org.exoplatform.social.core.manager.IdentityManagerImpl</type>
+        <component-plugins>
+            <component-plugin>
+                <name>SpaceIdentityProvider plugin</name>
+                <set-method>registerIdentityProviders</set-method>
+                <type>org.exoplatform.social.core.identity.IdentityProviderPlugin</type>
+                <init-params>
+                    <values-param>
+                        <name>providers</name>
+                        <description>Identity Providers</description>
+                        <value>org.exoplatform.social.core.identity.provider.SpaceIdentityProvider</value>
+                    </values-param>
+                </init-params>
+            </component-plugin>
+        </component-plugins>
         <init-params>
-          <object-param>
-            <name>locale.social.Core</name> <!-- resource bundle key file -->
-            <description>activity key type resource bundle mapping for relation's activities</description>
-            <object type="org.exoplatform.social.core.processor.ActivityResourceBundlePlugin">
-              <field name="activityKeyTypeMapping">
-                <map type="java.util.HashMap">
-                  <entry>
-                    <key><string>user_relations</string></key>
-                    <value><string>RelationshipPublisher.user_relations</string></value>
-                  </entry>
-                </map>
-              </field>
-            </object>
-          </object-param>
+            <value-param>
+                <name>sort.field.name</name>
+                <description>Identities sort field name</description>
+                <value>${exo.social.identity.sort.field:fullname}</value>
+            </value-param>
+            <value-param>
+                <name>sort.order.direction</name>
+                <description>Identities sort direction</description>
+                <value>${exo.social.identity.sort.direction:asc}</value>
+            </value-param>
+            <value-param>
+                <name>firstChar.field.name</name>
+                <description>Identities first char filtering field name</description>
+                <value>${exo.social.identity.firstChar.field:lastname}</value>
+            </value-param>
         </init-params>
-      </component-plugin>
-      <component-plugin>
-        <name>USER_COMMENTS_ACTIVITY_FOR_RELATIONSHIP</name> <!-- activity type -->
-        <set-method>addActivityResourceBundlePlugin</set-method>
-        <type>org.exoplatform.social.core.processor.ActivityResourceBundlePlugin</type>
+    </component>
+    
+    <component>
+        <key>org.exoplatform.social.core.service.ProfileConfig</key>
+        <type>org.exoplatform.social.core.service.ProfileConfig</type>
         <init-params>
-          <object-param>
-            <name>locale.social.Core</name> <!-- resource bundle key file -->
-            <description>activity key type resource bundle mapping for relation's activities</description>
-            <object type="org.exoplatform.social.core.processor.ActivityResourceBundlePlugin">
-              <field name="activityKeyTypeMapping">
-                <map type="java.util.HashMap">
-                  <entry>
-                    <key><string>user_relation_confirmed</string></key>
-                    <value><string>RelationshipPublisher.user_relation_confirmed</string></value>
-                  </entry>
-                </map>
-              </field>
-            </object>
-          </object-param>
+            <values-param>
+                <name>nodetype.emails</name>
+                <value>exo:profileKeyValue</value>
+            </values-param>
+            <values-param>
+                <name>nodetype.phones</name>
+                <value>exo:profileKeyValue</value>
+            </values-param>
+            <values-param>
+                <name>nodetype.ims</name>
+                <value>exo:profileKeyValue</value>
+            </values-param>
+            <values-param>
+                <name>nodetype.urls</name>
+                <value>exo:profileKeyValue</value>
+            </values-param>
+            <values-param>
+                <name>nodetype.address</name>
+                <value>exo:profileAddress</value>
+            </values-param>
+            <values-param>
+                <name>nodetype.experiences</name>
+                <value>exo:profileExperience</value>
+            </values-param>
+            <values-param>
+                <name>nodetype.education</name>
+                <value>exo:profileEducation</value>
+            </values-param>
+            <values-param>
+                <name>forceMultiValue</name>
+                <value>xxxxxxxxxxxx</value>
+            </values-param>
         </init-params>
-      </component-plugin>
-      <component-plugin>
-        <name>exosocial:people</name>
-        <set-method>addActivityResourceBundlePlugin</set-method>
-        <type>org.exoplatform.social.core.processor.ActivityResourceBundlePlugin</type>
+    </component>
+    
+    <component>
+        <key>org.exoplatform.social.core.profile.ProfileMapper</key>
+        <type>org.exoplatform.social.core.profile.ProfileMapper</type>
+    </component>
+    
+    <!-- Space Configuration -->
+    
+    <component>
+        <key>org.exoplatform.social.core.space.spi.SpaceService</key>
+        <type>org.exoplatform.social.core.space.impl.SpaceServiceImpl</type>
+    </component>
+    
+    <component>
+        <key>org.exoplatform.social.core.space.spi.SpaceTemplateService</key>
+        <type>org.exoplatform.social.core.space.impl.SpaceTemplateServiceImpl</type>
         <init-params>
-          <object-param>
-            <name>locale.social.Core</name>
-            <description>activity key type resource bundle mapping for exosocial:people</description>
-            <object type="org.exoplatform.social.core.processor.ActivityResourceBundlePlugin">
-              <field name="activityKeyTypeMapping">
-                <map type="java.util.HashMap">
-                  <entry>
-                    <key><string>position_updated</string></key>
-                    <value><string>ProfileUpdatesPublisher.position_updated</string></value>
-                  </entry>
-                  <entry>
-                    <key><string>avatar_updated</string></key>
-                    <value><string>ProfileUpdatesPublisher.avatar_updated</string></value>
-                  </entry>
-                  <entry>
-                    <key><string>basic_info_updated</string></key>
-                    <value><string>ProfileUpdatesPublisher.basic_info_updated</string></value>
-                  </entry>
-                  <entry>
-                    <key><string>contact_section_updated</string></key>
-                    <value><string>ProfileUpdatesPublisher.contact_section_updated</string></value>
-                  </entry>
-                  <entry>
-                    <key><string>experience_section_updated</string></key>
-                    <value><string>ProfileUpdatesPublisher.experience_section_updated</string></value>
-                  </entry>
-                  <entry>
-                    <key><string>aboutMe_section_updated</string></key>
-                    <value><string>ProfileUpdatesPublisher.aboutMe_section_updated</string></value>
-                  </entry>
-                </map>
-              </field>
-            </object>
-          </object-param>
+            <value-param>
+                <name>defaultSpaceTemplate</name>
+                <value>${exo.social.template.default:community}</value>
+            </value-param>
         </init-params>
-      </component-plugin>
-      <component-plugin>
-        <name>USER_PROFILE_ACTIVITY</name>
-        <set-method>addActivityResourceBundlePlugin</set-method>
-        <type>org.exoplatform.social.core.processor.ActivityResourceBundlePlugin</type>
+    </component>
+    
+    <component>
+        <key>org.exoplatform.social.core.space.SpacesAdministrationService</key>
+        <type>org.exoplatform.social.core.space.impl.SpacesAdministrationServiceImpl</type>
         <init-params>
-          <object-param>
-            <name>locale.social.Core</name>
-            <description>activity key type resource bundle mapping for USER_PROFILE_ACTIVITY</description>
-            <object type="org.exoplatform.social.core.processor.ActivityResourceBundlePlugin">
-              <field name="activityKeyTypeMapping">
-                <map type="java.util.HashMap">
-                  <entry>
-                    <key><string>position_updated</string></key>
-                    <value><string>ProfileUpdatesPublisher.position_updated</string></value>
-                  </entry>
-                  <entry>
-                    <key><string>avatar_updated</string></key>
-                    <value><string>ProfileUpdatesPublisher.avatar_updated</string></value>
-                  </entry>
-                  <entry>
-                    <key><string>basic_info_updated</string></key>
-                    <value><string>ProfileUpdatesPublisher.basic_info_updated</string></value>
-                  </entry>
-                  <entry>
-                    <key><string>contact_section_updated</string></key>
-                    <value><string>ProfileUpdatesPublisher.contact_section_updated</string></value>
-                  </entry>
-                  <entry>
-                    <key><string>experience_section_updated</string></key>
-                    <value><string>ProfileUpdatesPublisher.experience_section_updated</string></value>
-                  </entry>
-                  <entry>
-                    <key><string>aboutMe_section_updated</string></key>
-                    <value><string>ProfileUpdatesPublisher.aboutMe_section_updated</string></value>
-                  </entry>
-                </map>
-              </field>
-            </object>
-          </object-param>
+            <value-param>
+                <name>social.spaces.administrators</name>
+                <value>${social.spaces.administrators:}</value>
+            </value-param>
+            <value-param>
+                <name>social.spaces.creators</name>
+                <value>${social.spaces.creators:}</value>
+            </value-param>
         </init-params>
-      </component-plugin>
-      <component-plugin>
-        <name>SPACE_ACTIVITY</name> <!-- activity type -->
-        <set-method>addActivityResourceBundlePlugin</set-method>
-        <type>org.exoplatform.social.core.processor.ActivityResourceBundlePlugin</type>
-        <init-params>
-          <object-param>
-            <name>locale.social.Core</name> <!-- resource bundle key file -->
-            <description>activity key type resource bundle mapping for space activity</description>
-            <object type="org.exoplatform.social.core.processor.ActivityResourceBundlePlugin">
-              <field name="activityKeyTypeMapping">
-                <map type="java.util.HashMap">
-                  <entry>
-                    <key><string>space_members</string></key>
-                    <value><string>SpaceActivityPublisher.members</string></value>
-                  </entry>
-                  <entry>
-                    <key><string>space_member</string></key>
-                    <value><string>SpaceActivityPublisher.member</string></value>
-                  </entry>
-                </map>
-              </field>
-            </object>
-          </object-param>
-        </init-params>
-      </component-plugin>
-    </component-plugins>
-  </component>
-
-  <component>
-    <key>org.exoplatform.social.core.application.ProfileUpdatesPublisher</key>
-    <type>org.exoplatform.social.core.application.ProfileUpdatesPublisher</type>
-  </component>
-
-  <component>
-    <key>org.exoplatform.social.core.application.RelationshipPublisher</key>
-    <type>org.exoplatform.social.core.application.RelationshipPublisher</type>
-  </component>
-
-  <component>
-    <key>org.exoplatform.social.core.application.SpaceActivityPublisher</key>
-    <type>org.exoplatform.social.core.application.SpaceActivityPublisher</type>
-  </component>
-
-  <component>
-    <key>org.exoplatform.social.core.space.SpaceTemplateStatisticsListenerPlugin</key>
-    <type>org.exoplatform.social.core.space.SpaceTemplateStatisticsListenerPlugin</type>
-  </component>
-  
-  <component>
-    <key>org.exoplatform.social.core.profile.settings.UserProfileSettingsService</key>
-    <type>org.exoplatform.social.core.profile.settings.UserProfileSettingsService</type>
-    <component-plugins>
-      <component-plugin>
-        <name>profile-im-type-defaults</name>
-        <set-method>addIMTypesPlugin</set-method>
-        <type>org.exoplatform.social.core.profile.settings.IMTypesPlugin</type>
-        <init-params>
-          <value-param>
-            <name>gtalk</name>
-            <value>Gtalk</value>
-          </value-param>
-          <value-param>
-            <name>msn</name>
-            <value>MSN</value>
-          </value-param>
-          <value-param>
-            <name>yahoo</name>
-            <value>Yahoo</value>
-          </value-param>
-          <value-param>
-            <name>skype</name>
-            <value>Skype</value>
-          </value-param>
-          <value-param>
-            <name>other</name>
-            <value>Other</value>
-          </value-param>
-        </init-params>
-      </component-plugin>
-    </component-plugins>  
-  </component>
-
-  <external-component-plugins>
-    <target-component>org.exoplatform.services.resources.ResourceBundleService</target-component>
-    <component-plugin>
-      <name>Social Core Component Resource Bundle</name>
-      <set-method>addResourceBundle</set-method>
-      <type>org.exoplatform.services.resources.impl.BaseResourceBundlePlugin</type>
-      <init-params>
-        <values-param>
-          <name>classpath.resources</name>
-          <description>The resources that start with the following package name should be load from file system</description>
-          <value>locale.social.Core</value>
-        </values-param>
-        <values-param>
-          <name>portal.resource.names</name>
-          <description>The resources that start with the following package name should be load from file system</description>
-          <value>locale.social.Core</value>
-        </values-param>
-      </init-params>
-    </component-plugin>
-  </external-component-plugins>
-
-  <external-component-plugins>
-    <target-component>org.exoplatform.services.jcr.RepositoryService</target-component>
-    <component-plugin>
- 		  <name>add.namespaces</name>
- 		  <set-method>addPlugin</set-method>
- 		  <type>org.exoplatform.services.jcr.impl.AddNamespacesPlugin</type>
- 		  <init-params>
- 		    <properties-param>
- 		      <name>namespaces</name>
-          <property name="soc" value="http://www.exoplatform.org/jcr/soc/1.0/"/>
-        </properties-param>
-      </init-params>
- 		</component-plugin>
-    <component-plugin>
-      <name>add.social.nodeType</name>
-      <set-method>addPlugin</set-method>
-      <type>org.exoplatform.services.jcr.impl.AddNodeTypePlugin</type>
-      <init-params>
-        <values-param>
-          <name>autoCreatedInNewRepository</name>
-          <description>Node types configuration file</description>
-          <value>jar:/conf/portal/chromattic-nodetypes.xml</value>
-        </values-param>
-      </init-params>
-    </component-plugin>
-  </external-component-plugins>
-
-  <external-component-plugins>
-    <target-component>org.exoplatform.commons.chromattic.ChromatticManager</target-component>
-    <component-plugin>
-      <name>chromattic</name>
-      <set-method>addLifeCycle</set-method>
-      <type>org.exoplatform.social.common.lifecycle.SocialChromatticLifeCycle</type>
-      <init-params>
-        <value-param>
-          <name>domain-name</name>
-          <value>soc</value>
-        </value-param>
-        <value-param>
-          <name>workspace-name</name>
-          <value>social</value>
-        </value-param>
-        <value-param profiles="all,minimal">
-          <name>workspace-name</name>
-          <value>social</value>
-        </value-param>
-        <values-param>
-          <name>entities</name>
-          <value>org.exoplatform.social.core.chromattic.entity.ProviderRootEntity</value>
-          <value>org.exoplatform.social.core.chromattic.entity.ProviderEntity</value>
-
-          <value>org.exoplatform.social.core.chromattic.entity.DisabledEntity</value>
-          <value>org.exoplatform.social.core.chromattic.entity.IdentityEntity</value>
-          <value>org.exoplatform.social.core.chromattic.entity.ProfileEntity</value>
-          <value>org.exoplatform.social.core.chromattic.entity.ActivityProfileEntity</value>
-
-          <value>org.exoplatform.social.core.chromattic.entity.RelationshipEntity</value>
-          <value>org.exoplatform.social.core.chromattic.entity.RelationshipListEntity</value>
-
-          <value>org.exoplatform.social.core.chromattic.entity.HidableEntity</value>
-          <value>org.exoplatform.social.core.chromattic.entity.LockableEntity</value>
-          <value>org.exoplatform.social.core.chromattic.entity.ActivityEntity</value>
-          <value>org.exoplatform.social.core.chromattic.entity.ActivityListEntity</value>
-          <value>org.exoplatform.social.core.chromattic.entity.ActivityDayEntity</value>
-          <value>org.exoplatform.social.core.chromattic.entity.ActivityMonthEntity</value>
-          <value>org.exoplatform.social.core.chromattic.entity.ActivityYearEntity</value>
-          <value>org.exoplatform.social.core.chromattic.entity.ActivityParameters</value>
-          
-          <value>org.exoplatform.social.core.chromattic.entity.StreamsEntity</value>
-          <value>org.exoplatform.social.core.chromattic.entity.ActivityRefListEntity</value>
-          <value>org.exoplatform.social.core.chromattic.entity.ActivityRefDayEntity</value>
-          <value>org.exoplatform.social.core.chromattic.entity.ActivityRefMonthEntity</value>
-          <value>org.exoplatform.social.core.chromattic.entity.ActivityRefYearEntity</value>
-          <value>org.exoplatform.social.core.chromattic.entity.ActivityRef</value>
-
-          <value>org.exoplatform.social.core.chromattic.entity.SpaceRootEntity</value>
-          <value>org.exoplatform.social.core.chromattic.entity.SpaceEntity</value>
-          <value>org.exoplatform.social.core.chromattic.entity.SpaceListEntity</value>
-          <value>org.exoplatform.social.core.chromattic.entity.SpaceRef</value>
-
-          <value>org.exoplatform.social.core.jpa.updater.ActivityUpdaterEntity</value>
-        </values-param>
-        <properties-param>
-          <name>options</name>
-          <property name="org.chromattic.api.Option.root_node.path" value="/production"/>
-          <property name="org.chromattic.api.Option.root_node.create" value="true"/>
-          <property name="org.chromattic.api.Option.optimize.jcr.has_property.enabled" value="true"/>
-          <property name="org.chromattic.api.Option.optimize.jcr.has_node.enabled" value="true"/>
-        </properties-param>
-      </init-params>
-    </component-plugin>
-  </external-component-plugins>
-  
-  <external-component-plugins>
-    <target-component>org.exoplatform.commons.upgrade.UpgradeProductService</target-component>
-    <component-plugin>
-      <name>SocialModelUpdaterPlugin</name>
-      <set-method>addUpgradePlugin</set-method>
-      <type>org.exoplatform.social.core.updater.SocialModelUpdaterPlugin</type>
-      <description>eXo Social Model Upgrade Updater</description>
-      <init-params>
-        <value-param>
-          <name>product.group.id</name>
-          <description>The groupId of the product</description>
-          <value>org.exoplatform.social</value>
-        </value-param>
-        <value-param>
-          <name>plugin.upgrade.execute.once</name>
-          <description>Execute this upgrade pluginonly once</description>
-          <value>true</value>
-        </value-param>
-        <value-param>
-          <name>plugin.upgrade.target.version</name>
-          <description>Target version of the plugin</description>
-          <value>4.0.2</value>
-        </value-param>
-      </init-params>
-    </component-plugin>
-    <component-plugin>
-      <name>UserActivityStreamUpdaterPlugin</name>
-      <set-method>addUpgradePlugin</set-method>
-      <type>org.exoplatform.social.core.updater.UserActivityStreamUpdaterPlugin</type>
-      <description>eXo Social User Activity Stream Updater</description>
-      <init-params>
-        <value-param>
-          <name>product.group.id</name>
-          <description>The groupId of the product</description>
-          <value>org.exoplatform.social</value>
-        </value-param>
-        <value-param>
-          <name>limit</name>
-          <description>The number of activities will be migrated</description>
-          <value>20</value>
-        </value-param>
-        <value-param>
-          <name>plugin.upgrade.execute.once</name>
-          <description>Execute this upgrade pluginonly once</description>
-          <value>true</value>
-        </value-param>
-        <value-param>
-          <name>plugin.upgrade.target.version</name>
-          <description>Target version of the plugin</description>
-          <value>4.0.2</value>
-        </value-param>
-      </init-params>
-    </component-plugin>
-    <component-plugin>
-      <name>SpaceActivityStreamUpdaterPlugin</name>
-      <set-method>addUpgradePlugin</set-method>
-      <type>org.exoplatform.social.core.updater.SpaceActivityStreamUpdaterPlugin</type>
-      <description>eXo Social Space Activity Stream Updater</description>
-      <init-params>
-        <value-param>
-          <name>product.group.id</name>
-          <description>The groupId of the product</description>
-          <value>org.exoplatform.social</value>
-        </value-param>
-        <value-param>
-          <name>limit</name>
-          <description>The number of activities will be migrated</description>
-          <value>20</value>
-        </value-param>
-        <value-param>
-          <name>plugin.upgrade.execute.once</name>
-          <description>Execute this upgrade pluginonly once</description>
-          <value>true</value>
-        </value-param>
-        <value-param>
-          <name>plugin.upgrade.target.version</name>
-          <description>Target version of the plugin</description>
-          <value>4.0.2</value>
-        </value-param>
-      </init-params>
-    </component-plugin>
-    <component-plugin>
-      <name>EditActivityNotificationSettingsUpgradePlugin</name>
-      <set-method>addUpgradePlugin</set-method>
-      <type>org.exoplatform.social.core.updater.EditActivityNotificationSettingsUpgradePlugin</type>
-      <description>eXo Social Edit Activity Notification Upgrade Updater</description>
-      <init-params>
-        <value-param>
-          <name>product.group.id</name>
-          <description>The groupId of the product</description>
-          <value>org.exoplatform.social</value>
-        </value-param>
-        <value-param>
-          <name>plugin.execution.order</name>
-          <description>The plugin execution order</description>
-          <value>1</value>
-        </value-param>
-        <value-param>
-          <name>plugin.upgrade.execute.once</name>
-          <description>Execute this upgrade plugin only once</description>
-          <value>true</value>
-        </value-param>
-        <value-param>
-          <name>plugin.upgrade.target.version</name>
-          <description>Target version of the plugin</description>
-          <value>5.2.0</value>
-        </value-param>
-        <value-param>
-          <name>plugin.upgrade.async.execution</name>
-          <description>Execute this upgrade asynchronously</description>
-          <value>true</value>
-        </value-param>
-      </init-params>
-    </component-plugin>
-  </external-component-plugins>
-
-  <external-component-plugins>
-    <target-component>org.exoplatform.commons.file.services.NameSpaceService</target-component>
-    <component-plugin>
-      <name>SocialNameSpacePlugin</name>
-      <set-method>addNameSpacePlugin</set-method>
-      <type>org.exoplatform.commons.file.services.NameSpacePlugin</type>
-      <init-params>
-        <properties-param>
-          <name>fileNameSpace.params</name>
-          <property name="name" value="social"/>
-          <property name="description" value="social files storage"/>
-        </properties-param>
-      </init-params>
-    </component-plugin>
-  </external-component-plugins>
-
-  <external-component-plugins>
-    <target-component>org.exoplatform.social.core.space.spi.SpaceService</target-component>
-      <component-plugin>
-        <name>SpaceActivityPublisher</name>
-        <set-method>addSpaceListener</set-method>
+    </component>
+    
+    <component>
+        <key>org.exoplatform.social.core.processor.I18NActivityProcessor</key>
+        <type>org.exoplatform.social.core.processor.I18NActivityProcessor</type>
+        <component-plugins>
+            <component-plugin>
+                <name>exosocial:spaces</name> <!-- activity type -->
+                <set-method>addActivityResourceBundlePlugin</set-method>
+                <type>org.exoplatform.social.core.processor.ActivityResourceBundlePlugin</type>
+                <init-params>
+                    <object-param>
+                        <name>locale.social.Core</name> <!-- resource bundle key file -->
+                        <description>activity key type resource bundle mapping for exosocial:spaces</description>
+                        <object type="org.exoplatform.social.core.processor.ActivityResourceBundlePlugin">
+                            <field name="activityKeyTypeMapping">
+                                <map type="java.util.HashMap">
+                                    <entry>
+                                        <key><string>space_created</string></key>
+                                        <value><string>SpaceActivityPublisher.space_created</string></value>
+                                    </entry>
+                                    <entry>
+                                        <key><string>manager_role_granted</string></key>
+                                        <value><string>SpaceActivityPublisher.manager_role_granted</string></value>
+                                    </entry>
+                                    <entry>
+                                        <key><string>manager_role_revoked</string></key>
+                                        <value><string>SpaceActivityPublisher.manager_role_revoked</string></value>
+                                    </entry>
+                                    <entry>
+                                        <key><string>has_joined</string></key>
+                                        <value><string>SpaceActivityPublisher.has_joined</string></value>
+                                    </entry>
+                                    <entry>
+                                        <key><string>has_left</string></key>
+                                        <value><string>SpaceActivityPublisher.has_left</string></value>
+                                    </entry>
+                                    <entry>
+                                        <key><string>user_joined</string></key>
+                                        <value><string>SpaceActivityPublisher.user_joined</string></value>
+                                    </entry>
+                                    <entry>
+                                        <key><string>member_left</string></key>
+                                        <value><string>SpaceActivityPublisher.member_left</string></value>
+                                    </entry>
+                                    <entry>
+                                        <key><string>space_renamed</string></key>
+                                        <value><string>SpaceActivityPublisher.space_renamed</string></value>
+                                    </entry>
+                                    <entry>
+                                        <key><string>space_description_edited</string></key>
+                                        <value><string>SpaceActivityPublisher.space_description_edited</string></value>
+                                    </entry>
+                                    <entry>
+                                        <key><string>space_avatar_edited</string></key>
+                                        <value><string>SpaceActivityPublisher.space_avatar_edited</string></value>
+                                    </entry>
+                                </map>
+                            </field>
+                        </object>
+                    </object-param>
+                </init-params>
+            </component-plugin>
+            <component-plugin>
+                <name>USER_ACTIVITIES_FOR_SPACE</name> <!-- activity type -->
+                <set-method>addActivityResourceBundlePlugin</set-method>
+                <type>org.exoplatform.social.core.processor.ActivityResourceBundlePlugin</type>
+                <init-params>
+                    <object-param>
+                        <name>locale.social.Core</name> <!-- resource bundle key file -->
+                        <description>activity key type resource bundle mapping for exosocial:spaces</description>
+                        <object type="org.exoplatform.social.core.processor.ActivityResourceBundlePlugin">
+                            <field name="activityKeyTypeMapping">
+                                <map type="java.util.HashMap">
+                                    <entry>
+                                        <key><string>user_joined_public_space</string></key>
+                                        <value><string>SpaceActivityPublisher.member_of_one_or_zero_public_space</string></value>
+                                    </entry>
+                                    <entry>
+                                        <key><string>user_joined_public_spaces</string></key>
+                                        <value><string>SpaceActivityPublisher.member_of_number_public_spaces</string></value>
+                                    </entry>
+                                    <entry>
+                                        <key><string>user_space_joined</string></key>
+                                        <value><string>SpaceActivityPublisher.user_space_joined</string></value>
+                                    </entry>
+                                </map>
+                            </field>
+                        </object>
+                    </object-param>
+                </init-params>
+            </component-plugin>
+            <component-plugin>
+                <name>USER_ACTIVITIES_FOR_RELATIONSHIP</name> <!-- activity type -->
+                <set-method>addActivityResourceBundlePlugin</set-method>
+                <type>org.exoplatform.social.core.processor.ActivityResourceBundlePlugin</type>
+                <init-params>
+                    <object-param>
+                        <name>locale.social.Core</name> <!-- resource bundle key file -->
+                        <description>activity key type resource bundle mapping for relation's activities</description>
+                        <object type="org.exoplatform.social.core.processor.ActivityResourceBundlePlugin">
+                            <field name="activityKeyTypeMapping">
+                                <map type="java.util.HashMap">
+                                    <entry>
+                                        <key><string>user_relations</string></key>
+                                        <value><string>RelationshipPublisher.user_relations</string></value>
+                                    </entry>
+                                </map>
+                            </field>
+                        </object>
+                    </object-param>
+                </init-params>
+            </component-plugin>
+            <component-plugin>
+                <name>USER_COMMENTS_ACTIVITY_FOR_RELATIONSHIP</name> <!-- activity type -->
+                <set-method>addActivityResourceBundlePlugin</set-method>
+                <type>org.exoplatform.social.core.processor.ActivityResourceBundlePlugin</type>
+                <init-params>
+                    <object-param>
+                        <name>locale.social.Core</name> <!-- resource bundle key file -->
+                        <description>activity key type resource bundle mapping for relation's activities</description>
+                        <object type="org.exoplatform.social.core.processor.ActivityResourceBundlePlugin">
+                            <field name="activityKeyTypeMapping">
+                                <map type="java.util.HashMap">
+                                    <entry>
+                                        <key><string>user_relation_confirmed</string></key>
+                                        <value><string>RelationshipPublisher.user_relation_confirmed</string></value>
+                                    </entry>
+                                </map>
+                            </field>
+                        </object>
+                    </object-param>
+                </init-params>
+            </component-plugin>
+            <component-plugin>
+                <name>exosocial:people</name>
+                <set-method>addActivityResourceBundlePlugin</set-method>
+                <type>org.exoplatform.social.core.processor.ActivityResourceBundlePlugin</type>
+                <init-params>
+                    <object-param>
+                        <name>locale.social.Core</name>
+                        <description>activity key type resource bundle mapping for exosocial:people</description>
+                        <object type="org.exoplatform.social.core.processor.ActivityResourceBundlePlugin">
+                            <field name="activityKeyTypeMapping">
+                                <map type="java.util.HashMap">
+                                    <entry>
+                                        <key><string>position_updated</string></key>
+                                        <value><string>ProfileUpdatesPublisher.position_updated</string></value>
+                                    </entry>
+                                    <entry>
+                                        <key><string>avatar_updated</string></key>
+                                        <value><string>ProfileUpdatesPublisher.avatar_updated</string></value>
+                                    </entry>
+                                    <entry>
+                                        <key><string>basic_info_updated</string></key>
+                                        <value><string>ProfileUpdatesPublisher.basic_info_updated</string></value>
+                                    </entry>
+                                    <entry>
+                                        <key><string>contact_section_updated</string></key>
+                                        <value><string>ProfileUpdatesPublisher.contact_section_updated</string></value>
+                                    </entry>
+                                    <entry>
+                                        <key><string>experience_section_updated</string></key>
+                                        <value><string>ProfileUpdatesPublisher.experience_section_updated</string></value>
+                                    </entry>
+                                    <entry>
+                                        <key><string>aboutMe_section_updated</string></key>
+                                        <value><string>ProfileUpdatesPublisher.aboutMe_section_updated</string></value>
+                                    </entry>
+                                </map>
+                            </field>
+                        </object>
+                    </object-param>
+                </init-params>
+            </component-plugin>
+            <component-plugin>
+                <name>USER_PROFILE_ACTIVITY</name>
+                <set-method>addActivityResourceBundlePlugin</set-method>
+                <type>org.exoplatform.social.core.processor.ActivityResourceBundlePlugin</type>
+                <init-params>
+                    <object-param>
+                        <name>locale.social.Core</name>
+                        <description>activity key type resource bundle mapping for USER_PROFILE_ACTIVITY</description>
+                        <object type="org.exoplatform.social.core.processor.ActivityResourceBundlePlugin">
+                            <field name="activityKeyTypeMapping">
+                                <map type="java.util.HashMap">
+                                    <entry>
+                                        <key><string>position_updated</string></key>
+                                        <value><string>ProfileUpdatesPublisher.position_updated</string></value>
+                                    </entry>
+                                    <entry>
+                                        <key><string>avatar_updated</string></key>
+                                        <value><string>ProfileUpdatesPublisher.avatar_updated</string></value>
+                                    </entry>
+                                    <entry>
+                                        <key><string>basic_info_updated</string></key>
+                                        <value><string>ProfileUpdatesPublisher.basic_info_updated</string></value>
+                                    </entry>
+                                    <entry>
+                                        <key><string>contact_section_updated</string></key>
+                                        <value><string>ProfileUpdatesPublisher.contact_section_updated</string></value>
+                                    </entry>
+                                    <entry>
+                                        <key><string>experience_section_updated</string></key>
+                                        <value><string>ProfileUpdatesPublisher.experience_section_updated</string></value>
+                                    </entry>
+                                    <entry>
+                                        <key><string>aboutMe_section_updated</string></key>
+                                        <value><string>ProfileUpdatesPublisher.aboutMe_section_updated</string></value>
+                                    </entry>
+                                </map>
+                            </field>
+                        </object>
+                    </object-param>
+                </init-params>
+            </component-plugin>
+            <component-plugin>
+                <name>SPACE_ACTIVITY</name> <!-- activity type -->
+                <set-method>addActivityResourceBundlePlugin</set-method>
+                <type>org.exoplatform.social.core.processor.ActivityResourceBundlePlugin</type>
+                <init-params>
+                    <object-param>
+                        <name>locale.social.Core</name> <!-- resource bundle key file -->
+                        <description>activity key type resource bundle mapping for space activity</description>
+                        <object type="org.exoplatform.social.core.processor.ActivityResourceBundlePlugin">
+                            <field name="activityKeyTypeMapping">
+                                <map type="java.util.HashMap">
+                                    <entry>
+                                        <key><string>space_members</string></key>
+                                        <value><string>SpaceActivityPublisher.members</string></value>
+                                    </entry>
+                                    <entry>
+                                        <key><string>space_member</string></key>
+                                        <value><string>SpaceActivityPublisher.member</string></value>
+                                    </entry>
+                                </map>
+                            </field>
+                        </object>
+                    </object-param>
+                </init-params>
+            </component-plugin>
+        </component-plugins>
+    </component>
+    
+    <component>
+        <key>org.exoplatform.social.core.application.ProfileUpdatesPublisher</key>
+        <type>org.exoplatform.social.core.application.ProfileUpdatesPublisher</type>
+    </component>
+    
+    <component>
+        <key>org.exoplatform.social.core.application.RelationshipPublisher</key>
+        <type>org.exoplatform.social.core.application.RelationshipPublisher</type>
+    </component>
+    
+    <component>
+        <key>org.exoplatform.social.core.application.SpaceActivityPublisher</key>
         <type>org.exoplatform.social.core.application.SpaceActivityPublisher</type>
-      </component-plugin>
-      <component-plugin>
-        <name>SpaceTemplateStatisticsListenerPlugin</name>
-        <set-method>addSpaceListener</set-method>
+    </component>
+    
+    <component>
+        <key>org.exoplatform.social.core.space.SpaceTemplateStatisticsListenerPlugin</key>
         <type>org.exoplatform.social.core.space.SpaceTemplateStatisticsListenerPlugin</type>
-      </component-plugin>
-
-      <component-plugin>
-        <name>portlets.prefs.required</name>
-        <set-method>setPortletsPrefsRequired</set-method>
-        <type>org.exoplatform.social.core.application.PortletPreferenceRequiredPlugin</type>
-        <init-params>
-          <values-param>
-            <name>portletsPrefsRequired</name>
-            <value>SpaceActivityStreamPortlet</value>
-            <value>SpaceSettingPortlet</value>
-            <value>MembersPortlet</value>
-          </values-param>
-        </init-params>
-      </component-plugin>
-  </external-component-plugins>
-
-  <external-component-plugins>
-    <target-component>org.exoplatform.social.core.space.spi.SpaceTemplateService</target-component>
-    <component-plugin>
-      <name>DefaultSpaceApplicationHandler</name>
-      <set-method>registerSpaceApplicationHandler</set-method>
-      <type>org.exoplatform.social.core.space.impl.DefaultSpaceApplicationHandler</type>
-      <init-params>
-        <value-param>
-          <name>templateName</name>
-          <value>${exo.social.template.default:community}</value>
-        </value-param>
-      </init-params>
-    </component-plugin>
-      <!-- Default applications to be installed when creating a new space -->
-      <component-plugin>
-        <name>Space Template Configuration</name>
-        <set-method>registerSpaceTemplatePlugin</set-method>
-        <type>org.exoplatform.social.core.space.SpaceTemplateConfigPlugin</type>
-        <init-params>
-          <object-param>
-            <name>template</name>
-            <description>Space Template</description>
-            <object type="org.exoplatform.social.core.space.SpaceTemplate">
-              <field name="name"><string>community</string></field>
-              <field name="visibility"><string>private</string></field>
-              <field name="registration"><string>open</string></field>
-              <field name="bannerPath"><string>war:/conf/social-extension/social/space-template/community/banner.png</string></field>
-              <field name="permissions"><string>${exo.social.space.template.community.permissions:*:/platform/users}</string></field>
-              <field name="invitees"><string>${exo.social.space.template.community.invitees:}</string></field>
-              <field name="homePageApplication">
-                <object type="org.exoplatform.social.core.space.SpaceApplication">
-                  <field name="portletApp"><string>social-portlet</string></field>
-                  <field name="portletName"><string>SpaceActivityStreamPortlet</string></field>
-                  <field name="appTitle"><string>Home</string></field>
-                </object>
-              </field>
-              <field name="applications">
-                <collection type="java.util.ArrayList">
-                  <value>
-                    <object type="org.exoplatform.social.core.space.SpaceApplication">
-                      <field name="portletApp"><string>dashboard</string></field>
-                      <field name="portletName"><string>DashboardPortlet</string></field>
-                      <field name="appTitle"><string>Dashboard</string></field>
-                      <field name="removable"><boolean>true</boolean></field>
-                      <field name="order"><int>100</int></field>
-                      <field name="uri"><string>dashboard</string></field>
+    </component>
+    
+    <component>
+        <key>org.exoplatform.social.core.profile.settings.UserProfileSettingsService</key>
+        <type>org.exoplatform.social.core.profile.settings.UserProfileSettingsService</type>
+        <component-plugins>
+            <component-plugin>
+                <name>profile-im-type-defaults</name>
+                <set-method>addIMTypesPlugin</set-method>
+                <type>org.exoplatform.social.core.profile.settings.IMTypesPlugin</type>
+                <init-params>
+                    <value-param>
+                        <name>gtalk</name>
+                        <value>Gtalk</value>
+                    </value-param>
+                    <value-param>
+                        <name>msn</name>
+                        <value>MSN</value>
+                    </value-param>
+                    <value-param>
+                        <name>yahoo</name>
+                        <value>Yahoo</value>
+                    </value-param>
+                    <value-param>
+                        <name>skype</name>
+                        <value>Skype</value>
+                    </value-param>
+                    <value-param>
+                        <name>other</name>
+                        <value>Other</value>
+                    </value-param>
+                </init-params>
+            </component-plugin>
+        </component-plugins>
+    </component>
+    
+    <!-- GroupSpaceBinding service -->
+    <component>
+        <key>org.exoplatform.social.core.binding.spi.GroupSpaceBindingService</key>
+        <type>org.exoplatform.social.core.binding.impl.GroupSpaceBindingServiceImpl</type>
+    </component>
+    
+    <external-component-plugins>
+        <target-component>org.exoplatform.services.resources.ResourceBundleService</target-component>
+        <component-plugin>
+            <name>Social Core Component Resource Bundle</name>
+            <set-method>addResourceBundle</set-method>
+            <type>org.exoplatform.services.resources.impl.BaseResourceBundlePlugin</type>
+            <init-params>
+                <values-param>
+                    <name>classpath.resources</name>
+                    <description>The resources that start with the following package name should be load from file system</description>
+                    <value>locale.social.Core</value>
+                </values-param>
+                <values-param>
+                    <name>portal.resource.names</name>
+                    <description>The resources that start with the following package name should be load from file system</description>
+                    <value>locale.social.Core</value>
+                </values-param>
+            </init-params>
+        </component-plugin>
+    </external-component-plugins>
+    
+    <external-component-plugins>
+        <target-component>org.exoplatform.services.jcr.RepositoryService</target-component>
+        <component-plugin>
+            <name>add.namespaces</name>
+            <set-method>addPlugin</set-method>
+            <type>org.exoplatform.services.jcr.impl.AddNamespacesPlugin</type>
+            <init-params>
+                <properties-param>
+                    <name>namespaces</name>
+                    <property name="soc" value="http://www.exoplatform.org/jcr/soc/1.0/"/>
+                </properties-param>
+            </init-params>
+        </component-plugin>
+        <component-plugin>
+            <name>add.social.nodeType</name>
+            <set-method>addPlugin</set-method>
+            <type>org.exoplatform.services.jcr.impl.AddNodeTypePlugin</type>
+            <init-params>
+                <values-param>
+                    <name>autoCreatedInNewRepository</name>
+                    <description>Node types configuration file</description>
+                    <value>jar:/conf/portal/chromattic-nodetypes.xml</value>
+                </values-param>
+            </init-params>
+        </component-plugin>
+    </external-component-plugins>
+    
+    <external-component-plugins>
+        <target-component>org.exoplatform.commons.chromattic.ChromatticManager</target-component>
+        <component-plugin>
+            <name>chromattic</name>
+            <set-method>addLifeCycle</set-method>
+            <type>org.exoplatform.social.common.lifecycle.SocialChromatticLifeCycle</type>
+            <init-params>
+                <value-param>
+                    <name>domain-name</name>
+                    <value>soc</value>
+                </value-param>
+                <value-param>
+                    <name>workspace-name</name>
+                    <value>social</value>
+                </value-param>
+                <value-param profiles="all,minimal">
+                    <name>workspace-name</name>
+                    <value>social</value>
+                </value-param>
+                <values-param>
+                    <name>entities</name>
+                    <value>org.exoplatform.social.core.chromattic.entity.ProviderRootEntity</value>
+                    <value>org.exoplatform.social.core.chromattic.entity.ProviderEntity</value>
+                    
+                    <value>org.exoplatform.social.core.chromattic.entity.DisabledEntity</value>
+                    <value>org.exoplatform.social.core.chromattic.entity.IdentityEntity</value>
+                    <value>org.exoplatform.social.core.chromattic.entity.ProfileEntity</value>
+                    <value>org.exoplatform.social.core.chromattic.entity.ActivityProfileEntity</value>
+                    
+                    <value>org.exoplatform.social.core.chromattic.entity.RelationshipEntity</value>
+                    <value>org.exoplatform.social.core.chromattic.entity.RelationshipListEntity</value>
+                    
+                    <value>org.exoplatform.social.core.chromattic.entity.HidableEntity</value>
+                    <value>org.exoplatform.social.core.chromattic.entity.LockableEntity</value>
+                    <value>org.exoplatform.social.core.chromattic.entity.ActivityEntity</value>
+                    <value>org.exoplatform.social.core.chromattic.entity.ActivityListEntity</value>
+                    <value>org.exoplatform.social.core.chromattic.entity.ActivityDayEntity</value>
+                    <value>org.exoplatform.social.core.chromattic.entity.ActivityMonthEntity</value>
+                    <value>org.exoplatform.social.core.chromattic.entity.ActivityYearEntity</value>
+                    <value>org.exoplatform.social.core.chromattic.entity.ActivityParameters</value>
+                    
+                    <value>org.exoplatform.social.core.chromattic.entity.StreamsEntity</value>
+                    <value>org.exoplatform.social.core.chromattic.entity.ActivityRefListEntity</value>
+                    <value>org.exoplatform.social.core.chromattic.entity.ActivityRefDayEntity</value>
+                    <value>org.exoplatform.social.core.chromattic.entity.ActivityRefMonthEntity</value>
+                    <value>org.exoplatform.social.core.chromattic.entity.ActivityRefYearEntity</value>
+                    <value>org.exoplatform.social.core.chromattic.entity.ActivityRef</value>
+                    
+                    <value>org.exoplatform.social.core.chromattic.entity.SpaceRootEntity</value>
+                    <value>org.exoplatform.social.core.chromattic.entity.SpaceEntity</value>
+                    <value>org.exoplatform.social.core.chromattic.entity.SpaceListEntity</value>
+                    <value>org.exoplatform.social.core.chromattic.entity.SpaceRef</value>
+                    
+                    <value>org.exoplatform.social.core.jpa.updater.ActivityUpdaterEntity</value>
+                </values-param>
+                <properties-param>
+                    <name>options</name>
+                    <property name="org.chromattic.api.Option.root_node.path" value="/production"/>
+                    <property name="org.chromattic.api.Option.root_node.create" value="true"/>
+                    <property name="org.chromattic.api.Option.optimize.jcr.has_property.enabled" value="true"/>
+                    <property name="org.chromattic.api.Option.optimize.jcr.has_node.enabled" value="true"/>
+                </properties-param>
+            </init-params>
+        </component-plugin>
+    </external-component-plugins>
+    
+    <external-component-plugins>
+        <target-component>org.exoplatform.commons.upgrade.UpgradeProductService</target-component>
+        <component-plugin>
+            <name>SocialModelUpdaterPlugin</name>
+            <set-method>addUpgradePlugin</set-method>
+            <type>org.exoplatform.social.core.updater.SocialModelUpdaterPlugin</type>
+            <description>eXo Social Model Upgrade Updater</description>
+            <init-params>
+                <value-param>
+                    <name>product.group.id</name>
+                    <description>The groupId of the product</description>
+                    <value>org.exoplatform.social</value>
+                </value-param>
+                <value-param>
+                    <name>plugin.upgrade.execute.once</name>
+                    <description>Execute this upgrade pluginonly once</description>
+                    <value>true</value>
+                </value-param>
+                <value-param>
+                    <name>plugin.upgrade.target.version</name>
+                    <description>Target version of the plugin</description>
+                    <value>4.0.2</value>
+                </value-param>
+            </init-params>
+        </component-plugin>
+        <component-plugin>
+            <name>UserActivityStreamUpdaterPlugin</name>
+            <set-method>addUpgradePlugin</set-method>
+            <type>org.exoplatform.social.core.updater.UserActivityStreamUpdaterPlugin</type>
+            <description>eXo Social User Activity Stream Updater</description>
+            <init-params>
+                <value-param>
+                    <name>product.group.id</name>
+                    <description>The groupId of the product</description>
+                    <value>org.exoplatform.social</value>
+                </value-param>
+                <value-param>
+                    <name>limit</name>
+                    <description>The number of activities will be migrated</description>
+                    <value>20</value>
+                </value-param>
+                <value-param>
+                    <name>plugin.upgrade.execute.once</name>
+                    <description>Execute this upgrade pluginonly once</description>
+                    <value>true</value>
+                </value-param>
+                <value-param>
+                    <name>plugin.upgrade.target.version</name>
+                    <description>Target version of the plugin</description>
+                    <value>4.0.2</value>
+                </value-param>
+            </init-params>
+        </component-plugin>
+        <component-plugin>
+            <name>SpaceActivityStreamUpdaterPlugin</name>
+            <set-method>addUpgradePlugin</set-method>
+            <type>org.exoplatform.social.core.updater.SpaceActivityStreamUpdaterPlugin</type>
+            <description>eXo Social Space Activity Stream Updater</description>
+            <init-params>
+                <value-param>
+                    <name>product.group.id</name>
+                    <description>The groupId of the product</description>
+                    <value>org.exoplatform.social</value>
+                </value-param>
+                <value-param>
+                    <name>limit</name>
+                    <description>The number of activities will be migrated</description>
+                    <value>20</value>
+                </value-param>
+                <value-param>
+                    <name>plugin.upgrade.execute.once</name>
+                    <description>Execute this upgrade pluginonly once</description>
+                    <value>true</value>
+                </value-param>
+                <value-param>
+                    <name>plugin.upgrade.target.version</name>
+                    <description>Target version of the plugin</description>
+                    <value>4.0.2</value>
+                </value-param>
+            </init-params>
+        </component-plugin>
+        <component-plugin>
+            <name>EditActivityNotificationSettingsUpgradePlugin</name>
+            <set-method>addUpgradePlugin</set-method>
+            <type>org.exoplatform.social.core.updater.EditActivityNotificationSettingsUpgradePlugin</type>
+            <description>eXo Social Edit Activity Notification Upgrade Updater</description>
+            <init-params>
+                <value-param>
+                    <name>product.group.id</name>
+                    <description>The groupId of the product</description>
+                    <value>org.exoplatform.social</value>
+                </value-param>
+                <value-param>
+                    <name>plugin.execution.order</name>
+                    <description>The plugin execution order</description>
+                    <value>1</value>
+                </value-param>
+                <value-param>
+                    <name>plugin.upgrade.execute.once</name>
+                    <description>Execute this upgrade plugin only once</description>
+                    <value>true</value>
+                </value-param>
+                <value-param>
+                    <name>plugin.upgrade.target.version</name>
+                    <description>Target version of the plugin</description>
+                    <value>5.2.0</value>
+                </value-param>
+                <value-param>
+                    <name>plugin.upgrade.async.execution</name>
+                    <description>Execute this upgrade asynchronously</description>
+                    <value>true</value>
+                </value-param>
+            </init-params>
+        </component-plugin>
+    </external-component-plugins>
+    
+    <external-component-plugins>
+        <target-component>org.exoplatform.commons.file.services.NameSpaceService</target-component>
+        <component-plugin>
+            <name>SocialNameSpacePlugin</name>
+            <set-method>addNameSpacePlugin</set-method>
+            <type>org.exoplatform.commons.file.services.NameSpacePlugin</type>
+            <init-params>
+                <properties-param>
+                    <name>fileNameSpace.params</name>
+                    <property name="name" value="social"/>
+                    <property name="description" value="social files storage"/>
+                </properties-param>
+            </init-params>
+        </component-plugin>
+    </external-component-plugins>
+    
+    <external-component-plugins>
+        <target-component>org.exoplatform.social.core.space.spi.SpaceService</target-component>
+        <component-plugin>
+            <name>SpaceActivityPublisher</name>
+            <set-method>addSpaceListener</set-method>
+            <type>org.exoplatform.social.core.application.SpaceActivityPublisher</type>
+        </component-plugin>
+        <component-plugin>
+            <name>SpaceTemplateStatisticsListenerPlugin</name>
+            <set-method>addSpaceListener</set-method>
+            <type>org.exoplatform.social.core.space.SpaceTemplateStatisticsListenerPlugin</type>
+        </component-plugin>
+        
+        <component-plugin>
+            <name>portlets.prefs.required</name>
+            <set-method>setPortletsPrefsRequired</set-method>
+            <type>org.exoplatform.social.core.application.PortletPreferenceRequiredPlugin</type>
+            <init-params>
+                <values-param>
+                    <name>portletsPrefsRequired</name>
+                    <value>SpaceActivityStreamPortlet</value>
+                    <value>SpaceSettingPortlet</value>
+                    <value>MembersPortlet</value>
+                </values-param>
+            </init-params>
+        </component-plugin>
+    </external-component-plugins>
+    
+    <external-component-plugins>
+        <target-component>org.exoplatform.social.core.space.spi.SpaceTemplateService</target-component>
+        <component-plugin>
+            <name>DefaultSpaceApplicationHandler</name>
+            <set-method>registerSpaceApplicationHandler</set-method>
+            <type>org.exoplatform.social.core.space.impl.DefaultSpaceApplicationHandler</type>
+            <init-params>
+                <value-param>
+                    <name>templateName</name>
+                    <value>${exo.social.template.default:community}</value>
+                </value-param>
+            </init-params>
+        </component-plugin>
+        <!-- Default applications to be installed when creating a new space -->
+        <component-plugin>
+            <name>Space Template Configuration</name>
+            <set-method>registerSpaceTemplatePlugin</set-method>
+            <type>org.exoplatform.social.core.space.SpaceTemplateConfigPlugin</type>
+            <init-params>
+                <object-param>
+                    <name>template</name>
+                    <description>Space Template</description>
+                    <object type="org.exoplatform.social.core.space.SpaceTemplate">
+                        <field name="name"><string>community</string></field>
+                        <field name="visibility"><string>private</string></field>
+                        <field name="registration"><string>open</string></field>
+                        <field name="bannerPath"><string>war:/conf/social-extension/social/space-template/community/banner.png</string></field>
+                        <field name="permissions"><string>${exo.social.space.template.community.permissions:*:/platform/users}</string></field>
+                        <field name="invitees"><string>${exo.social.space.template.community.invitees:}</string></field>
+                        <field name="homePageApplication">
+                            <object type="org.exoplatform.social.core.space.SpaceApplication">
+                                <field name="portletApp"><string>social-portlet</string></field>
+                                <field name="portletName"><string>SpaceActivityStreamPortlet</string></field>
+                                <field name="appTitle"><string>Home</string></field>
+                            </object>
+                        </field>
+                        <field name="applications">
+                            <collection type="java.util.ArrayList">
+                                <value>
+                                    <object type="org.exoplatform.social.core.space.SpaceApplication">
+                                        <field name="portletApp"><string>dashboard</string></field>
+                                        <field name="portletName"><string>DashboardPortlet</string></field>
+                                        <field name="appTitle"><string>Dashboard</string></field>
+                                        <field name="removable"><boolean>true</boolean></field>
+                                        <field name="order"><int>100</int></field>
+                                        <field name="uri"><string>dashboard</string></field>
+                                    </object>
+                                </value>
+                                <value>
+                                    <object type="org.exoplatform.social.core.space.SpaceApplication">
+                                        <field name="portletApp"><string>social-portlet</string></field>
+                                        <field name="portletName"><string>SpaceSettingPortlet</string></field>
+                                        <field name="appTitle"><string>Space Settings</string></field>
+                                        <field name="removable"><boolean>false</boolean></field>
+                                        <field name="order"><int>200</int></field>
+                                        <field name="uri"><string>settings</string></field>
+                                    </object>
+                                </value>
+                                <value>
+                                    <object type="org.exoplatform.social.core.space.SpaceApplication">
+                                        <field name="portletApp"><string>social-portlet</string></field>
+                                        <field name="portletName"><string>MembersPortlet</string></field>
+                                        <field name="appTitle"><string>Members</string></field>
+                                        <field name="removable"><boolean>true</boolean></field>
+                                        <field name="order"><int>300</int></field>
+                                        <field name="uri"><string>members</string></field>
+                                    </object>
+                                </value>
+                            </collection>
+                        </field>
                     </object>
-                  </value>
-                  <value>
-                    <object type="org.exoplatform.social.core.space.SpaceApplication">
-                      <field name="portletApp"><string>social-portlet</string></field>
-                      <field name="portletName"><string>SpaceSettingPortlet</string></field>
-                      <field name="appTitle"><string>Space Settings</string></field>
-                      <field name="removable"><boolean>false</boolean></field>
-                      <field name="order"><int>200</int></field>
-                      <field name="uri"><string>settings</string></field>
-                    </object>
-                  </value>
-                  <value>
-                    <object type="org.exoplatform.social.core.space.SpaceApplication">
-                      <field name="portletApp"><string>social-portlet</string></field>
-                      <field name="portletName"><string>MembersPortlet</string></field>
-                      <field name="appTitle"><string>Members</string></field>
-                      <field name="removable"><boolean>true</boolean></field>
-                      <field name="order"><int>300</int></field>
-                      <field name="uri"><string>members</string></field>
-                    </object>
-                  </value>
-                </collection>
-              </field>
-            </object>
-          </object-param>
-        </init-params>
-      </component-plugin>
-  </external-component-plugins>
-
-  <external-component-plugins>
-    <target-component>org.exoplatform.portal.config.UserACL</target-component>
-    <component-plugin>
-      <name>space_creation_invitation</name>
-      <set-method>addGroupVisibilityPlugin</set-method>
-      <type>org.exoplatform.social.webui.SpaceCreationInvitationGroupVisibilityPlugin</type>
-    </component-plugin>
-  </external-component-plugins>
+                </object-param>
+            </init-params>
+        </component-plugin>
+    </external-component-plugins>
+    
+    <external-component-plugins>
+        <target-component>org.exoplatform.portal.config.UserACL</target-component>
+        <component-plugin>
+            <name>space_creation_invitation</name>
+            <set-method>addGroupVisibilityPlugin</set-method>
+            <type>org.exoplatform.social.webui.SpaceCreationInvitationGroupVisibilityPlugin</type>
+        </component-plugin>
+    </external-component-plugins>
 
 </configuration>
