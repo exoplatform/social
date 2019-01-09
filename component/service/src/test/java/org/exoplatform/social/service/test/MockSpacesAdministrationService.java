@@ -45,9 +45,4 @@ public class MockSpacesAdministrationService implements SpacesAdministrationServ
     return true;
   }
 
-  @Override
-  public boolean checkUsernameInSpaceCreators(String Username) {
-    return false;
-  }
-  
 }
