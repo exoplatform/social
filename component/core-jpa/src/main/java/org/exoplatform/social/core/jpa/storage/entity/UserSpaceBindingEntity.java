@@ -40,7 +40,7 @@ public class UserSpaceBindingEntity implements Serializable {
   @JoinColumn(name = "SPACE_ID", referencedColumnName = "SPACE_ID")
   private SpaceEntity             space;
 
-  @Column(name = "USER")
+  @Column(name = "USERNAME")
   private String                  user;
 
   @ManyToOne(fetch = FetchType.EAGER, optional = false)

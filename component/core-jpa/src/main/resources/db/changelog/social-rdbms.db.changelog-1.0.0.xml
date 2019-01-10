@@ -560,7 +560,7 @@
         <column name="SPACE_ID" type="BIGINT">
           <constraints foreignKeyName="FK_SOC_GROUP_SPACE_BINDING_SPACEID" references="SOC_SPACES(SPACE_ID)" nullable="false"/> 	
         </column>
-        <column name="GROUP" type="NVARCHAR(200)">
+        <column name="GROUP_NAME" type="NVARCHAR(200)">
           <constraints nullable="false"/>
         </column>
         <column name="SPACE_ROLE" type="NVARCHAR(200)">
@@ -577,7 +577,7 @@
         <column name="GROUP_SPACE_BINDING_ID" type="BIGINT">
           <constraints foreignKeyName="FK_SOC_USER_SPACE_BINDING_GROUP" references="SOC_GROUP_SPACE_BINDING(GROUP_SPACE_BINDING_ID)" nullable="false"/> 	
         </column>
-        <column name="USER" type="NVARCHAR(200)">
+        <column name="USERNAME" type="NVARCHAR(200)">
           <constraints nullable="false"/>
         </column>
         <column name="SPACE_ID" type="BIGINT">
@@ -585,10 +585,10 @@
         </column>
     </createTable>
     <createIndex tableName="SOC_GROUP_SPACE_BINDING" indexName="IDX_SOC_GROUP_SPACE_BINDING_01">
-          <column name="GROUP"/>
+          <column name="GROUP_NAME"/>
     </createIndex>
     <createIndex tableName="SOC_USER_SPACE_BINDING" indexName="IDX_SOC_USER_SPACE_BINDING_01">
-          <column name="USER"/>
+          <column name="USERNAME"/>
           <column name="SPACE_ID"/>
     </createIndex>
     <createSequence sequenceName="SEQ_SOC_USER_SPACE_BINDING_ID" startValue="1"/>

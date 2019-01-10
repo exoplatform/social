@@ -59,7 +59,7 @@ public class GroupSpaceBindingEntity implements Serializable {
   @JoinColumn(name = "SPACE_ID", referencedColumnName = "SPACE_ID")
   private SpaceEntity       space;
 
-  @Column(name = "GROUP")
+  @Column(name = "GROUP_NAME")
   private String            group;
 
   @Column(name = "SPACE_ROLE")
