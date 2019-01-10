@@ -27,15 +27,10 @@ import org.exoplatform.social.rest.impl.spacemembership.SpaceMembershipRestResou
 import org.exoplatform.social.rest.impl.spacesadministration.SpacesAdministrationRestResourcesTest;
 import org.exoplatform.social.rest.impl.userrelationship.UsersRelationshipsRestResourcesTest;
 import org.exoplatform.social.rest.impl.users.UserRestResourcesTest;
-import org.exoplatform.social.service.rest.ActivitiesRestServiceTest;
-import org.exoplatform.social.service.rest.IdentityRestServiceTest;
-import org.exoplatform.social.service.rest.notification.IntranetNotificationsRestServiceTest;
-import org.exoplatform.social.service.rest.LinkShareRestServiceTest;
-import org.exoplatform.social.service.rest.NotificationsRestServiceTest;
-import org.exoplatform.social.service.rest.RestCheckerTest;
-import org.exoplatform.social.service.rest.SecurityManagerTest;
-import org.exoplatform.social.service.rest.SpaceRestServiceTest;
+import org.exoplatform.social.service.rest.*;
 import org.exoplatform.social.service.rest.UtilTest;
+import org.exoplatform.social.service.rest.notification.IntranetNotificationsRestServiceTest;
+
 import org.exoplatform.social.service.rest.api.ActivityResourcesTest;
 import org.exoplatform.social.service.rest.api.ActivityStreamResourcesTest;
 import org.exoplatform.social.service.rest.api.IdentityResourcesTest;
@@ -70,7 +65,9 @@ import org.junit.runners.Suite.SuiteClasses;
   SpaceMembershipRestResourcesTest.class,
   SpacesAdministrationRestResourcesTest.class,
   UsersRelationshipsRestResourcesTest.class,
-  UserRestResourcesTest.class
+  UserRestResourcesTest.class,
+  UserRestResourcesTest.class,
+  GroupSpaceBindingRestServiceTest.class
   })
 @ConfigTestCase(AbstractServiceTest.class)
 public class InitContainerTestSuite extends BaseExoContainerTestSuite {

@@ -19,24 +19,24 @@ package org.exoplatform.social.rest.impl.binding;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.annotation.security.RolesAllowed;
-import javax.ws.rs.Path;
-import javax.ws.rs.QueryParam;
+import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
 import org.exoplatform.commons.utils.CommonsUtils;
+import org.exoplatform.services.security.ConversationState;
 import org.exoplatform.social.core.binding.model.GroupSpaceBinding;
 import org.exoplatform.social.core.binding.spi.GroupSpaceBindingService;
+import org.exoplatform.social.core.space.model.Space;
+import org.exoplatform.social.core.space.spi.SpaceService;
 import org.exoplatform.social.rest.api.EntityBuilder;
 import org.exoplatform.social.rest.api.GroupSpaceBindingRestResources;
 import org.exoplatform.social.rest.api.RestUtils;
-import org.exoplatform.social.rest.entity.CollectionEntity;
-import org.exoplatform.social.rest.entity.DataEntity;
-import org.exoplatform.social.rest.entity.GroupSpaceBindingEntity;
-import org.exoplatform.social.rest.entity.SpaceEntity;
+import org.exoplatform.social.rest.entity.*;
 import org.exoplatform.social.service.rest.api.VersionResources;
 
 import io.swagger.annotations.*;
@@ -51,10 +51,19 @@ import io.swagger.annotations.*;
     + "/social/groupspacebinding", description = "API  to manage the binding between a space and an organization group")
 public class GroupSpaceBindingRestResourcesV1 implements GroupSpaceBindingRestResources {
 
-  /**
-   * {@inheritDoc}
-   */
-  @RolesAllowed("administrators")
+    private SpaceService spaceService;
+
+    private GroupSpaceBindingService groupSpaceBindingService;
+
+    public GroupSpaceBindingRestResourcesV1(SpaceService spaceService, GroupSpaceBindingService groupSpaceBindingService) {
+        this.spaceService = spaceService;
+        this.groupSpaceBindingService = groupSpaceBindingService;
+    }
+
+    /**
+    * {@inheritDoc}
+    */
+    @RolesAllowed("users")
     @ApiOperation(value = "Gets list of binding for a space context (space + role in space)",
             httpMethod = "GET",
             response = Response.class,
@@ -70,7 +79,11 @@ public class GroupSpaceBindingRestResourcesV1 implements GroupSpaceBindingRestRe
                                               @ApiParam(value = "Limit", required = false, defaultValue = "20") @QueryParam("limit") int limit,
                                               @ApiParam(value = "Returning the number of spaces found or not", defaultValue = "false") @QueryParam("returnSize") boolean returnSize) throws Exception {
 
-        GroupSpaceBindingService groupSpaceBindingService = CommonsUtils.getService(GroupSpaceBindingService.class);
+        String authenticatedUser = ConversationState.getCurrent().getIdentity().getUserId();
+
+        if(!spaceService.isSuperManager(authenticatedUser)) {
+            throw new WebApplicationException(Response.Status.UNAUTHORIZED);
+        }
 
         List<GroupSpaceBinding> list = null;
 
@@ -90,6 +103,65 @@ public class GroupSpaceBindingRestResourcesV1 implements GroupSpaceBindingRestRe
         }
 
         return EntityBuilder.getResponse(collectionBinding, uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @POST
+    @RolesAllowed("users")
+    @ApiOperation(value = "Save space group bindings",
+            httpMethod = "POST",
+            response = Response.class,
+            notes = "This method update bindings for a specific space if the authenticated user is a spaces super manager")
+    @ApiResponses(value = {
+            @ApiResponse (code = 200, message = "Request fulfilled"),
+            @ApiResponse (code = 500, message = "Internal server error due to data encoding") })
+    public Response saveSpaceBindings(@Context UriInfo uriInfo,
+                                      @ApiParam(value = "SpaceId of the space", required = true)  @QueryParam("spaceId") String spaceId,
+                                      @ApiParam(value = "List of space bindings to be updated", required = true) List<GroupSpaceBindingEntity> groupSpaceBindingEntityList) {
+
+        String authenticatedUser = ConversationState.getCurrent().getIdentity().getUserId();
+
+        if(!spaceService.isSuperManager(authenticatedUser)) {
+            throw new WebApplicationException(Response.Status.UNAUTHORIZED);
+        }
+
+        List<GroupSpaceBinding> groupSpaceBindings = groupSpaceBindingEntityList.stream().
+                map(binding -> new GroupSpaceBinding(binding.getId(),binding.getSpaceId(),binding.getSpaceRole(),binding.getGroup(),binding.getGroupRole())).
+                collect(Collectors.toList());
+
+        groupSpaceBindingService.saveSpaceBindings(spaceId,groupSpaceBindings);
+
+        return EntityBuilder.getResponse("", uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @DELETE
+    @Path("{spaceId}/{spaceRole}")
+    @RolesAllowed("users")
+    @ApiOperation(value = "Deletes all the  binding by space/space role",
+            httpMethod = "DELETE",
+            response = Response.class,
+            notes = "This method delete all the bindings in the following cases the authenticated user is a spaces super manager")
+    @ApiResponses(value = {
+            @ApiResponse (code = 200, message = "Request fulfilled"),
+            @ApiResponse (code = 500, message = "Internal server error"),
+            @ApiResponse (code = 400, message = "Invalid query input") })
+    public Response deleteSpaceBindings(@Context UriInfo uriInfo,
+                                    @ApiParam(value = "spaceId", required = true) @PathParam("spaceId") String spaceId,
+                                    @ApiParam(value = "spaceRole", required = true) @PathParam("spaceRole") String spaceRole
+                                    ) throws Exception {
+        String authenticatedUser = ConversationState.getCurrent().getIdentity().getUserId();
+
+        if(!spaceService.isSuperManager(authenticatedUser)) {
+            throw new WebApplicationException(Response.Status.UNAUTHORIZED);
+        }
+        groupSpaceBindingService.deleteAllSpaceBindings(spaceId,spaceRole);
+
+        return Response.ok().build();
     }
 
 }

@@ -61,22 +61,25 @@ public class RDBMSGroupSpaceBindingStorageImpl implements GroupSpaceBindingStora
     }
 
     @ExoTransactional
-    public void saveBinding(GroupSpaceBinding binding, boolean isNew) throws GroupSpaceBindingStorageException {
+    public GroupSpaceBinding saveBinding(GroupSpaceBinding binding, boolean isNew) throws GroupSpaceBindingStorageException {
+        GroupSpaceBindingEntity entity;
         if (isNew) {
-            groupSpaceBindingDAO.create(buildEntityBindingFrom(binding));
+            entity = groupSpaceBindingDAO.create(buildEntityBindingFrom(binding));
         } else {
             Long id = binding.getId();
-            GroupSpaceBindingEntity entity = groupSpaceBindingDAO.find(id);
+            entity = groupSpaceBindingDAO.find(id);
             if (entity != null) {
                 entity = buildEntityBindingFrom(binding);
+                entity.setId(id);
                 groupSpaceBindingDAO.update(entity);
             }
         }
+        return fillBindingFromEntity(entity);
     }
 
     @ExoTransactional
-    public void deleteBinding(String id) throws GroupSpaceBindingStorageException {
-        groupSpaceBindingDAO.delete(groupSpaceBindingDAO.find(Long.parseLong(id)));
+    public void deleteBinding(long id) throws GroupSpaceBindingStorageException {
+        groupSpaceBindingDAO.delete(groupSpaceBindingDAO.find(id));
     }
 
     /**
@@ -123,7 +126,6 @@ public class RDBMSGroupSpaceBindingStorageImpl implements GroupSpaceBindingStora
      * @param groupSpaceBinding the GroupSpaceBinding object
      */
     private GroupSpaceBindingEntity buildEntityBindingFrom(GroupSpaceBinding groupSpaceBinding) {
-        LOG.info("Generating identity "+ groupSpaceBinding.getId()+" " + groupSpaceBinding.getGroup()+ " " + groupSpaceBinding.getGroupRole()+  " "+ groupSpaceBinding.getSpaceId() + " " + groupSpaceBinding.getSpaceRole());
         GroupSpaceBindingEntity groupSpaceBindingEntity = new GroupSpaceBindingEntity();
         groupSpaceBindingEntity.setGroup(groupSpaceBinding.getGroup());
         groupSpaceBindingEntity.setGroupRole(groupSpaceBinding.getGroupRole());

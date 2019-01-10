@@ -17,11 +17,13 @@
 
 package org.exoplatform.social.rest.api;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.QueryParam;
+import org.exoplatform.social.rest.entity.GroupSpaceBindingEntity;
+
+import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
+import java.util.List;
 
 /**
  * Provides REST/JSON API  to manage the binding between a space and an organization group.
@@ -48,4 +50,34 @@ public interface GroupSpaceBindingRestResources extends SocialRest{
                                                        @QueryParam("offset") int offset,
                                                        @QueryParam("limit") int limit,
                                                        @QueryParam("returnSize") boolean returnSize) throws Exception;
+
+
+    /**
+     * Return a list of binding in json format
+     *
+     * @param uriInfo
+     * @param spaceId Id of the space
+     * @param groupSpaceBindingEntityList list of bindings to be created for the space
+     * @return Status
+     * @throws Exception
+     */
+    @POST
+    public abstract Response saveSpaceBindings(@Context UriInfo uriInfo,
+                                                       @QueryParam("spaceId") String spaceId,
+                                                       List<GroupSpaceBindingEntity> groupSpaceBindingEntityList) throws Exception;
+
+
+    /**
+     * Deletes all the  binding by space/space role
+     *
+     * @param uriInfo
+     * @param spaceId Id of the space
+     * @param spaceRole Role in the space (member/manager)
+     * @return Status
+     * @throws Exception
+     */
+    @DELETE
+    public abstract Response deleteSpaceBindings(@Context UriInfo uriInfo,
+                                               @PathParam("spaceId") String spaceId,
+                                               @PathParam("spaceRole") String spaceRole) throws Exception;
 }
