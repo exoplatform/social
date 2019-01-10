@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="uiSearchInput">
-      <input v-model="search" class="showInputSearch" type="text" placeholder="search here" @keyup.enter="searchSpaces()"/>
+      <input v-model="search" :placeholder="$t('exoplatform.manage.spaces.search')" class="showInputSearch" type="text" @keyup.enter="searchSpaces()"/>
       <a data-original-title="Search" class="advancedSearch" rel="tooltip" data-placement="bottom" href="#">
         <i class="uiIconPLF24x24Search" @click="searchSpaces()"></i>
       </a>
@@ -14,7 +14,7 @@
         <th>
           {{ $t('exoplatform.manage.spaces.description') }}
         </th>
-        <th>
+        <th class="actions">
           {{ $t('exoplatform.manage.spaces.actions') }}
         </th>
       </tr>

@@ -8,7 +8,7 @@
         <th>
           {{ $t('exoplatform.permission.spaces.groups') }}
         </th>
-        <th>
+        <th class="actions">
           {{ $t('exoplatform.manage.spaces.actions') }}
         </th>
       </tr>
@@ -21,7 +21,7 @@
                 <h5>{{ creator }}</h5>
               </div>
             </div>
-            <h5 v-if="creators.length === 0">{{ $t('exoplatform.permission.spaces.noAssignement') }}</h5>
+            <h5 v-if="creators.length === 0 && displayNoAssignementCreators">{{ $t('exoplatform.permission.spaces.noAssignement') }}</h5>
           </div>
           <div v-show="!spacesCreatorsEditMode" class="inputUser">
             <input id="add-creators-suggester" type="text"/>
@@ -50,7 +50,7 @@
                 <h5>{{ administrator }}</h5>
               </div>
             </div>
-            <h5 v-if="administrators.length === 0">{{ $t('exoplatform.permission.spaces.noAssignement') }}</h5>
+            <h5 v-if="administrators.length === 0 && displayNoAssignementAdministrators">{{ $t('exoplatform.permission.spaces.noAssignement') }}</h5>
           </div>
           <div v-show="!spacesAdministratorsEditMode" class="inputUser">
             <input id="add-administrators-suggester" type="text"/>
@@ -85,7 +85,9 @@ export default {
       index: 0,
       settingValue: '',
       creatorsPermissions: null,
-      administratorsPermissions: null
+      administratorsPermissions: null,
+      displayNoAssignementCreators: false,
+      displayNoAssignementAdministrators: false
     };
   },
   created() {
@@ -171,6 +173,9 @@ export default {
         }
         this.initSuggesterSpacesCreators();
       });
+      setTimeout(() => {
+        this.displayNoAssignementCreators = true;
+      }, 1000);
     },
     initSuggesterSpacesAdministrators() {
       const suggesterContainer = $('#add-administrators-suggester');
@@ -271,6 +276,9 @@ export default {
         }
         this.initSuggesterSpacesAdministrators();
       });
+      setTimeout(() => {
+        this.displayNoAssignementAdministrators = true;
+      }, 1000);
     },
     editCreateSpace(){
       if(this.spacesCreatorsEditMode) {
