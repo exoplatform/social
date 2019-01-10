@@ -51,11 +51,13 @@ public class GroupSpaceBindingServiceImpl implements GroupSpaceBindingService {
     return groupSpaceBindingStorage.findSpaceBindings(spaceId, role);
   }
 
-  /**public void saveBinding(GroupSpaceBinding groupSpaceBinding, Boolean isNew) {
-    groupSpaceBindingStorage.saveBinding(groupSpaceBinding, true);
+  public void saveSpaceBindings(String spaceId,List<GroupSpaceBinding> groupSpaceBindings) {
+      for (GroupSpaceBinding groupSpaceBinding : groupSpaceBindings) {
+          groupSpaceBindingStorage.saveBinding(groupSpaceBinding, true);
+      }
   }
 
   public void deleteBinding(GroupSpaceBinding groupSpaceBinding) {
     groupSpaceBindingStorage.deleteBinding(Long.toString(groupSpaceBinding.getId()));
-  }*/
+  }
 }

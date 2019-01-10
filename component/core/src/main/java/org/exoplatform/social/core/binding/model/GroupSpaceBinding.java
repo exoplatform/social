@@ -37,6 +37,17 @@ public class GroupSpaceBinding {
   /** The group role */
   private String groupRole;
 
+  public GroupSpaceBinding() {
+  }
+
+  public GroupSpaceBinding(String id,String spaceId, String spaceRole,String group, String groupRole) {
+        this.id = Long.parseLong(id);
+        this.spaceId = spaceId;
+        this.spaceRole = spaceRole;
+        this.group = group;
+        this.groupRole = groupRole;
+  }
+
   public long getId() {
     return id;
   }

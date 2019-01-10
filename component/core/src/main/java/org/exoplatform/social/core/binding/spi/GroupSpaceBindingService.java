@@ -37,17 +37,19 @@ public interface GroupSpaceBindingService {
   List<GroupSpaceBinding> findSpaceBindings(String spaceId, String role);
 
     /**
-     * Creates a new space: creating a group, its group navigation with pages for installing space applications.
+     * Saves a list of group binding for a specific space.
      *
-     * @param groupSpaceBinding The binding to be created.
-     * @param isNew New binding?
+     * @param spaceId The space Id.
+     * @param groupSpaceBindings The list of bindings to be created for the space.
+     */
 
-    void saveBinding(GroupSpaceBinding groupSpaceBinding, Boolean isNew);*/
+    void saveSpaceBindings(String spaceId,List<GroupSpaceBinding> groupSpaceBindings);
 
     /**
-     * Deletes a space. When a space is deleted, all of its page navigations and its group will be deleted.
+     * Delete a group binding. When a binding is deleted, all user in the group will be remove from space.
      *
      * @param groupSpaceBinding The binding to be deleted.
+     */
 
-    void deleteBinding(GroupSpaceBinding groupSpaceBinding);*/
+    void deleteBinding(GroupSpaceBinding groupSpaceBinding);
 }
