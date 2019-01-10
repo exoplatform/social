@@ -45,7 +45,7 @@ public interface GroupSpaceBindingStorage {
    * @param isNew
    * @throws GroupSpaceBindingStorageException
    */
-  void saveBinding(GroupSpaceBinding binding, boolean isNew) throws GroupSpaceBindingStorageException;
+  GroupSpaceBinding saveBinding(GroupSpaceBinding binding, boolean isNew) throws GroupSpaceBindingStorageException;
 
   /**
    * Deletes a binding by binding id.
@@ -53,5 +53,5 @@ public interface GroupSpaceBindingStorage {
    * @param id
    * @throws GroupSpaceBindingStorageException
    */
-  void deleteBinding(String id) throws GroupSpaceBindingStorageException;
+  void deleteBinding(long id) throws GroupSpaceBindingStorageException;
 }
