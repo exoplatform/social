@@ -830,7 +830,8 @@ public class EntityBuilder {
    */
   public static GroupSpaceBindingEntity buildEntityFromGroupSpaceBinding(GroupSpaceBinding binding) {
     GroupSpaceBindingEntity groupSpaceBindingEntity = new GroupSpaceBindingEntity();
-    groupSpaceBindingEntity.setSpaceId(Long.toString(binding.getId()));
+    groupSpaceBindingEntity.setId(Long.toString(binding.getId()));
+    groupSpaceBindingEntity.setSpaceId(binding.getSpaceId());
     groupSpaceBindingEntity.setGroup(binding.getGroup());
     groupSpaceBindingEntity.setSpaceRole(binding.getSpaceRole());
     groupSpaceBindingEntity.setGroupRole(binding.getGroupRole());
