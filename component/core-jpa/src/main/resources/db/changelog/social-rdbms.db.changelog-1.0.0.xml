@@ -552,7 +552,7 @@
     <addPrimaryKey tableName="SOC_IDENTITY_EXPERIENCES" columnNames="EXPERIENCE_ID"></addPrimaryKey>
   </changeSet>
     
-   <changeSet author="social" id="1.0.0-60">
+   <changeSet author="social" id="1.0.0-61">
     <createTable tableName="SOC_GROUP_SPACE_BINDING">
         <column name="GROUP_SPACE_BINDING_ID" type="BIGINT" autoIncrement="${autoIncrement}" startWith="1">
         <constraints nullable="false" primaryKey="true" primaryKeyName="PK_GROUP_SPACE_BINDING_ID"/>
