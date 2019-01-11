@@ -24,7 +24,7 @@
                 <h5>{{ creator }}</h5>
               </div>
             </div>
-            <h5 v-if="creators.length === 0 && displayNoAssignementCreators">{{ $t('social.spaces.administration.permissions.noAssignment') }}</h5>
+            <h5 v-if="creators.length === 0 && displayNoAssignmentCreators">{{ $t('social.spaces.administration.permissions.noAssignment') }}</h5>
           </div>
           <div v-show="!spacesCreatorsEditMode" class="inputUser">
             <input id="add-creators-suggester" type="text"/>
@@ -56,7 +56,7 @@
                 <h5>{{ administrator }}</h5>
               </div>
             </div>
-            <h5 v-if="administrators.length === 0 && displayNoAssignementAdministrators">{{ $t('social.spaces.administration.permissions.noAssignment') }}</h5>
+            <h5 v-if="administrators.length === 0 && displayNoAssignmentAdministrators">{{ $t('social.spaces.administration.permissions.noAssignment') }}</h5>
           </div>
           <div v-show="!spacesAdministratorsEditMode" class="inputUser">
             <input id="add-administrators-suggester" type="text"/>
@@ -177,11 +177,9 @@ export default {
         if(data) {
           this.creatorsPermissions = data.memberships;
         }
+        this.displayNoAssignmentCreators = true;
         this.initSuggesterSpacesCreators();
       });
-      setTimeout(() => {
-        this.displayNoAssignmentCreators = true;
-      }, 1000);
     },
     initSuggesterSpacesAdministrators() {
       const suggesterContainer = $('#add-administrators-suggester');
@@ -280,11 +278,9 @@ export default {
         if(data) {
           this.administratorsPermissions = data.memberships;
         }
+        this.displayNoAssignmentAdministrators = true;
         this.initSuggesterSpacesAdministrators();
       });
-      setTimeout(() => {
-        this.displayNoAssignmentAdministrators = true;
-      }, 1000);
     },
     editCreateSpace(){
       if(this.spacesCreatorsEditMode) {

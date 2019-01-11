@@ -4,7 +4,7 @@ import {spaceConstants} from './spaceAdministrationConstants.js';
 const lang = typeof eXo !== 'undefined' ? eXo.env.portal.language : 'en';
 
 // should expose the locale ressources as REST API 
-const url = `${spaceConstants.PORTAL}/${spaceConstants.PORTAL_REST}/i18n/bundle/locale.social.Webui-${lang}.json`;
+const url = `${spaceConstants.PORTAL}/${spaceConstants.PORTAL_REST}/i18n/bundle/locale.portlet.social.SpacesAdministrationPortlet-${lang}.json`;
 
 // get overrided components if exists
 if (extensionRegistry) {

@@ -35,13 +35,20 @@ import org.exoplatform.social.service.rest.api.models.ActivityRestIn;
 
 public interface SpaceRestResources extends SocialRest {
 
-  /**
-   * Process to return a list of space in json format
-   * 
-   * @param uriInfo
-   * @return
-   * @throws Exception
-   */
+/**
+ * Process to return a list of space in json format
+ * 
+ * @param uriInfo
+ * @param q
+ * @param offset
+ * @param limit
+ * @param sortBy
+ * @param orderBy
+ * @param returnSize
+ * @param expand
+ * @return
+ * @throws Exception
+ */
   @GET
   public abstract Response getSpaces(@Context UriInfo uriInfo,
                                      @QueryParam("q") String q,
