@@ -3,17 +3,20 @@
     <table class="uiGrid table table-hover table-striped">
       <tr>          
         <th>
-          {{ $t('exoplatform.permission.spaces.permissions') }}
+          {{ $t('social.spaces.administration.permissions') }}
         </th>
         <th>
-          {{ $t('exoplatform.permission.spaces.groups') }}
+          {{ $t('social.spaces.administration.permissions.groups') }}
         </th>
         <th class="actions">
-          {{ $t('exoplatform.manage.spaces.actions') }}
+          {{ $t('social.spaces.administration.permissions.actions') }}
         </th>
       </tr>
       <tr>
-        <td><h5 class="title">{{ $t('exoplatform.permission.spaces.createSpace') }}</h5> <h5>{{ $t('exoplatform.permission.spaces.descriptionCreateSpace') }}</h5></td>
+        <td>
+          <h5 class="title">{{ $t('social.spaces.administration.permissions.createSpace') }}</h5>
+          <h5>{{ $t('social.spaces.administration.permissions.descriptionCreateSpace') }}</h5>
+        </td>
         <td>
           <div v-show="spacesCreatorsEditMode">
             <div v-if="creators.length > 0">
@@ -21,7 +24,7 @@
                 <h5>{{ creator }}</h5>
               </div>
             </div>
-            <h5 v-if="creators.length === 0 && displayNoAssignementCreators">{{ $t('exoplatform.permission.spaces.noAssignement') }}</h5>
+            <h5 v-if="creators.length === 0 && displayNoAssignementCreators">{{ $t('social.spaces.administration.permissions.noAssignement') }}</h5>
           </div>
           <div v-show="!spacesCreatorsEditMode" class="inputUser">
             <input id="add-creators-suggester" type="text"/>
@@ -42,7 +45,10 @@
         </td>       
       </tr>
       <tr>
-        <td><h5 class="title">{{ $t('exoplatform.permission.spaces.manageSpace') }}</h5> <h5>{{ $t('exoplatform.permission.spaces.descriptionManageSpace') }}</h5></td>
+        <td>
+          <h5 class="title">{{ $t('social.spaces.administration.permissions.manageSpaces') }}</h5>
+          <h5>{{ $t('social.spaces.administration.permissions.descriptionManageSpaces') }}</h5>
+        </td>
         <td>
           <div v-show="spacesAdministratorsEditMode">
             <div v-if="administrators.length > 0">
@@ -50,7 +56,7 @@
                 <h5>{{ administrator }}</h5>
               </div>
             </div>
-            <h5 v-if="administrators.length === 0 && displayNoAssignementAdministrators">{{ $t('exoplatform.permission.spaces.noAssignement') }}</h5>
+            <h5 v-if="administrators.length === 0 && displayNoAssignementAdministrators">{{ $t('social.spaces.administration.permissions.noAssignement') }}</h5>
           </div>
           <div v-show="!spacesAdministratorsEditMode" class="inputUser">
             <input id="add-administrators-suggester" type="text"/>

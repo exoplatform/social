@@ -3,10 +3,10 @@
     <div class="uiTabNormal uiTabInPage">
       <ul class="nav nav-tabs">
         <li :class="{active: activeTab === 1}" @click="activeTab=1">
-          <a data-toggle="tab">{{ $t('exoplatform.permission.spaces.manageSpace') }}</a>
+          <a data-toggle="tab">{{ $t('social.spaces.administration.manageSpaces') }}</a>
         </li>
         <li :class="{active: activeTab === 2}" @click="activeTab=2" >
-          <a data-toggle="tab">{{ $t('exoplatform.permission.spaces.permissions') }}</a>
+          <a data-toggle="tab">{{ $t('social.spaces.administration.permissions') }}</a>
         </li>
       </ul> 
       <div class="tab-content">

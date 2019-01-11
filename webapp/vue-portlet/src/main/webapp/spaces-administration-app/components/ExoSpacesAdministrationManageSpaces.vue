@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="uiSearchInput">
-      <input v-model="search" :placeholder="$t('exoplatform.manage.spaces.search')" class="showInputSearch" type="text" @keyup.enter="searchSpaces()"/>
+      <input v-model="search" :placeholder="$t('social.spaces.administration.manageSpaces.search')" class="showInputSearch" type="text" @keyup.enter="searchSpaces()"/>
       <a data-original-title="Search" class="advancedSearch" rel="tooltip" data-placement="bottom" href="#">
         <i class="uiIconPLF24x24Search" @click="searchSpaces()"></i>
       </a>
@@ -9,17 +9,17 @@
     <table class="uiGrid table table-hover table-striped">
       <tr>          
         <th>
-          {{ $t('exoplatform.manage.spaces.space') }}
+          {{ $t('social.spaces.administration.manageSpaces.space') }}
         </th>
         <th>
-          {{ $t('exoplatform.manage.spaces.description') }}
+          {{ $t('social.spaces.administration.manageSpaces.description') }}
         </th>
         <th class="actions">
-          {{ $t('exoplatform.manage.spaces.actions') }}
+          {{ $t('social.spaces.administration.manageSpaces.actions') }}
         </th>
       </tr>
       <tr v-if="spaces.length === 0"> 
-        <td class="empty center" colspan="12"> {{ $t('exoplatform.manage.spaces.emptyData') }} </td>
+        <td class="empty center" colspan="12"> {{ $t('social.spaces.administration.manageSpaces.noSpaces') }} </td>
       </tr>
       <tr v-for="(space, index) in spaces" :key="space.id">
         <td><img v-if="space.avatarUrl != null" :src="space.avatarUrl" class="avatar" /> <img v-else :src="avatar" class="avatar" />  {{ space.displayName }}</td>
@@ -52,10 +52,10 @@
       </ul>
     </div> 
     <exo-modal v-show="showConfirmMessageModal" :title="ConfirmationDeleteMessage" @modal-closed="closeModal">
-      <h3>{{ $t('exoplatform.modal.confirmation.delete') }}</h3>
+      <h3>{{ $t('social.spaces.administration.delete.spaces.confirm') }}</h3>
       <div class="uiAction uiActionBorder">
-        <div class="btn btn-primary" @click="confirmDelete">{{ $t('exoplatform.modal.button.delete') }}</div>
-        <div class="btn" @click="closeModal">{{ $t('exoplatform.modal.button.annuler') }}</div>
+        <div class="btn btn-primary" @click="confirmDelete">{{ $t('social.spaces.administration.delete.spaces.button.delete') }}</div>
+        <div class="btn" @click="closeModal">{{ $t('social.spaces.administration.delete.spaces.button.cancel') }}</div>
       </div>
     </exo-modal>
   </div>  

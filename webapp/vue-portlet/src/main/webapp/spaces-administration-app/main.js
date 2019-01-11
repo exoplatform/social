@@ -1,9 +1,10 @@
 import './components/initComponents.js';
+import {spaceConstants} from './spaceAdministrationConstants.js';
 // getting language of the PLF 
 const lang = typeof eXo !== 'undefined' ? eXo.env.portal.language : 'en';
 
 // should expose the locale ressources as REST API 
-const url = '/social-vue-portlet/spaces-administration-app/locale_en.json';
+const url = `${spaceConstants.PORTAL}/${spaceConstants.PORTAL_REST}/i18n/bundle/locale.social.Webui-${lang}.json`;
 
 // get overrided components if exists
 if (extensionRegistry) {
