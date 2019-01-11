@@ -5,7 +5,7 @@ export function getSpaces(){
 }
 
 export function searchSpaces(search){
-  return fetch(`${spaceConstants.SOCIAL_SPACE_API}?q=${search}&limit=${spaceConstants.SPACES_PER_PAGE}`, {credentials: 'include'}).then(resp => resp.json());
+  return fetch(`${spaceConstants.SOCIAL_SPACE_API}?q=${search}&limit=${spaceConstants.SPACES_PER_PAGE}&returnSize=true`, {credentials: 'include'}).then(resp => resp.json());
 }
 
 export function getSpacesPerPage(offset){

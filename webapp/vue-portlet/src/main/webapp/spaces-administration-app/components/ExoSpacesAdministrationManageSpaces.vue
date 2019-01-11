@@ -84,7 +84,7 @@ export default {
     initSpaces() {
       spaceAdministrationServices.getSpaces().then(data =>{
         this.spaces = data.spaces;
-        this.totalPages = Math.ceil(data.size/spaceAdministrationConstants.spaceConstants.SPACES_PER_PAGE);
+        this.totalPages = Math.ceil(data.size / spaceAdministrationConstants.spaceConstants.SPACES_PER_PAGE);
       });
     },
     getSpacesPerPage(currentPage) {
@@ -111,7 +111,7 @@ export default {
     searchSpaces(){
       spaceAdministrationServices.searchSpaces(this.searchText).then(data =>{
         this.spaces = data.spaces;
-        this.totalPages = Math.ceil(this.spaces.length / spaceAdministrationConstants.spaceConstants.SPACES_PER_PAGE);
+        this.totalPages = Math.ceil(data.size / spaceAdministrationConstants.spaceConstants.SPACES_PER_PAGE);
       });
     },
     closeModal(){
