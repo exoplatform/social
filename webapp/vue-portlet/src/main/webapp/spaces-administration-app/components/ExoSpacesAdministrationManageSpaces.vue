@@ -51,7 +51,7 @@
         </li>
       </ul>
     </div> 
-    <exo-modal v-show="showConfirmMessageModal" :title="ConfirmationDeleteMessage" @modal-closed="closeModal">
+    <exo-modal v-show="showConfirmMessageModal" :title="$t('social.spaces.administration.delete.spaces.confirm.title')" @modal-closed="closeModal">
       <h3>{{ $t('social.spaces.administration.delete.spaces.confirm') }}</h3>
       <div class="uiAction uiActionBorder">
         <div class="btn btn-primary" @click="confirmDelete">{{ $t('social.spaces.administration.delete.spaces.button.delete') }}</div>
@@ -67,7 +67,6 @@ import * as spaceAdministrationConstants from '../spaceAdministrationConstants';
 export default {
   data() {
     return {
-      ConfirmationDeleteMessage: 'Confirmation',
       showConfirmMessageModal: false,
       spaces: [],
       id: null,
