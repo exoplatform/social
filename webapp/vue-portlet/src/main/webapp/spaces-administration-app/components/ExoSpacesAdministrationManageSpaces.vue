@@ -35,14 +35,14 @@
       </tr>
     </table> 
     <div v-if="totalPages > 1" class="pagination uiPageIterator">
-      <ul>
+      <ul class="pull-right">
         <li :class="{'disabled': currentPage === 1}">
           <a data-placement="bottom" rel="tooltip" href="#" data-original-title="Previous Page" @click="getSpacesPerPage(currentPage-1)">
             <i class="uiIconPrevArrow"></i>
           </a>
         </li>
-        <li v-for="i in totalPages" :key="i">
-          <a :class="{'active': currentPage === i}" href="#" @click="getSpacesPerPage(i)">{{ i }}</a>
+        <li v-for="i in totalPages" :key="i" :class="{'active': currentPage === i}">
+          <a href="#" @click="getSpacesPerPage(i)">{{ i }}</a>
         </li>
         <li :class="[currentPage === totalPages ? 'disabled': '' ]">
           <a data-placement="bottom" rel="tooltip" href="#" data-original-title="Next Page" @click="getSpacesPerPage(currentPage+1)">
