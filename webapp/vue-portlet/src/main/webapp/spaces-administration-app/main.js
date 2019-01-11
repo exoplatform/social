@@ -6,6 +6,20 @@ const lang = typeof eXo !== 'undefined' ? eXo.env.portal.language : 'en';
 // should expose the locale ressources as REST API 
 const url = `${spaceConstants.PORTAL}/${spaceConstants.PORTAL_REST}/i18n/bundle/locale.portlet.social.SpacesAdministrationPortlet-${lang}.json`;
 
+Vue.directive('exo-tooltip', function (el, binding) {
+  const element = $(el);
+  const placement = Object.keys(binding.modifiers)[0];
+  const container = Object.keys(binding.modifiers)[1];
+  element.attr('data-original-title', binding.value);
+  if (placement) {
+    element.attr('data-placement', placement);
+  }
+  if (container) {
+    element.attr('data-container', container);
+  }
+  element.tooltip();
+});
+
 // get overrided components if exists
 if (extensionRegistry) {
   const components = extensionRegistry.loadComponents('SpacesAdministration');

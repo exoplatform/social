@@ -2,7 +2,7 @@
   <div>
     <div class="uiSearchInput">
       <input v-model="searchText" :placeholder="$t('social.spaces.administration.manageSpaces.search')" class="showInputSearch" type="text" @keyup.enter="searchSpaces()"/>
-      <a data-original-title="Search" class="advancedSearch" rel="tooltip" data-placement="bottom" href="#">
+      <a v-exo-tooltip.bottom.body="Search" class="advancedSearch" href="#">
         <i class="uiIconPLF24x24Search" @click="searchSpaces()"></i>
       </a>
     </div>
@@ -25,10 +25,10 @@
         <td><img v-if="space.avatarUrl != null" :src="space.avatarUrl" class="avatar" /> <img v-else :src="avatar" class="avatar" />  {{ space.displayName }}</td>
         <td>{{ space.description }}</td>
         <td class="center actionContainer" >
-          <a :href="getSpaceLinkSetting(space.displayName)" target="_blank" data-placement="bottom" rel="tooltip" class="actionIcon" data-original-title="Edit" >
+          <a v-exo-tooltip.bottom.body="$t('social.spaces.administration.manageSpaces.actions.edit')" :href="getSpaceLinkSetting(space.displayName)" target="_blank">
             <i class="uiIconEdit uiIconLightGray"></i>
           </a>
-          <a data-placement="bottom" rel="tooltip" class="actionIcon" data-original-title="Delete" @click="deleteSpaceById(space.id, index)">
+          <a v-exo-tooltip.bottom.body="$t('social.spaces.administration.manageSpaces.actions.delete')" class="actionIcon" @click="deleteSpaceById(space.id, index)">
             <i class="uiIconDeleteUser uiIconLightGray"></i>
           </a>
         </td>
@@ -37,7 +37,7 @@
     <div v-if="totalPages > 1" class="pagination uiPageIterator">
       <ul class="pull-right">
         <li :class="{'disabled': currentPage === 1}">
-          <a data-placement="bottom" rel="tooltip" href="#" data-original-title="Previous Page" @click="getSpacesPerPage(currentPage-1)">
+          <a v-exo-tooltip.bottom.body="$t('social.spaces.administration.manageSpaces.pagination.previous')" href="#" @click="getSpacesPerPage(currentPage-1)">
             <i class="uiIconPrevArrow"></i>
           </a>
         </li>
@@ -45,7 +45,7 @@
           <a href="#" @click="getSpacesPerPage(i)">{{ i }}</a>
         </li>
         <li :class="[currentPage === totalPages ? 'disabled': '' ]">
-          <a data-placement="bottom" rel="tooltip" href="#" data-original-title="Next Page" @click="getSpacesPerPage(currentPage+1)">
+          <a v-exo-tooltip.bottom.body="$t('social.spaces.administration.manageSpaces.pagination.next')" href="#" @click="getSpacesPerPage(currentPage+1)">
             <i class="uiIconNextArrow"></i>
           </a>
         </li>

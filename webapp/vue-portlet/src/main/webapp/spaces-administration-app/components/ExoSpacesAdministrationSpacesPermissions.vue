@@ -31,15 +31,15 @@
           </div>
         </td>
         <td v-if="!spacesCreatorsEditMode" class="center actionContainer" >
-          <a data-placement="bottom" rel="tooltip" class="actionIcon" data-original-title="Edit" @click="editCreateSpace()">
+          <a v-exo-tooltip.bottom.body="$t('social.spaces.administration.permissions.actions.edit')" class="actionIcon" @click="editCreateSpace()">
             <i class="uiIconEdit uiIconLightGray"></i>
           </a>
         </td>
         <td v-if="spacesCreatorsEditMode" class="center actionContainer" >
-          <a data-placement="bottom" rel="tooltip" class="actionIcon" data-original-title="Save" @click="savePermissionsCreateSpace()">
+          <a v-exo-tooltip.bottom.body="$t('social.spaces.administration.permissions.actions.save')" class="actionIcon" @click="savePermissionsCreateSpace()">
             <i class="uiIconSave uiIconLightGray"></i>
           </a>
-          <a data-placement="bottom" rel="tooltip" class="actionIcon" data-original-title="Close" @click="editCreateSpace()">
+          <a v-exo-tooltip.bottom.body="$t('social.spaces.administration.permissions.actions.cancel')" class="actionIcon" @click="editCreateSpace()">
             <i class="uiIconClose uiIconLightGray"></i>
           </a>
         </td>       
@@ -63,15 +63,15 @@
           </div>
         </td>
         <td v-if="!spacesAdministratorsEditMode" class="center actionContainer" >
-          <a data-placement="bottom" rel="tooltip" class="actionIcon" data-original-title="Edit" @click="editManageSpace()">
+          <a v-exo-tooltip.bottom.body="$t('social.spaces.administration.permissions.actions.edit')" class="actionIcon" @click="editManageSpace()">
             <i class="uiIconEdit uiIconLightGray"></i>
           </a>
         </td>
         <td v-if="spacesAdministratorsEditMode" class="center actionContainer" >
-          <a data-placement="bottom" rel="tooltip" class="actionIcon" data-original-title="Save" @click="savePermissionsSpacesAdministrators()">
+          <a v-exo-tooltip.bottom.body="$t('social.spaces.administration.permissions.actions.save')" class="actionIcon" @click="savePermissionsSpacesAdministrators()">
             <i class="uiIconSave uiIconLightGray"></i>
           </a>
-          <a data-placement="bottom" rel="tooltip" class="actionIcon" data-original-title="Close" @click="editManageSpace()">
+          <a v-exo-tooltip.bottom.body="$t('social.spaces.administration.permissions.actions.cancel')" class="actionIcon" @click="editManageSpace()">
             <i class="uiIconClose uiIconLightGray"></i>
           </a>
         </td>
