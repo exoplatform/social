@@ -24,7 +24,7 @@
                 <h5>{{ creator }}</h5>
               </div>
             </div>
-            <h5 v-if="creators.length === 0 && displayNoAssignementCreators">{{ $t('social.spaces.administration.permissions.noAssignement') }}</h5>
+            <h5 v-if="creators.length === 0 && displayNoAssignementCreators">{{ $t('social.spaces.administration.permissions.noAssignment') }}</h5>
           </div>
           <div v-show="!spacesCreatorsEditMode" class="inputUser">
             <input id="add-creators-suggester" type="text"/>
@@ -56,7 +56,7 @@
                 <h5>{{ administrator }}</h5>
               </div>
             </div>
-            <h5 v-if="administrators.length === 0 && displayNoAssignementAdministrators">{{ $t('social.spaces.administration.permissions.noAssignement') }}</h5>
+            <h5 v-if="administrators.length === 0 && displayNoAssignementAdministrators">{{ $t('social.spaces.administration.permissions.noAssignment') }}</h5>
           </div>
           <div v-show="!spacesAdministratorsEditMode" class="inputUser">
             <input id="add-administrators-suggester" type="text"/>
@@ -92,8 +92,8 @@ export default {
       settingValue: '',
       creatorsPermissions: null,
       administratorsPermissions: null,
-      displayNoAssignementCreators: false,
-      displayNoAssignementAdministrators: false
+      displayNoAssignmentCreators: false,
+      displayNoAssignmentAdministrators: false
     };
   },
   created() {
@@ -180,7 +180,7 @@ export default {
         this.initSuggesterSpacesCreators();
       });
       setTimeout(() => {
-        this.displayNoAssignementCreators = true;
+        this.displayNoAssignmentCreators = true;
       }, 1000);
     },
     initSuggesterSpacesAdministrators() {
@@ -283,7 +283,7 @@ export default {
         this.initSuggesterSpacesAdministrators();
       });
       setTimeout(() => {
-        this.displayNoAssignementAdministrators = true;
+        this.displayNoAssignmentAdministrators = true;
       }, 1000);
     },
     editCreateSpace(){

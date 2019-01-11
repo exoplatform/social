@@ -28,6 +28,8 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
+import org.exoplatform.social.core.search.Sorting.OrderBy;
+import org.exoplatform.social.core.search.Sorting.SortBy;
 import org.exoplatform.social.rest.entity.SpaceEntity;
 import org.exoplatform.social.service.rest.api.models.ActivityRestIn;
 
@@ -45,6 +47,8 @@ public interface SpaceRestResources extends SocialRest {
                                      @QueryParam("q") String q,
                                      @QueryParam("offset") int offset,
                                      @QueryParam("limit") int limit,
+                                     @QueryParam("sortBy") SortBy sortBy,
+                                     @QueryParam("orderBy") OrderBy orderBy,
                                      @QueryParam("returnSize") boolean returnSize,
                                      @QueryParam("expand") String expand) throws Exception;
 

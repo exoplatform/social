@@ -55,6 +55,9 @@ import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvide
 import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
 import org.exoplatform.social.core.manager.ActivityManager;
 import org.exoplatform.social.core.manager.IdentityManager;
+import org.exoplatform.social.core.search.Sorting;
+import org.exoplatform.social.core.search.Sorting.OrderBy;
+import org.exoplatform.social.core.search.Sorting.SortBy;
 import org.exoplatform.social.core.space.SpaceException;
 import org.exoplatform.social.core.space.SpaceFilter;
 import org.exoplatform.social.core.space.SpaceUtils;
@@ -100,6 +103,8 @@ public class SpaceRestResourcesV1 implements SpaceRestResources {
                             @ApiParam(value = "Space name search information", required = false) @QueryParam("q") String q,
                             @ApiParam(value = "Offset", required = false, defaultValue = "0") @QueryParam("offset") int offset,
                             @ApiParam(value = "Limit", required = false, defaultValue = "20") @QueryParam("limit") int limit,
+                            @ApiParam(value = "SortBy", required = false) @QueryParam("sortBy") SortBy sortBy,
+                            @ApiParam(value = "OrderBy", required = false) @QueryParam("orderBy") OrderBy orderBy,
                             @ApiParam(value = "Returning the number of spaces found or not", defaultValue = "false") @QueryParam("returnSize") boolean returnSize,
                             @ApiParam(value = "Asking for a full representation of a specific subresource, ex: members or managers", required = false) @QueryParam("expand") String expand) throws Exception {
 
@@ -109,20 +114,25 @@ public class SpaceRestResourcesV1 implements SpaceRestResources {
     SpaceService spaceService = CommonsUtils.getService(SpaceService.class);
 
     ListAccess<Space> listAccess = null;
-    SpaceFilter spaceFilter = null;
-    if (q != null) {
-      spaceFilter = new SpaceFilter();
+    SpaceFilter spaceFilter = new SpaceFilter();
+
+    if (q != null)
       spaceFilter.setSpaceNameSearchCondition(q);
-    }
+    
+    if (orderBy == null)
+      orderBy = Sorting.OrderBy.DESC;
+    if (sortBy == null)
+      sortBy = Sorting.SortBy.DATE;
+
+    spaceFilter.setSorting(new Sorting(sortBy, orderBy));
+
     String authenticatedUser = ConversationState.getCurrent().getIdentity().getUserId();
     if (spaceService.isSuperManager(authenticatedUser)) {
-      listAccess = spaceFilter != null ? spaceService.getAllSpacesByFilter(spaceFilter):
-         spaceService.getAllSpacesWithListAccess();
+      listAccess = spaceService.getAllSpacesByFilter(spaceFilter);
     } else {
-      listAccess = spaceFilter != null ? spaceService.getAccessibleSpacesByFilter(authenticatedUser, spaceFilter):
-         spaceService.getAccessibleSpacesWithListAccess(authenticatedUser);
+      listAccess = spaceService.getAccessibleSpacesByFilter(authenticatedUser, spaceFilter);
     }
-    List<DataEntity> spaceInfos = new ArrayList<DataEntity>();
+    List<DataEntity> spaceInfos = new ArrayList<>();
     for (Space space : listAccess.load(offset, limit)) {
       SpaceEntity spaceInfo = EntityBuilder.buildEntityFromSpace(space, authenticatedUser, uriInfo.getPath(), expand);
       //
@@ -130,7 +140,7 @@ public class SpaceRestResourcesV1 implements SpaceRestResources {
     }
     CollectionEntity collectionSpace = new CollectionEntity(spaceInfos, EntityBuilder.SPACES_TYPE, offset, limit);
     if (returnSize) {
-      collectionSpace.setSize( listAccess.getSize());
+      collectionSpace.setSize(listAccess.getSize());
     }
     
     return EntityBuilder.getResponse(collectionSpace, uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
