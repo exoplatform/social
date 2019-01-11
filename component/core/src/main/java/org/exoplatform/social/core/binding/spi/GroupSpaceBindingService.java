@@ -17,12 +17,13 @@
 
 package org.exoplatform.social.core.binding.spi;
 
-import org.exoplatform.social.core.binding.model.GroupSpaceBinding;
-
 import java.util.List;
 
+import org.exoplatform.social.core.binding.model.GroupSpaceBinding;
+
 /**
- * Provides methods to manage the binding between a space and an organization group.
+ * Provides methods to manage the binding between a space and an organization
+ * group.
  */
 
 public interface GroupSpaceBindingService {
@@ -31,25 +32,33 @@ public interface GroupSpaceBindingService {
    * Gets a list containing all the groups binding for a space/role.
    *
    * @param spaceId The space Id.
-   * @param role The role in the space (manager or member).
+   * @param spaceRole The role in the space (manager or member).
    * @return The list of binding.
    */
-  List<GroupSpaceBinding> findSpaceBindings(String spaceId, String role);
+  List<GroupSpaceBinding> findSpaceBindings(String spaceId, String spaceRole);
 
-    /**
-     * Saves a list of group binding for a specific space.
-     *
-     * @param spaceId The space Id.
-     * @param groupSpaceBindings The list of bindings to be created for the space.
-     */
+  /**
+   * Saves a list of group binding for a specific space.
+   *
+   * @param spaceId The space Id.
+   * @param groupSpaceBindings The list of bindings to be created for the space.
+   */
+  void saveSpaceBindings(String spaceId, List<GroupSpaceBinding> groupSpaceBindings);
 
-    void saveSpaceBindings(String spaceId,List<GroupSpaceBinding> groupSpaceBindings);
+  /**
+   * Delete a group binding. When a binding is deleted, all user in the group will
+   * be remove from space.
+   *
+   * @param groupSpaceBinding The binding to be deleted.
+   */
+  void deleteSpaceBinding(GroupSpaceBinding groupSpaceBinding);
 
-    /**
-     * Delete a group binding. When a binding is deleted, all user in the group will be remove from space.
-     *
-     * @param groupSpaceBinding The binding to be deleted.
-     */
-
-    void deleteBinding(GroupSpaceBinding groupSpaceBinding);
+  /**
+   * Delete all group bindings for a specific space / role. When bindings is
+   * deleted, all users in the group will be remove from space.
+   * 
+   * @param spaceId The space Id.
+   * @param spaceRole The role in the space (manager or member).
+   */
+  void deleteAllSpaceBindings(String spaceId, String spaceRole);
 }
