@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="uiSearchInput">
-      <input v-model="search" :placeholder="$t('social.spaces.administration.manageSpaces.search')" class="showInputSearch" type="text" @keyup.enter="searchSpaces()"/>
+      <input v-model="searchText" :placeholder="$t('social.spaces.administration.manageSpaces.search')" class="showInputSearch" type="text" @keyup.enter="searchSpaces()"/>
       <a data-original-title="Search" class="advancedSearch" rel="tooltip" data-placement="bottom" href="#">
         <i class="uiIconPLF24x24Search" @click="searchSpaces()"></i>
       </a>
@@ -69,12 +69,11 @@ export default {
     return {
       showConfirmMessageModal: false,
       spaces: [],
-      id: null,
-      index: null,
+      spaceToDeleteId: null,
+      spaceToDeleteIndex: null,
       totalPages: 1,
-      offset: 0,
       currentPage: 1,
-      search: '',
+      searchText: '',
       avatar : spaceAdministrationConstants.spaceConstants.DEFAULT_SPACE_AVATAR
     };
   },
@@ -89,20 +88,20 @@ export default {
       });
     },
     getSpacesPerPage(currentPage) {
-      this.offset = ( currentPage - 1 ) * spaceAdministrationConstants.spaceConstants.SPACES_PER_PAGE;
-      spaceAdministrationServices.getSpacesPerPage(this.offset).then(data =>{
+      const offset = ( currentPage - 1 ) * spaceAdministrationConstants.spaceConstants.SPACES_PER_PAGE;
+      spaceAdministrationServices.getSpacesPerPage(offset).then(data =>{
         this.spaces = data.spaces;
         this.currentPage = currentPage;
       }); 
     },
     deleteSpaceById(id, index){
       this.showConfirmMessageModal = true;
-      this.id = id;
-      this.index = index;
+      this.spaceToDeleteIndex = id;
+      this.spaceToDeleteIndex = index;
     },
     confirmDelete(){
-      spaceAdministrationServices.deleteSpaceById(this.id).then(()=> {
-        this.spaces.splice(this.index,1);
+      spaceAdministrationServices.deleteSpaceById(this.spaceToDeleteIndex).then(()=> {
+        this.spaces.splice(this.spaceToDeleteIndex, 1);
       });
       this.showConfirmMessageModal = false;
     },
@@ -110,9 +109,9 @@ export default {
       return spaceAdministrationServices.getSpaceLinkSetting(spaceDisplayName);
     },
     searchSpaces(){
-      spaceAdministrationServices.searchSpaces(this.search).then(data =>{
+      spaceAdministrationServices.searchSpaces(this.searchText).then(data =>{
         this.spaces = data.spaces;
-        this.totalPages = Math.ceil(this.spaces.length/spaceAdministrationConstants.spaceConstants.SPACES_PER_PAGE);
+        this.totalPages = Math.ceil(this.spaces.length / spaceAdministrationConstants.spaceConstants.SPACES_PER_PAGE);
       });
     },
     closeModal(){

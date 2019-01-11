@@ -19,8 +19,8 @@ export function deleteSpaceById(id){
 }
 
 export function getSpaceLinkSetting(spaceDisplayName){
-  const nameSpace = spaceDisplayName.toLowerCase().split(' ').join('_');
-  return `${spaceConstants.PORTAL}${spaceConstants.PROFILE_SPACE_LINK}${nameSpace}/${nameSpace}/settings`;
+  const spaceName = spaceDisplayName.toLowerCase().split(' ').join('_');
+  return `${spaceConstants.PORTAL}${spaceConstants.PROFILE_SPACE_LINK}${spaceName}/${spaceName}/settings`;
 }
 
 export function getGroups(query) {
