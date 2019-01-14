@@ -24,116 +24,195 @@ import org.exoplatform.commons.api.persistence.ExoTransactional;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.binding.model.GroupSpaceBinding;
+import org.exoplatform.social.core.binding.model.UserSpaceBinding;
 import org.exoplatform.social.core.jpa.storage.dao.GroupSpaceBindingDAO;
 import org.exoplatform.social.core.jpa.storage.dao.SpaceDAO;
 import org.exoplatform.social.core.jpa.storage.dao.UserSpaceBindingDAO;
 import org.exoplatform.social.core.jpa.storage.entity.GroupSpaceBindingEntity;
 import org.exoplatform.social.core.jpa.storage.entity.SpaceEntity;
+import org.exoplatform.social.core.jpa.storage.entity.UserSpaceBindingEntity;
 import org.exoplatform.social.core.storage.GroupSpaceBindingStorageException;
 import org.exoplatform.social.core.storage.api.GroupSpaceBindingStorage;
 
 /**
- * {@link GroupSpaceBindingStorage}
- * implementation.
+ * {@link GroupSpaceBindingStorage} implementation.
  */
 
 public class RDBMSGroupSpaceBindingStorageImpl implements GroupSpaceBindingStorage {
 
-    /**
-     * Logger
-     */
-    private static final Log LOG = ExoLogger.getLogger(RDBMSGroupSpaceBindingStorageImpl.class);
+  /**
+   * Logger
+   */
+  private static final Log                                           LOG =
+                                                                         ExoLogger.getLogger(RDBMSGroupSpaceBindingStorageImpl.class);
 
-    private final org.exoplatform.social.core.jpa.storage.dao.SpaceDAO spaceDAO;
+  private final org.exoplatform.social.core.jpa.storage.dao.SpaceDAO spaceDAO;
 
-    private GroupSpaceBindingDAO groupSpaceBindingDAO;
+  private GroupSpaceBindingDAO                                       groupSpaceBindingDAO;
 
-    private UserSpaceBindingDAO userSpaceBindingDAO;
+  private UserSpaceBindingDAO                                        userSpaceBindingDAO;
 
-    public RDBMSGroupSpaceBindingStorageImpl(GroupSpaceBindingDAO groupSpaceBindingDAO, UserSpaceBindingDAO userSpaceBindingDAO, SpaceDAO spaceDAO) {
-        this.groupSpaceBindingDAO = groupSpaceBindingDAO;
-        this.userSpaceBindingDAO = userSpaceBindingDAO;
-        this.spaceDAO = spaceDAO;
+  public RDBMSGroupSpaceBindingStorageImpl(GroupSpaceBindingDAO groupSpaceBindingDAO,
+                                           UserSpaceBindingDAO userSpaceBindingDAO,
+                                           SpaceDAO spaceDAO) {
+    this.groupSpaceBindingDAO = groupSpaceBindingDAO;
+    this.userSpaceBindingDAO = userSpaceBindingDAO;
+    this.spaceDAO = spaceDAO;
+  }
+
+  public List<GroupSpaceBinding> findSpaceBindings(String spaceId, String role) throws GroupSpaceBindingStorageException {
+    return buildGroupBindingListFromEntities(groupSpaceBindingDAO.findSpaceBindings(Long.parseLong(spaceId), role));
+  }
+
+  public List<UserSpaceBinding> findUserSpaceBindings(String spaceId, String username) throws GroupSpaceBindingStorageException {
+    return buildUserBindingListFromEntities(userSpaceBindingDAO.findUserBindingsByMember(Long.parseLong(spaceId), username));
+  }
+
+  @ExoTransactional
+  public GroupSpaceBinding saveGroupBinding(GroupSpaceBinding binding, boolean isNew) throws GroupSpaceBindingStorageException {
+    GroupSpaceBindingEntity entity;
+    if (isNew) {
+      entity = groupSpaceBindingDAO.create(buildEntityGroupBindingFrom(binding));
+    } else {
+      Long id = binding.getId();
+      entity = groupSpaceBindingDAO.find(id);
+      if (entity != null) {
+        entity = buildEntityGroupBindingFrom(binding);
+        entity.setId(id);
+        groupSpaceBindingDAO.update(entity);
+      }
     }
+    return fillGroupBindingFromEntity(entity);
+  }
 
-    public List<GroupSpaceBinding> findSpaceBindings(String spaceId, String role) throws GroupSpaceBindingStorageException {
-        return buildBindingListFromEntities(groupSpaceBindingDAO.findSpaceBindings(Long.parseLong(spaceId), role));
-    }
+  @ExoTransactional
+  public UserSpaceBinding saveUserBinding(UserSpaceBinding binding) throws GroupSpaceBindingStorageException {
+    UserSpaceBindingEntity entity;
+    entity = userSpaceBindingDAO.create(buildEntityUserBindingFrom(binding));
+    return fillUserBindingFromEntity(entity);
+  }
 
-    @ExoTransactional
-    public GroupSpaceBinding saveBinding(GroupSpaceBinding binding, boolean isNew) throws GroupSpaceBindingStorageException {
-        GroupSpaceBindingEntity entity;
-        if (isNew) {
-            entity = groupSpaceBindingDAO.create(buildEntityBindingFrom(binding));
-        } else {
-            Long id = binding.getId();
-            entity = groupSpaceBindingDAO.find(id);
-            if (entity != null) {
-                entity = buildEntityBindingFrom(binding);
-                entity.setId(id);
-                groupSpaceBindingDAO.update(entity);
-            }
-        }
-        return fillBindingFromEntity(entity);
-    }
+  @ExoTransactional
+  public void deleteGroupBinding(long id) throws GroupSpaceBindingStorageException {
+    groupSpaceBindingDAO.delete(groupSpaceBindingDAO.find(id));
+  }
 
-    @ExoTransactional
-    public void deleteBinding(long id) throws GroupSpaceBindingStorageException {
-        groupSpaceBindingDAO.delete(groupSpaceBindingDAO.find(id));
-    }
+  @ExoTransactional
+  public void deleteUserBinding(long id) throws GroupSpaceBindingStorageException {
+    userSpaceBindingDAO.delete(userSpaceBindingDAO.find(id));
+  }
 
-    /**
-     * Fills {@link GroupSpaceBinding}'s properties to
-     * {@link GroupSpaceBindingEntity}'s.
-     *
-     * @param entity the GroupSpaceBinding entity
-     */
-    private GroupSpaceBinding fillBindingFromEntity(GroupSpaceBindingEntity entity) {
-        if (entity == null) {
-            return null;
-        }
-        GroupSpaceBinding groupSpaceBinding = new GroupSpaceBinding();
-        groupSpaceBinding.setId(entity.getId());
-        groupSpaceBinding.setGroup(entity.getGroup());
-        groupSpaceBinding.setGroupRole(entity.getGroupRole());
-        String spaceId = Long.toString(entity.getSpace().getId());
-        groupSpaceBinding.setSpaceId(spaceId);
-        groupSpaceBinding.setSpaceRole(entity.getSpaceRole());
-        return groupSpaceBinding;
-    }
+  @ExoTransactional
+  public void deleteAllUserBindings(String userName) throws GroupSpaceBindingStorageException {
+    userSpaceBindingDAO.deleteAllUserBindings(userName);
+  }
 
-    /**
-     * build {@link GroupSpaceBinding}'s list from {@link GroupSpaceBindingEntity}'s
-     * list.
-     *
-     * @param entities the list of entities
-     */
-    private List<GroupSpaceBinding> buildBindingListFromEntities(List<GroupSpaceBindingEntity> entities) {
-        List<GroupSpaceBinding> groupSpaceBindings = new LinkedList<>();
-        if (groupSpaceBindings != null) {
-            for (GroupSpaceBindingEntity entity : entities) {
-                GroupSpaceBinding groupSpaceBinding = fillBindingFromEntity(entity);
-                groupSpaceBindings.add(groupSpaceBinding);
-            }
-        }
-        return groupSpaceBindings;
-    }
+  @Override
+  public boolean hasUserBindings(String spaceId,String userName) {
+    return userSpaceBindingDAO.hasUserBindings(Long.parseLong(spaceId), userName);
+  }
 
-    /**
-     * build {@link GroupSpaceBindingEntity} from {@link GroupSpaceBinding} object
-     * list.
-     *
-     * @param groupSpaceBinding the GroupSpaceBinding object
-     */
-    private GroupSpaceBindingEntity buildEntityBindingFrom(GroupSpaceBinding groupSpaceBinding) {
-        GroupSpaceBindingEntity groupSpaceBindingEntity = new GroupSpaceBindingEntity();
-        groupSpaceBindingEntity.setGroup(groupSpaceBinding.getGroup());
-        groupSpaceBindingEntity.setGroupRole(groupSpaceBinding.getGroupRole());
-        Long spaceId = Long.parseLong(groupSpaceBinding.getSpaceId());
-        SpaceEntity entity = spaceDAO.find(spaceId);
-        groupSpaceBindingEntity.setSpace(entity);
-        groupSpaceBindingEntity.setSpaceRole(groupSpaceBinding.getSpaceRole());
-        return groupSpaceBindingEntity;
+  /**
+   * Fills {@link GroupSpaceBinding}'s properties to
+   * {@link GroupSpaceBindingEntity}'s.
+   *
+   * @param entity the GroupSpaceBinding entity
+   */
+  private GroupSpaceBinding fillGroupBindingFromEntity(GroupSpaceBindingEntity entity) {
+    if (entity == null) {
+      return null;
     }
+    GroupSpaceBinding groupSpaceBinding = new GroupSpaceBinding();
+    groupSpaceBinding.setId(entity.getId());
+    groupSpaceBinding.setGroup(entity.getGroup());
+    groupSpaceBinding.setGroupRole(entity.getGroupRole());
+    String spaceId = Long.toString(entity.getSpace().getId());
+    groupSpaceBinding.setSpaceId(spaceId);
+    groupSpaceBinding.setSpaceRole(entity.getSpaceRole());
+    return groupSpaceBinding;
+  }
+
+  /**
+   * Fills {@link UserSpaceBinding}'s properties to
+   * {@link UserSpaceBindingEntity}'s.
+   *
+   * @param entity the UserSpaceBinding entity
+   */
+  private UserSpaceBinding fillUserBindingFromEntity(UserSpaceBindingEntity entity) {
+    if (entity == null) {
+      return null;
+    }
+    UserSpaceBinding userSpaceBinding = new UserSpaceBinding();
+    userSpaceBinding.setId(entity.getId());
+    userSpaceBinding.setGroupBinding(fillGroupBindingFromEntity(entity.getGroupSpaceBinding()));
+    String spaceId = Long.toString(entity.getSpace().getId());
+    userSpaceBinding.setSpaceId(spaceId);
+    userSpaceBinding.setUser(entity.getUser());
+    return userSpaceBinding;
+  }
+
+  /**
+   * build {@link GroupSpaceBinding}'s list from {@link GroupSpaceBindingEntity}'s
+   * list.
+   *
+   * @param entities the list of entities
+   */
+  private List<GroupSpaceBinding> buildGroupBindingListFromEntities(List<GroupSpaceBindingEntity> entities) {
+    List<GroupSpaceBinding> groupSpaceBindings = new LinkedList<>();
+    for (GroupSpaceBindingEntity entity : entities) {
+      GroupSpaceBinding groupSpaceBinding = fillGroupBindingFromEntity(entity);
+      groupSpaceBindings.add(groupSpaceBinding);
+    }
+    return groupSpaceBindings;
+  }
+
+  /**
+   * build {@link UserSpaceBinding}'s list from {@link UserSpaceBindingEntity}'s
+   * list.
+   *
+   * @param entities the list of entities
+   */
+  private List<UserSpaceBinding> buildUserBindingListFromEntities(List<UserSpaceBindingEntity> entities) {
+    List<UserSpaceBinding> userSpaceBindings = new LinkedList<>();
+    for (UserSpaceBindingEntity entity : entities) {
+      UserSpaceBinding userSpaceBinding = fillUserBindingFromEntity(entity);
+      userSpaceBindings.add(userSpaceBinding);
+    }
+    return userSpaceBindings;
+  }
+
+  /**
+   * build {@link GroupSpaceBindingEntity} from {@link GroupSpaceBinding} object
+   * list.
+   *
+   * @param groupSpaceBinding the GroupSpaceBinding object
+   */
+  private GroupSpaceBindingEntity buildEntityGroupBindingFrom(GroupSpaceBinding groupSpaceBinding) {
+    GroupSpaceBindingEntity groupSpaceBindingEntity = new GroupSpaceBindingEntity();
+    groupSpaceBindingEntity.setGroup(groupSpaceBinding.getGroup());
+    groupSpaceBindingEntity.setGroupRole(groupSpaceBinding.getGroupRole());
+    Long spaceId = Long.parseLong(groupSpaceBinding.getSpaceId());
+    SpaceEntity entity = spaceDAO.find(spaceId);
+    groupSpaceBindingEntity.setSpace(entity);
+    groupSpaceBindingEntity.setSpaceRole(groupSpaceBinding.getSpaceRole());
+    return groupSpaceBindingEntity;
+  }
+
+  /**
+   * build {@link UserSpaceBindingEntity} from {@link UserSpaceBinding} object
+   * list.
+   *
+   * @param userSpaceBinding the UserSpaceBinding object
+   */
+  private UserSpaceBindingEntity buildEntityUserBindingFrom(UserSpaceBinding userSpaceBinding) {
+    UserSpaceBindingEntity userSpaceBindingEntity = new UserSpaceBindingEntity();
+    userSpaceBindingEntity.setUser(userSpaceBinding.getUser());
+    GroupSpaceBindingEntity groupBindingEntity = groupSpaceBindingDAO.find(userSpaceBinding.getGroupBinding().getId());
+    userSpaceBindingEntity.setGroupSpaceBinding(groupBindingEntity);
+    Long spaceId = Long.parseLong(userSpaceBinding.getSpaceId());
+    SpaceEntity spaceEntity = spaceDAO.find(spaceId);
+    userSpaceBindingEntity.setSpace(spaceEntity);
+    return userSpaceBindingEntity;
+  }
 
 }
