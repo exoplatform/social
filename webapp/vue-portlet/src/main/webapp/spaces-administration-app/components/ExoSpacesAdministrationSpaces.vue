@@ -1,5 +1,5 @@
 <template>
-  <div class="uiSpaces">
+  <div class="spacesAdministration">
     <div class="uiTabNormal uiTabInPage">
       <ul class="nav nav-tabs">
         <li :class="{active: activeTab === 1}" @click="activeTab=1">

@@ -36,28 +36,5 @@ export default {
   }
 };
 </script>
-<style>
-.modal-mask .uiPopupWrapper {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  z-index: 999;
-}
-.uiPopup {
-  width: 600px;
-  position: relative;
-  user-select: none;
-  display: block;
-  visibility: visible;
-  z-index: 4;
-  top: 158px;
-  left: 336px;
-  } 
-.modal-content .popupTitle {
-    cursor: auto;
-}
-</style>
 
 

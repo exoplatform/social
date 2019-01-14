@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="manageSpaces">
     <div class="uiSearchInput">
       <input v-model="searchText" :placeholder="$t('social.spaces.administration.manageSpaces.search')" class="showInputSearch" type="text" @keyup.enter="searchSpaces()"/>
       <a v-exo-tooltip.bottom.body="Search" class="advancedSearch" href="#">
@@ -14,7 +14,7 @@
         <th>
           {{ $t('social.spaces.administration.manageSpaces.description') }}
         </th>
-        <th class="actions">
+        <th>
           {{ $t('social.spaces.administration.manageSpaces.actions') }}
         </th>
       </tr>
@@ -25,7 +25,7 @@
         <td><img v-if="space.avatarUrl != null" :src="space.avatarUrl" class="avatar" /> <img v-else :src="avatar" class="avatar" />  {{ space.displayName }}</td>
         <td>{{ space.description }}</td>
         <td class="center actionContainer" >
-          <a v-exo-tooltip.bottom.body="$t('social.spaces.administration.manageSpaces.actions.edit')" :href="getSpaceLinkSetting(space.displayName)" target="_blank">
+          <a v-exo-tooltip.bottom.body="$t('social.spaces.administration.manageSpaces.actions.edit')" :href="getSpaceLinkSetting(space.displayName)" class="actionIcon" target="_blank">
             <i class="uiIconEdit uiIconLightGray"></i>
           </a>
           <a v-exo-tooltip.bottom.body="$t('social.spaces.administration.manageSpaces.actions.delete')" class="actionIcon" @click="deleteSpaceById(space.id, index)">
@@ -52,7 +52,7 @@
       </ul>
     </div> 
     <exo-modal v-show="showConfirmMessageModal" :title="$t('social.spaces.administration.delete.spaces.confirm.title')" @modal-closed="closeModal">
-      <h3>{{ $t('social.spaces.administration.delete.spaces.confirm') }}</h3>
+      <p>{{ $t('social.spaces.administration.delete.spaces.confirm') }}</p>
       <div class="uiAction uiActionBorder">
         <div class="btn btn-primary" @click="confirmDelete">{{ $t('social.spaces.administration.delete.spaces.button.delete') }}</div>
         <div class="btn" @click="closeModal">{{ $t('social.spaces.administration.delete.spaces.button.cancel') }}</div>

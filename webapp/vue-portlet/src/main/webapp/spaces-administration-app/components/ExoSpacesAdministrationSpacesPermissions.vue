@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="spacesPermissions">
     <table class="uiGrid table table-hover table-striped">
       <tr>          
         <th>
