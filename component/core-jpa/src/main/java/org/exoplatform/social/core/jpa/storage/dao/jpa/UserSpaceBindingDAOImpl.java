@@ -17,11 +17,31 @@
 
 package org.exoplatform.social.core.jpa.storage.dao.jpa;
 
+import java.util.List;
+
+import javax.persistence.Query;
+import javax.persistence.TypedQuery;
+
 import org.exoplatform.commons.persistence.impl.GenericDAOJPAImpl;
 import org.exoplatform.social.core.jpa.storage.dao.UserSpaceBindingDAO;
-import org.exoplatform.social.core.jpa.storage.entity.ActivityEntity;
 import org.exoplatform.social.core.jpa.storage.entity.UserSpaceBindingEntity;
 
 public class UserSpaceBindingDAOImpl extends GenericDAOJPAImpl<UserSpaceBindingEntity, Long> implements UserSpaceBindingDAO {
+
+  @Override
+  public List<UserSpaceBindingEntity> findUserBindingsByMember(Long spaceId, String userName) {
+    TypedQuery<UserSpaceBindingEntity> query = getEntityManager().createNamedQuery("SocUserSpaceBinding.findUserBindingsbyMember",
+                                                                                   UserSpaceBindingEntity.class);
+    query.setParameter("spaceId", spaceId);
+    query.setParameter("userName", userName);
+    return query.getResultList();
+  }
+
+  @Override
+  public void deleteAllUserBindings(String userName) {
+    Query query = getEntityManager().createNamedQuery("SocUserSpaceBinding.deleteAllUserBindings");
+    query.setParameter("userName", userName);
+    query.executeUpdate();
+  }
 
 }

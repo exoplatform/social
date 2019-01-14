@@ -114,7 +114,7 @@ public class GroupSpaceBindingServiceTest extends AbstractCoreTest {
 
     // Then
     ArgumentCaptor<Long> idCaptor = ArgumentCaptor.forClass(Long.class);
-    Mockito.verify(groupSpaceBindingStorage, Mockito.times(1)).deleteBinding(idCaptor.capture());
+    Mockito.verify(groupSpaceBindingStorage, Mockito.times(1)).deleteGroupBinding(idCaptor.capture());
     long id = idCaptor.getValue();
     assertEquals(1, id);
   }
@@ -172,7 +172,7 @@ public class GroupSpaceBindingServiceTest extends AbstractCoreTest {
 
     // Then
     ArgumentCaptor<Long> idCaptor = ArgumentCaptor.forClass(Long.class);
-    Mockito.verify(groupSpaceBindingStorage, Mockito.times(2)).deleteBinding(idCaptor.capture());
+    Mockito.verify(groupSpaceBindingStorage, Mockito.times(2)).deleteGroupBinding(idCaptor.capture());
     long id = idCaptor.getValue();
     assertTrue(id == 1 || id == 4);
   }
@@ -216,8 +216,8 @@ public class GroupSpaceBindingServiceTest extends AbstractCoreTest {
     groupSpaceBindingService.saveSpaceBindings("1", groupSpaceBindings);
 
     // Then
-    Mockito.verify(groupSpaceBindingStorage, Mockito.times(1)).saveBinding(binding1, true);
-    Mockito.verify(groupSpaceBindingStorage, Mockito.times(1)).saveBinding(binding2, true);
-    Mockito.verify(groupSpaceBindingStorage, Mockito.times(1)).saveBinding(binding3, true);
+    Mockito.verify(groupSpaceBindingStorage, Mockito.times(1)).saveGroupBinding(binding1, true);
+    Mockito.verify(groupSpaceBindingStorage, Mockito.times(1)).saveGroupBinding(binding2, true);
+    Mockito.verify(groupSpaceBindingStorage, Mockito.times(1)).saveGroupBinding(binding3, true);
   }
 }

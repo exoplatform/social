@@ -23,6 +23,7 @@ import org.exoplatform.container.xml.InitParams;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.binding.model.GroupSpaceBinding;
+import org.exoplatform.social.core.binding.model.UserSpaceBinding;
 import org.exoplatform.social.core.binding.spi.GroupSpaceBindingService;
 import org.exoplatform.social.core.storage.api.GroupSpaceBindingStorage;
 
@@ -62,10 +63,28 @@ public class GroupSpaceBindingServiceImpl implements GroupSpaceBindingService {
   /**
    * {@inheritDoc}
    */
+  public List<UserSpaceBinding> findUserBindings(String spaceId, String userName) {
+    LOG.info("Retrieving user bindings for member:" + userName + "/" + spaceId);
+    return groupSpaceBindingStorage.findUserSpaceBindings(spaceId, userName);
+  }
+
+  /**
+   * {@inheritDoc}
+   */
   public void saveSpaceBindings(String spaceId, List<GroupSpaceBinding> groupSpaceBindings) {
     LOG.info("Saving space bindings:" + spaceId);
     for (GroupSpaceBinding groupSpaceBinding : groupSpaceBindings) {
-      groupSpaceBindingStorage.saveBinding(groupSpaceBinding, true);
+      groupSpaceBindingStorage.saveGroupBinding(groupSpaceBinding, true);
+    }
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  public void saveUserBindings(String userName, List<UserSpaceBinding> userSpaceBindings) {
+    LOG.info("Saving user bindings for user :" + userName);
+    for (UserSpaceBinding userSpaceBinding : userSpaceBindings) {
+      groupSpaceBindingStorage.saveUserBinding(userSpaceBinding);
     }
   }
 
@@ -75,7 +94,15 @@ public class GroupSpaceBindingServiceImpl implements GroupSpaceBindingService {
   public void deleteSpaceBinding(GroupSpaceBinding groupSpaceBinding) {
     LOG.info("Delete binding group :" + groupSpaceBinding.getGroup() + "/" + groupSpaceBinding.getGroupRole() + " for space :"
         + groupSpaceBinding.getSpaceId() + "/" + groupSpaceBinding.getSpaceRole());
-    groupSpaceBindingStorage.deleteBinding(groupSpaceBinding.getId());
+    groupSpaceBindingStorage.deleteGroupBinding(groupSpaceBinding.getId());
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  public void deleteUserBinding(UserSpaceBinding userSpaceBinding) {
+    LOG.info("Delete user binding for member :" + userSpaceBinding.getUser() + "/" + userSpaceBinding.getSpaceId());
+    groupSpaceBindingStorage.deleteUserBinding(userSpaceBinding.getId());
   }
 
   /**
@@ -86,5 +113,13 @@ public class GroupSpaceBindingServiceImpl implements GroupSpaceBindingService {
     for (GroupSpaceBinding groupSpaceBinding : findSpaceBindings(spaceId, spaceRole)) {
       deleteSpaceBinding(groupSpaceBinding);
     }
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  public void deleteAllUserBindings(String userName) {
+    LOG.info("Delete all user bindings for user :" + userName);
+    groupSpaceBindingStorage.deleteAllUserBindings(userName);
   }
 }

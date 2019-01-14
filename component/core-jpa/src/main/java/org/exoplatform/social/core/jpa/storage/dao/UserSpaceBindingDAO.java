@@ -17,9 +17,26 @@
 
 package org.exoplatform.social.core.jpa.storage.dao;
 
+import java.util.List;
+
 import org.exoplatform.commons.api.persistence.GenericDAO;
 import org.exoplatform.social.core.jpa.storage.entity.UserSpaceBindingEntity;
 
 public interface UserSpaceBindingDAO extends GenericDAO<UserSpaceBindingEntity, Long> {
 
+  /**
+   * Get groups binding for a specific role(member or manager) in space
+   *
+   * @param spaceId Id of the space
+   * @param userName Member in the space
+   * @return A list of group+membership bindings
+   */
+  List<UserSpaceBindingEntity> findUserBindingsByMember(Long spaceId, String userName);
+
+  /**
+   * Delete all the bindings of the user
+   *
+   * @param userName Member in the space
+   */
+  void deleteAllUserBindings(String userName);
 }

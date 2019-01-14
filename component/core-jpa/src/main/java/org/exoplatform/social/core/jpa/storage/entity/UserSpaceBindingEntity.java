@@ -26,6 +26,11 @@ import org.exoplatform.commons.api.persistence.ExoEntity;
 @Entity(name = "SocUserSpaceBinding")
 @ExoEntity
 @Table(name = "SOC_USER_SPACE_BINDING")
+@NamedQueries({
+    @NamedQuery(name = "SocUserSpaceBinding.findUserBindingsbyMember", query = "SELECT userSpaceBinding "
+        + " FROM SocUserSpaceBinding userSpaceBinding"
+        + " WHERE userSpaceBinding.space.id = :spaceId and userSpaceBinding.user = :userName"),
+    @NamedQuery(name = "SocUserSpaceBinding.deleteAllUserBindings", query = "DELETE FROM SocUserSpaceBinding userSpaceBinding WHERE userSpaceBinding.user = :userName") })
 public class UserSpaceBindingEntity implements Serializable {
 
   private static final long       serialVersionUID = -3088537806368295223L;
@@ -36,15 +41,15 @@ public class UserSpaceBindingEntity implements Serializable {
   @Column(name = "USER_SPACE_BINDING_ID")
   private long                    id;
 
-  @ManyToOne(fetch = FetchType.LAZY, optional = false)
-  @JoinColumn(name = "SPACE_ID", referencedColumnName = "SPACE_ID")
+  @ManyToOne
+  @JoinColumn(name = "SPACE_ID", referencedColumnName = "SPACE_ID", nullable = false)
   private SpaceEntity             space;
 
   @Column(name = "USERNAME")
   private String                  user;
 
-  @ManyToOne(fetch = FetchType.EAGER, optional = false)
-  @JoinColumn(name = "GROUP_SPACE_BINDING_ID", referencedColumnName = "GROUP_SPACE_BINDING_ID")
+  @ManyToOne
+  @JoinColumn(name = "GROUP_SPACE_BINDING_ID", referencedColumnName = "GROUP_SPACE_BINDING_ID", nullable = false)
   private GroupSpaceBindingEntity groupSpaceBinding;
 
   public long getId() {
