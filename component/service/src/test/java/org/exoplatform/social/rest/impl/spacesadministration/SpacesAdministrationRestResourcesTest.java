@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.exoplatform.services.organization.Group;
 import org.exoplatform.services.organization.search.GroupSearchService;
 import org.exoplatform.services.rest.impl.ContainerResponse;
 import org.exoplatform.services.rest.impl.MultivaluedMapImpl;
@@ -63,7 +64,7 @@ public class SpacesAdministrationRestResourcesTest extends AbstractResourceTest 
     startSessionAs("root");
 
     // When
-    ContainerResponse response = service("GET", getURLResource("spacesAdministration"), "", null, null, "root");
+    ContainerResponse response = service("GET", getURLResource("spacesAdministration/permissions"), "", null, null, "root");
 
     // Then
     assertNotNull(response);
@@ -103,7 +104,7 @@ public class SpacesAdministrationRestResourcesTest extends AbstractResourceTest 
     startSessionAs("mary");
 
     // When
-    ContainerResponse response = service("GET", getURLResource("spacesAdministration"), "", null, null, "mary");
+    ContainerResponse response = service("GET", getURLResource("spacesAdministration/permissions"), "", null, null, "mary");
 
     // Then
     assertNotNull(response);
@@ -117,7 +118,7 @@ public class SpacesAdministrationRestResourcesTest extends AbstractResourceTest 
     startSessionAs("root");
 
     // When
-    ContainerResponse response = service("GET", getURLResource("spacesAdministration/spacesAdministrators"), "", null, null, "root");
+    ContainerResponse response = service("GET", getURLResource("spacesAdministration/permissions/spacesAdministrators"), "", null, null, "root");
 
     // Then
     assertNotNull(response);
@@ -138,7 +139,7 @@ public class SpacesAdministrationRestResourcesTest extends AbstractResourceTest 
     startSessionAs("root");
 
     // When
-    ContainerResponse response = service("GET", getURLResource("spacesAdministration/spacesAdministrators"), "", null, null, "root");
+    ContainerResponse response = service("GET", getURLResource("spacesAdministration/permissions/spacesAdministrators"), "", null, null, "root");
 
     // Then
     assertNotNull(response);
@@ -161,7 +162,7 @@ public class SpacesAdministrationRestResourcesTest extends AbstractResourceTest 
     startSessionAs("mary");
 
     // When
-    ContainerResponse response = service("GET", getURLResource("spacesAdministration/spacesAdministrators"), "", null, null, "mary");
+    ContainerResponse response = service("GET", getURLResource("spacesAdministration/permissions/spacesAdministrators"), "", null, null, "mary");
 
     // Then
     assertNotNull(response);
@@ -186,7 +187,7 @@ public class SpacesAdministrationRestResourcesTest extends AbstractResourceTest 
     startSessionAs("root");
 
     // When
-    ContainerResponse response = service("PUT", getURLResource("spacesAdministration/spacesAdministrators"), "", headers, newMemberships.getBytes(), "root");
+    ContainerResponse response = service("PUT", getURLResource("spacesAdministration/permissions/spacesAdministrators"), "", headers, newMemberships.getBytes(), "root");
 
     // Then
     assertNotNull(response);
@@ -215,7 +216,7 @@ public class SpacesAdministrationRestResourcesTest extends AbstractResourceTest 
     startSessionAs("mary");
 
     // When
-    ContainerResponse response = service("PUT", getURLResource("spacesAdministration/spacesAdministrators"), "", headers, newMemberships.getBytes(), "mary");
+    ContainerResponse response = service("PUT", getURLResource("spacesAdministration/permissions/spacesAdministrators"), "", headers, newMemberships.getBytes(), "mary");
 
     // Then
     assertNotNull(response);
@@ -230,7 +231,7 @@ public class SpacesAdministrationRestResourcesTest extends AbstractResourceTest 
     startSessionAs("root");
 
     // When
-    ContainerResponse response = service("GET", getURLResource("spacesAdministration/spacesCreators"), "", null, null, "root");
+    ContainerResponse response = service("GET", getURLResource("spacesAdministration/permissions/spacesCreators"), "", null, null, "root");
 
     // Then
     assertNotNull(response);
@@ -251,7 +252,7 @@ public class SpacesAdministrationRestResourcesTest extends AbstractResourceTest 
     startSessionAs("root");
 
     // When
-    ContainerResponse response = service("GET", getURLResource("spacesAdministration/spacesCreators"), "", null, null, "root");
+    ContainerResponse response = service("GET", getURLResource("spacesAdministration/permissions/spacesCreators"), "", null, null, "root");
 
     // Then
     assertNotNull(response);
@@ -274,7 +275,7 @@ public class SpacesAdministrationRestResourcesTest extends AbstractResourceTest 
     startSessionAs("mary");
 
     // When
-    ContainerResponse response = service("GET", getURLResource("spacesAdministration/spacesCreators"), "", null, null, "mary");
+    ContainerResponse response = service("GET", getURLResource("spacesAdministration/permissions/spacesCreators"), "", null, null, "mary");
 
     // Then
     assertNotNull(response);
@@ -299,7 +300,7 @@ public class SpacesAdministrationRestResourcesTest extends AbstractResourceTest 
     startSessionAs("root");
 
     // When
-    ContainerResponse response = service("PUT", getURLResource("spacesAdministration/spacesCreators"), "", headers, newMemberships.getBytes(), "root");
+    ContainerResponse response = service("PUT", getURLResource("spacesAdministration/permissions/spacesCreators"), "", headers, newMemberships.getBytes(), "root");
 
     // Then
     assertNotNull(response);
@@ -328,8 +329,68 @@ public class SpacesAdministrationRestResourcesTest extends AbstractResourceTest 
     startSessionAs("mary");
 
     // When
-    ContainerResponse response = service("PUT", getURLResource("spacesAdministration/spacesCreators"), "", headers, newMemberships.getBytes(), "mary");
+    ContainerResponse response = service("PUT", getURLResource("spacesAdministration/permissions/spacesCreators"), "", headers, newMemberships.getBytes(), "mary");
 
+    // Then
+    assertNotNull(response);
+    assertEquals(401, response.getStatus());
+  }
+
+  public void testShouldReturnAllGroupsWhenGettingAllGroupsAsSpacesAdministrator() throws Exception {
+    // Given
+    startSessionAs("root");
+
+    // When
+    ContainerResponse response = service("GET", getURLResource("spacesAdministration/groups"), "", null, null, "root");
+
+    // Then
+    assertNotNull(response);
+    assertEquals(200, response.getStatus());
+    List<Group> groups = (List<Group>) response.getEntity();
+    assertNotNull(groups);
+    assertEquals(2, groups.size());
+    assertTrue(groups.stream().anyMatch(group -> group.getGroupName().equals("/users")));
+    assertTrue(groups.stream().anyMatch(group -> group.getGroupName().equals("/administrators")));
+  }
+
+  public void testShouldReturnSomeGroupsWhenGettingSomeGroupsAsSpacesAdministrator() throws Exception {
+    // Given
+    startSessionAs("root");
+
+    // When
+    ContainerResponse response = service("GET", getURLResource("spacesAdministration/groups?offset=1&limit=1"), "", null, null, "root");
+
+    // Then
+    assertNotNull(response);
+    assertEquals(200, response.getStatus());
+    List<Group> groups = (List<Group>) response.getEntity();
+    assertNotNull(groups);
+    assertEquals(1, groups.size());
+  }
+
+  public void testShouldReturnFilteredGroupsWhenGettingFilteredGroupsAsSpacesAdministrator() throws Exception {
+    // Given
+    startSessionAs("root");
+
+    // When
+    ContainerResponse response = service("GET", getURLResource("spacesAdministration/groups?q=miNistr"), "", null, null, "root");
+
+    // Then
+    assertNotNull(response);
+    assertEquals(200, response.getStatus());
+    List<Group> groups = (List<Group>) response.getEntity();
+    assertNotNull(groups);
+    assertEquals(1, groups.size());
+    assertTrue(groups.get(0).getGroupName().equals("/administrators"));
+  }
+
+  public void testShouldNotAuthorizedWhenGettingGroupsAsNotSpacesAdministrator() throws Exception {
+    // Given
+    startSessionAs("mary");
+    
+    // When
+    ContainerResponse response = service("GET", getURLResource("spacesAdministration/groups"), "", null, null, "mary");
+    
     // Then
     assertNotNull(response);
     assertEquals(401, response.getStatus());

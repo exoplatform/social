@@ -143,7 +143,7 @@ public class SpacesAdministrationRestResourcesV1 implements SocialRest {
   }
   
   @PUT
-  @Path("spacesAdministrators")
+  @Path("permissions/spacesAdministrators")
   @ApiOperation(value = "Updates spaces creators memberships",
                 httpMethod = "PUT",
                 response = Response.class,
@@ -171,7 +171,7 @@ public class SpacesAdministrationRestResourcesV1 implements SocialRest {
   }
 
   @PUT
-  @Path("spacesCreators")
+  @Path("permissions/spacesCreators")
   @ApiOperation(value = "Updates spaces creators memberships",
           httpMethod = "PUT",
           response = Response.class,
