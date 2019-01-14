@@ -28,7 +28,7 @@ export function getGroups(query) {
 }
 
 export function getSpacesAdministrationSetting(key){
-  return fetch(`${spaceConstants.SPACES_ADMINISTRATION_API}/${key}`, {
+  return fetch(`${spaceConstants.SPACES_ADMINISTRATION_API}/permissions/${key}`, {
     headers: {
       'Content-Type': 'application/json'
     },

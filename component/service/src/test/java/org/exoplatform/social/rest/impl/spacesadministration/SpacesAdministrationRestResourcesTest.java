@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.exoplatform.services.organization.search.GroupSearchService;
 import org.exoplatform.services.rest.impl.ContainerResponse;
 import org.exoplatform.services.rest.impl.MultivaluedMapImpl;
 import org.exoplatform.services.security.MembershipEntry;
@@ -20,6 +21,7 @@ public class SpacesAdministrationRestResourcesTest extends AbstractResourceTest 
   private IdentityManager identityManager;
   private SpaceService spaceService;
   private SpacesAdministrationService spacesAdministrationService;
+  private GroupSearchService groupSearchService;
   
   private SpacesAdministrationRestResourcesV1 spacesAdministrationRestResourcesV1;
 
@@ -31,13 +33,14 @@ public class SpacesAdministrationRestResourcesTest extends AbstractResourceTest 
     identityManager = getContainer().getComponentInstanceOfType(IdentityManager.class);
     spaceService = getContainer().getComponentInstanceOfType(SpaceService.class);
     spacesAdministrationService = getContainer().getComponentInstanceOfType(SpacesAdministrationService.class);
+    groupSearchService = getContainer().getComponentInstanceOfType(GroupSearchService.class);
 
     identityManager.getOrCreateIdentity("organization", "root", true);
     identityManager.getOrCreateIdentity("organization", "john", true);
     identityManager.getOrCreateIdentity("organization", "mary", true);
     identityManager.getOrCreateIdentity("organization", "demo", true);
 
-    spacesAdministrationRestResourcesV1 = new SpacesAdministrationRestResourcesV1(spaceService, spacesAdministrationService);
+    spacesAdministrationRestResourcesV1 = new SpacesAdministrationRestResourcesV1(spaceService, spacesAdministrationService, groupSearchService);
     registry(spacesAdministrationRestResourcesV1);
   }
 

@@ -17,17 +17,19 @@
 package org.exoplatform.social.rest.impl.spacesadministration;
 
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
+import org.exoplatform.commons.utils.ListAccess;
+import org.exoplatform.services.organization.Group;
+import org.exoplatform.services.organization.search.GroupSearchService;
 import org.exoplatform.services.security.ConversationState;
 import org.exoplatform.services.security.MembershipEntry;
 import org.exoplatform.social.core.space.SpacesAdministrationService;
@@ -45,26 +47,32 @@ import io.swagger.annotations.*;
 @Api(tags = VersionResources.VERSION_ONE + "/social/spacesAdministration", value = VersionResources.VERSION_ONE + "/social/spacesAdministration", description = "Managing Spaces Administration settings")
 public class SpacesAdministrationRestResourcesV1 implements SocialRest {
 
+  public static final int DEFAULT_LIMIT  = 20;
+
+  public static final int DEFAULT_OFFSET = 0;
+
   private SpaceService spaceService;
 
   private SpacesAdministrationService spacesAdministrationService;
 
-  private enum MembershipType {
-    ALL, PENDING, APPROVED, IGNORED
-  }
+  private GroupSearchService groupSearchService;
 
-  public SpacesAdministrationRestResourcesV1(SpaceService spaceService, SpacesAdministrationService spacesAdministrationService) {
+  public SpacesAdministrationRestResourcesV1(SpaceService spaceService, SpacesAdministrationService spacesAdministrationService,
+                                             GroupSearchService groupSearchService) {
     this.spaceService = spaceService;
     this.spacesAdministrationService = spacesAdministrationService;
+    this.groupSearchService = groupSearchService;
   }
 
   @GET
-  @ApiOperation(value = "Gets all spaces administrators settings",
+  @Path("permissions")
+  @ApiOperation(value = "Gets all spaces administrators permissions settings",
           httpMethod = "GET",
           response = Response.class,
           notes = "This returns space memberships in the following cases: <br/><ul><li>the sender of the space membership is the authenticated user</li><li>the authenticated user is a manager of the space</li><li>the authenticated user is the super user</li></ul>")
   @ApiResponses(value = {
           @ApiResponse (code = 200, message = "Request fulfilled"),
+          @ApiResponse (code = 401, message = "User not authorized to call this endpoint"),
           @ApiResponse (code = 404, message = "Resource not found"),
           @ApiResponse (code = 500, message = "Internal server error"),
           @ApiResponse (code = 400, message = "Invalid query input") })
@@ -85,16 +93,17 @@ public class SpacesAdministrationRestResourcesV1 implements SocialRest {
   }
 
   @GET
-  @Path("spacesAdministrators")
+  @Path("permissions/spacesAdministrators")
   @ApiOperation(value = "Gets spaces administrators memberships",
                 httpMethod = "GET",
                 response = Response.class,
                 notes = "This returns space memberships in the following cases: <br/><ul><li>the sender of the space membership is the authenticated user</li><li>the authenticated user is a manager of the space</li><li>the authenticated user is the super user</li></ul>")
   @ApiResponses(value = { 
-    @ApiResponse (code = 200, message = "Request fulfilled"),
-    @ApiResponse (code = 404, message = "Resource not found"),
-    @ApiResponse (code = 500, message = "Internal server error"),
-    @ApiResponse (code = 400, message = "Invalid query input") })
+          @ApiResponse (code = 200, message = "Request fulfilled"),
+          @ApiResponse (code = 401, message = "User not authorized to call this endpoint"),
+          @ApiResponse (code = 404, message = "Resource not found"),
+          @ApiResponse (code = 500, message = "Internal server error"),
+          @ApiResponse (code = 400, message = "Invalid query input") })
   public Response getSpacesAdministrators(@Context UriInfo uriInfo) {
 
     String authenticatedUser = ConversationState.getCurrent().getIdentity().getUserId();
@@ -109,13 +118,14 @@ public class SpacesAdministrationRestResourcesV1 implements SocialRest {
   }
 
   @GET
-  @Path("spacesCreators")
+  @Path("permissions/spacesCreators")
   @ApiOperation(value = "Gets spaces creators memberships",
           httpMethod = "GET",
           response = Response.class,
           notes = "This returns space memberships in the following cases: <br/><ul><li>the sender of the space membership is the authenticated user</li><li>the authenticated user is a manager of the space</li><li>the authenticated user is the super user</li></ul>")
   @ApiResponses(value = {
           @ApiResponse (code = 200, message = "Request fulfilled"),
+          @ApiResponse (code = 401, message = "User not authorized to call this endpoint"),
           @ApiResponse (code = 404, message = "Resource not found"),
           @ApiResponse (code = 500, message = "Internal server error"),
           @ApiResponse (code = 400, message = "Invalid query input") })
@@ -140,7 +150,8 @@ public class SpacesAdministrationRestResourcesV1 implements SocialRest {
                 notes = "This updates the space membership in the following cases: <br/><ul><li>the user of the space membership is the authenticated user  but he cannot update his own membership to \"approved\" for a space with a \"validation\" subscription</li><li>the authenticated user is a manager of the space</li><li>the authenticated user is a spaces super manager</li></ul>")
   @ApiResponses(value = { 
     @ApiResponse (code = 200, message = "Request fulfilled"),
-    @ApiResponse (code = 500, message = "Internal server error due to data encoding") })
+          @ApiResponse (code = 401, message = "User not authorized to call this endpoint"),
+    @ApiResponse (code = 500, message = "Internal server error") })
   public Response updateSpacesAdministrators(@Context UriInfo uriInfo,
                                              @ApiParam(value = "Space membership object to be updated", required = true) List<MembershipEntityWrapper> model) {
 
@@ -167,7 +178,8 @@ public class SpacesAdministrationRestResourcesV1 implements SocialRest {
           notes = "This updates the space membership in the following cases: <br/><ul><li>the user of the space membership is the authenticated user  but he cannot update his own membership to \"approved\" for a space with a \"validation\" subscription</li><li>the authenticated user is a manager of the space</li><li>the authenticated user is a spaces super manager</li></ul>")
   @ApiResponses(value = {
           @ApiResponse (code = 200, message = "Request fulfilled"),
-          @ApiResponse (code = 500, message = "Internal server error due to data encoding") })
+          @ApiResponse (code = 401, message = "User not authorized to call this endpoint"),
+          @ApiResponse (code = 500, message = "Internal server error") })
   public Response updateSpacesCreators(@Context UriInfo uriInfo,
                                        @ApiParam(value = "Space membership object to be updated", required = true) List<MembershipEntityWrapper> model) {
 
@@ -184,5 +196,51 @@ public class SpacesAdministrationRestResourcesV1 implements SocialRest {
     spacesAdministrationService.updateSpacesCreatorsMemberships(memberships);
 
     return EntityBuilder.getResponse("", uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
+  }
+
+
+  /**
+   * Get all groups, filter by name if exists.
+   *
+   * This endpoint has been created in this class (instead of in Gatein project, where it would make more sense since
+   * its purpose is to fetch groups) because we have to check that the user is a spaces administrator (which is a social
+   * notion).
+   *
+   * @param q search text to filter groups
+   * @return List of groups
+   * @throws Exception
+   */
+  @GET
+  @Path("groups")
+  @ApiOperation(value = "Gets groups",
+          httpMethod = "GET",
+          response = Response.class,
+          notes = "This returns the list of groups containing the given search text, only if the authenticated user is a spaces administrator")
+  @ApiResponses(value = {
+          @ApiResponse (code = 200, message = "Request fulfilled"),
+          @ApiResponse (code = 401, message = "User not authorized to call this endpoint"),
+          @ApiResponse (code = 500, message = "Internal server error") })
+  public Response getGroups(@Context UriInfo uriInfo,
+                            @ApiParam(value = "Search text to filter groups") @QueryParam("q") String q,
+                            @ApiParam(value = "Offset") @QueryParam("offset") int offset,
+                            @ApiParam(value = "Limit") @QueryParam("limit") int limit) throws Exception {
+
+    String authenticatedUser = ConversationState.getCurrent().getIdentity().getUserId();
+
+    if(!spaceService.isSuperManager(authenticatedUser)) {
+      throw new WebApplicationException(Response.Status.UNAUTHORIZED);
+    }
+
+    offset = offset > 0 ? offset : DEFAULT_OFFSET;
+    limit = limit > 0 ? limit : DEFAULT_LIMIT;
+
+    List<Group> groups = new LinkedList<>();
+    ListAccess<Group> groupsListAccess = groupSearchService.searchGroups(q);
+    if(groupsListAccess != null) {
+      limit = limit < groupsListAccess.getSize() ? limit : groupsListAccess.getSize();
+      groups.addAll(Arrays.asList(groupsListAccess.load(offset, limit)));
+    }
+
+    return Response.ok(groups, MediaType.APPLICATION_JSON).build();
   }
 }
