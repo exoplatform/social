@@ -34,6 +34,8 @@
 package org.exoplatform.social.core.jpa.storage.entity;
 
 import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.persistence.*;
 
@@ -47,26 +49,29 @@ import org.exoplatform.commons.api.persistence.ExoEntity;
     + " WHERE groupSpacebinding.space.id = :spaceId and groupSpacebinding.spaceRole = :role") })
 public class GroupSpaceBindingEntity implements Serializable {
 
-  private static final long serialVersionUID = -1901782610164740670L;
+  private static final long      serialVersionUID = -1901782610164740670L;
 
   @Id
   @SequenceGenerator(name = "SEQ_SOC_GROUP_SPACE_BINDING_ID", sequenceName = "SEQ_SOC_GROUP_SPACE_BINDING_ID")
   @GeneratedValue(strategy = GenerationType.AUTO, generator = "SEQ_SOC_GROUP_SPACE_BINDING_ID")
   @Column(name = "GROUP_SPACE_BINDING_ID")
-  private long              id;
+  private long                   id;
 
   @ManyToOne
-  @JoinColumn(name = "SPACE_ID", referencedColumnName = "SPACE_ID")
-  private SpaceEntity       space;
+  @JoinColumn(name = "SPACE_ID", referencedColumnName = "SPACE_ID", nullable = false)
+  private SpaceEntity            space;
+
+  @OneToMany(mappedBy = "groupSpaceBinding", cascade = CascadeType.ALL, orphanRemoval = true)
+  private Set<UserSpaceBindingEntity> userSpaceBindingEntities = new HashSet<UserSpaceBindingEntity>();
 
   @Column(name = "GROUP_NAME")
-  private String            group;
+  private String                 group;
 
   @Column(name = "SPACE_ROLE")
-  private String            spaceRole;
+  private String                 spaceRole;
 
   @Column(name = "GROUP_ROLE")
-  private String            groupRole;
+  private String                 groupRole;
 
   public long getId() {
     return id;
@@ -106,5 +111,13 @@ public class GroupSpaceBindingEntity implements Serializable {
 
   public void setGroupRole(String groupRole) {
     this.groupRole = groupRole;
+  }
+
+  public Set<UserSpaceBindingEntity> getUserSpaceBindingEntities() {
+    return userSpaceBindingEntities;
+  }
+
+  public void setUserSpaceBindingEntity(Set<UserSpaceBindingEntity> userSpaceBindingEntities) {
+    this.userSpaceBindingEntities = userSpaceBindingEntities;
   }
 }

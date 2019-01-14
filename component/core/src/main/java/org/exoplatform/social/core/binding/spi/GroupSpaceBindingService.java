@@ -20,6 +20,7 @@ package org.exoplatform.social.core.binding.spi;
 import java.util.List;
 
 import org.exoplatform.social.core.binding.model.GroupSpaceBinding;
+import org.exoplatform.social.core.binding.model.UserSpaceBinding;
 
 /**
  * Provides methods to manage the binding between a space and an organization
@@ -38,12 +39,30 @@ public interface GroupSpaceBindingService {
   List<GroupSpaceBinding> findSpaceBindings(String spaceId, String spaceRole);
 
   /**
+   * Gets a list containing all the groups binding for a space/role.
+   *
+   * @param spaceId The space Id.
+   * @param userName The space member's username.
+   * @return The list of users binding for this space member.
+   */
+  List<UserSpaceBinding> findUserBindings(String spaceId, String userName);
+
+  /**
    * Saves a list of group binding for a specific space.
    *
    * @param spaceId The space Id.
    * @param groupSpaceBindings The list of bindings to be created for the space.
    */
   void saveSpaceBindings(String spaceId, List<GroupSpaceBinding> groupSpaceBindings);
+
+  /**
+   * Saves a list of group binding for a specific space.
+   *
+   * @param userName The userName.
+   * @param userSpaceBindings The list of user bindings to be created for the
+   *          member.
+   */
+  void saveUserBindings(String userName, List<UserSpaceBinding> userSpaceBindings);
 
   /**
    * Delete a group binding. When a binding is deleted, all user in the group will
@@ -54,6 +73,20 @@ public interface GroupSpaceBindingService {
   void deleteSpaceBinding(GroupSpaceBinding groupSpaceBinding);
 
   /**
+   * Delete a user binding. When a binding is deleted
+   *
+   * @param userSpaceBinding The user binding to be deleted.
+   */
+  void deleteUserBinding(UserSpaceBinding userSpaceBinding);
+
+  /**
+   * Delete all the binding of a user
+   *
+   * @param user The user .
+   */
+  void deleteAllUserBindings(String user);
+
+  /**
    * Delete all group bindings for a specific space / role. When bindings is
    * deleted, all users in the group will be remove from space.
    * 
@@ -61,4 +94,14 @@ public interface GroupSpaceBindingService {
    * @param spaceRole The role in the space (manager or member).
    */
   void deleteAllSpaceBindings(String spaceId, String spaceRole);
+
+  /**
+   * Check if member has binding for this space
+   *
+   * @param spaceId The space Id.
+   * @param userName The username of the member.
+   * @return true if the member has binding for this space.
+   */
+  boolean hasUserBindings(String spaceId, String userName);
+
 }
