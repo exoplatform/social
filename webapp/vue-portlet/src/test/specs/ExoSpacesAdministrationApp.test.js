@@ -1,7 +1,12 @@
-import { shallow } from 'vue-test-utils';
-import {spaceConstants} from '../../main/webapp/spaces-administration-app/spaceAdministrationConstants.js';
+import { createLocalVue, shallowMount } from '@vue/test-utils';
+import { spaceConstants } from '../../main/webapp/spaces-administration-app/spaceAdministrationConstants.js';
 import ExoSpacesAdministrationManageSpaces from '../../main/webapp/spaces-administration-app/components/ExoSpacesAdministrationManageSpaces';
 import ExoModal from '../../main/webapp/spaces-administration-app/components/modal/ExoModal';
+
+const localVue = createLocalVue();
+
+// mock exo-tooltip directive
+localVue.directive('exo-tooltip', function() {});
 
 describe('ExoSpacesAdministrationManageSpaces.test.js', () => {
   let cmp;
@@ -21,7 +26,8 @@ describe('ExoSpacesAdministrationManageSpaces.test.js', () => {
     showConfirmMessageModal: false
   };
   beforeEach(() => {
-    cmp = shallow(ExoSpacesAdministrationManageSpaces, {
+    cmp = shallowMount(ExoSpacesAdministrationManageSpaces, {
+      localVue,
       stubs: {
         'exo-modal': ExoModal
       },
@@ -43,15 +49,17 @@ describe('ExoSpacesAdministrationManageSpaces.test.js', () => {
   
   it('should show confirm message modal when deleting space', () => {
     cmp.vm.deleteSpaceById(1, 0);
-    expect(cmp.vm.showConfirmMessageModal).toBeTruthy();
+    const confirmPopup = cmp.find('.uiPopup');
+    expect(confirmPopup.isVisible()).toBeTruthy();
   });
   
   it('should close confirm message modal when clicking on close icon', () => {
     cmp.vm.showConfirmMessageModal = true;
-    const closeButton = cmp.find('.btn');
-    expect(cmp.vm.showConfirmMessageModal).toBe(true);
+    const confirmPopup = cmp.find('.uiPopup');
+    expect(confirmPopup.isVisible()).toBeTruthy();
+    const closeButton = confirmPopup.find('.uiIconClose');
     closeButton.trigger('click');
-    expect(cmp.vm.showConfirmMessageModal).toBe(false);
+    expect(confirmPopup.isVisible()).toBe(false);
   });
 
   it('should fetch spaces with keyword when a search is triggered', () => {
