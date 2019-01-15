@@ -151,9 +151,12 @@ export default {
       }
     },
     removeSuggestedItemCreators(item) {
+      const suggesterContainer = $('#add-creators-suggester');
       for(let i=this.creators.length-1; i>=0; i--) {
         if(this.creators[i] === item) {
           this.creators.splice(i, 1);
+          suggesterContainer[0].selectize.removeOption(item);
+          suggesterContainer[0].selectize.removeItem(item);
         }
       }
     },
@@ -257,9 +260,12 @@ export default {
       }
     },
     removeSuggestedItemAdinistrators(item) {
+      const suggesterContainer = $('#add-administrators-suggester');
       for(let i=this.administrators.length-1; i>=0; i--) {
         if(this.administrators[i] === item) {
           this.administrators.splice(i, 1);
+          suggesterContainer[0].selectize.removeOption(item);
+          suggesterContainer[0].selectize.removeItem(item);
         }
       }
     },
