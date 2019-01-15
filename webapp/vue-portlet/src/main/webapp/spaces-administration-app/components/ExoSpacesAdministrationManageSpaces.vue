@@ -96,11 +96,11 @@ export default {
     },
     deleteSpaceById(id, index){
       this.showConfirmMessageModal = true;
-      this.spaceToDeleteIndex = id;
+      this.spaceToDeleteId = id;
       this.spaceToDeleteIndex = index;
     },
     confirmDelete(){
-      spaceAdministrationServices.deleteSpaceById(this.spaceToDeleteIndex).then(()=> {
+      spaceAdministrationServices.deleteSpaceById(this.spaceToDeleteId).then(() => {
         this.spaces.splice(this.spaceToDeleteIndex, 1);
       });
       this.showConfirmMessageModal = false;
