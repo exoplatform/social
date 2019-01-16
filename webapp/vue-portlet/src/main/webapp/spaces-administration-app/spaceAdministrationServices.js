@@ -18,9 +18,11 @@ export function deleteSpaceById(id){
     method: 'delete'});
 }
 
-export function getSpaceLinkSetting(spaceDisplayName){
+export function getSpaceLinkSetting(spaceDisplayName,groupId){
   const spaceName = spaceDisplayName.toLowerCase().split(' ').join('_');
-  return `${spaceConstants.PORTAL}${spaceConstants.PROFILE_SPACE_LINK}${spaceName}/${spaceName}/settings`;
+  const groupIdTab = groupId.toLowerCase().split('/');
+  const groupName  = groupIdTab[groupIdTab.length-1];
+  return `${spaceConstants.PORTAL}${spaceConstants.PROFILE_SPACE_LINK}${groupName}/${spaceName}/settings`;
 }
 
 export function getGroups(query) {

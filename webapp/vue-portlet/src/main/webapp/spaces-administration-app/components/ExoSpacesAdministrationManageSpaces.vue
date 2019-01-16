@@ -25,7 +25,7 @@
         <td><img v-if="space.avatarUrl != null" :src="space.avatarUrl" class="avatar" /> <img v-else :src="avatar" class="avatar" />  {{ space.displayName }}</td>
         <td>{{ space.description }}</td>
         <td class="center actionContainer" >
-          <a v-exo-tooltip.bottom.body="$t('social.spaces.administration.manageSpaces.actions.edit')" :href="getSpaceLinkSetting(space.displayName)" class="actionIcon" target="_blank">
+          <a v-exo-tooltip.bottom.body="$t('social.spaces.administration.manageSpaces.actions.edit')" :href="getSpaceLinkSetting(space.displayName,space.groupId)" class="actionIcon" target="_blank">
             <i class="uiIconEdit uiIconLightGray"></i>
           </a>
           <a v-exo-tooltip.bottom.body="$t('social.spaces.administration.manageSpaces.actions.delete')" class="actionIcon" @click="deleteSpaceById(space.id, index)">
@@ -105,8 +105,8 @@ export default {
       });
       this.showConfirmMessageModal = false;
     },
-    getSpaceLinkSetting(spaceDisplayName){
-      return spaceAdministrationServices.getSpaceLinkSetting(spaceDisplayName);
+    getSpaceLinkSetting(spaceDisplayName,groupId){
+      return spaceAdministrationServices.getSpaceLinkSetting(spaceDisplayName,groupId);
     },
     searchSpaces(){
       spaceAdministrationServices.searchSpaces(this.searchText).then(data =>{
