@@ -25,6 +25,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
@@ -49,6 +50,7 @@ public interface SpaceRestResources extends SocialRest {
  */
   @GET
   public abstract Response getSpaces(@Context UriInfo uriInfo,
+                                     @Context Request request,
                                      @QueryParam("q") String q,
                                      @QueryParam("offset") int offset,
                                      @QueryParam("limit") int limit,

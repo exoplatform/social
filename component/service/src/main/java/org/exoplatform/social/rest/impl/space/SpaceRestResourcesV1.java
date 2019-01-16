@@ -101,6 +101,7 @@ public class SpaceRestResourcesV1 implements SpaceRestResources {
     @ApiResponse (code = 500, message = "Internal server error"),
     @ApiResponse (code = 400, message = "Invalid query input") })
   public Response getSpaces(@Context UriInfo uriInfo,
+                            @Context Request request,
                             @ApiParam(value = "Space name search information", required = false) @QueryParam("q") String q,
                             @ApiParam(value = "Offset", required = false, defaultValue = "0") @QueryParam("offset") int offset,
                             @ApiParam(value = "Limit", required = false, defaultValue = "20") @QueryParam("limit") int limit,
@@ -151,7 +152,21 @@ public class SpaceRestResourcesV1 implements SpaceRestResources {
       collectionSpace.setSize(listAccess.getSize());
     }
     
-    return EntityBuilder.getResponse(collectionSpace, uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
+    EntityTag eTag = null;
+    if (collectionSpace != null) {
+      eTag = new EntityTag(Integer.toString(collectionSpace.hashCode()));
+    }
+    //
+    Response.ResponseBuilder builder = (eTag == null ? null : request.evaluatePreconditions(eTag));
+    if (builder == null) {
+      builder = EntityBuilder.getResponseBuilder(collectionSpace, uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
+      builder.tag(eTag);
+    }
+
+    CacheControl cc = new CacheControl();
+    builder.cacheControl(cc);
+
+    return builder.build();
   }
   
   /**
