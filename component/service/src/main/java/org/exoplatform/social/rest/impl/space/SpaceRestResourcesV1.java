@@ -42,6 +42,7 @@ import javax.ws.rs.core.*;
 
 
 import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.exoplatform.commons.utils.CommonsUtils;
 import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.container.PortalContainer;
@@ -103,8 +104,8 @@ public class SpaceRestResourcesV1 implements SpaceRestResources {
                             @ApiParam(value = "Space name search information", required = false) @QueryParam("q") String q,
                             @ApiParam(value = "Offset", required = false, defaultValue = "0") @QueryParam("offset") int offset,
                             @ApiParam(value = "Limit", required = false, defaultValue = "20") @QueryParam("limit") int limit,
-                            @ApiParam(value = "SortBy", required = false) @QueryParam("sortBy") SortBy sortBy,
-                            @ApiParam(value = "OrderBy", required = false) @QueryParam("orderBy") OrderBy orderBy,
+                            @ApiParam(value = "Sort", required = false) @QueryParam("sort") String sort,
+                            @ApiParam(value = "Order", required = false) @QueryParam("order") String order,
                             @ApiParam(value = "Returning the number of spaces found or not", defaultValue = "false") @QueryParam("returnSize") boolean returnSize,
                             @ApiParam(value = "Asking for a full representation of a specific subresource, ex: members or managers", required = false) @QueryParam("expand") String expand) throws Exception {
 
@@ -116,15 +117,22 @@ public class SpaceRestResourcesV1 implements SpaceRestResources {
     ListAccess<Space> listAccess = null;
     SpaceFilter spaceFilter = new SpaceFilter();
 
-    if (q != null)
+    if (q != null) {
       spaceFilter.setSpaceNameSearchCondition(q);
+    }
     
-    if (orderBy == null)
-      orderBy = Sorting.OrderBy.DESC;
-    if (sortBy == null)
-      sortBy = Sorting.SortBy.DATE;
+    if (StringUtils.isNotBlank(sort)) {
+      try {
+        SortBy sortBy = Sorting.SortBy.valueOf(sort.toUpperCase());
+        OrderBy orderBy = Sorting.OrderBy.ASC;
+        if (StringUtils.isNotBlank(order)) {
+          orderBy = Sorting.OrderBy.valueOf(order.toUpperCase());
+        }
+        spaceFilter.setSorting(new Sorting(sortBy, orderBy));
+      } catch(Exception e) {
 
-    spaceFilter.setSorting(new Sorting(sortBy, orderBy));
+      }
+    }
 
     String authenticatedUser = ConversationState.getCurrent().getIdentity().getUserId();
     if (spaceService.isSuperManager(authenticatedUser)) {

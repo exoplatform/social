@@ -1,15 +1,15 @@
 import {spaceConstants} from './spaceAdministrationConstants.js';
 
 export function getSpaces(){
-  return fetch(`${spaceConstants.SOCIAL_SPACE_API}?limit=${spaceConstants.SPACES_PER_PAGE}&returnSize=true`, {credentials: 'include'}).then(resp => resp.json());
+  return fetch(`${spaceConstants.SOCIAL_SPACE_API}?sort=date&order=desc&limit=${spaceConstants.SPACES_PER_PAGE}&returnSize=true`, {credentials: 'include'}).then(resp => resp.json());
 }
 
 export function searchSpaces(search){
-  return fetch(`${spaceConstants.SOCIAL_SPACE_API}?q=${search}&limit=${spaceConstants.SPACES_PER_PAGE}&returnSize=true`, {credentials: 'include'}).then(resp => resp.json());
+  return fetch(`${spaceConstants.SOCIAL_SPACE_API}?q=${search}&sort=date&order=desc&limit=${spaceConstants.SPACES_PER_PAGE}&returnSize=true`, {credentials: 'include'}).then(resp => resp.json());
 }
 
 export function getSpacesPerPage(offset){
-  return fetch(`${spaceConstants.SOCIAL_SPACE_API}?offset=${offset}&limit=${spaceConstants.SPACES_PER_PAGE}&returnSize=true`, {credentials: 'include'}).then(resp => resp.json());
+  return fetch(`${spaceConstants.SOCIAL_SPACE_API}?offset=${offset}&sort=date&order=desc&limit=${spaceConstants.SPACES_PER_PAGE}&returnSize=true`, {credentials: 'include'}).then(resp => resp.json());
 }
 
 export function deleteSpaceById(id){

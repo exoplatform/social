@@ -84,7 +84,7 @@ describe('ExoSpacesAdministrationManageSpaces.test.js', () => {
     showIconSearch.trigger('click');
 
     expect(global.fetch).toHaveBeenCalledTimes(1);
-    expect(global.fetch).toHaveBeenCalledWith('portal/rest/v1/social/spaces?q=space1&limit=30&returnSize=true', {'credentials': 'include'});
+    expect(global.fetch).toHaveBeenCalledWith('portal/rest/v1/social/spaces?q=space1&sort=date&order=desc&limit=30&returnSize=true', {'credentials': 'include'});
 
     global.fetch.mockClear();
   });

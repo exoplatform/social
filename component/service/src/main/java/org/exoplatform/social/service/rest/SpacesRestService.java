@@ -345,7 +345,7 @@ public class SpacesRestService implements ResourceContainer {
    * @throws Exception
    * @LevelAPI Platform
    * @anchor SpacesRestService.suggestSpacenames
-   * @deprecated Deprecated from 4.3.x. Replaced by a new API {@link SpaceRestResourcesV1#getSpaces(UriInfo, String, int, int, SortBy, OrderBy, boolean, String)}
+   * @deprecated Deprecated from 4.3.x. Replaced by a new API {@link SpaceRestResourcesV1#getSpaces(UriInfo, String, int, int, String, String, boolean, String)}
    */
   @GET
   @RolesAllowed("users")
