@@ -68,6 +68,16 @@ public class RDBMSGroupSpaceBindingStorageImpl implements GroupSpaceBindingStora
     return buildUserBindingListFromEntities(userSpaceBindingDAO.findUserBindingsByMember(Long.parseLong(spaceId), username));
   }
 
+  public List<UserSpaceBinding> findUserSpaceBindingsByGroup(String group,
+                                                             String groupRole,
+                                                             String userName) throws GroupSpaceBindingStorageException {
+    return buildUserBindingListFromEntities(userSpaceBindingDAO.findUserBindingsbyGroup(group, groupRole, userName));
+  }
+
+  public List<UserSpaceBinding> findUserAllBindingsbyGroupMembership(String group, String groupRole) {
+    return buildUserBindingListFromEntities(userSpaceBindingDAO.findUserAllBindingsbyGroupMembership(group, groupRole));
+  }
+
   @ExoTransactional
   public GroupSpaceBinding saveGroupBinding(GroupSpaceBinding binding, boolean isNew) throws GroupSpaceBindingStorageException {
     GroupSpaceBindingEntity entity;
@@ -108,7 +118,7 @@ public class RDBMSGroupSpaceBindingStorageImpl implements GroupSpaceBindingStora
   }
 
   @Override
-  public boolean hasUserBindings(String spaceId,String userName) {
+  public boolean hasUserBindings(String spaceId, String userName) {
     return userSpaceBindingDAO.hasUserBindings(Long.parseLong(spaceId), userName);
   }
 

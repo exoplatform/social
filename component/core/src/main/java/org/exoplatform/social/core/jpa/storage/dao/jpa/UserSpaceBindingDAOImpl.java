@@ -38,6 +38,25 @@ public class UserSpaceBindingDAOImpl extends GenericDAOJPAImpl<UserSpaceBindingE
   }
 
   @Override
+  public List<UserSpaceBindingEntity> findUserBindingsbyGroup(String group, String groupRole, String userName) {
+    TypedQuery<UserSpaceBindingEntity> query = getEntityManager().createNamedQuery("SocUserSpaceBinding.findUserBindingsbyGroup",
+                                                                                   UserSpaceBindingEntity.class);
+    query.setParameter("group", group);
+    query.setParameter("groupRole", groupRole);
+    query.setParameter("userName", userName);
+    return query.getResultList();
+  }
+
+  @Override
+  public List<UserSpaceBindingEntity> findUserAllBindingsbyGroupMembership(String group, String groupRole) {
+    TypedQuery<UserSpaceBindingEntity> query = getEntityManager().createNamedQuery("SocUserSpaceBinding.findUserAllBindingsbyGroupMembership",
+                                                                                   UserSpaceBindingEntity.class);
+    query.setParameter("group", group);
+    query.setParameter("groupRole", groupRole);
+    return query.getResultList();
+  }
+
+  @Override
   public void deleteAllUserBindings(String userName) {
     Query query = getEntityManager().createNamedQuery("SocUserSpaceBinding.deleteAllUserBindings");
     query.setParameter("userName", userName);
@@ -46,10 +65,10 @@ public class UserSpaceBindingDAOImpl extends GenericDAOJPAImpl<UserSpaceBindingE
 
   @Override
   public boolean hasUserBindings(Long spaceId, String userName) {
-      TypedQuery<Long> query = getEntityManager().createNamedQuery("SocUserSpaceBinding.countBindingsForMembers",Long.class);
-      query.setParameter("spaceId", spaceId);
-      query.setParameter("userName", userName);
-      return query.getSingleResult().intValue()>0;
+    TypedQuery<Long> query = getEntityManager().createNamedQuery("SocUserSpaceBinding.countBindingsForMembers", Long.class);
+    query.setParameter("spaceId", spaceId);
+    query.setParameter("userName", userName);
+    return query.getSingleResult().intValue() > 0;
   }
 
 }
