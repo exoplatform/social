@@ -30,6 +30,8 @@ import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.services.organization.MembershipTypeHandler;
+import org.exoplatform.social.core.binding.model.UserSpaceBinding;
+import org.exoplatform.social.core.binding.spi.GroupSpaceBindingService;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
@@ -105,6 +107,7 @@ public class UISpaceMember extends UIContainer {
   String spaceURL = null;
   private boolean hasErr = false;
   private IdentityManager identityManager;
+  private GroupSpaceBindingService groupSpaceBindingService;
 
   /**
    * The flag notifies a new search when clicks search icon or presses enter.
@@ -120,6 +123,7 @@ public class UISpaceMember extends UIContainer {
   public UISpaceMember() throws Exception {
     addChild(UIUserInvitation.class, null, null);
     identityManager = ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(IdentityManager.class);
+    groupSpaceBindingService = ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(GroupSpaceBindingService.class);
     iteratorPendingUsers = createUIComponent(UIPageIterator.class, null, iteratorPendingID);
     iteratorInvitedUsers = createUIComponent(UIPageIterator.class, null, iteratorInvitedID);
     iteratorExistingUsers = createUIComponent(UIPageIterator.class, null, iteratorExistingID);
@@ -682,4 +686,30 @@ public class UISpaceMember extends UIContainer {
     }
     return new String[] {getFullName(userName), MSG_ERROR_SELF_REMOVE_LEADER_IS, MSG_ERROR_SELF_REMOVE_LEADER_REMOVING_THE_RIGHTS};
   }
+
+    /**
+     * check if the user has exiting group binding for this space.
+     *
+     * @param userId
+     * @return true if the user has exiting group binding for this space
+     */
+    public boolean hasUserBindings(String userId) {
+        return groupSpaceBindingService.hasUserBindings(spaceId,userId);
+    }
+
+    /**
+     * Get the list of group bindings for the user to display as a tooltips
+     *
+     * @param userId
+     * @return the list of groups to display
+     */
+    public String getGroupbindingTooltips(String userId) {
+        String groups = "";
+        for (UserSpaceBinding userSpaceBinding:groupSpaceBindingService.findUserBindings(spaceId,userId))
+        {
+            groups += " " + userSpaceBinding.getGroupBinding().getGroup() + ",";
+        }
+        groups = groups.substring(0, groups.length() - 1);
+        return groups;
+    }
 }
