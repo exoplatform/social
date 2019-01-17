@@ -19,6 +19,11 @@ package org.exoplatform.social.core.binding.spi;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.exoplatform.commons.utils.ListAccess;
+import org.exoplatform.container.ExoContainerContext;
+import org.exoplatform.services.organization.OrganizationService;
+import org.exoplatform.services.organization.User;
+import org.exoplatform.social.core.manager.IdentityManager;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
@@ -30,6 +35,7 @@ import org.exoplatform.container.xml.InitParams;
 import org.exoplatform.social.core.binding.impl.GroupSpaceBindingServiceImpl;
 import org.exoplatform.social.core.binding.model.GroupSpaceBinding;
 import org.exoplatform.social.core.binding.model.UserSpaceBinding;
+import org.exoplatform.social.core.space.spi.SpaceService;
 import org.exoplatform.social.core.storage.api.GroupSpaceBindingStorage;
 import org.exoplatform.social.core.test.AbstractCoreTest;
 
@@ -41,6 +47,12 @@ public class GroupSpaceBindingServiceTest extends AbstractCoreTest {
 
   @Mock
   private InitParams               initParams;
+
+  @Mock
+  private SpaceService             spaceService;
+
+  @Mock
+  private OrganizationService      orgService;
 
   /**
    * Test
@@ -72,7 +84,7 @@ public class GroupSpaceBindingServiceTest extends AbstractCoreTest {
            .thenReturn(groupSpaceBindings);
 
     // When
-    GroupSpaceBindingService groupSpaceBindingService = new GroupSpaceBindingServiceImpl(initParams, groupSpaceBindingStorage);
+    GroupSpaceBindingService groupSpaceBindingService = new GroupSpaceBindingServiceImpl(initParams, groupSpaceBindingStorage, orgService, spaceService);
     List<GroupSpaceBinding> results = groupSpaceBindingService.findSpaceBindings("1", "member");
     GroupSpaceBinding result1 = results.get(0);
     GroupSpaceBinding result2 = results.get(1);
@@ -134,7 +146,7 @@ public class GroupSpaceBindingServiceTest extends AbstractCoreTest {
            .thenReturn(userSpaceBindings);
 
     // When
-    GroupSpaceBindingService groupSpaceBindingService = new GroupSpaceBindingServiceImpl(initParams, groupSpaceBindingStorage);
+    GroupSpaceBindingService groupSpaceBindingService = new GroupSpaceBindingServiceImpl(initParams, groupSpaceBindingStorage, orgService, spaceService);
     List<UserSpaceBinding> results = groupSpaceBindingService.findUserBindings("1", "john");
     UserSpaceBinding result1 = results.get(0);
     UserSpaceBinding result2 = results.get(1);
@@ -173,7 +185,7 @@ public class GroupSpaceBindingServiceTest extends AbstractCoreTest {
     userSpaceBindings.add(ub1);
 
     // When
-    GroupSpaceBindingService groupSpaceBindingService = new GroupSpaceBindingServiceImpl(initParams, groupSpaceBindingStorage);
+    GroupSpaceBindingService groupSpaceBindingService = new GroupSpaceBindingServiceImpl(initParams, groupSpaceBindingStorage, orgService, spaceService);
     groupSpaceBindingService.deleteUserBinding(ub1);
 
     // Then
@@ -200,7 +212,7 @@ public class GroupSpaceBindingServiceTest extends AbstractCoreTest {
     binding1.setSpaceId("1");
 
     // When
-    GroupSpaceBindingService groupSpaceBindingService = new GroupSpaceBindingServiceImpl(initParams, groupSpaceBindingStorage);
+    GroupSpaceBindingService groupSpaceBindingService = new GroupSpaceBindingServiceImpl(initParams, groupSpaceBindingStorage, orgService, spaceService);
     groupSpaceBindingService.deleteSpaceBinding(binding1);
 
     // Then
@@ -258,7 +270,7 @@ public class GroupSpaceBindingServiceTest extends AbstractCoreTest {
            .thenReturn(resultSpaceBindings);
 
     // When
-    GroupSpaceBindingService groupSpaceBindingService = new GroupSpaceBindingServiceImpl(initParams, groupSpaceBindingStorage);
+    GroupSpaceBindingService groupSpaceBindingService = new GroupSpaceBindingServiceImpl(initParams, groupSpaceBindingStorage, orgService, spaceService);
     groupSpaceBindingService.deleteAllSpaceBindings("1", "member");
 
     // Then
@@ -278,7 +290,7 @@ public class GroupSpaceBindingServiceTest extends AbstractCoreTest {
     // Given
 
     // When
-    GroupSpaceBindingService groupSpaceBindingService = new GroupSpaceBindingServiceImpl(initParams, groupSpaceBindingStorage);
+    GroupSpaceBindingService groupSpaceBindingService = new GroupSpaceBindingServiceImpl(initParams, groupSpaceBindingStorage, orgService, spaceService);
     groupSpaceBindingService.deleteAllUserBindings("john");
 
     // Then
@@ -322,8 +334,11 @@ public class GroupSpaceBindingServiceTest extends AbstractCoreTest {
     binding3.setSpaceId("1");
     groupSpaceBindings.add(binding3);
 
+    orgService = ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(OrganizationService.class);
+    spaceService = ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(SpaceService.class);
+
     // When
-    GroupSpaceBindingService groupSpaceBindingService = new GroupSpaceBindingServiceImpl(initParams, groupSpaceBindingStorage);
+    GroupSpaceBindingService groupSpaceBindingService = new GroupSpaceBindingServiceImpl(initParams, groupSpaceBindingStorage, orgService, spaceService);
     groupSpaceBindingService.saveSpaceBindings("1", groupSpaceBindings);
 
     // Then
@@ -356,7 +371,7 @@ public class GroupSpaceBindingServiceTest extends AbstractCoreTest {
     userSpaceBindings.add(ub1);
 
     // When
-    GroupSpaceBindingService groupSpaceBindingService = new GroupSpaceBindingServiceImpl(initParams, groupSpaceBindingStorage);
+    GroupSpaceBindingService groupSpaceBindingService = new GroupSpaceBindingServiceImpl(initParams, groupSpaceBindingStorage, orgService, spaceService);
     groupSpaceBindingService.saveUserBindings("john", userSpaceBindings);
 
     // Then
@@ -364,20 +379,19 @@ public class GroupSpaceBindingServiceTest extends AbstractCoreTest {
   }
 
   /**
-     * Test {@link GroupSpaceBindingService#hasUserBindings(String, String)}
-     *
-     * @throws Exception
-     */
-    @Test
-    public void hasUserBindings() throws Exception {
-        // Given
-        Mockito.when(groupSpaceBindingStorage.hasUserBindings(Mockito.eq("1"), Mockito.eq("john")))
-                .thenReturn(true);
+   * Test {@link GroupSpaceBindingService#hasUserBindings(String, String)}
+   *
+   * @throws Exception
+   */
+  @Test
+  public void hasUserBindings() throws Exception {
+    // Given
+    Mockito.when(groupSpaceBindingStorage.hasUserBindings(Mockito.eq("1"), Mockito.eq("john"))).thenReturn(true);
 
-        // When
-        GroupSpaceBindingService groupSpaceBindingService = new GroupSpaceBindingServiceImpl(initParams, groupSpaceBindingStorage);
-        
-        // Then
-        assertEquals(true, groupSpaceBindingService.hasUserBindings("1", "john"));
-    }
+    // When
+    GroupSpaceBindingService groupSpaceBindingService = new GroupSpaceBindingServiceImpl(initParams, groupSpaceBindingStorage, orgService, spaceService);
+
+    // Then
+    assertEquals(true, groupSpaceBindingService.hasUserBindings("1", "john"));
+  }
 }
