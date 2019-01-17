@@ -39,7 +39,7 @@ import org.exoplatform.social.core.space.SpacesAdministrationService;
 /**
  * Service to manage administration of spaces
  */
-@ManagedBy(SpaceAdministrationServiceManagerBean.class)
+@ManagedBy(SpacesAdministrationServiceManagerBean.class)
 public class SpacesAdministrationServiceImpl implements Startable, SpacesAdministrationService {
 
   private static final Log LOG = ExoLogger.getLogger(SpacesAdministrationServiceImpl.class);
@@ -120,7 +120,7 @@ public class SpacesAdministrationServiceImpl implements Startable, SpacesAdminis
    * {@inheritDoc}
    */
   @Override
-  public List<MembershipEntry> getSpaceCreatorsMemberships() {
+  public List<MembershipEntry> getSpacesCreatorsMemberships() {
     return Collections.unmodifiableList(spaceCreatorsMemberships);
   }
 
@@ -165,20 +165,20 @@ public class SpacesAdministrationServiceImpl implements Startable, SpacesAdminis
     SettingValue<String> creators = (SettingValue<String>) settingService.get(Context.GLOBAL, Scope.GLOBAL, SPACES_CREATORS_SETTING_KEY);
     if (creators != null && !StringUtils.isBlank(creators.getValue())) {
       String[] creatorsArray = creators.getValue().split(",");
-      addSpaceCreatorsMemberships(creatorsArray);
+      addSpacesCreatorsMemberships(creatorsArray);
     } else if (initParams != null) {
       ValueParam spacesCreatorsParam = initParams.getValueParam(SPACES_CREATORS_PARAM);
       if (spacesCreatorsParam != null) {
         String spacesCreatorsMemberships = spacesCreatorsParam.getValue();
         if (StringUtils.isNotBlank(spacesCreatorsMemberships)) {
           String[] spacesCreatorsMembershipsArray = spacesCreatorsMemberships.split(",");
-          addSpaceCreatorsMemberships(spacesCreatorsMembershipsArray);
+          addSpacesCreatorsMemberships(spacesCreatorsMembershipsArray);
         }
       }
     }
   }
 
-  private void addSpaceCreatorsMemberships(String[] creatorsArray) {
+  private void addSpacesCreatorsMemberships(String[] creatorsArray) {
     for(String creatorArray : creatorsArray) {
       if (StringUtils.isBlank(creatorArray)) {
         continue;
@@ -263,7 +263,7 @@ public class SpacesAdministrationServiceImpl implements Startable, SpacesAdminis
       }
       identity = new org.exoplatform.services.security.Identity(userId, entries);
     }
-    List<MembershipEntry> spacesCreatorsMemberships = getSpaceCreatorsMemberships();
+    List<MembershipEntry> spacesCreatorsMemberships = getSpacesCreatorsMemberships();
     if (spacesCreatorsMemberships != null && !spacesCreatorsMemberships.isEmpty()) {
       for (MembershipEntry spacesCreatorMembership : spacesCreatorsMemberships) {
         if (spacesCreatorMembership.getMembershipType().equals("*")) {

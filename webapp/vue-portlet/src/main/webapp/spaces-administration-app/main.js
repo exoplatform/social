@@ -1,12 +1,12 @@
 import './components/initComponents.js';
-import {spaceConstants} from './spaceAdministrationConstants.js';
+import { spacesConstants } from './spacesAdministrationConstants.js';
 import * as spacesAdministrationDirectives from './spacesAdministrationDirectives.js';
 
 // getting language of the PLF 
 const lang = typeof eXo !== 'undefined' ? eXo.env.portal.language : 'en';
 
 // should expose the locale ressources as REST API 
-const url = `${spaceConstants.PORTAL}/${spaceConstants.PORTAL_REST}/i18n/bundle/locale.portlet.social.SpacesAdministrationPortlet-${lang}.json`;
+const url = `${spacesConstants.PORTAL}/${spacesConstants.PORTAL_REST}/i18n/bundle/locale.portlet.social.SpacesAdministrationPortlet-${lang}.json`;
 
 Vue.directive('exo-tooltip', spacesAdministrationDirectives.tooltip);
 

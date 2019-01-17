@@ -1,15 +1,15 @@
-import {spaceConstants} from './spaceAdministrationConstants.js';
+import { spacesConstants } from './spacesAdministrationConstants.js';
 
 export function getSpaces(){
-  return fetch(`${spaceConstants.SOCIAL_SPACE_API}?sort=date&order=desc&limit=${spaceConstants.SPACES_PER_PAGE}&returnSize=true`, {credentials: 'include'}).then(resp => resp.json());
+  return fetch(`${spacesConstants.SOCIAL_SPACE_API}?sort=date&order=desc&limit=${spacesConstants.SPACES_PER_PAGE}&returnSize=true`, {credentials: 'include'}).then(resp => resp.json());
 }
 
 export function searchSpaces(search){
-  return fetch(`${spaceConstants.SOCIAL_SPACE_API}?q=${search}&sort=date&order=desc&limit=${spaceConstants.SPACES_PER_PAGE}&returnSize=true`, {credentials: 'include'}).then(resp => resp.json());
+  return fetch(`${spacesConstants.SOCIAL_SPACE_API}?q=${search}&sort=date&order=desc&limit=${spacesConstants.SPACES_PER_PAGE}&returnSize=true`, {credentials: 'include'}).then(resp => resp.json());
 }
 
 export function getSpacesPerPage(offset){
-  return fetch(`${spaceConstants.SOCIAL_SPACE_API}?offset=${offset}&sort=date&order=desc&limit=${spaceConstants.SPACES_PER_PAGE}&returnSize=true`, {credentials: 'include'}).then(resp => resp.json());
+  return fetch(`${spacesConstants.SOCIAL_SPACE_API}?offset=${offset}&sort=date&order=desc&limit=${spacesConstants.SPACES_PER_PAGE}&returnSize=true`, {credentials: 'include'}).then(resp => resp.json());
 }
 
 export function deleteSpaceById(id){
@@ -22,15 +22,15 @@ export function getSpaceLinkSetting(spaceDisplayName,groupId){
   const spaceName = spaceDisplayName.toLowerCase().split(' ').join('_');
   const groupIdTab = groupId.toLowerCase().split('/');
   const groupName  = groupIdTab[groupIdTab.length-1];
-  return `${spaceConstants.PORTAL}${spaceConstants.PROFILE_SPACE_LINK}${groupName}/${spaceName}/settings`;
+  return `${spacesConstants.PORTAL}${spacesConstants.PROFILE_SPACE_LINK}${groupName}/${spaceName}/settings`;
 }
 
 export function getGroups(query) {
-  return fetch(`${spaceConstants.GROUP_API}?q=${query}`, {credentials: 'include'}).then(resp => resp.json());
+  return fetch(`${spacesConstants.GROUP_API}?q=${query}`, {credentials: 'include'}).then(resp => resp.json());
 }
 
 export function getSpacesAdministrationSetting(key){
-  return fetch(`${spaceConstants.SPACES_ADMINISTRATION_API}/permissions/${key}`, {
+  return fetch(`${spacesConstants.SPACES_ADMINISTRATION_API}/permissions/${key}`, {
     headers: {
       'Content-Type': 'application/json'
     },
@@ -47,7 +47,7 @@ export function getSpacesAdministrationSetting(key){
 }
 
 export function updateSpacesAdministrationSetting(key, value){
-  return fetch(`${spaceConstants.SPACES_ADMINISTRATION_API}/permissions/${key}`, {
+  return fetch(`${spacesConstants.SPACES_ADMINISTRATION_API}/permissions/${key}`, {
     headers: {
       'Content-Type': 'application/json'
     },

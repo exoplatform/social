@@ -1,5 +1,5 @@
 import { createLocalVue, shallowMount } from '@vue/test-utils';
-import { spaceConstants } from '../../main/webapp/spaces-administration-app/spaceAdministrationConstants.js';
+import { spacesConstants } from '../../main/webapp/spaces-administration-app/spacesAdministrationConstants.js';
 import ExoSpacesAdministrationSpacesPermissions from '../../main/webapp/spaces-administration-app/components/ExoSpacesAdministrationSpacesPermissions';
 
 const localVue = createLocalVue();
@@ -20,7 +20,7 @@ describe('ExoSpacesAdministrationSpacesPermissions.test.js', () => {
       },
       mocks: {
         $t: () => {},
-        $constants : spaceConstants
+        $constants : spacesConstants
       }
     });
         

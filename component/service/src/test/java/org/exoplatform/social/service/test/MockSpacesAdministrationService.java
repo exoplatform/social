@@ -27,7 +27,7 @@ public class MockSpacesAdministrationService implements SpacesAdministrationServ
   }
 
   @Override
-  public List<MembershipEntry> getSpaceCreatorsMemberships() {
+  public List<MembershipEntry> getSpacesCreatorsMemberships() {
     return spacesCreators;
   }
 

@@ -61,8 +61,8 @@
   </div>  
 </template>
 <script>
-import * as spaceAdministrationServices from '../spaceAdministrationServices';
-import * as spaceAdministrationConstants from '../spaceAdministrationConstants';
+import * as spacesAdministrationServices from '../spacesAdministrationServices';
+import { spacesConstants } from '../spacesAdministrationConstants';
 
 export default {
   data() {
@@ -74,7 +74,7 @@ export default {
       totalPages: 1,
       currentPage: 1,
       searchText: '',
-      avatar : spaceAdministrationConstants.spaceConstants.DEFAULT_SPACE_AVATAR
+      avatar : spacesConstants.DEFAULT_SPACE_AVATAR
     };
   },
   created() {
@@ -82,14 +82,14 @@ export default {
   },
   methods: {
     initSpaces() {
-      spaceAdministrationServices.getSpaces().then(data =>{
+      spacesAdministrationServices.getSpaces().then(data =>{
         this.spaces = data.spaces;
-        this.totalPages = Math.ceil(data.size / spaceAdministrationConstants.spaceConstants.SPACES_PER_PAGE);
+        this.totalPages = Math.ceil(data.size / spacesConstants.SPACES_PER_PAGE);
       });
     },
     getSpacesPerPage(currentPage) {
-      const offset = ( currentPage - 1 ) * spaceAdministrationConstants.spaceConstants.SPACES_PER_PAGE;
-      spaceAdministrationServices.getSpacesPerPage(offset).then(data =>{
+      const offset = ( currentPage - 1 ) * spacesConstants.SPACES_PER_PAGE;
+      spacesAdministrationServices.getSpacesPerPage(offset).then(data =>{
         this.spaces = data.spaces;
         this.currentPage = currentPage;
       }); 
@@ -100,18 +100,18 @@ export default {
       this.spaceToDeleteIndex = index;
     },
     confirmDelete(){
-      spaceAdministrationServices.deleteSpaceById(this.spaceToDeleteId).then(() => {
+      spacesAdministrationServices.deleteSpaceById(this.spaceToDeleteId).then(() => {
         this.spaces.splice(this.spaceToDeleteIndex, 1);
       });
       this.showConfirmMessageModal = false;
     },
     getSpaceLinkSetting(spaceDisplayName,groupId){
-      return spaceAdministrationServices.getSpaceLinkSetting(spaceDisplayName,groupId);
+      return spacesAdministrationServices.getSpaceLinkSetting(spaceDisplayName,groupId);
     },
     searchSpaces(){
-      spaceAdministrationServices.searchSpaces(this.searchText).then(data =>{
+      spacesAdministrationServices.searchSpaces(this.searchText).then(data =>{
         this.spaces = data.spaces;
-        this.totalPages = Math.ceil(data.size / spaceAdministrationConstants.spaceConstants.SPACES_PER_PAGE);
+        this.totalPages = Math.ceil(data.size / spacesConstants.SPACES_PER_PAGE);
       });
     },
     closeModal(){

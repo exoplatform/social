@@ -80,7 +80,7 @@
   </div>
 </template>
 <script>
-import * as spaceAdministrationServices from '../spaceAdministrationServices';
+import * as spacesAdministrationServices from '../spacesAdministrationServices';
 export default {
   data() {
     return {
@@ -94,7 +94,7 @@ export default {
   },
   created() {
     this.getSettingValueCreateSpace();
-    this.getSettingValueSpaceAdministrators();
+    this.getSettingValueSpacesAdministrators();
   },
   methods: {
     initSuggesterSpacesCreators() {
@@ -162,7 +162,7 @@ export default {
     },
     savePermissionsCreateSpace() {
       if(this.creators){
-        spaceAdministrationServices.updateSpacesAdministrationSetting('spacesCreators',
+        spacesAdministrationServices.updateSpacesAdministrationSetting('spacesCreators',
           this.creators.map(creator => {
             const splitCreator = creator.split(':');
             return { 'membershipType': splitCreator[0], 'group': splitCreator[1] };
@@ -171,7 +171,7 @@ export default {
       this.spacesCreatorsEditMode = false;
     },
     getSettingValueCreateSpace() {
-      spaceAdministrationServices.getSpacesAdministrationSetting('spacesCreators').then(data => {
+      spacesAdministrationServices.getSpacesAdministrationSetting('spacesCreators').then(data => {
         if(data) {
           this.creators = [];
           for(const permission of data.memberships) {
@@ -232,7 +232,7 @@ export default {
         return callback(); 
       }
 
-      spaceAdministrationServices.getGroups(query).then(data => {
+      spacesAdministrationServices.getGroups(query).then(data => {
         const groups = [];
         for(const group of data) {
           groups.push({
@@ -271,7 +271,7 @@ export default {
     },
     savePermissionsSpacesAdministrators() {
       if(this.administrators){
-        spaceAdministrationServices.updateSpacesAdministrationSetting('spacesAdministrators',
+        spacesAdministrationServices.updateSpacesAdministrationSetting('spacesAdministrators',
           this.administrators.map(administrator => {
             const splitAdministrators = administrator.split(':');
             return { 'membershipType': splitAdministrators[0], 'group': splitAdministrators[1] };
@@ -279,8 +279,8 @@ export default {
       }
       this.spacesAdministratorsEditMode = false;
     },
-    getSettingValueSpaceAdministrators(){
-      spaceAdministrationServices.getSpacesAdministrationSetting('spacesAdministrators').then(data => {
+    getSettingValueSpacesAdministrators(){
+      spacesAdministrationServices.getSpacesAdministrationSetting('spacesAdministrators').then(data => {
         if(data) {
           this.administrators = [];
           for(const permission of data.memberships) {
@@ -304,7 +304,7 @@ export default {
       if(this.spacesAdministratorsEditMode) {
         this.spacesAdministratorsEditMode = false;
       } else {
-        this.getSettingValueSpaceAdministrators();
+        this.getSettingValueSpacesAdministrators();
         this.spacesAdministratorsEditMode = true;
       }
     }

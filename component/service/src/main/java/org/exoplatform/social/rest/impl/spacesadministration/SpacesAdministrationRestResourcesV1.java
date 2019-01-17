@@ -86,7 +86,7 @@ public class SpacesAdministrationRestResourcesV1 implements SocialRest {
 
     List settings = Arrays.asList(
             new SpacesAdministrationMembershipsEntity("spacesAdministrators", spacesAdministrationService.getSpacesAdministratorsMemberships()),
-            new SpacesAdministrationMembershipsEntity("spacesCreators", spacesAdministrationService.getSpaceCreatorsMemberships())
+            new SpacesAdministrationMembershipsEntity("spacesCreators", spacesAdministrationService.getSpacesCreatorsMemberships())
     );
 
     return EntityBuilder.getResponse(settings, uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
@@ -137,7 +137,7 @@ public class SpacesAdministrationRestResourcesV1 implements SocialRest {
       throw new WebApplicationException(Response.Status.UNAUTHORIZED);
     }
 
-    List<MembershipEntry> memberships = spacesAdministrationService.getSpaceCreatorsMemberships();
+    List<MembershipEntry> memberships = spacesAdministrationService.getSpacesCreatorsMemberships();
 
     return EntityBuilder.getResponse(new SpacesAdministrationMembershipsEntity("spacesCreators", memberships), uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
   }

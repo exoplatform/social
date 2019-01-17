@@ -27,7 +27,7 @@ public interface SpacesAdministrationService {
    *
    * @return a {@link List} of memberships of type {@link String}
    */
-  List<MembershipEntry> getSpaceCreatorsMemberships();
+  List<MembershipEntry> getSpacesCreatorsMemberships();
 
   /**
    * Update spaces super creator memberships

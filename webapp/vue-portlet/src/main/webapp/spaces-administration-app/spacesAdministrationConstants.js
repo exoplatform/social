@@ -1,4 +1,4 @@
-export const spaceConstants = {
+export const spacesConstants = {
   ENV: eXo.env.portal || '',
   PORTAL: eXo.env.portal.context || '',
   PORTAL_NAME: eXo.env.portal.portalName || '',
