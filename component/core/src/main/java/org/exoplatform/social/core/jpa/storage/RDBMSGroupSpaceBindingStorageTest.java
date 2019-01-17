@@ -412,4 +412,89 @@ public class RDBMSGroupSpaceBindingStorageTest extends AbstractCoreTest {
                  false,
                  groupSpaceBindingStorage.hasUserBindings(spaceId, "mary"));
   }
+
+    /**
+     * Test
+     * {@link org.exoplatform.social.core.storage.api.GroupSpaceBindingStorage#findUserAllBindingsbyGroupMembership(String, String)}
+     *
+     * @throws Exception
+     **/
+
+    public void testfindUserAllBindingsbyGroupMembership() throws Exception {
+        int totalBindings = 5;
+
+        GroupSpaceBinding groupSpaceBinding = this.getGroupSpaceBindingInstance(1,
+                spaceId,
+                "member",
+                "/platform/administrators",
+                "Any");
+        groupSpaceBinding = groupSpaceBindingStorage.saveGroupBinding(groupSpaceBinding, true);
+        StorageUtils.persist();
+        tearDownGroupbindingList.add(groupSpaceBinding);
+
+        GroupSpaceBinding groupSpaceBinding1 = this.getGroupSpaceBindingInstance(2,
+                spaceId,
+                "member",
+                "/platform/users",
+                "Any");
+        groupSpaceBinding1 = groupSpaceBindingStorage.saveGroupBinding(groupSpaceBinding1, true);
+        StorageUtils.persist();
+        tearDownGroupbindingList.add(groupSpaceBinding1);
+
+        for (int i = 1; i <= totalBindings; i++) {
+            UserSpaceBinding userSpaceBinding = this.getUserBindingInstance(1, "john", spaceId, groupSpaceBinding);
+            userSpaceBinding = groupSpaceBindingStorage.saveUserBinding(userSpaceBinding);
+            StorageUtils.persist();
+            tearDownUserbindingList.add(userSpaceBinding);
+        }
+        assertEquals("findUserAllBindingsbyGroupMembership('/platform/administrators','Any') must return: " + totalBindings,
+                totalBindings,
+                groupSpaceBindingStorage.findUserAllBindingsbyGroupMembership("/platform/administrators","Any").size());
+        assertEquals("findUserAllBindingsbyGroupMembership('/platform/administrators','Any') must return: " + 0,
+                0,
+                groupSpaceBindingStorage.findUserAllBindingsbyGroupMembership("/platform/users","Any").size());
+    }
+
+    /**
+     * Test
+     * {@link org.exoplatform.social.core.storage.api.GroupSpaceBindingStorage#findUserSpaceBindingsByGroup(String, String, String)}
+     *
+     * @throws Exception
+     **/
+
+    public void testfindUserSpaceBindingsByGroup() throws Exception {
+        int totalBindings = 5;
+
+        GroupSpaceBinding groupSpaceBinding = this.getGroupSpaceBindingInstance(1,
+                spaceId,
+                "member",
+                "/platform/administrators",
+                "Any");
+        groupSpaceBinding = groupSpaceBindingStorage.saveGroupBinding(groupSpaceBinding, true);
+        StorageUtils.persist();
+        tearDownGroupbindingList.add(groupSpaceBinding);
+
+        GroupSpaceBinding groupSpaceBinding1 = this.getGroupSpaceBindingInstance(2,
+                spaceId,
+                "member",
+                "/platform/users",
+                "Any");
+        groupSpaceBinding1 = groupSpaceBindingStorage.saveGroupBinding(groupSpaceBinding1, true);
+        StorageUtils.persist();
+        tearDownGroupbindingList.add(groupSpaceBinding1);
+
+        for (int i = 1; i <= totalBindings; i++) {
+            UserSpaceBinding userSpaceBinding = this.getUserBindingInstance(1, "john", spaceId, groupSpaceBinding);
+            userSpaceBinding = groupSpaceBindingStorage.saveUserBinding(userSpaceBinding);
+            StorageUtils.persist();
+            tearDownUserbindingList.add(userSpaceBinding);
+        }
+        assertEquals("findUserAllBindingsbyGroupMembership('/platform/administrators','Any') must return: " + totalBindings,
+                totalBindings,
+                groupSpaceBindingStorage.findUserSpaceBindingsByGroup("/platform/administrators","Any","john").size());
+
+        assertEquals("findUserAllBindingsbyGroupMembership('/platform/administrators','Any') must return: " + 0,
+                0,
+                groupSpaceBindingStorage.findUserSpaceBindingsByGroup("/platform/users","Any","john").size());
+    }
 }
