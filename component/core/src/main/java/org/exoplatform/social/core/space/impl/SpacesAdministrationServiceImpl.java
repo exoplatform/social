@@ -44,15 +44,15 @@ public class SpacesAdministrationServiceImpl implements Startable, SpacesAdminis
 
   private static final Log LOG = ExoLogger.getLogger(SpacesAdministrationServiceImpl.class);
 
-  private static final String SPACES_SUPER_ADMINISTRATORS_PARAM = "spaces.super.administrators";
+  private static final String SPACES_ADMINISTRATORS_PARAM = "social.spaces.administrators";
 
-  private static final String SPACES_SUPER_CREATORS_PARAM = "spaces.super.creators";
+  private static final String SPACES_CREATORS_PARAM = "social.spaces.creators";
 
-  private static final String SPACES_ADMINISTRATORS_SETTING_KEY = "exo:social_spaces_administrators";
+  private static final String SPACES_ADMINISTRATORS_SETTING_KEY = "social.spaces.administrators";
 
-  private static final String SPACES_CREATORS_SETTING_KEY = "exo:social_spaces_creators";
+  private static final String SPACES_CREATORS_SETTING_KEY = "social.spaces.creators";
 
-  public static final String SPACES_ADMINISTRATION_PAGE_KEY = "group::/platform/administrators::spacesAdministration";
+  public static final String SPACES_ADMINISTRATION_PAGE_KEY = "group::/platform/users::spacesAdministration";
 
   private SettingService settingService;
   
@@ -152,12 +152,12 @@ public class SpacesAdministrationServiceImpl implements Startable, SpacesAdminis
       String[] administratorsArray = administrators.getValue().split(",");
       addSpacesAdministratorsMemberships(administratorsArray);
     } else if (initParams != null) {
-      if (initParams.containsKey(SPACES_SUPER_ADMINISTRATORS_PARAM)) {
-        ValueParam superAdministratorParam = initParams.getValueParam(SPACES_SUPER_ADMINISTRATORS_PARAM);
-        String superManagersMemberships = superAdministratorParam.getValue();
-        if (StringUtils.isNotBlank(superManagersMemberships)) {
-          String[] superManagersMembershipsArray = superManagersMemberships.split(",");
-          addSpacesAdministratorsMemberships(superManagersMembershipsArray);
+      ValueParam spacesAdministratorsParam = initParams.getValueParam(SPACES_ADMINISTRATORS_PARAM);
+      if (spacesAdministratorsParam != null) {
+        String spacesAdministratorsMemberships = spacesAdministratorsParam.getValue();
+        if (StringUtils.isNotBlank(spacesAdministratorsMemberships)) {
+          String[] spacesAdministratorsMembershipsArray = spacesAdministratorsMemberships.split(",");
+          addSpacesAdministratorsMemberships(spacesAdministratorsMembershipsArray);
         }
       }
     }
@@ -167,12 +167,12 @@ public class SpacesAdministrationServiceImpl implements Startable, SpacesAdminis
       String[] creatorsArray = creators.getValue().split(",");
       addSpaceCreatorsMemberships(creatorsArray);
     } else if (initParams != null) {
-      if (initParams.containsKey(SPACES_SUPER_CREATORS_PARAM)) {
-        ValueParam superCreatorParam = initParams.getValueParam(SPACES_SUPER_CREATORS_PARAM);
-        String superCreatorsMemberships = superCreatorParam.getValue();
-        if (StringUtils.isNotBlank(superCreatorsMemberships)) {
-          String[] superCreatorsMembershipsArray = superCreatorsMemberships.split(",");
-          addSpaceCreatorsMemberships(superCreatorsMembershipsArray);
+      ValueParam spacesCreatorsParam = initParams.getValueParam(SPACES_CREATORS_PARAM);
+      if (spacesCreatorsParam != null) {
+        String spacesCreatorsMemberships = spacesCreatorsParam.getValue();
+        if (StringUtils.isNotBlank(spacesCreatorsMemberships)) {
+          String[] spacesCreatorsMembershipsArray = spacesCreatorsMemberships.split(",");
+          addSpaceCreatorsMemberships(spacesCreatorsMembershipsArray);
         }
       }
     }
@@ -263,13 +263,13 @@ public class SpacesAdministrationServiceImpl implements Startable, SpacesAdminis
       }
       identity = new org.exoplatform.services.security.Identity(userId, entries);
     }
-    List<MembershipEntry> superCreatorsMemberships = getSpaceCreatorsMemberships();
-    if (superCreatorsMemberships != null && !superCreatorsMemberships.isEmpty()) {
-      for (MembershipEntry superCreatorMembership : superCreatorsMemberships) {
-        if (superCreatorMembership.getMembershipType().equals("*")) {
-          return identity.isMemberOf(superCreatorMembership.getGroup());
+    List<MembershipEntry> spacesCreatorsMemberships = getSpaceCreatorsMemberships();
+    if (spacesCreatorsMemberships != null && !spacesCreatorsMemberships.isEmpty()) {
+      for (MembershipEntry spacesCreatorMembership : spacesCreatorsMemberships) {
+        if (spacesCreatorMembership.getMembershipType().equals("*")) {
+          return identity.isMemberOf(spacesCreatorMembership.getGroup());
         } else {
-          return identity.isMemberOf(superCreatorMembership);
+          return identity.isMemberOf(spacesCreatorMembership);
         }
       }
     }
