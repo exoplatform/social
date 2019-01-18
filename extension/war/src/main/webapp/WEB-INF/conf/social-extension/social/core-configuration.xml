@@ -764,4 +764,21 @@
             <type>org.exoplatform.social.webui.SpaceCreationInvitationGroupVisibilityPlugin</type>
         </component-plugin>
     </external-component-plugins>
+
+    <external-component-plugins>
+        <target-component>org.exoplatform.services.organization.OrganizationService</target-component>
+        <component-plugin>
+            <name>binding.group.event.listener</name>
+            <set-method>addListenerPlugin</set-method>
+            <type>org.exoplatform.social.core.binding.listener.BindGroupEventListener</type>
+            <description>Remove group binding when group is deleted</description>
+        </component-plugin>
+        <component-plugin>
+            <name>binding.membership.event.listener</name>
+            <set-method>addListenerPlugin</set-method>
+            <type>org.exoplatform.social.core.binding.listener.BindMembershipGroupEventListener</type>
+            <description>Add remove user space binding when user join/leave a group</description>
+        </component-plugin>
+    </external-component-plugins>
+
 </configuration>
