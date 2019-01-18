@@ -266,10 +266,9 @@ public class SpacesAdministrationServiceImpl implements Startable, SpacesAdminis
     List<MembershipEntry> spacesCreatorsMemberships = getSpacesCreatorsMemberships();
     if (spacesCreatorsMemberships != null && !spacesCreatorsMemberships.isEmpty()) {
       for (MembershipEntry spacesCreatorMembership : spacesCreatorsMemberships) {
-        if (spacesCreatorMembership.getMembershipType().equals("*")) {
-          return identity.isMemberOf(spacesCreatorMembership.getGroup());
-        } else {
-          return identity.isMemberOf(spacesCreatorMembership);
+        if ((spacesCreatorMembership.getMembershipType().equals("*") && identity.isMemberOf(spacesCreatorMembership.getGroup()))
+            || identity.isMemberOf(spacesCreatorMembership)) {
+          return true;
         }
       }
     }
