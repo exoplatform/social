@@ -48,6 +48,16 @@ public interface GroupSpaceBindingService {
   List<UserSpaceBinding> findUserBindings(String spaceId, String userName);
 
   /**
+   * Get user bindings for a membership (group+role) in space
+   *
+   * @param group the group
+   * @param groupRole the role in group
+   * @param userName Member in the space
+   * @return A list of group+membership bindings
+   */
+  List<UserSpaceBinding> findUserBindingsbyGroup(String group, String groupRole, String userName);
+
+  /**
    * Saves a list of group binding for a specific space.
    *
    * @param spaceId The space Id.

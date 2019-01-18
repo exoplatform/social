@@ -85,37 +85,55 @@ public class GroupSpaceBindingServiceImpl implements GroupSpaceBindingService {
   /**
    * {@inheritDoc}
    */
+  public List<UserSpaceBinding> findUserBindingsbyGroup(String group, String groupRole, String userName) {
+    LOG.info("Retrieving user bindings for user :" + userName + "with membership :" + group + ":" + groupRole);
+    return groupSpaceBindingStorage.findUserSpaceBindingsByGroup(group, groupRole, userName);
+  }
+
+  /**
+   * {@inheritDoc}
+   */
   public void saveSpaceBindings(String spaceId, List<GroupSpaceBinding> groupSpaceBindings) {
     LOG.info("Saving space bindings:" + spaceId);
     try {
       for (GroupSpaceBinding groupSpaceBinding : groupSpaceBindings) {
-          groupSpaceBindingStorage.saveGroupBinding(groupSpaceBinding, true);
-          ListAccess<User> groupMembersAccess = organizationService.getUserHandler().findUsersByGroupId(groupSpaceBinding.getGroup());
-          User [] users = groupMembersAccess.load(0, groupMembersAccess.getSize());
-          for (User user : users) {
-              // Check if user has the correct membership in group
-              if ( organizationService.getMembershipHandler().findMembershipByUserGroupAndType(user.getUserName(),groupSpaceBinding.getGroup(),groupSpaceBinding.getGroupRole())!=null)
-               {
-                   // add user to space
-                   if (!spaceService.isMember(spaceService.getSpaceById(spaceId),user.getUserName())) spaceService.addMember(spaceService.getSpaceById(spaceId),user.getUserName());
+        groupSpaceBinding = groupSpaceBindingStorage.saveGroupBinding(groupSpaceBinding, groupSpaceBinding.getId()==-1 );
+        ListAccess<User> groupMembersAccess =
+                                            organizationService.getUserHandler().findUsersByGroupId(groupSpaceBinding.getGroup());
+        User[] users = groupMembersAccess.load(0, groupMembersAccess.getSize());
+        for (User user : users) {
+          // Check if user has the correct membership in group
+          if (organizationService.getMembershipHandler()
+                                 .findMembershipByUserGroupAndType(user.getUserName(),
+                                                                   groupSpaceBinding.getGroup(),
+                                                                   groupSpaceBinding.getGroupRole()) != null) {
+            // add user to space
+            if (!spaceService.isMember(spaceService.getSpaceById(spaceId), user.getUserName()))
+              spaceService.addMember(spaceService.getSpaceById(spaceId), user.getUserName());
 
-                   // Delete previous binding if exist
-                   for (UserSpaceBinding userSpaceBinding :groupSpaceBindingStorage.findUserSpaceBindings(spaceId,user.getUserName()))
-                   {
-                       groupSpaceBindingStorage.deleteUserBinding(userSpaceBinding.getId());
-                   }
+            // set manager
+            if (!spaceService.isManager(spaceService.getSpaceById(spaceId), user.getUserName())
+                && groupSpaceBinding.getSpaceRole().equals("manager"))
+              spaceService.setManager(spaceService.getSpaceById(spaceId), user.getUserName(), true);
 
-                   // add user binding for this space*
-                   UserSpaceBinding userSpaceBinding = new UserSpaceBinding();
-                   userSpaceBinding.setGroupBinding(groupSpaceBinding);
-                   userSpaceBinding.setUser(user.getUserName());
-                   userSpaceBinding.setSpaceId(spaceId);
-                   groupSpaceBindingStorage.saveUserBinding(userSpaceBinding);
-               }
+            // Delete previous binding if exist
+            for (UserSpaceBinding userSpaceBinding : groupSpaceBindingStorage.findUserSpaceBindings(spaceId,
+                                                                                                    user.getUserName())) {
+              groupSpaceBindingStorage.deleteUserBinding(userSpaceBinding.getId());
+            }
+
+            // add user binding for this space
+            UserSpaceBinding userSpaceBinding = new UserSpaceBinding();
+            userSpaceBinding.setGroupBinding(groupSpaceBinding);
+            userSpaceBinding.setUser(user.getUserName());
+            userSpaceBinding.setSpaceId(spaceId);
+            groupSpaceBindingStorage.saveUserBinding(userSpaceBinding);
           }
-          }
-      } catch (Exception e) {
-        throw new RuntimeException("Failed bing space " + spaceId, e);
+        }
+      }
+    } catch (Exception e) {
+      LOG.error("ErrorBinding" + e);
+      throw new RuntimeException("Failed binding space " + spaceId, e);
     }
   }
 
@@ -135,6 +153,11 @@ public class GroupSpaceBindingServiceImpl implements GroupSpaceBindingService {
   public void deleteSpaceBinding(GroupSpaceBinding groupSpaceBinding) {
     LOG.info("Delete binding group :" + groupSpaceBinding.getGroup() + "/" + groupSpaceBinding.getGroupRole() + " for space :"
         + groupSpaceBinding.getSpaceId() + "/" + groupSpaceBinding.getSpaceRole());
+    // Call the delete user binding to also update space membership
+    for (UserSpaceBinding userSpaceBinding: groupSpaceBindingStorage.findUserAllBindingsbyGroupMembership(groupSpaceBinding.getGroup(),groupSpaceBinding.getGroupRole()))
+         {
+                 deleteUserBinding(userSpaceBinding);
+         }
     groupSpaceBindingStorage.deleteGroupBinding(groupSpaceBinding.getId());
   }
 
@@ -144,6 +167,25 @@ public class GroupSpaceBindingServiceImpl implements GroupSpaceBindingService {
   public void deleteUserBinding(UserSpaceBinding userSpaceBinding) {
     LOG.info("Delete user binding for member :" + userSpaceBinding.getUser() + "/" + userSpaceBinding.getSpaceId());
     groupSpaceBindingStorage.deleteUserBinding(userSpaceBinding.getId());
+    // cheek if the user has other binding to the target space before removing
+    // membership
+    if (groupSpaceBindingStorage.hasUserBindings(userSpaceBinding.getSpaceId(), userSpaceBinding.getUser())
+        && userSpaceBinding.getGroupBinding().getSpaceRole().equals("manager")) {
+      boolean hasManagerRole = false;
+      for (UserSpaceBinding userSpaceBinding1 : groupSpaceBindingStorage.findUserSpaceBindings(userSpaceBinding.getSpaceId(),
+                                                                                               userSpaceBinding.getUser())) {
+        if (userSpaceBinding1.getGroupBinding().getSpaceRole().equals("manager"))
+          hasManagerRole = true;
+      }
+      // if the user has a no binding to manager role remove the manager permission
+      if (!hasManagerRole) {
+        spaceService.setManager(spaceService.getSpaceById(userSpaceBinding.getSpaceId()), userSpaceBinding.getUser(), false);
+      }
+    } else {
+      // no binding to the target space in this case remove user from group
+      spaceService.removeMember(spaceService.getSpaceById(userSpaceBinding.getSpaceId()), userSpaceBinding.getUser());
+    }
+
   }
 
   /**
