@@ -23,7 +23,7 @@
       </tr>
       <tr v-for="(space, index) in spaces" :key="space.id">
         <td><img v-if="space.avatarUrl != null" :src="space.avatarUrl" class="avatar" /> <img v-else :src="avatar" class="avatar" />  {{ space.displayName }}</td>
-        <td>{{ space.description }}</td>
+        <td v-html="space.description"></td>
         <td class="center actionContainer" >
           <a v-exo-tooltip.bottom.body="$t('social.spaces.administration.manageSpaces.actions.edit')" :href="getSpaceLinkSetting(space.displayName,space.groupId)" class="actionIcon" target="_blank">
             <i class="uiIconEdit uiIconLightGray"></i>
