@@ -29,72 +29,94 @@ import org.exoplatform.social.core.storage.GroupSpaceBindingStorageException;
 
 public interface GroupSpaceBindingStorage {
 
-    /**
-     * Gets a list containing all the groups binding for a space/role.
-     *
-     * @param spaceId The space Id.
-     * @param role    The role in the space (manager or member).
-     * @return The list of binding.
-     */
-    List<GroupSpaceBinding> findSpaceBindings(String spaceId, String role) throws GroupSpaceBindingStorageException;
+  /**
+   * Gets a list containing all the groups binding for a space/role.
+   *
+   * @param spaceId The space Id.
+   * @param role The role in the space (manager or member).
+   * @return The list of binding.
+   */
+  List<GroupSpaceBinding> findSpaceBindings(String spaceId, String role) throws GroupSpaceBindingStorageException;
 
-    /**
-     * Gets a list containing all the group binding for a space member.
-     *
-     * @param spaceId  The space Id.
-     * @param userName The space member.
-     * @return The list of binding.
-     */
-    List<UserSpaceBinding> findUserSpaceBindings(String spaceId, String userName) throws GroupSpaceBindingStorageException;
+  /**
+   * Gets a list containing all the group binding for a space member.
+   *
+   * @param spaceId The space Id.
+   * @param userName The space member.
+   * @return The list of binding.
+   */
+  List<UserSpaceBinding> findUserSpaceBindings(String spaceId, String userName) throws GroupSpaceBindingStorageException;
 
-    /**
-     * Saves a binding. If isNew is true, creates new binding. If not only updates
-     * binding an saves it.
-     *
-     * @param binding
-     * @param isNew
-     * @throws GroupSpaceBindingStorageException
-     */
-    GroupSpaceBinding saveGroupBinding(GroupSpaceBinding binding, boolean isNew) throws GroupSpaceBindingStorageException;
+  /**
+   * Gets a list containing all the group binding for a membership
+   * (user/group/role).
+   *
+   * @param group The group.
+   * @param groupRole The role in group.
+   * @param userName The space member.
+   * @return The list of binding.
+   */
+  List<UserSpaceBinding> findUserSpaceBindingsByGroup(String group,
+                                                      String groupRole,
+                                                      String userName) throws GroupSpaceBindingStorageException;
 
-    /**
-     * Saves a user binding. binding an saves it.
-     *
-     * @param binding
-     * @throws GroupSpaceBindingStorageException
-     */
-    UserSpaceBinding saveUserBinding(UserSpaceBinding binding) throws GroupSpaceBindingStorageException;
+  /**
+   * Get all user bindings for a membership (group+role)
+   *
+   * @param group the group
+   * @param groupRole the role in group
+   * @return A list of group+membership bindings
+   */
+  List<UserSpaceBinding> findUserAllBindingsbyGroupMembership(String group, String groupRole);
 
-    /**
-     * Deletes a binding by binding id.
-     *
-     * @param id
-     * @throws GroupSpaceBindingStorageException
-     */
-    void deleteGroupBinding(long id) throws GroupSpaceBindingStorageException;
+  /**
+   * Saves a binding. If isNew is true, creates new binding. If not only updates
+   * binding an saves it.
+   *
+   * @param binding
+   * @param isNew
+   * @throws GroupSpaceBindingStorageException
+   */
+  GroupSpaceBinding saveGroupBinding(GroupSpaceBinding binding, boolean isNew) throws GroupSpaceBindingStorageException;
 
-    /**
-     * Delete a user binding by binding id.
-     *
-     * @param id
-     * @throws GroupSpaceBindingStorageException
-     */
-    void deleteUserBinding(long id) throws GroupSpaceBindingStorageException;
+  /**
+   * Saves a user binding. binding an saves it.
+   *
+   * @param binding
+   * @throws GroupSpaceBindingStorageException
+   */
+  UserSpaceBinding saveUserBinding(UserSpaceBinding binding) throws GroupSpaceBindingStorageException;
 
-    /**
-     * Delete all user bindings by username.
-     *
-     * @param userName
-     * @throws GroupSpaceBindingStorageException
-     */
-    void deleteAllUserBindings(String userName) throws GroupSpaceBindingStorageException;
+  /**
+   * Deletes a binding by binding id.
+   *
+   * @param id
+   * @throws GroupSpaceBindingStorageException
+   */
+  void deleteGroupBinding(long id) throws GroupSpaceBindingStorageException;
 
-    /**
-     * Delete all user bindings by username.
-     *
-     * @param spaceId The space Id.
-     * @param userName
-     * @throws GroupSpaceBindingStorageException
-     */
-    boolean hasUserBindings(String spaceId, String userName);
+  /**
+   * Delete a user binding by binding id.
+   *
+   * @param id
+   * @throws GroupSpaceBindingStorageException
+   */
+  void deleteUserBinding(long id) throws GroupSpaceBindingStorageException;
+
+  /**
+   * Delete all user bindings by username.
+   *
+   * @param userName
+   * @throws GroupSpaceBindingStorageException
+   */
+  void deleteAllUserBindings(String userName) throws GroupSpaceBindingStorageException;
+
+  /**
+   * Delete all user bindings by username.
+   *
+   * @param spaceId The space Id.
+   * @param userName
+   * @throws GroupSpaceBindingStorageException
+   */
+  boolean hasUserBindings(String spaceId, String userName);
 }
