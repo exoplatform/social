@@ -5,25 +5,22 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.exoplatform.services.organization.Group;
-import org.exoplatform.services.organization.search.GroupSearchService;
+import javax.ws.rs.core.MultivaluedMap;
+
+import org.exoplatform.portal.config.UserACL;
 import org.exoplatform.services.rest.impl.ContainerResponse;
 import org.exoplatform.services.rest.impl.MultivaluedMapImpl;
 import org.exoplatform.services.security.MembershipEntry;
 import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.space.SpacesAdministrationService;
-import org.exoplatform.social.core.space.spi.SpaceService;
 import org.exoplatform.social.rest.entity.SpacesAdministrationMembershipsEntity;
 import org.exoplatform.social.service.test.AbstractResourceTest;
 
-import javax.ws.rs.core.MultivaluedMap;
-
 public class SpacesAdministrationRestResourcesTest extends AbstractResourceTest {
   private IdentityManager identityManager;
-  private SpaceService spaceService;
+  private UserACL userACL;
   private SpacesAdministrationService spacesAdministrationService;
-  private GroupSearchService groupSearchService;
-  
+
   private SpacesAdministrationRestResourcesV1 spacesAdministrationRestResourcesV1;
 
   public void setUp() throws Exception {
@@ -32,16 +29,15 @@ public class SpacesAdministrationRestResourcesTest extends AbstractResourceTest 
     System.setProperty("gatein.email.domain.url", "localhost:8080");
 
     identityManager = getContainer().getComponentInstanceOfType(IdentityManager.class);
-    spaceService = getContainer().getComponentInstanceOfType(SpaceService.class);
+    userACL = getContainer().getComponentInstanceOfType(UserACL.class);
     spacesAdministrationService = getContainer().getComponentInstanceOfType(SpacesAdministrationService.class);
-    groupSearchService = getContainer().getComponentInstanceOfType(GroupSearchService.class);
 
     identityManager.getOrCreateIdentity("organization", "root", true);
     identityManager.getOrCreateIdentity("organization", "john", true);
     identityManager.getOrCreateIdentity("organization", "mary", true);
     identityManager.getOrCreateIdentity("organization", "demo", true);
 
-    spacesAdministrationRestResourcesV1 = new SpacesAdministrationRestResourcesV1(spaceService, spacesAdministrationService, groupSearchService);
+    spacesAdministrationRestResourcesV1 = new SpacesAdministrationRestResourcesV1(spacesAdministrationService, userACL);
     registry(spacesAdministrationRestResourcesV1);
   }
 
@@ -90,7 +86,7 @@ public class SpacesAdministrationRestResourcesTest extends AbstractResourceTest 
     assertTrue(spacesCreatorsMemberships.contains(new MembershipEntry("/platform/users", "member")));
   }
 
-  public void testShouldNotAuthorizedWhenGettingAllSettingsAsNotSpacesAdministrator() throws Exception {
+  public void testShouldNotAuthorizedWhenGettingAllSettingsAsNotPlatformAdministrator() throws Exception {
     // Given
     spacesAdministrationService.updateSpacesAdministratorsMemberships(Arrays.asList(
             new MembershipEntry("/platform/users", "manager"),
@@ -198,7 +194,7 @@ public class SpacesAdministrationRestResourcesTest extends AbstractResourceTest 
     assertTrue(spacesAdministratorsMemberships.contains(new MembershipEntry("/platform/users", "member")));
   }
 
-  public void testShouldNotAuthorizedWhenUpdatingSpacesAdministratorsAsNotSpacesAdministrator() throws Exception {
+  public void testShouldNotAuthorizedWhenUpdatingSpacesAdministratorsAsNotPlatformAdministrator() throws Exception {
     // Given
     spacesAdministrationService.updateSpacesAdministratorsMemberships(Arrays.asList(
             new MembershipEntry("/platform/users", "manager"),
@@ -265,7 +261,7 @@ public class SpacesAdministrationRestResourcesTest extends AbstractResourceTest 
     assertTrue(memberships.contains(new MembershipEntry("/platform/administrators", "*")));
   }
 
-  public void testShouldReturnNotAuthorizedWhenGettingSpacesCreatorsAsNotSpacesAdministrator() throws Exception {
+  public void testShouldReturnNotAuthorizedWhenGettingSpacesCreatorsAsNotPlatformAdministrator() throws Exception {
     // Given
     spacesAdministrationService.updateSpacesAdministratorsMemberships(Arrays.asList(
             new MembershipEntry("/platform/users", "manager"),
@@ -311,7 +307,7 @@ public class SpacesAdministrationRestResourcesTest extends AbstractResourceTest 
     assertTrue(spacesCreatorsMemberships.contains(new MembershipEntry("/platform/users", "member")));
   }
 
-  public void testShouldNotAuthorizedWhenUpdatingSpacesCreatorsAsNotSpacesAdministrator() throws Exception {
+  public void testShouldNotAuthorizedWhenUpdatingSpacesCreatorsAsNotPlatformAdministrator() throws Exception {
     // Given
     spacesAdministrationService.updateSpacesCreatorsMemberships(Arrays.asList(
             new MembershipEntry("/platform/users", "manager"),
@@ -336,6 +332,7 @@ public class SpacesAdministrationRestResourcesTest extends AbstractResourceTest 
     assertEquals(401, response.getStatus());
   }
 
+  /*
   public void testShouldReturnAllGroupsWhenGettingAllGroupsAsSpacesAdministrator() throws Exception {
     // Given
     startSessionAs("root");
@@ -395,4 +392,5 @@ public class SpacesAdministrationRestResourcesTest extends AbstractResourceTest 
     assertNotNull(response);
     assertEquals(401, response.getStatus());
   }
+  */
 }

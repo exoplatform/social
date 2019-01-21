@@ -25,6 +25,10 @@ export function getSpaceLinkSetting(spaceDisplayName,groupId){
   return `${spacesConstants.PORTAL}${spacesConstants.PROFILE_SPACE_LINK}${groupName}/${spaceName}/settings`;
 }
 
+export function getUserPermissions(userName) {
+  return fetch(`${spacesConstants.USER_API}/${userName}`, {credentials: 'include'}).then(resp => resp.json());
+}
+
 export function getGroups(query) {
   return fetch(`${spacesConstants.GROUP_API}?q=${query}`, {credentials: 'include'}).then(resp => resp.json());
 }

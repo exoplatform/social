@@ -500,10 +500,12 @@
     <type>org.exoplatform.social.core.space.impl.DefaultSpaceApplicationHandler</type>
   </component>
 
+  <!--
   <component>
     <key>org.exoplatform.services.organization.search.GroupSearchService</key>
     <type>org.exoplatform.social.service.test.MockGroupSearchService</type>
   </component>
+  -->
 
   <component>
     <key>org.exoplatform.social.core.space.SpacesAdministrationService</key>
