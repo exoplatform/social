@@ -3,17 +3,17 @@
     <div class="uiTabNormal uiTabInPage">
       <ul class="nav nav-tabs">
         <li :class="{active: activeTab === 1}" @click="activeTab=1">
-          <a data-toggle="tab">{{ $t('social.spaces.administration.manageSpaces') }}</a>
+          <a href="#manage" data-toggle="tab">{{ $t('social.spaces.administration.manageSpaces') }}</a>
         </li>
         <li :class="{active: activeTab === 2}" @click="activeTab=2" >
-          <a data-toggle="tab">{{ $t('social.spaces.administration.permissions') }}</a>
+          <a href="#permissions" data-toggle="tab">{{ $t('social.spaces.administration.permissions') }}</a>
         </li>
       </ul> 
       <div class="tab-content">
-        <div v-if="activeTab === 1" class="tab-pane fade in active">
+        <div v-if="activeTab === 1" id="manage" class="tab-pane fade in active">
           <exo-spaces-administration-manage-spaces></exo-spaces-administration-manage-spaces>
         </div>
-        <div v-if="activeTab === 2" class="tab-pane fade in active">
+        <div v-if="activeTab === 2" id="permissions" class="tab-pane fade in active">
           <exo-spaces-administration-manage-permissions></exo-spaces-administration-manage-permissions>
         </div>
       </div> 
@@ -27,6 +27,15 @@ export default {
     return {
       activeTab: 1
     };
+  },
+  mounted() {
+    const windowLocationHash = window.location.hash;
+    if(windowLocationHash === '#permissions') {
+      this.activeTab = 2;
+    }
+    else {
+      this.activeTab = 1;
+    }
   }
 };
 </script>
