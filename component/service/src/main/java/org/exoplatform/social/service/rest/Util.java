@@ -37,7 +37,6 @@ import javax.ws.rs.core.UriInfo;
 import org.exoplatform.commons.utils.CommonsUtils;
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.PortalContainer;
-import org.exoplatform.services.organization.OrganizationService;
 import org.exoplatform.services.rest.impl.EnvironmentContext;
 import org.exoplatform.services.security.ConversationState;
 import org.exoplatform.services.security.IdentityConstants;
@@ -347,16 +346,6 @@ public final class Util {
                                  getComponentInstanceOfType(RelationshipManager.class);
   }
 
-  /**
-   * Gets {@link OrganizationService} with default portal container.
-   *
-   * @return the organization service
-   */
-  @Deprecated
-  public static final OrganizationService getOrganizationService() {
-    return (OrganizationService) getDefaultPortalContainer().getComponentInstanceOfType(OrganizationService.class);
-  }
-  
   /**
    * Gets a portal container by its name.
    *

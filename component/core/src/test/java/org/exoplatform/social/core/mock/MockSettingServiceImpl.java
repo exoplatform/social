@@ -26,12 +26,9 @@ import org.exoplatform.commons.api.settings.SettingValue;
 import org.exoplatform.commons.api.settings.data.Context;
 import org.exoplatform.commons.api.settings.data.Scope;
 
-/**
- * Created by The eXo Platform SAS
- * Author : eXoPlatform
- *          thanhvc@exoplatform.com
- * Aug 19, 2013  
- */
+/** 
+* Create mock setting service 
+*/
 public class MockSettingServiceImpl implements SettingService {
   
   Map<String, SettingValue<?>> settingMap = new HashMap<String, SettingValue<?>>();

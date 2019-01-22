@@ -1,7 +1,7 @@
 {
   "name": "spacesAdministration",
   "version": "5.2.0",
-  "description": "eXo space administration",
+  "description": "eXo Spaces Administration",
   "repository": {
     "type": "git",
     "url": "https://github.com/exodev/social"

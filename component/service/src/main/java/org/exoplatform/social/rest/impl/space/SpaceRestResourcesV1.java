@@ -123,16 +123,12 @@ public class SpaceRestResourcesV1 implements SpaceRestResources {
     }
     
     if (StringUtils.isNotBlank(sort)) {
-      try {
         SortBy sortBy = Sorting.SortBy.valueOf(sort.toUpperCase());
         OrderBy orderBy = Sorting.OrderBy.ASC;
         if (StringUtils.isNotBlank(order)) {
           orderBy = Sorting.OrderBy.valueOf(order.toUpperCase());
         }
         spaceFilter.setSorting(new Sorting(sortBy, orderBy));
-      } catch(Exception e) {
-
-      }
     }
 
     String authenticatedUser = ConversationState.getCurrent().getIdentity().getUserId();

@@ -3,7 +3,7 @@
 def rcontext = _ctx.getRequestContext() ;
 def typeOfRelation = uicomponent.getTypeOfRelation();
 def spaceURL = uicomponent.getSpaceURL();
-def checkPermission = uicomponent.checkPermissionCreateSpace();
+def canCreateSpace = uicomponent.checkPermissionCreateSpace();
 def params = """ {
   uicomponentId: '${uicomponent.id}',
 	typeOfRelation: '$typeOfRelation',
@@ -21,7 +21,7 @@ uicomponent.initPlaceholder();
 <div class="uiSpaceSearch">
 <% uiform.begin();%>
 	<div class="uiGrayLightBox clearfix">
-	  <%if(checkPermission){%>
+	  <%if(canCreateSpace){%>
         <button class="btn btn-primary pull-left" type="button" onclick="<%= uicomponent.event("AddSpace") %>">
           <i class="uiIconSocSimplePlus uiIconSocWhite"></i><%=_ctx.appRes("UISpaceSearch.label.AddNewSpace")%>
         </button>
