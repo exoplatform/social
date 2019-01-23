@@ -501,6 +501,11 @@
   </component>
 
   <component>
+    <key>org.exoplatform.social.core.space.SpacesAdministrationService</key>
+    <type>org.exoplatform.social.service.test.MockSpacesAdministrationService</type>
+  </component>
+
+  <component>
     <key>org.exoplatform.social.core.processor.MentionsProcessor</key>
     <type>org.exoplatform.social.core.processor.MentionsProcessor</type>
   </component>

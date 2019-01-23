@@ -18,24 +18,21 @@ package org.exoplatform.social.core.space.spi;
 
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringEscapeUtils;
 
-import org.exoplatform.commons.chromattic.ChromatticManager;
-import org.exoplatform.commons.utils.CommonsUtils;
 import org.exoplatform.commons.utils.ListAccess;
-import org.exoplatform.container.ExoContainerContext;
-import org.exoplatform.container.component.RequestLifeCycle;
-import org.exoplatform.portal.config.StorageException;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.services.organization.Group;
 import org.exoplatform.services.organization.MembershipType;
 import org.exoplatform.services.organization.OrganizationService;
 import org.exoplatform.services.organization.User;
+import org.exoplatform.services.security.MembershipEntry;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
@@ -44,10 +41,7 @@ import org.exoplatform.social.core.manager.ActivityManager;
 import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.model.AvatarAttachment;
 import org.exoplatform.social.core.service.LinkProvider;
-import org.exoplatform.social.core.space.SpaceException;
-import org.exoplatform.social.core.space.SpaceFilter;
-import org.exoplatform.social.core.space.SpaceListAccess;
-import org.exoplatform.social.core.space.SpaceUtils;
+import org.exoplatform.social.core.space.*;
 import org.exoplatform.social.core.space.impl.DefaultSpaceApplicationHandler;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.storage.IdentityStorageException;
@@ -58,6 +52,7 @@ import org.exoplatform.social.core.test.AbstractCoreTest;
 public class SpaceServiceTest extends AbstractCoreTest {
   private IdentityStorage identityStorage;
   private OrganizationService organizationService;
+  protected SpacesAdministrationService spacesAdministrationService;
   private List<Space> tearDownSpaceList;
   private List<Identity> tearDownUserList;
 
@@ -91,8 +86,9 @@ public class SpaceServiceTest extends AbstractCoreTest {
   @Override
   public void setUp() throws Exception {
     super.setUp();
-    identityStorage = (IdentityStorage) getContainer().getComponentInstanceOfType(IdentityStorage.class);
-    organizationService = (OrganizationService) getContainer().getComponentInstanceOfType(OrganizationService.class);
+    identityStorage = getContainer().getComponentInstanceOfType(IdentityStorage.class);
+    organizationService = getContainer().getComponentInstanceOfType(OrganizationService.class);
+    spacesAdministrationService = getContainer().getComponentInstanceOfType(SpacesAdministrationService.class);
     tearDownSpaceList = new ArrayList<Space>();
     tearDownUserList = new ArrayList<Identity>();
     
@@ -2990,7 +2986,7 @@ public class SpaceServiceTest extends AbstractCoreTest {
     assertEquals(0, spaceService.getAccessibleSpacesByFilter(userName, null).getSize());
     assertEquals(0, spaceService.getSettingableSpaces(userName).getSize());
 
-    spaceService.addSuperManagersMembership("mstypetest:/testgroup");
+    spacesAdministrationService.updateSpacesAdministratorsMemberships(Arrays.asList(new MembershipEntry("/testgroup", "mstypetest")));
     assertTrue(spaceService.isSuperManager(userName));
     assertTrue(spaceService.hasAccessPermission(space, userName));
     assertTrue(spaceService.hasSettingPermission(space, userName));

@@ -29,7 +29,7 @@
   <name>eXo PLF:: Social Service Component</name>
   <description>eXo Social Service Component</description>
   <properties>
-    <exo.test.coverage.ratio>0.49</exo.test.coverage.ratio>
+    <exo.test.coverage.ratio>0.50</exo.test.coverage.ratio>
   </properties>
   <dependencies>
     <dependency>

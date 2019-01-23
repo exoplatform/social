@@ -18,6 +18,10 @@ package org.exoplatform.social.webui.space;
 
 import java.util.List;
 
+import org.exoplatform.commons.utils.CommonsUtils;
+import org.exoplatform.portal.webui.util.Util;
+import org.exoplatform.services.security.ConversationState;
+import org.exoplatform.social.core.space.SpacesAdministrationService;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
 import org.exoplatform.social.webui.Utils;
@@ -262,5 +266,12 @@ public class UISpaceSearch extends UIForm {
 
   public void setNewSearch(boolean isNewSearch) {
     this.isNewSearch = isNewSearch;
+  }
+  
+  public boolean checkPermissionCreateSpace() throws Exception {
+    String userId = ConversationState.getCurrent().getIdentity().getUserId();
+    SpacesAdministrationService spacesAdministrationService = CommonsUtils.getService(SpacesAdministrationService.class);
+  
+    return spacesAdministrationService.canCreateSpace(userId);
   }
 }

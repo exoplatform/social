@@ -24,6 +24,7 @@ import org.exoplatform.social.rest.impl.identity.IdentityRestResourcesTest;
 import org.exoplatform.social.rest.impl.relationship.RelationshipsRestResourcesTest;
 import org.exoplatform.social.rest.impl.space.SpaceRestResourcesTest;
 import org.exoplatform.social.rest.impl.spacemembership.SpaceMembershipRestResourcesTest;
+import org.exoplatform.social.rest.impl.spacesadministration.SpacesAdministrationRestResourcesTest;
 import org.exoplatform.social.rest.impl.userrelationship.UsersRelationshipsRestResourcesTest;
 import org.exoplatform.social.rest.impl.users.UserRestResourcesTest;
 import org.exoplatform.social.service.rest.ActivitiesRestServiceTest;
@@ -68,6 +69,7 @@ import org.junit.runners.Suite.SuiteClasses;
   RelationshipsRestResourcesTest.class,
   SpaceRestResourcesTest.class,
   SpaceMembershipRestResourcesTest.class,
+  SpacesAdministrationRestResourcesTest.class,
   UsersRelationshipsRestResourcesTest.class,
   UserRestResourcesTest.class
   })

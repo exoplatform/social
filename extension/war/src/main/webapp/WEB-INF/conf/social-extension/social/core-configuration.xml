@@ -402,12 +402,6 @@
         </init-params>
       </component-plugin>
     </component-plugins>
-    <init-params>
-      <value-param>
-        <name>spaces.super.administrators</name>
-        <value>${social.spaces.administrators:}</value>
-      </value-param>
-    </init-params>
   </component>
 
   <component>
@@ -415,6 +409,21 @@
     <type>org.exoplatform.social.core.space.impl.DefaultSpaceApplicationHandler</type>
   </component>
 
+  <component>
+    <key>org.exoplatform.social.core.space.SpacesAdministrationService</key>
+    <type>org.exoplatform.social.core.space.impl.SpacesAdministrationServiceImpl</type>
+    <init-params>
+      <value-param>
+        <name>social.spaces.administrators</name>
+        <value>${social.spaces.administrators:}</value>
+      </value-param>
+      <value-param>
+        <name>social.spaces.creators</name>
+        <value>${social.spaces.creators:}</value>
+      </value-param>
+    </init-params>
+  </component>
+  
   <component>
     <key>org.exoplatform.social.core.processor.I18NActivityProcessor</key>
     <type>org.exoplatform.social.core.processor.I18NActivityProcessor</type>

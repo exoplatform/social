@@ -225,8 +225,7 @@ public class EntityBuilder {
     spaceEntity.setAvatarUrl(space.getAvatarUrl());
     spaceEntity.setVisibility(space.getVisibility());
     spaceEntity.setSubscription(space.getRegistration());
-    //
-    updateCachedEtagValue(getEtagValue(space.getId()));
+
     return spaceEntity;
   }
   
@@ -654,6 +653,30 @@ public class EntityBuilder {
   }
 
   /**
+   * Gets the response builder object constructed from the provided params.
+   *
+   * @param entity the identity
+   * @param uriInfo the uri request info
+   * @param mediaType the media type to be returned
+   * @param status the status code
+   * @return responseBuilder the response builder object
+   */
+  public static ResponseBuilder getResponseBuilder(Object entity, UriInfo uriInfo, MediaType mediaType, Response.Status status) {
+    if (entity instanceof BaseEntity) {
+      entity = ((BaseEntity) entity).getDataEntity();
+    }
+    ResponseBuilder responseBuilder = Response.created(uriInfo.getAbsolutePath())
+                   .entity(entity)
+                   .type(mediaType.toString() + "; charset=utf-8")
+                   .status(status);
+    if (hasPaging(entity)) {
+      responseBuilder.header(LINK, buildLinkForHeader(entity, uriInfo.getAbsolutePath().toString()));
+    } 
+    
+    return responseBuilder;
+  }
+
+  /**
    * Gets the response object constructed from the provided params.
    *
    * @param entity the identity
@@ -663,20 +686,7 @@ public class EntityBuilder {
    * @return response the response object
    */
   public static Response getResponse(Object entity, UriInfo uriInfo, MediaType mediaType, Response.Status status) {
-    if (entity instanceof BaseEntity) {
-      entity = ((BaseEntity) entity).getDataEntity();
-    }
-    Response resp = Response.created(uriInfo.getAbsolutePath())
-                   .entity(entity)
-                   .type(mediaType.toString() + "; charset=utf-8")
-                   .status(status)
-                   .build();
-    if (!hasPaging(entity)) {
-      return resp;
-    }
-    
-    ResponseBuilder responseBuilder = Response.fromResponse(resp);
-    responseBuilder.header(LINK, buildLinkForHeader(entity, uriInfo.getAbsolutePath().toString()));
+    ResponseBuilder responseBuilder = getResponseBuilder(entity, uriInfo, mediaType, status);
     return responseBuilder.build();
   }
   

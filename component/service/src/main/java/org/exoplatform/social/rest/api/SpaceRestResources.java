@@ -25,6 +25,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
@@ -33,18 +34,28 @@ import org.exoplatform.social.service.rest.api.models.ActivityRestIn;
 
 public interface SpaceRestResources extends SocialRest {
 
-  /**
-   * Process to return a list of space in json format
-   * 
-   * @param uriInfo
-   * @return
-   * @throws Exception
-   */
+/**
+ * Process to return a list of space in json format
+ * 
+ * @param uriInfo
+ * @param q
+ * @param offset
+ * @param limit
+ * @param sort
+ * @param order
+ * @param returnSize
+ * @param expand
+ * @return
+ * @throws Exception
+ */
   @GET
   public abstract Response getSpaces(@Context UriInfo uriInfo,
+                                     @Context Request request,
                                      @QueryParam("q") String q,
                                      @QueryParam("offset") int offset,
                                      @QueryParam("limit") int limit,
+                                     @QueryParam("sort") String sort,
+                                     @QueryParam("order") String order,
                                      @QueryParam("returnSize") boolean returnSize,
                                      @QueryParam("expand") String expand) throws Exception;
 

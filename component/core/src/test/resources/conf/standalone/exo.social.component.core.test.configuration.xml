@@ -415,7 +415,7 @@
 
   <component>
     <key>org.exoplatform.commons.api.settings.SettingService</key>
-    <type>org.exoplatform.settings.jpa.JPASettingServiceImpl</type>
+    <type>org.exoplatform.social.core.mock.MockSettingServiceImpl</type>
   </component>
 
   <component>
@@ -542,6 +542,11 @@
   </component>
 
   <component>
+    <key>org.exoplatform.social.core.space.SpacesAdministrationService</key>
+    <type>org.exoplatform.social.core.space.impl.SpacesAdministrationServiceImpl</type>
+  </component>
+
+  <component>
     <key>org.exoplatform.social.core.processor.MentionsProcessor</key>
     <type>org.exoplatform.social.core.processor.MentionsProcessor</type>
   </component>
@@ -565,6 +570,38 @@
     <key>org.exoplatform.social.core.application.SpaceActivityPublisher</key>
     <type>org.exoplatform.social.core.application.SpaceActivityPublisher</type>
   </component>
+
+  <!-- Bind datasource -->
+  <external-component-plugins>
+    <target-component>org.exoplatform.services.naming.InitialContextInitializer</target-component>
+    <component-plugin>
+      <name>bind.datasource</name>
+      <set-method>addPlugin</set-method>
+      <type>org.exoplatform.services.naming.BindReferencePlugin</type>
+      <init-params>
+        <value-param>
+          <name>bind-name</name>
+          <value>java:/comp/env/exo-jpa_portal</value>
+        </value-param>
+        <value-param>
+          <name>class-name</name>
+          <value>javax.sql.DataSource</value>
+        </value-param>
+        <value-param>
+          <name>factory</name>
+          <value>org.apache.commons.dbcp.BasicDataSourceFactory</value>
+        </value-param>
+        <properties-param>
+          <name>ref-addresses</name>
+          <description>ref-addresses</description>
+          <property name="driverClassName" value="org.hsqldb.jdbcDriver" />
+          <property name="url" value="jdbc:hsqldb:mem:db1" />
+          <property name="username" value="sa" />
+          <property name="password" value="" />
+        </properties-param>
+      </init-params>
+    </component-plugin>
+  </external-component-plugins>
 
   <external-component-plugins>
     <target-component>org.exoplatform.social.core.manager.ActivityManager</target-component>

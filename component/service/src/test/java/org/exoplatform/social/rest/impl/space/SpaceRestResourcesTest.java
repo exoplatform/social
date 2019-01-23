@@ -8,8 +8,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
+import javax.ws.rs.core.EntityTag;
+import javax.ws.rs.core.MultivaluedMap;
+
 import org.exoplatform.portal.config.UserACL;
 import org.exoplatform.services.rest.impl.ContainerResponse;
+import org.exoplatform.services.rest.impl.MultivaluedMapImpl;
 import org.exoplatform.services.security.MembershipEntry;
 import org.exoplatform.social.common.RealtimeListAccess;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
@@ -135,6 +139,27 @@ public class SpaceRestResourcesTest extends AbstractResourceTest {
     assertEquals(2, collections.getEntities().size());
   }
   
+  public void testShouldUseCacheWhenSpacesDidNotChanged() throws Exception {
+    getSpaceInstance(1, "root");
+    getSpaceInstance(2, "john");
+    getSpaceInstance(3, "demo");
+
+    startSessionAs("root");
+    ContainerResponse response = service("GET", getURLResource("spaces?limit=5&offset=0"), "", null, null);
+    assertNotNull(response);
+    assertEquals(200, response.getStatus());
+    CollectionEntity collections = (CollectionEntity) response.getEntity();
+    assertEquals(3, collections.getEntities().size());
+    EntityTag eTag = (EntityTag) response.getHttpHeaders().getFirst("ETAG");
+    assertNotNull(eTag);
+
+    MultivaluedMap<String,String> headers = new MultivaluedMapImpl();
+    headers.putSingle("If-None-Match", "\"" + eTag.getValue() + "\"");
+    response = service("GET", getURLResource("spaces?limit=5&offset=0"), "", headers, null);
+    assertNotNull(response);
+    assertEquals(304, response.getStatus());
+  }
+
   public void testCreateSpace() throws Exception {
     startSessionAs("root");
     String input = "{\"displayName\":social}";
