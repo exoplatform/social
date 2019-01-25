@@ -2,6 +2,8 @@ package org.exoplatform.social.rest.impl.users;
 
 import org.exoplatform.portal.config.UserACL;
 import org.exoplatform.services.rest.impl.ContainerResponse;
+import org.exoplatform.services.user.UserStateModel;
+import org.exoplatform.services.user.UserStateService;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.activity.model.ExoSocialActivityImpl;
 import org.exoplatform.social.core.identity.model.Identity;
@@ -12,11 +14,14 @@ import org.exoplatform.social.core.manager.RelationshipManager;
 import org.exoplatform.social.core.space.impl.DefaultSpaceApplicationHandler;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
+import org.exoplatform.social.rest.api.ErrorResource;
 import org.exoplatform.social.rest.entity.ActivityEntity;
 import org.exoplatform.social.rest.entity.CollectionEntity;
 import org.exoplatform.social.rest.entity.ProfileEntity;
 import org.exoplatform.social.rest.impl.user.UserRestResourcesV1;
 import org.exoplatform.social.service.test.AbstractResourceTest;
+
+import java.util.Date;
 
 public class UserRestResourcesTest extends AbstractResourceTest {
   
@@ -25,7 +30,8 @@ public class UserRestResourcesTest extends AbstractResourceTest {
   private UserACL userACL;
   private RelationshipManager relationshipManager;
   private SpaceService spaceService;
-  
+  private UserStateService userStateService;
+
   private Identity rootIdentity;
   private Identity johnIdentity;
   private Identity maryIdentity;
@@ -41,6 +47,7 @@ public class UserRestResourcesTest extends AbstractResourceTest {
     userACL = getContainer().getComponentInstanceOfType(UserACL.class);
     relationshipManager = getContainer().getComponentInstanceOfType(RelationshipManager.class);
     spaceService = getContainer().getComponentInstanceOfType(SpaceService.class);
+    userStateService = getContainer().getComponentInstanceOfType(UserStateService.class);
 
     rootIdentity = new Identity(OrganizationIdentityProvider.NAME, "root");
     johnIdentity = new Identity(OrganizationIdentityProvider.NAME, "john");
@@ -67,6 +74,61 @@ public class UserRestResourcesTest extends AbstractResourceTest {
     assertEquals(200, response.getStatus());
     CollectionEntity collections = (CollectionEntity) response.getEntity();
     assertEquals(4, collections.getEntities().size());
+  }
+
+  public void testGetOnlineUsers() throws Exception {
+    startSessionAs("root");
+    long date = new Date().getTime();
+    UserStateModel userModel =
+            new UserStateModel("john",
+                    date,
+                    UserStateService.DEFAULT_STATUS);
+    UserStateModel userModel2 =
+            new UserStateModel("mary",
+                    date,
+                    UserStateService.DEFAULT_STATUS);
+    userStateService.save(userModel);
+    userStateService.save(userModel2);
+    userStateService.ping(userModel.getUserId());
+    userStateService.ping(userModel2.getUserId());
+    ContainerResponse response = service("GET", getURLResource("users?status=online&limit=5&offset=0"), "", null, null);
+    assertNotNull(response);
+    assertEquals(200, response.getStatus());
+    CollectionEntity collections = (CollectionEntity) response.getEntity();
+    assertEquals(2, collections.getEntities().size()); // john and mary
+  }
+
+  public void testGetOnlineUsersOfSpace() throws Exception {
+    startSessionAs("root");
+    long date = new Date().getTime();
+    UserStateModel userModel =
+            new UserStateModel("john",
+                    date,
+                    UserStateService.DEFAULT_STATUS);
+    UserStateModel userModel2 =
+            new UserStateModel("mary",
+                    date,
+                    UserStateService.DEFAULT_STATUS);
+    userStateService.save(userModel);
+    userStateService.save(userModel2);
+    userStateService.ping(userModel.getUserId());
+    userStateService.ping(userModel2.getUserId());
+    Space spaceTest = getSpaceInstance(0, "root");
+    String spaceId = spaceTest.getId();
+    spaceTest.setMembers(new String[] {"john"});
+    spaceService.updateSpace(spaceTest);
+    ContainerResponse response = service("GET", getURLResource("users?status=online&spaceId="+spaceId), "", null, null);
+    assertNotNull(response);
+    assertEquals(200, response.getStatus());
+    CollectionEntity collections = (CollectionEntity) response.getEntity();
+    assertEquals(1, collections.getEntities().size()); // only john
+    // non existing space
+    response = service("GET", getURLResource("users?status=online&spaceId=2"), "", null, null);
+    assertNotNull(response);
+    assertEquals(404, response.getStatus());
+    ErrorResource errorResource = (ErrorResource) response.getEntity();
+    assertEquals("space not found", errorResource.getDeveloperMessage());
+    assertEquals("space 2 does not exist", errorResource.getMessage());
   }
 
   public void testGetUserById() throws Exception {

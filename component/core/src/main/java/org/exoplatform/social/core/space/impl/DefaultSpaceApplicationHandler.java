@@ -398,9 +398,18 @@ public class DefaultSpaceApplicationHandler implements SpaceApplicationHandler {
     UserPortalConfigService userPortalConfigService = getUserPortalConfigService();
     Page page = null;
     try {
-      page = userPortalConfigService.createPageTemplate("space",
-                                                        PortalConfig.GROUP_TYPE,
-                                                        space.getGroupId());
+      if (isRoot) {
+        page = userPortalConfigService.createPageTemplate("spaceHomePage",
+                PortalConfig.GROUP_TYPE,
+                space.getGroupId());
+        setPermissionForPage(page.getChildren(), "*:" + space.getGroupId());
+      } else {
+        page = userPortalConfigService.createPageTemplate("space",
+                PortalConfig.GROUP_TYPE,
+                space.getGroupId());
+        //setting some data to page.
+        setPage(space, app, gadgetApplication, portletApplication, page);
+      }
       page.setName(pageName);
       page.setTitle(pageTitle);
       
@@ -423,9 +432,6 @@ public class DefaultSpaceApplicationHandler implements SpaceApplicationHandler {
                                           page.getFactoryId(), 
                                           page.getAccessPermissions() != null ? Arrays.asList(page.getAccessPermissions()) : null, 
                                           page.getEditPermission(), Arrays.asList(page.getMoveAppsPermissions()), Arrays.asList(page.getMoveContainersPermissions()));
-      
-      //setting some data to page.
-      setPage(space, app, gadgetApplication, portletApplication, page);
       
       pageService.savePage(new PageContext(pageKey, pageState));
       dataStorage.save(page);

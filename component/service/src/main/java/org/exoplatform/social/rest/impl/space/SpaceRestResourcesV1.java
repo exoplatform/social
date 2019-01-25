@@ -331,7 +331,7 @@ public class SpaceRestResourcesV1 implements SpaceRestResources {
     builder.cacheControl(cc);
     return builder.cacheControl(cc).build();
   }
-  
+
   /**
    * {@inheritDoc}
    */

@@ -354,7 +354,7 @@ public class UISpaceMenu extends UIContainer {
     }
 
     if(context != null){
-      return context.getApplicationResourceBundle().getString("UISpaceMenu.label.ActivityStream");
+      return context.getApplicationResourceBundle().getString("UISpaceMenu.label.SpaceHomePage");
     }
     return null ;
   }

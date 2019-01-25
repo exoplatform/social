@@ -38,12 +38,16 @@ public interface UserRestResources extends SocialRest {
    * Get all users, filter by name if exists.
    *
    * @param q value that an user's name match
+   * @param status filter only online users
+   * @param spaceId filter only space members
    * @return List of users in json format.
    * @throws Exception
    */
   @GET
   public abstract Response getUsers(@Context UriInfo uriInfo,
                                     @QueryParam("q") String q,
+                                    @QueryParam("status") String status,
+                                    @QueryParam("spaceId") String spaceId,
                                     @QueryParam("offset") int offset,
                                     @QueryParam("limit") int limit,
                                     @QueryParam("returnSize") boolean returnSize,

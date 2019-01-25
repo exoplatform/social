@@ -121,14 +121,14 @@ if(appSelected == null || appSelected.length() == 0) {
       </div>
 <nav>
 <%
-String activityStreamLabel = _ctx.appRes(uicomponent.getId() + ".label.ActivityStream");
+String spaceHomeAppLabel = _ctx.appRes(uicomponent.getId() + ".label.SpaceHomePage");
 %>
 
 <ul class="nav nav-tabs spaceMenuTab" id="spaceMenuTab" style="visibility: hidden;">
 <li class="$selectedClazz">
 <a data-toggle="tab" <%=activityStreamUrl%>>
-        <i class="uiIconAppSpaceActivityStreamPortlet uiIconDefaultApp"></i>
-<span class="tabName"> $activityStreamLabel</span>
+        <i class="uiIconAppSpaceHomePage uiIconDefaultApp"></i>
+<span class="tabName"> $spaceHomeAppLabel</span>
 </a>
 </li>
 

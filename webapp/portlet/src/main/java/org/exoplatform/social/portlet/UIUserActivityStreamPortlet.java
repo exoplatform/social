@@ -58,7 +58,7 @@ public class UIUserActivityStreamPortlet extends UIPortletApplication {
   private String activityId;
   private static final String SINGLE_ACTIVITY_NODE = "activity";
   private static final String SINGLE_ACTIVITY_REDIRECT_LINK_PREFIX = "activity/redirect";
-  private static final String NOTIFICATION_REST_PREFIX = "/social/notifications/redirectUrl";
+  private static final String NOTIFICATION_REST_PREFIX = "/locale/portlet/social/notifications/redirectUrl";
   private static final Log LOG = ExoLogger.getLogger(UIUserActivityStreamPortlet.class.getName());
   /**
    * constructor
