@@ -17,10 +17,35 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 -->
-<gatein-resources
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://www.gatein.org/xml/ns/gatein_resources_1_3 http://www.gatein.org/xml/ns/gatein_resources_1_3"
-  xmlns="http://www.gatein.org/xml/ns/gatein_resources_1_3">
+<gatein-resources xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                  xsi:schemaLocation="http://www.exoplatform.org/xml/ns/gatein_resources_1_4 http://www.exoplatform.org/xml/ns/gatein_resources_1_4"
+                  xmlns="http://www.exoplatform.org/xml/ns/gatein_resources_1_4">
+
+  <portlet>
+    <name>SpaceInfos</name>
+    <module>
+      <script>
+        <minify>false</minify>
+        <path>/js/spaceInfos.bundle.js</path>
+      </script>
+      <depends>
+        <module>vue</module>
+      </depends>
+      <depends>
+        <module>eXoVueI18n</module>
+      </depends>
+      <depends>
+        <module>extensionRegistry</module>
+      </depends>
+      <depends>
+        <module>jquery</module>
+        <as>$</as>
+      </depends>
+      <depends>
+        <module>userPopupPlugin</module>
+      </depends>
+    </module>
+  </portlet>
 
   <!-- Portlet javascript -->
   <portlet>

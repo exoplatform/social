@@ -16,5 +16,5 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http:/
 	  <portlet-info>
 	    <title>Spaces Administration</title>
 	  </portlet-info>
-  </portlet>	
+  </portlet>
 </portlet-app>

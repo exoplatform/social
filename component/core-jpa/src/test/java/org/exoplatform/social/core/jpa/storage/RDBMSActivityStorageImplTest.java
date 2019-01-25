@@ -702,7 +702,7 @@ public class RDBMSActivityStorageImplTest extends AbstractCoreTest {
     assertEquals(2, got.getMentionedIds().length);
   }
 
-  @MaxQueryNumber(51)
+  @MaxQueryNumber(57)
   public void testShouldMoveActivityUpWhenMentionedInAPost() {
     // Given
     ExoSocialActivity activity1 = createActivity(1);
