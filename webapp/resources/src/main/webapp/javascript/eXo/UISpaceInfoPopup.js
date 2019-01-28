@@ -99,10 +99,10 @@
                     tiptip_arrow.removeAttr("style");
                     var top = parseInt(org_elem.offset()['top']);
                     var left = parseInt(org_elem.offset()['left']);
-                    var org_width = parseInt(org_elem.outerWidth());
-                    var org_height = parseInt(org_elem.outerHeight());
-                    var tip_w = tiptip_holder.outerWidth();
-                    var tip_h = tiptip_holder.outerHeight();
+                    var org_width = parseInt(org_elem.outerWidth(true));
+                    var org_height = parseInt(org_elem.outerHeight(true));
+                    var tip_w = tiptip_holder.outerWidth(true);
+                    var tip_h = tiptip_holder.outerHeight(true);
                     var w_compare = Math.round((org_width - tip_w) / 2);
                     var h_compare = Math.round((org_height - tip_h) / 2);
                     var marg_left = Math.round(left + w_compare);
