@@ -16,11 +16,18 @@
  */
 package org.exoplatform.social.core.jpa.storage;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+
 import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.activity.model.ExoSocialActivityImpl;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
+import org.exoplatform.social.core.jpa.storage.dao.StreamItemDAO;
+import org.exoplatform.social.core.jpa.storage.entity.StreamItemEntity;
 import org.exoplatform.social.core.jpa.test.AbstractCoreTest;
 import org.exoplatform.social.core.jpa.test.MaxQueryNumber;
 import org.exoplatform.social.core.jpa.test.QueryNumberTest;
@@ -31,15 +38,12 @@ import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
 import org.exoplatform.social.core.storage.api.IdentityStorage;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-
 @QueryNumberTest
 public class RDBMSActivityStorageImplTest extends AbstractCoreTest {
   
   private IdentityStorage identityStorage;
+  
+  private StreamItemDAO streamItemDAO;
   
   private List<ExoSocialActivity> tearDownActivityList;
 
@@ -48,10 +52,12 @@ public class RDBMSActivityStorageImplTest extends AbstractCoreTest {
   private Identity maryIdentity;
   private Identity demoIdentity;
 
+
   @Override
   protected void setUp() throws Exception {
     super.setUp();
     identityStorage = getService(IdentityStorage.class);
+    streamItemDAO = getService(StreamItemDAO.class);
 
     assertNotNull(identityStorage);
     assertNotNull(activityStorage);
@@ -106,15 +112,22 @@ public class RDBMSActivityStorageImplTest extends AbstractCoreTest {
   public void testUpdateActivity() {
     ExoSocialActivity activity = createActivity(1);
     //
-    activityStorage.saveActivity(demoIdentity, activity);
+    ExoSocialActivity activityCreated = activityStorage.saveActivity(demoIdentity, activity);
+    List<StreamItemEntity> streamItems = streamItemDAO.findStreamItemByActivityId(Long.parseLong(activityCreated.getId()));
     
-    activity.setTitle("Title after updated");
+    activityCreated.setTitle("Title after updated");
     
     //update
-    activityStorage.updateActivity(activity);
+    
+    activityStorage.updateActivity(activityCreated);
     
     ExoSocialActivity res = activityStorage.getActivity(activity.getId());
+    // Check that stream Item update date is not modified
     
+    List<StreamItemEntity> streamItemsRes = streamItemDAO.findStreamItemByActivityId(Long.parseLong(activityCreated.getId()));
+
+    assertEquals(streamItemsRes.get(0).getUpdatedDate(),streamItems.get(0).getUpdatedDate());
+
     assertEquals("Title after updated", res.getTitle());
     //
     tearDownActivityList.add(activity);

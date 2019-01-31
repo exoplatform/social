@@ -1021,9 +1021,9 @@ public class RDBMSActivityStorageImpl implements ActivityStorage {
         // update comment
         updatedActivity.setUpdatedDate(new Date());
       }
-      //only raise the activity in stream when activity message updated
-      if (existingActivity.getTitle() != null &&
-              existingActivity.getTitle().equals(existingActivity.getTitle())) {
+      // only raise the activity in stream when activity date updated
+      if (existingActivity.getUpdated() != null && updatedActivity.getUpdatedDate() != null
+          && existingActivity.getUpdated().getTime() != updatedActivity.getUpdatedDate().getTime()) {
         processActivityStreamUpdatedTime(updatedActivity);
       }
       //create or remove liker if exist

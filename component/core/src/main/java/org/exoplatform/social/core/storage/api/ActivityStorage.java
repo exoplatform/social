@@ -619,7 +619,10 @@ public interface ActivityStorage {
   public SortedSet<ActivityProcessor> getActivityProcessors();
 
   /**
-   * Updates an existing activity.
+   * Updates an existing activity. If the updatedDate is different than the
+   * previous one, it is updated and the activity is moved up in the activity
+   * stream, otherwise the activity is updated without being moved in the
+   * stream.
    *
    * @param existingActivity
    * @throws ActivityStorageException
