@@ -161,6 +161,7 @@ export default {
       }
     },
     savePermissionsCreateSpace() {
+      $('.tooltip.fade.bottom.in').remove();
       if(this.creators){
         spacesAdministrationServices.updateSpacesAdministrationSetting('spacesCreators',
           this.creators.map(creator => {
@@ -270,6 +271,7 @@ export default {
       }
     },
     savePermissionsSpacesAdministrators() {
+      $('.tooltip.fade.bottom.in').remove();
       if(this.administrators){
         spacesAdministrationServices.updateSpacesAdministrationSetting('spacesAdministrators',
           this.administrators.map(administrator => {
@@ -293,6 +295,7 @@ export default {
       });
     },
     editCreateSpace(){
+      $('.tooltip.fade.bottom.in').remove();
       if(this.spacesCreatorsEditMode) {
         this.spacesCreatorsEditMode = false;
       } else {
@@ -301,6 +304,7 @@ export default {
       }
     },
     editManageSpace(){
+      $('.tooltip.fade.bottom.in').remove();
       if(this.spacesAdministratorsEditMode) {
         this.spacesAdministratorsEditMode = false;
       } else {
