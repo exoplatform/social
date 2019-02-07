@@ -132,11 +132,8 @@ public class SpaceActivityPublisher extends SpaceListenerPlugin {
   public void spaceCreated(SpaceLifeCycleEvent event) {
     Space space = event.getSpace();
     final String activityMessage = "Has joined the space.";
-    Map<String, String> templateParams = new LinkedHashMap<String, String>();
-    
+    Map<String, String> templateParams = new LinkedHashMap<>();
     templateParams.put(SPACE_DISPLAY_NAME_PARAM, space.getDisplayName());
-    templateParams.put(USER_NAME_PARAM, "@" + event.getTarget());
-    templateParams.put(BaseActivityProcessorPlugin.TEMPLATE_PARAM_TO_PROCESS, USER_NAME_PARAM);
     recordActivity(event, activityMessage, SPACE_CREATED_TITLE_ID, templateParams);
   }
 
