@@ -195,7 +195,7 @@ public class UIUserActivityStreamPortlet extends UIPortletApplication {
       ExoSocialActivity activity = Utils.getActivityManager().getActivity(gotId);
       if (activity != null && hasPermissionToViewActivity(activity)) {
         LOG.debug("got the activity = " + activity.toString());
-        return activity.getTitle();
+        return activity.getTitle().length() <= 50 ? activity.getTitle(): activity.getTitle().substring(0, 50) + "...";
       }
     }
     
