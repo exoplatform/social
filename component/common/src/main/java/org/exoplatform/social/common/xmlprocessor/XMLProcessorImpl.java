@@ -29,7 +29,6 @@ import org.exoplatform.services.log.Log;
  */
 public class XMLProcessorImpl implements XMLProcessor {
   
-  private static final Log LOG = ExoLogger.getLogger(XMLProcessorImpl.class);
   /**
    * The linked list for all filters.
    */
@@ -73,23 +72,6 @@ public class XMLProcessorImpl implements XMLProcessor {
   public void removeFilterPlugin(BaseXMLFilterPlugin filterComponentPlugin) {
     removeFilter(filterComponentPlugin);
   }
-
-  /**
-   * {@inheritDoc}
-   */
-  public void removeFilter(Class className) {
-    LinkedList<Filter> filtersClone = (LinkedList<Filter>) filters.clone();
-
-    for (Iterator<Filter> filterIterator = filtersClone.iterator();
-         filterIterator.hasNext();
-         ) {
-      Filter filter = filterIterator.next();
-      if (filter.getClass().equals(className)) {
-        filters.remove(filter);
-      }
-    }
-  }
-
 
   /**
    * {@inheritDoc}

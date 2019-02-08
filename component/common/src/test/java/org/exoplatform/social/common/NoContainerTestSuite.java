@@ -17,15 +17,17 @@
 package org.exoplatform.social.common;
 
 import org.exoplatform.social.common.jcr.filter.FilterLiteralTest;
+import org.exoplatform.social.common.router.ExoRouterReserveTest;
+import org.exoplatform.social.common.router.ExoRouterTest;
+import org.exoplatform.social.common.service.TraceListTest;
 import org.exoplatform.social.common.xmlprocessor.DOMParserTest;
 import org.exoplatform.social.common.xmlprocessor.TokenizerTest;
 import org.exoplatform.social.common.xmlprocessor.filters.OpenLinkNewTabFilterPluginTest;
 import org.exoplatform.social.common.xmlprocessor.filters.SanitizeFilterPluginTest;
-import org.exoplatform.social.common.xmlprocessor.filters.DOMXMLTagFilterPluginTest;
 import org.exoplatform.social.common.xmlprocessor.filters.URLConverterFilterPluginTest;
 import org.exoplatform.social.common.xmlprocessor.filters.XMLBalancerFilterPluginTest;
-import org.exoplatform.social.common.xmlprocessor.filters.XMLTagFilterPluginTest;
 import org.exoplatform.social.common.xmlprocessor.model.AttributesTest;
+import org.exoplatform.social.common.xmlprocessor.model.NodeTest;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
@@ -36,14 +38,17 @@ import org.junit.runners.Suite.SuiteClasses;
 @SuiteClasses({
   DOMParserTest.class,
   TokenizerTest.class,
+  NodeTest.class,
   AttributesTest.class,
   SanitizeFilterPluginTest.class,
-  DOMXMLTagFilterPluginTest.class,
   URLConverterFilterPluginTest.class,
   XMLBalancerFilterPluginTest.class,
-  XMLTagFilterPluginTest.class,
   FilterLiteralTest.class,
   OpenLinkNewTabFilterPluginTest.class,
+  ExoRouterTest.class,
+  ExoRouterReserveTest.class,
+  TraceListTest.class,
+  ResourceBundleUtilTest.class
   })
 public class NoContainerTestSuite {
   

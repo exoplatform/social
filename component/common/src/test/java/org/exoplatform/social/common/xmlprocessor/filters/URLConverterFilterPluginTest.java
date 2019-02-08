@@ -138,4 +138,15 @@ public class URLConverterFilterPluginTest extends TestCase {
     assertEquals("demo <a href=\"http://google.com\" target=\"_blank\"" +
             ">http://google.com</a> test\t\n<br />\t\n<a href=\"http://google.com\" target=\"_blank\">http://google.com</a>\n\t", urlConverterFilter.doFilter("demo http://google.com test\t\n<br />\t\nhttp://google.com\n\t"));
   }
+
+  public void testShouldReturnNullWhenConvertingNullInput() {
+    // Given
+    URLConverterFilterPlugin urlConverterFilterPlugin = new URLConverterFilterPlugin(0);
+
+    // When
+    Object filteredInput = urlConverterFilterPlugin.doFilter(null);
+
+    // Then
+    assertNull(filteredInput);
+  }
 }

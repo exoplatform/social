@@ -29,7 +29,7 @@
   <name>eXo PLF:: Social Common Component</name>
   <description>eXo Social Common Component</description>
   <properties>
-    <exo.test.coverage.ratio>0.52</exo.test.coverage.ratio>
+    <exo.test.coverage.ratio>0.59</exo.test.coverage.ratio>
   </properties>
   <dependencies>
     <dependency>

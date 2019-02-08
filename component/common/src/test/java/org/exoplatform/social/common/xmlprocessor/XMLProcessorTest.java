@@ -18,18 +18,10 @@ package org.exoplatform.social.common.xmlprocessor;
 
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.social.common.AbstractCommonTest;
-import org.exoplatform.social.common.xmlprocessor.filters.SanitizeFilterPlugin;
-import org.exoplatform.social.common.xmlprocessor.filters.DOMXMLTagFilterPlugin;
-import org.exoplatform.social.common.xmlprocessor.filters.XMLBalancerFilterPlugin;
-import org.exoplatform.social.common.xmlprocessor.filters.XMLTagFilterPlugin;
-import org.exoplatform.social.common.xmlprocessor.model.XMLTagFilterPolicy;
-import org.exoplatform.social.common.xmlprocessor.model.XMLTagFilterPolicy.AllowedTag;
 
 /**
  * Unit Test for {@link XMLProcessor}.
@@ -48,8 +40,8 @@ public class XMLProcessorTest extends AbstractCommonTest {
   public void setUp() throws Exception {
     super.setUp();
     portalContainer = PortalContainer.getInstance();
-    xmlProcessor = (XMLProcessor) portalContainer.getComponentInstanceOfType(XMLProcessor.class);
-    tearDownFilter = new ArrayList<Filter>();
+    xmlProcessor = portalContainer.getComponentInstanceOfType(XMLProcessor.class);
+    tearDownFilter = new ArrayList<>();
   }
 
   @Override
@@ -60,143 +52,102 @@ public class XMLProcessorTest extends AbstractCommonTest {
     super.tearDown();
   }
 
-  /**
-   * Tests {@link XMLProcessor#addFilter(Filter)}.
-   */
-  public void testAddFilter() {
-    SanitizeFilterPlugin filter = new SanitizeFilterPlugin();
-    tearDownFilter.add(filter);
-    xmlProcessor.addFilter(filter);
+  public void testShouldReturnNullWhenProcessNullInput() {
+    // Given
+    Test1FilterPlugin test1FilterPlugin = new Test1FilterPlugin();
+    xmlProcessor.addFilter(test1FilterPlugin);
+    tearDownFilter.add(test1FilterPlugin);
+
+    // When
+    Object processedText = xmlProcessor.process(null);
+
+    // Then
+    assertNull(processedText);
   }
 
-  /**
-   * Tests {@link XMLProcessor#removeFilter(Filter)}.
-   */
-  public void testRemoveFilter() {
-    xmlProcessor.removeFilter(new SanitizeFilterPlugin());
+  public void testShouldApplyFilterWhenOneFilterAdded() {
+    // Given
+    Test1FilterPlugin test1FilterPlugin = new Test1FilterPlugin();
+    xmlProcessor.addFilter(test1FilterPlugin);
+    tearDownFilter.add(test1FilterPlugin);
+
+    // When
+    Object processedText = xmlProcessor.process("test");
+
+    // Then
+    assertNotNull(processedText);
+    assertEquals("test-test1", (String) processedText);
   }
 
-  /**
-   * Tests {@link XMLProcessor#addFilterPlugin(BaseXMLFilterPlugin)}
-   * and {@link XMLProcessor#removeFilterPlugin(BaseXMLFilterPlugin)}.
-   */
-  public void testAddAndRemoveFilterPlugin() {
-    FakeXMLFilterPluginPlugin fakeXMLFilterPlugin = new FakeXMLFilterPluginPlugin();
-    xmlProcessor.addFilterPlugin(fakeXMLFilterPlugin);
-    xmlProcessor.removeFilterPlugin(fakeXMLFilterPlugin);
+  public void testShouldApplyFiltersWhenTwoFiltersAdded() {
+    // Given
+    Test1FilterPlugin test1FilterPlugin = new Test1FilterPlugin();
+    xmlProcessor.addFilter(test1FilterPlugin);
+    tearDownFilter.add(test1FilterPlugin);
+    Test2FilterPlugin test2FilterPlugin = new Test2FilterPlugin();
+    xmlProcessor.addFilter(test2FilterPlugin);
+    tearDownFilter.add(test2FilterPlugin);
+
+    // When
+    Object processedText = xmlProcessor.process("test");
+
+    // Then
+    assertNotNull(processedText);
+    assertEquals("test-test1-test2", (String) processedText);
   }
 
-  /**
-   * Tests {@link XMLProcessor#process(Object)}.
-   */
-  public void testProcess() {
-    Object output = xmlProcessor.process("<h3>hello world our there</h3><d>");
-    assertEquals("<h3>hello world our there</h3><d>", output);
+  public void testShouldApplyFiltersWhenTwoFiltersAddedAndOneRemoved() {
+    // Given
+    Test1FilterPlugin test1FilterPlugin = new Test1FilterPlugin();
+    xmlProcessor.addFilter(test1FilterPlugin);
+    Test2FilterPlugin test2FilterPlugin = new Test2FilterPlugin();
+    xmlProcessor.addFilter(test2FilterPlugin);
+    tearDownFilter.add(test2FilterPlugin);
+    xmlProcessor.removeFilter(test1FilterPlugin);
+
+    // When
+    Object processedText = xmlProcessor.process("test");
+
+    // Then
+    assertNotNull(processedText);
+    assertEquals("test-test2", (String) processedText);
   }
 
+  public void testShouldApplyFiltersByPluginWhenTwoFiltersAddedAndOneRemoved() {
+    // Given
+    Test1FilterPlugin test1FilterPlugin = new Test1FilterPlugin();
+    xmlProcessor.addFilterPlugin(test1FilterPlugin);
+    Test2FilterPlugin test2FilterPlugin = new Test2FilterPlugin();
+    xmlProcessor.addFilterPlugin(test2FilterPlugin);
+    tearDownFilter.add(test2FilterPlugin);
+    xmlProcessor.removeFilterPlugin(test1FilterPlugin);
 
-  /**
-   * Tests {@link XMLProcessor#process(Object)} with:
-   * {@link org.exoplatform.social.common.xmlprocessor.filters.XMLBalancerFilterPlugin}.
-   */
-  public void testXMLBalancer() {
-    XMLProcessor xmlProcessor = new XMLProcessorImpl();
-    XMLBalancerFilterPlugin xmlBalancer = new XMLBalancerFilterPlugin();
+    // When
+    Object processedText = xmlProcessor.process("test");
 
-    xmlProcessor.addFilter(xmlBalancer);
-
-    assertEquals(null,
-            xmlProcessor.process(null));
-    assertEquals("", xmlProcessor.process(""));
-    assertEquals("hello 1", xmlProcessor.process("hello 1"));
-    assertEquals("hello 1&lt;&gt; hello2",
-            xmlProcessor.process("hello 1<> hello2"));
-    assertEquals("<a>hello 1</a>", xmlProcessor.process("<a>hello 1"));
-    assertEquals("hello 1&lt;/a&gt;", xmlProcessor.process("hello 1</a>"));
-    assertEquals("<a>Hello 2<a><b></b></a></a>", xmlProcessor.process("<a<b>Hello 2<a><b>"));
-                   
+    // Then
+    assertNotNull(processedText);
+    assertEquals("test-test2", (String) processedText);
   }
 
-  /**
-   * Tests {@link XMLProcessor#process(Object)} with:
-   * {@link org.exoplatform.social.common.xmlprocessor.filters.XMLTagFilterPlugin} for allowed tags.
-   */
-  public void testXMLFilter() {
-    XMLTagFilterPolicy tagFilterPolicy = new XMLTagFilterPolicy();
-    tagFilterPolicy.addAllowedTags("div", "p", "b", "br", "a");
-    XMLTagFilterPlugin xmlFilter = new XMLTagFilterPlugin(tagFilterPolicy);
-    xmlProcessor.addFilter(xmlFilter);
-
-    Filter contentEscapeFilter = new SanitizeFilterPlugin();
-    xmlProcessor.addFilter(contentEscapeFilter);
-
-    assertEquals(null, xmlProcessor.process(null));
-
-    assertEquals("hello 1", xmlProcessor.process("hello 1"));
-    assertEquals("hello 1\n hello2", xmlProcessor.process("hello 1\n hello2"));
-    assertEquals("hello 1", xmlProcessor.process("<a>hello 1"));
-    assertEquals("hello 1", xmlProcessor.process("hello 1</a>"));
-    assertEquals("Hello 2<b></b>", xmlProcessor.process("<a<b>Hello 2<a><b>"));
-    assertEquals("Hello 2&lt;i&gt;<b></b>", xmlProcessor.process("<a<b>Hello 2<i><b>"));
-    assertEquals("Hello 2<b><b></b></b>", xmlProcessor.process("<a<b>Hello 2<b /><b>"));
-  }
-
-  /**
-   * Tests {@link XMLProcessor#process(Object)} with:
-   * {@link org.exoplatform.social.common.xmlprocessor.filters.XMLTagFilterPlugin} for allowed tags and its allowed attributes.
-   */
-  public void testXMLFilterWithTagAndAttributes() {
-    XMLTagFilterPolicy tagFilterPolicy = new XMLTagFilterPolicy();
-    tagFilterPolicy.addAllowedTags("div", "p", "b", "br", "a");
-    XMLTagFilterPlugin xmlFilter = new XMLTagFilterPlugin(tagFilterPolicy);
-    xmlProcessor.addFilter(xmlFilter);
-
-    assertEquals(null, xmlProcessor.process(null));
-    assertEquals("hello 1", xmlProcessor.process("hello 1"));
-    assertEquals("hello 1\n hello2", xmlProcessor.process("hello 1\n hello2"));
-    assertEquals("<a>hello 1", xmlProcessor.process("<a>hello 1"));
-    assertEquals("hello 1</a>", xmlProcessor.process("hello 1</a>"));
-    assertEquals("<a>Hello 2<a><b>", xmlProcessor.process("<a<b>Hello 2<a><b>"));
-    assertEquals("<a>Hello 2&lt;i&gt;<b>", xmlProcessor.process("<a<b>Hello 2<i><b>"));
-    assertEquals("<a>Hello 2<b /><b>", xmlProcessor.process("<a<b>Hello 2<b /><b>"));
-    assertEquals("&lt;script&gt;foo&lt;/script&gt;", xmlProcessor.process("<script>foo</script>"));
-  }
-
-  /**
-   * Tests {@link XMLProcessor#process(Object)} with:
-   * {@link org.exoplatform.social.common.xmlprocessor.filters.XMLTagFilterPlugin} for allowed tags and its allowed attributes,
-   * {@link SanitizeFilterPlugin}.
-   */
-  public void testXMLDOMFilterAndEscapeWithTagAndAttributes() {
-    XMLTagFilterPolicy tagFilterPolicy = new XMLTagFilterPolicy();
-    tagFilterPolicy.addAllowedTags("div", "p", "b", "br");
-    Set<String> aAttributes = new HashSet<String>();
-    aAttributes.add("href");
-    AllowedTag aTag = new AllowedTag("a", aAttributes);
-    tagFilterPolicy.addAllowedTag(aTag);
-
-
-    Filter domXmlTagFilter = new DOMXMLTagFilterPlugin(tagFilterPolicy);
-
-    xmlProcessor.addFilter(domXmlTagFilter);
-
-    assertEquals("hello 1", xmlProcessor.process(DOMParser.createDOMTree(Tokenizer.tokenize("hello 1"))).toString());
-    assertEquals("<a>hello 1", xmlProcessor.process(DOMParser.createDOMTree(Tokenizer.tokenize("<a>hello 1"))).toString());
-    assertEquals("hello 1</a>", xmlProcessor.process(DOMParser.createDOMTree(Tokenizer.tokenize("hello 1</a>"))).toString());
-    assertEquals("<a<b>Hello 2<a><b>", xmlProcessor.process(DOMParser.createDOMTree(Tokenizer.tokenize("<a<b>Hello 2<a><b>"))).toString());
-    assertEquals("<a>Hello 2</a>", xmlProcessor.process(DOMParser.createDOMTree(Tokenizer.tokenize("<a>Hello 2</a>"))).toString());
-    assertEquals("<a>Hello 2</a>", xmlProcessor.process(DOMParser.createDOMTree(Tokenizer.tokenize("<a>Hello 2</a>"))).toString());
-    assertEquals("<a href=\"abc\">Hello 2</a>", xmlProcessor.process(DOMParser.createDOMTree(Tokenizer.tokenize("<a href='abc' id='def'>Hello 2</a>"))).toString());
-    assertEquals("<img src=\"abc\" data-placeholder=\"placeholder\">Hello 2</img>", xmlProcessor.process(DOMParser.createDOMTree(Tokenizer.tokenize("<img src=\"abc\" data-placeholder=\"placeholder\">Hello 2</img>"))).toString());
-  }
-
-
-  /**
-   * Fake xml filter plugin
-   */
-  static class FakeXMLFilterPluginPlugin extends BaseXMLFilterPlugin {
+  class Test1FilterPlugin extends BaseXMLFilterPlugin {
     @Override
     public Object doFilter(Object input) {
+      if(input != null) {
+        String text = (String) input;
+        return text + "-test1";
+      }
+      return null;
+    }
+  }
+
+  class Test2FilterPlugin extends BaseXMLFilterPlugin {
+    @Override
+    public Object doFilter(Object input) {
+      if(input != null) {
+        String text = (String) input;
+        return text + "-test2";
+      }
       return null;
     }
   }

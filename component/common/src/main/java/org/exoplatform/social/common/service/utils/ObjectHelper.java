@@ -73,52 +73,6 @@ public class ObjectHelper {
   }
   
   /**
-   * Turns the given object arrays into a meaningful string
-   *
-   * @param objects an array of objects or null
-   * @return a meaningful string
-   */
-  public static String asString(Object[] objects) {
-      if (objects == null) {
-          return "null";
-      } else {
-          StringBuilder buffer = new StringBuilder("{");
-          int counter = 0;
-          for (Object object : objects) {
-              if (counter++ > 0) {
-                  buffer.append(", ");
-              }
-              String text = (object == null) ? "null" : object.toString();
-              buffer.append(text);
-          }
-          buffer.append("}");
-          return buffer.toString();
-      }
-  }
-
-  /**
-   * Returns true if a class is assignable from another class like the
-   * {@link Class#isAssignableFrom(Class)} method but which also includes
-   * coercion between primitive types to deal with Java 5 primitive type
-   * wrapping
-   */
-  public static boolean isAssignableFrom(Class<?> a, Class<?> b) {
-      a = convertPrimitiveTypeToWrapperType(a);
-      b = convertPrimitiveTypeToWrapperType(b);
-      return a.isAssignableFrom(b);
-  }
-
-  /**
-   * Returns if the given {@code clazz} type is a Java primitive array type.
-   * 
-   * @param clazz the Java type to be checked
-   * @return {@code true} if the given type is a Java primitive array type
-   */
-  public static boolean isPrimitiveArrayType(Class<?> clazz) {
-      return PRIMITIVE_ARRAY_TYPES.contains(clazz);
-  }
-  
-  /**
    * Converts the given value to the required type or throw a meaningful exception
    */
   @SuppressWarnings("unchecked")

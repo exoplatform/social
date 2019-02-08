@@ -38,4 +38,15 @@ public class OpenLinkNewTabFilterPluginTest extends TestCase {
     assertEquals("This is <a href=\"http://exoplatform.com\" target=\"_blank\">link</a>",
             linkTagFilter.doFilter("This is <a href=\"http://exoplatform.com\" target=\"frame_name\">link</a>"));
   }
+
+  public void testShouldReturnNullWhenFilteringNullInput() {
+    // Given
+    OpenLinkNewTabFilterPlugin openLinkNewTabFilterPlugin = new OpenLinkNewTabFilterPlugin();
+
+    // When
+    Object filteredInput = openLinkNewTabFilterPlugin.doFilter(null);
+
+    // Then
+    assertNull(filteredInput);
+  }
 }

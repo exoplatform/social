@@ -969,7 +969,7 @@ public class ActivityManagerTest extends AbstractCoreTest {
    */
   public  void testGetCommentWithHtmlContent() throws ActivityStorageException {
     String htmlString = "<span><strong>foo</strong>bar<script>zed</script></span>";
-    String htmlRemovedString = "<strong>foo</strong>bar&lt;script&gt;zed&lt;/script&gt;";
+    String htmlRemovedString = "<strong>foo</strong>bar";
     
     ExoSocialActivity activity = new ExoSocialActivityImpl();
     activity.setTitle("blah blah");

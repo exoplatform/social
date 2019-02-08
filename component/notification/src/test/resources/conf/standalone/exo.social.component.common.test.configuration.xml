@@ -32,11 +32,6 @@
   </component>
 
   <component>
-    <key>org.exoplatform.social.common.xmlprocessor.model.XMLTagFilterPolicy</key>
-    <type>org.exoplatform.social.common.xmlprocessor.model.XMLTagFilterPolicy</type>
-  </component>
-
-  <component>
     <key>org.exoplatform.commons.search.index.IndexingOperationProcessor</key>
     <type>org.exoplatform.social.notification.mock.MockIndexingOperationProcessor</type>
   </component>

@@ -27,27 +27,35 @@ import junit.framework.TestCase;
  */
 public class SanitizeFilterPluginTest extends TestCase {
 
-  /**
-   * Tests {@link SanitizeFilterPlugin#doFilter(Object)}.
-   */
   public void testContentEscape() {
     assertEquals(
             "",
             new SanitizeFilterPlugin().doFilter(
-                    DOMParser.createDOMTree(new Node(), Tokenizer.tokenize("")))
+                    DOMParser.createDOMTree(new Node(), Tokenizer.tokenize("")).toString())
                     .toString());
 
     assertEquals(
             "hello 1\r\nhello 2",
             new SanitizeFilterPlugin().doFilter(
                     DOMParser.createDOMTree(new Node(),
-                            Tokenizer.tokenize("hello 1\r\nhello 2"))).toString());
+                            Tokenizer.tokenize("hello 1\r\nhello 2")).toString()).toString());
 
     assertEquals(
-            "<b> = hello 1 &\"\\ hello 2 <a>",
+            "<b> &#61; hello 1 &amp;&#34;\\ hello 2 </b>",
             new SanitizeFilterPlugin().doFilter(
                     DOMParser.createDOMTree(new Node(),
-                            Tokenizer.tokenize("<b> = hello 1 &\"\\ hello 2 <a>")))
+                            Tokenizer.tokenize("<b> = hello 1 &\"\\ hello 2 <a>")).toString())
                     .toString());
+  }
+
+  public void testShouldReturnNullWhenSanitizingNullInput() {
+    // Given
+    SanitizeFilterPlugin sanitizeFilterPlugin = new SanitizeFilterPlugin();
+
+    // When
+    Object filteredInput = sanitizeFilterPlugin.doFilter(null);
+
+    // Then
+    assertNull(filteredInput);
   }
 }

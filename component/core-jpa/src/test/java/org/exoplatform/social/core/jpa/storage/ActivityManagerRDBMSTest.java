@@ -713,7 +713,7 @@ public class ActivityManagerRDBMSTest extends AbstractCoreTest {
     
     demoActivity = activityManager.getActivity(demoActivity.getId());
     assertEquals("demoActivity.getLikeIdentityIds().length must return: 1", 1, demoActivity.getLikeIdentityIds().length);
-    assertEquals("&\"demo activity", demoActivity.getTitle());
+    assertEquals("&amp;&#34;demo activity", demoActivity.getTitle());
   }
   /**
    * Test {@link ActivityManager#saveLike(ExoSocialActivity, Identity)}
@@ -1025,8 +1025,8 @@ public class ActivityManagerRDBMSTest extends AbstractCoreTest {
    * @throws ActivityStorageException
    */
   public  void testGetCommentWithHtmlContent() throws ActivityStorageException {
-    String htmlString = "<span><strong>foo</strong>bar<script>zed</script></span>";
-    String htmlRemovedString = "<span><strong>foo</strong>bar&lt;script&gt;zed&lt;/script&gt;</span>";
+    String htmlString = "<p><strong>foo</strong>bar<script>zed</script></p>";
+    String htmlRemovedString = "<p><strong>foo</strong>bar</p>";
     
     ExoSocialActivity activity = new ExoSocialActivityImpl();
     activity.setTitle("blah blah");
@@ -1041,8 +1041,8 @@ public class ActivityManagerRDBMSTest extends AbstractCoreTest {
 
     List<ExoSocialActivity> comments = activityManager.getComments(activity);
     assertEquals(1, comments.size());
-    assertEquals(htmlString, comments.get(0).getBody());
-    assertEquals(htmlString, comments.get(0).getTitle());
+    assertEquals(htmlRemovedString, comments.get(0).getBody());
+    assertEquals(htmlRemovedString, comments.get(0).getTitle());
   }
   
   /**

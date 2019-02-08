@@ -16,8 +16,6 @@
  */
 package org.exoplatform.social.common.jcr.filter;
 
-import org.exoplatform.social.common.jcr.filter.FilterLiteral.FilterOption;
-
 public class FieldLiteral<T>  {
 
   private final Class<T> type;

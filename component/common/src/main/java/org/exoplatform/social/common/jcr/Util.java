@@ -40,7 +40,7 @@ public class Util {
    * The logger
    */
   private static final Log LOG = ExoLogger.getLogger(Util.class);
-  private static final String SLASH_STR = "/";
+
   /**
    * Gets properties name pattern from an array of property names.
    *

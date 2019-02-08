@@ -16,7 +16,6 @@
  */
 package org.exoplatform.social.common;
 
-import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 

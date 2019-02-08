@@ -65,7 +65,7 @@ public class OSHtmlSanitizerProcessorTest extends AbstractCoreTest {
     activity.setTitle(sample);
     processor.processActivity(activity);
 
-    assertEquals("text <a href=\"#\" rel=\"nofollow\">bar</a> zed", activity.getTitle());
+    assertEquals("text <a href=\"#\" rel=\"nofollow\" target=\"_blank\">bar</a> zed", activity.getTitle());
 
     // only with open tag
     sample = "<strong> only open!!!";
@@ -77,19 +77,19 @@ public class OSHtmlSanitizerProcessorTest extends AbstractCoreTest {
     sample = "<script href='#' />bar</a>";
     activity.setTitle(sample);
     processor.processActivity(activity);
-    assertEquals("&lt;script href&#61;&#34;#&#34;&gt;&lt;/script&gt;bar&lt;/a&gt;", activity.getTitle());
+    assertEquals("bar&lt;/a&gt;", activity.getTitle());
 
     // forbidden tag
     sample = "<script>foo</script>";
     activity.setTitle(sample);
     processor.processActivity(activity);
-    assertEquals("&lt;script&gt;foo&lt;/script&gt;", activity.getTitle());
+    assertEquals("", activity.getTitle());
 
     // embedded
     sample = "<span><strong>foo</strong>bar<script>zed</script></span>";
     activity.setTitle(sample);
     processor.processActivity(activity);
-    assertEquals("<strong>foo</strong>bar&lt;script&gt;zed&lt;/script&gt;", activity.getTitle());
+    assertEquals("<strong>foo</strong>bar", activity.getTitle());
   }
   
   public void testProcessActivityWithTemplateParam() throws Exception {
@@ -108,7 +108,7 @@ public class OSHtmlSanitizerProcessorTest extends AbstractCoreTest {
     
     templateParams = activity.getTemplateParams();
     assertEquals("a\nb", templateParams.get("a"));
-    assertEquals("<a href=\"http://exoplatform.com\" rel=\"nofollow\">exoplatform.com</a>", templateParams.get("b"));
+    assertEquals("<a href=\"http://exoplatform.com\" rel=\"nofollow\" target=\"_blank\">exoplatform.com</a>", templateParams.get("b"));
     assertEquals("exoplatform.com", templateParams.get("d"));
   }
   

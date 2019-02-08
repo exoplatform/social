@@ -167,7 +167,7 @@ public class SpaceActivityRDBMSPublisherTest extends AbstractCoreTest {
    spaceService.updateSpace(space);
    comments = activityManager.getCommentsWithListAccess(activity).loadAsList(0, 20);
    assertEquals(3, comments.size());
-   assertEquals("Description has been updated to: "+space.getDescription(), comments.get(2).getTitle());
+   assertEquals("Description has been updated to: social&#39;s team", comments.get(2).getTitle());
    
    //update avatar
    AvatarAttachment avatar = new AvatarAttachment();

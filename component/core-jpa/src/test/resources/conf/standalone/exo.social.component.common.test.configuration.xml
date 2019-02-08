@@ -21,19 +21,12 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://www.exoplatform.org/xml/ns/kernel_1_2.xsd http://www.exoplatform.org/xml/ns/kernel_1_2.xsd"
   xmlns="http://www.exoplatform.org/xml/ns/kernel_1_2.xsd">
-  
-  
 
-   
   <component>
     <key>org.exoplatform.social.common.xmlprocessor.XMLProcessor</key>
     <type>org.exoplatform.social.common.xmlprocessor.XMLProcessorImpl</type>
   </component>
 
-  <component>
-    <key>org.exoplatform.social.common.xmlprocessor.model.XMLTagFilterPolicy</key>
-    <type>org.exoplatform.social.common.xmlprocessor.model.XMLTagFilterPolicy</type>
-  </component>
   <component>
     <type>org.exoplatform.services.scheduler.impl.QuartzSheduler</type>
   </component>

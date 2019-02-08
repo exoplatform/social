@@ -27,11 +27,6 @@
     <type>org.exoplatform.social.common.xmlprocessor.XMLProcessorImpl</type>
   </component>
 
-  <component>
-    <key>org.exoplatform.social.common.xmlprocessor.model.XMLTagFilterPolicy</key>
-    <type>org.exoplatform.social.common.xmlprocessor.model.XMLTagFilterPolicy</type>
-  </component>
-
   <!-- Notifications plugins required for IntranetNotificationsRestServiceTest -->
   <external-component-plugins>
     <target-component>org.exoplatform.commons.api.notification.service.setting.PluginContainer</target-component>
