@@ -659,6 +659,7 @@ public class RDBMSActivityStorageImplTest extends AbstractCoreTest {
     assertEquals(0, activityStorage.getOlderComments(activity, baseComment, 20).size());
     assertEquals(0, activityStorage.getNumberOfOlderComments(activity, baseComment));
   }
+
   @MaxQueryNumber(1281)
   public void testMentionersAndCommenters() throws Exception {
     ExoSocialActivity activity = createActivity(1);
@@ -699,6 +700,35 @@ public class RDBMSActivityStorageImplTest extends AbstractCoreTest {
     assertEquals(2, got.getReplyToId().length);
     assertEquals(2, got.getCommentedIds().length);
     assertEquals(2, got.getMentionedIds().length);
+  }
+
+  @MaxQueryNumber(51)
+  public void testShouldMoveActivityUpWhenMentionedInAPost() {
+    // Given
+    ExoSocialActivity activity1 = createActivity(1);
+    activity1.setTitle("hello world");
+    activityStorage.saveActivity(demoIdentity, activity1);
+    tearDownActivityList.add(activity1);
+
+    ExoSocialActivity activity2 = createActivity(1);
+    activity2.setTitle("hello mention @demo");
+    activityStorage.saveActivity(rootIdentity, activity2);
+    tearDownActivityList.add(activity2);
+
+    ExoSocialActivity activity3 = createActivity(1);
+    activity3.setTitle("bye world");
+    activityStorage.saveActivity(demoIdentity, activity3);
+    tearDownActivityList.add(activity3);
+
+    // When
+    List<ExoSocialActivity> activities = activityStorage.getActivities(demoIdentity, demoIdentity, 0, 10);
+
+    // Then
+    assertNotNull(activities);
+    assertEquals(3, activities.size());
+    assertEquals("bye world", activities.get(0).getTitle());
+    assertTrue(activities.get(1).getTitle().startsWith("hello mention"));
+    assertEquals("hello world", activities.get(2).getTitle());
   }
 
   @MaxQueryNumber(1293)
