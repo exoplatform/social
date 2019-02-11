@@ -26,7 +26,7 @@ import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.web.application.RequestContext;
-
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -71,7 +71,8 @@ public class ExoSocialSecurityTokenGenerator extends ExoDefaultSecurityTokenGene
       String portalContainer = PortalContainer.getCurrentPortalContainerName();
       PortalRequestContext portalRequestContext = Util.getPortalRequestContext();
       String url = portalRequestContext.getRequest().getRequestURL().toString();
-      String hostName = url.substring(0, url.indexOf(portalRequestContext.getRequestContextPath()));
+      URL requestURL = new URL(url);
+      String hostName = requestURL.getProtocol() + "://" + requestURL.getAuthority();
       t.setPortalContainer(portalContainer);
       t.setHostName(hostName);
       t.setPortalOwner(portalRequestContext.getPortalOwner());
