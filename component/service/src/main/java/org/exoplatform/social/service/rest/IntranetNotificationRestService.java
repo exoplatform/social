@@ -43,6 +43,7 @@ import org.exoplatform.commons.api.notification.model.PluginKey;
 import org.exoplatform.commons.api.notification.model.WebNotificationFilter;
 import org.exoplatform.commons.api.notification.plugin.BaseNotificationPlugin;
 import org.exoplatform.commons.api.notification.service.storage.WebNotificationStorage;
+import org.exoplatform.web.security.csrf.ExoCSRFCheck;
 import org.exoplatform.commons.notification.channel.WebChannel;
 import org.exoplatform.commons.notification.impl.NotificationContextImpl;
 import org.exoplatform.commons.notification.net.WebNotificationSender;
@@ -87,6 +88,7 @@ public class IntranetNotificationRestService extends AbstractStorage implements 
    */
   @GET
   @RolesAllowed("users")
+  @ExoCSRFCheck
   @Path("confirmInvitationToConnect/{senderId}/{receiverId}/{notificationId}/message.{format}")
   public Response confirmInvitationToConnect(@Context UriInfo uriInfo,
                                              @PathParam("senderId") String senderId,
@@ -140,6 +142,7 @@ public class IntranetNotificationRestService extends AbstractStorage implements 
    */
   @GET
   @RolesAllowed("users")
+  @ExoCSRFCheck
   @Path("ignoreInvitationToConnect/{senderId}/{receiverId}/{notificationId}/message.{format}")
   public Response ignoreInvitationToConnect(@Context UriInfo uriInfo,
                                           @PathParam("senderId") String senderId,
@@ -162,7 +165,7 @@ public class IntranetNotificationRestService extends AbstractStorage implements 
     //
     return Util.getResponse(getUserWebNotification(receiverId), uriInfo, mediaType, Response.Status.OK);
   }
-  
+
   /**
    * Processes the "Accept the invitation to join a space" action and update notification.
    *
@@ -176,6 +179,7 @@ public class IntranetNotificationRestService extends AbstractStorage implements 
    */
   @GET
   @RolesAllowed("users")
+  @ExoCSRFCheck
   @Path("acceptInvitationToJoinSpace/{spaceId}/{userId}/{notificationId}/message.{format}")
   public Response acceptInvitationToJoinSpace(@Context UriInfo uriInfo,
                                               @PathParam("spaceId") String spaceId,
@@ -227,6 +231,7 @@ public class IntranetNotificationRestService extends AbstractStorage implements 
    */
   @GET
   @RolesAllowed("users")
+  @ExoCSRFCheck
   @Path("ignoreInvitationToJoinSpace/{spaceId}/{userId}/{notificationId}/message.{format}")
   public Response ignoreInvitationToJoinSpace(@Context UriInfo uriInfo,
                                            @PathParam("spaceId") String spaceId,
@@ -267,6 +272,7 @@ public class IntranetNotificationRestService extends AbstractStorage implements 
    */
   @GET
   @RolesAllowed("users")
+  @ExoCSRFCheck
   @Path("validateRequestToJoinSpace/{spaceId}/{requestUserId}/{currentUserId}/{notificationId}/message.{format}")
   public Response validateRequestToJoinSpace(@Context UriInfo uriInfo,
                                          @PathParam("spaceId") String spaceId,
@@ -333,6 +339,7 @@ public class IntranetNotificationRestService extends AbstractStorage implements 
    */
   @GET
   @RolesAllowed("users")
+  @ExoCSRFCheck
   @Path("refuseRequestToJoinSpace/{spaceId}/{requestUserId}/{currentUserId}/{notificationId}/message.{format}")
   public Response refuseRequestToJoinSpace(@Context UriInfo uriInfo,
                                         @PathParam("spaceId") String spaceId,
