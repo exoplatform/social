@@ -220,6 +220,7 @@ export default {
           }
         };
         suggesterContainer.suggester(suggesterData);
+        $('#add-creators-suggester')[0].selectize.clear();
         if(this.administrators && this.administrators !== null) {
           for(const permission of this.administrators) {
             suggesterContainer[0].selectize.addOption({text: permission});
@@ -296,10 +297,10 @@ export default {
     },
     editCreateSpace(){
       $('.tooltip.fade.bottom.in').remove();
+      this.getSettingValueCreateSpace();
       if(this.spacesCreatorsEditMode) {
         this.spacesCreatorsEditMode = false;
       } else {
-        this.getSettingValueCreateSpace();
         this.spacesCreatorsEditMode = true;
       }
     },
