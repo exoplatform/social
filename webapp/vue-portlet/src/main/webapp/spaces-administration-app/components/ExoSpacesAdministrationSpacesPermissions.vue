@@ -133,6 +133,7 @@ export default {
           }
         };
         suggesterContainer.suggester(suggesterData);
+        $('#add-creators-suggester')[0].selectize.clear();
         if(this.creators && this.creators !== null) {
           for(const permission of this.creators) {
             suggesterContainer[0].selectize.addOption({text: permission});
