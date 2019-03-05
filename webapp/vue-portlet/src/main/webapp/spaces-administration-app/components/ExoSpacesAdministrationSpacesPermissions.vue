@@ -300,9 +300,9 @@ export default {
       if(this.spacesCreatorsEditMode) {
         this.spacesCreatorsEditMode = false;
       } else {
-        this.getSettingValueCreateSpace();
         this.spacesCreatorsEditMode = true;
       }
+      this.getSettingValueCreateSpace();
     },
     editManageSpace(){
       $('.tooltip.fade.bottom.in').remove();
