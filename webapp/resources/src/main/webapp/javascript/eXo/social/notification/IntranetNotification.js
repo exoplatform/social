@@ -85,7 +85,7 @@
         item.find('.cancel-item').off('click').on('click', function(evt) {
           evt.stopPropagation();
           var id = $(this).parents('li:first').data('id');
-          webNotif.doCancelAction(id, $(this).data('rest'));
+          webNotif.doCancelAction(id, me.appendCSRFToken($(this).data('rest')));
         });
         
         var comment = item.find('.comment')[0];
@@ -147,6 +147,12 @@
       },
       markAllRead : function() {
         IntranetNotification.portlet.find('ul.displayItems:first').find('li.unread').removeClass('unread');
+        IntranetNotification.portlet.find('.actionMark:first').removeClass('enabled');
+      },
+      appendCSRFToken : function(url) {
+        url.indexOf('?') >= 0 ? url += '&' : url += '?';
+        url += 'gtn:csrf=' + eXo.env.portal.csrfToken;
+        return url;
       }
   };
   //
