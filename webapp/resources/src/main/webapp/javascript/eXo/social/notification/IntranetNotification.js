@@ -146,8 +146,7 @@
         webNotif.ajaxReq(IntranetNotification.removeNotifURL);
       },
       markAllRead : function() {
-        IntranetNotification.portlet.find('ul.displayItems:first').find('li.unread').removeClass('unread');
-        IntranetNotification.portlet.find('.actionMark:first').removeClass('enabled');
+        IntranetNotification.portlet.find('ul.displayItems:first').find('li.unread').removeClass('unread');   
       },
       appendCSRFToken : function(url) {
         url.indexOf('?') >= 0 ? url += '&' : url += '?';
