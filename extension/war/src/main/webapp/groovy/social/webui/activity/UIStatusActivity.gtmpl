@@ -120,9 +120,9 @@
     commentFormFocused: '${uicomponent.isCommentFormFocused()}',
     labels: $labels
   } """
-  
+
   jsManager.require("SHARED/social-ui-activity", "activity").addScripts("activity.onLoad($params);");
-  
+
   //make sures commentFormFocused is set to false to prevent any refresh to focus, only focus after post a comment
   uicomponent.setCommentFormFocused(false);
   def ownerName, ownerUri = "#", ownerAvatar, activityPostedTime, activityPostedTimeInSpace, activityUpdatedTime;
@@ -157,7 +157,7 @@
 
   def ownerIdentity = uicomponent.ownerIdentity;
   def profile = ownerIdentity.profile;
-  
+
   if (uicomponent.isUserActivity()) {
     ownerUri = LinkProvider.getUserProfileUri(ownerIdentity.getRemoteId());
     ownerAvatar = profile.avatarUrl;
@@ -177,7 +177,7 @@
     ownerName = StringEscapeUtils.escapeHtml(profile.fullName);
   }
   def currentTime = System.currentTimeMillis();
-  
+
   String viewActivityTip = _ctx.appRes("UIActivity.msg.ViewActivity");
   def viewerId = Utils.getViewerIdentity().getId();
 %>
@@ -241,7 +241,7 @@
      <% if (activityCommentAndLikable) { %>
         <a class="$commentLink"  id="CommentLink${activity.id}" data-activity="${activity.id}" href="javascript:void(0);">
           $labelComment
-        </a> 
+        </a>
         <% if ( allCommentSize > 0 ) { %>
           <span>$allCommentSize</span>
         <% } %>
@@ -287,9 +287,9 @@
           </div>
       </div>
     <%}%>
-    
+
    <div id="CommentBlockBound${activity.id}">
-    
+
       <% if (uicomponent.commentListToggleable()) {
       def showAllCommentsAction = uicomponent.event("SetCommentListStatus", "all");
       def hideAllCommentsAction = uicomponent.event("SetCommentListStatus", "none");
@@ -328,13 +328,18 @@
     def subCommentClass = "";
     def hideSubComments = true;
     def updatedCommentId = uicomponent.getAndSetUpdatedCommentId(null);
+    def showSubComments = false;
+    def updatedComment;
+    if (updatedCommentId) {
+      updatedComment = Utils.getActivityManager().getActivity(updatedCommentId);
+    }
     commentList.each({
       commentCounter++;
       if (first & !uicomponent.commentListToggleable()) {
-        commentContentClass = "CommentContent";
-        first = false;
+          commentContentClass = "commentContent";
+          first = false;
       } else {
-        commentContentClass = "";
+          commentContentClass = "";
       }
 
       def id = Utils.getIdentityManager().getIdentity(it.userId);
@@ -344,11 +349,18 @@
       if(it.parentCommentId == null) {
         subCommentSize = uicomponent.getSubCommentsSize(commentList, it.id);
         subCommentIndex = 0;
-        hideSubComments = subCommentSize > 2 && (updatedCommentId == null || !updatedCommentId.equals(it.id));
-        if(hideSubComments) {
-            subCommentClass = "hidden";
-        } else {
-            subCommentClass = "";
+        if (updatedCommentId) {
+          if(updatedComment.parentCommentId == it.id || updatedComment.id == it.id){
+            showSubComments = true;
+          } else{
+            showSubComments = false;
+          }
+        }
+        hideSubComments = subCommentSize > 2 && (updatedCommentId == null || !showSubComments);
+        if(hideSubComments){
+          subCommentClass = "hidden";
+        } else{
+          subCommentClass = "";
         }
       } else {
            subCommentIndex++;

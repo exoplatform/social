@@ -1147,10 +1147,13 @@ public class BaseUIActivity extends UIForm {
       ExoSocialActivity originalActivity = Utils.getActivityManager().getActivity(commentId);
 
       uiActivity.editCommentMessage(originalActivity,message);
+      if(StringUtils.isNotBlank(commentId)) {
+        uiActivity.getAndSetUpdatedCommentId(commentId);
+      }
+
       requestContext.addUIComponentToUpdateByAjax(uiActivity);
       Utils.initUserProfilePopup(uiActivity.getId());
       uiActivity.getParent().broadcast(event, event.getExecutionPhase());
     }
   }
-
 }

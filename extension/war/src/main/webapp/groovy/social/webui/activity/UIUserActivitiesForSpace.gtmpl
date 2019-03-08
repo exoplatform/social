@@ -130,11 +130,11 @@
     commentFormFocused: '${uicomponent.isCommentFormFocused()}',
     labels: $labels
   } """
-  
+
   jsManager.require("SHARED/jquery", "jq")
            .require("SHARED/bts_tooltip").addScripts("jq('*[rel=\"tooltip\"]').tooltip();")
            .require("SHARED/social-ui-activity", "activity").addScripts("activity.onLoad($params);");
-  
+
   //make sures commentFormFocused is set to false to prevent any refresh to focus, only focus after post a comment
   uicomponent.setCommentFormFocused(false);
   def ownerName, ownerUri = "#", ownerAvatar, activityPostedTime, activityPostedTimeInSpace, activityUpdatedTime;
@@ -177,7 +177,7 @@
   activityUpdatedTime =uicomponent.getPostedTimeString(_ctx,activity.updated.getTime());
   def ownerIdentity = uicomponent.ownerIdentity;
   def profile = ownerIdentity.profile;
-  
+
   if (uicomponent.isUserActivity()) {
     ownerUri = LinkProvider.getUserProfileUri(ownerIdentity.getRemoteId());
     ownerAvatar = profile.avatarUrl;
@@ -198,7 +198,7 @@
     ownerName = StringEscapeUtils.escapeHtml(profile.fullName);
   }
   def currentTime = System.currentTimeMillis();
-  
+
   String viewActivityTip = _ctx.appRes("UIActivity.msg.ViewActivity");
   def deleteActivityTip = _ctx.appRes("UIActivity.msg.DeleteActivity");
   def viewerId = Utils.getViewerIdentity().getId();
@@ -211,7 +211,7 @@
 		<a  href="$ownerUri">
 		  <img alt="$ownerName" src="$ownerAvatar"/>
 		</a>
-	</div>	
+	</div>
   </div><!--end activityTimeLine-->
     <div class="boxContainer" id="boxContainer">
 	<div id="ContextBox${activity.id}" class="uiBox contentBox">
@@ -243,7 +243,7 @@
 			    %>
                 <!--/div-->
 				<div class="author">
-					<a  href="$ownerUri">$ownerName</a>                
+					<a  href="$ownerUri">$ownerName</a>
 				</div>
 				<div class="dataInfor">
 					<span class="dateTime"><i class="uiIconClock  uiIconLightGray"></i>&nbsp;<a id="EditActivityTime${activity.id}" href="<%=uicomponent.getActivityPermalink(activity.id)%>">$activityPostedTime</a></span>
@@ -264,19 +264,19 @@
 						<div class="actionBar clearfix ">
 					 <% def toggleDisplayCommentAction = uicomponent.event('ToggleDisplayCommentForm', null, false);
 								 def commentLink = "";
-							  %> 
-					 <% if (activityCommentAndLikable) { %>					 
+							  %>
+					 <% if (activityCommentAndLikable) { %>
 					<ul class="pull-right statusAction">
 						<li>
                             <a class="$commentLink"  id="CommentLink${activity.id}" data-activity="${activity.id}" href="javascript:void(0);">
 								<i class="uiIconComment uiIconLightGray"></i>&nbsp;$allCommentSize
-							</a> 
+							</a>
 						</li>
 					  <% if (uicomponent.isLiked()) { %>
 						<li>
 							<a onclick="$unlikeActivityAction" rel="tooltip" data-placement="bottom" title="<%=_ctx.appRes("UIActivity.msg.UnlikeActivity"); %>" id="UnLikeLink${activity.id}" href="javascript:void(0);">
 							   <i class="uiIconThumbUp uiIconBlue"></i>&nbsp;$totalLikesNum
-							</a> 
+							</a>
 						</li>
 					  <% } else { %>
 						<li>
@@ -284,12 +284,12 @@
 							  <i class="uiIconThumbUp uiIconLightGray"></i>&nbsp;$totalLikesNum
 							</a>
 						</li>
-					  <% }%>					  			
+					  <% }%>
 					</ul>
-					 <% }%>		
-			</div><!--end actionBar-->					
-			<% if (identityLikesNum > 0 || uicomponent.isLiked()) {%>				
-			<div class="listLikedBox $listPeopleBGClass">		
+					 <% }%>
+			</div><!--end actionBar-->
+			<% if (identityLikesNum > 0 || uicomponent.isLiked()) {%>
+			<div class="listLikedBox $listPeopleBGClass">
 				  <div class="listPeopleContent">
 				  <% if (!labelLikes) { labelLikes = ""; } %>
 							<p>$labelLikes</p>
@@ -311,10 +311,10 @@
 						<button onclick="$loadLikesAction" class="btn">...</button>
 					</div>
 					<% }%>
-				 </div>				
-			</div><!--end list like people--> 
+				 </div>
+			</div><!--end list like people-->
 			<%}%>
-			<div id="CommentBlockBound${activity.id}" class="commentBox ">    
+			<div id="CommentBlockBound${activity.id}" class="commentBox ">
 			  <% if (uicomponent.commentListToggleable()) {
 			  def showAllCommentsAction = uicomponent.event("SetCommentListStatus", "all");
 			  def hideAllCommentsAction = uicomponent.event("SetCommentListStatus", "none");
@@ -342,28 +342,40 @@
             def subCommentIndex = 0;
             def subCommentClass = "";
             def hideSubComments = true;
-            def updatedCommentId = uicomponent.getAndSetUpdatedCommentId(null);
-			commentList.each({
-			  commentCounter++;
-			  if (first & !uicomponent.commentListToggleable()) {
-				  commentContentClass = "commentContent";
-				  first = false;
-			  } else {
-				  commentContentClass = "";
-			  }
+			def updatedCommentId = uicomponent.getAndSetUpdatedCommentId(null);
+            def showSubComments = false;
+            def updatedComment;
+            if (updatedCommentId) {
+              updatedComment = Utils.getActivityManager().getActivity(updatedCommentId);
+            }
+            commentList.each({
+              commentCounter++;
+              if (first & !uicomponent.commentListToggleable()) {
+                  commentContentClass = "commentContent";
+                  first = false;
+              } else {
+                  commentContentClass = "";
+              }
 
-			  def id = Utils.getIdentityManager().getIdentity(it.userId);
-			  commenterFullName = StringEscapeUtils.escapeHtml(id.profile.fullName);
-			  commenterProfileUri = LinkProvider.getUserProfileUri(id.getRemoteId());
+              def id = Utils.getIdentityManager().getIdentity(it.userId);
+              commenterFullName = StringEscapeUtils.escapeHtml(id.profile.fullName);
+              commenterProfileUri = LinkProvider.getUserProfileUri(id.getRemoteId());
               def commentParentClass = it.parentCommentId == null ? "CommentBlock" : (subCommentClass + " subCommentBlock");
               if(it.parentCommentId == null) {
                 subCommentSize = uicomponent.getSubCommentsSize(commentList, it.id);
                 subCommentIndex = 0;
-                hideSubComments = subCommentSize > 2 && (updatedCommentId == null || !updatedCommentId.equals(it.id));
-                if(hideSubComments) {
-                    subCommentClass = "hidden";
-                } else {
-                    subCommentClass = "";
+                if (updatedCommentId) {
+                  if(updatedComment.parentCommentId == it.id || updatedComment.id == it.id){
+                    showSubComments = true;
+                  } else{
+                    showSubComments = false;
+                  }
+                }
+                hideSubComments = subCommentSize > 2 && (updatedCommentId == null || !showSubComments);
+                if(hideSubComments){
+                  subCommentClass = "hidden";
+                } else{
+                  subCommentClass = "";
                 }
               } else {
                    subCommentIndex++;

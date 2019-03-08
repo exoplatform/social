@@ -58,7 +58,7 @@
   def labelShowAllComments = _ctx.appRes("UIActivity.label.Show_All_Comments");
   def labelHideAllComments = _ctx.appRes("UIActivity.label.Hide_All_Comments");
   def labelShowPreviousComments = _ctx.appRes("UIActivity.label.Show_Previous_Comments");
-  
+
   def labelOnePersonLikeThis=_ctx.appRes("UIActivity.label.One_Person_Like_This");
   def labelTwoPersonLikeThis=_ctx.appRes("UIActivity.label.Two_Person_Like_This");
   def labelOneAndOthersLikeThis=_ctx.appRes("UIActivity.label.One_And_Others_Like_This");
@@ -83,7 +83,7 @@
     labelHideAllComments = labelHideAllComments.replace("{0}", allCommentSize + "");
 
   }
-  
+
   def parentCommentsSize = uicomponent.getParentCommentsSize(commentList);
   def commentsHidden = allCommentSize-parentCommentsSize;
   def displayedIdentityLikes = uicomponent.getDisplayedIdentityLikes();
@@ -94,7 +94,7 @@
   if (displayedIdentityLikes != null) {
     identityLikesNum = displayedIdentityLikes.length;
   }
-  
+
   def commentListStatus = uicomponent.getCommentListStatus();
   def commentFormDisplayed = uicomponent.isCommentFormDisplayed();
   def likesDisplayed = uicomponent.isAllLoaded();
@@ -133,11 +133,11 @@
     commentFormFocused: '${uicomponent.isCommentFormFocused()}',
     labels: $labels
   } """
-  
+
   jsManager.require("SHARED/jquery", "jq")
            .require("SHARED/bts_tooltip").addScripts("jq('*[rel=\"tooltip\"]').tooltip();")
            .require("SHARED/social-ui-activity", "activity").addScripts("activity.onLoad($params);");
-  
+
   //make sures commentFormFocused is set to false to prevent any refresh to focus, only focus after post a comment
   uicomponent.setCommentFormFocused(false);
   def ownerName, ownerUri = "#", ownerAvatar, activityPostedTime, activityPostedTimeInSpace, activityUpdatedTime;
@@ -265,7 +265,7 @@
 			     }
 			    %>
                 <!--/div-->
-				
+
 				<div class="author">
 				<div class="hidden-desktop circleSpaceAvatar">
 				    <a href="$ownerUri">
@@ -413,6 +413,11 @@
             def subCommentClass = "";
             def hideSubComments = true;
             def updatedCommentId = uicomponent.getAndSetUpdatedCommentId(null);
+            def showSubComments = false;
+            def updatedComment;
+            if (updatedCommentId) {
+              updatedComment = Utils.getActivityManager().getActivity(updatedCommentId);
+            }
 			commentList.each({
 			  commentCounter++;
 			  if (first & !uicomponent.commentListToggleable()) {
@@ -429,11 +434,18 @@
               if(it.parentCommentId == null) {
                 subCommentSize = uicomponent.getSubCommentsSize(commentList, it.id);
                 subCommentIndex = 0;
-                hideSubComments = subCommentSize > 2 && (updatedCommentId == null || !updatedCommentId.equals(it.id));
-                if(hideSubComments) {
-                    subCommentClass = "hidden";
-                } else {
-                    subCommentClass = "";
+                if (updatedCommentId) {
+                  if(updatedComment.parentCommentId == it.id || updatedComment.id == it.id){
+                    showSubComments = true;
+                  } else{
+                    showSubComments = false;
+                  }
+                }
+                hideSubComments = subCommentSize > 2 && (updatedCommentId == null || !showSubComments);
+                if(hideSubComments){
+                  subCommentClass = "hidden";
+                } else{
+                  subCommentClass = "";
                 }
               } else {
                    subCommentIndex++;
@@ -542,9 +554,9 @@
 			<% } %>
 					<div class="commmentLeft">
 						<a title="$currentCommenterName" href="$currentCommenterUri" class="avatarXSmall">
-						   <img alt="$currentCommenterName" src="$currentCommenterAvatar"/>        
+						   <img alt="$currentCommenterName" src="$currentCommenterAvatar"/>
 						</a>
-					</div><!--end commentLeft--> 
+					</div><!--end commentLeft-->
 					<div class="commentRight">
 						<div class="commentInputBox ">
 							<div class="commentInput"><% uicomponent.renderChild(UIFormTextAreaInput.class); %></div>
@@ -553,12 +565,12 @@
 						</div>
 					</div><!--end commentRight-->
                     <div class="clearfix"></div>
-				</div> <!--end commentItem-->				
+				</div> <!--end commentItem-->
 			  </div><!--end commentlist-->
     </div><!--end commentBox-->
 		</div><!--end #ActivityContextBox${activity.id}-->
-	</div> <!--end ContextBox${activity.id}-->	
-  </div> <!-- #boxContainer-->	  
+	</div> <!--end ContextBox${activity.id}-->
+  </div> <!-- #boxContainer-->
   <% uiform.end() %>
 </div><!--activityStream-->
 <% } else { %> <!-- activity deleted -->

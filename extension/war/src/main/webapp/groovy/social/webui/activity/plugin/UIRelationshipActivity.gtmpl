@@ -126,11 +126,11 @@
     allCommentSize: '${allCommentSize}',
     commentFormFocused: '${uicomponent.isCommentFormFocused()}'
     } """
-  
+
   jsManager.require("SHARED/jquery", "jq")
            .require("SHARED/bts_tooltip").addScripts("jq('*[rel=\"tooltip\"]').tooltip();")
            .require("SHARED/social-ui-activity", "activity").addScripts("activity.onLoad($params,$labels);");
-  
+
   //make sures commentFormFocused is set to false to prevent any refresh to focus, only focus after post a comment
   uicomponent.setCommentFormFocused(false);
   def ownerName, ownerUri = "#", ownerAvatar, activityPostedTime, activityPostedTimeInSpace;
@@ -190,7 +190,7 @@
     ownerName = StringEscapeUtils.escapeHtml(ownerIdentity.profile.fullName);
   }
   def currentTime = System.currentTimeMillis();
-  
+
   def isSender = uicomponent.isSender();
   def isReceiver = uicomponent.isReceiver();
   def status = uicomponent.getStatus();
@@ -228,7 +228,7 @@
           <img alt="$ownerName" src="$ownerAvatar"/>
         </a>
     </div>
-    
+
   </div><!--end activityTimeLine-->
   <div class="boxContainer" id="boxContainer">
     <div id="ContextBox${activity.id}" class="uiBox contentBox">
@@ -280,18 +280,18 @@
             <div class="actionBar clearfix ">
                  <% def toggleDisplayCommentAction = uicomponent.event('ToggleDisplayCommentForm', null, false);
                                  def commentLink = "";
-                              %>                 
+                              %>
                     <ul class="pull-right statusAction">
                         <li>
                             <a class="$commentLink"  id="CommentLink${activity.id}" data-activity="${activity.id}" href="javascript:void(0);">
                                 <i class="uiIconComment uiIconLightGray"></i>&nbsp;$allCommentSize
-                            </a> 
+                            </a>
                         </li>
                       <% if (uicomponent.isLiked()) { %>
                         <li>
                             <a onclick="$unlikeActivityAction" rel="tooltip" data-placement="bottom" title="<%=_ctx.appRes("UIActivity.msg.UnlikeActivity"); %>" id="UnLikeLink${activity.id}" href="javascript:void(0);">
                                <i class="uiIconThumbUp uiIconBlue"></i>&nbsp;$totalLikesNum
-                            </a> 
+                            </a>
                         </li>
                       <% } else { %>
                         <li>
@@ -299,26 +299,26 @@
                               <i class="uiIconThumbUp uiIconLightGray"></i>&nbsp;$totalLikesNum
                             </a>
                         </li>
-                      <% }%>         
+                      <% }%>
                   <% if (isInvited) {
                       if (isReceiver) {%>
-                        <li> 
+                        <li>
                             <a rel="tooltip" data-placement="bottom" title="$labelConfirm" href="javascript:void(0);" onclick="${uicomponent.event("Accept")}"><i class="uiIconValidate uiIconLightGray"></i></a>
-                        </li>  
-                        <li> 
+                        </li>
+                        <li>
                             <a rel="tooltip" data-placement="bottom" title="$labelDeny" href="javascript:void(0);" onclick="${uicomponent.event("Refuse")}"><i class="uiIconRemove uiIconLightGray"></i></a>
-                        </li>   
+                        </li>
                   <%  } else if (isSender) {%>
                         <li>
                             <a rel="tooltip" data-placement="bottom" title="$labelCancelRequest" href="javascript:void(0);" onclick="${uicomponent.event("Refuse")}"><i class="uiIconReply uiIconLightGray"></i></a>
                         </li>
                   <%  }
                      }%>
-                               
-                    </ul>   
-            </div><!--end actionBar-->                  
-            <% if (identityLikesNum > 0 || uicomponent.isLiked()) {%>               
-            <div class="listLikedBox $listPeopleBGClass">       
+
+                    </ul>
+            </div><!--end actionBar-->
+            <% if (identityLikesNum > 0 || uicomponent.isLiked()) {%>
+            <div class="listLikedBox $listPeopleBGClass">
                   <div class="listPeopleContent">
                   <% if (!labelLikes) { labelLikes = ""; } %>
                             <p>$labelLikes</p>
@@ -342,10 +342,10 @@
            <% } %>
                     </div>
                     <% }%>
-                 </div>             
-            </div><!--end list like people--> 
+                 </div>
+            </div><!--end list like people-->
             <%}%>
-            <div id="CommentBlockBound${activity.id}" class="commentBox ">    
+            <div id="CommentBlockBound${activity.id}" class="commentBox ">
               <% if (uicomponent.commentListToggleable()) {
               def showAllCommentsAction = uicomponent.event("SetCommentListStatus", "all");
               def hideAllCommentsAction = uicomponent.event("SetCommentListStatus", "none");
@@ -374,6 +374,11 @@
             def subCommentClass = "";
             def hideSubComments = true;
             def updatedCommentId = uicomponent.getAndSetUpdatedCommentId(null);
+            def showSubComments = false;
+            def updatedComment;
+            if (updatedCommentId) {
+              updatedComment = Utils.getActivityManager().getActivity(updatedCommentId);
+            }
             commentList.each({
               commentCounter++;
               if (first & !uicomponent.commentListToggleable()) {
@@ -390,11 +395,18 @@
               if(it.parentCommentId == null) {
                 subCommentSize = uicomponent.getSubCommentsSize(commentList, it.id);
                 subCommentIndex = 0;
-                hideSubComments = subCommentSize > 2 && (updatedCommentId == null || !updatedCommentId.equals(it.id));
-                if(hideSubComments) {
-                    subCommentClass = "hidden";
-                } else {
-                    subCommentClass = "";
+                if (updatedCommentId) {
+                  if(updatedComment.parentCommentId == it.id || updatedComment.id == it.id){
+                    showSubComments = true;
+                  } else{
+                    showSubComments = false;
+                  }
+                }
+                hideSubComments = subCommentSize > 2 && (updatedCommentId == null || !showSubComments);
+                if(hideSubComments){
+                  subCommentClass = "hidden";
+                } else{
+                  subCommentClass = "";
                 }
               } else {
                    subCommentIndex++;
