@@ -221,6 +221,7 @@ export default {
           }
         };
         suggesterContainer.suggester(suggesterData);
+        $('#add-administrators-suggester')[0].selectize.clear();
         if(this.administrators && this.administrators !== null) {
           for(const permission of this.administrators) {
             suggesterContainer[0].selectize.addOption({text: permission});
@@ -300,18 +301,18 @@ export default {
       if(this.spacesCreatorsEditMode) {
         this.spacesCreatorsEditMode = false;
       } else {
-        this.getSettingValueCreateSpace();
         this.spacesCreatorsEditMode = true;
       }
+      this.getSettingValueCreateSpace();
     },
     editManageSpace(){
       $('.tooltip.fade.bottom.in').remove();
       if(this.spacesAdministratorsEditMode) {
         this.spacesAdministratorsEditMode = false;
       } else {
-        this.getSettingValueSpacesAdministrators();
         this.spacesAdministratorsEditMode = true;
       }
+      this.getSettingValueSpacesAdministrators();
     }
   }
 };
