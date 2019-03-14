@@ -33,6 +33,7 @@
   <module>
     <name>notificationLocale</name>
     <supported-locale>ar</supported-locale>
+    <supported-locale>ar-OM</supported-locale>
     <supported-locale>ca</supported-locale>
     <supported-locale>cs</supported-locale>
     <supported-locale>de</supported-locale>
