@@ -62,8 +62,6 @@ public class SpaceAccessApplicationLifecycle implements ApplicationLifecycle<Web
     
     //
     String siteName = pcontext.getControllerContext().getParameter(RequestNavigationData.REQUEST_SITE_NAME);
-    String siteType = pcontext.getControllerContext().getParameter(RequestNavigationData.REQUEST_SITE_TYPE);
-    String requestPath = pcontext.getControllerContext().getParameter(RequestNavigationData.REQUEST_PATH);
 
     // Check if attribute is present on session and set it on request
     // to make it available on other webapps
@@ -72,25 +70,13 @@ public class SpaceAccessApplicationLifecycle implements ApplicationLifecycle<Web
     moveSessionAttributeToRequest(pcontext, SpaceAccessType.ACCESSED_SPACE_PRETTY_NAME_KEY);
     moveSessionAttributeToRequest(pcontext, SpaceAccessType.ACCESSED_SPACE_REQUEST_PATH_KEY);
 
-    //
-    String spacePrettyName = "";
-    synchronized (this) {
-      Route route = ExoRouter.route(requestPath);
-      if (route == null) { 
-        return;
-      }
-      
-       spacePrettyName = route.localArgs.get("spacePrettyName");
-      
-    }
-    
+
     if (pcontext.getSiteType().equals(SiteType.GROUP)
-        && pcontext.getSiteName().startsWith("/spaces") && spacePrettyName != null
-        && spacePrettyName.length() > 0) {
+        && pcontext.getSiteName().startsWith("/spaces/") ) {
       
-      Space space = Utils.getSpaceService().getSpaceByPrettyName(spacePrettyName);
+      Space space = Utils.getSpaceService().getSpaceByGroupId(siteName);
       String remoteId = Utils.getViewerRemoteId();
-      
+
       //it's workaround for SOC-3886 until EXOGTN-1829 is resolved, it's removing
       if (space != null && remoteId != null) {
         addMembershipToIdentity(remoteId, space);
