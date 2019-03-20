@@ -249,7 +249,6 @@
       var commentLinkEl = $("[data-activity='" + activityId + "']");
       if (commentLinkEl.length > 0) {
         commentLinkEl.off('click').on('click', function (evt) {
-          evt.stopPropagation();
           var currentActivityId = $(this).attr('data-activity');
           var currentCommentId = $(this).attr('data-comment');
           var currentSubCommentId = $(this).attr('data-sub-comment');
@@ -316,6 +315,7 @@
               }
             }
           }
+          commentLinkEl.closest('.activityStream').click();
         });
         }
 
