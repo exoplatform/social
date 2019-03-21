@@ -41,8 +41,24 @@
             <i class="uiIconPrevArrow"></i>
           </a>
         </li>
-        <li v-for="i in totalPages" :key="i" :class="{'active': currentPage === i}">
-          <a href="#" @click="getSpacesPerPage(i)">{{ i }}</a>
+        <li v-if="isInFirstPage">
+          <a href="#" @click="getSpacesPerPage(1)">{{ 1 }}</a>
+        </li>
+        <li v-if="isInFirstPage">
+          <a >
+            <span>...</span>
+          </a>
+        </li>
+        <li v-for="(page,i) in pages" :key="i" :class="{'active': currentPage === page.name}">
+          <a href="#" @click="getSpacesPerPage(page.name)">{{ page.name }}</a>
+        </li>
+        <li v-if="isInLastPage">
+          <a >
+            <span>...</span>
+          </a>
+        </li>
+        <li v-if="isInLastPage">
+          <a href="#" @click="getSpacesPerPage(totalPages)">{{ totalPages }}</a>
         </li>
         <li :class="[currentPage === totalPages ? 'disabled': '' ]">
           <a v-exo-tooltip.bottom.body="$t('social.spaces.administration.manageSpaces.pagination.next')" href="#" @click="getSpacesPerPage(currentPage+1)">
@@ -74,12 +90,65 @@ export default {
       totalPages: 1,
       currentPage: 1,
       searchText: '',
+      maxVisiblePagesButtons: 3,
+      maxVisibleButtons: 5,
       avatar : spacesConstants.DEFAULT_SPACE_AVATAR
     };
+  },
+  computed: {
+    startPage() {
+      if (this.currentPage === 1) {
+        return 1;
+      }
+      if (this.currentPage === this.totalPages && this.totalPages > this.maxVisibleButtons){
+        if(this.totalPages - this.maxVisiblePagesButtons +1 < 0) {
+          return 1;
+        }
+        else {
+          return this.totalPages - this.maxVisiblePagesButtons + 1;
+        }
+      }
+      if(this.totalPages > this.maxVisibleButtons){
+        if(this.totalPages - this.currentPage < this.maxVisibleButtons && this.totalPages - this.currentPage >= this.maxVisiblePagesButtons){
+          return this.totalPages - this.maxVisibleButtons +1;
+        }
+        if(this.totalPages - this.currentPage < this.maxVisiblePagesButtons-1) {
+          return this.currentPage-1;
+        }
+      }
+      else{
+        return 1;
+      }
+      return this.currentPage ;
+    },
+    endPage() {
+      if( this.totalPages - this.startPage <= this.maxVisibleButtons -1 ){
+        return this.totalPages;
+      }
+      else{
+        return Math.min(this.startPage + this.maxVisiblePagesButtons - 1, this.totalPages);
+      }
+    },
+    pages() {
+      const range = [];
+      for (let i = this.startPage; i <= this.endPage; i += 1) {
+        range.push({
+          name: i
+        });
+      }
+      return range;
+    },
+    isInFirstPage() {
+      return this.totalPages > this.maxVisibleButtons && this.totalPages - this.currentPage < this.maxVisiblePagesButtons;
+    },
+    isInLastPage() {
+      return this.totalPages - this.currentPage >= this.maxVisibleButtons;
+    },
   },
   created() {
     this.initSpaces();	
   },
+
   methods: {
     initSpaces() {
       spacesAdministrationServices.getSpaces().then(data =>{
