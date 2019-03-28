@@ -130,7 +130,6 @@ var UISpaceNavigation = {
 	      window.location = href;
 	    }
 	  };
-	  UISpaceNavigation.initStickyBanner();
 	},
 	initNavigation : function(index, moreLabel) {
 	  //
