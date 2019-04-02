@@ -73,10 +73,10 @@ public class SearchTestIT extends BaseESTest {
     identityManager = getService(IdentityManager.class);
     spaceStorage = getService(SpaceStorage.class);
 
-    rootIdentity = createIdentity("root", "testmail1@localhost.com");
-    johnIdentity = createIdentity("john", "testmail2@localhost.com");
-    maryIdentity = createIdentity("mary", "testmail3@localhost.com");
-    demoIdentity = createIdentity("demo", "testmail4@localhost.com");
+    rootIdentity = createIdentity("root", "root@platform.com");
+    johnIdentity = createIdentity("john", "john@platform.com");
+    maryIdentity = createIdentity("mary", "mary@platform.com");
+    demoIdentity = createIdentity("demo", "demo@platform.com");
   }
 
   @Override
@@ -142,11 +142,6 @@ public class SearchTestIT extends BaseESTest {
   }
 
   public void testPeopleNameOrEmail() throws Exception {    
-    rootIdentity = createIdentity("root", "testmail1@localhost.com");
-    johnIdentity = createIdentity("john", "testmail2@localhost.com");
-    maryIdentity = createIdentity("mary", "testmail3@localhost.com");
-    demoIdentity = createIdentity("demo", "testmail4@localhost.com");
-
     reindexProfileById(rootIdentity.getId());
     reindexProfileById(johnIdentity.getId());
     reindexProfileById(maryIdentity.getId());
@@ -154,24 +149,25 @@ public class SearchTestIT extends BaseESTest {
 
 
     ProfileFilter filter = new ProfileFilter();
-    filter.setName("localhost");
+    filter.setName("mary@platform.com");
 
     List<Identity> results = searchConnector.search(rootIdentity, filter, null, 0, 10);
     assertEquals(0, results.size());
 
     filter.setSearchEmail(true);
     results = searchConnector.search(rootIdentity, filter, null, 0, 10);
-    assertEquals(4, results.size());
+    assertEquals(1, results.size());
+    assertEquals("mary", results.get(0).getRemoteId());
   }
 
   public void testSpaceName() throws Exception {
     createSpace("testSpaceName abcd efgh", null, null);
 
-    assertEquals(1, spaceSearchConnector.search(searchContext, "*space*", null, 0, 10, null, null).size());
-
-    assertEquals(1, spaceSearchConnector.search(searchContext, "*name*", null, 0, 10, null, null).size());
+    assertEquals(1, spaceSearchConnector.search(searchContext, "*testSpaceName*", null, 0, 10, null, null).size());
 
     assertEquals(1, spaceSearchConnector.search(searchContext, "*abcd*", null, 0, 10, null, null).size());
+
+    assertEquals(1, spaceSearchConnector.search(searchContext, "*efgh*", null, 0, 10, null, null).size());
   }
 
   public void testSpaceDisplayName() throws Exception {
@@ -179,15 +175,15 @@ public class SearchTestIT extends BaseESTest {
 
     assertEquals(1, spaceSearchConnector.search(searchContext, "diSplayName*", null, 0, 10, null, null).size());
     assertEquals(1, spaceSearchConnector.search(searchContext, "*abc*", null, 0, 10, null, null).size());
-    assertEquals(1, spaceSearchConnector.search(searchContext, "*ef*", null, 0, 10, null, null).size());
+    assertEquals(1, spaceSearchConnector.search(searchContext, "*def*", null, 0, 10, null, null).size());
   }
 
   public void testSpaceDescription() throws Exception {
     createSpace("pretty", null, "spaceDescription 123 456");
 
-    assertEquals(1, spaceSearchConnector.search(searchContext, "*scription* *23*", null, 0, 10, null, null).size());
+    assertEquals(1, spaceSearchConnector.search(searchContext, "*spaceDescription*", null, 0, 10, null, null).size());
     assertEquals(1, spaceSearchConnector.search(searchContext, "*123*", null, 0, 10, null, null).size());
-    assertEquals(1, spaceSearchConnector.search(searchContext, "*56*", null, 0, 10, null, null).size());
+    assertEquals(1, spaceSearchConnector.search(searchContext, "*456*", null, 0, 10, null, null).size());
   }
 
   private Space createSpace(String prettyName, String displayName, String description) throws Exception {

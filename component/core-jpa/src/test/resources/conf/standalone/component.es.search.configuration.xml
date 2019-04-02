@@ -27,7 +27,7 @@
         <init-params>
           <value-param>
             <name>es.version</name>
-            <value>${exo.es.version.minor:5.3}</value>
+            <value>${exo.es.version.minor:5.6}</value>
           </value-param>
         </init-params>
     </component>

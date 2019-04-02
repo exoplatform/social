@@ -4,21 +4,14 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.chromattic.api.ChromatticSession;
 import org.exoplatform.commons.chromattic.ChromatticManager;
 import org.exoplatform.container.PortalContainer;
-import org.exoplatform.services.organization.Group;
-import org.exoplatform.services.organization.GroupHandler;
-import org.exoplatform.services.organization.Membership;
-import org.exoplatform.services.organization.MembershipHandler;
-import org.exoplatform.services.organization.MembershipType;
 import org.exoplatform.services.organization.MembershipTypeHandler;
 import org.exoplatform.services.organization.OrganizationService;
 import org.exoplatform.services.organization.User;
 import org.exoplatform.social.common.lifecycle.SocialChromatticLifeCycle;
 import org.exoplatform.social.core.chromattic.entity.DisabledEntity;
 import org.exoplatform.social.core.chromattic.entity.IdentityEntity;
-import org.exoplatform.social.core.chromattic.entity.ProviderRootEntity;
 import org.exoplatform.social.core.identity.SpaceMemberFilterListAccess.Type;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
@@ -32,7 +25,6 @@ import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.storage.api.IdentityStorage;
 import org.exoplatform.social.core.storage.api.SpaceStorage;
 import org.exoplatform.social.core.storage.impl.IdentityStorageImpl;
-import org.exoplatform.social.core.storage.impl.SpaceStorageImpl;
 import org.exoplatform.social.core.storage.impl.StorageUtils;
 import org.exoplatform.social.core.test.AbstractCoreTest;
 import org.exoplatform.social.core.test.MaxQueryNumber;
@@ -70,36 +62,6 @@ public class IdentityStorageTest extends AbstractCoreTest {
       spaceStorage.deleteSpace(space.getId());
     }
     super.tearDown();
-  }
-  
-  public void testUpgradeIdentity() {
-    Identity tobeSavedIdentity = new Identity(OrganizationIdentityProvider.NAME, "identity1");
-    identityStorage.saveIdentity(tobeSavedIdentity);
-
-    tearDownIdentityList.add(tobeSavedIdentity);
-
-    // Get new session
-    ChromatticSession session = lifecycle.getSession();
-    synchronized (this) {
-      try {
-        System.out.println("waiting 60 seconds ...");
-        this.wait(60 * 1000);
-      } catch (InterruptedException e1) {
-        System.out.println("InterruptedException but is Session close? " + session.isClosed());
-      }
-    }
-    System.out.println("JCRSession is alive? " + session.getJCRSession().isLive());
-    System.out.println("Session is close? " + session.isClosed());
-
-    // System.out.println("New session with timeout = " +timeout);
-    try {
-      IdentityStorageImpl impl = (IdentityStorageImpl)identityStorage;
-      ProviderRootEntity providerRoot = impl.getProviderRoot();
-      String path = providerRoot.getProviders().get(OrganizationIdentityProvider.NAME).getPath();
-      System.out.println(path);
-    } catch (NullPointerException e) {
-      e.printStackTrace();
-    }
   }
 
   private static SocialChromatticLifeCycle lifecycleLookup() {

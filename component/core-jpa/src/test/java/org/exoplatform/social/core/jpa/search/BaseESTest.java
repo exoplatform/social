@@ -120,14 +120,14 @@ public class BaseESTest extends AbstractCoreTest {
   }
 
   protected void refreshSpaceIndices() throws IOException {
-    HttpGet request = new HttpGet(urlClient + "/space/_refresh");
+    HttpGet request = new HttpGet(urlClient + "/space_alias/_refresh");
     LOG.info("Refreshing ES by calling {}", request.getURI());
     HttpResponse response = client.execute(request);
     assertThat(response.getStatusLine().getStatusCode(), is(200));
   }
 
   protected void refreshProfileIndices() throws IOException {
-    HttpGet request = new HttpGet(urlClient + "/profile/_refresh");
+    HttpGet request = new HttpGet(urlClient + "/profile_alias/_refresh");
     LOG.info("Refreshing ES by calling {}", request.getURI());
     HttpResponse response = client.execute(request);
     assertThat(response.getStatusLine().getStatusCode(), is(200));
