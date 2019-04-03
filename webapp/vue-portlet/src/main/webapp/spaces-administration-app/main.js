@@ -23,7 +23,8 @@ if (extensionRegistry) {
 // getting locale ressources
 export function init() {
   exoi18n.loadLanguageAsync(lang, url).then(i18n => {
-  // init Vue app when locale ressources are ready
+    Vue.config.devtools = true;
+    // init Vue app when locale ressources are ready
     new Vue({
       el: '#spacesAdministration',
       template: '<exo-spaces-administration-spaces></exo-spaces-administration-spaces>',

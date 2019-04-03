@@ -85,13 +85,30 @@
               <goal>npm</goal>
             </goals>
             <configuration>
-              <arguments>run build</arguments>
+              <arguments>run ${build-mode}</arguments>
             </configuration>
           </execution>
         </executions>
       </plugin>
     </plugins>
   </build>
+  <profiles>
+    <profile>
+      <id>dev</id>
+      <properties>
+        <build-mode>build-dev</build-mode>
+      </properties>
+    </profile>
+    <profile>
+      <id>prod</id>
+      <activation>
+        <activeByDefault>true</activeByDefault>
+      </activation>
+      <properties>
+        <build-mode>build</build-mode>
+      </properties>
+    </profile>
+  </profiles>
 
   <dependencies>
     <dependency>
