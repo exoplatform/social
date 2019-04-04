@@ -38,7 +38,6 @@ public class ImageUtils {
 
   public static final String GIF_EXTENDSION          = "gif";
   private static final Log LOG = ExoLogger.getLogger(ImageUtils.class);
-  public static BufferedImage image = null;
 
   /**
    * @param str Make string params not null
@@ -112,7 +111,7 @@ public class ImageUtils {
         return null;
       }
 
-      image = ImageIO.read(imageStream);
+      BufferedImage image = ImageIO.read(imageStream);
 
       int targetHeight = image.getHeight();
       int targetWidth = image.getWidth();

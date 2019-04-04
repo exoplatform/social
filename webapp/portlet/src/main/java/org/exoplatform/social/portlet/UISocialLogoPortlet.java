@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2003-2010 eXo Platform SAS.
+ * Copyright (C) 2003-2019 eXo Platform SAS.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Affero General Public License
@@ -17,7 +17,6 @@
 
 package org.exoplatform.social.portlet;
 
-import org.exoplatform.container.ExoContainer;
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.portal.config.model.PortalConfig;
 import org.exoplatform.portal.mop.user.UserNavigation;
@@ -44,7 +43,7 @@ import org.exoplatform.webui.organization.OrganizationUtils;
 public class UISocialLogoPortlet extends UIPortletApplication {
   private Profile                profile;
 
-  private static IdentityManager im;
+  private IdentityManager im;
 
   public UISocialLogoPortlet() throws Exception {
     // addChild(UILogoEditMode.class, null, null);
@@ -94,8 +93,7 @@ public class UISocialLogoPortlet extends UIPortletApplication {
    */
   private Identity getIdentity() throws Exception {
     if (im == null) {
-      ExoContainer container = ExoContainerContext.getCurrentContainer();
-      im = (IdentityManager) container.getComponentInstanceOfType(IdentityManager.class);
+      im = ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(IdentityManager.class);
     }
     return im.getOrCreateIdentity(OrganizationIdentityProvider.NAME, getCurrentProfileID());
   }

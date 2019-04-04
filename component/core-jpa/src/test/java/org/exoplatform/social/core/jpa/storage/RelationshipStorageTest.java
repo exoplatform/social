@@ -687,7 +687,7 @@ public class RelationshipStorageTest extends AbstractCoreTest {
    * @throws Exception
    * @since 1.2.2
    */
-  @MaxQueryNumber(186)
+  @MaxQueryNumber(204)
   public void testGetConnectionsCountByFilter() throws Exception {
     populateData();
     populateRelationshipData(Type.CONFIRMED);

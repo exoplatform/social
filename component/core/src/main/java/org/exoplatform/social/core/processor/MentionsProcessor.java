@@ -22,6 +22,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.exoplatform.container.xml.InitParams;
+import org.exoplatform.portal.config.UserPortalConfigService;
 import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.social.core.BaseActivityProcessorPlugin;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
@@ -38,8 +39,11 @@ public class MentionsProcessor extends BaseActivityProcessorPlugin {
 
   private static final Pattern pattern = Pattern.compile("@([^\\s]+)|@([^\\s]+)$");
 
-  public MentionsProcessor(InitParams params) {
+  private UserPortalConfigService userPortalConfigService;
+
+  public MentionsProcessor(InitParams params, UserPortalConfigService userPortalConfigService) {
     super(params);
+    this.userPortalConfigService = userPortalConfigService;
   }
 
   public void processActivity(ExoSocialActivity activity) {
@@ -49,7 +53,7 @@ public class MentionsProcessor extends BaseActivityProcessorPlugin {
         portalOwner = Util.getPortalRequestContext().getPortalOwner();
       } catch (Exception e){
         //default value for testing and social
-        portalOwner = LinkProvider.DEFAULT_PORTAL_OWNER;
+        portalOwner = userPortalConfigService.getDefaultPortal();
       }
       activity.setTitle(substituteUsernames(portalOwner, activity.getTitle()));
       activity.setBody(substituteUsernames(portalOwner, activity.getBody()));

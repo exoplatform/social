@@ -60,7 +60,7 @@ public class SocialServiceContextImpl implements SocialServiceContext {
     
   }
   
-  public static SocialServiceContext getInstance() {
+  public static synchronized SocialServiceContext getInstance() {
     if (instance == null) {
       instance = new SocialServiceContextImpl();
     }

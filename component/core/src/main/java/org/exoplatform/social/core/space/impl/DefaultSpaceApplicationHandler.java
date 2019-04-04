@@ -120,7 +120,7 @@ public class DefaultSpaceApplicationHandler implements SpaceApplicationHandler {
 
   private SpaceService spaceService;
 
-  private static Map<ApplicationCategory, List<Application>> appStoreCache = null;
+  private Map<ApplicationCategory, List<Application>> appStoreCache = null;
 
   private static List<Application> appCache = new ArrayList<Application>();
   

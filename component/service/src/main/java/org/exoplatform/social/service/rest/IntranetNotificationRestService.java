@@ -47,7 +47,6 @@ import org.exoplatform.web.security.csrf.ExoCSRFCheck;
 import org.exoplatform.commons.notification.channel.WebChannel;
 import org.exoplatform.commons.notification.impl.NotificationContextImpl;
 import org.exoplatform.commons.notification.net.WebNotificationSender;
-import org.exoplatform.commons.utils.CommonsUtils;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.services.rest.resource.ResourceContainer;
@@ -68,12 +67,23 @@ import org.exoplatform.social.core.storage.impl.AbstractStorage;
  */
 @Path("social/intranet-notification")
 public class IntranetNotificationRestService extends AbstractStorage implements ResourceContainer {
+
   private static final Log LOG = ExoLogger.getLogger(IntranetNotificationRestService.class);
-  private static IdentityManager identityManager;
-  private static RelationshipManager relationshipManager;
-  private static SpaceService spaceService;
-  private static WebNotificationStorage webNotificationStorage;
+
+  private IdentityManager identityManager;
+  private RelationshipManager relationshipManager;
+  private SpaceService spaceService;
+  private WebNotificationStorage webNotificationStorage;
+
   public final static String MESSAGE_JSON_FILE_NAME = "message.json";
+
+  public IntranetNotificationRestService(IdentityManager identityManager, RelationshipManager relationshipManager,
+                                         SpaceService spaceService, WebNotificationStorage webNotificationStorage) {
+    this.identityManager = identityManager;
+    this.relationshipManager = relationshipManager;
+    this.spaceService = spaceService;
+    this.webNotificationStorage = webNotificationStorage;
+  }
 
   /**
    * Processes the "Accept the invitation to connect" action between 2 users and update notification.
@@ -98,13 +108,13 @@ public class IntranetNotificationRestService extends AbstractStorage implements 
     //Check authenticated user
     checkAuthenticatedUserPermission(receiverId);
 
-    Identity sender = getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, senderId, true);
-    Identity receiver = getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, receiverId, true);
+    Identity sender = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, senderId, true);
+    Identity receiver = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, receiverId, true);
     if (sender == null || receiver == null) {
       throw new WebApplicationException(Response.Status.BAD_REQUEST);
     }
 
-    Relationship invitation = getRelationshipManager().get(sender, receiver);
+    Relationship invitation = relationshipManager.get(sender, receiver);
     if(invitation == null || !invitation.getStatus().equals(Relationship.Type.PENDING) || !invitation.isReceiver(receiver)) {
       throw new WebApplicationException(Response.Status.FORBIDDEN);
     }
@@ -113,7 +123,7 @@ public class IntranetNotificationRestService extends AbstractStorage implements 
     String[] mediaTypes = new String[] { "json", "xml" };
     MediaType mediaType = Util.getMediaType(format, mediaTypes);
     //update notification
-    NotificationInfo info = getWebNotificationStorage().get(notificationId);
+    NotificationInfo info = webNotificationStorage.get(notificationId);
     info.key(new PluginKey("RelationshipReceivedRequestPlugin"));
     info.setFrom(senderId);
     info.setTo(receiverId);
@@ -126,7 +136,7 @@ public class IntranetNotificationRestService extends AbstractStorage implements 
       throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
     }
 
-    getRelationshipManager().confirm(sender, receiver);
+    relationshipManager.confirm(sender, receiver);
 
     return Util.getResponse(messageInfo, uriInfo, mediaType, Response.Status.OK);
   }
@@ -155,13 +165,13 @@ public class IntranetNotificationRestService extends AbstractStorage implements 
     String[] mediaTypes = new String[] { "json", "xml" };
     MediaType mediaType = Util.getMediaType(format, mediaTypes);
     //
-    Identity sender = getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, senderId, true);
-    Identity receiver = getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, receiverId, true);
+    Identity sender = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, senderId, true);
+    Identity receiver = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, receiverId, true);
     if (sender == null || receiver == null) {
       throw new WebApplicationException(Response.Status.BAD_REQUEST);
     }
-    getRelationshipManager().deny(sender, receiver);
-    getWebNotificationStorage().remove(notificationId);
+    relationshipManager.deny(sender, receiver);
+    webNotificationStorage.remove(notificationId);
     //
     return Util.getResponse(getUserWebNotification(receiverId), uriInfo, mediaType, Response.Status.OK);
   }
@@ -189,7 +199,7 @@ public class IntranetNotificationRestService extends AbstractStorage implements 
     //Check authenticated user
     checkAuthenticatedUserPermission(userId);
     //
-    Space space = getSpaceService().getSpaceById(spaceId);
+    Space space = spaceService.getSpaceById(spaceId);
     if (space == null) {
       throw new WebApplicationException(Response.Status.BAD_REQUEST);
     }
@@ -203,7 +213,7 @@ public class IntranetNotificationRestService extends AbstractStorage implements 
     MediaType mediaType = Util.getMediaType(format, mediaTypes);
 
     //update notification
-    NotificationInfo info = getWebNotificationStorage().get(notificationId);
+    NotificationInfo info = webNotificationStorage.get(notificationId);
     info.setTo(userId);
     info.key(new PluginKey("SpaceInvitationPlugin"));
     Map<String, String> ownerParameter = new HashMap<String, String>();
@@ -215,7 +225,7 @@ public class IntranetNotificationRestService extends AbstractStorage implements 
       throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
     }
 
-    getSpaceService().addMember(space, userId);
+    spaceService.addMember(space, userId);
     return Util.getResponse(messageInfo, uriInfo, mediaType, Response.Status.OK);
   }
   
@@ -244,13 +254,13 @@ public class IntranetNotificationRestService extends AbstractStorage implements 
     String[] mediaTypes = new String[] { "json", "xml" };
     MediaType mediaType = Util.getMediaType(format, mediaTypes);
     //
-    Space space = getSpaceService().getSpaceById(spaceId);
+    Space space = spaceService.getSpaceById(spaceId);
     if (space == null) {
       throw new WebApplicationException(Response.Status.BAD_REQUEST);
     }
-    getSpaceService().removeInvitedUser(space, userId);
+    spaceService.removeInvitedUser(space, userId);
     //
-    getWebNotificationStorage().remove(notificationId);
+    webNotificationStorage.remove(notificationId);
     
     return Util.getResponse(getUserWebNotification(userId), uriInfo, mediaType, Response.Status.OK);
   }
@@ -284,7 +294,7 @@ public class IntranetNotificationRestService extends AbstractStorage implements 
     checkAuthenticatedUserPermission(currentUserId);
 
     //check space existence
-    Space space = getSpaceService().getSpaceById(spaceId);
+    Space space = spaceService.getSpaceById(spaceId);
     if (space == null) {
       throw new WebApplicationException(Response.Status.BAD_REQUEST);
     }
@@ -305,7 +315,7 @@ public class IntranetNotificationRestService extends AbstractStorage implements 
     String[] mediaTypes = new String[] { "json", "xml" };
     MediaType mediaType = Util.getMediaType(format, mediaTypes);
     //update notification
-    NotificationInfo info = getWebNotificationStorage().get(notificationId);
+    NotificationInfo info = webNotificationStorage.get(notificationId);
     info.setTo(currentUserId);
     info.key(new PluginKey("RequestJoinSpacePlugin"));
     Map<String, String> ownerParameter = new HashMap<String, String>();
@@ -319,7 +329,7 @@ public class IntranetNotificationRestService extends AbstractStorage implements 
     }
 
 
-    getSpaceService().addMember(space, requestUserId);
+    spaceService.addMember(space, requestUserId);
     return Util.getResponse(messageInfo, uriInfo, mediaType, Response.Status.OK);
   }
   
@@ -353,57 +363,14 @@ public class IntranetNotificationRestService extends AbstractStorage implements 
     String[] mediaTypes = new String[] { "json", "xml" };
     MediaType mediaType = Util.getMediaType(format, mediaTypes);
     //
-    Space space = getSpaceService().getSpaceById(spaceId);
+    Space space = spaceService.getSpaceById(spaceId);
     if (space == null) {
       throw new WebApplicationException(Response.Status.BAD_REQUEST);
     }
-    getSpaceService().removePendingUser(space, requestUserId);
-    getWebNotificationStorage().remove(notificationId);
+    spaceService.removePendingUser(space, requestUserId);
+    webNotificationStorage.remove(notificationId);
     //
     return Util.getResponse(getUserWebNotification(currentUserId), uriInfo, mediaType, Response.Status.OK);
-  }
-  
-  /**
-   * Gets a service which manages all things related to spaces.
-   * @return The SpaceService.
-   * @see SpaceService
-   */
-  public static SpaceService getSpaceService() {
-    if (spaceService == null) {
-      spaceService = CommonsUtils.getService(SpaceService.class);
-    }
-    return spaceService;
-  }
-
-  /**
-   * Gets a service which manages all things related to identities.
-   * @return The IdentityManager.
-   * @see IdentityManager
-   */
-  private static IdentityManager getIdentityManager() {
-    if (identityManager == null) {
-      identityManager = CommonsUtils.getService(IdentityManager.class);
-    }
-    return identityManager;
-  }
-  
-  /**
-   * Gets a service which manages all things related to relationship.
-   * @return The RelationshipManager.
-   * @see RelationshipManager
-   */
-  private static RelationshipManager getRelationshipManager() {
-    if (relationshipManager == null) {
-      relationshipManager = CommonsUtils.getService(RelationshipManager.class);
-    }
-    return relationshipManager;
-  }
-  
-  private static WebNotificationStorage getWebNotificationStorage() {
-    if (webNotificationStorage == null) {
-      webNotificationStorage = CommonsUtils.getService(WebNotificationStorage.class);
-    }
-    return webNotificationStorage;
   }
   
   private MessageInfo sendBackNotif(NotificationInfo notification) {
@@ -421,7 +388,7 @@ public class IntranetNotificationRestService extends AbstractStorage implements 
       notification.setTitle(msg.getBody());
       notification.with(NotificationMessageUtils.SHOW_POPOVER_PROPERTY.getKey(), "true")
                   .with(NotificationMessageUtils.READ_PORPERTY.getKey(), "false");
-      getWebNotificationStorage().update(notification, false);
+      webNotificationStorage.update(notification, false);
       return msg;
     } catch (Exception e) {
       LOG.error("Can not send the message to Intranet.", e.getMessage());
@@ -431,7 +398,7 @@ public class IntranetNotificationRestService extends AbstractStorage implements 
 
   private Map<String, Boolean> getUserWebNotification(String userId) throws Exception {
     Map<String, Boolean> data = new HashMap<String, Boolean>();
-    List<NotificationInfo> notifications = getWebNotificationStorage().get(new WebNotificationFilter(userId), 0, 1);
+    List<NotificationInfo> notifications = webNotificationStorage.get(new WebNotificationFilter(userId), 0, 1);
     data.put("showViewAll", (notifications.size() > 0));
     return data;
   }

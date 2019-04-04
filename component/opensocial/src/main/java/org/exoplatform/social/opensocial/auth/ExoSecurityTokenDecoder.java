@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2003-2010 eXo Platform SAS.
+ * Copyright (C) 2003-2019 eXo Platform SAS.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Affero General Public License
@@ -32,7 +32,7 @@ public class ExoSecurityTokenDecoder implements SecurityTokenCodec {
 
   private static final String        SECURITY_TOKEN_TYPE = "gadgets.securityTokenType";
 
-  private static SecurityTokenCodec decoder = null;
+  private SecurityTokenCodec decoder;
 
   @Inject
   public ExoSecurityTokenDecoder(ContainerConfig config) {
@@ -47,10 +47,6 @@ public class ExoSecurityTokenDecoder implements SecurityTokenCodec {
           + ContainerConfig.DEFAULT_CONTAINER + " container configuration. " + SECURITY_TOKEN_TYPE
           + ": " + tokenType);
     }
-  }
-
-  public static SecurityTokenCodec getSecurityTokenDecoder() {
-    return decoder;
   }
 
   public SecurityToken createToken(Map<String, String> tokenParameters) throws SecurityTokenException {

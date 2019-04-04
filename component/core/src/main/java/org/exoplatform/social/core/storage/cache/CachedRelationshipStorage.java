@@ -85,14 +85,7 @@ public class CachedRelationshipStorage extends AbstractStorage implements Relati
   private final IdentityStorage identityStorage;
 
   //
-  private static RelationshipKey RELATIONSHIP_NOT_FOUND;
-
-  private static RelationshipKey relationshipNotFoundKey() {
-    if (RELATIONSHIP_NOT_FOUND == null) {
-      RELATIONSHIP_NOT_FOUND = new RelationshipKey(null);
-    }
-    return RELATIONSHIP_NOT_FOUND;
-  }
+  private static RelationshipKey RELATIONSHIP_NOT_FOUND = new RelationshipKey(null);
 
   void clearCacheFor(Relationship r) {
 
@@ -356,7 +349,7 @@ public class CachedRelationshipStorage extends AbstractStorage implements Relati
               return k;
             }
             else {
-              return CachedRelationshipStorage.relationshipNotFoundKey();
+              return RELATIONSHIP_NOT_FOUND;
             }
           }
         },
@@ -364,7 +357,7 @@ public class CachedRelationshipStorage extends AbstractStorage implements Relati
     );
 
     //
-    if (gotKey != null && !gotKey.equals(CachedRelationshipStorage.relationshipNotFoundKey())) {
+    if (gotKey != null && !gotKey.equals(RELATIONSHIP_NOT_FOUND)) {
       return getRelationship(gotKey.getId());
     }
     else {
@@ -377,13 +370,13 @@ public class CachedRelationshipStorage extends AbstractStorage implements Relati
   public boolean hasRelationship(Identity identity1, Identity identity2, String relationshipPath) throws RelationshipStorageException {
     RelationshipIdentityKey key = new RelationshipIdentityKey(identity2.getId(), identity1.getId());
     RelationshipKey gotKey = exoRelationshipByIdentityCache.get(key);
-    if (gotKey != null && ! gotKey.equals(CachedRelationshipStorage.relationshipNotFoundKey()) && getRelationship(identity1, identity2).getStatus().equals(Relationship.Type.CONFIRMED)) {
+    if (gotKey != null && ! gotKey.equals(RELATIONSHIP_NOT_FOUND) && getRelationship(identity1, identity2).getStatus().equals(Relationship.Type.CONFIRMED)) {
       return true;
     }
     
     key = new RelationshipIdentityKey(identity1.getId(), identity2.getId());
     gotKey = exoRelationshipByIdentityCache.get(key);
-    if (gotKey != null && ! gotKey.equals(CachedRelationshipStorage.relationshipNotFoundKey()) && getRelationship(identity1, identity2).getStatus().equals(Relationship.Type.CONFIRMED)) {
+    if (gotKey != null && ! gotKey.equals(RELATIONSHIP_NOT_FOUND) && getRelationship(identity1, identity2).getStatus().equals(Relationship.Type.CONFIRMED)) {
       return true;
     }
 

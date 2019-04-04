@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2003-2007 eXo Platform SAS.
+ * Copyright (C) 2003-2019 eXo Platform SAS.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Affero General Public License
@@ -16,12 +16,11 @@
  */
 package org.exoplatform.social.opensocial.model;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.shindig.social.core.model.PersonImpl;
-
-import com.google.common.collect.Maps;
 
 public class ExoPersonImpl extends PersonImpl {
 
@@ -81,7 +80,7 @@ public class ExoPersonImpl extends PersonImpl {
     /**
      * a Map to convert json string to Field representations.
      */
-    private static Map<String, Field> URL_STRING_TO_FIELD_MAP;
+    private static Map<String, Field> URL_STRING_TO_FIELD_MAP = new HashMap<>();
 
     /**
      * Converts from a url string (usually passed in the fields= parameter) into the
@@ -90,11 +89,8 @@ public class ExoPersonImpl extends PersonImpl {
      * @return The corresponding person field.
      */
     public static ExoPersonImpl.Field fromUrlString(String urlString) {
-      if (URL_STRING_TO_FIELD_MAP == null) {
-        URL_STRING_TO_FIELD_MAP = Maps.newHashMap();
-        for (ExoPersonImpl.Field field : ExoPersonImpl.Field.values()) {
-          URL_STRING_TO_FIELD_MAP.put(field.toString(), field);
-        }
+      for (ExoPersonImpl.Field field : ExoPersonImpl.Field.values()) {
+        URL_STRING_TO_FIELD_MAP.put(field.toString(), field);
       }
 
       return URL_STRING_TO_FIELD_MAP.get(urlString);

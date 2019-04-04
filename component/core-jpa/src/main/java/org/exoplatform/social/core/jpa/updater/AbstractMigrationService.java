@@ -54,8 +54,8 @@ public abstract class AbstractMigrationService<T>  extends AbstractStorage {
   protected String process = "";
   protected int lastPercent = 0;
 
-  private static String identityQuery = null;
-  private static String spaceIdentityQuery = null;
+  private String identityQuery = null;
+  private String spaceIdentityQuery = null;
 
   protected long numberFailed = 0;
 

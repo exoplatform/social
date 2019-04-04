@@ -166,8 +166,8 @@ public class RDBMSActivityStorageImplTest extends AbstractCoreTest {
     assertEquals(0, activity.getMentionedIds().length);
 
     //update
-    String processedTitle = "test <a href=\"/portal/intranet/profile/root\" rel=\"nofollow\" target=\"_blank\">Root Root</a> " +
-            "<a href=\"/portal/intranet/profile/john\" rel=\"nofollow\" target=\"_blank\">John Anthony</a>";
+    String processedTitle = "test <a href=\"/portal/classic/profile/root\" rel=\"nofollow\" target=\"_blank\">Root Root</a> " +
+            "<a href=\"/portal/classic/profile/john\" rel=\"nofollow\" target=\"_blank\">John Anthony</a>";
     activity.setTitle("test @root @john");
     activityStorage.updateActivity(activity);
     //

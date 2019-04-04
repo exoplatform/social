@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2003-2010 eXo Platform SAS.
+ * Copyright (C) 2003-2019 eXo Platform SAS.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Affero General Public License
@@ -20,9 +20,7 @@ import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.Validate;
 import org.exoplatform.commons.utils.CommonsUtils;
 import org.exoplatform.container.PortalContainer;
-import org.exoplatform.container.xml.InitParams;
 import org.exoplatform.portal.mop.SiteType;
-import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.identity.model.Identity;
@@ -66,24 +64,11 @@ public class LinkProvider {
 
   public static final String ROUTE_DELIMITER = "/";
   
-  private static IdentityManager identityManager;
   private static Log             LOG = ExoLogger.getLogger(LinkProvider.class);
-
-  /**
-   * Hacks for unit test to work.
-   */
-  public static String DEFAULT_PORTAL_OWNER = "intranet";
 
   private static final  String BASE_URL_SOCIAL_REST_API = "/v1/social";
 
-  /**
-   * Constructor with parameter to inject the default portal owner name.
-   * @param params The params got from configuration.
-   * 
-   * @since 1.2.0 GA
-   */
-  public LinkProvider(InitParams params){
-    if(params.getValueParam("predefinedOwner") != null) DEFAULT_PORTAL_OWNER = params.getValueParam("predefinedOwner").getValue();
+  public LinkProvider() {
   }
 
   /**
@@ -438,10 +423,7 @@ public class LinkProvider {
    * @return The IdentityManager.
    */
   public static IdentityManager getIdentityManager() {
-    if (identityManager == null) {
-      identityManager = CommonsUtils.getService(IdentityManager.class);
-    }
-    return LinkProvider.identityManager;
+    return CommonsUtils.getService(IdentityManager.class);
   }
   
   /**

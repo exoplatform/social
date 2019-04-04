@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 eXo Platform SAS.
+ * Copyright (C) 2019 eXo Platform SAS.
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as
@@ -84,7 +84,6 @@ public class IdentityMigrationService extends AbstractMigrationService<Identity>
 
   private String identityQuery;
 
-  private long numberIdentities = 0;
   private Set<String> identitiesMigrateFailed = new HashSet<>();
   private Set<String> identitiesCleanupFailed = new HashSet<>();
 
@@ -105,7 +104,6 @@ public class IdentityMigrationService extends AbstractMigrationService<Identity>
   protected void beforeMigration() throws Exception {
     MigrationContext.setIdentityDone(false);
     identitiesMigrateFailed = new HashSet<>();
-    numberIdentities = 0;
   }
 
   @Override
@@ -190,12 +188,11 @@ public class IdentityMigrationService extends AbstractMigrationService<Identity>
           }
           RequestLifeCycle.end();
         }
-      } catch (Throwable ex) {
+      } catch (Exception ex) {
         LOG.error(ex);
       }
     }
 
-    numberIdentities = offset;
     if (identitiesMigrateFailed.size() > 0) {
       LOG.info(String.format("| / END::Identity migration failed for (%s) identity(s)", identitiesMigrateFailed.size()));
     }

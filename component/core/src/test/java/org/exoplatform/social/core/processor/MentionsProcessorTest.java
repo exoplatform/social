@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2003-2010 eXo Platform SAS.
+ * Copyright (C) 2003-2019 eXo Platform SAS.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Affero General Public License
@@ -20,6 +20,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.exoplatform.container.PortalContainer;
+import org.exoplatform.portal.config.UserPortalConfigService;
 import org.exoplatform.social.core.BaseActivityProcessorPlugin;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.activity.model.ExoSocialActivityImpl;
@@ -32,12 +33,14 @@ import org.exoplatform.social.core.test.AbstractCoreTest;
 public class MentionsProcessorTest extends AbstractCoreTest {
 
   private IdentityManager identityManager;
+  private UserPortalConfigService userPortalConfigService;
   private Identity rootIdentity, johnIdentity;
 
 
   public void setUp() throws Exception {
     super.setUp();
-    identityManager = (IdentityManager) PortalContainer.getComponent(IdentityManager.class);
+    identityManager = PortalContainer.getInstance().getComponentInstanceOfType(IdentityManager.class);
+    userPortalConfigService = PortalContainer.getInstance().getComponentInstanceOfType(UserPortalConfigService.class);
     assertNotNull("identityManager must not be null", identityManager);
     rootIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "root");
     johnIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "john");
@@ -66,8 +69,8 @@ public class MentionsProcessorTest extends AbstractCoreTest {
 
     String root = "root", john = "john";
 
-    String rootLink = LinkProvider.getProfileLink(root, LinkProvider.DEFAULT_PORTAL_OWNER);
-    String johnLink = LinkProvider.getProfileLink(john, LinkProvider.DEFAULT_PORTAL_OWNER);
+    String rootLink = LinkProvider.getProfileLink(root, userPortalConfigService.getDefaultPortal());
+    String johnLink = LinkProvider.getProfileLink(john, userPortalConfigService.getDefaultPortal());
 
     activity.setTitle("single @root substitution");
     processor.processActivity(activity);
@@ -105,10 +108,10 @@ public class MentionsProcessorTest extends AbstractCoreTest {
     processor.processActivity(activity);
     
     templateParams = activity.getTemplateParams();
-    assertEquals(LinkProvider.getProfileLink("root", LinkProvider.DEFAULT_PORTAL_OWNER) + " and " + 
-                 LinkProvider.getProfileLink("john", LinkProvider.DEFAULT_PORTAL_OWNER),
+    assertEquals(LinkProvider.getProfileLink("root", userPortalConfigService.getDefaultPortal()) + " and " +
+                 LinkProvider.getProfileLink("john", userPortalConfigService.getDefaultPortal()),
                  templateParams.get("a"));
-    assertEquals(LinkProvider.getProfileLink("john", LinkProvider.DEFAULT_PORTAL_OWNER),
+    assertEquals(LinkProvider.getProfileLink("john", userPortalConfigService.getDefaultPortal()),
                  templateParams.get("b"));    
     assertEquals("@mary", templateParams.get("d"));  
   }
