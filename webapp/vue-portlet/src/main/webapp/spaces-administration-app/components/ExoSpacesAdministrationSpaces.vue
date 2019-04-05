@@ -1,6 +1,6 @@
 <template>
   <div class="spacesAdministration">
-    <div class="uiTabNormal uiTabInPage">
+    <div class="uiTabAdvanced uiTabInPage">
       <ul class="nav nav-tabs">
         <li :class="{active: activeTab === 1}" @click="activeTab=1">
           <a href="#manage" data-toggle="tab">{{ $t('social.spaces.administration.manageSpaces') }}</a>
