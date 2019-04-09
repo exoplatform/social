@@ -677,7 +677,7 @@ public class UserRestResourcesV1 implements UserRestResources {
     for (String user : spaceMembers) {
         UserStateModel userModel = userStateService.getUserState(user);
         boolean isOnline = userStateService.isOnline(user);
-        if (user.equals(userId) || user.equals(superUserName) || INVISIBLE.equals(userModel.getStatus()) || !isOnline) {
+        if (user.equals(userId) || user.equals(superUserName) || userModel == null || INVISIBLE.equals(userModel.getStatus()) || !isOnline) {
           continue;
         }
         Identity userIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, user, false);
@@ -706,7 +706,7 @@ public class UserRestResourcesV1 implements UserRestResources {
     String superUserName = userACL.getSuperUser();
     for (UserStateModel userModel : users) {
       String user = userModel.getUserId();
-      if (user.equals(userId) || user.equals(superUserName) || INVISIBLE.equals(userModel.getStatus()))
+      if (user.equals(userId) || user.equals(superUserName) || userModel == null || INVISIBLE.equals(userModel.getStatus()))
         continue;
       Identity userIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, user, false);
       identities.add(userIdentity);
