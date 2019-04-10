@@ -121,6 +121,7 @@ public interface SpaceRestResources extends SocialRest {
   @GET
   @Path("{id}/users")
   public abstract Response getSpaceMembers(@Context UriInfo uriInfo,
+                                           @Context Request request,
                                            @PathParam("id") String id,
                                            @QueryParam("role") String role,
                                            @QueryParam("offset") int offset,

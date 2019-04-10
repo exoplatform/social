@@ -450,6 +450,7 @@ public class SpaceRestResourcesV1 implements SpaceRestResources {
     @ApiResponse (code = 500, message = "Internal server error"),
     @ApiResponse (code = 400, message = "Invalid query input") })
   public Response getSpaceMembers(@Context UriInfo uriInfo,
+                                  @Context Request request,
                                   @ApiParam(value = "Space id", required = true) @PathParam("id") String id,
                                   @ApiParam(value = "Role of the target user in this space, ex: manager", required = false, defaultValue = "0") @QueryParam("role") String role,
                                   @ApiParam(value = "Offset", required = false, defaultValue = "0") @QueryParam("offset") int offset,
@@ -478,8 +479,20 @@ public class SpaceRestResourcesV1 implements SpaceRestResources {
     CollectionEntity collectionUser = new CollectionEntity(profileInfos, EntityBuilder.USERS_TYPE, offset, limit);
     if (returnSize) {
       collectionUser.setSize(size);
-    }    
-    return EntityBuilder.getResponse(collectionUser, uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
+    }
+    EntityTag eTag = null;
+    eTag = new EntityTag(Integer.toString(collectionUser.hashCode()));
+    //
+    Response.ResponseBuilder builder = request.evaluatePreconditions(eTag);
+    if (builder == null) {
+      builder = EntityBuilder.getResponseBuilder(collectionUser, uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
+      builder.tag(eTag);
+    }
+
+    CacheControl cc = new CacheControl();
+    builder.cacheControl(cc);
+
+    return builder.build();
   }
   
   /**
