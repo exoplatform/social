@@ -49,7 +49,7 @@ public class URLConverterFilterPlugin extends BaseXMLFilterPlugin {
   private static final Pattern URL_PATTERN = Pattern
       .compile("(?i)" +
       "(" +
-        "((?:(?:ht|f)tp(?:s?)\\:\\/\\/)?" +                                                       // protolcol
+        "((?:(?:ht|f)tp(?:s?)\\:\\/\\/)" +                                                       // protolcol
         "(?:\\w+:\\w+@)?" +                                                                       // username password
         "(((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\." +  // IPAddress
         "(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?))|" +     // IPAddress
